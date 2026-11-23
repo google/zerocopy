@@ -101469,6 +101469,90 @@
         "verification"
       ]
     },
+    "rustc-mir-lower-intrinsics-slice-len-normalize-and-trivial-const": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "committed_at": "2026-11-22T20:28:26Z",
+            "kind": "repository",
+            "repository": "rust-lang/rust",
+            "revision": "137d1d49458b73b7b85d2c1599d8730886d65e47",
+            "url": "https://github.com/rust-lang/rust"
+          },
+          "name": "Rust compiler and standard library primary source (HEAD audit pin)"
+        },
+        {
+          "identity": {
+            "committed_at": "2026-11-11T17:59:24Z",
+            "kind": "repository",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "url": "https://github.com/rust-lang/rust",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust compiler primary source intermediate comparison pin (1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "committed_at": "2026-05-31T20:13:59Z",
+            "kind": "toolchain",
+            "llvm_version": "22.1.6",
+            "miri_version": "0.1.0",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "target": "x86_64-unknown-linux-gnu",
+            "url": "https://github.com/rust-lang/rust",
+            "version": "1.98.0-nightly"
+          },
+          "name": "Rust compiler and Miri live execution toolchain (1.98.0-nightly)"
+        },
+        {
+          "identity": {
+            "committed_at": "2026-11-17T20:49:56Z",
+            "kind": "specification",
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+            "url": "https://github.com/rust-lang/reference"
+          },
+          "name": "The Rust Reference normative specification"
+        },
+        {
+          "identity": {
+            "committed_at": "2026-11-19T21:39:21Z",
+            "kind": "repository",
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+            "url": "https://github.com/joshlf/anneal"
+          },
+          "name": "Anneal verification framework MIR capture, AST, and operational semantics"
+        },
+        {
+          "identity": {
+            "committed_at": "2026-09-24T17:27:27Z",
+            "kind": "toolchain",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "url": "https://github.com/leanprover/lean4",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4 kernel proof assistant"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "rustc-mir-move-elimination-tail-copy-to-move-and-nrvo-place-unification": {
       "observed_at": "2026-11-21",
       "subjects": [

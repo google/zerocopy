@@ -1,0 +1,578 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "trivial_const": {
+    "compile_rc": 0,
+    "compile_stderr": "",
+    "dump_counts": {
+      "TRIV_A": 1,
+      "TRIV_B": 1,
+      "TRIV_C_CHAIN2": 1,
+      "NON_TRIV_ARITH": 49,
+      "NON_TRIV_GENERIC_REF": 49,
+      "NON_TRIV_OPAQUE_DEF": 49,
+      "IMPOSSIBLE_CLAUSE_TRIV": 1,
+      "read_impossible_triv": 47
+    },
+    "dump_files": {
+      "TRIV_A": [
+        "triv_probe.TRIV_A.1-1-000.built.after.mir"
+      ],
+      "TRIV_B": [
+        "triv_probe.TRIV_B.1-1-000.built.after.mir"
+      ],
+      "TRIV_C_CHAIN2": [
+        "triv_probe.TRIV_C_CHAIN2.1-1-000.built.after.mir"
+      ],
+      "NON_TRIV_ARITH": [
+        "triv_probe.NON_TRIV_ARITH.-------.nll.0.mir",
+        "triv_probe.NON_TRIV_ARITH.-------.renumber.0.mir",
+        "triv_probe.NON_TRIV_ARITH.1-1-000.built.after.mir",
+        "triv_probe.NON_TRIV_ARITH.1-1-005.SimplifyCfg-initial.after.mir",
+        "triv_probe.NON_TRIV_ARITH.1-1-005.SimplifyCfg-initial.before.mir",
+        "triv_probe.NON_TRIV_ARITH.1-1-007.PromoteTemps.after.mir",
+        "triv_probe.NON_TRIV_ARITH.1-1-007.PromoteTemps.before.mir",
+        "triv_probe.NON_TRIV_ARITH.1-1-008.SimplifyCfg-promote-consts.after.mir",
+        "triv_probe.NON_TRIV_ARITH.1-1-008.SimplifyCfg-promote-consts.before.mir",
+        "triv_probe.NON_TRIV_ARITH.2-1-000.analysis.after.mir",
+        "triv_probe.NON_TRIV_ARITH.2-1-001.ImpossiblePredicates.after.mir",
+        "triv_probe.NON_TRIV_ARITH.2-1-001.ImpossiblePredicates.before.mir",
+        "triv_probe.NON_TRIV_ARITH.2-1-002.CleanupPostBorrowck.after.mir",
+        "triv_probe.NON_TRIV_ARITH.2-1-002.CleanupPostBorrowck.before.mir",
+        "triv_probe.NON_TRIV_ARITH.2-1-003.RemoveNoopLandingPads.after.mir",
+        "triv_probe.NON_TRIV_ARITH.2-1-003.RemoveNoopLandingPads.before.mir",
+        "triv_probe.NON_TRIV_ARITH.2-1-004.SimplifyCfg-post-analysis.after.mir",
+        "triv_probe.NON_TRIV_ARITH.2-1-004.SimplifyCfg-post-analysis.before.mir",
+        "triv_probe.NON_TRIV_ARITH.2-1-005.Derefer.after.mir",
+        "triv_probe.NON_TRIV_ARITH.2-1-005.Derefer.before.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-000.analysis-post-cleanup.after.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-001.AddCallGuards.after.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-001.AddCallGuards.before.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-002.PostAnalysisNormalize.after.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-002.PostAnalysisNormalize.before.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-003.Subtyper.after.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-003.Subtyper.before.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-004.ElaborateDrops.after.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-004.ElaborateDrops.before.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-006.AbortUnwindingCalls.after.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-006.AbortUnwindingCalls.before.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-007.AddMovesForPackedDrops.after.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-007.AddMovesForPackedDrops.before.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-008.EraseDerefTemps.after.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-008.EraseDerefTemps.before.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-009.ElaborateBoxDerefs.after.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-009.ElaborateBoxDerefs.before.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-010.StateTransform.after.mir",
+        "triv_probe.NON_TRIV_ARITH.2-2-010.StateTransform.before.mir",
+        "triv_probe.NON_TRIV_ARITH.3-1-000.runtime.after.mir",
+        "triv_probe.NON_TRIV_ARITH.3-1-001.LowerIntrinsics.after.mir",
+        "triv_probe.NON_TRIV_ARITH.3-1-001.LowerIntrinsics.before.mir",
+        "triv_probe.NON_TRIV_ARITH.3-1-002.RemovePlaceMention.after.mir",
+        "triv_probe.NON_TRIV_ARITH.3-1-002.RemovePlaceMention.before.mir",
+        "triv_probe.NON_TRIV_ARITH.3-1-003.SimplifyCfg-pre-optimizations.after.mir",
+        "triv_probe.NON_TRIV_ARITH.3-1-003.SimplifyCfg-pre-optimizations.before.mir",
+        "triv_probe.NON_TRIV_ARITH.3-2-000.runtime-post-cleanup.after.mir",
+        "triv_probe.NON_TRIV_ARITH.3-2-001.CtfeLimit.after.mir",
+        "triv_probe.NON_TRIV_ARITH.3-2-001.CtfeLimit.before.mir"
+      ],
+      "NON_TRIV_GENERIC_REF": [
+        "triv_probe.NON_TRIV_GENERIC_REF.-------.nll.0.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.-------.renumber.0.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.1-1-000.built.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.1-1-005.SimplifyCfg-initial.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.1-1-005.SimplifyCfg-initial.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.1-1-007.PromoteTemps.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.1-1-007.PromoteTemps.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.1-1-008.SimplifyCfg-promote-consts.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.1-1-008.SimplifyCfg-promote-consts.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-1-000.analysis.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-1-001.ImpossiblePredicates.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-1-001.ImpossiblePredicates.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-1-002.CleanupPostBorrowck.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-1-002.CleanupPostBorrowck.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-1-003.RemoveNoopLandingPads.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-1-003.RemoveNoopLandingPads.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-1-004.SimplifyCfg-post-analysis.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-1-004.SimplifyCfg-post-analysis.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-1-005.Derefer.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-1-005.Derefer.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-000.analysis-post-cleanup.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-001.AddCallGuards.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-001.AddCallGuards.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-002.PostAnalysisNormalize.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-002.PostAnalysisNormalize.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-003.Subtyper.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-003.Subtyper.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-004.ElaborateDrops.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-004.ElaborateDrops.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-006.AbortUnwindingCalls.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-006.AbortUnwindingCalls.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-007.AddMovesForPackedDrops.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-007.AddMovesForPackedDrops.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-008.EraseDerefTemps.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-008.EraseDerefTemps.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-009.ElaborateBoxDerefs.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-009.ElaborateBoxDerefs.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-010.StateTransform.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.2-2-010.StateTransform.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.3-1-000.runtime.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.3-1-001.LowerIntrinsics.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.3-1-001.LowerIntrinsics.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.3-1-002.RemovePlaceMention.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.3-1-002.RemovePlaceMention.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.3-1-003.SimplifyCfg-pre-optimizations.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.3-1-003.SimplifyCfg-pre-optimizations.before.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.3-2-000.runtime-post-cleanup.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.3-2-001.CtfeLimit.after.mir",
+        "triv_probe.NON_TRIV_GENERIC_REF.3-2-001.CtfeLimit.before.mir"
+      ],
+      "NON_TRIV_OPAQUE_DEF": [
+        "triv_probe.NON_TRIV_OPAQUE_DEF.-------.nll.0.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.-------.renumber.0.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.1-1-000.built.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.1-1-005.SimplifyCfg-initial.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.1-1-005.SimplifyCfg-initial.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.1-1-007.PromoteTemps.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.1-1-007.PromoteTemps.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.1-1-008.SimplifyCfg-promote-consts.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.1-1-008.SimplifyCfg-promote-consts.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-1-000.analysis.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-1-001.ImpossiblePredicates.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-1-001.ImpossiblePredicates.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-1-002.CleanupPostBorrowck.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-1-002.CleanupPostBorrowck.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-1-003.RemoveNoopLandingPads.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-1-003.RemoveNoopLandingPads.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-1-004.SimplifyCfg-post-analysis.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-1-004.SimplifyCfg-post-analysis.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-1-005.Derefer.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-1-005.Derefer.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-000.analysis-post-cleanup.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-001.AddCallGuards.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-001.AddCallGuards.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-002.PostAnalysisNormalize.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-002.PostAnalysisNormalize.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-003.Subtyper.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-003.Subtyper.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-004.ElaborateDrops.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-004.ElaborateDrops.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-006.AbortUnwindingCalls.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-006.AbortUnwindingCalls.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-007.AddMovesForPackedDrops.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-007.AddMovesForPackedDrops.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-008.EraseDerefTemps.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-008.EraseDerefTemps.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-009.ElaborateBoxDerefs.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-009.ElaborateBoxDerefs.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-010.StateTransform.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.2-2-010.StateTransform.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.3-1-000.runtime.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.3-1-001.LowerIntrinsics.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.3-1-001.LowerIntrinsics.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.3-1-002.RemovePlaceMention.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.3-1-002.RemovePlaceMention.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.3-1-003.SimplifyCfg-pre-optimizations.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.3-1-003.SimplifyCfg-pre-optimizations.before.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.3-2-000.runtime-post-cleanup.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.3-2-001.CtfeLimit.after.mir",
+        "triv_probe.NON_TRIV_OPAQUE_DEF.3-2-001.CtfeLimit.before.mir"
+      ],
+      "IMPOSSIBLE_CLAUSE_TRIV": [
+        "triv_probe.IMPOSSIBLE_CLAUSE_TRIV.1-1-000.built.after.mir"
+      ],
+      "read_impossible_triv": [
+        "triv_probe.read_impossible_triv.-------.nll.0.mir",
+        "triv_probe.read_impossible_triv.-------.renumber.0.mir",
+        "triv_probe.read_impossible_triv.1-1-000.built.after.mir",
+        "triv_probe.read_impossible_triv.1-1-005.SimplifyCfg-initial.after.mir",
+        "triv_probe.read_impossible_triv.1-1-005.SimplifyCfg-initial.before.mir",
+        "triv_probe.read_impossible_triv.1-1-007.PromoteTemps.after.mir",
+        "triv_probe.read_impossible_triv.1-1-007.PromoteTemps.before.mir",
+        "triv_probe.read_impossible_triv.1-1-008.SimplifyCfg-promote-consts.after.mir",
+        "triv_probe.read_impossible_triv.1-1-008.SimplifyCfg-promote-consts.before.mir",
+        "triv_probe.read_impossible_triv.2-1-000.analysis.after.mir",
+        "triv_probe.read_impossible_triv.2-1-001.ImpossiblePredicates.after.mir",
+        "triv_probe.read_impossible_triv.2-1-001.ImpossiblePredicates.before.mir",
+        "triv_probe.read_impossible_triv.2-1-002.CleanupPostBorrowck.after.mir",
+        "triv_probe.read_impossible_triv.2-1-002.CleanupPostBorrowck.before.mir",
+        "triv_probe.read_impossible_triv.2-1-003.RemoveNoopLandingPads.after.mir",
+        "triv_probe.read_impossible_triv.2-1-003.RemoveNoopLandingPads.before.mir",
+        "triv_probe.read_impossible_triv.2-1-004.SimplifyCfg-post-analysis.after.mir",
+        "triv_probe.read_impossible_triv.2-1-004.SimplifyCfg-post-analysis.before.mir",
+        "triv_probe.read_impossible_triv.2-1-005.Derefer.after.mir",
+        "triv_probe.read_impossible_triv.2-1-005.Derefer.before.mir",
+        "triv_probe.read_impossible_triv.2-2-000.analysis-post-cleanup.after.mir",
+        "triv_probe.read_impossible_triv.2-2-001.AddCallGuards.after.mir",
+        "triv_probe.read_impossible_triv.2-2-001.AddCallGuards.before.mir",
+        "triv_probe.read_impossible_triv.2-2-002.PostAnalysisNormalize.after.mir",
+        "triv_probe.read_impossible_triv.2-2-002.PostAnalysisNormalize.before.mir",
+        "triv_probe.read_impossible_triv.2-2-003.Subtyper.after.mir",
+        "triv_probe.read_impossible_triv.2-2-003.Subtyper.before.mir",
+        "triv_probe.read_impossible_triv.2-2-004.ElaborateDrops.after.mir",
+        "triv_probe.read_impossible_triv.2-2-004.ElaborateDrops.before.mir",
+        "triv_probe.read_impossible_triv.2-2-006.AbortUnwindingCalls.after.mir",
+        "triv_probe.read_impossible_triv.2-2-006.AbortUnwindingCalls.before.mir",
+        "triv_probe.read_impossible_triv.2-2-007.AddMovesForPackedDrops.after.mir",
+        "triv_probe.read_impossible_triv.2-2-007.AddMovesForPackedDrops.before.mir",
+        "triv_probe.read_impossible_triv.2-2-008.EraseDerefTemps.after.mir",
+        "triv_probe.read_impossible_triv.2-2-008.EraseDerefTemps.before.mir",
+        "triv_probe.read_impossible_triv.2-2-009.ElaborateBoxDerefs.after.mir",
+        "triv_probe.read_impossible_triv.2-2-009.ElaborateBoxDerefs.before.mir",
+        "triv_probe.read_impossible_triv.2-2-010.StateTransform.after.mir",
+        "triv_probe.read_impossible_triv.2-2-010.StateTransform.before.mir",
+        "triv_probe.read_impossible_triv.3-1-000.runtime.after.mir",
+        "triv_probe.read_impossible_triv.3-1-001.LowerIntrinsics.after.mir",
+        "triv_probe.read_impossible_triv.3-1-001.LowerIntrinsics.before.mir",
+        "triv_probe.read_impossible_triv.3-1-002.RemovePlaceMention.after.mir",
+        "triv_probe.read_impossible_triv.3-1-002.RemovePlaceMention.before.mir",
+        "triv_probe.read_impossible_triv.3-1-003.SimplifyCfg-pre-optimizations.after.mir",
+        "triv_probe.read_impossible_triv.3-1-003.SimplifyCfg-pre-optimizations.before.mir",
+        "triv_probe.read_impossible_triv.3-2-000.runtime-post-cleanup.after.mir"
+      ]
+    },
+    "triv_a_built": "// MIR for `TRIV_A` after built\n\nconst TRIV_A: usize = {\n    let mut _0: usize;\n\n    bb0: {\n        _0 = const 42_usize;\n        return;\n    }\n}\n",
+    "triv_b_built": "// MIR for `TRIV_B` after built\n\nconst TRIV_B: usize = {\n    let mut _0: usize;\n\n    bb0: {\n        _0 = const TRIV_A;\n        return;\n    }\n}\n",
+    "triv_c_chain2_built": "// MIR for `TRIV_C_CHAIN2` after built\n\nconst TRIV_C_CHAIN2: usize = {\n    let mut _0: usize;\n\n    bb0: {\n        _0 = const TRIV_B;\n        return;\n    }\n}\n",
+    "non_triv_arith_built": "// MIR for `NON_TRIV_ARITH` after built\n\nconst NON_TRIV_ARITH: usize = {\n    let mut _0: usize;\n    let mut _1: (usize, bool);\n\n    bb0: {\n        _1 = AddWithOverflow(const 40_usize, const 2_usize);\n        assert(!move (_1.1: bool), \"attempt to compute `{} + {}`, which would overflow\", const 40_usize, const 2_usize) -> [success: bb1, unwind: bb2];\n    }\n\n    bb1: {\n        _0 = move (_1.0: usize);\n        return;\n    }\n\n    bb2 (cleanup): {\n        resume;\n    }\n}\n",
+    "impossible_clause_triv_built": "// MIR for `IMPOSSIBLE_CLAUSE_TRIV` after built\n\nconst IMPOSSIBLE_CLAUSE_TRIV: usize = {\n    let mut _0: usize;\n\n    bb0: {\n        _0 = const 7_usize;\n        return;\n    }\n}\n",
+    "read_impossible_triv_after_impossible": "// MIR for `read_impossible_triv` after ImpossiblePredicates\n\nfn read_impossible_triv() -> usize {\n    let mut _0: usize;\n\n    bb0: {\n        unreachable;\n    }\n}\n"
+  },
+  "impossible_clause_non_triv": {
+    "compile_rc": 1,
+    "compile_stderr": "error[E0080]: entering unreachable code\n --> <TMPDIR>/imp_nontriv.rs:6:47\n  |\n6 | pub const IMPOSSIBLE_CLAUSE_NON_TRIV: usize = 3 + 4\n  |                                               ^^^^^ evaluation of `IMPOSSIBLE_CLAUSE_NON_TRIV` failed here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`.",
+    "dump_count": 49,
+    "after_impossible_predicates": "// MIR for `IMPOSSIBLE_CLAUSE_NON_TRIV` after ImpossiblePredicates\n\nconst IMPOSSIBLE_CLAUSE_NON_TRIV: usize = {\n    let mut _0: usize;\n\n    bb0: {\n        unreachable;\n    }\n}\n"
+  },
+  "lower_intrinsics": {
+    "compile_rc": 0,
+    "compile_stderr": "warning: unnecessary transmute\n   --> <TMPDIR>/lower_intrinsics_probe.rs:106:14\n    |\n106 |     unsafe { intrinsics::transmute(x) }\n    |              ^^^^^^^^^^^^^^^^^^^^^^^^\n    |\n    = note: `#[warn(unnecessary_transmutes)]` on by default\nhelp: replace this with\n    |\n106 -     unsafe { intrinsics::transmute(x) }\n106 +     unsafe { f32::from_bits(x) }\n    |\n\nwarning: feature `ptr_metadata` is declared but not used\n --> <TMPDIR>/lower_intrinsics_probe.rs:3:29\n  |\n3 | #![feature(core_intrinsics, ptr_metadata, ub_checks)]\n  |                             ^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default\n\nwarning: feature `ub_checks` is declared but not used\n --> <TMPDIR>/lower_intrinsics_probe.rs:3:43\n  |\n3 | #![feature(core_intrinsics, ptr_metadata, ub_checks)]\n  |                                           ^^^^^^^^^\n\nwarning: 3 warnings emitted",
+    "items": {
+      "probe_unreachable": {
+        "before": "// MIR for `probe_unreachable` before LowerIntrinsics\n\nfn probe_unreachable() -> ! {\n    let mut _0: !;\n\n    bb0: {\n        _0 = unreachable() -> unwind unreachable;\n    }\n}\n",
+        "after": "// MIR for `probe_unreachable` after LowerIntrinsics\n\nfn probe_unreachable() -> ! {\n    let mut _0: !;\n\n    bb0: {\n        unreachable;\n    }\n}\n"
+      },
+      "probe_runtime_checks": {
+        "before": "// MIR for `probe_runtime_checks` before LowerIntrinsics\n\nfn probe_runtime_checks() -> (bool, bool) {\n    let mut _0: (bool, bool);\n    let mut _1: bool;\n    let mut _2: bool;\n\n    bb0: {\n        StorageLive(_1);\n        _1 = check_library_ub() -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageLive(_2);\n        _2 = overflow_checks() -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _0 = (move _1, move _2);\n        StorageDead(_2);\n        StorageDead(_1);\n        return;\n    }\n}\n",
+        "after": "// MIR for `probe_runtime_checks` after LowerIntrinsics\n\nfn probe_runtime_checks() -> (bool, bool) {\n    let mut _0: (bool, bool);\n    let mut _1: bool;\n    let mut _2: bool;\n\n    bb0: {\n        StorageLive(_1);\n        _1 = UbChecks;\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageLive(_2);\n        _2 = OverflowChecks;\n        goto -> bb2;\n    }\n\n    bb2: {\n        _0 = (move _1, move _2);\n        StorageDead(_2);\n        StorageDead(_1);\n        return;\n    }\n}\n"
+      },
+      "probe_forget": {
+        "before": "// MIR for `probe_forget` before LowerIntrinsics\n\nfn probe_forget(_1: u64) -> () {\n    debug x => _1;\n    let mut _0: ();\n    let mut _2: u64;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = std::intrinsics::forget::<u64>(move _2) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_2);\n        return;\n    }\n}\n",
+        "after": "// MIR for `probe_forget` after LowerIntrinsics\n\nfn probe_forget(_1: u64) -> () {\n    debug x => _1;\n    let mut _0: ();\n    let mut _2: u64;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = const ();\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageDead(_2);\n        return;\n    }\n}\n"
+      },
+      "probe_copy_nonoverlapping": {
+        "before": "// MIR for `probe_copy_nonoverlapping` before LowerIntrinsics\n\nfn probe_copy_nonoverlapping(_1: *const u32, _2: *mut u32, _3: usize) -> () {\n    debug src => _1;\n    debug dst => _2;\n    debug count => _3;\n    let mut _0: ();\n    let mut _4: *const u32;\n    let mut _5: *mut u32;\n    let mut _6: usize;\n\n    bb0: {\n        StorageLive(_4);\n        _4 = copy _1;\n        StorageLive(_5);\n        _5 = copy _2;\n        StorageLive(_6);\n        _6 = copy _3;\n        _0 = std::intrinsics::copy_nonoverlapping::<u32>(move _4, move _5, move _6) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_6);\n        StorageDead(_5);\n        StorageDead(_4);\n        return;\n    }\n}\n",
+        "after": "// MIR for `probe_copy_nonoverlapping` after LowerIntrinsics\n\nfn probe_copy_nonoverlapping(_1: *const u32, _2: *mut u32, _3: usize) -> () {\n    debug src => _1;\n    debug dst => _2;\n    debug count => _3;\n    let mut _0: ();\n    let mut _4: *const u32;\n    let mut _5: *mut u32;\n    let mut _6: usize;\n\n    bb0: {\n        StorageLive(_4);\n        _4 = copy _1;\n        StorageLive(_5);\n        _5 = copy _2;\n        StorageLive(_6);\n        _6 = copy _3;\n        copy_nonoverlapping(dst = move _5, src = move _4, count = move _6);\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageDead(_6);\n        StorageDead(_5);\n        StorageDead(_4);\n        return;\n    }\n}\n"
+      },
+      "probe_assume": {
+        "before": "// MIR for `probe_assume` before LowerIntrinsics\n\nfn probe_assume(_1: bool) -> () {\n    debug b => _1;\n    let mut _0: ();\n    let mut _2: bool;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = assume(move _2) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_2);\n        return;\n    }\n}\n",
+        "after": "// MIR for `probe_assume` after LowerIntrinsics\n\nfn probe_assume(_1: bool) -> () {\n    debug b => _1;\n    let mut _0: ();\n    let mut _2: bool;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        assume(move _2);\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageDead(_2);\n        return;\n    }\n}\n"
+      },
+      "probe_binops": {
+        "before": "// MIR for `probe_binops` before LowerIntrinsics\n\nfn probe_binops(_1: u32, _2: u32, _3: u32) -> (u32, u32, u32, std::cmp::Ordering, u32, u32, u32, u32, u32, u32, u32) {\n    debug a => _1;\n    debug b => _2;\n    debug s => _3;\n    let mut _0: (u32, u32, u32, std::cmp::Ordering, u32, u32, u32, u32, u32, u32, u32);\n    let mut _4: u32;\n    let mut _5: u32;\n    let mut _6: u32;\n    let mut _7: u32;\n    let mut _8: u32;\n    let mut _9: u32;\n    let mut _10: u32;\n    let mut _11: u32;\n    let mut _12: u32;\n    let mut _13: std::cmp::Ordering;\n    let mut _14: u32;\n    let mut _15: u32;\n    let mut _16: u32;\n    let mut _17: u32;\n    let mut _18: u32;\n    let mut _19: u32;\n    let mut _20: u32;\n    let mut _21: u32;\n    let mut _22: u32;\n    let mut _23: u32;\n    let mut _24: u32;\n    let mut _25: u32;\n    let mut _26: u32;\n    let mut _27: u32;\n    let mut _28: u32;\n    let mut _29: u32;\n    let mut _30: u32;\n    let mut _31: u32;\n    let mut _32: u32;\n    let mut _33: u32;\n    let mut _34: u32;\n    let mut _35: u32;\n    let mut _36: u32;\n\n    bb0: {\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = copy _1;\n        StorageLive(_6);\n        _6 = copy _2;\n        _4 = std::intrinsics::wrapping_add::<u32>(move _5, move _6) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_6);\n        StorageDead(_5);\n        StorageLive(_7);\n        StorageLive(_8);\n        _8 = copy _1;\n        StorageLive(_9);\n        _9 = copy _2;\n        _7 = std::intrinsics::wrapping_sub::<u32>(move _8, move _9) -> [return: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        StorageDead(_9);\n        StorageDead(_8);\n        StorageLive(_10);\n        StorageLive(_11);\n        _11 = copy _1;\n        StorageLive(_12);\n        _12 = copy _2;\n        _10 = wrapping_mul::<u32>(move _11, move _12) -> [return: bb3, unwind unreachable];\n    }\n\n    bb3: {\n        StorageDead(_12);\n        StorageDead(_11);\n        StorageLive(_13);\n        StorageLive(_14);\n        _14 = copy _1;\n        StorageLive(_15);\n        _15 = copy _2;\n        _13 = three_way_compare::<u32>(move _14, move _15) -> [return: bb4, unwind unreachable];\n    }\n\n    bb4: {\n        StorageDead(_15);\n        StorageDead(_14);\n        StorageLive(_16);\n        StorageLive(_17);\n        _17 = copy _1;\n        StorageLive(_18);\n        _18 = copy _2;\n        _16 = unchecked_add::<u32>(move _17, move _18) -> [return: bb5, unwind unreachable];\n    }\n\n    bb5: {\n        StorageDead(_18);\n        StorageDead(_17);\n        StorageLive(_19);\n        StorageLive(_20);\n        _20 = copy _1;\n        StorageLive(_21);\n        _21 = copy _2;\n        _19 = unchecked_sub::<u32>(move _20, move _21) -> [return: bb6, unwind unreachable];\n    }\n\n    bb6: {\n        StorageDead(_21);\n        StorageDead(_20);\n        StorageLive(_22);\n        StorageLive(_23);\n        _23 = copy _1;\n        StorageLive(_24);\n        _24 = copy _2;\n        _22 = unchecked_mul::<u32>(move _23, move _24) -> [return: bb7, unwind unreachable];\n    }\n\n    bb7: {\n        StorageDead(_24);\n        StorageDead(_23);\n        StorageLive(_25);\n        StorageLive(_26);\n        _26 = copy _1;\n        StorageLive(_27);\n        _27 = copy _2;\n        _25 = unchecked_div::<u32>(move _26, move _27) -> [return: bb8, unwind unreachable];\n    }\n\n    bb8: {\n        StorageDead(_27);\n        StorageDead(_26);\n        StorageLive(_28);\n        StorageLive(_29);\n        _29 = copy _1;\n        StorageLive(_30);\n        _30 = copy _2;\n        _28 = unchecked_rem::<u32>(move _29, move _30) -> [return: bb9, unwind unreachable];\n    }\n\n    bb9: {\n        StorageDead(_30);\n        StorageDead(_29);\n        StorageLive(_31);\n        StorageLive(_32);\n        _32 = copy _1;\n        StorageLive(_33);\n        _33 = copy _3;\n        _31 = unchecked_shl::<u32, u32>(move _32, move _33) -> [return: bb10, unwind unreachable];\n    }\n\n    bb10: {\n        StorageDead(_33);\n        StorageDead(_32);\n        StorageLive(_34);\n        StorageLive(_35);\n        _35 = copy _1;\n        StorageLive(_36);\n        _36 = copy _3;\n        _34 = unchecked_shr::<u32, u32>(move _35, move _36) -> [return: bb11, unwind unreachable];\n    }\n\n    bb11: {\n        StorageDead(_36);\n        StorageDead(_35);\n        _0 = (move _4, move _7, move _10, move _13, move _16, move _19, move _22, move _25, move _28, move _31, move _34);\n        StorageDead(_34);\n        StorageDead(_31);\n        StorageDead(_28);\n        StorageDead(_25);\n        StorageDead(_22);\n        StorageDead(_19);\n        StorageDead(_16);\n        StorageDead(_13);\n        StorageDead(_10);\n        StorageDead(_7);\n        StorageDead(_4);\n        return;\n    }\n}\n",
+        "after": "// MIR for `probe_binops` after LowerIntrinsics\n\nfn probe_binops(_1: u32, _2: u32, _3: u32) -> (u32, u32, u32, std::cmp::Ordering, u32, u32, u32, u32, u32, u32, u32) {\n    debug a => _1;\n    debug b => _2;\n    debug s => _3;\n    let mut _0: (u32, u32, u32, std::cmp::Ordering, u32, u32, u32, u32, u32, u32, u32);\n    let mut _4: u32;\n    let mut _5: u32;\n    let mut _6: u32;\n    let mut _7: u32;\n    let mut _8: u32;\n    let mut _9: u32;\n    let mut _10: u32;\n    let mut _11: u32;\n    let mut _12: u32;\n    let mut _13: std::cmp::Ordering;\n    let mut _14: u32;\n    let mut _15: u32;\n    let mut _16: u32;\n    let mut _17: u32;\n    let mut _18: u32;\n    let mut _19: u32;\n    let mut _20: u32;\n    let mut _21: u32;\n    let mut _22: u32;\n    let mut _23: u32;\n    let mut _24: u32;\n    let mut _25: u32;\n    let mut _26: u32;\n    let mut _27: u32;\n    let mut _28: u32;\n    let mut _29: u32;\n    let mut _30: u32;\n    let mut _31: u32;\n    let mut _32: u32;\n    let mut _33: u32;\n    let mut _34: u32;\n    let mut _35: u32;\n    let mut _36: u32;\n\n    bb0: {\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = copy _1;\n        StorageLive(_6);\n        _6 = copy _2;\n        _4 = Add(move _5, move _6);\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageDead(_6);\n        StorageDead(_5);\n        StorageLive(_7);\n        StorageLive(_8);\n        _8 = copy _1;\n        StorageLive(_9);\n        _9 = copy _2;\n        _7 = Sub(move _8, move _9);\n        goto -> bb2;\n    }\n\n    bb2: {\n        StorageDead(_9);\n        StorageDead(_8);\n        StorageLive(_10);\n        StorageLive(_11);\n        _11 = copy _1;\n        StorageLive(_12);\n        _12 = copy _2;\n        _10 = Mul(move _11, move _12);\n        goto -> bb3;\n    }\n\n    bb3: {\n        StorageDead(_12);\n        StorageDead(_11);\n        StorageLive(_13);\n        StorageLive(_14);\n        _14 = copy _1;\n        StorageLive(_15);\n        _15 = copy _2;\n        _13 = Cmp(move _14, move _15);\n        goto -> bb4;\n    }\n\n    bb4: {\n        StorageDead(_15);\n        StorageDead(_14);\n        StorageLive(_16);\n        StorageLive(_17);\n        _17 = copy _1;\n        StorageLive(_18);\n        _18 = copy _2;\n        _16 = AddUnchecked(move _17, move _18);\n        goto -> bb5;\n    }\n\n    bb5: {\n        StorageDead(_18);\n        StorageDead(_17);\n        StorageLive(_19);\n        StorageLive(_20);\n        _20 = copy _1;\n        StorageLive(_21);\n        _21 = copy _2;\n        _19 = SubUnchecked(move _20, move _21);\n        goto -> bb6;\n    }\n\n    bb6: {\n        StorageDead(_21);\n        StorageDead(_20);\n        StorageLive(_22);\n        StorageLive(_23);\n        _23 = copy _1;\n        StorageLive(_24);\n        _24 = copy _2;\n        _22 = MulUnchecked(move _23, move _24);\n        goto -> bb7;\n    }\n\n    bb7: {\n        StorageDead(_24);\n        StorageDead(_23);\n        StorageLive(_25);\n        StorageLive(_26);\n        _26 = copy _1;\n        StorageLive(_27);\n        _27 = copy _2;\n        _25 = Div(move _26, move _27);\n        goto -> bb8;\n    }\n\n    bb8: {\n        StorageDead(_27);\n        StorageDead(_26);\n        StorageLive(_28);\n        StorageLive(_29);\n        _29 = copy _1;\n        StorageLive(_30);\n        _30 = copy _2;\n        _28 = Rem(move _29, move _30);\n        goto -> bb9;\n    }\n\n    bb9: {\n        StorageDead(_30);\n        StorageDead(_29);\n        StorageLive(_31);\n        StorageLive(_32);\n        _32 = copy _1;\n        StorageLive(_33);\n        _33 = copy _3;\n        _31 = ShlUnchecked(move _32, move _33);\n        goto -> bb10;\n    }\n\n    bb10: {\n        StorageDead(_33);\n        StorageDead(_32);\n        StorageLive(_34);\n        StorageLive(_35);\n        _35 = copy _1;\n        StorageLive(_36);\n        _36 = copy _3;\n        _34 = ShrUnchecked(move _35, move _36);\n        goto -> bb11;\n    }\n\n    bb11: {\n        StorageDead(_36);\n        StorageDead(_35);\n        _0 = (move _4, move _7, move _10, move _13, move _16, move _19, move _22, move _25, move _28, move _31, move _34);\n        StorageDead(_34);\n        StorageDead(_31);\n        StorageDead(_28);\n        StorageDead(_25);\n        StorageDead(_22);\n        StorageDead(_19);\n        StorageDead(_16);\n        StorageDead(_13);\n        StorageDead(_10);\n        StorageDead(_7);\n        StorageDead(_4);\n        return;\n    }\n}\n"
+      },
+      "probe_with_overflow": {
+        "before": "// MIR for `probe_with_overflow` before LowerIntrinsics\n\nfn probe_with_overflow(_1: u32, _2: u32) -> ((u32, bool), (u32, bool), (u32, bool)) {\n    debug a => _1;\n    debug b => _2;\n    let mut _0: ((u32, bool), (u32, bool), (u32, bool));\n    let mut _3: (u32, bool);\n    let mut _4: u32;\n    let mut _5: u32;\n    let mut _6: (u32, bool);\n    let mut _7: u32;\n    let mut _8: u32;\n    let mut _9: (u32, bool);\n    let mut _10: u32;\n    let mut _11: u32;\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        StorageLive(_5);\n        _5 = copy _2;\n        _3 = add_with_overflow::<u32>(move _4, move _5) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_5);\n        StorageDead(_4);\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = copy _1;\n        StorageLive(_8);\n        _8 = copy _2;\n        _6 = sub_with_overflow::<u32>(move _7, move _8) -> [return: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        StorageDead(_8);\n        StorageDead(_7);\n        StorageLive(_9);\n        StorageLive(_10);\n        _10 = copy _1;\n        StorageLive(_11);\n        _11 = copy _2;\n        _9 = mul_with_overflow::<u32>(move _10, move _11) -> [return: bb3, unwind unreachable];\n    }\n\n    bb3: {\n        StorageDead(_11);\n        StorageDead(_10);\n        _0 = (move _3, move _6, move _9);\n        StorageDead(_9);\n        StorageDead(_6);\n        StorageDead(_3);\n        return;\n    }\n}\n",
+        "after": "// MIR for `probe_with_overflow` after LowerIntrinsics\n\nfn probe_with_overflow(_1: u32, _2: u32) -> ((u32, bool), (u32, bool), (u32, bool)) {\n    debug a => _1;\n    debug b => _2;\n    let mut _0: ((u32, bool), (u32, bool), (u32, bool));\n    let mut _3: (u32, bool);\n    let mut _4: u32;\n    let mut _5: u32;\n    let mut _6: (u32, bool);\n    let mut _7: u32;\n    let mut _8: u32;\n    let mut _9: (u32, bool);\n    let mut _10: u32;\n    let mut _11: u32;\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        StorageLive(_5);\n        _5 = copy _2;\n        _3 = AddWithOverflow(move _4, move _5);\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageDead(_5);\n        StorageDead(_4);\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = copy _1;\n        StorageLive(_8);\n        _8 = copy _2;\n        _6 = SubWithOverflow(move _7, move _8);\n        goto -> bb2;\n    }\n\n    bb2: {\n        StorageDead(_8);\n        StorageDead(_7);\n        StorageLive(_9);\n        StorageLive(_10);\n        _10 = copy _1;\n        StorageLive(_11);\n        _11 = copy _2;\n        _9 = MulWithOverflow(move _10, move _11);\n        goto -> bb3;\n    }\n\n    bb3: {\n        StorageDead(_11);\n        StorageDead(_10);\n        _0 = (move _3, move _6, move _9);\n        StorageDead(_9);\n        StorageDead(_6);\n        StorageDead(_3);\n        return;\n    }\n}\n"
+      },
+      "probe_read_via_copy_u32": {
+        "before": "// MIR for `probe_read_via_copy_u32` before LowerIntrinsics\n\nfn probe_read_via_copy_u32(_1: *const u32) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let mut _2: *const u32;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = read_via_copy::<u32>(move _2) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_2);\n        return;\n    }\n}\n",
+        "after": "// MIR for `probe_read_via_copy_u32` after LowerIntrinsics\n\nfn probe_read_via_copy_u32(_1: *const u32) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let mut _2: *const u32;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = copy (*_2);\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageDead(_2);\n        return;\n    }\n}\n"
+      },
+      "probe_read_via_copy_void": {
+        "before": "// MIR for `probe_read_via_copy_void` before LowerIntrinsics\n\nfn probe_read_via_copy_void(_1: *const Void) -> Void {\n    debug p => _1;\n    let mut _0: Void;\n    let mut _2: *const Void;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = read_via_copy::<Void>(move _2) -> unwind unreachable;\n    }\n}\n",
+        "after": "// MIR for `probe_read_via_copy_void` after LowerIntrinsics\n\nfn probe_read_via_copy_void(_1: *const Void) -> Void {\n    debug p => _1;\n    let mut _0: Void;\n    let mut _2: *const Void;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = copy (*_2);\n        unreachable;\n    }\n}\n"
+      },
+      "probe_read_via_copy_uninhabited_sized": {
+        "before": "// MIR for `probe_read_via_copy_uninhabited_sized` before LowerIntrinsics\n\nfn probe_read_via_copy_uninhabited_sized(_1: *const UninhabitedSized) -> UninhabitedSized {\n    debug p => _1;\n    let mut _0: UninhabitedSized;\n    let mut _2: *const UninhabitedSized;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = read_via_copy::<UninhabitedSized>(move _2) -> unwind unreachable;\n    }\n}\n",
+        "after": "// MIR for `probe_read_via_copy_uninhabited_sized` after LowerIntrinsics\n\nfn probe_read_via_copy_uninhabited_sized(_1: *const UninhabitedSized) -> UninhabitedSized {\n    debug p => _1;\n    let mut _0: UninhabitedSized;\n    let mut _2: *const UninhabitedSized;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = copy (*_2);\n        unreachable;\n    }\n}\n"
+      },
+      "probe_discriminant_value": {
+        "before": "// MIR for `probe_discriminant_value` before LowerIntrinsics\n\nfn probe_discriminant_value(_1: &Tag) -> u8 {\n    debug x => _1;\n    let mut _0: u8;\n    let mut _2: &Tag;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = &(*_1);\n        _0 = discriminant_value::<Tag>(move _2) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_2);\n        return;\n    }\n}\n",
+        "after": "// MIR for `probe_discriminant_value` after LowerIntrinsics\n\nfn probe_discriminant_value(_1: &Tag) -> u8 {\n    debug x => _1;\n    let mut _0: u8;\n    let mut _2: &Tag;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = &(*_1);\n        _0 = discriminant((*_2));\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageDead(_2);\n        return;\n    }\n}\n"
+      },
+      "probe_offset": {
+        "before": "// MIR for `probe_offset` before LowerIntrinsics\n\nfn probe_offset(_1: *const u32, _2: isize) -> *const u32 {\n    debug p => _1;\n    debug delta => _2;\n    let mut _0: *const u32;\n    let mut _3: *const u32;\n    let mut _4: isize;\n\n    bb0: {\n        StorageLive(_3);\n        _3 = copy _1;\n        StorageLive(_4);\n        _4 = copy _2;\n        _0 = offset::<*const u32, isize>(move _3, move _4) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        StorageDead(_3);\n        return;\n    }\n}\n",
+        "after": "// MIR for `probe_offset` after LowerIntrinsics\n\nfn probe_offset(_1: *const u32, _2: isize) -> *const u32 {\n    debug p => _1;\n    debug delta => _2;\n    let mut _0: *const u32;\n    let mut _3: *const u32;\n    let mut _4: isize;\n\n    bb0: {\n        StorageLive(_3);\n        _3 = copy _1;\n        StorageLive(_4);\n        _4 = copy _2;\n        _0 = Offset(move _3, move _4);\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageDead(_4);\n        StorageDead(_3);\n        return;\n    }\n}\n"
+      },
+      "probe_slice_get_unchecked_all4": {
+        "before": "// MIR for `probe_slice_get_unchecked_all4` before LowerIntrinsics\n\nfn probe_slice_get_unchecked_all4(_1: *const [u32], _2: *mut [u32], _3: &[u32], _4: &mut [u32], _5: usize) -> (*const u32, *mut u32, &u32, &mut u32) {\n    debug cp => _1;\n    debug mp => _2;\n    debug sr => _3;\n    debug mr => _4;\n    debug idx => _5;\n    let mut _0: (*const u32, *mut u32, &u32, &mut u32);\n    let _6: *const u32;\n    let mut _7: *const [u32];\n    let mut _8: usize;\n    let mut _10: *mut [u32];\n    let mut _11: usize;\n    let mut _13: &[u32];\n    let mut _14: usize;\n    let mut _16: &mut [u32];\n    let mut _17: usize;\n    let mut _18: *const u32;\n    let mut _19: *mut u32;\n    let mut _20: &u32;\n    let mut _21: &mut u32;\n    scope 1 {\n        debug a => _6;\n        let _9: *mut u32;\n        scope 2 {\n            debug b => _9;\n            let _12: &u32;\n            scope 3 {\n                debug c => _12;\n                let _15: &mut u32;\n                scope 4 {\n                    debug d => _15;\n                }\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = copy _1;\n        StorageLive(_8);\n        _8 = copy _5;\n        _6 = slice_get_unchecked::<*const u32, *const [u32], u32>(move _7, move _8) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_8);\n        StorageDead(_7);\n        StorageLive(_9);\n        StorageLive(_10);\n        _10 = copy _2;\n        StorageLive(_11);\n        _11 = copy _5;\n        _9 = slice_get_unchecked::<*mut u32, *mut [u32], u32>(move _10, move _11) -> [return: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        StorageDead(_11);\n        StorageDead(_10);\n        StorageLive(_12);\n        StorageLive(_13);\n        _13 = copy _3;\n        StorageLive(_14);\n        _14 = copy _5;\n        _12 = slice_get_unchecked::<&u32, &[u32], u32>(move _13, move _14) -> [return: bb3, unwind unreachable];\n    }\n\n    bb3: {\n        StorageDead(_14);\n        StorageDead(_13);\n        StorageLive(_15);\n        StorageLive(_16);\n        _16 = move _4;\n        StorageLive(_17);\n        _17 = copy _5;\n        _15 = slice_get_unchecked::<&mut u32, &mut [u32], u32>(move _16, move _17) -> [return: bb4, unwind unreachable];\n    }\n\n    bb4: {\n        StorageDead(_17);\n        StorageDead(_16);\n        StorageLive(_18);\n        _18 = copy _6;\n        StorageLive(_19);\n        _19 = copy _9;\n        StorageLive(_20);\n        _20 = copy _12;\n        StorageLive(_21);\n        _21 = &mut (*_15);\n        _0 = (move _18, move _19, move _20, move _21);\n        StorageDead(_21);\n        StorageDead(_20);\n        StorageDead(_19);\n        StorageDead(_18);\n        StorageDead(_15);\n        StorageDead(_12);\n        StorageDead(_9);\n        StorageDead(_6);\n        return;\n    }\n}\n",
+        "after": "// MIR for `probe_slice_get_unchecked_all4` after LowerIntrinsics\n\nfn probe_slice_get_unchecked_all4(_1: *const [u32], _2: *mut [u32], _3: &[u32], _4: &mut [u32], _5: usize) -> (*const u32, *mut u32, &u32, &mut u32) {\n    debug cp => _1;\n    debug mp => _2;\n    debug sr => _3;\n    debug mr => _4;\n    debug idx => _5;\n    let mut _0: (*const u32, *mut u32, &u32, &mut u32);\n    let _6: *const u32;\n    let mut _7: *const [u32];\n    let mut _8: usize;\n    let mut _10: *mut [u32];\n    let mut _11: usize;\n    let mut _13: &[u32];\n    let mut _14: usize;\n    let mut _16: &mut [u32];\n    let mut _17: usize;\n    let mut _18: *const u32;\n    let mut _19: *mut u32;\n    let mut _20: &u32;\n    let mut _21: &mut u32;\n    scope 1 {\n        debug a => _6;\n        let _9: *mut u32;\n        scope 2 {\n            debug b => _9;\n            let _12: &u32;\n            scope 3 {\n                debug c => _12;\n                let _15: &mut u32;\n                scope 4 {\n                    debug d => _15;\n                }\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = copy _1;\n        StorageLive(_8);\n        _8 = copy _5;\n        _6 = &raw const (*_7)[_8];\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageDead(_8);\n        StorageDead(_7);\n        StorageLive(_9);\n        StorageLive(_10);\n        _10 = copy _2;\n        StorageLive(_11);\n        _11 = copy _5;\n        _9 = &raw mut (*_10)[_11];\n        goto -> bb2;\n    }\n\n    bb2: {\n        StorageDead(_11);\n        StorageDead(_10);\n        StorageLive(_12);\n        StorageLive(_13);\n        _13 = copy _3;\n        StorageLive(_14);\n        _14 = copy _5;\n        _12 = &(*_13)[_14];\n        goto -> bb3;\n    }\n\n    bb3: {\n        StorageDead(_14);\n        StorageDead(_13);\n        StorageLive(_15);\n        StorageLive(_16);\n        _16 = move _4;\n        StorageLive(_17);\n        _17 = copy _5;\n        _15 = &mut (*_16)[_17];\n        goto -> bb4;\n    }\n\n    bb4: {\n        StorageDead(_17);\n        StorageDead(_16);\n        StorageLive(_18);\n        _18 = copy _6;\n        StorageLive(_19);\n        _19 = copy _9;\n        StorageLive(_20);\n        _20 = copy _12;\n        StorageLive(_21);\n        _21 = &mut (*_15);\n        _0 = (move _18, move _19, move _20, move _21);\n        StorageDead(_21);\n        StorageDead(_20);\n        StorageDead(_19);\n        StorageDead(_18);\n        StorageDead(_15);\n        StorageDead(_12);\n        StorageDead(_9);\n        StorageDead(_6);\n        return;\n    }\n}\n"
+      },
+      "probe_transmute_u32_f32": {
+        "before": "// MIR for `probe_transmute_u32_f32` before LowerIntrinsics\n\nfn probe_transmute_u32_f32(_1: u32) -> f32 {\n    debug x => _1;\n    let mut _0: f32;\n    let mut _2: u32;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = std::intrinsics::transmute::<u32, f32>(move _2) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_2);\n        return;\n    }\n}\n",
+        "after": "// MIR for `probe_transmute_u32_f32` after LowerIntrinsics\n\nfn probe_transmute_u32_f32(_1: u32) -> f32 {\n    debug x => _1;\n    let mut _0: f32;\n    let mut _2: u32;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = move _2 as f32 (Transmute);\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageDead(_2);\n        return;\n    }\n}\n"
+      },
+      "probe_transmute_to_void": {
+        "before": "// MIR for `probe_transmute_to_void` before LowerIntrinsics\n\nfn probe_transmute_to_void(_1: ()) -> Void {\n    debug x => _1;\n    let mut _0: Void;\n    let mut _2: ();\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = std::intrinsics::transmute::<(), Void>(move _2) -> unwind unreachable;\n    }\n}\n",
+        "after": "// MIR for `probe_transmute_to_void` after LowerIntrinsics\n\nfn probe_transmute_to_void(_1: ()) -> Void {\n    debug x => _1;\n    let mut _0: Void;\n    let mut _2: ();\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = move _2 as Void (Transmute);\n        unreachable;\n    }\n}\n"
+      },
+      "probe_transmute_unchecked_to_void": {
+        "before": "// MIR for `probe_transmute_unchecked_to_void` before LowerIntrinsics\n\nfn probe_transmute_unchecked_to_void(_1: ()) -> Void {\n    debug x => _1;\n    let mut _0: Void;\n    let mut _2: ();\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = transmute_unchecked::<(), Void>(move _2) -> unwind unreachable;\n    }\n}\n",
+        "after": "// MIR for `probe_transmute_unchecked_to_void` after LowerIntrinsics\n\nfn probe_transmute_unchecked_to_void(_1: ()) -> Void {\n    debug x => _1;\n    let mut _0: Void;\n    let mut _2: ();\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = move _2 as Void (Transmute);\n        unreachable;\n    }\n}\n"
+      },
+      "probe_raw_ptr_roundtrip": {
+        "before": "// MIR for `probe_raw_ptr_roundtrip` before LowerIntrinsics\n\nfn probe_raw_ptr_roundtrip(_1: *const u32, _2: usize) -> usize {\n    debug p => _1;\n    debug len => _2;\n    let mut _0: usize;\n    let _3: *const [u32];\n    let mut _4: *const u32;\n    let mut _5: usize;\n    let mut _6: *const [u32];\n    scope 1 {\n        debug sp => _3;\n    }\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        StorageLive(_5);\n        _5 = copy _2;\n        _3 = aggregate_raw_ptr::<*const [u32], *const u32, usize>(move _4, move _5) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_5);\n        StorageDead(_4);\n        StorageLive(_6);\n        _6 = copy _3;\n        _0 = ptr_metadata::<[u32], usize>(move _6) -> [return: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        StorageDead(_6);\n        StorageDead(_3);\n        return;\n    }\n}\n",
+        "after": "// MIR for `probe_raw_ptr_roundtrip` after LowerIntrinsics\n\nfn probe_raw_ptr_roundtrip(_1: *const u32, _2: usize) -> usize {\n    debug p => _1;\n    debug len => _2;\n    let mut _0: usize;\n    let _3: *const [u32];\n    let mut _4: *const u32;\n    let mut _5: usize;\n    let mut _6: *const [u32];\n    scope 1 {\n        debug sp => _3;\n    }\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        StorageLive(_5);\n        _5 = copy _2;\n        _3 = *const [u32] from (move _4, move _5);\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageDead(_5);\n        StorageDead(_4);\n        StorageLive(_6);\n        _6 = copy _3;\n        _0 = PtrMetadata(move _6);\n        goto -> bb2;\n    }\n\n    bb2: {\n        StorageDead(_6);\n        StorageDead(_3);\n        return;\n    }\n}\n"
+      },
+      "probe_unlowered_ctpop": {
+        "before": "// MIR for `probe_unlowered_ctpop` before LowerIntrinsics\n\nfn probe_unlowered_ctpop(_1: u32) -> u32 {\n    debug x => _1;\n    let mut _0: u32;\n    let mut _2: u32;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = ctpop::<u32>(move _2) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_2);\n        return;\n    }\n}\n",
+        "after": "// MIR for `probe_unlowered_ctpop` after LowerIntrinsics\n\nfn probe_unlowered_ctpop(_1: u32) -> u32 {\n    debug x => _1;\n    let mut _0: u32;\n    let mut _2: u32;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = ctpop::<u32>(move _2) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_2);\n        return;\n    }\n}\n"
+      }
+    }
+  },
+  "lower_slice_len": {
+    "mir_opt_level_0": {
+      "compile_rc": 0,
+      "compile_stderr": "",
+      "items": {
+        "probe_slice_len": {
+          "files": [
+            "sl_probe_o0.probe_slice_len.3-3-000.runtime-optimized.after.mir"
+          ],
+          "before": null,
+          "after": null,
+          "optimized": "// MIR for `probe_slice_len` after runtime-optimized\n\nfn probe_slice_len(_1: &[u32]) -> usize {\n    debug s => _1;\n    let mut _0: usize;\n    let mut _2: &[u32];\n\n    bb0: {\n        StorageLive(_2);\n        _2 = &(*_1);\n        _0 = core::slice::<impl [u32]>::len(move _2) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_2);\n        return;\n    }\n}\n"
+        },
+        "probe_slice_len_mut_reborrow": {
+          "files": [
+            "sl_probe_o0.probe_slice_len_mut_reborrow.3-3-000.runtime-optimized.after.mir"
+          ],
+          "before": null,
+          "after": null,
+          "optimized": "// MIR for `probe_slice_len_mut_reborrow` after runtime-optimized\n\nfn probe_slice_len_mut_reborrow(_1: &mut [u32]) -> usize {\n    debug s => _1;\n    let mut _0: usize;\n    let _2: usize;\n    let mut _3: *const [u32];\n    let mut _4: usize;\n    let mut _5: bool;\n    let mut _6: &[u32];\n\n    bb0: {\n        StorageLive(_2);\n        _2 = const 0_usize;\n        _3 = &raw const (fake) (*_1);\n        _4 = PtrMetadata(move _3);\n        _5 = Lt(copy _2, copy _4);\n        assert(move _5, \"index out of bounds: the length is {} but the index is {}\", move _4, copy _2) -> [success: bb1, unwind continue];\n    }\n\n    bb1: {\n        (*_1)[_2] = const 1_u32;\n        StorageDead(_2);\n        StorageLive(_6);\n        _6 = &(*_1);\n        _0 = core::slice::<impl [u32]>::len(move _6) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        StorageDead(_6);\n        return;\n    }\n}\n"
+        },
+        "probe_slice_len_fn_ptr": {
+          "files": [
+            "sl_probe_o0.probe_slice_len_fn_ptr.3-3-000.runtime-optimized.after.mir"
+          ],
+          "before": null,
+          "after": null,
+          "optimized": "// MIR for `probe_slice_len_fn_ptr` after runtime-optimized\n\nfn probe_slice_len_fn_ptr(_1: &[u32]) -> usize {\n    debug s => _1;\n    let mut _0: usize;\n    let _2: for<'a> fn(&'a [u32]) -> usize;\n    let mut _3: for<'a> fn(&'a [u32]) -> usize;\n    let mut _4: &[u32];\n    scope 1 {\n        debug f => _2;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = core::slice::<impl [u32]>::len as for<'a> fn(&'a [u32]) -> usize (PointerCoercion(ReifyFnPointer(Safe), Implicit));\n        StorageLive(_3);\n        _3 = copy _2;\n        StorageLive(_4);\n        _4 = &(*_1);\n        _0 = move _3(move _4) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        StorageDead(_3);\n        StorageDead(_2);\n        return;\n    }\n}\n"
+        },
+        "probe_slice_len_sole_unwind_cleanup": {
+          "files": [
+            "sl_probe_o0.probe_slice_len_sole_unwind_cleanup.3-3-000.runtime-optimized.after.mir"
+          ],
+          "before": null,
+          "after": null,
+          "optimized": "// MIR for `probe_slice_len_sole_unwind_cleanup` after runtime-optimized\n\nfn probe_slice_len_sole_unwind_cleanup(_1: &[u32], _2: DropGuard) -> usize {\n    debug s => _1;\n    debug _g => _2;\n    let mut _0: usize;\n    let mut _3: &[u32];\n\n    bb0: {\n        StorageLive(_3);\n        _3 = &(*_1);\n        _0 = core::slice::<impl [u32]>::len(move _3) -> [return: bb1, unwind: bb3];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        drop(_2) -> [return: bb2, unwind: bb4];\n    }\n\n    bb2: {\n        return;\n    }\n\n    bb3 (cleanup): {\n        drop(_2) -> [return: bb4, unwind terminate(cleanup)];\n    }\n\n    bb4 (cleanup): {\n        resume;\n    }\n}\n"
+        }
+      }
+    },
+    "mir_opt_level_1": {
+      "compile_rc": 0,
+      "compile_stderr": "",
+      "items": {
+        "probe_slice_len": {
+          "files": [
+            "sl_probe_o1.probe_slice_len.3-2-004.LowerSliceLenCalls.after.mir",
+            "sl_probe_o1.probe_slice_len.3-2-004.LowerSliceLenCalls.before.mir",
+            "sl_probe_o1.probe_slice_len.3-3-000.runtime-optimized.after.mir"
+          ],
+          "before": "// MIR for `probe_slice_len` before LowerSliceLenCalls\n\nfn probe_slice_len(_1: &[u32]) -> usize {\n    debug s => _1;\n    let mut _0: usize;\n    let mut _2: &[u32];\n\n    bb0: {\n        StorageLive(_2);\n        _2 = &(*_1);\n        _0 = core::slice::<impl [u32]>::len(move _2) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_2);\n        return;\n    }\n}\n",
+          "after": "// MIR for `probe_slice_len` after LowerSliceLenCalls\n\nfn probe_slice_len(_1: &[u32]) -> usize {\n    debug s => _1;\n    let mut _0: usize;\n    let mut _2: &[u32];\n\n    bb0: {\n        StorageLive(_2);\n        _2 = &(*_1);\n        _0 = PtrMetadata(move _2);\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageDead(_2);\n        return;\n    }\n}\n",
+          "optimized": "// MIR for `probe_slice_len` after runtime-optimized\n\nfn probe_slice_len(_1: &[u32]) -> usize {\n    debug s => _1;\n    let mut _0: usize;\n\n    bb0: {\n        _0 = PtrMetadata(copy _1);\n        return;\n    }\n}\n"
+        },
+        "probe_slice_len_mut_reborrow": {
+          "files": [
+            "sl_probe_o1.probe_slice_len_mut_reborrow.3-2-004.LowerSliceLenCalls.after.mir",
+            "sl_probe_o1.probe_slice_len_mut_reborrow.3-2-004.LowerSliceLenCalls.before.mir",
+            "sl_probe_o1.probe_slice_len_mut_reborrow.3-3-000.runtime-optimized.after.mir"
+          ],
+          "before": "// MIR for `probe_slice_len_mut_reborrow` before LowerSliceLenCalls\n\nfn probe_slice_len_mut_reborrow(_1: &mut [u32]) -> usize {\n    debug s => _1;\n    let mut _0: usize;\n    let _2: usize;\n    let mut _3: *const [u32];\n    let mut _4: usize;\n    let mut _5: bool;\n    let mut _6: &[u32];\n\n    bb0: {\n        StorageLive(_2);\n        _2 = const 0_usize;\n        _3 = &raw const (fake) (*_1);\n        _4 = PtrMetadata(move _3);\n        _5 = Lt(copy _2, copy _4);\n        assert(move _5, \"index out of bounds: the length is {} but the index is {}\", move _4, copy _2) -> [success: bb1, unwind continue];\n    }\n\n    bb1: {\n        (*_1)[_2] = const 1_u32;\n        StorageDead(_2);\n        StorageLive(_6);\n        _6 = &(*_1);\n        _0 = core::slice::<impl [u32]>::len(move _6) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        StorageDead(_6);\n        return;\n    }\n}\n",
+          "after": "// MIR for `probe_slice_len_mut_reborrow` after LowerSliceLenCalls\n\nfn probe_slice_len_mut_reborrow(_1: &mut [u32]) -> usize {\n    debug s => _1;\n    let mut _0: usize;\n    let _2: usize;\n    let mut _3: *const [u32];\n    let mut _4: usize;\n    let mut _5: bool;\n    let mut _6: &[u32];\n\n    bb0: {\n        StorageLive(_2);\n        _2 = const 0_usize;\n        _3 = &raw const (fake) (*_1);\n        _4 = PtrMetadata(move _3);\n        _5 = Lt(copy _2, copy _4);\n        assert(move _5, \"index out of bounds: the length is {} but the index is {}\", move _4, copy _2) -> [success: bb1, unwind continue];\n    }\n\n    bb1: {\n        (*_1)[_2] = const 1_u32;\n        StorageDead(_2);\n        StorageLive(_6);\n        _6 = &(*_1);\n        _0 = PtrMetadata(move _6);\n        goto -> bb2;\n    }\n\n    bb2: {\n        StorageDead(_6);\n        return;\n    }\n}\n",
+          "optimized": "// MIR for `probe_slice_len_mut_reborrow` after runtime-optimized\n\nfn probe_slice_len_mut_reborrow(_1: &mut [u32]) -> usize {\n    debug s => _1;\n    let mut _0: usize;\n    let _2: usize;\n    let mut _3: *const [u32];\n    let mut _4: usize;\n    let mut _5: bool;\n    let mut _6: &[u32];\n\n    bb0: {\n        _2 = const 0_usize;\n        _3 = &raw const (fake) (*_1);\n        _4 = PtrMetadata(move _3);\n        _5 = Lt(copy _2, copy _4);\n        assert(move _5, \"index out of bounds: the length is {} but the index is {}\", move _4, copy _2) -> [success: bb1, unwind continue];\n    }\n\n    bb1: {\n        (*_1)[_2] = const 1_u32;\n        _6 = &(*_1);\n        _0 = PtrMetadata(move _6);\n        return;\n    }\n}\n"
+        },
+        "probe_slice_len_fn_ptr": {
+          "files": [
+            "sl_probe_o1.probe_slice_len_fn_ptr.3-2-004.LowerSliceLenCalls.after.mir",
+            "sl_probe_o1.probe_slice_len_fn_ptr.3-2-004.LowerSliceLenCalls.before.mir",
+            "sl_probe_o1.probe_slice_len_fn_ptr.3-3-000.runtime-optimized.after.mir"
+          ],
+          "before": "// MIR for `probe_slice_len_fn_ptr` before LowerSliceLenCalls\n\nfn probe_slice_len_fn_ptr(_1: &[u32]) -> usize {\n    debug s => _1;\n    let mut _0: usize;\n    let _2: for<'a> fn(&'a [u32]) -> usize;\n    let mut _3: for<'a> fn(&'a [u32]) -> usize;\n    let mut _4: &[u32];\n    scope 1 {\n        debug f => _2;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = core::slice::<impl [u32]>::len as for<'a> fn(&'a [u32]) -> usize (PointerCoercion(ReifyFnPointer(Safe), Implicit));\n        StorageLive(_3);\n        _3 = copy _2;\n        StorageLive(_4);\n        _4 = &(*_1);\n        _0 = move _3(move _4) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        StorageDead(_3);\n        StorageDead(_2);\n        return;\n    }\n}\n",
+          "after": "// MIR for `probe_slice_len_fn_ptr` after LowerSliceLenCalls\n\nfn probe_slice_len_fn_ptr(_1: &[u32]) -> usize {\n    debug s => _1;\n    let mut _0: usize;\n    let _2: for<'a> fn(&'a [u32]) -> usize;\n    let mut _3: for<'a> fn(&'a [u32]) -> usize;\n    let mut _4: &[u32];\n    scope 1 {\n        debug f => _2;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = core::slice::<impl [u32]>::len as for<'a> fn(&'a [u32]) -> usize (PointerCoercion(ReifyFnPointer(Safe), Implicit));\n        StorageLive(_3);\n        _3 = copy _2;\n        StorageLive(_4);\n        _4 = &(*_1);\n        _0 = move _3(move _4) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        StorageDead(_3);\n        StorageDead(_2);\n        return;\n    }\n}\n",
+          "optimized": "// MIR for `probe_slice_len_fn_ptr` after runtime-optimized\n\nfn probe_slice_len_fn_ptr(_1: &[u32]) -> usize {\n    debug s => _1;\n    let mut _0: usize;\n    let _2: for<'a> fn(&'a [u32]) -> usize;\n    scope 1 {\n        debug f => _2;\n    }\n\n    bb0: {\n        _2 = core::slice::<impl [u32]>::len as for<'a> fn(&'a [u32]) -> usize (PointerCoercion(ReifyFnPointer(Safe), Implicit));\n        _0 = copy _2(copy _1) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        return;\n    }\n}\n"
+        },
+        "probe_slice_len_sole_unwind_cleanup": {
+          "files": [
+            "sl_probe_o1.probe_slice_len_sole_unwind_cleanup.3-2-004.LowerSliceLenCalls.after.mir",
+            "sl_probe_o1.probe_slice_len_sole_unwind_cleanup.3-2-004.LowerSliceLenCalls.before.mir",
+            "sl_probe_o1.probe_slice_len_sole_unwind_cleanup.3-3-000.runtime-optimized.after.mir"
+          ],
+          "before": "// MIR for `probe_slice_len_sole_unwind_cleanup` before LowerSliceLenCalls\n\nfn probe_slice_len_sole_unwind_cleanup(_1: &[u32], _2: DropGuard) -> usize {\n    debug s => _1;\n    debug _g => _2;\n    let mut _0: usize;\n    let mut _3: &[u32];\n\n    bb0: {\n        StorageLive(_3);\n        _3 = &(*_1);\n        _0 = core::slice::<impl [u32]>::len(move _3) -> [return: bb1, unwind: bb3];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        drop(_2) -> [return: bb2, unwind: bb4];\n    }\n\n    bb2: {\n        return;\n    }\n\n    bb3 (cleanup): {\n        drop(_2) -> [return: bb4, unwind terminate(cleanup)];\n    }\n\n    bb4 (cleanup): {\n        resume;\n    }\n}\n",
+          "after": "// MIR for `probe_slice_len_sole_unwind_cleanup` after LowerSliceLenCalls\n\nfn probe_slice_len_sole_unwind_cleanup(_1: &[u32], _2: DropGuard) -> usize {\n    debug s => _1;\n    debug _g => _2;\n    let mut _0: usize;\n    let mut _3: &[u32];\n\n    bb0: {\n        StorageLive(_3);\n        _3 = &(*_1);\n        _0 = PtrMetadata(move _3);\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageDead(_3);\n        drop(_2) -> [return: bb2, unwind: bb4];\n    }\n\n    bb2: {\n        return;\n    }\n\n    bb3 (cleanup): {\n        drop(_2) -> [return: bb4, unwind terminate(cleanup)];\n    }\n\n    bb4 (cleanup): {\n        resume;\n    }\n}\n",
+          "optimized": "// MIR for `probe_slice_len_sole_unwind_cleanup` after runtime-optimized\n\nfn probe_slice_len_sole_unwind_cleanup(_1: &[u32], _2: DropGuard) -> usize {\n    debug s => _1;\n    debug _g => _2;\n    let mut _0: usize;\n\n    bb0: {\n        _0 = PtrMetadata(copy _1);\n        drop(_2) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        return;\n    }\n}\n"
+        }
+      }
+    }
+  },
+  "post_analysis_normalize": {
+    "compile_rc": 0,
+    "compile_stderr": "",
+    "items": {
+      "make_opaque_pair": {
+        "cleanup_before": "// MIR for `make_opaque_pair` before CleanupPostBorrowck\n\n| User Type Annotations\n| 0: user_ty: Canonical { value: Ty(Pair), max_universe: U0, var_kinds: [] }, span: <TMPDIR>/pan_probe.rs:13:12: 13:16, inferred_ty: Pair\n| 1: user_ty: Canonical { value: Ty(Pair), max_universe: U0, var_kinds: [] }, span: <TMPDIR>/pan_probe.rs:13:12: 13:16, inferred_ty: Pair\n|\nfn make_opaque_pair(_1: u32, _2: u64) -> OpaquePair {\n    debug x => _1;\n    debug y => _2;\n    let mut _0: OpaquePair;\n    let _3: Pair as UserTypeProjection { base: UserType(0), projs: [] };\n    let mut _4: u32;\n    let mut _5: u64;\n    scope 1 {\n        debug p => _3;\n    }\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        StorageLive(_5);\n        _5 = copy _2;\n        _3 = Pair(move _4, move _5);\n        StorageDead(_5);\n        StorageDead(_4);\n        FakeRead(ForLet(None), _3);\n        AscribeUserType(_3, o, UserTypeProjection { base: UserType(1), projs: [] });\n        _0 = copy _3;\n        StorageDead(_3);\n        return;\n    }\n}\n",
+        "cleanup_after": "// MIR for `make_opaque_pair` after CleanupPostBorrowck\n\nfn make_opaque_pair(_1: u32, _2: u64) -> OpaquePair {\n    debug x => _1;\n    debug y => _2;\n    let mut _0: OpaquePair;\n    let _3: Pair;\n    let mut _4: u32;\n    let mut _5: u64;\n    scope 1 {\n        debug p => _3;\n    }\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        StorageLive(_5);\n        _5 = copy _2;\n        _3 = Pair(move _4, move _5);\n        StorageDead(_5);\n        StorageDead(_4);\n        nop;\n        nop;\n        _0 = copy _3;\n        StorageDead(_3);\n        return;\n    }\n}\n",
+        "norm_before": "// MIR for `make_opaque_pair` before PostAnalysisNormalize\n\nfn make_opaque_pair(_1: u32, _2: u64) -> OpaquePair {\n    debug x => _1;\n    debug y => _2;\n    let mut _0: OpaquePair;\n    let _3: Pair;\n    let mut _4: u32;\n    let mut _5: u64;\n    scope 1 {\n        debug p => _3;\n    }\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        StorageLive(_5);\n        _5 = copy _2;\n        _3 = Pair(move _4, move _5);\n        StorageDead(_5);\n        StorageDead(_4);\n        _0 = copy _3;\n        StorageDead(_3);\n        return;\n    }\n}\n",
+        "norm_after": "// MIR for `make_opaque_pair` after PostAnalysisNormalize\n\nfn make_opaque_pair(_1: u32, _2: u64) -> Pair {\n    debug x => _1;\n    debug y => _2;\n    let mut _0: Pair;\n    let _3: Pair;\n    let mut _4: u32;\n    let mut _5: u64;\n    scope 1 {\n        debug p => _3;\n    }\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        StorageLive(_5);\n        _5 = copy _2;\n        _3 = Pair(move _4, move _5);\n        StorageDead(_5);\n        StorageDead(_4);\n        _0 = copy _3;\n        StorageDead(_3);\n        return;\n    }\n}\n"
+      },
+      "project_opaque_pair": {
+        "cleanup_before": "// MIR for `project_opaque_pair` before CleanupPostBorrowck\n\nfn project_opaque_pair(_1: OpaquePair) -> u64 {\n    debug p => _1;\n    let mut _0: u64;\n    let _2: u64;\n    scope 1 {\n        debug y => _2;\n    }\n\n    bb0: {\n        PlaceMention(_1);\n        StorageLive(_2);\n        _2 = copy ((_1 as Pair).1: u64);\n        _0 = copy _2;\n        StorageDead(_2);\n        return;\n    }\n}\n",
+        "cleanup_after": "// MIR for `project_opaque_pair` after CleanupPostBorrowck\n\nfn project_opaque_pair(_1: OpaquePair) -> u64 {\n    debug p => _1;\n    let mut _0: u64;\n    let _2: u64;\n    scope 1 {\n        debug y => _2;\n    }\n\n    bb0: {\n        PlaceMention(_1);\n        StorageLive(_2);\n        _2 = copy ((_1 as Pair).1: u64);\n        _0 = copy _2;\n        StorageDead(_2);\n        return;\n    }\n}\n",
+        "norm_before": "// MIR for `project_opaque_pair` before PostAnalysisNormalize\n\nfn project_opaque_pair(_1: OpaquePair) -> u64 {\n    debug p => _1;\n    let mut _0: u64;\n    let _2: u64;\n    scope 1 {\n        debug y => _2;\n    }\n\n    bb0: {\n        PlaceMention(_1);\n        StorageLive(_2);\n        _2 = copy ((_1 as Pair).1: u64);\n        _0 = copy _2;\n        StorageDead(_2);\n        return;\n    }\n}\n",
+        "norm_after": "// MIR for `project_opaque_pair` after PostAnalysisNormalize\n\nfn project_opaque_pair(_1: Pair) -> u64 {\n    debug p => _1;\n    let mut _0: u64;\n    let _2: u64;\n    scope 1 {\n        debug y => _2;\n    }\n\n    bb0: {\n        PlaceMention(_1);\n        StorageLive(_2);\n        _2 = copy (_1.1: u64);\n        _0 = copy _2;\n        StorageDead(_2);\n        return;\n    }\n}\n"
+      },
+      "probe_assoc_norm": {
+        "cleanup_before": "// MIR for `probe_assoc_norm` before CleanupPostBorrowck\n\n| User Type Annotations\n| 0: user_ty: Canonical { value: Ty(<u32 as Assoc>::Out), max_universe: U0, var_kinds: [] }, span: <TMPDIR>/pan_probe.rs:37:14: 37:33, inferred_ty: u64\n| 1: user_ty: Canonical { value: Ty(<u32 as Assoc>::Out), max_universe: U0, var_kinds: [] }, span: <TMPDIR>/pan_probe.rs:37:14: 37:33, inferred_ty: u64\n|\nfn probe_assoc_norm(_1: u32) -> u64 {\n    debug x => _1;\n    let mut _0: u64;\n    let _2: u64 as UserTypeProjection { base: UserType(0), projs: [] };\n    let mut _3: u32;\n    scope 1 {\n        debug tmp => _2;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = copy _1;\n        _2 = <u32 as Assoc>::project(move _3) -> [return: bb1, unwind: bb2];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        FakeRead(ForLet(None), _2);\n        AscribeUserType(_2, o, UserTypeProjection { base: UserType(1), projs: [] });\n        _0 = copy _2;\n        StorageDead(_2);\n        return;\n    }\n\n    bb2 (cleanup): {\n        resume;\n    }\n}\n",
+        "cleanup_after": "// MIR for `probe_assoc_norm` after CleanupPostBorrowck\n\nfn probe_assoc_norm(_1: u32) -> u64 {\n    debug x => _1;\n    let mut _0: u64;\n    let _2: u64;\n    let mut _3: u32;\n    scope 1 {\n        debug tmp => _2;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = copy _1;\n        _2 = <u32 as Assoc>::project(move _3) -> [return: bb1, unwind: bb2];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        nop;\n        nop;\n        _0 = copy _2;\n        StorageDead(_2);\n        return;\n    }\n\n    bb2 (cleanup): {\n        resume;\n    }\n}\n",
+        "norm_before": "// MIR for `probe_assoc_norm` before PostAnalysisNormalize\n\nfn probe_assoc_norm(_1: u32) -> u64 {\n    debug x => _1;\n    let mut _0: u64;\n    let _2: u64;\n    let mut _3: u32;\n    scope 1 {\n        debug tmp => _2;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = copy _1;\n        _2 = <u32 as Assoc>::project(move _3) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        _0 = copy _2;\n        StorageDead(_2);\n        return;\n    }\n}\n",
+        "norm_after": "// MIR for `probe_assoc_norm` after PostAnalysisNormalize\n\nfn probe_assoc_norm(_1: u32) -> u64 {\n    debug x => _1;\n    let mut _0: u64;\n    let _2: u64;\n    let mut _3: u32;\n    scope 1 {\n        debug tmp => _2;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = copy _1;\n        _2 = <u32 as Assoc>::project(move _3) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        _0 = copy _2;\n        StorageDead(_2);\n        return;\n    }\n}\n"
+      }
+    }
+  },
+  "custom_mir_probes": {
+    "indirect_slice_get_unchecked": {
+      "rc": 101,
+      "hit_is_indirect_ice": true,
+      "hit_const_idx_unwrap_ice": false,
+      "hit_only_local_span_bug": false,
+      "hit_validate_mir_broken": false,
+      "panic_lines": [
+        "thread 'rustc' (<TID>) panicked at <RUSTC_SRC>/compiler/rustc_mir_transform/src/lower_intrinsics.rs:230:25:",
+        "assertion failed: !place.is_indirect()",
+        "note: using internal features is not supported and expected to cause internal compiler errors when used incorrectly"
+      ],
+      "lower_intrinsics_before": "// MIR for `ice_indirect_slice_get_unchecked` before LowerIntrinsics\n\nfn ice_indirect_slice_get_unchecked(_1: &*const [u32], _2: usize) -> *const u32 {\n    let mut _0: *const u32;\n\n    bb0: {\n        _0 = slice_get_unchecked::<*const u32, *const [u32], u32>(copy (*_1), copy _2) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        return;\n    }\n}\n",
+      "lower_intrinsics_after": null
+    },
+    "const_index_slice_get_unchecked": {
+      "rc": 101,
+      "hit_is_indirect_ice": false,
+      "hit_const_idx_unwrap_ice": true,
+      "hit_only_local_span_bug": false,
+      "hit_validate_mir_broken": false,
+      "panic_lines": [
+        "thread 'rustc' (<TID>) panicked at <RUSTC_SRC>/compiler/rustc_mir_transform/src/lower_intrinsics.rs:235:56:",
+        "called `Option::unwrap()` on a `None` value",
+        "note: using internal features is not supported and expected to cause internal compiler errors when used incorrectly"
+      ],
+      "lower_intrinsics_before": "// MIR for `ice_const_idx_slice_get_unchecked` before LowerIntrinsics\n\nfn ice_const_idx_slice_get_unchecked(_1: *const [u32]) -> *const u32 {\n    debug sp => _1;\n    let mut _0: *const u32;\n    let mut _2: *const [u32];\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = slice_get_unchecked::<*const u32, *const [u32], u32>(move _2, const 2_usize) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_2);\n        return;\n    }\n}\n",
+      "lower_intrinsics_after": null
+    },
+    "field_proj_slice_get_unchecked_validate_mir": {
+      "rc": 101,
+      "hit_is_indirect_ice": false,
+      "hit_const_idx_unwrap_ice": false,
+      "hit_only_local_span_bug": false,
+      "hit_validate_mir_broken": true,
+      "panic_lines": [
+        "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:82:25: broken MIR in Item(DefId(0:5 ~ field_proj_slice_get_unchecked_validate_mir[7e46]::field_proj_slice_get_unchecked)) (after pass LowerIntrinsics) at bb0[0]:",
+        "thread 'rustc' (<TID>) panicked at <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:82:25:",
+        "note: using internal features is not supported and expected to cause internal compiler errors when used incorrectly"
+      ],
+      "lower_intrinsics_before": "// MIR for `field_proj_slice_get_unchecked` before LowerIntrinsics\n\nfn field_proj_slice_get_unchecked(_1: (*const [u32], usize), _2: usize) -> *const u32 {\n    let mut _0: *const u32;\n\n    bb0: {\n        _0 = slice_get_unchecked::<*const u32, *const [u32], u32>(copy (_1.0: *const [u32]), copy _2) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        return;\n    }\n}\n",
+      "lower_intrinsics_after": "// MIR for `field_proj_slice_get_unchecked` after LowerIntrinsics\n\nfn field_proj_slice_get_unchecked(_1: (*const [u32], usize), _2: usize) -> *const u32 {\n    let mut _0: *const u32;\n\n    bb0: {\n        _0 = &raw const (*(_1.0: *const [u32]))[_2];\n        goto -> bb1;\n    }\n\n    bb1: {\n        return;\n    }\n}\n"
+    },
+    "direct_slice_get_unchecked_control": {
+      "rc": 0,
+      "hit_is_indirect_ice": false,
+      "hit_const_idx_unwrap_ice": false,
+      "hit_only_local_span_bug": false,
+      "hit_validate_mir_broken": false,
+      "panic_lines": [],
+      "lower_intrinsics_before": "// MIR for `ok_direct_slice_get_unchecked` before LowerIntrinsics\n\nfn ok_direct_slice_get_unchecked(_1: *const [u32], _2: usize) -> *const u32 {\n    let mut _0: *const u32;\n\n    bb0: {\n        _0 = slice_get_unchecked::<*const u32, *const [u32], u32>(copy _1, copy _2) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        return;\n    }\n}\n",
+      "lower_intrinsics_after": "// MIR for `ok_direct_slice_get_unchecked` after LowerIntrinsics\n\nfn ok_direct_slice_get_unchecked(_1: *const [u32], _2: usize) -> *const u32 {\n    let mut _0: *const u32;\n\n    bb0: {\n        _0 = &raw const (*_1)[_2];\n        goto -> bb1;\n    }\n\n    bb1: {\n        return;\n    }\n}\n"
+    },
+    "indirect_read_via_copy": {
+      "rc": 101,
+      "hit_is_indirect_ice": false,
+      "hit_const_idx_unwrap_ice": false,
+      "hit_only_local_span_bug": true,
+      "hit_validate_mir_broken": false,
+      "panic_lines": [
+        "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/lower_intrinsics.rs:160:29: Only passing a local is supported",
+        "thread 'rustc' (<TID>) panicked at <RUSTC_SRC>/compiler/rustc_mir_transform/src/lower_intrinsics.rs:160:29:",
+        "note: using internal features is not supported and expected to cause internal compiler errors when used incorrectly"
+      ],
+      "lower_intrinsics_before": "// MIR for `ice_indirect_read_via_copy` before LowerIntrinsics\n\nfn ice_indirect_read_via_copy(_1: &*const u32) -> u32 {\n    let mut _0: u32;\n\n    bb0: {\n        _0 = read_via_copy::<u32>(copy (*_1)) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        return;\n    }\n}\n",
+      "lower_intrinsics_after": null
+    },
+    "indirect_discriminant_no_validate": {
+      "rc": 101,
+      "hit_is_indirect_ice": false,
+      "hit_const_idx_unwrap_ice": false,
+      "hit_only_local_span_bug": false,
+      "hit_validate_mir_broken": true,
+      "panic_lines": [
+        "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:82:25: broken MIR in Item(DefId(0:12 ~ indirect_discriminant_no_validate[0ccc]::probe_indirect_discriminant)) (after phase change to runtime-optimized) at bb0[0]:",
+        "thread 'rustc' (<TID>) panicked at <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:82:25:",
+        "note: using internal features is not supported and expected to cause internal compiler errors when used incorrectly"
+      ],
+      "lower_intrinsics_before": "// MIR for `probe_indirect_discriminant` before LowerIntrinsics\n\nfn probe_indirect_discriminant(_1: &&Tag) -> u8 {\n    let mut _0: u8;\n\n    bb0: {\n        _0 = discriminant_value::<Tag>(copy (*_1)) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        return;\n    }\n}\n",
+      "lower_intrinsics_after": "// MIR for `probe_indirect_discriminant` after LowerIntrinsics\n\nfn probe_indirect_discriminant(_1: &&Tag) -> u8 {\n    let mut _0: u8;\n\n    bb0: {\n        _0 = discriminant((*(*_1)));\n        goto -> bb1;\n    }\n\n    bb1: {\n        return;\n    }\n}\n"
+    },
+    "indirect_discriminant_validate_mir": {
+      "rc": 101,
+      "hit_is_indirect_ice": false,
+      "hit_const_idx_unwrap_ice": false,
+      "hit_only_local_span_bug": false,
+      "hit_validate_mir_broken": true,
+      "panic_lines": [
+        "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:82:25: broken MIR in Item(DefId(0:12 ~ indirect_discriminant_validate_mir[bc08]::probe_indirect_discriminant)) (after pass LowerIntrinsics) at bb0[0]:",
+        "thread 'rustc' (<TID>) panicked at <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:82:25:",
+        "note: using internal features is not supported and expected to cause internal compiler errors when used incorrectly"
+      ],
+      "lower_intrinsics_before": "// MIR for `probe_indirect_discriminant` before LowerIntrinsics\n\nfn probe_indirect_discriminant(_1: &&Tag) -> u8 {\n    let mut _0: u8;\n\n    bb0: {\n        _0 = discriminant_value::<Tag>(copy (*_1)) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        return;\n    }\n}\n",
+      "lower_intrinsics_after": "// MIR for `probe_indirect_discriminant` after LowerIntrinsics\n\nfn probe_indirect_discriminant(_1: &&Tag) -> u8 {\n    let mut _0: u8;\n\n    bb0: {\n        _0 = discriminant((*(*_1)));\n        goto -> bb1;\n    }\n\n    bb1: {\n        return;\n    }\n}\n"
+    }
+  },
+  "miri": {
+    "version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+    "read_via_copy_void_null": {
+      "rc": 1,
+      "stdout": "",
+      "ub_lines": [
+        "error: Undefined Behavior: constructing invalid value of type Void: encountered a value of zero-variant enum `Void`"
+      ],
+      "stderr_head": "warning: unreachable definition\n  --> src/main.rs:10:13\n   |\n10 |         let _v: Void = core::intrinsics::read_via_copy(null_ptr);\n   |             ^^         ----------------------------------------- any code following this expression is unreachable\n   |             |\n   |             unreachable definition\n   |\nnote: this expression has type `Void`, which is uninhabited\n  --> src/main.rs:10:24\n   |\n10 |         let _v: Void = core::intrinsics::read_via_copy(null_ptr);\n   |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: Undefined Behavior: constructing invalid value of type Void: encountered a value of zero-variant enum `Void`\n  --> src/main.rs:10:24\n   |\n10 |         let _v: Void = core::intrinsics::read_via_copy(null_ptr);\n   |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace"
+    },
+    "read_via_copy_sized_uninhabited_null": {
+      "rc": 1,
+      "stdout": "",
+      "ub_lines": [
+        "error: Undefined Behavior: memory access failed: attempting to access 8 bytes, but got null pointer"
+      ],
+      "stderr_head": "warning: unreachable definition\n  --> src/main.rs:12:13\n   |\n12 | ...et _v: UninhabitedSized = core::intrinsics::read_via_copy(null_ptr);\n   |       ^^                     ----------------------------------------- any code following this expression is unreachable\n   |       |\n   |       unreachable definition\n   |\nnote: this expression has type `UninhabitedSized`, which is uninhabited\n  --> src/main.rs:12:36\n   |\n12 | ...abitedSized = core::intrinsics::read_via_copy(null_ptr);\n   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: Undefined Behavior: memory access failed: attempting to access 8 bytes, but got null pointer\n  --> src/main.rs:12:36\n   |\n12 | ...tedSized = core::intrinsics::read_via_copy(null_ptr);\n   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace"
+    },
+    "read_via_copy_sized_uninhabited_valid": {
+      "rc": 1,
+      "stdout": "",
+      "ub_lines": [
+        "error: Undefined Behavior: constructing invalid value of type UninhabitedSized: at .1, encountered a value of zero-variant enum `Void`"
+      ],
+      "stderr_head": "warning: unreachable definition\n  --> src/main.rs:13:13\n   |\n13 | ...et _v: UninhabitedSized = core::intrinsics::read_via_copy(valid_ptr);\n   |       ^^                     ------------------------------------------ any code following this expression is unreachable\n   |       |\n   |       unreachable definition\n   |\nnote: this expression has type `UninhabitedSized`, which is uninhabited\n  --> src/main.rs:13:36\n   |\n13 | ...bitedSized = core::intrinsics::read_via_copy(valid_ptr);\n   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: Undefined Behavior: constructing invalid value of type UninhabitedSized: at .1, encountered a value of zero-variant enum `Void`\n  --> src/main.rs:13:36\n   |\n13 | ...tedSized = core::intrinsics::read_via_copy(valid_ptr);\n   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace"
+    },
+    "transmute_unit_to_void": {
+      "rc": 1,
+      "stdout": "",
+      "ub_lines": [
+        "error: Undefined Behavior: constructing invalid value of type Void: encountered a value of zero-variant enum `Void`"
+      ],
+      "stderr_head": "warning: unreachable definition\n --> src/main.rs:9:13\n  |\n9 |         let _v: Void = core::intrinsics::transmute::<(), Void>(());\n  |             ^^         ------------------------------------------- any code following this expression is unreachable\n  |             |\n  |             unreachable definition\n  |\nnote: this expression has type `Void`, which is uninhabited\n --> src/main.rs:9:24\n  |\n9 |         let _v: Void = core::intrinsics::transmute::<(), Void>(());\n  |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: the type `Void` does not permit zero-initialization\n --> src/main.rs:9:24\n  |\n9 |         let _v: Void = core::intrinsics::transmute::<(), Void>(());\n  |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this code causes undefined behavior when executed\n  |\nnote: enums with no inhabited variants have no valid value\n --> src/main.rs:5:1\n  |\n5 | pub enum Void {}"
+    },
+    "aggregate_raw_ptr_metadata_roundtrip": {
+      "rc": 0,
+      "stdout": "",
+      "ub_lines": [],
+      "stderr_head": ""
+    },
+    "slice_len_dangling_ref": {
+      "rc": 1,
+      "stdout": "",
+      "ub_lines": [
+        "error: Undefined Behavior: constructing invalid value of type &[u32]: encountered a dangling reference (0x4[noalloc] has no provenance)"
+      ],
+      "stderr_head": "error: Undefined Behavior: constructing invalid value of type &[u32]: encountered a dangling reference (0x4[noalloc] has no provenance)\n --> src/main.rs:4:41\n  |\n4 |     let dangling_ref: &[u32] = unsafe { &*raw };\n  |                                         ^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n"
+    }
+  }
+}
