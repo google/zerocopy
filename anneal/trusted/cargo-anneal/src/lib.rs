@@ -30,6 +30,8 @@ pub mod bundle;
 mod olean_cache;
 #[doc(hidden)]
 pub mod cli;
+mod diagnostics;
+mod init;
 #[doc(hidden)]
 pub mod sandbox;
 #[cfg(feature = "setup")]

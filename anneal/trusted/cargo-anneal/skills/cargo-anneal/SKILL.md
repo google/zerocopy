@@ -51,10 +51,11 @@ Other entrypoints:
 
 ## Create a request and starter proof
 
-Run `cargo anneal skill --example` to print a complete 4-file working example
-from the installed CLI. Save the files together in a temporary directory to
-test your environment; it proves termination and a zero return for a safe
-no-argument function in the captured MIR model.
+Run `cargo anneal init` inside a Cargo package to scaffold `proof/Spec.lean`
+and `proof/Proof.lean` (or `cargo anneal init --standalone` for a runnable
+4-file example, or `cargo anneal skill --example` to print it). Save standalone
+files in a temporary directory to test your environment; it proves termination
+and a zero return for a safe no-argument function in the captured MIR model.
 
 1. For request schema `1`, set `scope` to `{"kind": "selected_unit", "roots": ["mod::fn"]}`
    (`UnitTheorem`) or `{"kind": "crate"}` (`CrateTheorem`). Set `edition`,
@@ -83,7 +84,8 @@ Move to **`proof-scaling`** as soon as direct `execProg` / `simp` stalls.
 
 ## Diagnose failures and read Receipt v3 honestly
 
-Inspect `status`, `phase`, and `detail` together; check stderr if stdout is empty.
+Inspect `status`, `phase`, `detail`, and any actionable `hint` together; check
+stderr if stdout is empty.
 
 - `unsupported`: Fix invalid request/selector/path errors, or report exactly
   which target or Rust construct this version refused.

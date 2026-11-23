@@ -39,7 +39,13 @@ fn remote_archive() -> Result<exocrate::RemoteArchive, String> {
     #[cfg(all(target_os = "linux", target_arch = "x86_64", target_env = "gnu"))]
     {
         if REMOTE_ARCHIVE.sha256 == [0; 32] {
-            return Err("the alpha archive has not been pinned; use --local-archive".into());
+            return Err(
+                "the alpha archive has not been pinned; use --local-archive <path> \
+                 (e.g., build with `nix build .#omnibus-archive` and run \
+                 `cargo anneal setup --local-archive result`), or pass --capture, \
+                 --sysroot, and --lean directly to `cargo anneal verify`"
+                    .into(),
+            );
         }
         Ok(REMOTE_ARCHIVE)
     }

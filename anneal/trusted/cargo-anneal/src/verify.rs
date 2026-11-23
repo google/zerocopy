@@ -720,6 +720,8 @@ struct FailureReceipt<'a> {
     status: &'a str,
     phase: &'a str,
     detail: &'a str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    hint: Option<&'a str>,
     // `None` omits the key (pre-run staging/retention failures); `Some(None)`
     // emits `"artifacts": null` when `--artifacts` was omitted on failure.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -761,6 +763,10 @@ fn error(status: &'static str, phase: &'static str, detail: impl ToString) -> Er
 
 fn io(phase: &'static str, failure: std::io::Error) -> Error {
     error("tool_failed", phase, failure)
+}
+
+fn io_with_path(phase: &'static str, kind: &str, path: &Path, failure: std::io::Error) -> Error {
+    error("tool_failed", phase, format!("cannot inspect {kind} {}: {failure}", path.display()))
 }
 
 fn identifier(value: &str) -> bool {
@@ -916,8 +922,9 @@ fn reject_compiler_overrides(dir: &Path) -> Result<()> {
 // Cargo is an input-discovery shortcut, not a second verification profile.
 // Reject configurations this adapter cannot reproduce before building the
 // same explicit request consumed by the build-neutral path.
-fn cargo_request(args: &VerifyArgs, manifest: &Path) -> Result<(Request, PathBuf)> {
-    let manifest = fs::canonicalize(manifest).map_err(|e| io("cargo", e))?;
+fn cargo_request(args: &VerifyArgs, manifest_path: &Path) -> Result<(Request, PathBuf)> {
+    let manifest = fs::canonicalize(manifest_path)
+        .map_err(|e| io_with_path("cargo", "Cargo manifest", manifest_path, e))?;
     let source_root = manifest
         .parent()
         .ok_or_else(|| error("unsupported", "cargo", "manifest path has no parent directory"))?
@@ -1026,10 +1033,11 @@ fn cargo_request(args: &VerifyArgs, manifest: &Path) -> Result<(Request, PathBuf
         }
     }
     source_files.sort();
-    let proof_root = fs::canonicalize(args.proof_dir.as_ref().ok_or_else(|| {
+    let proof_dir = args.proof_dir.as_ref().ok_or_else(|| {
         error("unsupported", "request", "--proof-dir is required with --manifest-path")
-    })?)
-    .map_err(|e| io("proof", e))?;
+    })?;
+    let proof_root = fs::canonicalize(proof_dir)
+        .map_err(|e| io_with_path("proof", "proof directory", proof_dir, e))?;
     let mut sources = Vec::new();
     for entry in walkdir::WalkDir::new(&proof_root)
         .follow_links(false)
@@ -2330,6 +2338,7 @@ fn emit_failure(
     artifacts: Option<Option<&str>>,
     code: u8,
 ) -> ExitCode {
+    let hint = crate::diagnostics::hint_for_failure(status, phase, detail);
     let receipt = FailureReceipt {
         schema_version: RECEIPT_SCHEMA_VERSION,
         taint_reasons,
@@ -2337,6 +2346,7 @@ fn emit_failure(
         status,
         phase,
         detail,
+        hint: hint.as_deref(),
         artifacts,
     };
     println!("{}", serde_json::to_string(&receipt).expect("serializable failure receipt"));
@@ -2829,12 +2839,14 @@ mod tests {
             status: "tool_failed",
             phase: "retention",
             detail: "bad path",
+            hint: None,
             artifacts: None,
         })
         .unwrap();
         assert_eq!(omitted["schema_version"], 3);
         assert_eq!(omitted["taint_reasons"], json!([]));
         assert!(omitted.get("tainted").is_none(), "{omitted}");
+        assert!(omitted.get("hint").is_none(), "{omitted}");
         assert!(omitted.get("artifacts").is_none(), "{omitted}");
         assert!(omitted.get("elaboration_sandbox").is_none(), "{omitted}");
 
@@ -2845,12 +2857,14 @@ mod tests {
             status: "unsupported",
             phase: "capture",
             detail: "bad item",
+            hint: Some("try --select"),
             artifacts: Some(None),
         })
         .unwrap();
         assert_eq!(explicit_null["taint_reasons"], json!(["unpinned_lean"]));
         assert!(explicit_null.get("unpinned_lean").is_none());
         assert!(explicit_null.get("elaboration_sandbox").is_none());
+        assert_eq!(explicit_null["hint"], "try --select");
         assert_eq!(explicit_null.get("artifacts"), Some(&Value::Null), "{explicit_null}");
 
         let retained: Value = serde_json::to_value(FailureReceipt {
@@ -2860,6 +2874,7 @@ mod tests {
             status: "proof_failed",
             phase: "audit",
             detail: "mismatch",
+            hint: None,
             artifacts: Some(Some("/tmp/evidence")),
         })
         .unwrap();

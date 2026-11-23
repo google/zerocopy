@@ -10,7 +10,7 @@
 
 #[cfg(feature = "setup")]
 use crate::setup;
-use crate::verify;
+use crate::{init, verify};
 
 /// Package version of `cargo-anneal` for CLI version output and external test
 /// assertions.
@@ -56,6 +56,8 @@ enum Command {
         #[arg(long)]
         clear_old: bool,
     },
+    /// Scaffold starter Spec.lean and Proof.lean proof files.
+    Init(init::InitArgs),
     /// Print the bundled agent skill.
     Skill {
         /// Print a complete Rust, request, and Lean example.
@@ -75,7 +77,6 @@ enum Action {
 #[derive(Debug)]
 enum Failure {
     Arguments(clap::Error),
-    #[cfg(feature = "setup")]
     Operation(String),
 }
 
@@ -119,6 +120,7 @@ fn dispatch(
             let root = install(local_archive, clear_old)?;
             Ok(Action::Print(format!("Installed Anneal toolchain at {}\n", root.display())))
         }
+        Some(Command::Init(args)) => init::run(args).map(Action::Print),
         Some(Command::Skill { example: true }) => Ok(Action::Print(scalar_example())),
         Some(Command::Skill { example: false }) => {
             Ok(Action::Print(include_str!("../skills/cargo-anneal/SKILL.md").to_owned()))
@@ -128,14 +130,15 @@ fn dispatch(
 }
 
 #[cfg(not(feature = "setup"))]
-fn dispatch(cli: Cli) -> Action {
+fn dispatch(cli: Cli) -> Result<Action, String> {
     match cli.command {
-        None => Action::Print(format!("{}\n", Cli::command().render_help())),
-        Some(Command::Skill { example: true }) => Action::Print(scalar_example()),
+        None => Ok(Action::Print(format!("{}\n", Cli::command().render_help()))),
+        Some(Command::Init(args)) => init::run(args).map(Action::Print),
+        Some(Command::Skill { example: true }) => Ok(Action::Print(scalar_example())),
         Some(Command::Skill { example: false }) => {
-            Action::Print(include_str!("../skills/cargo-anneal/SKILL.md").to_owned())
+            Ok(Action::Print(include_str!("../skills/cargo-anneal/SKILL.md").to_owned()))
         }
-        Some(Command::Verify(args)) => Action::Verify(args),
+        Some(Command::Verify(args)) => Ok(Action::Verify(args)),
     }
 }
 
@@ -165,7 +168,7 @@ fn run(
 #[cfg(not(feature = "setup"))]
 fn run(args: Vec<OsString>) -> Result<Action, Failure> {
     match parse_action(args)? {
-        Ok(cli) => Ok(dispatch(cli)),
+        Ok(cli) => dispatch(cli).map_err(Failure::Operation),
         Err(action) => Ok(action),
     }
 }
@@ -186,7 +189,6 @@ pub fn main() -> ExitCode {
             eprint!("{error}");
             ExitCode::from(2)
         }
-        #[cfg(feature = "setup")]
         Err(Failure::Operation(error)) => {
             eprintln!("error: {error}");
             ExitCode::from(1)
@@ -362,10 +364,8 @@ mod tests {
             let failure = run_without_install(args(&[&["cargo-anneal"], suffix].concat()))
                 .err()
                 .expect("malformed arguments must fail");
-            #[cfg_attr(not(feature = "setup"), allow(clippy::infallible_destructuring_match))]
             let error = match failure {
                 Failure::Arguments(error) => error,
-                #[cfg(feature = "setup")]
                 other => panic!("expected an argument failure, got {other:?}"),
             };
             assert_eq!(error.exit_code(), 2);

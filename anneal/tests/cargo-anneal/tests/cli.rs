@@ -1577,3 +1577,272 @@ fn testkit_parses_cli_failure_receipt_cleanly() {
     let parsed = anneal_testkit::VerifyReceipt::from_json_slice(&output.stdout).unwrap();
     anneal_testkit::assert_rejected(&parsed, "unsupported", Some("request"), "").unwrap();
 }
+
+#[test]
+fn init_scaffolds_cargo_and_standalone_without_overwriting() {
+    use std::fs;
+
+    for route in [Route::Direct, Route::Cargo] {
+        let project = tempfile::tempdir().unwrap();
+        let no_manifest = command(route, project.path()).arg("init").output().unwrap();
+        assert_result(&no_manifest, 1, "", "no Cargo.toml found");
+
+        fs::write(
+            project.path().join("Cargo.toml"),
+            "[workspace]\nmembers = [\"a\"]\n",
+        )
+        .unwrap();
+        let workspace = command(route, project.path()).arg("init").output().unwrap();
+        assert_result(&workspace, 1, "", "virtual workspace");
+
+        fs::write(
+            project.path().join("Cargo.toml"),
+            "[package]\nname = \"demo\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+        )
+        .unwrap();
+        let ok = command(route, project.path()).arg("init").output().unwrap();
+        assert_result(&ok, 0, "Initialized Anneal proof files:", "");
+        assert!(project.path().join("proof/Spec.lean").is_file());
+        assert!(project.path().join("proof/Proof.lean").is_file());
+        let spec_text = fs::read_to_string(project.path().join("proof/Spec.lean")).unwrap();
+        let proof_text = fs::read_to_string(project.path().join("proof/Proof.lean")).unwrap();
+        assert!(spec_text.starts_with("prelude\nimport Trusted.MirSemantics"));
+        assert!(!spec_text.contains("sorry"));
+        assert!(proof_text.contains("Expected.claim"));
+
+        let second = command(route, project.path()).arg("init").output().unwrap();
+        assert_result(&second, 1, "", "refusing to overwrite existing file");
+
+        let standalone_dir = project.path().join("hello");
+        let standalone = command(route, project.path())
+            .args(["init", "--standalone", "--proof-dir"])
+            .arg(&standalone_dir)
+            .output()
+            .unwrap();
+        assert_result(&standalone, 0, "cargo anneal verify --request", "");
+        for name in ["lib.rs", "request.json", "Spec.lean", "Proof.lean"] {
+            assert!(standalone_dir.join(name).is_file(), "missing {name}");
+        }
+    }
+}
+
+#[test]
+fn failure_receipts_emit_actionable_hints_while_preserving_detail() {
+    use std::fs;
+
+    let project = tempfile::tempdir().unwrap();
+    fs::create_dir_all(project.path().join("crate_feat/src")).unwrap();
+    fs::create_dir_all(project.path().join("crate_feat/proof")).unwrap();
+    fs::write(
+        project.path().join("crate_feat/Cargo.toml"),
+        "[package]\nname = \"feat_demo\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n[features]\nfoo = []\n",
+    )
+    .unwrap();
+    fs::write(project.path().join("crate_feat/src/lib.rs"), b"pub fn f() -> u64 { 0 }\n").unwrap();
+
+    // 1. Missing Cargo manifest names the path and sets a clear hint.
+    let missing_manifest = command(Route::Direct, project.path())
+        .args(["verify", "--manifest-path", "absent/Cargo.toml", "--proof-dir", "crate_feat/proof"])
+        .args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"])
+        .output()
+        .unwrap();
+    assert_result(&missing_manifest, 2, "", "");
+    let receipt: serde_json::Value = serde_json::from_slice(&missing_manifest.stdout).unwrap();
+    assert_eq!(receipt["phase"], "cargo");
+    assert!(receipt["detail"].as_str().unwrap().contains("Cargo.toml"), "{receipt}");
+    assert!(receipt["hint"].as_str().unwrap().contains("--manifest-path"), "{receipt}");
+
+    // 2. Cargo shortcut refusal preserves detail and suggests `--request` / `skill --example`.
+    let feat_out = command(Route::Direct, project.path())
+        .args([
+            "verify",
+            "--manifest-path",
+            "crate_feat/Cargo.toml",
+            "--proof-dir",
+            "crate_feat/proof",
+            "--capture",
+            "cap",
+            "--sysroot",
+            "sys",
+            "--lean",
+            "lean",
+        ])
+        .output()
+        .unwrap();
+    assert_result(&feat_out, 1, "", "");
+    let feat_receipt: serde_json::Value = serde_json::from_slice(&feat_out.stdout).unwrap();
+    assert_eq!(feat_receipt["phase"], "cargo");
+    assert_eq!(
+        feat_receipt["detail"],
+        "Cargo features require an explicit configured compilation request"
+    );
+    assert!(feat_receipt["hint"].as_str().unwrap().contains("--request"), "{feat_receipt}");
+
+    // 3. Missing `--proof-dir` names the path and suggests `cargo anneal init`.
+    fs::create_dir_all(project.path().join("crate_ok/src")).unwrap();
+    fs::create_dir_all(project.path().join("crate_ok/proof")).unwrap();
+    fs::write(
+        project.path().join("crate_ok/Cargo.toml"),
+        "[package]\nname = \"ok_demo\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+    )
+    .unwrap();
+    fs::write(project.path().join("crate_ok/src/lib.rs"), b"pub fn f() -> u64 { 0 }\n").unwrap();
+    let dummy_sysroot = project.path().join("dummy-sysroot");
+    fs::create_dir(&dummy_sysroot).unwrap();
+    let dummy_capture = project.path().join("dummy-capture");
+    let dummy_lean = project.path().join("dummy-lean");
+    fs::write(&dummy_capture, b"stub\n").unwrap();
+    fs::write(&dummy_lean, b"stub\n").unwrap();
+    let missing_proof_dir = command(Route::Direct, project.path())
+        .args([
+            "verify",
+            "--manifest-path",
+            "crate_ok/Cargo.toml",
+            "--proof-dir",
+            "crate_ok/missing-proof",
+            "--capture",
+        ])
+        .arg(&dummy_capture)
+        .arg("--sysroot")
+        .arg(&dummy_sysroot)
+        .arg("--lean")
+        .arg(&dummy_lean)
+        .output()
+        .unwrap();
+    assert_result(&missing_proof_dir, 2, "", "");
+    let proof_receipt: serde_json::Value =
+        serde_json::from_slice(&missing_proof_dir.stdout).unwrap();
+    assert_eq!(proof_receipt["phase"], "proof");
+    assert!(
+        proof_receipt["detail"].as_str().unwrap().contains("cannot inspect proof directory"),
+        "{proof_receipt}"
+    );
+    assert!(
+        proof_receipt["hint"].as_str().unwrap().contains("cargo anneal init"),
+        "{proof_receipt}"
+    );
+
+    // 4. Missing capture tool emits setup/explicit-tool guidance.
+    let missing_explicit = command(Route::Direct, project.path())
+        .args([
+            "verify",
+            "--manifest-path",
+            "crate_ok/Cargo.toml",
+            "--proof-dir",
+            "crate_ok/proof",
+            "--capture",
+            "absent-capture",
+            "--sysroot",
+        ])
+        .arg(&dummy_sysroot)
+        .arg("--lean")
+        .arg(&dummy_lean)
+        .output()
+        .unwrap();
+    assert_result(&missing_explicit, 2, "", "");
+    let explicit_receipt: serde_json::Value =
+        serde_json::from_slice(&missing_explicit.stdout).unwrap();
+    assert_eq!(explicit_receipt["phase"], "capture-tool");
+    assert!(
+        explicit_receipt["hint"].as_str().unwrap().contains("`--capture`"),
+        "{explicit_receipt}"
+    );
+    #[cfg(feature = "setup")]
+    {
+        // Under `cargo test --workspace`, Cargo builds `anneal-rustc-capture`
+        // beside `CARGO_BIN_EXE_cargo-anneal`; stage an isolated `cargo-anneal`
+        // binary in an empty directory so sibling fallback cannot find it.
+        let isolated_dir = project.path().join("isolated-bin");
+        fs::create_dir(&isolated_dir).unwrap();
+        let exe_name = Path::new(env!("CARGO_BIN_EXE_cargo-anneal-test-bin")).file_name().unwrap();
+        let isolated_cli = isolated_dir.join(exe_name);
+        if fs::hard_link(env!("CARGO_BIN_EXE_cargo-anneal-test-bin"), &isolated_cli).is_err() {
+            #[cfg(unix)]
+            {
+                let stage = Command::new("/bin/sh")
+                    .arg("-ceu")
+                    .arg("cp \"$1\" \"$2\"")
+                    .arg("sh")
+                    .arg(env!("CARGO_BIN_EXE_cargo-anneal-test-bin"))
+                    .arg(&isolated_cli)
+                    .output()
+                    .unwrap();
+                assert_result(&stage, 0, "", "");
+            }
+            #[cfg(not(unix))]
+            fs::copy(env!("CARGO_BIN_EXE_cargo-anneal-test-bin"), &isolated_cli).unwrap();
+        }
+        let empty_cache = project.path().join("empty-cache");
+        let missing_tools = Command::new(&isolated_cli)
+            .current_dir(project.path())
+            .env("XDG_CACHE_HOME", &empty_cache)
+            .env("HOME", &empty_cache)
+            .env_remove("ANNEAL_CAPTURE")
+            .env_remove("ANNEAL_SYSROOT")
+            .env_remove("ANNEAL_LEAN")
+            .args([
+                "verify",
+                "--manifest-path",
+                "crate_ok/Cargo.toml",
+                "--proof-dir",
+                "crate_ok/proof",
+            ])
+            .output()
+            .unwrap();
+        assert_result(&missing_tools, 2, "", "");
+        let tool_receipt: serde_json::Value =
+            serde_json::from_slice(&missing_tools.stdout).unwrap();
+        assert_eq!(tool_receipt["phase"], "capture-tool");
+        assert!(tool_receipt["hint"].as_str().unwrap().contains("setup"), "{tool_receipt}");
+    }
+
+    // 5. Capture JSON envelope remains valid JSON in `detail` while `hint` explains Rust MIR bounds.
+    #[cfg(unix)]
+    {
+        let fake_capture = project.path().join("fake-capture");
+        let body = "#!/bin/sh\n\
+            printf '%s\\n' '{\"status\":\"unsupported\",\"diagnostics\":[\"1 required obligations are unsupported\"],\"unsupported\":[{\"def_id\":3,\"path\":\"take_ref\",\"reason\":\"unsupported type: &\\u0027{erased} u64\"}]}'\n\
+            exit 1\n";
+        let stage = Command::new("/bin/sh")
+            .arg("-ceu")
+            .arg("printf '%s' \"$1\" > \"$2\" && chmod 0755 \"$2\"")
+            .arg("sh")
+            .arg(body)
+            .arg(&fake_capture)
+            .output()
+            .unwrap();
+        assert_result(&stage, 0, "", "");
+
+        fs::write(project.path().join("crate_ok/proof/Spec.lean"), b"prelude\n").unwrap();
+        fs::write(project.path().join("crate_ok/proof/Proof.lean"), b"prelude\n").unwrap();
+        let sysroot = project.path().join("sysroot");
+        fs::create_dir(&sysroot).unwrap();
+        let fake_lean = project.path().join("fake-lean");
+        fs::write(&fake_lean, b"#!/bin/sh\nexit 0\n").unwrap();
+
+        let cap_out = command(Route::Direct, project.path())
+            .args([
+                "verify",
+                "--manifest-path",
+                "crate_ok/Cargo.toml",
+                "--proof-dir",
+                "crate_ok/proof",
+                "--capture",
+            ])
+            .arg(&fake_capture)
+            .arg("--sysroot")
+            .arg(&sysroot)
+            .arg("--lean")
+            .arg(&fake_lean)
+            .output()
+            .unwrap();
+        assert_result(&cap_out, 1, "", "");
+        let cap_receipt: serde_json::Value = serde_json::from_slice(&cap_out.stdout).unwrap();
+        assert_eq!(cap_receipt["phase"], "capture");
+        let parsed_detail: serde_json::Value =
+            serde_json::from_str(cap_receipt["detail"].as_str().unwrap()).unwrap();
+        assert_eq!(parsed_detail["unsupported"][0]["path"], "take_ref");
+        let hint = cap_receipt["hint"].as_str().unwrap();
+        assert!(hint.contains("`take_ref`") && hint.contains("references"), "{cap_receipt}");
+    }
+}
