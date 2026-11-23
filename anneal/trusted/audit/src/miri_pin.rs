@@ -10,12 +10,17 @@
 //! `{Init,Std,Lean}*` `.olean` manifests, and manages symlink-safe Miri
 //! `.olean` caches for repository Pass 2.
 
+#[cfg(unix)]
+use std::os::unix::fs::OpenOptionsExt as _;
 use std::{
     collections::{BTreeMap, BTreeSet, VecDeque},
     env,
     ffi::OsString,
-    fs, io,
+    fs,
+    io::{self, Write as _},
     path::{Component, Path, PathBuf},
+    process,
+    sync::atomic::{AtomicU64, Ordering},
 };
 
 use cargo_anneal::{
@@ -425,12 +430,41 @@ pub(crate) fn prepare_nosymlink_cache_path(
                 }
                 Err(e) if e.kind() == io::ErrorKind::NotFound => {
                     if create_dirs {
-                        fs::create_dir(&cur).map_err(|err| {
-                            Failure::operational(
-                                phase,
-                                format!("cannot create cache directory {}: {err}", cur.display()),
-                            )
-                        })?;
+                        match fs::create_dir(&cur) {
+                            Ok(()) => {}
+                            Err(err) if err.kind() == io::ErrorKind::AlreadyExists => {
+                                // Two writers can race to create the same
+                                // directory; re-stat without following links to
+                                // confirm the winner created a real directory.
+                                let meta = fs::symlink_metadata(&cur).map_err(|stat_err| {
+                                    Failure::operational(
+                                        phase,
+                                        format!(
+                                            "cannot stat cache directory {}: {stat_err}",
+                                            cur.display()
+                                        ),
+                                    )
+                                })?;
+                                if !meta.file_type().is_dir() {
+                                    return Err(Failure::policy(
+                                        phase,
+                                        format!(
+                                            "symlink or non-directory forbidden in cache path: {}",
+                                            cur.display()
+                                        ),
+                                    ));
+                                }
+                            }
+                            Err(err) => {
+                                return Err(Failure::operational(
+                                    phase,
+                                    format!(
+                                        "cannot create cache directory {}: {err}",
+                                        cur.display()
+                                    ),
+                                ));
+                            }
+                        }
                     } else {
                         return Ok(cache_dir.join(rel_path));
                     }
@@ -445,7 +479,14 @@ pub(crate) fn prepare_nosymlink_cache_path(
         }
     }
     let dst = cache_dir.join(rel_path);
-    match fs::symlink_metadata(&dst) {
+    ensure_cache_dst_regular_or_absent(&dst, phase)?;
+    Ok(dst)
+}
+
+/// Reject `dst` if it exists as a symlink or non-regular file; permit absent
+/// paths (`NotFound`) and regular files.
+fn ensure_cache_dst_regular_or_absent(dst: &Path, phase: &str) -> Result<(), Failure> {
+    match fs::symlink_metadata(dst) {
         Ok(meta) => {
             if !meta.file_type().is_file() {
                 return Err(Failure::policy(
@@ -456,21 +497,100 @@ pub(crate) fn prepare_nosymlink_cache_path(
                     ),
                 ));
             }
+            Ok(())
         }
-        Err(e) if e.kind() == io::ErrorKind::NotFound => {}
-        Err(e) => {
-            return Err(Failure::operational(
-                phase,
-                format!("cannot stat cache entry {}: {e}", dst.display()),
-            ));
-        }
+        Err(e) if e.kind() == io::ErrorKind::NotFound => Ok(()),
+        Err(e) => Err(Failure::operational(
+            phase,
+            format!("cannot stat cache entry {}: {e}", dst.display()),
+        )),
     }
-    Ok(dst)
 }
 
-/// Write a compiled artifact `src` into `cache_dir/rel_path` after rejecting
-/// symlinks at every path component and creating a fresh regular file with
-/// `create_new(true)`.
+/// Removes an unpublished sibling temporary cache file on drop unless disarmed
+/// after atomic publication.
+struct TempFileGuard {
+    path: PathBuf,
+    armed: bool,
+}
+
+impl TempFileGuard {
+    fn new(path: PathBuf) -> Self {
+        Self { path, armed: true }
+    }
+
+    fn path(&self) -> &Path {
+        &self.path
+    }
+
+    fn disarm(mut self) {
+        self.armed = false;
+    }
+}
+
+impl Drop for TempFileGuard {
+    fn drop(&mut self) {
+        if self.armed {
+            let _ = fs::remove_file(&self.path);
+        }
+    }
+}
+
+const MAX_CACHE_TEMP_ATTEMPTS: usize = 128;
+static NEXT_CACHE_TEMP_ID: AtomicU64 = AtomicU64::new(0);
+
+/// Create a unique sibling temporary file in `parent` using `create_new(true)`
+/// (`O_CREAT | O_EXCL`) and private `0o600` permissions on Unix.
+///
+/// POSIX guarantees `O_CREAT | O_EXCL` never follows a trailing symlink,
+/// failing with `EEXIST` instead; retrying across bounded sequence numbers
+/// recovers from stale or external filename collisions without exposing a
+/// writable symlink.
+fn create_unique_cache_temp(
+    parent: &Path,
+    dst_name: &str,
+    phase: &str,
+) -> Result<(TempFileGuard, fs::File), Failure> {
+    let pid = process::id();
+    for _ in 0..MAX_CACHE_TEMP_ATTEMPTS {
+        let seq = NEXT_CACHE_TEMP_ID.fetch_add(1, Ordering::Relaxed);
+        let prefix = format!(".tmp-{pid}-{seq}-");
+        let name = if prefix.len() + dst_name.len() <= 240 {
+            format!("{prefix}{dst_name}")
+        } else {
+            format!(".tmp-{pid}-{seq}")
+        };
+        let tmp_path = parent.join(name);
+        let mut opts = fs::OpenOptions::new();
+        opts.write(true).create_new(true);
+        #[cfg(unix)]
+        opts.mode(0o600);
+        match opts.open(&tmp_path) {
+            Ok(file) => return Ok((TempFileGuard::new(tmp_path), file)),
+            Err(e) if e.kind() == io::ErrorKind::AlreadyExists => continue,
+            Err(e) => {
+                return Err(Failure::operational(
+                    phase,
+                    format!("cannot create temporary cache entry {}: {e}", tmp_path.display()),
+                ));
+            }
+        }
+    }
+    Err(Failure::operational(
+        phase,
+        format!(
+            "exhausted {MAX_CACHE_TEMP_ATTEMPTS} attempts creating temporary cache entry in {}",
+            parent.display()
+        ),
+    ))
+}
+
+/// Atomically write a compiled artifact `src` into `cache_dir/rel_path` after
+/// rejecting symlinks at every path component.
+///
+/// Stages all bytes in a unique `0o600` sibling temporary file created with
+/// `create_new(true)`, flushes and closes the handle, re-verifies that `dst` is
+/// not a symlink or non-regular file, and publishes via `fs::rename`.
 pub(crate) fn write_cache_file(
     src: &Path,
     cache_dir: &Path,
@@ -481,30 +601,43 @@ pub(crate) fn write_cache_file(
     let bytes = fs::read(src)
         .map_err(|e| Failure::operational(phase, format!("cannot read {}: {e}", src.display())))?;
     let dst = prepare_nosymlink_cache_path(cache_dir, rel_path, true, phase)?;
-    if fs::symlink_metadata(&dst).is_ok() {
-        fs::remove_file(&dst).map_err(|e| {
-            Failure::operational(
-                phase,
-                format!("cannot replace cache entry {}: {e}", dst.display()),
-            )
-        })?;
-    }
-    let mut file = fs::OpenOptions::new()
-        .write(true)
-        .create_new(true)
-        .open(&dst)
-        .map_err(|e| {
-            Failure::operational(
-                phase,
-                format!("cannot create cache entry {}: {e}", dst.display()),
-            )
-        })?;
-    io::Write::write_all(&mut file, &bytes).map_err(|e| {
+    let Some(parent) = dst.parent() else {
+        return Err(Failure::operational(
+            phase,
+            format!("cache entry has no parent directory: {}", dst.display()),
+        ));
+    };
+    let dst_name = dst.file_name().and_then(|name| name.to_str()).ok_or_else(|| {
         Failure::operational(
             phase,
-            format!("cannot write cache entry {}: {e}", dst.display()),
+            format!("cache entry has non-UTF-8 file name: {}", dst.display()),
         )
     })?;
+
+    // Declare `guard` before `file` so an early `?` return closes the file
+    // descriptor before `TempFileGuard::drop` unlinks the staging file.
+    let (guard, mut file) = create_unique_cache_temp(parent, dst_name, phase)?;
+    file.write_all(&bytes).map_err(|e| {
+        Failure::operational(
+            phase,
+            format!("cannot write temporary cache entry {}: {e}", guard.path().display()),
+        )
+    })?;
+    file.flush().map_err(|e| {
+        Failure::operational(
+            phase,
+            format!("cannot flush temporary cache entry {}: {e}", guard.path().display()),
+        )
+    })?;
+    drop(file);
+
+    // Re-check `dst` right before publishing so a symlink or non-regular file
+    // introduced after `prepare_nosymlink_cache_path` still fails closed.
+    ensure_cache_dst_regular_or_absent(&dst, phase)?;
+    fs::rename(guard.path(), &dst).map_err(|e| {
+        Failure::operational(phase, format!("cannot publish cache entry {}: {e}", dst.display()))
+    })?;
+    guard.disarm();
     Ok(())
 }
 
@@ -1596,6 +1729,130 @@ mod tests {
             1
         );
         assert_eq!(fs::read(&victim).unwrap(), b"keep-me");
+        assert_no_temp_residue(&cache);
+        assert_no_temp_residue(&outside);
+    }
+
+    fn assert_no_temp_residue(root: &Path) {
+        if !root.exists() {
+            return;
+        }
+        for entry in WalkDir::new(root).follow_links(false) {
+            let entry = entry.unwrap();
+            let name = entry.file_name().to_string_lossy();
+            assert!(
+                !name.starts_with(".tmp-"),
+                "unexpected temp cache residue left behind: {}",
+                entry.path().display()
+            );
+        }
+    }
+
+    #[test]
+    fn write_cache_file_atomically_overwrites_existing_entry() {
+        let tmp = tempfile::tempdir().unwrap();
+        let cache = tmp.path().join("cache");
+        let src_v1 = tmp.path().join("v1.olean");
+        let src_v2 = tmp.path().join("v2.olean");
+        let missing_src = tmp.path().join("missing.olean");
+        fs::write(&src_v1, b"initial-olean-bytes").unwrap();
+        fs::write(&src_v2, b"replacement-olean-bytes-longer").unwrap();
+
+        write_cache_file(&src_v1, &cache, "Miri/Hex.olean", "miri-pin").unwrap();
+        let dst = cache.join("Miri/Hex.olean");
+        assert_eq!(fs::read(&dst).unwrap(), b"initial-olean-bytes");
+
+        write_cache_file(&src_v2, &cache, "Miri/Hex.olean", "miri-pin").unwrap();
+        assert_eq!(fs::read(&dst).unwrap(), b"replacement-olean-bytes-longer");
+
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt as _;
+            let mode = fs::symlink_metadata(&dst).unwrap().permissions().mode() & 0o777;
+            assert_eq!(mode, 0o600);
+        }
+
+        // Failed writes preserve the previously published valid cache entry
+        // and leave no temp files behind.
+        assert!(write_cache_file(&missing_src, &cache, "Miri/Hex.olean", "miri-pin").is_err());
+        assert_eq!(fs::read(&dst).unwrap(), b"replacement-olean-bytes-longer");
+
+        // Rejecting a non-regular destination directory also leaves no temp
+        // residue.
+        fs::create_dir_all(cache.join("Miri/Dir.olean")).unwrap();
+        assert_eq!(
+            write_cache_file(&src_v2, &cache, "Miri/Dir.olean", "miri-pin").unwrap_err().code,
+            1
+        );
+        assert_no_temp_residue(&cache);
+    }
+
+    #[test]
+    fn write_cache_file_handles_concurrent_writers_without_races_or_corruption() {
+        const THREADS: usize = 8;
+        const WRITES_PER_THREAD: usize = 8;
+        const PAYLOAD_LEN: usize = 64 * 1024;
+
+        let tmp = tempfile::tempdir().unwrap();
+        let cache = tmp.path().join("cache");
+        let payloads: Vec<(PathBuf, Vec<u8>)> = (0..THREADS)
+            .map(|tid| {
+                let src = tmp.path().join(format!("src-{tid}.olean"));
+                let bytes = vec![0x20 + u8::try_from(tid).unwrap(); PAYLOAD_LEN];
+                fs::write(&src, &bytes).unwrap();
+                (src, bytes)
+            })
+            .collect();
+
+        let barrier = std::sync::Barrier::new(THREADS);
+        std::thread::scope(|scope| {
+            for (src, _) in &payloads {
+                scope.spawn(|| {
+                    barrier.wait();
+                    for _ in 0..WRITES_PER_THREAD {
+                        write_cache_file(src, &cache, "Miri/Concurrent.olean", "miri-pin")
+                            .expect("concurrent write_cache_file must succeed");
+                    }
+                });
+            }
+        });
+
+        let final_bytes = fs::read(cache.join("Miri/Concurrent.olean")).unwrap();
+        assert_eq!(final_bytes.len(), PAYLOAD_LEN);
+        assert!(
+            payloads.iter().any(|(_, expected)| *expected == final_bytes),
+            "final cache contents did not match any complete writer payload"
+        );
+        assert_no_temp_residue(&cache);
+    }
+
+    #[test]
+    fn temp_file_guard_cleans_up_on_drop_and_panic_unless_disarmed() {
+        let tmp = tempfile::tempdir().unwrap();
+
+        let dropped_path = tmp.path().join(".tmp-drop");
+        fs::write(&dropped_path, b"partial").unwrap();
+        {
+            let _guard = TempFileGuard::new(dropped_path.clone());
+        }
+        assert!(!dropped_path.exists());
+
+        let panicked_path = tmp.path().join(".tmp-panic");
+        fs::write(&panicked_path, b"partial").unwrap();
+        let unwind_result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            let _guard = TempFileGuard::new(panicked_path.clone());
+            panic!("simulated panic before rename");
+        }));
+        assert!(unwind_result.is_err());
+        assert!(!panicked_path.exists());
+
+        let kept_path = tmp.path().join(".tmp-keep");
+        fs::write(&kept_path, b"published").unwrap();
+        {
+            let guard = TempFileGuard::new(kept_path.clone());
+            guard.disarm();
+        }
+        assert_eq!(fs::read(&kept_path).unwrap(), b"published");
     }
 
     #[test]
