@@ -1812,6 +1812,12 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
             .with_sandbox(Some(active_sandbox.as_str()))
         })?
     };
+    let runtime_libs_verified = checker
+        .admitted()
+        .map_err(|e| {
+            error("tool_failed", "toolchain", e.message).with_sandbox(Some(active_sandbox.as_str()))
+        })?
+        .runtime_libs_verified;
     let toolchain_identity = if args.allow_unpinned_lean {
         json!({
             "sha256_locked": [],
@@ -1822,6 +1828,21 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
             "unhashed": [
                 "Lean shared libraries, identified by lean --version",
                 "Lean sysroot modules outside the admitted Init/Std closure",
+                "Rust compiler and sysroot, identified by their reported commit",
+            ],
+        })
+    } else if runtime_libs_verified {
+        json!({
+            "sha256_locked": [
+                "Lean executable in foundation-lock.json",
+                "Lean runtime shared libraries in LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS",
+                "foundation-lock.json modules",
+                "Lean sysroot Init/Std/Lean .olean artifacts in LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256",
+                "imported library-lock.json modules",
+            ],
+            "sha256_recorded": ["capture executable as capture_binary_sha256"],
+            "unhashed": [
+                "Lean sysroot .ir/.ir.sig companions outside the locks",
                 "Rust compiler and sysroot, identified by their reported commit",
             ],
         })

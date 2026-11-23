@@ -2503,6 +2503,243 @@ exit 4
         assert!(!tampered_adm.execution_began());
     }
 
+    /// Regression test for unauthenticated Lean runtime shared libraries:
+    /// replacing a `lib/lean/*.so` file, deleting a required runtime shared
+    /// library, or dropping an extra `.so` under `lib/` or `bin/` while keeping
+    /// `bin/lean` and `Init`/`Std`/`Lean` `.olean`s pinned must fail closed
+    /// before `SandboxRuntime::probe` or any child `lean` process executes.
+    #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+    #[test]
+    fn tool_admission_rejects_tampered_or_injected_lean_runtime_shared_lib() {
+        let real_lean = fs::canonicalize(installed_lean()).unwrap();
+        let real_prefix_out =
+            std::process::Command::new(&real_lean).arg("--print-prefix").output().unwrap();
+        assert!(real_prefix_out.status.success());
+        let real_prefix = PathBuf::from(String::from_utf8(real_prefix_out.stdout).unwrap().trim());
+
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let syn_prefix = base.join("sysroot");
+        let copied_lean = syn_prefix.join("bin/lean");
+        fs::create_dir_all(copied_lean.parent().unwrap()).unwrap();
+        fs::copy(&real_lean, &copied_lean).unwrap();
+        fs::set_permissions(&copied_lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+        copy_dir_filtered(
+            &real_prefix.join("src/lean/Init"),
+            &syn_prefix.join("src/lean/Init"),
+            false,
+        );
+        let dst_lib_lean = syn_prefix.join("lib/lean");
+        fs::create_dir_all(&dst_lib_lean).unwrap();
+        for entry in fs::read_dir(real_prefix.join("lib")).unwrap() {
+            let entry = entry.unwrap();
+            let src_path = entry.path();
+            if entry.file_type().unwrap().is_file() {
+                let dst_path = syn_prefix.join("lib").join(entry.file_name());
+                fs::hard_link(&src_path, &dst_path)
+                    .or_else(|_| fs::copy(&src_path, &dst_path).map(|_| ()))
+                    .unwrap();
+            }
+        }
+        for entry in fs::read_dir(real_prefix.join("lib/lean")).unwrap() {
+            let entry = entry.unwrap();
+            let name = entry.file_name();
+            let name_str = name.to_string_lossy();
+            let src_path = entry.path();
+            let dst_path = dst_lib_lean.join(&name);
+            let ft = fs::symlink_metadata(&src_path).unwrap().file_type();
+            if matches!(name_str.as_ref(), "Init" | "Std" | "Lean") {
+                copy_dir_filtered(&src_path, &dst_path, name_str != "Init");
+            } else if ["Init.", "Std.", "Lean."].iter().any(|p| name_str.starts_with(p)) {
+                if ft.is_file() {
+                    fs::copy(&src_path, &dst_path).unwrap();
+                }
+            } else if ft.is_file() {
+                fs::hard_link(&src_path, &dst_path)
+                    .or_else(|_| fs::copy(&src_path, &dst_path).map(|_| ()))
+                    .unwrap();
+            }
+        }
+
+        // Control: untampered copy passes full pinned admission.
+        let mut control = Checker::new(&repo_root(), Some(&copied_lean)).unwrap();
+        control.tool_admission().unwrap();
+        assert!(!control.execution_began());
+
+        // 1. Tampering with `lib/lean/libInit_shared.so` fails pre-probe.
+        let init_shared = dst_lib_lean.join("libInit_shared.so");
+        let real_init_shared = real_prefix.join("lib/lean/libInit_shared.so");
+        fs::remove_file(&init_shared).unwrap();
+        fs::write(&init_shared, b"tampered runtime shared library\n").unwrap();
+
+        let req = minimal_request(&base.join("req"), None);
+        let mut tampered_target = Checker::new(&repo_root(), Some(&copied_lean)).unwrap();
+        let err = tampered_target.run_target(&req).unwrap_err();
+        assert_eq!((err.code, err.phase.as_str()), (2, "toolchain"), "{err}");
+        assert!(
+            err.message.contains(
+                "Lean runtime shared library SHA-256 mismatch for lib/lean/libInit_shared.so"
+            ),
+            "{err}"
+        );
+        assert!(!tampered_target.execution_began());
+
+        // 2. Removing a required runtime DSO fails closed.
+        fs::remove_file(&init_shared).unwrap();
+        let mut missing_adm = Checker::new(&repo_root(), Some(&copied_lean)).unwrap();
+        let err_missing = missing_adm.tool_admission().unwrap_err();
+        assert_eq!(
+            (err_missing.code, err_missing.phase.as_str()),
+            (2, "toolchain"),
+            "{err_missing}"
+        );
+        assert!(
+            err_missing.message.contains(
+                "missing required Lean runtime shared library: lib/lean/libInit_shared.so"
+            ),
+            "{err_missing}"
+        );
+        assert!(!missing_adm.execution_began());
+
+        // Restore `libInit_shared.so`, then inject an unlisted `lib/libc.so.6`.
+        fs::hard_link(&real_init_shared, &init_shared)
+            .or_else(|_| fs::copy(&real_init_shared, &init_shared).map(|_| ()))
+            .unwrap();
+        let injected_libc = syn_prefix.join("lib/libc.so.6");
+        fs::write(&injected_libc, b"unlisted shadow libc\n").unwrap();
+        let mut injected_adm = Checker::new(&repo_root(), Some(&copied_lean)).unwrap();
+        let err_inj = injected_adm.tool_admission().unwrap_err();
+        assert_eq!((err_inj.code, err_inj.phase.as_str()), (2, "toolchain"), "{err_inj}");
+        assert!(
+            err_inj
+                .message
+                .contains("unexpected runtime shared library in Lean sysroot: lib/libc.so.6"),
+            "{err_inj}"
+        );
+        assert!(!injected_adm.execution_began());
+
+        // Remove `lib/libc.so.6`, then inject an unlisted `.so` into `bin/`.
+        fs::remove_file(&injected_libc).unwrap();
+        let injected_bin = syn_prefix.join("bin/rogue.so");
+        fs::write(&injected_bin, b"unlisted bin shared library\n").unwrap();
+        let mut bin_adm = Checker::new(&repo_root(), Some(&copied_lean)).unwrap();
+        let err_bin = bin_adm.tool_admission().unwrap_err();
+        assert_eq!((err_bin.code, err_bin.phase.as_str()), (2, "toolchain"), "{err_bin}");
+        assert!(
+            err_bin
+                .message
+                .contains("unexpected runtime shared library in Lean sysroot: bin/rogue.so"),
+            "{err_bin}"
+        );
+        assert!(!bin_adm.execution_began());
+
+        // Remove `bin/rogue.so`, then point `lib/libLLVM.so` at a tampered
+        // symlink target and confirm symlinked DSO substitution fails closed.
+        fs::remove_file(&injected_bin).unwrap();
+        let outside_so = base.join("outside.so");
+        fs::write(&outside_so, b"tampered symlinked libLLVM\n").unwrap();
+        let llvm_link = syn_prefix.join("lib/libLLVM.so");
+        std::os::unix::fs::symlink(&outside_so, &llvm_link).unwrap();
+        let mut sym_adm = Checker::new(&repo_root(), Some(&copied_lean)).unwrap();
+        let err_sym = sym_adm.tool_admission().unwrap_err();
+        assert_eq!((err_sym.code, err_sym.phase.as_str()), (2, "toolchain"), "{err_sym}");
+        assert!(
+            err_sym
+                .message
+                .contains("Lean runtime shared library SHA-256 mismatch for lib/libLLVM.so"),
+            "{err_sym}"
+        );
+        assert!(!sym_adm.execution_began());
+
+        // Remove `lib/libLLVM.so`, then inject a symlinked directory under
+        // `lib/` (`lib/rogue_dir`) and confirm directory-symlink guard fires.
+        fs::remove_file(&llvm_link).unwrap();
+        let rogue_target = base.join("rogue_target");
+        fs::create_dir_all(&rogue_target).unwrap();
+        let rogue_dir = syn_prefix.join("lib/rogue_dir");
+        std::os::unix::fs::symlink(&rogue_target, &rogue_dir).unwrap();
+        let mut dir_adm = Checker::new(&repo_root(), Some(&copied_lean)).unwrap();
+        let err_dir = dir_adm.tool_admission().unwrap_err();
+        assert_eq!((err_dir.code, err_dir.phase.as_str()), (2, "toolchain"), "{err_dir}");
+        assert!(
+            err_dir
+                .message
+                .contains("unexpected symlinked directory in Lean sysroot: lib/rogue_dir"),
+            "{err_dir}"
+        );
+        assert!(!dir_adm.execution_began());
+
+        // Remove `lib/rogue_dir`, verify Unsandboxed pre-version guard on a
+        // tampered DSO, and verify prefix-split symlinked `bin/lean`.
+        fs::remove_file(&rogue_dir).unwrap();
+        fs::remove_file(&init_shared).unwrap();
+        fs::write(&init_shared, b"tampered runtime shared library\n").unwrap();
+        let mut unsandboxed_adm = Checker::new(&repo_root(), Some(&copied_lean)).unwrap();
+        unsandboxed_adm.set_sandbox_mode(crate::SandboxMode::Unsandboxed);
+        let err_unsand = unsandboxed_adm.tool_admission().unwrap_err();
+        assert_eq!(
+            (err_unsand.code, err_unsand.phase.as_str()),
+            (2, "toolchain"),
+            "{err_unsand}"
+        );
+        assert!(
+            err_unsand.message.contains(
+                "Lean runtime shared library SHA-256 mismatch for lib/lean/libInit_shared.so"
+            ),
+            "{err_unsand}"
+        );
+        assert!(!unsandboxed_adm.execution_began());
+
+        // Symlinked `bin/lean` check: `<split_prefix>/bin/lean` symlinks to
+        // `copied_lean` (whose sibling `lib/lean/libInit_shared.so` is
+        // tampered); Unsandboxed admission must follow the symlink and reject
+        // the canonical executable's `$ORIGIN/..` DSOs before `--version`.
+        let split_prefix = base.join("split-prefix");
+        fs::create_dir_all(split_prefix.join("bin")).unwrap();
+        std::os::unix::fs::symlink(&copied_lean, split_prefix.join("bin/lean")).unwrap();
+        let mut split_adm =
+            Checker::new(&repo_root(), Some(&split_prefix.join("bin/lean"))).unwrap();
+        split_adm.set_sandbox_mode(crate::SandboxMode::Unsandboxed);
+        let err_split = split_adm.tool_admission().unwrap_err();
+        assert_eq!((err_split.code, err_split.phase.as_str()), (2, "toolchain"), "{err_split}");
+        assert!(
+            err_split.message.contains(
+                "Lean runtime shared library SHA-256 mismatch for lib/lean/libInit_shared.so"
+            ),
+            "{err_split}"
+        );
+        assert!(!split_adm.execution_began());
+
+        // Non-`bin/` parent check: placing the pinned `x86_64` Linux binary at
+        // `<dir>/notbin/lean` next to a tampered `libInit_shared.so` must fail
+        // closed before `--version` rather than skipping `$ORIGIN/..` checks.
+        let notbin_root = base.join("notbin-sysroot");
+        let notbin_lean = notbin_root.join("notbin/lean");
+        fs::create_dir_all(notbin_lean.parent().unwrap()).unwrap();
+        fs::create_dir_all(notbin_root.join("lib/lean")).unwrap();
+        fs::copy(&real_lean, &notbin_lean).unwrap();
+        fs::set_permissions(&notbin_lean, fs::Permissions::from_mode(0o755)).unwrap();
+        fs::write(
+            notbin_root.join("lib/lean/libInit_shared.so"),
+            b"tampered runtime shared library\n",
+        )
+        .unwrap();
+        let mut notbin_adm = Checker::new(&repo_root(), Some(&notbin_lean)).unwrap();
+        notbin_adm.set_sandbox_mode(crate::SandboxMode::Unsandboxed);
+        let err_notbin = notbin_adm.tool_admission().unwrap_err();
+        assert_eq!(
+            (err_notbin.code, err_notbin.phase.as_str()),
+            (2, "toolchain"),
+            "{err_notbin}"
+        );
+        assert!(
+            err_notbin.message.contains("must reside under <prefix>/bin/"),
+            "{err_notbin}"
+        );
+        assert!(!notbin_adm.execution_began());
+    }
+
     #[test]
     fn live_spec_preflight_isolates_per_specification_library_closures() {
         let lean = installed_lean();

@@ -8437,21 +8437,37 @@ fn rejects_pass2_correspondence_import_cycles() {
     );
 }
 
-/// Keeps `LOCKED_LEAN_SHA256` synchronized with `foundation-lock.json`
-/// `distributions` binary digests.
+/// Keeps `LOCKED_LEAN_SHA256` and `LOCKED_LEAN_X86_64_LINUX_SHA256`
+/// synchronized with `foundation-lock.json` `distributions` binary digests,
+/// and validates `LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS` key hygiene.
 #[test]
 fn locked_lean_sha256_matches_foundation_lock_distributions() {
     let lock_bytes = fs::read(repo_root().join("trusted/lean/foundation-lock.json")).unwrap();
     let lock: Json = serde_json::from_slice(&lock_bytes).unwrap();
-    let expected: BTreeSet<String> = lock["distributions"]
-        .as_object()
-        .unwrap()
-        .values()
-        .map(|v| v.as_str().unwrap().to_ascii_lowercase())
-        .collect();
+    let dists = lock["distributions"].as_object().unwrap();
+    let expected: BTreeSet<String> =
+        dists.values().map(|v| v.as_str().unwrap().to_ascii_lowercase()).collect();
     let actual: BTreeSet<String> =
         anneal_audit::LOCKED_LEAN_SHA256.iter().map(|s| s.to_ascii_lowercase()).collect();
     assert_eq!(actual, expected);
+
+    let x86_64_linux_sha = dists
+        .iter()
+        .find_map(|(k, v)| k.contains("x86_64-unknown-linux-gnu").then(|| v.as_str().unwrap()))
+        .expect("x86_64-unknown-linux-gnu entry in foundation-lock.json distributions");
+    assert_eq!(
+        anneal_audit::LOCKED_LEAN_X86_64_LINUX_SHA256.to_ascii_lowercase(),
+        x86_64_linux_sha.to_ascii_lowercase()
+    );
+    let mut keys = Vec::with_capacity(anneal_audit::LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS.len());
+    for &(rel, sha) in anneal_audit::LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS {
+        assert!(anneal_audit::is_sha256_hex(sha), "invalid sha256 for {rel}");
+        keys.push(rel);
+    }
+    let mut sorted = keys.clone();
+    sorted.sort_unstable();
+    sorted.dedup();
+    assert_eq!(keys, sorted, "runtime lib keys must be sorted and unique");
 }
 
 /// Verifies that Pass 2 `"correspondence-preflight"` and Pass 2 module
