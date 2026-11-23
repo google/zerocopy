@@ -2381,6 +2381,19 @@ pub fn main(args: VerifyArgs) -> ExitCode {
         },
         None => None,
     };
+    if let Some(destination) = artifacts
+        && let Err(failure) = preflight_artifact_destination(destination)
+    {
+        return emit_failure(
+            taint_reasons,
+            None,
+            failure.status,
+            failure.phase,
+            &failure.detail,
+            None,
+            2,
+        );
+    }
     let stage = match verification_stage() {
         Ok(stage) => stage,
         Err(failure) => {
@@ -2471,6 +2484,108 @@ pub fn main(args: VerifyArgs) -> ExitCode {
                 code,
             )
         }
+    }
+}
+
+/// Split UTF-8 `destination` into `(entry, name, parent)` after separating a
+/// leading `Component::Prefix` of `prefix_len` bytes rather than using
+/// `Path::parent`, which drops trailing `.` components that `mkdir` does not.
+fn split_artifact_destination_with_prefix_len(
+    destination: &str,
+    prefix_len: usize,
+    is_separator: fn(char) -> bool,
+) -> (&str, &str, String) {
+    let (win_prefix, rest) = destination.split_at(prefix_len);
+    let trimmed_rest = rest.trim_end_matches(is_separator);
+    // A trailing separator makes `lstat` follow a final symlink, which would
+    // hide a dangling one that `mkdir` still refuses. Inspect the final entry
+    // without trailing separators while preserving root separators and Windows
+    // prefixes (`/` or `C:\`).
+    let entry = if trimmed_rest.is_empty() {
+        destination
+    } else {
+        &destination[..prefix_len + trimmed_rest.len()]
+    };
+    if trimmed_rest.is_empty() {
+        return (entry, "", String::new());
+    }
+    let name_start = trimmed_rest.rfind(is_separator).map_or(0, |separator| separator + 1);
+    let name = &trimmed_rest[name_start..];
+    let rest_prefix = &trimmed_rest[..name_start];
+    let trimmed_parent = rest_prefix.trim_end_matches(is_separator);
+    let parent = if rest_prefix.is_empty() {
+        if win_prefix.is_empty() { ".".to_owned() } else { format!("{win_prefix}.") }
+    } else if trimmed_parent.is_empty() {
+        // Every separator before the name belongs to a root directory
+        // (`/`, `C:\`, `\\?\C:\`, `\\server\share\`).
+        format!("{win_prefix}{}", &rest_prefix[..1])
+    } else {
+        format!("{win_prefix}{trimmed_parent}")
+    };
+    (entry, name, parent)
+}
+
+/// Reject an artifact destination that retention could not claim.
+///
+/// Retention claims its destination with a create-only `mkdir`, which fails
+/// when any entry (including a dangling symlink) occupies the final path
+/// component, when that component is `.` or `..`, or when the parent is missing
+/// or not a directory. Checking those conditions before staging reports a
+/// reused or mistyped path immediately, instead of after capture and Lean
+/// elaboration have run for evidence that cannot be kept. Write permission on
+/// the parent directory is not checked (`retain_stage` reports it), while any
+/// other error inspecting the destination path (such as search permission,
+/// symlink loops, or overlong names) is reported up front with the OS error.
+/// The filesystem may also change before retention, so this check is advisory
+/// only: `retain_stage` remains the authoritative, race-free claim and still
+/// refuses to write into any path that exists by then.
+///
+/// `destination` is the UTF-8 spelling already checked by `main`.
+fn preflight_artifact_destination(destination: &str) -> Result<()> {
+    use std::path::Component;
+
+    let reject = |detail: String| Err(error("tool_failed", "retention", detail));
+    if destination.is_empty() {
+        return reject("artifact destination path is empty".to_owned());
+    }
+    let prefix_len = match Path::new(destination).components().next() {
+        Some(Component::Prefix(prefix)) => prefix.as_os_str().as_encoded_bytes().len(),
+        _ => 0,
+    };
+    let (entry, name, parent) = split_artifact_destination_with_prefix_len(
+        destination,
+        prefix_len,
+        std::path::is_separator,
+    );
+    match fs::symlink_metadata(entry) {
+        Ok(_) => {
+            return reject(format!(
+                "artifact destination {destination} already exists; retention never \
+                 writes into an existing path, so pass a new path"
+            ));
+        }
+        // `ENOTDIR` means some ancestor is not a directory; the parent check
+        // below reports the immediate parent path (`is not a directory` or the
+        // OS `ENOTDIR` error).
+        Err(e)
+            if matches!(
+                e.kind(),
+                std::io::ErrorKind::NotFound | std::io::ErrorKind::NotADirectory
+            ) => {}
+        Err(e) => return reject(format!("artifact destination {destination}: {e}")),
+    }
+    if name.is_empty() || matches!(name, "." | "..") {
+        return reject(format!(
+            "artifact destination {destination} must end in a new directory name"
+        ));
+    }
+    // Follow symlinks here, as `mkdir` does for every component except the
+    // last: the invoker chooses the parent, and symlinked ancestors such as a
+    // symlinked temporary directory are ordinary and already accepted.
+    match fs::metadata(&parent) {
+        Ok(metadata) if metadata.is_dir() => Ok(()),
+        Ok(_) => reject(format!("artifact destination parent {parent} is not a directory")),
+        Err(e) => reject(format!("artifact destination parent {parent}: {e}")),
     }
 }
 
@@ -2796,6 +2911,158 @@ mod tests {
         fs::write(target.path().join("keep"), b"valuable").unwrap();
         assert!(retain(source.path(), target.path()).is_err());
         assert_eq!(fs::read(target.path().join("keep")).unwrap(), b"valuable");
+    }
+
+    /// Run the preflight on `path`, which must be UTF-8 as `main` ensures.
+    fn preflight(path: &Path) -> Result<()> {
+        preflight_artifact_destination(path.to_str().unwrap())
+    }
+
+    fn preflight_detail(path: &str) -> String {
+        let Err(failure) = preflight_artifact_destination(path) else {
+            panic!("artifact destination {path:?} must be rejected");
+        };
+        assert_eq!(failure.status, "tool_failed");
+        assert_eq!(failure.phase, "retention");
+        failure.detail
+    }
+
+    #[test]
+    fn artifact_preflight_accepts_only_claimable_destinations() {
+        let parent = tempfile::tempdir().unwrap();
+        let fresh = parent.path().join("fresh");
+        assert!(preflight(&fresh).is_ok());
+        assert!(preflight_artifact_destination(&format!("{}/", fresh.display())).is_ok());
+        assert!(!fresh.exists(), "preflight must not create the destination");
+
+        let directory = parent.path().join("directory");
+        fs::create_dir(&directory).unwrap();
+        let file = parent.path().join("file");
+        fs::write(&file, b"caller bytes").unwrap();
+        for existing in [&directory, &file] {
+            let shown = existing.to_str().unwrap();
+            for spelling in [shown.to_owned(), format!("{shown}/")] {
+                let detail = preflight_detail(&spelling);
+                assert!(detail.contains("already exists"), "{detail}");
+            }
+        }
+        assert_eq!(fs::read(&file).unwrap(), b"caller bytes");
+        assert!(preflight_detail("/").contains("already exists"));
+
+        let empty = preflight_detail("");
+        assert!(empty.contains("empty"), "{empty}");
+
+        for dots in ["missing/.", "missing/..", "missing/./"] {
+            let spelling = format!("{}/{dots}", parent.path().display());
+            let detail = preflight_detail(&spelling);
+            assert!(detail.contains("must end in a new directory name"), "{detail}");
+        }
+
+        let missing = parent.path().join("missing");
+        let detail = preflight_detail(missing.join("out").to_str().unwrap());
+        let missing_err = fs::metadata(&missing).unwrap_err();
+        assert_eq!(
+            detail,
+            format!("artifact destination parent {}: {missing_err}", missing.display())
+        );
+
+        let detail = preflight_detail(file.join("out").to_str().unwrap());
+        assert_eq!(
+            detail,
+            format!("artifact destination parent {} is not a directory", file.display())
+        );
+        let sub = file.join("sub");
+        let detail = preflight_detail(sub.join("out").to_str().unwrap());
+        let sub_prefix = format!("artifact destination parent {}: ", sub.display());
+        assert!(detail.starts_with(&sub_prefix), "{detail}");
+        assert!(!missing.exists());
+
+        // Destinations directly under filesystem root exercise root parent
+        // resolution (`/`). Multiple leading slashes remain valid on Unix.
+        if !Path::new("/anneal-preflight-nonexistent-root-probe").exists() {
+            assert!(
+                preflight_artifact_destination("/anneal-preflight-nonexistent-root-probe").is_ok()
+            );
+            #[cfg(unix)]
+            assert!(
+                preflight_artifact_destination("///anneal-preflight-nonexistent-root-probe")
+                    .is_ok()
+            );
+        }
+
+        // Windows drive, drive-relative, and verbatim prefixes remain intact.
+        let win_sep: fn(char) -> bool = |c| c == '/' || c == '\\';
+        assert_eq!(
+            split_artifact_destination_with_prefix_len(r"C:\fresh", 2, win_sep),
+            (r"C:\fresh", "fresh", r"C:\".to_owned())
+        );
+        assert_eq!(
+            split_artifact_destination_with_prefix_len(r"C:\", 2, win_sep),
+            (r"C:\", "", String::new())
+        );
+        assert_eq!(
+            split_artifact_destination_with_prefix_len(r"\\?\C:\fresh", 6, win_sep),
+            (r"\\?\C:\fresh", "fresh", r"\\?\C:\".to_owned())
+        );
+        assert_eq!(
+            split_artifact_destination_with_prefix_len("C:fresh", 2, win_sep),
+            ("C:fresh", "fresh", "C:.".to_owned())
+        );
+        assert_eq!(
+            split_artifact_destination_with_prefix_len("C:.", 2, win_sep),
+            ("C:.", ".", "C:.".to_owned())
+        );
+        assert_eq!(
+            split_artifact_destination_with_prefix_len("C:..", 2, win_sep),
+            ("C:..", "..", "C:.".to_owned())
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn artifact_preflight_reports_non_notfound_symlink_metadata_errors() {
+        use std::os::unix::fs::symlink;
+
+        let dir = tempfile::tempdir().unwrap();
+        let loop_a = dir.path().join("loop_a");
+        let loop_b = dir.path().join("loop_b");
+        symlink(&loop_b, &loop_a).unwrap();
+        symlink(&loop_a, &loop_b).unwrap();
+        let target = loop_a.join("out");
+        let detail = preflight_detail(target.to_str().unwrap());
+        let expected_prefix = format!("artifact destination {}: ", target.display());
+        assert!(detail.starts_with(&expected_prefix), "{detail}");
+        assert!(!detail.contains("already exists"), "{detail}");
+        assert!(!detail.contains("parent "), "{detail}");
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn artifact_preflight_rejects_live_and_dangling_symlink_destinations() {
+        use std::os::unix::fs::symlink;
+
+        let outside = tempfile::tempdir().unwrap();
+        let parent = tempfile::tempdir().unwrap();
+        let live = parent.path().join("live");
+        symlink(outside.path(), &live).unwrap();
+        let dangling = parent.path().join("dangling");
+        symlink(outside.path().join("absent"), &dangling).unwrap();
+        for link in [&live, &dangling] {
+            let shown = link.to_str().unwrap();
+            // A trailing separator makes `lstat` follow the link; the check
+            // must still see the link itself, as `mkdir` does.
+            for spelling in [shown.to_owned(), format!("{shown}/")] {
+                let detail = preflight_detail(&spelling);
+                assert!(detail.contains("already exists"), "{detail}");
+            }
+            assert!(fs::symlink_metadata(link).unwrap().is_symlink());
+        }
+        assert!(!outside.path().join("absent").exists());
+
+        // A symlinked parent directory is accepted, matching `mkdir`.
+        assert!(preflight(&live.join("out")).is_ok());
+        let detail = preflight_detail(dangling.join("out").to_str().unwrap());
+        assert!(detail.starts_with("artifact destination parent "), "{detail}");
     }
 
     #[test]
