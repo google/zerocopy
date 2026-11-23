@@ -427,6 +427,23 @@ jobs:
           path: ${{ runner.temp }}/anneal-miri-olean-cache
           key: ${{ steps.miri_olean_cache.outputs.cache-primary-key }}
 
+      # Verify that every cataloged UB guard in `Trusted/MirSemantics/` and
+      # header-import guard in `TrustedBoundary.lean` is actively exercised by
+      # negative refutation fixtures (100% kill rate required).
+      - name: Check TCB guard-mutation kill rate
+        id: guard_mutation
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+        run: |
+          set -euo pipefail
+          exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/guard-mutation.log") 2>&1
+          /usr/bin/python3 -I -B ci/check_guard_mutation.py \
+            --lean "$ANNEAL_TEST_INSTALL_ROOT/lean/bin/lean" \
+            --jobs 4 \
+            --json-out "$ANNEAL_TEST_DIAGNOSTICS/guard-mutation.json"
+
       - name: Verify clean working tree
         id: clean_tree
         env:
