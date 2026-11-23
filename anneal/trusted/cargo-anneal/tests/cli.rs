@@ -859,6 +859,40 @@ fn host_policy_conflicts_exit_2_on_stderr_with_empty_stdout() {
             &["--capture", "cap", "--sysroot", "sys", "--lean", "lean", "--export-lean-lib"],
         ]
         .concat(),
+        vec![
+            "verify",
+            "--request",
+            "r.json",
+            "--panic",
+            "abort",
+            "--capture",
+            "cap",
+            "--sysroot",
+            "sys",
+            "--lean",
+            "lean",
+        ],
+        [
+            &["verify", "--panic", "abort", "--capture", "cap", "--sysroot", "sys", "--lean", "lean"]
+                [..],
+            &base_rustc[1..],
+        ]
+        .concat(),
+        vec![
+            "verify",
+            "--manifest-path",
+            "Cargo.toml",
+            "--proof-dir",
+            "proof",
+            "--panic",
+            "bogus",
+            "--capture",
+            "cap",
+            "--sysroot",
+            "sys",
+            "--lean",
+            "lean",
+        ],
     ];
 
     for args in bad_cases {
@@ -1247,6 +1281,8 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
            \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\n\
            \"configuration\": {{\n\
              \"crate_name\": \"demo\",\n\
+             \"crate_type\": \"lib\",\n\
+             \"panic\": \"unwind\",\n\
              \"target\": \"x86_64-unknown-linux-gnu\",\n\
              \"edition\": \"2024\",\n\
              \"cfg\": [],\n\
@@ -1300,8 +1336,93 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
         "{receipt}"
     );
     let args_text = fs::read_to_string(&recorded_args).unwrap();
+    let recorded_lines: Vec<&str> = args_text.lines().collect();
     assert!(
-        args_text.lines().any(|line| line == "--env=CARGO_PKG_VERSION=0.8.64"),
+        recorded_lines.contains(&"--env=CARGO_PKG_VERSION=0.8.64"),
         "expected --env=CARGO_PKG_VERSION=0.8.64 in capture args:\n{args_text}"
     );
+    assert!(
+        recorded_lines.windows(2).any(|w| w == ["--crate-type", "lib"]),
+        "expected --crate-type lib in capture args:\n{args_text}"
+    );
+    assert!(
+        recorded_lines.windows(2).any(|w| w == ["--panic", "unwind"]),
+        "expected --panic unwind in capture args:\n{args_text}"
+    );
+
+    // Also confirm `cargo-anneal` rejects capture manifests whose reported
+    // `crate_type` or `panic` strategy disagrees with the request.
+    for (bad_crate_type, bad_panic, req_crate_type, req_panic) in
+        [("lib", "unwind", "bin", "unwind"), ("bin", "unwind", "bin", "abort")]
+    {
+        let mismatch_script = format!(
+            "#!/bin/sh\n\
+             out_dir=\"\"\n\
+             while [ \"$#\" -gt 0 ]; do\n\
+               if [ \"$1\" = \"--out-dir\" ]; then shift; out_dir=\"$1\"; fi\n\
+               shift\n\
+             done\n\
+             mkdir -p \"$out_dir\"\n\
+             cat > \"$out_dir/capture.json\" <<'JSON'\n\
+             {{\n\
+               \"schema_version\": 4,\n\
+               \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\n\
+               \"configuration\": {{\n\
+                 \"crate_name\": \"demo\",\n\
+                 \"crate_type\": \"{bad_crate_type}\",\n\
+                 \"panic\": \"{bad_panic}\",\n\
+                 \"target\": \"x86_64-unknown-linux-gnu\",\n\
+                 \"edition\": \"2024\",\n\
+                 \"cfg\": [],\n\
+                 \"env\": {{}}\n\
+               }},\n\
+               \"source_files\": [],\n\
+               \"census\": [],\n\
+               \"selected\": [],\n\
+               \"program\": {{\"scope\": {{\"kind\": \"selected_unit\", \"roots\": [\"f\"]}}, \"bodies\": []}}\n\
+             }}\n\
+             JSON\n\
+             printf '{{\"status\":\"captured\"}}\\n'\n"
+        );
+        fs::write(&fake_capture, mismatch_script).unwrap();
+        fs::set_permissions(&fake_capture, fs::Permissions::from_mode(0o755)).unwrap();
+        let mismatch_out = command(Route::Direct, project.path())
+            .args([
+                "verify",
+                "--capture",
+                fake_capture.to_str().unwrap(),
+                "--sysroot",
+                sysroot.to_str().unwrap(),
+                "--lean",
+                fake_lean.to_str().unwrap(),
+                "rustc",
+                "lib.rs",
+                "--crate-name",
+                "demo",
+                "--crate-type",
+                req_crate_type,
+                "--panic",
+                req_panic,
+                "--select",
+                "f",
+                "--spec-file",
+                "Spec=Spec.lean",
+                "--proof-file",
+                "Proof=Proof.lean",
+            ])
+            .output()
+            .unwrap();
+        assert_result(&mismatch_out, 2, "", "");
+        let mismatch_receipt: serde_json::Value =
+            serde_json::from_slice(&mismatch_out.stdout).unwrap();
+        assert_eq!(mismatch_receipt["status"], "tool_failed", "{mismatch_receipt}");
+        assert_eq!(mismatch_receipt["phase"], "capture", "{mismatch_receipt}");
+        assert!(
+            mismatch_receipt["detail"]
+                .as_str()
+                .unwrap_or("")
+                .contains("capture differs from the requested compilation or scope"),
+            "{mismatch_receipt}"
+        );
+    }
 }

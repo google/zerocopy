@@ -305,6 +305,7 @@ fn terminator_at(term: &Terminator, indent: usize) -> String {
         }
         Terminator::Ret => "Trusted.MirAst.TerminatorKind.return_".into(),
         Terminator::Unreachable => "Trusted.MirAst.TerminatorKind.unreachable".into(),
+        Terminator::Unsupported => "Trusted.MirAst.TerminatorKind.unsupported".into(),
     }
 }
 
@@ -798,6 +799,21 @@ mod tests {
         assert!(!rendered.contains("secret_fn"));
         assert!(!rendered.contains("helper_fn"));
         assert!(rendered.lines().all(|line| !line.ends_with(' ') && !line.ends_with('\t')));
+
+        let div_body = Body::try_new(
+            0,
+            false,
+            vec![Ty::Never],
+            vec![Block { statements: vec![], terminator: Terminator::Unsupported }],
+            "rust-path-v1::div_call".into(),
+        )
+        .unwrap();
+        let div_prog = Program::try_new(Scope::Crate, vec![div_body]).unwrap();
+        let div_rendered = render(&div_prog);
+        assert!(
+            div_rendered.contains("terminator := Trusted.MirAst.TerminatorKind.unsupported,"),
+            "{div_rendered}"
+        );
     }
 
     #[test]

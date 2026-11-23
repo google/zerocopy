@@ -21,6 +21,7 @@ extern crate rustc_interface;
 extern crate rustc_middle;
 extern crate rustc_session;
 extern crate rustc_span;
+extern crate rustc_target;
 
 mod capture;
 mod driver;
@@ -36,8 +37,38 @@ use std::ffi::OsString;
 use std::path::PathBuf;
 use std::process::ExitCode;
 
-use clap::{ArgGroup, Parser};
+use clap::{ArgGroup, Parser, ValueEnum};
 use serde::Serialize;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, ValueEnum)]
+pub enum CliCrateType {
+    Lib,
+    Bin,
+}
+
+impl From<CliCrateType> for ir::CrateType {
+    fn from(value: CliCrateType) -> Self {
+        match value {
+            CliCrateType::Lib => Self::Lib,
+            CliCrateType::Bin => Self::Bin,
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, ValueEnum)]
+pub enum CliPanicStrategy {
+    Unwind,
+    Abort,
+}
+
+impl From<CliPanicStrategy> for ir::PanicStrategy {
+    fn from(value: CliPanicStrategy) -> Self {
+        match value {
+            CliPanicStrategy::Unwind => Self::Unwind,
+            CliPanicStrategy::Abort => Self::Abort,
+        }
+    }
+}
 
 #[derive(Debug, Parser)]
 #[command(
@@ -51,6 +82,10 @@ pub struct Args {
     crate_root: PathBuf,
     #[arg(long)]
     crate_name: String,
+    #[arg(long, value_enum, default_value_t = CliCrateType::Lib)]
+    crate_type: CliCrateType,
+    #[arg(long, value_enum, default_value_t = CliPanicStrategy::Unwind)]
+    panic: CliPanicStrategy,
     #[arg(long, default_value = "2024", value_parser = ["2015", "2018", "2021", "2024"])]
     edition: String,
     #[arg(long)]

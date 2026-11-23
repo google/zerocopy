@@ -104,18 +104,55 @@ fn taint_reason_strings(taints: &BTreeSet<VerificationTaint>) -> Vec<&'static st
 }
 
 /// Arguments of the build-neutral verification command.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize, clap::ValueEnum)]
+#[serde(rename_all = "snake_case")]
+enum CrateType {
+    #[default]
+    Lib,
+    Bin,
+}
+
+impl CrateType {
+    const fn as_str(self) -> &'static str {
+        match self {
+            Self::Lib => "lib",
+            Self::Bin => "bin",
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize, clap::ValueEnum)]
+#[serde(rename_all = "snake_case")]
+enum PanicStrategy {
+    #[default]
+    Unwind,
+    Abort,
+}
+
+impl PanicStrategy {
+    const fn as_str(self) -> &'static str {
+        match self {
+            Self::Unwind => "unwind",
+            Self::Abort => "abort",
+        }
+    }
+}
+
 #[derive(Args)]
 #[command(subcommand_negates_reqs = true)]
 pub struct VerifyArgs {
     /// JSON compilation/proof request, with paths relative to its directory.
-    #[arg(long, conflicts_with_all = ["manifest_path", "proof_dir", "select"])]
+    #[arg(long, conflicts_with_all = ["manifest_path", "proof_dir", "panic", "select"])]
     request: Option<PathBuf>,
-    /// A feature-free library for the x86_64-unknown-linux-gnu scalar profile.
+    /// A feature-free library or binary crate for the x86_64-unknown-linux-gnu scalar profile.
     #[arg(long, conflicts_with = "request", requires = "proof_dir")]
     manifest_path: Option<PathBuf>,
     /// Directory containing Spec.lean and Proof.lean, for the Cargo shortcut.
     #[arg(long, requires = "manifest_path", conflicts_with = "request")]
     proof_dir: Option<PathBuf>,
+    /// Panic strategy (`unwind` or `abort`) for the Cargo shortcut.
+    #[arg(long, value_enum, requires = "manifest_path", conflicts_with = "request")]
+    panic: Option<PanicStrategy>,
     /// Select a function by its compiler path; omit to require the whole crate.
     #[arg(long, requires = "manifest_path", conflicts_with = "request")]
     select: Vec<String>,
@@ -214,6 +251,12 @@ struct RustcArgs {
     /// Crate name passed to rustc capture.
     #[arg(long)]
     crate_name: String,
+    /// Crate type (`lib` or `bin`) passed to rustc capture.
+    #[arg(long, value_enum, default_value_t = CrateType::Lib)]
+    crate_type: CrateType,
+    /// Panic strategy (`unwind` or `abort`) passed to rustc capture.
+    #[arg(long, value_enum, default_value_t = PanicStrategy::Unwind)]
+    panic: PanicStrategy,
     /// Rust edition (`2015`, `2018`, `2021`, or `2024`).
     #[arg(
         long,
@@ -368,12 +411,13 @@ impl VerifyArgs {
             if self.request.is_some()
                 || self.manifest_path.is_some()
                 || self.proof_dir.is_some()
+                || self.panic.is_some()
                 || !self.select.is_empty()
             {
                 return Err(cmd.error(
                     ErrorKind::ArgumentConflict,
-                    "--request, --manifest-path, --proof-dir, and parent --select \
-                     cannot be used with the `rustc` subcommand",
+                    "--request, --manifest-path, --proof-dir, parent --panic, and parent \
+                     --select cannot be used with the `rustc` subcommand",
                 ));
             }
             if rustc.crate_name.is_empty() {
@@ -480,6 +524,10 @@ struct Compilation {
     source_root: PathBuf,
     crate_root: PathBuf,
     crate_name: String,
+    #[serde(default)]
+    crate_type: CrateType,
+    #[serde(default)]
+    panic: PanicStrategy,
     #[serde(default = "edition")]
     edition: String,
     #[serde(default = "target")]
@@ -882,7 +930,7 @@ fn cargo_request(args: &VerifyArgs, manifest: &Path) -> Result<(Request, PathBuf
         return Err(error(
             "unsupported",
             "cargo",
-            "Cargo shortcut requires a dependency-free library; use an explicit compilation request",
+            "Cargo shortcut requires a dependency-free crate; use an explicit compilation request",
         ));
     }
     let targets = package["targets"]
@@ -899,10 +947,27 @@ fn cargo_request(args: &VerifyArgs, manifest: &Path) -> Result<(Request, PathBuf
             "build scripts and procedural macros need an explicit configured compilation",
         ));
     }
-    let library = targets
-        .iter()
-        .find(|t| t["kind"].as_array().is_some_and(|ks| ks.iter().any(|k| k == "lib")))
-        .ok_or_else(|| error("unsupported", "cargo", "Cargo shortcut requires a library target"))?;
+    let mut primary_targets = targets.iter().filter_map(|t| {
+        let kinds = t["kind"].as_array()?;
+        if kinds.iter().any(|k| k == "bin") {
+            Some((CrateType::Bin, t))
+        } else if kinds.iter().any(|k| k == "lib") {
+            Some((CrateType::Lib, t))
+        } else {
+            None
+        }
+    });
+    let (crate_type, target_meta) = primary_targets.next().ok_or_else(|| {
+        error("unsupported", "cargo", "Cargo shortcut requires a single library or binary target")
+    })?;
+    if primary_targets.next().is_some() {
+        return Err(error(
+            "unsupported",
+            "cargo",
+            "Cargo shortcut requires a single library or binary target; \
+             use an explicit compilation request",
+        ));
+    }
     let workspace_root =
         metadata["workspace_root"].as_str().and_then(|root| fs::canonicalize(root).ok());
     for ancestor in source_root.ancestors() {
@@ -911,9 +976,9 @@ fn cargo_request(args: &VerifyArgs, manifest: &Path) -> Result<(Request, PathBuf
             break;
         }
     }
-    let crate_root = Path::new(library["src_path"].as_str().unwrap_or_default())
+    let crate_root = Path::new(target_meta["src_path"].as_str().unwrap_or_default())
         .strip_prefix(&source_root)
-        .map_err(|_| error("unsupported", "cargo", "library root escapes package"))?
+        .map_err(|_| error("unsupported", "cargo", "target root escapes package"))?
         .to_path_buf();
     // This shortcut declares a namespace of .rs files. Other compiler inputs
     // require an explicit request: importing every package file would also
@@ -969,8 +1034,10 @@ fn cargo_request(args: &VerifyArgs, manifest: &Path) -> Result<(Request, PathBuf
             compilation: Compilation {
                 source_root,
                 crate_root,
-                crate_name: library["name"].as_str().unwrap_or_default().to_owned(),
-                edition: library["edition"].as_str().unwrap_or("2024").to_owned(),
+                crate_name: target_meta["name"].as_str().unwrap_or_default().replace('-', "_"),
+                crate_type,
+                panic: args.panic.unwrap_or_default(),
+                edition: target_meta["edition"].as_str().unwrap_or("2024").to_owned(),
                 target: target(),
                 cfg: BTreeSet::new(),
                 env: BTreeMap::new(),
@@ -1199,6 +1266,8 @@ fn prepare_rustc_request(
             source_root: PathBuf::from("rust"),
             crate_root,
             crate_name: rustc.crate_name.clone(),
+            crate_type: rustc.crate_type,
+            panic: rustc.panic,
             edition: rustc.edition.clone(),
             target: rustc.target.clone(),
             cfg: rustc.cfg.iter().cloned().collect(),
@@ -1439,6 +1508,10 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         .args([
             "--crate-name",
             &request.compilation.crate_name,
+            "--crate-type",
+            request.compilation.crate_type.as_str(),
+            "--panic",
+            request.compilation.panic.as_str(),
             "--edition",
             &request.compilation.edition,
             "--target",
@@ -1520,6 +1593,8 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     // cannot satisfy this request.
     if manifest.program.scope != request.scope
         || manifest.configuration["crate_name"] != request.compilation.crate_name
+        || manifest.configuration["crate_type"] != request.compilation.crate_type.as_str()
+        || manifest.configuration["panic"] != request.compilation.panic.as_str()
         || manifest.configuration["target"] != request.compilation.target
         || manifest.configuration["edition"] != request.compilation.edition
         || manifest.configuration["cfg"] != json!(request.compilation.cfg)
@@ -2766,6 +2841,7 @@ mod tests {
             request: Some(PathBuf::from("request.json")),
             manifest_path: None,
             proof_dir: None,
+            panic: None,
             select: Vec::new(),
             capture: None,
             lean: None,
@@ -2793,6 +2869,7 @@ mod tests {
                         request: base.request.clone(),
                         manifest_path: None,
                         proof_dir: None,
+                        panic: None,
                         select: Vec::new(),
                         capture: None,
                         lean: None,
@@ -3027,6 +3104,8 @@ mod tests {
         let rustc = RustcArgs {
             crate_root: runfiles.join("./lib.rs"),
             crate_name: "sample".to_owned(),
+            crate_type: CrateType::Lib,
+            panic: PanicStrategy::Unwind,
             edition: "2024".to_owned(),
             target: target(),
             cfg: vec!["foo".to_owned()],
@@ -3083,6 +3162,8 @@ mod tests {
             ..RustcArgs {
                 crate_root: runfiles.join("lib.rs"),
                 crate_name: "sample".to_owned(),
+                crate_type: CrateType::Lib,
+                panic: PanicStrategy::Unwind,
                 edition: "2024".to_owned(),
                 target: target(),
                 cfg: Vec::new(),
@@ -3168,6 +3249,7 @@ mod tests {
             request: Some(PathBuf::from("request.json")),
             manifest_path: None,
             proof_dir: None,
+            panic: None,
             select: Vec::new(),
             capture: None,
             lean: None,
@@ -3208,6 +3290,7 @@ mod tests {
                 request: base.request.clone(),
                 manifest_path: None,
                 proof_dir: None,
+                panic: None,
                 select: Vec::new(),
                 artifacts: None,
                 export_lean_lib: false,
@@ -3260,6 +3343,8 @@ mod tests {
         let make_args = |spec_files: Vec<ModuleFileArg>| RustcArgs {
             crate_root: lib.clone(),
             crate_name: "sample".to_owned(),
+            crate_type: CrateType::Lib,
+            panic: PanicStrategy::Unwind,
             edition: "2024".to_owned(),
             target: "x86_64-unknown-linux-gnu".to_owned(),
             cfg: Vec::new(),
@@ -3686,5 +3771,41 @@ mod tests {
         let digest_b = sha256_bytes(&encoded(&req_b).unwrap());
         assert_eq!(digest_a, digest_a_reordered);
         assert_ne!(digest_a, digest_b);
+    }
+
+    #[test]
+    fn compilation_crate_type_and_panic_default_to_lib_unwind_and_accept_bin_abort() {
+        let defaulted: Request = serde_json::from_value(json!({
+            "schema_version": 1,
+            "compilation": {
+                "source_root": ".",
+                "crate_root": "lib.rs",
+                "crate_name": "demo",
+                "source_files": ["lib.rs"]
+            },
+            "scope": { "kind": "crate" },
+            "proof": { "source_root": ".", "sources": [] }
+        }))
+        .unwrap();
+        assert_eq!(defaulted.compilation.crate_type, CrateType::Lib);
+        assert_eq!(defaulted.compilation.panic, PanicStrategy::Unwind);
+
+        let bin_abort: Request = serde_json::from_value(json!({
+            "schema_version": 1,
+            "compilation": {
+                "source_root": ".",
+                "crate_root": "main.rs",
+                "crate_name": "demo_bin",
+                "crate_type": "bin",
+                "panic": "abort",
+                "source_files": ["main.rs"]
+            },
+            "scope": { "kind": "selected_unit", "roots": ["guarded_exit"] },
+            "proof": { "source_root": ".", "sources": [] }
+        }))
+        .unwrap();
+        assert_eq!(bin_abort.compilation.crate_type, CrateType::Bin);
+        assert_eq!(bin_abort.compilation.panic, PanicStrategy::Abort);
+        assert_ne!(encoded(&defaulted).unwrap(), encoded(&bin_abort).unwrap());
     }
 }

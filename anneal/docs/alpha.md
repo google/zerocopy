@@ -19,12 +19,13 @@ those terms. -->
 > -> [Stage 1 (Audited trust boundary and TCB accounting, `#4012`)](https://github.com/google/zerocopy/issues/4012)
 > -> [Stage 2 (Broad systems coverage and TCB reduction, `#4096`)](https://github.com/google/zerocopy/issues/4096).
 
-The developer alpha checks selected Rust functions or scalar library crates on
-x86-64 Linux with glibc, such as Ubuntu 24.04. It compiles a dependency-free
-library with the pinned compiler and checks the authored Lean proof against the
-captured MIR, the stated specification, and Anneal's safety obligations. A
-successful receipt (`"schema_version": 3`) identifies the verified scope,
-compilation configuration, input digests, containment backend, and assumptions.
+The developer alpha checks selected Rust functions or scalar crates on x86-64
+Linux with glibc, such as Ubuntu 24.04. It compiles a dependency-free library
+or single binary target with the pinned compiler and checks the authored Lean
+proof against the captured MIR, the stated specification, and Anneal's safety
+obligations. A successful receipt (`"schema_version": 3`) identifies the
+verified scope, compilation configuration, input digests, containment backend,
+and assumptions.
 
 On Linux, `ExecSeal` isolates target Lean preflight, elaboration, and audit by
 default inside Tier 1 `linux_bwrap` or Tier 2 `linux_landlock_seccomp`
@@ -63,8 +64,9 @@ canonicalized `source_root`. Set `scope` to
 returning `selected_unit_verified`) or `{"kind": "crate"}` (`CrateTheorem`,
 returning `crate_verified`), and list the `specification` and `proof` Lean
 modules under `proof.sources`. For a dependency-free, feature-free Cargo
-library, `--manifest-path <Cargo.toml> --proof-dir <dir>` (with optional
-`--select <path>`) constructs the same request automatically.
+crate with a single library or binary target, `--manifest-path <Cargo.toml>
+--proof-dir <dir>` (with optional `--panic unwind|abort` and `--select <path>`)
+constructs the same request automatically.
 
 ## Stage 0 / MIR Profile v1: supported vs. refused
 
@@ -77,8 +79,8 @@ semantics.
 | :--- | :--- | :--- |
 | **Types** | `bool`, `char`, 8- through 128-bit and pointer-sized integers (`i8`..`i128`, `isize`, `u8`..`u128`, `usize` on 64-bit targets), `()`, `!`, `core::cmp::Ordering`, `(T, bool)` overflowing-arithmetic pairs (via `core::intrinsics::*_with_overflow`), and non-generic inhabited crate-local fieldless enums (without explicit discriminant `AnonConst` items in whole-crate scope). | References and raw pointers (`&T`, `&mut T`, `*const T`, `*mut T`), slices, arrays, structs, unions, enums with payloads, uninhabited zero-variant enums, floats, general tuples, and generic types. |
 | **Statements & rvalues** | `Assign` (`Use` on retag-noop scalar types, unary `Not`/`Neg`, binary bitwise/shift/wrapping-arithmetic/`*WithOverflow`/comparison/`Cmp`/unchecked `Div`/`Rem`, `CastKind::IntToInt`, `Discriminant`), `StorageLive`, `StorageDead`, bare unprojected `PlaceMention`, and `Nop`. | Place projections (fields, indexing, dereferencing, projected `PlaceMention`), `Aggregate` rvalues, `PtrMetadata`, pointer/float/`Transmute` casts, and inline assembly. |
-| **Terminators & operands** | `Goto`, `SwitchInt`, `Return`, `Unreachable`; `Copy`/`Move` on unprojected locals; already-evaluated integer scalar or `ZeroSized` unit/single-variant-enum constants. | `Call` terminators (including `overflowing_*` methods under `-Copt-level=0`, and `CallSource::Use`), runtime `Assert` terminators (including ordinary Rust `/` and `%`), `Drop`, unwind/abort terminators, and unevaluated constants. |
-| **Crate scope & items** | Dependency-free, feature-free library crates (`Scope::Crate` or `Scope::SelectedUnit`); non-generic free and associated functions. | External crate dependencies, Cargo features, generics, closures, `const`/`static`/`trait`/`impl`/`AnonConst` owners in whole-crate scope, global assembly, and proc-macro crates. |
+| **Terminators & operands** | `Goto`, `SwitchInt`, `Return`, `Unreachable`, and diverging calls (`TerminatorKind::Call` with `target: None` and non-`Use` `CallSource`, lowered to fail-closed `unsupported` when reachable); `Copy`/`Move` on unprojected locals; already-evaluated integer scalar, `ZeroSized` unit/single-variant-enum, or read-only provenance-free `.rodata` `GlobalAlloc::Memory` scalar constants. | Returning `Call` terminators (`target: Some(_)`, including `overflowing_*` methods under `-Copt-level=0`) and `CallSource::Use`, runtime `Assert` terminators (including ordinary Rust `/` and `%`), `Drop`, unwind/abort terminators, and unevaluated, static, mutable, or provenance-bearing constants. |
+| **Crate scope & items** | Dependency-free, feature-free single `lib` or `bin` crates (`Scope::Crate` or `Scope::SelectedUnit`, configurable `--panic unwind|abort`, and crate-local `#[panic_handler]` in `bin` selected-unit scope); non-generic free and associated functions. | External crate dependencies, Cargo features, multi-target crates, generics, closures, crate-local `#[panic_handler]` in `lib` or whole-crate scope, `const`/`static`/`trait`/`impl`/`AnonConst` owners in whole-crate scope, global assembly, and proc-macro crates. |
 
 For a realistic scalar example, `ci/verify_starnix_e2e.py` checks Starnix's
 `ebpf_core` endianness conversion using symbolic MIR helpers in `Anneal.MirWp`.

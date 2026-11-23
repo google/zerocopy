@@ -19,6 +19,7 @@ use rustc_abi::Endian;
 use rustc_ast::{Attribute, Crate, MetaItem, MetaItemInner};
 use rustc_data_structures::steal::Steal;
 use rustc_driver::Compilation;
+use rustc_hir::LangItem;
 use rustc_hir::def::DefKind;
 use rustc_interface::interface;
 use rustc_middle::mir;
@@ -29,6 +30,7 @@ use rustc_session::config::{CrateType, Options};
 use rustc_span::def_id::{LOCAL_CRATE, LocalDefId};
 use rustc_span::source_map::{FileLoader, RealFileLoader};
 use rustc_span::{FileName, sym};
+use rustc_target::spec::PanicStrategy as RustcPanicStrategy;
 
 use crate::{Args, Failure, extract, identity, ir};
 
@@ -348,7 +350,11 @@ impl rustc_driver::Callbacks for Callbacks<'_> {
         // never fall back to `AT_FDCWD` `./lib/rustlib`.
         config.opts.sysroot.explicit = Some(self.verified_sysroot.to_path_buf());
         config.opts.sysroot.default = self.verified_sysroot.to_path_buf();
-        if let Err(reason) = validate_compiler_options(&config.opts) {
+        if let Err(reason) = validate_compiler_options(
+            &config.opts,
+            self.args.crate_type.into(),
+            self.args.panic.into(),
+        ) {
             if let Ok(mut reads) = self.reads.lock() {
                 reads.tool_errors.push(reason.clone());
             }
@@ -467,17 +473,40 @@ fn validate_compiler_args(compiler_args: &[String]) -> Result<(), Failure> {
         }
         if arg == "--crate-type"
             || (arg.starts_with("--crate-type=")
-                && !matches!(arg.as_str(), "--crate-type=lib" | "--crate-type=rlib"))
+                && !matches!(
+                    arg.as_str(),
+                    "--crate-type=lib" | "--crate-type=rlib" | "--crate-type=bin"
+                ))
         {
             return Err(Failure::tool(format!(
                 "unsupported crate type during capture: {arg}"
+            )));
+        }
+        if arg == "-C"
+            || arg == "-Cpanic"
+            || (arg.starts_with("-Cpanic=")
+                && !matches!(arg.as_str(), "-Cpanic=unwind" | "-Cpanic=abort"))
+        {
+            return Err(Failure::tool(format!(
+                "unsupported panic or split -C compiler option during capture: {arg}"
             )));
         }
     }
     Ok(())
 }
 
-fn validate_compiler_options(opts: &Options) -> Result<(), String> {
+fn rustc_crate_type(crate_type: ir::CrateType) -> CrateType {
+    match crate_type {
+        ir::CrateType::Lib => CrateType::Rlib,
+        ir::CrateType::Bin => CrateType::Executable,
+    }
+}
+
+fn validate_compiler_options(
+    opts: &Options,
+    expected_crate_type: ir::CrateType,
+    expected_panic: ir::PanicStrategy,
+) -> Result<(), String> {
     if opts.sysroot.explicit.is_none() {
         return Err("explicit --sysroot is required during capture".into());
     }
@@ -487,13 +516,25 @@ fn validate_compiler_options(opts: &Options) -> Result<(), String> {
     if !opts.search_paths.is_empty() {
         return Err("library search path flags (-L) are forbidden during capture".into());
     }
-    if opts.crate_types.is_empty()
-        || !opts
-            .crate_types
-            .iter()
-            .all(|ct| matches!(ct, CrateType::Rlib))
-    {
-        return Err("proc-macro and non-library crate types are unsupported during capture".into());
+    let expected_rustc_ct = rustc_crate_type(expected_crate_type);
+    if opts.crate_types.as_slice() != [expected_rustc_ct] {
+        return Err(format!(
+            "unsupported or mismatched crate types during capture: {:?}",
+            opts.crate_types
+        ));
+    }
+    let panic_ok = match expected_panic {
+        ir::PanicStrategy::Unwind => {
+            matches!(opts.cg.panic, None | Some(RustcPanicStrategy::Unwind))
+        }
+        ir::PanicStrategy::Abort => matches!(opts.cg.panic, Some(RustcPanicStrategy::Abort)),
+    };
+    if !panic_ok {
+        return Err(format!(
+            "panic strategy {:?} disagreed with configured strategy `{}`",
+            opts.cg.panic,
+            expected_panic.as_str()
+        ));
     }
     if !opts.unstable_opts.mir_preserve_ub {
         return Err("-Zmir-preserve-ub must be enabled during capture".into());
@@ -532,48 +573,67 @@ fn collect_sysroot_lib_identities(
     Ok(allowed)
 }
 
-fn admit_external_crate<F>(
-    crate_name: &str,
+struct ExternalCrate<'a> {
+    name: &'a str,
     macros_only: bool,
+    has_rlib: bool,
     has_dylib: bool,
     has_sdylib: bool,
-    paths: &[&Path],
+    paths: &'a [&'a Path],
+}
+
+/// When `allow_dual_rlib_dylib` is true (specifically `CrateType::Bin`, where
+/// `rustc_metadata::locator::Context::needs_crate_flavor` probes all flavors and
+/// sysroot `std` carries both `.rlib` and `.so`), a sysroot crate with both
+/// `rlib` and `dylib` artifacts is admitted provided every resolved artifact
+/// resides inside `allowed_sysroot_ids`. Pure dynamic/proc-macro crates
+/// (`!has_rlib`) and `CrateType::Lib` dylibs remain refused.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_metadata/src/locator.rs#L550-L561
+fn admit_external_crate<F>(
+    krate: &ExternalCrate<'_>,
+    allow_dual_rlib_dylib: bool,
     allowed_sysroot_ids: &BTreeSet<(u64, u64)>,
     stat_dev_ino: F,
 ) -> Result<(), Failure>
 where
     F: Fn(&Path) -> io::Result<(u64, u64)>,
 {
-    if macros_only || crate_name == "proc_macro" {
+    if krate.macros_only || krate.name == "proc_macro" {
         return Err(Failure::unsupported(format!(
-            "proc-macro or macro-only crate is unsupported: {crate_name}"
+            "proc-macro or macro-only crate is unsupported: {}",
+            krate.name
         )));
     }
-    if has_dylib {
+    if krate.has_dylib && !(allow_dual_rlib_dylib && krate.has_rlib) {
         return Err(Failure::unsupported(format!(
-            "dynamic library or proc-macro crate is unsupported: {crate_name}"
+            "dynamic library or proc-macro crate is unsupported: {}",
+            krate.name
         )));
     }
-    if has_sdylib {
+    if krate.has_sdylib {
         return Err(Failure::unsupported(format!(
-            "sdylib interface crate is unsupported: {crate_name}"
+            "sdylib interface crate is unsupported: {}",
+            krate.name
         )));
     }
-    if paths.is_empty() {
+    if krate.paths.is_empty() {
         return Err(Failure::unsupported(format!(
-            "external crate lacks a resolved artifact path: {crate_name}"
+            "external crate lacks a resolved artifact path: {}",
+            krate.name
         )));
     }
-    for path in paths {
+    for path in krate.paths {
         let dev_ino = stat_dev_ino(path).map_err(|error| {
             Failure::tool(format!(
-                "cannot stat artifact for crate {crate_name} at {}: {error}",
+                "cannot stat artifact for crate {} at {}: {error}",
+                krate.name,
                 path.display()
             ))
         })?;
         if !allowed_sysroot_ids.contains(&dev_ino) {
             return Err(Failure::unsupported(format!(
-                "external crate {crate_name} resolved outside target sysroot: {}",
+                "external crate {} resolved outside target sysroot: {}",
+                krate.name,
                 path.display()
             )));
         }
@@ -587,12 +647,14 @@ fn verify_sysroot_only_crates(
     tcx: TyCtxt<'_>,
     sysroot: &Path,
     target: &str,
+    expected_crate_type: ir::CrateType,
 ) -> Result<(), Failure> {
     let crate_types = tcx.crate_types();
-    if crate_types.is_empty() || !crate_types.iter().all(|ct| matches!(ct, CrateType::Rlib)) {
-        return Err(Failure::unsupported(
-            "proc-macro and non-library crates are unsupported during capture",
-        ));
+    let expected_rustc_ct = rustc_crate_type(expected_crate_type);
+    if crate_types != [expected_rustc_ct] {
+        return Err(Failure::unsupported(format!(
+            "unsupported or mismatched crate types during capture: {crate_types:?}"
+        )));
     }
     if tcx.hir_krate_attrs().iter().any(|attr| {
         matches!(
@@ -627,11 +689,15 @@ fn verify_sysroot_only_crates(
             }
         }
         admit_external_crate(
-            crate_name.as_str(),
-            dep_kind.macros_only(),
-            source.dylib.is_some(),
-            source.sdylib_interface.is_some(),
-            &paths,
+            &ExternalCrate {
+                name: crate_name.as_str(),
+                macros_only: dep_kind.macros_only(),
+                has_rlib: source.rlib.is_some(),
+                has_dylib: source.dylib.is_some(),
+                has_sdylib: source.sdylib_interface.is_some(),
+                paths: &paths,
+            },
+            expected_crate_type == ir::CrateType::Bin,
             &allowed_ids,
             identity::regular_file_dev_ino,
         )?;
@@ -752,14 +818,34 @@ fn collect(
         verified_sysroot,
         verified_compiler.sysroot_id,
     )?;
-    verify_sysroot_only_crates(tcx, verified_sysroot, &args.target)?;
+    let requested_crate_type: ir::CrateType = args.crate_type.into();
+    let requested_panic: ir::PanicStrategy = args.panic.into();
+    if (requested_panic == ir::PanicStrategy::Abort)
+        != (tcx.sess.panic_strategy() == RustcPanicStrategy::Abort)
+    {
+        return Err(Failure::unsupported(format!(
+            "session panic strategy {:?} disagreed with configured strategy `{}`",
+            tcx.sess.panic_strategy(),
+            requested_panic.as_str()
+        )));
+    }
+    verify_sysroot_only_crates(tcx, verified_sysroot, &args.target, requested_crate_type)?;
     // "Defined lang items can come from the current crate or its dependencies."
-    // Only the pinned sysroot may supply them for the scalar profile.
+    // Admit crate-local `#[panic_handler]` (`LangItem::PanicImpl`) only in
+    // `SelectedUnit` scope on binary crates (`CrateType::Executable`); every
+    // other crate-local lang item (and any `PanicImpl` in `Scope::Crate` or
+    // `CrateType::Lib`) stays refused.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir/src/lang_items.rs#L24-L67
-    if tcx.lang_items().iter().any(|(_, def)| def.is_local()) {
-        return Err(Failure::unsupported(
-            "crate-local language items are unsupported",
-        ));
+    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir/src/lang_items.rs#L289
+    if let Some((lang_item, _)) = tcx.lang_items().iter().find(|(lang_item, def)| {
+        def.is_local()
+            && !(requested_crate_type == ir::CrateType::Bin
+                && matches!(scope, ir::Scope::SelectedUnit { .. })
+                && matches!(lang_item, LangItem::PanicImpl))
+    }) {
+        return Err(Failure::unsupported(format!(
+            "crate-local language item {lang_item:?} is unsupported"
+        )));
     }
     // During codegen after `Runtime(PostCleanup)`, `rustc_codegen_ssa` runs
     // `optimize_use_clone` ("Replace `clone` calls that come from `use`
@@ -1020,6 +1106,8 @@ fn collect(
         configuration: ir::Configuration {
             crate_root: args.crate_root.clone(),
             crate_name: args.crate_name.clone(),
+            crate_type: requested_crate_type,
+            panic: requested_panic,
             edition: args.edition.clone(),
             target: args.target.clone(),
             cfg: args.cfg.clone(),
@@ -1065,13 +1153,16 @@ pub(crate) fn run(
     SELECTION
         .set(scope.clone())
         .map_err(|_| Failure::tool("one capture invocation per process is required"))?;
+    let requested_crate_type: ir::CrateType = args.crate_type.into();
+    let requested_panic: ir::PanicStrategy = args.panic.into();
     let mut compiler_args = vec![
         "anneal-rustc-capture".into(),
         compiler_path(&args.crate_root)?.to_string(),
-        "--crate-type=lib".into(),
+        format!("--crate-type={}", requested_crate_type.as_str()),
         format!("--crate-name={}", args.crate_name),
         format!("--edition={}", args.edition),
         format!("--target={}", args.target),
+        format!("-Cpanic={}", requested_panic.as_str()),
         // Metadata alone skips monomorphization and can miss a failing generic
         // inline constant. rustc skips crate items when `should_codegen` is
         // false: "Skip crate items and just output metadata in -Z no-codegen
@@ -1197,6 +1288,9 @@ mod tests {
             "anneal-rustc-capture".to_owned(),
             "lib.rs".to_owned(),
             "--crate-type=lib".to_owned(),
+            "--crate-type=bin".to_owned(),
+            "-Cpanic=unwind".to_owned(),
+            "-Cpanic=abort".to_owned(),
             "--crate-name=demo".to_owned(),
         ];
         assert!(validate_compiler_args(&valid).is_ok());
@@ -1212,6 +1306,9 @@ mod tests {
             vec!["--crate-type=proc-macro".to_owned()],
             vec!["--crate-type=dylib".to_owned()],
             vec!["--crate-type".to_owned(), "proc-macro".to_owned()],
+            vec!["-Cpanic=immediate-abort".to_owned()],
+            vec!["-Cpanic".to_owned(), "abort".to_owned()],
+            vec!["-C".to_owned(), "panic=abort".to_owned()],
         ] {
             assert!(
                 validate_compiler_args(&bad).is_err(),
@@ -1221,21 +1318,54 @@ mod tests {
     }
 
     #[test]
-    fn compiler_options_gate_requires_mir_preserve_ub() {
+    fn compiler_options_gate_requires_mir_preserve_ub_and_matching_crate_type_and_panic() {
         let mut opts = Options {
             crate_types: vec![CrateType::Rlib],
             ..Options::default()
         };
         opts.sysroot.explicit = Some(PathBuf::from("/sysroot"));
         opts.unstable_opts.mir_preserve_ub = false;
-        let err = validate_compiler_options(&opts).unwrap_err();
+        let err = validate_compiler_options(
+            &opts,
+            ir::CrateType::Lib,
+            ir::PanicStrategy::Unwind,
+        )
+        .unwrap_err();
         assert!(err.contains("-Zmir-preserve-ub"), "{err}");
 
         opts.unstable_opts.mir_preserve_ub = true;
-        assert!(validate_compiler_options(&opts).is_ok());
+        assert!(
+            validate_compiler_options(&opts, ir::CrateType::Lib, ir::PanicStrategy::Unwind)
+                .is_ok()
+        );
+        assert!(
+            validate_compiler_options(&opts, ir::CrateType::Bin, ir::PanicStrategy::Unwind)
+                .is_err()
+        );
+
+        let mut bin_opts = Options {
+            crate_types: vec![CrateType::Executable],
+            ..Options::default()
+        };
+        bin_opts.sysroot.explicit = Some(PathBuf::from("/sysroot"));
+        bin_opts.unstable_opts.mir_preserve_ub = true;
+        bin_opts.cg.panic = Some(RustcPanicStrategy::Abort);
+        assert!(
+            validate_compiler_options(&bin_opts, ir::CrateType::Bin, ir::PanicStrategy::Abort)
+                .is_ok()
+        );
+        assert!(
+            validate_compiler_options(&bin_opts, ir::CrateType::Bin, ir::PanicStrategy::Unwind)
+                .is_err()
+        );
 
         opts.logical_env.insert("FOO".to_owned(), "bar".to_owned());
-        let err = validate_compiler_options(&opts).unwrap_err();
+        let err = validate_compiler_options(
+            &opts,
+            ir::CrateType::Lib,
+            ir::PanicStrategy::Unwind,
+        )
+        .unwrap_err();
         assert!(err.contains("--env-set"), "{err}");
     }
 
@@ -1317,11 +1447,15 @@ mod tests {
         let allowed = collect_sysroot_lib_identities(&sysroot, "x86_64-unknown-linux-gnu").unwrap();
         assert!(
             admit_external_crate(
-                "core",
+                &ExternalCrate {
+                    name: "core",
+                    macros_only: false,
+                    has_rlib: true,
+                    has_dylib: false,
+                    has_sdylib: false,
+                    paths: &[core_link.as_path()],
+                },
                 false,
-                false,
-                false,
-                &[core_link.as_path()],
                 &allowed,
                 identity::regular_file_dev_ino,
             )
@@ -1329,11 +1463,15 @@ mod tests {
         );
         assert!(
             admit_external_crate(
-                "host_only",
+                &ExternalCrate {
+                    name: "host_only",
+                    macros_only: false,
+                    has_rlib: true,
+                    has_dylib: false,
+                    has_sdylib: false,
+                    paths: &[host_only.as_path()],
+                },
                 false,
-                false,
-                false,
-                &[host_only.as_path()],
                 &allowed,
                 identity::regular_file_dev_ino,
             )
@@ -1341,11 +1479,15 @@ mod tests {
         );
         assert!(
             admit_external_crate(
-                "evil",
+                &ExternalCrate {
+                    name: "evil",
+                    macros_only: false,
+                    has_rlib: true,
+                    has_dylib: false,
+                    has_sdylib: false,
+                    paths: &[outside_rlib.as_path()],
+                },
                 false,
-                false,
-                false,
-                &[outside_rlib.as_path()],
                 &allowed,
                 identity::regular_file_dev_ino,
             )
@@ -1353,11 +1495,31 @@ mod tests {
         );
         assert!(
             admit_external_crate(
-                "my_macro",
+                &ExternalCrate {
+                    name: "my_macro",
+                    macros_only: true,
+                    has_rlib: false,
+                    has_dylib: false,
+                    has_sdylib: false,
+                    paths: &[core_link.as_path()],
+                },
+                false,
+                &allowed,
+                identity::regular_file_dev_ino,
+            )
+            .is_err()
+        );
+        assert!(
+            admit_external_crate(
+                &ExternalCrate {
+                    name: "my_macro",
+                    macros_only: false,
+                    has_rlib: false,
+                    has_dylib: true,
+                    has_sdylib: false,
+                    paths: &[core_link.as_path()],
+                },
                 true,
-                false,
-                false,
-                &[core_link.as_path()],
                 &allowed,
                 identity::regular_file_dev_ino,
             )
@@ -1365,11 +1527,47 @@ mod tests {
         );
         assert!(
             admit_external_crate(
-                "my_macro",
+                &ExternalCrate {
+                    name: "std",
+                    macros_only: false,
+                    has_rlib: true,
+                    has_dylib: true,
+                    has_sdylib: false,
+                    paths: &[core_link.as_path()],
+                },
                 false,
+                &allowed,
+                identity::regular_file_dev_ino,
+            )
+            .is_err()
+        );
+        assert!(
+            admit_external_crate(
+                &ExternalCrate {
+                    name: "std",
+                    macros_only: false,
+                    has_rlib: true,
+                    has_dylib: true,
+                    has_sdylib: false,
+                    paths: &[core_link.as_path()],
+                },
                 true,
-                false,
-                &[core_link.as_path()],
+                &allowed,
+                identity::regular_file_dev_ino,
+            )
+            .is_ok()
+        );
+        assert!(
+            admit_external_crate(
+                &ExternalCrate {
+                    name: "proc_macro",
+                    macros_only: false,
+                    has_rlib: true,
+                    has_dylib: false,
+                    has_sdylib: false,
+                    paths: &[core_link.as_path()],
+                },
+                true,
                 &allowed,
                 identity::regular_file_dev_ino,
             )
@@ -1377,23 +1575,15 @@ mod tests {
         );
         assert!(
             admit_external_crate(
-                "proc_macro",
+                &ExternalCrate {
+                    name: "core",
+                    macros_only: false,
+                    has_rlib: true,
+                    has_dylib: false,
+                    has_sdylib: false,
+                    paths: &[],
+                },
                 false,
-                false,
-                false,
-                &[core_link.as_path()],
-                &allowed,
-                identity::regular_file_dev_ino,
-            )
-            .is_err()
-        );
-        assert!(
-            admit_external_crate(
-                "core",
-                false,
-                false,
-                false,
-                &[],
                 &allowed,
                 identity::regular_file_dev_ino,
             )
