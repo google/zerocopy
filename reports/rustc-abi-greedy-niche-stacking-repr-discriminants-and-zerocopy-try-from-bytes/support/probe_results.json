@@ -1,0 +1,184 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "a_type_sizes_and_niche_bit_patterns": {
+    "print_type_sizes": {
+      "command": "rustc --edition=2024 -Zprint-type-sizes <tmp>/probe.rs -o <tmp>/probe_bin",
+      "returncode": 0,
+      "stdout": "print-type-size type: `std::fmt::Formatter<'_>`: 24 bytes, alignment: 8 bytes\nprint-type-size     field `.buf`: 16 bytes\nprint-type-size     field `.options`: 8 bytes\nprint-type-size type: `std::panic::Location<'_>`: 24 bytes, alignment: 8 bytes\nprint-type-size     field `.filename`: 16 bytes\nprint-type-size     field `.line`: 4 bytes\nprint-type-size     field `.col`: 4 bytes\nprint-type-size     field `._filename`: 0 bytes\nprint-type-size type: `std::result::Result<alloc::raw_vec::RawVecInner, std::collections::TryReserveError>`: 24 bytes, alignment: 8 bytes\nprint-type-size     discriminant: 8 bytes\nprint-type-size     variant `Ok`: 16 bytes\nprint-type-size         field `.0`: 16 bytes\nprint-type-size     variant `Err`: 16 bytes\nprint-type-size         field `.0`: 16 bytes\nprint-type-size type: `std::string::String`: 24 bytes, alignment: 8 bytes\nprint-type-size     field `.vec`: 24 bytes\nprint-type-size type: `std::vec::Vec<u8>`: 24 bytes, alignment: 8 bytes\nprint-type-size     field `.buf`: 16 bytes\nprint-type-size     field `.len`: 8 bytes\nprint-type-size type: `alloc::raw_vec::RawVec<u8>`: 16 bytes, alignment: 8 bytes\nprint-type-size     field `.inner`: 16 bytes\nprint-type-size     field `._marker`: 0 bytes\nprint-type-size type: `alloc::raw_vec::RawVecInner`: 16 bytes, alignment: 8 bytes\nprint-type-size     field `.cap`: 8 bytes\nprint-type-size     field `.ptr`: 8 bytes\nprint-type-size     field `.alloc`: 0 bytes\nprint-type-size type: `core::fmt::rt::Argument<'_>`: 16 bytes, alignment: 8 bytes\nprint-type-size     field `.ty`: 16 bytes\nprint-type-size type: `core::fmt::rt::ArgumentType<'_>`: 16 bytes, alignment: 8 bytes\nprint-type-size     variant `Placeholder`: 16 bytes\nprint-type-size         field `.value`: 8 bytes\nprint-type-size         field `.formatter`: 8 bytes\nprint-type-size         field `._lifetime`: 0 bytes\nprint-type-size     variant `Count`: 10 bytes\nprint-type-size         padding: 8 bytes\nprint-type-size         field `.0`: 2 bytes, alignment: 2 bytes\nprint-type-size type: `std::alloc::Layout`: 16 bytes, alignment: 8 bytes\nprint-type-size     field `.align`: 8 bytes\nprint-type-size     field `.size`: 8 bytes\nprint-type-size type: `std::collections::TryReserveError`: 16 bytes, alignment: 8 bytes\nprint-type-size     field `.kind`: 16 bytes\nprint-type-size type: `std::collections::TryReserveErrorKind`: 16 bytes, alignment: 8 bytes\nprint-type-size     variant `AllocError`: 16 bytes\nprint-type-size         field `.layout`: 16 bytes\nprint-type-size         field `.non_exhaustive`: 0 bytes\nprint-type-size     variant `CapacityOverflow`: 0 bytes\nprint-type-size type: `std::fmt::Arguments<'_>`: 16 bytes, alignment: 8 bytes\nprint-type-size     field `.template`: 8 bytes\nprint-type-size     field `.args`: 8 bytes\nprint-type-size type: `std::option::Option<&str>`: 16 bytes, alignment: 8 bytes\nprint-type-size     variant `Some`: 16 bytes\nprint-type-size         field `.0`: 16 bytes\nprint-type-size     variant `None`: 0 bytes\nprint-type-size type: `std::option::Option<std::option::Option<std::ptr::NonNull<u8>>>`: 16 bytes, alignment: 8 bytes\nprint-type-size     discriminant: 8 bytes\nprint-type-size     variant `Some`: 8 bytes\nprint-type-size         field `.0`: 8 bytes\nprint-type-size     variant `None`: 0 bytes\nprint-type-size type: `std::option::Option<usize>`: 16 bytes, alignment: 8 bytes\nprint-type-size     discriminant: 8 bytes\nprint-type-size     variant `Some`: 8 bytes\nprint-type-size         field `.0`: 8 bytes\nprint-type-size     variant `None`: 0 bytes\nprint-type-size type: `std::ptr::NonNull<str>`: 16 bytes, alignment: 8 bytes\nprint-type-size     field `.pointer`: 16 bytes\nprint-type-size type: `ReprCData`: 8 bytes, alignment: 4 bytes\nprint-type-size     discriminant: 4 bytes\nprint-type-size     variant `A`: 2 bytes\nprint-type-size         field `.0`: 2 bytes\nprint-type-size     variant `B`: 1 bytes\nprint-type-size         field `.0`: 1 bytes\nprint-type-size     end padding: 2 bytes\nprint-type-size type: `core::num::niche_types::NonZeroUsizeInner`: 8 bytes, alignment: 8 bytes\nprint-type-size     field `.0`: 8 bytes\nprint-type-size type: `core::num::niche_types::UsizeNoHighBit`: 8 bytes, alignment: 8 bytes\nprint-type-size     field `.0`: 8 bytes\nprint-type-size type: `std::fmt::FormattingOptions`: 8 bytes, alignment: 4 bytes\nprint-type-size     field `.flags`: 4 bytes\nprint-type-size     field `.width`: 2 bytes\nprint-type-size     field `.precision`: 2 bytes\nprint-type-size type: `std::mem::Alignment`: 8 bytes, alignment: 8 bytes\nprint-type-size     field `._inner_repr_trick`: 8 bytes\nprint-type-size type: `std::mem::alignment::AlignmentEnum`: 8 bytes, alignment: 8 bytes\nprint-type-size     discriminant: 8 bytes\nprint-type-size     variant `_Align1Shl0`: 0 bytes\nprint-type-size     variant `_Align1Shl1`: 0 bytes\nprint-type-size     variant `_Align1Shl2`: 0 bytes\nprint-type-size     variant `_Align1Shl3`: 0 bytes\nprint-type-size     variant `_Align1Shl4`: 0 bytes\nprint-type-size     variant `_Align1Shl5`: 0 bytes\nprint-type-size     variant `_Align1Shl6`: 0 bytes\nprint-type-size     variant `_Align1Shl7`: 0 bytes\nprint-type-size     variant `_Align1Shl8`: 0 bytes\nprint-type-size     variant `_Align1Shl9`: 0 bytes\nprint-type-size     variant `_Align1Shl10`: 0 bytes\nprint-type-size     variant `_Align1Shl11`: 0 bytes\nprint-type-size     variant `_Align1Shl12`: 0 bytes\nprint-type-size     variant `_Align1Shl13`: 0 bytes\nprint-type-size     variant `_Align1Shl14`: 0 bytes\nprint-type-size     variant `_Align1Shl15`: 0 bytes\nprint-type-size     variant `_Align1Shl16`: 0 bytes\nprint-type-size     variant `_Align1Shl17`: 0 bytes\nprint-type-size     variant `_Align1Shl18`: 0 bytes\nprint-type-size     variant `_Align1Shl19`: 0 bytes\nprint-type-size     variant `_Align1Shl20`: 0 bytes\nprint-type-size     variant `_Align1Shl21`: 0 bytes\nprint-type-size     variant `_Align1Shl22`: 0 bytes\nprint-type-size     variant `_Align1Shl23`: 0 bytes\nprint-type-size     variant `_Align1Shl24`: 0 bytes\nprint-type-size     variant `_Align1Shl25`: 0 bytes\nprint-type-size     variant `_Align1Shl26`: 0 bytes\nprint-type-size     variant `_Align1Shl27`: 0 bytes\nprint-type-size     variant `_Align1Shl28`: 0 bytes\nprint-type-size     variant `_Align1Shl29`: 0 bytes\nprint-type-size     variant `_Align1Shl30`: 0 bytes\nprint-type-size     variant `_Align1Shl31`: 0 bytes\nprint-type-size     variant `_Align1Shl32`: 0 bytes\nprint-type-size     variant `_Align1Shl33`: 0 bytes\nprint-type-size     variant `_Align1Shl34`: 0 bytes\nprint-type-size     variant `_Align1Shl35`: 0 bytes\nprint-type-size     variant `_Align1Shl36`: 0 bytes\nprint-type-size     variant `_Align1Shl37`: 0 bytes\nprint-type-size     variant `_Align1Shl38`: 0 bytes\nprint-type-size     variant `_Align1Shl39`: 0 bytes\nprint-type-size     variant `_Align1Shl40`: 0 bytes\nprint-type-size     variant `_Align1Shl41`: 0 bytes\nprint-type-size     variant `_Align1Shl42`: 0 bytes\nprint-type-size     variant `_Align1Shl43`: 0 bytes\nprint-type-size     variant `_Align1Shl44`: 0 bytes\nprint-type-size     variant `_Align1Shl45`: 0 bytes\nprint-type-size     variant `_Align1Shl46`: 0 bytes\nprint-type-size     variant `_Align1Shl47`: 0 bytes\nprint-type-size     variant `_Align1Shl48`: 0 bytes\nprint-type-size     variant `_Align1Shl49`: 0 bytes\nprint-type-size     variant `_Align1Shl50`: 0 bytes\nprint-type-size     variant `_Align1Shl51`: 0 bytes\nprint-type-size     variant `_Align1Shl52`: 0 bytes\nprint-type-size     variant `_Align1Shl53`: 0 bytes\nprint-type-size     variant `_Align1Shl54`: 0 bytes\nprint-type-size     variant `_Align1Shl55`: 0 bytes\nprint-type-size     variant `_Align1Shl56`: 0 bytes\nprint-type-size     variant `_Align1Shl57`: 0 bytes\nprint-type-size     variant `_Align1Shl58`: 0 bytes\nprint-type-size     variant `_Align1Shl59`: 0 bytes\nprint-type-size     variant `_Align1Shl60`: 0 bytes\nprint-type-size     variant `_Align1Shl61`: 0 bytes\nprint-type-size     variant `_Align1Shl62`: 0 bytes\nprint-type-size     variant `_Align1Shl63`: 0 bytes\nprint-type-size type: `std::num::NonZero<usize>`: 8 bytes, alignment: 8 bytes\nprint-type-size     field `.0`: 8 bytes\nprint-type-size type: `std::option::Option<std::mem::Alignment>`: 8 bytes, alignment: 8 bytes\nprint-type-size     variant `Some`: 8 bytes\nprint-type-size         field `.0`: 8 bytes\nprint-type-size     variant `None`: 0 bytes\nprint-type-size type: `std::option::Option<std::ptr::NonNull<u8>>`: 8 bytes, alignment: 8 bytes\nprint-type-size     variant `Some`: 8 bytes\nprint-type-size         field `.0`: 8 bytes\nprint-type-size     variant `None`: 0 bytes\nprint-type-size type: `std::ptr::DynMetadata<dyn std::fmt::Write>`: 8 bytes, alignment: 8 bytes\nprint-type-size     field `._vtable_ptr`: 8 bytes\nprint-type-size     field `._phantom`: 0 bytes\nprint-type-size type: `std::ptr::DynMetadata<dyn std::ops::Fn() -> i32 + std::marker::Sync + std::panic::RefUnwindSafe>`: 8 bytes, alignment: 8 bytes\nprint-type-size     field `._vtable_ptr`: 8 bytes\nprint-type-size     field `._phantom`: 0 bytes\nprint-type-size type: `std::ptr::NonNull<()>`: 8 bytes, alignment: 8 bytes\nprint-type-size     field `.pointer`: 8 bytes\nprint-type-size type: `std::ptr::NonNull<core::fmt::rt::Argument<'_>>`: 8 bytes, alignment: 8 bytes\nprint-type-size     field `.pointer`: 8 bytes\nprint-type-size type: `std::ptr::NonNull<std::ptr::metadata::VTable>`: 8 bytes, alignment: 8 bytes\nprint-type-size     field `.pointer`: 8 bytes\nprint-type-size type: `std::ptr::NonNull<u8>`: 8 bytes, alignment: 8 bytes\nprint-type-size     field `.pointer`: 8 bytes\nprint-type-size type: `std::ptr::Unique<u8>`: 8 bytes, alignment: 8 bytes\nprint-type-size     field `.pointer`: 8 bytes\nprint-type-size     field `._marker`: 0 bytes\nprint-type-size type: `{closure@std::fmt::format::{closure#0}}`: 8 bytes, alignment: 8 bytes\nprint-type-size     end padding: 8 bytes\nprint-type-size type: `{closure@std::rt::lang_start<()>::{closure#0}}`: 8 bytes, alignment: 8 bytes\nprint-type-size     end padding: 8 bytes\nprint-type-size type: `CLikeC`: 4 bytes, alignment: 4 bytes\nprint-type-size     discriminant: 4 bytes\nprint-type-size     variant `X`: 0 bytes\nprint-type-size     variant `Y`: 0 bytes\nprint-type-size type: `ReprCU8Data`: 4 bytes, alignment: 2 bytes\nprint-type-size     discriminant: 1 bytes\nprint-type-size     variant `A`: 3 bytes\nprint-type-size         padding: 1 bytes\nprint-type-size         field `.0`: 2 bytes, alignment: 2 bytes\nprint-type-size     variant `B`: 2 bytes\nprint-type-size         padding: 1 bytes\nprint-type-size         field `.0`: 1 bytes, alignment: 1 bytes\nprint-type-size type: `ReprU8Data`: 4 bytes, alignment: 2 bytes\nprint-type-size     discriminant: 1 bytes\nprint-type-size     variant `A`: 3 bytes\nprint-type-size         padding: 1 bytes\nprint-type-size         field `.0`: 2 bytes, alignment: 2 bytes\nprint-type-size     variant `B`: 1 bytes\nprint-type-size         field `.0`: 1 bytes\nprint-type-size type: `std::option::Option<char>`: 4 bytes, alignment: 4 bytes\nprint-type-size     variant `Some`: 4 bytes\nprint-type-size         field `.0`: 4 bytes\nprint-type-size     variant `None`: 0 bytes\nprint-type-size type: `std::option::Option<std::option::Option<char>>`: 4 bytes, alignment: 4 bytes\nprint-type-size     variant `Some`: 4 bytes\nprint-type-size         field `.0`: 4 bytes\nprint-type-size     variant `None`: 0 bytes\nprint-type-size type: `std::option::Option<std::option::Option<std::option::Option<char>>>`: 4 bytes, alignment: 4 bytes\nprint-type-size     variant `Some`: 4 bytes\nprint-type-size         field `.0`: 4 bytes\nprint-type-size     variant `None`: 0 bytes\nprint-type-size type: `unwind::libunwind::_Unwind_Reason_Code`: 4 bytes, alignment: 4 bytes\nprint-type-size     discriminant: 4 bytes\nprint-type-size     variant `_URC_NO_REASON`: 0 bytes\nprint-type-size     variant `_URC_FOREIGN_EXCEPTION_CAUGHT`: 0 bytes\nprint-type-size     variant `_URC_FATAL_PHASE2_ERROR`: 0 bytes\nprint-type-size     variant `_URC_FATAL_PHASE1_ERROR`: 0 bytes\nprint-type-size     variant `_URC_NORMAL_STOP`: 0 bytes\nprint-type-size     variant `_URC_END_OF_STACK`: 0 bytes\nprint-type-size     variant `_URC_HANDLER_FOUND`: 0 bytes\nprint-type-size     variant `_URC_INSTALL_CONTEXT`: 0 bytes\nprint-type-size     variant `_URC_CONTINUE_UNWIND`: 0 bytes\nprint-type-size     variant `_URC_FAILURE`: 0 bytes\nprint-type-size type: `std::option::Option<std::option::Option<std::num::NonZero<u8>>>`: 2 bytes, alignment: 1 bytes\nprint-type-size     discriminant: 1 bytes\nprint-type-size     variant `Some`: 1 bytes\nprint-type-size         field `.0`: 1 bytes\nprint-type-size     variant `None`: 0 bytes\nprint-type-size type: `BoolPlusTwo`: 1 bytes, alignment: 1 bytes\nprint-type-size     variant `Payload`: 1 bytes\nprint-type-size         field `.0`: 1 bytes\nprint-type-size     variant `X`: 0 bytes\nprint-type-size     variant `Y`: 0 bytes\nprint-type-size type: `CLikeU8`: 1 bytes, alignment: 1 bytes\nprint-type-size     discriminant: 1 bytes\nprint-type-size     variant `X`: 0 bytes\nprint-type-size     variant `Y`: 0 bytes\nprint-type-size type: `alloc::raw_vec::AllocInit`: 1 bytes, alignment: 1 bytes\nprint-type-size     discriminant: 1 bytes\nprint-type-size     variant `Uninitialized`: 0 bytes\nprint-type-size     variant `Zeroed`: 0 bytes\nprint-type-size type: `core::num::niche_types::NonZeroU8Inner`: 1 bytes, alignment: 1 bytes\nprint-type-size     field `.0`: 1 bytes\nprint-type-size type: `std::num::NonZero<u8>`: 1 bytes, alignment: 1 bytes\nprint-type-size     field `.0`: 1 bytes\nprint-type-size type: `std::option::Option<bool>`: 1 bytes, alignment: 1 bytes\nprint-type-size     variant `Some`: 1 bytes\nprint-type-size         field `.0`: 1 bytes\nprint-type-size     variant `None`: 0 bytes\nprint-type-size type: `std::option::Option<std::num::NonZero<u8>>`: 1 bytes, alignment: 1 bytes\nprint-type-size     variant `Some`: 1 bytes\nprint-type-size         field `.0`: 1 bytes\nprint-type-size     variant `None`: 0 bytes\nprint-type-size type: `std::option::Option<std::option::Option<bool>>`: 1 bytes, alignment: 1 bytes\nprint-type-size     variant `Some`: 1 bytes\nprint-type-size         field `.0`: 1 bytes\nprint-type-size     variant `None`: 0 bytes\nprint-type-size type: `std::option::Option<std::option::Option<std::option::Option<bool>>>`: 1 bytes, alignment: 1 bytes\nprint-type-size     variant `Some`: 1 bytes\nprint-type-size         field `.0`: 1 bytes\nprint-type-size     variant `None`: 0 bytes\nprint-type-size type: `std::process::ExitCode`: 1 bytes, alignment: 1 bytes\nprint-type-size     field `.0`: 1 bytes\nprint-type-size type: `std::result::Result<(), std::fmt::Error>`: 1 bytes, alignment: 1 bytes\nprint-type-size     discriminant: 1 bytes\nprint-type-size     variant `Ok`: 0 bytes\nprint-type-size         field `.0`: 0 bytes\nprint-type-size     variant `Err`: 0 bytes\nprint-type-size         field `.0`: 0 bytes\nprint-type-size type: `std::sys::process::unix::common::ExitCode`: 1 bytes, alignment: 1 bytes\nprint-type-size     field `.0`: 1 bytes\nprint-type-size type: `std::alloc::Global`: 0 bytes, alignment: 1 bytes\nprint-type-size type: `std::fmt::Error`: 0 bytes, alignment: 1 bytes\nprint-type-size type: `std::marker::PhantomData<&()>`: 0 bytes, alignment: 1 bytes\nprint-type-size type: `std::marker::PhantomData<&str>`: 0 bytes, alignment: 1 bytes\nprint-type-size type: `std::marker::PhantomData<dyn std::fmt::Write>`: 0 bytes, alignment: 1 bytes\nprint-type-size type: `std::marker::PhantomData<dyn std::ops::Fn() -> i32 + std::marker::Sync + std::panic::RefUnwindSafe>`: 0 bytes, alignment: 1 bytes\nprint-type-size type: `std::marker::PhantomData<u8>`: 0 bytes, alignment: 1 bytes",
+      "stderr": ""
+    },
+    "niche_and_repr_execution": {
+      "command": "<tmp>/probe_bin",
+      "returncode": 0,
+      "stdout": "{\"opt_bool\":[0, 1, 2],\"opt_opt_bool\":[0, 1, 2, 255],\"opt3_bool\":[0, 1, 2, 255, 254],\"bool_plus_two\":[0, 1, 2, 3],\"opt3_char_hex\":[\"0x41\",\"0xffffffff\",\"0xfffffffe\",\"0xfffffffd\"],\"nonnull_none\":0,\"nonzero_u8_none\":0,\"opt2_nonnull_tags\":[1,1,0],\"opt2_nonzero_u8_tags\":[1,1,0],\"sizes\":{\"ReprU8Data\":[4,2],\"ReprCU8Data\":[4,2],\"ReprCData\":[8,4],\"CLikeC\":[4,4],\"CLikeU8\":[1,1],\"OptChar3\":[4,4],\"OptNonNull2\":[16,8],\"OptNonZeroU8_2\":[2,1]},\"field_offsets\":{\"ReprU8Data_A\":2,\"ReprU8Data_B\":1,\"ReprCU8Data_B\":2,\"ReprCData_B\":4},\"tags\":{\"ReprU8Data_B\":9,\"ReprCU8Data_B\":9,\"ReprCData_B\":1}}",
+      "stderr": ""
+    },
+    "parsed_execution_values": {
+      "opt_bool": [
+        0,
+        1,
+        2
+      ],
+      "opt_opt_bool": [
+        0,
+        1,
+        2,
+        255
+      ],
+      "opt3_bool": [
+        0,
+        1,
+        2,
+        255,
+        254
+      ],
+      "bool_plus_two": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "opt3_char_hex": [
+        "0x41",
+        "0xffffffff",
+        "0xfffffffe",
+        "0xfffffffd"
+      ],
+      "nonnull_none": 0,
+      "nonzero_u8_none": 0,
+      "opt2_nonnull_tags": [
+        1,
+        1,
+        0
+      ],
+      "opt2_nonzero_u8_tags": [
+        1,
+        1,
+        0
+      ],
+      "sizes": {
+        "ReprU8Data": [
+          4,
+          2
+        ],
+        "ReprCU8Data": [
+          4,
+          2
+        ],
+        "ReprCData": [
+          8,
+          4
+        ],
+        "CLikeC": [
+          4,
+          4
+        ],
+        "CLikeU8": [
+          1,
+          1
+        ],
+        "OptChar3": [
+          4,
+          4
+        ],
+        "OptNonNull2": [
+          16,
+          8
+        ],
+        "OptNonZeroU8_2": [
+          2,
+          1
+        ]
+      },
+      "field_offsets": {
+        "ReprU8Data_A": 2,
+        "ReprU8Data_B": 1,
+        "ReprCU8Data_B": 2,
+        "ReprCData_B": 4
+      },
+      "tags": {
+        "ReprU8Data_B": 9,
+        "ReprCU8Data_B": 9,
+        "ReprCData_B": 1
+      }
+    },
+    "e0732_non_unit_explicit_discr": {
+      "command": "rustc --edition=2024 --error-format=short <tmp>/e0732.rs -o <tmp>/e0732_bin",
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "<tmp>/e0732.rs:3:1: error[E0732]: `#[repr(inttype)]` must be specified for enums with explicit discriminants and non-unit variants\nerror: aborting due to 1 previous error"
+    },
+    "e0732_unit_explicit_discr_with_non_unit_variant": {
+      "command": "rustc --edition=2024 --error-format=short <tmp>/e0732_unit.rs -o <tmp>/e0732_unit_bin",
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "<tmp>/e0732_unit.rs:3:1: error[E0732]: `#[repr(inttype)]` must be specified for enums with explicit discriminants and non-unit variants\nerror: aborting due to 1 previous error"
+    }
+  },
+  "b_miri_enum_validity": {
+    "miri_valid_option_option_bool_0_1_2_255_ok": {
+      "command": "cargo miri run --offline",
+      "returncode": 0,
+      "stdout": "MIRI_NICHE_VALID=[Some(Some(false)), Some(Some(true)), Some(None), None]",
+      "stderr": "Compiling miri_miri_valid_option_option_bool_0_1_2_255_ok v0.1.0 (<tmp>/miri_miri_valid_option_option_bool_0_1_2_255_ok)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner <tmp>/miri_target/miri/x86_64-unknown-linux-gnu/debug/miri_miri_valid_option_option_bool_0_1_2_255_ok`"
+    },
+    "miri_invalid_niche_tag_3_ub_caught": {
+      "command": "cargo miri run --offline",
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Compiling miri_miri_invalid_niche_tag_3_ub_caught v0.1.0 (<tmp>/miri_miri_invalid_niche_tag_3_ub_caught)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.05s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner <tmp>/miri_target/miri/x86_64-unknown-linux-gnu/debug/miri_miri_invalid_niche_tag_3_ub_caught`\nerror: Undefined Behavior: constructing invalid value of type std::option::Option<std::option::Option<bool>>: at .<enum-tag>, encountered 0x03, but expected a valid enum tag\n --> src/main.rs:4:46\n  |\n4 |     let bad: Option<Option<bool>> = unsafe { transmute(3u8) };\n  |                                              ^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+    },
+    "miri_invalid_niche_tag_3_opt3_ub_caught": {
+      "command": "cargo miri run --offline",
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Compiling miri_miri_invalid_niche_tag_3_opt3_ub_caught v0.1.0 (<tmp>/miri_miri_invalid_niche_tag_3_opt3_ub_caught)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.05s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner <tmp>/miri_target/miri/x86_64-unknown-linux-gnu/debug/miri_miri_invalid_niche_tag_3_opt3_ub_caught`\nerror: Undefined Behavior: constructing invalid value of type std::option::Option<std::option::Option<std::option::Option<bool>>>: at .<enum-tag>, encountered 0x03, but expected a valid enum tag\n --> src/main.rs:4:54\n  |\n4 |     let bad: Option<Option<Option<bool>>> = unsafe { transmute(3u8) };\n  |                                                      ^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+    },
+    "miri_invalid_char_niche_0x110000_ub_caught": {
+      "command": "cargo miri run --offline",
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Compiling miri_miri_invalid_char_niche_0x110000_ub_caught v0.1.0 (<tmp>/miri_miri_invalid_char_niche_0x110000_ub_caught)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.05s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner <tmp>/miri_target/miri/x86_64-unknown-linux-gnu/debug/miri_miri_invalid_char_niche_0x110000_ub_caught`\nerror: Undefined Behavior: constructing invalid value of type std::option::Option<char>: at .<enum-tag>, encountered 0x00110000, but expected a valid enum tag\n --> src/main.rs:4:38\n  |\n4 |     let bad: Option<char> = unsafe { transmute(0x110000u32) };\n  |                                      ^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+    },
+    "miri_invalid_char_surrogate_0xd800_ub_caught": {
+      "command": "cargo miri run --offline",
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Compiling miri_miri_invalid_char_surrogate_0xd800_ub_caught v0.1.0 (<tmp>/miri_miri_invalid_char_surrogate_0xd800_ub_caught)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.05s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner <tmp>/miri_target/miri/x86_64-unknown-linux-gnu/debug/miri_miri_invalid_char_surrogate_0xd800_ub_caught`\nerror: Undefined Behavior: constructing invalid value of type std::option::Option<char>: at .<enum-variant(Some)>.0, encountered 0x0000d800, but expected a valid unicode scalar value (in `0..=0x10FFFF` but not in `0xD800..=0xDFFF`)\n --> src/main.rs:4:38\n  |\n4 |     let bad: Option<char> = unsafe { transmute(0xD800u32) };\n  |                                      ^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+    },
+    "miri_repr_u8_vs_cu8_offsets_ok": {
+      "command": "cargo miri run --offline",
+      "returncode": 0,
+      "stdout": "MIRI_OFFSETS=(1, 2)",
+      "stderr": "Compiling miri_miri_repr_u8_vs_cu8_offsets_ok v0.1.0 (<tmp>/miri_miri_repr_u8_vs_cu8_offsets_ok)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner <tmp>/miri_target/miri/x86_64-unknown-linux-gnu/debug/miri_miri_repr_u8_vs_cu8_offsets_ok`\nwarning: variant `A` is never constructed\n --> src/main.rs:4:5\n  |\n3 | enum ReprU8Data {\n  |      ---------- variant in this enum\n4 |     A(u16) = 5,\n  |     ^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: variant `A` is never constructed\n --> src/main.rs:9:5\n  |\n8 | enum ReprCU8Data {\n  |      ----------- variant in this enum\n9 |     A(u16) = 5,\n  |     ^"
+    },
+    "miri_invalid_repr_u8_tag_ub_caught": {
+      "command": "cargo miri run --offline",
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Compiling miri_miri_invalid_repr_u8_tag_ub_caught v0.1.0 (<tmp>/miri_miri_invalid_repr_u8_tag_ub_caught)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.05s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner <tmp>/miri_target/miri/x86_64-unknown-linux-gnu/debug/miri_miri_invalid_repr_u8_tag_ub_caught`\nwarning: variants `A` and `B` are never constructed\n --> src/main.rs:6:5\n  |\n5 | enum ReprU8Data {\n  |      ---------- variants in this enum\n6 |     A(u16) = 5,\n  |     ^\n7 |     B(u8) = 9,\n  |     ^\n  |\n  = note: `ReprU8Data` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: Undefined Behavior: constructing invalid value of type ReprU8Data: at .<enum-tag>, encountered 0x07, but expected a valid enum tag\n  --> src/main.rs:11:36\n   |\n11 |     let bad: ReprU8Data = unsafe { transmute(raw) };\n   |                                    ^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+    }
+  },
+  "c_zerocopy_try_from_bytes": {
+    "zerocopy_available": true,
+    "native_run": {
+      "command": "cargo run --offline",
+      "returncode": 0,
+      "stdout": "ZC_RESULTS bool=(Some(false),Some(true),true,true) char=(Some('A'),true,true) onz=(Some(None),Some(7)) pkt_u8=(true,true,true,true,true) pkt_c=(true,true,true)",
+      "stderr": "Compiling proc-macro2 v1.0.80\n   Compiling unicode-ident v1.0.22\n   Compiling zerocopy v0.8.64 (<zerocopy>)\n   Compiling quote v1.0.40\n   Compiling syn v2.0.56\n   Compiling zerocopy-derive v0.8.64 (<zerocopy>/zerocopy-derive)\n   Compiling zc_probe v0.1.0 (<tmp>/zc_probe)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 20.87s\n     Running `<tmp>/zc_target/debug/zc_probe`"
+    },
+    "miri_run": {
+      "command": "cargo miri run --offline",
+      "returncode": 0,
+      "stdout": "ZC_RESULTS bool=(Some(false),Some(true),true,true) char=(Some('A'),true,true) onz=(Some(None),Some(7)) pkt_u8=(true,true,true,true,true) pkt_c=(true,true,true)",
+      "stderr": "Compiling proc-macro2 v1.0.80\n   Compiling unicode-ident v1.0.22\n   Compiling zerocopy v0.8.64 (<zerocopy>)\n   Compiling quote v1.0.40\n   Compiling syn v2.0.56\n   Compiling zerocopy-derive v0.8.64 (<zerocopy>/zerocopy-derive)\nwarning: function `miri_promise_symbolic_alignment` is never used\n  --> <zerocopy>/src/util/mod.rs:71:19\n   |\n71 |     pub(crate) fn miri_promise_symbolic_alignment(ptr: *const (), align:...\n   |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   |\n   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: `zerocopy` (lib) generated 1 warning\n   Compiling zc_probe v0.1.0 (<tmp>/zc_probe)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 14.86s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner <tmp>/zc_target/miri/x86_64-unknown-linux-gnu/debug/zc_probe`"
+    },
+    "reject_repr_c_u8": {
+      "command": "cargo check --offline",
+      "returncode": 101,
+      "stdout": "",
+      "stderr": "Checking zerocopy v0.8.64 (<zerocopy>)\n    Checking zc_reject_cu8 v0.1.0 (<tmp>/zc_reject_cu8)\nerror: this conflicts with another representation hint\n --> src/main.rs:5:8\n  |\n5 | #[repr(C, u8)]\n  |        ^^^^^\n\nerror: could not compile `zc_reject_cu8` (bin \"zc_reject_cu8\") due to 1 previous error"
+    }
+  }
+}

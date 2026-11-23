@@ -99995,6 +99995,81 @@
         "verification/program-logics"
       ]
     },
+    "rustc-abi-greedy-niche-stacking-repr-discriminants-and-zerocopy-try-from-bytes": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "release": "rustc 1.98.0-nightly (2026-05-31)",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          },
+          "name": "rust-lang/rust (installed nightly toolchain and miri)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+          },
+          "name": "rust-lang/rust (intermediate nightly pin)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "20fe935d50367c0ff8872c2ebfa050c5c99d9201"
+          },
+          "name": "rust-lang/rust (upstream main at time of observation)"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "6f262351a9b652425d13867717966668f3dd7cb0"
+          },
+          "name": "google/zerocopy (v0.8.x source pin)"
+        },
+        {
+          "identity": {
+            "crate_version": "0.8.64",
+            "repository": "google/zerocopy",
+            "revision": "907b9175fee081872ec883ca4709e6ad922f8ed0"
+          },
+          "name": "google/zerocopy (compiled probe crate)"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "e86eb0281380bdc278f4b4b3788dc9525ef59035"
+          },
+          "name": "google/zerocopy (upstream main at time of observation)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "joshlf/anneal (verification framework IR and Lean Miri oracle)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4 (proof-checking kernel)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/abi",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "verification"
+      ]
+    },
     "rustc-abi-repr-rust-vs-repr-c-layout-zst-packed-align-and-e0588-retirement": {
       "observed_at": "2026-11-23",
       "subjects": [
