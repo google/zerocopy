@@ -40,7 +40,7 @@ theorem boolOrTrue {a b : Bool} (h : (a || b) = true) : a = true ∨ b = true :=
   · exact Or.inl rfl
   · exact Or.inl rfl
 
-def natEqb (a b : Nat) : Bool := Nat.beq a b
+noncomputable def natEqb (a b : Nat) : Bool := Nat.beq a b
 
 theorem natEqb_true_iff (a b : Nat) : natEqb a b = true ↔ a = b := by
   induction a generalizing b with
@@ -59,7 +59,7 @@ theorem natEqb_true_iff (a b : Nat) : natEqb a b = true ↔ a = b := by
 theorem natEqb_refl (a : Nat) : natEqb a a = true := by
   rw [natEqb_true_iff]
 
-def memNat (x : Nat) : List Nat → Bool
+noncomputable def memNat (x : Nat) : List Nat → Bool
   | [] => false
   | y :: ys => natEqb x y || memNat x ys
 
@@ -87,15 +87,15 @@ theorem memNat_true_iff (x : Nat) : ∀ (xs : List Nat), memNat x xs = true ↔ 
             rw [hys]
             cases natEqb x y <;> rfl
 
-def allList {α : Type} (p : α → Bool) : List α → Bool
+noncomputable def allList {α : Type} (p : α → Bool) : List α → Bool
   | [] => true
   | x :: xs => p x && allList p xs
 
-def anyList {α : Type} (p : α → Bool) : List α → Bool
+noncomputable def anyList {α : Type} (p : α → Bool) : List α → Bool
   | [] => false
   | x :: xs => p x || anyList p xs
 
-def filterList {α : Type} (p : α → Bool) : List α → List α
+noncomputable def filterList {α : Type} (p : α → Bool) : List α → List α
   | [] => []
   | x :: xs => if p x then x :: filterList p xs else filterList p xs
 
@@ -201,7 +201,7 @@ inductive RawPoloniusArg where
 /-- Channel-gated default corresponding to `Polonius::DEFAULT` in
     `compiler/rustc_session/src/config.rs` and `CFG_DEFAULT_POLONIUS_NEXT` in
     `src/bootstrap/src/core/build_steps/compile.rs`. -/
-def defaultPoloniusMode : ToolchainEra → ChannelFlavor → PoloniusMode
+noncomputable def defaultPoloniusMode : ToolchainEra → ChannelFlavor → PoloniusMode
   | .pre199, _ => .off
   | .post199, .stable => .off
   | .post199, .nightly => .next
@@ -210,7 +210,7 @@ def defaultPoloniusMode : ToolchainEra → ChannelFlavor → PoloniusMode
     `compiler/rustc_session/src/options.rs`:
     bare `-Zpolonius` selects `Polonius::Legacy`, `-Zpolonius=next` selects
     `Polonius::Next`, and `-Zpolonius=off` selects `Polonius::Off` (rejected pre-1.99). -/
-def parsePoloniusCli (era : ToolchainEra) (ch : ChannelFlavor) :
+noncomputable def parsePoloniusCli (era : ToolchainEra) (ch : ChannelFlavor) :
     RawPoloniusArg → Option PoloniusMode
   | .noneSpecified => some (defaultPoloniusMode era ch)
   | .bareZPolonius => some .legacy
@@ -251,12 +251,12 @@ inductive VarianceDir where
   | bwd
   | bidir
 
-def VarianceDir.allowsFwd : VarianceDir → Bool
+noncomputable def VarianceDir.allowsFwd : VarianceDir → Bool
   | .fwd => true
   | .bwd => false
   | .bidir => true
 
-def VarianceDir.allowsBwd : VarianceDir → Bool
+noncomputable def VarianceDir.allowsBwd : VarianceDir → Bool
   | .fwd => false
   | .bwd => true
   | .bidir => true
@@ -308,12 +308,12 @@ inductive NllSubset (sys : BorrowRegionSystem) : OriginId → OriginId → Prop 
   | trans {o1 o2 o3 : OriginId} :
       NllSubset sys o1 o2 → NllSubset sys o2 o3 → NllSubset sys o1 o3
 
-def NllLoanLive (sys : BorrowRegionSystem) (l : LoanId) (p : PointId) : Prop :=
+noncomputable def NllLoanLive (sys : BorrowRegionSystem) (l : LoanId) (p : PointId) : Prop :=
   ∃ ld o, ld ∈ sys.loans ∧ ld.loan = l ∧ NllSubset sys ld.origin o ∧ sys.liveAt o p = true
 
 /-- `Polonius::Off` (location-insensitive NLL): rejects any conflict where the
     loan is NLL-live and rejects any forbidden universal pair in `NllSubset`. -/
-def OffAccepts (sys : BorrowRegionSystem) : Prop :=
+noncomputable def OffAccepts (sys : BorrowRegionSystem) : Prop :=
   (∀ c, c ∈ sys.conflicts → ¬ NllLoanLive sys c.loan c.pt) ∧
   (∀ u, u ∈ sys.forbiddenUnivPairs → ¬ NllSubset sys u.longer u.shorter)
 
@@ -342,13 +342,13 @@ inductive NextReach (sys : BorrowRegionSystem) (l : LoanId) :
       sys.liveAt o p2 = true →
       NextReach sys l (o, p2) → NextReach sys l (o, p1)
 
-def NextLoanLive (sys : BorrowRegionSystem) (l : LoanId) (p : PointId) : Prop :=
+noncomputable def NextLoanLive (sys : BorrowRegionSystem) (l : LoanId) (p : PointId) : Prop :=
   ∃ o, NextReach sys l (o, p) ∧ sys.liveAt o p = true
 
 /-- `Polonius::Next`: localized `NextLoanLive` for loan conflicts, yet STILL uses
     location-insensitive `NllSubset` (`check_universal_regions`,
     `region_context.rs:216-229`) for universal-region checks! -/
-def NextAccepts (sys : BorrowRegionSystem) : Prop :=
+noncomputable def NextAccepts (sys : BorrowRegionSystem) : Prop :=
   (∀ c, c ∈ sys.conflicts → ¬ NextLoanLive sys c.loan c.pt) ∧
   (∀ u, u ∈ sys.forbiddenUnivPairs → ¬ NllSubset sys u.longer u.shorter)
 
@@ -384,12 +384,12 @@ inductive LegacyLoanAt (sys : BorrowRegionSystem) (l : LoanId) :
       LegacyLoanAt sys l o p1 →
       LegacyLoanAt sys l o p2
 
-def LegacyLoanLive (sys : BorrowRegionSystem) (l : LoanId) (p : PointId) : Prop :=
+noncomputable def LegacyLoanLive (sys : BorrowRegionSystem) (l : LoanId) (p : PointId) : Prop :=
   ∃ o, LegacyLoanAt sys l o p ∧ sys.liveAt o p = true
 
 /-- `Polonius::Legacy`: point-indexed `LegacyLoanLive` for loan conflicts AND
     point-indexed `LegacySubset` (`check_polonius_subset_errors`) for universal pairs. -/
-def LegacyAccepts (sys : BorrowRegionSystem) : Prop :=
+noncomputable def LegacyAccepts (sys : BorrowRegionSystem) : Prop :=
   (∀ c, c ∈ sys.conflicts → ¬ LegacyLoanLive sys c.loan c.pt) ∧
   (∀ u, u ∈ sys.forbiddenUnivPairs → ∀ p, ¬ LegacySubset sys u.longer u.shorter p)
 
@@ -403,7 +403,7 @@ inductive CfgWalk (sys : BorrowRegionSystem) : PointId → PointId → Prop wher
   | step {p q r : PointId} :
       (p, q) ∈ sys.cfgEdges → CfgWalk sys q r → CfgWalk sys p r
 
-def OperationalSafe (sys : BorrowRegionSystem) : Prop :=
+noncomputable def OperationalSafe (sys : BorrowRegionSystem) : Prop :=
   ∀ c, c ∈ sys.conflicts →
     ¬ (∃ ld o, ld ∈ sys.loans ∧ ld.loan = c.loan ∧
         CfgWalk sys sys.entry ld.issuePt ∧
@@ -458,7 +458,7 @@ theorem legacySubset_implies_nllSubset {sys : BorrowRegionSystem}
   | trans _ _ ih1 ih2 => exact NllSubset.trans ih1 ih2
   | fwdCfg _ _ _ _ ih => exact ih
 
-def AllOriginsBidir (sys : BorrowRegionSystem) : Prop :=
+noncomputable def AllOriginsBidir (sys : BorrowRegionSystem) : Prop :=
   ∀ o, (sys.dirOf o).allowsFwd = true ∧ (sys.dirOf o).allowsBwd = true
 
 theorem legacySubset_to_nextReach_of_bidir {sys : BorrowRegionSystem}
@@ -543,7 +543,7 @@ theorem off_accepts_implies_operational_safe_of_bidir (sys : BorrowRegionSystem)
     Under `Next` and `Legacy`, `Single 1` only connects `'?v@1 -> 'a@1`; since `(0, 2)` never
     passes `1`, `loan 0` never reaches `'a` along `(0, 2)` and `'?v` is dead at `2`!
 -/
-def pc3Graph : BorrowRegionSystem where
+noncomputable def pc3Graph : BorrowRegionSystem where
   entry := 0
   cfgEdges := [(0, 1), (0, 2)]
   liveAt := fun o p =>
@@ -724,7 +724,7 @@ theorem pc3Graph_operationalSafe : OperationalSafe pc3Graph :=
     - Under `Legacy`: at `pt 0` no edges; at `pt 1` only `{0, 2}`; at `pt 2` only `{1, 2}`;
       since there is no CFG edge from `1` to `2` or `2` to `1`, `LegacySubset` NEVER connects `0` and `1`!
 -/
-def invarianceGraph : BorrowRegionSystem where
+noncomputable def invarianceGraph : BorrowRegionSystem where
   entry := 0
   cfgEdges := [(0, 1), (0, 2)]
   liveAt := fun o p =>
@@ -763,7 +763,7 @@ theorem invarianceGraph_not_offAccepts : ¬ OffAccepts invarianceGraph := by
   intro hoff
   exact invarianceGraph_not_nextAccepts (off_accepts_implies_next_accepts invarianceGraph hoff)
 
-def invAllowedAt (p : PointId) (o1 o2 : OriginId) : Prop :=
+noncomputable def invAllowedAt (p : PointId) (o1 o2 : OriginId) : Prop :=
   o1 = o2 ∨
   (p = 1 ∧ (o1 = 0 ∨ o1 = 2) ∧ (o2 = 0 ∨ o2 = 2)) ∨
   (p = 2 ∧ (o1 = 1 ∨ o1 = 2) ∧ (o2 = 1 ∨ o2 = 2))
@@ -870,7 +870,7 @@ theorem polonius_three_way_strict_separation :
 
 /-- Witness 3 (`covariantGraph`): Replacing invariance with covariance removes
     reverse edges (`0 -> 2`, `1 -> 2`), so ALL THREE modes accept! -/
-def covariantGraph : BorrowRegionSystem where
+noncomputable def covariantGraph : BorrowRegionSystem where
   entry := 0
   cfgEdges := [(0, 1), (0, 2)]
   liveAt := fun _ _ => true
@@ -933,7 +933,7 @@ theorem covariantGraph_accepted_by_all_three :
 
 /-- Witness 4 (`timeTravelGraph`): Backward invariance edges are mandatory for
     soundness on `*q = &mut b; b = 3; *p` (`a5`). -/
-def timeTravelGraph (withBwd : Bool) : BorrowRegionSystem where
+noncomputable def timeTravelGraph (withBwd : Bool) : BorrowRegionSystem where
   entry := 0
   cfgEdges := [(0, 1), (1, 2)]
   liveAt := fun o p =>
@@ -1044,7 +1044,7 @@ inductive OpaqueOriginKind where
 
 /-- Exact model of `opaque_captures_all_in_scope_lifetimes` in
     `compiler/rustc_hir_analysis/src/collect/resolve_bound_vars.rs:322-331`. -/
-def opaqueCapturesAllInScopeLifetimes (orig : OpaqueOriginKind) (ed : RustEdition)
+noncomputable def opaqueCapturesAllInScopeLifetimes (orig : OpaqueOriginKind) (ed : RustEdition)
     (hasUseBound : Bool) : Bool :=
   if hasUseBound then false
   else match orig with
@@ -1080,38 +1080,38 @@ structure MemberConstraintProblem where
   lowerBounds : List Nat
   upperBounds : List Nat
 
-def candidateChoices (p : MemberConstraintProblem) : List Nat :=
+noncomputable def candidateChoices (p : MemberConstraintProblem) : List Nat :=
   0 :: p.argRegions
 
-def satisfiesLowerBounds (rel : RegionPreorder) (p : MemberConstraintProblem) (c : Nat) : Bool :=
+noncomputable def satisfiesLowerBounds (rel : RegionPreorder) (p : MemberConstraintProblem) (c : Nat) : Bool :=
   allList (fun lb => rel.outlives c lb) p.lowerBounds
 
-def satisfiesUpperBounds (rel : RegionPreorder) (p : MemberConstraintProblem) (c : Nat) : Bool :=
+noncomputable def satisfiesUpperBounds (rel : RegionPreorder) (p : MemberConstraintProblem) (c : Nat) : Bool :=
   allList (fun ub => rel.outlives ub c) p.upperBounds
 
-def admissibleChoices (rel : RegionPreorder) (p : MemberConstraintProblem) : List Nat :=
+noncomputable def admissibleChoices (rel : RegionPreorder) (p : MemberConstraintProblem) : List Nat :=
   filterList
     (fun c => satisfiesLowerBounds rel p c && satisfiesUpperBounds rel p c)
     (candidateChoices p)
 
-def totallyOrderedChoices (rel : RegionPreorder) (choices : List Nat) : List Nat :=
+noncomputable def totallyOrderedChoices (rel : RegionPreorder) (choices : List Nat) : List Nat :=
   filterList
     (fun r1 => allList (fun r2 => rel.outlives r1 r2 || rel.outlives r2 r1) choices)
     choices
 
-def pickSmaller (rel : RegionPreorder) (r1 r2 : Nat) : Nat :=
+noncomputable def pickSmaller (rel : RegionPreorder) (r1 r2 : Nat) : Nat :=
   match rel.outlives r1 r2, rel.outlives r2 r1 with
   | true, true => if Nat.ble r1 r2 then r1 else r2
   | true, false => r2
   | false, true => r1
   | false, false => r1
 
-def reduceLeast (rel : RegionPreorder) (acc : Nat) : List Nat → Nat
+noncomputable def reduceLeast (rel : RegionPreorder) (acc : Nat) : List Nat → Nat
   | [] => acc
   | r :: rs => reduceLeast rel (pickSmaller rel acc r) rs
 
 /-- Exact mechanization of `apply_member_constraint` (`member_constraints.rs:74-138`). -/
-def applyMemberConstraint (rel : RegionPreorder) (p : MemberConstraintProblem) : Option Nat :=
+noncomputable def applyMemberConstraint (rel : RegionPreorder) (p : MemberConstraintProblem) : Option Nat :=
   match totallyOrderedChoices rel (admissibleChoices rel p) with
   | [] => none
   | r :: rs => some (reduceLeast rel r rs)
@@ -1273,7 +1273,7 @@ theorem applyMemberConstraint_minimal (rel : RegionPreorder) (p : MemberConstrai
 
 /-- Partial order with `0 = 'static`, `1 = 'a`, `2 = 'b`, `3 = 'c`:
     `'static: 'a, 'b, 'c`; `'a: 'c`; `'b: 'c`; while `'a` and `'b` are incomparable! -/
-def diamondRelFn (x y : Nat) : Bool :=
+noncomputable def diamondRelFn (x y : Nat) : Bool :=
   match x, y with
   | 0, _ => true
   | 1, 1 => true
@@ -1376,14 +1376,14 @@ theorem diamondRelFn_trans (a b c : Nat)
                   subst h1
                   exact hbc
 
-def diamondRel : RegionPreorder where
+noncomputable def diamondRel : RegionPreorder where
   outlives := diamondRelFn
   refl := diamondRelFn_refl
   trans := diamondRelFn_trans
   staticTop := fun _ => rfl
 
 /-- Ordered relation `'a: 'b` (`1` outlives `2`, `0` = `'static`). -/
-def orderedRelFn (x y : Nat) : Bool :=
+noncomputable def orderedRelFn (x y : Nat) : Bool :=
   match x, y with
   | 0, _ => true
   | 1, 1 => true
@@ -1445,7 +1445,7 @@ theorem orderedRelFn_trans (a b c : Nat)
               subst h1
               exact hbc
 
-def orderedRel : RegionPreorder where
+noncomputable def orderedRel : RegionPreorder where
   outlives := orderedRelFn
   refl := orderedRelFn_refl
   trans := orderedRelFn_trans
@@ -1454,33 +1454,33 @@ def orderedRel : RegionPreorder where
 /-- `b4` (`member_incomparable`): `use<'a, 'b>` with `if cond { x } else { y }`
     imposes upper bounds `['a, 'b]`; neither `'static`, `'a`, nor `'b` is
     outlived by both `'a` and `'b`, yielding `[]` -> `none` (`E0700`)! -/
-def b4IncomparableProblem : MemberConstraintProblem :=
+noncomputable def b4IncomparableProblem : MemberConstraintProblem :=
   { argRegions := [1, 2], lowerBounds := [], upperBounds := [1, 2] }
 
 /-- `b5` (`member_ordered`): adding `where 'a: 'b` narrows admissible choices to
     `['b]`, picking `some 2` (`'b`). -/
-def b5OrderedProblem : MemberConstraintProblem :=
+noncomputable def b5OrderedProblem : MemberConstraintProblem :=
   { argRegions := [1, 2], lowerBounds := [], upperBounds := [1, 2] }
 
 /-- `b6` (`member_with_cell`): `Cell<&'a str>` imposes both lower and upper bound
     `'a` (`1`), while `'b` (`2`) fails lower bound `'b: 'a`; picks `some 1` (`'a`). -/
-def b6UniqueCellProblem : MemberConstraintProblem :=
+noncomputable def b6UniqueCellProblem : MemberConstraintProblem :=
   { argRegions := [1, 2], lowerBounds := [1], upperBounds := [1] }
 
 /-- `b7` (`member_static`): returning `&'static str` under `use<'a, 'b>` leaves
     `['static, 'a, 'b]` admissible; `'a, 'b` are dropped from `totallyOrderedChoices`,
     leaving `['static]` -> `some 0`. -/
-def b7StaticProblem : MemberConstraintProblem :=
+noncomputable def b7StaticProblem : MemberConstraintProblem :=
   { argRegions := [1, 2], lowerBounds := [], upperBounds := [] }
 
 /-- `b8` (`member_diamond`): under `where 'a: 'c, 'b: 'c` (`diamondRel`) with
     `use<'a, 'b, 'c>` and `if cond { x } else { y }`, `3` (`'c`) uniquely satisfies
     upper bounds `[1, 2]` (and even with `upperBounds := []`, `totallyOrderedChoices`
     is `[0, 3]` and picks `some 3` `'c`, NOT `0` `'static`!). -/
-def b8DiamondBranchProblem : MemberConstraintProblem :=
+noncomputable def b8DiamondBranchProblem : MemberConstraintProblem :=
   { argRegions := [1, 2, 3], lowerBounds := [], upperBounds := [1, 2] }
 
-def b8DiamondLowerProblem : MemberConstraintProblem :=
+noncomputable def b8DiamondLowerProblem : MemberConstraintProblem :=
   { argRegions := [1, 2, 3], lowerBounds := [3], upperBounds := [] }
 
 theorem member_constraints_empirical_correspondence :
@@ -1515,7 +1515,7 @@ structure BorrowckTwoPhaseState where
   priorSharedCount : Nat
   otherMutActive : Bool
 
-def BorrowckTwoPhaseState.init : BorrowckTwoPhaseState :=
+noncomputable def BorrowckTwoPhaseState.init : BorrowckTwoPhaseState :=
   { phase := .unreserved, priorSharedCount := 0, otherMutActive := false }
 
 /-- Exact transition function modeling `rustc_borrowck/src/lib.rs:1288-1375,
@@ -1527,7 +1527,7 @@ def BorrowckTwoPhaseState.init : BorrowckTwoPhaseState :=
       or `.activated` or `priorSharedCount > 0` (`lib.rs:1347`).
     - `activateTwoPhase`: allowed iff `phase = .reserved ∧ priorSharedCount = 0`
       (`check_activations`, `lib.rs:1872-1895`). -/
-def borrowckStep (st : BorrowckTwoPhaseState) (act : TwoPhaseAction) :
+noncomputable def borrowckStep (st : BorrowckTwoPhaseState) (act : TwoPhaseAction) :
     Option BorrowckTwoPhaseState :=
   match act with
   | .startPriorShared =>
@@ -1568,7 +1568,7 @@ def borrowckStep (st : BorrowckTwoPhaseState) (act : TwoPhaseAction) :
       | .activated => some { st with phase := .released }
       | _ => none
 
-def runBorrowckTrace (st : BorrowckTwoPhaseState) :
+noncomputable def runBorrowckTrace (st : BorrowckTwoPhaseState) :
     List TwoPhaseAction → Option BorrowckTwoPhaseState
   | [] => some st
   | a :: rest =>
@@ -1577,7 +1577,7 @@ def runBorrowckTrace (st : BorrowckTwoPhaseState) :
       | some st' => runBorrowckTrace st' rest
 
 /-- Aliasing-exclusivity invariant preserved by every borrowck-accepted trace. -/
-def BorrowckInvariant (st : BorrowckTwoPhaseState) : Prop :=
+noncomputable def BorrowckInvariant (st : BorrowckTwoPhaseState) : Prop :=
   (st.phase = .activated → st.priorSharedCount = 0 ∧ st.otherMutActive = false) ∧
   (st.phase = .reserved → st.otherMutActive = false)
 
@@ -1663,7 +1663,7 @@ inductive TBAccess where
 /-- Exact `Freeze` permission transition table from
     `src/tools/miri/src/borrow_tracker/tree_borrows/perms.rs:135-233`.
     Returns `none` on Tree Borrows UB. -/
-def tbStep (isProtected : Bool) (acc : TBAccess) (s : TBState) : Option TBState :=
+noncomputable def tbStep (isProtected : Bool) (acc : TBAccess) (s : TBState) : Option TBState :=
   match acc, s with
   | .childRead, .tbDisabled => none
   | .childRead, s' => some s'
@@ -1680,14 +1680,14 @@ def tbStep (isProtected : Bool) (acc : TBAccess) (s : TBState) : Option TBState 
   | .childWrite, .tbDisabled => none
   | .foreignWrite, _ => some .tbDisabled
 
-def runTBTrace (isProtected : Bool) (s : TBState) : List TBAccess → Option TBState
+noncomputable def runTBTrace (isProtected : Bool) (s : TBState) : List TBAccess → Option TBState
   | [] => some s
   | a :: rest =>
       match tbStep isProtected a s with
       | none => none
       | some s' => runTBTrace isProtected s' rest
 
-def twoPhaseActionToTB : TwoPhaseAction → Option TBAccess
+noncomputable def twoPhaseActionToTB : TwoPhaseAction → Option TBAccess
   | .sharedRead => some .foreignRead
   | .startPriorShared => some .foreignRead
   | .endPriorShared => none
@@ -1699,7 +1699,7 @@ def twoPhaseActionToTB : TwoPhaseAction → Option TBAccess
 
 /-- Simulation coupling between borrowck two-phase state and unprotected Tree
     Borrows tag state (`RetagKind::TwoPhase`, `isProtected = false`). -/
-def TBMatchesBorrowck (st : BorrowckTwoPhaseState) (tb : TBState) : Prop :=
+noncomputable def TBMatchesBorrowck (st : BorrowckTwoPhaseState) (tb : TBState) : Prop :=
   (st.phase = .reserved → tb = .tbReserved false) ∧
   (st.phase = .activated → tb = .tbUnique)
 
@@ -1790,22 +1790,22 @@ theorem borrowck_step_unprotected_tb_sound
 
 /-! ### Concrete Witnesses Matching `c1`..`c6` -/
 
-def traceC1VecPushLen : List TwoPhaseAction :=
+noncomputable def traceC1VecPushLen : List TwoPhaseAction :=
   [.reserveTwoPhase, .sharedRead, .activateTwoPhase, .releaseTwoPhase]
 
-def traceC2WriteWhileReserved : List TwoPhaseAction :=
+noncomputable def traceC2WriteWhileReserved : List TwoPhaseAction :=
   [.reserveTwoPhase, .directWrite]
 
-def traceC3NestedReserveWhileReserved : List TwoPhaseAction :=
+noncomputable def traceC3NestedReserveWhileReserved : List TwoPhaseAction :=
   [.reserveTwoPhase, .nestedReserveTwoPhase]
 
-def traceC4ExplicitMutThenRead : List TwoPhaseAction :=
+noncomputable def traceC4ExplicitMutThenRead : List TwoPhaseAction :=
   [.reserveTwoPhase, .activateTwoPhase, .sharedRead]
 
-def traceC5PriorSharedEndsBeforeActivation : List TwoPhaseAction :=
+noncomputable def traceC5PriorSharedEndsBeforeActivation : List TwoPhaseAction :=
   [.startPriorShared, .reserveTwoPhase, .sharedRead, .endPriorShared, .activateTwoPhase, .releaseTwoPhase]
 
-def traceC6PriorSharedLiveAtActivation : List TwoPhaseAction :=
+noncomputable def traceC6PriorSharedLiveAtActivation : List TwoPhaseAction :=
   [.startPriorShared, .reserveTwoPhase, .sharedRead, .activateTwoPhase]
 
 theorem twoPhase_empirical_correspondence :

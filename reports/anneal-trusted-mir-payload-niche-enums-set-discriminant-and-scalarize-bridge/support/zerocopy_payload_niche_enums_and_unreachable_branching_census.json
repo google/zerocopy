@@ -1,0 +1,3367 @@
+{
+  "probe_id": "E3-89",
+  "title": "zerocopy First-Customer Census: Payload/Niche Enums, Discriminant Operations, and UnreachableEnumBranching",
+  "zerocopy_origin_main_sha": "d3362d9a657e2f943d25a0812f7b13b93e60af4d",
+  "zerocopy_crate_version": "0.8.64",
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "compile_cmd_zerocopy": "rustc +nightly --edition=2021 --crate-name zerocopy --crate-type lib --cfg feature=\"alloc\" --cfg feature=\"std\" --cfg feature=\"simd\" --cfg feature=\"simd-nightly\" --cfg feature=\"float-nightly\" -Zdump-mir=analysis-post-cleanup | UnreachableEnumBranching | runtime-optimized -Zdump-mir-dir=<tmp>/mir_zc -Zprint-type-sizes -o <tmp>/libzerocopy.rlib <tmp>/zerocopy/src/lib.rs",
+  "zerocopy_enum_declarations_in_src": {
+    "count": 40,
+    "declarations": [
+      {
+        "file": "src/byteorder.rs",
+        "line": 103,
+        "name": "Order",
+        "decl": "pub enum Order {"
+      },
+      {
+        "file": "src/byteorder.rs",
+        "line": 114,
+        "name": "BigEndian",
+        "decl": "pub enum BigEndian {}"
+      },
+      {
+        "file": "src/byteorder.rs",
+        "line": 131,
+        "name": "LittleEndian",
+        "decl": "pub enum LittleEndian {}"
+      },
+      {
+        "file": "src/doctests.rs",
+        "line": 59,
+        "name": "TransmuteRefMutAlignmentIncrease",
+        "decl": "enum TransmuteRefMutAlignmentIncrease {}"
+      },
+      {
+        "file": "src/doctests.rs",
+        "line": 81,
+        "name": "TransmuteRefMutSizeIncrease",
+        "decl": "enum TransmuteRefMutSizeIncrease {}"
+      },
+      {
+        "file": "src/doctests.rs",
+        "line": 103,
+        "name": "TransmuteRefMutSizeDecrease",
+        "decl": "enum TransmuteRefMutSizeDecrease {}"
+      },
+      {
+        "file": "src/doctests.rs",
+        "line": 120,
+        "name": "TransmuteRefMutDstOffsetIncrease",
+        "decl": "enum TransmuteRefMutDstOffsetIncrease {}"
+      },
+      {
+        "file": "src/doctests.rs",
+        "line": 137,
+        "name": "TransmuteRefMutDstOffsetNotMultiple",
+        "decl": "enum TransmuteRefMutDstOffsetNotMultiple {}"
+      },
+      {
+        "file": "src/doctests.rs",
+        "line": 153,
+        "name": "TransmuteRefMutDstElemSizeNotMultiple",
+        "decl": "enum TransmuteRefMutDstElemSizeNotMultiple {}"
+      },
+      {
+        "file": "src/doctests.rs",
+        "line": 170,
+        "name": "InvalidImplOrVerify",
+        "decl": "enum InvalidImplOrVerify {}"
+      },
+      {
+        "file": "src/error.rs",
+        "line": 155,
+        "name": "ConvertError",
+        "decl": "pub enum ConvertError<A, S, V> {"
+      },
+      {
+        "file": "src/impls.rs",
+        "line": 758,
+        "name": "value",
+        "decl": "pub enum value {}"
+      },
+      {
+        "file": "src/layout.rs",
+        "line": 47,
+        "name": "SizeInfo",
+        "decl": "pub(crate) enum SizeInfo<E = usize> {"
+      },
+      {
+        "file": "src/layout.rs",
+        "line": 865,
+        "name": "CastType",
+        "decl": "pub enum CastType {"
+      },
+      {
+        "file": "src/layout.rs",
+        "line": 872,
+        "name": "MetadataCastError",
+        "decl": "pub(crate) enum MetadataCastError {"
+      },
+      {
+        "file": "src/layout.rs",
+        "line": 2003,
+        "name": "CastParamsInner",
+        "decl": "enum CastParamsInner {"
+      },
+      {
+        "file": "src/lib.rs",
+        "line": 1308,
+        "name": "TryFromBytesDerive",
+        "decl": "pub enum TryFromBytesDerive {}"
+      },
+      {
+        "file": "src/lib.rs",
+        "line": 1310,
+        "name": "ProjectDerive",
+        "decl": "pub enum ProjectDerive {}"
+      },
+      {
+        "file": "src/macros.rs",
+        "line": 1789,
+        "name": "NotZerocopy",
+        "decl": "enum NotZerocopy {}"
+      },
+      {
+        "file": "src/pointer/invariant.rs",
+        "line": 104,
+        "name": "ValidityKind",
+        "decl": "pub enum ValidityKind {"
+      },
+      {
+        "file": "src/pointer/invariant.rs",
+        "line": 129,
+        "name": "Shared",
+        "decl": "pub enum Shared {}"
+      },
+      {
+        "file": "src/pointer/invariant.rs",
+        "line": 140,
+        "name": "Exclusive",
+        "decl": "pub enum Exclusive {}"
+      },
+      {
+        "file": "src/pointer/invariant.rs",
+        "line": 147,
+        "name": "Unaligned",
+        "decl": "pub enum Unaligned {}"
+      },
+      {
+        "file": "src/pointer/invariant.rs",
+        "line": 163,
+        "name": "Aligned",
+        "decl": "pub enum Aligned {}"
+      },
+      {
+        "file": "src/pointer/invariant.rs",
+        "line": 178,
+        "name": "Uninit",
+        "decl": "pub enum Uninit {}"
+      },
+      {
+        "file": "src/pointer/invariant.rs",
+        "line": 214,
+        "name": "AsInitialized",
+        "decl": "pub enum AsInitialized {}"
+      },
+      {
+        "file": "src/pointer/invariant.rs",
+        "line": 223,
+        "name": "Initialized",
+        "decl": "pub enum Initialized {}"
+      },
+      {
+        "file": "src/pointer/invariant.rs",
+        "line": 234,
+        "name": "Safe",
+        "decl": "pub enum Safe {}"
+      },
+      {
+        "file": "src/pointer/invariant.rs",
+        "line": 281,
+        "name": "BecauseExclusive",
+        "decl": "pub enum BecauseExclusive {}"
+      },
+      {
+        "file": "src/pointer/invariant.rs",
+        "line": 286,
+        "name": "BecauseImmutable",
+        "decl": "pub enum BecauseImmutable {}"
+      },
+      {
+        "file": "src/pointer/mod.rs",
+        "line": 120,
+        "name": "CastSized",
+        "decl": "pub enum CastSized {}"
+      },
+      {
+        "file": "src/pointer/mod.rs",
+        "line": 147,
+        "name": "CastSizedExact",
+        "decl": "pub enum CastSizedExact {}"
+      },
+      {
+        "file": "src/pointer/mod.rs",
+        "line": 178,
+        "name": "CastUnsized",
+        "decl": "pub enum CastUnsized {}"
+      },
+      {
+        "file": "src/pointer/ptr.rs",
+        "line": 1377,
+        "name": "Enum",
+        "decl": "enum Enum {"
+      },
+      {
+        "file": "src/pointer/transmute.rs",
+        "line": 126,
+        "name": "BecauseMutationCompatible",
+        "decl": "pub enum BecauseMutationCompatible {}"
+      },
+      {
+        "file": "src/pointer/transmute.rs",
+        "line": 197,
+        "name": "BecauseRead",
+        "decl": "pub enum BecauseRead {}"
+      },
+      {
+        "file": "src/pointer/transmute.rs",
+        "line": 232,
+        "name": "BecauseSharedCompatible",
+        "decl": "pub enum BecauseSharedCompatible {}"
+      },
+      {
+        "file": "src/ref.rs",
+        "line": 1501,
+        "name": "CastForSized",
+        "decl": "enum CastForSized {}"
+      },
+      {
+        "file": "src/util/macro_util.rs",
+        "line": 1168,
+        "name": "ReprI8",
+        "decl": "enum ReprI8 {"
+      },
+      {
+        "file": "src/util/macro_util.rs",
+        "line": 1303,
+        "name": "Test",
+        "decl": "enum Test {"
+      }
+    ]
+  },
+  "type_size_layout_census": {
+    "zerocopy_crate_monomorphized": {
+      "count": 26,
+      "tag_encoding_counts": {
+        "Direct": 17,
+        "Niche": 5,
+        "StructOrSingle": 2,
+        "Single": 2
+      },
+      "layouts": [
+        {
+          "type": "std::option::Option<layout::SizeInfo<std::num::NonZero<usize>>>",
+          "size_bytes": 40,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Some",
+              "size_bytes": 32
+            },
+            {
+              "name": "None",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "layout::SizeInfo",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "SliceDst",
+              "size_bytes": 32
+            },
+            {
+              "name": "Sized",
+              "size_bytes": 16
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "layout::SizeInfo<std::num::NonZero<usize>>",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "SliceDst",
+              "size_bytes": 32
+            },
+            {
+              "name": "Sized",
+              "size_bytes": 16
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "std::option::Option<i128>",
+          "size_bytes": 32,
+          "align_bytes": 16,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Some",
+              "size_bytes": 16
+            },
+            {
+              "name": "None",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 16,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::option::Option<layout::TrailingSliceLayout>",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Some",
+              "size_bytes": 32
+            },
+            {
+              "name": "None",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "<layout::cast_from::CastFrom<Dst> as pointer::cast::Project<Src, Dst>>::project::CastParamsInner",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 3,
+          "variants": [
+            {
+              "name": "UnsizedToUnsized",
+              "size_bytes": 16
+            },
+            {
+              "name": "SizedToUnsized",
+              "size_bytes": 8
+            },
+            {
+              "name": "SizedToSized",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<(usize, usize), layout::MetadataCastError>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 23
+            },
+            {
+              "name": "Err",
+              "size_bytes": 1
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::option::Option<i64>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Some",
+              "size_bytes": 8
+            },
+            {
+              "name": "None",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::option::Option<isize>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Some",
+              "size_bytes": 8
+            },
+            {
+              "name": "None",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::option::Option<usize>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Some",
+              "size_bytes": 8
+            },
+            {
+              "name": "None",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::mem::alignment::AlignmentEnum",
+          "size_bytes": 8,
+          "align_bytes": 8,
+          "variant_count": 64,
+          "variants": [
+            {
+              "name": "_Align1Shl0",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl1",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl2",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl3",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl4",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl5",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl6",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl7",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl8",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl9",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl10",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl11",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl12",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl13",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl14",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl15",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl16",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl17",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl18",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl19",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl20",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl21",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl22",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl23",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl24",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl25",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl26",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl27",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl28",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl29",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl30",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl31",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl32",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl33",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl34",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl35",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl36",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl37",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl38",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl39",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl40",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl41",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl42",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl43",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl44",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl45",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl46",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl47",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl48",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl49",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl50",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl51",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl52",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl53",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl54",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl55",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl56",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl57",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl58",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl59",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl60",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl61",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl62",
+              "size_bytes": 0
+            },
+            {
+              "name": "_Align1Shl63",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::option::Option<i32>",
+          "size_bytes": 8,
+          "align_bytes": 4,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Some",
+              "size_bytes": 4
+            },
+            {
+              "name": "None",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 4,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::option::Option<std::num::NonZero<usize>>",
+          "size_bytes": 8,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Some",
+              "size_bytes": 8
+            },
+            {
+              "name": "None",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "std::option::Option<i16>",
+          "size_bytes": 4,
+          "align_bytes": 2,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Some",
+              "size_bytes": 2
+            },
+            {
+              "name": "None",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 2,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::option::Option<i8>",
+          "size_bytes": 2,
+          "align_bytes": 1,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Some",
+              "size_bytes": 1
+            },
+            {
+              "name": "None",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "byteorder::Order",
+          "size_bytes": 1,
+          "align_bytes": 1,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "BigEndian",
+              "size_bytes": 0
+            },
+            {
+              "name": "LittleEndian",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "layout::CastType",
+          "size_bytes": 1,
+          "align_bytes": 1,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Prefix",
+              "size_bytes": 0
+            },
+            {
+              "name": "Suffix",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "layout::MetadataCastError",
+          "size_bytes": 1,
+          "align_bytes": 1,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Alignment",
+              "size_bytes": 0
+            },
+            {
+              "name": "Size",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "pointer::invariant::ValidityKind",
+          "size_bytes": 1,
+          "align_bytes": 1,
+          "variant_count": 4,
+          "variants": [
+            {
+              "name": "Uninit",
+              "size_bytes": 0
+            },
+            {
+              "name": "AsInitialized",
+              "size_bytes": 0
+            },
+            {
+              "name": "Initialized",
+              "size_bytes": 0
+            },
+            {
+              "name": "Safe",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::cmp::Ordering",
+          "size_bytes": 1,
+          "align_bytes": 1,
+          "variant_count": 3,
+          "variants": [
+            {
+              "name": "Less",
+              "size_bytes": 0
+            },
+            {
+              "name": "Equal",
+              "size_bytes": 0
+            },
+            {
+              "name": "Greater",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::option::Option<std::cmp::Ordering>",
+          "size_bytes": 1,
+          "align_bytes": 1,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Some",
+              "size_bytes": 1
+            },
+            {
+              "name": "None",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "std::result::Result<(), std::fmt::Error>",
+          "size_bytes": 1,
+          "align_bytes": 1,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 0
+            },
+            {
+              "name": "Err",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "error::AllocError",
+          "size_bytes": 0,
+          "align_bytes": 1,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "std::fmt::Error",
+          "size_bytes": 0,
+          "align_bytes": 1,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "std::result::Result<!, error::AllocError>",
+          "size_bytes": 0,
+          "align_bytes": 1,
+          "variant_count": 1,
+          "variants": [
+            {
+              "name": "Err",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Single"
+        },
+        {
+          "type": "std::result::Result<!, std::fmt::Error>",
+          "size_bytes": 0,
+          "align_bytes": 1,
+          "variant_count": 1,
+          "variants": [
+            {
+              "name": "Err",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Single"
+        }
+      ]
+    },
+    "downstream_generic_instantiations": {
+      "count": 105,
+      "tag_encoding_counts": {
+        "Direct": 46,
+        "Niche": 14,
+        "Single": 9,
+        "StructOrSingle": 36
+      },
+      "layouts": [
+        {
+          "type": "std::option::Option<zerocopy::layout::SizeInfo<std::num::NonZero<usize>>>",
+          "size_bytes": 40,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Some",
+              "size_bytes": 32
+            },
+            {
+              "name": "None",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::ops::ControlFlow<std::result::Result<!, zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, [u8; 4]>, zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, [u8; 4]>, !>>, (zerocopy::PtrInner<'_, [u8; 4]>, zerocopy::PtrInner<'_, [u8]>)>",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Continue",
+              "size_bytes": 24
+            },
+            {
+              "name": "Break",
+              "size_bytes": 24
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::ops::ControlFlow<std::result::Result<!, zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, bool>, zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, bool>, !>>, (zerocopy::PtrInner<'_, bool>, zerocopy::PtrInner<'_, [u8]>)>",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Continue",
+              "size_bytes": 24
+            },
+            {
+              "name": "Break",
+              "size_bytes": 24
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::ops::ControlFlow<std::result::Result<!, zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, u32>, zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, u32>, !>>, (zerocopy::PtrInner<'_, u32>, zerocopy::PtrInner<'_, [u8]>)>",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Continue",
+              "size_bytes": 24
+            },
+            {
+              "name": "Break",
+              "size_bytes": 24
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<(zerocopy::Ptr<'_, [u8; 4], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Initialized)>, zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>), zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, [u8; 4]>, zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, [u8; 4]>, !>>",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 24
+            },
+            {
+              "name": "Err",
+              "size_bytes": 24
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<(zerocopy::Ptr<'_, bool, (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Initialized)>, zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>), zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, bool>, zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, bool>, !>>",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 24
+            },
+            {
+              "name": "Err",
+              "size_bytes": 24
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<(zerocopy::Ptr<'_, u32, (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Initialized)>, zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>), zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, u32>, zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, u32>, !>>",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 24
+            },
+            {
+              "name": "Err",
+              "size_bytes": 24
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<(zerocopy::PtrInner<'_, [u8; 4]>, zerocopy::PtrInner<'_, [u8]>), zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, [u8; 4]>, zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, [u8; 4]>, !>>",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 24
+            },
+            {
+              "name": "Err",
+              "size_bytes": 24
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<(zerocopy::PtrInner<'_, [u8; 4]>, zerocopy::PtrInner<'_, [u8]>), zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::PtrInner<'_, [u8]>, [u8; 4]>, zerocopy::SizeError<zerocopy::PtrInner<'_, [u8]>, [u8; 4]>, !>>",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 24
+            },
+            {
+              "name": "Err",
+              "size_bytes": 24
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<(zerocopy::PtrInner<'_, bool>, zerocopy::PtrInner<'_, [u8]>), zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, bool>, zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, bool>, !>>",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 24
+            },
+            {
+              "name": "Err",
+              "size_bytes": 24
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<(zerocopy::PtrInner<'_, bool>, zerocopy::PtrInner<'_, [u8]>), zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::PtrInner<'_, [u8]>, bool>, zerocopy::SizeError<zerocopy::PtrInner<'_, [u8]>, bool>, !>>",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 24
+            },
+            {
+              "name": "Err",
+              "size_bytes": 24
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<(zerocopy::PtrInner<'_, u32>, zerocopy::PtrInner<'_, [u8]>), zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, u32>, zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, u32>, !>>",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 24
+            },
+            {
+              "name": "Err",
+              "size_bytes": 24
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<(zerocopy::PtrInner<'_, u32>, zerocopy::PtrInner<'_, [u8]>), zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::PtrInner<'_, [u8]>, u32>, zerocopy::SizeError<zerocopy::PtrInner<'_, [u8]>, u32>, !>>",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 24
+            },
+            {
+              "name": "Err",
+              "size_bytes": 24
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<zerocopy::Ref<&[u8], [u8; 4]>, zerocopy::ConvertError<zerocopy::AlignmentError<&[u8], [u8; 4]>, zerocopy::SizeError<&[u8], [u8; 4]>, !>>",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 24
+            },
+            {
+              "name": "Err",
+              "size_bytes": 24
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<zerocopy::Ref<&[u8], zerocopy::Unalign<u32>>, zerocopy::ConvertError<zerocopy::AlignmentError<&[u8], zerocopy::Unalign<u32>>, zerocopy::SizeError<&[u8], zerocopy::Unalign<u32>>, !>>",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 24
+            },
+            {
+              "name": "Err",
+              "size_bytes": 24
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::layout::SizeInfo",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "SliceDst",
+              "size_bytes": 32
+            },
+            {
+              "name": "Sized",
+              "size_bytes": 16
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "zerocopy::layout::SizeInfo<std::num::NonZero<usize>>",
+          "size_bytes": 32,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "SliceDst",
+              "size_bytes": 32
+            },
+            {
+              "name": "Sized",
+              "size_bytes": 16
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "std::ops::ControlFlow<std::result::Result<!, zerocopy::layout::MetadataCastError>, (usize, usize)>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Continue",
+              "size_bytes": 23
+            },
+            {
+              "name": "Break",
+              "size_bytes": 1
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<!, zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, [u8; 4]>, zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, [u8; 4]>, !>>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 1,
+          "variants": [
+            {
+              "name": "Err",
+              "size_bytes": 24
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Single"
+        },
+        {
+          "type": "std::result::Result<!, zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, bool>, zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, bool>, !>>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 1,
+          "variants": [
+            {
+              "name": "Err",
+              "size_bytes": 24
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Single"
+        },
+        {
+          "type": "std::result::Result<!, zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, u32>, zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, u32>, !>>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 1,
+          "variants": [
+            {
+              "name": "Err",
+              "size_bytes": 24
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Single"
+        },
+        {
+          "type": "std::result::Result<&bool, zerocopy::ConvertError<zerocopy::AlignmentError<&[u8], bool>, zerocopy::SizeError<&[u8], bool>, zerocopy::ValidityError<&[u8], bool>>>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Err",
+              "size_bytes": 24
+            },
+            {
+              "name": "Ok",
+              "size_bytes": 16
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "std::result::Result<&u32, zerocopy::ConvertError<zerocopy::AlignmentError<&[u8], u32>, zerocopy::SizeError<&[u8], u32>, !>>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Err",
+              "size_bytes": 24
+            },
+            {
+              "name": "Ok",
+              "size_bytes": 16
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "std::result::Result<(usize, usize), zerocopy::layout::MetadataCastError>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 23
+            },
+            {
+              "name": "Err",
+              "size_bytes": 1
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<bool, zerocopy::ConvertError<!, zerocopy::SizeError<&[u8], bool>, zerocopy::ValidityError<&[u8], bool>>>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Err",
+              "size_bytes": 24
+            },
+            {
+              "name": "Ok",
+              "size_bytes": 9
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "std::result::Result<zerocopy::Ptr<'_, [u8; 4], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Initialized)>, zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, [u8; 4]>, zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, [u8; 4]>, !>>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Err",
+              "size_bytes": 24
+            },
+            {
+              "name": "Ok",
+              "size_bytes": 16
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "std::result::Result<zerocopy::Ptr<'_, bool, (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Initialized)>, zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, bool>, zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, bool>, !>>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Err",
+              "size_bytes": 24
+            },
+            {
+              "name": "Ok",
+              "size_bytes": 16
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "std::result::Result<zerocopy::Ptr<'_, u32, (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Initialized)>, zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, u32>, zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, u32>, !>>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Err",
+              "size_bytes": 24
+            },
+            {
+              "name": "Ok",
+              "size_bytes": 16
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "zerocopy::ConvertError<!, zerocopy::SizeError<&[u8], bool>, zerocopy::ValidityError<&[u8], bool>>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 3,
+          "variants": [
+            {
+              "name": "Size",
+              "size_bytes": 16
+            },
+            {
+              "name": "Validity",
+              "size_bytes": 16
+            },
+            {
+              "name": "Alignment",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::ConvertError<zerocopy::AlignmentError<&[u8], [u8; 4]>, zerocopy::SizeError<&[u8], [u8; 4]>, !>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 3,
+          "variants": [
+            {
+              "name": "Alignment",
+              "size_bytes": 16
+            },
+            {
+              "name": "Size",
+              "size_bytes": 16
+            },
+            {
+              "name": "Validity",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::ConvertError<zerocopy::AlignmentError<&[u8], bool>, zerocopy::SizeError<&[u8], bool>, !>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 3,
+          "variants": [
+            {
+              "name": "Alignment",
+              "size_bytes": 16
+            },
+            {
+              "name": "Size",
+              "size_bytes": 16
+            },
+            {
+              "name": "Validity",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::ConvertError<zerocopy::AlignmentError<&[u8], bool>, zerocopy::SizeError<&[u8], bool>, zerocopy::ValidityError<&[u8], bool>>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 3,
+          "variants": [
+            {
+              "name": "Alignment",
+              "size_bytes": 16
+            },
+            {
+              "name": "Size",
+              "size_bytes": 16
+            },
+            {
+              "name": "Validity",
+              "size_bytes": 16
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::ConvertError<zerocopy::AlignmentError<&[u8], u32>, zerocopy::SizeError<&[u8], u32>, !>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 3,
+          "variants": [
+            {
+              "name": "Alignment",
+              "size_bytes": 16
+            },
+            {
+              "name": "Size",
+              "size_bytes": 16
+            },
+            {
+              "name": "Validity",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::ConvertError<zerocopy::AlignmentError<&[u8], zerocopy::Unalign<u32>>, zerocopy::SizeError<&[u8], zerocopy::Unalign<u32>>, !>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 3,
+          "variants": [
+            {
+              "name": "Alignment",
+              "size_bytes": 16
+            },
+            {
+              "name": "Size",
+              "size_bytes": 16
+            },
+            {
+              "name": "Validity",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, [u8; 4]>, zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, [u8; 4]>, !>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 3,
+          "variants": [
+            {
+              "name": "Alignment",
+              "size_bytes": 16
+            },
+            {
+              "name": "Size",
+              "size_bytes": 16
+            },
+            {
+              "name": "Validity",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, bool>, zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, bool>, !>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 3,
+          "variants": [
+            {
+              "name": "Alignment",
+              "size_bytes": 16
+            },
+            {
+              "name": "Size",
+              "size_bytes": 16
+            },
+            {
+              "name": "Validity",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, u32>, zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, u32>, !>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 3,
+          "variants": [
+            {
+              "name": "Alignment",
+              "size_bytes": 16
+            },
+            {
+              "name": "Size",
+              "size_bytes": 16
+            },
+            {
+              "name": "Validity",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::PtrInner<'_, [u8]>, [u8; 4]>, zerocopy::SizeError<zerocopy::PtrInner<'_, [u8]>, [u8; 4]>, !>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 3,
+          "variants": [
+            {
+              "name": "Alignment",
+              "size_bytes": 16
+            },
+            {
+              "name": "Size",
+              "size_bytes": 16
+            },
+            {
+              "name": "Validity",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::PtrInner<'_, [u8]>, bool>, zerocopy::SizeError<zerocopy::PtrInner<'_, [u8]>, bool>, !>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 3,
+          "variants": [
+            {
+              "name": "Alignment",
+              "size_bytes": 16
+            },
+            {
+              "name": "Size",
+              "size_bytes": 16
+            },
+            {
+              "name": "Validity",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::ConvertError<zerocopy::AlignmentError<zerocopy::PtrInner<'_, [u8]>, u32>, zerocopy::SizeError<zerocopy::PtrInner<'_, [u8]>, u32>, !>",
+          "size_bytes": 24,
+          "align_bytes": 8,
+          "variant_count": 3,
+          "variants": [
+            {
+              "name": "Alignment",
+              "size_bytes": 16
+            },
+            {
+              "name": "Size",
+              "size_bytes": 16
+            },
+            {
+              "name": "Validity",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::option::Option<usize>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Some",
+              "size_bytes": 8
+            },
+            {
+              "name": "None",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::option::Option<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Exclusive, zerocopy::invariant::Unaligned, zerocopy::invariant::Initialized)>>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Some",
+              "size_bytes": 16
+            },
+            {
+              "name": "None",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "std::option::Option<zerocopy::PtrInner<'_, [u8]>>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Some",
+              "size_bytes": 16
+            },
+            {
+              "name": "None",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "std::result::Result<(zerocopy::MetadataOf<[u8; 4]>, zerocopy::MetadataOf<[u8]>), zerocopy::layout::MetadataCastError>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 15
+            },
+            {
+              "name": "Err",
+              "size_bytes": 1
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<(zerocopy::MetadataOf<bool>, zerocopy::MetadataOf<[u8]>), zerocopy::layout::MetadataCastError>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 15
+            },
+            {
+              "name": "Err",
+              "size_bytes": 1
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<(zerocopy::MetadataOf<u32>, zerocopy::MetadataOf<[u8]>), zerocopy::layout::MetadataCastError>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 15
+            },
+            {
+              "name": "Err",
+              "size_bytes": 1
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<u32, zerocopy::SizeError<&[u8], u32>>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Err",
+              "size_bytes": 16
+            },
+            {
+              "name": "Ok",
+              "size_bytes": 12
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "std::result::Result<zerocopy::Ptr<'_, [u8; 4], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Initialized)>, zerocopy::ConvertError<zerocopy::AlignmentError<(), [u8; 4]>, zerocopy::SizeError<(), [u8; 4]>, !>>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 15
+            },
+            {
+              "name": "Err",
+              "size_bytes": 1
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<zerocopy::Ptr<'_, bool, (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Initialized)>, zerocopy::ConvertError<zerocopy::AlignmentError<(), bool>, zerocopy::SizeError<(), bool>, !>>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 15
+            },
+            {
+              "name": "Err",
+              "size_bytes": 1
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<zerocopy::Ptr<'_, bool, (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, zerocopy::ValidityError<zerocopy::Ptr<'_, bool, (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Initialized)>, bool>>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 8
+            },
+            {
+              "name": "Err",
+              "size_bytes": 8
+            }
+          ],
+          "discriminant_bytes": 8,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<zerocopy::Ptr<'_, u32, (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Initialized)>, zerocopy::ConvertError<zerocopy::AlignmentError<(), u32>, zerocopy::SizeError<(), u32>, !>>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 15
+            },
+            {
+              "name": "Err",
+              "size_bytes": 1
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::AlignmentError<&[u8], [u8; 4]>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::AlignmentError<&[u8], bool>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::AlignmentError<&[u8], u32>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::AlignmentError<&[u8], zerocopy::Unalign<u32>>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, [u8; 4]>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, bool>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::AlignmentError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, u32>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::AlignmentError<zerocopy::PtrInner<'_, [u8]>, [u8; 4]>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::AlignmentError<zerocopy::PtrInner<'_, [u8]>, bool>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::AlignmentError<zerocopy::PtrInner<'_, [u8]>, u32>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::SizeError<&[u8], [u8; 4]>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::SizeError<&[u8], bool>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::SizeError<&[u8], u32>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::SizeError<&[u8], zerocopy::Unalign<u32>>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, [u8; 4]>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, bool>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::SizeError<zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>, u32>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::SizeError<zerocopy::PtrInner<'_, [u8]>, [u8; 4]>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::SizeError<zerocopy::PtrInner<'_, [u8]>, bool>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::SizeError<zerocopy::PtrInner<'_, [u8]>, u32>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::ValidityError<&[u8], bool>",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "{closure@zerocopy::pointer::ptr::_casts::<impl zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>>::try_with_unchecked<[u8; 4], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Initialized), zerocopy::ConvertError<zerocopy::AlignmentError<(), [u8; 4]>, zerocopy::SizeError<(), [u8; 4]>, !>, {closure@zerocopy::pointer::ptr::_casts::<impl zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>>::try_cast_into_no_leftover<[u8; 4], zerocopy::invariant::BecauseImmutable>::{closure#0}}>::{closure#0}}",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "{closure@zerocopy::pointer::ptr::_casts::<impl zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>>::try_with_unchecked<bool, (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Initialized), zerocopy::ConvertError<zerocopy::AlignmentError<(), bool>, zerocopy::SizeError<(), bool>, !>, {closure@zerocopy::pointer::ptr::_casts::<impl zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>>::try_cast_into_no_leftover<bool, zerocopy::invariant::BecauseImmutable>::{closure#0}}>::{closure#0}}",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "{closure@zerocopy::pointer::ptr::_casts::<impl zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>>::try_with_unchecked<u32, (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Initialized), zerocopy::ConvertError<zerocopy::AlignmentError<(), u32>, zerocopy::SizeError<(), u32>, !>, {closure@zerocopy::pointer::ptr::_casts::<impl zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>>::try_cast_into_no_leftover<u32, zerocopy::invariant::BecauseImmutable>::{closure#0}}>::{closure#0}}",
+          "size_bytes": 16,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "std::option::Option<std::num::NonZero<usize>>",
+          "size_bytes": 8,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Some",
+              "size_bytes": 8
+            },
+            {
+              "name": "None",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "std::option::Option<std::ptr::NonNull<u8>>",
+          "size_bytes": 8,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Some",
+              "size_bytes": 8
+            },
+            {
+              "name": "None",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "std::option::Option<zerocopy::Ptr<'_, u32, (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Initialized)>>",
+          "size_bytes": 8,
+          "align_bytes": 8,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Some",
+              "size_bytes": 8
+            },
+            {
+              "name": "None",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Niche"
+        },
+        {
+          "type": "std::result::Result<&u32, !>",
+          "size_bytes": 8,
+          "align_bytes": 8,
+          "variant_count": 1,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 8
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Single"
+        },
+        {
+          "type": "zerocopy::ValidityError<zerocopy::Ptr<'_, bool, (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Initialized)>, bool>",
+          "size_bytes": 8,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "{closure@zerocopy::pointer::ptr::_casts::<impl zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>>::try_with_unchecked<[u8; 4], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Initialized), zerocopy::ConvertError<zerocopy::AlignmentError<(), [u8; 4]>, zerocopy::SizeError<(), [u8; 4]>, !>, {closure@zerocopy::pointer::ptr::_casts::<impl zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>>::try_cast_into_no_leftover<[u8; 4], zerocopy::invariant::BecauseImmutable>::{closure#0}}>::{closure#0}::{closure#0}}",
+          "size_bytes": 8,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "{closure@zerocopy::pointer::ptr::_casts::<impl zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>>::try_with_unchecked<bool, (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Initialized), zerocopy::ConvertError<zerocopy::AlignmentError<(), bool>, zerocopy::SizeError<(), bool>, !>, {closure@zerocopy::pointer::ptr::_casts::<impl zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>>::try_cast_into_no_leftover<bool, zerocopy::invariant::BecauseImmutable>::{closure#0}}>::{closure#0}::{closure#0}}",
+          "size_bytes": 8,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "{closure@zerocopy::pointer::ptr::_casts::<impl zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>>::try_with_unchecked<u32, (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Initialized), zerocopy::ConvertError<zerocopy::AlignmentError<(), u32>, zerocopy::SizeError<(), u32>, !>, {closure@zerocopy::pointer::ptr::_casts::<impl zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>>::try_cast_into_no_leftover<u32, zerocopy::invariant::BecauseImmutable>::{closure#0}}>::{closure#0}::{closure#0}}",
+          "size_bytes": 8,
+          "align_bytes": 8,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "std::result::Result<u32, !>",
+          "size_bytes": 4,
+          "align_bytes": 4,
+          "variant_count": 1,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 4
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Single"
+        },
+        {
+          "type": "unwind::types::_Unwind_Reason_Code",
+          "size_bytes": 4,
+          "align_bytes": 4,
+          "variant_count": 10,
+          "variants": [
+            {
+              "name": "_URC_NO_REASON",
+              "size_bytes": 0
+            },
+            {
+              "name": "_URC_FOREIGN_EXCEPTION_CAUGHT",
+              "size_bytes": 0
+            },
+            {
+              "name": "_URC_FATAL_PHASE2_ERROR",
+              "size_bytes": 0
+            },
+            {
+              "name": "_URC_FATAL_PHASE1_ERROR",
+              "size_bytes": 0
+            },
+            {
+              "name": "_URC_NORMAL_STOP",
+              "size_bytes": 0
+            },
+            {
+              "name": "_URC_END_OF_STACK",
+              "size_bytes": 0
+            },
+            {
+              "name": "_URC_HANDLER_FOUND",
+              "size_bytes": 0
+            },
+            {
+              "name": "_URC_INSTALL_CONTEXT",
+              "size_bytes": 0
+            },
+            {
+              "name": "_URC_CONTINUE_UNWIND",
+              "size_bytes": 0
+            },
+            {
+              "name": "_URC_FAILURE",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 4,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::util::transmute_unchecked::Transmute<zerocopy::Unalign<u32>, u32>",
+          "size_bytes": 4,
+          "align_bytes": 4,
+          "variant_count": 1,
+          "variants": [
+            {
+              "name": "Transmute",
+              "size_bytes": 4
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Single"
+        },
+        {
+          "type": "std::mem::MaybeUninit<bool>",
+          "size_bytes": 1,
+          "align_bytes": 1,
+          "variant_count": 1,
+          "variants": [
+            {
+              "name": "MaybeUninit",
+              "size_bytes": 1
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Single"
+        },
+        {
+          "type": "std::option::Option<()>",
+          "size_bytes": 1,
+          "align_bytes": 1,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "None",
+              "size_bytes": 0
+            },
+            {
+              "name": "Some",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<!, zerocopy::layout::MetadataCastError>",
+          "size_bytes": 1,
+          "align_bytes": 1,
+          "variant_count": 1,
+          "variants": [
+            {
+              "name": "Err",
+              "size_bytes": 1
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Single"
+        },
+        {
+          "type": "std::result::Result<(), std::fmt::Error>",
+          "size_bytes": 1,
+          "align_bytes": 1,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 0
+            },
+            {
+              "name": "Err",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::result::Result<(), zerocopy::AlignmentError<(), zerocopy::Unalign<u32>>>",
+          "size_bytes": 1,
+          "align_bytes": 1,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 0
+            },
+            {
+              "name": "Err",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::CastType",
+          "size_bytes": 1,
+          "align_bytes": 1,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Prefix",
+              "size_bytes": 0
+            },
+            {
+              "name": "Suffix",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::ConvertError<zerocopy::AlignmentError<(), [u8; 4]>, zerocopy::SizeError<(), [u8; 4]>, !>",
+          "size_bytes": 1,
+          "align_bytes": 1,
+          "variant_count": 3,
+          "variants": [
+            {
+              "name": "Alignment",
+              "size_bytes": 0
+            },
+            {
+              "name": "Size",
+              "size_bytes": 0
+            },
+            {
+              "name": "Validity",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::ConvertError<zerocopy::AlignmentError<(), bool>, zerocopy::SizeError<(), bool>, !>",
+          "size_bytes": 1,
+          "align_bytes": 1,
+          "variant_count": 3,
+          "variants": [
+            {
+              "name": "Alignment",
+              "size_bytes": 0
+            },
+            {
+              "name": "Size",
+              "size_bytes": 0
+            },
+            {
+              "name": "Validity",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::ConvertError<zerocopy::AlignmentError<(), u32>, zerocopy::SizeError<(), u32>, !>",
+          "size_bytes": 1,
+          "align_bytes": 1,
+          "variant_count": 3,
+          "variants": [
+            {
+              "name": "Alignment",
+              "size_bytes": 0
+            },
+            {
+              "name": "Size",
+              "size_bytes": 0
+            },
+            {
+              "name": "Validity",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "zerocopy::layout::MetadataCastError",
+          "size_bytes": 1,
+          "align_bytes": 1,
+          "variant_count": 2,
+          "variants": [
+            {
+              "name": "Alignment",
+              "size_bytes": 0
+            },
+            {
+              "name": "Size",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": 1,
+          "tag_encoding": "Direct"
+        },
+        {
+          "type": "std::fmt::Error",
+          "size_bytes": 0,
+          "align_bytes": 1,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "std::result::Result<(), !>",
+          "size_bytes": 0,
+          "align_bytes": 1,
+          "variant_count": 1,
+          "variants": [
+            {
+              "name": "Ok",
+              "size_bytes": 0
+            }
+          ],
+          "discriminant_bytes": null,
+          "tag_encoding": "Single"
+        },
+        {
+          "type": "zerocopy::AlignmentError<(), [u8; 4]>",
+          "size_bytes": 0,
+          "align_bytes": 1,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::AlignmentError<(), bool>",
+          "size_bytes": 0,
+          "align_bytes": 1,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::AlignmentError<(), u32>",
+          "size_bytes": 0,
+          "align_bytes": 1,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::AlignmentError<(), zerocopy::Unalign<u32>>",
+          "size_bytes": 0,
+          "align_bytes": 1,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::SizeError<(), [u8; 4]>",
+          "size_bytes": 0,
+          "align_bytes": 1,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::SizeError<(), bool>",
+          "size_bytes": 0,
+          "align_bytes": 1,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        },
+        {
+          "type": "zerocopy::SizeError<(), u32>",
+          "size_bytes": 0,
+          "align_bytes": 1,
+          "variant_count": 0,
+          "variants": [],
+          "discriminant_bytes": null,
+          "tag_encoding": "StructOrSingle"
+        }
+      ]
+    }
+  },
+  "mir_enum_ops_census": {
+    "runtime_post_cleanup": {
+      "counts": {
+        "bodies": 4859,
+        "set_discriminant": 0,
+        "rvalue_discriminant": 614,
+        "aggregate_adt_enum": 63,
+        "downcast_field_projection": 1081,
+        "switch_int": 1117,
+        "switch_int_arms": 2842,
+        "unreachable_terminators": 544
+      },
+      "samples": {
+        "set_discriminant": [],
+        "rvalue_discriminant": [
+          {
+            "fn": "FromBytes-mut_from_bytes-{impl#0}-ASSERT",
+            "stmt": "_6 = discriminant((_5.1: layout::SizeInfo));"
+          },
+          {
+            "fn": "FromBytes-mut_from_bytes-{impl#0}-ASSERT",
+            "stmt": "_15 = discriminant((_14.1: layout::SizeInfo));"
+          },
+          {
+            "fn": "FromBytes-mut_from_bytes",
+            "stmt": "_12 = discriminant(_8);"
+          },
+          {
+            "fn": "FromBytes-mut_from_bytes_with_elems",
+            "stmt": "_9 = discriminant(_5);"
+          },
+          {
+            "fn": "FromBytes-mut_from_prefix-{impl#0}-ASSERT",
+            "stmt": "_6 = discriminant((_5.1: layout::SizeInfo));"
+          }
+        ],
+        "aggregate_adt_enum": [
+          {
+            "fn": "FromBytes-mut_from_bytes_with_elems",
+            "stmt": "_7 = Option::<usize>::Some(move _8);"
+          },
+          {
+            "fn": "FromBytes-mut_from_prefix_with_elems",
+            "stmt": "_4 = Option::<usize>::Some(move _5);"
+          },
+          {
+            "fn": "FromBytes-mut_from_suffix_with_elems",
+            "stmt": "_5 = Option::<usize>::Some(move _6);"
+          },
+          {
+            "fn": "FromBytes-read_from_io",
+            "stmt": "_0 = Result::<Self, std::io::Error>::Ok(move _24);"
+          },
+          {
+            "fn": "FromBytes-ref_from_bytes_with_elems",
+            "stmt": "_7 = Option::<usize>::Some(move _8);"
+          }
+        ],
+        "downcast_field_projection": [
+          {
+            "fn": "FromBytes-mut_from_bytes-{impl#0}-ASSERT",
+            "stmt": "_7 = copy ((((_5.1: layout::SizeInfo) as SliceDst).0: layout::TrailingSliceLayout).1: usize);"
+          },
+          {
+            "fn": "FromBytes-mut_from_bytes-{impl#0}-ASSERT",
+            "stmt": "_16 = copy ((((_14.1: layout::SizeInfo) as SliceDst).0: layout::TrailingSliceLayout).1: usize);"
+          },
+          {
+            "fn": "FromBytes-mut_from_bytes",
+            "stmt": "_18 = move ((_8 as Err).0: error::ConvertError<error::AlignmentError<pointer::ptr::def::Ptr<'_, [u8], (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Safe)>, Self>, error::SizeError<pointer::ptr::def::Ptr<'_, [u8], (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Safe)>, Self>, !>);"
+          },
+          {
+            "fn": "FromBytes-mut_from_bytes",
+            "stmt": "_13 = move ((_8 as Ok).0: pointer::ptr::def::Ptr<'_, Self, (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Initialized)>);"
+          },
+          {
+            "fn": "FromBytes-mut_from_bytes_with_elems",
+            "stmt": "_15 = move ((_5 as Err).0: error::ConvertError<error::AlignmentError<pointer::ptr::def::Ptr<'_, [u8], (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Safe)>, Self>, error::SizeError<pointer::ptr::def::Ptr<'_, [u8], (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Safe)>, Self>, !>);"
+          }
+        ]
+      }
+    },
+    "runtime_optimized": {
+      "counts": {
+        "bodies": 4505,
+        "set_discriminant": 0,
+        "rvalue_discriminant": 563,
+        "aggregate_adt_enum": 66,
+        "downcast_field_projection": 586,
+        "switch_int": 995,
+        "switch_int_arms": 2208,
+        "unreachable_terminators": 160
+      },
+      "samples": {
+        "set_discriminant": [],
+        "rvalue_discriminant": [
+          {
+            "fn": "FromBytes-mut_from_bytes",
+            "stmt": "_6 = discriminant(_3);"
+          },
+          {
+            "fn": "FromBytes-mut_from_bytes_with_elems",
+            "stmt": "_6 = discriminant(_4);"
+          },
+          {
+            "fn": "FromBytes-read_from_bytes",
+            "stmt": "_4 = discriminant(_2);"
+          },
+          {
+            "fn": "FromBytes-read_from_bytes",
+            "stmt": "_3 = discriminant(((_2 as Err).0: error::ConvertError<error::AlignmentError<&[u8], wrappers::Unalign<Self>>, error::SizeError<&[u8], wrappers::Unalign<Self>>, !>));"
+          },
+          {
+            "fn": "FromBytes-read_from_io",
+            "stmt": "_13 = discriminant(_9);"
+          }
+        ],
+        "aggregate_adt_enum": [
+          {
+            "fn": "FromBytes-mut_from_bytes_with_elems",
+            "stmt": "_5 = Option::<usize>::Some(copy _2);"
+          },
+          {
+            "fn": "FromBytes-mut_from_prefix_with_elems",
+            "stmt": "_3 = Option::<usize>::Some(copy _2);"
+          },
+          {
+            "fn": "FromBytes-mut_from_suffix_with_elems",
+            "stmt": "_4 = Option::<usize>::Some(copy _2);"
+          },
+          {
+            "fn": "FromBytes-read_from_io",
+            "stmt": "_0 = Result::<Self, std::io::Error>::Ok(move _15);"
+          },
+          {
+            "fn": "FromBytes-ref_from_bytes_with_elems",
+            "stmt": "_5 = Option::<usize>::Some(copy _2);"
+          }
+        ],
+        "downcast_field_projection": [
+          {
+            "fn": "FromBytes-mut_from_bytes",
+            "stmt": "_10 = move ((_3 as Err).0: error::ConvertError<error::AlignmentError<pointer::ptr::def::Ptr<'_, [u8], (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Safe)>, Self>, error::SizeError<pointer::ptr::def::Ptr<'_, [u8], (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Safe)>, Self>, !>);"
+          },
+          {
+            "fn": "FromBytes-mut_from_bytes",
+            "stmt": "_7 = move ((_3 as Ok).0: pointer::ptr::def::Ptr<'_, Self, (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Initialized)>);"
+          },
+          {
+            "fn": "FromBytes-mut_from_bytes_with_elems",
+            "stmt": "_10 = move ((_4 as Err).0: error::ConvertError<error::AlignmentError<pointer::ptr::def::Ptr<'_, [u8], (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Safe)>, Self>, error::SizeError<pointer::ptr::def::Ptr<'_, [u8], (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Safe)>, Self>, !>);"
+          },
+          {
+            "fn": "FromBytes-mut_from_bytes_with_elems",
+            "stmt": "_7 = move ((_4 as Ok).0: pointer::ptr::def::Ptr<'_, Self, (pointer::invariant::Exclusive, pointer::invariant::Aligned, pointer::invariant::Initialized)>);"
+          },
+          {
+            "fn": "FromBytes-read_from_bytes",
+            "stmt": "_3 = discriminant(((_2 as Err).0: error::ConvertError<error::AlignmentError<&[u8], wrappers::Unalign<Self>>, error::SizeError<&[u8], wrappers::Unalign<Self>>, !>));"
+          }
+        ]
+      }
+    }
+  },
+  "unreachable_enum_branching_census": {
+    "zerocopy_crate": {
+      "bodies_checked": 4482,
+      "bodies_modified_semantically": 45,
+      "switch_int_before": 1041,
+      "switch_int_after": 1041,
+      "switch_int_arms_before": 2633,
+      "switch_int_arms_after": 2654,
+      "unreachable_before": 514,
+      "unreachable_after": 522,
+      "modified_bodies": [
+        {
+          "mir_fn": "FromBytes-read_from_bytes",
+          "src_refs": [],
+          "switch_int_before": 2,
+          "switch_int_after": 2,
+          "arms_before": 7,
+          "arms_after": 7,
+          "unreachable_before": 2,
+          "unreachable_after": 2,
+          "before_mir_excerpt": "// MIR for `FromBytes::read_from_bytes` before UnreachableEnumBranching\n\nfn FromBytes::read_from_bytes(_1: &[u8]) -> Result<Self, error::SizeError<&[u8], Self>> {\n    debug source => _1;\n    let mut _0: std::result::Result<Self, error::SizeError<&[u8], Self>>;\n    let mut _2: std::result::Result<r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>, error::ConvertError<error::AlignmentError<&[u8], wrappers::Unalign<Self>>, error::SizeError<&[u8], wrappers::Unalign<Self>>, !>>;\n    let mut _3: &[u8];\n    let mut _4: isize;\n    let mut _5: isize;\n    let _6: r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>;\n    let mut _7: Self;\n    let mut _8: wrappers::Unalign<Self>;\n    let mut _9: &r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>;\n    let _10: &r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>;\n    let _11: error::SizeError<&[u8], wrappers::Unalign<Self>>;\n    let mut _12: error::SizeError<&[u8], Self>;\n    let mut _13: error::SizeError<&[u8], wrappers::Unalign<Self>>;\n    let mut _14: !;\n    let _15: !;\n    let mut _16: !;\n    scope 1 {\n        debug r => _6;\n    }\n    scope 2 {\n        debug e => _11;\n    }\n    scope 3 {\n        debug i => const ZeroSized: !;\n    }\n\n    bb0: {\n        _3 = copy _1;\n        _2 = r#ref::<impl r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>>::sized_from(move _3) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _5 = discriminant(_2);\n        switchInt(move _5) -> [0: bb7, 1: bb3, otherwise: bb2];\n    }\n\n    bb2: {\n        unreachable;\n    }\n\n    bb3: {\n        _4 = discriminant(((_2 as Err).0: error::ConvertError<error::AlignmentError<&[u8], wrappers::Unalign<Self>>, error::SizeError<&[u8], wrappers::Unalign<Self>>, !>));\n        switchInt(move _4) -> [0: bb5, 1: bb6, 2: bb4, otherwise: bb2];\n    }\n\n    bb4: {\n        _15 = const Zero",
+          "after_mir_excerpt": "// MIR for `FromBytes::read_from_bytes` after UnreachableEnumBranching\n\nfn FromBytes::read_from_bytes(_1: &[u8]) -> Result<Self, error::SizeError<&[u8], Self>> {\n    debug source => _1;\n    let mut _0: std::result::Result<Self, error::SizeError<&[u8], Self>>;\n    let mut _2: std::result::Result<r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>, error::ConvertError<error::AlignmentError<&[u8], wrappers::Unalign<Self>>, error::SizeError<&[u8], wrappers::Unalign<Self>>, !>>;\n    let mut _3: &[u8];\n    let mut _4: isize;\n    let mut _5: isize;\n    let _6: r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>;\n    let mut _7: Self;\n    let mut _8: wrappers::Unalign<Self>;\n    let mut _9: &r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>;\n    let _10: &r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>;\n    let _11: error::SizeError<&[u8], wrappers::Unalign<Self>>;\n    let mut _12: error::SizeError<&[u8], Self>;\n    let mut _13: error::SizeError<&[u8], wrappers::Unalign<Self>>;\n    let mut _14: !;\n    let _15: !;\n    let mut _16: !;\n    scope 1 {\n        debug r => _6;\n    }\n    scope 2 {\n        debug e => _11;\n    }\n    scope 3 {\n        debug i => const ZeroSized: !;\n    }\n\n    bb0: {\n        _3 = copy _1;\n        _2 = r#ref::<impl r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>>::sized_from(move _3) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _5 = discriminant(_2);\n        switchInt(move _5) -> [0: bb7, 1: bb3, otherwise: bb2];\n    }\n\n    bb2: {\n        unreachable;\n    }\n\n    bb3: {\n        _4 = discriminant(((_2 as Err).0: error::ConvertError<error::AlignmentError<&[u8], wrappers::Unalign<Self>>, error::SizeError<&[u8], wrappers::Unalign<Self>>, !>));\n        switchInt(move _4) -> [0: bb5, 1: bb6, 2: bb2, otherwise: bb2];\n    }\n\n    bb4: {\n        _15 = const ZeroS"
+        },
+        {
+          "mir_fn": "FromBytes-read_from_prefix",
+          "src_refs": [],
+          "switch_int_before": 2,
+          "switch_int_after": 2,
+          "arms_before": 7,
+          "arms_after": 7,
+          "unreachable_before": 2,
+          "unreachable_after": 2,
+          "before_mir_excerpt": "// MIR for `FromBytes::read_from_prefix` before UnreachableEnumBranching\n\nfn FromBytes::read_from_prefix(_1: &[u8]) -> Result<(Self, &[u8]), error::SizeError<&[u8], Self>> {\n    debug source => _1;\n    let mut _0: std::result::Result<(Self, &[u8]), error::SizeError<&[u8], Self>>;\n    let mut _2: std::result::Result<(r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>, &[u8]), error::ConvertError<error::AlignmentError<&[u8], wrappers::Unalign<Self>>, error::SizeError<&[u8], wrappers::Unalign<Self>>, !>>;\n    let mut _3: &[u8];\n    let mut _4: isize;\n    let mut _5: isize;\n    let _6: r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>;\n    let _7: &[u8];\n    let mut _8: (Self, &[u8]);\n    let mut _9: Self;\n    let mut _10: wrappers::Unalign<Self>;\n    let mut _11: &r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>;\n    let _12: &r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>;\n    let mut _13: &[u8];\n    let _14: error::SizeError<&[u8], wrappers::Unalign<Self>>;\n    let mut _15: error::SizeError<&[u8], Self>;\n    let mut _16: error::SizeError<&[u8], wrappers::Unalign<Self>>;\n    let mut _17: !;\n    let _18: !;\n    let mut _19: !;\n    scope 1 {\n        debug r => _6;\n        debug suffix => _7;\n    }\n    scope 2 {\n        debug e => _14;\n    }\n    scope 3 {\n        debug i => const ZeroSized: !;\n    }\n\n    bb0: {\n        _3 = copy _1;\n        _2 = r#ref::<impl r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>>::sized_from_prefix(move _3) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _5 = discriminant(_2);\n        switchInt(move _5) -> [0: bb7, 1: bb3, otherwise: bb2];\n    }\n\n    bb2: {\n        unreachable;\n    }\n\n    bb3: {\n        _4 = discriminant(((_2 as Err).0: error::ConvertError<error::AlignmentError<&[u8], wrappers::Unalign<Self>>, error::SizeError<&[u8], wrappe",
+          "after_mir_excerpt": "// MIR for `FromBytes::read_from_prefix` after UnreachableEnumBranching\n\nfn FromBytes::read_from_prefix(_1: &[u8]) -> Result<(Self, &[u8]), error::SizeError<&[u8], Self>> {\n    debug source => _1;\n    let mut _0: std::result::Result<(Self, &[u8]), error::SizeError<&[u8], Self>>;\n    let mut _2: std::result::Result<(r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>, &[u8]), error::ConvertError<error::AlignmentError<&[u8], wrappers::Unalign<Self>>, error::SizeError<&[u8], wrappers::Unalign<Self>>, !>>;\n    let mut _3: &[u8];\n    let mut _4: isize;\n    let mut _5: isize;\n    let _6: r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>;\n    let _7: &[u8];\n    let mut _8: (Self, &[u8]);\n    let mut _9: Self;\n    let mut _10: wrappers::Unalign<Self>;\n    let mut _11: &r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>;\n    let _12: &r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>;\n    let mut _13: &[u8];\n    let _14: error::SizeError<&[u8], wrappers::Unalign<Self>>;\n    let mut _15: error::SizeError<&[u8], Self>;\n    let mut _16: error::SizeError<&[u8], wrappers::Unalign<Self>>;\n    let mut _17: !;\n    let _18: !;\n    let mut _19: !;\n    scope 1 {\n        debug r => _6;\n        debug suffix => _7;\n    }\n    scope 2 {\n        debug e => _14;\n    }\n    scope 3 {\n        debug i => const ZeroSized: !;\n    }\n\n    bb0: {\n        _3 = copy _1;\n        _2 = r#ref::<impl r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>>::sized_from_prefix(move _3) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _5 = discriminant(_2);\n        switchInt(move _5) -> [0: bb7, 1: bb3, otherwise: bb2];\n    }\n\n    bb2: {\n        unreachable;\n    }\n\n    bb3: {\n        _4 = discriminant(((_2 as Err).0: error::ConvertError<error::AlignmentError<&[u8], wrappers::Unalign<Self>>, error::SizeError<&[u8], wrapper"
+        },
+        {
+          "mir_fn": "FromBytes-read_from_suffix",
+          "src_refs": [],
+          "switch_int_before": 2,
+          "switch_int_after": 2,
+          "arms_before": 7,
+          "arms_after": 7,
+          "unreachable_before": 2,
+          "unreachable_after": 2,
+          "before_mir_excerpt": "// MIR for `FromBytes::read_from_suffix` before UnreachableEnumBranching\n\nfn FromBytes::read_from_suffix(_1: &[u8]) -> Result<(&[u8], Self), error::SizeError<&[u8], Self>> {\n    debug source => _1;\n    let mut _0: std::result::Result<(&[u8], Self), error::SizeError<&[u8], Self>>;\n    let mut _2: std::result::Result<(&[u8], r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>), error::ConvertError<error::AlignmentError<&[u8], wrappers::Unalign<Self>>, error::SizeError<&[u8], wrappers::Unalign<Self>>, !>>;\n    let mut _3: &[u8];\n    let mut _4: isize;\n    let mut _5: isize;\n    let _6: &[u8];\n    let _7: r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>;\n    let mut _8: (&[u8], Self);\n    let mut _9: &[u8];\n    let mut _10: Self;\n    let mut _11: wrappers::Unalign<Self>;\n    let mut _12: &r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>;\n    let _13: &r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>;\n    let _14: error::SizeError<&[u8], wrappers::Unalign<Self>>;\n    let mut _15: error::SizeError<&[u8], Self>;\n    let mut _16: error::SizeError<&[u8], wrappers::Unalign<Self>>;\n    let mut _17: !;\n    let _18: !;\n    let mut _19: !;\n    scope 1 {\n        debug prefix => _6;\n        debug r => _7;\n    }\n    scope 2 {\n        debug e => _14;\n    }\n    scope 3 {\n        debug i => const ZeroSized: !;\n    }\n\n    bb0: {\n        _3 = copy _1;\n        _2 = r#ref::<impl r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>>::sized_from_suffix(move _3) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _5 = discriminant(_2);\n        switchInt(move _5) -> [0: bb7, 1: bb3, otherwise: bb2];\n    }\n\n    bb2: {\n        unreachable;\n    }\n\n    bb3: {\n        _4 = discriminant(((_2 as Err).0: error::ConvertError<error::AlignmentError<&[u8], wrappers::Unalign<Self>>, error::SizeError<&[u8], wrappe",
+          "after_mir_excerpt": "// MIR for `FromBytes::read_from_suffix` after UnreachableEnumBranching\n\nfn FromBytes::read_from_suffix(_1: &[u8]) -> Result<(&[u8], Self), error::SizeError<&[u8], Self>> {\n    debug source => _1;\n    let mut _0: std::result::Result<(&[u8], Self), error::SizeError<&[u8], Self>>;\n    let mut _2: std::result::Result<(&[u8], r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>), error::ConvertError<error::AlignmentError<&[u8], wrappers::Unalign<Self>>, error::SizeError<&[u8], wrappers::Unalign<Self>>, !>>;\n    let mut _3: &[u8];\n    let mut _4: isize;\n    let mut _5: isize;\n    let _6: &[u8];\n    let _7: r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>;\n    let mut _8: (&[u8], Self);\n    let mut _9: &[u8];\n    let mut _10: Self;\n    let mut _11: wrappers::Unalign<Self>;\n    let mut _12: &r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>;\n    let _13: &r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>;\n    let _14: error::SizeError<&[u8], wrappers::Unalign<Self>>;\n    let mut _15: error::SizeError<&[u8], Self>;\n    let mut _16: error::SizeError<&[u8], wrappers::Unalign<Self>>;\n    let mut _17: !;\n    let _18: !;\n    let mut _19: !;\n    scope 1 {\n        debug prefix => _6;\n        debug r => _7;\n    }\n    scope 2 {\n        debug e => _14;\n    }\n    scope 3 {\n        debug i => const ZeroSized: !;\n    }\n\n    bb0: {\n        _3 = copy _1;\n        _2 = r#ref::<impl r#ref::def::Ref<&[u8], wrappers::Unalign<Self>>>::sized_from_suffix(move _3) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _5 = discriminant(_2);\n        switchInt(move _5) -> [0: bb7, 1: bb3, otherwise: bb2];\n    }\n\n    bb2: {\n        unreachable;\n    }\n\n    bb3: {\n        _4 = discriminant(((_2 as Err).0: error::ConvertError<error::AlignmentError<&[u8], wrappers::Unalign<Self>>, error::SizeError<&[u8], wrapper"
+        },
+        {
+          "mir_fn": "IntoBytes-write_to_suffix",
+          "src_refs": [],
+          "switch_int_before": 2,
+          "switch_int_after": 2,
+          "arms_before": 4,
+          "arms_after": 6,
+          "unreachable_before": 0,
+          "unreachable_after": 1,
+          "before_mir_excerpt": "// MIR for `IntoBytes::write_to_suffix` before UnreachableEnumBranching\n\nfn IntoBytes::write_to_suffix(_1: &Self, _2: &mut [u8]) -> Result<(), error::SizeError<&Self, &mut [u8]>> {\n    debug self => _1;\n    debug dst => _2;\n    let mut _0: std::result::Result<(), error::SizeError<&Self, &mut [u8]>>;\n    let _3: &[u8];\n    let mut _4: &Self;\n    let mut _6: std::option::Option<usize>;\n    let mut _7: usize;\n    let mut _8: &[u8];\n    let mut _9: usize;\n    let mut _10: &[u8];\n    let mut _11: isize;\n    let mut _13: !;\n    let mut _14: error::SizeError<&Self, &mut [u8]>;\n    let mut _15: &Self;\n    let mut _17: std::option::Option<&mut [u8]>;\n    let mut _18: &mut [u8];\n    let mut _19: std::ops::RangeFrom<usize>;\n    let mut _20: usize;\n    let mut _21: isize;\n    let mut _23: !;\n    let mut _24: error::SizeError<&Self, &mut [u8]>;\n    let mut _25: &Self;\n    let _26: ();\n    let _27: ();\n    let mut _28: &[u8];\n    let mut _29: &mut [u8];\n    let mut _30: ();\n    scope 1 {\n        debug src => _3;\n        let _5: usize;\n        scope 2 {\n            debug start => _5;\n            let _16: &mut [u8];\n            scope 4 {\n                debug dst => _16;\n            }\n            scope 5 {\n                debug dst => _22;\n                let _22: &mut [u8];\n            }\n        }\n        scope 3 {\n            debug start => _12;\n            let _12: usize;\n        }\n    }\n\n    bb0: {\n        _4 = copy _1;\n        _3 = <Self as IntoBytes>::as_bytes(move _4) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _8 = &(*_2);\n        _7 = PtrMetadata(move _8);\n        goto -> bb2;\n    }\n\n    bb2: {\n        _10 = copy _3;\n        _9 = PtrMetadata(move _10);\n        goto -> bb3;\n    }\n\n    bb3: {\n        _6 = core::num::<impl usize>::checked_sub(move _7, move _9) ->",
+          "after_mir_excerpt": "// MIR for `IntoBytes::write_to_suffix` after UnreachableEnumBranching\n\nfn IntoBytes::write_to_suffix(_1: &Self, _2: &mut [u8]) -> Result<(), error::SizeError<&Self, &mut [u8]>> {\n    debug self => _1;\n    debug dst => _2;\n    let mut _0: std::result::Result<(), error::SizeError<&Self, &mut [u8]>>;\n    let _3: &[u8];\n    let mut _4: &Self;\n    let mut _6: std::option::Option<usize>;\n    let mut _7: usize;\n    let mut _8: &[u8];\n    let mut _9: usize;\n    let mut _10: &[u8];\n    let mut _11: isize;\n    let mut _13: !;\n    let mut _14: error::SizeError<&Self, &mut [u8]>;\n    let mut _15: &Self;\n    let mut _17: std::option::Option<&mut [u8]>;\n    let mut _18: &mut [u8];\n    let mut _19: std::ops::RangeFrom<usize>;\n    let mut _20: usize;\n    let mut _21: isize;\n    let mut _23: !;\n    let mut _24: error::SizeError<&Self, &mut [u8]>;\n    let mut _25: &Self;\n    let _26: ();\n    let _27: ();\n    let mut _28: &[u8];\n    let mut _29: &mut [u8];\n    let mut _30: ();\n    scope 1 {\n        debug src => _3;\n        let _5: usize;\n        scope 2 {\n            debug start => _5;\n            let _16: &mut [u8];\n            scope 4 {\n                debug dst => _16;\n            }\n            scope 5 {\n                debug dst => _22;\n                let _22: &mut [u8];\n            }\n        }\n        scope 3 {\n            debug start => _12;\n            let _12: usize;\n        }\n    }\n\n    bb0: {\n        _4 = copy _1;\n        _3 = <Self as IntoBytes>::as_bytes(move _4) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _8 = &(*_2);\n        _7 = PtrMetadata(move _8);\n        goto -> bb2;\n    }\n\n    bb2: {\n        _10 = copy _3;\n        _9 = PtrMetadata(move _10);\n        goto -> bb3;\n    }\n\n    bb3: {\n        _6 = core::num::<impl usize>::checked_sub(move _7, move _9) -> "
+        },
+        {
+          "mir_fn": "error-{impl#13}-display_verbose_extras",
+          "src_refs": [
+            "zerocopy/src/error.rs:436"
+          ],
+          "switch_int_before": 15,
+          "switch_int_after": 15,
+          "arms_before": 42,
+          "arms_after": 43,
+          "unreachable_before": 1,
+          "unreachable_after": 1,
+          "before_mir_excerpt": "// MIR for `error::<impl at <tmp>/zerocopy/src/error.rs:436:1: 436:43>::display_verbose_extras` before UnreachableEnumBranching\n\nfn error::<impl at <tmp>/zerocopy/src/error.rs:436:1: 436:43>::display_verbose_extras(_1: &error::SizeError<Src, Dst>, _2: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {\n    debug self => _1;\n    debug f => _2;\n    let mut _0: std::result::Result<(), std::fmt::Error>;\n    let _3: ();\n    let mut _4: std::ops::ControlFlow<std::result::Result<!, std::fmt::Error>>;\n    let mut _5: std::result::Result<(), std::fmt::Error>;\n    let mut _6: &mut std::fmt::Formatter<'_>;\n    let mut _7: &str;\n    let _8: &str;\n    let mut _9: isize;\n    let _10: std::result::Result<!, std::fmt::Error>;\n    let mut _11: !;\n    let mut _12: std::result::Result<!, std::fmt::Error>;\n    let _13: ();\n    let _14: ();\n    let mut _15: std::ops::ControlFlow<std::result::Result<!, std::fmt::Error>>;\n    let mut _16: std::result::Result<(), std::fmt::Error>;\n    let mut _17: &mut std::fmt::Formatter<'_>;\n    let mut _18: &str;\n    let _19: &str;\n    let mut _20: isize;\n    let _21: std::result::Result<!, std::fmt::Error>;\n    let mut _22: !;\n    let mut _23: std::result::Result<!, std::fmt::Error>;\n    let _24: ();\n    let _25: usize;\n    let mut _26: &<Src as std::ops::Deref>::Target;\n    let _27: &<Src as std::ops::Deref>::Target;\n    let _28: &<Src as std::ops::Deref>::Target;\n    let mut _29: &Src;\n    let _30: ();\n    let mut _31: std::ops::ControlFlow<std::result::Result<!, std::fmt::Error>>;\n    let mut _32: std::result::Result<(), std::fmt::Error>;\n    let mut _33: &mut std::fmt::Formatter<'_>;\n    let mut _34: &str;\n    let _35: &str;\n    let mut _36: isize;\n    let mut _38: !;\n    let mut _39: std::result::Result<!, std::fmt::Er",
+          "after_mir_excerpt": "// MIR for `error::<impl at <tmp>/zerocopy/src/error.rs:436:1: 436:43>::display_verbose_extras` after UnreachableEnumBranching\n\nfn error::<impl at <tmp>/zerocopy/src/error.rs:436:1: 436:43>::display_verbose_extras(_1: &error::SizeError<Src, Dst>, _2: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {\n    debug self => _1;\n    debug f => _2;\n    let mut _0: std::result::Result<(), std::fmt::Error>;\n    let _3: ();\n    let mut _4: std::ops::ControlFlow<std::result::Result<!, std::fmt::Error>>;\n    let mut _5: std::result::Result<(), std::fmt::Error>;\n    let mut _6: &mut std::fmt::Formatter<'_>;\n    let mut _7: &str;\n    let _8: &str;\n    let mut _9: isize;\n    let _10: std::result::Result<!, std::fmt::Error>;\n    let mut _11: !;\n    let mut _12: std::result::Result<!, std::fmt::Error>;\n    let _13: ();\n    let _14: ();\n    let mut _15: std::ops::ControlFlow<std::result::Result<!, std::fmt::Error>>;\n    let mut _16: std::result::Result<(), std::fmt::Error>;\n    let mut _17: &mut std::fmt::Formatter<'_>;\n    let mut _18: &str;\n    let _19: &str;\n    let mut _20: isize;\n    let _21: std::result::Result<!, std::fmt::Error>;\n    let mut _22: !;\n    let mut _23: std::result::Result<!, std::fmt::Error>;\n    let _24: ();\n    let _25: usize;\n    let mut _26: &<Src as std::ops::Deref>::Target;\n    let _27: &<Src as std::ops::Deref>::Target;\n    let _28: &<Src as std::ops::Deref>::Target;\n    let mut _29: &Src;\n    let _30: ();\n    let mut _31: std::ops::ControlFlow<std::result::Result<!, std::fmt::Error>>;\n    let mut _32: std::result::Result<(), std::fmt::Error>;\n    let mut _33: &mut std::fmt::Formatter<'_>;\n    let mut _34: &str;\n    let _35: &str;\n    let mut _36: isize;\n    let mut _38: !;\n    let mut _39: std::result::Result<!, std::fmt::Err"
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#1031}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 43,
+          "switch_int_after": 43,
+          "arms_before": 108,
+          "arms_after": 108,
+          "unreachable_before": 23,
+          "unreachable_after": 23
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#1124}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 45,
+          "switch_int_after": 45,
+          "arms_before": 113,
+          "arms_after": 113,
+          "unreachable_before": 24,
+          "unreachable_after": 24
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#116}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 13,
+          "switch_int_after": 13,
+          "arms_before": 33,
+          "arms_after": 33,
+          "unreachable_before": 8,
+          "unreachable_after": 8
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#11}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 3,
+          "switch_int_after": 3,
+          "arms_before": 8,
+          "arms_after": 8,
+          "unreachable_before": 3,
+          "unreachable_after": 3
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#1221}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 47,
+          "switch_int_after": 47,
+          "arms_before": 118,
+          "arms_after": 118,
+          "unreachable_before": 25,
+          "unreachable_after": 25
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#1322}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 49,
+          "switch_int_after": 49,
+          "arms_before": 123,
+          "arms_after": 123,
+          "unreachable_before": 26,
+          "unreachable_after": 26
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#1427}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 51,
+          "switch_int_after": 51,
+          "arms_before": 128,
+          "arms_after": 128,
+          "unreachable_before": 27,
+          "unreachable_after": 27
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#149}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 15,
+          "switch_int_after": 15,
+          "arms_before": 38,
+          "arms_after": 38,
+          "unreachable_before": 9,
+          "unreachable_after": 9
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#186}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 17,
+          "switch_int_after": 17,
+          "arms_before": 43,
+          "arms_after": 43,
+          "unreachable_before": 10,
+          "unreachable_after": 10
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#227}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 19,
+          "switch_int_after": 19,
+          "arms_before": 48,
+          "arms_after": 48,
+          "unreachable_before": 11,
+          "unreachable_after": 11
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#24}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 5,
+          "switch_int_after": 5,
+          "arms_before": 13,
+          "arms_after": 13,
+          "unreachable_before": 4,
+          "unreachable_after": 4
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#272}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 21,
+          "switch_int_after": 21,
+          "arms_before": 53,
+          "arms_after": 53,
+          "unreachable_before": 12,
+          "unreachable_after": 12
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#2}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 1,
+          "switch_int_after": 1,
+          "arms_before": 3,
+          "arms_after": 3,
+          "unreachable_before": 2,
+          "unreachable_after": 2
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#321}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 23,
+          "switch_int_after": 23,
+          "arms_before": 58,
+          "arms_after": 58,
+          "unreachable_before": 13,
+          "unreachable_after": 13
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#374}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 25,
+          "switch_int_after": 25,
+          "arms_before": 63,
+          "arms_after": 63,
+          "unreachable_before": 14,
+          "unreachable_after": 14
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#41}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 7,
+          "switch_int_after": 7,
+          "arms_before": 18,
+          "arms_after": 18,
+          "unreachable_before": 5,
+          "unreachable_after": 5
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#431}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 27,
+          "switch_int_after": 27,
+          "arms_before": 68,
+          "arms_after": 68,
+          "unreachable_before": 15,
+          "unreachable_after": 15
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#492}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 29,
+          "switch_int_after": 29,
+          "arms_before": 73,
+          "arms_after": 73,
+          "unreachable_before": 16,
+          "unreachable_after": 16
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#557}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 31,
+          "switch_int_after": 31,
+          "arms_before": 78,
+          "arms_after": 78,
+          "unreachable_before": 17,
+          "unreachable_after": 17
+        },
+        {
+          "mir_fn": "impls-tuples-_-{impl#626}-is_safe",
+          "src_refs": [
+            "zerocopy/src/util/macros.rs:128"
+          ],
+          "switch_int_before": 33,
+          "switch_int_after": 33,
+          "arms_before": 83,
+          "arms_after": 83,
+          "unreachable_before": 18,
+          "unreachable_after": 18
+        }
+      ]
+    },
+    "downstream_generic_instantiations": {
+      "bodies_checked": 2,
+      "bodies_modified_semantically": 1,
+      "switch_int_before": 17,
+      "switch_int_after": 17,
+      "switch_int_arms_before": 46,
+      "switch_int_arms_after": 47,
+      "unreachable_before": 3,
+      "unreachable_after": 3,
+      "modified_bodies": [
+        {
+          "mir_fn": "use_generic_enums",
+          "src_refs": [],
+          "switch_int_before": 17,
+          "switch_int_after": 17,
+          "arms_before": 46,
+          "arms_after": 47,
+          "unreachable_before": 3,
+          "unreachable_after": 3,
+          "before_mir_excerpt": "// MIR for `use_generic_enums` before UnreachableEnumBranching\n\nfn use_generic_enums(_1: &[u8]) -> usize {\n    debug bytes => _1;\n    let mut _0: usize;\n    let _2: std::result::Result<&u32, zerocopy::ConvertError<zerocopy::AlignmentError<&[u8], u32>, zerocopy::SizeError<&[u8], u32>, !>>;\n    let mut _3: &[u8];\n    let mut _5: &[u8];\n    let mut _7: &[u8];\n    let mut _9: &[u8];\n    let mut _11: &[u8];\n    let mut _13: &[u8];\n    let mut _15: bool;\n    let mut _16: &[u8];\n    let mut _17: zerocopy::PtrInner<'_, [u8]>;\n    let mut _18: &zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>;\n    let mut _20: *mut u8;\n    let mut _21: *const u8;\n    let mut _22: &[u8];\n    let mut _25: isize;\n    let mut _27: &u32;\n    let mut _28: &u32;\n    let _29: &u32;\n    let _30: u32;\n    let _32: ();\n    let mut _33: isize;\n    let mut _34: isize;\n    let mut _36: usize;\n    let mut _37: u32;\n    let mut _39: !;\n    let _40: ();\n    let mut _41: isize;\n    let mut _42: isize;\n    let mut _44: usize;\n    let mut _45: u8;\n    let mut _46: &[u8; 4];\n    let mut _47: &zerocopy::Ref<&[u8], [u8; 4]>;\n    let _48: usize;\n    let mut _49: bool;\n    let mut _51: !;\n    let _52: ();\n    let mut _53: isize;\n    let mut _54: isize;\n    let mut _56: usize;\n    let mut _57: bool;\n    let _58: ();\n    let mut _59: isize;\n    let mut _60: isize;\n    let mut _62: usize;\n    let mut _63: bool;\n    let _64: ();\n    let mut _65: isize;\n    let mut _67: usize;\n    let mut _68: u32;\n    let _69: ();\n    let mut _70: bool;\n    let mut _71: &std::option::Option<zerocopy::PtrInner<'_, [u8]>>;\n    let _72: ();\n    let mut _73: bool;\n    let mut _74: &std::option::Option<std::ptr::NonNull<u8>>;\n    let _75: ();\n    let mut _76: isize;\n    let mut _78: ",
+          "after_mir_excerpt": "// MIR for `use_generic_enums` after UnreachableEnumBranching\n\nfn use_generic_enums(_1: &[u8]) -> usize {\n    debug bytes => _1;\n    let mut _0: usize;\n    let _2: std::result::Result<&u32, zerocopy::ConvertError<zerocopy::AlignmentError<&[u8], u32>, zerocopy::SizeError<&[u8], u32>, !>>;\n    let mut _3: &[u8];\n    let mut _5: &[u8];\n    let mut _7: &[u8];\n    let mut _9: &[u8];\n    let mut _11: &[u8];\n    let mut _13: &[u8];\n    let mut _15: bool;\n    let mut _16: &[u8];\n    let mut _17: zerocopy::PtrInner<'_, [u8]>;\n    let mut _18: &zerocopy::Ptr<'_, [u8], (zerocopy::invariant::Shared, zerocopy::invariant::Aligned, zerocopy::invariant::Safe)>;\n    let mut _20: *mut u8;\n    let mut _21: *const u8;\n    let mut _22: &[u8];\n    let mut _25: isize;\n    let mut _27: &u32;\n    let mut _28: &u32;\n    let _29: &u32;\n    let _30: u32;\n    let _32: ();\n    let mut _33: isize;\n    let mut _34: isize;\n    let mut _36: usize;\n    let mut _37: u32;\n    let mut _39: !;\n    let _40: ();\n    let mut _41: isize;\n    let mut _42: isize;\n    let mut _44: usize;\n    let mut _45: u8;\n    let mut _46: &[u8; 4];\n    let mut _47: &zerocopy::Ref<&[u8], [u8; 4]>;\n    let _48: usize;\n    let mut _49: bool;\n    let mut _51: !;\n    let _52: ();\n    let mut _53: isize;\n    let mut _54: isize;\n    let mut _56: usize;\n    let mut _57: bool;\n    let _58: ();\n    let mut _59: isize;\n    let mut _60: isize;\n    let mut _62: usize;\n    let mut _63: bool;\n    let _64: ();\n    let mut _65: isize;\n    let mut _67: usize;\n    let mut _68: u32;\n    let _69: ();\n    let mut _70: bool;\n    let mut _71: &std::option::Option<zerocopy::PtrInner<'_, [u8]>>;\n    let _72: ();\n    let mut _73: bool;\n    let mut _74: &std::option::Option<std::ptr::NonNull<u8>>;\n    let _75: ();\n    let mut _76: isize;\n    let mut _78: u"
+        }
+      ]
+    }
+  },
+  "concrete_zerocopy_functions": {
+    "niche_option_result_examples": [
+      {
+        "mir_fn": "FromBytes-mut_from_bytes",
+        "src_refs": [
+          "zerocopy/src/lib.rs:4781"
+        ]
+      },
+      {
+        "mir_fn": "FromBytes-mut_from_bytes_with_elems",
+        "src_refs": [
+          "zerocopy/src/lib.rs:5323"
+        ]
+      },
+      {
+        "mir_fn": "FromBytes-read_from_bytes",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-read_from_io",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-read_from_prefix",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-read_from_suffix",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-ref_from_bytes",
+        "src_refs": [
+          "zerocopy/src/lib.rs:4491"
+        ]
+      },
+      {
+        "mir_fn": "FromBytes-ref_from_bytes_with_elems",
+        "src_refs": [
+          "zerocopy/src/lib.rs:5049"
+        ]
+      },
+      {
+        "mir_fn": "FromZeros-insert_vec_zeroed",
+        "src_refs": [
+          "zerocopy/src/lib.rs:4137"
+        ]
+      },
+      {
+        "mir_fn": "IntoBytes-write_to_prefix",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "IntoBytes-write_to_suffix",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "TryFromBytes-try_mut_from_bytes",
+        "src_refs": [
+          "zerocopy/src/lib.rs:2439"
+        ]
+      },
+      {
+        "mir_fn": "TryFromBytes-try_mut_from_bytes_with_elems",
+        "src_refs": [
+          "zerocopy/src/lib.rs:3081"
+        ]
+      },
+      {
+        "mir_fn": "TryFromBytes-try_read_from_prefix",
+        "src_refs": [
+          "zerocopy/src/lib.rs:3424"
+        ]
+      },
+      {
+        "mir_fn": "TryFromBytes-try_read_from_suffix",
+        "src_refs": [
+          "zerocopy/src/lib.rs:3513"
+        ]
+      },
+      {
+        "mir_fn": "TryFromBytes-try_ref_from_bytes",
+        "src_refs": [
+          "zerocopy/src/lib.rs:2113"
+        ]
+      },
+      {
+        "mir_fn": "TryFromBytes-try_ref_from_bytes_with_elems",
+        "src_refs": [
+          "zerocopy/src/lib.rs:2757"
+        ]
+      },
+      {
+        "mir_fn": "byteorder-{impl#7}-fmt",
+        "src_refs": [
+          "zerocopy/src/byteorder.rs:102"
+        ]
+      },
+      {
+        "mir_fn": "error-{impl#10}-fmt",
+        "src_refs": [
+          "zerocopy/src/error.rs:393"
+        ]
+      },
+      {
+        "mir_fn": "error-{impl#13}-display_verbose_extras",
+        "src_refs": [
+          "zerocopy/src/error.rs:436"
+        ]
+      },
+      {
+        "mir_fn": "error-{impl#18}-fmt",
+        "src_refs": [
+          "zerocopy/src/error.rs:555"
+        ]
+      },
+      {
+        "mir_fn": "error-{impl#1}-fmt",
+        "src_refs": [
+          "zerocopy/src/error.rs:210"
+        ]
+      },
+      {
+        "mir_fn": "error-{impl#21}-display_verbose_extras",
+        "src_refs": [
+          "zerocopy/src/error.rs:595"
+        ]
+      },
+      {
+        "mir_fn": "error-{impl#27}-fmt",
+        "src_refs": [
+          "zerocopy/src/error.rs:692"
+        ]
+      },
+      {
+        "mir_fn": "error-{impl#2}-fmt",
+        "src_refs": [
+          "zerocopy/src/error.rs:226"
+        ]
+      }
+    ],
+    "uninhabited_infallible_examples": [
+      {
+        "mir_fn": "FromBytes-mut_from",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-mut_from_bytes",
+        "src_refs": [
+          "zerocopy/src/lib.rs:4781"
+        ]
+      },
+      {
+        "mir_fn": "FromBytes-mut_from_bytes_with_elems",
+        "src_refs": [
+          "zerocopy/src/lib.rs:5323"
+        ]
+      },
+      {
+        "mir_fn": "FromBytes-mut_from_prefix",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-mut_from_prefix_with_elems",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-mut_from_suffix",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-mut_from_suffix_with_elems",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-mut_slice_from_prefix",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-mut_slice_from_suffix",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-read_from_bytes",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-read_from_prefix",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-read_from_suffix",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-ref_from",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-ref_from_bytes",
+        "src_refs": [
+          "zerocopy/src/lib.rs:4491"
+        ]
+      },
+      {
+        "mir_fn": "FromBytes-ref_from_bytes_with_elems",
+        "src_refs": [
+          "zerocopy/src/lib.rs:5049"
+        ]
+      },
+      {
+        "mir_fn": "FromBytes-ref_from_prefix",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-ref_from_prefix_with_elems",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-ref_from_suffix",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-ref_from_suffix_with_elems",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-slice_from_prefix",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "FromBytes-slice_from_suffix",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "ProjectField-is_projectable",
+        "src_refs": []
+      },
+      {
+        "mir_fn": "TryFromBytes-try_mut_from_bytes",
+        "src_refs": [
+          "zerocopy/src/lib.rs:2439"
+        ]
+      },
+      {
+        "mir_fn": "TryFromBytes-try_mut_from_bytes_with_elems",
+        "src_refs": [
+          "zerocopy/src/lib.rs:3081"
+        ]
+      },
+      {
+        "mir_fn": "TryFromBytes-try_ref_from_bytes",
+        "src_refs": [
+          "zerocopy/src/lib.rs:2113"
+        ]
+      }
+    ]
+  }
+}
