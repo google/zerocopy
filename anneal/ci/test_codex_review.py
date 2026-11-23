@@ -25,6 +25,57 @@ from codex_review import (
 HEAD = "a" * 40
 OTHER_HEAD = "b" * 40
 BASE = "c" * 40
+OTHER_BASE = "d" * 40
+TREE = "e" * 40
+OTHER_TREE = "f" * 40
+
+
+def gate2_payload(base_sha=BASE, head_sha=HEAD, tree_sha=TREE,
+                  reviewer_family="gemini", author_family="claude",
+                  verdict="clean", findings=None, **extra):
+    payload = {
+        "base_sha": base_sha,
+        "head_sha": head_sha,
+        "tree_sha": tree_sha,
+        "reviewer_family": reviewer_family,
+        "author_family": author_family,
+        "verdict": verdict,
+        "findings": [] if findings is None else findings,
+    }
+    payload.update(extra)
+    return payload
+
+
+def gate2_review(review_id=20, head_sha=HEAD, submitted_at="2026-11-23T01:00:00Z",
+                 state="COMMENTED", author_association="MEMBER",
+                 login="reviewer", user_id=42, commit_id=...,
+                 prefix="Automated Gate 2 review completed.\n", **payload_overrides):
+    payload = gate2_payload(head_sha=head_sha, **payload_overrides)
+    return {
+        "id": review_id,
+        "state": state,
+        "commit_id": payload["head_sha"] if commit_id is ... else commit_id,
+        "submitted_at": submitted_at,
+        "author_association": author_association,
+        "user": {"id": user_id, "login": login, "type": "User"},
+        "body": f"{prefix}<!-- anneal-gate2-review:v1 {json.dumps(payload)} -->",
+    }
+
+
+def gate2_comment(comment_id=30, head_sha=HEAD, created_at="2026-11-23T01:00:00Z",
+                  updated_at=None, author_association="MEMBER",
+                  login="reviewer", user_id=42, **payload_overrides):
+    payload = gate2_payload(head_sha=head_sha, **payload_overrides)
+    comment = {
+        "id": comment_id,
+        "created_at": created_at,
+        "author_association": author_association,
+        "user": {"id": user_id, "login": login, "type": "User"},
+        "body": f"Gate 2 review.\n<!-- anneal-gate2-review:v1 {json.dumps(payload)} -->",
+    }
+    if updated_at is not None:
+        comment["updated_at"] = updated_at
+    return comment
 
 
 def summary(head=HEAD, created_at="2026-11-08T10:00:00Z",
@@ -201,15 +252,24 @@ class PolicyTests(unittest.TestCase):
 
 class FakeGitHub:
     def __init__(self, initial, comments, final=None, changed_comments=None,
-                 deleted=None, queues=None, bases=None):
+                 deleted=None, queues=None, bases=None,
+                 reviews=None, changed_reviews=None, trees=None,
+                 authorized_reviewers=None):
         self.snapshots = [initial, initial if final is None else final]
         self.bodies = comments
+        self.review_bodies = (
+            {p["number"]: [] for p in initial} if reviews is None else reviews
+        )
         self.writes = []
         self.comment_reads = set()
+        self.review_reads = set()
         self.changed_comments = changed_comments or {}
+        self.changed_reviews = changed_reviews or {}
         self.deleted = deleted or {}
         self.queues = queues or {}
         self.bases = {p["number"]: None for p in initial} if bases is None else bases
+        self.trees = {HEAD: TREE, OTHER_HEAD: OTHER_TREE} if trees is None else trees
+        self.authorized_reviewers = authorized_reviewers
 
     def pulls(self):
         return copy.deepcopy(self.snapshots.pop(0))
@@ -221,6 +281,20 @@ class FakeGitHub:
         if isinstance(body, Exception):
             raise body
         return body
+
+    def reviews(self, number):
+        body = (self.changed_reviews.get(number, self.review_bodies.get(number, []))
+                if number in self.review_reads else self.review_bodies.get(number, []))
+        self.review_reads.add(number)
+        if isinstance(body, Exception):
+            raise body
+        return body
+
+    def commit_tree(self, sha):
+        val = self.trees[sha]
+        if isinstance(val, Exception):
+            raise val
+        return val
 
     def deleted_summaries(self):
         return self.deleted
@@ -504,6 +578,521 @@ class TransportTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "POST.*HTTP 403") as error:
                 github.request(f"statuses/{HEAD}", {})
         self.assertNotIn("not-a-real-token", str(error.exception))
+
+
+class Gate2CrossFamilyTests(unittest.TestCase):
+    def test_clean_cross_family_comment_review_and_comment_pass(self):
+        for reviewer, author in [
+            ("gemini", "claude"),
+            ("claude", "gemini"),
+            ("openai", "claude"),
+            ("claude", "human"),
+            ("deepseek", "qwen"),
+        ]:
+            with self.subTest(reviewer=reviewer, author=author):
+                rev = gate2_review(reviewer_family=reviewer, author_family=author)
+                res = review_result(
+                    HEAD, [], reviews=[rev], base_sha=BASE, tree_sha=TREE,
+                )
+                self.assertEqual(res.state, "success")
+        # Issue comment with valid authorization and optional identity fields
+        # also passes cleanly.
+        cmt = gate2_comment(
+            parent_tree="1" * 40,
+            commit_msg_sha256="2" * 64,
+            reviewed_at="2026-11-23T01:00:00Z",
+        )
+        res = review_result(HEAD, [cmt], base_sha=BASE, tree_sha=TREE)
+        self.assertEqual(res.state, "success")
+
+    def test_same_family_and_invalid_family_tokens_fail_closed(self):
+        same_family_pairs = [
+            ("claude", "claude"),
+            ("Claude", "claude"),
+            ("claude-opus", "claude"),
+            ("anthropic", "claude-sonnet"),
+            ("gemini-pro", "gemini"),
+            ("google-gemini", "gemini-flash"),
+            ("openai", "gpt-4o"),
+            ("codex", "openai"),
+            ("o3-pro", "chatgpt"),
+        ]
+        for reviewer, author in same_family_pairs:
+            with self.subTest(reviewer=reviewer, author=author):
+                rev = gate2_review(reviewer_family=reviewer, author_family=author)
+                res = review_result(
+                    HEAD, [], reviews=[rev], base_sha=BASE, tree_sha=TREE,
+                )
+                self.assertEqual(res.state, "failure")
+
+        for bad_reviewer in ["", " ", "unknown", "none", "null", "n/a", "self", "human"]:
+            with self.subTest(bad_reviewer=bad_reviewer):
+                rev = gate2_review(reviewer_family=bad_reviewer, author_family="claude")
+                res = review_result(
+                    HEAD, [], reviews=[rev], base_sha=BASE, tree_sha=TREE,
+                )
+                self.assertEqual(res.state, "failure")
+
+        for bad_author in ["", " ", "unknown", "none", "null", "n/a"]:
+            with self.subTest(bad_author=bad_author):
+                rev = gate2_review(reviewer_family="gemini", author_family=bad_author)
+                res = review_result(
+                    HEAD, [], reviews=[rev], base_sha=BASE, tree_sha=TREE,
+                )
+                self.assertEqual(res.state, "failure")
+
+    def test_exact_base_head_tree_and_commit_id_binding(self):
+        # Wrong head waits; wrong tree fails; wrong base waits.
+        wrong_head = gate2_review(head_sha=OTHER_HEAD)
+        self.assertEqual(
+            review_result(HEAD, [], reviews=[wrong_head], base_sha=BASE, tree_sha=TREE).state,
+            "pending",
+        )
+        wrong_tree = gate2_review(tree_sha=OTHER_TREE)
+        self.assertEqual(
+            review_result(HEAD, [], reviews=[wrong_tree], base_sha=BASE, tree_sha=TREE).state,
+            "failure",
+        )
+        wrong_base = gate2_review(base_sha=OTHER_BASE)
+        self.assertEqual(
+            review_result(HEAD, [], reviews=[wrong_base], base_sha=BASE, tree_sha=TREE).state,
+            "pending",
+        )
+        mismatched_commit_id = gate2_review(commit_id=OTHER_HEAD)
+        self.assertEqual(
+            review_result(HEAD, [], reviews=[mismatched_commit_id], base_sha=BASE, tree_sha=TREE).state,
+            "failure",
+        )
+        # Missing base_sha or tree_sha in caller fails closed.
+        clean_rev = gate2_review()
+        self.assertEqual(
+            review_result(HEAD, [], reviews=[clean_rev], base_sha=None, tree_sha=TREE).state,
+            "failure",
+        )
+        self.assertEqual(
+            review_result(HEAD, [], reviews=[clean_rev], base_sha=BASE, tree_sha=None).state,
+            "failure",
+        )
+
+    def test_base_change_freshness_ignores_comment_updated_at(self):
+        changed = "2026-11-23T02:00:00Z"
+        stale_cmt = gate2_comment(
+            created_at="2026-11-23T01:00:00Z",
+            updated_at="2026-11-23T03:00:00Z",
+        )
+        self.assertEqual(
+            review_result(
+                HEAD, [stale_cmt], base_changed_at=changed, base_sha=BASE, tree_sha=TREE,
+            ).state,
+            "pending",
+        )
+        stale_rev = gate2_review(submitted_at="2026-11-23T02:00:00Z")
+        self.assertEqual(
+            review_result(
+                HEAD, [], reviews=[stale_rev], base_changed_at=changed,
+                base_sha=BASE, tree_sha=TREE,
+            ).state,
+            "pending",
+        )
+        fresh_rev = gate2_review(submitted_at="2026-11-23T02:00:01Z")
+        self.assertEqual(
+            review_result(
+                HEAD, [], reviews=[fresh_rev], base_changed_at=changed,
+                base_sha=BASE, tree_sha=TREE,
+            ).state,
+            "success",
+        )
+
+    def test_gate5_approve_separation_and_review_states(self):
+        # Gate 2 marker attached to an APPROVED review must fail closed.
+        approved_gate2 = gate2_review(state="APPROVED")
+        self.assertEqual(
+            review_result(HEAD, [], reviews=[approved_gate2], base_sha=BASE, tree_sha=TREE).state,
+            "failure",
+        )
+        # Ordinary human APPROVE without Gate 2 marker does not satisfy or break Gate 2.
+        human_approve = {
+            "id": 99,
+            "state": "APPROVED",
+            "commit_id": HEAD,
+            "submitted_at": "2026-11-23T01:05:00Z",
+            "author_association": "OWNER",
+            "user": {"id": 7, "login": "maintainer", "type": "User"},
+            "body": "LGTM, Gate 5 approved.",
+        }
+        self.assertEqual(
+            review_result(HEAD, [], reviews=[human_approve], base_sha=BASE, tree_sha=TREE).state,
+            "pending",
+        )
+        self.assertEqual(
+            review_result(
+                HEAD, [], reviews=[gate2_review(), human_approve],
+                base_sha=BASE, tree_sha=TREE,
+            ).state,
+            "success",
+        )
+        for pending_state in ("PENDING", "DISMISSED"):
+            rev = gate2_review(state=pending_state)
+            self.assertEqual(
+                review_result(HEAD, [], reviews=[rev], base_sha=BASE, tree_sha=TREE).state,
+                "pending",
+            )
+        changes_req = gate2_review(state="CHANGES_REQUESTED")
+        self.assertEqual(
+            review_result(HEAD, [], reviews=[changes_req], base_sha=BASE, tree_sha=TREE).state,
+            "failure",
+        )
+
+    def test_verdict_findings_consistency_and_malformed_payloads(self):
+        finding = {"severity": "P1", "path": "anneal/ci/codex_review.py", "line": 10, "summary": "Bug"}
+        self.assertEqual(
+            review_result(
+                HEAD, [],
+                reviews=[gate2_review(verdict="findings", findings=[finding])],
+                base_sha=BASE, tree_sha=TREE,
+            ).state,
+            "failure",
+        )
+        self.assertEqual(
+            review_result(
+                HEAD, [],
+                reviews=[gate2_review(verdict="incomplete", findings=[])],
+                base_sha=BASE, tree_sha=TREE,
+            ).state,
+            "pending",
+        )
+        # Contradictions and malformed payloads fail closed.
+        bad_reviews = [
+            gate2_review(verdict="clean", findings=[finding]),
+            gate2_review(verdict="findings", findings=[]),
+            gate2_review(verdict="incomplete", findings=[finding]),
+            gate2_review(verdict="approve", findings=[]),
+            gate2_review(findings=[{"severity": "HIGH", "summary": "Bad severity"}]),
+            gate2_review(findings=[{"severity": "P1", "summary": ""}]),
+            gate2_review(findings=[{"severity": "P1", "summary": "Bad line", "line": True}]),
+            gate2_review(findings=[{"severity": "P1", "summary": "Bad line", "line": 0}]),
+            gate2_review(unexpected_field=True),
+            gate2_review(parent_tree="not-a-sha"),
+            gate2_review(commit_msg_sha256="short"),
+            gate2_review(submitted_at=None),
+        ]
+        for rev in bad_reviews:
+            with self.subTest(rev=rev["body"]):
+                self.assertEqual(
+                    review_result(HEAD, [], reviews=[rev], base_sha=BASE, tree_sha=TREE).state,
+                    "failure",
+                )
+        # Duplicate JSON keys, duplicate markers, and unsupported versions fail closed.
+        clean_body = gate2_review()["body"]
+        for bad_body in [
+            clean_body.replace("review:v1", "review:v2"),
+            clean_body.replace('"verdict": "clean"', '"verdict": "clean", "verdict": "findings"'),
+            clean_body + "\n" + clean_body,
+            "<!-- anneal-gate2-review:v1 [] -->",
+        ]:
+            rev = gate2_review()
+            rev["body"] = bad_body
+            with self.subTest(bad_body=bad_body):
+                self.assertEqual(
+                    review_result(HEAD, [], reviews=[rev], base_sha=BASE, tree_sha=TREE).state,
+                    "failure",
+                )
+
+    def test_authorization_and_explicit_allowlist(self):
+        for assoc in ("NONE", "CONTRIBUTOR", "FIRST_TIME_CONTRIBUTOR", None):
+            rev = gate2_review(author_association=assoc, login="outsider", user_id=999)
+            self.assertEqual(
+                review_result(HEAD, [], reviews=[rev], base_sha=BASE, tree_sha=TREE).state,
+                "pending",
+            )
+        bot_rev = gate2_review(author_association="NONE", login="anneal-gate2[bot]", user_id=555)
+        self.assertEqual(
+            review_result(
+                HEAD, [], reviews=[bot_rev], base_sha=BASE, tree_sha=TREE,
+                authorized_reviewers={"anneal-gate2[bot]"},
+            ).state,
+            "success",
+        )
+        member_rev = gate2_review(author_association="MEMBER", login="someone", user_id=123)
+        self.assertEqual(
+            review_result(
+                HEAD, [], reviews=[member_rev], base_sha=BASE, tree_sha=TREE,
+                authorized_reviewers={"anneal-gate2[bot]"},
+            ).state,
+            "pending",
+        )
+
+    def test_anti_downgrade_retry_and_separate_id_spaces(self):
+        finding = {"severity": "P1", "summary": "Soundness gap"}
+        earlier_findings = gate2_review(
+            review_id=10, submitted_at="2026-11-23T01:00:00Z",
+            verdict="findings", findings=[finding],
+        )
+        later_clean = gate2_review(
+            review_id=11, submitted_at="2026-11-23T01:05:00Z",
+            verdict="clean", findings=[],
+        )
+        # Later silent clean review on the exact same identity does not clear prior findings.
+        self.assertEqual(
+            review_result(
+                HEAD, [], reviews=[earlier_findings, later_clean],
+                base_sha=BASE, tree_sha=TREE,
+            ).state,
+            "failure",
+        )
+        # Prior incomplete (0 findings) followed by clean retry passes.
+        earlier_incomplete = gate2_review(
+            review_id=10, submitted_at="2026-11-23T01:00:00Z",
+            verdict="incomplete", findings=[],
+        )
+        self.assertEqual(
+            review_result(
+                HEAD, [], reviews=[earlier_incomplete, later_clean],
+                base_sha=BASE, tree_sha=TREE,
+            ).state,
+            "success",
+        )
+        # Prior findings on an older head followed by clean review on new head passes.
+        old_head_findings = gate2_review(
+            review_id=10, head_sha=OTHER_HEAD, tree_sha=OTHER_TREE,
+            submitted_at="2026-11-23T01:00:00Z",
+            verdict="findings", findings=[finding],
+        )
+        self.assertEqual(
+            review_result(
+                HEAD, [], reviews=[old_head_findings, later_clean],
+                base_sha=BASE, tree_sha=TREE,
+            ).state,
+            "success",
+        )
+        # Issue comment deleted_through never blocks a PR review ID from the separate
+        # GitHub review ID sequence, while blocking older issue comments.
+        small_id_review = gate2_review(review_id=5)
+        self.assertEqual(
+            review_result(
+                HEAD, [], deleted_through=9999999999,
+                reviews=[small_id_review], base_sha=BASE, tree_sha=TREE,
+            ).state,
+            "success",
+        )
+        deleted_cmt = gate2_comment(comment_id=50)
+        self.assertEqual(
+            review_result(
+                HEAD, [deleted_cmt], deleted_through=50,
+                base_sha=BASE, tree_sha=TREE,
+            ).state,
+            "pending",
+        )
+        # An incomplete retry after a finding on the same identity keeps failure.
+        later_incomplete = gate2_review(
+            review_id=12, submitted_at="2026-11-23T01:06:00Z",
+            verdict="incomplete", findings=[],
+        )
+        self.assertEqual(
+            review_result(
+                HEAD, [], reviews=[earlier_findings, later_incomplete],
+                base_sha=BASE, tree_sha=TREE,
+            ).state,
+            "failure",
+        )
+
+    def test_coexistence_with_legacy_codex_summaries(self):
+        # Silent Codex failure (status="failed", has_any_findings=True) is unblocked
+        # by a clean anneal-gate2-review:v1.
+        codex_silent_fail = summary(status="failed", has_any_findings=True, has_unresolved_findings=True)
+        clean_gate2 = gate2_review()
+        self.assertEqual(
+            review_result(
+                HEAD, [codex_silent_fail], reviews=[clean_gate2],
+                base_sha=BASE, tree_sha=TREE,
+            ),
+            Result("success", "Independent cross-family Gate 2 review passed (gemini)"),
+        )
+        # Completed Codex findings on current head still block even if Gate 2 is clean.
+        codex_completed_finding = summary(status="completed", has_any_findings=True, has_unresolved_findings=True)
+        self.assertEqual(
+            review_result(
+                HEAD, [codex_completed_finding], reviews=[clean_gate2],
+                base_sha=BASE, tree_sha=TREE,
+            ).state,
+            "failure",
+        )
+        # Old Gate 2 on OTHER_HEAD does not block clean Codex on HEAD.
+        old_gate2 = gate2_review(head_sha=OTHER_HEAD, tree_sha=OTHER_TREE)
+        self.assertEqual(
+            review_result(
+                HEAD, [summary()], reviews=[old_gate2],
+                base_sha=BASE, tree_sha=TREE,
+            ).state,
+            "success",
+        )
+        # Incomplete Gate 2 on HEAD holds pending even if Codex passed.
+        incomplete_gate2 = gate2_review(verdict="incomplete", findings=[])
+        self.assertEqual(
+            review_result(
+                HEAD, [summary()], reviews=[incomplete_gate2],
+                base_sha=BASE, tree_sha=TREE,
+            ).state,
+            "pending",
+        )
+
+    def test_reconcile_and_transport_for_reviews_and_commit_tree(self):
+        with patch("sys.stdout", new=io.StringIO()):
+            # Reconcile passes via Gate 2 PR review even when Codex summary failed.
+            github = FakeGitHub(
+                [pull()],
+                {1: [summary(status="failed", has_any_findings=True)]},
+                reviews={1: [gate2_review()]},
+            )
+            verdicts = reconcile(github, publish=True)
+            self.assertEqual(verdicts[HEAD].state, "success")
+            self.assertEqual(github.writes, [(HEAD, Result("success", "Clean Gate 2 review for all 1 PR(s)"))])
+
+            # Review edits/dismissals during reconcile force pending recheck.
+            github = FakeGitHub(
+                [pull()],
+                {1: []},
+                reviews={1: [gate2_review()]},
+                changed_reviews={1: [gate2_review(state="DISMISSED")]},
+            )
+            reconcile(github, publish=True)
+            self.assertEqual(github.writes[0][1].state, "pending")
+
+            # Tree lookup failure blocks that PR without dropping other PRs.
+            github = FakeGitHub(
+                [pull(1, HEAD), pull(2, OTHER_HEAD)],
+                {1: [], 2: [summary(OTHER_HEAD)]},
+                reviews={1: [gate2_review()], 2: []},
+                trees={HEAD: OSError("commits API failed"), OTHER_HEAD: OTHER_TREE},
+            )
+            with self.assertRaisesRegex(RuntimeError, "commits API failed"):
+                reconcile(github, publish=True)
+            self.assertEqual(
+                {head: result.state for head, result in github.writes},
+                {HEAD: "failure", OTHER_HEAD: "success"},
+            )
+
+        # Transport: reviews(), commit_tree(), and Gate 2 deletion tombstones.
+        gh = GitHub("google/zerocopy", "not-a-real-token", authorized_reviewers=["anneal-bot"])
+        with patch.object(gh, "request", return_value=[{"id": 1}]) as req:
+            self.assertEqual(gh.reviews(42), [{"id": 1}])
+            self.assertEqual(req.call_args.args[0], "pulls/42/reviews?per_page=100&page=1")
+        with patch.object(gh, "request", return_value={"sha": HEAD, "commit": {"tree": {"sha": TREE}}}):
+            self.assertEqual(gh.commit_tree(HEAD), TREE)
+        with patch.object(gh, "request", return_value={"sha": OTHER_HEAD, "commit": {"tree": {"sha": TREE}}}):
+            with self.assertRaises(RuntimeError):
+                gh.commit_tree(HEAD)
+        event = {
+            "action": "deleted",
+            "issue": {"number": 42, "pull_request": True},
+            "comment": gate2_comment(comment_id=77, login="anneal-bot", author_association="NONE"),
+        }
+        with patch.object(gh, "publish_status") as publish:
+            gh.record_deletion(event)
+            self.assertEqual(publish.call_args.args[1]["context"], "Codex summary deletion/42/77")
+
+    def test_multi_seat_and_round_optional_fields(self):
+        seats = [
+            {
+                "seat": "seat1",
+                "family": "claude",
+                "model_label": "claude-frontier-thinking",
+                "role": "tcb_and_api_critic",
+                "status": "completed",
+                "verdict": "clean",
+                "findings_count": 0,
+                "latency_sec": 120,
+            },
+            {
+                "seat": "seat2",
+                "family": "gemini",
+                "model_label": "gemini-frontier-thinking",
+                "role": "tcb_and_spec_critic",
+                "status": "completed",
+                "verdict": "clean",
+                "findings_count": 0,
+                "latency_sec": 95,
+            },
+        ]
+        # Full multi-seat clean payload (including nullable parent_tree/commit_msg_sha256).
+        rev = gate2_review(
+            reviewer_family="gemini",
+            author_family="claude",
+            parent_tree=None,
+            commit_msg_sha256=None,
+            round=2,
+            risk_tier="tier2_tcb",
+            merge_base=BASE,
+            identity_key=f"multi:{BASE}:{HEAD}",
+            panel_seats=seats,
+            prior_findings_status=[{"id": "G2-R1-01", "status": "fixed"}],
+            coverage={"total_files": 3, "inspected": 3, "inapplicable": 0, "blocked": 0},
+        )
+        self.assertEqual(
+            review_result(HEAD, [], reviews=[rev], base_sha=BASE, tree_sha=TREE).state,
+            "success",
+        )
+        # Multi reviewer_family works with human author when panel_seats has completed seat.
+        multi_human = gate2_review(
+            reviewer_family="multi",
+            author_family="human",
+            panel_seats=seats,
+        )
+        self.assertEqual(
+            review_result(HEAD, [], reviews=[multi_human], base_sha=BASE, tree_sha=TREE).state,
+            "success",
+        )
+        # Findings with multi-seat metadata validate cleanly and block.
+        rich_finding = {
+            "id": "G2-R1-01",
+            "severity": "P1",
+            "path": "anneal/ci/codex_review.py",
+            "line": 10,
+            "summary": "Missing guard",
+            "fingerprint": "sha256:abcd",
+            "surface": "Pass 2 ci/",
+            "consensus_count": 2,
+            "raised_by": ["seat1", "seat2"],
+            "repro_status": "probe_confirmed",
+        }
+        findings_rev = gate2_review(
+            verdict="findings",
+            findings=[rich_finding],
+            panel_seats=seats,
+            round=1,
+            risk_tier="tier2_tcb",
+        )
+        self.assertEqual(
+            review_result(HEAD, [], reviews=[findings_rev], base_sha=BASE, tree_sha=TREE).state,
+            "failure",
+        )
+        # Fail-closed rejections: multi without panel_seats, panel with no completed
+        # cross-family seat, clean with still_open prior finding, clean with blocked coverage,
+        # bad round/merge_base/finding metadata.
+        same_only_seats = [
+            {"seat": "seat1", "family": "claude", "status": "completed", "verdict": "clean"},
+            {"seat": "seat2", "family": "gemini", "status": "failed", "verdict": "incomplete"},
+        ]
+        bad_cases = [
+            gate2_review(reviewer_family="multi", author_family="claude"),
+            gate2_review(reviewer_family="multi", author_family="claude", panel_seats=[]),
+            gate2_review(reviewer_family="multi", author_family="claude", panel_seats=same_only_seats),
+            gate2_review(reviewer_family="gemini", author_family="claude", panel_seats=same_only_seats),
+            gate2_review(prior_findings_status=[{"id": "G2-R1-01", "status": "still_open"}]),
+            gate2_review(coverage={"total_files": 2, "inspected": 1, "blocked": 1}),
+            gate2_review(round=0),
+            gate2_review(round=True),
+            gate2_review(merge_base="bad-sha"),
+            gate2_review(risk_tier=" "),
+            gate2_review(verdict="findings", findings=[{**rich_finding, "consensus_count": 0}]),
+            gate2_review(verdict="findings", findings=[{**rich_finding, "raised_by": [""]}]),
+        ]
+        for bad_rev in bad_cases:
+            with self.subTest(body=bad_rev["body"]):
+                self.assertEqual(
+                    review_result(HEAD, [], reviews=[bad_rev], base_sha=BASE, tree_sha=TREE).state,
+                    "failure",
+                )
 
 
 if __name__ == "__main__":

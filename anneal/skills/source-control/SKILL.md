@@ -29,7 +29,7 @@ reviewable:
 1. **One logical change per commit:** Separate refactoring, mechanical renames,
    formatting adjustments, semantic changes, and policy edits into distinct
    commits (and keep policy edits in dedicated policy-only PRs where possible
-   so hosted reviewers do not evaluate product code under unreviewed modified
+   so Gate 2 reviewers do not evaluate product code under unreviewed modified
    rules). Never fold an unrelated cleanup into a `trusted/` soundness fix.
 2. **Cohesive PR sizing:** Keep each PR focused on one reviewable unit; split
    large multi-subsystem work into a stack when independent layers review more
@@ -361,11 +361,11 @@ authorized**.
     [Format commit messages to repository conventions](#format-commit-messages-to-repository-conventions)
     and use its subject and unwrapped body verbatim as the PR title and
     description.
-  - *No extra PR sections:* Do not add `## Summary`, `## Motivation`,
+  - *No extra PR sections:* Never add `## Summary`, `## Motivation`,
     `## Verification`, before/after tables, per-file catalogs, or `Human review
-    surface` blocks to the PR description; place `Human review surface`,
-    `Codex finding dispositions`, and verification receipts in the Review
-    Receipt PR comment per
+    surface` blocks to the PR description; put `Human review surface`, `Gate 2
+    finding dispositions` (legacy `Codex finding dispositions`), and receipts in
+    the Review Receipt comment per
     [`change-review`](../change-review/SKILL.md#record-the-receipt-and-converge).
 - **Non-interactive stacked publication with prepared bodies:** Do not use bare
   `gh stack submit` (prompts interactively and can hang under a PTY) or
@@ -398,7 +398,7 @@ authorized**.
   `main..<head>` CI-executed-surface gate in
   [`change-review`](../change-review/SKILL.md#schedule-by-data-dependency)
   before pushing any branch. When authorized to push early for parallel CI and
-  hosted review, push the frozen candidate to a **draft** PR, verify the remote
+  Gate 2 review, push the frozen candidate to a **draft** PR, verify the remote
   head matches it, and mark the PR ready for human review (`gh pr ready`) only
   after Gate 1 (local review) converges and the Review Receipt PR comment
   (including its complete `Human review surface` block) is posted (unless the
@@ -423,11 +423,10 @@ authorized**.
   one-commit PR onto its lower PR's squash commit, whose tree equals the lower
   PR's reviewed head tree, leaves the upper PR's identity—and its review
   evidence—unchanged per
-  [`docs/codex-review.md`](../../docs/codex-review.md#merge-gates); only its
-  preflight and CI rerun. To avoid O(n²) hosted re-reviews during a stack
-  landing cascade when identities do change, defer pushing rebased upper
-  branches until each reaches the bottom of the stack (or its base settles on
-  `main`).
+  `main`); only its preflight and CI rerun. To avoid O(n²) Gate 2 re-reviews
+  during a stack landing cascade when identities do change, defer pushing
+  rebased upper branches until each reaches the bottom of the stack (or its base
+  settles on `main`).
 - **Mandatory post-rebase checks:** After every rebase, run:
   1. `git range-diff <old-base>..<old-head> <new-base>..<new-head>` to verify
      whether patch diffs or upstream interfaces changed;
@@ -435,5 +434,5 @@ authorized**.
      claims against `git diff <new-base>..HEAD`;
   3. Scoped or full re-verification per
      [`change-review`](../change-review/SKILL.md#key-every-result-to-its-inputs)
-     (including deterministic preflight, plus fresh hosted review whenever the
+     (including deterministic preflight, plus fresh Gate 2 review whenever the
      identity changed and CI before merge on the new `head`).

@@ -38,7 +38,7 @@ the single repository-wide ownership map:
 | [`skills/change-review/SKILL.md`](../skills/change-review/SKILL.md) | Reviewer coverage, isolated probes, and host-constrained reporting (Part I); evidence reuse, risk/structure sizing, delegation, holdouts, pipelining, adjudication, and receipts (Part II) |
 | [`skills/trust-review/SKILL.md`](../skills/trust-review/SKILL.md) | Path-to-surface map, repo-wide filesystem/Unicode hygiene, Pass 1 untrusted/seam/spec audit, Pass 2 TCB/CI checklists, and pre-existing hazard reporting |
 | [`skills/source-control/SKILL.md`](../skills/source-control/SKILL.md) | Commit sizing, bottom-up stack self-containment, commit messages, delegated-worker quarantine, PR/stack publication and readiness, and stack locking/rebasing |
-| [`docs/codex-review.md`](codex-review.md) | Merge gates, live ruleset state, read-only `ci/codex_review.py` diagnostics, and re-enablement criteria |
+| [`docs/codex-review.md`](codex-review.md) | Merge gates (including Gate 2 cross-family review), live ruleset state, read-only `ci/codex_review.py` diagnostics, and re-enablement criteria |
 | [`docs/review-policy-design.md`](review-policy-design.md) | Maintainer architecture contract, drift checks, non-bootstrap self-modification rule, and empirical evaluation methodology |
 | [`skills/README.md`](../skills/README.md) | Index of Anneal policy skills and pointer to shared [`../../skills/README.md`](../../skills/README.md) |
 
@@ -261,7 +261,7 @@ weakened rules:
   must be explained in the commit body, surfaced in the Review Receipt
   comment's `Human review surface` block, judged sound by reviewers, and
   confirmed at Gate 5 (human approval).
-- Keep CI and human branch protections live while automated Codex ruleset
+- Keep CI and human branch protections live while automated Gate 2 ruleset
   enforcement remains disabled under
   [`docs/codex-review.md`](codex-review.md).
 - Treat structural and drift checks as **design checks**, never as proof of
@@ -293,7 +293,7 @@ against its canonical owner and required outcome:
 4. **Repair-induced TCB violation and style oscillation:**
    [`change-review`](../skills/change-review/SKILL.md#adjudicate-findings-and-repairs)
    — rejects TCB-violating repairs and repeated style oscillation without new
-   evidence; escalates refuted Codex findings without agent waiver.
+   evidence; escalates refuted Gate 2 findings without agent waiver.
 5. **Stated-specification, seam, and helper-predicate tampering outside
    `trusted/`:**
    [`trust-review`](../skills/trust-review/SKILL.md#pass-1-untrusted-inputs-seams-and-specification-integrity)
@@ -316,7 +316,7 @@ against its canonical owner and required outcome:
    and
    [`source-control`](../skills/source-control/SKILL.md#lock-and-rebase-a-stack)
    — evaluates the CI-executed-surface gate across cumulative `main..<head>`
-   before push, overlaps non-CI draft-PR CI/hosted review with local review,
+   before push, overlaps non-CI draft-PR CI and Gate 2 review with local review,
    coalesces repairs into focused commits, locks converged prefixes, and checks
    `range-diff`.
 9. **Trivial edit zero-ceremony path and scoped evidence reuse:**
@@ -345,7 +345,7 @@ against its canonical owner and required outcome:
     — verifies SHA-bound receipts instead of repeating cold builds, isolates
     untrusted probes in OS sandboxes after static checks, and rejects
     coverage-free or truncated outputs.
-13. **Identity-keyed merge evidence and nondeterministic hosted review:**
+13. **Identity-keyed merge evidence and nondeterministic Gate 2 review:**
     [`docs/codex-review.md`](codex-review.md#merge-gates),
     [`change-review`](../skills/change-review/SKILL.md#key-every-result-to-its-inputs),
     and
@@ -354,12 +354,13 @@ against its canonical owner and required outcome:
     identity (parent tree, tree, and commit message for a one-commit PR, so a
     tree change in a lower PR invalidates every one-commit PR above it, while
     a rebase onto the lower PR's tree-identical squash commit does not), reruns
-    preflight and CI on every new head, and requires a complete Codex review on
-    the PR for the current identity with no requested review still running and
-    every finding fixed by a verified later change to the surface it concerns
-    or carried as an agent-proposed, maintainer-accepted disposition (a later
-    review's silence never resolves a finding, and in-scope trust or soundness
-    defects are never deferred).
+    preflight and CI on every new head, and requires a complete Gate 2 review on
+    the PR for the current identity (an independent cross-family
+    `anneal-gate2-review:v1` `COMMENT` review or legacy Codex summary) with no
+    requested review still running and every finding fixed by a verified later
+    change to the surface it concerns or carried as an agent-proposed,
+    maintainer-accepted disposition (a later review's silence never resolves a
+    finding, and in-scope trust or soundness defects are never deferred).
 
 ## Empirical evaluation methodology
 

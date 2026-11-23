@@ -348,12 +348,17 @@ never proves defect absence or substitutes for CI or merge gates.
   checks, or base access, use the host's failure/abstention path—else retain
   the limitation for the next authorized handoff without fabricating a finding.
   Never treat an aborted or empty findings-only run as completion or approval
-  without separate completion evidence.
+  without separate completion evidence. Automated Gate 2 reviewers must run in
+  a distinct model family from the author, post `COMMENT` (never `APPROVE`,
+  reserved for Gate 5), and—outside legacy Codex summaries—emit one
+  `<!-- anneal-gate2-review:v1 {...} -->` footer binding `base_sha`,
+  `head_sha`, `tree_sha`, `reviewer_family`, `author_family`, `verdict`, and
+  `findings[]`.
 <!-- code-review-rules:end -->
 
 ## Required skills
 
-Single-turn hosted reviewers use the [Code Review Rules](#code-review-rules).
+Single-turn automated reviewers use the [Code Review Rules](#code-review-rules).
 For other activities below, first read each applicable `SKILL.md` in full and
 its referenced `references/` files. Delegated read-only reviewers use only
 Part I of `change-review`.

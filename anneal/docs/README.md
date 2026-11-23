@@ -52,7 +52,7 @@ cargo run --locked -p anneal-audit -- \
   and test the Rust workspace.
 - The [release workflows](alpha.md#cut-the-release) prepare and publish
   the [Anneal alpha](alpha.md).
-- The [Codex review guide](codex-review.md) describes review gates and the
+- The [Gate 2 review guide](codex-review.md) describes review gates and the
   standalone diagnostic evaluator.
 
 ## Documentation index
@@ -84,7 +84,7 @@ incrementally.
 | [MIR correspondence strategy](mir-correspondence-strategy.md) | Current | Proof strategy and simulation obligations for MIR correspondence. |
 | [Lean-Miri provenance](lean-miri-provenance.md) | Current | Provenance and patching policy for `vendor/lean-miri/`. |
 | [Review policy design](review-policy-design.md) | Current | Contributor review rules and policy-placement structure. |
-| [Codex review guide](codex-review.md) | Current | Automated review gates and standalone diagnostic evaluator. |
+| [Gate 2 review guide](codex-review.md) | Current | Automated review gates and standalone diagnostic evaluator. |
 
 ### Target architecture and interop docs
 
