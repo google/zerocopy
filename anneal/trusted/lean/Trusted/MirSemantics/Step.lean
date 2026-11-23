@@ -7,18 +7,21 @@
 -- those terms.
 
 -- anneal-trust-tier: candidate:mir_semantics
+module
 prelude
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Control.Except
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics.Ops
-import Trusted.MirSemantics.Enum
-import Trusted.MirSemantics.State
-import Trusted.MirSemantics.Layout
-import Trusted.MirSemantics.Memory
-import Trusted.MirSemantics.Bytes
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Control.Except
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics.Ops
+public import Trusted.MirSemantics.Enum
+public import Trusted.MirSemantics.State
+public import Trusted.MirSemantics.Layout
+public import Trusted.MirSemantics.Memory
+public import Trusted.MirSemantics.Bytes
+
+@[expose] public section
 
 namespace Trusted.MirSemantics
 
@@ -868,3 +871,5 @@ noncomputable def forceAllocation (p : Program) (s : State)
   | _ => .error .unsupported
 
 end Trusted.MirSemantics
+
+end

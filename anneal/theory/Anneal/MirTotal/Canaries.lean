@@ -6,22 +6,25 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Int.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.Nat.Bitwise.Basic
-import Init.Data.List.Basic
-import Init.SimpLemmas
-import Init.Control.Except
-import Trusted
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics
-import Anneal.MirWp
-import Anneal.MirTotal.ExecTotal
+public import Init.Core
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Int.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.Nat.Bitwise.Basic
+public import Init.Data.List.Basic
+public import Init.SimpLemmas
+public import Init.Control.Except
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics
+public import Anneal.MirWp
+public import Anneal.MirTotal.ExecTotal
+
+public section
 
 namespace Anneal.MirTotal
 
@@ -45,18 +48,18 @@ Kernel-checked positive and negative verification witnesses exercising:
 -/
 
 /-- Constructs a `d`-fold nested shared reference `.ref .shared (... .unit)`. -/
-def tyNestedRef (d : Nat) : MirTy :=
+@[expose] def tyNestedRef (d : Nat) : MirTy :=
   @Nat.rec (fun _ => MirTy) .unit (fun _ inner => .ref .shared inner) d
 
 /-- Depth-17 nested shared reference around `.unit` (AST depth 18). -/
-def ty17 : MirTy := tyNestedRef 17
+@[expose] def ty17 : MirTy := tyNestedRef 17
 
 /-- Depth-16 nested shared reference around `.unit` (AST depth 17). -/
-def ty16 : MirTy := tyNestedRef 16
+@[expose] def ty16 : MirTy := tyNestedRef 16
 
 /-- Single-statement MIR program copying local `1` (`srcTy`) into local `0`
 (`dstTy`). -/
-def mkProgNestedRefPair (dstTy srcTy : MirTy) : Program :=
+@[expose] def mkProgNestedRefPair (dstTy srcTy : MirTy) : Program :=
   { bodies :=
       [{ identity := "mir_total::nested_ref_uninit"
          argumentCount := 0
@@ -72,15 +75,15 @@ def mkProgNestedRefPair (dstTy srcTy : MirTy) : Program :=
 
 /-- Single-statement MIR program copying uninitialized depth-`d` nested
 references (`tyNestedRef d`). -/
-def mkProgNestedRefUninit (d : Nat) : Program :=
+@[expose] def mkProgNestedRefUninit (d : Nat) : Program :=
   mkProgNestedRefPair (tyNestedRef d) (tyNestedRef d)
 
 /-- Depth-17 instantiation of `mkProgNestedRefUninit`. -/
-def progDepth17Uninit : Program :=
+@[expose] def progDepth17Uninit : Program :=
   mkProgNestedRefUninit 17
 
 /-- Single-frame state with two live uninitialized immediate locals. -/
-def stateDepth17Uninit : State :=
+@[expose] def stateDepth17Uninit : State :=
   { frames := [{ defId := 0, blockIdx := 0, stmtIdx := 0,
                  locals := [.immediate none, .immediate none] }]
     callerMem := ⟨[]⟩
@@ -139,7 +142,7 @@ theorem depth17_nested_ref_wpFaultState :
   ⟨rfl, wpFaultState_of_evalMirFuelTotal rfl⟩
 
 /-- Safe `u16` overflowing-addition canary (`40000 + 30000 = (4464, true)`). -/
-def canaryAddWithOverflowProg : Program :=
+@[expose] def canaryAddWithOverflowProg : Program :=
   { bodies :=
       [{ identity := "mir_total::canary_u16_add_with_overflow"
          argumentCount := 0
@@ -158,7 +161,7 @@ def canaryAddWithOverflowProg : Program :=
     mirProfileVersion := 1 }
 
 /-- Faulting `u16` unchecked-addition overflow canary (`40000 + 30000`). -/
-def canaryUncheckedOverflowProg : Program :=
+@[expose] def canaryUncheckedOverflowProg : Program :=
   { bodies :=
       [{ identity := "mir_total::canary_u16_unchecked_overflow"
          argumentCount := 0
@@ -201,7 +204,7 @@ theorem canary_entry_bridges_verified :
       .returned ⟨.tuple [.scalar ⟨.i16, false, BitVec.ofNat 128 4464⟩, .bool true], ⟨[]⟩⟩,
       rfl, rfl⟩
 
-private def badCastBody : Body :=
+@[expose] def badCastBody : Body :=
   { identity := "g"
     argumentCount := 0
     locals := [.int .i8 false, .int .i16 false]
@@ -240,3 +243,5 @@ theorem mirTotal_negative_guards_tests :
   ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 end Anneal.MirTotal
+
+end

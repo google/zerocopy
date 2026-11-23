@@ -1371,22 +1371,27 @@ pub fn validate_and_promote_olean(
     Ok(sha)
 }
 
-/// Door 1 validator for Pass 2 module compilation where Lean `module` files
-/// may emit declared `.olean.server` / `.olean.private` sidecars (promoted)
-/// and `.ir` / `.ir.sig` outputs (validated and discarded) alongside
+/// Door 1 validator for Lean `module` compilation where a module may emit
+/// declared `.olean.server` / `.olean.private` sidecars (promoted) and
+/// `.ir` / `.ir.sig` outputs (validated and discarded) alongside
 /// `<stem>.olean`. Rejects any undeclared file, subdirectory, symlink,
-/// hardlink, or oversized file before promoting each promoted file to
-/// `dest_dir`.
-pub fn validate_and_promote_olean_set(
+/// hardlink, or oversized file before hashing, marking `0o444`, and atomically
+/// renaming each promoted file into `dest_dir`.
+///
+/// Returns a map from promoted destination paths to their lowercase hex SHA-256
+/// digests so callers can register every promoted `.olean*` file in the
+/// artifact ledger.
+pub fn validate_and_promote_olean_set_with_digests(
     out_dir: &Path,
     allowed_promote: &BTreeSet<String>,
     allowed_discard: &BTreeSet<String>,
     required_filename: &str,
     dest_dir: &Path,
-) -> Result<(), Failure> {
+) -> Result<BTreeMap<PathBuf, String>, Failure> {
     let entries = collect_out_entries(out_dir, "door1")?;
     let mut saw_required = false;
-    let mut opened: Vec<(String, PathBuf, fs::File)> = Vec::with_capacity(entries.len());
+    let mut opened: Vec<(String, PathBuf, fs::File, Option<String>)> =
+        Vec::with_capacity(entries.len());
     for (name, path) in entries {
         if !allowed_promote.contains(&name) && !allowed_discard.contains(&name) {
             return Err(Failure::operational(
@@ -1398,13 +1403,20 @@ pub fn validate_and_promote_olean_set(
             ));
         }
         let mut file = open_validated_out_file(&path, MAX_OLEAN_BYTES, "door1")?;
-        if allowed_promote.contains(&name) {
-            validate_olean_v2_header(&mut file, &path, "door1")?;
-        }
+        let sha = if allowed_promote.contains(&name) {
+            Some(validate_olean_v2_and_sha256(
+                &mut file,
+                MAX_OLEAN_BYTES,
+                &path,
+                "door1",
+            )?)
+        } else {
+            None
+        };
         if name == required_filename {
             saw_required = true;
         }
-        opened.push((name, path, file));
+        opened.push((name, path, file, sha));
     }
     if !saw_required {
         return Err(Failure::operational(
@@ -1418,8 +1430,9 @@ pub fn validate_and_promote_olean_set(
     fs::create_dir_all(dest_dir).map_err(|e| {
         Failure::operational("door1", format!("cannot create {}: {e}", dest_dir.display()))
     })?;
-    for (name, path, file) in opened {
-        if allowed_promote.contains(&name) {
+    let mut promoted = BTreeMap::new();
+    for (name, path, file, sha) in opened {
+        if let Some(sha) = sha {
             set_file_mode_readonly(&file, &path, "door1")?;
             drop(file);
             let dest = dest_dir.join(&name);
@@ -1429,11 +1442,35 @@ pub fn validate_and_promote_olean_set(
                     format!("cannot promote {} to {}: {e}", path.display(), dest.display()),
                 )
             })?;
+            promoted.insert(dest, sha);
         } else {
             drop(file);
             let _ = fs::remove_file(&path);
         }
     }
+    Ok(promoted)
+}
+
+/// Door 1 validator for Pass 2 module compilation where Lean `module` files
+/// may emit declared `.olean.server` / `.olean.private` sidecars (promoted)
+/// and `.ir` / `.ir.sig` outputs (validated and discarded) alongside
+/// `<stem>.olean`. Rejects any undeclared file, subdirectory, symlink,
+/// hardlink, or oversized file before promoting each promoted file to
+/// `dest_dir`.
+pub fn validate_and_promote_olean_set(
+    out_dir: &Path,
+    allowed_promote: &BTreeSet<String>,
+    allowed_discard: &BTreeSet<String>,
+    required_filename: &str,
+    dest_dir: &Path,
+) -> Result<(), Failure> {
+    validate_and_promote_olean_set_with_digests(
+        out_dir,
+        allowed_promote,
+        allowed_discard,
+        required_filename,
+        dest_dir,
+    )?;
     Ok(())
 }
 
@@ -1548,42 +1585,6 @@ fn open_validated_out_file(path: &Path, max_bytes: u64, phase: &str) -> Result<f
         ));
     }
     Ok(file)
-}
-
-/// Verify that an opened `.olean` descriptor starts with [`OLEAN_V2_MAGIC`].
-///
-/// Reading directly from the already-opened `O_NOFOLLOW` descriptor avoids
-/// path-based TOCTOU between validation and promotion.
-fn validate_olean_v2_header(file: &mut fs::File, path: &Path, phase: &str) -> Result<(), Failure> {
-    let mut header = [0u8; 6];
-    let mut filled = 0usize;
-    while filled < header.len() {
-        let n = file.read(&mut header[filled..]).map_err(|e| {
-            Failure::operational(phase, format!("cannot read header of {}: {e}", path.display()))
-        })?;
-        if n == 0 {
-            return Err(Failure::operational(
-                phase,
-                format!(
-                    "malformed .olean artifact {}: truncated header ({filled} bytes, expected v2 magic)",
-                    path.display()
-                ),
-            ));
-        }
-        filled += n;
-    }
-    if &header != OLEAN_V2_MAGIC {
-        return Err(Failure::operational(
-            phase,
-            format!(
-                "unsupported or malformed .olean header in {}: expected v2 magic {:02x?}, got {:02x?}",
-                path.display(),
-                OLEAN_V2_MAGIC,
-                header
-            ),
-        ));
-    }
-    Ok(())
 }
 
 /// Validate the `v2` `.olean` header and compute the SHA-256 digest of the

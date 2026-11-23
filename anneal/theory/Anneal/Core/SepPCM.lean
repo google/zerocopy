@@ -6,18 +6,21 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.Data.Nat.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.List.Basic
-import Init.Data.BitVec.BasicAux
-import Trusted
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics
-import Anneal.Core.StageCut
+public import Init.Core
+public import Init.NotationExtra
+public import Init.Data.Nat.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.List.Basic
+public import Init.Data.BitVec.BasicAux
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics
+public import Anneal.Core.StageCut
+
+public section
 
 namespace Anneal.Core
 
@@ -49,13 +52,13 @@ Provides a constructive, LCNF-computable (`0` `noncomputable`, `0`
 /-! ## Option Combinators -/
 
 /-- Monadic bind on `Option` (`0` typeclass overhead). -/
-def optBind {α β : Type} (x : Option α) (f : α → Option β) : Option β :=
+@[expose] def optBind {α β : Type} (x : Option α) (f : α → Option β) : Option β :=
   match x with
   | none => none
   | some a => f a
 
 /-- Left-biased choice on `Option`. -/
-def orElseOpt {α : Type} (x y : Option α) : Option α :=
+@[expose] def orElseOpt {α : Type} (x y : Option α) : Option α :=
   match x with
   | some a => some a
   | none => y
@@ -125,7 +128,7 @@ theorem ExplPCM.assoc_backward {M : Type} (pcm : ExplPCM M)
     exact ⟨ab, rfl, h⟩
 
 /-- Compatibility / disjointness relation `∃ c, pcm.op a b = some c`. -/
-def PCMDisjoint {M : Type} (pcm : ExplPCM M) (a b : M) : Prop :=
+@[expose] def PCMDisjoint {M : Type} (pcm : ExplPCM M) (a b : M) : Prop :=
   ∃ c : M, pcm.op a b = some c
 
 /-- Symmetry of `PCMDisjoint`. -/
@@ -141,27 +144,27 @@ theorem PCMDisjoint.symm {M : Type} {pcm : ExplPCM M} {a b : M}
 abbrev SepProp (M : Type) : Type := M → Prop
 
 /-- Semantic entailment `∀ h, P h → Q h`. -/
-def SepEntails {M : Type} (P Q : SepProp M) : Prop :=
+@[expose] def SepEntails {M : Type} (P Q : SepProp M) : Prop :=
   ∀ h : M, P h → Q h
 
 /-- Pointwise logical equivalence `∀ h, P h ↔ Q h` (`0` `funext`). -/
-def SepEquiv {M : Type} (P Q : SepProp M) : Prop :=
+@[expose] def SepEquiv {M : Type} (P Q : SepProp M) : Prop :=
   ∀ h : M, P h ↔ Q h
 
 /-- Empty-resource assertion `h = pcm.unit`. -/
-def sepEmp {M : Type} (pcm : ExplPCM M) : SepProp M :=
+@[expose] def sepEmp {M : Type} (pcm : ExplPCM M) : SepProp M :=
   fun h => h = pcm.unit
 
 /-- Pure proposition lifted to `SepProp M` alongside `h = pcm.unit`. -/
-def sepPureEmp {M : Type} (pcm : ExplPCM M) (P : Prop) : SepProp M :=
+@[expose] def sepPureEmp {M : Type} (pcm : ExplPCM M) (P : Prop) : SepProp M :=
   fun h => P ∧ h = pcm.unit
 
 /-- Separating conjunction `P ∗ Q`. -/
-def sepConj {M : Type} (pcm : ExplPCM M) (P Q : SepProp M) : SepProp M :=
+@[expose] def sepConj {M : Type} (pcm : ExplPCM M) (P Q : SepProp M) : SepProp M :=
   fun h => ∃ h₁ h₂ : M, pcm.op h₁ h₂ = some h ∧ P h₁ ∧ Q h₂
 
 /-- Separating implication (magic wand) `P −∗ Q`. -/
-def sepWand {M : Type} (pcm : ExplPCM M) (P Q : SepProp M) : SepProp M :=
+@[expose] def sepWand {M : Type} (pcm : ExplPCM M) (P Q : SepProp M) : SepProp M :=
   fun h => ∀ h' hCombined : M,
     pcm.op h h' = some hCombined → P h' → Q hCombined
 
@@ -252,7 +255,7 @@ theorem sepWand_elim {M : Type} (pcm : ExplPCM M) (P Q : SepProp M) :
 
 /-- Frame-preserving resource update from `P` to `Q` preserving compatibility
 with every disjoint frame `hf`. -/
-def FramePreserving {M : Type} (pcm : ExplPCM M) (P Q : SepProp M) : Prop :=
+@[expose] def FramePreserving {M : Type} (pcm : ExplPCM M) (P Q : SepProp M) : Prop :=
   ∀ h₁ hf hCombined : M,
     P h₁ → pcm.op h₁ hf = some hCombined →
     ∃ h₁' hCombined' : M, pcm.op h₁' hf = some hCombined' ∧ Q h₁'
@@ -277,11 +280,11 @@ structure ByteAddr where
   offset : Nat
 
 /-- Computable equality on `ByteAddr`. -/
-def addrBeq (a b : ByteAddr) : Bool :=
+@[expose] def addrBeq (a b : ByteAddr) : Bool :=
   Nat.beq a.allocId b.allocId && Nat.beq a.offset b.offset
 
 /-- Strict lexicographic ordering on `ByteAddr`. -/
-def addrLt (a b : ByteAddr) : Bool :=
+@[expose] def addrLt (a b : ByteAddr) : Bool :=
   Nat.blt a.allocId b.allocId ||
     (Nat.beq a.allocId b.allocId && Nat.blt a.offset b.offset)
 
@@ -428,7 +431,7 @@ theorem addrLt_trichotomy (a b : ByteAddr) :
               exact .inr (.inl rfl)
 
 /-- Association-list lookup over `ByteAddr` keys (`0` `noncomputable`). -/
-def lookupEntries {V : Type} (xs : List (ByteAddr × V)) (k : ByteAddr) :
+@[expose] def lookupEntries {V : Type} (xs : List (ByteAddr × V)) (k : ByteAddr) :
     Option V :=
   List.foldr
     (fun (kv : ByteAddr × V) (rest : Option V) =>
@@ -437,7 +440,7 @@ def lookupEntries {V : Type} (xs : List (ByteAddr × V)) (k : ByteAddr) :
     xs
 
 /-- Strictly ascending lower-bounded key predicate `lo < k₀ < k₁ < ...`. -/
-def BoundedEntries {V : Type} (xs : List (ByteAddr × V)) : ByteAddr → Prop :=
+@[expose] def BoundedEntries {V : Type} (xs : List (ByteAddr × V)) : ByteAddr → Prop :=
   List.foldr
     (fun (kv : ByteAddr × V) (ih : ByteAddr → Prop) (lo : ByteAddr) =>
       addrLt lo kv.1 = true ∧ ih kv.1)
@@ -445,7 +448,7 @@ def BoundedEntries {V : Type} (xs : List (ByteAddr × V)) : ByteAddr → Prop :=
     xs
 
 /-- Strictly ascending key invariant on `List (ByteAddr × V)`. -/
-def IsStrictlySorted {V : Type} (xs : List (ByteAddr × V)) : Prop :=
+@[expose] def IsStrictlySorted {V : Type} (xs : List (ByteAddr × V)) : Prop :=
   match xs with
   | [] => True
   | kv :: tl => BoundedEntries tl kv.1
@@ -568,7 +571,7 @@ theorem sorted_entries_ext {V : Type} {xs ys : List (ByteAddr × V)}
 
 /-! ## Disjoint Linear-Time Merge via Fuel-Bounded `@Nat.rec` -/
 
-private def mergeDisjointFuel {V : Type} (fuel : Nat) :
+@[expose] def mergeDisjointFuel {V : Type} (fuel : Nat) :
     List (ByteAddr × V) → List (ByteAddr × V) → Option (List (ByteAddr × V)) :=
   @Nat.rec
     (fun _ =>
@@ -647,7 +650,7 @@ private theorem mergeDisjointFuel_eq {V : Type} :
 /-- Merges two strictly sorted `ByteAddr` entry lists in linear `O(|xs| + |ys|)`
 time (in both LCNF and WHNF), returning `none` on any key collision (`0`
 `noncomputable`, `0` `._unsafe_rec`). -/
-def mergeDisjointEntries {V : Type} (xs ys : List (ByteAddr × V)) :
+@[expose] def mergeDisjointEntries {V : Type} (xs ys : List (ByteAddr × V)) :
     Option (List (ByteAddr × V)) :=
   mergeDisjointFuel (xs.length + ys.length + 1) xs ys
 
@@ -805,7 +808,7 @@ theorem mergeDisjointEntries_sorted {V : Type}
               ⟨hYX, hSx⟩ hSy hSub
 
 /-- Pointwise key-disjointness of two association lists. -/
-def DisjointEntries {V : Type} (xs ys : List (ByteAddr × V)) : Prop :=
+@[expose] def DisjointEntries {V : Type} (xs ys : List (ByteAddr × V)) : Prop :=
   ∀ k : ByteAddr, lookupEntries xs k = none ∨ lookupEntries ys k = none
 
 private theorem mergeDisjointEntries_sound {V : Type}
@@ -998,7 +1001,7 @@ private theorem mergeDisjointEntries_complete {V : Type}
 /-! ## `SortedAssocMap V` and `ByteHeaplet` PCM Instances -/
 
 /-- Boolean strictly-ascending lower-bounded key check (`0` `noncomputable`). -/
-def boundedEntriesBool {V : Type} (xs : List (ByteAddr × V)) :
+@[expose] def boundedEntriesBool {V : Type} (xs : List (ByteAddr × V)) :
     ByteAddr → Bool :=
   List.foldr
     (fun (kv : ByteAddr × V) (ih : ByteAddr → Bool) (lo : ByteAddr) =>
@@ -1025,12 +1028,12 @@ private theorem boundedEntriesBool_iff {V : Type}
              fun h => (ih kv.1).mpr h.2⟩
 
 /-- Boolean strictly-ascending key check (`0` `noncomputable`). -/
-def isStrictlySortedBool {V : Type} (xs : List (ByteAddr × V)) : Bool :=
+@[expose] def isStrictlySortedBool {V : Type} (xs : List (ByteAddr × V)) : Bool :=
   match xs with
   | [] => true
   | kv :: tl => boundedEntriesBool tl kv.1
 
-private theorem isStrictlySortedBool_iff {V : Type}
+theorem isStrictlySortedBool_iff {V : Type}
     (xs : List (ByteAddr × V)) :
     isStrictlySortedBool xs = true ↔ IsStrictlySorted xs := by
   cases xs with
@@ -1053,25 +1056,25 @@ private theorem sortedAssocMap_ext {V : Type} {a b : SortedAssocMap V}
       rfl
 
 /-- Empty `SortedAssocMap V`. -/
-def SortedAssocMap.empty (V : Type) : SortedAssocMap V :=
+@[expose] def SortedAssocMap.empty (V : Type) : SortedAssocMap V :=
   { entries := [], sorted := True.intro }
 
 /-- Singleton `SortedAssocMap V` at `addr`. -/
-def SortedAssocMap.singleton {V : Type} (addr : ByteAddr) (val : V) :
+@[expose] def SortedAssocMap.singleton {V : Type} (addr : ByteAddr) (val : V) :
     SortedAssocMap V :=
   { entries := [(addr, val)], sorted := True.intro }
 
 /-- Key lookup on `SortedAssocMap V`. -/
-def SortedAssocMap.lookup {V : Type} (m : SortedAssocMap V) (addr : ByteAddr) :
+@[expose] def SortedAssocMap.lookup {V : Type} (m : SortedAssocMap V) (addr : ByteAddr) :
     Option V :=
   lookupEntries m.entries addr
 
-private def mkSortedFromFlag {V : Type} (zs : List (ByteAddr × V)) :
+@[expose] def mkSortedFromFlag {V : Type} (zs : List (ByteAddr × V)) :
     ∀ b : Bool, (isStrictlySortedBool zs = b) → Option (SortedAssocMap V)
   | true, h => some ⟨zs, (isStrictlySortedBool_iff zs).mp h⟩
   | false, _ => none
 
-private def mkSortedAssocMap? {V : Type}
+@[expose] def mkSortedAssocMap? {V : Type}
     (opt : Option (List (ByteAddr × V))) : Option (SortedAssocMap V) :=
   match opt with
   | none => none
@@ -1095,7 +1098,7 @@ private theorem mkSortedAssocMap?_some {V : Type}
     ((isStrictlySortedBool_iff zs).mpr hs)
 
 /-- Disjoint merge on `SortedAssocMap V` (`0` `noncomputable`). -/
-def SortedAssocMap.merge {V : Type} (a b : SortedAssocMap V) :
+@[expose] def SortedAssocMap.merge {V : Type} (a b : SortedAssocMap V) :
     Option (SortedAssocMap V) :=
   mkSortedAssocMap? (mergeDisjointEntries a.entries b.entries)
 
@@ -1111,7 +1114,7 @@ private theorem orElseOpt_assoc {V : Type} (x y z : Option V) :
 
 /-- Constructive `ExplPCM` instance on `SortedAssocMap V` (`propext`-only; `0`
 `Quot.sound`, `0` `Classical.choice`). -/
-def sortedAssocPCM (V : Type) : ExplPCM (SortedAssocMap V) where
+@[expose] def sortedAssocPCM (V : Type) : ExplPCM (SortedAssocMap V) where
   unit := SortedAssocMap.empty V
   op := SortedAssocMap.merge
   op_comm := fun a b => by
@@ -1326,10 +1329,10 @@ abbrev ByteHeaplet : Type := SortedAssocMap AllocByte
 
 /-- Constructive `ExplPCM` over `ByteHeaplet` (`propext`-only; `0` `Quot.sound`,
 `0` `Classical.choice`). -/
-def byteHeapletPCM : ExplPCM ByteHeaplet := sortedAssocPCM AllocByte
+@[expose] def byteHeapletPCM : ExplPCM ByteHeaplet := sortedAssocPCM AllocByte
 
 /-- Singleton byte points-to assertion `addr ↦ val`. -/
-def bytePointsTo (addr : ByteAddr) (val : AllocByte) :
+@[expose] def bytePointsTo (addr : ByteAddr) (val : AllocByte) :
     SepProp ByteHeaplet :=
   fun h => h = SortedAssocMap.singleton addr val
 
@@ -1441,7 +1444,7 @@ structure ByteRange where
 
 /-- Computable membership test for `addr` inside `[r.offset, r.offset + r.len)`.
 -/
-def ByteRange.contains (r : ByteRange) (addr : ByteAddr) : Bool :=
+@[expose] def ByteRange.contains (r : ByteRange) (addr : ByteAddr) : Bool :=
   Nat.beq r.allocId addr.allocId &&
     Nat.ble r.offset addr.offset &&
     Nat.blt addr.offset (r.offset + r.len)
@@ -1450,14 +1453,14 @@ def ByteRange.contains (r : ByteRange) (addr : ByteAddr) : Bool :=
 abbrev ByteFootprint : Type := List ByteRange
 
 /-- Computable footprint membership test (`0` `noncomputable`). -/
-def ByteFootprint.contains (fp : ByteFootprint) (addr : ByteAddr) : Bool :=
+@[expose] def ByteFootprint.contains (fp : ByteFootprint) (addr : ByteAddr) : Bool :=
   fp.any (fun r => r.contains addr)
 
 /-- Allocation-metadata-preserving memory frame relation: from `mem` to `mem'`,
 `nextAllocId` grows monotonically, every pre-existing allocation `aid <
 mem.nextAllocId` retains its `live`, `alignLog2`, `mutability`, and byte
 length, and every byte outside `fp` retains its exact `AllocByte`. -/
-def MemDisjointFrame (fp : ByteFootprint) (mem mem' : MemoryState) : Prop :=
+@[expose] def MemDisjointFrame (fp : ByteFootprint) (mem mem' : MemoryState) : Prop :=
   mem.nextAllocId ≤ mem'.nextAllocId ∧
   ∀ aid : AllocId, aid < mem.nextAllocId →
     match findAllocation aid mem.allocations,
@@ -1535,7 +1538,7 @@ inductive SepAtomTree (M : Type) : Type where
 /-- `O(depth)` Braun-tree lookup via `@Nat.rec` (`0` `noncomputable`, `0`
 `._unsafe_rec`, `hasIR = true`): index `0` at root, `2*k + 1` in `left` at `k`,
 `2*k + 2` in `right` at `k`; out-of-bounds returns `sepEmp pcm`. -/
-def SepAtomTree.getAt {M : Type} (pcm : ExplPCM M) (depth : Nat) :
+@[expose] def SepAtomTree.getAt {M : Type} (pcm : ExplPCM M) (depth : Nat) :
     SepAtomTree M → Nat → SepProp M :=
   @Nat.rec (fun _ => SepAtomTree M → Nat → SepProp M)
     (fun t idx =>
@@ -1556,14 +1559,14 @@ def SepAtomTree.getAt {M : Type} (pcm : ExplPCM M) (depth : Nat) :
 
 /-- `O(log N)` Braun-tree lookup covering up to `2^20` atoms (`0`
 `noncomputable`, `0` `._unsafe_rec`, `hasIR = true`). -/
-def SepAtomTree.get {M : Type} (pcm : ExplPCM M) (t : SepAtomTree M)
+@[expose] def SepAtomTree.get {M : Type} (pcm : ExplPCM M) (t : SepAtomTree M)
     (idx : Nat) : SepProp M :=
   SepAtomTree.getAt pcm 20 t idx
 
-private def sepUnzipEvenOdd {α : Type} (xs : List α) : List α × List α :=
+@[expose] def sepUnzipEvenOdd {α : Type} (xs : List α) : List α × List α :=
   List.foldr (fun x eo => (x :: eo.2, eo.1)) ([], []) xs
 
-private def sepAtomTreeOfListFuel {M : Type} (fuel : Nat) :
+@[expose] def sepAtomTreeOfListFuel {M : Type} (fuel : Nat) :
     List (SepProp M) → SepAtomTree M :=
   @Nat.rec (fun _ => List (SepProp M) → SepAtomTree M)
     (fun _ => .empty)
@@ -1576,7 +1579,7 @@ private def sepAtomTreeOfListFuel {M : Type} (fuel : Nat) :
     fuel
 
 /-- Builds a balanced `SepAtomTree M` from a list of separation assertions. -/
-def SepAtomTree.ofList {M : Type} (xs : List (SepProp M)) : SepAtomTree M :=
+@[expose] def SepAtomTree.ofList {M : Type} (xs : List (SepProp M)) : SepAtomTree M :=
   sepAtomTreeOfListFuel xs.length xs
 
 /-- Reflected separation-logic formula AST over `Nat` atom indices. -/
@@ -1588,7 +1591,7 @@ inductive SepExpr : Type where
 /-- Propositional denotation of `SepExpr` against `env : SepAtomTree M` over
 `pcm`. Marked `noncomputable` solely to avoid emitting compiler `._unsafe_rec`
 auxiliaries; all reflective checkers below are computable (`hasIR = true`). -/
-noncomputable def SepExpr.eval {M : Type} (pcm : ExplPCM M)
+@[expose] noncomputable def SepExpr.eval {M : Type} (pcm : ExplPCM M)
     (env : SepAtomTree M) : SepExpr → SepProp M
   | .emp => sepEmp pcm
   | .atom i => env.get pcm i
@@ -1642,7 +1645,7 @@ inductive AtomBag : Type where
 
 /-- Smart constructor collapsing `.node .empty 0 .empty` back to `.empty` so
 canceled bags compare equal to `.empty` structurally. -/
-def AtomBag.make (l : AtomBag) (c : Nat) (r : AtomBag) : AtomBag :=
+@[expose] def AtomBag.make (l : AtomBag) (c : Nat) (r : AtomBag) : AtomBag :=
   match c with
   | 0 =>
     match l, r with
@@ -1654,7 +1657,7 @@ def AtomBag.make (l : AtomBag) (c : Nat) (r : AtomBag) : AtomBag :=
 `noncomputable`, `0` `._unsafe_rec`, `hasIR = true`). Returns `false` on any
 `.node` at fuel `0` so `beqAt fuel a b = true` unconditionally implies `a = b`.
 -/
-def AtomBag.beqAt (fuel : Nat) : AtomBag → AtomBag → Bool :=
+@[expose] def AtomBag.beqAt (fuel : Nat) : AtomBag → AtomBag → Bool :=
   @Nat.rec (fun _ => AtomBag → AtomBag → Bool)
     (fun a b =>
       match a, b with
@@ -1669,7 +1672,7 @@ def AtomBag.beqAt (fuel : Nat) : AtomBag → AtomBag → Bool :=
     fuel
 
 /-- Structural equality on `AtomBag` up to radix depth `21`. -/
-def AtomBag.beq (a b : AtomBag) : Bool :=
+@[expose] def AtomBag.beq (a b : AtomBag) : Bool :=
   AtomBag.beqAt 21 a b
 
 private theorem atomBag_eq_of_beqAt :
@@ -1698,7 +1701,7 @@ private theorem atomBag_eq_of_beqAt :
 /-- Fuel-bounded pointwise multiset addition on `AtomBag` via `@Nat.rec` (`0`
 `noncomputable`, `0` `._unsafe_rec`, `hasIR = true`), failing closed (`none`)
 if two `.node`s exceed `fuel`. -/
-def AtomBag.addAt (fuel : Nat) : AtomBag → AtomBag → Option AtomBag :=
+@[expose] def AtomBag.addAt (fuel : Nat) : AtomBag → AtomBag → Option AtomBag :=
   @Nat.rec (fun _ => AtomBag → AtomBag → Option AtomBag)
     (fun a b =>
       match a, b with
@@ -1721,7 +1724,7 @@ def AtomBag.addAt (fuel : Nat) : AtomBag → AtomBag → Option AtomBag :=
 /-- Fuel-bounded pointwise multiset common-atom cancellation on `AtomBag` via
 `@Nat.rec` (`0` `noncomputable`, `0` `._unsafe_rec`, `hasIR = true`), returning
 `some (lhsRem, rhsRem)` with all shared multiplicities canceled. -/
-def AtomBag.cancelAt (fuel : Nat) :
+@[expose] def AtomBag.cancelAt (fuel : Nat) :
     AtomBag → AtomBag → Option (AtomBag × AtomBag) :=
   @Nat.rec (fun _ => AtomBag → AtomBag → Option (AtomBag × AtomBag))
     (fun a b =>
@@ -1745,10 +1748,10 @@ def AtomBag.cancelAt (fuel : Nat) :
             some (AtomBag.make rl.1 d1 rr.1, AtomBag.make rl.2 d2 rr.2))
     fuel
 
-private def bagPow2 (n : Nat) : Nat :=
+@[expose] def bagPow2 (n : Nat) : Nat :=
   @Nat.rec (fun _ => Nat) 1 (fun _ ih => 2 * ih) n
 
-private def bagSingletonFuel (fuel : Nat) : Nat → AtomBag :=
+@[expose] def bagSingletonFuel (fuel : Nat) : Nat → AtomBag :=
   @Nat.rec (fun _ => Nat → AtomBag)
     (fun _ => .node .empty 1 .empty)
     (fun _ ih m =>
@@ -1761,14 +1764,14 @@ private def bagSingletonFuel (fuel : Nat) : Nat → AtomBag :=
 
 /-- Builds the singleton `AtomBag` for atom index `idx` (exact for all
 `idx < 2^20 - 1 = 1,048,575`, `0` `noncomputable`, `0` `._unsafe_rec`). -/
-def AtomBag.singleton (idx : Nat) : AtomBag :=
+@[expose] def AtomBag.singleton (idx : Nat) : AtomBag :=
   bagSingletonFuel 20 (idx + 1)
 
 /-- Compiles a `SepExpr` into its canonical `AtomBag` multiset via `@Nat.rec`
 up to AST depth `fuel` (`0` `noncomputable`, `0` `._unsafe_rec`,
 `hasIR = true`), failing closed (`none`) if AST depth exceeds `fuel` or any
 atom index reaches `2^20 - 1`. -/
-def SepExpr.toBagAt (fuel : Nat) : SepExpr → Option AtomBag :=
+@[expose] def SepExpr.toBagAt (fuel : Nat) : SepExpr → Option AtomBag :=
   @Nat.rec (fun _ => SepExpr → Option AtomBag)
     (fun _ => none)
     (fun _ ih e =>
@@ -1787,7 +1790,7 @@ def SepExpr.toBagAt (fuel : Nat) : SepExpr → Option AtomBag :=
 
 /-- `n`-fold separating conjunction of `P` (`sepRepeat pcm 0 P = sepEmp pcm`).
 -/
-def sepRepeat {M : Type} (pcm : ExplPCM M) (n : Nat) (P : SepProp M) :
+@[expose] def sepRepeat {M : Type} (pcm : ExplPCM M) (n : Nat) (P : SepProp M) :
     SepProp M :=
   @Nat.rec (fun _ => SepProp M) (sepEmp pcm) (fun _ ih => sepConj pcm P ih) n
 
@@ -1808,7 +1811,7 @@ private theorem sepRepeat_add {M : Type} (pcm : ExplPCM M) (P : SepProp M) :
 affine positive key coordinates `(base, stride)`. Marked `noncomputable` solely
 to suppress compiler `._unsafe_rec` auxiliaries (never called by computable
 checkers). -/
-noncomputable def evalBagAt {M : Type} (pcm : ExplPCM M) (env : SepAtomTree M) :
+@[expose] noncomputable def evalBagAt {M : Type} (pcm : ExplPCM M) (env : SepAtomTree M) :
     Nat → Nat → AtomBag → SepProp M
   | _, _, .empty => sepEmp pcm
   | base, stride, .node l c r =>
@@ -1818,7 +1821,7 @@ noncomputable def evalBagAt {M : Type} (pcm : ExplPCM M) (env : SepAtomTree M) :
         (evalBagAt pcm env (base + stride) (2 * stride) r))
 
 /-- Top-level `AtomBag` semantics at root `(base := 0, stride := 1)`. -/
-noncomputable def evalBag {M : Type} (pcm : ExplPCM M) (env : SepAtomTree M)
+@[expose] noncomputable def evalBag {M : Type} (pcm : ExplPCM M) (env : SepAtomTree M)
     (b : AtomBag) : SepProp M :=
   evalBagAt pcm env 0 1 b
 
@@ -2184,7 +2187,7 @@ structure SepACEquivCert where
 /-- Computable reflective AC-equivalence checker for `SepExpr` (`0`
 `noncomputable`, `0` `._unsafe_rec`, `hasIR = true`, `O(log N)` radix-bag
 depth). -/
-def sepACCheckEquiv (cert : SepACEquivCert) : Bool :=
+@[expose] def sepACCheckEquiv (cert : SepACEquivCert) : Bool :=
   match cert.lhs.toBagAt 32 with
   | none => false
   | some bl =>
@@ -2224,7 +2227,7 @@ structure SepACCancelCert where
 
 /-- Computable reflective multiset-frame canceler checker (`0` `noncomputable`,
 `0` `._unsafe_rec`, `hasIR = true`, `O(log N)` radix-bag depth). -/
-def sepACCheckCancel (cert : SepACCancelCert) : Bool :=
+@[expose] def sepACCheckCancel (cert : SepACCancelCert) : Bool :=
   match cert.lhs.toBagAt 32 with
   | none => false
   | some bl =>
@@ -2334,7 +2337,7 @@ structure SepACFrameCert where
   frame : SepExpr
 
 /-- Computable reflective frame-split checker (`avail ≡ req ∗ frame`). -/
-def sepACCheckFrame (cert : SepACFrameCert) : Bool :=
+@[expose] def sepACCheckFrame (cert : SepACFrameCert) : Bool :=
   sepACCheckEquiv ⟨cert.avail, .star cert.req cert.frame⟩
 
 /-- Extracts a `SepEquiv` frame split `avail ≡ req ∗ frame` from a sealed
@@ -2349,13 +2352,13 @@ theorem sepAC_frame_split_of_boolCertCut {M : Type} (pcm : ExplPCM M)
   exact sepAC_equiv_of_boolCertCut pcm env avail (.star req frame)
     (BoolCertCut.seal sepACCheckEquiv ⟨avail, .star req frame⟩ hRaw)
 
-private def mkSepTreeAsc : Nat → Nat → Nat → SepExpr :=
+@[expose] def mkSepTreeAsc : Nat → Nat → Nat → SepExpr :=
   @Nat.rec (fun _ => Nat → Nat → SepExpr)
     (fun start _ => .atom start)
     (fun _ ih start half =>
       .star (ih start (Nat.div half 2)) (ih (start + half) (Nat.div half 2)))
 
-private def mkSepTreeDesc : Nat → Nat → Nat → SepExpr :=
+@[expose] def mkSepTreeDesc : Nat → Nat → Nat → SepExpr :=
   @Nat.rec (fun _ => Nat → Nat → SepExpr)
     (fun start _ => .atom start)
     (fun _ ih start half =>
@@ -2423,3 +2426,5 @@ theorem sepAC_frame_cancel_canary :
       (.init 0x11 none) (.init 0x7a none))
 
 end Anneal.Core
+
+end

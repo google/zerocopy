@@ -6,14 +6,17 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Nat.Bitwise.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.Nat.Basic
-import Init.Data.Fin.Basic
-import Anneal.NatBitwise
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Nat.Bitwise.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.Nat.Basic
+public import Init.Data.Fin.Basic
+public import Anneal.NatBitwise
+
+public section
 
 namespace Anneal.BitVec
 
@@ -51,7 +54,7 @@ private theorem nat_pow_succ (a n : Nat) :
     Nat.pow a (n + 1) = Nat.pow a n * a :=
   Nat.pow_succ a n
 
-private theorem nat_two_pow_pos (n : Nat) : 0 < Nat.pow 2 n :=
+theorem nat_two_pow_pos (n : Nat) : 0 < Nat.pow 2 n :=
   Nat.two_pow_pos n
 
 private theorem nat_pow_add (a m n : Nat) :
@@ -62,7 +65,7 @@ private theorem nat_pow_add (a m n : Nat) :
   | succ n ih =>
     rw [Nat.add_succ, nat_pow_succ, nat_pow_succ, ih, Nat.mul_assoc]
 
-private theorem nat_pow_le_pow_right {i j : Nat} (h : i ≤ j) :
+theorem nat_pow_le_pow_right {i j : Nat} (h : i ≤ j) :
     Nat.pow 2 i ≤ Nat.pow 2 j :=
   Nat.pow_le_pow_right (by decide : 0 < 2) h
 
@@ -94,7 +97,7 @@ private theorem nat_div_eq_of_lt {a b : Nat} (h : a < b) :
     Nat.div a b = 0 :=
   Nat.div_eq_of_lt h
 
-private theorem nat_div_le_self (a b : Nat) : Nat.div a b ≤ a :=
+theorem nat_div_le_self (a b : Nat) : Nat.div a b ≤ a :=
   Nat.div_le_self a b
 
 private theorem nat_div_div_eq_div_mul (m n k : Nat) :
@@ -261,8 +264,7 @@ private theorem nat_bitwise_unfold (f : Bool → Bool → Bool) (n m : Nat) :
 
 private theorem nat_land_one_eq (k : Nat) :
     Nat.land 1 k = if decide (Nat.mod k 2 = 1) then 1 else 0 := by
-  change Nat.bitwise and 1 k = _
-  rw [nat_bitwise_unfold]
+  rw [Anneal.NatBitwise.land_eq_bitwise, nat_bitwise_unfold]
   cases k with
   | zero => rfl
   | succ k' =>
@@ -524,20 +526,20 @@ private theorem nat_bitwise_lt_two_pow {f : Bool → Bool → Bool} (w : Nat) :
       Nat.bitwise f n m < Nat.pow 2 w :=
   Anneal.NatBitwise.lt_two_pow f w
 
-private theorem nat_land_lt_two_pow {w n m : Nat}
+theorem nat_land_lt_two_pow {w n m : Nat}
     (hn : n < Nat.pow 2 w) (hm : m < Nat.pow 2 w) :
     Nat.land n m < Nat.pow 2 w :=
-  nat_bitwise_lt_two_pow w n m hn hm
+  Anneal.NatBitwise.land_lt_two_pow hn hm
 
-private theorem nat_lor_lt_two_pow {w n m : Nat}
+theorem nat_lor_lt_two_pow {w n m : Nat}
     (hn : n < Nat.pow 2 w) (hm : m < Nat.pow 2 w) :
     Nat.lor n m < Nat.pow 2 w :=
-  nat_bitwise_lt_two_pow w n m hn hm
+  Anneal.NatBitwise.lor_lt_two_pow hn hm
 
-private theorem nat_xor_lt_two_pow {w n m : Nat}
+theorem nat_xor_lt_two_pow {w n m : Nat}
     (hn : n < Nat.pow 2 w) (hm : m < Nat.pow 2 w) :
     Nat.xor n m < Nat.pow 2 w :=
-  nat_bitwise_lt_two_pow w n m hn hm
+  Anneal.NatBitwise.xor_lt_two_pow hn hm
 
 private theorem nat_eq_of_testBit_eq_below (w : Nat) :
     ∀ a b : Nat, a < Nat.pow 2 w → b < Nat.pow 2 w →
@@ -629,44 +631,44 @@ private theorem nat_le_of_testBit_imp (w : Nat) :
 
 /-- All-ones bitvector of width `w`, definitionally equal to `BitVec.allOnes w`.
 -/
-def allOnes (w : Nat) : BitVec w :=
+@[expose] def allOnes (w : Nat) : BitVec w :=
   BitVec.ofNatLT (Nat.pow 2 w - 1)
     (Nat.sub_lt (nat_two_pow_pos w) Nat.one_pos)
 
 /-- Return the `i`-th least significant bit of `x` (or `false` for `i ≥ w`),
 definitionally equal to `BitVec.getLsbD x i`. -/
-def getLsbD {w : Nat} (x : BitVec w) (i : Nat) : Bool :=
+@[expose] def getLsbD {w : Nat} (x : BitVec w) (i : Nat) : Bool :=
   x.toNat.testBit i
 
 /-- Bitwise AND of two `w`-bit bitvectors, definitionally equal to `x &&& y`. -/
-def and {w : Nat} (x y : BitVec w) : BitVec w :=
+@[expose] def and {w : Nat} (x y : BitVec w) : BitVec w :=
   BitVec.ofNatLT (Nat.land x.toNat y.toNat) (nat_land_lt_two_pow x.isLt y.isLt)
 
 /-- Bitwise OR of two `w`-bit bitvectors, definitionally equal to `x ||| y`. -/
-def or {w : Nat} (x y : BitVec w) : BitVec w :=
+@[expose] def or {w : Nat} (x y : BitVec w) : BitVec w :=
   BitVec.ofNatLT (Nat.lor x.toNat y.toNat) (nat_lor_lt_two_pow x.isLt y.isLt)
 
 /-- Bitwise XOR of two `w`-bit bitvectors, definitionally equal to `x ^^^ y`. -/
-def xor {w : Nat} (x y : BitVec w) : BitVec w :=
+@[expose] def xor {w : Nat} (x y : BitVec w) : BitVec w :=
   BitVec.ofNatLT (Nat.xor x.toNat y.toNat) (nat_xor_lt_two_pow x.isLt y.isLt)
 
 /-- Bitwise complement of a `w`-bit bitvector, definitionally equal to `~~~x`.
 -/
-def not {w : Nat} (x : BitVec w) : BitVec w :=
+@[expose] def not {w : Nat} (x : BitVec w) : BitVec w :=
   xor (allOnes w) x
 
 /-- Logical left shift by `k : Nat`, definitionally equal to `x <<< k`. -/
-def shl {w : Nat} (x : BitVec w) (k : Nat) : BitVec w :=
+@[expose] def shl {w : Nat} (x : BitVec w) (k : Nat) : BitVec w :=
   BitVec.ofNat w (Nat.shiftLeft x.toNat k)
 
 /-- Logical right shift by `k : Nat`, definitionally equal to `x >>> k`. -/
-def ushr {w : Nat} (x : BitVec w) (k : Nat) : BitVec w :=
+@[expose] def ushr {w : Nat} (x : BitVec w) (k : Nat) : BitVec w :=
   BitVec.ofNatLT (Nat.shiftRight x.toNat k)
     (Nat.lt_of_le_of_lt (Nat.shiftRight_le x.toNat k) x.isLt)
 
 /-- Zero-extend or truncate `x : BitVec w` to width `v`, definitionally equal
 to `BitVec.setWidth v x`. -/
-def setWidth {w : Nat} (v : Nat) (x : BitVec w) : BitVec v :=
+@[expose] def setWidth {w : Nat} (v : Nat) (x : BitVec w) : BitVec v :=
   if h : w ≤ v then
     BitVec.ofNatLT x.toNat
       (Nat.lt_of_lt_of_le x.isLt (nat_pow_le_pow_right h))
@@ -675,12 +677,12 @@ def setWidth {w : Nat} (v : Nat) (x : BitVec w) : BitVec v :=
 
 /-- Wrapping multiplication of two `w`-bit bitvectors, definitionally equal to
 `x * y`. -/
-def mul {w : Nat} (x y : BitVec w) : BitVec w :=
+@[expose] def mul {w : Nat} (x y : BitVec w) : BitVec w :=
   BitVec.ofNat w (x.toNat * y.toNat)
 
 /-- Unsigned division of two `w`-bit bitvectors (division by zero returns zero),
 definitionally equal to `x / y` (`BitVec.udiv`). -/
-def udiv {w : Nat} (x y : BitVec w) : BitVec w :=
+@[expose] def udiv {w : Nat} (x y : BitVec w) : BitVec w :=
   BitVec.ofNatLT (Nat.div x.toNat y.toNat)
     (Nat.lt_of_le_of_lt (nat_div_le_self x.toNat y.toNat) x.isLt)
 
@@ -828,18 +830,24 @@ theorem getLsbD_ge {w : Nat} (a : BitVec w) {i : Nat} (hi : w ≤ i) :
 
 /-- `getLsbD` of `and a b`. -/
 @[simp] theorem getLsbD_and {w : Nat} (a b : BitVec w) (i : Nat) :
-    getLsbD (and a b) i = (getLsbD a i && getLsbD b i) :=
-  nat_testBit_bitwise (f := Bool.and) rfl i a.toNat b.toNat
+    getLsbD (and a b) i = (getLsbD a i && getLsbD b i) := by
+  change (Nat.land a.toNat b.toNat).testBit i = (a.toNat.testBit i && b.toNat.testBit i)
+  rw [Anneal.NatBitwise.land_eq_bitwise]
+  exact nat_testBit_bitwise (f := Bool.and) rfl i a.toNat b.toNat
 
 /-- `getLsbD` of `or a b`. -/
 @[simp] theorem getLsbD_or {w : Nat} (a b : BitVec w) (i : Nat) :
-    getLsbD (or a b) i = (getLsbD a i || getLsbD b i) :=
-  nat_testBit_bitwise (f := Bool.or) rfl i a.toNat b.toNat
+    getLsbD (or a b) i = (getLsbD a i || getLsbD b i) := by
+  change (Nat.lor a.toNat b.toNat).testBit i = (a.toNat.testBit i || b.toNat.testBit i)
+  rw [Anneal.NatBitwise.lor_eq_bitwise]
+  exact nat_testBit_bitwise (f := Bool.or) rfl i a.toNat b.toNat
 
 /-- `getLsbD` of `xor a b`. -/
 @[simp] theorem getLsbD_xor {w : Nat} (a b : BitVec w) (i : Nat) :
-    getLsbD (xor a b) i = (getLsbD a i != getLsbD b i) :=
-  nat_testBit_bitwise (f := bne) rfl i a.toNat b.toNat
+    getLsbD (xor a b) i = (getLsbD a i != getLsbD b i) := by
+  change (Nat.xor a.toNat b.toNat).testBit i = (a.toNat.testBit i != b.toNat.testBit i)
+  rw [Anneal.NatBitwise.xor_eq_bitwise]
+  exact nat_testBit_bitwise (f := bne) rfl i a.toNat b.toNat
 
 /-- `getLsbD` of `not a`. -/
 @[simp] theorem getLsbD_not {w : Nat} (a : BitVec w) (i : Nat) :
@@ -1175,7 +1183,7 @@ theorem disjoint_or_injective {w : Nat} {mask a₁ b₁ a₂ b₂ : BitVec w}
     eq_of_getLsbD_eq (fun i hi => (hbit i hi).2)⟩
 
 /-- Bitmask with the lowest `k` bits set to `1` in a `w`-bit bitvector. -/
-def lowMask (w k : Nat) : BitVec w :=
+@[expose] def lowMask (w k : Nat) : BitVec w :=
   BitVec.ofNat w (Nat.pow 2 k - 1)
 
 /-- Bit characterization of `lowMask w k` at any in-bounds index `i < w`. -/
@@ -1243,7 +1251,7 @@ theorem aligned_or_bounded_injective {w k : Nat} {a₁ b₁ a₂ b₂ : BitVec w
 /-- Tristate-number (tnum) equality modulo unknown-bit mask `mask`: `x` and `y`
 agree on every known bit (`mask[i] = false`), i.e.,
 `x &&& ~~~mask = y &&& ~~~mask`. -/
-def MaskEq {w : Nat} (mask x y : BitVec w) : Prop :=
+@[expose] def MaskEq {w : Nat} (mask x y : BitVec w) : Prop :=
   and x (not mask) = and y (not mask)
 
 /-- Pointwise bit characterization of `MaskEq`. -/
@@ -1763,7 +1771,7 @@ theorem maskEq_lowMask_of_bounds {w k : Nat} {umin x umax : BitVec w}
 /-- Count consecutive leading zero bits of `x` across the low `n` bits (indices
 `n - 1` down to `0`). Using `@Nat.rec` avoids compiler `_unsafe_rec`
 auxiliaries while remaining `rfl`-reducible on `0` and `n + 1`. -/
-def clzAux {w : Nat} (x : BitVec w) (n : Nat) : Nat :=
+@[expose] def clzAux {w : Nat} (x : BitVec w) (n : Nat) : Nat :=
   @Nat.rec (fun _ => Nat)
     0
     (fun k ih => if getLsbD x k then 0 else ih + 1)
@@ -1774,7 +1782,7 @@ private theorem clzAux_succ {w : Nat} (x : BitVec w) (n : Nat) :
   rfl
 
 /-- Number of leading zero bits of a `w`-bit bitvector (`0 ≤ clz x ≤ w`). -/
-def clz {w : Nat} (x : BitVec w) : Nat :=
+@[expose] def clz {w : Nat} (x : BitVec w) : Nat :=
   clzAux x w
 
 private theorem clzAux_le {w : Nat} (x : BitVec w) (n : Nat) :
@@ -1946,3 +1954,5 @@ theorem maskEq_clz_of_bounds {w : Nat} {umin x umax : BitVec w}
   maskEq_lowMask_of_bounds hlo hhi (xor_and_not_lowMask_sub_clz umin umax)
 
 end Anneal.BitVec
+
+end

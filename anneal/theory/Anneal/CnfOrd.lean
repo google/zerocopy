@@ -6,7 +6,8 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Anneal.CnfOrd.Ord
-import Anneal.CnfOrd.Worklist
-import Anneal.CnfOrd.Canaries
+public import Anneal.CnfOrd.Ord
+public import Anneal.CnfOrd.Worklist
+public import Anneal.CnfOrd.Canaries

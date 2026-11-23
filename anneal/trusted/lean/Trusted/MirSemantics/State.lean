@@ -7,13 +7,16 @@
 -- those terms.
 
 -- anneal-trust-tier: candidate:mir_semantics
+module
 prelude
-import Init.NotationExtra
-import Init.Control.Except
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics.Enum
-import Trusted.MirSemantics.Memory
+public import Init.NotationExtra
+public import Init.Control.Except
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics.Enum
+public import Trusted.MirSemantics.Memory
+
+@[expose] public section
 
 namespace Trusted.MirSemantics
 
@@ -260,3 +263,5 @@ noncomputable def initState (p : Program) (q : Query) :
           }
 
 end Trusted.MirSemantics
+
+end

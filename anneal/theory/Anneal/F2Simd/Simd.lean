@@ -6,14 +6,17 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Nat.Basic
-import Init.Data.Nat.Bitwise.Basic
-import Init.Data.Nat.Div.Basic
-import Anneal.BitVec
-import Anneal.F2Simd.Basis
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Nat.Basic
+public import Init.Data.Nat.Bitwise.Basic
+public import Init.Data.Nat.Div.Basic
+public import Anneal.BitVec
+public import Anneal.F2Simd.Basis
+
+public section
 
 namespace Anneal.F2Simd
 
@@ -49,6 +52,7 @@ models and $\mathbb{F}_2$-linearity / $\mathbb{F}_2$-bilinearity proofs for:
 
 /-- Raw `Nat` carryless polynomial multiplication over the low `n` bits of `y`
 using `@Nat.rec` (`Nat.xor` and `Nat.shiftLeft` run in C++ GMP). -/
+@[expose]
 def clmulNatAux (x y n : Nat) : Nat :=
   @Nat.rec (fun _ => Nat)
     0
@@ -62,12 +66,14 @@ def clmulNatAux (x y n : Nat) : Nat :=
 (keeping the low `wOut` bits when `wOut < 2 * w - 1`; `pclmulqdq` at `w = 64`,
 `wOut = 128`), short-circuiting immediately when either operand is zero so
 multi-limb Karatsuba subproducts skip zero limbs in `O(1)`. -/
+@[expose]
 def clmul (w wOut : Nat) (x y : BitVec w) : BitVec wOut :=
   if Nat.beq x.toNat 0 || Nat.beq y.toNat 0 then bvZero wOut
   else BitVec.ofNat wOut (clmulNatAux x.toNat y.toNat w)
 
 /-- Bit-vector shift-and-XOR reference loop for carryless multiplication,
 defined via `@Nat.rec`. -/
+@[expose]
 def clmulBvAux {wOut wY : Nat} (x : BitVec wOut) (y : BitVec wY)
     (n : Nat) : BitVec wOut :=
   @Nat.rec (fun _ => BitVec wOut)
@@ -288,6 +294,7 @@ theorem clmul_isBilinear (w wOut : Nat) : IsF2Bilinear (clmul w wOut) where
 
 /-- Three-multiply 64×64 → 128-bit Karatsuba carryless polynomial multiplication
 built from three 32×32 → 64-bit `clmul` calls. -/
+@[expose]
 def clmulKaratsuba64 (x y : BitVec 64) : BitVec 128 :=
   let xLo : BitVec 32 := extractLsb 0 32 x
   let xHi : BitVec 32 := extractLsb 32 32 x
@@ -529,11 +536,13 @@ theorem clmulKaratsuba64_bvUnit {i j : Nat} (hi : i < 64) (hj : j < 64) :
 
 /-- Extracts `laneW`-bit lane `i` (`extractLsb (laneW * i) laneW v`) from a
 wide register `v : BitVec w`. -/
+@[expose]
 def getLane {w : Nat} (laneW : Nat) (v : BitVec w) (i : Nat) : BitVec laneW :=
   extractLsb (laneW * i) laneW v
 
 /-- Packs the first `n` `laneW`-bit lanes (`f 0` at LSB .. `f (n - 1)` at MSB)
 into `BitVec wOut` via `@Nat.rec`. -/
+@[expose]
 def packLanesAux (wOut laneW : Nat) (f : Nat → BitVec laneW)
     (n : Nat) : BitVec wOut :=
   @Nat.rec (fun _ => BitVec wOut)
@@ -542,6 +551,7 @@ def packLanesAux (wOut laneW : Nat) (f : Nat → BitVec laneW)
     n
 
 /-- Packs `numLanes` `laneW`-bit lanes into `BitVec (numLanes * laneW)`. -/
+@[expose]
 def packLanes (numLanes laneW : Nat) (f : Nat → BitVec laneW) :
     BitVec (numLanes * laneW) :=
   packLanesAux (numLanes * laneW) laneW f numLanes
@@ -744,14 +754,17 @@ theorem checkUniformSimdLanes_sound (numLanes laneW : Nat)
 /-! ## 3. 128-Bit `vpshufb` Permutes & Split-Nibble $\text{GF}(2^8)$ SIMD -/
 
 /-- Extracts byte `i` (`0 ≤ i < 16`) from a 128-bit SIMD register. -/
+@[expose]
 def getByte128 (v : BitVec 128) (i : Nat) : BitVec 8 :=
   getLane 8 v i
 
 /-- Packs 16 bytes (`f 0` at LSB .. `f 15` at MSB) into `BitVec 128`. -/
+@[expose]
 def packBytes128 (f : Nat → BitVec 8) : BitVec 128 :=
   packLanesAux 128 8 f 16
 
-private def vpshufb128NatAux (src ctrl : Nat) (n : Nat) : Nat :=
+@[expose]
+def vpshufb128NatAux (src ctrl : Nat) (n : Nat) : Nat :=
   @Nat.rec (fun _ => Nat)
     0
     (fun i prev =>
@@ -771,6 +784,7 @@ private def vpshufb128NatAux (src ctrl : Nat) (n : Nat) : Nat :=
 wrap. Arm A64 `TBL` (`vqtbl1q_u8`) coincides only when every control byte
 satisfies `cb < 16 ∨ cb ≥ 128` (as holds in `gf256SimdVpshufb128` after `0x0f`
 masking). -/
+@[expose]
 def vpshufb128 (src ctrl : BitVec 128) : BitVec 128 :=
   BitVec.ofNat 128 (vpshufb128NatAux src.toNat ctrl.toNat 16)
 
@@ -978,6 +992,7 @@ theorem vpshufb128_constCtrl_isLinear (ctrl : BitVec 128) :
     | false => exact getLane_xor 8 a b _
 
 /-- Checks `lut[a ^ b] == lut[a] ^ lut[b]` for row `a` across `b < n`. -/
+@[expose]
 def checkLut16Row (lut : BitVec 128) (a n : Nat) : Bool :=
   @Nat.rec (fun _ => Bool)
     true
@@ -990,6 +1005,7 @@ def checkLut16Row (lut : BitVec 128) (a n : Nat) : Bool :=
     n
 
 /-- Checks all 16×16 XOR pairs on `lut` across rows `a < m`. -/
+@[expose]
 def checkLut16LinearAux (lut : BitVec 128) (m : Nat) : Bool :=
   @Nat.rec (fun _ => Bool)
     true
@@ -1001,6 +1017,7 @@ def checkLut16LinearAux (lut : BitVec 128) (m : Nat) : Bool :=
 
 /-- Certifies that 16-byte lookup table `lut : BitVec 128` is
 $\mathbb{F}_2$-linear over 4-bit nibble indices `0 .. 15`. -/
+@[expose]
 def checkLut16Linear (lut : BitVec 128) : Bool :=
   bvEq (getByte128 lut 0) (bvZero 8) && checkLut16LinearAux lut 16
 
@@ -1101,11 +1118,13 @@ private theorem nibble_mask_msb_false (x : BitVec 8) :
 
 /-- Constant `0x0f` low-nibble mask replicated across all 16 bytes of a 128-bit
 register (`packBytes128 (fun _ => BitVec.ofNat 8 0x0f)`). -/
+@[expose]
 def simdMask0f128 : BitVec 128 :=
   packBytes128 (fun _ => BitVec.ofNat 8 0x0f)
 
 /-- Vectorized split-nibble $\text{GF}(2^8)$ multiplication across 16 bytes
 using two `vpshufb128` lookups. -/
+@[expose]
 def gf256SimdVpshufb128 (lutLo lutHi v : BitVec 128) : BitVec 128 :=
   let lo := and v simdMask0f128
   let hi := and (ushr v 4) simdMask0f128
@@ -1217,6 +1236,7 @@ theorem gf256SimdVpshufb128_isLinear {lutLo lutHi : BitVec 128}
 
 /-- $\text{GF}(2^8)$ `xtime` modulo the AES (Rijndael) polynomial
 $x^8 + x^4 + x^3 + x + 1$ (`0x1b`). -/
+@[expose]
 def gf256Xtime (a : BitVec 8) : BitVec 8 :=
   match getLsbD a 7 with
   | false => shl a 1
@@ -1224,6 +1244,7 @@ def gf256Xtime (a : BitVec 8) : BitVec 8 :=
 
 /-- Horner loop for byte-level $\text{GF}(2^8)$ constant multiplication by `c`
 over `n ≤ 8` steps (`n = 8` in `gf256MulConstByte`) via `@Nat.rec`. -/
+@[expose]
 def gf256MulConstByteAux (c a : BitVec 8) (n : Nat) : BitVec 8 :=
   @Nat.rec (fun _ => BitVec 8)
     (bvZero 8)
@@ -1235,11 +1256,13 @@ def gf256MulConstByteAux (c a : BitVec 8) (n : Nat) : BitVec 8 :=
     n
 
 /-- Byte-level $\text{GF}(2^8)$ multiplication by constant `c : BitVec 8`. -/
+@[expose]
 def gf256MulConstByte (c a : BitVec 8) : BitVec 8 :=
   gf256MulConstByteAux c a 8
 
 /-- 16-lane SIMD reference $\text{GF}(2^8)$ constant multiplication on
 `BitVec 128`. -/
+@[expose]
 def gf256MulConstSimd128 (c : BitVec 8) (v : BitVec 128) : BitVec 128 :=
   packBytes128 fun i => gf256MulConstByte c (getByte128 v i)
 
@@ -1336,12 +1359,16 @@ theorem gf256MulConstSimd128_isLinear (c : BitVec 8) :
 
 /-- Precomputes the low-nibble 16-byte `vpshufb128` table for $\text{GF}(2^8)$
 constant `c`. -/
+@[expose]
 def mkGf256LutLo (c : BitVec 8) : BitVec 128 :=
   packBytes128 fun nib => gf256MulConstByte c (BitVec.ofNat 8 nib)
 
 /-- Precomputes the high-nibble 16-byte `vpshufb128` table for $\text{GF}(2^8)$
 constant `c`. -/
+@[expose]
 def mkGf256LutHi (c : BitVec 8) : BitVec 128 :=
   packBytes128 fun nib => gf256MulConstByte c (BitVec.ofNat 8 (nib * 16))
 
 end Anneal.F2Simd
+
+end

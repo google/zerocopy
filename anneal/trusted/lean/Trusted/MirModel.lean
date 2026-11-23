@@ -7,10 +7,13 @@
 -- those terms.
 
 -- anneal-trust-tier: candidate:mir_semantics
+module
 prelude
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Trusted.MirAst
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Trusted.MirAst
+
+@[expose] public section
 
 namespace Trusted.MirSemantics
 
@@ -260,3 +263,5 @@ noncomputable def setElem? {α : Type} : List α → Nat → α → Option (List
     | none => none
 
 end Trusted.MirSemantics
+
+end

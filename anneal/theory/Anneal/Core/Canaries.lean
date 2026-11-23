@@ -6,26 +6,29 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Int.Basic
-import Init.Data.Nat.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.List.Basic
-import Init.Control.Except
-import Trusted
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics
-import Anneal.MirWp
-import Anneal.MirTotal.Ops
-import Anneal.MirTotal.StepCore
-import Anneal.Core.BlockTree
-import Anneal.Core.SepPCM
-import Anneal.Core.StageCut
-import Anneal.Core.SpecRealizability
+public import Init.Core
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Int.Basic
+public import Init.Data.Nat.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.List.Basic
+public import Init.Control.Except
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics
+public import Anneal.MirWp
+public import Anneal.MirTotal.Ops
+public import Anneal.MirTotal.StepCore
+public import Anneal.Core.BlockTree
+public import Anneal.Core.SepPCM
+public import Anneal.Core.StageCut
+public import Anneal.Core.SpecRealizability
+
+public section
 
 namespace Anneal.Core
 
@@ -61,32 +64,32 @@ Exercises `Core.BlockTree`, `Core.SepPCM`, and `Core.StageCut` (`0`
 /-! ## Computable Scalar / Tuple Helpers (`0` `noncomputable`) -/
 
 /-- `u8` MIR type. -/
-def coreU8Ty : MirTy := .int .i8 false
+@[expose] def coreU8Ty : MirTy := .int .i8 false
 
 /-- `u32` MIR type. -/
-def coreU32Ty : MirTy := .int .i32 false
+@[expose] def coreU32Ty : MirTy := .int .i32 false
 
 /-- `(u32, bool)` overflowing-arithmetic return type. -/
-def coreOvU32Ty : MirTy := .tuple [coreU32Ty, .bool]
+@[expose] def coreOvU32Ty : MirTy := .tuple [coreU32Ty, .bool]
 
 /-- Canonical `u8` `Val` from `n : Nat`. -/
-def coreU8Val (n : Nat) : Val :=
+@[expose] def coreU8Val (n : Nat) : Val :=
   .scalar ⟨.i8, false, truncateBitsComp .i8 (BitVec.ofNat 128 n)⟩
 
 /-- Canonical `u32` `Val` from `n : Nat`. -/
-def coreU32Val (n : Nat) : Val :=
+@[expose] def coreU32Val (n : Nat) : Val :=
   .scalar ⟨.i32, false, truncateBitsComp .i32 (BitVec.ofNat 128 n)⟩
 
 /-- Constant `u8` `Operand`. -/
-def coreU8Const (n : Nat) : Operand :=
+@[expose] def coreU8Const (n : Nat) : Operand :=
   .constant ⟨coreU8Ty, .scalar (BitVec.ofNat 128 n)⟩
 
 /-- Constant `u32` `Operand`. -/
-def coreU32Const (n : Nat) : Operand :=
+@[expose] def coreU32Const (n : Nat) : Operand :=
   .constant ⟨coreU32Ty, .scalar (BitVec.ofNat 128 n)⟩
 
 /-- Direct unprojected `Place` for `id`. -/
-def coreLocalPlace (id : LocalId) : Place := ⟨id, []⟩
+@[expose] def coreLocalPlace (id : LocalId) : Place := ⟨id, []⟩
 
 private theorem nat_lt_of_ble_true {a b : Nat}
     (h : Nat.ble (a + 1) b = true) : a < b :=
@@ -377,7 +380,7 @@ abbrev hullLo (k : Nat) : Nat := (overflowHullAt k).1
 abbrev hullHi (k : Nat) : Nat := (overflowHullAt k).2
 
 /-- Stage `k` boolean `SwitchInt` dispatch block (`3 * k + 1`). -/
-def mkStageSwitchBlock (k : Nat) : BasicBlock :=
+@[expose] def mkStageSwitchBlock (k : Nat) : BasicBlock :=
   { statements := []
     terminator := .switchInt (.copy (coreLocalPlace (k + 2)))
       { branches := [(0, 3 * k + 3)], otherwise := 3 * k + 2 }
@@ -386,7 +389,7 @@ def mkStageSwitchBlock (k : Nat) : BasicBlock :=
 /-- Stage `k` `true`-arm block (`3 * k + 2`): `u32 -> u8 -> u32` roundtrip cast,
 `mulWithOverflow` + `mulUnchecked` by `2`, and `addWithOverflow` +
 `addUnchecked`. -/
-def mkStageTrueBlock (k : Nat) : BasicBlock :=
+@[expose] def mkStageTrueBlock (k : Nat) : BasicBlock :=
   { statements := [
       .assign (coreLocalPlace 11)
         (.cast .intToInt (.copy (coreLocalPlace 10)) coreU8Ty),
@@ -408,7 +411,7 @@ def mkStageTrueBlock (k : Nat) : BasicBlock :=
 
 /-- Stage `k` `false`-arm block (`3 * k + 3`): constant `(k + 1)u8 -> u32` cast
 and `addWithOverflow` + `addUnchecked`. -/
-def mkStageFalseBlock (k : Nat) : BasicBlock :=
+@[expose] def mkStageFalseBlock (k : Nat) : BasicBlock :=
   { statements := [
       .assign (coreLocalPlace 11) (.use (coreU8Const (k + 1))),
       .assign (coreLocalPlace 12)
@@ -424,12 +427,12 @@ def mkStageFalseBlock (k : Nat) : BasicBlock :=
     cleanup := false }
 
 /-- 3-block diamond slice for stage `k`. -/
-def mkOverflowCastStageBlocks (k : Nat) : List BasicBlock :=
+@[expose] def mkOverflowCastStageBlocks (k : Nat) : List BasicBlock :=
   [mkStageSwitchBlock k, mkStageTrueBlock k, mkStageFalseBlock k]
 
 /-- Entry prologue block (`bb0`): widens `seed : u8` to `u32` and computes
 `seed + 1` via `addWithOverflow` + `addUnchecked`. -/
-def join8EntryBlock : BasicBlock :=
+@[expose] def join8EntryBlock : BasicBlock :=
   { statements := [
       .assign (coreLocalPlace 11) (.use (.copy (coreLocalPlace 1))),
       .assign (coreLocalPlace 12)
@@ -443,7 +446,7 @@ def join8EntryBlock : BasicBlock :=
     cleanup := false }
 
 /-- Exit block (`bb25`): returns `_13 : (u32, bool)`. -/
-def join8ExitBlock : BasicBlock :=
+@[expose] def join8ExitBlock : BasicBlock :=
   { statements := [
       .assign (coreLocalPlace 0) (.use (.copy (coreLocalPlace 13)))
     ]
@@ -452,7 +455,7 @@ def join8ExitBlock : BasicBlock :=
 
 /-- `26`-block, `256`-boolean-path MIR `Body` combining overflowing and
 unchecked arithmetic with narrowing and widening integer casts. -/
-def bodyOverflowCastJoin8 : Body :=
+@[expose] def bodyOverflowCastJoin8 : Body :=
   { identity := "anneal_core::overflow_cast_join8"
     isUnsafe := false
     locals := [
@@ -474,7 +477,7 @@ def bodyOverflowCastJoin8 : Body :=
       [join8ExitBlock] }
 
 /-- Balanced depth-`5` `BlockTree` built once outside the step loop. -/
-def btOverflowCastJoin8 : BlockTree BasicBlock :=
+@[expose] def btOverflowCastJoin8 : BlockTree BasicBlock :=
   BlockTree.ofList bodyOverflowCastJoin8.basicBlocks
 
 /-- Validity witness for `btOverflowCastJoin8`. -/
@@ -494,7 +497,7 @@ structure FlagVec8 where
   b7 : Bool
 
 /-- Projects flag `k` out of `fv : FlagVec8`. -/
-def flagAt8 (fv : FlagVec8) (k : Nat) : Bool :=
+@[expose] def flagAt8 (fv : FlagVec8) (k : Nat) : Bool :=
   match k with
   | 0 => fv.b0
   | 1 => fv.b1
@@ -506,7 +509,7 @@ def flagAt8 (fv : FlagVec8) (k : Nat) : Bool :=
   | _ => fv.b7
 
 /-- Entry argument list `[seedVal, b0, ..., b7]`. -/
-def flagArgs8 (seedVal : Val) (fv : FlagVec8) : List Val :=
+@[expose] def flagArgs8 (seedVal : Val) (fv : FlagVec8) : List Val :=
   [seedVal, .bool fv.b0, .bool fv.b1, .bool fv.b2, .bool fv.b3,
    .bool fv.b4, .bool fv.b5, .bool fv.b6, .bool fv.b7]
 
@@ -517,10 +520,10 @@ structure OverflowHullNode where
   hi : Nat
 
 /-- Canonical hull cutpoint node at stage `k` (`blockIdx = 3 * k + 1`). -/
-def mkOverflowHullNode (k : Nat) : OverflowHullNode :=
+@[expose] def mkOverflowHullNode (k : Nat) : OverflowHullNode :=
   { blockIdx := 3 * k + 1, lo := hullLo k, hi := hullHi k }
 
-private def mkJoin8Locals (s0 : LocalSlot) (seed : Nat) (fv : FlagVec8)
+@[expose] def mkJoin8Locals (s0 : LocalSlot) (seed : Nat) (fv : FlagVec8)
     (s10 s11 s12 s13 : LocalSlot) : List LocalSlot :=
   [s0, .immediate (some (coreU8Val seed)),
    .immediate (some (.bool fv.b0)), .immediate (some (.bool fv.b1)),
@@ -529,14 +532,14 @@ private def mkJoin8Locals (s0 : LocalSlot) (seed : Nat) (fv : FlagVec8)
    .immediate (some (.bool fv.b6)), .immediate (some (.bool fv.b7)),
    s10, s11, s12, s13]
 
-private def mkJoin8RawState (blockIdx stmtIdx : Nat)
+@[expose] def mkJoin8RawState (blockIdx stmtIdx : Nat)
     (locals : List LocalSlot) : State :=
   { frames := [{ defId := 0, blockIdx := blockIdx, stmtIdx := stmtIdx,
                  locals := locals }]
     callerMem := ⟨[]⟩
     mem := entryMemoryComp }
 
-private def mkStageLocals (seed : Nat) (fv : FlagVec8)
+@[expose] def mkStageLocals (seed : Nat) (fv : FlagVec8)
     (acc v11 v12 : Nat) : List LocalSlot :=
   mkJoin8Locals (.immediate none) seed fv
     (.immediate (some (coreU32Val acc)))
@@ -544,12 +547,12 @@ private def mkStageLocals (seed : Nat) (fv : FlagVec8)
     (.immediate (some (coreU32Val v12)))
     (.immediate (some (.tuple [coreU32Val acc, .bool false])))
 
-private def mkStageState (blockIdx stmtIdx seed : Nat) (fv : FlagVec8)
+@[expose] def mkStageState (blockIdx stmtIdx seed : Nat) (fv : FlagVec8)
     (acc v11 v12 : Nat) : State :=
   mkJoin8RawState blockIdx stmtIdx (mkStageLocals seed fv acc v11 v12)
 
 /-- Cutpoint state invariant at `node`. -/
-def HoldsAtOverflowNode (node : OverflowHullNode) (seed : Nat)
+@[expose] def HoldsAtOverflowNode (node : OverflowHullNode) (seed : Nat)
     (fv : FlagVec8) (s : State) : Prop :=
   ∃ (acc v11 v12 : Nat),
     node.lo ≤ acc ∧ acc ≤ node.hi ∧
@@ -557,7 +560,7 @@ def HoldsAtOverflowNode (node : OverflowHullNode) (seed : Nat)
 
 /-- Zero-`Prop`-argument stage-cut join predicate over `StepStageCut` /
 `wpUntilCutStep` (sealed `@[irreducible]` below). -/
-def OverflowCastStageCut (body : Body) (bt : BlockTree BasicBlock)
+@[expose] def OverflowCastStageCut (body : Body) (bt : BlockTree BasicBlock)
     (src dst : OverflowHullNode) (seed : Nat) (fv : FlagVec8)
     (fuel : Nat) : Prop :=
   ∀ s : State,
@@ -1445,7 +1448,7 @@ private theorem join8_entry_wpUntilCut (seed : Nat) (fv : FlagVec8)
 
 /-- Postcondition `37 ≤ acc ≤ 130561` with `overflow = false` for
 `bodyOverflowCastJoin8`. -/
-def OverflowCastJoin8Post (out : TerminalOut) : Prop :=
+@[expose] def OverflowCastJoin8Post (out : TerminalOut) : Prop :=
   ∃ acc : Nat,
     37 ≤ acc ∧ acc ≤ 130561 ∧
     out = .returned ⟨.tuple [coreU32Val acc, .bool false], ⟨[]⟩⟩
@@ -1589,7 +1592,7 @@ theorem bodyOverflowCastJoin8_endpoint_max_127327 :
 
 /-- Negative unchecked-overflow canary: `addUnchecked(u32::MAX, 1)` faults with
 `FaultKind.undefined` and refutes `WellFormed`. -/
-def bodyUncheckedOverflowFault : Body :=
+@[expose] def bodyUncheckedOverflowFault : Body :=
   { identity := "anneal_core::unchecked_overflow_fault"
     isUnsafe := false
     locals := [coreU32Ty]
@@ -1613,7 +1616,7 @@ theorem bodyUncheckedOverflowFault_negative_canary :
 /-! ## Canary Suite 2: Two-Pass Conjunctive WP (`bodyTwoPassAdd`) -/
 
 /-- Single-block `u32` addition body exercising `wpProg_of_wlp_and_safety`. -/
-def bodyTwoPassAdd : Body :=
+@[expose] def bodyTwoPassAdd : Body :=
   { identity := "anneal_core::two_pass_add"
     isUnsafe := false
     locals := [coreU32Ty, coreU32Ty, coreU32Ty]
@@ -1652,7 +1655,7 @@ theorem bodyTwoPassAdd_19_23_canary :
 
 /-- `cleanup = true` block ending in `return_` (forbidden by MIR cleanup rules).
 -/
-def bodyCleanupFaultBlock : Body :=
+@[expose] def bodyCleanupFaultBlock : Body :=
   { identity := "anneal_core::cleanup_return_fault"
     isUnsafe := false
     locals := [coreU32Ty]
@@ -1676,7 +1679,7 @@ theorem bodyCleanupFaultBlock_rejects_done :
     { statements := [], terminator := .return_, cleanup := true }
     rfl rfl rfl rfl rfl rfl
 
-private def mkGuardScopeBlock (scopeLocal guardLocal retCode : Nat)
+@[expose] def mkGuardScopeBlock (scopeLocal guardLocal retCode : Nat)
     (earlyBlk contBlk : BasicBlockId) : BasicBlock :=
   { statements := [
       .storageLive scopeLocal,
@@ -1686,7 +1689,7 @@ private def mkGuardScopeBlock (scopeLocal guardLocal retCode : Nat)
       { branches := [(1, earlyBlk)], otherwise := contBlk }
     cleanup := false }
 
-private def mkConstRetJoinBlock (retCode : Nat)
+@[expose] def mkConstRetJoinBlock (retCode : Nat)
     (cleanBlk : BasicBlockId) : BasicBlock :=
   { statements := [
       .assign (coreLocalPlace 0) (.use (coreU32Const retCode))
@@ -1694,14 +1697,14 @@ private def mkConstRetJoinBlock (retCode : Nat)
     terminator := .goto cleanBlk
     cleanup := false }
 
-private def mkStorageDeadGotoBlock (dropIdx nextBlk : Nat) : BasicBlock :=
+@[expose] def mkStorageDeadGotoBlock (dropIdx nextBlk : Nat) : BasicBlock :=
   { statements := [.storageDead dropIdx]
     terminator := .goto nextBlk
     cleanup := false }
 
 /-- `11`-block nested-guard MIR `Body` sharing a 5-block LIFO `StorageDead`
 cleanup spine (`bb6 -> bb7 -> bb8 -> bb9 -> bb10`). -/
-def bodyCleanupChain4 : Body :=
+@[expose] def bodyCleanupChain4 : Body :=
   { identity := "anneal_core::cleanup_chain_4"
     isUnsafe := false
     argumentCount := 4
@@ -1722,11 +1725,11 @@ def bodyCleanupChain4 : Body :=
     ] }
 
 /-- Balanced `BlockTree` for `bodyCleanupChain4`. -/
-def btCleanupChain4 : BlockTree BasicBlock :=
+@[expose] def btCleanupChain4 : BlockTree BasicBlock :=
   BlockTree.ofList bodyCleanupChain4.basicBlocks
 
 /-- Functional specification of `bodyCleanupChain4`. -/
-def cleanupChain4Spec (g0 g1 g2 g3 : Bool) : Nat :=
+@[expose] def cleanupChain4Spec (g0 g1 g2 g3 : Bool) : Nat :=
   if g0 then 101
   else if g1 then 102
   else if g2 then 103
@@ -1895,7 +1898,7 @@ theorem bodyCleanupChain4_single_cutpoint_wpProg (g0 g1 g2 g3 : Bool) :
 
 /-- 6-block MIR loop with a mid-loop `?`-style early-return guard (`bb1 -> bb2`)
 and a normal exit (`bb3 -> bb5`). -/
-def bodyLoopEarlyRetClean : Body :=
+@[expose] def bodyLoopEarlyRetClean : Body :=
   { identity := "anneal_core::loop_early_ret_clean"
     isUnsafe := false
     argumentCount := 2
@@ -1949,7 +1952,7 @@ def bodyLoopEarlyRetClean : Body :=
 
 /-- Buggy early-return loop variant omitting `_0` initialization on the early
 exit (`bb2`), which must fault with `FaultKind.undefined`. -/
-def bodyLoopEarlyRetUninitRet : Body :=
+@[expose] def bodyLoopEarlyRetUninitRet : Body :=
   { identity := "anneal_core::loop_early_ret_uninit_ret"
     isUnsafe := false
     argumentCount := 2
@@ -2145,7 +2148,7 @@ theorem byteHeaplet_disjoint_and_conflict_canary :
          bytePointsTo_conflict ⟨2, 0⟩ (.init 0x55 none) .uninit⟩
 
 /-- Concrete two-allocation `MemoryState` before writing byte `⟨0, 0⟩`. -/
-def frameCanaryMemBefore : MemoryState :=
+@[expose] def frameCanaryMemBefore : MemoryState :=
   { allocations := [
       { allocId := 0, alignLog2 := 0, mutability := .mut,
         bytes := [.init 0x11 none, .init 0x22 none], live := true },
@@ -2156,7 +2159,7 @@ def frameCanaryMemBefore : MemoryState :=
 
 /-- Concrete two-allocation `MemoryState` after `storeIndirect` writes `0x7a` at
 `⟨0, 0⟩`. -/
-def frameCanaryMemAfter : MemoryState :=
+@[expose] def frameCanaryMemAfter : MemoryState :=
   { allocations := [
       { allocId := 0, alignLog2 := 0, mutability := .mut,
         bytes := [.init 0x7a none, .init 0x22 none], live := true },
@@ -2232,7 +2235,7 @@ theorem memDisjointFrame_storeIndirect_and_framePreserving_canary :
     exact bytePointsTo_conflict ⟨1, 0⟩ (.init 0x7a none) (.init 0x33 none)
       h₂ hConj₂
 
-private def mkNatRangeFrom : Nat → Nat → List Nat :=
+@[expose] def mkNatRangeFrom : Nat → Nat → List Nat :=
   @Nat.rec (fun _ => Nat → List Nat)
     (fun _ => [])
     (fun _ ih start => start :: ih (start + 1))
@@ -2269,7 +2272,7 @@ private theorem coreU32Val_inj {a b : Nat}
         (Nat.lt_of_lt_of_le hb (intWidthModulus_le_pow128 .i32))] at hNat
   exact hNat
 
-private def canaryNonEmptyCallerMem : CallerMemory :=
+@[expose] def canaryNonEmptyCallerMem : CallerMemory :=
   ⟨[{ allocId := 1, alignLog2 := 0, mutability := .mut, bytes := [],
       live := true }]⟩
 
@@ -2298,13 +2301,13 @@ theorem vacuityClass_wire_taxonomy_canary :
     (∀ c : VacuityClass, c ∈ VacuityClass.all) := by
   refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, VacuityClass.mem_all⟩
 
-private def twoPassAddQuery19_23 : Query :=
+@[expose] def twoPassAddQuery19_23 : Query :=
   { args := [coreU32Val 19, coreU32Val 23] }
 
-private def twoPassAddSpecPre (q : Query) : Prop :=
+@[expose] def twoPassAddSpecPre (q : Query) : Prop :=
   q = twoPassAddQuery19_23
 
-private def twoPassAddSpecPost (_q : Query) (out : TerminalOut) : Prop :=
+@[expose] def twoPassAddSpecPost (_q : Query) (out : TerminalOut) : Prop :=
   out = .returned ⟨coreU32Val 42, ⟨[]⟩⟩
 
 /-- Positive `SatisfiesPost` bridge canary on `bodyTwoPassAdd (19, 23) = 42`:
@@ -2378,11 +2381,11 @@ theorem bodyTwoPassAdd_realizability_and_dichotomy_canary :
       (fun _ => TerminalOut.returned ⟨coreU32Val 42, ⟨[]⟩⟩)
   exact ⟨hReal, hTermDich, hDich, hMut, hDet⟩
 
-private def statefulAllocBumpPre (_args : List Val) (mem : CallerMemory) :
+@[expose] def statefulAllocBumpPre (_args : List Val) (mem : CallerMemory) :
     Prop :=
   mem = ⟨[]⟩
 
-private def statefulAllocBumpPost (_args : List Val) (mem : CallerMemory)
+@[expose] def statefulAllocBumpPost (_args : List Val) (mem : CallerMemory)
     (ret : Val) (mem' : CallerMemory) : Prop :=
   ret = coreU32Val mem.allocations.length ∧ mem' = canaryNonEmptyCallerMem
 
@@ -2421,44 +2424,44 @@ theorem statefulAllocBump_realizability_canary :
     rfl
   exact ⟨hPre, hReal, hRetDich, hDich, hDet⟩
 
-private def deadNatPre (n : Nat) : Prop := 100 < n ∧ n < 50
-private def deadNatPost (n ret : Nat) : Prop := ret = n
+@[expose] def deadNatPre (n : Nat) : Prop := 100 < n ∧ n < 50
+@[expose] def deadNatPost (n ret : Nat) : Prop := ret = n
 
-private def bodyUnsafeOverflowVacuous : Body :=
+@[expose] def bodyUnsafeOverflowVacuous : Body :=
   { identity := "anneal_core::unsafe_overflow_vacuous"
     isUnsafe := true
     locals := [coreU32Ty]
     argumentCount := 0
     basicBlocks := bodyUncheckedOverflowFault.basicBlocks }
 
-private def deadSafetyPre (args : List Val) : Prop := args.length = 99
+@[expose] def deadSafetyPre (args : List Val) : Prop := args.length = 99
 
-private def specViolPre (n : Nat) : Prop := n < 10
-private def specViolPost (n ret : Nat) : Prop := 10 ≤ n ∧ ret = 5
-private def contraNatPost (_n ret : Nat) : Prop := ret = 1 ∧ ret = 2
+@[expose] def specViolPre (n : Nat) : Prop := n < 10
+@[expose] def specViolPost (n ret : Nat) : Prop := 10 ≤ n ∧ ret = 5
+@[expose] def contraNatPost (_n ret : Nat) : Prop := ret = 1 ∧ ret = 2
 
-private def trivReflNatPost (_n ret : Nat) : Prop := ret = ret
-private def trivDisjNatPost (_n ret : Nat) : Prop := ret = ret ∨ ret = 0
+@[expose] def trivReflNatPost (_n ret : Nat) : Prop := ret = ret
+@[expose] def trivDisjNatPost (_n ret : Nat) : Prop := ret = ret ∨ ret = 0
 
-private def inputOnlyNatPost (n _ret : Nat) : Prop := n < 100
+@[expose] def inputOnlyNatPost (n _ret : Nat) : Prop := n < 100
 
-private def memOnlyStatefulPre (_args : List Val) (_mem : CallerMemory) :
+@[expose] def memOnlyStatefulPre (_args : List Val) (_mem : CallerMemory) :
     Prop :=
   True
 
-private def memOnlyStatefulPost (_args : List Val) (mem : CallerMemory)
+@[expose] def memOnlyStatefulPost (_args : List Val) (mem : CallerMemory)
     (_ret : Val) (mem' : CallerMemory) : Prop :=
   mem' = mem
 
-private def unwoundOnlyTrapPre (_q : Query) : Prop := True
+@[expose] def unwoundOnlyTrapPre (_q : Query) : Prop := True
 
-private def unwoundOnlyTrapPost (_q : Query) : TerminalOut → Prop
+@[expose] def unwoundOnlyTrapPost (_q : Query) : TerminalOut → Prop
   | .returned _ => True
   | .unwound _ => False
 
-private def survivedNatPre (n : Nat) : Prop := n < 10
-private def survivedDisjNatPost (n ret : Nat) : Prop := n < 10 ∨ ret = 42
-private def survivedImpNatPost (n ret : Nat) : Prop := 10 ≤ n → ret = 42
+@[expose] def survivedNatPre (n : Nat) : Prop := n < 10
+@[expose] def survivedDisjNatPost (n ret : Nat) : Prop := n < 10 ∨ ret = 42
+@[expose] def survivedImpNatPost (n ret : Nat) : Prop := 10 ≤ n → ret = 42
 
 /-- Negative vacuity canary suite exercising all five `VacuityClass` failure
 modes (`DeadPrecondition`, `SpecViolation`, `TrivialPostcondition`,
@@ -2583,3 +2586,5 @@ theorem specRealizability_negative_vacuity_and_composition_canary :
     hBranchPos, hBranchNeg⟩
 
 end Anneal.Core
+
+end

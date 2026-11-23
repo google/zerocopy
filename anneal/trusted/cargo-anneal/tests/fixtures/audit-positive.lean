@@ -7,12 +7,19 @@
 -- those terms.
 
 -- anneal-trust-tier: vetted
+module
 prelude
-import Init.NotationExtra
+public import Init.NotationExtra
+
+@[expose] public section
 
 namespace Outside
 
-private def helper (n : Nat) : Nat := n
+def helper (n : Nat) : Nat := n
+
+private def privateHelper (n : Nat) : Nat := n
+
+private theorem privateHelper_eq (n : Nat) : Eq (privateHelper n) n := rfl
 
 structure Box where
   value : Nat
@@ -66,3 +73,5 @@ end Outside
 
 open Outside in
 def wrapped : Box := Box.mk 4
+
+end

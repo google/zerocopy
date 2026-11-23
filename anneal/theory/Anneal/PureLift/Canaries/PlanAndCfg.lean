@@ -6,19 +6,22 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.Data.List.Basic
-import Init.Data.Nat.Basic
-import Anneal.PureLift.Lens
-import Anneal.PureLift.PermTree
-import Anneal.PureLift.LoanGraph
-import Anneal.PureLift.SpatialPin
-import Anneal.PureLift.Plan
-import Anneal.PureLift.BlockCfg
-import Anneal.PureLift.Adapter
+public import Init.Core
+public import Init.Data.List.Basic
+public import Init.Data.Nat.Basic
+public import Anneal.PureLift.Lens
+public import Anneal.PureLift.PermTree
+public import Anneal.PureLift.LoanGraph
+public import Anneal.PureLift.SpatialPin
+public import Anneal.PureLift.Plan
+public import Anneal.PureLift.BlockCfg
+public import Anneal.PureLift.Adapter
 
-import Anneal.PureLift.Canaries.Fixtures
+public import Anneal.PureLift.Canaries.Fixtures
+
+public section
 
 namespace Anneal.PureLift
 
@@ -26,7 +29,7 @@ namespace Anneal.PureLift
 
 
 /-- Initialize locals `1 ..= 10` to `.nat 1 ..= .nat 10` in order. -/
-def highLocalPrefixPlan : FlowPlan StdVal :=
+@[expose] def highLocalPrefixPlan : FlowPlan StdVal :=
   (List.range 10).foldr
     (fun i acc =>
       .seq (.act (.assign (.localSub (i + 1) []) (.constVal (.nat (i + 1)))))
@@ -35,7 +38,7 @@ def highLocalPrefixPlan : FlowPlan StdVal :=
 
 /-- Symbolic branch merge preserves locals at index $\ge 8$ written by both
 branches. -/
-def highLocalBranchPlan : FlowPlan StdVal :=
+@[expose] def highLocalBranchPlan : FlowPlan StdVal :=
   .seq highLocalPrefixPlan
     (.seq
       (.branch (.use (.localSub 0 []))
@@ -45,7 +48,7 @@ def highLocalBranchPlan : FlowPlan StdVal :=
 
 /-- A local appended in only one branch (local `11`) may be uninitialized after
 the join, so reading it fails. -/
-def branchOnlyLocalPlan : FlowPlan StdVal :=
+@[expose] def branchOnlyLocalPlan : FlowPlan StdVal :=
   .seq highLocalPrefixPlan
     (.seq
       (.branch (.use (.localSub 0 []))
@@ -95,7 +98,7 @@ theorem explicit_join_rejects_nonexistent_loan_id (cond : Bool) :
 /-- Symbolic branch joining two `.call`s that return mutable borrows (`lensCall`
 targets) preserves both backward lenses under `.choice` and writes back to the
 selected caller-owned referent when the joined loan ends. -/
-def singleMutIdSummary (offset : Nat) : CallSummary StdVal where
+@[expose] def singleMutIdSummary (offset : Nat) : CallSummary StdVal where
   returnsMutBorrow := true
   fwd _ mutVals :=
     match mutVals with
@@ -106,7 +109,7 @@ def singleMutIdSummary (offset : Nat) : CallSummary StdVal where
     | ⟨_, .nat vf⟩ => some [.nat (vf + offset)]
     | _ => none
 
-def branchJoinLensCallsPlan : FlowPlan StdVal :=
+@[expose] def branchJoinLensCallsPlan : FlowPlan StdVal :=
   .seq
     (.branch (.use (.localSub 0 []))
       (.act (.call 3 (singleMutIdSummary 10) [] [.derefSub 1 []]))
@@ -129,7 +132,7 @@ theorem branch_join_lens_calls_writeback_verified
   cases cond <;> rfl
 
 
-def branchJoinRegionGroupsPlan : FlowPlan StdVal :=
+@[expose] def branchJoinRegionGroupsPlan : FlowPlan StdVal :=
   .seq
     (.branch (.use (.localSub 0 []))
       (.act (.callMultiRegion [] [regionSpecWithAdd 5]))
@@ -164,7 +167,7 @@ theorem branch_join_mismatched_region_groups_rejected
 /-- Spatial provenance counter takes `max st1.nextSpatialTag st2.nextSpatialTag`
 across symbolic branch joins so post-join `freezeSpatial` never reuses an
 in-branch tag. -/
-def branchSpatialTagFreshnessPlan : FlowPlan StdVal :=
+@[expose] def branchSpatialTagFreshnessPlan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 2 .mutBorrow (.derefSub 1 [])))
     (.seq
@@ -191,7 +194,7 @@ theorem branch_spatial_tag_freshness_verified (cond : Bool) (vx : Nat) :
 /-- Output-free region group (`outDsts = []`) reserves its `lockLid` in
 `st.loans` so a subsequent sibling borrow gets a distinct `LoanId` and does not
 collide when ending. -/
-def outputFreeRegionSpec : RegionGroupSpec StdVal where
+@[expose] def outputFreeRegionSpec : RegionGroupSpec StdVal where
   groupId := 0
   requiredChildren := []
   inputPlaces := [.derefSub 0 [0]]
@@ -202,7 +205,7 @@ def outputFreeRegionSpec : RegionGroupSpec StdVal where
     | [⟨_, .nat v0⟩] => some ([.nat (v0 + 7)], [])
     | _ => none
 
-def outputFreeRegionThenSiblingBorrowPlan : FlowPlan StdVal :=
+@[expose] def outputFreeRegionThenSiblingBorrowPlan : FlowPlan StdVal :=
   .seq
     (.act (.callMultiRegion [] [outputFreeRegionSpec]))
     (.seq
@@ -222,7 +225,7 @@ theorem output_free_region_no_lockLid_collision (v0 v1 : Nat) :
 
 /-- `PrimAction.endLoanAtLocal` retires a freshly allocated reborrow on every
 iteration of a `.whileLoop`. -/
-def loopReborrowWithEndLoanAtLocalPlan (fuel : Nat) : FlowPlan StdVal :=
+@[expose] def loopReborrowWithEndLoanAtLocalPlan (fuel : Nat) : FlowPlan StdVal :=
   .whileLoop fuel
     (.binary stdLtBool (.derefSub 0 []) (.localSub 1 []))
     (.seq
@@ -240,7 +243,7 @@ theorem loop_reborrow_with_endLoanAtLocal_verified :
 
 /-- Two-block CFG used to check concrete `BasicBlock` execution against the
 equivalent straight-line plan run by `evalFnValue`. -/
-def sampleTwoBlockCfg : List (BasicBlock StdVal) :=
+@[expose] def sampleTwoBlockCfg : List (BasicBlock StdVal) :=
   [ ⟨.act (.assign (.localSub 1 []) (.constVal (.nat 20))), .goto 1⟩
   , ⟨.act (.assign (.localSub 1 []) (.unary stdInc (.localSub 1 []))),
      .ret (.use (.localSub 1 []))⟩
@@ -262,7 +265,7 @@ theorem blockCfg_two_block_exec_and_equiv_test :
 
 /-- Step function for the `M2ExecutesTo.step_choice` and
 `m3SpatialModel.disjointSubPlaces` tests. -/
-def m2ChoiceStep : Nat → M2StepResult Nat Nat StdVal
+@[expose] def m2ChoiceStep : Nat → M2StepResult Nat Nat StdVal
   | 0 => .choice (fun s' => s' = 1 ∨ s' = 2)
   | _ => .terminated ⟨.nat 99, []⟩
 
@@ -413,7 +416,7 @@ theorem plan_whileLoop_initFnState_and_returningMut_tests :
 /-- Unit tests for `BlockCfg` terminators (`BlockTerm.branch`,
 `BlockTerm.goto`, `BlockTerm.ret`), out-of-bounds block IDs (`.fault`), zero
 fuel (`.diverged`), and `cfg_certificate_step_sound`. -/
-def sampleBranchBlockCfg : List (BasicBlock StdVal) :=
+@[expose] def sampleBranchBlockCfg : List (BasicBlock StdVal) :=
   [ ⟨.skip, .branch (.use (.localSub 0 [])) 1 2⟩
   , ⟨.act (.assign (.localSub 1 []) (.constVal (.nat 10))),
      .goto 3⟩
@@ -463,7 +466,7 @@ theorem blockCfg_terminators_and_certificate_tests :
    (`[0]` and `[1]`) of the same owner (`releaseLoanPermAtPath`), and
 4. Symbolic branches where one arm takes `.earlyReturn` and the other arm
    continues into subsequent statements (`ExecFlow.guardedContinuing`). -/
-def loopRegionGroupPlan (fuel : Nat) : FlowPlan StdVal :=
+@[expose] def loopRegionGroupPlan (fuel : Nat) : FlowPlan StdVal :=
   .whileLoop fuel
     (.binary stdLtBool (.derefSub 0 []) (.localSub 1 []))
     (.seq
@@ -471,7 +474,7 @@ def loopRegionGroupPlan (fuel : Nat) : FlowPlan StdVal :=
         [{ regionSpecWithAdd 1 with inputPlaces := [.derefSub 0 []] }]))
       (.act (.endRegionGroup 0)))
 
-def pairSwapMutBorrowSummary : CallSummary StdVal where
+@[expose] def pairSwapMutBorrowSummary : CallSummary StdVal where
   returnsMutBorrow := true
   fwd _ mutVals :=
     match mutVals with
@@ -482,7 +485,7 @@ def pairSwapMutBorrowSummary : CallSummary StdVal where
     | [_, v1] => some [vFinal, v1]
     | _ => none
 
-def sameOwnerTwoSubpathMutCallPlan : FlowPlan StdVal :=
+@[expose] def sameOwnerTwoSubpathMutCallPlan : FlowPlan StdVal :=
   .seq
     (.act (.call 1 pairSwapMutBorrowSummary []
       [.derefSub 0 [0], .derefSub 0 [1]]))
@@ -490,7 +493,7 @@ def sameOwnerTwoSubpathMutCallPlan : FlowPlan StdVal :=
       (.act (.assign (.derefSub 1 []) (.constVal (.nat 88))))
       (.act (.endLoan 1)))
 
-def symbolicMixedEarlyReturnPlan : FlowPlan StdVal :=
+@[expose] def symbolicMixedEarlyReturnPlan : FlowPlan StdVal :=
   .seq
     (.branch (.use (.localSub 0 []))
       (.seq
@@ -708,7 +711,7 @@ theorem aggregate_join_branch_local_loan_and_heap_lookup_tests
   ⟨rfl, rfl, rfl, ⟨fun h => h, fun h => h⟩⟩
 
 /-- A five-level left-nested pair `((((1, 2), 3), 4), 5), 6)`. -/
-def deepNestedStdVal : StdVal :=
+@[expose] def deepNestedStdVal : StdVal :=
   .pair (.pair (.pair (.pair (.pair (.nat 1) (.nat 2)) (.nat 3)) (.nat 4))
     (.nat 5)) (.nat 6)
 
@@ -799,7 +802,7 @@ theorem borrowed_handle_shared_alias_and_frame_escape_tests
 
 /-- Output-free region group locking `(*local 1).0`, used when testing active
 region locks across an explicit branch join (`branchExplicitJoin`). -/
-def outputFreeRegionOnLocal1Spec : RegionGroupSpec StdVal where
+@[expose] def outputFreeRegionOnLocal1Spec : RegionGroupSpec StdVal where
   groupId := 0
   requiredChildren := []
   inputPlaces := [.derefSub 1 [0]]
@@ -814,7 +817,7 @@ def outputFreeRegionOnLocal1Spec : RegionGroupSpec StdVal where
 output-free region group (whose ended lock sentinel sits at loan `1`) alongside
 a continuing borrow at loan `2`, renamed by `joinPairs = [(1, 2)]` before
 writeback and `endRegionGroup 0`. -/
-def outputFreeRegionExplicitJoinPlan : FlowPlan StdVal :=
+@[expose] def outputFreeRegionExplicitJoinPlan : FlowPlan StdVal :=
   .seq
     (.branchExplicitJoin (.use (.localSub 0 []))
       (.earlyReturn [] [] (.constVal (.nat 99)))
@@ -891,7 +894,7 @@ whose concrete `.choice (.bool true)` target's untaken false arm names
 `.parentLoan 0`. The false arm retires loan `0` (possible because
 `noActiveChildLoanEdgesIn` prunes the untaken arm) and allocates loan `2`, and
 `branchExplicitJoin` aligns `[(0, 2)]` before ending loans `1` and `0`. -/
-def concreteChoicePruneExplicitJoinPlan : FlowPlan StdVal :=
+@[expose] def concreteChoicePruneExplicitJoinPlan : FlowPlan StdVal :=
   .seq
     (.branchExplicitJoin (.use (.localSub 0 []))
       (.act (.assign (.derefSub 4 []) (.constVal (.nat 100))))
@@ -946,3 +949,5 @@ theorem concrete_choice_prune_explicit_join_tests (cond : Bool) :
   cases cond <;> exact ⟨⟨rfl, rfl, rfl, rfl⟩, ⟨rfl, rfl, rfl, rfl⟩⟩
 
 end Anneal.PureLift
+
+end

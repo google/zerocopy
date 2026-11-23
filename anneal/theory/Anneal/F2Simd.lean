@@ -6,7 +6,8 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Anneal.F2Simd.Basis
-import Anneal.F2Simd.Simd
-import Anneal.F2Simd.Canaries
+public import Anneal.F2Simd.Basis
+public import Anneal.F2Simd.Simd
+public import Anneal.F2Simd.Canaries

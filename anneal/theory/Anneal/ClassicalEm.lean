@@ -6,10 +6,13 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.Tactics
+public import Init.Core
+public import Init.NotationExtra
+public import Init.Tactics
+
+public section
 
 /-!
 # Foundation-Locked Classical Excluded Middle & Choice (`Anneal.ClassicalEm`)
@@ -36,7 +39,7 @@ namespace Anneal.ClassicalEm
 /-! ## 1. Classical Choice and Excluded Middle -/
 
 /-- Extracts a witness from `Nonempty (Subtype P)` using `Classical.choice`. -/
-noncomputable def chooseSub {α : Sort u} {P : α → Prop}
+@[expose] noncomputable def chooseSub {α : Sort u} {P : α → Prop}
     (h : Nonempty (Subtype P)) : α :=
   (Classical.choice h).1
 
@@ -132,15 +135,18 @@ theorem not_and_iff_or_not (p q : Prop) : ¬ (p ∧ q) ↔ (¬ p ∨ ¬ q) := by
     | inl hnp => exact hnp hpq.1
     | inr hnq => exact hnq hpq.2
 
-/-- Selects a witness from an existential proof using `Classical.choice`. -/
-noncomputable def chooseExists {α : Sort u} {P : α → Prop}
+/-- Selects a witness from an existential proof using `Classical.choice`.
+
+Uses a pure elimination term rather than a `by` block so Lean can export the
+`@[expose]` body cleanly in `module` mode without stuck metavariables. -/
+@[expose] noncomputable def chooseExists {α : Sort u} {P : α → Prop}
     (h : ∃ x : α, P x) : α :=
-  chooseSub (by cases h with | intro w hw => exact ⟨⟨w, hw⟩⟩)
+  chooseSub (Exists.elim h fun w hw => ⟨⟨w, hw⟩⟩)
 
 /-- Specification of `chooseExists`: the selected witness satisfies `P`. -/
 theorem chooseExists_spec {α : Sort u} {P : α → Prop}
     (h : ∃ x : α, P x) : P (chooseExists h) :=
-  chooseSub_spec (by cases h with | intro w hw => exact ⟨⟨w, hw⟩⟩)
+  chooseSub_spec (Exists.elim h fun w hw => ⟨⟨w, hw⟩⟩)
 
 /-! ## 2. Kernel-Checked Canaries -/
 
@@ -168,3 +174,5 @@ theorem canary_chooseExists_false_rejected : ¬ ∃ n : Nat, n < n :=
   fun h => Nat.lt_irrefl (chooseExists h) (chooseExists_spec h)
 
 end Anneal.ClassicalEm
+
+end

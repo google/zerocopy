@@ -6,16 +6,19 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.Data.List.Basic
-import Init.Data.Nat.Basic
-import Anneal.PureLift.Lens
-import Anneal.PureLift.PermTree
-import Anneal.PureLift.LoanGraph
-import Anneal.PureLift.SpatialPin
-import Anneal.PureLift.Plan
-import Anneal.PureLift.BlockCfg
+public import Init.Core
+public import Init.Data.List.Basic
+public import Init.Data.Nat.Basic
+public import Anneal.PureLift.Lens
+public import Anneal.PureLift.PermTree
+public import Anneal.PureLift.LoanGraph
+public import Anneal.PureLift.SpatialPin
+public import Anneal.PureLift.Plan
+public import Anneal.PureLift.BlockCfg
+
+public section
 
 namespace Anneal.PureLift
 
@@ -132,7 +135,7 @@ inductive M1MachState (State Val : Type) where
   | returned (out : FuncOut Val)
   | faulted
 
-def m1StepMach {State Val : Type}
+@[expose] def m1StepMach {State Val : Type}
     (step : State → M1StepResult State Val) :
     M1MachState State Val → M1MachState State Val
   | .running s =>
@@ -143,9 +146,11 @@ def m1StepMach {State Val : Type}
   | .returned out => .returned out
   | .faulted => .faulted
 
-def m1RunN {State Val : Type} (step : State → M1StepResult State Val)
+@[expose] def m1RunN {State Val : Type} (step : State → M1StepResult State Val)
     (k : Nat) (m : M1MachState State Val) : M1MachState State Val :=
-  @Nat.recCompiled (fun _ => M1MachState State Val → M1MachState State Val)
+  -- Use kernel-exposed `@Nat.rec` (compiled via `@[csimp]` to `Nat.recCompiled`)
+  -- so downstream `module` proofs can reduce through `m1RunN`.
+  @Nat.rec (fun _ => M1MachState State Val → M1MachState State Val)
     (fun m0 => m0)
     (fun _ ih m0 => ih (m1StepMach step m0))
     k m
@@ -171,7 +176,7 @@ theorem m1RunN_add {State Val : Type}
     exact ih (m1StepMach step m)
 
 /-- Operational adapter for total step-function machines (`M1StepResult`). -/
-def m1OperationalAdapter {State Val : Type}
+@[expose] def m1OperationalAdapter {State Val : Type}
     (step : State → M1StepResult State Val)
     (stateRel : SymState Val → State → Prop) :
     OperationalAdapter (M1MachState State Val) Val where
@@ -220,7 +225,7 @@ inductive M2ExecutesTo {State Obs Val : Type}
       step s = .terminated out →
       M2ExecutesTo step ⟨s, tr, none⟩ 1 ⟨s, tr, some out⟩
 
-def M2ProductiveOn {State Obs Val : Type}
+@[expose] def M2ProductiveOn {State Obs Val : Type}
     (step : State → M2StepResult State Obs Val) (s : State) : Prop :=
   match step s with
   | .failed => False
@@ -229,7 +234,7 @@ def M2ProductiveOn {State Obs Val : Type}
 
 /-- Operational adapter for trace-emitting relational small-step machines
 (`M2StepResult`). -/
-def m2OperationalAdapter {State Obs Val : Type}
+@[expose] def m2OperationalAdapter {State Obs Val : Type}
     (step : State → M2StepResult State Obs Val)
     (stateRel : SymState Val → State → Prop) :
     OperationalAdapter (M2Config State Obs Val) Val where
@@ -266,7 +271,7 @@ structure M3Mach (Val : Type) where
 
 /-- True iff neither `p1` nor `p2` is a prefix of the other, witnessing
 non-overlapping sub-place paths within the same allocation slot. -/
-def subPathDisjoint (p1 p2 : SubPath) : Bool :=
+@[expose] def subPathDisjoint (p1 p2 : SubPath) : Bool :=
   listFold
     (fun _ => false)
     (fun x _ ih ys =>
@@ -279,7 +284,7 @@ def subPathDisjoint (p1 p2 : SubPath) : Bool :=
 `none` if no cell matches, if multiple cells share `(aid, off, path)`, or if
 another cell at `(aid, off)` has a prefix-overlapping sub-path
 (`!subPathDisjoint c.subPath path`). -/
-def m3LookupCell {Val : Type} (aid : AllocId) (off : Offset) (path : SubPath)
+@[expose] def m3LookupCell {Val : Type} (aid : AllocId) (off : Offset) (path : SubPath)
     (cells : List (M3Cell Val)) : Option (M3Cell Val) :=
   match
     cells.foldr
@@ -312,7 +317,7 @@ or `.split` when child borrows cover only strict sub-places), the cell must
 carry the tag of the owning loan `owner` with a unique permission. The model
 does not see the owner's phase: callers pass a shared owner's place as
 `.shared` (`effectiveBoundLoanPerm`), which requires a frozen cell. -/
-def m3SpatialModel (Val : Type) :
+@[expose] def m3SpatialModel (Val : Type) :
     SpatialModel Val (List (M3Cell Val)) (AllocId × Offset) where
   ownSubPlace heap addr path owner perm v :=
     match m3LookupCell addr.1 addr.2 path heap with
@@ -337,7 +342,7 @@ def m3SpatialModel (Val : Type) :
 
 /-- Pairwise disjointness across a list of `(LoanId × Addr × SubPath)` spatial
 loan bindings under `sp.disjointSubPlaces`. -/
-def spatialBindingsDisjoint {Val MachMem Addr : Type}
+@[expose] def spatialBindingsDisjoint {Val MachMem Addr : Type}
     (sp : SpatialModel Val MachMem Addr)
     (bindings : List (LoanId × Addr × SubPath)) : Prop :=
   listFold True
@@ -362,7 +367,7 @@ lid` for `.activeMut`, `.shared [lid]` for `.activeShared`). A place under an
 (`.split`) is still shared as a whole, so it is also `.shared [lid]`:
 `m3SpatialModel` then requires a frozen cell, not the unique one it requires
 for `.split`. -/
-def effectiveBoundLoanPerm {Val : Type} (lid : LoanId) (phase : LoanPhase Val)
+@[expose] def effectiveBoundLoanPerm {Val : Type} (lid : LoanId) (phase : LoanPhase Val)
     (cellPerm : PermTree) : PermTree :=
   match getPathPerm [] cellPerm with
   | .unborrowed =>
@@ -380,7 +385,7 @@ def effectiveBoundLoanPerm {Val : Type} (lid : LoanId) (phase : LoanPhase Val)
 concrete memory `mem` via `sp.ownSubPlace` (using `effectiveBoundLoanPerm` so
 unborrowed loan cells remain tied to their own `lid` and `phase`) and
 `spatialBindingsDisjoint`. -/
-def spatialBindingsHold {Val MachMem Addr : Type}
+@[expose] def spatialBindingsHold {Val MachMem Addr : Type}
     (sp : SpatialModel Val MachMem Addr)
     (bindings : List (LoanId × Addr × SubPath))
     (st : SymState Val) (mem : MachMem) : Prop :=
@@ -403,7 +408,7 @@ def spatialBindingsHold {Val MachMem Addr : Type}
 (`.mutLocked lid`, which requires the cell's tag to equal `lid`), matching how
 `spatialBindingsHold` ties an unborrowed root loan to its own tag at entry, so
 the caller's original mutable reference remains usable after the call. -/
-def spatialFinalBindingsHold {Val MachMem Addr : Type}
+@[expose] def spatialFinalBindingsHold {Val MachMem Addr : Type}
     (sp : SpatialModel Val MachMem Addr)
     (rootAddrs : List (LoanId × Addr × SubPath))
     (out : FuncOut Val) (mem : MachMem) : Prop :=
@@ -434,7 +439,7 @@ inductive M3ExecutesTo {Val : Type}
 heap step function `step`, spatial loan-address bindings `bindings`, root
 mutable output addresses `rootAddrs`, and auxiliary state relation `stateRel`.
 -/
-def m3OperationalAdapter {Val : Type}
+@[expose] def m3OperationalAdapter {Val : Type}
     (step : List (M3Cell Val) → M1StepResult (List (M3Cell Val)) Val)
     (stateRel : SymState Val → List (M3Cell Val) → Prop)
     (bindings : List (LoanId × (AllocId × Offset) × SubPath) := [])
@@ -599,3 +604,5 @@ theorem effectiveBoundLoanPerm_shared_split_tests :
   ⟨rfl, rfl, ⟨rfl, rfl, rfl⟩, fun h => nomatch h.2.2⟩
 
 end Anneal.PureLift
+
+end

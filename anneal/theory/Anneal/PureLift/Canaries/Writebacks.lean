@@ -6,19 +6,22 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.Data.List.Basic
-import Init.Data.Nat.Basic
-import Anneal.PureLift.Lens
-import Anneal.PureLift.PermTree
-import Anneal.PureLift.LoanGraph
-import Anneal.PureLift.SpatialPin
-import Anneal.PureLift.Plan
-import Anneal.PureLift.BlockCfg
-import Anneal.PureLift.Adapter
+public import Init.Core
+public import Init.Data.List.Basic
+public import Init.Data.Nat.Basic
+public import Anneal.PureLift.Lens
+public import Anneal.PureLift.PermTree
+public import Anneal.PureLift.LoanGraph
+public import Anneal.PureLift.SpatialPin
+public import Anneal.PureLift.Plan
+public import Anneal.PureLift.BlockCfg
+public import Anneal.PureLift.Adapter
 
-import Anneal.PureLift.Canaries.Fixtures
+public import Anneal.PureLift.Canaries.Fixtures
+
+public section
 
 namespace Anneal.PureLift
 
@@ -26,7 +29,7 @@ namespace Anneal.PureLift
 
 /-- Field-index map for `gapStdValAlg`: field `1` is a pair's first component,
 field `2` its second, and index `0` is a gap. -/
-def gapIdx (f : FieldIdx) : Option FieldIdx :=
+@[expose] def gapIdx (f : FieldIdx) : Option FieldIdx :=
   match f with
   | 1 => some 0
   | 2 => some 1
@@ -67,12 +70,12 @@ theorem gapIdx_inj (f g i : FieldIdx) (hf : gapIdx f = some i)
             | succ _ => nomatch hg
         | succ _ => nomatch hf
 
-def gapGetField (f : FieldIdx) (v : StdVal) : Option StdVal :=
+@[expose] def gapGetField (f : FieldIdx) (v : StdVal) : Option StdVal :=
   match gapIdx f with
   | some i => stdValGetField i v
   | none => none
 
-def gapSetField (f : FieldIdx) (v child : StdVal) : Option StdVal :=
+@[expose] def gapSetField (f : FieldIdx) (v child : StdVal) : Option StdVal :=
   match gapIdx f with
   | some i => stdValSetField i v child
   | none => none
@@ -263,7 +266,7 @@ theorem gap_getField_projectBranchVal (cond : StdVal) (branch : Bool)
     nomatch hFalse
   | some i => exact stdVal_getField_projectBranchVal cond branch i s a
 
-def gapStdValAlg : ValAlgebra StdVal :=
+@[expose] def gapStdValAlg : ValAlgebra StdVal :=
   { stdValAlg with
     getField := gapGetField
     getField_projectBranchVal := gap_getField_projectBranchVal
@@ -282,14 +285,14 @@ def gapStdValAlg : ValAlgebra StdVal :=
 
 /-- A by-value call summary whose backward function writes `out` back to its
 single mutable argument. -/
-def writebackSummary (out : StdVal) : CallSummary StdVal where
+@[expose] def writebackSummary (out : StdVal) : CallSummary StdVal where
   returnsMutBorrow := false
   fwd _ _ := some .unit
   back _ _ _ := some [out]
 
 /-- Freeze loan `1` (a reborrow of `*p`), overwrite its spatial cell with
 `cell`, and reabsorb it. -/
-def spatialOverwritePlan (cell : StdVal) : FlowPlan StdVal :=
+@[expose] def spatialOverwritePlan (cell : StdVal) : FlowPlan StdVal :=
   .seq (.act (.borrow 1 .mutBorrow (.derefSub 0 [])))
     (.seq (.act (.freezeSpatial 1 valueCellCodec))
       (.seq (.act (.mutateSpatial 0 0 [.init cell]))
@@ -407,7 +410,7 @@ theorem writeback_overlap_region_child_and_stale_join_tests :
 
 /-- Output-free region group `gid` over `input` whose backward function writes
 `out` back to its single input and deposits nothing. -/
-def writeRegionSpec (gid : RegionGroupId) (input : PlaceExpr)
+@[expose] def writeRegionSpec (gid : RegionGroupId) (input : PlaceExpr)
     (outs : List StdVal) : RegionGroupSpec StdVal where
   groupId := gid
   requiredChildren := []
@@ -527,7 +530,7 @@ theorem value_return_tests :
 /-- Explicit join over arms that allocate different numbers of loans: the
 false arm uses a scratch shared borrow (loan `2`) before its mutable borrow
 (loan `3`), which the pair `(2, 3)` renames to the true arm's loan `2`. -/
-def unevenExplicitJoinPlan : FlowPlan StdVal :=
+@[expose] def unevenExplicitJoinPlan : FlowPlan StdVal :=
   .seq
     (.branchExplicitJoin (.use (.localSub 0 []))
       (.act (.borrow 3 .mutBorrow (.derefSub 1 [])))
@@ -600,7 +603,7 @@ theorem explicit_join_and_branch_local_region_tests :
 /-- `let a = &mut x; let b = &mut y; let r = if c { &mut a } else { &mut b };`
 followed by the end of `r`, `b`, and `a`: the reborrow `r` writes the
 unchanged handle back to `a` (or `b`) through a symbolic `.choice` target. -/
-def choiceOverHandlesPlan : FlowPlan StdVal :=
+@[expose] def choiceOverHandlesPlan : FlowPlan StdVal :=
   .seq (.act (.borrow 3 .mutBorrow (.localSub 1 [])))
     (.seq (.act (.borrow 4 .mutBorrow (.localSub 2 [])))
       (.seq
@@ -613,7 +616,7 @@ def choiceOverHandlesPlan : FlowPlan StdVal :=
 /-- Explicit join where the true arm takes a scratch shared borrow (loan `1`)
 before its mutable borrow (loan `2`), and the false arm only takes the mutable
 borrow (loan `1`); the pair `(2, 1)` renames the false arm's loan. -/
-def trueArmScratchPlan : FlowPlan StdVal :=
+@[expose] def trueArmScratchPlan : FlowPlan StdVal :=
   .seq
     (.branchExplicitJoin (.use (.localSub 0 []))
       (.seq (.act (.borrow 3 .shared (.localSub 2 [])))
@@ -624,7 +627,7 @@ def trueArmScratchPlan : FlowPlan StdVal :=
     (.act (.endLoan 2))
 
 /-- `true` iff `endLoanInState` succeeds on `st`. -/
-def endLoanOk (lid : LoanId) (st : SymState StdVal) : Bool :=
+@[expose] def endLoanOk (lid : LoanId) (st : SymState StdVal) : Bool :=
   match endLoanInState stdValAlg lid st with
   | .ok _ => true
   | .fail => false
@@ -680,7 +683,7 @@ theorem choice_handle_and_explicit_join_padding_tests :
 The locals hold `zipVal c h3 h4` and `zipVal c h4 h3`, the state after
 `if c {} else { mem::swap(&mut a, &mut b) }` for unique handles `h3`, `h4`:
 in each branch each handle occurs once. -/
-def swappedChoiceState (outs : List StdVal) : SymState StdVal :=
+@[expose] def swappedChoiceState (outs : List StdVal) : SymState StdVal :=
   let c : StdVal := .symBool true
   ⟨[⟨zipStdVal c (.refVal 3 []) (.refVal 4 []), .mutLocked 5⟩,
     ⟨zipStdVal c (.refVal 4 []) (.refVal 3 []), .mutLocked 5⟩],
@@ -691,7 +694,7 @@ def swappedChoiceState (outs : List StdVal) : SymState StdVal :=
      fun _ _ => some (outs, [])⟩], [], [], 0⟩
 
 /-- `true` iff ending region group `0` succeeds on `st`. -/
-def endGroup0Ok (st : SymState StdVal) : Bool :=
+@[expose] def endGroup0Ok (st : SymState StdVal) : Bool :=
   match endRegionGroupInState stdValAlg 0 st with
   | .ok _ => true
   | .fail => false
@@ -699,7 +702,7 @@ def endGroup0Ok (st : SymState StdVal) : Bool :=
 /-- Local `0` is split between loan `1` at `[0]` and loan `2` at `[0, 1]`, and
 locals `1` and `2` are borrowed by loans `1` and `2`; `t1` and `t2` are the
 loans' targets. -/
-def correlatedOverlapState (t1 t2 : BackTarget LensTestVal) :
+@[expose] def correlatedOverlapState (t1 t2 : BackTarget LensTestVal) :
     SymState LensTestVal :=
   { locals := [⟨.node (.node (.atom 1) (.atom 2)) (.atom 3),
                 .split [([0], .mutLocked 1), ([0, 1], .mutLocked 2)]⟩,
@@ -712,7 +715,7 @@ def correlatedOverlapState (t1 t2 : BackTarget LensTestVal) :
     nextSpatialTag := 0 }
 
 /-- `true` iff ending loan `1` succeeds on `st`. -/
-def endLoan1Ok (st : SymState LensTestVal) : Bool :=
+@[expose] def endLoan1Ok (st : SymState LensTestVal) : Bool :=
   match endLoanInState lensTestValAlg 1 st with
   | .ok _ => true
   | .fail => false
@@ -770,7 +773,7 @@ theorem branchwise_handle_accounting_tests :
   ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 /-- `true` iff ending loan `a` and then loan `b` succeeds on `st`. -/
-def endLoansInOrderOk (a b : LoanId) (st : SymState LensTestVal) : Bool :=
+@[expose] def endLoansInOrderOk (a b : LoanId) (st : SymState LensTestVal) : Bool :=
   match endLoanInState lensTestValAlg a st with
   | .ok st1 =>
     match endLoanInState lensTestValAlg b st1 with
@@ -830,14 +833,14 @@ theorem conditional_writeback_correlation_tests :
 
 /-- Handle renaming that retargets every handle to `t`, not only those to the
 renamed loan. -/
-def retargetAllRemap (_ t : LoanId) (v : StdVal) : StdVal :=
+@[expose] def retargetAllRemap (_ t : LoanId) (v : StdVal) : StdVal :=
   match v with
   | ⟨_, .refVal _ p⟩ => .refVal t p
   | other => other
 
 /-- Handle renaming that also changes non-handle data: it adds `1000` to every
 top-level number. -/
-def bumpNatRemap (oldLid newLid : LoanId) (v : StdVal) : StdVal :=
+@[expose] def bumpNatRemap (oldLid newLid : LoanId) (v : StdVal) : StdVal :=
   match v with
   | ⟨_, .nat n⟩ => .nat (n + 1000)
   | other => remapStdVal oldLid newLid other
@@ -867,7 +870,7 @@ theorem unfaithful_remaps_break_laws :
 
 /-- An explicit join renaming the false arm's loan `3` to `2`, after which the
 plan writes through both the renamed loan and the second root parameter. -/
-def explicitJoinRenamePlan : FlowPlan StdVal :=
+@[expose] def explicitJoinRenamePlan : FlowPlan StdVal :=
   .seq
     (.branchExplicitJoin (.use (.localSub 0 []))
       (.act (.borrow 3 .mutBorrow (.derefSub 2 [])))
@@ -897,7 +900,7 @@ true arm takes loan `2` for `x` and loan `3` for `y`, and the false arm loan
 `2` for `y` and loan `3` for `x`. The pairs `[(2, 3), (3, 2)]` exchange the
 false arm's IDs; afterwards local `3` reborrows `x` and local `4` reborrows
 `y` in both arms. -/
-def swappedLoanIdsJoinPlan : FlowPlan StdVal :=
+@[expose] def swappedLoanIdsJoinPlan : FlowPlan StdVal :=
   .seq
     (.branchExplicitJoin (.use (.localSub 0 []))
       (.seq (.act (.borrow 3 .mutBorrow (.derefSub 1 [])))
@@ -914,7 +917,7 @@ def swappedLoanIdsJoinPlan : FlowPlan StdVal :=
 whose dead handle stays in local `3`, as in MIR before `StorageDead`, and then
 the reborrow of `*x` (loan `3`) that the pair `(2, 3)` renames to the true
 arm's loan `2`. -/
-def deadRefExplicitJoinPlan : FlowPlan StdVal :=
+@[expose] def deadRefExplicitJoinPlan : FlowPlan StdVal :=
   .seq (.act (.assign (.localSub 3 []) (.constVal (.nat 0))))
     (.seq
       (.branchExplicitJoin (.use (.localSub 0 []))
@@ -930,7 +933,7 @@ def deadRefExplicitJoinPlan : FlowPlan StdVal :=
 (`swapped = false`: loan `2` borrows local `0` and loan `3` local `1`), or the
 same locals in the opposite order (`swapped = true`). Locals `2` and `3` hold
 the handles to the borrows of locals `0` and `1`. -/
-def twoReborrowsState (swapped : Bool) : SymState StdVal :=
+@[expose] def twoReborrowsState (swapped : Bool) : SymState StdVal :=
   let l0 : LoanId := if swapped then 3 else 2
   let l1 : LoanId := if swapped then 2 else 3
   ⟨[⟨.nat 1, .mutLocked l0⟩, ⟨.nat 2, .mutLocked l1⟩,
@@ -988,7 +991,7 @@ theorem explicit_join_dead_ref_plan_tests :
 (`sameRefVal := fun _ _ => false`), modeling an algebra whose reference handles
 carry extra non-decoded data so `zipOrKeepSameRef` preserves the conditional
 choice instead of collapsing to the true-arm value. -/
-def opaqueRefStdValAlg : ValAlgebra StdVal :=
+@[expose] def opaqueRefStdValAlg : ValAlgebra StdVal :=
   { stdValAlg with
     sameRefVal := fun _ _ => false
     sameRefVal_eq := fun _ _ h => nomatch h }
@@ -1062,3 +1065,5 @@ theorem recursive_projection_nested_add_and_ref_join_tests :
   ⟨rfl, rfl, rfl, ⟨rfl, rfl⟩, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 end Anneal.PureLift
+
+end

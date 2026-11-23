@@ -6,11 +6,14 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.NotationExtra
-import Init.Data.List.Basic
-import Init.Data.Nat.Basic
-import Init.Data.Nat.Div.Basic
+public import Init.NotationExtra
+public import Init.Data.List.Basic
+public import Init.Data.Nat.Basic
+public import Init.Data.Nat.Div.Basic
+
+public section
 
 universe u v
 
@@ -177,7 +180,7 @@ private theorem list_drop_cons_length_le {α : Type u} {k : Nat} (hk : 0 < k)
 /-! ## Part 1: Ceiling Division (`divCeil`) -/
 
 /-- Ceiling division `⌈n / k⌉` with `divCeil 0 k = 0` for all `k`. -/
-def divCeil (n k : Nat) : Nat :=
+@[expose] def divCeil (n k : Nat) : Nat :=
   if n = 0 then 0 else HDiv.hDiv (n - 1) k + 1
 
 /-- Ceiling division of zero is zero for every divisor `k`. -/
@@ -326,7 +329,7 @@ theorem divCeil_eq_succ_sub {n k : Nat} (hn : 0 < n) (hk : 0 < k) :
 /-- Fuel-bounded structural list chunking. Using `@Nat.rec` avoids compiler
 `_unsafe_rec` auxiliaries while remaining `rfl`-reducible on `0` and
 `fuel + 1`. -/
-def chunksOfAux {α : Type u} (k : Nat) (fuel : Nat) (xs : List α) :
+@[expose] def chunksOfAux {α : Type u} (k : Nat) (fuel : Nat) (xs : List α) :
     List (List α) :=
   @Nat.rec (fun _ => List α → List (List α))
     (fun _ => [])
@@ -397,7 +400,7 @@ theorem chunksOfAux_fuel_irrel {α : Type u} {k : Nat} (hk : 0 < k) :
 /-- Partition `xs` into contiguous chunks of size `k` (with a possibly shorter
 final chunk when `k` does not divide `xs.length`). Returns `[]` when `k = 0`.
 -/
-def chunksOf {α : Type u} (k : Nat) (xs : List α) : List (List α) :=
+@[expose] def chunksOf {α : Type u} (k : Nat) (xs : List α) : List (List α) :=
   if k = 0 then [] else chunksOfAux k xs.length xs
 
 /-- Chunking with size `0` always yields `[]`. -/
@@ -702,3 +705,5 @@ theorem chunksOf_same_len_elem_length_eq {α : Type u} {β : Type v} {k : Nat}
     list_length_drop, hlen]
 
 end Anneal.ListChunks
+
+end

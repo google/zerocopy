@@ -6,9 +6,10 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Anneal.Core.BlockTree
-import Anneal.Core.SepPCM
-import Anneal.Core.StageCut
-import Anneal.Core.SpecRealizability
-import Anneal.Core.Canaries
+public import Anneal.Core.BlockTree
+public import Anneal.Core.SepPCM
+public import Anneal.Core.StageCut
+public import Anneal.Core.SpecRealizability
+public import Anneal.Core.Canaries

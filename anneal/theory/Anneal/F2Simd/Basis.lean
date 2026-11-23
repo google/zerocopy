@@ -6,14 +6,17 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Nat.Basic
-import Init.Data.Nat.Bitwise.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.List.Basic
-import Anneal.BitVec
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Nat.Basic
+public import Init.Data.Nat.Bitwise.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.List.Basic
+public import Anneal.BitVec
+
+public section
 
 namespace Anneal.F2Simd
 
@@ -50,14 +53,17 @@ bit-vector transformations:
 /-! ## 1. Core `BitVec` $\mathbb{F}_2$ Operations and Algebraic Identities -/
 
 /-- Zero `BitVec` of width `w` (`BitVec.ofNat w 0`). -/
+@[expose]
 def bvZero (w : Nat) : BitVec w :=
   BitVec.ofNat w 0
 
 /-- `k`-th unit-basis `BitVec` of width `w` (`1 <<< k` modulo `2^w`). -/
+@[expose]
 def bvUnit (w k : Nat) : BitVec w :=
   shl (BitVec.ofNat w 1) k
 
 /-- Fast C++ GMP `Nat.beq` equality test on `BitVec w`. -/
+@[expose]
 def bvEq {w : Nat} (a b : BitVec w) : Bool :=
   Nat.beq a.toNat b.toNat
 
@@ -65,11 +71,13 @@ def bvEq {w : Nat} (a b : BitVec w) : Bool :=
 `(lo, len)` like `BitVec.extractLsb'`), extensionally equal to
 `BitVec.extractLsb' lo len x` (`getLsbD_extractLsb`) and definitionally equal
 (`rfl`) when `len < w`. -/
+@[expose]
 def extractLsb {w : Nat} (lo len : Nat) (x : BitVec w) : BitVec len :=
   setWidth len (ushr x lo)
 
 /-- Concatenate high `wHi` bits `hi` above low `wLo` bits `lo` into width
 `wHi + wLo`. -/
+@[expose]
 def concatBv {wHi wLo : Nat} (hi : BitVec wHi) (lo : BitVec wLo) :
     BitVec (wHi + wLo) :=
   or (shl (setWidth (wHi + wLo) hi) wLo) (setWidth (wHi + wLo) lo)
@@ -419,6 +427,7 @@ structure IsF2Bilinear {w1 w2 wOut : Nat}
 
 /-- Reconstructs the lowest `n` bits of `x : BitVec w` as an $\mathbb{F}_2$ sum
 of unit-basis vectors `bvUnit w k` using `@Nat.rec` (zero `._unsafe_rec`). -/
+@[expose]
 def bvBasisPrefix {w : Nat} (x : BitVec w) (n : Nat) : BitVec w :=
   @Nat.rec (fun _ => BitVec w)
     (bvZero w)
@@ -487,6 +496,7 @@ theorem bvBasisPrefix_full {w : Nat} (x : BitVec w) :
 
 /-- Checks `bvEq (f (bvUnit wIn k)) (g (bvUnit wIn k))` for all `k < n` via
 `@Nat.rec`. -/
+@[expose]
 def checkBasis1Aux {wIn wOut : Nat} (f g : BitVec wIn → BitVec wOut)
     (n : Nat) : Bool :=
   @Nat.rec (fun _ => Bool)
@@ -528,6 +538,7 @@ private theorem checkBasis1Aux_prefix_eq {wIn wOut : Nat}
         rw [hf.map_xor, hg.map_xor, ih, hk]
 
 /-- Unary $\mathbb{F}_2$-linear equivalence checker (`wIn` basis checks). -/
+@[expose]
 def checkF2Linear1 {wIn wOut : Nat} (f g : BitVec wIn → BitVec wOut) : Bool :=
   checkBasis1Aux f g wIn
 
@@ -562,6 +573,7 @@ theorem checkBasis1Aux_of_forall {wIn wOut : Nat}
 /-- Checks `len` consecutive unary basis vectors `start .. start + len - 1` via
 `@Nat.rec` so wide (`128`-bit, `256`-bit) linear checks stay at bounded
 recursion depth without `set_option`. -/
+@[expose]
 def checkLinear1Range {wIn wOut : Nat} (f g : BitVec wIn → BitVec wOut)
     (start len : Nat) : Bool :=
   @Nat.rec (fun _ => Bool)
@@ -640,6 +652,7 @@ theorem checkF2Linear1Range_sound {wIn wOut : Nat}
 
 /-- Binary jointly $\mathbb{F}_2$-linear equivalence checker (`w1 + w2`
 unit-basis checks). -/
+@[expose]
 def checkF2Linear2 {w1 w2 wOut : Nat}
     (f g : BitVec w1 → BitVec w2 → BitVec wOut) : Bool :=
   checkF2Linear1 (fun x => f x (bvZero w2)) (fun x => g x (bvZero w2)) &&
@@ -691,6 +704,7 @@ theorem checkF2Linear2_sound {w1 w2 wOut : Nat}
 
 /-- Row helper checking `B1 (bvUnit w1 i)` against `B2 (bvUnit w1 i)` across
 `i < n` via `@Nat.rec`. -/
+@[expose]
 def checkBilinearRows {w1 w2 wOut : Nat}
     (B1 B2 : BitVec w1 → BitVec w2 → BitVec wOut) (n : Nat) : Bool :=
   @Nat.rec (fun _ => Bool)
@@ -705,6 +719,7 @@ def checkBilinearRows {w1 w2 wOut : Nat}
 
 /-- Two-variable $\mathbb{F}_2$-bilinear equivalence checker (`w1 * w2`
 unit-basis checks). -/
+@[expose]
 def checkF2Bilinear {w1 w2 wOut : Nat}
     (B1 B2 : BitVec w1 → BitVec w2 → BitVec wOut) : Bool :=
   checkBilinearRows B1 B2 w1
@@ -776,6 +791,7 @@ theorem checkBilinearRows_of_forall {w1 w2 wOut : Nat}
 `@Nat.rec` so wide (`64×64`, `128×128`) bilinear certificates decompose into
 independent `rfl` lemmas under Lean's default `whnf` heartbeat budget without
 `set_option`. -/
+@[expose]
 def checkBilinearRange {w1 w2 wOut : Nat}
     (B1 B2 : BitVec w1 → BitVec w2 → BitVec wOut) (start len : Nat) : Bool :=
   @Nat.rec (fun _ => Bool)
@@ -859,10 +875,12 @@ theorem checkF2BilinearRange_sound {w1 w2 wOut : Nat}
 /-! ## 3. Cone-of-Influence Basis Slicing -/
 
 /-- Decidable `Nat` membership test on `cone : List Nat`. -/
+@[expose]
 def natInCone (k : Nat) (cone : List Nat) : Bool :=
   cone.foldr (fun c acc => Nat.beq k c || acc) false
 
 /-- Checks that `f (bvUnit wIn k) = g (bvUnit wIn k)` for every `k ∈ cone`. -/
+@[expose]
 def checkConeBasis1 {wIn wOut : Nat} (cone : List Nat)
     (f g : BitVec wIn → BitVec wOut) : Bool :=
   cone.foldr
@@ -873,6 +891,7 @@ def checkConeBasis1 {wIn wOut : Nat} (cone : List Nat)
     true
 
 /-- Checks that `f (bvUnit wIn k) = 0` for every `k < n` outside `cone`. -/
+@[expose]
 def checkOutsideConeZeroAux {wIn wOut : Nat} (cone : List Nat)
     (f : BitVec wIn → BitVec wOut) (n : Nat) : Bool :=
   @Nat.rec (fun _ => Bool)
@@ -886,6 +905,7 @@ def checkOutsideConeZeroAux {wIn wOut : Nat} (cone : List Nat)
 
 /-- Checks that `f` maps every unit-basis bit outside `cone` in `0 .. wIn - 1`
 to `bvZero wOut`. -/
+@[expose]
 def checkOutsideConeZero {wIn wOut : Nat} (cone : List Nat)
     (f : BitVec wIn → BitVec wOut) : Bool :=
   checkOutsideConeZeroAux cone f wIn
@@ -932,6 +952,7 @@ theorem hasBitCone_of_check {wIn wOut : Nat} (cone : List Nat)
 
 /-- Checks `len` consecutive basis indices `start .. start + len - 1` outside
 `cone` map to `bvZero wOut`. -/
+@[expose]
 def checkOutsideConeZeroRange {wIn wOut : Nat} (cone : List Nat)
     (f : BitVec wIn → BitVec wOut) (start len : Nat) : Bool :=
   @Nat.rec (fun _ => Bool)
@@ -1081,6 +1102,7 @@ theorem checkF2ConeLinear_sound {wIn wOut : Nat} (cone : List Nat)
 
 /-- Checks via `@Nat.rec` that every index `k < n` outside `cone` lies
 outside `[lo, lo + len)`. -/
+@[expose]
 def checkConeContainsRange (cone : List Nat) (lo len n : Nat) : Bool :=
   @Nat.rec (fun _ => Bool)
     true
@@ -1159,7 +1181,8 @@ inductive F2Circuit : Nat → Nat → Nat → Type where
       F2Circuit d2 w2 w3 → F2Circuit d1 w1 w2 →
       F2Circuit (d2 + d1 + 1) w1 w3
 
-private def withStrictBv {w : Nat} {α : Type} (v : BitVec w)
+@[expose]
+def withStrictBv {w : Nat} {α : Type} (v : BitVec w)
     (k : BitVec w → α) : α :=
   match v with
   | .ofFin ⟨n, h⟩ =>
@@ -1176,7 +1199,8 @@ private theorem withStrictBv_eq {w : Nat} {α : Type} (v : BitVec w)
     | mk n h =>
       cases n <;> rfl
 
-private def f2CircuitEvalStep
+@[expose]
+def f2CircuitEvalStep
     (rec : ∀ {d wIn wOut : Nat},
       F2Circuit d wIn wOut → BitVec wIn → BitVec wOut)
     {d wIn wOut : Nat} (c : F2Circuit d wIn wOut) (x : BitVec wIn) :
@@ -1194,6 +1218,7 @@ private def f2CircuitEvalStep
 
 /-- Evaluates an `F2Circuit` under `fuel` steps via `@Nat.rec` (`0`
 `._unsafe_rec`, `0` `noncomputable`). -/
+@[expose]
 def F2Circuit.evalAt (fuel : Nat) :
     ∀ {d wIn wOut : Nat}, F2Circuit d wIn wOut → BitVec wIn → BitVec wOut :=
   @Nat.rec
@@ -1210,6 +1235,7 @@ private theorem f2Circuit_evalAt_succ (fuel : Nat) {d wIn wOut : Nat}
 
 /-- Total denotational evaluation of `c : F2Circuit d wIn wOut` at its exact
 structural fuel bound `d + 1`. -/
+@[expose]
 def F2Circuit.eval {d wIn wOut : Nat} (c : F2Circuit d wIn wOut) :
     BitVec wIn → BitVec wOut :=
   F2Circuit.evalAt (d + 1) c
@@ -1410,3 +1436,5 @@ theorem checkF2CircuitEq_sound {d1 d2 wIn wOut : Nat}
   checkF2Linear1_sound c1.eval_isLinear c2.eval_isLinear hcert
 
 end Anneal.F2Simd
+
+end

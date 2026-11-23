@@ -7,8 +7,9 @@
 -- those terms.
 
 -- anneal-trust-tier: vetted
+module
 prelude
-import Init.NotationExtra
+public import Init.NotationExtra
 
 /-!
 # Anneal Trusted Lean Foundation (`Trusted.lean`)

@@ -6,8 +6,11 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Anneal.MirWp
+public import Anneal.MirWp
+
+public section
 
 namespace Anneal.LoopInv
 
@@ -57,7 +60,7 @@ that satisfies `stop`.
 
 Like `wpOutcomeState`, the definition uses `@Nat.rec` into `Prop` and keeps the
 `ValidChoice`-quantified shape of each step. -/
-def wpUntil (p : Program) (stop : State → Prop)
+@[expose] def wpUntil (p : Program) (stop : State → Prop)
     (onDone : TerminalOut → Prop) (onFault : FaultKind → Prop)
     (fuel : Nat) (s : State) : Prop :=
   @Nat.rec (fun _ => State → Prop)
@@ -87,7 +90,7 @@ abbrev wpReach (p : Program) (stop : State → Prop) (fuel : Nat)
 /-- Deterministic `c = 0` counterpart of `wpUntil` over `evalStep p 0`. On a
 concrete state each step reduces by `rfl`, and `wpUntil_of_execUntil` lifts the
 result into `wpUntil`. -/
-def execUntil (p : Program) (stop : State → Prop)
+@[expose] def execUntil (p : Program) (stop : State → Prop)
     (onDone : TerminalOut → Prop) (onFault : FaultKind → Prop)
     (fuel : Nat) (s : State) : Prop :=
   @Nat.rec (fun _ => State → Prop)
@@ -1017,7 +1020,7 @@ theorem wpSim_rel {α : Type} {p : Program}
 
 /-- Iterate the abstract step function `stepAbs` at most `k` times, stopping
 at the first state where it returns `none`. -/
-def runAbsFuel {α : Type} (stepAbs : α → Option α) (k : Nat)
+@[expose] def runAbsFuel {α : Type} (stepAbs : α → Option α) (k : Nat)
     (a : α) : α :=
   @Nat.rec (fun _ => α → α)
     (fun a => a)
@@ -1416,18 +1419,18 @@ whole execution, which shows that the combinators of this module apply to a
 `Trusted.MirAst.Program` with a symbolic trip count. -/
 
 /-- Computable alias for `Trusted.MirSemantics.u32Ty`. -/
-private abbrev countDownU32Ty : MirTy := .int .i32 false
+abbrev countDownU32Ty : MirTy := .int .i32 false
 
 /-- Immediate `u32` local slot holding `m`. -/
-def u32Slot (m : Nat) : LocalSlot :=
+@[expose] def u32Slot (m : Nat) : LocalSlot :=
   .immediate (some (.scalar ⟨.i32, false, BitVec.ofNat 128 m⟩))
 
 /-- Frame of body `0` at block `b` and statement `i` with locals `ls`. -/
-def frameAt (b i : Nat) (ls : List LocalSlot) : FrameState :=
+@[expose] def frameAt (b i : Nat) (ls : List LocalSlot) : FrameState :=
   { defId := 0, blockIdx := b, stmtIdx := i, locals := ls }
 
 /-- Entry block `bb0`: `_0 = const 0_u32; goto bb1`. -/
-def countDownEntry : BasicBlock := {
+@[expose] def countDownEntry : BasicBlock := {
   statements := [
     .assign ⟨0, []⟩
       (.use (.constant ⟨countDownU32Ty, .scalar (BitVec.ofNat 128 0)⟩))
@@ -1436,7 +1439,7 @@ def countDownEntry : BasicBlock := {
 }
 
 /-- Loop header `bb1`: `switchInt(copy _1) -> [0: bb3, otherwise: bb2]`. -/
-def countDownHeader : BasicBlock := {
+@[expose] def countDownHeader : BasicBlock := {
   statements := []
   terminator := .switchInt (.copy ⟨1, []⟩) {
     branches := [(BitVec.ofNat 128 0, 3)]
@@ -1445,31 +1448,31 @@ def countDownHeader : BasicBlock := {
 }
 
 /-- Decrement statement `_1 = Sub(copy _1, const 1_u32)`. -/
-def countDownDec : StatementKind :=
+@[expose] def countDownDec : StatementKind :=
   .assign ⟨1, []⟩
     (.binaryOp .sub (.copy ⟨1, []⟩)
       (.constant ⟨countDownU32Ty, .scalar (BitVec.ofNat 128 1)⟩))
 
 /-- Increment statement `_0 = Add(copy _0, const 1_u32)`. -/
-def countDownInc : StatementKind :=
+@[expose] def countDownInc : StatementKind :=
   .assign ⟨0, []⟩
     (.binaryOp .add (.copy ⟨0, []⟩)
       (.constant ⟨countDownU32Ty, .scalar (BitVec.ofNat 128 1)⟩))
 
 /-- Loop body `bb2`: decrement `_1`, increment `_0`, and `goto bb1`. -/
-def countDownLoop : BasicBlock := {
+@[expose] def countDownLoop : BasicBlock := {
   statements := [countDownDec, countDownInc]
   terminator := .goto 1
 }
 
 /-- Exit block `bb3`: `return`. -/
-def countDownExit : BasicBlock := {
+@[expose] def countDownExit : BasicBlock := {
   statements := []
   terminator := .return_
 }
 
 /-- Body of `fn count_down(n: u32) -> u32`. -/
-def countDownBody : Body := {
+@[expose] def countDownBody : Body := {
   argumentCount := 1
   locals := [countDownU32Ty, countDownU32Ty]
   basicBlocks :=
@@ -1478,7 +1481,7 @@ def countDownBody : Body := {
 }
 
 /-- Single-body program for `count_down`. -/
-def countDownProg : Program := {
+@[expose] def countDownProg : Program := {
   scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
@@ -1488,23 +1491,23 @@ def countDownProg : Program := {
 /-- Loop-header state with accumulator `acc` and counter `k`. Uses the
 computable literal `{ nextAllocId := 2, allocations := [] }` (definitionally
 equal to `entryMemory`) so `countDownAt` remains computable. -/
-def countDownAt (acc k : Nat) : State :=
+@[expose] def countDownAt (acc k : Nat) : State :=
   mkState 1 0 [u32Slot acc, u32Slot k] 0
     { nextAllocId := 2, allocations := [] }
 
 /-- Loop invariant for argument `n` with `k` iterations remaining: the
 execution is at the loop header and the accumulator and the counter sum to
 `n`. -/
-def countDownInv (n k : Nat) (s : State) : Prop :=
+@[expose] def countDownInv (n k : Nat) (s : State) : Prop :=
   ∃ acc, acc + k = n ∧ s = countDownAt acc k
 
 /-- Loop exit for argument `n`: the loop header with counter `0` and
 accumulator `n`. -/
-def countDownDone (n : Nat) (s : State) : Prop :=
+@[expose] def countDownDone (n : Nat) (s : State) : Prop :=
   s = countDownAt n 0
 
 /-- Postcondition for argument `n`: the program returns `n`. -/
-def countDownPost (n : Nat) (out : TerminalOut) : Prop :=
+@[expose] def countDownPost (n : Nat) (out : TerminalOut) : Prop :=
   out = .returned ⟨u32Val n, ⟨[]⟩⟩
 
 /-- A `u32` argument below `2^32` is a valid entry argument. -/
@@ -1689,3 +1692,5 @@ theorem countDown_returns (n : Nat) (hn : n < Nat.pow 2 32) :
   exact ⟨hSat.1, hBeh⟩
 
 end Anneal.LoopInv
+
+end

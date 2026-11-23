@@ -6,19 +6,22 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.Data.List.Basic
-import Init.Data.Nat.Basic
-import Anneal.PureLift.Lens
-import Anneal.PureLift.PermTree
-import Anneal.PureLift.LoanGraph
-import Anneal.PureLift.SpatialPin
-import Anneal.PureLift.Plan
-import Anneal.PureLift.BlockCfg
-import Anneal.PureLift.Adapter
+public import Init.Core
+public import Init.Data.List.Basic
+public import Init.Data.Nat.Basic
+public import Anneal.PureLift.Lens
+public import Anneal.PureLift.PermTree
+public import Anneal.PureLift.LoanGraph
+public import Anneal.PureLift.SpatialPin
+public import Anneal.PureLift.Plan
+public import Anneal.PureLift.BlockCfg
+public import Anneal.PureLift.Adapter
 
-import Anneal.PureLift.Canaries.Fixtures
+public import Anneal.PureLift.Canaries.Fixtures
+
+public section
 
 namespace Anneal.PureLift
 
@@ -27,7 +30,7 @@ namespace Anneal.PureLift
 -/
 
 /-- **S1 (`max_assign`)**: `if *x < y { *x = y }`. -/
-def s1MaxAssignPlan : FlowPlan StdVal :=
+@[expose] def s1MaxAssignPlan : FlowPlan StdVal :=
   .seq
     (.act (.assign (.localSub 2 [])
       (.binary stdLtSym (.derefSub 0 []) (.localSub 1 []))))
@@ -44,7 +47,7 @@ theorem s1_max_assign_spec (vx vy : Nat) :
       [zipStdVal (.symBool (Nat.blt vx vy)) (.nat vy) (.nat vx)]⟩ := rfl
 
 /-- **S2 (`update_min`)**: Two `&mut` parameters with entry aliasing checks. -/
-def s2UpdateMinPlan : FlowPlan StdVal :=
+@[expose] def s2UpdateMinPlan : FlowPlan StdVal :=
   .seq
     (.act (.assign (.localSub 2 [])
       (.binary stdLtSym (.derefSub 0 []) (.derefSub 1 []))))
@@ -69,7 +72,7 @@ theorem s2_update_min_aliased_fails (vx : Nat) :
 
 /-- **S3 (`shared_max` vs. `max_assign_shared`)**: Shared borrows permit
 aliasing, whereas `&mut` + `&` on the same root is rejected. -/
-def s3SharedMaxPlan : FlowPlan StdVal :=
+@[expose] def s3SharedMaxPlan : FlowPlan StdVal :=
   .seq
     (.act (.assign (.localSub 2 [])
       (.binary stdLtSym (.derefSub 0 []) (.derefSub 1 []))))
@@ -92,7 +95,7 @@ theorem s3_max_assign_shared_aliased_fails (va : Nat) :
 
 /-- **S4 (`conditional_reborrow`)**: Diamond conditional reborrow
 `let r = if cond { &mut *x } else { &mut *y }; *r += a; endLoan(r); *x += b`. -/
-def s4DiamondReborrowPlan : FlowPlan StdVal :=
+@[expose] def s4DiamondReborrowPlan : FlowPlan StdVal :=
   .seq
     (.branch (.use (.localSub 0 []))
       (.act (.borrow 5 .mutBorrow (.derefSub 1 [])))
@@ -121,7 +124,7 @@ theorem s4_conditional_reborrow_symbolic (cond : Bool) (vx vy a b : Nat) :
 
 /-- **S5 (`choose_mut` & `choose_test`)**: Function returning `&'a mut T` with
 a lawful forward/backward lens and modular caller composition. -/
-def s5ChoosePlan : FlowPlan StdVal :=
+@[expose] def s5ChoosePlan : FlowPlan StdVal :=
   .branch (.use (.localSub 0 []))
     (.act (.borrow 3 .mutBorrow (.derefSub 1 [])))
     (.act (.borrow 3 .mutBorrow (.derefSub 2 [])))
@@ -140,7 +143,7 @@ theorem s5_choose_mut_spec (cond : Bool) (vx vy vNew : Nat) :
     | .fail => False := by
   cases cond <;> exact ⟨rfl, rfl⟩
 
-def chooseCallSummary : CallSummary StdVal where
+@[expose] def chooseCallSummary : CallSummary StdVal where
   returnsMutBorrow := true
   fwd pureVals mutVals :=
     match pureVals, mutVals with
@@ -153,7 +156,7 @@ def chooseCallSummary : CallSummary StdVal where
             zipStdVal cond vy (projectBranchStdVal cond false vFinal)]
     | _, _ => none
 
-def choosePairLens (cond : Bool) : Lens (StdVal × StdVal) StdVal where
+@[expose] def choosePairLens (cond : Bool) : Lens (StdVal × StdVal) StdVal where
   get xy := chooseCallSummary.fwd [.bool cond] [xy.1, xy.2]
   put xy vNew :=
     match chooseCallSummary.back [.bool cond] [xy.1, xy.2] vNew with
@@ -193,7 +196,7 @@ theorem s5_choosePairLens_lawful (cond : Bool) :
         subst hEq
         rfl)
 
-def s5ChooseCallerPlan : FlowPlan StdVal :=
+@[expose] def s5ChooseCallerPlan : FlowPlan StdVal :=
   .seq
     (.act (.call 4 chooseCallSummary
       [.use (.localSub 0 [])]
@@ -220,7 +223,7 @@ theorem s5_choose_caller_symbolic (cond : Bool) (vx vy delta : Nat) :
 
 /-- **S6 (`count_up`)**: Constructive `while` loop and non-vacuity on
 insufficient fuel. -/
-def s6CountUpPlan (fuel : Nat) : FlowPlan StdVal :=
+@[expose] def s6CountUpPlan (fuel : Nat) : FlowPlan StdVal :=
   .whileLoop fuel
     (.binary stdLtBool (.derefSub 0 []) (.localSub 1 []))
     (.act (.assign (.derefSub 0 []) (.unary stdInc (.derefSub 0 []))))
@@ -239,7 +242,7 @@ theorem s6_count_up_insufficient_fuel_fails :
       (.constVal .unit) = .fail := rfl
 
 /-- **S7 (`double_bounded`)**: Modular interprocedural call composition. -/
-def addInPlaceSummary : CallSummary StdVal where
+@[expose] def addInPlaceSummary : CallSummary StdVal where
   returnsMutBorrow := false
   fwd pureVals mutVals :=
     match pureVals, mutVals with
@@ -250,7 +253,7 @@ def addInPlaceSummary : CallSummary StdVal where
     | [⟨_, .nat d⟩], [⟨_, .nat x⟩] => some [.nat (x + d)]
     | _, _ => none
 
-def s7DoubleCallPlan : FlowPlan StdVal :=
+@[expose] def s7DoubleCallPlan : FlowPlan StdVal :=
   .seq
     (.act (.call 2 addInPlaceSummary [.use (.localSub 1 [])] [.derefSub 0 []]))
     (.act (.call 2 addInPlaceSummary [.use (.localSub 1 [])] [.derefSub 0 []]))
@@ -268,7 +271,7 @@ theorem s7_double_bounded_spec (vx d : Nat) :
 
 /-- **H1 Plan A**: Borrow `r0 = &mut (*p).0` (loan 1) and `r1 = &mut (*p).1`
 (loan 2), swap them, end loan 1 then loan 2, and read root `*p` at `[]`. -/
-def h1SplitSwapEnd12Plan : FlowPlan StdVal :=
+@[expose] def h1SplitSwapEnd12Plan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 1 .mutBorrow (.derefSub 0 [0])))
     (.seq
@@ -287,7 +290,7 @@ def h1SplitSwapEnd12Plan : FlowPlan StdVal :=
 
 /-- **H1 Plan B**: Identical to Plan A except loan 2 (`&mut p.1`) ends before
 loan 1 (`&mut p.0`). -/
-def h1SplitSwapEnd21Plan : FlowPlan StdVal :=
+@[expose] def h1SplitSwapEnd21Plan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 1 .mutBorrow (.derefSub 0 [0])))
     (.seq
@@ -321,7 +324,7 @@ theorem h1_sibling_end_commutes_spec (v0 v1 : Nat) :
       h1SplitSwapEnd21Plan
       (.use (.localSub 4 [])) := rfl
 
-def h1SharedAndMutSiblingsPlan : FlowPlan StdVal :=
+@[expose] def h1SharedAndMutSiblingsPlan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 1 .shared (.derefSub 0 [0])))
     (.seq
@@ -340,7 +343,7 @@ theorem h1_shared_and_mut_disjoint_siblings_ok (v0 v1 : Nat) :
       (.constVal .unit) =
     .ok ⟨.unit, [.pair (.nat v0) (.nat (v0 + v1))]⟩ := rfl
 
-def h1MultiSharedLoanIdTrackingPlan : FlowPlan StdVal :=
+@[expose] def h1MultiSharedLoanIdTrackingPlan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 1 .shared (.derefSub 0 [0])))
     (.seq
@@ -370,7 +373,7 @@ theorem h1_multi_shared_loan_id_tracking_spec (v0 v1 : Nat) :
       (.constVal .unit) =
     .ok ⟨.unit, [.pair (.nat (v0 + 1)) (.nat (v0 + v1))]⟩ := rfl
 
-def h1BadMutWhileSecondSharedActivePlan : FlowPlan StdVal :=
+@[expose] def h1BadMutWhileSecondSharedActivePlan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 1 .shared (.derefSub 0 [0])))
     (.seq
@@ -387,7 +390,7 @@ theorem h1_reject_mut_while_second_shared_active (v0 v1 : Nat) :
       h1BadMutWhileSecondSharedActivePlan
       (.constVal .unit) = .fail := rfl
 
-def h1BadBorrowRootWhileFieldActivePlan : FlowPlan StdVal :=
+@[expose] def h1BadBorrowRootWhileFieldActivePlan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 1 .mutBorrow (.derefSub 0 [0])))
     (.seq
@@ -400,7 +403,7 @@ theorem h1_reject_root_borrow_while_field_active (v0 v1 : Nat) :
       h1BadBorrowRootWhileFieldActivePlan
       (.constVal .unit) = .fail := rfl
 
-def h1BadBorrowSubpathWhilePrefixActivePlan : FlowPlan StdVal :=
+@[expose] def h1BadBorrowSubpathWhilePrefixActivePlan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 1 .mutBorrow (.derefSub 0 [0])))
     (.seq
@@ -414,7 +417,7 @@ theorem h1_reject_subpath_borrow_while_prefix_active (v0 v1 v2 : Nat) :
       (.constVal .unit) = .fail := rfl
 
 /-- **H2**: Multi-region-group staggered termination with `requiredChildren`. -/
-def h2DependentRegionSpecs : List (RegionGroupSpec StdVal) :=
+@[expose] def h2DependentRegionSpecs : List (RegionGroupSpec StdVal) :=
   [ { groupId := 0
       requiredChildren := [1]
       inputPlaces := [.derefSub 1 []]
@@ -443,7 +446,7 @@ def h2DependentRegionSpecs : List (RegionGroupSpec StdVal) :=
         | [v1] => some ([], [v1])
         | _ => none } ]
 
-def h2ValidMultiRegionPlan : FlowPlan StdVal :=
+@[expose] def h2ValidMultiRegionPlan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 1 .mutBorrow (.derefSub 0 [0])))
     (.seq
@@ -468,7 +471,7 @@ theorem h2_multi_region_valid_order_and_reborrow_propagation_spec
       (.constVal .unit) =
     .ok ⟨.unit, [.pair (.nat (v0 + 1 + (10 + 5))) (.nat v1)]⟩ := rfl
 
-def h2BadOutOfOrderRegionPlan : FlowPlan StdVal :=
+@[expose] def h2BadOutOfOrderRegionPlan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 1 .mutBorrow (.derefSub 0 [0])))
     (.seq
@@ -485,7 +488,7 @@ theorem h2_multi_region_out_of_order_rejected (v0 v1 : Nat) :
       h2BadOutOfOrderRegionPlan
       (.constVal .unit) = .fail := rfl
 
-def h2BadEndRegionWhileOutputReborrowedPlan : FlowPlan StdVal :=
+@[expose] def h2BadEndRegionWhileOutputReborrowedPlan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 1 .mutBorrow (.derefSub 0 [0])))
     (.seq
@@ -500,7 +503,7 @@ theorem h2_reject_end_region_while_output_reborrowed (v0 v1 : Nat) :
       h2BadEndRegionWhileOutputReborrowedPlan
       (.constVal .unit) = .fail := rfl
 
-def h2ThreeLevelReborrowPlan : FlowPlan StdVal :=
+@[expose] def h2ThreeLevelReborrowPlan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 2 .mutBorrow (.derefSub 0 [0])))
     (.seq
@@ -530,7 +533,7 @@ theorem h2_three_level_reborrow_chain_spec (v0 v1 delta : Nat) :
     .ok ⟨.unit, [.pair (.nat (v0 + delta + 1 + 1)) (.nat v1)]⟩ := rfl
 
 /-- **H3**: Hybrid functional-spatial pinning and unpinned sibling isolation. -/
-def h3HybridSpatialSiblingPlan (vSpatialNew : Nat) : FlowPlan StdVal :=
+@[expose] def h3HybridSpatialSiblingPlan (vSpatialNew : Nat) : FlowPlan StdVal :=
   .seq
     (.act (.borrow 1 .mutBorrow (.derefSub 0 [0])))
     (.seq
@@ -555,14 +558,14 @@ theorem h3_hybrid_spatial_preserves_unpinned_sibling_spec
       (.constVal .unit) =
     .ok ⟨.unit, [.pair (.nat vSpatialNew) (.nat (v1 + 1))]⟩ := rfl
 
-def h3BadPureWriteWhileSpatialPinnedPlan : FlowPlan StdVal :=
+@[expose] def h3BadPureWriteWhileSpatialPinnedPlan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 1 .mutBorrow (.derefSub 0 [0])))
     (.seq
       (.act (.freezeSpatial 1 valueCellCodec))
       (.act (.assign (.derefSub 1 []) (.constVal (.nat 99)))))
 
-def h3BadEndLoanWhileSpatialPinnedPlan : FlowPlan StdVal :=
+@[expose] def h3BadEndLoanWhileSpatialPinnedPlan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 1 .mutBorrow (.derefSub 0 [0])))
     (.seq
@@ -580,7 +583,7 @@ theorem h3_reject_pure_write_and_end_while_spatial_pinned (v0 v1 : Nat) :
       (.constVal .unit) = .fail :=
   ⟨rfl, rfl⟩
 
-def h3BadUninitReabsorbPlan : FlowPlan StdVal :=
+@[expose] def h3BadUninitReabsorbPlan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 1 .mutBorrow (.derefSub 0 [0])))
     (.seq
@@ -605,7 +608,7 @@ compares with the concrete `stdLtBool`, so its result is a concrete value that
 the machine must reproduce. The bridges are instantiated at inputs that take
 each branch, since kernel reduction cannot case-split an `if` on a
 `Nat.blt` of variables. -/
-def h4MaxAssignConcretePlan : FlowPlan StdVal :=
+@[expose] def h4MaxAssignConcretePlan : FlowPlan StdVal :=
   .seq
     (.act (.assign (.localSub 2 [])
       (.binary stdLtBool (.derefSub 0 []) (.localSub 1 []))))
@@ -615,14 +618,14 @@ def h4MaxAssignConcretePlan : FlowPlan StdVal :=
 
 /-- `max_assign` machine state `(pc, x, y)` at entry (`pc = 0`) agrees with
 the symbolic state on `*x` and `y`. -/
-def h4MaxAssignStateRel (st : SymState StdVal) (s : Nat × Nat × Nat) : Prop :=
+@[expose] def h4MaxAssignStateRel (st : SymState StdVal) (s : Nat × Nat × Nat) : Prop :=
   s.1 = 0 ∧
     readPlaceVal stdValAlg (.derefSub 0 []) st = some (.nat s.2.1) ∧
     readPlaceVal stdValAlg (.localSub 1 []) st = some (.nat s.2.2)
 
 /-- `max_assign` as an `M1` step function: step `0` assigns `x := y` when
 `x < y`, and step `1` returns the final `*x`. -/
-def m1MaxAssignStep : Nat × Nat × Nat → M1StepResult (Nat × Nat × Nat) StdVal
+@[expose] def m1MaxAssignStep : Nat × Nat × Nat → M1StepResult (Nat × Nat × Nat) StdVal
   | (0, x, y) =>
     .next (1,
       (match Nat.blt x y with
@@ -633,7 +636,7 @@ def m1MaxAssignStep : Nat × Nat × Nat → M1StepResult (Nat × Nat × Nat) Std
 
 /-- `max_assign` as an `M2` step function that also emits the inputs it
 compares as observations. -/
-def m2MaxAssignStep :
+@[expose] def m2MaxAssignStep :
     Nat × Nat × Nat → M2StepResult (Nat × Nat × Nat) Nat StdVal
   | (0, x, y) =>
     .step [x, y] (1,
@@ -749,7 +752,7 @@ theorem h4_m2_bridge_sound_skips :
       (M2ExecutesTo.step_term rfl),
     rfl⟩
 
-def m3SwapHeapStep (cells : List (M3Cell StdVal)) :
+@[expose] def m3SwapHeapStep (cells : List (M3Cell StdVal)) :
     M1StepResult (List (M3Cell StdVal)) StdVal :=
   match cells with
   | [ ⟨0, 0, [], 0, .activeUnique, .init ⟨_, .pairBranch fl fr a b⟩⟩,
@@ -819,7 +822,7 @@ theorem h4_m3_tree_borrows_bridge_sound (v0 v1 : Nat) :
 
 /-- **H5**: Nested early return inside sub-borrows and Goodhart rejection
 canaries. -/
-def h5EarlyReturnNestedSubBorrowsPlan : FlowPlan StdVal :=
+@[expose] def h5EarlyReturnNestedSubBorrowsPlan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 2 .mutBorrow (.derefSub 0 [0])))
     (.seq
@@ -850,7 +853,7 @@ theorem h5_early_return_branch_not_taken_spec (v0 v1 : Nat) :
       (.constVal (.nat 0)) =
     .ok ⟨.nat 0, [.pair (.nat (v0 + 100)) (.nat v1)]⟩ := rfl
 
-def h5GoodhartEarlyReturnUnendedLoanPlan : FlowPlan StdVal :=
+@[expose] def h5GoodhartEarlyReturnUnendedLoanPlan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 2 .mutBorrow (.derefSub 0 [0])))
     (.seq
@@ -863,7 +866,7 @@ theorem h5_goodhart_early_return_unended_loan_fails (v0 v1 : Nat) :
       h5GoodhartEarlyReturnUnendedLoanPlan
       (.constVal (.nat 0)) = .fail := rfl
 
-def h5GoodhartOutOfOrderEndLoanPlan : FlowPlan StdVal :=
+@[expose] def h5GoodhartOutOfOrderEndLoanPlan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 2 .mutBorrow (.derefSub 0 [0])))
     (.seq
@@ -878,7 +881,7 @@ theorem h5_goodhart_out_of_order_end_loan_fails (v0 v1 : Nat) :
       h5GoodhartOutOfOrderEndLoanPlan
       (.constVal .unit) = .fail := rfl
 
-def h5GoodhartDoubleEndLoanPlan : FlowPlan StdVal :=
+@[expose] def h5GoodhartDoubleEndLoanPlan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 1 .mutBorrow (.derefSub 0 [0])))
     (.seq
@@ -891,7 +894,7 @@ theorem h5_goodhart_double_end_loan_fails (v0 v1 : Nat) :
       h5GoodhartDoubleEndLoanPlan
       (.constVal .unit) = .fail := rfl
 
-def h5GoodhartUnendedLoanAtReturnPlan : FlowPlan StdVal :=
+@[expose] def h5GoodhartUnendedLoanAtReturnPlan : FlowPlan StdVal :=
   .act (.borrow 1 .mutBorrow (.derefSub 0 [0]))
 
 theorem h5_goodhart_unended_loan_at_normal_return_fails (v0 v1 : Nat) :
@@ -900,7 +903,7 @@ theorem h5_goodhart_unended_loan_at_normal_return_fails (v0 v1 : Nat) :
       h5GoodhartUnendedLoanAtReturnPlan
       (.constVal .unit) = .fail := rfl
 
-def h5GoodhartReadLocalWhileMutBorrowedPlan : FlowPlan StdVal :=
+@[expose] def h5GoodhartReadLocalWhileMutBorrowedPlan : FlowPlan StdVal :=
   .seq
     (.act (.borrow 1 .mutBorrow (.localSub 0 [])))
     (.seq
@@ -915,7 +918,7 @@ theorem h5_goodhart_read_local_while_mut_borrowed_fails (v0 : Nat) :
       h5GoodhartReadLocalWhileMutBorrowedPlan
       (.use (.localSub 2 [])) = .fail := rfl
 
-def h5GoodhartAliasedBranchJoinPlan : FlowPlan StdVal :=
+@[expose] def h5GoodhartAliasedBranchJoinPlan : FlowPlan StdVal :=
   .branchExplicitJoin (.use (.localSub 0 []))
     .skip
     .skip
@@ -928,3 +931,5 @@ theorem h5_goodhart_aliased_branch_join_fails (cond : Bool) :
       (.constVal .unit) = .fail := rfl
 
 end Anneal.PureLift
+
+end

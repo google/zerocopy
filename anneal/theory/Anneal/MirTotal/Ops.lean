@@ -6,20 +6,23 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Int.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.Nat.Bitwise.Basic
-import Init.Data.List.Basic
-import Init.SimpLemmas
-import Init.Control.Except
-import Trusted
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics
+public import Init.Core
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Int.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.Nat.Bitwise.Basic
+public import Init.Data.List.Basic
+public import Init.SimpLemmas
+public import Init.Control.Except
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics
+
+public section
 
 namespace Anneal.MirTotal
 
@@ -39,7 +42,7 @@ equational equivalence theorems (`*_eq`) against `Trusted.MirSemantics`.
 /-! ## Constructive `Bool`, `Nat`, `Int`, `BitVec`, and `List` Helpers -/
 
 /-- Total computable equality on `Bool`. -/
-def boolBeqComp (a b : Bool) : Bool :=
+@[expose] def boolBeqComp (a b : Bool) : Bool :=
   match a, b with
   | true, true => true
   | false, false => true
@@ -51,7 +54,7 @@ theorem boolBeqComp_eq (a b : Bool) : boolBeqComp a b = (a == b) := by
   cases a <;> cases b <;> rfl
 
 /-- Total list indexing via `List.foldr` (`0` `noncomputable`). -/
-def compGetElem? {α : Type} (xs : List α) (idx : Nat) : Option α :=
+@[expose] def compGetElem? {α : Type} (xs : List α) (idx : Nat) : Option α :=
   List.foldr
     (fun (x : α) (ih : Nat → Option α) (n : Nat) =>
       match n with
@@ -70,7 +73,7 @@ theorem compGetElem?_eq {α : Type} (xs : List α) (idx : Nat) :
     | zero => rfl
     | succ k => exact ih k
 
-private def compSetElemAux {α : Type} (xs : List α) :
+@[expose] def compSetElemAux {α : Type} (xs : List α) :
     List α × (Nat → α → Option (List α)) :=
   List.foldr
     (fun (x : α) (acc : List α × (Nat → α → Option (List α))) =>
@@ -86,7 +89,7 @@ private def compSetElemAux {α : Type} (xs : List α) :
     xs
 
 /-- Total list update via `List.foldr` (`0` `noncomputable`). -/
-def compSetElem? {α : Type} (xs : List α) (idx : Nat) (val : α) :
+@[expose] def compSetElem? {α : Type} (xs : List α) (idx : Nat) (val : α) :
     Option (List α) :=
   (compSetElemAux xs).2 idx val
 
@@ -147,7 +150,7 @@ private theorem decCasesBool_eq {p : Prop} (b : Bool) (d : Decidable p)
     exact hIff.mpr hYes
 
 /-- Total computable equality on `Int`. -/
-def intBeqComp (a b : Int) : Bool :=
+@[expose] def intBeqComp (a b : Int) : Bool :=
   match a, b with
   | .ofNat m, .ofNat n => Nat.beq m n
   | .negSucc m, .negSucc n => Nat.beq m n
@@ -182,7 +185,7 @@ theorem intBneComp_eq (a b : Int) : (!intBeqComp a b) = (a != b) := by
   rw [intBeqComp_eq_beq]
 
 /-- Total computable `≤` comparison on `Int`. -/
-def intBleComp (a b : Int) : Bool :=
+@[expose] def intBleComp (a b : Int) : Bool :=
   match a, b with
   | .ofNat m, .ofNat n => Nat.ble m n
   | .ofNat _, .negSucc _ => false
@@ -190,7 +193,7 @@ def intBleComp (a b : Int) : Bool :=
   | .negSucc m, .negSucc n => Nat.ble n m
 
 /-- Total computable `<` comparison on `Int`. -/
-def intBltComp (a b : Int) : Bool :=
+@[expose] def intBltComp (a b : Int) : Bool :=
   intBleComp (a + 1) b
 
 private theorem not_int_nonNeg_negSucc (k : Nat) : ¬ Int.NonNeg (Int.negSucc k) :=
@@ -266,7 +269,7 @@ theorem intBltComp_eq_dec (a b : Int) :
   decCasesBool_eq (intBltComp a b) (Int.decLt a b) (intBleComp_iff (a + 1) b)
 
 /-- Total computable equality on `BitVec 128`. -/
-def bv128BeqComp (x y : BitVec 128) : Bool :=
+@[expose] def bv128BeqComp (x y : BitVec 128) : Bool :=
   Nat.beq x.toNat y.toNat
 
 /-- Logical equivalence `bv128BeqComp x y = true ↔ x = y`. -/
@@ -299,7 +302,7 @@ theorem bv128BneComp_eq (x y : BitVec 128) : (!bv128BeqComp x y) = (x != y) := b
   rw [bv128BeqComp_eq_beq]
 
 /-- Total computable equality on `UInt8`. -/
-def uint8BeqComp (x y : UInt8) : Bool :=
+@[expose] def uint8BeqComp (x y : UInt8) : Bool :=
   Nat.beq x.toNat y.toNat
 
 /-- Logical equivalence `uint8BeqComp x y = true ↔ x = y`. -/
@@ -333,7 +336,7 @@ theorem uint8BeqComp_eq_beq (x y : UInt8) : uint8BeqComp x y = (x == y) :=
 /-! ## Computable Type-Metadata, Scalar, Layout, Codec, and Memory Mirrors -/
 
 /-- Computable mirror of `IntWidth.byteSize`. -/
-def byteSizeComp (w : IntWidth) : Nat :=
+@[expose] def byteSizeComp (w : IntWidth) : Nat :=
   match w with
   | .i8 => 1
   | .i16 => 2
@@ -347,7 +350,7 @@ theorem byteSizeComp_eq (w : IntWidth) : byteSizeComp w = w.byteSize := by
   cases w <;> rfl
 
 /-- Computable mirror of `IntWidth.bitWidth`. -/
-def bitWidthComp (w : IntWidth) : Nat := byteSizeComp w * 8
+@[expose] def bitWidthComp (w : IntWidth) : Nat := byteSizeComp w * 8
 
 /-- Agreement between `bitWidthComp` and `IntWidth.bitWidth`. -/
 theorem bitWidthComp_eq (w : IntWidth) : bitWidthComp w = w.bitWidth := by
@@ -355,7 +358,7 @@ theorem bitWidthComp_eq (w : IntWidth) : bitWidthComp w = w.bitWidth := by
   rw [byteSizeComp_eq]
 
 /-- Computable mirror of `IntWidth.beq`. -/
-def intWidthBeqComp (a b : IntWidth) : Bool :=
+@[expose] def intWidthBeqComp (a b : IntWidth) : Bool :=
   match a with
   | .i8 => match b with | .i8 => true | .i16 | .i32 | .i64 | .i128 | .isize => false
   | .i16 => match b with | .i16 => true | .i8 | .i32 | .i64 | .i128 | .isize => false
@@ -369,7 +372,7 @@ theorem intWidthBeqComp_eq (a b : IntWidth) : intWidthBeqComp a b = IntWidth.beq
   cases a <;> cases b <;> rfl
 
 /-- Computable mirror of `Mutability.beq`. -/
-def mutabilityBeqComp (a b : Mutability) : Bool :=
+@[expose] def mutabilityBeqComp (a b : Mutability) : Bool :=
   match a with
   | .shared => match b with | .shared => true | .mut => false
   | .mut => match b with | .shared => false | .mut => true
@@ -380,7 +383,7 @@ theorem mutabilityBeqComp_eq (a b : Mutability) :
   cases a <;> cases b <;> rfl
 
 /-- Computable mirror of `Trusted.MirAst.natListBeq`. -/
-def natListBeqComp (xs ys : List Nat) : Bool :=
+@[expose] def natListBeqComp (xs ys : List Nat) : Bool :=
   List.foldr
     (fun (x : Nat) (ih : List Nat → Bool) (bs : List Nat) =>
       match bs with
@@ -401,7 +404,7 @@ theorem natListBeqComp_eq (xs ys : List Nat) : natListBeqComp xs ys = natListBeq
       rw [ih tl]
 
 /-- Computable mirror of `EnumTagRepr.beq`. -/
-def enumTagReprBeqComp (a b : EnumTagRepr) : Bool :=
+@[expose] def enumTagReprBeqComp (a b : EnumTagRepr) : Bool :=
   match a with
   | .zeroSized => match b with | .zeroSized => true | .scalar _ _ => false
   | .scalar w1 s1 =>
@@ -419,7 +422,7 @@ theorem enumTagReprBeqComp_eq (a b : EnumTagRepr) :
          rw [intWidthBeqComp_eq, boolBeqComp_eq])
 
 /-- Computable mirror of `EnumTy.beq`. -/
-def enumTyBeqComp (a b : EnumTy) : Bool :=
+@[expose] def enumTyBeqComp (a b : EnumTy) : Bool :=
   Nat.beq a.id b.id &&
     intWidthBeqComp a.discrWidth b.discrWidth &&
     boolBeqComp a.discrSigned b.discrSigned &&
@@ -432,7 +435,7 @@ theorem enumTyBeqComp_eq (a b : EnumTy) : enumTyBeqComp a b = EnumTy.beq a b := 
   rw [intWidthBeqComp_eq, boolBeqComp_eq, enumTagReprBeqComp_eq, natListBeqComp_eq]
 
 /-- Computable mirror of `Trusted.MirSemantics.isOverflowPairTy`. -/
-def isOverflowPairTyComp (ty : MirTy) : Bool :=
+@[expose] def isOverflowPairTyComp (ty : MirTy) : Bool :=
   match ty with
   | .tuple [.int _ _, .bool] => true
   | _ => false
@@ -456,7 +459,7 @@ theorem isOverflowPairTyComp_eq (ty : MirTy) :
   | unsupported => rfl
 
 /-- Computable mirror of `BinOp.isShift`. -/
-def binOpIsShiftComp (op : BinOp) : Bool :=
+@[expose] def binOpIsShiftComp (op : BinOp) : Bool :=
   match op with
   | .shl | .shlUnchecked | .shr | .shrUnchecked => true
   | _ => false
@@ -466,7 +469,7 @@ theorem binOpIsShiftComp_eq (op : BinOp) : binOpIsShiftComp op = op.isShift := b
   cases op <;> rfl
 
 /-- Computable mirror of `BinOp.isUnchecked`. -/
-def binOpIsUncheckedComp (op : BinOp) : Bool :=
+@[expose] def binOpIsUncheckedComp (op : BinOp) : Bool :=
   match op with
   | .addUnchecked | .subUnchecked | .mulUnchecked | .shlUnchecked | .shrUnchecked => true
   | _ => false
@@ -477,7 +480,7 @@ theorem binOpIsUncheckedComp_eq (op : BinOp) :
   cases op <;> rfl
 
 /-- Computable mirror of `BinOp.isOverflowing`. -/
-def binOpIsOverflowingComp (op : BinOp) : Bool :=
+@[expose] def binOpIsOverflowingComp (op : BinOp) : Bool :=
   match op with
   | .addWithOverflow | .subWithOverflow | .mulWithOverflow => true
   | _ => false
@@ -488,7 +491,7 @@ theorem binOpIsOverflowingComp_eq (op : BinOp) :
   cases op <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.intEmod`. -/
-def intEmodComp (x n : Int) : Int :=
+@[expose] def intEmodComp (x n : Int) : Int :=
   match x with
   | .ofNat m => .ofNat (Nat.mod m (Int.natAbs n))
   | .negSucc m => Int.subNatNat (Int.natAbs n) (Nat.succ (Nat.mod m (Int.natAbs n)))
@@ -498,7 +501,7 @@ theorem intEmodComp_eq (x n : Int) : intEmodComp x n = intEmod x n := by
   cases x <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.intTdiv`. -/
-def intTdivComp (x y : Int) : Int :=
+@[expose] def intTdivComp (x y : Int) : Int :=
   match x, y with
   | .ofNat m, .ofNat n => .ofNat (Nat.div m n)
   | .ofNat m, .negSucc n => Int.neg (.ofNat (Nat.div m (Nat.succ n)))
@@ -510,7 +513,7 @@ theorem intTdivComp_eq (x y : Int) : intTdivComp x y = intTdiv x y := by
   cases x <;> cases y <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.intTmod`. -/
-def intTmodComp (x y : Int) : Int :=
+@[expose] def intTmodComp (x y : Int) : Int :=
   match x, y with
   | .ofNat m, .ofNat n => .ofNat (Nat.mod m n)
   | .ofNat m, .negSucc n => .ofNat (Nat.mod m (Nat.succ n))
@@ -522,7 +525,7 @@ theorem intTmodComp_eq (x y : Int) : intTmodComp x y = intTmod x y := by
   cases x <;> cases y <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.intShiftRight`. -/
-def intShiftRightComp (x : Int) (s : Nat) : Int :=
+@[expose] def intShiftRightComp (x : Int) (s : Nat) : Int :=
   match x with
   | .ofNat n => .ofNat (Nat.shiftRight n s)
   | .negSucc n => .negSucc (Nat.shiftRight n s)
@@ -533,7 +536,7 @@ theorem intShiftRightComp_eq (x : Int) (s : Nat) :
   cases x <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.intShiftLeft`. -/
-def intShiftLeftComp (x : Int) (s : Nat) : Int :=
+@[expose] def intShiftLeftComp (x : Int) (s : Nat) : Int :=
   match x with
   | .ofNat n => .ofNat (Nat.shiftLeft n s)
   | .negSucc n => .negSucc ((Nat.shiftLeft (n + 1) s) - 1)
@@ -544,7 +547,7 @@ theorem intShiftLeftComp_eq (x : Int) (s : Nat) :
   cases x <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.intNot`. -/
-def intNotComp (x : Int) : Int :=
+@[expose] def intNotComp (x : Int) : Int :=
   match x with
   | .ofNat n => .negSucc n
   | .negSucc n => .ofNat n
@@ -553,15 +556,15 @@ def intNotComp (x : Int) : Int :=
 theorem intNotComp_eq (x : Int) : intNotComp x = intNot x := by
   cases x <;> rfl
 
-private def bvExtractLsb'Comp {n : Nat} (start len : Nat) (x : BitVec n) : BitVec len :=
+@[expose] def bvExtractLsb'Comp {n : Nat} (start len : Nat) (x : BitVec n) : BitVec len :=
   BitVec.ofNat len (Nat.shiftRight x.toNat start)
 
-private def bvExtractLsbComp {n : Nat} (hi lo : Nat) (x : BitVec n) :
+@[expose] def bvExtractLsbComp {n : Nat} (hi lo : Nat) (x : BitVec n) :
     BitVec (hi - lo + 1) :=
   bvExtractLsb'Comp lo (hi - lo + 1) x
 
 /-- Computable mirror of `Trusted.MirSemantics.bvToInt`. -/
-def bvToIntComp {n : Nat} (x : BitVec n) : Int :=
+@[expose] def bvToIntComp {n : Nat} (x : BitVec n) : Int :=
   if Nat.blt (2 * x.toNat) (Nat.pow 2 n) then
     Int.ofNat x.toNat
   else
@@ -586,7 +589,7 @@ theorem bvToIntComp_eq {n : Nat} (x : BitVec n) : bvToIntComp x = bvToInt x := b
     rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.bvOfInt`. -/
-def bvOfIntComp (n : Nat) (i : Int) : BitVec n :=
+@[expose] def bvOfIntComp (n : Nat) (i : Int) : BitVec n :=
   BitVec.ofNat n (intEmodComp i (Int.ofNat (Nat.pow 2 n))).toNat
 
 /-- Agreement between `bvOfIntComp` and `bvOfInt`. -/
@@ -594,11 +597,11 @@ theorem bvOfIntComp_eq (n : Nat) (i : Int) : bvOfIntComp n i = bvOfInt n i := by
   unfold bvOfIntComp bvOfInt
   rw [intEmodComp_eq]
 
-private def bvZeroExtendComp {w : Nat} (v : Nat) (x : BitVec w) : BitVec v :=
+@[expose] def bvZeroExtendComp {w : Nat} (v : Nat) (x : BitVec w) : BitVec v :=
   BitVec.ofNat v x.toNat
 
 /-- Computable mirror of `Trusted.MirSemantics.bvSignExtend`. -/
-def bvSignExtendComp {w : Nat} (v : Nat) (x : BitVec w) : BitVec v :=
+@[expose] def bvSignExtendComp {w : Nat} (v : Nat) (x : BitVec w) : BitVec v :=
   bvOfIntComp v (bvToIntComp x)
 
 /-- Agreement between `bvSignExtendComp` and `bvSignExtend`. -/
@@ -608,7 +611,7 @@ theorem bvSignExtendComp_eq {w : Nat} (v : Nat) (x : BitVec w) :
   rw [bvToIntComp_eq, bvOfIntComp_eq]
 
 /-- Computable mirror of `Trusted.MirSemantics.truncateBits`. -/
-def truncateBitsComp (w : IntWidth) (value : BitVec 128) : BitVec 128 :=
+@[expose] def truncateBitsComp (w : IntWidth) (value : BitVec 128) : BitVec 128 :=
   bvZeroExtendComp 128 (bvExtractLsbComp (bitWidthComp w - 1) 0 value)
 
 /-- Agreement between `truncateBitsComp` and `truncateBits`. -/
@@ -617,7 +620,7 @@ theorem truncateBitsComp_eq (w : IntWidth) (value : BitVec 128) :
   cases w <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.signExtendBits`. -/
-def signExtendBitsComp (w : IntWidth) (value : BitVec 128) : Int :=
+@[expose] def signExtendBitsComp (w : IntWidth) (value : BitVec 128) : Int :=
   bvToIntComp (bvSignExtendComp 128 (bvExtractLsbComp (bitWidthComp w - 1) 0 value))
 
 /-- Agreement between `signExtendBitsComp` and `signExtendBits`. -/
@@ -627,17 +630,17 @@ theorem signExtendBitsComp_eq (w : IntWidth) (value : BitVec 128) :
     (unfold signExtendBitsComp signExtendBits;
      rw [bvSignExtendComp_eq, bvToIntComp_eq]; rfl)
 
-private def bvAndComp (x y : BitVec 128) : BitVec 128 :=
+@[expose] def bvAndComp (x y : BitVec 128) : BitVec 128 :=
   BitVec.ofNat 128 (Nat.land x.toNat y.toNat)
 
-private def bvOrComp (x y : BitVec 128) : BitVec 128 :=
+@[expose] def bvOrComp (x y : BitVec 128) : BitVec 128 :=
   BitVec.ofNat 128 (Nat.lor x.toNat y.toNat)
 
-private def bvXorComp (x y : BitVec 128) : BitVec 128 :=
+@[expose] def bvXorComp (x y : BitVec 128) : BitVec 128 :=
   BitVec.ofNat 128 (Nat.xor x.toNat y.toNat)
 
 /-- Computable mirror of `Trusted.MirSemantics.signedMinInt`. -/
-def signedMinIntComp (w : IntWidth) : Int :=
+@[expose] def signedMinIntComp (w : IntWidth) : Int :=
   Neg.neg (HPow.hPow (2 : Int) (bitWidthComp w - 1))
 
 /-- Agreement between `signedMinIntComp` and `signedMinInt`. -/
@@ -646,7 +649,7 @@ theorem signedMinIntComp_eq (w : IntWidth) : signedMinIntComp w = signedMinInt w
   rw [bitWidthComp_eq]
 
 /-- Computable mirror of `ScalarVal.wf`. -/
-def scalarWfComp (v : ScalarVal) : Bool :=
+@[expose] def scalarWfComp (v : ScalarVal) : Bool :=
   bv128BeqComp (truncateBitsComp v.width v.bits) v.bits
 
 /-- Agreement between `scalarWfComp` and `ScalarVal.wf`. -/
@@ -655,7 +658,7 @@ theorem scalarWfComp_eq (v : ScalarVal) : scalarWfComp v = v.wf := by
   rw [bv128BeqComp_eq_beq, truncateBitsComp_eq]
 
 /-- Computable mirror of `Trusted.MirSemantics.decodeScalar`. -/
-def decodeScalarComp (sv : ScalarVal) : Int :=
+@[expose] def decodeScalarComp (sv : ScalarVal) : Int :=
   let trunc := truncateBitsComp sv.width sv.bits
   if sv.signed then
     signExtendBitsComp sv.width trunc
@@ -668,7 +671,7 @@ theorem decodeScalarComp_eq (sv : ScalarVal) : decodeScalarComp sv = decodeScala
   rw [truncateBitsComp_eq, signExtendBitsComp_eq]
 
 /-- Computable mirror of `Trusted.MirSemantics.truncateScalar`. -/
-def truncateScalarComp (w : IntWidth) (s : Bool) (value : Int) :
+@[expose] def truncateScalarComp (w : IntWidth) (s : Bool) (value : Int) :
     Except FaultKind (ScalarVal × Bool) :=
   if s then
     let wrapped := bvToIntComp (bvOfIntComp 128 value)
@@ -724,7 +727,7 @@ theorem truncateScalarComp_eq (w : IntWidth) (s : Bool) (value : Int) :
       intBneComp_eq, intBltComp_eq_dec, intBleComp_eq_dec]
 
 /-- Computable mirror of `Trusted.MirSemantics.evalShiftOp`. -/
-def evalShiftOpComp (op : BinOp) (w : IntWidth) (s : Bool) (l r : Int) :
+@[expose] def evalShiftOpComp (op : BinOp) (w : IntWidth) (s : Bool) (l r : Int) :
     Except FaultKind Val :=
   let amount := intEmodComp r (Int.ofNat (bitWidthComp w))
   let overflow := !(intBeqComp amount r)
@@ -752,7 +755,7 @@ theorem evalShiftOpComp_eq (op : BinOp) (w : IntWidth) (s : Bool) (l r : Int) :
           | error _ => rfl
           | ok p => cases p; rfl))
 
-private def hostOverflowComp (s : Bool) (result : Int) : Bool :=
+@[expose] def hostOverflowComp (s : Bool) (result : Int) : Bool :=
   if s then
     intBltComp result (Neg.neg (HPow.hPow (2 : Int) 127)) ||
       intBleComp (HPow.hPow (2 : Int) 127) result
@@ -760,7 +763,7 @@ private def hostOverflowComp (s : Bool) (result : Int) : Bool :=
     intBltComp result 0 || intBleComp (HPow.hPow (2 : Int) 128) result
 
 /-- Computable mirror of `Trusted.MirSemantics.evalArithOp`. -/
-def evalArithOpComp (op : BinOp) (w : IntWidth) (s : Bool) (l r : Int) :
+@[expose] def evalArithOpComp (op : BinOp) (w : IntWidth) (s : Bool) (l r : Int) :
     Except FaultKind Val :=
   let isDivOrRem := match op with | .div | .rem => true | _ => false
   if isDivOrRem && intBeqComp r 0 then
@@ -911,7 +914,7 @@ theorem evalArithOpComp_eq (op : BinOp) (w : IntWidth) (s : Bool) (l r : Int) :
     | eq | lt | le | ne | ge | gt | cmp | offset => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.cmpOrderingOfInt`. -/
-def cmpOrderingOfIntComp (l r : Int) : OrderingVal :=
+@[expose] def cmpOrderingOfIntComp (l r : Int) : OrderingVal :=
   if intBltComp l r then .less else if intBeqComp l r then .equal else .greater
 
 /-- Agreement between `cmpOrderingOfIntComp` and `cmpOrderingOfInt`. -/
@@ -922,7 +925,7 @@ theorem cmpOrderingOfIntComp_eq (l r : Int) :
   rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.evalBinOp`. -/
-def evalBinOpComp (op : BinOp) (lhs rhs : Val) : Except FaultKind Val :=
+@[expose] def evalBinOpComp (op : BinOp) (lhs rhs : Val) : Except FaultKind Val :=
   match lhs, rhs with
   | .scalar l, .scalar r =>
     let lInt := decodeScalarComp l
@@ -1029,7 +1032,7 @@ theorem evalBinOpComp_eq (op : BinOp) (lhs rhs : Val) :
   | ptr _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.intLikeBits`. -/
-def intLikeBitsComp (v : Val) : Option Nat :=
+@[expose] def intLikeBitsComp (v : Val) : Option Nat :=
   match v with
   | .scalar sv =>
     if sv.signed then
@@ -1050,7 +1053,7 @@ theorem intLikeBitsComp_eq (v : Val) : intLikeBitsComp v = intLikeBits v := by
   | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.evalIntToIntCast`. -/
-def evalIntToIntCastComp (v : Val) (castTy : MirTy) : Except FaultKind Val :=
+@[expose] def evalIntToIntCastComp (v : Val) (castTy : MirTy) : Except FaultKind Val :=
   match intLikeBitsComp v with
   | none => .error .unsupported
   | some bits =>
@@ -1076,7 +1079,7 @@ theorem evalIntToIntCastComp_eq (v : Val) (castTy : MirTy) :
     | unsupported => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.evalUnOp`. -/
-def evalUnOpComp (op : UnOp) (v : Val) : Except FaultKind Val :=
+@[expose] def evalUnOpComp (op : UnOp) (v : Val) : Except FaultKind Val :=
   match op, v with
   | .not, .bool b => .ok (.bool (!b))
   | .not, .scalar sv =>
@@ -1119,7 +1122,7 @@ theorem evalUnOpComp_eq (op : UnOp) (v : Val) : evalUnOpComp op v = evalUnOp op 
   | ptrMetadata => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.natNotElem`. -/
-def natNotElemComp (x : Nat) (ys : List Nat) : Bool :=
+@[expose] def natNotElemComp (x : Nat) (ys : List Nat) : Bool :=
   List.foldr (fun y acc => !Nat.beq x y && acc) true ys
 
 /-- Agreement between `natNotElemComp` and `natNotElem`. -/
@@ -1132,7 +1135,7 @@ theorem natNotElemComp_eq (x : Nat) (ys : List Nat) :
     rw [ih]
 
 /-- Computable mirror of `Trusted.MirSemantics.natListPairwiseNe`. -/
-def natListPairwiseNeComp (xs : List Nat) : Bool :=
+@[expose] def natListPairwiseNeComp (xs : List Nat) : Bool :=
   (List.foldr
     (fun (x : Nat) (acc : List Nat × Bool) =>
       (x :: acc.1, natNotElemComp x acc.1 && acc.2))
@@ -1160,7 +1163,7 @@ theorem natListPairwiseNeComp_eq (xs : List Nat) :
     rw [natListPairwiseNeComp_fst tl, natNotElemComp_eq, ih]
 
 /-- Computable elementwise equality on `List UInt8`. -/
-def listBeqUInt8Comp (xs ys : List UInt8) : Bool :=
+@[expose] def listBeqUInt8Comp (xs ys : List UInt8) : Bool :=
   List.foldr
     (fun (x : UInt8) (ih : List UInt8 → Bool) (bs : List UInt8) =>
       match bs with
@@ -1182,7 +1185,7 @@ theorem listBeqUInt8Comp_eq (xs ys : List UInt8) :
       rw [uint8BeqComp_eq_beq, ih tl]
 
 /-- Computable mirror of `Trusted.MirSemantics.stringBeq`. -/
-def stringBeqComp (a b : String) : Bool :=
+@[expose] def stringBeqComp (a b : String) : Bool :=
   listBeqUInt8Comp a.toByteArray.data.toList b.toByteArray.data.toList
 
 /-- Agreement between `stringBeqComp` and `stringBeq`. -/
@@ -1191,7 +1194,7 @@ theorem stringBeqComp_eq (a b : String) : stringBeqComp a b = stringBeq a b := b
   exact listBeqUInt8Comp_eq _ _
 
 /-- Computable mirror of `Trusted.MirSemantics.tagBitsToDiscrBits`. -/
-def tagBitsToDiscrBitsComp (tagW : IntWidth) (tagS : Bool) (discrW : IntWidth)
+@[expose] def tagBitsToDiscrBitsComp (tagW : IntWidth) (tagS : Bool) (discrW : IntWidth)
     (tagBits : BitVec 128) : BitVec 128 :=
   let extended :=
     if tagS then bvOfIntComp 128 (signExtendBitsComp tagW tagBits)
@@ -1207,7 +1210,7 @@ theorem tagBitsToDiscrBitsComp_eq (tagW : IntWidth) (tagS : Bool) (discrW : IntW
   rw [signExtendBitsComp_eq, bvOfIntComp_eq, truncateBitsComp_eq, truncateBitsComp_eq]
 
 /-- Computable mirror of `Trusted.MirSemantics.enumAdmitted`. -/
-def enumAdmittedComp (ety : EnumTy) : Bool :=
+@[expose] def enumAdmittedComp (ety : EnumTy) : Bool :=
   !ety.discriminants.isEmpty &&
     Nat.blt ety.discriminants.length (Nat.pow 2 32) &&
     ety.discriminants.all (fun d => Nat.blt d (Nat.pow 2 (bitWidthComp ety.discrWidth))) &&
@@ -1243,7 +1246,7 @@ theorem enumAdmittedComp_eq (ety : EnumTy) : enumAdmittedComp ety = enumAdmitted
     rw [hAll]
 
 /-- Computable mirror of `Trusted.MirSemantics.isZstEnumTy`. -/
-def isZstEnumTyComp (ety : EnumTy) : Bool :=
+@[expose] def isZstEnumTyComp (ety : EnumTy) : Bool :=
   match ety.tagRepr with
   | .zeroSized => enumAdmittedComp ety
   | .scalar _ _ => false
@@ -1254,7 +1257,7 @@ theorem isZstEnumTyComp_eq (ety : EnumTy) : isZstEnumTyComp ety = isZstEnumTy et
   cases ety.tagRepr <;> first | rfl | exact enumAdmittedComp_eq ety
 
 /-- Computable mirror of `Trusted.MirSemantics.findDiscrVariantAux`. -/
-def findDiscrVariantAuxComp (idx : Nat) (discrBits : BitVec 128) (ds : List Nat) :
+@[expose] def findDiscrVariantAuxComp (idx : Nat) (discrBits : BitVec 128) (ds : List Nat) :
     Option Nat :=
   List.foldr
     (fun (d : Nat) (ih : Nat → Option Nat) (i : Nat) =>
@@ -1275,7 +1278,7 @@ theorem findDiscrVariantAuxComp_eq (idx : Nat) (discrBits : BitVec 128) (ds : Li
     rw [bv128BeqComp_eq_beq, ih (idx + 1)]
 
 /-- Computable mirror of `Trusted.MirSemantics.findDiscrVariant?`. -/
-def findDiscrVariant?Comp (discrBits : BitVec 128) (ds : List Nat) : Option Nat :=
+@[expose] def findDiscrVariant?Comp (discrBits : BitVec 128) (ds : List Nat) : Option Nat :=
   findDiscrVariantAuxComp 0 discrBits ds
 
 /-- Agreement between `findDiscrVariant?Comp` and `findDiscrVariant?`. -/
@@ -1284,25 +1287,25 @@ theorem findDiscrVariant?Comp_eq (discrBits : BitVec 128) (ds : List Nat) :
   findDiscrVariantAuxComp_eq 0 discrBits ds
 
 /-- Computable mirror of `Trusted.MirSemantics.isUnicodeScalar`. -/
-def isUnicodeScalarComp (n : Nat) : Bool :=
+@[expose] def isUnicodeScalarComp (n : Nat) : Bool :=
   Nat.ble n 0x10ffff && !(Nat.ble 0xd800 n && Nat.ble n 0xdfff)
 
 /-- Computable mirror of `Trusted.MirSemantics.orderingTagBits`. -/
-def orderingTagBitsComp (ord : OrderingVal) : Nat :=
+@[expose] def orderingTagBitsComp (ord : OrderingVal) : Nat :=
   match ord with
   | .less => 255
   | .equal => 0
   | .greater => 1
 
 /-- Computable mirror of `Trusted.MirSemantics.orderingOfTagBits`. -/
-def orderingOfTagBitsComp (bits : Nat) : Option OrderingVal :=
+@[expose] def orderingOfTagBitsComp (bits : Nat) : Option OrderingVal :=
   if Nat.beq bits 255 then some .less
   else if Nat.beq bits 0 then some .equal
   else if Nat.beq bits 1 then some .greater
   else none
 
 /-- Computable mirror of `Val.ty?`. -/
-def valTy?Comp (v : Val) : Option MirTy :=
+@[expose] def valTy?Comp (v : Val) : Option MirTy :=
   match v with
   | .scalar sv => if scalarWfComp sv then some (.int sv.width sv.signed) else none
   | .bool _ => some .bool
@@ -1345,7 +1348,7 @@ theorem valTy?Comp_eq (v : Val) : valTy?Comp v = v.ty? := by
   | ptr _ | bool _ | char _ | ordering _ | unit | bytes _ => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.isSupportedScalarOrUnitTy`. -/
-def isSupportedScalarOrUnitTyComp (ty : MirTy) : Bool :=
+@[expose] def isSupportedScalarOrUnitTyComp (ty : MirTy) : Bool :=
   match ty with
   | .bool | .int _ _ | .char | .ordering | .unit | .never => true
   | .enum ety => enumAdmittedComp ety
@@ -1363,7 +1366,7 @@ theorem isSupportedScalarOrUnitTyComp_eq (ty : MirTy) :
   | unsupported => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.liveUninitSlot`. -/
-def liveUninitSlotComp (ty : MirTy) : LocalSlot :=
+@[expose] def liveUninitSlotComp (ty : MirTy) : LocalSlot :=
   match ty with
   | .unit => .immediate (some .unit)
   | .enum ety =>
@@ -1380,7 +1383,7 @@ theorem liveUninitSlotComp_eq (ty : MirTy) : liveUninitSlotComp ty = liveUninitS
   | unsupported => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.isPrimitiveReadableTy`. -/
-def isPrimitiveReadableTyComp (ty : MirTy) : Bool :=
+@[expose] def isPrimitiveReadableTyComp (ty : MirTy) : Bool :=
   match ty with
   | .bool | .int _ _ | .char => true
   | .tuple fs => isOverflowPairTyComp (.tuple fs)
@@ -1396,7 +1399,7 @@ theorem isPrimitiveReadableTyComp_eq (ty : MirTy) :
   | unsupported => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.isIntLikeTy`. -/
-def isIntLikeTyComp (ty : MirTy) : Bool :=
+@[expose] def isIntLikeTyComp (ty : MirTy) : Bool :=
   match ty with
   | .bool | .int _ _ | .char => true
   | _ => false
@@ -1406,7 +1409,7 @@ theorem isIntLikeTyComp_eq (ty : MirTy) : isIntLikeTyComp ty = isIntLikeTy ty :=
   cases ty <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.intLayout`. -/
-def intLayoutComp (w : IntWidth) : LayoutData :=
+@[expose] def intLayoutComp (w : IntWidth) : LayoutData :=
   match w with
   | .i8 => ⟨1, 0⟩
   | .i16 => ⟨2, 1⟩
@@ -1420,7 +1423,7 @@ theorem intLayoutComp_eq (w : IntWidth) : intLayoutComp w = intLayout w := by
   cases w <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.overflowPairLayout`. -/
-def overflowPairLayoutComp (w : IntWidth) : LayoutData :=
+@[expose] def overflowPairLayoutComp (w : IntWidth) : LayoutData :=
   ⟨2 * (intLayoutComp w).size, (intLayoutComp w).alignLog2⟩
 
 /-- Agreement between `overflowPairLayoutComp` and `overflowPairLayout`. -/
@@ -1430,7 +1433,7 @@ theorem overflowPairLayoutComp_eq (w : IntWidth) :
   rw [intLayoutComp_eq]
 
 /-- Computable mirror of `Trusted.MirSemantics.layoutOfTy`. -/
-def layoutOfTyComp (ty : MirTy) : Option LayoutData :=
+@[expose] def layoutOfTyComp (ty : MirTy) : Option LayoutData :=
   match ty with
   | .bool => some ⟨1, 0⟩
   | .int w _ => some (intLayoutComp w)
@@ -1477,13 +1480,13 @@ theorem layoutOfTyComp_eq (ty : MirTy) : layoutOfTyComp ty = layoutOfTy ty := by
   | bool | char | ordering | unit | never | ref _ _ | rawPtr _ _ | unsupported => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.entryMemory`. -/
-def entryMemoryComp : MemoryState := { nextAllocId := 2, allocations := [] }
+@[expose] def entryMemoryComp : MemoryState := { nextAllocId := 2, allocations := [] }
 
 /-- Agreement between `entryMemoryComp` and `entryMemory`. -/
 theorem entryMemoryComp_eq : entryMemoryComp = entryMemory := rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.findAllocation`. -/
-def findAllocationComp (id : AllocId) (xs : List Allocation) : Option Allocation :=
+@[expose] def findAllocationComp (id : AllocId) (xs : List Allocation) : Option Allocation :=
   List.foldr (fun a acc => if Nat.beq a.allocId id then some a else acc) none xs
 
 /-- Agreement between `findAllocationComp` and `findAllocation`. -/
@@ -1497,7 +1500,7 @@ theorem findAllocationComp_eq (id : AllocId) (xs : List Allocation) :
     rw [ih]
 
 /-- Computable mirror of `Trusted.MirSemantics.replaceAllocation`. -/
-def replaceAllocationComp (a' : Allocation) (xs : List Allocation) : List Allocation :=
+@[expose] def replaceAllocationComp (a' : Allocation) (xs : List Allocation) : List Allocation :=
   (List.foldr
     (fun (a : Allocation) (acc : List Allocation × List Allocation) =>
       (a :: acc.1,
@@ -1528,7 +1531,7 @@ theorem replaceAllocationComp_eq (a' : Allocation) (xs : List Allocation) :
     rw [replaceAllocationComp_fst a' tl, ih]
 
 /-- Computable mirror of `Trusted.MirSemantics.deallocateStack`. -/
-def deallocateStackComp (m : MemoryState) (place : MemPlace) : Except FaultKind MemoryState :=
+@[expose] def deallocateStackComp (m : MemoryState) (place : MemPlace) : Except FaultKind MemoryState :=
   if !Nat.beq place.offset 0 then .error .undefined
   else
     match findAllocationComp place.allocId m.allocations with
@@ -1554,16 +1557,16 @@ theorem deallocateStackComp_eq (m : MemoryState) (place : MemPlace) :
     cases a.mutability <;> dsimp only <;> first | rfl | rw [replaceAllocationComp_eq]
 
 /-- Computable mirror of `Trusted.MirSemantics.isInBounds`. -/
-def isInBoundsComp (a : Allocation) (offset size : Nat) : Bool :=
+@[expose] def isInBoundsComp (a : Allocation) (offset size : Nat) : Bool :=
   Nat.ble (offset + size) a.bytes.length
 
 /-- Computable mirror of `Trusted.MirSemantics.isAligned`. -/
-def isAlignedComp (a : Allocation) (offset alignLog2 : Nat) : Bool :=
+@[expose] def isAlignedComp (a : Allocation) (offset alignLog2 : Nat) : Bool :=
   Nat.ble alignLog2 a.alignLog2 &&
     Nat.beq (Nat.mod offset (Nat.pow 2 alignLog2)) 0
 
 /-- Computable mirror of `Trusted.MirSemantics.readBytes`. -/
-def readBytesComp (m : MemoryState) (place : MemPlace) (size alignLog2 : Nat) :
+@[expose] def readBytesComp (m : MemoryState) (place : MemPlace) (size alignLog2 : Nat) :
     Except FaultKind (List AllocByte) :=
   if Nat.beq size 0 then .ok []
   else
@@ -1584,7 +1587,7 @@ theorem readBytesComp_eq (m : MemoryState) (place : MemPlace) (size alignLog2 : 
   cases findAllocation place.allocId m.allocations <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.writeBytes`. -/
-def writeBytesComp (m : MemoryState) (place : MemPlace) (alignLog2 : Nat)
+@[expose] def writeBytesComp (m : MemoryState) (place : MemPlace) (alignLog2 : Nat)
     (bytes : List AllocByte) : Except FaultKind MemoryState :=
   if Nat.beq bytes.length 0 then .ok m
   else
@@ -1616,7 +1619,7 @@ theorem writeBytesComp_eq (m : MemoryState) (place : MemPlace) (alignLog2 : Nat)
     cases a.mutability <;> dsimp only <;> first | rfl | rw [replaceAllocationComp_eq]
 
 /-- Computable mirror of `Trusted.MirSemantics.writeUninit`. -/
-def writeUninitComp (m : MemoryState) (place : MemPlace) (size alignLog2 : Nat) :
+@[expose] def writeUninitComp (m : MemoryState) (place : MemPlace) (size alignLog2 : Nat) :
     Except FaultKind MemoryState :=
   writeBytesComp m place alignLog2 (List.replicate size .uninit)
 
@@ -1626,7 +1629,7 @@ theorem writeUninitComp_eq (m : MemoryState) (place : MemPlace) (size alignLog2 
   writeBytesComp_eq m place alignLog2 (List.replicate size .uninit)
 
 /-- Computable mirror of `Trusted.MirSemantics.evalConstLit`. -/
-def evalConstLitComp (ty : MirTy) (lit : ConstLit) : Except FaultKind Val :=
+@[expose] def evalConstLitComp (ty : MirTy) (lit : ConstLit) : Except FaultKind Val :=
   match ty, lit with
   | .int w s, .scalar bits =>
     if !(bv128BeqComp (truncateBitsComp w bits) bits) then .error .unsupported
@@ -1713,7 +1716,7 @@ theorem evalConstLitComp_eq (ty : MirTy) (lit : ConstLit) :
     cases lit <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.leBytesOfNat`. -/
-def leBytesOfNatComp (n value : Nat) : List UInt8 :=
+@[expose] def leBytesOfNatComp (n value : Nat) : List UInt8 :=
   @Nat.rec (fun _ => Nat → List UInt8)
     (fun _ => [])
     (fun _ ih v => UInt8.ofNat (Nat.mod v 256) :: ih (Nat.div v 256))
@@ -1730,7 +1733,7 @@ theorem leBytesOfNatComp_eq (n value : Nat) :
     rw [ih]
 
 /-- Computable mirror of `Trusted.MirSemantics.encodeUInt`. -/
-def encodeUIntComp (endian : TargetEndian) (n value : Nat) : List UInt8 :=
+@[expose] def encodeUIntComp (endian : TargetEndian) (n value : Nat) : List UInt8 :=
   match endian with
   | .little => leBytesOfNatComp n value
   | .big => (leBytesOfNatComp n value).reverse
@@ -1741,7 +1744,7 @@ theorem encodeUIntComp_eq (endian : TargetEndian) (n value : Nat) :
   cases endian <;> (unfold encodeUIntComp encodeUInt; rw [leBytesOfNatComp_eq])
 
 /-- Computable mirror of `Trusted.MirSemantics.natOfLeBytes`. -/
-def natOfLeBytesComp (bytes : List UInt8) : Nat :=
+@[expose] def natOfLeBytesComp (bytes : List UInt8) : Nat :=
   List.foldr (fun b acc => b.toNat + 256 * acc) 0 bytes
 
 /-- Agreement between `natOfLeBytesComp` and `natOfLeBytes`. -/
@@ -1754,7 +1757,7 @@ theorem natOfLeBytesComp_eq (bytes : List UInt8) :
     rw [ih]
 
 /-- Computable mirror of `Trusted.MirSemantics.decodeUInt`. -/
-def decodeUIntComp (endian : TargetEndian) (bytes : List UInt8) : Nat :=
+@[expose] def decodeUIntComp (endian : TargetEndian) (bytes : List UInt8) : Nat :=
   match endian with
   | .little => natOfLeBytesComp bytes
   | .big => natOfLeBytesComp bytes.reverse
@@ -1765,7 +1768,7 @@ theorem decodeUIntComp_eq (endian : TargetEndian) (bytes : List UInt8) :
   cases endian <;> (dsimp only [decodeUIntComp, decodeUInt]; rw [natOfLeBytesComp_eq])
 
 /-- Computable mirror of `Trusted.MirSemantics.initBytes?`. -/
-def initBytes?Comp (bytes : List AllocByte) : Option (List UInt8) :=
+@[expose] def initBytes?Comp (bytes : List AllocByte) : Option (List UInt8) :=
   List.foldr
     (fun ab acc =>
       match ab with
@@ -1791,7 +1794,7 @@ theorem initBytes?Comp_eq (bytes : List AllocByte) :
       rw [ih]
 
 /-- Computable mirror of `Trusted.MirSemantics.decodeVal`. -/
-def decodeValComp (endian : TargetEndian) (ty : MirTy) (bytes : List AllocByte) :
+@[expose] def decodeValComp (endian : TargetEndian) (ty : MirTy) (bytes : List AllocByte) :
     Except FaultKind (Option Val) :=
   match ty with
   | .never => .ok none
@@ -1889,7 +1892,7 @@ theorem decodeValComp_eq (endian : TargetEndian) (ty : MirTy) (bytes : List Allo
           cases evalConstLit _ (.scalar (BitVec.ofNat 128 (decodeUInt endian raw))) <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.loadIndirect`. -/
-def loadIndirectComp (mem : MemoryState) (ty : MirTy) (place : MemPlace) :
+@[expose] def loadIndirectComp (mem : MemoryState) (ty : MirTy) (place : MemPlace) :
     Except FaultKind (Option Val) :=
   match layoutOfTyComp ty with
   | none => .error .unsupported
@@ -1913,7 +1916,7 @@ theorem loadIndirectComp_eq (mem : MemoryState) (ty : MirTy) (place : MemPlace) 
     | ok bytes => exact decodeValComp_eq .big ty bytes
 
 /-- Computable mirror of `Trusted.MirSemantics.deinitIndirect`. -/
-def deinitIndirectComp (mem : MemoryState) (ty : MirTy) (place : MemPlace) :
+@[expose] def deinitIndirectComp (mem : MemoryState) (ty : MirTy) (place : MemPlace) :
     Except FaultKind MemoryState :=
   match layoutOfTyComp ty with
   | none => .error .unsupported
@@ -1929,7 +1932,7 @@ theorem deinitIndirectComp_eq (mem : MemoryState) (ty : MirTy) (place : MemPlace
   | some layout => exact writeUninitComp_eq mem place layout.size layout.alignLog2
 
 /-- Computable mirror of `Trusted.MirSemantics.deallocateLocal`. -/
-def deallocateLocalComp (mem : MemoryState) (slot : LocalSlot) :
+@[expose] def deallocateLocalComp (mem : MemoryState) (slot : LocalSlot) :
     Except FaultKind MemoryState :=
   match slot with
   | .indirect mplace => deallocateStackComp mem mplace
@@ -1941,3 +1944,5 @@ theorem deallocateLocalComp_eq (mem : MemoryState) (slot : LocalSlot) :
   cases slot <;> first | rfl | exact deallocateStackComp_eq mem _
 
 end Anneal.MirTotal
+
+end

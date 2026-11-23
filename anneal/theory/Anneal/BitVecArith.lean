@@ -6,15 +6,18 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Nat.Bitwise.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.Nat.Basic
-import Init.Data.Fin.Basic
-import Anneal.NatBitwise
-import Anneal.BitVec
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Nat.Bitwise.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.Nat.Basic
+public import Init.Data.Fin.Basic
+public import Anneal.NatBitwise
+public import Anneal.BitVec
+
+public section
 
 namespace Anneal.BitVecArith
 
@@ -225,8 +228,7 @@ private theorem nat_div_le_div_left {a b c : Nat} (h : b ≤ c) (hb : 0 < b) :
 
 private theorem nat_land_one_eq (k : Nat) :
     Nat.land 1 k = if decide (Nat.mod k 2 = 1) then 1 else 0 := by
-  change Nat.bitwise and 1 k = _
-  rw [Anneal.NatBitwise.unfold_eq]
+  rw [Anneal.NatBitwise.land_eq_bitwise, Anneal.NatBitwise.unfold_eq]
   cases k with
   | zero => rfl
   | succ k' =>
@@ -369,15 +371,15 @@ private theorem nat_lor_add_land (w : Nat) :
       have hbv := Anneal.BitVec.eq_of_getLsbD_eq (w := w)
         (a := BitVec.ofNatLT (Nat.div (Nat.lor a b) 2)
           ((Nat.div_lt_iff_lt_mul (by decide : 0 < 2)).2
-            (Anneal.NatBitwise.lt_two_pow Bool.or (w + 1) a b ha hb)))
+            (Anneal.NatBitwise.lor_lt_two_pow ha hb)))
         (b := BitVec.ofNatLT (Nat.lor (Nat.div a 2) (Nat.div b 2))
-          (Anneal.NatBitwise.lt_two_pow Bool.or w _ _ ha2 hb2))
+          (Anneal.NatBitwise.lor_lt_two_pow ha2 hb2))
       have hEq :
           BitVec.ofNatLT (Nat.div (Nat.lor a b) 2)
             ((Nat.div_lt_iff_lt_mul (by decide : 0 < 2)).2
-              (Anneal.NatBitwise.lt_two_pow Bool.or (w + 1) a b ha hb)) =
+              (Anneal.NatBitwise.lor_lt_two_pow ha hb)) =
           BitVec.ofNatLT (Nat.lor (Nat.div a 2) (Nat.div b 2))
-            (Anneal.NatBitwise.lt_two_pow Bool.or w _ _ ha2 hb2) := by
+            (Anneal.NatBitwise.lor_lt_two_pow ha2 hb2) := by
         apply hbv
         intro i _
         change (Nat.div (Nat.lor a b) 2).testBit i =
@@ -399,9 +401,9 @@ private theorem nat_lor_add_land (w : Nat) :
       have hEq :
           BitVec.ofNatLT (Nat.div (Nat.land a b) 2)
             ((Nat.div_lt_iff_lt_mul (by decide : 0 < 2)).2
-              (Anneal.NatBitwise.lt_two_pow Bool.and (w + 1) a b ha hb)) =
+              (Anneal.NatBitwise.land_lt_two_pow ha hb)) =
           BitVec.ofNatLT (Nat.land (Nat.div a 2) (Nat.div b 2))
-            (Anneal.NatBitwise.lt_two_pow Bool.and w _ _ ha2 hb2) := by
+            (Anneal.NatBitwise.land_lt_two_pow ha2 hb2) := by
         apply Anneal.BitVec.eq_of_getLsbD_eq
         intro i _
         change (Nat.div (Nat.land a b) 2).testBit i =
@@ -658,7 +660,7 @@ private theorem bool_bne_cancel_left {a b c : Bool}
 
 /-- Most-significant bit of a `w`-bit bitvector (`false` when `w = 0`),
 definitionally equal to `BitVec.msb x`. -/
-def msb {w : Nat} (x : BitVec w) : Bool :=
+@[expose] def msb {w : Nat} (x : BitVec w) : Bool :=
   decide (0 < w) && Anneal.BitVec.getLsbD x (w - 1)
 
 /-- Conditional characterization of `msb`. -/
@@ -734,7 +736,7 @@ theorem msb_eq_false_iff {w : Nat} (hw : 0 < w) (x : BitVec w) :
 
 /-- Two's-complement negation of a `w`-bit bitvector, definitionally equal to
 `-x` (`BitVec.neg x`). -/
-def neg {w : Nat} (x : BitVec w) : BitVec w :=
+@[expose] def neg {w : Nat} (x : BitVec w) : BitVec w :=
   BitVec.ofNat w (Nat.pow 2 w - x.toNat)
 
 /-- `toNat` characterization of `neg x`. -/
@@ -844,7 +846,7 @@ theorem neg_eq_not_add_one {w : Nat} (x : BitVec w) :
       Anneal.BitVec.toNat_ofNat, nat_mod_eq_of_lt h1lt, hsub1]
 
 /-- Sign-bit mask (`2^(w - 1)` when `w > 0`, and `0#0` when `w = 0`). -/
-def signBit {w : Nat} : BitVec w :=
+@[expose] def signBit {w : Nat} : BitVec w :=
   if w = 0 then BitVec.ofNat w 0 else BitVec.ofNat w (Nat.pow 2 (w - 1))
 
 /-- Exact `toNat` of `signBit` when `w > 0`. -/
@@ -879,7 +881,7 @@ theorem toNat_signBit_of_pos {w : Nat} (hw : 0 < w) :
 /-- Order-preserving unsigned key for signed two's-complement comparison
 (`(x ^^^ signBit).toNat`). Maps `INT_MIN` to `0`, `0` to `2^(w - 1)`, and
 `INT_MAX` to `2^w - 1`. -/
-def signedKey {w : Nat} (x : BitVec w) : Nat :=
+@[expose] def signedKey {w : Nat} (x : BitVec w) : Nat :=
   (Anneal.BitVec.xor x signBit).toNat
 
 /-- Upper bound `signedKey x < 2^w`. -/
@@ -991,11 +993,11 @@ theorem half_le_signedKey_of_msb_false {w : Nat} (hw : 0 < w) {x : BitVec w}
   exact Nat.le_add_left (Nat.pow 2 (w - 1)) x.toNat
 
 /-- Signed less-than-or-equal on `BitVec w` via `signedKey`. -/
-def sle {w : Nat} (a b : BitVec w) : Prop :=
+@[expose] def sle {w : Nat} (a b : BitVec w) : Prop :=
   signedKey a ≤ signedKey b
 
 /-- Signed strict less-than on `BitVec w` via `signedKey`. -/
-def slt {w : Nat} (a b : BitVec w) : Prop :=
+@[expose] def slt {w : Nat} (a b : BitVec w) : Prop :=
   signedKey a < signedKey b
 
 /-- Reflexivity of `sle`. -/
@@ -1109,7 +1111,7 @@ theorem slt_iff_toNat_lt_of_same_msb {w : Nat} {a b : BitVec w}
 /-- Sign-extend (or truncate when `v ≤ w`) `x : BitVec w` to width `v`,
 filling bit positions `w .. v - 1` with `msb x`. Defined purely over `Nat` /
 `BitVec.ofNat` without `Int`. -/
-def signExtend {w : Nat} (v : Nat) (x : BitVec w) : BitVec v :=
+@[expose] def signExtend {w : Nat} (v : Nat) (x : BitVec w) : BitVec v :=
   if msb x then
     Anneal.BitVec.or (Anneal.BitVec.setWidth v x)
       (Anneal.BitVec.not (Anneal.BitVec.lowMask v w))
@@ -1185,7 +1187,7 @@ theorem setWidth_signExtend_of_le {w v : Nat} (h : w ≤ v) (x : BitVec w) :
 
 /-- Arithmetic right shift of `x : BitVec w` by `k : Nat`, preserving `msb x`
 in vacated upper bit positions. -/
-def ashr {w : Nat} (x : BitVec w) (k : Nat) : BitVec w :=
+@[expose] def ashr {w : Nat} (x : BitVec w) (k : Nat) : BitVec w :=
   if msb x then
     Anneal.BitVec.or (Anneal.BitVec.ushr x k)
       (Anneal.BitVec.not (Anneal.BitVec.lowMask w (w - k)))
@@ -1766,7 +1768,7 @@ theorem tnum_sub_sound_general {w : Nat} {m₁ m₂ x₁ x₂ v₁ v₂ : BitVec
 
 /-- Unsigned remainder of two `w`-bit bitvectors, definitionally equal to
 `x % y` (`BitVec.umod x y`). -/
-def urem {w : Nat} (x y : BitVec w) : BitVec w :=
+@[expose] def urem {w : Nat} (x y : BitVec w) : BitVec w :=
   BitVec.ofNatLT (Nat.mod x.toNat y.toNat)
     (Nat.lt_of_le_of_lt (Nat.mod_le x.toNat y.toNat) x.isLt)
 
@@ -2086,19 +2088,19 @@ theorem signed_range_add_no_overflow_sound {w : Nat}
     exact ⟨Nat.sub_le_sub_right hsum_lo _, Nat.sub_le_sub_right hsum_hi _⟩
 
 /-- Unsigned minimum of two `w`-bit bitvectors. -/
-def bvMin {w : Nat} (a b : BitVec w) : BitVec w :=
+@[expose] def bvMin {w : Nat} (a b : BitVec w) : BitVec w :=
   if a.toNat ≤ b.toNat then a else b
 
 /-- Unsigned maximum of two `w`-bit bitvectors. -/
-def bvMax {w : Nat} (a b : BitVec w) : BitVec w :=
+@[expose] def bvMax {w : Nat} (a b : BitVec w) : BitVec w :=
   if a.toNat ≤ b.toNat then b else a
 
 /-- Signed minimum of two `w`-bit bitvectors (under `sle`). -/
-def sbvMin {w : Nat} (a b : BitVec w) : BitVec w :=
+@[expose] def sbvMin {w : Nat} (a b : BitVec w) : BitVec w :=
   if signedKey a ≤ signedKey b then a else b
 
 /-- Signed maximum of two `w`-bit bitvectors (under `sle`). -/
-def sbvMax {w : Nat} (a b : BitVec w) : BitVec w :=
+@[expose] def sbvMax {w : Nat} (a b : BitVec w) : BitVec w :=
   if signedKey a ≤ signedKey b then b else a
 
 private theorem le_bvMin {w : Nat} {x a b : BitVec w}
@@ -2335,7 +2337,7 @@ theorem signed_range_refine_sgt {w : Nat} {lo hi x c : BitVec w}
 
 /-- Extract a `len`-bit field starting at bit offset `lo` from `x : BitVec w`.
 -/
-def extractBits {w : Nat} (x : BitVec w) (lo len : Nat) : BitVec len :=
+@[expose] def extractBits {w : Nat} (x : BitVec w) (lo len : Nat) : BitVec len :=
   Anneal.BitVec.setWidth len (Anneal.BitVec.ushr x lo)
 
 /-- Exact `getLsbD` characterization of `extractBits x lo len`. -/
@@ -2440,7 +2442,7 @@ theorem tnum_extractBits_sound {w : Nat} {m x val : BitVec w}
 
 /-- Move byte `src` (bits `8 * src .. 8 * src + 7`) of `x` into byte position
 `dst` (bits `8 * dst .. 8 * dst + 7`). -/
-def moveByte {w : Nat} (x : BitVec w) (src dst : Nat) : BitVec w :=
+@[expose] def moveByte {w : Nat} (x : BitVec w) (src dst : Nat) : BitVec w :=
   Anneal.BitVec.shl
     (Anneal.BitVec.setWidth w (extractBits x (8 * src) 8))
     (8 * dst)
@@ -2501,7 +2503,7 @@ private theorem getLsbD_moveByte {w : Nat} (x : BitVec w) (src dst i : Nat)
 
 /-- Build the low `k` destination bytes of byte-reversed `x : BitVec (8 * n)`
 via structural `@Nat.rec`. -/
-def bswapBytesAux {n : Nat} (x : BitVec (8 * n)) (k : Nat) : BitVec (8 * n) :=
+@[expose] def bswapBytesAux {n : Nat} (x : BitVec (8 * n)) (k : Nat) : BitVec (8 * n) :=
   @Nat.rec (fun _ => BitVec (8 * n))
     (BitVec.ofNat (8 * n) 0)
     (fun j acc => Anneal.BitVec.or acc (moveByte x (n - 1 - j) j))
@@ -2546,7 +2548,7 @@ private theorem getLsbD_bswapBytesAux {n : Nat} (x : BitVec (8 * n)) (k : Nat) :
           Bool.false_and, Bool.true_and, Bool.false_or]
 
 /-- Reverse the `n` bytes of a `(8 * n)`-bit bitvector. -/
-def bswapBytes (n : Nat) (x : BitVec (8 * n)) : BitVec (8 * n) :=
+@[expose] def bswapBytes (n : Nat) (x : BitVec (8 * n)) : BitVec (8 * n) :=
   bswapBytesAux x n
 
 /-- Exact `getLsbD` characterization of `bswapBytes n x`. -/
@@ -2638,15 +2640,15 @@ theorem tnum_bswapBytes_sound (n : Nat) {m x val : BitVec (8 * n)}
   exact Anneal.BitVec.maskEq_iff_getLsbD.1 h _ hj_lt hm
 
 /-- 16-bit byte swap (`u16::swap_bytes`). -/
-def bswap16 (x : BitVec 16) : BitVec 16 :=
+@[expose] def bswap16 (x : BitVec 16) : BitVec 16 :=
   bswapBytes 2 x
 
 /-- 32-bit byte swap (`u32::swap_bytes`). -/
-def bswap32 (x : BitVec 32) : BitVec 32 :=
+@[expose] def bswap32 (x : BitVec 32) : BitVec 32 :=
   bswapBytes 4 x
 
 /-- 64-bit byte swap (`u64::swap_bytes`). -/
-def bswap64 (x : BitVec 64) : BitVec 64 :=
+@[expose] def bswap64 (x : BitVec 64) : BitVec 64 :=
   bswapBytes 8 x
 
 /-- `bswap16` is an involution (`bswap16 (bswap16 x) = x`). -/
@@ -2716,3 +2718,5 @@ theorem bswap16_eq_ushr_or_shl (x : BitVec 16) :
     rfl
 
 end Anneal.BitVecArith
+
+end

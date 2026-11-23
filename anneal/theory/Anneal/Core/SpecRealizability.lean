@@ -6,17 +6,19 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.Data.List.Basic
-import Trusted
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics
-import Anneal.ClassicalEm
-import Anneal.MirTotal.Ops
+public import Init.Core
+public import Init.NotationExtra
+public import Init.Data.List.Basic
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics
+public import Anneal.ClassicalEm
+public import Anneal.MirTotal.Ops
 
+public section
 namespace Anneal.Core
 
 open Trusted.MirAst Trusted.MirSemantics Anneal.ClassicalEm Anneal.MirTotal
@@ -57,7 +59,7 @@ inductive VacuityClass : Type where
   | survivedAllMutants
 
 /-- Structural equality on `VacuityClass`. -/
-def VacuityClass.beq : VacuityClass → VacuityClass → Bool
+@[expose] def VacuityClass.beq : VacuityClass → VacuityClass → Bool
   | .deadPrecondition, .deadPrecondition => true
   | .specViolation, .specViolation => true
   | .trivialPostcondition, .trivialPostcondition => true
@@ -66,7 +68,7 @@ def VacuityClass.beq : VacuityClass → VacuityClass → Bool
   | _, _ => false
 
 /-- Decidable equality on `VacuityClass`. -/
-def VacuityClass.decEq (a b : VacuityClass) : Decidable (a = b) :=
+@[expose] def VacuityClass.decEq (a b : VacuityClass) : Decidable (a = b) :=
   match a, b with
   | .deadPrecondition, .deadPrecondition => isTrue rfl
   | .specViolation, .specViolation => isTrue rfl
@@ -101,7 +103,7 @@ instance : DecidableEq VacuityClass := VacuityClass.decEq
 instance : Inhabited VacuityClass := ⟨.deadPrecondition⟩
 
 /-- Canonical wire and diagnostic name for each `VacuityClass`. -/
-def VacuityClass.canonicalName : VacuityClass → String
+@[expose] def VacuityClass.canonicalName : VacuityClass → String
   | .deadPrecondition => "DeadPrecondition"
   | .specViolation => "SpecViolation"
   | .trivialPostcondition => "TrivialPostcondition"
@@ -130,7 +132,7 @@ theorem VacuityClass.canonicalName_injective {a b : VacuityClass}
 
 /-- All five `VacuityClass` variants in their frozen cross-language wire
 order. -/
-def VacuityClass.all : List VacuityClass :=
+@[expose] def VacuityClass.all : List VacuityClass :=
   [.deadPrecondition, .specViolation, .trivialPostcondition,
     .unboundReturnOutput, .survivedAllMutants]
 
@@ -147,7 +149,7 @@ theorem VacuityClass.mem_all (c : VacuityClass) : c ∈ VacuityClass.all := by
 
 /-- Parse a canonical wire name back into its `VacuityClass` (`none` for any
 other string), matching `VacuityClass.canonicalName` via pure UTF-8 equality. -/
-def VacuityClass.ofCanonicalName? (name : String) : Option VacuityClass :=
+@[expose] def VacuityClass.ofCanonicalName? (name : String) : Option VacuityClass :=
   VacuityClass.all.find? (fun c => stringBeqComp c.canonicalName name)
 
 /-- `VacuityClass.ofCanonicalName?` recovers any `VacuityClass` from its
@@ -165,68 +167,68 @@ universe u v w u₁ u₂ v₁ v₂
 /-! ### 1. Generic Relational Obligations -/
 
 /-- Precondition `pre` admits at least one valid input witness. -/
-def PreconditionSatisfiable {X : Type u} (pre : X → Prop) : Prop :=
+@[expose] def PreconditionSatisfiable {X : Type u} (pre : X → Prop) : Prop :=
   ∃ x, pre x
 
 /-- Contract `(pre, post)` admits at least one valid input and satisfying
 output. -/
-def ContractRealizable {X : Type u} {Y : Type v}
+@[expose] def ContractRealizable {X : Type u} {Y : Type v}
     (pre : X → Prop) (post : X → Y → Prop) : Prop :=
   ∃ x, pre x ∧ ∃ y, post x y
 
 /-- Contract `(pre, post)` has a satisfiable precondition and every valid input
 admits at least one satisfying output. -/
-def UniversalContractRealizable {X : Type u} {Y : Type v}
+@[expose] def UniversalContractRealizable {X : Type u} {Y : Type v}
     (pre : X → Prop) (post : X → Y → Prop) : Prop :=
   PreconditionSatisfiable pre ∧ ∀ x, pre x → ∃ y, post x y
 
 /-- Contract `(pre, post)` is nontrivial: some valid input admits both an
 accepted output `y_ok` and a rejected output `y_bad`. -/
-def PostconditionDichotomy {X : Type u} {Y : Type v}
+@[expose] def PostconditionDichotomy {X : Type u} {Y : Type v}
     (pre : X → Prop) (post : X → Y → Prop) : Prop :=
   ∃ x, pre x ∧ (∃ y_ok, post x y_ok) ∧ (∃ y_bad, ¬ post x y_bad)
 
 /-- Contract `(pre, post)` has a satisfiable precondition and every valid input
 admits both an accepted output and a rejected output. -/
-def PointwisePostconditionDichotomy {X : Type u} {Y : Type v}
+@[expose] def PointwisePostconditionDichotomy {X : Type u} {Y : Type v}
     (pre : X → Prop) (post : X → Y → Prop) : Prop :=
   PreconditionSatisfiable pre ∧
     ∀ x, pre x → (∃ y_ok, post x y_ok) ∧ (∃ y_bad, ¬ post x y_bad)
 
 /-- Postcondition `post` uniquely determines observation `obs y` for every
 input satisfying `pre`. -/
-def ContractDeterministicOn {X : Type u} {Y : Type v} {Z : Type w}
+@[expose] def ContractDeterministicOn {X : Type u} {Y : Type v} {Z : Type w}
     (obs : Y → Z) (pre : X → Prop) (post : X → Y → Prop) : Prop :=
   ∀ x y₁ y₂, pre x → post x y₁ → post x y₂ → obs y₁ = obs y₂
 
 /-- Postcondition `post` uniquely determines the output value `y` on every
 input satisfying `pre`. -/
-def ContractDeterministic {X : Type u} {Y : Type v}
+@[expose] def ContractDeterministic {X : Type u} {Y : Type v}
     (pre : X → Prop) (post : X → Y → Prop) : Prop :=
   ContractDeterministicOn id pre post
 
 /-- Postcondition `post` cannot distinguish any two outputs under `pre`. -/
-def OutputInsensitive {X : Type u} {Y : Type v}
+@[expose] def OutputInsensitive {X : Type u} {Y : Type v}
     (pre : X → Prop) (post : X → Y → Prop) : Prop :=
   ∀ x, pre x → ∀ y₁ y₂, post x y₁ ↔ post x y₂
 
 /-- One-directional form of `OutputInsensitive`: under `pre`, accepting one
 output forces accepting every other output. -/
-def ForwardOutputInsensitive {X : Type u} {Y : Type v}
+@[expose] def ForwardOutputInsensitive {X : Type u} {Y : Type v}
     (pre : X → Prop) (post : X → Y → Prop) : Prop :=
   ∀ x, pre x → ∀ y₁ y₂, post x y₁ → post x y₂
 
 /-- Postcondition `post` achieves dichotomy within a single observation fibre
 of `obs`, ruling out vacuous dichotomy caused solely by differing `obs`
 boilerplate values. -/
-def DichotomyModuloObservation {X : Type u} {Y : Type v} {Z : Type w}
+@[expose] def DichotomyModuloObservation {X : Type u} {Y : Type v} {Z : Type w}
     (obs : X → Y → Z) (pre : X → Prop) (post : X → Y → Prop) : Prop :=
   ∃ x, pre x ∧ ∃ y_ok y_bad,
     obs x y_ok = obs x y_bad ∧ post x y_ok ∧ ¬ post x y_bad
 
 /-- Concrete mutant witness: on valid input `x`, `y_ok` satisfies `post`,
 while the distinct mutant output `y_bad ≠ y_ok` is rejected by `post`. -/
-def MutantKilledBySpec {X : Type u} {Y : Type v}
+@[expose] def MutantKilledBySpec {X : Type u} {Y : Type v}
     (pre : X → Prop) (post : X → Y → Prop) (x : X) (y_ok y_bad : Y) : Prop :=
   pre x ∧ y_bad ≠ y_ok ∧ post x y_ok ∧ ¬ post x y_bad
 
@@ -654,22 +656,22 @@ section MirSpecializations
 
 /-- Witness obligation asserting that a value-level precondition `pre` is
 satisfiable. -/
-def NonVacuousPre (pre : List Val → Prop) : Prop :=
+@[expose] def NonVacuousPre (pre : List Val → Prop) : Prop :=
   ∃ args, pre args
 
 /-- Witness obligation asserting that a caller-memory-aware precondition `pre`
 is satisfiable. -/
-def NonVacuousStatefulPre (pre : List Val → CallerMemory → Prop) : Prop :=
+@[expose] def NonVacuousStatefulPre (pre : List Val → CallerMemory → Prop) : Prop :=
   ∃ args mem, pre args mem
 
 /-- Witness obligation asserting that a `Query`-level precondition `pre` is
 satisfiable. -/
-def NonVacuousQueryPre (pre : Query → Prop) : Prop :=
+@[expose] def NonVacuousQueryPre (pre : Query → Prop) : Prop :=
   ∃ q, pre q
 
 /-- Witness obligation asserting that an `unsafe` body's `BodyVerified` safety
 precondition admits at least one `ValidEntryArgs`-compatible argument list. -/
-def NonVacuousBodySafetyPre (body : Body) (safetyPre : List Val → Prop) :
+@[expose] def NonVacuousBodySafetyPre (body : Body) (safetyPre : List Val → Prop) :
     Prop :=
   ∃ args, ValidEntryArgs body args ∧ safetyPre args
 
@@ -716,22 +718,22 @@ theorem bodyVerified_vacuous_safety_of_unsat
 
 /-! #### Stateless `List Val → Val` Contracts -/
 
-def StatelessPreSatisfiable (pre : List Val → Prop) : Prop :=
+@[expose] def StatelessPreSatisfiable (pre : List Val → Prop) : Prop :=
   PreconditionSatisfiable pre
 
-def StatelessRealizable (pre : List Val → Prop)
+@[expose] def StatelessRealizable (pre : List Val → Prop)
     (post : List Val → Val → Prop) : Prop :=
   ContractRealizable pre post
 
-def StatelessUniversalRealizable (pre : List Val → Prop)
+@[expose] def StatelessUniversalRealizable (pre : List Val → Prop)
     (post : List Val → Val → Prop) : Prop :=
   UniversalContractRealizable pre post
 
-def StatelessDichotomy (pre : List Val → Prop)
+@[expose] def StatelessDichotomy (pre : List Val → Prop)
     (post : List Val → Val → Prop) : Prop :=
   PostconditionDichotomy pre post
 
-def StatelessDeterministic (pre : List Val → Prop)
+@[expose] def StatelessDeterministic (pre : List Val → Prop)
     (post : List Val → Val → Prop) : Prop :=
   ContractDeterministic pre post
 
@@ -751,17 +753,17 @@ theorem StatelessRealizable.toPreSatisfiable
 
 /-! #### Stateful `(List Val, CallerMemory)` Contracts -/
 
-def StatefulPreSatisfiable (pre : List Val → CallerMemory → Prop) : Prop :=
+@[expose] def StatefulPreSatisfiable (pre : List Val → CallerMemory → Prop) : Prop :=
   PreconditionSatisfiable (fun p : List Val × CallerMemory => pre p.1 p.2)
 
-def StatefulRealizable (pre : List Val → CallerMemory → Prop)
+@[expose] def StatefulRealizable (pre : List Val → CallerMemory → Prop)
     (post : List Val → CallerMemory → Val → CallerMemory → Prop) : Prop :=
   ContractRealizable
     (fun p : List Val × CallerMemory => pre p.1 p.2)
     (fun (p : List Val × CallerMemory) (q : Val × CallerMemory) =>
       post p.1 p.2 q.1 q.2)
 
-def StatefulDichotomy (pre : List Val → CallerMemory → Prop)
+@[expose] def StatefulDichotomy (pre : List Val → CallerMemory → Prop)
     (post : List Val → CallerMemory → Val → CallerMemory → Prop) : Prop :=
   PostconditionDichotomy
     (fun p : List Val × CallerMemory => pre p.1 p.2)
@@ -771,12 +773,12 @@ def StatefulDichotomy (pre : List Val → CallerMemory → Prop)
 /-- Strict return-value dichotomy for a stateful contract: holds the post-call
 `CallerMemory` fixed so that a spec constraining only `mem'` while leaving the
 return value unconstrained cannot pass. -/
-def StatefulReturnDichotomy (pre : List Val → CallerMemory → Prop)
+@[expose] def StatefulReturnDichotomy (pre : List Val → CallerMemory → Prop)
     (post : List Val → CallerMemory → Val → CallerMemory → Prop) : Prop :=
   ∃ args mem mem' v_ok v_bad,
     pre args mem ∧ post args mem v_ok mem' ∧ ¬ post args mem v_bad mem'
 
-def StatefulDeterministic (pre : List Val → CallerMemory → Prop)
+@[expose] def StatefulDeterministic (pre : List Val → CallerMemory → Prop)
     (post : List Val → CallerMemory → Val → CallerMemory → Prop) : Prop :=
   ContractDeterministic
     (fun p : List Val × CallerMemory => pre p.1 p.2)
@@ -846,7 +848,7 @@ theorem StatefulRealizable.toPreSatisfiable
 /-- Strict return-value dichotomy for `(Query, Out)` contracts: holds
 `out.callerMem` fixed so specs constraining only caller-visible memory do not
 qualify as binding the returned `Val`. -/
-def QueryOutReturnDichotomy (pre : Query → Prop)
+@[expose] def QueryOutReturnDichotomy (pre : Query → Prop)
     (post : Query → Out → Prop) : Prop :=
   ∃ q callerMem' v_ok v_bad,
     pre q ∧ post q ⟨v_ok, callerMem'⟩ ∧ ¬ post q ⟨v_bad, callerMem'⟩
@@ -886,7 +888,7 @@ theorem not_queryOutReturnDichotomy_of_returnInsensitive
 memory (`Sum.inl out.callerMem`) from unwind caller memory (`Sum.inr mem`),
 so dichotomy within one fibre must distinguish normal return values `out.ret`.
 -/
-def terminalReturnObs (_q : Query) :
+@[expose] def terminalReturnObs (_q : Query) :
     TerminalOut → Sum CallerMemory CallerMemory
   | .returned out => .inl out.callerMem
   | .unwound mem => .inr mem
@@ -894,7 +896,7 @@ def terminalReturnObs (_q : Query) :
 /-- Strict normal-return dichotomy for `(Query, TerminalOut)` contracts: rules
 out vacuous dichotomies that only distinguish `.returned` from `.unwound` or
 only constrain `out.callerMem`. -/
-def TerminalReturnDichotomy (pre : Query → Prop)
+@[expose] def TerminalReturnDichotomy (pre : Query → Prop)
     (post : Query → TerminalOut → Prop) : Prop :=
   ∃ q callerMem' v_ok v_bad,
     pre q ∧
@@ -1004,3 +1006,5 @@ theorem satisfiesPost_terminalReturnDichotomy
 end MirSpecializations
 
 end Anneal.Core
+
+end

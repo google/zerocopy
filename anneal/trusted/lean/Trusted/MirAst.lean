@@ -7,13 +7,14 @@
 -- those terms.
 
 -- anneal-trust-tier: candidate:mir_ast
+module
 prelude
-import Trusted.MirAst.Types
-import Trusted.MirAst.Places
-import Trusted.MirAst.Rvalues
-import Trusted.MirAst.Statements
-import Trusted.MirAst.Terminators
-import Trusted.MirAst.Body
+public import Trusted.MirAst.Types
+public import Trusted.MirAst.Places
+public import Trusted.MirAst.Rvalues
+public import Trusted.MirAst.Statements
+public import Trusted.MirAst.Terminators
+public import Trusted.MirAst.Body
 
 /-!
 # Anneal MIR Abstract Syntax (`Trusted.MirAst`)

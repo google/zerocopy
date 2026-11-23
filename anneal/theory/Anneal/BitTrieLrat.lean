@@ -6,14 +6,17 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.Data.Nat.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.Nat.Bitwise.Basic
-import Init.Data.List.Basic
-import Init.SimpLemmas
+public import Init.Core
+public import Init.NotationExtra
+public import Init.Data.Nat.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.Nat.Bitwise.Basic
+public import Init.Data.List.Basic
+public import Init.SimpLemmas
+
+public section
 
 /-!
 # Radix-2 Trie RUP-Only LRAT Certificate Checker (`Anneal.BitTrieLrat`)
@@ -39,7 +42,7 @@ namespace Anneal.BitTrieLrat
 
 /-- Case-split `v` into `0` or `n + 1` before applying `k` so kernel reduction
 receives weak-head form. -/
-def strictNat {α : Type} (v : Nat) (k : Nat → α) : α :=
+@[expose] def strictNat {α : Type} (v : Nat) (k : Nat → α) : α :=
   match v with
   | 0 => k 0
   | n + 1 => k (n + 1)
@@ -51,7 +54,7 @@ theorem strictNat_eq {α : Type} (v : Nat) (k : Nat → α) :
 
 /-- Left fold implemented in continuation-passing style over `List.foldr` so no
 additional recursive auxiliary is generated. -/
-def listFoldl {α β : Type} (f : β → α → β) (init : β) (xs : List α) : β :=
+@[expose] def listFoldl {α β : Type} (f : β → α → β) (init : β) (xs : List α) : β :=
   List.foldr (fun (x : α) (k : β → β) (acc : β) => k (f acc x))
     (fun (acc : β) => acc) xs init
 
@@ -61,19 +64,19 @@ theorem listFoldl_cons {α β : Type} (f : β → α → β) (init : β)
     listFoldl f init (x :: xs) = listFoldl f (f init x) xs := rfl
 
 /-- Boolean negation. -/
-def boolNot (b : Bool) : Bool :=
+@[expose] def boolNot (b : Bool) : Bool :=
   match b with | true => false | false => true
 
 /-- Boolean disjunction. -/
-def boolOr (a b : Bool) : Bool :=
+@[expose] def boolOr (a b : Bool) : Bool :=
   match a with | true => true | false => b
 
 /-- Boolean conjunction. -/
-def boolAnd (a b : Bool) : Bool :=
+@[expose] def boolAnd (a b : Bool) : Bool :=
   match a with | true => b | false => false
 
 /-- Boolean equality. -/
-def boolBeq (a b : Bool) : Bool :=
+@[expose] def boolBeq (a b : Bool) : Bool :=
   match a, b with
   | true, true => true
   | false, false => true
@@ -152,7 +155,7 @@ inductive Trie (α : Type) where
   | node (val : Option α) (ev od : Trie α)
 
 /-- Case-split `t` into `.leaf` or `.node` before passing it to `k`. -/
-def strictTrie {α β : Type} (t : Trie α) (k : Trie α → β) : β :=
+@[expose] def strictTrie {α β : Type} (t : Trie α) (k : Trie α → β) : β :=
   match t with
   | .leaf => k .leaf
   | .node v l r => k (.node v l r)
@@ -163,7 +166,7 @@ theorem strictTrie_eq {α β : Type} (t : Trie α) (k : Trie α → β) :
   cases t <;> rfl
 
 /-- Look up key `k` in `t` up to `depth` trie levels using `@Nat.rec`. -/
-def Trie.get {α : Type} (depth : Nat) (t : Trie α) (k : Nat) : Option α :=
+@[expose] def Trie.get {α : Type} (depth : Nat) (t : Trie α) (k : Nat) : Option α :=
   @Nat.rec (fun _ => Trie α → Nat → Option α)
     (fun _ _ => none)
     (fun _ ih cur idx =>
@@ -196,7 +199,7 @@ theorem Trie.get_succ {α : Type} (d : Nat) (t : Trie α) (idx : Nat) :
 /-- Insert or overwrite key `k` with `v` in `t` up to `depth` levels. If `k`
 exceeds `depth`, leaves all lookups unchanged while possibly allocating
 empty branch nodes. -/
-def Trie.set {α : Type} (depth : Nat) (t : Trie α) (k : Nat) (v : α) :
+@[expose] def Trie.set {α : Type} (depth : Nat) (t : Trie α) (k : Nat) (v : α) :
     Trie α :=
   @Nat.rec (fun _ => Trie α → Nat → Trie α)
     (fun cur _ => cur)
@@ -224,13 +227,13 @@ def Trie.set {α : Type} (depth : Nat) (t : Trie α) (k : Nat) (v : α) :
               strictTrie (ih od0 q) (fun od' => .node v0 ev0 od')))
     depth t k
 
-def trieVal {α : Type} (t : Trie α) : Option α :=
+@[expose] def trieVal {α : Type} (t : Trie α) : Option α :=
   match t with | .leaf => none | .node v _ _ => v
 
-def trieEv {α : Type} (t : Trie α) : Trie α :=
+@[expose] def trieEv {α : Type} (t : Trie α) : Trie α :=
   match t with | .leaf => .leaf | .node _ ev _ => ev
 
-def trieOd {α : Type} (t : Trie α) : Trie α :=
+@[expose] def trieOd {α : Type} (t : Trie α) : Trie α :=
   match t with | .leaf => .leaf | .node _ _ od => od
 
 theorem Trie.set_succ_parts {α : Type} (d : Nat) (t : Trie α) (idx : Nat)
@@ -251,7 +254,7 @@ theorem Trie.set_succ_parts {α : Type} (d : Nat) (t : Trie α) (idx : Nat)
 
 /-- Remove key `k` from `t` up to `depth` levels (setting its node payload to
 `none`). Keys deeper than `depth` leave `t` unchanged. -/
-def Trie.erase {α : Type} (depth : Nat) (t : Trie α) (k : Nat) : Trie α :=
+@[expose] def Trie.erase {α : Type} (depth : Nat) (t : Trie α) (k : Nat) : Trie α :=
   @Nat.rec (fun _ => Trie α → Nat → Trie α)
     (fun cur _ => cur)
     (fun _ ih cur idx =>
@@ -431,24 +434,24 @@ abbrev Clause := List Nat
 
 /-- Encode `(varId, isPos)` as `2 * varId` when positive or `2 * varId + 1`
 when negated. -/
-def mkLit (varId : Nat) (isPos : Bool) : Nat :=
+@[expose] def mkLit (varId : Nat) (isPos : Bool) : Nat :=
   match isPos with
   | true => 2 * varId
   | false => 2 * varId + 1
 
 /-- Decode variable identifier from an integer-encoded literal. -/
-def litVar (lit : Nat) : Nat := Nat.div lit 2
+@[expose] def litVar (lit : Nat) : Nat := Nat.div lit 2
 
 /-- Decode polarity (`true` for positive/even, `false` for negative/odd) from
 an integer-encoded literal. -/
-def litPos (lit : Nat) : Bool := Nat.beq (Nat.land lit 1) 0
+@[expose] def litPos (lit : Nat) : Bool := Nat.beq (Nat.land lit 1) 0
 
 /-- Evaluate a single literal under valuation `σ`. -/
-def evalLit (σ : Valuation) (lit : Nat) : Bool :=
+@[expose] def evalLit (σ : Valuation) (lit : Nat) : Bool :=
   boolBeq (σ (litVar lit)) (litPos lit)
 
 /-- Evaluate a clause (disjunction of literals) under valuation `σ`. -/
-def evalClause (σ : Valuation) (cls : Clause) : Bool :=
+@[expose] def evalClause (σ : Valuation) (cls : Clause) : Bool :=
   List.foldr (fun lit acc => boolOr (evalLit σ lit) acc) false cls
 
 theorem evalClause_cons (σ : Valuation) (lit : Nat) (rest : Clause) :
@@ -456,7 +459,7 @@ theorem evalClause_cons (σ : Valuation) (lit : Nat) (rest : Clause) :
       boolOr (evalLit σ lit) (evalClause σ rest) := rfl
 
 /-- Evaluate a CNF formula (conjunction of clauses) under valuation `σ`. -/
-def evalCnf (σ : Valuation) (cnf : List Clause) : Bool :=
+@[expose] def evalCnf (σ : Valuation) (cnf : List Clause) : Bool :=
   List.foldr (fun cls acc => boolAnd (evalClause σ cls) acc) true cnf
 
 theorem evalCnf_cons (σ : Valuation) (cls : Clause) (rest : List Clause) :
@@ -464,7 +467,7 @@ theorem evalCnf_cons (σ : Valuation) (cls : Clause) (rest : List Clause) :
       boolAnd (evalClause σ cls) (evalCnf σ rest) := rfl
 
 /-- Semantic unsatisfiability: every `Nat → Bool` valuation falsifies `cnf`. -/
-def UnsatCnf (cnf : List Clause) : Prop :=
+@[expose] def UnsatCnf (cnf : List Clause) : Prop :=
   ∀ (σ : Valuation), evalCnf σ cnf = false
 
 /-- Clause evaluation state under a partial trie assignment during RUP checking:
@@ -476,7 +479,7 @@ inductive ClauseRupState where
   | unit (uLit : Nat)
   | satOrMulti
 
-def stepLitRUP (depth : Nat) (assign : Trie Bool) (lit : Nat)
+@[expose] def stepLitRUP (depth : Nat) (assign : Trie Bool) (lit : Nat)
     (sub : ClauseRupState) : ClauseRupState :=
   match Trie.get depth assign (litVar lit) with
   | some val =>
@@ -494,7 +497,7 @@ def stepLitRUP (depth : Nat) (assign : Trie Bool) (lit : Nat)
 
 /-- Classify `cls` under partial assignment `assign` as `.allFalse`,
 `.unit uLit`, or `.satOrMulti`. -/
-def evalClauseRUP (depth : Nat) (assign : Trie Bool) (cls : Clause) :
+@[expose] def evalClauseRUP (depth : Nat) (assign : Trie Bool) (cls : Clause) :
     ClauseRupState :=
   List.foldr (stepLitRUP depth assign) .allFalse cls
 
@@ -509,7 +512,7 @@ inductive HintPropState where
   | conflict
   | invalidHint (badCid : Nat)
 
-def stepRupHint (depth : Nat) (db : Trie Clause) (st : HintPropState)
+@[expose] def stepRupHint (depth : Nat) (db : Trie Clause) (st : HintPropState)
     (cid : Nat) : HintPropState :=
   match st with
   | .conflict => .conflict
@@ -528,7 +531,7 @@ def stepRupHint (depth : Nat) (db : Trie Clause) (st : HintPropState)
 
 /-- Seed a RUP propagation state with the negation of `lit`, latching
 `.conflict` if `litVar lit` already holds the opposite polarity. -/
-def stepTargetLit (depth : Nat) (lit : Nat) (st : HintPropState) :
+@[expose] def stepTargetLit (depth : Nat) (lit : Nat) (st : HintPropState) :
     HintPropState :=
   match st with
   | .conflict => .conflict
@@ -547,7 +550,7 @@ def stepTargetLit (depth : Nat) (lit : Nat) (st : HintPropState) :
 /-- Seed the RUP propagation state with the negation of every literal in
 `target`, detecting complementary literals as an immediate `.conflict`. Keys
 deeper than `depth` remain unassigned, preventing false conflicts. -/
-def initRupState (depth : Nat) (target : Clause) : HintPropState :=
+@[expose] def initRupState (depth : Nat) (target : Clause) : HintPropState :=
   List.foldr (stepTargetLit depth) (.prop Trie.leaf) target
 
 theorem initRupState_nil (depth : Nat) :
@@ -558,13 +561,13 @@ theorem initRupState_cons (depth : Nat) (lit : Nat) (rest : Clause) :
       stepTargetLit depth lit (initRupState depth rest) := rfl
 
 /-- Fold `stepRupHint` across a hint list via CPS `listFoldl`. -/
-def propagateHints (depth : Nat) (db : Trie Clause) (st : HintPropState)
+@[expose] def propagateHints (depth : Nat) (db : Trie Clause) (st : HintPropState)
     (hints : List Nat) : HintPropState :=
   listFoldl (stepRupHint depth db) st hints
 
 /-- Verify whether `target` is implied by `db` using unit propagation along
 `hints` starting from the negated `target` literals. -/
-def checkRupStep (depth : Nat) (db : Trie Clause) (target : Clause)
+@[expose] def checkRupStep (depth : Nat) (db : Trie Clause) (target : Clause)
     (hints : List Nat) : HintPropState :=
   propagateHints depth db (initRupState depth target) hints
 
@@ -583,7 +586,7 @@ inductive RupVerdict where
 
 /-- Load initial `cnf` clauses at sequential IDs `0, 1, ...` into a radix-2
 trie of bounded depth `depth`. -/
-def loadCnfTrie (depth : Nat) (cnf : List Clause) : Trie Clause :=
+@[expose] def loadCnfTrie (depth : Nat) (cnf : List Clause) : Trie Clause :=
   (listFoldl
     (fun (st : Nat × Trie Clause) cls =>
       match st with
@@ -593,7 +596,7 @@ def loadCnfTrie (depth : Nat) (cnf : List Clause) : Trie Clause :=
     (0, Trie.leaf) cnf).2
 
 /-- Erase every clause ID in `cids` from `db`. -/
-def eraseIdsTrie (depth : Nat) (db : Trie Clause) (cids : List Nat) :
+@[expose] def eraseIdsTrie (depth : Nat) (db : Trie Clause) (cids : List Nat) :
     Trie Clause :=
   listFoldl
     (fun cur cid => strictTrie (Trie.erase depth cur cid) (fun t' => t'))
@@ -604,12 +607,12 @@ inductive ProofLoopState where
   | failedBadHint (stepCid : Nat) (hintCid : Nat)
   | failedNoConflict (stepCid : Nat)
 
-def isEmptyClause (cls : Clause) : Bool :=
+@[expose] def isEmptyClause (cls : Clause) : Bool :=
   match cls with | [] => true | _ :: _ => false
 
 /-- Execute one `RupStep` on `ProofLoopState`, latching errors or tracking
 whether an empty clause has been derived. -/
-def stepRupProof (depth : Nat) (st : ProofLoopState) (step : RupStep) :
+@[expose] def stepRupProof (depth : Nat) (st : ProofLoopState) (step : RupStep) :
     ProofLoopState :=
   match st with
   | .failedBadHint s h => .failedBadHint s h
@@ -628,7 +631,7 @@ def stepRupProof (depth : Nat) (st : ProofLoopState) (step : RupStep) :
 /-- Run the complete RUP-only LRAT proof `steps` starting from `cnf` with
 trie depth bound `depth`, returning `.unsatVerified` only when every step
 succeeds and at least one derived step records the empty clause `[]`. -/
-def checkRupProof (depth : Nat) (cnf : List Clause) (steps : List RupStep) :
+@[expose] def checkRupProof (depth : Nat) (cnf : List Clause) (steps : List RupStep) :
     RupVerdict :=
   match listFoldl (stepRupProof depth)
           (.active (loadCnfTrie depth cnf) false) steps with
@@ -638,12 +641,12 @@ def checkRupProof (depth : Nat) (cnf : List Clause) (steps : List RupStep) :
   | .active _ false => .errFinalNotEmpty
 
 /-- Every variable bound in `assign` agrees with `σ`. -/
-def AssignConsistent (depth : Nat) (σ : Valuation) (assign : Trie Bool) :
+@[expose] def AssignConsistent (depth : Nat) (σ : Valuation) (assign : Trie Bool) :
     Prop :=
   ∀ (v : Nat) (b : Bool), Trie.get depth assign v = some b → σ v = b
 
 /-- Every clause stored in `db` evaluates to `true` under `σ`. -/
-def DbEntailed (depth : Nat) (σ : Valuation) (db : Trie Clause) : Prop :=
+@[expose] def DbEntailed (depth : Nat) (σ : Valuation) (db : Trie Clause) : Prop :=
   ∀ (cid : Nat) (cls : Clause),
     Trie.get depth db cid = some cls → evalClause σ cls = true
 
@@ -935,7 +938,7 @@ theorem checkRupProof_sound (depth : Nat) (cnf : List Clause)
 
 /-- Diamond UNSAT instance across variables `0..3` combining unit, ternary,
 and binary clauses. -/
-def sampleUnsatCnf : List Clause :=
+@[expose] def sampleUnsatCnf : List Clause :=
   [ [mkLit 0 true]
   , [mkLit 0 false, mkLit 1 true, mkLit 2 true]
   , [mkLit 1 false, mkLit 3 true]
@@ -945,7 +948,7 @@ def sampleUnsatCnf : List Clause :=
 
 /-- Valid LRAT/RUP refutation for `sampleUnsatCnf` including clause deletion
 before deriving the final empty clause. -/
-def sampleUnsatSteps : List RupStep :=
+@[expose] def sampleUnsatSteps : List RupStep :=
   [ .addRup 5 [mkLit 3 true] [0, 2, 3, 1]
   , .del [0, 1, 2, 3]
   , .addRup 6 [] [5, 4]
@@ -1052,3 +1055,5 @@ theorem sampleTautologyStep_verified :
       [.addRup 2 [mkLit 1 true, mkLit 1 false] [], .addRup 3 [] [0, 1]] rfl⟩
 
 end Anneal.BitTrieLrat
+
+end

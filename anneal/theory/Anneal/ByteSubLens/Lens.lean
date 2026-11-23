@@ -6,19 +6,21 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.Data.Nat.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.List.Basic
-import Init.Control.Except
-import Trusted
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics
-import Anneal.MirTotal.Ops
+public import Init.Core
+public import Init.NotationExtra
+public import Init.Data.Nat.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.List.Basic
+public import Init.Control.Except
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics
+public import Anneal.MirTotal.Ops
 
+public section
 namespace Anneal.ByteSubLens
 
 open Trusted.MirAst Trusted.MirSemantics Anneal.MirTotal
@@ -598,7 +600,7 @@ structure ByteSubLens where
 
 /-- Decidable interval disjointness `[off1, off1 + sz1) ∩ [off2, off2 + sz2) =
 ∅` on non-empty slices. -/
-def rangesDisjoint (off1 sz1 off2 sz2 : Nat) : Bool :=
+@[expose] def rangesDisjoint (off1 sz1 off2 sz2 : Nat) : Bool :=
   Nat.ble (off1 + sz1) off2 || Nat.ble (off2 + sz2) off1
 
 /-- Symmetry of `rangesDisjoint`. -/
@@ -608,7 +610,7 @@ theorem rangesDisjoint_symm (off1 sz1 off2 sz2 : Nat) :
 
 /-- Decidable disjointness of two `ByteSubLens`es (distinct `allocId`s or
 disjoint byte intervals). -/
-def byteLensDisjoint (L1 L2 : ByteSubLens) : Bool :=
+@[expose] def byteLensDisjoint (L1 L2 : ByteSubLens) : Bool :=
   !Nat.beq L1.allocId L2.allocId ||
     rangesDisjoint L1.offset L1.size L2.offset L2.size
 
@@ -622,7 +624,7 @@ theorem byteLensDisjoint_symm (L1 L2 : ByteSubLens) :
 /-- Decidable hierarchical sub-slice containment `child ⊆ parent` (same
 `allocId`, `0 < child.size`, and `[child.offset, child.offset + child.size) ⊆
 [parent.offset, parent.offset + parent.size)`). -/
-def subLensContained (child parent : ByteSubLens) : Bool :=
+@[expose] def subLensContained (child parent : ByteSubLens) : Bool :=
   Nat.beq child.allocId parent.allocId &&
   Nat.blt 0 child.size &&
   Nat.ble parent.offset child.offset &&
@@ -702,7 +704,7 @@ theorem byteLensDisjoint_of_contained {c1 p1 c2 p2 : ByteSubLens}
       exact borComm _ true
 
 /-- Computable boolean test for `Mutability.mut`. -/
-def mutabilityIsMut (m : Mutability) : Bool :=
+@[expose] def mutabilityIsMut (m : Mutability) : Bool :=
   match m with
   | .mut => true
   | .shared => false
@@ -716,7 +718,7 @@ private theorem mutability_eq_mut_of_isMut (m : Mutability)
 /-- Computable sub-allocation byte-slice read (`0` `noncomputable`), enforcing
 `0 < L.size`, `mutability = .mut`, `live = true`, `isInBounds`, and
 `isAligned`. -/
-def byteSubLensGet (L : ByteSubLens) (m : MemoryState) :
+@[expose] def byteSubLensGet (L : ByteSubLens) (m : MemoryState) :
     Option (List AllocByte) :=
   match Nat.blt 0 L.size with
   | false => none
@@ -734,7 +736,7 @@ def byteSubLensGet (L : ByteSubLens) (m : MemoryState) :
 /-- Computable sub-allocation byte-slice write (`0` `noncomputable`), enforcing
 `0 < L.size`, `bs.length = L.size`, `mutability = .mut`, `live = true`,
 `isInBounds`, and `isAligned`. -/
-def byteSubLensPut (L : ByteSubLens) (m : MemoryState)
+@[expose] def byteSubLensPut (L : ByteSubLens) (m : MemoryState)
     (bs : List AllocByte) : Option MemoryState :=
   match Nat.blt 0 L.size && Nat.beq bs.length L.size with
   | false => none
@@ -1374,3 +1376,5 @@ theorem wrongLengthByteLensPutRejected (L : ByteSubLens) (m : MemoryState)
   cases Nat.blt 0 L.size <;> rfl
 
 end Anneal.ByteSubLens
+
+end

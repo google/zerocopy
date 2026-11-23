@@ -179,6 +179,24 @@ pub(crate) fn is_bundled_theory_module(module: &str) -> bool {
     module == "Anneal" || module.starts_with("Anneal.")
 }
 
+/// Return whether `module` belongs to the bundled `Trusted` model namespace
+/// (`Trusted` or `Trusted.*`).
+fn is_trusted_model_module(module: &str) -> bool {
+    module == "Trusted" || module.starts_with("Trusted.")
+}
+
+/// Foundation modules that bundled `Anneal.*` `module`-system theory files may
+/// open via `import all` (mirroring `TrustedBoundary.allowedTheoryImportAllModules`).
+const ALLOWED_THEORY_IMPORT_ALL_MODULES: &[&str] = &["Init.Data.Nat.Bitwise.Basic"];
+
+/// Return whether `(module, role)` is permitted to use Lean 4's `module`
+/// system during target verification (strictly bundled `Trusted.*` `Model` and
+/// bundled `Anneal.*` `Proof` modules).
+fn is_allowed_module_target(module: &str, role: TargetRole) -> bool {
+    (role == TargetRole::Model && is_trusted_model_module(module))
+        || (role == TargetRole::Proof && is_bundled_theory_module(module))
+}
+
 /// Compute the deterministic BFS set of target modules to retain for
 /// compilation and auditing.
 ///
@@ -896,10 +914,19 @@ impl Checker {
             serde_json::from_value(self.inspect_headers(&header_sources)?)
                 .map_err(|e| Failure::operational("headers", e.to_string()))?;
         let mut imports = BTreeMap::new();
+        let mut is_module = BTreeMap::new();
         for header in headers.headers {
             if !staged.contains_key(&header.module) || imports.contains_key(&header.module) {
                 return Err(Failure::policy("headers", "duplicate or foreign source header"));
             }
+            if header.is_module && !is_allowed_module_target(&header.module, roles[&header.module])
+            {
+                return Err(Failure::policy(
+                    "headers",
+                    format!("module system header is unsupported in {}", header.module),
+                ));
+            }
+            is_module.insert(header.module.clone(), header.is_module);
             imports.insert(header.module, header.imports);
         }
         if imports.len() != staged.len() {
@@ -909,6 +936,7 @@ impl Checker {
         // `Anneal.*` theory modules reachable from them via parsed imports.
         let retained = reachable_target_modules(request, &imports);
         imports.retain(|module, _| retained.contains(module));
+        is_module.retain(|module, _| retained.contains(module));
         roles.retain(|module, _| retained.contains(module));
         staged.retain(|module, _| retained.contains(module));
         let filtered_request = TargetAuditRequest {
@@ -940,9 +968,22 @@ impl Checker {
             self.admit_libraries(imports.values().flatten().map(|e| e.module.clone()))?;
         }
         for (module, edges) in &imports {
+            let mod_is_module = is_module.get(module).copied().unwrap_or(false);
+            let allow_theory_import_all = mod_is_module
+                && roles[module] == TargetRole::Proof
+                && is_bundled_theory_module(module);
             let has_non_meta_init = edges.iter().any(|e| e.module == "Init" && !e.is_meta);
             for edge in edges {
-                if edge.import_all || !edge.is_exported {
+                if edge.import_all
+                    && !(allow_theory_import_all
+                        && ALLOWED_THEORY_IMPORT_ALL_MODULES.contains(&edge.module.as_str()))
+                {
+                    return Err(Failure::policy(
+                        "target-import",
+                        format!("import modifiers are unsupported in {module}"),
+                    ));
+                }
+                if !edge.is_exported && !mod_is_module {
                     return Err(Failure::policy(
                         "target-import",
                         format!("import modifiers are unsupported in {module}"),
@@ -1082,6 +1123,7 @@ impl Checker {
             &order,
             &staged,
             &imports,
+            &is_module,
             "lib",
             false,
             true,

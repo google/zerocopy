@@ -6,20 +6,23 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.Data.Nat.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.List.Basic
-import Init.Control.Except
-import Trusted
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics
-import Anneal.MirWp
-import Anneal.MirTotal.Ops
-import Anneal.MirTotal.StepCore
+public import Init.Core
+public import Init.NotationExtra
+public import Init.Data.Nat.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.List.Basic
+public import Init.Control.Except
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics
+public import Anneal.MirWp
+public import Anneal.MirTotal.Ops
+public import Anneal.MirTotal.StepCore
+
+public section
 
 namespace Anneal.Core
 
@@ -65,7 +68,7 @@ private theorem ite_bool_false {α : Type} {b : Bool} {t e : α}
   rfl
 
 /-- Computable `2^n` via `@Nat.rec` (`0` `noncomputable`). -/
-def pow2 (n : Nat) : Nat :=
+@[expose] def pow2 (n : Nat) : Nat :=
   @Nat.rec (fun _ => Nat) 1 (fun _ ih => 2 * ih) n
 
 /-- Base equation `pow2 0 = 1`. -/
@@ -236,7 +239,7 @@ inductive PTree (α : Type) : Type where
   | node : PTree α → PTree α → PTree α
 
 /-- Top-down strided radix-2 tabulation helper (`0` `noncomputable`). -/
-def ptreeTabulateAt {α : Type} (depth : Nat) :
+@[expose] def ptreeTabulateAt {α : Type} (depth : Nat) :
     Nat → Nat → (Nat → Option α) → PTree α :=
   @Nat.rec (fun _ => Nat → Nat → (Nat → Option α) → PTree α)
     (fun offset _ f => PTree.leaf (f offset))
@@ -245,11 +248,11 @@ def ptreeTabulateAt {α : Type} (depth : Nat) :
     depth
 
 /-- Tabulates `f 0 .. f (2^depth - 1)` into a balanced radix-2 `PTree α`. -/
-def ptreeTabulate {α : Type} (f : Nat → Option α) (depth : Nat) : PTree α :=
+@[expose] def ptreeTabulate {α : Type} (f : Nat → Option α) (depth : Nat) : PTree α :=
   ptreeTabulateAt depth 0 1 f
 
 /-- Looks up `idx` in a depth-`depth` `PTree α` in `O(depth)` bit steps. -/
-def ptreeGetAt {α : Type} (depth : Nat) : PTree α → Nat → Option α :=
+@[expose] def ptreeGetAt {α : Type} (depth : Nat) : PTree α → Nat → Option α :=
   @Nat.rec (fun _ => PTree α → Nat → Option α)
     (fun t idx =>
       match t with
@@ -269,7 +272,7 @@ def ptreeGetAt {α : Type} (depth : Nat) : PTree α → Nat → Option α :=
 
 /-- Single-pass `O(depth)` functional update at `idx` in `PTree α`, allocating
 missing interior spines on demand. -/
-def ptreeModifyAt {α : Type} (depth : Nat) :
+@[expose] def ptreeModifyAt {α : Type} (depth : Nat) :
     PTree α → Nat → Option α → PTree α :=
   @Nat.rec (fun _ => PTree α → Nat → Option α → PTree α)
     (fun t idx v =>
@@ -578,7 +581,7 @@ theorem ptreeGetAt_ptreeModifyAt_ne {α : Type}
 
 /-- Accumulator-passing logarithmic ceiling loop via `@Nat.rec`, terminating
 reduction as soon as `n ≤ cap` (`O(log n)` reduction depth). -/
-def compLog2DepthGo (n : Nat) : Nat → Nat → Nat → Nat :=
+@[expose] def compLog2DepthGo (n : Nat) : Nat → Nat → Nat → Nat :=
   @Nat.rec (fun _ => Nat → Nat → Nat)
     (fun depth _ => depth)
     (fun _ ih depth cap =>
@@ -587,7 +590,7 @@ def compLog2DepthGo (n : Nat) : Nat → Nat → Nat → Nat :=
 
 /-- Smallest radix-2 tree depth covering `n` elements (`compLog2Depth 26 = 5`,
 `compLog2Depth 64 = 6`). -/
-def compLog2Depth (n : Nat) : Nat := compLog2DepthGo n n 0 1
+@[expose] def compLog2Depth (n : Nat) : Nat := compLog2DepthGo n n 0 1
 
 private theorem compLog2DepthGo_bound (n : Nat) :
     ∀ (fuel depth cap : Nat),
@@ -623,7 +626,7 @@ theorem le_pow2_compLog2Depth (n : Nat) : n ≤ pow2 (compLog2Depth n) := by
 
 /-- Splits `xs` in one pass into `(evens, odds)` (`evens[k] = xs[2*k]`,
 `odds[k] = xs[2*k + 1]`). -/
-def unzipEvenOdd {α : Type} (xs : List α) : List α × List α :=
+@[expose] def unzipEvenOdd {α : Type} (xs : List α) : List α × List α :=
   List.foldr (fun x eo => (x :: eo.2, eo.1)) ([], []) xs
 
 private theorem getElem?_unzipEvenOdd {α : Type} :
@@ -660,7 +663,7 @@ private theorem length_unzipEvenOdd_bounds {α : Type} :
 /-- Builds a radix-2 `PTree α` of height `depth` directly from `xs` by
 splitting even and odd indices at each level (`O(|xs| log |xs|)` total work,
 pruning empty subtrees to `.empty` without per-leaf list rescans). -/
-def ptreeFromListAt {α : Type} (depth : Nat) : List α → PTree α :=
+@[expose] def ptreeFromListAt {α : Type} (depth : Nat) : List α → PTree α :=
   @Nat.rec (fun _ => List α → PTree α)
     (fun xs =>
       match xs with
@@ -746,7 +749,7 @@ structure BlockTree (α : Type) where
 /-- Lazy right-fold list length (`O(k)` WHNF prefix inspection under `Nat.ble`,
 avoiding `List.length`'s strict tail-recursive full-list scan during
 elaboration). -/
-def compListLength {α : Type} (xs : List α) : Nat :=
+@[expose] def compListLength {α : Type} (xs : List α) : Nat :=
   List.foldr (fun _ k => Nat.succ k) 0 xs
 
 /-- Exact agreement between `compListLength` and `List.length`. -/
@@ -757,25 +760,25 @@ theorem compListLength_eq {α : Type} :
 
 /-- Tabulates `xs` into a `BlockTree α` at explicit depth `depth` via
 single-pass even/odd list splitting (`ptreeFromListAt`). -/
-def BlockTree.ofListAt {α : Type} (xs : List α) (depth : Nat) : BlockTree α :=
+@[expose] def BlockTree.ofListAt {α : Type} (xs : List α) (depth : Nat) : BlockTree α :=
   { depth := depth, tree := ptreeFromListAt depth xs }
 
 /-- Tabulates `xs` into a `BlockTree α` at depth
 `compLog2Depth (compListLength xs)`. -/
-def BlockTree.ofList {α : Type} (xs : List α) : BlockTree α :=
+@[expose] def BlockTree.ofList {α : Type} (xs : List α) : BlockTree α :=
   BlockTree.ofListAt xs (compLog2Depth (compListLength xs))
 
 /-- Looks up index `idx` in `bt` in `O(bt.depth)` trie steps. -/
-def BlockTree.lookup {α : Type} (bt : BlockTree α) (idx : Nat) : Option α :=
+@[expose] def BlockTree.lookup {α : Type} (bt : BlockTree α) (idx : Nat) : Option α :=
   ptreeGetAt bt.depth bt.tree idx
 
 /-- Functionally updates index `idx` in `bt` in `O(bt.depth)` trie steps. -/
-def BlockTree.modify {α : Type} (bt : BlockTree α) (idx : Nat) (v : Option α) :
+@[expose] def BlockTree.modify {α : Type} (bt : BlockTree α) (idx : Nat) (v : Option α) :
     BlockTree α :=
   { depth := bt.depth, tree := ptreeModifyAt bt.depth bt.tree idx v }
 
 /-- Validity predicate tying a pure-data `BlockTree α` back to `xs`. -/
-def ValidBlockTree {α : Type} (xs : List α) (bt : BlockTree α) : Prop :=
+@[expose] def ValidBlockTree {α : Type} (xs : List α) (bt : BlockTree α) : Prop :=
   xs.length ≤ pow2 bt.depth ∧
   ∀ idx : Nat, bt.lookup idx = Trusted.MirSemantics.getElem? xs idx
 
@@ -857,7 +860,7 @@ theorem BlockTree.valid_modify_of_setElem? {α : Type} {xs xs' : List α}
 
 /-- Single-body MIR step evaluator (`0` `noncomputable`) indexing basic blocks
 via `bt.lookup` (`O(bt.depth)` trie steps on a normalized `BlockTree`). -/
-def evalMirStepBlockTreeBy (tyEq : MirTy → MirTy → Bool)
+@[expose] def evalMirStepBlockTreeBy (tyEq : MirTy → MirTy → Bool)
     (bt : BlockTree BasicBlock) (body : Body) (s : State) :
     StepResult State TerminalOut :=
   match s.frames with
@@ -877,7 +880,7 @@ def evalMirStepBlockTreeBy (tyEq : MirTy → MirTy → Bool)
   | _ => .fault .unsupported
 
 /-- Fuel-bounded `BlockTree`-accelerated single-body MIR evaluator. -/
-def evalMirFuelBlockTreeBy (tyEq : MirTy → MirTy → Bool)
+@[expose] def evalMirFuelBlockTreeBy (tyEq : MirTy → MirTy → Bool)
     (bt : BlockTree BasicBlock) (body : Body) (fuel : Nat) (s : State) :
     StepResult State TerminalOut :=
   @Nat.rec (fun _ => State → StepResult State TerminalOut)
@@ -1009,12 +1012,12 @@ structure Chunk8 (α : Type) where
   e7 : Option α
 
 /-- All-`none` `Chunk8 α`. -/
-def Chunk8.empty {α : Type} : Chunk8 α :=
+@[expose] def Chunk8.empty {α : Type} : Chunk8 α :=
   ⟨none, none, none, none, none, none, none, none⟩
 
 /-- Constant-time `O(1)` slot lookup in `Chunk8 α` (returns `none` for
 `r ≥ 8`). -/
-def Chunk8.get {α : Type} (c : Chunk8 α) (r : Nat) : Option α :=
+@[expose] def Chunk8.get {α : Type} (c : Chunk8 α) (r : Nat) : Option α :=
   match r with
   | 0 => c.e0
   | 1 => c.e1
@@ -1031,7 +1034,7 @@ def Chunk8.get {α : Type} (c : Chunk8 α) (r : Nat) : Option α :=
 Destructures `c` once into flat constructor fields instead of using record
 update projections so repeated updates do not build nested projection chains in
 kernel WHNF. -/
-def Chunk8.set {α : Type} (c : Chunk8 α) (r : Nat) (v : Option α) : Chunk8 α :=
+@[expose] def Chunk8.set {α : Type} (c : Chunk8 α) (r : Nat) (v : Option α) : Chunk8 α :=
   match c with
   | ⟨e0, e1, e2, e3, e4, e5, e6, e7⟩ =>
     match r with
@@ -1343,7 +1346,7 @@ theorem Chunk8.get_set_ne {α : Type} (c : Chunk8 α) {r j : Nat}
 
 /-- Extracts the leading up-to-8 elements of `xs` into a `Chunk8 α` and returns
 the remaining suffix (`0` `noncomputable`). -/
-def takeChunk8 {α : Type} (xs : List α) : Chunk8 α × List α :=
+@[expose] def takeChunk8 {α : Type} (xs : List α) : Chunk8 α × List α :=
   match xs with
   | [] => (Chunk8.empty, [])
   | [x0] => (⟨some x0, none, none, none, none, none, none, none⟩, [])
@@ -1364,7 +1367,7 @@ def takeChunk8 {α : Type} (xs : List α) : Chunk8 α × List α :=
 
 /-- Fuel-bounded single-pass chunk packer via `@Nat.rec` (`0` `noncomputable`,
 `0` `brecOn`), terminating immediately on `[]`. -/
-def packChunk8Fuel {α : Type} (fuel : Nat) : List α → List (Chunk8 α) :=
+@[expose] def packChunk8Fuel {α : Type} (fuel : Nat) : List α → List (Chunk8 α) :=
   @Nat.rec (fun _ => List α → List (Chunk8 α))
     (fun _ => [])
     (fun _ ih xs =>
@@ -1376,7 +1379,7 @@ def packChunk8Fuel {α : Type} (fuel : Nat) : List α → List (Chunk8 α) :=
     fuel
 
 /-- Packs `xs` into `⌈xs.length / 8⌉` `Chunk8 α` leaves in one linear pass. -/
-def packChunk8 {α : Type} (xs : List α) : List (Chunk8 α) :=
+@[expose] def packChunk8 {α : Type} (xs : List α) : List (Chunk8 α) :=
   packChunk8Fuel (Nat.div (compListLength xs + 7) 8) xs
 
 private theorem nat_le_eight_mul_div_add7 (n : Nat) :
@@ -1757,7 +1760,7 @@ inductive Chunk8Tree (α : Type) : Type where
   | leaf : Chunk8 α → Chunk8Tree α
   | node : Chunk8Tree α → Chunk8Tree α → Chunk8Tree α
 
-private def natMax2 (a b : Nat) : Nat :=
+@[expose] def natMax2 (a b : Nat) : Nat :=
   cond (Nat.ble a b) b a
 
 private theorem natMax2_le {a b c : Nat} (ha : a ≤ c) (hb : b ≤ c) :
@@ -1769,7 +1772,7 @@ private theorem natMax2_le {a b c : Nat} (ha : a ≤ c) (hb : b ≤ c) :
 
 /-- Fuel-bounded constructor height of a `Chunk8Tree α` via `@Nat.rec` (`0`
 `noncomputable`, `0` `._unsafe_rec`, `hasIR = true`). -/
-def Chunk8Tree.heightAt {α : Type} (fuel : Nat) : Chunk8Tree α → Nat :=
+@[expose] def Chunk8Tree.heightAt {α : Type} (fuel : Nat) : Chunk8Tree α → Nat :=
   @Nat.rec (fun _ => Chunk8Tree α → Nat)
     (fun _ => 0)
     (fun _ ih t =>
@@ -1782,7 +1785,7 @@ def Chunk8Tree.heightAt {α : Type} (fuel : Nat) : Chunk8Tree α → Nat :=
 /-- Builds a balanced `Chunk8Tree α` of spine depth `depth` directly from a
 packed `List (Chunk8 α)` via single-pass even/odd splitting (`0`
 `noncomputable`, `0` `._unsafe_rec`, `hasIR = true`). -/
-def chunk8TreeFromChunksAt {α : Type} (depth : Nat) :
+@[expose] def chunk8TreeFromChunksAt {α : Type} (depth : Nat) :
     List (Chunk8 α) → Chunk8Tree α :=
   @Nat.rec (fun _ => List (Chunk8 α) → Chunk8Tree α)
     (fun cs =>
@@ -1818,7 +1821,7 @@ theorem chunk8TreeFromChunksAt_height_le {α : Type} :
 
 /-- Looks up an entire `Chunk8 α` leaf at `chunkIdx` in `O(depth)` spine steps
 using `cond` (zero `@ite`/`Decidable` overhead). -/
-def chunk8TreeLookupChunkAt {α : Type} (depth : Nat) :
+@[expose] def chunk8TreeLookupChunkAt {α : Type} (depth : Nat) :
     Chunk8Tree α → Nat → Option (Chunk8 α) :=
   @Nat.rec (fun _ => Chunk8Tree α → Nat → Option (Chunk8 α))
     (fun t chunkIdx =>
@@ -1910,7 +1913,7 @@ theorem chunk8TreeLookupChunkAt_fromChunksAt {α : Type} :
 /-- Single-pass `O(depth)` functional update of slot `(chunkIdx, rem)` in a
 `Chunk8Tree α`, allocating missing spine nodes and `Chunk8.empty` leaves on
 demand (`0` `noncomputable`). -/
-def chunk8TreeModifyAt {α : Type} (depth : Nat) :
+@[expose] def chunk8TreeModifyAt {α : Type} (depth : Nat) :
     Chunk8Tree α → Nat → Nat → Option α → Chunk8Tree α :=
   @Nat.rec (fun _ => Chunk8Tree α → Nat → Nat → Option α → Chunk8Tree α)
     (fun t chunkIdx rem v =>
@@ -1930,7 +1933,7 @@ def chunk8TreeModifyAt {α : Type} (depth : Nat) :
 
 /-- Looks up element `idx` inside a depth-`depth` `Chunk8Tree α` in
 `O(depth)` spine steps plus one `O(1)` `Chunk8.get` dispatch. -/
-def chunk8TreeGetAt {α : Type} (depth : Nat) (t : Chunk8Tree α) (idx : Nat) :
+@[expose] def chunk8TreeGetAt {α : Type} (depth : Nat) (t : Chunk8Tree α) (idx : Nat) :
     Option α :=
   match chunk8TreeLookupChunkAt depth t (Nat.div idx 8) with
   | some c => c.get (Nat.mod idx 8)
@@ -2165,13 +2168,13 @@ structure Chunk8BlockTree (α : Type) where
 
 /-- Tabulates `xs` into a `Chunk8BlockTree α` at explicit spine depth `depth`.
 -/
-def Chunk8BlockTree.ofListAt {α : Type} (xs : List α) (depth : Nat) :
+@[expose] def Chunk8BlockTree.ofListAt {α : Type} (xs : List α) (depth : Nat) :
     Chunk8BlockTree α :=
   { depth := depth, tree := chunk8TreeFromChunksAt depth (packChunk8 xs) }
 
 /-- Tabulates `xs` into a `Chunk8BlockTree α` at minimal logarithmic spine
 depth `compLog2Depth (Nat.div (compListLength xs + 7) 8)`. -/
-def Chunk8BlockTree.ofList {α : Type} (xs : List α) : Chunk8BlockTree α :=
+@[expose] def Chunk8BlockTree.ofList {α : Type} (xs : List α) : Chunk8BlockTree α :=
   let chunks := packChunk8 xs
   { depth := compLog2Depth (compListLength chunks)
     tree := chunk8TreeFromChunksAt (compLog2Depth (compListLength chunks))
@@ -2179,25 +2182,25 @@ def Chunk8BlockTree.ofList {α : Type} (xs : List α) : Chunk8BlockTree α :=
 
 /-- Looks up an entire 8-element `Chunk8 α` leaf at `chunkIdx` in one spine
 traversal (`O(bt.depth)`), enabling stride-8 batch inspection. -/
-def Chunk8BlockTree.lookupChunk {α : Type} (bt : Chunk8BlockTree α)
+@[expose] def Chunk8BlockTree.lookupChunk {α : Type} (bt : Chunk8BlockTree α)
     (chunkIdx : Nat) : Option (Chunk8 α) :=
   chunk8TreeLookupChunkAt bt.depth bt.tree chunkIdx
 
 /-- Looks up element `idx` in `bt` in `O(bt.depth)` spine steps plus one `O(1)`
 `Chunk8.get` dispatch. -/
-def Chunk8BlockTree.lookup {α : Type} (bt : Chunk8BlockTree α) (idx : Nat) :
+@[expose] def Chunk8BlockTree.lookup {α : Type} (bt : Chunk8BlockTree α) (idx : Nat) :
     Option α :=
   chunk8TreeGetAt bt.depth bt.tree idx
 
 /-- Functionally updates element `idx` in `bt` in `O(bt.depth)` spine steps. -/
-def Chunk8BlockTree.modify {α : Type} (bt : Chunk8BlockTree α) (idx : Nat)
+@[expose] def Chunk8BlockTree.modify {α : Type} (bt : Chunk8BlockTree α) (idx : Nat)
     (v : Option α) : Chunk8BlockTree α :=
   { depth := bt.depth
     tree := chunk8TreeModifyAt bt.depth bt.tree (Nat.div idx 8)
       (Nat.mod idx 8) v }
 
 /-- Validity predicate tying a pure-data `Chunk8BlockTree α` back to `xs`. -/
-def ValidChunk8BlockTree {α : Type} (xs : List α) (bt : Chunk8BlockTree α) :
+@[expose] def ValidChunk8BlockTree {α : Type} (xs : List α) (bt : Chunk8BlockTree α) :
     Prop :=
   xs.length ≤ 8 * pow2 bt.depth ∧
   ∀ idx : Nat, bt.lookup idx = Trusted.MirSemantics.getElem? xs idx
@@ -2432,11 +2435,11 @@ standalone radix-8 `MaskTree` implementations). -/
 abbrev MaskTree : Type := Chunk8BlockTree Bool
 
 /-- Builds a `MaskTree` from a boolean list. -/
-def MaskTree.ofList (xs : List Bool) : MaskTree :=
+@[expose] def MaskTree.ofList (xs : List Bool) : MaskTree :=
   Chunk8BlockTree.ofList xs
 
 /-- Looks up boolean mask bit `idx` (`false` when out of bounds). -/
-def MaskTree.get (mt : MaskTree) (idx : Nat) : Bool :=
+@[expose] def MaskTree.get (mt : MaskTree) (idx : Nat) : Bool :=
   match mt.lookup idx with
   | some b => b
   | none => false
@@ -2452,7 +2455,7 @@ theorem MaskTree.get_ofList (xs : List Bool) (idx : Nat) :
 
 /-- Single-body MIR step evaluator (`0` `noncomputable`) indexing basic blocks
 via `Chunk8BlockTree BasicBlock`. -/
-def evalMirStepChunk8By (tyEq : MirTy → MirTy → Bool)
+@[expose] def evalMirStepChunk8By (tyEq : MirTy → MirTy → Bool)
     (bt : Chunk8BlockTree BasicBlock) (body : Body) (s : State) :
     StepResult State TerminalOut :=
   match s.frames with
@@ -2599,14 +2602,14 @@ theorem chunk8_depth_4096_canary :
     compLog2Depth (Nat.div (256 + 7) 8) = 5 :=
   ⟨rfl, rfl⟩
 
-private def mkChunk8Range : Nat → Nat → List Nat :=
+@[expose] def mkChunk8Range : Nat → Nat → List Nat :=
   @Nat.rec (fun _ => Nat → List Nat)
     (fun _ => [])
     (fun _ ih start => start :: ih (start + 1))
 
 /-- Top-down strided tabulation directly into a `Chunk8Tree α` (`O(depth)` WHNF
 path forcing on surgical lookups, avoiding intermediate `List` construction). -/
-def chunk8TreeTabulateAt {α : Type} (depth : Nat) :
+@[expose] def chunk8TreeTabulateAt {α : Type} (depth : Nat) :
     Nat → Nat → (Nat → Option α) → Chunk8Tree α :=
   @Nat.rec (fun _ => Nat → Nat → (Nat → Option α) → Chunk8Tree α)
     (fun chunkOff _ f =>
@@ -2620,7 +2623,7 @@ def chunk8TreeTabulateAt {α : Type} (depth : Nat) :
 /-- Top-down `Chunk8BlockTree α` tabulation covering indices `0 .. 8*2^depth-1`
 in spine depth `depth` (`depth = 5` covers `256` elements; `depth = 9` covers
 `4,096` elements with tree height `10 ≤ 11`). -/
-def Chunk8BlockTree.tabulate {α : Type} (depth : Nat) (f : Nat → Option α) :
+@[expose] def Chunk8BlockTree.tabulate {α : Type} (depth : Nat) (f : Nat → Option α) :
     Chunk8BlockTree α :=
   { depth := depth, tree := chunk8TreeTabulateAt depth 0 1 f }
 
@@ -2845,3 +2848,5 @@ theorem chunk8BlockTree_scaling_canary :
    rfl, rfl, rfl, rfl, rfl⟩
 
 end Anneal.Core
+
+end

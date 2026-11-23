@@ -6,16 +6,19 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Nat.Basic
-import Init.Data.Nat.Bitwise.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.List.Basic
-import Anneal.BitVec
-import Anneal.F2Simd.Basis
-import Anneal.F2Simd.Simd
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Nat.Basic
+public import Init.Data.Nat.Bitwise.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.List.Basic
+public import Anneal.BitVec
+public import Anneal.F2Simd.Basis
+public import Anneal.F2Simd.Simd
+
+public section
 
 namespace Anneal.F2Simd
 
@@ -70,6 +73,7 @@ theorem getLane_isLinear (w laneW i : Nat) :
 
 /-- Single-byte split-nibble $\text{GF}(2^8)$ lookup driven by two certified
 16-byte tables `lutLo`, `lutHi`. -/
+@[expose]
 def gf256SplitNibbleByte (lutLo lutHi : BitVec 128) (x : BitVec 8) : BitVec 8 :=
   let loIdx := (and x (BitVec.ofNat 8 0x0f)).toNat
   let hiIdx := (and (ushr x 4) (BitVec.ofNat 8 0x0f)).toNat
@@ -168,6 +172,7 @@ theorem vpshufb128_gf256_mul_0x9d_eq :
 
 /-- Control mask for 4-lane 32-bit endian byte-swap (`bswap32x4`) in
 `vpshufb128`. -/
+@[expose]
 def bswap32x4Ctrl128 : BitVec 128 :=
   BitVec.ofNat 128 0x0c0d0e0f08090a0b0405060700010203
 
@@ -197,6 +202,7 @@ theorem vpshufb128_bswap32x4_involutive :
 /-! ## 3. Cone-of-Influence Slicing, 256-Bit Uniform SIMD & `F2Circuit` -/
 
 /-- Bit-cone `[24 .. 31]` for byte lane `3` of a 128-bit register. -/
+@[expose]
 def lane3BitCone : List Nat :=
   [24, 25, 26, 27, 28, 29, 30, 31]
 
@@ -252,11 +258,13 @@ theorem uniform_simd32_gf256_0x0b_eq :
     rfl
 
 /-- 64-bit binary-to-Gray code `F2Circuit` (`x ^^^ (x >>> 1)`). -/
+@[expose]
 def grayEncodeCircuit64 : F2Circuit 2 64 64 :=
   .xor .id (.ushrConst .id 1)
 
 /-- 64-bit Gray-to-binary logarithmic XOR cascade `F2Circuit`
 (`1, 2, 4, 8, 16, 32` shift stages). -/
+@[expose]
 def grayDecodeCircuit64 : F2Circuit 17 64 64 :=
   let s1 : F2Circuit 2 64 64 := .xor .id (.ushrConst .id 1)
   let s2 : F2Circuit 2 64 64 := .xor .id (.ushrConst .id 2)
@@ -356,3 +364,5 @@ theorem canary_f2simd_negative_fail_closed_tests :
   ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 end Anneal.F2Simd
+
+end

@@ -6,13 +6,16 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Fin.Basic
-import Init.Data.List.Basic
-import Init.Data.Nat.Basic
-import Init.Data.Nat.Div.Basic
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Fin.Basic
+public import Init.Data.List.Basic
+public import Init.Data.Nat.Basic
+public import Init.Data.Nat.Div.Basic
+
+public section
 
 namespace Anneal.LeBytes
 
@@ -191,7 +194,7 @@ private theorem list_append_inj_of_length_eq {α : Type} :
 /-- Produce `n` little-endian bytes from the low `n * 8` bits of `v`. Using
 `@Nat.rec` avoids compiler `_unsafe_rec` auxiliaries while remaining
 `rfl`-reducible on `0` and `n + 1`. -/
-def toLeBytesAux (n : Nat) (v : Nat) : List (BitVec 8) :=
+@[expose] def toLeBytesAux (n : Nat) (v : Nat) : List (BitVec 8) :=
   @Nat.rec (fun _ => Nat → List (BitVec 8))
     (fun _ => [])
     (fun _ ih k => BitVec.ofNat 8 k :: ih (HDiv.hDiv k 256))
@@ -207,13 +210,13 @@ def toLeBytesAux (n : Nat) (v : Nat) : List (BitVec 8) :=
   rfl
 
 /-- Encode an `(n * 8)`-bit bitvector into `n` little-endian bytes. -/
-def toLeBytes (n : Nat) (x : BitVec (n * 8)) : List (BitVec 8) :=
+@[expose] def toLeBytes (n : Nat) (x : BitVec (n * 8)) : List (BitVec 8) :=
   toLeBytesAux n x.toNat
 
 /-- Decode a list of little-endian bytes into a natural number. Using
 `List.foldr` avoids compiler `_unsafe_rec` auxiliaries while remaining
 `rfl`-reducible on `[]` and `b :: rest`. -/
-def fromLeBytes (bs : List (BitVec 8)) : Nat :=
+@[expose] def fromLeBytes (bs : List (BitVec 8)) : Nat :=
   bs.foldr (fun b acc => b.toNat + 256 * acc) 0
 
 /-- Base equation of `fromLeBytes` on the empty byte list. -/
@@ -226,15 +229,15 @@ def fromLeBytes (bs : List (BitVec 8)) : Nat :=
 
 /-- Decode a list of little-endian bytes into a bitvector of width
 `bs.length * 8`. -/
-def fromLeBytesBv (bs : List (BitVec 8)) : BitVec (bs.length * 8) :=
+@[expose] def fromLeBytesBv (bs : List (BitVec 8)) : BitVec (bs.length * 8) :=
   BitVec.ofNat (bs.length * 8) (fromLeBytes bs)
 
 /-- Encode an `(n * 8)`-bit bitvector into `n` big-endian bytes. -/
-def toBeBytes (n : Nat) (x : BitVec (n * 8)) : List (BitVec 8) :=
+@[expose] def toBeBytes (n : Nat) (x : BitVec (n * 8)) : List (BitVec 8) :=
   (toLeBytes n x).reverse
 
 /-- Decode a list of big-endian bytes into a natural number. -/
-def fromBeBytes (bs : List (BitVec 8)) : Nat :=
+@[expose] def fromBeBytes (bs : List (BitVec 8)) : Nat :=
   fromLeBytes bs.reverse
 
 /-- Encode a 16-bit bitvector into 2 little-endian bytes. -/
@@ -563,3 +566,5 @@ theorem toLeBytes_u64_eq (x : BitVec 64) :
   repeat rw [Nat.div_div_eq_div_mul]
 
 end Anneal.LeBytes
+
+end

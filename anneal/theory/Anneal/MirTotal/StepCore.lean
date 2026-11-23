@@ -6,22 +6,25 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Int.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.Nat.Bitwise.Basic
-import Init.Data.List.Basic
-import Init.SimpLemmas
-import Init.Control.Except
-import Trusted
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics
-import Anneal.MirWp
-import Anneal.MirTotal.Ops
+public import Init.Core
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Int.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.Nat.Bitwise.Basic
+public import Init.Data.List.Basic
+public import Init.SimpLemmas
+public import Init.Control.Except
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics
+public import Anneal.MirWp
+public import Anneal.MirTotal.Ops
+
+public section
 
 namespace Anneal.MirTotal
 
@@ -47,7 +50,7 @@ in `MirTotal.ExecTotal` yields a premise-free, unbounded-depth mirror of
 /-- Depth-bounded LCNF-computable structural equality on `MirTy` (`0`
 `noncomputable`), returning `false` once `.tuple`, `.ref`, or `.rawPtr` nesting
 exceeds `fuel`. -/
-def mirTyBeqAt (fuel : Nat) : MirTy → MirTy → Bool :=
+@[expose] def mirTyBeqAt (fuel : Nat) : MirTy → MirTy → Bool :=
   @Nat.rec (fun _ => MirTy → MirTy → Bool)
     (fun _ _ => false)
     (fun _ ih a b =>
@@ -120,7 +123,7 @@ def mirTyBeqAt (fuel : Nat) : MirTy → MirTy → Bool :=
 
 /-- Computable mirror of `Trusted.MirSemantics.checkVal` parameterized by
 `tyEq`. -/
-def checkValBy (tyEq : MirTy → MirTy → Bool) (v : Val) (ty : MirTy) : Bool :=
+@[expose] def checkValBy (tyEq : MirTy → MirTy → Bool) (v : Val) (ty : MirTy) : Bool :=
   match valTy?Comp v with
   | some vTy => tyEq vTy ty
   | none => false
@@ -138,7 +141,7 @@ theorem checkValBy_eq (tyEq : MirTy → MirTy → Bool)
 
 /-- Computable mirror of `Trusted.MirSemantics.encodeVal` parameterized by
 `tyEq`. -/
-def encodeValBy (tyEq : MirTy → MirTy → Bool) (endian : TargetEndian)
+@[expose] def encodeValBy (tyEq : MirTy → MirTy → Bool) (endian : TargetEndian)
     (ty : MirTy) (v : Val) : Except FaultKind (List AllocByte) :=
   if !checkValBy tyEq v ty then .error .unsupported
   else
@@ -250,7 +253,7 @@ theorem encodeValBy_eq (tyEq : MirTy → MirTy → Bool)
 
 /-- Computable mirror of `Trusted.MirSemantics.storeIndirect` parameterized by
 `tyEq`. -/
-def storeIndirectBy (tyEq : MirTy → MirTy → Bool) (mem : MemoryState)
+@[expose] def storeIndirectBy (tyEq : MirTy → MirTy → Bool) (mem : MemoryState)
     (ty : MirTy) (place : MemPlace) (v : Val) : Except FaultKind MemoryState :=
   match layoutOfTyComp ty with
   | none => .error .unsupported
@@ -279,7 +282,7 @@ theorem storeIndirectBy_eq (tyEq : MirTy → MirTy → Bool)
 /-! ## Operands, Rvalues, Statements, Terminators, and Step Core -/
 
 /-- Computable mirror of `Trusted.MirSemantics.evalOperandToSlot`. -/
-def evalOperandToSlotComp (bodyLocals : List MirTy) (locals : List LocalSlot)
+@[expose] def evalOperandToSlotComp (bodyLocals : List MirTy) (locals : List LocalSlot)
     (mem : MemoryState) (tyOk : MirTy → Bool) (opnd : Operand) :
     Except FaultKind (MirTy × Option Val × List LocalSlot × MemoryState) :=
   match opnd with
@@ -373,7 +376,7 @@ theorem evalOperandToSlotComp_eq (bodyLocals : List MirTy) (locals : List LocalS
     cases evalConstLit c.ty c.lit <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.evalPrimitiveOperand`. -/
-def evalPrimitiveOperandComp (bodyLocals : List MirTy)
+@[expose] def evalPrimitiveOperandComp (bodyLocals : List MirTy)
     (locals : List LocalSlot) (mem : MemoryState) (opnd : Operand) :
     Except FaultKind (Val × List LocalSlot × MemoryState) :=
   match evalOperandToSlotComp bodyLocals locals mem isPrimitiveReadableTyComp opnd with
@@ -405,7 +408,7 @@ theorem evalPrimitiveOperandComp_eq (bodyLocals : List MirTy) (locals : List Loc
         cases optVal <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.evalDiscriminantOfVal`. -/
-def evalDiscriminantOfValComp (ety : EnumTy) (optVal : Option Val)
+@[expose] def evalDiscriminantOfValComp (ety : EnumTy) (optVal : Option Val)
     (locals : List LocalSlot) (mem : MemoryState) :
     Except FaultKind (Val × List LocalSlot × MemoryState) :=
   if !enumAdmittedComp ety then .error .unsupported
@@ -475,7 +478,7 @@ theorem evalDiscriminantOfValComp_eq (ety : EnumTy) (optVal : Option Val)
 
 /-- Computable mirror of
 `Trusted.MirSemantics.evalOrderingDiscriminantOfVal`. -/
-def evalOrderingDiscriminantOfValComp (optVal : Option Val)
+@[expose] def evalOrderingDiscriminantOfValComp (optVal : Option Val)
     (locals : List LocalSlot) (mem : MemoryState) :
     Except FaultKind (Val × List LocalSlot × MemoryState) :=
   match optVal with
@@ -496,7 +499,7 @@ theorem evalOrderingDiscriminantOfValComp_eq (optVal : Option Val)
 
 /-- Computable mirror of `Trusted.MirSemantics.evalRvalue` parameterized by
 `tyEq`. -/
-def evalRvalueBy (tyEq : MirTy → MirTy → Bool) (bodyLocals : List MirTy)
+@[expose] def evalRvalueBy (tyEq : MirTy → MirTy → Bool) (bodyLocals : List MirTy)
     (locals : List LocalSlot) (mem : MemoryState) (dstTy : MirTy) (rv : Rvalue) :
     Except FaultKind (Val × List LocalSlot × MemoryState) :=
   match rv with
@@ -687,7 +690,7 @@ theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
 
 /-- Computable mirror of `Trusted.MirSemantics.writePlace` parameterized by
 `tyEq`. -/
-def writePlaceBy (tyEq : MirTy → MirTy → Bool) (locals : List LocalSlot)
+@[expose] def writePlaceBy (tyEq : MirTy → MirTy → Bool) (locals : List LocalSlot)
     (mem : MemoryState) (dstLocalId : LocalId) (dstTy : MirTy) (val : Val) :
     Except FaultKind (List LocalSlot × MemoryState) :=
   if !checkValBy tyEq val dstTy then .error .unsupported
@@ -730,7 +733,7 @@ theorem writePlaceBy_eq (tyEq : MirTy → MirTy → Bool)
 
 /-- Computable mirror of `Trusted.MirSemantics.evalStatement` parameterized by
 `tyEq`. -/
-def evalStatementBy (tyEq : MirTy → MirTy → Bool) (body : Body)
+@[expose] def evalStatementBy (tyEq : MirTy → MirTy → Bool) (body : Body)
     (frame : FrameState) (mem : MemoryState) (callerMem : CallerMemory)
     (stmt : StatementKind) : StepResult State TerminalOut :=
   match stmt with
@@ -845,7 +848,7 @@ theorem evalStatementBy_eq (tyEq : MirTy → MirTy → Bool)
               | ok pair => cases pair; rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.evalSwitchBranches`. -/
-def evalSwitchBranchesComp (w : IntWidth) (discrBits : BitVec 128)
+@[expose] def evalSwitchBranchesComp (w : IntWidth) (discrBits : BitVec 128)
     (otherwise : BasicBlockId) (branches : List (BitVec 128 × BasicBlockId)) :
     Except FaultKind BasicBlockId :=
   List.foldr
@@ -882,7 +885,7 @@ theorem evalSwitchBranchesComp_eq (w : IntWidth) (discrBits : BitVec 128)
       rw [bv128BneComp_eq, bv128BeqComp_eq_beq, truncateBitsComp_eq, truncateBitsComp_eq, ih]
 
 /-- Computable mirror of `Trusted.MirSemantics.evalBoolSwitchBranches`. -/
-def evalBoolSwitchBranchesComp (discr : Bool) (otherwise : BasicBlockId)
+@[expose] def evalBoolSwitchBranchesComp (discr : Bool) (otherwise : BasicBlockId)
     (branches : List (BitVec 128 × BasicBlockId)) : Except FaultKind BasicBlockId :=
   List.foldr
     (fun (entry : BitVec 128 × BasicBlockId) (acc : Except FaultKind BasicBlockId) =>
@@ -924,7 +927,7 @@ theorem evalBoolSwitchBranchesComp_eq (discr : Bool) (otherwise : BasicBlockId)
       rw [evalConstLitComp_eq, ih]
 
 /-- Computable mirror of `Trusted.MirSemantics.evalCharSwitchBranches`. -/
-def evalCharSwitchBranchesComp (discr : Char) (otherwise : BasicBlockId)
+@[expose] def evalCharSwitchBranchesComp (discr : Char) (otherwise : BasicBlockId)
     (branches : List (BitVec 128 × BasicBlockId)) : Except FaultKind BasicBlockId :=
   List.foldr
     (fun (entry : BitVec 128 × BasicBlockId) (acc : Except FaultKind BasicBlockId) =>
@@ -962,12 +965,12 @@ theorem evalCharSwitchBranchesComp_eq (discr : Char) (otherwise : BasicBlockId)
           | .ok _ => Except.error FaultKind.unsupported)
       rw [evalConstLitComp_eq, ih]
 
-private def jumpToBlockComp (frame : FrameState) (mem : MemoryState)
+@[expose] def jumpToBlockComp (frame : FrameState) (mem : MemoryState)
     (callerMem : CallerMemory) (target : BasicBlockId) : StepResult State TerminalOut :=
   .step { frames := [{ frame with blockIdx := target, stmtIdx := 0 }], callerMem, mem }
 
 /-- Computable mirror of `Trusted.MirSemantics.evalTerminator`. -/
-def evalTerminatorComp (body : Body) (bb : BasicBlock)
+@[expose] def evalTerminatorComp (body : Body) (bb : BasicBlock)
     (frame : FrameState) (mem : MemoryState) (callerMem : CallerMemory) :
     StepResult State TerminalOut :=
   match bb.terminator with
@@ -1067,7 +1070,7 @@ theorem evalTerminatorComp_eq (body : Body) (bb : BasicBlock)
             cases targets.branches <;> rfl
 
 /-- Single-step MIR evaluator (`0` `noncomputable`) parameterized by `tyEq`. -/
-def evalMirStepBy (tyEq : MirTy → MirTy → Bool) (p : Program) (_c : Choice)
+@[expose] def evalMirStepBy (tyEq : MirTy → MirTy → Bool) (p : Program) (_c : Choice)
     (s : State) : StepResult State TerminalOut :=
   match s.frames with
   | [frame] =>
@@ -1121,12 +1124,12 @@ theorem evalMirStepBy_eq (tyEq : MirTy → MirTy → Bool)
 
 /-- Depth-bounded LCNF-computable single-step MIR evaluator (`0`
 `noncomputable`). -/
-def evalMirStepAt (fuel : Nat) (p : Program) (c : Choice) (s : State) :
+@[expose] def evalMirStepAt (fuel : Nat) (p : Program) (c : Choice) (s : State) :
     StepResult State TerminalOut :=
   evalMirStepBy (mirTyBeqAt fuel) p c s
 
 /-- Fuel-bounded MIR evaluator (`0` `noncomputable`) parameterized by `tyEq`. -/
-def evalMirFuelBy (tyEq : MirTy → MirTy → Bool) (p : Program) (fuel : Nat)
+@[expose] def evalMirFuelBy (tyEq : MirTy → MirTy → Bool) (p : Program) (fuel : Nat)
     (s : State) : StepResult State TerminalOut :=
   @Nat.rec (fun _ => State → StepResult State TerminalOut)
     (fun st => .step st)
@@ -1190,7 +1193,7 @@ theorem wpOutcomeState_of_evalMirFuelBy {tyEq : MirTy → MirTy → Bool}
 /-! ## Static Entry-Admission and `initState` Core -/
 
 /-- Computable mirror of `Trusted.MirSemantics.stmtHasStorageMarker`. -/
-def stmtHasStorageMarkerComp (localId : LocalId) (stmt : StatementKind) : Bool :=
+@[expose] def stmtHasStorageMarkerComp (localId : LocalId) (stmt : StatementKind) : Bool :=
   match stmt with
   | .storageLive id | .storageDead id => Nat.beq id localId
   | _ => false
@@ -1201,7 +1204,7 @@ theorem stmtHasStorageMarkerComp_eq (localId : LocalId) (stmt : StatementKind) :
   cases stmt <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.hasStorageAnnotation`. -/
-def hasStorageAnnotationComp (body : Body) (localId : LocalId) : Bool :=
+@[expose] def hasStorageAnnotationComp (body : Body) (localId : LocalId) : Bool :=
   body.basicBlocks.any (fun bb => bb.statements.any (stmtHasStorageMarkerComp localId))
 
 /-- Agreement between `hasStorageAnnotationComp` and `hasStorageAnnotation`. -/
@@ -1212,7 +1215,7 @@ theorem hasStorageAnnotationComp_eq (body : Body) (localId : LocalId) :
     listAny_congr bb.statements (stmtHasStorageMarkerComp_eq localId))
 
 /-- Computable mirror of `Trusted.MirSemantics.storageAnnotationsInBounds`. -/
-def storageAnnotationsInBoundsComp (body : Body) : Bool :=
+@[expose] def storageAnnotationsInBoundsComp (body : Body) : Bool :=
   let numLocals := body.locals.length
   body.basicBlocks.all (fun bb =>
     bb.statements.all (fun stmt =>
@@ -1227,7 +1230,7 @@ theorem storageAnnotationsInBoundsComp_eq (body : Body) :
 
 /-- Computable mirror of `Trusted.MirSemantics.discriminantTypesValid`
 parameterized by `tyEq`. -/
-def discriminantTypesValidBy (tyEq : MirTy → MirTy → Bool) (body : Body) : Bool :=
+@[expose] def discriminantTypesValidBy (tyEq : MirTy → MirTy → Bool) (body : Body) : Bool :=
   body.basicBlocks.all (fun bb =>
     bb.statements.all (fun stmt =>
       match stmt with
@@ -1297,7 +1300,7 @@ theorem discriminantTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
 
 /-- Computable mirror of `Trusted.MirSemantics.castTypesValid` parameterized by
 `tyEq`. -/
-def castTypesValidBy (tyEq : MirTy → MirTy → Bool) (body : Body) : Bool :=
+@[expose] def castTypesValidBy (tyEq : MirTy → MirTy → Bool) (body : Body) : Bool :=
   body.basicBlocks.all (fun bb =>
     bb.statements.all (fun stmt =>
       match stmt with
@@ -1340,7 +1343,7 @@ theorem castTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
 
 /-- Computable mirror of `Trusted.MirSemantics.checkArgsMatch` parameterized by
 `tyEq`. -/
-def checkArgsMatchBy (tyEq : MirTy → MirTy → Bool) (vs : List Val)
+@[expose] def checkArgsMatchBy (tyEq : MirTy → MirTy → Bool) (vs : List Val)
     (tys : List MirTy) : Bool :=
   List.foldr
     (fun (v : Val) (ih : List MirTy → Bool) (ts : List MirTy) =>
@@ -1367,7 +1370,7 @@ theorem checkArgsMatchBy_eq (tyEq : MirTy → MirTy → Bool)
       rw [checkValBy_eq tyEq hTyEq, ih tl]
 
 /-- Computable mirror of `Trusted.MirSemantics.initLocalsLoop`. -/
-def initLocalsLoopComp (body : Body) (args : List Val) (startIdx : Nat)
+@[expose] def initLocalsLoopComp (body : Body) (args : List Val) (startIdx : Nat)
     (tys : List MirTy) : List LocalSlot :=
   List.foldr
     (fun (ty : MirTy) (ih : Nat → List LocalSlot) (idx : Nat) =>
@@ -1409,7 +1412,7 @@ theorem initLocalsLoopComp_eq (body : Body) (args : List Val) (idx : Nat)
 
 /-- Computable mirror of `Trusted.MirSemantics.BodyStaticAdmitted` parameterized
 by `tyEq`. -/
-def bodyStaticAdmittedBy (tyEq : MirTy → MirTy → Bool) (p : Program)
+@[expose] def bodyStaticAdmittedBy (tyEq : MirTy → MirTy → Bool) (p : Program)
     (body : Body) : Bool :=
   Nat.beq p.pointerWidthBits 64 &&
     Nat.beq p.mirProfileVersion 1 &&
@@ -1434,7 +1437,7 @@ theorem bodyStaticAdmittedBy_eq (tyEq : MirTy → MirTy → Bool)
 
 /-- Computable mirror of `Trusted.MirSemantics.initState` parameterized by
 `tyEq`. -/
-def initStateBy (tyEq : MirTy → MirTy → Bool) (p : Program) (q : Query) :
+@[expose] def initStateBy (tyEq : MirTy → MirTy → Bool) (p : Program) (q : Query) :
     Except FaultKind State :=
   if !Nat.beq p.pointerWidthBits 64 || !Nat.beq p.mirProfileVersion 1 then
     .error .unsupported
@@ -1483,3 +1486,5 @@ theorem initStateBy_eq (tyEq : MirTy → MirTy → Bool)
       checkArgsMatchBy_eq tyEq hTyEq, initLocalsLoopComp_eq, entryMemoryComp_eq]
 
 end Anneal.MirTotal
+
+end

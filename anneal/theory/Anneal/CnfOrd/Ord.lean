@@ -6,12 +6,14 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.Data.Nat.Basic
-import Init.Data.List.Basic
+public import Init.Core
+public import Init.NotationExtra
+public import Init.Data.Nat.Basic
+public import Init.Data.List.Basic
 
+public section
 namespace Anneal.CnfOrd
 
 /-!
@@ -178,7 +180,7 @@ private theorem natBlt_irrefl (a : Nat) : Nat.blt a a = false := by
   | zero => rfl
   | succ _ ih => exact ih
 
-private def listFoldAux {α β : Type} (nil : β) (cons : α → List α → β → β)
+@[expose] def listFoldAux {α β : Type} (nil : β) (cons : α → List α → β → β)
     (xs : List α) : List α × β :=
   List.foldr (fun x acc => (x :: acc.1, cons x acc.1 acc.2)) ([], nil) xs
 
@@ -189,7 +191,7 @@ private theorem listFoldAux_fst {α β : Type} (nil : β)
   | nil => rfl
   | cons x _ ih => exact congrArg (List.cons x) ih
 
-private def listFold {α β : Type} (nil : β) (cons : α → List α → β → β)
+@[expose] def listFold {α β : Type} (nil : β) (cons : α → List α → β → β)
     (xs : List α) : β :=
   (listFoldAux nil cons xs).2
 
@@ -209,18 +211,18 @@ inductive Cmp3 where
   | gt
 
 /-- Swaps `.lt` and `.gt`, fixing `.eq`. -/
-def cmpFlip (c : Cmp3) : Cmp3 :=
+@[expose] def cmpFlip (c : Cmp3) : Cmp3 :=
   match c with
   | .lt => .gt
   | .eq => .eq
   | .gt => .lt
 
 /-- Computable strict inequality `a < b` (`Nat.ble (a + 1) b`). -/
-def natLt (a b : Nat) : Bool :=
+@[expose] def natLt (a b : Nat) : Bool :=
   Nat.ble (a + 1) b
 
 /-- Computable three-way comparison on `Nat`. -/
-def natCmp (a b : Nat) : Cmp3 :=
+@[expose] def natCmp (a b : Nat) : Cmp3 :=
   match natLt a b with
   | true => .lt
   | false =>
@@ -318,12 +320,12 @@ representing `∑_i ω^{exp_i} · coeff_i`. -/
 abbrev CnfOrd : Type := List (Nat × Nat)
 
 /-- `true` iff every term exponent in `xs` is strictly below `bound`. -/
-def cnfAllBelow (bound : Nat) (xs : CnfOrd) : Bool :=
+@[expose] def cnfAllBelow (bound : Nat) (xs : CnfOrd) : Bool :=
   xs.foldr (fun p ih => natLt p.1 bound && ih) true
 
 /-- `true` iff `xs` is in canonical Cantor Normal Form: strictly descending
 exponents `e_0 > e_1 > ...` and strictly positive coefficients `c_i > 0`. -/
-def isCanonicalCnf (xs : CnfOrd) : Bool :=
+@[expose] def isCanonicalCnf (xs : CnfOrd) : Bool :=
   listFold true (fun p tl ih => natLt 0 p.2 && cnfAllBelow p.1 tl && ih) xs
 
 /-- Unfolding equation for `isCanonicalCnf (p :: tl)`. -/
@@ -344,7 +346,7 @@ theorem cnfAllBelow_mono (b1 b2 : Nat) (xs : CnfOrd)
       (ih (bandRight h))
 
 /-- Lexicographic three-way comparison on single `(exp, coeff)` CNF terms. -/
-def termCmp (a b : Nat × Nat) : Cmp3 :=
+@[expose] def termCmp (a b : Nat × Nat) : Cmp3 :=
   match natCmp a.1 b.1 with
   | .lt => .lt
   | .gt => .gt
@@ -400,7 +402,7 @@ private theorem termCmpTransLtBle (a b c : Nat × Nat)
         rw [hac2]
 
 /-- Lexicographic three-way comparison on `CnfOrd` term lists. -/
-def cnfCmp (xs ys : CnfOrd) : Cmp3 :=
+@[expose] def cnfCmp (xs ys : CnfOrd) : Cmp3 :=
   (xs.foldr
     (fun a ih rem =>
       match rem with
@@ -416,14 +418,14 @@ def cnfCmp (xs ys : CnfOrd) : Cmp3 :=
       | _ :: _ => .lt)) ys
 
 /-- Strict `< ω^ω` Cantor Normal Form ordinal ordering. -/
-def cnfLt (xs ys : CnfOrd) : Bool :=
+@[expose] def cnfLt (xs ys : CnfOrd) : Bool :=
   match cnfCmp xs ys with
   | .lt => true
   | .eq => false
   | .gt => false
 
 /-- Reflexive `≤` ordering on `CnfOrd`. -/
-def cnfBle (xs ys : CnfOrd) : Bool :=
+@[expose] def cnfBle (xs ys : CnfOrd) : Bool :=
   match cnfCmp xs ys with
   | .lt => true
   | .eq => true
@@ -639,7 +641,7 @@ theorem cnfBle_antisymm (a b : CnfOrd)
 /-! ## 3. Coefficient Extraction & Highest-Differing-Exponent Descent -/
 
 /-- Total coefficient of `ω^q` in `xs`. -/
-def cnfCoeffAt (q : Nat) (xs : CnfOrd) : Nat :=
+@[expose] def cnfCoeffAt (q : Nat) (xs : CnfOrd) : Nat :=
   xs.foldr
     (fun p acc => match Nat.beq p.1 q with | true => p.2 + acc | false => acc)
     0
@@ -924,7 +926,7 @@ theorem cnfLt_of_coeff_drop (xs ys : CnfOrd)
 
 /-- Inserts or merges `ω^e · c` into canonical CNF list `xs` (skipping `c = 0`).
 -/
-def cnfAddTerm (e c : Nat) (xs : CnfOrd) : CnfOrd :=
+@[expose] def cnfAddTerm (e c : Nat) (xs : CnfOrd) : CnfOrd :=
   match c with
   | 0 => xs
   | c' + 1 =>
@@ -938,11 +940,11 @@ def cnfAddTerm (e c : Nat) (xs : CnfOrd) : CnfOrd :=
       xs
 
 /-- Normalizes an arbitrary `(exp, coeff)` term list into canonical `CnfOrd`. -/
-def cnfNorm (xs : CnfOrd) : CnfOrd :=
+@[expose] def cnfNorm (xs : CnfOrd) : CnfOrd :=
   xs.foldr (fun p acc => cnfAddTerm p.1 p.2 acc) []
 
 /-- Hessenberg natural addition `xs ⊕ ys` on `CnfOrd`. -/
-def cnfNatAdd (xs ys : CnfOrd) : CnfOrd :=
+@[expose] def cnfNatAdd (xs ys : CnfOrd) : CnfOrd :=
   xs.foldr (fun p acc => cnfAddTerm p.1 p.2 acc) (cnfNorm ys)
 
 /-- Alias for Hessenberg natural addition `cnfNatAdd`. -/
@@ -1428,7 +1430,7 @@ inductive CnfStepConverges {α : Type} (step : α → Option α)
       CnfStepConverges step measure s sFinal
 
 /-- Computable `@Nat.rec` bounded runner for `step : α → Option α`. -/
-def cnfStepRun {α : Type} (fuel : Nat) (step : α → Option α) (s : α) :
+@[expose] def cnfStepRun {α : Type} (fuel : Nat) (step : α → Option α) (s : α) :
     Option α :=
   @Nat.rec (fun _ => α → Option α)
     (fun _ => none)
@@ -1498,3 +1500,5 @@ theorem cnfStep_terminates_all {α : Type} (step : α → Option α)
     exact ⟨sFinal, hConv.1, hConv.2, hEx.1, hEx.2⟩
 
 end Anneal.CnfOrd
+
+end

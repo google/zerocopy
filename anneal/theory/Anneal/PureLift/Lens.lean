@@ -6,10 +6,13 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.Data.List.Basic
-import Init.Data.Nat.Basic
+public import Init.Core
+public import Init.Data.List.Basic
+public import Init.Data.Nat.Basic
+
+public section
 
 namespace Anneal.PureLift
 
@@ -45,29 +48,33 @@ reduce the recursion spine in head position before inspecting the target value,
 Consequently, base cases (`.unborrowed`, `.direct`, `.act`, `0`) discard the
 recursive continuation `ih` in $O(1)$ `whnf` steps without emitting
 compiler-only `_unsafe_rec` declarations. -/
-def fix2 {α : Type} (step : α → α) (base : α) : α :=
+@[expose] def fix2 {α : Type} (step : α → α) (base : α) : α :=
   step (step base)
 
-def fix4 {α : Type} (step : α → α) (base : α) : α :=
+@[expose] def fix4 {α : Type} (step : α → α) (base : α) : α :=
   fix2 step (fix2 step base)
 
-def fix8 {α : Type} (step : α → α) (base : α) : α :=
+@[expose] def fix8 {α : Type} (step : α → α) (base : α) : α :=
   fix4 step (fix4 step base)
 
-def fix16 {α : Type} (step : α → α) (base : α) : α :=
+@[expose] def fix16 {α : Type} (step : α → α) (base : α) : α :=
   fix8 step (fix8 step base)
 
-/-- Total structural recursion on `Nat` indices via `@Nat.recCompiled`, avoiding
-bounded fuel truncation at indices above eight while emitting zero
-compiler-only `_unsafe_rec` declarations. -/
-def natFold {α : Type} (zero : α) (succ : Nat → α → α) (n : Nat) : α :=
-  @Nat.recCompiled (fun _ => α) zero succ n
+/-- Total structural recursion on `Nat` indices via the kernel recursor
+`@Nat.rec`, avoiding bounded fuel truncation at indices above eight while
+emitting zero compiler-only `_unsafe_rec` declarations.
+
+Uses `@Nat.rec` rather than `@Nat.recCompiled` because `Nat.recCompiled` is not
+`@[expose]`d in `Init.Data.Nat.Basic` under Lean 4's `module` system, whereas
+`@Nat.rec` is kernel-exposed and `@[csimp]`-compiled to `Nat.recCompiled`. -/
+@[expose] def natFold {α : Type} (zero : α) (succ : Nat → α → α) (n : Nat) : α :=
+  @Nat.rec (fun _ => α) zero succ n
 
 /-- Total structural recursion on `List` spines via `List.foldr`, passing the
 actual remaining list tail to `cons` and avoiding bounded fuel truncation on
 lists longer than eight elements while emitting zero compiler-only
 `_unsafe_rec` declarations. -/
-def listFold {α β : Type} (nil : β) (cons : α → List α → β → β)
+@[expose] def listFold {α β : Type} (nil : β) (cons : α → List α → β → β)
     (xs : List α) : β :=
   match
     xs.foldr
@@ -91,7 +98,7 @@ inductive EvalOutcome (α : Type) where
 
 Mapping `.fail` to `False` guarantees that a proved specification always
 witnesses successful evaluation without borrow or safety faults. -/
-def HoldsFnSpec {α : Type} (out : EvalOutcome α) (post : α → Prop) : Prop :=
+@[expose] def HoldsFnSpec {α : Type} (out : EvalOutcome α) (post : α → Prop) : Prop :=
   match out with
   | .ok res => post res
   | .fail => False
@@ -121,13 +128,13 @@ structure LawfulLens (S A : Type) (l : Lens S A) : Prop where
   put_put : ∀ s a1 a2 s1, l.put s a1 = some s1 → l.put s1 a2 = l.put s a2
 
 /-- Identity lens on `S`. -/
-def Lens.id (S : Type) : Lens S S where
+@[expose] def Lens.id (S : Type) : Lens S S where
   get s := some s
   put _ a := some a
 
 /-- Sequential composition of partial lenses `l1 : Lens S A` and
 `l2 : Lens A B`. -/
-def Lens.comp {S A B : Type} (l1 : Lens S A) (l2 : Lens A B) : Lens S B where
+@[expose] def Lens.comp {S A B : Type} (l1 : Lens S A) (l2 : Lens A B) : Lens S B where
   get s :=
     match l1.get s with
     | some a => l2.get a
@@ -407,7 +414,7 @@ structure ValAlgebra (Val : Type) where
       sameAggregateShape s' t = true
 
 /-- Single-step field projection lens induced by `alg` at field index `f`. -/
-def fieldLens {Val : Type} (alg : ValAlgebra Val) (f : FieldIdx) :
+@[expose] def fieldLens {Val : Type} (alg : ValAlgebra Val) (f : FieldIdx) :
     Lens Val Val where
   get v := alg.getField f v
   put v sub := alg.setField f v sub
@@ -421,7 +428,7 @@ theorem fieldLens_lawful {Val : Type} (alg : ValAlgebra Val) (f : FieldIdx) :
   put_put := alg.setField_setField f
 
 /-- Read the nested sub-value at `SubPath` inside `v`. -/
-def getPath {Val : Type} (alg : ValAlgebra Val) (path : SubPath) (v : Val) :
+@[expose] def getPath {Val : Type} (alg : ValAlgebra Val) (path : SubPath) (v : Val) :
     Option Val :=
   path.foldr
     (fun f ih v0 =>
@@ -432,7 +439,7 @@ def getPath {Val : Type} (alg : ValAlgebra Val) (path : SubPath) (v : Val) :
     v
 
 /-- Update the nested sub-value at `SubPath` inside `vOld` to `vNew`. -/
-def putPath {Val : Type} (alg : ValAlgebra Val) (path : SubPath)
+@[expose] def putPath {Val : Type} (alg : ValAlgebra Val) (path : SubPath)
     (vOld vNew : Val) : Option Val :=
   path.foldr
     (fun f ih vO vN =>
@@ -446,7 +453,7 @@ def putPath {Val : Type} (alg : ValAlgebra Val) (path : SubPath)
     vOld vNew
 
 /-- Bidirectional lens focusing on the nested sub-place at `path`. -/
-def subPathLens {Val : Type} (alg : ValAlgebra Val) (path : SubPath) :
+@[expose] def subPathLens {Val : Type} (alg : ValAlgebra Val) (path : SubPath) :
     Lens Val Val where
   get v := getPath alg path v
   put v sub := putPath alg path v sub
@@ -614,13 +621,13 @@ theorem putPath_putPath_diverging_comm {Val : Type} (alg : ValAlgebra Val)
 
 /-- Conditional list selector used to merge `mutFinals` across branch joins
 without requiring list-length side-conditions. -/
-def zipValListBool {Val : Type} (c : Bool) (xs ys : List Val) : List Val :=
+@[expose] def zipValListBool {Val : Type} (c : Bool) (xs ys : List Val) : List Val :=
   match c with
   | true => xs
   | false => ys
 
 /-- Elementwise conditional list merge for equal-length value lists. -/
-def zipValListElem {Val : Type} (zipB : Bool → Val → Val → Val) (c : Bool)
+@[expose] def zipValListElem {Val : Type} (zipB : Bool → Val → Val → Val) (c : Bool)
     (xs ys : List Val) : List Val :=
   xs.foldr
     (fun x ih ys0 =>
@@ -631,7 +638,7 @@ def zipValListElem {Val : Type} (zipB : Bool → Val → Val → Val) (c : Bool)
     ys
 
 /-- Pointwise conditional merge of two `FuncOut Val` results. -/
-def zipFuncOut {Val : Type} (zipB : Bool → Val → Val → Val)
+@[expose] def zipFuncOut {Val : Type} (zipB : Bool → Val → Val → Val)
     (c : Bool) (t f : FuncOut Val) : FuncOut Val :=
   ⟨zipB c t.ret f.ret, zipValListBool c t.mutFinals f.mutFinals⟩
 
@@ -680,21 +687,21 @@ structure LensTestVal where
 namespace LensTestVal
 
 /-- Atomic scalar leaf constructor. -/
-def atom (n : Nat) : LensTestVal :=
+@[expose] def atom (n : Nat) : LensTestVal :=
   ⟨1, .atom n⟩
 
 /-- Encoded reference leaf constructor. -/
-def ref (lid : LoanId) (path : SubPath) : LensTestVal :=
+@[expose] def ref (lid : LoanId) (path : SubPath) : LensTestVal :=
   ⟨1, .ref lid path⟩
 
 /-- Binary aggregate node constructor carrying unforgeable structural fuel
 `l.fuel + r.fuel + 1`. -/
-def node (l r : LensTestVal) : LensTestVal :=
+@[expose] def node (l r : LensTestVal) : LensTestVal :=
   ⟨l.fuel + r.fuel + 1, .branch l.fuel r.fuel l.tree r.tree⟩
 
 /-- Symbolic conditional choice node constructor carrying unforgeable structural
 fuel `c.fuel + vt.fuel + vf.fuel + 1`. -/
-def choice (c vt vf : LensTestVal) : LensTestVal :=
+@[expose] def choice (c vt vf : LensTestVal) : LensTestVal :=
   ⟨c.fuel + vt.fuel + vf.fuel + 1,
    .choice c.fuel vt.fuel vf.fuel c.tree vt.tree vf.tree⟩
 
@@ -702,7 +709,7 @@ end LensTestVal
 
 /-- One step of `remapLensTestVal`: rename a handle to `oldLid` at the root of
 `x` to `newLid`, and rename the children of `x` with `ih`. -/
-def remapLensTestStep (oldLid newLid : LoanId)
+@[expose] def remapLensTestStep (oldLid newLid : LoanId)
     (ih : LensTestVal → LensTestVal) (x : LensTestVal) : LensTestVal :=
   match x with
   | ⟨_, .atom n⟩ => .atom n
@@ -714,23 +721,23 @@ def remapLensTestStep (oldLid newLid : LoanId)
 
 /-- `remapLensTestStep` nested `k` deep; parts of `v` deeper than `k` are left
 unchanged. -/
-def remapLensTestFuel (oldLid newLid : LoanId) (k : Nat) (v : LensTestVal) :
+@[expose] def remapLensTestFuel (oldLid newLid : LoanId) (k : Nat) (v : LensTestVal) :
     LensTestVal :=
   natFold (fun x => x) (fun _ ih x => remapLensTestStep oldLid newLid ih x) k v
 
 /-- Rename every handle to loan `oldLid` inside `v` to `newLid`. The fuel
 `v.fuel` exceeds the depth of every node of `v`
 (`remapLensTestFuel_eq`). -/
-def remapLensTestVal (oldLid newLid : LoanId) (v : LensTestVal) : LensTestVal :=
+@[expose] def remapLensTestVal (oldLid newLid : LoanId) (v : LensTestVal) : LensTestVal :=
   remapLensTestFuel oldLid newLid v.fuel v
 
-def lensTestGetField (f : FieldIdx) (v : LensTestVal) : Option LensTestVal :=
+@[expose] def lensTestGetField (f : FieldIdx) (v : LensTestVal) : Option LensTestVal :=
   match f, v with
   | 0, ⟨_, .branch fl _ l _⟩ => some ⟨fl, l⟩
   | 1, ⟨_, .branch _ fr _ r⟩ => some ⟨fr, r⟩
   | _, _ => none
 
-def lensTestSetField (f : FieldIdx) (v sub : LensTestVal) :
+@[expose] def lensTestSetField (f : FieldIdx) (v sub : LensTestVal) :
     Option LensTestVal :=
   match f, v, sub with
   | 0, ⟨_, .branch _ fr _ r⟩, ⟨fSub, tSub⟩ =>
@@ -938,7 +945,7 @@ theorem lensTest_setField_setField_comm (f g : FieldIdx)
             | ref _ _ => nomatch h1
         | succ _ => nomatch h1
 
-def lensTestSubPathEq (xs ys : SubPath) : Bool :=
+@[expose] def lensTestSubPathEq (xs ys : SubPath) : Bool :=
   xs.foldr
     (fun a ih bs =>
       match bs with
@@ -983,7 +990,7 @@ theorem lensTestSubPathEq_eq :
         intro h
         rw [Nat.eq_of_beq_eq_true hxy, ih ys' h]
 
-def lensTestValEqStep (ih : LensTestVal → LensTestVal → Bool)
+@[expose] def lensTestValEqStep (ih : LensTestVal → LensTestVal → Bool)
     (a b : LensTestVal) : Bool :=
   match a, b with
   | ⟨_, .atom n1⟩, ⟨_, .atom n2⟩ => Nat.beq n1 n2
@@ -998,13 +1005,13 @@ def lensTestValEqStep (ih : LensTestVal → LensTestVal → Bool)
     Nat.beq lid1 lid2 && lensTestSubPathEq p1 p2
   | _, _ => false
 
-def lensTestValEqFuel (k : Nat) (v1 v2 : LensTestVal) : Bool :=
+@[expose] def lensTestValEqFuel (k : Nat) (v1 v2 : LensTestVal) : Bool :=
   natFold
     (fun _ _ => false)
     (fun _ ih a b => lensTestValEqStep ih a b)
     k v1 v2
 
-def lensTestValEq (v1 v2 : LensTestVal) : Bool :=
+@[expose] def lensTestValEq (v1 v2 : LensTestVal) : Bool :=
   lensTestValEqFuel v1.fuel v1 v2
 
 theorem lensTestTree_eq_refl :
@@ -1063,18 +1070,18 @@ theorem lensTestValEq_refl (v : LensTestVal) : lensTestValEq v v = true := by
   | mk f t =>
     exact lensTestTree_eq_refl t f (Nat.le_refl f)
 
-def lensTestAsBool (v : LensTestVal) : Option Bool :=
+@[expose] def lensTestAsBool (v : LensTestVal) : Option Bool :=
   match v with
   | ⟨_, .atom n⟩ => some (n != 0)
   | _ => none
 
-def lensTestZipVal (c vt vf : LensTestVal) : LensTestVal :=
+@[expose] def lensTestZipVal (c vt vf : LensTestVal) : LensTestVal :=
   match lensTestAsBool c with
   | some true => vt
   | some false => vf
   | none => .choice c vt vf
 
-def lensTestProjectBranchStep (c : LensTestVal) (branch : Bool)
+@[expose] def lensTestProjectBranchStep (c : LensTestVal) (branch : Bool)
     (ih : LensTestVal → LensTestVal) (v0 : LensTestVal) : LensTestVal :=
   match v0 with
   | ⟨_, .choice fc ft ff cond vt vf⟩ =>
@@ -1088,12 +1095,12 @@ def lensTestProjectBranchStep (c : LensTestVal) (branch : Bool)
     .node (ih ⟨fl, l⟩) (ih ⟨fr, r⟩)
   | other => other
 
-def lensTestProjectBranchFuel (c : LensTestVal) (branch : Bool)
+@[expose] def lensTestProjectBranchFuel (c : LensTestVal) (branch : Bool)
     (k : Nat) (v : LensTestVal) : LensTestVal :=
   natFold (fun v0 => v0)
     (fun _ ih v0 => lensTestProjectBranchStep c branch ih v0) k v
 
-def lensTestProjectBranchVal (c : LensTestVal) (branch : Bool)
+@[expose] def lensTestProjectBranchVal (c : LensTestVal) (branch : Bool)
     (v : LensTestVal) : LensTestVal :=
   match lensTestAsBool c with
   | some _ => v
@@ -1307,7 +1314,7 @@ theorem lensTest_getField_lt_sizeBound (f : FieldIdx) (v c : LensTestVal)
 
 /-- `LensTestVal` aggregates are binary `.branch` nodes, which carry no data
 besides their two fields. -/
-def lensTestSameAggregateShape (v1 v2 : LensTestVal) : Bool :=
+@[expose] def lensTestSameAggregateShape (v1 v2 : LensTestVal) : Bool :=
   match v1, v2 with
   | ⟨_, .branch _ _ _ _⟩, ⟨_, .branch _ _ _ _⟩ => true
   | _, _ => false
@@ -1357,7 +1364,7 @@ theorem lensTest_sameAggregateShape_setField (f : FieldIdx)
         | exact nomatch hShape
 
 /-- Handle decoding for `LensTestVal`: only `.ref` leaves are handles. -/
-def lensTestDecodeRef (v : LensTestVal) : Option (LoanId × SubPath) :=
+@[expose] def lensTestDecodeRef (v : LensTestVal) : Option (LoanId × SubPath) :=
   match v with
   | ⟨_, .ref lid path⟩ => some (lid, path)
   | _ => none
@@ -1377,7 +1384,7 @@ theorem lensTest_decodeRef_getField (f : FieldIdx) (v : LensTestVal)
     | choice _ _ _ _ _ _ => nomatch hDec
 
 /-- Guard and arms of a `LensTestVal` choice node. -/
-def lensTestBranchSplit (v : LensTestVal) :
+@[expose] def lensTestBranchSplit (v : LensTestVal) :
     Option (LensTestVal × LensTestVal × LensTestVal) :=
   match v with
   | ⟨_, .choice fc ft ff c vt vf⟩ => some (⟨fc, c⟩, ⟨ft, vt⟩, ⟨ff, vf⟩)
@@ -1404,7 +1411,7 @@ theorem lensTest_branchSplit_zipVal (cond vt vf : LensTestVal)
 /-- Key of a `LensTestVal` condition that `lensTestSameCond` can compare: the
 two atoms of a `.node (.atom a) (.atom b)` value. The test suite's symbolic
 conditions have this shape; other conditions get no key. -/
-def lensTestCondKey (v : LensTestVal) : Option (Nat × Nat) :=
+@[expose] def lensTestCondKey (v : LensTestVal) : Option (Nat × Nat) :=
   match v with
   | ⟨_, .branch _ _ (.atom a) (.atom b)⟩ => some (a, b)
   | _ => none
@@ -1437,7 +1444,7 @@ theorem lensTestCondKey_eq (v : LensTestVal) (a b : Nat)
 
 /-- Conservative condition equality for `LensTestVal`: equal keys
 (`lensTestCondKey`). Conditions without a key are never reported equal. -/
-def lensTestSameCond (c1 c2 : LensTestVal) : Bool :=
+@[expose] def lensTestSameCond (c1 c2 : LensTestVal) : Bool :=
   match lensTestCondKey c1, lensTestCondKey c2 with
   | some (a1, b1), some (a2, b2) => Nat.beq a1 a2 && Nat.beq b1 b2
   | _, _ => false
@@ -1677,7 +1684,7 @@ theorem lensTest_remapRefInVal_leaf (oldLid newLid : LoanId) (v : LensTestVal)
     | branch _ _ _ _ => nomatch hFields 0
     | choice _ _ _ _ _ _ => nomatch hSplit
 
-def lensTestSameRefVal (v1 v2 : LensTestVal) : Bool :=
+@[expose] def lensTestSameRefVal (v1 v2 : LensTestVal) : Bool :=
   match v1, v2 with
   | ⟨_, .ref l1 p1⟩, ⟨_, .ref l2 p2⟩ =>
     Nat.beq l1 l2 && lensTestSubPathEq p1 p2
@@ -1709,7 +1716,7 @@ theorem lensTest_sameRefVal_eq (v1 v2 : LensTestVal)
       | branch _ _ _ _ => nomatch h
       | choice _ _ _ _ _ _ => nomatch h
 
-def lensTestValAlg : ValAlgebra LensTestVal where
+@[expose] def lensTestValAlg : ValAlgebra LensTestVal where
   defaultVal := .atom 0
   asBool := lensTestAsBool
   zipVal := lensTestZipVal
@@ -1774,7 +1781,7 @@ theorem listFold_above_eight_exact :
 
 /-- Deep 10-level binary tree value for testing `getPath` and `putPath` beyond
 depth 8. -/
-def deepLensTestTree (leaf : Nat) : LensTestVal :=
+@[expose] def deepLensTestTree (leaf : Nat) : LensTestVal :=
   .node (.node (.node (.node (.node (.node (.node (.node (.node (.node
     (.atom leaf) (.atom 1)) (.atom 2)) (.atom 3)) (.atom 4)) (.atom 5))
     (.atom 6)) (.atom 7)) (.atom 8)) (.atom 9)) (.atom 10)
@@ -1896,3 +1903,5 @@ theorem lensTestValAlg_operations_and_failures_tests :
    rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 end Anneal.PureLift
+
+end

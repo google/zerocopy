@@ -392,8 +392,23 @@ fn rejects_forbidden_syntax_and_attributes_without_executing_eval() {
 
     let inspector_negatives: Vec<(&str, String)> = vec![
         (
-            "module header",
-            "-- anneal-trust-tier: vetted\nmodule\nprelude\nimport Init.Core\n"
+            "trusted import all",
+            "-- anneal-trust-tier: vetted\nmodule\nprelude\nimport all Init.Data.Nat.Bitwise.Basic\n"
+                .to_string(),
+        ),
+        (
+            "module meta import",
+            "-- anneal-trust-tier: vetted\nmodule\nprelude\nmeta import Init.Core\n"
+                .to_string(),
+        ),
+        (
+            "module meta section",
+            "-- anneal-trust-tier: vetted\nmodule\nprelude\npublic import Init.Core\nmeta section\nend\n"
+                .to_string(),
+        ),
+        (
+            "module noncomputable section",
+            "-- anneal-trust-tier: vetted\nmodule\nprelude\npublic import Init.Core\nnoncomputable section\nend\n"
                 .to_string(),
         ),
         (
@@ -9835,6 +9850,99 @@ fn rejects_overlapping_pass1_and_pass2_module_names() {
             sha256_file(&pass1_olean, "test").unwrap(),
             pass1_sha,
             "Pass 1 trusted .olean must not be overwritten on collision"
+        );
+    }
+}
+
+/// Pass 1 `"preflight"` and `"audit"` admit Lean 4 `module`-system `Trusted`
+/// and `theory/` files (`public import`, `@[expose] public section`,
+/// `public section` + `@[expose] def`, private `import`, and narrowly scoped
+/// `import all Init.Data.Nat.Bitwise.Basic` in `theory/`), thread `isModule`
+/// into `lean --setup`, and fail closed when a `theory/` module attempts
+/// `import all` on any non-allowlisted foundation module.
+#[test]
+fn admits_module_system_pass1_and_restricts_import_all() {
+    // Positive case: `Trusted` and `Anneal` both use Lean 4 `module` syntax,
+    // including `import all Init.Data.Nat.Bitwise.Basic` in `Anneal`.
+    {
+        let fix = TempFixture::new(Some(
+            "-- anneal-trust-tier: vetted\n\
+             module\n\
+             prelude\n\
+             public import Init.Core\n\
+             @[expose] public section\n\
+             namespace Trusted\n\
+             def seed : Nat := 7\n\
+             end Trusted\n\
+             end\n",
+        ));
+        fs::create_dir_all(fix.root.join("theory")).unwrap();
+        fs::write(
+            fix.root.join("theory/Anneal.lean"),
+            "module\n\
+             prelude\n\
+             public import Init.Core\n\
+             public import Init.Data.Nat.Bitwise.Basic\n\
+             public import Trusted\n\
+             import all Init.Data.Nat.Bitwise.Basic\n\
+             public section\n\
+             namespace Anneal\n\
+             @[expose] def bump : Nat := Trusted.seed\n\
+             theorem land_bridge (n m : Nat) : Nat.land n m = Nat.bitwise and n m := by rfl\n\
+             end Anneal\n\
+             end\n",
+        )
+        .unwrap();
+
+        let mut checker = Checker::new(&fix.root, None).unwrap();
+        checker.set_require_mir_wp(false);
+        let report = checker.run().unwrap();
+        assert_eq!(report["replay"], json!(true), "unexpected report: {report}");
+        assert!(
+            checker.stage().join("lib/Trusted.olean.private").exists(),
+            "module-compiled Trusted must emit .olean.private"
+        );
+        assert!(
+            checker.stage().join("theory-lib/Anneal.olean.private").exists(),
+            "module-compiled Anneal must emit .olean.private"
+        );
+    }
+
+    // Negative case: `theory/` cannot `import all` outside the narrow
+    // `allowedTheoryImportAllModules` allowlist.
+    {
+        let fix = TempFixture::new(Some(
+            "-- anneal-trust-tier: vetted\n\
+             module\n\
+             prelude\n\
+             public import Init.Core\n\
+             @[expose] public section\n\
+             namespace Trusted\n\
+             def seed : Nat := 7\n\
+             end Trusted\n\
+             end\n",
+        ));
+        fs::create_dir_all(fix.root.join("theory")).unwrap();
+        fs::write(
+            fix.root.join("theory/Anneal.lean"),
+            "module\n\
+             prelude\n\
+             public import Init.Core\n\
+             import all Init.Core\n\
+             public section\n\
+             theorem ok : True := True.intro\n\
+             end\n",
+        )
+        .unwrap();
+
+        let mut checker = Checker::new(&fix.root, None).unwrap();
+        checker.set_require_mir_wp(false);
+        let err = checker.run().unwrap_err();
+        assert_eq!(err.code, 1, "expected policy exit 1: {err}");
+        assert_eq!(err.phase, "preflight", "expected preflight rejection: {err}");
+        assert!(
+            err.message.contains("import modifiers are unsupported"),
+            "unexpected error: {err}"
         );
     }
 }

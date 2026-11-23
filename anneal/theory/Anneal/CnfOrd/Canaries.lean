@@ -6,10 +6,12 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Anneal.CnfOrd.Ord
-import Anneal.CnfOrd.Worklist
+public import Anneal.CnfOrd.Ord
+public import Anneal.CnfOrd.Worklist
 
+public section
 namespace Anneal.CnfOrd
 
 open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp Anneal.LoopInv
@@ -39,10 +41,10 @@ End-to-end positive and fail-closed negative canaries for `Anneal.CnfOrd`
 
 /-! ## 1. Symbolic 2-Tier Resetting MIR Loop (`lex_reset`) -/
 
-private abbrev lexU32Ty : MirTy := .int .i32 false
+abbrev lexU32Ty : MirTy := .int .i32 false
 
 /-- Reads scalar `bits.toNat` of local `idx` in top frame (`0` if absent). -/
-def readFrameU32Nat (idx : Nat) (s : State) : Nat :=
+@[expose] def readFrameU32Nat (idx : Nat) (s : State) : Nat :=
   match s.frames with
   | [] => 0
   | fr :: _ =>
@@ -55,11 +57,11 @@ def readFrameU32Nat (idx : Nat) (s : State) : Nat :=
     | _ => 0
 
 /-- Raw `< ω^ω` ranking `ω^1 · _1 + ω^0 · _2` extracted from MIR `State`. -/
-def lexResetRawRank (s : State) : CnfOrd :=
+@[expose] def lexResetRawRank (s : State) : CnfOrd :=
   [(1, readFrameU32Nat 1 s), (0, readFrameU32Nat 2 s)]
 
 /-- Entry block `bb0`: `_0 = const 0_u32; goto bb1`. -/
-def lexResetEntry : BasicBlock := {
+@[expose] def lexResetEntry : BasicBlock := {
   statements := [
     .assign ⟨0, []⟩
       (.use (.constant ⟨lexU32Ty, .scalar (BitVec.ofNat 128 0)⟩))
@@ -69,7 +71,7 @@ def lexResetEntry : BasicBlock := {
 
 /-- Inner loop header `bb1`: `switchInt(copy _2) -> [0: bb3, otherwise: bb2]`.
 -/
-def lexResetInnerHeader : BasicBlock := {
+@[expose] def lexResetInnerHeader : BasicBlock := {
   statements := []
   terminator := .switchInt (.copy ⟨2, []⟩) {
     branches := [(BitVec.ofNat 128 0, 3)]
@@ -78,7 +80,7 @@ def lexResetInnerHeader : BasicBlock := {
 }
 
 /-- Inner decrement `bb2`: `_2 = Sub(copy _2, const 1_u32); goto bb1`. -/
-def lexResetInnerDec : BasicBlock := {
+@[expose] def lexResetInnerDec : BasicBlock := {
   statements := [
     .assign ⟨2, []⟩
       (.binaryOp .sub (.copy ⟨2, []⟩)
@@ -88,7 +90,7 @@ def lexResetInnerDec : BasicBlock := {
 }
 
 /-- Outer header `bb3`: `switchInt(copy _1) -> [0: bb5, otherwise: bb4]`. -/
-def lexResetOuterHeader : BasicBlock := {
+@[expose] def lexResetOuterHeader : BasicBlock := {
   statements := []
   terminator := .switchInt (.copy ⟨1, []⟩) {
     branches := [(BitVec.ofNat 128 0, 5)]
@@ -98,7 +100,7 @@ def lexResetOuterHeader : BasicBlock := {
 
 /-- Outer decrement + dynamic inner reset `bb4`:
 `_1 = Sub(copy _1, 1); _2 = copy _3; _0 = Add(copy _0, 1); goto bb1`. -/
-def lexResetOuterBody : BasicBlock := {
+@[expose] def lexResetOuterBody : BasicBlock := {
   statements := [
     .assign ⟨1, []⟩
       (.binaryOp .sub (.copy ⟨1, []⟩)
@@ -112,13 +114,13 @@ def lexResetOuterBody : BasicBlock := {
 }
 
 /-- Exit block `bb5`: `return`. -/
-def lexResetExit : BasicBlock := {
+@[expose] def lexResetExit : BasicBlock := {
   statements := []
   terminator := .return_
 }
 
 /-- MIR `Body` for `fn lex_reset(outer: u32, inner: u32, reset_bound: u32)`. -/
-def lexResetBody : Body := {
+@[expose] def lexResetBody : Body := {
   argumentCount := 3
   locals := [lexU32Ty, lexU32Ty, lexU32Ty, lexU32Ty]
   basicBlocks := [
@@ -133,7 +135,7 @@ def lexResetBody : Body := {
 }
 
 /-- Single-body `Program` for `lex_reset`. -/
-def lexResetProg : Program := {
+@[expose] def lexResetProg : Program := {
   scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
@@ -141,13 +143,13 @@ def lexResetProg : Program := {
 }
 
 /-- Loop-header state at `bb1` holding `(acc, outRem, inRem, resetB)`. -/
-def lexResetAt (acc outRem inRem resetB : Nat) : State :=
+@[expose] def lexResetAt (acc outRem inRem resetB : Nat) : State :=
   mkState 1 0
     [u32Slot acc, u32Slot outRem, u32Slot inRem, u32Slot resetB]
     0 { nextAllocId := 2, allocations := [] }
 
 /-- Loop invariant at `bb1` for initial `(outer, resetB)`. -/
-def lexResetInv (outer resetB : Nat) (s : State) : Prop :=
+@[expose] def lexResetInv (outer resetB : Nat) (s : State) : Prop :=
   ∃ acc outRem inRem,
     acc + outRem = outer ∧
     inRem < Nat.pow 2 32 ∧
@@ -155,11 +157,11 @@ def lexResetInv (outer resetB : Nat) (s : State) : Prop :=
 
 /-- Loop exit state at `bb1`: both counters have reached `0` and `_0 = outer`.
 -/
-def lexResetDone (outer resetB : Nat) (s : State) : Prop :=
+@[expose] def lexResetDone (outer resetB : Nat) (s : State) : Prop :=
   s = lexResetAt outer 0 0 resetB
 
 /-- Postcondition for `lexResetProg`: returns `outer`. -/
-def lexResetPost (outer : Nat) (out : TerminalOut) : Prop :=
+@[expose] def lexResetPost (outer : Nat) (out : TerminalOut) : Prop :=
   out = .returned ⟨u32Val outer, ⟨[]⟩⟩
 
 private theorem evalStatement_assign_copy_u32 {body : Body} {frame : FrameState}
@@ -550,14 +552,14 @@ theorem lexReset_returns (outer inner resetBound : Nat)
 
 /-- 4-tier strictly descending rank tower `[5, 3, 2, 1, 0]` (`0 < r_{i+1} < r_i`
 across 3 interior tiers). -/
-def tower53210 : List Nat := [5, 3, 2, 1, 0]
+@[expose] def tower53210 : List Nat := [5, 3, 2, 1, 0]
 
 /-- Spawn policy stepping down `tower53210` with fanout `2` at each hop. -/
-def policyTower53210 : SpawnPolicy := towerLookupNext tower53210 2 0
+@[expose] def policyTower53210 : SpawnPolicy := towerLookupNext tower53210 2 0
 
 /-- Initial `WorklistPool` with one rank-`5` root task (`remYields = 1`),
 spawning `1 + 4 + 8 + 16 + 32 = 61` tasks across `62` steps. -/
-def multiRankPool0 : WorklistPool := {
+@[expose] def multiRankPool0 : WorklistPool := {
   fifoQueue := [RankedTask.mk 0 5 1]
   stealDeque := []
   nextTaskId := 1
@@ -623,3 +625,5 @@ theorem canary_cnford_negative_fail_closed_tests :
   ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 end Anneal.CnfOrd
+
+end

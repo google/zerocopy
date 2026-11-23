@@ -6,8 +6,9 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Anneal.MirTotal.Ops
-import Anneal.MirTotal.StepCore
-import Anneal.MirTotal.ExecTotal
-import Anneal.MirTotal.Canaries
+public import Anneal.MirTotal.Ops
+public import Anneal.MirTotal.StepCore
+public import Anneal.MirTotal.ExecTotal
+public import Anneal.MirTotal.Canaries
