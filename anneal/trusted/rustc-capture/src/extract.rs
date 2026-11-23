@@ -773,8 +773,12 @@ pub fn body<'tcx>(tcx: TyCtxt<'tcx>, def: LocalDefId, body: &mir::Body<'tcx>) ->
         );
     }
     // Refuse crates enabling `#![feature(ergonomic_clones)]`: post-capture
-    // `optimize_use_clone` in `rustc_codegen_ssa` rewrites `CallSource::Use`
-    // calls on `&T` (`T: Copy`) to bitwise copies after `Runtime(PostCleanup)`.
+    // `optimize_use_clone` in `rustc_codegen_ssa` ("Replace `clone` calls that
+    // come from `use` statements with direct copies if possible", guarded by
+    // `if tcx.features().ergonomic_clones()`) rewrites `CallSource::Use` calls
+    // on `&T` (`T: Copy`) to bitwise copies after `Runtime(PostCleanup)`.
+    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/mir/mod.rs#L217-L224
+    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/mir/mod.rs#L350-L407
     if tcx.features().ergonomic_clones() {
         return Err(
             "#![feature(ergonomic_clones)] is unsupported during capture: \

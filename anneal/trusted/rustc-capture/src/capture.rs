@@ -761,6 +761,22 @@ fn collect(
             "crate-local language items are unsupported",
         ));
     }
+    // During codegen after `Runtime(PostCleanup)`, `rustc_codegen_ssa` runs
+    // `optimize_use_clone` ("Replace `clone` calls that come from `use`
+    // statements with direct copies if possible") whenever
+    // `tcx.features().ergonomic_clones()` holds (`if
+    // tcx.features().ergonomic_clones()`), rewriting `CallSource::Use` calls
+    // on `&T` (`T: Copy`) into bitwise copies even when `<T as Clone>::clone`
+    // is non-trivial. Enforce this at crate level too so bodyless
+    // `--scope=crate` captures fail closed before per-body extraction.
+    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/mir/mod.rs#L217-L224
+    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/mir/mod.rs#L350-L407
+    if tcx.features().ergonomic_clones() {
+        return Err(Failure::unsupported(
+            "#![feature(ergonomic_clones)] is unsupported during capture: \
+             post-capture optimize_use_clone can diverge from captured MIR",
+        ));
+    }
 
     // `iter_local_def_id` finishes analysis and visits all definitions,
     // including definitions created during enumeration: "Recompute the number
