@@ -1,0 +1,58 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/mir-semantics",
+    "anneal/rustc-capture",
+    "rust",
+    "rust/stdlib",
+    "rust/unsafe",
+    "rustc",
+    "rustc/intrinsics",
+    "rustc/mir",
+    "rustc/sysroot",
+    "verification",
+    "verification/rust",
+    "verification/verify-rust-std"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler and standard library (pinned 1.98.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly (2026-05-30)"
+      }
+    },
+    {
+      "name": "Rust compiler and standard library (development head comparison)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8006091eb71ae7d9e9bccb66c6122c9d68af4466"
+      }
+    },
+    {
+      "name": "Anneal MIR capture and verification toolchain in zerocopy",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "e5a9824d87f7daa5282969a25a8bbca9af985400",
+        "subpath": "anneal"
+      }
+    },
+    {
+      "name": "Verify Rust Standard Library fork and challenge suite",
+      "identity": {
+        "repository": "model-checking/verify-rust-std",
+        "revision": "1feeadd937956b8067ec2fb147ef55469361dab4"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}
