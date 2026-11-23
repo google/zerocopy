@@ -86498,6 +86498,61 @@
         "verification/compiler-verification"
       ]
     },
+    "proof-size-pressure-modularity-and-scaffolding": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "a68641199cdfa99f96cb62f0cde921c9d36bfb22"
+          },
+          "name": "google/zerocopy (Anneal 0.2.0-alpha.8 census, zerocopy/proofs/01..04, cargo-anneal verify.rs, and anneal/theory)"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "3f9d7d7048138494e17e419557f08e218fe36bba"
+          },
+          "name": "google/zerocopy (Anneal.PureLift.BlockCfg refactoring probe and proof-scaling/cargo-anneal skills baseline)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4 (pinned Lean 4 v4.34.1 compiler and kernel replay engine)"
+        },
+        {
+          "identity": {
+            "repository": "graydon/millipede",
+            "revision": "4f13d3980a5570177a774e63cfbc95e652dd3cde"
+          },
+          "name": "graydon/millipede (Millipede/Meta/Burden.lean theorem-size distribution baseline and Lean kernel scaling study)"
+        },
+        {
+          "identity": {
+            "arxiv": "2510.15700; 2605.20244; 2606.03743; 2211.15864; 2310.00656v3; 2211.16605; 2310.19791; 1905.09381; 2010.00774; 2210.12283",
+            "doi": "10.1016/0005-1098(78)90005-5; 10.34727/2023/isbn.978-3-85448-060-0_26"
+          },
+          "name": "Proof-refactoring, library-compression, SMT-stability, and MDL literature (ProofOptimizer, Lean Refactor, Proof-Refactor, Peano, LEGO-Prover, Stitch, LILO, CoqGym, PUMPKIN Pi, DSP, Mariposa, Rissanen 1978, Ousterhout 2021)"
+        }
+      ],
+      "topics": [
+        "agents",
+        "agents/proof-search",
+        "anneal",
+        "anneal/mir-semantics",
+        "anneal/theory",
+        "lean/elaboration",
+        "lean/kernel",
+        "rust/mir-verification",
+        "tooling/refactoring",
+        "verification/proof-compression",
+        "verification/scaffolding",
+        "zerocopy"
+      ]
+    },
     "prophecy-variables-and-backward-functions-for-mutable-borrows": {
       "observed_at": "2026-11-20",
       "subjects": [
