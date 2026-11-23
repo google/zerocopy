@@ -1,0 +1,108 @@
+{
+  "schema": "anneal-perf-budgets/v1",
+  "rolling": {
+    "window": 25,
+    "min_history": 5,
+    "confirmed_z": 3.5,
+    "spike_z": 4.0,
+    "min_rel_delta": 0.08,
+    "spike_min_rel_delta": 0.10,
+    "severe_z": 6.0,
+    "severe_rel_delta": 0.20,
+    "mad_floor_rel": 0.015,
+    "deterministic_rel_delta": 0.05,
+    "deterministic_min_bytes": 4096
+  },
+  "budgets": [
+    {
+      "pattern": "theory_elab.*.cold_j1_ms",
+      "max_value": 75000.0,
+      "unit": "ms",
+      "description": "Catastrophic per-module cold lean -j1 elaboration ceiling"
+    },
+    {
+      "pattern": "memory_rss.theory_*.cold_j1_maxrss_kib",
+      "max_value": 2621440,
+      "unit": "KiB",
+      "description": "Per-module lean -j1 peak RSS ceiling (2.5 GiB)"
+    },
+    {
+      "pattern": "memory_rss.theory_elab.max_module_maxrss_kib",
+      "max_value": 2621440,
+      "unit": "KiB",
+      "description": "Maximum per-module lean -j1 peak RSS ceiling (2.5 GiB)"
+    },
+    {
+      "pattern": "memory_rss.verify_scalar.*_maxrss_kib",
+      "max_value": 2621440,
+      "unit": "KiB",
+      "description": "Scalar cargo-anneal verify peak RSS ceiling (2.5 GiB)"
+    },
+    {
+      "metric": "artifact_size.module.trusted.olean_bytes",
+      "max_value": 3145728,
+      "unit": "B",
+      "description": "Root Trusted public .olean byte ceiling (3 MiB)"
+    },
+    {
+      "pattern": "artifact_size.module.trusted_*.olean_bytes",
+      "max_value": 3145728,
+      "unit": "B",
+      "description": "Per-module Trusted.* public .olean byte ceiling (3 MiB)"
+    },
+    {
+      "pattern": "artifact_size.module.anneal_*.olean_bytes",
+      "max_value": 3145728,
+      "unit": "B",
+      "description": "Per-module Anneal.* public .olean byte ceiling (3 MiB)"
+    },
+    {
+      "pattern": "artifact_size.module.trustedboundary.olean_bytes",
+      "max_value": 25165824,
+      "unit": "B",
+      "description": "TrustedBoundary inspector public .olean byte ceiling (24 MiB)"
+    },
+    {
+      "pattern": "artifact_size.module.*.olean_private_bytes",
+      "max_value": 12582912,
+      "unit": "B",
+      "description": "Per-module .olean.private byte ceiling (12 MiB)"
+    },
+    {
+      "pattern": "artifact_size.bundled_olean.total_bytes",
+      "max_value": 67108864,
+      "unit": "B",
+      "description": "Total bundled .olean* footprint ceiling (64 MiB)"
+    },
+    {
+      "pattern": "artifact_size.bin.cargo_anneal_bytes",
+      "max_value": 33554432,
+      "unit": "B",
+      "description": "cargo-anneal binary byte ceiling (32 MiB)"
+    },
+    {
+      "pattern": "artifact_size.bin.anneal_rustc_capture_bytes",
+      "max_value": 33554432,
+      "unit": "B",
+      "description": "anneal-rustc-capture binary byte ceiling (32 MiB)"
+    },
+    {
+      "pattern": "artifact_size.bin.anneal_audit_bytes",
+      "max_value": 33554432,
+      "unit": "B",
+      "description": "anneal-audit binary byte ceiling (32 MiB)"
+    },
+    {
+      "pattern": "artifact_size.archive.omnibus_tar_zst_bytes",
+      "max_value": 1073741824,
+      "unit": "B",
+      "description": "Omnibus toolchain archive byte ceiling (1 GiB)"
+    },
+    {
+      "pattern": "zerocopy_proofs.suite.verified_units_count",
+      "min_value": 4,
+      "unit": "count",
+      "description": "Non-backsliding first-customer verified proof unit floor"
+    }
+  ]
+}
