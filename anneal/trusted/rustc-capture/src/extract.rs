@@ -149,7 +149,7 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
         // non-generic (`args.is_empty()`) enums "defined in the crate currently
         // being compiled" (`is_local()`). Their paths are crate-relative,
         // phantom generic instantiations cannot share one key, and `capture.rs`
-        // can refuse a key shared by two local enum definitions.
+        // refuses any emitted key shared by two local enum definitions.
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_span/src/def_id.rs#L291-L295
         ty::Adt(adt, args) if adt.did().is_local() && adt.is_enum() && args.is_empty() => {
             if adt.variants().is_empty() {
@@ -539,8 +539,10 @@ fn item_identity(tcx: TyCtxt<'_>, def: DefId) -> String {
 ///
 /// Truncation to the `u32` width of `ir::EnumTy`'s key can collide, and
 /// distinct definitions can print the same path (for example, same-named enums
-/// in sibling blocks of one function). `capture.rs` therefore refuses a crate
-/// in which two local enum definitions share a key.
+/// in sibling blocks of one function or repeated anonymous `const _` blocks).
+/// `capture.rs` therefore refuses any admitted or captured enum key that two
+/// local enum definitions in the crate share, while ignoring collisions among
+/// unreferenced enums outside the captured scope.
 pub fn enum_id(tcx: TyCtxt<'_>, def: DefId) -> u32 {
     let digest = Sha256::digest(format!("anneal:enum:v1:{}", item_identity(tcx, def)));
     u32::from_be_bytes([digest[0], digest[1], digest[2], digest[3]])

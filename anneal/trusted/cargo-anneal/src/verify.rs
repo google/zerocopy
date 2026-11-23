@@ -219,6 +219,10 @@ struct RustcArgs {
     /// Conditional compilation `cfg` flag passed to capture.
     #[arg(long)]
     cfg: Vec<String>,
+    /// Compile-time environment variable (`KEY=VALUE`) for `env!` and
+    /// `option_env!`.
+    #[arg(long, value_name = "KEY=VALUE", value_parser = parse_env_arg)]
+    env: Vec<(String, String)>,
     /// Additional Rust source file in the crate.
     #[arg(long)]
     source_file: Vec<PathBuf>,
@@ -301,6 +305,33 @@ fn parse_module_file_arg(raw: &OsStr) -> std::result::Result<ModuleFileArg, Stri
     Ok(ModuleFileArg { module: module.to_owned(), path })
 }
 
+fn parse_env_arg(raw: &str) -> std::result::Result<(String, String), String> {
+    let Some((key, value)) = raw.split_once('=') else {
+        return Err(format!("expected KEY=VALUE environment binding, got {raw:?}"));
+    };
+    validate_env_binding(key, value)?;
+    Ok((key.to_owned(), value.to_owned()))
+}
+
+/// Validate a declared compile-time environment variable binding.
+///
+/// Rejects empty keys, keys containing `'='`, and NUL bytes in either key or
+/// value. Forbidding `'='` in keys prevents a JSON request key such as
+/// `"A=B": "C"` from smuggling a different `(key, value)` split across
+/// `--env={key}={value}` when invoking `anneal-rustc-capture`.
+fn validate_env_binding(key: &str, value: &str) -> std::result::Result<(), String> {
+    if key.is_empty() {
+        return Err("environment variable name must not be empty".to_owned());
+    }
+    if key.contains('=') {
+        return Err(format!("environment variable name must not contain '=': {key:?}"));
+    }
+    if key.contains('\0') || value.contains('\0') {
+        return Err("environment binding must not contain NUL bytes".to_owned());
+    }
+    Ok(())
+}
+
 fn parse_decl_spec(raw: &str) -> std::result::Result<DeclSpec, String> {
     if let Some((module, decl)) = raw.split_once(':') {
         if decl.contains(':') || module.is_empty() || decl.is_empty() {
@@ -349,6 +380,15 @@ impl VerifyArgs {
                             "duplicate Lean module `{}` across --spec-file/--proof-file",
                             entry.module
                         ),
+                    ));
+                }
+            }
+            let mut seen_env = BTreeSet::new();
+            for (key, _) in &rustc.env {
+                if !seen_env.insert(key.as_str()) {
+                    return Err(cmd.error(
+                        ErrorKind::ArgumentConflict,
+                        format!("duplicate --env binding for `{key}`"),
                     ));
                 }
             }
@@ -432,6 +472,8 @@ struct Compilation {
     target: String,
     #[serde(default)]
     cfg: BTreeSet<String>,
+    #[serde(default)]
+    env: BTreeMap<String, String>,
     source_files: Vec<PathBuf>,
 }
 
@@ -917,6 +959,7 @@ fn cargo_request(args: &VerifyArgs, manifest: &Path) -> Result<(Request, PathBuf
                 edition: library["edition"].as_str().unwrap_or("2024").to_owned(),
                 target: target(),
                 cfg: BTreeSet::new(),
+                env: BTreeMap::new(),
                 source_files,
             },
             scope,
@@ -1145,6 +1188,7 @@ fn prepare_rustc_request(
             edition: rustc.edition.clone(),
             target: rustc.target.clone(),
             cfg: rustc.cfg.iter().cloned().collect(),
+            env: rustc.env.iter().cloned().collect(),
             source_files,
         },
         scope,
@@ -1281,6 +1325,9 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     if request.schema_version != 1 || request.compilation.source_files.is_empty() {
         return Err(error("unsupported", "request", "unsupported or empty compilation request"));
     }
+    for (key, value) in &request.compilation.env {
+        validate_env_binding(key, value).map_err(|msg| error("unsupported", "request", msg))?;
+    }
     if !identifier(&request.proof.specification) || !identifier(&request.proof.theorem) {
         return Err(error("unsupported", "request", "invalid Lean declaration identifier"));
     }
@@ -1298,8 +1345,9 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         }
         None => module_of(&request.proof.theorem)?,
     };
-    // Selection roots and cfg entries use BTreeSet so spelling order and
-    // duplicates normalize automatically in the hashed request identity.
+    // Selection roots, cfg entries, and env bindings use BTreeSet/BTreeMap so
+    // spelling order and duplicates normalize automatically in the hashed
+    // request identity.
     let request_bytes = encoded(&request)?;
     let request_sha256 = sha256_bytes(&request_bytes);
     write(&work.join("request.json"), &request_bytes)?;
@@ -1412,6 +1460,12 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     for cfg in &request.compilation.cfg {
         command.arg(format!("--cfg={cfg}"));
     }
+    // Pass each explicit compile-time environment binding in joined `--env=...`
+    // form so keys starting with `-` stay option data and capture populates
+    // `rustc`'s logical environment without inheriting ambient process env.
+    for (key, value) in &request.compilation.env {
+        command.arg(format!("--env={key}={value}"));
+    }
     for source in &sources {
         command.arg("--source-file").arg(rust_stage.join(&source.relative_path));
     }
@@ -1447,6 +1501,7 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         || manifest.configuration["target"] != request.compilation.target
         || manifest.configuration["edition"] != request.compilation.edition
         || manifest.configuration["cfg"] != json!(request.compilation.cfg)
+        || manifest.configuration["env"] != json!(request.compilation.env)
     {
         return Err(error(
             "tool_failed",
@@ -2804,6 +2859,7 @@ mod tests {
             edition: "2024".to_owned(),
             target: target(),
             cfg: vec!["foo".to_owned()],
+            env: vec![("CARGO_PKG_VERSION".to_owned(), "0.8.64".to_owned())],
             source_file: vec![runfiles.join("lib.rs"), runfiles.join("helper.rs")],
             spec_file: vec![ModuleFileArg {
                 module: "Contract".to_owned(),
@@ -2828,6 +2884,10 @@ mod tests {
         let req = prepared.request;
         assert_eq!(req.compilation.source_root, Path::new("rust"));
         assert_eq!(req.compilation.crate_root, Path::new("lib.rs"));
+        assert_eq!(
+            req.compilation.env,
+            BTreeMap::from([("CARGO_PKG_VERSION".to_owned(), "0.8.64".to_owned())])
+        );
         assert_eq!(
             req.compilation.source_files,
             vec![PathBuf::from("helper.rs"), PathBuf::from("lib.rs")]
@@ -2855,6 +2915,7 @@ mod tests {
                 edition: "2024".to_owned(),
                 target: target(),
                 cfg: Vec::new(),
+                env: Vec::new(),
                 source_file: Vec::new(),
                 spec_file: Vec::new(),
                 proof_file: Vec::new(),
@@ -3027,6 +3088,7 @@ mod tests {
             edition: "2024".to_owned(),
             target: "x86_64-unknown-linux-gnu".to_owned(),
             cfg: Vec::new(),
+            env: Vec::new(),
             source_file: Vec::new(),
             spec_file: spec_files,
             proof_file: vec![ModuleFileArg { module: "Proof".to_owned(), path: proof.clone() }],
@@ -3378,5 +3440,76 @@ mod tests {
         let normalized = normalize_lexical_absolute(&messy).unwrap();
         assert_eq!(normalized, link);
         assert_ne!(normalized, fs::canonicalize(&link).unwrap());
+    }
+
+    #[test]
+    fn env_binding_validation_blocks_empty_keys_equals_smuggling_and_nul() {
+        assert_eq!(
+            parse_env_arg("CARGO_PKG_VERSION=0.8.64").unwrap(),
+            ("CARGO_PKG_VERSION".to_owned(), "0.8.64".to_owned())
+        );
+        assert_eq!(
+            parse_env_arg("NESTED=a=b").unwrap(),
+            ("NESTED".to_owned(), "a=b".to_owned())
+        );
+        assert_eq!(parse_env_arg("EMPTY=").unwrap(), ("EMPTY".to_owned(), String::new()));
+
+        assert!(parse_env_arg("NO_EQUALS").is_err());
+        assert!(parse_env_arg("=val").is_err());
+        assert!(validate_env_binding("", "val").is_err());
+        // JSON request objects could otherwise smuggle `--env=A=B=C` via key
+        // `"A=B"`.
+        assert!(validate_env_binding("A=B", "C").is_err());
+        assert!(validate_env_binding("A\0B", "C").is_err());
+        assert!(validate_env_binding("A", "B\0C").is_err());
+    }
+
+    #[test]
+    fn compilation_request_env_normalizes_order_and_changes_request_digest() {
+        let req_a: Request = serde_json::from_value(json!({
+            "schema_version": 1,
+            "compilation": {
+                "source_root": ".",
+                "crate_root": "lib.rs",
+                "crate_name": "demo",
+                "env": { "Z": "2", "A": "1" },
+                "source_files": ["lib.rs"]
+            },
+            "scope": { "kind": "selected_unit", "roots": ["f"] },
+            "proof": { "source_root": ".", "sources": [] }
+        }))
+        .unwrap();
+        let req_a_reordered: Request = serde_json::from_value(json!({
+            "schema_version": 1,
+            "compilation": {
+                "source_root": ".",
+                "crate_root": "lib.rs",
+                "crate_name": "demo",
+                "env": { "A": "1", "Z": "2" },
+                "source_files": ["lib.rs"]
+            },
+            "scope": { "kind": "selected_unit", "roots": ["f"] },
+            "proof": { "source_root": ".", "sources": [] }
+        }))
+        .unwrap();
+        let req_b: Request = serde_json::from_value(json!({
+            "schema_version": 1,
+            "compilation": {
+                "source_root": ".",
+                "crate_root": "lib.rs",
+                "crate_name": "demo",
+                "env": { "A": "1", "Z": "3" },
+                "source_files": ["lib.rs"]
+            },
+            "scope": { "kind": "selected_unit", "roots": ["f"] },
+            "proof": { "source_root": ".", "sources": [] }
+        }))
+        .unwrap();
+
+        let digest_a = sha256_bytes(&encoded(&req_a).unwrap());
+        let digest_a_reordered = sha256_bytes(&encoded(&req_a_reordered).unwrap());
+        let digest_b = sha256_bytes(&encoded(&req_b).unwrap());
+        assert_eq!(digest_a, digest_a_reordered);
+        assert_ne!(digest_a, digest_b);
     }
 }

@@ -1588,15 +1588,39 @@ fn enum_ids_survive_unrelated_item_insertion() {
 #[test]
 fn enum_id_collisions_between_distinct_local_enums_are_refused() {
     // Same-named enums in sibling blocks print the same semantic path, so
-    // their keys collide although they are distinct types. The refusal covers
-    // every local enum, whether or not a captured body uses it.
-    let source = b"pub fn selected() -> u64 {\n\
+    // their keys collide although they are distinct types. Whole-crate scope
+    // admits every local enum and refuses the collision even when no body uses
+    // either enum; selected-unit scope refuses whenever a captured body
+    // references the colliding enum.
+    let unreferenced_source = b"pub fn selected() -> u64 {\n\
             { enum E { A } }\n\
             { enum E { B } }\n\
             0\n\
         }\n";
-    for scope in ["--select=selected", "--scope=crate"] {
-        let fixture = Capture::new(source);
+    let crate_fixture = Capture::new(unreferenced_source);
+    let crate_output = crate_fixture
+        .command()
+        .arg("--scope=crate")
+        .output()
+        .unwrap();
+    assert_eq!(crate_output.status.code(), Some(1), "{crate_output:?}");
+    let failure = status(&crate_output);
+    assert_eq!(failure["status"], "unsupported", "{failure}");
+    assert!(
+        failure.to_string().contains("enum identity collision"),
+        "{failure}"
+    );
+    crate_fixture.assert_no_capture_artifacts();
+
+    let referenced_source = b"pub fn outer() {\n\
+            {\n\
+                pub enum E { A, B }\n\
+                pub fn selected(x: E) -> u8 { match x { E::A => 0, E::B => 1 } }\n\
+            }\n\
+            { enum E { C, D } }\n\
+        }\n";
+    for scope in ["--select=outer::selected", "--scope=crate"] {
+        let fixture = Capture::new(referenced_source);
         let output = fixture.command().arg(scope).output().unwrap();
         assert_eq!(output.status.code(), Some(1), "{scope}: {output:?}");
         let failure = status(&output);
@@ -1607,6 +1631,179 @@ fn enum_id_collisions_between_distinct_local_enums_are_refused() {
         );
         fixture.assert_no_capture_artifacts();
     }
+}
+
+#[test]
+fn enum_id_collisions_outside_selected_scope_do_not_block_capture() {
+    // Macro-expanded `const _: () = { enum ... }` blocks and sibling-block
+    // enums elsewhere in a crate share printed paths (`_::CastToWrapper`,
+    // `other::E`). Selected-unit capture must ignore collisions that do not
+    // enter any captured body while still admitting non-colliding enums used
+    // by the selected function.
+    let source = b"\
+        macro_rules! dup_const_enum {\n\
+            () => {\n\
+                const _: () = {\n\
+                    #[allow(dead_code)]\n\
+                    enum CastToWrapper {}\n\
+                };\n\
+            };\n\
+        }\n\
+        dup_const_enum!();\n\
+        dup_const_enum!();\n\
+        #[allow(dead_code)]\n\
+        pub fn other() -> u64 {\n\
+            { enum E { A } }\n\
+            { enum E { B } }\n\
+            0\n\
+        }\n\
+        pub enum Good { X, Y }\n\
+        pub fn selected(g: Good) -> u8 {\n\
+            match g { Good::X => 1, Good::Y => 2 }\n\
+        }\n";
+    let fixture = Capture::new(source);
+    let output = fixture.selected_command().output().unwrap();
+    assert!(output.status.success(), "{output:?}");
+    let manifest = fixture.manifest();
+    let ty = &manifest["program"]["bodies"][0]["local_tys"][1];
+    assert_eq!(ty["kind"], "enum", "{ty}");
+    let digest = Sha256::digest(b"anneal:enum:v1:rust-path-v1::Good");
+    let expected = u32::from_be_bytes([digest[0], digest[1], digest[2], digest[3]]);
+    assert_eq!(ty["id"].as_u64().unwrap(), u64::from(expected));
+}
+
+#[test]
+fn identically_named_enums_in_distinct_modules_capture_with_distinct_ids() {
+    let source = b"\
+        pub mod a { pub enum E { A } }\n\
+        pub mod b { pub enum E { B } }\n\
+        pub fn selected(_x: a::E, _y: b::E) -> u8 { 0 }\n";
+    for scope in ["--select=selected", "--scope=crate"] {
+        let fixture = Capture::new(source);
+        let output = fixture.command().arg(scope).output().unwrap();
+        assert!(output.status.success(), "{scope}: {output:?}");
+        let manifest = fixture.manifest();
+        let ty_a = &manifest["program"]["bodies"][0]["local_tys"][1];
+        let ty_b = &manifest["program"]["bodies"][0]["local_tys"][2];
+        assert_eq!(ty_a["kind"], "enum", "{ty_a}");
+        assert_eq!(ty_b["kind"], "enum", "{ty_b}");
+        let id_a = ty_a["id"].as_u64().unwrap();
+        let id_b = ty_b["id"].as_u64().unwrap();
+        assert_ne!(id_a, id_b);
+        let digest_a = Sha256::digest(b"anneal:enum:v1:rust-path-v1::a::E");
+        let digest_b = Sha256::digest(b"anneal:enum:v1:rust-path-v1::b::E");
+        assert_eq!(
+            id_a,
+            u64::from(u32::from_be_bytes([
+                digest_a[0],
+                digest_a[1],
+                digest_a[2],
+                digest_a[3],
+            ]))
+        );
+        assert_eq!(
+            id_b,
+            u64::from(u32::from_be_bytes([
+                digest_b[0],
+                digest_b[1],
+                digest_b[2],
+                digest_b[3],
+            ]))
+        );
+    }
+}
+
+#[test]
+fn explicit_env_bindings_admit_env_macros_override_ambient_and_bind_manifest() {
+    // Mirrors real-world crates using `#[doc = concat!(...,
+    // env!("CARGO_PKG_VERSION"))]` alongside macro-expanded anonymous
+    // `const _` blocks.
+    let source = b"\
+        macro_rules! dup_wrapper {\n\
+            () => {\n\
+                const _: () = {\n\
+                    #[allow(dead_code)]\n\
+                    enum CastToWrapper {}\n\
+                };\n\
+            };\n\
+        }\n\
+        dup_wrapper!();\n\
+        dup_wrapper!();\n\
+        #[doc = concat!(\"version \", env!(\"CARGO_PKG_VERSION\"))]\n\
+        pub const TAG: Option<&str> = option_env!(\"ANNEAL_BUILD_TAG\");\n\
+        pub fn selected(x: usize) -> usize { x }\n";
+
+    // 1. Declared `--env` bindings admit both `env!` and `option_env!`,
+    //    override conflicting ambient process environment values, and record
+    //    a deterministically sorted `configuration.env` map.
+    let fixture_a = Capture::new(source);
+    let mut cmd_a = fixture_a.selected_command();
+    cmd_a
+        .arg("--env=CARGO_PKG_VERSION=0.8.64")
+        .arg("--env=ANNEAL_BUILD_TAG=rc1")
+        .env("CARGO_PKG_VERSION", "99.99.99-ambient")
+        .env("ANNEAL_BUILD_TAG", "ambient-ignored");
+    let out_a = cmd_a.output().unwrap();
+    assert!(out_a.status.success(), "{out_a:?}");
+    let manifest_a = fixture_a.manifest();
+    assert_eq!(
+        manifest_a["configuration"]["env"],
+        serde_json::json!({
+            "ANNEAL_BUILD_TAG": "rc1",
+            "CARGO_PKG_VERSION": "0.8.64",
+        })
+    );
+    let bytes_a = std::fs::read(fixture_a.output.join("capture.json")).unwrap();
+
+    // 2. Changing an `--env` value changes the recorded `capture.json` digest.
+    let fixture_b = Capture::new(source);
+    let mut cmd_b = fixture_b.selected_command();
+    cmd_b
+        .arg("--env=ANNEAL_BUILD_TAG=rc1")
+        .arg("--env=CARGO_PKG_VERSION=0.8.65");
+    let out_b = cmd_b.output().unwrap();
+    assert!(out_b.status.success(), "{out_b:?}");
+    let bytes_b = std::fs::read(fixture_b.output.join("capture.json")).unwrap();
+    assert_ne!(Sha256::digest(&bytes_a), Sha256::digest(&bytes_b));
+
+    // 3. Omitting a single accessed variable (`ANNEAL_BUILD_TAG`) still fails
+    //    closed, even when `CARGO_PKG_VERSION` is declared.
+    let partial = Capture::new(source);
+    let mut cmd_partial = partial.selected_command();
+    cmd_partial
+        .arg("--env=CARGO_PKG_VERSION=0.8.64")
+        .env_remove("ANNEAL_BUILD_TAG");
+    let out_partial = cmd_partial.output().unwrap();
+    assert_eq!(out_partial.status.code(), Some(1), "{out_partial:?}");
+    let failure = status(&out_partial);
+    assert_eq!(failure["status"], "unsupported", "{failure}");
+    assert!(
+        failure
+            .to_string()
+            .contains("environment-dependent source inputs are unsupported")
+            && failure.to_string().contains("ANNEAL_BUILD_TAG"),
+        "{failure}"
+    );
+    partial.assert_no_capture_artifacts();
+
+    // 4. Conflicting duplicate `--env` keys fail closed as `tool_failed`.
+    let dup = Capture::new(source);
+    let mut cmd_dup = dup.selected_command();
+    cmd_dup
+        .arg("--env=CARGO_PKG_VERSION=0.8.64")
+        .arg("--env=CARGO_PKG_VERSION=0.8.65")
+        .arg("--env=ANNEAL_BUILD_TAG=rc1");
+    let out_dup = cmd_dup.output().unwrap();
+    assert_eq!(out_dup.status.code(), Some(1), "{out_dup:?}");
+    let failure = status(&out_dup);
+    assert_eq!(failure["status"], "tool_failed", "{failure}");
+    assert!(
+        failure
+            .to_string()
+            .contains("duplicate --env binding for CARGO_PKG_VERSION"),
+        "{failure}"
+    );
+    dup.assert_no_capture_artifacts();
 }
 
 #[test]

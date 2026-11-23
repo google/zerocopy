@@ -141,8 +141,9 @@ fn tag_bits_to_discr_bits(tag: IntTy, discr_width: IntWidth, raw_tag: u128) -> u
 ///
 /// `id` is the nominal key that Lean compares in enum type equality. Capture
 /// derives it with `extract::enum_id` from the enum's semantic path rather
-/// than from a compiler index, and refuses crates in which two local enums
-/// share a key. This constructor does not check how the key was derived.
+/// than from a compiler index, and refuses any emitted key shared by two local
+/// enum definitions in the crate. This constructor does not check how the key
+/// was derived.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct EnumTy {
     id: u32,
@@ -299,6 +300,26 @@ impl Ty {
             | Self::OverflowPair(_) => true,
         }
     }
+
+    /// Record every nominal [`EnumTy::id`] embedded in this type.
+    ///
+    /// Keep the match exhaustive so any future compound type variant must
+    /// recurse into its constituent types rather than hiding an enum key from
+    /// collision checks.
+    pub fn collect_enum_ids(&self, out: &mut BTreeSet<u32>) {
+        match self {
+            Self::Enum(ety) => {
+                out.insert(ety.id());
+            }
+            Self::Bool
+            | Self::Char
+            | Self::Ordering
+            | Self::Unit
+            | Self::Never
+            | Self::Int(_)
+            | Self::OverflowPair(_) => {}
+        }
+    }
 }
 
 /// Constant literal payload matching `Trusted.MirAst.ConstLit` 1-to-1.
@@ -451,6 +472,15 @@ pub enum Operand {
     Copy { local: u32 },
     Move { local: u32 },
     Constant { ty: Ty, lit: ConstLit },
+}
+
+impl Operand {
+    fn collect_enum_ids(&self, out: &mut BTreeSet<u32>) {
+        match self {
+            Self::Copy { .. } | Self::Move { .. } => {}
+            Self::Constant { ty, .. } => ty.collect_enum_ids(out),
+        }
+    }
 }
 
 /// Admitted MIR unary operators (`rustc_middle::mir::UnOp`, "The `!` operator
@@ -912,6 +942,45 @@ impl Body {
     pub fn identity(&self) -> &str {
         &self.identity
     }
+
+    /// Record every nominal [`EnumTy::id`] referenced anywhere in this body.
+    ///
+    /// Exhaustive matching guarantees that any future statement, rvalue,
+    /// operand, or terminator variant carrying a [`Ty`] must update this
+    /// traversal so emitted enum keys cannot bypass collision checks.
+    pub fn collect_enum_ids(&self, out: &mut BTreeSet<u32>) {
+        for ty in &self.local_tys {
+            ty.collect_enum_ids(out);
+        }
+        for block in &self.blocks {
+            for stmt in &block.statements {
+                match stmt {
+                    Statement::Assign { value, .. } => match value {
+                        Rvalue::Use { operand, .. } | Rvalue::Unary { operand, .. } => {
+                            operand.collect_enum_ids(out);
+                        }
+                        Rvalue::Binary { left, right, .. } => {
+                            left.collect_enum_ids(out);
+                            right.collect_enum_ids(out);
+                        }
+                        Rvalue::Cast { operand, ty, .. } => {
+                            operand.collect_enum_ids(out);
+                            ty.collect_enum_ids(out);
+                        }
+                        Rvalue::Discriminant { .. } => {}
+                    },
+                    Statement::StorageLive { .. }
+                    | Statement::StorageDead { .. }
+                    | Statement::PlaceMention { .. }
+                    | Statement::Nop => {}
+                }
+            }
+            match &block.terminator {
+                Terminator::SwitchInt { operand, .. } => operand.collect_enum_ids(out),
+                Terminator::Goto { .. } | Terminator::Ret | Terminator::Unreachable => {}
+            }
+        }
+    }
 }
 
 /// Single authoritative capture scope recorded on [`Program`] and matching
@@ -1005,6 +1074,7 @@ pub struct Configuration {
     pub edition: String,
     pub target: String,
     pub cfg: Vec<String>,
+    pub env: BTreeMap<String, String>,
     pub opt_level: u8,
     pub debug_assertions: bool,
     pub overflow_checks: bool,
@@ -1602,5 +1672,59 @@ mod tests {
         )
         .unwrap_err();
         assert!(oob.contains("place mention local 9 out of bounds"), "{oob}");
+    }
+
+    #[test]
+    fn body_collect_enum_ids_visits_locals_and_constant_operands() {
+        let isize_discr = IntTy {
+            width: IntWidth::Isize,
+            signed: true,
+        };
+        let enum_a = EnumTy::try_new(101, isize_discr, EnumTagRepr::ZeroSized, vec![0]).unwrap();
+        let enum_b = EnumTy::try_new(
+            202,
+            isize_discr,
+            EnumTagRepr::Scalar(IntTy {
+                width: IntWidth::I8,
+                signed: false,
+            }),
+            vec![0, 1],
+        )
+        .unwrap();
+        let body = Body::try_new(
+            0,
+            false,
+            vec![Ty::Enum(enum_a.clone()), Ty::Enum(enum_b.clone())],
+            vec![Block {
+                statements: vec![
+                    Statement::Assign {
+                        local: 0,
+                        value: Rvalue::Use {
+                            operand: Operand::Constant {
+                                ty: Ty::Enum(enum_a),
+                                lit: ConstLit::ZeroSized,
+                            },
+                            with_retag: false,
+                        },
+                    },
+                    Statement::Assign {
+                        local: 1,
+                        value: Rvalue::Use {
+                            operand: Operand::Constant {
+                                ty: Ty::Enum(enum_b),
+                                lit: ConstLit::Scalar { bits: 1 },
+                            },
+                            with_retag: false,
+                        },
+                    },
+                ],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::enum_ids_body".into(),
+        )
+        .unwrap();
+        let mut ids = BTreeSet::new();
+        body.collect_enum_ids(&mut ids);
+        assert_eq!(ids, BTreeSet::from([101, 202]));
     }
 }

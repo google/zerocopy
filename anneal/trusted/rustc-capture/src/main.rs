@@ -30,7 +30,7 @@ mod ir;
 mod lean;
 mod publication;
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::env;
 use std::ffi::OsString;
 use std::path::PathBuf;
@@ -67,6 +67,15 @@ pub struct Args {
     scope: Option<String>,
     #[arg(long, action = clap::ArgAction::Append)]
     cfg: Vec<String>,
+    /// Declare a compile-time environment variable (`KEY=VALUE`) for `env!`
+    /// and `option_env!`. Undeclared environment reads still fail closed.
+    #[arg(
+        long,
+        action = clap::ArgAction::Append,
+        value_name = "KEY=VALUE",
+        value_parser = parse_env_binding
+    )]
+    env: Vec<(String, String)>,
     /// Override the sysroot resolved from the pinned compiler distribution.
     #[arg(long)]
     sysroot: Option<PathBuf>,
@@ -75,6 +84,19 @@ pub struct Args {
     /// ambient module or include-file reads.
     #[arg(long, required = true, action = clap::ArgAction::Append)]
     source_file: Vec<PathBuf>,
+}
+
+fn parse_env_binding(raw: &str) -> Result<(String, String), String> {
+    let Some((key, value)) = raw.split_once('=') else {
+        return Err(format!("expected KEY=VALUE environment binding, got {raw:?}"));
+    };
+    if key.is_empty() {
+        return Err("environment variable name must not be empty".to_owned());
+    }
+    if key.contains('\0') || value.contains('\0') {
+        return Err("environment binding must not contain NUL bytes".to_owned());
+    }
+    Ok((key.to_owned(), value.to_owned()))
 }
 
 impl Args {
@@ -87,6 +109,18 @@ impl Args {
             return Err(Failure::unsupported("empty selected scope"));
         }
         Ok(ir::Scope::SelectedUnit { roots })
+    }
+
+    pub(crate) fn resolved_env(&self) -> Result<BTreeMap<String, String>, Failure> {
+        let mut declared = BTreeMap::new();
+        for (key, value) in &self.env {
+            if declared.insert(key.clone(), value.clone()).is_some() {
+                return Err(Failure::tool(format!(
+                    "duplicate --env binding for {key}"
+                )));
+            }
+        }
+        Ok(declared)
     }
 }
 
@@ -153,6 +187,7 @@ fn run(mut args: Args) -> Result<serde_json::Value, Failure> {
     args.source_file.dedup();
     args.cfg.sort();
     args.cfg.dedup();
+    let declared_env = args.resolved_env()?;
     // Resolve explicit or packaged sysroot lexically (preserving virtual
     // symlink-forest layouts such as `<sysroot>/bin/rustc` beside
     // `<sysroot>/lib/rustlib`) and verify compiler identity and Linux driver
@@ -170,7 +205,7 @@ fn run(mut args: Args) -> Result<serde_json::Value, Failure> {
     // completed directory rename permits a captured status below.
     let publication = publication::Publication::new(&args.out_dir).map_err(Failure::io)?;
     args.out_dir = publication.compiler_dir();
-    let manifest = capture::run(&args, &sysroot, &verified)?;
+    let manifest = capture::run(&args, &declared_env, &sysroot, &verified)?;
     let json =
         serde_json::to_vec_pretty(&manifest).map_err(|error| Failure::tool(error.to_string()))?;
     let lean = lean::render(&manifest.program);
@@ -264,4 +299,71 @@ fn main() -> ExitCode {
         args.remove(0);
     }
     driver::run(args)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_env_binding_validates_syntax_and_nul_bytes() {
+        assert_eq!(
+            parse_env_binding("CARGO_PKG_VERSION=0.8.64").unwrap(),
+            ("CARGO_PKG_VERSION".to_owned(), "0.8.64".to_owned())
+        );
+        assert_eq!(
+            parse_env_binding("EMPTY=").unwrap(),
+            ("EMPTY".to_owned(), String::new())
+        );
+        assert_eq!(
+            parse_env_binding("NESTED=a=b=c").unwrap(),
+            ("NESTED".to_owned(), "a=b=c".to_owned())
+        );
+        assert_eq!(
+            parse_env_binding("AT=@literal").unwrap(),
+            ("AT".to_owned(), "@literal".to_owned())
+        );
+
+        assert!(parse_env_binding("NO_EQUALS").is_err());
+        assert!(parse_env_binding("=value").is_err());
+        assert!(parse_env_binding("BAD\0KEY=value").is_err());
+        assert!(parse_env_binding("KEY=bad\0value").is_err());
+    }
+
+    #[test]
+    fn resolved_env_sorts_deterministically_and_rejects_duplicates() {
+        let base = [
+            "anneal-rustc-capture capture",
+            "--crate-root=lib.rs",
+            "--crate-name=demo",
+            "--target=x86_64-unknown-linux-gnu",
+            "--out-dir=out",
+            "--select=f",
+            "--source-file=lib.rs",
+        ];
+
+        let args = Args::try_parse_from(
+            base.into_iter()
+                .chain(["--env=Z_KEY=last", "--env=A_KEY=first"]),
+        )
+        .unwrap();
+        let resolved = args.resolved_env().unwrap();
+        let keys: Vec<&str> = resolved.keys().map(String::as_str).collect();
+        assert_eq!(keys, vec!["A_KEY", "Z_KEY"]);
+        assert_eq!(resolved["A_KEY"], "first");
+        assert_eq!(resolved["Z_KEY"], "last");
+
+        for dup in [
+            ["--env=FOO=one", "--env=FOO=two"],
+            ["--env=FOO=one", "--env=FOO=one"],
+        ] {
+            let args = Args::try_parse_from(base.into_iter().chain(dup)).unwrap();
+            let err = args.resolved_env().unwrap_err();
+            assert_eq!(err.status, "tool_failed");
+            assert!(
+                err.diagnostics[0].contains("duplicate --env binding for FOO"),
+                "{err:?}"
+            );
+        }
+    }
 }
