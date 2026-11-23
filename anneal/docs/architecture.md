@@ -386,7 +386,8 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   (`theory/Anneal/{MirWp,LoopInv,LinearArith,BitVec,BitVecArith}.lean`,
   `theory/Anneal/{InitLemmas,ClassicalEm,LeBytes,ListChunks}.lean`,
   `theory/Anneal/{NatBitwise,BitTrieLrat,PTree,SpineForce}.lean`,
-  `theory/Anneal/PureLift/`, and planned `Theory/Rust/{Wp,Tactics}/`):**
+  `theory/Anneal/{ByteSubLens,PureLift}/`, and planned
+  `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
   Diaconescu classical excluded middle and existential choice,
   foundation-locked `Bool`/`BEq`/`Nat`/`Int`/slice helper lemmas, sparse
@@ -394,9 +395,10 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   bitvector, byte-serialization, list-chunking, and canonical positive
   radix-trie framing proof libraries, CPS spine-forcing and `@Nat.rec`
   iteration combinators, a radix-2 trie RUP-only LRAT UNSAT checker,
-  functional borrow lifting, separation-logic frame rules, and proof
-  automation built against $M_{\text{anneal}}$ and `StableAst` /
-  `StableSemantics` (`cargo-anneal` bundles the scalar and MIR proof libraries
+  lawful sub-allocation byte lenses and `@[irreducible]` `&mut` method call
+  summaries (`ByteSubLens`), functional borrow lifting, separation-logic frame
+  rules, and proof automation built against $M_{\text{anneal}}$ and `StableAst`
+  / `StableSemantics` (`cargo-anneal` bundles the scalar and MIR proof libraries
   under `theory/Anneal/`, compiling and auditing only the transitive `Anneal.*`
   closure imported by target proof modules).
 
@@ -510,6 +512,7 @@ anneal/
     │   ├── BitTrieLrat.lean        # Radix-2 trie RUP-only LRAT checker
     │   ├── BitVec.lean             # Constructive 3-axiom BitVec & tnum lemmas
     │   ├── BitVecArith.lean        # Constructive BitVec range & arithmetic
+    │   ├── ByteSubLens.lean        # Sub-alloc byte lenses & &mut summaries (+ ByteSubLens/)
     │   ├── ClassicalEm.lean        # Diaconescu excluded middle and choice
     │   ├── Core.lean               # BlockTree, SepPCM & StepStageCut (+ Core/)
     │   ├── InitLemmas.lean         # Foundation Bool/BEq/Nat/Int/list helpers

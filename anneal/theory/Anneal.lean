@@ -24,6 +24,7 @@ import Anneal.InitLemmas
 import Anneal.ClassicalEm
 import Anneal.MirTotal
 import Anneal.Core
+import Anneal.ByteSubLens
 import Anneal.PureLift
 
 namespace Anneal
@@ -38,8 +39,9 @@ Umbrella module for Anneal's untrusted proof theory (`theory/`), re-exporting
 `Anneal.BitTrieLrat`, `Anneal.InitLemmas`, and `Anneal.ClassicalEm`), the
 fuel-bounded MIR weakest-precondition machinery (`Anneal.MirWp`), the computable
 MIR step mirrors and unbounded-depth bridges (`Anneal.MirTotal`), the
-block-tree, separation-logic, and stage-cut core (`Anneal.Core`), and
-`Anneal.PureLift`.
+block-tree, separation-logic, and stage-cut core (`Anneal.Core`), lawful
+sub-allocation byte lenses and `&mut` method call summaries
+(`Anneal.ByteSubLens`), and `Anneal.PureLift`.
 -/
 
 end Anneal
