@@ -297,6 +297,10 @@ significant influences are listed here, but this list is far from exhaustive.
 - The [Fuchsia] and [Starnix eBPF][starnix-ebpf] contributors' production Rust
   crates and build integration shaped Anneal's out-of-tree verification
   interface and end-to-end verification tests.
+- Google DeepMind's [`code-verification`][code-verification] (`ProofLib`,
+  Apache-2.0) inspired Anneal's balanced Braun-tree separation-logic AC
+  reflection (`Anneal.Core.SepPCM`) and sparse linear bitvector offset
+  normalizer (`Anneal.PureLift.BvLin`).
 
 [Aeneas]: https://arxiv.org/abs/2206.07185
 [Charon]: https://link.springer.com/chapter/10.1007/978-3-031-98685-7_18
@@ -328,3 +332,4 @@ significant influences are listed here, but this list is far from exhaustive.
 [asterinas]: https://asterinas.github.io/2025/06/04/kernel-memory-safety-mission-accomplished.html
 [Fuchsia]: https://fuchsia.dev/
 [starnix-ebpf]: https://fuchsia.googlesource.com/fuchsia/+/823a15538f191b9dbd9ebafaa6ba23220b87d2e1/src/starnix/lib/ebpf/core/src
+[code-verification]: https://github.com/google-deepmind/code-verification

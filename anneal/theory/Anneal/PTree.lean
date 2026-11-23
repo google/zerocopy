@@ -11,18 +11,24 @@ import Init.Core
 import Init.NotationExtra
 import Init.SimpLemmas
 import Init.Data.Nat.Basic
+import Init.Data.Nat.Div.Basic
 
 /-!
 # Canonical Positive Binary Radix Trie (`Anneal.PTree`)
 
-Pass-1-portable (`prelude` + locked `Init.*` only, zero `._unsafe_rec`, allowed
-theory tactics only) Appel-Leroy canonical positive radix trie `PTree α`:
+Pass-1-portable (`prelude` + locked `Init.*` only, zero `._unsafe_rec`,
+computable `@Nat.rec` top-down tabulation `ptreeTabulate` and `natToPosAt` with
+`hasIR = true`, allowed theory tactics only) Appel-Leroy canonical positive
+radix trie `PTree α`:
 
 - Every finite map has a unique canonical representation
   (`RawTree.isCanon = true`), giving axiom-free extensional equality
   `ptree_eq_of_get` (zero Lean axioms: no `funext`, no `Classical.choice`, no
   `Quot.sound`) so disjoint updates commute definitionally (`rfl`) on concrete
   keys.
+- Top-down strided `ptreeTabulate` builds canonical radix tries lazily in
+  `O(log N)` forced WHNF nodes per lookup, avoiding the `O(N)` stack and WHNF
+  blowup of sequential `List.foldl PTree.set` on large CFG tables.
 - Polymorphic `PTree.diffWith eqB` implements deterministic, non-backtracking
   structural map subtraction over `req` (one recursive call per `req` node),
   usable for separation-logic framing (`ptree_diffWith_sound`).
@@ -826,7 +832,383 @@ theorem ptree_diffWith_empty_req {α : Type} (eqB : α → α → Bool)
     (goal : PTree α) :
     PTree.diffWith eqB goal PTree.empty = some goal := rfl
 
-/-! ## 4. Kernel-Checked Canaries -/
+/-! ## 4. Top-Down Strided Tabulation (`ptreeTabulate`) -/
+
+/-- Bit length (`≥ 1`) of a positive binary key `Pos` (specification helper). -/
+noncomputable def posDepth : Pos → Nat
+  | .xH => 1
+  | .xO p => posDepth p + 1
+  | .xI p => posDepth p + 1
+
+/-- Computable `2^n` via `@Nat.rec` (`0` `noncomputable`). -/
+def ptreePow2 (n : Nat) : Nat :=
+  @Nat.rec (fun _ => Nat) 1 (fun _ ih => 2 * ih) n
+
+private theorem posToNat_pos : ∀ k : Pos, 0 < posToNat k
+  | .xH => Nat.zero_lt_one
+  | .xO p => Nat.mul_pos (Nat.succ_pos 1) (posToNat_pos p)
+  | .xI p => Nat.succ_pos (2 * posToNat p)
+
+private theorem ptreePow2_pos (n : Nat) : 0 < ptreePow2 n := by
+  induction n with
+  | zero => exact Nat.zero_lt_one
+  | succ _ ih => exact Nat.mul_pos (Nat.succ_pos 1) ih
+
+/-- Bit-depth characterization: `posDepth k ≤ d ↔ posToNat k < ptreePow2 d`. -/
+theorem posDepth_le_iff_lt_pow2 :
+    ∀ (k : Pos) (d : Nat), posDepth k ≤ d ↔ posToNat k < ptreePow2 d
+  | .xH, 0 =>
+    ⟨fun h => False.elim (Nat.not_succ_le_zero 0 h),
+     fun h => False.elim (Nat.lt_irrefl 1 h)⟩
+  | .xH, d' + 1 =>
+    ⟨fun _ => by
+       change 1 < 2 * ptreePow2 d'
+       have hPos : 1 ≤ ptreePow2 d' := ptreePow2_pos d'
+       have h2 : 2 * 1 ≤ 2 * ptreePow2 d' := Nat.mul_le_mul_left 2 hPos
+       exact Nat.lt_of_lt_of_le (Nat.lt_succ_self 1) h2,
+     fun _ => Nat.succ_le_succ (Nat.zero_le d')⟩
+  | .xO p, 0 =>
+    ⟨fun h => False.elim (Nat.not_succ_le_zero (posDepth p) h),
+     fun h => by
+       have hp : 1 ≤ posToNat p := posToNat_pos p
+       have h2 : 2 ≤ 2 * posToNat p := Nat.mul_le_mul_left 2 hp
+       exact False.elim (Nat.not_lt_of_ge h2 (Nat.lt_trans h (Nat.lt_succ_self 1)))⟩
+  | .xO p, d' + 1 => by
+    have ih := posDepth_le_iff_lt_pow2 p d'
+    constructor
+    · intro h
+      have hLt : posToNat p < ptreePow2 d' := ih.mp (Nat.le_of_succ_le_succ h)
+      change 2 * posToNat p < 2 * ptreePow2 d'
+      have hSucc : posToNat p + 1 ≤ ptreePow2 d' := hLt
+      have hMul := Nat.mul_le_mul_left 2 hSucc
+      rw [Nat.mul_succ] at hMul
+      exact Nat.lt_of_lt_of_le (Nat.lt_succ_of_lt (Nat.lt_succ_self _)) hMul
+    · intro h
+      change 2 * posToNat p < 2 * ptreePow2 d' at h
+      have hLt : posToNat p < ptreePow2 d' := by
+        cases Nat.lt_or_ge (posToNat p) (ptreePow2 d') with
+        | inl hl => exact hl
+        | inr hg =>
+          exact False.elim
+            (Nat.not_lt_of_ge (Nat.mul_le_mul_left 2 hg) h)
+      exact Nat.succ_le_succ (ih.mpr hLt)
+  | .xI p, 0 =>
+    ⟨fun h => False.elim (Nat.not_succ_le_zero (posDepth p) h),
+     fun h => by
+       have hp : 1 ≤ posToNat p := posToNat_pos p
+       have h2 : 2 ≤ 2 * posToNat p := Nat.mul_le_mul_left 2 hp
+       have h3 : 3 ≤ 2 * posToNat p + 1 := Nat.succ_le_succ h2
+       exact False.elim
+         (Nat.not_lt_of_ge h3 (Nat.lt_trans h (Nat.lt_succ_of_lt (Nat.lt_succ_self 1))))⟩
+  | .xI p, d' + 1 => by
+    have ih := posDepth_le_iff_lt_pow2 p d'
+    constructor
+    · intro h
+      have hLt : posToNat p < ptreePow2 d' := ih.mp (Nat.le_of_succ_le_succ h)
+      change 2 * posToNat p + 1 < 2 * ptreePow2 d'
+      have hSucc : posToNat p + 1 ≤ ptreePow2 d' := hLt
+      have hMul := Nat.mul_le_mul_left 2 hSucc
+      rw [Nat.mul_succ] at hMul
+      exact Nat.lt_of_lt_of_le (Nat.lt_succ_self _) hMul
+    · intro h
+      change 2 * posToNat p + 1 < 2 * ptreePow2 d' at h
+      have hLt : posToNat p < ptreePow2 d' := by
+        cases Nat.lt_or_ge (posToNat p) (ptreePow2 d') with
+        | inl hl => exact hl
+        | inr hg =>
+          have h2 := Nat.mul_le_mul_left 2 hg
+          exact False.elim
+            (Nat.not_lt_of_ge (Nat.le_trans h2 (Nat.le_succ _)) h)
+      exact Nat.succ_le_succ (ih.mpr hLt)
+
+/-- Top-down strided builder for canonical `RawTree α` over `Nat` indices
+`0 .. 2^depth - 2` (encoded via `natToPos n`, whose `posToNat` value is
+`n + 1`).
+
+Why top-down tabulation: building an `N`-entry CFG table with sequential
+`List.foldl PTree.set` forces all `N` insertions on the very first lookup and
+can exceed `maxRecDepth = 512` at large `N`. Because `RawTree.make l (some x) r`
+returns `.node l (some x) r` without forcing `l` or `r`, top-down tabulation
+forces only the `O(log N)` nodes along a queried key's path during WHNF
+reduction. -/
+def RawTree.tabulateGo {α : Type} (depth : Nat) :
+    Nat → Nat → (Nat → Option α) → RawTree α :=
+  @Nat.rec (fun _ => Nat → Nat → (Nat → Option α) → RawTree α)
+    (fun _ _ _ => .leaf)
+    (fun _ ih base stride f =>
+      RawTree.make
+        (ih base (2 * stride) f)
+        (f (base + stride - 1))
+        (ih (base + stride) (2 * stride) f))
+    depth
+
+/-- `RawTree.tabulateGo` always produces a canonical `RawTree α`. -/
+theorem rawTree_tabulateGo_isCanon {α : Type} :
+    ∀ (depth base stride : Nat) (f : Nat → Option α),
+      (RawTree.tabulateGo depth base stride f).isCanon = true
+  | 0, _, _, _ => rfl
+  | d + 1, base, stride, f =>
+    rawTree_make_isCanon (f (base + stride - 1))
+      (rawTree_tabulateGo_isCanon d base (2 * stride) f)
+      (rawTree_tabulateGo_isCanon d (base + stride) (2 * stride) f)
+
+/-- Top-down strided canonical `PTree α` tabulation covering all `k : Pos` with
+`posDepth k ≤ depth` (i.e., `natToPos n` for all `n + 1 < ptreePow2 depth`). -/
+def ptreeTabulate {α : Type} (depth : Nat) (f : Nat → Option α) : PTree α :=
+  ⟨RawTree.tabulateGo depth 0 1 f, rawTree_tabulateGo_isCanon depth 0 1 f⟩
+
+/-- Method alias for `ptreeTabulate`. -/
+abbrev PTree.tabulate {α : Type} (depth : Nat) (f : Nat → Option α) : PTree α :=
+  ptreeTabulate depth f
+
+/-- In-bounds lookup law for `RawTree.tabulateGo` (`posDepth k ≤ depth`). -/
+theorem rawTree_get_tabulateGo_in {α : Type} :
+    ∀ (depth base stride : Nat) (f : Nat → Option α) (k : Pos),
+      posDepth k ≤ depth →
+      RawTree.get (RawTree.tabulateGo depth base stride f) k =
+        f (base + stride * posToNat k - 1)
+  | 0, _, _, _, k, hk => by
+    cases k with
+    | xH => exact False.elim (Nat.not_succ_le_zero 0 hk)
+    | xO p => exact False.elim (Nat.not_succ_le_zero (posDepth p) hk)
+    | xI p => exact False.elim (Nat.not_succ_le_zero (posDepth p) hk)
+  | d + 1, base, stride, f, k, hk => by
+    change RawTree.get
+        (RawTree.make
+          (RawTree.tabulateGo d base (2 * stride) f)
+          (f (base + stride - 1))
+          (RawTree.tabulateGo d (base + stride) (2 * stride) f)) k =
+      f (base + stride * posToNat k - 1)
+    rw [rawTree_get_make]
+    cases k with
+    | xH =>
+      change f (base + stride - 1) = f (base + stride * 1 - 1)
+      rw [Nat.mul_one]
+    | xO p =>
+      change RawTree.get (RawTree.tabulateGo d base (2 * stride) f) p =
+        f (base + stride * (2 * posToNat p) - 1)
+      rw [rawTree_get_tabulateGo_in d base (2 * stride) f p
+            (Nat.le_of_succ_le_succ hk),
+          Nat.mul_comm 2 stride, Nat.mul_assoc stride 2 (posToNat p)]
+    | xI p =>
+      change RawTree.get
+          (RawTree.tabulateGo d (base + stride) (2 * stride) f) p =
+        f (base + stride * (2 * posToNat p + 1) - 1)
+      rw [rawTree_get_tabulateGo_in d (base + stride) (2 * stride) f p
+            (Nat.le_of_succ_le_succ hk)]
+      have harith :
+          (base + stride) + (2 * stride) * posToNat p =
+            base + stride * (2 * posToNat p + 1) := by
+        rw [Nat.mul_comm 2 stride, Nat.mul_assoc stride 2 (posToNat p),
+          Nat.add_assoc base stride (stride * (2 * posToNat p))]
+        have hs :
+            stride + stride * (2 * posToNat p) =
+              stride * (2 * posToNat p + 1) := by
+          rw [Nat.mul_add, Nat.mul_one, Nat.add_comm]
+        rw [hs]
+      rw [harith]
+
+/-- Out-of-bounds lookup law for `RawTree.tabulateGo` (`depth < posDepth k`). -/
+theorem rawTree_get_tabulateGo_oob {α : Type} :
+    ∀ (depth base stride : Nat) (f : Nat → Option α) (k : Pos),
+      depth < posDepth k →
+      RawTree.get (RawTree.tabulateGo depth base stride f) k = none
+  | 0, _, _, _, _, _ => rfl
+  | d + 1, base, stride, f, k, hk => by
+    change RawTree.get
+        (RawTree.make
+          (RawTree.tabulateGo d base (2 * stride) f)
+          (f (base + stride - 1))
+          (RawTree.tabulateGo d (base + stride) (2 * stride) f)) k = none
+    rw [rawTree_get_make]
+    cases k with
+    | xH =>
+      exact False.elim (Nat.not_lt_of_ge (Nat.succ_le_succ (Nat.zero_le d)) hk)
+    | xO p =>
+      exact rawTree_get_tabulateGo_oob d base (2 * stride) f p
+        (Nat.lt_of_succ_lt_succ hk)
+    | xI p =>
+      exact rawTree_get_tabulateGo_oob d (base + stride) (2 * stride) f p
+        (Nat.lt_of_succ_lt_succ hk)
+
+/-- In-bounds `Pos` lookup equivalence for `ptreeTabulate`. -/
+theorem ptree_get_tabulate_in {α : Type} (depth : Nat) (f : Nat → Option α)
+    {k : Pos} (hk : posDepth k ≤ depth) :
+    (ptreeTabulate depth f).get k = f (posToNat k - 1) := by
+  unfold ptreeTabulate PTree.get
+  dsimp only
+  rw [rawTree_get_tabulateGo_in depth 0 1 f k hk, Nat.one_mul, Nat.zero_add]
+
+/-- Out-of-bounds `Pos` lookup law for `ptreeTabulate`. -/
+theorem ptree_get_tabulate_oob {α : Type} (depth : Nat) (f : Nat → Option α)
+    {k : Pos} (hk : depth < posDepth k) :
+    (ptreeTabulate depth f).get k = none :=
+  rawTree_get_tabulateGo_oob depth 0 1 f k hk
+
+/-- In-bounds `Nat` lookup equivalence for `ptreeTabulate`: for all `n` with
+`n + 1 < ptreePow2 depth`, `(ptreeTabulate depth f).get (natToPos n) = f n`.
+-/
+theorem ptree_get_tabulate_nat_in {α : Type} (depth : Nat) (f : Nat → Option α)
+    {n : Nat} (hn : n + 1 < ptreePow2 depth) :
+    (ptreeTabulate depth f).get (natToPos n) = f n := by
+  have hDepth : posDepth (natToPos n) ≤ depth :=
+    (posDepth_le_iff_lt_pow2 (natToPos n) depth).mpr (by
+      rw [posToNat_natToPos n]
+      exact hn)
+  rw [ptree_get_tabulate_in depth f hDepth, posToNat_natToPos n]
+  rfl
+
+/-- Out-of-bounds `Nat` lookup law for `ptreeTabulate`
+(`ptreePow2 depth ≤ n + 1`). -/
+theorem ptree_get_tabulate_nat_oob {α : Type} (depth : Nat)
+    (f : Nat → Option α) {n : Nat} (hn : ptreePow2 depth ≤ n + 1) :
+    (ptreeTabulate depth f).get (natToPos n) = none := by
+  have hGt : depth < posDepth (natToPos n) := by
+    cases Nat.lt_or_ge depth (posDepth (natToPos n)) with
+    | inl hlt => exact hlt
+    | inr hle =>
+      have hLt := (posDepth_le_iff_lt_pow2 (natToPos n) depth).mp hle
+      rw [posToNat_natToPos n] at hLt
+      exact False.elim (Nat.not_lt_of_ge hn hLt)
+  exact ptree_get_tabulate_oob depth f hGt
+
+/-- Logarithmic `O(depth)` conversion of a positive `Nat` `m ≥ 1` into `Pos`
+via `@Nat.rec` (`0` `noncomputable`), avoiding unary `natToPos` stack depth on
+large indices (`natToPosFast 255` takes 9 steps instead of 255). -/
+def posOfNatFuel (fuel : Nat) : Nat → Pos :=
+  @Nat.rec (fun _ => Nat → Pos)
+    (fun _ => .xH)
+    (fun _ ih m =>
+      cond (Nat.ble m 1) .xH
+        (cond (Nat.beq (Nat.mod m 2) 0)
+          (.xO (ih (Nat.div m 2)))
+          (.xI (ih (Nat.div m 2)))))
+    fuel
+
+/-- Logarithmic `O(depth)` encoder mapping `n : Nat` to `Pos` representing
+`n + 1` (exact for all `n + 1 < ptreePow2 depth`). -/
+def natToPosAt (depth n : Nat) : Pos :=
+  posOfNatFuel depth (n + 1)
+
+private theorem posToNat_inj : ∀ {a b : Pos}, posToNat a = posToNat b → a = b
+  | .xH, .xH, _ => rfl
+  | .xH, .xO p, h => by
+    have h2 : 2 ≤ 2 * posToNat p := Nat.mul_le_mul_left 2 (posToNat_pos p)
+    change 1 = 2 * posToNat p at h
+    rw [← h] at h2
+    exact False.elim (Nat.not_lt_of_ge h2 (Nat.lt_succ_self 1))
+  | .xH, .xI p, h => by
+    have h2 : 2 ≤ 2 * posToNat p := Nat.mul_le_mul_left 2 (posToNat_pos p)
+    have h3 : 3 ≤ 2 * posToNat p + 1 := Nat.succ_le_succ h2
+    change 1 = 2 * posToNat p + 1 at h
+    rw [← h] at h3
+    exact False.elim (Nat.not_lt_of_ge h3 (Nat.lt_succ_of_lt (Nat.lt_succ_self 1)))
+  | .xO p, .xH, h => by
+    have h2 : 2 ≤ 2 * posToNat p := Nat.mul_le_mul_left 2 (posToNat_pos p)
+    change 2 * posToNat p = 1 at h
+    rw [h] at h2
+    exact False.elim (Nat.not_lt_of_ge h2 (Nat.lt_succ_self 1))
+  | .xI p, .xH, h => by
+    have h2 : 2 ≤ 2 * posToNat p := Nat.mul_le_mul_left 2 (posToNat_pos p)
+    have h3 : 3 ≤ 2 * posToNat p + 1 := Nat.succ_le_succ h2
+    change 2 * posToNat p + 1 = 1 at h
+    rw [h] at h3
+    exact False.elim (Nat.not_lt_of_ge h3 (Nat.lt_succ_of_lt (Nat.lt_succ_self 1)))
+  | .xO a, .xO b, h => by
+    change 2 * posToNat a = 2 * posToNat b at h
+    have he : posToNat a = posToNat b :=
+      Nat.eq_of_mul_eq_mul_left (Nat.succ_pos 1) h
+    exact congrArg Pos.xO (posToNat_inj he)
+  | .xI a, .xI b, h => by
+    change 2 * posToNat a + 1 = 2 * posToNat b + 1 at h
+    have he : posToNat a = posToNat b :=
+      Nat.eq_of_mul_eq_mul_left (Nat.succ_pos 1) (Nat.succ.inj h)
+    exact congrArg Pos.xI (posToNat_inj he)
+  | .xO a, .xI b, h => by
+    change 2 * posToNat a = 2 * posToNat b + 1 at h
+    have hm : Nat.mod (2 * posToNat a) 2 = Nat.mod (2 * posToNat b + 1) 2 :=
+      congrArg (fun z => Nat.mod z 2) h
+    have hL : Nat.mod (2 * posToNat a) 2 = 0 := Nat.mul_mod_right 2 (posToNat a)
+    have hR : Nat.mod (2 * posToNat b + 1) 2 = Nat.mod 1 2 :=
+      Nat.mul_add_mod_self_left 2 (posToNat b) 1
+    rw [hL, hR] at hm
+    cases hm
+  | .xI a, .xO b, h => by
+    change 2 * posToNat a + 1 = 2 * posToNat b at h
+    have hm : Nat.mod (2 * posToNat a + 1) 2 = Nat.mod (2 * posToNat b) 2 :=
+      congrArg (fun z => Nat.mod z 2) h
+    have hL : Nat.mod (2 * posToNat a + 1) 2 = Nat.mod 1 2 :=
+      Nat.mul_add_mod_self_left 2 (posToNat a) 1
+    have hR : Nat.mod (2 * posToNat b) 2 = 0 := Nat.mul_mod_right 2 (posToNat b)
+    rw [hL, hR] at hm
+    cases hm
+
+private theorem posToNat_posOfNatFuel :
+    ∀ (fuel m : Nat), 0 < m → m < ptreePow2 fuel →
+      posToNat (posOfNatFuel fuel m) = m
+  | 0, m, hPos, hLt =>
+    False.elim (Nat.not_lt_of_ge hPos hLt)
+  | d + 1, m, hPos, hLt => by
+    change posToNat
+      (cond (Nat.ble m 1) .xH
+        (cond (Nat.beq (Nat.mod m 2) 0)
+          (.xO (posOfNatFuel d (Nat.div m 2)))
+          (.xI (posOfNatFuel d (Nat.div m 2))))) = m
+    cases h1 : Nat.ble m 1 with
+    | true =>
+      dsimp only [cond, posToNat]
+      exact (Nat.le_antisymm (Nat.le_of_ble_eq_true h1) hPos).symm
+    | false =>
+      dsimp only [cond]
+      have hGe2 : 2 ≤ m := by
+        cases Nat.lt_or_ge m 2 with
+        | inr hg => exact hg
+        | inl hl =>
+          have hLe1 : m ≤ 1 := Nat.le_of_lt_succ hl
+          have hbt := Nat.ble_eq_true_of_le hLe1
+          rw [h1] at hbt
+          cases hbt
+      have hHalfPos : 0 < Nat.div m 2 := by
+        have h1le : 1 ≤ Nat.div m 2 :=
+          (Nat.le_div_iff_mul_le (Nat.succ_pos 1)).mpr hGe2
+        exact h1le
+      have hHalfLt : Nat.div m 2 < ptreePow2 d := by
+        change m < 2 * ptreePow2 d at hLt
+        rw [Nat.mul_comm 2 (ptreePow2 d)] at hLt
+        exact (Nat.div_lt_iff_lt_mul (Nat.succ_pos 1)).mpr hLt
+      have hdm : 2 * Nat.div m 2 + Nat.mod m 2 = m := Nat.div_add_mod m 2
+      have hModLt : Nat.mod m 2 < 2 := Nat.mod_lt m (Nat.succ_pos 1)
+      cases hp : Nat.beq (Nat.mod m 2) 0 with
+      | true =>
+        dsimp only [cond, posToNat]
+        rw [posToNat_posOfNatFuel d (Nat.div m 2) hHalfPos hHalfLt]
+        have hz := Nat.eq_of_beq_eq_true hp
+        rw [hz, Nat.add_zero] at hdm
+        exact hdm
+      | false =>
+        dsimp only [cond, posToNat]
+        rw [posToNat_posOfNatFuel d (Nat.div m 2) hHalfPos hHalfLt]
+        cases hmv : Nat.mod m 2 with
+        | zero => rw [hmv] at hp; cases hp
+        | succ r =>
+          cases r with
+          | zero =>
+            rw [hmv] at hdm
+            exact hdm
+          | succ r' =>
+            rw [hmv] at hModLt
+            exact False.elim
+              (Nat.not_lt_of_ge (Nat.le_add_left 2 r') hModLt)
+
+/-- Logarithmic `natToPosAt depth n` agrees identically with `natToPos n`
+whenever `n + 1 < ptreePow2 depth`. -/
+theorem natToPosAt_eq_natToPos {depth n : Nat} (h : n + 1 < ptreePow2 depth) :
+    natToPosAt depth n = natToPos n :=
+  posToNat_inj (by
+    rw [posToNat_natToPos n]
+    exact posToNat_posOfNatFuel depth (n + 1) (Nat.succ_pos n) h)
+
+/-! ## 5. Kernel-Checked Canaries -/
 
 /-- Canary: disjoint-key `PTree.set` updates commute by `rfl` without axioms.
 -/
@@ -888,5 +1270,19 @@ required key has a mismatched value. -/
 theorem canary_diffWith_mismatch :
     PTree.diffWith Nat.beq canaryGoalTree (PTree.empty.set (natToPos 1) 99) =
       none := rfl
+
+/-- 256-entry top-down `ptreeTabulate` scaling canary (`depth = 9`, covering
+indices `0..510`): surgical lookups via logarithmic `natToPosAt` at `0`, `127`,
+`255`, and out-of-bounds `256` / `511` reduce by `rfl` forcing only `O(log N)`
+spine nodes. -/
+theorem canary_ptreeTabulate_256 :
+    let t := ptreeTabulate 9
+      (fun i => cond (Nat.blt i 256) (some (i * 3 + 1)) none)
+    t.get (natToPosAt 9 0) = some 1 ∧
+    t.get (natToPosAt 9 127) = some 382 ∧
+    t.get (natToPosAt 9 255) = some 766 ∧
+    t.get (natToPosAt 9 256) = none ∧
+    t.get (natToPosAt 10 511) = none :=
+  ⟨rfl, rfl, rfl, rfl, rfl⟩
 
 end Anneal.PTree

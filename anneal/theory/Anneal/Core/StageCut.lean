@@ -36,14 +36,25 @@ barriers and compositional weakest-precondition combinators over
    Generic fuel-bounded step-reachability barrier preventing `whnf` / `dsimp` /
    `rw` term blowup across multi-diamond joins (`2^m -> m`), paired with
    `MirStageCut.ofBlockTree` and `wpUntilCutStep_iff_exists_stepStageCut`.
-2. `wlpOutcomeState` and `wpOutcomeState_conj_of_wlp_noDiv`: Two-pass
+2. `BoolCertCut` (`@[irreducible]`, `0` `Prop` arguments): Generic reflective
+   certificate barrier sealing `check cert = true` with zero `Prop` arguments
+   and constant-time seal/unseal/pairing soundness combinators.
+3. `wlpOutcomeState` and `wpOutcomeState_conj_of_wlp_noDiv`: Two-pass
    conjunctive split separating safety/termination (`wpState`) from functional
    correctness (`wlpOutcomeState`) without re-proving step safety.
-3. `twoTrackPost`, `cleanup_block_return_faults_unsupported`, `DropSpineCut`
+4. `twoTrackPost`, `cleanup_block_return_faults_unsupported`, `DropSpineCut`
    (`@[irreducible]`, `0` `Prop` arguments), and
    `wpOutcomeState_loop_early_return_sound`: Normal-vs-unwind postconditions,
    cleanup-return fault rejection, shared `O(K)` LIFO `StorageDead` spine cuts,
    and bounded loops with early-return (`?`) exit guards.
+
+Why zero-`Prop`-argument barriers: Lean 4's `rw` (`kabstract` + `congrArg`) and
+`simp` (`simpApp` -> `congrArgs`) descend into explicit `Prop` arguments even
+beneath an `@[irreducible]` head constant (such as `Hold P` or
+`Firewall tag P`). Carrying only computational data arguments inside
+`@[irreducible]` cutpoint predicates (`StepStageCut`, `BoolCertCut`,
+`DropSpineCut`) blocks tactic traversal into sealed obligations while keeping
+every seal and unseal lemma linear-time and axiom-free.
 -/
 
 /-! ## Generic Zero-`Prop`-Argument `StepStageCut` and `wpUntilCutStep` -/
@@ -63,7 +74,11 @@ def reachStepIn {S Out : Type} (step : S → StepResult S Out)
 
 /-- Zero-`Prop`-argument stage-cut barrier asserting that `s₀` reaches `s₁`
 within `fuel` transitions of `step` without faulting or halting prematurely
-(sealed `@[irreducible]` below after its introduction and composition laws). -/
+(sealed `@[irreducible]` below after its introduction and composition laws).
+
+Keeping `StepStageCut` free of `Prop` arguments ensures downstream `rw` and
+`simp` passes cannot traverse into the reachability body via
+`congrArg` / `congrArgs` without explicitly applying the elimination lemmas. -/
 def StepStageCut {S Out : Type} (step : S → StepResult S Out)
     (fuel : Nat) (s₀ s₁ : S) : Prop :=
   reachStepIn step fuel s₀ s₁
@@ -412,6 +427,117 @@ theorem wpOutcomeState_of_wpUntilCutMir {p : Program}
   exact wpOutcomeState_of_mirStageCut hCut (hCont s₁ hc)
 
 attribute [irreducible] StepStageCut
+
+/-! ## Generic Zero-`Prop`-Argument Reflective Barrier (`BoolCertCut`) -/
+
+/-- Zero-`Prop`-argument reflective certificate barrier asserting that
+computable checker `check : Code → Bool` accepts certificate `cert : Code`
+(`check cert = true`), sealed `@[irreducible]` below after its seal, unseal,
+and pairing laws.
+
+Why zero `Prop` arguments: wrapping a `Prop` inside an `@[irreducible]`
+constant (such as `Hold (P : Prop)` or `Firewall tag P`) does not block Lean
+4's `rw` (`kabstract` + `congrArg`) or `simp` (`simpApp` -> `congrArgs`), which
+still descend into explicit `Prop` arguments without unfolding the head
+constant. Parameterizing `BoolCertCut` strictly by computational data (`Code`,
+`check`, `cert`) keeps the sealed proposition opaque to downstream rewriting
+while supporting zero-axiom reflective proofs.
+-/
+def BoolCertCut {Code : Type} (check : Code → Bool) (cert : Code) : Prop :=
+  check cert = true
+
+/-- Seals a concrete or derived `check cert = true` witness behind
+`BoolCertCut`. -/
+theorem BoolCertCut.seal {Code : Type} (check : Code → Bool) (cert : Code)
+    (h : check cert = true) : BoolCertCut check cert :=
+  h
+
+/-- Unseals `BoolCertCut check cert` back to `check cert = true`. -/
+theorem BoolCertCut.unseal {Code : Type} {check : Code → Bool} {cert : Code}
+    (h : BoolCertCut check cert) : check cert = true :=
+  h
+
+/-- Applies a pointwise soundness implication directly to a sealed
+`BoolCertCut` witness without exposing the definition to downstream tactics. -/
+theorem BoolCertCut.elim {Code : Type} {check : Code → Bool} {cert : Code}
+    {P : Prop} (hSound : check cert = true → P)
+    (hCut : BoolCertCut check cert) : P :=
+  hSound hCut
+
+/-- Applies a universal checker soundness theorem
+`∀ c, check c = true → interp c` to a sealed `BoolCertCut check cert`. -/
+theorem BoolCertCut.sound {Code : Type} {check : Code → Bool}
+    {interp : Code → Prop}
+    (hSound : ∀ c : Code, check c = true → interp c)
+    {cert : Code} (hCut : BoolCertCut check cert) : interp cert :=
+  hSound cert hCut
+
+/-- Pointwise checker congruence for `BoolCertCut`. -/
+theorem BoolCertCut.congr_check {Code : Type}
+    {check₁ check₂ : Code → Bool}
+    (hEq : ∀ c : Code, check₁ c = check₂ c) {cert : Code} :
+    BoolCertCut check₁ cert ↔ BoolCertCut check₂ cert := by
+  unfold BoolCertCut
+  rw [hEq cert]
+
+/-- Conjoins two `BoolCertCut` witnesses into a single paired certificate
+checker without introducing any `Prop` arguments. -/
+theorem BoolCertCut.pair {C₁ C₂ : Type}
+    {check₁ : C₁ → Bool} {check₂ : C₂ → Bool} {c₁ : C₁} {c₂ : C₂}
+    (h₁ : BoolCertCut check₁ c₁) (h₂ : BoolCertCut check₂ c₂) :
+    BoolCertCut (fun p : C₁ × C₂ => check₁ p.1 && check₂ p.2) (c₁, c₂) := by
+  unfold BoolCertCut at h₁ h₂
+  unfold BoolCertCut
+  dsimp only
+  rw [h₁, h₂]
+  rfl
+
+/-- Extracts the left `BoolCertCut` component from a paired certificate. -/
+theorem BoolCertCut.fst {C₁ C₂ : Type}
+    {check₁ : C₁ → Bool} {check₂ : C₂ → Bool} {c₁ : C₁} {c₂ : C₂}
+    (h : BoolCertCut (fun p : C₁ × C₂ => check₁ p.1 && check₂ p.2) (c₁, c₂)) :
+    BoolCertCut check₁ c₁ := by
+  unfold BoolCertCut at h
+  unfold BoolCertCut
+  dsimp only at h
+  cases h1 : check₁ c₁ with
+  | true => rfl
+  | false =>
+    rw [h1] at h
+    cases h
+
+/-- Extracts the right `BoolCertCut` component from a paired certificate. -/
+theorem BoolCertCut.snd {C₁ C₂ : Type}
+    {check₁ : C₁ → Bool} {check₂ : C₂ → Bool} {c₁ : C₁} {c₂ : C₂}
+    (h : BoolCertCut (fun p : C₁ × C₂ => check₁ p.1 && check₂ p.2) (c₁, c₂)) :
+    BoolCertCut check₂ c₂ := by
+  unfold BoolCertCut at h
+  unfold BoolCertCut
+  dsimp only at h
+  cases h1 : check₁ c₁ with
+  | false =>
+    rw [h1] at h
+    cases h
+  | true =>
+    rw [h1, Bool.true_and] at h
+    exact h
+
+attribute [irreducible] BoolCertCut
+
+/-- Canary: sealing, pairing, and discharging via `BoolCertCut.sound` require
+zero axioms and keep `BoolCertCut` opaque after sealing. -/
+theorem boolCertCut_roundtrip_canary : (7 : Nat) = 7 ∧ (42 : Nat) = 42 := by
+  let check : Nat × Nat → Bool := fun p => Nat.beq p.1 p.2
+  have h1 : BoolCertCut check (7, 7) := BoolCertCut.seal check (7, 7) rfl
+  have h2 : BoolCertCut check (42, 42) := BoolCertCut.seal check (42, 42) rfl
+  have hPair :
+      BoolCertCut (fun p : (Nat × Nat) × (Nat × Nat) => check p.1 && check p.2)
+        ((7, 7), (42, 42)) :=
+    BoolCertCut.pair h1 h2
+  have hSound : ∀ p : Nat × Nat, check p = true → p.1 = p.2 :=
+    fun p h => Nat.eq_of_beq_eq_true h
+  exact ⟨BoolCertCut.sound hSound (BoolCertCut.fst hPair),
+         BoolCertCut.sound hSound (BoolCertCut.snd hPair)⟩
 
 /-! ## Two-Pass Safety / Functional-Spec Split (`wlpOutcomeState`) -/
 
