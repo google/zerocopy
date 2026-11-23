@@ -1,0 +1,326 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-11-23T13:43:06Z",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "total_cases": 44,
+  "part_a_orphan_and_fundamental": {
+    "a01_local_type_for_foreign_trait_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "warning: field `0` is never read\n --> <WORKDIR>/a01_local_ok.rs:3:18\n  |\n3 | struct LocalType(u32);\n  |        --------- ^^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+      "run_rc": 0,
+      "stdout": "A01=local"
+    },
+    "a02_fundamental_box_local_type_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "warning: field `0` is never read\n --> <WORKDIR>/a02_box_ok.rs:3:18\n  |\n3 | struct LocalType(u32);\n  |        --------- ^^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+      "run_rc": 0,
+      "stdout": "A02=box_local"
+    },
+    "a03_fundamental_shared_ref_local_type_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "warning: field `0` is never read\n --> <WORKDIR>/a03_ref_ok.rs:3:18\n  |\n3 | struct LocalType(u32);\n  |        --------- ^^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+      "run_rc": 0,
+      "stdout": "A03=ref_local"
+    },
+    "a04_fundamental_mut_ref_local_type_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "warning: field `0` is never read\n --> <WORKDIR>/a04_mut_ref_ok.rs:3:18\n  |\n3 | struct LocalType(u32);\n  |        --------- ^^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+      "run_rc": 0,
+      "stdout": "A04=mut_ref_local"
+    },
+    "a05_nested_fundamental_pin_ref_and_pin_box_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "warning: field `0` is never read\n --> <WORKDIR>/a05_pin_nested_ok.rs:4:18\n  |\n4 | struct LocalType(u32);\n  |        --------- ^^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+      "run_rc": 0,
+      "stdout": "A05=pin_ref_local,pin_box_local"
+    },
+    "a06_non_fundamental_vec_local_type_e0117": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0117"
+      ],
+      "stderr_head": "error[E0117]: only traits defined in the current crate can be implemented for types defined outside of the crate\n --> <WORKDIR>/a06_vec_e0117.rs:4:1\n  |\n4 | impl ForeignTrait for Vec<LocalType> {\n  | ^^^^^------------^^^^^--------------\n  |      |                |\n  |      |                `Vec` is not defined in the current crate\n  |      this is not defined in the current crate because this is a foreign trait\n  |\n  = note: impl doesn't have any local type before any uncovered type parameters\n  = note: for more information see https://doc.rust-lang.org/reference/items/implementations.html#orphan-rules\n  = note: define and implement a trait or new type instead\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0117`."
+    },
+    "a07_non_fundamental_foreign_wrapper_local_type_e0117": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0117"
+      ],
+      "stderr_head": "error[E0117]: only traits defined in the current crate can be implemented for types defined outside of the crate\n --> <WORKDIR>/a07_wrap_e0117.rs:4:1\n  |\n4 | impl ForeignTrait for ForeignWrapper<LocalType> {\n  | ^^^^^------------^^^^^-------------------------\n  |      |                |\n  |      |                `ForeignWrapper` is not defined in the current crate\n  |      this is not defined in the current crate because this is a foreign trait\n  |\n  = note: impl doesn't have any local type before any uncovered type parameters\n  = note: for more information see https://doc.rust-lang.org/reference/items/implementations.html#orphan-rules\n  = note: define and implement a trait or new type instead\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0117`."
+    },
+    "a08_foreign_trait_local_arg_for_u32_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "warning: field `0` is never read\n --> <WORKDIR>/a08_arg_u32_ok.rs:3:18\n  |\n3 | struct LocalType(u32);\n  |        --------- ^^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+      "run_rc": 0,
+      "stdout": "A08=u32_local_arg"
+    },
+    "a09_rfc2451_covered_t_in_vec_before_local_arg_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "warning: field `0` is never read\n --> <WORKDIR>/a09_rfc2451_ok.rs:3:18\n  |\n3 | struct LocalType(u32);\n  |        --------- ^^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+      "run_rc": 0,
+      "stdout": "A09=vec_t_local_arg"
+    },
+    "a10_uncovered_t_before_local_type_arg_e0210": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0210"
+      ],
+      "stderr_head": "error[E0210]: type parameter `T` must be covered by another type when it appears before the first local type (`LocalType`)\n --> <WORKDIR>/a10_uncovered_e0210.rs:4:6\n  |\n4 | impl<T> ForeignTrait<LocalType> for T {\n  |      ^ type parameter `T` must be covered by another type when it appears before the first local type (`LocalType`)\n  |\n  = note: implementing a foreign trait is only possible if at least one of the types for which it is implemented is local, and no uncovered type parameters appear before that first local type\n  = note: in this case, 'before' refers to the following order: `impl<..> ForeignTrait<T1, ..., Tn> for T0`, where `T0` is the first and `Tn` is the last\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0210`."
+    },
+    "a11_uncovered_t_in_fundamental_box_before_local_arg_e0210": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0210"
+      ],
+      "stderr_head": "error[E0210]: type parameter `T` must be covered by another type when it appears before the first local type (`LocalType`)\n --> <WORKDIR>/a11_box_t_e0210.rs:4:6\n  |\n4 | impl<T> ForeignTrait<LocalType> for Box<T> {\n  |      ^ type parameter `T` must be covered by another type when it appears before the first local type (`LocalType`)\n  |\n  = note: implementing a foreign trait is only possible if at least one of the types for which it is implemented is local, and no uncovered type parameters appear before that first local type\n  = note: in this case, 'before' refers to the following order: `impl<..> ForeignTrait<T1, ..., Tn> for T0`, where `T0` is the first and `Tn` is the last\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0210`."
+    },
+    "a12_covered_t_after_local_self_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "warning: field `0` is never read\n --> <WORKDIR>/a12_after_local_ok.rs:3:18\n  |\n3 | struct LocalType(u32);\n  |        --------- ^^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+      "run_rc": 0,
+      "stdout": "A12=local_self_then_t,local_gen_then_t"
+    },
+    "a13_fully_foreign_with_type_param_e0210": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0210"
+      ],
+      "stderr_head": "error[E0210]: type parameter `T` must be used as the type parameter for some local type (e.g., `MyStruct<T>`)\n --> <WORKDIR>/a13_foreign_t_e0210.rs:3:6\n  |\n3 | impl<T> ForeignTrait<T> for ForeignType {\n  |      ^ type parameter `T` must be used as the type parameter for some local type\n  |\n  = note: implementing a foreign trait is only possible if at least one of the types for which it is implemented is local\n  = note: only traits defined in the current crate can be implemented for a type parameter\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0210`."
+    },
+    "a14_fully_foreign_concrete_e0117": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0117"
+      ],
+      "stderr_head": "error[E0117]: only traits defined in the current crate can be implemented for types defined outside of the crate\n --> <WORKDIR>/a14_foreign_e0117.rs:3:1\n  |\n3 | impl ForeignTrait for ForeignType {\n  | ^^^^^------------^^^^^-----------\n  |      |                |\n  |      |                `ForeignType` is not defined in the current crate\n  |      this is not defined in the current crate because this is a foreign trait\n  |\n  = note: impl doesn't have any local type before any uncovered type parameters\n  = note: for more information see https://doc.rust-lang.org/reference/items/implementations.html#orphan-rules\n  = note: define and implement a trait or new type instead\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0117`."
+    },
+    "a15_box_allocator_param_unwrapped_in_1_98": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "A15=box_u32_local_alloc"
+    },
+    "a16_auto_trait_bypasses_fundamental_e0321": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0321"
+      ],
+      "stderr_head": "error[E0321]: cross-crate traits with a default impl, like `Send`, can only be implemented for a struct/enum type defined in the current crate\n --> <WORKDIR>/a16_auto_e0321.rs:3:1\n  |\n3 | unsafe impl Send for Box<LocalType> {}\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ can't implement cross-crate trait for type in another crate\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0321`."
+    },
+    "a17_fundamental_fnmut_trait_knowable_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "A17=fnmut,str_ref"
+    },
+    "a18_non_fundamental_foreign_trait_knowability_e0119": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0119"
+      ],
+      "stderr_head": "error[E0119]: conflicting implementations of trait `Pattern` for type `&str`\n --> <WORKDIR>/a18_non_fund_trait_e0119.rs:7:1\n  |\n4 | impl<T: ForeignBlanketTrait> Pattern for T {\n  | ------------------------------------------ first implementation here\n...\n7 | impl Pattern for &str {\n  | ^^^^^^^^^^^^^^^^^^^^^ conflicting implementation for `&str`\n  |\n  = note: upstream crates may add a new impl of trait `up::ForeignBlanketTrait` for type `&str` in future versions\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0119`."
+    },
+    "a19_tuple_containing_local_type_rejected_e0117": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0117"
+      ],
+      "stderr_head": "error[E0117]: only traits defined in the current crate can be implemented for arbitrary types\n --> <WORKDIR>/a19_tuple_e0117.rs:4:1\n  |\n4 | impl ForeignTrait for (LocalType, u32) {\n  | ^^^^^------------^^^^^----------------\n  |      |                |\n  |      |                this is not defined in the current crate because tuples are always foreign\n  |      this is not defined in the current crate because this is a foreign trait\n  |\n  = note: impl doesn't have any local type before any uncovered type parameters\n  = note: for more information see https://doc.rust-lang.org/reference/items/implementations.html#orphan-rules\n  = note: define and implement a trait or new type instead\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0117`."
+    },
+    "a20_box_local_before_uncovered_trait_arg_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "warning: field `0` is never read\n --> <WORKDIR>/a20_box_local_before_t_ok.rs:3:18\n  |\n3 | struct LocalType(u32);\n  |        --------- ^^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+      "run_rc": 0,
+      "stdout": "A20=box_local_before_t"
+    }
+  },
+  "part_b_overlap_inherent_and_marker": {
+    "b01_conflicting_trait_impls_e0119": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0119"
+      ],
+      "stderr_head": "error[E0119]: conflicting implementations of trait `Tr` for type `Wrapper<u32>`\n --> <WORKDIR>/b01_e0119.rs:5:1\n  |\n4 | impl<T> Tr for Wrapper<T> { fn f(&self) -> u32 { 1 } }\n  | ------------------------- first implementation here\n5 | impl Tr for Wrapper<u32> { fn f(&self) -> u32 { 2 } }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation for `Wrapper<u32>`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0119`."
+    },
+    "b02_inherent_impls_disjoint_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "B02=10,-3"
+    },
+    "b03_inherent_impls_overlap_e0592": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0592"
+      ],
+      "stderr_head": "error[E0592]: duplicate definitions with name `dup`\n --> <WORKDIR>/b03_inh_e0592.rs:3:19\n  |\n3 | impl<T> Wrap<T> { fn dup(&self) {} }\n  |                   ^^^^^^^^^^^^^ duplicate definitions for `dup`\n4 | impl Wrap<u32> { fn dup(&self) {} }\n  |                  ------------- other definition for `dup`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0592`."
+    },
+    "b04_inherent_impl_foreign_type_e0116": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0116"
+      ],
+      "stderr_head": "error[E0116]: cannot define inherent `impl` for a type outside of the crate where the type is defined\n --> <WORKDIR>/b04_inh_e0116.rs:3:1\n  |\n3 | impl ForeignType { fn bad(&self) {} }\n  | ^^^^^^^^^^^^^^^^ impl for type defined outside of crate\n  |\n  = help: consider defining a trait and implementing it for the type or using a newtype wrapper like `struct MyType(ExternalType);` and implement it\n  = note: for more details about the orphan rules, see <https://doc.rust-lang.org/reference/items/implementations.html?highlight=orphan#orphan-rules>\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0116`."
+    },
+    "b05_object_overlap_supertrait_e0371": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0371"
+      ],
+      "stderr_head": "error[E0371]: the object type `(dyn Sub + 'static)` automatically implements the trait `Sup`\n --> <WORKDIR>/b05_obj_e0371.rs:4:1\n  |\n4 | impl Sup for dyn Sub {}\n  | ^^^^^^^^^^^^^^^^^^^^ `(dyn Sub + 'static)` automatically implements trait `Sup`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0371`."
+    },
+    "b06_marker_trait_overlap_allowed_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "B06=marker_ok"
+    },
+    "b07_marker_trait_with_item_and_impl_e0714_e0715": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0714",
+        "E0715"
+      ],
+      "stderr_head": "error[E0714]: marker traits cannot have associated items\n --> <WORKDIR>/b07_marker_e0714_e0715.rs:4:15\n  |\n4 | pub trait M { fn bad(&self) {} }\n  |               ^^^^^^^^^^^^^\n\nerror[E0715]: impls for marker traits cannot contain items\n --> <WORKDIR>/b07_marker_e0714_e0715.rs:5:1\n  |\n5 | impl M for u32 {}\n  | ^^^^^^^^^^^^^^\n\nerror: aborting due to 2 previous errors\n\nSome errors have detailed explanations: E0714, E0715.\nFor more information about an error, try `rustc --explain E0714`."
+    },
+    "b08_marker_trait_impl_explicit_item_e0714_e0715": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0714",
+        "E0715"
+      ],
+      "stderr_head": "error[E0714]: marker traits cannot have associated items\n --> <WORKDIR>/b08_marker_item_e0715.rs:4:15\n  |\n4 | pub trait M { const X: u32 = 1; }\n  |               ^^^^^^^^^^^^\n\nerror[E0715]: impls for marker traits cannot contain items\n --> <WORKDIR>/b08_marker_item_e0715.rs:5:1\n  |\n5 | impl M for u32 { const X: u32 = 2; }\n  | ^^^^^^^^^^^^^^\n\nerror: aborting due to 2 previous errors\n\nSome errors have detailed explanations: E0714, E0715.\nFor more information about an error, try `rustc --explain E0714`."
+    }
+  },
+  "part_c_negative_impls_and_coherence": {
+    "c01_overlap_without_negative_impl_e0119": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0119"
+      ],
+      "stderr_head": "error[E0119]: conflicting implementations of trait `Marker` for type `Local`\n --> <WORKDIR>/c01_no_neg_e0119.rs:5:1\n  |\n4 | impl<T: Send> Marker for T { fn tag() -> u32 { 1 } }\n  | -------------------------- first implementation here\n5 | impl Marker for Local { fn tag() -> u32 { 2 } }\n  | ^^^^^^^^^^^^^^^^^^^^^ conflicting implementation for `Local`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0119`."
+    },
+    "c02_local_negative_impl_send_without_with_negative_coherence_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "C02=1,2"
+    },
+    "c03_negative_impl_send_with_negative_coherence_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "C03=1,2"
+    },
+    "c04_negative_impl_custom_trait_with_negative_coherence_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "C04=10,20"
+    },
+    "c05_negative_impl_foreign_trait_for_local_and_overlap_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "C05=200"
+    },
+    "c06a_cross_crate_negative_impl_without_with_negative_coherence_e0119": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0119"
+      ],
+      "stderr_head": "error[E0119]: conflicting implementations of trait `CrossClassify` for type `UpNegStruct`\n --> <WORKDIR>/c06a_cross_crate_stable_e0119.rs:5:1\n  |\n4 | impl<T: UpNegTrait> CrossClassify for T { fn kind() -> &'static str { \"po...\n  | --------------------------------------- first implementation here\n5 | impl CrossClassify for UpNegStruct { fn kind() -> &'static str { \"up_negs...\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation for `UpNegStruct`\n  |\n  = note: upstream crates may add a new impl of trait `up_neg::UpNegTrait` for type `up_neg::UpNegStruct` in future versions\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0119`."
+    },
+    "c06b_cross_crate_negative_impl_with_negative_coherence_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "C06B=up_nosend,up_negstruct"
+    },
+    "c07_foreign_rc_without_negative_coherence_e0119": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0119"
+      ],
+      "stderr_head": "error[E0119]: conflicting implementations of trait `Classify` for type `Rc<_>`\n --> <WORKDIR>/c07_rc_stable_e0119.rs:5:1\n  |\n4 | impl<T: Send> Classify for T { fn cls() -> u32 { 1 } }\n  | ---------------------------- first implementation here\n5 | impl<T> Classify for Rc<T> { fn cls() -> u32 { 2 } }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation for `Rc<_>`\n  |\n  = note: upstream crates may add a new impl of trait `std::marker::Send` for type `std::rc::Rc<_>` in future versions\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0119`."
+    },
+    "c08_foreign_rc_with_negative_coherence_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "C08=1,2"
+    },
+    "c09_negative_impl_with_items_rejected_e0749": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0749"
+      ],
+      "stderr_head": "error[E0749]: negative impls cannot have any items\n --> <WORKDIR>/c09_neg_items_e0749.rs:5:23\n  |\n5 | impl !Foo for Local { fn bar(&self) {} }\n  |                       ^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0749`."
+    },
+    "c10_negative_positive_conflict_e0751": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0751"
+      ],
+      "stderr_head": "error[E0751]: found both positive and negative implementation of trait `Foo` for type `Local`:\n --> <WORKDIR>/c10_neg_pos_e0751.rs:6:1\n  |\n5 | impl Foo for Local {}\n  | ------------------ positive implementation here\n6 | impl !Foo for Local {}\n  | ^^^^^^^^^^^^^^^^^^^ negative implementation here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0751`."
+    },
+    "c11_negative_auto_trait_specialized_rejected_e0366": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0366"
+      ],
+      "stderr_head": "error[E0366]: `!Send` impls cannot be specialized\n --> <WORKDIR>/c11_neg_spec_e0366.rs:4:1\n  |\n4 | impl !Send for Wrap<u32> {}\n  | ^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: `u32` is not a generic parameter\nnote: use the same sequence of generic lifetime, type and const parameters as the struct definition\n --> <WORKDIR>/c11_neg_spec_e0366.rs:3:1\n  |\n3 | struct Wrap<T>(T);\n  | ^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0366`."
+    }
+  },
+  "part_d_zerocopy_coherence_patterns": {
+    "d01_zerocopy_style_disjoint_reason_markers_and_occurs_check_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "D01=ok,ok,ok"
+    },
+    "d02_zerocopy_style_omitting_reason_param_triggers_e0119": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0119"
+      ],
+      "stderr_head": "error[E0119]: conflicting implementations of trait `MutationCompatible<_, _>`\n  --> <WORKDIR>/d02_zc_no_reason_e0119.rs:14:1\n   |\n 9 | / unsafe impl<Src: ?Sized, Dst: ?Sized, A: Aliasing> MutationCompatible<...\n10 | | where\n11 | |     Src: Read<A>,\n12 | |     Dst: Read<A>,\n   | |_________________- first implementation here\n13 |   {}\n14 | / unsafe impl<Src: ?Sized, Dst: ?Sized, A: Aliasing> MutationCompatible<...\n15 | | where\n16 | |     Dst: SharedCompatible<Src>,\n   | |_______________________________^ conflicting implementation\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0119`."
+    },
+    "d03_zerocopy_style_downstream_fundamental_ok_vs_vec_e0117": {
+      "fundamental_ok": {
+        "compile_rc": 0,
+        "error_codes": [],
+        "stderr_head": "warning: field `0` is never read\n --> <WORKDIR>/d03a_zc_fund_ok.rs:5:19\n  |\n5 | struct UserStruct(u32);\n  |        ---------- ^^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+        "run_rc": 0,
+        "stdout": "D03=user,box_user,ref_user,pin_ref_user"
+      },
+      "vec_rejected_e0117": {
+        "compile_rc": 1,
+        "error_codes": [
+          "E0117"
+        ],
+        "stderr_head": "error[E0117]: only traits defined in the current crate can be implemented for types defined outside of the crate\n --> <WORKDIR>/d03b_zc_vec_e0117.rs:4:1\n  |\n4 | impl ZcMarkerLike for Vec<UserStruct> {\n  | ^^^^^^^^^^^^^^^^^^^^^^---------------\n  |                       |\n  |                       `Vec` is not defined in the current crate\n  |\n  = note: impl doesn't have any local type before any uncovered type parameters\n  = note: for more information see https://doc.rust-lang.org/reference/items/implementations.html#orphan-rules\n  = note: define and implement a trait or new type instead\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0117`."
+      }
+    }
+  }
+}
