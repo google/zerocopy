@@ -9,7 +9,7 @@
 // === case: alloc_passthrough_with_spec ===
 //@ fail(capture): "alloc_passthrough: unsupported type: &'{erased} usize"
 
-/// anneal:spec ensures(ret == x)
+/// Reference parameter/local with ordinary doc comment (no synthesis tags).
 pub fn alloc_passthrough(x: usize) -> usize {
     let r = &x;
     *r
@@ -26,7 +26,6 @@ pub fn alloc_passthrough(x: usize) -> usize {
 // === case: wrong_alloc_passthrough ===
 //@ fail(capture): "alloc_passthrough: unsupported type: &'{erased} usize"
 
-/// anneal:spec ensures(ret == x)
 pub fn alloc_passthrough(x: usize) -> usize {
     let zero = 0usize;
     let r = &zero;

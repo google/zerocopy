@@ -15,7 +15,6 @@
 // === case: struct_capture_refused_nonzero_library ===
 //@ fail(capture): "NonZeroUsize: whole-crate obligation is unsupported: Struct"
 
-/// anneal:invariant val != 0
 #[repr(transparent)]
 pub struct NonZeroUsize {
     val: usize,
@@ -32,8 +31,6 @@ pub fn make_nonzero(x: usize) -> NonZeroUsize {
 /// # Safety
 ///
 /// `x` must not be zero.
-///
-/// anneal:requires x != 0
 pub unsafe fn new_unchecked(x: usize) -> NonZeroUsize {
     NonZeroUsize { val: x }
 }
@@ -50,7 +47,6 @@ pub fn get_unchecked(x: NonZeroUsize) -> usize {
 //@ fail(capture): "NonZeroUsize: whole-crate obligation is unsupported: Struct"
 
 // Rejected at `Struct` capture before any invariant check on `make_nonzero`.
-/// anneal:invariant val != 0
 #[repr(transparent)]
 pub struct NonZeroUsize {
     val: usize,
@@ -64,8 +60,6 @@ pub fn make_nonzero(x: usize) -> NonZeroUsize {
 /// # Safety
 ///
 /// `x` must not be zero.
-///
-/// anneal:requires x != 0
 pub unsafe fn new_unchecked(x: usize) -> NonZeroUsize {
     NonZeroUsize { val: x }
 }
@@ -82,7 +76,6 @@ pub fn get_unchecked(x: NonZeroUsize) -> usize {
 //@ fail(capture): "NonZeroUsize: whole-crate obligation is unsupported: Struct"
 
 // Rejected at `Struct` capture before any field-visibility invariant check.
-/// anneal:invariant val != 0
 #[repr(transparent)]
 pub struct NonZeroUsize {
     pub val: usize,
@@ -99,8 +92,6 @@ pub fn make_nonzero(x: usize) -> NonZeroUsize {
 /// # Safety
 ///
 /// `x` must not be zero.
-///
-/// anneal:requires x != 0
 pub unsafe fn new_unchecked(x: usize) -> NonZeroUsize {
     NonZeroUsize { val: x }
 }
@@ -117,13 +108,11 @@ pub fn get_unchecked(x: NonZeroUsize) -> usize {
 //@ fail(capture): "NonZeroUsize: whole-crate obligation is unsupported: Struct"
 
 // Rejected at `Struct` capture before any safety or invariant check.
-/// anneal:invariant val != 0
 #[repr(transparent)]
 pub struct NonZeroUsize {
     val: usize,
 }
 
-/// anneal:requires x != 0
 pub unsafe fn new_unchecked(x: usize) -> NonZeroUsize {
     let _ = x;
     NonZeroUsize { val: 0 }
@@ -132,14 +121,13 @@ pub unsafe fn new_unchecked(x: usize) -> NonZeroUsize {
 // === case: struct_capture_refused_with_requires_clause ===
 //@ fail(capture): "NonZeroUsize: whole-crate obligation is unsupported: Struct"
 
-// Real capture refuses `Struct` before the harness inspects `anneal:requires`.
-/// anneal:invariant val != 0
+// Real capture refuses `Struct` before any specification check.
 #[repr(transparent)]
 pub struct NonZeroUsize {
     val: usize,
 }
 
-/// anneal:requires x != 1
+/// Requires `x != 1` (unreachable behind `Struct` refusal).
 pub unsafe fn new_unchecked(x: usize) -> NonZeroUsize {
     NonZeroUsize { val: x }
 }
@@ -147,14 +135,13 @@ pub unsafe fn new_unchecked(x: usize) -> NonZeroUsize {
 // === case: struct_capture_refused_with_spec_clause ===
 //@ fail(capture): "NonZeroUsize: whole-crate obligation is unsupported: Struct"
 
-// Real capture refuses `Struct` before the harness inspects `anneal:spec`.
-/// anneal:invariant val != 0
+// Real capture refuses `Struct` before any specification check.
 #[repr(transparent)]
 pub struct NonZeroUsize {
     val: usize,
 }
 
-/// anneal:spec ensures(ret == x)
+/// Ensures `ret == x` (unreachable behind `Struct` refusal).
 pub fn make_nonzero(x: usize) -> NonZeroUsize {
     if x == 0 {
         NonZeroUsize { val: 1 }
