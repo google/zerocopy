@@ -1,0 +1,252 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+name: Anneal Performance Tracking
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '17 04 * * *'
+  workflow_dispatch: {}
+
+defaults:
+  run:
+    working-directory: anneal
+
+permissions: {}
+
+concurrency:
+  group: anneal-perf-tracking
+  cancel-in-progress: false
+
+jobs:
+  collect-and-publish:
+    name: Collect and publish performance telemetry
+    if: github.repository == 'google/zerocopy'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: write # Append validated JSONL record and static dashboard to orphan benchmark-data branch
+    env:
+      ACTIONS_CACHE_URL: ''
+      ACTIONS_RESULTS_URL: ''
+      ACTIONS_RUNTIME_TOKEN: ''
+      ACTIONS_RUNTIME_URL: ''
+    steps:
+      - name: Checkout repository
+        id: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Verify root TCB manifest
+        id: manifest
+        run: |
+          set -euo pipefail
+          linked_path="$(find trusted -type l -print -quit)"
+          if [ -n "$linked_path" ]; then
+            echo "symlink in Anneal trusted tree: $linked_path" >&2
+            exit 1
+          fi
+          sha256sum --check --strict trusted/root-manifest.sha256
+          for root in . "$GITHUB_WORKSPACE"; do
+            for name in .cargo rust-toolchain rust-toolchain.toml .gitmodules; do
+              path="$root/$name"
+              if [ -e "$path" ] || [ -L "$path" ]; then
+                echo "forbidden root config override: $path" >&2
+                exit 1
+              fi
+            done
+          done
+
+      - name: Install Nix
+        id: nix
+        uses: DeterminateSystems/determinate-nix-action@92957199488000b908fdad19f63711000965d8f3 # v3.24.1
+
+      - name: Build omnibus archive and release binaries
+        id: build
+        run: |
+          set -euo pipefail
+          if ! command -v /usr/bin/time >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y time
+          fi
+          mkdir -p target
+          nix build --max-jobs 4 --cores 4 .#omnibus-archive --out-link target/omnibus-link
+          cp -f "$(readlink -f target/omnibus-link)" target/anneal-exocrate.tar.zst
+          rm -f target/omnibus-link
+          cargo build --locked --release -p cargo-anneal -p anneal-audit
+
+      - name: Install bubblewrap and zstd
+        id: sandbox
+        run: |
+          set -euo pipefail
+          pkgs=()
+          if ! command -v bwrap >/dev/null 2>&1; then
+            pkgs+=(bubblewrap)
+          fi
+          if ! command -v zstd >/dev/null 2>&1; then
+            pkgs+=(zstd)
+          fi
+          if [ "${#pkgs[@]}" -gt 0 ]; then
+            sudo apt-get update
+            sudo apt-get install -y "${pkgs[@]}"
+          fi
+          if [ ! -f /etc/apparmor.d/bwrap ] && command -v apparmor_parser >/dev/null 2>&1; then
+            sudo tee /etc/apparmor.d/bwrap <<'PROFILE' >/dev/null
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          profile bwrap /usr/bin/bwrap flags=(unconfined) {
+            userns,
+            include if exists <local/bwrap>
+          }
+          PROFILE
+            sudo apparmor_parser -r /etc/apparmor.d/bwrap
+          fi
+          bwrap --unshare-all --die-with-parent --new-session --clearenv \
+            --tmpfs / --dev /dev --proc /proc \
+            --ro-bind /usr/lib /usr/lib \
+            --ro-bind-try /usr/lib64 /usr/lib64 \
+            --ro-bind-try /lib /lib \
+            --ro-bind-try /lib64 /lib64 \
+            --ro-bind-try /etc/ld.so.cache /etc/ld.so.cache \
+            --ro-bind /usr/bin/true /true \
+            -- /true
+
+      - name: Unpack and verify toolchain bundle
+        id: unpack
+        run: |
+          set -euo pipefail
+          install_cache="$(mktemp -d "$RUNNER_TEMP/anneal-perf-toolchain.XXXXXX")"
+          install_root="$install_cache/anneal/toolchain/extracted"
+          mkdir -p "$install_root"
+          tar --no-same-owner --zstd -xf target/anneal-exocrate.tar.zst -C "$install_root"
+          /usr/bin/python3 -I -B ci/check_bundle_tree.py \
+            --cache-root "$install_cache" \
+            --root "$install_root" \
+            >> "$GITHUB_ENV"
+
+      - name: Collect performance metrics and check budgets
+        id: collect
+        env:
+          PROFILE_NAME: github-ubuntu-24.04-x86_64
+          RECORD_PATH: ${{ runner.temp }}/anneal-perf-record.json
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 -I -B ci/perf_tracking.py collect \
+            --profile "$PROFILE_NAME" \
+            --cli target/release/cargo-anneal \
+            --auditor target/release/anneal-audit \
+            --install-root "$ANNEAL_TEST_INSTALL_ROOT" \
+            --omnibus-archive target/anneal-exocrate.tar.zst \
+            --verify-repeats 3 \
+            --cold-no-cache-repeats 1 \
+            --output "$RECORD_PATH"
+          /usr/bin/python3 -I -B ci/perf_tracking.py validate "$RECORD_PATH"
+          /usr/bin/python3 -I -B ci/perf_tracking.py check-budgets "$RECORD_PATH" \
+            --budgets ci/perf_budgets.json
+
+      - name: Publish telemetry and dashboard
+        id: publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO_REMOTE_URL: ${{ github.server_url }}/${{ github.repository }}.git
+          RECORD_PATH: ${{ runner.temp }}/anneal-perf-record.json
+          PROFILE_NAME: github-ubuntu-24.04-x86_64
+        run: |
+          set -euo pipefail
+          publish_dir="$(mktemp -d "${RUNNER_TEMP:-/tmp}/anneal-perf-publish.XXXXXX")"
+          cleanup_publish() {
+            rm -rf "$publish_dir"
+          }
+          trap cleanup_publish EXIT
+
+          remote_url="${ORIGIN_URL:-$REPO_REMOTE_URL}"
+          if [ -n "${GH_TOKEN:-}" ]; then
+            auth_b64="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 | tr -d '\n')"
+            export GIT_CONFIG_COUNT=1
+            export GIT_CONFIG_KEY_0="http.https://github.com/.extraheader"
+            export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic ${auth_b64}"
+          fi
+
+          anneal_ci_dir="$PWD/ci"
+          pushed=0
+          for attempt in 1 2 3 4 5; do
+            rm -rf "$publish_dir/repo"
+            mkdir -p "$publish_dir/repo"
+            git -C "$publish_dir/repo" -c init.defaultBranch=benchmark-data init -q
+            git -C "$publish_dir/repo" config user.name "github-actions[bot]"
+            git -C "$publish_dir/repo" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git -C "$publish_dir/repo" remote add origin "$remote_url"
+
+            set +e
+            git -C "$publish_dir/repo" ls-remote --exit-code --heads origin benchmark-data \
+              >"$publish_dir/ls_remote.out" 2>"$publish_dir/ls_remote.err"
+            ls_rc=$?
+            set -e
+
+            if [ "$ls_rc" -eq 0 ]; then
+              git -C "$publish_dir/repo" fetch --quiet --depth=1 origin benchmark-data
+              git -C "$publish_dir/repo" checkout --quiet -B benchmark-data FETCH_HEAD
+            elif [ "$ls_rc" -eq 2 ]; then
+              git -C "$publish_dir/repo" checkout --quiet --orphan benchmark-data
+            else
+              cat "$publish_dir/ls_remote.err" >&2
+              echo "Failed probing remote benchmark-data branch (exit $ls_rc)" >&2
+              exit "$ls_rc"
+            fi
+
+            mkdir -p "$publish_dir/repo/anneal" "$publish_dir/repo/dashboard/anneal"
+            /usr/bin/python3 -I -B "$anneal_ci_dir/perf_tracking.py" append \
+              "$publish_dir/repo/anneal/records.jsonl" "$RECORD_PATH"
+            /usr/bin/python3 -I -B "$anneal_ci_dir/render_perf_dashboard.py" \
+              --records "$publish_dir/repo/anneal/records.jsonl" \
+              --budgets "$anneal_ci_dir/perf_budgets.json" \
+              --profile "$PROFILE_NAME" \
+              --output-dir "$publish_dir/repo/dashboard/anneal"
+
+            if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+              /usr/bin/python3 -I -B "$anneal_ci_dir/perf_tracking.py" summary-markdown \
+                "$publish_dir/repo/anneal/records.jsonl" \
+                --budgets "$anneal_ci_dir/perf_budgets.json" \
+                --profile "$PROFILE_NAME" \
+                > "$GITHUB_STEP_SUMMARY"
+            fi
+
+            git -C "$publish_dir/repo" add -- anneal/records.jsonl dashboard/anneal
+            set +e
+            git -C "$publish_dir/repo" diff --cached --quiet
+            diff_rc=$?
+            set -e
+            if [ "$diff_rc" -eq 0 ]; then
+              pushed=1
+              break
+            fi
+            if [ "$diff_rc" -ne 1 ]; then
+              exit "$diff_rc"
+            fi
+
+            git -C "$publish_dir/repo" commit -qm "Record Anneal performance telemetry"
+            set +e
+            git -C "$publish_dir/repo" push --quiet origin HEAD:refs/heads/benchmark-data
+            push_rc=$?
+            set -e
+            if [ "$push_rc" -eq 0 ]; then
+              pushed=1
+              break
+            fi
+            echo "Push attempt $attempt conflicted; retrying..." >&2
+          done
+
+          if [ "$pushed" -ne 1 ]; then
+            echo "Failed to push telemetry to benchmark-data after 5 attempts" >&2
+            exit 1
+          fi
