@@ -21,6 +21,8 @@ public import Trusted.MirAst
 public import Trusted.MirModel
 public import Trusted.MirSemantics
 public import Anneal.Framework.StepWp
+public import Anneal.BitVec
+public import Anneal.BitVecArith
 public import Anneal.MirWp
 public import Anneal.MirTotal.Ops
 public import Anneal.MirTotal.StepCore
@@ -28,6 +30,7 @@ public import Anneal.Core.BlockTree
 public import Anneal.Core.SepPCM
 public import Anneal.Core.StageCut
 public import Anneal.Core.SpecRealizability
+public import Anneal.Core.AlignMath
 
 public section
 
@@ -60,6 +63,14 @@ Exercises `Core.BlockTree`, `Core.SepPCM`, and `Core.StageCut` (`0`
    return that skips `_0` initialization (`FaultKind.undefined`).
 5. **Spatial `ByteHeaplet` PCM & `MemDisjointFrame` Canaries:** Exercises
    disjoint heaplet framing, conflict refutation, and metadata preservation.
+6. **`zerocopy` Alignment MIR Canaries:** Exercises hand-modeled Profile v1
+   64-bit `usize` scalar equivalents of `padding_needed_for`
+   (`bodyZerocopyPaddingNeededFor`) and
+   `round_down_to_next_multiple_of_alignment` (`bodyZerocopyRoundDown`) over
+   `MirWp`, concrete non-vacuity runs, and negative `align = 6`
+   counterexamples (verbatim `zerocopy/src/util/mod.rs` capture remains gated
+   on `NonZeroUsize` struct parameters, `TerminatorKind::Call`, and
+   `debug_assert!`).
 -/
 
 /-! ## Computable Scalar / Tuple Helpers (`0` `noncomputable`) -/
@@ -2577,6 +2588,711 @@ theorem specRealizability_negative_vacuity_and_composition_canary :
     hTrivDisj, hInputOnly, hSubsing, ⟨hMemOnlyDich, hMemOnlyNotRet⟩,
     ⟨hUnwoundDich, hUnwoundNotRet⟩, ⟨hSurvPre, hSurvDisj, hSurvImp⟩,
     hBranchPos, hBranchNeg⟩
+
+/-! ## `zerocopy` Alignment MIR Canaries -/
+
+/-- Hand-modeled Profile v1 64-bit `usize` (`MirTy.int .isize false`) MIR
+scalar equivalent (with overflow checks off) of
+`zerocopy::util::padding_needed_for` (`!(len.wrapping_sub(1)) & (align - 1)`
+in `zerocopy/src/util/mod.rs`). Direct capture of the verbatim item is
+blocked by Profile v1's fail-closed rejection of the `NonZeroUsize` struct
+parameter and `TerminatorKind::Call` (`NonZero::get` and
+`usize::wrapping_sub`). -/
+@[expose] def bodyZerocopyPaddingNeededFor : Body :=
+  { identity := "canary::zerocopy_align_math::padding_needed_for_model"
+    isUnsafe := false
+    locals :=
+      [alignUsizeTy, alignUsizeTy, alignUsizeTy, alignUsizeTy, alignUsizeTy]
+    argumentCount := 2
+    basicBlocks := [
+      { statements := [
+          .storageLive 3,
+          .assign (coreLocalPlace 3)
+            (.binaryOp .sub (.copy (coreLocalPlace 1)) (alignUsizeConst 1)),
+          .assign (coreLocalPlace 3)
+            (.unaryOp .not (.copy (coreLocalPlace 3))),
+          .storageLive 4,
+          .assign (coreLocalPlace 4)
+            (.binaryOp .sub (.copy (coreLocalPlace 2)) (alignUsizeConst 1)),
+          .assign (coreLocalPlace 0)
+            (.binaryOp .bitAnd (.copy (coreLocalPlace 3))
+              (.copy (coreLocalPlace 4))),
+          .storageDead 4,
+          .storageDead 3
+        ]
+        terminator := .return_
+        cleanup := false }
+    ] }
+
+/-- Hand-modeled Profile v1 64-bit `usize` (`MirTy.int .isize false`) MIR
+scalar equivalent (with overflow checks off) of
+`zerocopy::util::round_down_to_next_multiple_of_alignment` (`n & !(align - 1)`
+in `zerocopy/src/util/mod.rs`). Direct capture of the verbatim item is
+blocked by Profile v1's fail-closed rejection of the `NonZeroUsize` struct
+parameter, `TerminatorKind::Call` (`NonZero::get`), and `debug_assert!`
+lowering. -/
+@[expose] def bodyZerocopyRoundDown : Body :=
+  { identity := "canary::zerocopy_align_math::round_down_model"
+    isUnsafe := false
+    locals := [alignUsizeTy, alignUsizeTy, alignUsizeTy, alignUsizeTy]
+    argumentCount := 2
+    basicBlocks := [
+      { statements := [
+          .storageLive 3,
+          .assign (coreLocalPlace 3)
+            (.binaryOp .sub (.copy (coreLocalPlace 2)) (alignUsizeConst 1)),
+          .assign (coreLocalPlace 3)
+            (.unaryOp .not (.copy (coreLocalPlace 3))),
+          .assign (coreLocalPlace 0)
+            (.binaryOp .bitAnd (.copy (coreLocalPlace 1))
+              (.copy (coreLocalPlace 3))),
+          .storageDead 3
+        ]
+        terminator := .return_
+        cleanup := false }
+    ] }
+
+private theorem wpProg_of_executes {body : Body} {args : List Val}
+    {s₀ : State} {vRet : Val}
+    (hInit : initState (bodyProg body) { args := args } = .ok s₀)
+    (hExec : Executes body s₀ vRet) :
+    ∃ fuel, wpProg (bodyProg body) fuel { args := args }
+      (fun out => out = .returned ⟨vRet, ⟨[]⟩⟩) := by
+  let ⟨fuel, hRuns⟩ := executes_iff_wpState.mp hExec
+  refine ⟨fuel, ?_⟩
+  unfold wpProg
+  rw [hInit]
+  exact wpOutcomeState_of_execOutcomeState hRuns
+
+private theorem bvZeroExtend_128_u64_one :
+    bvZeroExtend 128 (BitVec.ofNat 64 1) = BitVec.ofNat 128 1 := by
+  unfold bvZeroExtend
+  rw [Anneal.BitVec.toNat_ofNat,
+    (by decide : Nat.mod 1 (Nat.pow 2 64) = 1)]
+
+private theorem evalPrimitiveOperand_alignUsizeConst_one
+    (tys : List MirTy) (locs : List LocalSlot) (m : MemoryState) :
+    evalPrimitiveOperand tys locs m (alignUsizeConst 1) =
+      .ok (alignUsizeVal (BitVec.ofNat 64 1), locs, m) := by
+  unfold alignUsizeVal
+  rw [bvZeroExtend_128_u64_one]
+  rfl
+
+private theorem evalRvalue_binaryOp_usize {tys : List MirTy}
+    {ls ls₁ ls₂ : List LocalSlot} {m m₁ m₂ : MemoryState} {dstTy : MirTy}
+    {op : BinOp} {lhs rhs : Operand} {lVal rVal res : Val}
+    (hL : evalPrimitiveOperand tys ls m lhs = .ok (lVal, ls₁, m₁))
+    (hR : evalPrimitiveOperand tys ls₁ m₁ rhs = .ok (rVal, ls₂, m₂))
+    (hOp : evalBinOp op lVal rVal = .ok res) :
+    evalRvalue tys ls m dstTy (.binaryOp op lhs rhs) =
+      .ok (res, ls₂, m₂) := by
+  unfold evalRvalue
+  dsimp only
+  rw [hL]
+  dsimp only
+  rw [hR]
+  dsimp only
+  rw [hOp]
+
+private theorem evalRvalue_unaryOp_usize {tys : List MirTy}
+    {ls ls₁ : List LocalSlot} {m m₁ : MemoryState} {dstTy : MirTy}
+    {op : UnOp} {opnd : Operand} {v res : Val}
+    (hOpnd : evalPrimitiveOperand tys ls m opnd = .ok (v, ls₁, m₁))
+    (hOp : evalUnOp op v = .ok res) :
+    evalRvalue tys ls m dstTy (.unaryOp op opnd) = .ok (res, ls₁, m₁) := by
+  unfold evalRvalue
+  dsimp only
+  rw [hOpnd]
+  dsimp only
+  rw [hOp]
+
+private theorem evalStatement_assign_any {body : Body}
+    {frame : FrameState} {m m₁ m₂ : MemoryState} {cm : CallerMemory}
+    {dst : Place} {rvalue : Rvalue} {dstTy : MirTy} {val : Val}
+    {ls ls' : List LocalSlot}
+    (hProj : dst.projection.isEmpty = true)
+    (hLoc : Trusted.MirSemantics.getElem? body.locals dst.localId =
+      some dstTy)
+    (hRv : evalRvalue body.locals frame.locals m dstTy rvalue =
+      .ok (val, ls, m₁))
+    (hW : writePlace ls m₁ dst.localId dstTy val = .ok (ls', m₂)) :
+    evalStatement body frame m cm (.assign dst rvalue) =
+      .step {
+        frames := [{
+          frame with
+          stmtIdx := frame.stmtIdx + 1
+          locals := ls'
+        }]
+        callerMem := cm
+        mem := m₂
+      } := by
+  have hNotProj : (!dst.projection.isEmpty) = false := by
+    rw [hProj]
+    rfl
+  unfold evalStatement
+  dsimp only
+  rw [ite_bool_false hNotProj, hLoc]
+  dsimp only
+  rw [hRv]
+  dsimp only
+  rw [hW]
+
+private theorem writePlace_usize {ls ls' : List LocalSlot}
+    {m : MemoryState} {dstId : LocalId} {x : BitVec 64}
+    {old : Option Val}
+    (hGet : Trusted.MirSemantics.getElem? ls dstId =
+      some (.immediate old))
+    (hSet : Trusted.MirSemantics.setElem? ls dstId
+      (.immediate (some (alignUsizeVal x))) = some ls') :
+    writePlace ls m dstId alignUsizeTy (alignUsizeVal x) =
+      .ok (ls', m) := by
+  have hNotChk : (!checkVal (alignUsizeVal x) alignUsizeTy) = false := by
+    rw [checkVal_alignUsizeVal x]
+    rfl
+  unfold writePlace
+  rw [ite_bool_false hNotChk, hGet, hSet]
+
+private theorem evalStep_stmt_step {body : Body} {bb : BasicBlock}
+    {k : Nat} {stmt : StatementKind} {ls : List LocalSlot} {next : State}
+    (hBb : Trusted.MirSemantics.getElem? body.basicBlocks 0 = some bb)
+    (hStmt : Trusted.MirSemantics.getElem? bb.statements k = some stmt)
+    (hEval :
+      evalStatement body
+        { defId := 0, blockIdx := 0, stmtIdx := k, locals := ls }
+        entryMemory ⟨[]⟩ stmt = .step next) :
+    evalStep (bodyProg body) 0 (mkState 0 k ls) = .step next := by
+  have hBody : Trusted.MirSemantics.getElem? [body] 0 = some body := rfl
+  unfold bodyProg evalStep mkState
+  dsimp only [activeFrameBody, attachCallers]
+  rw [hBody]
+  dsimp only
+  rw [hBb]
+  dsimp only
+  rw [hStmt]
+  exact hEval
+
+private theorem evalStep_assign_usize {body : Body} {bb : BasicBlock}
+    (k : Nat) (dst : Place) (rvalue : Rvalue) (val : Val)
+    (ls ls' : List LocalSlot)
+    (hBb : Trusted.MirSemantics.getElem? body.basicBlocks 0 = some bb)
+    (hStmt : Trusted.MirSemantics.getElem? bb.statements k =
+      some (.assign dst rvalue))
+    (hProj : dst.projection.isEmpty = true)
+    (hLoc : Trusted.MirSemantics.getElem? body.locals dst.localId =
+      some alignUsizeTy)
+    (hRv : evalRvalue body.locals ls entryMemory alignUsizeTy rvalue =
+      .ok (val, ls, entryMemory))
+    (hW : writePlace ls entryMemory dst.localId alignUsizeTy val =
+      .ok (ls', entryMemory)) :
+    evalStep (bodyProg body) 0 (mkState 0 k ls) =
+      .step (mkState 0 (k + 1) ls') :=
+  evalStep_stmt_step hBb hStmt
+    (evalStatement_assign_any
+      (frame := { defId := 0, blockIdx := 0, stmtIdx := k, locals := ls })
+      hProj hLoc hRv hW)
+
+private theorem alignUsizeVal_inj {x y : BitVec 64}
+    (h : alignUsizeVal x = alignUsizeVal y) : x = y := by
+  unfold alignUsizeVal at h
+  injection h with hSv
+  injection hSv with _ _ hBv
+  have hNat := congrArg BitVec.toNat hBv
+  rw [bvZeroExtend_128_toNat, bvZeroExtend_128_toNat] at hNat
+  exact Anneal.BitVec.eq_of_toNat_eq hNat
+
+private theorem validEntryArgs_pad_usize (len align : BitVec 64) :
+    ValidEntryArgs bodyZerocopyPaddingNeededFor
+      [alignUsizeVal len, alignUsizeVal align] :=
+  (checkArgsMatch_cons_iff (args := [alignUsizeVal len, alignUsizeVal align])
+    (ty := alignUsizeTy) (tys := [alignUsizeTy])).mpr
+    ⟨alignUsizeVal len, [alignUsizeVal align], rfl, checkVal_alignUsizeVal len,
+      (checkArgsMatch_cons_iff (args := [alignUsizeVal align])
+        (ty := alignUsizeTy) (tys := [])).mpr
+        ⟨alignUsizeVal align, [], rfl, checkVal_alignUsizeVal align,
+          checkArgsMatch_nil_iff.mpr rfl⟩⟩
+
+/-- Symbolic 9-step weakest-precondition certificate for
+`bodyZerocopyPaddingNeededFor` across arbitrary 64-bit `usize` inputs
+`len, align : BitVec 64`. -/
+theorem bodyZerocopyPaddingNeededFor_wpProg (len align : BitVec 64) :
+    ∃ fuel, wpProg (bodyProg bodyZerocopyPaddingNeededFor) fuel
+      { args := [alignUsizeVal len, alignUsizeVal align] }
+      (fun out =>
+        out = .returned ⟨alignUsizeVal (paddingFast len align), ⟨[]⟩⟩) := by
+  have hInit :
+      initState (bodyProg bodyZerocopyPaddingNeededFor)
+        { args := [alignUsizeVal len, alignUsizeVal align] } =
+        .ok (mkState 0 0
+          [.immediate none, .immediate (some (alignUsizeVal len)),
+           .immediate (some (alignUsizeVal align)), .dead, .dead]) :=
+    initState_eq_ok (body := bodyZerocopyPaddingNeededFor) rfl rfl
+      (validEntryArgs_pad_usize len align)
+  let vLen := alignUsizeVal len
+  let vAlign := alignUsizeVal align
+  let t1 := len - BitVec.ofNat 64 1
+  let vt1 := alignUsizeVal t1
+  let t2 := Anneal.BitVec.not t1
+  let vt2 := alignUsizeVal t2
+  let t3 := align - BitVec.ofNat 64 1
+  let vt3 := alignUsizeVal t3
+  let vRet := alignUsizeVal (paddingFast len align)
+  let ls0 : List LocalSlot :=
+    [.immediate none, .immediate (some vLen), .immediate (some vAlign),
+     .dead, .dead]
+  let ls1 : List LocalSlot :=
+    [.immediate none, .immediate (some vLen), .immediate (some vAlign),
+     .immediate none, .dead]
+  let ls2 : List LocalSlot :=
+    [.immediate none, .immediate (some vLen), .immediate (some vAlign),
+     .immediate (some vt1), .dead]
+  let ls3 : List LocalSlot :=
+    [.immediate none, .immediate (some vLen), .immediate (some vAlign),
+     .immediate (some vt2), .dead]
+  let ls4 : List LocalSlot :=
+    [.immediate none, .immediate (some vLen), .immediate (some vAlign),
+     .immediate (some vt2), .immediate none]
+  let ls5 : List LocalSlot :=
+    [.immediate none, .immediate (some vLen), .immediate (some vAlign),
+     .immediate (some vt2), .immediate (some vt3)]
+  let ls6 : List LocalSlot :=
+    [.immediate (some vRet), .immediate (some vLen), .immediate (some vAlign),
+     .immediate (some vt2), .immediate (some vt3)]
+  let ls7 : List LocalSlot :=
+    [.immediate (some vRet), .immediate (some vLen), .immediate (some vAlign),
+     .immediate (some vt2), .dead]
+  let ls8 : List LocalSlot :=
+    [.immediate (some vRet), .immediate (some vLen), .immediate (some vAlign),
+     .dead, .dead]
+  have hStep0 :
+      evalStep (bodyProg bodyZerocopyPaddingNeededFor) 0 (mkState 0 0 ls0) =
+        .step (mkState 0 1 ls1) := rfl
+  have hStep1 :
+      evalStep (bodyProg bodyZerocopyPaddingNeededFor) 0 (mkState 0 1 ls1) =
+        .step (mkState 0 2 ls2) := by
+    have hRv := evalRvalue_binaryOp_usize (dstTy := alignUsizeTy)
+      (tys := bodyZerocopyPaddingNeededFor.locals) (ls := ls1)
+      (m := entryMemory) (lhs := .copy (coreLocalPlace 1))
+      (rhs := alignUsizeConst 1) (lVal := vLen)
+      (rVal := alignUsizeVal (BitVec.ofNat 64 1)) (res := vt1)
+      rfl (evalPrimitiveOperand_alignUsizeConst_one _ _ _)
+      (evalBinOp_sub_usize len (BitVec.ofNat 64 1))
+    have hW := writePlace_usize (ls := ls1) (ls' := ls2) (m := entryMemory)
+      (dstId := 3) (x := t1) (old := none) rfl rfl
+    exact evalStep_assign_usize 1 (coreLocalPlace 3)
+      (.binaryOp .sub (.copy (coreLocalPlace 1)) (alignUsizeConst 1))
+      vt1 ls1 ls2 rfl rfl rfl rfl hRv hW
+  have hStep2 :
+      evalStep (bodyProg bodyZerocopyPaddingNeededFor) 0 (mkState 0 2 ls2) =
+        .step (mkState 0 3 ls3) := by
+    have hRv := evalRvalue_unaryOp_usize (dstTy := alignUsizeTy)
+      (tys := bodyZerocopyPaddingNeededFor.locals) (ls := ls2)
+      (m := entryMemory) (op := .not) (opnd := .copy (coreLocalPlace 3))
+      (v := vt1) (res := vt2) rfl (evalUnOp_not_usize t1)
+    have hW := writePlace_usize (ls := ls2) (ls' := ls3) (m := entryMemory)
+      (dstId := 3) (x := t2) (old := some vt1) rfl rfl
+    exact evalStep_assign_usize 2 (coreLocalPlace 3)
+      (.unaryOp .not (.copy (coreLocalPlace 3)))
+      vt2 ls2 ls3 rfl rfl rfl rfl hRv hW
+  have hStep3 :
+      evalStep (bodyProg bodyZerocopyPaddingNeededFor) 0 (mkState 0 3 ls3) =
+        .step (mkState 0 4 ls4) := rfl
+  have hStep4 :
+      evalStep (bodyProg bodyZerocopyPaddingNeededFor) 0 (mkState 0 4 ls4) =
+        .step (mkState 0 5 ls5) := by
+    have hRv := evalRvalue_binaryOp_usize (dstTy := alignUsizeTy)
+      (tys := bodyZerocopyPaddingNeededFor.locals) (ls := ls4)
+      (m := entryMemory) (lhs := .copy (coreLocalPlace 2))
+      (rhs := alignUsizeConst 1) (lVal := vAlign)
+      (rVal := alignUsizeVal (BitVec.ofNat 64 1)) (res := vt3)
+      rfl (evalPrimitiveOperand_alignUsizeConst_one _ _ _)
+      (evalBinOp_sub_usize align (BitVec.ofNat 64 1))
+    have hW := writePlace_usize (ls := ls4) (ls' := ls5) (m := entryMemory)
+      (dstId := 4) (x := t3) (old := none) rfl rfl
+    exact evalStep_assign_usize 4 (coreLocalPlace 4)
+      (.binaryOp .sub (.copy (coreLocalPlace 2)) (alignUsizeConst 1))
+      vt3 ls4 ls5 rfl rfl rfl rfl hRv hW
+  have hStep5 :
+      evalStep (bodyProg bodyZerocopyPaddingNeededFor) 0 (mkState 0 5 ls5) =
+        .step (mkState 0 6 ls6) := by
+    have hRv := evalRvalue_binaryOp_usize (dstTy := alignUsizeTy)
+      (tys := bodyZerocopyPaddingNeededFor.locals) (ls := ls5)
+      (m := entryMemory) (op := .bitAnd) (lhs := .copy (coreLocalPlace 3))
+      (rhs := .copy (coreLocalPlace 4)) (lVal := vt2) (rVal := vt3)
+      (res := vRet) rfl rfl (evalBinOp_bitAnd_usize t2 t3)
+    have hW := writePlace_usize (ls := ls5) (ls' := ls6) (m := entryMemory)
+      (dstId := 0) (x := paddingFast len align) (old := none) rfl rfl
+    exact evalStep_assign_usize 5 (coreLocalPlace 0)
+      (.binaryOp .bitAnd (.copy (coreLocalPlace 3)) (.copy (coreLocalPlace 4)))
+      vRet ls5 ls6 rfl rfl rfl rfl hRv hW
+  have hStep6 :
+      evalStep (bodyProg bodyZerocopyPaddingNeededFor) 0 (mkState 0 6 ls6) =
+        .step (mkState 0 7 ls7) := rfl
+  have hStep7 :
+      evalStep (bodyProg bodyZerocopyPaddingNeededFor) 0 (mkState 0 7 ls7) =
+        .step (mkState 0 8 ls8) := rfl
+  have hStep8 :
+      evalStep (bodyProg bodyZerocopyPaddingNeededFor) 0 (mkState 0 8 ls8) =
+        .done (.returned ⟨vRet, ⟨[]⟩⟩) := rfl
+  change initState (bodyProg bodyZerocopyPaddingNeededFor)
+    { args := [alignUsizeVal len, alignUsizeVal align] } =
+      .ok (mkState 0 0 ls0) at hInit
+  exact wpProg_of_executes hInit
+    (.next hStep0 (.next hStep1 (.next hStep2 (.next hStep3
+      (.next hStep4 (.next hStep5 (.next hStep6 (.next hStep7
+        (.ret hStep8)))))))))
+
+/-- End-to-end MIR WP + mathematical alignment specification for the
+hand-modeled 64-bit `usize` `bodyZerocopyPaddingNeededFor` across all
+`len, align : BitVec 64` satisfying `isPow2BV align`. -/
+theorem zerocopy_padding_needed_for_mir_spec (len align : BitVec 64)
+    (hAlign : isPow2BV align) :
+    let q : Query := { args := [alignUsizeVal len, alignUsizeVal align] }
+    let p : BitVec 64 := paddingFast len align
+    WellFormed (bodyProg bodyZerocopyPaddingNeededFor) q ∧
+    ¬ Diverges (bodyProg bodyZerocopyPaddingNeededFor) q ∧
+    SatisfiesPost (bodyProg bodyZerocopyPaddingNeededFor) q
+      (fun out => out = .returned ⟨alignUsizeVal p, ⟨[]⟩⟩) ∧
+    p = paddingNaive len align ∧
+    p.toNat < align.toNat ∧
+    Nat.mod (len.toNat + p.toNat) align.toNat = 0 ∧
+    Nat.mod (len + p).toNat align.toNat = 0 ∧
+    (∀ r : BitVec 64, Nat.mod (len + r).toNat align.toNat = 0 → p ≤ r) := by
+  let q : Query := { args := [alignUsizeVal len, alignUsizeVal align] }
+  let ⟨fuel, hWp⟩ := bodyZerocopyPaddingNeededFor_wpProg len align
+  let ⟨hSat, hNdiv, _, _, _⟩ :=
+    wellFormed_and_spec_of_wp (bodyProg bodyZerocopyPaddingNeededFor) q fuel
+      (fun out =>
+        out = .returned ⟨alignUsizeVal (paddingFast len align), ⟨[]⟩⟩)
+      hWp
+  let ⟨hEq, hLt, hMath, hWrap, hMin⟩ := paddingFast_spec_u64 hAlign len
+  exact ⟨hSat.1, hNdiv, hSat, hEq, hLt, hMath, hWrap, hMin⟩
+
+private theorem validEntryArgs_round_usize (n align : BitVec 64) :
+    ValidEntryArgs bodyZerocopyRoundDown
+      [alignUsizeVal n, alignUsizeVal align] :=
+  (checkArgsMatch_cons_iff (args := [alignUsizeVal n, alignUsizeVal align])
+    (ty := alignUsizeTy) (tys := [alignUsizeTy])).mpr
+    ⟨alignUsizeVal n, [alignUsizeVal align], rfl, checkVal_alignUsizeVal n,
+      (checkArgsMatch_cons_iff (args := [alignUsizeVal align])
+        (ty := alignUsizeTy) (tys := [])).mpr
+        ⟨alignUsizeVal align, [], rfl, checkVal_alignUsizeVal align,
+          checkArgsMatch_nil_iff.mpr rfl⟩⟩
+
+/-- Symbolic 6-step weakest-precondition certificate for
+`bodyZerocopyRoundDown` across arbitrary 64-bit `usize` inputs
+`n, align : BitVec 64`. -/
+theorem bodyZerocopyRoundDown_wpProg (n align : BitVec 64) :
+    ∃ fuel, wpProg (bodyProg bodyZerocopyRoundDown) fuel
+      { args := [alignUsizeVal n, alignUsizeVal align] }
+      (fun out =>
+        out = .returned ⟨alignUsizeVal (roundDownFast n align), ⟨[]⟩⟩) := by
+  have hInit :
+      initState (bodyProg bodyZerocopyRoundDown)
+        { args := [alignUsizeVal n, alignUsizeVal align] } =
+        .ok (mkState 0 0
+          [.immediate none, .immediate (some (alignUsizeVal n)),
+           .immediate (some (alignUsizeVal align)), .dead]) :=
+    initState_eq_ok (body := bodyZerocopyRoundDown) rfl rfl
+      (validEntryArgs_round_usize n align)
+  let vN := alignUsizeVal n
+  let vAlign := alignUsizeVal align
+  let t1 := align - BitVec.ofNat 64 1
+  let vt1 := alignUsizeVal t1
+  let t2 := Anneal.BitVec.not t1
+  let vt2 := alignUsizeVal t2
+  let vRet := alignUsizeVal (roundDownFast n align)
+  let ls0 : List LocalSlot :=
+    [.immediate none, .immediate (some vN), .immediate (some vAlign), .dead]
+  let ls1 : List LocalSlot :=
+    [.immediate none, .immediate (some vN), .immediate (some vAlign),
+     .immediate none]
+  let ls2 : List LocalSlot :=
+    [.immediate none, .immediate (some vN), .immediate (some vAlign),
+     .immediate (some vt1)]
+  let ls3 : List LocalSlot :=
+    [.immediate none, .immediate (some vN), .immediate (some vAlign),
+     .immediate (some vt2)]
+  let ls4 : List LocalSlot :=
+    [.immediate (some vRet), .immediate (some vN), .immediate (some vAlign),
+     .immediate (some vt2)]
+  let ls5 : List LocalSlot :=
+    [.immediate (some vRet), .immediate (some vN), .immediate (some vAlign),
+     .dead]
+  have hStep0 :
+      evalStep (bodyProg bodyZerocopyRoundDown) 0 (mkState 0 0 ls0) =
+        .step (mkState 0 1 ls1) := rfl
+  have hStep1 :
+      evalStep (bodyProg bodyZerocopyRoundDown) 0 (mkState 0 1 ls1) =
+        .step (mkState 0 2 ls2) := by
+    have hRv := evalRvalue_binaryOp_usize (dstTy := alignUsizeTy)
+      (tys := bodyZerocopyRoundDown.locals) (ls := ls1) (m := entryMemory)
+      (lhs := .copy (coreLocalPlace 2)) (rhs := alignUsizeConst 1)
+      (lVal := vAlign) (rVal := alignUsizeVal (BitVec.ofNat 64 1)) (res := vt1)
+      rfl (evalPrimitiveOperand_alignUsizeConst_one _ _ _)
+      (evalBinOp_sub_usize align (BitVec.ofNat 64 1))
+    have hW := writePlace_usize (ls := ls1) (ls' := ls2) (m := entryMemory)
+      (dstId := 3) (x := t1) (old := none) rfl rfl
+    exact evalStep_assign_usize 1 (coreLocalPlace 3)
+      (.binaryOp .sub (.copy (coreLocalPlace 2)) (alignUsizeConst 1))
+      vt1 ls1 ls2 rfl rfl rfl rfl hRv hW
+  have hStep2 :
+      evalStep (bodyProg bodyZerocopyRoundDown) 0 (mkState 0 2 ls2) =
+        .step (mkState 0 3 ls3) := by
+    have hRv := evalRvalue_unaryOp_usize (dstTy := alignUsizeTy)
+      (tys := bodyZerocopyRoundDown.locals) (ls := ls2) (m := entryMemory)
+      (op := .not) (opnd := .copy (coreLocalPlace 3))
+      (v := vt1) (res := vt2) rfl (evalUnOp_not_usize t1)
+    have hW := writePlace_usize (ls := ls2) (ls' := ls3) (m := entryMemory)
+      (dstId := 3) (x := t2) (old := some vt1) rfl rfl
+    exact evalStep_assign_usize 2 (coreLocalPlace 3)
+      (.unaryOp .not (.copy (coreLocalPlace 3)))
+      vt2 ls2 ls3 rfl rfl rfl rfl hRv hW
+  have hStep3 :
+      evalStep (bodyProg bodyZerocopyRoundDown) 0 (mkState 0 3 ls3) =
+        .step (mkState 0 4 ls4) := by
+    have hRv := evalRvalue_binaryOp_usize (dstTy := alignUsizeTy)
+      (tys := bodyZerocopyRoundDown.locals) (ls := ls3) (m := entryMemory)
+      (op := .bitAnd) (lhs := .copy (coreLocalPlace 1))
+      (rhs := .copy (coreLocalPlace 3)) (lVal := vN) (rVal := vt2)
+      (res := vRet) rfl rfl (evalBinOp_bitAnd_usize n t2)
+    have hW := writePlace_usize (ls := ls3) (ls' := ls4) (m := entryMemory)
+      (dstId := 0) (x := roundDownFast n align) (old := none) rfl rfl
+    exact evalStep_assign_usize 3 (coreLocalPlace 0)
+      (.binaryOp .bitAnd (.copy (coreLocalPlace 1)) (.copy (coreLocalPlace 3)))
+      vRet ls3 ls4 rfl rfl rfl rfl hRv hW
+  have hStep4 :
+      evalStep (bodyProg bodyZerocopyRoundDown) 0 (mkState 0 4 ls4) =
+        .step (mkState 0 5 ls5) := rfl
+  have hStep5 :
+      evalStep (bodyProg bodyZerocopyRoundDown) 0 (mkState 0 5 ls5) =
+        .done (.returned ⟨vRet, ⟨[]⟩⟩) := rfl
+  change initState (bodyProg bodyZerocopyRoundDown)
+    { args := [alignUsizeVal n, alignUsizeVal align] } =
+      .ok (mkState 0 0 ls0) at hInit
+  exact wpProg_of_executes hInit
+    (.next hStep0 (.next hStep1 (.next hStep2 (.next hStep3
+      (.next hStep4 (.ret hStep5))))))
+
+/-- End-to-end MIR WP + mathematical alignment specification for the
+hand-modeled 64-bit `usize` `bodyZerocopyRoundDown` across all
+`n, align : BitVec 64` satisfying `isPow2BV align`. -/
+theorem zerocopy_round_down_mir_spec (n align : BitVec 64)
+    (hAlign : isPow2BV align) :
+    let q : Query := { args := [alignUsizeVal n, alignUsizeVal align] }
+    let r : BitVec 64 := roundDownFast n align
+    WellFormed (bodyProg bodyZerocopyRoundDown) q ∧
+    ¬ Diverges (bodyProg bodyZerocopyRoundDown) q ∧
+    SatisfiesPost (bodyProg bodyZerocopyRoundDown) q
+      (fun out => out = .returned ⟨alignUsizeVal r, ⟨[]⟩⟩) ∧
+    r ≤ n ∧
+    Nat.mod r.toNat align.toNat = 0 ∧
+    n.toNat < r.toNat + align.toNat ∧
+    (∀ m : BitVec 64, m ≤ n → Nat.mod m.toNat align.toNat = 0 → m ≤ r) := by
+  let q : Query := { args := [alignUsizeVal n, alignUsizeVal align] }
+  let ⟨fuel, hWp⟩ := bodyZerocopyRoundDown_wpProg n align
+  let ⟨hSat, hNdiv, _, _, _⟩ :=
+    wellFormed_and_spec_of_wp (bodyProg bodyZerocopyRoundDown) q fuel
+      (fun out =>
+        out = .returned ⟨alignUsizeVal (roundDownFast n align), ⟨[]⟩⟩)
+      hWp
+  let ⟨hLe, hMod, hLt, hMax⟩ := roundDownFast_spec_u64 hAlign n
+  exact ⟨hSat.1, hNdiv, hSat, hLe, hMod, hLt, hMax⟩
+
+private theorem bitVec64_toNat_of_lt {n : Nat} (hn : n < Nat.pow 2 64) :
+    (BitVec.ofNat 64 n).toNat = n := by
+  rw [Anneal.BitVec.toNat_ofNat]
+  exact Nat.mod_eq_of_lt hn
+
+/-- Explicit non-vacuity and concrete positive MIR execution witnesses on the
+hand-modeled 64-bit `usize` bodies `bodyZerocopyPaddingNeededFor` (`(300, 32)
+-> 20`, `(320, 32) -> 0`, and 64-bit `usize::MAX - 5` wraparound at `align =
+16 -> 6`) and `bodyZerocopyRoundDown` (`(300, 32) -> 288`), plus
+`PreconditionSatisfiable`. -/
+theorem zerocopy_align_nonvacuity_canaries :
+    PreconditionSatisfiable (fun args : BitVec 64 × BitVec 64 =>
+      isPow2BV args.2) ∧
+    PositiveCanaryClaim (bodyProg bodyZerocopyPaddingNeededFor)
+      { args := [alignUsizeVal (BitVec.ofNat 64 300),
+                 alignUsizeVal (BitVec.ofNat 64 32)] }
+      (alignUsizeVal (BitVec.ofNat 64 20)) ∧
+    PositiveCanaryClaim (bodyProg bodyZerocopyPaddingNeededFor)
+      { args := [alignUsizeVal (BitVec.ofNat 64 320),
+                 alignUsizeVal (BitVec.ofNat 64 32)] }
+      (alignUsizeVal (BitVec.ofNat 64 0)) ∧
+    PositiveCanaryClaim (bodyProg bodyZerocopyPaddingNeededFor)
+      { args := [alignUsizeVal (BitVec.ofNat 64 18446744073709551610),
+                 alignUsizeVal (BitVec.ofNat 64 16)] }
+      (alignUsizeVal (BitVec.ofNat 64 6)) ∧
+    PositiveCanaryClaim (bodyProg bodyZerocopyRoundDown)
+      { args := [alignUsizeVal (BitVec.ofNat 64 300),
+                 alignUsizeVal (BitVec.ofNat 64 32)] }
+      (alignUsizeVal (BitVec.ofNat 64 288)) := by
+  have hPow32 : isPow2BV (BitVec.ofNat 64 32) :=
+    isPow2BV_ofNat_pow (w := 64) (k := 5) (by decide)
+  have hPow16 : isPow2BV (BitVec.ofNat 64 16) :=
+    isPow2BV_ofNat_pow (w := 64) (k := 4) (by decide)
+  have hPreSat : PreconditionSatisfiable (fun args : BitVec 64 × BitVec 64 =>
+      isPow2BV args.2) :=
+    ⟨(BitVec.ofNat 64 300, BitVec.ofNat 64 32), hPow32⟩
+  have hPad300 :
+      paddingFast (BitVec.ofNat 64 300) (BitVec.ofNat 64 32) =
+        BitVec.ofNat 64 20 := by
+    apply Anneal.BitVec.eq_of_toNat_eq
+    rw [toNat_paddingFast hPow32,
+      bitVec64_toNat_of_lt (by decide : 300 < Nat.pow 2 64),
+      bitVec64_toNat_of_lt (by decide : 32 < Nat.pow 2 64),
+      bitVec64_toNat_of_lt (by decide : 20 < Nat.pow 2 64)]
+    decide
+  have hPad320 :
+      paddingFast (BitVec.ofNat 64 320) (BitVec.ofNat 64 32) =
+        BitVec.ofNat 64 0 := by
+    apply Anneal.BitVec.eq_of_toNat_eq
+    rw [toNat_paddingFast hPow32,
+      bitVec64_toNat_of_lt (by decide : 320 < Nat.pow 2 64),
+      bitVec64_toNat_of_lt (by decide : 32 < Nat.pow 2 64),
+      bitVec64_toNat_of_lt (by decide : 0 < Nat.pow 2 64)]
+    decide
+  have hPadWrap :
+      paddingFast (BitVec.ofNat 64 18446744073709551610) (BitVec.ofNat 64 16) =
+        BitVec.ofNat 64 6 := by
+    apply Anneal.BitVec.eq_of_toNat_eq
+    rw [toNat_paddingFast hPow16,
+      bitVec64_toNat_of_lt
+        (by decide : 18446744073709551610 < Nat.pow 2 64),
+      bitVec64_toNat_of_lt (by decide : 16 < Nat.pow 2 64),
+      bitVec64_toNat_of_lt (by decide : 6 < Nat.pow 2 64)]
+    decide
+  have hRound300 :
+      roundDownFast (BitVec.ofNat 64 300) (BitVec.ofNat 64 32) =
+        BitVec.ofNat 64 288 := by
+    apply Anneal.BitVec.eq_of_toNat_eq
+    rw [toNat_roundDownFast_eq_div_mul hPow32,
+      bitVec64_toNat_of_lt (by decide : 300 < Nat.pow 2 64),
+      bitVec64_toNat_of_lt (by decide : 32 < Nat.pow 2 64),
+      bitVec64_toNat_of_lt (by decide : 288 < Nat.pow 2 64)]
+  let ⟨_, hWp1⟩ := bodyZerocopyPaddingNeededFor_wpProg
+    (BitVec.ofNat 64 300) (BitVec.ofNat 64 32)
+  rw [hPad300] at hWp1
+  let ⟨_, hWp2⟩ := bodyZerocopyPaddingNeededFor_wpProg
+    (BitVec.ofNat 64 320) (BitVec.ofNat 64 32)
+  rw [hPad320] at hWp2
+  let ⟨_, hWp3⟩ := bodyZerocopyPaddingNeededFor_wpProg
+    (BitVec.ofNat 64 18446744073709551610) (BitVec.ofNat 64 16)
+  rw [hPadWrap] at hWp3
+  let ⟨_, hWp4⟩ := bodyZerocopyRoundDown_wpProg
+    (BitVec.ofNat 64 300) (BitVec.ofNat 64 32)
+  rw [hRound300] at hWp4
+  exact ⟨hPreSat, positiveCanary_of_wp hWp1, positiveCanary_of_wp hWp2,
+    positiveCanary_of_wp hWp3, positiveCanary_of_wp hWp4⟩
+
+/-- Negative counterexamples showing why `isPow2BV align` is essential:
+1. `align = 6` fails `isPow2BV`.
+2. Executing `bodyZerocopyPaddingNeededFor` at `(len = 4, align = 6)` returns
+   `4` (`(4 + 4) mod 6 = 2 ≠ 0`), refuting alignment congruence.
+3. Executing `bodyZerocopyRoundDown` at `(n = 6, align = 6)` returns `2`
+   (`2 mod 6 = 2 ≠ 0`), refuting alignment congruence. -/
+theorem zerocopy_align_negative_counterexamples :
+    ¬ isPow2BV (BitVec.ofNat 64 6) ∧
+    ¬ SatisfiesPost (bodyProg bodyZerocopyPaddingNeededFor)
+        { args := [alignUsizeVal (BitVec.ofNat 64 4),
+                   alignUsizeVal (BitVec.ofNat 64 6)] }
+        (fun out => ∃ r : BitVec 64,
+          out = .returned ⟨alignUsizeVal r, ⟨[]⟩⟩ ∧
+          Nat.mod (4 + r.toNat) 6 = 0) ∧
+    ¬ SatisfiesPost (bodyProg bodyZerocopyRoundDown)
+        { args := [alignUsizeVal (BitVec.ofNat 64 6),
+                   alignUsizeVal (BitVec.ofNat 64 6)] }
+        (fun out => ∃ r : BitVec 64,
+          out = .returned ⟨alignUsizeVal r, ⟨[]⟩⟩ ∧
+          Nat.mod r.toNat 6 = 0) := by
+  have h6 : (BitVec.ofNat 64 6).toNat = 6 :=
+    bitVec64_toNat_of_lt (by decide : 6 < Nat.pow 2 64)
+  have h1 : (BitVec.ofNat 64 1).toNat = 1 :=
+    bitVec64_toNat_of_lt (by decide : 1 < Nat.pow 2 64)
+  have h5 : (BitVec.ofNat 64 6 - BitVec.ofNat 64 1).toNat = 5 := by
+    have hLe : BitVec.ofNat 64 1 ≤ BitVec.ofNat 64 6 := by
+      change (BitVec.ofNat 64 1).toNat ≤ (BitVec.ofNat 64 6).toNat
+      rw [h1, h6]
+      decide
+    rw [Anneal.BitVec.toNat_sub_of_le hLe, h6, h1]
+  have hNotPow6 : ¬ isPow2BV (BitVec.ofNat 64 6) := by
+    intro hBad
+    have hNat := congrArg BitVec.toNat hBad.2
+    rw [Anneal.BitVec.toNat_and, h6, h5, Anneal.BitVec.toNat_zero] at hNat
+    cases (by decide : Nat.land 6 5 = 4).symm.trans hNat
+  have hPad46 :
+      paddingFast (BitVec.ofNat 64 4) (BitVec.ofNat 64 6) =
+        BitVec.ofNat 64 4 := by
+    apply Anneal.BitVec.eq_of_toNat_eq
+    unfold paddingFast
+    have h4 : (BitVec.ofNat 64 4).toNat = 4 :=
+      bitVec64_toNat_of_lt (by decide : 4 < Nat.pow 2 64)
+    have h3 : (BitVec.ofNat 64 4 - BitVec.ofNat 64 1).toNat = 3 := by
+      have hLe : BitVec.ofNat 64 1 ≤ BitVec.ofNat 64 4 := by
+        change (BitVec.ofNat 64 1).toNat ≤ (BitVec.ofNat 64 4).toNat
+        rw [h1, h4]
+        decide
+      rw [Anneal.BitVec.toNat_sub_of_le hLe, h4, h1]
+    have hNot3 :
+        (Anneal.BitVec.not (BitVec.ofNat 64 4 - BitVec.ofNat 64 1)).toNat =
+          Nat.pow 2 64 - 4 := by
+      rw [Anneal.BitVecArith.toNat_not_eq_sub, h3, Nat.sub_sub,
+        Nat.add_comm 1 3]
+    rw [Anneal.BitVec.toNat_and, hNot3, h5, h4]
+    decide
+  have hRound66 :
+      roundDownFast (BitVec.ofNat 64 6) (BitVec.ofNat 64 6) =
+        BitVec.ofNat 64 2 := by
+    apply Anneal.BitVec.eq_of_toNat_eq
+    unfold roundDownFast
+    have h2 : (BitVec.ofNat 64 2).toNat = 2 :=
+      bitVec64_toNat_of_lt (by decide : 2 < Nat.pow 2 64)
+    have hNot5 :
+        (Anneal.BitVec.not (BitVec.ofNat 64 6 - BitVec.ofNat 64 1)).toNat =
+          Nat.pow 2 64 - 6 := by
+      rw [Anneal.BitVecArith.toNat_not_eq_sub, h5, Nat.sub_sub,
+        Nat.add_comm 1 5]
+    rw [Anneal.BitVec.toNat_and, h6, hNot5, h2]
+    decide
+  have hNegPad :
+      ¬ SatisfiesPost (bodyProg bodyZerocopyPaddingNeededFor)
+          { args := [alignUsizeVal (BitVec.ofNat 64 4),
+                     alignUsizeVal (BitVec.ofNat 64 6)] }
+          (fun out => ∃ r : BitVec 64,
+            out = .returned ⟨alignUsizeVal r, ⟨[]⟩⟩ ∧
+            Nat.mod (4 + r.toNat) 6 = 0) := by
+    intro hSat
+    let ⟨_, hWp⟩ := bodyZerocopyPaddingNeededFor_wpProg
+      (BitVec.ofNat 64 4) (BitVec.ofNat 64 6)
+    let ⟨_, hBeh, _, _⟩ := spec_and_behavior_of_wp_eq hWp
+    let ⟨r, hrEq, hrMod⟩ := hSat.2 _ hBeh
+    rw [hPad46] at hrEq
+    injection hrEq with hRes
+    injection hRes with hVal _
+    have hr := alignUsizeVal_inj hVal
+    subst hr
+    rw [bitVec64_toNat_of_lt (by decide : 4 < Nat.pow 2 64)] at hrMod
+    exact False.elim ((by decide : Nat.mod (4 + 4) 6 ≠ 0) hrMod)
+  have hNegRound :
+      ¬ SatisfiesPost (bodyProg bodyZerocopyRoundDown)
+          { args := [alignUsizeVal (BitVec.ofNat 64 6),
+                     alignUsizeVal (BitVec.ofNat 64 6)] }
+          (fun out => ∃ r : BitVec 64,
+            out = .returned ⟨alignUsizeVal r, ⟨[]⟩⟩ ∧
+            Nat.mod r.toNat 6 = 0) := by
+    intro hSat
+    let ⟨_, hWp⟩ := bodyZerocopyRoundDown_wpProg
+      (BitVec.ofNat 64 6) (BitVec.ofNat 64 6)
+    let ⟨_, hBeh, _, _⟩ := spec_and_behavior_of_wp_eq hWp
+    let ⟨r, hrEq, hrMod⟩ := hSat.2 _ hBeh
+    rw [hRound66] at hrEq
+    injection hrEq with hRes
+    injection hRes with hVal _
+    have hr := alignUsizeVal_inj hVal
+    subst hr
+    rw [bitVec64_toNat_of_lt (by decide : 2 < Nat.pow 2 64)] at hrMod
+    exact False.elim ((by decide : Nat.mod 2 6 ≠ 0) hrMod)
+  exact ⟨hNotPow6, hNegPad, hNegRound⟩
 
 end Anneal.Core
 
