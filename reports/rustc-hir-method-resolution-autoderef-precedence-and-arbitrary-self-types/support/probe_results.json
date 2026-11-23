@@ -1,0 +1,274 @@
+{
+  "group_a_autoderef_and_adjustment_precedence": {
+    "a_matrix": {
+      "compile_returncode": 0,
+      "compile_stderr": "warning: variable does not need to be mutable\n   --> <TMP>/a_matrix.rs:106:9\n    |\n106 |     let mut o1 = Outer(Inner(7));\n    |         ----^^\n    |         |\n    |         help: remove this `mut`\n    |\n    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default\n\nwarning: variable does not need to be mutable\n   --> <TMP>/a_matrix.rs:125:9\n    |\n125 |     let mut rs_owned2 = RefStep(2);\n    |         ----^^^^^^^^^\n    |         |\n    |         help: remove this `mut`\n\nwarning: field `0` is never read\n --> <TMP>/a_matrix.rs:4:14\n  |\n4 | struct Inner(u32);\n  |        ----- ^^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: methods `trait_vs_inherent` and `val_vs_ref` are never used\n --> <TMP>/a_matrix.rs:6:8\n  |\n5 | impl Inner {\n  | ---------- methods in this implementation\n6 |     fn trait_vs_inherent(&self) -> &'static str { \"Inner::inherent(&self)\" }\n  |        ^^^^^^^^^^^^^^^^^\n7 |     fn only_inner_mut(&mut self) -> &'static str { \"Inner::mut(&mut self)\" }\n8 |     fn val_vs_ref(self) -> &'static str { \"Inner::inherent(self)\" }\n  |        ^^^^^^^^^^\n\nwarning: methods `val_vs_inherent_ref` and `ref_vs_mut` are never used\n  --> <TMP>/a_matrix.rs:38:8\n   |\n36 | impl Outer {\n   | ---------- methods in this implementation\n37 |     fn val_vs_ref(&self) -> &'static str { \"Outer::inherent(&self)\" }\n38 |     fn val_vs_inherent_ref(&self) -> &'static str { \"Outer::inherent(&se...\n   |        ^^^^^^^^^^^^^^^^^^^\n39 |     fn ref_vs_mut(&mut self) -> &'static str { \"Outer::inherent(&mut sel...\n   |        ^^^^^^^^^^\n\nwarning: field `0` is never read\n  --> <TMP>/a_matrix.rs:44:16\n   |\n44 | struct RefStep(u32);\n   |        ------- ^^^\n   |        |\n   |        field in this struct\n   |\n   = help: consider removing this field\n   = note: `RefStep` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n\nwarning: methods `by_val` and `m_val_or_ref` are never used\n  --> <TMP>/a_matrix.rs:50:8\n   |\n49 | trait RefStepRef {\n   |       ---------- methods in this trait\n50 |     fn by_val(&self) -> &'static str;\n   |        ^^^^^^\n51 |     fn m_val_or_ref(&self) -> &'static str;\n   |        ^^^^^^^^^^^^\n\nwarning: trait `SliceFallback` is never used\n  --> <TMP>/a_matrix.rs:80:7\n   |\n80 | trait SliceFallback {\n   |       ^^^^^^^^^^^^^\n\nwarning: trait `BlanketExt` is never used\n  --> <TMP>/a_matrix.rs:93:7\n   |\n93 | trait BlanketExt {\n   |       ^^^^^^^^^^\n\nwarning: unnecessary allocation, use `&` instead\n   --> <TMP>/a_matrix.rs:146:19\n    |\n146 |     let box_len = Box::new([1u8, 2, 3, 4, 5]).len();\n    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    |\n    = note: `#[warn(unused_allocation)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 10 warnings emitted",
+      "compile_stdout": "",
+      "edition": "2024",
+      "extra_args": [],
+      "run_returncode": 0,
+      "run_stderr": "",
+      "run_stdout": "A1=OuterTrait::trait(&self) | A2=Outer::inherent(&self) | A3=OuterByVal::trait(self) | A4=OuterTrait::trait(&self) | A5=Outer::only_mut(&mut self) | A6=Inner::mut(&mut self) | V1=RefStep::by_val(self) | V2=RefStepRef::&self | V3=RefStepMut::&mut self | V3B=RefStepMut::&mut self | V4=RefStep::by_val(self) | V5=RefStepRef::&self | OA_SLICE=4 | OA_TRAIT=404 | OA_OVR=ArrayOverride::[u8;4] | BOX_LEN=5 | W=WhereBound::inherent_priority"
+    },
+    "a_pin_reborrow_positive": {
+      "compile_returncode": 0,
+      "compile_stderr": "warning: the feature `pin_ergonomics` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/a_pin_reborrow.rs:2:12\n  |\n2 | #![feature(pin_ergonomics)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130494 <https://github.com/rust-lang/rust/issues/130494> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: variable does not need to be mutable\n  --> <TMP>/a_pin_reborrow.rs:12:9\n   |\n12 |     let mut p: Pin<&mut Pinned> = Pin::new(&mut val);\n   |         ----^\n   |         |\n   |         help: remove this `mut`\n   |\n   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 2 warnings emitted",
+      "compile_stdout": "",
+      "edition": "2024",
+      "extra_args": [],
+      "run_returncode": 0,
+      "run_stderr": "",
+      "run_stdout": "PIN_REBORROW=110"
+    },
+    "a_probe_ignores_place_mutability_e0596": {
+      "compile_returncode": 1,
+      "compile_stderr": "error[E0596]: cannot borrow `o` as mutable, as it is not declared as mutable\n  --> <TMP>/a_mut_e0596.rs:22:5\n   |\n22 |     o.m()\n   |     ^ cannot borrow as mutable\n   |\nhelp: consider changing this to be mutable\n   |\n19 |     let mut o = Outer(Inner);\n   |         +++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0596`.",
+      "compile_stdout": "",
+      "crate_type": "lib",
+      "edition": "2024",
+      "extra_args": []
+    },
+    "a_raw_ptr_no_autoderef_e0599": {
+      "compile_returncode": 1,
+      "compile_stderr": "error[E0599]: no method named `m` found for raw pointer `*const Pointee` in the current scope\n --> <TMP>/a_raw_e0599.rs:8:7\n  |\n8 |     p.m()\n  |       ^ method not found in `*const Pointee`\n  |\nnote: the method `m` exists on the type `&Pointee`\n --> <TMP>/a_raw_e0599.rs:4:5\n  |\n4 |     pub fn m(&self) -> u32 { 42 }\n  |     ^^^^^^^^^^^^^^^^^^^^^^\n  = note: you might want to use the unsafe method `<*const T>::as_ref` to get an optional reference to the value behind the pointer\n  = note: read the documentation for `<*const T>::as_ref` and ensure you satisfy its safety preconditions before calling it to avoid undefined behavior: https://doc.rust-lang.org/std/primitive.pointer.html#method.as_ref\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0599`.",
+      "compile_stdout": "",
+      "crate_type": "lib",
+      "edition": "2024",
+      "extra_args": []
+    },
+    "a_raw_ptr_to_const_no_chained_autoref_e0599": {
+      "compile_returncode": 1,
+      "compile_stderr": "error[E0599]: no method named `on_const_ptr_ref` found for raw pointer `*mut Target` in the current scope\n  --> <TMP>/a_raw_const_neg.rs:22:7\n   |\n22 |     p.on_const_ptr_ref()\n   |       ^^^^^^^^^^^^^^^^ method not found in `*mut Target`\n   |\n   = help: items from traits can only be used if the trait is implemented and in scope\nnote: `ConstPtrTrait` defines an item `on_const_ptr_ref`, perhaps you need to implement it\n  --> <TMP>/a_raw_const_neg.rs:11:1\n   |\n11 | trait ConstPtrTrait {\n   | ^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0599`.",
+      "compile_stdout": "",
+      "crate_type": "lib",
+      "edition": "2024",
+      "extra_args": []
+    },
+    "a_raw_ptr_to_const_positive": {
+      "compile_returncode": 0,
+      "compile_stderr": "warning: trait `FallbackConst` is never used\n  --> <TMP>/a_raw_const_pos.rs:11:7\n   |\n11 | trait FallbackConst {\n   |       ^^^^^^^^^^^^^\n   |\n   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+      "compile_stdout": "",
+      "edition": "2024",
+      "extra_args": [],
+      "run_returncode": 0,
+      "run_stderr": "",
+      "run_stdout": "TO_CONST_PTR=77 PREFER_MUT=mut_ptr_by_val"
+    },
+    "a_unsize_skips_by_value_and_const_ptr_e0599": {
+      "compile_returncode": 1,
+      "compile_stderr": "error[E0599]: no method named `slice_const_ptr` found for raw pointer `*mut [u8; 4]` in the current scope\n  --> <TMP>/a_unsize_skip.rs:16:7\n   |\n 5 |     fn slice_const_ptr(self: *const Self) -> usize;\n   |                              ----------- the method might not be found because of this arbitrary self type\n...\n16 |     p.slice_const_ptr()\n   |       ^^^^^^^^^^^^^^^ method not found in `*mut [u8; 4]`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0599`.",
+      "compile_stdout": "",
+      "crate_type": "lib",
+      "edition": "2024",
+      "extra_args": []
+    }
+  },
+  "group_b_ambiguity_shadowing_and_arbitrary_self_types": {
+    "anti_shadowing_asymmetry_pointee_shadows_smart": {
+      "compile_returncode": 0,
+      "compile_stderr": "warning: method `asym` is never used\n  --> <TMP>/b_anti_asym.rs:10:8\n   |\n 9 | impl<T> SmartPtr<T> {\n   | ------------------- method in this implementation\n10 |     fn asym(&self) -> &'static str { \"SmartPtr::&self\" }\n   |        ^^^^\n   |\n   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+      "compile_stdout": "",
+      "edition": "2024",
+      "extra_args": [],
+      "run_returncode": 0,
+      "run_stderr": "",
+      "run_stdout": "ASYM_POINTEE_WINS=Target::SmartPtr<Self>"
+    },
+    "anti_shadowing_by_val_over_ref_e0034": {
+      "compile_returncode": 1,
+      "compile_stderr": "error[E0034]: multiple applicable items in scope\n  --> <TMP>/b_anti_val_ref.rs:19:7\n   |\n19 |     p.collide()\n   |       ^^^^^^^ multiple `collide` found\n   |\nnote: candidate #1 is defined in an impl for the type `SmartPtr<T>`\n  --> <TMP>/b_anti_val_ref.rs:10:5\n   |\n10 |     pub fn collide(self) -> u32 { 1 }\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nnote: candidate #2 is defined in an impl for the type `Target`\n  --> <TMP>/b_anti_val_ref.rs:15:5\n   |\n15 |     pub fn collide(self: &SmartPtr<Self>) -> u32 { 2 }\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0034`.",
+      "compile_stdout": "",
+      "crate_type": "lib",
+      "edition": "2024",
+      "extra_args": []
+    },
+    "anti_shadowing_double_ref_niche_bypass": {
+      "compile_returncode": 0,
+      "compile_stderr": "warning: method `niche` is never used\n  --> <TMP>/b_anti_double_ref.rs:18:8\n   |\n17 | impl Target {\n   | ----------- method in this implementation\n18 |     fn niche(self: &&SmartPtr<Self>) -> &'static str { \"Target::&&SmartP...\n   |        ^^^^^\n   |\n   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+      "compile_stdout": "",
+      "edition": "2024",
+      "extra_args": [],
+      "run_returncode": 0,
+      "run_stderr": "",
+      "run_stdout": "DOUBLE_REF_NICHE=SmartPtr::&self"
+    },
+    "anti_shadowing_mut_ptr_exemption": {
+      "compile_returncode": 0,
+      "compile_stderr": "warning: field `0` is never read\n --> <TMP>/b_anti_mut_ptr_exempt.rs:5:19\n  |\n5 | struct RawWrap<T>(*mut T);\n  |        -------    ^^^^^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: method `ptr_shadow` is never used\n  --> <TMP>/b_anti_mut_ptr_exempt.rs:17:8\n   |\n16 | impl Target {\n   | ----------- method in this implementation\n17 |     fn ptr_shadow(self: *const RawWrap<Self>) -> &'static str { \"Target:...\n   |        ^^^^^^^^^^\n\nwarning: 2 warnings emitted",
+      "compile_stdout": "",
+      "edition": "2024",
+      "extra_args": [],
+      "run_returncode": 0,
+      "run_stderr": "",
+      "run_stdout": "MUT_PTR_EXEMPT=RawWrap::*mut"
+    },
+    "anti_shadowing_shared_ref_over_mut_ref_e0034": {
+      "compile_returncode": 1,
+      "compile_stderr": "error[E0034]: multiple applicable items in scope\n  --> <TMP>/b_anti_ref_mut.rs:19:7\n   |\n19 |     p.collide()\n   |       ^^^^^^^ multiple `collide` found\n   |\nnote: candidate #1 is defined in an impl for the type `SmartPtr<T>`\n  --> <TMP>/b_anti_ref_mut.rs:10:5\n   |\n10 |     pub fn collide(&self) -> u32 { 1 }\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nnote: candidate #2 is defined in an impl for the type `Target`\n  --> <TMP>/b_anti_ref_mut.rs:15:5\n   |\n15 |     pub fn collide(self: &mut SmartPtr<Self>) -> u32 { 2 }\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0034`.",
+      "compile_stdout": "",
+      "crate_type": "lib",
+      "edition": "2024",
+      "extra_args": []
+    },
+    "arbitrary_self_receiver_vs_deref_positive": {
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "compile_stdout": "",
+      "edition": "2024",
+      "extra_args": [],
+      "run_returncode": 0,
+      "run_stderr": "",
+      "run_stdout": "SMART_REF=107 SMART_VAL=117 DEREF_FALLBACK=209"
+    },
+    "arbitrary_self_receiver_without_deref_e0599": {
+      "compile_returncode": 1,
+      "compile_stderr": "error[E0599]: no method named `needs_deref` found for struct `SmartOnly<T>` in the current scope\n  --> <TMP>/b_arb_no_deref.rs:15:7\n   |\n 5 | pub struct SmartOnly<T>(pub T);\n   | ----------------------- method `needs_deref` not found for this struct\n...\n15 |     s.needs_deref()\n   |       ^^^^^^^^^^^ method not found in `SmartOnly<TargetVal>`\n   |\nhelp: one of the expressions' fields has a method of the same name\n   |\n15 |     s.0.needs_deref()\n   |       ++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0599`.",
+      "compile_stdout": "",
+      "crate_type": "lib",
+      "edition": "2024",
+      "extra_args": []
+    },
+    "cross_step_trait_shadows_inner_inherent": {
+      "compile_returncode": 0,
+      "compile_stderr": "warning: method `sh` is never used\n --> <TMP>/b_cross_step.rs:6:8\n  |\n5 | impl Inner {\n  | ---------- method in this implementation\n6 |     fn sh(&self) -> &'static str { \"Inner_inherent_step1\" }\n  |        ^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+      "compile_stdout": "",
+      "edition": "2024",
+      "extra_args": [],
+      "run_returncode": 0,
+      "run_stderr": "",
+      "run_stdout": "CROSS_STEP=TOuter_step0"
+    },
+    "inference_deferred_same_trait_collapse": {
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "compile_stdout": "",
+      "edition": "2024",
+      "extra_args": [],
+      "run_returncode": 0,
+      "run_stderr": "",
+      "run_stdout": "COLLAPSE_SAME_TRAIT=0"
+    },
+    "same_step_inherent_ambiguity_e0034": {
+      "compile_returncode": 1,
+      "compile_stderr": "error[E0592]: duplicate definitions with name `dup`\n --> <TMP>/b_inh_e0034.rs:3:23\n  |\n3 | impl<T> Gen<T, u32> { pub fn dup(&self) -> u32 { 1 } }\n  |                       ^^^^^^^^^^^^^^^^^^^^^^^^ duplicate definitions for `dup`\n4 | impl<U> Gen<u32, U> { pub fn dup(&self) -> u32 { 2 } }\n  |                       ------------------------ other definition for `dup`\n\nerror[E0034]: multiple applicable items in scope\n  --> <TMP>/b_inh_e0034.rs:10:7\n   |\n10 |     g.dup()\n   |       ^^^ multiple `dup` found\n   |\nnote: candidate #1 is defined in an impl for the type `Gen<T, u32>`\n  --> <TMP>/b_inh_e0034.rs:3:23\n   |\n 3 | impl<T> Gen<T, u32> { pub fn dup(&self) -> u32 { 1 } }\n   |                       ^^^^^^^^^^^^^^^^^^^^^^^^\nnote: candidate #2 is defined in an impl for the type `Gen<u32, U>`\n  --> <TMP>/b_inh_e0034.rs:4:23\n   |\n 4 | impl<U> Gen<u32, U> { pub fn dup(&self) -> u32 { 2 } }\n   |                       ^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 2 previous errors\n\nSome errors have detailed explanations: E0034, E0592.\nFor more information about an error, try `rustc --explain E0034`.",
+      "compile_stdout": "",
+      "crate_type": "lib",
+      "edition": "2024",
+      "extra_args": []
+    },
+    "same_step_object_candidate_ambiguity_e0034": {
+      "compile_returncode": 1,
+      "compile_stderr": "error[E0034]: multiple applicable items in scope\n --> <TMP>/b_obj_e0034.rs:8:7\n  |\n8 |     x.ambig()\n  |       ^^^^^ multiple `ambig` found\n  |\nnote: candidate #1 is defined in the trait `T1`\n --> <TMP>/b_obj_e0034.rs:2:16\n  |\n2 | pub trait T1 { fn ambig(&self) -> u32 { 1 } }\n  |                ^^^^^^^^^^^^^^^^^^^^^^\nnote: candidate #2 is defined in the trait `T2`\n --> <TMP>/b_obj_e0034.rs:3:16\n  |\n3 | pub trait T2 { fn ambig(&self) -> u32 { 2 } }\n  |                ^^^^^^^^^^^^^^^^^^^^^^\nhelp: disambiguate the method for candidate #1\n  |\n8 -     x.ambig()\n8 +     T1::ambig(&x)\n  |\nhelp: disambiguate the method for candidate #2\n  |\n8 -     x.ambig()\n8 +     T2::ambig(&x)\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0034`.",
+      "compile_stdout": "",
+      "crate_type": "lib",
+      "edition": "2024",
+      "extra_args": []
+    },
+    "same_step_trait_ambiguity_e0034": {
+      "compile_returncode": 1,
+      "compile_stderr": "error[E0034]: multiple applicable items in scope\n --> <TMP>/b_trait_e0034.rs:9:7\n  |\n9 |     s.collide()\n  |       ^^^^^^^ multiple `collide` found\n  |\nnote: candidate #1 is defined in an impl of the trait `T1` for the type `S`\n --> <TMP>/b_trait_e0034.rs:3:16\n  |\n3 | pub trait T1 { fn collide(&self) -> u32 { 1 } }\n  |                ^^^^^^^^^^^^^^^^^^^^^^^^\nnote: candidate #2 is defined in an impl of the trait `T2` for the type `S`\n --> <TMP>/b_trait_e0034.rs:4:16\n  |\n4 | pub trait T2 { fn collide(&self) -> u32 { 2 } }\n  |                ^^^^^^^^^^^^^^^^^^^^^^^^\nhelp: disambiguate the method for candidate #1\n  |\n9 -     s.collide()\n9 +     T1::collide(&s)\n  |\nhelp: disambiguate the method for candidate #2\n  |\n9 -     s.collide()\n9 +     T2::collide(&s)\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0034`.",
+      "compile_stdout": "",
+      "crate_type": "lib",
+      "edition": "2024",
+      "extra_args": []
+    },
+    "same_step_where_clause_ambiguity_e0034": {
+      "compile_returncode": 1,
+      "compile_stderr": "error[E0034]: multiple applicable items in scope\n --> <TMP>/b_where_e0034.rs:7:7\n  |\n7 |     x.ambig()\n  |       ^^^^^ multiple `ambig` found\n  |\nnote: candidate #1 is defined in the trait `T1`\n --> <TMP>/b_where_e0034.rs:2:16\n  |\n2 | pub trait T1 { fn ambig(&self) -> u32 { 1 } }\n  |                ^^^^^^^^^^^^^^^^^^^^^^\nnote: candidate #2 is defined in the trait `T2`\n --> <TMP>/b_where_e0034.rs:3:16\n  |\n3 | pub trait T2 { fn ambig(&self) -> u32 { 2 } }\n  |                ^^^^^^^^^^^^^^^^^^^^^^\nhelp: disambiguate the method for candidate #1\n  |\n7 -     x.ambig()\n7 +     T1::ambig(&x)\n  |\nhelp: disambiguate the method for candidate #2\n  |\n7 -     x.ambig()\n7 +     T2::ambig(&x)\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0034`.",
+      "compile_stdout": "",
+      "crate_type": "lib",
+      "edition": "2024",
+      "extra_args": []
+    },
+    "supertrait_collision_without_feature_e0034": {
+      "compile_returncode": 1,
+      "compile_stderr": "error[E0034]: multiple applicable items in scope\n --> <TMP>/b_super_e0034.rs:9:7\n  |\n9 |     x.item()\n  |       ^^^^ multiple `item` found\n  |\nnote: candidate #1 is defined in an impl of the trait `Sub` for the type `Impl`\n --> <TMP>/b_super_e0034.rs:3:24\n  |\n3 | pub trait Sub: Super { fn item(&self) -> u32 { 2 } }\n  |                        ^^^^^^^^^^^^^^^^^^^^^\nnote: candidate #2 is defined in an impl of the trait `Super` for the type `Impl`\n --> <TMP>/b_super_e0034.rs:2:19\n  |\n2 | pub trait Super { fn item(&self) -> u32 { 1 } }\n  |                   ^^^^^^^^^^^^^^^^^^^^^\nhelp: disambiguate the method for candidate #1\n  |\n9 -     x.item()\n9 +     Sub::item(&x)\n  |\nhelp: disambiguate the method for candidate #2\n  |\n9 -     x.item()\n9 +     Super::item(&x)\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0034`.",
+      "compile_stdout": "",
+      "crate_type": "lib",
+      "edition": "2024",
+      "extra_args": []
+    },
+    "supertrait_shadowing_with_feature": {
+      "compile_returncode": 0,
+      "compile_stderr": "warning: trait item `item` from `Sub` shadows identically named item from supertrait\n  --> <TMP>/b_super_feat.rs:12:40\n   |\n12 |     println!(\"SUPERTRAIT_SHADOW={}\", x.item());\n   |                                        ^^^^\n   |\nnote: item from `Sub` shadows a supertrait item\n  --> <TMP>/b_super_feat.rs:5:20\n   |\n 5 | trait Sub: Super { fn item(&self) -> u32 { 2 } }\n   |                    ^^^^^^^^^^^^^^^^^^^^^\nnote: item from `Super` is shadowed by a subtrait item\n  --> <TMP>/b_super_feat.rs:4:15\n   |\n 4 | trait Super { fn item(&self) -> u32 { 1 } }\n   |               ^^^^^^^^^^^^^^^^^^^^^\nnote: the lint level is defined here\n  --> <TMP>/b_super_feat.rs:3:9\n   |\n 3 | #![warn(resolving_to_items_shadowing_supertrait_items)]\n   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nwarning: method `item` is never used\n --> <TMP>/b_super_feat.rs:4:18\n  |\n4 | trait Super { fn item(&self) -> u32 { 1 } }\n  |       -----      ^^^^\n  |       |\n  |       method in this trait\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 2 warnings emitted",
+      "compile_stdout": "",
+      "edition": "2024",
+      "extra_args": [],
+      "run_returncode": 0,
+      "run_stderr": "",
+      "run_stdout": "SUPERTRAIT_SHADOW=2"
+    }
+  },
+  "group_c_zerocopy_first_customer_patterns": {
+    "mir_lowering_excerpts": {
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "mir_excerpts": {
+        "mir_array_unsize_len": "fn mir_array_unsize_len(_1: &[u8; 4]) -> usize {\n    debug a => _1;\n    let mut _0: usize;\n    let mut _2: &[u8];\n\n    bb0: {\n        _2 = copy _1 as &[u8] (PointerCoercion(Unsize, Implicit));\n        _0 = PtrMetadata(move _2);\n        return;\n    }\n}",
+        "mir_deref_then_unsize_len": "fn mir_deref_then_unsize_len(_1: &UnalignLike) -> usize {\n    debug u => _1;\n    let mut _0: usize;\n    let mut _2: &[u8];\n    let _3: &[u8; 4];\n\n    bb0: {\n        _3 = <UnalignLike as Deref>::deref(copy _1) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _2 = copy _3 as &[u8] (PointerCoercion(Unsize, Implicit));\n        _0 = PtrMetadata(move _2);\n        return;\n    }\n}",
+        "mir_ptr_reborrow_and_as_ref": "fn mir_ptr_reborrow_and_as_ref(_1: PtrLike<'_, [u8; 4]>) -> usize {\n    debug p => _1;\n    let mut _0: usize;\n    let mut _2: &[u8];\n    let _3: &[u8; 4];\n    let mut _4: PtrLike<'_, [u8; 4]>;\n    let mut _5: &mut PtrLike<'_, [u8; 4]>;\n\n    bb0: {\n        _5 = &mut _1;\n        _4 = PtrLike::<'_, [u8; 4]>::reborrow(move _5) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _3 = PtrLike::<'_, [u8; 4]>::as_ref(move _4) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _2 = copy _3 as &[u8] (PointerCoercion(Unsize, Implicit));\n        _0 = PtrMetadata(move _2);\n        return;\n    }\n}"
+      }
+    },
+    "zerocopy_patterns_positive": {
+      "compile_returncode": 0,
+      "compile_stderr": "warning: trait `InnerConflict` is never used\n  --> <TMP>/c_zerocopy_pos.rs:38:7\n   |\n38 | trait InnerConflict {\n   |       ^^^^^^^^^^^^^\n   |\n   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: trait `ReferentGet` is never used\n  --> <TMP>/c_zerocopy_pos.rs:64:7\n   |\n64 | trait ReferentGet {\n   |       ^^^^^^^^^^^\n\nwarning: 2 warnings emitted",
+      "compile_stdout": "",
+      "edition": "2024",
+      "extra_args": [],
+      "run_returncode": 0,
+      "run_stderr": "",
+      "run_stdout": "PTR=[1, 2, 3, 4] RB=1 CONSUMED=[1, 2, 3, 4] UNALIGN_GET=[10, 20, 30, 40] UNALIGN_LEN=4 RO_AS_REF=[5, 6, 7, 8] RO_LEN=4 RO_INNER=[5, 6, 7, 8]"
+    },
+    "zerocopy_ptr_no_deref_to_referent_e0599": {
+      "compile_returncode": 1,
+      "compile_stderr": "error[E0599]: no method named `len` found for struct `Ptr<'a, T>` in the current scope\n  --> <TMP>/c_zc_ptr_no_deref_e0599.rs:13:7\n   |\n 3 | pub struct Ptr<'a, T: ?Sized> {\n   | ----------------------------- method `len` not found for this struct\n...\n13 |     p.len()\n   |       ^^^ method not found in `Ptr<'_, [u8; 4]>`\n   |\n   = help: items from traits can only be used if the trait is implemented and in scope\n   = note: the following trait defines an item `len`, perhaps you need to implement it:\n           candidate #1: `ExactSizeIterator`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0599`.",
+      "compile_stdout": "",
+      "crate_type": "lib",
+      "edition": "2024",
+      "extra_args": []
+    },
+    "zerocopy_readonly_missing_immutable_e0599": {
+      "compile_returncode": 1,
+      "compile_stderr": "error[E0599]: no method named `get` found for reference `&ReadOnly<Cell<u8>>` in the current scope\n  --> <TMP>/c_zc_immutable_e0599.rs:15:7\n   |\n15 |     r.get()\n   |       ^^^ method not found in `&ReadOnly<Cell<u8>>`\n   |\n   = help: items from traits can only be used if the trait is implemented and in scope\n   = note: the following trait defines an item `get`, perhaps you need to implement it:\n           candidate #1: `SliceIndex`\nhelp: one of the expressions' fields has a method of the same name\n   |\n15 |     r.0.get()\n   |       ++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0599`.",
+      "compile_stdout": "",
+      "crate_type": "lib",
+      "edition": "2024",
+      "extra_args": []
+    },
+    "zerocopy_unalign_missing_unaligned_e0599": {
+      "compile_returncode": 1,
+      "compile_stderr": "error[E0599]: no method named `len` found for reference `&Unalign<[u32; 4]>` in the current scope\n  --> <TMP>/c_zc_unaligned_e0599.rs:23:7\n   |\n23 |     u.len()\n   |       ^^^ method not found in `&Unalign<[u32; 4]>`\n   |\n   = help: items from traits can only be used if the trait is implemented and in scope\n   = note: the following trait defines an item `len`, perhaps you need to implement it:\n           candidate #1: `ExactSizeIterator`\nhelp: one of the expressions' fields has a method of the same name\n   |\n23 |     u.0.len()\n   |       ++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0599`.",
+      "compile_stdout": "",
+      "crate_type": "lib",
+      "edition": "2024",
+      "extra_args": []
+    }
+  },
+  "group_d_miri_execution": {
+    "a_matrix_stacked": {
+      "rc": 0,
+      "stderr": "warning: variable does not need to be mutable\n   --> src/main.rs:106:9\n    |\n106 |     let mut o1 = Outer(Inner(7));\n    |         ----^^\n    |         |\n    |         help: remove this `mut`\n    |\n    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default\n\nwarning: variable does not need to be mutable\n   --> src/main.rs:125:9\n    |\n125 |     let mut rs_owned2 = RefStep(2);\n    |         ----^^^^^^^^^\n    |         |\n    |         help: remove this `mut`\n\nwarning: field `0` is never read\n --> src/main.rs:4:14\n  |\n4 | struct Inner(u32);\n  |        ----- ^^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: methods `trait_vs_inherent` and `val_vs_ref` are never used\n --> src/main.rs:6:8\n  |\n5 | impl Inner {\n  | ---------- methods in this implementation\n6 |     fn trait_vs_inherent(&self) -> &'static str { \"Inner::inherent(&self)\" }\n  |        ^^^^^^^^^^^^^^^^^\n7 |     fn only_inner_mut(&mut self) -> &'static str { \"Inner::mut(&mut self)\" }\n8 |     fn val_vs_ref(self) -> &'static str { \"Inner::inherent(self)\" }\n  |        ^^^^^^^^^^\n\nwarning: methods `val_vs_inherent_ref` and `ref_vs_mut` are never used\n  --> src/main.rs:38:8\n   |\n36 | impl Outer {\n   | ---------- methods in this implementation\n37 |     fn val_vs_ref(&self) -> &'static str { \"Outer::inherent(&self)\" }\n38 |     fn val_vs_inherent_ref(&self) -> &'static str { \"Outer::inherent(&se...\n   |        ^^^^^^^^^^^^^^^^^^^\n39 |     fn ref_vs_mut(&mut self) -> &'static str { \"Outer::inherent(&mut sel...\n   |        ^^^^^^^^^^\n\nwarning: field `0` is never read\n  --> src/main.rs:44:16\n   |\n44 | struct RefStep(u32);\n   |        ------- ^^^\n   |        |\n   |        field in this struct\n   |\n   = help: consider removing this field\n   = note: `RefStep` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n\nwarning: methods `by_val` and `m_val_or_ref` are never used\n  --> src/main.rs:50:8\n   |\n49 | trait RefStepRef {\n   |       ---------- methods in this trait\n50 |     fn by_val(&self) -> &'static str;\n   |        ^^^^^^\n51 |     fn m_val_or_ref(&self) -> &'static str;\n   |        ^^^^^^^^^^^^\n\nwarning: trait `SliceFallback` is never used\n  --> src/main.rs:80:7\n   |\n80 | trait SliceFallback {\n   |       ^^^^^^^^^^^^^\n\nwarning: trait `BlanketExt` is never used\n  --> src/main.rs:93:7\n   |\n93 | trait BlanketExt {\n   |       ^^^^^^^^^^\n\nwarning: unnecessary allocation, use `&` instead\n   --> src/main.rs:146:19\n    |\n146 |     let box_len = Box::new([1u8, 2, 3, 4, 5]).len();\n    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    |\n    = note: `#[warn(unused_allocation)]` (part of `#[warn(unused)]`) on by default",
+      "stdout": "A1=OuterTrait::trait(&self) | A2=Outer::inherent(&self) | A3=OuterByVal::trait(self) | A4=OuterTrait::trait(&self) | A5=Outer::only_mut(&mut self) | A6=Inner::mut(&mut self) | V1=RefStep::by_val(self) | V2=RefStepRef::&self | V3=RefStepMut::&mut self | V3B=RefStepMut::&mut self | V4=RefStep::by_val(self) | V5=RefStepRef::&self | OA_SLICE=4 | OA_TRAIT=404 | OA_OVR=ArrayOverride::[u8;4] | BOX_LEN=5 | W=WhereBound::inherent_priority"
+    },
+    "a_matrix_tree_borrows": {
+      "rc": 0,
+      "stderr": "warning: variable does not need to be mutable\n   --> src/main.rs:106:9\n    |\n106 |     let mut o1 = Outer(Inner(7));\n    |         ----^^\n    |         |\n    |         help: remove this `mut`\n    |\n    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default\n\nwarning: variable does not need to be mutable\n   --> src/main.rs:125:9\n    |\n125 |     let mut rs_owned2 = RefStep(2);\n    |         ----^^^^^^^^^\n    |         |\n    |         help: remove this `mut`\n\nwarning: field `0` is never read\n --> src/main.rs:4:14\n  |\n4 | struct Inner(u32);\n  |        ----- ^^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: methods `trait_vs_inherent` and `val_vs_ref` are never used\n --> src/main.rs:6:8\n  |\n5 | impl Inner {\n  | ---------- methods in this implementation\n6 |     fn trait_vs_inherent(&self) -> &'static str { \"Inner::inherent(&self)\" }\n  |        ^^^^^^^^^^^^^^^^^\n7 |     fn only_inner_mut(&mut self) -> &'static str { \"Inner::mut(&mut self)\" }\n8 |     fn val_vs_ref(self) -> &'static str { \"Inner::inherent(self)\" }\n  |        ^^^^^^^^^^\n\nwarning: methods `val_vs_inherent_ref` and `ref_vs_mut` are never used\n  --> src/main.rs:38:8\n   |\n36 | impl Outer {\n   | ---------- methods in this implementation\n37 |     fn val_vs_ref(&self) -> &'static str { \"Outer::inherent(&self)\" }\n38 |     fn val_vs_inherent_ref(&self) -> &'static str { \"Outer::inherent(&se...\n   |        ^^^^^^^^^^^^^^^^^^^\n39 |     fn ref_vs_mut(&mut self) -> &'static str { \"Outer::inherent(&mut sel...\n   |        ^^^^^^^^^^\n\nwarning: field `0` is never read\n  --> src/main.rs:44:16\n   |\n44 | struct RefStep(u32);\n   |        ------- ^^^\n   |        |\n   |        field in this struct\n   |\n   = help: consider removing this field\n   = note: `RefStep` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n\nwarning: methods `by_val` and `m_val_or_ref` are never used\n  --> src/main.rs:50:8\n   |\n49 | trait RefStepRef {\n   |       ---------- methods in this trait\n50 |     fn by_val(&self) -> &'static str;\n   |        ^^^^^^\n51 |     fn m_val_or_ref(&self) -> &'static str;\n   |        ^^^^^^^^^^^^\n\nwarning: trait `SliceFallback` is never used\n  --> src/main.rs:80:7\n   |\n80 | trait SliceFallback {\n   |       ^^^^^^^^^^^^^\n\nwarning: trait `BlanketExt` is never used\n  --> src/main.rs:93:7\n   |\n93 | trait BlanketExt {\n   |       ^^^^^^^^^^\n\nwarning: unnecessary allocation, use `&` instead\n   --> src/main.rs:146:19\n    |\n146 |     let box_len = Box::new([1u8, 2, 3, 4, 5]).len();\n    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    |\n    = note: `#[warn(unused_allocation)]` (part of `#[warn(unused)]`) on by default",
+      "stdout": "A1=OuterTrait::trait(&self) | A2=Outer::inherent(&self) | A3=OuterByVal::trait(self) | A4=OuterTrait::trait(&self) | A5=Outer::only_mut(&mut self) | A6=Inner::mut(&mut self) | V1=RefStep::by_val(self) | V2=RefStepRef::&self | V3=RefStepMut::&mut self | V3B=RefStepMut::&mut self | V4=RefStep::by_val(self) | V5=RefStepRef::&self | OA_SLICE=4 | OA_TRAIT=404 | OA_OVR=ArrayOverride::[u8;4] | BOX_LEN=5 | W=WhereBound::inherent_priority"
+    },
+    "available": true,
+    "c_zerocopy_stacked": {
+      "rc": 0,
+      "stderr": "warning: trait `InnerConflict` is never used\n  --> src/main.rs:38:7\n   |\n38 | trait InnerConflict {\n   |       ^^^^^^^^^^^^^\n   |\n   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: trait `ReferentGet` is never used\n  --> src/main.rs:64:7\n   |\n64 | trait ReferentGet {\n   |       ^^^^^^^^^^^",
+      "stdout": "PTR=[1, 2, 3, 4] RB=1 CONSUMED=[1, 2, 3, 4] UNALIGN_GET=[10, 20, 30, 40] UNALIGN_LEN=4 RO_AS_REF=[5, 6, 7, 8] RO_LEN=4 RO_INNER=[5, 6, 7, 8]"
+    },
+    "c_zerocopy_tree_borrows": {
+      "rc": 0,
+      "stderr": "warning: trait `InnerConflict` is never used\n  --> src/main.rs:38:7\n   |\n38 | trait InnerConflict {\n   |       ^^^^^^^^^^^^^\n   |\n   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: trait `ReferentGet` is never used\n  --> src/main.rs:64:7\n   |\n64 | trait ReferentGet {\n   |       ^^^^^^^^^^^",
+      "stdout": "PTR=[1, 2, 3, 4] RB=1 CONSUMED=[1, 2, 3, 4] UNALIGN_GET=[10, 20, 30, 40] UNALIGN_LEN=4 RO_AS_REF=[5, 6, 7, 8] RO_LEN=4 RO_INNER=[5, 6, 7, 8]"
+    },
+    "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)"
+  },
+  "observed_at": "2026-11-23",
+  "rustc_commit_hash": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6"
+}
