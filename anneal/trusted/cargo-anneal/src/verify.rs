@@ -1938,6 +1938,12 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
             .unwrap()
             .insert("sorry_declarations".into(), Value::Array(sorry_decls));
     }
+    let spec_warnings =
+        extract_spec_warnings(&audit).map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?;
+    result
+        .as_object_mut()
+        .unwrap()
+        .insert("spec_warnings".into(), Value::Array(spec_warnings));
     let result_bytes =
         encoded(&result).map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?;
     finalize_passing_artifacts(work, &result_bytes, args.export_lean_lib, |dest| {
@@ -2083,6 +2089,58 @@ fn validate_sorry_declarations(
         }
         Ok(None)
     }
+}
+
+/// Extract and validate advisory anti-vacuity warnings from `audit.specWarnings`
+/// for Receipt v3 `"spec_warnings"`.
+fn extract_spec_warnings(audit: &Value) -> Result<Vec<Value>> {
+    let Some(raw) = audit.get("specWarnings") else {
+        return Ok(Vec::new());
+    };
+    let Some(items) = raw.as_array() else {
+        return Err(error("tool_failed", "audit", "malformed audit.specWarnings metadata"));
+    };
+    let mut warnings = Vec::with_capacity(items.len());
+    for item in items {
+        let Some(obj) = item.as_object() else {
+            return Err(error("tool_failed", "audit", "malformed audit.specWarnings entry"));
+        };
+        let req_str = |key: &str| -> Result<&str> {
+            match obj.get(key).and_then(Value::as_str) {
+                Some(s) if !s.is_empty() => Ok(s),
+                _ => Err(error(
+                    "tool_failed",
+                    "audit",
+                    format!("malformed audit.specWarnings entry field `{key}`"),
+                )),
+            }
+        };
+        let code = req_str("code")?;
+        let declaration = req_str("declaration")?;
+        let message = req_str("message")?;
+        let mut entry = json!({
+            "code": code,
+            "declaration": declaration,
+            "message": message,
+        });
+        if let Some(body_val) = obj.get("body")
+            && !body_val.is_null()
+        {
+            let Some(body) = body_val.as_str().filter(|s| !s.is_empty()) else {
+                return Err(error(
+                    "tool_failed",
+                    "audit",
+                    "malformed audit.specWarnings entry field `body`",
+                ));
+            };
+            entry
+                .as_object_mut()
+                .unwrap()
+                .insert("body".into(), Value::String(body.to_owned()));
+        }
+        warnings.push(entry);
+    }
+    Ok(warnings)
 }
 
 fn verification_stage() -> std::io::Result<tempfile::TempDir> {
@@ -2236,6 +2294,20 @@ pub fn main(args: VerifyArgs) -> ExitCode {
         Ok(mut result) => {
             if let Some(path) = retained {
                 result["artifacts"] = json!(path);
+            }
+            if let Some(warnings) = result.get("spec_warnings").and_then(Value::as_array) {
+                for warning in warnings {
+                    let code = warning.get("code").and_then(Value::as_str).unwrap_or("unknown");
+                    let decl =
+                        warning.get("declaration").and_then(Value::as_str).unwrap_or("<unknown>");
+                    let msg = warning.get("message").and_then(Value::as_str).unwrap_or("");
+                    match warning.get("body").and_then(Value::as_str) {
+                        Some(body) => {
+                            eprintln!("WARNING [anti-vacuity: {code}] {decl} (body `{body}`): {msg}");
+                        }
+                        None => eprintln!("WARNING [anti-vacuity: {code}] {decl}: {msg}"),
+                    }
+                }
             }
             println!("{}", serde_json::to_string_pretty(&result).unwrap());
             ExitCode::SUCCESS
@@ -2831,6 +2903,55 @@ mod tests {
                 "{case}: expected `{expected_substr}` in `{}`",
                 err.detail
             );
+        }
+    }
+
+    #[test]
+    fn extract_spec_warnings_validates_and_preserves_entries() {
+        assert_eq!(extract_spec_warnings(&json!({})).unwrap(), Vec::<Value>::new());
+        let with_warnings = json!({
+            "specWarnings": [
+                {
+                    "code": "unsatisfiable_safety",
+                    "declaration": "Spec.specs",
+                    "message": "safety is False",
+                    "body": "crate::f"
+                },
+                {
+                    "code": "trivial_property",
+                    "declaration": "Spec.specs",
+                    "message": "property is True",
+                    "body": null
+                }
+            ]
+        });
+        assert_eq!(
+            extract_spec_warnings(&with_warnings).unwrap(),
+            vec![
+                json!({
+                    "code": "unsatisfiable_safety",
+                    "declaration": "Spec.specs",
+                    "message": "safety is False",
+                    "body": "crate::f"
+                }),
+                json!({
+                    "code": "trivial_property",
+                    "declaration": "Spec.specs",
+                    "message": "property is True"
+                }),
+            ]
+        );
+        for bad in [
+            json!({"specWarnings": "not-an-array"}),
+            json!({"specWarnings": [123]}),
+            json!({"specWarnings": [{"code": "", "declaration": "D", "message": "M"}]}),
+            json!({"specWarnings": [{"code": "c", "declaration": "", "message": "M"}]}),
+            json!({"specWarnings": [{"code": "c", "declaration": "D", "message": ""}]}),
+            json!({"specWarnings": [{"code": "c", "declaration": "D", "message": "M", "body": ""}]}),
+        ] {
+            let err = extract_spec_warnings(&bad).unwrap_err();
+            assert_eq!(err.status, "tool_failed");
+            assert_eq!(err.phase, "audit");
         }
     }
 

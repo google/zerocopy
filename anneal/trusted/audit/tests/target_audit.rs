@@ -2330,3 +2330,29 @@ fn target_audit_phase2_allow_sorry_in_proof_tracks_multiple_helpers_and_isolates
     );
     f_bad_expected.reject_audit("unapproved axiom sorryAx from Init.Prelude");
 }
+
+#[test]
+fn target_audit_reports_empty_and_unused_binding_spec_warnings() {
+    let f_clean = Fixture::new(PROOF);
+    let clean_report = f_clean.run().unwrap();
+    assert_eq!(clean_report["specWarnings"], serde_json::json!([]));
+
+    let mut f_unused = Fixture::new(PROOF);
+    f_unused.set(
+        "Spec",
+        TargetRole::Specification,
+        "prelude\nimport Model\n\
+         def Spec.helper (unusedParam : Nat) (p : BitVec 8) : Prop := p &&& p = p\n\
+         def Spec.specs (p : BitVec 8) : Prop := Spec.helper 0 p\n",
+    );
+    let unused_report = f_unused.run().unwrap();
+    assert_eq!(unused_report["replay"], true);
+    assert_eq!(
+        unused_report["specWarnings"],
+        serde_json::json!([{
+            "code": "unused_spec_binding",
+            "declaration": "Spec.helper",
+            "message": "unused argument binding(s) in `Spec.helper`: unusedParam"
+        }])
+    );
+}
