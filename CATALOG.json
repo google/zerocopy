@@ -101514,6 +101514,78 @@
         "zerocopy/layout"
       ]
     },
+    "rustc-const-generics-valtree-canonicalization-and-structural-eq-soundness": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+            "repository": "https://github.com/rust-lang/rust"
+          },
+          "name": "rust-lang/rust (HEAD primary source)"
+        },
+        {
+          "identity": {
+            "commit": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "llvm_version": "22.1.6",
+            "repository": "https://github.com/rust-lang/rust",
+            "version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "rust-lang/rust (executed local nightly rustc + LLVM 22.1.6)"
+        },
+        {
+          "identity": {
+            "commit": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "repository": "https://github.com/rust-lang/rust",
+            "version": "miri 0.1.0 (14210df0e2 2026-05-31)"
+          },
+          "name": "rust-lang/miri (executed Stacked Borrows & Tree Borrows driver)"
+        },
+        {
+          "identity": {
+            "commit": "49d734536222bf28bb6d07d885b3a81d145981da",
+            "llvm_version": "23.1.5",
+            "repository": "https://github.com/rust-lang/rust",
+            "toolchain_commit": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+          },
+          "name": "rust-lang/rust (nightly reference snapshot)"
+        },
+        {
+          "identity": {
+            "commit": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+            "repository": "https://github.com/rust-lang/reference"
+          },
+          "name": "rust-lang/reference"
+        },
+        {
+          "identity": {
+            "commit": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+            "repository": "https://github.com/joshlf/anneal"
+          },
+          "name": "joshlf/anneal"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "repository": "https://github.com/leanprover/lean4",
+            "version": "Lean 4.34.1"
+          },
+          "name": "leanprover/lean4"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/frontend",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "verification"
+      ]
+    },
     "rustc-const-heap-make-global-ices-dealloc-contract-and-interning-soundness": {
       "observed_at": "2026-11-22",
       "subjects": [
