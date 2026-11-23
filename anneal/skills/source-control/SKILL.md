@@ -382,7 +382,10 @@ authorized**.
   body
   (`gh pr create --draft --base <previous-branch> --head <branch> --title "<title>" --body-file <file>`),
   and link the stack bottom-to-top using only non-mutating metadata linkage
-  (`gh stack link <branch-or-pr>...`; do not run `gh stack sync` after freezing
+  (`gh stack link --base main <branch-or-pr>...`—always pass `--base main`
+  or the explicit trunk branch because omitting `--base` resolves against
+  `origin/HEAD`, which can retarget and permanently auto-close the bottom PR
+  when `origin/HEAD` points elsewhere; do not run `gh stack sync` after freezing
   heads or receipts, because it can fetch, cascade-rebase, and push branches
   without re-running affected pre-push gates—if a stack needs syncing, do so
   before freezing and re-run every affected gate on the new SHAs). If
