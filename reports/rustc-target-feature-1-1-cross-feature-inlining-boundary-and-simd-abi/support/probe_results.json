@@ -1,0 +1,410 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "experiments": {
+    "a_target_feature_11_call_safety": {
+      "safe_avx2_to_avx2_and_native_exec": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "SAFE_CALL=69 SAFE_FP=69 CLOSURE=53 UNSAFE_FP=52",
+        "run_stderr": ""
+      },
+      "baseline_safe_call_rejected": {
+        "edition": "2024",
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0133]: call to function `avx2_leaf` with `#[target_feature]` is unsafe and requires unsafe block\n --> <tmp>/probe.rs:6:5\n  |\n6 |     avx2_leaf(x)\n  |     ^^^^^^^^^^^^ call to function with `#[target_feature]`\n  |\n  = help: in order for the call to be safe, the context requires the following additional target feature: avx2\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0133`."
+      },
+      "baseline_safe_fn_ptr_coercion_rejected": {
+        "edition": "2024",
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0308]: mismatched types\n --> <tmp>/probe.rs:6:5\n  |\n2 | #[target_feature(enable = \"avx2\")]\n  | ---------------------------------- `#[target_feature]` added here\n...\n5 | pub fn bad_coerce() -> fn(i32) -> i32 {\n  |                        -------------- expected `fn(i32) -> i32` because of return type\n6 |     avx2_leaf\n  |     ^^^^^^^^^ cannot coerce functions with `#[target_feature]` to safe function pointers\n  |\n  = note: expected fn pointer `fn(_) -> _`\n                found fn item `#[target_features] fn(_) -> _ {avx2_leaf}`\n  = note: functions with `#[target_feature]` can only be coerced to `unsafe` function pointers\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`."
+      },
+      "non_subset_feature_rejected": {
+        "edition": "2024",
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0308]: mismatched types\n  --> <tmp>/probe.rs:12:5\n   |\n 2 | #[target_feature(enable = \"avx2\")]\n   | ---------------------------------- `#[target_feature]` added here\n...\n11 | pub fn sse42_bad_coerce() -> fn(i32) -> i32 {\n   |                              -------------- expected `fn(i32) -> i32` because of return type\n12 |     avx2_leaf\n   |     ^^^^^^^^^ cannot coerce functions with `#[target_feature]` to safe function pointers\n   |\n   = note: expected fn pointer `fn(_) -> _`\n                 found fn item `#[target_features] fn(_) -> _ {avx2_leaf}`\n   = note: functions with `#[target_feature]` can only be coerced to `unsafe` function pointers\n\nerror[E0133]: call to function `avx2_leaf` with `#[target_feature]` is unsafe and requires unsafe block\n --> <tmp>/probe.rs:7:5\n  |\n7 |     avx2_leaf(x)\n  |     ^^^^^^^^^^^^ call to function with `#[target_feature]`\n  |\n  = help: in order for the call to be safe, the context requires the following additional target feature: avx2\n\nerror: aborting due to 2 previous errors\n\nSome errors have detailed explanations: E0133, E0308.\nFor more information about an error, try `rustc --explain E0133`."
+      },
+      "trait_and_main_rejected": {
+        "edition": "2024",
+        "compile_returncode": 1,
+        "compile_stderr": "error: `#[target_feature]` attribute cannot be used on required trait methods\n --> <tmp>/probe.rs:3:5\n  |\n3 |     #[target_feature(enable = \"avx2\")]\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = help: `#[target_feature]` can be applied to functions, inherent methods, provided trait methods, and trait methods in impl blocks\n\nerror: `#[target_feature(..)]` cannot be applied to safe trait method\n --> <tmp>/probe.rs:3:5\n  |\n3 |     #[target_feature(enable = \"avx2\")]\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ cannot be applied to safe trait method\n4 |     fn trait_method(&self);\n  |     ----------------------- not an `unsafe` function\n\nerror: `main` function is not allowed to have `#[target_feature]`\n --> <tmp>/probe.rs:8:1\n  |\n8 | fn main() {}\n  | ^^^^^^^^^ `main` function is not allowed to have `#[target_feature]`\n\nerror: aborting due to 3 previous errors"
+      },
+      "inline_always_with_target_feature_probe": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=3",
+          "--emit=llvm-ir"
+        ],
+        "compile_returncode": 1,
+        "compile_stderr": "error: cannot use `#[inline(always)]` with `#[target_feature]`\n --> <tmp>/probe.rs:3:1\n  |\n3 | #[inline(always)]\n  | ^^^^^^^^^^^^^^^^^\n  |\n  = note: See this issue for full discussion: https://github.com/rust-lang/rust/issues/145574\n\nerror: aborting due to 1 previous error"
+      }
+    },
+    "b_cross_feature_inlining_mir_vs_llvm": {
+      "edition": "2024",
+      "mir_compile_returncode": 0,
+      "mir_compile_stderr": "",
+      "mir_inline_dump_excerpts": {
+        "probe.avx2_calls_avx2_leaf.3-2-003.ForceInline.after.mir": [
+          "fn avx2_calls_avx2_leaf(_1: u32) -> u32 {",
+          "        _0 = avx2_leaf_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.avx2_calls_avx2_leaf.3-2-003.ForceInline.before.mir": [
+          "fn avx2_calls_avx2_leaf(_1: u32) -> u32 {",
+          "        _0 = avx2_leaf_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.avx2_calls_avx2_leaf.3-2-004.Inline.after.mir": [
+          "fn avx2_calls_avx2_leaf(_1: u32) -> u32 {",
+          "    scope 1 (inlined avx2_leaf_helper) {"
+        ],
+        "probe.avx2_calls_avx2_leaf.3-2-004.Inline.before.mir": [
+          "fn avx2_calls_avx2_leaf(_1: u32) -> u32 {",
+          "        _0 = avx2_leaf_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.avx2_calls_avx_leaf.3-2-003.ForceInline.after.mir": [
+          "fn avx2_calls_avx_leaf(_1: u32) -> u32 {",
+          "        _0 = avx_leaf_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.avx2_calls_avx_leaf.3-2-003.ForceInline.before.mir": [
+          "fn avx2_calls_avx_leaf(_1: u32) -> u32 {",
+          "        _0 = avx_leaf_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.avx2_calls_avx_leaf.3-2-004.Inline.after.mir": [
+          "fn avx2_calls_avx_leaf(_1: u32) -> u32 {",
+          "        _0 = avx_leaf_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.avx2_calls_avx_leaf.3-2-004.Inline.before.mir": [
+          "fn avx2_calls_avx_leaf(_1: u32) -> u32 {",
+          "        _0 = avx_leaf_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.avx2_calls_baseline_always.3-2-003.ForceInline.after.mir": [
+          "fn avx2_calls_baseline_always(_1: u32) -> u32 {",
+          "        _0 = baseline_inline_always_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.avx2_calls_baseline_always.3-2-003.ForceInline.before.mir": [
+          "fn avx2_calls_baseline_always(_1: u32) -> u32 {",
+          "        _0 = baseline_inline_always_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.avx2_calls_baseline_always.3-2-004.Inline.after.mir": [
+          "fn avx2_calls_baseline_always(_1: u32) -> u32 {",
+          "        _0 = baseline_inline_always_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.avx2_calls_baseline_always.3-2-004.Inline.before.mir": [
+          "fn avx2_calls_baseline_always(_1: u32) -> u32 {",
+          "        _0 = baseline_inline_always_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.avx2_calls_baseline_inline.3-2-003.ForceInline.after.mir": [
+          "fn avx2_calls_baseline_inline(_1: u32) -> u32 {",
+          "        _0 = baseline_inline_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.avx2_calls_baseline_inline.3-2-003.ForceInline.before.mir": [
+          "fn avx2_calls_baseline_inline(_1: u32) -> u32 {",
+          "        _0 = baseline_inline_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.avx2_calls_baseline_inline.3-2-004.Inline.after.mir": [
+          "fn avx2_calls_baseline_inline(_1: u32) -> u32 {",
+          "        _0 = baseline_inline_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.avx2_calls_baseline_inline.3-2-004.Inline.before.mir": [
+          "fn avx2_calls_baseline_inline(_1: u32) -> u32 {",
+          "        _0 = baseline_inline_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.baseline_calls_avx2_leaf.3-2-003.ForceInline.after.mir": [
+          "fn baseline_calls_avx2_leaf(_1: u32) -> u32 {",
+          "        _0 = avx2_leaf_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.baseline_calls_avx2_leaf.3-2-003.ForceInline.before.mir": [
+          "fn baseline_calls_avx2_leaf(_1: u32) -> u32 {",
+          "        _0 = avx2_leaf_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.baseline_calls_avx2_leaf.3-2-004.Inline.after.mir": [
+          "fn baseline_calls_avx2_leaf(_1: u32) -> u32 {",
+          "        _0 = avx2_leaf_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.baseline_calls_avx2_leaf.3-2-004.Inline.before.mir": [
+          "fn baseline_calls_avx2_leaf(_1: u32) -> u32 {",
+          "        _0 = avx2_leaf_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.bmi1_avx2_calls_avx2_bmi1.3-2-003.ForceInline.after.mir": [
+          "fn bmi1_avx2_calls_avx2_bmi1(_1: u32) -> u32 {",
+          "        _0 = avx2_bmi1_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.bmi1_avx2_calls_avx2_bmi1.3-2-003.ForceInline.before.mir": [
+          "fn bmi1_avx2_calls_avx2_bmi1(_1: u32) -> u32 {",
+          "        _0 = avx2_bmi1_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.bmi1_avx2_calls_avx2_bmi1.3-2-004.Inline.after.mir": [
+          "fn bmi1_avx2_calls_avx2_bmi1(_1: u32) -> u32 {",
+          "        _0 = avx2_bmi1_helper(move _2) -> [return: bb1, unwind continue];"
+        ],
+        "probe.bmi1_avx2_calls_avx2_bmi1.3-2-004.Inline.before.mir": [
+          "fn bmi1_avx2_calls_avx2_bmi1(_1: u32) -> u32 {",
+          "        _0 = avx2_bmi1_helper(move _2) -> [return: bb1, unwind continue];"
+        ]
+      },
+      "llvm_ir_compile_returncode": 0,
+      "llvm_ir_compile_stderr": "",
+      "llvm_ir_summary": {
+        "defines": {
+          "define internal fastcc noundef i32 @_RNvCsh8INqWOoJ6U_5probe16avx2_leaf_helper(i32 noundef %x) unnamed_addr #0 {": [
+            "define internal fastcc noundef i32 @_RNvCsh8INqWOoJ6U_5probe16avx2_leaf_helper(i32 noundef %x) unnamed_addr #0 {",
+            "start:",
+            "  %_0.i1 = mul i32 %x, 17",
+            "  %_0.i = add i32 %_0.i1, 5",
+            "  ret i32 %_0.i",
+            "}"
+          ],
+          "define noundef i32 @_RNvCsh8INqWOoJ6U_5probe19avx2_calls_avx_leaf(i32 noundef %x) unnamed_addr #1 {": [
+            "define noundef i32 @_RNvCsh8INqWOoJ6U_5probe19avx2_calls_avx_leaf(i32 noundef %x) unnamed_addr #1 {",
+            "start:",
+            "  %_0.i1.i = mul i32 %x, 11",
+            "  %_0.i.i = add i32 %_0.i1.i, 3",
+            "  ret i32 %_0.i.i",
+            "}"
+          ],
+          "define noundef i32 @_RNvCsh8INqWOoJ6U_5probe20avx2_calls_avx2_leaf(i32 noundef %x) unnamed_addr #1 {": [
+            "define noundef i32 @_RNvCsh8INqWOoJ6U_5probe20avx2_calls_avx2_leaf(i32 noundef %x) unnamed_addr #1 {",
+            "start:",
+            "  %_0.i1 = mul i32 %x, 17",
+            "  %_0.i = add i32 %_0.i1, 5",
+            "  ret i32 %_0.i",
+            "}"
+          ],
+          "define noundef i32 @_RNvCsh8INqWOoJ6U_5probe24baseline_calls_avx2_leaf(i32 noundef %x) unnamed_addr #2 {": [
+            "define noundef i32 @_RNvCsh8INqWOoJ6U_5probe24baseline_calls_avx2_leaf(i32 noundef %x) unnamed_addr #2 {",
+            "start:",
+            "; call probe::avx2_leaf_helper",
+            "  %_0 = tail call fastcc noundef i32 @_RNvCsh8INqWOoJ6U_5probe16avx2_leaf_helper(i32 noundef %x) #4",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "define noundef i32 @_RNvCsh8INqWOoJ6U_5probe25bmi1_avx2_calls_avx2_bmi1(i32 noundef %x) unnamed_addr #3 {": [
+            "define noundef i32 @_RNvCsh8INqWOoJ6U_5probe25bmi1_avx2_calls_avx2_bmi1(i32 noundef %x) unnamed_addr #3 {",
+            "start:",
+            "  %_0.i1.i = mul i32 %x, 23",
+            "  %_0.i.i = add i32 %_0.i1.i, 7",
+            "  ret i32 %_0.i.i",
+            "}"
+          ],
+          "define noundef i32 @_RNvCsh8INqWOoJ6U_5probe26avx2_calls_baseline_always(i32 noundef %x) unnamed_addr #1 {": [
+            "define noundef i32 @_RNvCsh8INqWOoJ6U_5probe26avx2_calls_baseline_always(i32 noundef %x) unnamed_addr #1 {",
+            "start:",
+            "  %_0.i = xor i32 %x, -1515890086",
+            "  ret i32 %_0.i",
+            "}"
+          ],
+          "define noundef i32 @_RNvCsh8INqWOoJ6U_5probe26avx2_calls_baseline_inline(i32 noundef %x) unnamed_addr #1 {": [
+            "define noundef i32 @_RNvCsh8INqWOoJ6U_5probe26avx2_calls_baseline_inline(i32 noundef %x) unnamed_addr #1 {",
+            "start:",
+            "  %_0.i = add i32 %x, 99",
+            "  ret i32 %_0.i",
+            "}"
+          ]
+        },
+        "attributes": [
+          "attributes #0 = { inlinehint mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+avx,+avx2,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3\" }",
+          "attributes #1 = { mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+avx,+avx2,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3\" }",
+          "attributes #2 = { mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "attributes #3 = { mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+bmi,+avx,+avx2,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3\" }",
+          "attributes #4 = { inlinehint }"
+        ]
+      }
+    },
+    "c_simd_vector_abi_and_target_features": {
+      "default_baseline_sse2_extern_c_rejected": {
+        "extra_flags": [
+          "-Copt-level=2"
+        ],
+        "compile_returncode": 1,
+        "compile_stderr": "warning: `extern` fn uses type `__m256`, which is not FFI-safe\n  --> <tmp>/probe.rs:11:37\n   |\n11 | pub extern \"C\" fn pass_m256_avx2(v: __m256) -> __m256 { v }\n   |                                     ^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n   = note: `#[warn(improper_ctypes_definitions)]` on by default\n\nwarning: `extern` fn uses type `__m256`, which is not FFI-safe\n  --> <tmp>/probe.rs:11:48\n   |\n11 | pub extern \"C\" fn pass_m256_avx2(v: __m256) -> __m256 { v }\n   |                                                ^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nwarning: `extern` fn uses type `__m256`, which is not FFI-safe\n  --> <tmp>/probe.rs:14:41\n   |\n14 | pub extern \"C\" fn pass_m256_baseline(v: __m256) -> __m256 { v }\n   |                                         ^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nwarning: `extern` fn uses type `__m256`, which is not FFI-safe\n  --> <tmp>/probe.rs:14:52\n   |\n14 | pub extern \"C\" fn pass_m256_baseline(v: __m256) -> __m256 { v }\n   |                                                    ^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nwarning: `extern` fn uses type `__m256`, which is not FFI-safe\n  --> <tmp>/probe.rs:17:44\n   |\n17 | pub extern \"C\" fn pass_wrap256_baseline(w: Wrap256) -> Wrap256 { w }\n   |                                            ^^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nwarning: `extern` fn uses type `__m256`, which is not FFI-safe\n  --> <tmp>/probe.rs:17:56\n   |\n17 | pub extern \"C\" fn pass_wrap256_baseline(w: Wrap256) -> Wrap256 { w }\n   |                                                        ^^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nwarning: `extern` fn uses type `__m256`, which is not FFI-safe\n  --> <tmp>/probe.rs:20:54\n   |\n20 | pub extern \"C\" fn caller_baseline_calls_avx2_m256(v: __m256) -> __m256 {\n   |                                                      ^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nwarning: `extern` fn uses type `__m256`, which is not FFI-safe\n  --> <tmp>/probe.rs:20:65\n   |\n20 | pub extern \"C\" fn caller_baseline_calls_avx2_m256(v: __m256) -> __m256 {\n   |                                                                 ^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nerror: this function definition uses SIMD vector type `__m256` which (with the chosen ABI) requires the `avx` target feature, which is not enabled\n  --> <tmp>/probe.rs:14:1\n   |\n14 | pub extern \"C\" fn pass_m256_baseline(v: __m256) -> __m256 { v }\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function defined here\n   |\n   = help: consider enabling it globally (`-C target-feature=+avx`) or locally (`#[target_feature(enable=\"avx\")]`)\n\nerror: this function definition uses SIMD vector type `Wrap256` which (with the chosen ABI) requires the `avx` target feature, which is not enabled\n  --> <tmp>/probe.rs:17:1\n   |\n17 | pub extern \"C\" fn pass_wrap256_baseline(w: Wrap256) -> Wrap256 { w }\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function defined here\n   |\n   = help: consider enabling it globally (`-C target-feature=+avx`) or locally (`#[target_feature(enable=\"avx\")]`)\n\nerror: this function definition uses SIMD vector type `__m256` which (with the chosen ABI) requires the `avx` target feature, which is not enabled\n  --> <tmp>/probe.rs:20:1\n   |\n20 | pub extern \"C\" fn caller_baseline_calls_avx2_m256(v: __m256) -> __m256 {\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function defined here\n   |\n   = help: consider enabling it globally (`-C target-feature=+avx`) or locally (`#[target_feature(enable=\"avx\")]`)\n\nerror: this function call uses SIMD vector type `__m256` which (with the chosen ABI) requires the `avx` target feature, which is not enabled in the caller\n  --> <tmp>/probe.rs:21:14\n   |\n21 |     unsafe { pass_m256_avx2(v) }\n   |              ^^^^^^^^^^^^^^^^^ function called here\n   |\n   = help: consider enabling it globally (`-C target-feature=+avx`) or locally (`#[target_feature(enable=\"avx\")]`)\n\nerror: aborting due to 4 previous errors; 8 warnings emitted"
+      },
+      "default_baseline_sse2_rust_vs_avx2_extern_c": {
+        "extra_flags": [
+          "-Copt-level=2"
+        ],
+        "compile_returncode": 0,
+        "compile_stderr": "warning: `extern` fn uses type `__m256`, which is not FFI-safe\n  --> <tmp>/probe.rs:11:37\n   |\n11 | pub extern \"C\" fn pass_m256_avx2(v: __m256) -> __m256 { v }\n   |                                     ^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n   = note: `#[warn(improper_ctypes_definitions)]` on by default\n\nwarning: `extern` fn uses type `__m256`, which is not FFI-safe\n  --> <tmp>/probe.rs:11:48\n   |\n11 | pub extern \"C\" fn pass_m256_avx2(v: __m256) -> __m256 { v }\n   |                                                ^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nwarning: `extern` fn uses type `__m256`, which is not FFI-safe\n  --> <tmp>/probe.rs:15:39\n   |\n15 | pub extern \"C\" fn pass_wrap256_avx(w: Wrap256) -> Wrap256 { w }\n   |                                       ^^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nwarning: `extern` fn uses type `__m256`, which is not FFI-safe\n  --> <tmp>/probe.rs:15:51\n   |\n15 | pub extern \"C\" fn pass_wrap256_avx(w: Wrap256) -> Wrap256 { w }\n   |                                                   ^^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nwarning: `extern` fn uses type `__m128`, which is not FFI-safe\n  --> <tmp>/probe.rs:33:41\n   |\n33 | pub extern \"C\" fn pass_m128_baseline(v: __m128) -> __m128 { v }\n   |                                         ^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nwarning: `extern` fn uses type `__m128`, which is not FFI-safe\n  --> <tmp>/probe.rs:33:52\n   |\n33 | pub extern \"C\" fn pass_m128_baseline(v: __m128) -> __m128 { v }\n   |                                                    ^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nwarning: 6 warnings emitted",
+        "llvm_ir_summary": {
+          "defines": {
+            "define void @_RNvCsh8INqWOoJ6U_5probe14pass_m128_rust(ptr dead_on_unwind noalias noundef writable writeonly sret([16 x i8]) align 16 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr dead_on_return noalias noundef readonly align 16 captures(none) dereferenceable(16) %v) unnamed_addr #0 {": [
+              "define void @_RNvCsh8INqWOoJ6U_5probe14pass_m128_rust(ptr dead_on_unwind noalias noundef writable writeonly sret([16 x i8]) align 16 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr dead_on_return noalias noundef readonly align 16 captures(none) dereferenceable(16) %v) unnamed_addr #0 {",
+              "start:",
+              "  %0 = load <4 x float>, ptr %v, align 16",
+              "  store <4 x float> %0, ptr %_0, align 16",
+              "  ret void",
+              "}"
+            ],
+            "define <8 x float> @_RNvCsh8INqWOoJ6U_5probe14pass_m256_avx2(<8 x float> returned %v) unnamed_addr #1 {": [
+              "define <8 x float> @_RNvCsh8INqWOoJ6U_5probe14pass_m256_avx2(<8 x float> returned %v) unnamed_addr #1 {",
+              "start:",
+              "  ret <8 x float> %v",
+              "}"
+            ],
+            "define void @_RNvCsh8INqWOoJ6U_5probe14pass_m256_rust(ptr dead_on_unwind noalias noundef writable writeonly sret([32 x i8]) align 32 captures(none) dereferenceable(32) initializes((0, 32)) %_0, ptr dead_on_return noalias noundef readonly align 32 captures(none) dereferenceable(32) %v) unnamed_addr #0 {": [
+              "define void @_RNvCsh8INqWOoJ6U_5probe14pass_m256_rust(ptr dead_on_unwind noalias noundef writable writeonly sret([32 x i8]) align 32 captures(none) dereferenceable(32) initializes((0, 32)) %_0, ptr dead_on_return noalias noundef readonly align 32 captures(none) dereferenceable(32) %v) unnamed_addr #0 {",
+              "start:",
+              "  %0 = load <8 x float>, ptr %v, align 32",
+              "  store <8 x float> %0, ptr %_0, align 32",
+              "  ret void",
+              "}"
+            ],
+            "define <32 x i8> @_RNvCsh8INqWOoJ6U_5probe16pass_wrap256_avx(<32 x i8> returned %0) unnamed_addr #2 {": [
+              "define <32 x i8> @_RNvCsh8INqWOoJ6U_5probe16pass_wrap256_avx(<32 x i8> returned %0) unnamed_addr #2 {",
+              "start:",
+              "  ret <32 x i8> %0",
+              "}"
+            ],
+            "define <4 x float> @_RNvCsh8INqWOoJ6U_5probe18pass_m128_baseline(<4 x float> returned %v) unnamed_addr #3 {": [
+              "define <4 x float> @_RNvCsh8INqWOoJ6U_5probe18pass_m128_baseline(<4 x float> returned %v) unnamed_addr #3 {",
+              "start:",
+              "  ret <4 x float> %v",
+              "}"
+            ],
+            "define void @_RNvCsh8INqWOoJ6U_5probe19pass_m256_rust_avx2(ptr dead_on_unwind noalias noundef writable writeonly sret([32 x i8]) align 32 captures(none) dereferenceable(32) initializes((0, 32)) %_0, ptr dead_on_return noalias noundef readonly align 32 captures(none) dereferenceable(32) %v) unnamed_addr #4 {": [
+              "define void @_RNvCsh8INqWOoJ6U_5probe19pass_m256_rust_avx2(ptr dead_on_unwind noalias noundef writable writeonly sret([32 x i8]) align 32 captures(none) dereferenceable(32) initializes((0, 32)) %_0, ptr dead_on_return noalias noundef readonly align 32 captures(none) dereferenceable(32) %v) unnamed_addr #4 {",
+              "start:",
+              "  %0 = load <8 x float>, ptr %v, align 32",
+              "  store <8 x float> %0, ptr %_0, align 32",
+              "  ret void",
+              "}"
+            ],
+            "define void @_RNvCsh8INqWOoJ6U_5probe36caller_baseline_rust_calls_avx2_rust(ptr dead_on_unwind noalias noundef writable writeonly sret([32 x i8]) align 32 captures(none) dereferenceable(32) initializes((0, 32)) %_0, ptr dead_on_return noalias noundef readonly align 32 captures(none) dereferenceable(32) %v) unnamed_addr #0 {": [
+              "define void @_RNvCsh8INqWOoJ6U_5probe36caller_baseline_rust_calls_avx2_rust(ptr dead_on_unwind noalias noundef writable writeonly sret([32 x i8]) align 32 captures(none) dereferenceable(32) initializes((0, 32)) %_0, ptr dead_on_return noalias noundef readonly align 32 captures(none) dereferenceable(32) %v) unnamed_addr #0 {",
+              "start:",
+              "  %0 = alloca [32 x i8], align 32",
+              "  %1 = load <8 x float>, ptr %v, align 32",
+              "  call void @llvm.lifetime.start.p0(ptr nonnull %0)",
+              "  store <8 x float> %1, ptr %0, align 32",
+              "; call probe::pass_m256_rust_avx2",
+              "  call void @_RNvCsh8INqWOoJ6U_5probe19pass_m256_rust_avx2(ptr noalias noundef nonnull sret([32 x i8]) align 32 captures(none) dereferenceable(32) %_0, ptr noalias noundef nonnull readonly align 32 captures(none) dereferenceable(32) %0) #6",
+              "  call void @llvm.lifetime.end.p0(ptr nonnull %0)",
+              "  ret void",
+              "}"
+            ]
+          },
+          "attributes": [
+            "attributes #0 = { mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(argmem: readwrite) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "attributes #1 = { mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+avx,+avx2,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3\" }",
+            "attributes #2 = { mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+avx,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3\" }",
+            "attributes #3 = { mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "attributes #4 = { mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(argmem: readwrite) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+avx,+avx2,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3\" }",
+            "attributes #5 = { mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite) }",
+            "attributes #6 = { noinline }"
+          ]
+        }
+      },
+      "global_avx2_target_feature_flag": {
+        "extra_flags": [
+          "-Copt-level=2",
+          "-Ctarget-feature=+avx2"
+        ],
+        "compile_returncode": 0,
+        "compile_stderr": "warning: `extern` fn uses type `__m256`, which is not FFI-safe\n  --> <tmp>/probe.rs:11:37\n   |\n11 | pub extern \"C\" fn pass_m256_avx2(v: __m256) -> __m256 { v }\n   |                                     ^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n   = note: `#[warn(improper_ctypes_definitions)]` on by default\n\nwarning: `extern` fn uses type `__m256`, which is not FFI-safe\n  --> <tmp>/probe.rs:11:48\n   |\n11 | pub extern \"C\" fn pass_m256_avx2(v: __m256) -> __m256 { v }\n   |                                                ^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nwarning: `extern` fn uses type `__m256`, which is not FFI-safe\n  --> <tmp>/probe.rs:15:39\n   |\n15 | pub extern \"C\" fn pass_wrap256_avx(w: Wrap256) -> Wrap256 { w }\n   |                                       ^^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nwarning: `extern` fn uses type `__m256`, which is not FFI-safe\n  --> <tmp>/probe.rs:15:51\n   |\n15 | pub extern \"C\" fn pass_wrap256_avx(w: Wrap256) -> Wrap256 { w }\n   |                                                   ^^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nwarning: `extern` fn uses type `__m128`, which is not FFI-safe\n  --> <tmp>/probe.rs:33:41\n   |\n33 | pub extern \"C\" fn pass_m128_baseline(v: __m128) -> __m128 { v }\n   |                                         ^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nwarning: `extern` fn uses type `__m128`, which is not FFI-safe\n  --> <tmp>/probe.rs:33:52\n   |\n33 | pub extern \"C\" fn pass_m128_baseline(v: __m128) -> __m128 { v }\n   |                                                    ^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nwarning: `extern` fn uses type `__m256`, which is not FFI-safe\n  --> <tmp>/probe.rs:36:41\n   |\n36 | pub extern \"C\" fn pass_m256_baseline(v: __m256) -> __m256 { v }\n   |                                         ^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nwarning: `extern` fn uses type `__m256`, which is not FFI-safe\n  --> <tmp>/probe.rs:36:52\n   |\n36 | pub extern \"C\" fn pass_m256_baseline(v: __m256) -> __m256 { v }\n   |                                                    ^^^^^^ not FFI-safe\n   |\n   = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n   = note: this struct has unspecified layout\n\nwarning: 8 warnings emitted",
+        "llvm_ir_summary": {
+          "defines": {
+            "define void @_RNvCsh8INqWOoJ6U_5probe14pass_m128_rust(ptr dead_on_unwind noalias noundef writable writeonly sret([16 x i8]) align 16 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr dead_on_return noalias noundef readonly align 16 captures(none) dereferenceable(16) %v) unnamed_addr #0 {": [
+              "define void @_RNvCsh8INqWOoJ6U_5probe14pass_m128_rust(ptr dead_on_unwind noalias noundef writable writeonly sret([16 x i8]) align 16 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr dead_on_return noalias noundef readonly align 16 captures(none) dereferenceable(16) %v) unnamed_addr #0 {",
+              "start:",
+              "  %0 = load <4 x float>, ptr %v, align 16",
+              "  store <4 x float> %0, ptr %_0, align 16",
+              "  ret void",
+              "}"
+            ],
+            "define <8 x float> @_RNvCsh8INqWOoJ6U_5probe14pass_m256_avx2(<8 x float> returned %v) unnamed_addr #1 {": [
+              "define <8 x float> @_RNvCsh8INqWOoJ6U_5probe14pass_m256_avx2(<8 x float> returned %v) unnamed_addr #1 {",
+              "start:",
+              "  ret <8 x float> %v",
+              "}"
+            ],
+            "define void @_RNvCsh8INqWOoJ6U_5probe14pass_m256_rust(ptr dead_on_unwind noalias noundef writable writeonly sret([32 x i8]) align 32 captures(none) dereferenceable(32) initializes((0, 32)) %_0, ptr dead_on_return noalias noundef readonly align 32 captures(none) dereferenceable(32) %v) unnamed_addr #0 {": [
+              "define void @_RNvCsh8INqWOoJ6U_5probe14pass_m256_rust(ptr dead_on_unwind noalias noundef writable writeonly sret([32 x i8]) align 32 captures(none) dereferenceable(32) initializes((0, 32)) %_0, ptr dead_on_return noalias noundef readonly align 32 captures(none) dereferenceable(32) %v) unnamed_addr #0 {",
+              "start:",
+              "  %0 = load <8 x float>, ptr %v, align 32",
+              "  store <8 x float> %0, ptr %_0, align 32",
+              "  ret void",
+              "}"
+            ],
+            "define <4 x float> @_RNvCsh8INqWOoJ6U_5probe18pass_m128_baseline(<4 x float> returned %v) unnamed_addr #3 {": [
+              "define <4 x float> @_RNvCsh8INqWOoJ6U_5probe18pass_m128_baseline(<4 x float> returned %v) unnamed_addr #3 {",
+              "start:",
+              "  ret <4 x float> %v",
+              "}"
+            ],
+            "define <8 x float> @_RNvCsh8INqWOoJ6U_5probe18pass_m256_baseline(<8 x float> returned %v) unnamed_addr #3 {": [
+              "define <8 x float> @_RNvCsh8INqWOoJ6U_5probe18pass_m256_baseline(<8 x float> returned %v) unnamed_addr #3 {",
+              "start:",
+              "  ret <8 x float> %v",
+              "}"
+            ],
+            "define void @_RNvCsh8INqWOoJ6U_5probe19pass_m256_rust_avx2(ptr dead_on_unwind noalias noundef writable writeonly sret([32 x i8]) align 32 captures(none) dereferenceable(32) initializes((0, 32)) %_0, ptr dead_on_return noalias noundef readonly align 32 captures(none) dereferenceable(32) %v) unnamed_addr #4 {": [
+              "define void @_RNvCsh8INqWOoJ6U_5probe19pass_m256_rust_avx2(ptr dead_on_unwind noalias noundef writable writeonly sret([32 x i8]) align 32 captures(none) dereferenceable(32) initializes((0, 32)) %_0, ptr dead_on_return noalias noundef readonly align 32 captures(none) dereferenceable(32) %v) unnamed_addr #4 {",
+              "start:",
+              "  %0 = load <8 x float>, ptr %v, align 32",
+              "  store <8 x float> %0, ptr %_0, align 32",
+              "  ret void",
+              "}"
+            ]
+          },
+          "attributes": [
+            "attributes #0 = { mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(argmem: readwrite) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+avx,+avx2,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3\" }",
+            "attributes #1 = { mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+avx,+avx2,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3,+avx,+avx2,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3\" }",
+            "attributes #2 = { mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+avx,+avx2,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3,+avx,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3\" }",
+            "attributes #3 = { mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+avx,+avx2,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3\" }",
+            "attributes #4 = { mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(argmem: readwrite) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+avx,+avx2,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3,+avx,+avx2,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3\" }",
+            "attributes #5 = { mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite) }",
+            "attributes #6 = { noinline }"
+          ]
+        }
+      },
+      "rlib_uninstantiated_m512_deferred": {
+        "extra_flags": [
+          "--crate-type=lib",
+          "-Copt-level=2"
+        ],
+        "compile_returncode": 0,
+        "llvm_ir_summary": {
+          "defines": {},
+          "attributes": []
+        }
+      },
+      "m512_avx2_only_rejected": {
+        "extra_flags": [
+          "--crate-type=lib",
+          "-Copt-level=2"
+        ],
+        "compile_returncode": 1,
+        "compile_stderr": "warning: `extern` fn uses type `__m512`, which is not FFI-safe\n --> <tmp>/probe.rs:6:46\n  |\n6 | pub extern \"C\" fn bad_m512_with_avx2_only(v: __m512) -> __m512 { v }\n  |                                              ^^^^^^ not FFI-safe\n  |\n  = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n  = note: this struct has unspecified layout\n  = note: `#[warn(improper_ctypes_definitions)]` on by default\n\nwarning: `extern` fn uses type `__m512`, which is not FFI-safe\n --> <tmp>/probe.rs:6:57\n  |\n6 | pub extern \"C\" fn bad_m512_with_avx2_only(v: __m512) -> __m512 { v }\n  |                                                         ^^^^^^ not FFI-safe\n  |\n  = help: consider adding a `#[repr(C)]` or `#[repr(transparent)]` attribute to this struct\n  = note: this struct has unspecified layout\n\nerror: this function definition uses SIMD vector type `__m512` which (with the chosen ABI) requires the `avx512f` target feature, which is not enabled\n --> <tmp>/probe.rs:6:1\n  |\n6 | pub extern \"C\" fn bad_m512_with_avx2_only(v: __m512) -> __m512 { v }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function defined here\n  |\n  = help: consider enabling it globally (`-C target-feature=+avx512f`) or locally (`#[target_feature(enable=\"avx512f\")]`)\n\nerror: aborting due to 1 previous error; 2 warnings emitted"
+      },
+      "m512_avx512f_vs_rust": {
+        "extra_flags": [
+          "--crate-type=lib",
+          "-Copt-level=2"
+        ],
+        "compile_returncode": 0,
+        "llvm_ir_summary": {
+          "defines": {
+            "define void @_RNvCsh8INqWOoJ6U_5probe14pass_m512_rust(ptr dead_on_unwind noalias noundef writable writeonly sret([64 x i8]) align 64 captures(none) dereferenceable(64) initializes((0, 64)) %_0, ptr dead_on_return noalias noundef readonly align 64 captures(none) dereferenceable(64) %v) unnamed_addr #0 {": [
+              "define void @_RNvCsh8INqWOoJ6U_5probe14pass_m512_rust(ptr dead_on_unwind noalias noundef writable writeonly sret([64 x i8]) align 64 captures(none) dereferenceable(64) initializes((0, 64)) %_0, ptr dead_on_return noalias noundef readonly align 64 captures(none) dereferenceable(64) %v) unnamed_addr #0 {",
+              "start:",
+              "  %0 = load <16 x float>, ptr %v, align 64",
+              "  store <16 x float> %0, ptr %_0, align 64",
+              "  ret void",
+              "}"
+            ],
+            "define <16 x float> @_RNvCsh8INqWOoJ6U_5probe17pass_m512_avx512f(<16 x float> returned %v) unnamed_addr #1 {": [
+              "define <16 x float> @_RNvCsh8INqWOoJ6U_5probe17pass_m512_avx512f(<16 x float> returned %v) unnamed_addr #1 {",
+              "start:",
+              "  ret <16 x float> %v",
+              "}"
+            ]
+          },
+          "attributes": [
+            "attributes #0 = { mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(argmem: readwrite) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "attributes #1 = { mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+avx,+avx2,+avx512f,+f16c,+fma,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3\" }"
+          ]
+        }
+      }
+    }
+  }
+}

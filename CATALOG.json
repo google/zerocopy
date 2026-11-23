@@ -110172,6 +110172,88 @@
         "verification"
       ]
     },
+    "rustc-target-feature-1-1-cross-feature-inlining-boundary-and-simd-abi": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "277240238554297f93fa9ee3c7643dfa03ccbbb4"
+          },
+          "name": "rustc primary source (main branch HEAD audited)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rustc 1.102.0-nightly primary source (2026-11-11)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+          },
+          "name": "rustc nightly primary source (2026-09-11 pre-#145574 relaxation)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc 1.98.0-nightly live probe toolchain & source (2026-05-31)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "0a5579eb649d3634a9c30ac873300cc2944fa070"
+          },
+          "name": "rustc LLVM 23.1.5 fork submodule (pinned by 3ef0c22cdb)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "08c84e69a84d95936296dfcab0e38b34100725d5"
+          },
+          "name": "rustc LLVM 22.1.6 fork submodule (pinned by 14210df0e2)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "970a1b012bacd479f450604d34faa52f5ccce5d6"
+          },
+          "name": "upstream LLVM main primary source"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal MIR verifier semantics (Trusted/MirSemantics.lean)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 verification kernel"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/codegen",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "verification"
+      ]
+    },
     "rustc-target-feature-safety-std-arch-intrinsics-and-simd-lane-refinement": {
       "observed_at": "2026-11-21",
       "subjects": [
