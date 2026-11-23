@@ -104848,6 +104848,66 @@
         "verification"
       ]
     },
+    "rustc-mir-lint-body-sanity-check-rustc-peek-and-prettify-alpha-isomorphism": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "5debe6a1244452beced762385f88a51857a915fc",
+            "subpath": "compiler/rustc_mir_transform/src"
+          },
+          "name": "rust-lang/rust (HEAD source: lint, sanity_check, prettify, pass_manager, validate, rustc_peek, storage_liveness)"
+        },
+        {
+          "identity": {
+            "llvm_version": "22.1.6",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "rustc_version": "1.98.0-nightly"
+          },
+          "name": "rust-lang/rust (executed toolchain rustc 1.98.0-nightly / miri 0.1.0 / LLVM 22.1.6)"
+        },
+        {
+          "identity": {
+            "audited_tree_revision": "49d734536222bf28bb6d07d885b3a81d145981da",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "rustc_version": "1.102.0-nightly"
+          },
+          "name": "rust-lang/rust (cross-checked nightly 1.102.0-nightly commit range)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+            "subpath": "trusted/lean/Trusted/MirSemantics.lean"
+          },
+          "name": "joshlf/anneal (Trusted.MirSemantics)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "tag": "v4.34.1"
+          },
+          "name": "leanprover/lean4 (v4.34.1 kernel and typechecker)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "rustc-mir-liveness-mentioned-items-multiple-returns-and-mir-patch-cfg-invariants": {
       "observed_at": "2026-11-23",
       "subjects": [

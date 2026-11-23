@@ -1,0 +1,663 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+  "pass_flag_resolution_probe": {
+    "rc": 0,
+    "stderr": "warning: MIR pass `Lint` is unknown and will be ignored\n\nwarning: MIR pass `Prettify` is unknown and will be ignored\n\nnote: valid MIR pass names are: `AbortUnwindingCalls`, `AddCallGuards`, `AddMovesForPackedDrops`, `CheckAlignment`, `CheckCallRecursion`, `CheckConstItemMutation`, `CheckDropRecursion`, `CheckEnums`, `CheckForceInline`, `CheckLiveDrops`, `CheckNull`, `CheckPackedRef`, `CleanupPostBorrowck`, `CopyProp`, `CtfeLimit`, `DataflowConstProp`, `DeadStoreElimination-final`, `DeadStoreElimination-initial`, `Derefer`, `DestinationPropagation`, `EarlyOtherwiseBranch`, `ElaborateBoxDerefs`, `ElaborateDrops`, `EnumSizeOpt`, `EraseDerefTemps`, `ForceInline`, `FunctionItemReferences`, `GVN`, `ImpossiblePredicates`, `Inline`, `InstSimplify-after-simplifycfg`, `InstSimplify-before-inline`, `InstrumentCoverage`, `JumpThreading`, `KnownPanicsLint`, `LowerIntrinsics`, `LowerSliceLenCalls`, `MatchBranchSimplification`, `MentionedItems`, `MultipleReturnTerminators`, `PostAnalysisNormalize`, `PromoteTemps`, `ReferencePropagation`, `RemoveNoopLandingPads`, `RemovePlaceMention`, `RemoveStorageMarkers`, `RemoveUninitDrops`, `RemoveUnneededDrops`, `RemoveZsts`, `ReorderBasicBlocks`, `ReorderLocals`, `RequiredConstsVisitor`, `SanityCheck`, `ScalarReplacementOfAggregates`, `SimplifyCfg-after-unreachable-enum-branching`, `SimplifyCfg-final`, `SimplifyCfg-initial`, `SimplifyCfg-make_shim`, `SimplifyCfg-post-analysis`, `SimplifyCfg-pre-optimizations`, `SimplifyCfg-promote-consts`, `SimplifyCfg-remove-false-edges`, `SimplifyComparisonIntegral`, `SimplifyConstCondition-after-const-prop`, `SimplifyConstCondition-after-inst-simplify`, `SimplifyConstCondition-final`, `SimplifyLocals-after-value-numbering`, `SimplifyLocals-before-const-prop`, `SimplifyLocals-final`, `SingleUseConsts`, `SsaRangePropagation`, `StateTransform`, `StripDebugInfo`, `Subtyper`, `UnreachableEnumBranching`, `UnreachablePropagation`, and `Validator`\n\nwarning: 2 warnings emitted",
+    "valid_pass_names_count": 77,
+    "valid_pass_names": [
+      "AbortUnwindingCalls",
+      "AddCallGuards",
+      "AddMovesForPackedDrops",
+      "CheckAlignment",
+      "CheckCallRecursion",
+      "CheckConstItemMutation",
+      "CheckDropRecursion",
+      "CheckEnums",
+      "CheckForceInline",
+      "CheckLiveDrops",
+      "CheckNull",
+      "CheckPackedRef",
+      "CleanupPostBorrowck",
+      "CopyProp",
+      "CtfeLimit",
+      "DataflowConstProp",
+      "DeadStoreElimination-final",
+      "DeadStoreElimination-initial",
+      "Derefer",
+      "DestinationPropagation",
+      "EarlyOtherwiseBranch",
+      "ElaborateBoxDerefs",
+      "ElaborateDrops",
+      "EnumSizeOpt",
+      "EraseDerefTemps",
+      "ForceInline",
+      "FunctionItemReferences",
+      "GVN",
+      "ImpossiblePredicates",
+      "Inline",
+      "InstSimplify-after-simplifycfg",
+      "InstSimplify-before-inline",
+      "InstrumentCoverage",
+      "JumpThreading",
+      "KnownPanicsLint",
+      "LowerIntrinsics",
+      "LowerSliceLenCalls",
+      "MatchBranchSimplification",
+      "MentionedItems",
+      "MultipleReturnTerminators",
+      "PostAnalysisNormalize",
+      "PromoteTemps",
+      "ReferencePropagation",
+      "RemoveNoopLandingPads",
+      "RemovePlaceMention",
+      "RemoveStorageMarkers",
+      "RemoveUninitDrops",
+      "RemoveUnneededDrops",
+      "RemoveZsts",
+      "ReorderBasicBlocks",
+      "ReorderLocals",
+      "RequiredConstsVisitor",
+      "SanityCheck",
+      "ScalarReplacementOfAggregates",
+      "SimplifyCfg-after-unreachable-enum-branching",
+      "SimplifyCfg-final",
+      "SimplifyCfg-initial",
+      "SimplifyCfg-make_shim",
+      "SimplifyCfg-post-analysis",
+      "SimplifyCfg-pre-optimizations",
+      "SimplifyCfg-promote-consts",
+      "SimplifyCfg-remove-false-edges",
+      "SimplifyComparisonIntegral",
+      "SimplifyConstCondition-after-const-prop",
+      "SimplifyConstCondition-after-inst-simplify",
+      "SimplifyConstCondition-final",
+      "SimplifyLocals-after-value-numbering",
+      "SimplifyLocals-before-const-prop",
+      "SimplifyLocals-final",
+      "SingleUseConsts",
+      "SsaRangePropagation",
+      "StateTransform",
+      "StripDebugInfo",
+      "Subtyper",
+      "UnreachableEnumBranching",
+      "UnreachablePropagation",
+      "Validator"
+    ]
+  },
+  "lint_body_vs_validator_vs_miri": {
+    "overlap_assign": {
+      "source": "#![feature(custom_mir, core_intrinsics)]\n#![allow(internal_features)]\nuse core::intrinsics::mir::*;\n\n#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\npub fn overlap_assign(mut a: u32) -> u32 {\n    mir! {\n        {\n            a = Move(a);\n            RET = a;\n            Return()\n        }\n    }\n}\nfn main() { assert_eq!(overlap_assign(42), 42); }\n",
+      "runs": {
+        "default": {
+          "flags": [],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_validate_mir": {
+          "flags": [
+            "-Zvalidate-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_lint_mir": {
+          "flags": [
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ overlap_assign[e20e]::overlap_assign)) (after phase change to runtime-post-cleanup) at bb0[0]:\n                                encountered `_1 = move _1` statement with overlapping memory\n --> <tmp>/overlap_assign.rs:9:13\n  |\n9 |             a = Move(a);\n  |             ^^^^^^^^^^^\n  |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:107:34 - disabled backtrace\n --> <tmp>/overlap_assign.rs:9:13\n  |\n9 |             a = Move(a);\n  |             ^^^^^^^^^^^\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n\nnote: compiler flags: --crate-type bin -Z lint-mir\n\nquery stack during panic:\nend of query stack"
+        },
+        "z_validate_and_lint": {
+          "flags": [
+            "-Zvalidate-mir",
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ overlap_assign[e20e]::overlap_assign)) (after phase change to runtime-post-cleanup) at bb0[0]:\n                                encountered `_1 = move _1` statement with overlapping memory\n --> <tmp>/overlap_assign.rs:9:13\n  |\n9 |             a = Move(a);\n  |             ^^^^^^^^^^^\n  |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:107:34 - disabled backtrace\n --> <tmp>/overlap_assign.rs:9:13\n  |\n9 |             a = Move(a);\n  |             ^^^^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ overlap_assign[e20e]::overlap_assign)) (after pass CheckAlignment) at bb0[0]:\n                                encountered `_1 = move _1` statement with overlapping memory\n --> <tmp>/overlap_assign.rs:9:13\n  |\n9 |             a = Move(a);\n  |             ^^^^^^^^^^^\n  |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:107:34 - disabled backtrace\n --> <tmp>/overlap_assign.rs:9:13\n  |\n9 |             a = Move(a);\n  |             ^^^^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ overlap_assign[e20e]::overlap_assign)) (after pass CheckNull) at bb0[0]:\n                                encountered `_1 = move _1` statement with overlapping memory\n --> <tmp>/overlap_assign.rs:9:13\n  |\n9 |             a = Move(a);\n  |             ^^^^^^^^^^^\n  |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:107:34 - disabled backtrace\n --> <tmp>/overlap_assign.rs:9:13\n  |\n9 |             a = Move(a);\n  |             ^^^^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ overl"
+        }
+      },
+      "miri": {
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    "overlap_array_assign": {
+      "source": "#![feature(custom_mir, core_intrinsics)]\n#![allow(internal_features)]\nuse core::intrinsics::mir::*;\n\n#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\npub fn overlap_array_assign(mut a: [u32; 8]) -> [u32; 8] {\n    mir! {\n        {\n            a = Move(a);\n            RET = a;\n            Return()\n        }\n    }\n}\nfn main() { assert_eq!(overlap_array_assign([7; 8])[0], 7); }\n",
+      "runs": {
+        "default": {
+          "flags": [],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_validate_mir": {
+          "flags": [
+            "-Zvalidate-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_lint_mir": {
+          "flags": [
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ overlap_array_assign[26f9]::overlap_array_assign)) (after phase change to runtime-post-cleanup) at bb0[0]:\n                                encountered `_1 = move _1` statement with overlapping memory\n --> <tmp>/overlap_array_assign.rs:9:13\n  |\n9 |             a = Move(a);\n  |             ^^^^^^^^^^^\n  |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:107:34 - disabled backtrace\n --> <tmp>/overlap_array_assign.rs:9:13\n  |\n9 |             a = Move(a);\n  |             ^^^^^^^^^^^\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n\nnote: compiler flags: --crate-type bin -Z lint-mir\n\nquery stack during panic:\nend of query stack"
+        },
+        "z_validate_and_lint": {
+          "flags": [
+            "-Zvalidate-mir",
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ overlap_array_assign[26f9]::overlap_array_assign)) (after phase change to runtime-post-cleanup) at bb0[0]:\n                                encountered `_1 = move _1` statement with overlapping memory\n --> <tmp>/overlap_array_assign.rs:9:13\n  |\n9 |             a = Move(a);\n  |             ^^^^^^^^^^^\n  |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:107:34 - disabled backtrace\n --> <tmp>/overlap_array_assign.rs:9:13\n  |\n9 |             a = Move(a);\n  |             ^^^^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ overlap_array_assign[26f9]::overlap_array_assign)) (after pass CheckAlignment) at bb0[0]:\n                                encountered `_1 = move _1` statement with overlapping memory\n --> <tmp>/overlap_array_assign.rs:9:13\n  |\n9 |             a = Move(a);\n  |             ^^^^^^^^^^^\n  |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:107:34 - disabled backtrace\n --> <tmp>/overlap_array_assign.rs:9:13\n  |\n9 |             a = Move(a);\n  |             ^^^^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ overlap_array_assign[26f9]::overlap_array_assign)) (after pass CheckNull) at bb0[0]:\n                                encountered `_1 = move _1` statement with overlapping memory\n --> <tmp>/overlap_array_assign.rs:9:13\n  |\n9 |             a = Move(a);\n  |             ^^^^^^^^^^^\n  |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:107:34 - disabled backtrace\n --> <tmp>/overlap_array_assign.rs:9:13\n  |\n9 |             a = Move(a);\n  |             ^^^^^^^^^"
+        }
+      },
+      "miri": {
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: `copy_nonoverlapping` called on overlapping ranges\n --> <tmp>/overlap_array_assign.rs:9:13\n  |\n9 |             a = Move(a);\n  |             ^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: overlap_array_assign\n              at <tmp>/overlap_array_assign.rs:9:13: 9:24\n          1: main\n              at <tmp>/overlap_array_assign.rs:15:24: 15:52\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+      }
+    },
+    "overlap_disjoint_tuple_fields": {
+      "source": "#![feature(custom_mir, core_intrinsics)]\n#![allow(internal_features)]\nuse core::intrinsics::mir::*;\n\n#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\npub fn overlap_disjoint_fields(mut t: (u32, u32)) -> u32 {\n    mir! {\n        {\n            t.0 = Move(t.1);\n            RET = t.0;\n            Return()\n        }\n    }\n}\nfn main() { assert_eq!(overlap_disjoint_fields((1, 2)), 2); }\n",
+      "runs": {
+        "default": {
+          "flags": [],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_validate_mir": {
+          "flags": [
+            "-Zvalidate-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_lint_mir": {
+          "flags": [
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ overlap_disjoint_tuple_fields[6ed6]::overlap_disjoint_fields)) (after phase change to runtime-post-cleanup) at bb0[0]:\n                                encountered `(_1.0: u32) = move (_1.1: u32)` statement with overlapping memory\n --> <tmp>/overlap_disjoint_tuple_fields.rs:9:13\n  |\n9 |             t.0 = Move(t.1);\n  |             ^^^^^^^^^^^^^^^\n  |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:107:34 - disabled backtrace\n --> <tmp>/overlap_disjoint_tuple_fields.rs:9:13\n  |\n9 |             t.0 = Move(t.1);\n  |             ^^^^^^^^^^^^^^^\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n\nnote: compiler flags: --crate-type bin -Z lint-mir\n\nquery stack during panic:\nend of query stack"
+        },
+        "z_validate_and_lint": {
+          "flags": [
+            "-Zvalidate-mir",
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ overlap_disjoint_tuple_fields[6ed6]::overlap_disjoint_fields)) (after phase change to runtime-post-cleanup) at bb0[0]:\n                                encountered `(_1.0: u32) = move (_1.1: u32)` statement with overlapping memory\n --> <tmp>/overlap_disjoint_tuple_fields.rs:9:13\n  |\n9 |             t.0 = Move(t.1);\n  |             ^^^^^^^^^^^^^^^\n  |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:107:34 - disabled backtrace\n --> <tmp>/overlap_disjoint_tuple_fields.rs:9:13\n  |\n9 |             t.0 = Move(t.1);\n  |             ^^^^^^^^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ overlap_disjoint_tuple_fields[6ed6]::overlap_disjoint_fields)) (after pass CheckAlignment) at bb0[0]:\n                                encountered `(_1.0: u32) = move (_1.1: u32)` statement with overlapping memory\n --> <tmp>/overlap_disjoint_tuple_fields.rs:9:13\n  |\n9 |             t.0 = Move(t.1);\n  |             ^^^^^^^^^^^^^^^\n  |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:107:34 - disabled backtrace\n --> <tmp>/overlap_disjoint_tuple_fields.rs:9:13\n  |\n9 |             t.0 = Move(t.1);\n  |             ^^^^^^^^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ overlap_disjoint_tuple_fields[6ed6]::overlap_disjoint_fields)) (after pass CheckNull) at bb0[0]:\n                                encountered `(_1.0: u32) = move (_1.1: u32)` statement with overlapping memory\n --> <tmp>/overlap_disjoint_tuple_fields.rs:9:13\n  |\n9 |             t.0 = Move(t.1);\n  |             ^^^^^^^^^^^^^^^\n  |\nnote: delayed at <rus"
+        }
+      },
+      "miri": {
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    "overlap_binop_same_local": {
+      "source": "#![feature(custom_mir, core_intrinsics)]\n#![allow(internal_features)]\nuse core::intrinsics::mir::*;\n\n#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\npub fn overlap_binop(mut a: u32) -> u32 {\n    mir! {\n        {\n            a = a + 1_u32;\n            RET = a;\n            Return()\n        }\n    }\n}\nfn main() { assert_eq!(overlap_binop(41), 42); }\n",
+      "runs": {
+        "default": {
+          "flags": [],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_validate_mir": {
+          "flags": [
+            "-Zvalidate-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_lint_mir": {
+          "flags": [
+            "-Zlint-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_validate_and_lint": {
+          "flags": [
+            "-Zvalidate-mir",
+            "-Zlint-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        }
+      },
+      "miri": {
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    "use_after_storage_dead": {
+      "source": "#![feature(custom_mir, core_intrinsics)]\n#![allow(internal_features)]\nuse core::intrinsics::mir::*;\n\n#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\npub fn use_after_storage_dead() -> u32 {\n    mir! {\n        let tmp: u32;\n        {\n            StorageLive(tmp);\n            tmp = 7_u32;\n            StorageDead(tmp);\n            RET = tmp;\n            Return()\n        }\n    }\n}\nfn main() { let _ = use_after_storage_dead(); }\n",
+      "runs": {
+        "default": {
+          "flags": [],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_validate_mir": {
+          "flags": [
+            "-Zvalidate-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_lint_mir": {
+          "flags": [
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ use_after_storage_dead[ff0e]::use_after_storage_dead)) (after phase change to runtime-post-cleanup) at bb0[3]:\n                                use of local _1, which has no storage here\n  --> <tmp>/use_after_storage_dead.rs:13:13\n   |\n13 |             RET = tmp;\n   |             ^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:80:22 - disabled backtrace\n  --> <tmp>/use_after_storage_dead.rs:13:13\n   |\n13 |             RET = tmp;\n   |             ^^^^^^^^^\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n\nnote: compiler flags: --crate-type bin -Z lint-mir\n\nquery stack during panic:\nend of query stack"
+        },
+        "z_validate_and_lint": {
+          "flags": [
+            "-Zvalidate-mir",
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ use_after_storage_dead[ff0e]::use_after_storage_dead)) (after phase change to runtime-post-cleanup) at bb0[3]:\n                                use of local _1, which has no storage here\n  --> <tmp>/use_after_storage_dead.rs:13:13\n   |\n13 |             RET = tmp;\n   |             ^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:80:22 - disabled backtrace\n  --> <tmp>/use_after_storage_dead.rs:13:13\n   |\n13 |             RET = tmp;\n   |             ^^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ use_after_storage_dead[ff0e]::use_after_storage_dead)) (after pass CheckAlignment) at bb0[3]:\n                                use of local _1, which has no storage here\n  --> <tmp>/use_after_storage_dead.rs:13:13\n   |\n13 |             RET = tmp;\n   |             ^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:80:22 - disabled backtrace\n  --> <tmp>/use_after_storage_dead.rs:13:13\n   |\n13 |             RET = tmp;\n   |             ^^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ use_after_storage_dead[ff0e]::use_after_storage_dead)) (after pass CheckNull) at bb0[3]:\n                                use of local _1, which has no storage here\n  --> <tmp>/use_after_storage_dead.rs:13:13\n   |\n13 |             RET = tmp;\n   |             ^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:80:22 - disabled backtrace\n  --> <tmp>/use_after_storage_dead.rs:13:13\n   |\n13 |             RET = tmp;\n   |             ^^^^^^^^^\n\nerror: internal comp"
+        }
+      },
+      "miri": {
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: accessing a dead local variable\n  --> <tmp>/use_after_storage_dead.rs:13:13\n   |\n13 |             RET = tmp;\n   |             ^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: use_after_storage_dead\n               at <tmp>/use_after_storage_dead.rs:13:13: 13:22\n           1: main\n               at <tmp>/use_after_storage_dead.rs:18:21: 18:45\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+      }
+    },
+    "double_storage_live_then_write": {
+      "source": "#![feature(custom_mir, core_intrinsics)]\n#![allow(internal_features)]\nuse core::intrinsics::mir::*;\n\n#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\npub fn double_storage_live() -> u32 {\n    mir! {\n        let tmp: u32;\n        {\n            StorageLive(tmp);\n            StorageLive(tmp);\n            tmp = 7_u32;\n            RET = tmp;\n            StorageDead(tmp);\n            Return()\n        }\n    }\n}\nfn main() { assert_eq!(double_storage_live(), 7); }\n",
+      "runs": {
+        "default": {
+          "flags": [],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_validate_mir": {
+          "flags": [
+            "-Zvalidate-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_lint_mir": {
+          "flags": [
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ double_storage_live_then_write[d9a3]::double_storage_live)) (after phase change to runtime-post-cleanup) at bb0[1]:\n                                StorageLive(_1) which already has storage here\n  --> <tmp>/double_storage_live_then_write.rs:11:13\n   |\n11 |             StorageLive(tmp);\n   |             ^^^^^^^^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:121:26 - disabled backtrace\n  --> <tmp>/double_storage_live_then_write.rs:11:13\n   |\n11 |             StorageLive(tmp);\n   |             ^^^^^^^^^^^^^^^^\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n\nnote: compiler flags: --crate-type bin -Z lint-mir\n\nquery stack during panic:\nend of query stack"
+        },
+        "z_validate_and_lint": {
+          "flags": [
+            "-Zvalidate-mir",
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ double_storage_live_then_write[d9a3]::double_storage_live)) (after phase change to runtime-post-cleanup) at bb0[1]:\n                                StorageLive(_1) which already has storage here\n  --> <tmp>/double_storage_live_then_write.rs:11:13\n   |\n11 |             StorageLive(tmp);\n   |             ^^^^^^^^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:121:26 - disabled backtrace\n  --> <tmp>/double_storage_live_then_write.rs:11:13\n   |\n11 |             StorageLive(tmp);\n   |             ^^^^^^^^^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ double_storage_live_then_write[d9a3]::double_storage_live)) (after pass CheckAlignment) at bb0[1]:\n                                StorageLive(_1) which already has storage here\n  --> <tmp>/double_storage_live_then_write.rs:11:13\n   |\n11 |             StorageLive(tmp);\n   |             ^^^^^^^^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:121:26 - disabled backtrace\n  --> <tmp>/double_storage_live_then_write.rs:11:13\n   |\n11 |             StorageLive(tmp);\n   |             ^^^^^^^^^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ double_storage_live_then_write[d9a3]::double_storage_live)) (after pass CheckNull) at bb0[1]:\n                                StorageLive(_1) which already has storage here\n  --> <tmp>/double_storage_live_then_write.rs:11:13\n   |\n11 |             StorageLive(tmp);\n   |             ^^^^^^^^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:121:26 - disa"
+        }
+      },
+      "miri": {
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    "double_storage_live_clobber": {
+      "source": "#![feature(custom_mir, core_intrinsics)]\n#![allow(internal_features)]\nuse core::intrinsics::mir::*;\n\n#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\npub fn double_storage_live_clobber() -> u32 {\n    mir! {\n        let tmp: u32;\n        {\n            StorageLive(tmp);\n            tmp = 99_u32;\n            StorageLive(tmp);\n            RET = tmp;\n            StorageDead(tmp);\n            Return()\n        }\n    }\n}\nfn main() { let _ = double_storage_live_clobber(); }\n",
+      "runs": {
+        "default": {
+          "flags": [],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_validate_mir": {
+          "flags": [
+            "-Zvalidate-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_lint_mir": {
+          "flags": [
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ double_storage_live_clobber[ce06]::double_storage_live_clobber)) (after phase change to runtime-post-cleanup) at bb0[2]:\n                                StorageLive(_1) which already has storage here\n  --> <tmp>/double_storage_live_clobber.rs:12:13\n   |\n12 |             StorageLive(tmp);\n   |             ^^^^^^^^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:121:26 - disabled backtrace\n  --> <tmp>/double_storage_live_clobber.rs:12:13\n   |\n12 |             StorageLive(tmp);\n   |             ^^^^^^^^^^^^^^^^\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n\nnote: compiler flags: --crate-type bin -Z lint-mir\n\nquery stack during panic:\nend of query stack"
+        },
+        "z_validate_and_lint": {
+          "flags": [
+            "-Zvalidate-mir",
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ double_storage_live_clobber[ce06]::double_storage_live_clobber)) (after phase change to runtime-post-cleanup) at bb0[2]:\n                                StorageLive(_1) which already has storage here\n  --> <tmp>/double_storage_live_clobber.rs:12:13\n   |\n12 |             StorageLive(tmp);\n   |             ^^^^^^^^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:121:26 - disabled backtrace\n  --> <tmp>/double_storage_live_clobber.rs:12:13\n   |\n12 |             StorageLive(tmp);\n   |             ^^^^^^^^^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ double_storage_live_clobber[ce06]::double_storage_live_clobber)) (after pass CheckAlignment) at bb0[2]:\n                                StorageLive(_1) which already has storage here\n  --> <tmp>/double_storage_live_clobber.rs:12:13\n   |\n12 |             StorageLive(tmp);\n   |             ^^^^^^^^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:121:26 - disabled backtrace\n  --> <tmp>/double_storage_live_clobber.rs:12:13\n   |\n12 |             StorageLive(tmp);\n   |             ^^^^^^^^^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ double_storage_live_clobber[ce06]::double_storage_live_clobber)) (after pass CheckNull) at bb0[2]:\n                                StorageLive(_1) which already has storage here\n  --> <tmp>/double_storage_live_clobber.rs:12:13\n   |\n12 |             StorageLive(tmp);\n   |             ^^^^^^^^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:121:26 - disa"
+        }
+      },
+      "miri": {
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: Undefined Behavior: constructing invalid value of type u32: encountered uninitialized memory, but expected an integer\n  --> <tmp>/double_storage_live_clobber.rs:13:13\n   |\n13 |             RET = tmp;\n   |             ^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: double_storage_live_clobber\n               at <tmp>/double_storage_live_clobber.rs:13:13: 13:22\n           1: main\n               at <tmp>/double_storage_live_clobber.rs:19:21: 19:50\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+      }
+    },
+    "double_storage_dead": {
+      "source": "#![feature(custom_mir, core_intrinsics)]\n#![allow(internal_features)]\nuse core::intrinsics::mir::*;\n\n#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\npub fn double_storage_dead() -> u32 {\n    mir! {\n        let tmp: u32;\n        {\n            StorageLive(tmp);\n            tmp = 7_u32;\n            StorageDead(tmp);\n            StorageDead(tmp);\n            RET = 1_u32;\n            Return()\n        }\n    }\n}\nfn main() { assert_eq!(double_storage_dead(), 1); }\n",
+      "runs": {
+        "default": {
+          "flags": [],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_validate_mir": {
+          "flags": [
+            "-Zvalidate-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_lint_mir": {
+          "flags": [
+            "-Zlint-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_validate_and_lint": {
+          "flags": [
+            "-Zvalidate-mir",
+            "-Zlint-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        }
+      },
+      "miri": {
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    "return_with_live_local": {
+      "source": "#![feature(custom_mir, core_intrinsics)]\n#![allow(internal_features)]\nuse core::intrinsics::mir::*;\n\n#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\npub fn return_with_live_local() -> u32 {\n    mir! {\n        let tmp: u32;\n        {\n            StorageLive(tmp);\n            tmp = 7_u32;\n            RET = tmp;\n            Return()\n        }\n    }\n}\nfn main() { assert_eq!(return_with_live_local(), 7); }\n",
+      "runs": {
+        "default": {
+          "flags": [],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_validate_mir": {
+          "flags": [
+            "-Zvalidate-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_lint_mir": {
+          "flags": [
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ return_with_live_local[37cd]::return_with_live_local)) (after phase change to runtime-post-cleanup) at bb0[3]:\n                                local _1 still has storage when returning from function\n  --> <tmp>/return_with_live_local.rs:13:13\n   |\n13 |             Return()\n   |             ^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:140:34 - disabled backtrace\n  --> <tmp>/return_with_live_local.rs:13:13\n   |\n13 |             Return()\n   |             ^^^^^^^^\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n\nnote: compiler flags: --crate-type bin -Z lint-mir\n\nquery stack during panic:\nend of query stack"
+        },
+        "z_validate_and_lint": {
+          "flags": [
+            "-Zvalidate-mir",
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ return_with_live_local[37cd]::return_with_live_local)) (after phase change to runtime-post-cleanup) at bb0[3]:\n                                local _1 still has storage when returning from function\n  --> <tmp>/return_with_live_local.rs:13:13\n   |\n13 |             Return()\n   |             ^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:140:34 - disabled backtrace\n  --> <tmp>/return_with_live_local.rs:13:13\n   |\n13 |             Return()\n   |             ^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ return_with_live_local[37cd]::return_with_live_local)) (after pass CheckAlignment) at bb0[3]:\n                                local _1 still has storage when returning from function\n  --> <tmp>/return_with_live_local.rs:13:13\n   |\n13 |             Return()\n   |             ^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:140:34 - disabled backtrace\n  --> <tmp>/return_with_live_local.rs:13:13\n   |\n13 |             Return()\n   |             ^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ return_with_live_local[37cd]::return_with_live_local)) (after pass CheckNull) at bb0[3]:\n                                local _1 still has storage when returning from function\n  --> <tmp>/return_with_live_local.rs:13:13\n   |\n13 |             Return()\n   |             ^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:140:34 - disabled backtrace\n  --> <tmp>/return_with_live_local.rs:13:13\n   |\n13 |             Return()\n   |             ^^^^^^"
+        }
+      },
+      "miri": {
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    "call_duplicate_move_arg": {
+      "source": "#![feature(custom_mir, core_intrinsics)]\n#![allow(internal_features)]\nuse core::intrinsics::mir::*;\nfn sink(_x: u32, _y: u32) -> u32 { 0 }\n\n#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\npub fn call_dup_move(mut x: u32) -> u32 {\n    mir! {\n        {\n            Call(RET = sink(Move(x), Move(x)), ReturnTo(bb1), UnwindContinue())\n        }\n        bb1 = { Return() }\n    }\n}\n",
+      "runs": {
+        "default": {
+          "flags": [],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_validate_mir": {
+          "flags": [
+            "-Zvalidate-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_lint_mir": {
+          "flags": [
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:5 ~ call_duplicate_move_arg[08bd]::call_dup_move)) (after phase change to runtime-post-cleanup) at bb0[0]:\n                                encountered overlapping memory in `Move` arguments to `Call` terminator: _0 = sink(move _1, move _1) -> [return: bb1, unwind continue]\n  --> <tmp>/call_duplicate_move_arg.rs:10:13\n   |\n10 | ...   Call(RET = sink(Move(x), Move(x)), ReturnTo(bb1), UnwindContinue())\n   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:163:26 - disabled backtrace\n  --> <tmp>/call_duplicate_move_arg.rs:10:13\n   |\n10 | ...   Call(RET = sink(Move(x), Move(x)), ReturnTo(bb1), UnwindContinue())\n   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n\nnote: compiler flags: --crate-type lib -Z lint-mir\n\nquery stack during panic:\nend of query stack"
+        },
+        "z_validate_and_lint": {
+          "flags": [
+            "-Zvalidate-mir",
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:5 ~ call_duplicate_move_arg[08bd]::call_dup_move)) (after phase change to runtime-post-cleanup) at bb0[0]:\n                                encountered overlapping memory in `Move` arguments to `Call` terminator: _0 = sink(move _1, move _1) -> [return: bb1, unwind continue]\n  --> <tmp>/call_duplicate_move_arg.rs:10:13\n   |\n10 | ...   Call(RET = sink(Move(x), Move(x)), ReturnTo(bb1), UnwindContinue())\n   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:163:26 - disabled backtrace\n  --> <tmp>/call_duplicate_move_arg.rs:10:13\n   |\n10 | ...   Call(RET = sink(Move(x), Move(x)), ReturnTo(bb1), UnwindContinue())\n   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:5 ~ call_duplicate_move_arg[08bd]::call_dup_move)) (after pass CheckAlignment) at bb0[0]:\n                                encountered overlapping memory in `Move` arguments to `Call` terminator: _0 = sink(move _1, move _1) -> [return: bb1, unwind continue]\n  --> <tmp>/call_duplicate_move_arg.rs:10:13\n   |\n10 | ...   Call(RET = sink(Move(x), Move(x)), ReturnTo(bb1), UnwindContinue())\n   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:163:26 - disabled backtrace\n  --> <tmp>/call_duplicate_move_arg.rs:10:13\n   |\n10 | ...   Call(RET = sink(Move(x), Move(x)), ReturnTo(bb1), UnwindContinue())\n   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+        }
+      },
+      "miri": null
+    },
+    "call_dest_field_distinct": {
+      "source": "#![feature(custom_mir, core_intrinsics)]\n#![allow(internal_features)]\nuse core::intrinsics::mir::*;\nfn id(x: u32) -> u32 { x }\n\n#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\npub fn call_field_distinct(mut p: (u32, u32)) -> u32 {\n    mir! {\n        {\n            Call(p.0 = id(Move(p.1)), ReturnTo(bb1), UnwindContinue())\n        }\n        bb1 = { RET = p.0; Return() }\n    }\n}\n",
+      "runs": {
+        "default": {
+          "flags": [],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_validate_mir": {
+          "flags": [
+            "-Zvalidate-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_lint_mir": {
+          "flags": [
+            "-Zlint-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_validate_and_lint": {
+          "flags": [
+            "-Zvalidate-mir",
+            "-Zlint-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        }
+      },
+      "miri": null
+    },
+    "call_dest_same_field": {
+      "source": "#![feature(custom_mir, core_intrinsics)]\n#![allow(internal_features)]\nuse core::intrinsics::mir::*;\nfn id(x: u32) -> u32 { x }\n\n#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\npub fn call_same_field(mut p: (u32, u32)) -> u32 {\n    mir! {\n        {\n            Call(p.0 = id(Move(p.0)), ReturnTo(bb1), UnwindContinue())\n        }\n        bb1 = { RET = p.0; Return() }\n    }\n}\n",
+      "runs": {
+        "default": {
+          "flags": [],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_validate_mir": {
+          "flags": [
+            "-Zvalidate-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_lint_mir": {
+          "flags": [
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:5 ~ call_dest_same_field[9e85]::call_same_field)) (after phase change to runtime-post-cleanup) at bb0[0]:\n                                encountered overlapping memory in `Move` arguments to `Call` terminator: (_1.0: u32) = id(move (_1.0: u32)) -> [return: bb1, unwind continue]\n  --> <tmp>/call_dest_same_field.rs:10:13\n   |\n10 |             Call(p.0 = id(Move(p.0)), ReturnTo(bb1), UnwindContinue())\n   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:163:26 - disabled backtrace\n  --> <tmp>/call_dest_same_field.rs:10:13\n   |\n10 |             Call(p.0 = id(Move(p.0)), ReturnTo(bb1), UnwindContinue())\n   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n\nnote: compiler flags: --crate-type lib -Z lint-mir\n\nquery stack during panic:\nend of query stack"
+        },
+        "z_validate_and_lint": {
+          "flags": [
+            "-Zvalidate-mir",
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:5 ~ call_dest_same_field[9e85]::call_same_field)) (after phase change to runtime-post-cleanup) at bb0[0]:\n                                encountered overlapping memory in `Move` arguments to `Call` terminator: (_1.0: u32) = id(move (_1.0: u32)) -> [return: bb1, unwind continue]\n  --> <tmp>/call_dest_same_field.rs:10:13\n   |\n10 |             Call(p.0 = id(Move(p.0)), ReturnTo(bb1), UnwindContinue())\n   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:163:26 - disabled backtrace\n  --> <tmp>/call_dest_same_field.rs:10:13\n   |\n10 |             Call(p.0 = id(Move(p.0)), ReturnTo(bb1), UnwindContinue())\n   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:5 ~ call_dest_same_field[9e85]::call_same_field)) (after pass CheckAlignment) at bb0[0]:\n                                encountered overlapping memory in `Move` arguments to `Call` terminator: (_1.0: u32) = id(move (_1.0: u32)) -> [return: bb1, unwind continue]\n  --> <tmp>/call_dest_same_field.rs:10:13\n   |\n10 |             Call(p.0 = id(Move(p.0)), ReturnTo(bb1), UnwindContinue())\n   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:163:26 - disabled backtrace\n  --> <tmp>/call_dest_same_field.rs:10:13\n   |\n10 |             Call(p.0 = id(Move(p.0)), ReturnTo(bb1), UnwindContinue())\n   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+        }
+      },
+      "miri": null
+    },
+    "unreachable_storage_poison": {
+      "source": "#![feature(custom_mir, core_intrinsics)]\n#![allow(internal_features)]\nuse core::intrinsics::mir::*;\n\n#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\npub fn unreachable_poison() -> u32 {\n    mir! {\n        let tmp: u32;\n        {\n            tmp = 7_u32;\n            RET = tmp;\n            Return()\n        }\n        bb_dead = {\n            StorageLive(tmp);\n            StorageDead(tmp);\n            Return()\n        }\n    }\n}\n",
+      "runs": {
+        "default": {
+          "flags": [],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_validate_mir": {
+          "flags": [
+            "-Zvalidate-mir"
+          ],
+          "rc": 0,
+          "stderr_excerpt": ""
+        },
+        "z_lint_mir": {
+          "flags": [
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ unreachable_storage_poison[ffff]::unreachable_poison)) (after phase change to runtime-post-cleanup) at bb0[0]:\n                                use of local _1, which has no storage here\n  --> <tmp>/unreachable_storage_poison.rs:10:13\n   |\n10 |             tmp = 7_u32;\n   |             ^^^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:80:22 - disabled backtrace\n  --> <tmp>/unreachable_storage_poison.rs:10:13\n   |\n10 |             tmp = 7_u32;\n   |             ^^^^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ unreachable_storage_poison[ffff]::unreachable_poison)) (after phase change to runtime-post-cleanup) at bb0[1]:\n                                use of local _1, which has no storage here\n  --> <tmp>/unreachable_storage_poison.rs:11:13\n   |\n11 |             RET = tmp;\n   |             ^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:80:22 - disabled backtrace\n  --> <tmp>/unreachable_storage_poison.rs:11:13\n   |\n11 |             RET = tmp;\n   |             ^^^^^^^^^\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n\nnote: compiler flags: --crate-type lib -Z lint-mir\n\nquery stack during panic:\nend of query stack"
+        },
+        "z_validate_and_lint": {
+          "flags": [
+            "-Zvalidate-mir",
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ unreachable_storage_poison[ffff]::unreachable_poison)) (after phase change to runtime-post-cleanup) at bb0[0]:\n                                use of local _1, which has no storage here\n  --> <tmp>/unreachable_storage_poison.rs:10:13\n   |\n10 |             tmp = 7_u32;\n   |             ^^^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:80:22 - disabled backtrace\n  --> <tmp>/unreachable_storage_poison.rs:10:13\n   |\n10 |             tmp = 7_u32;\n   |             ^^^^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ unreachable_storage_poison[ffff]::unreachable_poison)) (after phase change to runtime-post-cleanup) at bb0[1]:\n                                use of local _1, which has no storage here\n  --> <tmp>/unreachable_storage_poison.rs:11:13\n   |\n11 |             RET = tmp;\n   |             ^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:80:22 - disabled backtrace\n  --> <tmp>/unreachable_storage_poison.rs:11:13\n   |\n11 |             RET = tmp;\n   |             ^^^^^^^^^\n\nerror: internal compiler error: broken MIR in Item(DefId(0:4 ~ unreachable_storage_poison[ffff]::unreachable_poison)) (after pass CheckAlignment) at bb0[0]:\n                                use of local _1, which has no storage here\n  --> <tmp>/unreachable_storage_poison.rs:10:13\n   |\n10 |             tmp = 7_u32;\n   |             ^^^^^^^^^^^\n   |\nnote: delayed at <rustc-src>/compiler/rustc_mir_transform/src/lint.rs:80:22 - disabled backtrace\n  --> <tmp>/unreachable_storage_poison.rs:10:13\n   |\n10 |             t"
+        }
+      },
+      "miri": null
+    },
+    "validator_bad_unwind_action": {
+      "source": "#![feature(custom_mir, core_intrinsics)]\n#![allow(internal_features)]\nuse core::intrinsics::mir::*;\n\n#[custom_mir(dialect = \"runtime\", phase = \"post-cleanup\")]\npub extern \"C\" fn bad_unwind(f: extern \"C\" fn()) {\n    mir! {\n        {\n            Call(RET = f(), ReturnTo(bb1), UnwindContinue())\n        }\n        bb1 = { Return() }\n    }\n}\n",
+      "runs": {
+        "default": {
+          "flags": [],
+          "rc": 101,
+          "stderr_excerpt": "error: internal compiler error: <rustc-src>/compiler/rustc_mir_transform/src/validate.rs:262:26: broken MIR in Item(DefId(0:4 ~ validator_bad_unwind_action[cbce]::bad_unwind)) (after phase change to runtime-optimized) at bb0[0]:\n                                `UnwindAction::Continue` in no-unwind function\n --> <tmp>/validator_bad_unwind_action.rs:9:13\n  |\n9 |             Call(RET = f(), ReturnTo(bb1), UnwindContinue())\n  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n\nthread 'rustc' (2979022) panicked at <rustc-src>/compiler/rustc_mir_transform/src/validate.rs:262:26:\nBox<dyn Any>\nstack backtrace:\n   0:     0x7fc33a2a0ee9 - <<std[b67b1f443dfd2e41]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[5f430e017bac492f]::fmt::Display>::fmt\n   1:     0x7fc33aa2a308 - core[5f430e017bac492f]::fmt::write\n   2:     0x7fc33a2b79e6 - <std[b67b1f443dfd2e41]::sys::stdio::unix::Stderr as std[b67b1f443dfd2e41]::io::Write>::write_fmt\n   3:     0x7fc33a27711e - std[b67b1f443dfd2e41]::panicking::default_hook::{closure#0}\n   4:     0x7fc33a294823 - std[b67b1f443dfd2e41]::panicking::default_hook\n   5:     0x7fc339090301 - std[b67b1f443dfd2e41]::panicking::update_hook::<alloc[60cf5b42ecb504f8]::boxed::Box<rustc_driver_impl[ca013510a3051a8f]::install_ice_hook::{closure#1}>>::{closure#0}\n   6:     0x7fc33a294b02 - std[b67b1f443dfd2e41]::panicking::panic_with_hook\n   7:     0x7fc3390bdab1 - std[b67b1f443dfd2e41]::panicking::begin_panic::<rustc_errors[7286139cd6e3e3]::ExplicitBug>::{closure#0}\n   8:     0x7fc3390b6aa6 - std[b67b1f443dfd2e41]::sys::backtrace::__rust_end_short_backtrace::<std[b67b1f443dfd2e41]::panicking::begin_panic<rustc_errors[7286139cd6e3e3]::ExplicitBug>::{closure#0}, !>\n   9:     0x7fc3390b680b - std[b67b1f443dfd2e41]::panicking::begin_panic::"
+        },
+        "z_validate_mir": {
+          "flags": [
+            "-Zvalidate-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "error: internal compiler error: <rustc-src>/compiler/rustc_mir_transform/src/validate.rs:262:26: broken MIR in Item(DefId(0:4 ~ validator_bad_unwind_action[cbce]::bad_unwind)) (after phase change to runtime-post-cleanup) at bb0[0]:\n                                `UnwindAction::Continue` in no-unwind function\n --> <tmp>/validator_bad_unwind_action.rs:9:13\n  |\n9 |             Call(RET = f(), ReturnTo(bb1), UnwindContinue())\n  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n\nthread 'rustc' (2979036) panicked at <rustc-src>/compiler/rustc_mir_transform/src/validate.rs:262:26:\nBox<dyn Any>\nstack backtrace:\n   0:     0x7f8350ea0ee9 - <<std[b67b1f443dfd2e41]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[5f430e017bac492f]::fmt::Display>::fmt\n   1:     0x7f835162a308 - core[5f430e017bac492f]::fmt::write\n   2:     0x7f8350eb79e6 - <std[b67b1f443dfd2e41]::sys::stdio::unix::Stderr as std[b67b1f443dfd2e41]::io::Write>::write_fmt\n   3:     0x7f8350e7711e - std[b67b1f443dfd2e41]::panicking::default_hook::{closure#0}\n   4:     0x7f8350e94823 - std[b67b1f443dfd2e41]::panicking::default_hook\n   5:     0x7f834fc90301 - std[b67b1f443dfd2e41]::panicking::update_hook::<alloc[60cf5b42ecb504f8]::boxed::Box<rustc_driver_impl[ca013510a3051a8f]::install_ice_hook::{closure#1}>>::{closure#0}\n   6:     0x7f8350e94b02 - std[b67b1f443dfd2e41]::panicking::panic_with_hook\n   7:     0x7f834fcbdab1 - std[b67b1f443dfd2e41]::panicking::begin_panic::<rustc_errors[7286139cd6e3e3]::ExplicitBug>::{closure#0}\n   8:     0x7f834fcb6aa6 - std[b67b1f443dfd2e41]::sys::backtrace::__rust_end_short_backtrace::<std[b67b1f443dfd2e41]::panicking::begin_panic<rustc_errors[7286139cd6e3e3]::ExplicitBug>::{closure#0}, !>\n   9:     0x7f834fcb680b - std[b67b1f443dfd2e41]::panicking::begin_pani"
+        },
+        "z_lint_mir": {
+          "flags": [
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "error: internal compiler error: <rustc-src>/compiler/rustc_mir_transform/src/validate.rs:262:26: broken MIR in Item(DefId(0:4 ~ validator_bad_unwind_action[cbce]::bad_unwind)) (after phase change to runtime-optimized) at bb0[0]:\n                                `UnwindAction::Continue` in no-unwind function\n --> <tmp>/validator_bad_unwind_action.rs:9:13\n  |\n9 |             Call(RET = f(), ReturnTo(bb1), UnwindContinue())\n  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n\nthread 'rustc' (2979051) panicked at <rustc-src>/compiler/rustc_mir_transform/src/validate.rs:262:26:\nBox<dyn Any>\nstack backtrace:\n   0:     0x7f18d7aa0ee9 - <<std[b67b1f443dfd2e41]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[5f430e017bac492f]::fmt::Display>::fmt\n   1:     0x7f18d822a308 - core[5f430e017bac492f]::fmt::write\n   2:     0x7f18d7ab79e6 - <std[b67b1f443dfd2e41]::sys::stdio::unix::Stderr as std[b67b1f443dfd2e41]::io::Write>::write_fmt\n   3:     0x7f18d7a7711e - std[b67b1f443dfd2e41]::panicking::default_hook::{closure#0}\n   4:     0x7f18d7a94823 - std[b67b1f443dfd2e41]::panicking::default_hook\n   5:     0x7f18d6890301 - std[b67b1f443dfd2e41]::panicking::update_hook::<alloc[60cf5b42ecb504f8]::boxed::Box<rustc_driver_impl[ca013510a3051a8f]::install_ice_hook::{closure#1}>>::{closure#0}\n   6:     0x7f18d7a94b02 - std[b67b1f443dfd2e41]::panicking::panic_with_hook\n   7:     0x7f18d68bdab1 - std[b67b1f443dfd2e41]::panicking::begin_panic::<rustc_errors[7286139cd6e3e3]::ExplicitBug>::{closure#0}\n   8:     0x7f18d68b6aa6 - std[b67b1f443dfd2e41]::sys::backtrace::__rust_end_short_backtrace::<std[b67b1f443dfd2e41]::panicking::begin_panic<rustc_errors[7286139cd6e3e3]::ExplicitBug>::{closure#0}, !>\n   9:     0x7f18d68b680b - std[b67b1f443dfd2e41]::panicking::begin_panic::"
+        },
+        "z_validate_and_lint": {
+          "flags": [
+            "-Zvalidate-mir",
+            "-Zlint-mir"
+          ],
+          "rc": 101,
+          "stderr_excerpt": "error: internal compiler error: <rustc-src>/compiler/rustc_mir_transform/src/validate.rs:262:26: broken MIR in Item(DefId(0:4 ~ validator_bad_unwind_action[cbce]::bad_unwind)) (after phase change to runtime-post-cleanup) at bb0[0]:\n                                `UnwindAction::Continue` in no-unwind function\n --> <tmp>/validator_bad_unwind_action.rs:9:13\n  |\n9 |             Call(RET = f(), ReturnTo(bb1), UnwindContinue())\n  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n\nthread 'rustc' (2979068) panicked at <rustc-src>/compiler/rustc_mir_transform/src/validate.rs:262:26:\nBox<dyn Any>\nstack backtrace:\n   0:     0x7f4c0c4a0ee9 - <<std[b67b1f443dfd2e41]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[5f430e017bac492f]::fmt::Display>::fmt\n   1:     0x7f4c0cc2a308 - core[5f430e017bac492f]::fmt::write\n   2:     0x7f4c0c4b79e6 - <std[b67b1f443dfd2e41]::sys::stdio::unix::Stderr as std[b67b1f443dfd2e41]::io::Write>::write_fmt\n   3:     0x7f4c0c47711e - std[b67b1f443dfd2e41]::panicking::default_hook::{closure#0}\n   4:     0x7f4c0c494823 - std[b67b1f443dfd2e41]::panicking::default_hook\n   5:     0x7f4c0b290301 - std[b67b1f443dfd2e41]::panicking::update_hook::<alloc[60cf5b42ecb504f8]::boxed::Box<rustc_driver_impl[ca013510a3051a8f]::install_ice_hook::{closure#1}>>::{closure#0}\n   6:     0x7f4c0c494b02 - std[b67b1f443dfd2e41]::panicking::panic_with_hook\n   7:     0x7f4c0b2bdab1 - std[b67b1f443dfd2e41]::panicking::begin_panic::<rustc_errors[7286139cd6e3e3]::ExplicitBug>::{closure#0}\n   8:     0x7f4c0b2b6aa6 - std[b67b1f443dfd2e41]::sys::backtrace::__rust_end_short_backtrace::<std[b67b1f443dfd2e41]::panicking::begin_panic<rustc_errors[7286139cd6e3e3]::ExplicitBug>::{closure#0}, !>\n   9:     0x7f4c0b2b680b - std[b67b1f443dfd2e41]::panicking::begin_pani"
+        }
+      },
+      "miri": null
+    }
+  },
+  "sanity_check_rustc_peek": {
+    "peek_init_ok": {
+      "flags": [],
+      "rc": 1,
+      "stderr_excerpt": "error: stop_after_dataflow ended compilation\n\nerror: aborting due to 1 previous error"
+    },
+    "peek_init_without_stop": {
+      "flags": [],
+      "rc": 101,
+      "stderr_excerpt": "error: internal compiler error: <rustc-src>/compiler/rustc_codegen_ssa/src/mir/block.rs:1041:37: intrinsic rustc_peek must be overridden by codegen backend, but isn't\n --> <tmp>/peek_init_without_stop.rs:7:5\n  |\n7 |     rustc_peek(&x);\n  |     ^^^^^^^^^^^^^^\n\n\nthread 'rustc' (2979092) panicked at <rustc-src>/compiler/rustc_codegen_ssa/src/mir/block.rs:1041:37:\nBox<dyn Any>\nstack backtrace:\n   0:     0x7fe2fb0a0ee9 - <<std[b67b1f443dfd2e41]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[5f430e017bac492f]::fmt::Display>::fmt\n   1:     0x7fe2fb82a308 - core[5f430e017bac492f]::fmt::write\n   2:     0x7fe2fb0b79e6 - <std[b67b1f443dfd2e41]::sys::stdio::unix::Stderr as std[b67b1f443dfd2e41]::io::Write>::write_fmt\n   3:     0x7fe2fb07711e - std[b67b1f443dfd2e41]::panicking::default_hook::{closure#0}\n   4:     0x7fe2fb094823 - std[b67b1f443dfd2e41]::panicking::default_hook\n   5:     0x7fe2f9e90301 - std[b67b1f443dfd2e41]::panicking::update_hook::<alloc[60cf5b42ecb504f8]::boxed::Box<rustc_driver_impl[ca013510a3051a8f]::install_ice_hook::{closure#1}>>::{closure#0}\n   6:     0x7fe2fb094b02 - std[b67b1f443dfd2e41]::panicking::panic_with_hook\n   7:     0x7fe2f9ebdab1 - std[b67b1f443dfd2e41]::panicking::begin_panic::<rustc_errors[7286139cd6e3e3]::ExplicitBug>::{closure#0}\n   8:     0x7fe2f9eb6aa6 - std[b67b1f443dfd2e41]::sys::backtrace::__rust_end_short_backtrace::<std[b67b1f443dfd2e41]::panicking::begin_panic<rustc_errors[7286139cd6e3e3]::ExplicitBug>::{closure#0}, !>\n   9:     0x7fe2f9eb680b - std[b67b1f443dfd2e41]::panicking::begin_panic::<rustc_errors[7286139cd6e3e3]::ExplicitBug>\n  10:     0x7fe2f9ec8fa1 - <rustc_errors[7286139cd6e3e3]::diagnostic::BugAbort as rustc_errors[7286139cd6e3e3]::diagnostic::EmissionGuarantee>::emit_producing_guarantee\n  11:     0x7fe2fa52cbec - <rustc_errors[7286139cd6e3e3]::DiagCtxtHandle>::span_bug::<rustc_span[ca595a211516ca16]::span_encoding::Span, alloc[60cf5b42ecb504f8]::string::String>\n  12:     0x7fe2fa558556 - rustc_middle[12da4173cb83124b]::util::bug::opt_span_bug_fmt::<rustc_span[ca595a211516ca16]::span_encoding::Span>::{closure#0}\n  13:     0x7fe2fa5586e2 - rustc_middle[12da4173cb83124b]::ty::context::tls::with_opt:"
+    },
+    "peek_uninit_with_sanity_check_enabled": {
+      "flags": [],
+      "rc": 1,
+      "stderr_excerpt": "error: rustc_peek: bit not set\n --> <tmp>/peek_uninit_with_sanity_check_enabled.rs:8:5\n  |\n8 |     rustc_peek(&x);\n  |     ^^^^^^^^^^^^^^\n\nerror: stop_after_dataflow ended compilation\n\nerror: aborting due to 2 previous errors"
+    },
+    "peek_uninit_with_sanity_check_disabled_hits_borrowck": {
+      "flags": [
+        "-Zmir-enable-passes=-SanityCheck"
+      ],
+      "rc": 1,
+      "stderr_excerpt": "error[E0381]: used binding `x` isn't initialized\n --> <tmp>/peek_uninit_with_sanity_check_disabled_hits_borrowck.rs:8:16\n  |\n7 |     let x: i32;\n  |         - binding declared here but left uninitialized\n8 |     rustc_peek(&x);\n  |                ^^ `x` used here but it isn't initialized\n  |\nhelp: consider assigning a value\n  |\n7 |     let x: i32 = 42;\n  |                ++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0381`."
+    },
+    "peek_liveness_dead": {
+      "flags": [],
+      "rc": 1,
+      "stderr_excerpt": "error: rustc_peek: bit not set\n --> <tmp>/peek_liveness_dead.rs:7:5\n  |\n7 |     rustc_peek(&x);\n  |     ^^^^^^^^^^^^^^\n\nerror: stop_after_dataflow ended compilation\n\nerror: aborting due to 2 previous errors"
+    },
+    "peek_maybe_uninit_definitely_init": {
+      "flags": [],
+      "rc": 1,
+      "stderr_excerpt": "error: rustc_peek: bit not set\n --> <tmp>/peek_maybe_uninit_definitely_init.rs:7:5\n  |\n7 |     rustc_peek(&x);\n  |     ^^^^^^^^^^^^^^\n\nerror: stop_after_dataflow ended compilation\n\nerror: aborting due to 2 previous errors"
+    },
+    "peek_maybe_uninit_with_sanity_check_disabled_codegen_ice": {
+      "flags": [
+        "-Zmir-enable-passes=-SanityCheck"
+      ],
+      "rc": 101,
+      "stderr_excerpt": "error: internal compiler error: <rustc-src>/compiler/rustc_codegen_ssa/src/mir/block.rs:1041:37: intrinsic rustc_peek must be overridden by codegen backend, but isn't\n --> <tmp>/peek_maybe_uninit_with_sanity_check_disabled_codegen_ice.rs:7:5\n  |\n7 |     rustc_peek(&x);\n  |     ^^^^^^^^^^^^^^\n\n\nthread 'rustc' (2979155) panicked at <rustc-src>/compiler/rustc_codegen_ssa/src/mir/block.rs:1041:37:\nBox<dyn Any>\nstack backtrace:\n   0:     0x7f95586a0ee9 - <<std[b67b1f443dfd2e41]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[5f430e017bac492f]::fmt::Display>::fmt\n   1:     0x7f9558e2a308 - core[5f430e017bac492f]::fmt::write\n   2:     0x7f95586b79e6 - <std[b67b1f443dfd2e41]::sys::stdio::unix::Stderr as std[b67b1f443dfd2e41]::io::Write>::write_fmt\n   3:     0x7f955867711e - std[b67b1f443dfd2e41]::panicking::default_hook::{closure#0}\n   4:     0x7f9558694823 - std[b67b1f443dfd2e41]::panicking::default_hook\n   5:     0x7f9557490301 - std[b67b1f443dfd2e41]::panicking::update_hook::<alloc[60cf5b42ecb504f8]::boxed::Box<rustc_driver_impl[ca013510a3051a8f]::install_ice_hook::{closure#1}>>::{closure#0}\n   6:     0x7f9558694b02 - std[b67b1f443dfd2e41]::panicking::panic_with_hook\n   7:     0x7f95574bdab1 - std[b67b1f443dfd2e41]::panicking::begin_panic::<rustc_errors[7286139cd6e3e3]::ExplicitBug>::{closure#0}\n   8:     0x7f95574b6aa6 - std[b67b1f443dfd2e41]::sys::backtrace::__rust_end_short_backtrace::<std[b67b1f443dfd2e41]::panicking::begin_panic<rustc_errors[7286139cd6e3e3]::ExplicitBug>::{closure#0}, !>\n   9:     0x7f95574b680b - std[b67b1f443dfd2e41]::panicking::begin_panic::<rustc_errors[7286139cd6e3e3]::ExplicitBug>\n  10:     0x7f95574c8fa1 - <rustc_errors[7286139cd6e3e3]::diagnostic::BugAbort as rustc_errors[7286139cd6e3e3]::diagnostic::EmissionGuarantee>::emit_producing_guarantee\n  11:     0x7f9557b2cbec - <rustc_errors[7286139cd6e3e3]::DiagCtxtHandle>::span_bug::<rustc_span[ca595a211516ca16]::span_encoding::Span, alloc[60cf5b42ecb504f8]::string::String>\n  12:     0x7f9557b58556 - rustc_middle[12da4173cb83124b]::util::bug::opt_span_bug_fmt::<rustc_span[ca595a211516ca16]::span_encoding::Span>::{closure#0}\n  13:     0x7f9557b586e2 - rustc_middle[12da4173cb83"
+    }
+  },
+  "prettify_reorder_probe": {
+    "baseline_compile_rc": 0,
+    "baseline_exec": {
+      "rc": 0,
+      "stdout": "PRETTIFY=112",
+      "stderr": ""
+    },
+    "prettify_compile_rc": 0,
+    "prettify_exec": {
+      "rc": 0,
+      "stdout": "PRETTIFY=112",
+      "stderr": ""
+    },
+    "llvm_ir_multi_branch_cfg_identical": false,
+    "llvm_ir_multi_branch_cfg_alpha_identical": true,
+    "lib_obj_bytes_identical": true,
+    "llvm_ir_multi_branch_cfg_base": "define internal fastcc noundef range(i32 -5, 117) i32 @_RNvCsluRuN2isSdU_14prettify_probe16multi_branch_cfg(i32 noundef range(i32 4, 9) %x, i1 noundef zeroext %flag) unnamed_addr #3 {\nstart:\n  br i1 %flag, label %bb9.peel42, label %bb2.us.preheader\n\nbb2.us.preheader:                                 ; preds = %start\n  %0 = icmp samesign ugt i32 %x, 5\n  %1 = sub nsw i32 0, %x\n  %spec.select = select i1 %0, i32 95, i32 %1\n  br label %bb11\n\nbb9.peel42:                                       ; preds = %start\n  %switch.selectcmp = icmp eq i32 %x, 5\n  %switch.select = select i1 %switch.selectcmp, i32 16, i32 116\n  %switch.selectcmp68 = icmp eq i32 %x, 4\n  %switch.select69 = select i1 %switch.selectcmp68, i32 4, i32 %switch.select\n  br label %bb11\n\nbb11:                                             ; preds = %bb9.peel42, %bb2.us.preheader\n  %_0.sroa.0.0 = phi i32 [ %switch.select69, %bb9.peel42 ], [ %spec.select, %bb2.us.preheader ]\n  ret i32 %_0.sroa.0.0\n}",
+    "llvm_ir_multi_branch_cfg_prettify": "define internal fastcc noundef range(i32 -5, 117) i32 @_RNvCsluRuN2isSdU_14prettify_probe16multi_branch_cfg(i32 noundef range(i32 4, 9) %x, i1 noundef zeroext %flag) unnamed_addr #3 {\nstart:\n  br i1 %flag, label %bb11.peel42, label %bb3.us.preheader\n\nbb3.us.preheader:                                 ; preds = %start\n  %0 = icmp samesign ugt i32 %x, 5\n  %1 = sub nsw i32 0, %x\n  %spec.select = select i1 %0, i32 95, i32 %1\n  br label %bb9\n\nbb11.peel42:                                      ; preds = %start\n  %switch.selectcmp = icmp eq i32 %x, 5\n  %switch.select = select i1 %switch.selectcmp, i32 16, i32 116\n  %switch.selectcmp68 = icmp eq i32 %x, 4\n  %switch.select69 = select i1 %switch.selectcmp68, i32 4, i32 %switch.select\n  br label %bb9\n\nbb9:                                              ; preds = %bb11.peel42, %bb3.us.preheader\n  %_0.sroa.0.0 = phi i32 [ %switch.select69, %bb11.peel42 ], [ %spec.select, %bb3.us.preheader ]\n  ret i32 %_0.sroa.0.0\n}",
+    "mir_dumps": {
+      "baseline_runtime_optimized": "// MIR for `multi_branch_cfg` after runtime-optimized\n\nfn multi_branch_cfg(_1: i32, _2: bool) -> i32 {\n    debug x => _1;\n    debug flag => _2;\n    let mut _0: i32;\n    let mut _3: i32;\n    let mut _5: bool;\n    let mut _6: i32;\n    let mut _7: i32;\n    let mut _8: i32;\n    let mut _9: i32;\n    let mut _10: i32;\n    let mut _11: i32;\n    scope 1 {\n        debug sum => _3;\n        let mut _4: i32;\n        scope 2 {\n            debug i => _4;\n        }\n    }\n\n    bb0: {\n        _3 = const 0_i32;\n        StorageLive(_4);\n        _4 = const 0_i32;\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageLive(_5);\n        StorageLive(_6);\n        _6 = copy _4;\n        _5 = Lt(move _6, copy _1);\n        switchInt(move _5) -> [0: bb10, otherwise: bb2];\n    }\n\n    bb2: {\n        StorageDead(_6);\n        switchInt(copy _2) -> [0: bb6, otherwise: bb3];\n    }\n\n    bb3: {\n        StorageLive(_7);\n        StorageLive(_8);\n        _8 = copy _4;\n        _7 = Rem(move _8, const 2_i32);\n        StorageDead(_8);\n        switchInt(copy _7) -> [0: bb4, otherwise: bb5];\n    }\n\n    bb4: {\n        StorageDead(_7);\n        StorageLive(_9);\n        StorageLive(_10);\n        _10 = copy _4;\n        _9 = Mul(move _10, const 3_i32);\n        StorageDead(_10);\n        _3 = Add(copy _3, move _9);\n        StorageDead(_9);\n        goto -> bb9;\n    }\n\n    bb5: {\n        StorageDead(_7);\n        goto -> bb6;\n    }\n\n    bb6: {\n        StorageLive(_11);\n        _11 = copy _4;\n        switchInt(copy _11) -> [5: bb7, otherwise: bb8];\n    }\n\n    bb7: {\n        StorageDead(_11);\n        _0 = Add(move _3, const 100_i32);\n        StorageDead(_5);\n        StorageDead(_4);\n        goto -> bb11;\n    }\n\n    bb8: {\n        StorageDead(_11);\n        _3 = Sub(copy _3, const 1_i32);\n        goto -> bb9;\n    }\n\n    bb9: {\n        _4 = Add(copy _4, const 1_i32);\n        StorageDead(_5);\n        goto -> bb1;\n    }\n\n    bb10: {\n        StorageDead(_6);\n        StorageDead(_5);\n        _0 = copy _3;\n        StorageDead(_4);\n        goto -> bb11;\n    }\n\n    bb11: {\n        return;\n    }\n}\n",
+      "before_reorder_basic_blocks": "// MIR for `multi_branch_cfg` before ReorderBasicBlocks\n\nfn multi_branch_cfg(_1: i32, _2: bool) -> i32 {\n    debug x => _1;\n    debug flag => _2;\n    let mut _0: i32;\n    let mut _3: i32;\n    let mut _5: bool;\n    let mut _6: i32;\n    let mut _7: i32;\n    let mut _8: i32;\n    let mut _9: i32;\n    let mut _10: i32;\n    let mut _11: i32;\n    scope 1 {\n        debug sum => _3;\n        let mut _4: i32;\n        scope 2 {\n            debug i => _4;\n        }\n    }\n\n    bb0: {\n        _3 = const 0_i32;\n        StorageLive(_4);\n        _4 = const 0_i32;\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageLive(_5);\n        StorageLive(_6);\n        _6 = copy _4;\n        _5 = Lt(move _6, copy _1);\n        switchInt(move _5) -> [0: bb10, otherwise: bb2];\n    }\n\n    bb2: {\n        StorageDead(_6);\n        switchInt(copy _2) -> [0: bb6, otherwise: bb3];\n    }\n\n    bb3: {\n        StorageLive(_7);\n        StorageLive(_8);\n        _8 = copy _4;\n        _7 = Rem(move _8, const 2_i32);\n        StorageDead(_8);\n        switchInt(copy _7) -> [0: bb4, otherwise: bb5];\n    }\n\n    bb4: {\n        StorageDead(_7);\n        StorageLive(_9);\n        StorageLive(_10);\n        _10 = copy _4;\n        _9 = Mul(move _10, const 3_i32);\n        StorageDead(_10);\n        _3 = Add(copy _3, move _9);\n        StorageDead(_9);\n        goto -> bb9;\n    }\n\n    bb5: {\n        StorageDead(_7);\n        goto -> bb6;\n    }\n\n    bb6: {\n        StorageLive(_11);\n        _11 = copy _4;\n        switchInt(copy _11) -> [5: bb7, otherwise: bb8];\n    }\n\n    bb7: {\n        StorageDead(_11);\n        _0 = Add(move _3, const 100_i32);\n        StorageDead(_5);\n        StorageDead(_4);\n        goto -> bb11;\n    }\n\n    bb8: {\n        StorageDead(_11);\n        _3 = Sub(copy _3, const 1_i32);\n        goto -> bb9;\n    }\n\n    bb9: {\n        _4 = Add(copy _4, const 1_i32);\n        StorageDead(_5);\n        goto -> bb1;\n    }\n\n    bb10: {\n        StorageDead(_6);\n        StorageDead(_5);\n        _0 = copy _3;\n        StorageDead(_4);\n        goto -> bb11;\n    }\n\n    bb11: {\n        return;\n    }\n}\n",
+      "after_reorder_basic_blocks": "// MIR for `multi_branch_cfg` after ReorderBasicBlocks\n\nfn multi_branch_cfg(_1: i32, _2: bool) -> i32 {\n    debug x => _1;\n    debug flag => _2;\n    let mut _0: i32;\n    let mut _3: i32;\n    let mut _5: bool;\n    let mut _6: i32;\n    let mut _7: i32;\n    let mut _8: i32;\n    let mut _9: i32;\n    let mut _10: i32;\n    let mut _11: i32;\n    scope 1 {\n        debug sum => _3;\n        let mut _4: i32;\n        scope 2 {\n            debug i => _4;\n        }\n    }\n\n    bb0: {\n        _3 = const 0_i32;\n        StorageLive(_4);\n        _4 = const 0_i32;\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageLive(_5);\n        StorageLive(_6);\n        _6 = copy _4;\n        _5 = Lt(move _6, copy _1);\n        switchInt(move _5) -> [0: bb2, otherwise: bb3];\n    }\n\n    bb2: {\n        StorageDead(_6);\n        StorageDead(_5);\n        _0 = copy _3;\n        StorageDead(_4);\n        goto -> bb9;\n    }\n\n    bb3: {\n        StorageDead(_6);\n        switchInt(copy _2) -> [0: bb7, otherwise: bb4];\n    }\n\n    bb4: {\n        StorageLive(_7);\n        StorageLive(_8);\n        _8 = copy _4;\n        _7 = Rem(move _8, const 2_i32);\n        StorageDead(_8);\n        switchInt(copy _7) -> [0: bb5, otherwise: bb6];\n    }\n\n    bb5: {\n        StorageDead(_7);\n        StorageLive(_9);\n        StorageLive(_10);\n        _10 = copy _4;\n        _9 = Mul(move _10, const 3_i32);\n        StorageDead(_10);\n        _3 = Add(copy _3, move _9);\n        StorageDead(_9);\n        goto -> bb11;\n    }\n\n    bb6: {\n        StorageDead(_7);\n        goto -> bb7;\n    }\n\n    bb7: {\n        StorageLive(_11);\n        _11 = copy _4;\n        switchInt(copy _11) -> [5: bb8, otherwise: bb10];\n    }\n\n    bb8: {\n        StorageDead(_11);\n        _0 = Add(move _3, const 100_i32);\n        StorageDead(_5);\n        StorageDead(_4);\n        goto -> bb9;\n    }\n\n    bb9: {\n        return;\n    }\n\n    bb10: {\n        StorageDead(_11);\n        _3 = Sub(copy _3, const 1_i32);\n        goto -> bb11;\n    }\n\n    bb11: {\n        _4 = Add(copy _4, const 1_i32);\n        StorageDead(_5);\n        goto -> bb1;\n    }\n}\n",
+      "after_reorder_locals": "// MIR for `multi_branch_cfg` after ReorderLocals\n\nfn multi_branch_cfg(_1: i32, _2: bool) -> i32 {\n    debug x => _1;\n    debug flag => _2;\n    let mut _0: i32;\n    let mut _3: i32;\n    let mut _5: i32;\n    let mut _6: bool;\n    let mut _7: i32;\n    let mut _8: i32;\n    let mut _9: i32;\n    let mut _10: i32;\n    let mut _11: i32;\n    scope 1 {\n        debug sum => _3;\n        let mut _4: i32;\n        scope 2 {\n            debug i => _4;\n        }\n    }\n\n    bb0: {\n        _3 = const 0_i32;\n        StorageLive(_4);\n        _4 = const 0_i32;\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageLive(_6);\n        StorageLive(_5);\n        _5 = copy _4;\n        _6 = Lt(move _5, copy _1);\n        switchInt(move _6) -> [0: bb2, otherwise: bb3];\n    }\n\n    bb2: {\n        StorageDead(_5);\n        StorageDead(_6);\n        _0 = copy _3;\n        StorageDead(_4);\n        goto -> bb9;\n    }\n\n    bb3: {\n        StorageDead(_5);\n        switchInt(copy _2) -> [0: bb7, otherwise: bb4];\n    }\n\n    bb4: {\n        StorageLive(_8);\n        StorageLive(_7);\n        _7 = copy _4;\n        _8 = Rem(move _7, const 2_i32);\n        StorageDead(_7);\n        switchInt(copy _8) -> [0: bb5, otherwise: bb6];\n    }\n\n    bb5: {\n        StorageDead(_8);\n        StorageLive(_10);\n        StorageLive(_9);\n        _9 = copy _4;\n        _10 = Mul(move _9, const 3_i32);\n        StorageDead(_9);\n        _3 = Add(copy _3, move _10);\n        StorageDead(_10);\n        goto -> bb11;\n    }\n\n    bb6: {\n        StorageDead(_8);\n        goto -> bb7;\n    }\n\n    bb7: {\n        StorageLive(_11);\n        _11 = copy _4;\n        switchInt(copy _11) -> [5: bb8, otherwise: bb10];\n    }\n\n    bb8: {\n        StorageDead(_11);\n        _0 = Add(move _3, const 100_i32);\n        StorageDead(_6);\n        StorageDead(_4);\n        goto -> bb9;\n    }\n\n    bb9: {\n        return;\n    }\n\n    bb10: {\n        StorageDead(_11);\n        _3 = Sub(copy _3, const 1_i32);\n        goto -> bb11;\n    }\n\n    bb11: {\n        _4 = Add(copy _4, const 1_i32);\n        StorageDead(_6);\n        goto -> bb1;\n    }\n}\n",
+      "prettify_runtime_optimized": "// MIR for `multi_branch_cfg` after runtime-optimized\n\nfn multi_branch_cfg(_1: i32, _2: bool) -> i32 {\n    debug x => _1;\n    debug flag => _2;\n    let mut _0: i32;\n    let mut _3: i32;\n    let mut _5: i32;\n    let mut _6: bool;\n    let mut _7: i32;\n    let mut _8: i32;\n    let mut _9: i32;\n    let mut _10: i32;\n    let mut _11: i32;\n    scope 1 {\n        debug sum => _3;\n        let mut _4: i32;\n        scope 2 {\n            debug i => _4;\n        }\n    }\n\n    bb0: {\n        _3 = const 0_i32;\n        StorageLive(_4);\n        _4 = const 0_i32;\n        goto -> bb1;\n    }\n\n    bb1: {\n        StorageLive(_6);\n        StorageLive(_5);\n        _5 = copy _4;\n        _6 = Lt(move _5, copy _1);\n        switchInt(move _6) -> [0: bb2, otherwise: bb3];\n    }\n\n    bb2: {\n        StorageDead(_5);\n        StorageDead(_6);\n        _0 = copy _3;\n        StorageDead(_4);\n        goto -> bb9;\n    }\n\n    bb3: {\n        StorageDead(_5);\n        switchInt(copy _2) -> [0: bb7, otherwise: bb4];\n    }\n\n    bb4: {\n        StorageLive(_8);\n        StorageLive(_7);\n        _7 = copy _4;\n        _8 = Rem(move _7, const 2_i32);\n        StorageDead(_7);\n        switchInt(copy _8) -> [0: bb5, otherwise: bb6];\n    }\n\n    bb5: {\n        StorageDead(_8);\n        StorageLive(_10);\n        StorageLive(_9);\n        _9 = copy _4;\n        _10 = Mul(move _9, const 3_i32);\n        StorageDead(_9);\n        _3 = Add(copy _3, move _10);\n        StorageDead(_10);\n        goto -> bb11;\n    }\n\n    bb6: {\n        StorageDead(_8);\n        goto -> bb7;\n    }\n\n    bb7: {\n        StorageLive(_11);\n        _11 = copy _4;\n        switchInt(copy _11) -> [5: bb8, otherwise: bb10];\n    }\n\n    bb8: {\n        StorageDead(_11);\n        _0 = Add(move _3, const 100_i32);\n        StorageDead(_6);\n        StorageDead(_4);\n        goto -> bb9;\n    }\n\n    bb9: {\n        return;\n    }\n\n    bb10: {\n        StorageDead(_11);\n        _3 = Sub(copy _3, const 1_i32);\n        goto -> bb11;\n    }\n\n    bb11: {\n        _4 = Add(copy _4, const 1_i32);\n        StorageDead(_6);\n        goto -> bb1;\n    }\n}\n"
+    },
+    "dead_bb_unsorted_opt0_prettify": {
+      "rc": 101,
+      "stderr_excerpt": "thread 'rustc' (2979372) panicked at <rustc-src>/compiler/rustc_index/src/slice.rs:194:20:\nindex out of bounds: the len is 3 but the index is 3\nstack backtrace:\n   0:     0x7f098caa0ee9 - <<std[b67b1f443dfd2e41]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[5f430e017bac492f]::fmt::Display>::fmt\n   1:     0x7f098d22a308 - core[5f430e017bac492f]::fmt::write\n   2:     0x7f098cab79e6 - <std[b67b1f443dfd2e41]::sys::stdio::unix::Stderr as std[b67b1f443dfd2e41]::io::Write>::write_fmt\n   3:     0x7f098ca7711e - std[b67b1f443dfd2e41]::panicking::default_hook::{closure#0}\n   4:     0x7f098ca94823 - std[b67b1f443dfd2e41]::panicking::default_hook\n   5:     0x7f098b890301 - std[b67b1f443dfd2e41]::panicking::update_hook::<alloc[60cf5b42ecb504f8]::boxed::Box<rustc_driver_impl[ca013510a3051a8f]::install_ice_hook::{closure#1}>>::{closure#0}\n   6:     0x7f098ca94b02 - std[b67b1f443dfd2e41]::panicking::panic_with_hook\n   7:     0x7f098ca771e2 - std[b67b1f443dfd2e41]::panicking::panic_handler::{closure#0}\n   8:     0x7f098ca6b709 - std[b67b1f443dfd2e41]::sys::backtrace::__rust_end_short_backtrace::<std[b67b1f443dfd2e41]::panicking::panic_handler::{closure#0}, !>\n   9:     0x7f098ca7"
+    },
+    "dead_bb_unsorted_default_prettify": {
+      "rc": 0,
+      "stderr_excerpt": ""
+    }
+  }
+}
