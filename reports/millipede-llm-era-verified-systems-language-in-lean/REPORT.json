@@ -1,0 +1,24 @@
+{
+  "topics": [
+    "agents/code-generation",
+    "compilers/verified-compilation",
+    "lean/verified-compilers",
+    "pl/embedded-dsls",
+    "pl/linear-types",
+    "pl/llm-authored-languages",
+    "verification/resource-bounds",
+    "verification/translation-validation"
+  ],
+  "subjects": [
+    {
+      "name": "Millipede verified low-level language and compiler (graydon/millipede)",
+      "identity": {
+        "repository": "graydon/millipede",
+        "revision": "4f13d3980a5570177a774e63cfbc95e652dd3cde",
+        "toolchain": "leanprover/lean4:v4.35.0",
+        "url": "https://github.com/graydon/millipede"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

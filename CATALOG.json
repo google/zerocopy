@@ -69217,6 +69217,30 @@
         "pl/execution-models"
       ]
     },
+    "millipede-llm-era-verified-systems-language-in-lean": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "graydon/millipede",
+            "revision": "4f13d3980a5570177a774e63cfbc95e652dd3cde",
+            "toolchain": "leanprover/lean4:v4.35.0",
+            "url": "https://github.com/graydon/millipede"
+          },
+          "name": "Millipede verified low-level language and compiler (graydon/millipede)"
+        }
+      ],
+      "topics": [
+        "agents/code-generation",
+        "compilers/verified-compilation",
+        "lean/verified-compilers",
+        "pl/embedded-dsls",
+        "pl/linear-types",
+        "pl/llm-authored-languages",
+        "verification/resource-bounds",
+        "verification/translation-validation"
+      ]
+    },
     "minamide-holes-ocaml-tmc-destination-calculus-and-sret-copy-elision": {
       "observed_at": "2026-11-20",
       "subjects": [
