@@ -1262,13 +1262,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Check that all toolchains listed in Cargo.toml are tested in CI
     steps:
-      - name: Install yq (for YAML parsing)
-        # FIXME(https://github.com/mikefarah/yq/issues/2587): Remove
-        # `GONOSUMDB` once this bug is fixed.
-        run: GONOSUMDB=github.com/mikefarah/yq/v4 go install github.com/mikefarah/yq/v4@v4.44.1
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - uses: ./.github/actions/install-yq
       - name: Run check
         run: cd zerocopy && ./ci/check_all_toolchains_tested.sh
 
@@ -1276,13 +1273,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Check all-jobs-succeeded depends on all jobs
     steps:
-      - name: Install yq (for YAML parsing)
-        # FIXME(https://github.com/mikefarah/yq/issues/2587): Remove
-        # `GONOSUMDB` once this bug is fixed.
-        run: GONOSUMDB=github.com/mikefarah/yq/v4 go install github.com/mikefarah/yq/v4@v4.44.1
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - uses: ./.github/actions/install-yq
       - name: Run dependency check
         run: ./ci/check_job_dependencies.sh
 
@@ -1342,10 +1336,6 @@ jobs:
       ACTIONS_RESULTS_URL: ''
       ACTIONS_RUNTIME_TOKEN: ''
     steps:
-      - name: Install yq (for YAML parsing)
-        # FIXME(https://github.com/mikefarah/yq/issues/2587): Remove
-        # `GONOSUMDB` once this bug is fixed.
-        run: GONOSUMDB=github.com/mikefarah/yq/v4 go install github.com/mikefarah/yq/v4@v4.44.1
       - name: Install ripgrep
         run: |
          sudo apt-get update
@@ -1353,6 +1343,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      - uses: ./.github/actions/install-yq
       - name: Run dependency check
         # Ensure that Git hooks execute successfully.
         #
