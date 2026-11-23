@@ -1,0 +1,385 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "suite_a_liveness": {
+    "A1_sync_move_closure": {
+      "rc": 0,
+      "warning_count": 3,
+      "diagnostics": [
+        {
+          "level": "warning",
+          "code": "unused_assignments",
+          "message": "value captured by `u_sync` is never read",
+          "line": 4
+        },
+        {
+          "level": "warning",
+          "code": "unused_assignments",
+          "message": "value assigned to `u_sync` is never read",
+          "line": 4
+        },
+        {
+          "level": "warning",
+          "code": "unused_variables",
+          "message": "unused variable: `u_sync`",
+          "line": 2
+        },
+        {
+          "level": "warning",
+          "code": null,
+          "message": "3 warnings emitted",
+          "line": null
+        }
+      ]
+    },
+    "A2_async_move_block_coroutine": {
+      "rc": 0,
+      "warning_count": 3,
+      "diagnostics": [
+        {
+          "level": "warning",
+          "code": "unused_assignments",
+          "message": "value captured by `u_block` is never read",
+          "line": 4
+        },
+        {
+          "level": "warning",
+          "code": "unused_assignments",
+          "message": "value assigned to `u_block` is never read",
+          "line": 4
+        },
+        {
+          "level": "warning",
+          "code": "unused_variables",
+          "message": "unused variable: `u_block`",
+          "line": 2
+        },
+        {
+          "level": "warning",
+          "code": null,
+          "message": "3 warnings emitted",
+          "line": null
+        }
+      ]
+    },
+    "A3_async_move_fnmut_coroutine_closure": {
+      "rc": 0,
+      "warning_count": 0,
+      "diagnostics": [],
+      "built_mir_bodies": [
+        "probe.async_fnmut_dead_capture-{closure#0}-{closure#0}.1-1-000.built.after.mir",
+        "probe.async_fnmut_dead_capture-{closure#0}-{synthetic#0}.-------.built.after.mir",
+        "probe.async_fnmut_dead_capture-{closure#0}.1-1-000.built.after.mir",
+        "probe.async_fnmut_dead_capture.1-1-000.built.after.mir"
+      ],
+      "wrapper_mir_has_mut_borrow": true,
+      "inner_coro_captures_by_mut_ref": true,
+      "synthetic_by_move_body_present": true
+    },
+    "A4_async_move_fnonce_vs_sync_fnonce": {
+      "async_fnonce_rc": 0,
+      "async_fnonce_warning_count": 2,
+      "async_fnonce_diagnostics": [
+        {
+          "level": "warning",
+          "code": "unused_assignments",
+          "message": "value captured by `u_async_once` is never read",
+          "line": 6
+        },
+        {
+          "level": "warning",
+          "code": "unused_assignments",
+          "message": "value assigned to `u_async_once` is never read",
+          "line": 6
+        },
+        {
+          "level": "warning",
+          "code": null,
+          "message": "2 warnings emitted",
+          "line": null
+        }
+      ],
+      "async_fnonce_inner_captures_by_value": true,
+      "sync_fnonce_rc": 0,
+      "sync_fnonce_warning_count": 3,
+      "sync_fnonce_diagnostics": [
+        {
+          "level": "warning",
+          "code": "unused_assignments",
+          "message": "value captured by `u_sync_once` is never read",
+          "line": 6
+        },
+        {
+          "level": "warning",
+          "code": "unused_assignments",
+          "message": "value assigned to `u_sync_once` is never read",
+          "line": 6
+        },
+        {
+          "level": "warning",
+          "code": "unused_variables",
+          "message": "unused variable: `u_sync_once`",
+          "line": 2
+        },
+        {
+          "level": "warning",
+          "code": null,
+          "message": "3 warnings emitted",
+          "line": null
+        }
+      ]
+    },
+    "A5_fnmut_loop_closure_vs_fnonce": {
+      "rc": 0,
+      "warning_count": 1,
+      "diagnostics": [
+        {
+          "level": "warning",
+          "code": "unused_assignments",
+          "message": "value assigned to `acc` is never read",
+          "line": 28
+        },
+        {
+          "level": "warning",
+          "code": null,
+          "message": "1 warning emitted",
+          "line": null
+        }
+      ]
+    },
+    "A6_self_assign_guards_drop_guard_and_by_ref_diverge": {
+      "rc": 0,
+      "warning_count": 6,
+      "diagnostics": [
+        {
+          "level": "warning",
+          "code": "unused_variables",
+          "message": "variable `x` is assigned to, but never used",
+          "line": 2
+        },
+        {
+          "level": "warning",
+          "code": "unused_assignments",
+          "message": "value assigned to `x` is never read",
+          "line": 3
+        },
+        {
+          "level": "warning",
+          "code": "unused_variables",
+          "message": "variable `y` is assigned to, but never used",
+          "line": 7
+        },
+        {
+          "level": "warning",
+          "code": "unused_assignments",
+          "message": "value assigned to `y` is never read",
+          "line": 8
+        },
+        {
+          "level": "warning",
+          "code": "unused_variables",
+          "message": "variable `g_direct` is assigned to, but never used",
+          "line": 31
+        },
+        {
+          "level": "warning",
+          "code": "unused_assignments",
+          "message": "value assigned to `g_direct` is never read",
+          "line": 32
+        },
+        {
+          "level": "warning",
+          "code": null,
+          "message": "6 warnings emitted",
+          "line": null
+        }
+      ]
+    }
+  },
+  "suite_b_mentioned_items": {
+    "B1_six_visitor_patterns_post_dce_enforcement": {
+      "1a_call_dead_const_prop": {
+        "emit_metadata_rc": 0,
+        "emit_obj_o0_rc": 1,
+        "emit_obj_o3_mir4_rc": 1,
+        "o3_first_error": "evaluation panicked: CALL_CONST_PROP_PME"
+      },
+      "1b_call_dead_if_false": {
+        "emit_metadata_rc": 0,
+        "emit_obj_o0_rc": 1,
+        "emit_obj_o3_mir4_rc": 1,
+        "o3_first_error": "evaluation panicked: CALL_IF_FALSE_PME"
+      },
+      "2_drop_dead": {
+        "emit_metadata_rc": 0,
+        "emit_obj_o0_rc": 1,
+        "emit_obj_o3_mir4_rc": 1,
+        "o3_first_error": "evaluation panicked: DROP_PME"
+      },
+      "3_inline_asm_symfn_dead": {
+        "emit_metadata_rc": 0,
+        "emit_obj_o0_rc": 1,
+        "emit_obj_o3_mir4_rc": 1,
+        "o3_first_error": "evaluation panicked: ASM_SYMFN_PME"
+      },
+      "4_unsize_vtable_dead": {
+        "emit_metadata_rc": 0,
+        "emit_obj_o0_rc": 1,
+        "emit_obj_o3_mir4_rc": 1,
+        "o3_first_error": "evaluation panicked: VTABLE_PME"
+      },
+      "5_closure_fnptr_dead": {
+        "emit_metadata_rc": 0,
+        "emit_obj_o0_rc": 1,
+        "emit_obj_o3_mir4_rc": 1,
+        "o3_first_error": "evaluation panicked: CLOSURE_FNPTR_PME"
+      },
+      "6_reify_fnptr_dead": {
+        "emit_metadata_rc": 0,
+        "emit_obj_o0_rc": 1,
+        "emit_obj_o3_mir4_rc": 1,
+        "o3_first_error": "evaluation panicked: REIFY_FNPTR_PME"
+      },
+      "4b_unsize_array_to_slice_control": {
+        "emit_metadata_rc": 0,
+        "emit_obj_o0_rc": 0,
+        "emit_obj_o3_mir4_rc": 0,
+        "o3_first_error": null
+      }
+    },
+    "B2_dead_call_present_before_opt_absent_after_opt": {
+      "rc": 1,
+      "post_cleanup_contains_trigger_pme": true,
+      "optimized_contains_trigger_pme": false,
+      "optimized_mir_body": "// MIR for `f` after runtime-optimized\n\nfn f() -> usize {\n    let mut _0: usize;\n    scope 1 {\n        debug x => const 4_usize;\n    }\n\n    bb0: {\n        _0 = const 1_usize;\n        return;\n    }\n}"
+    },
+    "B3_mentioned_only_skips_codegen_and_linking": {
+      "o3_mir4_link_rc": 0,
+      "o3_mir4_binary_created": true,
+      "o3_mir4_llvm_ir_contains_extern_sym": false,
+      "o0_mir0_link_rc": 0,
+      "o0_mir0_llvm_ir_contains_extern_sym": true
+    },
+    "B4_rlib_cross_crate_inlinable_opt_level_seam": {
+      "pub_fn_default_o0_mir0_rc": 1,
+      "pub_fn_default_o3_mir4_rc": 0,
+      "pub_fn_default_o3_mir4_threshold0_rc": 1,
+      "pub_fn_inline_never_o0_mir0_rc": 1,
+      "pub_fn_inline_never_o3_mir4_rc": 1
+    }
+  },
+  "suite_c_multiple_return_terminators": {
+    "mir_opt_3": {
+      "rc": 0,
+      "multi_return": {
+        "basic_blocks": 6,
+        "cleanup_blocks": 0,
+        "return_terminators": 1,
+        "goto_terminators": 3,
+        "unreachable_terminators": 0,
+        "terminate_terminators": 0
+      },
+      "multi_return_with_shared_drop": {
+        "basic_blocks": 7,
+        "cleanup_blocks": 0,
+        "return_terminators": 1,
+        "goto_terminators": 3,
+        "unreachable_terminators": 0,
+        "terminate_terminators": 0
+      }
+    },
+    "mir_opt_4": {
+      "rc": 0,
+      "multi_return": {
+        "basic_blocks": 5,
+        "cleanup_blocks": 0,
+        "return_terminators": 3,
+        "goto_terminators": 0,
+        "unreachable_terminators": 0,
+        "terminate_terminators": 0
+      },
+      "multi_return_with_shared_drop": {
+        "basic_blocks": 7,
+        "cleanup_blocks": 0,
+        "return_terminators": 1,
+        "goto_terminators": 3,
+        "unreachable_terminators": 0,
+        "terminate_terminators": 0
+      }
+    },
+    "mir_opt_2_explicit_enable": {
+      "rc": 0,
+      "multi_return": {
+        "basic_blocks": 6,
+        "cleanup_blocks": 0,
+        "return_terminators": 3,
+        "goto_terminators": 0,
+        "unreachable_terminators": 0,
+        "terminate_terminators": 0
+      },
+      "multi_return_with_shared_drop": {
+        "basic_blocks": 10,
+        "cleanup_blocks": 2,
+        "return_terminators": 1,
+        "goto_terminators": 3,
+        "unreachable_terminators": 0,
+        "terminate_terminators": 0
+      }
+    },
+    "mir_opt_4_explicit_disable": {
+      "rc": 0,
+      "multi_return": {
+        "basic_blocks": 6,
+        "cleanup_blocks": 0,
+        "return_terminators": 1,
+        "goto_terminators": 3,
+        "unreachable_terminators": 0,
+        "terminate_terminators": 0
+      },
+      "multi_return_with_shared_drop": {
+        "basic_blocks": 7,
+        "cleanup_blocks": 0,
+        "return_terminators": 1,
+        "goto_terminators": 3,
+        "unreachable_terminators": 0,
+        "terminate_terminators": 0
+      }
+    }
+  },
+  "suite_d_mir_patch": {
+    "D1_bipartite_cleanup_and_unreachable": {
+      "rc": 0,
+      "nounwind_with_drop_counts": {
+        "basic_blocks": 7,
+        "cleanup_blocks": 2,
+        "return_terminators": 1,
+        "goto_terminators": 0,
+        "unreachable_terminators": 0,
+        "terminate_terminators": 1
+      },
+      "normal_unreachable_counts": {
+        "basic_blocks": 4,
+        "cleanup_blocks": 0,
+        "return_terminators": 1,
+        "goto_terminators": 0,
+        "unreachable_terminators": 1,
+        "terminate_terminators": 0
+      },
+      "nounwind_has_cleanup_terminate_abi": true,
+      "normal_unreachable_has_non_cleanup_unreachable": true
+    },
+    "D2_mir_patch_stable_insertion_order": {
+      "rc": 0,
+      "before_has_assume": false,
+      "after_inserts_eq_then_assume_in_queue_order": true,
+      "before_mir_excerpt": "// MIR for `stable_insertion_assume` before UnreachablePropagation\n\nfn stable_insertion_assume(_1: bool, _2: u32, _3: Option<Never>) -> u32 {\n    debug flag => _1;\n    debug x => _2;\n    debug n => const Option::<Never>::None;\n    let mut _0: u32;\n    let mut _4: bool;\n    let _5: u32;\n    let mut _6: u32;\n    let mut _8: u32;\n    let _9: ();\n    let mut _10: isize;\n    let mut _13: u32;\n    let mut _14: !;\n    scope 1 {\n        debug a => _5;\n        let _7: u32;\n        scope 2 {\n            debug b => _7;\n            scope 3 {\n                debug never => const ZeroSized: Never;\n                let _11: Never;\n                let _12: u32;\n                scope 4 {\n                    debug _c => _12;\n                }\n            }\n        }\n    }\n\n    bb0: {\n        _4 = copy _1;\n        switchInt(move _4) -> [0: bb4, otherwise: bb1];\n    }\n\n    bb1: {\n        _6 = copy _2;\n        _5 = BitXor(move _6, const 21930_u32);\n        _8 = copy _5;\n        _7 = BitOr(move _8, const 15_u32);\n        _10 = discriminant(_3);\n        switchInt(move _10) -> [1: bb6, 0: bb3, otherwise: bb6];\n    }\n\n    bb2: {\n        nop;\n        _13 = copy _7;\n        _12 = BitAnd(move _13, const 255_u32);\n        unreachable;\n    }\n\n    bb3: {\n        nop;\n        _0 = copy _7;\n        goto -> bb5;\n    }\n\n    bb4: {\n        _0 = copy _2;\n        goto -> bb5;\n    }\n\n    bb5: {\n        return;\n    }\n\n    bb6: {\n        unreachable;\n    }\n}",
+      "after_mir_excerpt": "// MIR for `stable_insertion_assume` after UnreachablePropagation\n\nfn stable_insertion_assume(_1: bool, _2: u32, _3: Option<Never>) -> u32 {\n    debug flag => _1;\n    debug x => _2;\n    debug n => const Option::<Never>::None;\n    let mut _0: u32;\n    let mut _4: bool;\n    let _5: u32;\n    let mut _6: u32;\n    let mut _8: u32;\n    let _9: ();\n    let mut _10: isize;\n    let mut _13: u32;\n    let mut _14: !;\n    let mut _15: bool;\n    scope 1 {\n        debug a => _5;\n        let _7: u32;\n        scope 2 {\n            debug b => _7;\n            scope 3 {\n                debug never => const ZeroSized: Never;\n                let _11: Never;\n                let _12: u32;\n                scope 4 {\n                    debug _c => _12;\n                }\n            }\n        }\n    }\n\n    bb0: {\n        _4 = copy _1;\n        switchInt(move _4) -> [0: bb4, otherwise: bb1];\n    }\n\n    bb1: {\n        _6 = copy _2;\n        _5 = BitXor(move _6, const 21930_u32);\n        _8 = copy _5;\n        _7 = BitOr(move _8, const 15_u32);\n        _10 = discriminant(_3);\n        _15 = Eq(copy _10, const 0_isize);\n        assume(move _15);\n        goto -> bb3;\n    }\n\n    bb2: {\n        nop;\n        _13 = copy _7;\n        _12 = BitAnd(move _13, const 255_u32);\n        unreachable;\n    }\n\n    bb3: {\n        nop;\n        _0 = copy _7;\n        goto -> bb5;\n    }\n\n    bb4: {\n        _0 = copy _2;\n        goto -> bb5;\n    }\n\n    bb5: {\n        return;\n    }\n\n    bb6: {\n        unreachable;\n    }\n}"
+    },
+    "D3_mir_patch_unreachable_statement_clearing": {
+      "rc": 0,
+      "before_bb0_has_bitxor_and_bitor": true,
+      "after_bb0_cleared_to_empty_unreachable": true,
+      "before_mir_excerpt": "// MIR for `clear_stmts_on_unreachable_patch` before UnreachablePropagation\n\nfn clear_stmts_on_unreachable_patch(_1: bool, _2: u32, _3: Never) -> u32 {\n    debug flag => _1;\n    debug x => _2;\n    debug n => const ZeroSized: Never;\n    let mut _0: u32;\n    let _4: u32;\n    let mut _5: u32;\n    let mut _7: u32;\n    let mut _8: bool;\n    let mut _10: u32;\n    let mut _11: !;\n    let mut _13: u32;\n    let mut _14: !;\n    scope 1 {\n        debug a => _4;\n        let _6: u32;\n        scope 2 {\n            debug b => _6;\n            let _9: u32;\n            let _12: u32;\n            scope 3 {\n                debug _y => _9;\n            }\n            scope 4 {\n                debug _z => _12;\n            }\n        }\n    }\n\n    bb0: {\n        _5 = copy _2;\n        _4 = BitXor(move _5, const 21930_u32);\n        _7 = copy _4;\n        _6 = BitOr(move _7, const 15_u32);\n        _8 = copy _1;\n        switchInt(move _8) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _10 = copy _6;\n        _9 = BitAnd(move _10, const 1_u32);\n        unreachable;\n    }\n\n    bb2: {\n        _13 = copy _6;\n        _12 = BitAnd(move _13, const 2_u32);\n        unreachable;\n    }\n}",
+      "after_mir_excerpt": "// MIR for `clear_stmts_on_unreachable_patch` after UnreachablePropagation\n\nfn clear_stmts_on_unreachable_patch(_1: bool, _2: u32, _3: Never) -> u32 {\n    debug flag => _1;\n    debug x => _2;\n    debug n => const ZeroSized: Never;\n    let mut _0: u32;\n    let _4: u32;\n    let mut _5: u32;\n    let mut _7: u32;\n    let mut _8: bool;\n    let mut _10: u32;\n    let mut _11: !;\n    let mut _13: u32;\n    let mut _14: !;\n    scope 1 {\n        debug a => _4;\n        let _6: u32;\n        scope 2 {\n            debug b => _6;\n            let _9: u32;\n            let _12: u32;\n            scope 3 {\n                debug _y => _9;\n            }\n            scope 4 {\n                debug _z => _12;\n            }\n        }\n    }\n\n    bb0: {\n        unreachable;\n    }\n\n    bb1: {\n        unreachable;\n    }\n\n    bb2: {\n        unreachable;\n    }\n}"
+    }
+  }
+}
