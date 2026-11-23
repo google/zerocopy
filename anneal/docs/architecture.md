@@ -386,7 +386,8 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   (`theory/Anneal/{MirWp,LoopInv,LinearArith,BitVec,BitVecArith}.lean`,
   `theory/Anneal/{InitLemmas,ClassicalEm,Firewall,LeBytes,ListChunks}.lean`,
   `theory/Anneal/{NatBitwise,BitTrieLrat,PTree,SpineForce}.lean`,
-  `theory/Anneal/{ByteRun,ByteSubLens,CnfOrd,F2Simd,PureLift}/`, and planned
+  `theory/Anneal/{ByteRun,ByteSubLens,CnfOrd,F2Simd}/`,
+  `theory/Anneal/{OverflowCastJoin,PureLift}/`, and planned
   `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
   Diaconescu classical excluded middle and existential choice, WHNF and
@@ -397,15 +398,17 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `@Nat.rec` iteration combinators, a radix-2 trie RUP-only LRAT UNSAT checker,
   run-decomposed mixed-`InitMask` padded-aggregate and `[T; N]` `Repeat`
   byte-copy laws (`ByteRun`), lawful sub-allocation byte lenses and
-  `@[irreducible]` `&mut` method call
-  summaries (`ByteSubLens`), constructive `< ω^ω` Cantor Normal Form ordinals
-  and multi-rank worklist termination (`CnfOrd`), $\mathbb{F}_2$-linear,
-  $\mathbb{F}_2$-bilinear, and cone-sliced SIMD certificate evaluators
-  (`F2Simd`), functional borrow lifting, separation-logic frame rules, and
-  proof automation built against $M_{\text{anneal}}$ and `StableAst` /
-  `StableSemantics` (`cargo-anneal` bundles the scalar and MIR proof libraries
-  under `theory/Anneal/`, compiling and auditing only the transitive `Anneal.*`
-  closure imported by target proof modules).
+  `@[irreducible]` `&mut` method call summaries (`ByteSubLens`), constructive
+  `< ω^ω` Cantor Normal Form ordinals and multi-rank worklist termination
+  (`CnfOrd`), $\mathbb{F}_2$-linear, $\mathbb{F}_2$-bilinear, and cone-sliced
+  SIMD certificate evaluators (`F2Simd`), `@[irreducible]` stage-cut interval
+  joins for overflowing tuple arithmetic and `intToInt` casts
+  (`OverflowCastJoin`), functional borrow lifting, separation-logic frame rules,
+  and proof automation built against
+  $M_{\text{anneal}}$ and `StableAst` / `StableSemantics` (`cargo-anneal`
+  bundles the scalar and MIR proof libraries under `theory/Anneal/`, compiling
+  and auditing only the transitive `Anneal.*` closure imported by target proof
+  modules).
 
 #### Why $M_{\text{anneal}}$'s step rules and `theory/` do not expand the TCB
 
@@ -532,6 +535,7 @@ anneal/
     │   ├── MirTotal.lean           # Computable MIR step mirrors & bridges (+ MirTotal/)
     │   ├── MirWp.lean              # Fuel-bounded MIR WP & canaries (+ MirWp/)
     │   ├── NatBitwise.lean         # Shared Nat.bitwise unfolding & bounds
+    │   ├── OverflowCastJoin.lean   # Stage-cut joins for overflowing arithmetic & casts (+ OverflowCastJoin/)
     │   ├── PTree.lean              # Canonical positive radix trie & framing
     │   ├── PureLift.lean           # Functional borrow-lifting calculus
     │   ├── PureLift/

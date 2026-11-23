@@ -30,6 +30,7 @@ public import Anneal.ByteRun
 public import Anneal.ByteSubLens
 public import Anneal.CnfOrd
 public import Anneal.F2Simd
+public import Anneal.OverflowCastJoin
 public import Anneal.PureLift
 
 public section
@@ -51,8 +52,9 @@ Umbrella module for Anneal's untrusted proof theory (`theory/`), re-exporting
 (`Anneal.ByteRun`), lawful sub-allocation byte lenses and `&mut` method call
 summaries (`Anneal.ByteSubLens`), constructive `< ω^ω` Cantor Normal Form
 ordinals and multi-rank termination (`Anneal.CnfOrd`), $\mathbb{F}_2$-linear
-and $\mathbb{F}_2$-bilinear SIMD certificate evaluators (`Anneal.F2Simd`), and
-`Anneal.PureLift`.
+and $\mathbb{F}_2$-bilinear SIMD certificate evaluators (`Anneal.F2Simd`),
+stage-cut interval joins for overflowing arithmetic and casts
+(`Anneal.OverflowCastJoin`), and `Anneal.PureLift`.
 -/
 
 end Anneal
