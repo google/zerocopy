@@ -78,11 +78,11 @@ theorem stepExists (state : State) (inv : invariant state) :
         | inr same => subst state; exact ⟨s3, step4⟩
 
 theorem productive :
-    ProductiveInvariant body
+    ProductiveInvariant .little body
       (mkState 0 0 (initLocalsLoop body [] 0 body.locals)) invariant :=
   ⟨.inl rfl, closed, stepExists⟩
 
-theorem safe : Safe body [] :=
+theorem safe : Safe .little body [] :=
   (safeFrom_and_no_done_of_productiveInvariant productive).1
 
 theorem diverges_and_no_behavior :

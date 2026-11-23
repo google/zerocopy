@@ -41,7 +41,7 @@ use crate::setup::{ToolOverrides, installed_bundle, resolve_tools};
 // canonical audited sources without running a build hook.
 include!("bundled_resources.rs");
 
-const PINNED_CAPTURE_SCHEMA_VERSION: u32 = 4;
+const PINNED_CAPTURE_SCHEMA_VERSION: u32 = 5;
 const PINNED_RUSTC_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";
 const RECEIPT_SCHEMA_VERSION: u32 = 3;
 
@@ -678,9 +678,26 @@ struct CapturedSourceFile {
     sha256: String,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "lowercase")]
+enum TargetEndian {
+    Little,
+    Big,
+}
+
+impl TargetEndian {
+    const fn as_str(self) -> &'static str {
+        match self {
+            Self::Little => "little",
+            Self::Big => "big",
+        }
+    }
+}
+
 #[derive(Deserialize)]
 struct CaptureProgram {
     scope: Scope,
+    target_endian: TargetEndian,
     #[serde(rename = "bodies")]
     _bodies: serde::de::IgnoredAny,
 }
@@ -695,13 +712,13 @@ struct CaptureSchemaHeader {
 fn parse_capture_receipt(bytes: &[u8]) -> Result<CaptureReceipt> {
     let header: CaptureSchemaHeader =
         serde_json::from_slice(bytes).map_err(|e| error("tool_failed", "capture", e))?;
-    // Capture schema 4 widens integer widths to `i128`, encodes 128-bit bit
-    // patterns as canonical decimal strings, and adds `char`, `Ordering`,
-    // `(T, bool)` overflow pairs, unary/overflow/division/comparison ops, and
-    // `IntToInt` casts on top of schema 3's `program.scope`, `with_retag`
-    // flags, and source identities. Check the schema version and compiler
-    // commit before strict deserialization so older capture ABIs report a clear
-    // version mismatch. Request schema 1 is independent.
+    // Capture schema 5 adds explicit `program.target_endian` paired with
+    // `configuration["endian"]` on top of schema 4's `i128` widths, decimal
+    // string bit-patterns, unary/overflow/division/comparison ops, `IntToInt`
+    // casts, `program.scope`, `with_retag` flags, and source identities. Check
+    // the schema version and compiler commit before strict deserialization so
+    // older capture ABIs report a clear version mismatch. Request schema 1 is
+    // independent.
     if header.schema_version != PINNED_CAPTURE_SCHEMA_VERSION
         || header.compiler.as_ref().map(|compiler| compiler.commit.as_str())
             != Some(PINNED_RUSTC_COMMIT)
@@ -1648,6 +1665,7 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         || manifest.configuration["edition"] != request.compilation.edition
         || manifest.configuration["cfg"] != json!(request.compilation.cfg)
         || manifest.configuration["env"] != json!(request.compilation.env)
+        || manifest.configuration["endian"] != manifest.program.target_endian.as_str()
     {
         return Err(error(
             "tool_failed",
@@ -2803,6 +2821,7 @@ mod tests {
         for legacy in [
             br#"{"schema_version":2,"compiler":{"commit":"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"},"legacy":true}"#.as_slice(),
             br#"{"schema_version":3,"compiler":{"commit":"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"},"legacy":true}"#.as_slice(),
+            br#"{"schema_version":4,"compiler":{"commit":"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"},"legacy":true}"#.as_slice(),
         ] {
             let Err(err) = parse_capture_receipt(legacy) else {
                 panic!("legacy schema receipt must be rejected");
@@ -2812,11 +2831,10 @@ mod tests {
             assert_eq!(err.detail, "unexpected capture schema or compiler");
         }
 
-        // Schema 4 receipts carrying 128-bit decimal string constants above
-        // `u64::MAX` inside `program.bodies` parse cleanly without arbitrary
-        // JSON number precision.
-        let schema4_u128 = br#"{
-            "schema_version": 4,
+        // Schema 5 requires explicit `program.target_endian`
+        // ("little" | "big"); omitting it must fail closed.
+        let schema5_missing_endian = br#"{
+            "schema_version": 5,
             "compiler": { "commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1" },
             "configuration": {},
             "source_files": [{ "path": "src/lib.rs", "sha256": "00" }],
@@ -2824,10 +2842,36 @@ mod tests {
             "selected": [],
             "program": {
                 "scope": { "kind": "crate" },
-                "bodies": [{ "bits": "340282366920938463463374607431768211455" }]
+                "bodies": []
             }
         }"#;
-        assert!(parse_capture_receipt(schema4_u128).is_ok());
+        let Err(err) = parse_capture_receipt(schema5_missing_endian) else {
+            panic!("schema 5 without program.target_endian must be rejected");
+        };
+        assert_eq!(err.status, "tool_failed");
+        assert_eq!(err.phase, "capture");
+
+        // Schema 5 receipts carrying 128-bit decimal string constants above
+        // `u64::MAX` inside `program.bodies` parse cleanly for both little- and
+        // big-endian targets without arbitrary JSON number precision.
+        for endian in ["little", "big"] {
+            let schema5_u128 = format!(
+                r#"{{
+                    "schema_version": 5,
+                    "compiler": {{ "commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1" }},
+                    "configuration": {{ "endian": "{endian}" }},
+                    "source_files": [{{ "path": "src/lib.rs", "sha256": "00" }}],
+                    "census": [],
+                    "selected": [],
+                    "program": {{
+                        "scope": {{ "kind": "crate" }},
+                        "target_endian": "{endian}",
+                        "bodies": [{{ "bits": "340282366920938463463374607431768211455" }}]
+                    }}
+                }}"#
+            );
+            assert!(parse_capture_receipt(schema5_u128.as_bytes()).is_ok());
+        }
     }
 
     #[test]

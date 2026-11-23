@@ -265,6 +265,7 @@ theorem canary_crate_and_body_verified_anneal_base :
         (entryProgForBody {
           scope := .unit
           pointerWidthBits := 64
+          targetEndian := .little
           mirProfileVersion := 1
           bodies := [canaryUnsafeGuardedBody false]
         } 0)
@@ -303,6 +304,7 @@ theorem canary_crate_and_body_verified_anneal_base :
         (entryProgForBody {
           scope := .crate
           pointerWidthBits := 64
+          targetEndian := .little
           mirProfileVersion := 1
           bodies := [canarySafeUnitBody, canaryUnsafeGuardedBody false]
         } 1)
@@ -332,7 +334,10 @@ theorem canary_memory_lifecycle_anneal_base :
    ⟨_, _, _, _, _, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩,
    ⟨_, _, _, _, _, _, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩,
    ⟨_, _, _, _, _, rfl, rfl, rfl, rfl, rfl⟩,
-   ⟨_, _, _, _, _, rfl, rfl, rfl, rfl, rfl⟩⟩
+   ⟨_, _, _, _, _, rfl, rfl, rfl, rfl, rfl⟩,
+   ⟨_, _, _, _, _, _, _, rfl, rfl, rfl, rfl, rfl, rfl,
+     (fun h => by cases h), rfl, rfl, rfl, rfl, rfl⟩,
+   ⟨_, _, _, _, _, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩⟩
 
 /-- `char` and `BinOp.cmp` canary: `char` comparisons, `Cmp` on `char`, signed
 and unsigned integers, the discriminant of an `Ordering`, and `switchInt` on a

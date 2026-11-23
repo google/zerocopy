@@ -247,7 +247,7 @@ private theorem decodeUInt_big_4_lt (b3 b2 b1 b0 : UInt8) :
   exact Nat.ble_eq_true_of_le s4
 
 /-- Encodes `v : Nat` as 4 big-endian initialized `AllocByte`s (`0`
-`noncomputable`, matching `profileTargetEndian = .big`). -/
+`noncomputable`, matching `.big` target endianness). -/
 @[expose] def encodeU32BeSlice (v : Nat) : List AllocByte :=
   List.foldr (fun b acc => AllocByte.init b none :: acc) []
     (encodeUIntComp .big 4 v)
@@ -356,7 +356,7 @@ theorem loadIndirect_of_extract4Init (subL : ByteSubLens) (mem : MemoryState)
     (hSz : subL.size = 4) (hAl : subL.alignLog2 = 2)
     (hGet : byteSubLensGet subL mem = some oldSlice)
     (hExt : extract4InitBytes oldSlice = some (b3, b2, b1, b0)) :
-    loadIndirect mem u32MirTy ⟨subL.allocId, subL.offset⟩ =
+    loadIndirect .big mem u32MirTy ⟨subL.allocId, subL.offset⟩ =
       .ok (some (.scalar ⟨.i32, false,
         BitVec.ofNat 128 (decodeUInt .big [b3, b2, b1, b0])⟩)) := by
   have hInit : initBytes? oldSlice = some [b3, b2, b1, b0] ∧
@@ -419,7 +419,7 @@ theorem loadIndirect_of_extract4Init (subL : ByteSubLens) (mem : MemoryState)
         dsimp only [decodeVal, layoutOfTy, intLayout]
         rw [hInit.2, cn_ite_bool_false (rfl : (!Nat.beq 4 4) = false),
             cn_ite_bool_false (rfl : Nat.beq 4 0 = false), hInit.1]
-        dsimp only [profileTargetEndian, evalConstLit]
+        dsimp only [evalConstLit]
         have hTrunc := truncateBits_i32_of_lt (decodeUInt .big [b3, b2, b1, b0])
           (decodeUInt_big_4_lt b3 b2 b1 b0)
         rw [hTrunc]
@@ -439,7 +439,7 @@ theorem storeIndirect_u32_eq_byteSubLensPut (subL : ByteSubLens)
     (oldSlice : List AllocByte)
     (hGet : byteSubLensGet subL mem = some oldSlice) :
     ∃ memOut : MemoryState,
-      storeIndirect mem u32MirTy ⟨subL.allocId, subL.offset⟩
+      storeIndirect .big mem u32MirTy ⟨subL.allocId, subL.offset⟩
         (.scalar ⟨.i32, false, bits⟩) = .ok memOut ∧
       byteSubLensPut subL mem (encodeU32BeSlice bits.toNat) = some memOut := by
   have hLenSlice : (encodeU32BeSlice bits.toNat).length = subL.size := by
@@ -459,7 +459,7 @@ theorem storeIndirect_u32_eq_byteSubLensPut (subL : ByteSubLens)
       rw [hWf]; rfl
     dsimp only [storeIndirect, u32MirTy, layoutOfTy, intLayout, encodeVal]
     rw [cn_ite_bool_false hNotWf]
-    dsimp only [profileTargetEndian, IntWidth.byteSize]
+    dsimp only [IntWidth.byteSize]
     have hEncEq :
         (encodeUInt .big 4 bits.toNat).map (fun b => AllocByte.init b none) =
         encodeU32BeSlice bits.toNat := by
@@ -481,6 +481,7 @@ theorem storeIndirect_u32_eq_byteSubLensPut (subL : ByteSubLens)
 `*field = (*field).wrapping_add(delta); return *field`. -/
 @[expose] def progMutFieldAddAssignU32 : Program where
   pointerWidthBits := 64
+  targetEndian := .big
   mirProfileVersion := 1
   scope := .unit
   bodies := [{
@@ -588,7 +589,7 @@ theorem progMutFieldAddAssignU32_realizes_summary :
               rw [cn_ite_bool_false hProjEmpty,
                   cn_ite_bool_false hProjEmpty, cn_ite_bool_false hPrimU32]
               have hLoad' :
-                  loadIndirect mem (.int .i32 false)
+                  loadIndirect .big mem (.int .i32 false)
                     ⟨subL.allocId, subL.offset⟩ =
                   .ok (some (.scalar ⟨.i32, false, BitVec.ofNat 128 vOld⟩)) :=
                 hLoad
@@ -621,7 +622,7 @@ theorem progMutFieldAddAssignU32_realizes_summary :
               rw [cn_ite_bool_false hNotSumWf]
               dsimp only [Trusted.MirSemantics.getElem?]
               have hStore1 :
-                  storeIndirect mem (.int .i32 false)
+                  storeIndirect .big mem (.int .i32 false)
                     ⟨subL.allocId, subL.offset⟩
                     (.scalar ⟨.i32, false, sumBits⟩) = .ok memOut := hStore.1
               rw [hStore1]
@@ -639,6 +640,7 @@ theorem seal_addAssignU32_summaryCut :
 `if *slot == 0u32 { *slot = cap; return 1u32 } else { return 0u32 }`. -/
 @[expose] def progMutSlotMintIfEmptyU32 : Program where
   pointerWidthBits := 64
+  targetEndian := .big
   mirProfileVersion := 1
   scope := .unit
   bodies := [{
@@ -714,7 +716,7 @@ theorem progMutSlotMintIfEmptyU32_realizes_summary :
               b3 b2 b1 b0 hSz hAl hGet hExtB
             let vOld := decodeUInt .big [b3, b2, b1, b0]
             have hLoad' :
-                loadIndirect mem (.int .i32 false)
+                loadIndirect .big mem (.int .i32 false)
                   ⟨subL.allocId, subL.offset⟩ =
                 .ok (some (.scalar ⟨.i32, false, BitVec.ofNat 128 vOld⟩)) :=
               hLoad
@@ -808,7 +810,7 @@ theorem progMutSlotMintIfEmptyU32_realizes_summary :
                 rw [cn_ite_bool_false hNotCapWf]
                 dsimp only [Trusted.MirSemantics.getElem?]
                 have hStore1 :
-                    storeIndirect mem (.int .i32 false)
+                    storeIndirect .big mem (.int .i32 false)
                       ⟨subL.allocId, subL.offset⟩
                       (.scalar ⟨.i32, false, capBits⟩) = .ok memOut := hStore.1
                 rw [hStore1]

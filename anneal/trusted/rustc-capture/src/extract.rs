@@ -11,8 +11,7 @@
 //! simplification.
 
 use rustc_abi::{
-    BackendRepr, Endian, ExternAbi, HasDataLayout, Integer, Primitive, Scalar, Size, TagEncoding,
-    Variants,
+    BackendRepr, ExternAbi, HasDataLayout, Integer, Primitive, Scalar, Size, TagEncoding, Variants,
 };
 use rustc_ast::Mutability;
 use rustc_hir::attrs::{InlineAttr, OptimizeAttr};
@@ -398,12 +397,13 @@ fn operand<'tcx>(
     }
 }
 
-/// Read an initialized, provenance-free little-endian scalar out of an immutable
-/// (`.rodata`, `Mutability::Not`) `GlobalAlloc::Memory` allocation.
+/// Read an initialized, provenance-free scalar out of an immutable
+/// (`.rodata`, `Mutability::Not`) `GlobalAlloc::Memory` allocation using the
+/// target's endianness (`cx.data_layout().endian`).
 ///
-/// Fails closed on mutable allocations, non-little-endian targets, out-of-bounds
-/// or overflowing ranges, uninitialized bytes (`InitMask`), and overlapping
-/// pointer provenance (`ProvenanceMap`), matching `Allocation::read_scalar`
+/// Fails closed on mutable allocations, out-of-bounds or overflowing ranges,
+/// uninitialized bytes (`InitMask`), and overlapping pointer provenance
+/// (`ProvenanceMap`), matching `Allocation::read_scalar`
 /// (`read_provenance = false`):
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/interpret/allocation.rs#L698-L737
 fn read_rodata_scalar_from_alloc<Prov: Provenance>(
@@ -412,9 +412,6 @@ fn read_rodata_scalar_from_alloc<Prov: Provenance>(
     offset: Size,
     width: u32,
 ) -> Result<u128> {
-    if cx.data_layout().endian != Endian::Little {
-        return Err("non-little-endian global allocation constants are unsupported".into());
-    }
     if width == 0 || !width.is_multiple_of(8) || width > 128 {
         return Err(format!(
             "unsupported scalar width {width} for global allocation constant"
@@ -1303,19 +1300,24 @@ mod tests {
             "rust-path-v1::entry".into(),
         )
         .unwrap();
-        assert!(ir::Program::try_new(ir::Scope::Crate, vec![]).is_err());
+        assert!(ir::Program::try_new(ir::Scope::Crate, ir::TargetEndian::Little, vec![]).is_err());
         assert!(
             ir::Program::try_new(
                 ir::Scope::SelectedUnit {
                     roots: std::collections::BTreeSet::new(),
                     instantiations: std::collections::BTreeSet::new(),
                 },
+                ir::TargetEndian::Little,
                 vec![valid.clone()],
             )
             .is_err()
         );
-        let duplicate =
-            ir::Program::try_new(ir::Scope::Crate, vec![valid.clone(), valid]).unwrap_err();
+        let duplicate = ir::Program::try_new(
+            ir::Scope::Crate,
+            ir::TargetEndian::Little,
+            vec![valid.clone(), valid],
+        )
+        .unwrap_err();
         assert!(duplicate.contains("ambiguous captured function identity"));
     }
 
@@ -1475,6 +1477,7 @@ mod tests {
                 roots: std::collections::BTreeSet::from(["enum_neg_tag".into(), "enum_zst".into()]),
                 instantiations: std::collections::BTreeSet::new(),
             },
+            ir::TargetEndian::Little,
             vec![valid_neg, valid_zst],
         )
         .unwrap();
@@ -1604,10 +1607,15 @@ mod tests {
             1
         );
 
-        // 2. Reject big-endian layouts, mutable allocations, and out-of-bounds ranges.
-        let be_err =
-            read_rodata_scalar_from_alloc(&be_dl, &ro_alloc, Size::ZERO, 8).unwrap_err();
-        assert!(be_err.contains("non-little-endian"), "{be_err}");
+        // 2. Decode big-endian layouts; reject mutable allocations and out-of-bounds ranges.
+        assert_eq!(
+            read_rodata_scalar_from_alloc(&be_dl, &ro_alloc, Size::from_bytes(3), 64).unwrap(),
+            0x0002_0304_0506_0708
+        );
+        assert_eq!(
+            read_rodata_scalar_from_alloc(&be_dl, &ro_alloc, Size::from_bytes(2), 8).unwrap(),
+            1
+        );
 
         let mut_alloc: Allocation<CtfeProvenance> =
             Allocation::from_bytes(bytes.as_slice(), Align::EIGHT, Mutability::Mut, ());

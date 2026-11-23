@@ -27,7 +27,7 @@ private theorem bits_eq_zero_of_decode_beq {bits : BitVec 128}
 private theorem executes_nonzero (bits : BitVec 128)
     (hT : truncateBits .isize bits = bits)
     (hNe : bits ≠ BitVec.ofNat 128 0) :
-    Executes Captured.body_0
+    Executes .little Captured.body_0
       (mkState 0 0 (initLocalsLoop Captured.body_0
         [.scalar ⟨.isize, false, bits⟩] 0 Captured.body_0.locals))
       (.scalar ⟨.isize, false, bits⟩) := by
@@ -50,7 +50,7 @@ private theorem executes_nonzero (bits : BitVec 128)
   have hS1 : evalStep (bodyProg Captured.body_0) 0
       (mkState 0 1 [.immediate none, .immediate (some v), .immediate none, .dead, .dead]) =
       .step (mkState 0 2 [.immediate none, .immediate (some v), .immediate none, .immediate none, .dead]) := rfl
-  have hW3 : writePlace
+  have hW3 : writePlace .little
       [.immediate none, .immediate (some v), .immediate none, .immediate none, .dead]
       entryMemory 3 (.int .isize false) v =
       .ok ([.immediate none, .immediate (some v), .immediate none, .immediate (some v), .dead],
@@ -61,7 +61,7 @@ private theorem executes_nonzero (bits : BitVec 128)
   have hS2 : evalStep (bodyProg Captured.body_0) 0
       (mkState 0 2 [.immediate none, .immediate (some v), .immediate none, .immediate none, .dead]) =
       .step (mkState 0 3 [.immediate none, .immediate (some v), .immediate none, .immediate (some v), .dead]) := by
-    change (match writePlace _ entryMemory 3 (.int .isize false) v with
+    change (match writePlace .little _ entryMemory 3 (.int .isize false) v with
       | .error k => StepResult.fault k
       | .ok (ls, m) => StepResult.step ({ frames := [{ defId := 0, blockIdx := 0, stmtIdx := 3, locals := ls }], callerMem := ⟨[]⟩, mem := m } : State)) = _
     rw [hW3]; rfl
@@ -71,7 +71,7 @@ private theorem executes_nonzero (bits : BitVec 128)
       (.scalar ⟨.isize, false, BitVec.ofNat 128 0⟩) = .ok (.bool eqb)
     rfl
   have hRval :
-      evalRvalue
+      evalRvalue .little
         [.int .isize false, .int .isize false, .bool, .int .isize false, .never]
         [.immediate none, .immediate (some v), .immediate none, .immediate (some v), .dead]
         entryMemory .bool
@@ -89,7 +89,7 @@ private theorem executes_nonzero (bits : BitVec 128)
            ([.immediate none, .immediate (some v), .immediate none, .immediate none, .dead] : List LocalSlot),
            entryMemory)) = _
     rw [hBinEq, hF]
-  have hW2 : writePlace
+  have hW2 : writePlace .little
       [.immediate none, .immediate (some v), .immediate none, .immediate none, .dead]
       entryMemory 2 .bool (.bool false) =
       .ok ([.immediate none, .immediate (some v), .immediate (some (.bool false)), .immediate none, .dead],
@@ -112,7 +112,7 @@ private theorem executes_nonzero (bits : BitVec 128)
   have hDead3 : evalStep (bodyProg Captured.body_0) 0
       (mkState 2 0 [.immediate none, .immediate (some v), .immediate none, .immediate none, .dead]) =
       .step (mkState 2 1 [.immediate none, .immediate (some v), .immediate none, .dead, .dead]) := rfl
-  have hW0 : writePlace
+  have hW0 : writePlace .little
       [.immediate none, .immediate (some v), .immediate none, .dead, .dead]
       entryMemory 0 (.int .isize false) v =
       .ok ([.immediate (some v), .immediate (some v), .immediate none, .dead, .dead],
@@ -123,7 +123,7 @@ private theorem executes_nonzero (bits : BitVec 128)
   have hAssign : evalStep (bodyProg Captured.body_0) 0
       (mkState 2 1 [.immediate none, .immediate (some v), .immediate none, .dead, .dead]) =
       .step (mkState 2 2 [.immediate (some v), .immediate (some v), .immediate none, .dead, .dead]) := by
-    change (match writePlace _ entryMemory 0 (.int .isize false) v with
+    change (match writePlace .little _ entryMemory 0 (.int .isize false) v with
       | .error k => StepResult.fault k
       | .ok (ls, m) => StepResult.step ({ frames := [{ defId := 0, blockIdx := 2, stmtIdx := 2, locals := ls }], callerMem := ⟨[]⟩, mem := m } : State)) = _
     rw [hW0]; rfl

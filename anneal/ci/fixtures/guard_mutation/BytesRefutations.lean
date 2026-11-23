@@ -76,4 +76,68 @@ theorem refute_bytes_uninit_memory_read :
      | .error _ => False) :=
   rfl
 
+/-- Little-endian program that allocates `_1 : u32` in memory and stores
+`0x01020304` into `_1`. -/
+noncomputable def progStoreIndirectLe : Program :=
+  mkSingleBlockProg 0 [u32Ty, u32Ty]
+    [.storageLive 1,
+     .assign ⟨1, []⟩
+       (.use (.constant ⟨u32Ty, .scalar (BitVec.ofNat 128 0x01020304)⟩))]
+
+/-- Big-endian program with the same body as `progStoreIndirectLe`. -/
+noncomputable def progStoreIndirectBe : Program :=
+  { progStoreIndirectLe with targetEndian := .big }
+
+/-- Guard `bytes_decode_endian_little`: `decodeUInt .little` decodes
+`[4, 3, 2, 1]` as `0x01020304` rather than reversing bytes as big-endian. -/
+theorem refute_bytes_decode_endian_little :
+    decodeUInt .little [4, 3, 2, 1] = 0x01020304 :=
+  rfl
+
+/-- Guard `bytes_decode_endian_big`: `decodeUInt .big` decodes `[1, 2, 3, 4]`
+as `0x01020304` rather than reading little-endian byte order. -/
+theorem refute_bytes_decode_endian_big :
+    decodeUInt .big [1, 2, 3, 4] = 0x01020304 :=
+  rfl
+
+/-- Guard `step_endian_propagates_little`: `evalStep` threads
+`p.targetEndian = .little` into `evalStatement` and `storeIndirect`, storing
+`[0x04, 0x03, 0x02, 0x01]` for `0x01020304u32`. -/
+theorem refute_step_endian_propagates_little :
+    (match initState progStoreIndirectLe queryEmpty with
+     | .ok s₀ =>
+       match evalStep progStoreIndirectLe 0 s₀ with
+       | .step s₁ =>
+         match forceAllocation progStoreIndirectLe s₁ 1 with
+         | .ok (s₂, place) =>
+           match evalStep progStoreIndirectLe 0 s₂ with
+           | .step s₃ =>
+             readBytes s₃.mem place 4 2 =
+               .ok [.init 4 none, .init 3 none, .init 2 none, .init 1 none]
+           | _ => False
+         | .error _ => False
+       | _ => False
+     | .error _ => False) :=
+  rfl
+
+/-- Guard `step_endian_propagates_big`: `evalStep` threads
+`p.targetEndian = .big` into `evalStatement` and `storeIndirect`, storing
+`[0x01, 0x02, 0x03, 0x04]` for `0x01020304u32`. -/
+theorem refute_step_endian_propagates_big :
+    (match initState progStoreIndirectBe queryEmpty with
+     | .ok s₀ =>
+       match evalStep progStoreIndirectBe 0 s₀ with
+       | .step s₁ =>
+         match forceAllocation progStoreIndirectBe s₁ 1 with
+         | .ok (s₂, place) =>
+           match evalStep progStoreIndirectBe 0 s₂ with
+           | .step s₃ =>
+             readBytes s₃.mem place 4 2 =
+               .ok [.init 1 none, .init 2 none, .init 3 none, .init 4 none]
+           | _ => False
+         | .error _ => False
+       | _ => False
+     | .error _ => False) :=
+  rfl
+
 end GuardMutation

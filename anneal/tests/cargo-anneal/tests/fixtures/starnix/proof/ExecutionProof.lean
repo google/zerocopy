@@ -30,8 +30,8 @@ theorem paths_some : ∀ flag : Bool, ∀ width : Fin 4,
 
 theorem completed :
     ∀ flag : Bool, ∀ width : Fin 4, ∀ value : Word,
-      Safe sourceBody (endianArgs flag width.val value) ∧
-      ∃ output, Returns sourceBody (endianArgs flag width.val value) output := by
+      Safe .little sourceBody (endianArgs flag width.val value) ∧
+      ∃ output, Returns .little sourceBody (endianArgs flag width.val value) output := by
   intro flag width value
   let ⟨_, hp⟩ := Option.isSome_iff_exists.mp (paths_some flag width)
   exact ⟨(path_sound hp value).1, _, (path_sound hp value).2⟩
@@ -45,7 +45,7 @@ theorem verify : Expected.claim := by
       subst body
       refine bodyVerified_of_safe found rfl (fun args valid _ => ?_)
       apply validArgs3_elim sourceBody _ rfl rfl
-        (Safe sourceBody) _ args valid
+        (Safe .little sourceBody) _ args valid
       intro flag width value
       exact (completed flag width value).1
     | succ id => cases found

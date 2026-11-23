@@ -72,8 +72,9 @@ the repository's trust boundary (`trusted/`, pinned `vendor/`, `theory/`, and
    `trusted/correspondence/Trusted/Correspondence.lean`). Minor semantic
    variations across compiler versions or compilation targets are controlled by
    declarative profile data (`CaptureProfile` / `CaptureManifest`, including
-   `Program.pointerWidthBits`, `Program.mirProfileVersion`, and target layout
-   metadata) rather than by duplicating the interpreter.
+   `Program.pointerWidthBits`, `Program.targetEndian`,
+   `Program.mirProfileVersion`, and target layout metadata) rather than by
+   duplicating the interpreter.
 3. **Stage 3 — Correspondence Proof, Verified Lowering & Proof Engine
    (`theory/`, `correspondence/`):** In `correspondence/` (staged and audited as
    an untrusted `.theory` root by Pass 2 `anneal-audit
@@ -316,7 +317,7 @@ repository CI by `trusted/correspondence/` and pinned `vendor/lean-miri/` under
   Defines the Lean inductive types for captured MIR programs (`Program`, `Body`,
   `VerificationScope`), types (`MirTy`, `EnumTy`), places, rvalues, statements,
   terminators, and target profile parameters (including `pointerWidthBits`,
-  `mirProfileVersion`, and target layout metadata).
+  `targetEndian`, `mirProfileVersion`, and target layout metadata).
 - **Verification operational semantics ($M_{\text{anneal}}$ in
   `Trusted/MirSemantics.lean`, planned `Trusted/Rust/Semantics/`):** Defines the
   outer theorem-stating boundary described above (including the top-level
@@ -652,7 +653,7 @@ than conflating them into a single version number:
 | :--- | :--- | :--- | :--- |
 | **1. Artifact schema** | `schema_version` | Syntactic wire/file layout of emitted `.lean` files and `CaptureManifest`. | Only when Anneal changes the serialization format between `rustc-capture` and `trusted/lean/`. |
 | **2. Compiler toolchain** | `rustc_version` and commit hash | Which `rustc-capture` backend (planned `rustc-capture-v1_<minor>`) produced the capture and which `rustc` release was run. | Every supported `rustc` release. |
-| **3. Semantic profile** | `SemProfile` / `CaptureProfile` (`Program.pointerWidthBits`, `Program.mirProfileVersion`, endianness, and layout metadata) | Feature and compilation-target switches shared across $M_{\text{anneal}}$ (`Trusted/MirSemantics.lean`), $\tau_{\text{prog}}$ (`trusted/correspondence/`), and $M_{\text{ref}}$ (`vendor/lean-miri/`)—such as pointer width, MIR profile version, pointer aliasing model, or version-specific intrinsic semantics. | Only when Rust's runtime behavior or MIR execution semantics genuinely differ across versions or configurations. |
+| **3. Semantic profile** | `SemProfile` / `CaptureProfile` (`Program.pointerWidthBits`, `Program.targetEndian`, `Program.mirProfileVersion`, and layout metadata) | Feature and compilation-target switches shared across $M_{\text{anneal}}$ (`Trusted/MirSemantics.lean`), $\tau_{\text{prog}}$ (`trusted/correspondence/`), and $M_{\text{ref}}$ (`vendor/lean-miri/`)—such as pointer width, target endianness, MIR profile version, pointer aliasing model, or version-specific intrinsic semantics. | Only when Rust's runtime behavior or MIR execution semantics genuinely differ across versions or configurations. |
 
 ### How compiler upgrades are absorbed across the three stages
 

@@ -138,6 +138,7 @@ abbrev lexU32Ty : MirTy := .int .i32 false
 @[expose] def lexResetProg : Program := {
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [lexResetBody]
 }
@@ -164,14 +165,15 @@ abbrev lexU32Ty : MirTy := .int .i32 false
 @[expose] def lexResetPost (outer : Nat) (out : TerminalOut) : Prop :=
   out = .returned ⟨u32Val outer, ⟨[]⟩⟩
 
-private theorem evalStatement_assign_copy_u32 {body : Body} {frame : FrameState}
+private theorem evalStatement_assign_copy_u32 {endian : TargetEndian}
+    {body : Body} {frame : FrameState}
     {m : MemoryState} {cm : CallerMemory} {dstIdx : LocalId}
     {srcOp : Operand} {val : Val} {ls ls' : List LocalSlot}
     (hLoc : Trusted.MirSemantics.getElem? body.locals dstIdx = some u32Ty)
-    (hRv : evalRvalue body.locals frame.locals m u32Ty (.use srcOp) =
+    (hRv : evalRvalue endian body.locals frame.locals m u32Ty (.use srcOp) =
       .ok (val, ls, m))
-    (hW : writePlace ls m dstIdx u32Ty val = .ok (ls', m)) :
-    evalStatement body frame m cm (.assign ⟨dstIdx, []⟩ (.use srcOp)) =
+    (hW : writePlace endian ls m dstIdx u32Ty val = .ok (ls', m)) :
+    evalStatement endian body frame m cm (.assign ⟨dstIdx, []⟩ (.use srcOp)) =
       .step {
         frames := [{ frame with stmtIdx := frame.stmtIdx + 1, locals := ls' }]
         callerMem := cm
@@ -215,7 +217,7 @@ private theorem lexReset_step_inner_switch (acc outRem resetB : Nat) {k : Nat}
   have hSw : evalSwitchBranches .i32 (BitVec.ofNat 128 (k + 1)) 2
       [(BitVec.ofNat 128 0, 3)] = .ok 2 :=
     evalSwitchBranches_single_ne rfl (switch_beq_false_u32 hk)
-  exact evalTerminator_switchInt_scalar
+  exact evalTerminator_switchInt_scalar (endian := .little)
     (body := lexResetBody) (bb := lexResetInnerHeader)
     (frame := frameAt 1 0
       [u32Slot acc, u32Slot outRem, u32Slot (k + 1), u32Slot resetB])
@@ -235,7 +237,7 @@ private theorem lexReset_step_inner_dec (acc outRem resetB : Nat) {k : Nat}
         [u32Slot acc, u32Slot outRem, u32Slot k, u32Slot resetB]) := by
   have hk' : k < Nat.pow 2 32 := Nat.lt_trans (Nat.lt_succ_self k) hk
   have hChk : checkVal (u32Val k) u32Ty = true := checkVal_u32Val hk'
-  have hRv : evalRvalue lexResetBody.locals
+  have hRv : evalRvalue .little lexResetBody.locals
       [u32Slot acc, u32Slot outRem, u32Slot (k + 1), u32Slot resetB]
       entryMemory u32Ty
       (.binaryOp .sub (.copy ⟨2, []⟩)
@@ -246,7 +248,7 @@ private theorem lexReset_step_inner_dec (acc outRem resetB : Nat) {k : Nat}
     evalRvalue_binaryOp (lVal := u32Val (k + 1)) (rVal := u32Val 1)
       (ls₁ := [u32Slot acc, u32Slot outRem, u32Slot (k + 1), u32Slot resetB])
       (m₁ := entryMemory) rfl rfl (evalBinOp_sub_u32 hk)
-  have hW : writePlace
+  have hW : writePlace .little
       [u32Slot acc, u32Slot outRem, u32Slot (k + 1), u32Slot resetB]
       entryMemory 2 u32Ty (u32Val k) =
       .ok ([u32Slot acc, u32Slot outRem, u32Slot k, u32Slot resetB],
@@ -272,7 +274,7 @@ private theorem lexReset_step_outer_switch (acc resetB : Nat) {m : Nat}
   have hSw : evalSwitchBranches .i32 (BitVec.ofNat 128 (m + 1)) 4
       [(BitVec.ofNat 128 0, 5)] = .ok 4 :=
     evalSwitchBranches_single_ne rfl (switch_beq_false_u32 hm)
-  exact evalTerminator_switchInt_scalar
+  exact evalTerminator_switchInt_scalar (endian := .little)
     (body := lexResetBody) (bb := lexResetOuterHeader)
     (frame := frameAt 3 0
       [u32Slot acc, u32Slot (m + 1), u32Slot 0, u32Slot resetB])
@@ -292,7 +294,7 @@ private theorem lexReset_step_outer_dec (acc resetB : Nat) {m : Nat}
         [u32Slot acc, u32Slot m, u32Slot 0, u32Slot resetB]) := by
   have hm' : m < Nat.pow 2 32 := Nat.lt_trans (Nat.lt_succ_self m) hm
   have hChk : checkVal (u32Val m) u32Ty = true := checkVal_u32Val hm'
-  have hRv : evalRvalue lexResetBody.locals
+  have hRv : evalRvalue .little lexResetBody.locals
       [u32Slot acc, u32Slot (m + 1), u32Slot 0, u32Slot resetB]
       entryMemory u32Ty
       (.binaryOp .sub (.copy ⟨1, []⟩)
@@ -303,7 +305,7 @@ private theorem lexReset_step_outer_dec (acc resetB : Nat) {m : Nat}
     evalRvalue_binaryOp (lVal := u32Val (m + 1)) (rVal := u32Val 1)
       (ls₁ := [u32Slot acc, u32Slot (m + 1), u32Slot 0, u32Slot resetB])
       (m₁ := entryMemory) rfl rfl (evalBinOp_sub_u32 hm)
-  have hW : writePlace
+  have hW : writePlace .little
       [u32Slot acc, u32Slot (m + 1), u32Slot 0, u32Slot resetB]
       entryMemory 1 u32Ty (u32Val m) =
       .ok ([u32Slot acc, u32Slot m, u32Slot 0, u32Slot resetB],
@@ -327,7 +329,7 @@ private theorem lexReset_step_reset_inner (acc m : Nat) {resetB : Nat}
       .step (mkState 4 2
         [u32Slot acc, u32Slot m, u32Slot resetB, u32Slot resetB]) := by
   have hChk : checkVal (u32Val resetB) u32Ty = true := checkVal_u32Val hr
-  have hW : writePlace
+  have hW : writePlace .little
       [u32Slot acc, u32Slot m, u32Slot 0, u32Slot resetB]
       entryMemory 2 u32Ty (u32Val resetB) =
       .ok ([u32Slot acc, u32Slot m, u32Slot resetB, u32Slot resetB],
@@ -351,7 +353,7 @@ private theorem lexReset_step_inc_acc (m resetB : Nat) {acc : Nat}
       .step (mkState 4 3
         [u32Slot (acc + 1), u32Slot m, u32Slot resetB, u32Slot resetB]) := by
   have hChk : checkVal (u32Val (acc + 1)) u32Ty = true := checkVal_u32Val hAcc
-  have hRv : evalRvalue lexResetBody.locals
+  have hRv : evalRvalue .little lexResetBody.locals
       [u32Slot acc, u32Slot m, u32Slot resetB, u32Slot resetB]
       entryMemory u32Ty
       (.binaryOp .add (.copy ⟨0, []⟩)
@@ -362,7 +364,7 @@ private theorem lexReset_step_inc_acc (m resetB : Nat) {acc : Nat}
     evalRvalue_binaryOp (lVal := u32Val acc) (rVal := u32Val 1)
       (ls₁ := [u32Slot acc, u32Slot m, u32Slot resetB, u32Slot resetB])
       (m₁ := entryMemory) rfl rfl (evalBinOp_add_u32 hAcc)
-  have hW : writePlace
+  have hW : writePlace .little
       [u32Slot acc, u32Slot m, u32Slot resetB, u32Slot resetB]
       entryMemory 0 u32Ty (u32Val (acc + 1)) =
       .ok ([u32Slot (acc + 1), u32Slot m, u32Slot resetB, u32Slot resetB],

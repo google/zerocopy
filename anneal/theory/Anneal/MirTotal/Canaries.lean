@@ -71,6 +71,7 @@ Kernel-checked positive and negative verification witnesses exercising:
     entryDefId := 0
     scope := .unit
     pointerWidthBits := 64
+    targetEndian := .little
     mirProfileVersion := 1 }
 
 /-- Single-statement MIR program copying uninitialized depth-`d` nested
@@ -121,7 +122,7 @@ theorem depth17_nested_ref_uninit_matches_evalStep :
           Except FaultKind (Val × List LocalSlot × MemoryState))) with
       | .error k => StepResult.fault k
       | .ok (val, localsAfterRval, memAfterRval) =>
-        match writePlace localsAfterRval memAfterRval 0 (tyNestedRef d) val with
+        match writePlace .little localsAfterRval memAfterRval 0 (tyNestedRef d) val with
         | .error k => StepResult.fault k
         | .ok (localsAfterWrite, memAfterWrite) =>
           StepResult.step
@@ -158,6 +159,7 @@ theorem depth17_nested_ref_wpFaultState :
     entryDefId := 0
     scope := .unit
     pointerWidthBits := 64
+    targetEndian := .little
     mirProfileVersion := 1 }
 
 /-- Faulting `u16` unchecked-addition overflow canary (`40000 + 30000`). -/
@@ -177,6 +179,7 @@ theorem depth17_nested_ref_wpFaultState :
     entryDefId := 0
     scope := .unit
     pointerWidthBits := 64
+    targetEndian := .little
     mirProfileVersion := 1 }
 
 /-- Discharges `BodyVerified` on `canaryAddWithOverflowProg` and `wpFaultProg`
@@ -225,16 +228,16 @@ theorem mirTotal_negative_guards_tests :
       { nextAllocId := 2
         allocations := [⟨1, 2, .mut, [.init 0 none, .init 0 none], true⟩] }
       ⟨1, 1⟩ 1 [.init 1 none] = .error .undefined ∧
-    loadIndirectComp
+    loadIndirectComp .little
       { nextAllocId := 2, allocations := [⟨1, 0, .mut, [.uninit], true⟩] }
       (.int .i8 false) ⟨1, 0⟩ = .ok none ∧
-    evalStatementBy (mirTyBeqAt 8)
+    evalStatementBy (mirTyBeqAt 8) .little
       { identity := "g", argumentCount := 0, locals := [.unit, .unit], basicBlocks := [] }
       { defId := 0, blockIdx := 0, stmtIdx := 0, locals := [.immediate (some .unit), .dead] }
       entryMemoryComp ⟨[]⟩ (.storageDead 0) = .fault .unsupported ∧
-    evalOperandToSlotComp [.int .i32 false] [.dead] entryMemoryComp (fun _ => true)
+    evalOperandToSlotComp .little [.int .i32 false] [.dead] entryMemoryComp (fun _ => true)
       (.copy ⟨0, []⟩) = .error .undefined ∧
-    evalTerminatorComp
+    evalTerminatorComp .little
       { identity := "g", argumentCount := 0, locals := [.unit], basicBlocks := [] }
       { statements := [], terminator := .return_, cleanup := true }
       { defId := 0, blockIdx := 0, stmtIdx := 0, locals := [.immediate (some .unit)] }

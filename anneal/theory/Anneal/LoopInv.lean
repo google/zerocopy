@@ -1174,13 +1174,13 @@ other part of a step still reduces by `rfl`. -/
 
 /-- Evaluate `Rvalue.binaryOp` from the values of its operands and the result
 of `evalBinOp`. -/
-theorem evalRvalue_binaryOp {tys : List MirTy}
+theorem evalRvalue_binaryOp {endian : TargetEndian} {tys : List MirTy}
     {ls ls₁ ls₂ : List LocalSlot} {m m₁ m₂ : MemoryState} {dstTy : MirTy}
     {op : BinOp} {lhs rhs : Operand} {lVal rVal res : Val}
-    (hL : evalPrimitiveOperand tys ls m lhs = .ok (lVal, ls₁, m₁))
-    (hR : evalPrimitiveOperand tys ls₁ m₁ rhs = .ok (rVal, ls₂, m₂))
+    (hL : evalPrimitiveOperand endian tys ls m lhs = .ok (lVal, ls₁, m₁))
+    (hR : evalPrimitiveOperand endian tys ls₁ m₁ rhs = .ok (rVal, ls₂, m₂))
     (hOp : evalBinOp op lVal rVal = .ok res) :
-    evalRvalue tys ls m dstTy (.binaryOp op lhs rhs) =
+    evalRvalue endian tys ls m dstTy (.binaryOp op lhs rhs) =
       .ok (res, ls₂, m₂) := by
   unfold evalRvalue
   dsimp only
@@ -1192,17 +1192,18 @@ theorem evalRvalue_binaryOp {tys : List MirTy}
 
 /-- Step an assignment of a binary operation from the result of `evalRvalue`
 and the result of `writePlace`. -/
-theorem evalStatement_assign_binaryOp {body : Body} {frame : FrameState}
+theorem evalStatement_assign_binaryOp {endian : TargetEndian} {body : Body}
+    {frame : FrameState}
     {m m₁ m₂ : MemoryState} {cm : CallerMemory} {dst : Place} {op : BinOp}
     {lhs rhs : Operand} {dstTy : MirTy} {val : Val}
     {ls ls' : List LocalSlot}
     (hProj : dst.projection.isEmpty = true)
     (hLoc : Trusted.MirSemantics.getElem? body.locals dst.localId =
       some dstTy)
-    (hRv : evalRvalue body.locals frame.locals m dstTy
+    (hRv : evalRvalue endian body.locals frame.locals m dstTy
       (.binaryOp op lhs rhs) = .ok (val, ls, m₁))
-    (hW : writePlace ls m₁ dst.localId dstTy val = .ok (ls', m₂)) :
-    evalStatement body frame m cm (.assign dst (.binaryOp op lhs rhs)) =
+    (hW : writePlace endian ls m₁ dst.localId dstTy val = .ok (ls', m₂)) :
+    evalStatement endian body frame m cm (.assign dst (.binaryOp op lhs rhs)) =
       .step {
         frames := [{ frame with stmtIdx := frame.stmtIdx + 1, locals := ls' }]
         callerMem := cm
@@ -1221,16 +1222,17 @@ theorem evalStatement_assign_binaryOp {body : Body} {frame : FrameState}
 
 /-- Step a `switchInt` terminator on a scalar discriminant from the result of
 `evalSwitchBranches`. -/
-theorem evalTerminator_switchInt_scalar {body : Body} {bb : BasicBlock}
+theorem evalTerminator_switchInt_scalar {endian : TargetEndian} {body : Body}
+    {bb : BasicBlock}
     {frame : FrameState} {m m₁ : MemoryState} {cm : CallerMemory}
     {discr : Operand} {targets : SwitchTargets} {sv : ScalarVal}
     {ls : List LocalSlot} {target : BasicBlockId}
     (hTerm : bb.terminator = .switchInt discr targets)
-    (hDiscr : evalPrimitiveOperand body.locals frame.locals m discr =
+    (hDiscr : evalPrimitiveOperand endian body.locals frame.locals m discr =
       .ok (.scalar sv, ls, m₁))
     (hSw : evalSwitchBranches sv.width sv.bits targets.otherwise
       targets.branches = .ok target) :
-    evalTerminator body bb frame m cm =
+    evalTerminator endian body bb frame m cm =
       jumpToBlock { frame with locals := ls } m₁ cm target := by
   unfold evalTerminator
   rw [hTerm]
@@ -1484,6 +1486,7 @@ abbrev countDownU32Ty : MirTy := .int .i32 false
 @[expose] def countDownProg : Program := {
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [countDownBody]
 }
@@ -1542,7 +1545,7 @@ theorem countDown_step_switch (acc : Nat) {k : Nat}
   have hSw : evalSwitchBranches .i32 (BitVec.ofNat 128 (k + 1)) 2
       [(BitVec.ofNat 128 0, 3)] = .ok 2 :=
     evalSwitchBranches_single_ne rfl (switch_beq_false_u32 hk)
-  have hTerm : evalTerminator countDownBody countDownHeader
+  have hTerm : evalTerminator .little countDownBody countDownHeader
       (frameAt 1 0 [u32Slot acc, u32Slot (k + 1)]) entryMemory ⟨[]⟩ =
       jumpToBlock (frameAt 1 0 [u32Slot acc, u32Slot (k + 1)])
         entryMemory ⟨[]⟩ 2 :=
@@ -1562,7 +1565,7 @@ theorem countDown_step_dec (acc : Nat) {k : Nat}
       .step (mkState 2 1 [u32Slot acc, u32Slot k]) := by
   have hk' : k < Nat.pow 2 32 := Nat.lt_trans (Nat.lt_succ_self k) hk
   have hChk : checkVal (u32Val k) u32Ty = true := checkVal_u32Val hk'
-  have hRv : evalRvalue countDownBody.locals
+  have hRv : evalRvalue .little countDownBody.locals
       [u32Slot acc, u32Slot (k + 1)] entryMemory u32Ty
       (.binaryOp .sub (.copy ⟨1, []⟩)
         (.constant ⟨u32Ty, .scalar (BitVec.ofNat 128 1)⟩)) =
@@ -1571,7 +1574,7 @@ theorem countDown_step_dec (acc : Nat) {k : Nat}
       (ls₁ := [u32Slot acc, u32Slot (k + 1)])
       (m₁ := entryMemory) rfl rfl
       (evalBinOp_sub_u32 hk)
-  have hW : writePlace [u32Slot acc, u32Slot (k + 1)] entryMemory 1 u32Ty
+  have hW : writePlace .little [u32Slot acc, u32Slot (k + 1)] entryMemory 1 u32Ty
       (u32Val k) = .ok ([u32Slot acc, u32Slot k], entryMemory) := by
     unfold writePlace
     cases hC : checkVal (u32Val k) u32Ty with
@@ -1579,7 +1582,7 @@ theorem countDown_step_dec (acc : Nat) {k : Nat}
       rw [hC] at hChk
       cases hChk
     | true => rfl
-  have hStmt : evalStatement countDownBody
+  have hStmt : evalStatement .little countDownBody
       (frameAt 2 0 [u32Slot acc, u32Slot (k + 1)]) entryMemory ⟨[]⟩
       countDownDec =
       .step (mkState 2 1 [u32Slot acc, u32Slot k]) :=
@@ -1592,7 +1595,7 @@ theorem countDown_step_inc (acc k : Nat) (hAcc : acc + 1 < Nat.pow 2 32) :
       .step (mkState 2 2 [u32Slot (acc + 1), u32Slot k]) := by
   have hChk : checkVal (u32Val (acc + 1)) u32Ty = true :=
     checkVal_u32Val hAcc
-  have hRv : evalRvalue countDownBody.locals
+  have hRv : evalRvalue .little countDownBody.locals
       [u32Slot acc, u32Slot k] entryMemory u32Ty
       (.binaryOp .add (.copy ⟨0, []⟩)
         (.constant ⟨u32Ty, .scalar (BitVec.ofNat 128 1)⟩)) =
@@ -1601,7 +1604,7 @@ theorem countDown_step_inc (acc k : Nat) (hAcc : acc + 1 < Nat.pow 2 32) :
       (ls₁ := [u32Slot acc, u32Slot k])
       (m₁ := entryMemory) rfl rfl
       (evalBinOp_add_u32 hAcc)
-  have hW : writePlace [u32Slot acc, u32Slot k] entryMemory 0 u32Ty
+  have hW : writePlace .little [u32Slot acc, u32Slot k] entryMemory 0 u32Ty
       (u32Val (acc + 1)) =
       .ok ([u32Slot (acc + 1), u32Slot k], entryMemory) := by
     unfold writePlace
@@ -1610,7 +1613,7 @@ theorem countDown_step_inc (acc k : Nat) (hAcc : acc + 1 < Nat.pow 2 32) :
       rw [hC] at hChk
       cases hChk
     | true => rfl
-  have hStmt : evalStatement countDownBody
+  have hStmt : evalStatement .little countDownBody
       (frameAt 2 1 [u32Slot acc, u32Slot k]) entryMemory ⟨[]⟩ countDownInc =
       .step (mkState 2 2 [u32Slot (acc + 1), u32Slot k]) :=
     evalStatement_assign_binaryOp (dstTy := u32Ty) rfl rfl hRv hW

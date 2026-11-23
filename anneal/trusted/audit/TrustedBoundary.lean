@@ -3768,7 +3768,7 @@ def verifyCorrespondenceClaims (env : Environment)
        `Anneal.MirCorrespondenceProof.bytes_codec_matches_miri,
        [`Trusted.MirSemantics.encodeVal,
          `Trusted.MirSemantics.decodeVal,
-         `Trusted.MirSemantics.profileTargetEndian,
+         `Trusted.Correspondence.refRuntimeLayout,
          `Miri.Memory.Allocation.writeScalar,
          `Miri.Memory.Allocation.getBytesUnchecked,
          `Miri.Memory.Allocation.readScalar,
@@ -5532,7 +5532,7 @@ def extractCapturedBodies (env : Environment) (subjectName : Name)
   let progFn := progExpr.getAppFn
   let progArgs := progExpr.getAppArgs
   if progFn.constName? != some `Trusted.MirAst.Program.mk ||
-      progArgs.size != 5 then
+      progArgs.size != 6 then
     return #[]
   let mut cur := progArgs[0]!
   let mut out : Array CapturedBodySummary := #[]

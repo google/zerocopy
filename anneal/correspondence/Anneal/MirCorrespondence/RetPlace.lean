@@ -153,7 +153,8 @@ private theorem subrange_self_toMiriSize (w : IntWidth) :
       .ok (allocRange Size.ZERO (toMiriSize w)) := by
   cases w <;> rfl
 
-private theorem getPtrAllocMut_retPlace_nonGhost (w : IntWidth)
+private theorem getPtrAllocMut_retPlace_nonGhost (endian : TargetEndian)
+    (w : IntWidth)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (alloc : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
@@ -166,21 +167,22 @@ private theorem getPtrAllocMut_retPlace_nonGhost (w : IntWidth)
     let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, alloc⟩)]) }
     Miri.Memory.AllocationAccess.getPtrAllocMut mem ⟨machine, none⟩
         ⟨Size.ofBytes 8⟩ retPtr (toMiriSize w) false none
-        refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig) =
+        (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian)) =
       ⟨mem, ⟨machine, none⟩,
         some ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), alloc⟩,
         .ok (some ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), alloc⟩)⟩ := by
   intro mem
   exact Miri.Memory.AllocationAccess.live_mut_of_edges mem ⟨machine, none⟩
-    ⟨Size.ofBytes 8⟩ retPtr (toMiriSize w) none refAccessConfig.globalHooks
-    (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
+    ⟨Size.ofBytes 8⟩ retPtr (toMiriSize w) none
+    (refAccessConfig endian).globalHooks
+    (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
     retAllocId ⟨.stack, alloc⟩ (.concrete Miri.Memory.BorTag.one)
     (toMiriSize w).bytes.toNat
     (sizeAsI64_toMiriSize w)
     (toMiriSize_ne_zero w)
-    (Miri.Interpreter.PlaceMachine.resolvePointer_ok refAccessConfig mem machine
-      retPtr _ _ rfl)
+    (Miri.Interpreter.PlaceMachine.resolvePointer_ok (refAccessConfig endian)
+      mem machine retPtr _ _ rfl)
     (singleton_live_find _)
     h_mut
     rfl
@@ -190,7 +192,7 @@ private theorem getPtrAllocMut_retPlace_nonGhost (w : IntWidth)
       dsimp only [Miri.Interpreter.PlaceMachine.accessHooks]
       rw [h_extra]
       exact Miri.Interpreter.PlaceMachine.memoryAccess_fresh_write
-        refAccessConfig machine retAllocId Miri.Memory.BorTag.one
+        (refAccessConfig endian) machine retAllocId Miri.Memory.BorTag.one
         (toMiriSize w) h_dr rfl rfl rfl)
     (singleton_live_filter_push _ _)
 
@@ -265,7 +267,8 @@ private theorem getPtrAlloc_retPlace_ghost (w : IntWidth)
     h_res h_gh h_sz (sizeAsI64_toMiriSize w) (by cases w <;> decide)
     (checkedBounds_retPlace w)
 
-private theorem getPtrAllocMut_retPlace_ghost_gen (w : IntWidth) (signedSize : Int)
+private theorem getPtrAllocMut_retPlace_ghost_gen (endian : TargetEndian)
+    (w : IntWidth) (signedSize : Int)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (alloc : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
@@ -279,14 +282,14 @@ private theorem getPtrAllocMut_retPlace_ghost_gen (w : IntWidth) (signedSize : I
     let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, alloc⟩)]) }
     Miri.Memory.AllocationAccess.getPtrAllocMut mem ⟨machine, none⟩
         ⟨Size.ofBytes 8⟩ retPtr (toMiriSize w) true none
-        refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig) =
+        (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian)) =
       ⟨mem, ⟨machine, none⟩,
         some ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), alloc⟩,
         .ok (some ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), alloc⟩)⟩ := by
   intro mem
   have h_raw : Miri.Memory.MemoryLifecycle.getAllocRawMut mem ⟨machine, none⟩
-      retAllocId none refAccessConfig.globalHooks =
+      retAllocId none (refAccessConfig endian).globalHooks =
       ⟨mem, ⟨machine, none⟩, .ok alloc⟩ := by
     dsimp only [Miri.Memory.MemoryLifecycle.getAllocRawMut, refAccessConfig,
       refGlobalAllocationHooks, mem, Id.run, bind, Bind.bind, pure, Pure.pure]
@@ -294,12 +297,14 @@ private theorem getPtrAllocMut_retPlace_ghost_gen (w : IntWidth) (signedSize : I
     dsimp only [bind, Bind.bind, pure, Pure.pure]
     rw [h_mut]
     rfl
-  have h_rp : (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig).resolvePointer
-      mem ⟨machine, none⟩ retPtr signedSize =
+  have h_rp :
+      (Miri.Interpreter.PlaceMachine.accessHooks
+          (refAccessConfig endian)).resolvePointer
+        mem ⟨machine, none⟩ retPtr signedSize =
       ⟨⟨machine, none⟩,
         .ok (.ok ⟨retAllocId, Size.ZERO, .concrete Miri.Memory.BorTag.one⟩)⟩ :=
-    Miri.Interpreter.PlaceMachine.resolvePointer_ok refAccessConfig mem machine
-      retPtr _ _ rfl
+    Miri.Interpreter.PlaceMachine.resolvePointer_ok (refAccessConfig endian)
+      mem machine retPtr _ _ rfl
   dsimp only [Miri.Memory.AllocationAccess.getPtrAllocMut]
   change (match Miri.Memory.sizeAsI64 (toMiriSize w) with
     | Except.ok _ => _ | Except.error _ => _) = _
@@ -314,7 +319,8 @@ private theorem getPtrAllocMut_retPlace_ghost_gen (w : IntWidth) (signedSize : I
   rw [h_sz, h_bounds]
   rfl
 
-private theorem getPtrAllocMut_retPlace_ghost (w : IntWidth)
+private theorem getPtrAllocMut_retPlace_ghost (endian : TargetEndian)
+    (w : IntWidth)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (alloc : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
@@ -324,17 +330,17 @@ private theorem getPtrAllocMut_retPlace_ghost (w : IntWidth)
     let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, alloc⟩)]) }
     Miri.Memory.AllocationAccess.getPtrAllocMut mem ⟨machine, none⟩
         ⟨Size.ofBytes 8⟩ retPtr (toMiriSize w) true none
-        refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig) =
+        (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian)) =
       ⟨mem, ⟨machine, none⟩,
         some ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), alloc⟩,
         .ok (some ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), alloc⟩)⟩ :=
-  getPtrAllocMut_retPlace_ghost_gen w (toMiriSize w).bytes.toNat mem1 alloc machine
-    h_sz h_mut (sizeAsI64_toMiriSize w) (by cases w <;> decide)
+  getPtrAllocMut_retPlace_ghost_gen endian w (toMiriSize w).bytes.toNat mem1
+    alloc machine h_sz h_mut (sizeAsI64_toMiriSize w) (by cases w <;> decide)
     (checkedBounds_retPlace w)
 
 theorem getPlaceAlloc_sized_of_access_poly {P E K H X : Type}
-    [DecidableEq K]
+    [DecidableEq K] (endian : TargetEndian)
     (memory : Miri.Memory.MemoryState P E K) (hooks : H)
     (place : Miri.Interpreter.MemoryOperandPlace P)
     (ghost : Bool) (kind : Option K)
@@ -348,7 +354,7 @@ theorem getPlaceAlloc_sized_of_access_poly {P E K H X : Type}
       ⟨Size.ofBytes 8⟩ place.mplace.ptr place.layout.size ghost kind global access =
       ⟨memory, hooks, some reference, .ok (some reference)⟩) :
     Miri.Interpreter.getPlaceAlloc memory hooks place
-        RuntimeTargetDataLayout.default ghost kind global access dynamic =
+        (refRuntimeLayout endian) ghost kind global access dynamic =
       ⟨memory, hooks, some reference, .ok (some reference)⟩ := by
   cases place with
   | mk mplace layout =>
@@ -366,7 +372,8 @@ theorem getPlaceAlloc_sized_of_access_poly {P E K H X : Type}
             | Except.error error => _
             | Except.ok reference? => _) = _
           rw [actual]
-          dsimp only [pure, Pure.pure, RuntimeTargetDataLayout.default,
+          dsimp only [pure, Pure.pure, refRuntimeLayout,
+            RuntimeTargetDataLayout.default,
             RuntimeTargetDataLayout.defaultAddressSpacePointerSpec]
           rw [actual]
         | @Memory isSized =>
@@ -378,12 +385,13 @@ theorem getPlaceAlloc_sized_of_access_poly {P E K H X : Type}
               | Except.error error => _
               | Except.ok reference? => _) = _
             rw [actual]
-            dsimp only [pure, Pure.pure, RuntimeTargetDataLayout.default,
+            dsimp only [pure, Pure.pure, refRuntimeLayout,
+              RuntimeTargetDataLayout.default,
               RuntimeTargetDataLayout.defaultAddressSpacePointerSpec]
             rw [actual]
 
 theorem getPlaceAllocMut_sized_of_access_poly {P E K H X : Type}
-    [DecidableEq K]
+    [DecidableEq K] (endian : TargetEndian)
     (memory : Miri.Memory.MemoryState P E K) (hooks : H)
     (place : Miri.Interpreter.MemoryOperandPlace P)
     (ghost : Bool) (kind : Option K)
@@ -397,7 +405,7 @@ theorem getPlaceAllocMut_sized_of_access_poly {P E K H X : Type}
       ⟨Size.ofBytes 8⟩ place.mplace.ptr place.layout.size ghost kind global access =
       ⟨memory, hooks, some reference, .ok (some reference)⟩) :
     Miri.Interpreter.getPlaceAllocMut memory hooks place
-        RuntimeTargetDataLayout.default ghost kind global access dynamic =
+        (refRuntimeLayout endian) ghost kind global access dynamic =
       ⟨memory, hooks, some reference, .ok (some reference)⟩ := by
   cases place with
   | mk mplace layout =>
@@ -415,7 +423,8 @@ theorem getPlaceAllocMut_sized_of_access_poly {P E K H X : Type}
             | Except.error error => _
             | Except.ok reference? => _) = _
           rw [actual]
-          dsimp only [pure, Pure.pure, RuntimeTargetDataLayout.default,
+          dsimp only [pure, Pure.pure, refRuntimeLayout,
+            RuntimeTargetDataLayout.default,
             RuntimeTargetDataLayout.defaultAddressSpacePointerSpec]
           rw [actual]
         | @Memory isSized =>
@@ -427,18 +436,19 @@ theorem getPlaceAllocMut_sized_of_access_poly {P E K H X : Type}
               | Except.error error => _
               | Except.ok reference? => _) = _
             rw [actual]
-            dsimp only [pure, Pure.pure, RuntimeTargetDataLayout.default,
+            dsimp only [pure, Pure.pure, refRuntimeLayout,
+              RuntimeTargetDataLayout.default,
               RuntimeTargetDataLayout.defaultAddressSpacePointerSpec]
             rw [actual]
 
-private theorem getPlaceAlloc_retPlace_ghost (w : IntWidth)
+private theorem getPlaceAlloc_retPlace_ghost (endian : TargetEndian) (w : IntWidth)
     (memLayout : Miri.Interpreter.MemoryOperandLayout)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (alloc : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
     (machine : Miri.Interpreter.MachineHooks.MachineState Unit RefUser)
     (cfg : Miri.Interpreter.PlaceMachine.AccessConfig Unit RefUser)
-    (h_rt : cfg.runtime = Miri.ABI.RuntimeTargetDataLayout.default)
+    (h_rt : cfg.runtime = refRuntimeLayout endian)
     (h_gk : cfg.globalKind = none)
     (h_res : cfg.resolvePointer = refResolvePointer)
     (h_gh : cfg.globalHooks = refGlobalAllocationHooks)
@@ -456,13 +466,13 @@ private theorem getPlaceAlloc_retPlace_ghost (w : IntWidth)
   intro mem
   rw [h_rt, h_gk]
   have h_ptr := getPtrAlloc_retPlace_ghost w mem1 alloc machine cfg h_res h_gh h_sz
-  exact getPlaceAlloc_sized_of_access_poly mem ⟨machine, none⟩
+  exact getPlaceAlloc_sized_of_access_poly endian mem ⟨machine, none⟩
     ⟨retMemPlace, memLayout⟩ true none cfg.globalHooks
     (Miri.Interpreter.PlaceMachine.accessHooks cfg) cfg.dynamicLayout
     ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), alloc⟩
     h_uns rfl (by dsimp only; rw [h_lsz]; exact h_ptr)
 
-theorem getPlaceAllocMut_retPlace_ghost (w : IntWidth)
+theorem getPlaceAllocMut_retPlace_ghost (endian : TargetEndian) (w : IntWidth)
     (memLayout : Miri.Interpreter.MemoryOperandLayout)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -474,23 +484,24 @@ theorem getPlaceAllocMut_retPlace_ghost (w : IntWidth)
     (h_mut : alloc.mutability = .Mut) :
     let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, alloc⟩)]) }
     Miri.Interpreter.getPlaceAllocMut mem ⟨machine, none⟩
-        ⟨retMemPlace, memLayout⟩ refAccessConfig.runtime true none
-        refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-        refAccessConfig.dynamicLayout =
+        ⟨retMemPlace, memLayout⟩ (refAccessConfig endian).runtime true none
+        (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+        (refAccessConfig endian).dynamicLayout =
       ⟨mem, ⟨machine, none⟩,
         some ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), alloc⟩,
         .ok (some ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), alloc⟩)⟩ := by
   intro mem
-  have h_ptr := getPtrAllocMut_retPlace_ghost w mem1 alloc machine h_sz h_mut
-  exact getPlaceAllocMut_sized_of_access_poly mem ⟨machine, none⟩
-    ⟨retMemPlace, memLayout⟩ true none refAccessConfig.globalHooks
-    (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-    refAccessConfig.dynamicLayout
+  have h_ptr := getPtrAllocMut_retPlace_ghost endian w mem1 alloc machine h_sz
+    h_mut
+  exact getPlaceAllocMut_sized_of_access_poly endian mem ⟨machine, none⟩
+    ⟨retMemPlace, memLayout⟩ true none (refAccessConfig endian).globalHooks
+    (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+    (refAccessConfig endian).dynamicLayout
     ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), alloc⟩
     h_uns rfl (by dsimp only; rw [h_lsz]; exact h_ptr)
 
-theorem writeMemory_retPlace_scalar (w : IntWidth)
+theorem writeMemory_retPlace_scalar (endian : TargetEndian) (w : IntWidth)
     (layout : LocalLayout) (abi : Miri.ABI.Scalar) (bits : BitVec 128)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -498,8 +509,8 @@ theorem writeMemory_retPlace_scalar (w : IntWidth)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_backend : (localMemoryLayout layout).backendRepr = .Scalar abi)
     (h_lsz : layout.layout.size = toMiriSize w)
-    (h_prim : Miri.ABI.Primitive.size abi.primitive refAccessConfig.runtime =
-      .ok (toMiriSize w))
+    (h_prim : Miri.ABI.Primitive.size abi.primitive
+        (refAccessConfig endian).runtime = .ok (toMiriSize w))
     (h_nonptr : match abi.primitive with | .Pointer _ => True | _ => True)
     (h_raw : Allocation.tryNew (Prov := Miri.Memory.Provenance)
       (toMiriSize w) Align.ONE .Uninit
@@ -510,11 +521,11 @@ theorem writeMemory_retPlace_scalar (w : IntWidth)
     (h_dr : st.machine.dataRace = none) :
     ∃ after,
       let mem' := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
-      Miri.Interpreter.PlaceMachine.writeMemory refAccessConfig (fun _ => true)
-          (.scalar (.fromScalarInt (miriScalar w bits)))
+      Miri.Interpreter.PlaceMachine.writeMemory (refAccessConfig endian)
+          (fun _ => true) (.scalar (.fromScalarInt (miriScalar w bits)))
           ⟨retMemPlace, layout⟩ st =
         .ok () { st with machine := { st.machine with memory := mem' } } ∧
-      after.readScalar RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w)) false =
         .ok (.fromScalarInt (miriScalar w bits)) ∧
       Allocation.clearProvenance (allocRange Size.ZERO (toMiriSize w))
@@ -532,22 +543,23 @@ theorem writeMemory_retPlace_scalar (w : IntWidth)
   let alloc := rawAlloc.withExtra
     (Miri.TreeBorrows.BorrowTree.new Miri.Memory.BorTag.one (toMiriSize w))
   let ⟨after, h_w, h_rd, h_cp, h_asz, h_amut, h_aal, _⟩ :=
-    tryNew_writeScalar_readScalar w bits h_raw
+    tryNew_writeScalar_readScalar endian w bits h_raw
   have h_sc_sz : (Scalar.fromScalarInt (Prov := Miri.Memory.Provenance)
       (miriScalar w bits)).size = toMiriSize w := miriScalar_size w bits
   have h_lml_sz : (localMemoryLayout layout).size = toMiriSize w := h_lsz
   have h_uns : (localMemoryLayout layout).backendRepr.isUnsized = false := by
     rw [h_backend]; rfl
-  have h_ptr_acc := getPtrAllocMut_retPlace_nonGhost w mem1 alloc st.machine
-    h_rsz h_rmut rfl h_dr
+  have h_ptr_acc := getPtrAllocMut_retPlace_nonGhost endian w mem1 alloc
+    st.machine h_rsz h_rmut rfl h_dr
   have h_place_acc :
       Miri.Interpreter.getPlaceAllocMut
         { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, alloc⟩)]) }
         ⟨st.machine, none⟩
         ⟨retMemPlace, localMemoryLayout layout⟩
-        refAccessConfig.runtime false none refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-        refAccessConfig.dynamicLayout =
+        (refAccessConfig endian).runtime false none
+        (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+        (refAccessConfig endian).dynamicLayout =
       ⟨{ mem1 with live := (Array.mk [(retAllocId, ⟨.stack, alloc⟩)]) },
         ⟨st.machine, none⟩,
         some ⟨retAllocId, allocRange Size.ZERO (localMemoryLayout layout).size, alloc⟩,
@@ -561,10 +573,10 @@ theorem writeMemory_retPlace_scalar (w : IntWidth)
         st.machine.memory ⟨st.machine, none⟩
         (.scalar (.fromScalarInt (miriScalar w bits)))
         ⟨retMemPlace, localMemoryLayout layout⟩
-        refAccessConfig.runtime refAccessConfig.ghostMode
-        refAccessConfig.globalKind refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-        refAccessConfig.dynamicLayout (fun _ => true) =
+        (refAccessConfig endian).runtime (refAccessConfig endian).ghostMode
+        (refAccessConfig endian).globalKind (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+        (refAccessConfig endian).dynamicLayout (fun _ => true) =
       ⟨{ mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) },
         ⟨st.machine, none⟩,
         some ⟨retAllocId, allocRange Size.ZERO (localMemoryLayout layout).size, after⟩,
@@ -575,9 +587,9 @@ theorem writeMemory_retPlace_scalar (w : IntWidth)
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
       ⟨st.machine, none⟩
       ⟨retMemPlace, localMemoryLayout layout⟩
-      refAccessConfig.runtime none refAccessConfig.globalHooks
-      (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-      refAccessConfig.dynamicLayout (fun _ => true)
+      (refAccessConfig endian).runtime none (refAccessConfig endian).globalHooks
+      (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+      (refAccessConfig endian).dynamicLayout (fun _ => true)
       (.fromScalarInt (miriScalar w bits)) abi retAllocId alloc after
       h_backend
       (by rw [h_sc_sz]; exact h_prim)
@@ -587,7 +599,7 @@ theorem writeMemory_retPlace_scalar (w : IntWidth)
       (by rw [h_sc_sz]; exact h_w)
       (singleton_setLiveAllocation mem1 alloc after)
   exact ⟨after,
-    Miri.Interpreter.PlaceMachine.writeMemory_of_result refAccessConfig
+    Miri.Interpreter.PlaceMachine.writeMemory_of_result (refAccessConfig endian)
       (fun _ => true) (.scalar (.fromScalarInt (miriScalar w bits)))
       ⟨retMemPlace, layout⟩ st
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
@@ -638,7 +650,7 @@ theorem writeUninit_of_access_poly {P E K H X : Type}
   rw [committed]
   rfl
 
-theorem writeMemory_retPlace_uninit (w : IntWidth)
+theorem writeMemory_retPlace_uninit (endian : TargetEndian) (w : IntWidth)
     (layout : LocalLayout)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -655,10 +667,10 @@ theorem writeMemory_retPlace_uninit (w : IntWidth)
     (h_dr : st.machine.dataRace = none) :
     ∃ after info,
       let mem' := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
-      Miri.Interpreter.PlaceMachine.writeMemory refAccessConfig (fun _ => true)
-          .uninit ⟨retMemPlace, layout⟩ st =
+      Miri.Interpreter.PlaceMachine.writeMemory (refAccessConfig endian)
+          (fun _ => true) .uninit ⟨retMemPlace, layout⟩ st =
         .ok () { st with machine := { st.machine with memory := mem' } } ∧
-      after.readScalar RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w)) false =
         .error (.invalidUninitBytes info) ∧
       after.byteSize = toMiriSize w ∧
@@ -673,18 +685,19 @@ theorem writeMemory_retPlace_uninit (w : IntWidth)
   let alloc := rawAlloc.withExtra
     (Miri.TreeBorrows.BorrowTree.new Miri.Memory.BorTag.one (toMiriSize w))
   let ⟨after, info, h_wu, h_rd, h_asz, h_amut, h_aal, _⟩ :=
-    tryNew_writeUninit_readUninit w h_raw
+    tryNew_writeUninit_readUninit endian w h_raw
   have h_lml_sz : (localMemoryLayout layout).size = toMiriSize w := h_lsz
-  have h_ptr_acc := getPtrAllocMut_retPlace_nonGhost w mem1 alloc st.machine
-    h_rsz h_rmut rfl h_dr
+  have h_ptr_acc := getPtrAllocMut_retPlace_nonGhost endian w mem1 alloc
+    st.machine h_rsz h_rmut rfl h_dr
   have h_place_acc :
       Miri.Interpreter.getPlaceAllocMut
         { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, alloc⟩)]) }
         ⟨st.machine, none⟩
         ⟨retMemPlace, localMemoryLayout layout⟩
-        refAccessConfig.runtime false none refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-        refAccessConfig.dynamicLayout =
+        (refAccessConfig endian).runtime false none
+        (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+        (refAccessConfig endian).dynamicLayout =
       ⟨{ mem1 with live := (Array.mk [(retAllocId, ⟨.stack, alloc⟩)]) },
         ⟨st.machine, none⟩,
         some ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), alloc⟩,
@@ -693,9 +706,10 @@ theorem writeMemory_retPlace_uninit (w : IntWidth)
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, alloc⟩)]) }
       ⟨st.machine, none⟩
       ⟨retMemPlace, localMemoryLayout layout⟩
-      refAccessConfig.runtime (Size.ofBytes 8) none refAccessConfig.globalHooks
-      (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-      refAccessConfig.dynamicLayout
+      (refAccessConfig endian).runtime (Size.ofBytes 8) none
+      (refAccessConfig endian).globalHooks
+      (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+      (refAccessConfig endian).dynamicLayout
       ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), alloc⟩
       h_uns rfl rfl (by rw [h_lml_sz]; exact h_ptr_acc)
     exact h_p
@@ -703,10 +717,10 @@ theorem writeMemory_retPlace_uninit (w : IntWidth)
       Miri.Interpreter.writeImmediateToMplaceNoValidate
         st.machine.memory ⟨st.machine, none⟩ .uninit
         ⟨retMemPlace, localMemoryLayout layout⟩
-        refAccessConfig.runtime refAccessConfig.ghostMode
-        refAccessConfig.globalKind refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-        refAccessConfig.dynamicLayout (fun _ => true) =
+        (refAccessConfig endian).runtime (refAccessConfig endian).ghostMode
+        (refAccessConfig endian).globalKind (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+        (refAccessConfig endian).dynamicLayout (fun _ => true) =
       ⟨{ mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) },
         ⟨st.machine, none⟩,
         some ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), after⟩,
@@ -716,20 +730,20 @@ theorem writeMemory_retPlace_uninit (w : IntWidth)
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, alloc⟩)]) }
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
       ⟨st.machine, none⟩ ⟨retMemPlace, localMemoryLayout layout⟩
-      refAccessConfig.runtime refAccessConfig.ghostMode
-      refAccessConfig.globalKind refAccessConfig.globalHooks
-      (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-      refAccessConfig.dynamicLayout (fun _ => true)
+      (refAccessConfig endian).runtime (refAccessConfig endian).ghostMode
+      (refAccessConfig endian).globalKind (refAccessConfig endian).globalHooks
+      (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+      (refAccessConfig endian).dynamicLayout (fun _ => true)
       ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), alloc⟩ after
       h_uns h_place_acc h_wu (singleton_setLiveAllocation mem1 alloc after)
   exact ⟨after, info,
-    Miri.Interpreter.PlaceMachine.writeMemory_of_result refAccessConfig
+    Miri.Interpreter.PlaceMachine.writeMemory_of_result (refAccessConfig endian)
       (fun _ => true) .uninit ⟨retMemPlace, layout⟩ st
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
       _ rfl h_wm_op,
     h_rd, h_asz, h_amut, h_aal⟩
 
-theorem readImmediateFromMplaceRaw_retPlace_int_aux
+theorem readImmediateFromMplaceRaw_retPlace_int_aux (endian : TargetEndian)
     (w : IntWidth) (s : Bool) (al : Align) (vr : Miri.ABI.WrappingRange)
     (cty : Option Nat)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -745,7 +759,7 @@ theorem readImmediateFromMplaceRaw_retPlace_int_aux
             (validRange := vr)),
           cty⟩
       Miri.Interpreter.getPlaceAlloc mem ⟨machine, none⟩
-          ⟨retMemPlace, layout⟩ RuntimeTargetDataLayout.default true none
+          ⟨retMemPlace, layout⟩ (refRuntimeLayout endian) true none
           cfg.globalHooks (Miri.Interpreter.PlaceMachine.accessHooks cfg)
           cfg.dynamicLayout =
         ⟨mem, ⟨machine, none⟩,
@@ -758,10 +772,10 @@ theorem readImmediateFromMplaceRaw_retPlace_int_aux
           (validRange := vr)),
         cty⟩
     Miri.Interpreter.readImmediateFromMplaceRaw mem ⟨machine, none⟩
-        ⟨retMemPlace, layout⟩ RuntimeTargetDataLayout.default true none
+        ⟨retMemPlace, layout⟩ (refRuntimeLayout endian) true none
         cfg.globalHooks (Miri.Interpreter.PlaceMachine.accessHooks cfg)
         cfg.dynamicLayout =
-      match after.readScalar RuntimeTargetDataLayout.default.base
+      match after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w)) false with
       | .ok sc =>
         ⟨mem, ⟨machine, none⟩,
@@ -771,7 +785,7 @@ theorem readImmediateFromMplaceRaw_retPlace_int_aux
         ⟨mem, ⟨machine, none⟩,
           some ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), after⟩,
           .error (.allocation err)⟩ := by
-  cases h_rd : after.readScalar RuntimeTargetDataLayout.default.base
+  cases h_rd : after.readScalar (refRuntimeLayout endian).base
       (allocRange Size.ZERO (toMiriSize w)) false <;>
     cases w <;> (
       intro mem layout
@@ -781,20 +795,21 @@ theorem readImmediateFromMplaceRaw_retPlace_int_aux
       simp only [Bool.false_eq_true, ite_false]
       change Miri.Interpreter.readImmediateFromMplaceRaw.match_3 _
         (Except.mapError Miri.Interpreter.MemoryOperandError.allocation
-          (after.readScalar RuntimeTargetDataLayout.default.base
+          (after.readScalar (refRuntimeLayout endian).base
             (allocRange Size.ZERO layout.size) false)) _ _ = _
       dsimp only [layout]
       rw [h_rd]
       rfl)
 
-theorem readImmediateFromMplaceRaw_retPlace_core (types : List MirTy)
+theorem readImmediateFromMplaceRaw_retPlace_core (endian : TargetEndian)
+    (types : List MirTy)
     (w : IntWidth) (ty : MirTy)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (after : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
     (machine : Miri.Interpreter.MachineHooks.MachineState Unit RefUser)
     (cfg : Miri.Interpreter.PlaceMachine.AccessConfig Unit RefUser)
-    (h_rt : cfg.runtime = Miri.ABI.RuntimeTargetDataLayout.default)
+    (h_rt : cfg.runtime = refRuntimeLayout endian)
     (h_gk : cfg.globalKind = none)
     (h_res : cfg.resolvePointer = refResolvePointer)
     (h_gh : cfg.globalHooks = refGlobalAllocationHooks)
@@ -804,10 +819,10 @@ theorem readImmediateFromMplaceRaw_retPlace_core (types : List MirTy)
     let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
     Miri.Interpreter.readImmediateFromMplaceRaw mem ⟨machine, none⟩
         ⟨retMemPlace, localMemoryLayout (refLocalLayoutForTy types ty)⟩
-        RuntimeTargetDataLayout.default true none
+        (refRuntimeLayout endian) true none
         cfg.globalHooks (Miri.Interpreter.PlaceMachine.accessHooks cfg)
         cfg.dynamicLayout =
-      match after.readScalar RuntimeTargetDataLayout.default.base
+      match after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w)) false with
       | .ok sc =>
         ⟨mem, ⟨machine, none⟩,
@@ -832,7 +847,7 @@ theorem readImmediateFromMplaceRaw_retPlace_core (types : List MirTy)
       cases h with
       | inl h => let ⟨s, hs⟩ := h; rw [hs]; rfl
       | inr h => rw [h.1, h.2]; rfl
-  have h_acc := getPlaceAlloc_retPlace_ghost w
+  have h_acc := getPlaceAlloc_retPlace_ghost endian w
     (localMemoryLayout (refLocalLayoutForTy types ty))
     mem1 after machine cfg h_rt h_gk h_res h_gh h_uns h_lsz h_sz
   rw [h_rt, h_gk] at h_acc
@@ -848,16 +863,16 @@ theorem readImmediateFromMplaceRaw_retPlace_core (types : List MirTy)
     simp only [Bool.false_eq_true, ite_false]
     change Miri.Interpreter.readImmediateFromMplaceRaw.match_3 _
       (Except.mapError Miri.Interpreter.MemoryOperandError.allocation
-        (after.readScalar RuntimeTargetDataLayout.default.base
+        (after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize .i8)) false)) _ _ = _
-    cases after.readScalar RuntimeTargetDataLayout.default.base
+    cases after.readScalar (refRuntimeLayout endian).base
         (allocRange Size.ZERO (toMiriSize .i8)) false <;> rfl
   | inr h =>
     cases h with
     | inl h =>
       let ⟨s, hty⟩ := h
       subst hty
-      exact readImmediateFromMplaceRaw_retPlace_int_aux w s
+      exact readImmediateFromMplaceRaw_retPlace_int_aux endian w s
         (Miri.ABI.AbiAlign.new Align.ONE).abi
         (refFullWrappingRangeSize (toMiriSize w))
         (some (tyIdFor types (.int w s)))
@@ -865,7 +880,7 @@ theorem readImmediateFromMplaceRaw_retPlace_core (types : List MirTy)
     | inr h =>
       let ⟨hty, hw⟩ := h
       subst hty hw
-      exact readImmediateFromMplaceRaw_retPlace_int_aux .i32 false
+      exact readImmediateFromMplaceRaw_retPlace_int_aux endian .i32 false
         (Miri.ABI.AbiAlign.new Align.ONE).abi
         ⟨BitVec.ofNat 128 0, BitVec.ofNat 128 0x10ffff⟩
         (some (tyIdFor types .char))
@@ -939,8 +954,8 @@ theorem clearPlaceProvenance_mem_step {K P E H X S C Extra : Type}
   rfl
 
 
-theorem validatePlace_mem_ub_step (types : List MirTy) (c : Choice)
-    (layout : LocalLayout)
+theorem validatePlace_mem_ub_step (endian : TargetEndian) (types : List MirTy)
+    (c : Choice) (layout : LocalLayout)
     (st st' : Miri.Interpreter.MachineHooks.State Unit RefUser) (msg : String)
     (h_vis :
       let initSess :
@@ -949,11 +964,11 @@ theorem validatePlace_mem_ub_step (types : List MirTy) (c : Choice)
         path := ⟨"", (Array.mk [])⟩, flags := ⟨true, false⟩, ctfeMode := none,
         refTracking := none, dataBytes := some .empty
       }
-      Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c 8
+      Miri.Interpreter.ValidityVisitor.visit (refValHooks endian types) c 8
         initSess ⟨.memory retMemPlace, layout⟩ st =
         .error (.undefinedBehavior msg) st') :
-    Miri.Interpreter.ValidityVisitor.validatePlace (refValHooks types) c 8
-        ⟨.memory retMemPlace, layout⟩ false true st =
+    Miri.Interpreter.ValidityVisitor.validatePlace (refValHooks endian types)
+        c 8 ⟨.memory retMemPlace, layout⟩ false true st =
       .error (.undefinedBehavior msg) st' := by
   dsimp only [Miri.Interpreter.ValidityVisitor.validatePlace,
     bind, Bind.bind, EStateM.bind]
@@ -974,11 +989,12 @@ theorem copyRuntimePlace_imm_to_mem_step (rp : RefProg) (c : Choice)
     (res : EStateM.Result StepError
       (Miri.Interpreter.MachineHooks.State Unit RefUser) Unit)
     (h_pmd : st.machine.pendingMoveDeinit = false)
-    (h_wm : Miri.Interpreter.PlaceMachine.writeMemory refAccessConfig
-      (fun _ => true) imm ⟨mplace, refLocalLayoutForTy rp.types ty⟩ st =
-      .ok () st1)
+    (h_wm : Miri.Interpreter.PlaceMachine.writeMemory
+      (refAccessConfig rp.targetEndian) (fun _ => true) imm
+      ⟨mplace, refLocalLayoutForTy rp.types ty⟩ st = .ok () st1)
     (h_val :
-      Miri.Interpreter.ValidityVisitor.validatePlace (refValHooks rp.types) c 8
+      Miri.Interpreter.ValidityVisitor.validatePlace
+          (refValHooks rp.targetEndian rp.types) c 8
         ⟨.memory mplace, refLocalLayoutForTy rp.types ty⟩ false true st1 =
           res) :
     let h := Miri.Interpreter.ExecutionMachine.withValidation
@@ -998,7 +1014,8 @@ theorem copyRuntimePlace_imm_to_mem_step (rp : RefProg) (c : Choice)
         dsimp only at h_pmd
         subst h_pmd
         rfl
-  have h_rr : Miri.Interpreter.PlaceMachine.readRaw refAccessConfig
+  have h_rr : Miri.Interpreter.PlaceMachine.readRaw
+      (refAccessConfig rp.targetEndian)
       ⟨.immediate imm, refLocalLayoutForTy rp.types ty⟩ st =
       .ok (.immediate
         ⟨imm, localMemoryLayout (refLocalLayoutForTy rp.types ty)⟩) st := by
@@ -1015,8 +1032,9 @@ theorem copyRuntimePlace_imm_to_mem_step (rp : RefProg) (c : Choice)
     rw [beq_self_eq_true]
   have h_wp :
       Miri.Interpreter.writePlaceImmediateNoValidate
-        (Miri.Interpreter.PlaceMachine.placeHooks refAccessConfig
-          refAllocationConfig (refCompilerHooks rp.types))
+        (Miri.Interpreter.PlaceMachine.placeHooks
+          (refAccessConfig rp.targetEndian) refAllocationConfig
+          (refCompilerHooks rp.targetEndian rp.types))
         c imm ⟨.memory mplace, refLocalLayoutForTy rp.types ty⟩ st =
         .ok () st1 := by
     dsimp only [Miri.Interpreter.writePlaceImmediateNoValidate,
@@ -1042,7 +1060,7 @@ theorem copyRuntimePlace_imm_to_mem_step (rp : RefProg) (c : Choice)
       | EStateM.Result.error e s => EStateM.Result.error e s) = _
     dsimp only
     simp only [Bool.not_true, Bool.false_and, Bool.false_eq_true, ite_false]
-    let ⟨pb, h_pb⟩ := refHasPadding_ok rp.types ty
+    let ⟨pb, h_pb⟩ := refHasPadding_ok rp.targetEndian rp.types ty
     have h_pad : h.copy.hasPadding (refLocalLayoutForTy rp.types ty) = .ok pb :=
       h_pb
     rw [h_pad]
@@ -1055,8 +1073,9 @@ theorem copyRuntimePlace_imm_to_mem_step (rp : RefProg) (c : Choice)
     | false =>
       simp only [Bool.false_eq_true, ite_false]
       change (EStateM.bind
-        (Miri.Interpreter.PlaceMachine.readRaw refAccessConfig
-        ⟨.immediate imm, refLocalLayoutForTy rp.types ty⟩) _ st) = _
+        (Miri.Interpreter.PlaceMachine.readRaw
+          (refAccessConfig rp.targetEndian)
+          ⟨.immediate imm, refLocalLayoutForTy rp.types ty⟩) _ st) = _
       rw [mem_eStateM_bind_ok h_rr]
       dsimp only [bind, Bind.bind, EStateM.bind, pure, Pure.pure, EStateM.pure]
       rw [h_sz, bne_self_eq_false]
@@ -1073,7 +1092,8 @@ theorem copyRuntimePlace_imm_to_mem_step (rp : RefProg) (c : Choice)
   have h_v :
       (Miri.Interpreter.ExecutionMachine.projectionHooks h).place.validate c
         ⟨.memory mplace, refLocalLayoutForTy rp.types ty⟩ st1 =
-      Miri.Interpreter.ValidityVisitor.validatePlace (refValHooks rp.types) c 8
+      Miri.Interpreter.ValidityVisitor.validatePlace
+        (refValHooks rp.targetEndian rp.types) c 8
         ⟨.memory mplace, refLocalLayoutForTy rp.types ty⟩ false true st1 := rfl
   dsimp only [Miri.Interpreter.copyRuntimePlace, bind, Bind.bind, EStateM.bind]
   rw [h_nv]

@@ -22,9 +22,9 @@ open Trusted.MirAst
 /-!
 # Target Data Layout and Type Layouts (`Trusted.MirSemantics.Layout`)
 
-Byte order (`TargetEndian`), the profile-v1 target byte order
-(`profileTargetEndian`), the size and alignment of a sized type
-(`LayoutData`), and the layouts of the Day-1 local types (`layoutOfTy`).
+The size and alignment of a sized type (`LayoutData`), and the layouts of the
+Day-1 local types (`layoutOfTy`). Byte order (`TargetEndian`) lives in
+`Trusted.MirAst.Types` (`Program.targetEndian`).
 
 $M_{\text{anneal}}$ uses these definitions when it moves a local into memory
 (`forceAllocation`) and when it encodes or decodes a value as bytes
@@ -32,30 +32,6 @@ $M_{\text{anneal}}$ uses these definitions when it moves a local into memory
 $M_{\text{anneal}}$, so they live outside `Trusted.MirAst*`, which the
 independent reference evaluator $M_{\text{ref}}$ may import.
 -/
-
-/-- Byte order of multi-byte integers in memory, corresponding to
-`rustc_abi::Endian` (`compiler/rustc_abi/src/lib.rs`, `rust-lang/rust`
-`8144389c895da997dbdecaa635e41d6a50be6ffd`):
-
-> "pub enum Endian {
->     Little,
->     Big,
-> }" -/
-inductive TargetEndian where
-  | little
-  | big
-
-/-- Byte order of the MIR semantic profile version 1
-(`Program.mirProfileVersion = 1`).
-
-`Program` does not record the target's byte order. Profile version 1 has no
-operation that reinterprets the bytes of a value at another type (no
-transmutes, pointer casts, unions, or partial reads), so byte order cannot
-affect any `Behavior`. Profile version 1 therefore fixes big-endian order,
-which matches the data layout that `Trusted.Correspondence` passes to
-`lean-miri` (`Miri.ABI.RuntimeTargetDataLayout.default`). A profile that can
-observe byte order must take it from the captured target data layout. -/
-noncomputable def profileTargetEndian : TargetEndian := .big
 
 /-- Size and alignment of a sized type, corresponding to the `size` and
 `align` fields of `rustc_abi::LayoutData` (`compiler/rustc_abi/src/lib.rs`,

@@ -18,14 +18,14 @@ private theorem body0_adm :
     BodyStaticAdmitted Captured.program Captured.body_0 = true := rfl
 
 private theorem body0_runs :
-    Runs Captured.body_0 2 [] .unit := rfl
+    Runs Captured.program.targetEndian Captured.body_0 2 [] .unit := rfl
 
 private theorem total_of_runs {defId : DefId} {body : Body}
     {fuel : Nat} {args : List Val} {ret : Val}
     (h_body : Trusted.MirSemantics.getElem? Captured.program.bodies defId = some body)
     (h_adm : BodyStaticAdmitted Captured.program body = true)
     (h_args : ValidEntryArgs body args)
-    (h_runs : Runs body fuel args ret) :
+    (h_runs : Runs Captured.program.targetEndian body fuel args ret) :
     Spec.ReturnsTotal Captured.program defId args ret := by
   have h_execProg :
       execProg (entryProgForBody Captured.program defId) fuel { args := args }

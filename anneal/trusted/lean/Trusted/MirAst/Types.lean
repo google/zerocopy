@@ -339,6 +339,18 @@ mutual
     | _, _ => false
 end
 
+/-- Byte order of multi-byte integers in memory, corresponding to
+`rustc_abi::Endian` (`compiler/rustc_abi/src/lib.rs`, `rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+> "pub enum Endian {
+>     Little,
+>     Big,
+> }" -/
+inductive TargetEndian where
+  | little
+  | big
+
 end Trusted.MirAst
 
 end

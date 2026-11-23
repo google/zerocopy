@@ -4055,7 +4055,6 @@ fn enforces_correspondence_non_backsliding() {
          def evalStep : Nat := 0\n\
          def encodeVal : Nat := 0\n\
          def decodeVal : Nat := 0\n\
-         def profileTargetEndian : Nat := 0\n\
          def mkBinOpProg : Nat := 0\n\
          def mkCmpDiscriminantProg : Nat := 0\n\
          def progCharSwitch : Nat := 0\n\
@@ -4250,6 +4249,7 @@ fn enforces_correspondence_non_backsliding() {
              def RefReachesOutcome : Prop := True\n\
              def faultToRefOutcome : Nat := 0\n\
              def refReadReturnVal : Nat := 0\n\
+             def refRuntimeLayout : Nat := 0\n\
              def progUseAfterMoveD6 : Nat := 0\n\
              def progBinOpCopyThenMoveD7a : Nat := 0\n\
              def progBinOpMoveThenCopyD7b : Nat := 0\n\
@@ -4350,7 +4350,7 @@ fn enforces_correspondence_non_backsliding() {
              def RefStepSoundForAllowedStepClaim : Prop := {ref_step_allowed_def}\n\
              def BytesCodecMatchesMiriClaim : Prop :=\n\
                Trusted.MirSemantics.encodeVal = Trusted.MirSemantics.decodeVal ∧\n\
-               Trusted.MirSemantics.profileTargetEndian = Miri.Memory.Allocation.writeScalar ∧\n\
+               refRuntimeLayout = Miri.Memory.Allocation.writeScalar ∧\n\
                Miri.Memory.Allocation.getBytesUnchecked = Miri.Memory.Allocation.readScalar ∧\n\
                Miri.Memory.Allocation.writeUninit = Miri.Memory.Allocation.writeUninit\n\
              end Trusted.Correspondence\n"
@@ -4661,7 +4661,7 @@ fn enforces_correspondence_non_backsliding() {
     // `verifyCorrespondenceClaims`.
     let valid_bytes_codec_def = "def BytesCodecMatchesMiriClaim : Prop :=\n\
                Trusted.MirSemantics.encodeVal = Trusted.MirSemantics.decodeVal ∧\n\
-               Trusted.MirSemantics.profileTargetEndian = Miri.Memory.Allocation.writeScalar ∧\n\
+               refRuntimeLayout = Miri.Memory.Allocation.writeScalar ∧\n\
                Miri.Memory.Allocation.getBytesUnchecked = Miri.Memory.Allocation.readScalar ∧\n\
                Miri.Memory.Allocation.writeUninit = Miri.Memory.Allocation.writeUninit\n";
     let valid_claims = all_claims_src(

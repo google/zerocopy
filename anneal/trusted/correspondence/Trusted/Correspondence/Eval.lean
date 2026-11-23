@@ -78,7 +78,8 @@ noncomputable def evalRefStep (rp : RefProg) (c : Choice)
         (refExecutionConfig rp) refLimits c rs.miri with
     | (miri', .ok true) =>
       if miri'.stack.frames.isEmpty then
-        match refReadReturnVal miri'.machine.memory rs.retTy rs.retPlace with
+        match refReadReturnVal rp.targetEndian miri'.machine.memory rs.retTy
+            rs.retPlace with
         | .ok retVal =>
           .returned (.returned ⟨retVal, miri'.machine.user.callerMem⟩)
         | .error k => faultToRefOutcome k

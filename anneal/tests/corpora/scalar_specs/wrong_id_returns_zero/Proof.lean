@@ -23,12 +23,12 @@ theorem verify : Expected.claim := by
       injection found with hEq
       subst hEq
       refine bodyVerified_of_safe rfl rfl (fun args valid _ => ?_)
-      have hRun : Runs Captured.body_0 8 args
+      have hRun : Runs .little Captured.body_0 8 args
           (.scalar ⟨.isize, false, BitVec.ofNat 128 0⟩) := by rfl
       exact (run_initial_success hRun).1
     | succ id => cases found
   · refine ⟨Captured.body_0, rfl, fun bits hTrunc => ?_⟩
-    have hRun : Runs Captured.body_0 8 [.scalar ⟨.isize, false, bits⟩]
+    have hRun : Runs .little Captured.body_0 8 [.scalar ⟨.isize, false, bits⟩]
         (.scalar ⟨.isize, false, bits⟩) := by rfl
     exact behavior_of_returns rfl rfl (by rfl) (run_initial_success hRun).2
 -- === end-scope ===

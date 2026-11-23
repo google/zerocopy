@@ -32,7 +32,7 @@ theorem verify : Expected.claim := by
     let ⟨bits, hvEq, _⟩ := hv
     subst hvEq
     have hRun :
-        Runs Captured.body_0 8 [.scalar ⟨.isize, false, bits⟩]
+        Runs .little Captured.body_0 8 [.scalar ⟨.isize, false, bits⟩]
           (.scalar ⟨.isize, false, BitVec.ofNat 128 0⟩) := rfl
     exact (run_initial_success hRun).1
   | succ id => cases found

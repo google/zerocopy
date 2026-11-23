@@ -87,13 +87,14 @@ private theorem checkedSliceMirror_ok (bs : Array UInt8) (sz : Size)
   dsimp only [Bind.bind, Except.bind, pure, Pure.pure, Except.pure]
   rw [h_oob, ite_false_eq_true]
 
-private theorem clearProvenance_of_read_ok_range (r : AllocRange) (fin : Size)
+private theorem clearProvenance_of_read_ok_range (endian : TargetEndian)
+    (r : AllocRange) (fin : Size)
     (h_end : r.endExclusive = .ok fin)
     {after : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree}
     {sc : Scalar Miri.Memory.Provenance}
     (h_prov : after.provenanceMap = ProvenanceMap.new)
     (h_rd :
-      after.readScalar RuntimeTargetDataLayout.default.base r false = .ok sc) :
+      after.readScalar (refRuntimeLayout endian).base r false = .ok sc) :
     Allocation.clearProvenance r (Size.ofBytes 8) after = .ok () after := by
   have h_bs : ∃ bs, Allocation.getBytesUnchecked after r = .ok bs := by
     dsimp only [Allocation.readScalar] at h_rd
@@ -130,27 +131,28 @@ private theorem clearProvenance_of_read_ok_range (r : AllocRange) (fin : Size)
 
 private def boolByte (b : Bool) : UInt8 := if b then 1 else 0
 
-private theorem targetUIntBytesMirror_bool (b : Bool) :
-    targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+private theorem targetUIntBytesMirror_bool (endian : TargetEndian) (b : Bool) :
+    targetUIntBytesMirror (refRuntimeLayout endian).base
       (Size.ofBytes 1) (ScalarInt.ofBool b).data =
       .ok (Array.mk [boolByte b]) := by
-  cases b <;> exact targetUIntBytesMirror_be 1 (by decide) _
+  cases endian <;> cases b <;>
+    exact targetUIntBytesMirror_endian _ 1 (by decide) _
 
-private theorem readTargetUInt_bool (b : Bool) :
+private theorem readTargetUInt_bool (endian : TargetEndian) (b : Bool) :
     Bind.bind
-      (readTargetUIntMirror RuntimeTargetDataLayout.default.base
+      (readTargetUIntMirror (refRuntimeLayout endian).base
         (Array.mk [boolByte b]))
       (fun x => (Scalar.fromUInt (Prov := Miri.Memory.Provenance)
         x (Size.ofBytes 1)).mapError AllocError.scalar) =
       .ok (.fromBool b) := by
   cases b
-  · rw [show (Array.mk [boolByte false] : Array UInt8) = beBytes 0 1 1
-      from rfl]
-    rw [readTargetUIntMirror_be 1 (by decide) 0]
+  · rw [show (Array.mk [boolByte false] : Array UInt8) = endianBytes endian 0 1 1
+      from by cases endian <;> rfl]
+    rw [readTargetUIntMirror_endian endian 1 (by decide) 0]
     rfl
-  · rw [show (Array.mk [boolByte true] : Array UInt8) = beBytes 1 1 1
-      from rfl]
-    rw [readTargetUIntMirror_be 1 (by decide) 1]
+  · rw [show (Array.mk [boolByte true] : Array UInt8) = endianBytes endian 1 1 1
+      from by cases endian <;> rfl]
+    rw [readTargetUIntMirror_endian endian 1 (by decide) 1]
     rfl
 
 private theorem scalar_fromScalarInt_toBitsOrPtr (w : IntWidth)
@@ -165,13 +167,14 @@ private theorem scalar_fromBool_toBitsOrPtr (b : Bool) :
       (Size.ofBytes 1) = .ok (.bits (ScalarInt.ofBool b).data) := by
   cases b <;> rfl
 
-private def PairAllocReads (w : IntWidth) (bits : BitVec 128) (b : Bool)
+private def PairAllocReads (endian : TargetEndian) (w : IntWidth)
+    (bits : BitVec 128) (b : Bool)
     (a : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
     : Prop :=
-  a.readScalar RuntimeTargetDataLayout.default.base
+  a.readScalar (refRuntimeLayout endian).base
       (allocRange Size.ZERO (toMiriSize w)) false =
     .ok (.fromScalarInt (miriScalar w bits)) ∧
-  a.readScalar RuntimeTargetDataLayout.default.base
+  a.readScalar (refRuntimeLayout endian).base
       (allocRange (toMiriSize w) (Size.ofBytes 1)) false = .ok (.fromBool b) ∧
   Allocation.clearProvenance (allocRange Size.ZERO (toMiriSize w))
       (Size.ofBytes 8) a = .ok () a ∧
@@ -264,15 +267,15 @@ private theorem tryNew_size_uninit_image (sz : Size)
   rw [ite_eq_right h_ne] at h_wu
   exact ⟨init, h_fb, h_wu⟩
 
-private theorem pair_write_read_abstract
+private theorem pair_write_read_abstract (endian : TargetEndian)
     (w : IntWidth) (bits : BitVec 128) (b : Bool)
     (bytes0 data boolBytes : Array UInt8)
     (h_b0 : bytes0.size = (Size.ofBytes (2 * (toMiriSize w).bytes)).bytes.toNat)
     (h_dlen : data.size = (toMiriSize w).bytes.toNat)
     (h_blen : boolBytes.size = 1)
-    (h_t1 : targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+    (h_t1 : targetUIntBytesMirror (refRuntimeLayout endian).base
       (toMiriSize w) (miriScalar w bits).data = .ok data)
-    (h_t2 : targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+    (h_t2 : targetUIntBytesMirror (refRuntimeLayout endian).base
       (Size.ofBytes 1) (ScalarInt.ofBool b).data = .ok boolBytes)
     {init rawAlloc : Allocation Miri.Memory.Provenance Unit}
     (h_fb : Allocation.fromBytes (Prov := Miri.Memory.Provenance)
@@ -283,41 +286,41 @@ private theorem pair_write_read_abstract
     let alloc := rawAlloc.withExtra (Miri.TreeBorrows.BorrowTree.new
       Miri.Memory.BorTag.one (Size.ofBytes (2 * (toMiriSize w).bytes)))
     ∃ middle after after2,
-      Allocation.writeScalar RuntimeTargetDataLayout.default.base
+      Allocation.writeScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w))
           (.fromScalarInt (miriScalar w bits)) alloc = .ok () middle ∧
       middle.byteSize = Size.ofBytes (2 * (toMiriSize w).bytes) ∧
       middle.mutability = .Mut ∧
-      Allocation.writeScalar RuntimeTargetDataLayout.default.base
+      Allocation.writeScalar (refRuntimeLayout endian).base
           (allocRange (toMiriSize w) (Size.ofBytes 1))
           (.fromBool b) middle = .ok () after ∧
       Allocation.writeUninit (pairPadRange w) (Size.ofBytes 8) after =
         .ok () after2 ∧
-      after.readScalar RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w)) false =
         Bind.bind
-          (readTargetUIntMirror RuntimeTargetDataLayout.default.base data)
+          (readTargetUIntMirror (refRuntimeLayout endian).base data)
           (fun x =>
             (Scalar.fromUInt x (toMiriSize w)).mapError AllocError.scalar) ∧
-      after.readScalar RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
           (allocRange (toMiriSize w) (Size.ofBytes 1)) false =
         Bind.bind
-          (readTargetUIntMirror RuntimeTargetDataLayout.default.base boolBytes)
+          (readTargetUIntMirror (refRuntimeLayout endian).base boolBytes)
           (fun x =>
             (Scalar.fromUInt x (Size.ofBytes 1)).mapError AllocError.scalar) ∧
       after.provenanceMap = ProvenanceMap.new ∧
       after.byteSize = Size.ofBytes (2 * (toMiriSize w).bytes) ∧
       after.mutability = .Mut ∧ after.align = Align.ONE ∧
-      after2.readScalar RuntimeTargetDataLayout.default.base
+      after2.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w)) false =
         Bind.bind
-          (readTargetUIntMirror RuntimeTargetDataLayout.default.base data)
+          (readTargetUIntMirror (refRuntimeLayout endian).base data)
           (fun x =>
             (Scalar.fromUInt x (toMiriSize w)).mapError AllocError.scalar) ∧
-      after2.readScalar RuntimeTargetDataLayout.default.base
+      after2.readScalar (refRuntimeLayout endian).base
           (allocRange (toMiriSize w) (Size.ofBytes 1)) false =
         Bind.bind
-          (readTargetUIntMirror RuntimeTargetDataLayout.default.base boolBytes)
+          (readTargetUIntMirror (refRuntimeLayout endian).base boolBytes)
           (fun x =>
             (Scalar.fromUInt x (Size.ofBytes 1)).mapError AllocError.scalar) ∧
       after2.provenanceMap = ProvenanceMap.new ∧
@@ -388,7 +391,7 @@ private theorem pair_write_read_abstract
   change (Bind.bind (Except.ok Align.ONE) _) = _ at h_fb
   dsimp only [Bind.bind, Except.bind] at h_fb
   rw [h_b0] at h_fb
-  cases w <;> (
+  cases endian <;> cases w <;> (
     dsimp only [toMiriSize, Size.ofBytes] at h_fb
     injection h_fb with h_init_eq; subst h_init_eq
     rw [UInt64.ofNat_toNat] at h_wu
@@ -441,26 +444,26 @@ private theorem pair_write_read_abstract
       rw [checkedSliceMirror_ok _ _ _ _ h_b0 h_r1_e h_r1_o]
       dsimp only
       first
-      | change (match targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+      | change (match targetUIntBytesMirror (refRuntimeLayout _).base
             (toMiriSize .i8) (miriScalar .i8 bits).data with
           | Except.ok _ => _ | Except.error _ => _) = _
-      | change (match targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+      | change (match targetUIntBytesMirror (refRuntimeLayout _).base
             (toMiriSize .i16) (miriScalar .i16 bits).data with
           | Except.ok _ => _ | Except.error _ => _) = _
-      | change (match targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+      | change (match targetUIntBytesMirror (refRuntimeLayout _).base
             (toMiriSize .i32) (miriScalar .i32 bits).data with
           | Except.ok _ => _ | Except.error _ => _) = _
       | (rw [show IntWidth.i64 = IntWidth.i64 from rfl] at h_t1
          change (match targetUIntBytesMirror
-            RuntimeTargetDataLayout.default.base
+            (refRuntimeLayout _).base
             (toMiriSize .i64) (miriScalar .i64 bits).data with
           | Except.ok _ => _ | Except.error _ => _) = _)
       | (rw [show IntWidth.isize = IntWidth.isize from rfl] at h_t1
          change (match targetUIntBytesMirror
-            RuntimeTargetDataLayout.default.base
+            (refRuntimeLayout _).base
             (toMiriSize .isize) (miriScalar .isize bits).data with
           | Except.ok _ => _ | Except.error _ => _) = _)
-      | change (match targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+      | change (match targetUIntBytesMirror (refRuntimeLayout _).base
             (toMiriSize .i128) (miriScalar .i128 bits).data with
           | Except.ok _ => _ | Except.error _ => _) = _
       rw [h_t1]
@@ -480,7 +483,7 @@ private theorem pair_write_read_abstract
         | Except.error _ => _ | Except.ok _ => _) = _
       rw [checkedSliceMirror_ok _ _ _ _ h_bytes1 h_r2_e h_r2_o]
       dsimp only
-      change (match targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+      change (match targetUIntBytesMirror (refRuntimeLayout _).base
           (Size.ofBytes 1) (ScalarInt.ofBool b).data with
         | Except.ok _ => _ | Except.error _ => _) = _
       rw [h_t2]
@@ -527,25 +530,27 @@ private theorem pair_write_read_abstract
     · rfl
     · rfl)
 
-private theorem tryNew_pair_write_read (w : IntWidth) (bits : BitVec 128)
-    (b : Bool) {rawAlloc : Allocation Miri.Memory.Provenance Unit}
+private theorem tryNew_pair_write_read (endian : TargetEndian) (w : IntWidth)
+    (bits : BitVec 128) (b : Bool)
+    {rawAlloc : Allocation Miri.Memory.Provenance Unit}
     (h_raw : Allocation.tryNew (Prov := Miri.Memory.Provenance)
       (Size.ofBytes (2 * (toMiriSize w).bytes)) Align.ONE .Uninit
       (fun n _ => some (Array.replicate n.bytes.toNat 0)) = .ok rawAlloc) :
     let alloc := rawAlloc.withExtra (Miri.TreeBorrows.BorrowTree.new
       Miri.Memory.BorTag.one (Size.ofBytes (2 * (toMiriSize w).bytes)))
     ∃ middle after after2,
-      Allocation.writeScalar RuntimeTargetDataLayout.default.base
+      Allocation.writeScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w))
           (.fromScalarInt (miriScalar w bits)) alloc = .ok () middle ∧
       middle.byteSize = Size.ofBytes (2 * (toMiriSize w).bytes) ∧
       middle.mutability = .Mut ∧
-      Allocation.writeScalar RuntimeTargetDataLayout.default.base
+      Allocation.writeScalar (refRuntimeLayout endian).base
           (allocRange (toMiriSize w) (Size.ofBytes 1))
           (.fromBool b) middle = .ok () after ∧
       Allocation.writeUninit (pairPadRange w) (Size.ofBytes 8) after =
         .ok () after2 ∧
-      PairAllocReads w bits b after ∧ PairAllocReads w bits b after2 := by
+      PairAllocReads endian w bits b after ∧
+      PairAllocReads endian w bits b after2 := by
   let bytes0 : Array UInt8 :=
     Array.replicate (Size.ofBytes (2 * (toMiriSize w).bytes)).bytes.toNat 0
   have h_b0 :
@@ -556,22 +561,22 @@ private theorem tryNew_pair_write_read (w : IntWidth) (bits : BitVec 128)
       (pair_size_pos w) h_raw
   let n := (toMiriSize w).bytes.toNat
   let x := (miriScalar w bits).data.toNat
-  let data := beBytes x n n
-  have h_dlen : data.size = n := beBytes_size x n n
+  let data := endianBytes endian x n n
+  have h_dlen : data.size = n := endianBytes_size endian x n n
   have h_t1 :
-      targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+      targetUIntBytesMirror (refRuntimeLayout endian).base
         (toMiriSize w) (miriScalar w bits).data = .ok data := by
-    cases w <;> exact targetUIntBytesMirror_be _ (by decide) _
+    cases w <;> exact targetUIntBytesMirror_endian endian _ (by decide) _
   let boolBytes := Array.mk [boolByte b]
   have h_blen : boolBytes.size = 1 := rfl
   have h_t2 :
-      targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+      targetUIntBytesMirror (refRuntimeLayout endian).base
         (Size.ofBytes 1) (ScalarInt.ofBool b).data = .ok boolBytes :=
-    targetUIntBytesMirror_bool b
+    targetUIntBytesMirror_bool endian b
   let ⟨middle, after, after2, h_w1, h_msz, h_mmut, h_w2, h_wu2,
       h_a_r1, h_a_r2, h_a_prov, h_a_sz, h_a_mut, h_a_al,
       h_a2_r1, h_a2_r2, h_a2_prov, h_a2_sz, h_a2_mut, h_a2_al⟩ :=
-    pair_write_read_abstract w bits b bytes0 data boolBytes
+    pair_write_read_abstract endian w bits b bytes0 data boolBytes
       h_b0 h_dlen h_blen h_t1 h_t2 h_fb h_wu
   have h_n_le : n ≤ 16 := by cases w <;> decide
   have h_bw : 8 * n = w.bitWidth := by cases w <;> rfl
@@ -581,58 +586,60 @@ private theorem tryNew_pair_write_read (w : IntWidth) (bits : BitVec 128)
     exact Nat.mod_lt _ (intWidth_modulus_pos w)
   have h_read_int :
       Bind.bind
-        (readTargetUIntMirror RuntimeTargetDataLayout.default.base data)
+        (readTargetUIntMirror (refRuntimeLayout endian).base data)
         (fun v => (Scalar.fromUInt (Prov := Miri.Memory.Provenance)
           v (toMiriSize w)).mapError AllocError.scalar) =
         .ok (.fromScalarInt (miriScalar w bits)) := by
     dsimp only [data]
-    rw [readTargetUIntMirror_be _ h_n_le _]
+    rw [readTargetUIntMirror_endian endian _ h_n_le _]
     dsimp only [Bind.bind, Except.bind]
     rw [Nat.mod_eq_of_lt h_lt]
     dsimp only [x]
     rw [miriScalar_data, bitVec128_ofNat_toNat]
     exact scalar_fromUInt_truncateBits w bits
   have h_r1 :
-      after.readScalar RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
         (allocRange Size.ZERO (toMiriSize w)) false =
         .ok (.fromScalarInt (miriScalar w bits)) := by
     rw [h_a_r1, h_read_int]
   have h_r2 :
-      after.readScalar RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
         (allocRange (toMiriSize w) (Size.ofBytes 1)) false =
         .ok (.fromBool b) := by
     rw [h_a_r2]
-    exact readTargetUInt_bool b
+    exact readTargetUInt_bool endian b
   have h_c1 :=
-    clearProvenance_of_read_ok_range (allocRange Size.ZERO (toMiriSize w))
+    clearProvenance_of_read_ok_range endian
+      (allocRange Size.ZERO (toMiriSize w))
       (toMiriSize w) (pair_r1_end w) h_a_prov h_r1
   have h_c2 :=
-    clearProvenance_of_read_ok_range
+    clearProvenance_of_read_ok_range endian
       (allocRange (toMiriSize w) (Size.ofBytes 1))
       (Size.ofBytes ((toMiriSize w).bytes + 1)) (pair_r2_end w) h_a_prov h_r2
   have h2_r1 :
-      after2.readScalar RuntimeTargetDataLayout.default.base
+      after2.readScalar (refRuntimeLayout endian).base
         (allocRange Size.ZERO (toMiriSize w)) false =
         .ok (.fromScalarInt (miriScalar w bits)) := by
     rw [h_a2_r1, h_read_int]
   have h2_r2 :
-      after2.readScalar RuntimeTargetDataLayout.default.base
+      after2.readScalar (refRuntimeLayout endian).base
         (allocRange (toMiriSize w) (Size.ofBytes 1)) false =
         .ok (.fromBool b) := by
     rw [h_a2_r2]
-    exact readTargetUInt_bool b
+    exact readTargetUInt_bool endian b
   have h2_c1 :=
-    clearProvenance_of_read_ok_range (allocRange Size.ZERO (toMiriSize w))
+    clearProvenance_of_read_ok_range endian
+      (allocRange Size.ZERO (toMiriSize w))
       (toMiriSize w) (pair_r1_end w) h_a2_prov h2_r1
   have h2_c2 :=
-    clearProvenance_of_read_ok_range
+    clearProvenance_of_read_ok_range endian
       (allocRange (toMiriSize w) (Size.ofBytes 1))
       (Size.ofBytes ((toMiriSize w).bytes + 1)) (pair_r2_end w) h_a2_prov h2_r2
   exact ⟨middle, after, after2, h_w1, h_msz, h_mmut, h_w2, h_wu2,
     ⟨h_r1, h_r2, h_c1, h_c2, h_a_sz, h_a_mut, h_a_al⟩,
     ⟨h2_r1, h2_r2, h2_c1, h2_c2, h_a2_sz, h_a2_mut, h_a2_al⟩⟩
 
-private theorem tryNew_pair_writeUninit (w : IntWidth)
+private theorem tryNew_pair_writeUninit (endian : TargetEndian) (w : IntWidth)
     {rawAlloc : Allocation Miri.Memory.Provenance Unit}
     (h_raw : Allocation.tryNew (Prov := Miri.Memory.Provenance)
       (Size.ofBytes (2 * (toMiriSize w).bytes)) Align.ONE .Uninit
@@ -643,7 +650,7 @@ private theorem tryNew_pair_writeUninit (w : IntWidth)
       Allocation.writeUninit
           (allocRange Size.ZERO (Size.ofBytes (2 * (toMiriSize w).bytes)))
           (Size.ofBytes 8) alloc = .ok () after ∧
-      after.readScalar RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w)) false =
         .error (.invalidUninitBytes info) ∧
       after.byteSize = Size.ofBytes (2 * (toMiriSize w).bytes) ∧
@@ -651,7 +658,7 @@ private theorem tryNew_pair_writeUninit (w : IntWidth)
   let ⟨init, h_fb, h_wu⟩ :=
     tryNew_size_uninit_image (Size.ofBytes (2 * (toMiriSize w).bytes))
       (pair_size_pos w) h_raw
-  cases w <;> (
+  cases endian <;> cases w <;> (
     injection h_fb with h_init_eq; subst h_init_eq
     injection h_wu with _ h_raw_eq
     dsimp only [toMiriSize, allocRange, Size.ZERO, Size.ofBytes] at h_raw_eq
@@ -747,7 +754,8 @@ private theorem checkedBounds_pair_bool (w : IntWidth) :
   rw [h_fits]
   cases w <;> rfl
 
-private theorem getPtrAllocMut_pair_nonGhost (w : IntWidth)
+private theorem getPtrAllocMut_pair_nonGhost (endian : TargetEndian)
+    (w : IntWidth)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (alloc : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
@@ -760,8 +768,8 @@ private theorem getPtrAllocMut_pair_nonGhost (w : IntWidth)
     let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, alloc⟩)]) }
     Miri.Memory.AllocationAccess.getPtrAllocMut mem ⟨machine, none⟩
         ⟨Size.ofBytes 8⟩ retPtr (Size.ofBytes (2 * (toMiriSize w).bytes))
-        false none refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig) =
+        false none (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian)) =
       ⟨mem, ⟨machine, none⟩,
         some ⟨retAllocId,
           allocRange Size.ZERO (Size.ofBytes (2 * (toMiriSize w).bytes)),
@@ -771,14 +779,14 @@ private theorem getPtrAllocMut_pair_nonGhost (w : IntWidth)
           alloc⟩)⟩ := by
   intro mem
   exact Miri.Memory.AllocationAccess.live_mut_of_edges mem ⟨machine, none⟩
-    ⟨Size.ofBytes 8⟩ retPtr _ none refAccessConfig.globalHooks
-    (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
+    ⟨Size.ofBytes 8⟩ retPtr _ none (refAccessConfig endian).globalHooks
+    (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
     retAllocId ⟨.stack, alloc⟩ (.concrete Miri.Memory.BorTag.one)
     (Size.ofBytes (2 * (toMiriSize w).bytes)).bytes.toNat
     (sizeAsI64_pair w)
     (by cases w <;> decide)
-    (Miri.Interpreter.PlaceMachine.resolvePointer_ok refAccessConfig mem machine
-      retPtr _ _ rfl)
+    (Miri.Interpreter.PlaceMachine.resolvePointer_ok (refAccessConfig endian)
+      mem machine retPtr _ _ rfl)
     (singleton_live_find _)
     h_mut
     rfl
@@ -788,11 +796,12 @@ private theorem getPtrAllocMut_pair_nonGhost (w : IntWidth)
       dsimp only [Miri.Interpreter.PlaceMachine.accessHooks]
       rw [h_extra]
       exact Miri.Interpreter.PlaceMachine.memoryAccess_fresh_write
-        refAccessConfig machine retAllocId Miri.Memory.BorTag.one
+        (refAccessConfig endian) machine retAllocId Miri.Memory.BorTag.one
         _ h_dr rfl rfl rfl)
     (singleton_live_filter_push _ _)
 
-private theorem writeMemory_retPlace_pair (types : List MirTy) (w : IntWidth)
+private theorem writeMemory_retPlace_pair (endian : TargetEndian)
+    (types : List MirTy) (w : IntWidth)
     (s : Bool) (bits : BitVec 128) (b : Bool)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -809,14 +818,16 @@ private theorem writeMemory_retPlace_pair (types : List MirTy) (w : IntWidth)
     ∃ after after2,
       let mem' :=
         { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
-      Miri.Interpreter.PlaceMachine.writeMemory refAccessConfig (fun _ => true)
+      Miri.Interpreter.PlaceMachine.writeMemory (refAccessConfig endian)
+          (fun _ => true)
           (.scalarPair (.fromScalarInt (miriScalar w bits)) (.fromBool b))
           ⟨retMemPlace,
             refLocalLayoutForTy types (.tuple [.int w s, .bool])⟩ st =
         .ok () { st with machine := { st.machine with memory := mem' } } ∧
       Allocation.writeUninit (pairPadRange w) (Size.ofBytes 8) after =
         .ok () after2 ∧
-      PairAllocReads w bits b after ∧ PairAllocReads w bits b after2 := by
+      PairAllocReads endian w bits b after ∧
+      PairAllocReads endian w bits b after2 := by
   let ⟨_, h_raw_eq, h_rsz, _, _, h_rmut, _⟩ :=
     Allocation.tryNew_replicate_full (P := Miri.Memory.Provenance)
       (Size.ofBytes (2 * (toMiriSize w).bytes)) Align.ONE 1 (by decide)
@@ -827,22 +838,23 @@ private theorem writeMemory_retPlace_pair (types : List MirTy) (w : IntWidth)
   let alloc := rawAlloc.withExtra (Miri.TreeBorrows.BorrowTree.new
     Miri.Memory.BorTag.one (Size.ofBytes (2 * (toMiriSize w).bytes)))
   let ⟨middle, after, after2, h_w1, _, _, h_w2, h_pad, h_rd1, h_rd2⟩ :=
-    tryNew_pair_write_read w bits b h_raw
+    tryNew_pair_write_read endian w bits b h_raw
   have h_sc_sz : (Scalar.fromScalarInt (Prov := Miri.Memory.Provenance)
       (miriScalar w bits)).size = toMiriSize w := miriScalar_size w bits
   let place : Miri.Interpreter.MemoryOperandPlace Miri.Memory.Provenance :=
     ⟨retMemPlace, localMemoryLayout (refLocalLayoutForTy types
       (.tuple [.int w s, .bool]))⟩
   have h_uns : place.layout.backendRepr.isUnsized = false := rfl
-  have h_ptr_acc := getPtrAllocMut_pair_nonGhost w mem1 alloc st.machine
+  have h_ptr_acc := getPtrAllocMut_pair_nonGhost endian w mem1 alloc st.machine
     h_rsz h_rmut rfl h_dr
   have h_place_acc :
       Miri.Interpreter.getPlaceAllocMut
         { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, alloc⟩)]) }
         ⟨st.machine, none⟩ place
-        refAccessConfig.runtime false none refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-        refAccessConfig.dynamicLayout =
+        (refAccessConfig endian).runtime false none
+        (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+        (refAccessConfig endian).dynamicLayout =
       ⟨{ mem1 with live := (Array.mk [(retAllocId, ⟨.stack, alloc⟩)]) },
         ⟨st.machine, none⟩,
         some ⟨retAllocId, allocRange Size.ZERO place.layout.size, alloc⟩,
@@ -854,13 +866,14 @@ private theorem writeMemory_retPlace_pair (types : List MirTy) (w : IntWidth)
       Size.ofBytes 1 := by
     cases b <;> rfl
   have h_wA : Miri.ABI.Primitive.size (.Int (toMiriInteger w) s)
-      refAccessConfig.runtime =
+      (refAccessConfig endian).runtime =
       .ok (Scalar.fromScalarInt (Prov := Miri.Memory.Provenance)
         (miriScalar w bits)).size := by
-    rw [h_sc_sz]; cases w <;> rfl
-  have h_wB : Miri.ABI.Primitive.size (.Int .I8 false) refAccessConfig.runtime =
+    rw [h_sc_sz]; cases endian <;> cases w <;> rfl
+  have h_wB : Miri.ABI.Primitive.size (.Int .I8 false)
+      (refAccessConfig endian).runtime =
       .ok (Scalar.fromBool (Prov := Miri.Memory.Provenance) b).size := by
-    rw [h_fb_sz]; rfl
+    rw [h_fb_sz]; cases endian <;> rfl
   have h_cB : (Scalar.fromBool (Prov := Miri.Memory.Provenance) b).isPointer =
       false := by
     cases b <;> rfl
@@ -876,10 +889,10 @@ private theorem writeMemory_retPlace_pair (types : List MirTy) (w : IntWidth)
       Miri.Interpreter.writeImmediateToMplaceNoValidate
         st.machine.memory ⟨st.machine, none⟩
         (.scalarPair (.fromScalarInt (miriScalar w bits)) (.fromBool b)) place
-        refAccessConfig.runtime refAccessConfig.ghostMode
-        refAccessConfig.globalKind refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-        refAccessConfig.dynamicLayout (fun _ => true) =
+        (refAccessConfig endian).runtime (refAccessConfig endian).ghostMode
+        (refAccessConfig endian).globalKind (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+        (refAccessConfig endian).dynamicLayout (fun _ => true) =
       ⟨{ mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) },
         ⟨st.machine, none⟩,
         some ⟨retAllocId, allocRange Size.ZERO place.layout.size, after⟩,
@@ -890,9 +903,9 @@ private theorem writeMemory_retPlace_pair (types : List MirTy) (w : IntWidth)
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, middle⟩)]) }
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
       ⟨st.machine, none⟩ place
-      refAccessConfig.runtime none refAccessConfig.globalHooks
-      (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-      refAccessConfig.dynamicLayout
+      (refAccessConfig endian).runtime none (refAccessConfig endian).globalHooks
+      (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+      (refAccessConfig endian).dynamicLayout
       (.fromScalarInt (miriScalar w bits)) (.fromBool b)
       (.Initialized (value := .Int (toMiriInteger w) s)
         (validRange := refFullWrappingRangeSize (toMiriSize w)))
@@ -907,7 +920,7 @@ private theorem writeMemory_retPlace_pair (types : List MirTy) (w : IntWidth)
       (singleton_setLiveAllocation mem1 middle after)
     exact h_place_acc
   exact ⟨after, after2,
-    Miri.Interpreter.PlaceMachine.writeMemory_of_result refAccessConfig
+    Miri.Interpreter.PlaceMachine.writeMemory_of_result (refAccessConfig endian)
       (fun _ => true)
       (.scalarPair (.fromScalarInt (miriScalar w bits)) (.fromBool b))
       ⟨retMemPlace, refLocalLayoutForTy types (.tuple [.int w s, .bool])⟩ st
@@ -963,7 +976,8 @@ private theorem getPtrAlloc_off_ghost (off sz : Size) (signedSize : Int)
   rw [h_bounds]
   rfl
 
-private theorem getPtrAllocMut_off_ghost (off sz : Size) (signedSize : Int)
+private theorem getPtrAllocMut_off_ghost (endian : TargetEndian) (off sz : Size)
+    (signedSize : Int)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (alloc : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
@@ -976,14 +990,14 @@ private theorem getPtrAllocMut_off_ghost (off sz : Size) (signedSize : Int)
     let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, alloc⟩)]) }
     Miri.Memory.AllocationAccess.getPtrAllocMut mem ⟨machine, none⟩
         ⟨Size.ofBytes 8⟩ (offMemPlace off).ptr sz true none
-        refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig) =
+        (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian)) =
       ⟨mem, ⟨machine, none⟩,
         some ⟨retAllocId, allocRange off sz, alloc⟩,
         .ok (some ⟨retAllocId, allocRange off sz, alloc⟩)⟩ := by
   intro mem
   have h_raw : Miri.Memory.MemoryLifecycle.getAllocRawMut mem ⟨machine, none⟩
-      retAllocId none refAccessConfig.globalHooks =
+      retAllocId none (refAccessConfig endian).globalHooks =
       ⟨mem, ⟨machine, none⟩, .ok alloc⟩ := by
     dsimp only [Miri.Memory.MemoryLifecycle.getAllocRawMut, refAccessConfig,
       refGlobalAllocationHooks, mem, Id.run, bind, Bind.bind, pure, Pure.pure]
@@ -992,12 +1006,13 @@ private theorem getPtrAllocMut_off_ghost (off sz : Size) (signedSize : Int)
     rw [h_mut]
     rfl
   have h_rp :
-      (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig).resolvePointer
+      (Miri.Interpreter.PlaceMachine.accessHooks
+          (refAccessConfig endian)).resolvePointer
         mem ⟨machine, none⟩ (offMemPlace off).ptr signedSize =
       ⟨⟨machine, none⟩,
         .ok (.ok ⟨retAllocId, off, .concrete Miri.Memory.BorTag.one⟩)⟩ :=
-    Miri.Interpreter.PlaceMachine.resolvePointer_ok refAccessConfig mem machine
-      _ _ _ rfl
+    Miri.Interpreter.PlaceMachine.resolvePointer_ok (refAccessConfig endian)
+      mem machine _ _ _ rfl
   dsimp only [Miri.Memory.AllocationAccess.getPtrAllocMut]
   change (match Miri.Memory.sizeAsI64 sz with
     | Except.ok _ => _ | Except.error _ => _) = _
@@ -1011,8 +1026,8 @@ private theorem getPtrAllocMut_off_ghost (off sz : Size) (signedSize : Int)
   dsimp only [pure, Pure.pure, bind, Bind.bind]
   rw [h_bounds]
   rfl
-private theorem readImmediateFromMplaceRaw_pair_int (types : List MirTy)
-    (w : IntWidth) (s : Bool)
+private theorem readImmediateFromMplaceRaw_pair_int (endian : TargetEndian)
+    (types : List MirTy) (w : IntWidth) (s : Bool)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (after : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
@@ -1024,10 +1039,10 @@ private theorem readImmediateFromMplaceRaw_pair_int (types : List MirTy)
     let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
     Miri.Interpreter.readImmediateFromMplaceRaw mem ⟨machine, none⟩
         ⟨retMemPlace, localMemoryLayout (refLocalLayoutForTy types (.int w s))⟩
-        RuntimeTargetDataLayout.default true none
+        (refRuntimeLayout endian) true none
         cfg.globalHooks (Miri.Interpreter.PlaceMachine.accessHooks cfg)
         cfg.dynamicLayout =
-      match after.readScalar RuntimeTargetDataLayout.default.base
+      match after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w)) false with
       | .ok sc =>
         ⟨mem, ⟨machine, none⟩,
@@ -1043,25 +1058,25 @@ private theorem readImmediateFromMplaceRaw_pair_int (types : List MirTy)
     (toMiriSize w).bytes.toNat mem1 after machine cfg h_res h_gh
     (sizeAsI64_toMiriSize w) (by cases w <;> decide)
     (by rw [h_sz]; exact checkedBounds_pair_int w)
-  have h_acc := getPlaceAlloc_sized_of_access_poly mem ⟨machine, none⟩
+  have h_acc := getPlaceAlloc_sized_of_access_poly endian mem ⟨machine, none⟩
     ⟨retMemPlace, localMemoryLayout (refLocalLayoutForTy types (.int w s))⟩
     true none cfg.globalHooks (Miri.Interpreter.PlaceMachine.accessHooks cfg)
     cfg.dynamicLayout ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), after⟩
     (by cases w <;> cases s <;> rfl) rfl h_ptr
-  exact readImmediateFromMplaceRaw_retPlace_int_aux w s
+  exact readImmediateFromMplaceRaw_retPlace_int_aux endian w s
     (Miri.ABI.AbiAlign.new Align.ONE).abi
     (refFullWrappingRangeSize (toMiriSize w))
     (some (tyIdFor types (.int w s)))
     mem1 after machine cfg h_acc
 
-private theorem readImmediate_mem_pair_int (types : List MirTy)
-    (w : IntWidth) (s : Bool)
+private theorem readImmediate_mem_pair_int (endian : TargetEndian)
+    (types : List MirTy) (w : IntWidth) (s : Bool)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (after : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
     (machine : Miri.Interpreter.MachineHooks.MachineState Unit RefUser)
     (cfg : Miri.Interpreter.PlaceMachine.AccessConfig Unit RefUser)
-    (h_rt : cfg.runtime = Miri.ABI.RuntimeTargetDataLayout.default)
+    (h_rt : cfg.runtime = refRuntimeLayout endian)
     (h_gk : cfg.globalKind = none)
     (h_res : cfg.resolvePointer = refResolvePointer)
     (h_gh : cfg.globalHooks = refGlobalAllocationHooks)
@@ -1072,7 +1087,7 @@ private theorem readImmediate_mem_pair_int (types : List MirTy)
         (localMemoryLayout (refLocalLayoutForTy types (.int w s)))
         cfg.runtime true cfg.globalKind cfg.globalHooks
         (Miri.Interpreter.PlaceMachine.accessHooks cfg) cfg.dynamicLayout =
-      match after.readScalar RuntimeTargetDataLayout.default.base
+      match after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w)) false with
       | .ok sc =>
         ⟨mem, ⟨machine, none⟩,
@@ -1084,7 +1099,7 @@ private theorem readImmediate_mem_pair_int (types : List MirTy)
           some ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), after⟩,
           .error (.allocation err)⟩ := by
   intro mem
-  have h_raw := readImmediateFromMplaceRaw_pair_int types w s mem1 after
+  have h_raw := readImmediateFromMplaceRaw_pair_int endian types w s mem1 after
     machine cfg h_res h_gh h_sz
   rw [h_rt, h_gk]
   cases w <;> cases s <;> (
@@ -1092,11 +1107,11 @@ private theorem readImmediate_mem_pair_int (types : List MirTy)
       Miri.Interpreter.readImmediateRaw,
       Id.run, pure, Pure.pure, bind, Bind.bind]
     rw [h_raw]
-    cases after.readScalar RuntimeTargetDataLayout.default.base
+    cases after.readScalar (refRuntimeLayout endian).base
         (allocRange Size.ZERO _) false <;> rfl)
 
-private theorem readImmediateFromMplaceRaw_bool_at (types : List MirTy)
-    (off : Size)
+private theorem readImmediateFromMplaceRaw_bool_at (endian : TargetEndian)
+    (types : List MirTy) (off : Size)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (after : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
@@ -1107,7 +1122,7 @@ private theorem readImmediateFromMplaceRaw_bool_at (types : List MirTy)
         { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
       Miri.Interpreter.getPlaceAlloc mem ⟨machine, none⟩
           ⟨offMemPlace off, localMemoryLayout (refLocalLayoutForTy types .bool)⟩
-          RuntimeTargetDataLayout.default true none
+          (refRuntimeLayout endian) true none
           cfg.globalHooks (Miri.Interpreter.PlaceMachine.accessHooks cfg)
           cfg.dynamicLayout =
         ⟨mem, ⟨machine, none⟩,
@@ -1119,10 +1134,10 @@ private theorem readImmediateFromMplaceRaw_bool_at (types : List MirTy)
     let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
     Miri.Interpreter.readImmediateFromMplaceRaw mem ⟨machine, none⟩
         ⟨offMemPlace off, localMemoryLayout (refLocalLayoutForTy types .bool)⟩
-        RuntimeTargetDataLayout.default true none
+        (refRuntimeLayout endian) true none
         cfg.globalHooks (Miri.Interpreter.PlaceMachine.accessHooks cfg)
         cfg.dynamicLayout =
-      match after.readScalar RuntimeTargetDataLayout.default.base
+      match after.readScalar (refRuntimeLayout endian).base
           (allocRange off (Size.ofBytes 1)) false with
       | .ok sc =>
         ⟨mem, ⟨machine, none⟩,
@@ -1146,14 +1161,14 @@ private theorem readImmediateFromMplaceRaw_bool_at (types : List MirTy)
           (allocRange Size.ZERO (Size.ofBytes 1))))
       (fun range =>
         Except.mapError Miri.Interpreter.MemoryOperandError.allocation
-          (after.readScalar RuntimeTargetDataLayout.default.base range false)))
+          (after.readScalar (refRuntimeLayout endian).base range false)))
     _ _ = _
   rw [h_sub]
   change Miri.Interpreter.readImmediateFromMplaceRaw.match_3 _
     (Except.mapError Miri.Interpreter.MemoryOperandError.allocation
-      (after.readScalar RuntimeTargetDataLayout.default.base
+      (after.readScalar (refRuntimeLayout endian).base
         (allocRange off (Size.ofBytes 1)) false)) _ _ = _
-  cases after.readScalar RuntimeTargetDataLayout.default.base
+  cases after.readScalar (refRuntimeLayout endian).base
       (allocRange off (Size.ofBytes 1)) false <;> rfl
 
 private theorem subrange_bool_at (w : IntWidth) :
@@ -1162,14 +1177,14 @@ private theorem subrange_bool_at (w : IntWidth) :
       .ok (allocRange (toMiriSize w) (Size.ofBytes 1)) := by
   cases w <;> rfl
 
-private theorem readImmediate_mem_pair_bool (types : List MirTy)
-    (w : IntWidth)
+private theorem readImmediate_mem_pair_bool (endian : TargetEndian)
+    (types : List MirTy) (w : IntWidth)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (after : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
     (machine : Miri.Interpreter.MachineHooks.MachineState Unit RefUser)
     (cfg : Miri.Interpreter.PlaceMachine.AccessConfig Unit RefUser)
-    (h_rt : cfg.runtime = Miri.ABI.RuntimeTargetDataLayout.default)
+    (h_rt : cfg.runtime = refRuntimeLayout endian)
     (h_gk : cfg.globalKind = none)
     (h_res : cfg.resolvePointer = refResolvePointer)
     (h_gh : cfg.globalHooks = refGlobalAllocationHooks)
@@ -1180,7 +1195,7 @@ private theorem readImmediate_mem_pair_bool (types : List MirTy)
         (localMemoryLayout (refLocalLayoutForTy types .bool))
         cfg.runtime true cfg.globalKind cfg.globalHooks
         (Miri.Interpreter.PlaceMachine.accessHooks cfg) cfg.dynamicLayout =
-      match after.readScalar RuntimeTargetDataLayout.default.base
+      match after.readScalar (refRuntimeLayout endian).base
           (allocRange (toMiriSize w) (Size.ofBytes 1)) false with
       | .ok sc =>
         ⟨mem, ⟨machine, none⟩,
@@ -1195,22 +1210,23 @@ private theorem readImmediate_mem_pair_bool (types : List MirTy)
     (Size.ofBytes 1).bytes.toNat mem1 after machine cfg h_res h_gh
     rfl rfl
     (by rw [h_sz]; exact checkedBounds_pair_bool w)
-  have h_acc := getPlaceAlloc_sized_of_access_poly mem ⟨machine, none⟩
+  have h_acc := getPlaceAlloc_sized_of_access_poly endian mem ⟨machine, none⟩
     ⟨offMemPlace (toMiriSize w),
       localMemoryLayout (refLocalLayoutForTy types .bool)⟩
     true none cfg.globalHooks (Miri.Interpreter.PlaceMachine.accessHooks cfg)
     cfg.dynamicLayout
     ⟨retAllocId, allocRange (toMiriSize w) (Size.ofBytes 1), after⟩
     rfl rfl h_ptr
-  have h_raw := readImmediateFromMplaceRaw_bool_at types (toMiriSize w)
+  have h_raw := readImmediateFromMplaceRaw_bool_at endian types (toMiriSize w)
     mem1 after machine cfg h_acc (subrange_bool_at w)
   rw [h_rt, h_gk]
   dsimp only [Miri.Interpreter.readImmediate, Miri.Interpreter.readImmediateRaw,
     Id.run, pure, Pure.pure, bind, Bind.bind]
   rw [h_raw]
-  cases after.readScalar RuntimeTargetDataLayout.default.base
+  cases after.readScalar (refRuntimeLayout endian).base
       (allocRange (toMiriSize w) (Size.ofBytes 1)) false <;> rfl
-private theorem validityMemory_readImmediate_of_core_ok (types : List MirTy)
+private theorem validityMemory_readImmediate_of_core_ok (endian : TargetEndian)
+    (types : List MirTy)
     (op : Operand Miri.Memory.Provenance) (layout : LocalLayout)
     (sc : Scalar Miri.Memory.Provenance) (expected : ExpectedValue)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -1225,13 +1241,14 @@ private theorem validityMemory_readImmediate_of_core_ok (types : List MirTy)
       Miri.Interpreter.readImmediate
         { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
         ⟨st.machine, none⟩ op (localMemoryLayout layout)
-        refAccessConfig.runtime true none refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-        refAccessConfig.dynamicLayout =
+        (refAccessConfig endian).runtime true none
+        (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+        (refAccessConfig endian).dynamicLayout =
       ⟨{ mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) },
         ⟨st.machine, none⟩, some ref,
         .ok ⟨.scalar sc, localMemoryLayout layout⟩⟩) :
-    Miri.Interpreter.ValidityMemory.readImmediate refValidityMemoryEnv
+    Miri.Interpreter.ValidityMemory.readImmediate (refValidityMemoryEnv endian)
         ⟨op, layout⟩ expected st =
       .ok ⟨.scalar sc, layout⟩ st := by
   let _ := types
@@ -1249,7 +1266,8 @@ private theorem validityMemory_readImmediate_of_core_ok (types : List MirTy)
       subst h_mem
       rfl
 
-private theorem validityMemory_readImmediate_of_core_uninit (types : List MirTy)
+private theorem validityMemory_readImmediate_of_core_uninit
+    (endian : TargetEndian) (types : List MirTy)
     (op : Operand Miri.Memory.Provenance) (layout : LocalLayout)
     (info : Option Miri.Memory.BadBytesAccess) (expected : ExpectedValue)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -1264,15 +1282,16 @@ private theorem validityMemory_readImmediate_of_core_uninit (types : List MirTy)
       Miri.Interpreter.readImmediate
         { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
         ⟨st.machine, none⟩ op (localMemoryLayout layout)
-        refAccessConfig.runtime true none refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-        refAccessConfig.dynamicLayout =
+        (refAccessConfig endian).runtime true none
+        (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+        (refAccessConfig endian).dynamicLayout =
       ⟨{ mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) },
         ⟨st.machine, none⟩, some ref,
         .error (.allocation (.invalidUninitBytes info))⟩) :
     ∃ msg,
-      Miri.Interpreter.ValidityMemory.readImmediate refValidityMemoryEnv
-          ⟨op, layout⟩ expected st =
+      Miri.Interpreter.ValidityMemory.readImmediate
+          (refValidityMemoryEnv endian) ⟨op, layout⟩ expected st =
         .error (.undefinedBehavior msg) st := by
   let _ := types
   dsimp only [Miri.Interpreter.ValidityMemory.readImmediate,
@@ -1289,8 +1308,9 @@ private theorem validityMemory_readImmediate_of_core_uninit (types : List MirTy)
       subst h_mem
       exact ⟨_, rfl⟩
 
-private theorem clearPlaceProvenance_mem_at (types : List MirTy)
-    (c : Choice) (mplace : Miri.Interpreter.MemPlace Miri.Memory.Provenance)
+private theorem clearPlaceProvenance_mem_at (endian : TargetEndian)
+    (types : List MirTy) (c : Choice)
+    (mplace : Miri.Interpreter.MemPlace Miri.Memory.Provenance)
     (layout : LocalLayout) (range : AllocRange)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -1302,16 +1322,17 @@ private theorem clearPlaceProvenance_mem_at (types : List MirTy)
       Miri.Interpreter.getPlaceAllocMut
         { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
         ⟨st.machine, none⟩ ⟨mplace, localMemoryLayout layout⟩
-        refAccessConfig.runtime true none refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-        refAccessConfig.dynamicLayout =
+        (refAccessConfig endian).runtime true none
+        (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+        (refAccessConfig endian).dynamicLayout =
       ⟨{ mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) },
         ⟨st.machine, none⟩,
         some ⟨retAllocId, range, after⟩,
         .ok (some ⟨retAllocId, range, after⟩)⟩)
     (h_cp : Allocation.clearProvenance range (Size.ofBytes 8) after =
       .ok () after) :
-    (refValHooks types).clearProvenance c ⟨.memory mplace, layout⟩ st =
+    (refValHooks endian types).clearProvenance c ⟨.memory mplace, layout⟩ st =
       .ok () st := by
   have h_st_eq :
       ({ st with machine := { st.machine with
@@ -1329,13 +1350,14 @@ private theorem clearPlaceProvenance_mem_at (types : List MirTy)
         rfl
   have h_env_acc :
       Miri.Interpreter.getPlaceAllocMut
-        (refValidityMemoryEnv.memory st) (refValidityMemoryEnv.hooks st)
+        ((refValidityMemoryEnv endian).memory st)
+        ((refValidityMemoryEnv endian).hooks st)
         ⟨mplace, localMemoryLayout layout⟩
-        refValidityMemoryEnv.context.runtime true
-        refValidityMemoryEnv.context.globalKind
-        refValidityMemoryEnv.context.globalHooks
-        refValidityMemoryEnv.context.accessHooks
-        refValidityMemoryEnv.context.dynamicLayout =
+        (refValidityMemoryEnv endian).context.runtime true
+        (refValidityMemoryEnv endian).context.globalKind
+        (refValidityMemoryEnv endian).context.globalHooks
+        (refValidityMemoryEnv endian).context.accessHooks
+        (refValidityMemoryEnv endian).context.dynamicLayout =
       ⟨{ mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) },
         ⟨st.machine, none⟩,
         some ⟨retAllocId, range, after⟩,
@@ -1344,8 +1366,8 @@ private theorem clearPlaceProvenance_mem_at (types : List MirTy)
     rw [h_mem]
     exact h_acc
   rw [refValHooks_clearProvenance]
-  have h_res := clearPlaceProvenance_mem_step refValidityMemoryEnv
-    (refBasePlaceProjectionHooks types).place
+  have h_res := clearPlaceProvenance_mem_step (refValidityMemoryEnv endian)
+    (refBasePlaceProjectionHooks endian types).place
     c (fun st => .ok false st) (fun _ _ st => .ok () st)
     mplace layout st st
     { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
@@ -1363,7 +1385,8 @@ private theorem clearPlaceProvenance_mem_at (types : List MirTy)
   dsimp only [refValidityMemoryEnv]
   rw [h_st_eq]
 
-private theorem getPlaceAllocMut_off_ghost (off sz : Size) (signedSize : Int)
+private theorem getPlaceAllocMut_off_ghost (endian : TargetEndian)
+    (off sz : Size) (signedSize : Int)
     (memLayout : Miri.Interpreter.MemoryOperandLayout)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -1378,20 +1401,20 @@ private theorem getPlaceAllocMut_off_ghost (off sz : Size) (signedSize : Int)
       alloc.byteSize off signedSize .memoryAccess = .ok ()) :
     let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, alloc⟩)]) }
     Miri.Interpreter.getPlaceAllocMut mem ⟨machine, none⟩
-        ⟨offMemPlace off, memLayout⟩ refAccessConfig.runtime true none
-        refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-        refAccessConfig.dynamicLayout =
+        ⟨offMemPlace off, memLayout⟩ (refAccessConfig endian).runtime true none
+        (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+        (refAccessConfig endian).dynamicLayout =
       ⟨mem, ⟨machine, none⟩,
         some ⟨retAllocId, allocRange off sz, alloc⟩,
         .ok (some ⟨retAllocId, allocRange off sz, alloc⟩)⟩ := by
   intro mem
-  have h_ptr := getPtrAllocMut_off_ghost off sz signedSize mem1 alloc machine
-    h_mut h_sa h_nz h_bounds
-  exact getPlaceAllocMut_sized_of_access_poly mem ⟨machine, none⟩
-    ⟨offMemPlace off, memLayout⟩ true none refAccessConfig.globalHooks
-    (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-    refAccessConfig.dynamicLayout
+  have h_ptr := getPtrAllocMut_off_ghost endian off sz signedSize mem1 alloc
+    machine h_mut h_sa h_nz h_bounds
+  exact getPlaceAllocMut_sized_of_access_poly endian mem ⟨machine, none⟩
+    ⟨offMemPlace off, memLayout⟩ true none (refAccessConfig endian).globalHooks
+    (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+    (refAccessConfig endian).dynamicLayout
     ⟨retAllocId, allocRange off sz, alloc⟩
     h_uns rfl (by dsimp only; rw [h_lsz]; exact h_ptr)
 private noncomputable def pairDataRange (w : IntWidth) :
@@ -1400,8 +1423,9 @@ private noncomputable def pairDataRange (w : IntWidth) :
   | .ok rs => rs
   | .error _ => .empty
 
-private theorem visit_mem_pair_int_ok (types : List MirTy) (c : Choice)
-    (fuel : Nat) (path : Miri.Memory.ValidationPath) (w : IntWidth) (s : Bool)
+private theorem visit_mem_pair_int_ok (endian : TargetEndian)
+    (types : List MirTy) (c : Choice) (fuel : Nat)
+    (path : Miri.Memory.ValidationPath) (w : IntWidth) (s : Bool)
     (sc : Scalar Miri.Memory.Provenance)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -1412,7 +1436,7 @@ private theorem visit_mem_pair_int_ok (types : List MirTy) (c : Choice)
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) })
     (h_sz : after.byteSize = Size.ofBytes (2 * (toMiriSize w).bytes))
     (h_mut : after.mutability = .Mut)
-    (h_rd : after.readScalar RuntimeTargetDataLayout.default.base
+    (h_rd : after.readScalar (refRuntimeLayout endian).base
       (allocRange Size.ZERO (toMiriSize w)) false = .ok sc)
     (h_cp : Allocation.clearProvenance (allocRange Size.ZERO (toMiriSize w))
       (Size.ofBytes 8) after = .ok () after) :
@@ -1421,37 +1445,39 @@ private theorem visit_mem_pair_int_ok (types : List MirTy) (c : Choice)
       path := path, flags := ⟨true, false⟩, ctfeMode := none,
       refTracking := none, dataBytes := some .empty
     }
-    Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c (fuel + 1)
-        sess ⟨.memory retMemPlace, refLocalLayoutForTy types (.int w s)⟩ st =
+    Miri.Interpreter.ValidityVisitor.visit (refValHooks endian types) c
+        (fuel + 1) sess ⟨.memory retMemPlace,
+          refLocalLayoutForTy types (.int w s)⟩ st =
       .ok { sess with dataBytes := some (singleDataRange w) } st := by
   intro sess
-  have h_core := readImmediate_mem_pair_int types w s mem1 after st.machine
-    refAccessConfig rfl rfl rfl rfl h_sz
+  have h_core := readImmediate_mem_pair_int endian types w s mem1 after
+    st.machine (refAccessConfig endian) rfl rfl rfl rfl h_sz
   rw [h_rd] at h_core
-  have h_ri : (refValHooks types).readImmediate c
+  have h_ri : (refValHooks endian types).readImmediate c
       ⟨.memory retMemPlace, refLocalLayoutForTy types (.int w s)⟩
       ExpectedValue.integer st =
       .ok ⟨.scalar sc, refLocalLayoutForTy types (.int w s)⟩ st := by
     rw [refValHooks_readImmediate]
     dsimp only [Miri.Interpreter.placeToOp, Miri.Interpreter.placeToOpCore,
       bind, Bind.bind, EStateM.bind, pure, Pure.pure, EStateM.pure]
-    exact validityMemory_readImmediate_of_core_ok types (.indirect retMemPlace)
-      (refLocalLayoutForTy types (.int w s)) sc ExpectedValue.integer mem1 after
+    exact validityMemory_readImmediate_of_core_ok endian types
+      (.indirect retMemPlace) (refLocalLayoutForTy types (.int w s)) sc
+      ExpectedValue.integer mem1 after
       ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), after⟩ st h_mem h_core
-  have h_acc := getPlaceAllocMut_off_ghost Size.ZERO (toMiriSize w)
+  have h_acc := getPlaceAllocMut_off_ghost endian Size.ZERO (toMiriSize w)
     (toMiriSize w).bytes.toNat
     (localMemoryLayout (refLocalLayoutForTy types (.int w s)))
     mem1 after st.machine (by cases w <;> cases s <;> rfl) rfl h_mut
     (sizeAsI64_toMiriSize w) (by cases w <;> decide)
     (by rw [h_sz]; exact checkedBounds_pair_int w)
-  have h_clr := clearPlaceProvenance_mem_at types c retMemPlace
+  have h_clr := clearPlaceProvenance_mem_at endian types c retMemPlace
     (refLocalLayoutForTy types (.int w s)) (allocRange Size.ZERO (toMiriSize w))
     mem1 after st h_mem h_acc h_cp
   dsimp only [Miri.Interpreter.ValidityVisitor.visit, bind, Bind.bind,
     EStateM.bind]
   rw [mem_refLocalLayoutForTy_ty, refValHooks_classify, h_res]
   dsimp only
-  change (EStateM.bind (EStateM.bind ((refValHooks types).readImmediate c
+  change (EStateM.bind (EStateM.bind ((refValHooks endian types).readImmediate c
     ⟨.memory retMemPlace, refLocalLayoutForTy types (.int w s)⟩
     ExpectedValue.integer) _) _ st) = _
   rw [eStateM_bind_bind_ok h_ri]
@@ -1464,17 +1490,17 @@ private theorem visit_mem_pair_int_ok (types : List MirTy) (c : Choice)
       (Miri.Interpreter.ValidityVisitor.TypeKind.integer == .character) =
         false := rfl
   rw [h_ib, mem_ite_false_eq, h_ic, mem_ite_false_eq, mem_ite_true_eq]
-  change (EStateM.bind (EStateM.bind ((refValHooks types).clearProvenance c
-    ⟨.memory retMemPlace, refLocalLayoutForTy types (.int w s)⟩) _) _ st) = _
+  change (EStateM.bind (EStateM.bind ((refValHooks endian types).clearProvenance
+    c ⟨.memory retMemPlace, refLocalLayoutForTy types (.int w s)⟩) _) _ st) = _
   rw [eStateM_bind_bind_ok h_clr]
   dsimp only [EStateM.bind, EStateM.pure, bind, Bind.bind, pure, Pure.pure,
     refValHooks_toOp, Miri.Interpreter.placeToOp,
     Miri.Interpreter.placeToOpCore, refLocalLayoutForTy, refLayoutDataForTy,
     refScalarLayoutData, refBaseLayoutData]
-  cases w <;> rfl
+  cases endian <;> cases w <;> rfl
 
-private theorem visit_mem_pair_int_uninit_ub (types : List MirTy) (c : Choice)
-    (fuel : Nat)
+private theorem visit_mem_pair_int_uninit_ub (endian : TargetEndian)
+    (types : List MirTy) (c : Choice) (fuel : Nat)
     (sess : Miri.Interpreter.ValidityVisitor.Session Miri.Memory.Provenance)
     (w : IntWidth) (s : Bool) (info : Option Miri.Memory.BadBytesAccess)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -1485,21 +1511,22 @@ private theorem visit_mem_pair_int_uninit_ub (types : List MirTy) (c : Choice)
     (h_mem : st.machine.memory =
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) })
     (h_sz : after.byteSize = Size.ofBytes (2 * (toMiriSize w).bytes))
-    (h_rd : after.readScalar RuntimeTargetDataLayout.default.base
+    (h_rd : after.readScalar (refRuntimeLayout endian).base
       (allocRange Size.ZERO (toMiriSize w)) false =
       .error (.invalidUninitBytes info)) :
     ∃ msg,
-      Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c (fuel + 1)
-          sess ⟨.memory retMemPlace, refLocalLayoutForTy types (.int w s)⟩ st =
+      Miri.Interpreter.ValidityVisitor.visit (refValHooks endian types) c
+          (fuel + 1) sess ⟨.memory retMemPlace,
+            refLocalLayoutForTy types (.int w s)⟩ st =
         .error (.undefinedBehavior msg) st := by
-  have h_core := readImmediate_mem_pair_int types w s mem1 after st.machine
-    refAccessConfig rfl rfl rfl rfl h_sz
+  have h_core := readImmediate_mem_pair_int endian types w s mem1 after
+    st.machine (refAccessConfig endian) rfl rfl rfl rfl h_sz
   rw [h_rd] at h_core
-  let ⟨msg, h_ri_raw⟩ := validityMemory_readImmediate_of_core_uninit types
-    (.indirect retMemPlace) (refLocalLayoutForTy types (.int w s)) info
+  let ⟨msg, h_ri_raw⟩ := validityMemory_readImmediate_of_core_uninit endian
+    types (.indirect retMemPlace) (refLocalLayoutForTy types (.int w s)) info
     ExpectedValue.integer mem1 after
     ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), after⟩ st h_mem h_core
-  have h_ri : (refValHooks types).readImmediate c
+  have h_ri : (refValHooks endian types).readImmediate c
       ⟨.memory retMemPlace, refLocalLayoutForTy types (.int w s)⟩
       ExpectedValue.integer st = .error (.undefinedBehavior msg) st := by
     rw [refValHooks_readImmediate]
@@ -1511,13 +1538,14 @@ private theorem visit_mem_pair_int_uninit_ub (types : List MirTy) (c : Choice)
     EStateM.bind]
   rw [mem_refLocalLayoutForTy_ty, refValHooks_classify, h_res]
   dsimp only
-  change (EStateM.bind (EStateM.bind ((refValHooks types).readImmediate c
+  change (EStateM.bind (EStateM.bind ((refValHooks endian types).readImmediate c
     ⟨.memory retMemPlace, refLocalLayoutForTy types (.int w s)⟩
     ExpectedValue.integer) _) _ st) = _
   rw [eStateM_bind_bind_err h_ri]
 
-private theorem visit_mem_pair_bool_ok (types : List MirTy) (c : Choice)
-    (fuel : Nat) (path : Miri.Memory.ValidationPath) (w : IntWidth) (b : Bool)
+private theorem visit_mem_pair_bool_ok (endian : TargetEndian)
+    (types : List MirTy) (c : Choice) (fuel : Nat)
+    (path : Miri.Memory.ValidationPath) (w : IntWidth) (b : Bool)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (after : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
@@ -1527,7 +1555,7 @@ private theorem visit_mem_pair_bool_ok (types : List MirTy) (c : Choice)
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) })
     (h_sz : after.byteSize = Size.ofBytes (2 * (toMiriSize w).bytes))
     (h_mut : after.mutability = .Mut)
-    (h_rd : after.readScalar RuntimeTargetDataLayout.default.base
+    (h_rd : after.readScalar (refRuntimeLayout endian).base
       (allocRange (toMiriSize w) (Size.ofBytes 1)) false = .ok (.fromBool b))
     (h_cp : Allocation.clearProvenance
       (allocRange (toMiriSize w) (Size.ofBytes 1))
@@ -1537,40 +1565,40 @@ private theorem visit_mem_pair_bool_ok (types : List MirTy) (c : Choice)
       path := path, flags := ⟨true, false⟩, ctfeMode := none,
       refTracking := none, dataBytes := some (singleDataRange w)
     }
-    Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c (fuel + 1)
-        sess ⟨.memory (offMemPlace (toMiriSize w)),
+    Miri.Interpreter.ValidityVisitor.visit (refValHooks endian types) c
+        (fuel + 1) sess ⟨.memory (offMemPlace (toMiriSize w)),
           refLocalLayoutForTy types .bool⟩
         st =
       .ok { sess with dataBytes := some (pairDataRange w) } st := by
   intro sess
-  have h_core := readImmediate_mem_pair_bool types w mem1 after st.machine
-    refAccessConfig rfl rfl rfl rfl h_sz
+  have h_core := readImmediate_mem_pair_bool endian types w mem1 after
+    st.machine (refAccessConfig endian) rfl rfl rfl rfl h_sz
   rw [h_rd] at h_core
-  have h_ri : (refValHooks types).readImmediate c
+  have h_ri : (refValHooks endian types).readImmediate c
       ⟨.memory (offMemPlace (toMiriSize w)), refLocalLayoutForTy types .bool⟩
       ExpectedValue.boolean st =
       .ok ⟨.scalar (.fromBool b), refLocalLayoutForTy types .bool⟩ st := by
     rw [refValHooks_readImmediate]
     dsimp only [Miri.Interpreter.placeToOp, Miri.Interpreter.placeToOpCore,
       bind, Bind.bind, EStateM.bind, pure, Pure.pure, EStateM.pure]
-    exact validityMemory_readImmediate_of_core_ok types
+    exact validityMemory_readImmediate_of_core_ok endian types
       (.indirect (offMemPlace (toMiriSize w))) (refLocalLayoutForTy types .bool)
       (.fromBool b) ExpectedValue.boolean mem1 after
       ⟨retAllocId, allocRange (toMiriSize w) (Size.ofBytes 1), after⟩ st
       h_mem h_core
-  have h_acc := getPlaceAllocMut_off_ghost (toMiriSize w) (Size.ofBytes 1)
-    (Size.ofBytes 1).bytes.toNat
+  have h_acc := getPlaceAllocMut_off_ghost endian (toMiriSize w)
+    (Size.ofBytes 1) (Size.ofBytes 1).bytes.toNat
     (localMemoryLayout (refLocalLayoutForTy types .bool))
     mem1 after st.machine rfl rfl h_mut rfl rfl
     (by rw [h_sz]; exact checkedBounds_pair_bool w)
-  have h_clr := clearPlaceProvenance_mem_at types c
+  have h_clr := clearPlaceProvenance_mem_at endian types c
     (offMemPlace (toMiriSize w)) (refLocalLayoutForTy types .bool)
     (allocRange (toMiriSize w) (Size.ofBytes 1)) mem1 after st h_mem h_acc h_cp
   dsimp only [Miri.Interpreter.ValidityVisitor.visit, bind, Bind.bind,
     EStateM.bind]
   rw [mem_refLocalLayoutForTy_ty, refValHooks_classify, h_res]
   dsimp only
-  change (EStateM.bind (EStateM.bind ((refValHooks types).readImmediate c
+  change (EStateM.bind (EStateM.bind ((refValHooks endian types).readImmediate c
     ⟨.memory (offMemPlace (toMiriSize w)), refLocalLayoutForTy types .bool⟩
     ExpectedValue.boolean) _) _ st) = _
   rw [eStateM_bind_bind_ok h_ri]
@@ -1587,12 +1615,13 @@ private theorem visit_mem_pair_bool_ok (types : List MirTy) (c : Choice)
   cases b <;> (
     dsimp only [EStateM.bind, EStateM.pure, bind, Bind.bind, pure, Pure.pure]
     rw [h_bc, mem_ite_false_eq, mem_ite_true_eq]
-    change (EStateM.bind (EStateM.bind ((refValHooks types).clearProvenance c
-      ⟨.memory (offMemPlace (toMiriSize w)),
-        refLocalLayoutForTy types .bool⟩) _) _
+    change (EStateM.bind (EStateM.bind
+      ((refValHooks endian types).clearProvenance c
+        ⟨.memory (offMemPlace (toMiriSize w)),
+          refLocalLayoutForTy types .bool⟩) _) _
       st) = _
     rw [eStateM_bind_bind_ok h_clr]
-    cases w <;> rfl)
+    cases endian <;> cases w <;> rfl)
 
 private theorem eStateM_bind_ok_trans {ε σ α β : Type} {m : EStateM ε σ α}
     {f : α → EStateM ε σ β} {a : α} {st st' : σ} {r : EStateM.Result ε σ β}
@@ -1618,8 +1647,8 @@ private theorem forIn_singleton_yield {ε σ α β : Type} {x : α} {init b : β
     forIn ((Array.mk [x]) : Array α) init f st = .ok b st' := by
   rw [forIn_singleton_array, h]
 
-private theorem beginPadding_pair (types : List MirTy) (c : Choice)
-    (w : IntWidth) (s : Bool)
+private theorem beginPadding_pair (endian : TargetEndian) (types : List MirTy)
+    (c : Choice) (w : IntWidth) (s : Bool)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (after : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
@@ -1628,7 +1657,7 @@ private theorem beginPadding_pair (types : List MirTy) (c : Choice)
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) })
     (h_sz : after.byteSize = Size.ofBytes (2 * (toMiriSize w).bytes))
     (h_mut : after.mutability = .Mut) :
-    (refValHooks types).beginPadding c
+    (refValHooks endian types).beginPadding c
         ⟨retMemPlace, refLocalLayoutForTy types (.tuple [.int w s, .bool])⟩
         (Size.ofBytes (2 * (toMiriSize w).bytes)) st =
       .ok (some ⟨retAllocId, allocRange Size.ZERO
@@ -1644,9 +1673,10 @@ private theorem beginPadding_pair (types : List MirTy) (c : Choice)
       dsimp only [Allocation.byteSize] at h_sz
       dsimp only at h_mut
       subst h_sz h_mut
-      cases w <;> rfl
+      cases endian <;> cases w <;> rfl
 
-private theorem writePadding_retAlloc (types : List MirTy) (c : Choice)
+private theorem writePadding_retAlloc (endian : TargetEndian)
+    (types : List MirTy) (c : Choice)
     (hr rel abs : AllocRange)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -1657,12 +1687,12 @@ private theorem writePadding_retAlloc (types : List MirTy) (c : Choice)
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) })
     (h_sub : hr.subrange rel = .ok abs)
     (h_wu : Allocation.writeUninit abs (Size.ofBytes 8) after = .ok () after2) :
-    (refValHooks types).writePadding c ⟨retAllocId, hr⟩ rel st =
+    (refValHooks endian types).writePadding c ⟨retAllocId, hr⟩ rel st =
       .ok () { st with machine := { st.machine with
         memory := { mem1 with
           live := (Array.mk [(retAllocId, ⟨.stack, after2⟩)]) } } } := by
-  change Miri.Interpreter.ValidityMemory.writePadding refValidityMemoryEnv
-    ⟨retAllocId, hr⟩ rel st = _
+  change Miri.Interpreter.ValidityMemory.writePadding
+    (refValidityMemoryEnv endian) ⟨retAllocId, hr⟩ rel st = _
   dsimp only [Miri.Interpreter.ValidityMemory.writePadding, bind, Bind.bind,
     EStateM.bind]
   rw [h_sub]
@@ -1675,8 +1705,9 @@ private theorem writePadding_retAlloc (types : List MirTy) (c : Choice)
   dsimp only [get, getThe, MonadStateOf.get, EStateM.get,
     bind, Bind.bind, EStateM.bind]
   have h_wu' : Allocation.writeUninit abs
-      refValidityMemoryEnv.context.runtime.pointerSize after = .ok () after2 :=
-    h_wu
+      (refValidityMemoryEnv endian).context.runtime.pointerSize after =
+      .ok () after2 := by
+    cases endian <;> exact h_wu
   dsimp only [refValidityMemoryEnv] at h_wu'
   dsimp only [refValidityMemoryEnv]
   rw [h_mem, singleton_live_find]
@@ -1689,7 +1720,8 @@ private theorem subrange_pairPad (w : IntWidth) :
         (pairPadRange w) = .ok (pairPadRange w) := by
   cases w <;> rfl
 
-private theorem validatePlace_mem_pair_step_i8 (types : List MirTy) (c : Choice)
+private theorem validatePlace_mem_pair_step_i8 (endian : TargetEndian)
+    (types : List MirTy) (c : Choice)
     (s : Bool) (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_vis :
       let initSess :
@@ -1697,16 +1729,16 @@ private theorem validatePlace_mem_pair_step_i8 (types : List MirTy) (c : Choice)
         path := ⟨"", (Array.mk [])⟩, flags := ⟨true, false⟩, ctfeMode := none,
         refTracking := none, dataBytes := some .empty
       }
-      Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c 8
+      Miri.Interpreter.ValidityVisitor.visit (refValHooks endian types) c 8
         initSess ⟨.memory retMemPlace,
           refLocalLayoutForTy types (.tuple [.int .i8 s, .bool])⟩ st =
         .ok { initSess with dataBytes := some (pairDataRange .i8) } st) :
-    Miri.Interpreter.ValidityVisitor.validatePlace (refValHooks types) c 8
-        ⟨.memory retMemPlace,
+    Miri.Interpreter.ValidityVisitor.validatePlace (refValHooks endian types)
+        c 8 ⟨.memory retMemPlace,
           refLocalLayoutForTy types (.tuple [.int .i8 s, .bool])⟩
         false true st = .ok () st := by
   dsimp only [Miri.Interpreter.ValidityVisitor.validatePlace, bind, Bind.bind]
-  refine eStateM_bind_ok_trans (refValHooks_typeName types c _ st) ?_
+  refine eStateM_bind_ok_trans (refValHooks_typeName endian types c _ st) ?_
   change EStateM.bind _ _ st = _
   rw [refValHooks_withGhostValidation, mem_ite_true_eq]
   refine eStateM_bind_bind_ok_trans (a := ⟨.indirect retMemPlace,
@@ -1716,10 +1748,10 @@ private theorem validatePlace_mem_pair_step_i8 (types : List MirTy) (c : Choice)
   change EStateM.bind (EStateM.bind _ _) _ st = _
   refine eStateM_bind_bind_ok_trans (a := ()) (st' := st) ?_ ?_
   · rfl
-  · rfl
+  · cases endian <;> rfl
 
-private theorem validatePlace_mem_pair_step_wide (types : List MirTy)
-    (c : Choice)
+private theorem validatePlace_mem_pair_step_wide (endian : TargetEndian)
+    (types : List MirTy) (c : Choice)
     (w : IntWidth) (s : Bool) (h_ne : w ≠ .i8)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -1738,30 +1770,31 @@ private theorem validatePlace_mem_pair_step_wide (types : List MirTy)
         path := ⟨"", (Array.mk [])⟩, flags := ⟨true, false⟩, ctfeMode := none,
         refTracking := none, dataBytes := some .empty
       }
-      Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c 8
+      Miri.Interpreter.ValidityVisitor.visit (refValHooks endian types) c 8
         initSess ⟨.memory retMemPlace,
           refLocalLayoutForTy types (.tuple [.int w s, .bool])⟩ st =
         .ok { initSess with dataBytes := some (pairDataRange w) } st) :
-    Miri.Interpreter.ValidityVisitor.validatePlace (refValHooks types) c 8
-        ⟨.memory retMemPlace,
+    Miri.Interpreter.ValidityVisitor.validatePlace (refValHooks endian types)
+        c 8 ⟨.memory retMemPlace,
           refLocalLayoutForTy types (.tuple [.int w s, .bool])⟩
         false true st =
       .ok () { st with machine := { st.machine with
         memory := { mem1 with
           live := (Array.mk [(retAllocId, ⟨.stack, after2⟩)]) } } } := by
-  have h_bp := beginPadding_pair types c w s mem1 after st h_mem h_sz h_mut
+  have h_bp := beginPadding_pair endian types c w s mem1 after st h_mem h_sz
+    h_mut
   have h_wp : ∀ r, r = pairPadRange w →
-      (refValHooks types).writePadding c ⟨retAllocId,
+      (refValHooks endian types).writePadding c ⟨retAllocId,
         allocRange Size.ZERO (Size.ofBytes (2 * (toMiriSize w).bytes))⟩ r st =
       .ok () { st with machine := { st.machine with
         memory := { mem1 with
           live := (Array.mk [(retAllocId, ⟨.stack, after2⟩)]) } } } := by
     intro r hr
     subst hr
-    exact writePadding_retAlloc types c _ _ _ mem1 after after2 st h_mem
+    exact writePadding_retAlloc endian types c _ _ _ mem1 after after2 st h_mem
       (subrange_pairPad w) h_pad
   dsimp only [Miri.Interpreter.ValidityVisitor.validatePlace, bind, Bind.bind]
-  refine eStateM_bind_ok_trans (refValHooks_typeName types c _ st) ?_
+  refine eStateM_bind_ok_trans (refValHooks_typeName endian types c _ st) ?_
   change EStateM.bind _ _ st = _
   rw [refValHooks_withGhostValidation, mem_ite_true_eq]
   refine eStateM_bind_bind_ok_trans (a := ⟨.indirect retMemPlace,
@@ -1774,7 +1807,7 @@ private theorem validatePlace_mem_pair_step_wide (types : List MirTy)
       memory := { mem1 with
         live := (Array.mk [(retAllocId, ⟨.stack, after2⟩)]) } } }) ?_ rfl
   change (EStateM.bind (Miri.Interpreter.forceAllocation
-      (refValHooks types).projection.place c
+      (refValHooks endian types).projection.place c
       ⟨.memory retMemPlace,
         refLocalLayoutForTy types (.tuple [.int w s, .bool])⟩)
     (fun memory => _) st) = _
@@ -1806,19 +1839,20 @@ private theorem validatePlace_mem_pair_step_wide (types : List MirTy)
     refine forIn_singleton_yield ?_
     change EStateM.bind _ _ st = _
     exact eStateM_bind_ok_trans (h_wp _ rfl) rfl
-private theorem placeDynamic_field_pair0 (types : List MirTy) (c : Choice)
-    (w : IntWidth) (s : Bool)
+private theorem placeDynamic_field_pair0 (endian : TargetEndian)
+    (types : List MirTy) (c : Choice) (w : IntWidth) (s : Bool)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_res : resolveTy types (tyIdFor types (.tuple [.int w s, .bool])) =
       some (.tuple [.int w s, .bool])) :
-    Miri.Interpreter.PlaceDynamic.field (refBasePlaceProjectionHooks types) c
+    Miri.Interpreter.PlaceDynamic.field
+        (refBasePlaceProjectionHooks endian types) c
         ⟨.memory retMemPlace,
           refLocalLayoutForTy types (.tuple [.int w s, .bool])⟩
         0 st =
       .ok ⟨.memory retMemPlace, refLocalLayoutForTy types (.int w s)⟩ st := by
   have h_fo : (refLocalLayoutForTy types
       (.tuple [.int w s, .bool])).layout.fields.offset 0 = .ok Size.ZERO := rfl
-  have h_fl : (refBasePlaceProjectionHooks types).field c
+  have h_fl : (refBasePlaceProjectionHooks endian types).field c
       (refLocalLayoutForTy types (.tuple [.int w s, .bool])) 0 st =
       .ok (refLocalLayoutForTy types (.int w s)) st := by
     dsimp only [refBasePlaceProjectionHooks, refProjectFieldLayout,
@@ -1830,7 +1864,7 @@ private theorem placeDynamic_field_pair0 (types : List MirTy) (c : Choice)
   dsimp only [Miri.Interpreter.PlaceDynamic.field, bind, Bind.bind,
     EStateM.bind]
   rw [h_fo]
-  change (EStateM.bind ((refBasePlaceProjectionHooks types).field c
+  change (EStateM.bind ((refBasePlaceProjectionHooks endian types).field c
     (refLocalLayoutForTy types (.tuple [.int w s, .bool])) 0) _ st) = _
   rw [mem_eStateM_bind_ok h_fl]
   dsimp only [bind, Bind.bind, EStateM.bind, pure, Pure.pure, EStateM.pure]
@@ -1839,7 +1873,7 @@ private theorem placeDynamic_field_pair0 (types : List MirTy) (c : Choice)
     refBasePlaceProjectionHooks, Miri.Interpreter.PlaceMachine.placeHooks,
     refBaseCompilerHooks, bind, Bind.bind, EStateM.bind, pure, Pure.pure,
     EStateM.pure]
-  rw [placeMemoryOffset_retPlace_zero]
+  cases endian <;> rw [placeMemoryOffset_retPlace_zero]
 
 private theorem placeMemoryOffset_retPlace_pair (w : IntWidth)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -1859,8 +1893,8 @@ private theorem placeMemoryOffset_retPlace_pair (w : IntWidth)
   subst h_sz
   cases w <;> rfl
 
-private theorem placeDynamic_field_pair1 (types : List MirTy) (c : Choice)
-    (w : IntWidth) (s : Bool)
+private theorem placeDynamic_field_pair1 (endian : TargetEndian)
+    (types : List MirTy) (c : Choice) (w : IntWidth) (s : Bool)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (after : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
@@ -1870,7 +1904,8 @@ private theorem placeDynamic_field_pair1 (types : List MirTy) (c : Choice)
     (h_sz : after.byteSize = Size.ofBytes (2 * (toMiriSize w).bytes))
     (h_res : resolveTy types (tyIdFor types (.tuple [.int w s, .bool])) =
       some (.tuple [.int w s, .bool])) :
-    Miri.Interpreter.PlaceDynamic.field (refBasePlaceProjectionHooks types) c
+    Miri.Interpreter.PlaceDynamic.field
+        (refBasePlaceProjectionHooks endian types) c
         ⟨.memory retMemPlace,
           refLocalLayoutForTy types (.tuple [.int w s, .bool])⟩
         1 st =
@@ -1880,7 +1915,7 @@ private theorem placeDynamic_field_pair1 (types : List MirTy) (c : Choice)
   have h_fo : (refLocalLayoutForTy types
       (.tuple [.int w s, .bool])).layout.fields.offset 1 =
       .ok (toMiriSize w) := rfl
-  have h_fl : (refBasePlaceProjectionHooks types).field c
+  have h_fl : (refBasePlaceProjectionHooks endian types).field c
       (refLocalLayoutForTy types (.tuple [.int w s, .bool])) 1 st =
       .ok (refLocalLayoutForTy types .bool) st := by
     dsimp only [refBasePlaceProjectionHooks, refProjectFieldLayout,
@@ -1892,7 +1927,7 @@ private theorem placeDynamic_field_pair1 (types : List MirTy) (c : Choice)
   dsimp only [Miri.Interpreter.PlaceDynamic.field, bind, Bind.bind,
     EStateM.bind]
   rw [h_fo]
-  change (EStateM.bind ((refBasePlaceProjectionHooks types).field c
+  change (EStateM.bind ((refBasePlaceProjectionHooks endian types).field c
     (refLocalLayoutForTy types (.tuple [.int w s, .bool])) 1) _ st) = _
   rw [mem_eStateM_bind_ok h_fl]
   dsimp only [bind, Bind.bind, EStateM.bind, pure, Pure.pure, EStateM.pure]
@@ -1902,8 +1937,8 @@ private theorem placeDynamic_field_pair1 (types : List MirTy) (c : Choice)
     refBaseCompilerHooks, bind, Bind.bind, EStateM.bind, pure, Pure.pure,
     EStateM.pure]
   rw [h_mem, placeMemoryOffset_retPlace_pair w mem1 after st h_sz]
-private theorem visit_mem_pair_ok (types : List MirTy) (c : Choice)
-    (fuel k : Nat) (h_fuel : fuel = k + 1)
+private theorem visit_mem_pair_ok (endian : TargetEndian) (types : List MirTy)
+    (c : Choice) (fuel k : Nat) (h_fuel : fuel = k + 1)
     (w : IntWidth) (s : Bool) (bits : BitVec 128) (b : Bool)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -1913,14 +1948,14 @@ private theorem visit_mem_pair_ok (types : List MirTy) (c : Choice)
       some (.tuple [.int w s, .bool]))
     (h_mem : st.machine.memory =
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) })
-    (h_rd : PairAllocReads w bits b after) :
+    (h_rd : PairAllocReads endian w bits b after) :
     let initSess :
         Miri.Interpreter.ValidityVisitor.Session Miri.Memory.Provenance := {
       path := ⟨"", (Array.mk [])⟩, flags := ⟨true, false⟩, ctfeMode := none,
       refTracking := none, dataBytes := some .empty
     }
-    Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c (fuel + 1)
-        initSess ⟨.memory retMemPlace,
+    Miri.Interpreter.ValidityVisitor.visit (refValHooks endian types) c
+        (fuel + 1) initSess ⟨.memory retMemPlace,
           refLocalLayoutForTy types (.tuple [.int w s, .bool])⟩ st =
       .ok { initSess with dataBytes := some (pairDataRange w) } st := by
   intro initSess
@@ -1933,9 +1968,9 @@ private theorem visit_mem_pair_ok (types : List MirTy) (c : Choice)
       .Arbitrary (Array.mk [Size.ZERO, toMiriSize w]) (Array.mk [0, 1]) := rfl
   have h_vars : (refLocalLayoutForTy types
       (.tuple [.int w s, .bool])).layout.variants = .Single 0 := rfl
-  have h_f0 := placeDynamic_field_pair0 types c w s st h_res
+  have h_f0 := placeDynamic_field_pair0 endian types c w s st h_res
   have h_f1 :=
-    placeDynamic_field_pair1 types c w s mem1 after st h_mem h_sz h_res
+    placeDynamic_field_pair1 endian types c w s mem1 after st h_mem h_sz h_res
   dsimp only [Miri.Interpreter.ValidityVisitor.visit, bind, Bind.bind,
     EStateM.bind]
   rw [mem_refLocalLayoutForTy_ty, refValHooks_classify, h_res]
@@ -1957,7 +1992,7 @@ private theorem visit_mem_pair_ok (types : List MirTy) (c : Choice)
   rw [refValHooks_fieldPath]
   dsimp only [bind, Bind.bind, EStateM.bind, initSess, Bool.or]
   rw [h_fuel]
-  rw [visit_mem_pair_int_ok types c k
+  rw [visit_mem_pair_int_ok endian types c k
     ({ originalType := "" : Miri.Memory.ValidationPath }.push .enumTag) w s
     (.fromScalarInt (miriScalar w bits)) mem1 after st
     (mem_resolveTy_tyIdFor_int types w s) h_mem h_sz h_mut h_ri h_ci]
@@ -1966,7 +2001,7 @@ private theorem visit_mem_pair_ok (types : List MirTy) (c : Choice)
   dsimp only [bind, Bind.bind, EStateM.bind]
   rw [refValHooks_fieldPath]
   dsimp only [bind, Bind.bind, EStateM.bind]
-  rw [visit_mem_pair_bool_ok types c k
+  rw [visit_mem_pair_bool_ok endian types c k
     ({ originalType := "" : Miri.Memory.ValidationPath }.push .enumTag) w b
     mem1 after st (resolveTy_tyIdFor_of_aux rfl) h_mem h_sz h_mut h_rb h_cb]
   dsimp only [bind, Bind.bind, EStateM.bind, pure, Pure.pure, EStateM.pure]
@@ -1974,7 +2009,8 @@ private theorem visit_mem_pair_ok (types : List MirTy) (c : Choice)
   dsimp only [bind, Bind.bind, EStateM.bind, pure, Pure.pure, EStateM.pure]
   rw [mem_ite_true_eq, refValHooks_debugAssertions, mem_ite_false_eq]
   rfl
-private theorem writeMemory_retPlace_pair_uninit (types : List MirTy)
+private theorem writeMemory_retPlace_pair_uninit (endian : TargetEndian)
+    (types : List MirTy)
     (w : IntWidth) (s : Bool)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -1991,12 +2027,12 @@ private theorem writeMemory_retPlace_pair_uninit (types : List MirTy)
     ∃ after info,
       let mem' :=
         { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
-      Miri.Interpreter.PlaceMachine.writeMemory refAccessConfig (fun _ => true)
-          .uninit
+      Miri.Interpreter.PlaceMachine.writeMemory (refAccessConfig endian)
+          (fun _ => true) .uninit
           ⟨retMemPlace,
             refLocalLayoutForTy types (.tuple [.int w s, .bool])⟩ st =
         .ok () { st with machine := { st.machine with memory := mem' } } ∧
-      after.readScalar RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w)) false =
         .error (.invalidUninitBytes info) ∧
       after.byteSize = Size.ofBytes (2 * (toMiriSize w).bytes) ∧
@@ -2011,20 +2047,21 @@ private theorem writeMemory_retPlace_pair_uninit (types : List MirTy)
   let alloc := rawAlloc.withExtra (Miri.TreeBorrows.BorrowTree.new
     Miri.Memory.BorTag.one (Size.ofBytes (2 * (toMiriSize w).bytes)))
   let ⟨after, info, h_wu, h_rd, h_asz, h_amut, _⟩ :=
-    tryNew_pair_writeUninit w h_raw
+    tryNew_pair_writeUninit endian w h_raw
   let place : Miri.Interpreter.MemoryOperandPlace Miri.Memory.Provenance :=
     ⟨retMemPlace, localMemoryLayout (refLocalLayoutForTy types
       (.tuple [.int w s, .bool]))⟩
   have h_uns : place.layout.backendRepr.isUnsized = false := rfl
-  have h_ptr_acc := getPtrAllocMut_pair_nonGhost w mem1 alloc st.machine
+  have h_ptr_acc := getPtrAllocMut_pair_nonGhost endian w mem1 alloc st.machine
     h_rsz h_rmut rfl h_dr
   have h_place_acc :
       Miri.Interpreter.getPlaceAllocMut
         { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, alloc⟩)]) }
         ⟨st.machine, none⟩ place
-        refAccessConfig.runtime false none refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-        refAccessConfig.dynamicLayout =
+        (refAccessConfig endian).runtime false none
+        (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+        (refAccessConfig endian).dynamicLayout =
       ⟨{ mem1 with live := (Array.mk [(retAllocId, ⟨.stack, alloc⟩)]) },
         ⟨st.machine, none⟩,
         some ⟨retAllocId,
@@ -2038,10 +2075,10 @@ private theorem writeMemory_retPlace_pair_uninit (types : List MirTy)
   have h_wm_op :
       Miri.Interpreter.writeImmediateToMplaceNoValidate
         st.machine.memory ⟨st.machine, none⟩ .uninit place
-        refAccessConfig.runtime refAccessConfig.ghostMode
-        refAccessConfig.globalKind refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-        refAccessConfig.dynamicLayout (fun _ => true) =
+        (refAccessConfig endian).runtime (refAccessConfig endian).ghostMode
+        (refAccessConfig endian).globalKind (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+        (refAccessConfig endian).dynamicLayout (fun _ => true) =
       ⟨{ mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) },
         ⟨st.machine, none⟩,
         some ⟨retAllocId,
@@ -2053,23 +2090,24 @@ private theorem writeMemory_retPlace_pair_uninit (types : List MirTy)
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, alloc⟩)]) }
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
       ⟨st.machine, none⟩ place
-      refAccessConfig.runtime refAccessConfig.ghostMode
-      refAccessConfig.globalKind refAccessConfig.globalHooks
-      (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-      refAccessConfig.dynamicLayout (fun _ => true)
+      (refAccessConfig endian).runtime (refAccessConfig endian).ghostMode
+      (refAccessConfig endian).globalKind (refAccessConfig endian).globalHooks
+      (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+      (refAccessConfig endian).dynamicLayout (fun _ => true)
       ⟨retAllocId,
         allocRange Size.ZERO (Size.ofBytes (2 * (toMiriSize w).bytes)), alloc⟩
       after h_uns ?_ h_wu (singleton_setLiveAllocation mem1 alloc after)
     exact h_place_acc
   exact ⟨after, info,
-    Miri.Interpreter.PlaceMachine.writeMemory_of_result refAccessConfig
+    Miri.Interpreter.PlaceMachine.writeMemory_of_result (refAccessConfig endian)
       (fun _ => true) .uninit
       ⟨retMemPlace, refLocalLayoutForTy types (.tuple [.int w s, .bool])⟩ st
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
       _ rfl h_wm_op,
     h_rd, h_asz, h_amut⟩
 
-private theorem visit_mem_pair_uninit_ub (types : List MirTy) (c : Choice)
+private theorem visit_mem_pair_uninit_ub (endian : TargetEndian)
+    (types : List MirTy) (c : Choice)
     (fuel k : Nat) (h_fuel : fuel = k + 1)
     (w : IntWidth) (s : Bool) (info : Option Miri.Memory.BadBytesAccess)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -2081,7 +2119,7 @@ private theorem visit_mem_pair_uninit_ub (types : List MirTy) (c : Choice)
     (h_mem : st.machine.memory =
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) })
     (h_sz : after.byteSize = Size.ofBytes (2 * (toMiriSize w).bytes))
-    (h_rd : after.readScalar RuntimeTargetDataLayout.default.base
+    (h_rd : after.readScalar (refRuntimeLayout endian).base
       (allocRange Size.ZERO (toMiriSize w)) false =
       .error (.invalidUninitBytes info)) :
     let initSess :
@@ -2090,8 +2128,8 @@ private theorem visit_mem_pair_uninit_ub (types : List MirTy) (c : Choice)
       refTracking := none, dataBytes := some .empty
     }
     ∃ msg,
-      Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c (fuel + 1)
-          initSess ⟨.memory retMemPlace,
+      Miri.Interpreter.ValidityVisitor.visit (refValHooks endian types) c
+          (fuel + 1) initSess ⟨.memory retMemPlace,
             refLocalLayoutForTy types (.tuple [.int w s, .bool])⟩ st =
         .error (.undefinedBehavior msg) st := by
   intro initSess
@@ -2101,8 +2139,8 @@ private theorem visit_mem_pair_uninit_ub (types : List MirTy) (c : Choice)
   have h_fields : (refLocalLayoutForTy types
       (.tuple [.int w s, .bool])).layout.fields =
       .Arbitrary (Array.mk [Size.ZERO, toMiriSize w]) (Array.mk [0, 1]) := rfl
-  have h_f0 := placeDynamic_field_pair0 types c w s st h_res
-  let ⟨msg, h_v0⟩ := visit_mem_pair_int_uninit_ub types c k
+  have h_f0 := placeDynamic_field_pair0 endian types c w s st h_res
+  let ⟨msg, h_v0⟩ := visit_mem_pair_int_uninit_ub endian types c k
     { path := { originalType := "" : Miri.Memory.ValidationPath }.push .enumTag,
       flags := ⟨true, false⟩, ctfeMode := none,
       refTracking := none, dataBytes := some .empty }
@@ -2130,14 +2168,15 @@ private theorem visit_mem_pair_uninit_ub (types : List MirTy) (c : Choice)
   dsimp only [bind, Bind.bind, EStateM.bind, initSess, Bool.or]
   rw [h_fuel, h_v0]
 
-private theorem refReadReturnVal_pair (types : List MirTy) (w : IntWidth)
+private theorem refReadReturnVal_pair (endian : TargetEndian)
+    (types : List MirTy) (w : IntWidth)
     (s : Bool) (bits : BitVec 128) (b : Bool)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (a : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
-    (h_rd : PairAllocReads w bits b a)
+    (h_rd : PairAllocReads endian w bits b a)
     (h_trunc : truncateBits w bits = bits) :
-    refReadReturnVal
+    refReadReturnVal endian
         { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, a⟩)]) }
         (.tuple [.int w s, .bool])
         ⟨retMemPlace, refLocalLayoutForTy types (.tuple [.int w s, .bool])⟩ =
@@ -2186,32 +2225,35 @@ theorem copyReturn_pair_ok (rp : RefProg) (c : Choice) (w : IntWidth)
           ⟨.memory retMemPlace,
             refLocalLayoutForTy rp.types (.tuple [.int w s, .bool])⟩ true st =
         .ok () { st with machine := { st.machine with memory := mem' } } ∧
-      refReadReturnVal mem' (.tuple [.int w s, .bool])
+      refReadReturnVal rp.targetEndian mem' (.tuple [.int w s, .bool])
           ⟨retMemPlace,
             refLocalLayoutForTy rp.types (.tuple [.int w s, .bool])⟩ =
         .ok (.tuple [.scalar ⟨w, s, bits⟩, .bool b]) := by
   intro h
   let ⟨after, after2, h_wm, h_pad, h_rd1, h_rd2⟩ :=
-    writeMemory_retPlace_pair rp.types w s bits b mem1 st h_raw h_mem h_dr
+    writeMemory_retPlace_pair rp.targetEndian rp.types w s bits b mem1 st h_raw
+      h_mem h_dr
   let ⟨_, _, _, _, h_asz, h_amut, _⟩ := h_rd1
   let mem1' : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit :=
     { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
   let st1 := { st with machine := { st.machine with memory := mem1' } }
-  have h_vis := visit_mem_pair_ok rp.types c 7 6 rfl w s bits b mem1 after st1
-    h_res rfl h_rd1
+  have h_vis := visit_mem_pair_ok rp.targetEndian rp.types c 7 6 rfl w s bits b
+    mem1 after st1 h_res rfl h_rd1
   cases w with
   | i8 =>
     exact ⟨mem1',
       copyRuntimePlace_imm_to_mem_step rp c _ _ retMemPlace st st1 _ h_pmd h_wm
-        (validatePlace_mem_pair_step_i8 rp.types c s st1 h_vis),
-      refReadReturnVal_pair rp.types .i8 s bits b mem1 after h_rd1 h_trunc⟩
+        (validatePlace_mem_pair_step_i8 rp.targetEndian rp.types c s st1 h_vis),
+      refReadReturnVal_pair rp.targetEndian rp.types .i8 s bits b mem1 after
+        h_rd1 h_trunc⟩
   | i16 | i32 | i64 | i128 | isize =>
     refine ⟨{ mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after2⟩)]) },
-      ?_, refReadReturnVal_pair rp.types _ s bits b mem1 after2 h_rd2 h_trunc⟩
-    have h_val := validatePlace_mem_pair_step_wide rp.types c _ s
-      (by intro h_eq; cases h_eq) mem1 after after2 st1 rfl h_asz h_amut h_pad
-      h_vis
+      ?_, refReadReturnVal_pair rp.targetEndian rp.types _ s bits b mem1 after2
+        h_rd2 h_trunc⟩
+    have h_val := validatePlace_mem_pair_step_wide rp.targetEndian rp.types c _
+      s (by intro h_eq; cases h_eq) mem1 after after2 st1 rfl h_asz h_amut
+      h_pad h_vis
     exact copyRuntimePlace_imm_to_mem_step rp c _ _ retMemPlace st st1 _ h_pmd
       h_wm h_val
 
@@ -2248,15 +2290,17 @@ theorem copyReturn_pair_uninit_ub (rp : RefProg) (c : Choice)
         .error (.undefinedBehavior msg) st' := by
   intro h
   let ⟨after, info, h_wm, h_rd, h_asz, _⟩ :=
-    writeMemory_retPlace_pair_uninit rp.types w s mem1 st h_raw h_mem h_dr
+    writeMemory_retPlace_pair_uninit rp.targetEndian rp.types w s mem1 st h_raw
+      h_mem h_dr
   let mem1' : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit :=
     { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
   let st1 := { st with machine := { st.machine with memory := mem1' } }
-  let ⟨msg, h_vis⟩ := visit_mem_pair_uninit_ub rp.types c 7 6 rfl w s info
-    mem1 after st1 h_res rfl h_asz h_rd
+  let ⟨msg, h_vis⟩ := visit_mem_pair_uninit_ub rp.targetEndian rp.types c 7 6
+    rfl w s info mem1 after st1 h_res rfl h_asz h_rd
   exact ⟨msg, st1,
     copyRuntimePlace_imm_to_mem_step rp c _ _ retMemPlace st st1 _ h_pmd h_wm
-      (validatePlace_mem_ub_step rp.types c _ st1 st1 msg h_vis)⟩
+      (validatePlace_mem_ub_step rp.targetEndian rp.types c _ st1 st1 msg
+        h_vis)⟩
 
 end Anneal.MirCorrespondence

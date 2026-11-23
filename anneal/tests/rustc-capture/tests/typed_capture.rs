@@ -185,7 +185,9 @@ fn selected_capture_keeps_unselected_unsupported_items_in_the_census() {
     assert!(output.status.success(), "{output:?}");
     assert_eq!(status(&output)["status"], "captured", "{output:?}");
     let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 4);
+    assert_eq!(manifest["schema_version"], 5);
+    assert_eq!(manifest["configuration"]["endian"], "little");
+    assert_eq!(manifest["program"]["target_endian"], "little");
     assert!(manifest.get("scope").is_none(), "{manifest}");
     assert_eq!(manifest["program"]["scope"]["kind"], "selected_unit");
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 1);
@@ -199,7 +201,11 @@ fn selected_capture_keeps_unselected_unsupported_items_in_the_census() {
         assert_eq!(item["required"], true);
         assert_eq!(item["selected"], selected);
     }
-    assert!(fixture.output.join("Captured.lean").is_file());
+    let captured_lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
+    assert!(
+        captured_lean.contains("targetEndian := Trusted.MirAst.TargetEndian.little"),
+        "{captured_lean}"
+    );
 }
 
 #[test]
@@ -906,7 +912,7 @@ fn whole_crate_admits_implicit_fieldless_enums_and_refuses_all_anon_consts() {
     let output = fixture.command().arg("--scope=crate").output().unwrap();
     assert!(output.status.success(), "{output:?}");
     let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 4);
+    assert_eq!(manifest["schema_version"], 5);
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 2);
     let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
     assert!(lean.contains("EnumTagRepr.zeroSized"), "{lean}");
@@ -1039,7 +1045,7 @@ fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_
     let output = fixture.command().arg("--select=read_discr").output().unwrap();
     assert!(output.status.success(), "{output:?}");
     let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 4);
+    assert_eq!(manifest["schema_version"], 5);
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 1);
     let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
     assert!(lean.contains("EnumTagRepr.scalar Trusted.MirAst.IntWidth.i8 true"), "{lean}");
@@ -1663,7 +1669,7 @@ fn linux_residency_accepts_symlinked_sysroot_and_rejects_mismatched_driver_inode
         .output()
         .unwrap();
     assert!(output.status.success(), "{output:?}");
-    assert_eq!(fixture.manifest()["schema_version"], 4);
+    assert_eq!(fixture.manifest()["schema_version"], 5);
 
     // Replacing the driver symlink with a distinct regular file inode must fail
     // closed.
@@ -1939,7 +1945,7 @@ fn sysroot_only_gate_admits_no_std_core_and_refuses_proc_macro_and_extern_crates
     let no_std_fixture = Capture::new(b"#![no_std]\npub fn selected(x: u64) -> u64 { x }\n");
     let output = no_std_fixture.selected_command().output().unwrap();
     assert!(output.status.success(), "{output:?}");
-    assert_eq!(no_std_fixture.manifest()["schema_version"], 4);
+    assert_eq!(no_std_fixture.manifest()["schema_version"], 5);
 
     let proc_macro_fixture = Capture::new(
         b"#![crate_type = \"proc-macro\"]\n\
@@ -2143,7 +2149,7 @@ pub fn overflow_pairs(a: u64, b: u64) -> (u64, bool) {
         stderr(&output)
     );
     let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 4);
+    assert_eq!(manifest["schema_version"], 5);
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 5);
 
     let manifest_text = std::fs::read_to_string(fixture.output.join("capture.json")).unwrap();
@@ -2316,7 +2322,7 @@ fn thousand_one_hundred_function_crate_compiles_in_lean_under_default_max_rec_de
         stderr(&output)
     );
     let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 4);
+    assert_eq!(manifest["schema_version"], 5);
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 1_100);
 
     let captured_lean = fixture.output.join("Captured.lean");

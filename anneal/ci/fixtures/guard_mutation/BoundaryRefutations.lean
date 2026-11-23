@@ -49,6 +49,7 @@ noncomputable def safeUnreachableBody : Body := {
 noncomputable def safeUnreachableProg : Program := {
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [safeUnreachableBody]
 }
@@ -78,6 +79,7 @@ noncomputable def badNeverBody : Body := {
 noncomputable def badNeverProg : Program := {
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [badNeverBody]
 }

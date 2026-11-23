@@ -156,6 +156,17 @@ noncomputable def toMiriSize : IntWidth → Miri.ABI.Size
   | .i128 => Miri.ABI.Size.ofBytes 16
   | .isize => Miri.ABI.Size.ofBytes 8
 
+/-- Map an Anneal `TargetEndian` to `Miri.ABI.Endian`. -/
+noncomputable def toMiriEndian : TargetEndian → Miri.ABI.Endian
+  | .little => .little
+  | .big => .big
+
+/-- Construct the 64-bit `Miri.ABI.RuntimeTargetDataLayout` for `endian`. -/
+noncomputable def refRuntimeLayout (endian : TargetEndian) :
+    Miri.ABI.RuntimeTargetDataLayout :=
+  { Miri.ABI.RuntimeTargetDataLayout.default with
+    base := ⟨toMiriEndian endian, .w64⟩ }
+
 /-- Map `(w, signed)` to `Miri.MIR.IntegerKind`
 (`vendor/lean-miri/Miri/MIR/Operators.lean`). -/
 noncomputable def toMiriIntKind :
@@ -990,12 +1001,13 @@ allocation `retPlace` in `memory` after `Return` pops the root frame and
 `ExecutionControl.hooks.copyReturn` writes and validates `_0` into `retPlace`.
 An overflow pair reads the integer at offset `0` and the `bool` at offset
 `toMiriSize w` (the `ScalarPair`'s `bOffset`), ignoring the padding. -/
-noncomputable def refReadReturnVal
+noncomputable def refReadReturnVal (endian : TargetEndian)
     (memory : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (retTy : MirTy)
     (retPlace : Miri.Interpreter.MPlaceTy Miri.Memory.Provenance) :
     Except FaultKind Val :=
+  let targetLayout := (refRuntimeLayout endian).base
   match retTy with
   | .unit => .ok .unit
   | .int w s =>
@@ -1006,7 +1018,7 @@ noncomputable def refReadReturnVal
       | some (_, localAlloc) =>
         let range := Miri.Memory.allocRange Miri.ABI.Size.ZERO (toMiriSize w)
         match localAlloc.allocation.readScalar
-            Miri.ABI.RuntimeTargetDataLayout.default.base range false with
+            targetLayout range false with
         | .ok sc =>
           match sc.tryToScalarInt with
           | .ok (.integer sci) => .ok (.scalar ⟨w, s, sci.data⟩)
@@ -1023,7 +1035,7 @@ noncomputable def refReadReturnVal
         let range := Miri.Memory.allocRange Miri.ABI.Size.ZERO
           (Miri.ABI.Size.ofBytes 1)
         match localAlloc.allocation.readScalar
-            Miri.ABI.RuntimeTargetDataLayout.default.base range false with
+            targetLayout range false with
         | .ok sc =>
           match sc.tryToScalarInt with
           | .ok (.integer sci) =>
@@ -1044,7 +1056,7 @@ noncomputable def refReadReturnVal
         let range := Miri.Memory.allocRange Miri.ABI.Size.ZERO
           (Miri.ABI.Size.ofBytes 4)
         match localAlloc.allocation.readScalar
-            Miri.ABI.RuntimeTargetDataLayout.default.base range false with
+            targetLayout range false with
         | .ok sc =>
           match sc.tryToScalarInt with
           | .ok (.integer sci) =>
@@ -1066,12 +1078,12 @@ noncomputable def refReadReturnVal
         let boolRange := Miri.Memory.allocRange (toMiriSize w)
           (Miri.ABI.Size.ofBytes 1)
         match localAlloc.allocation.readScalar
-            Miri.ABI.RuntimeTargetDataLayout.default.base intRange false with
+            targetLayout intRange false with
         | .ok intSc =>
           match intSc.tryToScalarInt with
           | .ok (.integer intSci) =>
             match localAlloc.allocation.readScalar
-                Miri.ABI.RuntimeTargetDataLayout.default.base boolRange
+                targetLayout boolRange
                 false with
             | .ok boolSc =>
               match boolSc.tryToScalarInt with
@@ -1110,7 +1122,7 @@ noncomputable def refReadReturnVal
               let range := Miri.Memory.allocRange Miri.ABI.Size.ZERO
                 (toMiriSize tagW)
               match localAlloc.allocation.readScalar
-                  Miri.ABI.RuntimeTargetDataLayout.default.base range false with
+                  targetLayout range false with
               | .ok sc =>
                 match sc.tryToScalarInt with
                 | .ok (.integer sci) =>

@@ -1277,7 +1277,7 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
 
     let recorded_args = project.path().join("capture_args.txt");
     let fake_capture = project.path().join("fake-capture");
-    // Emit a syntactically valid schema-4 capture manifest whose
+    // Emit a syntactically valid schema-5 capture manifest whose
     // `configuration.env` disagrees with the requested `--env` binding.
     let script = format!(
         "#!/bin/sh\n\
@@ -1295,7 +1295,7 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
          mkdir -p \"$out_dir\"\n\
          cat > \"$out_dir/capture.json\" <<'JSON'\n\
          {{\n\
-           \"schema_version\": 4,\n\
+           \"schema_version\": 5,\n\
            \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\n\
            \"configuration\": {{\n\
              \"crate_name\": \"demo\",\n\
@@ -1304,12 +1304,13 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
              \"target\": \"x86_64-unknown-linux-gnu\",\n\
              \"edition\": \"2024\",\n\
              \"cfg\": [],\n\
-             \"env\": {{\"CARGO_PKG_VERSION\": \"0.0.0-mismatch\"}}\n\
+             \"env\": {{\"CARGO_PKG_VERSION\": \"0.0.0-mismatch\"}},\n\
+             \"endian\": \"little\"\n\
            }},\n\
            \"source_files\": [],\n\
            \"census\": [],\n\
            \"selected\": [],\n\
-           \"program\": {{\"scope\": {{\"kind\": \"selected_unit\", \"roots\": [\"f\"]}}, \"bodies\": []}}\n\
+           \"program\": {{\"scope\": {{\"kind\": \"selected_unit\", \"roots\": [\"f\"]}}, \"target_endian\": \"little\", \"bodies\": []}}\n\
          }}\n\
          JSON\n\
          printf '{{\"status\":\"captured\"}}\\n'\n",
@@ -1383,7 +1384,7 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
              mkdir -p \"$out_dir\"\n\
              cat > \"$out_dir/capture.json\" <<'JSON'\n\
              {{\n\
-               \"schema_version\": 4,\n\
+               \"schema_version\": 5,\n\
                \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\n\
                \"configuration\": {{\n\
                  \"crate_name\": \"demo\",\n\
@@ -1392,12 +1393,13 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
                  \"target\": \"x86_64-unknown-linux-gnu\",\n\
                  \"edition\": \"2024\",\n\
                  \"cfg\": [],\n\
-                 \"env\": {{}}\n\
+                 \"env\": {{}},\n\
+                 \"endian\": \"little\"\n\
                }},\n\
                \"source_files\": [],\n\
                \"census\": [],\n\
                \"selected\": [],\n\
-               \"program\": {{\"scope\": {{\"kind\": \"selected_unit\", \"roots\": [\"f\"]}}, \"bodies\": []}}\n\
+               \"program\": {{\"scope\": {{\"kind\": \"selected_unit\", \"roots\": [\"f\"]}}, \"target_endian\": \"little\", \"bodies\": []}}\n\
              }}\n\
              JSON\n\
              printf '{{\"status\":\"captured\"}}\\n'\n"
@@ -1502,19 +1504,20 @@ fn verify_passes_instantiate_flags_and_rejects_mismatched_capture_scope() {
          mkdir -p \"$out_dir\"\n\
          cat > \"$out_dir/capture.json\" <<'JSON'\n\
          {{\n\
-           \"schema_version\": 4,\n\
+           \"schema_version\": 5,\n\
            \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\n\
            \"configuration\": {{\n\
              \"crate_name\": \"demo\",\n\
              \"target\": \"x86_64-unknown-linux-gnu\",\n\
              \"edition\": \"2024\",\n\
              \"cfg\": [],\n\
-             \"env\": {{}}\n\
+             \"env\": {{}},\n\
+             \"endian\": \"little\"\n\
            }},\n\
            \"source_files\": [],\n\
            \"census\": [],\n\
            \"selected\": [],\n\
-           \"program\": {{\"scope\": {{\"kind\": \"selected_unit\", \"roots\": []}}, \"bodies\": []}}\n\
+           \"program\": {{\"scope\": {{\"kind\": \"selected_unit\", \"roots\": []}}, \"target_endian\": \"little\", \"bodies\": []}}\n\
          }}\n\
          JSON\n\
          printf '{{\"status\":\"captured\"}}\\n'\n",
@@ -1844,5 +1847,120 @@ fn failure_receipts_emit_actionable_hints_while_preserving_detail() {
         assert_eq!(parsed_detail["unsupported"][0]["path"], "take_ref");
         let hint = cap_receipt["hint"].as_str().unwrap();
         assert!(hint.contains("`take_ref`") && hint.contains("references"), "{cap_receipt}");
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn verify_rejects_capture_manifest_with_endian_mismatch() {
+    use std::{fs, os::unix::fs::PermissionsExt};
+
+    let mk_capture_script = |config_endian_line: &str, target_endian: &str| {
+        let env_line = if config_endian_line.is_empty() {
+            r#""env": {}"#.to_string()
+        } else {
+            format!(r#""env": {{}}, {config_endian_line}"#)
+        };
+        format!(
+            "#!/bin/sh\n\
+             out_dir=\"\"\n\
+             while [ \"$#\" -gt 0 ]; do\n\
+               if [ \"$1\" = \"--out-dir\" ]; then\n\
+                 shift\n\
+                 out_dir=\"$1\"\n\
+               fi\n\
+               shift\n\
+             done\n\
+             mkdir -p \"$out_dir\"\n\
+             cat > \"$out_dir/capture.json\" <<'JSON'\n\
+             {{\n\
+               \"schema_version\": 5,\n\
+               \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\n\
+               \"configuration\": {{\n\
+                 \"crate_name\": \"demo\",\n\
+                 \"crate_type\": \"lib\",\n\
+                 \"panic\": \"unwind\",\n\
+                 \"target\": \"x86_64-unknown-linux-gnu\",\n\
+                 \"edition\": \"2024\",\n\
+                 \"cfg\": [],\n\
+                 {env_line}\n\
+               }},\n\
+               \"source_files\": [],\n\
+               \"census\": [],\n\
+               \"selected\": [],\n\
+               \"program\": {{\"scope\": {{\"kind\": \"selected_unit\", \"roots\": [\"f\"]}}, \"target_endian\": \"{target_endian}\", \"bodies\": []}}\n\
+             }}\n\
+             JSON\n\
+             printf '{{\"status\":\"captured\"}}\\n'\n",
+        )
+    };
+
+    let run_case = |config_endian_line: &str, target_endian: &str| {
+        let project = tempfile::tempdir().unwrap();
+        fs::write(project.path().join("lib.rs"), b"pub fn f() -> u64 { 0 }\n").unwrap();
+        fs::write(project.path().join("Spec.lean"), b"").unwrap();
+        fs::write(project.path().join("Proof.lean"), b"").unwrap();
+        let sysroot = project.path().join("sysroot");
+        fs::create_dir_all(&sysroot).unwrap();
+        let fake_lean = project.path().join("lean");
+        fs::write(&fake_lean, b"#!/bin/sh\nexit 0\n").unwrap();
+        fs::set_permissions(&fake_lean, fs::Permissions::from_mode(0o755)).unwrap();
+        let fake_capture = project.path().join("fake-capture");
+        fs::write(&fake_capture, mk_capture_script(config_endian_line, target_endian)).unwrap();
+        fs::set_permissions(&fake_capture, fs::Permissions::from_mode(0o755)).unwrap();
+        let output = command(Route::Direct, project.path())
+            .args([
+                "verify",
+                "--capture",
+                fake_capture.to_str().unwrap(),
+                "--sysroot",
+                sysroot.to_str().unwrap(),
+                "--lean",
+                fake_lean.to_str().unwrap(),
+                "rustc",
+                "lib.rs",
+                "--crate-name",
+                "demo",
+                "--select",
+                "f",
+                "--spec-file",
+                "Spec=Spec.lean",
+                "--proof-file",
+                "Proof=Proof.lean",
+            ])
+            .output()
+            .unwrap();
+        assert_result(&output, 2, "", "");
+        serde_json::from_slice::<serde_json::Value>(&output.stdout).unwrap()
+    };
+
+    // Baseline control: when every configuration field including `endian`
+    // matches `program.target_endian`, verification clears the capture-config
+    // mismatch gate (failing later because the fake capture omitted Lean).
+    let matched = run_case(r#""endian": "little""#, "little");
+    assert_eq!(matched["status"], "tool_failed", "{matched}");
+    assert!(
+        !matched["detail"]
+            .as_str()
+            .unwrap_or("")
+            .contains("capture differs from the requested compilation or scope"),
+        "matched endian must clear configuration gate: {matched}"
+    );
+
+    for (name, config_endian_line, target_endian) in [
+        ("big_vs_little", r#""endian": "big""#, "little"),
+        ("little_vs_big", r#""endian": "little""#, "big"),
+        ("missing_config_endian", "", "little"),
+    ] {
+        let receipt = run_case(config_endian_line, target_endian);
+        assert_eq!(receipt["status"], "tool_failed", "{name}: {receipt}");
+        assert_eq!(receipt["phase"], "capture", "{name}: {receipt}");
+        assert!(
+            receipt["detail"]
+                .as_str()
+                .unwrap_or("")
+                .contains("capture differs from the requested compilation or scope"),
+            "{name}: {receipt}"
+        );
     }
 }

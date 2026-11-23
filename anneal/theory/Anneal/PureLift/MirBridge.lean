@@ -3856,6 +3856,7 @@ u32) -> u32`. -/
 @[expose] def progComputeLinearU32 : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     identity := "compute_linear_u32"
@@ -4101,6 +4102,7 @@ theorem mir_swap_fields_verified (a b : ScalarVal) :
 @[expose] def progSelectAddU32 : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     identity := "select_add_u32"
@@ -4261,6 +4263,7 @@ and transferred across `CorrespondenceClaim` to `lean-miri` ($M_{\text{ref}}$).
 @[expose] def progLoopAccumulateU32 : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     identity := "loop_accumulate_u32"
@@ -4419,6 +4422,7 @@ theorem mir_loop_accumulate_verified
 @[expose] def progUseAfterMoveUb : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     identity := "use_after_move_ub"
@@ -4440,6 +4444,7 @@ theorem mir_loop_accumulate_verified
 @[expose] def progUseAfterStorageDeadUb : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     identity := "use_after_storage_dead_ub"
@@ -4587,6 +4592,7 @@ and reading its `u8` discriminant into `_0` via `Rvalue.discriminant`. -/
 @[expose] def progEnumDiscriminantU8 : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     identity := "enum_discriminant_u8"
@@ -4610,6 +4616,7 @@ and reading its `u8` discriminant into `_0` via `Rvalue.discriminant`. -/
 @[expose] def progEnumInvalidTagUb : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     identity := "enum_invalid_tag_ub"

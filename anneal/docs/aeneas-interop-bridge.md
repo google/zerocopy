@@ -200,11 +200,10 @@ Core Anneal currently operates on the Stage 0 scalar MIR profile (`v4.34.1`).
 Executing real Rust leaves through `anneal/interop/aeneas-bridge/` requires
 four upstream prerequisites:
 
-1. **Parameterized target endianness (`Program.targetEndian`):** MIR Profile v1
-   currently fixes `Layout.profileTargetEndian` to `.big` because byte-
-   reinterpreting operations are forbidden in Profile v1. MIR Profile v2+ must
-   thread concrete target endianness (`.little` on `x86_64`/`aarch64`) into
-   `Trusted.MirAst.Program` before proving little-endian byte-cast refinement.
+1. **Target endianness (`Program.targetEndian`):** Implemented explicitly on
+   `Trusted.MirAst.Program` (`.little` and `.big`, wired from
+   `anneal-rustc-capture`'s `tcx.data_layout.endian` so `x86_64`/`aarch64`
+   verify real little-endian byte representations).
 2. **Slice, raw-pointer, and mutable-borrow MIR support:** Profile v2+ capture
    and semantics must admit `&[T]`/`&mut [T]` fat pointers, place projections,
    pointer casts, `copy_nonoverlapping`, and `CallerMemory` allocations.

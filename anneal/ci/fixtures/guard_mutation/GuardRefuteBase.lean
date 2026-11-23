@@ -185,6 +185,7 @@ noncomputable def mkSingleBlockProg (argCount : Nat) (locals : List MirTy)
     Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := argCount

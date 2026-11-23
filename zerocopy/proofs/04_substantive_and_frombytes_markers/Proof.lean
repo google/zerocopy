@@ -24,17 +24,26 @@ private theorem body6_adm : BodyStaticAdmitted Captured.program Captured.body_6 
 private theorem body7_adm : BodyStaticAdmitted Captured.program Captured.body_7 = true := rfl
 private theorem body8_adm : BodyStaticAdmitted Captured.program Captured.body_8 = true := rfl
 
-private theorem body0_runs : Runs Captured.body_0 2 [] .unit := rfl
-private theorem body1_runs (v : Val) : Runs Captured.body_1 2 [v] .unit := rfl
-private theorem body2_runs : Runs Captured.body_2 2 [.unit] (Spec.usizeVal 0) := rfl
-private theorem body5_runs : Runs Captured.body_5 2 [] .unit := rfl
-private theorem body6_runs : Runs Captured.body_6 2 [] .unit := rfl
-private theorem body7_runs : Runs Captured.body_7 2 [] .unit := rfl
-private theorem body8_runs : Runs Captured.body_8 2 [] .unit := rfl
+private theorem body0_runs :
+    Runs Captured.program.targetEndian Captured.body_0 2 [] .unit := rfl
+private theorem body1_runs (v : Val) :
+    Runs Captured.program.targetEndian Captured.body_1 2 [v] .unit := rfl
+private theorem body2_runs :
+    Runs Captured.program.targetEndian
+      Captured.body_2 2 [.unit] (Spec.usizeVal 0) := rfl
+private theorem body5_runs :
+    Runs Captured.program.targetEndian Captured.body_5 2 [] .unit := rfl
+private theorem body6_runs :
+    Runs Captured.program.targetEndian Captured.body_6 2 [] .unit := rfl
+private theorem body7_runs :
+    Runs Captured.program.targetEndian Captured.body_7 2 [] .unit := rfl
+private theorem body8_runs :
+    Runs Captured.program.targetEndian Captured.body_8 2 [] .unit := rfl
 
 private theorem writePlace_isize {v : Val}
     (hv : checkVal v (.int .isize false) = true) :
-    writePlace [.immediate none, .immediate (some v)] entryMemory 0
+    writePlace Captured.program.targetEndian
+        [.immediate none, .immediate (some v)] entryMemory 0
         (.int .isize false) v =
       .ok ([.immediate (some v), .immediate (some v)], entryMemory) := by
   unfold writePlace
@@ -44,25 +53,26 @@ private theorem writePlace_isize {v : Val}
 private theorem step_copy_isize (body : Body) {v : Val}
     (hLoc : initLocalsLoop body [v] 0 body.locals =
       [.immediate none, .immediate (some v)])
-    (hRval : evalRvalue body.locals
+    (hRval : evalRvalue Captured.program.targetEndian body.locals
         [.immediate none, .immediate (some v)]
         entryMemory (.int .isize false) (.use (.copy ⟨1, []⟩)) =
       .ok (v, [.immediate none, .immediate (some v)], entryMemory))
-    (hStep : evalStep (bodyProg body) 0
+    (hStep : evalStep (bodyProg body Captured.program.targetEndian) 0
         (mkState 0 0 [.immediate none, .immediate (some v)]) =
-      match evalRvalue body.locals
+      match evalRvalue Captured.program.targetEndian body.locals
           [.immediate none, .immediate (some v)]
           entryMemory (.int .isize false) (.use (.copy ⟨1, []⟩)) with
       | .error k => .fault k
       | .ok (val, l1, m1) =>
-        match writePlace l1 m1 0 (.int .isize false) val with
+        match writePlace Captured.program.targetEndian
+            l1 m1 0 (.int .isize false) val with
         | .error k => .fault k
         | .ok (l2, m2) =>
           .step
             { frames := [{ defId := 0, blockIdx := 0, stmtIdx := 1, locals := l2 }],
               callerMem := ⟨[]⟩, mem := m2 })
     (hv : checkVal v (.int .isize false) = true) :
-    evalStep (bodyProg body) 0
+    evalStep (bodyProg body Captured.program.targetEndian) 0
       (mkState 0 0 (initLocalsLoop body [v] 0 body.locals)) =
     .step (mkState 0 1 [.immediate (some v), .immediate (some v)]) := by
   rw [hLoc, hStep, hRval]
@@ -72,14 +82,14 @@ private theorem step_copy_isize (body : Body) {v : Val}
 
 private theorem body3_executes {v : Val}
     (hv : checkVal v (.int .isize false) = true) :
-    Executes Captured.body_3
+    Executes Captured.program.targetEndian Captured.body_3
       (mkState 0 0 (initLocalsLoop Captured.body_3 [v] 0 Captured.body_3.locals))
       v :=
   .next (step_copy_isize Captured.body_3 rfl rfl rfl hv) (.ret rfl)
 
 private theorem body4_executes {v : Val}
     (hv : checkVal v (.int .isize false) = true) :
-    Executes Captured.body_4
+    Executes Captured.program.targetEndian Captured.body_4
       (mkState 0 0 (initLocalsLoop Captured.body_4 [v] 0 Captured.body_4.locals))
       v :=
   .next (step_copy_isize Captured.body_4 rfl rfl rfl hv) (.ret rfl)
@@ -89,7 +99,8 @@ private theorem total_of_executes {defId : DefId} {body : Body}
     (h_body : Trusted.MirSemantics.getElem? Captured.program.bodies defId = some body)
     (h_adm : BodyStaticAdmitted Captured.program body = true)
     (h_args : ValidEntryArgs body args)
-    (h_exec : Executes body (mkState 0 0 (initLocalsLoop body args 0 body.locals)) ret) :
+    (h_exec : Executes Captured.program.targetEndian body
+      (mkState 0 0 (initLocalsLoop body args 0 body.locals)) ret) :
     Spec.ReturnsTotal Captured.program defId args ret := by
   let ⟨fuel, h_execState⟩ := executes_iff_wpState.mp h_exec
   have h_execProg :
@@ -106,7 +117,7 @@ private theorem total_of_runs {defId : DefId} {body : Body}
     (h_body : Trusted.MirSemantics.getElem? Captured.program.bodies defId = some body)
     (h_adm : BodyStaticAdmitted Captured.program body = true)
     (h_args : ValidEntryArgs body args)
-    (h_runs : Runs body fuel args ret) :
+    (h_runs : Runs Captured.program.targetEndian body fuel args ret) :
     Spec.ReturnsTotal Captured.program defId args ret :=
   total_of_executes h_body h_adm h_args (run_executes h_runs)
 
@@ -114,7 +125,7 @@ private theorem unit0_safe_verified {defId : DefId} {body : Body}
     (h_body : Trusted.MirSemantics.getElem? Captured.program.bodies defId = some body)
     (h_adm : BodyStaticAdmitted Captured.program body = true)
     (h_tys : (body.locals.drop 1).take body.argumentCount = [])
-    (h_runs : Runs body 2 [] .unit) :
+    (h_runs : Runs Captured.program.targetEndian body 2 [] .unit) :
     BodyVerified Captured.program defId body (Spec.specs.safety body.identity) := by
   refine bodyVerified_of_safe h_body h_adm (fun args valid _ => ?_)
   have hMatch : checkArgsMatch args [] = true := by
@@ -130,7 +141,8 @@ private theorem isize_copy_safe_verified {defId : DefId} {body : Body}
     (h_adm : BodyStaticAdmitted Captured.program body = true)
     (h_tys : (body.locals.drop 1).take body.argumentCount = [.int .isize false])
     (h_exec : ∀ {v : Val}, checkVal v (.int .isize false) = true →
-      Executes body (mkState 0 0 (initLocalsLoop body [v] 0 body.locals)) v) :
+      Executes Captured.program.targetEndian body
+        (mkState 0 0 (initLocalsLoop body [v] 0 body.locals)) v) :
     BodyVerified Captured.program defId body (Spec.specs.safety body.identity) := by
   refine bodyVerified_of_safe h_body h_adm (fun args valid _ => ?_)
   have hMatch : checkArgsMatch args [.int .isize false] = true := by

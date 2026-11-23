@@ -401,8 +401,9 @@ theorem refLayoutOfTyId_tyIdFor_of_resolve {ts : List MirTy} {ty : MirTy}
   rw [h]
 
 /-- `refHasPadding` succeeds on every canonical $M_{\text{ref}}$ layout. -/
-theorem refHasPadding_ok (types : List MirTy) (ty : MirTy) :
-    ∃ b, refHasPadding (refLocalLayoutForTy types ty) = .ok b := by
+theorem refHasPadding_ok (endian : TargetEndian) (types : List MirTy)
+    (ty : MirTy) :
+    ∃ b, refHasPadding endian (refLocalLayoutForTy types ty) = .ok b := by
   cases ty with
   | int w s => cases w <;> cases s <;> exact ⟨_, rfl⟩
   | bool | unit | never | char | ordering | ref _ _ | rawPtr _ _
@@ -424,7 +425,7 @@ theorem refHasPadding_ok (types : List MirTy) (ty : MirTy) :
           cases f with
           | int w s =>
             cases g with
-            | bool => cases w <;> cases s <;> exact ⟨_, rfl⟩
+            | bool => cases endian <;> cases w <;> cases s <;> exact ⟨_, rfl⟩
             | _ => exact ⟨_, rfl⟩
           | _ => exact ⟨_, rfl⟩
 
@@ -813,11 +814,12 @@ theorem SlotsMatchTys.not_indirect {tys : List MirTy} {slots : List LocalSlot}
     (h_sl : MirSemantics.getElem? slots i = some (.indirect place)) : False :=
   SlotsMatchTys.getElem? h h_ty h_sl
 
-theorem evalOperandToSlot_slotsMatchTys {bodyLocals : List MirTy}
+theorem evalOperandToSlot_slotsMatchTys {endian : TargetEndian}
+    {bodyLocals : List MirTy}
     {locals locals' : List LocalSlot} {mem mem' : MemoryState} {op : Operand}
     {tyOk : MirTy → Bool} {ty : MirTy} {optVal : Option Val}
     (h_inv : SlotsMatchTys bodyLocals locals)
-    (h : evalOperandToSlot bodyLocals locals mem tyOk op =
+    (h : evalOperandToSlot endian bodyLocals locals mem tyOk op =
       .ok (ty, optVal, locals', mem')) :
     SlotsMatchTys bodyLocals locals' ∧ SlotMatchesTy ty (.immediate optVal) ∧
       mem' = mem := by
@@ -893,16 +895,17 @@ theorem evalOperandToSlot_slotsMatchTys {bodyLocals : List MirTy}
       subst h_ty_eq; subst h_opt_eq; subst h_loc_eq; subst h_mem_eq
       exact ⟨h_inv, evalConstLit_checkVal h_lit, rfl⟩
 
-theorem evalPrimitiveOperand_slotsMatchTys {bodyLocals : List MirTy}
+theorem evalPrimitiveOperand_slotsMatchTys {endian : TargetEndian}
+    {bodyLocals : List MirTy}
     {locals locals' : List LocalSlot} {mem mem' : MemoryState}
     {opnd : Operand} {v : Val}
     (h_inv : SlotsMatchTys bodyLocals locals)
-    (h : evalPrimitiveOperand bodyLocals locals mem opnd =
+    (h : evalPrimitiveOperand endian bodyLocals locals mem opnd =
       .ok (v, locals', mem')) :
     SlotsMatchTys bodyLocals locals' ∧ mem' = mem := by
   unfold evalPrimitiveOperand at h
-  cases h_op : evalOperandToSlot bodyLocals locals mem isPrimitiveReadableTy
-      opnd with
+  cases h_op : evalOperandToSlot endian bodyLocals locals mem
+      isPrimitiveReadableTy opnd with
   | error _ => rw [h_op] at h; cases h
   | ok res =>
     let ⟨ty, optVal, l₁, m₁⟩ := res
@@ -1004,16 +1007,18 @@ theorem evalOrderingDiscriminantOfVal_ok {optVal : Option Val}
       exact ⟨h_l.symm, h_m.symm⟩
     | _ => cases h
 
-theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
+theorem evalRvalue_slotsMatchTys {endian : TargetEndian}
+    {bodyLocals : List MirTy}
     {locals locals' : List LocalSlot} {mem mem' : MemoryState}
     {dstTy : MirTy} {rv : Rvalue} {v : Val}
     (h_inv : SlotsMatchTys bodyLocals locals)
-    (h : evalRvalue bodyLocals locals mem dstTy rv = .ok (v, locals', mem')) :
+    (h : evalRvalue endian bodyLocals locals mem dstTy rv =
+      .ok (v, locals', mem')) :
     SlotsMatchTys bodyLocals locals' ∧ mem' = mem := by
   cases rv with
   | use opnd =>
     dsimp only [evalRvalue] at h
-    cases h_op : evalOperandToSlot bodyLocals locals mem
+    cases h_op : evalOperandToSlot endian bodyLocals locals mem
         (fun srcTy => MirTy.beq srcTy dstTy) opnd with
     | error _ => rw [h_op] at h; cases h
     | ok res =>
@@ -1035,13 +1040,13 @@ theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
           exact ⟨h_l, h_m⟩
   | binaryOp op lhs rhs =>
     dsimp only [evalRvalue] at h
-    cases h_l : evalPrimitiveOperand bodyLocals locals mem lhs with
+    cases h_l : evalPrimitiveOperand endian bodyLocals locals mem lhs with
     | error _ => rw [h_l] at h; cases h
     | ok resL =>
       let ⟨lVal, l₁, m₁⟩ := resL
       rw [h_l] at h
       dsimp only at h
-      cases h_r : evalPrimitiveOperand bodyLocals l₁ m₁ rhs with
+      cases h_r : evalPrimitiveOperand endian bodyLocals l₁ m₁ rhs with
       | error _ => rw [h_r] at h; cases h
       | ok resR =>
         let ⟨rVal, l₂, m₂⟩ := resR
@@ -1060,7 +1065,7 @@ theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
           exact ⟨h_l₂, h_m₂.trans h_m₁⟩
   | unaryOp op opnd =>
     dsimp only [evalRvalue] at h
-    cases h_op : evalPrimitiveOperand bodyLocals locals mem opnd with
+    cases h_op : evalPrimitiveOperand endian bodyLocals locals mem opnd with
     | error _ => rw [h_op] at h; cases h
     | ok res =>
       let ⟨v₀, l₁, m₁⟩ := res
@@ -1080,7 +1085,8 @@ theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
     | unsupported => cases h
     | intToInt =>
       dsimp only [evalRvalue] at h
-      cases h_op : evalOperandToSlot bodyLocals locals mem isIntLikeTy opnd with
+      cases h_op : evalOperandToSlot endian bodyLocals locals mem isIntLikeTy
+          opnd with
       | error _ => rw [h_op] at h; cases h
       | ok res =>
         let ⟨srcTy, optVal, l₁, m₁⟩ := res
@@ -1137,12 +1143,14 @@ theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
             | _ => cases h
   | ref _ _ | addressOf _ _ | aggregateTuple _ | unsupported => cases h
 
-theorem writePlace_slotsMatchTys {bodyLocals : List MirTy}
+theorem writePlace_slotsMatchTys {endian : TargetEndian}
+    {bodyLocals : List MirTy}
     {locals locals' : List LocalSlot} {mem mem' : MemoryState}
     {dstLocalId : LocalId} {dstTy : MirTy} {val : Val}
     (h_inv : SlotsMatchTys bodyLocals locals)
     (h_ty : MirSemantics.getElem? bodyLocals dstLocalId = some dstTy)
-    (h : writePlace locals mem dstLocalId dstTy val = .ok (locals', mem')) :
+    (h : writePlace endian locals mem dstLocalId dstTy val =
+      .ok (locals', mem')) :
     SlotsMatchTys bodyLocals locals' ∧ mem' = mem := by
   unfold writePlace at h
   cases h_chk : checkVal val dstTy with

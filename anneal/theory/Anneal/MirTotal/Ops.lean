@@ -1896,19 +1896,20 @@ theorem decodeValComp_eq (endian : TargetEndian) (ty : MirTy) (bytes : List Allo
           cases evalConstLit _ (.scalar (BitVec.ofNat 128 (decodeUInt endian raw))) <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.loadIndirect`. -/
-@[expose] def loadIndirectComp (mem : MemoryState) (ty : MirTy) (place : MemPlace) :
-    Except FaultKind (Option Val) :=
+@[expose] def loadIndirectComp (endian : TargetEndian) (mem : MemoryState) (ty : MirTy)
+    (place : MemPlace) : Except FaultKind (Option Val) :=
   match layoutOfTyComp ty with
   | none => .error .unsupported
   | some layout =>
     match readBytesComp mem place layout.size layout.alignLog2 with
     | .error k => .error k
-    | .ok bytes => decodeValComp .big ty bytes
+    | .ok bytes => decodeValComp endian ty bytes
 
 /-- Agreement between `loadIndirectComp` and `loadIndirect`. -/
-theorem loadIndirectComp_eq (mem : MemoryState) (ty : MirTy) (place : MemPlace) :
-    loadIndirectComp mem ty place = loadIndirect mem ty place := by
-  unfold loadIndirectComp loadIndirect profileTargetEndian
+theorem loadIndirectComp_eq (endian : TargetEndian) (mem : MemoryState)
+    (ty : MirTy) (place : MemPlace) :
+    loadIndirectComp endian mem ty place = loadIndirect endian mem ty place := by
+  unfold loadIndirectComp loadIndirect
   rw [layoutOfTyComp_eq]
   cases layoutOfTy ty with
   | none => rfl
@@ -1917,7 +1918,7 @@ theorem loadIndirectComp_eq (mem : MemoryState) (ty : MirTy) (place : MemPlace) 
     rw [readBytesComp_eq]
     cases readBytes mem place layout.size layout.alignLog2 with
     | error _ => rfl
-    | ok bytes => exact decodeValComp_eq .big ty bytes
+    | ok bytes => exact decodeValComp_eq endian ty bytes
 
 /-- Computable mirror of `Trusted.MirSemantics.deinitIndirect`. -/
 @[expose] def deinitIndirectComp (mem : MemoryState) (ty : MirTy) (place : MemPlace) :

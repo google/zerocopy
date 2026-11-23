@@ -137,9 +137,9 @@ inductive VerificationScope where
   | crate
 
 /-- A complete MIR program unit: function bodies indexed by `DefId`, an entry
-function `entryDefId`, the captured target's pointer width `pointerWidthBits`,
-the MIR semantic profile version `mirProfileVersion`, and the capture scope
-`scope`.
+function `entryDefId`, the captured target's pointer width `pointerWidthBits`
+and byte order `targetEndian`, the MIR semantic profile version
+`mirProfileVersion`, and the capture scope `scope`.
 
 1. **Target pointer width (`pointerWidthBits`):**
    `pointerWidthBits` records the target layout that `rustc` used when it
@@ -159,7 +159,13 @@ the MIR semantic profile version `mirProfileVersion`, and the capture scope
    `Trusted.Correspondence.initRefState` reject any program whose
    `pointerWidthBits` is not `64` with `FaultKind.unsupported` (`.blocked`).
 
-2. **MIR semantic profile version (`mirProfileVersion`):**
+2. **Target byte order (`targetEndian`):**
+   `targetEndian` records the target's `rustc_abi::Endian` (`Little` or `Big`)
+   from `tcx.data_layout.endian`. Memory loads and stores (`loadIndirect`,
+   `storeIndirect`) and `Trusted.Correspondence`'s
+   `Miri.ABI.RuntimeTargetDataLayout` use `p.targetEndian` explicitly.
+
+3. **MIR semantic profile version (`mirProfileVersion`):**
    `mirProfileVersion` pins the contract version of the post-cleanup runtime MIR
    semantic profile shared between `anneal-rustc-capture` (`rust-lang/rust`
    `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`), `Trusted.MirSemantics`, and
@@ -168,11 +174,12 @@ the MIR semantic profile version `mirProfileVersion`, and the capture scope
    `initRefState` fail closed with `FaultKind.unsupported` (`.blocked`)
    whenever `p.mirProfileVersion ≠ 1`.
 
-**Producer obligations:** `Program.pointerWidthBits`,
+**Producer obligations:** `Program.pointerWidthBits`, `Program.targetEndian`,
 `Program.mirProfileVersion`, and `Program.scope` carry no defaults so every
 `Program` literal (both hand-written canaries and serialized captures) must
-state the target layout, profile contract, and intended verification scope
-explicitly rather than silently inheriting accepted or `.unit` values.
+state the target layout, byte order, profile contract, and intended
+verification scope explicitly rather than silently inheriting accepted,
+big/little-endian, or `.unit` values.
 The remaining Lean field defaults across `Trusted.MirAst` exist solely for
 concise hand-written canary literals. Two defaults equal unprojected/non-cleanup
 values (`BasicBlock.cleanup := false` and `Place.projection := []`), and
@@ -181,7 +188,7 @@ two defaults (`Body.isUnsafe := false` and `Body.identity := ""`) fail closed
 (`isUnsafe := false` withholds caller safety preconditions, and `identity := ""`
 is rejected by `BodyStaticAdmitted`). Any serializer or MIR producer (such as
 `anneal-rustc-capture`) MUST explicitly populate all of these fields—
-`pointerWidthBits` (from the compiled target's data layout),
+`pointerWidthBits` and `targetEndian` (from the compiled target's data layout),
 `mirProfileVersion` (from the capture profile contract), `scope`, `entryDefId`,
 `Body.isUnsafe`, `Body.identity`, `BasicBlock.cleanup` (from
 `BasicBlockData::is_cleanup`), and `Place.projection` (from
@@ -193,6 +200,7 @@ structure Program where
   bodies : List Body
   entryDefId : DefId := 0
   pointerWidthBits : Nat
+  targetEndian : TargetEndian
   mirProfileVersion : Nat
   scope : VerificationScope
 

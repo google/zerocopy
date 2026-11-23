@@ -35,12 +35,12 @@ noncomputable def pathWord (flag : Bool) (width : Nat) : Option Sym :=
     SVal.sym?
 
 theorem path_sound {flag : Bool} {width : Nat} {s : Sym}
-    (h : pathWord flag width = some s) (value : Word) :
-    Safe sourceBody (endianArgs flag width value) ∧
-      Returns sourceBody (endianArgs flag width value)
+    {endian : TargetEndian} (h : pathWord flag width = some s) (value : Word) :
+    Safe endian sourceBody (endianArgs flag width value) ∧
+      Returns endian sourceBody (endianArgs flag width value)
         (u64Val (s.eval value)) := by
   obtain ⟨v, hr, hs⟩ := Option.bind_eq_some_iff.mp h
-  have run := symRun_entry value hr
+  have run := symRun_entry (endian := endian) value hr
   rw [SVal.sym?_sound value hs] at run
   exact run
 

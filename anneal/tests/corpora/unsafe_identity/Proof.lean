@@ -20,7 +20,7 @@ def faulting : Body := Captured.program.bodies[0]
 def returning : Body := Captured.program.bodies[1]
 
 theorem returning_runs :
-    Runs returning 2 [] (.scalar ⟨.i64, false, BitVec.ofNat 128 0⟩) := rfl
+    Runs .little returning 2 [] (.scalar ⟨.i64, false, BitVec.ofNat 128 0⟩) := rfl
 
 theorem faulting_step0 :
     evalStep (bodyProg faulting) 0
@@ -32,7 +32,7 @@ theorem faulting_really_faults :
       (mkState 0 1 [.immediate none, .immediate none]) =
       .fault .undefined := rfl
 
-theorem faulting_not_safe : ¬Safe faulting [] := by
+theorem faulting_not_safe : ¬Safe .little faulting [] := by
   intro safe
   exact safe _ .undefined (.next .refl faulting_step0) faulting_really_faults
 

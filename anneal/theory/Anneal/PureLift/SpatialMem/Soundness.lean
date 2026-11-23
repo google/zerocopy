@@ -340,7 +340,8 @@ private theorem paddedStruct_loadFieldA (m : MemoryState) (place : MemPlace)
         (execEncodeUInt execProfileTargetEndian 4 bVal).map (fun b => AllocByte.init b none),
         true⟩)
     (hOff : place.offset = 0) :
-    Trusted.MirSemantics.loadIndirect m (.int .i8 false) ⟨place.allocId, 0⟩ =
+    Trusted.MirSemantics.loadIndirect execProfileTargetEndian m
+      (.int .i8 false) ⟨place.allocId, 0⟩ =
       .ok (some (.scalar ⟨.i8, false, BitVec.ofNat 128 aInit⟩)) := by
   rw [← execFindAllocation_eq] at hFind
   rw [← execLoadIndirect_eq, ← hOff]
@@ -393,7 +394,8 @@ private theorem paddedStruct_loadFieldB (m : MemoryState) (place : MemPlace)
         [AllocByte.init (UInt8.ofNat aInit) none, .uninit, .uninit, .uninit] ++
         (execEncodeUInt execProfileTargetEndian 4 bVal).map (fun b => AllocByte.init b none),
         true⟩) :
-    Trusted.MirSemantics.loadIndirect m (.int .i32 false) ⟨place.allocId, 4⟩ =
+    Trusted.MirSemantics.loadIndirect execProfileTargetEndian m
+      (.int .i32 false) ⟨place.allocId, 4⟩ =
       .ok (some (.scalar ⟨.i32, false, BitVec.ofNat 128 bVal⟩)) := by
   rw [← execFindAllocation_eq] at hFind
   rw [← execLoadIndirect_eq]
@@ -983,16 +985,20 @@ theorem paddedStruct_mem_freeze_mutate_reabsorb_sound
         .ok stMut.mem ∧
       Trusted.MirSemantics.readBytes stMut.mem ⟨place.allocId, 1⟩ 3 0 =
         .ok [.uninit, .uninit, .uninit] ∧
-      Trusted.MirSemantics.loadIndirect stMut.mem (.int .i8 false) ⟨place.allocId, 0⟩ =
+      Trusted.MirSemantics.loadIndirect execProfileTargetEndian stMut.mem
+        (.int .i8 false) ⟨place.allocId, 0⟩ =
         .ok (some (.scalar ⟨.i8, false, BitVec.ofNat 128 aInit⟩)) ∧
-      Trusted.MirSemantics.loadIndirect stMut.mem (.int .i32 false) ⟨place.allocId, 4⟩ =
+      Trusted.MirSemantics.loadIndirect execProfileTargetEndian stMut.mem
+        (.int .i32 false) ⟨place.allocId, 4⟩ =
         .ok (some (.scalar ⟨.i32, false, BitVec.ofNat 128 bNew⟩)) ∧
       reabsorbPaddedFromMem u8U32Ctx2 0 stMut =
         .ok stReabsorbed ∧
       stReabsorbed.mirLocals = [.immediate (some .unit), .indirect place] ∧
-      Trusted.MirSemantics.loadIndirect stReabsorbed.mem (.int .i8 false) ⟨place.allocId, 0⟩ =
+      Trusted.MirSemantics.loadIndirect execProfileTargetEndian stReabsorbed.mem
+        (.int .i8 false) ⟨place.allocId, 0⟩ =
         .ok (some (.scalar ⟨.i8, false, BitVec.ofNat 128 aInit⟩)) ∧
-      Trusted.MirSemantics.loadIndirect stReabsorbed.mem (.int .i32 false) ⟨place.allocId, 4⟩ =
+      Trusted.MirSemantics.loadIndirect execProfileTargetEndian stReabsorbed.mem
+        (.int .i32 false) ⟨place.allocId, 4⟩ =
         .ok (some (.scalar ⟨.i32, false, BitVec.ofNat 128 bNew⟩)) ∧
       endLoanInState mirValAlg 0 stReabsorbed.sym = .ok stEndSym ∧
       endPaddedLoan u8U32Ctx2 0 stReabsorbed =
@@ -1471,11 +1477,13 @@ theorem paddedStruct_mem_freeze_mutate_reabsorb_sound
     rw [ite_bool_false hPadOk]
     rfl
   have hLoadA :
-      Trusted.MirSemantics.loadIndirect stMut.mem (.int .i8 false) ⟨place.allocId, 0⟩ =
+      Trusted.MirSemantics.loadIndirect execProfileTargetEndian stMut.mem
+        (.int .i8 false) ⟨place.allocId, 0⟩ =
         .ok (some (.scalar ⟨.i8, false, BitVec.ofNat 128 aInit⟩)) :=
     paddedStruct_loadFieldA stMut.mem place aInit bNew hA hFindMutReal rfl
   have hLoadB :
-      Trusted.MirSemantics.loadIndirect stMut.mem (.int .i32 false) ⟨place.allocId, 4⟩ =
+      Trusted.MirSemantics.loadIndirect execProfileTargetEndian stMut.mem
+        (.int .i32 false) ⟨place.allocId, 4⟩ =
         .ok (some (.scalar ⟨.i32, false, BitVec.ofNat 128 bNew⟩)) :=
     paddedStruct_loadFieldB stMut.mem place aInit bNew hBNew hFindMutReal
   have hEncNewEqMut : paddedU8U32Encode newStruct = mutRawBytes := by
@@ -1967,9 +1975,10 @@ private theorem execMemoryEmpty_eq : execMemoryEmpty = MemoryState.empty := rfl
       mkSampleU8U32InitState = .ok stPinned ∧
     Trusted.MirSemantics.writeUninit stPinned.mem ⟨1, byteOff⟩ 1 0 = .ok mBad ∧
     reabsorbPaddedFromMem sampleBodyCtx 0 { stPinned with mem := mBad } = .fail ∧
-    Trusted.MirSemantics.loadIndirect mBad fieldTy ⟨1, fieldOff⟩ = .ok none ∧
-    Trusted.MirSemantics.evalPrimitiveOperand [fieldTy] [.indirect ⟨1, fieldOff⟩] mBad
-      (.copy ⟨0, []⟩) = .error .undefined
+    Trusted.MirSemantics.loadIndirect execProfileTargetEndian mBad fieldTy
+      ⟨1, fieldOff⟩ = .ok none ∧
+    Trusted.MirSemantics.evalPrimitiveOperand execProfileTargetEndian [fieldTy]
+      [.indirect ⟨1, fieldOff⟩] mBad (.copy ⟨0, []⟩) = .error .undefined
 
 private theorem nonPadUninitCheckAt_0 : nonPadUninitCheckAt 0 (.int .i8 false) 0 := by
   refine ⟨_, _, rfl, rfl, rfl, rfl, rfl⟩
@@ -2026,18 +2035,21 @@ theorem padded_padding_non_uniqueness_and_decodeVal_uninit_test :
       stR1.mem ≠ stR2.mem ∧
       execEncodeVal execProfileTargetEndian (.int .i8 false)
         (.scalar ⟨.i8, false, BitVec.ofNat 128 0xAA⟩) = .ok [.init 0xAA none] ∧
-      execStoreIndirect st1.mem (.int .i8 false) ⟨1, 1⟩
+      execStoreIndirect execProfileTargetEndian st1.mem (.int .i8 false) ⟨1, 1⟩
         (.scalar ⟨.i8, false, BitVec.ofNat 128 0xAA⟩) = .ok memStore1 ∧
       execDeinitIndirect memStore1 (.int .i8 false) ⟨1, 1⟩ = .ok st1.mem ∧
-      Trusted.MirSemantics.decodeVal execProfileTargetEndian (.int .i8 false) [.uninit] =
-        .ok none ∧
-      Trusted.MirSemantics.decodeVal execProfileTargetEndian (.int .i8 false) [.init 0xAA none] =
+      Trusted.MirSemantics.decodeVal execProfileTargetEndian (.int .i8 false)
+        [.uninit] = .ok none ∧
+      Trusted.MirSemantics.decodeVal execProfileTargetEndian (.int .i8 false)
+        [.init 0xAA none] =
         .ok (some (.scalar ⟨.i8, false, BitVec.ofNat 128 0xAA⟩)) ∧
-      Trusted.MirSemantics.evalPrimitiveOperand [.int .i8 false] [.indirect ⟨1, 1⟩]
-        st1.mem (.copy ⟨0, []⟩) = .error .undefined ∧
-      Trusted.MirSemantics.evalPrimitiveOperand [.int .i8 false] [.indirect ⟨1, 1⟩]
-        st2.mem (.copy ⟨0, []⟩) =
-          .ok (.scalar ⟨.i8, false, BitVec.ofNat 128 0xAA⟩, [.indirect ⟨1, 1⟩], st2.mem) := by
+      Trusted.MirSemantics.evalPrimitiveOperand execProfileTargetEndian
+        [.int .i8 false] [.indirect ⟨1, 1⟩] st1.mem (.copy ⟨0, []⟩) =
+        .error .undefined ∧
+      Trusted.MirSemantics.evalPrimitiveOperand execProfileTargetEndian
+        [.int .i8 false] [.indirect ⟨1, 1⟩] st2.mem (.copy ⟨0, []⟩) =
+          .ok (.scalar ⟨.i8, false, BitVec.ofNat 128 0xAA⟩,
+            [.indirect ⟨1, 1⟩], st2.mem) := by
   let st1 : PaddedSymMemState :=
     match freezePaddedToMem sampleBodyCtx 0 paddedU8U32MemCodec paddedU8U32MemCodec_lawful
         mkSampleU8U32InitState with
@@ -3504,7 +3516,7 @@ theorem promoted_u32_sync_and_stale_mir_read_rejected_test :
     writePaddedSymPlace u32SyncCtx (.derefSub 2 []) v30 stReab20 = .ok stSynced30 ∧
     allPromotedLocalsMemSynced u32SyncCtx stSynced30 = true ∧
     evalPaddedMirOperand u32SyncCtx stSynced30 (.copy ⟨1, []⟩) = .ok (v30, stSynced30) ∧
-    Trusted.MirSemantics.evalPrimitiveOperand
+    Trusted.MirSemantics.evalPrimitiveOperand execProfileTargetEndian
       (stSynced30.mirLocalTypes.map SpatialTargetSpec.toCapturedMirTy)
       stSynced30.mirLocals stSynced30.mem (.copy ⟨1, []⟩) =
         .ok (v30, stSynced30.mirLocals, stSynced30.mem) ∧

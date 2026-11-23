@@ -97,8 +97,9 @@ the type after resolution with the same result.
   case).
 - `.constant c`: decodes constant literal without mutating `locals` or `mem`.
 -/
-noncomputable def evalOperandToSlot (bodyLocals : List MirTy)
-    (locals : List LocalSlot) (mem : MemoryState) (tyOk : MirTy → Bool) :
+noncomputable def evalOperandToSlot (endian : TargetEndian)
+    (bodyLocals : List MirTy) (locals : List LocalSlot) (mem : MemoryState)
+    (tyOk : MirTy → Bool) :
     Operand →
       Except FaultKind (MirTy × Option Val × List LocalSlot × MemoryState)
   | .copy place =>
@@ -116,7 +117,7 @@ noncomputable def evalOperandToSlot (bodyLocals : List MirTy)
       else if !tyOk ty then
         .error .unsupported
       else
-        match loadIndirect mem ty mplace with
+        match loadIndirect endian mem ty mplace with
         | .ok optVal => .ok (ty, optVal, locals, mem)
         | .error k => .error k
     | _, _ => .error .unsupported
@@ -137,7 +138,7 @@ noncomputable def evalOperandToSlot (bodyLocals : List MirTy)
       else if !tyOk ty then
         .error .unsupported
       else
-        match loadIndirect mem ty mplace with
+        match loadIndirect endian mem ty mplace with
         | .error k => .error k
         | .ok optVal =>
           match deinitIndirect mem ty mplace with
@@ -179,10 +180,12 @@ Used by `.binaryOp`, `.unaryOp`, and `.switchInt`. Checks
 non-primitives such as `.unit`; `evalOperandToSlot` performs this check before
 reading an `.indirect` local's memory), and then checks initialization (`optVal
 = some v`, faulting with `.undefined` on uninitialized storage). -/
-noncomputable def evalPrimitiveOperand (bodyLocals : List MirTy)
-    (locals : List LocalSlot) (mem : MemoryState) (opnd : Operand) :
+noncomputable def evalPrimitiveOperand (endian : TargetEndian)
+    (bodyLocals : List MirTy) (locals : List LocalSlot) (mem : MemoryState)
+    (opnd : Operand) :
     Except FaultKind (Val × List LocalSlot × MemoryState) :=
-  match evalOperandToSlot bodyLocals locals mem isPrimitiveReadableTy opnd with
+  match evalOperandToSlot endian bodyLocals locals mem isPrimitiveReadableTy
+      opnd with
   | .error k => .error k
   | .ok (ty, optVal, locals', mem') =>
     if !isPrimitiveReadableTy ty then
@@ -304,11 +307,11 @@ both producing `.undefined`):
   an `.indirect` local, with `loadIndirect`) and returns
   `evalDiscriminantOfVal ety` or `evalOrderingDiscriminantOfVal`. Reading
   `.discriminant` from a `.dead` local faults with `.error .undefined`. -/
-noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
-    (mem : MemoryState) (dstTy : MirTy) :
+noncomputable def evalRvalue (endian : TargetEndian) (bodyLocals : List MirTy)
+    (locals : List LocalSlot) (mem : MemoryState) (dstTy : MirTy) :
     Rvalue → Except FaultKind (Val × List LocalSlot × MemoryState)
   | .use opnd =>
-    match evalOperandToSlot bodyLocals locals mem
+    match evalOperandToSlot endian bodyLocals locals mem
         (fun srcTy => MirTy.beq srcTy dstTy) opnd with
     | .error k => .error k
     | .ok (srcTy, optVal, locals₁, mem₁) =>
@@ -319,24 +322,24 @@ noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
         | some v => .ok (v, locals₁, mem₁)
         | none => .error .undefined
   | .binaryOp op lhs rhs =>
-    match evalPrimitiveOperand bodyLocals locals mem lhs with
+    match evalPrimitiveOperand endian bodyLocals locals mem lhs with
     | .error k => .error k
     | .ok (lVal, locals₁, mem₁) =>
-      match evalPrimitiveOperand bodyLocals locals₁ mem₁ rhs with
+      match evalPrimitiveOperand endian bodyLocals locals₁ mem₁ rhs with
       | .error k => .error k
       | .ok (rVal, locals₂, mem₂) =>
         match evalBinOp op lVal rVal with
         | .error k => .error k
         | .ok res => .ok (res, locals₂, mem₂)
   | .unaryOp op opnd =>
-    match evalPrimitiveOperand bodyLocals locals mem opnd with
+    match evalPrimitiveOperand endian bodyLocals locals mem opnd with
     | .error k => .error k
     | .ok (v, locals₁, mem₁) =>
       match evalUnOp op v with
       | .error k => .error k
       | .ok res => .ok (res, locals₁, mem₁)
   | .cast .intToInt opnd castTy =>
-    match evalOperandToSlot bodyLocals locals mem isIntLikeTy opnd with
+    match evalOperandToSlot endian bodyLocals locals mem isIntLikeTy opnd with
     | .error k => .error k
     | .ok (srcTy, optVal, locals₁, mem₁) =>
       if !isIntLikeTy srcTy then
@@ -366,11 +369,11 @@ noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
       else
         match srcTy with
         | .enum ety =>
-          match loadIndirect mem srcTy mplace with
+          match loadIndirect endian mem srcTy mplace with
           | .error k => .error k
           | .ok optVal => evalDiscriminantOfVal ety optVal locals mem
         | .ordering =>
-          match loadIndirect mem srcTy mplace with
+          match loadIndirect endian mem srcTy mplace with
           | .error k => .error k
           | .ok optVal => evalOrderingDiscriminantOfVal optVal locals mem
         | _ => .error .unsupported
@@ -385,8 +388,8 @@ noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
 matching `write_immediate_no_validate`'s `Left(mplace)` case in
 `compiler/rustc_const_eval/src/interpret/place.rs`, `rust-lang/rust`
 `8144389c895da997dbdecaa635e41d6a50be6ffd`). -/
-noncomputable def writePlace (locals : List LocalSlot) (mem : MemoryState)
-    (dstLocalId : LocalId) (dstTy : MirTy) (val : Val) :
+noncomputable def writePlace (endian : TargetEndian) (locals : List LocalSlot)
+    (mem : MemoryState) (dstLocalId : LocalId) (dstTy : MirTy) (val : Val) :
     Except FaultKind (List LocalSlot × MemoryState) :=
   if !checkVal val dstTy then
     .error .unsupported
@@ -399,7 +402,7 @@ noncomputable def writePlace (locals : List LocalSlot) (mem : MemoryState)
       | some locals' => .ok (locals', mem)
       | none => .error .unsupported
     | some (.indirect mplace) =>
-      match storeIndirect mem dstTy mplace val with
+      match storeIndirect endian mem dstTy mplace val with
       | .ok mem' => .ok (locals, mem')
       | .error k => .error k
 
@@ -472,9 +475,9 @@ noncomputable def deallocateLocal (mem : MemoryState) :
   fault `.unsupported` before write-time `DeadLocal`, and `.use` checks
   uninitialized input before writing while `rustc`'s `copy_op` validates after
   writing, both producing `.undefined`). -/
-noncomputable def evalStatement (body : Body) (frame : FrameState)
-    (mem : MemoryState) (callerMem : CallerMemory) (stmt : StatementKind) :
-    StepResult State TerminalOut :=
+noncomputable def evalStatement (endian : TargetEndian) (body : Body)
+    (frame : FrameState) (mem : MemoryState) (callerMem : CallerMemory)
+    (stmt : StatementKind) : StepResult State TerminalOut :=
   match stmt with
   | .nop =>
     .step {
@@ -533,10 +536,10 @@ noncomputable def evalStatement (body : Body) (frame : FrameState)
       match getElem? body.locals dst.localId with
       | none => .fault .unsupported
       | some dstTy =>
-        match evalRvalue body.locals frame.locals mem dstTy rvalue with
+        match evalRvalue endian body.locals frame.locals mem dstTy rvalue with
         | .error k => .fault k
         | .ok (val, localsAfterRval, memAfterRval) =>
-          match writePlace localsAfterRval memAfterRval dst.localId dstTy
+          match writePlace endian localsAfterRval memAfterRval dst.localId dstTy
               val with
           | .error k => .fault k
           | .ok (localsAfterWrite, memAfterWrite) =>
@@ -693,9 +696,9 @@ noncomputable def jumpToBlock (frame : FrameState) (mem : MemoryState)
 
 `Return` reads `_0`'s value (from memory with `loadIndirect` if `_0` is
 `.indirect`); an uninitialized or dead `_0` faults with `.undefined`. -/
-noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
-    (frame : FrameState) (mem : MemoryState) (callerMem : CallerMemory) :
-    StepResult State TerminalOut :=
+noncomputable def evalTerminator (endian : TargetEndian) (body : Body)
+    (bb : BasicBlock) (frame : FrameState) (mem : MemoryState)
+    (callerMem : CallerMemory) : StepResult State TerminalOut :=
   match bb.terminator with
   | .goto target => jumpToBlock frame mem callerMem target
   | .return_ =>
@@ -710,7 +713,7 @@ noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
         match getElem? body.locals 0 with
         | none => .fault .unsupported
         | some retTy =>
-          match loadIndirect mem retTy mplace with
+          match loadIndirect endian mem retTy mplace with
           | .ok (some retVal) => .done (.returned ⟨retVal, callerMem⟩)
           | .ok none => .fault .undefined
           | .error k => .fault k
@@ -718,7 +721,7 @@ noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
   | .unreachable =>
     .fault .undefined
   | .switchInt discr targets =>
-    match evalPrimitiveOperand body.locals frame.locals mem discr with
+    match evalPrimitiveOperand endian body.locals frame.locals mem discr with
     | .error k => .fault k
     | .ok (discrVal, localsAfterDiscr, memAfterDiscr) =>
       let targetRes : Except FaultKind BasicBlockId :=
@@ -781,10 +784,11 @@ noncomputable def evalStep (p : Program) (_c : Choice) (s : State) :
       | none => .fault .unsupported
       | some bb =>
         match getElem? bb.statements frame.stmtIdx with
-        | some stmt => evalStatement body frame s.mem s.callerMem stmt
+        | some stmt =>
+          evalStatement p.targetEndian body frame s.mem s.callerMem stmt
         | none =>
           if Nat.beq frame.stmtIdx bb.statements.length then
-            evalTerminator body bb frame s.mem s.callerMem
+            evalTerminator p.targetEndian body bb frame s.mem s.callerMem
           else
             .fault .unsupported
   | _ => .fault .unsupported
@@ -857,7 +861,7 @@ noncomputable def forceAllocation (p : Program) (s : State)
           let stored : Except FaultKind MemoryState :=
             match optVal with
             | none => .ok mem₁
-            | some v => storeIndirect mem₁ ty place v
+            | some v => storeIndirect p.targetEndian mem₁ ty place v
           match stored with
           | .error k => .error k
           | .ok mem₂ =>

@@ -821,19 +821,23 @@ struct CheckedProfileConfig {
     overflow_checks: bool,
     mir_preserve_ub: bool,
     pointer_bits: u64,
-    endian: &'static str,
+    target_endian: ir::TargetEndian,
 }
 
 fn checked_target_profile(
     pointer_bits: u64,
     endian: Endian,
-) -> Result<(u64, &'static str), Failure> {
-    match endian {
-        Endian::Little if pointer_bits == 64 => Ok((pointer_bits, "little")),
-        Endian::Little | Endian::Big => {
-            Err(Failure::unsupported("only 64-bit little-endian targets are modeled"))
-        }
+) -> Result<(u64, ir::TargetEndian), Failure> {
+    if pointer_bits != 64 {
+        return Err(Failure::unsupported(
+            "only 64-bit pointer-width targets are modeled",
+        ));
     }
+    let target_endian = match endian {
+        Endian::Little => ir::TargetEndian::Little,
+        Endian::Big => ir::TargetEndian::Big,
+    };
+    Ok((pointer_bits, target_endian))
 }
 
 /// Validate and derive the captured target and compiler-flag profile from
@@ -847,15 +851,13 @@ fn checked_target_profile(
 fn verified_profile_config(tcx: TyCtxt<'_>) -> Result<CheckedProfileConfig, Failure> {
     // `pointer_size` is the compiler's "pointer size in the default data
     // address space". `endian` is the "Endianness of the target, which must
-    // match cfg(target-endian)", set to `Endian::Little` by the data-layout
-    // specification `"e"`. The owned syntax fixes both that width and
-    // endianness; neither a host-width guess nor a target-name heuristic
-    // supplies them.
+    // match cfg(target-endian)". Both come from `tcx.data_layout`; neither a
+    // host-width guess nor a target-name heuristic supplies them.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L674-L678
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L259-L260
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L444
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L752-L756
-    let (pointer_bits, endian) =
+    let (pointer_bits, target_endian) =
         checked_target_profile(tcx.data_layout.pointer_size().bits(), tcx.data_layout.endian)?;
     let opt_level = validate_profile_options(&tcx.sess.opts).map_err(Failure::tool)?;
     let debug_assertions = tcx.sess.opts.debug_assertions;
@@ -870,7 +872,7 @@ fn verified_profile_config(tcx: TyCtxt<'_>) -> Result<CheckedProfileConfig, Fail
         overflow_checks,
         mir_preserve_ub,
         pointer_bits,
-        endian,
+        target_endian,
     })
 }
 
@@ -1226,7 +1228,8 @@ fn collect(
         }
     }
     check_current_inputs(&reads)?;
-    let program = ir::Program::try_new(scope.clone(), bodies).map_err(Failure::unsupported)?;
+    let program = ir::Program::try_new(scope.clone(), profile.target_endian, bodies)
+        .map_err(Failure::unsupported)?;
     Ok(ir::Manifest {
         schema_version: ir::SCHEMA_VERSION,
         compiler: ir::Compiler {
@@ -1250,7 +1253,7 @@ fn collect(
             overflow_checks: profile.overflow_checks,
             mir_preserve_ub: profile.mir_preserve_ub,
             pointer_bits: profile.pointer_bits,
-            endian: profile.endian,
+            endian: profile.target_endian.as_str(),
             declared_source_files: args.source_file.clone(),
         },
         source_files: reads.files.values().cloned().collect(),
@@ -1547,13 +1550,20 @@ mod tests {
     }
 
     #[test]
-    fn target_profile_gate_requires_64_bit_little_endian() {
-        assert_eq!(checked_target_profile(64, Endian::Little).unwrap(), (64, "little"));
-        for (bits, endian) in [(32, Endian::Little), (64, Endian::Big), (32, Endian::Big)] {
+    fn target_profile_gate_accepts_little_and_big_endian_64bit() {
+        assert_eq!(
+            checked_target_profile(64, Endian::Little).unwrap(),
+            (64, ir::TargetEndian::Little)
+        );
+        assert_eq!(
+            checked_target_profile(64, Endian::Big).unwrap(),
+            (64, ir::TargetEndian::Big)
+        );
+        for (bits, endian) in [(32, Endian::Little), (32, Endian::Big)] {
             let err = checked_target_profile(bits, endian).unwrap_err();
             assert_eq!(err.status, "unsupported");
             assert!(
-                err.diagnostics[0].contains("64-bit little-endian"),
+                err.diagnostics[0].contains("64-bit pointer-width"),
                 "{bits}, {endian:?}: {err:?}"
             );
         }

@@ -146,8 +146,8 @@ noncomputable def sOperand (tys : List MirTy) (ls : List SSlot) :
 
 theorem sOperand_sound {tys : List MirTy} {ls ls' : List SSlot}
     {op : Operand} {ty : MirTy} {v : Option SVal} {tyOk : MirTy → Bool}
-    (x : Word) (h : sOperand tys ls op = some (ty, v, ls')) :
-    evalOperandToSlot tys (ls.map (SSlot.slot x)) entryMemory tyOk op =
+    {endian : TargetEndian} (x : Word) (h : sOperand tys ls op = some (ty, v, ls')) :
+    evalOperandToSlot endian tys (ls.map (SSlot.slot x)) entryMemory tyOk op =
       .ok (ty, v.map (SVal.val x), ls'.map (SSlot.slot x), entryMemory) := by
   cases op with
   | copy p =>
@@ -195,8 +195,9 @@ noncomputable def sPrim (tys : List MirTy) (ls : List SSlot) (op : Operand) :
   | _ => none
 
 theorem sPrim_sound {tys : List MirTy} {ls ls' : List SSlot} {op : Operand}
-    {v : SVal} (x : Word) (h : sPrim tys ls op = some (v, ls')) :
-    evalPrimitiveOperand tys (ls.map (SSlot.slot x)) entryMemory op =
+    {v : SVal} {endian : TargetEndian} (x : Word)
+    (h : sPrim tys ls op = some (v, ls')) :
+    evalPrimitiveOperand endian tys (ls.map (SSlot.slot x)) entryMemory op =
       .ok (v.val x, ls'.map (SSlot.slot x), entryMemory) := by
   simp only [sPrim] at h
   split at h
@@ -412,9 +413,9 @@ noncomputable def sRvalue (tys : List MirTy) (ls : List SSlot) (dst : MirTy) :
   | _ => none
 
 theorem sRvalue_sound {tys : List MirTy} {ls ls' : List SSlot} {dst : MirTy}
-    {rv : Rvalue} {v : SVal} (x : Word)
+    {rv : Rvalue} {v : SVal} {endian : TargetEndian} (x : Word)
     (h : sRvalue tys ls dst rv = some (v, ls')) :
-    evalRvalue tys (ls.map (SSlot.slot x)) entryMemory dst rv =
+    evalRvalue endian tys (ls.map (SSlot.slot x)) entryMemory dst rv =
       .ok (v.val x, ls'.map (SSlot.slot x), entryMemory) := by
   cases rv with
   | use op =>
@@ -492,8 +493,9 @@ noncomputable def sWrite (ls : List SSlot) (dst : LocalId) (ty : MirTy)
   else none
 
 theorem sWrite_sound {ls ls' : List SSlot} {dst : LocalId} {ty : MirTy}
-    {v : SVal} (x : Word) (h : sWrite ls dst ty v = some ls') :
-    writePlace (ls.map (SSlot.slot x)) entryMemory dst ty (v.val x) =
+    {v : SVal} {endian : TargetEndian} (x : Word)
+    (h : sWrite ls dst ty v = some ls') :
+    writePlace endian (ls.map (SSlot.slot x)) entryMemory dst ty (v.val x) =
       .ok (ls'.map (SSlot.slot x), entryMemory) := by
   simp only [sWrite] at h
   split at h
@@ -561,8 +563,9 @@ noncomputable def sStatement (body : Body) (s : SState) : StatementKind → SRes
   | .unsupported => .stuck
 
 theorem sStatement_sound {body : Body} {s s' : SState} {stmt : StatementKind}
-    (x : Word) (h : sStatement body s stmt = .step s') :
-    evalStatement body (s.frame x) entryMemory ⟨[]⟩ stmt =
+    {endian : TargetEndian} (x : Word)
+    (h : sStatement body s stmt = .step s') :
+    evalStatement endian body (s.frame x) entryMemory ⟨[]⟩ stmt =
       .step (s'.state x) := by
   cases stmt with
   | nop =>
@@ -673,8 +676,9 @@ noncomputable def sTerminator (body : Body) (bb : BasicBlock) (s : SState) :
   | _ => .stuck
 
 theorem sTerminator_step {body : Body} {bb : BasicBlock} {s s' : SState}
-    (x : Word) (h : sTerminator body bb s = .step s') :
-    evalTerminator body bb (s.frame x) entryMemory ⟨[]⟩ =
+    {endian : TargetEndian} (x : Word)
+    (h : sTerminator body bb s = .step s') :
+    evalTerminator endian body bb (s.frame x) entryMemory ⟨[]⟩ =
       .step (s'.state x) := by
   simp only [sTerminator] at h
   split at h
@@ -707,8 +711,9 @@ theorem sTerminator_step {body : Body} {bb : BasicBlock} {s s' : SState}
   · cases h
 
 theorem sTerminator_ret {body : Body} {bb : BasicBlock} {s : SState}
-    {v : SVal} (x : Word) (h : sTerminator body bb s = .ret v) :
-    evalTerminator body bb (s.frame x) entryMemory ⟨[]⟩ =
+    {v : SVal} {endian : TargetEndian} (x : Word)
+    (h : sTerminator body bb s = .ret v) :
+    evalTerminator endian body bb (s.frame x) entryMemory ⟨[]⟩ =
       .done (.returned ⟨v.val x, ⟨[]⟩⟩) := by
   simp only [sTerminator] at h
   split at h
@@ -740,22 +745,23 @@ noncomputable def sStep (body : Body) (s : SState) : SRes :=
       else .stuck
   | none => .stuck
 
-theorem evalStep_state (body : Body) (x : Word) (s : SState) :
-    evalStep (bodyProg body) 0 (s.state x) =
+theorem evalStep_state (body : Body) {endian : TargetEndian} (x : Word)
+    (s : SState) :
+    evalStep (bodyProg body endian) 0 (s.state x) =
       match Trusted.MirSemantics.getElem? body.basicBlocks s.block with
       | none => .fault .unsupported
       | some bb =>
         match Trusted.MirSemantics.getElem? bb.statements s.stmt with
-        | some stmt => evalStatement body (s.frame x) entryMemory ⟨[]⟩ stmt
+        | some stmt => evalStatement endian body (s.frame x) entryMemory ⟨[]⟩ stmt
         | none =>
           if Nat.beq s.stmt bb.statements.length then
-            evalTerminator body bb (s.frame x) entryMemory ⟨[]⟩
+            evalTerminator endian body bb (s.frame x) entryMemory ⟨[]⟩
           else .fault .unsupported :=
   rfl
 
-theorem sStep_step {body : Body} {s s' : SState} (x : Word)
-    (h : sStep body s = .step s') :
-    evalStep (bodyProg body) 0 (s.state x) = .step (s'.state x) := by
+theorem sStep_step {body : Body} {s s' : SState} {endian : TargetEndian}
+    (x : Word) (h : sStep body s = .step s') :
+    evalStep (bodyProg body endian) 0 (s.state x) = .step (s'.state x) := by
   rw [evalStep_state]
   simp only [sStep] at h
   split at h
@@ -774,9 +780,9 @@ theorem sStep_step {body : Body} {s s' : SState} (x : Word)
       · cases h
   · cases h
 
-theorem sStep_ret {body : Body} {s : SState} {v : SVal} (x : Word)
-    (h : sStep body s = .ret v) :
-    evalStep (bodyProg body) 0 (s.state x) =
+theorem sStep_ret {body : Body} {s : SState} {v : SVal} {endian : TargetEndian}
+    (x : Word) (h : sStep body s = .ret v) :
+    evalStep (bodyProg body endian) 0 (s.state x) =
       .done (.returned ⟨v.val x, ⟨[]⟩⟩) := by
   rw [evalStep_state]
   simp only [sStep] at h
@@ -803,9 +809,9 @@ noncomputable def symRun (body : Body) : Nat → SState → Option SVal
     | .ret v => some v
     | .stuck => none
 
-theorem symRun_sound {body : Body} (x : Word) :
+theorem symRun_sound {body : Body} {endian : TargetEndian} (x : Word) :
     ∀ {fuel : Nat} {s : SState} {v : SVal}, symRun body fuel s = some v →
-      Executes body (s.state x) (v.val x)
+      Executes endian body (s.state x) (v.val x)
   | 0, _, _, h => by cases h
   | fuel + 1, s, v, h => by
     simp only [symRun] at h
@@ -857,10 +863,11 @@ noncomputable def sEntry (body : Body) (args : List SVal) : SState :=
 /-- A symbolic run from the entry state yields a safe actual return for
 every input word. -/
 theorem symRun_entry {body : Body} {args : List SVal} {fuel : Nat} {v : SVal}
-    (x : Word) (h : symRun body fuel (sEntry body args) = some v) :
-    Safe body (args.map (SVal.val x)) ∧
-      Returns body (args.map (SVal.val x)) (v.val x) := by
-  have e := symRun_sound x h
+    {endian : TargetEndian} (x : Word)
+    (h : symRun body fuel (sEntry body args) = some v) :
+    Safe endian body (args.map (SVal.val x)) ∧
+      Returns endian body (args.map (SVal.val x)) (v.val x) := by
+  have e := symRun_sound (endian := endian) x h
   have hs : (sEntry body args).state x =
       mkState 0 0
         (initLocalsLoop body (args.map (SVal.val x)) 0 body.locals) := by

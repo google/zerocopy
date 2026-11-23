@@ -362,26 +362,26 @@ noncomputable def decodeVal (endian : TargetEndian) (ty : MirTy)
 `8144389c895da997dbdecaa635e41d6a50be6ffd`): `readBytes` checks liveness,
 bounds, and alignment, and `decodeVal` checks initialization and validity.
 -/
-noncomputable def loadIndirect (mem : MemoryState) (ty : MirTy)
-    (place : MemPlace) : Except FaultKind (Option Val) :=
+noncomputable def loadIndirect (endian : TargetEndian) (mem : MemoryState)
+    (ty : MirTy) (place : MemPlace) : Except FaultKind (Option Val) :=
   match layoutOfTy ty with
   | none => .error .unsupported
   | some layout =>
     match readBytes mem place layout.size layout.alignLog2 with
     | .error k => .error k
-    | .ok bytes => decodeVal profileTargetEndian ty bytes
+    | .ok bytes => decodeVal endian ty bytes
 
-/-- Store the value `v` of type `ty` at `place`, matching
-`write_immediate_to_mplace_no_validate` in
+/-- Store the value `v` of type `ty` at `place` using byte order `endian`,
+matching `write_immediate_to_mplace_no_validate` in
 `compiler/rustc_const_eval/src/interpret/place.rs` (`rust-lang/rust`
 `8144389c895da997dbdecaa635e41d6a50be6ffd`): `encodeVal` produces the bytes
 and `writeBytes` checks liveness, bounds, alignment, and mutability. -/
-noncomputable def storeIndirect (mem : MemoryState) (ty : MirTy)
-    (place : MemPlace) (v : Val) : Except FaultKind MemoryState :=
+noncomputable def storeIndirect (endian : TargetEndian) (mem : MemoryState)
+    (ty : MirTy) (place : MemPlace) (v : Val) : Except FaultKind MemoryState :=
   match layoutOfTy ty with
   | none => .error .unsupported
   | some layout =>
-    match encodeVal profileTargetEndian ty v with
+    match encodeVal endian ty v with
     | .error k => .error k
     | .ok bytes => writeBytes mem place layout.alignLog2 bytes
 

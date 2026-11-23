@@ -849,9 +849,9 @@ Day-1 `encodeVal`/`decodeVal` agreement, and round-trip contract for a
     sameAtNonPad c.padMask bs (c.encodeValToMem x) = true) ∧
   (∀ ty l, c.targetTy = .mirTy ty →
     Trusted.MirSemantics.layoutOfTy ty = some l →
-    (∀ x, Trusted.MirSemantics.encodeVal profileTargetEndian ty
+    (∀ x, Trusted.MirSemantics.encodeVal execProfileTargetEndian ty
         (c.encodeToSymVal x) = .ok (c.encodeValToMem x)) ∧
-    (∀ x, Trusted.MirSemantics.decodeVal profileTargetEndian ty
+    (∀ x, Trusted.MirSemantics.decodeVal execProfileTargetEndian ty
         (c.encodeValToMem x) = .ok (some (c.encodeToSymVal x))) ∧
     (∀ bs x, bs.length = c.layout.size →
       nonPadBytesInitialized c.padMask bs = true →
@@ -859,7 +859,7 @@ Day-1 `encodeVal`/`decodeVal` agreement, and round-trip contract for a
       valAndBytesMatchTargetSpec false c.targetTy (c.encodeToSymVal x) bs =
         true →
       c.decodeValFromMem bs = some x →
-      Trusted.MirSemantics.decodeVal profileTargetEndian ty bs =
+      Trusted.MirSemantics.decodeVal execProfileTargetEndian ty bs =
         .ok (some (c.encodeToSymVal x)))) ∧
   (∀ b1 b2, b1.length = c.layout.size → b2.length = c.layout.size →
     nonPadBytesInitialized c.padMask b1 = true →
@@ -2303,14 +2303,14 @@ concrete Rust UB such as dead or uninitialized reads as `.error .undefined`). -/
       if immLocked then
         .error .unsupported
       else
-        match execEvalPrimitiveOperand ctx.body.locals st.mirLocals st.mem
-            opnd with
+        match execEvalPrimitiveOperand execProfileTargetEndian
+            ctx.body.locals st.mirLocals st.mem opnd with
         | .error k => .error k
         | .ok (v, mirLocals', mem') =>
           .ok (v, { st with mirLocals := mirLocals', mem := mem' })
     | .constant _ =>
-      match execEvalPrimitiveOperand ctx.body.locals st.mirLocals st.mem
-          opnd with
+      match execEvalPrimitiveOperand execProfileTargetEndian
+          ctx.body.locals st.mirLocals st.mem opnd with
       | .error k => .error k
       | .ok (v, mirLocals', mem') =>
         .ok (v, { st with mirLocals := mirLocals', mem := mem' })
@@ -4024,12 +4024,10 @@ theorem u32MemCodec_lawful : LawfulTypedSpatialMemCodec u32MemCodec := by
     refine ⟨?_, ?_, ?_⟩
     · intro x
       rw [← execEncodeVal_eq]
-      have hEnd : profileTargetEndian = execProfileTargetEndian := rfl
       have hPow128 : 4294967296 ≤ Nat.pow 2 128 :=
         natLe_of_ble 4294967296 (Nat.pow 2 128) rfl
       have hToNat : (BitVec.ofNat 128 x.toNat).toNat = x.toNat :=
         bitVec128_ofNat_toNat_lt x.toNat 4294967296 x.isLt hPow128
-      rw [hEnd]
       dsimp only [u32MemCodec, execEncodeVal, execByteSize,
         u32MemToSymVal, u32MemEncode]
       rw [mirCheckVal_u32_ofNat x.isLt,
@@ -4041,8 +4039,6 @@ theorem u32MemCodec_lawful : LawfulTypedSpatialMemCodec u32MemCodec := by
         execEncodeUInt_length execProfileTargetEndian 4 x.toNat
       have hMemLen : (u32MemEncode x).length = 4 := by
         dsimp only [u32MemEncode]; rw [listLength_map]; exact hEncLen
-      have hEnd : profileTargetEndian = execProfileTargetEndian := rfl
-      rw [hEnd]
       dsimp only [u32MemCodec, execDecodeVal, execDecodeValFallback,
         execLayoutOfTy, execIntLayout]
       rw [hMemLen, ite_bool_false (rfl : (!Nat.beq 4 4) = false),
@@ -4059,8 +4055,6 @@ theorem u32MemCodec_lawful : LawfulTypedSpatialMemCodec u32MemCodec := by
       have hL4 : bs.length = 4 := hLen
       have hNoProv : sliceAllInitNoProv bs = true := hProv
       rw [← execDecodeVal_eq]
-      have hEnd : profileTargetEndian = execProfileTargetEndian := rfl
-      rw [hEnd]
       dsimp only [u32MemCodec, u32MemDecode] at hDec
       rw [hL4, hNoProv, ite_bool_false (rfl : (!Nat.beq 4 4 || !true) = false)] at hDec
       dsimp only [u32MemCodec, execDecodeVal, execDecodeValFallback,

@@ -16,7 +16,7 @@ open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
 
 private theorem executes_id (bits : BitVec 128)
     (hTrunc : truncateBits .isize bits = bits) :
-    Executes Captured.body_0
+    Executes .little Captured.body_0
       (mkState 0 0 (initLocalsLoop Captured.body_0
         [.scalar ⟨.isize, false, bits⟩] 0 Captured.body_0.locals))
       (.scalar ⟨.isize, false, bits⟩) := by
@@ -30,7 +30,7 @@ private theorem executes_id (bits : BitVec 128)
       (.int .isize false) = true :=
     checkVal_int_iff.mpr ⟨bits, rfl, hTrunc⟩
   have hWrite :
-      writePlace
+      writePlace .little
         [.immediate none,
          .immediate (some (.scalar ⟨.isize, false, bits⟩))]
         entryMemory 0 (.int .isize false) (.scalar ⟨.isize, false, bits⟩) =
@@ -49,7 +49,7 @@ private theorem executes_id (bits : BitVec 128)
         [.immediate (some (.scalar ⟨.isize, false, bits⟩)),
          .immediate (some (.scalar ⟨.isize, false, bits⟩))]) := by
     change
-      (match writePlace
+      (match writePlace .little
         [.immediate none,
          .immediate (some (.scalar ⟨.isize, false, bits⟩))]
         entryMemory 0 (.int .isize false) (.scalar ⟨.isize, false, bits⟩)

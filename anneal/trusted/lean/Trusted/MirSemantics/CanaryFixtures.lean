@@ -74,6 +74,7 @@ noncomputable def mkBinOpProg (op : BinOp) (retTy lhsTy rhsTy : MirTy) :
     Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 2
@@ -91,6 +92,7 @@ noncomputable def mkBinOpProg (op : BinOp) (retTy lhsTy rhsTy : MirTy) :
 noncomputable def mkUnOpProg (op : UnOp) (ty : MirTy) : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 1
@@ -117,6 +119,7 @@ noncomputable def queryAdd30_12 : Query :=
 noncomputable def progEmptyUnitFn : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 0
@@ -139,6 +142,7 @@ branch arm (`10u32 -> bb2 -> 100u32`) and the `otherwise` fallback arm
 noncomputable def progStmtsAndCf : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 1
@@ -206,6 +210,7 @@ noncomputable def IntWidthBoundaryCanary (w : IntWidth) : Prop :=
 noncomputable def progDivByZero : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 1
@@ -236,6 +241,7 @@ unmodeled statement `.unsupported` steps to `.fault .unsupported`. -/
 noncomputable def progUnsupported : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 0
@@ -260,6 +266,7 @@ noncomputable def queryU32MaxPlusOne : Query :=
 noncomputable def progStorageDeadReadUb : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 0
@@ -282,6 +289,7 @@ StorageDead(_2); return }`. -/
 noncomputable def progMemLifecycle : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .big
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 1
@@ -297,6 +305,10 @@ noncomputable def progMemLifecycle : Program where
     }]
   }]
 
+/-- Little-endian counterpart of `progMemLifecycle`. -/
+noncomputable def progMemLifecycleLe : Program :=
+  { progMemLifecycle with targetEndian := .little }
+
 /-- Input query `(0x01020304u32)` for `progMemLifecycle`, whose four bytes are
 distinct so the canary pins their order in memory. -/
 noncomputable def queryMemLifecycle : Query :=
@@ -307,6 +319,7 @@ noncomputable def queryMemLifecycle : Query :=
 noncomputable def progMemUninitRead : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 0
@@ -324,6 +337,7 @@ noncomputable def progMemUninitRead : Program where
 noncomputable def progStorageDeadReturnPlaceUb : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 0
@@ -338,6 +352,7 @@ noncomputable def progStorageDeadReturnPlaceUb : Program where
 noncomputable def progUnreachableUb : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 0
@@ -374,6 +389,7 @@ and reading `Rvalue.discriminant` into a `u8` return place `_0`. -/
 noncomputable def progEnumExplicitReprU8 : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 0
@@ -396,6 +412,7 @@ noncomputable def progEnumExplicitReprU8 : Program where
 noncomputable def progEnumSignedTagIsize : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 0
@@ -427,6 +444,7 @@ noncomputable def canarySingleZstEnumTy : EnumTy := {
 noncomputable def progZstSingleEnumImplicitRet : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 0
@@ -442,6 +460,7 @@ on ZST), `ConstLit.zeroSized`, and `Rvalue.discriminant` on `Single`. -/
 noncomputable def progZstSingleEnumMoveAndDiscr : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 0
@@ -473,6 +492,7 @@ invalid enum tag (not variant index 1!) and faults with `.undefined`. -/
 noncomputable def progEnumInvalidTagConstUb : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 0
@@ -493,6 +513,7 @@ scalar-tagged enum local faults with `.undefined`. -/
 noncomputable def progEnumUninitDiscrUb : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 0
@@ -514,6 +535,7 @@ from an `.indirect` `_0`. -/
 noncomputable def progMemIndirectOps : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .big
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 1
@@ -527,12 +549,17 @@ noncomputable def progMemIndirectOps : Program where
     }]
   }]
 
+/-- Little-endian counterpart of `progMemIndirectOps`. -/
+noncomputable def progMemIndirectOpsLe : Program :=
+  { progMemIndirectOps with targetEndian := .little }
+
 /-- Ill-typed copy program (`CanaryMemoryLifecycleAnnealClaim`):
 `fn f() -> u32 { StorageLive(_1); _0 = copy _1; return }` with `_1: bool`.
 The `bool` source does not match the `u32` destination. -/
 noncomputable def progMemIllTypedUse : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 0
@@ -552,6 +579,7 @@ noncomputable def progMemIllTypedUse : Program where
 noncomputable def progMemNonPrimitiveUnOp : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 0
@@ -577,6 +605,7 @@ noncomputable def overflowPairTy (ty : MirTy) : MirTy := .tuple [ty, .bool]
 noncomputable def mkIntToIntCastProg (srcTy dstTy : MirTy) : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 1
@@ -595,6 +624,7 @@ _0 = discriminant(_3); return }` -/
 noncomputable def mkCmpDiscriminantProg (ty : MirTy) : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 2
@@ -614,6 +644,7 @@ where `bb1` returns `1u32` and `bb2` returns `2u32`. -/
 noncomputable def progCharSwitch : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 1
@@ -649,6 +680,7 @@ and faults with `.undefined`. -/
 noncomputable def progInvalidCharConstUb : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 0
@@ -667,6 +699,7 @@ Unicode scalar value faults with `.undefined` when the case is compared. -/
 noncomputable def progInvalidCharSwitchCaseUb : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 1
@@ -695,6 +728,7 @@ noncomputable def progInvalidCharSwitchCaseUb : Program where
 noncomputable def progCastUninitSourceUb : Program where
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 0
@@ -765,6 +799,7 @@ noncomputable def canaryValidCrate : Crate := {
   program := {
     scope := .crate
     pointerWidthBits := 64
+    targetEndian := .little
     mirProfileVersion := 1
     bodies := [
       canarySafeUnitBody,

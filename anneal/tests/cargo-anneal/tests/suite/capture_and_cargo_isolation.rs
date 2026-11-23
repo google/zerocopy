@@ -215,7 +215,7 @@ fn cargo_shortcut_verifies_std_and_nostd_nomain_binaries() {
                  refine bodyVerified_of_safe rfl rfl (fun args valid _ => ?_)\n    \
                  cases args with\n    \
                  | nil =>\n      \
-                   have hRun : Runs Captured.body_0 4 [] .unit := rfl\n      \
+                   have hRun : Runs .little Captured.body_0 4 [] .unit := rfl\n      \
                    exact (run_initial_success hRun).1\n    \
                  | cons _ _ => cases valid\n  \
                | succ _ => cases found\n\
@@ -311,7 +311,7 @@ pub unsafe fn guarded_exit(ok: bool) -> bool {
                  refine bodyVerified_of_safe rfl rfl (fun args _ req => ?_)\n    \
                  have hArg : args = [.bool true] := req rfl\n    \
                  subst hArg\n    \
-                 have hRun : Runs Captured.body_0 8 [.bool true] (.bool true) := rfl\n    \
+                 have hRun : Runs .little Captured.body_0 8 [.bool true] (.bool true) := rfl\n    \
                  exact (run_initial_success hRun).1\n  \
                | succ _ => cases found\n\
              end Proof",
@@ -393,7 +393,7 @@ pub unsafe fn guarded_exit(ok: bool) -> bool {
                  injection found with hEq\n    \
                  subst hEq\n    \
                  refine bodyVerified_of_safe rfl rfl (fun args _ _ => ?_)\n    \
-                 have hRun : Runs Captured.body_0 8 [.bool false] (.bool false) := rfl\n    \
+                 have hRun : Runs .little Captured.body_0 8 [.bool false] (.bool false) := rfl\n    \
                  exact (run_initial_success hRun).1\n  \
                | succ _ => cases found\n\
              end Proof",

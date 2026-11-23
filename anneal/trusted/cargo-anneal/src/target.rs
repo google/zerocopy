@@ -3297,7 +3297,7 @@ mod tests {
                        basicBlocks := [{ statements := [], terminator := .return_ }],\n    \
                        identity := _root_.String.ofList [(_root_.Char.ofNat 97)] }\n\
                      def Captured.program : Trusted.MirAst.Program :=\n  \
-                     { pointerWidthBits := 64, mirProfileVersion := 1, bodies := [Captured.body0], scope := .unit }\n",
+                     { pointerWidthBits := 64, targetEndian := .little, mirProfileVersion := 1, bodies := [Captured.body0], scope := .unit }\n",
                 ),
                 (
                     "Spec",
@@ -3326,7 +3326,7 @@ mod tests {
                        cases h\n    \
                        refine Anneal.MirWp.bodyVerified_of_safe rfl rfl (fun args hv _ => ?_)\n    \
                        cases args with\n    \
-                       | nil => exact (Anneal.MirWp.run_initial_success (body := Captured.body0) (fuel := 4) (args := []) (value := .unit) rfl).1\n    \
+                       | nil => exact (Anneal.MirWp.run_initial_success (endian := .little) (body := Captured.body0) (fuel := 4) (args := []) (value := .unit) rfl).1\n    \
                        | cons _ _ => cases hv\n  \
                      | succ n => cases n <;> cases h\n",
                 ),
@@ -3383,7 +3383,7 @@ mod tests {
                        basicBlocks := [{ statements := [], terminator := .return_ }],\n    \
                        identity := _root_.String.ofList [(_root_.Char.ofNat 97)] }\n\
                      def Captured.program : Trusted.MirAst.Program :=\n  \
-                     { pointerWidthBits := 64, mirProfileVersion := 1, bodies := [Captured.body0], scope := .unit }\n",
+                     { pointerWidthBits := 64, targetEndian := .little, mirProfileVersion := 1, bodies := [Captured.body0], scope := .unit }\n",
                 ),
                 (
                     "Spec",
@@ -3614,7 +3614,7 @@ mod tests {
                        basicBlocks := [{ statements := [], terminator := .return_ }],\n    \
                        identity := _root_.String.ofList [(_root_.Char.ofNat 97)] }\n\
                      def Captured.program : Trusted.MirAst.Program :=\n  \
-                     { pointerWidthBits := 64, mirProfileVersion := 1, bodies := [Captured.body0], scope := .unit }\n",
+                     { pointerWidthBits := 64, targetEndian := .little, mirProfileVersion := 1, bodies := [Captured.body0], scope := .unit }\n",
                 ),
                 (
                     "Spec",
@@ -3647,7 +3647,7 @@ mod tests {
                          cases h\n      \
                          refine Anneal.MirWp.bodyVerified_of_safe rfl rfl (fun args hv _ => ?_)\n      \
                          cases args with\n      \
-                         | nil => exact (Anneal.MirWp.run_initial_success (body := Captured.body0) (fuel := 4) (args := []) (value := .unit) rfl).1\n      \
+                         | nil => exact (Anneal.MirWp.run_initial_success (endian := .little) (body := Captured.body0) (fuel := 4) (args := []) (value := .unit) rfl).1\n      \
                          | cons _ _ => cases hv\n    \
                        | succ n => cases n <;> cases h\n  \
                      · exact fun _ _ _ _ _ ha1 ha2 hb1 hb2 hor =>\n      \
@@ -3943,7 +3943,7 @@ mod tests {
                          { statements := [], terminator := .return_ }],\n    \
                        identity := \"count_down\" }\n\
                      def Captured.program : Trusted.MirAst.Program :=\n  \
-                     { pointerWidthBits := 64, mirProfileVersion := 1, bodies := [Captured.body0], scope := .unit }\n",
+                     { pointerWidthBits := 64, targetEndian := .little, mirProfileVersion := 1, bodies := [Captured.body0], scope := .unit }\n",
                 ),
                 (
                     "Spec",
@@ -4568,7 +4568,7 @@ mod tests {
                     TargetRole::Capture,
                     "prelude\nimport Trusted.MirSemantics\n\
                      def Captured.program : Trusted.MirAst.Program :=\n  \
-                     { pointerWidthBits := 64, mirProfileVersion := 1, bodies := [] }\n",
+                     { pointerWidthBits := 64, targetEndian := .little, mirProfileVersion := 1, bodies := [] }\n",
                 ),
                 (
                     "Spec",
@@ -4597,6 +4597,170 @@ mod tests {
         assert_eq!(err_missing.code, 1, "expected elaboration failure: {err_missing}");
         assert_eq!(err_missing.phase, "compile-Captured", "{err_missing}");
         assert!(err_missing.message.contains("Fields missing: `scope`"), "{err_missing}");
+
+        // Omitting `targetEndian` from `Trusted.MirAst.Program` must also fail
+        // Lean elaboration rather than silently defaulting.
+        let mut req_missing_endian = write_target_request(
+            &base.join("missing-target-endian"),
+            vec![
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Captured.program : Trusted.MirAst.Program :=\n  \
+                     { pointerWidthBits := 64, mirProfileVersion := 1, scope := .crate, bodies := [] }\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Spec.specs : Trusted.MirSemantics.Specs := {}\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.CrateTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\n\
+                     theorem Proof.verify : Expected.claim := by exact False.elim sorry\n",
+                ),
+            ],
+        );
+        bundle.attach(&mut req_missing_endian, true);
+        let mut checker_missing_endian = Checker::new(&bundle.root, Some(&lean)).unwrap();
+        let err_missing_endian =
+            checker_missing_endian.run_target(&req_missing_endian).unwrap_err();
+        assert_eq!(
+            err_missing_endian.code, 1,
+            "expected elaboration failure: {err_missing_endian}"
+        );
+        assert_eq!(err_missing_endian.phase, "compile-Captured", "{err_missing_endian}");
+        assert!(
+            err_missing_endian.message.contains("Fields missing: `targetEndian`"),
+            "{err_missing_endian}"
+        );
+    }
+
+    #[test]
+    fn live_target_endian_byte_layout_and_mismatch_rejection() {
+        let Some(lean) = explicit_verified_lean() else {
+            return;
+        };
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let bundle = EmbeddedBundle::materialize(&base.join("bundle"));
+
+        let mk_captured = |endian: &str| {
+            format!(
+                "prelude\nimport Trusted.MirSemantics\n\
+                 def Captured.body_0 : Trusted.MirAst.Body := {{\n  \
+                 argumentCount := 0\n  \
+                 locals := [.unit]\n  \
+                 basicBlocks := [{{ statements := [], terminator := .return_ }}]\n  \
+                 isUnsafe := false\n  \
+                 identity := \"endian_e2e::unit_id\"\n\
+                 }}\n\
+                 def Captured.program : Trusted.MirAst.Program := {{\n  \
+                 bodies := [Captured.body_0]\n  \
+                 entryDefId := 0\n  \
+                 pointerWidthBits := 64\n  \
+                 targetEndian := Trusted.MirAst.TargetEndian.{endian}\n  \
+                 mirProfileVersion := 1\n  \
+                 scope := .crate\n\
+                 }}\n"
+            )
+        };
+        let mk_spec = |bytes: &str| {
+            format!(
+                "prelude\nimport Trusted.MirSemantics\n\
+                 def Spec.specs : Trusted.MirSemantics.Specs where\n  \
+                 safety := fun _ _ => True\n  \
+                 property := fun p =>\n    \
+                 Trusted.MirSemantics.encodeVal p.targetEndian (.int .i32 false)\n      \
+                 (.scalar ⟨.i32, false, BitVec.ofNat 128 0x01020304⟩) = .ok {bytes}\n"
+            )
+        };
+        let proof = "\
+prelude\nimport Expected\nimport Anneal.MirWp\n\
+open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp\n\
+private theorem body0_adm :\n    \
+  BodyStaticAdmitted Captured.program Captured.body_0 = true := rfl\n\
+private theorem body0_runs :\n    \
+  Runs Captured.program.targetEndian Captured.body_0 2 [] .unit := rfl\n\
+private theorem body0_safe_verified :\n    \
+  BodyVerified Captured.program 0 Captured.body_0\n      \
+    (Spec.specs.safety Captured.body_0.identity) := by\n  \
+  refine bodyVerified_of_safe rfl body0_adm (fun args valid _ => ?_)\n  \
+  have hMatch : checkArgsMatch args [] = true := valid\n  \
+  have hNil : args = [] := checkArgsMatch_nil_iff.mp hMatch\n  \
+  subst hNil\n  \
+  exact (run_initial_success body0_runs).1\n\
+theorem Proof.verify : Expected.claim := by\n  \
+  refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, rfl⟩\n  \
+  have hAll : BodiesVerified Captured.program Spec.specs 0 Captured.program.bodies :=\n    \
+    ⟨body0_safe_verified, True.intro⟩\n  \
+  intro defId body found\n  \
+  have hSub := bodiesVerified_getElem hAll defId body found\n  \
+  rw [Nat.zero_add] at hSub\n  \
+  exact hSub\n";
+        let expected = "\
+prelude\nimport Captured\nimport Spec\n\
+def Expected.claim : Prop := Trusted.MirSemantics.CrateTheorem \
+(Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n";
+
+        let little_bytes = "[.init 4 none, .init 3 none, .init 2 none, .init 1 none]";
+        let big_bytes = "[.init 1 none, .init 2 none, .init 3 none, .init 4 none]";
+
+        for (name, endian, bytes) in
+            [("pass_little", "little", little_bytes), ("pass_big", "big", big_bytes)]
+        {
+            let pass_dir = base.join(name);
+            let mut req = write_target_request(
+                &pass_dir,
+                vec![
+                    ("Captured", TargetRole::Capture, &mk_captured(endian)),
+                    ("Spec", TargetRole::Specification, &mk_spec(bytes)),
+                    ("Expected", TargetRole::Expected, expected),
+                    ("Proof", TargetRole::Proof, proof),
+                ],
+            );
+            bundle.attach(&mut req, true);
+            req.canonical_root = "Trusted.MirSemantics.CrateTheorem".to_owned();
+            let mut checker = Checker::new(&bundle.root, Some(&lean)).unwrap();
+            let report = checker.run_target(&req).unwrap();
+            assert_eq!(report["replay"], Json::Bool(true), "expected replay for {name}");
+            assert_eq!(report["exactType"], Json::Bool(true), "expected exactType for {name}");
+        }
+
+        for (name, endian, wrong_bytes) in [
+            ("little_expects_big", "little", big_bytes),
+            ("big_expects_little", "big", little_bytes),
+        ] {
+            let fail_dir = base.join(name);
+            let mut fail_req = write_target_request(
+                &fail_dir,
+                vec![
+                    ("Captured", TargetRole::Capture, &mk_captured(endian)),
+                    ("Spec", TargetRole::Specification, &mk_spec(wrong_bytes)),
+                    ("Expected", TargetRole::Expected, expected),
+                    ("Proof", TargetRole::Proof, proof),
+                ],
+            );
+            bundle.attach(&mut fail_req, true);
+            fail_req.canonical_root = "Trusted.MirSemantics.CrateTheorem".to_owned();
+            let mut checker_fail = Checker::new(&bundle.root, Some(&lean)).unwrap();
+            let err = checker_fail.run_target(&fail_req).unwrap_err();
+            assert_eq!(err.code, 1, "expected proof failure for {name}: {err}");
+            assert_eq!(
+                err.phase, "compile-Proof",
+                "expected compile-Proof failure for {name}: {err}"
+            );
+        }
     }
 
     #[test]

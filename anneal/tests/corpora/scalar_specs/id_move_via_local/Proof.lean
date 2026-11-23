@@ -16,7 +16,7 @@ open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
 
 private theorem executes_move (bits : BitVec 128)
     (hTrunc : truncateBits .isize bits = bits) :
-    Executes Captured.body_0
+    Executes .little Captured.body_0
       (mkState 0 0 (initLocalsLoop Captured.body_0
         [.scalar ⟨.isize, false, bits⟩] 0 Captured.body_0.locals))
       (.scalar ⟨.isize, false, bits⟩) := by
@@ -41,7 +41,7 @@ private theorem executes_move (bits : BitVec 128)
          .immediate (some (.scalar ⟨.isize, false, bits⟩)),
          .immediate none]) := rfl
   have hWrite2 :
-      writePlace
+      writePlace .little
         [.immediate none,
          .immediate (some (.scalar ⟨.isize, false, bits⟩)),
          .immediate none]
@@ -64,7 +64,7 @@ private theorem executes_move (bits : BitVec 128)
          .immediate (some (.scalar ⟨.isize, false, bits⟩)),
          .immediate (some (.scalar ⟨.isize, false, bits⟩))]) := by
     change
-      (match writePlace
+      (match writePlace .little
         [.immediate none,
          .immediate (some (.scalar ⟨.isize, false, bits⟩)),
          .immediate none]
@@ -79,7 +79,7 @@ private theorem executes_move (bits : BitVec 128)
     rw [hWrite2]
     rfl
   have hWrite0 :
-      writePlace
+      writePlace .little
         [.immediate none,
          .immediate (some (.scalar ⟨.isize, false, bits⟩)),
          .immediate (some (.scalar ⟨.isize, false, bits⟩))]
@@ -102,7 +102,7 @@ private theorem executes_move (bits : BitVec 128)
          .immediate (some (.scalar ⟨.isize, false, bits⟩)),
          .immediate (some (.scalar ⟨.isize, false, bits⟩))]) := by
     change
-      (match writePlace
+      (match writePlace .little
         [.immediate none,
          .immediate (some (.scalar ⟨.isize, false, bits⟩)),
          .immediate (some (.scalar ⟨.isize, false, bits⟩))]

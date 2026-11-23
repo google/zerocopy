@@ -242,7 +242,7 @@ theorem getElem?_zero_of_blt {α : Type} {xs : List α} {n : Nat}
 
 theorem initRefState_sim_base : InitRefStateSimClaim := by
   intro rp p q maxSteps h_dec
-  let ⟨h_entry, h_width, h_prof, _, h_bodies⟩ := decodeProg_inv h_dec
+  let ⟨h_entry, h_width, _h_endian, h_prof, _, h_bodies⟩ := decodeProg_inv h_dec
   unfold initRefState initState
   rw [h_entry, h_width, h_prof]
   cases Nat.beq p.pointerWidthBits 64
@@ -1275,7 +1275,8 @@ theorem refStep_sound_for_allowedStep_base :
       (refExecutionConfig rp) refLimits c rs.miri with
     | (miri', .ok true) =>
       if miri'.stack.frames.isEmpty then
-        match refReadReturnVal miri'.machine.memory rs.retTy rs.retPlace with
+        match refReadReturnVal rp.targetEndian miri'.machine.memory rs.retTy
+            rs.retPlace with
         | .ok retVal =>
           .returned (.returned ⟨retVal, miri'.machine.user.callerMem⟩)
         | .error k => faultToRefOutcome k
@@ -1318,7 +1319,8 @@ theorem refStep_sound_for_allowedStep_base :
         exact ⟨fun _ h => (by cases h), fun _ h => (by cases h)⟩
       | true =>
         change (if miri'.stack.frames.isEmpty then
-            match refReadReturnVal miri'.machine.memory rs.retTy rs.retPlace with
+            match refReadReturnVal rp.targetEndian miri'.machine.memory
+                rs.retTy rs.retPlace with
             | .ok retVal =>
               .returned (.returned ⟨retVal, miri'.machine.user.callerMem⟩)
             | .error k => faultToRefOutcome k
@@ -1336,11 +1338,13 @@ theorem refStep_sound_for_allowedStep_base :
           exact ⟨refLimits, c, h_vc, h_st⟩
         | true =>
           rw [h_emp] at h_ev
-          change (match refReadReturnVal miri'.machine.memory rs.retTy rs.retPlace with
+          change (match refReadReturnVal rp.targetEndian miri'.machine.memory
+              rs.retTy rs.retPlace with
             | .ok retVal =>
               .returned (.returned ⟨retVal, miri'.machine.user.callerMem⟩)
             | .error k => faultToRefOutcome k) = out at h_ev
-          cases h_rv : refReadReturnVal miri'.machine.memory rs.retTy rs.retPlace with
+          cases h_rv : refReadReturnVal rp.targetEndian miri'.machine.memory
+              rs.retTy rs.retPlace with
           | error k =>
             rw [h_rv] at h_ev
             cases k with

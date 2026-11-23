@@ -15,16 +15,11 @@ use std::path::PathBuf;
 use serde::ser::SerializeSeq;
 use serde::{Serialize, Serializer};
 
-// Version 4 widens integer widths to include `i128` (`IntWidth::I128`), encodes
-// 128-bit bit-pattern fields (`ConstLit::Scalar.bits`, `EnumTy.discriminants`,
-// and `Terminator::SwitchInt.targets`) as canonical base-10 strings so JSON
-// consumers without arbitrary-precision numbers round-trip `0..=u128::MAX`
-// losslessly, adds `Ty::{Char, Ordering, OverflowPair}`, `UnOp::{Not, Neg}`,
-// `CastKind::IntToInt`, `BinOp::{Div, Rem, AddWithOverflow, SubWithOverflow,
-// MulWithOverflow, Cmp}`, and `Rvalue::{Unary, Cast}`, and enforces static
-// operand and destination typing across binary, unary, cast, discriminant, and
-// switch operations.
-pub const SCHEMA_VERSION: u32 = 4;
+// Version 5 adds explicit `TargetEndian` (`"little"` / `"big"`) to
+// `ir::Program` (`program.target_endian`) and emitted
+// `Trusted.MirAst.Program.targetEndian` alongside `configuration.endian`,
+// rather than hardcoding big-endian byte order in Lean `MirSemantics`.
+pub const SCHEMA_VERSION: u32 = 5;
 pub const COMPILER_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";
 pub const COMPILER_VERSION: &str = "1.98.0-nightly (f8a08b688 2026-05-30)";
 
@@ -54,8 +49,8 @@ fn serialize_switch_targets_decimal<S: Serializer>(
     seq.end()
 }
 
-/// Admitted integer widths in the 64-bit little-endian capture profile,
-/// corresponding 1-to-1 to `Trusted.MirAst.IntWidth`.
+/// Admitted integer widths in the 64-bit capture profile, corresponding 1-to-1
+/// to `Trusted.MirAst.IntWidth`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum IntWidth {
@@ -1057,17 +1052,47 @@ pub enum Scope {
     Crate,
 }
 
+/// Target byte order admitted in `Trusted.MirAst.TargetEndian`.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum TargetEndian {
+    Little,
+    Big,
+}
+
+impl TargetEndian {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Little => "little",
+            Self::Big => "big",
+        }
+    }
+
+    pub const fn lean_name(self) -> &'static str {
+        match self {
+            Self::Little => "little",
+            Self::Big => "big",
+        }
+    }
+}
+
 /// Validated captured program enforcing non-empty selected-unit targets,
-/// non-empty bodies, and pairwise-distinct function identities
-/// (`Trusted.MirSemantics.bodiesHaveUniqueIdentities`).
+/// non-empty bodies, pairwise-distinct function identities
+/// (`Trusted.MirSemantics.bodiesHaveUniqueIdentities`), and explicit target
+/// byte order (`Trusted.MirAst.Program.targetEndian`).
 #[derive(Debug, Serialize)]
 pub struct Program {
     scope: Scope,
+    target_endian: TargetEndian,
     bodies: Vec<Body>,
 }
 
 impl Program {
-    pub fn try_new(scope: Scope, bodies: Vec<Body>) -> Result<Self, String> {
+    pub fn try_new(
+        scope: Scope,
+        target_endian: TargetEndian,
+        bodies: Vec<Body>,
+    ) -> Result<Self, String> {
         if let Scope::SelectedUnit { roots, instantiations } = &scope
             && roots.is_empty()
             && instantiations.is_empty()
@@ -1086,11 +1111,19 @@ impl Program {
                 ));
             }
         }
-        Ok(Self { scope, bodies })
+        Ok(Self {
+            scope,
+            target_endian,
+            bodies,
+        })
     }
 
     pub fn scope(&self) -> &Scope {
         &self.scope
+    }
+
+    pub fn target_endian(&self) -> TargetEndian {
+        self.target_endian
     }
 
     pub fn bodies(&self) -> &[Body] {

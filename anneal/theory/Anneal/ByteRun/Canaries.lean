@@ -209,17 +209,17 @@ theorem canary_untyped_padded_copy_preserves_stale_padding :
       copyRangeComp sampleStaleInitPadMem0 ⟨1, 0⟩ ⟨1, 12⟩ 12 2 = .ok mOut2 ∧
       mOut1 ≠ mOut2 ∧
       readBytesComp mOut1 ⟨1, 12⟩ 12 2 ≠ readBytesComp mOut2 ⟨1, 12⟩ 12 2 ∧
-      loadIndirectComp mOut1 (.int .i8 false) ⟨1, 12⟩ =
+      loadIndirectComp .big mOut1 (.int .i8 false) ⟨1, 12⟩ =
         .ok (some (.scalar ⟨.i8, false, BitVec.ofNat 128 0x11⟩)) ∧
-      loadIndirectComp mOut2 (.int .i8 false) ⟨1, 12⟩ =
+      loadIndirectComp .big mOut2 (.int .i8 false) ⟨1, 12⟩ =
         .ok (some (.scalar ⟨.i8, false, BitVec.ofNat 128 0x11⟩)) ∧
-      loadIndirectComp mOut1 (.int .i32 false) ⟨1, 16⟩ =
+      loadIndirectComp .big mOut1 (.int .i32 false) ⟨1, 16⟩ =
         .ok (some (.scalar ⟨.i32, false, BitVec.ofNat 128 0x22334455⟩)) ∧
-      loadIndirectComp mOut2 (.int .i32 false) ⟨1, 16⟩ =
+      loadIndirectComp .big mOut2 (.int .i32 false) ⟨1, 16⟩ =
         .ok (some (.scalar ⟨.i32, false, BitVec.ofNat 128 0x22334455⟩)) ∧
-      loadIndirectComp mOut1 (.int .i8 false) ⟨1, 20⟩ =
+      loadIndirectComp .big mOut1 (.int .i8 false) ⟨1, 20⟩ =
         .ok (some (.scalar ⟨.i8, false, BitVec.ofNat 128 0x66⟩)) ∧
-      loadIndirectComp mOut2 (.int .i8 false) ⟨1, 20⟩ =
+      loadIndirectComp .big mOut2 (.int .i8 false) ⟨1, 20⟩ =
         .ok (some (.scalar ⟨.i8, false, BitVec.ofNat 128 0x66⟩)) := by
   refine ⟨_, _, rfl, rfl, ?_, ?_, rfl, rfl, rfl, rfl, rfl, rfl⟩
   · intro hEq
@@ -232,6 +232,7 @@ theorem canary_untyped_padded_copy_preserves_stale_padding :
 @[expose] def progReadIndirectU8 : Program := {
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 1

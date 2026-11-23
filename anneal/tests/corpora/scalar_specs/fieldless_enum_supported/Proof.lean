@@ -47,14 +47,14 @@ theorem verify : Expected.claim := by
         cases val with
         | zero =>
           have hRun :
-              Runs Captured.body_0 12 [.enumVal enumE 0]
+              Runs .little Captured.body_0 12 [.enumVal enumE 0]
                 (.scalar ⟨.isize, false, BitVec.ofNat 128 0⟩) := rfl
           exact (run_initial_success hRun).1
         | succ val' =>
           cases val' with
           | zero =>
             have hRun :
-                Runs Captured.body_0 12 [.enumVal enumE 1]
+                Runs .little Captured.body_0 12 [.enumVal enumE 1]
                   (.scalar ⟨.isize, false, BitVec.ofNat 128 1⟩) := rfl
             exact (run_initial_success hRun).1
           | succ _ =>
@@ -63,12 +63,12 @@ theorem verify : Expected.claim := by
     | succ id => cases found
   · refine ⟨Captured.body_0, rfl, rfl, ?_, ?_⟩
     · have hRun :
-          Runs Captured.body_0 12 [.enumVal enumE 0]
+          Runs .little Captured.body_0 12 [.enumVal enumE 0]
             (.scalar ⟨.isize, false, BitVec.ofNat 128 0⟩) := rfl
       exact behavior_of_returns rfl rfl (valid_enum ⟨0, by decide⟩)
         (run_initial_success hRun).2
     · have hRun :
-          Runs Captured.body_0 12 [.enumVal enumE 1]
+          Runs .little Captured.body_0 12 [.enumVal enumE 1]
             (.scalar ⟨.isize, false, BitVec.ofNat 128 1⟩) := rfl
       exact behavior_of_returns rfl rfl (valid_enum ⟨1, by decide⟩)
         (run_initial_success hRun).2

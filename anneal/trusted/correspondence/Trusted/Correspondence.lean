@@ -54,8 +54,8 @@ This module defines five components:
 1. **Reference-indexed MIR syntax (`RefProg`):** Mirrors `Miri.MIR.Syntax` by
    replacing inline structural `MirTy` values with `TyId := Nat` indices into a
    single deduplicated program type table `RefProg.types : List MirTy`, while
-   carrying explicit `pointerWidthBits : Nat`, `mirProfileVersion : Nat`, and
-   `scope : VerificationScope`.
+   carrying explicit `pointerWidthBits : Nat`, `targetEndian : TargetEndian`,
+   `mirProfileVersion : Nat`, and `scope : VerificationScope`.
 2. **Canonical type-interning codec (`encodeProg` / `decodeProg`):** Interns
    every structural `MirTy` in bottom-up topological order and provides an
    unconditional left-inverse decoder `decodeProg`.
@@ -625,17 +625,18 @@ def RefStepSoundForAllowedStepClaim : Prop :=
       ∃ miri', RefAllowedStep rp rs.miri miri' (.ok true) ∧
         miri'.stack.frames.isEmpty = true ∧
         ∃ retVal,
-          refReadReturnVal miri'.machine.memory rs.retTy rs.retPlace =
+          refReadReturnVal rp.targetEndian miri'.machine.memory rs.retTy
+              rs.retPlace =
             .ok retVal ∧
           t = .returned ⟨retVal, miri'.machine.user.callerMem⟩)
 
 /-- Trusted claim for `Anneal.MirCorrespondenceProof.bytes_codec_matches_miri`:
 pins $M_{\text{anneal}}$'s byte codec (`Trusted.MirSemantics.encodeVal` and
-`decodeVal` at `Trusted.MirSemantics.profileTargetEndian`) against `lean-miri`'s
-`Allocation.writeScalar`, `getBytesUnchecked`, `readScalar`, and `writeUninit`
-on a fresh `toMiriSize w`-byte allocation under the data layout that
-$M_{\text{ref}}$ uses (`RuntimeTargetDataLayout.default.base`), for every
-integer width `w`, signedness `s`, and bit pattern `bits`:
+`decodeVal` at `endian`) against `lean-miri`'s `Allocation.writeScalar`,
+`getBytesUnchecked`, `readScalar`, and `writeUninit` on a fresh `toMiriSize
+w`-byte allocation under `(refRuntimeLayout endian).base`, for every target
+byte order `endian : TargetEndian`, integer width `w`, signedness `s`, and
+bit pattern `bits`:
 0. The fresh allocation exists (`Allocation.tryNew` succeeds), so the
    remaining conjuncts are not vacuous.
 1. `encodeVal` produces exactly the bytes that `writeScalar` stores for the
@@ -645,7 +646,7 @@ integer width `w`, signedness `s`, and bit pattern `bits`:
 2. After `writeUninit`, `readScalar` faults with `invalidUninitBytes`, and
    `decodeVal` decodes uninitialized bytes to `none`. -/
 def BytesCodecMatchesMiriClaim : Prop :=
-  ∀ (w : IntWidth) (s : Bool) (bits : BitVec 128),
+  ∀ (endian : TargetEndian) (w : IntWidth) (s : Bool) (bits : BitVec 128),
   (∃ (rawAlloc : Miri.Memory.Allocation Miri.Memory.Provenance Unit),
     Miri.Memory.Allocation.tryNew (Prov := Miri.Memory.Provenance)
         (toMiriSize w) Miri.ABI.Align.ONE .Uninit
@@ -657,11 +658,11 @@ def BytesCodecMatchesMiriClaim : Prop :=
     (∃ (raw : List UInt8)
         (after : Miri.Memory.Allocation Miri.Memory.Provenance
           Miri.TreeBorrows.BorrowTree),
-      encodeVal profileTargetEndian (.int w s)
+      encodeVal endian (.int w s)
           (.scalar ⟨w, s, truncateBits w bits⟩) =
         .ok (raw.map (fun b => AllocByte.init b none)) ∧
       Miri.Memory.Allocation.writeScalar
-          Miri.ABI.RuntimeTargetDataLayout.default.base
+          (refRuntimeLayout endian).base
           (Miri.Memory.allocRange Miri.ABI.Size.ZERO (toMiriSize w))
           (.fromScalarInt (miriScalar w bits))
           (rawAlloc.withExtra (Miri.TreeBorrows.BorrowTree.new
@@ -669,10 +670,10 @@ def BytesCodecMatchesMiriClaim : Prop :=
       after.getBytesUnchecked
           (Miri.Memory.allocRange Miri.ABI.Size.ZERO (toMiriSize w)) =
         .ok (Array.mk raw) ∧
-      after.readScalar Miri.ABI.RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
           (Miri.Memory.allocRange Miri.ABI.Size.ZERO (toMiriSize w)) false =
         .ok (.fromScalarInt (miriScalar w bits)) ∧
-      decodeVal profileTargetEndian (.int w s)
+      decodeVal endian (.int w s)
           (raw.map (fun b => AllocByte.init b none)) =
         .ok (some (.scalar ⟨w, s, truncateBits w bits⟩))) ∧
     (∃ (after : Miri.Memory.Allocation Miri.Memory.Provenance
@@ -683,10 +684,10 @@ def BytesCodecMatchesMiriClaim : Prop :=
           (Miri.ABI.Size.ofBytes 8)
           (rawAlloc.withExtra (Miri.TreeBorrows.BorrowTree.new
             Miri.Memory.BorTag.one (toMiriSize w))) = .ok () after ∧
-      after.readScalar Miri.ABI.RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
           (Miri.Memory.allocRange Miri.ABI.Size.ZERO (toMiriSize w)) false =
         .error (.invalidUninitBytes info) ∧
-      decodeVal profileTargetEndian (.int w s)
+      decodeVal endian (.int w s)
           (List.replicate w.byteSize .uninit) = .ok none)
 
 end Trusted.Correspondence

@@ -19,7 +19,7 @@ theorem wellFormed :
 
 theorem behavior_of_sourceReturns {flag : Bool} {width : Fin 4} {value : Word}
     {ret : Val}
-    (h_ret : Returns sourceBody (endianArgs flag width.val value) ret) :
+    (h_ret : Returns .little sourceBody (endianArgs flag width.val value) ret) :
     Behavior (entryProgForBody Captured.program 0)
       { args := endianArgs flag width.val value }
       (.returned ⟨ret, ⟨[]⟩⟩) :=
@@ -29,8 +29,8 @@ theorem behavior_of_sourceReturns {flag : Bool} {width : Fin 4} {value : Word}
 
 theorem completed :
     ∀ flag : Bool, ∀ width : Fin 4, ∀ value : Word,
-      Safe sourceBody (endianArgs flag width.val value) ∧
-      ∃ output, Returns sourceBody (endianArgs flag width.val value) output := by
+      Safe .little sourceBody (endianArgs flag width.val value) ∧
+      ∃ output, Returns .little sourceBody (endianArgs flag width.val value) output := by
   intro flag width value
   cases flag with
   | false =>
@@ -43,7 +43,7 @@ theorem completed :
 theorem baseline (safetyPre : List Val → Prop) :
     BodyVerified Captured.program 0 sourceBody safetyPre := by
   refine bodyVerified_of_safe rfl wellFormed (fun args valid _ => ?_)
-  apply validArgs3_elim sourceBody _ rfl rfl (Safe sourceBody) _ args valid
+  apply validArgs3_elim sourceBody _ rfl rfl (Safe .little sourceBody) _ args valid
   intro flag width value
   exact (completed flag width value).1
 

@@ -676,7 +676,7 @@ private theorem all_bodies_adm :
     allZeroBodiesAdm Captured.program Captured.program.bodies = true := rfl
 
 private theorem zeroBody_runs (ident : String) :
-    Runs
+    Runs Captured.program.targetEndian
       { argumentCount := 0
       , locals := [.int .i64 false]
       , basicBlocks := expectedBlocks

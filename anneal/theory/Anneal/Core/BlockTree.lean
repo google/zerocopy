@@ -871,10 +871,11 @@ via `bt.lookup` (`O(bt.depth)` trie steps on a normalized `BlockTree`). -/
       | none => .fault .unsupported
       | some bb =>
         match compGetElem? bb.statements frame.stmtIdx with
-        | some stmt => evalStatementBy tyEq body frame s.mem s.callerMem stmt
+        | some stmt =>
+          evalStatementBy tyEq .little body frame s.mem s.callerMem stmt
         | none =>
           if Nat.beq frame.stmtIdx bb.statements.length then
-            evalTerminatorComp body bb frame s.mem s.callerMem
+            evalTerminatorComp .little body bb frame s.mem s.callerMem
           else
             .fault .unsupported
   | _ => .fault .unsupported
@@ -918,11 +919,11 @@ theorem evalMirStepBlockTreeBy_eq_evalMirStepBy (tyEq : MirTy → MirTy → Bool
                 | some bb =>
                   match compGetElem? bb.statements stmtIdx with
                   | some stmt =>
-                    evalStatementBy tyEq body ⟨0, blkIdx, stmtIdx, locs⟩
+                    evalStatementBy tyEq .little body ⟨0, blkIdx, stmtIdx, locs⟩
                       mem callerMem stmt
                   | none =>
                     if Nat.beq stmtIdx bb.statements.length then
-                      evalTerminatorComp body bb ⟨0, blkIdx, stmtIdx, locs⟩
+                      evalTerminatorComp .little body bb ⟨0, blkIdx, stmtIdx, locs⟩
                         mem callerMem
                     else StepResult.fault FaultKind.unsupported) =
               (match compGetElem? body.basicBlocks blkIdx with
@@ -930,11 +931,11 @@ theorem evalMirStepBlockTreeBy_eq_evalMirStepBy (tyEq : MirTy → MirTy → Bool
                 | some bb =>
                   match compGetElem? bb.statements stmtIdx with
                   | some stmt =>
-                    evalStatementBy tyEq body ⟨0, blkIdx, stmtIdx, locs⟩
+                    evalStatementBy tyEq .little body ⟨0, blkIdx, stmtIdx, locs⟩
                       mem callerMem stmt
                   | none =>
                     if Nat.beq stmtIdx bb.statements.length then
-                      evalTerminatorComp body bb ⟨0, blkIdx, stmtIdx, locs⟩
+                      evalTerminatorComp .little body bb ⟨0, blkIdx, stmtIdx, locs⟩
                         mem callerMem
                     else StepResult.fault FaultKind.unsupported)
             rw [BlockTree.lookup_eq_compGetElem? hValid blkIdx]
@@ -2466,10 +2467,11 @@ via `Chunk8BlockTree BasicBlock`. -/
       | none => .fault .unsupported
       | some bb =>
         match compGetElem? bb.statements frame.stmtIdx with
-        | some stmt => evalStatementBy tyEq body frame s.mem s.callerMem stmt
+        | some stmt =>
+          evalStatementBy tyEq .little body frame s.mem s.callerMem stmt
         | none =>
           if Nat.beq frame.stmtIdx bb.statements.length then
-            evalTerminatorComp body bb frame s.mem s.callerMem
+            evalTerminatorComp .little body bb frame s.mem s.callerMem
           else
             .fault .unsupported
   | _ => .fault .unsupported
@@ -2504,24 +2506,24 @@ theorem evalMirStepChunk8By_eq_evalStep (tyEq : MirTy → MirTy → Bool)
                   | some bb =>
                     match compGetElem? bb.statements stmtIdx with
                     | some stmt =>
-                      evalStatementBy tyEq body ⟨0, blkIdx, stmtIdx, locs⟩
+                      evalStatementBy tyEq .little body ⟨0, blkIdx, stmtIdx, locs⟩
                         mem callerMem stmt
                     | none =>
                       if Nat.beq stmtIdx bb.statements.length then
-                        evalTerminatorComp body bb ⟨0, blkIdx, stmtIdx, locs⟩
-                          mem callerMem
+                        evalTerminatorComp .little body bb
+                          ⟨0, blkIdx, stmtIdx, locs⟩ mem callerMem
                       else StepResult.fault FaultKind.unsupported) =
                 (match compGetElem? body.basicBlocks blkIdx with
                   | none => StepResult.fault FaultKind.unsupported
                   | some bb =>
                     match compGetElem? bb.statements stmtIdx with
                     | some stmt =>
-                      evalStatementBy tyEq body ⟨0, blkIdx, stmtIdx, locs⟩
+                      evalStatementBy tyEq .little body ⟨0, blkIdx, stmtIdx, locs⟩
                         mem callerMem stmt
                     | none =>
                       if Nat.beq stmtIdx bb.statements.length then
-                        evalTerminatorComp body bb ⟨0, blkIdx, stmtIdx, locs⟩
-                          mem callerMem
+                        evalTerminatorComp .little body bb
+                          ⟨0, blkIdx, stmtIdx, locs⟩ mem callerMem
                       else StepResult.fault FaultKind.unsupported)
               rw [hValid.2 blkIdx, ← compGetElem?_eq]
             | succ _ => rfl

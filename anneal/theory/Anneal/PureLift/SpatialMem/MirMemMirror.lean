@@ -444,7 +444,8 @@ abbrev execIsAligned (a : Allocation) (offset alignLog2 : Nat) : Bool :=
     (size alignLog2 : Nat) : Except FaultKind MemoryState :=
   execWriteBytes m place alignLog2 (List.replicate size .uninit)
 
-/-- Computable mirror of `Trusted.MirSemantics.profileTargetEndian` (`.big`). -/
+/-- Default big-endian `TargetEndian` witness used by fixed-endian `SpatialMem`
+codec instantiations and regression tests. -/
 @[expose] def execProfileTargetEndian : TargetEndian := .big
 
 /-- Computable mirror of `Trusted.MirAst.IntWidth.byteSize`. -/
@@ -678,22 +679,22 @@ abbrev execIsAligned (a : Allocation) (offset alignLog2 : Nat) : Bool :=
     execDecodeValFallback endian ty bytes
 
 /-- Computable mirror of `Trusted.MirSemantics.loadIndirect`. -/
-@[expose] def execLoadIndirect (mem : MemoryState) (ty : MirTy)
-    (place : MemPlace) : Except FaultKind (Option Val) :=
+@[expose] def execLoadIndirect (endian : TargetEndian) (mem : MemoryState)
+    (ty : MirTy) (place : MemPlace) : Except FaultKind (Option Val) :=
   match execLayoutOfTy ty with
   | none => .error .unsupported
   | some layout =>
     match execReadBytes mem place layout.size layout.alignLog2 with
     | .error k => .error k
-    | .ok bytes => execDecodeVal execProfileTargetEndian ty bytes
+    | .ok bytes => execDecodeVal endian ty bytes
 
 /-- Computable mirror of `Trusted.MirSemantics.storeIndirect`. -/
-@[expose] def execStoreIndirect (mem : MemoryState) (ty : MirTy)
-    (place : MemPlace) (v : Val) : Except FaultKind MemoryState :=
+@[expose] def execStoreIndirect (endian : TargetEndian) (mem : MemoryState)
+    (ty : MirTy) (place : MemPlace) (v : Val) : Except FaultKind MemoryState :=
   match execLayoutOfTy ty with
   | none => .error .unsupported
   | some layout =>
-    match execEncodeVal execProfileTargetEndian ty v with
+    match execEncodeVal endian ty v with
     | .error k => .error k
     | .ok bytes => execWriteBytes mem place layout.alignLog2 bytes
 
@@ -706,8 +707,8 @@ abbrev execIsAligned (a : Allocation) (offset alignLog2 : Nat) : Bool :=
 
 /-- Computable mirror of `Trusted.MirSemantics.evalOperandToSlot` specialized to
 `mirIsPrimitiveReadableTy`. -/
-@[expose] def execEvalPrimitiveOperandToSlot (bodyLocals : List MirTy)
-    (locals : List LocalSlot) (mem : MemoryState) :
+@[expose] def execEvalPrimitiveOperandToSlot (endian : TargetEndian)
+    (bodyLocals : List MirTy) (locals : List LocalSlot) (mem : MemoryState) :
     Operand →
       Except FaultKind (MirTy × Option Val × List LocalSlot × MemoryState)
   | .copy place =>
@@ -721,7 +722,7 @@ abbrev execIsAligned (a : Allocation) (offset alignLog2 : Nat) : Bool :=
       if !place.projection.isEmpty then .error .unsupported
       else if !mirIsPrimitiveReadableTy ty then .error .unsupported
       else
-        match execLoadIndirect mem ty mplace with
+        match execLoadIndirect endian mem ty mplace with
         | .ok optVal => .ok (ty, optVal, locals, mem)
         | .error k => .error k
     | _, _ => .error .unsupported
@@ -739,7 +740,7 @@ abbrev execIsAligned (a : Allocation) (offset alignLog2 : Nat) : Bool :=
       if !place.projection.isEmpty then .error .unsupported
       else if !mirIsPrimitiveReadableTy ty then .error .unsupported
       else
-        match execLoadIndirect mem ty mplace with
+        match execLoadIndirect endian mem ty mplace with
         | .error k => .error k
         | .ok optVal =>
           match execDeinitIndirect mem ty mplace with
@@ -752,10 +753,10 @@ abbrev execIsAligned (a : Allocation) (offset alignLog2 : Nat) : Bool :=
     | .error k => .error k
 
 /-- Computable mirror of `Trusted.MirSemantics.evalPrimitiveOperand`. -/
-@[expose] def execEvalPrimitiveOperand (bodyLocals : List MirTy)
-    (locals : List LocalSlot) (mem : MemoryState) (opnd : Operand) :
-    Except FaultKind (Val × List LocalSlot × MemoryState) :=
-  match execEvalPrimitiveOperandToSlot bodyLocals locals mem opnd with
+@[expose] def execEvalPrimitiveOperand (endian : TargetEndian)
+    (bodyLocals : List MirTy) (locals : List LocalSlot) (mem : MemoryState)
+    (opnd : Operand) : Except FaultKind (Val × List LocalSlot × MemoryState) :=
+  match execEvalPrimitiveOperandToSlot endian bodyLocals locals mem opnd with
   | .error k => .error k
   | .ok (ty, optVal, locals', mem') =>
     if !mirIsPrimitiveReadableTy ty then .error .unsupported
@@ -1199,8 +1200,10 @@ theorem execDecodeVal_eq (endian : TargetEndian) (ty : MirTy) (bytes : List Allo
             apply execDecodeVal_layout_arm_eq
 
 /-- Unconditional agreement between `execLoadIndirect` and `loadIndirect`. -/
-theorem execLoadIndirect_eq (mem : MemoryState) (ty : MirTy) (place : MemPlace) :
-    execLoadIndirect mem ty place = loadIndirect mem ty place := by
+theorem execLoadIndirect_eq (endian : TargetEndian) (mem : MemoryState)
+    (ty : MirTy) (place : MemPlace) :
+    execLoadIndirect endian mem ty place =
+      loadIndirect endian mem ty place := by
   unfold execLoadIndirect loadIndirect
   rw [execLayoutOfTy_eq ty]
   cases layoutOfTy ty with
@@ -1210,23 +1213,21 @@ theorem execLoadIndirect_eq (mem : MemoryState) (ty : MirTy) (place : MemPlace) 
     rw [execReadBytes_eq mem place layout.size layout.alignLog2]
     cases readBytes mem place layout.size layout.alignLog2 with
     | error _ => rfl
-    | ok bytes =>
-      have hEnd : execProfileTargetEndian = profileTargetEndian := rfl
-      rw [hEnd]
-      exact execDecodeVal_eq profileTargetEndian ty bytes
+    | ok bytes => exact execDecodeVal_eq endian ty bytes
 
 /-- Unconditional agreement between `execStoreIndirect` and `storeIndirect`. -/
-theorem execStoreIndirect_eq (mem : MemoryState) (ty : MirTy) (place : MemPlace) (v : Val) :
-    execStoreIndirect mem ty place v = storeIndirect mem ty place v := by
+theorem execStoreIndirect_eq (endian : TargetEndian) (mem : MemoryState)
+    (ty : MirTy) (place : MemPlace) (v : Val) :
+    execStoreIndirect endian mem ty place v =
+      storeIndirect endian mem ty place v := by
   unfold execStoreIndirect storeIndirect
   rw [execLayoutOfTy_eq ty]
   cases layoutOfTy ty with
   | none => rfl
   | some layout =>
     dsimp only
-    have hEnd : execProfileTargetEndian = profileTargetEndian := rfl
-    rw [hEnd, execEncodeVal_eq profileTargetEndian ty v]
-    cases encodeVal profileTargetEndian ty v with
+    rw [execEncodeVal_eq endian ty v]
+    cases encodeVal endian ty v with
     | error _ => rfl
     | ok bytes => exact execWriteBytes_eq mem place layout.alignLog2 bytes
 
@@ -1258,10 +1259,12 @@ private theorem mirIsPrimitiveReadableTy_eq (ty : MirTy) :
     mirIsPrimitiveReadableTy ty = isPrimitiveReadableTy ty := by
   cases ty <;> rfl
 
-private theorem execEvalPrimitiveOperandToSlot_eq (bodyLocals : List MirTy)
-    (locals : List LocalSlot) (mem : MemoryState) (opnd : Operand) :
-    execEvalPrimitiveOperandToSlot bodyLocals locals mem opnd =
-      evalOperandToSlot bodyLocals locals mem isPrimitiveReadableTy opnd := by
+private theorem execEvalPrimitiveOperandToSlot_eq (endian : TargetEndian)
+    (bodyLocals : List MirTy) (locals : List LocalSlot) (mem : MemoryState)
+    (opnd : Operand) :
+    execEvalPrimitiveOperandToSlot endian bodyLocals locals mem opnd =
+      evalOperandToSlot endian bodyLocals locals mem isPrimitiveReadableTy
+        opnd := by
   cases opnd with
   | copy place =>
     dsimp only [execEvalPrimitiveOperandToSlot, evalOperandToSlot]
@@ -1278,7 +1281,8 @@ private theorem execEvalPrimitiveOperandToSlot_eq (bodyLocals : List MirTy)
         | immediate _ => rfl
         | indirect mplace =>
           dsimp only
-          rw [mirIsPrimitiveReadableTy_eq ty, execLoadIndirect_eq mem ty mplace]
+          rw [mirIsPrimitiveReadableTy_eq ty,
+            execLoadIndirect_eq endian mem ty mplace]
           rfl
   | move place =>
     dsimp only [execEvalPrimitiveOperandToSlot, evalOperandToSlot]
@@ -1299,7 +1303,8 @@ private theorem execEvalPrimitiveOperandToSlot_eq (bodyLocals : List MirTy)
           rfl
         | indirect mplace =>
           dsimp only
-          rw [mirIsPrimitiveReadableTy_eq ty, execLoadIndirect_eq mem ty mplace,
+          rw [mirIsPrimitiveReadableTy_eq ty,
+            execLoadIndirect_eq endian mem ty mplace,
             execDeinitIndirect_eq mem ty mplace]
           rfl
   | constant c =>
@@ -1309,13 +1314,15 @@ private theorem execEvalPrimitiveOperandToSlot_eq (bodyLocals : List MirTy)
 
 /-- Agreement between `execEvalPrimitiveOperand` and
 `Trusted.MirSemantics.evalPrimitiveOperand`. -/
-theorem execEvalPrimitiveOperand_eq (bodyLocals : List MirTy)
-    (locals : List LocalSlot) (mem : MemoryState) (opnd : Operand) :
-    execEvalPrimitiveOperand bodyLocals locals mem opnd =
-      evalPrimitiveOperand bodyLocals locals mem opnd := by
+theorem execEvalPrimitiveOperand_eq (endian : TargetEndian)
+    (bodyLocals : List MirTy) (locals : List LocalSlot) (mem : MemoryState)
+    (opnd : Operand) :
+    execEvalPrimitiveOperand endian bodyLocals locals mem opnd =
+      evalPrimitiveOperand endian bodyLocals locals mem opnd := by
   unfold execEvalPrimitiveOperand evalPrimitiveOperand
-  rw [execEvalPrimitiveOperandToSlot_eq bodyLocals locals mem opnd]
-  cases evalOperandToSlot bodyLocals locals mem isPrimitiveReadableTy opnd with
+  rw [execEvalPrimitiveOperandToSlot_eq endian bodyLocals locals mem opnd]
+  cases evalOperandToSlot endian bodyLocals locals mem isPrimitiveReadableTy
+      opnd with
   | error _ => rfl
   | ok res =>
     cases res with

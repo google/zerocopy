@@ -60,7 +60,7 @@ private theorem verified_id {idx : DefId} (b : Body)
         initLocalsLoop b' [.scalar ⟨.isize, false, bits⟩] 0 b'.locals =
         [.immediate none, .immediate (some (.scalar ⟨.isize, false, bits⟩))] := rfl
     have hWrite :
-        writePlace [.immediate none, .immediate (some (.scalar ⟨.isize, false, bits⟩))]
+        writePlace .little [.immediate none, .immediate (some (.scalar ⟨.isize, false, bits⟩))]
           entryMemory 0 (.int .isize false) (.scalar ⟨.isize, false, bits⟩) =
         .ok ([.immediate (some (.scalar ⟨.isize, false, bits⟩)),
               .immediate (some (.scalar ⟨.isize, false, bits⟩))],
@@ -74,11 +74,11 @@ private theorem verified_id {idx : DefId} (b : Body)
             .immediate (some (.scalar ⟨.isize, false, bits⟩))]) =
         .step (mkState 0 1 [.immediate (some (.scalar ⟨.isize, false, bits⟩)),
           .immediate (some (.scalar ⟨.isize, false, bits⟩))]) := by
-      change (match writePlace _ entryMemory 0 (.int .isize false) (.scalar ⟨.isize, false, bits⟩) with
+      change (match writePlace .little _ entryMemory 0 (.int .isize false) (.scalar ⟨.isize, false, bits⟩) with
         | .error k => StepResult.fault k
         | .ok (ls, m) => StepResult.step ({ frames := [{ defId := 0, blockIdx := 0, stmtIdx := 1, locals := ls }], callerMem := ⟨[]⟩, mem := m } : State)) = _
       rw [hWrite]; rfl
-    have hExec : Executes b'
+    have hExec : Executes .little b'
         (mkState 0 0 (initLocalsLoop b' [.scalar ⟨.isize, false, bits⟩] 0 b'.locals))
         (.scalar ⟨.isize, false, bits⟩) := by
       rw [hInit]
@@ -119,7 +119,7 @@ private theorem verified_move {idx : DefId} (b : Body)
     have hS0 : evalStep (bodyProg b') 0
         (mkState 0 0 [.immediate none, .immediate (some sv), .dead]) =
         .step (mkState 0 1 [.immediate none, .immediate (some sv), .immediate none]) := rfl
-    have hW2 : writePlace [.immediate none, .immediate (some sv), .immediate none]
+    have hW2 : writePlace .little [.immediate none, .immediate (some sv), .immediate none]
         entryMemory 2 (.int .isize false) sv =
         .ok ([.immediate none, .immediate (some sv), .immediate (some sv)], entryMemory) := by
       unfold writePlace
@@ -128,11 +128,11 @@ private theorem verified_move {idx : DefId} (b : Body)
     have hS1 : evalStep (bodyProg b') 0
         (mkState 0 1 [.immediate none, .immediate (some sv), .immediate none]) =
         .step (mkState 0 2 [.immediate none, .immediate (some sv), .immediate (some sv)]) := by
-      change (match writePlace _ entryMemory 2 (.int .isize false) sv with
+      change (match writePlace .little _ entryMemory 2 (.int .isize false) sv with
         | .error k => StepResult.fault k
         | .ok (ls, m) => StepResult.step ({ frames := [{ defId := 0, blockIdx := 0, stmtIdx := 2, locals := ls }], callerMem := ⟨[]⟩, mem := m } : State)) = _
       rw [hW2]; rfl
-    have hW0 : writePlace [.immediate none, .immediate (some sv), .immediate (some sv)]
+    have hW0 : writePlace .little [.immediate none, .immediate (some sv), .immediate (some sv)]
         entryMemory 0 (.int .isize false) sv =
         .ok ([.immediate (some sv), .immediate (some sv), .immediate (some sv)], entryMemory) := by
       unfold writePlace
@@ -141,14 +141,14 @@ private theorem verified_move {idx : DefId} (b : Body)
     have hS2 : evalStep (bodyProg b') 0
         (mkState 0 2 [.immediate none, .immediate (some sv), .immediate (some sv)]) =
         .step (mkState 0 3 [.immediate (some sv), .immediate (some sv), .immediate (some sv)]) := by
-      change (match writePlace _ entryMemory 0 (.int .isize false) sv with
+      change (match writePlace .little _ entryMemory 0 (.int .isize false) sv with
         | .error k => StepResult.fault k
         | .ok (ls, m) => StepResult.step ({ frames := [{ defId := 0, blockIdx := 0, stmtIdx := 3, locals := ls }], callerMem := ⟨[]⟩, mem := m } : State)) = _
       rw [hW0]; rfl
     have hS3 : evalStep (bodyProg b') 0
         (mkState 0 3 [.immediate (some sv), .immediate (some sv), .immediate (some sv)]) =
         .step (mkState 0 4 [.immediate (some sv), .immediate (some sv), .dead]) := rfl
-    have hExec : Executes b'
+    have hExec : Executes .little b'
         (mkState 0 0 (initLocalsLoop b' [sv] 0 b'.locals)) sv := by
       rw [hInit]
       exact .next hS0 (.next hS1 (.next hS2 (.next hS3 (.ret rfl))))

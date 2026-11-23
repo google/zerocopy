@@ -22,7 +22,8 @@ private theorem body1_adm :
 
 private theorem writePlace_isize {v : Val}
     (hv : checkVal v (.int .isize false) = true) :
-    writePlace [.immediate none, .immediate (some v)] entryMemory 0
+    writePlace Captured.program.targetEndian
+        [.immediate none, .immediate (some v)] entryMemory 0
         (.int .isize false) v =
       .ok ([.immediate (some v), .immediate (some v)], entryMemory) := by
   unfold writePlace
@@ -32,25 +33,26 @@ private theorem writePlace_isize {v : Val}
 private theorem step_copy_isize (body : Body) {v : Val}
     (hLoc : initLocalsLoop body [v] 0 body.locals =
       [.immediate none, .immediate (some v)])
-    (hRval : evalRvalue body.locals
+    (hRval : evalRvalue Captured.program.targetEndian body.locals
         [.immediate none, .immediate (some v)]
         entryMemory (.int .isize false) (.use (.copy ⟨1, []⟩)) =
       .ok (v, [.immediate none, .immediate (some v)], entryMemory))
-    (hStep : evalStep (bodyProg body) 0
+    (hStep : evalStep (bodyProg body Captured.program.targetEndian) 0
         (mkState 0 0 [.immediate none, .immediate (some v)]) =
-      match evalRvalue body.locals
+      match evalRvalue Captured.program.targetEndian body.locals
           [.immediate none, .immediate (some v)]
           entryMemory (.int .isize false) (.use (.copy ⟨1, []⟩)) with
       | .error k => .fault k
       | .ok (val, l1, m1) =>
-        match writePlace l1 m1 0 (.int .isize false) val with
+        match writePlace Captured.program.targetEndian
+            l1 m1 0 (.int .isize false) val with
         | .error k => .fault k
         | .ok (l2, m2) =>
           .step
             { frames := [{ defId := 0, blockIdx := 0, stmtIdx := 1, locals := l2 }],
               callerMem := ⟨[]⟩, mem := m2 })
     (hv : checkVal v (.int .isize false) = true) :
-    evalStep (bodyProg body) 0
+    evalStep (bodyProg body Captured.program.targetEndian) 0
       (mkState 0 0 (initLocalsLoop body [v] 0 body.locals)) =
     .step (mkState 0 1 [.immediate (some v), .immediate (some v)]) := by
   rw [hLoc, hStep, hRval]
@@ -60,14 +62,14 @@ private theorem step_copy_isize (body : Body) {v : Val}
 
 private theorem body0_executes {v : Val}
     (hv : checkVal v (.int .isize false) = true) :
-    Executes Captured.body_0
+    Executes Captured.program.targetEndian Captured.body_0
       (mkState 0 0 (initLocalsLoop Captured.body_0 [v] 0 Captured.body_0.locals))
       v :=
   .next (step_copy_isize Captured.body_0 rfl rfl rfl hv) (.ret rfl)
 
 private theorem body1_executes {v : Val}
     (hv : checkVal v (.int .isize false) = true) :
-    Executes Captured.body_1
+    Executes Captured.program.targetEndian Captured.body_1
       (mkState 0 0 (initLocalsLoop Captured.body_1 [v] 0 Captured.body_1.locals))
       v :=
   .next (step_copy_isize Captured.body_1 rfl rfl rfl hv) (.ret rfl)
@@ -77,7 +79,8 @@ private theorem total_of_executes {defId : DefId} {body : Body}
     (h_body : Trusted.MirSemantics.getElem? Captured.program.bodies defId = some body)
     (h_adm : BodyStaticAdmitted Captured.program body = true)
     (h_args : ValidEntryArgs body args)
-    (h_exec : Executes body (mkState 0 0 (initLocalsLoop body args 0 body.locals)) ret) :
+    (h_exec : Executes Captured.program.targetEndian body
+      (mkState 0 0 (initLocalsLoop body args 0 body.locals)) ret) :
     Spec.ReturnsTotal Captured.program defId args ret := by
   let ⟨fuel, h_execState⟩ := executes_iff_wpState.mp h_exec
   have h_execProg :

@@ -101,9 +101,9 @@ noncomputable def refGlobalAllocationHooks :
 /-- `PlaceMachine.AccessConfig` for `refExecutionConfig`, with
 `deinitMovedPlace := true` and canonical `Miri.Interpreter.MemoryErrors.operand`
 error mapping. -/
-noncomputable def refAccessConfig :
+noncomputable def refAccessConfig (endian : TargetEndian) :
     Miri.Interpreter.PlaceMachine.AccessConfig Unit RefUser := {
-  runtime := Miri.ABI.RuntimeTargetDataLayout.default
+  runtime := refRuntimeLayout endian
   ghostMode := false
   globalKind := none
   globalHooks := refGlobalAllocationHooks
@@ -189,9 +189,10 @@ noncomputable def refProjErrToStepErr :
 
 /-- Pure `Miri.Interpreter.ProjectionCx` for immediate field/variant
 projections (enum tag field `0` and downcast variants). -/
-noncomputable def refProjectionCx (types : List MirTy) :
+noncomputable def refProjectionCx (endian : TargetEndian)
+    (types : List MirTy) :
     Miri.Interpreter.ProjectionCx Miri.Memory.Provenance := {
-  target := Miri.ABI.RuntimeTargetDataLayout.default.base
+  target := (refRuntimeLayout endian).base
   maxSizeOfVal := refMaxSizeOfVal
   isSliceOrStr := fun _ => .ok false
   field := refProjectFieldLayout types
@@ -215,7 +216,8 @@ noncomputable def refProjectionCx (types : List MirTy) :
 
 /-- Base `PlaceMachine.CompilerHooks` used to construct `refValidityHooks`
 before binding `validate` via `TypedMachineBindings.bindValidation`. -/
-noncomputable def refBaseCompilerHooks (types : List MirTy) :
+noncomputable def refBaseCompilerHooks (endian : TargetEndian)
+    (types : List MirTy) :
     Miri.Interpreter.PlaceMachine.CompilerHooks Unit RefUser Choice := {
   debugAssertions := false
   layout := fun _ localId st =>
@@ -229,7 +231,7 @@ noncomputable def refBaseCompilerHooks (types : List MirTy) :
         | .ok l => .ok l st
         | .error e => .error e st
   validationInProgress := fun st => .ok false st
-  projection := fun _ st => .ok (refProjectionCx types) st
+  projection := fun _ st => .ok (refProjectionCx endian types) st
   deref := fun _ _ _ st =>
     .error (.unsupported "projections unsupported on Day 1") st
   checkPlaceType := fun _ _ _ st => .ok () st
@@ -247,10 +249,11 @@ noncomputable def refBaseCompilerHooks (types : List MirTy) :
 
 /-- `DynamicLayoutHooks` for `refExecutionConfig` (all Day-1 types are sized,
 so `DynamicLayout.sizeAndAlignFromMeta` hits its sized fast path). -/
-noncomputable def refDynamicLayoutHooks (types : List MirTy) :
+noncomputable def refDynamicLayoutHooks (endian : TargetEndian)
+    (types : List MirTy) :
     Miri.Interpreter.DynamicLayoutHooks Miri.Memory.Provenance
       (Miri.Interpreter.MachineHooks.State Unit RefUser) Choice := {
-  target := Miri.ABI.RuntimeTargetDataLayout.default.base
+  target := (refRuntimeLayout endian).base
   maxSizeOfVal := refMaxSizeOfVal
   classify := fun _ _ st =>
     .error (.unsupported "unsized dynamic layout unsupported on Day 1") st
@@ -265,15 +268,17 @@ noncomputable def refDynamicLayoutHooks (types : List MirTy) :
 
 /-- Base `PlaceProjectionHooks` used inside `refValidityHooks` (whose read,
 field, variant, and `toOp` paths never invoke `place.validate`). -/
-noncomputable def refBasePlaceProjectionHooks (types : List MirTy) :
+noncomputable def refBasePlaceProjectionHooks (endian : TargetEndian)
+    (types : List MirTy) :
     Miri.Interpreter.PlaceProjectionHooks Miri.Memory.Provenance
       (Miri.Interpreter.MachineHooks.State Unit RefUser) Choice
       Miri.Interpreter.MachineHooks.FrameExtra := {
   place := Miri.Interpreter.PlaceMachine.placeHooks
-    refAccessConfig refAllocationConfig (refBaseCompilerHooks types)
-  target := Miri.ABI.RuntimeTargetDataLayout.default.base
+    (refAccessConfig endian) refAllocationConfig
+    (refBaseCompilerHooks endian types)
+  target := (refRuntimeLayout endian).base
   maxSizeOfVal := refMaxSizeOfVal
-  dynamic := refDynamicLayoutHooks types
+  dynamic := refDynamicLayoutHooks endian types
   dynamicFuel := 8
   isSliceOrStr := fun _ _ st => .ok false st
   field := fun _ base idx st =>
@@ -376,12 +381,14 @@ noncomputable def refOperandLeaves (types : List MirTy) :
 
 No reference or raw-pointer type has a $M_{\text{ref}}$ layout, so the
 wide-pointer arm never applies. -/
-noncomputable def refHasPadding (layout : Miri.Interpreter.LocalLayout) :
+noncomputable def refHasPadding (endian : TargetEndian)
+    (layout : Miri.Interpreter.LocalLayout) :
     Except Miri.Interpreter.StepError Bool :=
   match layout.layout.backendRepr with
   | .Scalar _ => .ok false
   | .ScalarPair (a := a) (b := b) (bOffset := _) =>
-    match a.size refAccessConfig.runtime, b.size refAccessConfig.runtime with
+    match a.size (refAccessConfig endian).runtime,
+        b.size (refAccessConfig endian).runtime with
     | .ok sizeA, .ok sizeB =>
       match sizeA.add sizeB with
       | .ok total => .ok (total != layout.layout.size)
@@ -391,12 +398,13 @@ noncomputable def refHasPadding (layout : Miri.Interpreter.LocalLayout) :
 
 /-- `PlaceCopyHooks` for `refExecutionConfig`: `refHasPadding` decides padding,
 and canonical `TyId`s make layout compatibility exact `a.ty == b.ty`. -/
-noncomputable def refPlaceCopyHooks :
+noncomputable def refPlaceCopyHooks (endian : TargetEndian) :
     Miri.Interpreter.PlaceCopyHooks Miri.Memory.Provenance
       (Miri.Interpreter.MachineHooks.State Unit RefUser) Choice := {
   compatible := fun a b => .ok (a.ty == b.ty)
-  hasPadding := refHasPadding
-  readRaw := fun _ => Miri.Interpreter.PlaceMachine.readRaw refAccessConfig
+  hasPadding := refHasPadding endian
+  readRaw := fun _ =>
+    Miri.Interpreter.PlaceMachine.readRaw (refAccessConfig endian)
   memoryCopy := fun _ _ _ st =>
     .error (.unsupported "memoryCopy unsupported on Day 1") st
   validateSource := fun _ _ _ st => .ok () st
@@ -446,11 +454,12 @@ noncomputable def refDiscriminantLeaves (types : List MirTy) :
 
 /-- `OperandMachine.Hooks` used by `ValidityVisitor`'s `discriminant` hooks
 (`projectRead`). -/
-noncomputable def refValidityOperandHooks (types : List MirTy) :
+noncomputable def refValidityOperandHooks (endian : TargetEndian)
+    (types : List MirTy) :
     Miri.Interpreter.OperandMachine.Hooks Unit RefUser Choice := {
-  compiler := refBaseCompilerHooks types
-  projection := refBasePlaceProjectionHooks types
-  layoutCompatible := refPlaceCopyHooks.compatible
+  compiler := refBaseCompilerHooks endian types
+  projection := refBasePlaceProjectionHooks endian types
+  layoutCompatible := (refPlaceCopyHooks endian).compatible
   -- Invoked live by `OperandMachine.evalPlaceToOp`; Day-1 place/local types
   -- are validated statically at entry (`initRefState`).
   checkPlaceType := fun _ _ _ st => .ok () st
@@ -465,24 +474,27 @@ noncomputable def refValidityOperandHooks (types : List MirTy) :
 
 /-- `DiscriminantHooks` supplied to `ValidityVisitor.Hooks` so enum validation
 executes real `Miri.Interpreter.Discriminant.readDiscriminant`. -/
-noncomputable def refValidityDiscriminantHooks (types : List MirTy) :
+noncomputable def refValidityDiscriminantHooks (endian : TargetEndian)
+    (types : List MirTy) :
     Miri.Interpreter.DiscriminantHooks Miri.Memory.Provenance
       (Miri.Interpreter.MachineHooks.State Unit RefUser) Choice
       (Miri.Interpreter.RuntimePlace Miri.Memory.Provenance) :=
   let leaves := refDiscriminantLeaves types
-  let proj := refBasePlaceProjectionHooks types
+  let proj := refBasePlaceProjectionHooks endian types
   {
-    runtimeTarget := refAccessConfig.runtime
+    runtimeTarget := (refAccessConfig endian).runtime
     discriminantLayout := leaves.discriminantLayout
     tagLayout := leaves.tagLayout
     discriminantValue := leaves.discriminantValue
     variantForDiscriminant := leaves.variantForDiscriminant
     adtVariantCount := leaves.adtVariantCount
     projectRead :=
-      Miri.Interpreter.OperandMachine.field (refValidityOperandHooks types)
+      Miri.Interpreter.OperandMachine.field
+        (refValidityOperandHooks endian types)
     readImmediate := fun _ =>
       Miri.Interpreter.PlaceMachine.readImmediate
-        { refAccessConfig with ghostMode := true, deinitMovedPlace := false }
+        { refAccessConfig endian with
+          ghostMode := true, deinitMovedPlace := false }
     destLayout := Miri.Interpreter.RuntimePlace.layout
     projectWrite := Miri.Interpreter.PlaceDynamic.field proj
     writeScalar := fun c sc dest =>
@@ -493,10 +505,10 @@ noncomputable def refValidityDiscriminantHooks (types : List MirTy) :
 
 /-- `VTableHooks` fail-closed placeholder for Day-1 (unreachable without
 trait objects). -/
-noncomputable def refVTableHooks {F ABI : Type} :
+noncomputable def refVTableHooks (endian : TargetEndian) {F ABI : Type} :
     Miri.Interpreter.VTableHooks Miri.Memory.Provenance
       (Miri.Interpreter.MachineHooks.State Unit RefUser) Choice F ABI := {
-  target := Miri.ABI.RuntimeTargetDataLayout.default.base
+  target := (refRuntimeLayout endian).base
   isDynamic := fun _ _ st => .ok false st
   memoryOffset := fun _ _ _ _ _ st =>
     .error (.unsupported "vtable unsupported on Day 1") st
@@ -524,19 +536,20 @@ noncomputable def refVTableHooks {F ABI : Type} :
 
 /-- `ValidityMemory.Environment` connecting `ValidityMemory.bind` directly to
 `MachineHooks.State Unit RefUser`'s live `MemoryState`. -/
-noncomputable def refValidityMemoryEnv :
+noncomputable def refValidityMemoryEnv (endian : TargetEndian) :
     Miri.Interpreter.ValidityMemory.Environment
       Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree Unit
       (Miri.Interpreter.PlaceMachine.AccessState Unit RefUser)
       Miri.Memory.ProvenanceExtra
       (Miri.Interpreter.MachineHooks.State Unit RefUser) := {
   context := {
-    runtime := refAccessConfig.runtime
+    runtime := (refAccessConfig endian).runtime
     ghostMode := true
     globalKind := none
-    globalHooks := refAccessConfig.globalHooks
-    accessHooks := Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig
-    dynamicLayout := refAccessConfig.dynamicLayout
+    globalHooks := (refAccessConfig endian).globalHooks
+    accessHooks := Miri.Interpreter.PlaceMachine.accessHooks
+      (refAccessConfig endian)
+    dynamicLayout := (refAccessConfig endian).dynamicLayout
   }
   memory := fun st => st.machine.memory
   hooks := fun st => ⟨st.machine, none⟩
@@ -553,22 +566,23 @@ noncomputable def refValidityMemoryEnv :
 /-- `ValidityVisitor.Hooks` bound to real `ValidityMemory.bind` for Day-1
 integer, boolean, `char`, unit, never, fieldless-enum, `Ordering`, and
 overflow-pair validation. -/
-noncomputable def refValidityHooks (types : List MirTy) :
+noncomputable def refValidityHooks (endian : TargetEndian)
+    (types : List MirTy) :
     Miri.Interpreter.ValidityVisitor.Hooks Miri.Memory.Provenance
       (Miri.Interpreter.MachineHooks.State Unit RefUser) Choice
       Miri.Interpreter.MachineHooks.FrameExtra
       (Miri.Interpreter.FnVal Unit) (Miri.ABI.FnAbi TyId)
       Miri.Interpreter.ValidityMemory.PaddingHandle :=
-  let proj := refBasePlaceProjectionHooks types
+  let proj := refBasePlaceProjectionHooks endian types
   let base : Miri.Interpreter.ValidityVisitor.Hooks Miri.Memory.Provenance
       (Miri.Interpreter.MachineHooks.State Unit RefUser) Choice
       Miri.Interpreter.MachineHooks.FrameExtra
       (Miri.Interpreter.FnVal Unit) (Miri.ABI.FnAbi TyId)
       Miri.Interpreter.ValidityMemory.PaddingHandle := {
-    target := Miri.ABI.RuntimeTargetDataLayout.default
+    target := refRuntimeLayout endian
     projection := proj
-    vtable := refVTableHooks
-    discriminant := refValidityDiscriminantHooks types
+    vtable := refVTableHooks endian
+    discriminant := refValidityDiscriminantHooks endian types
     debugAssertions := false
     classify := fun _ tyId st =>
       match resolveTy types tyId with
@@ -634,7 +648,7 @@ noncomputable def refValidityHooks (types : List MirTy) :
     cachedUnionRanges := fun _ _ act => act
     withGhostValidation := fun act => act
   }
-  Miri.Interpreter.ValidityMemory.bind base refValidityMemoryEnv
+  Miri.Interpreter.ValidityMemory.bind base (refValidityMemoryEnv endian)
     (fun st => .ok false st) (fun _ _ st => .ok () st) (fun _ => true)
 
 /-- `ExecutionScalar.Leaves` for `refExecutionConfig`. -/
@@ -741,23 +755,27 @@ noncomputable def refRetagHooks :
 
 /-- `PlaceMachine.CompilerHooks` with `validate` bound to real
 `ValidityVisitor.validatePlace` via `TypedMachineBindings.bindValidation`. -/
-noncomputable def refCompilerHooks (types : List MirTy) :
+noncomputable def refCompilerHooks (endian : TargetEndian)
+    (types : List MirTy) :
     Miri.Interpreter.PlaceMachine.CompilerHooks Unit RefUser Choice :=
   (Miri.Interpreter.TypedMachineBindings.bindValidation
-    (refBaseCompilerHooks types) refPlaceCopyHooks (refValidityHooks types)
+    (refBaseCompilerHooks endian types) (refPlaceCopyHooks endian)
+    (refValidityHooks endian types)
     refRetagHooks refLimits.retag refLimits.validation
     (fun _ _ st => .ok false st)).1
 
 /-- `PlaceProjectionHooks` for `refExecutionConfig`, carrying `place.validate`
 bound to `ValidityVisitor.validatePlace` so `ExecutionMachine.projectionHooks`,
 `rvalueHooks`, and `ExecutionControl.hooks` run real shallow validation. -/
-noncomputable def refPlaceProjectionHooks (types : List MirTy) :
+noncomputable def refPlaceProjectionHooks (endian : TargetEndian)
+    (types : List MirTy) :
     Miri.Interpreter.PlaceProjectionHooks Miri.Memory.Provenance
       (Miri.Interpreter.MachineHooks.State Unit RefUser) Choice
       Miri.Interpreter.MachineHooks.FrameExtra :=
-  { refBasePlaceProjectionHooks types with
+  { refBasePlaceProjectionHooks endian types with
     place := Miri.Interpreter.PlaceMachine.placeHooks
-      refAccessConfig refAllocationConfig (refCompilerHooks types) }
+      (refAccessConfig endian) refAllocationConfig
+      (refCompilerHooks endian types) }
 
 /-- Empty address-table placeholder for Day-1 `ExecutionMachine.Config`. -/
 noncomputable def refEmptyAddressState :
@@ -840,11 +858,12 @@ noncomputable def refCastLeaves (types : List MirTy) :
 }
 
 /-- Fail-closed `AtomicAccessHooks` placeholder for Day-1. -/
-noncomputable def refAtomicAccessHooks (types : List MirTy) :
+noncomputable def refAtomicAccessHooks (endian : TargetEndian)
+    (types : List MirTy) :
     Miri.Interpreter.AtomicAccessHooks Miri.Memory.Provenance
       (Miri.Interpreter.MachineHooks.State Unit RefUser) Choice
       (Miri.Interpreter.RuntimePlace Miri.Memory.Provenance) := {
-  target := Miri.ABI.RuntimeTargetDataLayout.default.base
+  target := (refRuntimeLayout endian).base
   getGlobal := fun st => st.machine.dataRace
   setGlobal := fun st g =>
     { st with machine := { st.machine with dataRace := some g } }
@@ -924,17 +943,18 @@ noncomputable def refVarArgsHooks :
 
 /-- Fail-closed `IntrinsicHooks` placeholder for Day-1 (unreachable since
 `TerminatorKind.call` lowers to `.CoroutineDrop`). -/
-noncomputable def refIntrinsicHooks (types : List MirTy) :
+noncomputable def refIntrinsicHooks (endian : TargetEndian)
+    (types : List MirTy) :
     Miri.Interpreter.IntrinsicHooks Miri.Memory.Provenance
       (Miri.Interpreter.MachineHooks.State Unit RefUser) Choice
       (Miri.Interpreter.RuntimePlace Miri.Memory.Provenance) :=
-  let atomics := refAtomicAccessHooks types
+  let atomics := refAtomicAccessHooks endian types
   let scalarOps := atomics.scalarOps
   let floats := refFloatOpsHooks types
   let simd : Miri.Interpreter.IntrinsicSimdHooks Miri.Memory.Provenance
       (Miri.Interpreter.MachineHooks.State Unit RefUser) Choice
       (Miri.Interpreter.RuntimePlace Miri.Memory.Provenance) := {
-    target := Miri.ABI.RuntimeTargetDataLayout.default.base
+    target := (refRuntimeLayout endian).base
     boolTy := tyIdFor types .bool
     u8Ty := tyIdFor types (.int .i8 false)
     isSimd := fun _ _ st => .ok false st
@@ -966,9 +986,9 @@ noncomputable def refIntrinsicHooks (types : List MirTy) :
     scalarOps := scalarOps
     floatOps := floats
     castHooks := Miri.Interpreter.ExecutionCast.hooks
-      (refCastLeaves types) refAccessConfig refAllocationConfig
-      (refCompilerHooks types) (refPlaceProjectionHooks types)
-      refPlaceCopyHooks refRetagHooks (refValidityHooks types)
+      (refCastLeaves types) (refAccessConfig endian) refAllocationConfig
+      (refCompilerHooks endian types) (refPlaceProjectionHooks endian types)
+      (refPlaceCopyHooks endian) refRetagHooks (refValidityHooks endian types)
       {
         registry := fun _ => Miri.Interpreter.FunctionPointers.Registry.empty
         putRegistry := fun u _ => u
@@ -981,7 +1001,8 @@ noncomputable def refIntrinsicHooks (types : List MirTy) :
         importedFunction := fun _ st => .ok none st
       }
       floats (refOperandLeaves types).dereference
-      (Miri.Interpreter.OperandMachine.field (refValidityOperandHooks types))
+      (Miri.Interpreter.OperandMachine.field
+        (refValidityOperandHooks endian types))
       (fun _ _ st => .ok false st) 8 8 none
     chooseEqualFloatRight := fun _ _ _ st => .ok false st
     fuseMulAdd := fun _ st => .ok false st
@@ -1006,7 +1027,7 @@ noncomputable def refIntrinsicHooks (types : List MirTy) :
         .error (.unsupported "atomics unsupported") st
     }
     typeIdHooks := {
-      target := Miri.ABI.RuntimeTargetDataLayout.default.base
+      target := (refRuntimeLayout endian).base
       hasErasableRegions := fun _ _ st => .ok false st
       typeHash := fun _ _ st => .ok (BitVec.ofNat 128 0) st
       u128Layout := fun _ st =>
@@ -1041,7 +1062,7 @@ noncomputable def refIntrinsicHooks (types : List MirTy) :
     }
     varArgsHooks := refVarArgsHooks
     varArgsFuel := 8
-    target := Miri.ABI.RuntimeTargetDataLayout.default.base
+    target := (refRuntimeLayout endian).base
     pointerOffset := Miri.ABI.Size.ofBytes 8
     maxSizeOfVal := refMaxSizeOfVal
     destLayout := Miri.Interpreter.RuntimePlace.layout
@@ -1131,15 +1152,16 @@ noncomputable def refExecutionConfig (rp : RefProg) :
     Miri.Interpreter.ExecutionMachine.Config Unit RefUser Choice Unit Unit
       Unit :=
   let types := rp.types
+  let endian := rp.targetEndian
   {
-    access := refAccessConfig
+    access := refAccessConfig endian
     allocation := refAllocationConfig
-    compiler := refCompilerHooks types
-    projection := refPlaceProjectionHooks types
+    compiler := refCompilerHooks endian types
+    projection := refPlaceProjectionHooks endian types
     operands := refOperandLeaves types
-    copy := refPlaceCopyHooks
+    copy := refPlaceCopyHooks endian
     retag := refRetagHooks
-    validity := refValidityHooks types
+    validity := refValidityHooks endian types
     validationRecursive := fun _ _ st => .ok false st
     lifecycle := refLifecycle types
     functions := {
@@ -1222,7 +1244,7 @@ noncomputable def refExecutionConfig (rp : RefProg) :
         sourceScope := fun _ _ _ _ st => .ok ⟨none, none⟩ st
         unitLayout := fun st => .ok (refLocalLayoutForTy types .unit) st
       }
-      vtable := refVTableHooks
+      vtable := refVTableHooks endian
       alignment := {
         policy := fun _ => .None
         promises := fun _ => Array.empty
@@ -1281,9 +1303,9 @@ noncomputable def refExecutionConfig (rp : RefProg) :
     floats := refFloatOpsHooks types
     casts := refCastLeaves types
     backend := { selection := fun _ => .ok .none }
-    atomics := refAtomicAccessHooks types
+    atomics := refAtomicAccessHooks endian types
     varArgs := refVarArgsHooks
-    intrinsics := fun _ => refIntrinsicHooks types
+    intrinsics := fun _ => refIntrinsicHooks endian types
     intrinsicName := fun _ st => .ok "" st
     intrinsicMustOverride := fun _ st => .ok true st
     intrinsicFallbackIsSpec := fun _ st => .ok false st

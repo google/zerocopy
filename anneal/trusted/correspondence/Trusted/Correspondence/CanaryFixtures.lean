@@ -40,6 +40,7 @@ noncomputable def progUseAfterMoveD6 : Program where
   entryDefId := 0
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 1
@@ -64,6 +65,7 @@ noncomputable def progBinOpCopyThenMoveD7a : Program where
   entryDefId := 0
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 1
@@ -84,6 +86,7 @@ noncomputable def progBinOpMoveThenCopyD7b : Program where
   entryDefId := 0
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 1
@@ -104,6 +107,7 @@ noncomputable def progBinOpMoveThenMoveD7c : Program where
   entryDefId := 0
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 1
@@ -124,6 +128,7 @@ noncomputable def progSelfMoveD8 : Program where
   entryDefId := 0
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 1
@@ -145,6 +150,7 @@ noncomputable def progMoveUnitZstD9 : Program where
   entryDefId := 0
   scope := .unit
   pointerWidthBits := 64
+  targetEndian := .little
   mirProfileVersion := 1
   bodies := [{
     argumentCount := 0

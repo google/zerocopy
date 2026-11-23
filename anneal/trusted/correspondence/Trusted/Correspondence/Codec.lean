@@ -117,10 +117,13 @@ and discriminant queries). Each frame entry carries its `LocalLayout`
 pre-cached so `OperandMachine.localToOp` never mutates `frame.locals` during
 read-only accesses.
 
-`pointerWidthBits` and `mirProfileVersion` carry `Program.pointerWidthBits` and
+`pointerWidthBits`, `targetEndian`, and `mirProfileVersion` carry
+`Program.pointerWidthBits`, `Program.targetEndian`, and
 `Program.mirProfileVersion` across the codec so that `initRefState`
 independently rejects non-64-bit targets and unsupported MIR profile versions,
-matching `Trusted.MirSemantics.initState`. `scope` carries `Program.scope` for
+matching `Trusted.MirSemantics.initState`, and `refExecutionConfig` /
+`evalRefStep` configure `lean-miri`'s runtime target byte order from
+`rp.targetEndian`. `scope` carries `Program.scope` for
 structural round-trip alignment only and is inert in $M_{\text{ref}}$ (never
 consulted by `initRefState` or `evalRefStep`). -/
 structure RefProg where
@@ -128,6 +131,7 @@ structure RefProg where
   entryDefId : DefId := 0
   types : List MirTy
   pointerWidthBits : Nat
+  targetEndian : TargetEndian
   mirProfileVersion : Nat
   scope : VerificationScope
 
@@ -327,7 +331,7 @@ noncomputable def encodeBody (ts : List MirTy) (b : Body) : RefBody :=
 noncomputable def encodeProg (p : Program) : RefProg :=
   let ts := collectProgTypes p
   ⟨p.bodies.map (encodeBody ts), p.entryDefId, ts, p.pointerWidthBits,
-   p.mirProfileVersion, p.scope⟩
+   p.targetEndian, p.mirProfileVersion, p.scope⟩
 
 /-- Decode a `RefProjectionElem` against type table `ts`. -/
 noncomputable def decodeProjElem (ts : List MirTy) :
@@ -413,7 +417,7 @@ noncomputable def decodeBody (ts : List MirTy) (b : RefBody) : Option Body :=
 some p`). -/
 noncomputable def decodeProg (rp : RefProg) : Option Program :=
   optMap (fun bodies => ⟨bodies, rp.entryDefId, rp.pointerWidthBits,
-      rp.mirProfileVersion, rp.scope⟩)
+      rp.targetEndian, rp.mirProfileVersion, rp.scope⟩)
     (mapOption (decodeBody rp.types) rp.bodies)
 
 end Trusted.Correspondence

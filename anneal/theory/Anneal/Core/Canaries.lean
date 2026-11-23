@@ -632,7 +632,7 @@ attribute [irreducible] OverflowCastStageCut
 
 private theorem evalPrimitiveOperandComp_u32Const (locs : List LocalSlot)
     (n : Nat) (hn : n < 4294967296) :
-    evalPrimitiveOperandComp bodyOverflowCastJoin8.locals locs entryMemoryComp
+    evalPrimitiveOperandComp .little bodyOverflowCastJoin8.locals locs entryMemoryComp
         (coreU32Const n) =
       .ok (coreU32Val n, locs, entryMemoryComp) := by
   dsimp only [evalPrimitiveOperandComp, evalOperandToSlotComp, coreU32Const]
@@ -641,7 +641,7 @@ private theorem evalPrimitiveOperandComp_u32Const (locs : List LocalSlot)
 
 private theorem evalRvalueBy_use_u8Const (locs : List LocalSlot)
     (n : Nat) (hn : n < 256) :
-    evalRvalueBy MirTy.beq bodyOverflowCastJoin8.locals locs entryMemoryComp
+    evalRvalueBy MirTy.beq .little bodyOverflowCastJoin8.locals locs entryMemoryComp
         coreU8Ty (.use (coreU8Const n)) =
       .ok (coreU8Val n, locs, entryMemoryComp) := by
   dsimp only [evalRvalueBy, evalOperandToSlotComp, coreU8Const]
@@ -665,7 +665,7 @@ private theorem step_trueBlk_s0 (k seed : Nat) (fv : FlagVec8)
   change (match evalIntToIntCastComp (coreU32Val acc) coreU8Ty with
     | .error k => StepResult.fault k
     | .ok val =>
-      match writePlaceBy MirTy.beq (mkStageLocals seed fv acc v11 v12)
+      match writePlaceBy MirTy.beq .little (mkStageLocals seed fv acc v11 v12)
           entryMemoryComp 11 coreU8Ty val with
       | .error k => StepResult.fault k
       | .ok (lw, mw) =>
@@ -700,7 +700,7 @@ private theorem step_trueBlk_s1 (k seed : Nat) (fv : FlagVec8)
   change (match evalIntToIntCastComp (coreU8Val m) coreU32Ty with
     | .error k => StepResult.fault k
     | .ok val =>
-      match writePlaceBy MirTy.beq _ entryMemoryComp 12 coreU32Ty val with
+      match writePlaceBy MirTy.beq .little _ entryMemoryComp 12 coreU32Ty val with
       | .error k => StepResult.fault k
       | .ok (lw, mw) =>
         StepResult.step ({
@@ -737,7 +737,7 @@ private theorem step_trueBlk_s2 (k seed : Nat) (fv : FlagVec8) (acc m : Nat)
     (.immediate (some (.tuple [coreU32Val acc, .bool false])))
   dsimp only [evalMirStepBlockTreeBy, mkJoin8RawState]
   rw [hTr]
-  change (match (match evalPrimitiveOperandComp bodyOverflowCastJoin8.locals locs
+  change (match (match evalPrimitiveOperandComp .little bodyOverflowCastJoin8.locals locs
           entryMemoryComp (coreU32Const 2) with
         | .error k => Except.error k
         | .ok (rVal, l2, m2) =>
@@ -746,7 +746,7 @@ private theorem step_trueBlk_s2 (k seed : Nat) (fv : FlagVec8) (acc m : Nat)
           | .ok res => Except.ok (res, l2, m2)) with
       | .error k => StepResult.fault k
       | .ok (val, lr, mr) =>
-        match writePlaceBy MirTy.beq lr mr 13 coreOvU32Ty val with
+        match writePlaceBy MirTy.beq .little lr mr 13 coreOvU32Ty val with
         | .error k => StepResult.fault k
         | .ok (lw, mw) =>
           StepResult.step ({
@@ -785,7 +785,7 @@ private theorem step_trueBlk_s3 (k seed : Nat) (fv : FlagVec8) (acc m : Nat)
     (.immediate (some (.tuple [coreU32Val (2 * acc), .bool false])))
   dsimp only [evalMirStepBlockTreeBy, mkJoin8RawState]
   rw [hTr]
-  change (match (match evalPrimitiveOperandComp bodyOverflowCastJoin8.locals locs
+  change (match (match evalPrimitiveOperandComp .little bodyOverflowCastJoin8.locals locs
           entryMemoryComp (coreU32Const 2) with
         | .error k => Except.error k
         | .ok (rVal, l2, m2) =>
@@ -794,7 +794,7 @@ private theorem step_trueBlk_s3 (k seed : Nat) (fv : FlagVec8) (acc m : Nat)
           | .ok res => Except.ok (res, l2, m2)) with
       | .error k => StepResult.fault k
       | .ok (val, lr, mr) =>
-        match writePlaceBy MirTy.beq lr mr 10 coreU32Ty val with
+        match writePlaceBy MirTy.beq .little lr mr 10 coreU32Ty val with
         | .error k => StepResult.fault k
         | .ok (lw, mw) =>
           StepResult.step ({
@@ -838,7 +838,7 @@ private theorem step_trueBlk_s4 (k seed : Nat) (fv : FlagVec8) (acc2 m : Nat)
         | .ok res => Except.ok (res, locs, entryMemoryComp)) with
       | .error k => StepResult.fault k
       | .ok (val, lr, mr) =>
-        match writePlaceBy MirTy.beq lr mr 13 coreOvU32Ty val with
+        match writePlaceBy MirTy.beq .little lr mr 13 coreOvU32Ty val with
         | .error k => StepResult.fault k
         | .ok (lw, mw) =>
           StepResult.step ({
@@ -875,7 +875,7 @@ private theorem step_trueBlk_s5 (k seed : Nat) (fv : FlagVec8) (acc2 m : Nat)
         | .ok res => Except.ok (res, locs, entryMemoryComp)) with
       | .error k => StepResult.fault k
       | .ok (val, lr, mr) =>
-        match writePlaceBy MirTy.beq lr mr 10 coreU32Ty val with
+        match writePlaceBy MirTy.beq .little lr mr 10 coreU32Ty val with
         | .error k => StepResult.fault k
         | .ok (lw, mw) =>
           StepResult.step ({
@@ -964,11 +964,11 @@ private theorem step_falseBlk_s0 (k seed : Nat) (fv : FlagVec8)
   let locs := mkStageLocals seed fv acc v11 v12
   dsimp only [evalMirStepBlockTreeBy, mkStageState, mkJoin8RawState]
   rw [hFa]
-  change (match evalRvalueBy MirTy.beq bodyOverflowCastJoin8.locals locs
+  change (match evalRvalueBy MirTy.beq .little bodyOverflowCastJoin8.locals locs
         entryMemoryComp coreU8Ty (.use (coreU8Const (k + 1))) with
     | .error err => StepResult.fault err
     | .ok (val, lr, mr) =>
-      match writePlaceBy MirTy.beq lr mr 11 coreU8Ty val with
+      match writePlaceBy MirTy.beq .little lr mr 11 coreU8Ty val with
       | .error err => StepResult.fault err
       | .ok (lw, mw) =>
         StepResult.step ({
@@ -1002,7 +1002,7 @@ private theorem step_falseBlk_s1 (k seed : Nat) (fv : FlagVec8)
   change (match evalIntToIntCastComp (coreU8Val (k + 1)) coreU32Ty with
     | .error err => StepResult.fault err
     | .ok val =>
-      match writePlaceBy MirTy.beq _ entryMemoryComp 12 coreU32Ty val with
+      match writePlaceBy MirTy.beq .little _ entryMemoryComp 12 coreU32Ty val with
       | .error err => StepResult.fault err
       | .ok (lw, mw) =>
         StepResult.step ({
@@ -1044,7 +1044,7 @@ private theorem step_falseBlk_s2 (k seed : Nat) (fv : FlagVec8) (acc : Nat)
         | .ok res => Except.ok (res, locs, entryMemoryComp)) with
       | .error err => StepResult.fault err
       | .ok (val, lr, mr) =>
-        match writePlaceBy MirTy.beq lr mr 13 coreOvU32Ty val with
+        match writePlaceBy MirTy.beq .little lr mr 13 coreOvU32Ty val with
         | .error err => StepResult.fault err
         | .ok (lw, mw) =>
           StepResult.step ({
@@ -1081,7 +1081,7 @@ private theorem step_falseBlk_s3 (k seed : Nat) (fv : FlagVec8) (acc : Nat)
         | .ok res => Except.ok (res, locs, entryMemoryComp)) with
       | .error err => StepResult.fault err
       | .ok (val, lr, mr) =>
-        match writePlaceBy MirTy.beq lr mr 10 coreU32Ty val with
+        match writePlaceBy MirTy.beq .little lr mr 10 coreU32Ty val with
         | .error err => StepResult.fault err
         | .ok (lw, mw) =>
           StepResult.step ({
@@ -1322,7 +1322,7 @@ private theorem join8_entry_wpUntilCut (seed : Nat) (fv : FlagVec8)
           (.immediate none) (.immediate none))) := by
     dsimp only [evalMirStepBlockTreeBy, mkJoin8RawState]
     rw [hEntry0]
-    change (match writePlaceBy MirTy.beq _ entryMemoryComp 11 coreU8Ty
+    change (match writePlaceBy MirTy.beq .little _ entryMemoryComp 11 coreU8Ty
           (coreU8Val seed) with
       | .error err => StepResult.fault err
       | .ok (lw, mw) =>
@@ -1347,7 +1347,7 @@ private theorem join8_entry_wpUntilCut (seed : Nat) (fv : FlagVec8)
     change (match evalIntToIntCastComp (coreU8Val seed) coreU32Ty with
       | .error err => StepResult.fault err
       | .ok val =>
-        match writePlaceBy MirTy.beq _ entryMemoryComp 12 coreU32Ty val with
+        match writePlaceBy MirTy.beq .little _ entryMemoryComp 12 coreU32Ty val with
         | .error err => StepResult.fault err
         | .ok (lw, mw) =>
           StepResult.step ({
@@ -1373,7 +1373,7 @@ private theorem join8_entry_wpUntilCut (seed : Nat) (fv : FlagVec8)
       (.immediate (some (coreU32Val seed))) (.immediate none)
     dsimp only [evalMirStepBlockTreeBy, mkJoin8RawState]
     rw [hEntry0]
-    change (match (match evalPrimitiveOperandComp bodyOverflowCastJoin8.locals
+    change (match (match evalPrimitiveOperandComp .little bodyOverflowCastJoin8.locals
             locs2 entryMemoryComp (coreU32Const 1) with
           | .error err => Except.error err
           | .ok (rVal, l2, m2) =>
@@ -1382,7 +1382,7 @@ private theorem join8_entry_wpUntilCut (seed : Nat) (fv : FlagVec8)
             | .ok res => Except.ok (res, l2, m2)) with
         | .error err => StepResult.fault err
         | .ok (val, lr, mr) =>
-          match writePlaceBy MirTy.beq lr mr 13 coreOvU32Ty val with
+          match writePlaceBy MirTy.beq .little lr mr 13 coreOvU32Ty val with
           | .error err => StepResult.fault err
           | .ok (lw, mw) =>
             StepResult.step ({
@@ -1409,7 +1409,7 @@ private theorem join8_entry_wpUntilCut (seed : Nat) (fv : FlagVec8)
       (.immediate (some (.tuple [coreU32Val (seed + 1), .bool false])))
     dsimp only [evalMirStepBlockTreeBy, mkJoin8RawState, mkStageState]
     rw [hEntry0]
-    change (match (match evalPrimitiveOperandComp bodyOverflowCastJoin8.locals
+    change (match (match evalPrimitiveOperandComp .little bodyOverflowCastJoin8.locals
             locs3 entryMemoryComp (coreU32Const 1) with
           | .error err => Except.error err
           | .ok (rVal, l2, m2) =>
@@ -1418,7 +1418,7 @@ private theorem join8_entry_wpUntilCut (seed : Nat) (fv : FlagVec8)
             | .ok res => Except.ok (res, l2, m2)) with
         | .error err => StepResult.fault err
         | .ok (val, lr, mr) =>
-          match writePlaceBy MirTy.beq lr mr 10 coreU32Ty val with
+          match writePlaceBy MirTy.beq .little lr mr 10 coreU32Ty val with
           | .error err => StepResult.fault err
           | .ok (lw, mw) =>
             StepResult.step ({
@@ -1477,7 +1477,7 @@ private theorem join8_exit_wpOutcomeState (seed : Nat) (fv : FlagVec8) :
         (mkStageState 25 0 seed fv acc v11 v12) = .step st1 := by
     dsimp only [evalMirStepBlockTreeBy, mkStageState, mkJoin8RawState]
     rw [hExit25]
-    change (match writePlaceBy MirTy.beq _ entryMemoryComp 0 coreOvU32Ty
+    change (match writePlaceBy MirTy.beq .little _ entryMemoryComp 0 coreOvU32Ty
           (.tuple [coreU32Val acc, .bool false]) with
       | .error err => StepResult.fault err
       | .ok (lw, mw) =>
@@ -2177,7 +2177,7 @@ update across `⟨1, 0⟩ ↦ 0x33` via `bytePointsTo_framePreserving_update` an
 `FramePreserving.frame`, and refutes an aliasing `FramePreserving` claim that
 moves `⟨0, 0⟩` onto the framed address `⟨1, 0⟩`. -/
 theorem memDisjointFrame_storeIndirect_and_framePreserving_canary :
-    storeIndirect frameCanaryMemBefore coreU8Ty ⟨0, 0⟩ (coreU8Val 0x7a) =
+    storeIndirect .little frameCanaryMemBefore coreU8Ty ⟨0, 0⟩ (coreU8Val 0x7a) =
       .ok frameCanaryMemAfter ∧
     MemDisjointFrame [⟨0, 0, 1⟩] frameCanaryMemBefore frameCanaryMemAfter ∧
     ¬ MemDisjointFrame [] frameCanaryMemBefore frameCanaryMemAfter ∧

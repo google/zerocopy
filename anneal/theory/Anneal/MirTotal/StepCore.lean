@@ -253,37 +253,40 @@ theorem encodeValBy_eq (tyEq : MirTy → MirTy → Bool)
 
 /-- Computable mirror of `Trusted.MirSemantics.storeIndirect` parameterized by
 `tyEq`. -/
-@[expose] def storeIndirectBy (tyEq : MirTy → MirTy → Bool) (mem : MemoryState)
-    (ty : MirTy) (place : MemPlace) (v : Val) : Except FaultKind MemoryState :=
+@[expose] def storeIndirectBy (tyEq : MirTy → MirTy → Bool) (endian : TargetEndian)
+    (mem : MemoryState) (ty : MirTy) (place : MemPlace) (v : Val) :
+    Except FaultKind MemoryState :=
   match layoutOfTyComp ty with
   | none => .error .unsupported
   | some layout =>
-    match encodeValBy tyEq .big ty v with
+    match encodeValBy tyEq endian ty v with
     | .error k => .error k
     | .ok bytes => writeBytesComp mem place layout.alignLog2 bytes
 
 /-- Agreement between `storeIndirectBy` and `storeIndirect` when `tyEq` agrees
 with `MirTy.beq`. -/
 theorem storeIndirectBy_eq (tyEq : MirTy → MirTy → Bool)
-    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) (endian : TargetEndian)
     (mem : MemoryState) (ty : MirTy) (place : MemPlace) (v : Val) :
-    storeIndirectBy tyEq mem ty place v = storeIndirect mem ty place v := by
-  unfold storeIndirectBy storeIndirect profileTargetEndian
+    storeIndirectBy tyEq endian mem ty place v =
+      storeIndirect endian mem ty place v := by
+  unfold storeIndirectBy storeIndirect
   rw [layoutOfTyComp_eq]
   cases layoutOfTy ty with
   | none => rfl
   | some layout =>
     dsimp only
     rw [encodeValBy_eq tyEq hTyEq]
-    cases encodeVal .big ty v with
+    cases encodeVal endian ty v with
     | error _ => rfl
     | ok bytes => exact writeBytesComp_eq mem place layout.alignLog2 bytes
 
 /-! ## Operands, Rvalues, Statements, Terminators, and Step Core -/
 
 /-- Computable mirror of `Trusted.MirSemantics.evalOperandToSlot`. -/
-@[expose] def evalOperandToSlotComp (bodyLocals : List MirTy) (locals : List LocalSlot)
-    (mem : MemoryState) (tyOk : MirTy → Bool) (opnd : Operand) :
+@[expose] def evalOperandToSlotComp (endian : TargetEndian) (bodyLocals : List MirTy)
+    (locals : List LocalSlot) (mem : MemoryState) (tyOk : MirTy → Bool)
+    (opnd : Operand) :
     Except FaultKind (MirTy × Option Val × List LocalSlot × MemoryState) :=
   match opnd with
   | .copy place =>
@@ -296,7 +299,7 @@ theorem storeIndirectBy_eq (tyEq : MirTy → MirTy → Bool)
       if !place.projection.isEmpty then .error .unsupported
       else if !tyOk ty then .error .unsupported
       else
-        match loadIndirectComp mem ty mplace with
+        match loadIndirectComp endian mem ty mplace with
         | .ok optVal => .ok (ty, optVal, locals, mem)
         | .error k => .error k
     | _, _ => .error .unsupported
@@ -313,7 +316,7 @@ theorem storeIndirectBy_eq (tyEq : MirTy → MirTy → Bool)
       if !place.projection.isEmpty then .error .unsupported
       else if !tyOk ty then .error .unsupported
       else
-        match loadIndirectComp mem ty mplace with
+        match loadIndirectComp endian mem ty mplace with
         | .error k => .error k
         | .ok optVal =>
           match deinitIndirectComp mem ty mplace with
@@ -327,11 +330,12 @@ theorem storeIndirectBy_eq (tyEq : MirTy → MirTy → Bool)
 
 /-- Agreement between `evalOperandToSlotComp` and `evalOperandToSlot` under
 pointwise agreement of `tyOk1` and `tyOk2`. -/
-theorem evalOperandToSlotComp_eq (bodyLocals : List MirTy) (locals : List LocalSlot)
-    (mem : MemoryState) (tyOk1 tyOk2 : MirTy → Bool) (opnd : Operand)
+theorem evalOperandToSlotComp_eq (endian : TargetEndian)
+    (bodyLocals : List MirTy) (locals : List LocalSlot) (mem : MemoryState)
+    (tyOk1 tyOk2 : MirTy → Bool) (opnd : Operand)
     (hTyOk : ∀ ty, tyOk1 ty = tyOk2 ty) :
-    evalOperandToSlotComp bodyLocals locals mem tyOk1 opnd =
-      evalOperandToSlot bodyLocals locals mem tyOk2 opnd := by
+    evalOperandToSlotComp endian bodyLocals locals mem tyOk1 opnd =
+      evalOperandToSlot endian bodyLocals locals mem tyOk2 opnd := by
   cases opnd with
   | copy place =>
     dsimp only [evalOperandToSlotComp, evalOperandToSlot]
@@ -348,7 +352,7 @@ theorem evalOperandToSlotComp_eq (bodyLocals : List MirTy) (locals : List LocalS
         | indirect mplace =>
           dsimp only
           rw [hTyOk ty, loadIndirectComp_eq]
-          cases loadIndirect mem ty mplace <;> rfl
+          cases loadIndirect endian mem ty mplace <;> rfl
   | move place =>
     dsimp only [evalOperandToSlotComp, evalOperandToSlot]
     rw [compGetElem?_eq, compGetElem?_eq]
@@ -367,7 +371,7 @@ theorem evalOperandToSlotComp_eq (bodyLocals : List MirTy) (locals : List LocalS
         | indirect mplace =>
           dsimp only
           rw [hTyOk ty, loadIndirectComp_eq, deinitIndirectComp_eq]
-          cases loadIndirect mem ty mplace with
+          cases loadIndirect endian mem ty mplace with
           | error _ => rfl
           | ok _ => cases deinitIndirect mem ty mplace <;> rfl
   | constant c =>
@@ -376,10 +380,11 @@ theorem evalOperandToSlotComp_eq (bodyLocals : List MirTy) (locals : List LocalS
     cases evalConstLit c.ty c.lit <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.evalPrimitiveOperand`. -/
-@[expose] def evalPrimitiveOperandComp (bodyLocals : List MirTy)
+@[expose] def evalPrimitiveOperandComp (endian : TargetEndian) (bodyLocals : List MirTy)
     (locals : List LocalSlot) (mem : MemoryState) (opnd : Operand) :
     Except FaultKind (Val × List LocalSlot × MemoryState) :=
-  match evalOperandToSlotComp bodyLocals locals mem isPrimitiveReadableTyComp opnd with
+  match evalOperandToSlotComp endian bodyLocals locals mem
+      isPrimitiveReadableTyComp opnd with
   | .error k => .error k
   | .ok (ty, optVal, locals', mem') =>
     if !isPrimitiveReadableTyComp ty then .error .unsupported
@@ -389,14 +394,16 @@ theorem evalOperandToSlotComp_eq (bodyLocals : List MirTy) (locals : List LocalS
       | none => .error .undefined
 
 /-- Agreement between `evalPrimitiveOperandComp` and `evalPrimitiveOperand`. -/
-theorem evalPrimitiveOperandComp_eq (bodyLocals : List MirTy) (locals : List LocalSlot)
-    (mem : MemoryState) (opnd : Operand) :
-    evalPrimitiveOperandComp bodyLocals locals mem opnd =
-      evalPrimitiveOperand bodyLocals locals mem opnd := by
+theorem evalPrimitiveOperandComp_eq (endian : TargetEndian)
+    (bodyLocals : List MirTy) (locals : List LocalSlot) (mem : MemoryState)
+    (opnd : Operand) :
+    evalPrimitiveOperandComp endian bodyLocals locals mem opnd =
+      evalPrimitiveOperand endian bodyLocals locals mem opnd := by
   unfold evalPrimitiveOperandComp evalPrimitiveOperand
-  rw [evalOperandToSlotComp_eq bodyLocals locals mem
+  rw [evalOperandToSlotComp_eq endian bodyLocals locals mem
     isPrimitiveReadableTyComp isPrimitiveReadableTy opnd isPrimitiveReadableTyComp_eq]
-  cases evalOperandToSlot bodyLocals locals mem isPrimitiveReadableTy opnd with
+  cases evalOperandToSlot endian bodyLocals locals mem isPrimitiveReadableTy
+      opnd with
   | error _ => rfl
   | ok quad =>
     cases quad with
@@ -499,12 +506,13 @@ theorem evalOrderingDiscriminantOfValComp_eq (optVal : Option Val)
 
 /-- Computable mirror of `Trusted.MirSemantics.evalRvalue` parameterized by
 `tyEq`. -/
-@[expose] def evalRvalueBy (tyEq : MirTy → MirTy → Bool) (bodyLocals : List MirTy)
-    (locals : List LocalSlot) (mem : MemoryState) (dstTy : MirTy) (rv : Rvalue) :
+@[expose] def evalRvalueBy (tyEq : MirTy → MirTy → Bool) (endian : TargetEndian)
+    (bodyLocals : List MirTy) (locals : List LocalSlot) (mem : MemoryState)
+    (dstTy : MirTy) (rv : Rvalue) :
     Except FaultKind (Val × List LocalSlot × MemoryState) :=
   match rv with
   | .use opnd =>
-    match evalOperandToSlotComp bodyLocals locals mem
+    match evalOperandToSlotComp endian bodyLocals locals mem
         (fun srcTy => tyEq srcTy dstTy) opnd with
     | .error k => .error k
     | .ok (srcTy, optVal, locals1, mem1) =>
@@ -514,24 +522,24 @@ theorem evalOrderingDiscriminantOfValComp_eq (optVal : Option Val)
         | some v => .ok (v, locals1, mem1)
         | none => .error .undefined
   | .binaryOp op lhs rhs =>
-    match evalPrimitiveOperandComp bodyLocals locals mem lhs with
+    match evalPrimitiveOperandComp endian bodyLocals locals mem lhs with
     | .error k => .error k
     | .ok (lVal, locals1, mem1) =>
-      match evalPrimitiveOperandComp bodyLocals locals1 mem1 rhs with
+      match evalPrimitiveOperandComp endian bodyLocals locals1 mem1 rhs with
       | .error k => .error k
       | .ok (rVal, locals2, mem2) =>
         match evalBinOpComp op lVal rVal with
         | .error k => .error k
         | .ok res => .ok (res, locals2, mem2)
   | .unaryOp op opnd =>
-    match evalPrimitiveOperandComp bodyLocals locals mem opnd with
+    match evalPrimitiveOperandComp endian bodyLocals locals mem opnd with
     | .error k => .error k
     | .ok (v, locals1, mem1) =>
       match evalUnOpComp op v with
       | .error k => .error k
       | .ok res => .ok (res, locals1, mem1)
   | .cast .intToInt opnd castTy =>
-    match evalOperandToSlotComp bodyLocals locals mem isIntLikeTyComp opnd with
+    match evalOperandToSlotComp endian bodyLocals locals mem isIntLikeTyComp opnd with
     | .error k => .error k
     | .ok (srcTy, optVal, locals1, mem1) =>
       if !isIntLikeTyComp srcTy then .error .unsupported
@@ -557,11 +565,11 @@ theorem evalOrderingDiscriminantOfValComp_eq (optVal : Option Val)
       else
         match srcTy with
         | .enum ety =>
-          match loadIndirectComp mem srcTy mplace with
+          match loadIndirectComp endian mem srcTy mplace with
           | .error k => .error k
           | .ok optVal => evalDiscriminantOfValComp ety optVal locals mem
         | .ordering =>
-          match loadIndirectComp mem srcTy mplace with
+          match loadIndirectComp endian mem srcTy mplace with
           | .error k => .error k
           | .ok optVal => evalOrderingDiscriminantOfValComp optVal locals mem
         | _ => .error .unsupported
@@ -571,18 +579,19 @@ theorem evalOrderingDiscriminantOfValComp_eq (optVal : Option Val)
 /-- Agreement between `evalRvalueBy` and `evalRvalue` when `tyEq` agrees with
 `MirTy.beq`. -/
 theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
-    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) (endian : TargetEndian)
     (bodyLocals : List MirTy) (locals : List LocalSlot)
     (mem : MemoryState) (dstTy : MirTy) (rv : Rvalue) :
-    evalRvalueBy tyEq bodyLocals locals mem dstTy rv =
-      evalRvalue bodyLocals locals mem dstTy rv := by
+    evalRvalueBy tyEq endian bodyLocals locals mem dstTy rv =
+      evalRvalue endian bodyLocals locals mem dstTy rv := by
   cases rv with
   | use opnd =>
     dsimp only [evalRvalueBy, evalRvalue]
-    rw [evalOperandToSlotComp_eq bodyLocals locals mem
+    rw [evalOperandToSlotComp_eq endian bodyLocals locals mem
       (fun srcTy => tyEq srcTy dstTy) (fun srcTy => MirTy.beq srcTy dstTy)
       opnd (fun srcTy => hTyEq srcTy dstTy)]
-    cases evalOperandToSlot bodyLocals locals mem (fun srcTy => MirTy.beq srcTy dstTy) opnd with
+    cases evalOperandToSlot endian bodyLocals locals mem
+        (fun srcTy => MirTy.beq srcTy dstTy) opnd with
     | error _ => rfl
     | ok quad =>
       cases quad with
@@ -595,7 +604,7 @@ theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
   | binaryOp op lhs rhs =>
     dsimp only [evalRvalueBy, evalRvalue]
     rw [evalPrimitiveOperandComp_eq]
-    cases evalPrimitiveOperand bodyLocals locals mem lhs with
+    cases evalPrimitiveOperand endian bodyLocals locals mem lhs with
     | error _ => rfl
     | ok t1 =>
       cases t1 with
@@ -604,7 +613,7 @@ theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
         | mk l1 m1 =>
           dsimp only
           rw [evalPrimitiveOperandComp_eq]
-          cases evalPrimitiveOperand bodyLocals l1 m1 rhs with
+          cases evalPrimitiveOperand endian bodyLocals l1 m1 rhs with
           | error _ => rfl
           | ok t2 =>
             cases t2 with
@@ -615,7 +624,7 @@ theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
   | unaryOp op opnd =>
     dsimp only [evalRvalueBy, evalRvalue]
     rw [evalPrimitiveOperandComp_eq]
-    cases evalPrimitiveOperand bodyLocals locals mem opnd with
+    cases evalPrimitiveOperand endian bodyLocals locals mem opnd with
     | error _ => rfl
     | ok t1 =>
       cases t1 with
@@ -628,9 +637,9 @@ theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
     | unsupported => rfl
     | intToInt =>
       dsimp only [evalRvalueBy, evalRvalue]
-      rw [evalOperandToSlotComp_eq bodyLocals locals mem isIntLikeTyComp isIntLikeTy
-        opnd isIntLikeTyComp_eq]
-      cases evalOperandToSlot bodyLocals locals mem isIntLikeTy opnd with
+      rw [evalOperandToSlotComp_eq endian bodyLocals locals mem isIntLikeTyComp
+        isIntLikeTy opnd isIntLikeTyComp_eq]
+      cases evalOperandToSlot endian bodyLocals locals mem isIntLikeTy opnd with
       | error _ => rfl
       | ok quad =>
         cases quad with
@@ -675,13 +684,13 @@ theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
             | enum ety =>
               dsimp only
               rw [loadIndirectComp_eq]
-              cases loadIndirect mem (.enum ety) mplace with
+              cases loadIndirect endian mem (.enum ety) mplace with
               | error _ => rfl
               | ok optVal => exact evalDiscriminantOfValComp_eq _ _ _ _
             | ordering =>
               dsimp only
               rw [loadIndirectComp_eq]
-              cases loadIndirect mem .ordering mplace with
+              cases loadIndirect endian mem .ordering mplace with
               | error _ => rfl
               | ok optVal => exact evalOrderingDiscriminantOfValComp_eq _ _ _
             | bool | int _ _ | char | unit | never | tuple _ | ref _ _ | rawPtr _ _
@@ -690,8 +699,9 @@ theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
 
 /-- Computable mirror of `Trusted.MirSemantics.writePlace` parameterized by
 `tyEq`. -/
-@[expose] def writePlaceBy (tyEq : MirTy → MirTy → Bool) (locals : List LocalSlot)
-    (mem : MemoryState) (dstLocalId : LocalId) (dstTy : MirTy) (val : Val) :
+@[expose] def writePlaceBy (tyEq : MirTy → MirTy → Bool) (endian : TargetEndian)
+    (locals : List LocalSlot) (mem : MemoryState) (dstLocalId : LocalId)
+    (dstTy : MirTy) (val : Val) :
     Except FaultKind (List LocalSlot × MemoryState) :=
   if !checkValBy tyEq val dstTy then .error .unsupported
   else
@@ -703,18 +713,18 @@ theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
       | some locals' => .ok (locals', mem)
       | none => .error .unsupported
     | some (.indirect mplace) =>
-      match storeIndirectBy tyEq mem dstTy mplace val with
+      match storeIndirectBy tyEq endian mem dstTy mplace val with
       | .ok mem' => .ok (locals, mem')
       | .error k => .error k
 
 /-- Agreement between `writePlaceBy` and `writePlace` when `tyEq` agrees with
 `MirTy.beq`. -/
 theorem writePlaceBy_eq (tyEq : MirTy → MirTy → Bool)
-    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) (endian : TargetEndian)
     (locals : List LocalSlot) (mem : MemoryState)
     (dstLocalId : LocalId) (dstTy : MirTy) (val : Val) :
-    writePlaceBy tyEq locals mem dstLocalId dstTy val =
-      writePlace locals mem dstLocalId dstTy val := by
+    writePlaceBy tyEq endian locals mem dstLocalId dstTy val =
+      writePlace endian locals mem dstLocalId dstTy val := by
   dsimp only [writePlaceBy, writePlace]
   rw [checkValBy_eq tyEq hTyEq, compGetElem?_eq]
   cases Trusted.MirSemantics.getElem? locals dstLocalId with
@@ -729,13 +739,14 @@ theorem writePlaceBy_eq (tyEq : MirTy → MirTy → Bool)
     | indirect mplace =>
       dsimp only
       rw [storeIndirectBy_eq tyEq hTyEq]
-      cases storeIndirect mem dstTy mplace val <;> rfl
+      cases storeIndirect endian mem dstTy mplace val <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.evalStatement` parameterized by
 `tyEq`. -/
-@[expose] def evalStatementBy (tyEq : MirTy → MirTy → Bool) (body : Body)
-    (frame : FrameState) (mem : MemoryState) (callerMem : CallerMemory)
-    (stmt : StatementKind) : StepResult State TerminalOut :=
+@[expose] def evalStatementBy (tyEq : MirTy → MirTy → Bool) (endian : TargetEndian)
+    (body : Body) (frame : FrameState) (mem : MemoryState)
+    (callerMem : CallerMemory) (stmt : StatementKind) :
+    StepResult State TerminalOut :=
   match stmt with
   | .nop =>
     .step { frames := [{ frame with stmtIdx := frame.stmtIdx + 1 }], callerMem, mem }
@@ -774,10 +785,10 @@ theorem writePlaceBy_eq (tyEq : MirTy → MirTy → Bool)
       match compGetElem? body.locals dst.localId with
       | none => .fault .unsupported
       | some dstTy =>
-        match evalRvalueBy tyEq body.locals frame.locals mem dstTy rvalue with
+        match evalRvalueBy tyEq endian body.locals frame.locals mem dstTy rvalue with
         | .error k => .fault k
         | .ok (val, localsAfterRval, memAfterRval) =>
-          match writePlaceBy tyEq localsAfterRval memAfterRval dst.localId dstTy val with
+          match writePlaceBy tyEq endian localsAfterRval memAfterRval dst.localId dstTy val with
           | .error k => .fault k
           | .ok (localsAfterWrite, memAfterWrite) =>
             .step { frames :=
@@ -788,11 +799,11 @@ theorem writePlaceBy_eq (tyEq : MirTy → MirTy → Bool)
 /-- Agreement between `evalStatementBy` and `evalStatement` when `tyEq` agrees
 with `MirTy.beq`. -/
 theorem evalStatementBy_eq (tyEq : MirTy → MirTy → Bool)
-    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) (endian : TargetEndian)
     (body : Body) (frame : FrameState) (mem : MemoryState)
     (callerMem : CallerMemory) (stmt : StatementKind) :
-    evalStatementBy tyEq body frame mem callerMem stmt =
-      evalStatement body frame mem callerMem stmt := by
+    evalStatementBy tyEq endian body frame mem callerMem stmt =
+      evalStatement endian body frame mem callerMem stmt := by
   cases stmt with
   | nop | unsupported => rfl
   | storageLive localId =>
@@ -834,7 +845,7 @@ theorem evalStatementBy_eq (tyEq : MirTy → MirTy → Bool)
       | some dstTy =>
         dsimp only
         rw [evalRvalueBy_eq tyEq hTyEq]
-        cases evalRvalue body.locals frame.locals mem dstTy rvalue with
+        cases evalRvalue endian body.locals frame.locals mem dstTy rvalue with
         | error _ => rfl
         | ok triple =>
           cases triple with
@@ -843,7 +854,8 @@ theorem evalStatementBy_eq (tyEq : MirTy → MirTy → Bool)
             | mk localsAfterRval memAfterRval =>
               dsimp only
               rw [writePlaceBy_eq tyEq hTyEq]
-              cases writePlace localsAfterRval memAfterRval dst.localId dstTy val with
+              cases writePlace endian localsAfterRval memAfterRval dst.localId
+                  dstTy val with
               | error _ => rfl
               | ok pair => cases pair; rfl
 
@@ -970,7 +982,7 @@ theorem evalCharSwitchBranchesComp_eq (discr : Char) (otherwise : BasicBlockId)
   .step { frames := [{ frame with blockIdx := target, stmtIdx := 0 }], callerMem, mem }
 
 /-- Computable mirror of `Trusted.MirSemantics.evalTerminator`. -/
-@[expose] def evalTerminatorComp (body : Body) (bb : BasicBlock)
+@[expose] def evalTerminatorComp (endian : TargetEndian) (body : Body) (bb : BasicBlock)
     (frame : FrameState) (mem : MemoryState) (callerMem : CallerMemory) :
     StepResult State TerminalOut :=
   match bb.terminator with
@@ -985,14 +997,14 @@ theorem evalCharSwitchBranchesComp_eq (discr : Char) (otherwise : BasicBlockId)
         match compGetElem? body.locals 0 with
         | none => .fault .unsupported
         | some retTy =>
-          match loadIndirectComp mem retTy mplace with
+          match loadIndirectComp endian mem retTy mplace with
           | .ok (some retVal) => .done (.returned ⟨retVal, callerMem⟩)
           | .ok none => .fault .undefined
           | .error k => .fault k
       | none => .fault .unsupported
   | .unreachable => .fault .undefined
   | .switchInt discr targets =>
-    match evalPrimitiveOperandComp body.locals frame.locals mem discr with
+    match evalPrimitiveOperandComp endian body.locals frame.locals mem discr with
     | .error k => .fault k
     | .ok (discrVal, localsAfterDiscr, memAfterDiscr) =>
       let targetRes : Except FaultKind BasicBlockId :=
@@ -1012,10 +1024,11 @@ theorem evalCharSwitchBranchesComp_eq (discr : Char) (otherwise : BasicBlockId)
     .fault .unsupported
 
 /-- Agreement between `evalTerminatorComp` and `evalTerminator`. -/
-theorem evalTerminatorComp_eq (body : Body) (bb : BasicBlock)
-    (frame : FrameState) (mem : MemoryState) (callerMem : CallerMemory) :
-    evalTerminatorComp body bb frame mem callerMem =
-      evalTerminator body bb frame mem callerMem := by
+theorem evalTerminatorComp_eq (endian : TargetEndian) (body : Body)
+    (bb : BasicBlock) (frame : FrameState) (mem : MemoryState)
+    (callerMem : CallerMemory) :
+    evalTerminatorComp endian body bb frame mem callerMem =
+      evalTerminator endian body bb frame mem callerMem := by
   unfold evalTerminatorComp evalTerminator
   cases bb.terminator with
   | goto _ | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _ | unsupported => rfl
@@ -1039,13 +1052,13 @@ theorem evalTerminatorComp_eq (body : Body) (bb : BasicBlock)
           | some retTy =>
             dsimp only
             rw [loadIndirectComp_eq]
-            cases loadIndirect mem retTy mplace with
+            cases loadIndirect endian mem retTy mplace with
             | error _ => rfl
             | ok optRet => cases optRet <;> rfl
   | switchInt discr targets =>
     dsimp only
     rw [evalPrimitiveOperandComp_eq]
-    cases evalPrimitiveOperand body.locals frame.locals mem discr with
+    cases evalPrimitiveOperand endian body.locals frame.locals mem discr with
     | error _ => rfl
     | ok triple =>
       cases triple with
@@ -1081,10 +1094,11 @@ theorem evalTerminatorComp_eq (body : Body) (bb : BasicBlock)
       | none => .fault .unsupported
       | some bb =>
         match compGetElem? bb.statements frame.stmtIdx with
-        | some stmt => evalStatementBy tyEq body frame s.mem s.callerMem stmt
+        | some stmt =>
+          evalStatementBy tyEq p.targetEndian body frame s.mem s.callerMem stmt
         | none =>
           if Nat.beq frame.stmtIdx bb.statements.length then
-            evalTerminatorComp body bb frame s.mem s.callerMem
+            evalTerminatorComp p.targetEndian body bb frame s.mem s.callerMem
           else
             .fault .unsupported
   | _ => .fault .unsupported
@@ -1115,12 +1129,16 @@ theorem evalMirStepBy_eq (tyEq : MirTy → MirTy → Bool)
           dsimp only
           rw [compGetElem?_eq]
           cases Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx with
-          | some stmt => exact evalStatementBy_eq tyEq hTyEq body frame s.mem s.callerMem stmt
+          | some stmt =>
+            exact evalStatementBy_eq tyEq hTyEq p.targetEndian body frame s.mem
+              s.callerMem stmt
           | none =>
             dsimp only
             cases Nat.beq frame.stmtIdx bb.statements.length with
             | false => rfl
-            | true => exact evalTerminatorComp_eq body bb frame s.mem s.callerMem
+            | true =>
+              exact evalTerminatorComp_eq p.targetEndian body bb frame s.mem
+                s.callerMem
 
 /-- Depth-bounded LCNF-computable single-step MIR evaluator (`0`
 `noncomputable`). -/

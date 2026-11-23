@@ -25,7 +25,7 @@ namespace Anneal.MirCorrespondence
 open Trusted Trusted.MirAst Trusted.MirSemantics Trusted.Correspondence
 open Miri.ABI Miri.Memory Miri.Interpreter
 
-/-! ## Section 1: Inductive Big-Endian Byte Encoding/Decoding -/
+/-! ## Section 1: Inductive Endian-Parameterized Byte Encoding/Decoding -/
 
 theorem nat_mod_mul_decomp (x a b : Nat) (ha : 0 < a) (hb : 0 < b) :
     HMod.hMod x a + HMod.hMod (HDiv.hDiv x a) b * a = HMod.hMod x (a * b) := by
@@ -74,29 +74,34 @@ private theorem pow2_pos (k : Nat) : 0 < HPow.hPow (2 : Nat) k := by
     rw [Nat.pow_succ]
     exact Nat.mul_pos ih (by decide)
 
-noncomputable def beBytes (x n : Nat) : Nat → Array UInt8
+noncomputable def endianBytes (endian : TargetEndian) (x n : Nat) :
+    Nat → Array UInt8
   | 0 => Array.mk []
   | k + 1 =>
-    (beBytes x n k).push (UInt8.ofNat (HMod.hMod (HDiv.hDiv x (HPow.hPow 2 (8 * (n - k - 1)))) 256))
+    let idx := match endian with | .little => k | .big => n - k - 1
+    (endianBytes endian x n k).push
+      (UInt8.ofNat (HMod.hMod (HDiv.hDiv x (HPow.hPow 2 (8 * idx))) 256))
 
-theorem beBytes_size (x n : Nat) : ∀ k, (beBytes x n k).size = k
+theorem endianBytes_size (endian : TargetEndian) (x n : Nat) :
+    ∀ k, (endianBytes endian x n k).size = k
   | 0 => rfl
   | k + 1 => by
-    dsimp only [beBytes]
-    rw [Array.size_push, beBytes_size x n k]
+    dsimp only [endianBytes]
+    rw [Array.size_push, endianBytes_size endian x n k]
 
-theorem beBytes_getElem? (x n : Nat) :
+theorem endianBytes_getElem? (endian : TargetEndian) (x n : Nat) :
     ∀ k i, i < k →
-      (beBytes x n k)[i]? =
-        some (UInt8.ofNat (HMod.hMod (HDiv.hDiv x (HPow.hPow 2 (8 * (n - i - 1)))) 256))
+      (endianBytes endian x n k)[i]? =
+        some (UInt8.ofNat (HMod.hMod (HDiv.hDiv x (HPow.hPow 2
+          (8 * (match endian with | .little => i | .big => n - i - 1)))) 256))
   | 0, _, h => False.elim (Nat.not_lt_zero _ h)
   | k + 1, i, hi => by
-    dsimp only [beBytes]
-    rw [Array.getElem?_push, beBytes_size x n k]
+    dsimp only [endianBytes]
+    rw [Array.getElem?_push, endianBytes_size endian x n k]
     cases Nat.lt_or_eq_of_le (Nat.le_of_lt_succ hi) with
     | inl hlt =>
       rw [ite_eq_right (Nat.ne_of_lt hlt)]
-      exact beBytes_getElem? x n k i hlt
+      exact endianBytes_getElem? endian x n k i hlt
     | inr heq =>
       subst heq
       rw [ite_eq_left rfl]
@@ -184,9 +189,11 @@ def readTargetUIntMirror (layout : TargetDataLayout)
 private theorem except_bind_pure {ε α β : Type} (a : α) (f : α → Except ε β) :
     Bind.bind (pure a : Except ε α) f = f a := rfl
 
-theorem targetUIntBytesMirror_be (n : Nat) (hn : n ≤ 16) (d : U128) :
-    targetUIntBytesMirror RuntimeTargetDataLayout.default.base
-        (Size.ofBytes (UInt64.ofNat n)) d = .ok (beBytes d.toNat n n) := by
+theorem targetUIntBytesMirror_endian (endian : TargetEndian) (n : Nat)
+    (hn : n ≤ 16) (d : U128) :
+    targetUIntBytesMirror (refRuntimeLayout endian).base
+        (Size.ofBytes (UInt64.ofNat n)) d =
+      .ok (endianBytes endian d.toNat n n) := by
   have h_n_lt : n < HPow.hPow (2 : Nat) 64 := Nat.lt_of_le_of_lt hn (by decide)
   have h_sz_nat : (Size.ofBytes (UInt64.ofNat n)).bytes.toNat = n := by
     change HMod.hMod n (HPow.hPow (2 : Nat) 64) = n
@@ -195,32 +202,64 @@ theorem targetUIntBytesMirror_be (n : Nat) (hn : n ≤ 16) (d : U128) :
     change ¬ (16 < (Size.ofBytes (UInt64.ofNat n)).bytes.toNat)
     rw [h_sz_nat]
     exact Nat.not_lt.mpr hn
-  have h_endian :
-      (RuntimeTargetDataLayout.default.base.endian == Endian.little) = false := by
-    decide
-  dsimp only [targetUIntBytesMirror]
-  rw [ite_eq_right h_not_gt, except_bind_pure]
-  have h_loop : ∀ k,
-      forIn (m := Except AllocError) (List.range' 0 k 1) (Array.mk [] : Array UInt8)
-        (fun index acc =>
-          pure (ForInStep.yield
-            (acc.push (UInt8.ofNat
-              (HMod.hMod (HDiv.hDiv d.toNat (HPow.hPow 2 (8 * (n - index - 1)))) 256))))) =
-        .ok (beBytes d.toNat n k) := by
-    intro k
-    induction k with
-    | zero => rfl
-    | succ k ih =>
-      rw [list_range'_succ_end]
-      refine forIn_append_ok _ _ _ (beBytes d.toNat n k) _ _ ih ?_
-        (fun _ _ b => ⟨_, rfl⟩)
-      rw [List.forIn_cons]
-      rfl
-  simp only [h_endian, Bool.false_eq_true, ite_false, h_sz_nat,
-    Std.Legacy.Range.forIn_eq_forIn_range', Std.Legacy.Range.size,
-    Nat.sub_zero, Nat.add_sub_cancel, Nat.div_one]
-  rw [h_loop n]
-  rfl
+  cases endian with
+  | little =>
+    have h_endian :
+        ((refRuntimeLayout .little).base.endian == Endian.little) = true := by
+      decide
+    dsimp only [targetUIntBytesMirror]
+    rw [ite_eq_right h_not_gt, except_bind_pure]
+    have h_loop : ∀ k,
+        forIn (m := Except AllocError) (List.range' 0 k 1)
+          (Array.mk [] : Array UInt8)
+          (fun index acc =>
+            pure (ForInStep.yield
+              (acc.push (UInt8.ofNat
+                (HMod.hMod (HDiv.hDiv d.toNat (HPow.hPow 2 (8 * index))) 256))))) =
+          .ok (endianBytes .little d.toNat n k) := by
+      intro k
+      induction k with
+      | zero => rfl
+      | succ k ih =>
+        rw [list_range'_succ_end]
+        refine forIn_append_ok _ _ _ (endianBytes .little d.toNat n k) _ _ ih
+          ?_ (fun _ _ b => ⟨_, rfl⟩)
+        rw [List.forIn_cons]
+        rfl
+    simp only [h_endian, ite_true, h_sz_nat,
+      Std.Legacy.Range.forIn_eq_forIn_range', Std.Legacy.Range.size,
+      Nat.sub_zero, Nat.add_sub_cancel, Nat.div_one]
+    rw [h_loop n]
+    rfl
+  | big =>
+    have h_endian :
+        ((refRuntimeLayout .big).base.endian == Endian.little) = false := by
+      decide
+    dsimp only [targetUIntBytesMirror]
+    rw [ite_eq_right h_not_gt, except_bind_pure]
+    have h_loop : ∀ k,
+        forIn (m := Except AllocError) (List.range' 0 k 1)
+          (Array.mk [] : Array UInt8)
+          (fun index acc =>
+            pure (ForInStep.yield
+              (acc.push (UInt8.ofNat
+                (HMod.hMod (HDiv.hDiv d.toNat
+                  (HPow.hPow 2 (8 * (n - index - 1)))) 256))))) =
+          .ok (endianBytes .big d.toNat n k) := by
+      intro k
+      induction k with
+      | zero => rfl
+      | succ k ih =>
+        rw [list_range'_succ_end]
+        refine forIn_append_ok _ _ _ (endianBytes .big d.toNat n k) _ _ ih ?_
+          (fun _ _ b => ⟨_, rfl⟩)
+        rw [List.forIn_cons]
+        rfl
+    simp only [h_endian, Bool.false_eq_true, ite_false, h_sz_nat,
+      Std.Legacy.Range.forIn_eq_forIn_range', Std.Legacy.Range.size,
+      Nat.sub_zero, Nat.add_sub_cancel, Nat.div_one]
+    rw [h_loop n]
+    rfl
 
 private theorem be_accum_step (x k m : Nat) :
     HMod.hMod (HDiv.hDiv x (HPow.hPow 2 (8 * (m + 1)))) (HPow.hPow 2 (8 * k)) *
@@ -250,77 +289,135 @@ private theorem be_accum_step (x k m : Nat) :
     rw [Nat.mul_comm (HPow.hPow 2 (8 * m)) 256, Nat.mul_assoc]
   rw [h_assoc]
 
-theorem readTargetUIntMirror_be (n : Nat) (hn : n ≤ 16) (x : Nat) :
-    readTargetUIntMirror RuntimeTargetDataLayout.default.base (beBytes x n n) =
+theorem readTargetUIntMirror_endian (endian : TargetEndian) (n : Nat)
+    (hn : n ≤ 16) (x : Nat) :
+    readTargetUIntMirror (refRuntimeLayout endian).base
+        (endianBytes endian x n n) =
       .ok (BitVec.ofNat 128 (HMod.hMod x (HPow.hPow 2 (8 * n)))) := by
-  have h_endian :
-      (RuntimeTargetDataLayout.default.base.endian == Endian.little) = false := by
-    decide
-  have h_not_gt : ¬ ((beBytes x n n).size > 16) := by
-    rw [beBytes_size]
+  have h_not_gt : ¬ ((endianBytes endian x n n).size > 16) := by
+    rw [endianBytes_size]
     exact Nat.not_lt.mpr hn
-  dsimp only [readTargetUIntMirror]
-  rw [ite_eq_right h_not_gt, beBytes_size]
-  simp only [h_endian, Bool.false_eq_true, ite_false,
-    Std.Legacy.Range.forIn_eq_forIn_range', Std.Legacy.Range.size,
-    Nat.sub_zero, Nat.add_sub_cancel, Nat.div_one]
-  have h_loop : ∀ k, k ≤ n →
-      forIn (m := Except AllocError) (List.range' 0 k 1) (0 : Nat)
-        (fun index s =>
-          match (beBytes x n n)[index]? with
-          | some byte =>
-            pure (ForInStep.yield
-              (s + byte.toNat * HPow.hPow 2 (8 * (n - index - 1))))
-          | _ =>
-            throw (.invalidSliceEndpoints index (index + 1) n)) =
-        .ok (HMod.hMod (HDiv.hDiv x (HPow.hPow 2 (8 * (n - k)))) (HPow.hPow 2 (8 * k)) *
-          HPow.hPow 2 (8 * (n - k))) := by
-    intro k hk
-    induction k with
-    | zero =>
-      dsimp only [List.range']
-      rw [List.forIn_nil]
-      change Except.ok 0 =
-        Except.ok (HMod.hMod (HDiv.hDiv x (HPow.hPow 2 (8 * (n - 0)))) 1 *
-          HPow.hPow 2 (8 * (n - 0)))
-      rw [Nat.mod_one, Nat.zero_mul]
-    | succ k ih =>
-      have hk_lt : k < n := hk
-      have hk_le : k ≤ n := Nat.le_of_lt hk_lt
-      have h_sub : n - k = (n - k - 1) + 1 := by
-        have h1 : 1 ≤ n - k := Nat.sub_pos_of_lt hk_lt
-        exact (Nat.sub_add_cancel h1).symm
-      have h_sub2 : n - (k + 1) = n - k - 1 := by
-        rw [Nat.sub_add_eq]
-      rw [list_range'_succ_end]
-      refine forIn_append_ok _ _ _
-        (HMod.hMod (HDiv.hDiv x (HPow.hPow 2 (8 * (n - k)))) (HPow.hPow 2 (8 * k)) *
-          HPow.hPow 2 (8 * (n - k))) _ _
-        (ih hk_le) ?_ ?_
-      · rw [List.forIn_cons, beBytes_getElem? x n n k hk_lt]
-        dsimp only [bind, Except.bind, pure, Except.pure]
+  cases endian with
+  | little =>
+    have h_endian :
+        ((refRuntimeLayout .little).base.endian == Endian.little) = true := by
+      decide
+    dsimp only [readTargetUIntMirror]
+    rw [ite_eq_right h_not_gt, endianBytes_size]
+    simp only [h_endian, ite_true,
+      Std.Legacy.Range.forIn_eq_forIn_range', Std.Legacy.Range.size,
+      Nat.sub_zero, Nat.add_sub_cancel, Nat.div_one]
+    have h_loop : ∀ k, k ≤ n →
+        forIn (m := Except AllocError) (List.range' 0 k 1) (0 : Nat)
+          (fun index s =>
+            match (endianBytes .little x n n)[index]? with
+            | some byte =>
+              pure (ForInStep.yield
+                (s + byte.toNat * HPow.hPow 2 (8 * index)))
+            | _ =>
+              throw (.invalidSliceEndpoints index (index + 1) n)) =
+          .ok (HMod.hMod x (HPow.hPow 2 (8 * k))) := by
+      intro k hk
+      induction k with
+      | zero =>
+        dsimp only [List.range']
         rw [List.forIn_nil]
-        change Except.ok
+        change Except.ok 0 = Except.ok (HMod.hMod x (HPow.hPow 2 (8 * 0)))
+        rw [Nat.mul_zero, Nat.pow_zero, Nat.mod_one]
+      | succ k ih =>
+        have hk_lt : k < n := hk
+        have hk_le : k ≤ n := Nat.le_of_lt hk_lt
+        rw [list_range'_succ_end]
+        refine forIn_append_ok _ _ _ (HMod.hMod x (HPow.hPow 2 (8 * k))) _ _
+          (ih hk_le) ?_ ?_
+        · rw [List.forIn_cons, endianBytes_getElem? .little x n n k hk_lt]
+          dsimp only [bind, Except.bind, pure, Except.pure]
+          rw [List.forIn_nil]
+          change Except.ok
+            (HMod.hMod x (HPow.hPow 2 (8 * k)) +
+              (UInt8.ofNat (HMod.hMod (HDiv.hDiv x (HPow.hPow 2 (8 * k))) 256)).toNat *
+                HPow.hPow 2 (8 * k)) =
+            Except.ok (HMod.hMod x (HPow.hPow 2 (8 * (k + 1))))
+          have h_pow : HPow.hPow (2 : Nat) (8 * (k + 1)) =
+              HPow.hPow 2 (8 * k) * 256 := by
+            rw [Nat.mul_add, Nat.mul_one, Nat.pow_add]
+          rw [u8_ofNat_toNat_mod, h_pow]
+          exact congrArg Except.ok
+            (nat_mod_mul_decomp x (HPow.hPow 2 (8 * k)) 256 (pow2_pos _)
+              (by decide))
+        · intro idx hmem acc
+          let ⟨i, hi, hidx⟩ := List.mem_range'.mp hmem
+          rw [Nat.one_mul, Nat.zero_add] at hidx
+          rw [hidx, endianBytes_getElem? .little x n n i (Nat.lt_trans hi hk_lt)]
+          exact ⟨_, rfl⟩
+    rw [h_loop n (Nat.le_refl n)]
+    rfl
+  | big =>
+    have h_endian :
+        ((refRuntimeLayout .big).base.endian == Endian.little) = false := by
+      decide
+    dsimp only [readTargetUIntMirror]
+    rw [ite_eq_right h_not_gt, endianBytes_size]
+    simp only [h_endian, Bool.false_eq_true, ite_false,
+      Std.Legacy.Range.forIn_eq_forIn_range', Std.Legacy.Range.size,
+      Nat.sub_zero, Nat.add_sub_cancel, Nat.div_one]
+    have h_loop : ∀ k, k ≤ n →
+        forIn (m := Except AllocError) (List.range' 0 k 1) (0 : Nat)
+          (fun index s =>
+            match (endianBytes .big x n n)[index]? with
+            | some byte =>
+              pure (ForInStep.yield
+                (s + byte.toNat * HPow.hPow 2 (8 * (n - index - 1))))
+            | _ =>
+              throw (.invalidSliceEndpoints index (index + 1) n)) =
+          .ok (HMod.hMod (HDiv.hDiv x (HPow.hPow 2 (8 * (n - k)))) (HPow.hPow 2 (8 * k)) *
+            HPow.hPow 2 (8 * (n - k))) := by
+      intro k hk
+      induction k with
+      | zero =>
+        dsimp only [List.range']
+        rw [List.forIn_nil]
+        change Except.ok 0 =
+          Except.ok (HMod.hMod (HDiv.hDiv x (HPow.hPow 2 (8 * (n - 0)))) 1 *
+            HPow.hPow 2 (8 * (n - 0)))
+        rw [Nat.mod_one, Nat.zero_mul]
+      | succ k ih =>
+        have hk_lt : k < n := hk
+        have hk_le : k ≤ n := Nat.le_of_lt hk_lt
+        have h_sub : n - k = (n - k - 1) + 1 := by
+          have h1 : 1 ≤ n - k := Nat.sub_pos_of_lt hk_lt
+          exact (Nat.sub_add_cancel h1).symm
+        have h_sub2 : n - (k + 1) = n - k - 1 := by
+          rw [Nat.sub_add_eq]
+        rw [list_range'_succ_end]
+        refine forIn_append_ok _ _ _
           (HMod.hMod (HDiv.hDiv x (HPow.hPow 2 (8 * (n - k)))) (HPow.hPow 2 (8 * k)) *
-              HPow.hPow 2 (8 * (n - k)) +
-            (UInt8.ofNat (HMod.hMod (HDiv.hDiv x (HPow.hPow 2 (8 * (n - k - 1)))) 256)).toNat *
-              HPow.hPow 2 (8 * (n - k - 1))) =
-          Except.ok
-            (HMod.hMod (HDiv.hDiv x (HPow.hPow 2 (8 * (n - (k + 1)))))
-                (HPow.hPow 2 (8 * (k + 1))) *
-              HPow.hPow 2 (8 * (n - (k + 1))))
-        have h_step := be_accum_step x k (n - k - 1)
-        rw [← h_sub] at h_step
-        rw [u8_ofNat_toNat_mod, h_sub2, h_step]
-      · intro idx hmem acc
-        let ⟨i, hi, hidx⟩ := List.mem_range'.mp hmem
-        rw [Nat.one_mul, Nat.zero_add] at hidx
-        rw [hidx, beBytes_getElem? x n n i (Nat.lt_trans hi hk_lt)]
-        exact ⟨_, rfl⟩
-  rw [h_loop n (Nat.le_refl n), Nat.sub_self]
-  change Except.ok (BitVec.ofNat 128
-    (HMod.hMod (HDiv.hDiv x 1) (HPow.hPow 2 (8 * n)) * 1)) = _
-  rw [Nat.div_one, Nat.mul_one]
+            HPow.hPow 2 (8 * (n - k))) _ _
+          (ih hk_le) ?_ ?_
+        · rw [List.forIn_cons, endianBytes_getElem? .big x n n k hk_lt]
+          dsimp only [bind, Except.bind, pure, Except.pure]
+          rw [List.forIn_nil]
+          change Except.ok
+            (HMod.hMod (HDiv.hDiv x (HPow.hPow 2 (8 * (n - k)))) (HPow.hPow 2 (8 * k)) *
+                HPow.hPow 2 (8 * (n - k)) +
+              (UInt8.ofNat (HMod.hMod (HDiv.hDiv x (HPow.hPow 2 (8 * (n - k - 1)))) 256)).toNat *
+                HPow.hPow 2 (8 * (n - k - 1))) =
+            Except.ok
+              (HMod.hMod (HDiv.hDiv x (HPow.hPow 2 (8 * (n - (k + 1)))))
+                  (HPow.hPow 2 (8 * (k + 1))) *
+                HPow.hPow 2 (8 * (n - (k + 1))))
+          have h_step := be_accum_step x k (n - k - 1)
+          rw [← h_sub] at h_step
+          rw [u8_ofNat_toNat_mod, h_sub2, h_step]
+        · intro idx hmem acc
+          let ⟨i, hi, hidx⟩ := List.mem_range'.mp hmem
+          rw [Nat.one_mul, Nat.zero_add] at hidx
+          rw [hidx, endianBytes_getElem? .big x n n i (Nat.lt_trans hi hk_lt)]
+          exact ⟨_, rfl⟩
+    rw [h_loop n (Nat.le_refl n), Nat.sub_self]
+    change Except.ok (BitVec.ofNat 128
+      (HMod.hMod (HDiv.hDiv x 1) (HPow.hPow 2 (8 * n)) * 1)) = _
+    rw [Nat.div_one, Nat.mul_one]
 
 /-! ## Section 2: Fresh Allocation Initialization and Scalar Round-Trips -/
 
@@ -464,11 +561,11 @@ theorem scalar_fromUInt_truncateBits (w : IntWidth)
     rw [h1, h2]
   rw [h_ms]
 
-private theorem clearProvenance_of_read_ok (w : IntWidth)
+private theorem clearProvenance_of_read_ok (endian : TargetEndian) (w : IntWidth)
     {after : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree}
     {sc : Scalar Miri.Memory.Provenance}
     (h_prov : after.provenanceMap = ProvenanceMap.new)
-    (h_rd : after.readScalar RuntimeTargetDataLayout.default.base
+    (h_rd : after.readScalar (refRuntimeLayout endian).base
       (allocRange Size.ZERO (toMiriSize w)) false = .ok sc) :
     Allocation.clearProvenance (allocRange Size.ZERO (toMiriSize w))
       (Size.ofBytes 8) after = .ok () after := by
@@ -559,10 +656,10 @@ private theorem checkedSliceMirror_eq (w : IntWidth) (bytes : Array UInt8)
   rw [h, bne_self_eq_false, ite_false_eq_true]
   cases w <;> rfl
 
-private theorem writeScalar_readScalar_step_i8
+private theorem writeScalar_readScalar_step_i8 (endian : TargetEndian)
     (bits : BitVec 128) (data : Array UInt8)
     (h_dlen : data.size = (toMiriSize .i8).bytes.toNat)
-    (h_t : targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+    (h_t : targetUIntBytesMirror (refRuntimeLayout endian).base
       (toMiriSize .i8) (miriScalar .i8 bits).data = .ok data)
     {rawAlloc : Allocation Miri.Memory.Provenance Unit}
     (h_raw : Allocation.tryNew (Prov := Miri.Memory.Provenance)
@@ -571,13 +668,13 @@ private theorem writeScalar_readScalar_step_i8
     let alloc := rawAlloc.withExtra
       (Miri.TreeBorrows.BorrowTree.new Miri.Memory.BorTag.one (toMiriSize .i8))
     ∃ after,
-      Allocation.writeScalar RuntimeTargetDataLayout.default.base
+      Allocation.writeScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize .i8))
           (.fromScalarInt (miriScalar .i8 bits)) alloc = .ok () after ∧
-      after.readScalar RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize .i8)) false =
         Bind.bind
-          (readTargetUIntMirror RuntimeTargetDataLayout.default.base
+          (readTargetUIntMirror (refRuntimeLayout endian).base
             (((Array.mk []) ++ data ++ (Array.mk [])).extract 0 (toMiriSize .i8).bytes.toNat))
           (fun b => (Scalar.fromUInt b (toMiriSize .i8)).mapError AllocError.scalar) ∧
       after.getBytesUnchecked (allocRange Size.ZERO (toMiriSize .i8)) =
@@ -595,33 +692,34 @@ private theorem writeScalar_readScalar_step_i8
   injection h_fb with h_init_eq; subst h_init_eq
   injection h_wu with _ h_raw_eq; subst h_raw_eq
   intro alloc
-  change ∃ after,
-    (match targetUIntBytesMirror RuntimeTargetDataLayout.default.base
-        (toMiriSize .i8) (miriScalar .i8 bits).data with
-    | Except.ok _ => _
-    | Except.error _ => _) = EStateM.Result.ok () after ∧ _
-  rw [h_t]
-  change ∃ after,
-    (if ((((Array.mk []) : Array UInt8) ++ data ++ (Array.mk [])).size != (toMiriSize .i8).bytes.toNat) = true
-     then _ else _) = EStateM.Result.ok () after ∧ _
-  rw [h_len_eq, bne_self_eq_false, ite_false_eq_true]
-  refine ⟨_, rfl, ?_, ?_, rfl, rfl, rfl, rfl, rfl⟩
-  · change Bind.bind
-      (checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
-        (toMiriSize .i8) (allocRange Size.ZERO (toMiriSize .i8)))
-      (fun bytes => Bind.bind
-        (readTargetUIntMirror RuntimeTargetDataLayout.default.base bytes)
-        (fun b => (Scalar.fromUInt b (toMiriSize .i8)).mapError AllocError.scalar)) = _
-    rw [checkedSliceMirror_eq .i8 _ h_len_eq]
-    rfl
-  · change checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
-      (toMiriSize .i8) (allocRange Size.ZERO (toMiriSize .i8)) = _
-    exact checkedSliceMirror_eq .i8 _ h_len_eq
+  cases endian <;> (
+    change ∃ after,
+      (match targetUIntBytesMirror (refRuntimeLayout _).base
+          (toMiriSize .i8) (miriScalar .i8 bits).data with
+      | Except.ok _ => _
+      | Except.error _ => _) = EStateM.Result.ok () after ∧ _
+    rw [h_t]
+    change ∃ after,
+      (if ((((Array.mk []) : Array UInt8) ++ data ++ (Array.mk [])).size != (toMiriSize .i8).bytes.toNat) = true
+       then _ else _) = EStateM.Result.ok () after ∧ _
+    rw [h_len_eq, bne_self_eq_false, ite_false_eq_true]
+    refine ⟨_, rfl, ?_, ?_, rfl, rfl, rfl, rfl, rfl⟩
+    · change Bind.bind
+        (checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
+          (toMiriSize .i8) (allocRange Size.ZERO (toMiriSize .i8)))
+        (fun bytes => Bind.bind
+          (readTargetUIntMirror (refRuntimeLayout _).base bytes)
+          (fun b => (Scalar.fromUInt b (toMiriSize .i8)).mapError AllocError.scalar)) = _
+      rw [checkedSliceMirror_eq .i8 _ h_len_eq]
+      rfl
+    · change checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
+        (toMiriSize .i8) (allocRange Size.ZERO (toMiriSize .i8)) = _
+      exact checkedSliceMirror_eq .i8 _ h_len_eq)
 
-private theorem writeScalar_readScalar_step_i16
+private theorem writeScalar_readScalar_step_i16 (endian : TargetEndian)
     (bits : BitVec 128) (data : Array UInt8)
     (h_dlen : data.size = (toMiriSize .i16).bytes.toNat)
-    (h_t : targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+    (h_t : targetUIntBytesMirror (refRuntimeLayout endian).base
       (toMiriSize .i16) (miriScalar .i16 bits).data = .ok data)
     {rawAlloc : Allocation Miri.Memory.Provenance Unit}
     (h_raw : Allocation.tryNew (Prov := Miri.Memory.Provenance)
@@ -630,13 +728,13 @@ private theorem writeScalar_readScalar_step_i16
     let alloc := rawAlloc.withExtra
       (Miri.TreeBorrows.BorrowTree.new Miri.Memory.BorTag.one (toMiriSize .i16))
     ∃ after,
-      Allocation.writeScalar RuntimeTargetDataLayout.default.base
+      Allocation.writeScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize .i16))
           (.fromScalarInt (miriScalar .i16 bits)) alloc = .ok () after ∧
-      after.readScalar RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize .i16)) false =
         Bind.bind
-          (readTargetUIntMirror RuntimeTargetDataLayout.default.base
+          (readTargetUIntMirror (refRuntimeLayout endian).base
             (((Array.mk []) ++ data ++ (Array.mk [])).extract 0 (toMiriSize .i16).bytes.toNat))
           (fun b => (Scalar.fromUInt b (toMiriSize .i16)).mapError AllocError.scalar) ∧
       after.getBytesUnchecked (allocRange Size.ZERO (toMiriSize .i16)) =
@@ -654,33 +752,34 @@ private theorem writeScalar_readScalar_step_i16
   injection h_fb with h_init_eq; subst h_init_eq
   injection h_wu with _ h_raw_eq; subst h_raw_eq
   intro alloc
-  change ∃ after,
-    (match targetUIntBytesMirror RuntimeTargetDataLayout.default.base
-        (toMiriSize .i16) (miriScalar .i16 bits).data with
-    | Except.ok _ => _
-    | Except.error _ => _) = EStateM.Result.ok () after ∧ _
-  rw [h_t]
-  change ∃ after,
-    (if ((((Array.mk []) : Array UInt8) ++ data ++ (Array.mk [])).size != (toMiriSize .i16).bytes.toNat) = true
-     then _ else _) = EStateM.Result.ok () after ∧ _
-  rw [h_len_eq, bne_self_eq_false, ite_false_eq_true]
-  refine ⟨_, rfl, ?_, ?_, rfl, rfl, rfl, rfl, rfl⟩
-  · change Bind.bind
-      (checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
-        (toMiriSize .i16) (allocRange Size.ZERO (toMiriSize .i16)))
-      (fun bytes => Bind.bind
-        (readTargetUIntMirror RuntimeTargetDataLayout.default.base bytes)
-        (fun b => (Scalar.fromUInt b (toMiriSize .i16)).mapError AllocError.scalar)) = _
-    rw [checkedSliceMirror_eq .i16 _ h_len_eq]
-    rfl
-  · change checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
-      (toMiriSize .i16) (allocRange Size.ZERO (toMiriSize .i16)) = _
-    exact checkedSliceMirror_eq .i16 _ h_len_eq
+  cases endian <;> (
+    change ∃ after,
+      (match targetUIntBytesMirror (refRuntimeLayout _).base
+          (toMiriSize .i16) (miriScalar .i16 bits).data with
+      | Except.ok _ => _
+      | Except.error _ => _) = EStateM.Result.ok () after ∧ _
+    rw [h_t]
+    change ∃ after,
+      (if ((((Array.mk []) : Array UInt8) ++ data ++ (Array.mk [])).size != (toMiriSize .i16).bytes.toNat) = true
+       then _ else _) = EStateM.Result.ok () after ∧ _
+    rw [h_len_eq, bne_self_eq_false, ite_false_eq_true]
+    refine ⟨_, rfl, ?_, ?_, rfl, rfl, rfl, rfl, rfl⟩
+    · change Bind.bind
+        (checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
+          (toMiriSize .i16) (allocRange Size.ZERO (toMiriSize .i16)))
+        (fun bytes => Bind.bind
+          (readTargetUIntMirror (refRuntimeLayout _).base bytes)
+          (fun b => (Scalar.fromUInt b (toMiriSize .i16)).mapError AllocError.scalar)) = _
+      rw [checkedSliceMirror_eq .i16 _ h_len_eq]
+      rfl
+    · change checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
+        (toMiriSize .i16) (allocRange Size.ZERO (toMiriSize .i16)) = _
+      exact checkedSliceMirror_eq .i16 _ h_len_eq)
 
-private theorem writeScalar_readScalar_step_i32
+private theorem writeScalar_readScalar_step_i32 (endian : TargetEndian)
     (bits : BitVec 128) (data : Array UInt8)
     (h_dlen : data.size = (toMiriSize .i32).bytes.toNat)
-    (h_t : targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+    (h_t : targetUIntBytesMirror (refRuntimeLayout endian).base
       (toMiriSize .i32) (miriScalar .i32 bits).data = .ok data)
     {rawAlloc : Allocation Miri.Memory.Provenance Unit}
     (h_raw : Allocation.tryNew (Prov := Miri.Memory.Provenance)
@@ -689,13 +788,13 @@ private theorem writeScalar_readScalar_step_i32
     let alloc := rawAlloc.withExtra
       (Miri.TreeBorrows.BorrowTree.new Miri.Memory.BorTag.one (toMiriSize .i32))
     ∃ after,
-      Allocation.writeScalar RuntimeTargetDataLayout.default.base
+      Allocation.writeScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize .i32))
           (.fromScalarInt (miriScalar .i32 bits)) alloc = .ok () after ∧
-      after.readScalar RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize .i32)) false =
         Bind.bind
-          (readTargetUIntMirror RuntimeTargetDataLayout.default.base
+          (readTargetUIntMirror (refRuntimeLayout endian).base
             (((Array.mk []) ++ data ++ (Array.mk [])).extract 0 (toMiriSize .i32).bytes.toNat))
           (fun b => (Scalar.fromUInt b (toMiriSize .i32)).mapError AllocError.scalar) ∧
       after.getBytesUnchecked (allocRange Size.ZERO (toMiriSize .i32)) =
@@ -713,33 +812,34 @@ private theorem writeScalar_readScalar_step_i32
   injection h_fb with h_init_eq; subst h_init_eq
   injection h_wu with _ h_raw_eq; subst h_raw_eq
   intro alloc
-  change ∃ after,
-    (match targetUIntBytesMirror RuntimeTargetDataLayout.default.base
-        (toMiriSize .i32) (miriScalar .i32 bits).data with
-    | Except.ok _ => _
-    | Except.error _ => _) = EStateM.Result.ok () after ∧ _
-  rw [h_t]
-  change ∃ after,
-    (if ((((Array.mk []) : Array UInt8) ++ data ++ (Array.mk [])).size != (toMiriSize .i32).bytes.toNat) = true
-     then _ else _) = EStateM.Result.ok () after ∧ _
-  rw [h_len_eq, bne_self_eq_false, ite_false_eq_true]
-  refine ⟨_, rfl, ?_, ?_, rfl, rfl, rfl, rfl, rfl⟩
-  · change Bind.bind
-      (checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
-        (toMiriSize .i32) (allocRange Size.ZERO (toMiriSize .i32)))
-      (fun bytes => Bind.bind
-        (readTargetUIntMirror RuntimeTargetDataLayout.default.base bytes)
-        (fun b => (Scalar.fromUInt b (toMiriSize .i32)).mapError AllocError.scalar)) = _
-    rw [checkedSliceMirror_eq .i32 _ h_len_eq]
-    rfl
-  · change checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
-      (toMiriSize .i32) (allocRange Size.ZERO (toMiriSize .i32)) = _
-    exact checkedSliceMirror_eq .i32 _ h_len_eq
+  cases endian <;> (
+    change ∃ after,
+      (match targetUIntBytesMirror (refRuntimeLayout _).base
+          (toMiriSize .i32) (miriScalar .i32 bits).data with
+      | Except.ok _ => _
+      | Except.error _ => _) = EStateM.Result.ok () after ∧ _
+    rw [h_t]
+    change ∃ after,
+      (if ((((Array.mk []) : Array UInt8) ++ data ++ (Array.mk [])).size != (toMiriSize .i32).bytes.toNat) = true
+       then _ else _) = EStateM.Result.ok () after ∧ _
+    rw [h_len_eq, bne_self_eq_false, ite_false_eq_true]
+    refine ⟨_, rfl, ?_, ?_, rfl, rfl, rfl, rfl, rfl⟩
+    · change Bind.bind
+        (checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
+          (toMiriSize .i32) (allocRange Size.ZERO (toMiriSize .i32)))
+        (fun bytes => Bind.bind
+          (readTargetUIntMirror (refRuntimeLayout _).base bytes)
+          (fun b => (Scalar.fromUInt b (toMiriSize .i32)).mapError AllocError.scalar)) = _
+      rw [checkedSliceMirror_eq .i32 _ h_len_eq]
+      rfl
+    · change checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
+        (toMiriSize .i32) (allocRange Size.ZERO (toMiriSize .i32)) = _
+      exact checkedSliceMirror_eq .i32 _ h_len_eq)
 
-private theorem writeScalar_readScalar_step_i64
+private theorem writeScalar_readScalar_step_i64 (endian : TargetEndian)
     (bits : BitVec 128) (data : Array UInt8)
     (h_dlen : data.size = (toMiriSize .i64).bytes.toNat)
-    (h_t : targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+    (h_t : targetUIntBytesMirror (refRuntimeLayout endian).base
       (toMiriSize .i64) (miriScalar .i64 bits).data = .ok data)
     {rawAlloc : Allocation Miri.Memory.Provenance Unit}
     (h_raw : Allocation.tryNew (Prov := Miri.Memory.Provenance)
@@ -748,13 +848,13 @@ private theorem writeScalar_readScalar_step_i64
     let alloc := rawAlloc.withExtra
       (Miri.TreeBorrows.BorrowTree.new Miri.Memory.BorTag.one (toMiriSize .i64))
     ∃ after,
-      Allocation.writeScalar RuntimeTargetDataLayout.default.base
+      Allocation.writeScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize .i64))
           (.fromScalarInt (miriScalar .i64 bits)) alloc = .ok () after ∧
-      after.readScalar RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize .i64)) false =
         Bind.bind
-          (readTargetUIntMirror RuntimeTargetDataLayout.default.base
+          (readTargetUIntMirror (refRuntimeLayout endian).base
             (((Array.mk []) ++ data ++ (Array.mk [])).extract 0 (toMiriSize .i64).bytes.toNat))
           (fun b => (Scalar.fromUInt b (toMiriSize .i64)).mapError AllocError.scalar) ∧
       after.getBytesUnchecked (allocRange Size.ZERO (toMiriSize .i64)) =
@@ -772,33 +872,34 @@ private theorem writeScalar_readScalar_step_i64
   injection h_fb with h_init_eq; subst h_init_eq
   injection h_wu with _ h_raw_eq; subst h_raw_eq
   intro alloc
-  change ∃ after,
-    (match targetUIntBytesMirror RuntimeTargetDataLayout.default.base
-        (toMiriSize .i64) (miriScalar .i64 bits).data with
-    | Except.ok _ => _
-    | Except.error _ => _) = EStateM.Result.ok () after ∧ _
-  rw [h_t]
-  change ∃ after,
-    (if ((((Array.mk []) : Array UInt8) ++ data ++ (Array.mk [])).size != (toMiriSize .i64).bytes.toNat) = true
-     then _ else _) = EStateM.Result.ok () after ∧ _
-  rw [h_len_eq, bne_self_eq_false, ite_false_eq_true]
-  refine ⟨_, rfl, ?_, ?_, rfl, rfl, rfl, rfl, rfl⟩
-  · change Bind.bind
-      (checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
-        (toMiriSize .i64) (allocRange Size.ZERO (toMiriSize .i64)))
-      (fun bytes => Bind.bind
-        (readTargetUIntMirror RuntimeTargetDataLayout.default.base bytes)
-        (fun b => (Scalar.fromUInt b (toMiriSize .i64)).mapError AllocError.scalar)) = _
-    rw [checkedSliceMirror_eq .i64 _ h_len_eq]
-    rfl
-  · change checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
-      (toMiriSize .i64) (allocRange Size.ZERO (toMiriSize .i64)) = _
-    exact checkedSliceMirror_eq .i64 _ h_len_eq
+  cases endian <;> (
+    change ∃ after,
+      (match targetUIntBytesMirror (refRuntimeLayout _).base
+          (toMiriSize .i64) (miriScalar .i64 bits).data with
+      | Except.ok _ => _
+      | Except.error _ => _) = EStateM.Result.ok () after ∧ _
+    rw [h_t]
+    change ∃ after,
+      (if ((((Array.mk []) : Array UInt8) ++ data ++ (Array.mk [])).size != (toMiriSize .i64).bytes.toNat) = true
+       then _ else _) = EStateM.Result.ok () after ∧ _
+    rw [h_len_eq, bne_self_eq_false, ite_false_eq_true]
+    refine ⟨_, rfl, ?_, ?_, rfl, rfl, rfl, rfl, rfl⟩
+    · change Bind.bind
+        (checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
+          (toMiriSize .i64) (allocRange Size.ZERO (toMiriSize .i64)))
+        (fun bytes => Bind.bind
+          (readTargetUIntMirror (refRuntimeLayout _).base bytes)
+          (fun b => (Scalar.fromUInt b (toMiriSize .i64)).mapError AllocError.scalar)) = _
+      rw [checkedSliceMirror_eq .i64 _ h_len_eq]
+      rfl
+    · change checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
+        (toMiriSize .i64) (allocRange Size.ZERO (toMiriSize .i64)) = _
+      exact checkedSliceMirror_eq .i64 _ h_len_eq)
 
-private theorem writeScalar_readScalar_step_isize
+private theorem writeScalar_readScalar_step_isize (endian : TargetEndian)
     (bits : BitVec 128) (data : Array UInt8)
     (h_dlen : data.size = (toMiriSize .isize).bytes.toNat)
-    (h_t : targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+    (h_t : targetUIntBytesMirror (refRuntimeLayout endian).base
       (toMiriSize .isize) (miriScalar .isize bits).data = .ok data)
     {rawAlloc : Allocation Miri.Memory.Provenance Unit}
     (h_raw : Allocation.tryNew (Prov := Miri.Memory.Provenance)
@@ -807,13 +908,13 @@ private theorem writeScalar_readScalar_step_isize
     let alloc := rawAlloc.withExtra
       (Miri.TreeBorrows.BorrowTree.new Miri.Memory.BorTag.one (toMiriSize .isize))
     ∃ after,
-      Allocation.writeScalar RuntimeTargetDataLayout.default.base
+      Allocation.writeScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize .isize))
           (.fromScalarInt (miriScalar .isize bits)) alloc = .ok () after ∧
-      after.readScalar RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize .isize)) false =
         Bind.bind
-          (readTargetUIntMirror RuntimeTargetDataLayout.default.base
+          (readTargetUIntMirror (refRuntimeLayout endian).base
             (((Array.mk []) ++ data ++ (Array.mk [])).extract 0 (toMiriSize .isize).bytes.toNat))
           (fun b => (Scalar.fromUInt b (toMiriSize .isize)).mapError AllocError.scalar) ∧
       after.getBytesUnchecked (allocRange Size.ZERO (toMiriSize .isize)) =
@@ -831,33 +932,34 @@ private theorem writeScalar_readScalar_step_isize
   injection h_fb with h_init_eq; subst h_init_eq
   injection h_wu with _ h_raw_eq; subst h_raw_eq
   intro alloc
-  change ∃ after,
-    (match targetUIntBytesMirror RuntimeTargetDataLayout.default.base
-        (toMiriSize .isize) (miriScalar .isize bits).data with
-    | Except.ok _ => _
-    | Except.error _ => _) = EStateM.Result.ok () after ∧ _
-  rw [h_t]
-  change ∃ after,
-    (if ((((Array.mk []) : Array UInt8) ++ data ++ (Array.mk [])).size != (toMiriSize .isize).bytes.toNat) = true
-     then _ else _) = EStateM.Result.ok () after ∧ _
-  rw [h_len_eq, bne_self_eq_false, ite_false_eq_true]
-  refine ⟨_, rfl, ?_, ?_, rfl, rfl, rfl, rfl, rfl⟩
-  · change Bind.bind
-      (checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
-        (toMiriSize .isize) (allocRange Size.ZERO (toMiriSize .isize)))
-      (fun bytes => Bind.bind
-        (readTargetUIntMirror RuntimeTargetDataLayout.default.base bytes)
-        (fun b => (Scalar.fromUInt b (toMiriSize .isize)).mapError AllocError.scalar)) = _
-    rw [checkedSliceMirror_eq .isize _ h_len_eq]
-    rfl
-  · change checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
-      (toMiriSize .isize) (allocRange Size.ZERO (toMiriSize .isize)) = _
-    exact checkedSliceMirror_eq .isize _ h_len_eq
+  cases endian <;> (
+    change ∃ after,
+      (match targetUIntBytesMirror (refRuntimeLayout _).base
+          (toMiriSize .isize) (miriScalar .isize bits).data with
+      | Except.ok _ => _
+      | Except.error _ => _) = EStateM.Result.ok () after ∧ _
+    rw [h_t]
+    change ∃ after,
+      (if ((((Array.mk []) : Array UInt8) ++ data ++ (Array.mk [])).size != (toMiriSize .isize).bytes.toNat) = true
+       then _ else _) = EStateM.Result.ok () after ∧ _
+    rw [h_len_eq, bne_self_eq_false, ite_false_eq_true]
+    refine ⟨_, rfl, ?_, ?_, rfl, rfl, rfl, rfl, rfl⟩
+    · change Bind.bind
+        (checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
+          (toMiriSize .isize) (allocRange Size.ZERO (toMiriSize .isize)))
+        (fun bytes => Bind.bind
+          (readTargetUIntMirror (refRuntimeLayout _).base bytes)
+          (fun b => (Scalar.fromUInt b (toMiriSize .isize)).mapError AllocError.scalar)) = _
+      rw [checkedSliceMirror_eq .isize _ h_len_eq]
+      rfl
+    · change checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
+        (toMiriSize .isize) (allocRange Size.ZERO (toMiriSize .isize)) = _
+      exact checkedSliceMirror_eq .isize _ h_len_eq)
 
-private theorem writeScalar_readScalar_step_i128
+private theorem writeScalar_readScalar_step_i128 (endian : TargetEndian)
     (bits : BitVec 128) (data : Array UInt8)
     (h_dlen : data.size = (toMiriSize .i128).bytes.toNat)
-    (h_t : targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+    (h_t : targetUIntBytesMirror (refRuntimeLayout endian).base
       (toMiriSize .i128) (miriScalar .i128 bits).data = .ok data)
     {rawAlloc : Allocation Miri.Memory.Provenance Unit}
     (h_raw : Allocation.tryNew (Prov := Miri.Memory.Provenance)
@@ -866,13 +968,13 @@ private theorem writeScalar_readScalar_step_i128
     let alloc := rawAlloc.withExtra
       (Miri.TreeBorrows.BorrowTree.new Miri.Memory.BorTag.one (toMiriSize .i128))
     ∃ after,
-      Allocation.writeScalar RuntimeTargetDataLayout.default.base
+      Allocation.writeScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize .i128))
           (.fromScalarInt (miriScalar .i128 bits)) alloc = .ok () after ∧
-      after.readScalar RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize .i128)) false =
         Bind.bind
-          (readTargetUIntMirror RuntimeTargetDataLayout.default.base
+          (readTargetUIntMirror (refRuntimeLayout endian).base
             (((Array.mk []) ++ data ++ (Array.mk [])).extract 0 (toMiriSize .i128).bytes.toNat))
           (fun b => (Scalar.fromUInt b (toMiriSize .i128)).mapError AllocError.scalar) ∧
       after.getBytesUnchecked (allocRange Size.ZERO (toMiriSize .i128)) =
@@ -890,33 +992,34 @@ private theorem writeScalar_readScalar_step_i128
   injection h_fb with h_init_eq; subst h_init_eq
   injection h_wu with _ h_raw_eq; subst h_raw_eq
   intro alloc
-  change ∃ after,
-    (match targetUIntBytesMirror RuntimeTargetDataLayout.default.base
-        (toMiriSize .i128) (miriScalar .i128 bits).data with
-    | Except.ok _ => _
-    | Except.error _ => _) = EStateM.Result.ok () after ∧ _
-  rw [h_t]
-  change ∃ after,
-    (if ((((Array.mk []) : Array UInt8) ++ data ++ (Array.mk [])).size != (toMiriSize .i128).bytes.toNat) = true
-     then _ else _) = EStateM.Result.ok () after ∧ _
-  rw [h_len_eq, bne_self_eq_false, ite_false_eq_true]
-  refine ⟨_, rfl, ?_, ?_, rfl, rfl, rfl, rfl, rfl⟩
-  · change Bind.bind
-      (checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
-        (toMiriSize .i128) (allocRange Size.ZERO (toMiriSize .i128)))
-      (fun bytes => Bind.bind
-        (readTargetUIntMirror RuntimeTargetDataLayout.default.base bytes)
-        (fun b => (Scalar.fromUInt b (toMiriSize .i128)).mapError AllocError.scalar)) = _
-    rw [checkedSliceMirror_eq .i128 _ h_len_eq]
-    rfl
-  · change checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
-      (toMiriSize .i128) (allocRange Size.ZERO (toMiriSize .i128)) = _
-    exact checkedSliceMirror_eq .i128 _ h_len_eq
+  cases endian <;> (
+    change ∃ after,
+      (match targetUIntBytesMirror (refRuntimeLayout _).base
+          (toMiriSize .i128) (miriScalar .i128 bits).data with
+      | Except.ok _ => _
+      | Except.error _ => _) = EStateM.Result.ok () after ∧ _
+    rw [h_t]
+    change ∃ after,
+      (if ((((Array.mk []) : Array UInt8) ++ data ++ (Array.mk [])).size != (toMiriSize .i128).bytes.toNat) = true
+       then _ else _) = EStateM.Result.ok () after ∧ _
+    rw [h_len_eq, bne_self_eq_false, ite_false_eq_true]
+    refine ⟨_, rfl, ?_, ?_, rfl, rfl, rfl, rfl, rfl⟩
+    · change Bind.bind
+        (checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
+          (toMiriSize .i128) (allocRange Size.ZERO (toMiriSize .i128)))
+        (fun bytes => Bind.bind
+          (readTargetUIntMirror (refRuntimeLayout _).base bytes)
+          (fun b => (Scalar.fromUInt b (toMiriSize .i128)).mapError AllocError.scalar)) = _
+      rw [checkedSliceMirror_eq .i128 _ h_len_eq]
+      rfl
+    · change checkedSliceMirror (((Array.mk []) : Array UInt8) ++ data ++ (Array.mk []))
+        (toMiriSize .i128) (allocRange Size.ZERO (toMiriSize .i128)) = _
+      exact checkedSliceMirror_eq .i128 _ h_len_eq)
 
-theorem writeScalar_readScalar_step (w : IntWidth)
+theorem writeScalar_readScalar_step (endian : TargetEndian) (w : IntWidth)
     (bits : BitVec 128) (data : Array UInt8)
     (h_dlen : data.size = (toMiriSize w).bytes.toNat)
-    (h_t : targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+    (h_t : targetUIntBytesMirror (refRuntimeLayout endian).base
       (toMiriSize w) (miriScalar w bits).data = .ok data)
     {rawAlloc : Allocation Miri.Memory.Provenance Unit}
     (h_raw : Allocation.tryNew (Prov := Miri.Memory.Provenance)
@@ -925,13 +1028,13 @@ theorem writeScalar_readScalar_step (w : IntWidth)
     let alloc := rawAlloc.withExtra
       (Miri.TreeBorrows.BorrowTree.new Miri.Memory.BorTag.one (toMiriSize w))
     ∃ after,
-      Allocation.writeScalar RuntimeTargetDataLayout.default.base
+      Allocation.writeScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w))
           (.fromScalarInt (miriScalar w bits)) alloc = .ok () after ∧
-      after.readScalar RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w)) false =
         Bind.bind
-          (readTargetUIntMirror RuntimeTargetDataLayout.default.base
+          (readTargetUIntMirror (refRuntimeLayout endian).base
             (((Array.mk []) ++ data ++ (Array.mk [])).extract 0 (toMiriSize w).bytes.toNat))
           (fun b => (Scalar.fromUInt b (toMiriSize w)).mapError AllocError.scalar) ∧
       after.getBytesUnchecked (allocRange Size.ZERO (toMiriSize w)) =
@@ -943,18 +1046,20 @@ theorem writeScalar_readScalar_step (w : IntWidth)
       after.align = Align.ONE ∧
       after.extra = alloc.extra := by
   cases w with
-  | i8 => exact writeScalar_readScalar_step_i8 bits data h_dlen h_t h_raw
-  | i16 => exact writeScalar_readScalar_step_i16 bits data h_dlen h_t h_raw
-  | i32 => exact writeScalar_readScalar_step_i32 bits data h_dlen h_t h_raw
-  | i64 => exact writeScalar_readScalar_step_i64 bits data h_dlen h_t h_raw
-  | isize => exact writeScalar_readScalar_step_isize bits data h_dlen h_t h_raw
-  | i128 => exact writeScalar_readScalar_step_i128 bits data h_dlen h_t h_raw
+  | i8 => exact writeScalar_readScalar_step_i8 endian bits data h_dlen h_t h_raw
+  | i16 => exact writeScalar_readScalar_step_i16 endian bits data h_dlen h_t h_raw
+  | i32 => exact writeScalar_readScalar_step_i32 endian bits data h_dlen h_t h_raw
+  | i64 => exact writeScalar_readScalar_step_i64 endian bits data h_dlen h_t h_raw
+  | isize => exact writeScalar_readScalar_step_isize endian bits data h_dlen h_t h_raw
+  | i128 => exact writeScalar_readScalar_step_i128 endian bits data h_dlen h_t h_raw
 
 /-- Writing a `miriScalar w bits` into a fresh `toMiriSize w`-byte allocation
 succeeds, reads back the identical `Scalar`, satisfies `clearProvenance`
 without mutating the allocation, and preserves allocation metadata (`byteSize`,
-`mutability`, `align`, `extra`). Covers all 6 `IntWidth`s. -/
-theorem tryNew_writeScalar_readScalar (w : IntWidth) (bits : BitVec 128)
+`mutability`, `align`, `extra`). Covers both byte orders and all 6
+`IntWidth`s. -/
+theorem tryNew_writeScalar_readScalar (endian : TargetEndian) (w : IntWidth)
+    (bits : BitVec 128)
     {rawAlloc : Allocation Miri.Memory.Provenance Unit}
     (h_raw : Allocation.tryNew (Prov := Miri.Memory.Provenance)
       (toMiriSize w) Align.ONE .Uninit
@@ -962,10 +1067,10 @@ theorem tryNew_writeScalar_readScalar (w : IntWidth) (bits : BitVec 128)
     let alloc := rawAlloc.withExtra
       (Miri.TreeBorrows.BorrowTree.new Miri.Memory.BorTag.one (toMiriSize w))
     ∃ after,
-      Allocation.writeScalar RuntimeTargetDataLayout.default.base
+      Allocation.writeScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w))
           (.fromScalarInt (miriScalar w bits)) alloc = .ok () after ∧
-      after.readScalar RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w)) false =
         .ok (.fromScalarInt (miriScalar w bits)) ∧
       Allocation.clearProvenance (allocRange Size.ZERO (toMiriSize w))
@@ -977,34 +1082,34 @@ theorem tryNew_writeScalar_readScalar (w : IntWidth) (bits : BitVec 128)
   have h_le16 : (toMiriSize w).bytes.toNat ≤ 16 := by cases w <;> decide
   have h_bits_eq : 8 * (toMiriSize w).bytes.toNat = w.bitWidth := by
     cases w <;> rfl
-  have h_t : targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+  have h_t : targetUIntBytesMirror (refRuntimeLayout endian).base
       (toMiriSize w) (miriScalar w bits).data =
-      .ok (beBytes (miriScalar w bits).data.toNat (toMiriSize w).bytes.toNat
-        (toMiriSize w).bytes.toNat) := by
-    cases w <;> exact targetUIntBytesMirror_be _ (by decide) _
+      .ok (endianBytes endian (miriScalar w bits).data.toNat
+        (toMiriSize w).bytes.toNat (toMiriSize w).bytes.toNat) := by
+    cases w <;> exact targetUIntBytesMirror_endian endian _ (by decide) _
   let ⟨after, h_w, h_rd, _, h_prov, h_sz, h_mut, h_al, h_ex⟩ :=
-    writeScalar_readScalar_step w bits
-      (beBytes (miriScalar w bits).data.toNat (toMiriSize w).bytes.toNat
-        (toMiriSize w).bytes.toNat)
-      (beBytes_size _ _ _) h_t h_raw
+    writeScalar_readScalar_step endian w bits
+      (endianBytes endian (miriScalar w bits).data.toNat
+        (toMiriSize w).bytes.toNat (toMiriSize w).bytes.toNat)
+      (endianBytes_size _ _ _ _) h_t h_raw
   have h_lt : (truncateBits w bits).toNat < HPow.hPow 2 w.bitWidth := by
     rw [toNat_truncateBits]
     exact Nat.mod_lt bits.toNat (intWidth_modulus_pos w)
-  have h_rd' : after.readScalar RuntimeTargetDataLayout.default.base
+  have h_rd' : after.readScalar (refRuntimeLayout endian).base
       (allocRange Size.ZERO (toMiriSize w)) false =
       .ok (.fromScalarInt (miriScalar w bits)) := by
-    rw [h_rd, array_empty_append_extract _ _ (beBytes_size _ _ _),
-      readTargetUIntMirror_be _ h_le16 _]
+    rw [h_rd, array_empty_append_extract _ _ (endianBytes_size _ _ _ _),
+      readTargetUIntMirror_endian endian _ h_le16 _]
     dsimp only [bind, Except.bind]
     rw [h_bits_eq, miriScalar_data, Nat.mod_eq_of_lt h_lt,
       bitVec128_ofNat_toNat]
     exact scalar_fromUInt_truncateBits w bits
   exact ⟨after, h_w, h_rd',
-    clearProvenance_of_read_ok w h_prov h_rd', h_sz, h_mut, h_al, h_ex⟩
+    clearProvenance_of_read_ok endian w h_prov h_rd', h_sz, h_mut, h_al, h_ex⟩
 
 /-- Writing `.uninit` to a fresh uninitialized allocation leaves it
 uninitialized (so `readScalar` returns `.error (.invalidUninitBytes _)`). -/
-theorem tryNew_writeUninit_readUninit (w : IntWidth)
+theorem tryNew_writeUninit_readUninit (endian : TargetEndian) (w : IntWidth)
     {rawAlloc : Allocation Miri.Memory.Provenance Unit}
     (h_raw : Allocation.tryNew (Prov := Miri.Memory.Provenance)
       (toMiriSize w) Align.ONE .Uninit
@@ -1014,7 +1119,7 @@ theorem tryNew_writeUninit_readUninit (w : IntWidth)
     ∃ after info,
       Allocation.writeUninit (allocRange Size.ZERO (toMiriSize w))
           (Size.ofBytes 8) alloc = .ok () after ∧
-      after.readScalar RuntimeTargetDataLayout.default.base
+      after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w)) false =
         .error (.invalidUninitBytes info) ∧
       after.byteSize = toMiriSize w ∧
@@ -1022,7 +1127,7 @@ theorem tryNew_writeUninit_readUninit (w : IntWidth)
       after.align = Align.ONE ∧
       after.extra = alloc.extra := by
   let ⟨init, h_fb, h_wu⟩ := freshAlloc_eq_fromBytes_uninit w h_raw
-  cases w <;> (
+  cases endian <;> cases w <;> (
     injection h_fb with h_init_eq; subst h_init_eq
     injection h_wu with _ h_raw_eq; subst h_raw_eq
     exact ⟨_, _, rfl, rfl, rfl, rfl, rfl, rfl⟩)

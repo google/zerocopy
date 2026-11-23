@@ -560,7 +560,7 @@ together with every later change to those definitions:
 | `Trusted.MirAst` | AST types (`MirTy`, `EnumTy`, `StatementKind`, |
 | | `Rvalue`, `TerminatorKind`, `Body`), |
 | | `VerificationScope`, `Program` (`pointerWidthBits`, |
-| | `mirProfileVersion`, `scope`) |
+| | `targetEndian`, `mirProfileVersion`, `scope`) |
 | `Trusted.MirSemantics` | `Val`, `Query`, `Out`, `TerminalOut`, `FaultKind`, |
 | | `StepResult`, `LocalSlot`, `FrameState`, `State` |
 | | `ValidChoice`, `Step`, `Reaches`, `ReachesResult`, |
@@ -718,6 +718,7 @@ structure RefProg where
   entryDefId : DefId := 0
   types : List MirTy
   pointerWidthBits : Nat
+  targetEndian : TargetEndian
   mirProfileVersion : Nat
   scope : VerificationScope
 ```
@@ -1130,6 +1131,7 @@ structure Program where
   bodies : List Body
   entryDefId : DefId := 0
   pointerWidthBits : Nat
+  targetEndian : TargetEndian
   mirProfileVersion : Nat
   scope : VerificationScope
 ```
@@ -1145,7 +1147,7 @@ and `identity`, unchanged.
 Once implemented, `anneal-rustc-capture` records the target layout,
 compiler/MIR profile, and capture scope in the `CaptureManifest`
 ([`docs/architecture.md`](architecture.md)). `Program` and `RefProg`
-deliberately omit Lean field defaults for `pointerWidthBits`,
+deliberately omit Lean field defaults for `pointerWidthBits`, `targetEndian`,
 `mirProfileVersion`, and `scope` so that any capture serializer omitting these
 fields fails at Lean elaboration/compile time rather than silently defaulting
 to accepted values (`64`, `1`, or `.unit`) and bypassing the initializer or
@@ -1778,6 +1780,7 @@ noncomputable def canaryNeverParamBody (badStorage : Bool) : Body := {
 noncomputable def canaryValidCrate : Crate := {
   program := {
     pointerWidthBits := 64
+    targetEndian := .little
     mirProfileVersion := 1
     scope := .crate
     bodies := [
@@ -1801,6 +1804,7 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
   UnitTheorem {
       program := {
         pointerWidthBits := 64
+        targetEndian := .little
         mirProfileVersion := 1
         scope := .unit
         bodies := [canarySafeUnitBody]
@@ -1810,24 +1814,25 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
       }
     } ∧
   ¬ BodyVerified
-      { pointerWidthBits := 64, mirProfileVersion := 1, scope := .unit,
-        bodies := [canaryUnsafeGuardedBody false] } 0
+      { pointerWidthBits := 64, targetEndian := .little, mirProfileVersion := 1,
+        scope := .unit, bodies := [canaryUnsafeGuardedBody false] } 0
       (canaryUnsafeGuardedBody false) (fun _ => False) ∧
   ¬ BodyVerified
-      { pointerWidthBits := 64, mirProfileVersion := 1, scope := .unit,
-        bodies := [canaryNeverParamBody true] } 0
+      { pointerWidthBits := 64, targetEndian := .little, mirProfileVersion := 1,
+        scope := .unit, bodies := [canaryNeverParamBody true] } 0
       (canaryNeverParamBody true) (fun _ => True) ∧
   ¬ BodyVerified
-      { pointerWidthBits := 64, mirProfileVersion := 1, scope := .unit,
-        bodies := [canarySafeUnitBody, canaryUnsafeGuardedBody false] } 0
+      { pointerWidthBits := 64, targetEndian := .little, mirProfileVersion := 1,
+        scope := .unit, bodies := [canarySafeUnitBody, canaryUnsafeGuardedBody false] } 0
       (canaryUnsafeGuardedBody false) (fun _ => True) ∧
   ¬ BodyVerified
-      { pointerWidthBits := 64, mirProfileVersion := 1, scope := .unit,
-        bodies := [canaryUnsafeGuardedBody false] } 0
+      { pointerWidthBits := 64, targetEndian := .little, mirProfileVersion := 1,
+        scope := .unit, bodies := [canaryUnsafeGuardedBody false] } 0
       (canaryNeverParamBody false) (fun _ => True) ∧
   ¬ CrateTheorem {
       program := {
         pointerWidthBits := 64
+        targetEndian := .little
         mirProfileVersion := 1
         scope := .crate
         bodies := []
@@ -1836,6 +1841,7 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
   ¬ UnitTheorem {
       program := {
         pointerWidthBits := 64
+        targetEndian := .little
         mirProfileVersion := 1
         scope := .unit
         entryDefId := 5
@@ -1845,6 +1851,7 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
   ¬ CrateTheorem {
       program := {
         pointerWidthBits := 64
+        targetEndian := .little
         mirProfileVersion := 1
         scope := .crate
         bodies := [canarySafeUnitBody, canarySafeUnitBody]
@@ -1853,6 +1860,7 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
   ¬ CrateTheorem {
       program := {
         pointerWidthBits := 64
+        targetEndian := .little
         mirProfileVersion := 1
         scope := .crate
         bodies := [canarySafeUnitBody, canaryUnsafeGuardedBody false]
@@ -1861,6 +1869,7 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
   ¬ CrateTheorem {
       program := {
         pointerWidthBits := 64
+        targetEndian := .little
         mirProfileVersion := 1
         scope := .crate
         bodies := [canarySafeUnitBody]
@@ -1872,6 +1881,7 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
   ¬ UnitTheorem {
       program := {
         pointerWidthBits := 64
+        targetEndian := .little
         mirProfileVersion := 1
         scope := .unit
         bodies := [canarySafeUnitBody]
@@ -1883,6 +1893,7 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
   ¬ CrateTheorem {
       program := {
         pointerWidthBits := 64
+        targetEndian := .little
         mirProfileVersion := 1
         scope := .unit
         bodies := [canarySafeUnitBody]
@@ -1915,18 +1926,19 @@ Option 1A of Section 6.1:
   size and alignment of a sized type, and `layoutOfTy` gives the layouts of the
   Day-1 local types (`bool`, the integers with natural alignment, `()`, `!`,
   and admitted fieldless enums, whose scalar-tagged layout is the tag
-  integer's). `TargetEndian` and `profileTargetEndian` fix the byte order of
-  MIR profile version 1 to big-endian, matching the data layout that
-  $M_{\text{ref}}$ passes to `lean-miri` (`RuntimeTargetDataLayout.default`).
+  integer's). `TargetEndian` (`.little` | `.big`) on `Trusted.MirAst.Program`
+  configures the byte order of indirect loads and stores per program, matching
+  the data layout that $M_{\text{ref}}$ passes to `lean-miri`
+  (`refRuntimeLayout p.targetEndian`).
   These are $M_{\text{anneal}}$'s own choices, so they live outside
-  `Trusted.MirAst*`, which `verifyRefEvaluatorIndependence` lets the
-  reference evaluator import. $M_{\text{ref}}$ chooses alignments
-  independently: `RuntimeTargetDataLayout.default` gives `i64` and `i128`
-  4-byte alignment, and `Trusted.Correspondence` gives every local layout
-  alignment 1 (`Align.ONE`), whereas $M_{\text{anneal}}$ uses natural
+  `Trusted.MirAst*` (except `TargetEndian`, which is a shared AST enum),
+  keeping `verifyRefEvaluatorIndependence` intact. $M_{\text{ref}}$ chooses
+  alignments independently: `RuntimeTargetDataLayout.default` gives `i64` and
+  `i128` 4-byte alignment, and `Trusted.Correspondence` gives every local
+  layout alignment 1 (`Align.ONE`), whereas $M_{\text{anneal}}$ uses natural
   alignment. Profile version 1 has no operation that reinterprets bytes or
-  exposes an address, so neither byte order nor alignment can affect any
-  `Behavior`.
+  exposes an address, while byte-level memory tests and downstream interop
+  bridges exercise the exact per-target endianness (`p.targetEndian`).
 - **Value representations (`Trusted.MirSemantics.Bytes`):** `encodeUInt` and
   `decodeUInt` follow `rustc`'s `write_target_uint` / `read_target_uint`.
   `encodeVal` stores a Day-1 value as initialized, provenance-free bytes, and

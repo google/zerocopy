@@ -19,7 +19,7 @@ private theorem write_i32 (ls : List LocalSlot) (idx : LocalId) (b : BitVec 128)
     (ls' : List LocalSlot)
     (hOld : Trusted.MirSemantics.getElem? ls idx = some (.immediate old))
     (hSet : setElem? ls idx (.immediate (some (.scalar ⟨.i32, false, b⟩))) = some ls') :
-    writePlace ls entryMemory idx (.int .i32 false) (.scalar ⟨.i32, false, b⟩) =
+    writePlace .little ls entryMemory idx (.int .i32 false) (.scalar ⟨.i32, false, b⟩) =
       .ok (ls', entryMemory) := by
   have hCheck : checkVal (.scalar ⟨.i32, false, b⟩) (.int .i32 false) = true :=
     checkVal_int_iff.mpr ⟨b, rfl, hT⟩
@@ -28,7 +28,7 @@ private theorem write_i32 (ls : List LocalSlot) (idx : LocalId) (b : BitVec 128)
 
 private theorem executes_add (b₁ b₂ : BitVec 128)
     (hT₁ : truncateBits .i32 b₁ = b₁) (hT₂ : truncateBits .i32 b₂ = b₂) :
-    Executes Captured.body_0
+    Executes .little Captured.body_0
       (mkState 0 0 (initLocalsLoop Captured.body_0
         [.scalar ⟨.i32, false, b₁⟩, .scalar ⟨.i32, false, b₂⟩] 0
         Captured.body_0.locals))
@@ -57,7 +57,7 @@ private theorem executes_add (b₁ b₂ : BitVec 128)
       .step (mkState 0 2 [.immediate none, .immediate (some v₁), .immediate (some v₂), .immediate (some v₁), .dead]) := by
     have hW := write_i32 [.immediate none, .immediate (some v₁), .immediate (some v₂), .immediate none, .dead]
       3 b₁ hT₁ none [.immediate none, .immediate (some v₁), .immediate (some v₂), .immediate (some v₁), .dead] rfl rfl
-    change (match writePlace _ entryMemory 3 (.int .i32 false) v₁ with
+    change (match writePlace .little _ entryMemory 3 (.int .i32 false) v₁ with
       | .error k => StepResult.fault k
       | .ok (ls, m) => StepResult.step ({ frames := [{ defId := 0, blockIdx := 0, stmtIdx := 2, locals := ls }], callerMem := ⟨[]⟩, mem := m } : State)) = _
     rw [hW]; rfl
@@ -71,13 +71,13 @@ private theorem executes_add (b₁ b₂ : BitVec 128)
       .step (mkState 0 4 [.immediate none, .immediate (some v₁), .immediate (some v₂), .immediate (some v₁), .immediate (some v₂)]) := by
     have hW := write_i32 [.immediate none, .immediate (some v₁), .immediate (some v₂), .immediate (some v₁), .immediate none]
       4 b₂ hT₂ none [.immediate none, .immediate (some v₁), .immediate (some v₂), .immediate (some v₁), .immediate (some v₂)] rfl rfl
-    change (match writePlace _ entryMemory 4 (.int .i32 false) v₂ with
+    change (match writePlace .little _ entryMemory 4 (.int .i32 false) v₂ with
       | .error k => StepResult.fault k
       | .ok (ls, m) => StepResult.step ({ frames := [{ defId := 0, blockIdx := 0, stmtIdx := 4, locals := ls }], callerMem := ⟨[]⟩, mem := m } : State)) = _
     rw [hW]; rfl
   have hBin := evalBinOp_unsigned_add .i32 b₁ b₂
   have hRval :
-      evalRvalue
+      evalRvalue .little
         [.int .i32 false, .int .i32 false, .int .i32 false,
          .int .i32 false, .int .i32 false]
         [.immediate none, .immediate (some v₁), .immediate (some v₂),
@@ -122,7 +122,7 @@ private theorem executes_add (b₁ b₂ : BitVec 128)
 
 private theorem executes_id_u32 (bits : BitVec 128)
     (hT : truncateBits .i32 bits = bits) :
-    Executes Captured.body_1
+    Executes .little Captured.body_1
       (mkState 0 0 (initLocalsLoop Captured.body_1
         [.scalar ⟨.i32, false, bits⟩] 0 Captured.body_1.locals))
       (.scalar ⟨.i32, false, bits⟩) := by
@@ -139,7 +139,7 @@ private theorem executes_id_u32 (bits : BitVec 128)
     have hW := write_i32 [.immediate none, .immediate (some (.scalar ⟨.i32, false, bits⟩))]
       0 bits hT none [.immediate (some (.scalar ⟨.i32, false, bits⟩)),
         .immediate (some (.scalar ⟨.i32, false, bits⟩))] rfl rfl
-    change (match writePlace _ entryMemory 0 (.int .i32 false) (.scalar ⟨.i32, false, bits⟩) with
+    change (match writePlace .little _ entryMemory 0 (.int .i32 false) (.scalar ⟨.i32, false, bits⟩) with
       | .error k => StepResult.fault k
       | .ok (ls, m) => StepResult.step ({ frames := [{ defId := 0, blockIdx := 0, stmtIdx := 1, locals := ls }], callerMem := ⟨[]⟩, mem := m } : State)) = _
     rw [hW]; rfl

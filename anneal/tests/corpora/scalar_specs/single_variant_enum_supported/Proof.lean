@@ -47,7 +47,7 @@ theorem verify : Expected.claim := by
         cases val with
         | zero =>
           have hRun :
-              Runs Captured.body_0 4
+              Runs .little Captured.body_0 4
                 [.enumVal
                   { id := 873866302, discrWidth := .isize, discrSigned := true,
                     tagRepr := .zeroSized, discriminants := [0] }
@@ -58,7 +58,7 @@ theorem verify : Expected.claim := by
     | succ id => cases found
   · refine ⟨Captured.body_0, _, rfl, rfl, rfl, rfl, ?_⟩
     have hRun :
-        Runs Captured.body_0 4
+        Runs .little Captured.body_0 4
           [.enumVal
             { id := 873866302, discrWidth := .isize, discrSigned := true,
               tagRepr := .zeroSized, discriminants := [0] }

@@ -384,8 +384,9 @@ fn body_record(body: &ir::Body, indent: usize) -> String {
 }
 
 /// Target pointer width and MIR semantic profile version pinned by capture
-/// (`capture.rs` refuses any target that is not 64-bit little-endian, matching
-/// `Trusted.MirAst.Program`).
+/// (`capture.rs` verifies 64-bit pointer width and threads
+/// `tcx.data_layout.endian` explicitly into
+/// `Trusted.MirAst.Program.targetEndian`).
 const POINTER_WIDTH_BITS: u32 = 64;
 const MIR_PROFILE_VERSION: u32 = 1;
 
@@ -415,6 +416,7 @@ pub fn render(program: &ir::Program) -> String {
         ir::Scope::SelectedUnit { .. } => "unit",
         ir::Scope::Crate => "crate",
     };
+    let target_endian = program.target_endian().lean_name();
     let mut out = String::from(HEADER);
     let mut body_names = Vec::with_capacity(program.bodies().len());
     for (index, item) in program.bodies().iter().enumerate() {
@@ -447,6 +449,7 @@ pub fn render(program: &ir::Program) -> String {
         "def program : Trusted.MirAst.Program :=\n\
          \x20 {{\n\
          \x20   pointerWidthBits := {POINTER_WIDTH_BITS},\n\
+         \x20   targetEndian := Trusted.MirAst.TargetEndian.{target_endian},\n\
          \x20   mirProfileVersion := {MIR_PROFILE_VERSION},\n\
          \x20   scope := Trusted.MirAst.VerificationScope.{scope},\n\
          \x20   entryDefId := {ENTRY_DEF_ID},\n\
@@ -463,7 +466,7 @@ mod tests {
     use super::{MAX_LIST_CHUNK_LEN, identity, list, render};
     use crate::ir::{
         Block, Body, ConstLit, EnumTagRepr, EnumTy, IntTy, IntWidth, Operand, Program, Rvalue,
-        Scope, Statement, Terminator, Ty,
+        Scope, Statement, TargetEndian, Terminator, Ty,
     };
 
     fn max_paren_depth(text: &str) -> usize {
@@ -593,9 +596,14 @@ mod tests {
             "rust-path-v1::unit_fn".into(),
         )
         .unwrap();
-        let program = Program::try_new(Scope::Crate, vec![body.clone()]).unwrap();
+        let program =
+            Program::try_new(Scope::Crate, TargetEndian::Little, vec![body.clone()]).unwrap();
         let rendered = render(&program);
         assert!(rendered.contains("pointerWidthBits := 64"), "{rendered}");
+        assert!(
+            rendered.contains("targetEndian := Trusted.MirAst.TargetEndian.little"),
+            "{rendered}"
+        );
         assert!(rendered.contains("mirProfileVersion := 1"), "{rendered}");
         // Producers must not rely on the Lean default for the entry body.
         assert!(rendered.contains("entryDefId := 0"), "{rendered}");
@@ -614,10 +622,15 @@ mod tests {
                 roots: BTreeSet::from(["raw\"selector".into()]),
                 instantiations: BTreeSet::new(),
             },
+            TargetEndian::Big,
             vec![body],
         )
         .unwrap();
         let selected_rendered = render(&selected);
+        assert!(
+            selected_rendered.contains("targetEndian := Trusted.MirAst.TargetEndian.big"),
+            "{selected_rendered}"
+        );
         assert!(
             selected_rendered.contains("Trusted.MirAst.VerificationScope.unit"),
             "{selected_rendered}"
@@ -649,7 +662,7 @@ mod tests {
                 .unwrap()
             })
             .collect();
-        let program = Program::try_new(Scope::Crate, bodies).unwrap();
+        let program = Program::try_new(Scope::Crate, TargetEndian::Little, bodies).unwrap();
         let rendered = render(&program);
         assert!(rendered.contains("def body_0 : Trusted.MirAst.Body :="), "{rendered}");
         assert!(rendered.contains("def body_129 : Trusted.MirAst.Body :="), "{rendered}");
@@ -754,7 +767,7 @@ mod tests {
                 .unwrap(),
             );
         }
-        let program = Program::try_new(Scope::Crate, bodies).unwrap();
+        let program = Program::try_new(Scope::Crate, TargetEndian::Little, bodies).unwrap();
         let rendered = render(&program);
         // `bodies` (depth 3) + Body/BasicBlock/SwitchInt/BitVec wrappers (5)
         // + 250-statement or 70-target append tree (depth 4/3) stays O(log N).
@@ -831,7 +844,7 @@ mod tests {
             "rust-path-v1::helper_fn".into(),
         )
         .unwrap();
-        let program = Program::try_new(Scope::Crate, vec![body0, body1]).unwrap();
+        let program = Program::try_new(Scope::Crate, TargetEndian::Little, vec![body0, body1]).unwrap();
         let rendered = render(&program);
         for expected in [
             "def body_0 : Trusted.MirAst.Body :=\n  {\n",
@@ -869,7 +882,8 @@ mod tests {
             "rust-path-v1::div_call".into(),
         )
         .unwrap();
-        let div_prog = Program::try_new(Scope::Crate, vec![div_body]).unwrap();
+        let div_prog =
+            Program::try_new(Scope::Crate, TargetEndian::Little, vec![div_body]).unwrap();
         let div_rendered = render(&div_prog);
         assert!(
             div_rendered.contains("terminator := Trusted.MirAst.TerminatorKind.unsupported,"),
@@ -891,7 +905,7 @@ mod tests {
             "rust-path-v1::place_mention_nop".into(),
         )
         .unwrap();
-        let program = Program::try_new(Scope::Crate, vec![body]).unwrap();
+        let program = Program::try_new(Scope::Crate, TargetEndian::Little, vec![body]).unwrap();
         let rendered = render(&program);
         assert_eq!(rendered.matches("Trusted.MirAst.StatementKind.nop").count(), 2, "{rendered}");
     }

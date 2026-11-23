@@ -486,6 +486,7 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
       program := {
         scope := .unit
         pointerWidthBits := 64
+        targetEndian := .little
         mirProfileVersion := 1
         bodies := [canarySafeUnitBody]
       }
@@ -496,6 +497,7 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
   ¬ BodyVerified {
       scope := .unit
       pointerWidthBits := 64
+      targetEndian := .little
       mirProfileVersion := 1
       bodies := [canaryUnsafeGuardedBody false]
     } 0
@@ -503,6 +505,7 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
   ¬ BodyVerified {
       scope := .unit
       pointerWidthBits := 64
+      targetEndian := .little
       mirProfileVersion := 1
       bodies := [canaryNeverParamBody true]
     } 0
@@ -510,6 +513,7 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
   ¬ BodyVerified {
       scope := .unit
       pointerWidthBits := 64
+      targetEndian := .little
       mirProfileVersion := 1
       bodies := [canarySafeUnitBody, canaryUnsafeGuardedBody false]
     } 0
@@ -517,6 +521,7 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
   ¬ BodyVerified {
       scope := .unit
       pointerWidthBits := 64
+      targetEndian := .little
       mirProfileVersion := 1
       bodies := [canaryUnsafeGuardedBody false]
     } 0
@@ -525,6 +530,7 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
       program := {
         scope := .crate
         pointerWidthBits := 64
+        targetEndian := .little
         mirProfileVersion := 1
         bodies := []
       }
@@ -534,6 +540,7 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
         scope := .unit
         entryDefId := 5
         pointerWidthBits := 64
+        targetEndian := .little
         mirProfileVersion := 1
         bodies := [canarySafeUnitBody]
       }
@@ -542,6 +549,7 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
       program := {
         scope := .crate
         pointerWidthBits := 64
+        targetEndian := .little
         mirProfileVersion := 1
         bodies := [canarySafeUnitBody, canarySafeUnitBody]
       }
@@ -550,6 +558,7 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
       program := {
         scope := .crate
         pointerWidthBits := 64
+        targetEndian := .little
         mirProfileVersion := 1
         bodies := [canarySafeUnitBody, canaryUnsafeGuardedBody false]
       }
@@ -558,6 +567,7 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
       program := {
         scope := .crate
         pointerWidthBits := 64
+        targetEndian := .little
         mirProfileVersion := 1
         bodies := [canarySafeUnitBody]
       }
@@ -569,6 +579,7 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
       program := {
         scope := .unit
         pointerWidthBits := 64
+        targetEndian := .little
         mirProfileVersion := 1
         bodies := [canarySafeUnitBody]
       }
@@ -580,15 +591,20 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
       program := {
         scope := .unit
         pointerWidthBits := 64
+        targetEndian := .little
         mirProfileVersion := 1
         bodies := [canarySafeUnitBody]
       }
     } ∧
   ¬ UnitTheorem canaryValidCrate
 
-/-- The four big-endian bytes of `0x01020304u32` (`profileTargetEndian`). -/
+/-- The four big-endian bytes of `0x01020304u32` (`.big`). -/
 noncomputable def canaryBytes01020304 : List AllocByte :=
   [.init 1 none, .init 2 none, .init 3 none, .init 4 none]
+
+/-- The four little-endian bytes of `0x01020304u32` (`.little`). -/
+noncomputable def canaryBytes01020304Le : List AllocByte :=
+  [.init 4 none, .init 3 none, .init 2 none, .init 1 none]
 
 /-- Trusted claim for `Anneal.MirWp.canary_memory_lifecycle_anneal`, which
 exercises `.indirect` locals and `MemoryState` on `progMemLifecycle`
@@ -620,7 +636,11 @@ exercises `.indirect` locals and `MemoryState` on `progMemLifecycle`
 7. Type checks precede memory reads: copying a `bool` `.indirect` local into
    a `u32` (`progMemIllTypedUse`) and applying `Not` to an enum `.indirect`
    local (`progMemNonPrimitiveUnOp`) fault with `.unsupported` even after
-   the local's allocation is deallocated. -/
+   the local's allocation is deallocated.
+8. With `targetEndian := .little` (`progMemLifecycleLe` and
+   `progMemIndirectOpsLe`), the same programs store little-endian bytes
+   (`canaryBytes01020304Le`), do not match big-endian bytes, and cross-endian
+   loads reinterpret `0x01020304` as `0x04030201` (`67305985`). -/
 def CanaryMemoryLifecycleAnnealClaim : Prop :=
   PositiveCanaryClaim progMemLifecycle queryMemLifecycle
     (u32Val 16909060) ∧
@@ -691,7 +711,31 @@ def CanaryMemoryLifecycleAnnealClaim : Prop :=
     forceAllocation progMemNonPrimitiveUnOp x₁ 1 = .ok (x₂, place) ∧
     deallocateStack x₂.mem place = .ok m ∧
     evalStep progMemNonPrimitiveUnOp 0 { x₂ with mem := m } =
-      .fault .unsupported)
+      .fault .unsupported) ∧
+  (∃ (s₀ s₁ s₂ s₃ s₄ s₅ : State) (place : MemPlace),
+    initState progMemLifecycleLe queryMemLifecycle = .ok s₀ ∧
+    evalStep progMemLifecycleLe 0 s₀ = .step s₁ ∧
+    evalStep progMemLifecycleLe 0 s₁ = .step s₂ ∧
+    forceAllocation progMemLifecycleLe s₂ 2 = .ok (s₃, place) ∧
+    place = ⟨2, 0⟩ ∧
+    readBytes s₃.mem place 4 2 = .ok canaryBytes01020304Le ∧
+    readBytes s₃.mem place 4 2 ≠ .ok canaryBytes01020304 ∧
+    loadIndirect .big s₃.mem u32Ty place = .ok (some (u32Val 67305985)) ∧
+    evalStep progMemLifecycleLe 0 s₃ = .step s₄ ∧
+    evalStep progMemLifecycleLe 0 s₄ = .step s₅ ∧
+    readBytes s₅.mem place 4 2 = .error .undefined ∧
+    evalStep progMemLifecycleLe 0 s₅ =
+      .done (.returned ⟨u32Val 16909060, ⟨[]⟩⟩)) ∧
+  (∃ (v₀ v₁ v₂ v₃ v₄ : State),
+    initState progMemIndirectOpsLe queryMemLifecycle = .ok v₀ ∧
+    forceAllocation progMemIndirectOpsLe v₀ 1 = .ok (v₁, ⟨2, 0⟩) ∧
+    forceAllocation progMemIndirectOpsLe v₁ 0 = .ok (v₂, ⟨3, 0⟩) ∧
+    readBytes v₂.mem ⟨2, 0⟩ 4 2 = .ok canaryBytes01020304Le ∧
+    evalStep progMemIndirectOpsLe 0 v₂ = .step v₃ ∧
+    readBytes v₃.mem ⟨3, 0⟩ 4 2 = .ok canaryBytes01020304Le ∧
+    evalStep progMemIndirectOpsLe 0 v₃ = .step v₄ ∧
+    evalStep progMemIndirectOpsLe 0 v₄ =
+      .done (.returned ⟨u32Val 16909060, ⟨[]⟩⟩))
 
 /-- Trusted claim for `Anneal.MirWp.canary_positive_char_and_cmp_anneal`:
 1. `char` comparisons compare Unicode scalar values (`'a' < 'b'`,

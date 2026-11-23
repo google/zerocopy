@@ -27,9 +27,10 @@ open Miri.ABI Miri.Memory Miri.Interpreter
 
 /-! ## Section 6: `Trusted.MirSemantics` Byte Codec Against `Allocation` -/
 
-/-- `writeScalar` on a fresh allocation stores the big-endian bytes of the
+/-- `writeScalar` on a fresh allocation stores the `endian` bytes of the
 scalar's data and reads the same scalar back. -/
-theorem tryNew_writeScalar_getBytes (w : IntWidth) (bits : BitVec 128)
+theorem tryNew_writeScalar_getBytes (endian : TargetEndian) (w : IntWidth)
+    (bits : BitVec 128)
     {rawAlloc : Allocation Miri.Memory.Provenance Unit}
     (h_raw : Allocation.tryNew (Prov := Miri.Memory.Provenance)
       (toMiriSize w) Align.ONE .Uninit
@@ -37,35 +38,35 @@ theorem tryNew_writeScalar_getBytes (w : IntWidth) (bits : BitVec 128)
     let alloc := rawAlloc.withExtra
       (Miri.TreeBorrows.BorrowTree.new Miri.Memory.BorTag.one (toMiriSize w))
     ∃ after,
-      Allocation.writeScalar RuntimeTargetDataLayout.default.base
+      Allocation.writeScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w))
           (.fromScalarInt (miriScalar w bits)) alloc = .ok () after ∧
       after.getBytesUnchecked (allocRange Size.ZERO (toMiriSize w)) =
-        .ok (beBytes (miriScalar w bits).data.toNat (toMiriSize w).bytes.toNat
-          (toMiriSize w).bytes.toNat) ∧
-      after.readScalar RuntimeTargetDataLayout.default.base
+        .ok (endianBytes endian (miriScalar w bits).data.toNat
+          (toMiriSize w).bytes.toNat (toMiriSize w).bytes.toNat) ∧
+      after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w)) false =
         .ok (.fromScalarInt (miriScalar w bits)) := by
   intro alloc
-  have h_t : targetUIntBytesMirror RuntimeTargetDataLayout.default.base
+  have h_t : targetUIntBytesMirror (refRuntimeLayout endian).base
       (toMiriSize w) (miriScalar w bits).data =
-      .ok (beBytes (miriScalar w bits).data.toNat (toMiriSize w).bytes.toNat
-        (toMiriSize w).bytes.toNat) := by
-    cases w <;> exact targetUIntBytesMirror_be _ (by decide) _
+      .ok (endianBytes endian (miriScalar w bits).data.toNat
+        (toMiriSize w).bytes.toNat (toMiriSize w).bytes.toNat) := by
+    cases w <;> exact targetUIntBytesMirror_endian endian _ (by decide) _
   let ⟨after, h_w, _, h_gb, _, _, _, _, _⟩ :=
-    writeScalar_readScalar_step w bits
-      (beBytes (miriScalar w bits).data.toNat (toMiriSize w).bytes.toNat
-        (toMiriSize w).bytes.toNat)
-      (beBytes_size _ _ _) h_t h_raw
+    writeScalar_readScalar_step endian w bits
+      (endianBytes endian (miriScalar w bits).data.toNat
+        (toMiriSize w).bytes.toNat (toMiriSize w).bytes.toNat)
+      (endianBytes_size _ _ _ _) h_t h_raw
   let ⟨after', h_w', h_rd', _, _, _, _, _⟩ :=
-    tryNew_writeScalar_readScalar w bits h_raw
+    tryNew_writeScalar_readScalar endian w bits h_raw
   have h_eq : after' = after := by
     rw [h_w] at h_w'
     injection h_w' with _ h_a
     exact h_a.symm
   rw [h_eq] at h_rd'
   refine ⟨after, h_w, ?_, h_rd'⟩
-  rw [h_gb, array_empty_append_extract _ _ (beBytes_size _ _ _)]
+  rw [h_gb, array_empty_append_extract _ _ (endianBytes_size _ _ _ _)]
 
 /-- Length of `leBytesOfNat`. -/
 theorem leBytesOfNat_length : ∀ (n x : Nat), (leBytesOfNat n x).length = n
@@ -111,30 +112,45 @@ theorem natOfLeBytes_leBytesOfNat : ∀ (n x : Nat),
     exact nat_mod_mul_decomp x 256 (HPow.hPow 256 n) (by decide)
       (pow256_pos n)
 
-/-- The reversed little-endian bytes are `lean-miri`'s big-endian bytes. -/
-theorem reverse_leBytesOfNat_eq_beBytes (n x : Nat) :
-    Array.mk (leBytesOfNat n x).reverse = beBytes x n n := by
-  have h_list : (leBytesOfNat n x).reverse = (beBytes x n n).toList := by
+/-- `encodeUInt` matches `lean-miri`'s `endianBytes` under `endian`. -/
+theorem encodeUInt_eq_endianBytes (endian : TargetEndian) (n x : Nat) :
+    Array.mk (encodeUInt endian n x) = endianBytes endian x n n := by
+  have h_list : encodeUInt endian n x = (endianBytes endian x n n).toList := by
     apply List.ext_getElem?
     intro i
-    rw [Array.getElem?_toList (xs := beBytes x n n)]
-    cases Nat.lt_or_ge i n with
-    | inl h_lt =>
-      have h_len : i < (leBytesOfNat n x).length := by
-        rw [leBytesOfNat_length]; exact h_lt
-      rw [List.getElem?_reverse h_len, leBytesOfNat_length,
-        beBytes_getElem? x n n i h_lt]
-      have h_idx : n - 1 - i < n :=
-        Nat.lt_of_le_of_lt (Nat.sub_le (n - 1) i)
-          (Nat.sub_lt (Nat.lt_of_le_of_lt (Nat.zero_le i) h_lt) (by decide))
-      rw [leBytesOfNat_getElem? n x (n - 1 - i) h_idx, Nat.sub_right_comm,
-        Nat.pow_mul]
-    | inr h_ge =>
-      have h_l : (leBytesOfNat n x).reverse.length ≤ i := by
-        rw [List.length_reverse, leBytesOfNat_length]; exact h_ge
-      have h_a : (beBytes x n n).size ≤ i := by
-        rw [beBytes_size]; exact h_ge
-      rw [List.getElem?_eq_none h_l, Array.getElem?_eq_none h_a]
+    rw [Array.getElem?_toList (xs := endianBytes endian x n n)]
+    cases endian with
+    | little =>
+      dsimp only [encodeUInt]
+      cases Nat.lt_or_ge i n with
+      | inl h_lt =>
+        rw [leBytesOfNat_getElem? n x i h_lt,
+          endianBytes_getElem? .little x n n i h_lt, Nat.pow_mul]
+      | inr h_ge =>
+        have h_l : (leBytesOfNat n x).length ≤ i := by
+          rw [leBytesOfNat_length]; exact h_ge
+        have h_a : (endianBytes .little x n n).size ≤ i := by
+          rw [endianBytes_size]; exact h_ge
+        rw [List.getElem?_eq_none h_l, Array.getElem?_eq_none h_a]
+    | big =>
+      dsimp only [encodeUInt]
+      cases Nat.lt_or_ge i n with
+      | inl h_lt =>
+        have h_len : i < (leBytesOfNat n x).length := by
+          rw [leBytesOfNat_length]; exact h_lt
+        rw [List.getElem?_reverse h_len, leBytesOfNat_length,
+          endianBytes_getElem? .big x n n i h_lt]
+        have h_idx : n - 1 - i < n :=
+          Nat.lt_of_le_of_lt (Nat.sub_le (n - 1) i)
+            (Nat.sub_lt (Nat.lt_of_le_of_lt (Nat.zero_le i) h_lt) (by decide))
+        rw [leBytesOfNat_getElem? n x (n - 1 - i) h_idx, Nat.sub_right_comm,
+          Nat.pow_mul]
+      | inr h_ge =>
+        have h_l : (leBytesOfNat n x).reverse.length ≤ i := by
+          rw [List.length_reverse, leBytesOfNat_length]; exact h_ge
+        have h_a : (endianBytes .big x n n).size ≤ i := by
+          rw [endianBytes_size]; exact h_ge
+        rw [List.getElem?_eq_none h_l, Array.getElem?_eq_none h_a]
   rw [h_list]
 
 /-- `initBytes?` recovers the raw bytes of initialized, provenance-free
@@ -149,16 +165,23 @@ theorem initBytes?_map_init : ∀ (raw : List UInt8),
     rw [initBytes?_map_init rest]
 
 /-- `Trusted.MirSemantics.decodeVal` inverts `encodeVal` on well-formed
-integers at `profileTargetEndian`. -/
-theorem decodeVal_int_encode (w : IntWidth) (s : Bool) (bits : BitVec 128) :
-    decodeVal profileTargetEndian (.int w s)
-        ((leBytesOfNat w.byteSize (truncateBits w bits).toNat).reverse.map
+integers under `endian`. -/
+theorem decodeVal_int_encode (endian : TargetEndian) (w : IntWidth) (s : Bool)
+    (bits : BitVec 128) :
+    decodeVal endian (.int w s)
+        ((encodeUInt endian w.byteSize (truncateBits w bits).toNat).map
           (fun b => AllocByte.init b none)) =
       .ok (some (.scalar ⟨w, s, truncateBits w bits⟩)) := by
+  have h_enc_len :
+      (encodeUInt endian w.byteSize (truncateBits w bits).toNat).length =
+        w.byteSize := by
+    cases endian with
+    | little => exact leBytesOfNat_length _ _
+    | big => exact List.length_reverse.trans (leBytesOfNat_length _ _)
   have h_len :
-      ((leBytesOfNat w.byteSize (truncateBits w bits).toNat).reverse.map
+      ((encodeUInt endian w.byteSize (truncateBits w bits).toNat).map
         (fun b => AllocByte.init b none)).length = w.byteSize := by
-    rw [List.length_map, List.length_reverse, leBytesOfNat_length]
+    rw [List.length_map, h_enc_len]
   have h_sz : (intLayout w).size = w.byteSize := by cases w <;> rfl
   have h_nz : Nat.beq w.byteSize 0 = false := by cases w <;> rfl
   have h_pow : Nat.pow 2 w.bitWidth = HPow.hPow 256 w.byteSize := by
@@ -167,19 +190,26 @@ theorem decodeVal_int_encode (w : IntWidth) (s : Bool) (bits : BitVec 128) :
     rw [toNat_truncateBits, ← h_pow]
     exact Nat.mod_lt _ (intWidth_modulus_pos w)
   have h_dec :
-      decodeUInt profileTargetEndian
-          (leBytesOfNat w.byteSize (truncateBits w bits).toNat).reverse =
+      decodeUInt endian
+          (encodeUInt endian w.byteSize (truncateBits w bits).toNat) =
         (truncateBits w bits).toNat := by
-    change natOfLeBytes
-        (leBytesOfNat w.byteSize (truncateBits w bits).toNat).reverse.reverse =
-      (truncateBits w bits).toNat
-    rw [List.reverse_reverse, natOfLeBytes_leBytesOfNat]
-    exact Nat.mod_eq_of_lt h_x_lt
+    cases endian with
+    | little =>
+      change natOfLeBytes (leBytesOfNat w.byteSize (truncateBits w bits).toNat) =
+        (truncateBits w bits).toNat
+      rw [natOfLeBytes_leBytesOfNat]
+      exact Nat.mod_eq_of_lt h_x_lt
+    | big =>
+      change natOfLeBytes
+          (leBytesOfNat w.byteSize (truncateBits w bits).toNat).reverse.reverse =
+        (truncateBits w bits).toNat
+      rw [List.reverse_reverse, natOfLeBytes_leBytesOfNat]
+      exact Nat.mod_eq_of_lt h_x_lt
   change (match layoutOfTy (.int w s) with
     | none => Except.error FaultKind.unsupported
     | some layout =>
-      if (!Nat.beq ((leBytesOfNat w.byteSize
-          (truncateBits w bits).toNat).reverse.map
+      if (!Nat.beq ((encodeUInt endian w.byteSize
+          (truncateBits w bits).toNat).map
           (fun b => AllocByte.init b none)).length layout.size) = true then
         Except.error FaultKind.unsupported
       else if Nat.beq layout.size 0 = true then
@@ -187,14 +217,13 @@ theorem decodeVal_int_encode (w : IntWidth) (s : Bool) (bits : BitVec 128) :
         | .ok v => .ok (some v)
         | .error k => .error k
       else
-        match initBytes? ((leBytesOfNat w.byteSize
-            (truncateBits w bits).toNat).reverse.map
+        match initBytes? ((encodeUInt endian w.byteSize
+            (truncateBits w bits).toNat).map
             (fun b => AllocByte.init b none)) with
         | none => .ok none
         | some raw =>
           match evalConstLit (.int w s)
-              (.scalar (BitVec.ofNat 128
-                (decodeUInt profileTargetEndian raw))) with
+              (.scalar (BitVec.ofNat 128 (decodeUInt endian raw))) with
           | .ok v => .ok (some v)
           | .error k => .error k) = _
   have h_lay : layoutOfTy (.int w s) = some (intLayout w) := rfl
@@ -209,11 +238,12 @@ theorem decodeVal_int_encode (w : IntWidth) (s : Bool) (bits : BitVec 128) :
   rfl
 
 /-- `Trusted.MirSemantics.encodeVal` stores a well-formed integer as its
-big-endian bytes, all initialized and without provenance. -/
-theorem encodeVal_int_trunc (w : IntWidth) (s : Bool) (bits : BitVec 128) :
-    encodeVal profileTargetEndian (.int w s)
+`endian` bytes, all initialized and without provenance. -/
+theorem encodeVal_int_trunc (endian : TargetEndian) (w : IntWidth) (s : Bool)
+    (bits : BitVec 128) :
+    encodeVal endian (.int w s)
         (.scalar ⟨w, s, truncateBits w bits⟩) =
-      .ok ((leBytesOfNat w.byteSize (truncateBits w bits).toNat).reverse.map
+      .ok ((encodeUInt endian w.byteSize (truncateBits w bits).toNat).map
         (fun b => AllocByte.init b none)) := by
   have h_wf : (ScalarVal.mk w s (truncateBits w bits)).wf = true := by
     dsimp only [ScalarVal.wf]; rw [truncateBits_idem]
@@ -230,10 +260,10 @@ theorem encodeVal_int_trunc (w : IntWidth) (s : Bool) (bits : BitVec 128) :
   rfl
 
 /-- `Trusted.MirSemantics`'s byte codec agrees with `lean-miri`'s
-`Allocation` scalar accesses on every integer width (see
-`BytesCodecMatchesMiriClaim`). -/
+`Allocation` scalar accesses on both target byte orders and every integer width
+(see `BytesCodecMatchesMiriClaim`). -/
 theorem bytes_codec_matches_miri_base : BytesCodecMatchesMiriClaim := by
-  intro w s bits
+  intro endian w s bits
   refine ⟨?_, ?_⟩
   · let ⟨rawAlloc, h_raw, _⟩ :=
       Allocation.tryNew_replicate_full (P := Miri.Memory.Provenance)
@@ -241,14 +271,15 @@ theorem bytes_codec_matches_miri_base : BytesCodecMatchesMiriClaim := by
     exact ⟨rawAlloc, h_raw⟩
   intro rawAlloc h_raw
   refine ⟨?_, ?_⟩
-  · let ⟨after, h_w, h_gb, h_rd⟩ := tryNew_writeScalar_getBytes w bits h_raw
+  · let ⟨after, h_w, h_gb, h_rd⟩ :=
+      tryNew_writeScalar_getBytes endian w bits h_raw
     have h_n : (toMiriSize w).bytes.toNat = w.byteSize := by cases w <;> rfl
-    refine ⟨(leBytesOfNat w.byteSize (truncateBits w bits).toNat).reverse,
-      after, encodeVal_int_trunc w s bits, h_w, ?_, h_rd,
-      decodeVal_int_encode w s bits⟩
-    rw [h_gb, h_n, miriScalar_data, reverse_leBytesOfNat_eq_beBytes]
+    refine ⟨encodeUInt endian w.byteSize (truncateBits w bits).toNat,
+      after, encodeVal_int_trunc endian w s bits, h_w, ?_, h_rd,
+      decodeVal_int_encode endian w s bits⟩
+    rw [h_gb, h_n, miriScalar_data, encodeUInt_eq_endianBytes]
   · let ⟨after, info, h_wu, h_rd, _, _, _, _⟩ :=
-      tryNew_writeUninit_readUninit w h_raw
+      tryNew_writeUninit_readUninit endian w h_raw
     refine ⟨after, info, h_wu, h_rd, ?_⟩
     cases w <;> rfl
 

@@ -411,6 +411,52 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         fixture_module="BytesRefutations",
         theorem_name="refute_bytes_uninit_memory_read",
     ),
+    MirSemanticsGuard(
+        guard_id="bytes_decode_endian_little",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description="decodeUInt .little uses little-endian byte order",
+        anchor=(
+            "noncomputable def decodeUInt (endian : TargetEndian) (bytes : List UInt8) :\n"
+            "    Nat :=\n"
+            "  match endian with\n"
+            "  | .little => natOfLeBytes bytes\n"
+            "  | .big => natOfLeBytes bytes.reverse"
+        ),
+        replacement=(
+            "noncomputable def decodeUInt (endian : TargetEndian) (bytes : List UInt8) :\n"
+            "    Nat :=\n"
+            "  match endian with\n"
+            "  | .little => natOfLeBytes bytes.reverse\n"
+            "  | .big => natOfLeBytes bytes.reverse"
+        ),
+        fixture_module="BytesRefutations",
+        theorem_name="refute_bytes_decode_endian_little",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="bytes_decode_endian_big",
+        target_file="trusted/lean/Trusted/MirSemantics/Bytes.lean",
+        target_module="Trusted/MirSemantics/Bytes",
+        description="decodeUInt .big uses big-endian byte order",
+        anchor=(
+            "noncomputable def decodeUInt (endian : TargetEndian) (bytes : List UInt8) :\n"
+            "    Nat :=\n"
+            "  match endian with\n"
+            "  | .little => natOfLeBytes bytes\n"
+            "  | .big => natOfLeBytes bytes.reverse"
+        ),
+        replacement=(
+            "noncomputable def decodeUInt (endian : TargetEndian) (bytes : List UInt8) :\n"
+            "    Nat :=\n"
+            "  match endian with\n"
+            "  | .little => natOfLeBytes bytes\n"
+            "  | .big => natOfLeBytes bytes"
+        ),
+        fixture_module="BytesRefutations",
+        theorem_name="refute_bytes_decode_endian_big",
+        needs_wf_helper=False,
+    ),
     # ------------------------------------------------------------------
     # Trusted/MirSemantics/Memory.lean (15 allocation/bounds/align/mut guards)
     # ------------------------------------------------------------------
@@ -950,12 +996,12 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         target_module="Trusted/MirSemantics/Step",
         description="TerminatorKind.return_ rejects uninitialized indirect _0 as UB",
         anchor=(
-            "          match loadIndirect mem retTy mplace with\n"
+            "          match loadIndirect endian mem retTy mplace with\n"
             "          | .ok (some retVal) => .done (.returned ⟨retVal, callerMem⟩)\n"
             "          | .ok none => .fault .undefined"
         ),
         replacement=(
-            "          match loadIndirect mem retTy mplace with\n"
+            "          match loadIndirect endian mem retTy mplace with\n"
             "          | .ok (some retVal) => .done (.returned ⟨retVal, callerMem⟩)\n"
             "          | .ok none => .done (.returned ⟨.unit, callerMem⟩)"
         ),
@@ -987,6 +1033,38 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_force_alloc_dead_local",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_endian_propagates_little",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalStep forwards p.targetEndian (.little) into evalStatement",
+        anchor=(
+            "        | some stmt =>\n"
+            "          evalStatement p.targetEndian body frame s.mem s.callerMem stmt"
+        ),
+        replacement=(
+            "        | some stmt =>\n"
+            "          evalStatement .big body frame s.mem s.callerMem stmt"
+        ),
+        fixture_module="BytesRefutations",
+        theorem_name="refute_step_endian_propagates_little",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_endian_propagates_big",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalStep forwards p.targetEndian (.big) into evalStatement",
+        anchor=(
+            "        | some stmt =>\n"
+            "          evalStatement p.targetEndian body frame s.mem s.callerMem stmt"
+        ),
+        replacement=(
+            "        | some stmt =>\n"
+            "          evalStatement .little body frame s.mem s.callerMem stmt"
+        ),
+        fixture_module="BytesRefutations",
+        theorem_name="refute_step_endian_propagates_big",
     ),
     # ------------------------------------------------------------------
     # Trusted/MirSemantics/Boundary.lean (3 judgment soundness guards)

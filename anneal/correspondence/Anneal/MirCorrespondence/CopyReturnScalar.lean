@@ -28,14 +28,15 @@ namespace Anneal.MirCorrespondence
 open Trusted Trusted.MirAst Trusted.MirSemantics Trusted.Correspondence
 open Miri.ABI Miri.Memory Miri.Interpreter
 
-private theorem readImmediate_mem_retPlace_core (types : List MirTy)
+private theorem readImmediate_mem_retPlace_core (endian : TargetEndian)
+    (types : List MirTy)
     (w : IntWidth) (ty : MirTy)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (after : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
     (machine : Miri.Interpreter.MachineHooks.MachineState Unit RefUser)
     (cfg : Miri.Interpreter.PlaceMachine.AccessConfig Unit RefUser)
-    (h_rt : cfg.runtime = Miri.ABI.RuntimeTargetDataLayout.default)
+    (h_rt : cfg.runtime = refRuntimeLayout endian)
     (h_gk : cfg.globalKind = none)
     (h_res : cfg.resolvePointer = refResolvePointer)
     (h_gh : cfg.globalHooks = refGlobalAllocationHooks)
@@ -48,7 +49,7 @@ private theorem readImmediate_mem_retPlace_core (types : List MirTy)
         (localMemoryLayout (refLocalLayoutForTy types ty))
         cfg.runtime true cfg.globalKind cfg.globalHooks
         (Miri.Interpreter.PlaceMachine.accessHooks cfg) cfg.dynamicLayout =
-      match after.readScalar RuntimeTargetDataLayout.default.base
+      match after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize w)) false with
       | .ok sc =>
         ⟨mem, ⟨machine, none⟩,
@@ -59,8 +60,8 @@ private theorem readImmediate_mem_retPlace_core (types : List MirTy)
           some ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), after⟩,
           .error (.allocation err)⟩ := by
   intro mem
-  have h_raw := readImmediateFromMplaceRaw_retPlace_core types w ty mem1 after
-    machine cfg h_rt h_gk h_res h_gh h_ty h_sz
+  have h_raw := readImmediateFromMplaceRaw_retPlace_core endian types w ty mem1
+    after machine cfg h_rt h_gk h_res h_gh h_ty h_sz
   rw [h_rt, h_gk]
   cases h_ty with
   | inl h =>
@@ -69,7 +70,7 @@ private theorem readImmediate_mem_retPlace_core (types : List MirTy)
     dsimp only [Miri.Interpreter.readImmediate, Miri.Interpreter.readImmediateRaw,
       Id.run, pure, Pure.pure, bind, Bind.bind]
     rw [h_raw]
-    cases after.readScalar RuntimeTargetDataLayout.default.base
+    cases after.readScalar (refRuntimeLayout endian).base
         (allocRange Size.ZERO (toMiriSize .i8)) false <;> rfl
   | inr h =>
     cases h with
@@ -81,7 +82,7 @@ private theorem readImmediate_mem_retPlace_core (types : List MirTy)
           Miri.Interpreter.readImmediateRaw,
           Id.run, pure, Pure.pure, bind, Bind.bind]
         rw [h_raw]
-        cases after.readScalar RuntimeTargetDataLayout.default.base
+        cases after.readScalar (refRuntimeLayout endian).base
             (allocRange Size.ZERO _) false <;> rfl)
     | inr h =>
       let ⟨hty, hw⟩ := h
@@ -89,10 +90,11 @@ private theorem readImmediate_mem_retPlace_core (types : List MirTy)
       dsimp only [Miri.Interpreter.readImmediate, Miri.Interpreter.readImmediateRaw,
         Id.run, pure, Pure.pure, bind, Bind.bind]
       rw [h_raw]
-      cases after.readScalar RuntimeTargetDataLayout.default.base
+      cases after.readScalar (refRuntimeLayout endian).base
           (allocRange Size.ZERO (toMiriSize .i32)) false <;> rfl
 
-private theorem validityMemory_readImmediate_mem_scalar (types : List MirTy)
+private theorem validityMemory_readImmediate_mem_scalar (endian : TargetEndian)
+    (types : List MirTy)
     (w : IntWidth) (ty : MirTy) (sc : Scalar Miri.Memory.Provenance)
     (expected : ExpectedValue)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -103,13 +105,13 @@ private theorem validityMemory_readImmediate_mem_scalar (types : List MirTy)
       (ty = .char ∧ w = .i32))
     (h_mem : st.machine.memory = { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) })
     (h_sz : after.byteSize = toMiriSize w)
-    (h_rd : after.readScalar RuntimeTargetDataLayout.default.base
+    (h_rd : after.readScalar (refRuntimeLayout endian).base
       (allocRange Size.ZERO (toMiriSize w)) false = .ok sc) :
-    Miri.Interpreter.ValidityMemory.readImmediate refValidityMemoryEnv
+    Miri.Interpreter.ValidityMemory.readImmediate (refValidityMemoryEnv endian)
         ⟨.indirect retMemPlace, refLocalLayoutForTy types ty⟩ expected st =
       .ok ⟨.scalar sc, refLocalLayoutForTy types ty⟩ st := by
-  have h_core := readImmediate_mem_retPlace_core types w ty mem1 after
-    st.machine refAccessConfig rfl rfl rfl rfl h_ty h_sz
+  have h_core := readImmediate_mem_retPlace_core endian types w ty mem1 after
+    st.machine (refAccessConfig endian) rfl rfl rfl rfl h_ty h_sz
   rw [h_rd] at h_core
   dsimp only [Miri.Interpreter.ValidityMemory.readImmediate,
     refValidityMemoryEnv, get, getThe, MonadStateOf.get, EStateM.get,
@@ -120,9 +122,10 @@ private theorem validityMemory_readImmediate_mem_scalar (types : List MirTy)
         { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
         ⟨st.machine, none⟩ (.indirect retMemPlace)
         (localMemoryLayout (refLocalLayoutForTy types ty))
-        refAccessConfig.runtime true none refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-        refAccessConfig.dynamicLayout =
+        (refAccessConfig endian).runtime true none
+        (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+        (refAccessConfig endian).dynamicLayout =
       ⟨{ mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) },
         ⟨st.machine, none⟩,
         some ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), after⟩,
@@ -137,7 +140,8 @@ private theorem validityMemory_readImmediate_mem_scalar (types : List MirTy)
       subst h_mem
       rfl
 
-private theorem validityMemory_readImmediate_mem_uninit (types : List MirTy)
+private theorem validityMemory_readImmediate_mem_uninit (endian : TargetEndian)
+    (types : List MirTy)
     (w : IntWidth) (ty : MirTy) (info : Option Miri.Memory.BadBytesAccess)
     (expected : ExpectedValue)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -148,15 +152,15 @@ private theorem validityMemory_readImmediate_mem_uninit (types : List MirTy)
       (ty = .char ∧ w = .i32))
     (h_mem : st.machine.memory = { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) })
     (h_sz : after.byteSize = toMiriSize w)
-    (h_rd : after.readScalar RuntimeTargetDataLayout.default.base
+    (h_rd : after.readScalar (refRuntimeLayout endian).base
       (allocRange Size.ZERO (toMiriSize w)) false =
       .error (.invalidUninitBytes info)) :
     ∃ msg,
-      Miri.Interpreter.ValidityMemory.readImmediate refValidityMemoryEnv
+      Miri.Interpreter.ValidityMemory.readImmediate (refValidityMemoryEnv endian)
           ⟨.indirect retMemPlace, refLocalLayoutForTy types ty⟩ expected st =
         .error (.undefinedBehavior msg) st := by
-  have h_core := readImmediate_mem_retPlace_core types w ty mem1 after
-    st.machine refAccessConfig rfl rfl rfl rfl h_ty h_sz
+  have h_core := readImmediate_mem_retPlace_core endian types w ty mem1 after
+    st.machine (refAccessConfig endian) rfl rfl rfl rfl h_ty h_sz
   rw [h_rd] at h_core
   dsimp only [Miri.Interpreter.ValidityMemory.readImmediate,
     refValidityMemoryEnv, get, getThe, MonadStateOf.get, EStateM.get,
@@ -167,9 +171,10 @@ private theorem validityMemory_readImmediate_mem_uninit (types : List MirTy)
         { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
         ⟨st.machine, none⟩ (.indirect retMemPlace)
         (localMemoryLayout (refLocalLayoutForTy types ty))
-        refAccessConfig.runtime true none refAccessConfig.globalHooks
-        (Miri.Interpreter.PlaceMachine.accessHooks refAccessConfig)
-        refAccessConfig.dynamicLayout =
+        (refAccessConfig endian).runtime true none
+        (refAccessConfig endian).globalHooks
+        (Miri.Interpreter.PlaceMachine.accessHooks (refAccessConfig endian))
+        (refAccessConfig endian).dynamicLayout =
       ⟨{ mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) },
         ⟨st.machine, none⟩,
         some ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), after⟩,
@@ -184,7 +189,8 @@ private theorem validityMemory_readImmediate_mem_uninit (types : List MirTy)
       subst h_mem
       exact ⟨_, rfl⟩
 
-private theorem placeMachine_readImmediate_mem_scalar_ghost (types : List MirTy)
+private theorem placeMachine_readImmediate_mem_scalar_ghost
+    (endian : TargetEndian) (types : List MirTy)
     (tagW : IntWidth) (tagS : Bool) (sc : Scalar Miri.Memory.Provenance)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -193,16 +199,19 @@ private theorem placeMachine_readImmediate_mem_scalar_ghost (types : List MirTy)
     (h_pmd : st.machine.pendingMoveDeinit = false)
     (h_mem : st.machine.memory = { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) })
     (h_sz : after.byteSize = toMiriSize tagW)
-    (h_rd : after.readScalar RuntimeTargetDataLayout.default.base
+    (h_rd : after.readScalar (refRuntimeLayout endian).base
       (allocRange Size.ZERO (toMiriSize tagW)) false = .ok sc) :
     Miri.Interpreter.PlaceMachine.readImmediate
-        { refAccessConfig with ghostMode := true, deinitMovedPlace := false }
+        { refAccessConfig endian with
+          ghostMode := true, deinitMovedPlace := false }
         ⟨.indirect retMemPlace, refLocalLayoutForTy types (.int tagW tagS)⟩ st =
       .ok ⟨.scalar sc, refLocalLayoutForTy types (.int tagW tagS)⟩ st := by
   let cfg : Miri.Interpreter.PlaceMachine.AccessConfig Unit RefUser :=
-    { refAccessConfig with ghostMode := true, deinitMovedPlace := false }
-  have h_core := readImmediate_mem_retPlace_core types tagW (.int tagW tagS)
-    mem1 after st.machine cfg rfl rfl rfl rfl (Or.inr (Or.inl ⟨tagS, rfl⟩)) h_sz
+    { refAccessConfig endian with
+      ghostMode := true, deinitMovedPlace := false }
+  have h_core := readImmediate_mem_retPlace_core endian types tagW
+    (.int tagW tagS) mem1 after st.machine cfg rfl rfl rfl rfl
+    (Or.inr (Or.inl ⟨tagS, rfl⟩)) h_sz
   rw [h_rd] at h_core
   have h_take : Miri.Interpreter.PlaceMachine.takePendingMoveDeinit false st =
       .ok false st := by
@@ -244,7 +253,8 @@ private theorem placeMachine_readImmediate_mem_scalar_ghost (types : List MirTy)
       rfl
 
 
-private theorem clearPlaceProvenance_mem_retPlace (types : List MirTy)
+private theorem clearPlaceProvenance_mem_retPlace (endian : TargetEndian)
+    (types : List MirTy)
     (c : Choice) (w : IntWidth) (ty : MirTy)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -257,7 +267,7 @@ private theorem clearPlaceProvenance_mem_retPlace (types : List MirTy)
     (h_mut : after.mutability = .Mut)
     (h_cp : Allocation.clearProvenance (allocRange Size.ZERO (toMiriSize w))
       (Size.ofBytes 8) after = .ok () after) :
-    (refValHooks types).clearProvenance c
+    (refValHooks endian types).clearProvenance c
         ⟨.memory retMemPlace, refLocalLayoutForTy types ty⟩ st =
       .ok () st := by
   have h_uns : (localMemoryLayout (refLocalLayoutForTy types ty)).backendRepr.isUnsized = false := by
@@ -274,7 +284,7 @@ private theorem clearPlaceProvenance_mem_retPlace (types : List MirTy)
       cases h with
       | inl h => let ⟨s, hs⟩ := h; rw [hs]; rfl
       | inr h => rw [h.1, h.2]; rfl
-  have h_acc := getPlaceAllocMut_retPlace_ghost w
+  have h_acc := getPlaceAllocMut_retPlace_ghost endian w
     (localMemoryLayout (refLocalLayoutForTy types ty))
     mem1 after st.machine h_uns h_lsz h_sz h_mut
   have h_st_eq :
@@ -291,11 +301,14 @@ private theorem clearPlaceProvenance_mem_retPlace (types : List MirTy)
         rfl
   have h_env_acc :
       Miri.Interpreter.getPlaceAllocMut
-        (refValidityMemoryEnv.memory st) (refValidityMemoryEnv.hooks st)
+        ((refValidityMemoryEnv endian).memory st)
+        ((refValidityMemoryEnv endian).hooks st)
         ⟨retMemPlace, localMemoryLayout (refLocalLayoutForTy types ty)⟩
-        refValidityMemoryEnv.context.runtime true refValidityMemoryEnv.context.globalKind
-        refValidityMemoryEnv.context.globalHooks refValidityMemoryEnv.context.accessHooks
-        refValidityMemoryEnv.context.dynamicLayout =
+        (refValidityMemoryEnv endian).context.runtime true
+        (refValidityMemoryEnv endian).context.globalKind
+        (refValidityMemoryEnv endian).context.globalHooks
+        (refValidityMemoryEnv endian).context.accessHooks
+        (refValidityMemoryEnv endian).context.dynamicLayout =
       ⟨{ mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) },
         ⟨st.machine, none⟩,
         some ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), after⟩,
@@ -304,8 +317,8 @@ private theorem clearPlaceProvenance_mem_retPlace (types : List MirTy)
     rw [h_mem]
     exact h_acc
   rw [refValHooks_clearProvenance]
-  have h_res := clearPlaceProvenance_mem_step refValidityMemoryEnv
-    (refBasePlaceProjectionHooks types).place
+  have h_res := clearPlaceProvenance_mem_step (refValidityMemoryEnv endian)
+    (refBasePlaceProjectionHooks endian types).place
     c (fun st => .ok false st) (fun _ _ st => .ok () st)
     retMemPlace (refLocalLayoutForTy types ty) st st
     { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
@@ -319,7 +332,8 @@ private theorem clearPlaceProvenance_mem_retPlace (types : List MirTy)
   dsimp only [refValidityMemoryEnv]
   rw [h_st_eq]
 
-theorem visit_mem_int_ok (types : List MirTy) (c : Choice) (fuel : Nat)
+theorem visit_mem_int_ok (endian : TargetEndian) (types : List MirTy)
+    (c : Choice) (fuel : Nat)
     (path : Miri.Memory.ValidationPath) (w : IntWidth) (s : Bool)
     (sc : Scalar Miri.Memory.Provenance)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -331,7 +345,7 @@ theorem visit_mem_int_ok (types : List MirTy) (c : Choice) (fuel : Nat)
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) })
     (h_sz : after.byteSize = toMiriSize w)
     (h_mut : after.mutability = .Mut)
-    (h_rd : after.readScalar RuntimeTargetDataLayout.default.base
+    (h_rd : after.readScalar (refRuntimeLayout endian).base
       (allocRange Size.ZERO (toMiriSize w)) false = .ok sc)
     (h_cp : Allocation.clearProvenance (allocRange Size.ZERO (toMiriSize w))
       (Size.ofBytes 8) after = .ok () after) :
@@ -340,27 +354,28 @@ theorem visit_mem_int_ok (types : List MirTy) (c : Choice) (fuel : Nat)
       path := path, flags := ⟨true, false⟩, ctfeMode := none,
       refTracking := none, dataBytes := some .empty
     }
-    Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c (fuel + 1)
-        sess ⟨.memory retMemPlace, refLocalLayoutForTy types (.int w s)⟩ st =
+    Miri.Interpreter.ValidityVisitor.visit (refValHooks endian types) c
+        (fuel + 1) sess
+        ⟨.memory retMemPlace, refLocalLayoutForTy types (.int w s)⟩ st =
       .ok { sess with dataBytes := some (singleDataRange w) } st := by
   intro sess
-  have h_ri : (refValHooks types).readImmediate c
+  have h_ri : (refValHooks endian types).readImmediate c
       ⟨.memory retMemPlace, refLocalLayoutForTy types (.int w s)⟩
       ExpectedValue.integer st =
       .ok ⟨.scalar sc, refLocalLayoutForTy types (.int w s)⟩ st := by
     rw [refValHooks_readImmediate]
     dsimp only [Miri.Interpreter.placeToOp, Miri.Interpreter.placeToOpCore,
       bind, Bind.bind, EStateM.bind, pure, Pure.pure, EStateM.pure]
-    exact validityMemory_readImmediate_mem_scalar types w (.int w s) sc
+    exact validityMemory_readImmediate_mem_scalar endian types w (.int w s) sc
       ExpectedValue.integer mem1 after st (Or.inr (Or.inl ⟨s, rfl⟩))
       h_mem h_sz h_rd
-  have h_clr := clearPlaceProvenance_mem_retPlace types c w (.int w s)
+  have h_clr := clearPlaceProvenance_mem_retPlace endian types c w (.int w s)
     mem1 after st (Or.inr (Or.inl ⟨s, rfl⟩)) h_mem h_sz h_mut h_cp
   dsimp only [Miri.Interpreter.ValidityVisitor.visit, bind, Bind.bind,
     EStateM.bind]
   rw [mem_refLocalLayoutForTy_ty, refValHooks_classify, h_res]
   dsimp only
-  change (EStateM.bind (EStateM.bind ((refValHooks types).readImmediate c
+  change (EStateM.bind (EStateM.bind ((refValHooks endian types).readImmediate c
     ⟨.memory retMemPlace, refLocalLayoutForTy types (.int w s)⟩
     ExpectedValue.integer) _) _ st) = _
   rw [eStateM_bind_bind_ok h_ri]
@@ -373,7 +388,7 @@ theorem visit_mem_int_ok (types : List MirTy) (c : Choice) (fuel : Nat)
       (Miri.Interpreter.ValidityVisitor.TypeKind.integer == .character) =
         false := rfl
   rw [h_ib, mem_ite_false_eq, h_ic, mem_ite_false_eq, mem_ite_true_eq]
-  change (EStateM.bind (EStateM.bind ((refValHooks types).clearProvenance c
+  change (EStateM.bind (EStateM.bind ((refValHooks endian types).clearProvenance c
     ⟨.memory retMemPlace, refLocalLayoutForTy types (.int w s)⟩) _) _ st) = _
   rw [eStateM_bind_bind_ok h_clr]
   dsimp only [EStateM.bind, EStateM.pure, bind, Bind.bind, pure, Pure.pure,
@@ -382,8 +397,8 @@ theorem visit_mem_int_ok (types : List MirTy) (c : Choice) (fuel : Nat)
     refScalarLayoutData, refBaseLayoutData]
   cases w <;> rfl
 
-theorem visit_mem_int_uninit_ub (types : List MirTy) (c : Choice)
-    (fuel : Nat)
+theorem visit_mem_int_uninit_ub (endian : TargetEndian) (types : List MirTy)
+    (c : Choice) (fuel : Nat)
     (sess : Miri.Interpreter.ValidityVisitor.Session Miri.Memory.Provenance)
     (w : IntWidth) (s : Bool) (info : Option Miri.Memory.BadBytesAccess)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -394,18 +409,19 @@ theorem visit_mem_int_uninit_ub (types : List MirTy) (c : Choice)
     (h_mem : st.machine.memory =
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) })
     (h_sz : after.byteSize = toMiriSize w)
-    (h_rd : after.readScalar RuntimeTargetDataLayout.default.base
+    (h_rd : after.readScalar (refRuntimeLayout endian).base
       (allocRange Size.ZERO (toMiriSize w)) false =
       .error (.invalidUninitBytes info)) :
     ∃ msg,
-      Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c (fuel + 1)
-          sess ⟨.memory retMemPlace, refLocalLayoutForTy types (.int w s)⟩ st =
+      Miri.Interpreter.ValidityVisitor.visit (refValHooks endian types) c
+          (fuel + 1) sess
+          ⟨.memory retMemPlace, refLocalLayoutForTy types (.int w s)⟩ st =
         .error (.undefinedBehavior msg) st := by
-  let ⟨msg, h_ri_raw⟩ := validityMemory_readImmediate_mem_uninit types w
+  let ⟨msg, h_ri_raw⟩ := validityMemory_readImmediate_mem_uninit endian types w
     (.int w s) info ExpectedValue.integer mem1 after st
     (Or.inr (Or.inl ⟨s, rfl⟩))
     h_mem h_sz h_rd
-  have h_ri : (refValHooks types).readImmediate c
+  have h_ri : (refValHooks endian types).readImmediate c
       ⟨.memory retMemPlace, refLocalLayoutForTy types (.int w s)⟩
       ExpectedValue.integer st = .error (.undefinedBehavior msg) st := by
     rw [refValHooks_readImmediate]
@@ -417,13 +433,13 @@ theorem visit_mem_int_uninit_ub (types : List MirTy) (c : Choice)
     EStateM.bind]
   rw [mem_refLocalLayoutForTy_ty, refValHooks_classify, h_res]
   dsimp only
-  change (EStateM.bind (EStateM.bind ((refValHooks types).readImmediate c
+  change (EStateM.bind (EStateM.bind ((refValHooks endian types).readImmediate c
     ⟨.memory retMemPlace, refLocalLayoutForTy types (.int w s)⟩
     ExpectedValue.integer) _) _ st) = _
   rw [eStateM_bind_bind_err h_ri]
 
-theorem visit_mem_char_ok (types : List MirTy) (c : Choice)
-    (fuel : Nat)
+theorem visit_mem_char_ok (endian : TargetEndian) (types : List MirTy)
+    (c : Choice) (fuel : Nat)
     (path : Miri.Memory.ValidationPath) (ch : Char)
     (sc : Scalar Miri.Memory.Provenance)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -436,7 +452,7 @@ theorem visit_mem_char_ok (types : List MirTy) (c : Choice)
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) })
     (h_sz : after.byteSize = toMiriSize .i32)
     (h_mut : after.mutability = .Mut)
-    (h_rd : after.readScalar RuntimeTargetDataLayout.default.base
+    (h_rd : after.readScalar (refRuntimeLayout endian).base
       (allocRange Size.ZERO (toMiriSize .i32)) false = .ok sc)
     (h_cp : Allocation.clearProvenance (allocRange Size.ZERO (toMiriSize .i32))
       (Size.ofBytes 8) after = .ok () after) :
@@ -445,27 +461,28 @@ theorem visit_mem_char_ok (types : List MirTy) (c : Choice)
       path := path, flags := ⟨true, false⟩, ctfeMode := none,
       refTracking := none, dataBytes := some .empty
     }
-    Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c (fuel + 1)
-        sess ⟨.memory retMemPlace, refLocalLayoutForTy types .char⟩ st =
+    Miri.Interpreter.ValidityVisitor.visit (refValHooks endian types) c
+        (fuel + 1) sess ⟨.memory retMemPlace, refLocalLayoutForTy types .char⟩
+        st =
       .ok { sess with dataBytes := some (singleDataRange .i32) } st := by
   intro sess
-  have h_ri : (refValHooks types).readImmediate c
+  have h_ri : (refValHooks endian types).readImmediate c
       ⟨.memory retMemPlace, refLocalLayoutForTy types .char⟩
       ExpectedValue.character st =
       .ok ⟨.scalar sc, refLocalLayoutForTy types .char⟩ st := by
     rw [refValHooks_readImmediate]
     dsimp only [Miri.Interpreter.placeToOp, Miri.Interpreter.placeToOpCore,
       bind, Bind.bind, EStateM.bind, pure, Pure.pure, EStateM.pure]
-    exact validityMemory_readImmediate_mem_scalar types .i32 .char sc
+    exact validityMemory_readImmediate_mem_scalar endian types .i32 .char sc
       ExpectedValue.character mem1 after st (Or.inr (Or.inr ⟨rfl, rfl⟩))
       h_mem h_sz h_rd
-  have h_clr := clearPlaceProvenance_mem_retPlace types c .i32 .char
+  have h_clr := clearPlaceProvenance_mem_retPlace endian types c .i32 .char
     mem1 after st (Or.inr (Or.inr ⟨rfl, rfl⟩)) h_mem h_sz h_mut h_cp
   dsimp only [Miri.Interpreter.ValidityVisitor.visit, bind, Bind.bind,
     EStateM.bind]
   rw [mem_refLocalLayoutForTy_ty, refValHooks_classify, h_res]
   dsimp only
-  change (EStateM.bind (EStateM.bind ((refValHooks types).readImmediate c
+  change (EStateM.bind (EStateM.bind ((refValHooks endian types).readImmediate c
     ⟨.memory retMemPlace, refLocalLayoutForTy types .char⟩
     ExpectedValue.character) _) _ st) = _
   rw [eStateM_bind_bind_ok h_ri]
@@ -478,7 +495,7 @@ theorem visit_mem_char_ok (types : List MirTy) (c : Choice)
       (Miri.Interpreter.ValidityVisitor.TypeKind.character == .character) =
         true := rfl
   rw [h_ib, mem_ite_false_eq, h_ic, mem_ite_true_eq, h_char]
-  change (EStateM.bind (EStateM.bind ((refValHooks types).clearProvenance c
+  change (EStateM.bind (EStateM.bind ((refValHooks endian types).clearProvenance c
     ⟨.memory retMemPlace, refLocalLayoutForTy types .char⟩) _) _ st) = _
   rw [eStateM_bind_bind_ok h_clr]
   dsimp only [EStateM.bind, EStateM.pure, bind, Bind.bind, pure, Pure.pure,
@@ -487,8 +504,8 @@ theorem visit_mem_char_ok (types : List MirTy) (c : Choice)
     refScalarLayoutData, refBaseLayoutData]
   rfl
 
-theorem visit_mem_char_uninit_ub (types : List MirTy) (c : Choice)
-    (fuel : Nat)
+theorem visit_mem_char_uninit_ub (endian : TargetEndian) (types : List MirTy)
+    (c : Choice) (fuel : Nat)
     (sess : Miri.Interpreter.ValidityVisitor.Session Miri.Memory.Provenance)
     (info : Option Miri.Memory.BadBytesAccess)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -499,18 +516,19 @@ theorem visit_mem_char_uninit_ub (types : List MirTy) (c : Choice)
     (h_mem : st.machine.memory =
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) })
     (h_sz : after.byteSize = toMiriSize .i32)
-    (h_rd : after.readScalar RuntimeTargetDataLayout.default.base
+    (h_rd : after.readScalar (refRuntimeLayout endian).base
       (allocRange Size.ZERO (toMiriSize .i32)) false =
       .error (.invalidUninitBytes info)) :
     ∃ msg,
-      Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c (fuel + 1)
-          sess ⟨.memory retMemPlace, refLocalLayoutForTy types .char⟩ st =
+      Miri.Interpreter.ValidityVisitor.visit (refValHooks endian types) c
+          (fuel + 1) sess ⟨.memory retMemPlace, refLocalLayoutForTy types .char⟩
+          st =
         .error (.undefinedBehavior msg) st := by
-  let ⟨msg, h_ri_raw⟩ := validityMemory_readImmediate_mem_uninit types .i32
-    .char info ExpectedValue.character mem1 after st
+  let ⟨msg, h_ri_raw⟩ := validityMemory_readImmediate_mem_uninit endian types
+    .i32 .char info ExpectedValue.character mem1 after st
     (Or.inr (Or.inr ⟨rfl, rfl⟩))
     h_mem h_sz h_rd
-  have h_ri : (refValHooks types).readImmediate c
+  have h_ri : (refValHooks endian types).readImmediate c
       ⟨.memory retMemPlace, refLocalLayoutForTy types .char⟩
       ExpectedValue.character st = .error (.undefinedBehavior msg) st := by
     rw [refValHooks_readImmediate]
@@ -522,12 +540,13 @@ theorem visit_mem_char_uninit_ub (types : List MirTy) (c : Choice)
     EStateM.bind]
   rw [mem_refLocalLayoutForTy_ty, refValHooks_classify, h_res]
   dsimp only
-  change (EStateM.bind (EStateM.bind ((refValHooks types).readImmediate c
+  change (EStateM.bind (EStateM.bind ((refValHooks endian types).readImmediate c
     ⟨.memory retMemPlace, refLocalLayoutForTy types .char⟩
     ExpectedValue.character) _) _ st) = _
   rw [eStateM_bind_bind_err h_ri]
 
-theorem visit_mem_bool_ok (types : List MirTy) (c : Choice) (fuel : Nat)
+theorem visit_mem_bool_ok (endian : TargetEndian) (types : List MirTy)
+    (c : Choice) (fuel : Nat)
     (path : Miri.Memory.ValidationPath) (b : Bool)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -538,7 +557,7 @@ theorem visit_mem_bool_ok (types : List MirTy) (c : Choice) (fuel : Nat)
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) })
     (h_sz : after.byteSize = toMiriSize .i8)
     (h_mut : after.mutability = .Mut)
-    (h_rd : after.readScalar RuntimeTargetDataLayout.default.base
+    (h_rd : after.readScalar (refRuntimeLayout endian).base
       (allocRange Size.ZERO (toMiriSize .i8)) false =
       .ok (.fromScalarInt (miriScalar .i8 (if b then 1 else 0))))
     (h_cp : Allocation.clearProvenance (allocRange Size.ZERO (toMiriSize .i8))
@@ -548,11 +567,12 @@ theorem visit_mem_bool_ok (types : List MirTy) (c : Choice) (fuel : Nat)
       path := path, flags := ⟨true, false⟩, ctfeMode := none,
       refTracking := none, dataBytes := some .empty
     }
-    Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c (fuel + 1)
-        sess ⟨.memory retMemPlace, refLocalLayoutForTy types .bool⟩ st =
+    Miri.Interpreter.ValidityVisitor.visit (refValHooks endian types) c
+        (fuel + 1) sess ⟨.memory retMemPlace, refLocalLayoutForTy types .bool⟩
+        st =
       .ok { sess with dataBytes := some (singleDataRange .i8) } st := by
   intro sess
-  have h_ri : (refValHooks types).readImmediate c
+  have h_ri : (refValHooks endian types).readImmediate c
       ⟨.memory retMemPlace, refLocalLayoutForTy types .bool⟩
       ExpectedValue.boolean st =
       .ok ⟨.scalar (.fromScalarInt (miriScalar .i8 (if b then 1 else 0))),
@@ -560,15 +580,15 @@ theorem visit_mem_bool_ok (types : List MirTy) (c : Choice) (fuel : Nat)
     rw [refValHooks_readImmediate]
     dsimp only [Miri.Interpreter.placeToOp, Miri.Interpreter.placeToOpCore,
       bind, Bind.bind, EStateM.bind, pure, Pure.pure, EStateM.pure]
-    exact validityMemory_readImmediate_mem_scalar types .i8 .bool _
+    exact validityMemory_readImmediate_mem_scalar endian types .i8 .bool _
       ExpectedValue.boolean mem1 after st (Or.inl ⟨rfl, rfl⟩) h_mem h_sz h_rd
-  have h_clr := clearPlaceProvenance_mem_retPlace types c .i8 .bool
+  have h_clr := clearPlaceProvenance_mem_retPlace endian types c .i8 .bool
     mem1 after st (Or.inl ⟨rfl, rfl⟩) h_mem h_sz h_mut h_cp
   dsimp only [Miri.Interpreter.ValidityVisitor.visit, bind, Bind.bind,
     EStateM.bind]
   rw [mem_refLocalLayoutForTy_ty, refValHooks_classify, h_res]
   dsimp only
-  change (EStateM.bind (EStateM.bind ((refValHooks types).readImmediate c
+  change (EStateM.bind (EStateM.bind ((refValHooks endian types).readImmediate c
     ⟨.memory retMemPlace, refLocalLayoutForTy types .bool⟩
     ExpectedValue.boolean) _) _ st) = _
   rw [eStateM_bind_bind_ok h_ri]
@@ -586,13 +606,14 @@ theorem visit_mem_bool_ok (types : List MirTy) (c : Choice) (fuel : Nat)
   cases b <;> (
     dsimp only [EStateM.bind, EStateM.pure, bind, Bind.bind, pure, Pure.pure]
     rw [h_bc, mem_ite_false_eq, mem_ite_true_eq]
-    change (EStateM.bind (EStateM.bind ((refValHooks types).clearProvenance c
-      ⟨.memory retMemPlace, refLocalLayoutForTy types .bool⟩) _) _ st) = _
+    change (EStateM.bind (EStateM.bind
+      ((refValHooks endian types).clearProvenance c
+        ⟨.memory retMemPlace, refLocalLayoutForTy types .bool⟩) _) _ st) = _
     rw [eStateM_bind_bind_ok h_clr]
     rfl)
 
-theorem visit_mem_bool_uninit_ub (types : List MirTy) (c : Choice)
-    (fuel : Nat)
+theorem visit_mem_bool_uninit_ub (endian : TargetEndian) (types : List MirTy)
+    (c : Choice) (fuel : Nat)
     (sess : Miri.Interpreter.ValidityVisitor.Session Miri.Memory.Provenance)
     (info : Option Miri.Memory.BadBytesAccess)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -603,17 +624,18 @@ theorem visit_mem_bool_uninit_ub (types : List MirTy) (c : Choice)
     (h_mem : st.machine.memory =
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) })
     (h_sz : after.byteSize = toMiriSize .i8)
-    (h_rd : after.readScalar RuntimeTargetDataLayout.default.base
+    (h_rd : after.readScalar (refRuntimeLayout endian).base
       (allocRange Size.ZERO (toMiriSize .i8)) false =
       .error (.invalidUninitBytes info)) :
     ∃ msg,
-      Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c (fuel + 1)
-          sess ⟨.memory retMemPlace, refLocalLayoutForTy types .bool⟩ st =
+      Miri.Interpreter.ValidityVisitor.visit (refValHooks endian types) c
+          (fuel + 1) sess ⟨.memory retMemPlace, refLocalLayoutForTy types .bool⟩
+          st =
         .error (.undefinedBehavior msg) st := by
-  let ⟨msg, h_ri_raw⟩ := validityMemory_readImmediate_mem_uninit types .i8
+  let ⟨msg, h_ri_raw⟩ := validityMemory_readImmediate_mem_uninit endian types .i8
     .bool info ExpectedValue.boolean mem1 after st (Or.inl ⟨rfl, rfl⟩)
     h_mem h_sz h_rd
-  have h_ri : (refValHooks types).readImmediate c
+  have h_ri : (refValHooks endian types).readImmediate c
       ⟨.memory retMemPlace, refLocalLayoutForTy types .bool⟩
       ExpectedValue.boolean st = .error (.undefinedBehavior msg) st := by
     rw [refValHooks_readImmediate]
@@ -625,17 +647,19 @@ theorem visit_mem_bool_uninit_ub (types : List MirTy) (c : Choice)
     EStateM.bind]
   rw [mem_refLocalLayoutForTy_ty, refValHooks_classify, h_res]
   dsimp only
-  change (EStateM.bind (EStateM.bind ((refValHooks types).readImmediate c
+  change (EStateM.bind (EStateM.bind ((refValHooks endian types).readImmediate c
     ⟨.memory retMemPlace, refLocalLayoutForTy types .bool⟩
     ExpectedValue.boolean) _) _ st) = _
   rw [eStateM_bind_bind_err h_ri]
 
-private theorem placeDynamic_field0_mem_scalar_enum (types : List MirTy)
+private theorem placeDynamic_field0_mem_scalar_enum (endian : TargetEndian)
+    (types : List MirTy)
     (c : Choice) (ty : MirTy) (ety : EnumTy) (tagW : IntWidth) (tagS : Bool)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_tr : ety.tagRepr = .scalar tagW tagS)
     (h_el : EnumLike types ty ety) :
-    Miri.Interpreter.PlaceDynamic.field (refBasePlaceProjectionHooks types) c
+    Miri.Interpreter.PlaceDynamic.field
+        (refBasePlaceProjectionHooks endian types) c
         ⟨.memory retMemPlace, refLocalLayoutForTy types ty⟩ 0 st =
       .ok ⟨.memory retMemPlace,
         refLocalLayoutForTy types (.int tagW tagS)⟩ st := by
@@ -644,7 +668,7 @@ private theorem placeDynamic_field0_mem_scalar_enum (types : List MirTy)
     rw [enumLike_layout h_el]
     rw [refEnumLayoutData_scalar ety tagW tagS h_tr]
     rfl
-  have h_fl : (refBasePlaceProjectionHooks types).field c
+  have h_fl : (refBasePlaceProjectionHooks endian types).field c
       (refLocalLayoutForTy types ty) 0 st =
       .ok (refLocalLayoutForTy types (.int tagW tagS)) st := by
     dsimp only [refBasePlaceProjectionHooks]
@@ -655,7 +679,7 @@ private theorem placeDynamic_field0_mem_scalar_enum (types : List MirTy)
   dsimp only [Miri.Interpreter.PlaceDynamic.field, bind, Bind.bind,
     EStateM.bind]
   rw [h_fo]
-  change (EStateM.bind ((refBasePlaceProjectionHooks types).field c
+  change (EStateM.bind ((refBasePlaceProjectionHooks endian types).field c
     (refLocalLayoutForTy types ty) 0) _ st) = _
   rw [mem_eStateM_bind_ok h_fl]
   dsimp only [bind, Bind.bind, EStateM.bind, pure, Pure.pure, EStateM.pure]
@@ -666,19 +690,21 @@ private theorem placeDynamic_field0_mem_scalar_enum (types : List MirTy)
     EStateM.pure]
   rw [placeMemoryOffset_retPlace_zero]
 
-private theorem placeDynamic_downcast_mem_scalar_enum (types : List MirTy)
+private theorem placeDynamic_downcast_mem_scalar_enum (endian : TargetEndian)
+    (types : List MirTy)
     (c : Choice) (ty : MirTy) (ety : EnumTy) (variant : Nat)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_el : EnumLike types ty ety)
     (h_v_lt : variant < ety.discriminants.length) :
-    Miri.Interpreter.PlaceDynamic.downcast (refBasePlaceProjectionHooks types) c
+    Miri.Interpreter.PlaceDynamic.downcast
+        (refBasePlaceProjectionHooks endian types) c
         ⟨.memory retMemPlace, refLocalLayoutForTy types ty⟩ variant st =
       .ok ⟨.memory retMemPlace,
         ⟨tyIdFor types ty,
           { refUnitLayoutData with variants := .Single variant }⟩⟩ st := by
   have h_blt : Nat.blt variant ety.discriminants.length = true :=
     Nat.ble_eq_true_of_le h_v_lt
-  have h_vl : (refBasePlaceProjectionHooks types).variant c
+  have h_vl : (refBasePlaceProjectionHooks endian types).variant c
       (refLocalLayoutForTy types ty) variant st =
       .ok ⟨tyIdFor types ty,
         { refUnitLayoutData with variants := .Single variant }⟩ st := by
@@ -686,11 +712,11 @@ private theorem placeDynamic_downcast_mem_scalar_enum (types : List MirTy)
     rw [enumLike_projectVariant h_el h_v_lt]
   dsimp only [Miri.Interpreter.PlaceDynamic.downcast, bind, Bind.bind,
     EStateM.bind, pure, Pure.pure, EStateM.pure]
-  change (EStateM.bind ((refBasePlaceProjectionHooks types).variant c
+  change (EStateM.bind ((refBasePlaceProjectionHooks endian types).variant c
     (refLocalLayoutForTy types ty) variant) _ st) = _
   rw [mem_eStateM_bind_ok h_vl]
   change Miri.Interpreter.PlaceDynamic.offsetWithMeta
-    (refBasePlaceProjectionHooks types) c
+    (refBasePlaceProjectionHooks endian types) c
     ⟨.memory retMemPlace, refLocalLayoutForTy types ty⟩ Size.ZERO .inbounds
     .none ⟨tyIdFor types ty,
       { refUnitLayoutData with variants := .Single variant }⟩ st = _
@@ -700,7 +726,8 @@ private theorem placeDynamic_downcast_mem_scalar_enum (types : List MirTy)
     EStateM.pure]
   rw [placeMemoryOffset_retPlace_zero]
 
-theorem visit_mem_scalar_enum_ok (types : List MirTy) (c : Choice)
+theorem visit_mem_scalar_enum_ok (endian : TargetEndian) (types : List MirTy)
+    (c : Choice)
     (fuel k : Nat) (h_fuel : fuel = k + 1)
     (ty : MirTy) (ety : EnumTy) (tagW : IntWidth) (tagS : Bool)
     (variant disc : Nat)
@@ -717,7 +744,7 @@ theorem visit_mem_scalar_enum_ok (types : List MirTy) (c : Choice)
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) })
     (h_sz : after.byteSize = toMiriSize tagW)
     (h_mut : after.mutability = .Mut)
-    (h_rd : after.readScalar RuntimeTargetDataLayout.default.base
+    (h_rd : after.readScalar (refRuntimeLayout endian).base
       (allocRange Size.ZERO (toMiriSize tagW)) false =
       .ok (.fromScalarInt (miriScalar tagW (BitVec.ofNat 128 disc))))
     (h_cp : Allocation.clearProvenance (allocRange Size.ZERO (toMiriSize tagW))
@@ -727,8 +754,9 @@ theorem visit_mem_scalar_enum_ok (types : List MirTy) (c : Choice)
       path := ⟨"", (Array.mk [])⟩, flags := ⟨true, false⟩, ctfeMode := none,
       refTracking := none, dataBytes := some .empty
     }
-    Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c (fuel + 1)
-        initSess ⟨.memory retMemPlace, refLocalLayoutForTy types ty⟩ st =
+    Miri.Interpreter.ValidityVisitor.visit (refValHooks endian types) c
+        (fuel + 1) initSess ⟨.memory retMemPlace, refLocalLayoutForTy types ty⟩
+        st =
       .ok { initSess with dataBytes := some (singleDataRange tagW) } st := by
   intro initSess
   have h_v_lt : variant < ety.discriminants.length :=
@@ -746,11 +774,11 @@ theorem visit_mem_scalar_enum_ok (types : List MirTy) (c : Choice)
           (fun _ => refInhabitedVariantLayout)).toArray := by
     rw [enumLike_layout h_el]
     rw [refEnumLayoutData_scalar ety tagW tagS h_tr]
-  have h_field0 := placeDynamic_field0_mem_scalar_enum types c ty ety tagW
-    tagS st
-    h_tr h_el
+  have h_field0 := placeDynamic_field0_mem_scalar_enum endian types c ty ety
+    tagW tagS st h_tr h_el
   have h_op_field0 :
-      Miri.Interpreter.OperandMachine.field (refValidityOperandHooks types) c
+      Miri.Interpreter.OperandMachine.field
+        (refValidityOperandHooks endian types) c
         ⟨.indirect retMemPlace, refLocalLayoutForTy types ty⟩ 0 st =
       .ok ⟨.indirect retMemPlace,
         refLocalLayoutForTy types (.int tagW tagS)⟩ st := by
@@ -758,19 +786,19 @@ theorem visit_mem_scalar_enum_ok (types : List MirTy) (c : Choice)
       bind, Bind.bind, EStateM.bind]
     rw [h_field0]
     rfl
-  have h_ri_ghost := placeMachine_readImmediate_mem_scalar_ghost types tagW tagS
-    (.fromScalarInt (miriScalar tagW (BitVec.ofNat 128 disc)))
+  have h_ri_ghost := placeMachine_readImmediate_mem_scalar_ghost endian types
+    tagW tagS (.fromScalarInt (miriScalar tagW (BitVec.ofNat 128 disc)))
     mem1 after st h_pmd h_mem h_sz h_rd
-  have h_rd_discr := readDiscriminant_validity_scalar_enum types c ty ety tagW
-    tagS
+  have h_rd_discr := readDiscriminant_validity_scalar_enum endian types c ty
+    ety tagW tagS
     variant disc (.indirect retMemPlace)
     ⟨.indirect retMemPlace, refLocalLayoutForTy types (.int tagW tagS)⟩
     st h_tr h_adm h_el h_get_d h_op_field0 h_ri_ghost
-  have h_dc := placeDynamic_downcast_mem_scalar_enum types c ty ety variant st
-    h_el h_v_lt
+  have h_dc := placeDynamic_downcast_mem_scalar_enum endian types c ty ety
+    variant st h_el h_v_lt
   dsimp only [Miri.Interpreter.ValidityVisitor.visit, bind, Bind.bind,
     EStateM.bind]
-  rw [mem_refLocalLayoutForTy_ty, enumLike_classify h_el]
+  rw [mem_refLocalLayoutForTy_ty, enumLike_classify endian h_el]
   change (match (EStateM.Result.ok none st :
       EStateM.Result StepError
         (Miri.Interpreter.MachineHooks.State Unit RefUser)
@@ -789,7 +817,7 @@ theorem visit_mem_scalar_enum_ok (types : List MirTy) (c : Choice)
   rw [refValHooks_fieldPath]
   dsimp only [bind, Bind.bind, EStateM.bind, initSess, Bool.or]
   rw [h_fuel]
-  rw [visit_mem_int_ok types c k
+  rw [visit_mem_int_ok endian types c k
     ({ originalType := "" : Miri.Memory.ValidationPath }.push .enumTag)
     tagW tagS
     (.fromScalarInt (miriScalar tagW (BitVec.ofNat 128 disc)))
@@ -805,15 +833,16 @@ theorem visit_mem_scalar_enum_ok (types : List MirTy) (c : Choice)
   dsimp only [bind, Bind.bind, EStateM.bind]
   rw [refValHooks_variantPath]
   dsimp only [bind, Bind.bind, EStateM.bind]
-  rw [visit_local_fieldless_enum types c k _ _ ty ety variant st rfl h_el
-    rfl rfl rfl]
+  rw [visit_local_fieldless_enum endian types c k _ _ ty ety variant st rfl
+    h_el rfl rfl rfl]
   dsimp only [bind, Bind.bind, EStateM.bind, pure, Pure.pure, EStateM.pure]
-  rw [enumLike_opsemInhabited h_el]
+  rw [enumLike_opsemInhabited endian h_el]
   dsimp only [bind, Bind.bind, EStateM.bind, pure, Pure.pure, EStateM.pure]
   rw [mem_ite_true_eq, refValHooks_debugAssertions, mem_ite_false_eq]
   rfl
 
-theorem visit_mem_scalar_enum_uninit_ub (types : List MirTy)
+theorem visit_mem_scalar_enum_uninit_ub (endian : TargetEndian)
+    (types : List MirTy)
     (c : Choice)
     (fuel k : Nat) (h_fuel : fuel = k + 1)
     (ty : MirTy) (ety : EnumTy) (tagW : IntWidth) (tagS : Bool)
@@ -827,7 +856,7 @@ theorem visit_mem_scalar_enum_uninit_ub (types : List MirTy)
     (h_mem : st.machine.memory =
       { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) })
     (h_sz : after.byteSize = toMiriSize tagW)
-    (h_rd : after.readScalar RuntimeTargetDataLayout.default.base
+    (h_rd : after.readScalar (refRuntimeLayout endian).base
       (allocRange Size.ZERO (toMiriSize tagW)) false =
       .error (.invalidUninitBytes info)) :
     let initSess :
@@ -836,8 +865,9 @@ theorem visit_mem_scalar_enum_uninit_ub (types : List MirTy)
       refTracking := none, dataBytes := some .empty
     }
     ∃ msg,
-      Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c (fuel + 1)
-          initSess ⟨.memory retMemPlace, refLocalLayoutForTy types ty⟩ st =
+      Miri.Interpreter.ValidityVisitor.visit (refValHooks endian types) c
+          (fuel + 1) initSess
+          ⟨.memory retMemPlace, refLocalLayoutForTy types ty⟩ st =
         .error (.undefinedBehavior msg) st := by
   intro initSess
   have h_ne_box :
@@ -847,10 +877,9 @@ theorem visit_mem_scalar_enum_uninit_ub (types : List MirTy)
       .Arbitrary (Array.mk [Size.ZERO]) (Array.mk [0]) := by
     rw [enumLike_layout h_el]
     rw [refEnumLayoutData_scalar ety tagW tagS h_tr]
-  have h_field0 := placeDynamic_field0_mem_scalar_enum types c ty ety tagW
-    tagS st
-    h_tr h_el
-  let ⟨msg, h_v0⟩ := visit_mem_int_uninit_ub types c k
+  have h_field0 := placeDynamic_field0_mem_scalar_enum endian types c ty ety
+    tagW tagS st h_tr h_el
+  let ⟨msg, h_v0⟩ := visit_mem_int_uninit_ub endian types c k
     { path := { originalType := "" : Miri.Memory.ValidationPath }.push .enumTag,
       flags := ⟨true, false⟩, ctfeMode := none,
       refTracking := none, dataBytes := some .empty }
@@ -859,7 +888,7 @@ theorem visit_mem_scalar_enum_uninit_ub (types : List MirTy)
   refine ⟨msg, ?_⟩
   dsimp only [Miri.Interpreter.ValidityVisitor.visit, bind, Bind.bind,
     EStateM.bind]
-  rw [mem_refLocalLayoutForTy_ty, enumLike_classify h_el]
+  rw [mem_refLocalLayoutForTy_ty, enumLike_classify endian h_el]
   change (match (EStateM.Result.ok none st :
       EStateM.Result StepError
         (Miri.Interpreter.MachineHooks.State Unit RefUser)
@@ -879,8 +908,8 @@ theorem visit_mem_scalar_enum_uninit_ub (types : List MirTy)
   dsimp only [bind, Bind.bind, EStateM.bind, initSess, Bool.or]
   rw [h_fuel, h_v0]
 
-theorem validatePlace_mem_zst_step (types : List MirTy) (c : Choice)
-    (layout : LocalLayout)
+theorem validatePlace_mem_zst_step (endian : TargetEndian) (types : List MirTy)
+    (c : Choice) (layout : LocalLayout)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_sz0 : layout.layout.size = Size.ZERO)
     (h_vis :
@@ -890,20 +919,26 @@ theorem validatePlace_mem_zst_step (types : List MirTy) (c : Choice)
         path := ⟨"", (Array.mk [])⟩, flags := ⟨true, false⟩, ctfeMode := none,
         refTracking := none, dataBytes := some .empty
       }
-      Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c 8
+      Miri.Interpreter.ValidityVisitor.visit (refValHooks endian types) c 8
         initSess ⟨.memory retMemPlace, layout⟩ st = .ok initSess st) :
-    Miri.Interpreter.ValidityVisitor.validatePlace (refValHooks types) c 8
+    Miri.Interpreter.ValidityVisitor.validatePlace
+        (refValHooks endian types) c 8
         ⟨.memory retMemPlace, layout⟩ false true st = .ok () st := by
   have h_bp :
-      (refValHooks types).beginPadding c ⟨retMemPlace, layout⟩ Size.ZERO st =
+      (refValHooks endian types).beginPadding c ⟨retMemPlace, layout⟩
+          Size.ZERO st =
         .ok none st := by
-    change Miri.Interpreter.ValidityMemory.beginPadding refValidityMemoryEnv
-      ⟨retMemPlace, layout⟩ Size.ZERO st = .ok none st
-    exact Miri.Interpreter.ValidityMemory.beginPadding_zero refValidityMemoryEnv
-      ⟨retMemPlace, layout⟩ st
-      (by cases st with | mk stack machine => cases machine; rfl)
-  have h_sa : (refValHooks types).sizeAndAlign c ⟨retMemPlace, layout⟩ st =
-      .ok (some (Size.ZERO, layout.layout.align.abi)) st := by
+    change Miri.Interpreter.ValidityMemory.beginPadding
+      (refValidityMemoryEnv endian) ⟨retMemPlace, layout⟩ Size.ZERO st =
+      .ok none st
+    exact Miri.Interpreter.ValidityMemory.beginPadding_zero
+      (refValidityMemoryEnv endian) ⟨retMemPlace, layout⟩ st
+      (by
+        cases endian <;> cases st with
+        | mk stack machine => cases machine; rfl)
+  have h_sa :
+      (refValHooks endian types).sizeAndAlign c ⟨retMemPlace, layout⟩ st =
+        .ok (some (Size.ZERO, layout.layout.align.abi)) st := by
     change
       EStateM.Result.ok (some (layout.layout.size, layout.layout.align.abi))
         st = _
@@ -921,10 +956,12 @@ theorem validatePlace_mem_zst_step (types : List MirTy) (c : Choice)
   rw [mem_ite_false_eq, h_vis]
   dsimp only [bind, Bind.bind, EStateM.bind, pure, Pure.pure, EStateM.pure]
   rw [Miri.Interpreter.ValidityVisitor.resetPadding_memory_zero
-    (refValHooks types) c _ ⟨retMemPlace, layout⟩ st rfl h_sz0 h_sa h_bp]
+    (refValHooks endian types) c _ ⟨retMemPlace, layout⟩ st rfl h_sz0 h_sa
+    h_bp]
   rfl
 
-theorem validatePlace_mem_scalar_step (types : List MirTy) (c : Choice)
+theorem validatePlace_mem_scalar_step (endian : TargetEndian)
+    (types : List MirTy) (c : Choice)
     (w : IntWidth) (layout : LocalLayout)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_lsz : layout.layout.size = toMiriSize w)
@@ -935,10 +972,11 @@ theorem validatePlace_mem_scalar_step (types : List MirTy) (c : Choice)
         path := ⟨"", (Array.mk [])⟩, flags := ⟨true, false⟩, ctfeMode := none,
         refTracking := none, dataBytes := some .empty
       }
-      Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c 8
+      Miri.Interpreter.ValidityVisitor.visit (refValHooks endian types) c 8
         initSess ⟨.memory retMemPlace, layout⟩ st =
         .ok { initSess with dataBytes := some (singleDataRange w) } st) :
-    Miri.Interpreter.ValidityVisitor.validatePlace (refValHooks types) c 8
+    Miri.Interpreter.ValidityVisitor.validatePlace
+        (refValHooks endian types) c 8
         ⟨.memory retMemPlace, layout⟩ false true st = .ok () st := by
   dsimp only [Miri.Interpreter.ValidityVisitor.validatePlace,
     bind, Bind.bind, EStateM.bind]
@@ -959,6 +997,6 @@ theorem validatePlace_mem_scalar_step (types : List MirTy) (c : Choice)
         maxReprAlign =>
       dsimp only at h_lsz
       subst h_lsz
-      cases w <;> rfl
+      cases endian <;> cases w <;> rfl
 
 end Anneal.MirCorrespondence

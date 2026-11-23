@@ -39,7 +39,7 @@
     },
     {
       "path": "theory/Anneal/LoopInv.lean",
-      "sha256": "722a7bbf42add73dd5b070bd3e40d18465ad15ccdd403806abd0c35cb622fed2"
+      "sha256": "68a92a55941ce67467beef564ae3b139d4e1372e74649c9f059496c75f252a59"
     },
     {
       "path": "theory/Anneal/MirWp.lean",
@@ -47,7 +47,7 @@
     },
     {
       "path": "theory/Anneal/MirWp/Canaries.lean",
-      "sha256": "b45256c4c839e59de801714373e3e6e4d66a456bf76665da6d6f580508e2966e"
+      "sha256": "320af36581bb5d79111d37b3b75b92bcc6530d6a86c5e4c4aaeb974b9b675a53"
     },
     {
       "path": "theory/Anneal/MirWp/Core.lean",
@@ -55,7 +55,7 @@
     },
     {
       "path": "theory/Anneal/MirWp/Execution.lean",
-      "sha256": "2fd2f2c01b9385dc6da93b9b4072650dc56c9494c448b22bdf1fa8a529da4a66"
+      "sha256": "cf374c59be0ead5b882edcaaf4d105adbf47eaa522b9325915303e3f1c8273fa"
     },
     {
       "path": "theory/Anneal/MirWp/Reflection.lean",
