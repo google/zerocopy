@@ -11,13 +11,19 @@
 
 name: Publish Rustdoc on GitHub Pages
 on:
-  # Both workflow names are coupled to `.github/workflows/ci.yml` and
-  # `.github/workflows/anneal.yml`. Triggering on both lets either workflow be
-  # the last to finish and lets a successful rerun repair a previously failed
-  # pair. The `coordinate` job below prevents the two completion events from
-  # deploying the same SHA twice.
+  # These workflow names are coupled to `.github/workflows/ci.yml`,
+  # `.github/workflows/anneal.yml`, and `.github/workflows/anneal-perf.yml`.
+  # Triggering on `ci.yml` and `anneal.yml` lets either CI workflow be the last
+  # to finish and lets a successful rerun repair a previously failed pair while
+  # `coordinate` deduplicates the pair to one deploy per SHA. Triggering on
+  # `anneal-perf.yml` refreshes Pages if performance telemetry finishes
+  # publishing to `benchmark-data` after the CI pair has completed (or on
+  # scheduled/manual perf runs on `main` HEAD).
   workflow_run: # zizmor: ignore[dangerous-triggers]
-    workflows: ["Build & Tests", "Anneal Tests"]
+    workflows:
+      - "Build & Tests"
+      - "Anneal Tests"
+      - "Anneal Performance Tracking"
     types: [completed]
     branches: [main]
 
@@ -32,26 +38,45 @@ concurrency:
 
 jobs:
   coordinate:
-    name: Verify both CI workflows
+    name: Verify CI workflows and deploy readiness
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    # Only main-branch push runs publish documentation. In particular, a
-    # manually-dispatched CI run must not substitute for the checks associated
-    # with a commit's push.
+    # Only main-branch runs in google/zerocopy publish documentation. Core CI
+    # and Anneal Tests must be main-branch `push` runs that succeeded; Anneal
+    # Performance Tracking may run via `push`, `schedule`, or
+    # `workflow_dispatch` on `main` and may conclude `failure` when its final
+    # budget gate fails *after* publishing telemetry to `benchmark-data`.
     if: |
       github.repository == 'google/zerocopy' &&
-      github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'push' &&
-      github.event.workflow_run.head_branch == 'main'
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.head_branch == 'main' &&
+      (
+        (
+          github.event.workflow_run.conclusion == 'success' &&
+          github.event.workflow_run.event == 'push'
+        ) ||
+        (
+          github.event.workflow_run.name == 'Anneal Performance Tracking' &&
+          (
+            github.event.workflow_run.event == 'push' ||
+            github.event.workflow_run.event == 'schedule' ||
+            github.event.workflow_run.event == 'workflow_dispatch'
+          ) &&
+          (
+            github.event.workflow_run.conclusion == 'success' ||
+            github.event.workflow_run.conclusion == 'failure'
+          )
+        )
+      )
     permissions:
-      actions: read
-      contents: read
+      actions: read # Query CI workflow runs and perf publish step status
+      contents: read # Resolve refs/heads/main tip SHA
     outputs:
       deploy: ${{ steps.coordinate.outputs.deploy }}
       sha: ${{ steps.coordinate.outputs.sha }}
       anneal_run_id: ${{ steps.coordinate.outputs.anneal_run_id }}
     steps:
-      - name: Select the successful CI pair
+      - name: Select the deployment-ready main SHA
         id: coordinate
         env:
           GH_TOKEN: ${{ github.token }}
@@ -61,6 +86,78 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+
+          TRIGGER_RUN="$(
+            gh api --method GET \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "repos/$REPOSITORY/actions/runs/$TRIGGER_RUN_ID"
+          )"
+          TRIGGER_PATH="$(jq -r '.path // ""' <<< "$TRIGGER_RUN")"
+          TRIGGER_IS_PERF=false
+          if [ "$TRIGGER_PATH" = ".github/workflows/anneal-perf.yml" ]; then
+            TRIGGER_IS_PERF=true
+            if ! jq -e --arg REPO "$REPOSITORY" --arg SHA "$SOURCE_SHA" '
+              .head_repository.full_name == $REPO
+              and .head_branch == "main"
+              and .head_sha == $SHA
+              and (
+                .event == "push"
+                or .event == "schedule"
+                or .event == "workflow_dispatch"
+              )
+              and .status == "completed"
+              and (.conclusion == "success" or .conclusion == "failure")
+            ' <<< "$TRIGGER_RUN" >/dev/null; then
+              echo "Ignoring non-main or incomplete performance run $TRIGGER_RUN_ID" \
+                >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+
+            # Query by filename so a future run-name collision cannot
+            # impersonate `.github/workflows/anneal-perf.yml`.
+            PERF_RESPONSE="$(
+              gh api --method GET \
+                -H 'X-GitHub-Api-Version: 2022-11-28' \
+                "repos/$REPOSITORY/actions/workflows/anneal-perf.yml/runs" \
+                -f branch=main \
+                -f head_sha="$SOURCE_SHA" \
+                -F per_page=100
+            )"
+            if ! jq -e --arg ID "$TRIGGER_RUN_ID" --arg SHA "$SOURCE_SHA" '
+              any(
+                .workflow_runs[];
+                (.id | tostring) == $ID
+                and .head_sha == $SHA
+                and .head_branch == "main"
+                and .status == "completed"
+              )
+            ' <<< "$PERF_RESPONSE" >/dev/null; then
+              echo "Run $TRIGGER_RUN_ID does not belong to anneal-perf.yml for $SOURCE_SHA" \
+                >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+
+            PUBLISH_CONCLUSION="$(
+              gh api --method GET \
+                -H 'X-GitHub-Api-Version: 2022-11-28' \
+                "repos/$REPOSITORY/actions/runs/$TRIGGER_RUN_ID/jobs?per_page=100" \
+                --jq '
+                  [.jobs[]
+                    | select(.name == "Collect and publish performance telemetry")
+                    | .steps[]
+                    | select(.name == "Publish telemetry and dashboard")
+                    | .conclusion]
+                  | first // "missing"
+                '
+            )"
+            echo "- Anneal Performance Tracking: publish=$PUBLISH_CONCLUSION ($(jq -r '.html_url' <<< "$TRIGGER_RUN"))" \
+              >> "$GITHUB_STEP_SUMMARY"
+            if [ "$PUBLISH_CONCLUSION" != "success" ]; then
+              echo "Performance run $TRIGGER_RUN_ID did not publish telemetry; skipping deploy" \
+                >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+          fi
 
           RUNS='[]'
           for WORKFLOW in ci.yml anneal.yml; do
@@ -110,17 +207,19 @@ jobs:
             exit 0
           fi
 
-          # Both completions trigger this workflow. Only the completion with
-          # the latest `(updated_at, id)` pair proceeds, which makes the choice
-          # deterministic even when GitHub records both updates in the same
-          # second. A later successful rerun naturally becomes the new winner.
-          WINNER_RUN_ID="$(
-            jq -r 'sort_by([.updated_at, .id]) | last | .id' <<< "$RUNS"
-          )"
-          if [ "$WINNER_RUN_ID" != "$TRIGGER_RUN_ID" ]; then
-            echo "Run $WINNER_RUN_ID owns deployment for $SOURCE_SHA" \
-              >> "$GITHUB_STEP_SUMMARY"
-            exit 0
+          if [ "$TRIGGER_IS_PERF" != "true" ]; then
+            # Both CI completions trigger this workflow. Only the completion with
+            # the latest `(updated_at, id)` pair proceeds, which makes the choice
+            # deterministic even when GitHub records both updates in the same
+            # second. A later successful rerun naturally becomes the new winner.
+            WINNER_RUN_ID="$(
+              jq -r 'sort_by([.updated_at, .id]) | last | .id' <<< "$RUNS"
+            )"
+            if [ "$WINNER_RUN_ID" != "$TRIGGER_RUN_ID" ]; then
+              echo "Run $WINNER_RUN_ID owns deployment for $SOURCE_SHA" \
+                >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
           fi
 
           # A manually rerun workflow retains event `push` even after its

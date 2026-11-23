@@ -6,7 +6,7 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
-"""Tests for `.github/workflows/anneal-perf.yml` security and CAS publishing."""
+"""Tests for `.github/workflows/anneal-perf.yml` and `.github/workflows/docs.yml`."""
 
 from __future__ import annotations
 
@@ -14,6 +14,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import stat
 import subprocess
 import tempfile
@@ -26,6 +27,8 @@ from workflow_yaml import load_workflow_yaml
 CI_DIR = Path(__file__).resolve().parent
 ANNEAL_DIR = CI_DIR.parent
 WORKFLOW_PATH = ANNEAL_DIR.parent / ".github/workflows/anneal-perf.yml"
+DOCS_WORKFLOW_PATH = ANNEAL_DIR.parent / ".github/workflows/docs.yml"
+BUDGETS_PATH = CI_DIR / "perf_budgets.json"
 
 
 def _make_record(sha_idx: int, unix_ts: int, subject: str = "Test") -> dict:
@@ -122,15 +125,34 @@ class PerfWorkflowStaticTests(unittest.TestCase):
             r"^DeterminateSystems/determinate-nix-action@[0-9a-f]{40}$",
         )
 
-        # GH_TOKEN must be scoped strictly to the final publish step, and no
-        # `${{ ... }}` expression may appear inside any `run:` script.
-        for step in steps[:-1]:
-            self.assertNotIn("GH_TOKEN", step.get("env", {}))
-            self.assertNotIn("${{", step.get("run", ""))
-        publish = steps[-1]
-        self.assertEqual(publish["id"], "publish")
+        # `collect` must only collect+validate, `publish` must run next with
+        # `GH_TOKEN` scoped strictly to it, and `check-budgets` must run last
+        # without `GH_TOKEN`. No `${{ ... }}` expression may appear inside any
+        # `run:` script.
+        step_ids = [s.get("id") for s in steps]
+        collect_idx = step_ids.index("collect")
+        publish_idx = step_ids.index("publish")
+        check_idx = step_ids.index("check-budgets")
+        self.assertLess(collect_idx, publish_idx)
+        self.assertEqual(publish_idx + 1, check_idx)
+        self.assertEqual(check_idx, len(steps) - 1)
+
+        collect = steps[collect_idx]
+        self.assertIn("perf_tracking.py collect", collect["run"])
+        self.assertIn("perf_tracking.py validate", collect["run"])
+        self.assertNotIn("check-budgets", collect["run"])
+
+        publish = steps[publish_idx]
         self.assertEqual(publish["env"]["GH_TOKEN"], "${{ github.token }}")
-        self.assertNotIn("${{", publish["run"])
+
+        check_budgets = steps[check_idx]
+        self.assertIn("perf_tracking.py check-budgets", check_budgets["run"])
+        self.assertIn("--budgets ci/perf_budgets.json", check_budgets["run"])
+
+        for step in steps:
+            if step.get("id") != "publish":
+                self.assertNotIn("GH_TOKEN", step.get("env", {}))
+            self.assertNotIn("${{", step.get("run", ""))
 
         manifest_step = next(s for s in steps if s.get("id") == "manifest")
         self.assertIn(
@@ -144,9 +166,13 @@ class PerfWorkflowStaticTests(unittest.TestCase):
 class PerfWorkflowPublishExecutionTests(unittest.TestCase):
     def setUp(self):
         self.workflow = load_workflow_yaml(WORKFLOW_PATH.read_text(encoding="utf-8"))
-        self.publish_script = self.workflow["jobs"]["collect-and-publish"]["steps"][-1][
-            "run"
-        ]
+        steps = self.workflow["jobs"]["collect-and-publish"]["steps"]
+        self.publish_script = next(
+            s["run"] for s in steps if s.get("id") == "publish"
+        )
+        self.check_budgets_script = next(
+            s["run"] for s in steps if s.get("id") == "check-budgets"
+        )
 
     def _run_publish(
         self,
@@ -363,6 +389,540 @@ class PerfWorkflowPublishExecutionTests(unittest.TestCase):
             self.assertNotEqual(res.returncode, 0)
             self.assertIn("Failed probing remote benchmark-data branch", res.stderr)
             self.assertIn("does not appear to be a git repository", res.stderr)
+
+    def test_publish_persists_budget_breach_before_check_budgets_fails(self):
+        with tempfile.TemporaryDirectory(prefix="anneal-perf-breach-") as tmp:
+            root = Path(tmp)
+            bare = root / "remote.git"
+            subprocess.run(["git", "init", "--bare", "-q", str(bare)], check=True)
+            summary = root / "step_summary.md"
+
+            breach_rec = _make_record(1, 1000, subject="Breach archive budget")
+            breach_rec["metrics"]["artifact_size.archive.omnibus_tar_zst_bytes"] = (
+                2_000_000_000
+            )
+            pub_res = self._run_publish(
+                bare_repo=bare, record=breach_rec, tmp_root=root, summary_path=summary
+            )
+            self.assertEqual(pub_res.returncode, 0, pub_res.stdout + pub_res.stderr)
+            self.assertIn("budget_breach", summary.read_text(encoding="utf-8"))
+
+            inspect = root / "inspect"
+            subprocess.run(
+                [
+                    "git",
+                    "clone",
+                    "--quiet",
+                    "--branch",
+                    "benchmark-data",
+                    bare.as_uri(),
+                    str(inspect),
+                ],
+                check=True,
+            )
+            dash_data = json.loads(
+                (inspect / "dashboard/anneal/data.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(len(dash_data["commits"]), 1)
+            self.assertTrue(
+                any(
+                    a["kind"] == "budget_breach"
+                    and a["metric"] == "artifact_size.archive.omnibus_tar_zst_bytes"
+                    for a in dash_data["anomalies"]
+                )
+            )
+
+            rec_path = root / "breach_record.json"
+            rec_path.write_text(json.dumps(breach_rec), encoding="utf-8")
+            env = os.environ.copy()
+            env["RECORD_PATH"] = str(rec_path)
+            chk_res = subprocess.run(
+                ["bash", "--noprofile", "--norc", "-c", self.check_budgets_script],
+                cwd=ANNEAL_DIR,
+                env=env,
+                capture_output=True,
+                text=True,
+            )
+            self.assertNotEqual(chk_res.returncode, 0)
+            self.assertIn("BUDGET VIOLATION", chk_res.stderr)
+            self.assertIn("omnibus_tar_zst_bytes", chk_res.stderr)
+
+    def test_omnibus_budget_ceiling_accommodates_current_archive_with_headroom(self):
+        budgets = json.loads(BUDGETS_PATH.read_text(encoding="utf-8"))
+        rule = next(
+            r
+            for r in budgets["budgets"]
+            if r.get("pattern") == "artifact_size.archive.omnibus_tar_zst_bytes"
+        )
+        self.assertEqual(rule["max_value"], 1395864371)
+
+        rec = _make_record(1, 1000)
+        rec["metrics"]["artifact_size.archive.omnibus_tar_zst_bytes"] = 1_245_655_225
+        with tempfile.TemporaryDirectory(prefix="anneal-perf-ok-") as tmp:
+            rec_path = Path(tmp) / "record.json"
+            rec_path.write_text(json.dumps(rec), encoding="utf-8")
+            env = os.environ.copy()
+            env["RECORD_PATH"] = str(rec_path)
+            chk_res = subprocess.run(
+                ["bash", "--noprofile", "--norc", "-c", self.check_budgets_script],
+                cwd=ANNEAL_DIR,
+                env=env,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(chk_res.returncode, 0, chk_res.stdout + chk_res.stderr)
+
+
+class DocsWorkflowStaticTests(unittest.TestCase):
+    def setUp(self):
+        self.workflow = load_workflow_yaml(
+            DOCS_WORKFLOW_PATH.read_text(encoding="utf-8")
+        )
+
+    def test_triggers_permissions_and_perf_coordination(self):
+        wr = self.workflow["on"]["workflow_run"]
+        self.assertEqual(
+            wr["workflows"],
+            ["Build & Tests", "Anneal Tests", "Anneal Performance Tracking"],
+        )
+        self.assertEqual(wr["types"], ["completed"])
+        self.assertEqual(wr["branches"], ["main"])
+        self.assertEqual(self.workflow["permissions"], {})
+
+        coord = self.workflow["jobs"]["coordinate"]
+        self.assertIn("github.repository == 'google/zerocopy'", coord["if"])
+        self.assertIn(
+            "github.event.workflow_run.head_repository.full_name == github.repository",
+            coord["if"],
+        )
+        self.assertIn("github.event.workflow_run.head_branch == 'main'", coord["if"])
+        self.assertIn("Anneal Performance Tracking", coord["if"])
+        self.assertNotIn("pull_request", coord["if"])
+
+        script = coord["steps"][0]["run"]
+        self.assertIn(".github/workflows/anneal-perf.yml", script)
+        self.assertIn("workflows/anneal-perf.yml/runs", script)
+        self.assertIn("Publish telemetry and dashboard", script)
+        self.assertIn('PUBLISH_CONCLUSION" != "success"', script)
+        self.assertIn("for WORKFLOW in ci.yml anneal.yml", script)
+        self.assertIn("repos/$REPOSITORY/git/ref/heads/main", script)
+        self.assertNotIn("${{", script)
+
+        build = self.workflow["jobs"]["build"]
+        self.assertEqual(build["needs"], "coordinate")
+        self.assertEqual(build["if"], "needs.coordinate.outputs.deploy == 'true'")
+        checkouts = [
+            s
+            for s in build["steps"]
+            if s.get("uses", "").startswith("actions/checkout@")
+        ]
+        self.assertEqual(len(checkouts), 2)
+        for co in checkouts:
+            self.assertEqual(co["with"]["persist-credentials"], "false")
+        self.assertEqual(checkouts[0]["with"]["ref"], "${{ needs.coordinate.outputs.sha }}")
+        self.assertEqual(checkouts[1]["with"]["ref"], "benchmark-data")
+
+        deploy = self.workflow["jobs"]["deploy"]
+        self.assertEqual(deploy["needs"], ["coordinate", "build"])
+        self.assertIn(
+            "repos/$REPOSITORY/git/ref/heads/main", deploy["steps"][0]["run"]
+        )
+        self.assertNotIn("${{", deploy["steps"][0]["run"])
+
+
+class DocsWorkflowExecutionTests(unittest.TestCase):
+    def setUp(self):
+        if shutil.which("jq") is None:
+            self.skipTest("jq is required to execute docs.yml coordinate script")
+        self.workflow = load_workflow_yaml(
+            DOCS_WORKFLOW_PATH.read_text(encoding="utf-8")
+        )
+        self.coord_script = self.workflow["jobs"]["coordinate"]["steps"][0]["run"]
+
+    def _run_coordinate(
+        self,
+        *,
+        source_sha: str,
+        main_sha: str,
+        trigger_run_id: int,
+        runs_by_id: dict[int, dict],
+        workflow_runs: dict[str, list[dict]],
+        jobs_by_run_id: dict[int, list[dict]],
+    ) -> tuple[subprocess.CompletedProcess[str], dict[str, str], str]:
+        with tempfile.TemporaryDirectory(prefix="anneal-docs-coord-") as tmp:
+            root = Path(tmp)
+            fixtures = {
+                "main_sha": main_sha,
+                "runs_by_id": {str(k): v for k, v in runs_by_id.items()},
+                "workflow_runs": workflow_runs,
+                "jobs_by_run_id": {str(k): v for k, v in jobs_by_run_id.items()},
+            }
+            fixtures_path = root / "fixtures.json"
+            fixtures_path.write_text(json.dumps(fixtures), encoding="utf-8")
+
+            fake_bin = root / "bin"
+            fake_bin.mkdir()
+            fake_gh = fake_bin / "gh"
+            fake_gh.write_text(
+                f"""#!/usr/bin/env python3
+import json, pathlib, sys
+data = json.loads(pathlib.Path({str(fixtures_path)!r}).read_text())
+args = sys.argv[1:]
+jq_expr = None
+if "--jq" in args:
+    idx = args.index("--jq")
+    jq_expr = args[idx + 1]
+endpoint = next(a for a in args if a.startswith("repos/"))
+if endpoint.endswith("/git/ref/heads/main"):
+    payload = {{"object": {{"sha": data["main_sha"]}}}}
+elif "/actions/runs/" in endpoint and endpoint.endswith("/jobs?per_page=100"):
+    run_id = endpoint.split("/actions/runs/", 1)[1].split("/", 1)[0]
+    payload = {{"jobs": data["jobs_by_run_id"].get(run_id, [])}}
+elif "/actions/runs/" in endpoint:
+    run_id = endpoint.split("/actions/runs/", 1)[1]
+    payload = data["runs_by_id"][run_id]
+elif "/actions/workflows/" in endpoint and "/runs" in endpoint:
+    wf = endpoint.split("/actions/workflows/", 1)[1].split("/runs", 1)[0]
+    payload = {{"workflow_runs": data["workflow_runs"].get(wf, [])}}
+else:
+    sys.stderr.write(f"unexpected endpoint: {{endpoint}}\\n")
+    sys.exit(2)
+raw = json.dumps(payload)
+if jq_expr is not None:
+    import subprocess
+    res = subprocess.run(["jq", "-r", jq_expr], input=raw, text=True, check=True, capture_output=True)
+    sys.stdout.write(res.stdout)
+else:
+    sys.stdout.write(raw)
+""",
+                encoding="utf-8",
+            )
+            fake_gh.chmod(stat.S_IRWXU)
+
+            gh_output = root / "github_output.txt"
+            gh_output.write_text("", encoding="utf-8")
+            gh_summary = root / "github_summary.md"
+            gh_summary.write_text("", encoding="utf-8")
+
+            env = os.environ.copy()
+            env["PATH"] = f"{fake_bin}:{env['PATH']}"
+            env["GH_TOKEN"] = "mock-token"
+            env["REPOSITORY"] = "google/zerocopy"
+            env["SOURCE_SHA"] = source_sha
+            env["TRIGGER_RUN_ID"] = str(trigger_run_id)
+            env["GITHUB_OUTPUT"] = str(gh_output)
+            env["GITHUB_STEP_SUMMARY"] = str(gh_summary)
+
+            res = subprocess.run(
+                ["bash", "--noprofile", "--norc", "-c", self.coord_script],
+                cwd=ANNEAL_DIR,
+                env=env,
+                capture_output=True,
+                text=True,
+            )
+            outputs: dict[str, str] = {}
+            for line in gh_output.read_text(encoding="utf-8").splitlines():
+                if "=" in line:
+                    k, v = line.split("=", 1)
+                    outputs[k] = v
+            return res, outputs, gh_summary.read_text(encoding="utf-8")
+
+    def _ci_fixtures(self, sha: str, *, anneal_status: str = "completed", anneal_conclusion: str = "success"):
+        ci_run = {
+            "id": 101,
+            "name": "Build & Tests",
+            "path": ".github/workflows/ci.yml",
+            "event": "push",
+            "head_branch": "main",
+            "head_sha": sha,
+            "head_repository": {"full_name": "google/zerocopy"},
+            "status": "completed",
+            "conclusion": "success",
+            "updated_at": "2026-11-23T17:10:00Z",
+            "html_url": "https://github.com/google/zerocopy/actions/runs/101",
+        }
+        anneal_run = {
+            "id": 102,
+            "name": "Anneal Tests",
+            "path": ".github/workflows/anneal.yml",
+            "event": "push",
+            "head_branch": "main",
+            "head_sha": sha,
+            "head_repository": {"full_name": "google/zerocopy"},
+            "status": anneal_status,
+            "conclusion": anneal_conclusion,
+            "updated_at": "2026-11-23T17:15:00Z",
+            "html_url": "https://github.com/google/zerocopy/actions/runs/102",
+        }
+        return ci_run, anneal_run
+
+    def test_perf_run_deploys_even_when_budget_check_fails_after_publish(self):
+        sha = "a" * 40
+        ci_run, anneal_run = self._ci_fixtures(sha)
+        perf_run = {
+            "id": 103,
+            "name": "Anneal Performance Tracking",
+            "path": ".github/workflows/anneal-perf.yml",
+            "event": "push",
+            "head_branch": "main",
+            "head_sha": sha,
+            "head_repository": {"full_name": "google/zerocopy"},
+            "status": "completed",
+            "conclusion": "failure",
+            "updated_at": "2026-11-23T17:20:00Z",
+            "html_url": "https://github.com/google/zerocopy/actions/runs/103",
+        }
+        res, outputs, summary = self._run_coordinate(
+            source_sha=sha,
+            main_sha=sha,
+            trigger_run_id=103,
+            runs_by_id={101: ci_run, 102: anneal_run, 103: perf_run},
+            workflow_runs={
+                "ci.yml": [ci_run],
+                "anneal.yml": [anneal_run],
+                "anneal-perf.yml": [perf_run],
+            },
+            jobs_by_run_id={
+                103: [
+                    {
+                        "name": "Collect and publish performance telemetry",
+                        "steps": [
+                            {"name": "Publish telemetry and dashboard", "conclusion": "success"},
+                            {"name": "Check performance budgets", "conclusion": "failure"},
+                        ],
+                    }
+                ]
+            },
+        )
+        self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
+        self.assertEqual(
+            outputs,
+            {"deploy": "true", "sha": sha, "anneal_run_id": "102"},
+        )
+        self.assertIn("publish=success", summary)
+
+    def test_perf_run_skips_deploy_when_publish_did_not_succeed(self):
+        sha = "b" * 40
+        ci_run, anneal_run = self._ci_fixtures(sha)
+        perf_run = {
+            "id": 203,
+            "name": "Anneal Performance Tracking",
+            "path": ".github/workflows/anneal-perf.yml",
+            "event": "push",
+            "head_branch": "main",
+            "head_sha": sha,
+            "head_repository": {"full_name": "google/zerocopy"},
+            "status": "completed",
+            "conclusion": "failure",
+            "updated_at": "2026-11-23T17:20:00Z",
+            "html_url": "https://github.com/google/zerocopy/actions/runs/203",
+        }
+        res, outputs, summary = self._run_coordinate(
+            source_sha=sha,
+            main_sha=sha,
+            trigger_run_id=203,
+            runs_by_id={101: ci_run, 102: anneal_run, 203: perf_run},
+            workflow_runs={
+                "ci.yml": [ci_run],
+                "anneal.yml": [anneal_run],
+                "anneal-perf.yml": [perf_run],
+            },
+            jobs_by_run_id={
+                203: [
+                    {
+                        "name": "Collect and publish performance telemetry",
+                        "steps": [
+                            {"name": "Collect and validate performance metrics", "conclusion": "failure"},
+                            {"name": "Publish telemetry and dashboard", "conclusion": "skipped"},
+                        ],
+                    }
+                ]
+            },
+        )
+        self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
+        self.assertEqual(outputs, {})
+        self.assertIn("did not publish telemetry", summary)
+
+    def test_perf_run_waits_for_ci_and_blocks_stale_main(self):
+        sha = "c" * 40
+        ci_run, anneal_run = self._ci_fixtures(
+            sha, anneal_status="in_progress", anneal_conclusion=None
+        )
+        perf_run = {
+            "id": 303,
+            "name": "Anneal Performance Tracking",
+            "path": ".github/workflows/anneal-perf.yml",
+            "event": "schedule",
+            "head_branch": "main",
+            "head_sha": sha,
+            "head_repository": {"full_name": "google/zerocopy"},
+            "status": "completed",
+            "conclusion": "success",
+            "updated_at": "2026-11-23T17:20:00Z",
+            "html_url": "https://github.com/google/zerocopy/actions/runs/303",
+        }
+        jobs = {
+            303: [
+                {
+                    "name": "Collect and publish performance telemetry",
+                    "steps": [
+                        {"name": "Publish telemetry and dashboard", "conclusion": "success"},
+                    ],
+                }
+            ]
+        }
+        res_wait, outputs_wait, summary_wait = self._run_coordinate(
+            source_sha=sha,
+            main_sha=sha,
+            trigger_run_id=303,
+            runs_by_id={101: ci_run, 102: anneal_run, 303: perf_run},
+            workflow_runs={
+                "ci.yml": [ci_run],
+                "anneal.yml": [anneal_run],
+                "anneal-perf.yml": [perf_run],
+            },
+            jobs_by_run_id=jobs,
+        )
+        self.assertEqual(res_wait.returncode, 0, res_wait.stdout + res_wait.stderr)
+        self.assertEqual(outputs_wait, {})
+        self.assertIn("Both CI workflows have not succeeded", summary_wait)
+
+        # Once both CI workflows succeed on MAIN_SHA, schedule/workflow_dispatch perf deploys.
+        _, anneal_ok = self._ci_fixtures(sha)
+        res_ok, outputs_ok, _ = self._run_coordinate(
+            source_sha=sha,
+            main_sha=sha,
+            trigger_run_id=303,
+            runs_by_id={101: ci_run, 102: anneal_ok, 303: perf_run},
+            workflow_runs={
+                "ci.yml": [ci_run],
+                "anneal.yml": [anneal_ok],
+                "anneal-perf.yml": [perf_run],
+            },
+            jobs_by_run_id=jobs,
+        )
+        self.assertEqual(res_ok.returncode, 0, res_ok.stdout + res_ok.stderr)
+        self.assertEqual(outputs_ok["deploy"], "true")
+
+        # Stale SOURCE_SHA != MAIN_SHA must be rejected.
+        res_stale, outputs_stale, summary_stale = self._run_coordinate(
+            source_sha=sha,
+            main_sha="d" * 40,
+            trigger_run_id=303,
+            runs_by_id={101: ci_run, 102: anneal_ok, 303: perf_run},
+            workflow_runs={
+                "ci.yml": [ci_run],
+                "anneal.yml": [anneal_ok],
+                "anneal-perf.yml": [perf_run],
+            },
+            jobs_by_run_id=jobs,
+        )
+        self.assertEqual(res_stale.returncode, 0, res_stale.stdout + res_stale.stderr)
+        self.assertEqual(outputs_stale, {})
+        self.assertIn("Refusing to replace", summary_stale)
+
+    def test_spoofed_name_and_ci_pair_winner_deduplication(self):
+        sha = "e" * 40
+        ci_run, anneal_run = self._ci_fixtures(sha)
+        spoofed_run = {
+            "id": 999,
+            "name": "Anneal Performance Tracking",
+            "path": ".github/workflows/spoof.yml",
+            "event": "push",
+            "head_branch": "main",
+            "head_sha": sha,
+            "head_repository": {"full_name": "google/zerocopy"},
+            "status": "completed",
+            "conclusion": "success",
+            "updated_at": "2026-11-23T17:30:00Z",
+            "html_url": "https://github.com/google/zerocopy/actions/runs/999",
+        }
+        # Spoofed workflow path is rejected by WINNER_RUN_ID != TRIGGER_RUN_ID.
+        res_spoof, out_spoof, _ = self._run_coordinate(
+            source_sha=sha,
+            main_sha=sha,
+            trigger_run_id=999,
+            runs_by_id={101: ci_run, 102: anneal_run, 999: spoofed_run},
+            workflow_runs={"ci.yml": [ci_run], "anneal.yml": [anneal_run]},
+            jobs_by_run_id={},
+        )
+        self.assertEqual(res_spoof.returncode, 0, res_spoof.stdout + res_spoof.stderr)
+        self.assertEqual(out_spoof, {})
+
+        # Earlier CI run (101) defers to later Anneal run (102).
+        res_ci, out_ci, _ = self._run_coordinate(
+            source_sha=sha,
+            main_sha=sha,
+            trigger_run_id=101,
+            runs_by_id={101: ci_run, 102: anneal_run},
+            workflow_runs={"ci.yml": [ci_run], "anneal.yml": [anneal_run]},
+            jobs_by_run_id={},
+        )
+        self.assertEqual(res_ci.returncode, 0, res_ci.stdout + res_ci.stderr)
+        self.assertEqual(out_ci, {})
+
+        # Winning Anneal run (102) deploys.
+        res_anneal, out_anneal, _ = self._run_coordinate(
+            source_sha=sha,
+            main_sha=sha,
+            trigger_run_id=102,
+            runs_by_id={101: ci_run, 102: anneal_run},
+            workflow_runs={"ci.yml": [ci_run], "anneal.yml": [anneal_run]},
+            jobs_by_run_id={},
+        )
+        self.assertEqual(res_anneal.returncode, 0, res_anneal.stdout + res_anneal.stderr)
+        self.assertEqual(
+            out_anneal,
+            {"deploy": "true", "sha": sha, "anneal_run_id": "102"},
+        )
+
+    def test_perf_run_rejects_mismatched_repository_or_event(self):
+        sha = "f" * 40
+        ci_run, anneal_run = self._ci_fixtures(sha)
+        jobs = {
+            403: [
+                {
+                    "name": "Collect and publish performance telemetry",
+                    "steps": [
+                        {"name": "Publish telemetry and dashboard", "conclusion": "success"},
+                    ],
+                }
+            ]
+        }
+        for label, overrides in (
+            ("fork_repo", {"head_repository": {"full_name": "fork/zerocopy"}}),
+            ("pr_event", {"event": "pull_request"}),
+        ):
+            with self.subTest(label=label):
+                bad_perf = {
+                    "id": 403,
+                    "name": "Anneal Performance Tracking",
+                    "path": ".github/workflows/anneal-perf.yml",
+                    "event": "push",
+                    "head_branch": "main",
+                    "head_sha": sha,
+                    "head_repository": {"full_name": "google/zerocopy"},
+                    "status": "completed",
+                    "conclusion": "success",
+                    "updated_at": "2026-11-23T17:25:00Z",
+                    "html_url": "https://github.com/google/zerocopy/actions/runs/403",
+                }
+                bad_perf.update(overrides)
+                res, out, summary = self._run_coordinate(
+                    source_sha=sha,
+                    main_sha=sha,
+                    trigger_run_id=403,
+                    runs_by_id={101: ci_run, 102: anneal_run, 403: bad_perf},
+                    workflow_runs={
+                        "ci.yml": [ci_run],
+                        "anneal.yml": [anneal_run],
+                        "anneal-perf.yml": [bad_perf],
+                    },
+                    jobs_by_run_id=jobs,
+                )
+                self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
+                self.assertEqual(out, {})
+                self.assertIn("Ignoring non-main or incomplete performance run", summary)
 
 
 if __name__ == "__main__":

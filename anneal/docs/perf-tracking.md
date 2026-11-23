@@ -91,9 +91,9 @@ enforcement, and interactive static dashboard pipeline.
   │ - Zero writes to benchmark-data        │       │ concurrency: anneal-perf-tracking          │
   └────────────────────────────────────────┘       └─────────────────────┬──────────────────────┘
                                                                          │
-                                                     1. Collect metrics (`anneal/ci/perf_tracking.py`)
-                                                     2. Idempotent SHA-keyed append + CAS retry
-                                                     3. Render bundle (`anneal/ci/render_perf_dashboard.py`)
+                                                     1. Collect & validate (`perf_tracking.py`)
+                                                     2. Append + CAS push & render bundle
+                                                     3. Check Tier A budgets (fail on breach)
                                                                          │
                                                                          ▼
                                                    ┌────────────────────────────────────────────┐
@@ -128,8 +128,10 @@ namespaces all persisted artifacts strictly under two disjoint paths:
   (outside `dashboard/`, so raw historical logs do not bloat the deployed Pages
   artifact);
 - `dashboard/anneal/{index.html,data.json}`: self-contained static dashboard
-  mounted automatically at `/bench/anneal/` on GitHub Pages with zero
-  modifications to `.github/workflows/docs.yml`.
+  mounted at `/bench/anneal/` on GitHub Pages. `.github/workflows/docs.yml`
+  copies `dashboard/*` into `target/doc/bench/` and triggers on
+  `workflow_run` completions of `Build & Tests`, `Anneal Tests`, and
+  `Anneal Performance Tracking` (`main`).
 
 ---
 
@@ -413,11 +415,28 @@ zero npm build steps and zero external runtime URLs:
   `concurrency: { group: anneal-perf-tracking, cancel-in-progress: false }` so
   rapid `main` merges serialize cleanly without aborting in-progress
   measurements.
-- **Root TCB Manifest & Checkout Hygiene:** `actions/checkout` pinned by
-  40-hex commit SHA with `persist-credentials: false`, verifying
-  `trusted/root-manifest.sha256` and symlink/override guards before building or
-  invoking Anneal binaries; orphan-branch publication uses an isolated
-  temporary clone authenticated strictly in the publish step via `GH_TOKEN` with
-  a 5-attempt `git fetch origin benchmark-data` + idempotent replay + `git push`
+- **Root TCB Manifest, Checkout Hygiene, & Publish-Before-Gate Ordering:**
+  `actions/checkout` is pinned by 40-hex commit SHA with
+  `persist-credentials: false`, verifying `trusted/root-manifest.sha256` and
+  symlink/override guards before building or invoking Anneal binaries. After
+  `perf_tracking.py collect` and `perf_tracking.py validate` succeed,
+  `Publish telemetry and dashboard` always runs first—using an isolated
+  temporary clone authenticated strictly in that step via `GH_TOKEN` with a
+  5-attempt `git fetch origin benchmark-data` + idempotent replay + `git push`
   compare-and-swap loop, plus a Markdown table and anomaly report written to
-  `$GITHUB_STEP_SUMMARY`.
+  `$GITHUB_STEP_SUMMARY`—so budget breaches remain visible in red on
+  `dashboard/anneal/`. A final `Check performance budgets` step (with no
+  `GH_TOKEN`) then runs `perf_tracking.py check-budgets` and fails CI if any
+  Tier A budget is violated.
+- **GitHub Pages Redeployment (`.github/workflows/docs.yml`):** `docs.yml`
+  listens on `workflow_run` (`completed`, `branches: [main]`) for
+  `Anneal Performance Tracking` in addition to `Build & Tests` and
+  `Anneal Tests`. When triggered by `anneal-perf.yml`, `coordinate` verifies by
+  workflow path/filename that the run belongs to `google/zerocopy` (`main`,
+  `push`/`schedule`/`workflow_dispatch`) and that its
+  `Publish telemetry and dashboard` step concluded `success` (even if the final
+  `Check performance budgets` step failed), confirms both `ci.yml` and
+  `anneal.yml` succeeded on `push` for the same commit, and verifies that
+  commit still matches `refs/heads/main` before building rustdoc and copying
+  `benchmark-data/dashboard/*` read-only (`persist-credentials: false`) to
+  GitHub Pages.
