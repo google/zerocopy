@@ -1,0 +1,143 @@
+{
+  "topics": [
+    "agents/gui-environments",
+    "agents/web-agents",
+    "agents/visual-grounding",
+    "agents/set-of-marks",
+    "agents/benchmark-methodology",
+    "verification/evaluation-oracles",
+    "verification/stateful-environments",
+    "security/prompt-injection",
+    "security/capability-gating",
+    "tooling/browser-automation"
+  ],
+  "subjects": [
+    {
+      "name": "WebArena Web Agent Environment and Evaluation Harness (web-arena-x/webarena; Zhou et al., ICLR 2024)",
+      "identity": {
+        "arxiv": "2307.13854",
+        "committer_date": "2025-11-26T21:15:59Z",
+        "openreview": "oKn9c6ytLx",
+        "repository": "web-arena-x/webarena",
+        "revision": "dce04686a56253aefba7b18a4fa0937cf1dc987b",
+        "venue": "12th International Conference on Learning Representations (ICLR 2024)",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "VisualWebArena Multimodal Web Benchmark and Set-of-Marks Processor (web-arena-x/visualwebarena; Koh et al., ACL 2024)",
+      "identity": {
+        "arxiv": "2401.13649",
+        "committer_date": "2024-11-09T00:47:00Z",
+        "doi": "10.18653/v1/2024.acl-long.50",
+        "repository": "web-arena-x/visualwebarena",
+        "revision": "89f5af29305c3d1e9f97ce4421462060a70c9a03",
+        "venue": "Proc. 62nd Annual Meeting of the ACL (Vol. 1: Long Papers), pp. 881-905",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "OSWorld Desktop Computer-Use Benchmark and Evaluator (xlang-ai/OSWorld; Xie et al., NeurIPS 2024)",
+      "identity": {
+        "arxiv": "2404.07972",
+        "committer_date": "2026-11-12T16:40:37Z",
+        "doi": "10.52202/079017-1650",
+        "repository": "xlang-ai/OSWorld",
+        "revision": "5123bfdbbc34b947bcffcff564abc62d0ab7072d",
+        "venue": "Advances in Neural Information Processing Systems 37 (NeurIPS 2024 Datasets and Benchmarks Track), pp. 52040-52094",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "AndroidWorld Dynamic Mobile Benchmarking Environment and App Snapshot Manager (google-research/android_world; Rawles et al., ICLR 2025)",
+      "identity": {
+        "arxiv": "2405.14573",
+        "author_date": "2026-10-23T23:14:30Z",
+        "committer_date": "2026-10-23T23:15:01Z",
+        "openreview": "il5yUQsrjC",
+        "repository": "google-research/android_world",
+        "revision": "55ddaf5edc6f6c25673aed343907d5b9dca66f84",
+        "venue": "13th International Conference on Learning Representations (ICLR 2025)",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "BrowserGym Unified Web Agent Ecosystem and WebArena-Verified Adapter (ServiceNow/BrowserGym; De Chezelles et al., TMLR 2025)",
+      "identity": {
+        "arxiv": "2412.05467",
+        "committer_date": "2026-11-18T05:00:33Z",
+        "openreview": "5298fKGmv3",
+        "repository": "ServiceNow/BrowserGym",
+        "revision": "62a678feefaff0f93e9bab03f51c5402a1e1db00",
+        "venue": "Transactions on Machine Learning Research (TMLR), ISSN 2835-8856 (Feb. 2025)",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "WebArena-Verified Deterministic Response and Network-Trace Evaluator (ServiceNow/webarena-verified; El hattami et al., SEA @ NeurIPS 2025)",
+      "identity": {
+        "committer_date": "2026-02-07T22:42:39Z",
+        "openreview": "94tlGxmqkN",
+        "repository": "ServiceNow/webarena-verified",
+        "revision": "6473f72db5dcefc97b5725b59e734504edc28a21",
+        "venue": "NeurIPS 2025 Workshop on Scaling Environments for Agents (SEA @ NeurIPS 2025, Poster)",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Mind2Web Generalist Web Agent Dataset and Action Prediction Evaluator (OSU-NLP-Group/Mind2Web; Deng et al., NeurIPS 2023)",
+      "identity": {
+        "arxiv": "2306.06070",
+        "committer_date": "2025-11-05T00:38:41Z",
+        "openreview": "kiYqbO3wqw",
+        "repository": "OSU-NLP-Group/Mind2Web",
+        "revision": "33bd95caeee7bba22dd08ecc935845e15c5e5dc7",
+        "venue": "Advances in Neural Information Processing Systems 36 (NeurIPS 2023 Datasets and Benchmarks Track), pp. 28091-28114",
+        "year": "2023-2025"
+      }
+    },
+    {
+      "name": "OmniParser Pure-Vision GUI Detector and Box Annotator (microsoft/OmniParser; Lu et al., 2024)",
+      "identity": {
+        "arxiv": "2408.00203",
+        "committer_date": "2026-07-20T01:09:31Z",
+        "repository": "microsoft/OmniParser",
+        "revision": "354021201345a96178360b28733573e27269f2de",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "WASP Web Agent Security Against Prompt Injection Benchmark (facebookresearch/wasp; Evtimov et al., NeurIPS 2025)",
+      "identity": {
+        "arxiv": "2504.18575",
+        "committer_date": "2025-05-14T07:17:04Z",
+        "doi": "10.52202/085713-0666",
+        "openreview": "Ip1cCUAllL",
+        "repository": "facebookresearch/wasp",
+        "revision": "ffee6f41fde76acd14bd792db442479c506260c2",
+        "venue": "Advances in Neural Information Processing Systems 38 (NeurIPS 2025 Datasets and Benchmarks Track), pp. 22436-22458",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Set-of-Mark Prompting, SeeAct Grounding, UGround Universal GUI Grounding, and ShowUI Token-Pruned VLA (Yang et al., 2023; Zheng et al., ICML 2024; Gou et al., ICLR 2025; Lin et al., CVPR 2025)",
+      "identity": {
+        "arxiv": "2310.11441; 2401.01614; 2410.05243; 2411.17465",
+        "openreview": "kxnoqaisCT",
+        "venue": "arXiv:2310.11441 (2023); PMLR Vol. 235 (ICML 2024), pp. 61349-61385; ICLR 2025 Oral; CVPR 2025, pp. 19498-19508",
+        "year": "2023-2025"
+      }
+    },
+    {
+      "name": "Environmental, Pop-Up, and Adversarial-Pixel GUI Injection Studies: EIA, Pop-ups, and VWA-Adv (Liao et al., ICLR 2025; Zhang, Yu, & Yang, ACL 2025; Wu et al., ICLR 2025)",
+      "identity": {
+        "arxiv": "2409.11295; 2411.02391; 2406.12814",
+        "doi": "10.18653/v1/2025.acl-long.411",
+        "openreview": "xMOLUzo2Lk; YauQYh2k1g",
+        "venue": "ICLR 2025; Proc. 63rd Annual Meeting of the ACL (Vol. 1: Long Papers), pp. 8387-8401 (2025)",
+        "year": "2025"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

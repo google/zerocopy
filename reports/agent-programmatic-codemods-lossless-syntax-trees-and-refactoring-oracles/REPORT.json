@@ -1,0 +1,212 @@
+{
+  "topics": [
+    "agents",
+    "agents/codemods",
+    "agents/refactoring-benchmarks",
+    "agents/reward-hacking",
+    "pl",
+    "pl/cst",
+    "pl/program-transformation",
+    "tooling",
+    "tooling/autofix",
+    "tooling/codemods",
+    "tooling/refactoring",
+    "verification",
+    "verification/refactoring-oracles"
+  ],
+  "subjects": [
+    {
+      "name": "OpenRewrite Lossless Semantic Tree (LST) Refactoring Engine (openrewrite/rewrite)",
+      "identity": {
+        "author_date": "2026-11-22T00:36:47Z",
+        "committer_date": "2026-11-22T00:36:47Z",
+        "repository": "openrewrite/rewrite",
+        "revision": "5c471ca885f60943772d66c18de2f7be94c1a18c"
+      }
+    },
+    {
+      "name": "LibCST Lossless Concrete Syntax Tree Parser and Metadata Engine for Python (Instagram/LibCST)",
+      "identity": {
+        "author_date": "2026-08-11T05:22:07Z",
+        "committer_date": "2026-08-11T05:22:07Z",
+        "repository": "Instagram/LibCST",
+        "revision": "d9a255843b5cdbecc6834684d233bce1f2987f9d"
+      }
+    },
+    {
+      "name": "Recast JavaScript/TypeScript Shadow-AST Format-Preserving Printer (benjamn/recast)",
+      "identity": {
+        "author_date": "2026-11-09T00:29:36Z",
+        "committer_date": "2026-11-09T00:29:36Z",
+        "repository": "benjamn/recast",
+        "revision": "b6377759df9251782639fd4391b5763d17313810"
+      }
+    },
+    {
+      "name": "jscodeshift JavaScript/TypeScript Codemod Toolkit (facebook/jscodeshift)",
+      "identity": {
+        "author_date": "2026-10-12T06:38:08Z",
+        "committer_date": "2026-10-13T20:55:04Z",
+        "repository": "facebook/jscodeshift",
+        "revision": "938bc3c355dd77fd3cc8063c8615ee0f9caeed89"
+      }
+    },
+    {
+      "name": "Comby Multi-Language Scannerless Parser-Combinator Structural Rewriter (comby-tools/comby)",
+      "identity": {
+        "author_date": "2026-11-06T07:32:43Z",
+        "committer_date": "2026-11-06T07:32:43Z",
+        "repository": "comby-tools/comby",
+        "revision": "a49be8ef83592bcc392c1bd188a66b9bea9d88e1"
+      }
+    },
+    {
+      "name": "Semgrep Static Analysis and Byte-Span Autofix Engine (semgrep/semgrep)",
+      "identity": {
+        "author_date": "2026-11-18T17:22:20Z",
+        "committer_date": "2026-11-20T21:52:58Z",
+        "repository": "semgrep/semgrep",
+        "revision": "c4dbe9ee2fc6d0022ba02ef6b97c5954ed9549e3"
+      }
+    },
+    {
+      "name": "RefactoringMiner Threshold-Free AST Refactoring Detection Engine (tsantalis/RefactoringMiner)",
+      "identity": {
+        "author_date": "2026-11-22T23:56:53Z",
+        "committer_date": "2026-11-22T23:56:53Z",
+        "repository": "tsantalis/RefactoringMiner",
+        "revision": "485889d8108685986c825f4d399f0507c8b31afb"
+      }
+    },
+    {
+      "name": "RefactorBench Multi-File Python Agent Refactoring Benchmark (microsoft/RefactorBench)",
+      "identity": {
+        "author_date": "2025-07-11T03:15:49Z",
+        "committer_date": "2025-07-11T03:15:49Z",
+        "repository": "microsoft/RefactorBench",
+        "revision": "210b2d15a373ad265aa721f70199c9962d7de069"
+      }
+    },
+    {
+      "name": "Comby PLDI 2019 Replication Artifact (squaresLab/pldi-artifact-2019)",
+      "identity": {
+        "author_date": "2019-07-02T17:48:52Z",
+        "committer_date": "2019-07-02T17:48:52Z",
+        "repository": "squaresLab/pldi-artifact-2019",
+        "revision": "0a1c323006288d909c1f21ee94d366fbb9b17d66",
+        "zenodo": "10.5281/zenodo.2642857"
+      }
+    },
+    {
+      "name": "Lightweight multi-language syntax transformation with parser parser combinators (van Tonder & Le Goues, PLDI 2019)",
+      "identity": {
+        "doi": "10.1145/3314221.3314589",
+        "pages": "363-378",
+        "venue": "Proceedings of the 40th ACM SIGPLAN Conference on Programming Language Design and Implementation (PLDI '19)",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "Tailoring programs for static analysis via program transformation (van Tonder & Le Goues, ICSE 2020)",
+      "identity": {
+        "doi": "10.1145/3377811.3380343",
+        "pages": "824-834",
+        "venue": "Proceedings of the ACM/IEEE 42nd International Conference on Software Engineering (ICSE '20)",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Learning Syntactic Program Transformations from Examples (Rolim et al., ICSE 2017)",
+      "identity": {
+        "arxiv": "1608.09000",
+        "doi": "10.1109/ICSE.2017.44",
+        "pages": "404-415",
+        "venue": "2017 IEEE/ACM 39th International Conference on Software Engineering (ICSE)",
+        "year": "2017"
+      }
+    },
+    {
+      "name": "Automated Behavioral Testing of Refactoring Engines (Soares, Gheyi, & Massoni, IEEE TSE 2013)",
+      "identity": {
+        "doi": "10.1109/TSE.2012.19",
+        "pages": "147-162",
+        "venue": "IEEE Transactions on Software Engineering 39(2)",
+        "year": "2013"
+      }
+    },
+    {
+      "name": "Accurate and efficient refactoring detection in commit history & RefactoringMiner 2.0 (Tsantalis et al., ICSE 2018 & IEEE TSE 2022)",
+      "identity": {
+        "doi_icse": "10.1145/3180155.3180206",
+        "doi_tse": "10.1109/TSE.2020.3007722",
+        "pages_icse": "483-494",
+        "pages_tse": "930-950",
+        "venue": "ICSE '18 and IEEE Transactions on Software Engineering 48(3) (2022)",
+        "year": "2018-2022"
+      }
+    },
+    {
+      "name": "Unprecedented Code Change Automation: The Fusion of LLMs and Transformation by Example (Dilhara, Bellur, Bryksin, & Dig, PACMSE/FSE 2024)",
+      "identity": {
+        "article": "29",
+        "arxiv": "2402.07138v3",
+        "doi": "10.1145/3643755",
+        "pages": "631-653",
+        "venue": "Proceedings of the ACM on Software Engineering 1(FSE)",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Next-Generation Refactoring: Combining LLM Insights and IDE Capabilities for Extract Method & EM-Assist (Pomian et al., ICSME 2024 & FSE Companion 2024)",
+      "identity": {
+        "arxiv_fse": "2405.20551",
+        "arxiv_icsme": "2401.15298v2",
+        "doi_fse": "10.1145/3663529.3663803",
+        "doi_icsme": "10.1109/ICSME58944.2024.00034",
+        "pages_fse": "582-586",
+        "pages_icsme": "275-287",
+        "venue": "2024 IEEE ICSME and Companion Proceedings of the 32nd ACM FSE ('24)",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Exploring the potential of general purpose LLMs in automated software refactoring: an empirical study (Liu et al., Automated Software Engineering 2025)",
+      "identity": {
+        "article": "26",
+        "arxiv": "2411.04444",
+        "doi": "10.1007/s10515-025-00500-0",
+        "venue": "Automated Software Engineering 32(1)",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Refactoring Programs Using Large Language Models with Few-Shot Examples (Shirafuji et al., APSEC 2023)",
+      "identity": {
+        "arxiv": "2311.11690v1",
+        "doi": "10.1109/APSEC60848.2023.00025",
+        "pages": "151-160",
+        "venue": "2023 30th Asia-Pacific Software Engineering Conference (APSEC)",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "RefactorBench: Evaluating Stateful Reasoning in Language Agents Through Code (Gautam et al., ICLR 2025)",
+      "identity": {
+        "arxiv": "2503.07832v1",
+        "doi": "10.48550/arXiv.2503.07832",
+        "venue": "13th International Conference on Learning Representations (ICLR 2025)",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "SWE-Refactor: A Repository-Level Benchmark for Real-World LLM-Based Code Refactoring (Xu, Yang, & Chen, 2026)",
+      "identity": {
+        "arxiv": "2602.03712v1",
+        "doi": "10.48550/arXiv.2602.03712",
+        "year": "2026",
+        "zenodo": "10.5281/zenodo.17196850"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

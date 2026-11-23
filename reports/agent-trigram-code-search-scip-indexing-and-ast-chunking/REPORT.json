@@ -1,0 +1,128 @@
+{
+  "topics": [
+    "agents/code-search",
+    "agents/codebase-indexing",
+    "agents/retrieval-augmented-generation",
+    "agents/hybrid-retrieval",
+    "agents/benchmark-methodology",
+    "tooling/trigram-indexing",
+    "tooling/scip",
+    "tooling/lsif",
+    "tooling/ast-chunking",
+    "compilers/cross-references",
+    "vcs/merkle-trees",
+    "vcs/worktree-indexing"
+  ],
+  "subjects": [
+    {
+      "name": "Zoekt Positional Rune-Trigram Code Search Engine (sourcegraph/zoekt)",
+      "identity": {
+        "author_date": "2026-11-20T20:34:23Z",
+        "committer_date": "2026-11-20T20:36:55Z",
+        "repository": "sourcegraph/zoekt",
+        "revision": "b55ce727df8cfbed76b8a1420445fd0cf93f3256"
+      }
+    },
+    {
+      "name": "Regular Expression Matching with a Trigram Index (Russ Cox, Jan. 2012)",
+      "identity": {
+        "author": "Russ Cox",
+        "url": "https://swtch.com/~rsc/regexp/regexp4.html",
+        "year": "2012-01"
+      }
+    },
+    {
+      "name": "SCIP Code Intelligence Protocol Schema, Streaming Go Parser, and Engineering Report (sourcegraph/scip; Geirsson, 2022)",
+      "identity": {
+        "committer_date": "2026-11-21T09:18:19Z",
+        "repository": "sourcegraph/scip",
+        "revision": "8fe503757e133d98312b059b89e0ad5f72852d53",
+        "url": "https://sourcegraph.com/blog/announcing-scip",
+        "year": "2022-2026"
+      }
+    },
+    {
+      "name": "Microsoft Language Server Index Format (LSIF) Normative Specifications v0.5.0 and v0.6.0 (microsoft/language-server-protocol)",
+      "identity": {
+        "committer_date": "2026-11-16T09:44:22Z",
+        "repository": "microsoft/language-server-protocol",
+        "revision": "6714b477746a6d4b29fb5510152a3b82206a2e16",
+        "versions": "0.5.0; 0.6.0"
+      }
+    },
+    {
+      "name": "cAST Structural AST Code Chunking Library and Paper (yilinjz/astchunk; Zhang et al., Findings of EMNLP 2025)",
+      "identity": {
+        "arxiv": "2506.15655v2",
+        "committer_date": "2026-06-27T02:24:33Z",
+        "doi": "10.18653/v1/2025.findings-emnlp.430",
+        "repository": "yilinjz/astchunk",
+        "revision": "82029ada8a8dd8d668283c076980cedb886e6d4c",
+        "venue": "Findings of the Association for Computational Linguistics: EMNLP 2025, pp. 8106-8116",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "CodeSearchNet and CoSQA Semantic Code Search Benchmarks (Husain et al., 2019/2020; Huang et al., ACL 2021)",
+      "identity": {
+        "arxiv": "1909.09436v3; 2105.13239",
+        "doi": "10.48550/arXiv.1909.09436; 10.18653/v1/2021.acl-long.442",
+        "venue": "arXiv:1909.09436v3 (2020); Proc. 59th Annual Meeting of the ACL and 11th IJCNLP (Vol. 1: Long Papers), pp. 5690-5700 (Aug. 2021)",
+        "year": "2019-2021"
+      }
+    },
+    {
+      "name": "CoSQA+ Multi-Choice Test-Driven Code Search Benchmark and Evaluator (DeepSoftwareAnalytics/CoSQA_Plus; Gong et al., arXiv v1 2024 & IEEE TSE 2026)",
+      "identity": {
+        "arxiv": "2406.11589v1; 2406.11589v7",
+        "committer_date": "2025-09-08T14:50:29Z",
+        "doi": "10.1109/TSE.2025.3631886",
+        "repository": "DeepSoftwareAnalytics/CoSQA_Plus",
+        "revision": "1ca3343833a4036a4c42c852eec24b62c1f280d4",
+        "venue": "IEEE Transactions on Software Engineering, Vol. 52, No. 1, pp. 206-220 (Jan. 2026)",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "RepoBench Repository-Level Code Auto-Completion Benchmark (Leolty/repobench; Liu, Xu, & McAuley, ICLR 2024)",
+      "identity": {
+        "arxiv": "2306.03091",
+        "committer_date": "2024-08-16T07:08:26Z",
+        "openreview": "pPjZIOuQuF",
+        "repository": "Leolty/repobench",
+        "revision": "e0cfd34c9e7cd8f057efd32b9280b9719ae12a91",
+        "venue": "12th International Conference on Learning Representations (ICLR 2024)",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "CodeRAG-Bench Retrieval-Augmented Code Generation Benchmark (code-rag-bench/code-rag-bench; Wang et al., Findings of NAACL 2025)",
+      "identity": {
+        "arxiv": "2406.14497",
+        "committer_date": "2024-11-15T19:58:55Z",
+        "doi": "10.18653/v1/2025.findings-naacl.176",
+        "repository": "code-rag-bench/code-rag-bench",
+        "revision": "f9e100ca9ed94b8f1983b356ae81966e30210cf4",
+        "venue": "Findings of the Association for Computational Linguistics: NAACL 2025, pp. 3199-3214",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Reciprocal Rank Fusion and Hybrid Score-Normalization Functions (Cormack, Clarke, & Buettcher, SIGIR 2009; Bruch, Gai, & Ingber, ACM TOIS 2023/2024)",
+      "identity": {
+        "arxiv": "2210.11934v2",
+        "doi": "10.1145/1571941.1572114; 10.1145/3596512",
+        "venue": "Proc. 32nd Int. ACM SIGIR Conf. (SIGIR 2009), pp. 758-759; ACM Transactions on Information Systems, Vol. 42, Issue 1, Article 20, pp. 20:1-20:35 (pp. 1-35)",
+        "year": "2009-2024"
+      }
+    },
+    {
+      "name": "Git Content-Addressable Merkle Object Format and Diffing Plumbing",
+      "identity": {
+        "subcommands": "fast-import, rev-parse, diff-tree -r, status --porcelain -z -uall",
+        "tool": "git"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

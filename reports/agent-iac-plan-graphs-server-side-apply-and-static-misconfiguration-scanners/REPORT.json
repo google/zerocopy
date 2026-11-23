@@ -1,0 +1,182 @@
+{
+  "topics": [
+    "agents",
+    "agents/infrastructure-as-code",
+    "systems/terraform",
+    "systems/kubernetes",
+    "security/misconfiguration-scanners",
+    "verification/iac-benchmarks",
+    "tooling/evaluation-harnesses"
+  ],
+  "subjects": [
+    {
+      "name": "OpenTofu Declarative DAG Planner, Lifecycle Transformers, and Condition Evaluator (opentofu/opentofu)",
+      "identity": {
+        "author_date": "2026-11-20T12:41:45Z",
+        "commit_date": "2026-11-20T13:00:03Z",
+        "repository": "opentofu/opentofu",
+        "revision": "0183949c60df4ce6b6268e0b6e2a2acc40bf18a3"
+      }
+    },
+    {
+      "name": "HashiCorp Terraform Two-Phase Create-Before-Destroy DAG Transformer (hashicorp/terraform)",
+      "identity": {
+        "author_date": "2026-11-20T20:27:02Z",
+        "commit_date": "2026-11-20T20:27:02Z",
+        "repository": "hashicorp/terraform",
+        "revision": "80e6fc2811a0cee0a4f16a92d37622bb8b8aa13c"
+      }
+    },
+    {
+      "name": "Kubernetes API Server CEL ValidatingAdmissionPolicy Evaluator and ManagedFields Capper (kubernetes/kubernetes)",
+      "identity": {
+        "author_date": "2026-11-21T23:08:18Z",
+        "commit_date": "2026-11-21T23:08:18Z",
+        "repository": "kubernetes/kubernetes",
+        "revision": "43cbb94ee845ad387717fe851bf5f421b7284329"
+      }
+    },
+    {
+      "name": "Kubernetes Structured-Merge-Diff Server-Side Apply Ownership Engine (kubernetes-sigs/structured-merge-diff)",
+      "identity": {
+        "author_date": "2026-09-25T21:10:28Z",
+        "commit_date": "2026-09-25T21:10:28Z",
+        "repository": "kubernetes-sigs/structured-merge-diff",
+        "revision": "560aaa513ea735bf59e6011feecd5388e2dfeae9"
+      }
+    },
+    {
+      "name": "Kubernetes Enhancement Proposals KEP-555 (Server-Side Apply) and KEP-3488 (CEL for Admission Control) (kubernetes/enhancements)",
+      "identity": {
+        "author_date": "2026-11-20T15:32:25Z",
+        "commit_date": "2026-11-20T15:32:25Z",
+        "keps": "KEP-555, KEP-3488",
+        "repository": "kubernetes/enhancements",
+        "revision": "cac930cb9d7c70192016865425f943c339414011"
+      }
+    },
+    {
+      "name": "Checkov Static HCL and Terraform Plan JSON Scanner (bridgecrewio/checkov)",
+      "identity": {
+        "author_date": "2026-11-19T08:04:51Z",
+        "commit_date": "2026-11-19T08:14:20Z",
+        "repository": "bridgecrewio/checkov",
+        "revision": "286946086f105c8edee1d9968823671da17b7242"
+      }
+    },
+    {
+      "name": "Trivy Terraform HCL Block and Submodule Evaluator (aquasecurity/trivy)",
+      "identity": {
+        "author_date": "2026-11-20T11:14:25Z",
+        "commit_date": "2026-11-20T11:14:25Z",
+        "repository": "aquasecurity/trivy",
+        "revision": "edf9f5c13d27ba1f6b1bc747f2f41a383dc56dc9"
+      }
+    },
+    {
+      "name": "IaC-Eval Cloud Infrastructure-as-Code Benchmark and Evaluator Harness (autoiac-project/iac-eval; Kon et al., NeurIPS 2024)",
+      "identity": {
+        "author_date": "2024-12-12T04:36:24Z",
+        "commit_date": "2024-12-12T04:36:24Z",
+        "doi": "10.52202/079017-4273",
+        "repository": "autoiac-project/iac-eval",
+        "revision": "b75a90b32a9733b17b12cf82535121793cb228e5",
+        "venue": "NeurIPS 2024 Datasets and Benchmarks Track, pp. 134488-134506"
+      }
+    },
+    {
+      "name": "BPlan Formal Verification of Provisioning Change Stability (Perdereau et al., SEFM 2026)",
+      "identity": {
+        "artifact_doi": "10.5281/zenodo.22747162",
+        "hal": "hal-05855612v1",
+        "venue": "SEFM 2026",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Empirical Taxonomy of Infrastructure-as-Code Ecosystem Faults (Drosos et al., PACMPL OOPSLA2 2024)",
+      "identity": {
+        "doi": "10.1145/3689799",
+        "venue": "PACMPL 8(OOPSLA2), Article 359, pp. 2490-2520",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Sieve Automatic Reliability Testing for Cluster Management Controllers (Sun et al., OSDI 2022)",
+      "identity": {
+        "isbn": "978-1-939133-28-1",
+        "usenix": "osdi22/presentation/sun",
+        "venue": "OSDI 2022, pp. 143-159",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Acto End-to-End Operation Correctness Testing for Cloud System Management (Gu et al., SOSP 2023)",
+      "identity": {
+        "doi": "10.1145/3600006.3613161",
+        "venue": "SOSP 2023, pp. 96-112",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Anvil Verifying Liveness of Cluster Management Controllers via Eventually Stable Reconciliation (Sun et al., OSDI 2024)",
+      "identity": {
+        "isbn": "978-1-939133-40-3",
+        "usenix": "osdi24/presentation/sun-xudong",
+        "venue": "OSDI 2024, pp. 649-666",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "TerraFormer Policy-Guided Verifier Feedback for Infrastructure-as-Code Generation (Jana et al., ICSE-SEIP 2026)",
+      "identity": {
+        "arxiv": "2601.08734",
+        "doi": "10.1145/3786583.3786898",
+        "venue": "ICSE-SEIP 2026, pp. 578-589",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Multi-IaC-Eval Cross-Format Cloud Infrastructure Benchmark (Davidson et al., 2025)",
+      "identity": {
+        "arxiv": "2509.05303",
+        "doi": "10.48550/arXiv.2509.05303",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "IaC-Eval v2 Verifier-First Evaluation of Agentic LLMs for IaC Generation (Jouini, 2026)",
+      "identity": {
+        "arxiv": "2607.20478",
+        "doi": "10.48550/arXiv.2607.20478",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "TerraProbe Layered-Oracle Detection of Deceptive Fixes in LLM Terraform Security Repair (Alsaid, Nebolisa, & Abbas, 2026)",
+      "identity": {
+        "arxiv": "2606.26590",
+        "doi": "10.48550/arXiv.2606.26590",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Security-First Evaluation of Text-to-Terraform Across LLMs and SLMs (Vargas, Mansilha, & Kreutz, SBSeg 2026)",
+      "identity": {
+        "arxiv": "2608.02672",
+        "doi": "10.5753/sbseg.2026.29299",
+        "venue": "Anais do XXVI Simposio Brasileiro de Ciberseguranca (SBSeg 2026), pp. 1025-1040",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Comparison of Kubernetes Compliance Standards and Configuration Scanners (Krieger et al., 2026)",
+      "identity": {
+        "arxiv": "2606.24438",
+        "doi": "10.48550/arXiv.2606.24438",
+        "year": "2026"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}
