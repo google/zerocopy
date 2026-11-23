@@ -1,0 +1,89 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/audit",
+    "anneal/kernel-replay",
+    "anneal/tcb",
+    "lean/kernel",
+    "lean/export",
+    "lean/olean",
+    "verification/modular-linking",
+    "verification/trusted-computing-base",
+    "pl/dedukti"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain and bundled export checkers (v4.35.0)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+        "version": "v4.35.0"
+      }
+    },
+    {
+      "name": "lean4export (NDJSON 3.1.0 exporter)",
+      "identity": {
+        "repository": "leanprover/lean4export",
+        "revision": "df81913eee5519d5a88ae5b0fd701b5298cc29ab"
+      }
+    },
+    {
+      "name": "nanoda_lib (independent Rust Lean 4 kernel)",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+        "version": "0.4.19"
+      }
+    },
+    {
+      "name": "con-ron (Rust Lean 4 checker with --compare and --modular)",
+      "identity": {
+        "repository": "leanprover/con-ron",
+        "revision": "6fd8fee454dd71398ed7975ff3517058b5f5d8b6"
+      }
+    },
+    {
+      "name": "con-leche (verified Lean 4 checker)",
+      "identity": {
+        "repository": "leanprover/con-leche",
+        "revision": "bc6676101c488e21ce71a317b33905534d497e14"
+      }
+    },
+    {
+      "name": "CertiRocq (CertiCoq lambda lifting and compositional compilation)",
+      "identity": {
+        "repository": "CertiRocq/certirocq",
+        "revision": "ab66e0164e7ecb63e5af95c90c8e479068bf95c2"
+      }
+    },
+    {
+      "name": "Lambdapi (.lpo signature stripping and acyclic linking)",
+      "identity": {
+        "repository": "Deducteam/lambdapi",
+        "revision": "19fdacdfb9878e2d97a140ae839acbf8371d7183"
+      }
+    },
+    {
+      "name": "Metamath Zero (MM0 / MMB split statement and proof streams)",
+      "identity": {
+        "repository": "digama0/mm0",
+        "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956"
+      }
+    },
+    {
+      "name": "seL4 l4v (AutoCorres and Isabelle session DAGs)",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "df4f444823f8c9f99b4a9f45990001eecc820a5a"
+      }
+    },
+    {
+      "name": "CakeML (characteristic formulae modular linking)",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "afffa112be1e26551455023edc6b26a7c3f538b7"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}
