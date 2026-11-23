@@ -321,6 +321,10 @@ pub struct AdmittedToolchain {
     pub(crate) exec_lean: PathBuf,
     /// Expected locked SHA-256 digest of `exec_lean` in pinned mode.
     pub(crate) expected_lean_sha: Option<String>,
+    /// Verified SHA-256 manifest digest of `<prefix>/lib/lean/{Init,Std,Lean}*`
+    /// `.olean*` artifacts (populated eagerly in pinned mode and lazily on cache
+    /// access in unpinned mode).
+    pub(crate) sysroot_manifest_sha256: Option<String>,
     /// Staged precompiled `control/TrustedBoundary.olean` built once per
     /// `Checker` from `control/TrustedBoundary.lean`, plus its SHA-256 digest.
     pub(crate) inspector_olean: Option<(PathBuf, String)>,
@@ -675,7 +679,11 @@ fn non_empty_path(value: Option<&OsStr>) -> Option<PathBuf> {
     value.filter(|v| !v.is_empty()).map(PathBuf::from)
 }
 
-fn cache_dir_for_platform(is_macos: bool, xdg_cache_home: Option<&OsStr>, home: &Path) -> PathBuf {
+pub(crate) fn cache_dir_for_platform(
+    is_macos: bool,
+    xdg_cache_home: Option<&OsStr>,
+    home: &Path,
+) -> PathBuf {
     if is_macos {
         home.join("Library/Caches")
     } else {
@@ -824,16 +832,27 @@ fn walk_and_hash_sysroot_dir(
     foundation_modules: &BTreeSet<String>,
     phase: &str,
 ) -> Result<(String, BTreeSet<String>), Failure> {
+    walk_and_hash_sysroot_dir_with_mode(lib_dir, foundation_modules, false, phase)
+}
+
+fn walk_and_hash_sysroot_dir_with_mode(
+    lib_dir: &Path,
+    foundation_modules: &BTreeSet<String>,
+    unpinned_tolerant: bool,
+    phase: &str,
+) -> Result<(String, BTreeSet<String>), Failure> {
     let mut files_to_hash: Vec<(String, PathBuf)> = Vec::new();
     let mut modules: BTreeSet<String> = BTreeSet::new();
     for pkg in ["Init", "Std", "Lean"] {
         for ext in OLEAN_PARTS {
             let rel = format!("{pkg}.{ext}");
             let path = lib_dir.join(&rel);
-            match fs::symlink_metadata(&path) {
+            let meta_res =
+                if unpinned_tolerant { fs::metadata(&path) } else { fs::symlink_metadata(&path) };
+            match meta_res {
                 Ok(meta) => {
                     let ft = meta.file_type();
-                    if ft.is_symlink() {
+                    if !unpinned_tolerant && ft.is_symlink() {
                         return Err(Failure::policy(
                             phase,
                             format!("symlink forbidden in sysroot: {}", path.display()),
@@ -860,12 +879,30 @@ fn walk_and_hash_sysroot_dir(
             }
         }
         let pkg_dir = lib_dir.join(pkg);
-        for item in WalkDir::new(&pkg_dir).follow_links(false) {
+        if unpinned_tolerant {
+            match fs::metadata(&pkg_dir) {
+                Ok(meta) if meta.is_dir() => {}
+                Ok(_) => {
+                    return Err(Failure::policy(
+                        phase,
+                        format!("unexpected file type in sysroot: {}", pkg_dir.display()),
+                    ));
+                }
+                Err(e) if e.kind() == io::ErrorKind::NotFound => continue,
+                Err(e) => {
+                    return Err(Failure::policy(
+                        phase,
+                        format!("cannot inspect sysroot {}: {e}", pkg_dir.display()),
+                    ));
+                }
+            }
+        }
+        for item in WalkDir::new(&pkg_dir).follow_links(unpinned_tolerant) {
             let item = item.map_err(|e| {
                 Failure::policy(phase, format!("cannot walk sysroot {}: {e}", pkg_dir.display()))
             })?;
             let ft = item.file_type();
-            if ft.is_symlink() {
+            if !unpinned_tolerant && ft.is_symlink() {
                 return Err(Failure::policy(
                     phase,
                     format!("symlink forbidden in sysroot: {}", item.path().display()),
@@ -929,9 +966,12 @@ fn walk_and_hash_sysroot_dir(
         .min(4)
         .min(files_to_hash.len());
     let mut entries: BTreeMap<String, String> = BTreeMap::new();
+    let hash_one = |path: &Path| {
+        if unpinned_tolerant { sha256_file_deref(path, phase) } else { sha256_file(path, phase) }
+    };
     if workers <= 1 {
         for (rel, path) in files_to_hash {
-            let sha = sha256_file(&path, phase)?;
+            let sha = hash_one(&path)?;
             entries.insert(rel, sha);
         }
     } else {
@@ -948,7 +988,7 @@ fn walk_and_hash_sysroot_dir(
                         if idx >= files_to_hash.len() || idx > min_err_idx.load(Ordering::Relaxed) {
                             break;
                         }
-                        let res = sha256_file(&files_to_hash[idx].1, phase);
+                        let res = hash_one(&files_to_hash[idx].1);
                         if res.is_err() {
                             min_err_idx.fetch_min(idx, Ordering::Relaxed);
                         }
@@ -997,6 +1037,23 @@ pub fn verify_sysroot_foundation_dir(
         ));
     }
     Ok(modules.into_iter().collect())
+}
+
+/// Compute the canonical SHA-256 manifest digest of `<prefix>/lib/lean/{Init,Std,Lean}*`
+/// `.olean*` artifacts without filtering any module names.
+pub(crate) fn compute_sysroot_manifest_sha256(lib_dir: &Path, phase: &str) -> Result<String, Failure> {
+    walk_and_hash_sysroot_dir(lib_dir, &BTreeSet::new(), phase).map(|(sha, _)| sha)
+}
+
+/// Compute the SHA-256 manifest digest of an unpinned sysroot `lib/lean` tree,
+/// tolerating optional absent packages (`Std`/`Lean`) and dereferencing
+/// symlinks permitted in `--allow-unpinned-lean` configurations.
+pub(crate) fn compute_unpinned_sysroot_manifest_sha256(
+    lib_dir: &Path,
+    phase: &str,
+) -> Result<String, Failure> {
+    walk_and_hash_sysroot_dir_with_mode(lib_dir, &BTreeSet::new(), true, phase)
+        .map(|(sha, _)| sha)
 }
 
 #[cfg(test)]

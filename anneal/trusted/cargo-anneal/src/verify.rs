@@ -188,6 +188,14 @@ pub struct VerifyArgs {
         value_parser = clap::value_parser!(u32).range(1..)
     )]
     lean_memory_mb: Option<u32>,
+    /// Disable prebuilt and local disk `.olean` caching for bundled modules and
+    /// `TrustedBoundary`.
+    #[arg(long, global = true)]
+    no_cache: bool,
+    /// Fail closed rather than compiling `Trusted.*`, `Anneal.*`, or
+    /// `TrustedBoundary` when absent from prebuilt or local `.olean` caches.
+    #[arg(long, global = true, conflicts_with = "no_cache")]
+    no_rebuild_bundled: bool,
     /// Direct rustc-style verification subcommand.
     #[command(subcommand)]
     command: Option<VerifySubcommand>,
@@ -424,6 +432,12 @@ impl VerifyArgs {
             return Err(cmd.error(
                 ErrorKind::MissingRequiredArgument,
                 "`--allow-unpinned-lean` requires an explicit `--lean <BIN>` path",
+            ));
+        }
+        if self.no_cache && self.no_rebuild_bundled {
+            return Err(cmd.error(
+                ErrorKind::ArgumentConflict,
+                "`--no-cache` and `--no-rebuild-bundled` cannot be used together",
             ));
         }
         #[cfg(not(feature = "setup"))]
@@ -1208,6 +1222,7 @@ struct SelectedTools {
     capture: PathBuf,
     sysroot: Option<PathBuf>,
     lean: Option<PathBuf>,
+    prebuilt_dir: Option<PathBuf>,
     // Keep the shared bundle flock held until `verify::run` finishes so a
     // concurrent `setup --local-archive` cannot swap toolchain binaries in use.
     #[cfg(feature = "setup")]
@@ -1234,10 +1249,16 @@ fn select_tools(args: &VerifyArgs) -> Result<SelectedTools> {
             std::env::current_exe(),
         )
         .map_err(|detail| error("tool_failed", "capture-tool", detail))?;
+        let prebuilt_dir = if args.lean.is_none() {
+            installed.as_ref().map(crate::setup::Bundle::prebuilt_dir)
+        } else {
+            None
+        };
         Ok(SelectedTools {
             capture: tools.capture,
             sysroot: tools.sysroot,
             lean: tools.lean,
+            prebuilt_dir,
             _bundle_lease: installed,
         })
     }
@@ -1248,6 +1269,7 @@ fn select_tools(args: &VerifyArgs) -> Result<SelectedTools> {
                 capture: capture.clone(),
                 sysroot: Some(sysroot.clone()),
                 lean: Some(lean.clone()),
+                prebuilt_dir: None,
             }),
             _ => {
                 let mut missing = Vec::new();
@@ -1704,6 +1726,9 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         SandboxMode::PreferBwrapOrLandlock
     });
     checker.set_lean_memory_limit_mb(args.lean_memory_mb);
+    checker.set_use_olean_cache(!args.no_cache);
+    checker.set_no_rebuild_bundled(args.no_rebuild_bundled);
+    checker.set_prebuilt_olean_dir(tools.prebuilt_dir);
     let audit_result = checker.run_target(&audit_request);
     let active_sandbox_opt = checker.active_sandbox();
     let sandbox_label = active_sandbox_opt.map(ActiveSandbox::as_str);
@@ -2658,6 +2683,8 @@ mod tests {
             allow_unsandboxed_elaboration: false,
             allow_sorry_in_proof: false,
             lean_memory_mb: None,
+            no_cache: false,
+            no_rebuild_bundled: false,
             command: None,
         };
         let crate_scope = Scope::Crate {};
@@ -2680,6 +2707,8 @@ mod tests {
                         artifacts: None,
                         export_lean_lib: false,
                         lean_memory_mb: None,
+                        no_cache: false,
+                        no_rebuild_bundled: false,
                         command: None,
                     };
                     let taints = active_taints(&args);
@@ -3007,6 +3036,8 @@ mod tests {
             allow_unsandboxed_elaboration: false,
             allow_sorry_in_proof: false,
             lean_memory_mb: None,
+            no_cache: false,
+            no_rebuild_bundled: false,
             command: None,
         };
 
@@ -3042,6 +3073,8 @@ mod tests {
                 allow_unsandboxed_elaboration: false,
                 allow_sorry_in_proof: false,
                 lean_memory_mb: None,
+                no_cache: false,
+                no_rebuild_bundled: false,
                 command: None,
             };
             let err = select_tools(&args).err().expect("missing tools must fail");

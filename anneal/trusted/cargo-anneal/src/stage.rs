@@ -29,6 +29,10 @@ use std::{
 use serde::Deserialize;
 use serde_json::json;
 
+use crate::olean_cache::{
+    CacheKind, OleanCache, OleanCacheKeyInput, build_import_bindings, canonical_compile_flags,
+    canonical_inspector_flags, is_cacheable_bundled_module,
+};
 use crate::sandbox::{
     ActiveSandbox, DEFAULT_CHILD_TIMEOUT, MountSpec, PathMapper, SandboxMode, SandboxPolicy,
     SandboxRuntime, copy_readonly_file, create_dir_mode, make_tree_writable, set_mode,
@@ -38,9 +42,11 @@ use crate::target::{TargetRole, is_bundled_theory_module};
 use crate::toolchain::{
     AdmittedToolchain, FOUNDATION_AXIOMS, Failure, FoundationLock, ImportEdge, Json,
     LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, LibraryLock, ModuleArtifacts, PARTS,
-    ParallelDagPlan, TOOLCHAIN, default_lean_path, is_sha256_hex, regular, run_parallel_dag,
-    scan_sysroot_package_roots, sha256_bytes, sha256_file, sha256_file_deref, stage_regular_file,
-    transitive_import_closure, verify_installed_module_record, verify_sysroot_foundation_dir,
+    ParallelDagPlan, TOOLCHAIN, compute_sysroot_manifest_sha256,
+    compute_unpinned_sysroot_manifest_sha256, default_lean_path, is_sha256_hex, regular,
+    run_parallel_dag, scan_sysroot_package_roots, sha256_bytes, sha256_file, sha256_file_deref,
+    stage_regular_file, transitive_import_closure, verify_installed_module_record,
+    verify_sysroot_foundation_dir,
 };
 
 /// Cache key for precompiled `TrustedBoundary.olean` artifacts held in process
@@ -254,6 +260,155 @@ fn collect_compiled_artifacts(module: &str, output: &Path) -> Result<ModuleArtif
     ModuleArtifacts::from_available(&available, "compile", || {
         format!("compiler omitted output for {module}")
     })
+}
+
+enum ModuleCachePrep {
+    Cached(Vec<(String, PathBuf, String)>),
+    CompileNeeded(Option<OleanCacheKeyInput>),
+}
+
+enum PreparedModuleCompile<W> {
+    Cached(Vec<(String, PathBuf, String)>),
+    Compile {
+        work: W,
+        cache_key: Option<OleanCacheKeyInput>,
+    },
+}
+
+enum ExecutedModuleCompile<D> {
+    Cached(Vec<(String, PathBuf, String)>),
+    Compiled {
+        done: D,
+        cache_key: Option<OleanCacheKeyInput>,
+    },
+}
+
+/// Skip Lean whitespace and comments (`--` line comments and nested `/- ... -/`)
+/// to determine whether a source file begins with the Lean 4 `module` header.
+fn source_starts_with_module_keyword(bytes: &[u8]) -> bool {
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i].is_ascii_whitespace() {
+            i += 1;
+            continue;
+        }
+        if bytes[i..].starts_with(b"--") {
+            while i < bytes.len() && bytes[i] != b'\n' {
+                i += 1;
+            }
+            continue;
+        }
+        if bytes[i..].starts_with(b"/-") {
+            i += 2;
+            let mut depth = 1usize;
+            while i < bytes.len() && depth > 0 {
+                if bytes[i..].starts_with(b"/-") {
+                    depth += 1;
+                    i += 2;
+                } else if bytes[i..].starts_with(b"-/") {
+                    depth -= 1;
+                    i += 2;
+                } else {
+                    i += 1;
+                }
+            }
+            continue;
+        }
+        break;
+    }
+    let Some(rest) = bytes[i..].strip_prefix(b"module") else {
+        return false;
+    };
+    rest.first().is_none_or(|b| b.is_ascii_whitespace())
+}
+
+fn olean_part_suffix(path: &str) -> Result<&'static str, Failure> {
+    if path.ends_with(".olean.server") {
+        Ok("olean.server")
+    } else if path.ends_with(".olean.private") {
+        Ok("olean.private")
+    } else if path.ends_with(".olean") {
+        Ok("olean")
+    } else {
+        Err(Failure::operational(
+            "olean-cache",
+            format!("unexpected compiled artifact extension in {path}"),
+        ))
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+fn prepare_module_cache(
+    olean_cache: &mut OleanCache,
+    adm: &AdmittedToolchain,
+    module: &str,
+    edge_list: &[ImportEdge],
+    src_path: &Path,
+    lib_dir: &Path,
+    warn_as_err: bool,
+    cache_ctx: Option<&(String, String)>,
+    path_sha_cache: &mut BTreeMap<String, String>,
+) -> Result<ModuleCachePrep, Failure> {
+    let Some((lean_sha, sysroot_sha)) = cache_ctx else {
+        return Ok(ModuleCachePrep::CompileNeeded(None));
+    };
+    if !is_cacheable_bundled_module(module) {
+        return Ok(ModuleCachePrep::CompileNeeded(None));
+    }
+    let src_bytes =
+        fs::read(src_path).map_err(|e| Failure::operational("olean-cache", e.to_string()))?;
+    let key_input = OleanCacheKeyInput {
+        kind: CacheKind::Module,
+        module: module.to_owned(),
+        lean_sha256: lean_sha.clone(),
+        sysroot_manifest_sha256: sysroot_sha.clone(),
+        source_sha256: sha256_bytes(&src_bytes),
+        is_module: source_starts_with_module_keyword(&src_bytes),
+        flags: canonical_compile_flags(warn_as_err),
+        imports: build_import_bindings(edge_list, &adm.artifacts, path_sha_cache)?,
+    };
+    if let Some(hit) =
+        olean_cache.lookup_and_materialize(&key_input, lib_dir, &module.replace('.', "/"))?
+    {
+        return Ok(ModuleCachePrep::Cached(hit.materialized_parts));
+    }
+    Ok(ModuleCachePrep::CompileNeeded(Some(key_input)))
+}
+
+#[allow(clippy::too_many_arguments)]
+fn finish_module_artifacts(
+    adm: &mut AdmittedToolchain,
+    olean_cache: &OleanCache,
+    olean_ledger: &mut BTreeMap<PathBuf, String>,
+    path_sha_cache: &mut BTreeMap<String, String>,
+    module: &str,
+    edge_list: &[ImportEdge],
+    parts_with_sha: &[(String, PathBuf, String)],
+    record_ledger: bool,
+    cache_key: Option<OleanCacheKeyInput>,
+) -> Result<(), Failure> {
+    let mut available: BTreeMap<&str, String> = BTreeMap::new();
+    for (suffix, dest_path, sha) in parts_with_sha {
+        let dest_str = dest_path.to_string_lossy().into_owned();
+        path_sha_cache.insert(dest_str.clone(), sha.clone());
+        if record_ledger {
+            olean_ledger.insert(dest_path.clone(), sha.clone());
+        }
+        available.insert(suffix.as_str(), dest_str);
+    }
+    let mod_arts = ModuleArtifacts::from_available(&available, "compile", || {
+        format!("compiler omitted primary .olean for {module}")
+    })?;
+    adm.artifacts.insert(module.to_owned(), mod_arts);
+    adm.graph.insert(module.to_owned(), edge_list.to_vec());
+    if let Some(ref key_input) = cache_key {
+        let part_refs: Vec<(&str, &Path, &str)> = parts_with_sha
+            .iter()
+            .map(|(suffix, path, sha)| (suffix.as_str(), path.as_path(), sha.as_str()))
+            .collect();
+        olean_cache.store_compiled(key_input, &part_refs)?;
+    }
+    Ok(())
 }
 
 fn is_retained_environment_key(key: &str) -> bool {
@@ -579,6 +734,8 @@ pub struct Checker {
     sandbox_runtime: Option<SandboxRuntime>,
     probed_backend: Option<ActiveSandbox>,
     child_timeout: Duration,
+    olean_cache: OleanCache,
+    prebuilt_olean_dir: Option<PathBuf>,
     pub(crate) olean_ledger: BTreeMap<PathBuf, String>,
     pub(crate) compiled_roles: BTreeMap<String, TargetRole>,
 }
@@ -612,7 +769,12 @@ impl Checker {
                 Ok((key, value))
             })
             .collect::<io::Result<Vec<_>>>()?;
-        Self::new_with_env(root, lean, environment)
+        let mut checker = Self::new_with_env(root, lean, environment)?;
+        let home = checker.environment.get("HOME").cloned();
+        let xdg = env::var_os("XDG_CACHE_HOME");
+        checker.olean_cache =
+            OleanCache::with_env_vars(home.as_deref().map(OsStr::new), xdg.as_deref());
+        Ok(checker)
     }
 
     /// Create a new [`Checker`] using a closed environment allowlist.
@@ -646,6 +808,8 @@ impl Checker {
         let mut environment: BTreeMap<String, String> =
             ambient_env.into_iter().filter(|(k, _)| is_retained_environment_key(k)).collect();
         environment.insert("PATH".to_string(), "/usr/bin:/bin".to_string());
+        let olean_cache =
+            OleanCache::with_env_vars(environment.get("HOME").map(OsStr::new), None);
 
         Ok(Self {
             _stage_dir: stage_dir,
@@ -664,6 +828,8 @@ impl Checker {
             sandbox_runtime: None,
             probed_backend: None,
             child_timeout: DEFAULT_CHILD_TIMEOUT,
+            olean_cache,
+            prebuilt_olean_dir: None,
             olean_ledger: BTreeMap::new(),
             compiled_roles: BTreeMap::new(),
         })
@@ -742,6 +908,55 @@ impl Checker {
     /// Return whether unpinned Lean toolchain admission is enabled.
     pub fn allow_unpinned_lean(&self) -> bool {
         self.allow_unpinned_lean
+    }
+
+    /// Enable or disable prebuilt and user-local `.olean` cache lookup and population.
+    pub fn set_use_olean_cache(&mut self, enabled: bool) {
+        self.olean_cache.set_enabled(enabled);
+    }
+
+    /// Require every cacheable `Trusted.*`/`Anneal.*` module and `TrustedBoundary`
+    /// to resolve from prebuilt or local `.olean` caches rather than recompiling.
+    pub fn set_no_rebuild_bundled(&mut self, no_rebuild: bool) {
+        self.olean_cache.set_no_rebuild_bundled(no_rebuild);
+    }
+
+    /// Override the read-only `share/anneal/prebuilt` directory checked before the
+    /// user-local disk `.olean` cache.
+    pub fn set_prebuilt_olean_dir(&mut self, dir: Option<PathBuf>) {
+        self.prebuilt_olean_dir = dir;
+    }
+
+    #[cfg(test)]
+    pub(crate) fn set_olean_disk_cache_dir_for_test(&mut self, dir: Option<PathBuf>) {
+        self.olean_cache.set_disk_dir(dir);
+    }
+
+    fn effective_prebuilt_dir(&self, prefix: &Path) -> Option<PathBuf> {
+        self.prebuilt_olean_dir.clone().or_else(|| {
+            prefix
+                .parent()
+                .map(|root| root.join("share/anneal/prebuilt"))
+                .filter(|dir| dir.join("manifest.json").is_file())
+        })
+    }
+
+    fn ensure_sysroot_manifest_sha256(&mut self) -> Result<String, Failure> {
+        let (existing, prefix, unpinned) = {
+            let adm = self.admitted()?;
+            (adm.sysroot_manifest_sha256.clone(), adm.prefix.clone(), adm.unpinned)
+        };
+        if let Some(sha) = existing {
+            return Ok(sha);
+        }
+        let lib_dir = prefix.join("lib/lean");
+        let sha = if unpinned {
+            compute_unpinned_sysroot_manifest_sha256(&lib_dir, "olean-cache")?
+        } else {
+            compute_sysroot_manifest_sha256(&lib_dir, "olean-cache")?
+        };
+        self.admitted_mut()?.sysroot_manifest_sha256 = Some(sha.clone());
+        Ok(sha)
     }
 
     /// Return the effective Lean memory cap in MiB for `mode`, combining the
@@ -1454,6 +1669,7 @@ impl Checker {
             lean_binary_sha256: None,
             exec_lean,
             expected_lean_sha: Some(expected_lean_sha.clone()),
+            sysroot_manifest_sha256: Some(expected_sysroot_sha.to_owned()),
             inspector_olean: None,
         });
         Ok(self.admitted.as_mut().unwrap())
@@ -1561,6 +1777,7 @@ impl Checker {
             lean_binary_sha256: Some(lean_binary_sha256),
             exec_lean,
             expected_lean_sha: None,
+            sysroot_manifest_sha256: None,
             inspector_olean: None,
         });
         Ok(self.admitted.as_mut().unwrap())
@@ -1933,67 +2150,152 @@ impl Checker {
             ParallelDagPlan::from_module_order(order, imports, "preflight", "module import cycle")?;
         self.execution_began = true;
 
+        let has_cacheable = order.iter().any(|m| is_cacheable_bundled_module(m));
+        let cache_ctx = if self.olean_cache.is_enabled() && has_cacheable {
+            let sysroot_sha = self.ensure_sysroot_manifest_sha256()?;
+            let (lean_sha, prefix) = {
+                let adm = self.admitted()?;
+                (adm.lean_sha256.clone(), adm.prefix.clone())
+            };
+            let prebuilt = self.effective_prebuilt_dir(&prefix);
+            self.olean_cache.set_prebuilt_dir(prebuilt);
+            self.olean_cache.preload_prebuilt()?;
+            Some((lean_sha, sysroot_sha))
+        } else {
+            None
+        };
+
         if !target_rejection && self.sandbox_mode == SandboxMode::Unsandboxed {
             let mem_limit_mb = self.effective_lean_memory_limit_mb(None);
             let lib_dir = self.stage.join(lib_subdir);
             fs::create_dir_all(&lib_dir)
                 .map_err(|e| Failure::operational("compile", e.to_string()))?;
             self.counter.fetch_add(order.len(), Ordering::Relaxed);
-            let stage = &self.stage;
-            let environment = &self.environment;
-            let adm = self
-                .admitted
+            let Self {
+                stage,
+                environment,
+                admitted,
+                olean_cache,
+                olean_ledger,
+                ..
+            } = self;
+            let stage: &Path = stage;
+            let environment: &BTreeMap<String, String> = environment;
+            let adm = admitted
                 .as_mut()
                 .expect("toolchain admission verified above");
             let exec_lean = adm.exec_lean.clone();
+            let mut path_sha_cache = BTreeMap::new();
+            let mut shared = (adm, olean_cache, olean_ledger, &mut path_sha_cache);
 
             return run_parallel_dag(
                 &plan,
                 max_workers,
                 "compile",
                 "worker panicked during Lean compilation",
-                adm,
-                |adm, idx| {
+                &mut shared,
+                |(adm, olean_cache, _, path_sha_cache), idx| {
                     let module = &order[idx];
                     let edge_list = &imports[module];
                     let src_path = &sources[module];
-                    let setup_path = stage.join(format!("{module}.setup.json"));
-                    write_setup_json_to_path(&setup_path, adm, module, edge_list, None)?;
-                    let output = lib_dir.join(format!("{}.olean", module.replace('.', "/")));
-                    if let Some(parent) = output.parent() {
-                        fs::create_dir_all(parent)
-                            .map_err(|e| Failure::operational("compile", e.to_string()))?;
-                    }
-                    let compile_args = build_lean_compile_args(
-                        &setup_path,
-                        &output,
+                    match prepare_module_cache(
+                        olean_cache,
+                        adm,
+                        module,
+                        edge_list,
                         src_path,
-                        mem_limit_mb,
+                        &lib_dir,
                         warn_as_err,
-                        false,
-                    );
-                    Ok((output, compile_args))
+                        cache_ctx.as_ref(),
+                        path_sha_cache,
+                    )? {
+                        ModuleCachePrep::Cached(parts) => Ok(PreparedModuleCompile::Cached(parts)),
+                        ModuleCachePrep::CompileNeeded(cache_key) => {
+                            let setup_path = stage.join(format!("{module}.setup.json"));
+                            write_setup_json_to_path(&setup_path, adm, module, edge_list, None)?;
+                            let output =
+                                lib_dir.join(format!("{}.olean", module.replace('.', "/")));
+                            if let Some(parent) = output.parent() {
+                                fs::create_dir_all(parent)
+                                    .map_err(|e| Failure::operational("compile", e.to_string()))?;
+                            }
+                            let compile_args = build_lean_compile_args(
+                                &setup_path,
+                                &output,
+                                src_path,
+                                mem_limit_mb,
+                                warn_as_err,
+                                false,
+                            );
+                            Ok(PreparedModuleCompile::Compile {
+                                work: (output, compile_args),
+                                cache_key,
+                            })
+                        }
+                    }
                 },
-                |idx, (output_path, compile_args)| {
-                    let module = &order[idx];
-                    let label = format!("compile-{module}");
-                    let output = Command::new(&exec_lean)
-                        .args(&compile_args)
-                        .current_dir(stage)
-                        .env_clear()
-                        .envs(environment)
-                        .output()
-                        .map_err(|e| {
-                            Failure::new(2, &label, format!("could not execute Lean: {e}"))
-                        })?;
-                    check_lean_output(&label, output, false)?;
-                    collect_compiled_artifacts(module, &output_path)
+                |idx, prep| match prep {
+                    PreparedModuleCompile::Cached(parts) => {
+                        Ok(ExecutedModuleCompile::Cached(parts))
+                    }
+                    PreparedModuleCompile::Compile {
+                        work: (output_path, compile_args),
+                        cache_key,
+                    } => {
+                        let module = &order[idx];
+                        let label = format!("compile-{module}");
+                        let output = Command::new(&exec_lean)
+                            .args(&compile_args)
+                            .current_dir(stage)
+                            .env_clear()
+                            .envs(environment)
+                            .output()
+                            .map_err(|e| {
+                                Failure::new(2, &label, format!("could not execute Lean: {e}"))
+                            })?;
+                        check_lean_output(&label, output, false)?;
+                        let mod_arts = collect_compiled_artifacts(module, &output_path)?;
+                        let mut parts_with_sha = Vec::with_capacity(mod_arts.olean_parts.len());
+                        for part_path in mod_arts.olean_parts {
+                            let suffix = olean_part_suffix(&part_path)?.to_owned();
+                            let path = PathBuf::from(&part_path);
+                            let sha = sha256_file(&path, "olean-cache")?;
+                            parts_with_sha.push((suffix, path, sha));
+                        }
+                        Ok(ExecutedModuleCompile::Compiled {
+                            done: parts_with_sha,
+                            cache_key,
+                        })
+                    }
                 },
-                |adm, idx, mod_arts| {
+                |(adm, olean_cache, olean_ledger, path_sha_cache), idx, exec_res| {
                     let module = &order[idx];
-                    adm.artifacts.insert(module.clone(), mod_arts);
-                    adm.graph.insert(module.clone(), imports[module].clone());
-                    Ok(())
+                    match exec_res {
+                        ExecutedModuleCompile::Cached(parts_with_sha) => finish_module_artifacts(
+                            adm,
+                            olean_cache,
+                            olean_ledger,
+                            path_sha_cache,
+                            module,
+                            &imports[module],
+                            &parts_with_sha,
+                            false,
+                            None,
+                        ),
+                        ExecutedModuleCompile::Compiled { done: parts_with_sha, cache_key } => {
+                            finish_module_artifacts(
+                                adm,
+                                olean_cache,
+                                olean_ledger,
+                                path_sha_cache,
+                                module,
+                                &imports[module],
+                                &parts_with_sha,
+                                false,
+                                cache_key,
+                            )
+                        }
+                    }
                 },
             );
         }
@@ -2010,12 +2312,14 @@ impl Checker {
             counter,
             admitted,
             child_timeout,
+            olean_cache,
             olean_ledger,
             ..
         } = self;
         let child_timeout = *child_timeout;
         let adm = admitted.as_mut().expect("toolchain admission verified above");
-        let mut shared = (adm, olean_ledger);
+        let mut path_sha_cache = BTreeMap::new();
+        let mut shared = (adm, olean_cache, olean_ledger, &mut path_sha_cache);
 
         run_parallel_dag(
             &plan,
@@ -2023,86 +2327,137 @@ impl Checker {
             "compile",
             "worker panicked during Lean compilation",
             &mut shared,
-            |(adm, _), idx| {
+            |(adm, olean_cache, _, path_sha_cache), idx| {
                 let module = &order[idx];
                 let edge_list = &imports[module];
                 let src_path = &sources[module];
-                let run_id = counter.fetch_add(1, Ordering::Relaxed) + 1;
-                let (_run_dir, in_dir, out_dir, tmp_dir) = prepare_run_dirs_at(stage, run_id)?;
-                let leaf = module.rsplit('.').next().unwrap_or(module);
-                let in_src = in_dir.join(format!("{leaf}.lean"));
-                copy_readonly_file(src_path, &in_src, "compile")?;
-
-                let ro_mounts = vec![
-                    MountSpec {
-                        host: in_dir.clone(),
-                        child: PathBuf::from("/work/in"),
-                    },
-                    MountSpec {
-                        host: lib_dir.clone(),
-                        child: PathBuf::from("/work/lib"),
-                    },
-                ];
-                let rw_out = MountSpec {
-                    host: out_dir.clone(),
-                    child: PathBuf::from("/work/out"),
-                };
-                let rw_tmp = MountSpec {
-                    host: tmp_dir.clone(),
-                    child: PathBuf::from("/work/tmp"),
-                };
-                let mapper = PathMapper::new(&runtime, &ro_mounts, &rw_out, &rw_tmp);
-
-                let setup_host = in_dir.join(format!("{module}.setup.json"));
-                write_setup_json_to_path(&setup_host, adm, module, edge_list, Some(&mapper))?;
-                set_mode(&in_dir, 0o500)?;
-
-                let out_filename = format!("{leaf}.olean");
-                let out_host = out_dir.join(&out_filename);
-                let mapped_setup = PathBuf::from(mapper.map_str(&setup_host)?);
-                let mapped_out = PathBuf::from(mapper.map_str(&out_host)?);
-                let mapped_src = PathBuf::from(mapper.map_str(&in_src)?);
-                let compile_args = build_lean_compile_args(
-                    &mapped_setup,
-                    &mapped_out,
-                    &mapped_src,
-                    mem_limit_mb,
+                match prepare_module_cache(
+                    olean_cache,
+                    adm,
+                    module,
+                    edge_list,
+                    src_path,
+                    &lib_dir,
                     warn_as_err,
-                    target_rejection,
-                );
-                let policy = SandboxPolicy {
-                    exec_bin: runtime.exec_lean.clone(),
-                    args: compile_args,
-                    ro_mounts,
-                    rw_out,
-                    rw_tmp,
-                    child_cwd: None,
-                    extra_env: BTreeMap::new(),
-                    timeout: child_timeout,
-                };
-                Ok((policy, out_dir, tmp_dir, out_filename))
+                    cache_ctx.as_ref(),
+                    path_sha_cache,
+                )? {
+                    ModuleCachePrep::Cached(parts) => Ok(PreparedModuleCompile::Cached(parts)),
+                    ModuleCachePrep::CompileNeeded(cache_key) => {
+                        let run_id = counter.fetch_add(1, Ordering::Relaxed) + 1;
+                        let (_run_dir, in_dir, out_dir, tmp_dir) =
+                            prepare_run_dirs_at(stage, run_id)?;
+                        let leaf = module.rsplit('.').next().unwrap_or(module);
+                        let in_src = in_dir.join(format!("{leaf}.lean"));
+                        copy_readonly_file(src_path, &in_src, "compile")?;
+
+                        let ro_mounts = vec![
+                            MountSpec {
+                                host: in_dir.clone(),
+                                child: PathBuf::from("/work/in"),
+                            },
+                            MountSpec {
+                                host: lib_dir.clone(),
+                                child: PathBuf::from("/work/lib"),
+                            },
+                        ];
+                        let rw_out = MountSpec {
+                            host: out_dir.clone(),
+                            child: PathBuf::from("/work/out"),
+                        };
+                        let rw_tmp = MountSpec {
+                            host: tmp_dir.clone(),
+                            child: PathBuf::from("/work/tmp"),
+                        };
+                        let mapper = PathMapper::new(&runtime, &ro_mounts, &rw_out, &rw_tmp);
+
+                        let setup_host = in_dir.join(format!("{module}.setup.json"));
+                        write_setup_json_to_path(&setup_host, adm, module, edge_list, Some(&mapper))?;
+                        set_mode(&in_dir, 0o500)?;
+
+                        let out_filename = format!("{leaf}.olean");
+                        let out_host = out_dir.join(&out_filename);
+                        let mapped_setup = PathBuf::from(mapper.map_str(&setup_host)?);
+                        let mapped_out = PathBuf::from(mapper.map_str(&out_host)?);
+                        let mapped_src = PathBuf::from(mapper.map_str(&in_src)?);
+                        let compile_args = build_lean_compile_args(
+                            &mapped_setup,
+                            &mapped_out,
+                            &mapped_src,
+                            mem_limit_mb,
+                            warn_as_err,
+                            target_rejection,
+                        );
+                        let policy = SandboxPolicy {
+                            exec_bin: runtime.exec_lean.clone(),
+                            args: compile_args,
+                            ro_mounts,
+                            rw_out,
+                            rw_tmp,
+                            child_cwd: None,
+                            extra_env: BTreeMap::new(),
+                            timeout: child_timeout,
+                        };
+                        Ok(PreparedModuleCompile::Compile {
+                            work: (policy, out_dir, tmp_dir, out_filename),
+                            cache_key,
+                        })
+                    }
+                }
             },
-            |idx, (policy, out_dir, tmp_dir, out_filename)| {
-                let module = &order[idx];
-                let label = format!("compile-{module}");
-                let output = runtime.execute(&policy);
-                let _ = fs::remove_dir_all(&tmp_dir);
-                let output = output?;
-                check_lean_output(&label, output, target_rejection)?;
-                Ok((out_dir, out_filename))
+            |idx, prep| match prep {
+                PreparedModuleCompile::Cached(parts) => Ok(ExecutedModuleCompile::Cached(parts)),
+                PreparedModuleCompile::Compile {
+                    work: (policy, out_dir, tmp_dir, out_filename),
+                    cache_key,
+                } => {
+                    let module = &order[idx];
+                    let label = format!("compile-{module}");
+                    let output = runtime.execute(&policy);
+                    let _ = fs::remove_dir_all(&tmp_dir);
+                    let output = output?;
+                    check_lean_output(&label, output, target_rejection)?;
+                    Ok(ExecutedModuleCompile::Compiled {
+                        done: (out_dir, out_filename),
+                        cache_key,
+                    })
+                }
             },
-            |(adm, olean_ledger), idx, (out_dir, out_filename)| {
+            |(adm, olean_cache, olean_ledger, path_sha_cache), idx, exec_res| {
                 let module = &order[idx];
-                let dest_olean = lib_dir.join(format!("{}.olean", module.replace('.', "/")));
-                let sha = validate_and_promote_olean(&out_dir, &out_filename, &dest_olean)?;
-                olean_ledger.insert(dest_olean.clone(), sha);
-                let mod_arts = ModuleArtifacts {
-                    olean_parts: vec![dest_olean.to_string_lossy().into_owned()],
-                    ir_parts: Vec::new(),
-                };
-                adm.artifacts.insert(module.clone(), mod_arts);
-                adm.graph.insert(module.clone(), imports[module].clone());
-                Ok(())
+                match exec_res {
+                    ExecutedModuleCompile::Cached(parts_with_sha) => finish_module_artifacts(
+                        adm,
+                        olean_cache,
+                        olean_ledger,
+                        path_sha_cache,
+                        module,
+                        &imports[module],
+                        &parts_with_sha,
+                        true,
+                        None,
+                    ),
+                    ExecutedModuleCompile::Compiled {
+                        done: (out_dir, out_filename),
+                        cache_key,
+                    } => {
+                        let dest_olean =
+                            lib_dir.join(format!("{}.olean", module.replace('.', "/")));
+                        let sha = validate_and_promote_olean(&out_dir, &out_filename, &dest_olean)?;
+                        let parts_with_sha = vec![("olean".to_owned(), dest_olean, sha)];
+                        finish_module_artifacts(
+                            adm,
+                            olean_cache,
+                            olean_ledger,
+                            path_sha_cache,
+                            module,
+                            &imports[module],
+                            &parts_with_sha,
+                            true,
+                            cache_key,
+                        )
+                    }
+                }
             },
         )
     }
@@ -2408,6 +2763,25 @@ impl Checker {
         } else {
             Some(self.ensure_sandbox_ready()?)
         };
+        let inspector_cache_key = if self.olean_cache.is_enabled() {
+            let sysroot_manifest_sha256 = self.ensure_sysroot_manifest_sha256()?;
+            let prebuilt_dir = self.effective_prebuilt_dir(&prefix);
+            self.olean_cache.set_prebuilt_dir(prebuilt_dir);
+            let src_bytes = fs::read(&inspector_host)
+                .map_err(|e| Failure::operational(compile_phase, e.to_string()))?;
+            Some(OleanCacheKeyInput {
+                kind: CacheKind::Inspector,
+                module: "TrustedBoundary".to_owned(),
+                lean_sha256: lean_sha.clone(),
+                sysroot_manifest_sha256,
+                source_sha256: actual_sha.clone(),
+                is_module: source_starts_with_module_keyword(&src_bytes),
+                flags: canonical_inspector_flags(),
+                imports: Vec::new(),
+            })
+        } else {
+            None
+        };
         let cache_key = (lean_sha, prefix, actual_sha);
         let slot = {
             let mut map = compiled_inspector_cache().lock().unwrap_or_else(|e| e.into_inner());
@@ -2425,6 +2799,21 @@ impl Checker {
                 &cached.sha256,
                 compile_phase,
             )?
+        } else if let Some(ref key_input) = inspector_cache_key
+            && let Some(parts) = self.olean_cache.lookup_bytes(key_input)?
+        {
+            let (bytes, sha) = parts
+                .into_iter()
+                .find(|(suffix, _, _)| suffix == "olean")
+                .map(|(_, bytes, sha)| (bytes, sha))
+                .ok_or_else(|| {
+                    Failure::operational("olean-cache", "cached inspector missing primary olean")
+                })?;
+            let promoted =
+                materialize_cached_inspector_olean(&control_dir, &bytes, &sha, compile_phase)?;
+            *guard =
+                Some(Arc::new(CompiledInspectorArtifacts { bytes, sha256: promoted.1.clone() }));
+            promoted
         } else {
             let (olean_dest, olean_sha) = if direct {
                 let run_id = self.next_counter();
@@ -2523,6 +2912,12 @@ impl Checker {
                 }
                 promote_inspector_olean(&control_dir, &out_dir, compile_phase)?
             };
+            if let Some(ref key_input) = inspector_cache_key {
+                self.olean_cache.store_compiled(
+                    key_input,
+                    &[("olean", olean_dest.as_path(), olean_sha.as_str())],
+                )?;
+            }
             let bytes = fs::read(&olean_dest)
                 .map_err(|e| Failure::operational(compile_phase, e.to_string()))?;
             *guard = Some(Arc::new(CompiledInspectorArtifacts {
@@ -3276,6 +3671,7 @@ mod process_tests {
             lean_binary_sha256: None,
             exec_lean: checkout.path().join("lean"),
             expected_lean_sha: None,
+            sysroot_manifest_sha256: None,
             inspector_olean: None,
         });
         assert_eq!(checker.default_lean_memory_limit_mb(None), 2048);
@@ -3673,6 +4069,7 @@ mod process_tests {
             lean_binary_sha256: None,
             exec_lean: PathBuf::from("/bin/sh"),
             expected_lean_sha: None,
+            sysroot_manifest_sha256: None,
             inspector_olean: Some((olean.clone(), sha256_file(&olean, "test").unwrap())),
         });
 
@@ -4044,5 +4441,115 @@ mod process_tests {
             "expected probed active_sandbox after post-probe pinned query timeout"
         );
         assert!(timeout_checker.sandbox_runtime.is_none());
+    }
+
+    #[test]
+    fn bundled_olean_cache_reuses_disk_artifacts_and_enforces_no_rebuild() {
+        use std::os::unix::fs::PermissionsExt;
+
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let root = base.join("bundle");
+        let prefix = base.join("sysroot");
+        let disk_cache = base.join("disk-cache");
+        let log_file = base.join("lean-compile.log");
+        fs::create_dir_all(prefix.join("lib/lean/Init")).unwrap();
+
+        let inspector_src = root.join("trusted/audit/TrustedBoundary.lean");
+        fs::create_dir_all(inspector_src.parent().unwrap()).unwrap();
+        fs::write(&inspector_src, "-- synthetic inspector\n").unwrap();
+
+        let lean = base.join("lean");
+        fs::write(
+            &lean,
+            format!(
+                r#"#!/bin/sh
+case "$1" in
+    --version) printf 'Lean 4.34.1\n'; exit ;;
+    --print-prefix) printf '%s\n' '{}'; exit ;;
+esac
+out=""
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        -o) out="$2"; shift 2 ;;
+        *) shift ;;
+    esac
+done
+if [ -n "$out" ]; then
+    printf '%s\n' "$out" >> '{}'
+    printf 'olean\0024.34.1\000synthetic' > "$out"
+    exit 0
+fi
+exit 1
+"#,
+                prefix.display(),
+                log_file.display()
+            ),
+        )
+        .unwrap();
+        fs::set_permissions(&lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+        let mod_src = base.join("MirAst.lean");
+        fs::write(&mod_src, "prelude\n").unwrap();
+        let order = vec!["Trusted.MirAst".to_owned()];
+        let sources = BTreeMap::from([("Trusted.MirAst".to_owned(), mod_src.clone())]);
+        let imports = BTreeMap::from([("Trusted.MirAst".to_owned(), Vec::new())]);
+
+        // Cold run compiles both TrustedBoundary and Trusted.MirAst and populates disk cache.
+        let mut c1 = Checker::new_with_env(&root, Some(&lean), []).unwrap();
+        c1.set_allow_unpinned_lean(true);
+        c1.set_sandbox_mode(SandboxMode::Unsandboxed);
+        c1.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
+        c1.tool_admission().unwrap();
+        let _ = c1.ensure_inspector_compiled("headers", true).unwrap();
+        c1.compile_lean_modules_parallel(&order, &sources, &imports, "lib", false, false, 1)
+            .unwrap();
+        let cold_lines: Vec<String> =
+            fs::read_to_string(&log_file).unwrap().lines().map(str::to_owned).collect();
+        assert_eq!(cold_lines.len(), 2, "expected 2 compiles on cold run: {cold_lines:?}");
+        fs::write(&log_file, b"").unwrap();
+
+        // Warm run with `--no-rebuild-bundled` hits disk cache with 0 Lean compile spawns.
+        let mut c2 = Checker::new_with_env(&root, Some(&lean), []).unwrap();
+        c2.set_allow_unpinned_lean(true);
+        c2.set_sandbox_mode(SandboxMode::Unsandboxed);
+        c2.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
+        c2.set_no_rebuild_bundled(true);
+        c2.tool_admission().unwrap();
+        let _ = c2.ensure_inspector_compiled("headers", true).unwrap();
+        c2.compile_lean_modules_parallel(&order, &sources, &imports, "lib", false, false, 1)
+            .unwrap();
+        assert_eq!(fs::read_to_string(&log_file).unwrap(), "", "warm run must not spawn lean");
+
+        // Changing bundled module source invalidates key and fails closed under `--no-rebuild-bundled`.
+        fs::write(&mod_src, "prelude\n-- modified\n").unwrap();
+        let mut c3 = Checker::new_with_env(&root, Some(&lean), []).unwrap();
+        c3.set_allow_unpinned_lean(true);
+        c3.set_sandbox_mode(SandboxMode::Unsandboxed);
+        c3.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
+        c3.set_no_rebuild_bundled(true);
+        c3.tool_admission().unwrap();
+        let _ = c3.ensure_inspector_compiled("headers", true).unwrap();
+        let err = c3
+            .compile_lean_modules_parallel(&order, &sources, &imports, "lib", false, false, 1)
+            .unwrap_err();
+        assert_eq!(err.phase, "olean-cache");
+        assert!(err.message.contains("--no-rebuild-bundled"), "{err}");
+
+        // `--no-cache` bypasses disk cache and compiles again.
+        let mut c4 = Checker::new_with_env(&root, Some(&lean), []).unwrap();
+        c4.set_allow_unpinned_lean(true);
+        c4.set_sandbox_mode(SandboxMode::Unsandboxed);
+        c4.set_olean_disk_cache_dir_for_test(Some(disk_cache));
+        c4.set_use_olean_cache(false);
+        c4.tool_admission().unwrap();
+        let _ = c4.ensure_inspector_compiled("headers", true).unwrap();
+        c4.compile_lean_modules_parallel(&order, &sources, &imports, "lib", false, false, 1)
+            .unwrap();
+        assert_eq!(
+            fs::read_to_string(&log_file).unwrap().lines().count(),
+            1,
+            "--no-cache must compile Trusted.MirAst directly (in-memory inspector still cached)"
+        );
     }
 }
