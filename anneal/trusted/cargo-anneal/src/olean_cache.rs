@@ -12,14 +12,15 @@
 //! Only the static inspector (`TrustedBoundary.lean`) and static bundled
 //! `Trusted.*` / `Anneal.*` runtime modules are cached. Every cached `.olean`
 //! must match the exact `lean` executable digest, sysroot `.olean*` manifest
-//! digest, module source digest, compiler flags, and direct import artifact
-//! digests, and is still copied into the private stage, checked against
-//! `olean_ledger`, and replayed by `target-audit` (`0` new TCB assumptions).
+//! digest, module source digest, compiler flags, and direct and transitive
+//! import artifact digests, and is still copied into the private stage, checked
+//! against `olean_ledger`, and replayed by `target-audit` (`0` new TCB
+//! assumptions).
 
 #[cfg(unix)]
 use std::os::unix::fs::{MetadataExt as _, OpenOptionsExt as _};
 use std::{
-    collections::BTreeMap,
+    collections::{BTreeMap, BTreeSet},
     ffi::OsStr,
     fs::{self, OpenOptions},
     io::{self, Write as _},
@@ -35,7 +36,7 @@ use crate::{
 };
 use crate::sandbox::{MAX_OLEAN_BYTES, OLEAN_V2_MAGIC, copy_readonly_file, create_dir_mode, set_mode};
 
-const CACHE_FORMAT_VERSION: u32 = 1;
+const CACHE_FORMAT_VERSION: u32 = 2;
 const PREBUILT_MANIFEST_FILE: &str = "manifest.json";
 const ENTRY_METADATA_FILE: &str = "metadata.json";
 
@@ -48,8 +49,9 @@ pub(crate) enum CacheKind {
     Module,
 }
 
-/// Binds a direct module `import` edge to the exact SHA-256 digests of the
-/// imported module's `.olean*` artifacts.
+/// Binds a direct module `import` edge to both the exact SHA-256 digests of the
+/// imported module's `.olean*` artifacts and its transitive import-DAG Merkle
+/// digest.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub(crate) struct CacheImportBinding {
@@ -58,6 +60,7 @@ pub(crate) struct CacheImportBinding {
     pub import_all: bool,
     pub is_meta: bool,
     pub part_sha256s: Vec<String>,
+    pub transitive_sha256: String,
 }
 
 /// Complete deterministic cache-key input for an inspector or bundled module.
@@ -76,10 +79,10 @@ pub(crate) struct OleanCacheKeyInput {
 
 impl OleanCacheKeyInput {
     /// Compute the deterministic 64-hex-char SHA-256 digest naming this exact
-    /// Merkle-DAG cache key (`v1`).
+    /// Merkle-DAG cache key (`v2`).
     pub(crate) fn cache_key(&self) -> String {
         let mut h = Sha256::new();
-        h.update(b"anneal-olean-cache-v1\0");
+        h.update(b"anneal-olean-cache-v2\0");
         h.update(match self.kind {
             CacheKind::Inspector => b"inspector\0".as_slice(),
             CacheKind::Module => b"module\0".as_slice(),
@@ -105,6 +108,7 @@ impl OleanCacheKeyInput {
             for sha in &imp.part_sha256s {
                 feed_len_str(&mut h, &sha.to_ascii_lowercase());
             }
+            feed_len_str(&mut h, &imp.transitive_sha256.to_ascii_lowercase());
         }
         format!("{:x}", h.finalize())
     }
@@ -128,6 +132,7 @@ impl OleanCacheKeyInput {
                         .iter()
                         .zip(&b.part_sha256s)
                         .all(|(x, y)| x.eq_ignore_ascii_case(y))
+                    && a.transitive_sha256.eq_ignore_ascii_case(&b.transitive_sha256)
             })
     }
 }
@@ -154,6 +159,14 @@ struct PrebuiltManifestEntry {
     #[serde(flatten)]
     input: OleanCacheKeyInput,
     parts: Vec<CachePartRecord>,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PrebuiltManifestHeader {
+    schema_version: u32,
+    #[allow(dead_code)]
+    entries: Vec<serde::de::IgnoredAny>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -239,6 +252,7 @@ pub(crate) struct OleanCache {
     prebuilt_dir: Option<PathBuf>,
     disk_dir: Option<PathBuf>,
     prebuilt_entries: Option<PrebuiltEntryMap>,
+    prebuilt_skipped_version: Option<u32>,
 }
 
 impl OleanCache {
@@ -249,6 +263,7 @@ impl OleanCache {
             prebuilt_dir: None,
             disk_dir: cache_dir_from_env_vars(home, xdg_cache_home),
             prebuilt_entries: None,
+            prebuilt_skipped_version: None,
         }
     }
 
@@ -260,6 +275,7 @@ impl OleanCache {
             prebuilt_dir: None,
             disk_dir: default_olean_cache_dir(),
             prebuilt_entries: None,
+            prebuilt_skipped_version: None,
         }
     }
 
@@ -284,6 +300,7 @@ impl OleanCache {
         if self.prebuilt_dir != dir {
             self.prebuilt_dir = dir;
             self.prebuilt_entries = None;
+            self.prebuilt_skipped_version = None;
         }
     }
 
@@ -296,6 +313,9 @@ impl OleanCache {
         if self.prebuilt_entries.is_some() {
             return Ok(self.prebuilt_entries.as_ref());
         }
+        if self.prebuilt_skipped_version.is_some() {
+            return Ok(None);
+        }
         let Some(ref prebuilt_dir) = self.prebuilt_dir else {
             return Ok(None);
         };
@@ -307,18 +327,26 @@ impl OleanCache {
             return Ok(None);
         }
         let bytes = read_regular_nofollow_capped(&manifest_path, MAX_OLEAN_BYTES, "olean-cache")?;
+        let header: PrebuiltManifestHeader = serde_json::from_slice(&bytes).map_err(|e| {
+            Failure::operational(
+                "olean-cache",
+                format!("invalid prebuilt olean manifest {}: {e}", manifest_path.display()),
+            )
+        })?;
+        if header.schema_version != CACHE_FORMAT_VERSION {
+            // Treat mismatched prebuilt manifest versions (e.g. a pinned v1
+            // toolchain archive) as a cache miss rather than aborting,
+            // matching v1/ disk-cache directory isolation while keeping
+            // malformed manifests fail-closed above.
+            self.prebuilt_skipped_version = Some(header.schema_version);
+            return Ok(None);
+        }
         let manifest: PrebuiltManifest = serde_json::from_slice(&bytes).map_err(|e| {
             Failure::operational(
                 "olean-cache",
                 format!("invalid prebuilt olean manifest {}: {e}", manifest_path.display()),
             )
         })?;
-        if manifest.schema_version != CACHE_FORMAT_VERSION {
-            return Err(Failure::operational(
-                "olean-cache",
-                format!("unsupported prebuilt manifest schema_version {}", manifest.schema_version),
-            ));
-        }
         let mut by_key = BTreeMap::new();
         for entry in manifest.entries {
             by_key.insert((entry.input.kind, entry.input.module.clone()), entry);
@@ -357,13 +385,18 @@ impl OleanCache {
         }
 
         if self.no_rebuild_bundled {
-            return Err(Failure::operational(
-                "olean-cache",
+            let reason = if let Some(found_ver) = self.prebuilt_skipped_version {
+                format!(
+                    "missing prebuilt or cached .olean for {} (--no-rebuild-bundled; skipped prebuilt manifest schema_version {found_ver} != {CACHE_FORMAT_VERSION})",
+                    input.module
+                )
+            } else {
                 format!(
                     "missing prebuilt or cached .olean for {} (--no-rebuild-bundled)",
                     input.module
-                ),
-            ));
+                )
+            };
+            return Err(Failure::operational("olean-cache", reason));
         }
         Ok(None)
     }
@@ -403,19 +436,19 @@ impl OleanCache {
             }
             return Err(err);
         }
-        let v1_dir = disk_dir.join("v1");
-        if !probe_existing_non_symlink_dir(&v1_dir, true)? {
-            create_dir_mode(&v1_dir, 0o700)?;
+        let v2_dir = disk_dir.join("v2");
+        if !probe_existing_non_symlink_dir(&v2_dir, true)? {
+            create_dir_mode(&v2_dir, 0o700)?;
         }
         let key = input.cache_key();
-        let entry_dir = v1_dir.join(&key);
+        let entry_dir = v2_dir.join(&key);
         if probe_existing_non_symlink_dir(&entry_dir, true)? {
             return Ok(());
         }
 
         let tmp = tempfile::Builder::new()
             .prefix(".tmp-")
-            .tempdir_in(&v1_dir)
+            .tempdir_in(&v2_dir)
             .map_err(|e| Failure::operational("olean-cache", format!("cannot stage cache temp dir: {e}")))?;
         #[cfg(unix)]
         set_mode(tmp.path(), 0o700)?;
@@ -454,7 +487,7 @@ impl OleanCache {
             .map_err(|e| Failure::operational("olean-cache", e.to_string()))?;
         set_mode(&meta_tmp, 0o444)?;
 
-        let lock_path = v1_dir.join(format!("{key}.lock"));
+        let lock_path = v2_dir.join(format!("{key}.lock"));
         let _lock = acquire_exclusive_flock(&lock_path)?;
         if !probe_existing_non_symlink_dir(&entry_dir, true)? {
             let staged_path = tmp.keep();
@@ -501,12 +534,12 @@ fn lookup_disk_cache_bytes(
         }
     };
     verify_non_symlink_dir_meta(disk_dir, &disk_meta, "olean-cache", true)?;
-    let v1_dir = disk_dir.join("v1");
-    if !probe_existing_non_symlink_dir(&v1_dir, true)? {
+    let v2_dir = disk_dir.join("v2");
+    if !probe_existing_non_symlink_dir(&v2_dir, true)? {
         return Ok(None);
     }
     let key = input.cache_key();
-    let entry_dir = v1_dir.join(&key);
+    let entry_dir = v2_dir.join(&key);
     if !probe_existing_non_symlink_dir(&entry_dir, true)? {
         return Ok(None);
     }
@@ -893,38 +926,154 @@ fn acquire_exclusive_flock(lock_path: &Path) -> Result<FlockGuard, Failure> {
     Ok(FlockGuard { _file: file })
 }
 
-/// Build canonical sorted direct import bindings for `edge_list` using the
-/// already-admitted `ModuleArtifacts` and any memoized path SHA-256 digests.
+/// Resolve and memoize SHA-256 digests for each `.olean*` part of `module`.
+fn resolve_module_part_sha256s(
+    module: &str,
+    artifacts: &BTreeMap<String, ModuleArtifacts>,
+    path_sha_cache: &mut BTreeMap<String, String>,
+) -> Result<Vec<String>, Failure> {
+    let mod_arts = artifacts.get(module).ok_or_else(|| {
+        Failure::operational("olean-cache", format!("missing artifact for import {module}"))
+    })?;
+    let mut shas = Vec::with_capacity(mod_arts.olean_parts.len());
+    for p in &mod_arts.olean_parts {
+        let sha = if let Some(cached) = path_sha_cache.get(p) {
+            cached.clone()
+        } else {
+            let bytes = fs::read(p).map_err(|e| {
+                Failure::operational("olean-cache", format!("cannot hash dependency {p}: {e}"))
+            })?;
+            let computed = sha256_bytes(&bytes);
+            path_sha_cache.insert(p.clone(), computed.clone());
+            computed
+        };
+        shas.push(sha);
+    }
+    Ok(shas)
+}
+
+/// Compute the canonical bottom-up Merkle digest for `module` over its own
+/// `.olean*` part digests and canonically sorted outgoing import edges.
+///
+/// Direct `.olean*` digests alone miss upstream edits behind declaration-free
+/// barrel modules whose serialized `.olean*` bytes remain identical. The hash
+/// framing (`anneal-olean-transitive-v1\0`, `<Q` lengths, lowercase hex, sorted
+/// edges) must stay byte-for-byte identical to `ci/prebuild_bundled_oleans.py`.
+fn compute_transitive_module_sha256_inner(
+    module: &str,
+    artifacts: &BTreeMap<String, ModuleArtifacts>,
+    graph: &BTreeMap<String, Vec<ImportEdge>>,
+    path_sha_cache: &mut BTreeMap<String, String>,
+    transitive_memo: &mut BTreeMap<String, String>,
+    visiting: &mut BTreeSet<String>,
+) -> Result<String, Failure> {
+    if let Some(cached) = transitive_memo.get(module) {
+        return Ok(cached.clone());
+    }
+    if !visiting.insert(module.to_owned()) {
+        return Err(Failure::operational(
+            "olean-cache",
+            format!("import cycle detected at {module}"),
+        ));
+    }
+    let result = (|| {
+        let part_shas = resolve_module_part_sha256s(module, artifacts, path_sha_cache)?;
+        let raw_edges = graph.get(module).ok_or_else(|| {
+            Failure::operational("olean-cache", format!("missing import graph entry for {module}"))
+        })?;
+        let mut sorted_edges: Vec<&ImportEdge> = raw_edges.iter().collect();
+        sorted_edges.sort_by(|a, b| {
+            a.module
+                .cmp(&b.module)
+                .then(a.is_exported.cmp(&b.is_exported))
+                .then(a.import_all.cmp(&b.import_all))
+                .then(a.is_meta.cmp(&b.is_meta))
+        });
+        let mut dep_hashes = Vec::with_capacity(sorted_edges.len());
+        for edge in &sorted_edges {
+            dep_hashes.push(compute_transitive_module_sha256_inner(
+                &edge.module,
+                artifacts,
+                graph,
+                path_sha_cache,
+                transitive_memo,
+                visiting,
+            )?);
+        }
+
+        let mut h = Sha256::new();
+        h.update(b"anneal-olean-transitive-v1\0");
+        h.update((part_shas.len() as u64).to_le_bytes());
+        for sha in &part_shas {
+            feed_len_str(&mut h, &sha.to_ascii_lowercase());
+        }
+        h.update((sorted_edges.len() as u64).to_le_bytes());
+        for (edge, dep_transitive) in sorted_edges.iter().zip(&dep_hashes) {
+            feed_len_str(&mut h, &edge.module);
+            h.update([
+                u8::from(edge.is_exported),
+                u8::from(edge.import_all),
+                u8::from(edge.is_meta),
+            ]);
+            feed_len_str(&mut h, &dep_transitive.to_ascii_lowercase());
+        }
+        Ok(format!("{:x}", h.finalize()))
+    })();
+    visiting.remove(module);
+    if let Ok(ref digest) = result {
+        transitive_memo.insert(module.to_owned(), digest.clone());
+    }
+    result
+}
+
+/// Compute a module's canonical bottom-up transitive import-DAG Merkle digest.
+///
+/// Fails closed on any missing artifact, missing graph node, or dependency
+/// cycle.
+pub(crate) fn compute_transitive_module_sha256(
+    module: &str,
+    artifacts: &BTreeMap<String, ModuleArtifacts>,
+    graph: &BTreeMap<String, Vec<ImportEdge>>,
+    path_sha_cache: &mut BTreeMap<String, String>,
+    transitive_memo: &mut BTreeMap<String, String>,
+) -> Result<String, Failure> {
+    let mut visiting = BTreeSet::new();
+    compute_transitive_module_sha256_inner(
+        module,
+        artifacts,
+        graph,
+        path_sha_cache,
+        transitive_memo,
+        &mut visiting,
+    )
+}
+
+/// Build direct import bindings for `edge_list` paired with each imported
+/// module's bottom-up transitive import-DAG Merkle digest.
 pub(crate) fn build_import_bindings(
     edge_list: &[ImportEdge],
     artifacts: &BTreeMap<String, ModuleArtifacts>,
+    graph: &BTreeMap<String, Vec<ImportEdge>>,
     path_sha_cache: &mut BTreeMap<String, String>,
+    transitive_memo: &mut BTreeMap<String, String>,
 ) -> Result<Vec<CacheImportBinding>, Failure> {
     let mut bindings = Vec::with_capacity(edge_list.len());
     for edge in edge_list {
-        let mod_arts = artifacts.get(&edge.module).ok_or_else(|| {
-            Failure::operational("olean-cache", format!("missing artifact for import {}", edge.module))
-        })?;
-        let mut shas = Vec::with_capacity(mod_arts.olean_parts.len());
-        for p in &mod_arts.olean_parts {
-            let sha = if let Some(cached) = path_sha_cache.get(p) {
-                cached.clone()
-            } else {
-                let bytes = fs::read(p).map_err(|e| {
-                    Failure::operational("olean-cache", format!("cannot hash dependency {p}: {e}"))
-                })?;
-                let computed = sha256_bytes(&bytes);
-                path_sha_cache.insert(p.clone(), computed.clone());
-                computed
-            };
-            shas.push(sha);
-        }
+        let shas = resolve_module_part_sha256s(&edge.module, artifacts, path_sha_cache)?;
+        let transitive_sha256 = compute_transitive_module_sha256(
+            &edge.module,
+            artifacts,
+            graph,
+            path_sha_cache,
+            transitive_memo,
+        )?;
         bindings.push(CacheImportBinding {
             module: edge.module.clone(),
             is_exported: edge.is_exported,
             import_all: edge.import_all,
             is_meta: edge.is_meta,
             part_sha256s: shas,
+            transitive_sha256,
         });
     }
     Ok(bindings)
@@ -949,6 +1098,7 @@ mod tests {
                 import_all: false,
                 is_meta: false,
                 part_sha256s: vec!["c".repeat(64)],
+                transitive_sha256: "e".repeat(64),
             }],
         }
     }
@@ -974,6 +1124,23 @@ mod tests {
         mod_src = base.clone();
         mod_src.imports[0].part_sha256s[0] = "d".repeat(64);
         assert_ne!(base.cache_key(), mod_src.cache_key());
+
+        mod_src = base.clone();
+        mod_src.imports[0].transitive_sha256 = "f".repeat(64);
+        assert_ne!(base.cache_key(), mod_src.cache_key());
+
+        // `cache_key` and `matches_entry` normalize hex case on digests while
+        // still rejecting differing `transitive_sha256` values if stored.
+        let mut upper = base.clone();
+        upper.lean_sha256 = upper.lean_sha256.to_ascii_uppercase();
+        upper.sysroot_manifest_sha256 = upper.sysroot_manifest_sha256.to_ascii_uppercase();
+        upper.source_sha256 = upper.source_sha256.to_ascii_uppercase();
+        upper.imports[0].part_sha256s[0] = upper.imports[0].part_sha256s[0].to_ascii_uppercase();
+        upper.imports[0].transitive_sha256 =
+            upper.imports[0].transitive_sha256.to_ascii_uppercase();
+        assert_eq!(base.cache_key(), upper.cache_key());
+        assert!(base.matches_entry(&upper));
+        assert!(!base.matches_entry(&mod_src));
     }
 
     #[test]
@@ -1015,7 +1182,7 @@ mod tests {
         assert!(err.message.contains("--no-rebuild-bundled"));
 
         // Corrupting the cached `.olean` fails closed on SHA-256 verification.
-        let key_dir = disk_dir.join("v1").join(input.cache_key());
+        let key_dir = disk_dir.join("v2").join(input.cache_key());
         let cached_file = key_dir.join("module.olean");
         set_mode(&cached_file, 0o600).unwrap();
         fs::write(&cached_file, b"tampered bytes").unwrap();
@@ -1103,7 +1270,7 @@ mod tests {
         let input = sample_input(&"4".repeat(64));
         let mut cache = OleanCache::new_default();
 
-        // Missing root, missing `v1`, missing entry dir, and missing
+        // Missing root, missing `v2`, missing entry dir, and missing
         // `metadata.json` all treat `NotFound` as a clean cache miss.
         let disk_dir = tmp.path().join("disk-cache");
         cache.set_disk_dir(Some(disk_dir.clone()));
@@ -1112,11 +1279,11 @@ mod tests {
         fs::create_dir_all(&disk_dir).unwrap();
         assert!(cache.lookup_bytes(&input).unwrap().is_none());
 
-        let v1_dir = disk_dir.join("v1");
-        fs::create_dir_all(&v1_dir).unwrap();
+        let v2_dir = disk_dir.join("v2");
+        fs::create_dir_all(&v2_dir).unwrap();
         assert!(cache.lookup_bytes(&input).unwrap().is_none());
 
-        let entry_dir = v1_dir.join(input.cache_key());
+        let entry_dir = v2_dir.join(input.cache_key());
         fs::create_dir_all(&entry_dir).unwrap();
         assert!(cache.lookup_bytes(&input).unwrap().is_none());
 
@@ -1136,9 +1303,9 @@ mod tests {
         assert_eq!(err.phase, "olean-cache");
         assert!(err.message.contains("regular non-symlink directory"), "{err}");
 
-        // Regular file at `v1` fails closed before probing `v1/<key>`.
-        fs::remove_dir_all(&v1_dir).unwrap();
-        fs::write(&v1_dir, b"not a dir").unwrap();
+        // Regular file at `v2` fails closed before probing `v2/<key>`.
+        fs::remove_dir_all(&v2_dir).unwrap();
+        fs::write(&v2_dir, b"not a dir").unwrap();
         let err = cache.lookup_bytes(&input).unwrap_err();
         assert_eq!(err.code, 2);
         assert_eq!(err.phase, "olean-cache");
@@ -1230,8 +1397,8 @@ mod tests {
         cache.set_disk_dir(Some(disk_dir.clone()));
         cache.store_compiled(&input, &[("olean", &src_olean, &olean_sha)]).unwrap();
 
-        let v1_dir = disk_dir.join("v1");
-        let entry_dir = v1_dir.join(input.cache_key());
+        let v2_dir = disk_dir.join("v2");
+        let entry_dir = v2_dir.join(input.cache_key());
 
         // Unreadable `entry_dir` causes `EACCES` on `metadata.json`.
         {
@@ -1242,9 +1409,9 @@ mod tests {
             assert!(err.message.contains("cannot inspect"), "{err}");
         }
 
-        // Unreadable `v1_dir` causes `EACCES` on both lookup and store probes.
+        // Unreadable `v2_dir` causes `EACCES` on both lookup and store probes.
         {
-            let _guard = RestoreDirModeGuard::lock(&v1_dir);
+            let _guard = RestoreDirModeGuard::lock(&v2_dir);
             let err = cache.lookup_bytes(&input).unwrap_err();
             assert_eq!(err.code, 2);
             assert_eq!(err.phase, "olean-cache");
@@ -1258,7 +1425,7 @@ mod tests {
             assert!(err.message.contains("cannot inspect"), "{err}");
         }
 
-        // Unreadable existing `disk_dir` causes `EACCES` when probing `v1` on
+        // Unreadable existing `disk_dir` causes `EACCES` when probing `v2` on
         // both lookup and store.
         {
             let _guard = RestoreDirModeGuard::lock(&disk_dir);
@@ -1322,5 +1489,283 @@ mod tests {
             assert_eq!(err.phase, "olean-cache");
             assert!(err.message.contains("cannot inspect"), "{err}");
         }
+    }
+
+    fn edge(module: &str, is_exported: bool, import_all: bool, is_meta: bool) -> ImportEdge {
+        ImportEdge {
+            module: module.to_owned(),
+            is_exported,
+            import_all,
+            is_meta,
+        }
+    }
+
+    fn arts(paths: &[PathBuf]) -> ModuleArtifacts {
+        ModuleArtifacts {
+            olean_parts: paths.iter().map(|p| p.to_string_lossy().into_owned()).collect(),
+            ir_parts: Vec::new(),
+        }
+    }
+
+    #[test]
+    fn transitive_merkle_digest_detects_indirect_change_with_identical_barrel() {
+        let tmp = tempfile::tempdir().unwrap();
+        let dir = tmp.path();
+        let disk_dir = dir.join("disk-cache");
+
+        let init_path = dir.join("InitCore.olean");
+        let leaf_path = dir.join("Leaf.olean");
+        let barrel_path = dir.join("Barrel.olean");
+        let downstream_path = dir.join("Downstream.olean");
+
+        fs::write(&init_path, fake_olean()).unwrap();
+        let mut leaf_v1 = fake_olean();
+        leaf_v1.extend_from_slice(b"-leaf-rev-1");
+        fs::write(&leaf_path, &leaf_v1).unwrap();
+        fs::write(&barrel_path, fake_olean()).unwrap();
+        let downstream_bytes = fake_olean();
+        let downstream_sha = sha256_bytes(&downstream_bytes);
+        fs::write(&downstream_path, &downstream_bytes).unwrap();
+
+        let artifacts = BTreeMap::from([
+            ("Init.Core".to_owned(), arts(std::slice::from_ref(&init_path))),
+            ("Trusted.Leaf".to_owned(), arts(std::slice::from_ref(&leaf_path))),
+            ("Trusted.Barrel".to_owned(), arts(std::slice::from_ref(&barrel_path))),
+        ]);
+        let graph = BTreeMap::from([
+            ("Init.Core".to_owned(), Vec::new()),
+            ("Trusted.Leaf".to_owned(), vec![edge("Init.Core", true, false, false)]),
+            ("Trusted.Barrel".to_owned(), vec![edge("Trusted.Leaf", true, false, false)]),
+        ]);
+        let downstream_edges = [edge("Trusted.Barrel", true, false, false)];
+
+        let bindings_v1 = build_import_bindings(
+            &downstream_edges,
+            &artifacts,
+            &graph,
+            &mut BTreeMap::new(),
+            &mut BTreeMap::new(),
+        )
+        .unwrap();
+        let key_v1 = OleanCacheKeyInput {
+            kind: CacheKind::Module,
+            module: "Anneal.Downstream".to_owned(),
+            lean_sha256: "a".repeat(64),
+            sysroot_manifest_sha256: "b".repeat(64),
+            source_sha256: "1".repeat(64),
+            is_module: false,
+            flags: canonical_compile_flags(false),
+            imports: bindings_v1.clone(),
+        };
+
+        let mut cache = OleanCache::new_default();
+        cache.set_disk_dir(Some(disk_dir.clone()));
+        cache.store_compiled(&key_v1, &[("olean", &downstream_path, &downstream_sha)]).unwrap();
+        assert!(cache.lookup_bytes(&key_v1).unwrap().is_some());
+
+        // Mutate `Trusted.Leaf` while leaving `Trusted.Barrel.olean` and
+        // `Anneal.Downstream.lean` completely byte-for-byte identical.
+        let mut leaf_v2 = fake_olean();
+        leaf_v2.extend_from_slice(b"-leaf-rev-2");
+        fs::write(&leaf_path, &leaf_v2).unwrap();
+
+        let bindings_v2 = build_import_bindings(
+            &downstream_edges,
+            &artifacts,
+            &graph,
+            &mut BTreeMap::new(),
+            &mut BTreeMap::new(),
+        )
+        .unwrap();
+        assert_eq!(bindings_v1[0].part_sha256s, bindings_v2[0].part_sha256s);
+        assert_ne!(bindings_v1[0].transitive_sha256, bindings_v2[0].transitive_sha256);
+
+        let key_v2 = OleanCacheKeyInput { imports: bindings_v2, ..key_v1.clone() };
+        assert_ne!(key_v1.cache_key(), key_v2.cache_key());
+        assert!(cache.lookup_bytes(&key_v2).unwrap().is_none());
+
+        // Pre-existing `v1` disk cache directories must never be reused under
+        // `v2`.
+        let legacy_v1_dir = disk_dir.join("v1").join(key_v2.cache_key());
+        fs::create_dir_all(&legacy_v1_dir).unwrap();
+        let src_v2_dir = disk_dir.join("v2").join(key_v1.cache_key());
+        fs::copy(src_v2_dir.join("module.olean"), legacy_v1_dir.join("module.olean")).unwrap();
+        fs::copy(src_v2_dir.join(ENTRY_METADATA_FILE), legacy_v1_dir.join(ENTRY_METADATA_FILE))
+            .unwrap();
+        assert!(cache.lookup_bytes(&key_v2).unwrap().is_none());
+    }
+
+    #[test]
+    fn transitive_merkle_rejects_cycles_missing_graph_and_skips_v1_manifests() {
+        let tmp = tempfile::tempdir().unwrap();
+        let olean_a = tmp.path().join("A.olean");
+        let olean_b = tmp.path().join("B.olean");
+        fs::write(&olean_a, fake_olean()).unwrap();
+        fs::write(&olean_b, fake_olean()).unwrap();
+
+        let artifacts = BTreeMap::from([
+            ("Mod.A".to_owned(), arts(std::slice::from_ref(&olean_a))),
+            ("Mod.B".to_owned(), arts(std::slice::from_ref(&olean_b))),
+        ]);
+        let cyclic_graph = BTreeMap::from([
+            ("Mod.A".to_owned(), vec![edge("Mod.B", true, false, false)]),
+            ("Mod.B".to_owned(), vec![edge("Mod.A", true, false, false)]),
+        ]);
+        let err = compute_transitive_module_sha256(
+            "Mod.A",
+            &artifacts,
+            &cyclic_graph,
+            &mut BTreeMap::new(),
+            &mut BTreeMap::new(),
+        )
+        .unwrap_err();
+        assert_eq!(err.phase, "olean-cache");
+        assert!(err.message.contains("import cycle detected"), "{err}");
+
+        let incomplete_graph = BTreeMap::from([
+            ("Mod.A".to_owned(), vec![edge("Mod.B", true, false, false)]),
+        ]);
+        let err = compute_transitive_module_sha256(
+            "Mod.A",
+            &artifacts,
+            &incomplete_graph,
+            &mut BTreeMap::new(),
+            &mut BTreeMap::new(),
+        )
+        .unwrap_err();
+        assert_eq!(err.phase, "olean-cache");
+        assert!(err.message.contains("missing import graph entry for Mod.B"), "{err}");
+
+        // Treat stale `schema_version: 1` prebuilt manifests (including entries
+        // written without `transitive_sha256`) as a clean cache miss (`None`)
+        // while keeping malformed JSON and unknown fields fail-closed.
+        let prebuilt = tmp.path().join("prebuilt");
+        fs::create_dir_all(&prebuilt).unwrap();
+        let v1_input = sample_input(&"1".repeat(64));
+        let v1_manifest = serde_json::json!({
+            "schema_version": 1,
+            "entries": [{
+                "kind": "module",
+                "module": v1_input.module,
+                "lean_sha256": v1_input.lean_sha256,
+                "sysroot_manifest_sha256": v1_input.sysroot_manifest_sha256,
+                "source_sha256": v1_input.source_sha256,
+                "is_module": v1_input.is_module,
+                "flags": v1_input.flags,
+                "imports": [{
+                    "module": v1_input.imports[0].module,
+                    "is_exported": v1_input.imports[0].is_exported,
+                    "import_all": v1_input.imports[0].import_all,
+                    "is_meta": v1_input.imports[0].is_meta,
+                    "part_sha256s": v1_input.imports[0].part_sha256s,
+                }],
+                "parts": [{
+                    "suffix": "olean",
+                    "path": "lib/Trusted/MirAst.olean",
+                    "sha256": "0".repeat(64),
+                }],
+            }],
+        });
+        fs::write(
+            prebuilt.join(PREBUILT_MANIFEST_FILE),
+            serde_json::to_vec(&v1_manifest).unwrap(),
+        )
+        .unwrap();
+        let mut cache = OleanCache::new_default();
+        cache.set_disk_dir(None);
+        cache.set_prebuilt_dir(Some(prebuilt.clone()));
+        assert!(cache.load_prebuilt().unwrap().is_none());
+        cache.preload_prebuilt().unwrap();
+        assert!(cache.lookup_bytes(&v1_input).unwrap().is_none());
+
+        cache.set_no_rebuild_bundled(true);
+        let err = cache.lookup_bytes(&v1_input).unwrap_err();
+        assert_eq!(err.phase, "olean-cache");
+        assert!(err.message.contains("--no-rebuild-bundled"), "{err}");
+        assert!(err.message.contains("schema_version 1 != 2"), "{err}");
+
+        // Unknown top-level fields on `v1`, malformed JSON, and `v2` entries
+        // omitting `transitive_sha256` must still fail closed.
+        for bad_manifest in [
+            br#"{"schema_version":1,"entries":[],"bogus":1}"#.as_slice(),
+            br#"{not json"#.as_slice(),
+            br#"{"schema_version":2,"entries":[{"kind":"module","module":"M","lean_sha256":"a","sysroot_manifest_sha256":"b","source_sha256":"c","is_module":false,"flags":[],"imports":[{"module":"I","is_exported":true,"import_all":false,"is_meta":false,"part_sha256s":[]}],"parts":[]}]}"#.as_slice(),
+        ] {
+            fs::write(prebuilt.join(PREBUILT_MANIFEST_FILE), bad_manifest).unwrap();
+            cache.set_prebuilt_dir(None);
+            cache.set_prebuilt_dir(Some(prebuilt.clone()));
+            let err = cache.preload_prebuilt().unwrap_err();
+            assert_eq!(err.phase, "olean-cache");
+            assert!(err.message.contains("invalid prebuilt olean manifest"), "{err}");
+        }
+    }
+
+    #[test]
+    fn transitive_merkle_and_cache_key_match_python_golden_vectors() {
+        // Cross-language parity fixture matched byte-for-byte in
+        // `test_prebuild_bundled_oleans.py`.
+        let artifacts = BTreeMap::from([
+            ("Init.Core".to_owned(), arts(&[PathBuf::from("init-core.olean")])),
+            (
+                "Trusted.Leaf".to_owned(),
+                arts(&[PathBuf::from("leaf.olean"), PathBuf::from("leaf.olean.server")]),
+            ),
+            ("Trusted.Barrel".to_owned(), arts(&[PathBuf::from("barrel.olean")])),
+        ]);
+        let mut path_sha_cache = BTreeMap::from([
+            ("init-core.olean".to_owned(), "11".repeat(32)),
+            ("leaf.olean".to_owned(), "22".repeat(32)),
+            ("leaf.olean.server".to_owned(), "33".repeat(32)),
+            ("barrel.olean".to_owned(), "44".repeat(32)),
+        ]);
+        let e_leaf = edge("Trusted.Leaf", true, false, false);
+        let e_core = edge("Init.Core", false, false, true);
+        let graph = BTreeMap::from([
+            ("Init.Core".to_owned(), Vec::new()),
+            ("Trusted.Leaf".to_owned(), vec![edge("Init.Core", true, false, false)]),
+            ("Trusted.Barrel".to_owned(), vec![e_leaf.clone(), e_core.clone()]),
+        ]);
+        let bindings = build_import_bindings(
+            &[edge("Trusted.Barrel", true, false, false)],
+            &artifacts,
+            &graph,
+            &mut path_sha_cache,
+            &mut BTreeMap::new(),
+        )
+        .unwrap();
+        assert_eq!(
+            bindings[0].transitive_sha256,
+            "a242a0e936fc66db2f2520751fc3ad4e9b29e255d7ea9fbf3d73e49f72bec6bf"
+        );
+
+        let graph_reordered = BTreeMap::from([
+            ("Init.Core".to_owned(), Vec::new()),
+            ("Trusted.Leaf".to_owned(), vec![edge("Init.Core", true, false, false)]),
+            ("Trusted.Barrel".to_owned(), vec![e_core, e_leaf]),
+        ]);
+        let reordered_digest = compute_transitive_module_sha256(
+            "Trusted.Barrel",
+            &artifacts,
+            &graph_reordered,
+            &mut path_sha_cache,
+            &mut BTreeMap::new(),
+        )
+        .unwrap();
+        assert_eq!(reordered_digest, bindings[0].transitive_sha256);
+
+        let key_input = OleanCacheKeyInput {
+            kind: CacheKind::Module,
+            module: "Anneal.Downstream".to_owned(),
+            lean_sha256: "AA".repeat(32),
+            sysroot_manifest_sha256: "BB".repeat(32),
+            source_sha256: "CC".repeat(32),
+            is_module: false,
+            flags: canonical_compile_flags(false),
+            imports: bindings,
+        };
+        assert_eq!(
+            key_input.cache_key(),
+            "c3a4decebcd8ececefe5514fad6d3b409e7f8da2da1496de5310d612a7b89e09"
+        );
     }
 }

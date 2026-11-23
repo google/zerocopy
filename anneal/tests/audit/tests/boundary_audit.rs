@@ -10301,6 +10301,159 @@ fn admits_module_system_pass1_and_restricts_import_all() {
     }
 }
 
+/// Negative and compatibility regressions at the `cargo_anneal::Checker`
+/// boundary for prebuilt `.olean` `manifest.json` admission: malformed JSON,
+/// unknown fields on `schema_version: 1`, and `schema_version: 2` entries
+/// omitting `transitive_sha256` must all fail closed with exit code `2`
+/// (`olean-cache`), whereas well-formed `schema_version: 1` manifests skip
+/// cleanly by default and fail closed (`code = 2`) under
+/// `--no-rebuild-bundled`.
+#[test]
+fn prebuilt_olean_manifest_admission_rejects_malformed_and_missing_transitive_sha256() {
+    use std::os::unix::fs::PermissionsExt;
+
+    let dir = tempfile::tempdir().unwrap();
+    let base = fs::canonicalize(dir.path()).unwrap();
+    let root = base.join("bundle");
+    let prefix = base.join("sysroot");
+    let prebuilt = base.join("prebuilt");
+    let cache_home = base.join("xdg-cache");
+    fs::create_dir_all(prefix.join("lib/lean/Init")).unwrap();
+    fs::create_dir_all(&prebuilt).unwrap();
+    fs::create_dir_all(&cache_home).unwrap();
+
+    let inspector_src = root.join("trusted/audit/TrustedBoundary.lean");
+    fs::create_dir_all(inspector_src.parent().unwrap()).unwrap();
+    fs::write(&inspector_src, "-- synthetic inspector\n").unwrap();
+
+    let lean = base.join("lean");
+    fs::write(
+        &lean,
+        format!(
+            r#"#!/bin/sh
+case "$1" in
+    --version) printf 'Lean 4.34.1\n'; exit ;;
+    --print-prefix) printf '%s\n' '{}'; exit ;;
+esac
+out=""
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        -o) out="$2"; shift 2 ;;
+        *) shift ;;
+    esac
+done
+if [ -n "$out" ]; then
+    printf 'olean\0024.34.1\000synthetic' > "$out"
+    exit 0
+fi
+exit 1
+"#,
+            prefix.display()
+        ),
+    )
+    .unwrap();
+    fs::set_permissions(&lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+    let mod_src = base.join("MirAst.lean");
+    fs::write(&mod_src, "prelude\n").unwrap();
+    let order = vec!["Trusted.MirAst".to_owned()];
+    let sources = BTreeMap::from([("Trusted.MirAst".to_owned(), mod_src)]);
+    let imports = BTreeMap::from([("Trusted.MirAst".to_owned(), Vec::new())]);
+    let is_module = BTreeMap::from([("Trusted.MirAst".to_owned(), false)]);
+
+    let env_vars = [
+        ("HOME".to_owned(), base.to_string_lossy().into_owned()),
+        ("XDG_CACHE_HOME".to_owned(), cache_home.to_string_lossy().into_owned()),
+    ];
+
+    // 1. Malformed JSON, unknown top-level fields on `schema_version: 1`, and
+    //    `schema_version: 2` entries omitting `transitive_sha256` must all fail
+    //    closed with exit code `2` in phase `olean-cache`.
+    for (case, bad_manifest) in [
+        ("malformed-json", br#"{not json"#.as_slice()),
+        ("v1-unknown-field", br#"{"schema_version":1,"entries":[],"bogus":1}"#.as_slice()),
+        (
+            "v2-missing-transitive-sha",
+            br#"{"schema_version":2,"entries":[{"kind":"module","module":"M","lean_sha256":"a","sysroot_manifest_sha256":"b","source_sha256":"c","is_module":false,"flags":[],"imports":[{"module":"I","is_exported":true,"import_all":false,"is_meta":false,"part_sha256s":[]}],"parts":[]}]}"#.as_slice(),
+        ),
+    ] {
+        fs::write(prebuilt.join("manifest.json"), bad_manifest).unwrap();
+        let mut checker =
+            cargo_anneal::Checker::new_with_env(&root, Some(&lean), env_vars.clone()).unwrap();
+        checker.set_allow_unpinned_lean(true);
+        checker.set_sandbox_mode(cargo_anneal::SandboxMode::Unsandboxed);
+        checker.set_prebuilt_olean_dir(Some(prebuilt.clone()));
+        checker.tool_admission().unwrap();
+        let err = checker
+            .compile_lean_modules_parallel(
+                &order, &sources, &imports, &is_module, "lib", false, false, 1,
+            )
+            .unwrap_err();
+        assert_eq!(err.code, 2, "{case}: expected exit code 2, got {err}");
+        assert_eq!(err.phase, "olean-cache", "{case}: {err}");
+        assert!(err.message.contains("invalid prebuilt olean manifest"), "{case}: {err}");
+    }
+
+    // 2. Well-formed `schema_version: 1` prebuilt manifest skips cleanly by
+    //    default (falls back to compiling `Trusted.MirAst`) and fails closed
+    //    with exit code `2` when `--no-rebuild-bundled` is active against an
+    //    empty disk cache.
+    let valid_v1 = json!({
+        "schema_version": 1,
+        "entries": [{
+            "kind": "module",
+            "module": "Trusted.MirAst",
+            "lean_sha256": "a".repeat(64),
+            "sysroot_manifest_sha256": "b".repeat(64),
+            "source_sha256": "c".repeat(64),
+            "is_module": false,
+            "flags": [],
+            "imports": [{
+                "module": "Init.Core",
+                "is_exported": true,
+                "import_all": false,
+                "is_meta": false,
+                "part_sha256s": ["d".repeat(64)],
+            }],
+            "parts": [{
+                "suffix": "olean",
+                "path": "lib/Trusted/MirAst.olean",
+                "sha256": "0".repeat(64),
+            }],
+        }],
+    });
+    fs::write(prebuilt.join("manifest.json"), serde_json::to_vec(&valid_v1).unwrap()).unwrap();
+
+    let mut no_rebuild =
+        cargo_anneal::Checker::new_with_env(&root, Some(&lean), env_vars.clone()).unwrap();
+    no_rebuild.set_allow_unpinned_lean(true);
+    no_rebuild.set_sandbox_mode(cargo_anneal::SandboxMode::Unsandboxed);
+    no_rebuild.set_prebuilt_olean_dir(Some(prebuilt.clone()));
+    no_rebuild.set_no_rebuild_bundled(true);
+    no_rebuild.tool_admission().unwrap();
+    let err = no_rebuild
+        .compile_lean_modules_parallel(
+            &order, &sources, &imports, &is_module, "lib", false, false, 1,
+        )
+        .unwrap_err();
+    assert_eq!(err.code, 2, "{err}");
+    assert_eq!(err.phase, "olean-cache", "{err}");
+    assert!(err.message.contains("--no-rebuild-bundled"), "{err}");
+    assert!(err.message.contains("schema_version 1 != 2"), "{err}");
+
+    let mut default_checker =
+        cargo_anneal::Checker::new_with_env(&root, Some(&lean), env_vars).unwrap();
+    default_checker.set_allow_unpinned_lean(true);
+    default_checker.set_sandbox_mode(cargo_anneal::SandboxMode::Unsandboxed);
+    default_checker.set_prebuilt_olean_dir(Some(prebuilt));
+    default_checker.tool_admission().unwrap();
+    default_checker
+        .compile_lean_modules_parallel(
+            &order, &sources, &imports, &is_module, "lib", false, false, 1,
+        )
+        .unwrap();
+}
+
 /// Pass-1 `"preflight"` explicitly rejects `include_str`, `Init/Util.lean`'s
 /// `lean_dbg_*` externs (`dbgSleep`, `dbgTrace`, `dbgTraceIfShared`,
 /// `dbgStackTrace`), `Lean.LoadDynlib` / `loadDynlib`, `Init.System.*`, and
