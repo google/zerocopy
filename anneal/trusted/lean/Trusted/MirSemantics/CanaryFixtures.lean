@@ -7,12 +7,15 @@
 -- those terms.
 
 -- anneal-trust-tier: candidate:mir_semantics
+module
 prelude
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics.Boundary
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics.Boundary
+
+@[expose] public section
 
 namespace Trusted.MirSemantics
 
@@ -780,3 +783,5 @@ noncomputable def canaryValidCrate : Crate := {
 }
 
 end Trusted.MirSemantics
+
+end

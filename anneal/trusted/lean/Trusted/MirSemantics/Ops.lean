@@ -7,15 +7,20 @@
 -- those terms.
 
 -- anneal-trust-tier: candidate:mir_semantics
+module
 prelude
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Int.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.Nat.Bitwise.Basic
-import Init.Control.Except
-import Trusted.MirAst
-import Trusted.MirModel
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+-- `Char.toNat` is not transitively re-exported in Lean 4 `module` mode.
+public import Init.Data.Char.Basic
+public import Init.Data.Int.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.Nat.Bitwise.Basic
+public import Init.Control.Except
+public import Trusted.MirAst
+public import Trusted.MirModel
+
+@[expose] public section
 
 namespace Trusted.MirSemantics
 
@@ -513,3 +518,5 @@ noncomputable def evalUnOp (op : UnOp) (v : Val) : Except FaultKind Val :=
   | _, _ => .error .unsupported
 
 end Trusted.MirSemantics
+
+end

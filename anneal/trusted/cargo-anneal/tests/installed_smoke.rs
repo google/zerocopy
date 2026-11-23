@@ -819,7 +819,7 @@ fn audit_case(name: &str, case: &mut CaseDirectory, root: &Path) -> TestResult {
         )?;
         case.write(
             "fixture/theory/Anneal.lean",
-            b"prelude\nimport Init.NotationExtra\nimport Trusted\nimport Anneal.MirWp\n",
+            b"module\nprelude\npublic import Init.NotationExtra\npublic import Trusted\npublic import Anneal.MirWp\n",
         )?;
     }
     let requested_lean = if name == "audit-missing-lean" {

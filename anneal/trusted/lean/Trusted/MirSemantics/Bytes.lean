@@ -7,17 +7,20 @@
 -- those terms.
 
 -- anneal-trust-tier: candidate:mir_semantics
+module
 prelude
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Nat.Div.Basic
-import Init.Control.Except
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics.Ops
-import Trusted.MirSemantics.Enum
-import Trusted.MirSemantics.Layout
-import Trusted.MirSemantics.Memory
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Nat.Div.Basic
+public import Init.Control.Except
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics.Ops
+public import Trusted.MirSemantics.Enum
+public import Trusted.MirSemantics.Layout
+public import Trusted.MirSemantics.Memory
+
+@[expose] public section
 
 namespace Trusted.MirSemantics
 
@@ -392,3 +395,5 @@ noncomputable def deinitIndirect (mem : MemoryState) (ty : MirTy)
   | some layout => writeUninit mem place layout.size layout.alignLog2
 
 end Trusted.MirSemantics
+
+end

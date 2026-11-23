@@ -401,9 +401,16 @@ def prebuild(
             raise RuntimeError(f"TrustedBoundary headers returned failure: {parsed_headers}")
 
         bundled_edges: dict[str, list[dict]] = {}
+        bundled_is_module: dict[str, bool] = {}
         for item in parsed_headers["result"]["headers"]:
             mod = item["module"]
             bundled_edges[mod] = item["imports"]
+            if "isModule" in item:
+                bundled_is_module[mod] = bool(item["isModule"])
+            else:
+                bundled_is_module[mod] = source_starts_with_module_keyword(
+                    bundled_sources[mod].read_bytes()
+                )
             for edge in item["imports"]:
                 dep = edge["module"]
                 if dep not in bundled_sources and dep not in sysroot_graph:
@@ -436,7 +443,7 @@ def prebuild(
                     import_arts = {dep: full_arts[dep] for dep in closure}
                     src_path = bundled_sources[mod]
                     src_bytes = src_path.read_bytes()
-                    is_mod = source_starts_with_module_keyword(src_bytes)
+                    is_mod = bundled_is_module[mod]
                     setup_path = setup_dir / f"{mod}.setup.json"
                     setup_path.write_text(
                         json.dumps(
@@ -499,6 +506,10 @@ def prebuild(
                     if not part_records or part_records[0]["suffix"] != "olean":
                         raise RuntimeError(f"compiler omitted primary .olean for {mod}")
 
+                    for ext in IR_PARTS:
+                        ir_file = output_dir / f"{rel_stem}.{ext}"
+                        if ir_file.is_file():
+                            ir_file.unlink()
                     full_arts[mod] = [oleans, []]
                     dep_part_shas[mod] = part_shas
                     compiled_entries[mod] = {

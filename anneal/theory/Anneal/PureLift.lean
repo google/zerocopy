@@ -6,14 +6,15 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Anneal.PureLift.Lens
-import Anneal.PureLift.PermTree
-import Anneal.PureLift.LoanGraph
-import Anneal.PureLift.SpatialPin
-import Anneal.PureLift.Plan
-import Anneal.PureLift.BlockCfg
-import Anneal.PureLift.Adapter
-import Anneal.PureLift.MirBridge
-import Anneal.PureLift.BvLin
-import Anneal.PureLift.Canaries
+public import Anneal.PureLift.Lens
+public import Anneal.PureLift.PermTree
+public import Anneal.PureLift.LoanGraph
+public import Anneal.PureLift.SpatialPin
+public import Anneal.PureLift.Plan
+public import Anneal.PureLift.BlockCfg
+public import Anneal.PureLift.Adapter
+public import Anneal.PureLift.MirBridge
+public import Anneal.PureLift.BvLin
+public import Anneal.PureLift.Canaries

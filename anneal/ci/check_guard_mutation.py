@@ -1313,10 +1313,11 @@ def _check_one_mir_guard(
         mut_target_path.write_text(mutated_text, encoding="utf-8")
 
         # Seed `mut_olean_dir` with hardlinks (falling back to copies across
-        # filesystems) to every unmodified `.olean` in `base_olean_dir`. Lean 4
+        # filesystems) to every unmodified `.olean*` artifact (`.olean`,
+        # `.olean.server`, `.olean.private`) in `base_olean_dir`. Lean 4
         # resolves a root namespace (`Trusted.*`) from the first `LEAN_PATH`
         # entry containing that root directory, so giving each mutant one
-        # complete `.olean` directory avoids partial-namespace lookup failures.
+        # complete `.olean*` directory avoids partial-namespace lookup failures.
         downstream = SEMANTICS_DOWNSTREAM[guard.target_module]
         rebuilt_mods = set(downstream) | {
             guard.sanity_module,
@@ -1328,16 +1329,22 @@ def _check_one_mir_guard(
                 if guard.needs_wf_helper
                 else FIXTURE_HELPERS_BOUNDARY
             )
-        for src_olean in base_olean_dir.rglob("*.olean"):
-            rel_mod = src_olean.relative_to(base_olean_dir).with_suffix("")
-            if rel_mod.as_posix() in rebuilt_mods:
+        for src_art in base_olean_dir.rglob("*.olean*"):
+            rel = src_art.relative_to(base_olean_dir)
+            rel_str = rel.as_posix()
+            rel_mod = None
+            for ext in (".olean", ".olean.server", ".olean.private"):
+                if rel_str.endswith(ext):
+                    rel_mod = rel_str[: -len(ext)]
+                    break
+            if rel_mod is None or rel_mod in rebuilt_mods:
                 continue
-            dst_olean = mut_olean_dir / src_olean.relative_to(base_olean_dir)
-            dst_olean.parent.mkdir(parents=True, exist_ok=True)
+            dst_art = mut_olean_dir / rel
+            dst_art.parent.mkdir(parents=True, exist_ok=True)
             try:
-                os.link(src_olean, dst_olean)
+                os.link(src_art, dst_art)
             except OSError:
-                shutil.copy2(src_olean, dst_olean)
+                shutil.copy2(src_art, dst_art)
 
         lean_path = [mut_olean_dir]
         for idx, mod in enumerate(downstream):

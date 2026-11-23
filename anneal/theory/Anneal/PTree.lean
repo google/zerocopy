@@ -6,12 +6,15 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.SimpLemmas
-import Init.Data.Nat.Basic
-import Init.Data.Nat.Div.Basic
+public import Init.Core
+public import Init.NotationExtra
+public import Init.SimpLemmas
+public import Init.Data.Nat.Basic
+public import Init.Data.Nat.Div.Basic
+
+public section
 
 /-!
 # Canonical Positive Binary Radix Trie (`Anneal.PTree`)
@@ -60,7 +63,7 @@ inductive Pos where
 /-- Structural Boolean equality on positive binary keys `Pos`. Marked
 `noncomputable` to avoid compiler `._unsafe_rec` auxiliaries while remaining
 definitionally reducible in kernel proofs. -/
-noncomputable def Pos.beq : Pos → Pos → Bool
+@[expose] noncomputable def Pos.beq : Pos → Pos → Bool
   | .xH, .xH => true
   | .xO a, .xO b => Pos.beq a b
   | .xI a, .xI b => Pos.beq a b
@@ -85,18 +88,18 @@ theorem pos_eq_of_beq : ∀ {a b : Pos}, Pos.beq a b = true → a = b
   | .xI _, .xO _, h => by nomatch h
 
 /-- Binary successor on `Pos`. -/
-noncomputable def Pos.succ : Pos → Pos
+@[expose] noncomputable def Pos.succ : Pos → Pos
   | .xH => .xO .xH
   | .xO p => .xI p
   | .xI p => .xO (Pos.succ p)
 
 /-- Inject `Nat` (`n ≥ 0`) bijectively into `Pos` (`n + 1`). -/
-noncomputable def natToPos : Nat → Pos
+@[expose] noncomputable def natToPos : Nat → Pos
   | 0 => .xH
   | n + 1 => Pos.succ (natToPos n)
 
 /-- Interpret a positive binary key `Pos` as its positive `Nat` value. -/
-noncomputable def posToNat : Pos → Nat
+@[expose] noncomputable def posToNat : Pos → Nat
   | .xH => 1
   | .xO p => 2 * posToNat p
   | .xI p => 2 * posToNat p + 1
@@ -132,13 +135,13 @@ inductive RawTree (α : Type) where
   | node (l : RawTree α) (v : Option α) (r : RawTree α)
 
 /-- Return `true` iff `t` is `.leaf`. -/
-def RawTree.isLeaf {α : Type} : RawTree α → Bool
+@[expose] def RawTree.isLeaf {α : Type} : RawTree α → Bool
   | .leaf => true
   | .node _ _ _ => false
 
 /-- Return `true` iff every node in `t` has canonical shape (no `.node .leaf
 none .leaf` empty branches) and both children are canonical. -/
-noncomputable def RawTree.isCanon {α : Type} : RawTree α → Bool
+@[expose] noncomputable def RawTree.isCanon {α : Type} : RawTree α → Bool
   | .leaf => true
   | .node l v r =>
     match v with
@@ -168,7 +171,7 @@ theorem rawTree_isCanon_right {α : Type} {l r : RawTree α} {v : Option α}
     exact bool_and_right h
 
 /-- Smart constructor collapsing `.node .leaf none .leaf` to `.leaf`. -/
-def RawTree.make {α : Type} (l : RawTree α) (v : Option α) (r : RawTree α) :
+@[expose] def RawTree.make {α : Type} (l : RawTree α) (v : Option α) (r : RawTree α) :
     RawTree α :=
   match v with
   | some x => .node l (some x) r
@@ -206,7 +209,7 @@ theorem rawTree_make_isCanon {α : Type} {l r : RawTree α} (v : Option α)
       rfl
 
 /-- Look up key `k` in `RawTree`. -/
-noncomputable def RawTree.get {α : Type} : RawTree α → Pos → Option α
+@[expose] noncomputable def RawTree.get {α : Type} : RawTree α → Pos → Option α
   | .leaf, _ => none
   | .node l v r, k =>
     match k with
@@ -229,7 +232,7 @@ theorem rawTree_get_make {α : Type} (l : RawTree α) (v : Option α)
     | node _ _ _ => rfl
 
 /-- Insert or overwrite key `k` with `x` in `RawTree`. -/
-noncomputable def RawTree.set {α : Type} : RawTree α → Pos → α → RawTree α
+@[expose] noncomputable def RawTree.set {α : Type} : RawTree α → Pos → α → RawTree α
   | .leaf, .xH, x => .node .leaf (some x) .leaf
   | .leaf, .xO k', x => RawTree.make (RawTree.set .leaf k' x) none .leaf
   | .leaf, .xI k', x => RawTree.make .leaf none (RawTree.set .leaf k' x)
@@ -325,7 +328,7 @@ theorem rawTree_get_set_other {α : Type} :
     exact rawTree_get_set_other r k1' k2' x (fun h => hNe (congrArg Pos.xI h))
 
 /-- Remove key `k` from `RawTree`, re-normalizing empty branches. -/
-noncomputable def RawTree.remove {α : Type} : RawTree α → Pos → RawTree α
+@[expose] noncomputable def RawTree.remove {α : Type} : RawTree α → Pos → RawTree α
   | .leaf, _ => .leaf
   | .node l _ r, .xH => RawTree.make l none r
   | .node l v r, .xO k' => RawTree.make (RawTree.remove l k') v r
@@ -437,24 +440,24 @@ theorem ptree_mk_eq {α : Type} {r1 r2 : RawTree α}
   rfl
 
 /-- Empty canonical trie. -/
-def PTree.empty {α : Type} : PTree α :=
+@[expose] def PTree.empty {α : Type} : PTree α :=
   ⟨.leaf, rfl⟩
 
 /-- Look up key `k` in canonical trie `t`. -/
-noncomputable def PTree.get {α : Type} (t : PTree α) (k : Pos) : Option α :=
+@[expose] noncomputable def PTree.get {α : Type} (t : PTree α) (k : Pos) : Option α :=
   RawTree.get t.raw k
 
 /-- Insert or update key `k` with value `v` in canonical trie `t`. -/
-noncomputable def PTree.set {α : Type} (t : PTree α) (k : Pos) (v : α) :
+@[expose] noncomputable def PTree.set {α : Type} (t : PTree α) (k : Pos) (v : α) :
     PTree α :=
   ⟨RawTree.set t.raw k v, rawTree_set_isCanon t.raw k v t.canon⟩
 
 /-- Remove key `k` from canonical trie `t`. -/
-noncomputable def PTree.remove {α : Type} (t : PTree α) (k : Pos) : PTree α :=
+@[expose] noncomputable def PTree.remove {α : Type} (t : PTree α) (k : Pos) : PTree α :=
   ⟨RawTree.remove t.raw k, rawTree_remove_isCanon t.raw k t.canon⟩
 
 /-- Single-entry canonical trie mapping `k` to `v`. -/
-noncomputable def PTree.singleton {α : Type} (k : Pos) (v : α) : PTree α :=
+@[expose] noncomputable def PTree.singleton {α : Type} (k : Pos) (v : α) : PTree α :=
   PTree.set PTree.empty k v
 
 /-- Axiom-free extensional equality for `PTree`: two canonical tries with
@@ -519,11 +522,11 @@ theorem ptree_set_set_comm {α : Type} (t : PTree α) {k1 k2 : Pos} (v1 v2 : α)
 /-! ## 3. Union, Disjointness, and Polymorphic `diffWith` Heap Framing -/
 
 /-- Pointwise domain disjointness of two `PTree` maps. -/
-def PTree.DisjointProp {α : Type} (a b : PTree α) : Prop :=
+@[expose] def PTree.DisjointProp {α : Type} (a b : PTree α) : Prop :=
   ∀ k : Pos, a.get k = none ∨ b.get k = none
 
 /-- Left-biased union on `RawTree`, preserving canonicality via `make`. -/
-noncomputable def RawTree.union {α : Type} : RawTree α → RawTree α → RawTree α
+@[expose] noncomputable def RawTree.union {α : Type} : RawTree α → RawTree α → RawTree α
   | .leaf, b => b
   | a, .leaf => a
   | .node l1 v1 r1, .node l2 v2 r2 =>
@@ -544,7 +547,7 @@ theorem rawTree_union_isCanon {α : Type} :
         (rawTree_isCanon_right hb))
 
 /-- Left-biased union of two canonical tries. -/
-noncomputable def PTree.union {α : Type} (a b : PTree α) : PTree α :=
+@[expose] noncomputable def PTree.union {α : Type} (a b : PTree α) : PTree α :=
   ⟨RawTree.union a.raw b.raw, rawTree_union_isCanon a.raw b.raw a.canon b.canon⟩
 
 /-- Pointwise lookup behavior of `RawTree.union`. -/
@@ -604,7 +607,7 @@ theorem ptree_union_comm_of_disjoint {α : Type} {a b : PTree α}
 
 /-- Structural recursion helper for `RawTree.diffWith` (`req` first so `req`
 decreases structurally alongside `goal`). -/
-noncomputable def RawTree.diffWithLoop {α : Type} (eqB : α → α → Bool) :
+@[expose] noncomputable def RawTree.diffWithLoop {α : Type} (eqB : α → α → Bool) :
     RawTree α → RawTree α → Option (RawTree α)
   | .leaf, goal => some goal
   | .node _ _ _, .leaf => none
@@ -630,7 +633,7 @@ noncomputable def RawTree.diffWithLoop {α : Type} (eqB : α → α → Bool) :
 /-- Subtract required entries `req` from `goal` using equality predicate
 `eqB`, returning `some rem` on match or `none` if any `req` entry is missing or
 disagrees. -/
-noncomputable def RawTree.diffWith {α : Type} (eqB : α → α → Bool)
+@[expose] noncomputable def RawTree.diffWith {α : Type} (eqB : α → α → Bool)
     (goal req : RawTree α) : Option (RawTree α) :=
   RawTree.diffWithLoop eqB req goal
 
@@ -681,7 +684,7 @@ theorem rawTree_diffWith_isCanon {α : Type} (eqB : α → α → Bool) :
 
 /-- Package a `some` result from `RawTree.diffWith` with its canonicality proof
 into `Option (PTree α)`. -/
-def ptreeWrapDiff {α : Type} (eqB : α → α → Bool) (goal req : RawTree α)
+@[expose] def ptreeWrapDiff {α : Type} (eqB : α → α → Bool) (goal req : RawTree α)
     (hg : goal.isCanon = true) (opt : Option (RawTree α))
     (h : RawTree.diffWith eqB goal req = opt) : Option (PTree α) :=
   match opt, h with
@@ -705,7 +708,7 @@ theorem ptreeWrapDiff_some {α : Type} {eqB : α → α → Bool}
 
 /-- Deterministic structural trie subtraction `PTree.diffWith eqB goal req`
 (single non-backtracking pass over `req`). -/
-noncomputable def PTree.diffWith {α : Type} (eqB : α → α → Bool)
+@[expose] noncomputable def PTree.diffWith {α : Type} (eqB : α → α → Bool)
     (goal req : PTree α) : Option (PTree α) :=
   ptreeWrapDiff eqB goal.raw req.raw goal.canon
     (RawTree.diffWith eqB goal.raw req.raw) rfl
@@ -835,13 +838,13 @@ theorem ptree_diffWith_empty_req {α : Type} (eqB : α → α → Bool)
 /-! ## 4. Top-Down Strided Tabulation (`ptreeTabulate`) -/
 
 /-- Bit length (`≥ 1`) of a positive binary key `Pos` (specification helper). -/
-noncomputable def posDepth : Pos → Nat
+@[expose] noncomputable def posDepth : Pos → Nat
   | .xH => 1
   | .xO p => posDepth p + 1
   | .xI p => posDepth p + 1
 
 /-- Computable `2^n` via `@Nat.rec` (`0` `noncomputable`). -/
-def ptreePow2 (n : Nat) : Nat :=
+@[expose] def ptreePow2 (n : Nat) : Nat :=
   @Nat.rec (fun _ => Nat) 1 (fun _ ih => 2 * ih) n
 
 private theorem posToNat_pos : ∀ k : Pos, 0 < posToNat k
@@ -931,7 +934,7 @@ can exceed `maxRecDepth = 512` at large `N`. Because `RawTree.make l (some x) r`
 returns `.node l (some x) r` without forcing `l` or `r`, top-down tabulation
 forces only the `O(log N)` nodes along a queried key's path during WHNF
 reduction. -/
-def RawTree.tabulateGo {α : Type} (depth : Nat) :
+@[expose] def RawTree.tabulateGo {α : Type} (depth : Nat) :
     Nat → Nat → (Nat → Option α) → RawTree α :=
   @Nat.rec (fun _ => Nat → Nat → (Nat → Option α) → RawTree α)
     (fun _ _ _ => .leaf)
@@ -954,7 +957,7 @@ theorem rawTree_tabulateGo_isCanon {α : Type} :
 
 /-- Top-down strided canonical `PTree α` tabulation covering all `k : Pos` with
 `posDepth k ≤ depth` (i.e., `natToPos n` for all `n + 1 < ptreePow2 depth`). -/
-def ptreeTabulate {α : Type} (depth : Nat) (f : Nat → Option α) : PTree α :=
+@[expose] def ptreeTabulate {α : Type} (depth : Nat) (f : Nat → Option α) : PTree α :=
   ⟨RawTree.tabulateGo depth 0 1 f, rawTree_tabulateGo_isCanon depth 0 1 f⟩
 
 /-- Method alias for `ptreeTabulate`. -/
@@ -1075,7 +1078,7 @@ theorem ptree_get_tabulate_nat_oob {α : Type} (depth : Nat)
 /-- Logarithmic `O(depth)` conversion of a positive `Nat` `m ≥ 1` into `Pos`
 via `@Nat.rec` (`0` `noncomputable`), avoiding unary `natToPos` stack depth on
 large indices (`natToPosFast 255` takes 9 steps instead of 255). -/
-def posOfNatFuel (fuel : Nat) : Nat → Pos :=
+@[expose] def posOfNatFuel (fuel : Nat) : Nat → Pos :=
   @Nat.rec (fun _ => Nat → Pos)
     (fun _ => .xH)
     (fun _ ih m =>
@@ -1087,7 +1090,7 @@ def posOfNatFuel (fuel : Nat) : Nat → Pos :=
 
 /-- Logarithmic `O(depth)` encoder mapping `n : Nat` to `Pos` representing
 `n + 1` (exact for all `n + 1 < ptreePow2 depth`). -/
-def natToPosAt (depth n : Nat) : Pos :=
+@[expose] def natToPosAt (depth n : Nat) : Pos :=
   posOfNatFuel depth (n + 1)
 
 private theorem posToNat_inj : ∀ {a b : Pos}, posToNat a = posToNat b → a = b
@@ -1222,13 +1225,13 @@ theorem canary_remove_to_empty :
     (((PTree.empty.set (natToPos 2) 10).set (natToPos 5) 20).remove
       (natToPos 2)).remove (natToPos 5) = PTree.empty := rfl
 
-private noncomputable def canaryGoalTree : PTree Nat :=
+@[expose] noncomputable def canaryGoalTree : PTree Nat :=
   ((PTree.empty.set (natToPos 1) 10).set (natToPos 2) 20).set (natToPos 3) 30
 
-private noncomputable def canaryReqTree : PTree Nat :=
+@[expose] noncomputable def canaryReqTree : PTree Nat :=
   (PTree.empty.set (natToPos 1) 10).set (natToPos 3) 30
 
-private noncomputable def canaryRemTree : PTree Nat :=
+@[expose] noncomputable def canaryRemTree : PTree Nat :=
   PTree.empty.set (natToPos 2) 20
 
 private theorem canary_diffWith_eval :
@@ -1286,3 +1289,5 @@ theorem canary_ptreeTabulate_256 :
   ⟨rfl, rfl, rfl, rfl, rfl⟩
 
 end Anneal.PTree
+
+end

@@ -6,19 +6,22 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Int.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.Nat.Bitwise.Basic
-import Init.Control.Except
-import Trusted
-import Trusted.MirAst
-import Trusted.MirSemantics
-import Anneal.MirWp.Core
-import Anneal.MirWp.Scalars
-import Anneal.MirWp.Reflection
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Int.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.Nat.Bitwise.Basic
+public import Init.Control.Except
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirSemantics
+public import Anneal.MirWp.Core
+public import Anneal.MirWp.Scalars
+public import Anneal.MirWp.Reflection
+
+public section
 
 namespace Anneal.MirWp
 
@@ -38,7 +41,7 @@ computed a step or a run would have to be exempted from code generation, which
 precondition `RunsFrom` and prove it by `rfl`. -/
 
 /-- Single-body program wrapper for unit-level execution of `body`. -/
-def bodyProg (body : Body) : Program :=
+@[expose] def bodyProg (body : Body) : Program :=
   { scope := .unit, pointerWidthBits := 64, mirProfileVersion := 1,
     bodies := [body] }
 
@@ -51,21 +54,21 @@ inductive Reach (body : Body) : State → State → Prop where
       Reach body start next
 
 /-- Prefix fault-freedom of `body` starting from `start`. -/
-def SafeFrom (body : Body) (start : State) : Prop :=
+@[expose] def SafeFrom (body : Body) (start : State) : Prop :=
   ∀ state kind, Reach body start state →
     evalStep (bodyProg body) 0 state ≠ .fault kind
 
 /-- Prefix fault-freedom of `body` from its entry state on `args`. -/
-def Safe (body : Body) (args : List Val) : Prop :=
+@[expose] def Safe (body : Body) (args : List Val) : Prop :=
   SafeFrom body (mkState 0 0 (initLocalsLoop body args 0 body.locals))
 
 /-- Normal return of `output` from `start` in `body`. -/
-def ReturnsFrom (body : Body) (start : State) (output : Val) : Prop :=
+@[expose] def ReturnsFrom (body : Body) (start : State) (output : Val) : Prop :=
   ∃ state, Reach body start state ∧
     evalStep (bodyProg body) 0 state = .done (.returned ⟨output, ⟨[]⟩⟩)
 
 /-- Normal return of `output` from the entry state of `body` on `args`. -/
-def Returns (body : Body) (args : List Val) (output : Val) : Prop :=
+@[expose] def Returns (body : Body) (args : List Val) (output : Val) : Prop :=
   ReturnsFrom body (mkState 0 0 (initLocalsLoop body args 0 body.locals))
     output
 
@@ -404,7 +407,7 @@ theorem safeFrom_selfLoop {body : Body} {start : State}
 /-- A productive state invariant holds at `start`, is closed under `.step`, and
 ensures every invariant state takes a `.step` transition (ruling out both
 `.fault` and `.done` simultaneously). -/
-def ProductiveInvariant (body : Body) (start : State)
+@[expose] def ProductiveInvariant (body : Body) (start : State)
     (invariant : State → Prop) : Prop :=
   invariant start ∧
   (∀ before after, invariant before →
@@ -434,13 +437,13 @@ theorem safeFrom_and_no_done_of_productiveInvariant
 /-! ### Single-Pass Frame Retagging Between `bodyProg` and `entryProgForBody` -/
 
 /-- Rewrite the active single-frame `defId` of `s` to `d`. -/
-def retagDefId (d : DefId) (s : State) : State :=
+@[expose] def retagDefId (d : DefId) (s : State) : State :=
   match s.frames with
   | [f] => { s with frames := [{ f with defId := d }] }
   | _ => s
 
 /-- True iff `s` has a single active stack frame at `defId = 0`. -/
-def IsSingleFrame0 (s : State) : Prop :=
+@[expose] def IsSingleFrame0 (s : State) : Prop :=
   ∃ f : FrameState, s.frames = [f] ∧ f.defId = 0
 
 /-- Every `mkState` at the default `defId` is a single frame at `defId = 0`. -/
@@ -1020,7 +1023,7 @@ theorem checkVal_u64_bvZeroExtend (w : BitVec 64) :
 
 /-- Relational predicate asserting that the active frame's `.assign` RHS
 evaluates to `out`. -/
-def EvalAssignVal (body : Body) (s : State) (out : Val) : Prop :=
+@[expose] def EvalAssignVal (body : Body) (s : State) (out : Val) : Prop :=
   match s.frames with
   | [frame] =>
     match Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx with
@@ -1040,7 +1043,7 @@ def EvalAssignVal (body : Body) (s : State) (out : Val) : Prop :=
 /-- Relational predicate asserting that stepping an `.assign` statement to a
 `u64` local while overriding the written value with `overrideVal` reaches
 `next`. -/
-def EvalAssignWith (body : Body) (s : State)
+@[expose] def EvalAssignWith (body : Body) (s : State)
     (overrideVal : Val) (next : State) : Prop :=
   match s.frames with
   | [frame] =>
@@ -1244,7 +1247,7 @@ theorem step_u64And {body : Body} {s next : State} (x y : BitVec 64)
     evalStep (bodyProg body) 0 s = .step next :=
   step_eq_evalAssignWith_of_truncate
     (truncateBits_i64_ofNat_lt
-      (nat_bitwise_lt_two_pow and 64 x.toNat y.toNat x.isLt y.isLt))
+      (Anneal.NatBitwise.land_lt_two_pow x.isLt y.isLt))
     h_val (u64BitAnd_sem_eq x y) h_next
 
 /-- Step an assignment whose RHS evaluates to 64-bit bitwise OR of `x` and
@@ -1258,7 +1261,7 @@ theorem step_u64Or {body : Body} {s next : State} (x y : BitVec 64)
     evalStep (bodyProg body) 0 s = .step next :=
   step_eq_evalAssignWith_of_truncate
     (truncateBits_i64_ofNat_lt
-      (nat_bitwise_lt_two_pow or 64 x.toNat y.toNat x.isLt y.isLt))
+      (Anneal.NatBitwise.lor_lt_two_pow x.isLt y.isLt))
     h_val (u64BitOr_sem_eq x y) h_next
 
 /-- Step an assignment whose RHS evaluates to 64-bit left shift of `x` by
@@ -1290,7 +1293,7 @@ theorem step_u64Shr {body : Body} {s next : State} (x : BitVec 64) (k : Nat)
     h_val (u64Shr_sem_eq x k) h_next
 
 /-- A finite conjunction supplies one checked proposition for each index. -/
-def CheckRange (n : Nat) : (Nat → Prop) → Prop :=
+@[expose] def CheckRange (n : Nat) : (Nat → Prop) → Prop :=
   Nat.rec (fun _ => True) (fun _ ih p => p 0 ∧ ih (fun i => p (i + 1))) n
 
 /-- Unfold `CheckRange` at `0`. -/
@@ -1314,3 +1317,5 @@ theorem checkRange_sound (n : Nat) (p : Nat → Prop)
     | succ i => exact ih _ checked.2 i (Nat.lt_of_succ_lt_succ hi)
 
 end Anneal.MirWp
+
+end

@@ -6,10 +6,12 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Anneal.LoopInv
-import Anneal.CnfOrd.Ord
+public import Anneal.LoopInv
+public import Anneal.CnfOrd.Ord
 
+public section
 namespace Anneal.CnfOrd
 
 open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp Anneal.LoopInv
@@ -272,7 +274,7 @@ private theorem natLt_add_left_of_ltW (a b r : Nat) (h : natLt a b = true) :
   rw [natAdd_commW a r, natAdd_commW b r]
   exact natBle_add_mono_leftW r (a + 1) b h
 
-private def listFoldAuxW {α β : Type} (nil : β) (cons : α → List α → β → β)
+@[expose] def listFoldAuxW {α β : Type} (nil : β) (cons : α → List α → β → β)
     (xs : List α) : List α × β :=
   List.foldr (fun x acc => (x :: acc.1, cons x acc.1 acc.2)) ([], nil) xs
 
@@ -283,7 +285,7 @@ private theorem listFoldAuxW_fst {α β : Type} (nil : β)
   | nil => rfl
   | cons x _ ih => exact congrArg (List.cons x) ih
 
-private def listFoldW {α β : Type} (nil : β) (cons : α → List α → β → β)
+@[expose] def listFoldW {α β : Type} (nil : β) (cons : α → List α → β → β)
     (xs : List α) : β :=
   (listFoldAuxW nil cons xs).2
 
@@ -312,25 +314,25 @@ structure WorklistPool where
 
 /-- Exponent-`q` contribution of a single `RankedTask`:
 `ω^{2·rank + 1} · 1 + ω^{2·rank} · remYields`. -/
-def taskWeightAt (q : Nat) (t : RankedTask) : Nat :=
+@[expose] def taskWeightAt (q : Nat) (t : RankedTask) : Nat :=
   (match Nat.beq (t.rank + t.rank + 1) q with | true => 1 | false => 0) +
   (match Nat.beq (t.rank + t.rank) q with | true => t.remYields | false => 0)
 
 /-- Total exponent-`q` weight across a task list. -/
-def tasksWeightAt (q : Nat) (qs : List RankedTask) : Nat :=
+@[expose] def tasksWeightAt (q : Nat) (qs : List RankedTask) : Nat :=
   qs.foldr (fun t acc => taskWeightAt q t + acc) 0
 
 /-- Hessenberg CNF contribution of task `t` added onto `acc`. -/
-def taskMeasure (t : RankedTask) (acc : CnfOrd) : CnfOrd :=
+@[expose] def taskMeasure (t : RankedTask) (acc : CnfOrd) : CnfOrd :=
   cnfAddTerm (t.rank + t.rank + 1) 1
     (cnfAddTerm (t.rank + t.rank) t.remYields acc)
 
 /-- Hessenberg CNF measure of task queue `qs` folded onto `init`. -/
-def queueMeasure (qs : List RankedTask) (init : CnfOrd) : CnfOrd :=
+@[expose] def queueMeasure (qs : List RankedTask) (init : CnfOrd) : CnfOrd :=
   qs.foldr taskMeasure init
 
 /-- Canonical `< ω^ω` Cantor Normal Form ordinal measure of `WorklistPool`. -/
-def poolMeasure (w : WorklistPool) : CnfOrd :=
+@[expose] def poolMeasure (w : WorklistPool) : CnfOrd :=
   queueMeasure w.fifoQueue (queueMeasure w.stealDeque [])
 
 private theorem tasksWeightAt_append (q : Nat) (xs ys : List RankedTask) :
@@ -378,13 +380,13 @@ theorem cnfCoeffAt_poolMeasure (q : Nat) (w : WorklistPool) :
 
 /-- Spawn admissibility guard: spawning `k > 0` child tasks requires strict tier
 drop `childRank < parentRank` (`k = 0` spawns nothing and is always valid). -/
-def spawnAdmissible (parentRank k childRank : Nat) : Bool :=
+@[expose] def spawnAdmissible (parentRank k childRank : Nat) : Bool :=
   match k with
   | 0 => true
   | _ + 1 => natLt childRank parentRank
 
 /-- Spawns `count` child tasks starting at `baseId` at `(rank, yields)`. -/
-def mkRankedTasks (baseId count rank yields : Nat) : List RankedTask :=
+@[expose] def mkRankedTasks (baseId count rank yields : Nat) : List RankedTask :=
   @Nat.rec (fun _ => Nat → List RankedTask)
     (fun _ => [])
     (fun _ ih tid => RankedTask.mk tid rank yields :: ih (tid + 1))
@@ -395,7 +397,7 @@ def mkRankedTasks (baseId count rank yields : Nat) : List RankedTask :=
 abbrev SpawnPolicy : Type := Nat → (Nat × Nat × Nat)
 
 /-- Policy-level admissibility: every tier satisfies `spawnAdmissible`. -/
-def PolicyAdmissible (pol : SpawnPolicy) : Prop :=
+@[expose] def PolicyAdmissible (pol : SpawnPolicy) : Prop :=
   ∀ (r : Nat), spawnAdmissible r (pol r).1 (pol r).2.1 = true
 
 /-- Outcome of a single multi-rank worklist step. -/
@@ -404,7 +406,7 @@ inductive WorklistOut where
   | faultInvalidSpawn
 
 /-- `true` iff either `fifoQueue` or `stealDeque` is non-empty. -/
-def poolIsNonEmpty (w : WorklistPool) : Bool :=
+@[expose] def poolIsNonEmpty (w : WorklistPool) : Bool :=
   match w.fifoQueue with
   | _ :: _ => true
   | [] =>
@@ -414,7 +416,7 @@ def poolIsNonEmpty (w : WorklistPool) : Bool :=
 
 /-- Executes one popped `RankedTask` under `pol`, failing closed with
 `.faultInvalidSpawn` if `spawnAdmissible` rejects `(hd.rank, k, childRank)`. -/
-def execWorklistPopped (pol : SpawnPolicy) (hd : RankedTask)
+@[expose] def execWorklistPopped (pol : SpawnPolicy) (hd : RankedTask)
     (remFifo remSteal : List RankedTask) (w : WorklistPool) : WorklistOut :=
   let polRes := pol hd.rank
   let k := polRes.1
@@ -446,7 +448,7 @@ def execWorklistPopped (pol : SpawnPolicy) (hd : RankedTask)
 
 /-- Single worklist dispatch step: pops `fifoQueue` first, falling back to
 `stealDeque`, or faults if called on an empty pool. -/
-def worklistStep (pol : SpawnPolicy) (w : WorklistPool) : WorklistOut :=
+@[expose] def worklistStep (pol : SpawnPolicy) (w : WorklistPool) : WorklistOut :=
   match w.fifoQueue with
   | hd :: ft => execWorklistPopped pol hd ft w.stealDeque w
   | [] =>
@@ -695,7 +697,7 @@ inductive WorklistConverges (pol : SpawnPolicy) :
       WorklistConverges pol w wFinal
 
 /-- Computable `@Nat.rec` multi-step runner for `worklistStep`. -/
-def runWorklistSteps (fuel : Nat) (pol : SpawnPolicy) (w : WorklistPool) :
+@[expose] def runWorklistSteps (fuel : Nat) (pol : SpawnPolicy) (w : WorklistPool) :
     Option WorklistPool :=
   @Nat.rec (fun _ => WorklistPool → Option WorklistPool)
     (fun _ => none)
@@ -784,7 +786,7 @@ theorem worklist_terminates_all (pol : SpawnPolicy)
 
 /-- `true` iff `ranks` is a strictly descending rank tower
 `r_0 > r_1 > ... > r_d`. -/
-def isStrictlyDescendingTower (ranks : List Nat) : Bool :=
+@[expose] def isStrictlyDescendingTower (ranks : List Nat) : Bool :=
   listFoldW true
     (fun r tl ih =>
       match tl with
@@ -794,7 +796,7 @@ def isStrictlyDescendingTower (ranks : List Nat) : Bool :=
 
 /-- Builds a multi-tier `SpawnPolicy` stepping down a strictly descending rank
 tower `ranks` with uniform `(fanout, childYields)` at each hop. -/
-def towerLookupNext (ranks : List Nat) (fanout childYields qRank : Nat) :
+@[expose] def towerLookupNext (ranks : List Nat) (fanout childYields qRank : Nat) :
     Nat × Nat × Nat :=
   listFoldW (0, 0, 0)
     (fun r tl ih =>
@@ -839,3 +841,5 @@ theorem towerLookupNext_admissible (ranks : List Nat)
         exact ih (bandRightW hDesc)
 
 end Anneal.CnfOrd
+
+end

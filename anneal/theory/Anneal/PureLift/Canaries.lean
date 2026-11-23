@@ -6,9 +6,10 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Anneal.PureLift.Canaries.Fixtures
-import Anneal.PureLift.Canaries.CoreAndHardening
-import Anneal.PureLift.Canaries.PlanAndCfg
-import Anneal.PureLift.Canaries.RegionReuse
-import Anneal.PureLift.Canaries.Writebacks
+public import Anneal.PureLift.Canaries.Fixtures
+public import Anneal.PureLift.Canaries.CoreAndHardening
+public import Anneal.PureLift.Canaries.PlanAndCfg
+public import Anneal.PureLift.Canaries.RegionReuse
+public import Anneal.PureLift.Canaries.Writebacks

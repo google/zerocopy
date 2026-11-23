@@ -7,10 +7,13 @@
 -- those terms.
 
 -- anneal-trust-tier: candidate:mir_semantics
+module
 prelude
-import Init.NotationExtra
-import Trusted.MirAst
-import Trusted.MirSemantics.Enum
+public import Init.NotationExtra
+public import Trusted.MirAst
+public import Trusted.MirSemantics.Enum
+
+@[expose] public section
 
 namespace Trusted.MirSemantics
 
@@ -160,3 +163,5 @@ noncomputable def layoutOfTy : MirTy → Option LayoutData
   | _ => none
 
 end Trusted.MirSemantics
+
+end

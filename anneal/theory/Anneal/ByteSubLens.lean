@@ -6,7 +6,8 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Anneal.ByteSubLens.Lens
-import Anneal.ByteSubLens.MutSummary
-import Anneal.ByteSubLens.Canaries
+public import Anneal.ByteSubLens.Lens
+public import Anneal.ByteSubLens.MutSummary
+public import Anneal.ByteSubLens.Canaries

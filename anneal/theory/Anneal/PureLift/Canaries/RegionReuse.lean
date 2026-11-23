@@ -6,19 +6,22 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.Data.List.Basic
-import Init.Data.Nat.Basic
-import Anneal.PureLift.Lens
-import Anneal.PureLift.PermTree
-import Anneal.PureLift.LoanGraph
-import Anneal.PureLift.SpatialPin
-import Anneal.PureLift.Plan
-import Anneal.PureLift.BlockCfg
-import Anneal.PureLift.Adapter
+public import Init.Core
+public import Init.Data.List.Basic
+public import Init.Data.Nat.Basic
+public import Anneal.PureLift.Lens
+public import Anneal.PureLift.PermTree
+public import Anneal.PureLift.LoanGraph
+public import Anneal.PureLift.SpatialPin
+public import Anneal.PureLift.Plan
+public import Anneal.PureLift.BlockCfg
+public import Anneal.PureLift.Adapter
 
-import Anneal.PureLift.Canaries.Fixtures
+public import Anneal.PureLift.Canaries.Fixtures
+
+public section
 
 namespace Anneal.PureLift
 
@@ -26,14 +29,14 @@ namespace Anneal.PureLift
 
 /-- Field accessor for `metaStdValAlg`: only the first component of a
 `StdVal.pair` is a field. -/
-def metaStdGetField (idx : FieldIdx) (v : StdVal) : Option StdVal :=
+@[expose] def metaStdGetField (idx : FieldIdx) (v : StdVal) : Option StdVal :=
   match idx, v with
   | 0, ⟨_, .pairBranch fl _ a _⟩ => some ⟨fl, a⟩
   | _, _ => none
 
 /-- Field updater for `metaStdValAlg`; the second component of the pair is
 preserved as non-field metadata. -/
-def metaStdSetField (idx : FieldIdx) (v child : StdVal) : Option StdVal :=
+@[expose] def metaStdSetField (idx : FieldIdx) (v child : StdVal) : Option StdVal :=
   match idx, v, child with
   | 0, ⟨_, .pairBranch _ fr _ b⟩, ⟨fChild, tChild⟩ =>
     some ⟨fChild + fr + 1, .pairBranch fChild fr tChild b⟩
@@ -250,7 +253,7 @@ theorem metaStd_getField_projectBranchVal (cond : StdVal) (branch : Bool)
         rw [projectBranchStdVal_pair]
         rfl
 
-def metaStdValAlg : ValAlgebra StdVal :=
+@[expose] def metaStdValAlg : ValAlgebra StdVal :=
   { stdValAlg with
     getField := metaStdGetField
     getField_projectBranchVal := metaStd_getField_projectBranchVal
@@ -269,7 +272,7 @@ def metaStdValAlg : ValAlgebra StdVal :=
     sameAggregateShape_setField := fun _ _ _ _ _ hShape _ => nomatch hShape }
 
 /-- By-value call summary returning its single pure argument. -/
-def identityByValSummary : CallSummary StdVal where
+@[expose] def identityByValSummary : CallSummary StdVal where
   returnsMutBorrow := false
   fwd pureVals _ :=
     match pureVals with
@@ -279,13 +282,13 @@ def identityByValSummary : CallSummary StdVal where
 
 /-- By-value call summary that ignores its argument and returns `.unit`, so
 only the argument check can reject a call. -/
-def dropArgSummary : CallSummary StdVal where
+@[expose] def dropArgSummary : CallSummary StdVal where
   returnsMutBorrow := false
   fwd _ _ := some .unit
   back _ _ _ := some []
 
 /-- By-value call summary that fabricates a handle to loan `0`. -/
-def forgeHandleSummary : CallSummary StdVal where
+@[expose] def forgeHandleSummary : CallSummary StdVal where
   returnsMutBorrow := false
   fwd _ _ := some (.refVal 0 [])
   back _ _ _ := some []
@@ -295,7 +298,7 @@ def forgeHandleSummary : CallSummary StdVal where
 install a second child `1`, either while the parent is still active
 (`endParentFirst = false`) or after the parent ends. Every group is ended
 before returning. -/
-def regionReusePlan (endParentFirst : Bool) : FlowPlan StdVal :=
+@[expose] def regionReusePlan (endParentFirst : Bool) : FlowPlan StdVal :=
   let reinstallChild : FlowPlan StdVal :=
     .seq (.act (.callMultiRegion [] [bareRegionSpec 1 []]))
       (.act (.endRegionGroup 1))
@@ -309,18 +312,18 @@ def regionReusePlan (endParentFirst : Bool) : FlowPlan StdVal :=
        | false => .seq reinstallChild (.act (.endRegionGroup 0))))
 
 /-- A guard that itself depends on `.symBool true`. -/
-def dependentGuard : StdVal :=
+@[expose] def dependentGuard : StdVal :=
   zipStdVal (.symBool true) (.bool true) (.bool false)
 
 /-- Loan `5` with an active child borrow of its field `[0]`, so the binding of
 its root sub-place sees a `.split` permission. -/
-def splitLoanState : SymState StdVal :=
+@[expose] def splitLoanState : SymState StdVal :=
   ⟨[], [⟨5, .activeMut,
          ⟨.pair (.nat 1) (.nat 2), .split [([0], .mutLocked 6)]⟩,
          .rootParam 0⟩], [], [], [], 0⟩
 
 /-- One concrete cell at `(0, 0, [])` holding loan `5`'s value under `tag`. -/
-def splitHeap (tag : Nat) : List (M3Cell StdVal) :=
+@[expose] def splitHeap (tag : Nat) : List (M3Cell StdVal) :=
   [⟨0, 0, [], tag, .activeUnique, .init (.pair (.nat 1) (.nat 2))⟩]
 
 /-- Reinstalling a completed child region group while a parent from an earlier
@@ -475,7 +478,7 @@ theorem aggregate_shape_local_slot_and_guard_tests :
 /-- Install independent groups `0` and `1` over `*p.0` and `*p.1`, then end
 them in the order `gids`. Both groups deposit a value that no parent consumes.
 -/
-def independentGroupsPlan (gids : List RegionGroupId) :
+@[expose] def independentGroupsPlan (gids : List RegionGroupId) :
     FlowPlan StdVal :=
   .seq
     (.act (.callMultiRegion []
@@ -486,7 +489,7 @@ def independentGroupsPlan (gids : List RegionGroupId) :
 /-- Install parent `0` (requiring child `1`) over `*p.0`, child `1` over
 `*p.1.0`, and unrelated group `2` over `*p.1.1`, then end them in the order
 `gids`. Only the child deposits a value. -/
-def childDepositPlan (gids : List RegionGroupId) : FlowPlan StdVal :=
+@[expose] def childDepositPlan (gids : List RegionGroupId) : FlowPlan StdVal :=
   .seq
     (.act (.callMultiRegion []
       [ countingRegionSpec 0 [1] (.derefSub 0 [0]) []
@@ -496,7 +499,7 @@ def childDepositPlan (gids : List RegionGroupId) : FlowPlan StdVal :=
 
 /-- The value of loan `0` after running `plan` from the entry state of
 `params`, if the plan falls through. -/
-def loan0After (params : List (ParamInput StdVal))
+@[expose] def loan0After (params : List (ParamInput StdVal))
     (plan : FlowPlan StdVal) : Option StdVal :=
   match initFnState stdValAlg params with
   | .ok st0 =>
@@ -561,7 +564,7 @@ theorem region_deposit_scope_and_commutation_tests :
 /-- Region group `gid` over `input` with one output bound to `dst`; its
 backward function writes the output's final value back to `input` and makes
 no deposits. -/
-def noDepositRegionSpec (gid : RegionGroupId) (input : PlaceExpr)
+@[expose] def noDepositRegionSpec (gid : RegionGroupId) (input : PlaceExpr)
     (dst : LocalId) : RegionGroupSpec StdVal where
   groupId := gid
   requiredChildren := []
@@ -578,7 +581,7 @@ def noDepositRegionSpec (gid : RegionGroupId) (input : PlaceExpr)
 
 /-- Install group `3` over `*p` with its output in `dst`, set the output to
 `7`, and end the group. -/
-def installAndEndPlan (dst : LocalId) : FlowPlan StdVal :=
+@[expose] def installAndEndPlan (dst : LocalId) : FlowPlan StdVal :=
   .seq
     (.act (.callMultiRegion []
       [noDepositRegionSpec 3 (.derefSub 1 []) dst]))
@@ -588,7 +591,7 @@ def installAndEndPlan (dst : LocalId) : FlowPlan StdVal :=
 
 /-- A two-block CFG whose entry block branches on local `0` to block `1` on
 both edges. -/
-def sameTargetCfg : List (BasicBlock StdVal) :=
+@[expose] def sameTargetCfg : List (BasicBlock StdVal) :=
   [ ⟨.skip, .branch (.use (.localSub 0 [])) 1 1⟩
   , ⟨.act (.assign (.localSub 1 []) (.constVal (.nat 10))),
      .ret (.use (.localSub 1 []))⟩ ]
@@ -677,3 +680,5 @@ theorem region_outputs_joins_and_cfg_branch_tests :
   ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 end Anneal.PureLift
+
+end

@@ -294,6 +294,7 @@ fn scan_lean_tree_opts(
 /// module-level trust tiers from [`Checker::preflight_and_order_modules`].
 struct OrderedPreflight {
     imports: BTreeMap<String, Vec<ImportEdge>>,
+    is_module: BTreeMap<String, bool>,
     module_tiers: BTreeMap<String, TrustTier>,
     trusted_order: Vec<String>,
     theory_order: Vec<String>,
@@ -699,11 +700,13 @@ impl Checker {
         .map_err(|_| Failure::operational("preflight", inventory_err))?;
 
         let mut imports: BTreeMap<String, Vec<ImportEdge>> = BTreeMap::new();
+        let mut is_module: BTreeMap<String, bool> = BTreeMap::new();
         let mut module_tiers = base_tiers.clone();
         {
             let adm = self.inner.admitted()?;
             for h in pf_res.headers {
                 let mod_name = h.module;
+                let mod_is_module = h.is_module;
                 let is_trusted = trusted_map.contains_key(&mod_name);
                 if is_trusted {
                     let raw_tier = h.trust_tier.ok_or_else(|| {
@@ -740,6 +743,7 @@ impl Checker {
                         ));
                     }
                 }
+                is_module.insert(mod_name.clone(), mod_is_module);
                 imports.insert(mod_name, h.imports);
             }
         }
@@ -767,7 +771,7 @@ impl Checker {
         let theory_order =
             topo_sort_modules(theory_map.keys().cloned().collect(), &imports, theory_cycle_msg)?;
 
-        Ok(OrderedPreflight { imports, module_tiers, trusted_order, theory_order })
+        Ok(OrderedPreflight { imports, is_module, module_tiers, trusted_order, theory_order })
     }
 
     /// Run the complete repository boundary check (Cargo hygiene, Pass 1
@@ -832,6 +836,7 @@ impl Checker {
             &preflight.trusted_order,
             &self.modules,
             &preflight.imports,
+            &preflight.is_module,
             "lib",
             false,
             false,
@@ -842,6 +847,7 @@ impl Checker {
             &preflight.theory_order,
             &self.theory_modules,
             &preflight.imports,
+            &preflight.is_module,
             "theory-lib",
             true,
             false,

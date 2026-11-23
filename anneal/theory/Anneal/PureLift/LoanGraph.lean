@@ -6,13 +6,16 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.Data.List.Basic
-import Init.Data.Nat.Basic
-import Init.Data.UInt.BasicAux
-import Anneal.PureLift.Lens
-import Anneal.PureLift.PermTree
+public import Init.Core
+public import Init.Data.List.Basic
+public import Init.Data.Nat.Basic
+public import Init.Data.UInt.BasicAux
+public import Anneal.PureLift.Lens
+public import Anneal.PureLift.PermTree
+
+public section
 
 namespace Anneal.PureLift
 
@@ -45,7 +48,7 @@ inductive OwnerRef where
   | localReg (reg : LocalId)
   | parentLoan (lid : LoanId)
 
-def OwnerRef.beq : OwnerRef → OwnerRef → Bool
+@[expose] def OwnerRef.beq : OwnerRef → OwnerRef → Bool
   | .localReg r1, .localReg r2 => r1 == r2
   | .parentLoan l1, .parentLoan l2 => l1 == l2
   | _, _ => false
@@ -76,21 +79,21 @@ structure BackTarget (Val : Type) where
 
 namespace BackTarget
 
-def rootParam {Val : Type} (paramIdx : Nat) : BackTarget Val :=
+@[expose] def rootParam {Val : Type} (paramIdx : Nat) : BackTarget Val :=
   ⟨[.rootParam paramIdx]⟩
 
-def direct {Val : Type} (owner : OwnerRef) (path : SubPath) : BackTarget Val :=
+@[expose] def direct {Val : Type} (owner : OwnerRef) (path : SubPath) : BackTarget Val :=
   ⟨[.direct owner path]⟩
 
-def choice {Val : Type} (cond : Val) (onTrue : BackTarget Val)
+@[expose] def choice {Val : Type} (cond : Val) (onTrue : BackTarget Val)
     (onFalse : BackTarget Val) : BackTarget Val :=
   ⟨.choiceJoin cond :: (onTrue.steps ++ onFalse.steps)⟩
 
-def lensCall {Val : Type} (targets : List (OwnerRef × SubPath))
+@[expose] def lensCall {Val : Type} (targets : List (OwnerRef × SubPath))
     (backFn : Val → Option (List Val)) : BackTarget Val :=
   ⟨[.lensCall targets backFn]⟩
 
-def regionOut {Val : Type} (groupId : RegionGroupId) (outIdx : Nat) :
+@[expose] def regionOut {Val : Type} (groupId : RegionGroupId) (outIdx : Nat) :
     BackTarget Val :=
   ⟨[.regionOut groupId outIdx]⟩
 
@@ -99,7 +102,7 @@ end BackTarget
 /-- True iff `BackTarget` (or any branch inside a nested `.choice` tree)
 contains a `.regionOut` target that must be retired via `endRegionGroupInState`
 rather than `endLoanInState`. -/
-def isRegionOutTarget {Val : Type} (t : BackTarget Val) : Bool :=
+@[expose] def isRegionOutTarget {Val : Type} (t : BackTarget Val) : Bool :=
   t.steps.foldr
     (fun step ih =>
       match step with
@@ -114,7 +117,7 @@ Only a bare `[.rootParam idx]` target is finalized at function return
 larger target can neither be ended (`deactivateLoan` rejects it through
 `activeTargetHasSpecial`) nor returned (`loansCleanAtReturn` requires every
 non-root loan to have ended), so a run holding such a loan fails. -/
-def isRootParamTarget {Val : Type} (t : BackTarget Val) : Bool :=
+@[expose] def isRootParamTarget {Val : Type} (t : BackTarget Val) : Bool :=
   t.steps.foldr
     (fun step ih =>
       match step with
@@ -127,7 +130,7 @@ every `.choiceJoin` finds two subtrees and one tree remains. The check ignores
 conditions, so a malformed subtree is caught even inside an arm that a
 concrete condition would discard. Branch-sensitive folds over `target` check
 this first and fail closed when it does not hold. -/
-def targetWellFormed {Val : Type} (target : BackTarget Val) : Bool :=
+@[expose] def targetWellFormed {Val : Type} (target : BackTarget Val) : Bool :=
   match
     target.steps.foldr
       (fun step (acc : Option Nat) =>
@@ -150,7 +153,7 @@ iff an active branch of `target` contains a `.rootParam` or `.regionOut` step.
 Untaken branches of a `.choice` whose condition is concrete are ignored; both
 branches of a symbolic choice count. A malformed target (`targetWellFormed`)
 counts as special. -/
-def activeTargetHasSpecial {Val : Type} (alg : ValAlgebra Val)
+@[expose] def activeTargetHasSpecial {Val : Type} (alg : ValAlgebra Val)
     (target : BackTarget Val) : Bool :=
   !targetWellFormed target ||
   let stk : List Bool :=
@@ -177,7 +180,7 @@ def activeTargetHasSpecial {Val : Type} (alg : ValAlgebra Val)
   | _ => true
 
 /-- True iff `target` is `.regionOut gid expectedIdx`. -/
-def isMatchingRegionOut {Val : Type} (gid : RegionGroupId)
+@[expose] def isMatchingRegionOut {Val : Type} (gid : RegionGroupId)
     (expectedIdx : Nat) (t : BackTarget Val) : Bool :=
   match t.steps with
   | [.regionOut g idx] => g == gid && idx == expectedIdx
@@ -187,7 +190,7 @@ def isMatchingRegionOut {Val : Type} (gid : RegionGroupId)
 vals)` list produced by a `.lensCall` backward function, returning `none` if
 `targets` and `vals` have different lengths, and `some vOld` if `(owner, path)`
 does not appear in `targets`. -/
-def lookupLensTargetVal {Val : Type} (owner : OwnerRef) (path : SubPath)
+@[expose] def lookupLensTargetVal {Val : Type} (owner : OwnerRef) (path : SubPath)
     (vOld : Val) (targets : List (OwnerRef × SubPath)) (vals : List Val) :
     Option Val :=
   targets.foldr
@@ -210,7 +213,7 @@ def lookupLensTargetVal {Val : Type} (owner : OwnerRef) (path : SubPath)
 
 /-- True iff `(owner, path)` overlaps with any `(o, p)` entry in `xs`
 (`OwnerRef.beq owner o && subPathOverlaps path p`). -/
-def overlapsAnyOwnerPath (owner : OwnerRef) (path : SubPath)
+@[expose] def overlapsAnyOwnerPath (owner : OwnerRef) (path : SubPath)
     (xs : List (OwnerRef × SubPath)) : Bool :=
   xs.foldr
     (fun op ih =>
@@ -221,7 +224,7 @@ def overlapsAnyOwnerPath (owner : OwnerRef) (path : SubPath)
 
 /-- True iff all `(owner, path)` entries in `xs` are pairwise disjoint (neither
 equal nor overlapping sub-paths of the same owner). -/
-def ownerPathsDisjoint (xs : List (OwnerRef × SubPath)) : Bool :=
+@[expose] def ownerPathsDisjoint (xs : List (OwnerRef × SubPath)) : Bool :=
   match
     xs.foldr
       (fun op acc =>
@@ -233,7 +236,7 @@ def ownerPathsDisjoint (xs : List (OwnerRef × SubPath)) : Bool :=
   | (ok, _) => ok
 
 /-- True iff `(owner, path)` occurs in `xs`. -/
-def containsOwnerPath (owner : OwnerRef) (path : SubPath)
+@[expose] def containsOwnerPath (owner : OwnerRef) (path : SubPath)
     (xs : List (OwnerRef × SubPath)) : Bool :=
   xs.foldr
     (fun op ih =>
@@ -245,7 +248,7 @@ def containsOwnerPath (owner : OwnerRef) (path : SubPath)
 /-- Deduplicate a list of `(OwnerRef × SubPath)` leaves via total structural
 recursion so diamond writeback updates each underlying leaf once without
 truncating large leaf sets. -/
-def dedupOwnerPaths (xs : List (OwnerRef × SubPath)) :
+@[expose] def dedupOwnerPaths (xs : List (OwnerRef × SubPath)) :
     List (OwnerRef × SubPath) :=
   xs.foldr
     (fun op tail =>
@@ -256,7 +259,7 @@ def dedupOwnerPaths (xs : List (OwnerRef × SubPath)) :
 
 /-- Collect all leaf `(OwnerRef × SubPath)` targets referenced anywhere in
 `target` via total structural recursion (`List.foldr`). -/
-def targetLeaves {Val : Type} (target : BackTarget Val) :
+@[expose] def targetLeaves {Val : Type} (target : BackTarget Val) :
     List (OwnerRef × SubPath) :=
   target.steps.foldr
     (fun step acc =>
@@ -275,7 +278,7 @@ or a stack that does not reduce to one tree) conservatively yields every
 serialized leaf (`targetLeaves`), so dependency checks such as
 `noActiveChildLoanEdgesIn` can never lose an edge through a malformed child
 target. -/
-def activeTargetLeaves {Val : Type} (alg : ValAlgebra Val)
+@[expose] def activeTargetLeaves {Val : Type} (alg : ValAlgebra Val)
     (target : BackTarget Val) : List (OwnerRef × SubPath) :=
   let res : Bool × List (List (OwnerRef × SubPath)) :=
     target.steps.foldr
@@ -308,7 +311,7 @@ concrete condition discards. In the active branches only (both arms of a
 symbolic `.choice`, the taken arm of a concrete one), it also rejects
 `.rootParam` and `.regionOut` targets and `.choice` trees whose branches
 target distinct overlapping sub-paths of the same owner. -/
-def validateSharedBackTarget {Val : Type} (alg : ValAlgebra Val)
+@[expose] def validateSharedBackTarget {Val : Type} (alg : ValAlgebra Val)
     (target : BackTarget Val) : Bool :=
   if !targetWellFormed target then false
   else if
@@ -345,7 +348,7 @@ pairwise-disjoint `targets` and succeeds on its branch-projected loan value
 with a value list matching its `targets` arity, that no `.choice` branches
 target distinct overlapping sub-paths of the same owner, and that no
 `.rootParam` or `.regionOut` node appears. -/
-def validateBackTarget {Val : Type} (alg : ValAlgebra Val)
+@[expose] def validateBackTarget {Val : Type} (alg : ValAlgebra Val)
     (target : BackTarget Val) (vNew : Val) : Bool :=
   if !targetWellFormed target then false
   else if
@@ -390,9 +393,11 @@ def validateBackTarget {Val : Type} (alg : ValAlgebra Val)
 some index is a field of only one of the two values. Callers pass a bound
 above every field index of both values (`getField_lt_sizeBound`), so no field
 is skipped. -/
-def zipAggregateFields {Val : Type} (alg : ValAlgebra Val)
+@[expose] def zipAggregateFields {Val : Type} (alg : ValAlgebra Val)
     (ih : Val → Val → Val) (maxFields : Nat) (v1 v2 : Val) : Option Val :=
-  @Nat.recCompiled (fun _ => Nat → Val → Option Val)
+  -- Use kernel-exposed `@Nat.rec` (compiled via `@[csimp]` to `Nat.recCompiled`)
+  -- so downstream `module` proofs can reduce through `zipAggregateFields`.
+  @Nat.rec (fun _ => Nat → Val → Option Val)
     (fun _ acc => some acc)
     (fun _ ihField idx acc =>
       match alg.getField idx v1, alg.getField idx v2 with
@@ -406,7 +411,7 @@ def zipAggregateFields {Val : Type} (alg : ValAlgebra Val)
 
 /-- True iff `v` has a field at some index (below `alg.sizeBound v`, which
 bounds every field index). -/
-def hasAnyField {Val : Type} (alg : ValAlgebra Val) (v : Val) : Bool :=
+@[expose] def hasAnyField {Val : Type} (alg : ValAlgebra Val) (v : Val) : Bool :=
   natFold false
     (fun idx acc =>
       acc ||
@@ -425,9 +430,11 @@ available after a symbolic branch join. Because `getField_lt_sizeBound`
 guarantees `sizeBound c < sizeBound v` for every child field `c`, the outer
 budget `max (alg.sizeBound v1) (alg.sizeBound v2) + 1` strictly bounds every
 nested aggregate field chain. -/
-def zipOrKeepSameRef {Val : Type} (alg : ValAlgebra Val)
+@[expose] def zipOrKeepSameRef {Val : Type} (alg : ValAlgebra Val)
     (cond v1 v2 : Val) : Val :=
-  @Nat.recCompiled (fun _ => Val → Val → Val)
+  -- Use kernel-exposed `@Nat.rec` (compiled via `@[csimp]` to `Nat.recCompiled`)
+  -- so downstream `module` proofs can reduce through `zipOrKeepSameRef`.
+  @Nat.rec (fun _ => Val → Val → Val)
     (fun a b =>
       match alg.decodeRef a, alg.decodeRef b with
       | some (l1, p1), some (l2, p2) =>
@@ -459,7 +466,7 @@ def zipOrKeepSameRef {Val : Type} (alg : ValAlgebra Val)
 `.direct`, `.lensCall`, and arbitrarily nested `.choice` trees with
 branch-sensitive evaluation and branch-specific value projection of both `vNew`
 and `vOld`. A malformed step sequence (`targetWellFormed`) gives `none`. -/
-def evalBackVal {Val : Type} (alg : ValAlgebra Val)
+@[expose] def evalBackVal {Val : Type} (alg : ValAlgebra Val)
     (owner : OwnerRef) (path : SubPath)
     (target : BackTarget Val) (vNew vOld : Val) : Option Val :=
   if !targetWellFormed target then none
@@ -522,7 +529,7 @@ inductive CellVal (Val : Type) where
   | rawByte (b : UInt8)
 
 /-- True iff any cell in `cells` is `.uninit`. -/
-def hasUninitCell {Val : Type} (cells : List (CellVal Val)) : Bool :=
+@[expose] def hasUninitCell {Val : Type} (cells : List (CellVal Val)) : Bool :=
   cells.foldr
     (fun c ih =>
       match c with
@@ -549,21 +556,21 @@ inductive LoanPhase (Val : Type) where
   | spatialPinned (bid : BlockId) (codec : SpatialCodec Val) : LoanPhase Val
   | ended : LoanPhase Val
 
-def LoanPhase.isActive {Val : Type} : LoanPhase Val → Bool
+@[expose] def LoanPhase.isActive {Val : Type} : LoanPhase Val → Bool
   | .activeShared => true
   | .activeMut => true
   | .spatialPinned _ _ => false
   | .ended => false
 
-def LoanPhase.isActiveMut {Val : Type} : LoanPhase Val → Bool
+@[expose] def LoanPhase.isActiveMut {Val : Type} : LoanPhase Val → Bool
   | .activeMut => true
   | _ => false
 
-def LoanPhase.isEnded {Val : Type} : LoanPhase Val → Bool
+@[expose] def LoanPhase.isEnded {Val : Type} : LoanPhase Val → Bool
   | .ended => true
   | _ => false
 
-def LoanPhase.samePhase {Val : Type} : LoanPhase Val → LoanPhase Val → Bool
+@[expose] def LoanPhase.samePhase {Val : Type} : LoanPhase Val → LoanPhase Val → Bool
   | .activeShared, .activeShared => true
   | .activeMut, .activeMut => true
   | .ended, .ended => true
@@ -622,7 +629,7 @@ structure SymState (Val : Type) where
   nextSpatialTag : Nat
 
 /-- Look up index `idx` in `xs`, returning `defVal` when out of bounds. -/
-def listGetVal {α : Type} (defVal : α) (idx : Nat) (xs : List α) : α :=
+@[expose] def listGetVal {α : Type} (defVal : α) (idx : Nat) (xs : List α) : α :=
   natFold
     (fun ys =>
       match ys with
@@ -634,12 +641,12 @@ def listGetVal {α : Type} (defVal : α) (idx : Nat) (xs : List α) : α :=
       | _ :: rest => ih rest)
     idx xs
 
-def getLocalCell {Val : Type} (alg : ValAlgebra Val) (reg : LocalId)
+@[expose] def getLocalCell {Val : Type} (alg : ValAlgebra Val) (reg : LocalId)
     (st : SymState Val) : PlaceCell Val :=
   listGetVal ⟨alg.defaultVal, .unborrowed⟩ reg st.locals
 
 /-- Force a `SubPerm` and its head loan IDs to constructor WHNF. -/
-def strictSubPerm (sp : SubPerm) : SubPerm :=
+@[expose] def strictSubPerm (sp : SubPerm) : SubPerm :=
   match sp with
   | .shared [] => .shared []
   | .shared [l1] => .shared [l1]
@@ -649,7 +656,7 @@ def strictSubPerm (sp : SubPerm) : SubPerm :=
   | .mutJoined m s => .mutJoined m s
 
 /-- Force a `(SubPath × SubPerm)` entry to constructor WHNF. -/
-def strictSplitEntry (e : SubPath × SubPerm) : SubPath × SubPerm :=
+@[expose] def strictSplitEntry (e : SubPath × SubPerm) : SubPath × SubPerm :=
   match e with
   | ([], sp) => ([], strictSubPerm sp)
   | ([f1], sp) => ([f1], strictSubPerm sp)
@@ -659,7 +666,7 @@ def strictSplitEntry (e : SubPath × SubPerm) : SubPath × SubPerm :=
 /-- Construct a `PlaceCell Val` after forcing `p : PermTree` (including `.split`
 entry spines) to weak head normal form so multi-step plans never accumulate
 chains of unreduced `PermTree` thunks inside `PlaceCell.perm`. -/
-def mkStrictPlaceCell {Val : Type} (v : Val) (p : PermTree) : PlaceCell Val :=
+@[expose] def mkStrictPlaceCell {Val : Type} (v : Val) (p : PermTree) : PlaceCell Val :=
   match p with
   | .unborrowed => ⟨v, .unborrowed⟩
   | .shared [] => ⟨v, .unborrowed⟩
@@ -683,7 +690,7 @@ def mkStrictPlaceCell {Val : Type} (v : Val) (p : PermTree) : PlaceCell Val :=
 when `idx` is not below `xs.length`: a local that no plan step has written has
 no value to read, borrow, or update. Only a whole-local write may create the
 next fresh local (`setLocalChecked`). -/
-def modifyLocalAt {Val : Type}
+@[expose] def modifyLocalAt {Val : Type}
     (f : Val → PermTree → Option (Val × PermTree))
     (idx : Nat) (xs : List (PlaceCell Val)) :
     Option (List (PlaceCell Val)) :=
@@ -704,29 +711,29 @@ def modifyLocalAt {Val : Type}
         | none => none)
     idx xs
 
-def getLocalPerm {Val : Type} (alg : ValAlgebra Val) (reg : LocalId)
+@[expose] def getLocalPerm {Val : Type} (alg : ValAlgebra Val) (reg : LocalId)
     (st : SymState Val) : PermTree :=
   (getLocalCell alg reg st).perm
 
 /-- Count occurrences of loan ID `lid` in `loans`. -/
-def countLoanId {Val : Type} (lid : LoanId)
+@[expose] def countLoanId {Val : Type} (lid : LoanId)
     (loans : List (LoanEntry Val)) : Nat :=
   loans.foldr (fun e ih => if e.id == lid then ih + 1 else ih) 0
 
 /-- True iff `lid` occurs exactly once in `loans`. -/
-def hasUniqueLoanId {Val : Type} (lid : LoanId)
+@[expose] def hasUniqueLoanId {Val : Type} (lid : LoanId)
     (loans : List (LoanEntry Val)) : Bool :=
   countLoanId lid loans == 1
 
 /-- Find loan `lid` in `loans`. -/
-def findLoan {Val : Type} (lid : LoanId)
+@[expose] def findLoan {Val : Type} (lid : LoanId)
     (loans : List (LoanEntry Val)) : Option (LoanEntry Val) :=
   loans.foldr
     (fun e ih => if e.id == lid then some e else ih)
     none
 
 /-- Update loan `lid` in `loans`. -/
-def updateLoan {Val : Type} (lid : LoanId)
+@[expose] def updateLoan {Val : Type} (lid : LoanId)
     (f : LoanEntry Val → LoanEntry Val)
     (loans : List (LoanEntry Val)) : List (LoanEntry Val) :=
   loans.foldr
@@ -734,17 +741,17 @@ def updateLoan {Val : Type} (lid : LoanId)
     []
 
 /-- `xs` with the first occurrence of `x` removed. -/
-def removeOneNat (x : Nat) (xs : List Nat) : List Nat :=
+@[expose] def removeOneNat (x : Nat) (xs : List Nat) : List Nat :=
   listFold [] (fun y rest ih => if y == x then rest else y :: ih) xs
 
 /-- Multiset union of `xs` and `ys` in which each element occurs as often as
 in whichever of the two lists holds it more often. -/
-def maxUnionNat (xs ys : List Nat) : List Nat :=
+@[expose] def maxUnionNat (xs ys : List Nat) : List Nat :=
   xs ++ xs.foldr (fun x acc => removeOneNat x acc) ys
 
 /-- Multiset intersection of `xs` and `ys` in which each element occurs as
 often as in whichever of the two lists holds it less often. -/
-def minInterNat (xs ys : List Nat) : List Nat :=
+@[expose] def minInterNat (xs ys : List Nat) : List Nat :=
   match
     xs.foldr
       (fun x (acc : List Nat × List Nat) =>
@@ -762,30 +769,30 @@ encoding (`alg.decodeRefIsShared`). -/
 abbrev HandleRef := LoanId × SubPath × Bool
 
 /-- Structural equality on `(LoanId × SubPath × Bool)` borrow handle identities. -/
-def handleRefEq (a b : HandleRef) : Bool :=
+@[expose] def handleRefEq (a b : HandleRef) : Bool :=
   a.1 == b.1 && subPathEq a.2.1 b.2.1 && a.2.2 == b.2.2
 
 /-- True iff `r` occurs in `rs`. -/
-def elemHandleRef (r : HandleRef) (rs : List HandleRef) :
+@[expose] def elemHandleRef (r : HandleRef) (rs : List HandleRef) :
     Bool :=
   rs.foldr (fun x ih => if handleRefEq x r then true else ih) false
 
 /-- `rs` with the first occurrence of `r` removed. -/
-def removeOneHandleRef (r : HandleRef)
+@[expose] def removeOneHandleRef (r : HandleRef)
     (rs : List HandleRef) : List HandleRef :=
   listFold [] (fun y rest ih => if handleRefEq y r then rest else y :: ih) rs
 
 /-- Multiset union of handle-reference lists `xs` and `ys` in which each
 `HandleRef` occurs as often as in whichever list holds it more
 often. -/
-def maxUnionHandleRef (xs ys : List HandleRef) :
+@[expose] def maxUnionHandleRef (xs ys : List HandleRef) :
     List HandleRef :=
   xs ++ xs.foldr (fun x acc => removeOneHandleRef x acc) ys
 
 /-- Multiset intersection of handle-reference lists `xs` and `ys` in which each
 `HandleRef` occurs as often as in whichever list holds it less
 often. -/
-def minInterHandleRef (xs ys : List HandleRef) :
+@[expose] def minInterHandleRef (xs ys : List HandleRef) :
     List HandleRef :=
   match
     xs.foldr
@@ -800,14 +807,14 @@ def minInterHandleRef (xs ys : List HandleRef) :
   | (out, _) => out
 
 /-- Number of occurrences of handle reference `r` in `rs`. -/
-def countHandleRef (r : HandleRef)
+@[expose] def countHandleRef (r : HandleRef)
     (rs : List HandleRef) : Nat :=
   rs.foldr (fun y n => if handleRefEq y r then n + 1 else n) 0
 
 /-- The truth value that the branch context `ctx` assigns to `cond`, if any.
 A branch context lists symbolic conditions with the truth value each takes in
 one family of branches; `alg.sameCond` identifies the same condition. -/
-def lookupCond {Val : Type} (alg : ValAlgebra Val)
+@[expose] def lookupCond {Val : Type} (alg : ValAlgebra Val)
     (ctx : List (Val × Bool)) (cond : Val) : Option Bool :=
   ctx.foldr
     (fun entry ih =>
@@ -819,7 +826,7 @@ def lookupCond {Val : Type} (alg : ValAlgebra Val)
 the branches described by `ctx`, with multiplicity, or `none` if `v` nests more
 deeply than its traversal budget `alg.sizeBound v + 1` or contains a choice
 whose guard is not handle-free. -/
-def collectHandleRefsIn {Val : Type} (alg : ValAlgebra Val) (lower : Bool)
+@[expose] def collectHandleRefsIn {Val : Type} (alg : ValAlgebra Val) (lower : Bool)
     (ctx : List (Val × Bool)) (v : Val) : Option (List HandleRef) :=
   natFold (fun _ => none)
     (fun _ ih w =>
@@ -861,12 +868,12 @@ def collectHandleRefsIn {Val : Type} (alg : ValAlgebra Val) (lower : Bool)
 
 /-- `HandleRef` triples named by the borrow handles in `v` in any
 branch, with multiplicity. -/
-def collectHandleRefs {Val : Type} (alg : ValAlgebra Val) (v : Val) :
+@[expose] def collectHandleRefs {Val : Type} (alg : ValAlgebra Val) (v : Val) :
     Option (List HandleRef) :=
   collectHandleRefsIn alg false [] v
 
 /-- Concatenated `collectHandleRefsIn` of every value in `vs`. -/
-def collectHandleRefsListIn {Val : Type} (alg : ValAlgebra Val) (lower : Bool)
+@[expose] def collectHandleRefsListIn {Val : Type} (alg : ValAlgebra Val) (lower : Bool)
     (ctx : List (Val × Bool)) (vs : List Val) :
     Option (List HandleRef) :=
   vs.foldr
@@ -879,7 +886,7 @@ def collectHandleRefsListIn {Val : Type} (alg : ValAlgebra Val) (lower : Bool)
 /-- Loan IDs named by the borrow handles in `v` in the branches described by
 `ctx`, with multiplicity, or `none` if `v` nests more deeply than its traversal
 budget `alg.sizeBound v + 1`. -/
-def collectHandlesIn {Val : Type} (alg : ValAlgebra Val) (lower : Bool)
+@[expose] def collectHandlesIn {Val : Type} (alg : ValAlgebra Val) (lower : Bool)
     (ctx : List (Val × Bool)) (v : Val) : Option (List LoanId) :=
   match collectHandleRefsIn alg lower ctx v with
   | some refs => some (refs.map Prod.fst)
@@ -888,24 +895,24 @@ def collectHandlesIn {Val : Type} (alg : ValAlgebra Val) (lower : Bool)
 /-- Loan IDs named by the borrow handles in `v` in any branch, with
 multiplicity: the upper bound of `collectHandlesIn` with no fixed conditions.
 An unchanged unique handle in both arms of `zipVal c h h` occurs once. -/
-def collectHandles {Val : Type} (alg : ValAlgebra Val) (v : Val) :
+@[expose] def collectHandles {Val : Type} (alg : ValAlgebra Val) (v : Val) :
     Option (List LoanId) :=
   collectHandlesIn alg false [] v
 
 /-- True iff `v` contains no decodable borrow handle (`collectHandles`). -/
-def handleFreeVal {Val : Type} (alg : ValAlgebra Val) (v : Val) : Bool :=
+@[expose] def handleFreeVal {Val : Type} (alg : ValAlgebra Val) (v : Val) : Bool :=
   match collectHandles alg v with
   | some [] => true
   | _ => false
 
 /-- True iff neither the return value nor any final `&mut` parameter value of
 `out` contains a borrow handle. -/
-def handleFreeOut {Val : Type} (alg : ValAlgebra Val) (out : FuncOut Val) :
+@[expose] def handleFreeOut {Val : Type} (alg : ValAlgebra Val) (out : FuncOut Val) :
     Bool :=
   handleFreeVal alg out.ret && out.mutFinals.all (handleFreeVal alg)
 
 /-- Concatenated `collectHandlesIn` of every value in `vs`. -/
-def collectHandlesListIn {Val : Type} (alg : ValAlgebra Val) (lower : Bool)
+@[expose] def collectHandlesListIn {Val : Type} (alg : ValAlgebra Val) (lower : Bool)
     (ctx : List (Val × Bool)) (vs : List Val) : Option (List LoanId) :=
   match collectHandleRefsListIn alg lower ctx vs with
   | some refs => some (refs.map Prod.fst)
@@ -916,7 +923,7 @@ loan, and that loan is currently `.activeShared`. Handles to `.activeMut`,
 `.spatialPinned`, or `.ended` loans are never copyable (ending a loan retires
 its entry before writeback runs, so treating `.ended` as copyable would let a
 backward lens fabricate a dangling handle to the retiring loan). -/
-def handleCopyable {Val : Type} (loans : List (LoanEntry Val))
+@[expose] def handleCopyable {Val : Type} (loans : List (LoanEntry Val))
     (lid : LoanId) : Bool :=
   hasUniqueLoanId lid loans &&
     match findLoan lid loans with
@@ -935,7 +942,7 @@ handle would grant unrecorded sub-place authority), `isShared` must be `true`
 (so mutable-form encodings in algebras where `encodeRef` and `encodeSharedRef`
 differ cannot be fabricated from an `.activeShared` loan), and `lid` must
 satisfy `handleCopyable loans`. -/
-def handleRefCopyable {Val : Type} (_alg : ValAlgebra Val)
+@[expose] def handleRefCopyable {Val : Type} (_alg : ValAlgebra Val)
     (loans : List (LoanEntry Val)) (r : HandleRef) : Bool :=
   r.2.1.isEmpty && r.2.2 && handleCopyable loans r.1
 
@@ -944,7 +951,7 @@ active loan in `loans` whose phase matches the handle's encoding flavor `isShare
 - for `.activeShared`, `isShared` must be `true`,
 - for `.activeMut`, `isShared` must equal
   `alg.decodeRefIsShared (alg.encodeRef lid path)`. -/
-def handleFlavorMatchesLoan {Val : Type} (alg : ValAlgebra Val)
+@[expose] def handleFlavorMatchesLoan {Val : Type} (alg : ValAlgebra Val)
     (loans : List (LoanEntry Val)) (r : HandleRef) : Bool :=
   if !hasUniqueLoanId r.1 loans then false
   else
@@ -962,7 +969,7 @@ def handleFlavorMatchesLoan {Val : Type} (alg : ValAlgebra Val)
 inside it (`collectHandleRefs`) satisfies `handleRefCopyable`. Reading a value
 out of the symbolic state never invalidates its source, so a mutable reference
 must be transferred by reborrowing it rather than by copying its handle. -/
-def copyableVal {Val : Type} (alg : ValAlgebra Val)
+@[expose] def copyableVal {Val : Type} (alg : ValAlgebra Val)
     (loans : List (LoanEntry Val)) (v : Val) : Bool :=
   match collectHandleRefs alg v with
   | some refs => refs.all (handleRefCopyable alg loans)
@@ -973,7 +980,7 @@ only if `v` satisfies `copyableVal alg st.loans v` (so no active mutable or
 spatially pinned borrow handle can be duplicated or fabricated) and either
 `reg` already exists with `canWritePath []` permission or `reg` is exactly
 one past the end (appending a fresh unborrowed local). -/
-def setLocalChecked {Val : Type} (alg : ValAlgebra Val) (reg : LocalId)
+@[expose] def setLocalChecked {Val : Type} (alg : ValAlgebra Val) (reg : LocalId)
     (v : Val) (st : SymState Val) : Option (SymState Val) :=
   match st with
   | ⟨locals, loans, rgs, deps, sp, tag⟩ =>
@@ -988,14 +995,14 @@ def setLocalChecked {Val : Type} (alg : ValAlgebra Val) (reg : LocalId)
       | none => none
 
 /-- Number of occurrences of `x` in `xs`. -/
-def countNat (x : Nat) (xs : List Nat) : Nat :=
+@[expose] def countNat (x : Nat) (xs : List Nat) : Nat :=
   xs.foldr (fun y n => if y == x then n + 1 else n) 0
 
 /-- Symbolic choice guards inside `v` (in fields and in arms, but not inside
 other guards), with repetition. A value nested more deeply than its traversal
 budget contributes only the guards found within the budget; `collectHandlesIn`
 fails on such a value anyway. -/
-def collectConds {Val : Type} (alg : ValAlgebra Val) (v : Val) : List Val :=
+@[expose] def collectConds {Val : Type} (alg : ValAlgebra Val) (v : Val) : List Val :=
   natFold (fun _ => [])
     (fun _ ih w =>
       match alg.decodeRef w with
@@ -1023,7 +1030,7 @@ def collectConds {Val : Type} (alg : ValAlgebra Val) (v : Val) : List Val :=
 /-- The distinct guards among `conds` that `alg.sameCond` can identify (those
 it reports equal to themselves). A guard it cannot identify can never be
 fixed by a branch context, so enumerating it would add no precision. -/
-def identifiableConds {Val : Type} (alg : ValAlgebra Val)
+@[expose] def identifiableConds {Val : Type} (alg : ValAlgebra Val)
     (conds : List Val) : List Val :=
   conds.foldr
     (fun c acc =>
@@ -1031,7 +1038,7 @@ def identifiableConds {Val : Type} (alg : ValAlgebra Val)
     []
 
 /-- Every branch context that assigns a truth value to each of `conds`. -/
-def condAssignments {Val : Type} (conds : List Val) :
+@[expose] def condAssignments {Val : Type} (conds : List Val) :
     List (List (Val × Bool)) :=
   conds.foldr
     (fun c acc =>
@@ -1043,7 +1050,7 @@ def condAssignments {Val : Type} (conds : List Val) :
 lists: every handle in `newRefs` must either satisfy `handleRefCopyable` or
 match a unique active loan (`handleFlavorMatchesLoan`) and appear no more
 often in `newRefs` than in `oldRefs`. -/
-def replaceableHandleRefs {Val : Type} (alg : ValAlgebra Val)
+@[expose] def replaceableHandleRefs {Val : Type} (alg : ValAlgebra Val)
     (loans : List (LoanEntry Val)) (oldRefs newRefs : List HandleRef) :
     Bool :=
   newRefs.all (fun r =>
@@ -1060,7 +1067,7 @@ unique handles between the written places (as in `mem::swap` of two `&mut`
 references) while rejecting handles that callee-supplied functions or spatial
 cells fabricate, duplicate, or retarget to a different `SubPath` or to an
 `.ended` loan. -/
-def replaceableVals {Val : Type} (alg : ValAlgebra Val)
+@[expose] def replaceableVals {Val : Type} (alg : ValAlgebra Val)
     (loans : List (LoanEntry Val)) (olds news : List Val) : Bool :=
   let fitsIn (ctx : List (Val × Bool)) : Bool :=
     match collectHandleRefsListIn alg false ctx news,
@@ -1076,7 +1083,7 @@ def replaceableVals {Val : Type} (alg : ValAlgebra Val)
       fitsIn
 
 /-- `replaceableVals` for a single place: writing `vNew` in place of `vOld`. -/
-def replaceableVal {Val : Type} (alg : ValAlgebra Val)
+@[expose] def replaceableVal {Val : Type} (alg : ValAlgebra Val)
     (loans : List (LoanEntry Val)) (vOld vNew : Val) : Bool :=
   replaceableVals alg loans [vOld] [vNew]
 
@@ -1086,7 +1093,7 @@ on that path with the arm taken. Concrete `.choice` conditions select their
 arm without adding to the context. If no path selects such a place, or the
 step tree is malformed, the result is `[[]]`, the context of an unconditional
 write, which makes overlap checks as strict as possible. -/
-def leafBranchContexts {Val : Type} (alg : ValAlgebra Val)
+@[expose] def leafBranchContexts {Val : Type} (alg : ValAlgebra Val)
     (hit : OwnerRef × SubPath → Bool) (target : BackTarget Val) :
     List (List (Val × Bool)) :=
   let res : Bool × List (List (List (Val × Bool))) :=
@@ -1126,7 +1133,7 @@ one that `ctx` fixes (`lookupCond`) selects the fixed arm, and any other
 symbolic one may take either arm. A malformed step tree conservatively answers
 whether any serialized leaf hits. With `ctx = []` this asks whether any active
 leaf (`activeTargetLeaves`) hits. -/
-def targetMayHitIn {Val : Type} (alg : ValAlgebra Val)
+@[expose] def targetMayHitIn {Val : Type} (alg : ValAlgebra Val)
     (ctx : List (Val × Bool)) (hit : OwnerRef × SubPath → Bool)
     (target : BackTarget Val) : Bool :=
   let res : Bool × List Bool :=
@@ -1185,7 +1192,7 @@ the outer loan's writeback turns the outer place into a choice value, and
 `getPath` cannot see through a choice to the inner place. So the inner loan
 must end first; ending the outer one first makes the inner loan's later end
 fail. -/
-def liveLoanTargetsOverlap {Val : Type} (alg : ValAlgebra Val)
+@[expose] def liveLoanTargetsOverlap {Val : Type} (alg : ValAlgebra Val)
     (writerCtxs : List (List (Val × Bool))) (exempt : List LoanId)
     (owner : OwnerRef) (path : SubPath) (loans : List (LoanEntry Val))
     (rgs : List (RegionGroupEntry Val)) : Bool :=
@@ -1199,7 +1206,7 @@ def liveLoanTargetsOverlap {Val : Type} (alg : ValAlgebra Val)
 
 /-- Single-pass linear modifier for loan `lid`, enforcing that `lid` occurs
 uniquely in `loans` and is active (or `.activeMut` when `reqMut == true`). -/
-def modifyLoanAt {Val : Type} (lid : LoanId) (reqMut : Bool)
+@[expose] def modifyLoanAt {Val : Type} (lid : LoanId) (reqMut : Bool)
     (f : Val → PermTree → Option (Val × PermTree))
     (loans : List (LoanEntry Val)) : Option (List (LoanEntry Val)) :=
   if !hasUniqueLoanId lid loans then none
@@ -1226,7 +1233,7 @@ def modifyLoanAt {Val : Type} (lid : LoanId) (reqMut : Bool)
     | (false, _) => none
 
 /-- Modify the `PlaceCell` of `owner` in a single pass. -/
-def modifyOwner {Val : Type} (_alg : ValAlgebra Val) (owner : OwnerRef)
+@[expose] def modifyOwner {Val : Type} (_alg : ValAlgebra Val) (owner : OwnerRef)
     (reqMut : Bool) (f : Val → PermTree → Option (Val × PermTree))
     (st : SymState Val) : Option (SymState Val) :=
   match st with
@@ -1243,7 +1250,7 @@ def modifyOwner {Val : Type} (_alg : ValAlgebra Val) (owner : OwnerRef)
 
 /-- Single-pass linear modifier for local register `idx` returning an auxiliary
 result `Res`. -/
-def modifyLocalAtRes {Val Res : Type}
+@[expose] def modifyLocalAtRes {Val Res : Type}
     (f : Val → PermTree → Option (Res × Val × PermTree))
     (idx : Nat) (xs : List (PlaceCell Val)) :
     Option (Res × List (PlaceCell Val)) :=
@@ -1267,7 +1274,7 @@ def modifyLocalAtRes {Val Res : Type}
 
 /-- Single-pass linear modifier for loan `lid` returning an auxiliary result
 `Res`, requiring `lid` to occur uniquely in `loans`. -/
-def modifyLoanAtRes {Val Res : Type} (lid : LoanId) (reqMut : Bool)
+@[expose] def modifyLoanAtRes {Val Res : Type} (lid : LoanId) (reqMut : Bool)
     (f : Val → PermTree → Option (Res × Val × PermTree))
     (loans : List (LoanEntry Val)) : Option (Res × List (LoanEntry Val)) :=
   if !hasUniqueLoanId lid loans then none
@@ -1295,7 +1302,7 @@ def modifyLoanAtRes {Val Res : Type} (lid : LoanId) (reqMut : Bool)
     | (none, _) => none
 
 /-- Modify `owner` in a single pass and return an auxiliary result `Res`. -/
-def modifyOwnerRes {Val Res : Type} (_alg : ValAlgebra Val)
+@[expose] def modifyOwnerRes {Val Res : Type} (_alg : ValAlgebra Val)
     (owner : OwnerRef)
     (reqMut : Bool) (f : Val → PermTree → Option (Res × Val × PermTree))
     (st : SymState Val) : Option (Res × SymState Val) :=
@@ -1318,7 +1325,7 @@ overlapping `path` (`!canReadPath path cell.perm`), and projecting both the
 returned value (`getPath alg path cell.val`) and permission
 (`getPathPerm path cell.perm`) to `path` so locked sibling sub-places are never
 exposed. -/
-def getOwnerForRead {Val : Type} (alg : ValAlgebra Val) (owner : OwnerRef)
+@[expose] def getOwnerForRead {Val : Type} (alg : ValAlgebra Val) (owner : OwnerRef)
     (st : SymState Val) (path : SubPath := []) : Option (PlaceCell Val) :=
   match owner with
   | .localReg reg =>
@@ -1348,7 +1355,7 @@ def getOwnerForRead {Val : Type} (alg : ValAlgebra Val) (owner : OwnerRef)
 /-- Look up the value of local register `reg` for read access (`getOwnerForRead`
 at `[]`), returning `none` if `reg` was never written or is behind an active
 mutable borrow (`!canReadPath [] perm`). -/
-def getLocal {Val : Type} (alg : ValAlgebra Val) (reg : LocalId)
+@[expose] def getLocal {Val : Type} (alg : ValAlgebra Val) (reg : LocalId)
     (st : SymState Val) : Option Val :=
   (getOwnerForRead alg (.localReg reg) st []).map PlaceCell.val
 
@@ -1359,7 +1366,7 @@ or mutable borrow overlapping `path` (`!canWritePath path cell.perm`), and
 projecting both the returned value (`getPath alg path cell.val`) and permission
 (`getPathPerm path cell.perm`) to `path` so locked sibling sub-places are never
 exposed. -/
-def getOwnerForMut {Val : Type} (alg : ValAlgebra Val) (owner : OwnerRef)
+@[expose] def getOwnerForMut {Val : Type} (alg : ValAlgebra Val) (owner : OwnerRef)
     (st : SymState Val) (path : SubPath := []) : Option (PlaceCell Val) :=
   match owner with
   | .localReg reg =>
@@ -1389,14 +1396,14 @@ def getOwnerForMut {Val : Type} (alg : ValAlgebra Val) (owner : OwnerRef)
 register below `st.locals.length`, or any parent loan (whose presence the loan
 modifiers check themselves). Writeback and cleanup check it before modifying
 an owner. -/
-def ownerExists {Val : Type} (owner : OwnerRef) (st : SymState Val) : Bool :=
+@[expose] def ownerExists {Val : Type} (owner : OwnerRef) (st : SymState Val) : Bool :=
   match owner with
   | .localReg reg => decide (reg < st.locals.length)
   | .parentLoan _ => true
 
 /-- Current value at `path` inside `owner`, or `none` if the owner does not
 exist (or its loan ID is ambiguous) or the path does not resolve. -/
-def ownerPathValue {Val : Type} (alg : ValAlgebra Val) (owner : OwnerRef)
+@[expose] def ownerPathValue {Val : Type} (alg : ValAlgebra Val) (owner : OwnerRef)
     (path : SubPath) (st : SymState Val) : Option Val :=
   match owner with
   | .localReg reg =>
@@ -1414,7 +1421,7 @@ def ownerPathValue {Val : Type} (alg : ValAlgebra Val) (owner : OwnerRef)
 /-- True iff writing `vals` into `targets` (one value per target) introduces no
 new non-copyable handle, counting across all targets at once
 (`replaceableVals`). -/
-def targetsReplaceable {Val : Type} (alg : ValAlgebra Val)
+@[expose] def targetsReplaceable {Val : Type} (alg : ValAlgebra Val)
     (targets : List (OwnerRef × SubPath)) (vals : List Val)
     (st : SymState Val) : Bool :=
   let olds : Option (List Val) :=
@@ -1430,7 +1437,7 @@ def targetsReplaceable {Val : Type} (alg : ValAlgebra Val)
 
 /-- True iff `v` may contain a handle to loan `lid` (or nests too deeply to
 tell; see `collectHandles`). -/
-def valMayMentionLoan {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
+@[expose] def valMayMentionLoan {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
     (v : Val) : Bool :=
   match collectHandles alg v with
   | some lids => elemLoanId lid lids
@@ -1438,7 +1445,7 @@ def valMayMentionLoan {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
 
 /-- True iff any local, loan cell, region deposit, or spatial block of `st` may
 hold a handle to loan `lid`. -/
-def stateMayMentionLoan {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
+@[expose] def stateMayMentionLoan {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
     (st : SymState Val) : Bool :=
   st.locals.any (fun c => valMayMentionLoan alg lid c.val) ||
     st.loans.any (fun e => valMayMentionLoan alg lid e.cell.val) ||
@@ -1454,7 +1461,7 @@ def stateMayMentionLoan {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
 is a parent loan) and holds a borrow lock for `lid` at `path` of the flavor
 required by `reqMut` (`hasMutLoanAtPath` without `hasSharedLoanAtPath` for
 `reqMut = true`, and the converse for `reqMut = false`). -/
-def ownerHasBorrowLock {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
+@[expose] def ownerHasBorrowLock {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
     (reqMut : Bool) (owner : OwnerRef) (path : SubPath)
     (st : SymState Val) : Bool :=
   match owner with
@@ -1487,7 +1494,7 @@ def ownerHasBorrowLock {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
 flavor required by `reqMut` (`ownerHasBorrowLock`), and resolves at `path`,
 returns `some subVal`; otherwise `none`. Combines `ownerHasBorrowLock` and
 `ownerPathValue` in a single lookup of `owner`. -/
-def ownerLockedPathValue {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
+@[expose] def ownerLockedPathValue {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
     (reqMut : Bool) (owner : OwnerRef) (path : SubPath)
     (st : SymState Val) : Option Val :=
   match owner with
@@ -1528,7 +1535,7 @@ symbolic choice arms via `zipOrKeepSameRef` (or selecting the taken arm when
 when any active step is `.rootParam`, `.regionOut`, `.lensCall`, lacks the
 required borrow lock on its owner path, or has a choice guard that is not
 handle-free. -/
-def deriveLockedTargetVal {Val : Type} (alg : ValAlgebra Val)
+@[expose] def deriveLockedTargetVal {Val : Type} (alg : ValAlgebra Val)
     (newLid : LoanId) (reqMut : Bool) (target : BackTarget Val)
     (st : SymState Val) : Option Val :=
   match target.steps with
@@ -1584,7 +1591,7 @@ def deriveLockedTargetVal {Val : Type} (alg : ValAlgebra Val)
   with the permission flavor matching `phase`, and `subVal` introduces no
   non-copyable handle that was not already present in those locked source
   places (`targetsReplaceable`). -/
-def validInstalledLoanSource {Val : Type} (alg : ValAlgebra Val)
+@[expose] def validInstalledLoanSource {Val : Type} (alg : ValAlgebra Val)
     (newLid : LoanId) (phase : LoanPhase Val) (subVal : Val)
     (target : BackTarget Val) (st : SymState Val) : Bool :=
   if valMayMentionLoan alg newLid subVal ||
@@ -1621,7 +1628,7 @@ write its encoded handle into `dst` when `dst` is writable or one past the end.
 Callers must already have verified `findLoan newLid st.loans == none`,
 `!valMayMentionLoan alg newLid subVal`, `!stateMayMentionLoan alg newLid st`,
 and the phase-specific source lock and handle accounting checks. -/
-def bindVerifiedLoanInLocal {Val : Type} (alg : ValAlgebra Val)
+@[expose] def bindVerifiedLoanInLocal {Val : Type} (alg : ValAlgebra Val)
     (dst : LocalId) (newLid : LoanId) (phase : LoanPhase Val) (subVal : Val)
     (target : BackTarget Val) (st : SymState Val) : Option (SymState Val) :=
   match st with
@@ -1655,7 +1662,7 @@ holds) and bind its freshly encoded handle (`alg.encodeRef newLid []` for
 `.activeMut`, or `alg.encodeSharedRef newLid []` for `.activeShared`) to local
 `dst` when `dst` is writable (`canWritePath []`) or one past the end
 (`dst == st.locals.length`). -/
-def installNewLoanInLocal {Val : Type} (alg : ValAlgebra Val) (dst : LocalId)
+@[expose] def installNewLoanInLocal {Val : Type} (alg : ValAlgebra Val) (dst : LocalId)
     (phase : LoanPhase Val) (target : BackTarget Val)
     (st : SymState Val) : Option (SymState Val) :=
   match st with
@@ -1692,7 +1699,7 @@ its freshly encoded handle to `dst`: reads `srcVals` from the locked `targets`
 in `st` via `ownerPathValue`, derives `subVal ← fwdFn srcVals`, constructs
 `target := .lensCall targets (backFn srcVals)`, validates
 `validInstalledLoanSource`, and binds the loan via `bindVerifiedLoanInLocal`. -/
-def installLensLoanInLocal {Val : Type} (alg : ValAlgebra Val) (dst : LocalId)
+@[expose] def installLensLoanInLocal {Val : Type} (alg : ValAlgebra Val) (dst : LocalId)
     (targets : List (OwnerRef × SubPath))
     (fwdFn : List Val → Option Val)
     (backFn : List Val → Val → Option (List Val))
@@ -1734,7 +1741,7 @@ destinations, unlocked or overlapping `inTargets`, any output list `outVals`
 that fabricates or duplicates a non-copyable handle (`targetsReplaceable`
 across all `outVals` at once), or any output loan ID that already exists or is
 mentioned in `st` or `outVals`. -/
-def installRegionGroupOutputs {Val : Type} (alg : ValAlgebra Val)
+@[expose] def installRegionGroupOutputs {Val : Type} (alg : ValAlgebra Val)
     (gid : RegionGroupId) (lockLid : LoanId)
     (inTargets : List (OwnerRef × SubPath)) (dsts : List LocalId)
     (outVals : List Val) (st : SymState Val) :
@@ -1801,7 +1808,7 @@ cannot be modified, but it need not be: the leaf is skipped (`some (some st)`)
 if the cell carries no permission overlapping `path` for `lid`, and rejected
 (`some none`) if it retains a residual permission. `none` means the owner is
 not an inactive parent loan and the caller should proceed normally. -/
-def inactiveParentLeafCleanup {Val : Type} (lid : LoanId) (owner : OwnerRef)
+@[expose] def inactiveParentLeafCleanup {Val : Type} (lid : LoanId) (owner : OwnerRef)
     (path : SubPath) (st : SymState Val) (reqMut : Bool) :
     Option (Option (SymState Val)) :=
   match owner with
@@ -1834,7 +1841,7 @@ An inactive leaf (one that `target` selects in no branch) is not written:
 permission overlapping `path` for `lid` is rejected. Leaves naming a missing
 local and parent loans that cannot be modified are handled without a write
 (`inactiveParentLeafCleanup`). -/
-def writebackLeaf {Val : Type} (alg : ValAlgebra Val)
+@[expose] def writebackLeaf {Val : Type} (alg : ValAlgebra Val)
     (lid : LoanId) (target : BackTarget Val)
     (activeLeaves : List (OwnerRef × SubPath)) (vNew : Val)
     (owner : OwnerRef) (path : SubPath) (st : SymState Val) :
@@ -1881,7 +1888,7 @@ def writebackLeaf {Val : Type} (alg : ValAlgebra Val)
 /-- Apply `writebackLeaf` to the leaves in `leaves` that are active
 (`wantActive = true`) or inactive (`wantActive = false`) with respect to
 `activeLeaves`, in order, failing if any leaf fails. -/
-def writebackLeavesPass {Val : Type} (alg : ValAlgebra Val)
+@[expose] def writebackLeavesPass {Val : Type} (alg : ValAlgebra Val)
     (lid : LoanId) (target : BackTarget Val)
     (activeLeaves : List (OwnerRef × SubPath)) (wantActive : Bool)
     (vNew : Val) (leaves : List (OwnerRef × SubPath)) (st : SymState Val) :
@@ -1903,7 +1910,7 @@ def writebackLeavesPass {Val : Type} (alg : ValAlgebra Val)
 /-- Old and written-back values of the leaves `written` of the ending mutable
 loan's target `target` (with new loan value `vNew`) in `st`, or `none` if some
 leaf has no current value or no written-back value. -/
-def activeLeafUpdates {Val : Type} (alg : ValAlgebra Val)
+@[expose] def activeLeafUpdates {Val : Type} (alg : ValAlgebra Val)
     (target : BackTarget Val) (vNew : Val)
     (written : List (OwnerRef × SubPath)) (st : SymState Val) :
     Option (List Val × List Val) :=
@@ -1940,7 +1947,7 @@ choice whose taken arm is `x[0, 1]`): cleaning up the inactive leaf must see
 the permission state after the active leaf's write released `lid`, or it
 would find `lid`'s permission at the overlapping active path and reject the
 leaf. -/
-def writebackLeaves {Val : Type} (alg : ValAlgebra Val)
+@[expose] def writebackLeaves {Val : Type} (alg : ValAlgebra Val)
     (lid : LoanId) (target : BackTarget Val) (vNew : Val)
     (leaves : List (OwnerRef × SubPath)) (st : SymState Val) :
     Option (SymState Val) :=
@@ -1969,7 +1976,7 @@ loan or region group observes overlapping storage, and the owner holds `lid`
 at the path as a mutable loan only. Overlapping targets would be written in
 sequence, so a later write could copy a handle that an earlier one placed
 inside it, past the handle count, which reads every old value first. -/
-def writebackLensTargets {Val : Type} (alg : ValAlgebra Val)
+@[expose] def writebackLensTargets {Val : Type} (alg : ValAlgebra Val)
     (lid : LoanId) (targets : List (OwnerRef × SubPath)) (vals : List Val)
     (st : SymState Val) : Option (SymState Val) :=
   -- Handles may move between the written places, but not multiply.
@@ -2009,7 +2016,7 @@ holds `lid` as a shared loan only. An inactive leaf releases a shared
 permission for `lid` if present and rejects any other permission overlapping
 the path; leaves naming a missing local or an unmodifiable parent loan are
 handled without a modification (`inactiveParentLeafCleanup`). -/
-def releaseSharedLeavesPass {Val : Type} (alg : ValAlgebra Val)
+@[expose] def releaseSharedLeavesPass {Val : Type} (alg : ValAlgebra Val)
     (lid : LoanId) (activeLeaves : List (OwnerRef × SubPath))
     (wantActive : Bool) (leaves : List (OwnerRef × SubPath))
     (st : SymState Val) : Option (SymState Val) :=
@@ -2061,7 +2068,7 @@ def releaseSharedLeavesPass {Val : Type} (alg : ValAlgebra Val)
 leaves, then all inactive ones, for the same reason as `writebackLeaves`: the
 cleanup of an inactive leaf that overlaps an active one must see the
 permission that the active leaf released. -/
-def releaseSharedLeaves {Val : Type} (alg : ValAlgebra Val)
+@[expose] def releaseSharedLeaves {Val : Type} (alg : ValAlgebra Val)
     (lid : LoanId) (activeLeaves : List (OwnerRef × SubPath))
     (leaves : List (OwnerRef × SubPath)) (st : SymState Val) :
     Option (SymState Val) :=
@@ -2072,7 +2079,7 @@ def releaseSharedLeaves {Val : Type} (alg : ValAlgebra Val)
 
 /-- True iff no local slot in `st.locals` and no loan cell in `st.loans`
 retains any permission (mutable or shared, at any sub-path) for `lid`. -/
-def noResidualLoanPerm {Val : Type} (lid : LoanId)
+@[expose] def noResidualLoanPerm {Val : Type} (lid : LoanId)
     (st : SymState Val) : Bool :=
   let localsClean :=
     st.locals.foldr
@@ -2086,12 +2093,12 @@ def noResidualLoanPerm {Val : Type} (lid : LoanId)
 
 /-- True iff no local slot or loan cell in `st` retains any permission for any
 loan ID in `lids`. -/
-def noResidualLoanListPerm {Val : Type} (lids : List LoanId)
+@[expose] def noResidualLoanListPerm {Val : Type} (lids : List LoanId)
     (st : SymState Val) : Bool :=
   lids.foldr (fun lid ih => noResidualLoanPerm lid st && ih) true
 
 /-- True iff `targets` contains an edge targeting `.parentLoan lid`. -/
-def hasParentLoanEdge (lid : LoanId)
+@[expose] def hasParentLoanEdge (lid : LoanId)
     (targets : List (OwnerRef × SubPath)) : Bool :=
   targets.foldr
     (fun op ih => OwnerRef.beq op.1 (.parentLoan lid) || ih)
@@ -2102,7 +2109,7 @@ def hasParentLoanEdge (lid : LoanId)
 condition are ignored (`activeTargetLeaves`): the child's permission lives only
 in the selected owner, so it does not depend on `lid`. Both branches of a
 symbolic choice still count. -/
-def noActiveChildLoanEdgesIn {Val : Type} (alg : ValAlgebra Val)
+@[expose] def noActiveChildLoanEdgesIn {Val : Type} (alg : ValAlgebra Val)
     (lid : LoanId) (loans : List (LoanEntry Val)) : Bool :=
   loans.foldr
     (fun e ih =>
@@ -2120,7 +2127,7 @@ def noActiveChildLoanEdgesIn {Val : Type} (alg : ValAlgebra Val)
 /-- Conservative variant of `noActiveChildLoanEdgesIn` that counts every
 serialized leaf of each non-ended child's target, for callers without a value
 algebra. -/
-def noActiveChildLoanEdges {Val : Type} (lid : LoanId)
+@[expose] def noActiveChildLoanEdges {Val : Type} (lid : LoanId)
     (loans : List (LoanEntry Val)) : Bool :=
   loans.foldr
     (fun e ih =>
@@ -2136,7 +2143,7 @@ def noActiveChildLoanEdges {Val : Type} (lid : LoanId)
 
 /-- True iff no active region group in `rgs` has an input target edge to
 `.parentLoan lid`. -/
-def noActiveChildRegionEdges {Val : Type} (lid : LoanId)
+@[expose] def noActiveChildRegionEdges {Val : Type} (lid : LoanId)
     (rgs : List (RegionGroupEntry Val)) : Bool :=
   rgs.foldr
     (fun rg ih =>
@@ -2151,7 +2158,7 @@ def noActiveChildRegionEdges {Val : Type} (lid : LoanId)
 `noActiveChildLoanEdgesIn alg lid loans`), has no `.regionOut` or `.rootParam`
 target in an active branch (`activeTargetHasSpecial`, which also rejects a
 malformed target), and is currently active (`phase.isActive`). -/
-def deactivateLoan {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
+@[expose] def deactivateLoan {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
     (loans : List (LoanEntry Val)) :
     Option (LoanEntry Val × List (LoanEntry Val)) :=
   if !noActiveChildLoanEdgesIn alg lid loans then none
@@ -2182,7 +2189,7 @@ def deactivateLoan {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
 
 /-- End active loan `lid` and propagate its backward writeback through the loan
 graph, supporting `.direct`, `.lensCall`, and nested `.choice` targets. -/
-def endLoanInState {Val : Type} (alg : ValAlgebra Val)
+@[expose] def endLoanInState {Val : Type} (alg : ValAlgebra Val)
     (lid : LoanId) (st : SymState Val) : EvalOutcome (SymState Val) :=
   match st with
   | ⟨locals, loans, rgs, deps, sp, tag⟩ =>
@@ -2214,7 +2221,7 @@ def endLoanInState {Val : Type} (alg : ValAlgebra Val)
         | .ended => .fail
 
 /-- End a sequence of loans in order. -/
-def endLoansInState {Val : Type} (alg : ValAlgebra Val)
+@[expose] def endLoansInState {Val : Type} (alg : ValAlgebra Val)
     (lids : List LoanId) (st : SymState Val) : EvalOutcome (SymState Val) :=
   lids.foldr
     (fun lid ih st0 =>
@@ -2225,31 +2232,31 @@ def endLoansInState {Val : Type} (alg : ValAlgebra Val)
     st
 
 /-- Count occurrences of region group ID `gid` in `rgs`. -/
-def countRegionGroupId {Val : Type} (gid : RegionGroupId)
+@[expose] def countRegionGroupId {Val : Type} (gid : RegionGroupId)
     (rgs : List (RegionGroupEntry Val)) : Nat :=
   rgs.foldr (fun g ih => if g.groupId == gid then ih + 1 else ih) 0
 
 /-- True iff `gid` occurs exactly once in `rgs`. -/
-def hasUniqueRegionGroupId {Val : Type} (gid : RegionGroupId)
+@[expose] def hasUniqueRegionGroupId {Val : Type} (gid : RegionGroupId)
     (rgs : List (RegionGroupEntry Val)) : Bool :=
   countRegionGroupId gid rgs == 1
 
 /-- Look up region group `gid`. -/
-def findRegionGroup {Val : Type} (gid : RegionGroupId)
+@[expose] def findRegionGroup {Val : Type} (gid : RegionGroupId)
     (rgs : List (RegionGroupEntry Val)) : Option (RegionGroupEntry Val) :=
   rgs.foldr
     (fun g ih => if g.groupId == gid then some g else ih)
     none
 
 /-- Update region group `gid`. -/
-def updateRegionGroup {Val : Type} (gid : RegionGroupId)
+@[expose] def updateRegionGroup {Val : Type} (gid : RegionGroupId)
     (f : RegionGroupEntry Val → RegionGroupEntry Val)
     (rgs : List (RegionGroupEntry Val)) : List (RegionGroupEntry Val) :=
   rgs.foldr
     (fun g ih => if g.groupId == gid then f g :: ih else g :: ih)
     []
 
-def isRegionGroupEnded {Val : Type} (gid : RegionGroupId)
+@[expose] def isRegionGroupEnded {Val : Type} (gid : RegionGroupId)
     (rgs : List (RegionGroupEntry Val)) : Bool :=
   if !hasUniqueRegionGroupId gid rgs then false
   else
@@ -2257,7 +2264,7 @@ def isRegionGroupEnded {Val : Type} (gid : RegionGroupId)
     | some g => !g.active
     | none => false
 
-def allRequiredGroupsEnded {Val : Type} (rgs : List (RegionGroupEntry Val))
+@[expose] def allRequiredGroupsEnded {Val : Type} (rgs : List (RegionGroupEntry Val))
     (reqIds : List RegionGroupId) : Bool :=
   reqIds.foldr
     (fun gid ih => isRegionGroupEnded gid rgs && ih)
@@ -2268,7 +2275,7 @@ loan at position `expectedIdx` is unique in `st.loans`, is currently
 `.activeMut`, has no active child sub-borrows (`isUnborrowed e.cell.perm`,
 `noActiveChildLoanEdgesIn`, and `noActiveChildRegionEdges`), and has target
 `.regionOut gid expectedIdx`. -/
-def collectAndRetireOutputLoans {Val : Type} (alg : ValAlgebra Val)
+@[expose] def collectAndRetireOutputLoans {Val : Type} (alg : ValAlgebra Val)
     (gid : RegionGroupId) (expectedIdx : Nat) (outLids : List LoanId)
     (st : SymState Val) : Option (List Val × SymState Val) :=
   outLids.foldr
@@ -2299,7 +2306,7 @@ def collectAndRetireOutputLoans {Val : Type} (alg : ValAlgebra Val)
     (fun _ st0 => some ([], st0))
     expectedIdx st
 
-def releaseLoanListPermAtPath (lids : List LoanId) (path : SubPath)
+@[expose] def releaseLoanListPermAtPath (lids : List LoanId) (path : SubPath)
     (p : PermTree) : PermTree :=
   lids.foldr
     (fun lid ih p0 => ih (releaseLoanPermAtPath lid path p0))
@@ -2311,7 +2318,7 @@ permission flavor its phase in `loans` implies: an `.activeMut` loan must not
 appear as a shared permission, and an `.activeShared` loan must not appear as a
 mutable one. Region writeback releases every such loan at once, so a
 contradictory flavor must be rejected first. -/
-def releasedPermFlavorsMatch {Val : Type} (loans : List (LoanEntry Val))
+@[expose] def releasedPermFlavorsMatch {Val : Type} (loans : List (LoanEntry Val))
     (lids : List LoanId) (path : SubPath) (perm : PermTree) : Bool :=
   lids.all (fun l =>
     match findLoan l loans with
@@ -2335,7 +2342,7 @@ observes overlapping storage, the owner holds `lockLid` at the path as a
 mutable loan only, and every released loan appears there only in the flavor
 its phase implies (`releasedPermFlavorsMatch`, using `phaseLoans` when the
 output loans were already retired). -/
-def writebackRegionTargets {Val : Type} (alg : ValAlgebra Val)
+@[expose] def writebackRegionTargets {Val : Type} (alg : ValAlgebra Val)
     (lockLid : LoanId) (releaseLids : List LoanId)
     (targets : List (OwnerRef × SubPath)) (vals : List Val)
     (st : SymState Val)
@@ -2393,7 +2400,7 @@ remaining deposits. The values are ordered by their producer's position in
 order in which independent groups ended. A child listed twice contributes its
 deposits once. Taken deposits are consumed, so if several groups require the
 same child, only the first of them to end receives the child's deposits. -/
-def takeChildDeposits {Val : Type} (children : List RegionGroupId)
+@[expose] def takeChildDeposits {Val : Type} (children : List RegionGroupId)
     (deps : List (RegionGroupId × Val)) :
     List Val × List (RegionGroupId × Val) :=
   children.foldl
@@ -2411,7 +2418,7 @@ targets, and backward lens propagation across `inputTargets`. The backward
 function receives only the deposits of the group's `requiredChildren`
 (`takeChildDeposits`), which are consumed; its own deposits are tagged with
 `gid`. -/
-def endRegionGroupInState {Val : Type} (alg : ValAlgebra Val)
+@[expose] def endRegionGroupInState {Val : Type} (alg : ValAlgebra Val)
     (gid : RegionGroupId) (st : SymState Val) : EvalOutcome (SymState Val) :=
   if !hasUniqueRegionGroupId gid st.regionGroups then .fail
   else
@@ -2461,7 +2468,7 @@ def endRegionGroupInState {Val : Type} (alg : ValAlgebra Val)
                      tag⟩
 
 /-- End a list of region groups in order. -/
-def endRegionGroupsInState {Val : Type} (alg : ValAlgebra Val)
+@[expose] def endRegionGroupsInState {Val : Type} (alg : ValAlgebra Val)
     (gids : List RegionGroupId) (st : SymState Val) :
     EvalOutcome (SymState Val) :=
   gids.foldr
@@ -2474,19 +2481,19 @@ def endRegionGroupsInState {Val : Type} (alg : ValAlgebra Val)
 
 /-- Extract `some paramIdx` if `t` is a root parameter backward target
 (`.rootParam paramIdx`), or `none` otherwise. -/
-def rootParamIdxOpt {Val : Type} (t : BackTarget Val) : Option Nat :=
+@[expose] def rootParamIdxOpt {Val : Type} (t : BackTarget Val) : Option Nat :=
   match t.steps with
   | [.rootParam idx] => some idx
   | _ => none
 
 /-- True iff `t` is a root parameter backward target (`.rootParam paramIdx`). -/
-def isRootTarget {Val : Type} (t : BackTarget Val) : Bool :=
+@[expose] def isRootTarget {Val : Type} (t : BackTarget Val) : Bool :=
   match rootParamIdxOpt t with
   | some _ => true
   | none => false
 
 /-- Count how many entries in `loans` have backward target `.rootParam idx`. -/
-def countRootParamIdx {Val : Type} (idx : Nat)
+@[expose] def countRootParamIdx {Val : Type} (idx : Nat)
     (loans : List (LoanEntry Val)) : Nat :=
   loans.foldr
     (fun e ih =>
@@ -2497,7 +2504,7 @@ def countRootParamIdx {Val : Type} (idx : Nat)
 
 /-- Insert `(idx, val)` into an ascending-index-sorted list of `(paramIdx, Val)`
 pairs. -/
-def insertRootMutByIdx {Val : Type} (idx : Nat) (v : Val)
+@[expose] def insertRootMutByIdx {Val : Type} (idx : Nat) (v : Val)
     (sorted : List (Nat × Val)) : List (Nat × Val) :=
   sorted.foldr
     (fun (curIdx, curVal) ih =>
@@ -2513,7 +2520,7 @@ def insertRootMutByIdx {Val : Type} (idx : Nat) (v : Val)
 /-- True iff every loan ID in `loans` is unique, every root parameter loan in
 `loans` has a unique `.rootParam idx` index and is active with no active child
 borrows (`isUnborrowed e.cell.perm`), and every non-root loan has ended. -/
-def loansCleanAtReturn {Val : Type}
+@[expose] def loansCleanAtReturn {Val : Type}
     (loans : List (LoanEntry Val)) : Bool :=
   loans.foldr
     (fun e ih =>
@@ -2530,7 +2537,7 @@ def loansCleanAtReturn {Val : Type}
     true
 
 /-- True iff all region groups in `rgs` have ended (`!g.active`). -/
-def allRegionGroupsEnded {Val : Type}
+@[expose] def allRegionGroupsEnded {Val : Type}
     (rgs : List (RegionGroupEntry Val)) : Bool :=
   rgs.foldr
     (fun g ih => !g.active && ih)
@@ -2539,7 +2546,7 @@ def allRegionGroupsEnded {Val : Type}
 /-- True iff every region group in `rgs` has ended and no two share a
 `groupId`, checked in a single pass so the return predicate inspects
 `regionGroups` once. -/
-def allRegionGroupsEndedUnique {Val : Type}
+@[expose] def allRegionGroupsEndedUnique {Val : Type}
     (rgs : List (RegionGroupEntry Val)) : Bool :=
   (rgs.foldr
     (fun g (acc : Bool × List RegionGroupId) =>
@@ -2553,7 +2560,7 @@ loans have unique IDs, unique parameter indices, and no active child borrows,
 no spatial blocks remain pinned, no local or loan cell retains any borrow
 permission, and no region deposit is left unconsumed (a leftover deposit is a
 backward result that no parent group received). -/
-def stateCleanAtReturn {Val : Type} (st : SymState Val) : Bool :=
+@[expose] def stateCleanAtReturn {Val : Type} (st : SymState Val) : Bool :=
   loansCleanAtReturn st.loans &&
   allRegionGroupsEndedUnique st.regionGroups &&
   st.spatial.isEmpty &&
@@ -2566,7 +2573,7 @@ def stateCleanAtReturn {Val : Type} (st : SymState Val) : Bool :=
 
 /-- Collect the final values of all root `&mut` parameter loans sorted in
 ascending parameter index order (`.rootParam paramIdx`). -/
-def collectRootMutVals {Val : Type}
+@[expose] def collectRootMutVals {Val : Type}
     (loans : List (LoanEntry Val)) : List Val :=
   let sortedPairs : List (Nat × Val) :=
     loans.foldr
@@ -2580,7 +2587,7 @@ def collectRootMutVals {Val : Type}
 /-- Finalize function return from `st` with direct return value `retVal`,
 verifying `stateCleanAtReturn st` and `handleFreeOut alg` on
 `⟨retVal, collectRootMutVals st.loans⟩`. -/
-def finalizeRootReturn {Val : Type} (alg : ValAlgebra Val) (retVal : Val)
+@[expose] def finalizeRootReturn {Val : Type} (alg : ValAlgebra Val) (retVal : Val)
     (st : SymState Val) : EvalOutcome (FuncOut Val) :=
   if !stateCleanAtReturn st then .fail
   else
@@ -2629,7 +2636,7 @@ theorem loanGraph_locals_above_eight_no_aliasing :
 /-- Balanced `.choice` tree with 16 distinct leaves used to verify that
 `targetLeaves` and `dedupOwnerPaths` preserve all 16 leaves without
 truncation. -/
-def choiceTree16 : BackTarget LensTestVal :=
+@[expose] def choiceTree16 : BackTarget LensTestVal :=
   let c := LensTestVal.atom 1
   let pair (i : Nat) : BackTarget LensTestVal :=
     .choice c (.direct (.localReg (2 * i)) [])
@@ -4213,3 +4220,5 @@ theorem target_validation_and_clean_return_tests :
   ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 end Anneal.PureLift
+
+end

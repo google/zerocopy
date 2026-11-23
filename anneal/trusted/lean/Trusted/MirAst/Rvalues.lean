@@ -7,10 +7,13 @@
 -- those terms.
 
 -- anneal-trust-tier: candidate:mir_ast
+module
 prelude
-import Init.NotationExtra
-import Trusted.MirAst.Types
-import Trusted.MirAst.Places
+public import Init.NotationExtra
+public import Trusted.MirAst.Types
+public import Trusted.MirAst.Places
+
+@[expose] public section
 
 namespace Trusted.MirAst
 
@@ -212,3 +215,5 @@ inductive Rvalue where
   | unsupported
 
 end Trusted.MirAst
+
+end

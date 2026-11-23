@@ -7,13 +7,16 @@
 -- those terms.
 
 -- anneal-trust-tier: candidate:mir_semantics
+module
 prelude
-import Init.NotationExtra
-import Init.Data.Nat.Div.Basic
-import Init.Control.Except
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics.Layout
+public import Init.NotationExtra
+public import Init.Data.Nat.Div.Basic
+public import Init.Control.Except
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics.Layout
+
+@[expose] public section
 
 namespace Trusted.MirSemantics
 
@@ -259,3 +262,5 @@ noncomputable def writeUninit (m : MemoryState) (place : MemPlace)
   writeBytes m place alignLog2 (List.replicate size .uninit)
 
 end Trusted.MirSemantics
+
+end

@@ -6,13 +6,16 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.Data.List.Basic
-import Init.Data.Nat.Basic
-import Anneal.PureLift.Lens
-import Anneal.PureLift.PermTree
-import Anneal.PureLift.LoanGraph
+public import Init.Core
+public import Init.Data.List.Basic
+public import Init.Data.Nat.Basic
+public import Anneal.PureLift.Lens
+public import Anneal.PureLift.PermTree
+public import Anneal.PureLift.LoanGraph
+
+public section
 
 namespace Anneal.PureLift
 
@@ -41,7 +44,7 @@ reasoning for `unsafe` pointer/slice operations (`MaybeUninit` initialization,
 
 /-- Canonical single-cell value codec mapping `v` to `[.init v]` and rejecting
 `.uninit` or multi-cell slices upon reabsorption. -/
-def valueCellCodec {Val : Type} : SpatialCodec Val where
+@[expose] def valueCellCodec {Val : Type} : SpatialCodec Val where
   codecId := 0
   encode v := [.init v]
   decode cells :=
@@ -52,7 +55,7 @@ def valueCellCodec {Val : Type} : SpatialCodec Val where
 
 /-- Round-trip law for a `SpatialCodec` (guaranteed for every `c : SpatialCodec
 Val` by `c.decode_encode`). -/
-def LawfulCodec {Val : Type} (c : SpatialCodec Val) : Prop :=
+@[expose] def LawfulCodec {Val : Type} (c : SpatialCodec Val) : Prop :=
   ∀ v : Val, c.decode (c.encode v) = some v
 
 theorem valueCellCodec_lawful {Val : Type} :
@@ -60,13 +63,13 @@ theorem valueCellCodec_lawful {Val : Type} :
   (@valueCellCodec Val).decode_encode
 
 /-- Constructive separation-logic assertion over a spatial heaplet. -/
-def SpatialProp (Val : Type) : Type :=
+@[expose] def SpatialProp (Val : Type) : Type :=
   List (SpatialBlock Val) → Prop
 
-def spatialEmp {Val : Type} : SpatialProp Val :=
+@[expose] def spatialEmp {Val : Type} : SpatialProp Val :=
   fun blocks => blocks = []
 
-def spatialPointsTo {Val : Type} (bid : BlockId) (perm : SpatialPerm)
+@[expose] def spatialPointsTo {Val : Type} (bid : BlockId) (perm : SpatialPerm)
     (cells : List (CellVal Val)) : SpatialProp Val :=
   fun blocks =>
     match blocks with
@@ -79,17 +82,17 @@ def spatialPointsTo {Val : Type} (bid : BlockId) (perm : SpatialPerm)
 `blockId` or an `originLoan` with a block of the other: two blocks pinned from
 the same loan are two representations of one allocation (see
 `countBlocksForLoan`), so they must never be framed apart. -/
-def blocksDisjoint {Val : Type} (h1 h2 : List (SpatialBlock Val)) : Prop :=
+@[expose] def blocksDisjoint {Val : Type} (h1 h2 : List (SpatialBlock Val)) : Prop :=
   ∀ b1 b2, b1 ∈ h1 → b2 ∈ h2 →
     b1.blockId ≠ b2.blockId ∧ b1.originLoan ≠ b2.originLoan
 
-def spatialSepConj {Val : Type} (P Q : SpatialProp Val) : SpatialProp Val :=
+@[expose] def spatialSepConj {Val : Type} (P Q : SpatialProp Val) : SpatialProp Val :=
   fun blocks =>
     Exists fun h1 => Exists fun h2 =>
       blocks = h1 ++ h2 ∧ blocksDisjoint h1 h2 ∧ P h1 ∧ Q h2
 
 /-- Local Hoare triple over the spatial heaplet `List (SpatialBlock Val)`. -/
-def SpatialTriple {Val : Type} (Pre : SpatialProp Val)
+@[expose] def SpatialTriple {Val : Type} (Pre : SpatialProp Val)
     (cmd : List (SpatialBlock Val) → Option (List (SpatialBlock Val)))
     (Post : SpatialProp Val) : Prop :=
   ∀ h hFrame,
@@ -124,26 +127,26 @@ theorem spatial_frame_law {Val : Type} (Pre Post Frame : SpatialProp Val)
           ⟨h1', ⟨h2, ⟨rfl, ⟨hPost.2.1, ⟨hPost.2.2, hFr⟩⟩⟩⟩⟩⟩
 
 /-- Count occurrences of spatial block ID `bid` in `blocks`. -/
-def countSpatialBlockId {Val : Type} (bid : BlockId)
+@[expose] def countSpatialBlockId {Val : Type} (bid : BlockId)
     (blocks : List (SpatialBlock Val)) : Nat :=
   blocks.foldr (fun b ih => if b.blockId == bid then ih + 1 else ih) 0
 
 /-- True iff `blocks` already contains a `SpatialBlock` with `blockId == bid`.
 -/
-def hasSpatialBlockId {Val : Type} (bid : BlockId)
+@[expose] def hasSpatialBlockId {Val : Type} (bid : BlockId)
     (blocks : List (SpatialBlock Val)) : Bool :=
   countSpatialBlockId bid blocks != 0
 
 /-- Count spatial blocks in `blocks` whose `originLoan` is `lid`. A loan may
 own at most one spatial block, otherwise reabsorbing one block would leave a
 second mutable representation of the same allocation. -/
-def countBlocksForLoan {Val : Type} (lid : LoanId)
+@[expose] def countBlocksForLoan {Val : Type} (lid : LoanId)
     (blocks : List (SpatialBlock Val)) : Nat :=
   blocks.foldr (fun b n => if b.originLoan == lid then n + 1 else n) 0
 
 /-- Extract the pure `Val` payloads from all `.init` cells in `cells`,
 ignoring `.uninit` and `.rawByte` cells (which hold no `Val`). -/
-def initCellVals {Val : Type} (cells : List (CellVal Val)) : List Val :=
+@[expose] def initCellVals {Val : Type} (cells : List (CellVal Val)) : List Val :=
   cells.foldr
     (fun c acc =>
       match c with
@@ -155,7 +158,7 @@ def initCellVals {Val : Type} (cells : List (CellVal Val)) : List Val :=
 /-- Concatenate `f v` across all `.init` cell payloads in `cells` (returning
 `some []` definitionally for blocks of `.rawByte` / `.uninit` cells), or
 `none` if `f` returns `none` for any `.init` value. -/
-def collectInitCells {Val α : Type} (f : Val → Option (List α))
+@[expose] def collectInitCells {Val α : Type} (f : Val → Option (List α))
     (cells : List (CellVal Val)) : Option (List α) :=
   (initCellVals cells).foldr
     (fun v acc =>
@@ -168,7 +171,7 @@ def collectInitCells {Val α : Type} (f : Val → Option (List α))
 already held in `srcVal` (`replaceableVals`). Blocks without `.init` cells
 (such as `[.rawByte ...]`) carry no handles and return `true` definitionally
 (`rfl`) without inspecting `srcVal`. -/
-def cellsAccountedByVal {Val : Type} (alg : ValAlgebra Val)
+@[expose] def cellsAccountedByVal {Val : Type} (alg : ValAlgebra Val)
     (loans : List (LoanEntry Val)) (srcVal : Val)
     (cells : List (CellVal Val)) : Bool :=
   match initCellVals cells with
@@ -177,7 +180,7 @@ def cellsAccountedByVal {Val : Type} (alg : ValAlgebra Val)
 
 /-- Extract spatial block `bid` and the remaining blocks in a single pass,
 requiring `bid` to occur uniquely in `blocks`. -/
-def findSpatialBlock {Val : Type} (blocks : List (SpatialBlock Val))
+@[expose] def findSpatialBlock {Val : Type} (blocks : List (SpatialBlock Val))
     (bid : BlockId) : Option (SpatialBlock Val × List (SpatialBlock Val)) :=
   match
     blocks.foldr
@@ -201,7 +204,7 @@ def findSpatialBlock {Val : Type} (blocks : List (SpatialBlock Val))
 block ordering), checking uniqueness of `bid`, provenance tag `tag`,
 `.readWrite` permission, zero active sub-splits (`b.activeSubSplits == 0`), and
 size preservation (`newCells.length == b.cells.length`). -/
-def mutateSpatialBlockAt {Val : Type} (bid : BlockId) (tag : Nat)
+@[expose] def mutateSpatialBlockAt {Val : Type} (bid : BlockId) (tag : Nat)
     (newCells : List (CellVal Val)) (blocks : List (SpatialBlock Val)) :
     Option (List (SpatialBlock Val)) :=
   match
@@ -238,7 +241,7 @@ transitioning `lid`'s phase to `.spatialPinned bid codec` while preserving
 `lid`'s backward target. Rejects any encoding that produces `.uninit` cells,
 introduces handles into `.init` cells beyond `e.cell.val`
 (`cellsAccountedByVal`), or collides with `st.nextSpatialTag`. -/
-def freezeToSpatialInState {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
+@[expose] def freezeToSpatialInState {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
     (codec : SpatialCodec Val) (st : SymState Val) :
     EvalOutcome (SymState Val) :=
   if !hasUniqueLoanId lid st.loans then .fail
@@ -274,7 +277,7 @@ def freezeToSpatialInState {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
 tag, write permission, and cell-count preservation (`newCells.length ==
 blk.cells.length`). Leaves all pure loans in `st.loans` and the ordering of
 `st.spatial` unchanged. -/
-def mutateSpatialInState {Val : Type} (bid : BlockId) (tag : Nat)
+@[expose] def mutateSpatialInState {Val : Type} (bid : BlockId) (tag : Nat)
     (newCells : List (CellVal Val)) (st : SymState Val) :
     EvalOutcome (SymState Val) :=
   match st with
@@ -289,7 +292,7 @@ block containing `.uninit` cells (`hasUninitCell`), un-accounted `.init` cell
 handles (`cellsAccountedByVal`), fabricated decoded handles (`replaceableVal`),
 duplicate loan IDs, mismatched codec IDs, `.readOnly` spatial blocks, or
 unmerged spatial sub-splits. -/
-def reabsorbFromSpatialInState {Val : Type} (alg : ValAlgebra Val)
+@[expose] def reabsorbFromSpatialInState {Val : Type} (alg : ValAlgebra Val)
     (lid : LoanId) (codec : SpatialCodec Val) (st : SymState Val) :
     EvalOutcome (SymState Val) :=
   if !hasUniqueLoanId lid st.loans then .fail
@@ -338,7 +341,7 @@ def reabsorbFromSpatialInState {Val : Type} (alg : ValAlgebra Val)
 /-- Codec that satisfies `decode_encode` on initialized values, used to test
 that `reabsorbFromSpatialInState` still rejects `.uninit` cells even if a
 codec's `decode` function would accept `.uninit`. -/
-def permissiveUninitCodec : SpatialCodec LensTestVal where
+@[expose] def permissiveUninitCodec : SpatialCodec LensTestVal where
   codecId := 1
   encode v := [.init v]
   decode cells :=
@@ -353,7 +356,7 @@ a 2-cell header `[.rawByte 1, .init v]` while decoding `[.init v]` to `.atom
 777`), used to verify that `reabsorbFromSpatialInState` decodes using the
 original `pinnedCodec` bound in `LoanPhase.spatialPinned` rather than a forged
 codec with the same `codecId`. -/
-def collidingIdCodec : SpatialCodec LensTestVal where
+@[expose] def collidingIdCodec : SpatialCodec LensTestVal where
   codecId := 0
   encode v := [.rawByte 1, .init v]
   decode cells :=
@@ -767,3 +770,5 @@ theorem spatial_cell_handle_accounting_tests :
   ⟨rfl, rfl, rfl, ⟨rfl, rfl⟩, fun _ _ _ => ⟨rfl, rfl⟩⟩
 
 end Anneal.PureLift
+
+end

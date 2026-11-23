@@ -6,15 +6,18 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.SimpLemmas
-import Init.Data.Nat.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.Nat.Bitwise.Basic
-import Init.Data.Int.Basic
-import Init.Data.List.Basic
+public import Init.Core
+public import Init.NotationExtra
+public import Init.SimpLemmas
+public import Init.Data.Nat.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.Nat.Bitwise.Basic
+public import Init.Data.Int.Basic
+public import Init.Data.List.Basic
+
+public section
 
 /-!
 # Sparse Linear Arithmetic & Chvatal-Gomory Cut Certifier (`Anneal.LinearArith`)
@@ -53,17 +56,17 @@ namespace Anneal.LinearArith
 
 /-! ## 1. Constructive `Int` <-> Sign-Magnitude `Nat` Bridge (`IntBalance`) -/
 
-def intPos : Int → Nat
+@[expose] def intPos : Int → Nat
   | .ofNat n => n
   | .negSucc _ => 0
 
-def intNeg : Int → Nat
+@[expose] def intNeg : Int → Nat
   | .ofNat _ => 0
   | .negSucc m => m + 1
 
 /-- Relational representation relating `x : Int` to a `(p, n) : Nat × Nat`
 pair via `intPos x + n = intNeg x + p`. -/
-def IntBalance (x : Int) (p n : Nat) : Prop :=
+@[expose] def IntBalance (x : Int) (p n : Nat) : Prop :=
   intPos x + n = intNeg x + p
 
 theorem add_four_rearrange (a b c d : Nat) :
@@ -369,7 +372,7 @@ theorem int_le_of_not_succ_le (a b : Int)
 
 /-- Magnitude cap (`2^128`) bounding intermediate certificate scalars
 and RHS values in `stepCut`. -/
-def magCap128 : Nat := Nat.shiftLeft 1 128
+@[expose] def magCap128 : Nat := Nat.shiftLeft 1 128
 
 /-- Kernel-reducible sign-magnitude integer used for `IntLinExpr`
 constants and `SparseIneq` rows. -/
@@ -377,22 +380,22 @@ structure SInt where
   neg : Bool
   mag : Nat
 
-def SInt.zero : SInt := ⟨false, 0⟩
-def SInt.one : SInt := ⟨false, 1⟩
-def SInt.negOne : SInt := ⟨true, 1⟩
+@[expose] def SInt.zero : SInt := ⟨false, 0⟩
+@[expose] def SInt.one : SInt := ⟨false, 1⟩
+@[expose] def SInt.negOne : SInt := ⟨true, 1⟩
 
 /-- Interprets a sign-magnitude `SInt` as an `Int`. -/
-def SInt.toInt (s : SInt) : Int :=
+@[expose] def SInt.toInt (s : SInt) : Int :=
   match s.neg with
   | false => Int.ofNat s.mag
   | true => Int.negOfNat s.mag
 
-def SInt.posPart (s : SInt) : Nat :=
+@[expose] def SInt.posPart (s : SInt) : Nat :=
   match s.neg with
   | false => s.mag
   | true => 0
 
-def SInt.negPart (s : SInt) : Nat :=
+@[expose] def SInt.negPart (s : SInt) : Nat :=
   match s.neg with
   | false => 0
   | true => s.mag
@@ -411,7 +414,7 @@ theorem sint_intBalance (s : SInt) :
 
 /-- Normalizes a difference `p - n` of `Nat`s into a sign-magnitude
 `SInt`. -/
-def SInt.ofPN (p n : Nat) : SInt :=
+@[expose] def SInt.ofPN (p n : Nat) : SInt :=
   match Nat.ble n p with
   | true => ⟨false, p - n⟩
   | false => ⟨true, n - p⟩
@@ -435,7 +438,7 @@ theorem sint_ofPN_balance (p n : Nat) :
           rw [Nat.zero_add, Nat.add_comm p (n - p), Nat.sub_add_cancel hLe])
 
 /-- Arithmetic negation on `SInt`, normalizing `-0` to `SInt.zero`. -/
-def SInt.negate (s : SInt) : SInt :=
+@[expose] def SInt.negate (s : SInt) : SInt :=
   match Nat.beq s.mag 0 with
   | true => SInt.zero
   | false => ⟨!s.neg, s.mag⟩
@@ -465,7 +468,7 @@ theorem sint_negate_balance (s : SInt) :
       exact intBalance_ofNat s.mag
 
 /-- Addition on `SInt` via `SInt.ofPN` cancellation. -/
-def SInt.add (a b : SInt) : SInt :=
+@[expose] def SInt.add (a b : SInt) : SInt :=
   SInt.ofPN (a.posPart + b.posPart) (a.negPart + b.negPart)
 
 theorem sint_add_balance (a b : SInt) :
@@ -479,11 +482,11 @@ theorem sint_add_toInt (a b : SInt) :
     (intBalance_add (sint_intBalance a) (sint_intBalance b))
 
 /-- Subtraction `a - b` on `SInt`. -/
-def SInt.sub (a b : SInt) : SInt :=
+@[expose] def SInt.sub (a b : SInt) : SInt :=
   SInt.add a (SInt.negate b)
 
 /-- Multiplies `s : SInt` by a nonnegative scalar `k : Nat`. -/
-def SInt.scaleNat (k : Nat) (s : SInt) : SInt :=
+@[expose] def SInt.scaleNat (k : Nat) (s : SInt) : SInt :=
   match Nat.beq k 0 with
   | true => SInt.zero
   | false =>
@@ -529,14 +532,14 @@ theorem sint_scaleNat_toInt (k : Nat) (s : SInt) :
         exact intBalance_eq_of_eq (intBalance_negOfNat (k * s.mag))
           (intBalance_mul_nat k (intBalance_negOfNat s.mag))
 
-def boolXor (a b : Bool) : Bool :=
+@[expose] def boolXor (a b : Bool) : Bool :=
   match a, b with
   | false, false => false
   | true, true => false
   | _, _ => true
 
 /-- Multiplication on `SInt`. -/
-def SInt.mul (a b : SInt) : SInt :=
+@[expose] def SInt.mul (a b : SInt) : SInt :=
   match Nat.beq a.mag 0 || Nat.beq b.mag 0 with
   | true => SInt.zero
   | false => ⟨boolXor a.neg b.neg, a.mag * b.mag⟩
@@ -602,21 +605,21 @@ theorem sint_mul_toInt (a b : SInt) :
                      Nat.zero_add] at hProd
           exact intBalance_eq_of_eq (intBalance_ofNat (a.mag * b.mag)) hProd
 
-def SInt.isZero (s : SInt) : Bool := Nat.beq s.mag 0
+@[expose] def SInt.isZero (s : SInt) : Bool := Nat.beq s.mag 0
 
-def SInt.isStrictlyNeg (s : SInt) : Bool :=
+@[expose] def SInt.isStrictlyNeg (s : SInt) : Bool :=
   s.neg && Nat.ble 1 s.mag
 
-def SInt.withinCap (s : SInt) : Bool := Nat.ble s.mag magCap128
+@[expose] def SInt.withinCap (s : SInt) : Bool := Nat.ble s.mag magCap128
 
 /-- Divides `s.mag` by `g` while preserving `s.neg` (sound when `g`
 divides `s.mag` and `0 < g`). -/
-def SInt.divExact (g : Nat) (s : SInt) : SInt :=
+@[expose] def SInt.divExact (g : Nat) (s : SInt) : SInt :=
   ⟨s.neg, Nat.div s.mag g⟩
 
 /-- Integer floor division on `SInt` for `0 < g`, rounding negative
 values toward negative infinity. -/
-def SInt.fdiv (s : SInt) (g : Nat) : SInt :=
+@[expose] def SInt.fdiv (s : SInt) (g : Nat) : SInt :=
   match s.neg with
   | false => ⟨false, Nat.div s.mag g⟩
   | true =>
@@ -756,17 +759,17 @@ theorem chvatal_gomory_floor_sound {g : Nat} {lhs : Int} {rhs : SInt}
 
 /-! ## 3. Surface `Int` & `Nat` ASTs and Sparse Cut Certifier -/
 
-noncomputable def listGet? {α : Type} : List α → Nat → Option α
+@[expose] noncomputable def listGet? {α : Type} : List α → Nat → Option α
   | [], _ => none
   | x :: _, 0 => some x
   | _ :: xs, i + 1 => listGet? xs i
 
-noncomputable def envLookupInt (env : List Int) (idx : Nat) : Int :=
+@[expose] noncomputable def envLookupInt (env : List Int) (idx : Nat) : Int :=
   match listGet? env idx with
   | some v => v
   | none => 0
 
-noncomputable def envLookupNat (env : List Nat) (idx : Nat) : Nat :=
+@[expose] noncomputable def envLookupNat (env : List Nat) (idx : Nat) : Nat :=
   match listGet? env idx with
   | some v => v
   | none => 0
@@ -782,7 +785,7 @@ inductive IntLinExpr where
   | mulC (k : SInt) (a : IntLinExpr)
 
 /-- Evaluates an `IntLinExpr` under variable environment `env`. -/
-noncomputable def IntLinExpr.eval (env : List Int) : IntLinExpr → Int
+@[expose] noncomputable def IntLinExpr.eval (env : List Int) : IntLinExpr → Int
   | .cst c => c.toInt
   | .var idx => envLookupInt env idx
   | .add a b => Int.add (a.eval env) (b.eval env)
@@ -796,12 +799,12 @@ structure IntCutIneq where
   rhs : IntLinExpr
 
 /-- Truth predicate `iq.lhs.eval env ≤ iq.rhs.eval env`. -/
-def IntCutIneq.holds (env : List Int) (iq : IntCutIneq) : Prop :=
+@[expose] def IntCutIneq.holds (env : List Int) (iq : IntCutIneq) : Prop :=
   iq.lhs.eval env ≤ iq.rhs.eval env
 
 /-- Curried implication chain over hypothesis list `xs` ending in
 `post`. -/
-def HypsImp {α : Type} (holds : α → Prop) (xs : List α) (post : Prop) : Prop :=
+@[expose] def HypsImp {α : Type} (holds : α → Prop) (xs : List α) (post : Prop) : Prop :=
   List.foldr (fun h acc => holds h → acc) post xs
 
 /-- Surface `Int` linear entailment goal (`hyps ⊢ concl`). -/
@@ -810,7 +813,7 @@ structure IntCutGoal where
   concl : IntCutIneq
 
 /-- Universally quantified semantic proposition denoted by `g`. -/
-def IntCutGoal.denote (g : IntCutGoal) : Prop :=
+@[expose] def IntCutGoal.denote (g : IntCutGoal) : Prop :=
   ∀ env : List Int, HypsImp (IntCutIneq.holds env) g.hyps (g.concl.holds env)
 
 /-- Deeply embedded natural-number linear arithmetic expression over
@@ -822,14 +825,14 @@ inductive NatLinExpr where
   | mulC (k : Nat) (a : NatLinExpr)
 
 /-- Evaluates a `NatLinExpr` under variable environment `env`. -/
-noncomputable def NatLinExpr.eval (env : List Nat) : NatLinExpr → Nat
+@[expose] noncomputable def NatLinExpr.eval (env : List Nat) : NatLinExpr → Nat
   | .cst n => n
   | .var idx => envLookupNat env idx
   | .add a b => a.eval env + b.eval env
   | .mulC k a => k * a.eval env
 
 /-- Embeds a `NatLinExpr` into `IntLinExpr` with nonnegative scalars. -/
-noncomputable def NatLinExpr.toIntExpr : NatLinExpr → IntLinExpr
+@[expose] noncomputable def NatLinExpr.toIntExpr : NatLinExpr → IntLinExpr
   | .cst n => .cst ⟨false, n⟩
   | .var idx => .var idx
   | .add a b => .add a.toIntExpr b.toIntExpr
@@ -865,10 +868,10 @@ structure NatCutIneq where
   rhs : NatLinExpr
 
 /-- Truth predicate `iq.lhs.eval env ≤ iq.rhs.eval env`. -/
-def NatCutIneq.holds (env : List Nat) (iq : NatCutIneq) : Prop :=
+@[expose] def NatCutIneq.holds (env : List Nat) (iq : NatCutIneq) : Prop :=
   iq.lhs.eval env ≤ iq.rhs.eval env
 
-noncomputable def NatCutIneq.toIntIneq (iq : NatCutIneq) : IntCutIneq :=
+@[expose] noncomputable def NatCutIneq.toIntIneq (iq : NatCutIneq) : IntCutIneq :=
   ⟨iq.lhs.toIntExpr, iq.rhs.toIntExpr⟩
 
 /-- Surface `Nat` linear entailment goal (`hyps ⊢ concl`). -/
@@ -877,7 +880,7 @@ structure NatCutGoal where
   concl : NatCutIneq
 
 /-- Universally quantified semantic proposition denoted by `g`. -/
-def NatCutGoal.denote (g : NatCutGoal) : Prop :=
+@[expose] def NatCutGoal.denote (g : NatCutGoal) : Prop :=
   ∀ env : List Nat, HypsImp (NatCutIneq.holds env) g.hyps (g.concl.holds env)
 
 /-- Sparse linear inequality `evalTerms env terms ≤ rhs.toInt`. Builders such
@@ -889,16 +892,16 @@ structure SparseIneq where
 
 /-- Evaluates a sparse linear term list against variable environment
 `env`. -/
-noncomputable def evalTerms (env : List Int) : List (Nat × SInt) → Int
+@[expose] noncomputable def evalTerms (env : List Int) : List (Nat × SInt) → Int
   | [] => 0
   | (v, c) :: rest =>
     Int.add (Int.mul c.toInt (envLookupInt env v)) (evalTerms env rest)
 
 /-- Truth predicate for a canonical `SparseIneq` under `env`. -/
-def SparseIneq.holds (env : List Int) (row : SparseIneq) : Prop :=
+@[expose] def SparseIneq.holds (env : List Int) (row : SparseIneq) : Prop :=
   evalTerms env row.terms ≤ row.rhs.toInt
 
-noncomputable def addTermsAux (v1 : Nat) (c1 : SInt) (tail1 : List (Nat × SInt))
+@[expose] noncomputable def addTermsAux (v1 : Nat) (c1 : SInt) (tail1 : List (Nat × SInt))
     (rec1 : List (Nat × SInt) → List (Nat × SInt)) :
     List (Nat × SInt) → List (Nat × SInt)
   | [] => (v1, c1) :: tail1
@@ -916,7 +919,7 @@ noncomputable def addTermsAux (v1 : Nat) (c1 : SInt) (tail1 : List (Nat × SInt)
 
 /-- Merges two sorted sparse term lists, summing matching variables and
 dropping zero-sum coefficients. -/
-noncomputable def addTerms :
+@[expose] noncomputable def addTerms :
     List (Nat × SInt) → List (Nat × SInt) → List (Nat × SInt)
   | [] => fun t2 => t2
   | (v1, c1) :: rest1 => addTermsAux v1 c1 rest1 (addTerms rest1)
@@ -1091,7 +1094,7 @@ theorem evalTerms_add (env : List Int) :
     exact evalTerms_addAux env v1 c1 rest1 (addTerms rest1)
       (evalTerms_add env rest1) t2
 
-noncomputable def scaleTermsNat (k : Nat) :
+@[expose] noncomputable def scaleTermsNat (k : Nat) :
     List (Nat × SInt) → List (Nat × SInt)
   | [] => []
   | (v, c) :: rest =>
@@ -1100,7 +1103,7 @@ noncomputable def scaleTermsNat (k : Nat) :
     | true => scaleTermsNat k rest
     | false => (v, scaled) :: scaleTermsNat k rest
 
-noncomputable def scaleTermsSInt (k : SInt) :
+@[expose] noncomputable def scaleTermsSInt (k : SInt) :
     List (Nat × SInt) → List (Nat × SInt)
   | [] => []
   | (v, c) :: rest =>
@@ -1152,7 +1155,7 @@ theorem evalTerms_scaleSInt (env : List Int) (k : SInt) :
           sint_mul_toInt]
 
 /-- Normalizes an `IntLinExpr` into `(terms, constant)` sparse form. -/
-noncomputable def normIntLinExpr : IntLinExpr → List (Nat × SInt) × SInt
+@[expose] noncomputable def normIntLinExpr : IntLinExpr → List (Nat × SInt) × SInt
   | .cst c => ([], c)
   | .var idx => ([(idx, SInt.one)], SInt.zero)
   | .add a b =>
@@ -1251,7 +1254,7 @@ theorem normIntLinExpr_sound (env : List Int) :
         normIntLinExpr_sound env a]
 
 /-- Normalizes `lhs ≤ rhs` into canonical sparse form `(lhs - rhs) ≤ 0`. -/
-noncomputable def ineqToSparse (iq : IntCutIneq) : SparseIneq :=
+@[expose] noncomputable def ineqToSparse (iq : IntCutIneq) : SparseIneq :=
   let n := normIntLinExpr (.sub iq.lhs iq.rhs)
   ⟨n.1, SInt.negate n.2⟩
 
@@ -1300,11 +1303,11 @@ inductive CutStep where
   | comb   (s1 : Nat) (k1 : Nat) (s2 : Nat) (k2 : Nat)
   | divCut (g : Nat) (s : Nat)
 
-noncomputable def allDivisible (g : Nat) : List (Nat × SInt) → Bool
+@[expose] noncomputable def allDivisible (g : Nat) : List (Nat × SInt) → Bool
   | [] => true
   | (_, c) :: rest => Nat.beq (Nat.mod c.mag g) 0 && allDivisible g rest
 
-noncomputable def divTerms (g : Nat) :
+@[expose] noncomputable def divTerms (g : Nat) :
     List (Nat × SInt) → List (Nat × SInt)
   | [] => []
   | (v, c) :: rest =>
@@ -1348,17 +1351,17 @@ theorem evalTerms_divTerms (env : List Int) (g : Nat) (hg : 0 < g) :
 
 /-- Checks that every coefficient in a sparse term list is within
 `magCap128`. -/
-noncomputable def termsWithinCap : List (Nat × SInt) → Bool
+@[expose] noncomputable def termsWithinCap : List (Nat × SInt) → Bool
   | [] => true
   | (_, c) :: rest => c.withinCap && termsWithinCap rest
 
 /-- Checks that both the RHS and every term coefficient in a sparse row are
 within `magCap128`. -/
-noncomputable def rowWithinCap (r : SparseIneq) : Bool :=
+@[expose] noncomputable def rowWithinCap (r : SparseIneq) : Bool :=
   r.rhs.withinCap && termsWithinCap r.terms
 
 /-- Checks that every `SparseIneq` in a list satisfies `rowWithinCap`. -/
-noncomputable def rowsWithinCap : List SparseIneq → Bool
+@[expose] noncomputable def rowsWithinCap : List SparseIneq → Bool
   | [] => true
   | r :: rest => rowWithinCap r && rowsWithinCap rest
 
@@ -1369,18 +1372,18 @@ structure DerivedRows where
   revRows : List SparseIneq
   len : Nat
 
-def DerivedRows.empty : DerivedRows := ⟨[], 0⟩
+@[expose] def DerivedRows.empty : DerivedRows := ⟨[], 0⟩
 
-def DerivedRows.push (d : DerivedRows) (r : SparseIneq) : DerivedRows :=
+@[expose] def DerivedRows.push (d : DerivedRows) (r : SparseIneq) : DerivedRows :=
   ⟨r :: d.revRows, d.len + 1⟩
 
-noncomputable def DerivedRows.get? (d : DerivedRows) (idx : Nat) :
+@[expose] noncomputable def DerivedRows.get? (d : DerivedRows) (idx : Nat) :
     Option SparseIneq :=
   match Nat.blt idx d.len with
   | false => none
   | true => listGet? d.revRows (d.len - 1 - idx)
 
-def DerivedRows.last? (d : DerivedRows) : Option SparseIneq :=
+@[expose] def DerivedRows.last? (d : DerivedRows) : Option SparseIneq :=
   match d.revRows with
   | [] => none
   | r :: _ => some r
@@ -1388,7 +1391,7 @@ def DerivedRows.last? (d : DerivedRows) : Option SparseIneq :=
 /-- Executes one `CutStep` against `hyps` and previously derived rows,
 failing closed (`none`) on out-of-bounds indices, cap overflow on input or
 output rows, or non-divisible coefficients. -/
-noncomputable def stepCut (hyps : List SparseIneq) (derived : DerivedRows) :
+@[expose] noncomputable def stepCut (hyps : List SparseIneq) (derived : DerivedRows) :
     CutStep → Option SparseIneq
   | .hyp idx =>
     match listGet? hyps idx with
@@ -1435,7 +1438,7 @@ noncomputable def stepCut (hyps : List SparseIneq) (derived : DerivedRows) :
             | false => none
 
 /-- Universal predicate asserting every `SparseIneq` in `rows` holds. -/
-def AllHolds (env : List Int) (rows : List SparseIneq) : Prop :=
+@[expose] def AllHolds (env : List Int) (rows : List SparseIneq) : Prop :=
   ∀ r : SparseIneq, r ∈ rows → r.holds env
 
 theorem allHolds_listGet {env : List Int} {rows : List SparseIneq}
@@ -1608,7 +1611,7 @@ theorem stepCut_sound {env : List Int} {hyps : List SparseIneq}
               rw [← evalTerms_divTerms env g hgPos row.terms hDiv] at hRow
               exact chvatal_gomory_floor_sound hgPos hRow
 
-noncomputable def runCutStepsAux (hyps : List SparseIneq) :
+@[expose] noncomputable def runCutStepsAux (hyps : List SparseIneq) :
     List CutStep → DerivedRows → Option DerivedRows
   | [], acc => some acc
   | st :: rest, acc =>
@@ -1646,7 +1649,7 @@ theorem runCutStepsAux_sound {env : List Int} {hyps : List SparseIneq}
 
 /-- Runs `steps` and checks that the last derived row has empty terms and
 strictly negative `rhs`, witnessing `0 ≤ rhs < 0`. -/
-noncomputable def checkCutRefute (hyps : List SparseIneq)
+@[expose] noncomputable def checkCutRefute (hyps : List SparseIneq)
     (steps : List CutStep) : Bool :=
   match rowsWithinCap hyps with
   | false => false
@@ -1711,7 +1714,7 @@ theorem checkCutRefute_sound {env : List Int} {hyps : List SparseIneq}
 
 /-- Bool checker verifying an `IntCutGoal` by refuting
 `g.hyps ++ [g.concl.rhs + 1 ≤ g.concl.lhs]` via `steps`. -/
-noncomputable def checkIntCutGoal (g : IntCutGoal) (steps : List CutStep) :
+@[expose] noncomputable def checkIntCutGoal (g : IntCutGoal) (steps : List CutStep) :
     Bool :=
   let negConcl : IntCutIneq := ⟨.add g.concl.rhs (.cst SInt.one), g.concl.lhs⟩
   let allSparse := (g.hyps ++ [negConcl]).map ineqToSparse
@@ -1766,7 +1769,7 @@ theorem checkIntCutGoal_sound (g : IntCutGoal) (steps : List CutStep)
     | tail _ hNil => nomatch hNil
 
 /-- Inserts `v` into a list of variable indices if not already present. -/
-noncomputable def insertNatDedup (v : Nat) : List Nat → List Nat
+@[expose] noncomputable def insertNatDedup (v : Nat) : List Nat → List Nat
   | [] => [v]
   | x :: xs =>
     match Nat.beq v x with
@@ -1774,40 +1777,40 @@ noncomputable def insertNatDedup (v : Nat) : List Nat → List Nat
     | false => x :: insertNatDedup v xs
 
 /-- Collects deduplicated variable indices appearing in `NatLinExpr`. -/
-noncomputable def natLinExprVars : NatLinExpr → List Nat → List Nat
+@[expose] noncomputable def natLinExprVars : NatLinExpr → List Nat → List Nat
   | .cst _, acc => acc
   | .var idx, acc => insertNatDedup idx acc
   | .add a b, acc => natLinExprVars b (natLinExprVars a acc)
   | .mulC _ a, acc => natLinExprVars a acc
 
 /-- Collects deduplicated variable indices appearing in a `NatCutIneq`. -/
-noncomputable def natIneqVars (iq : NatCutIneq) (acc : List Nat) : List Nat :=
+@[expose] noncomputable def natIneqVars (iq : NatCutIneq) (acc : List Nat) : List Nat :=
   natLinExprVars iq.rhs (natLinExprVars iq.lhs acc)
 
 /-- Collects deduplicated variable indices across a list of `NatCutIneq`s. -/
-noncomputable def natIneqListVars : List NatCutIneq → List Nat → List Nat
+@[expose] noncomputable def natIneqListVars : List NatCutIneq → List Nat → List Nat
   | [], acc => acc
   | iq :: rest, acc => natIneqListVars rest (natIneqVars iq acc)
 
 /-- Collects all distinct variable indices referenced in `g : NatCutGoal`
 across `g.hyps` and `g.concl`. -/
-noncomputable def natGoalVars (g : NatCutGoal) : List Nat :=
+@[expose] noncomputable def natGoalVars (g : NatCutGoal) : List Nat :=
   natIneqVars g.concl (natIneqListVars g.hyps [])
 
 /-- Integer inequality asserting nonnegativity `0 ≤ var v`. -/
-def natNonnegIntIneq (v : Nat) : IntCutIneq :=
+@[expose] def natNonnegIntIneq (v : Nat) : IntCutIneq :=
   ⟨.cst SInt.zero, .var v⟩
 
 /-- Embeds a `NatCutGoal` into an `IntCutGoal`, preserving user hypothesis
 indices `0 .. g.hyps.length - 1` and appending `0 ≤ var v` for every variable
 in `natGoalVars g`. -/
-noncomputable def natCutGoalToInt (g : NatCutGoal) : IntCutGoal :=
+@[expose] noncomputable def natCutGoalToInt (g : NatCutGoal) : IntCutGoal :=
   ⟨g.hyps.map NatCutIneq.toIntIneq ++ (natGoalVars g).map natNonnegIntIneq,
    g.concl.toIntIneq⟩
 
 /-- Bool checker verifying a `NatCutGoal` by embedding it into
 `IntCutGoal` via `natCutGoalToInt` and running `checkIntCutGoal`. -/
-noncomputable def checkNatCutGoal (g : NatCutGoal) (steps : List CutStep) :
+@[expose] noncomputable def checkNatCutGoal (g : NatCutGoal) (steps : List CutStep) :
     Bool :=
   checkIntCutGoal (natCutGoalToInt g) steps
 
@@ -1894,14 +1897,14 @@ Even though `CutStep.divCut` can simplify the hypothesis, this goal is already
 refutable over rationals by Farkas combination alone (`.hyp 0` is the user
 hypothesis, `.hyp 1` and `.hyp 2` are auto-generated `0 ≤ i` and `0 ≤ n`, and
 `.hyp 3` is the negated conclusion `n + 1 ≤ i + 1`). -/
-def parityStrideGoal : NatCutGoal :=
+@[expose] def parityStrideGoal : NatCutGoal :=
   let i := NatLinExpr.var 0
   let n := NatLinExpr.var 1
   { hyps := [⟨.add (.mulC 2 i) (.cst 1), .mulC 2 n⟩]
     concl := ⟨.add i (.cst 1), n⟩ }
 
 /-- Cut-free three-step Farkas certificate discharging `parityStrideGoal`. -/
-def parityStrideFarkasCert : List CutStep :=
+@[expose] def parityStrideFarkasCert : List CutStep :=
   [ .hyp 0
   , .hyp 3
   , .comb 0 1 1 2
@@ -1909,7 +1912,7 @@ def parityStrideFarkasCert : List CutStep :=
 
 /-- Four-step `CutStep` certificate applying `CutStep.divCut 2 0` before
 combining rows to prove `parityStrideGoal`. -/
-def parityStrideCert : List CutStep :=
+@[expose] def parityStrideCert : List CutStep :=
   [ .hyp 0
   , .divCut 2 0
   , .hyp 3
@@ -1929,7 +1932,7 @@ theorem parity_stride_cut_cert_ok :
 
 /-- Hypothesis-free `Nat` nonnegativity goal `⊢ 0 ≤ var 0`, discharged using
 the auto-generated `0 ≤ var 0` constraint at `.hyp 0`. -/
-def natVarNonnegGoal : NatCutGoal :=
+@[expose] def natVarNonnegGoal : NatCutGoal :=
   { hyps := []
     concl := ⟨.cst 0, .var 0⟩ }
 
@@ -1993,7 +1996,7 @@ theorem derived_rows_reverse_index_ok :
 /-- True parity-gap canary goal encoding `2 * i ≤ 2 * n + 1` and
 `2 * n + 1 ≤ 2 * i` implying `1 ≤ 0`. Satisfiable over rationals at
 `i = n + 1/2`, so cut-free Farkas combinations cannot derive `0 ≤ -1`. -/
-def parityCutReqGoal : NatCutGoal :=
+@[expose] def parityCutReqGoal : NatCutGoal :=
   let i := NatLinExpr.var 0
   let n := NatLinExpr.var 1
   { hyps :=
@@ -2004,7 +2007,7 @@ def parityCutReqGoal : NatCutGoal :=
 /-- Five-step Chvatal-Gomory certificate applying `CutStep.divCut 2` to both
 parity bounds (`2i - 2n ≤ 1 → i - n ≤ 0` and `-2i + 2n ≤ -1 → -i + n ≤ -1`)
 before summing to `0 ≤ -1`. -/
-def parityCutReqCert : List CutStep :=
+@[expose] def parityCutReqCert : List CutStep :=
   [ .hyp 0
   , .divCut 2 0
   , .hyp 1
@@ -2028,7 +2031,7 @@ theorem parity_cut_req_without_cut_fails :
 
 /-- `IntCutGoal` canary exercising `IntLinExpr` constructors `.sub`, `.neg`,
 and negative `.mulC` (`(-2) * x - y ≤ 5 → -3 ≤ -y → -4 ≤ x`). -/
-def intSubNegMulGoal : IntCutGoal :=
+@[expose] def intSubNegMulGoal : IntCutGoal :=
   let x := IntLinExpr.var 0
   let y := IntLinExpr.var 1
   { hyps :=
@@ -2037,7 +2040,7 @@ def intSubNegMulGoal : IntCutGoal :=
     concl := ⟨.cst ⟨true, 4⟩, x⟩ }
 
 /-- Five-step certificate discharging `intSubNegMulGoal`. -/
-def intSubNegMulCert : List CutStep :=
+@[expose] def intSubNegMulCert : List CutStep :=
   [ .hyp 0
   , .hyp 1
   , .comb 0 1 1 1
@@ -2054,3 +2057,5 @@ theorem int_sub_neg_mul_lower_bound (x y : Int)
   checkIntCutGoal_sound intSubNegMulGoal intSubNegMulCert rfl [x, y] h1 h2
 
 end Anneal.LinearArith
+
+end

@@ -193,6 +193,9 @@ pub struct PreflightHeader {
     pub module: String,
     /// Lists the module's header imports in source order.
     pub imports: Vec<ImportEdge>,
+    /// Indicates whether the source declares a Lean 4 `module` header.
+    #[serde(default)]
+    pub is_module: bool,
     /// Holds a `Trusted` module's `-- anneal-trust-tier:` value in
     /// `"preflight"` mode; `"headers"` mode never reports a tier.
     #[serde(default)]

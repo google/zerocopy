@@ -6,22 +6,25 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Int.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.Nat.Bitwise.Basic
-import Init.Data.List.Basic
-import Init.SimpLemmas
-import Init.Control.Except
-import Trusted
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics
-import Anneal.MirWp
-import Anneal.MirTotal.StepCore
+public import Init.Core
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Int.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.Nat.Bitwise.Basic
+public import Init.Data.List.Basic
+public import Init.SimpLemmas
+public import Init.Control.Except
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics
+public import Anneal.MirWp
+public import Anneal.MirTotal.StepCore
+
+public section
 
 namespace Anneal.MirTotal
 
@@ -40,7 +43,7 @@ zero local-type-support or type-depth side conditions.
 
 /-- Unbounded-depth single-step MIR evaluator instantiating `evalMirStepBy` at
 `Trusted.MirAst.MirTy.beq`. -/
-noncomputable def evalMirStepTotal (p : Program) (c : Choice) (s : State) :
+@[expose] noncomputable def evalMirStepTotal (p : Program) (c : Choice) (s : State) :
     StepResult State TerminalOut :=
   evalMirStepBy MirTy.beq p c s
 
@@ -52,7 +55,7 @@ theorem evalMirStepTotal_eq_evalStep (p : Program) (c : Choice) (s : State) :
 
 /-- Unbounded-depth fuel-bounded MIR evaluator instantiating `evalMirFuelBy` at
 `Trusted.MirAst.MirTy.beq`. -/
-noncomputable def evalMirFuelTotal (p : Program) (fuel : Nat) (s : State) :
+@[expose] noncomputable def evalMirFuelTotal (p : Program) (fuel : Nat) (s : State) :
     StepResult State TerminalOut :=
   evalMirFuelBy MirTy.beq p fuel s
 
@@ -88,7 +91,7 @@ theorem wpFaultState_of_evalMirFuelTotal {p : Program} {fuel : Nat} {s : State}
   rw [hRun]
 
 /-- Unbounded-depth mirror of `Trusted.MirSemantics.checkArgsMatch`. -/
-noncomputable def checkArgsMatchTotal (vs : List Val) (tys : List MirTy) :
+@[expose] noncomputable def checkArgsMatchTotal (vs : List Val) (tys : List MirTy) :
     Bool :=
   checkArgsMatchBy MirTy.beq vs tys
 
@@ -98,7 +101,7 @@ theorem checkArgsMatchTotal_eq (vs : List Val) (tys : List MirTy) :
   checkArgsMatchBy_eq MirTy.beq (fun _ _ => rfl) vs tys
 
 /-- Unbounded-depth mirror of `Trusted.MirSemantics.BodyStaticAdmitted`. -/
-noncomputable def bodyStaticAdmittedTotal (p : Program) (body : Body) : Bool :=
+@[expose] noncomputable def bodyStaticAdmittedTotal (p : Program) (body : Body) : Bool :=
   bodyStaticAdmittedBy MirTy.beq p body
 
 /-- Agreement between `bodyStaticAdmittedTotal` and `BodyStaticAdmitted`. -/
@@ -107,7 +110,7 @@ theorem bodyStaticAdmittedTotal_eq (p : Program) (body : Body) :
   bodyStaticAdmittedBy_eq MirTy.beq (fun _ _ => rfl) p body
 
 /-- Unbounded-depth mirror of `Trusted.MirSemantics.initState`. -/
-noncomputable def initStateTotal (p : Program) (q : Query) :
+@[expose] noncomputable def initStateTotal (p : Program) (q : Query) :
     Except FaultKind State :=
   initStateBy MirTy.beq p q
 
@@ -168,3 +171,5 @@ theorem bodyVerified_of_evalMirFuelTotal {p : Program} {defId : DefId}
     { args := args } fuel (fun _ => True) hWp).1.1
 
 end Anneal.MirTotal
+
+end

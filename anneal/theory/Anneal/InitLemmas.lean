@@ -6,15 +6,18 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.SimpLemmas
-import Init.Data.Nat.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.Nat.Bitwise.Basic
-import Init.Data.Int.Basic
-import Init.Data.List.Basic
+public import Init.Core
+public import Init.NotationExtra
+public import Init.SimpLemmas
+public import Init.Data.Nat.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.Nat.Bitwise.Basic
+public import Init.Data.Int.Basic
+public import Init.Data.List.Basic
+
+public section
 
 /-!
 # Shared Foundation-Locked `Init` Lemmas (`Anneal.InitLemmas`)
@@ -132,7 +135,7 @@ theorem nat_beq_iff (a b : Nat) : Nat.beq a b = true ↔ a = b :=
   beq_iff_of_refl_and_eq Nat.beq nat_beq_refl (fun h => nat_eq_of_beq h) a b
 
 /-- Structural Boolean equality on `List Nat` defined via `List.foldr`. -/
-def natListBeq (xs ys : List Nat) : Bool :=
+@[expose] def natListBeq (xs ys : List Nat) : Bool :=
   List.foldr
     (fun (x : Nat) (ih : List Nat → Bool) (ys' : List Nat) =>
       match ys' with
@@ -214,18 +217,18 @@ theorem div2_mod2_inj (m n : Nat)
 /-! ## 4. Constructive `IntBalance` Sign-Magnitude `Nat` Bridge -/
 
 /-- Nonnegative magnitude component of an `Int`. -/
-def intPos : Int → Nat
+@[expose] def intPos : Int → Nat
   | .ofNat n => n
   | .negSucc _ => 0
 
 /-- Negative magnitude component of an `Int` (`0` for nonnegative `Int`). -/
-def intNeg : Int → Nat
+@[expose] def intNeg : Int → Nat
   | .ofNat _ => 0
   | .negSucc m => m + 1
 
 /-- `IntBalance x p n` represents `x = (p : Int) - (n : Int)` using pure `Nat`
 addition (`intPos x + n = intNeg x + p`), avoiding `Int` ring tactics. -/
-def IntBalance (x : Int) (p n : Nat) : Prop :=
+@[expose] def IntBalance (x : Int) (p n : Nat) : Prop :=
   intPos x + n = intNeg x + p
 
 theorem intBalance_self (x : Int) : IntBalance x (intPos x) (intNeg x) :=
@@ -255,7 +258,7 @@ theorem intBalance_subNatNat (p n : Nat) :
 /-! ## 5. Total `@Nat.rec` List Indexing and Slice Helpers -/
 
 /-- Total list element lookup returning `none` when `idx ≥ xs.length`. -/
-def listNth {α : Type u} (xs : List α) (idx : Nat) : Option α :=
+@[expose] def listNth {α : Type u} (xs : List α) (idx : Nat) : Option α :=
   @Nat.rec (fun _ => List α → Option α)
     (fun cur => match cur with | [] => none | x :: _ => some x)
     (fun _ ih cur => match cur with | [] => none | _ :: rest => ih rest)
@@ -277,7 +280,7 @@ theorem listNth_map {α : Type u} {β : Type v} (f : α → β) :
   | n + 1, _ :: rest => listNth_map f n rest
 
 /-- Total functional list update leaving out-of-bounds indices unchanged. -/
-def listSet {α : Type u} (xs : List α) (idx : Nat) (val : α) : List α :=
+@[expose] def listSet {α : Type u} (xs : List α) (idx : Nat) (val : α) : List α :=
   @Nat.rec (fun _ => List α → List α)
     (fun cur => match cur with | [] => [] | _ :: rest => val :: rest)
     (fun _ ih cur => match cur with | [] => [] | x :: rest => x :: ih rest)
@@ -312,14 +315,14 @@ theorem listNth_listSet_other {α : Type u} (val : α) :
     listNth_listSet_other val n m rest (fun h => hNe (congrArg Nat.succ h))
 
 /-- Total list prefix take defined via `@Nat.rec` (no `._unsafe_rec`). -/
-def listTake {α : Type u} (n : Nat) (xs : List α) : List α :=
+@[expose] def listTake {α : Type u} (n : Nat) (xs : List α) : List α :=
   @Nat.rec (fun _ => List α → List α)
     (fun _ => [])
     (fun _ ih cur => match cur with | [] => [] | x :: rest => x :: ih rest)
     n xs
 
 /-- Total list prefix drop defined via `@Nat.rec` (no `._unsafe_rec`). -/
-def listDrop {α : Type u} (n : Nat) (xs : List α) : List α :=
+@[expose] def listDrop {α : Type u} (n : Nat) (xs : List α) : List α :=
   @Nat.rec (fun _ => List α → List α)
     (fun cur => cur)
     (fun _ ih cur => match cur with | [] => [] | _ :: rest => ih rest)
@@ -334,7 +337,7 @@ theorem listTake_append_listDrop {α : Type u} :
 
 /-- Total byte/element slice replacement `xs[off .. off + patch.length] :=
 patch`, preserving length when `off + patch.length <= xs.length`. -/
-def replaceSlice {α : Type u} (xs : List α) (off : Nat) (patch : List α) :
+@[expose] def replaceSlice {α : Type u} (xs : List α) (off : Nat) (patch : List α) :
     List α :=
   listTake off xs ++ patch ++ listDrop (off + patch.length) xs
 
@@ -431,3 +434,5 @@ theorem canary_list_ops_edge :
     replaceSlice_length [1, 2, 3, 4] 1 [8, 9] (by decide)⟩
 
 end Anneal.InitLemmas
+
+end

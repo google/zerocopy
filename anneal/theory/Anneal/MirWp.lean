@@ -6,16 +6,19 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.NotationExtra
-import Trusted
-import Trusted.MirAst
-import Trusted.MirSemantics
-import Anneal.MirWp.Core
-import Anneal.MirWp.Scalars
-import Anneal.MirWp.Reflection
-import Anneal.MirWp.Execution
-import Anneal.MirWp.Canaries
+public import Init.NotationExtra
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirSemantics
+public import Anneal.MirWp.Core
+public import Anneal.MirWp.Scalars
+public import Anneal.MirWp.Reflection
+public import Anneal.MirWp.Execution
+public import Anneal.MirWp.Canaries
+
+public section
 
 namespace Anneal.MirWp
 
@@ -154,3 +157,5 @@ theorem canary_negative_int_to_int_cast_anneal :
   canary_negative_int_to_int_cast_anneal_base
 
 end Anneal.MirWp
+
+end

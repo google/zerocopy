@@ -6,20 +6,23 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.Data.Nat.Basic
-import Init.Data.List.Basic
-import Init.Control.Except
-import Trusted
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics
-import Anneal.MirWp
-import Anneal.MirTotal.Ops
-import Anneal.MirTotal.StepCore
-import Anneal.Core.BlockTree
+public import Init.Core
+public import Init.NotationExtra
+public import Init.Data.Nat.Basic
+public import Init.Data.List.Basic
+public import Init.Control.Except
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics
+public import Anneal.MirWp
+public import Anneal.MirTotal.Ops
+public import Anneal.MirTotal.StepCore
+public import Anneal.Core.BlockTree
+
+public section
 
 namespace Anneal.Core
 
@@ -60,7 +63,7 @@ every seal and unseal lemma linear-time and axiom-free.
 /-! ## Generic Zero-`Prop`-Argument `StepStageCut` and `wpUntilCutStep` -/
 
 /-- Underlying bounded `.step`-reachability relation for `StepStageCut`. -/
-def reachStepIn {S Out : Type} (step : S → StepResult S Out)
+@[expose] def reachStepIn {S Out : Type} (step : S → StepResult S Out)
     (fuel : Nat) (s₀ s₁ : S) : Prop :=
   @Nat.rec (fun _ => S → Prop)
     (fun st => st = s₁)
@@ -79,7 +82,7 @@ within `fuel` transitions of `step` without faulting or halting prematurely
 Keeping `StepStageCut` free of `Prop` arguments ensures downstream `rw` and
 `simp` passes cannot traverse into the reachability body via
 `congrArg` / `congrArgs` without explicitly applying the elimination lemmas. -/
-def StepStageCut {S Out : Type} (step : S → StepResult S Out)
+@[expose] def StepStageCut {S Out : Type} (step : S → StepResult S Out)
     (fuel : Nat) (s₀ s₁ : S) : Prop :=
   reachStepIn step fuel s₀ s₁
 
@@ -204,7 +207,7 @@ theorem StepStageCut.congr_step {S Out : Type}
 
 /-- Predicate-level cutpoint weakest precondition over `step` (`0`
 `noncomputable`). -/
-def wpUntilCutStep {S Out : Type} (step : S → StepResult S Out)
+@[expose] def wpUntilCutStep {S Out : Type} (step : S → StepResult S Out)
     (cut : S → Prop) (fuel : Nat) (s₀ : S) : Prop :=
   @Nat.rec (fun _ => S → Prop)
     (fun st => cut st)
@@ -443,7 +446,7 @@ constant. Parameterizing `BoolCertCut` strictly by computational data (`Code`,
 `check`, `cert`) keeps the sealed proposition opaque to downstream rewriting
 while supporting zero-axiom reflective proofs.
 -/
-def BoolCertCut {Code : Type} (check : Code → Bool) (cert : Code) : Prop :=
+@[expose] def BoolCertCut {Code : Type} (check : Code → Bool) (cert : Code) : Prop :=
   check cert = true
 
 /-- Seals a concrete or derived `check cert = true` witness behind
@@ -544,7 +547,7 @@ theorem boolCertCut_roundtrip_canary : (7 : Nat) = 7 ∧ (42 : Nat) = 42 := by
 /-- Weakest liberal precondition over `evalStep` (`0` `noncomputable`):
 out-of-fuel defaults to `True` while every terminating or faulting path within
 `fuel` must satisfy `onDone` / `onFault`. -/
-def wlpOutcomeState (p : Program) (onDone : TerminalOut → Prop)
+@[expose] def wlpOutcomeState (p : Program) (onDone : TerminalOut → Prop)
     (onFault : FaultKind → Prop) (fuel : Nat) (s : State) : Prop :=
   @Nat.rec (fun _ => State → Prop)
     (fun _ => True)
@@ -557,7 +560,7 @@ def wlpOutcomeState (p : Program) (onDone : TerminalOut → Prop)
     fuel s
 
 /-- Whole-program weakest liberal precondition (`0` `noncomputable`). -/
-def wlpProg (p : Program) (fuel : Nat) (q : Query)
+@[expose] def wlpProg (p : Program) (fuel : Nat) (q : Query)
     (onDone : TerminalOut → Prop) : Prop :=
   match initState p q with
   | .error _ => False
@@ -632,14 +635,14 @@ theorem wpProg_of_wlp_and_safety {p : Program} {fuel : Nat} {q : Query}
 /-! ## Two-Track Postconditions, `DropSpineCut`, and Early-Return Loops -/
 
 /-- Splits a `TerminalOut` postcondition into `(onRet, onUnwind)`. -/
-def twoTrackPost (onRet : Out → Prop) (onUnwind : CallerMemory → Prop) :
+@[expose] def twoTrackPost (onRet : Out → Prop) (onUnwind : CallerMemory → Prop) :
     TerminalOut → Prop
   | .returned out => onRet out
   | .unwound cm => onUnwind cm
 
 /-- Two-track state-level weakest precondition forbidding faults (`0`
 `noncomputable`). -/
-def wpTwoTrack (p : Program) (fuel : Nat) (s : State)
+@[expose] def wpTwoTrack (p : Program) (fuel : Nat) (s : State)
     (onRet : Out → Prop) (onUnwind : CallerMemory → Prop) : Prop :=
   wpOutcomeState p (twoTrackPost onRet onUnwind) (fun _ => False) fuel s
 
@@ -684,13 +687,13 @@ theorem cleanup_block_return_faults_unsupported
 
 /-- True iff `slot` is `.dead` or `.immediate _` (so `deallocateLocal` is a
 memory no-op). -/
-def slotNonIndirect (slot : LocalSlot) : Bool :=
+@[expose] def slotNonIndirect (slot : LocalSlot) : Bool :=
   match slot with
   | .indirect _ => false
   | .dead | .immediate _ => true
 
 /-- True iff every slot in `ls` is non-indirect. -/
-def allSlotsNonIndirect (ls : List LocalSlot) : Bool :=
+@[expose] def allSlotsNonIndirect (ls : List LocalSlot) : Bool :=
   ls.all slotNonIndirect
 
 private theorem getElem?_nonIndirect_of_all {ls : List LocalSlot}
@@ -825,7 +828,7 @@ private theorem getElem?_setElem?_same_of_some {α : Type} :
 
 /-- Contiguous suffix-deadness assertion `ls[start .. start + count) = .dead`.
 -/
-def slotsDeadFrom (start count : Nat) (ls : List LocalSlot) : Prop :=
+@[expose] def slotsDeadFrom (start count : Nat) (ls : List LocalSlot) : Prop :=
   @Nat.rec (fun _ => Nat → Prop)
     (fun _ => True)
     (fun _ ih pos =>
@@ -856,7 +859,7 @@ private theorem slotsDeadFrom_cons_head {pos count : Nat}
    slotsDeadFrom_set_below (Nat.lt_succ_self pos) hSet hRest⟩
 
 /-- Entry state invariant for a shared LIFO `StorageDead` cleanup spine. -/
-def DropSpineInv (firstDead totalEnd : Nat) (retVal : Val) (blk : BasicBlockId)
+@[expose] def DropSpineInv (firstDead totalEnd : Nat) (retVal : Val) (blk : BasicBlockId)
     (s : State) : Prop :=
   ∃ (ls : List LocalSlot) (cm : CallerMemory) (mem : MemoryState),
     s = { frames := [{ defId := 0, blockIdx := blk, stmtIdx := 0, locals := ls }],
@@ -870,7 +873,7 @@ def DropSpineInv (firstDead totalEnd : Nat) (retVal : Val) (blk : BasicBlockId)
 /-- Zero-`Prop`-argument LIFO `StorageDead` spine cut predicate (sealed
 `@[irreducible]` below), proving normal return with `out.ret = retVal` and
 ruling out unwind outcomes (`onUnwind := fun _ => False`). -/
-def DropSpineCut (body : Body) (bt : BlockTree BasicBlock)
+@[expose] def DropSpineCut (body : Body) (bt : BlockTree BasicBlock)
     (blk : BasicBlockId) (firstDead totalEnd : Nat) (retVal : Val)
     (dropFuel : Nat) : Prop :=
   ValidBlockTree body.basicBlocks bt →
@@ -1010,7 +1013,7 @@ attribute [irreducible] DropSpineCut
 /-! ## Bounded Early-Return (`?`) Loop Invariant Rule -/
 
 /-- Computable maximum of two natural numbers. -/
-def compNatMax (a b : Nat) : Nat :=
+@[expose] def compNatMax (a b : Nat) : Nat :=
   if Nat.ble a b then b else a
 
 /-- Left upper-bound law `a ≤ compNatMax a b`. -/
@@ -1034,7 +1037,7 @@ theorem le_compNatMax_right (a b : Nat) : b ≤ compNatMax a b := by
     | inr hge => exact hge
 
 /-- Computable minimum of two natural numbers. -/
-def compNatMin (a b : Nat) : Nat :=
+@[expose] def compNatMin (a b : Nat) : Nat :=
   if Nat.ble a b then a else b
 
 /-- Left lower-bound law `compNatMin a b ≤ a`. -/
@@ -1061,7 +1064,7 @@ theorem compNatMin_le_right (a b : Nat) : compNatMin a b ≤ b := by
 (`normalExit`) and mid-loop `?` / `break` early-return cleanup exit
 (`earlyClean`), stepping each iteration via `wpUntilCutStep (evalStep p 0)` (`0`
 `noncomputable`). -/
-def wpIterWithRetGuard (p : Program)
+@[expose] def wpIterWithRetGuard (p : Program)
     (inv earlyClean normalExit : State → Prop)
     (stepBudget iters : Nat) (s : State) : Prop :=
   @Nat.rec (fun _ => State → Prop)
@@ -1163,3 +1166,5 @@ theorem wpIterWithRetGuard_of_step {p : Program}
             | inr he => exact .inr (.inl he)
 
 end Anneal.Core
+
+end

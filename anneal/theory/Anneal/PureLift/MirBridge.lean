@@ -6,21 +6,24 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.Data.List.Basic
-import Init.Data.Nat.Basic
-import Trusted
-import Trusted.MirAst
-import Trusted.MirSemantics
-import Anneal.MirWp
-import Anneal.PureLift.Lens
-import Anneal.PureLift.PermTree
-import Anneal.PureLift.LoanGraph
-import Anneal.PureLift.SpatialPin
-import Anneal.PureLift.Plan
-import Anneal.PureLift.BlockCfg
-import Anneal.PureLift.Adapter
+public import Init.Core
+public import Init.Data.List.Basic
+public import Init.Data.Nat.Basic
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirSemantics
+public import Anneal.MirWp
+public import Anneal.PureLift.Lens
+public import Anneal.PureLift.PermTree
+public import Anneal.PureLift.LoanGraph
+public import Anneal.PureLift.SpatialPin
+public import Anneal.PureLift.Plan
+public import Anneal.PureLift.BlockCfg
+public import Anneal.PureLift.Adapter
+
+public section
 
 namespace Anneal.PureLift
 
@@ -104,7 +107,7 @@ transformation to the authoritative post-cleanup runtime MIR syntax
 
 /-- Total list lookup by index via `List.foldr`, emitting zero compiler
 `_unsafe_rec` helpers while reducing by `rfl` on concrete lists. -/
-def mirListGet? {α : Type} (xs : List α) (idx : Nat) : Option α :=
+@[expose] def mirListGet? {α : Type} (xs : List α) (idx : Nat) : Option α :=
   xs.foldr
     (fun x ih k =>
       match k with
@@ -115,7 +118,7 @@ def mirListGet? {α : Type} (xs : List α) (idx : Nat) : Option α :=
 
 /-- Total list update by index via `natFold`, returning `none` when `idx` is
 out of bounds. -/
-def mirListSet? {α : Type} (xs : List α) (idx : Nat) (v : α) :
+@[expose] def mirListSet? {α : Type} (xs : List α) (idx : Nat) (v : α) :
     Option (List α) :=
   natFold
     (fun ys =>
@@ -346,7 +349,7 @@ theorem setElem?_setElem?_comm {α : Type} :
 /-- True iff `v` has tuple nesting depth at most `d` (`d = 0` admits all
 non-tuple `Val` leaves; `d + 1` admits `.tuple fields` whose elements each have
 tuple nesting depth at most `d`). Defined via `natFold` and `List.foldr`. -/
-def valDepthOk (d : Nat) (v : Val) : Bool :=
+@[expose] def valDepthOk (d : Nat) (v : Val) : Bool :=
   natFold
     (fun x =>
       match x with
@@ -406,7 +409,7 @@ theorem valDepthOk_mono :
 
 /-- Read field `f` of a `Val.tuple` aggregate admitting child values up to
 tuple nesting depth `d` (aggregate depth `d + 1` at the enclosing tuple). -/
-def getMirFieldAt (d : Nat) (f : FieldIdx) : Val → Option Val
+@[expose] def getMirFieldAt (d : Nat) (f : FieldIdx) : Val → Option Val
   | .tuple fields =>
     match mirListGet? fields f with
     | some c => if valDepthOk d c then some c else none
@@ -415,7 +418,7 @@ def getMirFieldAt (d : Nat) (f : FieldIdx) : Val → Option Val
 
 /-- Update field `f` of a `Val.tuple` aggregate to `child` when `valDepthOk d
 child` holds. -/
-def setMirFieldAt (d : Nat) (f : FieldIdx) (v child : Val) : Option Val :=
+@[expose] def setMirFieldAt (d : Nat) (f : FieldIdx) (v child : Val) : Option Val :=
   match v with
   | .tuple fields =>
     if valDepthOk d child then
@@ -634,7 +637,7 @@ theorem mir_setField_setField_comm {d : Nat} (f g : FieldIdx)
 
 /-- Bit width (`8`, `16`, `32`, `64`, or `128`) of `IntWidth` on 64-bit
 targets. -/
-def mirBitWidth : IntWidth → Nat
+@[expose] def mirBitWidth : IntWidth → Nat
   | .i8 => 8
   | .i16 => 16
   | .i32 => 32
@@ -643,7 +646,7 @@ def mirBitWidth : IntWidth → Nat
 
 /-- Computable width truncation on `BitVec 128`, matching
 `Trusted.MirSemantics.truncateBits` (`mirTruncateBits_eq_truncateBits`). -/
-def mirTruncateBits (w : IntWidth) (value : BitVec 128) : BitVec 128 :=
+@[expose] def mirTruncateBits (w : IntWidth) (value : BitVec 128) : BitVec 128 :=
   let low : BitVec (mirBitWidth w - 1 - 0 + 1) :=
     BitVec.ofNat (mirBitWidth w - 1 - 0 + 1) (Nat.shiftRight value.toNat 0)
   BitVec.ofNat 128 low.toNat
@@ -663,7 +666,7 @@ the masked bits are nonzero, and all other values return `some false` because
 constructor. Branch and loop conditions in `FlowPlan`s should guard non-boolean,
 non-scalar values via `mirBoolOrScalarVal` so invalid guard types fail closed
 with `.fail`. -/
-def mirAsBool (v : Val) : Option Bool :=
+@[expose] def mirAsBool (v : Val) : Option Bool :=
   match v with
   | .bool b => some b
   | .scalar sv => some (!Nat.beq (mirTruncateBits sv.width sv.bits).toNat 0)
@@ -673,13 +676,13 @@ def mirAsBool (v : Val) : Option Bool :=
 guards: preserves `.bool` and `.scalar` values and returns `none` (causing
 `evalRval` to fail closed with `.fail`) on `.unit`, `.tuple`, `.enumVal`,
 `.ptr`, and encoded `.bytes` borrow handles. -/
-def mirBoolOrScalarVal : Val → Option Val
+@[expose] def mirBoolOrScalarVal : Val → Option Val
   | .bool b => some (.bool b)
   | .scalar sv => some (.scalar sv)
   | _ => none
 
 /-- Conditional branch value selector on `Trusted.MirSemantics.Val`. -/
-def mirZipVal (cond vt vf : Val) : Val :=
+@[expose] def mirZipVal (cond vt vf : Val) : Val :=
   match mirAsBool cond with
   | some true => vt
   | _ => vf
@@ -693,11 +696,11 @@ theorem mirAsBool_ne_none (v : Val) : mirAsBool v ≠ none := by
 
 /-- Encode a `SubPath` as provenance-tagged `AllocByte` entries inside
 `Val.bytes` for `PureLift` first-order reference handle tracking. -/
-def encodeSubPathBytes (path : SubPath) : List AllocByte :=
+@[expose] def encodeSubPathBytes (path : SubPath) : List AllocByte :=
   path.foldr (fun f ih => .init 0 (some f) :: ih) []
 
 /-- Decode a `SubPath` from provenance-tagged `AllocByte` entries. -/
-def decodeSubPathBytes (bytes : List AllocByte) : Option SubPath :=
+@[expose] def decodeSubPathBytes (bytes : List AllocByte) : Option SubPath :=
   bytes.foldr
     (fun b0 ih =>
       match b0 with
@@ -722,15 +725,15 @@ theorem decodeSubPathBytes_encodeSubPathBytes :
     rw [decodeSubPathBytes_encodeSubPathBytes rest]
 
 /-- Encode a mutable borrow handle `(lid, path)` as a `Val.bytes` leaf. -/
-def mirEncodeRef (lid : LoanId) (path : SubPath) : Val :=
+@[expose] def mirEncodeRef (lid : LoanId) (path : SubPath) : Val :=
   .bytes (.init 0 (some lid) :: encodeSubPathBytes path)
 
 /-- Encode a shared borrow handle `(lid, path)` as a `Val.bytes` leaf. -/
-def mirEncodeSharedRef (lid : LoanId) (path : SubPath) : Val :=
+@[expose] def mirEncodeSharedRef (lid : LoanId) (path : SubPath) : Val :=
   .bytes (.init 1 (some lid) :: encodeSubPathBytes path)
 
 /-- Decode a borrow handle `(lid, path)` from a `Val.bytes` leaf. -/
-def mirDecodeRef : Val → Option (LoanId × SubPath)
+@[expose] def mirDecodeRef : Val → Option (LoanId × SubPath)
   | .bytes (.init tag (some lid) :: rest) =>
     if tag == 0 || tag == 1 then
       match decodeSubPathBytes rest with
@@ -742,7 +745,7 @@ def mirDecodeRef : Val → Option (LoanId × SubPath)
 
 /-- Distinguish shared (`tag == 1`) from mutable (`tag == 0`) encoded borrow
 handles. -/
-def mirDecodeRefIsShared : Val → Bool
+@[expose] def mirDecodeRefIsShared : Val → Bool
   | .bytes (.init tag (some _) :: _) => tag == 1
   | _ => false
 
@@ -772,7 +775,7 @@ theorem mir_decodeRef_getField {d : Nat} (f : FieldIdx) (v : Val)
   | tuple _ => nomatch hDec
 
 /-- Rename `oldLid` to `newLid` in an encoded borrow-handle byte list. -/
-def remapMirBytes (oldLid newLid : LoanId) (data : List AllocByte) :
+@[expose] def remapMirBytes (oldLid newLid : LoanId) (data : List AllocByte) :
     List AllocByte :=
   match data with
   | .init tag (some lid) :: rest =>
@@ -787,7 +790,7 @@ def remapMirBytes (oldLid newLid : LoanId) (data : List AllocByte) :
 
 /-- Depth-indexed loan-ID remapping across `Val` via `natFold` and
 `List.foldr`. -/
-def remapMirValAt (oldLid newLid : LoanId) (d : Nat) (v : Val) : Val :=
+@[expose] def remapMirValAt (oldLid newLid : LoanId) (d : Nat) (v : Val) : Val :=
   natFold
     (fun x =>
       match x with
@@ -806,7 +809,7 @@ def remapMirValAt (oldLid newLid : LoanId) (d : Nat) (v : Val) : Val :=
 
 /-- Rename loan `oldLid` to `newLid` in every encoded reference handle inside
 `v` up to child tuple depth `d` (enclosing tuple depth `d + 1`). -/
-def remapMirValAtDepth (d : Nat) (oldLid newLid : LoanId) (v : Val) : Val :=
+@[expose] def remapMirValAtDepth (d : Nat) (oldLid newLid : LoanId) (v : Val) : Val :=
   remapMirValAt oldLid newLid (d + 1) v
 
 theorem mirListGet?_foldr_map {α : Type} (g : α → α) :
@@ -951,7 +954,7 @@ theorem mir_decodeRef_remapRefInVal {d : Nat} (oldLid newLid : LoanId)
               rfl
 
 /-- Remap child value `c` at tuple depth `d` when `valDepthOk d c` holds. -/
-def remapChildAt (d : Nat) (oldLid newLid : LoanId) (c : Val) : Val :=
+@[expose] def remapChildAt (d : Nat) (oldLid newLid : LoanId) (c : Val) : Val :=
   if valDepthOk d c then remapMirValAt oldLid newLid d c else c
 
 theorem remapChildAt_of_false {d : Nat} (oldLid newLid : LoanId) (c : Val)
@@ -1070,7 +1073,7 @@ theorem mir_remapRefInVal_leaf {d : Nat} (oldLid newLid : LoanId) (v : Val)
 
 /-- Depth-indexed structural size bound on `Val` via `natFold` and
 `List.foldr`. -/
-def valSizeBoundAt (d : Nat) (v : Val) : Nat :=
+@[expose] def valSizeBoundAt (d : Nat) (v : Val) : Nat :=
   natFold
     (fun _ => 1)
     (fun _ ih x =>
@@ -1081,7 +1084,7 @@ def valSizeBoundAt (d : Nat) (v : Val) : Nat :=
 
 /-- Strict upper bound on field indices and aggregate nesting depth of `v` up
 to child tuple depth `d` (enclosing tuple depth `d + 1`). -/
-def valSizeBoundAtDepth (d : Nat) (v : Val) : Nat :=
+@[expose] def valSizeBoundAtDepth (d : Nat) (v : Val) : Nat :=
   valSizeBoundAt (d + 1) v
 
 theorem valSizeBoundAt_eq_succ :
@@ -1193,7 +1196,7 @@ theorem mir_getField_lt_sizeBound {d : Nat} (f : FieldIdx) (v c : Val)
 /-- Depth-parametric instantiation of `PureLift.ValAlgebra` for
 `Trusted.MirSemantics.Val` at arbitrary child tuple depth `d : Nat` (enclosing
 tuple depth `d + 1`). -/
-def mirValAlgAt (d : Nat) : ValAlgebra Val where
+@[expose] def mirValAlgAt (d : Nat) : ValAlgebra Val where
   defaultVal := .unit
   asBool := mirAsBool
   zipVal := mirZipVal
@@ -1236,7 +1239,7 @@ def mirValAlgAt (d : Nat) : ValAlgebra Val where
 
 /-- Default instantiation of `PureLift.ValAlgebra` for
 `Trusted.MirSemantics.Val` (`d = 7`, aggregate depth `8`). -/
-def mirValAlg : ValAlgebra Val := mirValAlgAt 7
+@[expose] def mirValAlg : ValAlgebra Val := mirValAlgAt 7
 
 /-- `fieldLens (mirValAlgAt d) f` satisfies the three bidirectional lens laws
 for every depth bound `d : Nat` and field index `f : FieldIdx`. -/
@@ -1321,7 +1324,7 @@ theorem reachesFault_of_mirRunsFault (p : Program) (q : Query) (fuel : Nat)
 matching `Trusted.MirSemantics` v1 top-level entry execution where
 `callerMem = ⟨[]⟩` and reference/tuple parameter types are outside the
 supported entry fragment. -/
-def mirAllByValParams (params : List (ParamInput Val)) : Bool :=
+@[expose] def mirAllByValParams (params : List (ParamInput Val)) : Bool :=
   params.foldr
     (fun p ih =>
       (match p.mode with
@@ -1330,12 +1333,12 @@ def mirAllByValParams (params : List (ParamInput Val)) : Bool :=
     true
 
 /-- Extract the runtime argument values from a `PureLift` parameter list. -/
-def mirParamVals (params : List (ParamInput Val)) : List Val :=
+@[expose] def mirParamVals (params : List (ParamInput Val)) : List Val :=
   params.foldr (fun p ih => p.val :: ih) []
 
 /-- Lift a list of runtime MIR entry arguments into `.byVal` `PureLift`
 parameter descriptors via `List.foldr`. -/
-def mirByValParams (args : List Val) : List (ParamInput Val) :=
+@[expose] def mirByValParams (args : List Val) : List (ParamInput Val) :=
   args.foldr (fun v acc => ⟨.byVal, v⟩ :: acc) []
 
 theorem mirAllByValParams_byValParams :
@@ -1376,7 +1379,7 @@ and caller-memory `.unsupported` faults before the body begins executing
 non-empty `basicBlocks`, `argumentCount < locals.length`, in-bounds storage
 annotations, and supported local types, though it does not check
 `body.identity` as `BodyStaticAdmitted` does). -/
-def MirArgsMatch (p : Program) (q : Query)
+@[expose] def MirArgsMatch (p : Program) (q : Query)
     (params : List (ParamInput Val)) : Prop :=
   mirAllByValParams params = true ∧
   q.args = mirParamVals params ∧
@@ -1413,7 +1416,7 @@ theorem mirArgsMatch_byValParams {p : Program} {body : Body} {args : List Val}
 /-- `MirRunsTo p q fuel out` holds when `out` carries no mutable reference
 writebacks (`out.mutFinals = []`, matching `callerMem = ⟨[]⟩` at top-level MIR
 entry) and `MirRunsDone p q fuel (.returned ⟨out.ret, ⟨[]⟩⟩)` holds. -/
-def MirRunsTo (p : Program) (q : Query) (fuel : Nat)
+@[expose] def MirRunsTo (p : Program) (q : Query) (fuel : Nat)
     (out : FuncOut Val) : Prop :=
   out.mutFinals = [] ∧
   MirRunsDone p q fuel (.returned ⟨out.ret, ⟨[]⟩⟩)
@@ -1468,7 +1471,7 @@ theorem mirExecutesTo_of_mirStepsDone (p : Program) :
 
 /-- `OperationalAdapter` connecting `Trusted.MirAst.Program` and
 `Trusted.MirSemantics.State` to `PureLift`. -/
-def mirOperationalAdapter (p : Program) (q : Query)
+@[expose] def mirOperationalAdapter (p : Program) (q : Query)
     (params : List (ParamInput Val)) :
     OperationalAdapter (M1MachState State Val) Val where
   ExecutesTo := MirExecutesTo p
@@ -1624,7 +1627,7 @@ RefDiverges)`. When instantiated with the definitions in
 RefBehavior RefDiverges` is definitionally equal (`rfl`) to
 `Trusted.Correspondence.CorrespondenceClaim` (proved by
 `Anneal.MirCorrespondenceProof.correspondence_claim_holds`). -/
-def MirCorrespondenceBridge
+@[expose] def MirCorrespondenceBridge
     {RefProg : Type}
     (encodeProg : Program → RefProg)
     (RefWellFormed : RefProg → Query → Prop)
@@ -1640,7 +1643,7 @@ def MirCorrespondenceBridge
 /-- Abstract interface of `Trusted.Correspondence.FaultEquivalenceClaim`,
 definitionally equal (`rfl`) to `Trusted.Correspondence.FaultEquivalenceClaim`
 when instantiated with `Trusted.Correspondence`. -/
-def MirFaultCorrespondenceBridge
+@[expose] def MirFaultCorrespondenceBridge
     {RefProg RefOutcome : Type}
     (encodeProg : Program → RefProg)
     (faultToRefOutcome : FaultKind → RefOutcome)
@@ -1711,15 +1714,15 @@ theorem mir_pure_lift_correspondence_transfer
 /-! ## Computable MIR Type, Constant, and Operator Evaluation Helpers -/
 
 /-- Universal list predicate via `List.foldr`. -/
-def mirListAll {α : Type} (pred : α → Bool) (xs : List α) : Bool :=
+@[expose] def mirListAll {α : Type} (pred : α → Bool) (xs : List α) : Bool :=
   xs.foldr (fun x ih => pred x && ih) true
 
 /-- Existential list predicate via `List.foldr`. -/
-def mirListAny {α : Type} (pred : α → Bool) (xs : List α) : Bool :=
+@[expose] def mirListAny {α : Type} (pred : α → Bool) (xs : List α) : Bool :=
   xs.foldr (fun x ih => pred x || ih) false
 
 /-- Computable structural equality on `IntWidth`. -/
-def mirIntWidthBeq : IntWidth → IntWidth → Bool
+@[expose] def mirIntWidthBeq : IntWidth → IntWidth → Bool
   | .i8, .i8 => true
   | .i16, .i16 => true
   | .i32, .i32 => true
@@ -1729,13 +1732,13 @@ def mirIntWidthBeq : IntWidth → IntWidth → Bool
   | _, _ => false
 
 /-- Computable structural equality on `Mutability`. -/
-def mirMutabilityBeq : Mutability → Mutability → Bool
+@[expose] def mirMutabilityBeq : Mutability → Mutability → Bool
   | .shared, .shared => true
   | .mut, .mut => true
   | _, _ => false
 
 /-- Computable elementwise equality on `List Nat` via `List.foldr`. -/
-def mirNatListBeq (xs ys : List Nat) : Bool :=
+@[expose] def mirNatListBeq (xs ys : List Nat) : Bool :=
   xs.foldr
     (fun x ih rs =>
       match rs with
@@ -1745,24 +1748,24 @@ def mirNatListBeq (xs ys : List Nat) : Bool :=
     ys
 
 /-- Computable non-membership test on `List Nat`. -/
-def mirNatNotElem (x : Nat) (ys : List Nat) : Bool :=
+@[expose] def mirNatNotElem (x : Nat) (ys : List Nat) : Bool :=
   mirListAll (fun y => !Nat.beq x y) ys
 
 /-- Computable pairwise-distinctness test on `List Nat` via `List.foldr`. -/
-def mirNatListPairwiseNe (xs : List Nat) : Bool :=
+@[expose] def mirNatListPairwiseNe (xs : List Nat) : Bool :=
   (xs.foldr
     (fun x (acc : List Nat × Bool) =>
       (x :: acc.1, mirNatNotElem x acc.1 && acc.2))
     ([], true)).2
 
 /-- Computable structural equality on `EnumTagRepr`. -/
-def mirEnumTagReprBeq : EnumTagRepr → EnumTagRepr → Bool
+@[expose] def mirEnumTagReprBeq : EnumTagRepr → EnumTagRepr → Bool
   | .zeroSized, .zeroSized => true
   | .scalar w₁ s₁, .scalar w₂ s₂ => mirIntWidthBeq w₁ w₂ && (s₁ == s₂)
   | _, _ => false
 
 /-- Computable structural equality on `EnumTy`. -/
-def mirEnumTyBeq (a b : EnumTy) : Bool :=
+@[expose] def mirEnumTyBeq (a b : EnumTy) : Bool :=
   Nat.beq a.id b.id &&
     mirIntWidthBeq a.discrWidth b.discrWidth &&
     (a.discrSigned == b.discrSigned) &&
@@ -1770,7 +1773,7 @@ def mirEnumTyBeq (a b : EnumTy) : Bool :=
     mirNatListBeq a.discriminants b.discriminants
 
 /-- Computable structural equality on `MirTy` via `natFold` and `List.foldr`. -/
-def mirTyBeqAt (d : Nat) (a b : MirTy) : Bool :=
+@[expose] def mirTyBeqAt (d : Nat) (a b : MirTy) : Bool :=
   natFold
     (fun x y =>
       match x, y with
@@ -1807,28 +1810,28 @@ def mirTyBeqAt (d : Nat) (a b : MirTy) : Bool :=
     d a b
 
 /-- Computable structural equality on `MirTy` up to nesting depth 8. -/
-def mirTyBeq (a b : MirTy) : Bool :=
+@[expose] def mirTyBeq (a b : MirTy) : Bool :=
   mirTyBeqAt 8 a b
 
 /-- Unsigned modulus $2^{\text{bitWidth}}$ for `IntWidth`. -/
-def mirModulus (w : IntWidth) : Nat :=
+@[expose] def mirModulus (w : IntWidth) : Nat :=
   Nat.pow 2 (mirBitWidth w)
 
 /-- Computable Euclidean integer modulo (`x % m` with `m > 0`). -/
-def mirIntEmod : Int → Int → Int
+@[expose] def mirIntEmod : Int → Int → Int
   | .ofNat m, n => .ofNat (Nat.mod m (Int.natAbs n))
   | .negSucc m, n =>
     Int.subNatNat (Int.natAbs n) (Nat.succ (Nat.mod m (Int.natAbs n)))
 
 /-- Computable truncated integer division towards zero. -/
-def mirIntTdiv : Int → Int → Int
+@[expose] def mirIntTdiv : Int → Int → Int
   | .ofNat m, .ofNat n => .ofNat (Nat.div m n)
   | .ofNat m, .negSucc n => Int.neg (.ofNat (Nat.div m (Nat.succ n)))
   | .negSucc m, .ofNat n => Int.neg (.ofNat (Nat.div (Nat.succ m) n))
   | .negSucc m, .negSucc n => .ofNat (Nat.div (Nat.succ m) (Nat.succ n))
 
 /-- Computable truncated integer remainder towards zero. -/
-def mirIntTmod : Int → Int → Int
+@[expose] def mirIntTmod : Int → Int → Int
   | .ofNat m, .ofNat n => .ofNat (Nat.mod m n)
   | .ofNat m, .negSucc n => .ofNat (Nat.mod m (Nat.succ n))
   | .negSucc m, .ofNat n => Int.neg (.ofNat (Nat.mod (Nat.succ m) n))
@@ -1836,51 +1839,51 @@ def mirIntTmod : Int → Int → Int
     Int.neg (.ofNat (Nat.mod (Nat.succ m) (Nat.succ n)))
 
 /-- Computable arithmetic right shift on `Int`. -/
-def mirIntShiftRight : Int → Nat → Int
+@[expose] def mirIntShiftRight : Int → Nat → Int
   | .ofNat n, s => .ofNat (Nat.shiftRight n s)
   | .negSucc n, s => .negSucc (Nat.shiftRight n s)
 
 /-- Computable left shift on `Int`. -/
-def mirIntShiftLeft : Int → Nat → Int
+@[expose] def mirIntShiftLeft : Int → Nat → Int
   | .ofNat n, s => .ofNat (Nat.shiftLeft n s)
   | .negSucc n, s => .negSucc ((Nat.shiftLeft (n + 1) s) - 1)
 
 /-- Computable bitwise complement (`!x = -x - 1`) on `Int`. -/
-def mirIntNot : Int → Int
+@[expose] def mirIntNot : Int → Int
   | .ofNat n => .negSucc n
   | .negSucc n => .ofNat n
 
 /-- Computable two's-complement signed interpretation of `BitVec n`. -/
-def mirBvToInt {n : Nat} (x : BitVec n) : Int :=
+@[expose] def mirBvToInt {n : Nat} (x : BitVec n) : Int :=
   if 2 * x.toNat < Nat.pow 2 n then
     Int.ofNat x.toNat
   else
     Int.ofNat x.toNat - Int.ofNat (Nat.pow 2 n)
 
 /-- Computable wrapping conversion from `Int` to `BitVec n`. -/
-def mirBvOfInt (n : Nat) (i : Int) : BitVec n :=
+@[expose] def mirBvOfInt (n : Nat) (i : Int) : BitVec n :=
   BitVec.ofNat n (mirIntEmod i (Int.ofNat (Nat.pow 2 n))).toNat
 
 /-- Computable sign-extension of the low `mirBitWidth w` bits of `value`. -/
-def mirSignExtendBits (w : IntWidth) (value : BitVec 128) : Int :=
+@[expose] def mirSignExtendBits (w : IntWidth) (value : BitVec 128) : Int :=
   let b := mirBitWidth w - 1 - 0 + 1
   let low : BitVec b := BitVec.ofNat b (Nat.shiftRight value.toNat 0)
   mirBvToInt (mirBvOfInt 128 (mirBvToInt low))
 
 /-- Computable bitwise AND on `BitVec 128`. -/
-def mirBvAnd (x y : BitVec 128) : BitVec 128 :=
+@[expose] def mirBvAnd (x y : BitVec 128) : BitVec 128 :=
   BitVec.ofNat 128 (Nat.land x.toNat y.toNat)
 
 /-- Computable bitwise OR on `BitVec 128`. -/
-def mirBvOr (x y : BitVec 128) : BitVec 128 :=
+@[expose] def mirBvOr (x y : BitVec 128) : BitVec 128 :=
   BitVec.ofNat 128 (Nat.lor x.toNat y.toNat)
 
 /-- Computable bitwise XOR on `BitVec 128`. -/
-def mirBvXor (x y : BitVec 128) : BitVec 128 :=
+@[expose] def mirBvXor (x y : BitVec 128) : BitVec 128 :=
   BitVec.ofNat 128 (Nat.xor x.toNat y.toNat)
 
 /-- Computable minimum signed integer at width `w`. -/
-def mirSignedMinInt : IntWidth → Int
+@[expose] def mirSignedMinInt : IntWidth → Int
   | .i8 => Neg.neg (HPow.hPow (2 : Int) 7)
   | .i16 => Neg.neg (HPow.hPow (2 : Int) 15)
   | .i32 => Neg.neg (HPow.hPow (2 : Int) 31)
@@ -1889,7 +1892,7 @@ def mirSignedMinInt : IntWidth → Int
 
 /-- Computable tag-to-discriminant extension/truncation matching
 `Trusted.MirSemantics.tagBitsToDiscrBits`. -/
-def mirTagBitsToDiscrBits (tagW : IntWidth) (tagS : Bool) (discrW : IntWidth)
+@[expose] def mirTagBitsToDiscrBits (tagW : IntWidth) (tagS : Bool) (discrW : IntWidth)
     (tagBits : BitVec 128) : BitVec 128 :=
   let extended :=
     if tagS then
@@ -1900,7 +1903,7 @@ def mirTagBitsToDiscrBits (tagW : IntWidth) (tagS : Bool) (discrW : IntWidth)
 
 /-- Computable static admission check for fieldless `EnumTy` descriptors,
 matching `Trusted.MirSemantics.enumAdmitted`. -/
-def mirEnumAdmitted (ety : EnumTy) : Bool :=
+@[expose] def mirEnumAdmitted (ety : EnumTy) : Bool :=
   !ety.discriminants.isEmpty &&
     Nat.blt ety.discriminants.length (Nat.pow 2 32) &&
     mirListAll (fun d => Nat.blt d (mirModulus ety.discrWidth))
@@ -1916,14 +1919,14 @@ def mirEnumAdmitted (ety : EnumTy) : Bool :=
         ety.discriminants
 
 /-- Computable check for admitted 0-byte ZST 1-variant fieldless enums. -/
-def mirIsZstEnumTy (ety : EnumTy) : Bool :=
+@[expose] def mirIsZstEnumTy (ety : EnumTy) : Bool :=
   match ety.tagRepr with
   | .zeroSized => mirEnumAdmitted ety
   | .scalar _ _ => false
 
 /-- Computable linear search from `idx` for the variant index matching
 `discrBits`. -/
-def mirFindDiscrVariantAux (discrBits : BitVec 128) (ds : List Nat)
+@[expose] def mirFindDiscrVariantAux (discrBits : BitVec 128) (ds : List Nat)
     (idx : Nat) : Option Nat :=
   ds.foldr
     (fun d ih cur =>
@@ -1935,29 +1938,29 @@ def mirFindDiscrVariantAux (discrBits : BitVec 128) (ds : List Nat)
     idx
 
 /-- Computable linear search for the variant index matching `discrBits`. -/
-def mirFindDiscrVariant? (discrBits : BitVec 128) (ds : List Nat) :
+@[expose] def mirFindDiscrVariant? (discrBits : BitVec 128) (ds : List Nat) :
     Option Nat :=
   mirFindDiscrVariantAux discrBits ds 0
 
 /-- Computable width-fit check on `ScalarVal`. -/
-def mirScalarWf (sv : ScalarVal) : Bool :=
+@[expose] def mirScalarWf (sv : ScalarVal) : Bool :=
   mirTruncateBits sv.width sv.bits == sv.bits
 
 /-- Computable Unicode scalar value check matching
 `Trusted.MirSemantics.isUnicodeScalar`. -/
-def mirIsUnicodeScalar (n : Nat) : Bool :=
+@[expose] def mirIsUnicodeScalar (n : Nat) : Bool :=
   Nat.ble n 0x10ffff && !(Nat.ble 0xd800 n && Nat.ble n 0xdfff)
 
 /-- Computable `core::cmp::Ordering` tag bits matching
 `Trusted.MirSemantics.orderingTagBits`. -/
-def mirOrderingTagBits : OrderingVal → Nat
+@[expose] def mirOrderingTagBits : OrderingVal → Nat
   | .less => 255
   | .equal => 0
   | .greater => 1
 
 /-- Computable `core::cmp::Ordering` tag decoder matching
 `Trusted.MirSemantics.orderingOfTagBits`. -/
-def mirOrderingOfTagBits (bits : Nat) : Option OrderingVal :=
+@[expose] def mirOrderingOfTagBits (bits : Nat) : Option OrderingVal :=
   if Nat.beq bits 255 then
     some .less
   else if Nat.beq bits 0 then
@@ -1969,13 +1972,13 @@ def mirOrderingOfTagBits (bits : Nat) : Option OrderingVal :=
 
 /-- Computable overflow-pair type check matching
 `Trusted.MirSemantics.isOverflowPairTy`. -/
-def mirIsOverflowPairTy : MirTy → Bool
+@[expose] def mirIsOverflowPairTy : MirTy → Bool
   | .tuple [.int _ _, .bool] => true
   | _ => false
 
 /-- Computable intrinsic runtime type check matching
 `Trusted.MirSemantics.Val.ty?`. -/
-def mirValTy? : Val → Option MirTy
+@[expose] def mirValTy? : Val → Option MirTy
   | .scalar sv =>
     if mirScalarWf sv then some (.int sv.width sv.signed) else none
   | .bool _ => some .bool
@@ -1993,14 +1996,14 @@ def mirValTy? : Val → Option MirTy
   | _ => none
 
 /-- Computable value-type check matching `Trusted.MirSemantics.checkVal`. -/
-def mirCheckVal (v : Val) (ty : MirTy) : Bool :=
+@[expose] def mirCheckVal (v : Val) (ty : MirTy) : Bool :=
   match mirValTy? v with
   | some vTy => mirTyBeq vTy ty
   | none => false
 
 /-- Computable local-type support check matching
 `Trusted.MirSemantics.isSupportedScalarOrUnitTy`. -/
-def mirIsSupportedScalarOrUnitTy : MirTy → Bool
+@[expose] def mirIsSupportedScalarOrUnitTy : MirTy → Bool
   | .bool | .int _ _ | .char | .ordering | .unit | .never => true
   | .enum ety => mirEnumAdmitted ety
   | .tuple fs => mirIsOverflowPairTy (.tuple fs)
@@ -2008,20 +2011,20 @@ def mirIsSupportedScalarOrUnitTy : MirTy → Bool
 
 /-- Computable primitive-readable type check mirroring
 `Trusted.MirSemantics.isPrimitiveReadableTy` (no agreement theorem). -/
-def mirIsPrimitiveReadableTy : MirTy → Bool
+@[expose] def mirIsPrimitiveReadableTy : MirTy → Bool
   | .bool | .int _ _ | .char => true
   | .tuple fs => mirIsOverflowPairTy (.tuple fs)
   | _ => false
 
 /-- Computable integer-like cast source check matching
 `Trusted.MirSemantics.isIntLikeTy`. -/
-def mirIsIntLikeTy : MirTy → Bool
+@[expose] def mirIsIntLikeTy : MirTy → Bool
   | .bool | .int _ _ | .char => true
   | _ => false
 
 /-- Computable initial live-uninitialized slot state matching
 `Trusted.MirSemantics.liveUninitSlot`. -/
-def mirLiveUninitSlot : MirTy → LocalSlot
+@[expose] def mirLiveUninitSlot : MirTy → LocalSlot
   | .unit => .immediate (some .unit)
   | .enum ety =>
     if mirIsZstEnumTy ety then .immediate (some (.enumVal ety 0))
@@ -2029,20 +2032,20 @@ def mirLiveUninitSlot : MirTy → LocalSlot
   | _ => .immediate none
 
 /-- Computable storage-marker check for a single `StatementKind`. -/
-def mirStmtHasStorageMarker (localId : LocalId) : StatementKind → Bool
+@[expose] def mirStmtHasStorageMarker (localId : LocalId) : StatementKind → Bool
   | .storageLive id | .storageDead id => Nat.beq id localId
   | _ => false
 
 /-- Computable check for whether `body` contains a `StorageLive` or
 `StorageDead` annotation on `localId`. -/
-def mirHasStorageAnnotation (body : Body) (localId : LocalId) : Bool :=
+@[expose] def mirHasStorageAnnotation (body : Body) (localId : LocalId) : Bool :=
   mirListAny
     (fun bb => mirListAny (mirStmtHasStorageMarker localId) bb.statements)
     body.basicBlocks
 
 /-- Computable bounds check on all `StorageLive` and `StorageDead` annotations
 in `body`. -/
-def mirStorageAnnotationsInBounds (body : Body) : Bool :=
+@[expose] def mirStorageAnnotationsInBounds (body : Body) : Bool :=
   let numLocals := body.locals.length
   mirListAll
     (fun bb =>
@@ -2056,7 +2059,7 @@ def mirStorageAnnotationsInBounds (body : Body) : Bool :=
 
 /-- Computable discriminant destination type check matching
 `Trusted.MirSemantics.discriminantTypesValid`. -/
-def mirDiscriminantTypesValid (body : Body) : Bool :=
+@[expose] def mirDiscriminantTypesValid (body : Body) : Bool :=
   mirListAll
     (fun bb =>
       mirListAll
@@ -2093,7 +2096,7 @@ def mirDiscriminantTypesValid (body : Body) : Bool :=
 /-- Computable cast destination type check matching
 `Trusted.MirSemantics.castTypesValid` (exactly when every local type is
 supported; see `mirCastTypesValid_eq`). -/
-def mirCastTypesValid (body : Body) : Bool :=
+@[expose] def mirCastTypesValid (body : Body) : Bool :=
   mirListAll
     (fun bb =>
       mirListAll
@@ -2115,7 +2118,7 @@ def mirCastTypesValid (body : Body) : Bool :=
 
 /-- Computable static body admission check matching the 2-argument
 `Trusted.MirSemantics.BodyStaticAdmitted`. -/
-def mirBodyStaticAdmitted (p : Program) (body : Body) : Bool :=
+@[expose] def mirBodyStaticAdmitted (p : Program) (body : Body) : Bool :=
   Nat.beq p.pointerWidthBits 64 &&
     Nat.beq p.mirProfileVersion 1 &&
     !body.identity.toByteArray.data.toList.isEmpty &&
@@ -2130,7 +2133,7 @@ def mirBodyStaticAdmitted (p : Program) (body : Body) : Bool :=
 `Trusted.MirSemantics.evalConstLit` (preserving the exact distinction between
 static `.error .unsupported` ill-typed constants and runtime `.error .undefined`
 UB bit patterns). -/
-def mirEvalConstLit : MirTy → ConstLit → Except FaultKind Val
+@[expose] def mirEvalConstLit : MirTy → ConstLit → Except FaultKind Val
   | .int w s, .scalar bits =>
     if mirTruncateBits w bits != bits then
       .error .unsupported
@@ -2179,7 +2182,7 @@ def mirEvalConstLit : MirTy → ConstLit → Except FaultKind Val
 
 /-- Computable fieldless-enum discriminant reader mirroring the `.discriminant`
 arm of `Trusted.MirSemantics.evalRvalue` (no agreement theorem). -/
-def mirEvalDiscrVal (ety : EnumTy) : Val → Option Val
+@[expose] def mirEvalDiscrVal (ety : EnumTy) : Val → Option Val
   | .enumVal ety' v =>
     if mirEnumTyBeq ety ety' && Nat.blt v ety.discriminants.length then
       match mirListGet? ety.discriminants v with
@@ -2195,32 +2198,32 @@ def mirEvalDiscrVal (ety : EnumTy) : Val → Option Val
 `.ordering` case of the `.discriminant` arm of
 `Trusted.MirSemantics.evalRvalue` (`evalOrderingDiscriminantOfVal`; no
 agreement theorem). -/
-def mirEvalOrderingDiscrVal : Val → Option Val
+@[expose] def mirEvalOrderingDiscrVal : Val → Option Val
   | .ordering ord =>
     some (.scalar ⟨.i8, true, BitVec.ofNat 128 (mirOrderingTagBits ord)⟩)
   | _ => none
 
 /-- Computable shift-operator classification matching `BinOp.isShift`. -/
-def mirBinOpIsShift : BinOp → Bool
+@[expose] def mirBinOpIsShift : BinOp → Bool
   | .shl | .shlUnchecked | .shr | .shrUnchecked => true
   | _ => false
 
 /-- Computable unchecked-operator classification matching
 `BinOp.isUnchecked`. -/
-def mirBinOpIsUnchecked : BinOp → Bool
+@[expose] def mirBinOpIsUnchecked : BinOp → Bool
   | .addUnchecked | .subUnchecked | .mulUnchecked
   | .shlUnchecked | .shrUnchecked => true
   | _ => false
 
 /-- Computable overflowing-operator classification matching
 `BinOp.isOverflowing`. -/
-def mirBinOpIsOverflowing : BinOp → Bool
+@[expose] def mirBinOpIsOverflowing : BinOp → Bool
   | .addWithOverflow | .subWithOverflow | .mulWithOverflow => true
   | _ => false
 
 /-- Computable scalar integer decoder matching
 `Trusted.MirSemantics.decodeScalar`. -/
-def mirDecodeScalar (sv : ScalarVal) : Int :=
+@[expose] def mirDecodeScalar (sv : ScalarVal) : Int :=
   let trunc := mirTruncateBits sv.width sv.bits
   if sv.signed then
     mirSignExtendBits sv.width trunc
@@ -2229,7 +2232,7 @@ def mirDecodeScalar (sv : ScalarVal) : Int :=
 
 /-- Computable integer truncation with lossiness flag matching
 `Trusted.MirSemantics.truncateScalar`. -/
-def mirTruncateScalar (w : IntWidth) (s : Bool) (value : Int) :
+@[expose] def mirTruncateScalar (w : IntWidth) (s : Bool) (value : Int) :
     Option (ScalarVal × Bool) :=
   if s then
     let wrapped := mirBvToInt (mirBvOfInt 128 value)
@@ -2247,7 +2250,7 @@ def mirTruncateScalar (w : IntWidth) (s : Bool) (value : Int) :
     some (⟨w, s, trunc⟩, trunc != raw)
 
 /-- Computable shift evaluation matching `Trusted.MirSemantics.evalShiftOp`. -/
-def mirEvalShiftOp (op : BinOp) (w : IntWidth) (s : Bool) (l r : Int) :
+@[expose] def mirEvalShiftOp (op : BinOp) (w : IntWidth) (s : Bool) (l r : Int) :
     Option Val :=
   let amount := mirIntEmod r (Int.ofNat (mirBitWidth w))
   let overflow := amount != r
@@ -2265,7 +2268,7 @@ def mirEvalShiftOp (op : BinOp) (w : IntWidth) (s : Bool) (l r : Int) :
 
 /-- Computable integer arithmetic evaluation matching
 `Trusted.MirSemantics.evalArithOp`. -/
-def mirEvalArithOp (op : BinOp) (w : IntWidth) (s : Bool) (l r : Int) :
+@[expose] def mirEvalArithOp (op : BinOp) (w : IntWidth) (s : Bool) (l r : Int) :
     Option Val :=
   let isDivOrRem := match op with | .div | .rem => true | _ => false
   if isDivOrRem && r == 0 then
@@ -2302,7 +2305,7 @@ def mirEvalArithOp (op : BinOp) (w : IntWidth) (s : Bool) (l r : Int) :
 
 /-- Computable three-way integer comparison matching
 `Trusted.MirSemantics.cmpOrderingOfInt`. -/
-def mirCmpOrderingOfInt (l r : Int) : OrderingVal :=
+@[expose] def mirCmpOrderingOfInt (l r : Int) : OrderingVal :=
   if decide (l < r) then
     .less
   else if decide (l = r) then
@@ -2312,7 +2315,7 @@ def mirCmpOrderingOfInt (l r : Int) : OrderingVal :=
 
 /-- Computable binary operator evaluator matching
 `Trusted.MirSemantics.evalBinOp` for `RvalOp.binary`. -/
-def mirEvalBinOpVal (op : BinOp) (lhs rhs : Val) : Option Val :=
+@[expose] def mirEvalBinOpVal (op : BinOp) (lhs rhs : Val) : Option Val :=
   match lhs, rhs with
   | .scalar l, .scalar r =>
     let lInt := mirDecodeScalar l
@@ -2377,7 +2380,7 @@ def mirEvalBinOpVal (op : BinOp) (lhs rhs : Val) : Option Val :=
 
 /-- Computable `u128` intermediate of an integer-like cast source matching
 `Trusted.MirSemantics.intLikeBits`. -/
-def mirIntLikeBits : Val → Option Nat
+@[expose] def mirIntLikeBits : Val → Option Nat
   | .scalar sv =>
     if sv.signed then
       some (mirBvOfInt 128 (mirDecodeScalar sv)).toNat
@@ -2390,7 +2393,7 @@ def mirIntLikeBits : Val → Option Nat
 /-- Computable `CastKind::IntToInt` evaluator matching
 `Trusted.MirSemantics.evalIntToIntCast` (collapsing error fault kinds to
 `none`). -/
-def mirEvalIntToIntCast (castTy : MirTy) (v : Val) : Option Val :=
+@[expose] def mirEvalIntToIntCast (castTy : MirTy) (v : Val) : Option Val :=
   match mirIntLikeBits v with
   | none => none
   | some bits =>
@@ -2406,7 +2409,7 @@ def mirEvalIntToIntCast (castTy : MirTy) (v : Val) : Option Val :=
 
 /-- Computable unary operator evaluator matching
 `Trusted.MirSemantics.evalUnOp` for `RvalOp.unary`. -/
-def mirEvalUnOpVal (op : UnOp) (v : Val) : Option Val :=
+@[expose] def mirEvalUnOpVal (op : UnOp) (v : Val) : Option Val :=
   match op, v with
   | .not, .bool b => some (.bool (!b))
   | .not, .scalar sv =>
@@ -3307,7 +3310,7 @@ directly inside `PureLift`'s loan graph:
 lists `[p1, p2, p3, p4, ...]` into `[.seq p1 p2, .seq p3 p4, ...]` and
 odd-length lists into `[p1, .seq p2 p3, ...]`) in a single pass while
 preserving left-to-right sequencing order. -/
-def mergePlanPairs (ps : List (FlowPlan Val)) : List (FlowPlan Val) :=
+@[expose] def mergePlanPairs (ps : List (FlowPlan Val)) : List (FlowPlan Val) :=
   let step :=
     ps.foldr
       (fun p (acc : Option (FlowPlan Val) × List (FlowPlan Val)) =>
@@ -3322,7 +3325,7 @@ def mergePlanPairs (ps : List (FlowPlan Val)) : List (FlowPlan Val) :=
 /-- Assemble a list of `PrimAction Val` steps into a balanced `.seq` tree via
 bottom-up pairwise merging (`natFold` + `List.foldr`) so evaluation closure
 depth scales logarithmically without duplicating recursive continuations. -/
-def actionsToPlan (acts : List (PrimAction Val)) : FlowPlan Val :=
+@[expose] def actionsToPlan (acts : List (PrimAction Val)) : FlowPlan Val :=
   let plans0 : List (FlowPlan Val) :=
     acts.foldr (fun a acc => .act a :: acc) []
   let merged : List (FlowPlan Val) :=
@@ -3341,7 +3344,7 @@ def actionsToPlan (acts : List (PrimAction Val)) : FlowPlan Val :=
 
 /-- Generate `count` consecutive fresh `PureLift` local assignments starting at
 `start`, each initialized to `initVal`, via `natFold`. -/
-def allocFreshLocalActions (start count : Nat) (initVal : Val) :
+@[expose] def allocFreshLocalActions (start count : Nat) (initVal : Val) :
     List (PrimAction Val) :=
   natFold
     (fun _ => [])
@@ -3352,23 +3355,23 @@ def allocFreshLocalActions (start count : Nat) (initVal : Val) :
 /-- Backing `PureLift` local register for MIR local `l` in a body with `argCnt`
 entry parameters (`_1 .. _argCnt` occupy `0 .. argCnt - 1`, `_0` occupies
 `argCnt`, and temporaries `> argCnt` occupy `l`). -/
-def mirValSlot (argCnt l : Nat) : LocalId :=
+@[expose] def mirValSlot (argCnt l : Nat) : LocalId :=
   if l == 0 then argCnt
   else if Nat.ble l argCnt then l - 1
   else l
 
 /-- Initialization capability handle slot (`&mut mirValSlot argCnt l`) for MIR
 local `l`. -/
-def mirInitCap (numLocals l : Nat) : LocalId :=
+@[expose] def mirInitCap (numLocals l : Nat) : LocalId :=
   numLocals + l
 
 /-- Scratch local register for the first evaluated operand or Rvalue result, and
 for holding the return value read from `_0` in the epilogue. -/
-def mirOp1Slot (numLocals : Nat) : LocalId :=
+@[expose] def mirOp1Slot (numLocals : Nat) : LocalId :=
   2 * numLocals
 
 /-- Scratch local register for the second evaluated binary operand. -/
-def mirOp2Slot (numLocals : Nat) : LocalId :=
+@[expose] def mirOp2Slot (numLocals : Nat) : LocalId :=
   2 * numLocals + 1
 
 /-- Compile-time capability state of a MIR local during straight-line lifting:
@@ -3381,20 +3384,20 @@ structure SlotCapState where
   hasInit : Bool
 
 /-- Read `SlotCapState` for MIR local `l` (defaulting to inactive). -/
-def getSlotCap (caps : List SlotCapState) (l : Nat) : SlotCapState :=
+@[expose] def getSlotCap (caps : List SlotCapState) (l : Nat) : SlotCapState :=
   match mirListGet? caps l with
   | some c => c
   | none => ⟨false, false⟩
 
 /-- Update `SlotCapState` for MIR local `l`. -/
-def setSlotCap (caps : List SlotCapState) (l : Nat) (c : SlotCapState) :
+@[expose] def setSlotCap (caps : List SlotCapState) (l : Nat) (c : SlotCapState) :
     List SlotCapState :=
   match mirListSet? caps l c with
   | some caps' => caps'
   | none => caps
 
 /-- Retire an active `mirInitCap` loan on `l` and mark `l` dead. -/
-def retireSlotCapActions (numLocals l : Nat) (caps : List SlotCapState) :
+@[expose] def retireSlotCapActions (numLocals l : Nat) (caps : List SlotCapState) :
     List (PrimAction Val) × List SlotCapState :=
   let c := getSlotCap caps l
   let initActs : List (PrimAction Val) :=
@@ -3403,7 +3406,7 @@ def retireSlotCapActions (numLocals l : Nat) (caps : List SlotCapState) :
 
 /-- Allocate fresh live storage for MIR local `l` of type `ty`, matching
 `Trusted.MirSemantics.liveUninitSlot ty`. -/
-def allocLiveUninitActions (argCnt numLocals l : Nat) (ty : MirTy) :
+@[expose] def allocLiveUninitActions (argCnt numLocals l : Nat) (ty : MirTy) :
     List (PrimAction Val) × SlotCapState :=
   match mirLiveUninitSlot ty with
   | .immediate (some zstVal) =>
@@ -3418,7 +3421,7 @@ def allocLiveUninitActions (argCnt numLocals l : Nat) (ty : MirTy) :
 entry in lockstep with `Trusted.MirSemantics.initLocalsLoop` (enforcing
 `mirCheckVal` on parameter slots `1 .. argCnt` so standalone `evalFnValue`
 calls fail closed on ill-typed or uninhabited `MirTy.never` arguments). -/
-def mirInitEntryLocalsLoop (body : Body) (argCnt numLocals idx : Nat)
+@[expose] def mirInitEntryLocalsLoop (body : Body) (argCnt numLocals idx : Nat)
     (tys : List MirTy) : List (PrimAction Val) × List SlotCapState :=
   tys.foldr
     (fun ty ih curIdx =>
@@ -3443,7 +3446,7 @@ def mirInitEntryLocalsLoop (body : Body) (argCnt numLocals idx : Nat)
 
 /-- Retire all remaining active local capability loans across `idx .. idx +
 count - 1` at `Return` via `natFold`. -/
-def retireRangeActions (numLocals idx count : Nat)
+@[expose] def retireRangeActions (numLocals idx count : Nat)
     (caps : List SlotCapState) : List (PrimAction Val) :=
   natFold
     (fun _ _ => [])
@@ -3456,7 +3459,7 @@ def retireRangeActions (numLocals idx count : Nat)
 `mirIsPrimitiveReadableTy` when `requirePrimitive = true`, rejecting static
 `.unsupported` constants with `none`, mapping runtime `.undefined` constant UB
 to `.fail`, and retiring `mirInitCap` on non-ZST `Operand.move`. -/
-def liftMirOperand (bodyLocals : List MirTy) (numLocals scratch : Nat)
+@[expose] def liftMirOperand (bodyLocals : List MirTy) (numLocals scratch : Nat)
     (requirePrimitive : Bool) (caps : List SlotCapState) (opnd : Operand) :
     Option (MirTy × List (PrimAction Val) × List SlotCapState) :=
   match opnd with
@@ -3513,7 +3516,7 @@ def liftMirOperand (bodyLocals : List MirTy) (numLocals scratch : Nat)
 /-- Lift an `Rvalue` (including `Rvalue.cast` with `CastKind.intToInt` and
 `Rvalue.discriminant` on admitted fieldless enums and `core::cmp::Ordering`) so
 its evaluated result lands in `mirOp1Slot numLocals`. -/
-def liftMirRvalue (numLocals : Nat) (bodyLocals : List MirTy) (dstTy : MirTy)
+@[expose] def liftMirRvalue (numLocals : Nat) (bodyLocals : List MirTy) (dstTy : MirTy)
     (caps : List SlotCapState) (rval : Rvalue) :
     Option (List (PrimAction Val) × List SlotCapState) :=
   match rval with
@@ -3596,7 +3599,7 @@ def liftMirRvalue (numLocals : Nat) (bodyLocals : List MirTy) (dstTy : MirTy)
 `dstTy`, checking `mirCheckVal` and requiring `dstLocal` to have active storage
 (writing through `mirInitCap` when dead so `PureLift` rejects writes to dead
 locals). -/
-def writeDstLocalActions (argCnt numLocals dstLocal : Nat) (dstTy : MirTy)
+@[expose] def writeDstLocalActions (argCnt numLocals dstLocal : Nat) (dstTy : MirTy)
     (caps : List SlotCapState) : List (PrimAction Val) × List SlotCapState :=
   let checkedRhs : RvalOp Val :=
     .unary (fun v => if mirCheckVal v dstTy then some v else none)
@@ -3611,7 +3614,7 @@ def writeDstLocalActions (argCnt numLocals dstLocal : Nat) (dstTy : MirTy)
      setSlotCap caps dstLocal ⟨true, true⟩)
 
 /-- Lift a single `StatementKind` in a straight-line MIR basic block. -/
-def liftMirStmt (argCnt numLocals : Nat) (bodyLocals : List MirTy)
+@[expose] def liftMirStmt (argCnt numLocals : Nat) (bodyLocals : List MirTy)
     (caps : List SlotCapState) (stmt : StatementKind) :
     Option (List (PrimAction Val) × List SlotCapState) :=
   match stmt with
@@ -3642,7 +3645,7 @@ def liftMirStmt (argCnt numLocals : Nat) (bodyLocals : List MirTy)
 
 /-- Lift a sequence of MIR statements into `PrimAction Val` steps via
 `List.foldr`. -/
-def liftMirStmtList (argCnt numLocals : Nat) (bodyLocals : List MirTy)
+@[expose] def liftMirStmtList (argCnt numLocals : Nat) (bodyLocals : List MirTy)
     (caps : List SlotCapState) (stmts : List StatementKind) :
     Option (List (PrimAction Val) × List SlotCapState) :=
   stmts.foldr
@@ -3659,7 +3662,7 @@ def liftMirStmtList (argCnt numLocals : Nat) (bodyLocals : List MirTy)
 /-- Algorithmically translate a single-block straight-line
 `Trusted.MirAst.Program` (`bb0` terminating with `TerminatorKind.return_`) into
 `(plan, retExpr)`. -/
-def liftStraightLineMir (p : Program) :
+@[expose] def liftStraightLineMir (p : Program) :
     Option (FlowPlan Val × RvalOp Val) :=
   match mirListGet? p.bodies p.entryDefId with
   | none => none
@@ -3698,7 +3701,7 @@ def liftStraightLineMir (p : Program) :
 /-- Unpack `liftStraightLineMir p` with a dummy fallback; coupling predicates
 always require `liftStraightLineMir p = some (plan, retExpr)`, which refutes the
 `none` case. -/
-def liftedPlanOrSkip (p : Program) : FlowPlan Val × RvalOp Val :=
+@[expose] def liftedPlanOrSkip (p : Program) : FlowPlan Val × RvalOp Val :=
   match liftStraightLineMir p with
   | some pair => pair
   | none => (.skip, .constVal .unit)
@@ -3708,7 +3711,7 @@ def liftedPlanOrSkip (p : Program) : FlowPlan Val × RvalOp Val :=
 and `ValidEntryArgs body q.args`) and `(plan, retExpr)` is the exact `FlowPlan`
 produced by `liftStraightLineMir p` (which implies `BodyStaticAdmitted p body =
 true` via `mirBodyStaticAdmitted_eq`). -/
-def MirStraightLineLiftsTo (p : Program) (q : Query)
+@[expose] def MirStraightLineLiftsTo (p : Program) (q : Query)
     (params : List (ParamInput Val))
     (plan : FlowPlan Val) (retExpr : RvalOp Val) : Prop :=
   MirArgsMatch p q params ∧
@@ -3808,30 +3811,30 @@ theorem mir_fault_correspondence_transfer
 
 /-- Computable `u32` type descriptor (`IntWidth.i32`, unsigned), definitionally
 equal (`rfl`) to `Trusted.MirSemantics.u32Ty`. -/
-def mirU32Ty : MirTy := .int .i32 false
+@[expose] def mirU32Ty : MirTy := .int .i32 false
 
 /-- Computable `u32` scalar constructor, definitionally equal (`rfl`) to
 `Trusted.MirSemantics.u32Val`. -/
-def mirU32Val (n : Nat) : Val :=
+@[expose] def mirU32Val (n : Nat) : Val :=
   .scalar ⟨.i32, false, BitVec.ofNat 128 n⟩
 
 /-- Pure `u32` wrapping addition on `Trusted.MirSemantics.Val`, matching
 `Trusted.MirSemantics.evalBinOp .add` on `u32` scalars. -/
-def mirAddU32Val (v1 v2 : Val) : Option Val :=
+@[expose] def mirAddU32Val (v1 v2 : Val) : Option Val :=
   mirEvalBinOpVal .add v1 v2
 
 /-- Pure `u32` wrapping subtraction on `Trusted.MirSemantics.Val`, matching
 `Trusted.MirSemantics.evalBinOp .sub` on `u32` scalars. -/
-def mirSubU32Val (v1 v2 : Val) : Option Val :=
+@[expose] def mirSubU32Val (v1 v2 : Val) : Option Val :=
   mirEvalBinOpVal .sub v1 v2
 
 /-- Pure `>` comparison on `Trusted.MirSemantics.Val`, matching
 `Trusted.MirSemantics.evalBinOp .gt`. -/
-def mirGtU32Val (v1 v2 : Val) : Option Val :=
+@[expose] def mirGtU32Val (v1 v2 : Val) : Option Val :=
   mirEvalBinOpVal .gt v1 v2
 
 /-- Construct a `u32` constant operand (`ConstOperand`). -/
-def u32Const (n : Nat) : Operand :=
+@[expose] def u32Const (n : Nat) : Operand :=
   .constant ⟨mirU32Ty, .scalar (BitVec.ofNat 128 n)⟩
 
 /-! ### Workload W-1: Straight-Line Arithmetic, Local Lifecycle, and Move Deinit
@@ -3857,7 +3860,7 @@ at entry).
 
 /-- Authoritative `Trusted.MirAst.Program` for `compute_linear(x: u32, delta:
 u32) -> u32`. -/
-def progComputeLinearU32 : Program where
+@[expose] def progComputeLinearU32 : Program where
   scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
@@ -3883,7 +3886,7 @@ def progComputeLinearU32 : Program where
 /-- Explicit `PureLift` `FlowPlan` for `compute_linear`: local `0` is `x`, local
 `1` is `delta`, local `2` is `tmp = x`, local `3` is `r = &mut tmp` (loan `0`),
 `*r = *r + delta`, loan `0` ends, and local `4` receives `out = tmp`. -/
-def mirComputeLinearPlan : FlowPlan Val :=
+@[expose] def mirComputeLinearPlan : FlowPlan Val :=
   .seq
     (.act (.assign (.localSub 2 []) (.use (.localSub 0 []))))
     (.seq
@@ -3898,7 +3901,7 @@ def mirComputeLinearPlan : FlowPlan Val :=
 /-- Standalone `PureLift` `FlowPlan` for `add_assign(p: &mut u32, delta: u32) ->
 u32`: reborrows `r = &mut *p` (loan `1`), updates `*r = *r + delta`, and ends
 loan `1`. -/
-def mirAddAssignPlan : FlowPlan Val :=
+@[expose] def mirAddAssignPlan : FlowPlan Val :=
   .seq
     (.act (.borrow 2 .mutBorrow (.derefSub 0 [])))
     (.seq
@@ -3918,7 +3921,7 @@ theorem pure_lift_add_assign_verified :
 
 /-- Input query `(30u32, 6u32)` for `progComputeLinearU32` (`30 + 6 + 6 = 42`).
 -/
-def queryComputeLinear30_6 : Query :=
+@[expose] def queryComputeLinear30_6 : Query :=
   { args := [mirU32Val 30, mirU32Val 6] }
 
 /-- Standalone kernel evaluation of the algorithmically lifted `FlowPlan` for
@@ -4074,7 +4077,7 @@ Conditional Branching (`select_add`)
 /-- Standalone `PureLift` `FlowPlan` for `swap_fields` on `Val.tuple [a, b]`:
 local `0` is `s: &mut (Val, Val)`, local `1` is `p0 = &mut (*s).0` (loan `1`),
 local `2` is `p1 = &mut (*s).1` (loan `2`), and local `3` is `tmp = *p0`. -/
-def mirSwapFieldsPlan : FlowPlan Val :=
+@[expose] def mirSwapFieldsPlan : FlowPlan Val :=
   .seq
     (.act (.borrow 1 .mutBorrow (.derefSub 0 [0])))
     (.seq
@@ -4102,7 +4105,7 @@ theorem mir_swap_fields_verified (a b : ScalarVal) :
 
 /-- 4-block authoritative `Trusted.MirAst.Program` for
 `select_add(flag: bool, x: u32, y: u32, v: u32) -> u32`. -/
-def progSelectAddU32 : Program where
+@[expose] def progSelectAddU32 : Program where
   scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
@@ -4149,7 +4152,7 @@ local `0` is `flag: bool`, local `1` is `x: u32`, local `2` is `y: u32`,
 local `3` is `v: u32`, local `4` is the branch-selected borrow `r = if flag {
 &x } else { &y }` joined via `.branchExplicitJoin`, and local `5` receives
 `*r + v` before the joined loan `0` ends. -/
-def mirSelectAddByValPlan : FlowPlan Val :=
+@[expose] def mirSelectAddByValPlan : FlowPlan Val :=
   .seq
     (.branchExplicitJoin (.unary mirBoolOrScalarVal (.localSub 0 []))
       (.act (.borrow 4 .shared (.localSub 1 [])))
@@ -4162,7 +4165,7 @@ def mirSelectAddByValPlan : FlowPlan Val :=
 
 /-- Input query for `progSelectAddU32` with symbolic `flag : Bool` and concrete
 operands `(10u32, 100u32, 5u32)`. -/
-def querySelectAdd (flag : Bool) : Query :=
+@[expose] def querySelectAdd (flag : Bool) : Query :=
   { args := [.bool flag, mirU32Val 10, mirU32Val 100, mirU32Val 5] }
 
 /-- End-to-end verification of the 4-block `progSelectAddU32` across all
@@ -4262,7 +4265,7 @@ and transferred across `CorrespondenceClaim` to `lean-miri` ($M_{\text{ref}}$).
 
 /-- 4-block authoritative `Trusted.MirAst.Program` for
 `loop_accumulate(acc: u32, n: u32) -> u32`. -/
-def progLoopAccumulateU32 : Program where
+@[expose] def progLoopAccumulateU32 : Program where
   scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
@@ -4316,7 +4319,7 @@ def progLoopAccumulateU32 : Program where
 local `0` is `acc: u32`, local `1` is `n: u32`, local `2` is `cur = acc`, and
 local `3` is a per-iteration mutable borrow `r = &mut cur` retired via
 `.endLoanAtLocal 3`. -/
-def mirLoopAccumulatePlan : FlowPlan Val :=
+@[expose] def mirLoopAccumulatePlan : FlowPlan Val :=
   .seq
     (.act (.assign (.localSub 2 []) (.use (.localSub 0 []))))
     (.whileLoop 4
@@ -4333,7 +4336,7 @@ def mirLoopAccumulatePlan : FlowPlan Val :=
                 (.localSub 1 []))))))))
 
 /-- Input query `(39u32, 3u32)` for `progLoopAccumulateU32` (`39 + 3 = 42`). -/
-def queryLoopAccumulate39_3 : Query :=
+@[expose] def queryLoopAccumulate39_3 : Query :=
   { args := [mirU32Val 39, mirU32Val 3] }
 
 /-- End-to-end verification of `progLoopAccumulateU32` on `(39u32, 3u32)`
@@ -4420,7 +4423,7 @@ theorem mir_loop_accumulate_verified
 
 /-- Authoritative `Trusted.MirAst.Program` that moves `_1` into `_2`
 (`Operand.move`, deinitializing `_1`) and then attempts to read `_1` again. -/
-def progUseAfterMoveUb : Program where
+@[expose] def progUseAfterMoveUb : Program where
   scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
@@ -4441,7 +4444,7 @@ def progUseAfterMoveUb : Program where
 
 /-- Named `Trusted.MirAst.Program` that initializes `_1`, retires `_1` with
 `StorageDead`, and then attempts to read `_1` into `_0`. -/
-def progUseAfterStorageDeadUb : Program where
+@[expose] def progUseAfterStorageDeadUb : Program where
   scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
@@ -4538,7 +4541,7 @@ theorem mir_negative_ub_fault_transfer_verified
 
 /-- Standalone `PureLift` plan that borrows `local 1 = &mut local 0` (loan `0`),
 ends loan `0`, and then attempts to read `*local 1`. -/
-def mirDanglingRefPlan : FlowPlan Val :=
+@[expose] def mirDanglingRefPlan : FlowPlan Val :=
   .seq
     (.act (.assign (.localSub 0 []) (.constVal (mirU32Val 42))))
     (.seq
@@ -4550,7 +4553,7 @@ def mirDanglingRefPlan : FlowPlan Val :=
 /-- Standalone `PureLift` plan that borrows `local 1 = &mut (*local 0)` (loan
 `1`), overwrites `*local 0` while loan `1` is active, and then reads `*local 1`.
 -/
-def mirOverwriteWhileBorrowedPlan : FlowPlan Val :=
+@[expose] def mirOverwriteWhileBorrowedPlan : FlowPlan Val :=
   .seq
     (.act (.borrow 1 .mutBorrow (.derefSub 0 [])))
     (.seq
@@ -4572,7 +4575,7 @@ theorem pure_lift_borrow_rejection_canaries :
 `Rvalue.discriminant` Lifting + Invalid-Tag UB Rejection -/
 
 /-- Computable `#[repr(u8)]` fieldless enum descriptor `{ A = 10, B = 20 }`. -/
-def mirReprU8EnumTy : EnumTy where
+@[expose] def mirReprU8EnumTy : EnumTy where
   id := 101
   discrWidth := .i8
   discrSigned := false
@@ -4580,15 +4583,15 @@ def mirReprU8EnumTy : EnumTy where
   discriminants := [10, 20]
 
 /-- Computable `u8` type descriptor. -/
-def mirU8Ty : MirTy := .int .i8 false
+@[expose] def mirU8Ty : MirTy := .int .i8 false
 
 /-- Computable `u8` scalar constructor. -/
-def mirU8Val (n : Nat) : Val :=
+@[expose] def mirU8Val (n : Nat) : Val :=
   .scalar ⟨.i8, false, BitVec.ofNat 128 n⟩
 
 /-- Straight-line MIR program decoding `ReprU8::B` (`20u8`) via `ConstOperand`
 and reading its `u8` discriminant into `_0` via `Rvalue.discriminant`. -/
-def progEnumDiscriminantU8 : Program where
+@[expose] def progEnumDiscriminantU8 : Program where
   scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
@@ -4611,7 +4614,7 @@ def progEnumDiscriminantU8 : Program where
 
 /-- Straight-line MIR program attempting to decode invalid tag `1u8` into
 `ReprU8 { A = 10, B = 20 }`, triggering `FaultKind.undefined`. -/
-def progEnumInvalidTagUb : Program where
+@[expose] def progEnumInvalidTagUb : Program where
   scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
@@ -4716,3 +4719,5 @@ theorem mir_enum_discriminant_lifted_verified
       rfl
 
 end Anneal.PureLift
+
+end

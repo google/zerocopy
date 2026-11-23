@@ -6,15 +6,18 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.Data.List.Basic
-import Init.Data.Nat.Basic
-import Anneal.PureLift.Lens
-import Anneal.PureLift.PermTree
-import Anneal.PureLift.LoanGraph
-import Anneal.PureLift.SpatialPin
-import Anneal.PureLift.Plan
+public import Init.Core
+public import Init.Data.List.Basic
+public import Init.Data.Nat.Basic
+public import Anneal.PureLift.Lens
+public import Anneal.PureLift.PermTree
+public import Anneal.PureLift.LoanGraph
+public import Anneal.PureLift.SpatialPin
+public import Anneal.PureLift.Plan
+
+public section
 
 namespace Anneal.PureLift
 
@@ -197,7 +200,7 @@ inductive BlockCfgOutcome (Ret : Type) where
   | diverged
   | fault
 
-def listGetOpt {α : Type} (idx : Nat) (xs : List α) : Option α :=
+@[expose] def listGetOpt {α : Type} (idx : Nat) (xs : List α) : Option α :=
   xs.foldr
     (fun x ih n =>
       match n with
@@ -208,7 +211,7 @@ def listGetOpt {α : Type} (idx : Nat) (xs : List α) : Option α :=
 
 /-- `some out` if `out` is free of borrow handles (`handleFreeOut`), and `none`
 otherwise. -/
-def handleFreeOutOpt {Val : Type} (alg : ValAlgebra Val) (out : FuncOut Val) :
+@[expose] def handleFreeOutOpt {Val : Type} (alg : ValAlgebra Val) (out : FuncOut Val) :
     Option (FuncOut Val) :=
   if handleFreeOut alg out then some out else none
 
@@ -217,7 +220,7 @@ spine from `bbIdx` within `fuel` steps, avoiding `visited` cycles. Follows
 `.goto tgt`, and at `.branch _ tTgt fTgt` continues from the first common
 convergence block of `tTgt` and `fTgt` (or records both arms' reachable blocks
 if only one arm continues). -/
-def traceExitPath {Val : Type} (blocks : List (BasicBlock Val))
+@[expose] def traceExitPath {Val : Type} (blocks : List (BasicBlock Val))
     (fuel : Nat) (bbIdx : BlockId) (visited : List BlockId) : List BlockId :=
   natFold (fun _ _ => [])
     (fun _ ih cur vis =>
@@ -242,7 +245,7 @@ def traceExitPath {Val : Type} (blocks : List (BasicBlock Val))
 
 /-- Find the first common convergence basic block on the forward exit spines of
 `tTgt` and `fTgt`, if any. -/
-def findConvergenceBlock {Val : Type} (blocks : List (BasicBlock Val))
+@[expose] def findConvergenceBlock {Val : Type} (blocks : List (BasicBlock Val))
     (fuel : Nat) (tTgt fTgt : BlockId) (visited : List BlockId) :
     Option BlockId :=
   let pathT := traceExitPath blocks fuel tTgt visited
@@ -251,7 +254,7 @@ def findConvergenceBlock {Val : Type} (blocks : List (BasicBlock Val))
 
 /-- Prepend one basic-block transition and an optional guarded early-return
 wrapper onto the `(steps, flow)` result of an `evalArmToJoin` recursive call. -/
-def prependArmStep {Val : Type}
+@[expose] def prependArmStep {Val : Type}
     (wrapOpt : Option ((FuncOut Val → FuncOut Val) × Bool ×
       (Option (Val × (Val → Option (List Val))) →
         Option (Val × (Val → Option (List Val))))))
@@ -272,7 +275,7 @@ including) `joinBb`, within `fuel` block transitions, returning both the number
 of basic-block transitions executed inside the arm and the resulting `ExecFlow`.
 When `bbIdx == joinBb`, stops immediately with `.ok (0, .continuing st)` so
 `joinBb` is evaluated once after the two arms join. -/
-def evalArmToJoin {Val : Type} (alg : ValAlgebra Val)
+@[expose] def evalArmToJoin {Val : Type} (alg : ValAlgebra Val)
     (blocks : List (BasicBlock Val)) (fuel : Nat) (joinBb : BlockId)
     (bbIdx : BlockId) (st : SymState Val) :
     EvalOutcome (Nat × ExecFlow Val) :=
@@ -374,7 +377,7 @@ def evalArmToJoin {Val : Type} (alg : ValAlgebra Val)
 fuel, optionally applying an outer pending early-return wrapper `outerWrap` from
 the branching block itself. Returns `none` when both arms returned before
 reaching `joinBb` so the caller falls back to `.branchJump`. -/
-def finishConvergedBranch {Val : Type} (alg : ValAlgebra Val)
+@[expose] def finishConvergedBranch {Val : Type} (alg : ValAlgebra Val)
     (armSteps : Nat)
     (outerWrap : Option (FuncOut Val → FuncOut Val))
     (joinBb : BlockId) (joined : ExecFlow Val) :
@@ -412,7 +415,7 @@ other successor's value. The merged value needs its own check: a pending early
 return may hold a handle that the later block's value lacks, and no `ValAlgebra`
 law makes a merge of handle-free values handle-free
 (`runBlockCfg_stepBasicBlock_handleFree` states the result). -/
-def stepBasicBlock {Val : Type} (alg : ValAlgebra Val)
+@[expose] def stepBasicBlock {Val : Type} (alg : ValAlgebra Val)
     (blocks : List (BasicBlock Val)) (bbIdx : BlockId)
     (st : SymState Val) : BlockStepResult (SymState Val) (FuncOut Val) :=
   match listGetOpt bbIdx blocks with
@@ -523,11 +526,13 @@ def stepBasicBlock {Val : Type} (alg : ValAlgebra Val)
 /-- Internal fuel-and-delay loop for `runBlockCfg`. When `wait = wait' + 1`,
 consumes one unit of `fuel` for an already-evaluated converged branch arm step
 before executing `bb0`. -/
-def runBlockCfgLoop {State Ret : Type}
+@[expose] def runBlockCfgLoop {State Ret : Type}
     (stepBb : Nat → State → BlockStepResult State Ret)
     (fuel : Nat) (wait : Nat) (bb : Nat) (st : State) :
     BlockCfgOutcome Ret :=
-  @Nat.recCompiled (fun _ => Nat → Nat → State → BlockCfgOutcome Ret)
+  -- Use kernel-exposed `@Nat.rec` (compiled via `@[csimp]` to `Nat.recCompiled`)
+  -- so downstream `module` proofs can reduce through `runBlockCfgLoop`.
+  @Nat.rec (fun _ => Nat → Nat → State → BlockCfgOutcome Ret)
     (fun _ _ _ => .diverged)
     (fun _ ih wait0 bb0 st0 =>
       match wait0 with
@@ -566,12 +571,12 @@ def runBlockCfgLoop {State Ret : Type}
 
 /-- Run a block-indexed CFG for `fuel` basic-block transitions. A wrapper or
 merge function that rejects its value makes the run fault. -/
-def runBlockCfg {State Ret : Type}
+@[expose] def runBlockCfg {State Ret : Type}
     (stepBb : Nat → State → BlockStepResult State Ret)
     (bb : Nat) (st : State) (fuel : Nat) : BlockCfgOutcome Ret :=
   runBlockCfgLoop stepBb fuel 0 bb st
 
-def BlockCfgPartialSpec {Ret : Type} (out : BlockCfgOutcome Ret)
+@[expose] def BlockCfgPartialSpec {Ret : Type} (out : BlockCfgOutcome Ret)
     (PostRet : Ret → Prop) : Prop :=
   match out with
   | .ret v => PostRet v
@@ -581,7 +586,7 @@ def BlockCfgPartialSpec {Ret : Type} (out : BlockCfgOutcome Ret)
 /-- Per-block verification condition (`LocalBlockVC`) for compositional $O(N)$
 CFG verification. A wrapper or merge function must accept every combination
 of values satisfying `PostRet`, and produce a value satisfying `PostRet`. -/
-def LocalBlockVC {State Ret : Type}
+@[expose] def LocalBlockVC {State Ret : Type}
     (stepBb : Nat → State → BlockStepResult State Ret)
     (BlockInv : Nat → State → Prop) (PostRet : Ret → Prop) : Prop :=
   ∀ bb st,
@@ -791,7 +796,7 @@ theorem modular_block_cfg_sound {State Ret : Type}
 /-- The promise a block result makes about the values the run returns through
 it: a returned value, and every value that its wrapper or merge function
 accepts, is free of borrow handles. -/
-def StepReturnsHandleFree {Val : Type} (alg : ValAlgebra Val) :
+@[expose] def StepReturnsHandleFree {Val : Type} (alg : ValAlgebra Val) :
     BlockStepResult (SymState Val) (FuncOut Val) → Prop
   | .jump _ _ => True
   | .jumpWrapped wrapRet _ _ =>
@@ -1268,7 +1273,7 @@ theorem cfg_certificate_step_sound {Val : Type} (alg : ValAlgebra Val)
 
 /-- Single-block `CfgCertificate`: the 1-block CFG `[⟨plan, .ret retExpr⟩]`
 run for one step, certified by `cfg_certificate_step_sound`. -/
-def CfgCertificate.singleBlock {Val : Type} (alg : ValAlgebra Val)
+@[expose] def CfgCertificate.singleBlock {Val : Type} (alg : ValAlgebra Val)
     (plan : FlowPlan Val) (retExpr : RvalOp Val) : CfgCertificate alg where
   blocks := [⟨plan, .ret retExpr⟩]
   entryBb := 0
@@ -1500,7 +1505,7 @@ theorem test_listGetOpt :
     listGetOpt 3 [10, 20, 30] = none :=
   ⟨rfl, rfl, rfl⟩
 
-def testCfgStep (bb : Nat) (st : Nat) : BlockStepResult Nat Nat :=
+@[expose] def testCfgStep (bb : Nat) (st : Nat) : BlockStepResult Nat Nat :=
   match bb with
   | 0 => if st == 0 then .jump 2 st else .jump 1 (st - 1)
   | 1 => .jump 0 st
@@ -1556,3 +1561,5 @@ theorem test_blockCfg_jumpWrapped_and_symbolic_branchJump :
   ⟨rfl, rfl, rfl, rfl⟩
 
 end Anneal.PureLift
+
+end

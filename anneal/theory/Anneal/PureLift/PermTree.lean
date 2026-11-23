@@ -6,11 +6,14 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.Data.List.Basic
-import Init.Data.Nat.Basic
-import Anneal.PureLift.Lens
+public import Init.Core
+public import Init.Data.List.Basic
+public import Init.Data.Nat.Basic
+public import Anneal.PureLift.Lens
+
+public section
 
 namespace Anneal.PureLift
 
@@ -57,11 +60,11 @@ inductive PermTree where
   | split (entries : List (SubPath × SubPerm)) : PermTree
 
 /-- True iff `lid` occurs in `xs`. -/
-def elemLoanId (lid : LoanId) (xs : List LoanId) : Bool :=
+@[expose] def elemLoanId (lid : LoanId) (xs : List LoanId) : Bool :=
   xs.foldr (fun x ih => x == lid || ih) false
 
 /-- Canonicalize `xs` as a deduplicated list of loan identifiers. -/
-def dedupLoanIds (xs : List LoanId) : List LoanId :=
+@[expose] def dedupLoanIds (xs : List LoanId) : List LoanId :=
   match xs with
   | [] => []
   | [x] => [x]
@@ -69,21 +72,21 @@ def dedupLoanIds (xs : List LoanId) : List LoanId :=
     xs.foldr (fun x ih => if elemLoanId x ih then ih else x :: ih) []
 
 /-- Merge two lists of loan identifiers without duplicates. -/
-def mergeLoanIds (xs ys : List LoanId) : List LoanId :=
+@[expose] def mergeLoanIds (xs ys : List LoanId) : List LoanId :=
   xs.foldr (fun x ih => if elemLoanId x ih then ih else x :: ih)
     (dedupLoanIds ys)
 
 /-- Remove all occurrences of `lid` from a list of loan identifiers. -/
-def removeLoanId (lid : LoanId) (xs : List LoanId) : List LoanId :=
+@[expose] def removeLoanId (lid : LoanId) (xs : List LoanId) : List LoanId :=
   xs.foldr (fun x ih => if x == lid then ih else x :: ih) []
 
 /-- Replace `oldLid` with `newLid` in `xs`, deduplicating the result. -/
-def replaceLoanId (oldLid newLid : LoanId) (xs : List LoanId) : List LoanId :=
+@[expose] def replaceLoanId (oldLid newLid : LoanId) (xs : List LoanId) : List LoanId :=
   dedupLoanIds
     (xs.foldr (fun x ih => (if x == oldLid then newLid else x) :: ih) [])
 
 /-- Structural equality on lists of loan identifiers. -/
-def loanIdListEq (xs ys : List LoanId) : Bool :=
+@[expose] def loanIdListEq (xs ys : List LoanId) : Bool :=
   xs.foldr
     (fun a ih bs =>
       match bs with
@@ -100,7 +103,7 @@ abbrev subPathEq (p1 p2 : SubPath) : Bool :=
   loanIdListEq p1 p2
 
 /-- True iff `p1` is a prefix of `p2`. -/
-def subPathPrefix (p1 p2 : SubPath) : Bool :=
+@[expose] def subPathPrefix (p1 p2 : SubPath) : Bool :=
   p1.foldr
     (fun x ih ys =>
       match ys with
@@ -111,7 +114,7 @@ def subPathPrefix (p1 p2 : SubPath) : Bool :=
 
 /-- Strip prefix `pref` from `full`, returning `some relSuffix` when `pref` is a
 prefix of `full`. -/
-def stripSubPathPrefix (pref full : SubPath) : Option SubPath :=
+@[expose] def stripSubPathPrefix (pref full : SubPath) : Option SubPath :=
   pref.foldr
     (fun x ih ys =>
       match ys with
@@ -121,12 +124,12 @@ def stripSubPathPrefix (pref full : SubPath) : Option SubPath :=
     full
 
 /-- True iff `p1` and `p2` overlap (one is a prefix of the other). -/
-def subPathOverlaps (p1 p2 : SubPath) : Bool :=
+@[expose] def subPathOverlaps (p1 p2 : SubPath) : Bool :=
   subPathPrefix p1 p2 || subPathPrefix p2 p1
 
 /-- Normalize a `SubPerm` from its active mutable and shared loan lists,
 returning `none` when both lists are empty. -/
-def mkSubPermOpt (mutLoans : List LoanId) (sharedLoans : List LoanId) :
+@[expose] def mkSubPermOpt (mutLoans : List LoanId) (sharedLoans : List LoanId) :
     Option SubPerm :=
   let m := dedupLoanIds mutLoans
   let s := dedupLoanIds sharedLoans
@@ -138,14 +141,14 @@ def mkSubPermOpt (mutLoans : List LoanId) (sharedLoans : List LoanId) :
 
 /-- Normalize a `SubPerm`, deduplicating its loan IDs and returning `none` when
 it holds no active loans (such as `.shared []` or `.mutJoined [] []`). -/
-def normalizeSubPerm (sp : SubPerm) : Option SubPerm :=
+@[expose] def normalizeSubPerm (sp : SubPerm) : Option SubPerm :=
   match sp with
   | .shared ls => mkSubPermOpt [] ls
   | .mutLocked l => some (.mutLocked l)
   | .mutJoined m s => mkSubPermOpt m s
 
 /-- Merge two `SubPerm` states at the same sub-place path. -/
-def unionSubPerm (sp1 sp2 : SubPerm) : SubPerm :=
+@[expose] def unionSubPerm (sp1 sp2 : SubPerm) : SubPerm :=
   let (m1, s1) : List LoanId × List LoanId :=
     match sp1 with
     | .shared ls => ([], ls)
@@ -162,7 +165,7 @@ def unionSubPerm (sp1 sp2 : SubPerm) : SubPerm :=
 
 /-- Insert or merge `(path, sp)` into a list of `(SubPath × SubPerm)` entries,
 ignoring `sp` if `normalizeSubPerm sp` is `none`. -/
-def insertSubPermEntry (path : SubPath) (sp : SubPerm)
+@[expose] def insertSubPermEntry (path : SubPath) (sp : SubPerm)
     (entries : List (SubPath × SubPerm)) : List (SubPath × SubPerm) :=
   match normalizeSubPerm sp with
   | none => entries
@@ -187,7 +190,7 @@ def insertSubPermEntry (path : SubPath) (sp : SubPerm)
 /-- Prepend or merge `(path, sp)` into a normalized list of `(SubPath × SubPerm)`
 entries, deduplicating loan IDs in `sp` via `normalizeSubPerm` and merging into
 an existing entry at `path` if one is already present in `entries`. -/
-def prependOrMergeSubPermEntry (path : SubPath) (sp : SubPerm)
+@[expose] def prependOrMergeSubPermEntry (path : SubPath) (sp : SubPerm)
     (entries : List (SubPath × SubPerm)) : List (SubPath × SubPerm) :=
   match normalizeSubPerm sp with
   | none => entries
@@ -209,7 +212,7 @@ def prependOrMergeSubPermEntry (path : SubPath) (sp : SubPerm)
 /-- Extract the normalized `(SubPath × SubPerm)` entry list of a `PermTree`,
 filtering out any degenerate empty `.shared []` or `.mutJoined [] []` entries
 and merging any duplicate sub-paths inside hand-constructed `.split` trees. -/
-def toEntries : PermTree → List (SubPath × SubPerm)
+@[expose] def toEntries : PermTree → List (SubPath × SubPerm)
   | .unborrowed => []
   | .shared ls =>
     match mkSubPermOpt [] ls with
@@ -227,7 +230,7 @@ def toEntries : PermTree → List (SubPath × SubPerm)
 
 /-- Collapse a normalized list of `(SubPath × SubPerm)` entries into a canonical
 `PermTree`. -/
-def fromCleanEntries (entries : List (SubPath × SubPerm)) : PermTree :=
+@[expose] def fromCleanEntries (entries : List (SubPath × SubPerm)) : PermTree :=
   match entries with
   | [] => .unborrowed
   | [([], SubPerm.shared ls)] => .shared ls
@@ -237,14 +240,14 @@ def fromCleanEntries (entries : List (SubPath × SubPerm)) : PermTree :=
 
 /-- Normalize a list of `(SubPath × SubPerm)` entries into a canonical
 `PermTree`. -/
-def fromEntries (entries : List (SubPath × SubPerm)) : PermTree :=
+@[expose] def fromEntries (entries : List (SubPath × SubPerm)) : PermTree :=
   fromCleanEntries
     (entries.foldr
       (fun entry acc => insertSubPermEntry entry.1 entry.2 acc)
       [])
 
 /-- Normalize a leaf permission from its active mutable and shared loan sets. -/
-def mkLeafPerm (mutLoans : List LoanId) (sharedLoans : List LoanId) :
+@[expose] def mkLeafPerm (mutLoans : List LoanId) (sharedLoans : List LoanId) :
     PermTree :=
   match mkSubPermOpt mutLoans sharedLoans with
   | none => .unborrowed
@@ -253,22 +256,22 @@ def mkLeafPerm (mutLoans : List LoanId) (sharedLoans : List LoanId) :
   | some (.mutJoined m s) => .mutJoined m s
 
 /-- True iff `sp` permits read access (i.e., holds no active mutable loan). -/
-def subPermCanRead : SubPerm → Bool
+@[expose] def subPermCanRead : SubPerm → Bool
   | .shared _ => true
   | .mutLocked _ => false
   | .mutJoined m _ => m.isEmpty
 
 /-- True iff no active shared or mutable loans lock any part of the tree. -/
-def isUnborrowed (t : PermTree) : Bool :=
+@[expose] def isUnborrowed (t : PermTree) : Bool :=
   (toEntries t).isEmpty
 
 /-- True iff every sub-place of the tree permits read access (i.e., no sub-place
 has an active mutable lock). -/
-def canReadTree (t : PermTree) : Bool :=
+@[expose] def canReadTree (t : PermTree) : Bool :=
   (toEntries t).foldr (fun entry ih => subPermCanRead entry.2 && ih) true
 
 /-- Project the permission subtree at nested `SubPath`. -/
-def getPathPerm (path : SubPath) (t : PermTree) : PermTree :=
+@[expose] def getPathPerm (path : SubPath) (t : PermTree) : PermTree :=
   match path with
   | [] => fromCleanEntries (toEntries t)
   | _ :: _ =>
@@ -285,16 +288,16 @@ def getPathPerm (path : SubPath) (t : PermTree) : PermTree :=
 
 /-- Project the permission subtree for immediate field `f` from an aggregate
 `PermTree`. -/
-def getChildPerm (f : FieldIdx) (t : PermTree) : PermTree :=
+@[expose] def getChildPerm (f : FieldIdx) (t : PermTree) : PermTree :=
   getPathPerm [f] t
 
 /-- Remove any loan IDs in `toRemove` from `xs`. -/
-def removeLoanIdList (toRemove xs : List LoanId) : List LoanId :=
+@[expose] def removeLoanIdList (toRemove xs : List LoanId) : List LoanId :=
   toRemove.foldr (fun lid acc => removeLoanId lid acc) xs
 
 /-- Strip loan IDs already present in an inherited root `SubPerm` from a child
 `SubPerm` so `setChildPerm` does not duplicate root-level locks into `[f]`. -/
-def stripInheritedSubPerm (inherited : SubPerm) (sp : SubPerm) :
+@[expose] def stripInheritedSubPerm (inherited : SubPerm) (sp : SubPerm) :
     Option SubPerm :=
   let (inhMut, inhSh) : List LoanId × List LoanId :=
     match inherited with
@@ -312,7 +315,7 @@ def stripInheritedSubPerm (inherited : SubPerm) (sp : SubPerm) :
 
 /-- Extract the permission entry at exact `targetPath` in `entries`, if present.
 -/
-def findSubPermAtPath (targetPath : SubPath)
+@[expose] def findSubPermAtPath (targetPath : SubPath)
     (entries : List (SubPath × SubPerm)) : Option SubPerm :=
   entries.foldr
     (fun entry ih =>
@@ -320,11 +323,11 @@ def findSubPermAtPath (targetPath : SubPath)
     none
 
 /-- Extract the root `[]` permission entry of `entries`, if present. -/
-def findRootSubPerm (entries : List (SubPath × SubPerm)) : Option SubPerm :=
+@[expose] def findRootSubPerm (entries : List (SubPath × SubPerm)) : Option SubPerm :=
   findSubPermAtPath [] entries
 
 /-- Split a `SubPerm` into its mutable and shared loan ID lists. -/
-def subPermLoanParts (sp : SubPerm) : List LoanId × List LoanId :=
+@[expose] def subPermLoanParts (sp : SubPerm) : List LoanId × List LoanId :=
   match sp with
   | .shared ls => ([], ls)
   | .mutLocked l => ([l], [])
@@ -332,7 +335,7 @@ def subPermLoanParts (sp : SubPerm) : List LoanId × List LoanId :=
 
 /-- True iff every mutable and shared loan ID of `inherited` also appears in the
 same role in `sp`. -/
-def subPermContainsLoans (inherited sp : SubPerm) : Bool :=
+@[expose] def subPermContainsLoans (inherited sp : SubPerm) : Bool :=
   let (inhMut, inhSh) := subPermLoanParts inherited
   let (curMut, curSh) := subPermLoanParts sp
   inhMut.all (fun l => elemLoanId l curMut) &&
@@ -352,7 +355,7 @@ loan. Otherwise a transformed child (for example,
 `renameLoanPerm 1 2 (getChildPerm 0 (.shared [1]))`) could not be told apart
 from a child that holds an explicit extra loan, and releasing the inherited loan
 would leave a phantom descendant lock. -/
-def setChildPerm (f : FieldIdx) (newChild : PermTree) (t : PermTree) :
+@[expose] def setChildPerm (f : FieldIdx) (newChild : PermTree) (t : PermTree) :
     Option PermTree :=
   let tEntries := toEntries t
   let rootSpOpt := findRootSubPerm tEntries
@@ -393,7 +396,7 @@ def setChildPerm (f : FieldIdx) (newChild : PermTree) (t : PermTree) :
     none
 
 /-- Check whether `SubPath` can be read under `PermTree`. -/
-def canReadPath (path : SubPath) (t : PermTree) : Bool :=
+@[expose] def canReadPath (path : SubPath) (t : PermTree) : Bool :=
   (toEntries t).foldr
     (fun entry ih =>
       if subPathOverlaps entry.1 path then
@@ -404,7 +407,7 @@ def canReadPath (path : SubPath) (t : PermTree) : Bool :=
 
 /-- Check whether `SubPath` can be mutably written or mutably borrowed under
 `PermTree`. -/
-def canWritePath (path : SubPath) (t : PermTree) : Bool :=
+@[expose] def canWritePath (path : SubPath) (t : PermTree) : Bool :=
   (toEntries t).foldr
     (fun entry ih =>
       if subPathOverlaps entry.1 path then false else ih)
@@ -413,7 +416,7 @@ def canWritePath (path : SubPath) (t : PermTree) : Bool :=
 /-- Acquire permission of `kind` for loan `lid` at `SubPath`, returning `none`
 if an incompatible borrow already locks an ancestor, target, or descendant
 sub-place. -/
-def acquirePerm (kind : BorrowKind) (lid : LoanId)
+@[expose] def acquirePerm (kind : BorrowKind) (lid : LoanId)
     (path : SubPath) (t : PermTree) : Option PermTree :=
   match kind with
   | .shared =>
@@ -433,7 +436,7 @@ def acquirePerm (kind : BorrowKind) (lid : LoanId)
 
 /-- Release all locks held by `lid` anywhere in `PermTree`, normalizing empty
 `.shared`, `.mutJoined`, and `.split` nodes back to `.unborrowed`. -/
-def releaseLoanPerm (lid : LoanId) (t : PermTree) : PermTree :=
+@[expose] def releaseLoanPerm (lid : LoanId) (t : PermTree) : PermTree :=
   fromCleanEntries
     ((toEntries t).foldr
       (fun entry ih =>
@@ -450,7 +453,7 @@ def releaseLoanPerm (lid : LoanId) (t : PermTree) : PermTree :=
       [])
 
 /-- Rename loan identifier `oldLid` to `newLid` throughout `PermTree`. -/
-def renameLoanPerm (oldLid newLid : LoanId) (t : PermTree) : PermTree :=
+@[expose] def renameLoanPerm (oldLid newLid : LoanId) (t : PermTree) : PermTree :=
   fromCleanEntries
     ((toEntries t).foldr
       (fun entry ih =>
@@ -470,14 +473,14 @@ def renameLoanPerm (oldLid newLid : LoanId) (t : PermTree) : PermTree :=
 
 /-- Conservative permission join across two control-flow branches, preserving
 all active shared and mutable loans from both branches without duplication. -/
-def unionPerm (t1 t2 : PermTree) : PermTree :=
+@[expose] def unionPerm (t1 t2 : PermTree) : PermTree :=
   fromCleanEntries
     ((toEntries t2).foldr
       (fun entry acc => insertSubPermEntry entry.1 entry.2 acc)
       (toEntries t1))
 
 /-- True iff `PermTree` records `lid` as an active mutable loan at `path`. -/
-def hasMutLoanAtPath (lid : LoanId) (path : SubPath) (t : PermTree) : Bool :=
+@[expose] def hasMutLoanAtPath (lid : LoanId) (path : SubPath) (t : PermTree) : Bool :=
   (toEntries t).foldr
     (fun entry ih =>
       let here : Bool :=
@@ -492,7 +495,7 @@ def hasMutLoanAtPath (lid : LoanId) (path : SubPath) (t : PermTree) : Bool :=
     false
 
 /-- True iff `PermTree` records `lid` as an active shared loan at `path`. -/
-def hasSharedLoanAtPath (lid : LoanId) (path : SubPath) (t : PermTree) :
+@[expose] def hasSharedLoanAtPath (lid : LoanId) (path : SubPath) (t : PermTree) :
     Bool :=
   (toEntries t).foldr
     (fun entry ih =>
@@ -509,7 +512,7 @@ def hasSharedLoanAtPath (lid : LoanId) (path : SubPath) (t : PermTree) :
 
 /-- True iff `PermTree` records `lid` (either mutable or shared) at any entry
 whose path overlaps `path`. -/
-def hasAnyLoanOverlappingPath (lid : LoanId) (path : SubPath) (t : PermTree) :
+@[expose] def hasAnyLoanOverlappingPath (lid : LoanId) (path : SubPath) (t : PermTree) :
     Bool :=
   (toEntries t).foldr
     (fun entry ih =>
@@ -527,7 +530,7 @@ def hasAnyLoanOverlappingPath (lid : LoanId) (path : SubPath) (t : PermTree) :
 /-- Release loan identifier `lid` only from the entry at `targetPath` in `t`,
 leaving other disjoint sub-paths in `t` untouched so multi-leaf writebacks to
 the same owner validate and release each leaf path independently. -/
-def releaseLoanPermAtPath (lid : LoanId) (targetPath : SubPath)
+@[expose] def releaseLoanPermAtPath (lid : LoanId) (targetPath : SubPath)
     (t : PermTree) : PermTree :=
   fromCleanEntries
     ((toEntries t).foldr
@@ -567,7 +570,7 @@ theorem acquire_release_root_mut (lid : LoanId) :
 
 /-- 10-level nested `PermTree` with `subPerm` at path
 `[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]`. -/
-def deepPermTree10 (subPerm : SubPerm) : PermTree :=
+@[expose] def deepPermTree10 (subPerm : SubPerm) : PermTree :=
   .split [([0, 0, 0, 0, 0, 0, 0, 0, 0, 0], subPerm)]
 
 /-- Traversal beyond depth 8 detects deep `.mutLocked` and `.shared` leaves,
@@ -830,3 +833,5 @@ theorem unionPerm_split_and_shared_combinations_tests :
    rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 end Anneal.PureLift
+
+end

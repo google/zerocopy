@@ -6,19 +6,22 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Int.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.Nat.Bitwise.Basic
-import Init.Control.Except
-import Trusted
-import Trusted.MirAst
-import Trusted.MirSemantics
-import Anneal.MirWp.Core
-import Anneal.MirWp.Scalars
-import Anneal.MirWp.Reflection
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Int.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.Nat.Bitwise.Basic
+public import Init.Control.Except
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirSemantics
+public import Anneal.MirWp.Core
+public import Anneal.MirWp.Scalars
+public import Anneal.MirWp.Reflection
+
+public section
 
 namespace Anneal.MirWp
 
@@ -398,3 +401,5 @@ theorem canary_negative_int_to_int_cast_anneal_base :
      (fun h => FaultKind.noConfusion h) rfl⟩
 
 end Anneal.MirWp
+
+end

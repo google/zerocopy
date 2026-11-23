@@ -6,18 +6,21 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Int.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.Nat.Bitwise.Basic
-import Init.Control.Except
-import Trusted
-import Trusted.MirAst
-import Trusted.MirSemantics
-import Anneal.NatBitwise
-import Anneal.MirWp.Core
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Int.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.Nat.Bitwise.Basic
+public import Init.Control.Except
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirSemantics
+public import Anneal.NatBitwise
+public import Anneal.MirWp.Core
+
+public section
 
 namespace Anneal.MirWp
 
@@ -37,7 +40,7 @@ theorem bitVec_eq_of_toNat_eq {n : Nat} {a b : BitVec n}
 /-- Unsigned modulus $2^{\text{bitWidth}}$ for proof-side wrapping and range
 lemmas. Defined directly in `theory/` rather than `Trusted.MirAst` so the
 trusted specification stays free of proof-only arithmetic helpers. -/
-def intWidthModulus : IntWidth → Nat
+@[expose] def intWidthModulus : IntWidth → Nat
   | .i8 => Nat.pow 2 8
   | .i16 => Nat.pow 2 16
   | .i32 => Nat.pow 2 32
@@ -326,21 +329,21 @@ theorem truncateBits_i64_ofNat_lt {n : Nat} (h : n < Nat.pow 2 64) :
   exact Nat.lt_of_le_of_lt (Nat.mod_le _ _) h
 
 /-- Computable closed-form result value of 64-bit unsigned bitwise AND. -/
-def u64BitAndVal (x y : BitVec 64) : Val :=
+@[expose] def u64BitAndVal (x y : BitVec 64) : Val :=
   .scalar ⟨.i64, false, BitVec.ofNat 128 (Nat.land x.toNat y.toNat)⟩
 
 /-- Computable closed-form result value of 64-bit unsigned bitwise OR. -/
-def u64BitOrVal (x y : BitVec 64) : Val :=
+@[expose] def u64BitOrVal (x y : BitVec 64) : Val :=
   .scalar ⟨.i64, false, BitVec.ofNat 128 (Nat.lor x.toNat y.toNat)⟩
 
 /-- Computable closed-form result value of 64-bit unsigned left shift by `k`. -/
-def u64ShlVal (x : BitVec 64) (k : Nat) : Val :=
+@[expose] def u64ShlVal (x : BitVec 64) (k : Nat) : Val :=
   .scalar ⟨.i64, false,
     BitVec.ofNat 128 (BitVec.ofNat 64 (Nat.shiftLeft x.toNat k)).toNat⟩
 
 /-- Computable closed-form result value of 64-bit unsigned logical right shift
 by `k`. -/
-def u64ShrVal (x : BitVec 64) (k : Nat) : Val :=
+@[expose] def u64ShrVal (x : BitVec 64) (k : Nat) : Val :=
   .scalar ⟨.i64, false, BitVec.ofNat 128 (Nat.shiftRight x.toNat k)⟩
 
 /-- Definitional unfolding of `u64BitAndVal x y`. -/
@@ -379,7 +382,7 @@ theorem u64BitAnd_sem_eq (x y : BitVec 64) :
       bvZeroExtend_128_toNat x, bvZeroExtend_128_toNat y]
   exact congrArg (fun b => Val.scalar ⟨.i64, false, b⟩)
     (truncateBits_i64_ofNat_lt
-      (nat_bitwise_lt_two_pow and 64 x.toNat y.toNat x.isLt y.isLt))
+      (Anneal.NatBitwise.land_lt_two_pow x.isLt y.isLt))
 
 /-- `Trusted.MirSemantics` 64-bit bitwise OR reduces to `u64BitOrVal`. -/
 theorem u64BitOr_sem_eq (x y : BitVec 64) :
@@ -392,7 +395,7 @@ theorem u64BitOr_sem_eq (x y : BitVec 64) :
       bvZeroExtend_128_toNat x, bvZeroExtend_128_toNat y]
   exact congrArg (fun b => Val.scalar ⟨.i64, false, b⟩)
     (truncateBits_i64_ofNat_lt
-      (nat_bitwise_lt_two_pow or 64 x.toNat y.toNat x.isLt y.isLt))
+      (Anneal.NatBitwise.lor_lt_two_pow x.isLt y.isLt))
 
 /-- `Trusted.MirSemantics` 64-bit left shift reduces to `u64ShlVal`. -/
 theorem u64Shl_sem_eq (x : BitVec 64) (k : Nat) :
@@ -440,3 +443,5 @@ theorem u64Shr_sem_eq (x : BitVec 64) (k : Nat) :
     (truncateBits_i64_ofNat_lt hLt)
 
 end Anneal.MirWp
+
+end

@@ -6,28 +6,31 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.NotationExtra
-import Trusted
-import Anneal.NatBitwise
-import Anneal.BitVec
-import Anneal.BitVecArith
-import Anneal.LeBytes
-import Anneal.ListChunks
-import Anneal.MirWp
-import Anneal.LoopInv
-import Anneal.LinearArith
-import Anneal.SpineForce
-import Anneal.PTree
-import Anneal.BitTrieLrat
-import Anneal.InitLemmas
-import Anneal.ClassicalEm
-import Anneal.MirTotal
-import Anneal.Core
-import Anneal.ByteSubLens
-import Anneal.CnfOrd
-import Anneal.F2Simd
-import Anneal.PureLift
+public import Init.NotationExtra
+public import Trusted
+public import Anneal.NatBitwise
+public import Anneal.BitVec
+public import Anneal.BitVecArith
+public import Anneal.LeBytes
+public import Anneal.ListChunks
+public import Anneal.MirWp
+public import Anneal.LoopInv
+public import Anneal.LinearArith
+public import Anneal.SpineForce
+public import Anneal.PTree
+public import Anneal.BitTrieLrat
+public import Anneal.InitLemmas
+public import Anneal.ClassicalEm
+public import Anneal.MirTotal
+public import Anneal.Core
+public import Anneal.ByteSubLens
+public import Anneal.CnfOrd
+public import Anneal.F2Simd
+public import Anneal.PureLift
+
+public section
 
 namespace Anneal
 
@@ -50,3 +53,5 @@ $\mathbb{F}_2$-bilinear SIMD certificate evaluators (`Anneal.F2Simd`), and
 -/
 
 end Anneal
+
+end

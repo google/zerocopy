@@ -6,16 +6,19 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Int.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.Nat.Bitwise.Basic
-import Init.Control.Except
-import Trusted
-import Trusted.MirAst
-import Trusted.MirSemantics
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Int.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.Nat.Bitwise.Basic
+public import Init.Control.Except
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirSemantics
+
+public section
 
 namespace Anneal.MirWp
 
@@ -27,7 +30,7 @@ open Trusted.MirAst Trusted.MirSemantics
 Using `@Nat.rec` into `Prop` avoids both codegen exemptions and `_unsafe_rec`
 while preserving the `ValidChoice`-quantified shape expected by downstream
 correspondence proofs. -/
-def wpOutcomeState (p : Program) (onDone : TerminalOut → Prop)
+@[expose] def wpOutcomeState (p : Program) (onDone : TerminalOut → Prop)
     (onFault : FaultKind → Prop) (fuel : Nat) (s : State) : Prop :=
   @Nat.rec (fun _ => State → Prop)
     (fun _ => False)
@@ -54,14 +57,14 @@ abbrev wpFaultState (p : Program) (fuel : Nat) (s : State)
 
 /-- Whole-program fuel-bounded weakest precondition starting from
 `initState p q`. -/
-def wpProg (p : Program) (fuel : Nat) (q : Query)
+@[expose] def wpProg (p : Program) (fuel : Nat) (q : Query)
     (post : TerminalOut → Prop) : Prop :=
   match initState p q with
   | .error _ => False
   | .ok s₀ => wpState p fuel s₀ post
 
 /-- Whole-program fuel-bounded fault verifier starting from `initState p q`. -/
-def wpFaultProg (p : Program) (fuel : Nat) (q : Query)
+@[expose] def wpFaultProg (p : Program) (fuel : Nat) (q : Query)
     (expected : FaultKind) : Prop :=
   match initState p q with
   | .error k => k = expected
@@ -70,7 +73,7 @@ def wpFaultProg (p : Program) (fuel : Nat) (q : Query)
 /-- Deterministic `c = 0` fast-path structural fuel-bounded execution
 predicate over `evalStep p 0`. Concrete runs reduce directly by `rfl` and lift
 into `wpOutcomeState` via `wpOutcomeState_of_execOutcomeState`. -/
-def execOutcomeState (p : Program) (onDone : TerminalOut → Prop)
+@[expose] def execOutcomeState (p : Program) (onDone : TerminalOut → Prop)
     (onFault : FaultKind → Prop) (fuel : Nat) (s : State) : Prop :=
   @Nat.rec (fun _ => State → Prop)
     (fun _ => False)
@@ -93,7 +96,7 @@ abbrev execFaultState (p : Program) (fuel : Nat) (s : State)
 
 /-- Whole-program deterministic `c = 0` normal-termination predicate starting
 from `initState p q`. -/
-def execProg (p : Program) (fuel : Nat) (q : Query)
+@[expose] def execProg (p : Program) (fuel : Nat) (q : Query)
     (post : TerminalOut → Prop) : Prop :=
   match initState p q with
   | .error _ => False
@@ -101,7 +104,7 @@ def execProg (p : Program) (fuel : Nat) (q : Query)
 
 /-- Whole-program deterministic `c = 0` fault-termination predicate starting
 from `initState p q`. -/
-def execFaultProg (p : Program) (fuel : Nat) (q : Query)
+@[expose] def execFaultProg (p : Program) (fuel : Nat) (q : Query)
     (expected : FaultKind) : Prop :=
   match initState p q with
   | .error k => k = expected
@@ -560,3 +563,5 @@ theorem negativeCanary_of_execFault {p : Program} {q : Query} {fuel : Nat}
   negativeCanary_of_wpFault h_ne (wpFaultProg_of_execFaultProg h_exec)
 
 end Anneal.MirWp
+
+end

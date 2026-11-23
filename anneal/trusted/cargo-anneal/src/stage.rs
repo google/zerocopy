@@ -36,12 +36,13 @@ use crate::olean_cache::{
 use crate::sandbox::{
     ActiveSandbox, DEFAULT_CHILD_TIMEOUT, MountSpec, PathMapper, SandboxMode, SandboxPolicy,
     SandboxRuntime, copy_readonly_file, create_dir_mode, make_tree_writable, set_mode,
-    validate_and_promote_olean, validate_and_promote_olean_set, validate_inspector_result,
+    validate_and_promote_olean, validate_and_promote_olean_set,
+    validate_and_promote_olean_set_with_digests, validate_inspector_result,
 };
 use crate::target::{TargetRole, is_bundled_theory_module};
 use crate::toolchain::{
     AdmittedToolchain, FOUNDATION_AXIOMS, Failure, FoundationLock, ImportEdge, Json,
-    LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, LibraryLock, ModuleArtifacts, PARTS,
+    LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, LibraryLock, ModuleArtifacts, OLEAN_PARTS, PARTS,
     ParallelDagPlan, TOOLCHAIN, compute_sysroot_manifest_sha256,
     compute_unpinned_sysroot_manifest_sha256, default_lean_path, is_sha256_hex, regular,
     run_parallel_dag, scan_sysroot_package_roots, sha256_bytes, sha256_file, sha256_file_deref,
@@ -171,6 +172,7 @@ fn write_setup_json_to_path(
     adm: &AdmittedToolchain,
     module: &str,
     imports: &[ImportEdge],
+    is_module: bool,
     mapper: Option<&PathMapper>,
 ) -> Result<(), Failure> {
     let closure = transitive_import_closure(&adm.graph, imports);
@@ -190,7 +192,7 @@ fn write_setup_json_to_path(
     }
     let setup_obj = json!({
         "name": module,
-        "isModule": false,
+        "isModule": is_module,
         "imports": imports,
         "importArts": import_arts,
         "dynlibs": [],
@@ -238,6 +240,68 @@ fn build_lean_compile_args(
         src_path.to_string_lossy().into_owned(),
     ]);
     compile_args
+}
+
+/// Promote Door 1 outputs from a sandboxed module compilation into
+/// `dest_olean.parent()`, recording every promoted `.olean*` file in
+/// `olean_ledger` and returning the ordered [`ModuleArtifacts`].
+///
+/// Non-module compilations keep the strict singleton `.olean` check via
+/// [`validate_and_promote_olean`]. Lean 4 `module` compilations promote only
+/// `.olean`, `.olean.server`, and `.olean.private` while validating and
+/// discarding `.ir` and `.ir.sig` outputs (which downstream pure Lean
+/// elaboration does not read and `"target-audit"` excludes).
+fn promote_compiled_module_parts(
+    out_dir: &Path,
+    leaf: &str,
+    dest_olean: &Path,
+    is_module: bool,
+) -> Result<Vec<(String, PathBuf, String)>, Failure> {
+    let out_filename = format!("{leaf}.olean");
+    if !is_module {
+        let sha = validate_and_promote_olean(out_dir, &out_filename, dest_olean)?;
+        return Ok(vec![("olean".to_owned(), dest_olean.to_path_buf(), sha)]);
+    }
+    let allowed_promote = BTreeSet::from([
+        out_filename.clone(),
+        format!("{leaf}.olean.server"),
+        format!("{leaf}.olean.private"),
+    ]);
+    let allowed_discard = BTreeSet::from([format!("{leaf}.ir"), format!("{leaf}.ir.sig")]);
+    let dest_dir = dest_olean
+        .parent()
+        .ok_or_else(|| Failure::operational("door1", "missing destination parent directory"))?;
+    let promoted = validate_and_promote_olean_set_with_digests(
+        out_dir,
+        &allowed_promote,
+        &allowed_discard,
+        &out_filename,
+        dest_dir,
+    )?;
+    let mut parts_with_sha = Vec::new();
+    for suffix in OLEAN_PARTS {
+        let candidate = dest_dir.join(format!("{leaf}.{suffix}"));
+        if let Some(sha) = promoted.get(&candidate) {
+            parts_with_sha.push(((*suffix).to_owned(), candidate, sha.clone()));
+        }
+    }
+    Ok(parts_with_sha)
+}
+
+fn promote_compiled_module_outputs(
+    out_dir: &Path,
+    leaf: &str,
+    dest_olean: &Path,
+    is_module: bool,
+    olean_ledger: &mut BTreeMap<PathBuf, String>,
+) -> Result<ModuleArtifacts, Failure> {
+    let parts_with_sha = promote_compiled_module_parts(out_dir, leaf, dest_olean, is_module)?;
+    let mut olean_parts = Vec::with_capacity(parts_with_sha.len());
+    for (_, path, sha) in parts_with_sha {
+        olean_parts.push(path.to_string_lossy().into_owned());
+        olean_ledger.insert(path, sha);
+    }
+    Ok(ModuleArtifacts { olean_parts, ir_parts: Vec::new() })
 }
 
 fn collect_compiled_artifacts(module: &str, output: &Path) -> Result<ModuleArtifacts, Failure> {
@@ -343,6 +407,7 @@ fn prepare_module_cache(
     adm: &AdmittedToolchain,
     module: &str,
     edge_list: &[ImportEdge],
+    mod_is_module: bool,
     src_path: &Path,
     lib_dir: &Path,
     warn_as_err: bool,
@@ -363,7 +428,7 @@ fn prepare_module_cache(
         lean_sha256: lean_sha.clone(),
         sysroot_manifest_sha256: sysroot_sha.clone(),
         source_sha256: sha256_bytes(&src_bytes),
-        is_module: source_starts_with_module_keyword(&src_bytes),
+        is_module: mod_is_module,
         flags: canonical_compile_flags(warn_as_err),
         imports: build_import_bindings(edge_list, &adm.artifacts, path_sha_cache)?,
     };
@@ -2092,7 +2157,7 @@ impl Checker {
         imports: &[ImportEdge],
     ) -> Result<PathBuf, Failure> {
         let setup_path = self.stage.join(format!("{module}.setup.json"));
-        self.write_setup_json_at(&setup_path, module, imports, None)?;
+        self.write_setup_json_at(&setup_path, module, imports, false, None)?;
         Ok(setup_path)
     }
 
@@ -2101,10 +2166,11 @@ impl Checker {
         setup_path: &Path,
         module: &str,
         imports: &[ImportEdge],
+        is_module: bool,
         mapper: Option<&PathMapper>,
     ) -> Result<(), Failure> {
         let adm = self.admitted()?;
-        write_setup_json_to_path(setup_path, adm, module, imports, mapper)
+        write_setup_json_to_path(setup_path, adm, module, imports, is_module, mapper)
     }
 
     /// Create fresh per-invocation `runs/<counter>/{in,out,tmp}` directories.
@@ -2116,11 +2182,13 @@ impl Checker {
     /// `self.stage/<lib_subdir>` using `--setup` and strict synchronous kernel
     /// flags, and register its compiled [`ModuleArtifacts`].
     #[doc(hidden)]
+    #[allow(clippy::too_many_arguments)]
     pub fn compile_lean_module(
         &mut self,
         module: &str,
         src_path: &Path,
         edge_list: Vec<ImportEdge>,
+        is_module: bool,
         lib_subdir: &str,
         warn_as_err: bool,
         target_rejection: bool,
@@ -2130,6 +2198,7 @@ impl Checker {
                 module,
                 src_path,
                 edge_list,
+                is_module,
                 lib_subdir,
                 warn_as_err,
             );
@@ -2140,7 +2209,8 @@ impl Checker {
         let lib_dir = self.stage.join(lib_subdir);
         create_dir_mode(&lib_dir, 0o700)?;
 
-        let leaf_name = format!("{}.lean", module.rsplit('.').next().unwrap_or(module));
+        let leaf = module.rsplit('.').next().unwrap_or(module);
+        let leaf_name = format!("{leaf}.lean");
         let in_src = in_dir.join(&leaf_name);
         copy_readonly_file(src_path, &in_src, "compile")?;
 
@@ -2165,10 +2235,10 @@ impl Checker {
         let mapper = PathMapper::new(&runtime, &ro_mounts, &rw_out, &rw_tmp);
 
         let setup_host = in_dir.join(format!("{module}.setup.json"));
-        self.write_setup_json_at(&setup_host, module, &edge_list, Some(&mapper))?;
+        self.write_setup_json_at(&setup_host, module, &edge_list, is_module, Some(&mapper))?;
         set_mode(&in_dir, 0o500)?;
 
-        let out_filename = format!("{}.olean", module.rsplit('.').next().unwrap_or(module));
+        let out_filename = format!("{leaf}.olean");
         let out_host = out_dir.join(&out_filename);
         let mut compile_args = vec![
             "-j1".to_string(),
@@ -2223,13 +2293,13 @@ impl Checker {
         }
 
         let dest_olean = lib_dir.join(format!("{}.olean", module.replace('.', "/")));
-        let sha = validate_and_promote_olean(&out_dir, &out_filename, &dest_olean)?;
-        self.olean_ledger.insert(dest_olean.clone(), sha);
-
-        let mod_arts = ModuleArtifacts {
-            olean_parts: vec![dest_olean.to_string_lossy().into_owned()],
-            ir_parts: Vec::new(),
-        };
+        let mod_arts = promote_compiled_module_outputs(
+            &out_dir,
+            leaf,
+            &dest_olean,
+            is_module,
+            &mut self.olean_ledger,
+        )?;
         let adm = self.admitted_mut()?;
         adm.artifacts.insert(module.to_string(), mod_arts);
         adm.graph.insert(module.to_string(), edge_list);
@@ -2241,10 +2311,12 @@ impl Checker {
         module: &str,
         src_path: &Path,
         edge_list: Vec<ImportEdge>,
+        is_module: bool,
         lib_subdir: &str,
         warn_as_err: bool,
     ) -> Result<(), Failure> {
-        let setup_path = self.write_setup_json(module, &edge_list)?;
+        let setup_path = self.stage.join(format!("{module}.setup.json"));
+        self.write_setup_json_at(&setup_path, module, &edge_list, is_module, None)?;
         let output =
             self.stage.join(lib_subdir).join(format!("{}.olean", module.replace('.', "/")));
         if let Some(parent) = output.parent() {
@@ -2270,7 +2342,7 @@ impl Checker {
     /// Compile a topologically ordered batch of staged `.lean` modules in
     /// parallel along their verified import DAG across at most `max_workers`
     /// workers, preserving deterministic earliest-order failure reporting,
-    /// `ExecSeal` + Door 1 single-file promotion (when active), and serialized
+    /// `ExecSeal` + Door 1 artifact promotion (when active), and serialized
     /// registration into `self.admitted` and `self.olean_ledger`.
     #[doc(hidden)]
     #[allow(clippy::too_many_arguments)]
@@ -2279,6 +2351,7 @@ impl Checker {
         order: &[String],
         sources: &BTreeMap<String, PathBuf>,
         imports: &BTreeMap<String, Vec<ImportEdge>>,
+        is_module: &BTreeMap<String, bool>,
         lib_subdir: &str,
         warn_as_err: bool,
         target_rejection: bool,
@@ -2347,12 +2420,14 @@ impl Checker {
                 |(adm, olean_cache, _, path_sha_cache), idx| {
                     let module = &order[idx];
                     let edge_list = &imports[module];
+                    let mod_is_module = is_module.get(module).copied().unwrap_or(false);
                     let src_path = &sources[module];
                     match prepare_module_cache(
                         olean_cache,
                         adm,
                         module,
                         edge_list,
+                        mod_is_module,
                         src_path,
                         &lib_dir,
                         warn_as_err,
@@ -2362,7 +2437,14 @@ impl Checker {
                         ModuleCachePrep::Cached(parts) => Ok(PreparedModuleCompile::Cached(parts)),
                         ModuleCachePrep::CompileNeeded(cache_key) => {
                             let setup_path = stage.join(format!("{module}.setup.json"));
-                            write_setup_json_to_path(&setup_path, adm, module, edge_list, None)?;
+                            write_setup_json_to_path(
+                                &setup_path,
+                                adm,
+                                module,
+                                edge_list,
+                                mod_is_module,
+                                None,
+                            )?;
                             let output =
                                 lib_dir.join(format!("{}.olean", module.replace('.', "/")));
                             if let Some(parent) = output.parent() {
@@ -2480,12 +2562,14 @@ impl Checker {
             |(adm, olean_cache, _, path_sha_cache), idx| {
                 let module = &order[idx];
                 let edge_list = &imports[module];
+                let mod_is_module = is_module.get(module).copied().unwrap_or(false);
                 let src_path = &sources[module];
                 match prepare_module_cache(
                     olean_cache,
                     adm,
                     module,
                     edge_list,
+                    mod_is_module,
                     src_path,
                     &lib_dir,
                     warn_as_err,
@@ -2497,7 +2581,7 @@ impl Checker {
                         let run_id = counter.fetch_add(1, Ordering::Relaxed) + 1;
                         let (_run_dir, in_dir, out_dir, tmp_dir) =
                             prepare_run_dirs_at(stage, run_id)?;
-                        let leaf = module.rsplit('.').next().unwrap_or(module);
+                        let leaf = module.rsplit('.').next().unwrap_or(module).to_owned();
                         let in_src = in_dir.join(format!("{leaf}.lean"));
                         copy_readonly_file(src_path, &in_src, "compile")?;
 
@@ -2522,7 +2606,14 @@ impl Checker {
                         let mapper = PathMapper::new(&runtime, &ro_mounts, &rw_out, &rw_tmp);
 
                         let setup_host = in_dir.join(format!("{module}.setup.json"));
-                        write_setup_json_to_path(&setup_host, adm, module, edge_list, Some(&mapper))?;
+                        write_setup_json_to_path(
+                            &setup_host,
+                            adm,
+                            module,
+                            edge_list,
+                            mod_is_module,
+                            Some(&mapper),
+                        )?;
                         set_mode(&in_dir, 0o500)?;
 
                         let out_filename = format!("{leaf}.olean");
@@ -2549,7 +2640,7 @@ impl Checker {
                             timeout: child_timeout,
                         };
                         Ok(PreparedModuleCompile::Compile {
-                            work: (policy, out_dir, tmp_dir, out_filename),
+                            work: (policy, out_dir, tmp_dir, leaf, mod_is_module),
                             cache_key,
                         })
                     }
@@ -2558,7 +2649,7 @@ impl Checker {
             |idx, prep| match prep {
                 PreparedModuleCompile::Cached(parts) => Ok(ExecutedModuleCompile::Cached(parts)),
                 PreparedModuleCompile::Compile {
-                    work: (policy, out_dir, tmp_dir, out_filename),
+                    work: (policy, out_dir, tmp_dir, leaf, mod_is_module),
                     cache_key,
                 } => {
                     let module = &order[idx];
@@ -2568,7 +2659,7 @@ impl Checker {
                     let output = output?;
                     check_lean_output(&label, output, target_rejection)?;
                     Ok(ExecutedModuleCompile::Compiled {
-                        done: (out_dir, out_filename),
+                        done: (out_dir, leaf, mod_is_module),
                         cache_key,
                     })
                 }
@@ -2588,13 +2679,17 @@ impl Checker {
                         None,
                     ),
                     ExecutedModuleCompile::Compiled {
-                        done: (out_dir, out_filename),
+                        done: (out_dir, leaf, mod_is_module),
                         cache_key,
                     } => {
                         let dest_olean =
                             lib_dir.join(format!("{}.olean", module.replace('.', "/")));
-                        let sha = validate_and_promote_olean(&out_dir, &out_filename, &dest_olean)?;
-                        let parts_with_sha = vec![("olean".to_owned(), dest_olean, sha)];
+                        let parts_with_sha = promote_compiled_module_parts(
+                            &out_dir,
+                            &leaf,
+                            &dest_olean,
+                            mod_is_module,
+                        )?;
                         finish_module_artifacts(
                             adm,
                             olean_cache,
@@ -4646,6 +4741,7 @@ exit 1
         let order = vec!["Trusted.MirAst".to_owned()];
         let sources = BTreeMap::from([("Trusted.MirAst".to_owned(), mod_src.clone())]);
         let imports = BTreeMap::from([("Trusted.MirAst".to_owned(), Vec::new())]);
+        let is_module = BTreeMap::from([("Trusted.MirAst".to_owned(), false)]);
 
         // Cold run compiles both TrustedBoundary and Trusted.MirAst and populates disk cache.
         let mut c1 = Checker::new_with_env(&root, Some(&lean), []).unwrap();
@@ -4654,8 +4750,10 @@ exit 1
         c1.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
         c1.tool_admission().unwrap();
         let _ = c1.ensure_inspector_compiled("headers", true).unwrap();
-        c1.compile_lean_modules_parallel(&order, &sources, &imports, "lib", false, false, 1)
-            .unwrap();
+        c1.compile_lean_modules_parallel(
+            &order, &sources, &imports, &is_module, "lib", false, false, 1,
+        )
+        .unwrap();
         let cold_lines: Vec<String> =
             fs::read_to_string(&log_file).unwrap().lines().map(str::to_owned).collect();
         assert_eq!(cold_lines.len(), 2, "expected 2 compiles on cold run: {cold_lines:?}");
@@ -4669,8 +4767,10 @@ exit 1
         c2.set_no_rebuild_bundled(true);
         c2.tool_admission().unwrap();
         let _ = c2.ensure_inspector_compiled("headers", true).unwrap();
-        c2.compile_lean_modules_parallel(&order, &sources, &imports, "lib", false, false, 1)
-            .unwrap();
+        c2.compile_lean_modules_parallel(
+            &order, &sources, &imports, &is_module, "lib", false, false, 1,
+        )
+        .unwrap();
         assert_eq!(fs::read_to_string(&log_file).unwrap(), "", "warm run must not spawn lean");
 
         // Changing bundled module source invalidates key and fails closed under `--no-rebuild-bundled`.
@@ -4683,7 +4783,9 @@ exit 1
         c3.tool_admission().unwrap();
         let _ = c3.ensure_inspector_compiled("headers", true).unwrap();
         let err = c3
-            .compile_lean_modules_parallel(&order, &sources, &imports, "lib", false, false, 1)
+            .compile_lean_modules_parallel(
+                &order, &sources, &imports, &is_module, "lib", false, false, 1,
+            )
             .unwrap_err();
         assert_eq!(err.phase, "olean-cache");
         assert!(err.message.contains("--no-rebuild-bundled"), "{err}");
@@ -4696,8 +4798,10 @@ exit 1
         c4.set_use_olean_cache(false);
         c4.tool_admission().unwrap();
         let _ = c4.ensure_inspector_compiled("headers", true).unwrap();
-        c4.compile_lean_modules_parallel(&order, &sources, &imports, "lib", false, false, 1)
-            .unwrap();
+        c4.compile_lean_modules_parallel(
+            &order, &sources, &imports, &is_module, "lib", false, false, 1,
+        )
+        .unwrap();
         assert_eq!(
             fs::read_to_string(&log_file).unwrap().lines().count(),
             1,

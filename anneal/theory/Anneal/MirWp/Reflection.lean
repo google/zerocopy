@@ -6,18 +6,21 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Int.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.Nat.Bitwise.Basic
-import Init.Control.Except
-import Trusted
-import Trusted.MirAst
-import Trusted.MirSemantics
-import Anneal.MirWp.Core
-import Anneal.MirWp.Scalars
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Int.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.Nat.Bitwise.Basic
+public import Init.Control.Except
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirSemantics
+public import Anneal.MirWp.Core
+public import Anneal.MirWp.Scalars
+
+public section
 
 namespace Anneal.MirWp
 
@@ -552,7 +555,7 @@ theorem not_validEntryArgs_of_never {body : Body} {args : List Val}
 
 /-- Single-frame running state in body `defId` (default `0`) with empty
 `callerMem` and memory `mem` (default `entryMemory`). -/
-def mkState (blockIdx stmtIdx : Nat) (locals : List LocalSlot)
+@[expose] def mkState (blockIdx stmtIdx : Nat) (locals : List LocalSlot)
     (defId : DefId := 0) (mem : MemoryState := entryMemory) : State :=
   {
     frames := [{
@@ -848,7 +851,7 @@ The definition folds over the list with `List.foldr` instead of recursing by
 pattern matching: equation-compiler recursion makes Lean emit an `unsafe`
 `BodiesVerified._unsafe_rec` helper even for a `Prop`, and `anneal-audit`
 rejects every `unsafe` constant. -/
-def BodiesVerified (p : Program) (specs : Specs) (idx : Nat)
+@[expose] def BodiesVerified (p : Program) (specs : Specs) (idx : Nat)
     (bs : List Body) : Prop :=
   bs.foldr
     (fun body ih curIdx =>
@@ -880,3 +883,5 @@ theorem bodiesVerified_getElem {p : Program} {specs : Specs} :
     exact hSub
 
 end Anneal.MirWp
+
+end

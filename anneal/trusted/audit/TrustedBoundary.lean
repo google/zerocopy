@@ -23,9 +23,11 @@ Pinned to Lean 4.34.1, commit
 this file across ten JSON IPC modes (`run` and `main`):
 
 - **`"headers"` (target import discovery before elaboration):**
-  Parses only module `prelude`/`import` headers via `Parser.parseHeader`,
-  rejecting Lean 4 module-system headers (`module`), import modifiers
-  (`import all`, non-exported imports, and `meta import` except Lean 4's
+  Parses only module headers via `Parser.parseHeader`, reporting each module's
+  `isModule` flag and `imports` while rejecting Lean 4 module-system headers
+  (`module`) outside the bundled `Trusted.*` and `Anneal.*` runtime namespaces,
+  `import all` outside `Anneal.*` importing `Init.Data.Nat.Bitwise.Basic`,
+  non-exported imports on non-module sources, `meta import` (except Lean 4's
   synthetic `!hasPrelude` `Init(isMeta = true)` paired with non-meta `Init`),
   and `Lean.*`/`Lake.*` imports so `cargo-anneal verify` can validate target
   module roles, admit the requested `library-lock.json` or unpinned `Init`/
@@ -586,10 +588,12 @@ def validateGraph (j : Json) (env : Environment) : IO Unit := do
 /-! ## Phase 1: syntactic header and source preflight -/
 
 /-- Lists the module header syntax kinds permitted in source files.
-Module-system and import modifiers (`moduleTk`, `public`, `meta`, `all`) are
-excluded, so the `SyntaxNodeKind` check alone rejects every header modifier. -/
+`moduleTk`, `public`, and `all` are permitted syntactically so `inspectSource`,
+`inspectHeader`, and `validateTargetImports` can enforce role-scoped module and
+import-modifier policies (`meta` remains excluded at the syntax-kind level). -/
 def allowedHeaderKinds : List Name := [
-  ``Parser.Module.header, ``Parser.Module.prelude, ``Parser.Module.import]
+  ``Parser.Module.header, ``Parser.Module.moduleTk, ``Parser.Module.prelude,
+  ``Parser.Module.import, ``Parser.Module.public, ``Parser.Module.all]
 
 /-- Lists the top-level command syntax kinds permitted in source files.
 Commands such as `#eval`, `#check`, `macro`, `syntax`, `elab`, `notation`,
@@ -621,7 +625,8 @@ def allowedCommandSyntaxKinds : List Name := [
   ``Parser.Command.declValSimple, ``Parser.Command.declValEqns,
   ``Parser.Command.whereStructInst, ``Parser.Command.docComment,
   ``Parser.Command.private, ``Parser.Command.protected,
-  ``Parser.Command.noncomputable, ``Parser.Command.openSimple,
+  ``Parser.Command.public, ``Parser.Command.noncomputable,
+  ``Parser.Command.openSimple,
   ``Parser.Command.sectionHeader, ``Parser.Command.eraseAttr,
   ``Parser.Command.ctor, ``Parser.Command.optDeriving,
   ``Parser.Command.optDefDeriving, ``Parser.Command.classTk,
@@ -739,9 +744,25 @@ end SourceRole
 
 /-- Lists the attributes permitted on declarations. Compiler-override and
 metaprogramming attributes (such as `extern`, `implemented_by`, `csimp`, `init`,
-`macro`, and `elab_as_elim`) are excluded. -/
+`macro`, and `elab_as_elim`) are excluded. `expose` controls Lean 4 `module`
+interface visibility only and introduces no compiler override or side effect. -/
 def allowedAttributeNames : List Name :=
-  [`simp, `instance, `reducible, `semireducible, `irreducible]
+  [`simp, `instance, `reducible, `semireducible, `irreducible, `expose]
+
+/-- Return `true` iff `moduleName` belongs to the bundled `Anneal` theory
+namespace (`Anneal` or `Anneal.*`). -/
+def isAnnealModuleName (moduleName : Name) : Bool :=
+  moduleName == `Anneal || moduleName.getRoot == `Anneal
+
+/-- Lists foundation modules whose internal definitions a `theory/` module may
+open via `import all` in Lean 4 `module` mode.
+
+Confined strictly to `Init.Data.Nat.Bitwise.Basic` because Lean's foundation
+keeps `Nat.bitwise`, `Nat.land`, `Nat.lor`, and `Nat.xor` unexposed in `module`
+mode; `Anneal.NatBitwise` opens that single module to prove public unfolding
+bridges while keeping `Trusted` and all other imports closed. -/
+def allowedTheoryImportAllModules : List Name :=
+  [`Init.Data.Nat.Bitwise.Basic]
 
 /-- Return `true` if `id` is a valid user-written identifier with non-empty
 string components, no macro scopes, and no `_root_` namespace escape. -/
@@ -790,14 +811,40 @@ def isAllowedNestedCommand (k : SyntaxNodeKind) : Bool :=
     ![``Parser.Command.namespace, ``Parser.Command.section,
       ``Parser.Command.end, ``Parser.Command.mutual].contains k
 
+/-- Return `true` iff `moduleName` belongs to a bundled Anneal runtime
+namespace (`Trusted`, `Trusted.*`, `Anneal`, or `Anneal.*`), which are the only
+namespaces permitted to use Lean 4 `module`-system headers in target
+verification. -/
+def isBundledRuntimeModuleName (moduleName : Name) : Bool :=
+  isTrustedModuleName moduleName || isAnnealModuleName moduleName
+
+/-- Validate a `Parser.Command.sectionHeader` arity-independently: permit only
+empty modifier slots, `public`, and `@[expose]`, rejecting `noncomputable`,
+`meta`, and any unknown modifier. -/
+def validateSectionHeader (args : Array Syntax) : IO Unit := do
+  for child in args do
+    let ok := child.isOfKind nullKind &&
+      (child.getArgs.isEmpty ||
+        (child.getArgs.size == 1 &&
+          match child.getArgs[0]! with
+          | .atom _ "public" => true
+          | _ => false) ||
+        (child.getArgs.size == 3 &&
+          match child.getArgs[0]!, child.getArgs[1]!, child.getArgs[2]! with
+          | .atom _ "@[", .atom _ "expose", .atom _ "]" => true
+          | _, _, _ => false))
+    unless ok do
+      fail "section/namespace modifiers are unsupported"
+
 /-- Enforce per-node structural invariants on a `Syntax.node` whose kind `k` has
 already been admitted by `allowedKinds`:
 
 - `Parser.Module.header`: an explicit `prelude` child (`args[1]`) is mandatory
   (omitting `prelude` produces an empty `null` node rather than a distinct
   `SyntaxNodeKind`).
-- `Parser.Command.sectionHeader`: `section` and `namespace` headers may not
-  carry modifiers (`noncomputable section`, `@[attr] section`, etc.).
+- `Parser.Command.sectionHeader`: `section` and `namespace` headers may carry
+  only `public` and `@[expose]` visibility modifiers (`noncomputable section`,
+  `meta section`, etc. remain rejected).
 - `Parser.Command.declaration`: the inner declaration body (`args[1]`) must be
   one of `allowedDeclarationKinds`.
 - `Parser.Command.mutual`: every element inside `mutual ... end` (`args[1]`)
@@ -814,8 +861,7 @@ def inspectNodeKind (k : SyntaxNodeKind) (args : Array Syntax)
       unless !(args[1]?.map Syntax.getArgs |>.getD #[]).isEmpty do
         fail "explicit prelude is required"
   else if k == ``Parser.Command.sectionHeader then
-    unless args.all (·.getArgs.isEmpty) do
-      fail "section/namespace modifiers are unsupported"
+    validateSectionHeader args
   else if k == ``Parser.Command.declaration then
     let declKind := args[1]?.map Syntax.getKind |>.getD .anonymous
     unless allowedDeclarationKinds.contains declKind do
@@ -1130,6 +1176,7 @@ repository `.lean` source file during `"preflight"` or
 structure InspectedSource where
   moduleName : Name
   imports : Array Import
+  isModule : Bool
   role : SourceRole
 
 /-- Render an `InspectedSource` in the JSON wire format expected by
@@ -1138,6 +1185,7 @@ def InspectedSource.renderJson (s : InspectedSource) : Json :=
   Json.mkObj [
     ("module", toJson s.moduleName),
     ("imports", toJson s.imports),
+    ("isModule", toJson s.isModule),
     ("trustTier", toJson s.role.renderTier?)]
 
 /-- Enforce module-level trust-tier import isolation across preflighted sources
@@ -1188,26 +1236,49 @@ def inspectSource (scopedNamespaces scopedPrefixes : NameSet)
   if log.hasErrors || initial.recovering then
     fail s!"header parser error in {moduleName}"
   inspectSyntax allowedKinds header.raw
+  let isModule := Elab.HeaderSyntax.isModule header
   let imports := Elab.HeaderSyntax.imports header
   for imp in imports do
-    if imp.importAll || imp.isMeta || !imp.isExported then
+    if imp.isMeta then
       fail "import modifiers are unsupported"
+    if !imp.isExported && !isModule then
+      fail "import modifiers are unsupported"
+    if imp.importAll then
+      let allowImportAll :=
+        isModule && role == .theory &&
+          allowedTheoryImportAllModules.contains imp.module
+      unless allowImportAll do
+        fail "import modifiers are unsupported"
   let rootScope : ParseScope :=
     { header := "", currNamespace := .anonymous, openDecls := [] }
   parseAndInspectCommands ctx scopedNamespaces scopedPrefixes parserEnv
     [rootScope] moduleName allowedKinds initial log
-  return { moduleName, imports, role }
+  return { moduleName, imports, isModule, role }
 
-/-- Validate target module import edges (`"headers"` and `"target-audit"`):
-reject `import all`, non-exported imports, `Lean.*`/`Lake.*` imports, and any
-`isMeta` edge other than Lean 4's synthetic `!hasPrelude` `Init(isMeta = true)`
-paired with a non-meta `Init` edge. -/
-def validateTargetImports (context : String) (imports : Array Import) :
+/-- Validate target module import edges (`"headers"`, `"spec-preflight"`, and
+`"target-audit"`):
+
+- Non-module targets (`allowModule = false`) reject `import all` and
+  non-exported imports unconditionally.
+- Bundled Lean 4 `module` targets (`allowModule = true`) allow private
+  (non-exported) imports and permit `import all` strictly when
+  `allowTheoryImportAll = true` and the target is in
+  `allowedTheoryImportAllModules`.
+- Every target rejects `Lean.*`/`Lake.*` imports and any `isMeta` edge other
+  than Lean 4's synthetic `!hasPrelude` `Init(isMeta = true)` paired with a
+  non-meta `Init` edge. -/
+def validateTargetImports (context : String) (imports : Array Import)
+    (allowModule : Bool := false) (allowTheoryImportAll : Bool := false) :
     IO Unit := do
   let hasNonMetaInit := imports.any fun imp =>
     imp.module == `Init && !imp.isMeta
   for imp in imports do
-    if imp.importAll || !imp.isExported then
+    if imp.importAll then
+      let ok := allowModule && allowTheoryImportAll &&
+        allowedTheoryImportAllModules.contains imp.module
+      unless ok do
+        fail s!"import modifiers are unsupported in {context}"
+    if !imp.isExported && !allowModule then
       fail s!"import modifiers are unsupported in {context}"
     if imp.isMeta then
       unless imp.module == `Init && hasNonMetaInit do
@@ -1217,25 +1288,29 @@ def validateTargetImports (context : String) (imports : Array Import) :
         imp.module == `Lake || root == `Lake then
       fail s!"disallowed sysroot import {imp.module} in {context}"
 
-/-- Read and validate a target source header (`"headers"`), rejecting Lean 4
-module-system headers (`module`), import modifiers (`public`/`meta`/`all`), and
-`Lean.*`/`Lake.*` imports while permitting omitted `prelude` (synthetic
-non-meta + meta `Init` pair). -/
+/-- Read and validate a target source header (`"headers"`), admitting Lean 4
+`module`-system headers strictly for bundled `Trusted.*` and `Anneal.*` runtime
+modules while keeping `Capture`, `Specification`, `Expected`, and authored
+`Proof` sources strictly non-module. -/
 def inspectHeader (moduleName : Name) (path : System.FilePath) : IO Json := do
   let text ← IO.FS.readFile path
   let ctx := Parser.mkInputContext text path.toString
   let (header, state, messages) ← Parser.parseHeader ctx
   if messages.hasErrors || state.recovering then
     fail s!"header parser error in {moduleName}"
-  if Elab.HeaderSyntax.isModule header then
+  let isModule := Elab.HeaderSyntax.isModule header
+  if isModule && !isBundledRuntimeModuleName moduleName then
     fail s!"module system header is unsupported in {moduleName}"
   inspectSyntax (.ofList allowedHeaderKinds) header.raw
     (requirePrelude := false)
   let imports := Elab.HeaderSyntax.imports header
   validateTargetImports moduleName.toString imports
+    (allowModule := isModule)
+    (allowTheoryImportAll := isAnnealModuleName moduleName)
   return Json.mkObj [
     ("module", toJson moduleName),
-    ("imports", toJson imports)]
+    ("imports", toJson imports),
+    ("isModule", toJson isModule)]
 
 /-- Parse only the import header of a pinned `vendor/lean-miri` source file
 (`"vendor-headers"`) for parallel cold DAG scheduling in `anneal-audit`.
@@ -2791,10 +2866,15 @@ def checkAlternateProofs (replayed : Kernel.Environment)
       (replayed.addDeclCore 0 0 (.thmDecl { info with name := fresh })
         (cancelTk? := none))
 
+-- Lean 4.34 moved `Lean.Environment.replay` to `Lean.Kernel.Environment.replay`
+-- and deprecated the old entry point; keep calling `Environment.replay` with
+-- the deprecation linter disabled locally so this inspector builds cleanly with
+-- `-DwarningAsError=true` across Lean 4.33 through 4.35.
+set_option linter.deprecated false in
 /-- Replay `replayMap` onto `base` with a fixed operational error prefix (so
 `Lean.Replay`'s stringified `Kernel.Exception` cannot spoof `"policy:"`).
 Validates cached `Name.hash`, `Level.data`, and `Expr.data` words across every
-declaration in `replayMap` before handing objects to `Kernel.Environment.replay`.
+declaration in `replayMap` before handing objects to `Environment.replay`.
 https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Replay.lean#L54-L63
 https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Replay.lean#L135-L136
 -/
@@ -2803,7 +2883,7 @@ def replayKernelEnv (base : Kernel.Environment)
     (errPrefix : String := "kernel replay failed") :
     IO Kernel.Environment := do
   validateConstantsCachedMetadata (replayMap.fold (init := #[]) fun acc _ ci => acc.push ci)
-  try base.replay replayMap
+  try return (← (Environment.ofKernelEnv base).replay replayMap).toKernelEnv
   catch error => throw <| IO.userError s!"{errPrefix}: {error}"
 
 /-- Replay `replayMap` onto `base.toKernelEnv` and check all `alternateProofs`
@@ -4537,6 +4617,117 @@ private def exportProofModules (_env : Environment)
     (_proofMods : NameSet) : IO Json :=
   throw <| IO.userError "proof exporter requires runtime implementation"
 
+/-- Return `true` iff `m` is a bundled runtime module permitted to carry Lean 4
+`module`-system artifacts in `role`. -/
+def isAllowedBundledTargetModule (role : TargetRole) (m : Name) : Bool :=
+  (role == .model && isTrustedModuleName m) ||
+    (role == .proof && isAnnealModuleName m)
+
+private def oleanHeaderSize : Nat := 88
+
+private def readUInt64LE (bytes : ByteArray) (off : Nat) : Nat :=
+  (bytes.get! off).toNat +
+  ((bytes.get! (off + 1)).toNat <<< 8) +
+  ((bytes.get! (off + 2)).toNat <<< 16) +
+  ((bytes.get! (off + 3)).toNat <<< 24) +
+  ((bytes.get! (off + 4)).toNat <<< 32) +
+  ((bytes.get! (off + 5)).toNat <<< 40) +
+  ((bytes.get! (off + 6)).toNat <<< 48) +
+  ((bytes.get! (off + 7)).toNat <<< 56)
+
+private def alignUp64K (n : Nat) : Nat :=
+  ((n + 65535) / 65536) * 65536
+
+/-- Pure, bounds-checked read of `ModuleData.isModule` from the root object of
+a primary `.olean` v2 file without invoking `CompactedRegion.read` or `mmap`. -/
+private def parsePrimaryOleanIsModule (m : Name) (bytes : ByteArray)
+    (baseAddr : Nat) : IO Bool := do
+  if bytes.size < oleanHeaderSize + 8 then
+    fail s!"truncated olean root pointer in {m}"
+  let rootPtr := readUInt64LE bytes oleanHeaderSize
+  if rootPtr < baseAddr then
+    fail s!"invalid olean root pointer in {m}"
+  let rootOff := rootPtr - baseAddr
+  if rootOff < oleanHeaderSize + 8 || rootOff + 8 > bytes.size then
+    fail s!"out-of-bounds olean root object in {m}"
+  let numObjs := (bytes.get! (rootOff + 6)).toNat
+  let tag := (bytes.get! (rootOff + 7)).toNat
+  let scalarOff := rootOff + 8 + numObjs * 8
+  if tag != 0 || numObjs != 5 || scalarOff >= bytes.size then
+    fail s!"invalid olean ModuleData layout in {m}"
+  let flag := bytes.get! scalarOff
+  if flag == 0 then
+    return false
+  else if flag == 1 then
+    return true
+  else
+    fail s!"invalid olean isModule flag in {m}"
+
+/-- Validate `.olean*` / `.ir` artifact part counts for a target module `m`:
+non-module targets accept a single monolithic `.olean`, while bundled
+`Trusted.*` (`Model`) and `Anneal.*` (`Proof`) modules accept `.olean` plus
+optional `.olean.server` / `.olean.private` sidecars (never `.ir`). -/
+def validateTargetArtifactParts (m : Name) (oleanPartCount : Nat)
+    (irEmpty allowModuleArtifact : Bool) : IO Unit := do
+  let partsOk :=
+    if allowModuleArtifact then
+      oleanPartCount >= 1 && oleanPartCount <= 3 && irEmpty
+    else
+      oleanPartCount == 1 && irEmpty
+  unless partsOk do
+    fail s!"companion artifact parts unsupported in {m}"
+
+/-- Validate `.olean*` binary headers, companion base-address chaining, and
+primary-part `isModule` policy before `importEnv` mmaps `.olean.server` or
+`.olean.private` companion regions via `CompactedRegion.read`. -/
+def validateTargetArtifactPreImport (m : Name) (art : ImportArtifacts)
+    (allowModuleArtifact : Bool) : IO Unit := do
+  let parts := art.oleanParts true
+  validateTargetArtifactParts m parts.size art.irParts.isEmpty
+    allowModuleArtifact
+  let mut prefix0 : Option ByteArray := none
+  let mut prevEndAligned : Option Nat := none
+  let mut primaryIsMod : Option Bool := none
+  for partPath in parts do
+    let bytes ← try
+      IO.FS.readBinFile partPath
+    catch e =>
+      throw <| IO.userError
+        s!"missing or unreadable artifact part {partPath} for {m}: {e}"
+    if bytes.size < oleanHeaderSize then
+      fail s!"truncated olean header in {m}"
+    let magicOk :=
+      bytes.get! 0 == 'o'.toNat.toUInt8 &&
+      bytes.get! 1 == 'l'.toNat.toUInt8 &&
+      bytes.get! 2 == 'e'.toNat.toUInt8 &&
+      bytes.get! 3 == 'a'.toNat.toUInt8 &&
+      bytes.get! 4 == 'n'.toNat.toUInt8 &&
+      bytes.get! 5 == 2
+    unless magicOk do
+      fail s!"invalid olean v2 header in {m}"
+    let hdrPrefix := bytes.extract 0 80
+    let baseAddr := readUInt64LE bytes 80
+    match prefix0, prevEndAligned with
+    | none, _ =>
+      let isMod ← parsePrimaryOleanIsModule m bytes baseAddr
+      primaryIsMod := some isMod
+      prefix0 := some hdrPrefix
+      prevEndAligned := some (alignUp64K (baseAddr + bytes.size))
+    | some expectedPrefix, some expectedBase =>
+      unless hdrPrefix == expectedPrefix do
+        fail s!"mismatched olean companion header in {m}"
+      unless baseAddr == expectedBase do
+        fail s!"mismatched olean companion base address in {m}"
+      prevEndAligned := some (alignUp64K (baseAddr + bytes.size))
+    | _, _ =>
+      fail s!"inconsistent olean companion sequence in {m}"
+  let some isMod := primaryIsMod
+    | fail s!"missing primary olean artifact for {m}"
+  if isMod && !allowModuleArtifact then
+    fail s!"module-system artifact unsupported in {m}"
+  validateTargetArtifactParts m parts.size art.irParts.isEmpty
+    (isMod && allowModuleArtifact)
+
 /-- Execute `"target-export"` in a dedicated sandboxed child process with zero
 write access to `"target-audit"`'s verdict output.
 
@@ -4562,8 +4753,7 @@ def targetExport (j : Json) (foundation : Array Name) : IO Json := do
     roles ← insertRole roles m (.source role) "overlapping target module"
     let some art := arts.find? m
       | fail s!"missing target artifacts for {m}"
-    unless (art.oleanParts true).size == 1 && art.irParts.isEmpty do
-      fail s!"companion artifact parts unsupported in {m}"
+    validateTargetArtifactPreImport m art (isAllowedBundledTargetModule role m)
     if role == .proof then
       proofMods := proofMods.insert m
     roots := roots.push m
@@ -4577,6 +4767,13 @@ def targetExport (j : Json) (foundation : Array Name) : IO Json := do
   let expProvenance n := constProvenance env roles n "target module"
   for m in env.header.modules, data in env.header.moduleData do
     if let some (.source srcRole) := roles.get? m.module then
+      let allowModuleArtifact := isAllowedBundledTargetModule srcRole m.module
+      if data.isModule && !allowModuleArtifact then
+        fail s!"module-system artifact unsupported in {m.module}"
+      let some art := arts.find? m.module
+        | fail s!"missing target artifacts for {m.module}"
+      validateTargetArtifactParts m.module (art.oleanParts true).size
+        art.irParts.isEmpty (data.isModule && allowModuleArtifact)
       if srcRole != .proof then
         let importsProof := data.imports.any fun imp =>
           roles.get? imp.module == some (.source .proof)
@@ -5540,12 +5737,12 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
           s!"proof module artifact {m} must not be passed to target-audit"
       expectedProofMods := expectedProofMods.insert m
     else
-      -- Reject companion artifact parts (`.olean.private`, `.olean.server`,
-      -- `.ir`) on non-proof target modules before `importEnv` opens them.
+      -- Reject mismatched companion `.olean*` headers, invalid base-address
+      -- chains, `.ir` parts, and `isModule` policy violations before
+      -- `importEnv` mmaps `.olean.server` / `.olean.private`.
       let some art := arts.find? m
         | fail s!"missing target artifacts for {m}"
-      unless (art.oleanParts true).size == 1 && art.irParts.isEmpty do
-        fail s!"companion artifact parts unsupported in {m}"
+      validateTargetArtifactPreImport m art (isAllowedBundledTargetModule role m)
       nonProofRoots := nonProofRoots.push m
   -- Enforce role-graph separation against the admitted DAG before calling
   -- `importEnv` on `nonProofRoots` so a non-`Proof` module importing a
@@ -5612,13 +5809,17 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
     if let .source targetRole := role then
       if targetRole == .proof then
         fail s!"proof module {m.module} must not be imported in target-audit"
-      if data.isModule then
+      let allowModuleArtifact := isAllowedBundledTargetModule targetRole m.module
+      if data.isModule && !allowModuleArtifact then
         fail s!"module-system artifact unsupported in {m.module}"
       let some art := arts.find? m.module
         | fail s!"missing target artifacts for {m.module}"
-      unless (art.oleanParts true).size == 1 && art.irParts.isEmpty do
-        fail s!"companion artifact parts unsupported in {m.module}"
+      validateTargetArtifactParts m.module (art.oleanParts true).size
+        art.irParts.isEmpty (data.isModule && allowModuleArtifact)
       validateTargetImports m.module.toString data.imports
+        (allowModule := data.isModule && allowModuleArtifact)
+        (allowTheoryImportAll :=
+          targetRole == .proof && isAnnealModuleName m.module)
       unless data.constNames == data.constants.map ConstantInfo.name do
         fail s!"invalid target inventory {m.module}"
       for ci in data.constants do
@@ -5647,9 +5848,12 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
   let mut proofOrigins : Std.HashMap Name Name := {}
   let mut proofConsts : Std.HashMap Name ConstantInfo := {}
   for pm in proofExport.modules do
-    if pm.isModule then
+    let allowModuleArtifact := isAllowedBundledTargetModule .proof pm.moduleName
+    if pm.isModule && !allowModuleArtifact then
       fail s!"module-system artifact unsupported in {pm.moduleName}"
     validateTargetImports pm.moduleName.toString pm.imports
+      (allowModule := pm.isModule && allowModuleArtifact)
+      (allowTheoryImportAll := allowModuleArtifact)
     unless pm.constNames == pm.constants.map ConstantInfo.name do
       fail s!"invalid target inventory {pm.moduleName}"
     for ci in pm.constants do

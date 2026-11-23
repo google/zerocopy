@@ -7,10 +7,13 @@
 -- those terms.
 
 -- anneal-trust-tier: candidate:mir_ast
+module
 prelude
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Int.Basic
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Int.Basic
+
+@[expose] public section
 
 namespace Trusted.MirAst
 
@@ -337,3 +340,5 @@ mutual
 end
 
 end Trusted.MirAst
+
+end

@@ -6,19 +6,21 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.Data.Nat.Basic
-import Init.Data.List.Basic
-import Trusted
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics
-import Anneal.MirWp
-import Anneal.MirTotal.Ops
-import Anneal.ByteSubLens.Lens
+public import Init.Core
+public import Init.NotationExtra
+public import Init.Data.Nat.Basic
+public import Init.Data.List.Basic
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics
+public import Anneal.MirWp
+public import Anneal.MirTotal.Ops
+public import Anneal.ByteSubLens.Lens
 
+public section
 namespace Anneal.ByteSubLens
 
 open Trusted.MirAst Trusted.MirSemantics Anneal.MirTotal
@@ -87,7 +89,7 @@ private theorem ms_natEq_of_beq (a b : Nat) (h : Nat.beq a b = true) :
 `_0 := liveUninitSlotComp retTy`, `_1 := LocalSlot.indirect ⟨subL.allocId,
 subL.offset⟩`, immediate value arguments `extraArgs`, and uninitialized
 temporaries `extraTempTys`. -/
-def initSuballocCalleeState (retTy : MirTy) (subL : ByteSubLens)
+@[expose] def initSuballocCalleeState (retTy : MirTy) (subL : ByteSubLens)
     (extraArgs : List Val) (extraTempTys : List MirTy)
     (mem : MemoryState) : State :=
   let argSlots := List.foldr (fun v acc => LocalSlot.immediate (some v) :: acc)
@@ -105,7 +107,7 @@ def initSuballocCalleeState (retTy : MirTy) (subL : ByteSubLens)
 /-- Fuel-bounded callee execution predicate over `Trusted.MirSemantics.evalStep`
 (`0` `noncomputable`), requiring normal `.done (.returned out)` termination with
 `cur.mem = memOut` and `out.ret = retVal` and forbidding unwinds and faults. -/
-def MirCalleeRunsTo (p : Program) (memOut : MemoryState) (retVal : Val)
+@[expose] def MirCalleeRunsTo (p : Program) (memOut : MemoryState) (retVal : Val)
     (fuel : Nat) (st : State) : Prop :=
   @Nat.rec (fun _ => State → Prop)
     (fun _ => False)
@@ -190,7 +192,7 @@ structure MutFieldCallSummary where
 slice width and alignment, reads `oldSlice` via `byteSubLensGet`, evaluates
 `sum.summaryFn`, and commits `newSlice` via `byteSubLensPut` without touching
 callee MIR. -/
-def execMutSummaryCall (sum : MutFieldCallSummary) (subL : ByteSubLens)
+@[expose] def execMutSummaryCall (sum : MutFieldCallSummary) (subL : ByteSubLens)
     (mem : MemoryState) (extraArgs : List Val) :
     Option (MemoryState × Val) :=
   match Nat.beq subL.size sum.fieldSize &&
@@ -211,7 +213,7 @@ def execMutSummaryCall (sum : MutFieldCallSummary) (subL : ByteSubLens)
 `ByteSubLens`, readable `oldSlice`, and argument tuple accepted by
 `sum.summaryFn`, `p` steps via `Trusted.MirSemantics.evalStep` to normal return
 `retVal` with post-memory `memOut` matching `byteSubLensPut`. -/
-def CalleeRealizesSummary (p : Program) (fuel : Nat)
+@[expose] def CalleeRealizesSummary (p : Program) (fuel : Nat)
     (sum : MutFieldCallSummary) : Prop :=
   ∀ (subL : ByteSubLens) (mem : MemoryState)
     (oldSlice newSlice : List AllocByte) (extraArgs : List Val) (retVal : Val),
@@ -226,7 +228,7 @@ def CalleeRealizesSummary (p : Program) (fuel : Nat)
 
 /-- Zero-`Prop`-argument opaque cutpoint predicate sealing a verified callee
 `MutFieldCallSummary` (`[irreducible]` applied after `seal`/`open`). -/
-def MutSummaryCut (p : Program) (fuel : Nat)
+@[expose] def MutSummaryCut (p : Program) (fuel : Nat)
     (sum : MutFieldCallSummary) : Prop :=
   CalleeRealizesSummary p fuel sum
 
@@ -321,7 +323,7 @@ structure SummaryCallSite where
 /-- Executes a list of `&mut` summary call sites left-to-right via `List.foldr`
 (`0` `noncomputable`, `0` `._unsafe_rec`), returning the final `MemoryState` and
 the list of per-call return values. -/
-def execMutSummaryChain (sites : List SummaryCallSite) (mem : MemoryState) :
+@[expose] def execMutSummaryChain (sites : List SummaryCallSite) (mem : MemoryState) :
     Option (MemoryState × List Val) :=
   List.foldr
     (fun (site : SummaryCallSite)
@@ -338,7 +340,7 @@ def execMutSummaryChain (sites : List SummaryCallSite) (mem : MemoryState) :
 
 /-- Decidable check that `otherL` is disjoint from every `site.subL` in
 `sites`. -/
-def allSitesDisjoint (otherL : ByteSubLens) (sites : List SummaryCallSite) :
+@[expose] def allSitesDisjoint (otherL : ByteSubLens) (sites : List SummaryCallSite) :
     Bool :=
   List.foldr (fun site acc => byteLensDisjoint site.subL otherL && acc)
     true sites
@@ -436,7 +438,7 @@ inductive MirCalleeChainRunsTo :
 /-- Predicate asserting that every `(p, fuel, site)` entry in `specs` carries a
 sealed `@[irreducible] MutSummaryCut p fuel site.sum` (`List.foldr`, `0`
 `._unsafe_rec`). -/
-def AllSitesSummaryCut (specs : List (Program × Nat × SummaryCallSite)) :
+@[expose] def AllSitesSummaryCut (specs : List (Program × Nat × SummaryCallSite)) :
     Prop :=
   List.foldr (fun e acc => MutSummaryCut e.1 e.2.1 e.2.2.sum ∧ acc) True specs
 
@@ -513,3 +515,5 @@ theorem execMutSummaryChain_certified_sound
                 exact ⟨.cons hStepSound.1 hTailSound.1, hFrameAll⟩
 
 end Anneal.ByteSubLens
+
+end

@@ -7,11 +7,14 @@
 -- those terms.
 
 -- anneal-trust-tier: candidate:mir_ast
+module
 prelude
-import Init.NotationExtra
-import Trusted.MirAst.Types
-import Trusted.MirAst.Statements
-import Trusted.MirAst.Terminators
+public import Init.NotationExtra
+public import Trusted.MirAst.Types
+public import Trusted.MirAst.Statements
+public import Trusted.MirAst.Terminators
+
+@[expose] public section
 
 namespace Trusted.MirAst
 
@@ -169,3 +172,5 @@ structure Program where
   scope : VerificationScope
 
 end Trusted.MirAst
+
+end

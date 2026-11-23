@@ -7,13 +7,16 @@
 -- those terms.
 
 -- anneal-trust-tier: candidate:mir_semantics
+module
 prelude
-import Init.NotationExtra
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics.Enum
-import Trusted.MirSemantics.State
-import Trusted.MirSemantics.Step
+public import Init.NotationExtra
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics.Enum
+public import Trusted.MirSemantics.State
+public import Trusted.MirSemantics.Step
+
+@[expose] public section
 
 namespace Trusted.MirSemantics
 
@@ -289,3 +292,5 @@ noncomputable def UnitTheorem (c : Crate) : Prop :=
   c.program.scope = .unit ∧ ProgramVerified c.program c.specs
 
 end Trusted.MirSemantics
+
+end

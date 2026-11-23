@@ -7,13 +7,16 @@
 -- those terms.
 
 -- anneal-trust-tier: candidate:mir_semantics
+module
 prelude
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Int.Basic
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics.Ops
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Int.Basic
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics.Ops
+
+@[expose] public section
 
 namespace Trusted.MirSemantics
 
@@ -304,3 +307,5 @@ noncomputable def isIntLikeTy : MirTy → Bool
   | _ => false
 
 end Trusted.MirSemantics
+
+end

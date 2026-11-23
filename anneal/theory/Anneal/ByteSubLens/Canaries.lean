@@ -6,24 +6,26 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.Data.BitVec.BasicAux
-import Init.Data.Int.Basic
-import Init.Data.Nat.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.List.Basic
-import Init.Control.Except
-import Trusted
-import Trusted.MirAst
-import Trusted.MirModel
-import Trusted.MirSemantics
-import Anneal.MirWp
-import Anneal.MirTotal.Ops
-import Anneal.ByteSubLens.Lens
-import Anneal.ByteSubLens.MutSummary
+public import Init.Core
+public import Init.NotationExtra
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.Int.Basic
+public import Init.Data.Nat.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.List.Basic
+public import Init.Control.Except
+public import Trusted
+public import Trusted.MirAst
+public import Trusted.MirModel
+public import Trusted.MirSemantics
+public import Anneal.MirWp
+public import Anneal.MirTotal.Ops
+public import Anneal.ByteSubLens.Lens
+public import Anneal.ByteSubLens.MutSummary
 
+public section
 namespace Anneal.ByteSubLens
 
 open Trusted.MirAst Trusted.MirSemantics Anneal.MirTotal
@@ -112,10 +114,10 @@ private theorem cn_natAdd_assoc (a b c : Nat) : (a + b) + c = a + (b + c) := by
   | succ _ ih => exact congrArg Nat.succ ih
 
 /-- Unsigned 32-bit MIR scalar type `.int .i32 false`. -/
-def u32MirTy : MirTy := .int .i32 false
+@[expose] def u32MirTy : MirTy := .int .i32 false
 
 /-- Computable `u32` scalar `Val` constructor (`0` `noncomputable`). -/
-def mkU32Val (n : Nat) : Val :=
+@[expose] def mkU32Val (n : Nat) : Val :=
   .scalar ⟨.i32, false, truncateBitsComp .i32 (BitVec.ofNat 128 n)⟩
 
 private theorem bitVec_toNat_ofNat (w x : Nat) :
@@ -246,7 +248,7 @@ private theorem decodeUInt_big_4_lt (b3 b2 b1 b0 : UInt8) :
 
 /-- Encodes `v : Nat` as 4 big-endian initialized `AllocByte`s (`0`
 `noncomputable`, matching `profileTargetEndian = .big`). -/
-def encodeU32BeSlice (v : Nat) : List AllocByte :=
+@[expose] def encodeU32BeSlice (v : Nat) : List AllocByte :=
   List.foldr (fun b acc => AllocByte.init b none :: acc) []
     (encodeUIntComp .big 4 v)
 
@@ -263,7 +265,7 @@ theorem encodeU32BeSlice_length (v : Nat) :
 
 /-- Extracts 4 initialized bytes `(b3, b2, b1, b0)` from a 4-byte `AllocByte`
 slice, returning `none` if any byte is `.uninit` or length ≠ 4. -/
-def extract4InitBytes (bs : List AllocByte) :
+@[expose] def extract4InitBytes (bs : List AllocByte) :
     Option (UInt8 × UInt8 × UInt8 × UInt8) :=
   match bs with
   | [] => none
@@ -295,7 +297,7 @@ def extract4InitBytes (bs : List AllocByte) :
 
 /-- Extracts a single well-formed unsigned 32-bit `Val` argument (`0`
 `noncomputable`). -/
-def extractSingleU32Arg (args : List Val) : Option (BitVec 128) :=
+@[expose] def extractSingleU32Arg (args : List Val) : Option (BitVec 128) :=
   match args with
   | [] => none
   | a0 :: rest =>
@@ -477,7 +479,7 @@ theorem storeIndirect_u32_eq_byteSubLensPut (subL : ByteSubLens)
 
 /-- Concrete `&mut Field` MIR program (`0` `noncomputable`):
 `*field = (*field).wrapping_add(delta); return *field`. -/
-def progMutFieldAddAssignU32 : Program where
+@[expose] def progMutFieldAddAssignU32 : Program where
   pointerWidthBits := 64
   mirProfileVersion := 1
   scope := .unit
@@ -495,7 +497,7 @@ def progMutFieldAddAssignU32 : Program where
 
 /-- Computable `MutFieldCallSummary` for `progMutFieldAddAssignU32` (`0`
 `noncomputable`). -/
-def fieldAddAssignSummary : MutFieldCallSummary where
+@[expose] def fieldAddAssignSummary : MutFieldCallSummary where
   retTy := u32MirTy
   fieldSize := 4
   alignLog2 := 2
@@ -635,7 +637,7 @@ theorem seal_addAssignU32_summaryCut :
 
 /-- Multi-block branching `&mut slots[i]` MIR program (`0` `noncomputable`):
 `if *slot == 0u32 { *slot = cap; return 1u32 } else { return 0u32 }`. -/
-def progMutSlotMintIfEmptyU32 : Program where
+@[expose] def progMutSlotMintIfEmptyU32 : Program where
   pointerWidthBits := 64
   mirProfileVersion := 1
   scope := .unit
@@ -665,7 +667,7 @@ def progMutSlotMintIfEmptyU32 : Program where
 
 /-- Computable `MutFieldCallSummary` for `progMutSlotMintIfEmptyU32` (`0`
 `noncomputable`). -/
-def slotMintIfEmptySummary : MutFieldCallSummary where
+@[expose] def slotMintIfEmptySummary : MutFieldCallSummary where
   retTy := u32MirTy
   fieldSize := 4
   alignLog2 := 2
@@ -861,7 +863,7 @@ theorem seal_slotMintIfEmptyU32_summaryCut :
 - `allocId = 1` (`.shared`, 4 bytes): external read-only config `0xCAFEBABE`;
 - `allocId = 2` (`.mut`, 24 bytes): CNode header + 4 capability slots
   `[epoch = 10, activeCount = 0, slots = [0, 77, 0, 99]]`. -/
-def cnode24Mem0 : MemoryState :=
+@[expose] def cnode24Mem0 : MemoryState :=
   { nextAllocId := 3
     allocations := [
       { allocId := 1
@@ -885,7 +887,7 @@ def cnode24Mem0 : MemoryState :=
 /-- Expected post-chain `MemoryState` after minting `501` into `slots[0]`,
 attempting `602` on occupied `slots[1]`, minting `703` into `slots[2]`, and
 accumulating `activeCount = 2`. -/
-def cnode24MemExpected : MemoryState :=
+@[expose] def cnode24MemExpected : MemoryState :=
   { nextAllocId := 3
     allocations := [
       { allocId := 1
@@ -907,17 +909,17 @@ def cnode24MemExpected : MemoryState :=
     ] }
 
 /-- Lens onto `[0..4)` (`epoch`) of `allocId = 2`. -/
-def cnodeEpochLens : ByteSubLens := ⟨2, 0, 4, 2⟩
+@[expose] def cnodeEpochLens : ByteSubLens := ⟨2, 0, 4, 2⟩
 
 /-- Lens onto `[4..8)` (`activeCount`) of `allocId = 2`. -/
-def cnodeActiveCountLens : ByteSubLens := ⟨2, 4, 4, 2⟩
+@[expose] def cnodeActiveCountLens : ByteSubLens := ⟨2, 4, 4, 2⟩
 
 /-- Lens onto capability slot `i` (`[8 + 4*i .. 12 + 4*i)`) of `allocId = 2`. -/
-def cnodeSlotLens (i : Nat) : ByteSubLens := ⟨2, 8 + 4 * i, 4, 2⟩
+@[expose] def cnodeSlotLens (i : Nat) : ByteSubLens := ⟨2, 8 + 4 * i, 4, 2⟩
 
 /-- 5-call sequence mixing `progMutSlotMintIfEmptyU32` and
 `progMutFieldAddAssignU32` across `slots[0..2]` and `activeCount`. -/
-def cnodeSummaryChainSpecs : List (Program × Nat × SummaryCallSite) :=
+@[expose] def cnodeSummaryChainSpecs : List (Program × Nat × SummaryCallSite) :=
   [ (progMutSlotMintIfEmptyU32, 5,
       ⟨slotMintIfEmptySummary, cnodeSlotLens 0, [mkU32Val 501]⟩),
     (progMutFieldAddAssignU32, 3,
@@ -1009,7 +1011,7 @@ theorem overlappingByteLensRefutesFrame :
   have hBool : false = true := congrArg sliceHeadByteIsZero hEq
   exact Bool.noConfusion hBool
 
-private def deadAllocMem : MemoryState :=
+@[expose] def deadAllocMem : MemoryState :=
   { nextAllocId := 2
     allocations := [{
       allocId := 1
@@ -1019,7 +1021,7 @@ private def deadAllocMem : MemoryState :=
       live := false
     }] }
 
-private def uninitByteMem : MemoryState :=
+@[expose] def uninitByteMem : MemoryState :=
   { nextAllocId := 2
     allocations := [{
       allocId := 1
@@ -1057,3 +1059,5 @@ theorem canary_bytesublens_negative_fail_closed_tests :
   ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 end Anneal.ByteSubLens
+
+end

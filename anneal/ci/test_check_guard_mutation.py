@@ -365,6 +365,53 @@ class GuardMutationUnitTests(unittest.TestCase):
         self.assertIn('--lean "$ANNEAL_TEST_INSTALL_ROOT/lean/bin/lean"', run_src)
         self.assertIn("guard-mutation.log", run_src)
 
+    def test_runner_preserves_module_olean_companion_parts(self):
+        # Fake `lean` emits `.olean`, `.olean.server`, and `.olean.private`
+        # like Lean 4 `module` compilation and requires unmodified base
+        # modules (`Trusted/MirAst.olean.{server,private}`) to be linked into
+        # the mutant's `LEAN_PATH` directory while omitting rebuilt modules.
+        ops_span = check_guard_mutation.find_theorem_line_span(
+            (
+                ANNEAL_ROOT
+                / "ci/fixtures/guard_mutation/OpsRefutations.lean"
+            ).read_text(encoding="utf-8"),
+            "refute_ops_div_rem_by_zero",
+        )
+        fake_lean_body = textwrap.dedent(
+            f"""\
+            args = sys.argv[1:]
+            lean_path = Path(os.environ.get("LEAN_PATH", "").split(os.pathsep)[0])
+            is_mutant = "anneal-gmut-" in str(lean_path) and "anneal-gmut-base-" not in str(lean_path)
+            if "-o" in args:
+                out_path = Path(args[args.index("-o") + 1])
+                src = args[-1]
+                if is_mutant and src.endswith("Ops.lean"):
+                    for suffix in (".olean", ".olean.server", ".olean.private"):
+                        if not (lean_path / f"Trusted/MirAst{{suffix}}").is_file():
+                            print(f"missing Trusted/MirAst{{suffix}}", file=sys.stderr)
+                            sys.exit(1)
+                    if (lean_path / "Trusted/MirSemantics/Ops.olean.server").exists():
+                        print("stale Ops.olean.server copied", file=sys.stderr)
+                        sys.exit(1)
+                for suffix in ("", ".server", ".private"):
+                    Path(f"{{out_path}}{{suffix}}").write_bytes(b"fake-olean")
+                if is_mutant and src.endswith("OpsRefutations.lean"):
+                    print(f"{{src}}:{ops_span[0]}:2: error: Type mismatch (rfl)")
+                    sys.exit(1)
+                sys.exit(0)
+            sys.exit(0)
+            """
+        )
+        rc, out, err, report, before, after = self._run_synthetic_suite(
+            fake_lean_body, suite="mir_semantics"
+        )
+        self.assertEqual(rc, 0, out + err)
+        self.assertEqual(before, after)
+        assert report is not None
+        self.assertEqual(report["killed"], 1)
+        self.assertEqual(report["survived"], 0)
+        self.assertEqual(report["errors"], 0)
+
 
 if __name__ == "__main__":
     unittest.main()

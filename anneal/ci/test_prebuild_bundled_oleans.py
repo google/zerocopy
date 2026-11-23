@@ -62,7 +62,7 @@ class PrebuildBundledOleansTests(unittest.TestCase):
             )
 
             mir_ast = root / "trusted/lean/Trusted/MirAst.lean"
-            mir_ast.write_text("prelude\nimport Init.Core\n", encoding="utf-8")
+            mir_ast.write_text("module\nprelude\npublic import Init.Core\n", encoding="utf-8")
             (root / "trusted/cargo-anneal/src/bundle.rs").write_text(
                 'pub const TRUSTED_BUNDLE_SOURCES: &[&str] = &[\n'
                 '    "trusted/lean/Trusted/MirAst.lean",\n'
@@ -71,7 +71,7 @@ class PrebuildBundledOleansTests(unittest.TestCase):
             )
 
             wp = root / "theory/Anneal/MirWp.lean"
-            wp.write_text("prelude\nimport Trusted.MirAst\n", encoding="utf-8")
+            wp.write_text("module\nprelude\npublic import Trusted.MirAst\n", encoding="utf-8")
             wp_sha = prebuild_bundled_oleans.sha256_file(wp)
             (root / "theory/bundle-manifest.json").write_text(
                 json.dumps(
@@ -96,10 +96,12 @@ if "--run" in args:
             "headers": [
                 {
                     "module": "Trusted.MirAst",
+                    "isModule": True,
                     "imports": [{"module": "Init.Core", "isExported": True, "importAll": False, "isMeta": False}],
                 },
                 {
                     "module": "Anneal.MirWp",
+                    "isModule": True,
                     "imports": [{"module": "Trusted.MirAst", "isExported": True, "importAll": False, "isMeta": False}],
                 },
             ]
@@ -111,6 +113,14 @@ if "-o" in args:
     out = pathlib.Path(args[args.index("-o") + 1])
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_bytes(b"olean\\x024.34.1\\x00" + out.name.encode())
+    if "--setup" in args:
+        setup = json.loads(pathlib.Path(args[args.index("--setup") + 1]).read_text())
+        if not setup.get("isModule"):
+            sys.stderr.write("expected isModule=true in setup.json\\n")
+            sys.exit(2)
+        out.with_suffix(".olean.server").write_bytes(b"olean\\x024.34.1\\x00srv-" + out.name.encode())
+        out.with_suffix(".olean.private").write_bytes(b"olean\\x024.34.1\\x00prv-" + out.name.encode())
+        out.with_suffix(".ir").write_bytes(b"ir-discard")
     sys.exit(0)
 sys.exit(1)
 """,
@@ -136,13 +146,23 @@ sys.exit(1)
                     ("module", "Anneal.MirWp"),
                 },
             )
+            mir_ast_entry = by_mod[("module", "Trusted.MirAst")]
             mir_wp_entry = by_mod[("module", "Anneal.MirWp")]
+            self.assertTrue(mir_ast_entry["is_module"])
+            self.assertTrue(mir_wp_entry["is_module"])
+            self.assertEqual(
+                [p["suffix"] for p in mir_ast_entry["parts"]],
+                ["olean", "olean.server", "olean.private"],
+            )
             self.assertEqual(
                 mir_wp_entry["imports"][0]["part_sha256s"],
-                [by_mod[("module", "Trusted.MirAst")]["parts"][0]["sha256"]],
+                [p["sha256"] for p in mir_ast_entry["parts"]],
             )
             self.assertTrue((out_dir / "TrustedBoundary.olean").is_file())
             self.assertTrue((out_dir / "lib/Trusted/MirAst.olean").is_file())
+            self.assertTrue((out_dir / "lib/Trusted/MirAst.olean.server").is_file())
+            self.assertTrue((out_dir / "lib/Trusted/MirAst.olean.private").is_file())
+            self.assertFalse((out_dir / "lib/Trusted/MirAst.ir").exists())
             self.assertTrue((out_dir / "lib/Anneal/MirWp.olean").is_file())
             self.assertTrue((out_dir / "manifest.json").is_file())
 

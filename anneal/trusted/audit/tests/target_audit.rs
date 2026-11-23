@@ -2017,7 +2017,7 @@ fn target_audit_phase1_enforces_whole_spec_opaque_effects_and_unsafe_rec_invaria
                 .inspect_headers(&[(name.to_string(), staged_src.clone())])
                 .unwrap();
             let hdrs: cargo_anneal::PreflightResult = serde_json::from_value(hdr_json).unwrap();
-            let edges = hdrs.headers.into_iter().next().unwrap().imports;
+            let header = hdrs.headers.into_iter().next().unwrap();
             let dest_olean = checker.stage().join("lib").join(format!("{name}.olean"));
             if dest_olean.exists() {
                 #[cfg(unix)]
@@ -2027,7 +2027,15 @@ fn target_audit_phase1_enforces_whole_spec_opaque_effects_and_unsafe_rec_invaria
                 }
             }
             checker
-                .compile_lean_module(name, &staged_src, edges, "lib", false, true)
+                .compile_lean_module(
+                    name,
+                    &staged_src,
+                    header.imports,
+                    header.is_module,
+                    "lib",
+                    false,
+                    true,
+                )
                 .unwrap();
         }
         if forge_companion {
@@ -2354,5 +2362,222 @@ fn target_audit_reports_empty_and_unused_binding_spec_warnings() {
             "declaration": "Spec.helper",
             "message": "unused argument binding(s) in `Spec.helper`: unusedParam"
         }])
+    );
+}
+
+/// `"target-export"` and `"target-audit"` must validate `.olean*` companion
+/// headers, 64 KiB base-address chaining, and primary-part `isModule` policy
+/// *before* `importEnv` mmaps `.olean.server` / `.olean.private` regions:
+/// - swapped `.olean.server` or `.olean.private` on `Trusted.*` (`Model`) or
+///   `Anneal.*` (`Proof`) fails closed with a policy error (zero `SIGSEGV`);
+/// - non-`module` `Trusted.*` or `Anneal.*` paired with companion parts (even
+///   with matching header prefix and chained 64 KiB base addresses) fails
+///   closed with `"companion artifact parts unsupported"` before `importEnv`.
+#[test]
+fn target_export_and_audit_reject_swapped_companions_and_non_module_bundled_companions() {
+    use anneal_audit::ModuleArtifacts;
+    use std::collections::BTreeMap;
+
+    let mut f = Fixture::new(
+        "prelude\nimport Expected\nimport Init.Data.BitVec.Lemmas\n\
+         import Anneal.HelperA\nimport Anneal.HelperB\nimport Anneal.NonMod\n\
+         theorem Proof.verify : Expected.claim :=\n\
+         (fun _ _ _ => And.intro rfl BitVec.and_self) Anneal.HelperA.ok Anneal.HelperB.ok Anneal.NonMod.ok\n",
+    );
+    f.request.modules.retain(|m| m.module != "Model");
+    f.set(
+        "Trusted.ModA",
+        TargetRole::Model,
+        "module\nprelude\npublic import Init.Data.BitVec.Basic\n\
+         @[expose] public section\n\
+         namespace Trusted.MirSemantics\n\
+         structure Crate where\n  program : BitVec 8\n  specs : BitVec 8 → Prop\n\
+         def UnitTheorem (c : Crate) : Prop := c.program.toNat = 7 ∧ c.specs c.program\n\
+         end Trusted.MirSemantics\n\
+         end\n",
+    );
+    f.set(
+        "Trusted.ModB",
+        TargetRole::Model,
+        "module\nprelude\npublic import Init.Core\n\
+         @[expose] public section\n\
+         def Trusted.ModB.val : Nat := 99\n\
+         end\n",
+    );
+    f.set(
+        "Trusted.NonMod",
+        TargetRole::Model,
+        "prelude\nimport Init.Core\ndef Trusted.NonMod.val : Nat := 1\n",
+    );
+    f.set(
+        "Anneal.HelperA",
+        TargetRole::Proof,
+        "module\nprelude\npublic import Init.Core\n\
+         public section\ntheorem Anneal.HelperA.ok : True := True.intro\nend\n",
+    );
+    f.set(
+        "Anneal.HelperB",
+        TargetRole::Proof,
+        "module\nprelude\npublic import Init.Core\n\
+         public section\ntheorem Anneal.HelperB.ok : True := True.intro\nend\n",
+    );
+    f.set(
+        "Anneal.NonMod",
+        TargetRole::Proof,
+        "prelude\nimport Init.Core\ntheorem Anneal.NonMod.ok : True := True.intro\n",
+    );
+    f.set(
+        "Captured",
+        TargetRole::Capture,
+        "prelude\nimport Trusted.ModA\nimport Trusted.ModB\nimport Trusted.NonMod\n\
+         def Captured.program : BitVec 8 := BitVec.ofNat 8 7\n",
+    );
+    f.set(
+        "Spec",
+        TargetRole::Specification,
+        "prelude\nimport Trusted.ModA\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+    );
+
+    let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+    let baseline = checker.run_target(&f.request).unwrap();
+    assert_eq!(baseline["replay"], true);
+    assert_eq!(baseline["exactType"], true);
+
+    let orig_artifacts = checker.admitted().unwrap().artifacts.clone();
+    let get_parts = |name: &str| -> Vec<String> {
+        orig_artifacts
+            .get(name)
+            .unwrap_or_else(|| panic!("missing artifacts for {name}"))
+            .olean_parts
+            .clone()
+    };
+
+    let mod_a = get_parts("Trusted.ModA");
+    let mod_b = get_parts("Trusted.ModB");
+    let helper_a = get_parts("Anneal.HelperA");
+    let helper_b = get_parts("Anneal.HelperB");
+    assert_eq!(mod_a.len(), 3, "expected 3-part module for Trusted.ModA");
+    assert_eq!(mod_b.len(), 3, "expected 3-part module for Trusted.ModB");
+    assert_eq!(helper_a.len(), 3, "expected 3-part module for Anneal.HelperA");
+    assert_eq!(helper_b.len(), 3, "expected 3-part module for Anneal.HelperB");
+
+    let build_arts = |p0: &str, p1: &str, p2: &str| -> ModuleArtifacts {
+        let mut avail = BTreeMap::new();
+        avail.insert("olean", p0.to_owned());
+        avail.insert("olean.server", p1.to_owned());
+        avail.insert("olean.private", p2.to_owned());
+        ModuleArtifacts::from_available(&avail, "fixture", || "missing".into()).unwrap()
+    };
+
+    // 1. Swapped `.olean.server` on `Trusted.ModA` (Model) fails closed before
+    //    `importEnv` without SIGSEGV.
+    checker.admitted_mut().unwrap().artifacts = orig_artifacts.clone();
+    checker
+        .admitted_mut()
+        .unwrap()
+        .artifacts
+        .insert("Trusted.ModA".into(), build_arts(&mod_a[0], &mod_b[1], &mod_a[2]));
+    let err = checker.inspect_target(&f.request).unwrap_err();
+    assert_eq!(err.code, 1, "{err}");
+    assert!(
+        err.message
+            .contains("mismatched olean companion base address in Trusted.ModA"),
+        "{err}"
+    );
+
+    // 2. Swapped `.olean.server` on `Anneal.HelperA` (Proof) fails closed in
+    //    `"target-export"`.
+    checker.admitted_mut().unwrap().artifacts = orig_artifacts.clone();
+    checker.admitted_mut().unwrap().artifacts.insert(
+        "Anneal.HelperA".into(),
+        build_arts(&helper_a[0], &helper_b[1], &helper_a[2]),
+    );
+    let err = checker.inspect_target(&f.request).unwrap_err();
+    assert_eq!(err.code, 1, "{err}");
+    assert_eq!(err.phase, "target-audit", "{err}");
+    assert!(
+        err.message
+            .contains("mismatched olean companion base address in Anneal.HelperA"),
+        "{err}"
+    );
+
+    // 3. Swapped `.olean.private` on `Anneal.HelperA` (Proof) fails closed in
+    //    `"target-export"` without SIGSEGV.
+    checker.admitted_mut().unwrap().artifacts = orig_artifacts.clone();
+    checker.admitted_mut().unwrap().artifacts.insert(
+        "Anneal.HelperA".into(),
+        build_arts(&helper_a[0], &helper_a[1], &helper_b[2]),
+    );
+    let err = checker.inspect_target(&f.request).unwrap_err();
+    assert_eq!(err.code, 1, "{err}");
+    assert_eq!(err.phase, "target-audit", "{err}");
+    assert!(
+        err.message
+            .contains("mismatched olean companion base address in Anneal.HelperA"),
+        "{err}"
+    );
+
+    // Helper: craft header-chained synthetic `.olean.server` & `.olean.private`
+    // for a non-`module` `.olean` so ONLY the primary-part `data.isModule`
+    // pre-import check (not the base-address check) can reject it before
+    // `CompactedRegion.read` would crash on the 88-byte synthetic bodies.
+    let stage_dir = checker.stage().to_path_buf();
+    let craft_chained_companions = |primary_path: &str, stem: &str| -> (String, String) {
+        let raw = fs::read(primary_path).unwrap();
+        assert!(raw.len() >= 88);
+        let base0 = u64::from_le_bytes(raw[80..88].try_into().unwrap());
+        let align64k = |n: u64| (n + 0xffff) & !0xffff;
+        let base1 = align64k(base0 + raw.len() as u64);
+        let mut srv = Vec::with_capacity(88);
+        srv.extend_from_slice(&raw[..80]);
+        srv.extend_from_slice(&base1.to_le_bytes());
+        let base2 = align64k(base1 + srv.len() as u64);
+        let mut prv = Vec::with_capacity(88);
+        prv.extend_from_slice(&raw[..80]);
+        prv.extend_from_slice(&base2.to_le_bytes());
+        let srv_path = stage_dir.join(format!("lib/{stem}.olean.server"));
+        let prv_path = stage_dir.join(format!("lib/{stem}.olean.private"));
+        fs::write(&srv_path, srv).unwrap();
+        fs::write(&prv_path, prv).unwrap();
+        (
+            srv_path.to_string_lossy().into_owned(),
+            prv_path.to_string_lossy().into_owned(),
+        )
+    };
+
+    // 4. Non-`module` `Trusted.NonMod` (`Model`) paired with header-chained
+    //    3-part companions fails closed before `importEnv` via `data.isModule`.
+    let non_mod_model = get_parts("Trusted.NonMod");
+    let (nm_srv, nm_prv) = craft_chained_companions(&non_mod_model[0], "Trusted/NonMod");
+    checker.admitted_mut().unwrap().artifacts = orig_artifacts.clone();
+    checker.admitted_mut().unwrap().artifacts.insert(
+        "Trusted.NonMod".into(),
+        build_arts(&non_mod_model[0], &nm_srv, &nm_prv),
+    );
+    let err = checker.inspect_target(&f.request).unwrap_err();
+    assert_eq!(err.code, 1, "{err}");
+    assert!(
+        err.message
+            .contains("companion artifact parts unsupported in Trusted.NonMod"),
+        "{err}"
+    );
+
+    // 5. Non-`module` `Anneal.NonMod` (`Proof`) paired with header-chained
+    //    3-part companions fails closed in `"target-export"` before `importEnv`.
+    let non_mod_proof = get_parts("Anneal.NonMod");
+    let (ap_srv, ap_prv) = craft_chained_companions(&non_mod_proof[0], "Anneal/NonMod");
+    checker.admitted_mut().unwrap().artifacts = orig_artifacts;
+    checker.admitted_mut().unwrap().artifacts.insert(
+        "Anneal.NonMod".into(),
+        build_arts(&non_mod_proof[0], &ap_srv, &ap_prv),
+    );
+    let err = checker.inspect_target(&f.request).unwrap_err();
+    assert_eq!(err.code, 1, "{err}");
+    assert_eq!(err.phase, "target-audit", "{err}");
+    assert!(
+        err.message
+            .contains("companion artifact parts unsupported in Anneal.NonMod"),
+        "{err}"
     );
 }

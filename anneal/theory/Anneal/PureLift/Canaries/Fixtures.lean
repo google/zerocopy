@@ -6,17 +6,20 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.Data.List.Basic
-import Init.Data.Nat.Basic
-import Anneal.PureLift.Lens
-import Anneal.PureLift.PermTree
-import Anneal.PureLift.LoanGraph
-import Anneal.PureLift.SpatialPin
-import Anneal.PureLift.Plan
-import Anneal.PureLift.BlockCfg
-import Anneal.PureLift.Adapter
+public import Init.Core
+public import Init.Data.List.Basic
+public import Init.Data.Nat.Basic
+public import Anneal.PureLift.Lens
+public import Anneal.PureLift.PermTree
+public import Anneal.PureLift.LoanGraph
+public import Anneal.PureLift.SpatialPin
+public import Anneal.PureLift.Plan
+public import Anneal.PureLift.BlockCfg
+public import Anneal.PureLift.Adapter
+
+public section
 
 
 namespace Anneal.PureLift
@@ -68,31 +71,31 @@ structure StdVal where
   fuel : Nat
   tree : StdValTree fuel
 
-def StdVal.unit : StdVal :=
+@[expose] def StdVal.unit : StdVal :=
   ⟨1, .unit⟩
 
-def StdVal.nat (n : Nat) : StdVal :=
+@[expose] def StdVal.nat (n : Nat) : StdVal :=
   ⟨1, .nat n⟩
 
-def StdVal.bool (b : Bool) : StdVal :=
+@[expose] def StdVal.bool (b : Bool) : StdVal :=
   ⟨1, .bool b⟩
 
-def StdVal.symBool (b : Bool) : StdVal :=
+@[expose] def StdVal.symBool (b : Bool) : StdVal :=
   ⟨1, .symBool b⟩
 
 /-- Smart constructor for binary aggregate pairs carrying exact structural
 recursion fuel `fst.fuel + snd.fuel + 1`. -/
-def StdVal.pair (fst snd : StdVal) : StdVal :=
+@[expose] def StdVal.pair (fst snd : StdVal) : StdVal :=
   ⟨fst.fuel + snd.fuel + 1, .pairBranch fst.fuel snd.fuel fst.tree snd.tree⟩
 
-def StdVal.refVal (lid : LoanId) (path : SubPath) : StdVal :=
+@[expose] def StdVal.refVal (lid : LoanId) (path : SubPath) : StdVal :=
   ⟨1, .refVal lid path⟩
 
-def StdVal.choice (cond vt vf : StdVal) : StdVal :=
+@[expose] def StdVal.choice (cond vt vf : StdVal) : StdVal :=
   ⟨cond.fuel + vt.fuel + vf.fuel + 1,
    .choice cond.fuel vt.fuel vf.fuel cond.tree vt.tree vf.tree⟩
 
-def stdBoolEq (b1 b2 : Bool) : Bool :=
+@[expose] def stdBoolEq (b1 b2 : Bool) : Bool :=
   match b1, b2 with
   | true, true => true
   | false, false => true
@@ -101,7 +104,7 @@ def stdBoolEq (b1 b2 : Bool) : Bool :=
 theorem stdBoolEq_refl (b : Bool) : stdBoolEq b b = true := by
   cases b <;> rfl
 
-def stdValEqStep (ih : StdVal → StdVal → Bool) (a b : StdVal) : Bool :=
+@[expose] def stdValEqStep (ih : StdVal → StdVal → Bool) (a b : StdVal) : Bool :=
   match a, b with
   | ⟨_, .unit⟩, ⟨_, .unit⟩ => true
   | ⟨_, .nat n1⟩, ⟨_, .nat n2⟩ => Nat.beq n1 n2
@@ -118,13 +121,13 @@ def stdValEqStep (ih : StdVal → StdVal → Bool) (a b : StdVal) : Bool :=
     ih ⟨ff1, vf1⟩ ⟨ff2, vf2⟩
   | _, _ => false
 
-def stdValEqFuel (k : Nat) (v1 v2 : StdVal) : Bool :=
+@[expose] def stdValEqFuel (k : Nat) (v1 v2 : StdVal) : Bool :=
   natFold
     (fun _ _ => false)
     (fun _ ih a b => stdValEqStep ih a b)
     k v1 v2
 
-def stdValEq (v1 v2 : StdVal) : Bool :=
+@[expose] def stdValEq (v1 v2 : StdVal) : Bool :=
   stdValEqFuel v1.fuel v1 v2
 
 theorem stdValTree_eq_refl :
@@ -202,18 +205,18 @@ theorem stdValEq_refl (v : StdVal) : stdValEq v v = true := by
   | mk f t =>
     exact stdValTree_eq_refl t f (Nat.le_refl f)
 
-def stdAsBool (v : StdVal) : Option Bool :=
+@[expose] def stdAsBool (v : StdVal) : Option Bool :=
   match v with
   | ⟨_, .bool b⟩ => some b
   | _ => none
 
-def zipStdVal (cond vt vf : StdVal) : StdVal :=
+@[expose] def zipStdVal (cond vt vf : StdVal) : StdVal :=
   match stdAsBool cond with
   | some true => vt
   | some false => vf
   | none => .choice cond vt vf
 
-def projectBranchStdStep (cond : StdVal) (branch : Bool)
+@[expose] def projectBranchStdStep (cond : StdVal) (branch : Bool)
     (ih : StdVal → StdVal) (v0 : StdVal) : StdVal :=
   match v0 with
   | ⟨_, .choice fc ft ff c vt vf⟩ =>
@@ -227,12 +230,12 @@ def projectBranchStdStep (cond : StdVal) (branch : Bool)
     .pair (ih ⟨fl, l⟩) (ih ⟨fr, r⟩)
   | other => other
 
-def projectBranchStdFuel (cond : StdVal) (branch : Bool)
+@[expose] def projectBranchStdFuel (cond : StdVal) (branch : Bool)
     (k : Nat) (v : StdVal) : StdVal :=
   natFold (fun v0 => v0)
     (fun _ ih v0 => projectBranchStdStep cond branch ih v0) k v
 
-def projectBranchStdVal (cond : StdVal) (branch : Bool) (v : StdVal) :
+@[expose] def projectBranchStdVal (cond : StdVal) (branch : Bool) (v : StdVal) :
     StdVal :=
   match stdAsBool cond with
   | some _ => v
@@ -240,7 +243,7 @@ def projectBranchStdVal (cond : StdVal) (branch : Bool) (v : StdVal) :
 
 /-- One step of `remapStdVal`: rename a handle to `oldLid` at the root of `v0`
 to `newLid`, and rename the children of `v0` with `ih`. -/
-def remapStdStep (oldLid newLid : LoanId) (ih : StdVal → StdVal)
+@[expose] def remapStdStep (oldLid newLid : LoanId) (ih : StdVal → StdVal)
     (v0 : StdVal) : StdVal :=
   match v0 with
   | ⟨_, .unit⟩ => .unit
@@ -255,21 +258,21 @@ def remapStdStep (oldLid newLid : LoanId) (ih : StdVal → StdVal)
 
 /-- `remapStdStep` nested `k` deep; parts of `v` deeper than `k` are left
 unchanged. -/
-def remapStdFuel (oldLid newLid : LoanId) (k : Nat) (v : StdVal) : StdVal :=
+@[expose] def remapStdFuel (oldLid newLid : LoanId) (k : Nat) (v : StdVal) : StdVal :=
   natFold (fun v0 => v0) (fun _ ih v0 => remapStdStep oldLid newLid ih v0) k v
 
 /-- Rename every handle to loan `oldLid` inside `v` to `newLid`. The fuel
 `v.fuel` exceeds the depth of every node of `v` (`remapStdFuel_eq`). -/
-def remapStdVal (oldLid newLid : LoanId) (v : StdVal) : StdVal :=
+@[expose] def remapStdVal (oldLid newLid : LoanId) (v : StdVal) : StdVal :=
   remapStdFuel oldLid newLid v.fuel v
 
-def stdValGetField (idx : FieldIdx) (v : StdVal) : Option StdVal :=
+@[expose] def stdValGetField (idx : FieldIdx) (v : StdVal) : Option StdVal :=
   match idx, v with
   | 0, ⟨_, .pairBranch fl _ a _⟩ => some ⟨fl, a⟩
   | 1, ⟨_, .pairBranch _ fr _ b⟩ => some ⟨fr, b⟩
   | _, _ => none
 
-def stdValSetField (idx : FieldIdx) (v child : StdVal) : Option StdVal :=
+@[expose] def stdValSetField (idx : FieldIdx) (v child : StdVal) : Option StdVal :=
   match idx, v, child with
   | 0, ⟨_, .pairBranch _ fr _ b⟩, ⟨fChild, tChild⟩ =>
     some ⟨fChild + fr + 1, .pairBranch fChild fr tChild b⟩
@@ -735,7 +738,7 @@ theorem stdVal_getField_projectBranchVal (cond : StdVal) (branch : Bool)
 
 /-- `StdVal` aggregates are binary `.pair` nodes, which carry no data besides
 their two fields. -/
-def stdSameAggregateShape (v1 v2 : StdVal) : Bool :=
+@[expose] def stdSameAggregateShape (v1 v2 : StdVal) : Bool :=
   match v1, v2 with
   | ⟨_, .pairBranch _ _ _ _⟩, ⟨_, .pairBranch _ _ _ _⟩ => true
   | _, _ => false
@@ -784,7 +787,7 @@ theorem stdVal_sameAggregateShape_setField (f : FieldIdx) (s a s' t : StdVal)
         | exact nomatch hShape
 
 /-- Handle decoding for `StdVal`: only `.refVal` leaves are handles. -/
-def stdDecodeRef (v : StdVal) : Option (LoanId × SubPath) :=
+@[expose] def stdDecodeRef (v : StdVal) : Option (LoanId × SubPath) :=
   match v with
   | ⟨_, .refVal lid path⟩ => some (lid, path)
   | _ => none
@@ -807,7 +810,7 @@ theorem stdVal_decodeRef_getField (f : FieldIdx) (v : StdVal)
     | choice _ _ _ _ _ _ => nomatch hDec
 
 /-- Guard and arms of a `StdVal` choice node. -/
-def stdBranchSplit (v : StdVal) : Option (StdVal × StdVal × StdVal) :=
+@[expose] def stdBranchSplit (v : StdVal) : Option (StdVal × StdVal × StdVal) :=
   match v with
   | ⟨_, .choice fc ft ff c vt vf⟩ => some (⟨fc, c⟩, ⟨ft, vt⟩, ⟨ff, vf⟩)
   | _ => none
@@ -835,7 +838,7 @@ theorem stdVal_branchSplit_zipVal (cond vt vf : StdVal)
 /-- Key of a `StdVal` condition that `stdSameCond` can compare: the tag of a
 `.symBool` placeholder, the shape of every symbolic condition in this suite.
 Other conditions get no key. -/
-def stdCondKey (v : StdVal) : Option Bool :=
+@[expose] def stdCondKey (v : StdVal) : Option Bool :=
   match v with
   | ⟨_, .symBool b⟩ => some b
   | _ => none
@@ -858,7 +861,7 @@ theorem stdCondKey_eq (v : StdVal) (b : Bool) (h : stdCondKey v = some b) :
 
 /-- Conservative condition equality for `StdVal`: equal keys (`stdCondKey`).
 Conditions without a key are never reported equal. -/
-def stdSameCond (c1 c2 : StdVal) : Bool :=
+@[expose] def stdSameCond (c1 c2 : StdVal) : Bool :=
   match stdCondKey c1, stdCondKey c2 with
   | some b1, some b2 => stdBoolEq b1 b2
   | _, _ => false
@@ -1094,7 +1097,7 @@ theorem stdVal_remapRefInVal_leaf (oldLid newLid : LoanId) (v : StdVal)
     | pairBranch _ _ _ _ => nomatch hFields 0
     | choice _ _ _ _ _ _ => nomatch hSplit
 
-def stdSameRefVal (v1 v2 : StdVal) : Bool :=
+@[expose] def stdSameRefVal (v1 v2 : StdVal) : Bool :=
   match v1, v2 with
   | ⟨_, .refVal l1 p1⟩, ⟨_, .refVal l2 p2⟩ =>
     Nat.beq l1 l2 && lensTestSubPathEq p1 p2
@@ -1132,7 +1135,7 @@ theorem stdVal_sameRefVal_eq (v1 v2 : StdVal)
       | pairBranch _ _ _ _ => nomatch h
       | choice _ _ _ _ _ _ => nomatch h
 
-def stdValAlg : ValAlgebra StdVal where
+@[expose] def stdValAlg : ValAlgebra StdVal where
   defaultVal := .unit
   asBool := stdAsBool
   zipVal := zipStdVal
@@ -1173,7 +1176,7 @@ def stdValAlg : ValAlgebra StdVal where
 
 /-- Add a concrete left operand `n1` to `v2`, distributing across any nested
 `.choice` nodes in `v2`. -/
-def stdAddLeafNat (n1 : Nat) (v2 : StdVal) : Option StdVal :=
+@[expose] def stdAddLeafNat (n1 : Nat) (v2 : StdVal) : Option StdVal :=
   natFold
     (fun _ => none)
     (fun _ ih w =>
@@ -1189,7 +1192,7 @@ def stdAddLeafNat (n1 : Nat) (v2 : StdVal) : Option StdVal :=
 /-- Add two `StdVal` numbers or symbolic choices of numbers, distributing
 addition across arbitrary nested `.choice` trees and collapsing matching
 choice guards on the same step via `stdValEq`. -/
-def stdAdd (v1 v2 : StdVal) : Option StdVal :=
+@[expose] def stdAdd (v1 v2 : StdVal) : Option StdVal :=
   natFold
     (fun _ _ => none)
     (fun _ ih w1 w2 =>
@@ -1213,18 +1216,18 @@ def stdAdd (v1 v2 : StdVal) : Option StdVal :=
       | _ => none)
     v1.fuel v1 v2
 
-def stdAddNat (k : Nat) (v : StdVal) : Option StdVal :=
+@[expose] def stdAddNat (k : Nat) (v : StdVal) : Option StdVal :=
   stdAdd v (.nat k)
 
-def stdInc (v : StdVal) : Option StdVal :=
+@[expose] def stdInc (v : StdVal) : Option StdVal :=
   stdAddNat 1 v
 
-def stdLtSym (v1 v2 : StdVal) : Option StdVal :=
+@[expose] def stdLtSym (v1 v2 : StdVal) : Option StdVal :=
   match v1, v2 with
   | ⟨_, .nat n1⟩, ⟨_, .nat n2⟩ => some (.symBool (Nat.blt n1 n2))
   | _, _ => none
 
-def stdLtBool (v1 v2 : StdVal) : Option StdVal :=
+@[expose] def stdLtBool (v1 v2 : StdVal) : Option StdVal :=
   match v1, v2 with
   | ⟨_, .nat n1⟩, ⟨_, .nat n2⟩ => some (.bool (Nat.blt n1 n2))
   | _, _ => none
@@ -1234,7 +1237,7 @@ def stdLtBool (v1 v2 : StdVal) : Option StdVal :=
 /-- `true` iff running `plan` from the entry state of `params` fails (and the
 entry state itself is valid). Tests use it to observe a failure at the step
 that should fail, rather than only at the return boundary. -/
-def planStepFails (params : List (ParamInput StdVal))
+@[expose] def planStepFails (params : List (ParamInput StdVal))
     (plan : FlowPlan StdVal) : Bool :=
   match initFnState stdValAlg params with
   | .ok st0 =>
@@ -1246,7 +1249,7 @@ def planStepFails (params : List (ParamInput StdVal))
 /-- `.branchExplicitJoin` remaps distinct branch-local loan IDs (`2` in the
 true arm vs. `3` in the false arm after a scratch loan `2` ends) into canonical
 loan `2` at the join point. -/
-def explicitJoinRemapLoanIdsPlan : FlowPlan StdVal :=
+@[expose] def explicitJoinRemapLoanIdsPlan : FlowPlan StdVal :=
   .seq
     (.branchExplicitJoin (.use (.localSub 0 []))
       (.seq
@@ -1267,7 +1270,7 @@ def explicitJoinRemapLoanIdsPlan : FlowPlan StdVal :=
 /-- Symbolic branch joining two active region groups with matching metadata
 merges their `backFn`s under `cond`, while mismatched region-group metadata
 fails closed. -/
-def regionSpecWithAdd (k : Nat) : RegionGroupSpec StdVal where
+@[expose] def regionSpecWithAdd (k : Nat) : RegionGroupSpec StdVal where
   groupId := 0
   requiredChildren := []
   inputPlaces := [.derefSub 1 []]
@@ -1283,7 +1286,7 @@ def regionSpecWithAdd (k : Nat) : RegionGroupSpec StdVal where
 
 /-- Output-free region group `gid` requiring the groups `children`; its
 callback accepts any deposits and deposits nothing. -/
-def bareRegionSpec (gid : RegionGroupId)
+@[expose] def bareRegionSpec (gid : RegionGroupId)
     (children : List RegionGroupId) : RegionGroupSpec StdVal where
   groupId := gid
   requiredChildren := children
@@ -1295,7 +1298,7 @@ def bareRegionSpec (gid : RegionGroupId)
 /-- Output-free region group `gid` that locks `input`, writes the number of
 deposits its backward function received back to `input`, and deposits `dep`.
 -/
-def countingRegionSpec (gid : RegionGroupId)
+@[expose] def countingRegionSpec (gid : RegionGroupId)
     (children : List RegionGroupId) (input : PlaceExpr)
     (dep : List StdVal := [.nat 9]) : RegionGroupSpec StdVal where
   groupId := gid
@@ -1306,3 +1309,5 @@ def countingRegionSpec (gid : RegionGroupId)
   backFn := fun _ _ _ deps => some ([.nat deps.length], dep)
 
 end Anneal.PureLift
+
+end

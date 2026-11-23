@@ -6,17 +6,19 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.NotationExtra
-import Init.SimpLemmas
-import Init.Data.Nat.Basic
-import Init.Data.Nat.Div.Basic
-import Init.Data.Int.Basic
-import Init.Data.BitVec.BasicAux
-import Init.Data.List.Basic
-import Anneal.Core.StageCut
+public import Init.Core
+public import Init.NotationExtra
+public import Init.SimpLemmas
+public import Init.Data.Nat.Basic
+public import Init.Data.Nat.Div.Basic
+public import Init.Data.Int.Basic
+public import Init.Data.BitVec.BasicAux
+public import Init.Data.List.Basic
+public import Anneal.Core.StageCut
 
+public section
 namespace Anneal.PureLift.BvLin
 
 open Anneal.Core
@@ -50,7 +52,7 @@ and `BoolCertCut` reflection.
 
 /-! ## 1. Foundation `BitVec w` Modular Ring Helpers (`0` Axioms) -/
 
-private def bvPow2 (w : Nat) : Nat :=
+@[expose] def bvPow2 (w : Nat) : Nat :=
   @Nat.rec (fun _ => Nat) 1 (fun _ ih => 2 * ih) w
 
 private theorem bvPow2_eq_two_pow : ∀ w : Nat, bvPow2 w = Nat.pow 2 w
@@ -82,22 +84,22 @@ private theorem bv_ofNat_toNat {w : Nat} (x : BitVec w) :
   exact Nat.mod_eq_of_lt x.isLt
 
 /-- Zero bitvector `BitVec.ofNat w 0`. -/
-def bvZero (w : Nat) : BitVec w := BitVec.ofNat w 0
+@[expose] def bvZero (w : Nat) : BitVec w := BitVec.ofNat w 0
 
 /-- Modular negation `0 - x` on `BitVec w`. -/
-def bvNeg {w : Nat} (x : BitVec w) : BitVec w := bvZero w - x
+@[expose] def bvNeg {w : Nat} (x : BitVec w) : BitVec w := bvZero w - x
 
 /-- Modular natural-number scalar multiplication `n * x` on `BitVec w`. -/
-def bvMulNat {w : Nat} (n : Nat) (x : BitVec w) : BitVec w :=
+@[expose] def bvMulNat {w : Nat} (n : Nat) (x : BitVec w) : BitVec w :=
   BitVec.ofNat w (n * x.toNat)
 
 /-- Maps an integer `c : Int` into `BitVec w` modulo `2^w`. -/
-def bvOfInt (w : Nat) : Int → BitVec w
+@[expose] def bvOfInt (w : Nat) : Int → BitVec w
   | .ofNat n => BitVec.ofNat w n
   | .negSucc n => bvNeg (BitVec.ofNat w (n + 1))
 
 /-- Scales `x : BitVec w` by an integer coefficient `k : Int`. -/
-def bvScale {w : Nat} (k : Int) (x : BitVec w) : BitVec w :=
+@[expose] def bvScale {w : Nat} (k : Int) (x : BitVec w) : BitVec w :=
   match k with
   | .ofNat n => bvMulNat n x
   | .negSucc n => bvNeg (bvMulNat (n + 1) x)
@@ -443,7 +445,7 @@ private theorem bvOfInt_neg (w : Nat) (a : Int) :
 
 /-- Canonical residue of `c : Int` modulo `2^w` in `[0, 2^w)` (`0`
 `noncomputable`, `hasIR = true`). -/
-def intModPow2 (c : Int) (w : Nat) : Nat :=
+@[expose] def intModPow2 (c : Int) (w : Nat) : Nat :=
   let m := bvPow2 w
   match c with
   | .ofNat n => Nat.mod n m
@@ -507,7 +509,7 @@ private theorem bvOfInt_eq_ofNat_intModPow2 (w : Nat) (c : Int) :
 /-! ## 2. Sparse Sorted Linear Polynomial (`LinPoly`) and Expression AST -/
 
 /-- Branch-free `Int` zero test (`0` `Decidable` overhead). -/
-def intIsZero : Int → Bool
+@[expose] def intIsZero : Int → Bool
   | .ofNat 0 => true
   | _ => false
 
@@ -526,7 +528,7 @@ structure LinPoly where
   const : Int
   terms : List (Nat × Int)
 
-private def insertTermFold (k : Nat) (c : Int) (ts : List (Nat × Int)) :
+@[expose] def insertTermFold (k : Nat) (c : Int) (ts : List (Nat × Int)) :
     List (Nat × Int) × List (Nat × Int) :=
   List.foldr
     (fun (kv : Nat × Int) (acc : List (Nat × Int) × List (Nat × Int)) =>
@@ -545,14 +547,14 @@ private def insertTermFold (k : Nat) (c : Int) (ts : List (Nat × Int)) :
 /-- Inserts `(k, c)` into a strictly key-sorted coefficient list via
 `List.foldr` paramorphism (`0` `noncomputable`, `0` `._unsafe_rec`,
 `hasIR = true`). -/
-def insertTerm (k : Nat) (c : Int) (ts : List (Nat × Int)) :
+@[expose] def insertTerm (k : Nat) (c : Int) (ts : List (Nat × Int)) :
     List (Nat × Int) :=
   (insertTermFold k c ts).1
 
-private def addTerms (xs ys : List (Nat × Int)) : List (Nat × Int) :=
+@[expose] def addTerms (xs ys : List (Nat × Int)) : List (Nat × Int) :=
   List.foldr (fun kv acc => insertTerm kv.1 kv.2 acc) xs ys
 
-private def scaleTerms (k : Int) (ts : List (Nat × Int)) : List (Nat × Int) :=
+@[expose] def scaleTerms (k : Int) (ts : List (Nat × Int)) : List (Nat × Int) :=
   List.foldr
     (fun (kv : Nat × Int) (acc : List (Nat × Int)) =>
       let sc := k * kv.2
@@ -561,28 +563,28 @@ private def scaleTerms (k : Int) (ts : List (Nat × Int)) : List (Nat × Int) :=
     ts
 
 /-- Zero polynomial `0`. -/
-def LinPoly.zero : LinPoly := { const := 0, terms := [] }
+@[expose] def LinPoly.zero : LinPoly := { const := 0, terms := [] }
 
 /-- Constant polynomial `c`. -/
-def LinPoly.ofConst (c : Int) : LinPoly := { const := c, terms := [] }
+@[expose] def LinPoly.ofConst (c : Int) : LinPoly := { const := c, terms := [] }
 
 /-- Single-variable polynomial `1 * var(k)`. -/
-def LinPoly.ofVar (k : Nat) : LinPoly := { const := 0, terms := [(k, 1)] }
+@[expose] def LinPoly.ofVar (k : Nat) : LinPoly := { const := 0, terms := [(k, 1)] }
 
 /-- Adds two sparse linear polynomials. -/
-def LinPoly.add (p q : LinPoly) : LinPoly :=
+@[expose] def LinPoly.add (p q : LinPoly) : LinPoly :=
   { const := p.const + q.const, terms := addTerms p.terms q.terms }
 
 /-- Scales a sparse linear polynomial by `k : Int` (short-circuiting on `0`). -/
-def LinPoly.scale (k : Int) (p : LinPoly) : LinPoly :=
+@[expose] def LinPoly.scale (k : Int) (p : LinPoly) : LinPoly :=
   cond (intIsZero k) LinPoly.zero
     { const := k * p.const, terms := scaleTerms k p.terms }
 
 /-- Negates a sparse linear polynomial (`-p`). -/
-def LinPoly.neg (p : LinPoly) : LinPoly := p.scale (Int.negSucc 0)
+@[expose] def LinPoly.neg (p : LinPoly) : LinPoly := p.scale (Int.negSucc 0)
 
 /-- Subtracts two sparse linear polynomials (`p - q`). -/
-def LinPoly.sub (p q : LinPoly) : LinPoly := p.add q.neg
+@[expose] def LinPoly.sub (p q : LinPoly) : LinPoly := p.add q.neg
 
 /-- Linear expression AST over `BitVec w` atoms (key `2 * i`) and `Nat` atoms
 (key `2 * i + 1`, lifted via `BitVec.ofNat w`). -/
@@ -599,7 +601,7 @@ inductive LinExpr : Type where
 /-- Compiles a `LinExpr` into canonical sparse sorted `LinPoly` normal form
 via `@Nat.rec` up to AST depth `fuel` (`0` `noncomputable`, `0` `._unsafe_rec`,
 `hasIR = true`), failing closed (`none`) if AST depth exceeds `fuel`. -/
-def LinExpr.toPolyAt (fuel : Nat) : LinExpr → Option LinPoly :=
+@[expose] def LinExpr.toPolyAt (fuel : Nat) : LinExpr → Option LinPoly :=
   @Nat.rec (fun _ => LinExpr → Option LinPoly)
     (fun _ => none)
     (fun _ ih e =>
@@ -639,7 +641,7 @@ structure BvLinEnv (w : Nat) where
   natAtom : Nat → Nat
 
 /-- Unified even/odd key lookup in `BvLinEnv w`. -/
-def BvLinEnv.lookupKey {w : Nat} (env : BvLinEnv w) (key : Nat) : BitVec w :=
+@[expose] def BvLinEnv.lookupKey {w : Nat} (env : BvLinEnv w) (key : Nat) : BitVec w :=
   cond (Nat.beq (Nat.mod key 2) 0)
     (env.bvAtom (Nat.div key 2))
     (BitVec.ofNat w (env.natAtom (Nat.div key 2)))
@@ -675,7 +677,7 @@ private theorem lookupKey_odd {w : Nat} (env : BvLinEnv w) (i : Nat) :
 `noncomputable` solely to avoid emitting compiler `._unsafe_rec` auxiliaries;
 all normalizers and reflective checkers below are computable (`hasIR = true`).
 -/
-noncomputable def LinExpr.evalBv {w : Nat} (env : BvLinEnv w) :
+@[expose] noncomputable def LinExpr.evalBv {w : Nat} (env : BvLinEnv w) :
     LinExpr → BitVec w
   | .constInt c => bvOfInt w c
   | .constNat n => BitVec.ofNat w n
@@ -688,13 +690,13 @@ noncomputable def LinExpr.evalBv {w : Nat} (env : BvLinEnv w) :
 
 /-- Evaluates a term list in `BitVec w` under `env` via `List.foldr` (`0`
 `noncomputable`, `0` `._unsafe_rec`, `hasIR = true`). -/
-def evalTermsBv {w : Nat} (env : BvLinEnv w) (ts : List (Nat × Int)) :
+@[expose] def evalTermsBv {w : Nat} (env : BvLinEnv w) (ts : List (Nat × Int)) :
     BitVec w :=
   List.foldr (fun kv acc => bvScale kv.2 (env.lookupKey kv.1) + acc)
     (bvZero w) ts
 
 /-- Evaluates a `LinPoly` in `BitVec w` under `env`. -/
-def LinPoly.evalBv {w : Nat} (env : BvLinEnv w) (p : LinPoly) : BitVec w :=
+@[expose] def LinPoly.evalBv {w : Nat} (env : BvLinEnv w) (p : LinPoly) : BitVec w :=
   bvOfInt w p.const + evalTermsBv env p.terms
 
 private theorem insertTermFold_snd (k : Nat) (c : Int) :
@@ -938,7 +940,7 @@ theorem linExpr_toPolyAt_evalBv {w : Nat} (env : BvLinEnv w) :
 /-- Extracts the exact integer constant difference `a - b` whenever all linear
 variable terms cancel identically (`0` `noncomputable`, `0` `._unsafe_rec`,
 `hasIR = true`). -/
-def LinExpr.diffConst? (a b : LinExpr) : Option Int :=
+@[expose] def LinExpr.diffConst? (a b : LinExpr) : Option Int :=
   match (LinExpr.sub a b).toPolyAt 64 with
   | none => none
   | some p =>
@@ -949,7 +951,7 @@ def LinExpr.diffConst? (a b : LinExpr) : Option Int :=
 /-- Extracts the canonical modular byte offset `(a - b) mod 2^w` whenever all
 linear variable terms cancel identically (`0` `noncomputable`, `0`
 `._unsafe_rec`, `hasIR = true`). -/
-def LinExpr.diffConstMod? (w : Nat) (a b : LinExpr) : Option Nat :=
+@[expose] def LinExpr.diffConstMod? (w : Nat) (a b : LinExpr) : Option Nat :=
   match LinExpr.diffConst? a b with
   | none => none
   | some c => some (intModPow2 c w)
@@ -993,7 +995,7 @@ theorem linExpr_diffConstMod?_sound {w : Nat} (env : BvLinEnv w)
 
 /-- Exact width-polymorphic equality checker: accepts `(a, b)` iff `a - b`
 normalizes to constant `0` with no surviving variable terms. -/
-def bvLinCheckEqExact (cert : LinExpr × LinExpr) : Bool :=
+@[expose] def bvLinCheckEqExact (cert : LinExpr × LinExpr) : Bool :=
   match cert.1.diffConst? cert.2 with
   | some c => intIsZero c
   | none => false
@@ -1016,7 +1018,7 @@ theorem bvLin_eq_exact_of_boolCertCut {w : Nat} (env : BvLinEnv w)
 
 /-- Modular `BitVec w` equality checker: accepts `(w, a, b)` iff `a - b`
 normalizes to a constant divisible by `2^w`. -/
-def bvLinCheckEqMod (cert : Nat × LinExpr × LinExpr) : Bool :=
+@[expose] def bvLinCheckEqMod (cert : Nat × LinExpr × LinExpr) : Bool :=
   match cert.2.1.diffConstMod? cert.1 cert.2.2 with
   | some r => Nat.beq r 0
   | none => false
@@ -1038,7 +1040,7 @@ theorem bvLin_eq_mod_of_boolCertCut {w : Nat} (env : BvLinEnv w)
 
 /-- Constant pointer-offset checker: accepts `(w, a, b, delta)` iff
 `a - b ≡ delta (mod 2^w)` with zero surviving variable terms. -/
-def bvLinCheckDiffConstMod (cert : Nat × LinExpr × LinExpr × Nat) : Bool :=
+@[expose] def bvLinCheckDiffConstMod (cert : Nat × LinExpr × LinExpr × Nat) : Bool :=
   match cert.2.1.diffConstMod? cert.1 cert.2.2.1 with
   | some r => Nat.beq r (Nat.mod cert.2.2.2 (bvPow2 cert.1))
   | none => false
@@ -1061,7 +1063,7 @@ theorem bvLin_diffConst_mod_of_boolCertCut {w : Nat} (env : BvLinEnv w)
 
 /-- Modular `BitVec w` disequality checker: accepts `(w, a, b)` iff `a - b`
 reduces to a nonzero constant modulo `2^w`. -/
-def bvLinCheckNeMod (cert : Nat × LinExpr × LinExpr) : Bool :=
+@[expose] def bvLinCheckNeMod (cert : Nat × LinExpr × LinExpr) : Bool :=
   match cert.2.1.diffConst? cert.2.2 with
   | some c => !(Nat.beq (intModPow2 c cert.1) 0)
   | none => false
@@ -1141,3 +1143,5 @@ theorem bvLin_pointer_offset_canary :
       (BoolCertCut.seal bvLinCheckNeMod (64, a, b) rfl)
 
 end Anneal.PureLift.BvLin
+
+end

@@ -6,10 +6,13 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Core
-import Init.Data.Nat.Basic
-import Init.Data.List.Basic
+public import Init.Core
+public import Init.Data.Nat.Basic
+public import Init.Data.List.Basic
+
+public section
 
 /-!
 # CPS Spine-Forcing and `@Nat.rec` Combinators (`Anneal.SpineForce`)
@@ -45,7 +48,7 @@ namespace Anneal.SpineForce
 
 /-- Case-split `n` into weak-head form (`0` or `Nat.succ _`) via `@Nat.casesOn`
 before passing the reconstructed `Nat` to `k`. -/
-def withStrictNat {α : Type u} (n : Nat) (k : Nat → α) : α :=
+@[expose] def withStrictNat {α : Type u} (n : Nat) (k : Nat → α) : α :=
   @Nat.casesOn (fun _ => α) n (k 0) (fun p => k (Nat.succ p))
 
 /-- Proves `withStrictNat` equals direct application `k n`. -/
@@ -56,7 +59,7 @@ theorem withStrictNat_eq {α : Type u} (n : Nat) (k : Nat → α) :
 /-! ## 2. CPS Spine-Forcing (`forceNat`, `forceOption`, `forceList`) -/
 
 /-- Force the full Peano spine of `n` in CPS before invoking `cont`. -/
-def forceNat {α : Type u} (n : Nat) (cont : Nat → α) : α :=
+@[expose] def forceNat {α : Type u} (n : Nat) (cont : Nat → α) : α :=
   @Nat.rec (fun _ => (Nat → α) → α)
     (fun k => k 0)
     (fun _ ih k => ih (fun m' => k (m' + 1)))
@@ -72,7 +75,7 @@ theorem forceNat_eq {α : Type u} :
 
 /-- Case-split `opt` in WHNF before passing the reconstructed `Option` to
 `cont`. -/
-def forceOption {α : Type u} {β : Type v} (opt : Option α)
+@[expose] def forceOption {α : Type u} {β : Type v} (opt : Option α)
     (cont : Option α → β) : β :=
   match opt with
   | none => cont none
@@ -85,7 +88,7 @@ theorem forceOption_eq {α : Type u} {β : Type v} (opt : Option α)
 
 /-- Force the cons-spine of `xs` in CPS before passing the rebuilt list to
 `cont`. -/
-def forceList {α : Type u} {β : Type v} (xs : List α)
+@[expose] def forceList {α : Type u} {β : Type v} (xs : List α)
     (cont : List α → β) : β :=
   List.foldr
     (fun (x : α) (ih : (List α → β) → β) (k : List α → β) =>
@@ -105,7 +108,7 @@ theorem forceList_eq {α : Type u} {β : Type v} :
 
 /-- Apply `stepFn k` over `steps` steps counting down from `steps - 1` to `0`
 using raw `@Nat.rec` (emitting no `._unsafe_rec` auxiliaries). -/
-def natFold {α : Type u} (steps : Nat) (stepFn : Nat → α → α) (init : α) : α :=
+@[expose] def natFold {α : Type u} (steps : Nat) (stepFn : Nat → α → α) (init : α) : α :=
   @Nat.rec (fun _ => α → α)
     (fun acc => acc)
     (fun k ih acc => ih (stepFn k acc))
@@ -138,7 +141,7 @@ theorem natFold_preserves {α : Type u} (inv : α → Prop)
 /-- Apply `stepChunk` `2 ^ pow2Depth` times via recursive doubling
 (`ih (ih cur)`) over raw `@Nat.rec`, structuring composition in a balanced
 binary call tree of depth `pow2Depth`. -/
-def runPow2 {α : Type u} (pow2Depth : Nat) (stepChunk : α → α) (st : α) : α :=
+@[expose] def runPow2 {α : Type u} (pow2Depth : Nat) (stepChunk : α → α) (st : α) : α :=
   @Nat.rec (fun _ => α → α)
     stepChunk
     (fun _ ih cur => ih (ih cur))
@@ -166,7 +169,7 @@ theorem runPow2_preserves {α : Type u} (inv : α → Prop) (stepChunk : α → 
 
 /-- Boolean checker verifying `predB k = true` for every `k < bound` using
 raw `@Nat.rec`. -/
-def checkRange (predB : Nat → Bool) (bound : Nat) : Bool :=
+@[expose] def checkRange (predB : Nat → Bool) (bound : Nat) : Bool :=
   @Nat.rec (fun _ => Bool)
     true
     (fun k acc => predB k && acc)
@@ -290,3 +293,5 @@ theorem checkRange_canary : ∀ i : Nat, i < 5 → i < 10 :=
     (fun _ h => of_decide_eq_true h) 5 rfl
 
 end Anneal.SpineForce
+
+end
