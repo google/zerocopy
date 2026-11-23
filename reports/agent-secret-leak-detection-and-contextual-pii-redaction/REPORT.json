@@ -1,0 +1,130 @@
+{
+  "topics": [
+    "agents/contextual-integrity",
+    "agents/data-minimization",
+    "agents/pii-redaction",
+    "agents/secret-detection",
+    "security",
+    "security/contextual-integrity",
+    "security/credential-leakage",
+    "security/pii-anonymization",
+    "security/secret-scanning",
+    "tooling/secret-scanners",
+    "vcs/git-object-persistence"
+  ],
+  "subjects": [
+    {
+      "name": "Yelp detect-secrets Secret Detection Framework",
+      "identity": {
+        "repository": "Yelp/detect-secrets",
+        "revision": "5e141933554a0b74e7341841f318be21e895339c"
+      }
+    },
+    {
+      "name": "Gitleaks Secret Scanner",
+      "identity": {
+        "repository": "gitleaks/gitleaks",
+        "revision": "5f6ec56cfa6f8c67648d863582c7ae2f206d5c1c"
+      }
+    },
+    {
+      "name": "TruffleHog Credential Scanner and Verifier",
+      "identity": {
+        "repository": "trufflesecurity/trufflehog",
+        "revision": "4ef51f69ca6347aaa76a5e64a87eac9c0c909f71"
+      }
+    },
+    {
+      "name": "Microsoft Presidio PII Analyzer and Anonymizer",
+      "identity": {
+        "repository": "microsoft/presidio",
+        "revision": "61fde811ebee29493a3b8c608d25d2f96e072f26"
+      }
+    },
+    {
+      "name": "Text Anonymization Benchmark (TAB) Corpus and Evaluator",
+      "identity": {
+        "repository": "NorskRegnesentral/text-anonymization-benchmark",
+        "revision": "558e09e26d6b36f5f78440074e6a233946d98bd9"
+      }
+    },
+    {
+      "name": "Meli, McNiece, & Reaves, How Bad Can It Git? Characterizing Secret Leakage in Public GitHub Repositories",
+      "identity": {
+        "doi": "10.14722/ndss.2019.23418",
+        "venue": "NDSS 2019"
+      }
+    },
+    {
+      "name": "Basak, Neil, Reaves, & Williams, SecretBench: A Dataset of Software Secrets",
+      "identity": {
+        "arxiv": "2303.06729",
+        "doi": "10.1109/MSR59073.2023.00053",
+        "venue": "IEEE/ACM MSR 2023"
+      }
+    },
+    {
+      "name": "Basak, Cox, Reaves, & Williams, A Comparative Study of Software Secrets Reporting by Secret Detection Tools",
+      "identity": {
+        "arxiv": "2307.00714",
+        "doi": "10.1109/ESEM56168.2023.10304853",
+        "venue": "ACM/IEEE ESEM 2023"
+      }
+    },
+    {
+      "name": "Basak, English, Ogura, Kambara, Reaves, & Williams, AssetHarvester: A Static Analysis Tool for Detecting Secret-Asset Pairs in Software Artifacts",
+      "identity": {
+        "arxiv": "2403.19072",
+        "doi": "10.1109/ICSE55347.2025.00067",
+        "venue": "IEEE/ACM ICSE 2025"
+      }
+    },
+    {
+      "name": "Niu, Mirza, Maradni, & Pöpper, CodexLeaks: Privacy Leaks from Code Generation Language Models in GitHub Copilot",
+      "identity": {
+        "isbn": "978-1-939133-37-3",
+        "pages": "2133-2150",
+        "venue": "USENIX Security 2023"
+      }
+    },
+    {
+      "name": "Huang, Li, Wu, Zhang, & Lyu, Your Code Secret Belongs to Me: Neural Code Completion Tools Can Memorize Hard-Coded Credentials",
+      "identity": {
+        "arxiv": "2309.07639",
+        "doi": "10.1145/3660818",
+        "venue": "PACMSE Vol. 1, Issue FSE, Art. 111 (2024)"
+      }
+    },
+    {
+      "name": "Pilán, Lison, Øvrelid, Papadopoulou, Sánchez, & Batet, The Text Anonymization Benchmark (TAB)",
+      "identity": {
+        "arxiv": "2202.00443",
+        "doi": "10.1162/coli_a_00458",
+        "venue": "Computational Linguistics 48(4):1053-1101 (2022)"
+      }
+    },
+    {
+      "name": "Mireshghallah et al., Can LLMs Keep a Secret? Testing Privacy Implications of Language Models via Contextual Integrity Theory (ConfAIde)",
+      "identity": {
+        "arxiv": "2310.17884",
+        "venue": "ICLR 2024"
+      }
+    },
+    {
+      "name": "Bagdasarian et al., AirGapAgent: Protecting Privacy-Conscious Conversational Agents",
+      "identity": {
+        "arxiv": "2405.05175",
+        "doi": "10.1145/3658644.3690350",
+        "venue": "ACM CCS 2024"
+      }
+    },
+    {
+      "name": "Shao, Li, Shi, Liu, & Yang, PrivacyLens: Evaluating Privacy Norm Awareness of Language Models in Action",
+      "identity": {
+        "arxiv": "2409.00138",
+        "venue": "NeurIPS 2024 Datasets and Benchmarks"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

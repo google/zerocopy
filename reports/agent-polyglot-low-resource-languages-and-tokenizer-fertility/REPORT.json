@@ -1,0 +1,102 @@
+{
+  "topics": [
+    "agents/code-generation",
+    "agents/polyglot-benchmarks",
+    "agents/tokenization",
+    "agents/cross-language-transfer",
+    "pl/low-resource-languages",
+    "pl/type-systems",
+    "compilers/diagnostic-feedback",
+    "tooling/benchmark-harnesses",
+    "tooling/bpe-tokenizers"
+  ],
+  "subjects": [
+    {
+      "name": "MultiPL-E Polyglot Code-Generation Benchmark Translators, Evaluation Harnesses, and Pass@k Results (nuprl/MultiPL-E; Cassano et al., IEEE TSE 2023)",
+      "identity": {
+        "arxiv": "2208.08227v4",
+        "doi": "10.1109/TSE.2023.3267446",
+        "repository": "nuprl/MultiPL-E",
+        "revision": "5d60ac014ea0e8567d7f24b8c733f129c6c5891c",
+        "venue": "IEEE Transactions on Software Engineering 49(7):3675-3691",
+        "year": "2023-2026"
+      }
+    },
+    {
+      "name": "McEval Massively Multilingual Code Evaluation Suite and Subprocess Sandbox (MCEVAL/McEval; Chai et al., ICLR 2025)",
+      "identity": {
+        "arxiv": "2406.07436v1",
+        "openreview": "UunCPtPOlZ",
+        "repository": "MCEVAL/McEval",
+        "revision": "09dec129dd5756447227239b3e5b47e543c2e0fd",
+        "venue": "13th International Conference on Learning Representations (ICLR 2025)",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "BabelCode Multilingual Execution Framework, TP3 Dataset, and Unimax Language-Balancing Study (google-research/babelcode; Orlanski et al., ICML 2023)",
+      "identity": {
+        "arxiv": "2302.01973v3",
+        "repository": "google-research/babelcode",
+        "revision": "e8314f6f438193893b705e9fa8f8c8069af26dec",
+        "venue": "Proceedings of the 40th International Conference on Machine Learning, PMLR 202:26619-26645",
+        "year": "2023-2024"
+      }
+    },
+    {
+      "name": "tiktoken OpenAI Pre-Tokenization Regular Expressions and Rust Byte-Level BPE Engines (openai/tiktoken)",
+      "identity": {
+        "repository": "openai/tiktoken",
+        "revision": "79dc2c0533685b893616c78160b5d9e40876e724",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "MultiPL-T Compiler- and Test-Verified Semi-Synthetic Cross-Language Transfer Pipeline (nuprl/MultiPL-T; Cassano et al., PACMPL OOPSLA 2024)",
+      "identity": {
+        "arxiv": "2308.09895v6",
+        "doi": "10.1145/3689735",
+        "repository": "nuprl/MultiPL-T",
+        "revision": "f4747e139e45106a54eb7993d8a6c42a0fc058d3",
+        "venue": "Proceedings of the ACM on Programming Languages 8(OOPSLA2), Article 295",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Agnostics Language-Agnostic Stdin/Stdout GRPO Environment and Ag-LiveCodeBench-X Suite (nuprl/Ag-LiveCodeBench-X; Boruch-Gruszecki et al., ICLR 2026)",
+      "identity": {
+        "arxiv": "2508.04865v4",
+        "repository": "nuprl/Ag-LiveCodeBench-X",
+        "revision": "b7b273ef5710db814d6eff8bca3c4f432b60ad4b",
+        "venue": "14th International Conference on Learning Representations (ICLR 2026)",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Cross-Language Tokenizer Parity and Inference Penalty Study (Petrov, La Malfa, Torr, & Bibi, NeurIPS 2023)",
+      "identity": {
+        "arxiv": "2305.15425v2",
+        "venue": "Advances in Neural Information Processing Systems 36 (NeurIPS 2023)",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Commercial LLM Tokenizer Fertility, Pricing, and Utility Disparity Study (Ahia, Kumar, Gonen, Kasai, Mortensen, Smith, & Tsvetkov, EMNLP 2023)",
+      "identity": {
+        "arxiv": "2305.13707v1",
+        "doi": "10.18653/v1/2023.emnlp-main.614",
+        "venue": "Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP 2023), pp. 9904-9923",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Pre-Tokenization Regex, Vocabulary Size, and Fast Vocabulary Transfer Study for Code LLMs (Dagan, Synnaeve, & Roziere, ICML 2024)",
+      "identity": {
+        "arxiv": "2402.01035v2",
+        "venue": "Proceedings of the 41st International Conference on Machine Learning, PMLR 235:9784-9805",
+        "year": "2024"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

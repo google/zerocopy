@@ -5347,6 +5347,139 @@
         "tooling/agent-harnesses"
       ]
     },
+    "agent-internationalization-cldr-messageformat-and-bidi-isolation": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "unicode-org/cldr",
+            "revision": "267bae66b10db620caca6d5df88c1719fc0fd457",
+            "specification": "UTS #35 LDML Revision 79 (CLDR 49.0.0) / dev Revision 80",
+            "url": "https://www.unicode.org/reports/tr35/"
+          },
+          "name": "Unicode Common Locale Data Repository (CLDR) and UTS #35 LDML Part 3 (Numbers) & Part 9 (MessageFormat 2.0)"
+        },
+        {
+          "identity": {
+            "repository": "unicode-org/cldr-json",
+            "revision": "7d2b9cb11cec08f4d333ad73209deb3df0711c3b",
+            "version": "49.0.0"
+          },
+          "name": "Unicode CLDR JSON Supplemental Plural and Ordinal Rules (unicode-org/cldr-json)"
+        },
+        {
+          "identity": {
+            "repository": "unicode-org/icu",
+            "revision": "9407c634af9e7f12841dd13fe09a37781baf08e9",
+            "version": "ICU 78 (@draft message2)"
+          },
+          "name": "International Components for Unicode \u2014 ICU4J MessagePattern & message2 and ICU4C MessageFormat 2.0 (unicode-org/icu)"
+        },
+        {
+          "identity": {
+            "repository": "formatjs/formatjs",
+            "revision": "0dd5f94402dcc25c5bebb710b2bb961565fe6299"
+          },
+          "name": "FormatJS ICU MessageFormat Parser and Pseudolocale Generator (formatjs/formatjs)"
+        },
+        {
+          "identity": {
+            "repository": "projectfluent/fluent.js",
+            "revision": "9a925d2a38b893be735ff4429be8ad62132a204d"
+          },
+          "name": "Project Fluent JavaScript Runtime and Isolating Bundle Resolver (projectfluent/fluent.js)"
+        },
+        {
+          "identity": {
+            "specification": "UAX #9 Revision 52 (2026-09-01); UAX #29 Revision 49 (2026-09-01); SpecialCasing-18.0.0.txt (2026-05-19)",
+            "url": "https://www.unicode.org/reports/tr9/tr9-52.html; https://www.unicode.org/reports/tr29/tr29-49.html",
+            "version": "Unicode 18.0.0"
+          },
+          "name": "Unicode Bidirectional Algorithm (UAX #9), Unicode Text Segmentation (UAX #29), and UCD SpecialCasing"
+        },
+        {
+          "identity": {
+            "doi": "10.17487/RFC8536",
+            "rfc": "RFC 8536",
+            "year": "2019"
+          },
+          "name": "IETF Time Zone Information Format Specification (RFC 8536; Olson, Eggert, & Murchison 2019)"
+        },
+        {
+          "identity": {
+            "pep": "PEP 495; PEP 615",
+            "repository": "python/cpython",
+            "revision": "9de76f2337effb4e9304284136505b85e0bd51e6",
+            "runtime_executed": "Python 3.13.15"
+          },
+          "name": "CPython datetime and zoneinfo Standard Library Implementation (python/cpython)"
+        },
+        {
+          "identity": {
+            "pep": "PEP 495; PEP 615",
+            "repository": "python/peps",
+            "revision": "4434e728a7db24540d581f52e96570ca1230356e"
+          },
+          "name": "Python Enhancement Proposals \u2014 PEP 495 Local Time Disambiguation & PEP 615 zoneinfo (python/peps)"
+        },
+        {
+          "identity": {
+            "olson_version": "2026f",
+            "repository": "stub42/pytz",
+            "revision": "e3c6fe223abf0ad1c1c4e40a9bd319a87bb3b829",
+            "version": "2026.6"
+          },
+          "name": "pytz Historical IANA Time Zone Library (stub42/pytz)"
+        },
+        {
+          "identity": {
+            "repository": "w3c/i18n-drafts",
+            "revision": "d240c497bd0e294f4d8df4f0be69f61404df1294",
+            "url": "https://www.w3.org/International/articles/article-text-size/; https://www.w3.org/International/articles/inline-bidi-markup/"
+          },
+          "name": "W3C Internationalization Working Group Articles \u2014 Text Size in Translation & Inline BiDi Markup (w3c/i18n-drafts)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICST.2016.36; 10.1109/ICST.2018.00030; 10.1109/ICSME46990.2020.00061; 10.1145/3377811.3380392; 10.1109/TSE.2012.40",
+            "repository": "USC-SQL/ifix",
+            "revision": "ecb6b03c2818f60e232567faee0f24d6a57f19d7",
+            "year": "2013-2021"
+          },
+          "name": "Software Internationalization Presentation Failure, Repair, Android RTL/Overflow, Accessibility, and String-Taint Studies (GWALI, IFix, ITDroid, Alshayban et al., TranStrL)"
+        },
+        {
+          "identity": {
+            "arxiv": "2009.09025; 2104.14478; 2310.10482",
+            "doi": "10.18653/v1/2020.emnlp-main.213; 10.1162/tacl_a_00437; 10.1162/tacl_a_00683",
+            "url": "https://ddd.uab.cat/record/130143",
+            "year": "2014-2024"
+          },
+          "name": "MQM Error Typology, Expert Human MT Evaluation, COMET, and xCOMET Translation Quality Studies (Lommel et al. 2014; Rei et al. 2020; Freitag et al. 2021; Guerreiro et al. 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2605.28218v1; 2609.23490v2; 2608.05232v1",
+            "doi": "10.5281/zenodo.21797172",
+            "year": "2026"
+          },
+          "name": "Multilingual Instruction Following, Agent Task Localization, and LLM Numerical Localisation Studies (IFMTBench, BabelArena, Kaye 2026)"
+        }
+      ],
+      "topics": [
+        "agents",
+        "agents/localization",
+        "domains",
+        "domains/i18n",
+        "domains/localization",
+        "runtimes",
+        "runtimes/icu",
+        "runtimes/cpython-zoneinfo",
+        "tooling",
+        "tooling/pseudolocalization",
+        "verification/conformance-checking"
+      ]
+    },
     "agent-interruption-cost-boundary-batching-and-transactive-memory": {
       "observed_at": "2026-11-22",
       "subjects": [
@@ -6197,6 +6330,108 @@
         "agents/loop-detection",
         "tooling/agent-harnesses",
         "verification/external-critics"
+      ]
+    },
+    "agent-polyglot-low-resource-languages-and-tokenizer-fertility": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2208.08227v4",
+            "doi": "10.1109/TSE.2023.3267446",
+            "repository": "nuprl/MultiPL-E",
+            "revision": "5d60ac014ea0e8567d7f24b8c733f129c6c5891c",
+            "venue": "IEEE Transactions on Software Engineering 49(7):3675-3691",
+            "year": "2023-2026"
+          },
+          "name": "MultiPL-E Polyglot Code-Generation Benchmark Translators, Evaluation Harnesses, and Pass@k Results (nuprl/MultiPL-E; Cassano et al., IEEE TSE 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "2406.07436v1",
+            "openreview": "UunCPtPOlZ",
+            "repository": "MCEVAL/McEval",
+            "revision": "09dec129dd5756447227239b3e5b47e543c2e0fd",
+            "venue": "13th International Conference on Learning Representations (ICLR 2025)",
+            "year": "2024-2025"
+          },
+          "name": "McEval Massively Multilingual Code Evaluation Suite and Subprocess Sandbox (MCEVAL/McEval; Chai et al., ICLR 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2302.01973v3",
+            "repository": "google-research/babelcode",
+            "revision": "e8314f6f438193893b705e9fa8f8c8069af26dec",
+            "venue": "Proceedings of the 40th International Conference on Machine Learning, PMLR 202:26619-26645",
+            "year": "2023-2024"
+          },
+          "name": "BabelCode Multilingual Execution Framework, TP3 Dataset, and Unimax Language-Balancing Study (google-research/babelcode; Orlanski et al., ICML 2023)"
+        },
+        {
+          "identity": {
+            "repository": "openai/tiktoken",
+            "revision": "79dc2c0533685b893616c78160b5d9e40876e724",
+            "year": "2026"
+          },
+          "name": "tiktoken OpenAI Pre-Tokenization Regular Expressions and Rust Byte-Level BPE Engines (openai/tiktoken)"
+        },
+        {
+          "identity": {
+            "arxiv": "2308.09895v6",
+            "doi": "10.1145/3689735",
+            "repository": "nuprl/MultiPL-T",
+            "revision": "f4747e139e45106a54eb7993d8a6c42a0fc058d3",
+            "venue": "Proceedings of the ACM on Programming Languages 8(OOPSLA2), Article 295",
+            "year": "2024-2025"
+          },
+          "name": "MultiPL-T Compiler- and Test-Verified Semi-Synthetic Cross-Language Transfer Pipeline (nuprl/MultiPL-T; Cassano et al., PACMPL OOPSLA 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2508.04865v4",
+            "repository": "nuprl/Ag-LiveCodeBench-X",
+            "revision": "b7b273ef5710db814d6eff8bca3c4f432b60ad4b",
+            "venue": "14th International Conference on Learning Representations (ICLR 2026)",
+            "year": "2025-2026"
+          },
+          "name": "Agnostics Language-Agnostic Stdin/Stdout GRPO Environment and Ag-LiveCodeBench-X Suite (nuprl/Ag-LiveCodeBench-X; Boruch-Gruszecki et al., ICLR 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.15425v2",
+            "venue": "Advances in Neural Information Processing Systems 36 (NeurIPS 2023)",
+            "year": "2023"
+          },
+          "name": "Cross-Language Tokenizer Parity and Inference Penalty Study (Petrov, La Malfa, Torr, & Bibi, NeurIPS 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.13707v1",
+            "doi": "10.18653/v1/2023.emnlp-main.614",
+            "venue": "Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing (EMNLP 2023), pp. 9904-9923",
+            "year": "2023"
+          },
+          "name": "Commercial LLM Tokenizer Fertility, Pricing, and Utility Disparity Study (Ahia, Kumar, Gonen, Kasai, Mortensen, Smith, & Tsvetkov, EMNLP 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "2402.01035v2",
+            "venue": "Proceedings of the 41st International Conference on Machine Learning, PMLR 235:9784-9805",
+            "year": "2024"
+          },
+          "name": "Pre-Tokenization Regex, Vocabulary Size, and Fast Vocabulary Transfer Study for Code LLMs (Dagan, Synnaeve, & Roziere, ICML 2024)"
+        }
+      ],
+      "topics": [
+        "agents/code-generation",
+        "agents/polyglot-benchmarks",
+        "agents/tokenization",
+        "agents/cross-language-transfer",
+        "pl/low-resource-languages",
+        "pl/type-systems",
+        "compilers/diagnostic-feedback",
+        "tooling/benchmark-harnesses",
+        "tooling/bpe-tokenizers"
       ]
     },
     "agent-prompt-injection-tool-security-sandboxing-and-reward-hacking-defenses": {
@@ -7099,6 +7334,161 @@
         "tooling/agent-harnesses"
       ]
     },
+    "agent-scientific-code-reproduction-and-peer-review-gaming": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2409.11363v2",
+            "commit_date": "2025-11-23T17:05:05Z",
+            "doi": "10.48550/arXiv.2409.11363",
+            "repository": "siegelz/core-bench",
+            "revision": "e32a2980e72fe6eb04ee04eb749458f570625663"
+          },
+          "name": "CORE-Bench Computational Reproducibility Benchmark and Evaluator (siegelz/core-bench; Siegel et al., TMLR 2024/2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2407.13168v1",
+            "commit_date": "2025-10-07T01:22:38Z",
+            "doi": "10.48550/arXiv.2407.13168",
+            "repository": "scicode-bench/SciCode",
+            "revision": "e3158ea011d4235245a547460d3688d7ccbf9900"
+          },
+          "name": "SciCode Research Coding Benchmark Harness and Scorers (scicode-bench/SciCode; Tian et al., NeurIPS 2024)"
+        },
+        {
+          "identity": {
+            "commit_date": "2025-02-17T18:04:31Z",
+            "dataset": "SciCode1/SciCode",
+            "host": "huggingface.co",
+            "revision": "4510f6a6aa27c43fad7b43da2c59602a86e88480"
+          },
+          "name": "SciCode Curated Dev and Test Split Dataset (Hugging Face SciCode1/SciCode)"
+        },
+        {
+          "identity": {
+            "arxiv": "2308.16458v5",
+            "commit_date": "2025-07-31T09:01:29Z",
+            "doi": "10.1093/bioinformatics/btae230",
+            "repository": "gersteinlab/BioCoder",
+            "revision": "b073718813f85b6e3d88f181bcffff0bbed4aea0",
+            "venue": "Bioinformatics 40(Suppl. 1):i266-i276"
+          },
+          "name": "BioCoder Bioinformatics Code Generation Benchmark and Fuzzer (gersteinlab/BioCoder; Tang et al., Bioinformatics 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2409.07440v1",
+            "commit_date": "2025-04-04T17:41:36Z",
+            "doi": "10.18653/v1/2024.emnlp-main.702",
+            "repository": "allenai/super-benchmark",
+            "revision": "0c03d77a1114fb9a14ec6d3e2edbcaf254d40a6d"
+          },
+          "name": "SUPER Research Repository Setup and Execution Benchmark (allenai/super-benchmark; Bogin et al., EMNLP 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2506.02314v1",
+            "commit_date": "2025-06-04T17:05:55Z",
+            "doi": "10.48550/arXiv.2506.02314",
+            "repository": "PatrickHua/ResearchCodeBench",
+            "revision": "db3d16d94cfa6b6785bef6f1db0263edfe6f1d34"
+          },
+          "name": "ResearchCodeBench Novel ML Research Code Benchmark (PatrickHua/ResearchCodeBench; Hua et al., 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2504.01848v3",
+            "doi": "10.48550/arXiv.2504.01848",
+            "venue": "ICML 2025",
+            "year": "2025"
+          },
+          "name": "PaperBench AI Research Replication Benchmark (Starace et al., ICML 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2408.06292v3",
+            "commit_date": "2025-12-19T07:46:21Z",
+            "doi": "10.48550/arXiv.2408.06292",
+            "repository": "SakanaAI/AI-Scientist",
+            "revision": "1de1dbc1f4ee2c5f61e9c94348d55eb51d7fa2eb"
+          },
+          "name": "The AI Scientist Automated Discovery and LLM Review Pipeline (SakanaAI/AI-Scientist; Lu et al., 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2504.08066v1",
+            "commit_date": "2025-12-19T07:46:31Z",
+            "doi": "10.48550/arXiv.2504.08066",
+            "repository": "SakanaAI/AI-Scientist-v2",
+            "revision": "96bd51617cfdbb494a9fc283af00fe090edfae48"
+          },
+          "name": "The AI Scientist-v2 Agentic Tree-Search Discovery and Review Pipeline (SakanaAI/AI-Scientist-v2; Yamada et al., 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2502.14297v3",
+            "doi": "10.1145/3769733.3769747",
+            "venue": "ACM SIGIR Forum 59(1):1-20",
+            "year": "2025"
+          },
+          "name": "Independent Empirical Audit of Sakana's AI Scientist (Beel, Kan, & Baumgart, ACM SIGIR Forum 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2406.12708v3",
+            "commit_date": "2026-05-10T21:39:42Z",
+            "doi": "10.18653/v1/2024.emnlp-main.70",
+            "repository": "Ahren09/AgentReview",
+            "revision": "9ce5ec762eaba2d1cdff2f965ce11430b5be9361"
+          },
+          "name": "AgentReview Multi-Agent Peer Review Simulation Arena (Ahren09/AgentReview; Jin et al., EMNLP 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2412.01708v1",
+            "doi": "10.48550/arXiv.2412.01708",
+            "year": "2024"
+          },
+          "name": "Scholarly LLM Peer Review Incomplete-Draft and White-Text Prompt-Injection Study (Ye et al., 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.07183v4",
+            "doi": "10.48550/arXiv.2403.07183",
+            "venue": "ICML 2024",
+            "year": "2024"
+          },
+          "name": "Distributional Monitoring of LLM-Modified Conference Peer Reviews (Liang et al., ICML 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.08569v1",
+            "doi": "10.18653/v1/2025.acl-long.1420",
+            "venue": "ACL 2025 (Long Papers)",
+            "year": "2025"
+          },
+          "name": "DeepReview Multi-Stage Structured Reasoning Paper Reviewer (Zhu et al., ACL 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2408.10365v1",
+            "doi": "10.48550/arXiv.2408.10365",
+            "year": "2024"
+          },
+          "name": "AI-Driven Academic Review Pairwise Arena and Planted-Error Framework Metadata (Tyser et al., 2024)"
+        }
+      ],
+      "topics": [
+        "agents",
+        "agents/scientific-reproduction",
+        "agents/peer-review",
+        "verification/benchmark-evaluators",
+        "security/prompt-injection",
+        "tooling/evaluation-harnesses"
+      ]
+    },
     "agent-se-communication-artifacts-discourse-cohesion-and-authorship-provenance": {
       "observed_at": "2026-11-22",
       "subjects": [
@@ -7239,6 +7629,136 @@
         "tooling/code-comments",
         "tooling/bug-reports",
         "verification/test-generation"
+      ]
+    },
+    "agent-secret-leak-detection-and-contextual-pii-redaction": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "Yelp/detect-secrets",
+            "revision": "5e141933554a0b74e7341841f318be21e895339c"
+          },
+          "name": "Yelp detect-secrets Secret Detection Framework"
+        },
+        {
+          "identity": {
+            "repository": "gitleaks/gitleaks",
+            "revision": "5f6ec56cfa6f8c67648d863582c7ae2f206d5c1c"
+          },
+          "name": "Gitleaks Secret Scanner"
+        },
+        {
+          "identity": {
+            "repository": "trufflesecurity/trufflehog",
+            "revision": "4ef51f69ca6347aaa76a5e64a87eac9c0c909f71"
+          },
+          "name": "TruffleHog Credential Scanner and Verifier"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/presidio",
+            "revision": "61fde811ebee29493a3b8c608d25d2f96e072f26"
+          },
+          "name": "Microsoft Presidio PII Analyzer and Anonymizer"
+        },
+        {
+          "identity": {
+            "repository": "NorskRegnesentral/text-anonymization-benchmark",
+            "revision": "558e09e26d6b36f5f78440074e6a233946d98bd9"
+          },
+          "name": "Text Anonymization Benchmark (TAB) Corpus and Evaluator"
+        },
+        {
+          "identity": {
+            "doi": "10.14722/ndss.2019.23418",
+            "venue": "NDSS 2019"
+          },
+          "name": "Meli, McNiece, & Reaves, How Bad Can It Git? Characterizing Secret Leakage in Public GitHub Repositories"
+        },
+        {
+          "identity": {
+            "arxiv": "2303.06729",
+            "doi": "10.1109/MSR59073.2023.00053",
+            "venue": "IEEE/ACM MSR 2023"
+          },
+          "name": "Basak, Neil, Reaves, & Williams, SecretBench: A Dataset of Software Secrets"
+        },
+        {
+          "identity": {
+            "arxiv": "2307.00714",
+            "doi": "10.1109/ESEM56168.2023.10304853",
+            "venue": "ACM/IEEE ESEM 2023"
+          },
+          "name": "Basak, Cox, Reaves, & Williams, A Comparative Study of Software Secrets Reporting by Secret Detection Tools"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.19072",
+            "doi": "10.1109/ICSE55347.2025.00067",
+            "venue": "IEEE/ACM ICSE 2025"
+          },
+          "name": "Basak, English, Ogura, Kambara, Reaves, & Williams, AssetHarvester: A Static Analysis Tool for Detecting Secret-Asset Pairs in Software Artifacts"
+        },
+        {
+          "identity": {
+            "isbn": "978-1-939133-37-3",
+            "pages": "2133-2150",
+            "venue": "USENIX Security 2023"
+          },
+          "name": "Niu, Mirza, Maradni, & P\u00f6pper, CodexLeaks: Privacy Leaks from Code Generation Language Models in GitHub Copilot"
+        },
+        {
+          "identity": {
+            "arxiv": "2309.07639",
+            "doi": "10.1145/3660818",
+            "venue": "PACMSE Vol. 1, Issue FSE, Art. 111 (2024)"
+          },
+          "name": "Huang, Li, Wu, Zhang, & Lyu, Your Code Secret Belongs to Me: Neural Code Completion Tools Can Memorize Hard-Coded Credentials"
+        },
+        {
+          "identity": {
+            "arxiv": "2202.00443",
+            "doi": "10.1162/coli_a_00458",
+            "venue": "Computational Linguistics 48(4):1053-1101 (2022)"
+          },
+          "name": "Pil\u00e1n, Lison, \u00d8vrelid, Papadopoulou, S\u00e1nchez, & Batet, The Text Anonymization Benchmark (TAB)"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.17884",
+            "venue": "ICLR 2024"
+          },
+          "name": "Mireshghallah et al., Can LLMs Keep a Secret? Testing Privacy Implications of Language Models via Contextual Integrity Theory (ConfAIde)"
+        },
+        {
+          "identity": {
+            "arxiv": "2405.05175",
+            "doi": "10.1145/3658644.3690350",
+            "venue": "ACM CCS 2024"
+          },
+          "name": "Bagdasarian et al., AirGapAgent: Protecting Privacy-Conscious Conversational Agents"
+        },
+        {
+          "identity": {
+            "arxiv": "2409.00138",
+            "venue": "NeurIPS 2024 Datasets and Benchmarks"
+          },
+          "name": "Shao, Li, Shi, Liu, & Yang, PrivacyLens: Evaluating Privacy Norm Awareness of Language Models in Action"
+        }
+      ],
+      "topics": [
+        "agents/contextual-integrity",
+        "agents/data-minimization",
+        "agents/pii-redaction",
+        "agents/secret-detection",
+        "security",
+        "security/contextual-integrity",
+        "security/credential-leakage",
+        "security/pii-anonymization",
+        "security/secret-scanning",
+        "tooling/secret-scanners",
+        "vcs/git-object-persistence"
       ]
     },
     "agent-software-reuse-economics-faceted-catalogs-and-registry-rot": {

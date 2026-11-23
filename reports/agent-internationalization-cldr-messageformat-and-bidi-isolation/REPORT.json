@@ -1,0 +1,133 @@
+{
+  "topics": [
+    "agents",
+    "agents/localization",
+    "domains",
+    "domains/i18n",
+    "domains/localization",
+    "runtimes",
+    "runtimes/icu",
+    "runtimes/cpython-zoneinfo",
+    "tooling",
+    "tooling/pseudolocalization",
+    "verification/conformance-checking"
+  ],
+  "subjects": [
+    {
+      "name": "Unicode Common Locale Data Repository (CLDR) and UTS #35 LDML Part 3 (Numbers) & Part 9 (MessageFormat 2.0)",
+      "identity": {
+        "repository": "unicode-org/cldr",
+        "revision": "267bae66b10db620caca6d5df88c1719fc0fd457",
+        "specification": "UTS #35 LDML Revision 79 (CLDR 49.0.0) / dev Revision 80",
+        "url": "https://www.unicode.org/reports/tr35/"
+      }
+    },
+    {
+      "name": "Unicode CLDR JSON Supplemental Plural and Ordinal Rules (unicode-org/cldr-json)",
+      "identity": {
+        "repository": "unicode-org/cldr-json",
+        "revision": "7d2b9cb11cec08f4d333ad73209deb3df0711c3b",
+        "version": "49.0.0"
+      }
+    },
+    {
+      "name": "International Components for Unicode — ICU4J MessagePattern & message2 and ICU4C MessageFormat 2.0 (unicode-org/icu)",
+      "identity": {
+        "repository": "unicode-org/icu",
+        "revision": "9407c634af9e7f12841dd13fe09a37781baf08e9",
+        "version": "ICU 78 (@draft message2)"
+      }
+    },
+    {
+      "name": "FormatJS ICU MessageFormat Parser and Pseudolocale Generator (formatjs/formatjs)",
+      "identity": {
+        "repository": "formatjs/formatjs",
+        "revision": "0dd5f94402dcc25c5bebb710b2bb961565fe6299"
+      }
+    },
+    {
+      "name": "Project Fluent JavaScript Runtime and Isolating Bundle Resolver (projectfluent/fluent.js)",
+      "identity": {
+        "repository": "projectfluent/fluent.js",
+        "revision": "9a925d2a38b893be735ff4429be8ad62132a204d"
+      }
+    },
+    {
+      "name": "Unicode Bidirectional Algorithm (UAX #9), Unicode Text Segmentation (UAX #29), and UCD SpecialCasing",
+      "identity": {
+        "specification": "UAX #9 Revision 52 (2026-09-01); UAX #29 Revision 49 (2026-09-01); SpecialCasing-18.0.0.txt (2026-05-19)",
+        "url": "https://www.unicode.org/reports/tr9/tr9-52.html; https://www.unicode.org/reports/tr29/tr29-49.html",
+        "version": "Unicode 18.0.0"
+      }
+    },
+    {
+      "name": "IETF Time Zone Information Format Specification (RFC 8536; Olson, Eggert, & Murchison 2019)",
+      "identity": {
+        "doi": "10.17487/RFC8536",
+        "rfc": "RFC 8536",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "CPython datetime and zoneinfo Standard Library Implementation (python/cpython)",
+      "identity": {
+        "pep": "PEP 495; PEP 615",
+        "repository": "python/cpython",
+        "revision": "9de76f2337effb4e9304284136505b85e0bd51e6",
+        "runtime_executed": "Python 3.13.15"
+      }
+    },
+    {
+      "name": "Python Enhancement Proposals — PEP 495 Local Time Disambiguation & PEP 615 zoneinfo (python/peps)",
+      "identity": {
+        "pep": "PEP 495; PEP 615",
+        "repository": "python/peps",
+        "revision": "4434e728a7db24540d581f52e96570ca1230356e"
+      }
+    },
+    {
+      "name": "pytz Historical IANA Time Zone Library (stub42/pytz)",
+      "identity": {
+        "olson_version": "2026f",
+        "repository": "stub42/pytz",
+        "revision": "e3c6fe223abf0ad1c1c4e40a9bd319a87bb3b829",
+        "version": "2026.6"
+      }
+    },
+    {
+      "name": "W3C Internationalization Working Group Articles — Text Size in Translation & Inline BiDi Markup (w3c/i18n-drafts)",
+      "identity": {
+        "repository": "w3c/i18n-drafts",
+        "revision": "d240c497bd0e294f4d8df4f0be69f61404df1294",
+        "url": "https://www.w3.org/International/articles/article-text-size/; https://www.w3.org/International/articles/inline-bidi-markup/"
+      }
+    },
+    {
+      "name": "Software Internationalization Presentation Failure, Repair, Android RTL/Overflow, Accessibility, and String-Taint Studies (GWALI, IFix, ITDroid, Alshayban et al., TranStrL)",
+      "identity": {
+        "doi": "10.1109/ICST.2016.36; 10.1109/ICST.2018.00030; 10.1109/ICSME46990.2020.00061; 10.1145/3377811.3380392; 10.1109/TSE.2012.40",
+        "repository": "USC-SQL/ifix",
+        "revision": "ecb6b03c2818f60e232567faee0f24d6a57f19d7",
+        "year": "2013-2021"
+      }
+    },
+    {
+      "name": "MQM Error Typology, Expert Human MT Evaluation, COMET, and xCOMET Translation Quality Studies (Lommel et al. 2014; Rei et al. 2020; Freitag et al. 2021; Guerreiro et al. 2024)",
+      "identity": {
+        "arxiv": "2009.09025; 2104.14478; 2310.10482",
+        "doi": "10.18653/v1/2020.emnlp-main.213; 10.1162/tacl_a_00437; 10.1162/tacl_a_00683",
+        "url": "https://ddd.uab.cat/record/130143",
+        "year": "2014-2024"
+      }
+    },
+    {
+      "name": "Multilingual Instruction Following, Agent Task Localization, and LLM Numerical Localisation Studies (IFMTBench, BabelArena, Kaye 2026)",
+      "identity": {
+        "arxiv": "2605.28218v1; 2609.23490v2; 2608.05232v1",
+        "doi": "10.5281/zenodo.21797172",
+        "year": "2026"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

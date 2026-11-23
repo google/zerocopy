@@ -1,0 +1,155 @@
+{
+  "topics": [
+    "agents",
+    "agents/scientific-reproduction",
+    "agents/peer-review",
+    "verification/benchmark-evaluators",
+    "security/prompt-injection",
+    "tooling/evaluation-harnesses"
+  ],
+  "subjects": [
+    {
+      "name": "CORE-Bench Computational Reproducibility Benchmark and Evaluator (siegelz/core-bench; Siegel et al., TMLR 2024/2025)",
+      "identity": {
+        "arxiv": "2409.11363v2",
+        "commit_date": "2025-11-23T17:05:05Z",
+        "doi": "10.48550/arXiv.2409.11363",
+        "repository": "siegelz/core-bench",
+        "revision": "e32a2980e72fe6eb04ee04eb749458f570625663"
+      }
+    },
+    {
+      "name": "SciCode Research Coding Benchmark Harness and Scorers (scicode-bench/SciCode; Tian et al., NeurIPS 2024)",
+      "identity": {
+        "arxiv": "2407.13168v1",
+        "commit_date": "2025-10-07T01:22:38Z",
+        "doi": "10.48550/arXiv.2407.13168",
+        "repository": "scicode-bench/SciCode",
+        "revision": "e3158ea011d4235245a547460d3688d7ccbf9900"
+      }
+    },
+    {
+      "name": "SciCode Curated Dev and Test Split Dataset (Hugging Face SciCode1/SciCode)",
+      "identity": {
+        "commit_date": "2025-02-17T18:04:31Z",
+        "dataset": "SciCode1/SciCode",
+        "host": "huggingface.co",
+        "revision": "4510f6a6aa27c43fad7b43da2c59602a86e88480"
+      }
+    },
+    {
+      "name": "BioCoder Bioinformatics Code Generation Benchmark and Fuzzer (gersteinlab/BioCoder; Tang et al., Bioinformatics 2024)",
+      "identity": {
+        "arxiv": "2308.16458v5",
+        "commit_date": "2025-07-31T09:01:29Z",
+        "doi": "10.1093/bioinformatics/btae230",
+        "repository": "gersteinlab/BioCoder",
+        "revision": "b073718813f85b6e3d88f181bcffff0bbed4aea0",
+        "venue": "Bioinformatics 40(Suppl. 1):i266-i276"
+      }
+    },
+    {
+      "name": "SUPER Research Repository Setup and Execution Benchmark (allenai/super-benchmark; Bogin et al., EMNLP 2024)",
+      "identity": {
+        "arxiv": "2409.07440v1",
+        "commit_date": "2025-04-04T17:41:36Z",
+        "doi": "10.18653/v1/2024.emnlp-main.702",
+        "repository": "allenai/super-benchmark",
+        "revision": "0c03d77a1114fb9a14ec6d3e2edbcaf254d40a6d"
+      }
+    },
+    {
+      "name": "ResearchCodeBench Novel ML Research Code Benchmark (PatrickHua/ResearchCodeBench; Hua et al., 2025)",
+      "identity": {
+        "arxiv": "2506.02314v1",
+        "commit_date": "2025-06-04T17:05:55Z",
+        "doi": "10.48550/arXiv.2506.02314",
+        "repository": "PatrickHua/ResearchCodeBench",
+        "revision": "db3d16d94cfa6b6785bef6f1db0263edfe6f1d34"
+      }
+    },
+    {
+      "name": "PaperBench AI Research Replication Benchmark (Starace et al., ICML 2025)",
+      "identity": {
+        "arxiv": "2504.01848v3",
+        "doi": "10.48550/arXiv.2504.01848",
+        "venue": "ICML 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "The AI Scientist Automated Discovery and LLM Review Pipeline (SakanaAI/AI-Scientist; Lu et al., 2024)",
+      "identity": {
+        "arxiv": "2408.06292v3",
+        "commit_date": "2025-12-19T07:46:21Z",
+        "doi": "10.48550/arXiv.2408.06292",
+        "repository": "SakanaAI/AI-Scientist",
+        "revision": "1de1dbc1f4ee2c5f61e9c94348d55eb51d7fa2eb"
+      }
+    },
+    {
+      "name": "The AI Scientist-v2 Agentic Tree-Search Discovery and Review Pipeline (SakanaAI/AI-Scientist-v2; Yamada et al., 2025)",
+      "identity": {
+        "arxiv": "2504.08066v1",
+        "commit_date": "2025-12-19T07:46:31Z",
+        "doi": "10.48550/arXiv.2504.08066",
+        "repository": "SakanaAI/AI-Scientist-v2",
+        "revision": "96bd51617cfdbb494a9fc283af00fe090edfae48"
+      }
+    },
+    {
+      "name": "Independent Empirical Audit of Sakana's AI Scientist (Beel, Kan, & Baumgart, ACM SIGIR Forum 2025)",
+      "identity": {
+        "arxiv": "2502.14297v3",
+        "doi": "10.1145/3769733.3769747",
+        "venue": "ACM SIGIR Forum 59(1):1-20",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "AgentReview Multi-Agent Peer Review Simulation Arena (Ahren09/AgentReview; Jin et al., EMNLP 2024)",
+      "identity": {
+        "arxiv": "2406.12708v3",
+        "commit_date": "2026-05-10T21:39:42Z",
+        "doi": "10.18653/v1/2024.emnlp-main.70",
+        "repository": "Ahren09/AgentReview",
+        "revision": "9ce5ec762eaba2d1cdff2f965ce11430b5be9361"
+      }
+    },
+    {
+      "name": "Scholarly LLM Peer Review Incomplete-Draft and White-Text Prompt-Injection Study (Ye et al., 2024)",
+      "identity": {
+        "arxiv": "2412.01708v1",
+        "doi": "10.48550/arXiv.2412.01708",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Distributional Monitoring of LLM-Modified Conference Peer Reviews (Liang et al., ICML 2024)",
+      "identity": {
+        "arxiv": "2403.07183v4",
+        "doi": "10.48550/arXiv.2403.07183",
+        "venue": "ICML 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "DeepReview Multi-Stage Structured Reasoning Paper Reviewer (Zhu et al., ACL 2025)",
+      "identity": {
+        "arxiv": "2503.08569v1",
+        "doi": "10.18653/v1/2025.acl-long.1420",
+        "venue": "ACL 2025 (Long Papers)",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "AI-Driven Academic Review Pairwise Arena and Planted-Error Framework Metadata (Tyser et al., 2024)",
+      "identity": {
+        "arxiv": "2408.10365v1",
+        "doi": "10.48550/arXiv.2408.10365",
+        "year": "2024"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}
