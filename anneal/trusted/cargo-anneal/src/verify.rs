@@ -21,7 +21,7 @@ use std::{
     time::Instant,
 };
 
-use cargo_anneal::{
+use crate::{
     ActiveSandbox, Checker, SandboxMode, TOOLCHAIN, TargetAuditRequest, TargetBindings,
     TargetModule, TargetRole, read_regular_file_deref, read_regular_file_strict, sha256_bytes,
 };
@@ -764,7 +764,7 @@ fn io(phase: &'static str, failure: std::io::Error) -> Error {
 }
 
 fn identifier(value: &str) -> bool {
-    !value.is_empty() && value.split('.').all(cargo_anneal::is_lean_ident)
+    !value.is_empty() && value.split('.').all(crate::is_lean_ident)
 }
 
 fn module_of(name: &str) -> Result<String> {
@@ -1685,7 +1685,7 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
             });
         }
     }
-    let bundled_theory = cargo_anneal::bundle::embedded_theory_bundle().map_err(|e| {
+    let bundled_theory = crate::bundle::embedded_theory_bundle().map_err(|e| {
         error("tool_failed", "bundle", format!("corrupt embedded theory bundle: {e}"))
     })?;
     for entry in bundled_theory.modules {
@@ -2098,7 +2098,7 @@ fn finalize_passing_artifacts(
     work: &Path,
     result_bytes: &[u8],
     export_lean_lib: bool,
-    export: impl FnOnce(&Path) -> std::result::Result<bool, cargo_anneal::Failure>,
+    export: impl FnOnce(&Path) -> std::result::Result<bool, crate::Failure>,
 ) -> Result<()> {
     let result_path = work.join("result.json");
     if let Err(mut write_err) = write(&result_path, result_bytes) {
@@ -2304,7 +2304,7 @@ fn handle_failed_target_audit(
     work: &Path,
     export_lean_lib: bool,
     sandbox_label: Option<&'static str>,
-    err: cargo_anneal::Failure,
+    err: crate::Failure,
 ) -> Error {
     if export_lean_lib
         && err.code == 1
@@ -3299,7 +3299,7 @@ mod tests {
         assert_eq!(provenance["upstream_commit"], "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a");
         assert_eq!(
             provenance["sysroot_foundation_manifest_sha256"],
-            cargo_anneal::LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256
+            crate::LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256
         );
         assert_eq!(provenance["upstream_pin_sha256"].as_str().unwrap().len(), 64);
         assert_eq!(provenance["correspondence_adapters"].as_object().unwrap().len(), 7);
@@ -3473,7 +3473,7 @@ mod tests {
             work_empty.path(),
             true,
             Some("linux_bwrap"),
-            cargo_anneal::Failure::policy("headers", "header rejected"),
+            crate::Failure::policy("headers", "header rejected"),
         );
         assert_eq!(clean_empty_err.status, "proof_failed");
         assert_eq!(clean_empty_err.phase, "audit");
@@ -3491,7 +3491,7 @@ mod tests {
             work_fs_err.path(),
             true,
             Some("linux_bwrap"),
-            cargo_anneal::Failure::policy("compile-Proof", "proof rejected"),
+            crate::Failure::policy("compile-Proof", "proof rejected"),
         );
         assert_eq!(fs_err.status, "tool_failed");
         assert_eq!(fs_err.phase, "export-lean-lib");
@@ -3511,7 +3511,7 @@ mod tests {
             work_unledgered.path(),
             true,
             Some("none"),
-            cargo_anneal::Failure::policy("compile-Proof", "proof rejected"),
+            crate::Failure::policy("compile-Proof", "proof rejected"),
         );
         assert_eq!(unledgered_err.status, "tool_failed");
         assert_eq!(unledgered_err.phase, "export-lean-lib");
@@ -3543,7 +3543,7 @@ mod tests {
         //    while gating `Proof.olean`, then tamper `stage/lib/Spec.olean` and
         //    verify `handle_failed_target_audit` escalates to `tool_failed` /
         //    exit 2.
-        let lean_bin = cargo_anneal::default_lean_path();
+        let lean_bin = crate::default_lean_path();
         if lean_bin.is_file() {
             let src_dir = tempfile::tempdir().unwrap();
             let sources = [
@@ -3624,7 +3624,7 @@ mod tests {
                 work_ok.path(),
                 true,
                 Some("linux_bwrap"),
-                cargo_anneal::Failure::policy("compile-Proof", "proof rejected"),
+                crate::Failure::policy("compile-Proof", "proof rejected"),
             );
             assert_eq!(clean_err.status, "proof_failed");
             assert_eq!(clean_err.phase, "audit");
@@ -3695,7 +3695,7 @@ mod tests {
             work_export_fail.path(),
             b"{\"status\":\"verified\"}\n",
             true,
-            |_| Err(cargo_anneal::Failure::operational("export-lean-lib", "simulated ENOSPC")),
+            |_| Err(crate::Failure::operational("export-lean-lib", "simulated ENOSPC")),
         )
         .unwrap_err();
         assert_eq!(err.status, "tool_failed");
@@ -3736,7 +3736,7 @@ mod tests {
             let err =
                 finalize_passing_artifacts(&ro_path, b"{\"status\":\"verified\"}\n", true, |_| {
                     fs::set_permissions(&ro_path, fs::Permissions::from_mode(0o500)).unwrap();
-                    Err(cargo_anneal::Failure::operational("export-lean-lib", "simulated EROFS"))
+                    Err(crate::Failure::operational("export-lean-lib", "simulated EROFS"))
                 })
                 .unwrap_err();
             fs::set_permissions(&ro_path, fs::Permissions::from_mode(0o700)).unwrap();

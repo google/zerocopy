@@ -85,9 +85,12 @@ jobs:
       - name: Check non-stable cargo-anneal version
         run: ./ci/check_non_stable_version.sh
       - name: Check offline cargo-anneal (--no-default-features) with Clippy
-        run: >-
-          cargo clippy --locked --no-deps -p cargo-anneal --no-default-features
-          --lib --bins --test cli -- -A clippy::type_complexity -D warnings
+        run: |
+          set -euo pipefail
+          cargo clippy --locked --no-deps -p cargo-anneal --no-default-features \
+            --lib --bins -- -A clippy::type_complexity -D warnings
+          cargo clippy --locked --no-deps -p cargo-anneal-tests --no-default-features \
+            --test cli -- -A clippy::type_complexity -D warnings
 
   build-exocrate:
     runs-on: ubuntu-latest
@@ -722,8 +725,8 @@ jobs:
             --ro-bind "$XDG_CACHE_HOME" /toolchain-cache \
             --ro-bind "$ANNEAL_TEST_CARGO_ANNEAL" /cargo-anneal \
             --ro-bind "$PWD/ci/probe_alpha.py" /anneal/ci/probe_alpha.py \
-            --ro-bind "$PWD/trusted/cargo-anneal/tests/fixtures/scalar" \
-              /anneal/trusted/cargo-anneal/tests/fixtures/scalar \
+            --ro-bind "$PWD/trusted/cargo-anneal/assets/scalar" \
+              /anneal/trusted/cargo-anneal/assets/scalar \
             -- /usr/bin/python3 -B /anneal/ci/probe_alpha.py --cli /cargo-anneal \
             > "$ANNEAL_TEST_DIAGNOSTICS/alpha-probe.log" 2>&1
           echo "Sandboxed scalar alpha probe passed."
@@ -861,7 +864,7 @@ jobs:
           unset ANNEAL_TEST_ARCHIVE ANNEAL_TEST_CASE
           # Cargo also succeeds when a filter selects no tests. Prove that
           # the intended ignored test exists before relying on its result.
-          cargo test --locked -p cargo-anneal --test installed_smoke \
+          cargo test --locked -p cargo-anneal-tests --test installed_smoke \
             --config 'profile.dev.package.cpufeatures.opt-level=3' \
             --config 'profile.dev.package.digest.opt-level=3' \
             --config 'profile.dev.package.sha2.opt-level=3' \
@@ -870,7 +873,7 @@ jobs:
             > "$ANNEAL_TEST_DIAGNOSTICS/installed-smoke-selection.stdout"
           grep -Fx 'installed_smoke: test' \
             "$ANNEAL_TEST_DIAGNOSTICS/installed-smoke-selection.stdout"
-          cargo test --locked -p cargo-anneal --test installed_smoke \
+          cargo test --locked -p cargo-anneal-tests --test installed_smoke \
             --config 'profile.dev.package.cpufeatures.opt-level=3' \
             --config 'profile.dev.package.digest.opt-level=3' \
             --config 'profile.dev.package.sha2.opt-level=3' \
@@ -1087,7 +1090,13 @@ jobs:
             --config 'profile.dev.package.digest.opt-level=3' \
             --config 'profile.dev.package.sha2.opt-level=3' \
             --config 'profile.dev.package.zstd-sys.opt-level=3' \
-            --lib --bin cargo-anneal --test cli
+            --lib --bin cargo-anneal
+          cargo test --locked -p cargo-anneal-tests --no-default-features \
+            --config 'profile.dev.package.cpufeatures.opt-level=3' \
+            --config 'profile.dev.package.digest.opt-level=3' \
+            --config 'profile.dev.package.sha2.opt-level=3' \
+            --config 'profile.dev.package.zstd-sys.opt-level=3' \
+            --test cli
           cargo test --workspace --locked \
             --config 'profile.dev.package.cpufeatures.opt-level=3' \
             --config 'profile.dev.package.digest.opt-level=3' \
@@ -1192,18 +1201,19 @@ jobs:
       - name: Compile and test ExecSeal on aarch64
         run: |
           set -euo pipefail
-          cargo clippy --locked -p cargo-anneal --lib --test sandbox_escape -- -D warnings
+          cargo clippy --locked -p cargo-anneal --lib -- -D warnings
+          cargo clippy --locked -p cargo-anneal-tests --test sandbox_escape -- -D warnings
           cargo test --locked -p cargo-anneal --lib sandbox:: -- --list \
             > "$RUNNER_TEMP/sandbox-aarch64-lib.stdout"
           test "$(grep -c ': test$' "$RUNNER_TEMP/sandbox-aarch64-lib.stdout")" -ge 1
           cargo test --locked -p cargo-anneal --lib sandbox:: -- --test-threads=1
-          cargo test --locked -p cargo-anneal --test sandbox_escape -- --list --exact \
+          cargo test --locked -p cargo-anneal-tests --test sandbox_escape -- --list --exact \
             sandbox_escape_vectors_blocked_in_tier1_and_tier2 \
             wall_clock_timeout_kills_process_group_in_tier1_and_tier2 \
             tier1_as_pid1_prevents_post_exit_out_writes \
             > "$RUNNER_TEMP/sandbox-aarch64-selection.stdout"
           test "$(grep -c ': test$' "$RUNNER_TEMP/sandbox-aarch64-selection.stdout")" -eq 3
-          cargo test --locked -p cargo-anneal --test sandbox_escape -- --test-threads=1 --exact \
+          cargo test --locked -p cargo-anneal-tests --test sandbox_escape -- --test-threads=1 --exact \
             sandbox_escape_vectors_blocked_in_tier1_and_tier2 \
             wall_clock_timeout_kills_process_group_in_tier1_and_tier2 \
             tier1_as_pid1_prevents_post_exit_out_writes

@@ -60,11 +60,12 @@ code in `ci/` and the
 [Zerocopy Anneal workflow](../../.github/workflows/anneal-current.yml).
 The vendored reference model and its replay support the correspondence audit.
 
-The current workspace divides verification and audit code into three zones.
+The current workspace divides verification, test, and audit code into four zones.
 
 | Zone | Directory | Role | Trust status |
 | :--- | :--- | :--- | :--- |
 | **Trusted foundation** | [`trusted/`](../trusted) | Extracts MIR and emits pure proof scripts (`trusted/rustc-capture/`), defines captured MIR syntax and verification operational semantics (`trusted/lean/`), states MIR correspondence claims and reference-adapter specifications (`trusted/correspondence/`), orchestrates CLI invocation (`trusted/cargo-anneal/`), and audits the Anneal repository in CI (`trusted/audit/`). | **In the TCB.** Audited by humans (alongside external files pinned by hash manifests inside `trusted/`). |
+| **Integration test suites** | [`tests/`](../tests) | Hosts workspace integration test suites and fixtures for `anneal-audit`, `cargo-anneal`, and `anneal-rustc-capture` (`tests/audit/`, `tests/cargo-anneal/`, `tests/rustc-capture/`). | **Outside the production TCB.** Enforced as `publish = false` crates with a strict one-way dependency boundary (`tests/` -> `trusted/`, never `trusted/` -> `tests/`) and no `build.rs` or proc-macros. |
 | **Proof theory & correspondence** | `theory/`, `correspondence/` | Defines the normalized `StableAst`, proves lowering passes (`Abstracts`), provides WP calculi (`theory/Anneal/MirWp.lean`), separation logic, and proof tactics (`theory/`), and proves the MIR correspondence theorems and canaries (`correspondence/`). | **Outside the TCB.** Treated as potentially adversarial; audited mechanically in Anneal's CI and checked by the Lean 4 kernel (`correspondence/` is checked in CI only and is not shipped in the user toolchain archive). |
 | **Vendored reference model** | `vendor/lean-miri/` | Pinned snapshot of `proofs-rs/lean-miri` with a human-audited 10-file opt-in `deinitMovedPlace` delta and 3-file theorem-only memory specification patch ([#4009](https://github.com/google/zerocopy/issues/4009); [`docs/mir-correspondence-design.md`](mir-correspondence-design.md)). Never shipped in the user toolchain archive. | **In the correspondence TCB.** Pinned byte-for-byte in `vendor/lean-miri/UPSTREAM_PIN.json` (locked by `LOCKED_UPSTREAM_PIN_SHA256` and `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/`). Only the 160-module `Miri.Interpreter.ExecutionMachine` slice (excluding `Miri.Input.NativeMathHost`) is compiled inside an OS-level `bwrap` sandbox (or restored from a digest-gated cache outside the checkout) and verified by `.olean` SHA-256; every non-`isPartial` vendored declaration (39,088 declarations) is replayed from scratch through the standalone Lean 4 kernel (`toKernelEnv.replay`) onto the authenticated sysroot base on every run, followed directly by replaying `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and `Anneal.MirCorrespondenceProof` on top of that replayed base and checking cone purity. |
 
@@ -125,8 +126,9 @@ flowchart TD
      toolchain archive. `anneal-audit` does **not** run on a user's machine; its
      job is to verify in CI that all first-party Lean code outside `trusted/`
      (`theory/` and `correspondence/`) is pure, effect-free, and within the
-     locked foundation axiom allowlist (and that no Rust crate resides outside
-     `trusted/`). Vendored reference-model sources under `vendor/lean-miri/` are
+     locked foundation axiom allowlist (and that Cargo workspace crates reside
+     only under `trusted/` or `tests/` with strict one-way `tests/` ->
+     `trusted/` dependencies). Vendored reference-model sources under `vendor/lean-miri/` are
      never packaged into the user toolchain archive and are admitted under Pass
      2 by content-addressed SHA-256 pinning, human semantic and compile-time
      review of upstream pin diffs and local patches, OS-sandboxed compilation
@@ -239,9 +241,12 @@ taint), while Repository Pass 2 requires `linux_bwrap`; Rust compilation
 Before inspecting Lean files, `anneal-audit` verifies the repository's root
 manifests against [`root-manifest.sha256`](../trusted/root-manifest.sha256)
 (`trusted/root-manifest.sha256`) and checks that every Cargo workspace member
-and `path` dependency resides under `trusted/`. Because Rust code (including
-`build.rs` scripts and proc-macros) is effectful and not checked by the Lean
-kernel, no Rust crate is permitted outside `trusted/`.
+resides under `trusted/` (production TCB) or `tests/` (fenced `publish = false`
+integration test crates), that no workspace crate declares `build.rs` or
+non-`crates.io` dependencies, and that every `path` dependency points strictly
+to a workspace member under `trusted/`. This enforces a one-way `tests/` ->
+`trusted/` dependency boundary: test suites exercise trusted code without
+inflating `trusted/`, and production TCB crates can never depend on `tests/`.
 
 ### Syntactic source preflight (`"preflight"` & `"correspondence-preflight"`)
 

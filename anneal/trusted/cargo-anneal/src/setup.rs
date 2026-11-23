@@ -1135,12 +1135,12 @@ fn prune_old_toolchains_with(
 ///
 /// Unit and smoke tests use a fresh `Custom` location for each synthetic local
 /// archive. Production setup uses [`install`] -> [`install_at_with_prune`].
-#[cfg(test)]
-pub(crate) fn install_at(
+#[doc(hidden)]
+pub fn install_at(
     local_archive: Option<PathBuf>,
     location: exocrate::Location,
 ) -> Result<PathBuf, String> {
-    install_at_with_remote(local_archive, location, remote_archive)
+    install_at_bundle(local_archive, location, remote_archive).map(|bundle| bundle.root)
 }
 
 /// Installs or resolves the archive at an explicit exocrate location, then

@@ -22,11 +22,34 @@ dependencies = [
 ]
 
 [[package]]
+name = "anneal-audit-tests"
+version = "0.1.0"
+dependencies = [
+ "anneal-audit",
+ "cargo-anneal",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "toml",
+ "walkdir",
+]
+
+[[package]]
 name = "anneal-rustc-capture"
 version = "0.1.0"
 dependencies = [
  "clap",
  "serde",
+ "serde_json",
+ "sha2",
+ "tempfile",
+]
+
+[[package]]
+name = "anneal-rustc-capture-tests"
+version = "0.1.0"
+dependencies = [
+ "anneal-rustc-capture",
  "serde_json",
  "sha2",
  "tempfile",
@@ -122,8 +145,22 @@ dependencies = [
  "tar",
  "tempfile",
  "thiserror",
- "wait-timeout",
  "walkdir",
+ "zstd",
+]
+
+[[package]]
+name = "cargo-anneal-tests"
+version = "0.1.0"
+dependencies = [
+ "cargo-anneal",
+ "exocrate",
+ "libc",
+ "serde_json",
+ "sha2",
+ "tar",
+ "tempfile",
+ "wait-timeout",
  "zstd",
 ]
 

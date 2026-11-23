@@ -247,7 +247,7 @@ or audit them is permitted).
   own import closure, never a repo-wide union susceptible to decoy shadowing.
 - **Mandatory negative tests and anti-vacuity:** Any change to `anneal-audit`
   admission rules, syntax filters, or tier checks must add or update negative
-  tests in `trusted/audit/tests/boundary_audit.rs` asserting policy exit code
+  tests in `tests/audit/tests/boundary_audit.rs` asserting policy exit code
   `1` (or non-zero exit code `2` for standalone kernel-replay rejections) and
   the target guard's failure diagnostic. Verify every negative security
   test—by guard-removal reasoning or an isolated sandbox probe—fails if its

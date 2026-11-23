@@ -575,7 +575,8 @@ with this architecture cleanly without patching Anneal's TCB:
 
 Continuous integration and test suites enforce these design invariants:
 
-1. **Sandbox escape and confinement test suite (`tests/sandbox_escape.rs`):**
+1. **Sandbox escape and confinement test suite
+   (`tests/cargo-anneal/tests/sandbox_escape.rs`):**
    Exercises both Tier 1 `linux_bwrap` and Tier 2 `linux_landlock_seccomp`
    against active hostile fixtures covering host-file read, staging/artifact
    overwrite, symlink/hardlink creation, companion `.olean.private`/`.ir`
@@ -589,8 +590,8 @@ Continuous integration and test suites enforce these design invariants:
    `kill`/`tgkill`, `fcntl`, `execve`/`execveat`, `memfd_create`, network
    sockets, and process-group reaping) alongside `x86_64`.
 3. **Target and boundary auditor negative tests
-   (`trusted/audit/tests/target_audit.rs` and
-   `trusted/audit/tests/boundary_audit.rs`):** `target_audit.rs` exercises every
+   (`tests/audit/tests/target_audit.rs` and
+   `tests/audit/tests/boundary_audit.rs`):** `target_audit.rs` exercises every
    added or modified guard in `"headers"`, `"spec-preflight"`, and
    `"target-audit"` with negative tests asserting the exact exit code (`1`
    policy / `2` kernel or operational) and diagnostic plus live parse-tree

@@ -91,13 +91,15 @@ never proves defect absence or substitutes for CI or merge gates.
     surface` block (or commit/PR body) and trust-reviewed (when the host
     permits summary prose, record "pending human approval (Gate 5)" as a merge
     condition, not a review block).
-  - *No unchecked build code outside TCB/CI:* Outside `trusted/`, `ci/`,
-    `.github/`, and pinned root manifests, reject any new Rust crate,
+  - *No unchecked build code outside TCB/CI:* Outside `trusted/`, `tests/`,
+    `ci/`, `.github/`, and pinned root manifests, reject any new Rust crate,
     `build.rs`, proc-macro, `Makefile`, `GNUmakefile`, `Justfile`, `lakefile*`,
     `lean-toolchain`, `.nix`, workflow, `.pre-commit-config.yaml`, shell/Python
     script (except unexecuted pinned `vendor/lean-miri/` provenance files), or
-    `.lean` file outside `theory/`, `correspondence/`, and pinned
-    `vendor/lean-miri/`.
+    `.lean` file outside `theory/`, `correspondence/`, `tests/`, and pinned
+    `vendor/lean-miri/`. In `tests/`, allow only `publish = false`,
+    build-script/proc-macro-free test crates with one-way `tests/` ->
+    `trusted/` deps.
   - *`theory/`/`correspondence/` purity and `TrustedBoundary.lean` exclusions:*
     Use only pure declarations and tactics admitted by `TrustedBoundary.lean`'s
     allowlists (`trusted/{lean,correspondence}/` stay tactic-free). Reject
@@ -188,7 +190,7 @@ never proves defect absence or substitutes for CI or merge gates.
       must resolve namespaces and imports strictly within the checked file's
       import closure.
     - Require new or updated negative tests in
-      `trusted/audit/tests/boundary_audit.rs` asserting exit code `1` (or `2`
+      `tests/audit/tests/boundary_audit.rs` asserting exit code `1` (or `2`
       for kernel-replay rejections) and the target diagnostic for every
       added/modified admission, syntax, or tier guard, verified to fail if the
       guard is disabled.

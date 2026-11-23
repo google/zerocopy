@@ -8,8 +8,15 @@
 
 [workspace]
 resolver = "2"
+# Keep a strict one-way dependency boundary between production TCB crates under
+# `trusted/` and integration test crates under `tests/`: `tests/*` crates may
+# depend on `trusted/*` crates, while `trusted/*` crates may never depend on
+# `tests/*` (enforced mechanically by `check_cargo_boundary` in `anneal-audit`).
 members = [
     "trusted/audit",
     "trusted/cargo-anneal",
     "trusted/rustc-capture",
+    "tests/audit",
+    "tests/cargo-anneal",
+    "tests/rustc-capture",
 ]

@@ -48,7 +48,7 @@ nix build .#omnibus-archive --max-jobs 1 --cores 2 --out-link target/omnibus-lin
 export XDG_CACHE_HOME="$(mktemp -d)"
 cargo run --locked -p cargo-anneal -- setup --local-archive target/omnibus-link
 cargo run --locked -p cargo-anneal -- verify \
-  --request trusted/cargo-anneal/tests/fixtures/scalar/request.json
+  --request trusted/cargo-anneal/assets/scalar/request.json
 ```
 
 The example proves that `zero()` returns zero. To experiment, make a copy of

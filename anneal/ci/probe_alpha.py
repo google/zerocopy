@@ -19,7 +19,7 @@ import tempfile
 
 FIXTURE = (
     Path(__file__).resolve().parent.parent
-    / "trusted/cargo-anneal/tests/fixtures/scalar"
+    / "trusted/cargo-anneal/assets/scalar"
 )
 FIXTURE_FILES = ("lib.rs", "Spec.lean", "Proof.lean", "request.json")
 

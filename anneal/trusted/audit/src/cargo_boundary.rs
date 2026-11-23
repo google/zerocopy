@@ -97,6 +97,8 @@ struct MemberPackage {
     #[serde(default)]
     build: Option<toml::Value>,
     #[serde(default)]
+    publish: Option<toml::Value>,
+    #[serde(default)]
     workspace: Option<toml::Value>,
 }
 
@@ -421,6 +423,10 @@ fn validate_dep_table(
             )
         })?;
         let rel_str = rel.to_string_lossy().replace('\\', "/");
+        // Enforce a strict one-way dependency boundary (`tests/` -> `trusted/`,
+        // never `trusted/` -> `tests/` or anywhere outside `trusted/`): every
+        // path dependency of both production TCB crates and fenced test crates
+        // must target a workspace member under `trusted/`.
         if !rel_str.starts_with("trusted/") {
             return Err(Failure::new(
                 1,
@@ -494,8 +500,11 @@ fn verify_cargo_lock(checkout: &Path, member_pkg_names: &BTreeSet<String>) -> Re
 
 /// Verify Cargo workspace DAG containment, root Cargo/toolchain hygiene,
 /// `Cargo.lock` dependency provenance, and `trusted/root-manifest.sha256` (when
-/// present): all workspace crates must reside under `trusted/`, and no
-/// workspace crate may depend on a path outside `workspace.members`.
+/// present): workspace crates must reside under `trusted/` (production TCB) or
+/// `tests/` (non-trusted integration test crates with `publish = false`), and
+/// every `path` dependency must point strictly to a workspace member under
+/// `trusted/` (enforcing a one-way `tests/` -> `trusted/` boundary, never
+/// `trusted/` -> `tests/`).
 ///
 /// This check reads only Cargo manifests, `Cargo.lock`,
 /// `trusted/root-manifest.sha256`, and the root build files that the root
@@ -552,11 +561,18 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
         .iter()
         .chain(&root_manifest.workspace.exclude)
     {
-        if !is_clean_relative_path(member) || !member.starts_with("trusted/") {
+        // Only two workspace zones are permitted: production TCB crates under
+        // `trusted/` and fenced integration test crates under `tests/`. Both
+        // zones remain subject to manifest, build-script, and lockfile checks,
+        // while `validate_dep_table` enforces the one-way `tests/` ->
+        // `trusted/` edge direction.
+        let is_trusted_member = member.starts_with("trusted/");
+        let is_test_member = member.starts_with("tests/");
+        if !is_clean_relative_path(member) || !(is_trusted_member || is_test_member) {
             return Err(Failure::new(
                 1,
                 phase,
-                format!("workspace member outside trusted/: {member}"),
+                format!("workspace member outside trusted/ or tests/: {member}"),
             ));
         }
         let member_toml_path = checkout.join(member).join("Cargo.toml");
@@ -582,6 +598,16 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
             .filter(|s| !s.is_empty())
             .ok_or_else(|| Failure::new(1, phase, format!("missing package.name in {member}")))?;
         member_pkg_names.insert(pkg_name.to_string());
+
+        // Non-trusted test crates exist solely to verify the workspace and must
+        // opt out of crates.io publication explicitly.
+        if is_test_member && manifest.package.publish != Some(toml::Value::Boolean(false)) {
+            return Err(Failure::new(
+                1,
+                phase,
+                format!("non-trusted test crate must set publish = false in {member}/Cargo.toml"),
+            ));
+        }
 
         if manifest.package.build.is_some() || manifest.package.workspace.is_some() {
             return Err(Failure::new(

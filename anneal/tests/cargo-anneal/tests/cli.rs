@@ -21,15 +21,32 @@ enum Route {
 }
 
 fn command(route: Route, workdir: &Path) -> Command {
-    let binary = Path::new(env!("CARGO_BIN_EXE_cargo-anneal"));
+    let binary = Path::new(env!("CARGO_BIN_EXE_cargo-anneal-test-bin"));
     assert!(binary.is_file(), "missing test binary: {}", binary.display());
     let mut command = match route {
         Route::Direct => Command::new(binary),
         Route::Cargo => {
             let mut command = Command::new(env!("CARGO"));
             command.arg("anneal");
-            command.env("CARGO_HOME", workdir.join("cargo-home"));
-            let mut paths = vec![binary.parent().expect("test binary has a parent").to_path_buf()];
+            let cargo_home = workdir.join("cargo-home");
+            command.env("CARGO_HOME", &cargo_home);
+            // Cargo dispatches `cargo anneal` to an executable literally named
+            // `cargo-anneal` on `PATH`. Stage a link inside `cargo-home/bin` so
+            // the test crate's non-colliding `cargo-anneal-test-bin` is found
+            // without opening an `O_WRONLY` fd to an executable in this process.
+            let cargo_bin = cargo_home.join("bin");
+            std::fs::create_dir_all(&cargo_bin).expect("create cargo subcommand bin dir");
+            let subcmd = cargo_bin.join(format!("cargo-anneal{}", env::consts::EXE_SUFFIX));
+            if std::fs::symlink_metadata(&subcmd).is_err() {
+                #[cfg(unix)]
+                std::os::unix::fs::symlink(binary, &subcmd)
+                    .expect("symlink cargo-anneal subcommand binary");
+                #[cfg(not(unix))]
+                if std::fs::hard_link(binary, &subcmd).is_err() {
+                    std::fs::copy(binary, &subcmd).expect("copy cargo-anneal subcommand binary");
+                }
+            }
+            let mut paths = vec![cargo_bin];
             if let Some(path) = env::var_os("PATH") {
                 paths.extend(env::split_paths(&path));
             }
@@ -86,7 +103,12 @@ fn help_and_version_work_through_direct_and_cargo_invocation() {
                 .arg(arg)
                 .output()
                 .unwrap_or_else(|error| panic!("launch {route:?}: {error}"));
-            assert_result(&output, 0, &format!("cargo-anneal {}", env!("CARGO_PKG_VERSION")), "");
+            assert_result(
+                &output,
+                0,
+                &format!("cargo-anneal {}", cargo_anneal::cli::PKG_VERSION),
+                "",
+            );
             assert!(output.stderr.is_empty(), "{output:?}");
         }
     }
@@ -114,7 +136,10 @@ fn bundled_skill_is_discoverable_and_matches_the_source_file() {
             .unwrap_or_else(|error| panic!("launch {route:?}: {error}"));
         assert_result(&output, 0, "", "");
         assert!(output.stderr.is_empty(), "{output:?}");
-        assert_eq!(output.stdout, include_bytes!("../skills/cargo-anneal/SKILL.md"));
+        assert_eq!(
+            output.stdout,
+            include_bytes!("../../../trusted/cargo-anneal/skills/cargo-anneal/SKILL.md")
+        );
     }
 }
 
@@ -133,16 +158,24 @@ fn bundled_example_matches_the_verified_fixture() {
         assert_eq!(
             sections,
             [
-                concat!("`lib.rs`\n\n```rust\n", include_str!("fixtures/scalar/lib.rs"), "```"),
                 concat!(
-                    "`request.json`\n\n```json\n",
-                    include_str!("fixtures/scalar/request.json"),
+                    "`lib.rs`\n\n```rust\n",
+                    include_str!("../../../trusted/cargo-anneal/assets/scalar/lib.rs"),
                     "```",
                 ),
-                concat!("`Spec.lean`\n\n```lean\n", include_str!("fixtures/scalar/Spec.lean"), "```"),
+                concat!(
+                    "`request.json`\n\n```json\n",
+                    include_str!("../../../trusted/cargo-anneal/assets/scalar/request.json"),
+                    "```",
+                ),
+                concat!(
+                    "`Spec.lean`\n\n```lean\n",
+                    include_str!("../../../trusted/cargo-anneal/assets/scalar/Spec.lean"),
+                    "```",
+                ),
                 concat!(
                     "`Proof.lean`\n\n```lean\n",
-                    include_str!("fixtures/scalar/Proof.lean"),
+                    include_str!("../../../trusted/cargo-anneal/assets/scalar/Proof.lean"),
                     "```",
                 ),
             ],
@@ -585,7 +618,7 @@ fn capture_discovery_prefers_explicit_then_installed_then_sibling() {
              chmod 0755 \"$2/anneal-rustc-capture\" \"$2/explicit\"",
         )
         .arg("sh")
-        .arg(env!("CARGO_BIN_EXE_cargo-anneal"))
+        .arg(env!("CARGO_BIN_EXE_cargo-anneal-test-bin"))
         .arg(&bin)
         .arg(script("sibling"))
         .arg(script("explicit"))

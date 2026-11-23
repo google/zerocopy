@@ -54,7 +54,7 @@ impl Capture {
     }
 
     fn command_with(&self, crate_name: &str, declare_source: bool) -> Command {
-        let mut command = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"));
+        let mut command = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"));
         command
             .current_dir(self.directory.path())
             .arg("capture")
@@ -109,7 +109,7 @@ fn status(output: &Output) -> Value {
 
 #[test]
 fn no_arguments_show_help_without_running_the_compiler() {
-    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
         .output()
         .expect("run capture without arguments");
     assert!(output.status.success(), "{output:?}");
@@ -120,14 +120,14 @@ fn no_arguments_show_help_without_running_the_compiler() {
 
 #[test]
 fn explicit_capture_requires_typed_arguments_and_has_its_own_help() {
-    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
         .arg("capture")
         .output()
         .expect("run capture without typed arguments");
     assert_eq!(output.status.code(), Some(2), "{output:?}");
     assert_eq!(status(&output)["status"], "tool_failed", "{output:?}");
 
-    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
         .args(["capture", "--help"])
         .output()
         .expect("run typed capture help");
@@ -141,7 +141,7 @@ fn separator_preserves_a_raw_input_named_capture() {
     let fixture = Capture::new(b"pub fn selected() {}\n");
     let source = fixture.directory.path().join("capture");
     std::fs::rename(&fixture.source, &source).expect("name raw source capture");
-    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
         .current_dir(fixture.directory.path())
         .args([
             "--",
@@ -167,7 +167,7 @@ fn separator_preserves_a_raw_input_named_capture() {
 
 #[test]
 fn typed_options_do_not_select_typed_mode_without_the_subcommand() {
-    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
         .args(["--crate-root", "input.rs"])
         .output()
         .expect("pass typed option to raw compiler mode");
@@ -1800,7 +1800,7 @@ fn explicit_env_bindings_admit_env_macros_override_ambient_and_bind_manifest() {
 #[test]
 fn pre_capture_identity_check_rejects_missing_or_mismatched_sysroot_as_tool_failed() {
     let fixture = Capture::new(b"pub fn selected(x: u64) -> u64 { x }\n");
-    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
         .current_dir(fixture.directory.path())
         .arg("capture")
         .arg("--crate-root")
@@ -1843,7 +1843,7 @@ fn pre_capture_identity_check_rejects_missing_or_mismatched_sysroot_as_tool_fail
         )
         .unwrap();
         std::fs::set_permissions(&fake_rustc, std::fs::Permissions::from_mode(0o755)).unwrap();
-        let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+        let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
             .current_dir(fixture.directory.path())
             .arg("capture")
             .arg("--crate-root")
@@ -1905,7 +1905,7 @@ fn linux_residency_accepts_symlinked_sysroot_and_rejects_mismatched_driver_inode
         .unwrap();
     }
 
-    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
         .current_dir(fixture.directory.path())
         .arg("capture")
         .arg("--crate-root")
@@ -1959,7 +1959,7 @@ fn linux_residency_accepts_symlinked_sysroot_and_rejects_mismatched_driver_inode
     )
     .unwrap();
     let bad_output_dir = fixture.directory.path().join("bad-output");
-    let bad_output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+    let bad_output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
         .current_dir(fixture.directory.path())
         .arg("capture")
         .arg("--crate-root")
@@ -2040,7 +2040,7 @@ fn logical_symlinked_sysroot_preserves_path_and_rejects_mismatched_libllvm_and_l
     )
     .unwrap();
 
-    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
         .current_dir(fixture.directory.path())
         .arg("capture")
         .arg("--crate-root")
@@ -2169,7 +2169,7 @@ fn logical_symlinked_sysroot_preserves_path_and_rejects_mismatched_libllvm_and_l
     }
     if replaced_llvm {
         let bad_llvm_out = fixture.directory.path().join("bad-llvm-out");
-        let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+        let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
             .current_dir(fixture.directory.path())
             .arg("capture")
             .arg("--crate-root")
@@ -2208,7 +2208,7 @@ fn logical_symlinked_sysroot_preserves_path_and_rejects_mismatched_libllvm_and_l
     .enumerate()
     {
         let preload_out = fixture.directory.path().join(format!("preload-out-{idx}"));
-        let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+        let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
             .current_dir(fixture.directory.path())
             .env(var, val)
             .arg("capture")
@@ -2304,7 +2304,7 @@ fn sysroot_only_gate_admits_no_std_core_and_refuses_proc_macro_and_extern_crates
 /// the source tree (all local and CI workspace runs; inside Nix's isolated
 /// `rustcCaptureSourceFiles` derivation `../lean` is intentionally absent).
 fn compile_captured_lean_if_trusted_sources_present(captured_lean: &std::path::Path) -> bool {
-    let lean_src_root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let lean_src_root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../trusted/lean");
     if !lean_src_root.join("Trusted/MirAst.lean").is_file() {
         return false;
     }
