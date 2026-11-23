@@ -4946,4 +4946,117 @@ mod tests {
             );
         }
     }
+
+    #[test]
+    fn live_demand_driven_firewall_three_axiom_proof() {
+        let Some(lean) = explicit_verified_lean() else {
+            return;
+        };
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let bundle = EmbeddedBundle::materialize(&base.join("bundle"));
+
+        // Unused bundled theory module with a deliberate elaboration error in
+        // its body (valid header only): proving it is pruned means it is never
+        // compiled.
+        let unused_path = base.join("Anneal_Unused.lean");
+        fs::write(
+            &unused_path,
+            "prelude\nimport Init.Prelude\ndef Anneal.Unused.broken : Nat := \"not_a_nat\"\n",
+        )
+        .unwrap();
+        let unused_sha = sha256_file(&unused_path, "fixture").unwrap();
+
+        let mut req = write_target_request(
+            &base.join("with-firewall"),
+            vec![
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.Core\n\
+                     namespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.specs c.program\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\ndef Captured.program : Nat := 0\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\n\
+                     def Spec.specs (n : Nat) : Prop :=\n  \
+                     (n = 0 → n = 0 ∧ n = 0) ∧ (n = 0 → n = 0)\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Anneal.Firewall\n\
+                     theorem Proof.verify : Expected.claim :=\n  \
+                     let stepPred : Nat → Nat → Prop := fun stage x =>\n    \
+                       match stage with\n    \
+                       | 0 => x = 0\n    \
+                       | _ + 1 => x = 0 ∧ True\n  \
+                     ⟨fun hn =>\n    \
+                       let h0 := Anneal.Firewall.wrap 0 hn\n    \
+                       let h4 := Anneal.Firewall.trans_tag 0 4 h0\n    \
+                       let hm := Anneal.Firewall.map 4 \
+                         (fun h : Captured.program = 0 => h) h4\n    \
+                       Anneal.Firewall.unwrap (Anneal.Firewall.map2 4 And.intro hm h4),\n   \
+                      fun hn =>\n    \
+                       let hs1 : Anneal.Firewall.IndexedCut stepPred 1 Captured.program :=\n      \
+                         Anneal.Firewall.seal_cut ⟨hn, True.intro⟩\n    \
+                       let hs0 : Anneal.Firewall.IndexedCut stepPred 0 Captured.program :=\n      \
+                         Anneal.Firewall.step_cut (cutAt := stepPred)\n        \
+                         (stage1 := 0) (stage2 := 1) (st1 := Captured.program)\n        \
+                         (st2 := Captured.program) (fun h => h.1) hs1\n    \
+                       let _opened := Anneal.Firewall.open_cut hs0\n    \
+                       Anneal.Firewall.canary_irreducible_indexed_cut\n      \
+                         (Anneal.Firewall.finish_cut (cutAt := stepPred) (stage := 0)\n        \
+                           (st := Captured.program) (fun h => h) hs0)⟩\n",
+                ),
+            ],
+        );
+        bundle.attach(&mut req, false);
+        req.modules.push(TargetModule {
+            module: "Anneal.Unused".to_owned(),
+            source: unused_path,
+            expected_sha256: unused_sha,
+            role: TargetRole::Proof,
+        });
+
+        let mut checker = Checker::new(&bundle.root, Some(&lean)).unwrap();
+        let report = checker.run_target(&req).unwrap();
+        assert_eq!(report["replay"], Json::Bool(true));
+        assert_eq!(report["exactType"], Json::Bool(true));
+        let sources: BTreeSet<&str> = report["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        let allowed_axioms: BTreeSet<&str> =
+            BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
+        let used_axioms: BTreeSet<&str> =
+            report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
+        assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
+        let export_dir = base.join("export-with-firewall");
+        assert!(checker.export_target_oleans(&export_dir).unwrap());
+        bundle.assert_exact_theory_retention(
+            &sources,
+            &checker.stage.join("lib"),
+            Some(&export_dir),
+            &["Anneal.Firewall"],
+            &["Anneal.Unused"],
+        );
+    }
 }
