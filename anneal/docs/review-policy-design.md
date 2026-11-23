@@ -258,9 +258,9 @@ weakened rules:
 - Flag any undisclosed or unsound weakening of governing docs, review rules,
   agent instructions, or security checks (including trust-boundary checks,
   severity discipline, or merge gates) as blocking. Even a justified relaxation
-  must be explained in the commit body, surfaced in the PR description's `Human
-  review surface` block, judged sound by reviewers, and confirmed at Gate 5
-  (human approval).
+  must be explained in the commit body, surfaced in the Review Receipt
+  comment's `Human review surface` block, judged sound by reviewers, and
+  confirmed at Gate 5 (human approval).
 - Keep CI and human branch protections live while automated Codex ruleset
   enforcement remains disabled under
   [`docs/codex-review.md`](codex-review.md).
