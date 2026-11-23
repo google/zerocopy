@@ -17,5 +17,10 @@ if ! command -v action-validator >/dev/null 2>&1; then
 fi
 
 shopt -s nullglob
-files=(../.github/workflows/anneal-current.yml .github/workflows/*.yml .github/workflows/*.yaml)
+files=(
+  ../.github/workflows/anneal.yml
+  ../.github/workflows/anneal-current.yml
+  .github/workflows/*.yml
+  .github/workflows/*.yaml
+)
 action-validator "${files[@]}"

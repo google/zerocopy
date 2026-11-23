@@ -31,7 +31,15 @@ manifest_path="${manifest_path:-trusted/cargo-anneal/Cargo.toml}"
 
 # FIXME(#4012): We must address all blockers listed in #4012 before permitting
 # stable releases.
-python3 - "$manifest_path" <<'EOF'
+# Isolate Python (`-I -B`) when stdlib `tomllib` (Python 3.11+) is available so
+# ambient repo files or `PYTHONPATH` cannot shadow stdlib and no `__pycache__`
+# is written. Fall back to `-B` on Python 3.10 where third-party `tomli` may
+# live in user site-packages.
+python_flags=(-B)
+if python3 -I -B -c "import tomllib" >/dev/null 2>&1; then
+  python_flags=(-I -B)
+fi
+python3 "${python_flags[@]}" - "$manifest_path" <<'EOF'
 import re
 import sys
 

@@ -9,8 +9,10 @@
 """Unit tests for `anneal/ci/check_non_stable_version.sh`."""
 
 import json
+import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -18,10 +20,11 @@ import unittest
 SCRIPT = Path(__file__).resolve().parent / "check_non_stable_version.sh"
 
 
-def run_check(*args, cwd=None):
+def run_check(*args, cwd=None, env=None):
     return subprocess.run(
         [str(SCRIPT), *args],
         cwd=cwd,
+        env=env,
         capture_output=True,
         text=True,
         check=False,
@@ -136,3 +139,28 @@ class CheckNonStableVersionTests(unittest.TestCase):
         extra_args = run_check("a", "b")
         self.assertEqual(extra_args.returncode, 1, extra_args.stdout)
         self.assertIn("Usage:", extra_args.stderr)
+
+    def test_isolated_python_blocks_pythonpath_shadowing_and_pycache(self):
+        with tempfile.TemporaryDirectory(prefix="anneal-semver-iso-") as tmp:
+            tmp_path = Path(tmp)
+            manifest = tmp_path / "Cargo.toml"
+            manifest.write_text(
+                '[package]\nname = "cargo-anneal"\nversion = "0.2.0-alpha.8"\n',
+                encoding="utf-8",
+            )
+            poison = tmp_path / "poison"
+            poison.mkdir()
+            (poison / "tomllib.py").write_text(
+                'raise RuntimeError("shadowed tomllib")\n', encoding="utf-8"
+            )
+            (poison / "re.py").write_text(
+                'raise RuntimeError("shadowed re")\n', encoding="utf-8"
+            )
+            env = os.environ.copy()
+            env["PYTHONPATH"] = str(poison)
+            result = run_check(str(manifest), cwd=poison, env=env)
+            if sys.version_info >= (3, 11):
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertFalse((poison / "__pycache__").exists())
+            else:
+                self.assertFalse((poison / "__pycache__").exists())
