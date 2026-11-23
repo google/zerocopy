@@ -106,6 +106,14 @@ struct MemberPackage {
 struct MemberTarget {
     #[serde(default)]
     path: Option<toml::Value>,
+    #[serde(default, rename = "proc-macro")]
+    proc_macro: Option<toml::Value>,
+    #[serde(default, rename = "proc_macro")]
+    proc_macro_underscore: Option<toml::Value>,
+    #[serde(default, rename = "crate-type")]
+    crate_type: Option<toml::Value>,
+    #[serde(default, rename = "crate_type")]
+    crate_type_underscore: Option<toml::Value>,
 }
 
 #[derive(Default, Deserialize)]
@@ -335,20 +343,69 @@ pub fn verify_bundled_resources(checkout: &Path) -> Result<(), Failure> {
     Ok(())
 }
 
-/// Verify that a relative target path inside a workspace member `Cargo.toml`
-/// does not use `..` or an absolute path to escape the member directory.
+/// Verify that a workspace member target neither declares a `proc-macro`
+/// (which executes arbitrary code at compile time) nor escapes its member
+/// directory via `..` or an absolute `path`.
 fn validate_member_target(
     member: &str,
     section: &str,
     target: &MemberTarget,
 ) -> Result<(), Failure> {
+    let phase = "cargo-boundary";
+    for (key, value) in [
+        ("proc-macro", &target.proc_macro),
+        ("proc_macro", &target.proc_macro_underscore),
+    ] {
+        if let Some(val) = value
+            && val.as_bool() != Some(false)
+        {
+            return Err(Failure::new(
+                1,
+                phase,
+                format!("disallowed proc-macro target ({section}.{key}) in {member}/Cargo.toml"),
+            ));
+        }
+    }
+    for (key, value) in [
+        ("crate-type", &target.crate_type),
+        ("crate_type", &target.crate_type_underscore),
+    ] {
+        if let Some(val) = value {
+            let arr = val.as_array().ok_or_else(|| {
+                Failure::new(
+                    1,
+                    phase,
+                    format!("invalid {section}.{key} in {member}/Cargo.toml"),
+                )
+            })?;
+            for item in arr {
+                let kind = item.as_str().ok_or_else(|| {
+                    Failure::new(
+                        1,
+                        phase,
+                        format!("invalid {section}.{key} entry in {member}/Cargo.toml"),
+                    )
+                })?;
+                if kind == "proc-macro" {
+                    return Err(Failure::new(
+                        1,
+                        phase,
+                        format!(
+                            "disallowed proc-macro crate-type ({section}.{key}) in {member}/Cargo.toml"
+                        ),
+                    ));
+                }
+            }
+        }
+    }
+
     let Some(path_val) = &target.path else {
         return Ok(());
     };
     let Some(p) = path_val.as_str() else {
         return Err(Failure::new(
             1,
-            "cargo-boundary",
+            phase,
             format!("invalid {section}.path in {member}/Cargo.toml"),
         ));
     };
@@ -356,11 +413,50 @@ fn validate_member_target(
     if path.is_absolute() || path.components().any(|c| matches!(c, Component::ParentDir)) {
         return Err(Failure::new(
             1,
-            "cargo-boundary",
+            phase,
             format!("{member} target {section}.path escapes member directory: {p}"),
         ));
     }
     Ok(())
+}
+
+/// Two-zone monotonic trust lattice for Cargo workspace members:
+/// `Trusted` (rank 0) < `Tests` (rank 1).
+///
+/// Dependencies may only flow downward or laterally (`zone(dst) <= zone(src)`):
+/// `Trusted -> Trusted`, `Tests -> Trusted`, and `Tests -> Tests` (such as
+/// shared test infrastructure under `tests/testkit`) are permitted, while
+/// `Trusted -> Tests` is rejected across every Cargo dependency table.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
+enum WorkspaceZone {
+    /// Production TCB crates under `trusted/` (rank 0).
+    Trusted = 0,
+    /// Non-shipping test and harness crates under `tests/` (rank 1).
+    Tests = 1,
+}
+
+fn classify_member_zone(rel_path: &str) -> Result<WorkspaceZone, Failure> {
+    if !is_clean_relative_path(rel_path)
+        || rel_path.ends_with('/')
+        || rel_path.contains('\\')
+    {
+        return Err(Failure::new(
+            1,
+            "cargo-boundary",
+            format!("unclean member path: {rel_path}"),
+        ));
+    }
+    if rel_path.starts_with("trusted/") {
+        Ok(WorkspaceZone::Trusted)
+    } else if rel_path.starts_with("tests/") {
+        Ok(WorkspaceZone::Tests)
+    } else {
+        Err(Failure::new(
+            1,
+            "cargo-boundary",
+            format!("workspace member outside trusted/ or tests/: {rel_path}"),
+        ))
+    }
 }
 
 /// Validate a single dependency table (`[dependencies]`, `[dev-dependencies]`,
@@ -369,6 +465,7 @@ fn validate_member_target(
 fn validate_dep_table(
     checkout_canon: &Path,
     member: &str,
+    src_zone: WorkspaceZone,
     member_parent: &Path,
     member_set: &BTreeSet<String>,
     section: &str,
@@ -423,15 +520,26 @@ fn validate_dep_table(
             )
         })?;
         let rel_str = rel.to_string_lossy().replace('\\', "/");
-        // Enforce a strict one-way dependency boundary (`tests/` -> `trusted/`,
-        // never `trusted/` -> `tests/` or anywhere outside `trusted/`): every
-        // path dependency of both production TCB crates and fenced test crates
-        // must target a workspace member under `trusted/`.
-        if !rel_str.starts_with("trusted/") {
+        // Enforce the two-zone monotonic lattice (`zone(dst) <= zone(src)`):
+        // `trusted/* -> trusted/*`, `tests/* -> trusted/*`, and
+        // `tests/* -> tests/*` are permitted, while `trusted/* -> tests/*` and
+        // targets outside either zone are rejected across all dep tables.
+        let dst_zone = classify_member_zone(&rel_str).map_err(|_| {
+            Failure::new(
+                1,
+                phase,
+                format!(
+                    "{member} path dependency points outside trusted/ or tests/: {rel_str}"
+                ),
+            )
+        })?;
+        if dst_zone > src_zone {
             return Err(Failure::new(
                 1,
                 phase,
-                format!("{member} path dependency points outside trusted/: {rel_str}"),
+                format!(
+                    "{member} ({src_zone:?}) path dependency violates monotonic boundary targeting {rel_str} ({dst_zone:?})"
+                ),
             ));
         }
         if !member_set.contains(&rel_str) {
@@ -500,11 +608,12 @@ fn verify_cargo_lock(checkout: &Path, member_pkg_names: &BTreeSet<String>) -> Re
 
 /// Verify Cargo workspace DAG containment, root Cargo/toolchain hygiene,
 /// `Cargo.lock` dependency provenance, and `trusted/root-manifest.sha256` (when
-/// present): workspace crates must reside under `trusted/` (production TCB) or
-/// `tests/` (non-trusted integration test crates with `publish = false`), and
-/// every `path` dependency must point strictly to a workspace member under
-/// `trusted/` (enforcing a one-way `tests/` -> `trusted/` boundary, never
-/// `trusted/` -> `tests/`).
+/// present): workspace crates must reside under `trusted/` (production TCB,
+/// zone 0) or `tests/` (non-trusted test/harness crates with `publish = false`,
+/// zone 1), and every `path` dependency must target a registered workspace
+/// member satisfying `zone(dst) <= zone(src)` (enforcing the two-zone monotonic
+/// lattice so `tests/` crates may share `tests/` helpers and depend on
+/// `trusted/`, while `trusted/` crates may never depend on `tests/`).
 ///
 /// This check reads only Cargo manifests, `Cargo.lock`,
 /// `trusted/root-manifest.sha256`, and the root build files that the root
@@ -561,20 +670,11 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
         .iter()
         .chain(&root_manifest.workspace.exclude)
     {
-        // Only two workspace zones are permitted: production TCB crates under
-        // `trusted/` and fenced integration test crates under `tests/`. Both
-        // zones remain subject to manifest, build-script, and lockfile checks,
-        // while `validate_dep_table` enforces the one-way `tests/` ->
-        // `trusted/` edge direction.
-        let is_trusted_member = member.starts_with("trusted/");
-        let is_test_member = member.starts_with("tests/");
-        if !is_clean_relative_path(member) || !(is_trusted_member || is_test_member) {
-            return Err(Failure::new(
-                1,
-                phase,
-                format!("workspace member outside trusted/ or tests/: {member}"),
-            ));
-        }
+        // Only two workspace zones are permitted (`WorkspaceZone::Trusted = 0 <
+        // WorkspaceZone::Tests = 1`). Both zones remain subject to manifest,
+        // build-script, and lockfile checks; `validate_dep_table` enforces
+        // `zone(dst) <= zone(src)`.
+        let src_zone = classify_member_zone(member)?;
         let member_toml_path = checkout.join(member).join("Cargo.toml");
         regular(&member_toml_path, phase)?;
         let member_text = fs::read_to_string(&member_toml_path).map_err(|e| {
@@ -601,7 +701,9 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
 
         // Non-trusted test crates exist solely to verify the workspace and must
         // opt out of crates.io publication explicitly.
-        if is_test_member && manifest.package.publish != Some(toml::Value::Boolean(false)) {
+        if src_zone == WorkspaceZone::Tests
+            && manifest.package.publish != Some(toml::Value::Boolean(false))
+        {
             return Err(Failure::new(
                 1,
                 phase,
@@ -633,6 +735,7 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
             validate_dep_table(
                 &checkout_canon,
                 member,
+                src_zone,
                 member_parent,
                 &member_set,
                 &section,

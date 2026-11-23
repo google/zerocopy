@@ -7,9 +7,9 @@
 # those terms.
 
 # Integration tests for `anneal-rustc-capture`, kept outside `trusted/` so
-# non-TCB test harnesses do not inflate the human-audited TCB surface. The
-# dependency edge is strictly one-way (`tests/` -> `trusted/`, never
-# `trusted/` -> `tests/`), enforced mechanically by `check_cargo_boundary`.
+# non-TCB test harnesses do not inflate the human-audited TCB surface.
+# `check_cargo_boundary` enforces the two-zone monotonic lattice (`tests/*` ->
+# `trusted/*` or `tests/testkit`, never `trusted/*` -> `tests/*`).
 
 [package]
 name = "anneal-rustc-capture-tests"
@@ -21,6 +21,7 @@ publish = false
 anneal-rustc-capture = { path = "../../trusted/rustc-capture" }
 
 [dev-dependencies]
+anneal-testkit = { path = "../testkit" }
 serde_json = "1.0"
 sha2 = "0.10"
 tempfile = "3.27"

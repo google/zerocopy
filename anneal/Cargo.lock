@@ -26,6 +26,7 @@ name = "anneal-audit-tests"
 version = "0.1.0"
 dependencies = [
  "anneal-audit",
+ "anneal-testkit",
  "cargo-anneal",
  "serde",
  "serde_json",
@@ -50,8 +51,19 @@ name = "anneal-rustc-capture-tests"
 version = "0.1.0"
 dependencies = [
  "anneal-rustc-capture",
+ "anneal-testkit",
  "serde_json",
  "sha2",
+ "tempfile",
+]
+
+[[package]]
+name = "anneal-testkit"
+version = "0.1.0"
+dependencies = [
+ "libc",
+ "serde",
+ "serde_json",
  "tempfile",
 ]
 
@@ -153,6 +165,7 @@ dependencies = [
 name = "cargo-anneal-tests"
 version = "0.1.0"
 dependencies = [
+ "anneal-testkit",
  "cargo-anneal",
  "exocrate",
  "libc",
