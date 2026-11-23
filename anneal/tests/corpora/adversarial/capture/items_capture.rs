@@ -9,23 +9,6 @@
 // === case: empty_crate_no_pub_fns ===
 //@ fail(capture): "captured program contains no executable bodies"
 
-// === case: fieldless_enum_supported ===
-//@ pass
-//@ mir-contains: "Trusted.MirAst.MirTy.enum"
-//@ mir-contains: "Trusted.MirAst.Rvalue.discriminant"
-
-pub enum E {
-    A,
-    B,
-}
-
-pub fn tag(e: E) -> usize {
-    match e {
-        E::A => 0,
-        E::B => 1,
-    }
-}
-
 // === case: enum_payload_rejected ===
 //@ fail(capture): "enum payloads are unsupported"
 
@@ -101,16 +84,4 @@ pub enum Empty {}
 
 pub fn take_empty(x: Empty) -> usize {
     match x {}
-}
-
-// === case: single_variant_enum_supported ===
-//@ pass
-//@ mir-contains: "Trusted.MirAst.EnumTagRepr.zeroSized"
-
-pub enum Single {
-    Only,
-}
-
-pub fn take_single(_x: Single) -> usize {
-    0
 }

@@ -54,6 +54,8 @@ pub struct VerifySuccessReceipt {
     #[serde(default)]
     pub unpinned_lean: Option<Value>,
     #[serde(default)]
+    pub spec_warnings: Vec<Value>,
+    #[serde(default)]
     pub sorry_declarations: Option<Vec<Value>>,
     #[serde(default)]
     pub artifacts: Option<String>,
@@ -99,7 +101,7 @@ impl VerifyReceipt {
                     .map_err(|error| format!("strict parse verified receipt: {error}"))?;
                 Ok(Self::Verified(Box::new(parsed)))
             }
-            "unsupported" | "proof_failed" | "tool_failed" => {
+            "unsupported" | "proof_failed" | "tool_failed" | "compiler_failed" => {
                 let parsed: VerifyFailureReceipt = serde_json::from_value(raw)
                     .map_err(|error| format!("strict parse failure receipt: {error}"))?;
                 Ok(Self::Failed(parsed))
@@ -441,6 +443,17 @@ mod tests {
             "rogue_field": 123
         }"#;
         assert!(VerifyReceipt::from_json_slice(with_extra).is_err());
+
+        let compiler_failed = br#"{
+            "schema_version": 3,
+            "taint_reasons": [],
+            "status": "compiler_failed",
+            "phase": "capture",
+            "detail": "rustc rejected compilation",
+            "artifacts": null
+        }"#;
+        let parsed_cf = VerifyReceipt::from_json_slice(compiler_failed).unwrap();
+        assert_rejected(&parsed_cf, "compiler_failed", Some("capture"), "rustc").unwrap();
     }
 
     #[test]

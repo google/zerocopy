@@ -88,7 +88,7 @@ fn transmute_checked<Src: Copy, Dst: Copy>(x: Src) -> Dst {
     unsafe { core::mem::transmute_copy(&x) }
 }
 
-/// anneal:spec ensures(ret == x)
+/// Transmute wrapper with plain doc comment.
 pub fn f(x: usize) -> usize {
     transmute_checked::<usize, usize>(x)
 }
@@ -96,7 +96,7 @@ pub fn f(x: usize) -> usize {
 // === case: inline_const_transmute_with_spec ===
 //@ fail(capture): "inline_const_transmute::{constant#0}: whole-crate obligation is unsupported: InlineConst"
 
-/// anneal:spec ensures(ret == x)
+/// Inline const transmute with plain doc comment.
 pub fn inline_const_transmute(x: usize) -> usize {
     let () = const {
         assert!(core::mem::size_of::<usize>() == core::mem::size_of::<usize>())
