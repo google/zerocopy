@@ -21,6 +21,7 @@ public import Trusted.MirSemantics.Bytes
 public import Trusted.MirSemantics.State
 public import Trusted.MirSemantics.Step
 public import Trusted.MirSemantics.Boundary
+public import Trusted.MirSemantics.Contract
 public import Trusted.MirSemantics.CanaryFixtures
 
 @[expose] public section

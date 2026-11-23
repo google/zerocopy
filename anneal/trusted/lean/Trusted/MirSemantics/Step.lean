@@ -741,7 +741,8 @@ noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
       | .ok target =>
         jumpToBlock { frame with locals := localsAfterDiscr } memAfterDiscr
           callerMem target
-  | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _ | .unsupported =>
+  | .unwindResume | .unwindTerminate | .assert _ _ _ _ _ | .call _ _ _ _ _
+  | .unsupported =>
     .fault .unsupported
 
 /-- Total single-step evaluator of $M_{\text{anneal}}$ over running `State`s,

@@ -362,8 +362,8 @@ theorem evalTerminator_step_inv {body : Body} {bb : BasicBlock}
             (SlotsMatchTys.length_eq h_inv) h_sl
           exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
     · cases h_step
-  | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
-  | unsupported =>
+  | unreachable | unwindResume | unwindTerminate | assert _ _ _ _ _
+  | call _ _ _ _ _ | unsupported =>
     cases h_step
   | switchInt discr targets =>
     dsimp only [evalTerminator] at h_step
@@ -1012,7 +1012,7 @@ private theorem returnFromCurrentFrame_ref_eq (rp : RefProg) (c : Choice)
         st'.stack.frames.isEmpty = true ∧
         refReadReturnVal st'.machine.memory retTy retPlace = .ok v ∧
         st'.machine.user.callerMem = cm'
-    | .done (.unwound _) => False
+    | .done (.unwound _) | .done (.aborted _) => False
     | .step s' =>
       ∃ tgt slots',
         s' = { frames := [{ f with blockIdx := tgt, stmtIdx := 0, locals := slots' }],
@@ -2287,7 +2287,7 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
         st'.stack.frames.isEmpty = true ∧
         refReadReturnVal st'.machine.memory retTy retPlace = .ok v ∧
         st'.machine.user.callerMem = cm'
-    | .done (.unwound _) => False
+    | .done (.unwound _) | .done (.aborted _) => False
     | .step s' =>
       ∃ tgt slots',
         s' = { frames := [{ f with blockIdx := tgt, stmtIdx := 0, locals := slots' }],
@@ -2316,6 +2316,13 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
     rw [← h_eq]
     exact ⟨_, _, rfl, rfl⟩
   | unwindResume =>
+    intro res
+    rw [h_rt] at h_term_dec
+    injection h_term_dec with h_eq
+    dsimp only [evalTerminator]
+    rw [← h_eq]
+    exact ⟨_, _, rfl, rfl⟩
+  | unwindTerminate =>
     intro res
     rw [h_rt] at h_term_dec
     injection h_term_dec with h_eq
@@ -3013,7 +3020,7 @@ theorem evalRefStep_eq_base : EvalRefStepEqClaim := by
         rfl
       | done out =>
         cases out with
-        | unwound _ =>
+        | unwound _ | aborted _ =>
           rw [h_et] at h_evT
           exact False.elim h_evT
         | returned tv =>

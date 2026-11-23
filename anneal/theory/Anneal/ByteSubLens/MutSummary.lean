@@ -117,7 +117,7 @@ temporaries `extraTempTys`. -/
       | .done d =>
         match d with
         | .returned out => cur.mem = memOut ∧ out.ret = retVal
-        | .unwound _ => False
+        | .unwound _ | .aborted _ => False
       | .fault _ => False)
     fuel st
 
@@ -135,7 +135,7 @@ theorem mirCalleeRunsTo_succ (p : Program) (memOut : MemoryState)
       | .done d =>
         match d with
         | .returned out => st.mem = memOut ∧ out.ret = retVal
-        | .unwound _ => False
+        | .unwound _ | .aborted _ => False
       | .fault _ => False) := rfl
 
 private theorem mirCalleeRunsTo_implies_execState {p : Program}
@@ -161,7 +161,7 @@ private theorem mirCalleeRunsTo_implies_execState {p : Program}
       rw [hStep] at h
       cases d with
       | returned out => exact ⟨out, rfl, h.2⟩
-      | unwound _ => exact False.elim h
+      | unwound _ | aborted _ => exact False.elim h
     | fault _ =>
       rw [hStep] at h
       exact False.elim h

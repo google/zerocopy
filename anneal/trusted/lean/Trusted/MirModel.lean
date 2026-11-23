@@ -180,10 +180,21 @@ structure Out where
   ret : Val
   callerMem : CallerMemory := ⟨[]⟩
 
-/-- Observable terminal outcome of a well-formed execution. -/
+/-- Observable terminal outcome of a well-formed execution.
+
+- `returned out`: normal return with value `out.ret` and final caller memory
+  `out.callerMem`.
+- `unwound callerMem`: stack unwinding exit (e.g., an unwinding panic) leaving
+  caller-visible memory in `callerMem`.
+- `aborted callerMem`: immediate process termination without stack unwinding
+  (e.g., `TerminatorKind::UnwindTerminate` or aborting panic under
+  `-C panic=abort`). Keeping `.aborted` distinct from `.unwound` allows
+  `EffectMask` (`noUnwind` vs. `noAbort`) and `AssumedContractRealizable` to
+  track unwinding and aborting independently. -/
 inductive TerminalOut where
   | returned (out : Out)
   | unwound (callerMem : CallerMemory := ⟨[]⟩)
+  | aborted (callerMem : CallerMemory := ⟨[]⟩)
 
 /-- Place in memory: the start of the bytes of a value at byte offset `offset`
 inside allocation `allocId`, corresponding to the thin (unsized-metadata-free)

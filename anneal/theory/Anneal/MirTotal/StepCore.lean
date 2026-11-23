@@ -1008,7 +1008,8 @@ theorem evalCharSwitchBranchesComp_eq (discr : Char) (otherwise : BasicBlockId)
       | .error k => .fault k
       | .ok target =>
         jumpToBlockComp { frame with locals := localsAfterDiscr } memAfterDiscr callerMem target
-  | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _ | .unsupported =>
+  | .unwindResume | .unwindTerminate | .assert _ _ _ _ _ | .call _ _ _ _ _
+  | .unsupported =>
     .fault .unsupported
 
 /-- Agreement between `evalTerminatorComp` and `evalTerminator`. -/
@@ -1018,7 +1019,8 @@ theorem evalTerminatorComp_eq (body : Body) (bb : BasicBlock)
       evalTerminator body bb frame mem callerMem := by
   unfold evalTerminatorComp evalTerminator
   cases bb.terminator with
-  | goto _ | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _ | unsupported => rfl
+  | goto _ | unreachable | unwindResume | unwindTerminate | assert _ _ _ _ _
+  | call _ _ _ _ _ | unsupported => rfl
   | return_ =>
     dsimp only
     cases bb.cleanup with

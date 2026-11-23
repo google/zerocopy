@@ -731,9 +731,9 @@ noncomputable def toMiriStatement (types : List MirTy) :
       kind := .Assign ⟨0, Array.empty⟩ (.CopyForDeref ⟨0, Array.empty⟩) }
 
 /-- Map `RefTerminatorKind` to `Miri.MIR.Terminator`. Day-1 unmodeled
-terminators (`.unwindResume`, `.assert`, `.call`, and `.unsupported`) map to
-`.CoroutineDrop`, which `ControlFlow.evalTerminator` rejects fail-closed with
-`.invalidProgram` (`.blocked`). -/
+terminators (`.unwindResume`, `.unwindTerminate`, `.assert`, `.call`, and
+`.unsupported`) map to `.CoroutineDrop`, which `ControlFlow.evalTerminator`
+rejects fail-closed with `.invalidProgram` (`.blocked`). -/
 noncomputable def toMiriTerminator (types : List MirTy) :
     RefTerminatorKind → Miri.MIR.Terminator
   | .goto target =>
@@ -748,7 +748,8 @@ noncomputable def toMiriTerminator (types : List MirTy) :
         { cases := Array.mk
             (targets.branches.map (fun b => .Case b.1.toNat b.2))
           otherwise := targets.otherwise } }
-  | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _ | .unsupported =>
+  | .unwindResume | .unwindTerminate | .assert _ _ _ _ _ | .call _ _ _ _ _
+  | .unsupported =>
     { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .CoroutineDrop }
 
 /-- Lower a `RefBasicBlock` to a `Miri.MIR.BasicBlock`. -/

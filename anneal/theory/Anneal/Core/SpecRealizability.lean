@@ -885,17 +885,18 @@ theorem not_queryOutReturnDichotomy_of_returnInsensitive
   exact hBad (hInsens q callerMem' v_ok v_bad hPre hOk)
 
 /-- Observation projection on `TerminalOut` isolating normal-return caller
-memory (`Sum.inl out.callerMem`) from unwind caller memory (`Sum.inr mem`),
-so dichotomy within one fibre must distinguish normal return values `out.ret`.
--/
+memory (`Sum.inl out.callerMem`) from unwind (`Sum.inr (Sum.inl mem)`) and
+abort (`Sum.inr (Sum.inr mem)`) caller memory, so dichotomy within one fibre
+must distinguish normal return values `out.ret`. -/
 @[expose] def terminalReturnObs (_q : Query) :
-    TerminalOut → Sum CallerMemory CallerMemory
+    TerminalOut → Sum CallerMemory (Sum CallerMemory CallerMemory)
   | .returned out => .inl out.callerMem
-  | .unwound mem => .inr mem
+  | .unwound mem => .inr (.inl mem)
+  | .aborted mem => .inr (.inr mem)
 
 /-- Strict normal-return dichotomy for `(Query, TerminalOut)` contracts: rules
-out vacuous dichotomies that only distinguish `.returned` from `.unwound` or
-only constrain `out.callerMem`. -/
+out vacuous dichotomies that only distinguish `.returned` from `.unwound` /
+`.aborted` or only constrain `out.callerMem`. -/
 @[expose] def TerminalReturnDichotomy (pre : Query → Prop)
     (post : Query → TerminalOut → Prop) : Prop :=
   ∃ q callerMem' v_ok v_bad,
@@ -928,6 +929,9 @@ theorem terminalReturnDichotomy_iff_moduloObs
       | unwound _ =>
         dsimp only [terminalReturnObs] at hObsEq
         cases hObsEq
+      | aborted _ =>
+        dsimp only [terminalReturnObs] at hObsEq
+        cases hObsEq
     | unwound m_ok =>
       cases y_bad with
       | returned _ =>
@@ -935,7 +939,27 @@ theorem terminalReturnDichotomy_iff_moduloObs
         cases hObsEq
       | unwound m_bad =>
         dsimp only [terminalReturnObs] at hObsEq
-        injection hObsEq with hMemEq
+        injection hObsEq with hInrEq
+        injection hInrEq with hMemEq
+        subst hMemEq
+        exact False.elim (hBad hOk)
+      | aborted _ =>
+        dsimp only [terminalReturnObs] at hObsEq
+        injection hObsEq with hInrEq
+        cases hInrEq
+    | aborted m_ok =>
+      cases y_bad with
+      | returned _ =>
+        dsimp only [terminalReturnObs] at hObsEq
+        cases hObsEq
+      | unwound _ =>
+        dsimp only [terminalReturnObs] at hObsEq
+        injection hObsEq with hInrEq
+        cases hInrEq
+      | aborted m_bad =>
+        dsimp only [terminalReturnObs] at hObsEq
+        injection hObsEq with hInrEq
+        injection hInrEq with hMemEq
         subst hMemEq
         exact False.elim (hBad hOk)
 
