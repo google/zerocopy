@@ -18,8 +18,14 @@
 //!
 //! Exocrate *supports*:
 //!
-//! - Remote archives loaded by URL and verified by checksum;
-//! - Local archives designated by file path.
+//! - Remote archives loaded by URL and verified by SHA-256 checksum;
+//! - Offline/pre-fetched local archives designated by file path and verified by
+//!   SHA-256 checksum (`Source::VerifiedLocal`);
+//! - Unverified local development archives designated by file path
+//!   (`Source::Local`).
+//!
+//! Fetching and installing archives requires the default `host-fetch` feature.
+//! Without it, only the pure-Rust verification core is available.
 //!
 //! Exocrate *provides* mechanisms to:
 //!
@@ -56,6 +62,7 @@
 //!     url: "https://example.com/linux-x86_64.tar.zst",
 //! };
 //!
+//! # #[cfg(feature = "host-fetch")] {
 //! // FIXME: Detect whether running in tool-installed or tool-development environment. The typical
 //! // pattern would be:
 //! // - tool-installed => use `exocrate::Location::UserGlobal`,
@@ -82,6 +89,7 @@
 //!     .status()
 //!     .expect("failed to start external dependency located at `bin/tool`");
 //! assert!(tool_status.success());
+//! # }
 //! ```
 //!
 //! And in your `Cargo.toml`:
@@ -128,7 +136,7 @@
 //! ## Custom versioning
 //!
 //! Manually constructing an [`Config`] offers you full control over the base directory (relative
-//! to one or another [`Location`] for installation) and version string that is used to construct
+//! to one or another `Location` for installation) and version string that is used to construct
 //! this `Config`'s version of the exocrate. By using this pattern, you takeresponsbility for
 //! determining what version of your exocrate corresponds with the code consuming the `exocrate`
 //! library.
@@ -137,17 +145,24 @@
 //!
 //! Exocrate does not currently support any helpers for cleaning up old versions of your exocrate
 //! installations. All installed versions will be stored somewhere inside the directories designated
-//! by one of the [`Location`] variants, but there are no other guarantees about how these
+//! by one of the `Location` variants, but there are no other guarantees about how these
 //! directory trees are managed at this time.
 
+#[cfg(feature = "host-fetch")]
 mod sync;
 
 use std::{
-    io::{Read, Result as IoResult, Seek as _},
+    collections::HashSet,
+    io::{Read, Result as IoResult},
+};
+#[cfg(feature = "host-fetch")]
+use std::{
+    io::Seek as _,
     path::{Path, PathBuf},
 };
 
 use sha2::Digest as _;
+#[cfg(feature = "host-fetch")]
 use sync::ManagedDirName;
 
 pub struct RemoteArchive {
@@ -156,12 +171,33 @@ pub struct RemoteArchive {
     pub sha256: [u8; 32],
 }
 
+/// A local archive path paired with the expected SHA-256 digest of its
+/// compressed bytes, enabling airgapped or mirror-backed installation with the
+/// same pre-decompression integrity check as [`RemoteArchive`].
+#[cfg(feature = "host-fetch")]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct VerifiedLocalArchive {
+    pub path: PathBuf,
+    /// The expected SHA-256 hash of the archive at `path`.
+    pub sha256: [u8; 32],
+}
+
 pub struct Config {
     rel_dir_path: &'static [&'static str],
     version_slug: &'static str,
 }
 
+/// Runtime-constructed counterpart to [`Config`] for archive installations
+/// whose cache directory components or version slug are resolved dynamically
+/// from manifests or content digests rather than compile-time constants.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct DynamicConfig {
+    rel_dir_path: Vec<String>,
+    version_slug: String,
+}
+
 /// The location to install dependencies.
+#[cfg(feature = "host-fetch")]
 pub enum Location {
     /// A location in the user's cache directory.
     UserGlobal,
@@ -172,15 +208,60 @@ pub enum Location {
     Custom(PathBuf),
 }
 
-/// The source from which to install dependencies
+/// The source from which to install dependencies.
+#[cfg(feature = "host-fetch")]
 pub enum Source {
-    /// Download the dependencies from the internet.
+    /// Download the dependencies from the internet and verify their SHA-256.
     Remote(RemoteArchive),
-    /// Use a locally available archive.
+    /// Install from a locally available archive after verifying its SHA-256
+    /// before decompression (for offline mirrors, vendored CIPD/Nix archives,
+    /// or pre-fetched toolchains).
+    VerifiedLocal(VerifiedLocalArchive),
+    /// Use a locally available archive without a pinned digest check (for
+    /// local development builds).
     Local(PathBuf),
 }
 
+#[cfg(feature = "host-fetch")]
+impl Source {
+    /// Resolves a [`RemoteArchive`] against an optional local offline mirror
+    /// directory before falling back to network download.
+    ///
+    /// When `mirror_dir` is `Some(dir)`, extracts the trailing archive file
+    /// name from `remote.url`, validates that it is a single cross-platform
+    /// path component, and returns [`Source::VerifiedLocal`] bound to
+    /// `remote.sha256` with zero network I/O.
+    pub fn from_remote_or_mirror(
+        remote: RemoteArchive,
+        mirror_dir: Option<&Path>,
+    ) -> IoResult<Self> {
+        let Some(dir) = mirror_dir else {
+            return Ok(Self::Remote(remote));
+        };
+        let url_without_query = remote.url.split(['?', '#']).next().unwrap_or(remote.url);
+        // The file name is the last segment of the URL's path, never its
+        // authority (`https://example.com` has no file name).
+        let after_scheme =
+            url_without_query.split_once("://").map_or(url_without_query, |(_, rest)| rest);
+        let Some((_authority, path)) = after_scheme.split_once('/') else {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidInput,
+                "remote archive URL has no path to name a mirrored file",
+            ));
+        };
+        let file_name = path.rsplit('/').next().unwrap_or("");
+        if let Err(reason) = check_path_component(file_name) {
+            return Err(std::io::Error::new(std::io::ErrorKind::InvalidInput, reason));
+        }
+        Ok(Self::VerifiedLocal(VerifiedLocalArchive {
+            path: dir.join(file_name),
+            sha256: remote.sha256,
+        }))
+    }
+}
+
 /// Whether an installation was resolved or newly installed.
+#[cfg(feature = "host-fetch")]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum ResolvedOrInstalled {
     /// An existing installation was resolved.
@@ -191,6 +272,7 @@ pub enum ResolvedOrInstalled {
 
 impl Config {
     /// Resolves the dependency directory, failing if it doesn't exist.
+    #[cfg(feature = "host-fetch")]
     pub fn resolve_installation_dir(&self, location: Location) -> IoResult<PathBuf> {
         let dir_path = self.dir_path(location)?;
         let _ = ManagedDirName::new(&dir_path).check_exists()?;
@@ -198,50 +280,24 @@ impl Config {
     }
 
     /// Resolves the dependency directory, installing it if needed.
+    #[cfg(feature = "host-fetch")]
     pub fn resolve_installation_dir_or_install(
         &self,
         location: Location,
         source: Source,
     ) -> IoResult<(PathBuf, ResolvedOrInstalled)> {
         let dir_path = self.dir_path(location)?;
-        if ManagedDirName::new(&dir_path).check_exists().is_ok() {
-            return Ok((dir_path, ResolvedOrInstalled::ResolvedExisting));
-        }
-        let (reader, expected_sha) = self.open_source(source)?;
-        install(reader, &dir_path, expected_sha)?;
-        Ok((dir_path, ResolvedOrInstalled::NewlyInstalled))
+        let state = install_if_missing(&dir_path, source)?;
+        Ok((dir_path, state))
     }
 
     /// Opens the given source.
     ///
-    /// For `Source::Download`, returns the SHA-256 hash which should be used to
-    /// validate the downloaded contents.
+    /// For [`Source::Remote`] and [`Source::VerifiedLocal`], returns the
+    /// SHA-256 digest that must be verified before decompressing the archive.
+    #[cfg(all(test, feature = "host-fetch"))]
     fn open_source(&self, source: Source) -> IoResult<(impl Read, Option<[u8; 32]>)> {
-        enum SourceReader<D, L> {
-            Download(D),
-            Local(L),
-        }
-
-        impl<D: Read, L: Read> Read for SourceReader<D, L> {
-            fn read(&mut self, buf: &mut [u8]) -> IoResult<usize> {
-                match self {
-                    Self::Download(r) => r.read(buf),
-                    Self::Local(r) => r.read(buf),
-                }
-            }
-        }
-
-        match source {
-            Source::Remote(RemoteArchive { url, sha256 }) => {
-                let resp = ureq::get(url).call().map_err(std::io::Error::other)?;
-                let reader = resp.into_body().into_reader();
-                Ok((SourceReader::Download(reader), Some(sha256)))
-            }
-            Source::Local(path) => {
-                let file = std::fs::File::open(path)?;
-                Ok((SourceReader::Local(file), None))
-            }
-        }
+        open_archive_source(source)
     }
 
     /// Calculates the directory path:
@@ -250,25 +306,19 @@ impl Config {
     ///   `Local` (or `./target` if `CARGO_MANIFEST_DIR` is not set), and the
     ///   supplied path for `Custom`.
     /// - The remainder is `{self.rel_dir_path}/{self.version_slug}`.
+    #[cfg(feature = "host-fetch")]
     fn dir_path(&self, location: Location) -> IoResult<PathBuf> {
-        let mut parts = match location {
-            Location::UserGlobal => dirs::cache_dir().ok_or_else(|| {
-                std::io::Error::new(std::io::ErrorKind::NotFound, "cache dir not found")
-            })?,
-            Location::LocalDev => {
-                std::env::var("CARGO_MANIFEST_DIR")
-                    .map(PathBuf::from)
-                    // Fall back to current directory if `CARGO_MANIFEST_DIR` is
-                    // not set, which can happen if the binary is executed
-                    // directly rather than via `cargo run`.
-                    .unwrap_or_else(|_| std::env::current_dir().unwrap())
-                    .join("target")
-            }
-            Location::Custom(path) => path,
-        };
+        resolve_base_dir(location, self.rel_dir_path.iter().copied(), self.version_slug)
+    }
 
-        parts.extend(self.rel_dir_path);
-        Ok(parts.join(self.version_slug))
+    /// Returns the validated relative path components for this configuration.
+    pub const fn rel_dir_path(&self) -> &'static [&'static str] {
+        self.rel_dir_path
+    }
+
+    /// Returns the validated version slug for this configuration.
+    pub const fn version_slug(&self) -> &'static str {
+        self.version_slug
     }
 
     /// Creates a new `Config` after validating `rel_dir_path` and
@@ -300,76 +350,229 @@ impl Config {
     }
 }
 
-/// Validates a single path component.
-///
-/// This function intentionally accepts only a small cross-platform subset
-/// of path component names. Thus, it ignores platform-specific behavior
-/// and ensures that the same logical path is valid on Windows, macOS
-/// and Unix-like systems.
-///
-/// # Panics
-///
-/// Panics if the component:
-/// - is empty
-/// - is `.` or `..`
-/// - contains a path separator
-/// - contains a character reserved on Windows
-/// - is a Windows-reserved device name (matched by its stem)
-/// - contains a null byte
-const fn validate_path(part: &str) {
+impl DynamicConfig {
+    /// Creates a runtime [`DynamicConfig`] after validating every component of
+    /// `rel_dir_path` and `version_slug` against the cross-platform path rules.
+    pub fn try_new<I, S>(rel_dir_path: I, version_slug: impl Into<String>) -> IoResult<Self>
+    where
+        I: IntoIterator<Item = S>,
+        S: Into<String>,
+    {
+        let mut validated_dirs = Vec::new();
+        for component in rel_dir_path {
+            let component = component.into();
+            if let Err(reason) = check_path_component(&component) {
+                return Err(std::io::Error::new(std::io::ErrorKind::InvalidInput, reason));
+            }
+            validated_dirs.push(component);
+        }
+        let version_slug = version_slug.into();
+        if let Err(reason) = check_path_component(&version_slug) {
+            return Err(std::io::Error::new(std::io::ErrorKind::InvalidInput, reason));
+        }
+        Ok(Self { rel_dir_path: validated_dirs, version_slug })
+    }
+
+    /// Returns the validated relative path components for this configuration.
+    pub fn rel_dir_path(&self) -> &[String] {
+        &self.rel_dir_path
+    }
+
+    /// Returns the validated version slug for this configuration.
+    pub fn version_slug(&self) -> &str {
+        &self.version_slug
+    }
+
+    /// Resolves the dependency directory, failing if it does not exist.
+    #[cfg(feature = "host-fetch")]
+    pub fn resolve_installation_dir(&self, location: Location) -> IoResult<PathBuf> {
+        let dir_path = self.dir_path(location)?;
+        let _ = ManagedDirName::new(&dir_path).check_exists()?;
+        Ok(dir_path)
+    }
+
+    /// Resolves the dependency directory, installing it if needed.
+    #[cfg(feature = "host-fetch")]
+    pub fn resolve_installation_dir_or_install(
+        &self,
+        location: Location,
+        source: Source,
+    ) -> IoResult<(PathBuf, ResolvedOrInstalled)> {
+        let dir_path = self.dir_path(location)?;
+        let state = install_if_missing(&dir_path, source)?;
+        Ok((dir_path, state))
+    }
+
+    #[cfg(feature = "host-fetch")]
+    fn dir_path(&self, location: Location) -> IoResult<PathBuf> {
+        resolve_base_dir(location, self.rel_dir_path.iter().map(String::as_str), &self.version_slug)
+    }
+}
+
+#[cfg(feature = "host-fetch")]
+fn install_if_missing(dir_path: &Path, source: Source) -> IoResult<ResolvedOrInstalled> {
+    match ManagedDirName::new(dir_path).check_exists() {
+        Ok(_) => return Ok(ResolvedOrInstalled::ResolvedExisting),
+        Err(err) if err.kind() == std::io::ErrorKind::NotFound => {}
+        Err(err) => return Err(err),
+    }
+    let (reader, expected_sha) = open_archive_source(source)?;
+    install(reader, dir_path, expected_sha)?;
+    Ok(ResolvedOrInstalled::NewlyInstalled)
+}
+
+#[cfg(feature = "host-fetch")]
+fn resolve_base_dir<'a>(
+    location: Location,
+    rel_dir_path: impl IntoIterator<Item = &'a str>,
+    version_slug: &str,
+) -> IoResult<PathBuf> {
+    let mut parts = match location {
+        Location::UserGlobal => dirs::cache_dir().ok_or_else(|| {
+            std::io::Error::new(std::io::ErrorKind::NotFound, "cache dir not found")
+        })?,
+        Location::LocalDev => std::env::var("CARGO_MANIFEST_DIR")
+            .map(PathBuf::from)
+            // Fall back to current directory if `CARGO_MANIFEST_DIR` is not
+            // set, which can happen if the binary is executed directly rather
+            // than via `cargo run`.
+            .unwrap_or_else(|_| std::env::current_dir().unwrap())
+            .join("target"),
+        Location::Custom(path) => path,
+    };
+    parts.extend(rel_dir_path);
+    Ok(parts.join(version_slug))
+}
+
+#[cfg(feature = "host-fetch")]
+fn open_archive_source(source: Source) -> IoResult<(impl Read, Option<[u8; 32]>)> {
+    enum SourceReader<D, L> {
+        Download(D),
+        Local(L),
+    }
+
+    impl<D: Read, L: Read> Read for SourceReader<D, L> {
+        fn read(&mut self, buf: &mut [u8]) -> IoResult<usize> {
+            match self {
+                Self::Download(r) => r.read(buf),
+                Self::Local(r) => r.read(buf),
+            }
+        }
+    }
+
+    match source {
+        Source::Remote(RemoteArchive { url, sha256 }) => {
+            let resp = ureq::get(url).call().map_err(std::io::Error::other)?;
+            let reader = resp.into_body().into_reader();
+            Ok((SourceReader::Download(reader), Some(sha256)))
+        }
+        Source::VerifiedLocal(VerifiedLocalArchive { path, sha256 }) => {
+            let file = open_regular_local_archive(&path)?;
+            Ok((SourceReader::Local(file), Some(sha256)))
+        }
+        Source::Local(path) => {
+            let file = open_regular_local_archive(&path)?;
+            Ok((SourceReader::Local(file), None))
+        }
+    }
+}
+
+/// Checks a single path component without panicking, returning the static
+/// diagnostic reason when invalid.
+pub const fn check_path_component(part: &str) -> Result<(), &'static str> {
     let bytes = part.as_bytes();
 
-    assert!(bytes.len() <= 255, "Error: each `rel_dir_path` component must not exceed 255 bytes.");
-    assert!(!bytes.is_empty(), "rel_dir_path component must not be empty");
-    assert!(
-        !(bytes.len() == 1 && bytes[0] == b'.'),
-        "Error: `rel_dir_path` component must not be '.'",
-    );
-    assert!(
-        !(bytes.len() == 2 && bytes[0] == b'.' && bytes[1] == b'.'),
-        "Error: `rel_dir_path` component must not be '..'",
-    );
+    if bytes.len() > 255 {
+        return Err("Error: each `rel_dir_path` component must not exceed 255 bytes.");
+    }
+    if bytes.is_empty() {
+        return Err("rel_dir_path component must not be empty");
+    }
+    if bytes.len() == 1 && bytes[0] == b'.' {
+        return Err("Error: `rel_dir_path` component must not be '.'");
+    }
+    if bytes.len() == 2 && bytes[0] == b'.' && bytes[1] == b'.' {
+        return Err("Error: `rel_dir_path` component must not be '..'");
+    }
     let mut i = 0;
     while i < bytes.len() {
         let b = bytes[i];
-        assert!(
-            b != b'/' && b != b'\\',
-            "Error: `rel_dir_path` component must not contain a path separator ('/' or '\\')",
-        );
-        assert!(
-            b != b'\0'
-                && b != b'<'
-                && b != b'>'
-                && b != b':'
-                && b != b'"'
-                && b != b'|'
-                && b != b'?'
-                && b != b'*',
-            "Error: `rel_dir_path` component must not contain a character reserved on Windows: < > : \" | ? *",
-        );
-        assert!(
-            b >= 0x20 && b != 0x7f,
-            "Error: `rel_dir_path` component must not contain an ASCII control character",
-        );
+        if b == b'/' || b == b'\\' {
+            return Err(
+                "Error: `rel_dir_path` component must not contain a path separator ('/' or '\\')",
+            );
+        }
+        if b == b'\0'
+            || b == b'<'
+            || b == b'>'
+            || b == b':'
+            || b == b'"'
+            || b == b'|'
+            || b == b'?'
+            || b == b'*'
+        {
+            return Err(
+                "Error: `rel_dir_path` component must not contain a character reserved on Windows: < > : \" | ? *",
+            );
+        }
+        if b < 0x20 || b == 0x7f {
+            return Err(
+                "Error: `rel_dir_path` component must not contain an ASCII control character",
+            );
+        }
         i += 1;
     }
+    // Windows strips trailing dots and spaces, so `a.` and `a ` alias `a`.
+    let last = bytes[bytes.len() - 1];
+    if last == b'.' || last == b' ' {
+        return Err("Error: `rel_dir_path` component must not end with '.' or ' '");
+    }
 
-    // Device names reserved by windows.
+    // Device names reserved by Windows, including the superscript-digit
+    // `COM`/`LPT` forms (encoded here as UTF-8).
     let reserved_names: &[&[u8]] = &[
-        b"CON", b"PRN", b"AUX", b"NUL", b"COM0", b"COM1", b"COM2", b"COM3", b"COM4", b"COM5",
-        b"COM6", b"COM7", b"COM8", b"COM9", b"LPT0", b"LPT1", b"LPT2", b"LPT3", b"LPT4", b"LPT5",
-        b"LPT6", b"LPT7", b"LPT8", b"LPT9",
+        b"CON",
+        b"PRN",
+        b"AUX",
+        b"NUL",
+        b"COM0",
+        b"COM1",
+        b"COM2",
+        b"COM3",
+        b"COM4",
+        b"COM5",
+        b"COM6",
+        b"COM7",
+        b"COM8",
+        b"COM9",
+        b"LPT0",
+        b"LPT1",
+        b"LPT2",
+        b"LPT3",
+        b"LPT4",
+        b"LPT5",
+        b"LPT6",
+        b"LPT7",
+        b"LPT8",
+        b"LPT9",
+        b"COM\xC2\xB9",
+        b"COM\xC2\xB2",
+        b"COM\xC2\xB3",
+        b"LPT\xC2\xB9",
+        b"LPT\xC2\xB2",
+        b"LPT\xC2\xB3",
     ];
 
-    // Length of the component up to (not including) the first
-    // '.'. If there is no `.`, then this equals `bytes.len()`.
-    //
-    // This is because Windows reserves device names matched by
-    // their stem, i.e., "CON.abc" is reserved the same as "CON".
-    // The following check covers both cases.
+    // Length of the component up to (not including) the first '.', minus any
+    // spaces before it. If there is no '.', then this is the whole component.
+    // Windows reserves device names matched by their stem, i.e., "CON.abc" and
+    // "CON .abc" are reserved the same as "CON".
     let mut len = 0;
     while len < bytes.len() && bytes[len] != b'.' {
         len += 1;
+    }
+    while len > 0 && bytes[len - 1] == b' ' {
+        len -= 1;
     }
     let mut r = 0;
     while r < reserved_names.len() {
@@ -384,19 +587,302 @@ const fn validate_path(part: &str) {
                 }
                 j += 1;
             }
-            assert!(
-                !is_reserved,
-                "Error: `rel_dir_path` component must not be a Windows-reserved device name.",
-            );
+            if is_reserved {
+                return Err(
+                    "Error: `rel_dir_path` component must not be a Windows-reserved device name.",
+                );
+            }
         }
         r += 1;
     }
+    Ok(())
+}
+
+/// Validates a single path component.
+///
+/// This function intentionally accepts only a small cross-platform subset
+/// of path component names. Thus, it ignores platform-specific behavior
+/// and ensures that the same logical path is valid on Windows, macOS
+/// and Unix-like systems.
+///
+/// # Panics
+///
+/// Panics if the component:
+/// - is empty
+/// - is `.` or `..`
+/// - contains a path separator
+/// - contains a character reserved on Windows
+/// - ends with `.` or a space, which Windows strips
+/// - is a Windows-reserved device name (matched by its stem)
+/// - contains a null byte
+const fn validate_path(part: &str) {
+    if let Err(msg) = check_path_component(part) {
+        panic!("{}", msg);
+    }
+}
+
+/// An in-memory regular file entry from a verified `.tar.zst` archive.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct VerifiedArchiveEntry {
+    /// Normalized relative Unix-style path using `/` separators.
+    pub path: String,
+    /// Uncompressed file contents.
+    pub bytes: Vec<u8>,
+}
+
+/// Verifies that `bytes` matches `expected_sha256` in pure Rust without I/O.
+pub fn verify_sha256_bytes(bytes: &[u8], expected_sha256: &[u8; 32]) -> IoResult<()> {
+    let actual: [u8; 32] = sha2::Sha256::digest(bytes).into();
+    if &actual != expected_sha256 {
+        return Err(std::io::Error::new(std::io::ErrorKind::InvalidData, "SHA-256 hash mismatch"));
+    }
+    Ok(())
+}
+
+fn normalize_tar_entry_path(raw: &str) -> IoResult<Option<String>> {
+    if raw.contains('\0') || raw.contains('\\') {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            format!("invalid archive path character in {raw:?}"),
+        ));
+    }
+    let mut parts = Vec::new();
+    for seg in raw.split('/') {
+        if seg.is_empty() || seg == "." {
+            continue;
+        }
+        if let Err(reason) = check_path_component(seg) {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                format!("unsafe archive path component in {raw:?}: {reason}"),
+            ));
+        }
+        parts.push(seg);
+    }
+    if parts.is_empty() { Ok(None) } else { Ok(Some(parts.join("/"))) }
+}
+
+/// Returns a key under which two normalized ASCII archive paths collide if
+/// they may name the same file on a case-insensitive file system (Windows or
+/// default macOS). Callers reject non-ASCII paths first, because Unicode case
+/// folding and normalization differ across file systems.
+fn path_collision_key(path: &str) -> String {
+    debug_assert!(path.is_ascii());
+    path.to_ascii_lowercase()
+}
+
+/// Records the file at collision key `key` in `files` (and its ancestor
+/// directories in `dirs`), returning `false` if it would name the same file as,
+/// or a directory of, an earlier entry, or sit below an earlier file.
+fn record_archive_file(
+    key: String,
+    files: &mut HashSet<String>,
+    dirs: &mut HashSet<String>,
+) -> bool {
+    if files.contains(&key) || dirs.contains(&key) {
+        return false;
+    }
+    let ancestors: Vec<String> = key.match_indices('/').map(|(i, _)| key[..i].to_owned()).collect();
+    if ancestors.iter().any(|a| files.contains(a)) {
+        return false;
+    }
+    dirs.extend(ancestors);
+    files.insert(key);
+    true
+}
+
+/// Verifies (when `expected_sha256` is `Some`) and decodes a `.tar.zst` archive
+/// purely in Rust, rejecting symlinks, hardlinks, special files, path
+/// traversal, duplicate file paths, and corrupt Zstd/tar streams.
+///
+/// File paths must be ASCII. They count as duplicates if they are equal after
+/// ASCII case folding, so that no two entries can name the same file on a
+/// case-insensitive file system, and no file may share a (case-folded) path
+/// with an ancestor directory of another file. Path components that Windows
+/// would alias (trailing `.` or ` `, or reserved device names) are rejected.
+///
+/// The archive must be exactly one Zstd frame: bytes after its end, including
+/// further frames, are rejected. If the frame carries a content checksum, it
+/// is verified.
+///
+/// When `expected_sha256` is `Some`, the compressed byte stream's SHA-256
+/// digest is checked before any byte reaches the Zstd or tar decoders.
+pub fn verify_and_read_tar_zst_entries<R: Read>(
+    mut reader: R,
+    expected_sha256: Option<[u8; 32]>,
+) -> IoResult<Vec<VerifiedArchiveEntry>> {
+    let mut compressed = Vec::new();
+    reader.read_to_end(&mut compressed)?;
+    if let Some(expected) = expected_sha256 {
+        verify_sha256_bytes(&compressed, &expected)?;
+    }
+    if compressed.is_empty() {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            "empty compressed archive",
+        ));
+    }
+
+    let mut decoder = ruzstd::decoding::StreamingDecoder::new(compressed.as_slice())
+        .map_err(|err| std::io::Error::new(std::io::ErrorKind::InvalidData, err))?;
+    let mut out = Vec::new();
+    let mut seen_files = HashSet::new();
+    let mut seen_dirs = HashSet::new();
+    {
+        let mut archive = tar::Archive::new(&mut decoder);
+        for entry_res in archive.entries()? {
+            let mut entry = entry_res?;
+            let entry_type = entry.header().entry_type();
+            let raw_path = std::str::from_utf8(entry.path_bytes().as_ref())
+                .map_err(|err| {
+                    std::io::Error::new(
+                        std::io::ErrorKind::InvalidData,
+                        format!("non-UTF-8 archive entry path: {err}"),
+                    )
+                })?
+                .to_owned();
+            if raw_path.starts_with('/') {
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidData,
+                    format!("absolute archive entry path rejected: {raw_path:?}"),
+                ));
+            }
+            let normalized = normalize_tar_entry_path(&raw_path)?;
+            if entry_type.is_dir() {
+                continue;
+            }
+            if !entry_type.is_file() {
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidData,
+                    format!("non-regular archive entry {raw_path:?} ({entry_type:?}) rejected"),
+                ));
+            }
+            let Some(path) = normalized else {
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidData,
+                    format!("empty archive file path for {raw_path:?}"),
+                ));
+            };
+            if !path.is_ascii() {
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidData,
+                    format!("non-ASCII archive entry path rejected: {path:?}"),
+                ));
+            }
+            if !record_archive_file(path_collision_key(&path), &mut seen_files, &mut seen_dirs) {
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidData,
+                    format!(
+                        "duplicate archive entry path (case-insensitively, or as a file and a \
+                         directory): {path}"
+                    ),
+                ));
+            }
+            let mut bytes = Vec::new();
+            entry.read_to_end(&mut bytes)?;
+            out.push(VerifiedArchiveEntry { path, bytes });
+        }
+    }
+    // Drain the remainder of the tar stream so truncated or trailing corrupt
+    // Zstd blocks after the tar EOF marker are still detected.
+    std::io::copy(&mut decoder, &mut std::io::sink())?;
+    // `StreamingDecoder` stops at the end of the first frame and never reads
+    // past it, so any input left over was not decoded.
+    let trailing = decoder.get_ref().len();
+    if trailing != 0 {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            format!("{trailing} unexpected bytes after the Zstd frame"),
+        ));
+    }
+    // `StreamingDecoder` reads the optional content checksum but does not
+    // compare it against the decoded bytes.
+    let frame = decoder.into_frame_decoder();
+    if let Some(stored) = frame.get_checksum_from_data()
+        && frame.get_calculated_checksum() != Some(stored)
+    {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            "Zstd content checksum mismatch",
+        ));
+    }
+    Ok(out)
+}
+
+#[cfg(feature = "host-fetch")]
+fn not_regular_file_error(path: &Path) -> std::io::Error {
+    std::io::Error::new(
+        std::io::ErrorKind::InvalidInput,
+        format!("local archive path is not a regular file: {}", path.display()),
+    )
+}
+
+/// Opens a local archive path after checking via `stat` (without opening
+/// FIFOs/devices) and `fstat` on the open descriptor that it refers to the
+/// same regular file.
+///
+/// On Unix, symlinks are resolved up front and the final open neither follows
+/// a symlink nor blocks, so a FIFO or symlink swapped in after the `stat` is
+/// rejected by the `fstat` check (or fails to open) instead of hanging.
+#[cfg(feature = "host-fetch")]
+fn open_regular_local_archive(path: &Path) -> IoResult<std::fs::File> {
+    #[cfg(unix)]
+    {
+        let resolved = std::fs::canonicalize(path)?;
+        let pre_meta = std::fs::symlink_metadata(&resolved)?;
+        if !pre_meta.is_file() {
+            return Err(not_regular_file_error(path));
+        }
+        open_expected_regular_file(&resolved, &pre_meta)
+    }
+    #[cfg(not(unix))]
+    {
+        if !std::fs::metadata(path)?.is_file() {
+            return Err(not_regular_file_error(path));
+        }
+        let file = std::fs::File::open(path)?;
+        if !file.metadata()?.is_file() {
+            return Err(not_regular_file_error(path));
+        }
+        Ok(file)
+    }
+}
+
+/// Opens `path` for reading iff it is (still) the regular file that
+/// `expected` describes.
+#[cfg(all(feature = "host-fetch", unix))]
+fn open_expected_regular_file(
+    path: &Path,
+    expected: &std::fs::Metadata,
+) -> IoResult<std::fs::File> {
+    use std::os::unix::fs::{MetadataExt as _, OpenOptionsExt as _};
+
+    // `O_NONBLOCK` keeps the open from waiting for a writer if `path` is now a
+    // FIFO; `O_NOFOLLOW` refuses a symlink (e.g. to a device node).
+    let file = std::fs::OpenOptions::new()
+        .read(true)
+        .custom_flags(libc::O_NONBLOCK | libc::O_NOFOLLOW)
+        .open(path)?;
+    let meta = file.metadata()?;
+    if !meta.is_file() {
+        return Err(not_regular_file_error(path));
+    }
+    if (meta.dev(), meta.ino()) != (expected.dev(), expected.ino()) {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            format!("local archive inode changed during open: {}", path.display()),
+        ));
+    }
+    // `O_NONBLOCK` is left set: POSIX ignores it for reads of regular files,
+    // which is all `file` can be after the check above.
+    Ok(file)
 }
 
 /// Extracts the `.tar.zst` from `reader` and installs it at `dst`.
 ///
 /// When `expected_sha256` is `Some`, buffers and verifies the SHA-256 digest of
 /// the entire compressed stream before invoking `zstd` or `tar` extraction.
+#[cfg(feature = "host-fetch")]
 fn install(mut reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>) -> IoResult<()> {
     struct HashingReader<R> {
         reader: R,
@@ -654,10 +1140,57 @@ pub mod macro_util {
 
 #[cfg(test)]
 mod tests {
+    #[cfg(feature = "host-fetch")]
     use std::fs;
 
     use super::*;
 
+    fn wrap_raw_zstd_frame(payload: &[u8]) -> Vec<u8> {
+        const MAX_RAW_BLOCK: usize = 128 * 1024;
+        let mut out = Vec::new();
+        // Zstandard frame magic + single-segment FHD with 4-byte FCS.
+        out.extend_from_slice(&0xFD2F_B528u32.to_le_bytes());
+        out.push(0xA0);
+        out.extend_from_slice(&(payload.len() as u32).to_le_bytes());
+        if payload.is_empty() {
+            out.extend_from_slice(&1u32.to_le_bytes()[..3]);
+            return out;
+        }
+        let mut offset = 0;
+        while offset < payload.len() {
+            let end = (offset + MAX_RAW_BLOCK).min(payload.len());
+            let chunk = &payload[offset..end];
+            let is_last = end == payload.len();
+            let header = ((chunk.len() as u32) << 3) | u32::from(is_last);
+            out.extend_from_slice(&header.to_le_bytes()[..3]);
+            out.extend_from_slice(chunk);
+            offset = end;
+        }
+        out
+    }
+
+    fn build_raw_tar_zst_bytes(entries: &[(&str, tar::EntryType, &[u8])]) -> Vec<u8> {
+        let mut tar_bytes = Vec::new();
+        {
+            let mut builder = tar::Builder::new(&mut tar_bytes);
+            for &(name, entry_type, content) in entries {
+                let mut header = tar::Header::new_gnu();
+                header.set_entry_type(entry_type);
+                header.set_mode(if entry_type.is_dir() { 0o755 } else { 0o644 });
+                header.set_size(if entry_type.is_file() { content.len() as u64 } else { 0 });
+                if entry_type == tar::EntryType::Symlink {
+                    header.set_link_name("target").unwrap();
+                }
+                header.set_path(name).unwrap();
+                header.set_cksum();
+                builder.append(&header, content).unwrap();
+            }
+            builder.finish().unwrap();
+        }
+        wrap_raw_zstd_frame(&tar_bytes)
+    }
+
+    #[cfg(feature = "host-fetch")]
     fn create_dummy_tar_zst(files: &[(&str, &[u8])]) -> Vec<u8> {
         let mut zstd_enc = zstd::stream::write::Encoder::new(Vec::new(), 0).unwrap();
         {
@@ -680,6 +1213,7 @@ mod tests {
         hasher.finalize().into()
     }
 
+    #[cfg(feature = "host-fetch")]
     fn dummy_config(rel_dir_path: &'static [&'static str]) -> Config {
         Config::new(rel_dir_path, "slug")
     }
@@ -692,6 +1226,191 @@ mod tests {
         }
     }
 
+    #[test]
+    fn test_dynamic_config_validation() {
+        let cfg = DynamicConfig::try_new(["anneal", "evidence"], "0.1.0-zerocopy").unwrap();
+        assert_eq!(cfg.rel_dir_path(), &["anneal".to_string(), "evidence".to_string()]);
+        assert_eq!(cfg.version_slug(), "0.1.0-zerocopy");
+        assert!(DynamicConfig::try_new(["../escape"], "v1").is_err());
+        assert!(DynamicConfig::try_new(["ok"], "CON.txt").is_err());
+    }
+
+    #[test]
+    fn test_pure_tar_zst_verification_and_safety() {
+        let valid = build_raw_tar_zst_bytes(&[
+            ("specs/", tar::EntryType::Directory, b""),
+            ("./specs/Spec.lean", tar::EntryType::Regular, b"theorem ok : True := trivial\n"),
+        ]);
+        let digest = compute_sha256(&valid);
+        let entries = verify_and_read_tar_zst_entries(valid.as_slice(), Some(digest)).unwrap();
+        assert_eq!(
+            entries,
+            vec![VerifiedArchiveEntry {
+                path: "specs/Spec.lean".to_string(),
+                bytes: b"theorem ok : True := trivial\n".to_vec(),
+            }]
+        );
+
+        // Digest mismatch must fail before passing non-zstd bytes to decode.
+        let err = verify_and_read_tar_zst_entries(&b"not zstd"[..], Some(digest)).unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::InvalidData);
+        assert_eq!(err.to_string(), "SHA-256 hash mismatch");
+
+        // Reject symlinks and duplicate entry paths.
+        let with_symlink = build_raw_tar_zst_bytes(&[("specs/link", tar::EntryType::Symlink, b"")]);
+        let err = verify_and_read_tar_zst_entries(with_symlink.as_slice(), None).unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::InvalidData);
+
+        let with_dup = build_raw_tar_zst_bytes(&[
+            ("specs/a.txt", tar::EntryType::Regular, b"one"),
+            ("specs/a.txt", tar::EntryType::Regular, b"two"),
+        ]);
+        let err = verify_and_read_tar_zst_entries(with_dup.as_slice(), None).unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::InvalidData);
+
+        let build_ustar_bytes = |name: &[u8]| -> Vec<u8> {
+            let mut raw = vec![0u8; 512];
+            raw[..name.len()].copy_from_slice(name);
+            raw[100..107].copy_from_slice(b"000644 ");
+            raw[108..115].copy_from_slice(b"000000 ");
+            raw[116..123].copy_from_slice(b"000000 ");
+            raw[124..135].copy_from_slice(b"00000000000");
+            raw[136..147].copy_from_slice(b"00000000000");
+            raw[148..156].fill(b' ');
+            raw[156] = b'0';
+            raw[257..263].copy_from_slice(b"ustar ");
+            let cksum: u32 = raw[..512].iter().map(|&b| u32::from(b)).sum();
+            let cksum_str = format!("{cksum:06o}\0 ");
+            raw[148..156].copy_from_slice(cksum_str.as_bytes());
+            raw.extend_from_slice(&[0u8; 1024]);
+            wrap_raw_zstd_frame(&raw)
+        };
+
+        // Reject parent-dir traversal even inside manual raw tar header bytes.
+        let bad_zst = build_ustar_bytes(b"specs/../escape.txt");
+        let err = verify_and_read_tar_zst_entries(bad_zst.as_slice(), None).unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::InvalidData);
+
+        // Non-UTF-8 archive paths must fail closed rather than using U+FFFD.
+        let non_utf8_zst = build_ustar_bytes(b"specs/\xff.txt");
+        let err = verify_and_read_tar_zst_entries(non_utf8_zst.as_slice(), None).unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::InvalidData);
+    }
+
+    #[test]
+    fn test_archive_rejects_case_folded_duplicates_and_windows_aliases() {
+        let read = |entries: &[(&str, &[u8])]| {
+            let entries: Vec<_> =
+                entries.iter().map(|&(p, b)| (p, tar::EntryType::Regular, b)).collect();
+            verify_and_read_tar_zst_entries(build_raw_tar_zst_bytes(&entries).as_slice(), None)
+        };
+
+        // Paths that name the same file on a case-insensitive file system, or
+        // that would need one name to be both a file and a directory.
+        for (a, b) in [
+            ("bin/Tool", "bin/tool"),
+            ("BIN/tool", "bin/tool"),
+            ("bin", "bin/tool"),
+            ("bin/tool", "bin"),
+            ("BIN", "bin/tool"),
+            ("bin/tool", "Bin"),
+            ("a/b", "A/B/c"),
+        ] {
+            let err = read(&[(a, b"one"), (b, b"two")]).unwrap_err();
+            assert_eq!(err.kind(), std::io::ErrorKind::InvalidData, "{a:?} vs {b:?}");
+            assert!(err.to_string().contains("duplicate"), "{a:?} vs {b:?}: {err}");
+        }
+
+        // Non-ASCII paths are rejected outright: file systems disagree on
+        // Unicode case folding (`\u{1e9e}` vs `\u{df}`, KELVIN SIGN vs `k`)
+        // and normalization (NFC vs NFD).
+        for name in ["specs/\u{c9}t\u{e9}.lean", "bin/\u{212a}", "bin/\u{1e9e}", "bin/e\u{301}"] {
+            let err = read(&[(name, b"x")]).unwrap_err();
+            assert_eq!(err.kind(), std::io::ErrorKind::InvalidData, "{name:?}");
+            assert!(err.to_string().contains("non-ASCII"), "{name:?}: {err}");
+        }
+
+        // Components that Windows strips or maps to a device.
+        for name in [
+            "bin/tool.",
+            "bin/tool ",
+            "bin./tool",
+            "bin/NUL",
+            "bin/nul.txt",
+            "bin/Com1.tar.gz",
+            "bin/LPT9",
+            "bin/con .txt",
+            "bin/COM\u{b9}",
+        ] {
+            let err = read(&[(name, b"x")]).unwrap_err();
+            assert_eq!(err.kind(), std::io::ErrorKind::InvalidData, "{name:?}");
+        }
+
+        // Similar but non-aliasing paths are accepted.
+        let entries = read(&[
+            ("bin/tool", b"1"),
+            ("bin/tool.v2", b"2"),
+            ("bin/console", b"3"),
+            ("bin/sub/tool", b"4"),
+            ("binary", b"5"),
+        ])
+        .unwrap();
+        assert_eq!(entries.len(), 5);
+    }
+
+    #[test]
+    fn test_archive_rejects_bytes_after_first_zstd_frame() {
+        let first = build_raw_tar_zst_bytes(&[("a.txt", tar::EntryType::Regular, b"one")]);
+        assert_eq!(verify_and_read_tar_zst_entries(first.as_slice(), None).unwrap().len(), 1);
+
+        let second = build_raw_tar_zst_bytes(&[("b.txt", tar::EntryType::Regular, b"two")]);
+        // Zstandard skippable frame with an empty payload.
+        let mut skippable = 0x184D_2A50u32.to_le_bytes().to_vec();
+        skippable.extend_from_slice(&0u32.to_le_bytes());
+        for suffix in [&b"\0"[..], b"garbage", &second, &skippable] {
+            let input = [first.as_slice(), suffix].concat();
+            let err = verify_and_read_tar_zst_entries(input.as_slice(), None).unwrap_err();
+            assert_eq!(err.kind(), std::io::ErrorKind::InvalidData);
+            let expected = format!("{} unexpected bytes after the Zstd frame", suffix.len());
+            assert_eq!(err.to_string(), expected);
+        }
+    }
+
+    #[test]
+    fn test_archive_rejects_zstd_content_checksum_mismatch() {
+        let mut frame = build_raw_tar_zst_bytes(&[("a.txt", tar::EntryType::Regular, b"one")]);
+        // Set the frame header's Content_Checksum_flag and append a checksum
+        // that does not match the content.
+        frame[4] |= 0x04;
+        frame.extend_from_slice(&0u32.to_le_bytes());
+        let err = verify_and_read_tar_zst_entries(frame.as_slice(), None).unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::InvalidData);
+        assert_eq!(err.to_string(), "Zstd content checksum mismatch");
+    }
+
+    #[cfg(feature = "host-fetch")]
+    #[test]
+    fn test_archive_accepts_valid_zstd_content_checksum() {
+        let mut enc = zstd::stream::write::Encoder::new(Vec::new(), 0).unwrap();
+        enc.include_checksum(true).unwrap();
+        {
+            let mut builder = tar::Builder::new(&mut enc);
+            let mut header = tar::Header::new_gnu();
+            header.set_size(3);
+            header.set_mode(0o644);
+            builder.append_data(&mut header, "a.txt", &b"one"[..]).unwrap();
+            builder.finish().unwrap();
+        }
+        let mut bytes = enc.finish().unwrap();
+        let entries = verify_and_read_tar_zst_entries(bytes.as_slice(), None).unwrap();
+        assert_eq!(entries[0].bytes, b"one");
+
+        *bytes.last_mut().unwrap() ^= 1;
+        let err = verify_and_read_tar_zst_entries(bytes.as_slice(), None).unwrap_err();
+        assert_eq!(err.to_string(), "Zstd content checksum mismatch");
+    }
+
+    #[cfg(feature = "host-fetch")]
     #[test]
     fn test_install_new() {
         let temp = tempfile::tempdir().unwrap();
@@ -709,6 +1428,7 @@ mod tests {
         assert_eq!(fs::read(dst.join("nested/dir/data.bin")).unwrap(), b"\x01\x02\x03");
     }
 
+    #[cfg(feature = "host-fetch")]
     #[test]
     fn test_install_without_hash_validation() {
         let temp = tempfile::tempdir().unwrap();
@@ -721,6 +1441,7 @@ mod tests {
         assert_eq!(fs::read_to_string(dst.join("hello.txt")).unwrap(), "hello world");
     }
 
+    #[cfg(feature = "host-fetch")]
     #[test]
     fn test_install_invalid_archive() {
         let temp = tempfile::tempdir().unwrap();
@@ -740,6 +1461,7 @@ mod tests {
         assert!(entries.is_empty());
     }
 
+    #[cfg(feature = "host-fetch")]
     #[test]
     fn test_install_already_exists() {
         let temp = tempfile::tempdir().unwrap();
@@ -757,6 +1479,7 @@ mod tests {
         assert_eq!(fs::read_to_string(dst.join("existing.txt")).unwrap(), "existing content");
     }
 
+    #[cfg(feature = "host-fetch")]
     #[test]
     fn test_install_hash_mismatch() {
         let temp = tempfile::tempdir().unwrap();
@@ -778,6 +1501,7 @@ mod tests {
         assert!(entries.is_empty());
     }
 
+    #[cfg(feature = "host-fetch")]
     #[test]
     fn test_install_trailing_garbage_hash_mismatch() {
         let temp = tempfile::tempdir().unwrap();
@@ -832,6 +1556,7 @@ mod tests {
         assert!(macro_util::decode_hex(invalid_hex).is_none());
     }
 
+    #[cfg(feature = "host-fetch")]
     #[test]
     fn test_config_dir_path() {
         let config = dummy_config(&["test_dir_path"]);
@@ -851,6 +1576,7 @@ mod tests {
         assert!(dev_path.ends_with(PathBuf::from_iter(["test_dir_path", "slug"])));
     }
 
+    #[cfg(feature = "host-fetch")]
     #[test]
     fn test_config_resolve_installation_dir() {
         let config = dummy_config(&["test_dir_resolve"]);
@@ -865,6 +1591,7 @@ mod tests {
         fs::remove_dir_all(&dev_path).unwrap();
     }
 
+    #[cfg(feature = "host-fetch")]
     #[test]
     fn test_config_resolve_installation_dir_or_install_local() {
         let temp = tempfile::tempdir().unwrap();
@@ -895,6 +1622,7 @@ mod tests {
         fs::remove_dir_all(&dev_path).unwrap();
     }
 
+    #[cfg(feature = "host-fetch")]
     #[test]
     fn test_config_open_source_not_found() {
         let config = dummy_config(&["test_open_source"]);
@@ -956,6 +1684,7 @@ mod tests {
         let _ = Config::new(&["COM1.txt"], "v1");
     }
 
+    #[cfg(feature = "host-fetch")]
     #[cfg(unix)]
     fn create_tar_zst_with_modes(files: &[(&str, &[u8], u32)], dirs: &[(&str, u32)]) -> Vec<u8> {
         let mut zstd_enc = zstd::stream::write::Encoder::new(Vec::new(), 0).unwrap();
@@ -981,6 +1710,7 @@ mod tests {
         zstd_enc.finish().unwrap()
     }
 
+    #[cfg(feature = "host-fetch")]
     #[cfg(unix)]
     fn serve_archives_once(
         archives: Vec<Vec<u8>>,
@@ -1012,6 +1742,7 @@ mod tests {
         (addr, handle)
     }
 
+    #[cfg(feature = "host-fetch")]
     #[test]
     fn test_install_verifies_hash_before_decompression() {
         let temp = tempfile::tempdir().unwrap();
@@ -1035,6 +1766,7 @@ mod tests {
         assert!(entries.is_empty());
     }
 
+    #[cfg(feature = "host-fetch")]
     #[cfg(unix)]
     #[test]
     fn test_rejected_0555_archive_does_not_contaminate_remote_install() {
@@ -1089,6 +1821,7 @@ mod tests {
         assert!(!installed.join("unexpected/marker.txt").exists());
     }
 
+    #[cfg(feature = "host-fetch")]
     #[cfg(unix)]
     #[test]
     fn test_rejected_0000_dir_archive_does_not_block_remote_install() {
@@ -1126,6 +1859,7 @@ mod tests {
         assert!(!installed.join("bin/poison").exists());
     }
 
+    #[cfg(feature = "host-fetch")]
     #[cfg(unix)]
     #[test]
     fn test_preexisting_unwritable_staging_residue_does_not_poison_or_block() {
@@ -1161,5 +1895,163 @@ mod tests {
         assert_eq!(fs::read_to_string(dst.join("official.txt")).unwrap(), "clean");
         assert!(!dst.join("unexpected").exists());
         assert!(!dst.join("bin").exists());
+    }
+
+    #[cfg(feature = "host-fetch")]
+    #[test]
+    fn test_verified_local_archive_succeeds_and_rejects_hash_mismatch_before_unpack() {
+        let temp = tempfile::tempdir().unwrap();
+        let valid_bytes = create_dummy_tar_zst(&[("bin/tool", b"verified-offline")]);
+        let expected_sha256 = compute_sha256(&valid_bytes);
+
+        let bad_archive_path = temp.path().join("tampered.tar.zst");
+        fs::write(&bad_archive_path, b"not even valid zstd").unwrap();
+
+        let config = Config::new(&["offline_tool"], "v1");
+        let err = config
+            .resolve_installation_dir_or_install(
+                Location::Custom(temp.path().to_path_buf()),
+                Source::VerifiedLocal(VerifiedLocalArchive {
+                    path: bad_archive_path,
+                    sha256: expected_sha256,
+                }),
+            )
+            .unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::InvalidData);
+        assert_eq!(err.to_string(), "SHA-256 hash mismatch");
+        assert!(!temp.path().join("offline_tool/v1").exists());
+
+        let good_archive_path = temp.path().join("good.tar.zst");
+        fs::write(&good_archive_path, &valid_bytes).unwrap();
+        let (installed, status) = config
+            .resolve_installation_dir_or_install(
+                Location::Custom(temp.path().to_path_buf()),
+                Source::VerifiedLocal(VerifiedLocalArchive {
+                    path: good_archive_path,
+                    sha256: expected_sha256,
+                }),
+            )
+            .unwrap();
+        assert_eq!(status, ResolvedOrInstalled::NewlyInstalled);
+        assert_eq!(fs::read(installed.join("bin/tool")).unwrap(), b"verified-offline");
+    }
+
+    #[cfg(feature = "host-fetch")]
+    #[test]
+    fn test_local_archive_rejects_directory_source() {
+        let temp = tempfile::tempdir().unwrap();
+        let dir_source = temp.path().join("not_a_file_dir");
+        fs::create_dir_all(&dir_source).unwrap();
+
+        let config = Config::new(&["dir_reject"], "v1");
+        let err = config
+            .resolve_installation_dir_or_install(
+                Location::Custom(temp.path().to_path_buf()),
+                Source::Local(dir_source),
+            )
+            .unwrap_err();
+        // The regular-file check rejects the directory up front, before
+        // anything (such as a lock file) is created under the location.
+        assert_eq!(err.kind(), std::io::ErrorKind::InvalidInput, "{err:?}");
+        let entries: Vec<_> =
+            fs::read_dir(temp.path()).unwrap().map(|e| e.unwrap().file_name()).collect();
+        assert_eq!(entries, [std::ffi::OsString::from("not_a_file_dir")]);
+    }
+
+    #[cfg(feature = "host-fetch")]
+    #[test]
+    fn test_dynamic_config_and_offline_mirror_resolution() {
+        let temp = tempfile::tempdir().unwrap();
+        let mirror_dir = temp.path().join("mirror");
+        fs::create_dir_all(&mirror_dir).unwrap();
+
+        let archive_bytes = create_dummy_tar_zst(&[("anneal-evidence.json", b"{}")]);
+        let sha256 = compute_sha256(&archive_bytes);
+        fs::write(mirror_dir.join("zerocopy-evidence-v0.8.64.tar.zst"), &archive_bytes).unwrap();
+
+        let remote = RemoteArchive {
+            // Unreachable port; mirror resolution must skip network I/O.
+            url: "http://127.0.0.1:1/releases/zerocopy-evidence-v0.8.64.tar.zst?download=1",
+            sha256,
+        };
+        let source = Source::from_remote_or_mirror(remote, Some(&mirror_dir)).unwrap();
+        assert!(matches!(source, Source::VerifiedLocal(_)));
+
+        let dyn_cfg = DynamicConfig::try_new(["anneal", "evidence"], "0.1.0-zerocopy-0.8.64")
+            .expect("valid dynamic config");
+        let (installed, status) = dyn_cfg
+            .resolve_installation_dir_or_install(
+                Location::Custom(temp.path().join("cache")),
+                source,
+            )
+            .unwrap();
+        assert_eq!(status, ResolvedOrInstalled::NewlyInstalled);
+        assert_eq!(fs::read(installed.join("anneal-evidence.json")).unwrap(), b"{}");
+
+        // Reject invalid path components at runtime without panicking.
+        assert!(DynamicConfig::try_new(["../escape"], "v1").is_err());
+        assert!(DynamicConfig::try_new(["ok"], "CON.txt").is_err());
+        for url in ["https://example.com/", "https://example.com", "https://example.com?download=1"]
+        {
+            let bad_remote = RemoteArchive { url, sha256 };
+            assert!(Source::from_remote_or_mirror(bad_remote, Some(&mirror_dir)).is_err(), "{url}");
+        }
+    }
+
+    #[cfg(all(feature = "host-fetch", unix))]
+    #[test]
+    fn test_local_archive_open_rejects_swapped_fifo_and_symlink() {
+        use std::{ffi::CString, os::unix::ffi::OsStrExt as _, sync::mpsc, time::Duration};
+
+        let temp = tempfile::tempdir().unwrap();
+        let regular = temp.path().join("archive.tar.zst");
+        fs::write(&regular, b"archive").unwrap();
+        let expected = fs::symlink_metadata(&regular).unwrap();
+
+        // Simulate a FIFO swapped in after the `stat`: the open must neither
+        // wait for a writer nor hand back the FIFO.
+        let fifo = temp.path().join("fifo");
+        let c_fifo = CString::new(fifo.as_os_str().as_bytes()).unwrap();
+        // SAFETY: `c_fifo` is a valid NUL-terminated path.
+        assert_eq!(unsafe { libc::mkfifo(c_fifo.as_ptr(), 0o600) }, 0);
+        let (tx, rx) = mpsc::channel();
+        let (fifo_clone, expected_clone) = (fifo.clone(), expected.clone());
+        std::thread::spawn(move || {
+            let res = open_expected_regular_file(&fifo_clone, &expected_clone);
+            let _ = tx.send(res.map(drop));
+        });
+        match rx.recv_timeout(Duration::from_secs(10)) {
+            Ok(res) => assert_eq!(res.unwrap_err().kind(), std::io::ErrorKind::InvalidInput),
+            Err(_) => {
+                // Unblock the stuck reader before failing.
+                let _writer = fs::OpenOptions::new().write(true).open(&fifo);
+                panic!("opening a swapped-in FIFO blocked");
+            }
+        }
+
+        // A symlink swapped in, even to the expected file, is not followed.
+        let link = temp.path().join("link");
+        std::os::unix::fs::symlink(&regular, &link).unwrap();
+        assert!(open_expected_regular_file(&link, &expected).is_err());
+
+        // A different regular file fails the inode check.
+        let other = temp.path().join("other");
+        fs::write(&other, b"archive").unwrap();
+        let err = open_expected_regular_file(&other, &expected).unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::InvalidData);
+
+        // The expected file opens and reads in full.
+        let mut file = open_expected_regular_file(&regular, &expected).unwrap();
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents).unwrap();
+        assert_eq!(contents, b"archive");
+
+        // Through the public path, a FIFO is rejected up front and a symlink
+        // to a regular archive is resolved before opening.
+        let err = open_regular_local_archive(&fifo).unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::InvalidInput);
+        let mut contents = Vec::new();
+        open_regular_local_archive(&link).unwrap().read_to_end(&mut contents).unwrap();
+        assert_eq!(contents, b"archive");
     }
 }
