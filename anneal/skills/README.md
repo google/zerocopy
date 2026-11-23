@@ -17,9 +17,9 @@ task routing table.
 
 | Skill | Source | Purpose |
 | :--- | :--- | :--- |
-| [`change-review`](change-review/SKILL.md) | Repository-owned | Local and hosted review workflow, risk sizing, pipelining, and receipts ([maintainer contract](../docs/review-policy-design.md)) |
+| [`change-review`](change-review/SKILL.md) | Repository-owned | Local and hosted review workflow, risk sizing, pipelining, and receipts ([maintainer contract](../development/review-policy-design.md)) |
 | [`source-control`](source-control/SKILL.md) | Repository-owned | Adapted from [`google/zerocopy`'s Contributing Guide](https://github.com/google/zerocopy/discussions/1318); commits, worker quarantine, publication, and stacks |
-| [`trust-review`](trust-review/SKILL.md) | Repository-owned | Derived from [`META_PRINCIPLES.md`](../META_PRINCIPLES.md), [`PRINCIPLES.md`](../PRINCIPLES.md), [`THREAT_MODEL.md`](../THREAT_MODEL.md), and [`docs/trust-model.md`](../docs/trust-model.md) |
+| [`trust-review`](trust-review/SKILL.md) | Repository-owned | Derived from [`META_PRINCIPLES.md`](../META_PRINCIPLES.md), [`PRINCIPLES.md`](../PRINCIPLES.md), [`THREAT_MODEL.md`](../THREAT_MODEL.md), and [`development/trust-model.md`](../development/trust-model.md) |
 
 Anneal's Pass 1 containment applies to both skill roots (see
 [`../AGENTS.md`](../AGENTS.md#code-review-rules)). Provenance and SHA-256

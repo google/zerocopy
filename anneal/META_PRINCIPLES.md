@@ -11,7 +11,8 @@ those terms. -->
 This document records the underlying goals that govern
 [`PRINCIPLES.md`](PRINCIPLES.md) and [`THREAT_MODEL.md`](THREAT_MODEL.md). When
 evaluating or revising those documents—or the architecture in
-[`docs/`](docs/design.md) that implements them—preserve the commitments below.
+[`DESIGN.md`](DESIGN.md) and [`development/`](development/README.md) that
+implements them—preserve the commitments below.
 
 ## 1. The end-to-end human-review sufficiency guarantee
 
@@ -85,10 +86,11 @@ has a single responsibility and audience:
      aim to defend against (and why) so that [`PRINCIPLES.md`](PRINCIPLES.md)
      and this document's sufficiency guarantee hold, without prescribing
      internal implementation mechanisms or file representations.
-3. **[`docs/*`](docs/design.md) (Developer-facing — *How*):**
-   [`docs/design.md`](docs/design.md),
-   [`docs/architecture.md`](docs/architecture.md), and
-   [`docs/trust-model.md`](docs/trust-model.md) treat
+3. **[`DESIGN.md`](DESIGN.md) and [`development/*`](development/README.md)
+   (Architecture and developer-facing — *How*):**
+   [`DESIGN.md`](DESIGN.md),
+   [`development/architecture.md`](development/architecture.md), and
+   [`development/trust-model.md`](development/trust-model.md) treat
    [`META_PRINCIPLES.md`](META_PRINCIPLES.md), [`PRINCIPLES.md`](PRINCIPLES.md),
    and [`THREAT_MODEL.md`](THREAT_MODEL.md) as controlling and specify how
    Anneal's architecture implements them.

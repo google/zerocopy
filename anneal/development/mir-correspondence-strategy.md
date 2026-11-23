@@ -61,7 +61,7 @@ with locked correspondence and fault-equivalence theorems in CI:
 - **A reference MIR model ($M_{\text{ref}}$):** An existing external
   formalization (`lean-miri`, `MiniRust`, or a combination of reference models;
   Anneal's target architecture adopts a pinned `lean-miri` snapshot, see
-  [`docs/architecture.md`](architecture.md)) landed in the repository and
+  [`development/architecture.md`](architecture.md)) landed in the repository and
   audited once up front for both Rust semantic fidelity and faithful
   transcription/vendoring from upstream (with its small staged support gate
   widened under human review as coverage grows within $M_{\text{ref}}$'s
@@ -126,7 +126,7 @@ Two features of this statement carry its soundness.
 
 First, both models execute the same program environment and input. Each program
 $p$ carries its captured target environment (`CaptureManifest` in
-[`docs/architecture.md`](architecture.md): compiler version, target layout such
+[`development/architecture.md`](architecture.md): compiler version, target layout such
 as pointer width, endianness, type sizes, alignments, and field offsets, and the
 active semantic profile), which both models enforce and which any program
 translation preserves identically. The theorem quantifies universally over all
@@ -157,7 +157,7 @@ $$
 $$
 
 This is the backward-simulation direction of the `Abstracts` relation that
-Anneal's verified lowering uses ([`docs/architecture.md`](architecture.md)),
+Anneal's verified lowering uses ([`development/architecture.md`](architecture.md)),
 with $M_{\text{ref}}$ in the role of the concrete semantics and
 $M_{\text{anneal}}$ in the role of its abstraction. Under
 `CorrespondenceClaim` alone (which requires totality only in the
@@ -255,7 +255,7 @@ small human-audited staged support gate one MIR feature at a time:
    and canary proofs—without changing `CorrespondenceClaim` or
    `FaultEquivalenceClaim` themselves. When a feature also adds a new
    `MirAst` constructor, outer boundary definition, or `encodeProg`/
-   `evalRefStep` arm (see [`docs/architecture.md`](architecture.md) and
+   `evalRefStep` arm (see [`development/architecture.md`](architecture.md) and
    Section 4.3), those TCB additions receive the same human semantic review.
 2. **CI polices soundness automatically:** Whenever a pull request changes a
    branch of $M_{\text{anneal}}$ from `unsupported` to an active execution
@@ -447,12 +447,12 @@ different reference program.
 Anneal therefore keeps semantic content out of $\tau_{\text{prog}}$ and keeps
 the evolving execution rules of $M_{\text{anneal}}$ out of the human-audited
 semantic assumptions. In Anneal's target three-stage pipeline
-([`docs/architecture.md`](architecture.md)), Stage 1 emits the shared
+([`development/architecture.md`](architecture.md)), Stage 1 emits the shared
 unnormalized captured-MIR AST (`Trusted/MirAst.lean`), which serves directly as
 the input syntax to both $M_{\text{anneal}}$ and Stage 3's program logics and
 lowering passes. Within the Lean operational semantics (Stages 2–3), only the
 three human-audited semantic surfaces detailed in
-[`docs/architecture.md`](architecture.md)—the reference model $M_{\text{ref}}$
+[`development/architecture.md`](architecture.md)—the reference model $M_{\text{ref}}$
 (with its `Trusted/Correspondence.lean` wrapper, `RefProg` dispatch into
 `vendor/lean-miri/`, and staged support gate), the correspondence interface in
 `Trusted/Correspondence.lean` ($\tau_{\text{prog}}$, output and choice-coupling
@@ -496,7 +496,7 @@ modular library-centric verification of concrete library functions over all
 caller inputs and states without a `fn main()`, while full polymorphic
 verification of uninstantiated generic library bodies across arbitrary
 downstream caller types and layouts (the long-term target in
-[`docs/design.md`](design.md#library-centric-verification)) is phased in
+[`DESIGN.md`](../DESIGN.md#library-centric-verification)) is phased in
 separately by parameterizing $M_{\text{anneal}}$ over generic substitutions and
 layout/trait constraints and connecting every valid concrete substitution to
 $M_{\text{ref}}$ via a kernel-verified instantiation theorem (or formally

@@ -11,7 +11,7 @@
 //!
 //! Shared between `cargo-anneal` and `anneal-audit` so both target verification
 //! and repository Pass 2 correspondence verification compile from one
-//! declarative [`SandboxPolicy`]. See `docs/elaborator-containment-design.md`
+//! declarative [`SandboxPolicy`]. See `development/elaborator-containment-design.md`
 //! Section 3 for the threat model and empirical rationale.
 
 #[cfg(unix)]

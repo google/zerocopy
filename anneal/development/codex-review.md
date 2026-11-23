@@ -140,8 +140,8 @@ report within host output and severity limits per
 [`change-review`](../skills/change-review/SKILL.md#report-within-the-hosts-constraints);
 these instructions never create a setting for unlimited findings or override a
 service limit. See
-[`docs/review-policy-design.md`](review-policy-design.md#policy-ownership) for
-file ownership across skills and docs.
+[`development/review-policy-design.md`](review-policy-design.md#policy-ownership)
+for file ownership across skills and docs.
 
 ## Live GitHub ruleset state and diagnostic workflow
 

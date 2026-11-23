@@ -22,8 +22,8 @@ assumptions hold, and Anneal emits no errors, then the verified crate is sound
 and satisfies its stated specifications—even if the crate's Rust bodies and Lean
 proofs are adversarial.
 
-[`docs/trust-model.md`](trust-model.md) describes how `anneal-audit` enforces
-that boundary in **Anneal's own repository CI** over `theory/`,
+[`development/trust-model.md`](trust-model.md) describes how `anneal-audit`
+enforces that boundary in **Anneal's own repository CI** over `theory/`,
 `correspondence/`, and `vendor/lean-miri/`. When `cargo-anneal` verifies an
 **external target crate** with authored `Specification` and `Proof` Lean files,
 uncontained build-time Lean elaboration (`#eval`, `run_cmd`, `by_elab`,

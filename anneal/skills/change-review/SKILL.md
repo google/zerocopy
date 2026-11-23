@@ -209,9 +209,10 @@ instructions at that state). Revalidate candidate and base SHAs before reusing
 any prior evidence; any edit to tree, commit history, or base invalidates every
 affected verdict. One exception applies to a published PR: the merge gates key
 this tuple to the PR's **identity** defined in
-[`docs/codex-review.md`](../../docs/codex-review.md#merge-gates), so a history
-rewrite that leaves the identity unchanged keeps the evidence recorded on that
-PR valid. Freeze the candidate commit before delegating fresh-context reviews,
+[`development/codex-review.md`](../../development/codex-review.md#merge-gates),
+so a history rewrite that leaves the identity unchanged keeps the evidence
+recorded on that PR valid. Freeze the candidate commit before delegating
+fresh-context reviews,
 and run the deterministic preflight checklist from
 [`AGENTS.md`](../../AGENTS.md#standing-rules) once per frozen commit to produce
 a verbatim SHA-bound **reference preflight receipt** for reviewers. As manual
@@ -405,7 +406,8 @@ than serializing independent work, while keeping coordinator compute lean:
 
 ### Adjudicate findings and repairs
 
-Merge gates in [`docs/codex-review.md`](../../docs/codex-review.md#merge-gates)
+Merge gates in
+[`development/codex-review.md`](../../development/codex-review.md#merge-gates)
 are non-adjudicable by an acting agent: never relax a stopping rule or waive a
 gate unilaterally to obtain approval. Adjudicate every local and hosted finding
 in order of authority:
@@ -428,7 +430,8 @@ in order of authority:
   specs, tests, or checks, misdiagnose deliberate roadmap prose under a stale
   base, or repeat a closed local critic-vs.-critic style oscillation without new
   falsifiable evidence. If a hosted Codex finding is demonstrably refuted,
-  follow [`docs/codex-review.md`](../../docs/codex-review.md#merge-gates).
+  follow
+  [`development/codex-review.md`](../../development/codex-review.md#merge-gates).
 - **Post-repair verification and convergence pause:** After any repair, verify
   prose grammar (especially after 80-column re-wrapping), companion manifests
   or generators, and commit messages under
@@ -446,8 +449,8 @@ relaxation (or `none`). When a Codex finding cannot be fixed, add it to a
 `Codex finding dispositions` list in that block with a clearly labeled
 proposed disposition and the supporting evidence; the maintainer's Gate 5
 approval decides it (see
-[`docs/codex-review.md`](../../docs/codex-review.md#merge-gates)). Post
-the **Review Receipt** in a PR comment (or in the task handoff for a
+[`development/codex-review.md`](../../development/codex-review.md#merge-gates)).
+Post the **Review Receipt** in a PR comment (or in the task handoff for a
 branch-only push) so updating receipts across rounds does not mutate the PR
 description. Follow the privacy rule in
 [`AGENTS.md`](../../AGENTS.md#standing-rules) across the PR description and
@@ -474,5 +477,5 @@ bullet per field:
    (Gate 5)" items, or merge blockers.
 
 Before merge, confirm every gate in
-[`docs/codex-review.md`](../../docs/codex-review.md#merge-gates) for the PR's
-current identity, with `merge_base == target_base`.
+[`development/codex-review.md`](../../development/codex-review.md#merge-gates)
+for the PR's current identity, with `merge_base == target_base`.

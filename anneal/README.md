@@ -1,27 +1,157 @@
 # Anneal
 
-<img src="https://raw.githubusercontent.com/google/zerocopy/main/anneal/docs/images/logo.svg" alt="Anneal logo" width="100%">
+<img src="https://raw.githubusercontent.com/google/zerocopy/main/anneal/assets/logo.svg" alt="Anneal logo" width="100%">
 
 <p align="center"><em>logo by <a href="https://www.instagram.com/tinyneonspark">tinyneonspark</a></em></p>
 
-> **Note:** Anneal is in alpha. You're welcome to use it, but many things
-> are broken or unsound, and we will change APIs frequently.
+> [!WARNING]
+> **Stage 0 alpha (`experimental: true`) — not yet production-audited.**
+> Anneal currently verifies selected functions and dependency-free, call-free
+> scalar library crates on `x86_64-unknown-linux-gnu` (Profile v1 scalar MIR).
+> Both the verifier and its Receipt v3 TCB audit log are still under active
+> development and have not yet completed the independent Stage 1 trust-boundary
+> audit ([`#4012`](https://github.com/google/zerocopy/issues/4012)). Treat a
+> Stage 0 pass as an early confidence-building tool rather than an audited
+> soundness boundary, and expect frequent API changes.
+
+## Anneal's Verification Promise
+
+> **In one sentence:** If every entry in Anneal's TCB audit log is correct, an
+> untainted receipt means verified safe APIs have no undefined behavior for any
+> caller, verified `unsafe` APIs have none for callers meeting their formal
+> safety preconditions, and verified code meets its stated specifications as
+> partial correctness. All of this is proved at the captured MIR and, in
+> today's Stage 0 alpha, not yet adversarially audited.
+
+> **Anneal's Verification Promise *(currently Stage 0 alpha,
+> `experimental: true` — pointer-free, call-free scalar/enum/unit MIR on
+> `x86_64-unknown-linux-gnu`; adversarial trust boundary to be audited in Stage
+> 1)*:** When Anneal runs in an intact, isolated execution environment
+> (including isolation from untrusted compile-time Rust code such as `build.rs`
+> and procedural macros) and emits an **untainted** passing verification
+> receipt immutably bound to an exact captured source, specification set,
+> target, `cfg` set, and compiler profile, the guarantee holds at the captured
+> MIR boundary whenever every component in the **TCB audit log**—including
+> Anneal's MIR semantics (its definition of UB), capture/audit boundary,
+> toolchain assumptions, external calls, and every waived or unverified item in
+> scope and transitive dependencies—is correct and its assumptions are
+> **jointly valid** of the real system. Under those conditions:
+>
+> 1. **Safe Rust APIs:** Every verified **safe** Rust API is **free of Rust
+>    Undefined Behavior (UB)** across all execution prefixes (terminating,
+>    diverging, or panicking) for all type-correct calls satisfying applicable
+>    library invariants (each preserved by every constructor and mutator, even
+>    on unwind, as proved or logged in the TCB) in any safe calling
+>    context—including open-world callbacks and interior mutability—and no user
+>    specification or scope clause can narrow that baseline.
+> 2. **`unsafe` Rust APIs:** Every verified **`unsafe`** API is **free of UB**
+>    across all prefixes whenever callers discharge its formally stated
+>    `# Safety` preconditions (which never relax Rust language validity).
+> 3. **Stated functional specifications:** Verified code **satisfies its stated
+>    functional specifications** (partial correctness: a never-returning body
+>    meets any postcondition unless return is required).
+>
+> Under the same conditions, whole-crate receipts cover the crate's entire
+> externally reachable surface (selected-unit receipts make no claim about
+> unverified siblings). Once Stage 1 completes its adversarial trust-boundary
+> audit (positive axiom allowlist, no untrusted compiled proof artifacts in the
+> verdict process, complete crate census), reviewers can skip all proof files
+> and every verified implementation body that defines no specification or TCB
+> assumption, and inspect two bounded surfaces: the **TCB audit log** (assumed
+> without proof) and the **complete, unambiguously rendered transitive
+> definition closure of stated specifications, with the captured items each one
+> binds to and their safe/`unsafe` status** (proved against the code, reviewed
+> for human intent and non-vacuity). Tainted development runs are irrevocably
+> labeled tainted and are not verification results; Anneal aims to support all
+> Rust program behaviors and otherwise fails closed with structured failure
+> receipts rather than failing open; and baseline UB-freedom makes no claim
+> about post-capture `rustc`/LLVM/linker/hardware lowering (explicitly tracked
+> in the TCB), termination, panic-freedom (nor do assumed contracts silently
+> assume progress), timing or microarchitectural side channels, hyperproperties
+> or randomness preservation, finite physical resource bounds, hardware faults,
+> or logic bugs outside stated specifications.
+
+### What Anneal Does Not Promise (Unless Separately Modeled & Specified)
+
+- **Not production-audited at Stage 0:** Today's alpha (`experimental: true`)
+  is not yet audited against adversarial proof files or hostile crates;
+  skipping proof review requires the audited Stage 1 trust boundary
+  ([`#4012`](https://github.com/google/zerocopy/issues/4012)).
+- **Not end-to-end binary verification (yet):** Proofs are anchored at
+  **captured MIR**. Post-capture `rustc` MIR optimizations, LLVM codegen, and
+  linking sit explicitly in the TCB until optional downstream translation
+  validation is added
+  ([`#3867`](https://github.com/google/zerocopy/issues/3867)); hardware
+  execution remains a TCB assumption at every stage.
+- **Not human intent or external standards:** Anneal proves code satisfies its
+  *stated* specifications; it cannot confirm that developer- or agent-authored
+  functional specs match external RFCs or human intent, nor catch
+  self-consistent spec-plus-code bugs. Optional kernel-checked
+  anti-vacuity/realizability checks (proposed in
+  [`#4112`](https://github.com/google/zerocopy/issues/4112)) are reviewer aids,
+  not a substitute for reviewing stated specs.
+- **Not progress, constant-time, or all security bugs:** Baseline UB-freedom is
+  all-prefix safety, and functional specifications are partial correctness
+  unless they require termination. Baseline UB-freedom makes no claim about
+  termination, panic-freedom (nor do assumed contracts silently assume
+  progress), timing or microarchitectural side channels, cryptographic
+  randomness or general hyperproperties (which trace refinement does not
+  preserve), finite physical resource bounds (stack overflow or OOM), physical
+  hardware faults, or logic/security vulnerabilities outside stated specs (such
+  as authorization bypasses or algorithmic DoS).
+- **Not tainted dev outputs:** Any run enabling `--allow-sorry-in-proof`,
+  `--allow-unpinned-lean`, or `--allow-unsandboxed-elaboration` is irrevocably
+  marked `tainted_*` in both CLI banners and Receipt v3 and does not constitute
+  a verification result.
+
+## Current Alpha Scope vs. Roadmap
+
+Anneal tracks maturity across three public milestones:
+[Stage 0 — Alpha usability (`#4095`)][stage-0] →
+[Stage 1 — Audited trust boundary & TCB accounting (`#4012`)][stage-1] →
+[Stage 2 — Broad systems Rust & TCB reduction (`#4096`)][stage-2].
+
+| Area | Shipped Today (Stage 0 Alpha — Profile v1) | Active Roadmap (Stage 1 & Stage 2) |
+| :--- | :--- | :--- |
+| **Rust MIR coverage** | Dependency-free, call-free scalar/enum/unit MIR on `x86_64-unknown-linux-gnu`: `bool`, 8–128-bit & pointer-sized integers, `char`, `Ordering`, `(T, bool)` overflowing-arithmetic intrinsics, unit/never, local fieldless enums, scalar ops & casts (`-Copt-level=0`, `-Cdebug-assertions=no`, `-Coverflow-checks=no`). Calls, runtime `Assert` terminators (incl. ordinary `/` and `%`), place projections, and aggregates fail closed. | References, slices, `unsafe` raw pointers & Tree Borrows, general ADTs/aggregates, function calls, `Drop`/unwinding, generics, concurrency, `asm!`/FFI ([`#4097`](https://github.com/google/zerocopy/issues/4097), [`#4101`](https://github.com/google/zerocopy/issues/4101)). |
+| **Specifications & proofs** | External Lean 4 `Spec.lean` (with live `"spec-preflight"`) & `Proof.lean` modules (`--manifest-path`, `--request`, or `verify rustc`), plus bundled 3-axiom `Anneal.*` proof libraries. Functional specs are partial correctness (termination such as `¬ Diverges` must be stated when required). | Inline Rust contract syntax (`core::contracts`, `anodized`, thin attributes), always-rendered golden spec closure binding canonical item paths & safe/`unsafe` signatures for `CODEOWNERS`/`OWNERS` gating, `Spec Core v2` ([`#4102`](https://github.com/google/zerocopy/issues/4102)). |
+| **Audit & containment** | Receipt Schema v3, positive 3-axiom allowlist, Linux `ExecSeal` (`bwrap` / Landlock + seccomp), Pass 2 correspondence against pinned `lean-miri`, and fail-closed `-Zmir-preserve-ub`, `PlaceMention`, and `CallSource::Use` capture guards (`#4114`, closing `#4042`/`#4083`). | Audited Stage 1 boundary ([`#4012`](https://github.com/google/zerocopy/issues/4012)): Universal NDJSON Comparator with independent external kernels (`nanoda_bin`, `con-ron`; [`#4016`](https://github.com/google/zerocopy/issues/4016)), complete crate census across every item kind (including body-less items), typed audit results, and mandatory guard-mutation CI. |
+| **Toolchains & scale** | Pinned single-version `rustc` + Lean 4 toolchain archive (`cargo anneal setup`). | Multi-version `rustc` & multi-crate capture ([`#4098`](https://github.com/google/zerocopy/issues/4098)), split-action Cargo/Bazel/GN/Buck2/Nix integration, crate sharding, LSP/MCP workflows ([`#4100`](https://github.com/google/zerocopy/issues/4100), [`#4103`](https://github.com/google/zerocopy/issues/4103)). |
+
+## Documentation Map
+
+| Document | Audience | Contents |
+| :--- | :--- | :--- |
+| [`README.md`][readme-doc] | Users | Verification promise, Stage 0 alpha scope, quickstart, and conceptual motivation. |
+| [`DESIGN.md`][design-doc] | Users & architects | End-to-end architecture (implemented vs. planned), golden spec closure, NDJSON comparator, build integration, and specification modes. |
+| [`PRINCIPLES.md`][principles-doc] | Users & maintainers | Governing mission, conditional correctness promise, and decision priorities. |
+| [`THREAT_MODEL.md`][threat-model-doc] | Security reviewers & users | Adversarial threat model, bounded two-surface human review, explicit assumptions, and total defenses. |
+| [`META_PRINCIPLES.md`][meta-principles-doc] | Maintainers | Invariant goals governing `PRINCIPLES.md` and `THREAT_MODEL.md`. |
 
 > [!NOTE]
-> The MIR-based alpha installs a toolchain from a published or locally built
-> archive and uses Lean's kernel to check proofs for selected Rust functions or
-> scalar library crates. General crate verification is under development. The
-> design discussion and examples below describe Anneal's goals. Verification
-> guarantees depend on trusted code being correct and the assumptions in the
-> verification receipt being valid.
+> Internal contributor and developer documentation (architecture deep dives,
+> trust-boundary enforcement details, build/test scaffolding, and review
+> policy) lives under [`development/`][development-dir] and is **not**
+> user-facing documentation.
 
-For safe code, Rust promises that "if it compiles, then it is memory-safe." Anneal promises the same for unsafe code.
+## Why Anneal (Target Design Vision)
 
-Rust promises that all safe Rust code is free of memory safety bugs. It does this by encoding the requirements for memory safety in the type system, ensuring that if a program type checks, then it is free of memory safety bugs. The lifetime system prevents use-after-free bugs, the ownership system prevents double-free bugs, and so on. **There do not exist type-checked safe Rust programs with memory safety bugs.**[^1] The same is not true of unsafe Rust code. **There do exist type-checked unsafe Rust programs with memory safety bugs.**
+*This section motivates Anneal's target design; see [Current Alpha Scope vs.
+Roadmap](#current-alpha-scope-vs-roadmap) and [Try the alpha](#try-the-alpha)
+for what runs today.*
 
-[^1]: Barring compiler and platform bugs, which do exist.
+For safe code, Rust promises that "if it compiles, then it is memory-safe."
+Anneal aims to provide the same assurance for `unsafe` code at the captured MIR
+boundary.
 
-One way to understand this distinction is that a safe Rust function must be free of memory safety bugs *no matter what value is passed in*. Consider [`usize::strict_div`](https://doc.rust-lang.org/std/primitive.usize.html#method.strict_div):
+Rust promises that safe Rust code is free of memory-safety bugs by encoding
+memory-safety requirements in its type system—lifetimes prevent use-after-free,
+ownership prevents double-free, and so on.[^1] By contrast, **type-checked
+`unsafe` Rust programs can still exhibit undefined behavior.**
+
+[^1]: Barring compiler, standard-library, and platform bugs, which do exist.
+
+Consider [`usize::strict_div`](https://doc.rust-lang.org/std/primitive.usize.html#method.strict_div):
 
 ```rust
 impl usize {
@@ -32,9 +162,9 @@ impl usize {
 }
 ```
 
-A safe implementation of `strict_div` would be forced to handle *all possible values* of `self` and `rhs`. `strict_div` must handle the case where `rhs == 0` (division by zero). It could choose to return an arbitrary `usize` or, as it does in practice, panic. But it cannot exhibit a memory safety bug – Rust would prevent such a program from compiling.
-
-By contrast, consider the unsafe [`usize::unchecked_div_exact`](https://doc.rust-lang.org/std/primitive.usize.html#method.unchecked_div_exact):
+A safe implementation of `strict_div` must handle *all possible values* of
+`self` and `rhs`—including `rhs == 0`—without triggering undefined behavior. By
+contrast, consider the `unsafe` [`usize::unchecked_div_exact`](https://doc.rust-lang.org/std/primitive.usize.html#method.unchecked_div_exact):
 
 ```rust
 impl usize {
@@ -45,162 +175,92 @@ impl usize {
 }
 ```
 
-Rust doesn't have any way to epxress "a pair of `usize`s such `rhs != 0` and `self % rhs == 0`". Thus, the type signature of `unchecked_div_exact` is *too permissive*. While it prevents some illegal values statically (e.g., the type system will not permit you to pass `-1`), some illegal values will compile just fine, and will result in memory safety bugs at runtime:
+Rust's type system has no way to express "a pair of `usize`s such that
+`rhs != 0` and `self % rhs == 0`." Its type signature is therefore *too
+permissive*: illegal values still compile and trigger undefined behavior at
+runtime:
 
 ```rust
 let res: usize = unsafe { 1usize.unchecked_div_exact(0) };
 ```
 
-In this view, unsafe Rust differs from safe Rust in that **some type-safe values are still illegal**, while in safe Rust, **all type-safe values are legal** (where "illegal" means "will result in a memory safety bug").
-
-As we saw before, Rust ensures that **no type-checked safe Rust programs contain memory safety bugs.** Anneal provides the same promise, but for unsafe Rust code. Just as Rust encodes memory safety requirements in its types, Anneal encodes memory safety requirements in its annotations. Unlike Rust types, Anneal annotations are powerful enough to prevent *any* illegal values from compiling, even in unsafe code. In this sense, Anneal annotations are an *extension* to Rust's type system.
-
-For example, here's how Anneal would encode the safety precondition of `unchecked_div_exact`, preventing buggy programs from compiling:
+Anneal extends Rust's static checks with formal specifications checked in Lean
+4. An `unsafe fn`'s `# Safety` preconditions become machine-checked obligations
+that verified callers must discharge at every call site, while a safe `fn` must
+prove UB-freedom unconditionally across all type-valid inputs (never narrowed by
+user specifications).
 
 ```rust
+// Target inline-contract vision (in development under #4102; syntax may change).
 impl usize {
     /// # Safety
     ///
-    /// ```anneal
-    /// requires(nonzero): rhs != 0
-    /// requires(divides): self % rhs == 0
-    /// ```
+    /// Requires `rhs != 0` and `self % rhs == 0`.
+    #[requires(rhs != 0)]
+    #[requires(self % rhs == 0)]
     pub unsafe fn unchecked_div_exact(self, rhs: usize) -> usize;
 }
 
 let res: usize = unsafe { 1usize.unchecked_div_exact(0) }; // ERROR: Cannot prove `rhs != 0`
 ```
 
-*Support for this example is in development. The annotation syntax may change.*
+*Support for inline Rust contract syntax is under development
+([`#4102`](https://github.com/google/zerocopy/issues/4102)). Today's Stage 0
+alpha attaches specifications in external `Spec.lean` modules.*
 
-Anneal removes most `unsafe` code from your [trusted computing base](https://en.wikipedia.org/wiki/Trusted_computing_base) (TCB).*
+Once Stage 1 closes the audited trust boundary, Anneal removes verified
+`unsafe` Rust code from your
+[trusted computing base](https://en.wikipedia.org/wiki/Trusted_computing_base)
+(TCB):\*
 
-| | Rust | Anneal |
-|-| ---- | ------ |
-| | `cargo check` | `cargo anneal verify` |
-| **Types** | Rust types | Rust types + Anneal annotations |
-| **Guarantee** | Safe code is free of memory safety bugs | Safe and unsafe code is free of memory safety bugs* |
-| **Caveat** | Unsafe code is unchecked | Code outside of the Rust Abstract Machine (AM) is unchecked* |
-| **TCB** | Rust toolchain, unsafe code | Rust + Anneal toolchains, code outside of the Rust AM* |
+| | Rust | Anneal (target, Stage 1+) |
+| :--- | :--- | :--- |
+| **Check** | `cargo check` | `cargo anneal verify` |
+| **Contracts** | Rust types | Rust types + stated specifications |
+| **Guarantee** | Safe code is UB-free | Safe and verified `unsafe` code is UB-free at captured MIR\* |
+| **Caveat** | `unsafe` code is unchecked | Code outside the modeled Rust Abstract Machine (AM) is assumed\* |
+| **TCB** | Rust toolchain, all `unsafe` code | Rust + Anneal toolchains, post-capture lowering, code outside the Rust AM\* |
 
-\* *Anneal cannot verify the soundness of code constructs which exist outside of the Rust Abstract Machine (AM), such as FFI or inline assembly. The programmer must axiomatically assert the behavior of this code, and it remains in the TCB. Note that Rust code which **calls** these constructs (e.g., code which calls a function implemented in C) **can** be verified – Anneal removes this code from the TCB.*
+\* *Anneal cannot verify code that executes outside the modeled Rust Abstract
+Machine, such as C FFI or unmodeled inline assembly; its contract must be
+stated as an explicit assumption recorded in the TCB audit log. Rust code that
+**calls** those constructs can still be verified against their logged
+contracts, removing the calling `unsafe` Rust code from the TCB.*
 
 ### Development Philosophy
 
-Anneal is a [formal verification](https://en.wikipedia.org/wiki/Formal_verification) tool. However, it diverges from many formal verification tools in its philosophy for how it should be used by end users.
+Formal verification has historically been applied *post-hoc* to existing
+codebases, which assumes separate specialist workflows, fights unverified code
+structure, stretches feedback loops, and lets proofs drift from code. Anneal
+treats specifications as an extension of Rust's type system:
 
-While exceptions exist, the most common form of formal verification has historically been *post-hoc verification*, in which verification is applied to a software artifact which already exists and which was not specifically written with verification in mind. This approach comes with a number of assumptions and limitations which we aim to sidestep:
-1. Assumes that verification requires distinct expertise which developers lack
-2. Verification is applied to a codebase whose structure may not be amenable to verification
-3. Results in long iteration cycles, in which feedback from verification is obtained long after a line of code is written
-4. Without extra infrastructure (e.g. in CI), software codebase and verification artifacts (specifications and proofs) can drift, requiring periodic efforts to update the verification to "catch up" with recent code changes
-
-We believe that all of these can be addressed by thinking of specifications as merely an extension to the type system rather than a parallel artifact. In particular:
-1. Developers already have justifications – albeit undocumented – for their belief that their code is correct. Type annotations simply ask them to make these justifications explicit
-2. As with any form of static typing, Anneal annotations will shape the codebase and nudge developers towards certain patterns for code organization which are more amenable to verification. This nudging will happen in the developer's inner loop and so will be much more effective than feedback from post-hoc verification
-3. We expect `cargo anneal verify` to be just as frequent as `cargo check`, and so iteration cycles are extremely short
-4. CI can simply run `cargo anneal verify` to ensure that specifications and proofs never drift or bit rot
+1. Developers already hold informal justifications for why their `unsafe` code
+   is sound; specifications make those justifications explicit and
+   machine-checked.
+2. Inner-loop verification nudges code organization toward clean abstraction
+   boundaries and explicit invariants as code is written.
+3. CI runs `cargo anneal verify` alongside `cargo test` so specifications,
+   proofs, and code stay synchronized on every change.
 
 ### Human and Agentic Development
 
-Anneal is designed for use by both human engineers and AI coding agents.
-Machine-checked proofs reduce the amount of code reviewers check by hand.
-Human reviewers assess specifications and trusted assumptions. We have
-[demonstrated](https://drive.google.com/file/d/1areyf438L0izETTHj7PRMnoSHSX4kM29/view?usp=sharing)
-that Antigravity can author `unsafe` Rust code and prove its soundness using
-Anneal.
-
-Without Anneal:
-
-```rust
-struct PositiveUsize {
-    // INVARIANT: x > 0
-    x: usize,
-}
-
-impl PositiveUsize {
-    /// Creates a new `PositiveUsize` if `x > 0`.
-    pub fn new(x: usize) -> Option<Self> {
-        if x > 0 {
-            // SAFETY: We checked that x > 0.
-            Some(Self { x })
-        } else {
-            None
-        }
-    }
-}
-
-impl std::ops::Div<PositiveUsize> for usize {
-    type Output = usize;
-
-    fn div(self, rhs: PositiveUsize) -> Self::Output {
-        // SAFETY: The type invariant of `PositiveUsize` guarantees that
-        // `rhs.x > 0`. This makes division by zero impossible.
-        unsafe { std::intrinsics::unchecked_div(self, rhs.x) }
-    }
-}
-```
-
-With Anneal:
-
-```rust
-/// ```anneal
-/// isValid self := self.val.val > 0
-/// ```
-pub struct PositiveUsize {
-    pub val: usize,
-}
-
-impl PositiveUsize {
-    /// Creates a new `PositiveUsize` if `x > 0`.
-    ///
-    /// ```anneal
-    /// ensures:
-    ///   match ret with
-    ///   | none => x.val = 0
-    ///   | some r => r.val.val = x.val
-    /// ```
-    pub fn new(x: usize) -> Option<PositiveUsize> {
-        if x > 0 {
-            Some(Self { val: x })
-        } else {
-            None
-        }
-    }
-}
-
-/// ```anneal
-/// proof (h_progress):
-///   unfold div_positive
-///   rcases h_req with ⟨h_self_val_is_valid, h_rhs_is_valid⟩
-///   have ho := unchecked_div.spec self_val rhs.val {
-///     h_a_is_valid := h_self_val_is_valid
-///     h_b_is_valid := by verify_is_valid h_b_is_valid _root_.positive_usize.div_positive
-///     h_anon := by simp_all [Anneal.IsValid.isValid]
-///   }
-///   rcases Aeneas.Std.WP.spec_imp_exists ho with ⟨y, h_eq, _⟩
-///   exact ⟨y, h_eq⟩
-/// ```
-fn div_positive(self_val: usize, rhs: PositiveUsize) -> usize {
-    unsafe { self_val.unchecked_div(rhs.val) }
-}
-
-impl std::ops::Div<PositiveUsize> for usize {
-    type Output = usize;
-
-    fn div(self, rhs: PositiveUsize) -> usize {
-        unsafe { unchecked_div(self_val, rhs.val) }
-    }
-}
-```
+Anneal is built for both human engineers and AI coding agents. Writing formal
+proofs is labor-intensive, whereas auditing a bounded set of contracts and
+assumptions is tractable. Under Anneal's target Stage 1 threat model
+([`THREAT_MODEL.md`][threat-model-doc]), untrusted contributors or AI coding
+agents can author complex `unsafe` Rust implementations and Lean 4 proofs while
+human reviewers skip all proof files and every verified implementation body
+that defines no specification or TCB assumption—reviewing the **always-rendered
+golden specification closure** (including each specification's bound Rust item
+paths, safe/`unsafe` signatures, and any referenced Rust helper bodies,
+optionally gated via `CODEOWNERS` / `OWNERS`) and the **TCB audit log** (for
+assumed components and waivers).
 
 ## Try the alpha
 
-The alpha verifies selected Rust functions or dependency-free scalar library
-crates on x86-64 Linux with glibc. Follow the [alpha guide][alpha-guide] to
-install it and check a runnable proof.
-
-[alpha-guide]: https://github.com/google/zerocopy/blob/main/anneal/docs/alpha.md
+The Stage 0 alpha verifies selected Rust functions or dependency-free scalar
+library crates on x86-64 Linux with glibc. Follow the
+[alpha guide][alpha-guide] to install it and check a runnable proof.
 
 ## Agent skill
 
@@ -221,18 +281,25 @@ gh skill install google/zerocopy \
 Choose the `--agent` value for your host. Commit the installed skill to share
 it with teammates and agents working in fresh checkouts.
 
-[gh-skill]: https://cli.github.com/manual/gh_skill_install
+## Contributor checks and internal docs
 
-## Repository checks
+Contributor build, audit, and review documentation lives in
+[`development/`][development-dir] (internal developer docs, not user-facing):
 
-See the [contributor guide][developing-anneal] to build the local toolchain
-archive and audit the trust boundary, the [scaffold guide][scaffold-guide] to
-run installed smoke cases and reproduce retained failures, and the
-[Codex review guide][codex-review] for required merge checks.
+- [Contributor guide][developing-anneal] to build the local toolchain archive
+  and run repository trust-boundary audits.
+- [Scaffold guide][scaffold-guide] to run installed smoke cases and reproduce
+  retained failures.
+- [Codex review guide][codex-review] for required merge gates.
 
-[developing-anneal]: https://github.com/google/zerocopy/blob/main/anneal/docs/README.md
-[scaffold-guide]: https://github.com/google/zerocopy/blob/main/anneal/docs/scaffolding.md
-[codex-review]: https://github.com/google/zerocopy/blob/main/anneal/docs/codex-review.md
+Subsystem tracking umbrellas on `google/zerocopy`:
+[MIR (`#4097`)](https://github.com/google/zerocopy/issues/4097),
+[Capture (`#4098`)](https://github.com/google/zerocopy/issues/4098),
+[Audit (`#4099`)](https://github.com/google/zerocopy/issues/4099),
+[Theory (`#4100`)](https://github.com/google/zerocopy/issues/4100),
+[FFI/ISA (`#4101`)](https://github.com/google/zerocopy/issues/4101),
+[Specs (`#4102`)](https://github.com/google/zerocopy/issues/4102), and
+[UX (`#4103`)](https://github.com/google/zerocopy/issues/4103).
 
 ## Acknowledgments
 
@@ -298,6 +365,20 @@ significant influences are listed here, but this list is far from exhaustive.
   crates and build integration shaped Anneal's out-of-tree verification
   interface and end-to-end verification tests.
 
+[stage-0]: https://github.com/google/zerocopy/issues/4095
+[stage-1]: https://github.com/google/zerocopy/issues/4012
+[stage-2]: https://github.com/google/zerocopy/issues/4096
+[readme-doc]: https://github.com/google/zerocopy/blob/main/anneal/README.md
+[design-doc]: https://github.com/google/zerocopy/blob/main/anneal/DESIGN.md
+[principles-doc]: https://github.com/google/zerocopy/blob/main/anneal/PRINCIPLES.md
+[threat-model-doc]: https://github.com/google/zerocopy/blob/main/anneal/THREAT_MODEL.md
+[meta-principles-doc]: https://github.com/google/zerocopy/blob/main/anneal/META_PRINCIPLES.md
+[development-dir]: https://github.com/google/zerocopy/tree/main/anneal/development
+[alpha-guide]: https://github.com/google/zerocopy/blob/main/anneal/development/alpha.md
+[developing-anneal]: https://github.com/google/zerocopy/blob/main/anneal/development/README.md
+[scaffold-guide]: https://github.com/google/zerocopy/blob/main/anneal/development/scaffolding.md
+[codex-review]: https://github.com/google/zerocopy/blob/main/anneal/development/codex-review.md
+[gh-skill]: https://cli.github.com/manual/gh_skill_install
 [Aeneas]: https://arxiv.org/abs/2206.07185
 [Charon]: https://link.springer.com/chapter/10.1007/978-3-031-98685-7_18
 [symbolic-borrows]: https://arxiv.org/abs/2404.02680

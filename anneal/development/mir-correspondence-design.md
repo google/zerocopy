@@ -16,7 +16,7 @@ those terms. -->
 > integration) described below are target architecture landing incrementally
 > across the MIR correspondence stack.
 
-[`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md) defines
+[`development/mir-correspondence-strategy.md`](mir-correspondence-strategy.md) defines
 how Anneal validates its Rust Mid-level Intermediate Representation (MIR)
 operational semantics ($M_{\text{anneal}}$): we prove in the Lean 4 kernel that
 $M_{\text{anneal}}$ refines an independently developed reference model
@@ -146,8 +146,8 @@ packages `theory/` into `share/anneal/theory` (requiring
 `trusted/correspondence/`, and `correspondence/` from packaged user archives.
 To preserve bounded human-review auditability without shipping
 `vendor/lean-miri/` or `correspondence/` at runtime
-([`docs/architecture.md`](architecture.md),
-[`docs/trust-model.md`](trust-model.md)), once end-to-end packaging lands,
+([`development/architecture.md`](architecture.md),
+[`development/trust-model.md`](trust-model.md)), once end-to-end packaging lands,
 packaged user archives and `cargo-anneal` bundles will instead carry a compact,
 CI-checked, digest-bound **correspondence provenance record** (pinned Anneal
 revision, `trusted/lean/` source and `.olean` digests, `vendor/lean-miri/`
@@ -158,7 +158,7 @@ packaged `trusted/lean/` artifacts and fail closed unless those computed digests
 exactly match the attested provenance record (as well as failing closed if
 missing or malformed), and `cargo anneal verify` will surface the verified
 record in every verification result's TCB audit log. Per
-[`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md), the
+[`development/mir-correspondence-strategy.md`](mir-correspondence-strategy.md), the
 Phase 1 correspondence domain covers concrete, monomorphic captured MIR carrying
 concrete instance/layout metadata (with polymorphic generic library verification
 phased separately), and the `Trusted/Correspondence.lean` wrapper maps any
@@ -196,8 +196,8 @@ kernel-certified against $M_{\text{ref}}$ (`vendor/lean-miri/` together with
 its `Trusted/Correspondence.lean` wrapper) in Pass 2 by `CorrespondenceClaim`
 and `FaultEquivalenceClaim` (`correspondence/`), keeping evolving
 $M_{\text{anneal}}$ execution rules out of the human-audited semantic TCB in
-accordance with [`docs/architecture.md`](architecture.md) and
-[`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md). While
+accordance with [`development/architecture.md`](architecture.md) and
+[`development/mir-correspondence-strategy.md`](mir-correspondence-strategy.md). While
 `evalStep` cross-checks against `vendor/lean-miri/`'s interpreter primitives,
 entry validation in `initRefState` (matching `initState`) and the Day-1
 `ExecutionMachine.Config` hooks in `Trusted/Correspondence/` (Section 2.2) are
@@ -269,7 +269,7 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      their pinned `patched_sha256` digests in `UPSTREAM_PIN.json`. Any future
      upstream pin update must expose and receive human semantic review of the
      resolved old-to-new reference-model diff (in addition to compile-time
-     metaprograms and local patches), per [`docs/trust-model.md`](trust-model.md).
+     metaprograms and local patches), per [`development/trust-model.md`](trust-model.md).
      Before any vendor module is compiled or replayed, `anneal-audit` also
      authenticates the pinned Lean toolchain's `Init`/`Std`/`Lean` `.olean`
      companions against `LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`.
@@ -297,7 +297,7 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      landed revision and manual dispatch performs a cold from-source build as
      well as standalone kernel replay while canonical `main` still seeds a
      missing default-branch cache entry for pull requests. Per
-     [`docs/trust-model.md`](trust-model.md), cold compilation and any
+     [`development/trust-model.md`](trust-model.md), cold compilation and any
      metaprogram-executing Pass 2 step over unmerged candidate
      `vendor/lean-miri/` code must be confined to an OS-level isolated sandbox
      without credentials or writable access to the worktree, home directory, or
@@ -398,7 +398,7 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      `Anneal.MirCorrespondence.*`, and `Anneal.MirCorrespondenceProof`)
      directly onto that replayed vendor kernel environment, matching the
      end-to-end Pass 1 + Pass 2 isolated staging and kernel-replay architecture
-     in [`docs/architecture.md`](architecture.md). Finally,
+     in [`development/architecture.md`](architecture.md). Finally,
      `verifyCorrConesAndClaims` restores the Pass 2 search path and traverses
      the constant-level dependency graph (`declarationEdges`) across both the
      36-root `Miri.Interpreter.ExecutionMachine` cone and the full
@@ -467,7 +467,7 @@ correspondence certification as a substitute for human semantic audit of
 `initState` and `evalStep` inside `trusted/lean/`—also requires lockstep
 updates to [`AGENTS.md`](../AGENTS.md),
 [`.gemini/styleguide.md`](../.gemini/styleguide.md),
-[`docs/trust-model.md`](trust-model.md), and
+[`development/trust-model.md`](trust-model.md), and
 [`skills/trust-review/SKILL.md`](../skills/trust-review/SKILL.md) so the
 repository code-review rules, trust model, and human review checklist cover
 Pass 2's directory roles, `UPSTREAM_PIN.json` and sysroot manifest pinning,
@@ -812,7 +812,7 @@ place so that any subsequent read before reinitialization is Undefined Behavior
 is therefore a deliberate conservative choice—stricter than current Miri,
 codegen, and MiniRust, and permitted by `rustc`'s MIR contract. Rather than
 deferring reads of moved places via a gated `.unsupported`/`.blocked` pair
-under [`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md)
+under [`development/mir-correspondence-strategy.md`](mir-correspondence-strategy.md)
 Section 4.1, Anneal enables the matching rule in $M_{\text{ref}}$ via
 `deinitMovedPlace = true` so both models classify moved-place reads identically
 as `.undefined` / `.ub`, which is why canaries `D6`, `D7b`, and `D7c` record
@@ -1144,7 +1144,7 @@ and `identity`, unchanged.
 
 Once implemented, `anneal-rustc-capture` records the target layout,
 compiler/MIR profile, and capture scope in the `CaptureManifest`
-([`docs/architecture.md`](architecture.md)). `Program` and `RefProg`
+([`development/architecture.md`](architecture.md)). `Program` and `RefProg`
 deliberately omit Lean field defaults for `pointerWidthBits`,
 `mirProfileVersion`, and `scope` so that any capture serializer omitting these
 fields fails at Lean elaboration/compile time rather than silently defaulting
@@ -1476,7 +1476,7 @@ State` (rather than `∀ n, ∃ s, ReachesN p n s₀ s`) ensures that even when
 allocator address choices), an infinitely branching tree of finite-only paths is
 not misclassified as divergent. Termination versus divergence is observable
 behavior under
-[`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md), and
+[`development/mir-correspondence-strategy.md`](mir-correspondence-strategy.md), and
 Section 5.2 relates `Diverges` to its reference counterpart in both
 directions. `SatisfiesPost` is a partial-correctness contract: it constrains
 every terminal behavior but does not by itself require termination, so a
@@ -2103,7 +2103,7 @@ divergence predicates, or existential fault sets across unrelated branches—or
 gating forward totality on `WellFormed p q`—would allow one machine to permute
 outcomes across $c_1$ and $c_2$ or collapse a mixed-faulting input into
 all-faulting branches while leaving a gated claim vacuous. Consistent with
-[`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md) Section
+[`development/mir-correspondence-strategy.md`](mir-correspondence-strategy.md) Section
 4.6, unconditionally across every `(p, q)` (without gating on `WellFormed p q`),
 the combined locked contract requires a faithful choice-coupled execution
 relation with (a) unconditional forward totality

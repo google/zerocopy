@@ -33,9 +33,10 @@ never proves defect absence or substitutes for CI or merge gates.
   (`#[anneal::trusted]`) or TCB audit log, `trusted/` (including trust tiers),
   `ci/`, `.github/`, pinned root manifests, lockfiles, packaged toolchain
   archives, governing docs (`META_PRINCIPLES.md`, `PRINCIPLES.md`,
-  `THREAT_MODEL.md`, `docs/trust-model.md`), policy files (`AGENTS.md`,
-  `CLAUDE.md`, `.gemini/styleguide.md`, `skills/`, `docs/codex-review.md`,
-  `docs/review-policy-design.md`), and editor or agent configs. Every PR
+  `THREAT_MODEL.md`, `development/trust-model.md`), policy files (`AGENTS.md`,
+  `CLAUDE.md`, `.gemini/styleguide.md`, `skills/`,
+  `development/codex-review.md`, `development/review-policy-design.md`), and
+  editor or agent configs. Every PR
   description (or branch-only handoff) must open with a `Human review surface`
   block listing every changed surface and intentional policy relaxation (or
   `none`), completed before marking ready for review. Relevant commit bodies
@@ -68,8 +69,8 @@ never proves defect absence or substitutes for CI or merge gates.
   execute, include, import, or load as trusted code/config (`include!`,
   `#[path]`, Nix imports, workflow `run:`), or any `-- anneal-trust-tier:`
   directive in a `.lean` file. Paths that CI or `anneal-audit` only scan, hash,
-  or audit as untrusted inputs (`theory/`, `correspondence/`, `docs/`) do not
-  trigger Pass 2; skip Pass 2 immediately as inapplicable when untriggered.
+  or audit as untrusted inputs (`theory/`, `correspondence/`, `development/`) do
+  not trigger Pass 2; skip Pass 2 immediately as inapplicable when untriggered.
   Finish Pass 1 and any triggered Pass 2 before the general pass.
 - **Pass 1, filesystem hygiene, untrusted contents, and specifications:**
   - *Filesystem, Unicode, and config hygiene (every path):* Reject symlinks,

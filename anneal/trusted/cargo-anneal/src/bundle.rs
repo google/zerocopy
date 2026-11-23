@@ -186,7 +186,7 @@ pub const PROVENANCE_SOURCES: &[&str] = &[
     "correspondence/Anneal/MirCorrespondenceProof.lean",
 ];
 /// Describes what the Pass 2 provenance does and does not certify, matching
-/// `docs/mir-correspondence-design.md`: the kernel checks only the operational
+/// `development/mir-correspondence-design.md`: the kernel checks only the operational
 /// execution rules of `Trusted/MirSemantics*`, while its theorem-stating
 /// surface, shared model types, and correspondence adapter remain
 /// human-audited.

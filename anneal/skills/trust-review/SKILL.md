@@ -15,7 +15,7 @@ Run an adversarial audit to protect Anneal's soundness guarantee in
 [`META_PRINCIPLES.md`](../../META_PRINCIPLES.md),
 [`PRINCIPLES.md`](../../PRINCIPLES.md),
 [`THREAT_MODEL.md`](../../THREAT_MODEL.md), and
-[`docs/trust-model.md`](../../docs/trust-model.md).
+[`development/trust-model.md`](../../development/trust-model.md).
 
 ## Adversarial stance and scope
 
@@ -52,8 +52,9 @@ companions—to its required pass:
 
 - **Immediate Pass 2 skip:** Paths that CI or `anneal-audit` only scan, hash,
   or audit as untrusted inputs (such as `theory/`, `correspondence/`, or
-  `docs/`) do not trigger Pass 2. When no Pass 2 surface or trigger is touched,
-  skip Pass 2 immediately and record `inapplicable: untouched TCB surface`.
+  `development/`) do not trigger Pass 2. When no Pass 2 surface or trigger is
+  touched, skip Pass 2 immediately and record `inapplicable: untouched TCB
+  surface`.
 - **Diff-scoped Pass 2:** When Pass 2 applies, audit only the touched and
   affected sub-surfaces (plus cross-surface seams they depend on).
 - **Never dismiss `trusted/` comment edits:** Comment-only changes in

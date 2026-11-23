@@ -47,8 +47,8 @@ the repository's trust boundary (`trusted/`, pinned `vendor/`, `theory/`, and
    concrete correspondence domain (failing closed to `unsupported` for
    uninstantiated generic bodies or unevaluated generic constants until
    polymorphic substitution/layout parameterization lands in a later phase, as
-   described in [`docs/design.md`](design.md#library-centric-verification) and
-   [`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md))—and
+   described in [`DESIGN.md`](../DESIGN.md#library-centric-verification) and
+   [`development/mir-correspondence-strategy.md`](mir-correspondence-strategy.md))—and
    inline Rust specification attributes 1-to-1 into Lean data definitions
    (`Mir.lean`) and a pure proof script (`Proof.lean`), with zero semantic
    normalization in Rust.
@@ -79,7 +79,7 @@ the repository's trust boundary (`trusted/`, pinned `vendor/`, `theory/`, and
    an untrusted `.theory` root by Pass 2 `anneal-audit
    --require-correspondence`), Anneal proves the kernel-checked
    `CorrespondenceClaim` and `FaultEquivalenceClaim`
-   ([`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md))
+   ([`development/mir-correspondence-strategy.md`](mir-correspondence-strategy.md))
    certifying universally over all programs and queries that $M_{\text{ref}}$
    refines $M_{\text{anneal}}$ (i.e., $M_{\text{anneal}}$ soundly abstracts
    $M_{\text{ref}}$) via $\tau_{\text{prog}}$. Separately, `theory/` (staged and
@@ -223,8 +223,8 @@ outer boundary to `vetted` (true `vetted` vs. `candidate` tier separation)
 additionally requires parameterizing the outer boundary over an abstract step
 relation (as in planned `Trusted/Framework/`); alternatively, placing both in
 the same tier once Pass 2-certified would either broaden `vetted` beyond
-human-audited TCB definitions (see [`docs/trust-model.md`](trust-model.md)) or
-introduce a distinct Pass 2-certified audit tier that `vetted` modules may
+human-audited TCB definitions (see [`development/trust-model.md`](trust-model.md))
+or introduce a distinct Pass 2-certified audit tier that `vetted` modules may
 depend on.
 
 For the broader context around this architecture, see:
@@ -233,13 +233,13 @@ For the broader context around this architecture, see:
   [`PRINCIPLES.md`](../PRINCIPLES.md), and
   [`THREAT_MODEL.md`](../THREAT_MODEL.md) for Anneal's controlling
   meta-principles, correctness promise, and threat model.
-- [`docs/design.md`](design.md) for Anneal's end-to-end user workflow,
+- [`DESIGN.md`](../DESIGN.md) for Anneal's end-to-end user workflow,
   library-centric verification model, and incremental adoption.
-- [`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md) for
-  how $M_{\text{anneal}}$ is developed against $M_{\text{ref}}$ under locked CI
-  correspondence and fault-equivalence theorems.
-- [`docs/trust-model.md`](trust-model.md) for how Anneal's CI enforces the
-  boundary between `trusted/` and `theory/`.
+- [`development/mir-correspondence-strategy.md`](mir-correspondence-strategy.md)
+  for how $M_{\text{anneal}}$ is developed against $M_{\text{ref}}$ under locked
+  CI correspondence and fault-equivalence theorems.
+- [`development/trust-model.md`](trust-model.md) for how Anneal's CI enforces
+  the boundary between `trusted/` and `theory/`.
 
 ## The three-stage MIR pipeline
 
@@ -367,7 +367,7 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
 
 - **Correspondence proof (`correspondence/`):** Proves the locked,
   kernel-checked `CorrespondenceClaim` and `FaultEquivalenceClaim`
-  ([`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md))
+  ([`development/mir-correspondence-strategy.md`](mir-correspondence-strategy.md))
   certifying that $M_{\text{ref}}$ (`vendor/lean-miri/`) refines
   $M_{\text{anneal}}$ (`Trusted/MirSemantics.lean`) via $\tau_{\text{prog}}$
   (`trusted/correspondence/Trusted/Correspondence.lean`), so
@@ -455,7 +455,7 @@ correspondence proof, simulation proof, or weakest-precondition proof will fail
 to typecheck in Lean; it can never certify an unsafe program against
 $M_{\text{ref}}$ (while optional reverse totality, when proved, additionally
 rejects spurious non-faulting behaviors in $M_{\text{anneal}}$). See
-[`docs/trust-model.md`](trust-model.md) for how Anneal's CI auditor
+[`development/trust-model.md`](trust-model.md) for how Anneal's CI auditor
 (`anneal-audit`) enforces the `trusted/` vs. `theory/` boundary so untrusted
 `theory/` roots remain pure and axiom-free and cannot bypass the Lean
 kernel—the same staging, source-preflight, and standalone kernel-replay

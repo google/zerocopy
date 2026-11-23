@@ -8,6 +8,12 @@ those terms. -->
 
 # Developing Anneal
 
+This directory holds **internal contributor and developer documentation**
+(architecture, trust-boundary enforcement, build/test scaffolding, and review
+policy). For user-facing documentation, see [`README.md`](../README.md),
+[`DESIGN.md`](../DESIGN.md), [`PRINCIPLES.md`](../PRINCIPLES.md), and
+[`THREAT_MODEL.md`](../THREAT_MODEL.md).
+
 The MIR-based implementation lives at [`anneal/`](../). See the
 [repository layout](architecture.md#repository-layout) for the workspace
 structure.
@@ -61,8 +67,8 @@ cargo run --locked -p anneal-audit -- \
   and [meta-principles](../META_PRINCIPLES.md) define the promise to users,
   the assumptions and review responsibilities, and the goals that govern
   both documents.
-- [Design overview](design.md) explains the intended verification workflow,
-  specification forms, and incremental adoption.
+- [Design overview](../DESIGN.md) explains the verification workflow,
+  trust boundary, specification forms, and incremental adoption.
 - [Architecture](architecture.md) covers the MIR pipeline, repository
   layout, and compiler integration.
 - [Trust model and boundary enforcement](trust-model.md) explains the
@@ -77,6 +83,23 @@ cargo run --locked -p anneal-audit -- \
 - [Agent instructions](../AGENTS.md) and the
   [review policy design](review-policy-design.md) describe contributor
   obligations and where the review rules belong.
+
+## Roadmap and tracking
+
+Public milestones and subsystem umbrellas are tracked on `google/zerocopy`:
+
+- **Stage milestones:**
+  [Stage 0 — Alpha usability (`#4095`)](https://github.com/google/zerocopy/issues/4095)
+  → [Stage 1 — Audited trust boundary and TCB accounting (`#4012`)](https://github.com/google/zerocopy/issues/4012)
+  → [Stage 2 — Broad systems coverage and TCB reduction (`#4096`)](https://github.com/google/zerocopy/issues/4096).
+- **Subsystem umbrellas:**
+  [MIR (`#4097`)](https://github.com/google/zerocopy/issues/4097),
+  [Capture (`#4098`)](https://github.com/google/zerocopy/issues/4098),
+  [Audit (`#4099`)](https://github.com/google/zerocopy/issues/4099),
+  [Theory (`#4100`)](https://github.com/google/zerocopy/issues/4100),
+  [FFI/ISA (`#4101`)](https://github.com/google/zerocopy/issues/4101),
+  [Specs (`#4102`)](https://github.com/google/zerocopy/issues/4102), and
+  [UX (`#4103`)](https://github.com/google/zerocopy/issues/4103).
 
 ## Historical workspaces
 
