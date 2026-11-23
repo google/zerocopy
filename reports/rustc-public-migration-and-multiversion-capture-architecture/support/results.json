@@ -1,0 +1,536 @@
+{
+  "zerocopy_commit": "3741897d51a2d91354d4427b4a4a155346d16ccf",
+  "observed_at": "2026-11-23",
+  "rustc_private_inventory": {
+    "features": [
+      "ergonomic_clones",
+      "normalize_lexically",
+      "rustc_private"
+    ],
+    "src_files": {
+      "capture.rs": {
+        "total": 1253,
+        "prod": 1061,
+        "mod_tests": 192
+      },
+      "driver.rs": {
+        "total": 177,
+        "prod": 177,
+        "mod_tests": 0
+      },
+      "extract.rs": {
+        "total": 1314,
+        "prod": 924,
+        "mod_tests": 390
+      },
+      "identity.rs": {
+        "total": 2397,
+        "prod": 1629,
+        "mod_tests": 768
+      },
+      "ir.rs": {
+        "total": 1606,
+        "prod": 1067,
+        "mod_tests": 539
+      },
+      "lean.rs": {
+        "total": 801,
+        "prod": 434,
+        "mod_tests": 367
+      },
+      "main.rs": {
+        "total": 267,
+        "prod": 267,
+        "mod_tests": 0
+      },
+      "publication.rs": {
+        "total": 188,
+        "prod": 119,
+        "mod_tests": 69
+      }
+    },
+    "tests_total_loc": 3285,
+    "by_crate_imports": {
+      "rustc_abi": [
+        "rustc_abi::Endian",
+        "rustc_abi::ExternAbi",
+        "rustc_abi::Integer",
+        "rustc_abi::Primitive",
+        "rustc_abi::TagEncoding",
+        "rustc_abi::Variants"
+      ],
+      "rustc_ast": [
+        "rustc_ast::Attribute",
+        "rustc_ast::Crate",
+        "rustc_ast::MetaItem",
+        "rustc_ast::MetaItemInner"
+      ],
+      "rustc_data_structures": [
+        "rustc_data_structures::steal::Steal"
+      ],
+      "rustc_driver": [
+        "rustc_driver::Callbacks",
+        "rustc_driver::Compilation"
+      ],
+      "rustc_hir": [
+        "rustc_hir::attrs::InlineAttr",
+        "rustc_hir::attrs::OptimizeAttr",
+        "rustc_hir::def::DefKind"
+      ],
+      "rustc_interface": [
+        "rustc_interface::interface"
+      ],
+      "rustc_middle": [
+        "rustc_middle::middle::codegen_fn_attrs::CodegenFnAttrFlags",
+        "rustc_middle::middle::codegen_fn_attrs::CodegenFnAttrs",
+        "rustc_middle::middle::codegen_fn_attrs::SanitizerFnAttrs",
+        "rustc_middle::mir",
+        "rustc_middle::mir::MirPhase",
+        "rustc_middle::mir::RuntimePhase",
+        "rustc_middle::ty",
+        "rustc_middle::ty::TyCtxt",
+        "rustc_middle::ty::TypingEnv",
+        "rustc_middle::util::Providers"
+      ],
+      "rustc_session": [
+        "rustc_session::EarlyDiagCtxt",
+        "rustc_session::config::CrateType",
+        "rustc_session::config::ErrorOutputType",
+        "rustc_session::config::Options"
+      ],
+      "rustc_span": [
+        "rustc_span::FileName",
+        "rustc_span::def_id::DefId",
+        "rustc_span::def_id::LOCAL_CRATE",
+        "rustc_span::def_id::LocalDefId",
+        "rustc_span::source_map::FileLoader",
+        "rustc_span::source_map::RealFileLoader",
+        "rustc_span::sym"
+      ]
+    },
+    "by_crate_paths": {
+      "rustc_abi": [
+        "rustc_abi::Endian"
+      ],
+      "rustc_data_structures": [
+        "rustc_data_structures::steal::Steal"
+      ],
+      "rustc_driver": [
+        "rustc_driver::Callbacks",
+        "rustc_driver::Compilation",
+        "rustc_driver::catch_fatal_errors",
+        "rustc_driver::catch_with_exit_code",
+        "rustc_driver::install_ice_hook",
+        "rustc_driver::run_compiler"
+      ],
+      "rustc_hir": [
+        "rustc_hir::Attribute::Parsed",
+        "rustc_hir::LangItem::OrderingEnum",
+        "rustc_hir::attrs",
+        "rustc_hir::attrs::AttributeKind::CrateType",
+        "rustc_hir::def::DefKind"
+      ],
+      "rustc_interface": [
+        "rustc_interface::interface",
+        "rustc_interface::util::rustc_version_str"
+      ],
+      "rustc_middle": [
+        "rustc_middle::middle::codegen_fn_attrs",
+        "rustc_middle::mir",
+        "rustc_middle::ty",
+        "rustc_middle::ty::TyCtxt",
+        "rustc_middle::ty::print::with_no_trimmed_paths",
+        "rustc_middle::ty::print::with_no_visible_paths",
+        "rustc_middle::util::Providers"
+      ],
+      "rustc_session": [
+        "rustc_session::EarlyDiagCtxt",
+        "rustc_session::Session",
+        "rustc_session::config",
+        "rustc_session::config::ErrorOutputType",
+        "rustc_session::config::host_tuple"
+      ],
+      "rustc_span": [
+        "rustc_span::def_id",
+        "rustc_span::source_map",
+        "rustc_span::sym::crate_type"
+      ]
+    },
+    "tcx_members": [
+      "codegen_fn_attrs",
+      "crate_dep_kind",
+      "crate_extern_paths",
+      "crate_name",
+      "crate_types",
+      "crates",
+      "data_layout",
+      "dcx",
+      "def_kind",
+      "def_path_str",
+      "effective_visibilities",
+      "features",
+      "fn_sig",
+      "generics_of",
+      "hir_krate_attrs",
+      "intrinsic",
+      "is_lang_item",
+      "iter_local_def_id",
+      "lang_items",
+      "mir_drops_elaborated_and_const_checked",
+      "native_libraries",
+      "proc_macro_decls_static",
+      "sess",
+      "type_of",
+      "used_crate_source",
+      "visibility"
+    ],
+    "body_members": [
+      "arg_count",
+      "blocks",
+      "coroutine",
+      "identity",
+      "injection_phase",
+      "is_unsafe",
+      "local_tys",
+      "phase",
+      "required_consts",
+      "spread_arg",
+      "tainted_by_errors"
+    ]
+  },
+  "cross_version_matrix": [
+    {
+      "toolchain": "stable-x86_64-unknown-linux-gnu",
+      "version": "rustc 1.100.0 (0ef1bc386 2026-11-09)",
+      "probes": {
+        "compat": {
+          "compile_rc": 1,
+          "bootstrap": false,
+          "compile_err_head": "error[E0554]: `#![feature]` may not be used on the stable release channel\n --> <probe_tmp>/matrix_compat.rs:1:1\n  |\n1 | #![feature(rustc_private)]\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nwarning: unused `#[macro_use]` import\n --> <probe_tmp>/matrix_compat.rs:6:1\n  |\n6 | #[macro_use]\n  | ^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+        },
+        "pin_surface": {
+          "compile_rc": 1,
+          "bootstrap": false,
+          "compile_err_head": "error[E0554]: `#![feature]` may not be used on the stable release channel\n --> <probe_tmp>/matrix_pin_surface.rs:1:1\n  |\n1 | #![feature(rustc_private)]\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nwarning: unused `#[macro_use]` import\n --> <probe_tmp>/matrix_pin_surface.rs:6:1\n  |\n6 | #[macro_use]\n  | ^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nerror[E0609]: no field `span` on type `rustc_public::mir::Terminator`"
+        },
+        "compat_bootstrap": {
+          "compile_rc": 0,
+          "bootstrap": true,
+          "compile_err_head": "",
+          "run_rc": 0,
+          "run_stdout": "COMPAT_OK krate=matrix_target ext=19 items=1 pm=0 uses=3 adts=1"
+        },
+        "pin_surface_bootstrap": {
+          "compile_rc": 1,
+          "bootstrap": true,
+          "compile_err_head": "warning: unused `#[macro_use]` import\n --> <probe_tmp>/matrix_pin_surface.rs:6:1\n  |\n6 | #[macro_use]\n  | ^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nerror[E0609]: no field `span` on type `rustc_public::mir::Terminator`\n  --> <probe_tmp>/matrix_pin_surface.rs:18:40\n   |\n18 |                 let _ = &bb.terminator.span;\n   |                                        ^^^^ unknown field\n   |\nhelp: one of the expressions' fields has a field of the same name"
+        }
+      }
+    },
+    {
+      "toolchain": "nightly-x86_64-unknown-linux-gnu",
+      "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+      "probes": {
+        "compat": {
+          "compile_rc": 0,
+          "bootstrap": false,
+          "compile_err_head": "",
+          "run_rc": 0,
+          "run_stdout": "COMPAT_OK krate=matrix_target ext=19 items=1 pm=0 uses=3 adts=1"
+        },
+        "pin_surface": {
+          "compile_rc": 1,
+          "bootstrap": false,
+          "compile_err_head": "error[E0425]: cannot find value `run_compiler` in crate `rustc_driver`\n  --> <probe_tmp>/matrix_pin_surface.rs:34:27\n   |\n34 |     let _ = rustc_driver::run_compiler as *const ();\n   |                           ^^^^^^^^^^^^ not found in `rustc_driver`\n   |\nhelp: consider importing this function\n   |\n 9 + use rustc_interface::run_compiler;\n   |\nhelp: if you import `run_compiler`, refer to it directly\n   |\n34 -     let _ = rustc_driver::run_compiler as *const ();\n34 +     let _ = run_compiler as *const ();\n   |"
+        }
+      }
+    },
+    {
+      "toolchain": "nightly-2025-08-20-x86_64-unknown-linux-gnu",
+      "version": "rustc 1.91.0-nightly (05f5a58e8 2025-08-19)",
+      "probes": {
+        "compat": {
+          "compile_rc": 1,
+          "bootstrap": false,
+          "compile_err_head": "warning: unused `#[macro_use]` import\n --> <probe_tmp>/matrix_compat.rs:6:1\n  |\n6 | #[macro_use]\n  | ^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` on by default\n\nerror[E0023]: this pattern has 2 fields, but the corresponding tuple variant has 1 field\n   --> <probe_tmp>/matrix_compat.rs:27:79\n    |\n 27 | ...ign(_, Rvalue::Use(_, _))) {\n    |                       ^  ^ expected 1 field, found 2\n    |"
+        },
+        "pin_surface": {
+          "compile_rc": 1,
+          "bootstrap": false,
+          "compile_err_head": "error[E0432]: unresolved import `rustc_public::mir::WithRetag`\n  --> <probe_tmp>/matrix_pin_surface.rs:11:44\n   |\n11 | use rustc_public::mir::{Rvalue, Statement, WithRetag};\n   |                                            ^^^^^^^^^ no `WithRetag` in `mir`\n\nwarning: unused `#[macro_use]` import\n --> <probe_tmp>/matrix_pin_surface.rs:6:1\n  |\n6 | #[macro_use]\n  | ^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` on by default\n\nerror[E0023]: this pattern has 2 fields, but the corresponding tuple variant has 1 field"
+        }
+      }
+    },
+    {
+      "toolchain": "nightly-2025-11-23-x86_64-unknown-linux-gnu",
+      "version": "rustc 1.93.0-nightly (94b49fd99 2025-11-22)",
+      "probes": {
+        "compat": {
+          "compile_rc": 1,
+          "bootstrap": false,
+          "compile_err_head": "warning: unused `#[macro_use]` import\n --> <probe_tmp>/matrix_compat.rs:6:1\n  |\n6 | #[macro_use]\n  | ^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nerror[E0023]: this pattern has 2 fields, but the corresponding tuple variant has 1 field\n   --> <probe_tmp>/matrix_compat.rs:27:79\n    |\n 27 | ...ign(_, Rvalue::Use(_, _))) {\n    |                       ^  ^ expected 1 field, found 2\n    |"
+        },
+        "pin_surface": {
+          "compile_rc": 1,
+          "bootstrap": false,
+          "compile_err_head": "error[E0432]: unresolved import `rustc_public::mir::WithRetag`\n  --> <probe_tmp>/matrix_pin_surface.rs:11:44\n   |\n11 | use rustc_public::mir::{Rvalue, Statement, WithRetag};\n   |                                            ^^^^^^^^^ no `WithRetag` in `mir`\n\nwarning: unused `#[macro_use]` import\n --> <probe_tmp>/matrix_pin_surface.rs:6:1\n  |\n6 | #[macro_use]\n  | ^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nerror[E0023]: this pattern has 2 fields, but the corresponding tuple variant has 1 field"
+        }
+      }
+    },
+    {
+      "toolchain": "nightly-2026-02-07-x86_64-unknown-linux-gnu",
+      "version": "rustc 1.95.0-nightly (efc9e1b50 2026-02-06)",
+      "probes": {
+        "compat": {
+          "compile_rc": 1,
+          "bootstrap": false,
+          "compile_err_head": "warning: unused `#[macro_use]` import\n --> <probe_tmp>/matrix_compat.rs:6:1\n  |\n6 | #[macro_use]\n  | ^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nerror[E0023]: this pattern has 2 fields, but the corresponding tuple variant has 1 field\n   --> <probe_tmp>/matrix_compat.rs:27:79\n    |\n 27 | ...ign(_, Rvalue::Use(_, _))) {\n    |                       ^  ^ expected 1 field, found 2\n    |"
+        },
+        "pin_surface": {
+          "compile_rc": 1,
+          "bootstrap": false,
+          "compile_err_head": "error[E0432]: unresolved import `rustc_public::mir::WithRetag`\n  --> <probe_tmp>/matrix_pin_surface.rs:11:44\n   |\n11 | use rustc_public::mir::{Rvalue, Statement, WithRetag};\n   |                                            ^^^^^^^^^ no `WithRetag` in `mir`\n\nwarning: unused `#[macro_use]` import\n --> <probe_tmp>/matrix_pin_surface.rs:6:1\n  |\n6 | #[macro_use]\n  | ^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nerror[E0023]: this pattern has 2 fields, but the corresponding tuple variant has 1 field"
+        }
+      }
+    },
+    {
+      "toolchain": "nightly-2026-04-12-x86_64-unknown-linux-gnu",
+      "version": "rustc 1.97.0-nightly (bf4fbfb7a 2026-04-11)",
+      "probes": {
+        "compat": {
+          "compile_rc": 1,
+          "bootstrap": false,
+          "compile_err_head": "warning: unused `#[macro_use]` import\n --> <probe_tmp>/matrix_compat.rs:6:1\n  |\n6 | #[macro_use]\n  | ^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nerror[E0023]: this pattern has 2 fields, but the corresponding tuple variant has 1 field\n   --> <probe_tmp>/matrix_compat.rs:27:79\n    |\n 27 | ...ign(_, Rvalue::Use(_, _))) {\n    |                       ^  ^ expected 1 field, found 2\n    |"
+        },
+        "pin_surface": {
+          "compile_rc": 1,
+          "bootstrap": false,
+          "compile_err_head": "error[E0432]: unresolved import `rustc_public::mir::WithRetag`\n  --> <probe_tmp>/matrix_pin_surface.rs:11:44\n   |\n11 | use rustc_public::mir::{Rvalue, Statement, WithRetag};\n   |                                            ^^^^^^^^^ no `WithRetag` in `mir`\n\nwarning: unused `#[macro_use]` import\n --> <probe_tmp>/matrix_pin_surface.rs:6:1\n  |\n6 | #[macro_use]\n  | ^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nerror[E0023]: this pattern has 2 fields, but the corresponding tuple variant has 1 field"
+        }
+      }
+    },
+    {
+      "toolchain": "nightly-2026-05-31-x86_64-unknown-linux-gnu",
+      "version": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)",
+      "probes": {
+        "compat": {
+          "compile_rc": 0,
+          "bootstrap": false,
+          "compile_err_head": "",
+          "run_rc": 0,
+          "run_stdout": "COMPAT_OK krate=matrix_target ext=19 items=1 pm=0 uses=3 adts=1"
+        },
+        "pin_surface": {
+          "compile_rc": 0,
+          "bootstrap": false,
+          "compile_err_head": "",
+          "run_rc": 0,
+          "run_stdout": "PIN_SURFACE_OK"
+        }
+      }
+    },
+    {
+      "toolchain": "nightly-2026-06-01-x86_64-unknown-linux-gnu",
+      "version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+      "probes": {
+        "compat": {
+          "compile_rc": 0,
+          "bootstrap": false,
+          "compile_err_head": "",
+          "run_rc": 0,
+          "run_stdout": "COMPAT_OK krate=matrix_target ext=19 items=1 pm=0 uses=3 adts=1"
+        },
+        "pin_surface": {
+          "compile_rc": 0,
+          "bootstrap": false,
+          "compile_err_head": "",
+          "run_rc": 0,
+          "run_stdout": "PIN_SURFACE_OK"
+        }
+      }
+    },
+    {
+      "toolchain": "nightly-2026-11-13-x86_64-unknown-linux-gnu",
+      "version": "rustc 1.102.0-nightly (8eb778d04 2026-11-12)",
+      "probes": {
+        "compat": {
+          "compile_rc": 0,
+          "bootstrap": false,
+          "compile_err_head": "",
+          "run_rc": 0,
+          "run_stdout": "COMPAT_OK krate=matrix_target ext=19 items=1 pm=0 uses=3 adts=1"
+        },
+        "pin_surface": {
+          "compile_rc": 1,
+          "bootstrap": false,
+          "compile_err_head": "error[E0425]: cannot find value `run_compiler` in crate `rustc_driver`\n  --> <probe_tmp>/matrix_pin_surface.rs:34:27\n   |\n34 |     let _ = rustc_driver::run_compiler as *const ();\n   |                           ^^^^^^^^^^^^ not found in `rustc_driver`\n   |\nhelp: consider importing this function\n   |\n 9 + use rustc_interface::run_compiler;\n   |\nhelp: if you import `run_compiler`, refer to it directly\n   |\n34 -     let _ = rustc_driver::run_compiler as *const ();\n34 +     let _ = run_compiler as *const ();\n   |"
+        }
+      }
+    },
+    {
+      "toolchain": "1.99.1-x86_64-unknown-linux-gnu",
+      "version": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+      "probes": {
+        "compat": {
+          "compile_rc": 1,
+          "bootstrap": false,
+          "compile_err_head": "error[E0554]: `#![feature]` may not be used on the stable release channel\n --> <probe_tmp>/matrix_compat.rs:1:1\n  |\n1 | #![feature(rustc_private)]\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nwarning: unused `#[macro_use]` import\n --> <probe_tmp>/matrix_compat.rs:6:1\n  |\n6 | #[macro_use]\n  | ^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+        },
+        "pin_surface": {
+          "compile_rc": 1,
+          "bootstrap": false,
+          "compile_err_head": "error[E0554]: `#![feature]` may not be used on the stable release channel\n --> <probe_tmp>/matrix_pin_surface.rs:1:1\n  |\n1 | #![feature(rustc_private)]\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nwarning: unused `#[macro_use]` import\n --> <probe_tmp>/matrix_pin_surface.rs:6:1\n  |\n6 | #[macro_use]\n  | ^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nerror[E0609]: no field `span` on type `rustc_public::mir::Terminator`"
+        },
+        "compat_bootstrap": {
+          "compile_rc": 0,
+          "bootstrap": true,
+          "compile_err_head": "",
+          "run_rc": 0,
+          "run_stdout": "COMPAT_OK krate=matrix_target ext=19 items=1 pm=0 uses=3 adts=1"
+        },
+        "pin_surface_bootstrap": {
+          "compile_rc": 1,
+          "bootstrap": true,
+          "compile_err_head": "warning: unused `#[macro_use]` import\n --> <probe_tmp>/matrix_pin_surface.rs:6:1\n  |\n6 | #[macro_use]\n  | ^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nerror[E0609]: no field `span` on type `rustc_public::mir::Terminator`\n  --> <probe_tmp>/matrix_pin_surface.rs:18:40\n   |\n18 |                 let _ = &bb.terminator.span;\n   |                                        ^^^^ unknown field\n   |\nhelp: one of the expressions' fields has a field of the same name"
+        }
+      }
+    }
+  ],
+  "probe_target_measurements": {
+    "1.98.0-nightly_f8a08b688": {
+      "local_crate": {
+        "fn_defs": 18,
+        "statics": 2,
+        "trait_decls": 0,
+        "trait_impls": 3,
+        "foreign_mods": 0,
+        "all_local_items": 36,
+        "external_crates": 19
+      },
+      "postcleanup_vs_optimized_diffs": {
+        "const_eval_fn_postcleanup": {
+          "bbs": 3,
+          "stmts": 39
+        },
+        "const_eval_fn_optimized": {
+          "bbs": 1,
+          "stmts": 14
+        },
+        "touch_all_adts_postcleanup": {
+          "bbs": 12,
+          "stmts": 116
+        },
+        "touch_all_adts_optimized": {
+          "bbs": 12,
+          "stmts": 21
+        },
+        "cleanup_unwind_test_postcleanup": {
+          "bbs": 7,
+          "stmts": 12,
+          "cleanup_bbs": 2
+        },
+        "cleanup_unwind_test_optimized": {
+          "bbs": 7,
+          "stmts": 1,
+          "cleanup_bbs_exposed": false
+        },
+        "ergonomic_use_fn_call_source_postcleanup": "CallSource::Use",
+        "ergonomic_use_fn_call_source_rustc_public": null,
+        "attr_fn_tool_attrs_len": 0,
+        "generic_ctfe_bomb_u8_exit_code": 101,
+        "generic_ctfe_bomb_u8_body_some_swallowed": true,
+        "union_uninit_const_item_body": "Unevaluated",
+        "union_uninit_const_instance_body_bytes": [
+          "Some(7)",
+          "None",
+          "None",
+          "None"
+        ],
+        "option_nonzerou8_niche": "TagEncoding::Niche { untagged_variant: VariantIdx(1), niche_variants: 0..=0, niche_start: 0 }",
+        "global_asm_exposed_in_all_local_items": false
+      }
+    },
+    "1.102.0-nightly_8eb778d04": {
+      "local_crate": {
+        "fn_defs": 18,
+        "statics": 2,
+        "adts": 14,
+        "trait_decls": 0,
+        "trait_impls": 3,
+        "all_local_items": 36,
+        "external_crates": 19
+      },
+      "postcleanup_stable_ok_count": 18,
+      "bodies_ok": 33,
+      "bodies_none": 3,
+      "pm_total": 2,
+      "asm_total": 1,
+      "adt_layouts_ok": 13,
+      "adt_layouts_err": 1
+    }
+  },
+  "real_zerocopy_measurements": {
+    "zerocopy_version": "0.8.64",
+    "cfg_flags": [
+      "--cfg",
+      "no_zerocopy_allocator_api_1_100_0",
+      "--edition",
+      "2021",
+      "--crate-type",
+      "lib"
+    ],
+    "1.98.0-nightly_f8a08b688": {
+      "status": "panic",
+      "panic_location": "rustc_public/src/unstable/convert/stable/ty.rs:479:17",
+      "panic_message": "not yet implemented",
+      "trigger_construct": "ty::Alias in un-normalized generic pointer method (assume_alignment)"
+    },
+    "1.102.0-nightly_8eb778d04_preserve_ub": {
+      "status": "ok",
+      "local_crate": {
+        "fn_defs": 4464,
+        "statics": 0,
+        "adts": 81,
+        "trait_decls": 99,
+        "trait_impls": 3639,
+        "all_local_items": 8558,
+        "external_crates": 2
+      },
+      "postcleanup_bridge": {
+        "bodies": 4430,
+        "bbs": 12639,
+        "stmts": 40758,
+        "place_mentions": 963,
+        "cleanup_bbs": 153
+      },
+      "optimized_rustc_public": {
+        "bodies_ok": 4730,
+        "bodies_none": 3828,
+        "bbs": 13069,
+        "stmts": 15711,
+        "alias_tys_seen": 45,
+        "place_mentions": 647,
+        "cleanup_bbs_exposed": false,
+        "adt_layouts_ok": 64,
+        "adt_layouts_err": 17
+      }
+    },
+    "1.102.0-nightly_8eb778d04_no_preserve_ub": {
+      "postcleanup_bridge": {
+        "bodies": 4430,
+        "bbs": 12665,
+        "stmts": 39821,
+        "place_mentions": 0,
+        "cleanup_bbs": 153
+      },
+      "optimized_rustc_public": {
+        "bodies_ok": 4730,
+        "bodies_none": 3828,
+        "bbs": 13126,
+        "stmts": 15098,
+        "alias_tys_seen": 45,
+        "place_mentions": 0
+      }
+    }
+  }
+}

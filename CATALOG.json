@@ -104137,6 +104137,121 @@
         "verification"
       ]
     },
+    "rustc-public-migration-and-multiversion-capture-architecture": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "3741897d51a2d91354d4427b4a4a155346d16ccf"
+          },
+          "name": "google/zerocopy (anneal/trusted/rustc-capture and zerocopy crate)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-05-30",
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly"
+          },
+          "name": "Rust 1.98.0-nightly (2026-05-31, anneal-rustc-capture compiler pin)"
+        },
+        {
+          "identity": {
+            "commit_date": "2025-08-19",
+            "repository": "rust-lang/rust",
+            "revision": "05f5a58e84a9c3a68586d70bf3d7442c571e379e",
+            "version": "1.91.0-nightly"
+          },
+          "name": "Rust 1.91.0-nightly"
+        },
+        {
+          "identity": {
+            "commit_date": "2025-11-22",
+            "repository": "rust-lang/rust",
+            "revision": "94b49fd998d6723e0a9240a7cff5f9df37b84dd8",
+            "version": "1.93.0-nightly"
+          },
+          "name": "Rust 1.93.0-nightly"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-02-06",
+            "repository": "rust-lang/rust",
+            "revision": "efc9e1b50cbf2cede7ebe25f0a1fc64fd8b3e942",
+            "version": "1.95.0-nightly"
+          },
+          "name": "Rust 1.95.0-nightly"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-04-11",
+            "repository": "rust-lang/rust",
+            "revision": "bf4fbfb7a18d74e7cd8eef93af7329c58fbb5344",
+            "version": "1.97.0-nightly"
+          },
+          "name": "Rust 1.97.0-nightly"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-05-31",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "Rust 1.98.0-nightly (2026-06-01)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-10-13",
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "Rust 1.99.1"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-09",
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "Rust 1.100.0 (stable)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-11",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust 1.102.0-nightly (2026-11-12)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-12",
+            "repository": "rust-lang/rust",
+            "revision": "8eb778d04094d3af4b26580cab327e0413eb1e02",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust 1.102.0-nightly (2026-11-13)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/rustc-capture",
+        "anneal/architecture",
+        "anneal/forward-compatibility",
+        "rustc",
+        "rustc/rustc-public",
+        "rustc/mir",
+        "rust",
+        "compilers",
+        "verification",
+        "zerocopy"
+      ]
+    },
     "rustc-public-stable-mir-vs-middle-mir-capture-seam-completeness": {
       "observed_at": "2026-11-22",
       "subjects": [
