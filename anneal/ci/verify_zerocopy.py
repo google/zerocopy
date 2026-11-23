@@ -126,10 +126,11 @@ def discover_units(proofs_dir, src_dir, selected_units=None):
     if not discovered:
         raise RuntimeError(f"no proof units discovered under {proofs_dir}")
     if selected_units:
-        missing = [name for name in selected_units if name not in discovered]
+        unique_units = list(dict.fromkeys(selected_units))
+        missing = [name for name in unique_units if name not in discovered]
         if missing:
             raise RuntimeError(f"requested proof unit(s) not found: {missing}")
-        return [discovered[name] for name in selected_units]
+        return [discovered[name] for name in unique_units]
     return [discovered[name] for name in sorted(discovered)]
 
 
@@ -160,7 +161,10 @@ def validate_receipt(unit_name, returncode, stdout_text, stderr_text, expected_r
         failures.append(f"sorry_declarations={receipt.get('sorry_declarations')!r}")
     if receipt.get("elaboration_sandbox") not in VALID_SANDBOXES:
         failures.append(f"elaboration_sandbox={receipt.get('elaboration_sandbox')!r}")
-    if "hostile Lean elaborator effects" in receipt.get("deferred", []):
+    deferred = receipt.get("deferred", [])
+    if not isinstance(deferred, list):
+        failures.append(f"deferred={deferred!r}")
+    elif "hostile Lean elaborator effects" in deferred:
         failures.append("hostile Lean elaborator effects deferred")
 
     scope = receipt.get("scope")
@@ -223,7 +227,8 @@ def env_tool(names, bundle_suffix=None):
 
 
 def discover_local_defaults(anneal_root):
-    target_dir = Path(os.environ.get("CARGO_TARGET_DIR", anneal_root / "target"))
+    raw_target = os.environ.get("CARGO_TARGET_DIR", "")
+    target_dir = Path(raw_target) if raw_target.strip() else anneal_root / "target"
     cli = target_dir / "debug/cargo-anneal"
     capture_candidates = [
         target_dir / "debug/anneal-rustc-capture",
@@ -234,9 +239,22 @@ def discover_local_defaults(anneal_root):
     lean_candidates = [
         home / ".elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
     ]
-    tc_root = Path(os.environ.get("XDG_CACHE_HOME", home / ".cache")) / "anneal/toolchain"
+    raw_xdg_cache = os.environ.get("XDG_CACHE_HOME", "")
+    cache_home = Path(raw_xdg_cache) if raw_xdg_cache.strip() else home / ".cache"
+    tc_root = cache_home / "anneal/toolchain"
     if tc_root.is_dir():
-        for entry in sorted(tc_root.iterdir(), key=lambda p: p.stat().st_mtime, reverse=True):
+        entries = []
+        try:
+            tc_entries = list(tc_root.iterdir())
+        except OSError:
+            tc_entries = []
+        for entry in tc_entries:
+            try:
+                mtime = entry.stat().st_mtime
+            except OSError:
+                continue
+            entries.append((mtime, entry))
+        for _, entry in sorted(entries, key=lambda item: item[0], reverse=True):
             cand = entry / "lean/bin/lean"
             if cand.is_file():
                 lean_candidates.insert(0, cand)
@@ -337,7 +355,6 @@ def run_suite(arguments, work_dir):
 def main(argv=None):
     anneal_root = Path(__file__).resolve().parents[1]
     repo_root = anneal_root.parent
-    local = discover_local_defaults(anneal_root)
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -379,17 +396,20 @@ def main(argv=None):
         parser.add_argument(f"--{name}", type=Path)
 
     arguments = parser.parse_args(argv)
-    defaults = {
-        "cli": env_tool(["ANNEAL_CLI", "ANNEAL_TEST_CARGO_ANNEAL"]) or local["cli"],
-        "capture": env_tool(["ANNEAL_CAPTURE"], "bin/anneal-rustc-capture")
-        or local["capture"],
-        "sysroot": env_tool(["ANNEAL_SYSROOT", "ANNEAL_TEST_RUST_SYSROOT"], "rust")
-        or local["sysroot"],
-        "lean": env_tool(["ANNEAL_LEAN"], "lean/bin/lean") or local["lean"],
+    env_fallbacks = {
+        "cli": env_tool(["ANNEAL_CLI", "ANNEAL_TEST_CARGO_ANNEAL"]),
+        "capture": env_tool(["ANNEAL_CAPTURE"], "bin/anneal-rustc-capture"),
+        "sysroot": env_tool(["ANNEAL_SYSROOT", "ANNEAL_TEST_RUST_SYSROOT"], "rust"),
+        "lean": env_tool(["ANNEAL_LEAN"], "lean/bin/lean"),
     }
-    for name, fallback in defaults.items():
+    for name, fallback in env_fallbacks.items():
         if getattr(arguments, name) is None:
             setattr(arguments, name, fallback)
+    if any(getattr(arguments, name) is None for name in env_fallbacks):
+        local = discover_local_defaults(anneal_root)
+        for name in env_fallbacks:
+            if getattr(arguments, name) is None:
+                setattr(arguments, name, local[name])
     for required in ("cli", "capture", "sysroot", "lean"):
         value = getattr(arguments, required)
         if value is None:

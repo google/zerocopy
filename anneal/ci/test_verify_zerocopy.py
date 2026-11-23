@@ -11,9 +11,11 @@
 import contextlib
 import io
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
+from unittest import mock
 
 import verify_zerocopy
 
@@ -146,6 +148,14 @@ class VerifyZerocopyTests(unittest.TestCase):
             ("sorry", make_receipt(sorry_declarations=["foo"]), "sorry_declarations"),
             ("status", make_receipt(status="proof_failed"), "status="),
             ("roots_str", make_receipt(scope={"kind": "selected_unit", "roots": "not-a-list"}), "scope mismatch"),
+            ("deferred_null", make_receipt(deferred=None), "deferred=None"),
+            ("deferred_str", make_receipt(deferred="hostile"), "deferred='hostile'"),
+            ("deferred_dict", make_receipt(deferred={}), "deferred=\\{\\}"),
+            (
+                "deferred_hostile",
+                make_receipt(deferred=["hostile Lean elaborator effects"]),
+                "hostile Lean elaborator effects deferred",
+            ),
             ("empty_digest", empty_digest, "binding digest"),
             ("missing_digest", missing_digest, "binding digest"),
             ("exit", good, "exit=1"),
@@ -192,6 +202,135 @@ class VerifyZerocopyTests(unittest.TestCase):
             summary = json.loads((artifacts / "summary.json").read_text(encoding="utf-8"))
             self.assertEqual(summary["unit_count"], 1)
             self.assertIn("01_unit", summary["units"])
+
+    def test_validate_receipt_allows_absent_deferred(self):
+        receipt = make_receipt()
+        del receipt["deferred"]
+        parsed = verify_zerocopy.validate_receipt(
+            "01_unit", 0, json.dumps(receipt), "", ["util::macros::__unsafe"]
+        )
+        self.assertEqual(parsed["status"], "selected_unit_verified")
+
+    def test_discover_units_deduplicates_selected_units_preserving_order(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            proofs_dir, src_dir, unit_01 = make_proof_tree(root)
+            unit_02 = proofs_dir / "02_unit"
+            unit_02.mkdir()
+            for fname in ("Spec.lean", "Proof.lean", "request.json"):
+                (unit_02 / fname).write_text(
+                    (unit_01 / fname).read_text(encoding="utf-8"), encoding="utf-8"
+                )
+
+            selected = verify_zerocopy.discover_units(
+                proofs_dir, src_dir, selected_units=["02_unit", "01_unit", "02_unit"]
+            )
+            self.assertEqual([u.name for u, _ in selected], ["02_unit", "01_unit"])
+
+    def test_main_deduplicates_unit_flags_and_skips_local_discovery(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            proofs_dir, src_dir, _ = make_proof_tree(root)
+            fake_cli = root / "cargo-anneal"
+            fake_cap = root / "anneal-rustc-capture"
+            fake_lean = root / "lean"
+            fake_sys = root / "sysroot"
+            fake_sys.mkdir()
+            for bin_path in (fake_cap, fake_lean):
+                bin_path.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+                bin_path.chmod(0o755)
+            invocations = root / "calls.txt"
+            payload_json = json.dumps(make_receipt())
+            fake_cli.write_text(
+                "#!/usr/bin/env python3\n"
+                "from pathlib import Path\n"
+                f"with Path({str(invocations)!r}).open('a', encoding='utf-8') as f:\n"
+                "    f.write('1\\n')\n"
+                f"print({payload_json!r})\n",
+                encoding="utf-8",
+            )
+            fake_cli.chmod(0o755)
+            artifacts = root / "out"
+            with (
+                mock.patch.object(
+                    verify_zerocopy,
+                    "discover_local_defaults",
+                    side_effect=AssertionError("should not probe local defaults"),
+                ),
+                contextlib.redirect_stdout(io.StringIO()),
+            ):
+                rc = verify_zerocopy.main([
+                    "--proofs-dir", str(proofs_dir),
+                    "--src-dir", str(src_dir),
+                    "--unit", "01_unit",
+                    "--unit", "01_unit",
+                    "--cli", str(fake_cli),
+                    "--capture", str(fake_cap),
+                    "--sysroot", str(fake_sys),
+                    "--lean", str(fake_lean),
+                    "--artifacts-dir", str(artifacts),
+                ])
+            self.assertEqual(rc, 0)
+            self.assertEqual(
+                invocations.read_text(encoding="utf-8").splitlines(), ["1"]
+            )
+            summary = json.loads(
+                (artifacts / "summary.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(summary["unit_count"], 1)
+
+    def test_main_help_defers_local_discovery(self):
+        with (
+            mock.patch.object(
+                verify_zerocopy,
+                "discover_local_defaults",
+                side_effect=AssertionError("should not probe local defaults on --help"),
+            ),
+            contextlib.redirect_stdout(io.StringIO()),
+        ):
+            with self.assertRaises(SystemExit) as exc:
+                verify_zerocopy.main(["--help"])
+            self.assertEqual(exc.exception.code, 0)
+
+    def test_discover_local_defaults_empty_xdg_and_dangling_symlink(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            home = root / "home"
+            cwd = root / "cwd"
+            anneal_root = root / "anneal"
+            home.mkdir()
+            cwd.mkdir()
+            anneal_root.mkdir()
+
+            # Decoy under CWD that would be probed if XDG_CACHE_HOME="" were
+            # treated as relative `.`.
+            decoy_lean = cwd / "anneal/toolchain/decoy/lean/bin/lean"
+            decoy_lean.parent.mkdir(parents=True)
+            decoy_lean.write_text("", encoding="utf-8")
+
+            cache_tc = home / ".cache/anneal/toolchain"
+            cache_tc.mkdir(parents=True)
+            (cache_tc / "broken").symlink_to(root / "nonexistent")
+            good_lean = cache_tc / "good/lean/bin/lean"
+            good_lean.parent.mkdir(parents=True)
+            good_lean.write_text("", encoding="utf-8")
+
+            old_cwd = os.getcwd()
+            try:
+                os.chdir(cwd)
+                for empty_xdg in ("", "   "):
+                    with (
+                        self.subTest(xdg_cache_home=empty_xdg),
+                        mock.patch.dict(
+                            os.environ, {"XDG_CACHE_HOME": empty_xdg}, clear=False
+                        ),
+                        mock.patch.object(Path, "home", return_value=home),
+                        mock.patch("subprocess.check_output", side_effect=OSError),
+                    ):
+                        defaults = verify_zerocopy.discover_local_defaults(anneal_root)
+                        self.assertEqual(defaults["lean"], good_lean)
+            finally:
+                os.chdir(old_cwd)
 
 
 if __name__ == "__main__":
