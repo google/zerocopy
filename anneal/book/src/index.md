@@ -17,14 +17,16 @@ computing base (TCB).
 > **Alpha status (Stage 0):** Anneal is in alpha and under active development;
 > APIs, specification syntax, and verification coverage change frequently. The
 > current CLI ships `cargo anneal setup` (versioned toolchain archive
-> installation), `cargo anneal verify` (including `--request`,
-> `--manifest-path`/`--proof-dir`, and `verify rustc` for the
-> `x86_64-unknown-linux-gnu` pointer-free scalar MIR profile using out-of-line
-> `Spec.lean` and `Proof.lean` modules), and `cargo anneal skill` (bundled
-> verification guidance and a working starter example). Inline Rust
-> specifications and broader MIR coverage are under development. To keep this
-> book accurate, every command and code example shown here is executed against
-> the current `cargo-anneal` build in CI. See
+> installation), `cargo anneal init` (starter `Spec.lean` and `Proof.lean`
+> scaffolding or a runnable `--standalone` example), `cargo anneal verify`
+> (including `--request`, `--manifest-path`/`--proof-dir` for dependency-free
+> library or binary crates with optional `--panic` and `--instantiate`, and
+> `verify rustc` for the `x86_64-unknown-linux-gnu` pointer-free scalar MIR
+> profile using out-of-line `Spec.lean` and `Proof.lean` modules), and
+> `cargo anneal skill` (bundled verification guidance and a working starter
+> example). Inline Rust specifications and broader MIR coverage are under
+> development. To keep this book accurate, every command and code example shown
+> here is executed against the current `cargo-anneal` build in CI. See
 > [Alpha Usage and Profile v1 Limits](https://github.com/google/zerocopy/blob/main/anneal/docs/alpha.md)
 > on GitHub for the exact supported and fail-closed refused Rust subset.
 
@@ -62,8 +64,9 @@ Every command transcript in this book is checked directly against the live
 - [Installing the Toolchain](getting-started/installation.md) walks through
   `cargo anneal setup`, local archives, cache cleanup, and fail-closed archive
   handling.
-- [CLI Reference](reference/cli.md) documents `setup`, `skill`, `verify`,
-  `verify rustc`, Receipt Schema v3 diagnostics, and CLI error handling.
+- [CLI Reference](reference/cli.md) documents `setup`, `init`, `skill`,
+  `verify`, `verify rustc`, Receipt Schema v3 diagnostics, and CLI error
+  handling.
 - [Project Principles](foundations/principles.md),
   [Threat Model](foundations/threat-model.md), and
   [Meta-Principles](foundations/meta-principles.md) define Anneal's correctness

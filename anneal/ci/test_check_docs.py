@@ -518,6 +518,28 @@ class CheckSourcesOracleTests(unittest.TestCase):
                 "closed offline CLI allowlist",
             ),
             (
+                "init_runtime_writes",
+                {
+                    "kind": "cli",
+                    "display_command": "$ cargo anneal init",
+                    "argv": ["anneal", "init"],
+                    "expect_exit": 0,
+                    "transcript": "transcript.txt",
+                },
+                "closed offline CLI allowlist",
+            ),
+            (
+                "init_standalone_runtime_writes",
+                {
+                    "kind": "cli",
+                    "display_command": "$ cargo anneal init --standalone",
+                    "argv": ["anneal", "init", "--standalone"],
+                    "expect_exit": 0,
+                    "transcript": "transcript.txt",
+                },
+                "closed offline CLI allowlist",
+            ),
+            (
                 "verify_runtime_unsandboxed",
                 {
                     "kind": "cli",
@@ -564,6 +586,8 @@ class CheckSourcesOracleTests(unittest.TestCase):
 
     def test_cli_argv_allowlist_admits_safe_offline_subcommands(self):
         good_cases = [
+            ("init_help", ["anneal", "init", "--help"], "$ cargo anneal init --help", False, {}),
+            ("help_init", ["anneal", "help", "init"], "$ cargo anneal help init", False, {}),
             ("skill", ["anneal", "skill"], "$ cargo anneal skill", False, {}),
             ("skill_help", ["anneal", "skill", "--help"], "$ cargo anneal skill --help", False, {}),
             ("skill_example", ["anneal", "skill", "--example"], "$ cargo anneal skill --example", False, {}),

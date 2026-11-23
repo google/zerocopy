@@ -24,6 +24,18 @@ the current `cargo-anneal` binary in CI.
 {{#include ../../examples/cli/setup-help/transcript.txt}}
 ```
 
+## `cargo anneal init`
+
+`cargo anneal init` scaffolds starter `Spec.lean` and `Proof.lean` files for a
+Cargo package (defaulting to `./Cargo.toml` and `proof/`), or creates a
+self-contained four-file runnable example (`lib.rs`, `request.json`,
+`Spec.lean`, `Proof.lean`) with `--standalone`. It refuses to overwrite existing
+files or traverse symlinks:
+
+```console
+{{#include ../../examples/cli/init-help/transcript.txt}}
+```
+
 ## `cargo anneal skill`
 
 `cargo anneal skill` prints the bundled verification skill for the installed
@@ -38,24 +50,28 @@ request, and Lean 4 starter example:
 
 `cargo anneal verify` captures Rust MIR for the configured target and checks an
 authored Lean 4 proof against the generated claim. It accepts a JSON request
-(`--request`), a dependency-free Cargo library (`--manifest-path` plus
-`--proof-dir`), or direct compiler inputs via `verify rustc`.
+(`--request`), a dependency-free Cargo library or binary crate
+(`--manifest-path` plus `--proof-dir`, with optional `--panic`, `--select`, and
+`--instantiate`), or direct compiler inputs via `verify rustc`.
 
 On Linux, Lean elaboration and auditing run inside an OS sandbox (`ExecSeal`)
 by default. Verification writes a JSON Receipt Schema v3 (`schema_version: 3`)
 to standard output and exits with:
 
 - `0`: verification succeeded (`selected_unit_verified` or `crate_verified`, or
-  a `tainted_*` status when `taint_reasons` is non-empty).
+  a `tainted_*` status when `taint_reasons` is non-empty). Passing receipts
+  also include advisory anti-vacuity `spec_warnings` (printed to standard error
+  when non-empty) without tainting or rejecting valid proofs.
 - `1`: proof or profile rejection (`proof_failed` or `unsupported`).
 - `2`: compilation, tool, sandbox, setup, artifact, or CLI usage error
   (`compiler_failed`, `tool_failed`, or argument diagnostics on standard error).
 
-Flags that relax verification guarantees (`--allow-unpinned-lean`,
-`--allow-unsandboxed-elaboration`, and `--allow-sorry-in-proof`) print
-`TAINTED` to standard error and record `"unpinned_lean"`,
-`"unsandboxed_elaboration"`, or `"sorry_in_proof"` in `taint_reasons` alongside
-`elaboration_sandbox`.
+Failure receipts may include an optional actionable `hint` alongside `status`,
+`phase`, and `detail`. Flags that relax verification guarantees
+(`--allow-unpinned-lean`, `--allow-unsandboxed-elaboration`, and
+`--allow-sorry-in-proof`) print `TAINTED` to standard error and record
+`"unpinned_lean"`, `"unsandboxed_elaboration"`, or `"sorry_in_proof"` in
+`taint_reasons` alongside `elaboration_sandbox`.
 
 ```console
 {{#include ../../examples/cli/verify-help/transcript.txt}}

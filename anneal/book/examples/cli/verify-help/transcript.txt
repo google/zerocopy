@@ -10,9 +10,11 @@ Commands:
 
 Options:
       --request <REQUEST>              JSON compilation/proof request, with paths relative to its directory
-      --manifest-path <MANIFEST_PATH>  A feature-free library for the x86_64-unknown-linux-gnu scalar profile
+      --manifest-path <MANIFEST_PATH>  A feature-free library or binary crate for the x86_64-unknown-linux-gnu scalar profile
       --proof-dir <PROOF_DIR>          Directory containing Spec.lean and Proof.lean, for the Cargo shortcut
+      --panic <PANIC>                  Panic strategy (`unwind` or `abort`) for the Cargo shortcut [possible values: unwind, abort]
       --select <SELECT>                Select a function by its compiler path; omit to require the whole crate
+      --instantiate <JSON>             Instantiate a generic item with concrete arguments as JSON (`{"path":"...","args":[...]}`)
       --capture <CAPTURE>              Capture driver; defaults to the installed bundle, then a sibling. The receipt records its SHA-256, which no lock pins
       --lean <LEAN>                    Lean executable; defaults to the installed bundle, cached toolchain, or pinned elan installation. Its SHA-256 must match the foundation lock, which does not cover the shared libraries it loads
       --sysroot <SYSROOT>              Compiler sysroot; defaults to the installed bundle when present. Capture checks its reported rustc commit but does not hash it

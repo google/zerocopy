@@ -530,10 +530,10 @@ def _validate_cli_argv_allowlist(
     """Enforce a closed allowlist of safe, offline `cargo-anneal` invocations.
 
     Rejects bare `setup` (including `setup --clear-old` without
-    `--local-archive`, which would attempt remote downloads) and rejects
-    runtime `verify` invocations (other than `--help`/`-h`/`help`) until
-    sandboxed execution and toolchain fixture isolation are wired for example
-    verification.
+    `--local-archive`, which would attempt remote downloads), rejects runtime
+    `init` (which writes files), and rejects runtime `verify` invocations
+    (other than `--help`/`-h`/`help`) until sandboxed execution and toolchain
+    fixture isolation are wired for example verification.
     """
     args = argv[1:] if argv and argv[0] == "anneal" else argv
     if args in (
@@ -546,6 +546,9 @@ def _validate_cli_argv_allowlist(
         ["help", "setup"],
         ["setup", "-h"],
         ["setup", "--help"],
+        ["help", "init"],
+        ["init", "-h"],
+        ["init", "--help"],
         ["help", "skill"],
         ["skill"],
         ["skill", "-h"],

@@ -8,6 +8,8 @@ Arguments:
 
 Options:
       --crate-name <CRATE_NAME>        Crate name passed to rustc capture
+      --crate-type <CRATE_TYPE>        Crate type (`lib` or `bin`) passed to rustc capture [default: lib] [possible values: lib, bin]
+      --panic <PANIC>                  Panic strategy (`unwind` or `abort`) passed to rustc capture [default: unwind] [possible values: unwind, abort]
       --edition <EDITION>              Rust edition (`2015`, `2018`, `2021`, or `2024`) [default: 2024] [possible values: 2015, 2018, 2021, 2024]
       --target <TARGET>                Target triple for the verification profile [default: x86_64-unknown-linux-gnu]
       --cfg <CFG>                      Conditional compilation `cfg` flag passed to capture
@@ -26,6 +28,7 @@ Options:
       --allow-unsandboxed-elaboration  Disable OS-level elaborator containment (`ExecSeal`) and run Lean unsandboxed (taints receipt)
       --select <SELECT>                Select a function by its compiler path; omit to require the whole crate
       --allow-sorry-in-proof           Allow `sorry` in proof modules only, recording `sorry_declarations` (never specifications, model, capture, or expected; taints receipt)
+      --instantiate <JSON>             Instantiate a generic item with concrete arguments as JSON (`{"path":"...","args":[...]}`)
       --lean-memory-mb <MB>            Explicit Lean memory limit in MiB (`-M<MB>`; `resolve-imports` enforces a 4096 MiB floor)
       --no-cache                       Disable prebuilt and local disk `.olean` caching for bundled modules and `TrustedBoundary`
       --no-rebuild-bundled             Fail closed rather than compiling `Trusted.*`, `Anneal.*`, or `TrustedBoundary` when absent from prebuilt or local `.olean` caches
