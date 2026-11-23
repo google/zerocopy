@@ -959,19 +959,17 @@ def collect_theory_and_oleans(
     foundation_lock = json.loads(
         (anneal_root / "trusted/lean/foundation-lock.json").read_text(encoding="utf-8")
     )
-    library_lock = json.loads(
-        (anneal_root / "trusted/audit/library-lock.json").read_text(encoding="utf-8")
+    prebuild_bundled_oleans.parse_and_verify_library_lock(
+        anneal_root / "trusted/audit/library-lock.json",
+        lean_prefix,
+        jobs=4,
     )
-    sysroot_graph: dict[str, list[dict[str, Any]]] = {}
-    sysroot_graph.update(foundation_lock["graph"])
-    sysroot_graph.update(library_lock["graph"])
+    foundation_graph: dict[str, list[dict[str, Any]]] = dict(foundation_lock["graph"])
+    sysroot_graph: dict[str, list[dict[str, Any]]] = dict(foundation_graph)
 
     foundation_mods = set(foundation_lock["modules"].keys())
-    library_mods = set(library_lock["modules"].keys())
-    _, sysroot_arts, _ = prebuild_bundled_oleans.compute_sysroot_manifest_and_artifacts(
+    _, path_shas = prebuild_bundled_oleans.compute_sysroot_manifest(
         lean_prefix / "lib/lean",
-        foundation_mods,
-        library_mods,
         jobs=4,
     )
 
@@ -1119,8 +1117,82 @@ def collect_theory_and_oleans(
                 )
 
             bundled_edges: dict[str, list[dict[str, Any]]] = {}
+            resolve_roots: set[str] = set()
             for item in parsed_headers["result"]["headers"]:
-                bundled_edges[item["module"]] = item["imports"]
+                mod = item["module"]
+                bundled_edges[mod] = item["imports"]
+                for edge in item["imports"]:
+                    dep = edge["module"]
+                    if dep in bundled_sources or dep in sysroot_graph:
+                        continue
+                    if not prebuild_bundled_oleans.is_allowed_pinned_library_module(dep):
+                        raise RuntimeError(
+                            f"bundled module {mod} imports disallowed external module {dep}"
+                        )
+                    resolve_roots.add(dep)
+
+            if resolve_roots:
+                resolve_req = tmp / "resolve.req.json"
+                resolve_res = tmp / "resolve.res.json"
+                resolve_req.write_text(
+                    json.dumps(
+                        {
+                            "mode": "resolve-imports",
+                            "sysroot": str(lean_prefix),
+                            "modules": sorted(resolve_roots),
+                        }
+                    ),
+                    encoding="utf-8",
+                )
+                resolve_proc = subprocess.run(
+                    [
+                        str(lean_exec),
+                        "-j1",
+                        "-M2048",
+                        "--run",
+                        str(entry_file),
+                        str(resolve_req),
+                        str(resolve_res),
+                    ],
+                    cwd=tmp,
+                    env=_lean_subprocess_env(
+                        os.pathsep.join([str(control_dir), str(lean_prefix / "lib/lean")])
+                    ),
+                    capture_output=True,
+                    text=True,
+                    timeout=timeout,
+                    check=False,
+                )
+                if resolve_proc.returncode != 0:
+                    raise RuntimeError(
+                        f"TrustedBoundary resolve-imports failed (rc={resolve_proc.returncode}):\n"
+                        f"stdout:\n{resolve_proc.stdout}\nstderr:\n{resolve_proc.stderr}"
+                    )
+                parsed_resolve = json.loads(resolve_res.read_text(encoding="utf-8"))
+                if not parsed_resolve.get("ok"):
+                    raise RuntimeError(
+                        f"TrustedBoundary resolve-imports error: {parsed_resolve}"
+                    )
+                resolved_graph = parsed_resolve["result"]["graph"]
+                prebuild_bundled_oleans.validate_resolved_library_graph(
+                    resolved_graph, resolve_roots, foundation_graph
+                )
+                sysroot_graph.update(resolved_graph)
+
+            for mod, edges in bundled_edges.items():
+                for edge in edges:
+                    dep = edge["module"]
+                    if dep not in bundled_sources and dep not in sysroot_graph:
+                        raise RuntimeError(
+                            f"bundled module {mod} imports unresolved external module {dep}"
+                        )
+
+            sysroot_mods = foundation_mods | set(sysroot_graph.keys())
+            sysroot_arts, _ = prebuild_bundled_oleans.collect_sysroot_artifacts(
+                lean_prefix / "lib/lean",
+                sysroot_mods,
+                path_shas,
+            )
 
             # Compute transitive bundled closure needed for `needed_bundled`.
             compile_set: set[str] = set()

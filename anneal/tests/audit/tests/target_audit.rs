@@ -1163,11 +1163,11 @@ fn reconciles_equal_theorem_bodies_before_discarding_inventory_metadata() {
     name := `MetadataWitness, levelParams := [], type := Lean.mkConst `True,
     value := Lean.mkConst `True.intro, all := [`MetadataWitness] }
   let stored := Lean.ConstantInfo.thmInfo original
-  let unchanged ← TrustedBoundary.inventoryAlternates stored stored true
+  let unchanged ← TrustedBoundary.inventoryAlternates stored stored
   unless unchanged.isEmpty do throw <| IO.userError "identical theorem produced alternates"
   let changedProof := Lean.Expr.letE `h original.type original.value (.bvar 0) false
   let alternate := Lean.ConstantInfo.thmInfo { original with value := changedProof }
-  let proofs ← TrustedBoundary.inventoryAlternates stored alternate true
+  let proofs ← TrustedBoundary.inventoryAlternates stored alternate
   unless proofs.size == 2 && proofs[0]!.value? true == stored.value? true &&
       proofs[1]!.value? true == alternate.value? true do
     throw <| IO.userError "different pinned proofs were not both retained"
@@ -1184,10 +1184,10 @@ fn reconciles_equal_theorem_bodies_before_discarding_inventory_metadata() {
       throw <| IO.userError "metadata fixture also changed the theorem expression"
     for (a, b) in #[(stored, ci), (ci, stored)] do
       let rejected ← try
-        let _ ← TrustedBoundary.inventoryAlternates a b true
+        let _ ← TrustedBoundary.inventoryAlternates a b
         pure false
       catch error =>
-        unless error.toString.startsWith "policy:inconsistent pinned theorem metadata" do
+        unless error.toString.startsWith "policy:inconsistent theorem metadata" do
           throw error
         pure true
       unless rejected do accepted := accepted.push label
@@ -2814,4 +2814,222 @@ fn spec_compilation_rejects_auto_implicit_typos_while_proof_unaffected() {
     let report = f_proof_ok.run().unwrap();
     assert_eq!(report["replay"], true);
     assert_eq!(report["exactType"], true);
+}
+
+/// `"spec-preflight"` explicitly rejects `include_str`, `Init/Util.lean`'s
+/// `lean_dbg_*` externs, `Lean.LoadDynlib` / `loadDynlib`, `Init.System.*`,
+/// and `Std.Internal.UV.*` (including through `open` resolution), and
+/// `"target-audit"` enforces the transitive spec ban as well.
+#[test]
+fn spec_preflight_and_target_audit_reject_io_debug_dynlib_and_uv() {
+    for (label, expected_msg, body) in [
+        ("include_str", "disallowed syntax", "def s : String := include_str \"Cargo.toml\"\n"),
+        ("dbgSleep", "disallowed identifier", "def f : Nat := dbgSleep 0 (fun _ => 1)\n"),
+        ("dbgTrace", "disallowed identifier", "def f : Nat := dbgTrace \"leak\" (fun _ => 1)\n"),
+        (
+            "dbgTraceIfShared",
+            "disallowed identifier",
+            "def f (x : Nat) : Nat := dbgTraceIfShared \"leak\" x\n",
+        ),
+        ("dbgStackTrace", "disallowed identifier", "def f : Nat := dbgStackTrace (fun _ => 1)\n"),
+        ("loadDynlib", "disallowed identifier", "def f : Nat → Nat := loadDynlib\n"),
+        (
+            "init_system_ident",
+            "disallowed reference",
+            "def f := Init.System.FilePath.mk \".\"\n",
+        ),
+        ("std_internal_uv_ident", "disallowed reference", "def f := Std.Internal.UV.Loop.mk\n"),
+        (
+            "open_std_internal_uv",
+            "disallowed reference UV.Loop.mk",
+            "open Std.Internal in\ndef f := UV.Loop.mk\n",
+        ),
+    ] {
+        let mut f = Fixture::new(PROOF);
+        f.set(
+            "Spec",
+            TargetRole::Specification,
+            &format!(
+                "prelude\nimport Model\n{body}\
+                 def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n"
+            ),
+        );
+        let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+        let err = checker.run_target(&f.request).unwrap_err();
+        assert_eq!(err.code, 1, "{label}: {err}");
+        assert_eq!(err.phase, "spec-preflight", "{label}: {err}");
+        assert!(err.message.contains(expected_msg), "{label}: {err}");
+    }
+
+    for (label, imp) in [
+        ("import_init_system_io", "import Init.System.IO\n"),
+        ("import_std_internal_uv", "import Std.Internal.UV\n"),
+        ("import_std_internal_uv_tcp", "import Std.Internal.UV.TCP\n"),
+    ] {
+        let mut f = Fixture::new(PROOF);
+        f.set(
+            "Spec",
+            TargetRole::Specification,
+            &format!(
+                "prelude\nimport Model\n{imp}\
+                 def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n"
+            ),
+        );
+        let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+        let err = checker.run_target(&f.request).unwrap_err();
+        assert_eq!(err.code, 1, "{label}: {err}");
+        assert_eq!(err.phase, "headers", "{label}: {err}");
+        assert!(err.message.contains("disallowed sysroot import"), "{label}: {err}");
+    }
+
+    // `"target-audit"` enforces the transitive spec ban across helpers
+    // declared in `Model` (which `"spec-preflight"` does not inspect).
+    let model_base = "prelude\nimport Init.Data.BitVec.Basic\n\
+        namespace Trusted.MirSemantics\n\
+        structure Crate where\n  \
+          program : BitVec 8\n  \
+          specs : BitVec 8 → Prop\n\
+        def UnitTheorem (c : Crate) : Prop := \
+          c.program.toNat = 7 ∧ c.specs c.program\n";
+    let mut f_trans = Fixture::new(
+        "prelude\nimport Expected\nimport Init.Data.BitVec.Lemmas\n\
+         theorem Proof.verify : Expected.claim :=\n  \
+           And.intro rfl (And.intro BitVec.and_self rfl)\n",
+    );
+    f_trans.set(
+        "Model",
+        TargetRole::Model,
+        &format!(
+            "{model_base}\
+             def Model.dbgLeak (n : Nat) : Nat := dbgTrace \"leak\" (fun _ => n)\n"
+        ),
+    );
+    f_trans.set(
+        "Spec",
+        TargetRole::Specification,
+        "prelude\nimport Model\n\
+         def Spec.specs (p : BitVec 8) : Prop :=\n  \
+           BitVec.and p p = p ∧ Trusted.MirSemantics.Model.dbgLeak p.toNat = p.toNat\n",
+    );
+    f_trans.reject_audit("specification transitively references disallowed constant");
+
+    // `"target-audit"` also applies the transitive spec ban across duplicate
+    // alternate theorem bodies in `.specification` (`pendingSourceAlternates`).
+    let mut f_alt_trans = Fixture::new(PROOF);
+    f_alt_trans.set(
+        "Model",
+        TargetRole::Model,
+        &format!(
+            "{model_base}\
+             def Model.dbgLeak (n : Nat) : Nat := dbgTrace \"leak\" (fun _ => n)\n"
+        ),
+    );
+    f_alt_trans.set(
+        "SpecAlt",
+        TargetRole::Specification,
+        "prelude\nimport Model\n\
+         theorem SharedSpec.altDup : True :=\n  \
+           (fun _ : Nat => True.intro) (Trusted.MirSemantics.Model.dbgLeak 0)\n",
+    );
+    f_alt_trans.set(
+        "Spec",
+        TargetRole::Specification,
+        "prelude\nimport Model\n\
+         theorem SharedSpec.altDup : True := True.intro\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+    );
+    f_alt_trans.set(
+        "Expected",
+        TargetRole::Expected,
+        "prelude\nimport Model\nimport Captured\nimport Spec\n\
+         def Expected.claim : Prop :=\n  \
+           Trusted.MirSemantics.UnitTheorem\n    \
+             (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+    );
+    f_alt_trans.reject_audit("specification transitively references disallowed constant");
+}
+
+/// Neither `"target-export"` nor `"target-audit"` executes `[init]` module
+/// initializers (`loadExts := false`), and `"target-audit"` still catches
+/// non-proof `.source` `@[csimp]` and `@[implemented_by]` overrides directly
+/// from `finalizeImport`-populated `getModuleEntries` without importing a
+/// duplicate metadata environment.
+#[test]
+fn target_export_and_audit_do_not_execute_init_and_catch_source_csimp_overrides() {
+    // 1. `[init]` blocks inside both `ModelAux` (non-proof module imported in
+    //    both `"target-export"` and `"target-audit"`) and `Proof` (imported in
+    //    `"target-export"`) that throw an uncaught IO error if executed must
+    //    never execute during `"target-export"` or `"target-audit"`. Omit
+    //    `prelude` in `ModelAux` and `Proof` (unpinned mode) so `IO` and
+    //    `IO.userError` are in scope without executing `ModelAux` during
+    //    downstream target compilation.
+    let mut f = Fixture::new(
+        "import Expected\n\
+         def proofInit : IO Unit := throw (IO.userError \"PROOF_INIT_EXECUTED\")\n\
+         @[init proofInit] def proofInitVal : Unit := ()\n\
+         theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    f.set(
+        "ModelAux",
+        TargetRole::Model,
+        "def modelInit : IO Unit := throw (IO.userError \"MODEL_INIT_EXECUTED\")\n\
+         @[init modelInit] def modelInitVal : Unit := ()\n",
+    );
+    let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+    checker.set_allow_unpinned_lean(true);
+    let report = checker.run_target(&f.request).unwrap();
+    assert_eq!(report["replay"], true, "{report}");
+    assert_eq!(report["exactType"], true, "{report}");
+
+    // 2. Non-proof `.source` `@[csimp]` override targeting a logically reached
+    //    helper is caught by `getModuleEntries` in `"target-audit"` without
+    //    requiring a separate `fixedMetadata` environment.
+    let mut f_csimp = Fixture::new(
+        "prelude\nimport Expected\nimport Init.Data.BitVec.Lemmas\n\
+         theorem Proof.verify : Expected.claim := And.intro rfl (And.intro rfl BitVec.and_self)\n",
+    );
+    f_csimp.set(
+        "Model",
+        TargetRole::Model,
+        "prelude\nimport Init.Data.BitVec.Basic\n\
+         def modelSlow (n : Nat) : Nat := n\n\
+         def modelFast (n : Nat) : Nat := n\n\
+         @[csimp] theorem modelSlow_eq : @modelSlow = @modelFast := rfl\n\
+         namespace Trusted.MirSemantics\n\
+         structure Crate where\n  program : BitVec 8\n  specs : BitVec 8 → Prop\n\
+         def UnitTheorem (c : Crate) : Prop := c.program.toNat = 7 ∧ c.specs c.program\n\
+         end Trusted.MirSemantics\n",
+    );
+    f_csimp.set(
+        "Spec",
+        TargetRole::Specification,
+        "prelude\nimport Model\n\
+         def Spec.specs (p : BitVec 8) : Prop := modelSlow p.toNat = p.toNat ∧ BitVec.and p p = p\n",
+    );
+    f_csimp.reject_audit("authored compiler replacement on logical dependency modelSlow");
+}
+
+/// `"target-audit"` seeds `phase2Roots` with dependencies of the selected
+/// `stored` proof body when an unreached realized theorem differs across
+/// proof modules, so `checkAlternateProofs` replays both without missing
+/// `unknown constant` errors.
+#[test]
+fn target_audit_replays_alternate_proof_with_unreached_stored_dependencies() {
+    let mut f = Fixture::new(
+        "prelude\nimport Expected\nimport Init.Data.BitVec.Lemmas\n\
+         theorem SharedAlt.check : (fun x : Nat => x = x) 0 := rfl\n\
+         theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    f.set(
+        "ModelAux",
+        TargetRole::Model,
+        "prelude\nimport Init.Data.BitVec.Basic\n\
+         def unreachedStoredOnlyAux : Nat := 1\n\
+         theorem SharedAlt.check : (fun x : Nat => x = x) 0 :=\n  \
+           (fun _ : Nat => rfl) unreachedStoredOnlyAux\n",
+    );
+    let mut checker = cargo_anneal::Checker::new(&f.root, None).unwrap();
+    let report = checker.run_target(&f.request).unwrap();
+    assert_eq!(report["replay"], true, "{report}");
+    assert_eq!(report["exactType"], true, "{report}");
 }

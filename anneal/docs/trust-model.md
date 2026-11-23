@@ -223,9 +223,10 @@ companion manifest (`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`) and, on
 `lib/lean/` (`LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS`), while leaving
 sysroot `.ir`/`.ir.sig` companions outside `foundation-lock.json` (and shared
 libraries on uncatalogued triples) unhashed (`lean --version` only), and the
-target checker additionally verifies the
-narrower imported `library-lock.json` source and companion digests (or
-dynamically discovers and records the `Init.*`/`Std.*` sysroot import closure
+target checker additionally verifies the 4-tree recursive `Init`/`Std` source
+and binary digests in `library-lock.json` before resolving `Init.*`/`Std.*`
+imports (or dynamically discovers and records the `Init`/`Std` sysroot import
+closure
 when opted in with `--allow-unpinned-lean`), enforces pre-elaboration
 declarative `"spec-preflight"` over `Specification` modules, promotes
 single-file `.olean` outputs through Door 1 with pre-audit `ArtifactLedger`

@@ -676,7 +676,7 @@ fn live_lean_compiles_and_blocks_hostile_eval_in_tier1_and_tier2() {
             exec_bin: lean.clone(),
             args: vec![
                 "-j1".to_string(),
-                "-M1024".to_string(),
+                "-M2048".to_string(),
                 "--run".to_string(),
                 i_mapper.map_str(&tb_dst).unwrap(),
                 i_mapper.map_str(&req_host).unwrap(),

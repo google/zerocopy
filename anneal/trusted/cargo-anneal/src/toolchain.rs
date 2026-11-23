@@ -34,7 +34,7 @@ use walkdir::WalkDir;
 pub type Json = serde_json::Value;
 
 /// Names the pinned Lean 4 toolchain identifier required by
-/// `foundation-lock.json` and `library-lock.json`.
+/// `foundation-lock.json`.
 pub const TOOLCHAIN: &str = "leanprover/lean4:v4.34.1";
 
 /// Lists the six minimal `Init.*` foundation modules forming the transitive
@@ -211,7 +211,7 @@ pub struct PreflightResult {
 }
 
 /// Stores the source and 5-part compiled artifact SHA-256 digests inside
-/// `foundation-lock.json` and `library-lock.json`.
+/// `foundation-lock.json`.
 #[derive(Debug, Clone, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub(crate) struct FoundationModuleRecord {
@@ -260,16 +260,111 @@ pub(crate) struct FoundationLock {
     pub axioms: Vec<(String, String)>,
 }
 
-/// Deserializes `trusted/audit/library-lock.json` (authenticated installed
-/// modules that remain logically untrusted and undergo kernel replay in
-/// `targetAudit`).
-#[derive(Debug, Clone, Deserialize)]
-#[serde(deny_unknown_fields)]
+/// Stores the 4-tree recursive SHA-256 sysroot lock loaded from
+/// `trusted/audit/library-lock.json` (authenticating `lean/lib/lean/Init/**`,
+/// `lean/lib/lean/Std/**`, `lean/src/lean/Init/**`, and
+/// `lean/src/lean/Std/**` so dynamically resolved `Init.*` and `Std.*`
+/// library imports remain pinned without enumerating thousands of module
+/// records; resolved library declarations remain logically untrusted and
+/// undergo kernel replay in `targetAudit`).
+pub(crate) const LIBRARY_LOCK_TREE_LABELS: [&str; 4] = [
+    "lean/lib/lean/Init/**",
+    "lean/lib/lean/Std/**",
+    "lean/src/lean/Init/**",
+    "lean/src/lean/Std/**",
+];
+
+/// Parses and enforces the compact 4-line recursive sysroot tree digest in
+/// `trusted/audit/library-lock.json`.
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct LibraryLock {
-    pub schema: i64,
-    pub toolchain: String,
-    pub modules: BTreeMap<String, FoundationModuleRecord>,
-    pub graph: BTreeMap<String, Vec<ImportEdge>>,
+    pub(crate) lib_init_sha256: String,
+    pub(crate) lib_std_sha256: String,
+    pub(crate) src_init_sha256: String,
+    pub(crate) src_std_sha256: String,
+}
+
+impl LibraryLock {
+    /// Parse a strict 4-line `<sha256>  <tree-label>` lock file, rejecting
+    /// empty lines, comments, duplicates, non-hex digests, or unknown/missing
+    /// trees.
+    pub(crate) fn parse(raw: &str) -> Result<Self, Failure> {
+        if raw.contains('\r') {
+            return Err(Failure::operational("library-lock", "invalid checked-library catalog"));
+        }
+        let normalized = raw.strip_suffix('\n').unwrap_or(raw);
+        let mut seen: BTreeMap<&str, String> = BTreeMap::new();
+        for line in normalized.split('\n') {
+            let Some((digest, label)) = line.split_once("  ") else {
+                return Err(Failure::operational(
+                    "library-lock",
+                    "invalid checked-library catalog",
+                ));
+            };
+            if !is_sha256_hex(digest)
+                || !LIBRARY_LOCK_TREE_LABELS.contains(&label)
+                || seen.contains_key(label)
+            {
+                return Err(Failure::operational(
+                    "library-lock",
+                    "invalid checked-library catalog",
+                ));
+            }
+            seen.insert(label, digest.to_ascii_lowercase());
+        }
+        if seen.len() != LIBRARY_LOCK_TREE_LABELS.len() {
+            return Err(Failure::operational(
+                "library-lock",
+                "invalid checked-library catalog",
+            ));
+        }
+        Ok(Self {
+            lib_init_sha256: seen.remove("lean/lib/lean/Init/**").expect("validated key"),
+            lib_std_sha256: seen.remove("lean/lib/lean/Std/**").expect("validated key"),
+            src_init_sha256: seen.remove("lean/src/lean/Init/**").expect("validated key"),
+            src_std_sha256: seen.remove("lean/src/lean/Std/**").expect("validated key"),
+        })
+    }
+
+    /// Render the canonical 4-line `library-lock.json` representation.
+    #[cfg(test)]
+    pub(crate) fn render(&self) -> String {
+        format!(
+            "{}  lean/lib/lean/Init/**\n{}  lean/lib/lean/Std/**\n{}  lean/src/lean/Init/**\n{}  lean/src/lean/Std/**\n",
+            self.lib_init_sha256, self.lib_std_sha256, self.src_init_sha256, self.src_std_sha256,
+        )
+    }
+
+    /// Compute a 4-tree `LibraryLock` from an installed Lean `prefix`.
+    #[cfg(test)]
+    pub(crate) fn compute_for_prefix(prefix: &Path, phase: &str) -> Result<Self, Failure> {
+        Ok(Self {
+            lib_init_sha256: compute_sysroot_tree_digest(&prefix.join("lib/lean/Init"), phase)?,
+            lib_std_sha256: compute_sysroot_tree_digest(&prefix.join("lib/lean/Std"), phase)?,
+            src_init_sha256: compute_sysroot_tree_digest(&prefix.join("src/lean/Init"), phase)?,
+            src_std_sha256: compute_sysroot_tree_digest(&prefix.join("src/lean/Std"), phase)?,
+        })
+    }
+
+    /// Verify all four `Init`/`Std` sysroot trees beneath `prefix` match this
+    /// lock without following symlinks or permitting non-regular files.
+    pub(crate) fn verify_prefix(&self, prefix: &Path, phase: &str) -> Result<(), Failure> {
+        for (label, rel_dir, expected) in [
+            ("lean/lib/lean/Init/**", "lib/lean/Init", &self.lib_init_sha256),
+            ("lean/lib/lean/Std/**", "lib/lean/Std", &self.lib_std_sha256),
+            ("lean/src/lean/Init/**", "src/lean/Init", &self.src_init_sha256),
+            ("lean/src/lean/Std/**", "src/lean/Std", &self.src_std_sha256),
+        ] {
+            let actual = compute_sysroot_tree_digest(&prefix.join(rel_dir), phase)?;
+            if !actual.eq_ignore_ascii_case(expected) {
+                return Err(Failure::operational(
+                    phase,
+                    format!("sysroot tree {label} SHA-256 mismatch: expected {expected}, got {actual}"),
+                ));
+            }
+        }
+        Ok(())
+    }
 }
 
 /// Holds the admitted Lean 4.34.1 toolchain state, `foundation-lock.json`
@@ -410,28 +505,59 @@ pub(crate) fn is_allowed_unpinned_sysroot_module(module: &str) -> bool {
         && matches!(module.split('.').next(), Some("Init" | "Std"))
 }
 
+/// Return `true` if `module` lies strictly beneath `Init.*` or `Std.*` so all
+/// of its `.lean` and `.olean`/`.ir` files live inside the four directories
+/// covered by [`LibraryLock`] (excluding bare `Init`/`Std` barrel files outside
+/// `Init/**` and `Std/**`).
+pub(crate) fn is_allowed_pinned_library_module(module: &str) -> bool {
+    module.contains('.') && is_allowed_unpinned_sysroot_module(module)
+}
+
 /// Validate that every module and import target in an unpinned sysroot graph
 /// belongs strictly to `Init` or `Std` and is present in `graph`.
 pub(crate) fn validate_unpinned_sysroot_graph(
     graph: &BTreeMap<String, Vec<ImportEdge>>,
 ) -> Result<(), Failure> {
+    validate_sysroot_graph_with(graph, false)
+}
+
+/// Validate that every module and import target in a pinned `library-lock`
+/// sysroot graph belongs strictly to `Init.*` or `Std.*` and is present in
+/// `graph`.
+pub(crate) fn validate_pinned_library_graph(
+    graph: &BTreeMap<String, Vec<ImportEdge>>,
+) -> Result<(), Failure> {
+    validate_sysroot_graph_with(graph, true)
+}
+
+fn validate_sysroot_graph_with(
+    graph: &BTreeMap<String, Vec<ImportEdge>>,
+    require_submodules_only: bool,
+) -> Result<(), Failure> {
+    let is_ok = |m: &str| {
+        if require_submodules_only {
+            is_allowed_pinned_library_module(m)
+        } else {
+            is_allowed_unpinned_sysroot_module(m)
+        }
+    };
+    let allowed_desc = if require_submodules_only {
+        "only Init.* and Std.* are permitted"
+    } else {
+        "only Init and Std are permitted"
+    };
     for (module, edges) in graph {
-        if !is_allowed_unpinned_sysroot_module(module) {
+        if !is_ok(module) {
             return Err(Failure::policy(
                 "sysroot",
-                format!(
-                    "disallowed unpinned sysroot module {module}: only Init and Std are permitted"
-                ),
+                format!("disallowed sysroot module {module}: {allowed_desc}"),
             ));
         }
         for edge in edges {
-            if !is_allowed_unpinned_sysroot_module(&edge.module) {
+            if !is_ok(&edge.module) {
                 return Err(Failure::policy(
                     "sysroot",
-                    format!(
-                        "disallowed unpinned sysroot import {} in {module}: only Init and Std are permitted",
-                        edge.module
-                    ),
+                    format!("disallowed sysroot import {} in {module}: {allowed_desc}", edge.module),
                 ));
             }
             if !graph.contains_key(&edge.module) {
@@ -602,13 +728,19 @@ pub fn read_regular_file_deref(path: &Path, phase: &str) -> Result<(Vec<u8>, Str
     Ok((bytes, sha))
 }
 
-/// Read and SHA-256 hash a regular file while rejecting symlinks and
-/// non-regular files, verifying the open fd and post-read canonical path.
-pub fn read_regular_file_strict(
+fn sha256_hex_of_digest(digest: &[u8; 32]) -> String {
+    let mut hex = String::with_capacity(64);
+    for byte in digest {
+        let _ = write!(&mut hex, "{byte:02x}");
+    }
+    hex
+}
+
+fn read_regular_file_strict_raw(
     path: &Path,
     expected_canon: Option<&Path>,
     phase: &str,
-) -> Result<(Vec<u8>, String), Failure> {
+) -> Result<(Vec<u8>, [u8; 32]), Failure> {
     regular(path, phase)?;
     let mut file = open_regular_nofollow_nonblock(path, phase)?;
     let mut bytes = Vec::new();
@@ -626,8 +758,19 @@ pub fn read_regular_file_strict(
             ));
         }
     }
-    let sha = sha256_bytes(&bytes);
-    Ok((bytes, sha))
+    let digest: [u8; 32] = Sha256::digest(&bytes).into();
+    Ok((bytes, digest))
+}
+
+/// Read and SHA-256 hash a regular file while rejecting symlinks and
+/// non-regular files, verifying the open fd and post-read canonical path.
+pub fn read_regular_file_strict(
+    path: &Path,
+    expected_canon: Option<&Path>,
+    phase: &str,
+) -> Result<(Vec<u8>, String), Failure> {
+    let (bytes, digest) = read_regular_file_strict_raw(path, expected_canon, phase)?;
+    Ok((bytes, sha256_hex_of_digest(&digest)))
 }
 
 /// Hash a file, dereferencing symlinks (for sysroot libraries/sources and tool
@@ -1065,6 +1208,167 @@ pub(crate) fn compute_unpinned_sysroot_manifest_sha256(
 ) -> Result<String, Failure> {
     walk_and_hash_sysroot_dir_with_mode(lib_dir, &BTreeSet::new(), true, phase)
         .map(|(sha, _)| sha)
+}
+
+/// Compute a deterministic SHA-256 digest over every regular file recursively
+/// beneath `root_dir`, framing entries as `<rel-posix>\0<sha256-digest>` sorted
+/// by POSIX relative path and failing closed on symlinks or non-regular files.
+pub(crate) fn compute_sysroot_tree_digest(root_dir: &Path, phase: &str) -> Result<String, Failure> {
+    let root_meta = fs::symlink_metadata(root_dir).map_err(|e| {
+        Failure::operational(phase, format!("cannot inspect sysroot tree {}: {e}", root_dir.display()))
+    })?;
+    if root_meta.file_type().is_symlink() {
+        return Err(Failure::policy(
+            phase,
+            format!("symlink forbidden in sysroot: {}", root_dir.display()),
+        ));
+    }
+    if !root_meta.file_type().is_dir() {
+        return Err(Failure::operational(
+            phase,
+            format!("expected sysroot directory: {}", root_dir.display()),
+        ));
+    }
+    let mut files: Vec<(String, PathBuf)> = Vec::new();
+    for item in WalkDir::new(root_dir).follow_links(false) {
+        let item = item.map_err(|e| {
+            Failure::policy(phase, format!("cannot walk sysroot {}: {e}", root_dir.display()))
+        })?;
+        let ft = item.file_type();
+        if ft.is_symlink() {
+            return Err(Failure::policy(
+                phase,
+                format!("symlink forbidden in sysroot: {}", item.path().display()),
+            ));
+        }
+        if ft.is_dir() {
+            continue;
+        }
+        if !ft.is_file() {
+            return Err(Failure::policy(
+                phase,
+                format!("unexpected file type in sysroot: {}", item.path().display()),
+            ));
+        }
+        let rel_path = item.path().strip_prefix(root_dir).map_err(|e| {
+            Failure::operational(phase, format!("invalid sysroot relative path: {e}"))
+        })?;
+        let mut segs = Vec::new();
+        for comp in rel_path.components() {
+            let Component::Normal(os) = comp else {
+                return Err(Failure::policy(
+                    phase,
+                    format!("invalid path component in {}", item.path().display()),
+                ));
+            };
+            let Some(s) = os.to_str() else {
+                return Err(Failure::policy(
+                    phase,
+                    format!("non-UTF-8 path in sysroot: {}", item.path().display()),
+                ));
+            };
+            segs.push(s);
+        }
+        files.push((segs.join("/"), item.path().to_path_buf()));
+    }
+    files.sort_by(|a, b| a.0.as_bytes().cmp(b.0.as_bytes()));
+
+    let workers = std::thread::available_parallelism()
+        .map(NonZero::get)
+        .unwrap_or(1)
+        .min(4)
+        .min(files.len());
+    let digests: Vec<[u8; 32]> = if workers <= 1 {
+        let mut out = Vec::with_capacity(files.len());
+        for (_, path) in &files {
+            let (_, digest) = read_regular_file_strict_raw(path, None, phase)?;
+            out.push(digest);
+        }
+        out
+    } else {
+        type DigestOutcome = (usize, Result<[u8; 32], Failure>);
+        let next_idx = AtomicUsize::new(0);
+        let min_err_idx = AtomicUsize::new(usize::MAX);
+        let outcomes: Mutex<Vec<DigestOutcome>> = Mutex::new(Vec::with_capacity(files.len()));
+        std::thread::scope(|scope| {
+            for _ in 0..workers {
+                scope.spawn(|| {
+                    let mut local = Vec::new();
+                    loop {
+                        let idx = next_idx.fetch_add(1, Ordering::Relaxed);
+                        if idx >= files.len() || idx > min_err_idx.load(Ordering::Relaxed) {
+                            break;
+                        }
+                        let res = read_regular_file_strict_raw(&files[idx].1, None, phase)
+                            .map(|(_, digest)| digest);
+                        if res.is_err() {
+                            min_err_idx.fetch_min(idx, Ordering::Relaxed);
+                        }
+                        local.push((idx, res));
+                    }
+                    outcomes.lock().unwrap_or_else(|e| e.into_inner()).extend(local);
+                });
+            }
+        });
+        let mut collected = outcomes.into_inner().unwrap_or_else(|e| e.into_inner());
+        collected.sort_unstable_by_key(|(idx, _)| *idx);
+        let mut out = Vec::with_capacity(files.len());
+        for (_, res) in collected {
+            out.push(res?);
+        }
+        out
+    };
+
+    let mut outer = Sha256::new();
+    for ((rel, _), digest) in files.iter().zip(digests.iter()) {
+        outer.update(rel.as_bytes());
+        outer.update([0u8]);
+        outer.update(digest);
+    }
+    let finalized: [u8; 32] = outer.finalize().into();
+    Ok(sha256_hex_of_digest(&finalized))
+}
+
+/// Collect regular binary artifact parts for a pinned `Init.*`/`Std.*`
+/// `module` under `prefix`, strictly forbidding symlinks.
+pub(crate) fn collect_pinned_sysroot_module_artifacts(
+    prefix: &Path,
+    module: &str,
+    phase: &str,
+) -> Result<ModuleArtifacts, Failure> {
+    if !is_allowed_pinned_library_module(module) {
+        return Err(Failure::policy(phase, format!("disallowed sysroot module {module}")));
+    }
+    let rel_mod = module.replace('.', "/");
+    let source_path = prefix.join("src/lean").join(format!("{rel_mod}.lean"));
+    match fs::symlink_metadata(&source_path) {
+        Err(e) if e.kind() == io::ErrorKind::NotFound => {}
+        Err(e) => {
+            return Err(Failure::operational(
+                phase,
+                format!("cannot inspect {}: {e}", source_path.display()),
+            ));
+        }
+        Ok(_) => regular(&source_path, phase)?,
+    }
+    let mut available: BTreeMap<&str, String> = BTreeMap::new();
+    for part in PARTS {
+        let installed = prefix.join("lib/lean").join(format!("{rel_mod}.{part}"));
+        match fs::symlink_metadata(&installed) {
+            Err(e) if e.kind() == io::ErrorKind::NotFound => {}
+            Err(e) => {
+                return Err(Failure::operational(
+                    phase,
+                    format!("cannot inspect {}: {e}", installed.display()),
+                ));
+            }
+            Ok(_) => {
+                regular(&installed, phase)?;
+                available.insert(part, installed.to_string_lossy().into_owned());
+            }
+        }
+    }
+    ModuleArtifacts::from_available(&available, phase, || format!("missing olean for {module}"))
 }
 
 #[cfg(test)]

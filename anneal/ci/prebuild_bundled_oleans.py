@@ -34,6 +34,12 @@ CACHE_FORMAT_VERSION = 1
 OLEAN_PARTS = ("olean", "olean.server", "olean.private")
 IR_PARTS = ("ir.sig", "ir")
 SYSROOT_PACKAGES = ("Init", "Std", "Lean")
+LIBRARY_LOCK_TREES = (
+    ("lean/lib/lean/Init/**", "lib/lean/Init"),
+    ("lean/lib/lean/Std/**", "lib/lean/Std"),
+    ("lean/src/lean/Init/**", "src/lean/Init"),
+    ("lean/src/lean/Std/**", "src/lean/Std"),
+)
 CANONICAL_COMPILE_FLAGS = [
     "-j1",
     "-t0",
@@ -42,10 +48,21 @@ CANONICAL_COMPILE_FLAGS = [
 ]
 TRUSTED_SOURCE_RE = re.compile(r'"(trusted/lean/(?:Trusted\.lean|Trusted/[^"]+\.lean))"')
 IDENT_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
+SHA256_HEX_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 
 
 def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def sha256_raw_file(path: Path) -> bytes:
+    if path.is_symlink() or not path.is_file():
+        raise RuntimeError(f"expected regular file in sysroot: {path}")
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        while chunk := f.read(1024 * 1024):
+            h.update(chunk)
+    return h.digest()
 
 
 def sha256_file(path: Path) -> str:
@@ -143,13 +160,95 @@ def load_theory_module_sources(anneal_root: Path) -> dict[str, Path]:
     return modules
 
 
-def compute_sysroot_manifest_and_artifacts(
+def is_allowed_pinned_library_module(module: str) -> bool:
+    """Return True iff `module` lies strictly beneath `Init.*` or `Std.*`."""
+    parts = module.split(".")
+    return (
+        len(parts) >= 2
+        and all(IDENT_RE.match(p) for p in parts)
+        and parts[0] in ("Init", "Std")
+    )
+
+
+def compute_sysroot_tree_digest(root_dir: Path, jobs: int) -> str:
+    """Compute recursive `<rel>\\0<32B-sha256>` tree digest matching Rust."""
+    if root_dir.is_symlink():
+        raise RuntimeError(f"symlink forbidden in sysroot: {root_dir}")
+    if not root_dir.is_dir():
+        raise RuntimeError(f"expected sysroot directory: {root_dir}")
+    files: list[tuple[str, Path]] = []
+    for dirpath, dirnames, filenames in os.walk(root_dir, followlinks=False):
+        dp = Path(dirpath)
+        for name in sorted(dirnames):
+            child = dp / name
+            if child.is_symlink():
+                raise RuntimeError(f"symlink forbidden in sysroot: {child}")
+        for name in sorted(filenames):
+            child = dp / name
+            if child.is_symlink():
+                raise RuntimeError(f"symlink forbidden in sysroot: {child}")
+            if not child.is_file():
+                raise RuntimeError(f"unexpected file type in sysroot: {child}")
+            rel_posix = child.relative_to(root_dir).as_posix()
+            files.append((rel_posix, child))
+    files.sort(key=lambda pair: pair[0].encode("utf-8"))
+    if len(files) <= 1 or jobs <= 1:
+        digests = [sha256_raw_file(p) for _, p in files]
+    else:
+        with ThreadPoolExecutor(max_workers=max(1, min(jobs, 4))) as pool:
+            digests = list(pool.map(lambda pair: sha256_raw_file(pair[1]), files))
+    outer = hashlib.sha256()
+    for (rel_posix, _), digest_bytes in zip(files, digests):
+        outer.update(rel_posix.encode("utf-8"))
+        outer.update(b"\x00")
+        outer.update(digest_bytes)
+    return outer.hexdigest()
+
+
+def render_library_lock_for_prefix(lean_prefix: Path, jobs: int = 1) -> str:
+    """Compute canonical 4-line `library-lock.json` text for `lean_prefix`."""
+    lines = [
+        f"{compute_sysroot_tree_digest(lean_prefix / rel_dir, jobs)}  {label}\n"
+        for label, rel_dir in LIBRARY_LOCK_TREES
+    ]
+    return "".join(lines)
+
+
+def parse_and_verify_library_lock(
+    library_lock_path: Path, lean_prefix: Path, jobs: int
+) -> dict[str, str]:
+    """Parse strict 4-line `library-lock.json` and verify all 4 sysroot trees."""
+    if library_lock_path.is_symlink() or not library_lock_path.is_file():
+        raise RuntimeError(f"expected regular library-lock file: {library_lock_path}")
+    raw = library_lock_path.read_text(encoding="utf-8")
+    if "\r" in raw:
+        raise RuntimeError(f"invalid library-lock CR line ending in {library_lock_path}")
+    normalized = raw[:-1] if raw.endswith("\n") else raw
+    expected_labels = {label for label, _ in LIBRARY_LOCK_TREES}
+    seen: dict[str, str] = {}
+    for line in normalized.split("\n"):
+        if "  " not in line:
+            raise RuntimeError(f"invalid library-lock line in {library_lock_path}: {line!r}")
+        digest, label = line.split("  ", 1)
+        if not SHA256_HEX_RE.match(digest) or label not in expected_labels or label in seen:
+            raise RuntimeError(f"invalid library-lock entry in {library_lock_path}: {line!r}")
+        seen[label] = digest.lower()
+    if len(seen) != len(LIBRARY_LOCK_TREES):
+        raise RuntimeError(f"incomplete library-lock in {library_lock_path}")
+    for label, rel_dir in LIBRARY_LOCK_TREES:
+        actual = compute_sysroot_tree_digest(lean_prefix / rel_dir, jobs)
+        if actual != seen[label]:
+            raise RuntimeError(
+                f"sysroot tree {label} SHA-256 mismatch: expected {seen[label]}, got {actual}"
+            )
+    return seen
+
+
+def compute_sysroot_manifest(
     lib_dir: Path,
-    foundation_modules: set[str],
-    library_modules: set[str],
     jobs: int,
-) -> tuple[str, dict[str, list[list[str]]], dict[str, list[str]]]:
-    """Compute strict `walk_and_hash_sysroot_dir` digest plus sysroot artifacts."""
+) -> tuple[str, dict[str, str]]:
+    """Compute strict `walk_and_hash_sysroot_dir` digest over `lib/lean`."""
     if not lib_dir.is_dir():
         raise RuntimeError(f"expected sysroot lib directory: {lib_dir}")
 
@@ -194,30 +293,42 @@ def compute_sysroot_manifest_and_artifacts(
     entries.sort(key=lambda pair: pair[0])
     manifest_text = "".join(f"{rel}:{sha}\n" for rel, sha in entries)
     manifest_sha = sha256_bytes(manifest_text.encode("utf-8"))
+    return manifest_sha, path_shas
 
+
+def collect_sysroot_artifacts(
+    lib_dir: Path,
+    sysroot_modules: set[str],
+    path_shas: dict[str, str],
+) -> tuple[dict[str, list[list[str]]], dict[str, list[str]]]:
+    """Collect `.olean*` and `.ir*` artifacts for resolved sysroot modules."""
     sysroot_arts: dict[str, list[list[str]]] = {}
     sysroot_part_shas: dict[str, list[str]] = {}
-    for mod in sorted(foundation_modules | library_modules):
+    for mod in sorted(sysroot_modules):
         mod_rel = mod.replace(".", "/")
         oleans: list[str] = []
         part_shas: list[str] = []
         for ext in OLEAN_PARTS:
             p = lib_dir / f"{mod_rel}.{ext}"
+            if p.is_symlink():
+                raise RuntimeError(f"symlink forbidden in sysroot: {p}")
             if p.is_file():
                 ps = str(p)
                 oleans.append(ps)
                 part_shas.append(path_shas.get(ps) or sha256_file(p))
         if not oleans:
-            raise RuntimeError(f"missing sysroot .olean for locked module {mod}")
-        irs = [
-            str(lib_dir / f"{mod_rel}.{ext}")
-            for ext in IR_PARTS
-            if (lib_dir / f"{mod_rel}.{ext}").is_file()
-        ]
+            raise RuntimeError(f"missing sysroot .olean for module {mod}")
+        irs = []
+        for ext in IR_PARTS:
+            p = lib_dir / f"{mod_rel}.{ext}"
+            if p.is_symlink():
+                raise RuntimeError(f"symlink forbidden in sysroot: {p}")
+            if p.is_file():
+                irs.append(str(p))
         sysroot_arts[mod] = [oleans, irs]
         sysroot_part_shas[mod] = part_shas
 
-    return manifest_sha, sysroot_arts, sysroot_part_shas
+    return sysroot_arts, sysroot_part_shas
 
 
 def run_lean(
@@ -249,6 +360,34 @@ def run_lean(
         capture_output=True,
         text=True,
     )
+
+
+def validate_resolved_library_graph(
+    resolved_graph: dict[str, list[dict]],
+    resolve_roots: set[str],
+    foundation_graph: dict[str, list[dict]],
+) -> None:
+    """Verify `resolve-imports` output contains only pinned `Init.*`/`Std.*` modules."""
+    for req_mod in sorted(resolve_roots):
+        if req_mod not in resolved_graph:
+            raise RuntimeError(f"resolve-imports omitted requested root {req_mod}")
+    for mod_name, edges in resolved_graph.items():
+        if not is_allowed_pinned_library_module(mod_name):
+            raise RuntimeError(f"resolve-imports returned disallowed module {mod_name}")
+        for edge in edges:
+            edge_mod = edge["module"]
+            if edge_mod not in resolved_graph:
+                raise RuntimeError(
+                    f"resolve-imports graph missing edge {mod_name} -> {edge_mod}"
+                )
+            if not is_allowed_pinned_library_module(edge_mod):
+                raise RuntimeError(
+                    f"resolve-imports returned disallowed edge {mod_name} -> {edge_mod}"
+                )
+        if mod_name in foundation_graph and foundation_graph[mod_name] != edges:
+            raise RuntimeError(
+                f"resolved foundation import edges changed for {mod_name}"
+            )
 
 
 def transitive_closure(graph: dict[str, list[dict]], direct_edges: list[dict]) -> list[str]:
@@ -287,19 +426,17 @@ def prebuild(
     foundation_lock = json.loads(
         (anneal_root / "trusted/lean/foundation-lock.json").read_text(encoding="utf-8")
     )
-    library_lock = json.loads(
-        (anneal_root / "trusted/audit/library-lock.json").read_text(encoding="utf-8")
+    parse_and_verify_library_lock(
+        anneal_root / "trusted/audit/library-lock.json",
+        lean_prefix_resolved,
+        jobs,
     )
-    sysroot_graph: dict[str, list[dict]] = {}
-    sysroot_graph.update(foundation_lock["graph"])
-    sysroot_graph.update(library_lock["graph"])
+    foundation_graph: dict[str, list[dict]] = dict(foundation_lock["graph"])
+    sysroot_graph: dict[str, list[dict]] = dict(foundation_graph)
 
     foundation_mods = set(foundation_lock["modules"].keys())
-    library_mods = set(library_lock["modules"].keys())
-    sysroot_manifest_sha256, sysroot_arts, dep_part_shas = compute_sysroot_manifest_and_artifacts(
+    sysroot_manifest_sha256, path_shas = compute_sysroot_manifest(
         lean_prefix_resolved / "lib/lean",
-        foundation_mods,
-        library_mods,
         jobs,
     )
 
@@ -402,6 +539,7 @@ def prebuild(
 
         bundled_edges: dict[str, list[dict]] = {}
         bundled_is_module: dict[str, bool] = {}
+        resolve_roots: set[str] = set()
         for item in parsed_headers["result"]["headers"]:
             mod = item["module"]
             bundled_edges[mod] = item["imports"]
@@ -413,10 +551,63 @@ def prebuild(
                 )
             for edge in item["imports"]:
                 dep = edge["module"]
+                if dep in bundled_sources or dep in sysroot_graph:
+                    continue
+                if not is_allowed_pinned_library_module(dep):
+                    raise RuntimeError(
+                        f"bundled module {mod} imports disallowed external module {dep}"
+                    )
+                resolve_roots.add(dep)
+
+        if resolve_roots:
+            resolve_req = tmp / "resolve.req.json"
+            resolve_res = tmp / "resolve.res.json"
+            resolve_req.write_text(
+                json.dumps(
+                    {
+                        "mode": "resolve-imports",
+                        "sysroot": str(lean_prefix_resolved),
+                        "modules": sorted(resolve_roots),
+                    }
+                ),
+                encoding="utf-8",
+            )
+            resolve_proc = run_lean(
+                lean_exec_resolved,
+                ["-j1", "-M2048", "--run", str(entry_file), str(resolve_req), str(resolve_res)],
+                cwd=tmp,
+                lean_path=os.pathsep.join(
+                    [str(control_dir), str(lean_prefix_resolved / "lib/lean")]
+                ),
+            )
+            if resolve_proc.returncode != 0:
+                raise RuntimeError(
+                    f"TrustedBoundary resolve-imports failed (rc={resolve_proc.returncode}):\n"
+                    f"stdout:\n{resolve_proc.stdout}\nstderr:\n{resolve_proc.stderr}"
+                )
+            parsed_resolve = json.loads(resolve_res.read_text(encoding="utf-8"))
+            if not parsed_resolve.get("ok"):
+                raise RuntimeError(
+                    f"TrustedBoundary resolve-imports returned failure: {parsed_resolve}"
+                )
+            resolved_graph = parsed_resolve["result"]["graph"]
+            validate_resolved_library_graph(resolved_graph, resolve_roots, foundation_graph)
+            sysroot_graph.update(resolved_graph)
+
+        for mod, edges in bundled_edges.items():
+            for edge in edges:
+                dep = edge["module"]
                 if dep not in bundled_sources and dep not in sysroot_graph:
                     raise RuntimeError(
-                        f"bundled module {mod} imports unlocked sysroot/external module {dep}"
+                        f"bundled module {mod} imports unresolved external module {dep}"
                     )
+
+        sysroot_mods = foundation_mods | set(sysroot_graph.keys())
+        sysroot_arts, dep_part_shas = collect_sysroot_artifacts(
+            lean_prefix_resolved / "lib/lean",
+            sysroot_mods,
+            path_shas,
+        )
 
         full_graph = dict(sysroot_graph)
         full_graph.update(bundled_edges)

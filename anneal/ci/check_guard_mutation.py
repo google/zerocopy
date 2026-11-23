@@ -1031,30 +1031,46 @@ AUDIT_HEADER_GUARDS: tuple[AuditHeaderGuard, ...] = (
     AuditHeaderGuard(
         guard_id="audit_header_reject_lean_import",
         target_file="trusted/audit/TrustedBoundary.lean",
-        description="validateTargetImports rejects `import Lean` in target headers",
+        description="isForbiddenPureImport rejects `import Lean` in target headers",
         anchor=(
-            "    if imp.module == `Lean || root == `Lean ||\n"
-            "        imp.module == `Lake || root == `Lake then"
+            "  let r := m.getRoot\n"
+            "  r == `Lean || r == `Lake ||"
         ),
         replacement=(
-            "    if false ||\n"
-            "        imp.module == `Lake || root == `Lake then"
+            "  let r := m.getRoot\n"
+            "  false || r == `Lake ||"
         ),
         negative_source="import Lean\n",
     ),
     AuditHeaderGuard(
         guard_id="audit_header_reject_lake_import",
         target_file="trusted/audit/TrustedBoundary.lean",
-        description="validateTargetImports rejects `import Lake` in target headers",
+        description="isForbiddenPureImport rejects `import Lake` in target headers",
         anchor=(
-            "    if imp.module == `Lean || root == `Lean ||\n"
-            "        imp.module == `Lake || root == `Lake then"
+            "  let r := m.getRoot\n"
+            "  r == `Lean || r == `Lake ||"
         ),
         replacement=(
-            "    if imp.module == `Lean || root == `Lean ||\n"
-            "        false then"
+            "  let r := m.getRoot\n"
+            "  r == `Lean || false ||"
         ),
         negative_source="import Lake\n",
+    ),
+    AuditHeaderGuard(
+        guard_id="audit_header_reject_init_system_import",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        description="isForbiddenPureImport rejects `import Init.System.IO` in target headers",
+        anchor="    m == `Init.System || (`Init.System).isPrefixOf m ||",
+        replacement="    false ||",
+        negative_source="import Init.System.IO\n",
+    ),
+    AuditHeaderGuard(
+        guard_id="audit_header_reject_std_uv_import",
+        target_file="trusted/audit/TrustedBoundary.lean",
+        description="isForbiddenPureImport rejects `import Std.Internal.UV` in target headers",
+        anchor="    m == `Std.Internal.UV || (`Std.Internal.UV).isPrefixOf m",
+        replacement="    false",
+        negative_source="import Std.Internal.UV\n",
     ),
 )
 
