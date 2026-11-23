@@ -11,6 +11,7 @@
 import argparse
 from concurrent.futures import ThreadPoolExecutor
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -26,7 +27,7 @@ FIXTURE_FILES = ("lib.rs", "Spec.lean", "Proof.lean", "request.json")
 
 def check(cli, directory, code, status, stderr_contains=None):
     result = subprocess.run(
-        [str(cli), "verify", "--request", "request.json"],
+        [str(cli), "verify", "--format", "json", "--request", "request.json"],
         cwd=directory,
         capture_output=True,
         text=True,
@@ -101,11 +102,53 @@ def run_unsupported(cli):
         return line
 
 
+def run_human_and_receipt_out(cli):
+    with tempfile.TemporaryDirectory(prefix="anneal-alpha-human-") as tmp:
+        directory = Path(tmp)
+        stage_fixture(directory)
+        receipt_file = directory / "receipt.json"
+        env = dict(os.environ)
+        for key in ("CARGO_TERM_COLOR", "CLICOLOR_FORCE", "FORCE_COLOR"):
+            env.pop(key, None)
+        result = subprocess.run(
+            [
+                str(cli),
+                "verify",
+                "--request",
+                "request.json",
+                "--receipt-out",
+                str(receipt_file),
+            ],
+            cwd=directory,
+            env=env,
+            capture_output=True,
+            text=True,
+            timeout=240,
+        )
+        if result.returncode != 0:
+            raise RuntimeError(
+                f"expected exit 0, got {result.returncode}\n"
+                f"{result.stdout}\n{result.stderr}"
+            )
+        if "\x1b" in result.stdout or "[SCOPED]" not in result.stdout or "[OK]" in result.stdout:
+            raise RuntimeError(f"unexpected default human card:\n{result.stdout}")
+        receipt = json.loads(receipt_file.read_text(encoding="utf-8"))
+        if receipt.get("status") != "selected_unit_verified":
+            raise RuntimeError(f"unexpected --receipt-out payload: {receipt}")
+        return "human_card+receipt_out (exit 0)"
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cli", required=True, type=Path)
     cli = parser.parse_args().cli.resolve(strict=True)
-    cases = (run_accepted, run_proof_failed, run_compiler_failed, run_unsupported)
+    cases = (
+        run_accepted,
+        run_proof_failed,
+        run_compiler_failed,
+        run_unsupported,
+        run_human_and_receipt_out,
+    )
     with ThreadPoolExecutor(max_workers=len(cases)) as pool:
         futures = [pool.submit(case, cli) for case in cases]
         lines = [future.result() for future in futures]

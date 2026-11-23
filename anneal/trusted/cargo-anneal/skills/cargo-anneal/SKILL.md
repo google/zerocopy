@@ -39,11 +39,30 @@ same user and `XDG_CACHE_HOME` across `setup` and `verify`. Builds compiled with
 `--no-default-features` omit `setup` and require `--capture`, `--sysroot`, and
 `--lean`.
 
-Run verification, save stdout to a receipt file, and keep its exit code:
+Run verification (defaults to `--format human` on stdout), atomically write a
+Receipt Schema v3 JSON file via `--receipt-out` (or pass `--format json` to
+stream JSON on stdout), and treat the process exit code (`0` verified, `1`
+verification failure, `2` operational/argument error) as authoritative
+alongside the receipt file (`--receipt-out` clears any pre-existing non-input
+regular file once inputs are validated so interrupted or failed runs cannot
+leave a stale pass behind, while early argument/alias rejections exit `2`
+without touching the destination):
 
 ```sh
-cargo anneal verify --request path/to/request.json > path/to/receipt.json
+cargo anneal verify --request path/to/request.json --receipt-out path/to/receipt.json
 ```
+
+Output and diagnostic flags:
+- `--format human|json|auto`: defaults to `human`, rendering a five-tier
+  verdict card (`[OK]` only for untainted, warning-free whole-crate runs;
+  `[SCOPED]` for `selected_unit`; `[WARN]` when `spec_warnings` are present;
+  `[TAINTED]` under `--allow-*`; `[FAIL]` on failure). Pass `--format json`
+  when piping Receipt v3 JSON on stdout, or `--receipt-out <path>` to persist
+  JSON atomically alongside human output.
+- `--color auto|always|never`, `-q`/`--quiet`, and `-v`/`--verbose`: control
+  ANSI styling (`auto` follows stream `isatty`, `CARGO_TERM_COLOR`, `NO_COLOR`,
+  and `TERM=dumb`), quiet summaries (never hiding taint or warning caveats),
+  and untruncated diagnostics/line progress.
 
 Other entrypoints:
 - Cargo packages: `cargo anneal verify --manifest-path path/to/Cargo.toml --proof-dir path/to/proofs [--no-default-features] [--features <list>] [--all-features]`

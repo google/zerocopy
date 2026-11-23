@@ -10,7 +10,7 @@
 
 use std::{env, ffi::OsStr, fs, os::unix::fs::symlink, path::PathBuf};
 
-use anneal_testkit::Invocation;
+use anneal_testkit::{Invocation, assertions::assert_outcome_exit};
 use serde_json::{Value, json};
 
 use crate::helpers::{
@@ -570,7 +570,7 @@ fn selected_unit_normalization_and_boundary_rejections() {
 
     // Missing capture executable fails as capture-tool error.
     let tools = workspace_tools();
-    let missing_inv = Invocation::new(tools.cli.as_deref().unwrap(), &["verify"])
+    let missing_inv = Invocation::new(tools.cli.as_deref().unwrap(), &["verify", "--format", "json"])
         .arg("--request")
         .arg(&req_path)
         .arg("--capture")
@@ -902,4 +902,91 @@ fn rustc_mode_symlinks_replay_export_lean_lib_and_unpinned_taint() {
         sp_fail.elaboration_sandbox.as_deref(),
         Some("linux_bwrap" | "linux_landlock_seccomp")
     ));
+}
+
+#[test]
+fn human_verdict_cards_and_receipt_out_cover_ok_scoped_and_tainted_tiers() {
+    let tools = workspace_tools();
+    let cli = tools.cli.as_deref().expect("workspace cli binary");
+    let capture = tools.capture.as_deref().expect("workspace capture binary");
+    let staged = new_workspace("anneal-human-card-").stage().unwrap();
+    let work = staged.work_dir();
+    let request = write_scalar_baseline(work);
+    let req_path = write_json_file(&work.join("human-crate.json"), &request);
+    let receipt_out = work.join("crate-receipt.json");
+
+    // 1. Default `--format human` with `--color always`, `-v`, `--receipt-out`
+    //    on clean whole-crate verify -> `[OK]` + SGR green + 6-phase LineLog
+    //    progress + atomic Receipt Schema v3 JSON on disk.
+    let ok_inv = Invocation::new(cli, &["--color", "always", "-v", "verify", "--request"])
+        .arg(&req_path)
+        .arg("--receipt-out")
+        .arg(&receipt_out)
+        .arg("--capture")
+        .arg(capture)
+        .arg("--lean")
+        .arg(&tools.lean)
+        .arg("--sysroot")
+        .arg(&tools.sysroot)
+        .env("ANNEAL_TEST_REDACT_TIMING", "1");
+    let ok_raw = staged.exec(&ok_inv).unwrap();
+    assert_outcome_exit(&ok_raw.process, 0).unwrap();
+    let ok_stdout = String::from_utf8(ok_raw.process.stdout).unwrap();
+    let ok_stderr = String::from_utf8(ok_raw.process.stderr).unwrap();
+    assert!(ok_stdout.contains("\x1b[1;32m[OK]\x1b[0m"), "{ok_stdout}");
+    assert!(ok_stdout.contains("CRATE VERIFIED (1/1 required crate bodies)"), "{ok_stdout}");
+    assert!(ok_stdout.contains(&format!("Receipt    : {}", receipt_out.display())), "{ok_stdout}");
+    for step in ["[1/6]", "[2/6]", "[3/6]", "[4/6]", "[5/6]", "[6/6]"] {
+        assert!(ok_stderr.contains(step), "missing {step} in verbose stderr:\n{ok_stderr}");
+    }
+    let disk_receipt: Value = serde_json::from_slice(&fs::read(&receipt_out).unwrap()).unwrap();
+    assert_eq!(disk_receipt["schema_version"], 3);
+    assert_eq!(disk_receipt["status"], "crate_verified");
+
+    // 2. Selected-unit verification -> `[SCOPED]`, NEVER `[OK]` / SGR 32 green.
+    let mut scoped_req = request.clone();
+    scoped_req["compilation"]["source_files"] = json!(["lib.rs", "extra.rs"]);
+    fs::write(work.join("rust/lib.rs"), "pub mod extra;\npub fn zero() -> u64 {\n    0\n}\n")
+        .unwrap();
+    fs::write(work.join("rust/extra.rs"), "pub fn unverified_helper() -> u64 { 42 }\n").unwrap();
+    scoped_req["scope"] = json!({"kind": "selected_unit", "roots": ["zero"]});
+    let scoped_req_path = write_json_file(&work.join("human-scoped.json"), &scoped_req);
+
+    let scoped_inv = Invocation::new(cli, &["--color", "always", "verify", "--request"])
+        .arg(&scoped_req_path)
+        .arg("--capture")
+        .arg(capture)
+        .arg("--lean")
+        .arg(&tools.lean)
+        .arg("--sysroot")
+        .arg(&tools.sysroot);
+    let scoped_raw = staged.exec(&scoped_inv).unwrap();
+    assert_outcome_exit(&scoped_raw.process, 0).unwrap();
+    let scoped_stdout = String::from_utf8(scoped_raw.process.stdout).unwrap();
+    assert!(scoped_stdout.contains("[SCOPED]"), "{scoped_stdout}");
+    assert!(!scoped_stdout.contains("[OK]"), "{scoped_stdout}");
+    assert!(!scoped_stdout.contains("\x1b[1;32m"), "{scoped_stdout}");
+    assert!(
+        scoped_stdout.contains("1/2 required crate bodies; 1 required items UNVERIFIED"),
+        "{scoped_stdout}"
+    );
+
+    // 3. Tainted verification (`--allow-sorry-in-proof -q`) -> `[TAINTED]` with
+    //    mandatory `! TAINT` row preserved even under `-q`.
+    let tainted_inv = Invocation::new(cli, &["-q", "verify", "--allow-sorry-in-proof", "--request"])
+        .arg(&scoped_req_path)
+        .arg("--capture")
+        .arg(capture)
+        .arg("--lean")
+        .arg(&tools.lean)
+        .arg("--sysroot")
+        .arg(&tools.sysroot);
+    let tainted_raw = staged.exec(&tainted_inv).unwrap();
+    assert_outcome_exit(&tainted_raw.process, 0).unwrap();
+    let tainted_stdout = String::from_utf8(tainted_raw.process.stdout).unwrap();
+    let tainted_stderr = String::from_utf8(tainted_raw.process.stderr).unwrap();
+    assert!(tainted_stdout.contains("[TAINTED]"), "{tainted_stdout}");
+    assert!(tainted_stdout.contains("! TAINT    : sorry_in_proof"), "{tainted_stdout}");
+    assert!(!tainted_stdout.contains("[OK]"), "{tainted_stdout}");
+    assert!(tainted_stderr.contains("TAINTED"), "{tainted_stderr}");
 }

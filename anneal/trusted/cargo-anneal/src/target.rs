@@ -166,6 +166,23 @@ pub struct TargetAuditRequest {
     pub bindings: TargetBindings,
 }
 
+/// Synchronous progress milestone emitted by
+/// [`Checker::run_target_with_progress`].
+#[doc(hidden)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum TargetProgress {
+    /// Admitting the Lean toolchain and foundation/library locks.
+    Toolchain,
+    /// Running `"spec-preflight"` across `module_count` specification modules.
+    SpecPreflight { module_count: usize },
+    /// Elaborating target and bundled Lean modules (`done` of `total`, `cached`
+    /// hits).
+    Elaborate { done: usize, total: usize, cached: usize },
+    /// Verifying the artifact ledger and replaying declarations in
+    /// `"target-audit"`.
+    Audit,
+}
+
 // Module routing and selected declaration labels deliberately share the
 // documented protocol above. Do not mistake this bounded profile for Lean's
 // general naming rules or apply it to helper declarations inside source files.
@@ -903,7 +920,24 @@ impl Checker {
     /// kernel reports, and unavailable locked artifacts use code 2. A rejection
     /// alone does not establish that the requested proposition is false.
     pub fn run_target(&mut self, request: &TargetAuditRequest) -> Result<Json, Failure> {
+        self.run_target_with_progress(request, |_| {})
+    }
+
+    /// Like [`Checker::run_target`], invoking `on_progress` synchronously as
+    /// each target verification stage begins or completes a Lean module.
+    ///
+    /// `Toolchain`, `SpecPreflight`, and `Audit` callbacks run on the calling
+    /// thread; per-module `Elaborate` callbacks run on `run_parallel_dag`
+    /// worker threads serialized under the scheduler mutex, so `on_progress`
+    /// must remain fast and non-blocking to avoid stalling DAG scheduling.
+    #[doc(hidden)]
+    pub fn run_target_with_progress(
+        &mut self,
+        request: &TargetAuditRequest,
+        mut on_progress: impl FnMut(TargetProgress) + Send,
+    ) -> Result<Json, Failure> {
         self.reset_stage()?;
+        on_progress(TargetProgress::Toolchain);
         self.tool_admission()?;
         for digest in [
             &request.bindings.request_sha256,
@@ -1099,6 +1133,7 @@ impl Checker {
             .filter(|(m, _)| roles.get(*m) == Some(&TargetRole::Specification))
             .map(|(m, p)| (m.clone(), p.clone()))
             .collect();
+        on_progress(TargetProgress::SpecPreflight { module_count: spec_sources.len() });
         if spec_sources.is_empty() {
             let empty_fnd = BTreeSet::new();
             let empty_libs = BTreeSet::new();
@@ -1192,7 +1227,8 @@ impl Checker {
         // Compilation consumes authenticated private copies and explicit
         // imported artifacts across the verified module DAG inside `ExecSeal`.
         self.compiled_roles = roles.clone();
-        self.compile_lean_modules_parallel(
+        on_progress(TargetProgress::Elaborate { done: 0, total: order.len(), cached: 0 });
+        self.compile_lean_modules_parallel_with_progress(
             &order,
             &staged,
             &imports,
@@ -1201,11 +1237,15 @@ impl Checker {
             false,
             true,
             default_compile_workers(4),
+            |done, total, cached| {
+                on_progress(TargetProgress::Elaborate { done, total, cached });
+            },
         )?;
         // Re-hash `stage/control/TrustedBoundary.lean`,
         // `stage/control/TrustedBoundary.olean`, every staged source snapshot
         // in `stage/ro/`, and every Door-1-promoted `.olean` in `stage/lib/`
         // immediately before `"target-audit"` (`ArtifactLedger`).
+        on_progress(TargetProgress::Audit);
         let ledger_sources: Vec<(PathBuf, &str)> = filtered_request
             .modules
             .iter()

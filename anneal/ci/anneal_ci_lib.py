@@ -393,7 +393,15 @@ def build_cargo_anneal_verify_cmd(
     extra_flags: Sequence[str] = (),
 ) -> list[str]:
     """Construct the canonical `cargo-anneal verify` command line."""
-    cmd = [str(cli), "verify", "--request", str(request_path), *extra_flags]
+    cmd = [
+        str(cli),
+        "verify",
+        "--format",
+        "json",
+        "--request",
+        str(request_path),
+        *extra_flags,
+    ]
     if capture is not None:
         cmd.extend(["--capture", str(capture)])
     if sysroot is not None:

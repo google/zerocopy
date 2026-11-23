@@ -34,6 +34,10 @@ const CARGO_RULES: &[DetailRule] = &[
                instead of the virtual workspace root.",
     },
     DetailRule {
+        needle: "does not have feature",
+        hint: "Check `[features]` in `Cargo.toml` and adjust `--features`.",
+    },
+    DetailRule {
         needle: "Cargo shortcut",
         hint: "The `--manifest-path` Cargo shortcut supports single library or binary crates \
                without active normal/build dependencies, build scripts, or proc-macros (use \
@@ -154,25 +158,45 @@ fn match_rule(rules: &[DetailRule], text: &str) -> Option<&'static str> {
 /// returning `None` when the raw `detail` is already self-explanatory.
 pub fn hint_for_failure(status: &str, phase: &str, detail: &str) -> Option<String> {
     match phase {
-        "capture-tool" => Some(hint_for_capture_tool(detail)),
+        "capture-tool" | "toolchain" => Some(hint_for_capture_tool(phase, detail)),
         "cargo" => match_rule(CARGO_RULES, detail).map(str::to_owned),
         "proof" => hint_for_proof_phase(detail),
         "capture" => hint_for_capture(status, detail),
         "audit" => hint_for_audit(detail),
+        "retention" if detail.contains("already exists") || detail.contains("File exists") => Some(
+            "Pass a new non-existent directory path to `--artifacts <dir>`; existing paths \
+                 are never overwritten."
+                .into(),
+        ),
         _ => None,
     }
 }
 
-fn hint_for_capture_tool(detail: &str) -> String {
+fn hint_for_capture_tool(phase: &str, detail: &str) -> String {
     if detail.contains("explicit --capture, --sysroot, and --lean") {
         return "Rebuild with the default `setup` feature for bundled discovery, or pass all \
                 three tool paths: `--capture`, `--sysroot`, and `--lean`."
             .into();
     }
-    "No usable `anneal-rustc-capture` binary or installed Anneal toolchain bundle was found. \
-     Check `--capture` if passed explicitly, or run `cargo anneal setup --local-archive <archive>` \
-     (or pass `--capture`, `--sysroot`, and `--lean`)."
-        .into()
+    #[cfg(feature = "setup")]
+    {
+        if phase == "toolchain" {
+            return "Run `cargo anneal setup` to install the matching Anneal toolchain bundle, or \
+                    pass explicit `--capture`, `--sysroot`, and `--lean` paths."
+                .into();
+        }
+        "No usable `anneal-rustc-capture` binary or installed Anneal toolchain bundle was found. \
+         Check `--capture` if passed explicitly, or run `cargo anneal setup --local-archive \
+         <archive>` (or pass `--capture`, `--sysroot`, and `--lean`)."
+            .into()
+    }
+    #[cfg(not(feature = "setup"))]
+    {
+        let _ = phase;
+        "Pass matching explicit `--capture`, `--sysroot`, and `--lean` paths for the pinned \
+         Anneal toolchain (or rebuild with the default `setup` feature)."
+            .into()
+    }
 }
 
 fn hint_for_proof_phase(detail: &str) -> Option<String> {
@@ -550,6 +574,13 @@ mod tests {
             "cannot inspect /tmp/x/anneal-rustc-capture: No such file or directory (os error 2)",
         )
         .unwrap();
+        #[cfg(feature = "setup")]
         assert!(missing_bundle.contains("cargo anneal setup --local-archive"), "{missing_bundle}");
+        #[cfg(not(feature = "setup"))]
+        assert!(
+            missing_bundle.contains("default `setup` feature")
+                && missing_bundle.contains("--capture"),
+            "{missing_bundle}"
+        );
     }
 }

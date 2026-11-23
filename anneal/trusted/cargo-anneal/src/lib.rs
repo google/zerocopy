@@ -27,13 +27,15 @@
 
 #[doc(hidden)]
 pub mod bundle;
-mod olean_cache;
 #[doc(hidden)]
 pub mod cli;
 #[doc(hidden)]
 pub mod core;
 mod diagnostics;
 mod init;
+mod olean_cache;
+#[doc(hidden)]
+pub mod output;
 #[doc(hidden)]
 pub mod inspect;
 #[doc(hidden)]
@@ -64,10 +66,13 @@ pub use core::{
     IR_PARTS, ImportEdge, ModuleArtifacts, OLEAN_PARTS, PARTS, is_clean_relative_path,
     is_lean_ident, is_sha256_hex, sha256_bytes, topo_sort_modules,
 };
-#[doc(hidden)]
-pub use sys_util::{SafeFs, SysSanitizer, TempFileGuard};
+
 pub use sandbox::{ActiveSandbox, SandboxMode};
 pub use stage::{Checker, source_starts_with_module_keyword};
+#[doc(hidden)]
+pub use sys_util::{SafeFs, SysSanitizer, TempFileGuard};
+#[doc(hidden)]
+pub use target::TargetProgress;
 pub use target::{TargetAuditRequest, TargetBindings, TargetModule, TargetRole};
 #[doc(hidden)]
 pub use toolchain::{

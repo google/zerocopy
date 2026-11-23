@@ -23,6 +23,8 @@ use std::{env, ffi::OsString, process::ExitCode};
 
 use clap::{CommandFactory, Parser, Subcommand, error::ErrorKind};
 
+use crate::output::{ColorChoice, OutputSession, VerifyFormat, finish_with_writers};
+
 #[derive(Parser)]
 #[command(
     name = "cargo-anneal",
@@ -32,6 +34,22 @@ use clap::{CommandFactory, Parser, Subcommand, error::ErrorKind};
     after_help = "Also accepts direct invocation as cargo-anneal <COMMAND>."
 )]
 struct Cli {
+    /// Control ANSI color output on human-formatted streams.
+    #[arg(
+        long,
+        global = true,
+        value_enum,
+        default_value_t = ColorChoice::Auto,
+        value_name = "WHEN"
+    )]
+    color: ColorChoice,
+    /// Reduce human output to verdicts and mandatory security caveats.
+    #[arg(short = 'q', long, global = true, conflicts_with = "verbose")]
+    quiet: bool,
+    /// Show expanded details (untruncated lists, timing, and phase progress;
+    /// `inspect` keeps 12-char digests unless `--full-digests` is passed).
+    #[arg(short = 'v', long, global = true, conflicts_with = "quiet")]
+    verbose: bool,
     #[command(subcommand)]
     command: Option<Command>,
 }
@@ -72,15 +90,15 @@ enum Command {
 }
 
 enum Action {
-    Print(String),
-    Verify(Box<verify::VerifyArgs>),
-    Inspect(Box<inspect::InspectArgs>),
+    Print { output: String, color: ColorChoice, quiet: bool, verbose: bool },
+    Verify { args: Box<verify::VerifyArgs>, color: ColorChoice, quiet: bool, verbose: bool },
+    Inspect { args: Box<inspect::InspectArgs>, color: ColorChoice, quiet: bool, verbose: bool },
 }
 
 #[derive(Debug)]
 enum Failure {
     Arguments(clap::Error),
-    Operation(String),
+    Operation { error: String, color: ColorChoice },
 }
 
 fn parse(mut args: Vec<OsString>) -> Result<Cli, clap::Error> {
@@ -117,35 +135,67 @@ fn scalar_example() -> String {
 #[cfg(feature = "setup")]
 fn dispatch(
     cli: Cli,
-    install: impl FnOnce(Option<PathBuf>, bool) -> Result<PathBuf, String>,
-) -> Result<Action, String> {
-    match cli.command {
-        None => Ok(Action::Print(format!("{}\n", Cli::command().render_help()))),
+    install: impl FnOnce(Option<PathBuf>, bool, bool) -> Result<PathBuf, String>,
+) -> Result<Action, Failure> {
+    let Cli { color, quiet, verbose, command } = cli;
+    match command {
+        None => Ok(Action::Print {
+            output: format!("{}\n", Cli::command().render_help()),
+            color,
+            quiet,
+            verbose,
+        }),
         Some(Command::Setup { local_archive, clear_old }) => {
-            let root = install(local_archive, clear_old)?;
-            Ok(Action::Print(format!("Installed Anneal toolchain at {}\n", root.display())))
+            let root = install(local_archive, clear_old, quiet)
+                .map_err(|error| Failure::Operation { error, color })?;
+            Ok(Action::Print {
+                output: format!("Installed Anneal toolchain at {}\n", root.display()),
+                color,
+                quiet,
+                verbose,
+            })
         }
-        Some(Command::Init(args)) => init::run(args).map(Action::Print),
-        Some(Command::Skill { example: true }) => Ok(Action::Print(scalar_example())),
-        Some(Command::Skill { example: false }) => {
-            Ok(Action::Print(include_str!("../skills/cargo-anneal/SKILL.md").to_owned()))
+        Some(Command::Init(args)) => init::run(args)
+            .map(|output| Action::Print { output, color, quiet, verbose })
+            .map_err(|error| Failure::Operation { error, color }),
+        Some(Command::Skill { example: true }) => {
+            Ok(Action::Print { output: scalar_example(), color, quiet, verbose })
         }
-        Some(Command::Verify(args)) => Ok(Action::Verify(args)),
-        Some(Command::Inspect(args)) => Ok(Action::Inspect(args)),
+        Some(Command::Skill { example: false }) => Ok(Action::Print {
+            output: include_str!("../skills/cargo-anneal/SKILL.md").to_owned(),
+            color,
+            quiet,
+            verbose,
+        }),
+        Some(Command::Verify(args)) => Ok(Action::Verify { args, color, quiet, verbose }),
+        Some(Command::Inspect(args)) => Ok(Action::Inspect { args, color, quiet, verbose }),
     }
 }
 
 #[cfg(not(feature = "setup"))]
-fn dispatch(cli: Cli) -> Result<Action, String> {
-    match cli.command {
-        None => Ok(Action::Print(format!("{}\n", Cli::command().render_help()))),
-        Some(Command::Init(args)) => init::run(args).map(Action::Print),
-        Some(Command::Skill { example: true }) => Ok(Action::Print(scalar_example())),
-        Some(Command::Skill { example: false }) => {
-            Ok(Action::Print(include_str!("../skills/cargo-anneal/SKILL.md").to_owned()))
+fn dispatch(cli: Cli) -> Result<Action, Failure> {
+    let Cli { color, quiet, verbose, command } = cli;
+    match command {
+        None => Ok(Action::Print {
+            output: format!("{}\n", Cli::command().render_help()),
+            color,
+            quiet,
+            verbose,
+        }),
+        Some(Command::Init(args)) => init::run(args)
+            .map(|output| Action::Print { output, color, quiet, verbose })
+            .map_err(|error| Failure::Operation { error, color }),
+        Some(Command::Skill { example: true }) => {
+            Ok(Action::Print { output: scalar_example(), color, quiet, verbose })
         }
-        Some(Command::Verify(args)) => Ok(Action::Verify(args)),
-        Some(Command::Inspect(args)) => Ok(Action::Inspect(args)),
+        Some(Command::Skill { example: false }) => Ok(Action::Print {
+            output: include_str!("../skills/cargo-anneal/SKILL.md").to_owned(),
+            color,
+            quiet,
+            verbose,
+        }),
+        Some(Command::Verify(args)) => Ok(Action::Verify { args, color, quiet, verbose }),
+        Some(Command::Inspect(args)) => Ok(Action::Inspect { args, color, quiet, verbose }),
     }
 }
 
@@ -155,7 +205,12 @@ fn parse_action(args: Vec<OsString>) -> Result<Result<Cli, Action>, Failure> {
         Err(error)
             if matches!(error.kind(), ErrorKind::DisplayHelp | ErrorKind::DisplayVersion) =>
         {
-            Ok(Err(Action::Print(error.to_string())))
+            Ok(Err(Action::Print {
+                output: error.to_string(),
+                color: ColorChoice::Auto,
+                quiet: false,
+                verbose: false,
+            }))
         }
         Err(error) => Err(Failure::Arguments(error)),
     }
@@ -164,10 +219,10 @@ fn parse_action(args: Vec<OsString>) -> Result<Result<Cli, Action>, Failure> {
 #[cfg(feature = "setup")]
 fn run(
     args: Vec<OsString>,
-    install: impl FnOnce(Option<PathBuf>, bool) -> Result<PathBuf, String>,
+    install: impl FnOnce(Option<PathBuf>, bool, bool) -> Result<PathBuf, String>,
 ) -> Result<Action, Failure> {
     match parse_action(args)? {
-        Ok(cli) => dispatch(cli, install).map_err(Failure::Operation),
+        Ok(cli) => dispatch(cli, install),
         Err(action) => Ok(action),
     }
 }
@@ -175,30 +230,37 @@ fn run(
 #[cfg(not(feature = "setup"))]
 fn run(args: Vec<OsString>) -> Result<Action, Failure> {
     match parse_action(args)? {
-        Ok(cli) => dispatch(cli).map_err(Failure::Operation),
+        Ok(cli) => dispatch(cli),
         Err(action) => Ok(action),
     }
 }
 
 pub fn main() -> ExitCode {
     #[cfg(feature = "setup")]
-    let outcome = run(env::args_os().collect(), setup::install);
+    let outcome = run(env::args_os().collect(), setup::install_with_quiet);
     #[cfg(not(feature = "setup"))]
     let outcome = run(env::args_os().collect());
 
     match outcome {
-        Ok(Action::Print(output)) => {
-            print!("{output}");
-            ExitCode::SUCCESS
+        Ok(Action::Print { output, color, quiet, verbose }) => {
+            let (mut session, _) = OutputSession::live(color, quiet, verbose, VerifyFormat::Human);
+            finish_with_writers(&mut session, output.as_bytes(), 0)
         }
-        Ok(Action::Verify(args)) => verify::main(*args),
-        Ok(Action::Inspect(args)) => inspect::main(*args),
+        Ok(Action::Verify { args, color, quiet, verbose }) => {
+            verify::main(*args, color, quiet, verbose)
+        }
+        Ok(Action::Inspect { args, color, quiet, verbose }) => {
+            inspect::main(*args, color, quiet, verbose)
+        }
         Err(Failure::Arguments(error)) => {
-            eprint!("{error}");
+            let (mut session, _) =
+                OutputSession::live(ColorChoice::Auto, false, false, VerifyFormat::Human);
+            session.write_clap_error(&error);
             ExitCode::from(2)
         }
-        Err(Failure::Operation(error)) => {
-            eprintln!("error: {error}");
+        Err(Failure::Operation { error, color }) => {
+            let (mut session, _) = OutputSession::live(color, false, false, VerifyFormat::Human);
+            let _ = session.write_stderr_error(&error);
             ExitCode::from(1)
         }
     }
@@ -213,7 +275,7 @@ mod tests {
     }
 
     #[cfg(feature = "setup")]
-    fn must_not_install(_: Option<PathBuf>, _: bool) -> Result<PathBuf, String> {
+    fn must_not_install(_: Option<PathBuf>, _: bool, _: bool) -> Result<PathBuf, String> {
         panic!("argument handling must not install a toolchain")
     }
 
@@ -230,8 +292,8 @@ mod tests {
 
     fn output(action: Action) -> String {
         match action {
-            Action::Print(output) => output,
-            Action::Verify(_) | Action::Inspect(_) => panic!("expected printable output"),
+            Action::Print { output, .. } => output,
+            Action::Verify { .. } | Action::Inspect { .. } => panic!("expected printable output"),
         }
     }
 
@@ -411,21 +473,22 @@ mod tests {
                     input.push("--clear-old".into());
                 }
                 let output = output(
-                    run(input.clone(), |actual_archive, actual_clear_old| {
+                    run(input.clone(), |actual_archive, actual_clear_old, actual_quiet| {
                         assert_eq!(actual_archive, archive);
                         assert_eq!(actual_clear_old, clear_old);
+                        assert!(!actual_quiet);
                         Ok(PathBuf::from("installed toolchain"))
                     })
                     .expect("setup must return the operation's success"),
                 );
                 assert_eq!(output, "Installed Anneal toolchain at installed toolchain\n");
 
-                let failure = run(input, |_, _| Err("archive unavailable".into()))
+                let failure = run(input, |_, _, _| Err("archive unavailable".into()))
                     .err()
                     .expect("setup must return the operation's failure");
                 assert!(matches!(
                     failure,
-                    Failure::Operation(message) if message == "archive unavailable"
+                    Failure::Operation { error: message, .. } if message == "archive unavailable"
                 ));
             }
         }
@@ -537,8 +600,60 @@ mod tests {
             for suffix in cases {
                 let action = run_without_install(args(&[prefix, suffix].concat()))
                     .expect("verify arguments must parse and dispatch");
-                assert!(matches!(action, Action::Verify(_)));
+                assert!(matches!(action, Action::Verify { .. }));
             }
+        }
+
+        // Global `--color`, `-q`/`--quiet`, `-v`/`--verbose`, `--format`, and
+        // `--receipt-out` parse cleanly before and after subcommands, while
+        // `-q -v` and invalid enum values fail argument parsing.
+        let valid_action = run_without_install(args(&[
+            "cargo-anneal",
+            "--color",
+            "always",
+            "-v",
+            "verify",
+            "--format",
+            "json",
+            "--receipt-out",
+            "out/receipt.json",
+            "--capture",
+            "cap",
+            "--sysroot",
+            "sys",
+            "--lean",
+            "lean",
+            "--request",
+            "request.json",
+        ]))
+        .expect("global output flags must parse");
+        assert!(matches!(
+            valid_action,
+            Action::Verify { color: ColorChoice::Always, quiet: false, verbose: true, .. }
+        ));
+
+        for bad in [
+            &["cargo-anneal", "-q", "-v", "skill"][..],
+            &["cargo-anneal", "--color", "bogus", "skill"],
+            &[
+                "cargo-anneal",
+                "verify",
+                "--format",
+                "yaml",
+                "--capture",
+                "cap",
+                "--sysroot",
+                "sys",
+                "--lean",
+                "lean",
+                "--request",
+                "request.json",
+            ],
+        ] {
+            assert!(
+                matches!(run_without_install(args(bad)), Err(Failure::Arguments(_))),
+                "{bad:?} must fail argument parsing"
+            );
         }
     }
 
@@ -570,10 +685,33 @@ mod tests {
             let action = run_without_install(args(&argv)).expect("parse inspect");
             assert!(matches!(
                 action,
-                Action::Inspect(ref a)
-                    if a.receipt.as_deref() == Some(std::path::Path::new("receipt.json"))
+                Action::Inspect { ref args, .. }
+                    if args.receipt.as_deref() == Some(std::path::Path::new("receipt.json"))
             ));
         }
+
+        assert!(matches!(
+            run_without_install(args(&[
+                "cargo-anneal",
+                "inspect",
+                "receipt.json",
+                "--color",
+                "always",
+                "-v",
+            ])),
+            Ok(Action::Inspect { color: ColorChoice::Always, quiet: false, verbose: true, .. })
+        ));
+        assert!(matches!(
+            run_without_install(args(&[
+                "cargo-anneal",
+                "--color",
+                "never",
+                "-q",
+                "inspect",
+                "receipt.json",
+            ])),
+            Ok(Action::Inspect { color: ColorChoice::Never, quiet: true, verbose: false, .. })
+        ));
 
         assert!(matches!(
             run_without_install(args(&["cargo-anneal", "inspect", "--diff", "-", "-"])),

@@ -64,12 +64,18 @@ cargo run --locked -p cargo-anneal -- verify \
 
 The example proves that `zero()` returns zero (`cargo anneal init
 --standalone --proof-dir <new-directory>` scaffolds the same four starter
-files outside the repository). To experiment, make a copy of the fixture
-directory and change its Rust function to return one. The same proof then fails
-(`"status": "proof_failed"`, exit code `1`). `--artifacts <new-directory>`
-retains the captured Lean program, bound claim, and diagnostic evidence for
-proof development; `verify` rejects a path that already exists, or whose parent
-is not an existing directory, before it starts any verification work.
+files outside the repository) and prints a human verification card
+(`[SCOPED]` for a selected function, `[OK]` only for untainted whole-crate
+verification). Pass `--receipt-out <path>` to write the canonical Receipt
+Schema v3 JSON atomically to disk alongside human output, or `--format json` to
+emit JSON directly on stdout (`--color auto|always|never`, `-q`/`--quiet`, and
+`-v`/`--verbose` control terminal styling and detail truncation). To
+experiment, make a copy of the fixture directory and change its Rust function
+to return one. The same proof then fails (`[FAIL]`, exit code `1`).
+`--artifacts <new-directory>` retains the captured Lean program, bound claim,
+and diagnostic evidence for proof development; `verify` rejects a path that
+already exists, or whose parent is not an existing directory, before it starts
+any verification work.
 
 In `request.json`, each `source_root` resolves relative to the directory
 containing the request file or to an existing out-of-tree directory, and

@@ -183,6 +183,7 @@ impl Tools {
         let mut command = Command::new(&self.cli);
         command
             .arg("verify")
+            .args(["--format", "json"])
             .arg("--capture")
             .arg(&self.capture)
             .arg("--lean")
