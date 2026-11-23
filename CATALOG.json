@@ -110051,6 +110051,47 @@
         "verification"
       ]
     },
+    "rustc-unsafe-binders-v0-mangling-ice-miri-validity-and-mir-opt-opacity": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "5debe6a1244452beced762385f88a51857a915fc"
+          },
+          "name": "rust-lang/rust (upstream HEAD)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "rustc 1.98.0-nightly (14210df0e 2026-05-31); miri 0.1.0 (14210df0e2 2026-05-31); LLVM 22.1.6"
+          },
+          "name": "rustc and Miri nightly toolchain (executed)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "joshlf/anneal"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "rustc-unsizing-coercions-wide-pointer-metadata-and-slice-dst-soundness": {
       "observed_at": "2026-11-21",
       "subjects": [
