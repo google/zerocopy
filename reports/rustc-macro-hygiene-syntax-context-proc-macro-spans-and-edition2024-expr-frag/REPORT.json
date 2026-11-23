@@ -1,0 +1,60 @@
+{
+  "topics": [
+    "anneal",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/frontend",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler (rust-lang/rust) \u2014 HEAD source snapshot",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+        "version": "1.102.0",
+        "commit_date": "2026-11-23"
+      }
+    },
+    {
+      "name": "Rust compiler (rust-lang/rust) \u2014 executed nightly toolchain",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly",
+        "commit_date": "2026-05-31",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "The Rust Reference (rust-lang/reference)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+        "commit_date": "2026-11-17"
+      }
+    },
+    {
+      "name": "Anneal verifier (joshlf/anneal)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+        "commit_date": "2026-11-19"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover (leanprover/lean4)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

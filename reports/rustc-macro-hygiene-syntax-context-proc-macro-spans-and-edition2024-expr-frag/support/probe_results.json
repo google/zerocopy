@@ -1,0 +1,198 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "experiments": {
+    "a_edition_2021_vs_2024_expr_frag_specifier": {
+      "edition_2021_expr": {
+        "edition": "2021",
+        "crate_type": "bin",
+        "compile_returncode": 1,
+        "compile_stderr": "error: no rules expected keyword `const`\n --> <tmp>/a_ed2021_expr.rs:8:26\n  |\n1 | macro_rules! accept_expr {\n  | ------------------------ when calling this macro\n...\n8 |     let a = accept_expr!(const { 1 + 2 });\n  |                          ^^^^^ no rules expected this token in macro call\n  |\nnote: while trying to match meta-variable `$e:expr`\n --> <tmp>/a_ed2021_expr.rs:2:6\n  |\n2 |     ($e:expr) => {\n  |      ^^^^^^^\n\nerror: no rules expected reserved identifier `_`\n --> <tmp>/a_ed2021_expr.rs:9:18\n  |\n1 | macro_rules! accept_expr {\n  | ------------------------ when calling this macro\n...\n9 |     accept_expr!(_) = 99;\n  |                  ^ no rules expected this token in macro call\n  |\nnote: while trying to match meta-variable `$e:expr`\n --> <tmp>/a_ed2021_expr.rs:2:6\n  |\n2 |     ($e:expr) => {\n  |      ^^^^^^^\n\nerror: aborting due to 2 previous errors"
+      },
+      "edition_2024_expr": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "A=3",
+        "run_stderr": "",
+        "unpretty_expanded_rc": 0,
+        "unpretty_expanded": "#![feature(prelude_import)]\nextern crate std;\n#[prelude_import]\nuse std::prelude::rust_2024::*;\nmacro_rules! accept_expr { ($e:expr) => { $e }; }\n\nfn main() {\n    let a = const { 1 + 2 };\n    _ = 99;\n    { ::std::io::_print(format_args!(\"A={0}\\n\", a)); };\n}"
+      },
+      "edition_2021_expr_parenthesized_subexpr": {
+        "edition": "2021",
+        "crate_type": "bin",
+        "compile_returncode": 0,
+        "compile_stderr": "warning: unnecessary parentheses around assigned value\n --> <tmp>/a_ed2021_paren.rs:8:26\n  |\n8 |     let a = accept_expr!((const { 1 + 2 }));\n  |                          ^               ^\n  |\n  = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default\nhelp: remove these parentheses\n  |\n8 -     let a = accept_expr!((const { 1 + 2 }));\n8 +     let a = accept_expr!(const { 1 + 2 } );\n  |\n\nwarning: 1 warning emitted",
+        "run_returncode": 0,
+        "run_stdout": "A_PAREN=3",
+        "run_stderr": ""
+      },
+      "edition_2024_expr_rejects_let": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 1,
+        "compile_stderr": "error: no rules expected keyword `let`\n --> <tmp>/a_ed2024_let.rs:8:18\n  |\n1 | macro_rules! accept_expr {\n  | ------------------------ when calling this macro\n...\n8 |     accept_expr!(let _ = 1);\n  |                  ^^^ no rules expected this token in macro call\n  |\nnote: while trying to match meta-variable `$e:expr`\n --> <tmp>/a_ed2024_let.rs:2:6\n  |\n2 |     ($e:expr) => {\n  |      ^^^^^^^\n\nerror: aborting due to 1 previous error"
+      },
+      "edition_2024_expr_2021_const_block": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 1,
+        "compile_stderr": "error: no rules expected keyword `const`\n --> <tmp>/a_ed2024_expr2021_const.rs:8:31\n  |\n1 | macro_rules! accept_expr_2021 {\n  | ----------------------------- when calling this macro\n...\n8 |     let _ = accept_expr_2021!(const { 1 + 2 });\n  |                               ^^^^^ no rules expected this token in macro call\n  |\nnote: while trying to match meta-variable `$e:expr_2021`\n --> <tmp>/a_ed2024_expr2021_const.rs:2:6\n  |\n2 |     ($e:expr_2021) => {\n  |      ^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error"
+      },
+      "edition_2024_expr_2021_underscore": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 1,
+        "compile_stderr": "error: no rules expected reserved identifier `_`\n --> <tmp>/a_ed2024_expr2021_under.rs:8:23\n  |\n1 | macro_rules! accept_expr_2021 {\n  | ----------------------------- when calling this macro\n...\n8 |     accept_expr_2021!(_) = 99;\n  |                       ^ no rules expected this token in macro call\n  |\nnote: while trying to match meta-variable `$e:expr_2021`\n --> <tmp>/a_ed2024_expr2021_under.rs:2:6\n  |\n2 |     ($e:expr_2021) => {\n  |      ^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error"
+      },
+      "cross_edition_def2021_call2024": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 1,
+        "compile_stderr": "error: no rules expected keyword `const`\n --> <tmp>/caller_2024_of_2021.rs:3:32\n  |\n3 |     let _ = mac_ed2021::m2021!(const { 1 + 2 });\n  |                                ^^^^^ no rules expected this token in macro call\n  |\nnote: while trying to match meta-variable `$e:expr`\n --> <tmp>/mac_ed2021.rs:1:39\n  |\n1 | #[macro_export] macro_rules! m2021 { ($e:expr) => { $e }; }\n  |                                       ^^^^^^^\n\nerror: no rules expected reserved identifier `_`\n --> <tmp>/caller_2024_of_2021.rs:4:24\n  |\n4 |     mac_ed2021::m2021!(_) = 99;\n  |                        ^ no rules expected this token in macro call\n  |\nnote: while trying to match meta-variable `$e:expr`\n --> <tmp>/mac_ed2021.rs:1:39\n  |\n1 | #[macro_export] macro_rules! m2021 { ($e:expr) => { $e }; }\n  |                                       ^^^^^^^\n\nerror: aborting due to 2 previous errors"
+      },
+      "cross_edition_def2024_call2021": {
+        "edition": "2021",
+        "crate_type": "bin",
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "X21=3",
+        "run_stderr": ""
+      }
+    },
+    "b_macro_rules_semi_opaque_hygiene_and_dollar_crate": {
+      "edition_2021": {
+        "edition": "2021",
+        "crate_type": "bin",
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "OUT=(1,2) ITEM=2 DC=77 HELPER_SHADOW=999 LEAKED=33 METH=15 TMETH=20 FIELD=10",
+        "run_stderr": "",
+        "unpretty_expanded_rc": 0,
+        "unpretty_expanded": "#![feature(prelude_import)]\nextern crate std;\n#[prelude_import]\nuse std::prelude::rust_2021::*;\nmod inner {\n    pub fn helper() -> u32 { 77 }\n\n    #[macro_export]\n    macro_rules! hygiene_probe {\n        ($v:expr, $leaked_name:ident) =>\n        {{\n                let x = 1u32; struct LeakedItem(u32); let item =\n                LeakedItem($v); let called = $crate::inner::helper();\n                (x, item.0, called)\n            }};\n    }\n\n    #[macro_export]\n    macro_rules! leak_struct { () => { struct LeakedTop(pub u32); }; }\n\n    #[macro_export]\n    macro_rules! call_method_on {\n        ($obj:expr) => { ($obj.get_val(), $obj.trait_val(), $obj.0) };\n    }\n}\n\nfn helper() -> u32 { 999 }\n\ntrait Extrinsic {\n    fn trait_val(&self)\n    -> u32;\n}\n\nstruct Holder(u32);\nimpl Holder {\n    fn get_val(&self) -> u32 { self.0 + 5 }\n}\nimpl Extrinsic for Holder {\n    fn trait_val(&self) -> u32 { self.0 + 10 }\n}\nstruct LeakedTop(pub u32);\n\n\nfn main() {\n    let x = 2u32;\n    let (macro_x, item_v, dc_v) =\n        {\n            let x = 1u32;\n            struct LeakedItem(u32);\n            let item = LeakedItem(x);\n            let called = crate::inner::helper();\n            (x, item.0, called)\n        };\n    let caller_x = x;\n    let leaked = LeakedTop(33);\n    let h = Holder(10);\n    let (meth, tmeth, field_v) = (h.get_val(), h.trait_val(), h.0);\n    {\n        ::std::io::_print(format_args!(\"OUT=({2},{3}) ITEM={4} DC={5} HELPER_SHADOW={0} LEAKED={1} METH={6} TMETH={7} FIELD={8}\\n\",\n                helper(), leaked.0, macro_x, caller_x, item_v, dc_v, meth,\n                tmeth, field_v));\n    };\n}"
+      },
+      "edition_2024": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "OUT=(1,2) ITEM=2 DC=77 HELPER_SHADOW=999 LEAKED=33 METH=15 TMETH=20 FIELD=10",
+        "run_stderr": "",
+        "unpretty_expanded_rc": 0,
+        "unpretty_expanded": "#![feature(prelude_import)]\nextern crate std;\n#[prelude_import]\nuse std::prelude::rust_2024::*;\nmod inner {\n    pub fn helper() -> u32 { 77 }\n\n    #[macro_export]\n    macro_rules! hygiene_probe {\n        ($v:expr, $leaked_name:ident) =>\n        {{\n                let x = 1u32; struct LeakedItem(u32); let item =\n                LeakedItem($v); let called = $crate::inner::helper();\n                (x, item.0, called)\n            }};\n    }\n\n    #[macro_export]\n    macro_rules! leak_struct { () => { struct LeakedTop(pub u32); }; }\n\n    #[macro_export]\n    macro_rules! call_method_on {\n        ($obj:expr) => { ($obj.get_val(), $obj.trait_val(), $obj.0) };\n    }\n}\n\nfn helper() -> u32 { 999 }\n\ntrait Extrinsic {\n    fn trait_val(&self)\n    -> u32;\n}\n\nstruct Holder(u32);\nimpl Holder {\n    fn get_val(&self) -> u32 { self.0 + 5 }\n}\nimpl Extrinsic for Holder {\n    fn trait_val(&self) -> u32 { self.0 + 10 }\n}\nstruct LeakedTop(pub u32);\n\n\nfn main() {\n    let x = 2u32;\n    let (macro_x, item_v, dc_v) =\n        {\n            let x = 1u32;\n            struct LeakedItem(u32);\n            let item = LeakedItem(x);\n            let called = crate::inner::helper();\n            (x, item.0, called)\n        };\n    let caller_x = x;\n    let leaked = LeakedTop(33);\n    let h = Holder(10);\n    let (meth, tmeth, field_v) = (h.get_val(), h.trait_val(), h.0);\n    {\n        ::std::io::_print(format_args!(\"OUT=({2},{3}) ITEM={4} DC={5} HELPER_SHADOW={0} LEAKED={1} METH={6} TMETH={7} FIELD={8}\\n\",\n                helper(), leaked.0, macro_x, caller_x, item_v, dc_v, meth,\n                tmeth, field_v));\n    };\n}"
+      },
+      "cross_crate_dollar_crate_vs_shadow": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "EXT_DC=55 SHADOW_MOD=888",
+        "run_stderr": ""
+      },
+      "negative_dollar_crate_respects_visibility": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0603]: function `priv_fn` is private\n --> <tmp>/b_cross_priv.rs:3:13\n  |\n3 |     let _ = dep_alias::call_dep_priv!();\n  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^ private function\n  |\nnote: the function `priv_fn` is defined here\n --> <tmp>/dep_hygiene.rs:3:5\n  |\n3 |     fn priv_fn() -> u32 { 66 }\n  |     ^^^^^^^^^^^^^^^^^^^\n  = note: this error originates in the macro `dep_alias::call_dep_priv` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0603`."
+      },
+      "negative_macro_rules_local_does_not_leak": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0425]: cannot find value `secret` in this scope\n --> <tmp>/b_neg_local_leak.rs:4:13\n  |\n4 |     let _ = secret;\n  |             ^^^^^^ not found in this scope\n  |\nhelp: an identifier with the same name is defined here, but is not accessible due to macro hygiene\n --> <tmp>/b_neg_local_leak.rs:1:39\n  |\n1 | macro_rules! def_secret { () => { let secret = 1u32; }; }\n  |                                       ^^^^^^\n2 | fn main() {\n3 |     def_secret!();\n  |     ------------- in this macro invocation\n  = note: this error originates in the macro `def_secret` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0425`."
+      },
+      "negative_macro_rules_cannot_capture_caller_local": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0425]: cannot find value `caller_only` in this scope\n --> <tmp>/b_neg_capture.rs:1:36\n  |\n1 | macro_rules! read_caller { () => { caller_only }; }\n  |                                    ^^^^^^^^^^^ not found in this scope\n...\n4 |     let _ = read_caller!();\n  |             -------------- in this macro invocation\n  |\nhelp: an identifier with the same name exists, but is not accessible due to macro hygiene\n --> <tmp>/b_neg_capture.rs:3:9\n  |\n3 |     let caller_only = 2u32;\n  |         ^^^^^^^^^^^\n  = note: this error originates in the macro `read_caller` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0425`."
+      },
+      "negative_macro_rules_label_isolation": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0426]: use of undeclared label `'blk`\n --> <tmp>/b_neg_label.rs:1:39\n  |\n1 | macro_rules! jump_blk { () => { break 'blk 1u32; }; }\n  |                                       ^^^^ undeclared label `'blk`\n...\n4 |         jump_blk!();\n  |         ----------- in this macro invocation\n  |\n  = note: this error originates in the macro `jump_blk` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nwarning: unused label\n --> <tmp>/b_neg_label.rs:3:19\n  |\n3 |     let _v: u32 = 'blk: {\n  |                   ^^^^\n  |\n  = note: `#[warn(unused_labels)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0426`."
+      }
+    },
+    "c_proc_macro_call_site_vs_mixed_site_vs_def_site": {
+      "proc_macro_build": {
+        "edition": "2024",
+        "crate_type": "proc-macro",
+        "compile_returncode": 0,
+        "compile_stderr": ""
+      },
+      "positive_call_site_mixed_site_def_site_internal": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "CS=42 CS_DEF=77 MS=10 MS_RES_AT=19 MS_ITEM=55 MS_METH=15 DS_INTERNAL=88 CALLER_X=42",
+        "run_stderr": "",
+        "unpretty_expanded_rc": 0,
+        "unpretty_expanded": "#![feature(prelude_import)]\nextern crate std;\n#[prelude_import]\nuse std::prelude::rust_2024::*;\nextern crate hygiene_pm;\n\nstruct Holder(u32);\nimpl Holder {\n    fn get_val(&self) -> u32 { self.0 + 5 }\n}\n\nstruct MixedLeaked(pub u32);\n\nfn main() {\n    let x = 42u32;\n    let cs = x;\n    let y = 77u32;\n    let ms = { let x = 10u32; x };\n    let ms_res_at = { let x = 19u32; x };\n    let ms_item = MixedLeaked(55).0;\n    let h = Holder(10);\n    let ms_meth = h.get_val();\n    let ds_internal =\n        {\n            struct DefInner(pub u32);\n            DefInner(88).0\n        };\n    {\n        ::std::io::_print(format_args!(\"CS={0} CS_DEF={1} MS={2} MS_RES_AT={3} MS_ITEM={4} MS_METH={5} DS_INTERNAL={6} CALLER_X={7}\\n\",\n                cs, y, ms, ms_res_at, ms_item, ms_meth, ds_internal, x));\n    };\n}"
+      },
+      "negative_mixed_site_cannot_capture_caller_x": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0425]: cannot find value `x` in this scope\n --> <tmp>/c_neg_capture.rs:4:13\n  |\n4 |     let _ = hygiene_pm::read_x_mixed_site!();\n  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope\n  |\nhelp: an identifier with the same name exists, but is not accessible due to macro hygiene\n --> <tmp>/c_neg_capture.rs:3:9\n  |\n3 |     let x = 42u32;\n  |         ^\n  = note: this error originates in the macro `hygiene_pm::read_x_mixed_site` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0425`."
+      },
+      "negative_mixed_site_local_does_not_leak": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0425]: cannot find value `z` in this scope\n --> <tmp>/c_neg_leak.rs:4:13\n  |\n4 |     let _ = z;\n  |             ^ not found in this scope\n  |\nhelp: an identifier with the same name is defined here, but is not accessible due to macro hygiene\n --> <tmp>/c_neg_leak.rs:3:5\n  |\n3 |     hygiene_pm::define_z_mixed_site!();\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  = note: this error originates in the macro `hygiene_pm::define_z_mixed_site` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0425`."
+      },
+      "negative_def_site_item_isolated": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0425]: cannot find function, tuple struct or tuple variant `DefSiteOnly` in this scope\n --> <tmp>/c_neg_def_item.rs:4:13\n  |\n2 | hygiene_pm::def_site_item_leak_probe!();\n  | --------------------------------------- you might have meant to refer to this tuple struct\n3 | fn main() {\n4 |     let _ = DefSiteOnly(1);\n  |             ^^^^^^^^^^^ not found in this scope\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0425`."
+      },
+      "negative_def_site_method_isolated": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0624]: method `get_val` is private\n --> <tmp>/c_neg_def_meth.rs:8:13\n  |\n4 |     fn get_val(&self) -> u32 { self.0 + 5 }\n  |     ------------------------ private method defined here\n...\n8 |     let _ = hygiene_pm::def_site_method_probe!(h);\n  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ private method\n  |\n  = note: this error originates in the macro `hygiene_pm::def_site_method_probe` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0624`."
+      },
+      "positive_def_site_pub_method_accessible": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "DS_PUB_METH=15",
+        "run_stderr": ""
+      }
+    },
+    "d_macros_2_0_decl_macro_opaque": {
+      "macros_2_0_opaque_item_isolated": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0425]: cannot find function, tuple struct or tuple variant `OpaqueStruct` in this scope\n  --> <tmp>/d_decl_macro_item_neg.rs:12:13\n   |\n 5 |         pub struct OpaqueStruct(pub u32);\n   |                    ------------ you might have meant to refer to this tuple struct\n...\n12 |     let _ = OpaqueStruct(1);\n   |             ^^^^^^^^^^^^ not found in this scope\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0425`."
+      },
+      "macros_2_0_opaque_method_privacy_at_def_site": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0624]: method `priv_val` is private\n  --> <tmp>/d_decl_macro_meth_neg.rs:4:48\n   |\n 4 |     pub macro decl_call_priv($obj:expr) { $obj.priv_val() }\n   |                                                ^^^^^^^^ private method\n...\n10 |         fn priv_val(&self) -> u32 { self.0 + 6 }\n   |         ------------------------- private method defined here\n...\n14 |         super::defs::decl_call_priv!(h)\n   |         ------------------------------- in this macro invocation\n   |\n   = note: this error originates in the macro `super::defs::decl_call_priv` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0624`."
+      },
+      "macros_2_0_opaque_def_site_and_pub_method": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "compile_returncode": 0,
+        "compile_stderr": "warning: function `helper` is never used\n  --> <tmp>/d_decl_macro_pos.rs:33:4\n   |\n33 | fn helper() -> u32 { 999 }\n   |    ^^^^^^\n   |\n   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+        "run_returncode": 0,
+        "run_stdout": "DECL2_VAL=15 DECL2_HELPER=321 DECL2_PUB_METH=19",
+        "run_stderr": ""
+      }
+    }
+  }
+}
