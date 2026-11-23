@@ -33,6 +33,7 @@ use crate::toolchain::{
 /// [`THEORY_BUNDLE_DESTINATION`], keeping `trusted/` registrations decoupled
 /// from untrusted proof-library additions.
 pub const TRUSTED_BUNDLE_SOURCES: &[&str] = &[
+    "trusted/audit/SpecPreflight.lean",
     "trusted/audit/TrustedBoundary.lean",
     "trusted/audit/library-lock.json",
     "trusted/lean/foundation-lock.json",

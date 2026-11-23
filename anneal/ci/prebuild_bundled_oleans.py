@@ -307,9 +307,12 @@ def prebuild(
     bundled_sources.update(load_trusted_module_sources(anneal_root))
     bundled_sources.update(load_theory_module_sources(anneal_root))
 
-    inspector_src = anneal_root / "trusted/audit/TrustedBoundary.lean"
-    if not inspector_src.is_file():
-        raise RuntimeError(f"missing inspector source: {inspector_src}")
+    inspector_sources: dict[str, Path] = {}
+    for stem in ("TrustedBoundary", "SpecPreflight"):
+        src = anneal_root / f"trusted/audit/{stem}.lean"
+        if not src.is_file():
+            raise RuntimeError(f"missing inspector source: {src}")
+        inspector_sources[stem] = src
 
     output_dir.mkdir(parents=True, exist_ok=True)
     manifest_entries: list[dict] = []
@@ -318,53 +321,57 @@ def prebuild(
         tmp = Path(tmp_str)
         control_dir = tmp / "control"
         control_dir.mkdir(parents=True)
-        staged_inspector = control_dir / "TrustedBoundary.lean"
-        inspector_bytes = inspector_src.read_bytes()
-        staged_inspector.write_bytes(inspector_bytes)
         entry_file = control_dir / "TrustedBoundaryEntry.lean"
         entry_file.write_text("import TrustedBoundary\n", encoding="utf-8")
 
-        inspector_out = output_dir / "TrustedBoundary.olean"
-        compile_ins = run_lean(
-            lean_exec_resolved,
-            [
-                *CANONICAL_COMPILE_FLAGS[:1],
-                "-M2048",
-                *CANONICAL_COMPILE_FLAGS[1:],
-                "-R",
-                str(control_dir),
-                "-o",
-                str(inspector_out),
-                str(staged_inspector),
-            ],
-            cwd=tmp,
-            lean_path=str(lean_prefix_resolved / "lib/lean"),
-        )
-        if compile_ins.returncode != 0:
-            raise RuntimeError(
-                f"failed compiling TrustedBoundary.lean (rc={compile_ins.returncode}):\n"
-                f"stdout:\n{compile_ins.stdout}\nstderr:\n{compile_ins.stderr}"
-            )
-        inspector_olean_sha = sha256_file(inspector_out)
-        manifest_entries.append(
-            {
-                "kind": "inspector",
-                "module": "TrustedBoundary",
-                "lean_sha256": lean_sha256,
-                "sysroot_manifest_sha256": sysroot_manifest_sha256,
-                "source_sha256": sha256_bytes(inspector_bytes),
-                "is_module": source_starts_with_module_keyword(inspector_bytes),
-                "flags": list(CANONICAL_COMPILE_FLAGS),
-                "imports": [],
-                "parts": [
-                    {
-                        "suffix": "olean",
-                        "path": "TrustedBoundary.olean",
-                        "sha256": inspector_olean_sha,
-                    }
+        inspector_outputs: dict[str, Path] = {}
+        for stem, inspector_src in inspector_sources.items():
+            staged_inspector = control_dir / f"{stem}.lean"
+            inspector_bytes = inspector_src.read_bytes()
+            staged_inspector.write_bytes(inspector_bytes)
+
+            inspector_out = output_dir / f"{stem}.olean"
+            compile_ins = run_lean(
+                lean_exec_resolved,
+                [
+                    *CANONICAL_COMPILE_FLAGS[:1],
+                    "-M2048",
+                    *CANONICAL_COMPILE_FLAGS[1:],
+                    "-R",
+                    str(control_dir),
+                    "-o",
+                    str(inspector_out),
+                    str(staged_inspector),
                 ],
-            }
-        )
+                cwd=tmp,
+                lean_path=str(lean_prefix_resolved / "lib/lean"),
+            )
+            if compile_ins.returncode != 0:
+                raise RuntimeError(
+                    f"failed compiling {stem}.lean (rc={compile_ins.returncode}):\n"
+                    f"stdout:\n{compile_ins.stdout}\nstderr:\n{compile_ins.stderr}"
+                )
+            inspector_outputs[stem] = inspector_out
+            inspector_olean_sha = sha256_file(inspector_out)
+            manifest_entries.append(
+                {
+                    "kind": "inspector",
+                    "module": stem,
+                    "lean_sha256": lean_sha256,
+                    "sysroot_manifest_sha256": sysroot_manifest_sha256,
+                    "source_sha256": sha256_bytes(inspector_bytes),
+                    "is_module": source_starts_with_module_keyword(inspector_bytes),
+                    "flags": list(CANONICAL_COMPILE_FLAGS),
+                    "imports": [],
+                    "parts": [
+                        {
+                            "suffix": "olean",
+                            "path": f"{stem}.olean",
+                            "sha256": inspector_olean_sha,
+                        }
+                    ],
+                }
+            )
 
         # Reuse compiled `TrustedBoundary.olean` directly to parse headers cleanly.
         headers_req = tmp / "headers.req.json"
@@ -382,7 +389,7 @@ def prebuild(
         )
         # Copy `TrustedBoundary.olean` into `control_dir` so `LEAN_PATH=control`
         # resolves without exposing anything else in `output_dir`.
-        shutil.copyfile(inspector_out, control_dir / "TrustedBoundary.olean")
+        shutil.copyfile(inspector_outputs["TrustedBoundary"], control_dir / "TrustedBoundary.olean")
         headers_proc = run_lean(
             lean_exec_resolved,
             ["-j1", "-M2048", "--run", str(entry_file), str(headers_req), str(headers_res)],

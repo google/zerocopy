@@ -216,6 +216,11 @@ pub struct VerifyArgs {
     /// (never specifications, model, capture, or expected; taints receipt).
     #[arg(long, global = true)]
     allow_sorry_in_proof: bool,
+    /// Cross-check the NDJSON proof export across a four-independent-kernel
+    /// quorum (`nanoda_bin`, `con-ron`, `con-leche`, and `lean4lean --import`)
+    /// directly inside `ExecSeal` on Lean `v4.35.0+`.
+    #[arg(long, global = true)]
+    paranoid_quorum: bool,
     /// Explicit Lean memory limit in MiB (`-M<MB>`; `resolve-imports` enforces
     /// a 4096 MiB floor).
     #[arg(
@@ -749,14 +754,24 @@ fn module_of(name: &str) -> Result<String> {
 ///
 /// The `Trusted` and `Anneal` namespaces hold the installed model and theory,
 /// `Captured` and `Expected` are the captured subject and generated claim, and
-/// `Init`, `Std`, `Lean`, `Lake`, and `TrustedBoundary` are reserved for the
-/// Lean toolchain and inspector in both pinned and unpinned modes so exported
-/// `LEAN_PATH` directories cannot shadow sysroot or inspector modules.
+/// `Init`, `Std`, `Lean`, `Lake`, `TrustedBoundary`, and `SpecPreflight` are
+/// reserved for the Lean toolchain and inspector in both pinned and unpinned
+/// modes so exported `LEAN_PATH` directories cannot shadow sysroot or
+/// inspector modules.
 fn reserved_proof_module(module: &str) -> bool {
     matches!(module, "Expected" | "Captured")
         || matches!(
             module.split('.').next(),
-            Some("Trusted" | "Anneal" | "Init" | "Std" | "Lean" | "Lake" | "TrustedBoundary")
+            Some(
+                "Trusted"
+                    | "Anneal"
+                    | "Init"
+                    | "Std"
+                    | "Lean"
+                    | "Lake"
+                    | "TrustedBoundary"
+                    | "SpecPreflight"
+            )
         )
 }
 
@@ -1804,6 +1819,7 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     checker.set_use_olean_cache(!args.no_cache);
     checker.set_no_rebuild_bundled(args.no_rebuild_bundled);
     checker.set_prebuilt_olean_dir(tools.prebuilt_dir);
+    checker.set_paranoid_quorum(args.paranoid_quorum);
     let audit_result = checker.run_target(&audit_request);
     let active_sandbox_opt = checker.active_sandbox();
     let sandbox_label = active_sandbox_opt.map(ActiveSandbox::as_str);
@@ -2591,6 +2607,8 @@ mod tests {
             "Lake.DSL",
             "TrustedBoundary",
             "TrustedBoundary.Helper",
+            "SpecPreflight",
+            "SpecPreflight.Helper",
         ] {
             assert!(reserved_proof_module(reserved), "{reserved}");
         }
@@ -2851,6 +2869,7 @@ mod tests {
             allow_unpinned_lean: false,
             allow_unsandboxed_elaboration: false,
             allow_sorry_in_proof: false,
+            paranoid_quorum: false,
             lean_memory_mb: None,
             no_cache: false,
             no_rebuild_bundled: false,
@@ -2876,6 +2895,7 @@ mod tests {
                         sysroot: None,
                         artifacts: None,
                         export_lean_lib: false,
+                        paranoid_quorum: false,
                         lean_memory_mb: None,
                         no_cache: false,
                         no_rebuild_bundled: false,
@@ -3259,6 +3279,7 @@ mod tests {
             allow_unpinned_lean: false,
             allow_unsandboxed_elaboration: false,
             allow_sorry_in_proof: false,
+            paranoid_quorum: false,
             lean_memory_mb: None,
             no_cache: false,
             no_rebuild_bundled: false,
@@ -3297,6 +3318,7 @@ mod tests {
                 allow_unpinned_lean: false,
                 allow_unsandboxed_elaboration: false,
                 allow_sorry_in_proof: false,
+                paranoid_quorum: false,
                 lean_memory_mb: None,
                 no_cache: false,
                 no_rebuild_bundled: false,

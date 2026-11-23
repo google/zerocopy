@@ -334,6 +334,7 @@
             rustcCapture = self.packages.${system}.rustc-capture;
             leanFoundation = ./trusted/lean;
             leanTheory = ./theory;
+            targetSpecPreflight = ./trusted/audit/SpecPreflight.lean;
             targetInspector = ./trusted/audit/TrustedBoundary.lean;
             targetLibraryLock = ./trusted/audit/library-lock.json;
             bundledResources = ./trusted/cargo-anneal/src/bundled_resources.rs;
@@ -349,6 +350,7 @@
               cp "$rustcCapture/bin/anneal-rustc-capture" "$TMPDIR/dist_staging/bin/"
               cp -r "$leanFoundation" "$TMPDIR/dist_staging/share/anneal/trusted/lean"
               cp -r "$leanTheory" "$TMPDIR/dist_staging/share/anneal/theory"
+              cp "$targetSpecPreflight" "$TMPDIR/dist_staging/share/anneal/trusted/audit/SpecPreflight.lean"
               cp "$targetInspector" "$TMPDIR/dist_staging/share/anneal/trusted/audit/TrustedBoundary.lean"
               cp "$targetLibraryLock" "$TMPDIR/dist_staging/share/anneal/trusted/audit/library-lock.json"
 
@@ -424,9 +426,11 @@
                 "$rustToolchain/bin/rustc" \
                 "$TMPDIR/dist_staging/share/anneal/correspondence-provenance.json" \
                 "$TMPDIR/dist_staging/share/anneal/prebuilt/manifest.json" \
+                "$TMPDIR/dist_staging/share/anneal/prebuilt/SpecPreflight.olean" \
                 "$TMPDIR/dist_staging/share/anneal/prebuilt/TrustedBoundary.olean" \
                 "$TMPDIR/dist_staging/share/anneal/prebuilt/lib/Trusted/MirAst.olean" \
                 "$TMPDIR/dist_staging/share/anneal/prebuilt/lib/Anneal/MirWp.olean" \
+                "$TMPDIR/dist_staging/share/anneal/trusted/audit/SpecPreflight.lean" \
                 "$TMPDIR/dist_staging/share/anneal/trusted/audit/TrustedBoundary.lean" \
                 "$TMPDIR/dist_staging/share/anneal/trusted/audit/library-lock.json" \
                 "$TMPDIR/dist_staging/share/anneal/trusted/lean/foundation-lock.json" \
@@ -502,9 +506,11 @@
                 rust/bin/rustc
                 share/anneal/correspondence-provenance.json
                 share/anneal/prebuilt/manifest.json
+                share/anneal/prebuilt/SpecPreflight.olean
                 share/anneal/prebuilt/TrustedBoundary.olean
                 share/anneal/prebuilt/lib/Trusted/MirAst.olean
                 share/anneal/prebuilt/lib/Anneal/MirWp.olean
+                share/anneal/trusted/audit/SpecPreflight.lean
                 share/anneal/trusted/audit/TrustedBoundary.lean
                 share/anneal/trusted/audit/library-lock.json
                 share/anneal/trusted/lean/foundation-lock.json

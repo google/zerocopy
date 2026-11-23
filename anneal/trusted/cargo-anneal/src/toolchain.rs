@@ -269,7 +269,115 @@ pub(crate) struct LibraryLock {
     pub graph: BTreeMap<String, Vec<ImportEdge>>,
 }
 
-/// Holds the admitted Lean 4.34.1 toolchain state, `foundation-lock.json`
+/// Bundled Lean `v4.35.0+` NDJSON export and independent kernel binaries
+/// discovered under `<sysroot>/bin/`.
+///
+/// When present, `cargo-anneal` activates the Universal NDJSON Comparator
+/// (`5a`/`5b`/`5c`) by default everywhere instead of in-process `.olean` target
+/// auditing, executing `nanoda_bin` and `con-ron` over plain UTF-8 NDJSON.
+#[derive(Debug, Clone)]
+pub struct NdjsonComparatorTools {
+    /// Canonical path to `<sysroot>/bin/leanexport`.
+    pub leanexport: PathBuf,
+    /// SHA-256 digest of `leanexport` recorded at admission.
+    pub leanexport_sha256: String,
+    /// Canonical path to `<sysroot>/bin/nanoda_bin`.
+    pub nanoda_bin: PathBuf,
+    /// SHA-256 digest of `nanoda_bin` recorded at admission.
+    pub nanoda_bin_sha256: String,
+    /// Canonical path to `<sysroot>/bin/con-ron`.
+    pub con_ron: PathBuf,
+    /// SHA-256 digest of `con-ron` recorded at admission.
+    pub con_ron_sha256: String,
+    /// Optional canonical path to `<sysroot>/bin/con-leche` for
+    /// `--paranoid-quorum`.
+    pub con_leche: Option<PathBuf>,
+    /// SHA-256 digest of `con-leche` recorded at admission.
+    pub con_leche_sha256: Option<String>,
+    /// Optional canonical path to `<sysroot>/bin/lean4lean` for
+    /// `--paranoid-quorum`.
+    pub lean4lean: Option<PathBuf>,
+    /// SHA-256 digest of `lean4lean` recorded at admission.
+    pub lean4lean_sha256: Option<String>,
+    /// Optional canonical path to `<sysroot>/bin/lake`.
+    pub lake: Option<PathBuf>,
+}
+
+/// Discover and hash the stock Lean `v4.35.0+` NDJSON comparator binaries under
+/// `<prefix>/bin/`.
+///
+/// Returns `Ok(Some(..))` when `leanexport`, `nanoda_bin`, and `con-ron` all
+/// exist under `<prefix>/bin/`, `Ok(None)` when none of the three exist (such
+/// as on Lean `v4.34.1`), and fails closed if only a partial subset is present.
+pub(crate) fn discover_ndjson_comparator_tools(
+    prefix: &Path,
+) -> Result<Option<NdjsonComparatorTools>, Failure> {
+    let bin_dir = prefix.join("bin");
+    let leanexport_raw = bin_dir.join("leanexport");
+    let nanoda_raw = bin_dir.join("nanoda_bin");
+    let con_ron_raw = bin_dir.join("con-ron");
+    let con_leche_raw = bin_dir.join("con-leche");
+    let lean4lean_raw = bin_dir.join("lean4lean");
+    let lake_raw = bin_dir.join("lake");
+
+    let has_export = leanexport_raw.is_file();
+    let has_nanoda = nanoda_raw.is_file();
+    let has_con_ron = con_ron_raw.is_file();
+    if !has_export && !has_nanoda && !has_con_ron {
+        return Ok(None);
+    }
+    if !(has_export && has_nanoda && has_con_ron) {
+        return Err(Failure::operational(
+            "toolchain",
+            format!(
+                "incomplete Lean NDJSON comparator binaries under {} \
+                 (leanexport={has_export}, nanoda_bin={has_nanoda}, con-ron={has_con_ron})",
+                bin_dir.display()
+            ),
+        ));
+    }
+    let canon = |p: &Path, name: &str| -> Result<PathBuf, Failure> {
+        fs::canonicalize(p).map_err(|e| {
+            Failure::operational("toolchain", format!("cannot canonicalize {name} {}: {e}", p.display()))
+        })
+    };
+    let leanexport = canon(&leanexport_raw, "leanexport")?;
+    let nanoda_bin = canon(&nanoda_raw, "nanoda_bin")?;
+    let con_ron = canon(&con_ron_raw, "con-ron")?;
+    let (con_leche, con_leche_sha256) = if con_leche_raw.is_file() {
+        let p = canon(&con_leche_raw, "con-leche")?;
+        let sha = sha256_file_deref(&p, "toolchain")?;
+        (Some(p), Some(sha))
+    } else {
+        (None, None)
+    };
+    let (lean4lean, lean4lean_sha256) = if lean4lean_raw.is_file() {
+        let p = canon(&lean4lean_raw, "lean4lean")?;
+        let sha = sha256_file_deref(&p, "toolchain")?;
+        (Some(p), Some(sha))
+    } else {
+        (None, None)
+    };
+    let lake = if lake_raw.is_file() { Some(canon(&lake_raw, "lake")?) } else { None };
+    let leanexport_sha256 = sha256_file_deref(&leanexport, "toolchain")?;
+    let nanoda_bin_sha256 = sha256_file_deref(&nanoda_bin, "toolchain")?;
+    let con_ron_sha256 = sha256_file_deref(&con_ron, "toolchain")?;
+    Ok(Some(NdjsonComparatorTools {
+        leanexport,
+        leanexport_sha256,
+        nanoda_bin,
+        nanoda_bin_sha256,
+        con_ron,
+        con_ron_sha256,
+        con_leche,
+        con_leche_sha256,
+        lean4lean,
+        lean4lean_sha256,
+        lake,
+    }))
+}
+
+/// Holds the admitted Lean toolchain state, `foundation-lock.json`
 /// metadata, and active artifact graph produced by
 /// [`crate::Checker::tool_admission`].
 ///
@@ -283,6 +391,11 @@ pub struct AdmittedToolchain {
     pub inspector: PathBuf,
     /// SHA-256 digest of staged `control/TrustedBoundary.lean` at admission.
     pub(crate) inspector_sha256: String,
+    /// Optional staged path of parser-only `control/SpecPreflight.lean` used
+    /// for `"headers"`, `"spec-preflight"`, and `"resolve-imports"`.
+    pub(crate) spec_preflight: Option<PathBuf>,
+    /// SHA-256 digest of staged `control/SpecPreflight.lean` at admission.
+    pub(crate) spec_preflight_sha256: Option<String>,
     /// Verified SHA-256 digest of the admitted `lean` binary.
     pub(crate) lean_sha256: String,
     /// Holds the verified `lean --version` string matching
@@ -336,6 +449,12 @@ pub struct AdmittedToolchain {
     /// a pinned runtime-library allowlist
     /// (`LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS`).
     pub runtime_libs_verified: bool,
+    /// Staged precompiled `control/SpecPreflight.olean` built once per
+    /// `Checker` from `control/SpecPreflight.lean`, plus its SHA-256 digest.
+    pub(crate) spec_preflight_olean: Option<(PathBuf, String)>,
+    /// Bundled Lean `v4.35.0+` NDJSON comparator binaries (`leanexport`,
+    /// `nanoda_bin`, `con-ron`, optional `lake`) when present in `<prefix>/bin/`.
+    pub ndjson_tools: Option<NdjsonComparatorTools>,
 }
 
 impl AdmittedToolchain {

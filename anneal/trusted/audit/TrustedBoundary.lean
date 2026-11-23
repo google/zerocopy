@@ -15,12 +15,27 @@ import Lean.Compiler.ExternAttr
 import Lean.Compiler.CSimpAttr
 
 /-!
-# Trusted Boundary and Kernel Environment Inspector (`TrustedBoundary.lean`)
+# Offline Repository Audit & Legacy Target Inspector (`TrustedBoundary.lean`)
+
+Provides offline repository Pass 1 (`"preflight"`, `"audit"`), Pass 2
+`lean-miri` correspondence (`"vendor-headers"`, `"correspondence-preflight"`,
+`"correspondence-audit"`), and transitional legacy `v4.34.1` `"target-export"` /
+`"target-audit"`.
+
+On Lean `v4.35.0+`, runtime target verification (`cargo-anneal verify`) does
+NOT compile or execute `TrustedBoundary.lean`: it uses the minimal parser-only
+`trusted/audit/SpecPreflight.lean` (`"headers"`, `"spec-preflight"`,
+`"resolve-imports"`) paired with the pure-Rust Universal NDJSON Comparator
+(`5a`/`5b`/`5c` in `trusted/cargo-anneal/src/ndjson_comparator.rs`) backed by
+`nanoda_bin` and `con-ron`, so no untrusted target `.olean` is ever mapped into
+the verdict process. The legacy `"target-export"` / `"target-audit"` blocks
+below remain strictly for transitional compatibility while the repository's
+pinned toolchain lock is on Lean `v4.34.1`.
 
 Pinned to Lean 4.34.1, commit
 `leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`. `anneal-audit`
-(`trusted/audit/`) and `cargo-anneal verify` (`trusted/cargo-anneal/`) invoke
-this file across ten JSON IPC modes (`run` and `main`):
+(`trusted/audit/`) and legacy `v4.34.1` `cargo-anneal verify` invoke this file
+across ten JSON IPC modes (`run` and `main`):
 
 - **`"headers"` (target import discovery before elaboration):**
   Parses only module `prelude`/`import` headers via `Parser.parseHeader`,

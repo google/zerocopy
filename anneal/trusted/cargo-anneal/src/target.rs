@@ -18,12 +18,18 @@ use std::{
     collections::{BTreeMap, BTreeSet, VecDeque},
     fs, io,
     path::{Path, PathBuf},
+    time::Instant,
 };
 
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 
 use crate::{
+    ndjson_comparator::{
+        CanonicalArena, NdjsonAuditVerdict, NdjsonTimingMs, PINNED_INIT_PRIMITIVES, SkippedKernel,
+        StructuralCompareRequest, parse_ndjson_file, parse_ndjson_reader,
+        validate_legacy_target_verdict, validate_ndjson_verdict, verify_ndjson_structure,
+    },
     sandbox::set_mode,
     stage::Checker,
     toolchain::{
@@ -39,10 +45,11 @@ use crate::{
 /// pinned and unpinned modes.
 ///
 /// Reserving these roots prevents authored target modules from claiming names
-/// such as `Init.System.IO`, `Lean.Elab`, or `TrustedBoundary` that would
-/// shadow sysroot or inspector modules in exported `LEAN_PATH` directories.
+/// such as `Init.System.IO`, `Lean.Elab`, `TrustedBoundary`, or `SpecPreflight`
+/// that would shadow sysroot or inspector modules in exported `LEAN_PATH`
+/// directories.
 const RESERVED_TOOLCHAIN_MODULE_ROOTS: &[&str] =
-    &["Init", "Std", "Lean", "Lake", "TrustedBoundary"];
+    &["Init", "Std", "Lean", "Lake", "TrustedBoundary", "SpecPreflight"];
 
 /// Return whether `module` belongs to a reserved toolchain or inspector root.
 fn is_reserved_toolchain_module(module: &str) -> bool {
@@ -1100,7 +1107,37 @@ impl Checker {
         // Compilation success alone does not establish the exact theorem
         // type, permitted assumptions, or compiled source roles. Acceptance
         // is a separate inspection of the produced kernel declarations.
-        let mut report = self.inspect_target(&filtered_request)?;
+        //
+        // On Lean `v4.35.0+` (where `<sysroot>/bin/{leanexport,nanoda_bin,
+        // con-ron}` are bundled), run the Universal NDJSON Comparator
+        // (`5a`/`5b`/`5c`) by default everywhere so no untrusted `.olean` is
+        // ever mapped into the verdict process. On legacy `v4.34.1`, fall back
+        // to `TrustedBoundary.lean` `"target-audit"` gated by strict
+        // `#[serde(deny_unknown_fields)]` schema validation.
+        let use_ndjson_comparator = self.admitted()?.ndjson_tools.is_some();
+        let mut report = if use_ndjson_comparator {
+            self.audit_target_ndjson(&filtered_request, &roles)?
+        } else {
+            if self.paranoid_quorum() {
+                return Err(Failure::operational(
+                    "ndjson-paranoid-quorum",
+                    "--paranoid-quorum requires Lean v4.35.0+ with bundled leanexport, \
+                     nanoda_bin, con-ron, con-leche, and lean4lean",
+                ));
+            }
+            let legacy_raw = self.inspect_target(&filtered_request)?;
+            let validated = validate_legacy_target_verdict(
+                &legacy_raw,
+                &filtered_request.theorem_name,
+                &filtered_request.canonical_root,
+                &filtered_request.subject_declaration,
+                &filtered_request.specification_declaration,
+                &filtered_request.expected_declaration,
+                filtered_request.allow_sorry_in_proof,
+            )?;
+            serde_json::to_value(&validated)
+                .map_err(|e| Failure::operational("target-audit", e.to_string()))?
+        };
         let mut provenance = Vec::new();
         for module in &filtered_request.modules {
             let artifacts = &self.admitted()?.artifacts[&module.module];
@@ -1218,6 +1255,230 @@ impl Checker {
             );
         }
         Ok(report)
+    }
+
+    /// Execute the Universal NDJSON Comparator (`5a`/`5b`/`5c`, default-ON on
+    /// Lean `v4.35.0+`) with zero untrusted `.olean` loading in the verdict
+    /// process:
+    ///
+    /// - `5-init`: clean sysroot export of all 39 [`PINNED_INIT_PRIMITIVES`]
+    ///   (cached per `(sysroot, leanexport_sha256)`).
+    /// - `5a` (`AnnealExportExpected`): isolated mount containing strictly
+    ///   `{Model, Capture, Specification, Expected}` `.olean`s (zero `Proof.*`
+    ///   or `Anneal.*`) exported to `expected_cone.ndjson`.
+    /// - `5b` (`AnnealExportProof`): sandboxed `leanexport` of
+    ///   `<expected_module>` + `<theorem_module>` to `proof_full.ndjson` with
+    ///   read-only inputs and empty `rw_out`.
+    /// - `5c` (`AnnealVerifyNdjson`): pure safe Rust structural verification
+    ///   (canonical DAG identity, 39-primitive pinning, `Quot.{mk,lift,ind}`
+    ///   post-check, `.opaqueInfo` and `unsafe`/`partial` bans, closed axiom
+    ///   allowlist) followed by dual independent kernels (`nanoda_bin` with
+    ///   `"unpermitted_axiom_hard_error": true` AND `con-ron --verified`), plus
+    ///   optional `--paranoid-quorum` (`con-leche` + `lean4lean --import`, all
+    ///   inside `ExecSeal`).
+    fn audit_target_ndjson(
+        &mut self,
+        request: &TargetAuditRequest,
+        roles: &BTreeMap<String, TargetRole>,
+    ) -> Result<Json, Failure> {
+        let mut trusted_modules = Vec::new();
+        let mut capture_modules = Vec::new();
+        let mut model_modules = Vec::new();
+        let mut specification_modules = Vec::new();
+        let forbidden_expected_roots = BTreeSet::from(["Anneal".to_owned(), "Proof".to_owned()]);
+        let mut forbidden_expected_modules = BTreeSet::new();
+        for (module, &role) in roles {
+            match role {
+                TargetRole::Model => {
+                    trusted_modules.push(module.clone());
+                    model_modules.push(module.clone());
+                }
+                TargetRole::Capture => {
+                    trusted_modules.push(module.clone());
+                    capture_modules.push(module.clone());
+                }
+                TargetRole::Specification => {
+                    trusted_modules.push(module.clone());
+                    specification_modules.push(module.clone());
+                }
+                TargetRole::Expected => {
+                    trusted_modules.push(module.clone());
+                }
+                TargetRole::Proof => {
+                    forbidden_expected_modules.insert(module.clone());
+                }
+            }
+        }
+
+        let total_start = Instant::now();
+
+        // Action 5-init: clean sysroot primitive cone (39 pinned primitives).
+        let t_init = Instant::now();
+        let init_cached = self.export_ndjson_init_primitives()?;
+        let init_primitives_ms = t_init.elapsed().as_millis() as u64;
+
+        // Action 5a: disjoint trusted-only expected cone export.
+        let t_exp = Instant::now();
+        let (expected_path, expected_cone_sha256) = self.export_ndjson_expected(
+            &request.expected_module,
+            &request.expected_declaration,
+            &trusted_modules,
+            "expected_cone.ndjson",
+        )?;
+        let export_expected_ms = t_exp.elapsed().as_millis() as u64;
+
+        // Action 5b: sandboxed proof export.
+        let t_proof = Instant::now();
+        let (proof_path, proof_ndjson_sha256) = self.export_ndjson_proof(
+            &request.expected_module,
+            &request.theorem_module,
+            &request.expected_declaration,
+            &request.theorem_name,
+            "proof_full.ndjson",
+        )?;
+        let export_proof_ms = t_proof.elapsed().as_millis() as u64;
+
+        // Action 5c (Part 1): pure memory-safe Rust structural verification.
+        let t_cmp = Instant::now();
+        let mut arena = CanonicalArena::new();
+        let init_env = parse_ndjson_reader(
+            io::BufReader::new(init_cached.bytes.as_slice()),
+            &mut arena,
+            "init_primitives_cone",
+        )?;
+        let (expected_env, parsed_expected_sha) =
+            parse_ndjson_file(&expected_path, &mut arena, "expected_cone")?;
+        if parsed_expected_sha != expected_cone_sha256 {
+            return Err(Failure::operational(
+                "ndjson-comparator",
+                "expected_cone.ndjson changed before verification",
+            ));
+        }
+        let (proof_env, parsed_proof_sha) =
+            parse_ndjson_file(&proof_path, &mut arena, "proof_full")?;
+        if parsed_proof_sha != proof_ndjson_sha256 {
+            return Err(Failure::operational(
+                "ndjson-comparator",
+                "proof_full.ndjson changed before verification",
+            ));
+        }
+
+        let compare_req = StructuralCompareRequest {
+            theorem_name: &request.theorem_name,
+            expected_declaration: &request.expected_declaration,
+            canonical_root: &request.canonical_root,
+            subject_declaration: &request.subject_declaration,
+            specification_declaration: &request.specification_declaration,
+            allow_sorry_in_proof: request.allow_sorry_in_proof,
+            forbidden_expected_roots,
+            forbidden_expected_modules,
+            capture_modules,
+            model_modules,
+            specification_modules,
+        };
+        let summary = verify_ndjson_structure(
+            &mut arena,
+            &init_env,
+            &expected_env,
+            &proof_env,
+            &compare_req,
+        )?;
+        let rust_compare_ms = t_cmp.elapsed().as_millis() as u64;
+
+        // Action 5c (Part 2): execute dual independent kernels by default:
+        // 1. `nanoda_bin` (Rust, `"unpermitted_axiom_hard_error": true`)
+        // 2. `con-ron` (formally verified Rust arena kernel, `--verified`)
+        let t_nanoda = Instant::now();
+        self.run_ndjson_nanoda(&proof_path, request.allow_sorry_in_proof)?;
+        let nanoda_ms = t_nanoda.elapsed().as_millis() as u64;
+        let mut kernels_passed = vec!["nanoda_bin".to_owned()];
+        let mut kernels_skipped = Vec::new();
+        let con_ron_ms = if summary.sorry_used {
+            // `con-ron --verified` enforces `no_False_declaration` over the
+            // three standard axioms only and declines `sorryAx`. When
+            // `--allow-sorry-in-proof` is explicitly set (which unconditionally
+            // taints Receipt v3) and `sorryAx` is present, record the skip
+            // explicitly rather than misrepresenting kernel coverage.
+            kernels_skipped.push(SkippedKernel {
+                kernel: "con-ron".to_owned(),
+                reason: "sorryAx_present_under_allow_sorry_in_proof".to_owned(),
+            });
+            0
+        } else {
+            let t_con = Instant::now();
+            self.run_ndjson_con_ron(&proof_path)?;
+            kernels_passed.push("con-ron".to_owned());
+            t_con.elapsed().as_millis() as u64
+        };
+
+        // Optional `--paranoid-quorum`: cross-check `proof_full.ndjson` across
+        // two additional independent bundled Lean `v4.35.0+` kernels
+        // (`con-leche` and `lean4lean --import`) directly inside `ExecSeal`
+        // for a four-independent-kernel quorum.
+        let paranoid_quorum = self.paranoid_quorum();
+        let paranoid_quorum_ms = if paranoid_quorum {
+            let t_pq = Instant::now();
+            if summary.sorry_used {
+                kernels_skipped.push(SkippedKernel {
+                    kernel: "con-leche".to_owned(),
+                    reason: "sorryAx_present_under_allow_sorry_in_proof".to_owned(),
+                });
+            } else {
+                self.run_ndjson_con_leche(&proof_path)?;
+                kernels_passed.push("con-leche".to_owned());
+            }
+            self.run_ndjson_lean4lean(&proof_path)?;
+            kernels_passed.push("lean4lean".to_owned());
+            t_pq.elapsed().as_millis() as u64
+        } else {
+            0
+        };
+
+        let verdict = NdjsonAuditVerdict {
+            audit_mode: "ndjson_comparator".to_owned(),
+            theorem: request.theorem_name.clone(),
+            canonical_root: request.canonical_root.clone(),
+            subject: request.subject_declaration.clone(),
+            specification: request.specification_declaration.clone(),
+            expected: request.expected_declaration.clone(),
+            axioms: summary.axioms,
+            sorry_declarations: summary.sorry_declarations,
+            replay: true,
+            exact_type: true,
+            replayed_declarations: summary.checked_declarations,
+            expected_cone_declarations: summary.expected_cone_declarations,
+            pinned_primitives_count: PINNED_INIT_PRIMITIVES.len(),
+            expected_cone_sha256,
+            proof_ndjson_sha256,
+            init_primitives_sha256: init_cached.sha256.clone(),
+            kernels_passed,
+            kernels_skipped,
+            paranoid_quorum,
+            timing_ms: NdjsonTimingMs {
+                init_primitives: init_primitives_ms,
+                export_expected: export_expected_ms,
+                export_proof: export_proof_ms,
+                rust_compare: rust_compare_ms,
+                nanoda: nanoda_ms,
+                con_ron: con_ron_ms,
+                paranoid_quorum: paranoid_quorum_ms,
+                total: total_start.elapsed().as_millis() as u64,
+            },
+            subject_closure: summary.subject_closure,
+            model_closure: summary.model_closure,
+            specification_closure: summary.specification_closure,
+        };
+        validate_ndjson_verdict(
+            &verdict,
+            &request.theorem_name,
+            &request.canonical_root,
+            &request.subject_declaration,
+            &request.specification_declaration,
+            &request.expected_declaration,
+            request.allow_sorry_in_proof,
+        )?;
+        serde_json::to_value(&verdict)
+            .map_err(|e| Failure::operational("ndjson-comparator", e.to_string()))
     }
 }
 
@@ -1599,6 +1860,8 @@ exit 4
             "Lake.DSL",
             "TrustedBoundary",
             "TrustedBoundary.Extra",
+            "SpecPreflight",
+            "SpecPreflight.Extra",
         ] {
             let mut shadowing = request.clone();
             shadowing.modules.push(TargetModule {

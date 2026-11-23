@@ -33,6 +33,7 @@ ARCHIVE_INPUTS = (
     "anneal/flake.lock",
     "anneal/trusted/rustc-capture",
     "anneal/trusted/lean",
+    "anneal/trusted/audit/SpecPreflight.lean",
     "anneal/trusted/audit/TrustedBoundary.lean",
     "anneal/trusted/audit/library-lock.json",
     "anneal/theory",
