@@ -26,7 +26,7 @@ use rustc_middle::mir;
 use rustc_middle::ty::TyCtxt;
 use rustc_middle::util::Providers;
 use rustc_session::EarlyDiagCtxt;
-use rustc_session::config::{CrateType, Options};
+use rustc_session::config::{CrateType, OptLevel, Options};
 use rustc_span::def_id::{LOCAL_CRATE, LocalDefId};
 use rustc_span::source_map::{FileLoader, RealFileLoader};
 use rustc_span::{FileName, sym};
@@ -502,6 +502,45 @@ fn rustc_crate_type(crate_type: ir::CrateType) -> CrateType {
     }
 }
 
+/// Validate the captured compilation's optimization, debug-assertion,
+/// overflow-check, and UB-preservation flags, returning the numeric
+/// optimization level encoded in `ir::Configuration`.
+///
+/// `rustc` defines `OptLevel::No` as `"-Copt-level=0"`, computes
+/// `"let debug_assertions = cg.debug_assertions.unwrap_or(opt_level ==`
+/// `OptLevel::No);"`, and computes `Session::overflow_checks` as
+/// `"self.opts.cg.overflow_checks.unwrap_or(self.opts.debug_assertions)"`.
+/// Require explicit `-Coverflow-checks=no` (`Some(false)`) here so missing
+/// flags cannot pass silently by defaulting through `debug_assertions`.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/config.rs#L91-L105
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/config.rs#L2629-L2634
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/session.rs#L724-L726
+fn validate_profile_options(opts: &Options) -> Result<u8, String> {
+    let opt_level = match opts.optimize {
+        OptLevel::No => 0,
+        other @ (OptLevel::Less
+        | OptLevel::More
+        | OptLevel::Aggressive
+        | OptLevel::Size
+        | OptLevel::SizeMin) => {
+            return Err(format!("-Copt-level=0 is required during capture (got {other:?})"));
+        }
+    };
+    if opts.debug_assertions {
+        return Err("-Cdebug-assertions=no is required during capture".into());
+    }
+    if opts.cg.overflow_checks != Some(false) {
+        return Err(format!(
+            "-Coverflow-checks=no is required during capture (got {:?})",
+            opts.cg.overflow_checks
+        ));
+    }
+    if !opts.unstable_opts.mir_preserve_ub {
+        return Err("-Zmir-preserve-ub must be enabled during capture".into());
+    }
+    Ok(opt_level)
+}
+
 fn validate_compiler_options(
     opts: &Options,
     expected_crate_type: ir::CrateType,
@@ -536,9 +575,7 @@ fn validate_compiler_options(
             expected_panic.as_str()
         ));
     }
-    if !opts.unstable_opts.mir_preserve_ub {
-        return Err("-Zmir-preserve-ub must be enabled during capture".into());
-    }
+    let _ = validate_profile_options(opts)?;
     if !opts.logical_env.is_empty() {
         return Err("raw compiler --env-set flags are forbidden during capture".into());
     }
@@ -778,6 +815,65 @@ fn check_admitted_enum_collisions(
     Ok(())
 }
 
+struct CheckedProfileConfig {
+    opt_level: u8,
+    debug_assertions: bool,
+    overflow_checks: bool,
+    mir_preserve_ub: bool,
+    pointer_bits: u64,
+    endian: &'static str,
+}
+
+fn checked_target_profile(
+    pointer_bits: u64,
+    endian: Endian,
+) -> Result<(u64, &'static str), Failure> {
+    match endian {
+        Endian::Little if pointer_bits == 64 => Ok((pointer_bits, "little")),
+        Endian::Little | Endian::Big => {
+            Err(Failure::unsupported("only 64-bit little-endian targets are modeled"))
+        }
+    }
+}
+
+/// Validate and derive the captured target and compiler-flag profile from
+/// the active `TyCtxt` rather than hardcoding literals in `ir::Configuration`.
+///
+/// Check `tcx.sess.overflow_checks()` directly alongside `tcx.sess.opts`
+/// because MIR building (`"check_overflow |= tcx.sess.overflow_checks();"`)
+/// and `cfg(overflow_checks)` read that resolved session predicate.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_build/src/builder/mod.rs#L759-L760
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/config/cfg.rs#L194-L214
+fn verified_profile_config(tcx: TyCtxt<'_>) -> Result<CheckedProfileConfig, Failure> {
+    // `pointer_size` is the compiler's "pointer size in the default data
+    // address space". `endian` is the "Endianness of the target, which must
+    // match cfg(target-endian)", set to `Endian::Little` by the data-layout
+    // specification `"e"`. The owned syntax fixes both that width and
+    // endianness; neither a host-width guess nor a target-name heuristic
+    // supplies them.
+    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L674-L678
+    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L259-L260
+    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L444
+    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L752-L756
+    let (pointer_bits, endian) =
+        checked_target_profile(tcx.data_layout.pointer_size().bits(), tcx.data_layout.endian)?;
+    let opt_level = validate_profile_options(&tcx.sess.opts).map_err(Failure::tool)?;
+    let debug_assertions = tcx.sess.opts.debug_assertions;
+    let overflow_checks = tcx.sess.overflow_checks();
+    if overflow_checks {
+        return Err(Failure::tool("-Coverflow-checks=no is required during capture"));
+    }
+    let mir_preserve_ub = tcx.sess.opts.unstable_opts.mir_preserve_ub;
+    Ok(CheckedProfileConfig {
+        opt_level,
+        debug_assertions,
+        overflow_checks,
+        mir_preserve_ub,
+        pointer_bits,
+        endian,
+    })
+}
+
 fn collect(
     tcx: TyCtxt<'_>,
     args: &Args,
@@ -798,21 +894,7 @@ fn collect(
     if tcx.dcx().has_errors().is_some() {
         return Err(Failure::compiler("compiler diagnostics prohibit capture"));
     }
-    // `pointer_size` is the compiler's "pointer size in the default data
-    // address space". `endian` is the "Endianness of the target, which must
-    // match cfg(target-endian)", set to `Endian::Little` by the data-layout
-    // specification `"e"`. The owned syntax fixes both that width and
-    // endianness; neither a host-width guess nor a target-name heuristic
-    // supplies them.
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L674-L678
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L259-L260
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L444
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L752-L756
-    if tcx.data_layout.pointer_size().bits() != 64 || tcx.data_layout.endian != Endian::Little {
-        return Err(Failure::unsupported(
-            "only 64-bit little-endian targets are modeled",
-        ));
-    }
+    let profile = verified_profile_config(tcx)?;
     let sysroot = verify_session_sysroot(
         tcx.sess.opts.sysroot.path(),
         verified_sysroot,
@@ -1112,12 +1194,12 @@ fn collect(
             target: args.target.clone(),
             cfg: args.cfg.clone(),
             env: declared_env.clone(),
-            opt_level: 0,
-            debug_assertions: false,
-            overflow_checks: false,
-            mir_preserve_ub: true,
-            pointer_bits: 64,
-            endian: "little",
+            opt_level: profile.opt_level,
+            debug_assertions: profile.debug_assertions,
+            overflow_checks: profile.overflow_checks,
+            mir_preserve_ub: profile.mir_preserve_ub,
+            pointer_bits: profile.pointer_bits,
+            endian: profile.endian,
             declared_source_files: args.source_file.clone(),
         },
         source_files: reads.files.values().cloned().collect(),
@@ -1317,13 +1399,19 @@ mod tests {
         }
     }
 
+    fn valid_capture_options(crate_type: CrateType) -> Options {
+        let mut opts = Options { crate_types: vec![crate_type], ..Options::default() };
+        opts.sysroot.explicit = Some(PathBuf::from("/sysroot"));
+        opts.optimize = OptLevel::No;
+        opts.debug_assertions = false;
+        opts.cg.overflow_checks = Some(false);
+        opts.unstable_opts.mir_preserve_ub = true;
+        opts
+    }
+
     #[test]
     fn compiler_options_gate_requires_mir_preserve_ub_and_matching_crate_type_and_panic() {
-        let mut opts = Options {
-            crate_types: vec![CrateType::Rlib],
-            ..Options::default()
-        };
-        opts.sysroot.explicit = Some(PathBuf::from("/sysroot"));
+        let mut opts = valid_capture_options(CrateType::Rlib);
         opts.unstable_opts.mir_preserve_ub = false;
         let err = validate_compiler_options(
             &opts,
@@ -1343,12 +1431,7 @@ mod tests {
                 .is_err()
         );
 
-        let mut bin_opts = Options {
-            crate_types: vec![CrateType::Executable],
-            ..Options::default()
-        };
-        bin_opts.sysroot.explicit = Some(PathBuf::from("/sysroot"));
-        bin_opts.unstable_opts.mir_preserve_ub = true;
+        let mut bin_opts = valid_capture_options(CrateType::Executable);
         bin_opts.cg.panic = Some(RustcPanicStrategy::Abort);
         assert!(
             validate_compiler_options(&bin_opts, ir::CrateType::Bin, ir::PanicStrategy::Abort)
@@ -1367,6 +1450,62 @@ mod tests {
         )
         .unwrap_err();
         assert!(err.contains("--env-set"), "{err}");
+    }
+
+    #[test]
+    fn compiler_options_gate_enforces_opt_level_debug_assertions_and_overflow_checks() {
+        let base = valid_capture_options(CrateType::Rlib);
+        assert_eq!(validate_profile_options(&base).unwrap(), 0);
+        assert!(
+            validate_compiler_options(&base, ir::CrateType::Lib, ir::PanicStrategy::Unwind).is_ok()
+        );
+
+        for level in [
+            OptLevel::Less,
+            OptLevel::More,
+            OptLevel::Aggressive,
+            OptLevel::Size,
+            OptLevel::SizeMin,
+        ] {
+            let mut opts = valid_capture_options(CrateType::Rlib);
+            opts.optimize = level;
+            let err =
+                validate_compiler_options(&opts, ir::CrateType::Lib, ir::PanicStrategy::Unwind)
+                    .unwrap_err();
+            assert!(err.contains("-Copt-level=0"), "{level:?}: {err}");
+        }
+
+        let mut debug_opts = valid_capture_options(CrateType::Rlib);
+        debug_opts.debug_assertions = true;
+        let err =
+            validate_compiler_options(&debug_opts, ir::CrateType::Lib, ir::PanicStrategy::Unwind)
+                .unwrap_err();
+        assert!(err.contains("-Cdebug-assertions=no"), "{err}");
+
+        for overflow in [None, Some(true)] {
+            let mut overflow_opts = valid_capture_options(CrateType::Rlib);
+            overflow_opts.cg.overflow_checks = overflow;
+            let err = validate_compiler_options(
+                &overflow_opts,
+                ir::CrateType::Lib,
+                ir::PanicStrategy::Unwind,
+            )
+            .unwrap_err();
+            assert!(err.contains("-Coverflow-checks=no"), "{overflow:?}: {err}");
+        }
+    }
+
+    #[test]
+    fn target_profile_gate_requires_64_bit_little_endian() {
+        assert_eq!(checked_target_profile(64, Endian::Little).unwrap(), (64, "little"));
+        for (bits, endian) in [(32, Endian::Little), (64, Endian::Big), (32, Endian::Big)] {
+            let err = checked_target_profile(bits, endian).unwrap_err();
+            assert_eq!(err.status, "unsupported");
+            assert!(
+                err.diagnostics[0].contains("64-bit little-endian"),
+                "{bits}, {endian:?}: {err:?}"
+            );
+        }
     }
 
     #[test]
