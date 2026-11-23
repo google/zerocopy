@@ -1,0 +1,345 @@
+{
+  "commits_checked": 8,
+  "files_checked": 42,
+  "files_verified": 42,
+  "all_verified": true,
+  "failures": [],
+  "entries": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+      "path": "compiler/rustc_attr_parsing/src/safety.rs",
+      "bytes": 5484,
+      "sha256": "8e9d428b9d14462127c7a0ca6ee78fa972aa79cdb3b1a538d8368927f8735962",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+      "path": "compiler/rustc_attr_parsing/src/attributes/codegen_attrs.rs",
+      "bytes": 38836,
+      "sha256": "99a22f8c145ea7c4e96a35239b12dfb6a3160bd1aa48dadb0196cbb3ffa61c36",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+      "path": "compiler/rustc_attr_parsing/src/attributes/link_attrs.rs",
+      "bytes": 30145,
+      "sha256": "02adb6bf7de08d7415ccca114b90859aed123412cbfc7a2c3de844b6895de651",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+      "path": "compiler/rustc_attr_parsing/src/diagnostics.rs",
+      "bytes": 68400,
+      "sha256": "d906b5c0a7bfd718414dad94c98c340a2a7b9629d662826bd01f15f9d767518d",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+      "path": "compiler/rustc_attr_parsing/src/interface.rs",
+      "bytes": 28275,
+      "sha256": "cac3e8b813c0050b3df92e56a115026751727d3815a82bd8736c5c25af5245ce",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+      "path": "compiler/rustc_passes/src/check_attr.rs",
+      "bytes": 62720,
+      "sha256": "20d3182e2a5738a9f62b089842db412147689b40d4bdfb970bbf6d46ab236b5a",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+      "path": "compiler/rustc_passes/src/reachable.rs",
+      "bytes": 24759,
+      "sha256": "cc59d44cfaaac19556243c0fc544638e543c87d9c69ab9df789d6ccda3b80ff8",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+      "path": "compiler/rustc_codegen_llvm/src/consts.rs",
+      "bytes": 42162,
+      "sha256": "c981345aebca76798a157d03f35e1bfbc59123ecf7fa6644c4e855269ced4b1f",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+      "path": "compiler/rustc_codegen_llvm/src/base.rs",
+      "bytes": 10692,
+      "sha256": "c1d8cccef48f95d3374e5c26d67750a597248652388e475abbfed3ca1f636b55",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+      "path": "compiler/rustc_codegen_ssa/src/back/symbol_export.rs",
+      "bytes": 41312,
+      "sha256": "022b25091e85c82a506a226dc3bc32b03b2e0a03f83f66a0016651e24b18d60e",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+      "path": "compiler/rustc_codegen_ssa/src/codegen_attrs.rs",
+      "bytes": 32943,
+      "sha256": "a2f3508b78ce7e000554eb325ed5bc8a26718c71ebb3b68f767b182aa4f27fea",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+      "path": "compiler/rustc_middle/src/middle/codegen_fn_attrs.rs",
+      "bytes": 13512,
+      "sha256": "3bf664a6681ef8c0991dae37da128c2b3ce67560fb81d0ffe893f046d741acab",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+      "path": "compiler/rustc_symbol_mangling/src/lib.rs",
+      "bytes": 17649,
+      "sha256": "7f7337a367b8c8dd5ea9dbd7761966ef52fcd2755739060560aea808c630ff36",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+      "path": "compiler/rustc_hir_analysis/src/check/check.rs",
+      "bytes": 102371,
+      "sha256": "8d4858ebb0381e0a7cd3f0a08ddf69713fdb07bf7f4c4eefaaacf13876333762",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+      "path": "compiler/rustc_hir_analysis/src/check/wfcheck.rs",
+      "bytes": 119498,
+      "sha256": "9621f37d190d226f4aabb4b30c51d637469df34b1697ee6ffe63aae447c72368",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+      "path": "compiler/rustc_const_eval/src/interpret/intern.rs",
+      "bytes": 19833,
+      "sha256": "17d753e17d4da212e951544a5b48525b110e1eea86bab1093a8d18f2fc59542f",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+      "path": "compiler/rustc_lint/src/builtin.rs",
+      "bytes": 121228,
+      "sha256": "d95e76f469a392617e7e61b2a289859771edb480e5dcd6e572fd546869694075",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647",
+      "path": "compiler/rustc_lint_defs/src/builtin.rs",
+      "bytes": 208660,
+      "sha256": "2fb81990049de1fc2cf0c9a22df73a116b011d9d5a8fe756b8f148972babd0c6",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_attr_parsing/src/safety.rs",
+      "bytes": 4887,
+      "sha256": "bcffbdc14f87a4196393bbbbb0ca18dabd63b8e3a93ab53da15afa86253d97b5",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_attr_parsing/src/attributes/codegen_attrs.rs",
+      "bytes": 30057,
+      "sha256": "5163e613a102d5885ebd969d9a100e00fd958c4ac59cbc6f99519b6f5cfccf09",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_attr_parsing/src/attributes/link_attrs.rs",
+      "bytes": 27242,
+      "sha256": "4c1be7a7fe16229fd8e74ea86504f476123dc0ffbdee809ae2711886a7bec423",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_passes/src/check_attr.rs",
+      "bytes": 77066,
+      "sha256": "9b9decef8286356d894c4904f28c2c56050d04921d530f3f8d2394557026d3f9",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_codegen_llvm/src/consts.rs",
+      "bytes": 36013,
+      "sha256": "d0079317ec08ad1d1d63f389ac6600d6918a5473cb4db94fabbfaa7c466d963e",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_codegen_ssa/src/back/symbol_export.rs",
+      "bytes": 32504,
+      "sha256": "59c5b59a53541fa35e5062e56492c76b0ed88bcfa421fb18adc92e69a6b16c97",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_codegen_ssa/src/codegen_attrs.rs",
+      "bytes": 29485,
+      "sha256": "3ddd0565fd06ca8ec02ae524cbafadb14f6133c54e77adaf09b80c0eddafb979",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_hir_analysis/src/check/check.rs",
+      "bytes": 97780,
+      "sha256": "ca2218b081d212f16eac165e9e43e9d2baf3b0c546f1a717e6972b55ba6b90e0",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_const_eval/src/interpret/intern.rs",
+      "bytes": 19821,
+      "sha256": "0415c621daaca12e2b77482229b62a42779e0fff140e4df018a617f60388c47c",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_lint/src/builtin.rs",
+      "bytes": 125003,
+      "sha256": "784e57db79ae2a2d4739dfd42e4525bcb9c7ade5a1f6c496d4778447a5aa4686",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "llvm/llvm-project",
+      "revision": "fc4aad7b5db3fff421df9a9637605b9ca5667881",
+      "path": "llvm/lib/Target/TargetLoweringObjectFile.cpp",
+      "bytes": 19238,
+      "sha256": "cbbdd2bc0dc38cfb05ecd311ec2fa72c9b5c08ac6050219e84818df8d491cc19",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "llvm/llvm-project",
+      "revision": "fc4aad7b5db3fff421df9a9637605b9ca5667881",
+      "path": "llvm/lib/CodeGen/TargetLoweringObjectFileImpl.cpp",
+      "bytes": 113939,
+      "sha256": "e5f3414676fb435187c32c2eabebd2440d5304bca6b470a21f3e48377564402f",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "llvm/llvm-project",
+      "revision": "229f673cd9cd804c579440dbd6e9cc0509f3a3c3",
+      "path": "llvm/lib/Target/TargetLoweringObjectFile.cpp",
+      "bytes": 21189,
+      "sha256": "69addfd6546141eb5bc3a663f6df190c52ef8e0cc01327fdcab99faf7aea9310",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "llvm/llvm-project",
+      "revision": "229f673cd9cd804c579440dbd6e9cc0509f3a3c3",
+      "path": "llvm/lib/CodeGen/TargetLoweringObjectFileImpl.cpp",
+      "bytes": 119703,
+      "sha256": "3f429b373e3fe839f188eca52fc46327f7f966a4854427608506ea7c1d06d24a",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/llvm-project",
+      "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+      "path": "llvm/lib/Target/TargetLoweringObjectFile.cpp",
+      "bytes": 19238,
+      "sha256": "cbbdd2bc0dc38cfb05ecd311ec2fa72c9b5c08ac6050219e84818df8d491cc19",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/llvm-project",
+      "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+      "path": "llvm/lib/CodeGen/TargetLoweringObjectFileImpl.cpp",
+      "bytes": 113939,
+      "sha256": "e5f3414676fb435187c32c2eabebd2440d5304bca6b470a21f3e48377564402f",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+      "path": "src/items/static-items.md",
+      "bytes": 5714,
+      "sha256": "5b57dfdd5a40d0db31922cbe7373ef9f35fa70eeede84dad3a5cf23e682be18c",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+      "path": "src/abi.md",
+      "bytes": 6618,
+      "sha256": "693d3b5a1cd12290ce43d3125a9e18194f2319100557d0eefb83e46533e5712e",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+      "path": "src/attributes/codegen.md",
+      "bytes": 59615,
+      "sha256": "060eb32e956f6a38847b3b6442283559acd9e23c8d84b125476f55659ad1caa2",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "joshlf/anneal",
+      "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+      "path": "trusted/lean/Trusted/MirAst.lean",
+      "bytes": 40381,
+      "sha256": "71b57539fa1d462e1e856db4d7b0c7a260f7c39255c05cf489cfe87edc1a77c8",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "joshlf/anneal",
+      "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+      "path": "trusted/lean/Trusted/MirSemantics.lean",
+      "bytes": 111865,
+      "sha256": "b8378127ea7b81b473a5f86cd164df430feb56296cbbbe57457cc2b125316c0a",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "joshlf/anneal",
+      "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+      "path": "trusted/audit/TrustedBoundary.lean",
+      "bytes": 117602,
+      "sha256": "6f19cc602cf931522d61efb320eae3ca60d7759db20ba6304c912bf372f2fc6a",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "joshlf/anneal",
+      "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+      "path": "trusted/rustc-capture/src/driver.rs",
+      "bytes": 8349,
+      "sha256": "f06038d401e53e55620e05d6c91475974d7015c0903c8a5a1f02a2ae8bd20e12",
+      "resolved_via": "raw.githubusercontent.com"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "path": "src/Init/Prelude.lean",
+      "bytes": 238777,
+      "sha256": "2a3163bdd830cd31f1f1bc9bc79ea6bdad6a3b2c6f334166792bbc73631f3b10",
+      "resolved_via": "raw.githubusercontent.com"
+    }
+  ]
+}

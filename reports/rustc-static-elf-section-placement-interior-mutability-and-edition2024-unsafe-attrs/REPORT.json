@@ -1,0 +1,87 @@
+{
+  "topics": [
+    "anneal",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/codegen",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc upstream compiler source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "0259d5e9a81c6af08e40f8c204f2c0c41dca1647"
+      }
+    },
+    {
+      "name": "rustc executed nightly compiler toolchain",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "release": "1.98.0-nightly",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "LLVM object-file section classifier (22.1.6 base)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "fc4aad7b5db3fff421df9a9637605b9ca5667881",
+        "tag": "llvmorg-22.1.6"
+      }
+    },
+    {
+      "name": "LLVM object-file section classifier (upstream HEAD comparison)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "229f673cd9cd804c579440dbd6e9cc0509f3a3c3"
+      }
+    },
+    {
+      "name": "Rust-forked LLVM & bundled rust-lld linker (LLD 22.1.6)",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+        "linker": "LLD 22.1.6"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "Anneal verification compiler and trusted Lean boundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean theorem prover kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1",
+        "platform": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "GNU Binutils ELF linker and inspector",
+      "identity": {
+        "tool": "GNU ld / GNU readelf",
+        "version": "2.47",
+        "toolchain_context": "Debian 15.2.0-14",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}
