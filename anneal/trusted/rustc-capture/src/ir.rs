@@ -280,14 +280,23 @@ impl Ty {
 
     /// Whether values of this type are always statically `Sized`.
     ///
-    /// In `rustc_const_eval`'s `eval_place` (`local_to_place`) and `lean-miri`'s
-    /// `Miri.Interpreter.Place.localToPlace`, evaluating an unprojected
+    /// In `rustc_const_eval`'s `eval_statement` (`"PlaceMention(place) => {
+    /// let _ = self.eval_place(**place)?; }"`) and `local_to_place` (`"let
+    /// layout = self.layout_of_local(frame, local, None)?; let place = if
+    /// layout.is_sized() { Place::Local { local, offset: None, locals_addr:
+    /// frame.locals_addr() } } else { match frame.locals[local].access()? {
+    /// Operand::Immediate(_) => bug!(), Operand::Indirect(mplace) =>
+    /// Place::Ptr(*mplace), } };"`, where `layout_of_local` indexes
+    /// `&frame.locals[local]` without calling `.access()`), and in
+    /// `lean-miri`'s `Miri.Interpreter.localToPlace`, evaluating an unprojected
     /// `PlaceMention` of a `Sized` local returns `Place::Local` without reading
     /// memory or checking liveness (an exact operational no-op), whereas an
     /// unsized local accesses its local operand and checks liveness. Any future
     /// unsized `Ty` variant must return `false` so capture fails closed rather
     /// than rendering `Statement::PlaceMention` as `StatementKind.nop`.
-    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/interpret/place.rs#L170-L185
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/interpret/step.rs#L117-L119
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/interpret/place.rs#L519-L536
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/interpret/stack.rs#L610-L631
     pub const fn is_sized(&self) -> bool {
         match self {
             Self::Bool

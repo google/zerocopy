@@ -274,8 +274,9 @@ fn statement_at(stmt: &Statement, indent: usize) -> String {
         Statement::StorageDead { local } => {
             format!("(Trusted.MirAst.StatementKind.storageDead {local})")
         }
+        // `extract::statement` rejects any `PlaceMention` with projections, and
         // `ir::Body::try_new` admits `Statement::PlaceMention` only for an
-        // in-bounds, unprojected `Sized` local, where `rustc`'s `eval_place`
+        // in-bounds `Sized` local, where `rustc`'s `eval_place`
         // (`local_to_place`) and `lean-miri`'s `Step.evalStatement` perform no
         // memory load and no liveness check.
         Statement::PlaceMention { .. } | Statement::Nop => "Trusted.MirAst.StatementKind.nop".into(),
@@ -797,5 +798,24 @@ mod tests {
         assert!(!rendered.contains("secret_fn"));
         assert!(!rendered.contains("helper_fn"));
         assert!(rendered.lines().all(|line| !line.ends_with(' ') && !line.ends_with('\t')));
+    }
+
+    #[test]
+    fn render_lowers_validated_place_mention_and_nop_to_statement_kind_nop() {
+        let u64_ty = Ty::Int(IntTy { width: IntWidth::I64, signed: false });
+        let body = Body::try_new(
+            1,
+            false,
+            vec![u64_ty.clone(), u64_ty],
+            vec![Block {
+                statements: vec![Statement::PlaceMention { local: 1 }, Statement::Nop],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::place_mention_nop".into(),
+        )
+        .unwrap();
+        let program = Program::try_new(Scope::Crate, vec![body]).unwrap();
+        let rendered = render(&program);
+        assert_eq!(rendered.matches("Trusted.MirAst.StatementKind.nop").count(), 2, "{rendered}");
     }
 }

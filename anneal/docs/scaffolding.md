@@ -138,9 +138,11 @@ cargo test --workspace --locked --jobs 2 -- --test-threads=2
 runs separately below.
 
 Build the boundary auditor into its own tool root and run it against the
-installed `lean` binary and checkout root (`--require-correspondence` also
-verifies Pass 2 `vendor/lean-miri/` correspondence inside Linux bubblewrap at
-`/usr/bin/bwrap`; omit `--require-correspondence` to check Pass 1 only):
+installed `lean` binary and checkout root (when `vendor/lean-miri/`,
+`trusted/correspondence/`, or `correspondence/` exists under `--anneal-root`,
+`anneal-audit` automatically runs Pass 2 correspondence verification inside
+Linux bubblewrap at `/usr/bin/bwrap`; `--require-correspondence` prevents silent
+fallback to Pass 1 if those directories are absent):
 
 ```bash
 cargo install --locked --debug --jobs 2 --path trusted/audit \

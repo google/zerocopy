@@ -1093,11 +1093,18 @@ pub(crate) fn run(
         "-Copt-level=0".into(),
         "-Cdebug-assertions=no".into(),
         "-Coverflow-checks=no".into(),
-        // Preserve `StatementKind::PlaceMention` and reads in trivial
-        // `SwitchInt` terminators (matching Miri's default arguments and
-        // disabling `RemovePlaceMention` before `Runtime(PostCleanup)`), while
-        // also implying `-Zmir-opt-level=0`.
+        // Preserve `StatementKind::PlaceMention` (`RemovePlaceMention` checks
+        // `!sess.opts.unstable_opts.mir_preserve_ub`) and `SwitchInt` reads
+        // (`SimplifyCfg` checks
+        // `|| tcx.sess.opts.unstable_opts.mir_preserve_ub`), matching Miri's
+        // UB-preservation flag. Note that despite `options.rs`'s help text
+        // ("implies -Zmir-opt-level=0"), `Session::mir_opt_level` inspects
+        // only `mir_opt_level` and `optimize`, so `-Zmir-preserve-ub` does not
+        // force `-Zmir-opt-level=0` (Miri passes both flags separately).
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/remove_place_mention.rs#L10-L12
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/simplify.rs#L128-L130
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/simplify.rs#L304-L312
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/session.rs#L617-L622
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/src/tools/miri/src/lib.rs#L183-L188
         "-Zmir-preserve-ub".into(),
         format!("--out-dir={}", compiler_path(&args.out_dir)?),

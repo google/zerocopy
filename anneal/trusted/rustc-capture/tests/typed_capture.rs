@@ -2686,7 +2686,13 @@ fn mir_preserve_ub_retains_bare_place_mention_and_rejects_projected_place_mentio
         has_place_mention,
         "expected -Zmir-preserve-ub to preserve PlaceMention in Runtime(PostCleanup) MIR: {manifest}"
     );
-    compile_captured_lean_if_trusted_sources_present(&bare.output.join("Captured.lean"));
+    let captured_lean = bare.output.join("Captured.lean");
+    let lean_text = std::fs::read_to_string(&captured_lean).unwrap();
+    assert!(
+        lean_text.contains("Trusted.MirAst.StatementKind.nop"),
+        "expected bare PlaceMention to render as StatementKind.nop in Captured.lean:\n{lean_text}"
+    );
+    compile_captured_lean_if_trusted_sources_present(&captured_lean);
 
     // All locals here have admitted types (`u64` and `(u64, bool)`), and the
     // body contains no `Call` terminators; only `let _ = p.0;` emits a
@@ -2736,13 +2742,18 @@ fn ergonomic_clones_and_call_source_use_fail_closed_at_capture() {
     );
     feature_only.assert_no_capture_artifacts();
 
-    // A concrete `.use` site (`CallSource::Use`) must also fail closed with no
-    // published capture artifacts.
+    // Concrete `.use` syntax requires `#![feature(ergonomic_clones)]`. Here
+    // `Wrapper` is `!Copy`, so `rustc_mir_build` lowers `x.use` to
+    // `TerminatorKind::Call { call_source: CallSource::Use, .. }` rather than
+    // `Rvalue::Use(Copy)` (`capture::collect`, with `extract::body` in defense
+    // in depth, rejects `ergonomic_clones` first with no published capture
+    // artifacts, while `extract::tests` directly unit-tests
+    // `check_call_source(mir::CallSource::Use)` via
+    // `call_source_use_fails_closed_while_other_call_sources_pass_guard`).
     let use_site = Capture::new(
         b"#![feature(ergonomic_clones)]\n\
           #![allow(incomplete_features)]\n\
           use core::clone::UseCloned;\n\
-          #[derive(Copy)]\n\
           pub struct Wrapper(pub u32);\n\
           impl Clone for Wrapper {\n\
               fn clone(&self) -> Self { Wrapper(self.0 + 1) }\n\
