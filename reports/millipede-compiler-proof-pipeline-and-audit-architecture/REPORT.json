@@ -1,0 +1,30 @@
+{
+  "topics": [
+    "compilers/instruction-selection",
+    "compilers/register-allocation",
+    "compilers/verified-compilation",
+    "isa/aarch64",
+    "isa/x86-64",
+    "lean/kernel-reduction",
+    "lean/metaprogramming",
+    "lean/proof-engineering",
+    "lean/verified-compilers",
+    "verification/abstract-interpretation",
+    "verification/audit-ledgers",
+    "verification/forward-simulation",
+    "verification/resource-bounds",
+    "verification/translation-validation"
+  ],
+  "subjects": [
+    {
+      "name": "Millipede verified compiler, proof pipeline, and audit infrastructure (graydon/millipede)",
+      "identity": {
+        "repository": "graydon/millipede",
+        "revision": "4f13d3980a5570177a774e63cfbc95e652dd3cde",
+        "toolchain": "leanprover/lean4:v4.35.0",
+        "url": "https://github.com/graydon/millipede"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}
