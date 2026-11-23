@@ -52,85 +52,16 @@ theorem wrappingRange_full_contains_truncateBits (w : IntWidth)
       rw [toNat_truncateBits]
       exact Nat.mod_lt x.toNat (intWidth_modulus_pos w)
     exact Nat.le_sub_one_of_lt h_lt
-  cases w with
-  | i8 =>
-    have hr : refFullWrappingRangeSize (toMiriSize .i8) =
-        ⟨BitVec.ofNat 128 0, BitVec.ofNat 128 (HPow.hPow 2 IntWidth.i8.bitWidth - 1)⟩ := by
-      decide
-    rw [hr]
+  have hr : refFullWrappingRangeSize (toMiriSize w) =
+      ⟨BitVec.ofNat 128 0, BitVec.ofNat 128 (HPow.hPow 2 w.bitWidth - 1)⟩ := by
+    cases w <;> decide
+  have h_and : ∀ {a b : Bool}, a = true → b = true → (a && b) = true := by
+    intro a b ha hb; rw [ha, hb]; rfl
+  rw [hr]
+  cases w <;> (
     dsimp only [Miri.ABI.WrappingRange.contains]
-    change (if 0 ≤ HPow.hPow 2 IntWidth.i8.bitWidth - 1 then
-      decide (0 ≤ (truncateBits .i8 x).toNat) &&
-        decide ((truncateBits .i8 x).toNat ≤ HPow.hPow 2 IntWidth.i8.bitWidth - 1)
-      else _) = true
-    rw [ite_eq_left (by decide), decide_eq_true (Nat.zero_le _),
-      decide_eq_true h_le]
-    rfl
-  | i16 =>
-    have hr : refFullWrappingRangeSize (toMiriSize .i16) =
-        ⟨BitVec.ofNat 128 0, BitVec.ofNat 128 (HPow.hPow 2 IntWidth.i16.bitWidth - 1)⟩ := by
-      decide
-    rw [hr]
-    dsimp only [Miri.ABI.WrappingRange.contains]
-    change (if 0 ≤ HPow.hPow 2 IntWidth.i16.bitWidth - 1 then
-      decide (0 ≤ (truncateBits .i16 x).toNat) &&
-        decide ((truncateBits .i16 x).toNat ≤ HPow.hPow 2 IntWidth.i16.bitWidth - 1)
-      else _) = true
-    rw [ite_eq_left (by decide), decide_eq_true (Nat.zero_le _),
-      decide_eq_true h_le]
-    rfl
-  | i32 =>
-    have hr : refFullWrappingRangeSize (toMiriSize .i32) =
-        ⟨BitVec.ofNat 128 0, BitVec.ofNat 128 (HPow.hPow 2 IntWidth.i32.bitWidth - 1)⟩ := by
-      decide
-    rw [hr]
-    dsimp only [Miri.ABI.WrappingRange.contains]
-    change (if 0 ≤ HPow.hPow 2 IntWidth.i32.bitWidth - 1 then
-      decide (0 ≤ (truncateBits .i32 x).toNat) &&
-        decide ((truncateBits .i32 x).toNat ≤ HPow.hPow 2 IntWidth.i32.bitWidth - 1)
-      else _) = true
-    rw [ite_eq_left (by decide), decide_eq_true (Nat.zero_le _),
-      decide_eq_true h_le]
-    rfl
-  | i64 =>
-    have hr : refFullWrappingRangeSize (toMiriSize .i64) =
-        ⟨BitVec.ofNat 128 0, BitVec.ofNat 128 (HPow.hPow 2 IntWidth.i64.bitWidth - 1)⟩ := by
-      decide
-    rw [hr]
-    dsimp only [Miri.ABI.WrappingRange.contains]
-    change (if 0 ≤ HPow.hPow 2 IntWidth.i64.bitWidth - 1 then
-      decide (0 ≤ (truncateBits .i64 x).toNat) &&
-        decide ((truncateBits .i64 x).toNat ≤ HPow.hPow 2 IntWidth.i64.bitWidth - 1)
-      else _) = true
-    rw [ite_eq_left (by decide), decide_eq_true (Nat.zero_le _),
-      decide_eq_true h_le]
-    rfl
-  | isize =>
-    have hr : refFullWrappingRangeSize (toMiriSize .isize) =
-        ⟨BitVec.ofNat 128 0, BitVec.ofNat 128 (HPow.hPow 2 IntWidth.isize.bitWidth - 1)⟩ := by
-      decide
-    rw [hr]
-    dsimp only [Miri.ABI.WrappingRange.contains]
-    change (if 0 ≤ HPow.hPow 2 IntWidth.isize.bitWidth - 1 then
-      decide (0 ≤ (truncateBits .isize x).toNat) &&
-        decide ((truncateBits .isize x).toNat ≤ HPow.hPow 2 IntWidth.isize.bitWidth - 1)
-      else _) = true
-    rw [ite_eq_left (by decide), decide_eq_true (Nat.zero_le _),
-      decide_eq_true h_le]
-    rfl
-  | i128 =>
-    have hr : refFullWrappingRangeSize (toMiriSize .i128) =
-        ⟨BitVec.ofNat 128 0, BitVec.ofNat 128 (HPow.hPow 2 IntWidth.i128.bitWidth - 1)⟩ := by
-      decide
-    rw [hr]
-    dsimp only [Miri.ABI.WrappingRange.contains]
-    change (if 0 ≤ HPow.hPow 2 IntWidth.i128.bitWidth - 1 then
-      decide (0 ≤ (truncateBits .i128 x).toNat) &&
-        decide ((truncateBits .i128 x).toNat ≤ HPow.hPow 2 IntWidth.i128.bitWidth - 1)
-      else _) = true
-    rw [ite_eq_left (by decide), decide_eq_true (Nat.zero_le _),
-      decide_eq_true h_le]
-    rfl
+    rw [ite_eq_left (by decide)]
+    exact h_and (decide_eq_true (Nat.zero_le _)) (decide_eq_true h_le))
 
 theorem refEnum_isVariantUninhabited_false (ety : EnumTy) (tagW : IntWidth)
     (tagS : Bool) (v : Nat)

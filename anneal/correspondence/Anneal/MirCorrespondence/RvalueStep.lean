@@ -218,22 +218,6 @@ noncomputable abbrev mkSimState (rp : RefProg) (defId : DefId) (rbody : RefBody)
     (mkSimFrame rp defId rbody blockIdx stmtIdx bodyLocals slots retPlace)
     mem ctrl cm
 
-private theorem eStateM_bind_ok {ε σ α β : Type} {m : EStateM ε σ α}
-    {f : α → EStateM ε σ β} {s s₁ : σ} {a : α}
-    (h : m s = .ok a s₁) :
-    EStateM.bind m f s = f a s₁ := by
-  dsimp only [EStateM.bind]; rw [h]
-
-private theorem eStateM_bind_err {ε σ α β : Type} {m : EStateM ε σ α}
-    {f : α → EStateM ε σ β} {s s₁ : σ} {e : ε}
-    (h : m s = .error e s₁) :
-    EStateM.bind m f s = .error e s₁ := by
-  dsimp only [EStateM.bind]; rw [h]
-
-private theorem eStateM_bind_pure {ε σ α β : Type} (a : α)
-    (f : α → EStateM ε σ β) (s : σ) :
-    EStateM.bind (EStateM.pure a) f s = f a s := rfl
-
 private theorem eStateM_bind_assoc {ε σ α β γ : Type} (m : EStateM ε σ α)
     (f : α → EStateM ε σ β) (g : β → EStateM ε σ γ) (s : σ) :
     EStateM.bind (EStateM.bind m f) g s =
@@ -246,15 +230,6 @@ private theorem eStateM_bind_ite_pure {ε σ α : Type} (b : Bool) (e : ε)
     EStateM.bind (if b = true then EStateM.pure () else EStateM.throw e) k s =
       if b = true then k () s else .error e s := by
   cases b <;> rfl
-
-private theorem ite_false_eq {α : Type} (a b : α) :
-    (if false = true then a else b) = b := rfl
-
-private theorem ite_true_eq {α : Type} (a b : α) :
-    (if true = true then a else b) = a := rfl
-
-private theorem ite_not_true_eq {α : Type} (a b : α) :
-    (if (!true) = true then a else b) = b := rfl
 
 private theorem ite_not_false_eq {α : Type} (a b : α) :
     (if (!false) = true then a else b) = a := rfl
@@ -278,18 +253,6 @@ private theorem array_forIn_singleton {ε σ α β : Type}
   cases f x init st with
   | ok r s => cases r <;> rfl
   | error e s => rfl
-
-private theorem mirSetElem?_some_of_lt {α : Type} (xs : List α) (i : Nat) (v : α)
-    (hi : i < xs.length) :
-    ∃ xs', MirSemantics.setElem? xs i v = some xs' := by
-  induction xs generalizing i with
-  | nil => cases hi
-  | cons x rest ih =>
-    cases i with
-    | zero => exact ⟨v :: rest, rfl⟩
-    | succ j =>
-      let ⟨rest', h_r⟩ := ih j (Nat.lt_of_succ_lt_succ hi)
-      exact ⟨x :: rest', by dsimp only [MirSemantics.setElem?]; rw [h_r]⟩
 
 theorem mkSimFrame_getLocal_some (rp : RefProg) (defId : DefId)
     (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
@@ -3622,34 +3585,6 @@ private theorem writePlaceImmediate_local_ok (rp : RefProg) (c : Choice)
   simp only [ite_true]
   rw [h_v]
   exact h_val
-
-/-- `refHasPadding` never fails on a canonical local layout. -/
-private theorem refHasPadding_ok (types : List MirTy) (ty : MirTy) :
-    ∃ b, refHasPadding (refLocalLayoutForTy types ty) = .ok b := by
-  cases ty with
-  | int w s => cases w <;> cases s <;> exact ⟨_, rfl⟩
-  | bool | unit | never | char | ordering | ref _ _ | rawPtr _ _
-  | unsupported => exact ⟨_, rfl⟩
-  | enum ety =>
-    dsimp only [refHasPadding, refLocalLayoutForTy, refLayoutDataForTy,
-      refEnumLayoutData]
-    cases ety.tagRepr <;> exact ⟨_, rfl⟩
-  | tuple fs =>
-    cases fs with
-    | nil => exact ⟨_, rfl⟩
-    | cons f rest =>
-      cases rest with
-      | nil => cases f <;> exact ⟨_, rfl⟩
-      | cons g rest₂ =>
-        cases rest₂ with
-        | cons _ _ => cases f <;> cases g <;> exact ⟨_, rfl⟩
-        | nil =>
-          cases f with
-          | int w s =>
-            cases g with
-            | bool => cases w <;> cases s <;> exact ⟨_, rfl⟩
-            | _ => exact ⟨_, rfl⟩
-          | _ => exact ⟨_, rfl⟩
 
 private theorem copyRuntimePlace_imm_to_local (rp : RefProg) (c : Choice)
     (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
