@@ -34,7 +34,8 @@ a stack, and the head of the PR directly below it otherwise.
 Review evidence recorded on this PR for one identity (review receipts, Codex
 reviews, and human approvals) remains valid for every later head of the same
 PR with that identity, however that head was produced, and for no other,
-subject to the Gate 5 rules for the PR description. Evidence never transfers
+subject to the Gate 5 rules for the Review Receipt comment's `Human review
+surface` block. Evidence never transfers
 between pull requests. In particular, when a lower stack PR is squash-merged
 and the PR above it is rebased onto that squash commit (whose tree equals the
 lower PR's reviewed head tree), the upper PR's identity—and its review
@@ -51,9 +52,9 @@ re-confirm every affected gate whenever the identity changes:
    [`trust-review`](../skills/trust-review/SKILL.md) have converged on the
    current identity, every open trust question is resolved by evidence or
    explicit human maintainer disposition, no confirmed in-scope defect remains
-   unresolved, the PR description opens with an accurate `Human review surface`
-   block, and the PR author or acting agent has posted a Review Receipt comment
-   naming a reviewed `head` SHA with the current identity.
+   unresolved, and the PR author or acting agent has posted a Review Receipt
+   comment naming a reviewed `head` SHA with the current identity that includes
+   an accurate `Human review surface` block.
 2. **Gate 2 — Codex coverage and finding dispositions:** At least one complete
    code review by an authentic `chatgpt-codex-connector[bot]`, posted on this
    PR, covers the current identity; a request answered with an error, or a run
@@ -64,7 +65,8 @@ re-confirm every affected gate whenever the identity changes:
    ways:
    - **Fixed:** after the finding, the surface it concerns changes (the PR's
      tree; its commit message; or, for a finding about something outside the
-     identity, such as the PR description, that surface), and Gate 1 confirms
+     identity, such as the PR description or Review Receipt comment, that
+     surface), and Gate 1 confirms
      on the PR's current state that the fix is still present and still
      addresses the finding, mapping it to the fixing hunk or edit in the
      Review Receipt. Any later edit to that surface reopens the finding until
@@ -73,9 +75,10 @@ re-confirm every affected gate whenever the identity changes:
      a tree finding. A finding about the tree or commit message that was
      raised on the current identity cannot be fixed without a new identity.
    - **Dispositioned:** the finding appears in a `Codex finding dispositions`
-     list inside the PR description's `Human review surface` block, with a
-     proposed disposition and its evidence, and the maintainer's Gate 5
-     approval, newer than the list's last edit, accepts it. A disposition may
+     list inside the Review Receipt comment's `Human review surface` block,
+     with a proposed disposition and its evidence, and the maintainer's Gate 5
+     approval, newer than that comment's creation and last edit, accepts it. A
+     disposition may
      refute a finding with falsifiable evidence or defer an out-of-scope
      finding (handling pre-existing hazards as
      [`trust-review`](../skills/trust-review/SKILL.md#report-findings-and-pre-existing-hazards)
@@ -113,24 +116,25 @@ re-confirm every affected gate whenever the identity changes:
    (`merge_group`).
 5. **Gate 5 — Human approval:** An independent human maintainer account (never
    a bot or acting agent) has approved the pull request on GitHub, confirming
-   every item listed in the `Human review surface` block (defined in
-   [`AGENTS.md`](../AGENTS.md#code-review-rules), including stated specs and
-   every definition their meaning transitively depends on, plus any editor or
-   agent config, intentional policy relaxation, or proposed Codex finding
-   disposition). An approval holds across a pure rebase only if no subsequent
-   push changes this PR's own Human review surface, no rebased-over commit
-   modifies a definition in a stated spec's transitive dependency closure
-   (verified via `git range-diff` and inspecting touched dependencies), and no
-   subsequent edit modifies the PR description's `Human review surface` block
-   or relevant commit bodies. An unchanged identity satisfies the first two
-   conditions, and a push that leaves the identity unchanged affects none of
-   those surfaces; the PR-description condition still applies. Verify that the
-   approval's timestamp is newer than both the last push affecting those
-   surfaces and the last edit to the `Human review surface` block (via GitHub's
-   PR description edit history); any later change requires fresh human
-   maintainer approval. Because agents may act under credentials matching a
-   human account, agents must never self-approve pull requests or author, edit,
-   or simulate maintainer dispositions or acceptance.
+   every item listed in the Review Receipt comment's `Human review surface`
+   block (defined in [`AGENTS.md`](../AGENTS.md#code-review-rules), including
+   stated specs and every definition their meaning transitively depends on,
+   plus any editor or agent config, intentional policy relaxation, or proposed
+   Codex finding disposition). An approval holds across a pure rebase only if
+   no subsequent push changes this PR's own Human review surface, no
+   rebased-over commit modifies a definition in a stated spec's transitive
+   dependency closure (verified via `git range-diff` and inspecting touched
+   dependencies), and no subsequent Review Receipt comment or edit modifies the
+   `Human review surface` block or relevant commit bodies. An unchanged
+   identity satisfies the first two conditions, and a push that leaves the
+   identity unchanged affects none of those surfaces; the `Human review
+   surface` condition still applies. Verify that the approval's timestamp is
+   newer than both the last push affecting those surfaces and the latest Review
+   Receipt comment's creation and last edit (via GitHub's comment timestamps
+   and edit history); any later change requires fresh human maintainer
+   approval. Because agents may act under credentials matching a human account,
+   agents must never self-approve pull requests or author, edit, or simulate
+   maintainer dispositions or acceptance.
 
 ## Hosted reviewers and skill boundaries
 

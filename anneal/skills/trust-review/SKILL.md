@@ -84,10 +84,10 @@ hashed in `trusted/root-manifest.sha256`: `Cargo.toml`, `Cargo.lock`,
    configs (such as nested `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `.agents/`,
    `.claude/`, `.gemini/`, `.codex/`, `.cursor/`, `.cursorrules`,
    `.windsurfrules`, `.clinerules`, `.mcp.json`, `.vscode/`, `.devcontainer/`,
-   `.idea/`, `.zed/`) unless explicitly listed in the `Human review surface`
-   block and trust-reviewed (when the host permits summary prose, record
-   "pending human approval (Gate 5)" as a merge condition, not a review
-   deadlock).
+   `.idea/`, `.zed/`) unless explicitly disclosed in the Review Receipt's
+   `Human review surface` block (or commit/PR body for single-turn hosts) and
+   trust-reviewed (when the host permits summary prose, record "pending human
+   approval (Gate 5)" as a merge condition, not a review deadlock).
 2. **No effectful build or toolchain code outside TCB/CI:** Outside `trusted/`,
    `ci/`, `.github/`, and pinned root manifests, reject any new Rust crate,
    `build.rs`, proc-macro, `Makefile`, `GNUmakefile`, `Justfile`, `lakefile*`,
@@ -191,8 +191,9 @@ or audit them is permitted).
   multi-PR stack or staged `candidate:<feature>` bring-up before
   `trusted/rustc-capture/` emits `Mir.lean`/`Proof.lean`, every declaration
   must still trace to the declared `Trusted.Crate` / `Trusted.CrateTheorem`
-  interface (or the planned top-of-stack claim root listed in `Human review
-  surface`) with zero dead or speculative helpers. Evict proof-only helpers out
+  interface (or the planned top-of-stack claim root listed in the Review
+  Receipt's `Human review surface` block or commit body) with zero dead or
+  speculative helpers. Evict proof-only helpers out
   to `theory/` and check `trusted/`-to-`theory/` seams for vacuous or
   mismatched assumptions (`THREAT_MODEL.md` §2.2).
 - **Human-auditable comments:** Verify design rationale and invariants, and for

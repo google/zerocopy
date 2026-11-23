@@ -347,11 +347,32 @@ authorized**.
   [`gh-stack` skill](https://github.com/github/gh-stack/tree/main/skills/gh-stack))
   when it aids review, or use a single pull request when simpler—leave the
   choice to the developer.
+- **PR descriptions:** Reuse commit prose verbatim rather than authoring a
+  second summary or review report:
+  - *Single-commit PRs:* Use the commit subject as the PR title and copy the
+    commit body verbatim as the PR description, mechanically unwrapping
+    72-column hard line breaks for GitHub Flavored Markdown (while preserving
+    blank lines, code blocks, lists, blockquotes, tables, explicit hard breaks,
+    and issue-reference lines) and converting the trailing `Agent-authored-by:`
+    trailer into the prose notice per
+    [`authorship-disclosure`](../../../skills/authorship-disclosure/SKILL.md).
+  - *Multi-commit PRs:* Draft a squash-style commit message describing the net
+    change against the target base under
+    [Format commit messages to repository conventions](#format-commit-messages-to-repository-conventions)
+    and use its subject and unwrapped body verbatim as the PR title and
+    description.
+  - *No extra PR sections:* Do not add `## Summary`, `## Motivation`,
+    `## Verification`, before/after tables, per-file catalogs, or `Human review
+    surface` blocks to the PR description; place `Human review surface`,
+    `Codex finding dispositions`, and verification receipts in the Review
+    Receipt PR comment per
+    [`change-review`](../change-review/SKILL.md#record-the-receipt-and-converge).
 - **Non-interactive stacked publication with prepared bodies:** Do not use bare
   `gh stack submit` (prompts interactively and can hang under a PTY) or
   `gh stack submit --auto` (publishes PRs with auto-generated titles before
-  [`authorship-disclosure`](../../../skills/authorship-disclosure/SKILL.md) and
-  `Human review surface` bodies are attached). Instead, push only branches whose
+  prepared commit-derived PR descriptions with
+  [`authorship-disclosure`](../../../skills/authorship-disclosure/SKILL.md) are
+  attached). Instead, push only branches whose
   cumulative `main..<head>` diff satisfies the pre-push CI-executed-surface
   gate in
   [`change-review`](../change-review/SKILL.md#schedule-by-data-dependency)
@@ -376,9 +397,9 @@ authorized**.
   before pushing any branch. When authorized to push early for parallel CI and
   hosted review, push the frozen candidate to a **draft** PR, verify the remote
   head matches it, and mark the PR ready for human review (`gh pr ready`) only
-  after Gate 1 (local review) converges, the `Human review surface` block is
-  complete, and the Review Receipt is posted (unless the user explicitly
-  requests a visibly incomplete handoff).
+  after Gate 1 (local review) converges and the Review Receipt PR comment
+  (including its complete `Human review surface` block) is posted (unless the
+  user explicitly requests a visibly incomplete handoff).
 - **Stack merge guard:** Land stacked PRs bottom-up and never run
   `gh stack merge` unless every PR it would merge satisfies the merge gates in
   [`docs/codex-review.md`](../../docs/codex-review.md#merge-gates).
