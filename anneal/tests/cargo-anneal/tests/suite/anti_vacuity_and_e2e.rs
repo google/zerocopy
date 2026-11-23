@@ -483,3 +483,118 @@ fn explicit_instantiation_and_required_consts_verify_end_to_end() {
     let bad_res = run_verify_strs(&staged, &["--request", bad_path.to_str().unwrap()]);
     crate::helpers::expect_failed(&bad_res, 2, "compiler_failed", Some("capture"), "");
 }
+
+#[test]
+fn onboarding_init_and_diagnostic_hints_e2e() {
+    use std::ffi::OsStr;
+
+    use anneal_testkit::assertions::assert_outcome_exit;
+
+    use crate::helpers::{verify_invocation, with_host_cargo_env};
+
+    let cli = workspace_tools().cli.as_deref().expect("workspace cli binary");
+    let staged = new_workspace("anneal-ux-e2e-").stage().unwrap();
+    let dir = staged.work_dir();
+
+    // 1. `cargo anneal init --standalone` produces a directly verifiable example.
+    let standalone = dir.join("hello");
+    let init_out = Command::new(cli)
+        .args(["init", "--standalone", "--proof-dir"])
+        .arg(&standalone)
+        .output()
+        .unwrap();
+    assert!(
+        init_out.status.success(),
+        "init --standalone failed:\n{}",
+        String::from_utf8_lossy(&init_out.stderr)
+    );
+    let pass_inv =
+        verify_invocation(&[OsStr::new("--request"), standalone.join("request.json").as_os_str()]);
+    let pass_raw = staged.exec(&pass_inv).unwrap();
+    assert_outcome_exit(&pass_raw.process, 0).unwrap();
+    let pass_stdout = String::from_utf8_lossy(&pass_raw.process.stdout);
+    let pass_receipt: Value = serde_json::from_str(&pass_stdout).unwrap();
+    assert_eq!(pass_receipt["status"], "selected_unit_verified", "{pass_receipt}");
+    assert_eq!(pass_receipt["taint_reasons"], json!([]), "{pass_receipt}");
+
+    // 2. Cargo `init` + unmodified starter proof emits a concise Lean placeholder hint,
+    //    `example` in `Spec.lean` emits a spec-preflight hint, and `take_ref` capture
+    //    emits a Profile v1 reference hint while preserving existing `detail` contracts.
+    let krate = dir.join("crate_demo");
+    fs::create_dir_all(krate.join("src")).unwrap();
+    fs::create_dir_all(krate.join("empty_proof")).unwrap();
+    fs::write(
+        krate.join("Cargo.toml"),
+        "[package]\nname = \"ux_demo\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+    )
+    .unwrap();
+    fs::write(krate.join("src/lib.rs"), "pub fn zero() -> u64 { 0 }\n").unwrap();
+
+    let manifest = krate.join("Cargo.toml");
+    let empty_proof_inv = with_host_cargo_env(verify_invocation(&[
+        OsStr::new("--manifest-path"),
+        manifest.as_os_str(),
+        OsStr::new("--proof-dir"),
+        krate.join("empty_proof").as_os_str(),
+    ]));
+    let empty_proof_out = staged.exec(&empty_proof_inv).unwrap().process;
+    assert_outcome_exit(&empty_proof_out, 1).unwrap();
+    let empty_proof_receipt: Value = serde_json::from_slice(&empty_proof_out.stdout).unwrap();
+    assert_eq!(empty_proof_receipt["phase"], "proof", "{empty_proof_receipt}");
+    assert_eq!(
+        empty_proof_receipt["detail"],
+        "specification and theorem must have their declared source roles"
+    );
+    assert!(
+        empty_proof_receipt["hint"].as_str().is_some_and(|h| h.contains("cargo anneal init")),
+        "{empty_proof_receipt}"
+    );
+
+    let cargo_init = Command::new(cli).current_dir(&krate).arg("init").output().unwrap();
+    assert!(cargo_init.status.success());
+
+    let proof_dir = krate.join("proof");
+    let hole_inv = with_host_cargo_env(verify_invocation(&[
+        OsStr::new("--manifest-path"),
+        manifest.as_os_str(),
+        OsStr::new("--proof-dir"),
+        proof_dir.as_os_str(),
+    ]));
+    let hole_out = staged.exec(&hole_inv).unwrap().process;
+    assert_outcome_exit(&hole_out, 1).unwrap();
+    let hole_receipt: Value = serde_json::from_slice(&hole_out.stdout).unwrap();
+    assert_eq!(hole_receipt["status"], "proof_failed", "{hole_receipt}");
+    assert!(
+        hole_receipt["hint"]
+            .as_str()
+            .is_some_and(|h| h.contains("Proof.lean:") && h.contains("Complete the remaining proof")),
+        "{hole_receipt}"
+    );
+
+    let spec_path = krate.join("proof/Spec.lean");
+    let orig_spec = fs::read_to_string(&spec_path).unwrap();
+    fs::write(&spec_path, format!("{orig_spec}\nexample : True := trivial\n")).unwrap();
+    let spec_out = staged.exec(&hole_inv).unwrap().process;
+    assert_outcome_exit(&spec_out, 1).unwrap();
+    let spec_receipt: Value = serde_json::from_slice(&spec_out.stdout).unwrap();
+    assert!(
+        spec_receipt["detail"].as_str().unwrap().contains("Lean.Parser.Command.example"),
+        "{spec_receipt}"
+    );
+    assert!(
+        spec_receipt["hint"].as_str().is_some_and(|h| h.contains("`example`")),
+        "{spec_receipt}"
+    );
+
+    fs::write(krate.join("src/lib.rs"), "pub fn take_ref(x: &u64) -> u64 { *x }\n").unwrap();
+    let ref_out = staged.exec(&hole_inv).unwrap().process;
+    assert_outcome_exit(&ref_out, 1).unwrap();
+    let ref_receipt: Value = serde_json::from_slice(&ref_out.stdout).unwrap();
+    assert_eq!(ref_receipt["phase"], "capture", "{ref_receipt}");
+    assert!(
+        ref_receipt["hint"]
+            .as_str()
+            .is_some_and(|h| h.contains("`take_ref`") && h.contains("references")),
+        "{ref_receipt}"
+    );
+}

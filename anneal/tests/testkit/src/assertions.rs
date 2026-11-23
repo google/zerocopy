@@ -73,6 +73,8 @@ pub struct VerifyFailureReceipt {
     pub phase: String,
     pub detail: String,
     #[serde(default)]
+    pub hint: Option<String>,
+    #[serde(default)]
     pub artifacts: Option<Option<String>>,
 }
 
