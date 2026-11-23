@@ -5521,6 +5521,9 @@ mod tests {
                     TargetRole::Model,
                     "prelude\nimport Init.Data.Nat.Div.Basic\n\
                      import Init.Data.Int.Basic\n\
+                     import Init.Data.BitVec.BasicAux\n\
+                     import Init.Data.UInt.BasicAux\n\
+                     import Init.Data.List.Basic\n\
                      namespace Trusted.MirSemantics\n\
                      structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
                      def UnitTheorem (c : Crate) : Prop := c.specs c.program\n",
@@ -5540,7 +5543,12 @@ mod tests {
                      (∀ m n : Nat, Nat.div n 2 = Nat.div m 2 → Nat.mod n 2 = Nat.mod m 2 → n = m) ∧\n  \
                      (∀ n a b : Nat, Nat.mod (Nat.mod n (a * b)) a = Nat.mod n a) ∧\n  \
                      (∀ x y z : Int, x ≤ y → y ≤ z → x ≤ z) ∧\n  \
-                     (∀ a b : Nat, b ≤ a → Int.ofNat a - Int.ofNat b = Int.ofNat (a - b))\n",
+                     (∀ a b : Nat, b ≤ a → Int.ofNat a - Int.ofNat b = Int.ofNat (a - b)) ∧\n  \
+                     (∀ (w a b : Nat), a + b < Nat.pow 2 w → BitVec.ofNat w a + BitVec.ofNat w b = BitVec.ofNat w (a + b)) ∧\n  \
+                     (∀ (w : Nat) (x y : BitVec w), x.toNat + y.toNat < Nat.pow 2 w → (x + y).toNat = x.toNat + y.toNat) ∧\n  \
+                     (∀ n : Nat, 0 < n → n < Nat.pow 2 16 → UInt16.ofNat n ≠ 0) ∧\n  \
+                     (∀ (x y : UInt64), x.toNat = y.toNat → x = y) ∧\n  \
+                     (∀ {α : Type} [BEq α] [LawfulBEq α] (xs ys : List α), List.beq xs ys = true ↔ xs = ys)\n",
                 ),
                 (
                     "Expected",
@@ -5557,13 +5565,21 @@ mod tests {
                      have _ := Anneal.InitLemmas.canary_list_ops_edge\n  \
                      have _ := Anneal.InitLemmas.canary_nat_mod_edge\n  \
                      have _ := Anneal.InitLemmas.canary_int_order_sub_edge\n  \
+                     have _ := Anneal.InitLemmas.canary_list_beq_edge\n  \
+                     have _ := Anneal.InitLemmas.canary_bv_arith_order_edge\n  \
+                     have _ := Anneal.InitLemmas.canary_uint_edge\n  \
                      exact ⟨fun _ _ h => ⟨Anneal.InitLemmas.bool_and_left h,\n    \
                        Anneal.InitLemmas.bool_and_right h⟩,\n    \
                        Anneal.InitLemmas.nat_two_pow_pos,\n    \
                        fun m n hd hm => Anneal.InitLemmas.div2_mod2_inj m n hd hm,\n    \
                        Anneal.InitLemmas.nat_mod_mod_mul_left,\n    \
                        fun _ _ _ hxy hyz => Anneal.InitLemmas.int_le_trans hxy hyz,\n    \
-                       fun _ _ hba => Anneal.InitLemmas.int_ofNat_sub_of_le hba⟩\n",
+                       fun _ _ hba => Anneal.InitLemmas.int_ofNat_sub_of_le hba,\n    \
+                       fun _ _ _ h => Anneal.InitLemmas.bv_add_ofNat_of_lt h,\n    \
+                       fun _ _ _ h => Anneal.InitLemmas.bv_toNat_add_of_lt h,\n    \
+                       fun _ hp hl => Anneal.InitLemmas.u16_ofNat_ne_zero hp hl,\n    \
+                       fun _ _ h => Anneal.InitLemmas.u64_eq_of_toNat_eq h,\n    \
+                       fun xs ys => Anneal.InitLemmas.list_beq_iff xs ys⟩\n",
                 ),
             ],
         );

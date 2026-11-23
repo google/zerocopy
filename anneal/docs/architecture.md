@@ -407,9 +407,13 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   planned `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
   Diaconescu classical excluded middle and existential choice, WHNF and
-  rewrite firewall combinators, foundation-locked `Bool`/`BEq`/`Nat`/`Int`/
-  slice helper lemmas, sparse Farkas and Chvatal-Gomory linear cut certificate
-  checker, constructive bitvector, byte-serialization, list-chunking, and
+  rewrite firewall combinators, foundation-locked helper lemmas (`Bool` and
+  `BEq` reflection including polymorphic `List.beq`, `Nat` modular and
+  power-of-two arithmetic, constructive `Int` order and subtraction, list
+  slices, bounded `BitVec` `toNat` with non-wrapping `+` and order, and
+  `UInt8`–`UInt64` `toNat`/`ofNat` and extensionality), sparse Farkas and
+  Chvatal-Gomory linear cut certificate checker, constructive bitvector,
+  byte-serialization, list-chunking, and
   canonical positive radix-trie framing proof libraries, CPS spine-forcing and
   `@Nat.rec` iteration combinators, a radix-2 trie RUP-only LRAT UNSAT checker,
   reduced-product MIR abstract-interpretation proof-carrying-code (`AiPcc`)
@@ -572,7 +576,7 @@ anneal/
     │   ├── Framework/StepWp.lean   # Generic step/checkpoint WP, cuts & loop rules
     │   ├── GaloisCodec.lean        # Galois byte-layout, zerocopy & transmute laws (+ GaloisCodec/)
     │   ├── Generic.lean            # Unbundled open-generic MIR, traits & erasure (+ Generic/)
-    │   ├── InitLemmas.lean         # Foundation Bool/BEq/Nat/Int/list helpers
+    │   ├── InitLemmas.lean         # Foundation Bool/BEq/List/Nat/Int/BitVec/UInt helpers
     │   ├── LeBytes.lean            # Parametric LE/BE byte serialization lemmas
     │   ├── LinearArith.lean        # Sparse Farkas & Chvatal-Gomory checker
     │   ├── ListChunks.lean         # Ceiling division & fixed-size chunking
