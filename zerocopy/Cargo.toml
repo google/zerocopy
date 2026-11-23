@@ -109,6 +109,10 @@ targets = [
 [package.metadata.playground]
 features = ["__internal_use_only_features_that_work_on_stable"]
 
+[package.metadata.anneal]
+manifest = "anneal/anneal.toml"
+evidence_crate = "zerocopy-anneal-proofs"
+
 [features]
 alloc = []
 derive = ["zerocopy-derive"]

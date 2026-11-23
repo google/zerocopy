@@ -48,8 +48,27 @@ pub(crate) const EMBEDDED_BUNDLE_SOURCES: &[(&str, &str)] = BUNDLE;
 pub(crate) const EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON: &str = CORRESPONDENCE_PROVENANCE_JSON;
 
 const PINNED_CAPTURE_SCHEMA_VERSION: u32 = 4;
-const PINNED_RUSTC_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";
+pub(crate) const PINNED_RUSTC_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";
+const PINNED_RUSTC_SEMVER: (u64, u64, u64) = (1, 98, 0);
 const RECEIPT_SCHEMA_VERSION: u32 = 3;
+
+/// Cargo build scripts whose effect on compilation the packaged Cargo path
+/// reproduces, keyed by the SHA-256 of `build.rs`.
+///
+/// Anneal never runs build scripts, so it cannot observe the
+/// `cargo:rustc-cfg`, `cargo:rustc-env`, or generated sources they produce.
+/// A script is listed only after review shows that its compiler-visible
+/// output is fully determined by manifest fields that
+/// `packaging::resolve_slice_cfgs` reads.
+///
+/// The zerocopy 0.8 script emits `cargo:rustc-cfg=<name>` for each
+/// `[package.metadata.build-rs]` entry whose minimum version the compiler
+/// does not meet, plus `cargo:rustc-check-cfg` and `cargo:rerun-if-changed`
+/// lines, which do not change the compiled program.
+const MODELED_BUILD_SCRIPTS: &[(&str, &str)] = &[(
+    "075d31f4f99cf4e42132e9c3652c846de832576e2f18be281b16405235644fcd",
+    "zerocopy 0.8 `[package.metadata.build-rs]` version cfgs",
+)];
 
 /// Closed 3-element set of verification taint atoms projected onto Receipt
 /// Schema v3 (`taint_reasons`), sorted lexicographically by wire spelling.
@@ -178,15 +197,19 @@ pub struct VerifyArgs {
             "features",
             "all_features",
             "no_default_features",
+            "unit",
+            "slice",
         ]
     )]
     request: Option<PathBuf>,
     /// A library or binary crate with no required normal or build dependencies
     /// (dev-dependencies and inactive optional dependencies are ignored) for
-    /// the `x86_64-unknown-linux-gnu` scalar profile.
+    /// the `x86_64-unknown-linux-gnu` scalar profile, or a package configured
+    /// through `anneal/anneal.toml`.
     #[arg(long, conflicts_with = "request", requires = "proof_dir")]
     manifest_path: Option<PathBuf>,
-    /// Directory containing Spec.lean and Proof.lean, for the Cargo shortcut.
+    /// Directory with Lean proof modules (`Proof.lean`, and `Spec.lean` when
+    /// omitted from `anneal/anneal.toml`).
     #[arg(long, requires = "manifest_path", conflicts_with = "request")]
     proof_dir: Option<PathBuf>,
     /// Panic strategy (`unwind` or `abort`) for the Cargo shortcut.
@@ -211,15 +234,26 @@ pub struct VerifyArgs {
         short = 'F',
         value_name = "FEATURES",
         requires = "manifest_path",
-        conflicts_with = "request"
+        conflicts_with_all = ["request", "unit", "slice"]
     )]
     features: Vec<String>,
     /// Activate all available Cargo features of the selected package.
-    #[arg(long, requires = "manifest_path", conflicts_with = "request")]
+    #[arg(long, requires = "manifest_path", conflicts_with_all = ["request", "unit", "slice"])]
     all_features: bool,
     /// Do not activate the `default` Cargo feature.
-    #[arg(long, requires = "manifest_path", conflicts_with = "request")]
+    #[arg(long, requires = "manifest_path", conflicts_with_all = ["request", "unit", "slice"])]
     no_default_features: bool,
+    /// Verification unit ID under `[[units]]` in `<crate>/anneal/anneal.toml`.
+    #[arg(
+        long,
+        value_name = "ID",
+        requires = "manifest_path",
+        conflicts_with_all = ["request", "select", "instantiate"]
+    )]
+    unit: Option<String>,
+    /// Compilation slice ID in `<crate>/anneal/anneal.toml` (`[slices.<id>]`).
+    #[arg(long, value_name = "ID", requires = "manifest_path", conflicts_with = "request")]
+    slice: Option<String>,
     /// Capture driver; defaults to the installed bundle, then a sibling. The
     /// receipt records its SHA-256, which no lock pins.
     #[cfg_attr(
@@ -489,12 +523,14 @@ impl VerifyArgs {
                 || !self.features.is_empty()
                 || self.all_features
                 || self.no_default_features
+                || self.unit.is_some()
+                || self.slice.is_some()
             {
                 return Err(cmd.error(
                     ErrorKind::ArgumentConflict,
                     "--request, --manifest-path, --proof-dir, parent --panic, parent --select, \
-                     parent --instantiate, --features, --all-features, and --no-default-features \
-                     cannot be used with the `rustc` subcommand",
+                     parent --instantiate, --features, --all-features, --no-default-features, \
+                     --unit, and --slice cannot be used with the `rustc` subcommand",
                 ));
             }
             if rustc.crate_name.is_empty() {
@@ -729,6 +765,10 @@ struct CaptureReceipt {
     census: Value,
     selected: Value,
     program: CaptureProgram,
+    #[serde(default)]
+    semantic_profile: Option<crate::packaging::SemanticProfile>,
+    #[serde(default)]
+    canonical_program_sha256: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -1185,10 +1225,186 @@ fn resolve_cargo_package_cfg(
     Ok(active_features.into_iter().map(|feat| format!("feature=\"{feat}\"")).collect())
 }
 
+fn packaging_error(failure: crate::Failure) -> Error {
+    let status = if failure.code == 1 { "unsupported" } else { "tool_failed" };
+    error(status, "package", failure.message)
+}
+
+struct CargoPrepared {
+    request: Request,
+    base: PathBuf,
+    authored: Option<Vec<StagedAuthored>>,
+    source_closure_sha256: Option<String>,
+}
+
+fn collect_cargo_rust_sources(source_root: &Path, crate_root: &Path) -> Result<Vec<PathBuf>> {
+    let walk_root = match crate_root.parent() {
+        Some(parent) if !parent.as_os_str().is_empty() => source_root.join(parent),
+        _ => source_root.to_path_buf(),
+    };
+    let mut source_files = Vec::new();
+    for entry in
+        walkdir::WalkDir::new(&walk_root).follow_links(false).into_iter().filter_entry(|e| {
+            if e.depth() == 0 {
+                return true;
+            }
+            let name = e.file_name().to_string_lossy();
+            if name.starts_with('.') || name == "target" {
+                return false;
+            }
+            // Package-level directories that are never library or binary
+            // module sources. Below the package root (for example under
+            // `src/`), directories with these names can hold real modules.
+            if e.file_type().is_dir()
+                && e.path().parent() == Some(source_root)
+                && matches!(
+                    name.as_ref(),
+                    "anneal" | "proofs" | "vendor" | "tests" | "benches" | "examples"
+                )
+            {
+                return false;
+            }
+            true
+        })
+    {
+        let entry = entry.map_err(|e| error("tool_failed", "cargo", e))?;
+        if entry.file_type().is_file() && entry.path().extension().is_some_and(|e| e == "rs") {
+            let rel = entry.path().strip_prefix(source_root).unwrap().to_path_buf();
+            // Skip `build.rs` for crate sources unless it is `crate_root`.
+            if rel != Path::new("build.rs") || rel == crate_root {
+                source_files.push(rel);
+            }
+        }
+    }
+    source_files.sort();
+    Ok(source_files)
+}
+
+fn slice_enables_external_dep(
+    pkg: &crate::packaging::ValidatedCargoPackage,
+    active_features: &BTreeSet<String>,
+    dep_name: &str,
+) -> bool {
+    if active_features.contains(dep_name) {
+        return true;
+    }
+    let dep_prefix = format!("{dep_name}/");
+    let dep_opt_prefix = format!("{dep_name}?/");
+    let dep_exact = format!("dep:{dep_name}");
+    for feat in active_features {
+        if let Some(items) = pkg.features.get(feat) {
+            for item in items {
+                if item == dep_name
+                    || item == &dep_exact
+                    || item.starts_with(&dep_prefix)
+                    || item.starts_with(&dep_opt_prefix)
+                {
+                    return true;
+                }
+            }
+        }
+    }
+    false
+}
+
+/// `[target.'cfg(any())'.dependencies]` is used as an associated-version pin
+/// and is permanently false on every target.
+fn is_never_true_cfg(cfg: &str) -> bool {
+    cfg.split_whitespace().collect::<String>() == "cfg(any())"
+}
+
+/// Checks that a packaged (`--unit` / `--slice`) Cargo target is the library
+/// that the source closure describes, and returns its rustc crate name.
+///
+/// Spec packages describe crates that others depend on, and only library
+/// targets can be dependencies. The source closure binds the Cargo.toml
+/// library name and package edition, so the target must use exactly those.
+fn check_packaged_target(
+    crate_type: CrateType,
+    target_meta: &Value,
+    pkg: &crate::packaging::ValidatedCargoPackage,
+) -> Result<String> {
+    if crate_type != CrateType::Lib {
+        return Err(error(
+            "unsupported",
+            "cargo",
+            "`--unit` / `--slice` verification supports library targets only",
+        ));
+    }
+    let crate_name = target_meta["name"].as_str().unwrap_or_default().replace('-', "_");
+    if crate_name != pkg.lib_crate_name() {
+        return Err(error(
+            "tool_failed",
+            "cargo",
+            format!(
+                "Cargo target name `{crate_name}` differs from the library name `{}` \
+                 read from Cargo.toml",
+                pkg.lib_crate_name()
+            ),
+        ));
+    }
+    if target_meta["edition"].as_str() != Some(pkg.edition.as_str()) {
+        return Err(error(
+            "unsupported",
+            "cargo",
+            "`--unit` / `--slice` verification does not support a target `edition` \
+             that differs from the package edition",
+        ));
+    }
+    Ok(crate_name)
+}
+
+/// Admits the package's Cargo build script only if it is `build.rs` at the
+/// package root and its digest is listed in [`MODELED_BUILD_SCRIPTS`].
+///
+/// The source closure hashes only a root `build.rs`, and the packaged path
+/// reproduces build-script output only for listed scripts. Any other
+/// script could make Cargo compile a program that differs from the one
+/// captured here, so it is refused.
+fn check_modeled_build_script(source_root: &Path, targets: &[Value]) -> Result<()> {
+    let build_targets = targets
+        .iter()
+        .filter(|t| t["kind"].as_array().is_some_and(|ks| ks.iter().any(|k| k == "custom-build")));
+    for target_meta in build_targets {
+        let src = Path::new(target_meta["src_path"].as_str().unwrap_or_default());
+        if src.strip_prefix(source_root).ok() != Some(Path::new("build.rs")) {
+            return Err(error(
+                "unsupported",
+                "cargo",
+                format!(
+                    "build script {} is not `build.rs` at the package root; \
+                     use an explicit configured compilation request",
+                    src.display()
+                ),
+            ));
+        }
+        let (_, sha256) = read_input_file(src, None, SymlinkPolicy::Reject, "cargo")?;
+        if !MODELED_BUILD_SCRIPTS.iter().any(|(digest, _)| *digest == sha256) {
+            return Err(error(
+                "unsupported",
+                "cargo",
+                format!(
+                    "build.rs (sha256 {sha256}) is not a reviewed build script whose \
+                     compiler inputs Anneal reproduces; its cfgs, env, and generated \
+                     sources cannot be captured. Remove it (declare `cfg(anneal)` in \
+                     `[lints.rust] unexpected_cfgs` instead) or use an explicit \
+                     configured compilation request"
+                ),
+            ));
+        }
+    }
+    Ok(())
+}
+
 // Cargo is an input-discovery shortcut, not a second verification profile.
 // Reject configurations this adapter cannot reproduce before building the
 // same explicit request consumed by the build-neutral path.
-fn cargo_request(args: &VerifyArgs, manifest_path: &Path) -> Result<(Request, PathBuf)> {
+fn cargo_request(
+    args: &VerifyArgs,
+    manifest_path: &Path,
+    work: &Path,
+    originals: &mut Vec<(PathBuf, String)>,
+) -> Result<CargoPrepared> {
     let manifest = fs::canonicalize(manifest_path)
         .map_err(|e| io_with_path("cargo", "Cargo manifest", manifest_path, e))?;
     let source_root = manifest
@@ -1222,26 +1438,50 @@ fn cargo_request(args: &VerifyArgs, manifest_path: &Path) -> Result<(Request, Pa
         .ok_or_else(|| {
             error("unsupported", "cargo", "choose a package Cargo.toml, not a virtual workspace")
         })?;
+    let has_anneal_meta = package["metadata"]["anneal"].is_object();
+    let packaged_mode = has_anneal_meta || args.unit.is_some() || args.slice.is_some();
+
+    if packaged_mode && (!args.features.is_empty() || args.all_features || args.no_default_features)
+    {
+        return Err(error(
+            "unsupported",
+            "cargo",
+            "--features, --all-features, and --no-default-features do not apply to packages \
+             configured through `anneal/anneal.toml`; select a `[slices.<id>]` with --slice",
+        ));
+    }
+
     let targets = package["targets"]
         .as_array()
         .ok_or_else(|| error("tool_failed", "cargo", "missing Cargo targets"))?;
-    if targets.iter().any(|t| {
-        t["kind"]
-            .as_array()
-            .is_some_and(|ks| ks.iter().any(|k| k == "custom-build" || k == "proc-macro"))
-    }) {
+    let is_proc_macro = targets
+        .iter()
+        .any(|t| t["kind"].as_array().is_some_and(|ks| ks.iter().any(|k| k == "proc-macro")));
+    let is_custom_build = targets
+        .iter()
+        .any(|t| t["kind"].as_array().is_some_and(|ks| ks.iter().any(|k| k == "custom-build")));
+    if is_proc_macro || (!packaged_mode && is_custom_build) {
         return Err(error(
             "unsupported",
             "cargo",
             "build scripts and procedural macros need an explicit configured compilation",
         ));
     }
-    let cfg = resolve_cargo_package_cfg(
-        package,
-        &args.features,
-        args.all_features,
-        args.no_default_features,
-    )?;
+    if is_custom_build {
+        check_modeled_build_script(&source_root, targets)?;
+    }
+    // Packaged mode resolves features per `[slices.<id>]` below; the plain
+    // shortcut resolves them from the command line here.
+    let cfg = if packaged_mode {
+        BTreeSet::new()
+    } else {
+        resolve_cargo_package_cfg(
+            package,
+            &args.features,
+            args.all_features,
+            args.no_default_features,
+        )?
+    };
     let mut primary_targets = targets.iter().filter_map(|t| {
         let kinds = t["kind"].as_array()?;
         if kinds.iter().any(|k| k == "bin") {
@@ -1263,7 +1503,8 @@ fn cargo_request(args: &VerifyArgs, manifest_path: &Path) -> Result<(Request, Pa
              use an explicit compilation request",
         ));
     }
-    if crate_type == CrateType::Bin {
+    // Packaged mode admits only library targets (`check_packaged_target`).
+    if !packaged_mode && crate_type == CrateType::Bin {
         match target_meta.get("required-features") {
             None | Some(Value::Null) => {}
             Some(Value::Array(reqs)) => {
@@ -1301,129 +1542,488 @@ fn cargo_request(args: &VerifyArgs, manifest_path: &Path) -> Result<(Request, Pa
         .strip_prefix(&source_root)
         .map_err(|_| error("unsupported", "cargo", "target root escapes package"))?
         .to_path_buf();
-    let mut non_primary_target_files = BTreeSet::new();
-    for other_target in targets {
-        if std::ptr::eq(other_target, target_meta) {
-            continue;
-        }
-        if let Some(src_path) = other_target["src_path"].as_str()
-            && let Ok(rel) = Path::new(src_path).strip_prefix(&source_root)
-            && rel != crate_root
-        {
-            non_primary_target_files.insert(rel.to_path_buf());
-        }
-    }
-    // This shortcut declares a namespace of .rs files for the selected primary
-    // target, excluding Cargo's top-level `tests/`, `benches/`, and `examples/`
-    // multi-target trees (and explicit non-primary target entrypoints) unless
-    // `crate_root` itself lives inside one. Other compiler inputs require an
-    // explicit request: importing every package file would stage unrelated
-    // data, proof packages, and build outputs.
-    let mut source_files = Vec::new();
-    for entry in
-        walkdir::WalkDir::new(&source_root).follow_links(false).into_iter().filter_entry(|e| {
-            if e.depth() == 0 {
-                return true;
-            }
-            let name = e.file_name();
-            if name.to_string_lossy().starts_with('.') || name == "target" {
-                return false;
-            }
-            if e.depth() == 1
-                && !e.file_type().is_file()
-                && matches!(name.to_str(), Some("tests" | "benches" | "examples"))
-                && !crate_root.starts_with(name)
-            {
-                return false;
-            }
-            true
-        })
-    {
-        let entry = entry.map_err(|e| error("tool_failed", "cargo", e))?;
-        if entry.file_type().is_file() && entry.path().extension().is_some_and(|e| e == "rs") {
-            let rel = entry.path().strip_prefix(&source_root).unwrap().to_path_buf();
-            if !non_primary_target_files.contains(&rel) {
-                source_files.push(rel);
-            }
-        }
-    }
-    source_files.sort();
     let proof_dir = args.proof_dir.as_ref().ok_or_else(|| {
         error("unsupported", "request", "--proof-dir is required with --manifest-path")
     })?;
     let proof_root = fs::canonicalize(proof_dir)
         .map_err(|e| io_with_path("proof", "proof directory", proof_dir, e))?;
-    let mut sources = Vec::new();
-    for entry in walkdir::WalkDir::new(&proof_root)
-        .follow_links(false)
-        .into_iter()
-        .filter_entry(|e| e.depth() == 0 || !e.file_name().to_string_lossy().starts_with('.'))
-    {
-        let entry = entry.map_err(|e| error("tool_failed", "proof", e))?;
-        if entry.file_type().is_file() && entry.path().extension().is_some_and(|e| e == "lean") {
-            let path = entry.path().strip_prefix(&proof_root).unwrap().to_path_buf();
-            let module =
-                path.with_extension("").to_string_lossy().replace(std::path::MAIN_SEPARATOR, ".");
-            sources.push(ProofSource {
-                role: if module == "Spec" || module.starts_with("Spec.") {
-                    AuthoredRole::Specification
-                } else {
-                    AuthoredRole::Proof
+
+    if !packaged_mode {
+        let mut non_primary_target_files = BTreeSet::new();
+        for other_target in targets {
+            if std::ptr::eq(other_target, target_meta) {
+                continue;
+            }
+            if let Some(src_path) = other_target["src_path"].as_str()
+                && let Ok(rel) = Path::new(src_path).strip_prefix(&source_root)
+                && rel != crate_root
+            {
+                non_primary_target_files.insert(rel.to_path_buf());
+            }
+        }
+        // This shortcut declares a namespace of .rs files for the selected primary
+        // target, excluding Cargo's top-level `tests/`, `benches/`, and `examples/`
+        // multi-target trees (and explicit non-primary target entrypoints) unless
+        // `crate_root` itself lives inside one. Other compiler inputs require an
+        // explicit request: importing every package file would stage unrelated
+        // data, proof packages, and build outputs.
+        let mut source_files = Vec::new();
+        for entry in
+            walkdir::WalkDir::new(&source_root).follow_links(false).into_iter().filter_entry(|e| {
+                if e.depth() == 0 {
+                    return true;
+                }
+                let name = e.file_name();
+                if name.to_string_lossy().starts_with('.') || name == "target" {
+                    return false;
+                }
+                if e.depth() == 1
+                    && !e.file_type().is_file()
+                    && matches!(name.to_str(), Some("tests" | "benches" | "examples"))
+                    && !crate_root.starts_with(name)
+                {
+                    return false;
+                }
+                true
+            })
+        {
+            let entry = entry.map_err(|e| error("tool_failed", "cargo", e))?;
+            if entry.file_type().is_file() && entry.path().extension().is_some_and(|e| e == "rs") {
+                let rel = entry.path().strip_prefix(&source_root).unwrap().to_path_buf();
+                if !non_primary_target_files.contains(&rel) {
+                    source_files.push(rel);
+                }
+            }
+        }
+        source_files.sort();
+        let mut sources = Vec::new();
+        for entry in walkdir::WalkDir::new(&proof_root)
+            .follow_links(false)
+            .into_iter()
+            .filter_entry(|e| e.depth() == 0 || !e.file_name().to_string_lossy().starts_with('.'))
+        {
+            let entry = entry.map_err(|e| error("tool_failed", "proof", e))?;
+            if entry.file_type().is_file() && entry.path().extension().is_some_and(|e| e == "lean")
+            {
+                let path = entry.path().strip_prefix(&proof_root).unwrap().to_path_buf();
+                let module = path
+                    .with_extension("")
+                    .to_string_lossy()
+                    .replace(std::path::MAIN_SEPARATOR, ".");
+                sources.push(ProofSource {
+                    role: if module == "Spec" || module.starts_with("Spec.") {
+                        AuthoredRole::Specification
+                    } else {
+                        AuthoredRole::Proof
+                    },
+                    module,
+                    path,
+                });
+            }
+        }
+        sources.sort_by(|a, b| a.module.cmp(&b.module));
+        let scope = if args.select.is_empty() && args.instantiate.is_empty() {
+            Scope::Crate {}
+        } else {
+            Scope::SelectedUnit {
+                roots: args.select.iter().cloned().collect(),
+                instantiations: args.instantiate.iter().cloned().collect(),
+            }
+        };
+        let crate_name = target_meta["name"].as_str().unwrap_or_default().replace('-', "_");
+        let pkg_name = package["name"].as_str().unwrap_or(&crate_name);
+        let edition = target_meta["edition"].as_str().unwrap_or("2024").to_owned();
+        // Bind the parsed feature graph when `Cargo.toml` passes the packaging
+        // checks; otherwise record no closure rather than one that omits it.
+        let closure_pkg = crate::packaging::validate_crate_cargo_toml(&source_root).ok();
+        let source_closure_sha256 = match closure_pkg {
+            Some(closure_pkg)
+                if source_files.contains(&crate_root) && source_root.join("src").is_dir() =>
+            {
+                Some(
+                    crate::packaging::compute_source_closure_sha256(
+                        &source_root,
+                        pkg_name,
+                        &edition,
+                        &closure_pkg.cargo_semantics(),
+                        &[],
+                    )
+                    .map_err(packaging_error)?
+                    .source_closure_sha256,
+                )
+            }
+            _ => None,
+        };
+        return Ok(CargoPrepared {
+            request: Request {
+                schema_version: 1,
+                compilation: Compilation {
+                    source_root,
+                    crate_root,
+                    crate_name,
+                    crate_type,
+                    panic: args.panic.unwrap_or_default(),
+                    edition,
+                    target: target(),
+                    cfg,
+                    env: BTreeMap::new(),
+                    source_files,
+                    stdlib_crate: None,
                 },
-                module,
-                path,
-            });
+                scope,
+                proof: Proof {
+                    source_root: proof_root,
+                    specification: spec_name(),
+                    theorem: proof_name(),
+                    specification_module: None,
+                    theorem_module: None,
+                    sources,
+                },
+            },
+            base: manifest.parent().unwrap().to_path_buf(),
+            authored: None,
+            source_closure_sha256,
+        });
+    }
+
+    if !has_anneal_meta {
+        return Err(error(
+            "unsupported",
+            "request",
+            "`--unit` / `--slice` require `[package.metadata.anneal]` in Cargo.toml",
+        ));
+    }
+    let pkg = crate::packaging::validate_crate_cargo_toml(&source_root).map_err(packaging_error)?;
+    let plane1 = crate::packaging::inspect_contract_plane(&source_root, &pkg.anneal_manifest_rel)
+        .map_err(packaging_error)?;
+    crate::packaging::verify_unexpected_cfgs_guard(&source_root, plane1.inline_attr_count)
+        .map_err(packaging_error)?;
+    let closure = crate::packaging::compute_source_closure_sha256(
+        &source_root,
+        &pkg.name,
+        &pkg.edition,
+        &pkg.cargo_semantics(),
+        &[],
+    )
+    .map_err(packaging_error)?;
+    let target_crate_name = check_packaged_target(crate_type, target_meta, &pkg)?;
+
+    let fallback_slice;
+    let slice = if let Some(slice_id) = &args.slice {
+        plane1.manifest.slices.get(slice_id).ok_or_else(|| {
+            error("unsupported", "request", format!("unknown slice `{slice_id}` in anneal.toml"))
+        })?
+    } else if let Some(default_slice) = plane1.manifest.slices.get("default") {
+        default_slice
+    } else if plane1.manifest.slices.len() == 1 {
+        plane1.manifest.slices.values().next().unwrap()
+    } else if plane1.manifest.slices.is_empty() {
+        fallback_slice = crate::packaging::ManifestSlice {
+            target: target(),
+            features: Vec::new(),
+            default_features: false,
+            cfg: Vec::new(),
+            panic: "unwind".to_owned(),
+        };
+        &fallback_slice
+    } else {
+        return Err(error(
+            "unsupported",
+            "request",
+            "crate defines multiple verification slices; pass `--slice <ID>`",
+        ));
+    };
+
+    if slice.target != target() {
+        return Err(error(
+            "unsupported",
+            "cargo",
+            format!(
+                "slice target `{}` differs from host capture target `{}`",
+                slice.target,
+                target()
+            ),
+        ));
+    }
+    let active_features =
+        crate::packaging::resolve_slice_feature_closure(&pkg, slice).map_err(packaging_error)?;
+    if let Some(deps) = package["dependencies"].as_array() {
+        for dep in deps {
+            let kind = dep["kind"].as_str();
+            if matches!(kind, Some("dev" | "build")) {
+                continue;
+            }
+            if dep["target"].as_str().is_some_and(is_never_true_cfg) {
+                continue;
+            }
+            let optional = dep["optional"].as_bool().unwrap_or(false);
+            let dep_key =
+                dep["rename"].as_str().or_else(|| dep["name"].as_str()).unwrap_or_default();
+            if !optional || slice_enables_external_dep(&pkg, &active_features, dep_key) {
+                return Err(error(
+                    "unsupported",
+                    "cargo",
+                    format!(
+                        "slice activates external dependency `{dep_key}`; Cargo shortcut requires a dependency-free slice"
+                    ),
+                ));
+            }
         }
     }
-    sources.sort_by(|a, b| a.module.cmp(&b.module));
-    let scope = if args.select.is_empty() && args.instantiate.is_empty() {
-        Scope::Crate {}
-    } else {
-        Scope::SelectedUnit {
-            roots: args.select.iter().cloned().collect(),
-            instantiations: args.instantiate.iter().cloned().collect(),
+    let cfg = crate::packaging::resolve_slice_cfgs(&pkg, slice, Some(PINNED_RUSTC_SEMVER))
+        .map_err(packaging_error)?;
+    let env = crate::packaging::derive_cargo_pkg_env(&pkg);
+    let slice_panic =
+        if slice.panic == "abort" { PanicStrategy::Abort } else { PanicStrategy::Unwind };
+    let panic = args.panic.unwrap_or(slice_panic);
+    let source_files = collect_cargo_rust_sources(&source_root, &crate_root)?;
+
+    let (scope, specification, specification_module, authored, proof_sources) = if let Some(
+        unit_id,
+    ) = &args.unit
+    {
+        let unit = plane1.manifest.units.iter().find(|u| &u.id == unit_id).ok_or_else(|| {
+            error("unsupported", "request", format!("unknown unit `{unit_id}` in anneal.toml"))
+        })?;
+        let scope = match &unit.scope {
+            crate::packaging::ManifestScope::Crate {} => Scope::Crate {},
+            crate::packaging::ManifestScope::SelectedUnit { roots, instantiations } => {
+                Scope::SelectedUnit {
+                    roots: roots.clone(),
+                    instantiations: instantiations
+                        .iter()
+                        .map(|inst| Instantiation {
+                            path: inst.path.clone(),
+                            args: inst.args.clone(),
+                        })
+                        .collect(),
+                }
+            }
+        };
+        let anneal_manifest_path = source_root.join(&pkg.anneal_manifest_rel);
+        let anneal_root = anneal_manifest_path.parent().ok_or_else(|| {
+            error("unsupported", "request", "anneal manifest path has no parent directory")
+        })?;
+        if unit.spec_modules.is_empty() && unit.models.is_empty() {
+            let mut sources = Vec::new();
+            for entry in
+                walkdir::WalkDir::new(&proof_root).follow_links(false).into_iter().filter_entry(
+                    |e| e.depth() == 0 || !e.file_name().to_string_lossy().starts_with('.'),
+                )
+            {
+                let entry = entry.map_err(|e| error("tool_failed", "proof", e))?;
+                if entry.file_type().is_file()
+                    && entry.path().extension().is_some_and(|e| e == "lean")
+                {
+                    let path = entry.path().strip_prefix(&proof_root).unwrap().to_path_buf();
+                    let module = path
+                        .with_extension("")
+                        .to_string_lossy()
+                        .replace(std::path::MAIN_SEPARATOR, ".");
+                    sources.push(ProofSource {
+                        role: if module == "Spec" || module.starts_with("Spec.") {
+                            AuthoredRole::Specification
+                        } else {
+                            AuthoredRole::Proof
+                        },
+                        module,
+                        path,
+                    });
+                }
+            }
+            sources.sort_by(|a, b| a.module.cmp(&b.module));
+            (scope, unit.specification.clone(), unit.specification_module.clone(), None, sources)
+        } else {
+            let mut staged = Vec::new();
+            let mut sources = Vec::new();
+            let mut seen_mods = BTreeSet::new();
+            let mut stage_plane1 = |module: &str, rel_under_anneal: &str| -> Result<()> {
+                if !seen_mods.insert(module.to_owned()) {
+                    return Err(error(
+                        "unsupported",
+                        "proof",
+                        format!("duplicate Plane 1 Lean module `{module}`"),
+                    ));
+                }
+                let src_path = anneal_root.join(rel_under_anneal);
+                let (bytes, sha256) =
+                    read_input_file(&src_path, None, SymlinkPolicy::Reject, "proof")?;
+                let rel_path = PathBuf::from(format!("{}.lean", module.replace('.', "/")));
+                let staged_path = work.join("authored").join(&rel_path);
+                write(&staged_path, &bytes)?;
+                originals.push((src_path, sha256.clone()));
+                sources.push(ProofSource {
+                    module: module.to_owned(),
+                    path: rel_path,
+                    role: AuthoredRole::Specification,
+                });
+                staged.push(StagedAuthored {
+                    module: module.to_owned(),
+                    source: staged_path,
+                    sha256,
+                    role: AuthoredRole::Specification,
+                });
+                Ok(())
+            };
+            for model_name in &unit.models {
+                let model =
+                    plane1.manifest.models.iter().find(|m| &m.module == model_name).ok_or_else(
+                        || {
+                            error(
+                                "unsupported",
+                                "request",
+                                format!("unit `{unit_id}` references unknown model `{model_name}`"),
+                            )
+                        },
+                    )?;
+                stage_plane1(&model.module, &model.path)?;
+            }
+            for spec_mod in &unit.spec_modules {
+                stage_plane1(&spec_mod.module, &spec_mod.path)?;
+            }
+            for entry in
+                walkdir::WalkDir::new(&proof_root).follow_links(false).into_iter().filter_entry(
+                    |e| e.depth() == 0 || !e.file_name().to_string_lossy().starts_with('.'),
+                )
+            {
+                let entry = entry.map_err(|e| error("tool_failed", "proof", e))?;
+                if entry.file_type().is_file()
+                    && entry.path().extension().is_some_and(|e| e == "lean")
+                {
+                    let rel = entry.path().strip_prefix(&proof_root).unwrap().to_path_buf();
+                    let module = rel
+                        .with_extension("")
+                        .to_string_lossy()
+                        .replace(std::path::MAIN_SEPARATOR, ".");
+                    if !seen_mods.insert(module.clone()) {
+                        return Err(error(
+                            "unsupported",
+                            "proof",
+                            format!(
+                                "proof directory `{}` attempts to redefine Plane 1 module `{module}`",
+                                proof_root.display()
+                            ),
+                        ));
+                    }
+                    let (bytes, sha256) =
+                        read_input_file(entry.path(), None, SymlinkPolicy::Reject, "proof")?;
+                    let rel_path = PathBuf::from(format!("{}.lean", module.replace('.', "/")));
+                    let staged_path = work.join("authored").join(&rel_path);
+                    write(&staged_path, &bytes)?;
+                    originals.push((entry.path().to_path_buf(), sha256.clone()));
+                    sources.push(ProofSource {
+                        module: module.clone(),
+                        path: rel_path,
+                        role: AuthoredRole::Proof,
+                    });
+                    staged.push(StagedAuthored {
+                        module,
+                        source: staged_path,
+                        sha256,
+                        role: AuthoredRole::Proof,
+                    });
+                }
+            }
+            sources.sort_by(|a, b| a.module.cmp(&b.module));
+            (
+                scope,
+                unit.specification.clone(),
+                unit.specification_module.clone(),
+                Some(staged),
+                sources,
+            )
         }
+    } else {
+        let scope = if args.select.is_empty() && args.instantiate.is_empty() {
+            Scope::Crate {}
+        } else {
+            Scope::SelectedUnit {
+                roots: args.select.iter().cloned().collect(),
+                instantiations: args.instantiate.iter().cloned().collect(),
+            }
+        };
+        let mut sources = Vec::new();
+        for entry in walkdir::WalkDir::new(&proof_root)
+            .follow_links(false)
+            .into_iter()
+            .filter_entry(|e| e.depth() == 0 || !e.file_name().to_string_lossy().starts_with('.'))
+        {
+            let entry = entry.map_err(|e| error("tool_failed", "proof", e))?;
+            if entry.file_type().is_file() && entry.path().extension().is_some_and(|e| e == "lean")
+            {
+                let path = entry.path().strip_prefix(&proof_root).unwrap().to_path_buf();
+                let module = path
+                    .with_extension("")
+                    .to_string_lossy()
+                    .replace(std::path::MAIN_SEPARATOR, ".");
+                sources.push(ProofSource {
+                    role: if module == "Spec" || module.starts_with("Spec.") {
+                        AuthoredRole::Specification
+                    } else {
+                        AuthoredRole::Proof
+                    },
+                    module,
+                    path,
+                });
+            }
+        }
+        sources.sort_by(|a, b| a.module.cmp(&b.module));
+        (scope, spec_name(), None, None, sources)
     };
-    Ok((
-        Request {
+
+    Ok(CargoPrepared {
+        request: Request {
             schema_version: 1,
             compilation: Compilation {
                 source_root,
                 crate_root,
-                crate_name: target_meta["name"].as_str().unwrap_or_default().replace('-', "_"),
+                // Cargo passes the library target's name (`[lib] name`), not
+                // the package name, as `--crate-name`; checked above.
+                crate_name: target_crate_name,
                 crate_type,
-                panic: args.panic.unwrap_or_default(),
-                edition: target_meta["edition"].as_str().unwrap_or("2024").to_owned(),
-                target: target(),
+                panic,
+                edition: pkg.edition,
+                target: slice.target.clone(),
                 cfg,
-                env: BTreeMap::new(),
+                env,
                 source_files,
                 stdlib_crate: None,
             },
             scope,
             proof: Proof {
                 source_root: proof_root,
-                specification: spec_name(),
+                specification,
                 theorem: proof_name(),
-                specification_module: None,
+                specification_module,
                 theorem_module: None,
-                sources,
+                sources: proof_sources,
             },
         },
-        manifest.parent().unwrap().to_path_buf(),
-    ))
+        base: manifest.parent().unwrap().to_path_buf(),
+        authored,
+        source_closure_sha256: Some(closure.source_closure_sha256),
+    })
 }
 
-fn load_request(args: &VerifyArgs) -> Result<(Request, PathBuf)> {
+fn load_request(
+    args: &VerifyArgs,
+    work: &Path,
+    originals: &mut Vec<(PathBuf, String)>,
+) -> Result<CargoPrepared> {
     if let Some(path) = &args.request {
         let path = fs::canonicalize(path).map_err(|e| io("request", e))?;
         let (bytes, _) = read_regular_file_deref(&path, "request")
             .map_err(|e| error("tool_failed", "request", e.message))?;
         let request: Request =
             serde_json::from_slice(&bytes).map_err(|e| error("unsupported", "request", e))?;
-        Ok((request, path.parent().unwrap().to_path_buf()))
+        Ok(CargoPrepared {
+            request,
+            base: path.parent().unwrap().to_path_buf(),
+            authored: None,
+            source_closure_sha256: None,
+        })
     } else {
-        cargo_request(args, args.manifest_path.as_ref().unwrap())
+        cargo_request(args, args.manifest_path.as_ref().unwrap(), work, originals)
     }
 }
 
@@ -1757,7 +2357,7 @@ fn normalize_lexical_absolute(path: &Path) -> std::io::Result<PathBuf> {
 fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     let start = Instant::now();
     let mut originals = Vec::new();
-    let (request, base, pre_staged_rust, pre_staged_lean, symlink_policy) =
+    let (request, base, pre_staged_rust, pre_staged_lean, symlink_policy, source_closure_sha256) =
         if let Some(VerifySubcommand::Rustc(rustc)) = &args.command {
             let prepared = prepare_rustc_request(rustc, work, &mut originals)?;
             (
@@ -1766,10 +2366,18 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
                 Some(prepared.sources),
                 Some(prepared.authored),
                 SymlinkPolicy::DereferenceRegular,
+                None,
             )
         } else {
-            let (request, base) = load_request(args)?;
-            (request, base, None, None, SymlinkPolicy::Reject)
+            let prepared = load_request(args, work, &mut originals)?;
+            (
+                prepared.request,
+                prepared.base,
+                None,
+                prepared.authored,
+                SymlinkPolicy::Reject,
+                prepared.source_closure_sha256,
+            )
         };
     if request.schema_version != 1 || request.compilation.source_files.is_empty() {
         return Err(error("unsupported", "request", "unsupported or empty compilation request"));
@@ -2000,6 +2608,34 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         }
     }
     let capture_sha256 = sha256_bytes(&capture_bytes);
+    let capture_json: Value =
+        serde_json::from_slice(&capture_bytes).map_err(|e| error("tool_failed", "capture", e))?;
+    let semantic_profile =
+        crate::packaging::SemanticProfile::from_capture_configuration(&manifest.configuration)
+            .map_err(|e| error("tool_failed", "capture", e.message))?;
+    if let Some(ref reported_profile) = manifest.semantic_profile
+        && reported_profile != &semantic_profile
+    {
+        return Err(error(
+            "tool_failed",
+            "capture",
+            "capture semantic_profile disagrees with configuration",
+        ));
+    }
+    let canonical_program_sha256 = crate::packaging::compute_canonical_program_sha256(
+        &semantic_profile,
+        &capture_json["program"],
+    )
+    .map_err(|e| error("tool_failed", "capture", e.message))?;
+    if let Some(ref reported_program_sha) = manifest.canonical_program_sha256
+        && !reported_program_sha.eq_ignore_ascii_case(&canonical_program_sha256)
+    {
+        return Err(error(
+            "tool_failed",
+            "capture",
+            "capture canonical_program_sha256 disagrees with program payload",
+        ));
+    }
 
     let bundle = work.join("anneal");
     let mut modules = Vec::new();
@@ -2051,6 +2687,9 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         source: captured_lean,
         role: TargetRole::Capture,
     });
+    // Bundled theory above also has the proof role; the proof manifest covers
+    // only the authored sources pushed after this point.
+    let authored_start = modules.len();
 
     // Module names choose destinations in the private stage. Reserve the
     // runner-owned names before writing anything so authored files cannot
@@ -2142,6 +2781,15 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     // proof edits. The auditor also checks actual compiled dependencies,
     // so a helper that changes a specification's meaning needs its role.
     let specification_manifest_sha256 = sha256_bytes(&encoded(&spec_identity)?);
+    // Bind every authored proof-role source into the receipt, so evidence
+    // that ships these files can be checked against what was verified.
+    let proof_identity: BTreeMap<String, String> = modules[authored_start..]
+        .iter()
+        .filter(|m| matches!(m.role, TargetRole::Proof))
+        .map(|m| (m.module.clone(), m.expected_sha256.clone()))
+        .collect();
+    let proof_manifest_sha256 =
+        crate::packaging::proof_manifest_sha256(&proof_identity).map_err(packaging_error)?;
     let root_name = request.scope.root_theorem();
     // Only validated declaration identifiers enter this fixed template. The
     // authored proof package never supplies an expected proposition or model.
@@ -2375,9 +3023,12 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         "request_sha256": request_sha256,
         "capture_sha256": capture_sha256,
         "capture_binary_sha256": capture_binary_sha256,
+        "canonical_program_sha256": canonical_program_sha256,
+        "semantic_profile": semantic_profile,
         "toolchain_identity": toolchain_identity,
         "model_manifest_sha256": model_manifest_sha256,
         "specification_manifest_sha256": specification_manifest_sha256,
+        "proof_manifest_sha256": proof_manifest_sha256,
         "correspondence_provenance": correspondence_provenance,
         "scope": request.scope, "selected": manifest.selected,
         "census": manifest.census, "sources": sources,
@@ -2390,6 +3041,12 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         "assumptions": assumptions,
         "deferred": deferred
     });
+    if let Some(closure_sha) = source_closure_sha256 {
+        result
+            .as_object_mut()
+            .unwrap()
+            .insert("source_closure_sha256".into(), Value::String(closure_sha));
+    }
     if args.allow_unpinned_lean {
         let Some(unpinned_lean) = audit.get("unpinnedLean").and_then(Value::as_object) else {
             return Err(error(
@@ -3512,6 +4169,8 @@ mod tests {
             features: Vec::new(),
             all_features: false,
             no_default_features: false,
+            unit: None,
+            slice: None,
             capture: None,
             lean: None,
             sysroot: None,
@@ -3547,6 +4206,8 @@ mod tests {
                         features: Vec::new(),
                         all_features: false,
                         no_default_features: false,
+                        unit: None,
+                        slice: None,
                         capture: None,
                         lean: None,
                         sysroot: None,
@@ -3953,6 +4614,8 @@ mod tests {
             features: Vec::new(),
             all_features: false,
             no_default_features: false,
+            unit: None,
+            slice: None,
             capture: None,
             lean: None,
             sysroot: None,
@@ -3998,6 +4661,8 @@ mod tests {
                 features: Vec::new(),
                 all_features: false,
                 no_default_features: false,
+                unit: None,
+                slice: None,
                 artifacts: None,
                 export_lean_lib: false,
                 allow_unpinned_lean: false,
@@ -4651,5 +5316,115 @@ mod tests {
         let err = resolve_cargo_package_cfg(&unsafe_feat_pkg, &[], false, true).unwrap_err();
         assert_eq!(err.status, "unsupported");
         assert_eq!(err.phase, "cargo");
+    }
+
+    fn build_target(src: &Path) -> Value {
+        json!({ "kind": ["custom-build"], "src_path": src.to_str().unwrap() })
+    }
+
+    #[test]
+    fn packaged_cargo_targets_must_match_the_closure_library() {
+        let pkg = tempfile::tempdir().unwrap();
+        fs::write(
+            pkg.path().join("Cargo.toml"),
+            "[package]\nname = \"demo-crate\"\nversion = \"0.1.0\"\nedition = \"2021\"\n",
+        )
+        .unwrap();
+        let pkg = crate::packaging::validate_crate_cargo_toml(pkg.path()).unwrap();
+        let lib = json!({"name": "demo-crate", "edition": "2021"});
+        assert_eq!(check_packaged_target(CrateType::Lib, &lib, &pkg).unwrap(), "demo_crate");
+
+        let err = check_packaged_target(CrateType::Bin, &lib, &pkg).unwrap_err();
+        assert!(err.detail.contains("library targets only"), "{}", err.detail);
+        let renamed = json!({"name": "other", "edition": "2021"});
+        let err = check_packaged_target(CrateType::Lib, &renamed, &pkg).unwrap_err();
+        assert!(err.detail.contains("differs from the library name"), "{}", err.detail);
+        let edition = json!({"name": "demo-crate", "edition": "2018"});
+        let err = check_packaged_target(CrateType::Lib, &edition, &pkg).unwrap_err();
+        assert!(err.detail.contains("target `edition`"), "{}", err.detail);
+    }
+
+    #[test]
+    fn packaged_cargo_refuses_unmodeled_build_scripts() {
+        let pkg = tempfile::tempdir().unwrap();
+        let root = fs::canonicalize(pkg.path()).unwrap();
+
+        // An arbitrary script could emit cfgs, env, or generated sources
+        // that capture never sees.
+        fs::write(root.join("build.rs"), "fn main() { println!(\"cargo:rustc-cfg=hidden\"); }\n")
+            .unwrap();
+        let err =
+            check_modeled_build_script(&root, &[build_target(&root.join("build.rs"))]).unwrap_err();
+        assert!(err.detail.contains("not a reviewed build script"), "{}", err.detail);
+
+        // A script outside the package-root `build.rs` is not in the source
+        // closure and is refused before it is read.
+        fs::create_dir_all(root.join("tools")).unwrap();
+        fs::write(root.join("tools/gen.rs"), "fn main() {}\n").unwrap();
+        let err = check_modeled_build_script(&root, &[build_target(&root.join("tools/gen.rs"))])
+            .unwrap_err();
+        assert!(err.detail.contains("not `build.rs` at the package root"), "{}", err.detail);
+
+        // A symlinked `build.rs` is refused rather than followed.
+        #[cfg(unix)]
+        {
+            fs::remove_file(root.join("build.rs")).unwrap();
+            std::os::unix::fs::symlink(root.join("tools/gen.rs"), root.join("build.rs")).unwrap();
+            assert!(
+                check_modeled_build_script(&root, &[build_target(&root.join("build.rs"))]).is_err()
+            );
+        }
+
+        // No build target is trivially admitted.
+        check_modeled_build_script(&root, &[json!({ "kind": ["lib"], "src_path": "x" })]).unwrap();
+    }
+
+    #[test]
+    fn packaged_cargo_admits_reviewed_zerocopy_build_script() {
+        // The repository's zerocopy `build.rs` must match the reviewed digest;
+        // if it changes, its output must be reviewed again before the digest
+        // in `MODELED_BUILD_SCRIPTS` is updated.
+        let zerocopy = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../zerocopy");
+        let Ok(zerocopy) = fs::canonicalize(zerocopy) else {
+            // Standalone packaged builds of this crate do not ship zerocopy.
+            return;
+        };
+        check_modeled_build_script(&zerocopy, &[build_target(&zerocopy.join("build.rs"))]).unwrap();
+    }
+
+    #[test]
+    fn packaged_cargo_sources_keep_module_dirs_below_the_package_root() {
+        let pkg = tempfile::tempdir().unwrap();
+        let root = pkg.path();
+        for dir in ["src/tests", "src/vendor", "src/examples", "tests", "examples"] {
+            fs::create_dir_all(root.join(dir)).unwrap();
+        }
+        for file in [
+            "src/lib.rs",
+            "src/tests/mod.rs",
+            "src/vendor/mod.rs",
+            "src/examples/mod.rs",
+            "tests/it.rs",
+            "examples/ex.rs",
+            "build.rs",
+        ] {
+            fs::write(root.join(file), "\n").unwrap();
+        }
+        let sources = collect_cargo_rust_sources(root, Path::new("src/lib.rs")).unwrap();
+        let expected: Vec<PathBuf> =
+            ["src/examples/mod.rs", "src/lib.rs", "src/tests/mod.rs", "src/vendor/mod.rs"]
+                .iter()
+                .map(PathBuf::from)
+                .collect();
+        assert_eq!(sources, expected);
+
+        // A root-level crate root still skips package-level test and example
+        // trees and `build.rs`.
+        fs::write(root.join("lib.rs"), "\n").unwrap();
+        let sources = collect_cargo_rust_sources(root, Path::new("lib.rs")).unwrap();
+        assert!(sources.contains(&PathBuf::from("lib.rs")));
+        assert!(sources.contains(&PathBuf::from("src/tests/mod.rs")));
+        assert!(!sources.iter().any(|p| p.starts_with("tests") || p.starts_with("examples")));
+        assert!(!sources.contains(&PathBuf::from("build.rs")));
     }
 }

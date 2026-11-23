@@ -52,6 +52,9 @@ enum Command {
         /// Install a local archive, replacing any existing cached version.
         #[arg(long, value_name = "path")]
         local_archive: Option<PathBuf>,
+        /// Expected SHA-256 hex digest of `--local-archive`.
+        #[arg(long, value_name = "SHA256", requires = "local_archive")]
+        expected_sha256: Option<String>,
         /// Remove older cached toolchain directories without prompting.
         #[arg(long)]
         clear_old: bool,
@@ -64,6 +67,8 @@ enum Command {
         #[arg(long)]
         example: bool,
     },
+    /// Validate split-plane Cargo spec packaging and optional evidence.
+    PackageCheck(Box<crate::packaging::PackageCheckArgs>),
     /// Capture a configured compilation and check its authored source proof.
     #[command(after_help = "Run `cargo anneal skill` to print the bundled agent skill.")]
     Verify(Box<verify::VerifyArgs>),
@@ -71,6 +76,7 @@ enum Command {
 
 enum Action {
     Print(String),
+    PackageCheck(Box<crate::packaging::PackageCheckArgs>),
     Verify(Box<verify::VerifyArgs>),
 }
 
@@ -112,12 +118,12 @@ fn scalar_example() -> String {
 #[cfg(feature = "setup")]
 fn dispatch(
     cli: Cli,
-    install: impl FnOnce(Option<PathBuf>, bool) -> Result<PathBuf, String>,
+    install: impl FnOnce(Option<PathBuf>, Option<String>, bool) -> Result<PathBuf, String>,
 ) -> Result<Action, String> {
     match cli.command {
         None => Ok(Action::Print(format!("{}\n", Cli::command().render_help()))),
-        Some(Command::Setup { local_archive, clear_old }) => {
-            let root = install(local_archive, clear_old)?;
+        Some(Command::Setup { local_archive, expected_sha256, clear_old }) => {
+            let root = install(local_archive, expected_sha256, clear_old)?;
             Ok(Action::Print(format!("Installed Anneal toolchain at {}\n", root.display())))
         }
         Some(Command::Init(args)) => init::run(args).map(Action::Print),
@@ -125,6 +131,7 @@ fn dispatch(
         Some(Command::Skill { example: false }) => {
             Ok(Action::Print(include_str!("../skills/cargo-anneal/SKILL.md").to_owned()))
         }
+        Some(Command::PackageCheck(args)) => Ok(Action::PackageCheck(args)),
         Some(Command::Verify(args)) => Ok(Action::Verify(args)),
     }
 }
@@ -138,6 +145,7 @@ fn dispatch(cli: Cli) -> Result<Action, String> {
         Some(Command::Skill { example: false }) => {
             Ok(Action::Print(include_str!("../skills/cargo-anneal/SKILL.md").to_owned()))
         }
+        Some(Command::PackageCheck(args)) => Ok(Action::PackageCheck(args)),
         Some(Command::Verify(args)) => Ok(Action::Verify(args)),
     }
 }
@@ -157,7 +165,7 @@ fn parse_action(args: Vec<OsString>) -> Result<Result<Cli, Action>, Failure> {
 #[cfg(feature = "setup")]
 fn run(
     args: Vec<OsString>,
-    install: impl FnOnce(Option<PathBuf>, bool) -> Result<PathBuf, String>,
+    install: impl FnOnce(Option<PathBuf>, Option<String>, bool) -> Result<PathBuf, String>,
 ) -> Result<Action, Failure> {
     match parse_action(args)? {
         Ok(cli) => dispatch(cli, install).map_err(Failure::Operation),
@@ -175,7 +183,7 @@ fn run(args: Vec<OsString>) -> Result<Action, Failure> {
 
 pub fn main() -> ExitCode {
     #[cfg(feature = "setup")]
-    let outcome = run(env::args_os().collect(), setup::install);
+    let outcome = run(env::args_os().collect(), setup::install_verified);
     #[cfg(not(feature = "setup"))]
     let outcome = run(env::args_os().collect());
 
@@ -184,6 +192,21 @@ pub fn main() -> ExitCode {
             print!("{output}");
             ExitCode::SUCCESS
         }
+        Ok(Action::PackageCheck(args)) => match crate::packaging::run_package_check(&args) {
+            Ok(output) => {
+                print!("{output}");
+                ExitCode::SUCCESS
+            }
+            Err(failure) => {
+                let envelope = serde_json::json!({
+                    "status": "package_rejected",
+                    "phase": failure.phase,
+                    "detail": failure.message,
+                });
+                println!("{}", serde_json::to_string_pretty(&envelope).unwrap());
+                ExitCode::from(u8::try_from(failure.code).unwrap_or(1))
+            }
+        },
         Ok(Action::Verify(args)) => verify::main(*args),
         Err(Failure::Arguments(error)) => {
             eprint!("{error}");
@@ -205,7 +228,7 @@ mod tests {
     }
 
     #[cfg(feature = "setup")]
-    fn must_not_install(_: Option<PathBuf>, _: bool) -> Result<PathBuf, String> {
+    fn must_not_install(_: Option<PathBuf>, _: Option<String>, _: bool) -> Result<PathBuf, String> {
         panic!("argument handling must not install a toolchain")
     }
 
@@ -223,7 +246,7 @@ mod tests {
     fn output(action: Action) -> String {
         match action {
             Action::Print(output) => output,
-            Action::Verify(_) => panic!("expected printable output"),
+            Action::PackageCheck(_) | Action::Verify(_) => panic!("expected printable output"),
         }
     }
 
@@ -403,8 +426,9 @@ mod tests {
                     input.push("--clear-old".into());
                 }
                 let output = output(
-                    run(input.clone(), |actual_archive, actual_clear_old| {
+                    run(input.clone(), |actual_archive, actual_sha, actual_clear_old| {
                         assert_eq!(actual_archive, archive);
+                        assert!(actual_sha.is_none());
                         assert_eq!(actual_clear_old, clear_old);
                         Ok(PathBuf::from("installed toolchain"))
                     })
@@ -412,7 +436,7 @@ mod tests {
                 );
                 assert_eq!(output, "Installed Anneal toolchain at installed toolchain\n");
 
-                let failure = run(input, |_, _| Err("archive unavailable".into()))
+                let failure = run(input, |_, _, _| Err("archive unavailable".into()))
                     .err()
                     .expect("setup must return the operation's failure");
                 assert!(matches!(
@@ -549,8 +573,21 @@ mod tests {
         .expect("OS-native archive path must parse");
         assert!(matches!(
             cli.command,
-            Some(Command::Setup { local_archive: Some(actual), clear_old: false })
+            Some(Command::Setup { local_archive: Some(actual), expected_sha256: None, clear_old: false })
                 if actual.as_os_str() == path
         ));
+    }
+
+    #[test]
+    fn package_check_dispatch_works_without_setup_feature() {
+        let action = run_without_install(args(&[
+            "cargo-anneal",
+            "package-check",
+            "--manifest-path",
+            "Cargo.toml",
+            "--run-cargo-package",
+        ]))
+        .expect("package-check arguments must parse");
+        assert!(matches!(action, Action::PackageCheck(_)));
     }
 }

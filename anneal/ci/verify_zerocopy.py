@@ -325,10 +325,59 @@ def verify_unit(arguments, unit_dir, request, artifacts_root):
     }
 
 
+def verify_split_plane_packaging(arguments, units):
+    """Validate `anneal/anneal.toml` packaging and fail closed on M1 spec drift."""
+    crate_dir = arguments.src_dir.parent
+    manifest_toml = crate_dir / "anneal" / "anneal.toml"
+    if not manifest_toml.is_file():
+        return None
+    for unit_dir, _ in units:
+        mirrored_spec = crate_dir / "anneal" / "specs" / unit_dir.name / "Spec.lean"
+        proof_spec = unit_dir / "Spec.lean"
+        if mirrored_spec.is_file() and proof_spec.is_file():
+            if mirrored_spec.read_bytes() != proof_spec.read_bytes():
+                raise RuntimeError(
+                    f"{unit_dir.name}: Plane 1 spec {mirrored_spec} drifted from {proof_spec}"
+                )
+    cmd = [
+        str(arguments.cli),
+        "package-check",
+        "--manifest-path",
+        str(crate_dir / "Cargo.toml"),
+    ]
+    if getattr(arguments, "run_cargo_package", False):
+        cmd.append("--run-cargo-package")
+    proc = subprocess.run(
+        cmd,
+        cwd=crate_dir,
+        capture_output=True,
+        text=True,
+        timeout=arguments.timeout,
+        check=False,
+    )
+    if proc.returncode != 0:
+        raise RuntimeError(
+            f"package-check failed (exit {proc.returncode}):\n"
+            f"stdout={proc.stdout[:800]}\nstderr={proc.stderr[:800]}"
+        )
+    report = json.loads(proc.stdout)
+    if report.get("status") != "package_ok":
+        raise RuntimeError(f"unexpected package-check status: {report!r}")
+    return report
+
+
 def run_suite(arguments, work_dir):
     units = discover_units(
         arguments.proofs_dir, arguments.src_dir, selected_units=arguments.unit or None
     )
+    packaging_report = verify_split_plane_packaging(arguments, units)
+    if getattr(arguments, "package_only", False):
+        summary = {"packaging": packaging_report, "unit_count": 0}
+        (work_dir / "summary.json").write_text(
+            json.dumps(summary, indent=2) + "\n", encoding="utf-8"
+        )
+        print(json.dumps(summary, indent=2))
+        return summary
     workers = max(1, min(arguments.jobs, len(units)))
     started = time.monotonic()
     results = {}
@@ -345,6 +394,8 @@ def run_suite(arguments, work_dir):
         "unit_count": len(results),
         "elapsed_seconds": round(time.monotonic() - started, 3),
     }
+    if packaging_report is not None:
+        summary["packaging"] = packaging_report
     (work_dir / "summary.json").write_text(
         json.dumps(summary, indent=2) + "\n", encoding="utf-8"
     )
@@ -392,6 +443,16 @@ def main(argv=None):
         default=600,
         help="Per-unit `cargo-anneal verify` timeout in seconds",
     )
+    parser.add_argument(
+        "--run-cargo-package",
+        action="store_true",
+        help="Also run unsandboxed `cargo package --offline` round-trip check",
+    )
+    parser.add_argument(
+        "--package-only",
+        action="store_true",
+        help="Run split-plane packaging and spec-drift checks without Lean verification",
+    )
     for name in ("cli", "capture", "sysroot", "lean"):
         parser.add_argument(f"--{name}", type=Path)
 
@@ -402,15 +463,16 @@ def main(argv=None):
         "sysroot": env_tool(["ANNEAL_SYSROOT", "ANNEAL_TEST_RUST_SYSROOT"], "rust"),
         "lean": env_tool(["ANNEAL_LEAN"], "lean/bin/lean"),
     }
-    for name, fallback in env_fallbacks.items():
+    required_tools = ("cli",) if arguments.package_only else ("cli", "capture", "sysroot", "lean")
+    for name in required_tools:
         if getattr(arguments, name) is None:
-            setattr(arguments, name, fallback)
-    if any(getattr(arguments, name) is None for name in env_fallbacks):
+            setattr(arguments, name, env_fallbacks[name])
+    if any(getattr(arguments, name) is None for name in required_tools):
         local = discover_local_defaults(anneal_root)
-        for name in env_fallbacks:
+        for name in required_tools:
             if getattr(arguments, name) is None:
                 setattr(arguments, name, local[name])
-    for required in ("cli", "capture", "sysroot", "lean"):
+    for required in required_tools:
         value = getattr(arguments, required)
         if value is None:
             parser.error(f"the following arguments are required: --{required}")

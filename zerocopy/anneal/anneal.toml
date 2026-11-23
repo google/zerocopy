@@ -1,0 +1,74 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+schema_version = 1
+
+[package]
+spec_format = "anneal-lean-v1"
+lean_compat = ">=4.34.1, <4.36.0"
+mir_model_schema = 1
+
+[evidence]
+carrier_crate = "zerocopy-anneal-proofs"
+
+[slices.default]
+target = "x86_64-unknown-linux-gnu"
+default_features = false
+features = []
+cfg = ["no_zerocopy_allocator_api_1_100_0"]
+panic = "unwind"
+
+[[units]]
+id = "01_usize_pointer_metadata"
+scope = { kind = "selected_unit", roots = [
+    "<usize as PointerMetadata>::from_elem_count",
+    "<usize as PointerMetadata>::to_elem_count",
+] }
+specification = "Spec.specs"
+spec_modules = [
+    { module = "Spec", path = "specs/01_usize_pointer_metadata/Spec.lean" },
+]
+
+[[units]]
+id = "02_unit_pointer_metadata"
+scope = { kind = "selected_unit", roots = [
+    "<() as PointerMetadata>::from_elem_count",
+    "<() as PointerMetadata>::to_elem_count",
+] }
+specification = "Spec.specs"
+spec_modules = [
+    { module = "Spec", path = "specs/02_unit_pointer_metadata/Spec.lean" },
+]
+
+[[units]]
+id = "03_macros_unsafe"
+scope = { kind = "selected_unit", roots = [
+    "util::macros::__unsafe",
+] }
+specification = "Spec.specs"
+spec_modules = [
+    { module = "Spec", path = "specs/03_macros_unsafe/Spec.lean" },
+]
+
+[[units]]
+id = "04_substantive_and_frombytes_markers"
+scope = { kind = "selected_unit", roots = [
+    "util::macros::__unsafe",
+    "<() as PointerMetadata>::from_elem_count",
+    "<() as PointerMetadata>::to_elem_count",
+    "<usize as PointerMetadata>::from_elem_count",
+    "<usize as PointerMetadata>::to_elem_count",
+    "impls::_::<impl Immutable for u8>::only_derive_is_allowed_to_implement_this_trait",
+    "impls::_::<impl TryFromBytes for u8>::only_derive_is_allowed_to_implement_this_trait",
+    "impls::_::<impl FromZeros for u8>::only_derive_is_allowed_to_implement_this_trait",
+    "impls::_::<impl FromBytes for u8>::only_derive_is_allowed_to_implement_this_trait",
+] }
+specification = "Spec.specs"
+spec_modules = [
+    { module = "Spec", path = "specs/04_substantive_and_frombytes_markers/Spec.lean" },
+]

@@ -109,6 +109,17 @@ impl Bundle {
 /// Busy locks or cleanup errors on obsolete directories emit warnings on
 /// stderr without failing the returned current installation path.
 pub fn install(local_archive: Option<PathBuf>, clear_old: bool) -> Result<PathBuf, String> {
+    install_verified(local_archive, None, clear_old)
+}
+
+/// Installs or resolves the Anneal toolchain archive in the user-global cache,
+/// optionally verifying `expected_sha256` over `local_archive` into a private
+/// temporary file before decompression.
+pub fn install_verified(
+    local_archive: Option<PathBuf>,
+    expected_sha256: Option<String>,
+    clear_old: bool,
+) -> Result<PathBuf, String> {
     let mode = if clear_old {
         PruneMode::ClearOld
     } else if io::stdin().is_terminal() && io::stdout().is_terminal() {
@@ -116,13 +127,43 @@ pub fn install(local_archive: Option<PathBuf>, clear_old: bool) -> Result<PathBu
     } else {
         PruneMode::NonInteractive
     };
+    let mut verified_temp: Option<tempfile::NamedTempFile> = None;
+    let resolved_archive = match (local_archive, expected_sha256) {
+        (Some(path), Some(expected_hex)) => {
+            if !crate::is_sha256_hex(&expected_hex) {
+                return Err(format!(
+                    "invalid --expected-sha256 digest {expected_hex:?} (expected 64 lowercase/uppercase hex chars)"
+                ));
+            }
+            let (bytes, actual_hex) =
+                crate::read_regular_file_deref(&path, "setup").map_err(|e| e.message)?;
+            if !actual_hex.eq_ignore_ascii_case(&expected_hex) {
+                return Err(format!(
+                    "local archive SHA-256 mismatch for {}: expected {expected_hex}, got {actual_hex}",
+                    path.display()
+                ));
+            }
+            let mut tmp = tempfile::NamedTempFile::new()
+                .map_err(|e| format!("cannot stage verified archive: {e}"))?;
+            io::Write::write_all(&mut tmp, &bytes)
+                .map_err(|e| format!("cannot write verified archive: {e}"))?;
+            let staged_path = tmp.path().to_path_buf();
+            verified_temp = Some(tmp);
+            Some(staged_path)
+        }
+        (other, None) => other,
+        (None, Some(_)) => {
+            return Err("--expected-sha256 requires --local-archive <path>".into());
+        }
+    };
     let (root, _report) = install_at_with_prune(
-        local_archive,
+        resolved_archive,
         exocrate::Location::UserGlobal,
         mode,
         prompt_stdin_stdout,
         &mut io::stderr(),
     )?;
+    drop(verified_temp);
     Ok(root)
 }
 

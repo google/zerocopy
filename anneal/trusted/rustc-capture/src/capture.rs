@@ -1989,6 +1989,28 @@ fn collect(
     }
     check_current_inputs(&reads)?;
     let program = ir::Program::try_new(scope.clone(), bodies).map_err(Failure::unsupported)?;
+    let configuration = ir::Configuration {
+        crate_root: args.crate_root.clone(),
+        crate_name: args.crate_name.clone(),
+        crate_type: requested_crate_type,
+        panic: requested_panic,
+        edition: args.edition.clone(),
+        target: args.target.clone(),
+        cfg: args.cfg.clone(),
+        env: declared_env.clone(),
+        opt_level: profile.opt_level,
+        debug_assertions: profile.debug_assertions,
+        overflow_checks: profile.overflow_checks,
+        mir_preserve_ub: profile.mir_preserve_ub,
+        pointer_bits: profile.pointer_bits,
+        endian: profile.endian,
+        declared_source_files: args.source_file.clone(),
+        stdlib_crate,
+    };
+    let semantic_profile = ir::SemanticProfile::from_configuration(&configuration);
+    let canonical_program_sha256 =
+        ir::compute_canonical_program_sha256(&semantic_profile, &program)
+            .map_err(Failure::unsupported)?;
     Ok(ir::Manifest {
         schema_version: ir::SCHEMA_VERSION,
         compiler: ir::Compiler {
@@ -1998,24 +2020,9 @@ fn collect(
             rustc_sha256: verified_compiler.rustc_sha256.clone(),
             driver: verified_compiler.driver.clone(),
         },
-        configuration: ir::Configuration {
-            crate_root: args.crate_root.clone(),
-            crate_name: args.crate_name.clone(),
-            crate_type: requested_crate_type,
-            panic: requested_panic,
-            edition: args.edition.clone(),
-            target: args.target.clone(),
-            cfg: args.cfg.clone(),
-            env: declared_env.clone(),
-            opt_level: profile.opt_level,
-            debug_assertions: profile.debug_assertions,
-            overflow_checks: profile.overflow_checks,
-            mir_preserve_ub: profile.mir_preserve_ub,
-            pointer_bits: profile.pointer_bits,
-            endian: profile.endian,
-            declared_source_files: args.source_file.clone(),
-            stdlib_crate,
-        },
+        configuration,
+        semantic_profile,
+        canonical_program_sha256,
         source_files: reads.files.values().cloned().collect(),
         census,
         selected,

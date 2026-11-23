@@ -14,6 +14,7 @@ use std::path::PathBuf;
 
 use serde::ser::SerializeSeq;
 use serde::{Serialize, Serializer};
+use sha2::Digest as _;
 
 // Version 4 widens integer widths to include `i128` (`IntWidth::I128`), encodes
 // 128-bit bit-pattern fields (`ConstLit::Scalar.bits`, `EnumTy.discriminants`,
@@ -1206,6 +1207,86 @@ pub struct Unsupported {
     pub reason: String,
 }
 
+/// Path-free target and compilation-profile parameters governing MIR semantics
+/// (`anneal-canonical-program-v1`).
+///
+/// Fields are declared in lexicographical order so `serde_json` emits sorted
+/// keys matching [`canonical_json_bytes`].
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct SemanticProfile {
+    pub debug_assertions: bool,
+    pub endian: &'static str,
+    pub mir_preserve_ub: bool,
+    pub opt_level: u8,
+    pub overflow_checks: bool,
+    pub panic: PanicStrategy,
+    pub pointer_bits: u64,
+    pub target: String,
+}
+
+impl SemanticProfile {
+    pub fn from_configuration(cfg: &Configuration) -> Self {
+        Self {
+            debug_assertions: cfg.debug_assertions,
+            endian: cfg.endian,
+            mir_preserve_ub: cfg.mir_preserve_ub,
+            opt_level: cfg.opt_level,
+            overflow_checks: cfg.overflow_checks,
+            panic: cfg.panic,
+            pointer_bits: cfg.pointer_bits,
+            target: cfg.target.clone(),
+        }
+    }
+}
+
+/// Recursively normalizes JSON object maps into sorted [`BTreeMap`] order and
+/// returns compact UTF-8 bytes so SHA-256 digests stay independent of map
+/// insertion order or `serde_json` feature flags.
+pub fn canonical_json_bytes(value: &serde_json::Value) -> Result<Vec<u8>, String> {
+    fn sort_value(v: &serde_json::Value) -> serde_json::Value {
+        match v {
+            serde_json::Value::Array(items) => {
+                serde_json::Value::Array(items.iter().map(sort_value).collect())
+            }
+            serde_json::Value::Object(map) => {
+                let mut sorted = serde_json::Map::new();
+                let ordered: BTreeMap<&String, &serde_json::Value> = map.iter().collect();
+                for (k, val) in ordered {
+                    sorted.insert(k.clone(), sort_value(val));
+                }
+                serde_json::Value::Object(sorted)
+            }
+            other => other.clone(),
+        }
+    }
+    serde_json::to_vec(&sort_value(value)).map_err(|e| e.to_string())
+}
+
+/// Computes `canonical_program_sha256` (`anneal-canonical-program-v1`) over
+/// `semantic_profile` and `program`, stripping host filesystem paths,
+/// unselected crate-wide census items, and raw `--cfg` flag spellings so slice
+/// receipts match across machines and orthogonal Cargo feature combinations.
+pub fn compute_canonical_program_sha256(
+    semantic_profile: &SemanticProfile,
+    program: &Program,
+) -> Result<String, String> {
+    let envelope = serde_json::json!({
+        "program": program,
+        "schema": "anneal-canonical-program-v1",
+        "semantic_profile": semantic_profile,
+    });
+    let bytes = canonical_json_bytes(&envelope)?;
+    let mut hasher = sha2::Sha256::new();
+    hasher.update(&bytes);
+    let digest = hasher.finalize();
+    let mut hex = String::with_capacity(64);
+    for b in digest {
+        use std::fmt::Write as _;
+        let _ = write!(&mut hex, "{b:02x}");
+    }
+    Ok(hex)
+}
+
 /// Bind the proof subject to the compilation and observed input evidence.
 /// JSON metadata supports host authentication and coverage checks, with
 /// `program.scope` serving as the single authoritative scope for both receipt
@@ -1216,6 +1297,8 @@ pub struct Manifest {
     pub schema_version: u32,
     pub compiler: Compiler,
     pub configuration: Configuration,
+    pub semantic_profile: SemanticProfile,
+    pub canonical_program_sha256: String,
     pub source_files: Vec<SourceFile>,
     pub census: Vec<CensusItem>,
     pub selected: Vec<SelectedBody>,
@@ -1831,5 +1914,67 @@ mod tests {
             term_json["blocks"][0]["terminator"],
             serde_json::json!({ "kind": "unsupported" })
         );
+    }
+
+    #[test]
+    fn canonical_program_sha256_is_deterministic_and_sensitive_to_profile_and_mir() {
+        let make_program = |ret_bits: u128| {
+            let u32_ty = Ty::Int(IntTy {
+                width: IntWidth::I32,
+                signed: false,
+            });
+            let body = Body::try_new(
+                0,
+                false,
+                vec![u32_ty.clone()],
+                vec![Block {
+                    statements: vec![Statement::Assign {
+                        local: 0,
+                        value: Rvalue::Use {
+                            operand: Operand::Constant {
+                                ty: u32_ty,
+                                lit: ConstLit::Scalar { bits: ret_bits },
+                            },
+                            with_retag: false,
+                        },
+                    }],
+                    terminator: Terminator::Ret,
+                }],
+                "rust-path-v1::unit_fn".into(),
+            )
+            .unwrap();
+            Program::try_new(
+                Scope::SelectedUnit {
+                    roots: BTreeSet::from(["unit_fn".into()]),
+                    instantiations: BTreeSet::new(),
+                },
+                vec![body],
+            )
+            .unwrap()
+        };
+        let profile_a = SemanticProfile {
+            debug_assertions: false,
+            endian: "little",
+            mir_preserve_ub: true,
+            opt_level: 2,
+            overflow_checks: false,
+            panic: PanicStrategy::Unwind,
+            pointer_bits: 64,
+            target: "x86_64-unknown-linux-gnu".into(),
+        };
+        let prog_0 = make_program(0);
+        let prog_1 = make_program(1);
+        let sha_a0 = compute_canonical_program_sha256(&profile_a, &prog_0).unwrap();
+        let sha_a0_again = compute_canonical_program_sha256(&profile_a, &prog_0).unwrap();
+        assert_eq!(sha_a0, sha_a0_again);
+        assert_eq!(sha_a0.len(), 64);
+
+        let sha_a1 = compute_canonical_program_sha256(&profile_a, &prog_1).unwrap();
+        assert_ne!(sha_a0, sha_a1, "MIR body change must alter digest");
+
+        let mut profile_abort = profile_a.clone();
+        profile_abort.panic = PanicStrategy::Abort;
+        let sha_abort = compute_canonical_program_sha256(&profile_abort, &prog_0).unwrap();
+        assert_ne!(sha_a0, sha_abort, "panic profile change must alter digest");
     }
 }

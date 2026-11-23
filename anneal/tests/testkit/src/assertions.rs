@@ -41,6 +41,7 @@ pub struct VerifySuccessReceipt {
     pub toolchain_identity: Value,
     pub model_manifest_sha256: String,
     pub specification_manifest_sha256: String,
+    pub proof_manifest_sha256: String,
     pub correspondence_provenance: Value,
     pub scope: Value,
     pub selected: Value,
@@ -57,6 +58,12 @@ pub struct VerifySuccessReceipt {
     pub spec_warnings: Vec<Value>,
     #[serde(default)]
     pub sorry_declarations: Option<Vec<Value>>,
+    #[serde(default)]
+    pub canonical_program_sha256: Option<String>,
+    #[serde(default)]
+    pub semantic_profile: Option<Value>,
+    #[serde(default)]
+    pub source_closure_sha256: Option<String>,
     #[serde(default)]
     pub artifacts: Option<String>,
 }
@@ -422,6 +429,7 @@ mod tests {
             "toolchain_identity": {},
             "model_manifest_sha256": "ddd",
             "specification_manifest_sha256": "eee",
+            "proof_manifest_sha256": "fff",
             "correspondence_provenance": {},
             "scope": {"kind": "selected_unit", "roots": ["id"]},
             "selected": [],

@@ -332,6 +332,51 @@ class VerifyZerocopyTests(unittest.TestCase):
             finally:
                 os.chdir(old_cwd)
 
+    def test_split_plane_packaging_passes_when_synced_and_rejects_drift(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            proofs_dir, src_dir, unit_01 = make_proof_tree(root)
+            crate_dir = src_dir.parent
+            (crate_dir / "Cargo.toml").write_text(
+                '[package]\nname = "zerocopy"\nversion = "0.8.64"\nedition = "2021"\n',
+                encoding="utf-8",
+            )
+            anneal_dir = crate_dir / "anneal"
+            (anneal_dir / "specs" / unit_01.name).mkdir(parents=True)
+            (anneal_dir / "anneal.toml").write_text("schema_version = 1\n", encoding="utf-8")
+            mirrored_spec = anneal_dir / "specs" / unit_01.name / "Spec.lean"
+            mirrored_spec.write_text(
+                (unit_01 / "Spec.lean").read_text(encoding="utf-8"), encoding="utf-8"
+            )
+
+            fake_cli = root / "cargo-anneal"
+            fake_cli.write_text(
+                "#!/usr/bin/env python3\n"
+                "import json, sys\n"
+                "if len(sys.argv) > 1 and sys.argv[1] == 'package-check':\n"
+                "    print(json.dumps({'status': 'package_ok', 'argv': sys.argv[1:]}))\n"
+                "else:\n"
+                "    raise SystemExit(1)\n",
+                encoding="utf-8",
+            )
+            fake_cli.chmod(0o755)
+            units = verify_zerocopy.discover_units(proofs_dir, src_dir)
+            args = mock.Mock(
+                cli=fake_cli, src_dir=src_dir, timeout=30, run_cargo_package=False
+            )
+
+            report = verify_zerocopy.verify_split_plane_packaging(args, units)
+            self.assertEqual(report["status"], "package_ok")
+            self.assertNotIn("--run-cargo-package", report["argv"])
+
+            args.run_cargo_package = True
+            report_pkg = verify_zerocopy.verify_split_plane_packaging(args, units)
+            self.assertIn("--run-cargo-package", report_pkg["argv"])
+
+            mirrored_spec.write_text("prelude\n-- drifted\n", encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "drifted from"):
+                verify_zerocopy.verify_split_plane_packaging(args, units)
+
 
 if __name__ == "__main__":
     unittest.main()

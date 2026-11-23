@@ -881,6 +881,10 @@ jobs:
             --config 'profile.dev.package.digest.opt-level=3' \
             --config 'profile.dev.package.sha2.opt-level=3' \
             --config 'profile.dev.package.zstd-sys.opt-level=3'
+          /usr/bin/python3 -I -B ci/verify_zerocopy.py \
+            --cli "$ANNEAL_TEST_CARGO_ANNEAL" \
+            --run-cargo-package \
+            --package-only
 
       - name: Run installed smoke suite
         id: smoke

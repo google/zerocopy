@@ -40,17 +40,21 @@ test = true
 
 [features]
 default = ["setup"]
-setup = ["dep:exocrate"]
+setup = ["dep:exocrate", "dep:zstd"]
 
 [dependencies]
 clap = { version = "4.5", default-features = false, features = ["std", "help", "usage", "error-context", "suggestions", "derive"] }
 exocrate = { version = "0.3.1", optional = true }
+flate2 = "1.1"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 sha2 = "0.10"
+tar = "0.4"
 tempfile = "3.27"
 thiserror = "2.0"
+toml = "0.9"
 walkdir = "2.5"
+zstd = { version = "0.13", optional = true }
 
 [target.'cfg(unix)'.dependencies]
 libc = "0.2"
@@ -62,5 +66,4 @@ sha2 = "0.10"
 walkdir = "2.5"
 
 [dev-dependencies]
-tar = "0.4"
 zstd = "0.13"

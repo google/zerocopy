@@ -33,11 +33,11 @@ scripts, on non-Linux hosts, or when passing `--allow-unsandboxed-elaboration`.
 Identify the Rust function or crate scope, intended property, and caller
 preconditions. If setup is needed, run `cargo anneal setup` (reuses an existing
 cached toolchain for that version) or `cargo anneal setup --local-archive <path>`
-to install a local archive. Pass `--clear-old` (or redirect stdin from
-`/dev/null`) in non-interactive shells so cleanup prompts cannot block. Use the
-same user and `XDG_CACHE_HOME` across `setup` and `verify`. Builds compiled with
-`--no-default-features` omit `setup` and require `--capture`, `--sysroot`, and
-`--lean`.
+(optionally pinned with `--expected-sha256 <hex>`) to install a local archive.
+Pass `--clear-old` (or redirect stdin from `/dev/null`) in non-interactive
+shells so cleanup prompts cannot block. Use the same user and `XDG_CACHE_HOME`
+across `setup` and `verify`. Builds compiled with `--no-default-features` omit
+`setup` and require `--capture`, `--sysroot`, and `--lean`.
 
 Run verification, save stdout to a receipt file, and keep its exit code:
 
@@ -46,7 +46,19 @@ cargo anneal verify --request path/to/request.json > path/to/receipt.json
 ```
 
 Other entrypoints:
-- Cargo packages: `cargo anneal verify --manifest-path path/to/Cargo.toml --proof-dir path/to/proofs [--no-default-features] [--features <list>] [--all-features]`
+- Cargo packages: `cargo anneal verify --manifest-path path/to/Cargo.toml
+  --proof-dir path/to/proofs [--no-default-features] [--features <list>]
+  [--all-features]`, or `--unit <id> [--slice <id>]` instead of the feature
+  flags when `anneal/anneal.toml` declares split-plane units/slices (library
+  targets only). Build
+  scripts are refused unless reviewed (declare `cfg(anneal)` in `[lints.rust]
+  unexpected_cfgs` rather than in `build.rs`).
+- Split-plane packaging check: `cargo anneal package-check --manifest-path
+  path/to/Cargo.toml [--run-cargo-package] [--evidence-dir <dir>]`. Evidence
+  slices must name the pinned compiler and Lean toolchain, and each receipt's
+  `proof_manifest_sha256` must match the shipped proof sources.
+  `--require-attestation` currently rejects every slice receipt, because
+  DSSE signatures are not yet verified.
 - Build systems with explicit inputs: `cargo anneal verify rustc <crate_root> --crate-name <name> [--env KEY=VALUE ...] --spec-file <Mod>=<path> --proof-file <Mod>=<path> ...`
 
 ## Create a request and starter proof
