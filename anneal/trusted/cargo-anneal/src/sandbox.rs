@@ -44,6 +44,16 @@ pub const MAX_CHILD_STREAM_BYTES: usize = 16 * 1024 * 1024;
 /// Door 1 size cap for a single compiled `.olean` output (256 MiB).
 pub const MAX_OLEAN_BYTES: u64 = 256 * 1024 * 1024;
 
+/// Required 6-byte magic prefix for standard Lean 4 module `.olean` artifacts
+/// (`v2` compacted region without closure relocation).
+///
+/// Lean 4's extended `v3` format (`b"olean\x03"`) carries relocated function
+/// pointers (`allowClosures := true`) intended only for identical-process
+/// serialization, never for standard `.olean` compilation outputs. Rejecting
+/// non-`v2` headers at Door 1 fails closed before any promoted `.olean` can
+/// reach downstream artifact inspection.
+pub const OLEAN_V2_MAGIC: &[u8; 6] = b"olean\x02";
+
 /// Door 1 size cap for a single inspector `result.json` output (64 MiB).
 pub const MAX_INSPECTOR_RESULT_BYTES: u64 = 64 * 1024 * 1024;
 
@@ -1099,8 +1109,9 @@ pub fn copy_readonly_file(src: &Path, dest: &Path, phase: &str) -> Result<(), Fa
 /// Door 1 validator for target module compilation (`"isModule": false`):
 /// scans `out_dir` non-recursively, requires an exact singleton regular file
 /// named `expected_filename` with `st_nlink == 1`, zero subdirectories, zero
-/// symlinks, and size `<= MAX_OLEAN_BYTES`, marks it `0o444`, atomically
-/// renames it to `dest_path`, and returns its SHA-256 hex digest.
+/// symlinks, a valid `v2` `.olean` header (`b"olean\x02"`), and size
+/// `<= MAX_OLEAN_BYTES`, marks it `0o444`, atomically renames it to
+/// `dest_path`, and returns its SHA-256 hex digest.
 pub fn validate_and_promote_olean(
     out_dir: &Path,
     expected_filename: &str,
@@ -1119,7 +1130,7 @@ pub fn validate_and_promote_olean(
     }
     let src = &entries[0].1;
     let mut file = open_validated_out_file(src, MAX_OLEAN_BYTES, "door1")?;
-    let sha = sha256_bounded_reader(&mut file, MAX_OLEAN_BYTES, src, "door1")?;
+    let sha = validate_olean_v2_and_sha256(&mut file, MAX_OLEAN_BYTES, src, "door1")?;
     set_file_mode_readonly(&file, src, "door1")?;
     drop(file);
     if let Some(parent) = dest_path.parent() {
@@ -1162,7 +1173,10 @@ pub fn validate_and_promote_olean_set(
                 ),
             ));
         }
-        let file = open_validated_out_file(&path, MAX_OLEAN_BYTES, "door1")?;
+        let mut file = open_validated_out_file(&path, MAX_OLEAN_BYTES, "door1")?;
+        if allowed_promote.contains(&name) {
+            validate_olean_v2_header(&mut file, &path, "door1")?;
+        }
         if name == required_filename {
             saw_required = true;
         }
@@ -1312,7 +1326,45 @@ fn open_validated_out_file(path: &Path, max_bytes: u64, phase: &str) -> Result<f
     Ok(file)
 }
 
-fn sha256_bounded_reader(
+/// Verify that an opened `.olean` descriptor starts with [`OLEAN_V2_MAGIC`].
+///
+/// Reading directly from the already-opened `O_NOFOLLOW` descriptor avoids
+/// path-based TOCTOU between validation and promotion.
+fn validate_olean_v2_header(file: &mut fs::File, path: &Path, phase: &str) -> Result<(), Failure> {
+    let mut header = [0u8; 6];
+    let mut filled = 0usize;
+    while filled < header.len() {
+        let n = file.read(&mut header[filled..]).map_err(|e| {
+            Failure::operational(phase, format!("cannot read header of {}: {e}", path.display()))
+        })?;
+        if n == 0 {
+            return Err(Failure::operational(
+                phase,
+                format!(
+                    "malformed .olean artifact {}: truncated header ({filled} bytes, expected v2 magic)",
+                    path.display()
+                ),
+            ));
+        }
+        filled += n;
+    }
+    if &header != OLEAN_V2_MAGIC {
+        return Err(Failure::operational(
+            phase,
+            format!(
+                "unsupported or malformed .olean header in {}: expected v2 magic {:02x?}, got {:02x?}",
+                path.display(),
+                OLEAN_V2_MAGIC,
+                header
+            ),
+        ));
+    }
+    Ok(())
+}
+
+/// Validate the `v2` `.olean` header and compute the SHA-256 digest of the
+/// complete file in a single bounded pass over the already-opened descriptor.
+fn validate_olean_v2_and_sha256(
     file: &mut fs::File,
     max_bytes: u64,
     path: &Path,
@@ -1321,6 +1373,8 @@ fn sha256_bounded_reader(
     let mut hasher = Sha256::new();
     let mut buf = [0u8; 64 * 1024];
     let mut total = 0u64;
+    let mut prefix = [0u8; 6];
+    let mut prefix_len = 0usize;
     loop {
         let n = file.read(&mut buf).map_err(|e| {
             Failure::operational(phase, format!("cannot read {}: {e}", path.display()))
@@ -1339,7 +1393,32 @@ fn sha256_bounded_reader(
                 ),
             ));
         }
+        if prefix_len < prefix.len() {
+            let take = (prefix.len() - prefix_len).min(n);
+            prefix[prefix_len..prefix_len + take].copy_from_slice(&buf[..take]);
+            prefix_len += take;
+        }
         hasher.update(&buf[..n]);
+    }
+    if prefix_len < prefix.len() {
+        return Err(Failure::operational(
+            phase,
+            format!(
+                "malformed .olean artifact {}: truncated header ({prefix_len} bytes, expected v2 magic)",
+                path.display()
+            ),
+        ));
+    }
+    if &prefix != OLEAN_V2_MAGIC {
+        return Err(Failure::operational(
+            phase,
+            format!(
+                "unsupported or malformed .olean header in {}: expected v2 magic {:02x?}, got {:02x?}",
+                path.display(),
+                OLEAN_V2_MAGIC,
+                prefix
+            ),
+        ));
     }
     let digest = hasher.finalize();
     let mut hex = String::with_capacity(64);
@@ -2928,13 +3007,49 @@ mod tests {
             fs::remove_file(out.join("Foo.olean")).unwrap();
         }
 
-        // 5. Clean singleton regular file succeeds and becomes 0o444.
-        fs::write(out.join("Foo.olean"), b"clean-olean").unwrap();
+        // 5. Clean singleton regular file with v2 header succeeds and becomes 0o444.
+        fs::write(out.join("Foo.olean"), b"olean\x02clean-olean").unwrap();
         let sha = validate_and_promote_olean(&out, "Foo.olean", &dest).unwrap();
         assert_eq!(sha.len(), 64);
         assert!(dest.is_file());
         #[cfg(unix)]
         assert_eq!(fs::metadata(&dest).unwrap().permissions().mode() & 0o777, 0o444);
+    }
+
+    #[test]
+    fn door1_rejects_non_v2_olean_headers() {
+        let dir = tempfile::tempdir().unwrap();
+        let out = dir.path().join("out");
+        let dest = dir.path().join("lib/Foo.olean");
+        fs::create_dir_all(&out).unwrap();
+
+        for (label, bytes) in [
+            ("v3-closure-header", b"olean\x03\x014.34.1\x00".as_slice()),
+            ("v1-header", b"olean\x01payload".as_slice()),
+            ("truncated-header", b"olean".as_slice()),
+            ("empty-file", b"".as_slice()),
+            ("arbitrary-bytes", b"not-an-olean".as_slice()),
+        ] {
+            fs::write(out.join("Foo.olean"), bytes).unwrap();
+            let err = validate_and_promote_olean(&out, "Foo.olean", &dest)
+                .expect_err(&format!("Door 1 must reject {label}"));
+            assert_eq!(err.phase, "door1");
+            assert!(!dest.exists(), "rejected {label} must not be promoted");
+        }
+
+        // Also verify `validate_and_promote_olean_set` rejects a v3 sidecar.
+        let set_out = dir.path().join("set_out");
+        let set_dest = dir.path().join("set_lib");
+        fs::create_dir_all(&set_out).unwrap();
+        fs::write(set_out.join("Mod.olean"), b"olean\x02ok").unwrap();
+        fs::write(set_out.join("Mod.olean.server"), b"olean\x03bad").unwrap();
+        let promote = BTreeSet::from(["Mod.olean".to_string(), "Mod.olean.server".to_string()]);
+        let discard = BTreeSet::new();
+        let err =
+            validate_and_promote_olean_set(&set_out, &promote, &discard, "Mod.olean", &set_dest)
+                .expect_err("Door 1 set must reject v3 sidecar");
+        assert_eq!(err.phase, "door1");
+        assert!(!set_dest.join("Mod.olean").exists());
     }
 
     #[test]
@@ -2959,8 +3074,8 @@ mod tests {
         let out = dir.path().join("out");
         let dest_dir = dir.path().join("lib");
         fs::create_dir_all(&out).unwrap();
-        fs::write(out.join("Mod.olean"), b"olean").unwrap();
-        fs::write(out.join("Mod.olean.server"), b"server").unwrap();
+        fs::write(out.join("Mod.olean"), b"olean\x02mod").unwrap();
+        fs::write(out.join("Mod.olean.server"), b"olean\x02server").unwrap();
         fs::write(out.join("Mod.ir"), b"ir").unwrap();
         fs::write(out.join("Mod.ir.sig"), b"irsig").unwrap();
         let promote = BTreeSet::from(["Mod.olean".to_string(), "Mod.olean.server".to_string()]);

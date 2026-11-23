@@ -9,6 +9,7 @@
 import Lean.Elab.Import
 import Lean.Parser.Tactic
 import Lean.Replay
+import Lean.Util.PtrSet
 import Lean.Compiler.ImplementedByAttr
 import Lean.Compiler.ExternAttr
 import Lean.Compiler.CSimpAttr
@@ -19,7 +20,7 @@ import Lean.Compiler.CSimpAttr
 Pinned to Lean 4.34.1, commit
 `leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`. `anneal-audit`
 (`trusted/audit/`) and `cargo-anneal verify` (`trusted/cargo-anneal/`) invoke
-this file across nine JSON IPC modes (`run` and `main`):
+this file across ten JSON IPC modes (`run` and `main`):
 
 - **`"headers"` (target import discovery before elaboration):**
   Parses only module `prelude`/`import` headers via `Parser.parseHeader`,
@@ -136,17 +137,25 @@ this file across nine JSON IPC modes (`run` and `main`):
   and correspondence cone are free of `unsafe`, `partial`, `.vendorMiri`
   `opaque`, and unapproved axioms, and verifies all 37 Pass 2 correspondence,
   wiring, and canary claims plus reference-evaluator independence checks.
+- **`"target-export"` (isolated structural proof-artifact exporter):**
+  Runs in a dedicated sandboxed child process with no write access to the
+  verdict output of `"target-audit"`. It imports the compiled target artifacts
+  at `trustLevel := 0` with `loadExts := false`, validates cached `Name.hash`,
+  `Level.data`, and `Expr.data` words on every exported proof constant, and
+  emits a pure structural DAG JSON stream (`names`, `levels`, `exprs`,
+  `modules`, `compilerOverrides`) containing zero heap pointers and zero cached
+  metadata words.
 - **`"target-audit"` (external target crate verification):**
-  Loads compiled target `.olean` artifacts (`TargetOrigin`: `.foundation`,
-  `.library` from `library-lock.json`, and `.source role` across `TargetRole`:
-  `.model`, `.specification`, `.capture`, `.expected`, `.proof`) with
-  `trustLevel := 0`, `plugins := #[]`, and `loadExts := false` for every
-  import, and it never calls `enableInitializersExecution`. Therefore no
-  imported `[init]` declaration (such as a target `initialize` block) or
-  extension import callback runs inside the inspector. It verifies
-  `TargetOrigin.allows` over compiled declaration edges, reconciles diamond
-  theorem exports across `library-lock.json`, replays all logically reached
-  declarations and alternate proofs onto `foundation-lock.json`, checks
+  Loads only the trusted/preflighted non-proof artifacts (`foundation`,
+  `libraries`, and non-`Proof` target roles) with `trustLevel := 0`,
+  `plugins := #[]`, and `loadExts := false`, never opening or mapping any
+  untrusted authored `Proof` `.olean` in the verdict-producing process. Proof
+  declarations are reconstructed fresh from the `"target-export"` structural
+  JSON stream using safe Lean constructors (recomputing all cached metadata).
+  It verifies `TargetOrigin.allows` over compiled declaration edges, reconciles
+  diamond theorem exports across `library-lock.json`, validates cached
+  `Name.hash`/`Level.data`/`Expr.data` words before replaying all logically
+  reached declarations and alternate proofs onto `foundation-lock.json`, checks
   definitional equality of both `Expected` and the submitted proof theorem
   against the canonical `CrateTheorem`/`UnitTheorem` kernel application, and
   rejects `@[implemented_by]`, `@[extern]`, and `@[csimp]` metadata on logically
@@ -2500,6 +2509,246 @@ def collectRepoModuleConstants (env : Environment) (roles : Std.HashMap Name ρ)
       extraNames := extraNames.insert n
   return (locals, extraNames)
 
+/-! ## Explicit raw-`UInt64` cached-metadata validation -/
+
+/-- Pointer-identity memoization sets used while validating cached `Name.hash`,
+`Level.data`, and `Expr.data` words.
+
+Standard `Std.HashSet` instances hash and compare via the very cached fields
+under inspection and could skip a distinct heap node whose structural twin had
+valid metadata. Keying strictly on physical pointer identity (`PtrSet`) checks
+every distinct deserialized object while keeping shared DAG traversal linear. -/
+private unsafe structure CachedMetaMemo where
+  names : PtrSet Name := mkPtrSet
+  levels : PtrSet Level := mkPtrSet
+  exprs : PtrSet Expr := mkPtrSet
+
+/-- Recompute `Name.hash` from validated children and fail closed on any
+raw-`UInt64` bit mismatch against the stored computed field.
+
+The formulas mirror pinned Lean 4.34.1 `Init/Prelude.lean` (`Name.hash`). We
+compare raw `UInt64` words rather than performing a structural pattern-match
+rebuild because Lean's compiler can optimize non-recursive match-and-reconstruct
+branches into constructor reuse (returning the original heap pointer and
+preserving tampered cached words). -/
+private unsafe def validateNameCachedHash (ref : IO.Ref CachedMetaMemo)
+    (ctx : String) : Name → IO Unit
+  | n => do
+    -- Use `modifyGet` (never `ref.get` + `ref.set`) so `CachedMetaMemo` keeps
+    -- reference count 1 and `PtrSet.insert` mutates in place in O(1).
+    if (← ref.modifyGet fun st => (st.names.contains n, st)) then
+      return ()
+    let expected : UInt64 ← match n with
+      | .anonymous => pure (.ofNatLT 1723 (of_decide_eq_true rfl))
+      | .str p s =>
+        validateNameCachedHash ref ctx p
+        pure (mixHash p.hash s.hash)
+      | .num p v =>
+        validateNameCachedHash ref ctx p
+        let vHash : UInt64 :=
+          if h : v < UInt64.size then
+            UInt64.ofNatLT v h
+          else
+            UInt64.ofNatLT 17 (of_decide_eq_true rfl)
+        pure (mixHash p.hash vHash)
+    unless expected == n.hash do
+      throw <| IO.userError
+        s!"cached metadata mismatch in {ctx}: Name.hash expected {expected}, found {n.hash}"
+    ref.modify fun st => { st with names := st.names.insert n }
+
+/-- Recompute `Level.data` from validated children and fail closed on any
+raw-`UInt64` mismatch against the stored computed field (`Lean/Level.lean`). -/
+private unsafe def validateLevelCachedData (ref : IO.Ref CachedMetaMemo)
+    (ctx : String) : Level → IO Unit
+  | l => do
+    if (← ref.modifyGet fun st => (st.levels.contains l, st)) then
+      return ()
+    let expected : Level.Data ← match l with
+      | .zero => pure (Level.mkData 2221 0 false false)
+      | .mvar mvarId =>
+        validateNameCachedHash ref ctx mvarId.name
+        pure (Level.mkData (mixHash 2237 (hash mvarId)) 0 true false)
+      | .param name =>
+        validateNameCachedHash ref ctx name
+        pure (Level.mkData (mixHash 2239 (hash name)) 0 false true)
+      | .succ u =>
+        validateLevelCachedData ref ctx u
+        pure (Level.mkData (mixHash 2243 u.data.hash) (u.data.depth.toNat + 1)
+          u.data.hasMVar u.data.hasParam)
+      | .max u v =>
+        validateLevelCachedData ref ctx u
+        validateLevelCachedData ref ctx v
+        pure (Level.mkData (mixHash 2251 (mixHash u.data.hash v.data.hash))
+          (Nat.max u.data.depth.toNat v.data.depth.toNat + 1)
+          (u.data.hasMVar || v.data.hasMVar)
+          (u.data.hasParam || v.data.hasParam))
+      | .imax u v =>
+        validateLevelCachedData ref ctx u
+        validateLevelCachedData ref ctx v
+        pure (Level.mkData (mixHash 2267 (mixHash u.data.hash v.data.hash))
+          (Nat.max u.data.depth.toNat v.data.depth.toNat + 1)
+          (u.data.hasMVar || v.data.hasMVar)
+          (u.data.hasParam || v.data.hasParam))
+    let expectedBits : UInt64 := expected
+    let actualBits : UInt64 := l.data
+    unless expectedBits == actualBits do
+      throw <| IO.userError
+        s!"cached metadata mismatch in {ctx}: Level.data expected {expectedBits}, found {actualBits}"
+    ref.modify fun st => { st with levels := st.levels.insert l }
+
+/-- Validate `Name` hashes embedded in `Expr.mdata` key-value metadata. -/
+private unsafe def validateMDataCachedNames (ref : IO.Ref CachedMetaMemo)
+    (ctx : String) (m : MData) : IO Unit := do
+  for (k, v) in m.entries do
+    validateNameCachedHash ref ctx k
+    if let .ofName n := v then
+      validateNameCachedHash ref ctx n
+
+/-- Recompute `Expr.data` from validated children and fail closed on any
+raw-`UInt64` mismatch against the stored computed field (`Lean/Expr.lean`).
+
+Every cached bit—32-bit hash, 8-bit `approxDepth`, `hasFVar`, `hasExprMVar`,
+`hasLevelMVar`, `hasLevelParam`, and 20-bit `looseBVarRange`—is checked by
+comparing the exact 64-bit `UInt64` word. -/
+private unsafe def validateExprCachedData (ref : IO.Ref CachedMetaMemo)
+    (ctx : String) : Expr → IO Unit
+  | e => do
+    if (← ref.modifyGet fun st => (st.exprs.contains e, st)) then
+      return ()
+    let expected : Expr.Data ← match e with
+      | .const n lvls =>
+        validateNameCachedHash ref ctx n
+        for lvl in lvls do
+          validateLevelCachedData ref ctx lvl
+        pure (Expr.mkData (mixHash 5 (mixHash (hash n) (hash lvls)))
+          0 0 false false (lvls.any Level.hasMVar) (lvls.any Level.hasParam))
+      | .bvar idx =>
+        pure (Expr.mkData (mixHash 7 (hash idx)) (idx + 1))
+      | .sort lvl =>
+        validateLevelCachedData ref ctx lvl
+        pure (Expr.mkData (mixHash 11 (hash lvl))
+          0 0 false false lvl.hasMVar lvl.hasParam)
+      | .fvar fvarId =>
+        validateNameCachedHash ref ctx fvarId.name
+        pure (Expr.mkData (mixHash 13 (hash fvarId)) 0 0 true)
+      | .mvar mvarId =>
+        validateNameCachedHash ref ctx mvarId.name
+        pure (Expr.mkData (mixHash 17 (hash mvarId)) 0 0 false true)
+      | .mdata m body =>
+        validateMDataCachedNames ref ctx m
+        validateExprCachedData ref ctx body
+        let d := body.data.approxDepth.toUInt32 + 1
+        pure (Expr.mkData (mixHash d.toUInt64 body.data.hash)
+          body.data.looseBVarRange.toNat d
+          body.data.hasFVar body.data.hasExprMVar
+          body.data.hasLevelMVar body.data.hasLevelParam)
+      | .proj s i body =>
+        validateNameCachedHash ref ctx s
+        validateExprCachedData ref ctx body
+        let d := body.data.approxDepth.toUInt32 + 1
+        pure (Expr.mkData
+          (mixHash d.toUInt64 (mixHash (hash s) (mixHash (hash i) body.data.hash)))
+          body.data.looseBVarRange.toNat d
+          body.data.hasFVar body.data.hasExprMVar
+          body.data.hasLevelMVar body.data.hasLevelParam)
+      | .app f a =>
+        validateExprCachedData ref ctx f
+        validateExprCachedData ref ctx a
+        pure (Expr.mkAppData f.data a.data)
+      | .lam n t b _ =>
+        validateNameCachedHash ref ctx n
+        validateExprCachedData ref ctx t
+        validateExprCachedData ref ctx b
+        let d := (max t.data.approxDepth.toUInt32 b.data.approxDepth.toUInt32) + 1
+        pure (Expr.mkDataForBinder
+          (mixHash d.toUInt64 (mixHash t.data.hash b.data.hash))
+          (max t.data.looseBVarRange.toNat (b.data.looseBVarRange.toNat - 1)) d
+          (t.data.hasFVar || b.data.hasFVar)
+          (t.data.hasExprMVar || b.data.hasExprMVar)
+          (t.data.hasLevelMVar || b.data.hasLevelMVar)
+          (t.data.hasLevelParam || b.data.hasLevelParam))
+      | .forallE n t b _ =>
+        validateNameCachedHash ref ctx n
+        validateExprCachedData ref ctx t
+        validateExprCachedData ref ctx b
+        let d := (max t.data.approxDepth.toUInt32 b.data.approxDepth.toUInt32) + 1
+        pure (Expr.mkDataForBinder
+          (mixHash d.toUInt64 (mixHash t.data.hash b.data.hash))
+          (max t.data.looseBVarRange.toNat (b.data.looseBVarRange.toNat - 1)) d
+          (t.data.hasFVar || b.data.hasFVar)
+          (t.data.hasExprMVar || b.data.hasExprMVar)
+          (t.data.hasLevelMVar || b.data.hasLevelMVar)
+          (t.data.hasLevelParam || b.data.hasLevelParam))
+      | .letE n t v b _ =>
+        validateNameCachedHash ref ctx n
+        validateExprCachedData ref ctx t
+        validateExprCachedData ref ctx v
+        validateExprCachedData ref ctx b
+        let d := (max (max t.data.approxDepth.toUInt32 v.data.approxDepth.toUInt32)
+          b.data.approxDepth.toUInt32) + 1
+        pure (Expr.mkDataForLet
+          (mixHash d.toUInt64 (mixHash t.data.hash (mixHash v.data.hash b.data.hash)))
+          (max (max t.data.looseBVarRange.toNat v.data.looseBVarRange.toNat)
+            (b.data.looseBVarRange.toNat - 1)) d
+          (t.data.hasFVar || v.data.hasFVar || b.data.hasFVar)
+          (t.data.hasExprMVar || v.data.hasExprMVar || b.data.hasExprMVar)
+          (t.data.hasLevelMVar || v.data.hasLevelMVar || b.data.hasLevelMVar)
+          (t.data.hasLevelParam || v.data.hasLevelParam || b.data.hasLevelParam))
+      | .lit l =>
+        pure (Expr.mkData (mixHash 3 (hash l)))
+    let expectedBits : UInt64 := expected
+    let actualBits : UInt64 := e.data
+    unless expectedBits == actualBits do
+      throw <| IO.userError
+        s!"cached metadata mismatch in {ctx}: Expr.data expected {expectedBits}, found {actualBits}"
+    ref.modify fun st => { st with exprs := st.exprs.insert e }
+
+/-- Validate every cached `Name.hash`, `Level.data`, and `Expr.data` word
+reachable inside a `ConstantInfo` (name, level parameters, type, value,
+inductive/constructor metadata, and recursor rules). -/
+private unsafe def validateConstantInfoCachedMetadata
+    (ref : IO.Ref CachedMetaMemo) (ci : ConstantInfo) : IO Unit := do
+  let ctx := s!"declaration {ci.name}"
+  validateNameCachedHash ref ctx ci.name
+  for lp in ci.levelParams do
+    validateNameCachedHash ref ctx lp
+  validateExprCachedData ref ctx ci.type
+  match ci with
+  | .defnInfo v =>
+    validateExprCachedData ref ctx v.value
+    for a in v.all do validateNameCachedHash ref ctx a
+  | .thmInfo v =>
+    validateExprCachedData ref ctx v.value
+    for a in v.all do validateNameCachedHash ref ctx a
+  | .opaqueInfo v =>
+    validateExprCachedData ref ctx v.value
+    for a in v.all do validateNameCachedHash ref ctx a
+  | .inductInfo v =>
+    for a in v.all do validateNameCachedHash ref ctx a
+    for c in v.ctors do validateNameCachedHash ref ctx c
+  | .ctorInfo v =>
+    validateNameCachedHash ref ctx v.induct
+  | .recInfo v =>
+    for a in v.all do validateNameCachedHash ref ctx a
+    for r in v.rules do
+      validateNameCachedHash ref ctx r.ctor
+      validateExprCachedData ref ctx r.rhs
+  | .axiomInfo _ | .quotInfo _ => pure ()
+
+private unsafe def validateConstantsCachedMetadataImpl
+    (constants : Array ConstantInfo) : IO Unit := do
+  let ref ← IO.mkRef ({} : CachedMetaMemo)
+  for ci in constants do
+    validateConstantInfoCachedMetadata ref ci
+
+/-- Validate every cached `Name.hash`, `Level.data`, and `Expr.data` word across
+`constants` using pointer-identity memoization. Fails closed on any single-bit
+discrepancy before declarations reach kernel replay. -/
+@[implemented_by validateConstantsCachedMetadataImpl]
+def validateConstantsCachedMetadata (_constants : Array ConstantInfo) : IO Unit :=
+  throw <| IO.userError
+    "cached metadata validator requires runtime implementation"
+
 /-- Check each alternate under a fresh name, bypassing replay's duplicate
 optimization while preserving the declaration's type and universe parameters.
 The pinned replay rule says "Ignore duplicate theorems" after comparing their
@@ -2508,6 +2757,7 @@ https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c5
 -/
 def checkAlternateProofs (replayed : Kernel.Environment)
     (alternateProofs : Array ConstantInfo) : IO Unit := do
+  validateConstantsCachedMetadata alternateProofs
   let checkedEnv := Environment.ofKernelEnv replayed
   let mut freshIndex := 0
   for ci in alternateProofs do
@@ -2528,6 +2778,8 @@ def checkAlternateProofs (replayed : Kernel.Environment)
 
 /-- Replay `replayMap` onto `base` with a fixed operational error prefix (so
 `Lean.Replay`'s stringified `Kernel.Exception` cannot spoof `"policy:"`).
+Validates cached `Name.hash`, `Level.data`, and `Expr.data` words across every
+declaration in `replayMap` before handing objects to `Kernel.Environment.replay`.
 https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Replay.lean#L54-L63
 https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Replay.lean#L135-L136
 -/
@@ -2535,6 +2787,7 @@ def replayKernelEnv (base : Kernel.Environment)
     (replayMap : Std.HashMap Name ConstantInfo)
     (errPrefix : String := "kernel replay failed") :
     IO Kernel.Environment := do
+  validateConstantsCachedMetadata (replayMap.fold (init := #[]) fun acc _ ci => acc.push ci)
   try base.replay replayMap
   catch error => throw <| IO.userError s!"{errPrefix}: {error}"
 
@@ -3967,13 +4220,694 @@ def runTargetClosurePhase
       st := { st with alternateProofs := st.alternateProofs ++ alternatives }
   return st
 
+/-! ## Isolated structural proof-module export/decode (`"target-export"`) -/
+
+/-- Pointer-identity interning pools used by `"target-export"` to serialize
+proof-module `Name`, `Level`, and `Expr` DAGs into pure structural JSON with
+zero heap pointers and zero cached metadata words. -/
+private unsafe structure ProofExportPool where
+  nameIds : PtrMap Name Nat := mkPtrMap
+  names : Array Json := #[]
+  levelIds : PtrMap Level Nat := mkPtrMap
+  levels : Array Json := #[]
+  exprIds : PtrMap Expr Nat := mkPtrMap
+  exprs : Array Json := #[]
+
+private unsafe def internExportName (ref : IO.Ref ProofExportPool)
+    (n : Name) : IO Nat := do
+  -- Use `modifyGet` so `ProofExportPool` keeps reference count 1 and
+  -- `PtrMap.insert` / `Array.push` stay O(1) instead of cloning the pools.
+  if let some idx ← ref.modifyGet fun st => (st.nameIds.find? n, st) then
+    return idx
+  let encoded : Json ← match n with
+    | .anonymous => pure (.arr #[toJson "a"])
+    | .str pre s =>
+      let preId ← internExportName ref pre
+      pure (.arr #[toJson "s", toJson preId, toJson s])
+    | .num pre v =>
+      let preId ← internExportName ref pre
+      pure (.arr #[toJson "n", toJson preId, toJson (toString v)])
+  ref.modifyGet fun st =>
+    let idx := st.names.size
+    (idx, { st with
+      nameIds := st.nameIds.insert n idx
+      names := st.names.push encoded })
+
+private unsafe def internExportLevel (ref : IO.Ref ProofExportPool)
+    (l : Level) : IO Nat := do
+  if let some idx ← ref.modifyGet fun st => (st.levelIds.find? l, st) then
+    return idx
+  let encoded : Json ← match l with
+    | .zero => pure (.arr #[toJson "z"])
+    | .succ u =>
+      let uid ← internExportLevel ref u
+      pure (.arr #[toJson "s", toJson uid])
+    | .max u v =>
+      let uid ← internExportLevel ref u
+      let vid ← internExportLevel ref v
+      pure (.arr #[toJson "m", toJson uid, toJson vid])
+    | .imax u v =>
+      let uid ← internExportLevel ref u
+      let vid ← internExportLevel ref v
+      pure (.arr #[toJson "i", toJson uid, toJson vid])
+    | .param n =>
+      let nid ← internExportName ref n
+      pure (.arr #[toJson "p", toJson nid])
+    | .mvar m =>
+      let nid ← internExportName ref m.name
+      pure (.arr #[toJson "v", toJson nid])
+  ref.modifyGet fun st =>
+    let idx := st.levels.size
+    (idx, { st with
+      levelIds := st.levelIds.insert l idx
+      levels := st.levels.push encoded })
+
+private def binderInfoCode : BinderInfo → Nat
+  | .default => 0
+  | .implicit => 1
+  | .strictImplicit => 2
+  | .instImplicit => 3
+
+private def binderInfoOfCode? : Nat → Option BinderInfo
+  | 0 => some .default
+  | 1 => some .implicit
+  | 2 => some .strictImplicit
+  | 3 => some .instImplicit
+  | _ => none
+
+private def safetyCode : DefinitionSafety → Nat
+  | .unsafe => 0
+  | .safe => 1
+  | .partial => 2
+
+private def safetyOfCode? : Nat → Option DefinitionSafety
+  | 0 => some .unsafe
+  | 1 => some .safe
+  | 2 => some .partial
+  | _ => none
+
+private def quotKindCode : QuotKind → Nat
+  | .type => 0
+  | .ctor => 1
+  | .lift => 2
+  | .ind => 3
+
+private def quotKindOfCode? : Nat → Option QuotKind
+  | 0 => some .type
+  | 1 => some .ctor
+  | 2 => some .lift
+  | 3 => some .ind
+  | _ => none
+
+private def encodeReducibilityHints : ReducibilityHints → Json
+  | .opaque => .arr #[toJson "o"]
+  | .abbrev => .arr #[toJson "a"]
+  | .regular h => .arr #[toJson "r", toJson h.toNat]
+
+private def decodeReducibilityHints (j : Json) : IO ReducibilityHints := do
+  let .arr elems := j
+    | throw <| IO.userError "malformed proof export reducibility hints"
+  let some tag := elems[0]?.bind (fun x => x.getStr?.toOption)
+    | throw <| IO.userError "missing proof export reducibility hint tag"
+  match tag with
+  | "o" =>
+    unless elems.size == 1 do
+      throw <| IO.userError "malformed opaque reducibility hint"
+    return .opaque
+  | "a" =>
+    unless elems.size == 1 do
+      throw <| IO.userError "malformed abbrev reducibility hint"
+    return .abbrev
+  | "r" =>
+    unless elems.size == 2 do
+      throw <| IO.userError "malformed regular reducibility hint"
+    let h ← IO.ofExcept (fromJson? (α := Nat) elems[1]!)
+    unless h < UInt32.size do
+      throw <| IO.userError "regular reducibility hint out of UInt32 range"
+    return .regular (UInt32.ofNat h)
+  | _ => throw <| IO.userError s!"unknown proof export reducibility hint {tag}"
+
+/-- Intern an `Expr` into pure structural JSON.
+
+`Expr.mdata` annotations are transparent to the Lean kernel and are stripped
+here so the structural wire format never needs to carry elaborator `Syntax`
+payloads. -/
+private unsafe def internExportExpr (ref : IO.Ref ProofExportPool)
+    (e : Expr) : IO Nat := do
+  if let some idx ← ref.modifyGet fun st => (st.exprIds.find? e, st) then
+    return idx
+  if let .mdata _ body := e then
+    let bodyId ← internExportExpr ref body
+    ref.modify fun st => { st with exprIds := st.exprIds.insert e bodyId }
+    return bodyId
+  let encoded : Json ← match e with
+    | .bvar idx =>
+      pure (.arr #[toJson "b", toJson (toString idx)])
+    | .fvar fv =>
+      let nid ← internExportName ref fv.name
+      pure (.arr #[toJson "f", toJson nid])
+    | .mvar mv =>
+      let nid ← internExportName ref mv.name
+      pure (.arr #[toJson "m", toJson nid])
+    | .sort lvl =>
+      let lid ← internExportLevel ref lvl
+      pure (.arr #[toJson "s", toJson lid])
+    | .const n lvls =>
+      let nid ← internExportName ref n
+      let lids ← lvls.toArray.mapM (internExportLevel ref)
+      pure (.arr #[toJson "c", toJson nid, toJson lids])
+    | .app f a =>
+      let fid ← internExportExpr ref f
+      let aid ← internExportExpr ref a
+      pure (.arr #[toJson "a", toJson fid, toJson aid])
+    | .lam n t b bi =>
+      let nid ← internExportName ref n
+      let tid ← internExportExpr ref t
+      let bid ← internExportExpr ref b
+      pure (.arr #[toJson "l", toJson nid, toJson tid, toJson bid,
+        toJson (binderInfoCode bi)])
+    | .forallE n t b bi =>
+      let nid ← internExportName ref n
+      let tid ← internExportExpr ref t
+      let bid ← internExportExpr ref b
+      pure (.arr #[toJson "p", toJson nid, toJson tid, toJson bid,
+        toJson (binderInfoCode bi)])
+    | .letE n t v b nondep =>
+      let nid ← internExportName ref n
+      let tid ← internExportExpr ref t
+      let vid ← internExportExpr ref v
+      let bid ← internExportExpr ref b
+      pure (.arr #[toJson "e", toJson nid, toJson tid, toJson vid, toJson bid,
+        toJson nondep])
+    | .lit (.natVal n) =>
+      pure (.arr #[toJson "ln", toJson (toString n)])
+    | .lit (.strVal s) =>
+      pure (.arr #[toJson "ls", toJson s])
+    | .proj s i body =>
+      let sid ← internExportName ref s
+      let bid ← internExportExpr ref body
+      pure (.arr #[toJson "j", toJson sid, toJson (toString i), toJson bid])
+    | .mdata _ _ => unreachable!
+  ref.modifyGet fun st =>
+    let idx := st.exprs.size
+    (idx, { st with
+      exprIds := st.exprIds.insert e idx
+      exprs := st.exprs.push encoded })
+
+private unsafe def encodeExportConstantInfo (ref : IO.Ref ProofExportPool)
+    (ci : ConstantInfo) : IO Json := do
+  let nid ← internExportName ref ci.name
+  let lpIds ← ci.levelParams.toArray.mapM (internExportName ref)
+  let tid ← internExportExpr ref ci.type
+  match ci with
+  | .axiomInfo v =>
+    return .arr #[toJson "axiom", toJson nid, toJson lpIds, toJson tid,
+      toJson v.isUnsafe]
+  | .defnInfo v =>
+    let vid ← internExportExpr ref v.value
+    let allIds ← v.all.toArray.mapM (internExportName ref)
+    return .arr #[toJson "defn", toJson nid, toJson lpIds, toJson tid,
+      toJson vid, encodeReducibilityHints v.hints,
+      toJson (safetyCode v.safety), toJson allIds]
+  | .thmInfo v =>
+    let vid ← internExportExpr ref v.value
+    let allIds ← v.all.toArray.mapM (internExportName ref)
+    return .arr #[toJson "thm", toJson nid, toJson lpIds, toJson tid,
+      toJson vid, toJson allIds]
+  | .opaqueInfo v =>
+    let vid ← internExportExpr ref v.value
+    let allIds ← v.all.toArray.mapM (internExportName ref)
+    return .arr #[toJson "opaque", toJson nid, toJson lpIds, toJson tid,
+      toJson vid, toJson v.isUnsafe, toJson allIds]
+  | .quotInfo v =>
+    return .arr #[toJson "quot", toJson nid, toJson lpIds, toJson tid,
+      toJson (quotKindCode v.kind)]
+  | .inductInfo v =>
+    let allIds ← v.all.toArray.mapM (internExportName ref)
+    let ctorIds ← v.ctors.toArray.mapM (internExportName ref)
+    return .arr #[toJson "induct", toJson nid, toJson lpIds, toJson tid,
+      toJson v.numParams, toJson v.numIndices, toJson allIds, toJson ctorIds,
+      toJson v.numNested, toJson v.isRec, toJson v.isUnsafe,
+      toJson v.isReflexive]
+  | .ctorInfo v =>
+    let indId ← internExportName ref v.induct
+    return .arr #[toJson "ctor", toJson nid, toJson lpIds, toJson tid,
+      toJson indId, toJson v.cidx, toJson v.numParams, toJson v.numFields,
+      toJson v.isUnsafe]
+  | .recInfo v =>
+    let allIds ← v.all.toArray.mapM (internExportName ref)
+    let rulesJson ← v.rules.toArray.mapM fun r => do
+      let cid ← internExportName ref r.ctor
+      let rid ← internExportExpr ref r.rhs
+      return Json.arr #[toJson cid, toJson r.nfields, toJson rid]
+    return .arr #[toJson "rec", toJson nid, toJson lpIds, toJson tid,
+      toJson allIds, toJson v.numParams, toJson v.numIndices,
+      toJson v.numMotives, toJson v.numMinors, .arr rulesJson,
+      toJson v.k, toJson v.isUnsafe]
+
+private unsafe def exportProofModulesImpl (env : Environment)
+    (proofMods : NameSet) : IO Json := do
+  let poolRef ← IO.mkRef ({} : ProofExportPool)
+  let mut modObjs : Array Json := #[]
+  let mut implByIds : Array Nat := #[]
+  let mut externIds : Array Nat := #[]
+  let mut csimpIds : Array Nat := #[]
+  for modIdx in Array.range env.header.modules.size do
+    let m := env.header.modules[modIdx]!
+    let data := env.header.moduleData[modIdx]!
+    if proofMods.contains m.module then
+      validateConstantsCachedMetadata data.constants
+      let constNameIds ← data.constNames.mapM (internExportName poolRef)
+      let constantsJson ← data.constants.mapM (encodeExportConstantInfo poolRef)
+      modObjs := modObjs.push <| Json.mkObj [
+        ("module", toJson m.module),
+        ("isModule", toJson data.isModule),
+        ("imports", toJson data.imports),
+        ("constNames", toJson constNameIds),
+        ("constants", .arr constantsJson)]
+      for (declName, _) in
+          Compiler.implementedByAttr.ext.getModuleEntries env modIdx do
+        implByIds := implByIds.push (← internExportName poolRef declName)
+      for (declName, _) in externAttr.ext.getModuleEntries env modIdx do
+        externIds := externIds.push (← internExportName poolRef declName)
+      for entry in Compiler.CSimp.ext.ext.getModuleEntries env modIdx do
+        let e := match entry with
+          | .global e | .scoped _ e => e
+        csimpIds := csimpIds.push (← internExportName poolRef e.fromDeclName)
+  let pool ← poolRef.get
+  return Json.mkObj [
+    ("schemaVersion", toJson (1 : Nat)),
+    ("names", .arr pool.names),
+    ("levels", .arr pool.levels),
+    ("exprs", .arr pool.exprs),
+    ("modules", .arr modObjs),
+    ("compilerOverrides", Json.mkObj [
+      ("implementedBy", toJson implByIds),
+      ("extern", toJson externIds),
+      ("csimp", toJson csimpIds)])]
+
+@[implemented_by exportProofModulesImpl]
+private def exportProofModules (_env : Environment)
+    (_proofMods : NameSet) : IO Json :=
+  throw <| IO.userError "proof exporter requires runtime implementation"
+
+/-- Execute `"target-export"` in a dedicated sandboxed child process with zero
+write access to `"target-audit"`'s verdict output.
+
+Imports target `.olean` artifacts at `trustLevel := 0` (`loadExts := false`),
+validates cached metadata words on every proof constant, and emits a pure
+structural DAG JSON representation of all `TargetRole::Proof` modules. -/
+def targetExport (j : Json) (foundation : Array Name) : IO Json := do
+  let target ← field (α := Json) j "target"
+  let libraries ← names j "libraries"
+  let modules ← field (α := Array Json) target "modules"
+  let arts ← artifacts j
+  let mut roles : Std.HashMap Name TargetOrigin := {}
+  for m in foundation do roles := roles.insert m .foundation
+  for m in libraries do
+    roles ← insertRole roles m .library "overlapping target module"
+  let mut roots := foundation ++ libraries
+  let mut proofMods : NameSet := {}
+  for item in modules do
+    let m := (← field (α := String) item "module").toName
+    let rawRole ← field (α := String) item "role"
+    let some role := TargetRole.parse? rawRole
+      | fail s!"unknown target role {rawRole}"
+    roles ← insertRole roles m (.source role) "overlapping target module"
+    let some art := arts.find? m
+      | fail s!"missing target artifacts for {m}"
+    unless (art.oleanParts true).size == 1 && art.irParts.isEmpty do
+      fail s!"companion artifact parts unsupported in {m}"
+    if role == .proof then
+      proofMods := proofMods.insert m
+    roots := roots.push m
+  let env ← importEnv j roots
+  -- When a caller bypasses header admission and relabels a dependency of a
+  -- non-`Proof` module as `TargetRole::Proof`, report the exact declaration
+  -- authority violation (or import authority violation if unused) as a policy
+  -- error before `"target-audit"` excludes `Proof` `.olean`s from its import
+  -- set. `"target-audit"` independently re-checks the admitted graph so it
+  -- never relies on `"target-export"` for authority enforcement.
+  let expProvenance n := constProvenance env roles n "target module"
+  for m in env.header.modules, data in env.header.moduleData do
+    if let some (.source srcRole) := roles.get? m.module then
+      if srcRole != .proof then
+        let importsProof := data.imports.any fun imp =>
+          roles.get? imp.module == some (.source .proof)
+        if importsProof then
+          for ci in data.constants do
+            let deps ← declarationEdges ci
+            for dep in deps do
+              let (_, depRole) ← expProvenance dep
+              if let some msg :=
+                  TargetOrigin.edgeViolation? ci.name (.source srcRole) dep depRole then
+                fail msg
+          for imp in data.imports do
+            if roles.get? imp.module == some (.source .proof) then
+              fail s!"target authority violation {m.module} imports {imp.module}"
+  exportProofModules env proofMods
+
+private structure ExportedProofModule where
+  moduleName : Name
+  isModule : Bool
+  imports : Array Import
+  constNames : Array Name
+  constants : Array ConstantInfo
+
+private structure ProofCompilerOverrides where
+  implementedBy : NameSet := {}
+  externDecls : NameSet := {}
+  csimp : NameSet := {}
+
+private structure DecodedProofExport where
+  modules : Array ExportedProofModule
+  overrides : ProofCompilerOverrides
+
+private def parseNatString (s : String) (label : String) : IO Nat := do
+  let some n := s.toNat?
+    | throw <| IO.userError s!"invalid decimal Nat in proof export ({label}): {s}"
+  return n
+
+private def lookupPool (pool : Array α) (idx : Nat) (label : String) : IO α := do
+  let some v := pool[idx]?
+    | throw <| IO.userError
+        s!"out-of-bounds proof export {label} index {idx} (pool size {pool.size})"
+  return v
+
+/-- Parse and reconstruct all proof-module declarations from the pure
+structural JSON stream emitted by `"target-export"`.
+
+Every `Name`, `Level`, and `Expr` is built sequentially via normal safe Lean
+constructors (so every cached `Name.hash`, `Level.data`, and `Expr.data` word
+is computed fresh inside `"target-audit"`). Strict index bounds (`idx < pool.size`
+during sequential construction) prevent cycles and malformed references. -/
+private def decodeProofExport (raw : Json) : IO DecodedProofExport := do
+  let schemaVersion ← field (α := Nat) raw "schemaVersion"
+  unless schemaVersion == 1 do
+    throw <| IO.userError s!"unsupported proof export schemaVersion {schemaVersion}"
+  let namesJson ← field (α := Array Json) raw "names"
+  let mut namePool : Array Name := Array.mkEmpty namesJson.size
+  for entry in namesJson do
+    let .arr elems := entry
+      | throw <| IO.userError "malformed name entry in proof export"
+    let some tag := elems[0]?.bind (fun x => x.getStr?.toOption)
+      | throw <| IO.userError "missing name tag in proof export"
+    let decoded : Name ← match tag with
+      | "a" =>
+        unless elems.size == 1 do
+          throw <| IO.userError "malformed anonymous name in proof export"
+        pure .anonymous
+      | "s" =>
+        unless elems.size == 3 do
+          throw <| IO.userError "malformed string name in proof export"
+        let preId ← IO.ofExcept (fromJson? (α := Nat) elems[1]!)
+        let seg ← IO.ofExcept (fromJson? (α := String) elems[2]!)
+        let pre ← lookupPool namePool preId "name"
+        pure (.str pre seg)
+      | "n" =>
+        unless elems.size == 3 do
+          throw <| IO.userError "malformed numeric name in proof export"
+        let preId ← IO.ofExcept (fromJson? (α := Nat) elems[1]!)
+        let numStr ← IO.ofExcept (fromJson? (α := String) elems[2]!)
+        let pre ← lookupPool namePool preId "name"
+        let v ← parseNatString numStr "name"
+        pure (.num pre v)
+      | _ => throw <| IO.userError s!"unknown name tag {tag} in proof export"
+    namePool := namePool.push decoded
+  let levelsJson ← field (α := Array Json) raw "levels"
+  let mut levelPool : Array Level := Array.mkEmpty levelsJson.size
+  for entry in levelsJson do
+    let .arr elems := entry
+      | throw <| IO.userError "malformed level entry in proof export"
+    let some tag := elems[0]?.bind (fun x => x.getStr?.toOption)
+      | throw <| IO.userError "missing level tag in proof export"
+    let decoded : Level ← match tag with
+      | "z" =>
+        unless elems.size == 1 do
+          throw <| IO.userError "malformed zero level in proof export"
+        pure .zero
+      | "s" =>
+        unless elems.size == 2 do
+          throw <| IO.userError "malformed succ level in proof export"
+        let uid ← IO.ofExcept (fromJson? (α := Nat) elems[1]!)
+        pure (.succ (← lookupPool levelPool uid "level"))
+      | "m" =>
+        unless elems.size == 3 do
+          throw <| IO.userError "malformed max level in proof export"
+        let uid ← IO.ofExcept (fromJson? (α := Nat) elems[1]!)
+        let vid ← IO.ofExcept (fromJson? (α := Nat) elems[2]!)
+        pure (.max (← lookupPool levelPool uid "level")
+          (← lookupPool levelPool vid "level"))
+      | "i" =>
+        unless elems.size == 3 do
+          throw <| IO.userError "malformed imax level in proof export"
+        let uid ← IO.ofExcept (fromJson? (α := Nat) elems[1]!)
+        let vid ← IO.ofExcept (fromJson? (α := Nat) elems[2]!)
+        pure (.imax (← lookupPool levelPool uid "level")
+          (← lookupPool levelPool vid "level"))
+      | "p" =>
+        unless elems.size == 2 do
+          throw <| IO.userError "malformed param level in proof export"
+        let nid ← IO.ofExcept (fromJson? (α := Nat) elems[1]!)
+        pure (.param (← lookupPool namePool nid "name"))
+      | "v" =>
+        unless elems.size == 2 do
+          throw <| IO.userError "malformed mvar level in proof export"
+        let nid ← IO.ofExcept (fromJson? (α := Nat) elems[1]!)
+        pure (.mvar ⟨← lookupPool namePool nid "name"⟩)
+      | _ => throw <| IO.userError s!"unknown level tag {tag} in proof export"
+    levelPool := levelPool.push decoded
+  let exprsJson ← field (α := Array Json) raw "exprs"
+  let mut exprPool : Array Expr := Array.mkEmpty exprsJson.size
+  for entry in exprsJson do
+    let .arr elems := entry
+      | throw <| IO.userError "malformed expr entry in proof export"
+    let some tag := elems[0]?.bind (fun x => x.getStr?.toOption)
+      | throw <| IO.userError "missing expr tag in proof export"
+    let decoded : Expr ← match tag with
+      | "b" =>
+        unless elems.size == 2 do
+          throw <| IO.userError "malformed bvar expr in proof export"
+        let idxStr ← IO.ofExcept (fromJson? (α := String) elems[1]!)
+        pure (.bvar (← parseNatString idxStr "bvar"))
+      | "f" =>
+        unless elems.size == 2 do
+          throw <| IO.userError "malformed fvar expr in proof export"
+        let nid ← IO.ofExcept (fromJson? (α := Nat) elems[1]!)
+        pure (.fvar ⟨← lookupPool namePool nid "name"⟩)
+      | "m" =>
+        unless elems.size == 2 do
+          throw <| IO.userError "malformed mvar expr in proof export"
+        let nid ← IO.ofExcept (fromJson? (α := Nat) elems[1]!)
+        pure (.mvar ⟨← lookupPool namePool nid "name"⟩)
+      | "s" =>
+        unless elems.size == 2 do
+          throw <| IO.userError "malformed sort expr in proof export"
+        let lid ← IO.ofExcept (fromJson? (α := Nat) elems[1]!)
+        pure (.sort (← lookupPool levelPool lid "level"))
+      | "c" =>
+        unless elems.size == 3 do
+          throw <| IO.userError "malformed const expr in proof export"
+        let nid ← IO.ofExcept (fromJson? (α := Nat) elems[1]!)
+        let lids ← IO.ofExcept (fromJson? (α := Array Nat) elems[2]!)
+        let lvls ← lids.toList.mapM (lookupPool levelPool · "level")
+        pure (.const (← lookupPool namePool nid "name") lvls)
+      | "a" =>
+        unless elems.size == 3 do
+          throw <| IO.userError "malformed app expr in proof export"
+        let fid ← IO.ofExcept (fromJson? (α := Nat) elems[1]!)
+        let aid ← IO.ofExcept (fromJson? (α := Nat) elems[2]!)
+        pure (.app (← lookupPool exprPool fid "expr")
+          (← lookupPool exprPool aid "expr"))
+      | "l" =>
+        unless elems.size == 5 do
+          throw <| IO.userError "malformed lam expr in proof export"
+        let nid ← IO.ofExcept (fromJson? (α := Nat) elems[1]!)
+        let tid ← IO.ofExcept (fromJson? (α := Nat) elems[2]!)
+        let bid ← IO.ofExcept (fromJson? (α := Nat) elems[3]!)
+        let biCode ← IO.ofExcept (fromJson? (α := Nat) elems[4]!)
+        let some bi := binderInfoOfCode? biCode
+          | throw <| IO.userError s!"invalid binder info code {biCode}"
+        pure (.lam (← lookupPool namePool nid "name")
+          (← lookupPool exprPool tid "expr")
+          (← lookupPool exprPool bid "expr") bi)
+      | "p" =>
+        unless elems.size == 5 do
+          throw <| IO.userError "malformed forallE expr in proof export"
+        let nid ← IO.ofExcept (fromJson? (α := Nat) elems[1]!)
+        let tid ← IO.ofExcept (fromJson? (α := Nat) elems[2]!)
+        let bid ← IO.ofExcept (fromJson? (α := Nat) elems[3]!)
+        let biCode ← IO.ofExcept (fromJson? (α := Nat) elems[4]!)
+        let some bi := binderInfoOfCode? biCode
+          | throw <| IO.userError s!"invalid binder info code {biCode}"
+        pure (.forallE (← lookupPool namePool nid "name")
+          (← lookupPool exprPool tid "expr")
+          (← lookupPool exprPool bid "expr") bi)
+      | "e" =>
+        unless elems.size == 6 do
+          throw <| IO.userError "malformed letE expr in proof export"
+        let nid ← IO.ofExcept (fromJson? (α := Nat) elems[1]!)
+        let tid ← IO.ofExcept (fromJson? (α := Nat) elems[2]!)
+        let vid ← IO.ofExcept (fromJson? (α := Nat) elems[3]!)
+        let bid ← IO.ofExcept (fromJson? (α := Nat) elems[4]!)
+        let nondep ← IO.ofExcept (fromJson? (α := Bool) elems[5]!)
+        pure (.letE (← lookupPool namePool nid "name")
+          (← lookupPool exprPool tid "expr")
+          (← lookupPool exprPool vid "expr")
+          (← lookupPool exprPool bid "expr") nondep)
+      | "ln" =>
+        unless elems.size == 2 do
+          throw <| IO.userError "malformed nat lit expr in proof export"
+        let s ← IO.ofExcept (fromJson? (α := String) elems[1]!)
+        pure (.lit (.natVal (← parseNatString s "natLit")))
+      | "ls" =>
+        unless elems.size == 2 do
+          throw <| IO.userError "malformed str lit expr in proof export"
+        let s ← IO.ofExcept (fromJson? (α := String) elems[1]!)
+        pure (.lit (.strVal s))
+      | "j" =>
+        unless elems.size == 4 do
+          throw <| IO.userError "malformed proj expr in proof export"
+        let sid ← IO.ofExcept (fromJson? (α := Nat) elems[1]!)
+        let idxStr ← IO.ofExcept (fromJson? (α := String) elems[2]!)
+        let bid ← IO.ofExcept (fromJson? (α := Nat) elems[3]!)
+        pure (.proj (← lookupPool namePool sid "name")
+          (← parseNatString idxStr "proj")
+          (← lookupPool exprPool bid "expr"))
+      | _ => throw <| IO.userError s!"unknown expr tag {tag} in proof export"
+    exprPool := exprPool.push decoded
+  let decodeNameList (j : Json) : IO (List Name) := do
+    let ids ← IO.ofExcept (fromJson? (α := Array Nat) j)
+    ids.toList.mapM (lookupPool namePool · "name")
+  let decodeConstant (j : Json) : IO ConstantInfo := do
+    let .arr elems := j
+      | throw <| IO.userError "malformed constant entry in proof export"
+    let some tag := elems[0]?.bind (fun x => x.getStr?.toOption)
+      | throw <| IO.userError "missing constant tag in proof export"
+    if elems.size < 4 then
+      throw <| IO.userError s!"truncated constant entry {tag} in proof export"
+    let name ← lookupPool namePool (← IO.ofExcept (fromJson? (α := Nat) elems[1]!)) "name"
+    let levelParams ← decodeNameList elems[2]!
+    let type ← lookupPool exprPool (← IO.ofExcept (fromJson? (α := Nat) elems[3]!)) "expr"
+    match tag with
+    | "axiom" =>
+      unless elems.size == 5 do
+        throw <| IO.userError "malformed axiom entry in proof export"
+      let isUnsafe ← IO.ofExcept (fromJson? (α := Bool) elems[4]!)
+      return .axiomInfo { name, levelParams, type, isUnsafe }
+    | "defn" =>
+      unless elems.size == 8 do
+        throw <| IO.userError "malformed defn entry in proof export"
+      let value ← lookupPool exprPool (← IO.ofExcept (fromJson? (α := Nat) elems[4]!)) "expr"
+      let hints ← decodeReducibilityHints elems[5]!
+      let sCode ← IO.ofExcept (fromJson? (α := Nat) elems[6]!)
+      let some safety := safetyOfCode? sCode
+        | throw <| IO.userError s!"invalid safety code {sCode} in proof export"
+      let all ← decodeNameList elems[7]!
+      return .defnInfo { name, levelParams, type, value, hints, safety, all }
+    | "thm" =>
+      unless elems.size == 6 do
+        throw <| IO.userError "malformed thm entry in proof export"
+      let value ← lookupPool exprPool (← IO.ofExcept (fromJson? (α := Nat) elems[4]!)) "expr"
+      let all ← decodeNameList elems[5]!
+      return .thmInfo { name, levelParams, type, value, all }
+    | "opaque" =>
+      unless elems.size == 7 do
+        throw <| IO.userError "malformed opaque entry in proof export"
+      let value ← lookupPool exprPool (← IO.ofExcept (fromJson? (α := Nat) elems[4]!)) "expr"
+      let isUnsafe ← IO.ofExcept (fromJson? (α := Bool) elems[5]!)
+      let all ← decodeNameList elems[6]!
+      return .opaqueInfo { name, levelParams, type, value, isUnsafe, all }
+    | "quot" =>
+      unless elems.size == 5 do
+        throw <| IO.userError "malformed quot entry in proof export"
+      let qCode ← IO.ofExcept (fromJson? (α := Nat) elems[4]!)
+      let some kind := quotKindOfCode? qCode
+        | throw <| IO.userError s!"invalid quot kind code {qCode} in proof export"
+      return .quotInfo { name, levelParams, type, kind }
+    | "induct" =>
+      unless elems.size == 12 do
+        throw <| IO.userError "malformed induct entry in proof export"
+      let numParams ← IO.ofExcept (fromJson? (α := Nat) elems[4]!)
+      let numIndices ← IO.ofExcept (fromJson? (α := Nat) elems[5]!)
+      let all ← decodeNameList elems[6]!
+      let ctors ← decodeNameList elems[7]!
+      let numNested ← IO.ofExcept (fromJson? (α := Nat) elems[8]!)
+      let isRec ← IO.ofExcept (fromJson? (α := Bool) elems[9]!)
+      let isUnsafe ← IO.ofExcept (fromJson? (α := Bool) elems[10]!)
+      let isReflexive ← IO.ofExcept (fromJson? (α := Bool) elems[11]!)
+      return .inductInfo {
+        name, levelParams, type, numParams, numIndices, all, ctors,
+        numNested, isRec, isUnsafe, isReflexive }
+    | "ctor" =>
+      unless elems.size == 9 do
+        throw <| IO.userError "malformed ctor entry in proof export"
+      let induct ← lookupPool namePool (← IO.ofExcept (fromJson? (α := Nat) elems[4]!)) "name"
+      let cidx ← IO.ofExcept (fromJson? (α := Nat) elems[5]!)
+      let numParams ← IO.ofExcept (fromJson? (α := Nat) elems[6]!)
+      let numFields ← IO.ofExcept (fromJson? (α := Nat) elems[7]!)
+      let isUnsafe ← IO.ofExcept (fromJson? (α := Bool) elems[8]!)
+      return .ctorInfo {
+        name, levelParams, type, induct, cidx, numParams, numFields, isUnsafe }
+    | "rec" =>
+      unless elems.size == 12 do
+        throw <| IO.userError "malformed rec entry in proof export"
+      let all ← decodeNameList elems[4]!
+      let numParams ← IO.ofExcept (fromJson? (α := Nat) elems[5]!)
+      let numIndices ← IO.ofExcept (fromJson? (α := Nat) elems[6]!)
+      let numMotives ← IO.ofExcept (fromJson? (α := Nat) elems[7]!)
+      let numMinors ← IO.ofExcept (fromJson? (α := Nat) elems[8]!)
+      let rulesJson ← IO.ofExcept (fromJson? (α := Array Json) elems[9]!)
+      let rules ← rulesJson.toList.mapM fun rj => do
+        let .arr rElems := rj
+          | throw <| IO.userError "malformed recursor rule in proof export"
+        unless rElems.size == 3 do
+          throw <| IO.userError "malformed recursor rule arity in proof export"
+        let ctor ← lookupPool namePool (← IO.ofExcept (fromJson? (α := Nat) rElems[0]!)) "name"
+        let nfields ← IO.ofExcept (fromJson? (α := Nat) rElems[1]!)
+        let rhs ← lookupPool exprPool (← IO.ofExcept (fromJson? (α := Nat) rElems[2]!)) "expr"
+        return ({ ctor, nfields, rhs } : RecursorRule)
+      let k ← IO.ofExcept (fromJson? (α := Bool) elems[10]!)
+      let isUnsafe ← IO.ofExcept (fromJson? (α := Bool) elems[11]!)
+      return .recInfo {
+        name, levelParams, type, all, numParams, numIndices, numMotives,
+        numMinors, rules, k, isUnsafe }
+    | _ => throw <| IO.userError s!"unknown constant tag {tag} in proof export"
+  let modsJson ← field (α := Array Json) raw "modules"
+  let mut decodedMods : Array ExportedProofModule := #[]
+  for mj in modsJson do
+    let modName := (← field (α := String) mj "module").toName
+    let isModule ← field (α := Bool) mj "isModule"
+    let imports ← field (α := Array Import) mj "imports"
+    let constNameIds ← field (α := Array Nat) mj "constNames"
+    let constNames ← constNameIds.mapM (lookupPool namePool · "name")
+    let constantsJson ← field (α := Array Json) mj "constants"
+    let constants ← constantsJson.mapM decodeConstant
+    decodedMods := decodedMods.push {
+      moduleName := modName, isModule, imports, constNames, constants }
+  let ovObj ← field (α := Json) raw "compilerOverrides"
+  let decodeNameSet (key : String) : IO NameSet := do
+    let ids ← field (α := Array Nat) ovObj key
+    let mut s : NameSet := {}
+    for id in ids do
+      s := s.insert (← lookupPool namePool id "name")
+    return s
+  let overrides : ProofCompilerOverrides := {
+    implementedBy := ← decodeNameSet "implementedBy"
+    externDecls := ← decodeNameSet "extern"
+    csimp := ← decodeNameSet "csimp" }
+  return { modules := decodedMods, overrides }
+
 /-- Execute Phase 4 (`"target-audit"`) on compiled target artifacts.
 
-Target auditing checks actual stored declarations, including private helpers
-and generated inductive members. It imports no unvalidated declaration into the
-replay base. Every import uses `loadExts := false`, including those for the
-compiler-metadata comparison, so no target `[init]` declaration or extension
-import callback runs in this process. -/
+Target auditing never opens or maps any untrusted authored `Proof` `.olean` in
+the verdict-producing process: only trusted/preflighted non-proof modules
+(`foundation`, `libraries`, `model`, `capture`, `specification`, `expected`)
+are imported via `importEnv` (`loadExts := false`), while every `Proof` module
+is reconstructed fresh from the pure structural JSON stream emitted by the
+isolated `"target-export"` process. Every reached declaration then undergoes
+raw-`UInt64` cached-metadata validation and fresh kernel replay onto
+`foundation-lock.json`. -/
 def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
   let target ← field (α := Json) j "target"
   let libraries ← names j "libraries"
@@ -3981,36 +4915,80 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
   let allowSorryInProof ← match target.getObjVal? "allowSorryInProof" with
     | .error _ => pure false
     | .ok val => IO.ofExcept (fromJson? (α := Bool) val)
+  let proofExportPath ← field (α := String) j "proofExportPath"
+  let proofExportRaw ← IO.ofExcept <| Json.parse (← IO.FS.readFile proofExportPath)
+  let proofExport ← decodeProofExport proofExportRaw
   let arts ← artifacts j
   let mut roles : Std.HashMap Name TargetOrigin := {}
   for m in foundation do roles := roles.insert m .foundation
   for m in libraries do
     roles ← insertRole roles m .library "overlapping target module"
-  let mut roots := foundation ++ libraries
+  let mut nonProofRoots := foundation ++ libraries
+  let mut expectedProofMods : NameSet := {}
   for item in modules do
     let m := (← field (α := String) item "module").toName
     let rawRole ← field (α := String) item "role"
     let some role := TargetRole.parse? rawRole
       | fail s!"unknown target role {rawRole}"
     roles ← insertRole roles m (.source role) "overlapping target module"
-    -- Reject companion artifact parts (`.olean.private`, `.olean.server`,
-    -- `.ir`) on target modules before `importEnv` ever opens or mmaps them.
-    let some art := arts.find? m
-      | fail s!"missing target artifacts for {m}"
-    unless (art.oleanParts true).size == 1 && art.irParts.isEmpty do
-      fail s!"companion artifact parts unsupported in {m}"
-    roots := roots.push m
-  let env ← importEnv j roots
-  validateGraph j env
-  let provenance n := constProvenance env roles n "target module"
-  let lookup n := lookupConst env n "target dependency"
+    if role == .proof then
+      -- Authored `Proof` `.olean`s must never be supplied to or mapped by the
+      -- verdict-producing `"target-audit"` process.
+      if (arts.find? m).isSome then
+        throw <| IO.userError
+          s!"proof module artifact {m} must not be passed to target-audit"
+      expectedProofMods := expectedProofMods.insert m
+    else
+      -- Reject companion artifact parts (`.olean.private`, `.olean.server`,
+      -- `.ir`) on non-proof target modules before `importEnv` opens them.
+      let some art := arts.find? m
+        | fail s!"missing target artifacts for {m}"
+      unless (art.oleanParts true).size == 1 && art.irParts.isEmpty do
+        fail s!"companion artifact parts unsupported in {m}"
+      nonProofRoots := nonProofRoots.push m
+  -- Enforce role-graph separation against the admitted DAG before calling
+  -- `importEnv` on `nonProofRoots` so a non-`Proof` module importing a
+  -- `Proof` module fails closed with a policy violation rather than a missing
+  -- module lookup error (and without relying on `"target-export"`).
+  let expectedGraph ← field (α := Json) j "graph"
+  let .obj graphObj := expectedGraph
+    | throw <| IO.userError "malformed admitted graph in target-audit request"
+  for (modStr, edgesJson) in graphObj.toList do
+    let modName := modStr.toName
+    if let some (.source srcRole) := roles.get? modName then
+      if srcRole != .proof then
+        let edges ← IO.ofExcept (fromJson? (α := Array Import) edgesJson)
+        for imp in edges do
+          if roles.get? imp.module == some (.source .proof) then
+            fail s!"target authority violation {modName} imports {imp.module}"
+  let env ← importEnv j nonProofRoots
+  -- Reconstruct the combined module import graph (`nonProofEnv` + exported
+  -- `Proof` modules) and verify exact equality against the admitted DAG.
+  let mut seenExportedProofMods : NameSet := {}
+  let mut combinedGraphEntries : List (String × Json) :=
+    (env.header.modules.zip env.header.moduleData).toList.map fun (m, d) =>
+      (m.module.toString, toJson d.imports)
+  for pm in proofExport.modules do
+    unless expectedProofMods.contains pm.moduleName do
+      fail s!"foreign exported proof module {pm.moduleName}"
+    if seenExportedProofMods.contains pm.moduleName then
+      fail s!"duplicate exported proof module {pm.moduleName}"
+    seenExportedProofMods := seenExportedProofMods.insert pm.moduleName
+    combinedGraphEntries :=
+      (pm.moduleName.toString, toJson pm.imports) :: combinedGraphEntries
+  for m in expectedProofMods do
+    unless seenExportedProofMods.contains m do
+      fail s!"missing exported proof module {m}"
+  let combinedGraph := Json.mkObj combinedGraphEntries
+  unless combinedGraph == expectedGraph do
+    fail "compiled module/import DAG differs from admitted DAG"
   let isSysrootConst := constHasRole env roles
     (fun r => r matches .foundation | .library)
   let isModelConst := constHasRole env roles
     (fun r => r matches .source .model)
-  -- Cross-check source inventory and the environment's actual stored values.
-  -- Library declarations are checked when reached, so irrelevant metaprogram
-  -- implementation constants do not become restrictions on authored proofs.
+  -- Cross-check non-proof source inventory and the environment's actual stored
+  -- values, then incorporate reconstructed proof declarations while rejecting
+  -- any shadowing or duplicate names.
   let mut sourceInventory : NameSet := {}
   let mut libraryInventories : Std.HashMap Name NameSet := {}
   let mut libraryExports : Std.HashMap Name (Array ConstantInfo) := {}
@@ -4031,6 +5009,8 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
         libraryExports := libraryExports.insert ci.name
           ((libraryExports.getD ci.name #[]).push ci)
     if let .source targetRole := role then
+      if targetRole == .proof then
+        fail s!"proof module {m.module} must not be imported in target-audit"
       if data.isModule then
         fail s!"module-system artifact unsupported in {m.module}"
       let some art := arts.find? m.module
@@ -4054,7 +5034,7 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
           fail s!"duplicate target declaration {ci.name}"
         unless (← origin env ci.name) == m.module do
           fail s!"target inventory origin mismatch {ci.name}"
-        let stored ← lookup ci.name
+        let stored ← lookupConst env ci.name "target dependency"
         unless stored.type == ci.type && stored.value? true == ci.value? true do
           fail s!"stored target declaration differs {ci.name}"
         sourceInventory := sourceInventory.insert ci.name
@@ -4063,6 +5043,47 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
             pairedSpecUnsafeRecs := pairedSpecUnsafeRecs.push (ci.name, parent)
           else
             specAllConsts := ci.name :: specAllConsts
+  let mut proofOrigins : Std.HashMap Name Name := {}
+  let mut proofConsts : Std.HashMap Name ConstantInfo := {}
+  for pm in proofExport.modules do
+    if pm.isModule then
+      fail s!"module-system artifact unsupported in {pm.moduleName}"
+    validateTargetImports pm.moduleName.toString pm.imports
+    unless pm.constNames == pm.constants.map ConstantInfo.name do
+      fail s!"invalid target inventory {pm.moduleName}"
+    for ci in pm.constants do
+      let userRoot := (privateToUserName ci.name).getRoot
+      if userRoot == `Trusted && !isGeneratedEqHelper isModelConst ci then
+        fail (s!"non-model target module {pm.moduleName} cannot declare " ++
+          s!"constant {ci.name} in Trusted namespace")
+      if reservedKernelRoots.contains userRoot &&
+          !isGeneratedEqHelper isSysrootConst ci then
+        fail (s!"target module {pm.moduleName} cannot declare constant " ++
+          s!"{ci.name} in reserved kernel namespace {userRoot}")
+      if (env.checked.get.find? ci.name).isSome || sourceInventory.contains ci.name then
+        fail s!"duplicate target declaration {ci.name}"
+      sourceInventory := sourceInventory.insert ci.name
+      proofOrigins := proofOrigins.insert ci.name pm.moduleName
+      proofConsts := proofConsts.insert ci.name ci
+  let originOf (n : Name) : IO Name := do
+    if let some idx := env.getModuleIdxFor? n then
+      let some modName := env.header.moduleNames[idx.toNat]?
+        | throw <| IO.userError s!"module index out of range for {n}"
+      return modName
+    if let some modName := proofOrigins.get? n then
+      return modName
+    fail s!"missing origin for {n}"
+  let lookup (n : Name) : IO ConstantInfo := do
+    if let some ci := env.checked.get.find? n then
+      return ci
+    if let some ci := proofConsts.get? n then
+      return ci
+    fail s!"missing target dependency {n}"
+  let provenance (n : Name) : IO (Name × TargetOrigin) := do
+    let orig ← originOf n
+    let some role := roles.get? orig
+      | fail s!"foreign target module {orig}"
+    return (orig, role)
   let theoremName := (← field (α := String) target "theoremName").toName
   let theoremModule := (← field (α := String) target "theoremModule").toName
   let expectedName :=
@@ -4073,8 +5094,8 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
   | _, _ => fail "incorrect target/expected authority roles"
   let theoremInfo ← lookup theoremName
   let expectedInfo ← lookup expectedName
-  unless (← origin env theoremName) == theoremModule &&
-      (← origin env expectedName) == expectedModule do
+  unless (← originOf theoremName) == theoremModule &&
+      (← originOf expectedName) == expectedModule do
     fail "incorrect target/expected declaration origin"
   -- Names and namespaces do not establish authority or the kind of claim.
   -- The later canonical comparison covers the entire submitted type, including
@@ -4240,6 +5261,11 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
   let fixedCSimp := csimpEntries fixedMetadata
   let targetCSimp := csimpEntries env
   for n in reached do
+    if proofExport.overrides.implementedBy.contains n ||
+        proofExport.overrides.externDecls.contains n then
+      fail s!"unchecked compiler override on logical dependency {n}"
+    if proofExport.overrides.csimp.contains n then
+      fail s!"authored compiler replacement on logical dependency {n}"
     unless Compiler.getImplementedBy? fixedMetadata n ==
         Compiler.getImplementedBy? env n &&
         getExternAttrData? fixedMetadata n == getExternAttrData? env n do
@@ -4258,10 +5284,10 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
   let describe (nodes : NameSet) :=
     nodes.toArray.qsort Name.lt |>.mapM fun n => do
       return Json.mkObj [("name", toJson n),
-        ("module", toJson (← origin env n))]
+        ("module", toJson (← originOf n))]
   return Json.mkObj [("theorem", toJson theoremName),
     ("canonicalRoot", toJson canonicalRoot), ("subject", toJson subjectName),
-    ("specification", toJson specName), ("graph", graph env),
+    ("specification", toJson specName), ("graph", combinedGraph),
     ("expected", toJson expectedName), ("axioms", toJson axioms),
     ("sorryDeclarations", toJson sorryDecls),
     ("replay", toJson true), ("exactType", toJson true),
@@ -4330,6 +5356,10 @@ def run (j : Json) : IO Json := do
     let theory ← names j "theory"
     let env ← importEnv j (foundation ++ trusted ++ theory)
     audit j env foundation trusted theory
+  | "target-export" =>
+    let foundation ← names j "foundation"
+    initHermeticSearchPath sysrootStr
+    targetExport j foundation
   | "target-audit" =>
     let foundation ← names j "foundation"
     initHermeticSearchPath sysrootStr
@@ -4353,9 +5383,13 @@ def main (args : List String) : IO UInt32 := do
     | IO.eprintln "expected request and result files"; return 2
   try
     let j ← IO.ofExcept <| Json.parse (← IO.FS.readFile request)
+    let mode := (j.getObjValAs? String "mode").toOption.getD ""
     let result ← TrustedBoundary.run j
+    let payload := Json.mkObj [("ok", toJson true), ("result", result)]
+    -- Use compact JSON for `"target-export"` DAG pools so large proof
+    -- modules stay compact and fast across the process boundary.
     IO.FS.writeFile output <|
-      (Json.mkObj [("ok", toJson true), ("result", result)]).pretty
+      if mode == "target-export" then payload.compress else payload.pretty
     return 0
   catch error =>
     let message := error.toString

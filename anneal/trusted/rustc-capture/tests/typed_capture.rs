@@ -2308,3 +2308,82 @@ fn ergonomic_clones_and_call_source_use_fail_closed_at_capture() {
     assert_eq!(failure["status"], "unsupported", "{failure}");
     use_site.assert_no_capture_artifacts();
 }
+
+#[test]
+fn whole_crate_refuses_exported_macros_but_allows_crate_private_macro_rules() {
+    let exported = b"#[macro_export]\n\
+        macro_rules! read_at {\n\
+            ($a:expr) => { unsafe { ::core::ptr::read($a as *const u8) } };\n\
+        }\n\
+        pub fn zero() -> u64 { 0 }\n";
+    let fixture = Capture::new(exported);
+    let output = fixture.command().arg("--scope=crate").output().unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    let failure = status(&output);
+    assert_eq!(failure["status"], "unsupported", "{failure}");
+    assert!(
+        failure.to_string().contains("Macro("),
+        "expected exported macro refusal, got {failure}"
+    );
+    fixture.assert_no_capture_artifacts();
+
+    // Crate-private helper `macro_rules!` only affects crate-local bodies that
+    // are already captured in MIR, so whole-crate capture continues to admit it.
+    let private_helper = b"macro_rules! zero_lit {\n\
+            () => { 0u64 };\n\
+        }\n\
+        pub fn zero() -> u64 { zero_lit!() }\n";
+    let ok_fixture = Capture::new(private_helper);
+    let ok_output = ok_fixture.command().arg("--scope=crate").output().unwrap();
+    assert!(
+        ok_output.status.success(),
+        "crate-private macro_rules! should pass whole-crate capture:\n{}\n{}",
+        stdout(&ok_output),
+        stderr(&ok_output)
+    );
+    let manifest = ok_fixture.manifest();
+    let macro_entry = manifest["census"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|item| item["path"] == "zero_lit")
+        .expect("private macro should appear in census");
+    assert_eq!(macro_entry["required"], false, "{macro_entry}");
+    assert_eq!(macro_entry["selected"], false, "{macro_entry}");
+}
+
+#[test]
+fn whole_crate_refuses_itemless_link_foreign_block_and_native_libraries() {
+    let linked_foreign = b"#[link(name = \"nonexistent_native_lib\")]\n\
+        unsafe extern \"C\" {}\n\
+        pub fn zero() -> u64 { 0 }\n";
+    let fixture = Capture::new(linked_foreign);
+    let output = fixture.command().arg("--scope=crate").output().unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    let failure = status(&output);
+    assert_eq!(failure["status"], "unsupported", "{failure}");
+    assert!(
+        failure.to_string().contains("ForeignMod"),
+        "expected ForeignMod refusal, got {failure}"
+    );
+    fixture.assert_no_capture_artifacts();
+
+    // Even in selected-unit mode, crate-local native library directives are
+    // refused by the belt-and-suspenders `native_libraries` check.
+    let sel_fixture = Capture::new(linked_foreign);
+    let sel_output = sel_fixture
+        .command()
+        .arg("--select=zero")
+        .output()
+        .unwrap();
+    assert_eq!(sel_output.status.code(), Some(1), "{sel_output:?}");
+    let sel_failure = status(&sel_output);
+    assert_eq!(sel_failure["status"], "unsupported", "{sel_failure}");
+    assert!(
+        sel_failure
+            .to_string()
+            .contains("crate-local native libraries are unsupported"),
+        "expected native_libraries refusal, got {sel_failure}"
+    );
+    sel_fixture.assert_no_capture_artifacts();
+}
