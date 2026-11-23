@@ -1,0 +1,395 @@
+{
+  "all_verified": true,
+  "commits": [
+    {
+      "commit_date": "2026-05-31T20:13:59Z",
+      "http_status": 200,
+      "method": "github_rest_api",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "commit_date": "2026-11-23T03:14:24Z",
+      "http_status": 200,
+      "method": "github_rest_api",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "commit_date": "2026-11-17T20:49:56Z",
+      "http_status": 200,
+      "method": "github_rest_api",
+      "repository": "rust-lang/reference",
+      "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+      "verified": true
+    },
+    {
+      "commit_date": "2026-11-14T17:21:49Z",
+      "http_status": 200,
+      "method": "github_rest_api",
+      "repository": "rust-lang/rfcs",
+      "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+      "verified": true
+    },
+    {
+      "commit_date": "2026-11-19T21:39:21Z",
+      "http_status": 200,
+      "method": "github_rest_api",
+      "repository": "joshlf/anneal",
+      "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+      "verified": true
+    },
+    {
+      "commit_date": "2026-09-24T17:27:27Z",
+      "http_status": 200,
+      "method": "github_rest_api",
+      "repository": "leanprover/lean4",
+      "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "verified": true
+    }
+  ],
+  "commits_total": 6,
+  "commits_verified": 6,
+  "files": [
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_middle/src/ty/vtable.rs",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_trait_selection/src/traits/vtable.rs",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_trait_selection/src/traits/select/candidate_assembly.rs",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_trait_selection/src/traits/select/confirmation.rs",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_trait_selection/src/traits/select/mod.rs",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_trait_selection/src/traits/util.rs",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_type_ir/src/elaborate.rs",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_codegen_ssa/src/base.rs",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_codegen_ssa/src/meth.rs",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_codegen_ssa/src/size_of_val.rs",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_codegen_ssa/src/mir/block.rs",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_codegen_ssa/src/mir/rvalue.rs",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_mir_transform/src/mentioned_items.rs",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_mir_transform/src/elaborate_drop.rs",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_mir_transform/src/shim.rs",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "library/alloc/src/boxed.rs",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "library/core/src/alloc/layout.rs",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_middle/src/ty/vtable.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_trait_selection/src/traits/vtable.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_trait_selection/src/traits/select/candidate_assembly.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_trait_selection/src/traits/select/confirmation.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_trait_selection/src/traits/select/mod.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_trait_selection/src/traits/util.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_type_ir/src/elaborate.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_codegen_ssa/src/base.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_codegen_ssa/src/meth.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_codegen_ssa/src/size_of_val.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_codegen_ssa/src/mir/block.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_codegen_ssa/src/mir/rvalue.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_mir_transform/src/mentioned_items.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_mir_transform/src/elaborate_drop.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "compiler/rustc_mir_transform/src/shim.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "library/alloc/src/boxed.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "library/core/src/alloc/layout.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "src/type-coercions.md",
+      "repository": "rust-lang/reference",
+      "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "src/types/trait-object.md",
+      "repository": "rust-lang/reference",
+      "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "text/3324-dyn-upcasting.md",
+      "repository": "rust-lang/rfcs",
+      "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "trusted/lean/Trusted/MirAst.lean",
+      "repository": "joshlf/anneal",
+      "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+      "verified": true
+    },
+    {
+      "expected_present": true,
+      "http_status": 200,
+      "path": "trusted/lean/Trusted/MirSemantics.lean",
+      "repository": "joshlf/anneal",
+      "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+      "verified": true
+    },
+    {
+      "expected_present": false,
+      "http_status": 404,
+      "path": "compiler/rustc_mir_dataflow/src/elaborate_drops.rs",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "verified": true
+    },
+    {
+      "expected_present": false,
+      "http_status": 404,
+      "path": "compiler/rustc_mir_dataflow/src/elaborate_drops.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    },
+    {
+      "expected_present": false,
+      "http_status": 404,
+      "path": "compiler/rustc_codegen_llvm/src/meth.rs",
+      "repository": "rust-lang/rust",
+      "revision": "5debe6a1244452beced762385f88a51857a915fc",
+      "verified": true
+    }
+  ],
+  "files_total": 42,
+  "files_verified": 42
+}

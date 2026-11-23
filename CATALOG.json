@@ -109366,6 +109366,68 @@
         "verification"
       ]
     },
+    "rustc-trait-upcasting-vtable-segments-diamond-dedup-and-box-drop-soundness": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "rust-lang/rust (rustc 1.98.0-nightly and miri 0.1.0 2026-05-31: executed compiler/Miri toolchain, vtable segment construction, trait upcasting selection, MIR drop elaboration, and SSA codegen)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "5debe6a1244452beced762385f88a51857a915fc"
+          },
+          "name": "rust-lang/rust (upstream HEAD inspected for source continuity across rustc_middle, rustc_trait_selection, rustc_type_ir, rustc_mir_transform, rustc_codegen_ssa, alloc, and core)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "rust-lang/reference (type coercions and trait object layout chapters)"
+        },
+        {
+          "identity": {
+            "path": "text/3324-dyn-upcasting.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "rust-lang/rfcs (RFC 3324 trait upcasting coercion)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "joshlf/anneal (Trusted.MirAst and Trusted.MirSemantics fail-closed boundary)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4 (Lean v4.34.1 kernel checking formal mechanization)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/codegen",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "rustc-transmute-backend-repr-provenance-padding-and-llvm-assume": {
       "observed_at": "2026-11-22",
       "subjects": [

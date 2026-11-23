@@ -1,0 +1,64 @@
+{
+  "audit": {
+    "max_rss_kb": 1579932,
+    "returncode": 0,
+    "stderr": "",
+    "summary": {
+      "AUDIT_AXIOMS": "[Quot.sound, propext]",
+      "AUDIT_DEFS": "513",
+      "AUDIT_INDUCTIVES": "31",
+      "AUDIT_MAP1_MODULE_CONSTS": "857",
+      "AUDIT_MAP1_MODULE_UNSAFE_REC": "0",
+      "AUDIT_MAP1_TOTAL": "208881",
+      "AUDIT_THEOREMS": "232",
+      "AUDIT_TOTAL_CONSTANTS": "857",
+      "AUDIT_VIOLATIONS": "0",
+      "AUDIT_ZERO_AXIOM_THEOREMS": "137"
+    },
+    "wall_seconds": 5.367
+  },
+  "audit_sha256": "e61d66178e33021917380726be39c2225efcd6547f476616b039aa0c93687708",
+  "compile": {
+    "max_rss_kb": 563428,
+    "olean_bytes": 2396784,
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "",
+    "wall_seconds": 16.022
+  },
+  "flags": [
+    "-M2048",
+    "-DElab.async=false",
+    "-Ddebug.skipKernelTC=false",
+    "-DwarningAsError=true"
+  ],
+  "forbidden_token_hits": {
+    "Classical": 0,
+    "_unsafe_rec": 0,
+    "admit": 0,
+    "axiom_decl": 0,
+    "bv_decide": 0,
+    "deriving_decidable_or_repr": 0,
+    "extern_attr": 0,
+    "native_decide": 0,
+    "omega": 0,
+    "opaque_decl": 0,
+    "partial_def": 0,
+    "plain_def_without_noncomputable": 0,
+    "sorry": 0,
+    "unsafe_kw": 0
+  },
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "module": "TraitUpcastingVtableSegmentsAndBoxDropSoundness.lean",
+  "module_sha256": "28ab8a20fa597ef99dc004aae5895c543f992378099de1b214155ae5587b0ea3",
+  "passed": true,
+  "plain_defs_found": [],
+  "source_metrics": {
+    "bytes": 82538,
+    "inductive_and_structure_decls": 31,
+    "lines": 1724,
+    "min_loc_required": 900,
+    "noncomputable_def_decls": 82,
+    "theorem_decls": 61
+  }
+}

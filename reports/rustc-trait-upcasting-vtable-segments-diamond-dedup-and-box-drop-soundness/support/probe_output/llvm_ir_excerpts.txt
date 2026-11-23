@@ -1,0 +1,1512 @@
+=== exp_a (-O0) ===
+@alloc_bb39b47c74e94ad5fcc7fc9430611586 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_45f94fa0a64992ed32e703b1a4fa2d6a, [16 x i8] c"\9F\00\00\00\00\00\00\00\90\00\00\00\05\00\00\00" }>, align 8
+@alloc_e31b6cb78685db66291b8d32e711d5f4 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_45f94fa0a64992ed32e703b1a4fa2d6a, [16 x i8] c"\9F\00\00\00\00\00\00\00\92\00\00\00\0E\00\00\00" }>, align 8
+@alloc_fc195923e78be83d357207be5caca7b8 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_8c0c55ad4cc76bcc7f5be0bc3de67bf4, [16 x i8] c"\91\00\00\00\00\00\00\00\13\02\00\00\05\00\00\00" }>, align 8
+@vtable.0 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNSNvYNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0INtNtNtCs8b4M6GsfcPr_4core3ops8function6FnOnceuE9call_once6vtableCsahIYSK1wfeh_29exp_a_multi_supertrait_vtable, ptr @_RNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0CsahIYSK1wfeh_29exp_a_multi_supertrait_vtable, ptr @_RNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0CsahIYSK1wfeh_29exp_a_multi_supertrait_vtable }>, align 8
+@vtable.1 = private unnamed_addr constant <{ [24 x i8], ptr, [8 x i8] }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00", ptr @_RNvXs5_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB5_4ImplINtB5_10CondVacantNtB5_7NonCopyE6alwaysB5_, [8 x i8] undef }>, align 8
+@alloc_efdc6553ec6a3212e83f34d46446f0e5 = private unnamed_addr constant <{ [24 x i8], ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00", ptr @_RNvXs_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB4_4ImplNtB4_6SuperB1b }>, align 8
+@vtable.2 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00", ptr @_RNvXCsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB2_4ImplNtB2_6SuperA1a, ptr @_RNvXs_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB4_4ImplNtB4_6SuperB1b, ptr @alloc_efdc6553ec6a3212e83f34d46446f0e5, ptr @_RNvXs1_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB5_4ImplNtB5_3Sub3sub }>, align 8
+@vtable.3 = private unnamed_addr constant <{ [24 x i8], ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00", ptr @_RNvXs_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB4_4ImplNtB4_6SuperB1b, ptr @_RNvXs4_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB5_4ImplNtB5_13SubAfterEmpty5sub_e }>, align 8
+@alloc_6a8ed819c37a9878fc9e19e24a7ba34b = private unnamed_addr constant <{ [24 x i8], ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00", ptr @_RNvXs0_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB5_4ImplNtB5_6SuperC2c1, ptr @_RNvXs0_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB5_4ImplNtB5_6SuperC2c2 }>, align 8
+@vtable.4 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr, ptr, ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00", ptr @_RNvXCsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB2_4ImplNtB2_6SuperA1a, ptr @_RNvXs_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB4_4ImplNtB4_6SuperB1b, ptr @alloc_efdc6553ec6a3212e83f34d46446f0e5, ptr @_RNvXs0_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB5_4ImplNtB5_6SuperC2c1, ptr @_RNvXs0_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB5_4ImplNtB5_6SuperC2c2, ptr @alloc_6a8ed819c37a9878fc9e19e24a7ba34b, ptr @_RNvXs2_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB5_4ImplNtB5_3Tri3tri }>, align 8
+@alloc_3bd927f2fcb3bf3d18fdb1ba1f487cdd = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_4d84828c77184f56e9b283ca33ed5c60, [16 x i8] c"\97\00\00\00\00\00\00\00^\05\00\00\0D\00\00\00" }>, align 8
+@alloc_58af4613c312039b95c85ac423c01fa1 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_45f94fa0a64992ed32e703b1a4fa2d6a, [16 x i8] c"\9F\00\00\00\00\00\00\00/\00\00\00\09\00\00\00" }>, align 8
+@alloc_5c06f8d804f5e057e62ebc5cd3a6848b = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_45f94fa0a64992ed32e703b1a4fa2d6a, [16 x i8] c"\9F\00\00\00\00\00\00\00=\00\00\00\09\00\00\00" }>, align 8
+@alloc_35e34aabc8d899b77c0dbd40092c4eea = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_45f94fa0a64992ed32e703b1a4fa2d6a, [16 x i8] c"\9F\00\00\00\00\00\00\00A\00\00\00\09\00\00\00" }>, align 8
+@alloc_bb411a7f7908ec3ffcdbc546f4ca1a64 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_45f94fa0a64992ed32e703b1a4fa2d6a, [16 x i8] c"\9F\00\00\00\00\00\00\00H\00\00\00\09\00\00\00" }>, align 8
+@alloc_6be737461af91d63b8d3b3896875e6e6 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_45f94fa0a64992ed32e703b1a4fa2d6a, [16 x i8] c"\9F\00\00\00\00\00\00\00O\00\00\00\09\00\00\00" }>, align 8
+@alloc_a09f602db8a52369749e219f1b3089d4 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_45f94fa0a64992ed32e703b1a4fa2d6a, [16 x i8] c"\9F\00\00\00\00\00\00\00X\00\00\00\09\00\00\00" }>, align 8
+@alloc_91fd0bf12a6b37569a491a103e19c0a2 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_45f94fa0a64992ed32e703b1a4fa2d6a, [16 x i8] c"\9F\00\00\00\00\00\00\00a\00\00\00\09\00\00\00" }>, align 8
+@alloc_5ddb6312eed93fa86079b9df845e695b = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_45f94fa0a64992ed32e703b1a4fa2d6a, [16 x i8] c"\9F\00\00\00\00\00\00\006\00\00\00\09\00\00\00" }>, align 8
+
+define internal { ptr, ptr } @_RNvCsahIYSK1wfeh_29exp_a_multi_supertrait_vtable11upcast_to_a(ptr %r.0, ptr align 8 %r.1) unnamed_addr #0 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %r.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %r.1, 1
+  ret { ptr, ptr } %1
+}
+
+define internal { ptr, ptr } @_RNvCsahIYSK1wfeh_29exp_a_multi_supertrait_vtable11upcast_to_b(ptr %r.0, ptr align 8 %r.1) unnamed_addr #0 {
+start:
+  %0 = getelementptr inbounds i8, ptr %r.1, i64 40
+  %_0.1 = load ptr, ptr %0, align 8, !invariant.load !5, !nonnull !5
+  %1 = insertvalue { ptr, ptr } poison, ptr %r.0, 0
+  %2 = insertvalue { ptr, ptr } %1, ptr %_0.1, 1
+  ret { ptr, ptr } %2
+}
+
+define internal { ptr, ptr } @_RNvCsahIYSK1wfeh_29exp_a_multi_supertrait_vtable15make_vacant_dyn(ptr align 16 %r) unnamed_addr #0 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %r, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr @vtable.1, 1
+  ret { ptr, ptr } %1
+}
+
+define internal { ptr, ptr } @_RNvCsahIYSK1wfeh_29exp_a_multi_supertrait_vtable15upcast_tri_to_a(ptr %r.0, ptr align 8 %r.1) unnamed_addr #0 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %r.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %r.1, 1
+  ret { ptr, ptr } %1
+}
+
+define internal { ptr, ptr } @_RNvCsahIYSK1wfeh_29exp_a_multi_supertrait_vtable15upcast_tri_to_b(ptr %r.0, ptr align 8 %r.1) unnamed_addr #0 {
+start:
+  %0 = getelementptr inbounds i8, ptr %r.1, i64 40
+  %_0.1 = load ptr, ptr %0, align 8, !invariant.load !5, !nonnull !5
+  %1 = insertvalue { ptr, ptr } poison, ptr %r.0, 0
+  %2 = insertvalue { ptr, ptr } %1, ptr %_0.1, 1
+  ret { ptr, ptr } %2
+}
+
+define internal { ptr, ptr } @_RNvCsahIYSK1wfeh_29exp_a_multi_supertrait_vtable15upcast_tri_to_c(ptr %r.0, ptr align 8 %r.1) unnamed_addr #0 {
+start:
+  %0 = getelementptr inbounds i8, ptr %r.1, i64 64
+  %_0.1 = load ptr, ptr %0, align 8, !invariant.load !5, !nonnull !5
+  %1 = insertvalue { ptr, ptr } poison, ptr %r.0, 0
+  %2 = insertvalue { ptr, ptr } %1, ptr %_0.1, 1
+  ret { ptr, ptr } %2
+}
+
+define internal { ptr, ptr } @_RNvCsahIYSK1wfeh_29exp_a_multi_supertrait_vtable23upcast_after_empty_to_b(ptr %r.0, ptr align 8 %r.1) unnamed_addr #0 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %r.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %r.1, 1
+  ret { ptr, ptr } %1
+}
+
+=== exp_a (-O2) ===
+@vtable.0 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNSNvYNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0INtNtNtCs8b4M6GsfcPr_4core3ops8function6FnOnceuE9call_once6vtableCsahIYSK1wfeh_29exp_a_multi_supertrait_vtable, ptr @_RNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0CsahIYSK1wfeh_29exp_a_multi_supertrait_vtable, ptr @_RNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0CsahIYSK1wfeh_29exp_a_multi_supertrait_vtable }>, align 8
+@alloc_efdc6553ec6a3212e83f34d46446f0e5 = private unnamed_addr constant <{ [24 x i8], ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00", ptr @_RNvXs_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB4_4ImplNtB4_6SuperB1b }>, align 8
+@vtable.2 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00", ptr @_RNvXCsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB2_4ImplNtB2_6SuperA1a, ptr @_RNvXs_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB4_4ImplNtB4_6SuperB1b, ptr @alloc_efdc6553ec6a3212e83f34d46446f0e5, ptr @_RNvXs1_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB5_4ImplNtB5_3Sub3sub }>, align 8
+@vtable.3 = private unnamed_addr constant <{ [24 x i8], ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00", ptr @_RNvXs_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB4_4ImplNtB4_6SuperB1b, ptr @_RNvXs4_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB5_4ImplNtB5_13SubAfterEmpty5sub_e }>, align 8
+@alloc_6a8ed819c37a9878fc9e19e24a7ba34b = private unnamed_addr constant <{ [24 x i8], ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00", ptr @_RNvXs0_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB5_4ImplNtB5_6SuperC2c1, ptr @_RNvXs0_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB5_4ImplNtB5_6SuperC2c2 }>, align 8
+@vtable.4 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr, ptr, ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00\10\00\00\00\00\00\00\00", ptr @_RNvXCsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB2_4ImplNtB2_6SuperA1a, ptr @_RNvXs_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB4_4ImplNtB4_6SuperB1b, ptr @alloc_efdc6553ec6a3212e83f34d46446f0e5, ptr @_RNvXs0_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB5_4ImplNtB5_6SuperC2c1, ptr @_RNvXs0_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB5_4ImplNtB5_6SuperC2c2, ptr @alloc_6a8ed819c37a9878fc9e19e24a7ba34b, ptr @_RNvXs2_CsahIYSK1wfeh_29exp_a_multi_supertrait_vtableNtB5_4ImplNtB5_3Tri3tri }>, align 8
+
+define internal fastcc { ptr, ptr } @_RNvCsahIYSK1wfeh_29exp_a_multi_supertrait_vtable11upcast_to_a(ptr noundef nonnull %r.0, ptr noalias noundef nonnull readonly align 8 captures(address, read_provenance) dereferenceable(48) %r.1) unnamed_addr #0 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %r.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %r.1, 1
+  ret { ptr, ptr } %1
+}
+
+define internal fastcc { ptr, ptr } @_RNvCsahIYSK1wfeh_29exp_a_multi_supertrait_vtable11upcast_to_b(ptr noundef nonnull %r.0, ptr noalias noundef nonnull readonly align 8 captures(none) dereferenceable(48) %r.1) unnamed_addr #4 {
+start:
+  %0 = getelementptr inbounds nuw i8, ptr %r.1, i64 40
+  %_0.1 = load ptr, ptr %0, align 8, !invariant.load !6, !nonnull !6
+  %1 = insertvalue { ptr, ptr } poison, ptr %r.0, 0
+  %2 = insertvalue { ptr, ptr } %1, ptr %_0.1, 1
+  ret { ptr, ptr } %2
+}
+
+define internal fastcc ptr @_RNvCsahIYSK1wfeh_29exp_a_multi_supertrait_vtable15make_vacant_dyn(ptr noalias noundef nonnull readonly align 16 captures(address, read_provenance) dereferenceable(16) %r) unnamed_addr #0 {
+start:
+  ret ptr %r
+}
+
+define internal fastcc { ptr, ptr } @_RNvCsahIYSK1wfeh_29exp_a_multi_supertrait_vtable15upcast_tri_to_a(ptr noundef nonnull %r.0, ptr noalias noundef nonnull readonly align 8 captures(address, read_provenance) dereferenceable(64) %r.1) unnamed_addr #0 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %r.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %r.1, 1
+  ret { ptr, ptr } %1
+}
+
+define internal fastcc { ptr, ptr } @_RNvCsahIYSK1wfeh_29exp_a_multi_supertrait_vtable15upcast_tri_to_b(ptr noundef nonnull %r.0, ptr noalias noundef nonnull readonly align 8 captures(none) dereferenceable(64) %r.1) unnamed_addr #4 {
+start:
+  %0 = getelementptr inbounds nuw i8, ptr %r.1, i64 40
+  %_0.1 = load ptr, ptr %0, align 8, !invariant.load !6, !nonnull !6
+  %1 = insertvalue { ptr, ptr } poison, ptr %r.0, 0
+  %2 = insertvalue { ptr, ptr } %1, ptr %_0.1, 1
+  ret { ptr, ptr } %2
+}
+
+define internal fastcc { ptr, ptr } @_RNvCsahIYSK1wfeh_29exp_a_multi_supertrait_vtable15upcast_tri_to_c(ptr noundef nonnull %r.0, ptr noalias noundef nonnull readonly align 8 captures(none) dereferenceable(64) %r.1) unnamed_addr #4 {
+start:
+  %0 = getelementptr inbounds nuw i8, ptr %r.1, i64 64
+  %_0.1 = load ptr, ptr %0, align 8, !invariant.load !6, !nonnull !6
+  %1 = insertvalue { ptr, ptr } poison, ptr %r.0, 0
+  %2 = insertvalue { ptr, ptr } %1, ptr %_0.1, 1
+  ret { ptr, ptr } %2
+}
+
+define internal fastcc { ptr, ptr } @_RNvCsahIYSK1wfeh_29exp_a_multi_supertrait_vtable23upcast_after_empty_to_b(ptr noundef nonnull %r.0, ptr noalias noundef nonnull readonly align 8 captures(address, read_provenance) dereferenceable(40) %r.1) unnamed_addr #0 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %r.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %r.1, 1
+  ret { ptr, ptr } %1
+}
+
+=== exp_b (-O0) ===
+@alloc_f21667751969779c11bc6d63af38f6c5 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_0307eab23d247c95081c7747e6534b4d, [16 x i8] c"\96\00\00\00\00\00\00\00\A4\00\00\00\05\00\00\00" }>, align 8
+@alloc_bed8b433241c12033d61ed9776cb72b0 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_0307eab23d247c95081c7747e6534b4d, [16 x i8] c"\96\00\00\00\00\00\00\00\A5\00\00\00\0E\00\00\00" }>, align 8
+@alloc_fc195923e78be83d357207be5caca7b8 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_8c0c55ad4cc76bcc7f5be0bc3de67bf4, [16 x i8] c"\91\00\00\00\00\00\00\00\13\02\00\00\05\00\00\00" }>, align 8
+@vtable.0 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNSNvYNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0INtNtNtCs8b4M6GsfcPr_4core3ops8function6FnOnceuE9call_once6vtableCs1GZ0cyf2gcG_20exp_b_diamond_upcast, ptr @_RNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0Cs1GZ0cyf2gcG_20exp_b_diamond_upcast, ptr @_RNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0Cs1GZ0cyf2gcG_20exp_b_diamond_upcast }>, align 8
+@alloc_b355297d77a4f4bd101210c9dbe4ae5f = private unnamed_addr constant <{ [24 x i8], ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXCs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB2_4NodeNtB2_4Root4root, ptr @_RNvXs1_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeNtB5_5Right5right }>, align 8
+@vtable.1 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXCs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB2_4NodeNtB2_4Root4root, ptr @_RNvXs0_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeNtB5_4Left4left, ptr @_RNvXs1_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeNtB5_5Right5right, ptr @alloc_b355297d77a4f4bd101210c9dbe4ae5f, ptr @_RNvXs2_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeNtB5_7Diamond3dia }>, align 8
+@vtable.2 = private unnamed_addr constant <{ [24 x i8], ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXCs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB2_4NodeNtB2_4Root4root }>, align 8
+@alloc_b98c2d3e5bbf2717bf1384dc9060a86e = private unnamed_addr constant <{ [24 x i8], ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB4_4NodeNtB4_7Sibling3sib }>, align 8
+@alloc_13dd57aacbf9493932c0c22d0151a66a = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB4_4NodeNtB4_7Sibling3sib, ptr @_RNvXCs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB2_4NodeNtB2_4Root4root, ptr @vtable.2, ptr @_RNvXs3_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeNtB5_11RightSecond4rsec }>, align 8
+@vtable.3 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr, ptr, ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXCs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB2_4NodeNtB2_4Root4root, ptr @_RNvXs0_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeNtB5_4Left4left, ptr @_RNvXs_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB4_4NodeNtB4_7Sibling3sib, ptr @alloc_b98c2d3e5bbf2717bf1384dc9060a86e, ptr @_RNvXs3_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeNtB5_11RightSecond4rsec, ptr @alloc_13dd57aacbf9493932c0c22d0151a66a, ptr @_RNvXs4_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeNtB5_11DiamondAsym4dia2 }>, align 8
+@alloc_92fc1d88098ba5aa3cd93325952e0051 = private unnamed_addr constant <{ [24 x i8], ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs6_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeINtB5_7GenRoottE3tag }>, align 8
+@vtable.4 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs5_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeINtB5_7GenRoothE3tag, ptr @_RNvXs6_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeINtB5_7GenRoottE3tag, ptr @alloc_92fc1d88098ba5aa3cd93325952e0051, ptr @_RNvXs7_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeNtB5_8AmbigDia5ambig }>, align 8
+@alloc_3bd927f2fcb3bf3d18fdb1ba1f487cdd = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_4d84828c77184f56e9b283ca33ed5c60, [16 x i8] c"\97\00\00\00\00\00\00\00^\05\00\00\0D\00\00\00" }>, align 8
+@alloc_a7b0542af1592ebb1e6ee0f1e3fefc34 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_0307eab23d247c95081c7747e6534b4d, [16 x i8] c"\96\00\00\00\00\00\00\00-\00\00\00\09\00\00\00" }>, align 8
+@alloc_ad2c3cc2abe7be076b3f8b7df6c4772e = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_0307eab23d247c95081c7747e6534b4d, [16 x i8] c"\96\00\00\00\00\00\00\00;\00\00\00\09\00\00\00" }>, align 8
+@alloc_52f8b2e473c9b2567273759d6a9a5caa = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_0307eab23d247c95081c7747e6534b4d, [16 x i8] c"\96\00\00\00\00\00\00\00B\00\00\00\09\00\00\00" }>, align 8
+@alloc_4365083bb1dfb860d661b1976f17128e = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_0307eab23d247c95081c7747e6534b4d, [16 x i8] c"\96\00\00\00\00\00\00\00I\00\00\00\09\00\00\00" }>, align 8
+@alloc_acb5a2193bc09c5de282bf7115987f55 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_0307eab23d247c95081c7747e6534b4d, [16 x i8] c"\96\00\00\00\00\00\00\00P\00\00\00\09\00\00\00" }>, align 8
+@alloc_d334720ce1834ad98cbe8ca6ceb14ba7 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_0307eab23d247c95081c7747e6534b4d, [16 x i8] c"\96\00\00\00\00\00\00\00W\00\00\00\09\00\00\00" }>, align 8
+@alloc_91a05b97c8cc1bbde486a798982bc182 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_0307eab23d247c95081c7747e6534b4d, [16 x i8] c"\96\00\00\00\00\00\00\00l\00\00\00\09\00\00\00" }>, align 8
+@alloc_5ea77d61a7dd47ff9f793242f3643591 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_0307eab23d247c95081c7747e6534b4d, [16 x i8] c"\96\00\00\00\00\00\00\004\00\00\00\09\00\00\00" }>, align 8
+
+define internal { ptr, ptr } @_RNvCs1GZ0cyf2gcG_20exp_b_diamond_upcast11ambig_to_u8(ptr %d.0, ptr align 8 %d.1) unnamed_addr #0 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %d.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %d.1, 1
+  ret { ptr, ptr } %1
+}
+
+define internal { ptr, ptr } @_RNvCs1GZ0cyf2gcG_20exp_b_diamond_upcast11dia_to_left(ptr %d.0, ptr align 8 %d.1) unnamed_addr #0 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %d.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %d.1, 1
+  ret { ptr, ptr } %1
+}
+
+define internal { ptr, ptr } @_RNvCs1GZ0cyf2gcG_20exp_b_diamond_upcast11dia_to_root(ptr %d.0, ptr align 8 %d.1) unnamed_addr #0 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %d.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %d.1, 1
+  ret { ptr, ptr } %1
+}
+
+define internal { ptr, ptr } @_RNvCs1GZ0cyf2gcG_20exp_b_diamond_upcast12ambig_to_u16(ptr %d.0, ptr align 8 %d.1) unnamed_addr #0 {
+start:
+  %0 = getelementptr inbounds i8, ptr %d.1, i64 40
+  %_0.1 = load ptr, ptr %0, align 8, !invariant.load !6, !nonnull !6
+  %1 = insertvalue { ptr, ptr } poison, ptr %d.0, 0
+  %2 = insertvalue { ptr, ptr } %1, ptr %_0.1, 1
+  ret { ptr, ptr } %2
+}
+
+define internal { ptr, ptr } @_RNvCs1GZ0cyf2gcG_20exp_b_diamond_upcast12asym_to_root(ptr %d.0, ptr align 8 %d.1) unnamed_addr #0 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %d.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %d.1, 1
+  ret { ptr, ptr } %1
+}
+
+define internal { ptr, ptr } @_RNvCs1GZ0cyf2gcG_20exp_b_diamond_upcast12dia_to_right(ptr %d.0, ptr align 8 %d.1) unnamed_addr #0 {
+start:
+  %0 = getelementptr inbounds i8, ptr %d.1, i64 48
+  %_0.1 = load ptr, ptr %0, align 8, !invariant.load !6, !nonnull !6
+  %1 = insertvalue { ptr, ptr } poison, ptr %d.0, 0
+  %2 = insertvalue { ptr, ptr } %1, ptr %_0.1, 1
+  ret { ptr, ptr } %2
+}
+
+define internal { ptr, ptr } @_RNvCs1GZ0cyf2gcG_20exp_b_diamond_upcast12left_to_root(ptr %l.0, ptr align 8 %l.1) unnamed_addr #0 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %l.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %l.1, 1
+  ret { ptr, ptr } %1
+}
+
+define internal { ptr, ptr } @_RNvCs1GZ0cyf2gcG_20exp_b_diamond_upcast13right_to_root(ptr %r.0, ptr align 8 %r.1) unnamed_addr #0 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %r.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %r.1, 1
+  ret { ptr, ptr } %1
+}
+
+define internal { ptr, ptr } @_RNvCs1GZ0cyf2gcG_20exp_b_diamond_upcast20asym_to_right_second(ptr %d.0, ptr align 8 %d.1) unnamed_addr #0 {
+start:
+  %0 = getelementptr inbounds i8, ptr %d.1, i64 64
+  %_0.1 = load ptr, ptr %0, align 8, !invariant.load !6, !nonnull !6
+  %1 = insertvalue { ptr, ptr } poison, ptr %d.0, 0
+  %2 = insertvalue { ptr, ptr } %1, ptr %_0.1, 1
+  ret { ptr, ptr } %2
+}
+
+define internal { ptr, ptr } @_RNvCs1GZ0cyf2gcG_20exp_b_diamond_upcast20right_second_to_root(ptr %r.0, ptr align 8 %r.1) unnamed_addr #0 {
+start:
+  %0 = getelementptr inbounds i8, ptr %r.1, i64 40
+  %_0.1 = load ptr, ptr %0, align 8, !invariant.load !6, !nonnull !6
+  %1 = insertvalue { ptr, ptr } poison, ptr %r.0, 0
+  %2 = insertvalue { ptr, ptr } %1, ptr %_0.1, 1
+  ret { ptr, ptr } %2
+}
+
+=== exp_b (-O2) ===
+@vtable.0 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNSNvYNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0INtNtNtCs8b4M6GsfcPr_4core3ops8function6FnOnceuE9call_once6vtableCs1GZ0cyf2gcG_20exp_b_diamond_upcast, ptr @_RNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0Cs1GZ0cyf2gcG_20exp_b_diamond_upcast, ptr @_RNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0Cs1GZ0cyf2gcG_20exp_b_diamond_upcast }>, align 8
+@alloc_b355297d77a4f4bd101210c9dbe4ae5f = private unnamed_addr constant <{ [24 x i8], ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXCs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB2_4NodeNtB2_4Root4root, ptr @_RNvXs1_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeNtB5_5Right5right }>, align 8
+@vtable.1 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXCs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB2_4NodeNtB2_4Root4root, ptr @_RNvXs0_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeNtB5_4Left4left, ptr @_RNvXs1_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeNtB5_5Right5right, ptr @alloc_b355297d77a4f4bd101210c9dbe4ae5f, ptr @_RNvXs2_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeNtB5_7Diamond3dia }>, align 8
+@vtable.2 = private unnamed_addr constant <{ [24 x i8], ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXCs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB2_4NodeNtB2_4Root4root }>, align 8
+@alloc_b98c2d3e5bbf2717bf1384dc9060a86e = private unnamed_addr constant <{ [24 x i8], ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB4_4NodeNtB4_7Sibling3sib }>, align 8
+@alloc_13dd57aacbf9493932c0c22d0151a66a = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB4_4NodeNtB4_7Sibling3sib, ptr @_RNvXCs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB2_4NodeNtB2_4Root4root, ptr @vtable.2, ptr @_RNvXs3_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeNtB5_11RightSecond4rsec }>, align 8
+@vtable.3 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr, ptr, ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXCs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB2_4NodeNtB2_4Root4root, ptr @_RNvXs0_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeNtB5_4Left4left, ptr @_RNvXs_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB4_4NodeNtB4_7Sibling3sib, ptr @alloc_b98c2d3e5bbf2717bf1384dc9060a86e, ptr @_RNvXs3_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeNtB5_11RightSecond4rsec, ptr @alloc_13dd57aacbf9493932c0c22d0151a66a, ptr @_RNvXs4_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeNtB5_11DiamondAsym4dia2 }>, align 8
+@alloc_92fc1d88098ba5aa3cd93325952e0051 = private unnamed_addr constant <{ [24 x i8], ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs6_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeINtB5_7GenRoottE3tag }>, align 8
+@vtable.4 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs5_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeINtB5_7GenRoothE3tag, ptr @_RNvXs6_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeINtB5_7GenRoottE3tag, ptr @alloc_92fc1d88098ba5aa3cd93325952e0051, ptr @_RNvXs7_Cs1GZ0cyf2gcG_20exp_b_diamond_upcastNtB5_4NodeNtB5_8AmbigDia5ambig }>, align 8
+
+define internal fastcc { ptr, ptr } @_RNvCs1GZ0cyf2gcG_20exp_b_diamond_upcast11ambig_to_u8(ptr noundef nonnull %d.0, ptr noalias noundef nonnull readonly align 8 captures(address, read_provenance) dereferenceable(40) %d.1) unnamed_addr #0 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %d.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %d.1, 1
+  ret { ptr, ptr } %1
+}
+
+define internal fastcc { ptr, ptr } @_RNvCs1GZ0cyf2gcG_20exp_b_diamond_upcast11dia_to_left(ptr noundef nonnull %d.0, ptr noalias noundef nonnull readonly align 8 captures(address, read_provenance) dereferenceable(56) %d.1) unnamed_addr #0 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %d.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %d.1, 1
+  ret { ptr, ptr } %1
+}
+
+define internal fastcc { ptr, ptr } @_RNvCs1GZ0cyf2gcG_20exp_b_diamond_upcast12ambig_to_u16(ptr noundef nonnull %d.0, ptr noalias noundef nonnull readonly align 8 captures(none) dereferenceable(40) %d.1) unnamed_addr #4 {
+start:
+  %0 = getelementptr inbounds nuw i8, ptr %d.1, i64 40
+  %_0.1 = load ptr, ptr %0, align 8, !invariant.load !6, !nonnull !6
+  %1 = insertvalue { ptr, ptr } poison, ptr %d.0, 0
+  %2 = insertvalue { ptr, ptr } %1, ptr %_0.1, 1
+  ret { ptr, ptr } %2
+}
+
+define internal fastcc { ptr, ptr } @_RNvCs1GZ0cyf2gcG_20exp_b_diamond_upcast12asym_to_root(ptr noundef nonnull %d.0, ptr noalias noundef nonnull readonly align 8 captures(address, read_provenance) dereferenceable(64) %d.1) unnamed_addr #0 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %d.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %d.1, 1
+  ret { ptr, ptr } %1
+}
+
+define internal fastcc { ptr, ptr } @_RNvCs1GZ0cyf2gcG_20exp_b_diamond_upcast12dia_to_right(ptr noundef nonnull %d.0, ptr noalias noundef nonnull readonly align 8 captures(none) dereferenceable(56) %d.1) unnamed_addr #4 {
+start:
+  %0 = getelementptr inbounds nuw i8, ptr %d.1, i64 48
+  %_0.1 = load ptr, ptr %0, align 8, !invariant.load !6, !nonnull !6
+  %1 = insertvalue { ptr, ptr } poison, ptr %d.0, 0
+  %2 = insertvalue { ptr, ptr } %1, ptr %_0.1, 1
+  ret { ptr, ptr } %2
+}
+
+define internal fastcc { ptr, ptr } @_RNvCs1GZ0cyf2gcG_20exp_b_diamond_upcast20asym_to_right_second(ptr noundef nonnull %d.0, ptr noalias noundef nonnull readonly align 8 captures(none) dereferenceable(64) %d.1) unnamed_addr #4 {
+start:
+  %0 = getelementptr inbounds nuw i8, ptr %d.1, i64 64
+  %_0.1 = load ptr, ptr %0, align 8, !invariant.load !6, !nonnull !6
+  %1 = insertvalue { ptr, ptr } poison, ptr %d.0, 0
+  %2 = insertvalue { ptr, ptr } %1, ptr %_0.1, 1
+  ret { ptr, ptr } %2
+}
+
+define internal fastcc { ptr, ptr } @_RNvCs1GZ0cyf2gcG_20exp_b_diamond_upcast20right_second_to_root(ptr noundef nonnull %r.0, ptr noalias noundef nonnull readonly align 8 captures(none) dereferenceable(48) %r.1) unnamed_addr #4 {
+start:
+  %0 = getelementptr inbounds nuw i8, ptr %r.1, i64 40
+  %_0.1 = load ptr, ptr %0, align 8, !invariant.load !6, !nonnull !6
+  %1 = insertvalue { ptr, ptr } poison, ptr %r.0, 0
+  %2 = insertvalue { ptr, ptr } %1, ptr %_0.1, 1
+  ret { ptr, ptr } %2
+}
+
+=== exp_c (-O0) ===
+@vtable.0 = private unnamed_addr constant <{ [24 x i8], ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs1g_NtCs8b4M6GsfcPr_4core3fmtRNtNtCs8jjFDZd5IFg_5alloc6string6StringNtB6_5Debug3fmtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc }>, align 8
+@vtable.1 = private unnamed_addr constant <{ [24 x i8], ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs1g_NtCs8b4M6GsfcPr_4core3fmtRTjjENtB6_5Debug3fmtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc }>, align 8
+@vtable.2 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNSNvYNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0INtNtNtCs8b4M6GsfcPr_4core3ops8function6FnOnceuE9call_once6vtableCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc, ptr @_RNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0Csln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc, ptr @_RNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0Csln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc }>, align 8
+@alloc_bf69d7ea55eac7a9ed3d6598ed0545e7 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_efbdeca105d3bdf21fa2ddff9f136ab5, [16 x i8] c"\95\00\00\00\00\00\00\00C\0F\00\00\18\00\00\00" }>, align 8
+@alloc_a90ea2605f3c32c86b53085f9a7c08cf = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_efbdeca105d3bdf21fa2ddff9f136ab5, [16 x i8] c"\95\00\00\00\00\00\00\00D\0F\00\00\17\00\00\00" }>, align 8
+@alloc_bd3476c16e04014adabc3e03e41b784b = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_efbdeca105d3bdf21fa2ddff9f136ab5, [16 x i8] c"\95\00\00\00\00\00\00\004\0F\00\00\18\00\00\00" }>, align 8
+@alloc_d1365c27e5b4385c4f70569ff757218e = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_efbdeca105d3bdf21fa2ddff9f136ab5, [16 x i8] c"\95\00\00\00\00\00\00\005\0F\00\00\17\00\00\00" }>, align 8
+@alloc_5353bce365716d7b4165f4dd4e57359c = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_efbdeca105d3bdf21fa2ddff9f136ab5, [16 x i8] c"\95\00\00\00\00\00\00\00\B9\0F\00\00\1D\00\00\00" }>, align 8
+@alloc_a27986cd09c2834e03b2d3f009c70e68 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_efbdeca105d3bdf21fa2ddff9f136ab5, [16 x i8] c"\95\00\00\00\00\00\00\00\B8\0F\00\00\1C\00\00\00" }>, align 8
+@alloc_6c4d13118498404e0f66ac15e46f0efd = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_181dc03254ba33e54e687a4c836479f3, [16 x i8] c"\92\00\00\00\00\00\00\00\C0\0C\00\00\0D\00\00\00" }>, align 8
+@alloc_a30bc6c37bde9da6d4b0c5c5f2fea12d = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_181dc03254ba33e54e687a4c836479f3, [16 x i8] c"\92\00\00\00\00\00\00\00\AE\08\00\00\09\00\00\00" }>, align 8
+@alloc_8a7ad60d303c4da2e9fb34854721e21c = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_e716c0406e532cf17fd18d4681c922f9, [16 x i8] c"\90\00\00\00\00\00\00\00\B0\01\00\00\15\00\00\00" }>, align 8
+@alloc_fc195923e78be83d357207be5caca7b8 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_8c0c55ad4cc76bcc7f5be0bc3de67bf4, [16 x i8] c"\91\00\00\00\00\00\00\00\13\02\00\00\05\00\00\00" }>, align 8
+@alloc_641e4007cac3380d636304b0e43cc2a5 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5ec13ded00de5a8d88cc8cb0d243cad9, [16 x i8] c"\9F\00\00\00\00\00\00\00\1A\00\00\00\01\00\00\00" }>, align 8
+@alloc_f90b4c338835155d0381ac1dea9a8f83 = private unnamed_addr constant <{ ptr, [16 x i8], ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc11DropTrackerEBD_, [16 x i8] c" \00\00\00\00\00\00\00 \00\00\00\00\00\00\00", ptr @_RNvXs2_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_6SuperB4id_b }>, align 8
+@vtable.3 = private unnamed_addr constant <{ ptr, [16 x i8], ptr, ptr, ptr, ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc11DropTrackerEBD_, [16 x i8] c" \00\00\00\00\00\00\00 \00\00\00\00\00\00\00", ptr @_RNvXs1_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_6SuperA4id_a, ptr @_RNvXs2_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_6SuperB4id_b, ptr @alloc_f90b4c338835155d0381ac1dea9a8f83, ptr @_RNvXs3_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_3Sub6id_sub }>, align 8
+@alloc_9304a8b263c7e8289db008cb80605d7e = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5ec13ded00de5a8d88cc8cb0d243cad9, [16 x i8] c"\9F\00\00\00\00\00\00\00\BE\00\00\00\10\00\00\00" }>, align 8
+@alloc_3107e4ea23351f6565e0ed71d050ba72 = private unnamed_addr constant <{ ptr, [16 x i8], ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc11DropTrackerEBD_, [16 x i8] c" \00\00\00\00\00\00\00 \00\00\00\00\00\00\00", ptr @_RNvXs6_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_5Prim22p2 }>, align 8
+@alloc_39e2e06bd2db61d8ccc455560f5ff74a = private unnamed_addr constant <{ ptr, [16 x i8], ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc11DropTrackerEBD_, [16 x i8] c" \00\00\00\00\00\00\00 \00\00\00\00\00\00\00", ptr @_RNvXs5_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_5Prim12p1 }>, align 8
+@alloc_84c0c7460a83e8ad170788389a086b47 = private unnamed_addr constant <{ ptr, [16 x i8], ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc11DropTrackerEBD_, [16 x i8] c" \00\00\00\00\00\00\00 \00\00\00\00\00\00\00", ptr @_RNvXs7_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_5Tier02t0 }>, align 8
+@alloc_a270d02da28235e1facba453ebea94ac = private unnamed_addr constant <{ ptr, [16 x i8], ptr, ptr, ptr, ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc11DropTrackerEBD_, [16 x i8] c" \00\00\00\00\00\00\00 \00\00\00\00\00\00\00", ptr @_RNvXs5_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_5Prim12p1, ptr @_RNvXs7_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_5Tier02t0, ptr @alloc_84c0c7460a83e8ad170788389a086b47, ptr @_RNvXs8_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_5Tier12t1 }>, align 8
+@alloc_80aa875b3b7396eb7b15f0eef91f9148 = private unnamed_addr constant <{ ptr, [16 x i8], ptr, ptr, ptr, ptr, ptr, ptr, ptr, ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc11DropTrackerEBD_, [16 x i8] c" \00\00\00\00\00\00\00 \00\00\00\00\00\00\00", ptr @_RNvXs6_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_5Prim22p2, ptr @_RNvXs5_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_5Prim12p1, ptr @alloc_39e2e06bd2db61d8ccc455560f5ff74a, ptr @_RNvXs7_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_5Tier02t0, ptr @alloc_84c0c7460a83e8ad170788389a086b47, ptr @_RNvXs8_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_5Tier12t1, ptr @alloc_a270d02da28235e1facba453ebea94ac, ptr @_RNvXs9_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_5Tier22t2 }>, align 8
+@vtable.4 = private unnamed_addr constant <{ ptr, [16 x i8], ptr, ptr, ptr, ptr, ptr, ptr, ptr, ptr, ptr, ptr, ptr, ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc11DropTrackerEBD_, [16 x i8] c" \00\00\00\00\00\00\00 \00\00\00\00\00\00\00", ptr @_RNvXs4_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_5Prim02p0, ptr @_RNvXs6_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_5Prim22p2, ptr @alloc_3107e4ea23351f6565e0ed71d050ba72, ptr @_RNvXs5_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_5Prim12p1, ptr @alloc_39e2e06bd2db61d8ccc455560f5ff74a, ptr @_RNvXs7_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_5Tier02t0, ptr @alloc_84c0c7460a83e8ad170788389a086b47, ptr @_RNvXs8_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_5Tier12t1, ptr @alloc_a270d02da28235e1facba453ebea94ac, ptr @_RNvXs9_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_5Tier22t2, ptr @alloc_80aa875b3b7396eb7b15f0eef91f9148, ptr @_RNvXsa_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_5Tier32t3 }>, align 8
+@alloc_3316c24d6206fcfda8a346d49751e0fe = private unnamed_addr constant <{ [24 x i8], ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00@\00\00\00\00\00\00\00 \00\00\00\00\00\00\00", ptr @_RNvXsc_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_9NoDropBigNtB5_6SuperB4id_b }>, align 8
+@vtable.5 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00@\00\00\00\00\00\00\00 \00\00\00\00\00\00\00", ptr @_RNvXsb_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_9NoDropBigNtB5_6SuperA4id_a, ptr @_RNvXsc_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_9NoDropBigNtB5_6SuperB4id_b, ptr @alloc_3316c24d6206fcfda8a346d49751e0fe, ptr @_RNvXsd_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_9NoDropBigNtB5_3Sub6id_sub }>, align 8
+@alloc_e237af35cc1b40fce361ae5d54230b0a = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5ec13ded00de5a8d88cc8cb0d243cad9, [16 x i8] c"\9F\00\00\00\00\00\00\00\D4\00\00\00\1A\00\00\00" }>, align 8
+@alloc_99bd57d8dba0a2651cea918e1d7c326f = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5ec13ded00de5a8d88cc8cb0d243cad9, [16 x i8] c"\9F\00\00\00\00\00\00\00\D5\00\00\00*\00\00\00" }>, align 8
+@vtable.6 = private unnamed_addr constant <{ ptr, [16 x i8], ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtCsfFlbQN6m3JZ_3std4sync6poison11PoisonErrorINtNtBE_5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1U_6string6StringEEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc, [16 x i8] c"\10\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs_NtNtCsfFlbQN6m3JZ_3std4sync6poisonINtB4_11PoisonErrorINtNtB4_5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1q_6string6StringEEENtNtCs8b4M6GsfcPr_4core3fmt5Debug3fmtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc }>, align 8
+@vtable.7 = private unnamed_addr constant <{ ptr, [16 x i8], ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtCsfFlbQN6m3JZ_3std4sync6poison11PoisonErrorINtNtBE_5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecTjjEEEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc, [16 x i8] c"\10\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs_NtNtCsfFlbQN6m3JZ_3std4sync6poisonINtB4_11PoisonErrorINtNtB4_5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecTjjEEEENtNtCs8b4M6GsfcPr_4core3fmt5Debug3fmtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc }>, align 8
+@alloc_149a1082c938088ecde0dd31ad862ad9 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_a203a36a9549c0de00297d631a11f923, [16 x i8] c"\96\00\00\00\00\00\00\00\A7\05\00\00\12\00\00\00" }>, align 8
+@alloc_33244a338704a4b78a31545e722130a9 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_a203a36a9549c0de00297d631a11f923, [16 x i8] c"\96\00\00\00\00\00\00\00\0D\01\00\00\1B\00\00\00" }>, align 8
+@alloc_3bd927f2fcb3bf3d18fdb1ba1f487cdd = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_4d84828c77184f56e9b283ca33ed5c60, [16 x i8] c"\97\00\00\00\00\00\00\00^\05\00\00\0D\00\00\00" }>, align 8
+@alloc_715c4efce98487832209b4c28b97f3d7 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_4c76be9a504a90e96970cd489d4a6a17, [16 x i8] c"\96\00\00\00\00\00\00\00\B6\01\00\00\15\00\00\00" }>, align 8
+@alloc_c007218ab5867c976c95d7d16fcdf820 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_051a43370f1b4c2d0492f523261324a4, [16 x i8] c"\91\00\00\00\00\00\00\00q\03\00\00*\00\00\00" }>, align 8
+@alloc_1983d619e7f2c1725d02d33aaa1cdaf9 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5ec13ded00de5a8d88cc8cb0d243cad9, [16 x i8] c"\9F\00\00\00\00\00\00\00S\00\00\00\14\00\00\00" }>, align 8
+@vtable.8 = private unnamed_addr constant <{ [24 x i8], ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs1g_NtCs8b4M6GsfcPr_4core3fmtRjNtB6_5Debug3fmtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc }>, align 8
+@alloc_e1b22377a332e16f5bb083e7824dbddd = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5ec13ded00de5a8d88cc8cb0d243cad9, [16 x i8] c"\9F\00\00\00\00\00\00\00c\00\00\00\09\00\00\00" }>, align 8
+@alloc_c5557895f46322580ce78fc0f95ff7dc = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5ec13ded00de5a8d88cc8cb0d243cad9, [16 x i8] c"\9F\00\00\00\00\00\00\00w\00\00\00\09\00\00\00" }>, align 8
+@alloc_5cf3c506531e6cffc9f22023a6e750ca = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5ec13ded00de5a8d88cc8cb0d243cad9, [16 x i8] c"\9F\00\00\00\00\00\00\00|\00\00\00\09\00\00\00" }>, align 8
+@alloc_10c0e1b0117b69ac3e940287cf033f94 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_3beb45b2802f43a78603727b13699296, [16 x i8] c"\97\00\00\00\00\00\00\00\7F\00\00\00\12\00\00\00" }>, align 8
+@alloc_8efdcea9e897b4f8e0a3e87931f16ada = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_7eec83d0a3d9be0c488dcb2e29cfc1f5, [16 x i8] c"\96\00\00\00\00\00\00\00\01\01\00\00\12\00\00\00" }>, align 8
+@alloc_27c6b6514d709e07387a4f31ccf1e118 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5ec13ded00de5a8d88cc8cb0d243cad9, [16 x i8] c"\9F\00\00\00\00\00\00\00\81\00\00\00\09\00\00\00" }>, align 8
+@alloc_d402914a4fe33b4ccd41123cd0215c7c = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5ec13ded00de5a8d88cc8cb0d243cad9, [16 x i8] c"\9F\00\00\00\00\00\00\00F\00\00\00\14\00\00\00" }>, align 8
+@alloc_0f37e08c577555021c4d8e60feac58ff = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_31f03dc13c74d109333ce58e29586f85, [16 x i8] c"\A1\00\00\00\00\00\00\00R\00\00\00\09\00\00\00" }>, align 8
+@alloc_2819012abb146cb70708c6c4cf014d27 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5ec13ded00de5a8d88cc8cb0d243cad9, [16 x i8] c"\9F\00\00\00\00\00\00\00\86\00\00\00\09\00\00\00" }>, align 8
+@alloc_3ad505768a7149af73ba06fb255198ba = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5ec13ded00de5a8d88cc8cb0d243cad9, [16 x i8] c"\9F\00\00\00\00\00\00\00\9B\00\00\00\09\00\00\00" }>, align 8
+@alloc_fa8db01ae02aace7408906a291e207ba = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_8c0c55ad4cc76bcc7f5be0bc3de67bf4, [16 x i8] c"\91\00\00\00\00\00\00\00\C0\02\00\00\09\00\00\00" }>, align 8
+@alloc_aaafa63246557e62de066e61df5e2405 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_1ad591c6649b6d9c7c096d368013b687, [16 x i8] c"\96\00\00\00\00\00\00\00\22\01\00\00#\00\00\00" }>, align 8
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueDNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3SubEL_EBE_(ptr %_1.0, ptr align 8 %_1.1) unnamed_addr #1 {
+start:
+  %0 = getelementptr inbounds i8, ptr %_1.1, i64 0
+  %1 = load ptr, ptr %0, align 8, !invariant.load !5
+  %2 = icmp ne ptr %1, null
+  br i1 %2, label %is_not_null, label %bb1
+
+is_not_null:                                      ; preds = %start
+  call void %1(ptr %_1.0) #21
+  br label %bb1
+
+bb1:                                              ; preds = %is_not_null, %start
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueDNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc5Tier0EL_EBE_(ptr %_1.0, ptr align 8 %_1.1) unnamed_addr #1 {
+start:
+  %0 = getelementptr inbounds i8, ptr %_1.1, i64 0
+  %1 = load ptr, ptr %0, align 8, !invariant.load !5
+  %2 = icmp ne ptr %1, null
+  br i1 %2, label %is_not_null, label %bb1
+
+is_not_null:                                      ; preds = %start
+  call void %1(ptr %_1.0) #21
+  br label %bb1
+
+bb1:                                              ; preds = %is_not_null, %start
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueDNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc6SuperBEL_EBE_(ptr %_1.0, ptr align 8 %_1.1) unnamed_addr #1 {
+start:
+  %0 = getelementptr inbounds i8, ptr %_1.1, i64 0
+  %1 = load ptr, ptr %0, align 8, !invariant.load !5
+  %2 = icmp ne ptr %1, null
+  br i1 %2, label %is_not_null, label %bb1
+
+is_not_null:                                      ; preds = %start
+  call void %1(ptr %_1.0) #21
+  br label %bb1
+
+bb1:                                              ; preds = %is_not_null, %start
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtB4_4cell10UnsafeCellINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB15_6string6StringEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) unnamed_addr #1 {
+start:
+; call core::ptr::drop_glue::<alloc::vec::Vec<alloc::string::String>>
+  call void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtBG_6string6StringEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1)
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtB4_4cell10UnsafeCellINtNtCs8jjFDZd5IFg_5alloc3vec3VecTjjEEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) unnamed_addr #1 {
+start:
+; call core::ptr::drop_glue::<alloc::vec::Vec<(usize, usize)>>
+  call void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc3vec3VecTjjEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1)
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtB4_6result6ResultINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecTjjEEEINtB12_12TryLockErrorBX_EEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) unnamed_addr #1 {
+start:
+  %_2 = load i64, ptr %_1, align 8
+  %0 = icmp eq i64 %_2, 0
+  br i1 %0, label %bb2, label %bb3
+
+bb2:                                              ; preds = %start
+  %1 = getelementptr inbounds i8, ptr %_1, i64 8
+; call core::ptr::drop_glue::<std::sync::poison::mutex::MutexGuard<alloc::vec::Vec<(usize, usize)>>>
+  call void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecTjjEEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %1)
+  br label %bb1
+
+bb3:                                              ; preds = %start
+  %2 = getelementptr inbounds i8, ptr %_1, i64 8
+; call core::ptr::drop_glue::<std::sync::poison::TryLockError<std::sync::poison::mutex::MutexGuard<alloc::vec::Vec<(usize, usize)>>>>
+  call void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtCsfFlbQN6m3JZ_3std4sync6poison12TryLockErrorINtNtBE_5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecTjjEEEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %2)
+  br label %bb1
+
+bb1:                                              ; preds = %bb3, %bb2
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtBG_6string6StringEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) unnamed_addr #1 personality ptr @rust_eh_personality {
+start:
+  %0 = alloca [16 x i8], align 8
+; invoke <alloc::vec::Vec<alloc::string::String> as core::ops::drop::Drop>::drop
+  invoke void @_RNvXso_NtCs8jjFDZd5IFg_5alloc3vecINtB5_3VecNtNtB7_6string6StringENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1)
+          to label %bb4 unwind label %cleanup
+
+bb3:                                              ; preds = %cleanup
+; invoke core::ptr::drop_glue::<alloc::raw_vec::RawVec<alloc::string::String>>
+  invoke void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc7raw_vec6RawVecNtNtBG_6string6StringEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) #22
+          to label %bb1 unwind label %terminate
+
+cleanup:                                          ; preds = %start
+  %1 = landingpad { ptr, i32 }
+          cleanup
+  %2 = extractvalue { ptr, i32 } %1, 0
+  %3 = extractvalue { ptr, i32 } %1, 1
+  store ptr %2, ptr %0, align 8
+  %4 = getelementptr inbounds i8, ptr %0, i64 8
+  store i32 %3, ptr %4, align 8
+  br label %bb3
+
+bb4:                                              ; preds = %start
+; call core::ptr::drop_glue::<alloc::raw_vec::RawVec<alloc::string::String>>
+  call void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc7raw_vec6RawVecNtNtBG_6string6StringEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1)
+  ret void
+
+terminate:                                        ; preds = %bb3
+  %5 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_in_cleanup
+  call void @_RNvNtCs8b4M6GsfcPr_4core9panicking16panic_in_cleanup() #23
+  unreachable
+
+bb1:                                              ; preds = %bb3
+  %6 = load ptr, ptr %0, align 8
+  %7 = getelementptr inbounds i8, ptr %0, i64 8
+  %8 = load i32, ptr %7, align 8
+  %9 = insertvalue { ptr, i32 } poison, ptr %6, 0
+  %10 = insertvalue { ptr, i32 } %9, i32 %8, 1
+  resume { ptr, i32 } %10
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc3vec3VecTjjEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) unnamed_addr #1 personality ptr @rust_eh_personality {
+start:
+  %0 = alloca [16 x i8], align 8
+; invoke <alloc::vec::Vec<(usize, usize)> as core::ops::drop::Drop>::drop
+  invoke void @_RNvXso_NtCs8jjFDZd5IFg_5alloc3vecINtB5_3VecTjjEENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1)
+          to label %bb4 unwind label %cleanup
+
+bb3:                                              ; preds = %cleanup
+; invoke core::ptr::drop_glue::<alloc::raw_vec::RawVec<(usize, usize)>>
+  invoke void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc7raw_vec6RawVecTjjEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) #22
+          to label %bb1 unwind label %terminate
+
+cleanup:                                          ; preds = %start
+  %1 = landingpad { ptr, i32 }
+          cleanup
+  %2 = extractvalue { ptr, i32 } %1, 0
+  %3 = extractvalue { ptr, i32 } %1, 1
+  store ptr %2, ptr %0, align 8
+  %4 = getelementptr inbounds i8, ptr %0, i64 8
+  store i32 %3, ptr %4, align 8
+  br label %bb3
+
+bb4:                                              ; preds = %start
+; call core::ptr::drop_glue::<alloc::raw_vec::RawVec<(usize, usize)>>
+  call void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc7raw_vec6RawVecTjjEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1)
+  ret void
+
+terminate:                                        ; preds = %bb3
+  %5 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_in_cleanup
+  call void @_RNvNtCs8b4M6GsfcPr_4core9panicking16panic_in_cleanup() #23
+  unreachable
+
+bb1:                                              ; preds = %bb3
+  %6 = load ptr, ptr %0, align 8
+  %7 = getelementptr inbounds i8, ptr %0, i64 8
+  %8 = load i32, ptr %7, align 8
+  %9 = insertvalue { ptr, i32 } poison, ptr %6, 0
+  %10 = insertvalue { ptr, i32 } %9, i32 %8, 1
+  resume { ptr, i32 } %10
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc3vec3VechEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) unnamed_addr #1 personality ptr @rust_eh_personality {
+start:
+  %0 = alloca [16 x i8], align 8
+; invoke <alloc::vec::Vec<u8> as core::ops::drop::Drop>::drop
+  invoke void @_RNvXso_NtCs8jjFDZd5IFg_5alloc3vecINtB5_3VechENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropCsfyNqZpOxG7m_5gimli(ptr align 8 %_1)
+          to label %bb4 unwind label %cleanup
+
+bb3:                                              ; preds = %cleanup
+; invoke core::ptr::drop_glue::<alloc::raw_vec::RawVec<u8>>
+  invoke void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc7raw_vec6RawVechEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) #22
+          to label %bb1 unwind label %terminate
+
+cleanup:                                          ; preds = %start
+  %1 = landingpad { ptr, i32 }
+          cleanup
+  %2 = extractvalue { ptr, i32 } %1, 0
+  %3 = extractvalue { ptr, i32 } %1, 1
+  store ptr %2, ptr %0, align 8
+  %4 = getelementptr inbounds i8, ptr %0, i64 8
+  store i32 %3, ptr %4, align 8
+  br label %bb3
+
+bb4:                                              ; preds = %start
+; call core::ptr::drop_glue::<alloc::raw_vec::RawVec<u8>>
+  call void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc7raw_vec6RawVechEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1)
+  ret void
+
+terminate:                                        ; preds = %bb3
+  %5 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_in_cleanup
+  call void @_RNvNtCs8b4M6GsfcPr_4core9panicking16panic_in_cleanup() #23
+  unreachable
+
+bb1:                                              ; preds = %bb3
+  %6 = load ptr, ptr %0, align 8
+  %7 = getelementptr inbounds i8, ptr %0, i64 8
+  %8 = load i32, ptr %7, align 8
+  %9 = insertvalue { ptr, i32 } poison, ptr %6, 0
+  %10 = insertvalue { ptr, i32 } %9, i32 %8, 1
+  resume { ptr, i32 } %10
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc5boxed3BoxDNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3SubEL_EEB1d_(ptr align 8 %_1) unnamed_addr #1 personality ptr @rust_eh_personality {
+start:
+  %0 = alloca [16 x i8], align 8
+  %_6.0 = load ptr, ptr %_1, align 8
+  %1 = getelementptr inbounds i8, ptr %_1, i64 8
+  %_6.1 = load ptr, ptr %1, align 8
+  %2 = getelementptr inbounds i8, ptr %_6.1, i64 0
+  %3 = load ptr, ptr %2, align 8, !invariant.load !5
+  %4 = icmp ne ptr %3, null
+  br i1 %4, label %is_not_null, label %bb3
+
+is_not_null:                                      ; preds = %start
+  invoke void %3(ptr %_6.0)
+          to label %bb3 unwind label %cleanup
+
+bb3:                                              ; preds = %is_not_null, %start
+; call <alloc::boxed::Box<dyn exp_c_box_upcast_drop_dealloc::Sub> as core::ops::drop::Drop>::drop
+  call void @_RNvXs8_NtCs8jjFDZd5IFg_5alloc5boxedINtB5_3BoxDNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3SubEL_ENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropBK_(ptr align 8 %_1) #21
+  ret void
+
+bb4:                                              ; preds = %cleanup
+; invoke <alloc::boxed::Box<dyn exp_c_box_upcast_drop_dealloc::Sub> as core::ops::drop::Drop>::drop
+  invoke void @_RNvXs8_NtCs8jjFDZd5IFg_5alloc5boxedINtB5_3BoxDNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3SubEL_ENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropBK_(ptr align 8 %_1) #22
+          to label %bb1 unwind label %terminate
+
+cleanup:                                          ; preds = %is_not_null
+  %5 = landingpad { ptr, i32 }
+          cleanup
+  %6 = extractvalue { ptr, i32 } %5, 0
+  %7 = extractvalue { ptr, i32 } %5, 1
+  store ptr %6, ptr %0, align 8
+  %8 = getelementptr inbounds i8, ptr %0, i64 8
+  store i32 %7, ptr %8, align 8
+  br label %bb4
+
+terminate:                                        ; preds = %bb4
+  %9 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_in_cleanup
+  call void @_RNvNtCs8b4M6GsfcPr_4core9panicking16panic_in_cleanup() #23
+  unreachable
+
+bb1:                                              ; preds = %bb4
+  %10 = load ptr, ptr %0, align 8
+  %11 = getelementptr inbounds i8, ptr %0, i64 8
+  %12 = load i32, ptr %11, align 8
+  %13 = insertvalue { ptr, i32 } poison, ptr %10, 0
+  %14 = insertvalue { ptr, i32 } %13, i32 %12, 1
+  resume { ptr, i32 } %14
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc5boxed3BoxDNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc5Tier0EL_EEB1d_(ptr align 8 %_1) unnamed_addr #1 personality ptr @rust_eh_personality {
+start:
+  %0 = alloca [16 x i8], align 8
+  %_6.0 = load ptr, ptr %_1, align 8
+  %1 = getelementptr inbounds i8, ptr %_1, i64 8
+  %_6.1 = load ptr, ptr %1, align 8
+  %2 = getelementptr inbounds i8, ptr %_6.1, i64 0
+  %3 = load ptr, ptr %2, align 8, !invariant.load !5
+  %4 = icmp ne ptr %3, null
+  br i1 %4, label %is_not_null, label %bb3
+
+is_not_null:                                      ; preds = %start
+  invoke void %3(ptr %_6.0)
+          to label %bb3 unwind label %cleanup
+
+bb3:                                              ; preds = %is_not_null, %start
+; call <alloc::boxed::Box<dyn exp_c_box_upcast_drop_dealloc::Tier0> as core::ops::drop::Drop>::drop
+  call void @_RNvXs8_NtCs8jjFDZd5IFg_5alloc5boxedINtB5_3BoxDNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc5Tier0EL_ENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropBK_(ptr align 8 %_1) #21
+  ret void
+
+bb4:                                              ; preds = %cleanup
+; invoke <alloc::boxed::Box<dyn exp_c_box_upcast_drop_dealloc::Tier0> as core::ops::drop::Drop>::drop
+  invoke void @_RNvXs8_NtCs8jjFDZd5IFg_5alloc5boxedINtB5_3BoxDNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc5Tier0EL_ENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropBK_(ptr align 8 %_1) #22
+          to label %bb1 unwind label %terminate
+
+cleanup:                                          ; preds = %is_not_null
+  %5 = landingpad { ptr, i32 }
+          cleanup
+  %6 = extractvalue { ptr, i32 } %5, 0
+  %7 = extractvalue { ptr, i32 } %5, 1
+  store ptr %6, ptr %0, align 8
+  %8 = getelementptr inbounds i8, ptr %0, i64 8
+  store i32 %7, ptr %8, align 8
+  br label %bb4
+
+terminate:                                        ; preds = %bb4
+  %9 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_in_cleanup
+  call void @_RNvNtCs8b4M6GsfcPr_4core9panicking16panic_in_cleanup() #23
+  unreachable
+
+bb1:                                              ; preds = %bb4
+  %10 = load ptr, ptr %0, align 8
+  %11 = getelementptr inbounds i8, ptr %0, i64 8
+  %12 = load i32, ptr %11, align 8
+  %13 = insertvalue { ptr, i32 } poison, ptr %10, 0
+  %14 = insertvalue { ptr, i32 } %13, i32 %12, 1
+  resume { ptr, i32 } %14
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc5boxed3BoxDNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc6SuperBEL_EEB1d_(ptr align 8 %_1) unnamed_addr #1 personality ptr @rust_eh_personality {
+start:
+  %0 = alloca [16 x i8], align 8
+  %_6.0 = load ptr, ptr %_1, align 8
+  %1 = getelementptr inbounds i8, ptr %_1, i64 8
+  %_6.1 = load ptr, ptr %1, align 8
+  %2 = getelementptr inbounds i8, ptr %_6.1, i64 0
+  %3 = load ptr, ptr %2, align 8, !invariant.load !5
+  %4 = icmp ne ptr %3, null
+  br i1 %4, label %is_not_null, label %bb3
+
+is_not_null:                                      ; preds = %start
+  invoke void %3(ptr %_6.0)
+          to label %bb3 unwind label %cleanup
+
+bb3:                                              ; preds = %is_not_null, %start
+; call <alloc::boxed::Box<dyn exp_c_box_upcast_drop_dealloc::SuperB> as core::ops::drop::Drop>::drop
+  call void @_RNvXs8_NtCs8jjFDZd5IFg_5alloc5boxedINtB5_3BoxDNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc6SuperBEL_ENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropBK_(ptr align 8 %_1) #21
+  ret void
+
+bb4:                                              ; preds = %cleanup
+; invoke <alloc::boxed::Box<dyn exp_c_box_upcast_drop_dealloc::SuperB> as core::ops::drop::Drop>::drop
+  invoke void @_RNvXs8_NtCs8jjFDZd5IFg_5alloc5boxedINtB5_3BoxDNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc6SuperBEL_ENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropBK_(ptr align 8 %_1) #22
+          to label %bb1 unwind label %terminate
+
+cleanup:                                          ; preds = %is_not_null
+  %5 = landingpad { ptr, i32 }
+          cleanup
+  %6 = extractvalue { ptr, i32 } %5, 0
+  %7 = extractvalue { ptr, i32 } %5, 1
+  store ptr %6, ptr %0, align 8
+  %8 = getelementptr inbounds i8, ptr %0, i64 8
+  store i32 %7, ptr %8, align 8
+  br label %bb4
+
+terminate:                                        ; preds = %bb4
+  %9 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_in_cleanup
+  call void @_RNvNtCs8b4M6GsfcPr_4core9panicking16panic_in_cleanup() #23
+  unreachable
+
+bb1:                                              ; preds = %bb4
+  %10 = load ptr, ptr %0, align 8
+  %11 = getelementptr inbounds i8, ptr %0, i64 8
+  %12 = load i32, ptr %11, align 8
+  %13 = insertvalue { ptr, i32 } poison, ptr %10, 0
+  %14 = insertvalue { ptr, i32 } %13, i32 %12, 1
+  resume { ptr, i32 } %14
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc7raw_vec6RawVecNtNtBG_6string6StringEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) unnamed_addr #1 {
+start:
+; call <alloc::raw_vec::RawVec<alloc::string::String> as core::ops::drop::Drop>::drop
+  call void @_RNvXs1_NtCs8jjFDZd5IFg_5alloc7raw_vecINtB5_6RawVecNtNtB7_6string6StringENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1)
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc7raw_vec6RawVecTjjEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) unnamed_addr #1 {
+start:
+; call <alloc::raw_vec::RawVec<(usize, usize)> as core::ops::drop::Drop>::drop
+  call void @_RNvXs1_NtCs8jjFDZd5IFg_5alloc7raw_vecINtB5_6RawVecTjjEENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1)
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc7raw_vec6RawVechEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) unnamed_addr #1 {
+start:
+; call <alloc::raw_vec::RawVec<u8> as core::ops::drop::Drop>::drop
+  call void @_RNvXs1_NtCs8jjFDZd5IFg_5alloc7raw_vecINtB5_6RawVechENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropCsfyNqZpOxG7m_5gimli(ptr align 8 %_1)
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtCsfFlbQN6m3JZ_3std4sync6poison11PoisonErrorINtNtBE_5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1U_6string6StringEEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) unnamed_addr #1 {
+start:
+; call core::ptr::drop_glue::<std::sync::poison::mutex::MutexGuard<alloc::vec::Vec<alloc::string::String>>>
+  call void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1B_6string6StringEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1)
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtCsfFlbQN6m3JZ_3std4sync6poison11PoisonErrorINtNtBE_5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecTjjEEEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) unnamed_addr #1 {
+start:
+; call core::ptr::drop_glue::<std::sync::poison::mutex::MutexGuard<alloc::vec::Vec<(usize, usize)>>>
+  call void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecTjjEEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1)
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtCsfFlbQN6m3JZ_3std4sync6poison12TryLockErrorINtNtBE_5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecTjjEEEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) unnamed_addr #1 {
+start:
+  %0 = load ptr, ptr %_1, align 8
+  %1 = getelementptr inbounds i8, ptr %_1, i64 8
+  %2 = load i8, ptr %1, align 8
+  %3 = icmp eq i8 %2, 2
+  %_2 = select i1 %3, i64 1, i64 0
+  %4 = icmp eq i64 %_2, 0
+  br i1 %4, label %bb2, label %bb1
+
+bb2:                                              ; preds = %start
+; call core::ptr::drop_glue::<std::sync::poison::PoisonError<std::sync::poison::mutex::MutexGuard<alloc::vec::Vec<(usize, usize)>>>>
+  call void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtCsfFlbQN6m3JZ_3std4sync6poison11PoisonErrorINtNtBE_5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecTjjEEEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1)
+  br label %bb1
+
+bb1:                                              ; preds = %bb2, %start
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1B_6string6StringEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) unnamed_addr #1 {
+start:
+; call <std::sync::poison::mutex::MutexGuard<alloc::vec::Vec<alloc::string::String>> as core::ops::drop::Drop>::drop
+  call void @_RNvXsc_NtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutexINtB5_10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB18_6string6StringEENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) #21
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecTjjEEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) unnamed_addr #1 {
+start:
+; call <std::sync::poison::mutex::MutexGuard<alloc::vec::Vec<(usize, usize)>> as core::ops::drop::Drop>::drop
+  call void @_RNvXsc_NtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutexINtB5_10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecTjjEEENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) #21
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex5MutexINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1v_6string6StringEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) unnamed_addr #1 {
+start:
+  %0 = getelementptr inbounds i8, ptr %_1, i64 8
+; call core::ptr::drop_glue::<core::cell::UnsafeCell<alloc::vec::Vec<alloc::string::String>>>
+  call void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtB4_4cell10UnsafeCellINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB15_6string6StringEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %0)
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex5MutexINtNtCs8jjFDZd5IFg_5alloc3vec3VecTjjEEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) unnamed_addr #1 {
+start:
+  %0 = getelementptr inbounds i8, ptr %_1, i64 8
+; call core::ptr::drop_glue::<core::cell::UnsafeCell<alloc::vec::Vec<(usize, usize)>>>
+  call void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtB4_4cell10UnsafeCellINtNtCs8jjFDZd5IFg_5alloc3vec3VecTjjEEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %0)
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNvXNvMNtCs8jjFDZd5IFg_5alloc5sliceSp9to_vec_inpNtBH_10ConvertVec6to_vec9DropGuardNtNtBM_6string6StringNtNtBM_5alloc6GlobalEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) unnamed_addr #1 {
+start:
+; call <<_ as <[_]>::to_vec_in::ConvertVec>::to_vec::DropGuard<alloc::string::String, alloc::alloc::Global> as core::ops::drop::Drop>::drop
+  call void @_RNvXNvXNvMNtCs8jjFDZd5IFg_5alloc5sliceSp9to_vec_inpNtB5_10ConvertVec6to_vecINtB2_9DropGuardNtNtBa_6string6StringNtNtBa_5alloc6GlobalENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) #21
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc11DropTrackerEBD_(ptr align 32 %_1) unnamed_addr #1 personality ptr @rust_eh_personality {
+start:
+  %0 = alloca [16 x i8], align 8
+; invoke <exp_c_box_upcast_drop_dealloc::DropTracker as core::ops::drop::Drop>::drop
+  invoke void @_RNvXs0_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4drop(ptr align 32 %_1)
+          to label %bb4 unwind label %cleanup
+
+bb3:                                              ; preds = %cleanup
+  %1 = getelementptr inbounds i8, ptr %_1, i64 16
+; invoke core::ptr::drop_glue::<exp_c_box_upcast_drop_dealloc::InnerDrop>
+  invoke void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc9InnerDropEBD_(ptr align 8 %1) #22
+          to label %bb1 unwind label %terminate
+
+cleanup:                                          ; preds = %start
+  %2 = landingpad { ptr, i32 }
+          cleanup
+  %3 = extractvalue { ptr, i32 } %2, 0
+  %4 = extractvalue { ptr, i32 } %2, 1
+  store ptr %3, ptr %0, align 8
+  %5 = getelementptr inbounds i8, ptr %0, i64 8
+  store i32 %4, ptr %5, align 8
+  br label %bb3
+
+bb4:                                              ; preds = %start
+  %6 = getelementptr inbounds i8, ptr %_1, i64 16
+; call core::ptr::drop_glue::<exp_c_box_upcast_drop_dealloc::InnerDrop>
+  call void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc9InnerDropEBD_(ptr align 8 %6)
+  ret void
+
+terminate:                                        ; preds = %bb3
+  %7 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_in_cleanup
+  call void @_RNvNtCs8b4M6GsfcPr_4core9panicking16panic_in_cleanup() #23
+  unreachable
+
+bb1:                                              ; preds = %bb3
+  %8 = load ptr, ptr %0, align 8
+  %9 = getelementptr inbounds i8, ptr %0, i64 8
+  %10 = load i32, ptr %9, align 8
+  %11 = insertvalue { ptr, i32 } poison, ptr %8, 0
+  %12 = insertvalue { ptr, i32 } %11, i32 %10, 1
+  resume { ptr, i32 } %12
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc9InnerDropEBD_(ptr align 8 %_1) unnamed_addr #1 {
+start:
+; call <exp_c_box_upcast_drop_dealloc::InnerDrop as core::ops::drop::Drop>::drop
+  call void @_RNvXs_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB4_9InnerDropNtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4drop(ptr align 8 %_1)
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtNtCs8jjFDZd5IFg_5alloc6string6StringECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1) unnamed_addr #1 {
+start:
+; call core::ptr::drop_glue::<alloc::vec::Vec<u8>>
+  call void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc3vec3VechEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1)
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueSNtNtCs8jjFDZd5IFg_5alloc6string6StringECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_1.0, i64 %_1.1) unnamed_addr #1 personality ptr @rust_eh_personality {
+start:
+  %0 = alloca [16 x i8], align 8
+  %_3 = alloca [8 x i8], align 8
+  store i64 0, ptr %_3, align 8
+  br label %bb6
+
+bb6:                                              ; preds = %bb5, %start
+  %1 = load i64, ptr %_3, align 8
+  %_7 = icmp eq i64 %1, %_1.1
+  br i1 %_7, label %bb1, label %bb5
+
+bb5:                                              ; preds = %bb6
+  %2 = load i64, ptr %_3, align 8
+  %_6 = getelementptr inbounds nuw %"alloc::string::String", ptr %_1.0, i64 %2
+  %3 = load i64, ptr %_3, align 8
+  %4 = add i64 %3, 1
+  store i64 %4, ptr %_3, align 8
+; invoke core::ptr::drop_glue::<alloc::string::String>
+  invoke void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtNtCs8jjFDZd5IFg_5alloc6string6StringECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_6)
+          to label %bb6 unwind label %cleanup
+
+bb1:                                              ; preds = %bb6
+  ret void
+
+bb4:                                              ; preds = %bb3, %cleanup
+  %5 = load i64, ptr %_3, align 8
+  %_5 = icmp eq i64 %5, %_1.1
+  br i1 %_5, label %bb2, label %bb3
+
+cleanup:                                          ; preds = %bb5
+  %6 = landingpad { ptr, i32 }
+          cleanup
+  %7 = extractvalue { ptr, i32 } %6, 0
+  %8 = extractvalue { ptr, i32 } %6, 1
+  store ptr %7, ptr %0, align 8
+  %9 = getelementptr inbounds i8, ptr %0, i64 8
+  store i32 %8, ptr %9, align 8
+  br label %bb4
+
+bb3:                                              ; preds = %bb4
+  %10 = load i64, ptr %_3, align 8
+  %_4 = getelementptr inbounds nuw %"alloc::string::String", ptr %_1.0, i64 %10
+  %11 = load i64, ptr %_3, align 8
+  %12 = add i64 %11, 1
+  store i64 %12, ptr %_3, align 8
+; invoke core::ptr::drop_glue::<alloc::string::String>
+  invoke void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtNtCs8jjFDZd5IFg_5alloc6string6StringECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr align 8 %_4) #22
+          to label %bb4 unwind label %terminate
+
+bb2:                                              ; preds = %bb4
+  %13 = load ptr, ptr %0, align 8
+  %14 = getelementptr inbounds i8, ptr %0, i64 8
+  %15 = load i32, ptr %14, align 8
+  %16 = insertvalue { ptr, i32 } poison, ptr %13, 0
+  %17 = insertvalue { ptr, i32 } %16, i32 %15, 1
+  resume { ptr, i32 } %17
+
+terminate:                                        ; preds = %bb3
+  %18 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_in_cleanup
+  call void @_RNvNtCs8b4M6GsfcPr_4core9panicking16panic_in_cleanup() #23
+  unreachable
+}
+
+define internal { ptr, ptr } @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc15upcast_box_to_b(ptr %b.0, ptr align 8 %b.1) unnamed_addr #2 {
+start:
+  %0 = getelementptr inbounds i8, ptr %b.1, i64 40
+  %_0.1 = load ptr, ptr %0, align 8, !invariant.load !5, !nonnull !5
+  %1 = insertvalue { ptr, ptr } poison, ptr %b.0, 0
+  %2 = insertvalue { ptr, ptr } %1, ptr %_0.1, 1
+  ret { ptr, ptr } %2
+}
+
+define internal { ptr, ptr } @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc17upcast_chain_3hop(ptr %b.0, ptr align 8 %b.1) unnamed_addr #2 {
+start:
+  %0 = getelementptr inbounds i8, ptr %b.1, i64 104
+  %b2.1 = load ptr, ptr %0, align 8, !invariant.load !5, !nonnull !5
+  %1 = getelementptr inbounds i8, ptr %b2.1, i64 72
+  %b1.1 = load ptr, ptr %1, align 8, !invariant.load !5, !nonnull !5
+  %2 = getelementptr inbounds i8, ptr %b1.1, i64 40
+  %b0.1 = load ptr, ptr %2, align 8, !invariant.load !5, !nonnull !5
+  %3 = insertvalue { ptr, ptr } poison, ptr %b.0, 0
+  %4 = insertvalue { ptr, ptr } %3, ptr %b0.1, 1
+  ret { ptr, ptr } %4
+}
+
+=== exp_c (-O2) ===
+@vtable.0 = private unnamed_addr constant <{ [24 x i8], ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs1g_NtCs8b4M6GsfcPr_4core3fmtRNtNtCs8jjFDZd5IFg_5alloc6string6StringNtB6_5Debug3fmtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc }>, align 8
+@vtable.1 = private unnamed_addr constant <{ [24 x i8], ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs1g_NtCs8b4M6GsfcPr_4core3fmtRTjjENtB6_5Debug3fmtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc }>, align 8
+@vtable.2 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNSNvYNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0INtNtNtCs8b4M6GsfcPr_4core3ops8function6FnOnceuE9call_once6vtableCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc, ptr @_RNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0Csln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc, ptr @_RNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0Csln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc }>, align 8
+@alloc_f90b4c338835155d0381ac1dea9a8f83 = private unnamed_addr constant <{ ptr, [16 x i8], ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc11DropTrackerEBD_, [16 x i8] c" \00\00\00\00\00\00\00 \00\00\00\00\00\00\00", ptr @_RNvXs2_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_6SuperB4id_b }>, align 8
+@vtable.3 = private unnamed_addr constant <{ ptr, [16 x i8], ptr, ptr, ptr, ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc11DropTrackerEBD_, [16 x i8] c" \00\00\00\00\00\00\00 \00\00\00\00\00\00\00", ptr @_RNvXs1_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_6SuperA4id_a, ptr @_RNvXs2_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_6SuperB4id_b, ptr @alloc_f90b4c338835155d0381ac1dea9a8f83, ptr @_RNvXs3_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_11DropTrackerNtB5_3Sub6id_sub }>, align 8
+@alloc_9304a8b263c7e8289db008cb80605d7e = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5ec13ded00de5a8d88cc8cb0d243cad9, [16 x i8] c"\9F\00\00\00\00\00\00\00\BE\00\00\00\10\00\00\00" }>, align 8
+@alloc_3316c24d6206fcfda8a346d49751e0fe = private unnamed_addr constant <{ [24 x i8], ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00@\00\00\00\00\00\00\00 \00\00\00\00\00\00\00", ptr @_RNvXsc_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_9NoDropBigNtB5_6SuperB4id_b }>, align 8
+@vtable.5 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00@\00\00\00\00\00\00\00 \00\00\00\00\00\00\00", ptr @_RNvXsb_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_9NoDropBigNtB5_6SuperA4id_a, ptr @_RNvXsc_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_9NoDropBigNtB5_6SuperB4id_b, ptr @alloc_3316c24d6206fcfda8a346d49751e0fe, ptr @_RNvXsd_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB5_9NoDropBigNtB5_3Sub6id_sub }>, align 8
+@alloc_e237af35cc1b40fce361ae5d54230b0a = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5ec13ded00de5a8d88cc8cb0d243cad9, [16 x i8] c"\9F\00\00\00\00\00\00\00\D4\00\00\00\1A\00\00\00" }>, align 8
+@alloc_99bd57d8dba0a2651cea918e1d7c326f = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5ec13ded00de5a8d88cc8cb0d243cad9, [16 x i8] c"\9F\00\00\00\00\00\00\00\D5\00\00\00*\00\00\00" }>, align 8
+@vtable.6 = private unnamed_addr constant <{ ptr, [16 x i8], ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtCsfFlbQN6m3JZ_3std4sync6poison11PoisonErrorINtNtBE_5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1U_6string6StringEEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc, [16 x i8] c"\10\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs_NtNtCsfFlbQN6m3JZ_3std4sync6poisonINtB4_11PoisonErrorINtNtB4_5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1q_6string6StringEEENtNtCs8b4M6GsfcPr_4core3fmt5Debug3fmtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc }>, align 8
+@vtable.7 = private unnamed_addr constant <{ ptr, [16 x i8], ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtCsfFlbQN6m3JZ_3std4sync6poison11PoisonErrorINtNtBE_5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1U_6string6StringEEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc, [16 x i8] c"\10\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs_NtNtCsfFlbQN6m3JZ_3std4sync6poisonINtB4_11PoisonErrorINtNtB4_5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1q_6string6StringEEENtNtCs8b4M6GsfcPr_4core3fmt5Debug3fmtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc }>, align 8
+@alloc_1983d619e7f2c1725d02d33aaa1cdaf9 = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5ec13ded00de5a8d88cc8cb0d243cad9, [16 x i8] c"\9F\00\00\00\00\00\00\00S\00\00\00\14\00\00\00" }>, align 8
+@vtable.8 = private unnamed_addr constant <{ [24 x i8], ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs1g_NtCs8b4M6GsfcPr_4core3fmtRjNtB6_5Debug3fmtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc }>, align 8
+@alloc_d402914a4fe33b4ccd41123cd0215c7c = private unnamed_addr constant <{ ptr, [16 x i8] }> <{ ptr @alloc_5ec13ded00de5a8d88cc8cb0d243cad9, [16 x i8] c"\9F\00\00\00\00\00\00\00F\00\00\00\14\00\00\00" }>, align 8
+
+define internal fastcc void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtBG_6string6StringEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr noalias noundef nonnull readonly align 8 captures(none) dereferenceable(24) %_1) unnamed_addr #0 personality ptr @rust_eh_personality {
+start:
+  tail call void @llvm.experimental.noalias.scope.decl(metadata !5)
+  %0 = getelementptr inbounds nuw i8, ptr %_1, i64 8
+  %_5.i = load ptr, ptr %0, align 8, !alias.scope !5, !nonnull !8, !noundef !8
+  %1 = getelementptr inbounds nuw i8, ptr %_1, i64 16
+  %len.i = load i64, ptr %1, align 8, !alias.scope !5, !noundef !8
+  tail call void @llvm.experimental.noalias.scope.decl(metadata !9)
+  %_710.i.i = icmp eq i64 %len.i, 0
+  br i1 %_710.i.i, label %bb4, label %bb5.i.i
+
+bb5.i.i:                                          ; preds = %start, %_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtNtCs8jjFDZd5IFg_5alloc6string6StringECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i.i
+  %_3.sroa.0.011.i.i = phi i64 [ %2, %_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtNtCs8jjFDZd5IFg_5alloc6string6StringECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i.i ], [ 0, %start ]
+  %_6.i.i = getelementptr inbounds nuw %"alloc::string::String", ptr %_5.i, i64 %_3.sroa.0.011.i.i
+  %2 = add nuw nsw i64 %_3.sroa.0.011.i.i, 1
+  tail call void @llvm.experimental.noalias.scope.decl(metadata !12)
+  tail call void @llvm.experimental.noalias.scope.decl(metadata !15)
+  tail call void @llvm.experimental.noalias.scope.decl(metadata !18)
+  tail call void @llvm.experimental.noalias.scope.decl(metadata !21)
+  tail call void @llvm.experimental.noalias.scope.decl(metadata !24)
+  %self1.i.i.i.i1.i.i.i.i = load i64, ptr %_6.i.i, align 8, !range !27, !alias.scope !28, !noalias !31, !noundef !8
+  %3 = icmp eq i64 %self1.i.i.i.i1.i.i.i.i, 0
+  br i1 %3, label %_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtNtCs8jjFDZd5IFg_5alloc6string6StringECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i.i, label %bb2.i.i.i2.i.i.i.i
+
+bb2.i.i.i2.i.i.i.i:                               ; preds = %bb5.i.i
+  %4 = getelementptr inbounds nuw i8, ptr %_6.i.i, i64 8
+  %self3.i.i.i.i3.i.i.i.i = load ptr, ptr %4, align 8, !alias.scope !28, !noalias !31, !nonnull !8, !noundef !8
+  tail call void @free(ptr noundef nonnull %self3.i.i.i.i3.i.i.i.i) #29, !noalias !33
+  br label %_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtNtCs8jjFDZd5IFg_5alloc6string6StringECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i.i
+
+_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtNtCs8jjFDZd5IFg_5alloc6string6StringECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i.i: ; preds = %bb2.i.i.i2.i.i.i.i, %bb5.i.i
+  %_7.i.i = icmp eq i64 %2, %len.i
+  br i1 %_7.i.i, label %bb4, label %bb5.i.i
+
+bb4:                                              ; preds = %_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtNtCs8jjFDZd5IFg_5alloc6string6StringECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i.i, %start
+  tail call void @llvm.experimental.noalias.scope.decl(metadata !34)
+  tail call void @llvm.experimental.noalias.scope.decl(metadata !37)
+  tail call void @llvm.experimental.noalias.scope.decl(metadata !40)
+  %self1.i.i.i.i1 = load i64, ptr %_1, align 8, !range !27, !alias.scope !43, !noalias !46, !noundef !8
+  %5 = icmp eq i64 %self1.i.i.i.i1, 0
+  br i1 %5, label %_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc7raw_vec6RawVecNtNtBG_6string6StringEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit4, label %bb2.i.i.i2
+
+bb2.i.i.i2:                                       ; preds = %bb4
+  tail call void @free(ptr noundef nonnull %_5.i) #29, !noalias !48
+  br label %_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc7raw_vec6RawVecNtNtBG_6string6StringEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit4
+
+_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc7raw_vec6RawVecNtNtBG_6string6StringEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit4: ; preds = %bb4, %bb2.i.i.i2
+  ret void
+}
+
+define internal fastcc void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc5boxed3BoxDNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc6SuperBEL_EEB1d_(ptr noalias noundef nonnull readonly align 8 captures(none) dereferenceable(16) %_1) unnamed_addr #1 personality ptr @rust_eh_personality {
+start:
+  %0 = getelementptr inbounds nuw i8, ptr %_1, i64 8
+  %_6.1 = load ptr, ptr %0, align 8, !nonnull !8, !align !49, !noundef !8
+  %1 = load ptr, ptr %_6.1, align 8, !invariant.load !8
+  %.not = icmp eq ptr %1, null
+  br i1 %.not, label %bb3, label %is_not_null
+
+is_not_null:                                      ; preds = %start
+  %_6.0 = load ptr, ptr %_1, align 8, !nonnull !8, !noundef !8
+  invoke void %1(ptr noundef nonnull %_6.0)
+          to label %bb3 unwind label %cleanup
+
+bb3:                                              ; preds = %is_not_null, %start
+  tail call void @llvm.experimental.noalias.scope.decl(metadata !50)
+  %2 = getelementptr inbounds nuw i8, ptr %_6.1, i64 8
+  %size.i = load i64, ptr %2, align 8, !range !27, !invariant.load !8, !noalias !50
+  %3 = icmp eq i64 %size.i, 0
+  br i1 %3, label %_RNvXs8_NtCs8jjFDZd5IFg_5alloc5boxedINtB5_3BoxDNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc6SuperBEL_ENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropBK_.exit, label %_RNvXs_NtCs8jjFDZd5IFg_5alloc5allocNtB4_6GlobalNtNtCs8b4M6GsfcPr_4core5alloc9Allocator10deallocate.exit.i
+
+_RNvXs_NtCs8jjFDZd5IFg_5alloc5allocNtB4_6GlobalNtNtCs8b4M6GsfcPr_4core5alloc9Allocator10deallocate.exit.i: ; preds = %bb3
+  %4 = getelementptr inbounds nuw i8, ptr %_6.1, i64 16
+  %align.i = load i64, ptr %4, align 8, !range !53, !invariant.load !8, !noalias !50
+  %ptr.0.i = load ptr, ptr %_1, align 8, !alias.scope !50, !nonnull !8, !noundef !8
+; call <exp_c_box_upcast_drop_dealloc::SpyAlloc as core::alloc::global::GlobalAlloc>::dealloc
+  tail call fastcc void @_RNvXCsln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB2_8SpyAllocNtNtNtCs8b4M6GsfcPr_4core5alloc6global11GlobalAlloc7dealloc(ptr noundef nonnull %ptr.0.i, i64 noundef range(i64 1, -9223372036854775807) %align.i, i64 noundef %size.i) #29
+  br label %_RNvXs8_NtCs8jjFDZd5IFg_5alloc5boxedINtB5_3BoxDNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc6SuperBEL_ENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropBK_.exit
+
+_RNvXs8_NtCs8jjFDZd5IFg_5alloc5boxedINtB5_3BoxDNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc6SuperBEL_ENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropBK_.exit: ; preds = %bb3, %_RNvXs_NtCs8jjFDZd5IFg_5alloc5allocNtB4_6GlobalNtNtCs8b4M6GsfcPr_4core5alloc9Allocator10deallocate.exit.i
+  ret void
+
+cleanup:                                          ; preds = %is_not_null
+  %5 = landingpad { ptr, i32 }
+          cleanup
+; call <alloc::boxed::Box<dyn exp_c_box_upcast_drop_dealloc::SuperB> as core::ops::drop::Drop>::drop
+  tail call fastcc void @_RNvXs8_NtCs8jjFDZd5IFg_5alloc5boxedINtB5_3BoxDNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc6SuperBEL_ENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropBK_(ptr noalias noundef align 8 dereferenceable(16) %_1) #30
+  resume { ptr, i32 } %5
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtCsfFlbQN6m3JZ_3std4sync6poison11PoisonErrorINtNtBE_5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1U_6string6StringEEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr noalias noundef readonly align 8 captures(none) dereferenceable(16) %_1) unnamed_addr #1 {
+start:
+  tail call void @llvm.experimental.noalias.scope.decl(metadata !54)
+  tail call void @llvm.experimental.noalias.scope.decl(metadata !57)
+  %_6.i.i = load ptr, ptr %_1, align 8, !alias.scope !60, !nonnull !8, !align !49, !noundef !8
+  %_3.i.i = getelementptr inbounds nuw i8, ptr %_6.i.i, i64 4
+  %_4.i.i = getelementptr inbounds nuw i8, ptr %_1, i64 8
+  tail call void @llvm.experimental.noalias.scope.decl(metadata !61)
+  %0 = load i8, ptr %_4.i.i, align 8, !range !64, !alias.scope !65, !noundef !8
+  %_3.i.i.i = trunc nuw i8 %0 to i1
+  br i1 %_3.i.i.i, label %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i, label %bb1.i.i.i
+
+bb1.i.i.i:                                        ; preds = %start
+  %1 = load atomic i64, ptr @_RNvNtNtCsfFlbQN6m3JZ_3std9panicking11panic_count18GLOBAL_PANIC_COUNT monotonic, align 8, !noalias !65
+  %_7.i.i.i = and i64 %1, 9223372036854775807
+  %2 = icmp eq i64 %_7.i.i.i, 0
+  br i1 %2, label %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i, label %bb6.i.i.i, !prof !66
+
+bb6.i.i.i:                                        ; preds = %bb1.i.i.i
+; call std::panicking::panic_count::is_zero_slow_path
+  %_6.i.i.i = tail call noundef zeroext i1 @_RNvNtNtCsfFlbQN6m3JZ_3std9panicking11panic_count17is_zero_slow_path() #31, !noalias !65
+  br i1 %_6.i.i.i, label %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i, label %bb2.i.i.i
+
+bb2.i.i.i:                                        ; preds = %bb6.i.i.i
+  store atomic i8 1, ptr %_3.i.i monotonic, align 4, !noalias !65
+  br label %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i
+
+_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i: ; preds = %bb2.i.i.i, %bb6.i.i.i, %bb1.i.i.i, %start
+  %_8.i.i = atomicrmw xchg ptr %_6.i.i, i32 0 release, align 4, !noalias !60
+  %3 = icmp eq i32 %_8.i.i, 2
+  br i1 %3, label %bb3.i.i, label %_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1B_6string6StringEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit, !prof !67
+
+bb3.i.i:                                          ; preds = %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i
+; call <std::sys::sync::mutex::futex::Mutex>::wake
+  tail call void @_RNvMNtNtNtNtCsfFlbQN6m3JZ_3std3sys4sync5mutex5futexNtB2_5Mutex4wake(ptr noundef nonnull align 4 %_6.i.i), !noalias !60
+  br label %_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1B_6string6StringEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit
+
+_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1B_6string6StringEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit: ; preds = %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i, %bb3.i.i
+  ret void
+}
+
+define internal fastcc void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1B_6string6StringEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr noalias noundef nonnull readonly align 8 captures(none) dereferenceable(16) %_1) unnamed_addr #1 {
+start:
+  tail call void @llvm.experimental.noalias.scope.decl(metadata !68)
+  %_6.i = load ptr, ptr %_1, align 8, !alias.scope !68, !nonnull !8, !align !49, !noundef !8
+  %_3.i = getelementptr inbounds nuw i8, ptr %_6.i, i64 4
+  %_4.i = getelementptr inbounds nuw i8, ptr %_1, i64 8
+  tail call void @llvm.experimental.noalias.scope.decl(metadata !71)
+  %0 = load i8, ptr %_4.i, align 8, !range !64, !alias.scope !74, !noundef !8
+  %_3.i.i = trunc nuw i8 %0 to i1
+  br i1 %_3.i.i, label %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i, label %bb1.i.i
+
+bb1.i.i:                                          ; preds = %start
+  %1 = load atomic i64, ptr @_RNvNtNtCsfFlbQN6m3JZ_3std9panicking11panic_count18GLOBAL_PANIC_COUNT monotonic, align 8, !noalias !74
+  %_7.i.i = and i64 %1, 9223372036854775807
+  %2 = icmp eq i64 %_7.i.i, 0
+  br i1 %2, label %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i, label %bb6.i.i, !prof !66
+
+bb6.i.i:                                          ; preds = %bb1.i.i
+; call std::panicking::panic_count::is_zero_slow_path
+  %_6.i.i = tail call noundef zeroext i1 @_RNvNtNtCsfFlbQN6m3JZ_3std9panicking11panic_count17is_zero_slow_path() #31, !noalias !74
+  br i1 %_6.i.i, label %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i, label %bb2.i.i
+
+bb2.i.i:                                          ; preds = %bb6.i.i
+  store atomic i8 1, ptr %_3.i monotonic, align 4, !noalias !74
+  br label %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i
+
+_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i: ; preds = %bb2.i.i, %bb6.i.i, %bb1.i.i, %start
+  %_8.i = atomicrmw xchg ptr %_6.i, i32 0 release, align 4, !noalias !68
+  %3 = icmp eq i32 %_8.i, 2
+  br i1 %3, label %bb3.i, label %_RNvXsc_NtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutexINtB5_10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB18_6string6StringEENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit, !prof !67
+
+bb3.i:                                            ; preds = %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i
+; call <std::sys::sync::mutex::futex::Mutex>::wake
+  tail call void @_RNvMNtNtNtNtCsfFlbQN6m3JZ_3std3sys4sync5mutex5futexNtB2_5Mutex4wake(ptr noundef nonnull align 4 %_6.i), !noalias !68
+  br label %_RNvXsc_NtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutexINtB5_10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB18_6string6StringEENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit
+
+_RNvXsc_NtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutexINtB5_10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB18_6string6StringEENtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4dropCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit: ; preds = %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i, %bb3.i
+  ret void
+}
+
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc11DropTrackerEBD_(ptr noalias noundef align 32 dereferenceable(32) %_1) unnamed_addr #1 personality ptr @rust_eh_personality {
+start:
+  %e.i.i = alloca [16 x i8], align 8
+  %_3.i = alloca [16 x i8], align 8
+  call void @llvm.lifetime.start.p0(ptr nonnull %_3.i)
+  %0 = cmpxchg ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, i32 0, i32 1 acquire monotonic, align 4, !noalias !75
+  %1 = extractvalue { i32, i1 } %0, 1
+  br i1 %1, label %bb3.i.i, label %bb1.i.i, !prof !66
+
+bb1.i.i:                                          ; preds = %start
+; invoke <std::sys::sync::mutex::futex::Mutex>::lock_contended
+  invoke void @_RNvMNtNtNtNtCsfFlbQN6m3JZ_3std3sys4sync5mutex5futexNtB2_5Mutex14lock_contended(ptr noundef nonnull align 4 @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG)
+          to label %bb3.i.i unwind label %cleanup
+
+bb3.i.i:                                          ; preds = %bb1.i.i, %start
+  %2 = load atomic i64, ptr @_RNvNtNtCsfFlbQN6m3JZ_3std9panicking11panic_count18GLOBAL_PANIC_COUNT monotonic, align 8, !noalias !75
+  %_6.i.i.i = and i64 %2, 9223372036854775807
+  %3 = icmp eq i64 %_6.i.i.i, 0
+  br i1 %3, label %_RNvMs5_NtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutexINtB5_5MutexINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB12_6string6StringEE4lockCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i, label %bb6.i.i.i, !prof !66
+
+bb6.i.i.i:                                        ; preds = %bb3.i.i
+; invoke std::panicking::panic_count::is_zero_slow_path
+  %4 = invoke noundef zeroext i1 @_RNvNtNtCsfFlbQN6m3JZ_3std9panicking11panic_count17is_zero_slow_path() #31
+          to label %.noexc1 unwind label %cleanup
+
+.noexc1:                                          ; preds = %bb6.i.i.i
+  %5 = xor i1 %4, true
+  %6 = zext i1 %5 to i8
+  br label %_RNvMs5_NtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutexINtB5_5MutexINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB12_6string6StringEE4lockCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i
+
+_RNvMs5_NtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutexINtB5_5MutexINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB12_6string6StringEE4lockCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i: ; preds = %.noexc1, %bb3.i.i
+  %_5.sroa.0.0.i.i.i = phi i8 [ %6, %.noexc1 ], [ 0, %bb3.i.i ]
+  %7 = load atomic i8, ptr getelementptr inbounds nuw (i8, ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, i64 4) monotonic, align 4, !noalias !75
+  %.not.i = icmp eq i8 %7, 0
+  br i1 %.not.i, label %_RNvMNtCs8b4M6GsfcPr_4core6resultINtB2_6ResultINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1H_6string6StringEEINtBM_11PoisonErrorBH_EE6unwrapCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i, label %bb2.i.i, !prof !66
+
+bb2.i.i:                                          ; preds = %_RNvMs5_NtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutexINtB5_5MutexINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB12_6string6StringEE4lockCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i
+  call void @llvm.lifetime.start.p0(ptr nonnull %e.i.i), !noalias !78
+  store ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, ptr %e.i.i, align 8, !noalias !78
+  %8 = getelementptr inbounds nuw i8, ptr %e.i.i, i64 8
+  store i8 %_5.sroa.0.0.i.i.i, ptr %8, align 8, !noalias !78
+; invoke core::result::unwrap_failed
+  invoke void @_RNvNtCs8b4M6GsfcPr_4core6result13unwrap_failed(ptr noalias noundef nonnull readonly captures(address, read_provenance) @alloc_00ae4b301f7fab8ac9617c03fcbd7274, i64 noundef 43, ptr noundef nonnull %e.i.i, ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(32) @vtable.6, ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_1983d619e7f2c1725d02d33aaa1cdaf9) #32
+          to label %unreachable.i.i unwind label %cleanup.i.i, !noalias !82
+
+cleanup.i.i:                                      ; preds = %bb2.i.i
+  %9 = landingpad { ptr, i32 }
+          cleanup
+; invoke core::ptr::drop_glue::<std::sync::poison::PoisonError<std::sync::poison::mutex::MutexGuard<alloc::vec::Vec<alloc::string::String>>>>
+  invoke void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtCsfFlbQN6m3JZ_3std4sync6poison11PoisonErrorINtNtBE_5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1U_6string6StringEEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr noalias noundef nonnull align 8 dereferenceable(16) %e.i.i) #30
+          to label %cleanup.body unwind label %terminate.i.i, !noalias !82
+
+unreachable.i.i:                                  ; preds = %bb2.i.i
+  unreachable
+
+terminate.i.i:                                    ; preds = %cleanup.i.i
+  %10 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_in_cleanup
+  call void @_RNvNtCs8b4M6GsfcPr_4core9panicking16panic_in_cleanup() #33, !noalias !82
+  unreachable
+
+_RNvMNtCs8b4M6GsfcPr_4core6resultINtB2_6ResultINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1H_6string6StringEEINtBM_11PoisonErrorBH_EE6unwrapCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i: ; preds = %_RNvMs5_NtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutexINtB5_5MutexINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB12_6string6StringEE4lockCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i
+  %t.1.i.i = trunc nuw i8 %_5.sroa.0.0.i.i.i to i1
+  store ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, ptr %_3.i, align 8
+  %11 = getelementptr inbounds nuw i8, ptr %_3.i, i64 8
+  store i8 %_5.sroa.0.0.i.i.i, ptr %11, align 8
+; call __rustc::__rust_no_alloc_shim_is_unstable_v2
+  tail call void @_RNvCsdvXcQmDfFIS_7___rustc35___rust_no_alloc_shim_is_unstable_v2() #29, !noalias !83
+  %_10.i.i.i.i.i.i.i = tail call noundef dereferenceable_or_null(10) ptr @malloc(i64 noundef range(i64 0, -9223372036854775808) 10) #29
+  %12 = icmp eq ptr %_10.i.i.i.i.i.i.i, null
+  br i1 %12, label %bb10.i, label %bb11.i
+
+cleanup.i:                                        ; preds = %bb10.i
+  %13 = landingpad { ptr, i32 }
+          cleanup
+  br label %cleanup.body.i
+
+cleanup.body.i:                                   ; preds = %bb5.i3.i, %cleanup.i
+  %eh.lpad-body.i = phi { ptr, i32 } [ %13, %cleanup.i ], [ %14, %bb5.i3.i ]
+; invoke core::ptr::drop_glue::<std::sync::poison::mutex::MutexGuard<alloc::vec::Vec<alloc::string::String>>>
+  invoke fastcc void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1B_6string6StringEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr noalias noundef align 8 dereferenceable(16) %_3.i) #30
+          to label %cleanup.body unwind label %terminate.i
+
+bb10.i:                                           ; preds = %_RNvMNtCs8b4M6GsfcPr_4core6resultINtB2_6ResultINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1H_6string6StringEEINtBM_11PoisonErrorBH_EE6unwrapCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i
+; invoke alloc::raw_vec::handle_error
+  invoke void @_RNvNtCs8jjFDZd5IFg_5alloc7raw_vec12handle_error(i64 noundef 1, i64 10) #32
+          to label %unreachable.i unwind label %cleanup.i
+
+bb11.i:                                           ; preds = %_RNvMNtCs8b4M6GsfcPr_4core6resultINtB2_6ResultINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1H_6string6StringEEINtBM_11PoisonErrorBH_EE6unwrapCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i
+  tail call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 1 dereferenceable(10) %_10.i.i.i.i.i.i.i, ptr noundef nonnull align 1 dereferenceable(10) @alloc_8cc3310dff371fcb48632f4c329e91c3, i64 10, i1 false)
+  %len.i.i = load i64, ptr getelementptr inbounds nuw (i8, ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, i64 24), align 8, !alias.scope !86, !noalias !89, !noundef !8
+  %self1.i.i = load i64, ptr getelementptr inbounds nuw (i8, ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, i64 8), align 8, !range !27, !alias.scope !86, !noalias !89, !noundef !8
+  %_4.i.i = icmp eq i64 %len.i.i, %self1.i.i
+  br i1 %_4.i.i, label %bb1.i1.i, label %bb12.i
+
+bb1.i1.i:                                         ; preds = %bb11.i
+; invoke <alloc::raw_vec::RawVec<alloc::string::String>>::grow_one
+  invoke void @_RNvMs3_NtCs8jjFDZd5IFg_5alloc7raw_vecINtB5_6RawVecNtNtB7_6string6StringE8grow_oneCsfFlbQN6m3JZ_3std(ptr noalias noundef nonnull align 8 dereferenceable(24) getelementptr inbounds nuw (i8, ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, i64 8))
+          to label %bb12.i unwind label %bb5.i3.i, !noalias !89
+
+bb5.i3.i:                                         ; preds = %bb1.i1.i
+  %14 = landingpad { ptr, i32 }
+          cleanup
+  tail call void @free(ptr noundef nonnull %_10.i.i.i.i.i.i.i) #29, !noalias !91
+  br label %cleanup.body.i
+
+bb12.i:                                           ; preds = %bb1.i1.i, %bb11.i
+  %_14.i.i = load ptr, ptr getelementptr inbounds nuw (i8, ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, i64 16), align 8, !alias.scope !86, !noalias !89, !nonnull !8, !noundef !8
+  %end.i.i = getelementptr inbounds nuw %"alloc::string::String", ptr %_14.i.i, i64 %len.i.i
+  store i64 10, ptr %end.i.i, align 8
+  %_5.sroa.5.0.end.i.sroa_idx.i = getelementptr inbounds nuw i8, ptr %end.i.i, i64 8
+  store ptr %_10.i.i.i.i.i.i.i, ptr %_5.sroa.5.0.end.i.sroa_idx.i, align 8
+  %_5.sroa.7.0.end.i.sroa_idx.i = getelementptr inbounds nuw i8, ptr %end.i.i, i64 16
+  store i64 10, ptr %_5.sroa.7.0.end.i.sroa_idx.i, align 8
+  %15 = add i64 %len.i.i, 1
+  store i64 %15, ptr getelementptr inbounds nuw (i8, ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, i64 24), align 8, !alias.scope !86, !noalias !89
+  br i1 %t.1.i.i, label %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i.i, label %bb1.i.i.i.i
+
+bb1.i.i.i.i:                                      ; preds = %bb12.i
+  %16 = load atomic i64, ptr @_RNvNtNtCsfFlbQN6m3JZ_3std9panicking11panic_count18GLOBAL_PANIC_COUNT monotonic, align 8, !noalias !102
+  %_7.i.i.i.i = and i64 %16, 9223372036854775807
+  %17 = icmp eq i64 %_7.i.i.i.i, 0
+  br i1 %17, label %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i.i, label %bb6.i.i.i.i, !prof !66
+
+bb6.i.i.i.i:                                      ; preds = %bb1.i.i.i.i
+; invoke std::panicking::panic_count::is_zero_slow_path
+  %_6.i.i.i.i2 = invoke noundef zeroext i1 @_RNvNtNtCsfFlbQN6m3JZ_3std9panicking11panic_count17is_zero_slow_path() #31
+          to label %_6.i.i.i.i.noexc unwind label %cleanup
+
+_6.i.i.i.i.noexc:                                 ; preds = %bb6.i.i.i.i
+  br i1 %_6.i.i.i.i2, label %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i.i, label %bb2.i.i.i.i
+
+bb2.i.i.i.i:                                      ; preds = %_6.i.i.i.i.noexc
+  store atomic i8 1, ptr getelementptr inbounds nuw (i8, ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, i64 4) monotonic, align 4, !noalias !102
+  br label %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i.i
+
+_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i.i: ; preds = %bb2.i.i.i.i, %_6.i.i.i.i.noexc, %bb1.i.i.i.i, %bb12.i
+  %_8.i.i.i = atomicrmw xchg ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, i32 0 release, align 4, !noalias !109
+  %18 = icmp eq i32 %_8.i.i.i, 2
+  br i1 %18, label %bb3.i.i.i, label %bb4, !prof !67
+
+bb3.i.i.i:                                        ; preds = %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i.i
+; invoke <std::sys::sync::mutex::futex::Mutex>::wake
+  invoke void @_RNvMNtNtNtNtCsfFlbQN6m3JZ_3std3sys4sync5mutex5futexNtB2_5Mutex4wake(ptr noundef nonnull align 4 @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG)
+          to label %bb4 unwind label %cleanup
+
+unreachable.i:                                    ; preds = %bb10.i
+  unreachable
+
+terminate.i:                                      ; preds = %cleanup.body.i
+  %19 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_in_cleanup
+  tail call void @_RNvNtCs8b4M6GsfcPr_4core9panicking16panic_in_cleanup() #33
+  unreachable
+
+cleanup:                                          ; preds = %bb3.i.i.i, %bb6.i.i.i.i, %bb6.i.i.i, %bb1.i.i
+  %20 = landingpad { ptr, i32 }
+          cleanup
+  br label %cleanup.body
+
+cleanup.body:                                     ; preds = %cleanup.i.i, %cleanup.body.i, %cleanup
+  %eh.lpad-body = phi { ptr, i32 } [ %20, %cleanup ], [ %9, %cleanup.i.i ], [ %eh.lpad-body.i, %cleanup.body.i ]
+  %21 = getelementptr inbounds nuw i8, ptr %_1, i64 16
+; invoke core::ptr::drop_glue::<exp_c_box_upcast_drop_dealloc::InnerDrop>
+  invoke fastcc void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc9InnerDropEBD_(ptr noalias noundef align 8 dereferenceable(16) %21) #30
+          to label %bb1 unwind label %terminate
+
+bb4:                                              ; preds = %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i.i, %bb3.i.i.i
+  call void @llvm.lifetime.end.p0(ptr nonnull %_3.i)
+  %22 = getelementptr inbounds nuw i8, ptr %_1, i64 16
+; call core::ptr::drop_glue::<exp_c_box_upcast_drop_dealloc::InnerDrop>
+  tail call fastcc void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc9InnerDropEBD_(ptr noalias noundef align 8 dereferenceable(16) %22)
+  ret void
+
+terminate:                                        ; preds = %cleanup.body
+  %23 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_in_cleanup
+  call void @_RNvNtCs8b4M6GsfcPr_4core9panicking16panic_in_cleanup() #33
+  unreachable
+
+bb1:                                              ; preds = %cleanup.body
+  resume { ptr, i32 } %eh.lpad-body
+}
+
+define internal fastcc void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc9InnerDropEBD_(ptr noalias noundef nonnull align 8 dereferenceable(16) %_1) unnamed_addr #1 personality ptr @rust_eh_personality {
+start:
+  %e.i.i = alloca [16 x i8], align 8
+  %args.i = alloca [16 x i8], align 8
+  %_5.i = alloca [24 x i8], align 8
+  %_3.i = alloca [16 x i8], align 8
+  call void @llvm.lifetime.start.p0(ptr nonnull %_5.i)
+  call void @llvm.lifetime.start.p0(ptr nonnull %_3.i), !noalias !110
+  %0 = cmpxchg ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, i32 0, i32 1 acquire monotonic, align 4, !noalias !113
+  %1 = extractvalue { i32, i1 } %0, 1
+  br i1 %1, label %bb3.i.i, label %bb1.i.i, !prof !66
+
+bb1.i.i:                                          ; preds = %start
+; call <std::sys::sync::mutex::futex::Mutex>::lock_contended
+  tail call void @_RNvMNtNtNtNtCsfFlbQN6m3JZ_3std3sys4sync5mutex5futexNtB2_5Mutex14lock_contended(ptr noundef nonnull align 4 @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG), !noalias !113
+  br label %bb3.i.i
+
+bb3.i.i:                                          ; preds = %bb1.i.i, %start
+  %2 = load atomic i64, ptr @_RNvNtNtCsfFlbQN6m3JZ_3std9panicking11panic_count18GLOBAL_PANIC_COUNT monotonic, align 8, !noalias !113
+  %_6.i.i.i = and i64 %2, 9223372036854775807
+  %3 = icmp eq i64 %_6.i.i.i, 0
+  br i1 %3, label %_RNvMs5_NtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutexINtB5_5MutexINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB12_6string6StringEE4lockCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i, label %bb6.i.i.i, !prof !66
+
+bb6.i.i.i:                                        ; preds = %bb3.i.i
+; call std::panicking::panic_count::is_zero_slow_path
+  %4 = tail call noundef zeroext i1 @_RNvNtNtCsfFlbQN6m3JZ_3std9panicking11panic_count17is_zero_slow_path() #31, !noalias !113
+  %5 = xor i1 %4, true
+  %6 = zext i1 %5 to i8
+  br label %_RNvMs5_NtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutexINtB5_5MutexINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB12_6string6StringEE4lockCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i
+
+_RNvMs5_NtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutexINtB5_5MutexINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB12_6string6StringEE4lockCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i: ; preds = %bb6.i.i.i, %bb3.i.i
+  %_5.sroa.0.0.i.i.i = phi i8 [ %6, %bb6.i.i.i ], [ 0, %bb3.i.i ]
+  %7 = load atomic i8, ptr getelementptr inbounds nuw (i8, ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, i64 4) monotonic, align 4, !noalias !113
+  %.not.i = icmp eq i8 %7, 0
+  br i1 %.not.i, label %_RNvMNtCs8b4M6GsfcPr_4core6resultINtB2_6ResultINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1H_6string6StringEEINtBM_11PoisonErrorBH_EE6unwrapCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i, label %bb2.i.i, !prof !66
+
+bb2.i.i:                                          ; preds = %_RNvMs5_NtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutexINtB5_5MutexINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB12_6string6StringEE4lockCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i
+  call void @llvm.lifetime.start.p0(ptr nonnull %e.i.i), !noalias !116
+  store ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, ptr %e.i.i, align 8, !noalias !116
+  %8 = getelementptr inbounds nuw i8, ptr %e.i.i, i64 8
+  store i8 %_5.sroa.0.0.i.i.i, ptr %8, align 8, !noalias !116
+; invoke core::result::unwrap_failed
+  invoke void @_RNvNtCs8b4M6GsfcPr_4core6result13unwrap_failed(ptr noalias noundef nonnull readonly captures(address, read_provenance) @alloc_00ae4b301f7fab8ac9617c03fcbd7274, i64 noundef 43, ptr noundef nonnull %e.i.i, ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(32) @vtable.6, ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_d402914a4fe33b4ccd41123cd0215c7c) #32
+          to label %unreachable.i.i unwind label %cleanup.i.i, !noalias !120
+
+cleanup.i.i:                                      ; preds = %bb2.i.i
+  %9 = landingpad { ptr, i32 }
+          cleanup
+; invoke core::ptr::drop_glue::<std::sync::poison::PoisonError<std::sync::poison::mutex::MutexGuard<alloc::vec::Vec<alloc::string::String>>>>
+  invoke void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtCsfFlbQN6m3JZ_3std4sync6poison11PoisonErrorINtNtBE_5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1U_6string6StringEEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr noalias noundef nonnull align 8 dereferenceable(16) %e.i.i) #30
+          to label %common.resume.i unwind label %terminate.i.i, !noalias !120
+
+unreachable.i.i:                                  ; preds = %bb2.i.i
+  unreachable
+
+terminate.i.i:                                    ; preds = %cleanup.i.i
+  %10 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_in_cleanup
+  call void @_RNvNtCs8b4M6GsfcPr_4core9panicking16panic_in_cleanup() #33, !noalias !120
+  unreachable
+
+common.resume.i:                                  ; preds = %cleanup.body.i, %cleanup.i.i
+  %common.resume.op.i = phi { ptr, i32 } [ %9, %cleanup.i.i ], [ %eh.lpad-body.i, %cleanup.body.i ]
+  resume { ptr, i32 } %common.resume.op.i
+
+_RNvMNtCs8b4M6GsfcPr_4core6resultINtB2_6ResultINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1H_6string6StringEEINtBM_11PoisonErrorBH_EE6unwrapCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i: ; preds = %_RNvMs5_NtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutexINtB5_5MutexINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB12_6string6StringEE4lockCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i
+  %t.1.i.i = trunc nuw i8 %_5.sroa.0.0.i.i.i to i1
+  store ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, ptr %_3.i, align 8, !noalias !110
+  %11 = getelementptr inbounds nuw i8, ptr %_3.i, i64 8
+  store i8 %_5.sroa.0.0.i.i.i, ptr %11, align 8, !noalias !110
+  call void @llvm.lifetime.start.p0(ptr nonnull %args.i), !noalias !110
+  store ptr %_1, ptr %args.i, align 8, !noalias !110
+  %_9.sroa.4.0..sroa_idx.i = getelementptr inbounds nuw i8, ptr %args.i, i64 8
+  store ptr @_RNvXs1i_NtCs8b4M6GsfcPr_4core3fmtReNtB6_7Display3fmtCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc, ptr %_9.sroa.4.0..sroa_idx.i, align 8, !noalias !110
+; invoke alloc::fmt::format::format_inner
+  invoke void @_RNvNvNtCs8jjFDZd5IFg_5alloc3fmt6format12format_inner(ptr noalias noundef nonnull sret([24 x i8]) align 8 captures(none) dereferenceable(24) %_5.i, ptr noundef nonnull @alloc_5785b3f10eca97f63d180639df220382, ptr noundef nonnull %args.i)
+          to label %bb6.i unwind label %cleanup.i
+
+cleanup.i:                                        ; preds = %_RNvMNtCs8b4M6GsfcPr_4core6resultINtB2_6ResultINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1H_6string6StringEEINtBM_11PoisonErrorBH_EE6unwrapCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i
+  %12 = landingpad { ptr, i32 }
+          cleanup
+  br label %cleanup.body.i
+
+cleanup.body.i:                                   ; preds = %bb2.i.i.i2.i.i.i.i, %cleanup.i2.i, %cleanup.i
+  %eh.lpad-body.i = phi { ptr, i32 } [ %12, %cleanup.i ], [ %13, %bb2.i.i.i2.i.i.i.i ], [ %13, %cleanup.i2.i ]
+; invoke core::ptr::drop_glue::<std::sync::poison::mutex::MutexGuard<alloc::vec::Vec<alloc::string::String>>>
+  invoke fastcc void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1B_6string6StringEEECsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc(ptr noalias noundef align 8 dereferenceable(16) %_3.i) #30
+          to label %common.resume.i unwind label %terminate.i
+
+bb6.i:                                            ; preds = %_RNvMNtCs8b4M6GsfcPr_4core6resultINtB2_6ResultINtNtNtNtCsfFlbQN6m3JZ_3std4sync6poison5mutex10MutexGuardINtNtCs8jjFDZd5IFg_5alloc3vec3VecNtNtB1H_6string6StringEEINtBM_11PoisonErrorBH_EE6unwrapCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc.exit.i
+  call void @llvm.lifetime.end.p0(ptr nonnull %args.i), !noalias !110
+  call void @llvm.experimental.noalias.scope.decl(metadata !121)
+  call void @llvm.experimental.noalias.scope.decl(metadata !124)
+  %len.i.i = load i64, ptr getelementptr inbounds nuw (i8, ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, i64 24), align 8, !alias.scope !121, !noalias !126, !noundef !8
+  %self1.i.i = load i64, ptr getelementptr inbounds nuw (i8, ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, i64 8), align 8, !range !27, !alias.scope !121, !noalias !126, !noundef !8
+  %_4.i.i = icmp eq i64 %len.i.i, %self1.i.i
+  br i1 %_4.i.i, label %bb1.i1.i, label %bb10.i
+
+bb1.i1.i:                                         ; preds = %bb6.i
+; invoke <alloc::raw_vec::RawVec<alloc::string::String>>::grow_one
+  invoke void @_RNvMs3_NtCs8jjFDZd5IFg_5alloc7raw_vecINtB5_6RawVecNtNtB7_6string6StringE8grow_oneCsfFlbQN6m3JZ_3std(ptr noalias noundef nonnull align 8 dereferenceable(24) getelementptr inbounds nuw (i8, ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, i64 8))
+          to label %bb10.i unwind label %cleanup.i2.i, !noalias !124
+
+cleanup.i2.i:                                     ; preds = %bb1.i1.i
+  %13 = landingpad { ptr, i32 }
+          cleanup
+  call void @llvm.experimental.noalias.scope.decl(metadata !127)
+  call void @llvm.experimental.noalias.scope.decl(metadata !130)
+  call void @llvm.experimental.noalias.scope.decl(metadata !133)
+  call void @llvm.experimental.noalias.scope.decl(metadata !136)
+  call void @llvm.experimental.noalias.scope.decl(metadata !139)
+  %self1.i.i.i.i1.i.i.i.i = load i64, ptr %_5.i, align 8, !range !27, !alias.scope !142, !noalias !145, !noundef !8
+  %14 = icmp eq i64 %self1.i.i.i.i1.i.i.i.i, 0
+  br i1 %14, label %cleanup.body.i, label %bb2.i.i.i2.i.i.i.i
+
+bb2.i.i.i2.i.i.i.i:                               ; preds = %cleanup.i2.i
+  %15 = getelementptr inbounds nuw i8, ptr %_5.i, i64 8
+  %self3.i.i.i.i3.i.i.i.i = load ptr, ptr %15, align 8, !alias.scope !142, !noalias !145, !nonnull !8, !noundef !8
+  call void @free(ptr noundef nonnull %self3.i.i.i.i3.i.i.i.i) #29, !noalias !147
+  br label %cleanup.body.i
+
+bb10.i:                                           ; preds = %bb1.i1.i, %bb6.i
+  %_14.i.i = load ptr, ptr getelementptr inbounds nuw (i8, ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, i64 16), align 8, !alias.scope !121, !noalias !126, !nonnull !8, !noundef !8
+  %end.i.i = getelementptr inbounds nuw %"alloc::string::String", ptr %_14.i.i, i64 %len.i.i
+  call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(24) %end.i.i, ptr noundef nonnull readonly align 8 dereferenceable(24) %_5.i, i64 24, i1 false)
+  %16 = add i64 %len.i.i, 1
+  store i64 %16, ptr getelementptr inbounds nuw (i8, ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, i64 24), align 8, !alias.scope !121, !noalias !126
+  br i1 %t.1.i.i, label %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i.i, label %bb1.i.i.i.i
+
+bb1.i.i.i.i:                                      ; preds = %bb10.i
+  %17 = load atomic i64, ptr @_RNvNtNtCsfFlbQN6m3JZ_3std9panicking11panic_count18GLOBAL_PANIC_COUNT monotonic, align 8, !noalias !148
+  %_7.i.i.i.i = and i64 %17, 9223372036854775807
+  %18 = icmp eq i64 %_7.i.i.i.i, 0
+  br i1 %18, label %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i.i, label %bb6.i.i.i.i, !prof !66
+
+bb6.i.i.i.i:                                      ; preds = %bb1.i.i.i.i
+; call std::panicking::panic_count::is_zero_slow_path
+  %_6.i.i.i.i = call noundef zeroext i1 @_RNvNtNtCsfFlbQN6m3JZ_3std9panicking11panic_count17is_zero_slow_path() #31, !noalias !155
+  br i1 %_6.i.i.i.i, label %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i.i, label %bb2.i.i.i.i
+
+bb2.i.i.i.i:                                      ; preds = %bb6.i.i.i.i
+  store atomic i8 1, ptr getelementptr inbounds nuw (i8, ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, i64 4) monotonic, align 4, !noalias !148
+  br label %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i.i
+
+_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i.i: ; preds = %bb2.i.i.i.i, %bb6.i.i.i.i, %bb1.i.i.i.i, %bb10.i
+  %_8.i.i.i = atomicrmw xchg ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG, i32 0 release, align 4, !noalias !156
+  %19 = icmp eq i32 %_8.i.i.i, 2
+  br i1 %19, label %bb3.i.i.i, label %_RNvXs_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB4_9InnerDropNtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4drop.exit, !prof !67
+
+bb3.i.i.i:                                        ; preds = %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i.i
+; call <std::sys::sync::mutex::futex::Mutex>::wake
+  call void @_RNvMNtNtNtNtCsfFlbQN6m3JZ_3std3sys4sync5mutex5futexNtB2_5Mutex4wake(ptr noundef nonnull align 4 @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc3LOG), !noalias !157
+  br label %_RNvXs_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB4_9InnerDropNtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4drop.exit
+
+terminate.i:                                      ; preds = %cleanup.body.i
+  %20 = landingpad { ptr, i32 }
+          filter [0 x ptr] zeroinitializer
+; call core::panicking::panic_in_cleanup
+  call void @_RNvNtCs8b4M6GsfcPr_4core9panicking16panic_in_cleanup() #33
+  unreachable
+
+_RNvXs_Csln6j0PvE6fm_29exp_c_box_upcast_drop_deallocNtB4_9InnerDropNtNtNtCs8b4M6GsfcPr_4core3ops4drop4Drop4drop.exit: ; preds = %_RNvMNtNtCsfFlbQN6m3JZ_3std4sync6poisonNtB2_4Flag4done.exit.i.i.i, %bb3.i.i.i
+  call void @llvm.lifetime.end.p0(ptr nonnull %_3.i), !noalias !110
+  call void @llvm.lifetime.end.p0(ptr nonnull %_5.i)
+  ret void
+}
+
+define internal fastcc { ptr, ptr } @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc15upcast_box_to_b(ptr noundef nonnull %b.0, ptr noalias noundef readonly align 8 captures(none) dereferenceable(48) %b.1) unnamed_addr #8 {
+start:
+  %0 = getelementptr inbounds nuw i8, ptr %b.1, i64 40
+  %_0.1 = load ptr, ptr %0, align 8, !invariant.load !8, !nonnull !8
+  %1 = insertvalue { ptr, ptr } poison, ptr %b.0, 0
+  %2 = insertvalue { ptr, ptr } %1, ptr %_0.1, 1
+  ret { ptr, ptr } %2
+}
+
+define internal fastcc ptr @_RNvCsln6j0PvE6fm_29exp_c_box_upcast_drop_dealloc17upcast_chain_3hop(ptr noundef nonnull %b.0) unnamed_addr #9 {
+start:
+  ret ptr %b.0
+}

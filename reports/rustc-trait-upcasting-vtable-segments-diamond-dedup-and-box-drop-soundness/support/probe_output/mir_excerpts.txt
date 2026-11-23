@@ -1,0 +1,1422 @@
+=== exp_a_multi_supertrait_vtable.make_vacant_dyn.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `make_vacant_dyn` after runtime-post-cleanup
+
+fn make_vacant_dyn(_1: &Impl) -> &dyn CondVacant<NonCopy> {
+    debug r => _1;
+    let mut _0: &dyn CondVacant<NonCopy>;
+    let mut _2: &dyn CondVacant<NonCopy>;
+    let _3: &dyn CondVacant<NonCopy>;
+    let mut _4: &Impl;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn CondVacant<NonCopy> (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn CondVacant<NonCopy> (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_a_multi_supertrait_vtable.make_vacant_dyn.3-3-000.runtime-optimized.after.mir ===
+// MIR for `make_vacant_dyn` after runtime-optimized
+
+fn make_vacant_dyn(_1: &Impl) -> &dyn CondVacant<NonCopy> {
+    debug r => _1;
+    let mut _0: &dyn CondVacant<NonCopy>;
+
+    bb0: {
+        _0 = copy _1 as &dyn CondVacant<NonCopy> (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+
+=== exp_a_multi_supertrait_vtable.upcast_after_empty_to_b.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `upcast_after_empty_to_b` after runtime-post-cleanup
+
+fn upcast_after_empty_to_b(_1: &dyn SubAfterEmpty) -> &dyn SuperB {
+    debug r => _1;
+    let mut _0: &dyn SuperB;
+    let mut _2: &dyn SuperB;
+    let _3: &dyn SuperB;
+    let mut _4: &dyn SubAfterEmpty;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn SuperB (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn SuperB (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_a_multi_supertrait_vtable.upcast_after_empty_to_b.3-3-000.runtime-optimized.after.mir ===
+// MIR for `upcast_after_empty_to_b` after runtime-optimized
+
+fn upcast_after_empty_to_b(_1: &dyn SubAfterEmpty) -> &dyn SuperB {
+    debug r => _1;
+    let mut _0: &dyn SuperB;
+
+    bb0: {
+        _0 = copy _1 as &dyn SuperB (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+
+=== exp_a_multi_supertrait_vtable.upcast_to_a.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `upcast_to_a` after runtime-post-cleanup
+
+fn upcast_to_a(_1: &dyn Sub) -> &dyn SuperA {
+    debug r => _1;
+    let mut _0: &dyn SuperA;
+    let mut _2: &dyn SuperA;
+    let _3: &dyn SuperA;
+    let mut _4: &dyn Sub;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn SuperA (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn SuperA (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_a_multi_supertrait_vtable.upcast_to_a.3-3-000.runtime-optimized.after.mir ===
+// MIR for `upcast_to_a` after runtime-optimized
+
+fn upcast_to_a(_1: &dyn Sub) -> &dyn SuperA {
+    debug r => _1;
+    let mut _0: &dyn SuperA;
+
+    bb0: {
+        _0 = copy _1 as &dyn SuperA (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+
+=== exp_a_multi_supertrait_vtable.upcast_to_b.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `upcast_to_b` after runtime-post-cleanup
+
+fn upcast_to_b(_1: &dyn Sub) -> &dyn SuperB {
+    debug r => _1;
+    let mut _0: &dyn SuperB;
+    let mut _2: &dyn SuperB;
+    let _3: &dyn SuperB;
+    let mut _4: &dyn Sub;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn SuperB (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn SuperB (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_a_multi_supertrait_vtable.upcast_to_b.3-3-000.runtime-optimized.after.mir ===
+// MIR for `upcast_to_b` after runtime-optimized
+
+fn upcast_to_b(_1: &dyn Sub) -> &dyn SuperB {
+    debug r => _1;
+    let mut _0: &dyn SuperB;
+
+    bb0: {
+        _0 = copy _1 as &dyn SuperB (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+
+=== exp_a_multi_supertrait_vtable.upcast_tri_to_a.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `upcast_tri_to_a` after runtime-post-cleanup
+
+fn upcast_tri_to_a(_1: &dyn Tri) -> &dyn SuperA {
+    debug r => _1;
+    let mut _0: &dyn SuperA;
+    let mut _2: &dyn SuperA;
+    let _3: &dyn SuperA;
+    let mut _4: &dyn Tri;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn SuperA (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn SuperA (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_a_multi_supertrait_vtable.upcast_tri_to_a.3-3-000.runtime-optimized.after.mir ===
+// MIR for `upcast_tri_to_a` after runtime-optimized
+
+fn upcast_tri_to_a(_1: &dyn Tri) -> &dyn SuperA {
+    debug r => _1;
+    let mut _0: &dyn SuperA;
+
+    bb0: {
+        _0 = copy _1 as &dyn SuperA (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+
+=== exp_a_multi_supertrait_vtable.upcast_tri_to_b.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `upcast_tri_to_b` after runtime-post-cleanup
+
+fn upcast_tri_to_b(_1: &dyn Tri) -> &dyn SuperB {
+    debug r => _1;
+    let mut _0: &dyn SuperB;
+    let mut _2: &dyn SuperB;
+    let _3: &dyn SuperB;
+    let mut _4: &dyn Tri;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn SuperB (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn SuperB (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_a_multi_supertrait_vtable.upcast_tri_to_b.3-3-000.runtime-optimized.after.mir ===
+// MIR for `upcast_tri_to_b` after runtime-optimized
+
+fn upcast_tri_to_b(_1: &dyn Tri) -> &dyn SuperB {
+    debug r => _1;
+    let mut _0: &dyn SuperB;
+
+    bb0: {
+        _0 = copy _1 as &dyn SuperB (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+
+=== exp_a_multi_supertrait_vtable.upcast_tri_to_c.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `upcast_tri_to_c` after runtime-post-cleanup
+
+fn upcast_tri_to_c(_1: &dyn Tri) -> &dyn SuperC {
+    debug r => _1;
+    let mut _0: &dyn SuperC;
+    let mut _2: &dyn SuperC;
+    let _3: &dyn SuperC;
+    let mut _4: &dyn Tri;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn SuperC (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn SuperC (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_a_multi_supertrait_vtable.upcast_tri_to_c.3-3-000.runtime-optimized.after.mir ===
+// MIR for `upcast_tri_to_c` after runtime-optimized
+
+fn upcast_tri_to_c(_1: &dyn Tri) -> &dyn SuperC {
+    debug r => _1;
+    let mut _0: &dyn SuperC;
+
+    bb0: {
+        _0 = copy _1 as &dyn SuperC (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.ambig_to_u16.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `ambig_to_u16` after runtime-post-cleanup
+
+fn ambig_to_u16(_1: &dyn AmbigDia) -> &dyn GenRoot<u16> {
+    debug d => _1;
+    let mut _0: &dyn GenRoot<u16>;
+    let mut _2: &dyn GenRoot<u16>;
+    let _3: &dyn GenRoot<u16>;
+    let mut _4: &dyn AmbigDia;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn GenRoot<u16> (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn GenRoot<u16> (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.ambig_to_u16.3-3-000.runtime-optimized.after.mir ===
+// MIR for `ambig_to_u16` after runtime-optimized
+
+fn ambig_to_u16(_1: &dyn AmbigDia) -> &dyn GenRoot<u16> {
+    debug d => _1;
+    let mut _0: &dyn GenRoot<u16>;
+
+    bb0: {
+        _0 = copy _1 as &dyn GenRoot<u16> (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.ambig_to_u8.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `ambig_to_u8` after runtime-post-cleanup
+
+fn ambig_to_u8(_1: &dyn AmbigDia) -> &dyn GenRoot<u8> {
+    debug d => _1;
+    let mut _0: &dyn GenRoot<u8>;
+    let mut _2: &dyn GenRoot<u8>;
+    let _3: &dyn GenRoot<u8>;
+    let mut _4: &dyn AmbigDia;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn GenRoot<u8> (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn GenRoot<u8> (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.ambig_to_u8.3-3-000.runtime-optimized.after.mir ===
+// MIR for `ambig_to_u8` after runtime-optimized
+
+fn ambig_to_u8(_1: &dyn AmbigDia) -> &dyn GenRoot<u8> {
+    debug d => _1;
+    let mut _0: &dyn GenRoot<u8>;
+
+    bb0: {
+        _0 = copy _1 as &dyn GenRoot<u8> (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.asym_to_right_second.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `asym_to_right_second` after runtime-post-cleanup
+
+fn asym_to_right_second(_1: &dyn DiamondAsym) -> &dyn RightSecond {
+    debug d => _1;
+    let mut _0: &dyn RightSecond;
+    let mut _2: &dyn RightSecond;
+    let _3: &dyn RightSecond;
+    let mut _4: &dyn DiamondAsym;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn RightSecond (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn RightSecond (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.asym_to_right_second.3-3-000.runtime-optimized.after.mir ===
+// MIR for `asym_to_right_second` after runtime-optimized
+
+fn asym_to_right_second(_1: &dyn DiamondAsym) -> &dyn RightSecond {
+    debug d => _1;
+    let mut _0: &dyn RightSecond;
+
+    bb0: {
+        _0 = copy _1 as &dyn RightSecond (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.asym_to_root.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `asym_to_root` after runtime-post-cleanup
+
+fn asym_to_root(_1: &dyn DiamondAsym) -> &dyn Root {
+    debug d => _1;
+    let mut _0: &dyn Root;
+    let mut _2: &dyn Root;
+    let _3: &dyn Root;
+    let mut _4: &dyn DiamondAsym;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn Root (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn Root (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.asym_to_root.3-3-000.runtime-optimized.after.mir ===
+// MIR for `asym_to_root` after runtime-optimized
+
+fn asym_to_root(_1: &dyn DiamondAsym) -> &dyn Root {
+    debug d => _1;
+    let mut _0: &dyn Root;
+
+    bb0: {
+        _0 = copy _1 as &dyn Root (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.dia_to_left.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `dia_to_left` after runtime-post-cleanup
+
+fn dia_to_left(_1: &dyn Diamond) -> &dyn Left {
+    debug d => _1;
+    let mut _0: &dyn Left;
+    let mut _2: &dyn Left;
+    let _3: &dyn Left;
+    let mut _4: &dyn Diamond;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn Left (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn Left (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.dia_to_left.3-3-000.runtime-optimized.after.mir ===
+// MIR for `dia_to_left` after runtime-optimized
+
+fn dia_to_left(_1: &dyn Diamond) -> &dyn Left {
+    debug d => _1;
+    let mut _0: &dyn Left;
+
+    bb0: {
+        _0 = copy _1 as &dyn Left (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.dia_to_right.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `dia_to_right` after runtime-post-cleanup
+
+fn dia_to_right(_1: &dyn Diamond) -> &dyn Right {
+    debug d => _1;
+    let mut _0: &dyn Right;
+    let mut _2: &dyn Right;
+    let _3: &dyn Right;
+    let mut _4: &dyn Diamond;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn Right (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn Right (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.dia_to_right.3-3-000.runtime-optimized.after.mir ===
+// MIR for `dia_to_right` after runtime-optimized
+
+fn dia_to_right(_1: &dyn Diamond) -> &dyn Right {
+    debug d => _1;
+    let mut _0: &dyn Right;
+
+    bb0: {
+        _0 = copy _1 as &dyn Right (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.dia_to_root.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `dia_to_root` after runtime-post-cleanup
+
+fn dia_to_root(_1: &dyn Diamond) -> &dyn Root {
+    debug d => _1;
+    let mut _0: &dyn Root;
+    let mut _2: &dyn Root;
+    let _3: &dyn Root;
+    let mut _4: &dyn Diamond;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn Root (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn Root (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.dia_to_root.3-3-000.runtime-optimized.after.mir ===
+// MIR for `dia_to_root` after runtime-optimized
+
+fn dia_to_root(_1: &dyn Diamond) -> &dyn Root {
+    debug d => _1;
+    let mut _0: &dyn Root;
+
+    bb0: {
+        _0 = copy _1 as &dyn Root (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.left_to_root.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `left_to_root` after runtime-post-cleanup
+
+fn left_to_root(_1: &dyn Left) -> &dyn Root {
+    debug l => _1;
+    let mut _0: &dyn Root;
+    let mut _2: &dyn Root;
+    let _3: &dyn Root;
+    let mut _4: &dyn Left;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn Root (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn Root (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.left_to_root.3-3-000.runtime-optimized.after.mir ===
+// MIR for `left_to_root` after runtime-optimized
+
+fn left_to_root(_1: &dyn Left) -> &dyn Root {
+    debug l => _1;
+    let mut _0: &dyn Root;
+
+    bb0: {
+        _0 = copy _1 as &dyn Root (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.right_second_to_root.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `right_second_to_root` after runtime-post-cleanup
+
+fn right_second_to_root(_1: &dyn RightSecond) -> &dyn Root {
+    debug r => _1;
+    let mut _0: &dyn Root;
+    let mut _2: &dyn Root;
+    let _3: &dyn Root;
+    let mut _4: &dyn RightSecond;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn Root (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn Root (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.right_second_to_root.3-3-000.runtime-optimized.after.mir ===
+// MIR for `right_second_to_root` after runtime-optimized
+
+fn right_second_to_root(_1: &dyn RightSecond) -> &dyn Root {
+    debug r => _1;
+    let mut _0: &dyn Root;
+
+    bb0: {
+        _0 = copy _1 as &dyn Root (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.right_to_root.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `right_to_root` after runtime-post-cleanup
+
+fn right_to_root(_1: &dyn Right) -> &dyn Root {
+    debug r => _1;
+    let mut _0: &dyn Root;
+    let mut _2: &dyn Root;
+    let _3: &dyn Root;
+    let mut _4: &dyn Right;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn Root (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn Root (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_b_diamond_upcast.right_to_root.3-3-000.runtime-optimized.after.mir ===
+// MIR for `right_to_root` after runtime-optimized
+
+fn right_to_root(_1: &dyn Right) -> &dyn Root {
+    debug r => _1;
+    let mut _0: &dyn Root;
+
+    bb0: {
+        _0 = copy _1 as &dyn Root (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+
+=== core.ptr-drop_glue.Box_dynSub_.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut Box<dyn Sub>) -> () {
+    let mut _0: ();
+    let mut _2: &mut std::boxed::Box<dyn Sub>;
+    let mut _3: ();
+    let mut _4: &mut std::boxed::Box<dyn Sub>;
+    let mut _5: ();
+    let mut _6: *const dyn Sub;
+
+    bb0: {
+        _6 = copy (((*_1).0: std::ptr::Unique<dyn Sub>).0: std::ptr::NonNull<dyn Sub>) as *const dyn Sub (Transmute);
+        drop((*_6)) -> [return: bb3, unwind: bb4];
+    }
+
+    bb1 (cleanup): {
+        resume;
+    }
+
+    bb2: {
+        return;
+    }
+
+    bb3: {
+        _2 = copy _1;
+        _3 = <Box<dyn Sub> as Drop>::drop(move _2) -> [return: bb2, unwind continue];
+    }
+
+    bb4 (cleanup): {
+        _4 = copy _1;
+        _5 = <Box<dyn Sub> as Drop>::drop(move _4) -> [return: bb1, unwind terminate(cleanup)];
+    }
+}
+
+
+=== core.ptr-drop_glue.Box_dynSuperB_.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut Box<dyn SuperB>) -> () {
+    let mut _0: ();
+    let mut _2: &mut std::boxed::Box<dyn SuperB>;
+    let mut _3: ();
+    let mut _4: &mut std::boxed::Box<dyn SuperB>;
+    let mut _5: ();
+    let mut _6: *const dyn SuperB;
+
+    bb0: {
+        _6 = copy (((*_1).0: std::ptr::Unique<dyn SuperB>).0: std::ptr::NonNull<dyn SuperB>) as *const dyn SuperB (Transmute);
+        drop((*_6)) -> [return: bb3, unwind: bb4];
+    }
+
+    bb1 (cleanup): {
+        resume;
+    }
+
+    bb2: {
+        return;
+    }
+
+    bb3: {
+        _2 = copy _1;
+        _3 = <Box<dyn SuperB> as Drop>::drop(move _2) -> [return: bb2, unwind continue];
+    }
+
+    bb4 (cleanup): {
+        _4 = copy _1;
+        _5 = <Box<dyn SuperB> as Drop>::drop(move _4) -> [return: bb1, unwind terminate(cleanup)];
+    }
+}
+
+
+=== core.ptr-drop_glue.Box_dynTier0_.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut Box<dyn Tier0>) -> () {
+    let mut _0: ();
+    let mut _2: &mut std::boxed::Box<dyn Tier0>;
+    let mut _3: ();
+    let mut _4: &mut std::boxed::Box<dyn Tier0>;
+    let mut _5: ();
+    let mut _6: *const dyn Tier0;
+
+    bb0: {
+        _6 = copy (((*_1).0: std::ptr::Unique<dyn Tier0>).0: std::ptr::NonNull<dyn Tier0>) as *const dyn Tier0 (Transmute);
+        drop((*_6)) -> [return: bb3, unwind: bb4];
+    }
+
+    bb1 (cleanup): {
+        resume;
+    }
+
+    bb2: {
+        return;
+    }
+
+    bb3: {
+        _2 = copy _1;
+        _3 = <Box<dyn Tier0> as Drop>::drop(move _2) -> [return: bb2, unwind continue];
+    }
+
+    bb4 (cleanup): {
+        _4 = copy _1;
+        _5 = <Box<dyn Tier0> as Drop>::drop(move _4) -> [return: bb1, unwind terminate(cleanup)];
+    }
+}
+
+
+=== core.ptr-drop_glue.DropTracker.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut DropTracker) -> () {
+    let mut _0: ();
+    let mut _2: &mut DropTracker;
+    let mut _3: ();
+
+    bb0: {
+        _2 = copy _1;
+        _3 = <DropTracker as Drop>::drop(move _2) -> [return: bb4, unwind: bb3];
+    }
+
+    bb1 (cleanup): {
+        resume;
+    }
+
+    bb2: {
+        return;
+    }
+
+    bb3 (cleanup): {
+        drop(((*_1).2: InnerDrop)) -> [return: bb1, unwind terminate(cleanup)];
+    }
+
+    bb4: {
+        drop(((*_1).2: InnerDrop)) -> [return: bb2, unwind continue];
+    }
+}
+
+
+=== core.ptr-drop_glue.InnerDrop.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut InnerDrop) -> () {
+    let mut _0: ();
+    let mut _2: &mut InnerDrop;
+    let mut _3: ();
+
+    bb0: {
+        _2 = copy _1;
+        _3 = <InnerDrop as Drop>::drop(move _2) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+
+=== core.ptr-drop_glue.PoisonError_std__sync__MutexGuard_'_,Vec_(usize,usize)___.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut PoisonError<std::sync::MutexGuard<'_, Vec<(usize, usize)>>>) -> () {
+    let mut _0: ();
+
+    bb0: {
+        drop(((*_1).0: std::sync::MutexGuard<'_, std::vec::Vec<(usize, usize)>>)) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+
+=== core.ptr-drop_glue.PoisonError_std__sync__MutexGuard_'_,Vec_String___.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut PoisonError<std::sync::MutexGuard<'_, Vec<String>>>) -> () {
+    let mut _0: ();
+
+    bb0: {
+        drop(((*_1).0: std::sync::MutexGuard<'_, std::vec::Vec<std::string::String>>)) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+
+=== core.ptr-drop_glue.Result_std__sync__MutexGuard_'_,Vec_(usize,usize)__,std__sync__TryLockError_std__sync__MutexGuard_'_,Vec_(usize,usize)____.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut Result<std::sync::MutexGuard<'_, Vec<(usize, usize)>>, std::sync::TryLockError<std::sync::MutexGuard<'_, Vec<(usize, usize)>>>>) -> () {
+    let mut _0: ();
+    let mut _2: isize;
+    let mut _3: isize;
+
+    bb0: {
+        _2 = discriminant((*_1));
+        switchInt(move _2) -> [0: bb2, otherwise: bb3];
+    }
+
+    bb1: {
+        return;
+    }
+
+    bb2: {
+        drop((((*_1) as Ok).0: std::sync::MutexGuard<'_, std::vec::Vec<(usize, usize)>>)) -> [return: bb1, unwind continue];
+    }
+
+    bb3: {
+        drop((((*_1) as Err).0: std::sync::TryLockError<std::sync::MutexGuard<'_, std::vec::Vec<(usize, usize)>>>)) -> [return: bb1, unwind continue];
+    }
+}
+
+
+=== core.ptr-drop_glue.String.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut String) -> () {
+    let mut _0: ();
+
+    bb0: {
+        drop(((*_1).0: std::vec::Vec<u8>)) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+
+=== core.ptr-drop_glue.UnsafeCell_Vec_(usize,usize)__.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut UnsafeCell<Vec<(usize, usize)>>) -> () {
+    let mut _0: ();
+
+    bb0: {
+        drop(((*_1).0: std::vec::Vec<(usize, usize)>)) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+
+=== core.ptr-drop_glue.UnsafeCell_Vec_String__.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut UnsafeCell<Vec<String>>) -> () {
+    let mut _0: ();
+
+    bb0: {
+        drop(((*_1).0: std::vec::Vec<std::string::String>)) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+
+=== core.ptr-drop_glue.Vec_(usize,usize)_.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut Vec<(usize, usize)>) -> () {
+    let mut _0: ();
+    let mut _2: &mut std::vec::Vec<(usize, usize)>;
+    let mut _3: ();
+
+    bb0: {
+        _2 = copy _1;
+        _3 = <Vec<(usize, usize)> as Drop>::drop(move _2) -> [return: bb4, unwind: bb3];
+    }
+
+    bb1 (cleanup): {
+        resume;
+    }
+
+    bb2: {
+        return;
+    }
+
+    bb3 (cleanup): {
+        drop(((*_1).0: alloc::raw_vec::RawVec<(usize, usize)>)) -> [return: bb1, unwind terminate(cleanup)];
+    }
+
+    bb4: {
+        drop(((*_1).0: alloc::raw_vec::RawVec<(usize, usize)>)) -> [return: bb2, unwind continue];
+    }
+}
+
+
+=== core.ptr-drop_glue.Vec_String_.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut Vec<String>) -> () {
+    let mut _0: ();
+    let mut _2: &mut std::vec::Vec<std::string::String>;
+    let mut _3: ();
+
+    bb0: {
+        _2 = copy _1;
+        _3 = <Vec<String> as Drop>::drop(move _2) -> [return: bb4, unwind: bb3];
+    }
+
+    bb1 (cleanup): {
+        resume;
+    }
+
+    bb2: {
+        return;
+    }
+
+    bb3 (cleanup): {
+        drop(((*_1).0: alloc::raw_vec::RawVec<std::string::String>)) -> [return: bb1, unwind terminate(cleanup)];
+    }
+
+    bb4: {
+        drop(((*_1).0: alloc::raw_vec::RawVec<std::string::String>)) -> [return: bb2, unwind continue];
+    }
+}
+
+
+=== core.ptr-drop_glue.Vec_u8_.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut Vec<u8>) -> () {
+    let mut _0: ();
+    let mut _2: &mut std::vec::Vec<u8>;
+    let mut _3: ();
+
+    bb0: {
+        _2 = copy _1;
+        _3 = <Vec<u8> as Drop>::drop(move _2) -> [return: bb4, unwind: bb3];
+    }
+
+    bb1 (cleanup): {
+        resume;
+    }
+
+    bb2: {
+        return;
+    }
+
+    bb3 (cleanup): {
+        drop(((*_1).0: alloc::raw_vec::RawVec<u8>)) -> [return: bb1, unwind terminate(cleanup)];
+    }
+
+    bb4: {
+        drop(((*_1).0: alloc::raw_vec::RawVec<u8>)) -> [return: bb2, unwind continue];
+    }
+}
+
+
+=== core.ptr-drop_glue.[String].3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut [String]) -> () {
+    let mut _0: ();
+    let mut _2: usize;
+    let mut _3: usize;
+    let mut _4: *mut std::string::String;
+    let mut _5: bool;
+    let mut _6: *mut std::string::String;
+    let mut _7: bool;
+
+    bb0: {
+        _2 = PtrMetadata(copy _1);
+        _3 = const 0_usize;
+        goto -> bb6;
+    }
+
+    bb1: {
+        return;
+    }
+
+    bb2 (cleanup): {
+        resume;
+    }
+
+    bb3 (cleanup): {
+        _4 = &raw mut (*_1)[_3];
+        _3 = Add(move _3, const 1_usize);
+        drop((*_4)) -> [return: bb4, unwind terminate(cleanup)];
+    }
+
+    bb4 (cleanup): {
+        _5 = Eq(copy _3, copy _2);
+        switchInt(move _5) -> [0: bb3, otherwise: bb2];
+    }
+
+    bb5: {
+        _6 = &raw mut (*_1)[_3];
+        _3 = Add(move _3, const 1_usize);
+        drop((*_6)) -> [return: bb6, unwind: bb4];
+    }
+
+    bb6: {
+        _7 = Eq(copy _3, copy _2);
+        switchInt(move _7) -> [0: bb5, otherwise: bb1];
+    }
+}
+
+
+=== core.ptr-drop_glue._Tasslice___impl[T]___to_vec_in__ConvertVec___to_vec__DropGuard_'_,String,std__alloc__Global_.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut <T as slice::<impl [T]>::to_vec_in::ConvertVec>::to_vec::DropGuard<'_, String, std::alloc::Global>) -> () {
+    let mut _0: ();
+    let mut _2: &mut <T as std::slice::<impl [T]>::to_vec_in::ConvertVec>::to_vec::DropGuard<'_, std::string::String, std::alloc::Global>;
+    let mut _3: ();
+
+    bb0: {
+        _2 = copy _1;
+        _3 = <<T as slice::<impl [T]>::to_vec_in::ConvertVec>::to_vec::DropGuard<'_, String, std::alloc::Global> as Drop>::drop(move _2) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+
+=== core.ptr-drop_glue.alloc__raw_vec__RawVec_(usize,usize)_.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut alloc::raw_vec::RawVec<(usize, usize)>) -> () {
+    let mut _0: ();
+    let mut _2: &mut alloc::raw_vec::RawVec<(usize, usize)>;
+    let mut _3: ();
+
+    bb0: {
+        _2 = copy _1;
+        _3 = <alloc::raw_vec::RawVec<(usize, usize)> as Drop>::drop(move _2) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+
+=== core.ptr-drop_glue.alloc__raw_vec__RawVec_String_.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut alloc::raw_vec::RawVec<String>) -> () {
+    let mut _0: ();
+    let mut _2: &mut alloc::raw_vec::RawVec<std::string::String>;
+    let mut _3: ();
+
+    bb0: {
+        _2 = copy _1;
+        _3 = <alloc::raw_vec::RawVec<String> as Drop>::drop(move _2) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+
+=== core.ptr-drop_glue.alloc__raw_vec__RawVec_u8_.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut alloc::raw_vec::RawVec<u8>) -> () {
+    let mut _0: ();
+    let mut _2: &mut alloc::raw_vec::RawVec<u8>;
+    let mut _3: ();
+
+    bb0: {
+        _2 = copy _1;
+        _3 = <alloc::raw_vec::RawVec<u8> as Drop>::drop(move _2) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+
+=== core.ptr-drop_glue.dynSub.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut dyn Sub) -> () {
+    let mut _0: ();
+
+    bb0: {
+        drop((*_1)) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+
+=== core.ptr-drop_glue.dynSuperB.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut dyn SuperB) -> () {
+    let mut _0: ();
+
+    bb0: {
+        drop((*_1)) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+
+=== core.ptr-drop_glue.dynTier0.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut dyn Tier0) -> () {
+    let mut _0: ();
+
+    bb0: {
+        drop((*_1)) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+
+=== core.ptr-drop_glue.std__sync__MutexGuard_'_,Vec_(usize,usize)__.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut std::sync::MutexGuard<'_, Vec<(usize, usize)>>) -> () {
+    let mut _0: ();
+    let mut _2: &mut std::sync::MutexGuard<'_, std::vec::Vec<(usize, usize)>>;
+    let mut _3: ();
+
+    bb0: {
+        _2 = copy _1;
+        _3 = <std::sync::MutexGuard<'_, Vec<(usize, usize)>> as Drop>::drop(move _2) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+
+=== core.ptr-drop_glue.std__sync__MutexGuard_'_,Vec_String__.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut std::sync::MutexGuard<'_, Vec<String>>) -> () {
+    let mut _0: ();
+    let mut _2: &mut std::sync::MutexGuard<'_, std::vec::Vec<std::string::String>>;
+    let mut _3: ();
+
+    bb0: {
+        _2 = copy _1;
+        _3 = <std::sync::MutexGuard<'_, Vec<String>> as Drop>::drop(move _2) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+
+=== core.ptr-drop_glue.std__sync__Mutex_Vec_(usize,usize)__.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut std::sync::Mutex<Vec<(usize, usize)>>) -> () {
+    let mut _0: ();
+
+    bb0: {
+        drop(((*_1).2: std::cell::UnsafeCell<std::vec::Vec<(usize, usize)>>)) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+
+=== core.ptr-drop_glue.std__sync__Mutex_Vec_String__.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut std::sync::Mutex<Vec<String>>) -> () {
+    let mut _0: ();
+
+    bb0: {
+        drop(((*_1).2: std::cell::UnsafeCell<std::vec::Vec<std::string::String>>)) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+
+=== core.ptr-drop_glue.std__sync__TryLockError_std__sync__MutexGuard_'_,Vec_(usize,usize)___.3-3-000.runtime-optimized.after.mir ===
+// MIR for `std::ptr::drop_glue` after runtime-optimized
+
+fn std::ptr::drop_glue(_1: &mut std::sync::TryLockError<std::sync::MutexGuard<'_, Vec<(usize, usize)>>>) -> () {
+    let mut _0: ();
+    let mut _2: isize;
+    let mut _3: isize;
+
+    bb0: {
+        _2 = discriminant((*_1));
+        switchInt(move _2) -> [0: bb2, otherwise: bb1];
+    }
+
+    bb1: {
+        return;
+    }
+
+    bb2: {
+        drop((((*_1) as Poisoned).0: std::sync::PoisonError<std::sync::MutexGuard<'_, std::vec::Vec<(usize, usize)>>>)) -> [return: bb1, unwind continue];
+    }
+}
+
+
+=== exp_c_box_upcast_drop_dealloc.upcast_box_to_b.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `upcast_box_to_b` after runtime-post-cleanup
+
+fn upcast_box_to_b(_1: Box<dyn Sub>) -> Box<dyn SuperB> {
+    debug b => _1;
+    let mut _0: std::boxed::Box<dyn SuperB>;
+    let mut _2: std::boxed::Box<dyn SuperB>;
+    let mut _3: std::boxed::Box<dyn Sub>;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = move _1;
+        _2 = move _3 as std::boxed::Box<dyn SuperB> (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        _0 = move _2 as std::boxed::Box<dyn SuperB> (PointerCoercion(Unsize, Implicit));
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_c_box_upcast_drop_dealloc.upcast_box_to_b.3-3-000.runtime-optimized.after.mir ===
+// MIR for `upcast_box_to_b` after runtime-optimized
+
+fn upcast_box_to_b(_1: Box<dyn Sub>) -> Box<dyn SuperB> {
+    debug b => _1;
+    let mut _0: std::boxed::Box<dyn SuperB>;
+
+    bb0: {
+        _0 = copy _1 as std::boxed::Box<dyn SuperB> (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
+
+=== exp_c_box_upcast_drop_dealloc.upcast_chain_3hop.3-2-000.runtime-post-cleanup.after.mir ===
+// MIR for `upcast_chain_3hop` after runtime-post-cleanup
+
+fn upcast_chain_3hop(_1: Box<dyn Tier3>) -> Box<dyn Tier0> {
+    debug b => _1;
+    let mut _0: std::boxed::Box<dyn Tier0>;
+    let mut _2: std::boxed::Box<dyn Tier0>;
+    let _3: std::boxed::Box<dyn Tier2>;
+    let mut _4: std::boxed::Box<dyn Tier3>;
+    let mut _6: std::boxed::Box<dyn Tier2>;
+    let mut _8: std::boxed::Box<dyn Tier1>;
+    let mut _9: std::boxed::Box<dyn Tier0>;
+    scope 1 {
+        debug b2 => _3;
+        let _5: std::boxed::Box<dyn Tier1>;
+        scope 2 {
+            debug b1 => _5;
+            let _7: std::boxed::Box<dyn Tier0>;
+            scope 3 {
+                debug b0 => _7;
+            }
+        }
+    }
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = move _1;
+        _3 = move _4 as std::boxed::Box<dyn Tier2> (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        StorageLive(_5);
+        StorageLive(_6);
+        _6 = move _3;
+        _5 = move _6 as std::boxed::Box<dyn Tier1> (PointerCoercion(Unsize, Implicit));
+        StorageDead(_6);
+        StorageLive(_7);
+        StorageLive(_8);
+        _8 = move _5;
+        _7 = move _8 as std::boxed::Box<dyn Tier0> (PointerCoercion(Unsize, Implicit));
+        StorageDead(_8);
+        StorageLive(_9);
+        _9 = move _7;
+        _2 = move _9 as std::boxed::Box<dyn Tier0> (PointerCoercion(Unsize, Implicit));
+        StorageDead(_9);
+        StorageDead(_7);
+        StorageDead(_5);
+        StorageDead(_3);
+        _0 = move _2 as std::boxed::Box<dyn Tier0> (PointerCoercion(Unsize, Implicit));
+        StorageDead(_2);
+        return;
+    }
+}
+
+
+=== exp_c_box_upcast_drop_dealloc.upcast_chain_3hop.3-3-000.runtime-optimized.after.mir ===
+// MIR for `upcast_chain_3hop` after runtime-optimized
+
+fn upcast_chain_3hop(_1: Box<dyn Tier3>) -> Box<dyn Tier0> {
+    debug b => _1;
+    let mut _0: std::boxed::Box<dyn Tier0>;
+    let _2: std::boxed::Box<dyn Tier2>;
+    scope 1 {
+        debug b2 => _2;
+        let _3: std::boxed::Box<dyn Tier1>;
+        scope 2 {
+            debug b1 => _3;
+            scope 3 {
+                debug b0 => _0;
+            }
+        }
+    }
+
+    bb0: {
+        _2 = copy _1 as std::boxed::Box<dyn Tier2> (PointerCoercion(Unsize, Implicit));
+        _3 = copy _2 as std::boxed::Box<dyn Tier1> (PointerCoercion(Unsize, Implicit));
+        _0 = copy _3 as std::boxed::Box<dyn Tier0> (PointerCoercion(Unsize, Implicit));
+        return;
+    }
+}
+
