@@ -299,12 +299,11 @@ impl OleanCache {
         let Some(ref prebuilt_dir) = self.prebuilt_dir else {
             return Ok(None);
         };
-        if fs::symlink_metadata(prebuilt_dir).is_err() {
+        if !probe_existing_non_symlink_dir(prebuilt_dir, false)? {
             return Ok(None);
         }
-        verify_non_symlink_dir(prebuilt_dir, "olean-cache", false)?;
         let manifest_path = prebuilt_dir.join(PREBUILT_MANIFEST_FILE);
-        if fs::symlink_metadata(&manifest_path).is_err() {
+        if !probe_existing_regular_file(&manifest_path, false)? {
             return Ok(None);
         }
         let bytes = read_regular_nofollow_capped(&manifest_path, MAX_OLEAN_BYTES, "olean-cache")?;
@@ -398,14 +397,19 @@ impl OleanCache {
         let Some(ref disk_dir) = self.disk_dir else {
             return Ok(());
         };
-        let v1_dir = match ensure_private_cache_v1_dir(disk_dir) {
-            Ok(dir) => dir,
-            Err(err) if is_unwritable_cache_init_err(&err) => return Ok(()),
-            Err(err) => return Err(err),
-        };
+        if let Err(err) = ensure_private_cache_root(disk_dir) {
+            if is_unwritable_cache_init_err(&err) {
+                return Ok(());
+            }
+            return Err(err);
+        }
+        let v1_dir = disk_dir.join("v1");
+        if !probe_existing_non_symlink_dir(&v1_dir, true)? {
+            create_dir_mode(&v1_dir, 0o700)?;
+        }
         let key = input.cache_key();
         let entry_dir = v1_dir.join(&key);
-        if fs::symlink_metadata(&entry_dir).is_ok() {
+        if probe_existing_non_symlink_dir(&entry_dir, true)? {
             return Ok(());
         }
 
@@ -452,12 +456,12 @@ impl OleanCache {
 
         let lock_path = v1_dir.join(format!("{key}.lock"));
         let _lock = acquire_exclusive_flock(&lock_path)?;
-        if fs::symlink_metadata(&entry_dir).is_err() {
+        if !probe_existing_non_symlink_dir(&entry_dir, true)? {
             let staged_path = tmp.keep();
             if let Err(err) = fs::rename(&staged_path, &entry_dir) {
                 crate::sandbox::make_tree_writable(&staged_path);
                 let _ = fs::remove_dir_all(&staged_path);
-                if fs::symlink_metadata(&entry_dir).is_err() {
+                if !probe_existing_non_symlink_dir(&entry_dir, true)? {
                     return Err(Failure::operational(
                         "olean-cache",
                         format!("cannot publish cache entry {}: {err}", entry_dir.display()),
@@ -480,23 +484,34 @@ fn lookup_disk_cache_bytes(
     disk_dir: &Path,
     input: &OleanCacheKeyInput,
 ) -> Result<Option<LoadedCacheParts>, Failure> {
-    if fs::symlink_metadata(disk_dir).is_err() {
-        return Ok(None);
-    }
-    verify_non_symlink_dir(disk_dir, "olean-cache", true)?;
+    // Allow an absent or unsearchable ambient `$HOME`/`$XDG_CACHE_HOME` root
+    // (`NotFound` or `PermissionDenied` on `lstat(disk_dir)`) to fall back to
+    // a clean cache miss, while failing closed on any other root error or any
+    // non-`NotFound` error inside an existing `disk_dir`.
+    let disk_meta = match fs::symlink_metadata(disk_dir) {
+        Ok(meta) => meta,
+        Err(e) if matches!(e.kind(), io::ErrorKind::NotFound | io::ErrorKind::PermissionDenied) => {
+            return Ok(None);
+        }
+        Err(e) => {
+            return Err(Failure::operational(
+                "olean-cache",
+                format!("cannot inspect {}: {e}", disk_dir.display()),
+            ));
+        }
+    };
+    verify_non_symlink_dir_meta(disk_dir, &disk_meta, "olean-cache", true)?;
     let v1_dir = disk_dir.join("v1");
-    if fs::symlink_metadata(&v1_dir).is_err() {
+    if !probe_existing_non_symlink_dir(&v1_dir, true)? {
         return Ok(None);
     }
-    verify_non_symlink_dir(&v1_dir, "olean-cache", true)?;
     let key = input.cache_key();
     let entry_dir = v1_dir.join(&key);
-    if fs::symlink_metadata(&entry_dir).is_err() {
+    if !probe_existing_non_symlink_dir(&entry_dir, true)? {
         return Ok(None);
     }
-    verify_non_symlink_dir(&entry_dir, "olean-cache", true)?;
     let meta_path = entry_dir.join(ENTRY_METADATA_FILE);
-    if fs::symlink_metadata(&meta_path).is_err() {
+    if !probe_existing_regular_file(&meta_path, true)? {
         return Ok(None);
     }
     let meta_bytes = read_regular_nofollow_capped(&meta_path, MAX_OLEAN_BYTES, "olean-cache")?;
@@ -590,8 +605,13 @@ fn materialize_loaded_parts(
         if let Some(parent) = dest_path.parent() {
             create_dir_mode(parent, 0o700)?;
         }
-        if fs::symlink_metadata(&dest_path).is_ok() {
-            let _ = fs::remove_file(&dest_path);
+        if probe_symlink_metadata(&dest_path)?.is_some() {
+            fs::remove_file(&dest_path).map_err(|e| {
+                Failure::operational(
+                    "olean-cache",
+                    format!("cannot replace staged {}: {e}", dest_path.display()),
+                )
+            })?;
         }
         let mut f = OpenOptions::new()
             .write(true)
@@ -617,7 +637,7 @@ fn materialize_loaded_parts(
     Ok(CachedHitArtifact { materialized_parts })
 }
 
-fn ensure_private_cache_v1_dir(disk_dir: &Path) -> Result<PathBuf, Failure> {
+fn ensure_private_cache_root(disk_dir: &Path) -> Result<(), Failure> {
     if !disk_dir.is_absolute() {
         return Err(Failure::operational(
             "olean-cache",
@@ -630,27 +650,18 @@ fn ensure_private_cache_v1_dir(disk_dir: &Path) -> Result<PathBuf, Failure> {
             Component::RootDir => cur.push(comp.as_os_str()),
             Component::Normal(seg) => {
                 cur.push(seg);
-                match fs::symlink_metadata(&cur) {
-                    Ok(meta) => {
-                        if meta.file_type().is_symlink() || !meta.is_dir() {
-                            return Err(Failure::operational(
-                                "olean-cache",
-                                format!(
-                                    "refusing symlink or non-directory cache ancestor {}",
-                                    cur.display()
-                                ),
-                            ));
-                        }
-                    }
-                    Err(e) if e.kind() == io::ErrorKind::NotFound => {
-                        create_dir_mode(&cur, 0o700)?;
-                    }
-                    Err(e) => {
+                if let Some(meta) = probe_symlink_metadata(&cur)? {
+                    if meta.file_type().is_symlink() || !meta.is_dir() {
                         return Err(Failure::operational(
                             "olean-cache",
-                            format!("cannot inspect {}: {e}", cur.display()),
+                            format!(
+                                "refusing symlink or non-directory cache ancestor {}",
+                                cur.display()
+                            ),
                         ));
                     }
+                } else {
+                    create_dir_mode(&cur, 0o700)?;
                 }
             }
             _ => {
@@ -661,24 +672,66 @@ fn ensure_private_cache_v1_dir(disk_dir: &Path) -> Result<PathBuf, Failure> {
             }
         }
     }
-    verify_non_symlink_dir(disk_dir, "olean-cache", true)?;
-    let v1_dir = disk_dir.join("v1");
-    match fs::symlink_metadata(&v1_dir) {
-        Ok(_) => verify_non_symlink_dir(&v1_dir, "olean-cache", true)?,
-        Err(e) if e.kind() == io::ErrorKind::NotFound => create_dir_mode(&v1_dir, 0o700)?,
-        Err(e) => {
-            return Err(Failure::operational(
-                "olean-cache",
-                format!("cannot inspect {}: {e}", v1_dir.display()),
-            ));
-        }
+    verify_non_symlink_dir(disk_dir, "olean-cache", true)
+}
+
+/// Inspect `path` without following symlinks, treating only
+/// `io::ErrorKind::NotFound` as absent (`Ok(None)`) and failing closed on
+/// other OS metadata errors (`PermissionDenied`, `NotADirectory`, `ELOOP`,
+/// `EIO`).
+fn probe_symlink_metadata(path: &Path) -> Result<Option<fs::Metadata>, Failure> {
+    match fs::symlink_metadata(path) {
+        Ok(meta) => Ok(Some(meta)),
+        Err(e) if e.kind() == io::ErrorKind::NotFound => Ok(None),
+        Err(e) => Err(Failure::operational(
+            "olean-cache",
+            format!("cannot inspect {}: {e}", path.display()),
+        )),
     }
-    Ok(v1_dir)
+}
+
+/// Probe `dir` without following symlinks, returning `Ok(false)` only when
+/// absent (`NotFound`) and rejecting symlinks, non-directories, owner UID
+/// mismatches (when `require_owner_uid`), and other OS errors.
+fn probe_existing_non_symlink_dir(dir: &Path, require_owner_uid: bool) -> Result<bool, Failure> {
+    let Some(meta) = probe_symlink_metadata(dir)? else {
+        return Ok(false);
+    };
+    verify_non_symlink_dir_meta(dir, &meta, "olean-cache", require_owner_uid)?;
+    Ok(true)
+}
+
+/// Probe `path` without following symlinks, returning `Ok(false)` only when
+/// absent (`NotFound`) and rejecting symlinks, non-regular files, owner UID
+/// mismatches (when `require_owner_uid`), and other OS errors.
+fn probe_existing_regular_file(path: &Path, require_owner_uid: bool) -> Result<bool, Failure> {
+    let Some(meta) = probe_symlink_metadata(path)? else {
+        return Ok(false);
+    };
+    if meta.file_type().is_symlink() || !meta.is_file() {
+        return Err(Failure::operational(
+            "olean-cache",
+            format!("cache path {} must be a regular non-symlink file", path.display()),
+        ));
+    }
+    if require_owner_uid {
+        verify_meta_owner_uid(path, &meta)?;
+    }
+    Ok(true)
 }
 
 fn verify_non_symlink_dir(dir: &Path, phase: &str, require_owner_uid: bool) -> Result<(), Failure> {
     let meta = fs::symlink_metadata(dir)
         .map_err(|e| Failure::operational(phase, format!("cannot inspect {}: {e}", dir.display())))?;
+    verify_non_symlink_dir_meta(dir, &meta, phase, require_owner_uid)
+}
+
+fn verify_non_symlink_dir_meta(
+    dir: &Path,
+    meta: &fs::Metadata,
+    phase: &str,
+    require_owner_uid: bool,
+) -> Result<(), Failure> {
     if meta.file_type().is_symlink() || !meta.is_dir() {
         return Err(Failure::operational(
             phase,
@@ -686,7 +739,7 @@ fn verify_non_symlink_dir(dir: &Path, phase: &str, require_owner_uid: bool) -> R
         ));
     }
     if require_owner_uid {
-        verify_meta_owner_uid(dir, &meta)?;
+        verify_meta_owner_uid(dir, meta)?;
     }
     Ok(())
 }
@@ -1021,6 +1074,253 @@ mod tests {
                 .lookup_and_materialize(&input, &stage, "Trusted/MirAst")
                 .unwrap_err();
             assert!(err.message.contains("symlink"), "{err}");
+        }
+    }
+
+    #[cfg(unix)]
+    struct RestoreDirModeGuard {
+        path: PathBuf,
+    }
+
+    #[cfg(unix)]
+    impl RestoreDirModeGuard {
+        fn lock(path: &Path) -> Self {
+            set_mode(path, 0o000).unwrap();
+            Self { path: path.to_path_buf() }
+        }
+    }
+
+    #[cfg(unix)]
+    impl Drop for RestoreDirModeGuard {
+        fn drop(&mut self) {
+            let _ = set_mode(&self.path, 0o700);
+        }
+    }
+
+    #[test]
+    fn disk_cache_missing_components_return_none_while_not_a_dir_fails_closed() {
+        let tmp = tempfile::tempdir().unwrap();
+        let input = sample_input(&"4".repeat(64));
+        let mut cache = OleanCache::new_default();
+
+        // Missing root, missing `v1`, missing entry dir, and missing
+        // `metadata.json` all treat `NotFound` as a clean cache miss.
+        let disk_dir = tmp.path().join("disk-cache");
+        cache.set_disk_dir(Some(disk_dir.clone()));
+        assert!(cache.lookup_bytes(&input).unwrap().is_none());
+
+        fs::create_dir_all(&disk_dir).unwrap();
+        assert!(cache.lookup_bytes(&input).unwrap().is_none());
+
+        let v1_dir = disk_dir.join("v1");
+        fs::create_dir_all(&v1_dir).unwrap();
+        assert!(cache.lookup_bytes(&input).unwrap().is_none());
+
+        let entry_dir = v1_dir.join(input.cache_key());
+        fs::create_dir_all(&entry_dir).unwrap();
+        assert!(cache.lookup_bytes(&input).unwrap().is_none());
+
+        // Directory in place of `metadata.json` fails closed.
+        fs::create_dir_all(entry_dir.join(ENTRY_METADATA_FILE)).unwrap();
+        let err = cache.lookup_bytes(&input).unwrap_err();
+        assert_eq!(err.code, 2);
+        assert_eq!(err.phase, "olean-cache");
+        assert!(err.message.contains("regular non-symlink file"), "{err}");
+
+        // Regular file at `entry_dir` fails closed before inspecting
+        // `metadata.json`.
+        fs::remove_dir_all(&entry_dir).unwrap();
+        fs::write(&entry_dir, b"not a dir").unwrap();
+        let err = cache.lookup_bytes(&input).unwrap_err();
+        assert_eq!(err.code, 2);
+        assert_eq!(err.phase, "olean-cache");
+        assert!(err.message.contains("regular non-symlink directory"), "{err}");
+
+        // Regular file at `v1` fails closed before probing `v1/<key>`.
+        fs::remove_dir_all(&v1_dir).unwrap();
+        fs::write(&v1_dir, b"not a dir").unwrap();
+        let err = cache.lookup_bytes(&input).unwrap_err();
+        assert_eq!(err.code, 2);
+        assert_eq!(err.phase, "olean-cache");
+        assert!(err.message.contains("regular non-symlink directory"), "{err}");
+
+        // Regular file ancestor of `disk_dir` (`ENOTDIR`) fails closed even as
+        // root.
+        let blocking_file = tmp.path().join("blocking-file");
+        fs::write(&blocking_file, b"file").unwrap();
+        cache.set_disk_dir(Some(blocking_file.join("olean-cache")));
+        let err = cache.lookup_bytes(&input).unwrap_err();
+        assert_eq!(err.code, 2);
+        assert_eq!(err.phase, "olean-cache");
+        assert!(err.message.contains("cannot inspect"), "{err}");
+    }
+
+    #[test]
+    fn prebuilt_missing_components_return_none_while_not_a_dir_fails_closed() {
+        let tmp = tempfile::tempdir().unwrap();
+        let input = sample_input(&"5".repeat(64));
+        let mut cache = OleanCache::new_default();
+        cache.set_disk_dir(None);
+
+        // Missing `prebuilt_dir` and empty `prebuilt_dir` without
+        // `manifest.json` both return `Ok(None)`.
+        let prebuilt_dir = tmp.path().join("prebuilt");
+        cache.set_prebuilt_dir(Some(prebuilt_dir.clone()));
+        cache.preload_prebuilt().unwrap();
+        assert!(cache.lookup_bytes(&input).unwrap().is_none());
+
+        fs::create_dir_all(&prebuilt_dir).unwrap();
+        cache.preload_prebuilt().unwrap();
+        assert!(cache.lookup_bytes(&input).unwrap().is_none());
+
+        // Directory in place of `manifest.json` fails closed.
+        fs::create_dir_all(prebuilt_dir.join(PREBUILT_MANIFEST_FILE)).unwrap();
+        let err = cache.preload_prebuilt().unwrap_err();
+        assert_eq!(err.code, 2);
+        assert_eq!(err.phase, "olean-cache");
+        assert!(err.message.contains("regular non-symlink file"), "{err}");
+        let err = cache.lookup_bytes(&input).unwrap_err();
+        assert_eq!(err.code, 2);
+        assert_eq!(err.phase, "olean-cache");
+
+        // Regular file at `prebuilt_dir` fails closed.
+        fs::remove_dir_all(&prebuilt_dir).unwrap();
+        fs::write(&prebuilt_dir, b"not a dir").unwrap();
+        let err = cache.preload_prebuilt().unwrap_err();
+        assert_eq!(err.code, 2);
+        assert_eq!(err.phase, "olean-cache");
+        assert!(err.message.contains("regular non-symlink directory"), "{err}");
+
+        // Regular file parent of `prebuilt_dir` (`ENOTDIR`) fails closed even
+        // as root.
+        let blocking_file = tmp.path().join("prebuilt-parent-file");
+        fs::write(&blocking_file, b"file").unwrap();
+        cache.set_prebuilt_dir(Some(blocking_file.join("prebuilt")));
+        let err = cache.preload_prebuilt().unwrap_err();
+        assert_eq!(err.code, 2);
+        assert_eq!(err.phase, "olean-cache");
+        assert!(err.message.contains("cannot inspect"), "{err}");
+        let err = cache.lookup_bytes(&input).unwrap_err();
+        assert_eq!(err.code, 2);
+        assert_eq!(err.phase, "olean-cache");
+        assert!(err.message.contains("cannot inspect"), "{err}");
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn unreadable_disk_and_prebuilt_cache_dirs_fail_closed() {
+        // SAFETY: `geteuid` has no preconditions and always succeeds.
+        if unsafe { libc::geteuid() } == 0 {
+            return;
+        }
+
+        let tmp = tempfile::tempdir().unwrap();
+        let disk_dir = tmp.path().join("disk-cache");
+        let src_dir = tmp.path().join("src");
+        fs::create_dir_all(&src_dir).unwrap();
+
+        let olean_bytes = fake_olean();
+        let olean_sha = sha256_bytes(&olean_bytes);
+        let src_olean = src_dir.join("MirAst.olean");
+        fs::write(&src_olean, &olean_bytes).unwrap();
+
+        let input = sample_input(&"6".repeat(64));
+        let other_input = sample_input(&"7".repeat(64));
+        let mut cache = OleanCache::new_default();
+        cache.set_disk_dir(Some(disk_dir.clone()));
+        cache.store_compiled(&input, &[("olean", &src_olean, &olean_sha)]).unwrap();
+
+        let v1_dir = disk_dir.join("v1");
+        let entry_dir = v1_dir.join(input.cache_key());
+
+        // Unreadable `entry_dir` causes `EACCES` on `metadata.json`.
+        {
+            let _guard = RestoreDirModeGuard::lock(&entry_dir);
+            let err = cache.lookup_bytes(&input).unwrap_err();
+            assert_eq!(err.code, 2);
+            assert_eq!(err.phase, "olean-cache");
+            assert!(err.message.contains("cannot inspect"), "{err}");
+        }
+
+        // Unreadable `v1_dir` causes `EACCES` on both lookup and store probes.
+        {
+            let _guard = RestoreDirModeGuard::lock(&v1_dir);
+            let err = cache.lookup_bytes(&input).unwrap_err();
+            assert_eq!(err.code, 2);
+            assert_eq!(err.phase, "olean-cache");
+            assert!(err.message.contains("cannot inspect"), "{err}");
+
+            let err = cache
+                .store_compiled(&other_input, &[("olean", &src_olean, &olean_sha)])
+                .unwrap_err();
+            assert_eq!(err.code, 2);
+            assert_eq!(err.phase, "olean-cache");
+            assert!(err.message.contains("cannot inspect"), "{err}");
+        }
+
+        // Unreadable existing `disk_dir` causes `EACCES` when probing `v1` on
+        // both lookup and store.
+        {
+            let _guard = RestoreDirModeGuard::lock(&disk_dir);
+            let err = cache.lookup_bytes(&input).unwrap_err();
+            assert_eq!(err.code, 2);
+            assert_eq!(err.phase, "olean-cache");
+            assert!(err.message.contains("cannot inspect"), "{err}");
+
+            let err = cache
+                .store_compiled(&other_input, &[("olean", &src_olean, &olean_sha)])
+                .unwrap_err();
+            assert_eq!(err.code, 2);
+            assert_eq!(err.phase, "olean-cache");
+            assert!(err.message.contains("cannot inspect"), "{err}");
+        }
+
+        // Restored permissions return the cached entry cleanly.
+        assert!(cache.lookup_bytes(&input).unwrap().is_some());
+
+        // Unsearchable ambient parent of `disk_dir` falls back cleanly as a
+        // best-effort unavailable cache on both lookup and store.
+        let ambient_parent = tmp.path().join("ambient-parent");
+        fs::create_dir_all(&ambient_parent).unwrap();
+        {
+            let _guard = RestoreDirModeGuard::lock(&ambient_parent);
+            for candidate in [
+                ambient_parent.join("olean-cache"),
+                ambient_parent.join("anneal/olean-cache"),
+            ] {
+                cache.set_disk_dir(Some(candidate));
+                assert!(cache.lookup_bytes(&input).unwrap().is_none());
+                cache.store_compiled(&input, &[("olean", &src_olean, &olean_sha)]).unwrap();
+            }
+        }
+
+        // Unreadable `prebuilt_dir` and unreadable parent of `prebuilt_dir`
+        // fail closed.
+        let prebuilt_parent = tmp.path().join("prebuilt-parent");
+        let prebuilt_dir = prebuilt_parent.join("prebuilt");
+        fs::create_dir_all(&prebuilt_dir).unwrap();
+        cache.set_disk_dir(None);
+        cache.set_prebuilt_dir(Some(prebuilt_dir.clone()));
+
+        {
+            let _guard = RestoreDirModeGuard::lock(&prebuilt_dir);
+            let err = cache.preload_prebuilt().unwrap_err();
+            assert_eq!(err.code, 2);
+            assert_eq!(err.phase, "olean-cache");
+            assert!(err.message.contains("cannot inspect"), "{err}");
+
+            let err = cache.lookup_bytes(&input).unwrap_err();
+            assert_eq!(err.code, 2);
+            assert_eq!(err.phase, "olean-cache");
+            assert!(err.message.contains("cannot inspect"), "{err}");
+        }
+
+        {
+            let _guard = RestoreDirModeGuard::lock(&prebuilt_parent);
+            let err = cache.preload_prebuilt().unwrap_err();
+            assert_eq!(err.code, 2);
+            assert_eq!(err.phase, "olean-cache");
+            assert!(err.message.contains("cannot inspect"), "{err}");
         }
     }
 }
