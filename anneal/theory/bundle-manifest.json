@@ -18,6 +18,10 @@
       "sha256": "8e8822f0a680590c229fdb36ca348c7df269eb7d1f4a4ba111bb7193d0d6a78f"
     },
     {
+      "path": "theory/Anneal/Firewall.lean",
+      "sha256": "2a3c80c5c56109d99edd372778664281958f4e358b88be259f84146a64a49435"
+    },
+    {
       "path": "theory/Anneal/InitLemmas.lean",
       "sha256": "eac13dec9c37e35be98c5bca6e43a9e788f2986ba7365e2246d7c63967346a34"
     },
