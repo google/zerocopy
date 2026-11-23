@@ -1741,6 +1741,111 @@ fn spec_preflight_parse_tree_round_trip_and_negative_guards() {
             "theorem t : True := ∎\n",
             "disallowed syntax «term∎»",
         ),
+        (
+            "opt-auto-implicit-true",
+            "set_option autoImplicit true\n",
+            "unsupported option autoImplicit",
+        ),
+        (
+            "opt-auto-implicit-false",
+            "set_option autoImplicit false\n",
+            "unsupported option autoImplicit",
+        ),
+        (
+            "opt-relaxed-auto-implicit-true",
+            "set_option relaxedAutoImplicit true\n",
+            "unsupported option relaxedAutoImplicit",
+        ),
+        (
+            "term-opt-auto-implicit-true",
+            "def x : Nat := set_option autoImplicit true in 0\n",
+            "unsupported option autoImplicit",
+        ),
+        (
+            "cmd-in-opt-auto-implicit-true",
+            "set_option autoImplicit true in\ndef x (n : Nat) : pre_ok → True := fun _ => trivial\n",
+            "unsupported option autoImplicit",
+        ),
+        (
+            "term-get-elem-bang",
+            "def x : Nat := (#[] : Array Nat)[0]!\n",
+            "disallowed syntax «term__[_]_!»",
+        ),
+        (
+            "ident-list-head-bang",
+            "def x : Nat := ([] : List Nat).head!\n",
+            "disallowed identifier head!",
+        ),
+        (
+            "ident-option-get-bang",
+            "def x : Nat := (none : Option Nat).get!\n",
+            "disallowed identifier get!",
+        ),
+        (
+            "ident-get-elem-bang-qual",
+            "def x : Nat := GetElem?.getElem! (#[] : Array Nat) 0\n",
+            "disallowed identifier GetElem?.getElem!",
+        ),
+        (
+            "ident-out-of-bounds",
+            "def x : Nat := outOfBounds\n",
+            "disallowed identifier outOfBounds",
+        ),
+        (
+            "ident-pos-slice-or-panic",
+            "def x := @String.Pos.sliceOrPanic\n",
+            "disallowed identifier String.Pos.sliceOrPanic",
+        ),
+        (
+            "ident-slice-pos-slice-or-panic",
+            "def x := @String.Slice.Pos.sliceOrPanic\n",
+            "disallowed identifier String.Slice.Pos.sliceOrPanic",
+        ),
+        (
+            "proj-slice-or-panic",
+            "def x (s : String) (pos : s.Pos) (h : pos ≤ pos) := pos.sliceOrPanic pos pos (h := h)\n",
+            "disallowed identifier pos.sliceOrPanic",
+        ),
+        (
+            "open-only-head-bang",
+            "open List (head!)\n",
+            "invalid open item head!",
+        ),
+        (
+            "export-head-bang",
+            "export List (head!)\n",
+            "invalid export item head!",
+        ),
+        (
+            "open-renaming-head-bang",
+            "open List renaming head! -> safeHead\n",
+            "invalid open renaming item head! -> safeHead",
+        ),
+        (
+            "open-renaming-slice-or-panic",
+            "open String.Slice renaming Pos.sliceOrPanic -> safeSlice\n",
+            "invalid open renaming item Pos.sliceOrPanic -> safeSlice",
+        ),
+        (
+            "do-while",
+            "def x : Nat := Id.run do\n  let mut i := 5\n  while i > 0 do\n    i := i - 1\n  return i\n",
+            "disallowed syntax Lean.Parser.Term.doWhile",
+        ),
+        (
+            "do-repeat",
+            "def x : Nat := Id.run do\n  repeat\n    break\n  return 0\n",
+            "disallowed syntax Lean.Parser.Term.doRepeat",
+        ),
+        (
+            "do-repeat-until",
+            "def x : Nat := Id.run do\n  let mut i := 0\n  repeat\n    i := i + 1\n  until i > 0\n  return i\n",
+            "disallowed syntax Lean.Parser.Term.doRepeatUntil",
+        ),
+        (
+            "ident-repeat-m",
+            "def x := repeatM\n",
+            "disallowed identifier repeatM",
+        ),
     ];
 
     // 1. Live parse-tree round-trip probe + exhaustive check of all negative
@@ -1801,6 +1906,10 @@ fn spec_preflight_parse_tree_round_trip_and_negative_guards() {
   parseHasKind "theorem t : 1 = 1 := by decide +native" `Lean.Parser.Tactic.decide
   parseHasKind "def q := `(1 + 2)" `Lean.Parser.Term.quot
   parseHasKind "def dq := `(term| 1 + 2)" `Lean.Parser.Term.dynamicQuot
+  parseHasKind "def x := (#[] : Array Nat)[0]!" `«term__[_]_!»
+  parseHasKind "def x : Nat := Id.run do\n  let mut i := 1\n  while i > 0 do i := i - 1\n  return i" `Lean.Parser.Term.doWhile
+  parseHasKind "def x : Nat := Id.run do\n  repeat break\n  return 0" `Lean.Parser.Term.doRepeat
+  parseHasKind "def x : Nat := Id.run do\n  let mut i := 0\n  repeat i := i + 1 until i > 0\n  return i" `Lean.Parser.Term.doRepeatUntil
   let raw ← IO.FS.readFile (System.FilePath.mk {:?})
   let j ← IO.ofExcept (Lean.Json.parse raw)
   let cases ← IO.ofExcept (Lean.fromJson? (α := Array (Array String)) j)
@@ -1886,6 +1995,11 @@ fn spec_preflight_parse_tree_round_trip_and_negative_guards() {
         "term-quot",
         "auto-param-exploit",
         "scoped-instance",
+        "cmd-in-opt-auto-implicit-true",
+        "term-get-elem-bang",
+        "ident-list-head-bang",
+        "ident-option-get-bang",
+        "do-while",
     ];
     for (idx, (label, snippet, expected)) in vectors
         .iter()
@@ -1943,6 +2057,13 @@ def wfHalf (n : Nat) : Nat :=
   if h : n = 0 then 0 else wfHalf (n / 2)
 termination_by n
 decreasing_by exact Nat.div_lt_self (Nat.pos_of_ne_zero h) (by decide)
+def optElem : Option Nat := [1, 2][0]?
+def optHead : Option Nat := [1, 2].head?
+def sumFor : Nat := Id.run do
+  let mut acc := 0
+  for x in [1, 2, 3] do
+    acc := acc + x
+  return acc
 section
 open BitVec
 def bvLit (x : Nat) (h : x < 2^8) : BitVec 8 := x#'h
@@ -2102,6 +2223,46 @@ fn target_audit_phase1_enforces_whole_spec_opaque_effects_and_unsafe_rec_invaria
             "platform-target",
             "def Spec.unusedTarget : String := System.Platform.target\n",
             "disallowed constant System.Platform.target",
+        ),
+        (
+            "get-elem-bang",
+            "def Spec.unusedGetElemBang : Nat := (#[] : Array Nat)[0]!\n",
+            "cannot reference GetElem?.getElem!",
+        ),
+        (
+            "list-head-bang",
+            "def Spec.unusedHeadBang : Nat := ([] : List Nat).head!\n",
+            "cannot reference List.head!",
+        ),
+        (
+            "option-get-bang",
+            "def Spec.unusedGetBang : Nat := (none : Option Nat).get!\n",
+            "cannot reference Option.get!",
+        ),
+        (
+            "do-while-loop",
+            "def Spec.unusedWhile : Nat := Id.run do\n  let mut x := 5\n  while x > 0 do\n    x := x - 1\n  return x\n",
+            "disallowed constant Lean.Loop",
+        ),
+        (
+            "out-of-bounds",
+            "def Spec.unusedOob : Nat := outOfBounds\n",
+            "cannot reference outOfBounds",
+        ),
+        (
+            "pos-slice-or-panic",
+            "def Spec.unusedPosSliceOrPanic := @String.Pos.sliceOrPanic\n",
+            "cannot reference String.Pos.sliceOrPanic",
+        ),
+        (
+            "slice-pos-slice-or-panic",
+            "def Spec.unusedSlicePosSliceOrPanic := @String.Slice.Pos.sliceOrPanic\n",
+            "cannot reference String.Slice.Pos.sliceOrPanic",
+        ),
+        (
+            "repeat-m",
+            "def Spec.unusedRepeatM : Nat := Id.run (repeatM (fun _ => pure (Sum.inr 0)) ())\n",
+            "disallowed constant repeatM",
         ),
     ] {
         let err = audit_bypassing_preflight(
@@ -2580,4 +2741,77 @@ fn target_export_and_audit_reject_swapped_companions_and_non_module_bundled_comp
             .contains("companion artifact parts unsupported in Anneal.NonMod"),
         "{err}"
     );
+}
+
+/// Compiling a `TargetRole::Specification` module passes `-DautoImplicit=false`
+/// and `-DrelaxedAutoImplicit=false`, rejecting undeclared multi-letter and
+/// single-letter typo identifiers at `compile-Spec` while leaving
+/// `TargetRole::Proof` auto-implicits unaffected; `set_option autoImplicit true`
+/// inside a specification is also rejected fail-closed in `"spec-preflight"`.
+#[test]
+fn spec_compilation_rejects_auto_implicit_typos_while_proof_unaffected() {
+    for (label, decl, typo_ident) in [
+        (
+            "relaxed-auto-implicit-typo",
+            "def Spec.typoRelaxed (n : Nat) : pre_ok → True := fun _ => True.intro\n",
+            "pre_ok",
+        ),
+        (
+            "single-letter-auto-implicit-typo",
+            "def Spec.typoSingle (n : Nat) : q → True := fun _ => True.intro\n",
+            "q",
+        ),
+    ] {
+        let mut f = Fixture::new(PROOF);
+        f.set(
+            "Spec",
+            TargetRole::Specification,
+            &format!(
+                "prelude\nimport Model\n{decl}\
+                 def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n"
+            ),
+        );
+        let err = f.run().unwrap_err();
+        assert_eq!(err.code, 1, "{label}: {err}");
+        assert_eq!(err.phase, "compile-Spec", "{label}: {err}");
+        assert!(
+            err.message.contains("Unknown identifier")
+                && err.message.contains(typo_ident)
+                && err.message.contains("autoImplicit"),
+            "{label}: expected autoImplicit rejection for {typo_ident}, got: {err}"
+        );
+    }
+
+    // Attempting to re-enable `autoImplicit` via `set_option ... in` fails in
+    // `"spec-preflight"` before elaboration.
+    let mut f_opt = Fixture::new(PROOF);
+    f_opt.set(
+        "Spec",
+        TargetRole::Specification,
+        "prelude\nimport Model\n\
+         set_option autoImplicit true in\n\
+         def Spec.typoOpt (n : Nat) : pre_ok → True := fun _ => True.intro\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+    );
+    let err = f_opt.run().unwrap_err();
+    assert_eq!(err.code, 1, "set_option autoImplicit true: {err}");
+    assert_eq!(
+        err.phase, "spec-preflight",
+        "set_option autoImplicit true: {err}"
+    );
+    assert!(
+        err.message.contains("unsupported option autoImplicit"),
+        "set_option autoImplicit true: {err}"
+    );
+
+    // Proof modules remain unaffected (single-letter `autoImplicit` still
+    // compiles and passes `"target-audit"` in `TargetRole::Proof`).
+    let f_proof_ok = Fixture::new(
+        "prelude\nimport Expected\nimport Init.Data.BitVec.Lemmas\n\
+         theorem Proof.autoHelper (h : p = p) : p = p := h\n\
+         theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    let report = f_proof_ok.run().unwrap();
+    assert_eq!(report["replay"], true);
+    assert_eq!(report["exactType"], true);
 }
