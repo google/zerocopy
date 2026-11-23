@@ -17,6 +17,8 @@
 //! `trusted/correspondence/`, and `correspondence/`).
 
 mod cargo_boundary;
+#[doc(hidden)]
+pub mod cli;
 mod miri_pin;
 mod repo_audit;
 

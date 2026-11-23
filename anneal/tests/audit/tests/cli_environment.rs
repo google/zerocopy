@@ -17,7 +17,7 @@ use std::path::Path;
 use std::process::{Command, Output};
 
 fn auditor(root: &Path) -> Command {
-    let mut command = Command::new(env!("CARGO_BIN_EXE_anneal-audit"));
+    let mut command = Command::new(env!("CARGO_BIN_EXE_anneal-audit-test-bin"));
     command
         .env_clear()
         .arg("--anneal-root")
@@ -105,7 +105,7 @@ fn preserves_non_utf8_repository_and_lean_path_arguments() {
     }
     let lean = non_utf8.join(OsString::from_vec(vec![0xfe]));
     fs::write(&lean, b"not the pinned Lean binary").unwrap();
-    let output = Command::new(env!("CARGO_BIN_EXE_anneal-audit"))
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-audit-test-bin"))
         .env_clear()
         .arg("--anneal-root")
         .arg(&non_utf8)

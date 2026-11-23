@@ -48,11 +48,9 @@ preserve [`META_PRINCIPLES.md`](META_PRINCIPLES.md),
   exempted `TODO` in source or docs must cite an issue (`TODO(#123):`); commit
   messages must contain none.
 <!-- TODO-check-enable -->
-- **Prose and wrapping:** Follow the writing skills. Wrap Markdown and
-  comments at 80 columns including comment prefixes, where practical. Keep
-  tables, diagrams, URLs, code blocks, and trailing comments readable. Indent
-  bullet continuations by two spaces. Separate paragraphs and leave a blank
-  line after headings.
+- **Prose and wrapping:** Follow the writing skills. Wrap Markdown/comments
+  at 80 cols (incl. prefixes) where practical, keeping tables/URLs/code
+  readable. Indent continuations 2 spaces; separate paragraphs and headings.
 - **No checked-in review ledgers or private leaks:** Never commit per-review
   scratch ledgers or trackers. Never publish internal hostnames, private paths,
   credentials, non-public model/environment IDs, private reasoning traces, or
@@ -168,13 +166,15 @@ never proves defect absence or substitutes for CI or merge gates.
     surface` block (or commit/PR body) and trust-reviewed (when the host
     permits summary prose, record "pending human approval (Gate 5)" as a merge
     condition, not a review block).
-  - *No unchecked build code outside TCB/CI:* Outside `trusted/`, `ci/`,
-    `.github/`, and pinned root manifests, reject any new Rust crate,
+  - *No unchecked build code outside TCB/CI:* Outside `trusted/`, `tests/`,
+    `ci/`, `.github/`, and pinned root manifests, reject any new Rust crate,
     `build.rs`, proc-macro, `Makefile`, `GNUmakefile`, `Justfile`, `lakefile*`,
     `lean-toolchain`, `.nix`, workflow, `.pre-commit-config.yaml`, shell/Python
     script (except unexecuted pinned `vendor/lean-miri/` provenance files), or
-    `.lean` file outside `theory/`, `correspondence/`, and pinned
-    `vendor/lean-miri/`.
+    `.lean` file outside `theory/`, `correspondence/`, `tests/`, and pinned
+    `vendor/lean-miri/`. In `tests/`, allow only `publish = false`,
+    build-script/proc-macro-free test crates with one-way `tests/` ->
+    `trusted/` deps.
   - *`theory/`/`correspondence/` purity and `TrustedBoundary.lean` exclusions:*
     Use only pure declarations and tactics admitted by `TrustedBoundary.lean`'s
     allowlists (`trusted/{lean,correspondence}/` stay tactic-free). Reject
@@ -265,7 +265,7 @@ never proves defect absence or substitutes for CI or merge gates.
       must resolve namespaces and imports strictly within the checked file's
       import closure.
     - Require new or updated negative tests in
-      `trusted/audit/tests/boundary_audit.rs` asserting exit code `1` (or `2`
+      `tests/audit/tests/boundary_audit.rs` asserting exit code `1` (or `2`
       for kernel-replay rejections) and the target diagnostic for every
       added/modified admission, syntax, or tier guard, verified to fail if the
       guard is disabled.
@@ -429,11 +429,9 @@ explain the correspondence in comments and both quote and cite
 
 ## Dependencies in `trusted/`
 
-Use battle-tested ecosystem crates for standard utilities such as parsing,
-serialization, hashing, and logging to limit bespoke code in the audit.
-Prefer focused dependencies with few transitive dependencies and understood
-failure modes that pose no Anneal-specific soundness risk. For every new or
-updated dependency, check provenance, pinned checksums, and transitives.
+Use battle-tested crates (parsing, serialization, hashing, logging) to limit
+bespoke TCB code; prefer focused deps with few transitives and low soundness
+risk. Check provenance, pinned checksums, and transitives on additions/updates.
 
 ## Technical reference corpus
 

@@ -1,0 +1,40 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+# Integration tests for `cargo-anneal`, kept outside `trusted/` so non-TCB test
+# harnesses and fixtures do not inflate the human-audited TCB surface. The
+# dependency edge is strictly one-way (`tests/` -> `trusted/`, never
+# `trusted/` -> `tests/`), enforced mechanically by `check_cargo_boundary`.
+
+[package]
+name = "cargo-anneal-tests"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[features]
+default = ["setup"]
+# Mirrors `cargo-anneal`'s optional `setup` feature so offline CLI tests
+# (`--no-default-features --test cli`) compile and run with zero `exocrate`
+# dependency in the Cargo graph.
+setup = ["cargo-anneal/setup", "dep:exocrate"]
+
+[dependencies]
+cargo-anneal = { path = "../../trusted/cargo-anneal", default-features = false }
+exocrate = { version = "0.3.0", optional = true }
+
+[dev-dependencies]
+serde_json = "1.0"
+sha2 = "0.10"
+tar = "0.4"
+tempfile = "3.27"
+wait-timeout = "0.2"
+zstd = "0.13"
+
+[target.'cfg(unix)'.dev-dependencies]
+libc = "0.2"

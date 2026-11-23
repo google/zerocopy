@@ -427,7 +427,7 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      and the 11 `D6`–`D16` canary claims (`CanaryD6UseAfterMoveUbClaim` through
      `CanaryD16WithOverflowOkClaim`), plus non-empty required
      constant cones on every claim.
-   - **Pass 2 negative audit tests:** `trusted/audit/tests/boundary_audit.rs`
+   - **Pass 2 negative audit tests:** `tests/audit/tests/boundary_audit.rs`
      (and unit tests in `trusted/audit/src/lib.rs`) must exercise fail-closed
      rejection (policy exit code `1`) for: `UPSTREAM_PIN.json` tampering,
      missing, unlisted, or symlinked files under `vendor/lean-miri/`,

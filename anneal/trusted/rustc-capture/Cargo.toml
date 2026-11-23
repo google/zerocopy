@@ -12,6 +12,12 @@ version = "0.1.0"
 edition = "2024"
 publish = false
 
+# `src/lib.rs` is a `#[doc(hidden)]` CLI shim for `anneal-rustc-capture-tests`
+# that requires `#![feature(rustc_private)]` and has no doctests; disable
+# doctests so Nix `buildRustPackage` does not invoke ambient stable `rustdoc`.
+[lib]
+doctest = false
+
 [dependencies]
 clap = { version = "4.5", default-features = false, features = ["std", "help", "usage", "error-context", "suggestions", "derive"] }
 serde = { version = "1.0", features = ["derive"] }

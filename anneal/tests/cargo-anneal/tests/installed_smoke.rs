@@ -6,8 +6,8 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-//! Opt-in installed tests: `cargo test -p cargo-anneal --test installed_smoke
-//! -- --ignored --exact installed_smoke --nocapture`.
+//! Opt-in installed tests: `cargo test -p cargo-anneal-tests --test
+//! installed_smoke -- --ignored --exact installed_smoke --nocapture`.
 //!
 //! Set `ANNEAL_TEST_SOURCE_REVISION` and supply exact artifact paths through
 //! `ANNEAL_TEST_CARGO_ANNEAL` and `ANNEAL_TEST_AUDITOR` for selected cases.
@@ -26,9 +26,6 @@
 
 #![cfg(feature = "setup")]
 
-#[allow(dead_code)]
-#[path = "../src/setup.rs"]
-mod setup;
 mod support;
 
 use std::{
@@ -224,7 +221,7 @@ fn installation(run: &RunDirectory) -> TestResult<PathBuf> {
 fn install_archive_worker() {
     let archive = required_path("ANNEAL_TEST_ARCHIVE").unwrap();
     let destination = env::var_os("ANNEAL_TEST_INSTALL_DEST").unwrap();
-    let root = setup::install_at(
+    let root = cargo_anneal::setup::install_at(
         Some(archive),
         exocrate::Location::Custom(destination.into()),
     )

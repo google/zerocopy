@@ -133,7 +133,7 @@ def execution_request(request_path):
 
 def run(arguments, work):
     repository = Path(__file__).resolve().parents[1]
-    fixture = repository / "trusted/cargo-anneal/tests/fixtures/starnix"
+    fixture = repository / "tests/cargo-anneal/tests/fixtures/starnix"
     project = work / "production"
     project.mkdir()
     pin = sources(arguments, fixture, project / "source")
@@ -303,7 +303,7 @@ def main():
     if arguments.fetch_only is not None:
         if arguments.source_dir is not None:
             arguments.source_dir = arguments.source_dir.resolve(strict=True)
-        fixture = repository / "trusted/cargo-anneal/tests/fixtures/starnix"
+        fixture = repository / "tests/cargo-anneal/tests/fixtures/starnix"
         sources(arguments, fixture, arguments.fetch_only.resolve())
         return
     local = discover_local_defaults()

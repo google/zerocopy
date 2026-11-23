@@ -29,10 +29,16 @@
 pub mod bundle;
 mod olean_cache;
 #[doc(hidden)]
+pub mod cli;
+#[doc(hidden)]
 pub mod sandbox;
+#[cfg(feature = "setup")]
+#[doc(hidden)]
+pub mod setup;
 mod stage;
 mod target;
 mod toolchain;
+mod verify;
 
 pub use sandbox::{ActiveSandbox, SandboxMode};
 pub use stage::Checker;

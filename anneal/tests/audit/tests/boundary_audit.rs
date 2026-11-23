@@ -128,8 +128,15 @@ fn copy_cargo_workspace(root: &Path) {
         "flake.lock",
         "trusted/root-manifest.sha256",
         "trusted/audit/Cargo.toml",
+        "tests/audit/Cargo.toml",
+        "tests/cargo-anneal/Cargo.toml",
+        "tests/rustc-capture/Cargo.toml",
     ] {
-        fs::copy(checkout.join(rel), root.join(rel)).unwrap();
+        let dest = root.join(rel);
+        if let Some(parent) = dest.parent() {
+            fs::create_dir_all(parent).unwrap();
+        }
+        fs::copy(checkout.join(rel), dest).unwrap();
     }
     for rel in ["trusted/rustc-capture", "trusted/cargo-anneal"] {
         copy_dir_all(&checkout.join(rel), &root.join(rel)).unwrap();
@@ -846,7 +853,7 @@ fn rejects_tampered_lean_sysroot_outside_foundation_lock() {
 
     // Binary CLI entrypoint also fails closed with policy exit code `1` and the
     // toolchain mismatch diagnostic.
-    let bin = env!("CARGO_BIN_EXE_anneal-audit");
+    let bin = env!("CARGO_BIN_EXE_anneal-audit-test-bin");
     let out = Command::new(bin)
         .arg("--anneal-root")
         .arg(repo_root())
@@ -934,15 +941,24 @@ fn rejects_unused_compiled_axiom() {
 }
 
 /// Verifies that `check_cargo_boundary` rejects Cargo workspace members
-/// outside `trusted/` and `path` dependencies from `trusted/` crates to paths
-/// outside `trusted/`.
+/// outside `trusted/` and `tests/`, rejects reverse `trusted/` -> `tests/` and
+/// out-of-`trusted/` `path` dependencies, and enforces `publish = false` and
+/// build-script prohibition on `tests/` crates.
 #[test]
 fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
     let checkout = repo_root();
     let mut fix = TempFixture::new(None);
     fs::copy(checkout.join("Cargo.toml"), fix.root.join("Cargo.toml")).unwrap();
-    fs::copy(checkout.join("trusted/audit/Cargo.toml"), fix.root.join("trusted/audit/Cargo.toml"))
-        .unwrap();
+    for rel in [
+        "trusted/audit/Cargo.toml",
+        "tests/audit/Cargo.toml",
+        "tests/cargo-anneal/Cargo.toml",
+        "tests/rustc-capture/Cargo.toml",
+    ] {
+        let dest = fix.root.join(rel);
+        fs::create_dir_all(dest.parent().unwrap()).unwrap();
+        fs::copy(checkout.join(rel), dest).unwrap();
+    }
     copy_dir_all(&checkout.join("trusted/rustc-capture"), &fix.root.join("trusted/rustc-capture"))
         .unwrap();
     copy_dir_all(&checkout.join("trusted/cargo-anneal"), &fix.root.join("trusted/cargo-anneal"))
@@ -963,10 +979,32 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
     .unwrap();
     let err_member = fix.check_expected(Some(1), Some("cargo-boundary"), Some(false)).unwrap_err();
     assert!(
-        err_member.message.contains("workspace member outside trusted/: crates/untrusted-helper")
+        err_member
+            .message
+            .contains("workspace member outside trusted/ or tests/: crates/untrusted-helper"),
+        "unexpected error: {err_member}"
     );
 
+    // Reverse edge `trusted/` -> `tests/` must be rejected in both
+    // `[dependencies]` and `[dev-dependencies]`.
     fs::copy(checkout.join("Cargo.toml"), fix.root.join("Cargo.toml")).unwrap();
+    for section in ["dependencies", "dev-dependencies"] {
+        fs::write(
+            fix.root.join("trusted/rustc-capture/Cargo.toml"),
+            format!(
+                "[package]\nname = \"anneal-rustc-capture\"\nversion = \"0.1.0\"\nedition = \"2024\"\n[{section}]\nanneal-audit-tests = {{ path = \"../../tests/audit\" }}\n"
+            ),
+        )
+        .unwrap();
+        let err_rev = fix.check_expected(Some(1), Some("cargo-boundary"), Some(false)).unwrap_err();
+        assert!(
+            err_rev
+                .message
+                .contains("trusted/rustc-capture path dependency points outside trusted/: tests/audit"),
+            "unexpected error for {section}: {err_rev}"
+        );
+    }
+
     fs::write(
         fix.root.join("trusted/rustc-capture/Cargo.toml"),
         b"[package]\nname = \"anneal-rustc-capture\"\nversion = \"0.1.0\"\nedition = \"2024\"\n[dependencies]\nuntrusted-helper = { path = \"../../crates/untrusted-helper\" }\n",
@@ -982,6 +1020,45 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
         fix.root.join("trusted/rustc-capture/Cargo.toml"),
     )
     .unwrap();
+
+    // Test crates under `tests/` must declare `publish = false`, forbid
+    // `build.rs`, and reject path dependencies outside `trusted/`.
+    fs::write(
+        fix.root.join("tests/audit/Cargo.toml"),
+        b"[package]\nname = \"anneal-audit-tests\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+    )
+    .unwrap();
+    let err_publish =
+        fix.check_expected(Some(1), Some("cargo-boundary"), Some(false)).unwrap_err();
+    assert!(
+        err_publish
+            .message
+            .contains("non-trusted test crate must set publish = false in tests/audit/Cargo.toml"),
+        "unexpected error: {err_publish}"
+    );
+    fs::write(
+        fix.root.join("tests/audit/Cargo.toml"),
+        b"[package]\nname = \"anneal-audit-tests\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\n[dependencies]\nuntrusted-helper = { path = \"../../crates/untrusted-helper\" }\n",
+    )
+    .unwrap();
+    let err_test_dep =
+        fix.check_expected(Some(1), Some("cargo-boundary"), Some(false)).unwrap_err();
+    assert!(
+        err_test_dep
+            .message
+            .contains("tests/audit path dependency points outside trusted/: crates/untrusted-helper"),
+        "unexpected error: {err_test_dep}"
+    );
+    fs::copy(checkout.join("tests/audit/Cargo.toml"), fix.root.join("tests/audit/Cargo.toml"))
+        .unwrap();
+    fs::write(fix.root.join("tests/audit/build.rs"), b"fn main() {}\n").unwrap();
+    let err_test_build =
+        fix.check_expected(Some(1), Some("cargo-boundary"), Some(false)).unwrap_err();
+    assert!(
+        err_test_build.message.contains("disallowed build script tests/audit/build.rs"),
+        "unexpected error: {err_test_build}"
+    );
+    fs::remove_file(fix.root.join("tests/audit/build.rs")).unwrap();
     fs::create_dir_all(fix.root.join(".cargo")).unwrap();
     fs::write(fix.root.join(".cargo/config.toml"), b"[build]\nrustc-wrapper = \"evil\"\n").unwrap();
     let err_cargo_cfg =
@@ -1710,30 +1787,7 @@ fn verifies_upstream_pin_and_rejects_tampering() {
     // 1. Deleting `vendor/` in a repository checkout fails `Checker::run()`
     // with policy exit code `1` (`miri-pin`).
     let mut fix_missing_dir = TempFixture::new(None);
-    fs::copy(checkout.join("Cargo.toml"), fix_missing_dir.root.join("Cargo.toml")).unwrap();
-    fs::copy(checkout.join("Cargo.lock"), fix_missing_dir.root.join("Cargo.lock")).unwrap();
-    fs::copy(checkout.join("flake.nix"), fix_missing_dir.root.join("flake.nix")).unwrap();
-    fs::copy(checkout.join("flake.lock"), fix_missing_dir.root.join("flake.lock")).unwrap();
-    fs::copy(
-        checkout.join("trusted/root-manifest.sha256"),
-        fix_missing_dir.root.join("trusted/root-manifest.sha256"),
-    )
-    .unwrap();
-    fs::copy(
-        checkout.join("trusted/audit/Cargo.toml"),
-        fix_missing_dir.root.join("trusted/audit/Cargo.toml"),
-    )
-    .unwrap();
-    copy_dir_all(
-        &checkout.join("trusted/rustc-capture"),
-        &fix_missing_dir.root.join("trusted/rustc-capture"),
-    )
-    .unwrap();
-    copy_dir_all(
-        &checkout.join("trusted/cargo-anneal"),
-        &fix_missing_dir.root.join("trusted/cargo-anneal"),
-    )
-    .unwrap();
+    copy_cargo_workspace(&fix_missing_dir.root);
     let err_no_vendor =
         fix_missing_dir.check_expected(Some(1), Some("miri-pin"), Some(false)).unwrap_err();
     assert!(
@@ -5622,7 +5676,7 @@ fn rejects_miri_cache_dir_inside_checkout() {
     ensure_miri_cache_outside_checkout(&fake_repo, &sibling_cache).unwrap();
 
     // Verify end-to-end CLI rejection with exit code `1`.
-    let output = Command::new(env!("CARGO_BIN_EXE_anneal-audit"))
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-audit-test-bin"))
         .env_clear()
         .arg("--anneal-root")
         .arg(&fix.root)
@@ -8893,7 +8947,7 @@ fn precompiled_inspector_handles_colon_in_tmpdir_and_drops_lean_path() {
     // `"audit"` phase proves both preflight and audit inspector runs succeeded
     // under the colon-containing `TMPDIR`.
     let lean = default_lean_path();
-    let output = Command::new(env!("CARGO_BIN_EXE_anneal-audit"))
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-audit-test-bin"))
         .arg("--anneal-root")
         .arg(&fix.root)
         .arg("--lean")

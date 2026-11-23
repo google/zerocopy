@@ -22,16 +22,6 @@ categories = [
     "development-tools::testing",
 ]
 keywords = ["formal-verification", "lean", "proof", "unsafe", "verification"]
-exclude = [
-    "tests/*.rs",
-    "tests/support/",
-    "tests/fixtures/*.rs",
-    "tests/fixtures/spin/",
-    "tests/fixtures/starnix/",
-    "tests/fixtures/unsafe_identity/",
-    "tests/fixtures/scalar/dependency.rs",
-    "tests/fixtures/scalar/unsupported.rs",
-]
 
 # Release preparation pins the published x86-64 Linux archive before
 # crates.io publication. An all-zero digest keeps remote setup disabled.
@@ -67,5 +57,4 @@ libc = "0.2"
 
 [dev-dependencies]
 tar = "0.4"
-wait-timeout = "0.2"
 zstd = "0.13"

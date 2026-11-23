@@ -45,7 +45,7 @@ impl Session {
     }
 
     fn command(&self) -> Command {
-        let mut command = self.command_for(env!("CARGO_BIN_EXE_anneal-rustc-capture"));
+        let mut command = self.command_for(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"));
         command.arg("--sysroot").arg(sysroot());
         command
     }
@@ -376,7 +376,7 @@ fn rustc_resolves_sysroot_options_in_response_files() {
         ),
     )
     .expect("write compiler response file");
-    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
         .current_dir(session.directory.path())
         .arg("@options")
         .output()
@@ -389,7 +389,7 @@ fn rustc_resolves_sysroot_options_in_response_files() {
 #[test]
 fn unbundled_driver_requires_an_explicit_sysroot() {
     let session = Session::new("pub fn valid() {}\n");
-    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
         .current_dir(session.directory.path())
         .args([
             "input.rs",
@@ -406,7 +406,7 @@ fn unbundled_driver_requires_an_explicit_sysroot() {
 #[test]
 fn help_and_version_do_not_claim_callback_execution() {
     for option in ["--help", "-h", "--version", "-V"] {
-        let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+        let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
             .arg(option)
             .output()
             .expect("run informational command");
@@ -422,7 +422,7 @@ fn explicit_separator_routes_information_requests_to_rustc() {
         ("--help", "Usage: rustc"),
         ("--version", "rustc 1.98.0-nightly (f8a08b688 2026-05-30)"),
     ] {
-        let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+        let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
             .args(["--", option])
             .output()
             .expect("run compiler information command through separator");
@@ -504,7 +504,7 @@ fn json_compile_failures_contain_only_compiler_diagnostics() {
 #[test]
 fn missing_packaged_sysroot_preserves_json_diagnostic_format() {
     let session = Session::new("pub fn valid() {}\n");
-    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
         .current_dir(session.directory.path())
         .args(["input.rs", "--crate-type=lib", "--error-format=json"])
         .output()

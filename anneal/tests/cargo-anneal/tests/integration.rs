@@ -83,19 +83,23 @@ impl Tools {
     fn discover() -> Self {
         let install_root = override_path("ANNEAL_TEST_INSTALL_ROOT");
         // Prefer explicit `ANNEAL_CLI` / `ANNEAL_MVP_CLI` overrides, then the
-        // freshly built test binary (`CARGO_BIN_EXE_cargo-anneal`). Never
-        // read `ANNEAL_TEST_CARGO_ANNEAL` here so CI's installed-smoke
+        // freshly built test binary (`CARGO_BIN_EXE_cargo-anneal-test-bin`).
+        // Never read `ANNEAL_TEST_CARGO_ANNEAL` here so CI's installed-smoke
         // variable does not silently switch workspace tests off the build.
         let cli = first_override(&["ANNEAL_CLI", "ANNEAL_MVP_CLI"])
-            .unwrap_or_else(|| PathBuf::from(env!("CARGO_BIN_EXE_cargo-anneal")));
+            .unwrap_or_else(|| PathBuf::from(env!("CARGO_BIN_EXE_cargo-anneal-test-bin")));
         let cli = required_file(cli, "cargo-anneal", "ANNEAL_CLI");
         // Prefer explicit `ANNEAL_CAPTURE` / `ANNEAL_MVP_CAPTURE` overrides,
-        // then the freshly built sibling beside `cli`, then an explicit
-        // `ANNEAL_TEST_INSTALL_ROOT` bundle (never a user-global install).
+        // then the freshly built sibling beside `cli` (`anneal-rustc-capture`
+        // or the workspace test shim `anneal-rustc-capture-test-bin`), then an
+        // explicit `ANNEAL_TEST_INSTALL_ROOT` bundle (never a user-global
+        // install).
         let capture = first_override(&["ANNEAL_CAPTURE", "ANNEAL_MVP_CAPTURE"])
             .or_else(|| {
-                let sibling = cli.with_file_name("anneal-rustc-capture");
-                sibling.is_file().then_some(sibling)
+                ["anneal-rustc-capture", "anneal-rustc-capture-test-bin"]
+                    .into_iter()
+                    .map(|name| cli.with_file_name(name))
+                    .find(|sibling| sibling.is_file())
             })
             .or_else(|| install_root.as_ref().map(|root| root.join("bin/anneal-rustc-capture")))
             .unwrap_or_else(|| cli.with_file_name("anneal-rustc-capture"));

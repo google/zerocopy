@@ -1,0 +1,29 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+# Integration tests for `anneal-audit`, kept outside `trusted/` so non-TCB test
+# harnesses do not inflate the human-audited TCB surface. The dependency edge
+# is strictly one-way (`tests/` -> `trusted/`, never `trusted/` -> `tests/`),
+# enforced mechanically by `check_cargo_boundary`.
+
+[package]
+name = "anneal-audit-tests"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+anneal-audit = { path = "../../trusted/audit" }
+
+[dev-dependencies]
+cargo-anneal = { path = "../../trusted/cargo-anneal", default-features = false }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tempfile = "3.27"
+toml = "0.9"
+walkdir = "2.5"

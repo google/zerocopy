@@ -24,9 +24,9 @@ use std::{
 use serde_json::{Value, json};
 use tempfile::TempDir;
 
-const SPEC: &str = include_str!("fixtures/scalar/Spec.lean");
-const PROOF: &str = include_str!("fixtures/scalar/Proof.lean");
-const SOURCE: &str = include_str!("fixtures/scalar/lib.rs");
+const SPEC: &str = include_str!("../../../trusted/cargo-anneal/assets/scalar/Spec.lean");
+const PROOF: &str = include_str!("../../../trusted/cargo-anneal/assets/scalar/Proof.lean");
+const SOURCE: &str = include_str!("../../../trusted/cargo-anneal/assets/scalar/lib.rs");
 const UNSUPPORTED: &str = include_str!("fixtures/scalar/unsupported.rs");
 const DEPENDENCY: &str = include_str!("fixtures/scalar/dependency.rs");
 
@@ -42,19 +42,22 @@ impl Tools {
     fn discover() -> Self {
         let install_root = override_path("ANNEAL_TEST_INSTALL_ROOT");
         // Prefer an explicit `ANNEAL_CLI` override, then the freshly built
-        // test binary (`CARGO_BIN_EXE_cargo-anneal`). Never read
+        // test binary (`CARGO_BIN_EXE_cargo-anneal-test-bin`). Never read
         // `ANNEAL_TEST_CARGO_ANNEAL` here so CI's installed-smoke variable
         // does not silently switch workspace tests off the build.
         let cli = first_override(&["ANNEAL_CLI"])
-            .unwrap_or_else(|| PathBuf::from(env!("CARGO_BIN_EXE_cargo-anneal")));
+            .unwrap_or_else(|| PathBuf::from(env!("CARGO_BIN_EXE_cargo-anneal-test-bin")));
         let cli = required_file(cli, "cargo-anneal", "ANNEAL_CLI");
         // Prefer an explicit `ANNEAL_CAPTURE` override, then the freshly built
-        // sibling beside `cli`, then an explicit `ANNEAL_TEST_INSTALL_ROOT`
-        // bundle (never a user-global install).
+        // sibling beside `cli` (`anneal-rustc-capture` or the workspace test
+        // shim `anneal-rustc-capture-test-bin`), then an explicit
+        // `ANNEAL_TEST_INSTALL_ROOT` bundle (never a user-global install).
         let capture = first_override(&["ANNEAL_CAPTURE"])
             .or_else(|| {
-                let sibling = cli.with_file_name("anneal-rustc-capture");
-                sibling.is_file().then_some(sibling)
+                ["anneal-rustc-capture", "anneal-rustc-capture-test-bin"]
+                    .into_iter()
+                    .map(|name| cli.with_file_name(name))
+                    .find(|sibling| sibling.is_file())
             })
             .or_else(|| install_root.as_ref().map(|root| root.join("bin/anneal-rustc-capture")))
             .unwrap_or_else(|| cli.with_file_name("anneal-rustc-capture"));
@@ -440,7 +443,8 @@ fn verifies_real_source_and_rejects_boundary_mutations() {
     // Verify the receipt provenance matches the canonical constant extracted by
     // `flake.nix`, and matches the installed omnibus archive copy when present.
     let bundled_source = fs::read_to_string(
-        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/bundled_resources.rs"),
+        PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../trusted/cargo-anneal/src/bundled_resources.rs"),
     )
     .expect("read bundled_resources.rs");
     let provenance_lines: Vec<&str> = bundled_source
@@ -1591,9 +1595,9 @@ fn anti_vacuity_lint_clean_spin_and_unsafe_identity() {
 
     // 1. Clean `scalar` proof emits empty `spec_warnings` and clean stderr.
     let clean = Fixture::new();
-    clean.write("rust/lib.rs", include_str!("fixtures/scalar/lib.rs"));
-    clean.write("lean/Spec.lean", include_str!("fixtures/scalar/Spec.lean"));
-    clean.write("lean/Proof.lean", include_str!("fixtures/scalar/Proof.lean"));
+    clean.write("rust/lib.rs", SOURCE);
+    clean.write("lean/Spec.lean", SPEC);
+    clean.write("lean/Proof.lean", PROOF);
     let clean_res = clean.run(&tools, "lint-clean", &clean.request);
     clean_res.expect(0, "crate_verified", None);
     assert_eq!(clean_res.value["spec_warnings"], json!([]));
@@ -1653,7 +1657,7 @@ fn anti_vacuity_lint_unused_bindings_and_wrong_arity() {
 
     // 4. Unused named bindings + non-trivial `Specs.property` ignoring `Program`.
     let unused = Fixture::new();
-    unused.write("rust/lib.rs", include_str!("fixtures/scalar/lib.rs"));
+    unused.write("rust/lib.rs", SOURCE);
     unused.write(
         "lean/Spec.lean",
         "\
