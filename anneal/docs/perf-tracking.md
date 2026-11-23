@@ -10,12 +10,10 @@ those terms. -->
 
 > **Scope in This Tree:** This document specifies Anneal's continuous
 > performance tracking, budget enforcement, static dashboard, and fork-safe CI
-> architecture. This tree includes the telemetry collector, budget gate,
-> regression detector (`anneal/ci/perf_tracking.py`,
-> `anneal/ci/perf_budgets.json`, and `anneal/ci/test_perf_tracking.py`), and
-> static dashboard generator (`anneal/ci/render_perf_dashboard.py` and
-> `anneal/ci/test_render_perf_dashboard.py`), while the GitHub Actions
-> collection workflow lands in a follow-on change.
+> architecture. This tree implements the complete pipeline across
+> `anneal/ci/perf_tracking.py`, `anneal/ci/perf_budgets.json`,
+> `anneal/ci/render_perf_dashboard.py`, `.github/workflows/anneal-perf.yml`,
+> and their unit test suites.
 
 ## 1. Purpose, Scope, Guarantees, and Non-Goals
 
