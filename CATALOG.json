@@ -94297,6 +94297,185 @@
         "verification/machine-code-ffi"
       ]
     },
+    "rust-crate-specification-proof-packaging-and-distribution": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "930a674da900a73c1dfbe16be62c42e75bdfdfc0"
+          },
+          "name": "Cargo"
+        },
+        {
+          "identity": {
+            "tool": "cargo",
+            "version": "cargo 1.102.0-nightly (c07ac2c4d 2026-11-06)"
+          },
+          "name": "Cargo local execution toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/crates.io",
+            "revision": "18a7cf31c4818d1a54f240cacfa25d09ba6c0671"
+          },
+          "name": "crates.io registry backend"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "a68641199cdfa99f96cb62f0cde921c9d36bfb22",
+            "tag": "anneal-v0.2.0-alpha.8"
+          },
+          "name": "zerocopy, exocrate, and Anneal"
+        },
+        {
+          "identity": {
+            "repository": "bazelbuild/rules_rust",
+            "revision": "5d99ff2e58d1a0c9387fc4945029df11144bc8a3"
+          },
+          "name": "rules_rust crate_universe"
+        },
+        {
+          "identity": {
+            "repository": "https://fuchsia.googlesource.com/fuchsia",
+            "revision": "af754e2ee6b2ca26df3bd0fbef1429b591d199f3",
+            "subpath": "tools/cargo-gnaw"
+          },
+          "name": "Fuchsia cargo-gnaw"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "1ce6a59bd72713cf486a7660097fe5ac57519617"
+          },
+          "name": "Verus and cargo-verus"
+        },
+        {
+          "identity": {
+            "repository": "creusot-rs/creusot",
+            "revision": "faeb61f5b5a8ffda94fde1f100ef96a1d798088b"
+          },
+          "name": "Creusot"
+        },
+        {
+          "identity": {
+            "repository": "model-checking/kani",
+            "revision": "87c87010eda7797d7fa14033ca68bcbe17184a63"
+          },
+          "name": "Kani"
+        },
+        {
+          "identity": {
+            "repository": "model-checking/verify-rust-std",
+            "revision": "1feeadd937956b8067ec2fb147ef55469361dab4"
+          },
+          "name": "verify-rust-std"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "b23c297f57c0b2072de7967c7f17088db0278a8c"
+          },
+          "name": "Charon"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "2e3d4488280bb8a95411db81019a7854a784861f"
+          },
+          "name": "Aeneas"
+        },
+        {
+          "identity": {
+            "repository": "mozilla/cargo-vet",
+            "revision": "a9bde85910409be3d2d61e6f6ff6ba7a521f0412"
+          },
+          "name": "cargo-vet"
+        },
+        {
+          "identity": {
+            "repository": "crev-dev/cargo-crev",
+            "revision": "e0e71f9dc2938c061ae0e99554caa8928d2299f1"
+          },
+          "name": "cargo-crev"
+        },
+        {
+          "identity": {
+            "repository": "dafny-lang/dafny",
+            "revision": "427892ac6f36204c6a1c760b328b74e0715a0efa"
+          },
+          "name": "Dafny"
+        },
+        {
+          "identity": {
+            "repository": "ucsd-progsys/liquidhaskell",
+            "revision": "7c809b687388dc837c53b9db29b0a70b7165b716"
+          },
+          "name": "LiquidHaskell"
+        },
+        {
+          "identity": {
+            "repository": "AdaCore/spark2014",
+            "revision": "1ce0965fbb11e23ca3560b94d50875abd385b4ab"
+          },
+          "name": "SPARK 2014 (GNATprove)"
+        },
+        {
+          "identity": {
+            "repository": "alire-project/alire",
+            "revision": "65765597471480f80b963cbc1c1ca3e691ff16fd"
+          },
+          "name": "Alire"
+        },
+        {
+          "identity": {
+            "repository": "Frama-C/Frama-C-snapshot",
+            "revision": "639a3647736bf8ac127d00ebe4c4c259f75f9b87"
+          },
+          "name": "Frama-C WP"
+        },
+        {
+          "identity": {
+            "repository": "rocq-prover/rocq",
+            "revision": "21891774bf0131945f6cf454e56121d6a4fda02e"
+          },
+          "name": "Rocq Prover"
+        },
+        {
+          "identity": {
+            "repository": "DefinitelyTyped/DefinitelyTyped",
+            "revision": "de614c26a55ac82a2b8c2344facf563179eb2d66"
+          },
+          "name": "DefinitelyTyped"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/typescript-go",
+            "revision": "89d5d5b2849a0db0957065889ca58536fa6d2e4a"
+          },
+          "name": "TypeScript module resolver (typescript-go)"
+        }
+      ],
+      "topics": [
+        "cargo",
+        "cargo/packaging",
+        "cargo/vendor",
+        "cargo/features",
+        "exocrate",
+        "anneal",
+        "anneal/architecture",
+        "build/bazel",
+        "build/gn",
+        "lean",
+        "rust/semver",
+        "security/supply-chain",
+        "tooling/package-managers",
+        "verification/cross-crate",
+        "verification/distribution",
+        "zerocopy"
+      ]
+    },
     "rust-ctfe-pointer-provenance-read-pointer-as-int-and-const-eval-vs-runtime-gaps": {
       "observed_at": "2026-11-20",
       "subjects": [
