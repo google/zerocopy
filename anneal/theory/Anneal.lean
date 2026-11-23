@@ -26,6 +26,7 @@ import Anneal.MirTotal
 import Anneal.Core
 import Anneal.ByteSubLens
 import Anneal.CnfOrd
+import Anneal.F2Simd
 import Anneal.PureLift
 
 namespace Anneal
@@ -43,7 +44,9 @@ MIR step mirrors and unbounded-depth bridges (`Anneal.MirTotal`), the
 block-tree, separation-logic, and stage-cut core (`Anneal.Core`), lawful
 sub-allocation byte lenses and `&mut` method call summaries
 (`Anneal.ByteSubLens`), constructive `< ω^ω` Cantor Normal Form ordinals and
-multi-rank termination (`Anneal.CnfOrd`), and `Anneal.PureLift`.
+multi-rank termination (`Anneal.CnfOrd`), $\mathbb{F}_2$-linear and
+$\mathbb{F}_2$-bilinear SIMD certificate evaluators (`Anneal.F2Simd`), and
+`Anneal.PureLift`.
 -/
 
 end Anneal

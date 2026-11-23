@@ -386,7 +386,7 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   (`theory/Anneal/{MirWp,LoopInv,LinearArith,BitVec,BitVecArith}.lean`,
   `theory/Anneal/{InitLemmas,ClassicalEm,LeBytes,ListChunks}.lean`,
   `theory/Anneal/{NatBitwise,BitTrieLrat,PTree,SpineForce}.lean`,
-  `theory/Anneal/{ByteSubLens,CnfOrd,PureLift}/`, and planned
+  `theory/Anneal/{ByteSubLens,CnfOrd,F2Simd,PureLift}/`, and planned
   `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
   Diaconescu classical excluded middle and existential choice,
@@ -397,12 +397,13 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   iteration combinators, a radix-2 trie RUP-only LRAT UNSAT checker,
   lawful sub-allocation byte lenses and `@[irreducible]` `&mut` method call
   summaries (`ByteSubLens`), constructive `< ω^ω` Cantor Normal Form ordinals
-  and multi-rank worklist termination (`CnfOrd`), functional borrow lifting,
-  separation-logic frame rules, and proof automation built against
-  $M_{\text{anneal}}$ and `StableAst` / `StableSemantics` (`cargo-anneal`
-  bundles the scalar and MIR proof libraries under `theory/Anneal/`, compiling
-  and auditing only the transitive `Anneal.*` closure imported by target proof
-  modules).
+  and multi-rank worklist termination (`CnfOrd`), $\mathbb{F}_2$-linear,
+  $\mathbb{F}_2$-bilinear, and cone-sliced SIMD certificate evaluators
+  (`F2Simd`), functional borrow lifting, separation-logic frame rules, and
+  proof automation built against $M_{\text{anneal}}$ and `StableAst` /
+  `StableSemantics` (`cargo-anneal` bundles the scalar and MIR proof libraries
+  under `theory/Anneal/`, compiling and auditing only the transitive `Anneal.*`
+  closure imported by target proof modules).
 
 #### Why $M_{\text{anneal}}$'s step rules and `theory/` do not expand the TCB
 
@@ -518,6 +519,7 @@ anneal/
     │   ├── ClassicalEm.lean        # Diaconescu excluded middle and choice
     │   ├── CnfOrd.lean             # Constructive < ω^ω CNF ordinals & worklists (+ CnfOrd/)
     │   ├── Core.lean               # BlockTree, SepPCM & StepStageCut (+ Core/)
+    │   ├── F2Simd.lean             # F2-linear/bilinear & SIMD certificate evaluators (+ F2Simd/)
     │   ├── InitLemmas.lean         # Foundation Bool/BEq/Nat/Int/list helpers
     │   ├── LeBytes.lean            # Parametric LE/BE byte serialization lemmas
     │   ├── LinearArith.lean        # Sparse Farkas & Chvatal-Gomory checker
