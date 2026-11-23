@@ -4,6 +4,9 @@
       "path": "../skills"
     },
     {
+      "path": "../trusted/cargo-anneal/skills"
+    },
+    {
       "path": "../../skills"
     }
   ]

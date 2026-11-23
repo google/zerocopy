@@ -1055,6 +1055,7 @@ def validate_skill_tree(
     allowed_top_files: Set[str],
     git_modes: Optional[Dict[str, str]],
     slug_cache: Dict[Path, Set[str]],
+    require_readme: bool = True,
 ) -> Set[str]:
     """Validate skill dirs, `SKILL.md` frontmatter, containment, and links."""
     root_rel = skills_root.relative_to(repo_root).as_posix()
@@ -1063,7 +1064,7 @@ def validate_skill_tree(
             f"{root_rel}: empty directory is not allowed: {empty_dirs[0]}"
         )
 
-    if "README.md" not in files_map:
+    if require_readme and "README.md" not in files_map:
         raise fail(f"{root_rel}: missing README.md")
 
     skill_dirs: Set[str] = set()
@@ -1195,7 +1196,11 @@ def validate_anneal_skills_json(repo_root: Path) -> None:
             )
         resolved_dirs.append(resolved_target)
 
-    expected = [repo_root / "anneal" / "skills", repo_root / "skills"]
+    expected = [
+        repo_root / "anneal" / "skills",
+        repo_root / "anneal" / "trusted" / "cargo-anneal" / "skills",
+        repo_root / "skills",
+    ]
     if resolved_dirs != expected:
         got_rels = [p.relative_to(repo_root).as_posix() for p in resolved_dirs]
         exp_rels = [p.relative_to(repo_root).as_posix() for p in expected]
@@ -1210,13 +1215,20 @@ def check_repository(repo_root: Path) -> None:
     resolved_root = repo_root.resolve()
     skills_dir = resolved_root / "skills"
     anneal_skills_dir = resolved_root / "anneal" / "skills"
+    cargo_anneal_skills_dir = (
+        resolved_root / "anneal" / "trusted" / "cargo-anneal" / "skills"
+    )
 
     root_files, root_empty_dirs = scan_tree(resolved_root, skills_dir)
     anneal_files, anneal_empty_dirs = scan_tree(
         resolved_root, anneal_skills_dir
     )
+    cargo_anneal_files, cargo_anneal_empty_dirs = scan_tree(
+        resolved_root, cargo_anneal_skills_dir
+    )
     git_modes = query_git_stage_modes(
-        resolved_root, ["skills", "anneal/skills"]
+        resolved_root,
+        ["skills", "anneal/skills", "anneal/trusted/cargo-anneal/skills"],
     )
 
     locked_skills = validate_vendor_lock(
@@ -1242,6 +1254,16 @@ def check_repository(repo_root: Path) -> None:
         git_modes=git_modes,
         slug_cache=slug_cache,
     )
+    cargo_anneal_skill_names = validate_skill_tree(
+        resolved_root,
+        cargo_anneal_skills_dir,
+        cargo_anneal_files,
+        cargo_anneal_empty_dirs,
+        allowed_top_files=set(),
+        git_modes=git_modes,
+        slug_cache=slug_cache,
+        require_readme=False,
+    )
 
     missing_locks = sorted(root_skill_names - REPO_OWNED_ROOT_SKILLS - locked_skills)
     if missing_locks:
@@ -1254,12 +1276,19 @@ def check_repository(repo_root: Path) -> None:
             f"skills/vendor-lock.json: repository-owned skills are locked: {owned_with_locks}"
         )
 
-    overlap = sorted(root_skill_names & anneal_skill_names)
-    if overlap:
-        raise fail(
-            f"duplicate skill name(s) across skills/ and anneal/skills/: "
-            f"{overlap}"
-        )
+    skill_roots = (
+        ("skills/", root_skill_names),
+        ("anneal/skills/", anneal_skill_names),
+        ("anneal/trusted/cargo-anneal/skills/", cargo_anneal_skill_names),
+    )
+    for idx, (label_a, names_a) in enumerate(skill_roots):
+        for label_b, names_b in skill_roots[idx + 1 :]:
+            overlap = sorted(names_a & names_b)
+            if overlap:
+                raise fail(
+                    f"duplicate skill name(s) across {label_a} and "
+                    f"{label_b}: {overlap}"
+                )
 
     validate_anneal_skills_json(resolved_root)
 

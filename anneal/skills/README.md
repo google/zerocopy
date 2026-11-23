@@ -10,10 +10,12 @@ those terms. -->
 
 This directory holds the pure-Markdown policy skills specific to the Anneal
 verifier. Shared repository-owned skills and vendored `joshlf/skills` packages
-live in [`../../skills/`](../../skills/README.md), and
-[`../.agents/skills.json`](../.agents/skills.json) exposes both directories for
-skill discovery. See [`../AGENTS.md`](../AGENTS.md) for standing rules and the
-task routing table.
+live in [`../../skills/`](../../skills/README.md), the `cargo-anneal` CLI skill
+lives in
+[`../trusted/cargo-anneal/skills/cargo-anneal/SKILL.md`](../trusted/cargo-anneal/skills/cargo-anneal/SKILL.md),
+and [`../.agents/skills.json`](../.agents/skills.json) exposes all three skill
+directories for discovery. See [`../AGENTS.md`](../AGENTS.md) for standing
+rules and the task routing table.
 
 | Skill | Source | Purpose |
 | :--- | :--- | :--- |
@@ -21,7 +23,7 @@ task routing table.
 | [`source-control`](source-control/SKILL.md) | Repository-owned | Adapted from [`google/zerocopy`'s Contributing Guide](https://github.com/google/zerocopy/discussions/1318); commits, worker quarantine, publication, and stacks |
 | [`trust-review`](trust-review/SKILL.md) | Repository-owned | Derived from [`META_PRINCIPLES.md`](../META_PRINCIPLES.md), [`PRINCIPLES.md`](../PRINCIPLES.md), [`THREAT_MODEL.md`](../THREAT_MODEL.md), and [`docs/trust-model.md`](../docs/trust-model.md) |
 
-Anneal's Pass 1 containment applies to both skill roots (see
+Anneal's Pass 1 containment applies across all skill roots (see
 [`../AGENTS.md`](../AGENTS.md#code-review-rules)). Provenance and SHA-256
 digests for vendored `joshlf/skills` packages are recorded in
 [`../../skills/README.md`](../../skills/README.md) and

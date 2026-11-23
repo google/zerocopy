@@ -59,9 +59,13 @@ class CheckSkillsTests(unittest.TestCase):
     def build_fixture(self, root: Path, *, init_git: bool = False) -> Path:
         skills_dir = root / "skills"
         anneal_skills = root / "anneal" / "skills"
+        cargo_anneal_skills = (
+            root / "anneal" / "trusted" / "cargo-anneal" / "skills"
+        )
         agents_dir = root / "anneal" / ".agents"
         skills_dir.mkdir(parents=True)
         anneal_skills.mkdir(parents=True)
+        cargo_anneal_skills.mkdir(parents=True)
         agents_dir.mkdir(parents=True)
 
         (skills_dir / "README.md").write_text(
@@ -114,6 +118,13 @@ class CheckSkillsTests(unittest.TestCase):
             ),
         )
 
+        # CLI-bundled cargo-anneal skill.
+        write_skill_md(
+            cargo_anneal_skills / "cargo-anneal",
+            "cargo-anneal",
+            description="Verify Rust code with cargo-anneal.",
+        )
+
         lock_data = {
             "schema": 1,
             "packages": {
@@ -139,7 +150,13 @@ class CheckSkillsTests(unittest.TestCase):
 
         (agents_dir / "skills.json").write_text(
             json.dumps(
-                {"entries": [{"path": "../skills"}, {"path": "../../skills"}]},
+                {
+                    "entries": [
+                        {"path": "../skills"},
+                        {"path": "../trusted/cargo-anneal/skills"},
+                        {"path": "../../skills"},
+                    ]
+                },
                 indent=2,
             )
             + "\n",
@@ -371,7 +388,11 @@ class CheckSkillsTests(unittest.TestCase):
             )
 
     def test_both_skill_roots_reject_scripts_and_executables(self) -> None:
-        for skill in ("skills/unsafe-rust", "anneal/skills/policy-review"):
+        for skill in (
+            "skills/unsafe-rust",
+            "anneal/skills/policy-review",
+            "anneal/trusted/cargo-anneal/skills/cargo-anneal",
+        ):
             for filename, content, make_exec in (
                 ("helper.py", "print(1)\n", False),
                 ("run.sh", "echo hi\n", False),
@@ -389,7 +410,11 @@ class CheckSkillsTests(unittest.TestCase):
                     )
 
     def test_both_skill_roots_reject_forbidden_config_paths(self) -> None:
-        for skill in ("skills/unsafe-rust", "anneal/skills/policy-review"):
+        for skill in (
+            "skills/unsafe-rust",
+            "anneal/skills/policy-review",
+            "anneal/trusted/cargo-anneal/skills/cargo-anneal",
+        ):
             for name in (
                 "AGENTS.override.md", "nested/.cargo/config.toml",
                 "nested/.agents/skills.json", "nested/rust-toolchain.toml",
@@ -480,6 +505,7 @@ class CheckSkillsTests(unittest.TestCase):
                     {
                         "entries": [
                             {"path": "../skills"},
+                            {"path": "../trusted/cargo-anneal/skills"},
                             {"path": "../../skills"},
                         ]
                     }
@@ -513,6 +539,7 @@ class CheckSkillsTests(unittest.TestCase):
                     {
                         "entries": [
                             {"path": "../escape/../../anneal/skills"},
+                            {"path": "../trusted/cargo-anneal/skills"},
                             {"path": "../../skills"},
                         ]
                     }
@@ -527,6 +554,7 @@ class CheckSkillsTests(unittest.TestCase):
                     {
                         "entries": [
                             {"path": "../skills"},
+                            {"path": "../trusted/cargo-anneal/skills"},
                             {"path": "../../skills"},
                         ]
                     }
@@ -596,6 +624,22 @@ class CheckSkillsTests(unittest.TestCase):
                 encoding="utf-8",
             )
             self.assert_fails_with(repo, "target does not exist")
+
+    def test_cargo_anneal_skill_root_and_cross_root_collisions(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = self.build_fixture(Path(tmp))
+            cargo_skills = (
+                repo / "anneal" / "trusted" / "cargo-anneal" / "skills"
+            )
+            extra_top = cargo_skills / "NOTES.md"
+            extra_top.write_text("# Stray\n", encoding="utf-8")
+            self.assert_fails_with(repo, "unexpected top-level file")
+            extra_top.unlink()
+
+            write_skill_md(
+                repo / "anneal" / "skills" / "cargo-anneal", "cargo-anneal"
+            )
+            self.assert_fails_with(repo, "duplicate skill name(s)")
 
 
 if __name__ == "__main__":

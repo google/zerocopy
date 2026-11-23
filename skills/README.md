@@ -33,7 +33,7 @@ in [`vendor-lock.json`](vendor-lock.json), which pins upstream revisions and
 per-file SHA-256 digests. [`../ci/check_skills.py`](../ci/check_skills.py)
 verifies the lock and enforces the repository-owned set.
 
-Both skill roots loaded by Anneal accept non-executable documentation and data
+All skill roots loaded by Anneal accept non-executable documentation and data
 files. Keep scripts, executables, and ambient agent or build configuration
 out of these roots.
 
