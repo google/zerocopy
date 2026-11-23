@@ -8,10 +8,20 @@
 // those terms.
 
 use std::{
+    ffi::OsString,
     fs::{self, File, OpenOptions},
     io::Result as IoResult,
     path::{Path, PathBuf},
 };
+
+/// Returns the parent directory of `path`, falling back to `.` when `path` is
+/// a single relative component (`path.parent() == Some("")`).
+pub(crate) fn staging_parent(path: &Path) -> &Path {
+    match path.parent() {
+        Some(parent) if !parent.as_os_str().is_empty() => parent,
+        _ => Path::new("."),
+    }
+}
 
 /// A directory managed by this library.
 ///
@@ -74,59 +84,72 @@ impl<'a> ManagedDirName<'a> {
             return Ok(dir);
         }
 
-        if let Some(parent) = self.path.parent() {
-            // NOTE: `create_dir_all` is safe to call concurrently with other
-            // processes attempting to create the same directory:
-            //
-            //  Notable exception [to the error conditions] is made for
-            //  situations where any of the directories specified in the path
-            //  could not be created as it was being created concurrently. Such
-            //  cases are considered to be successful. That is, calling
-            //  create_dir_all concurrently from multiple threads or processes
-            //  is guaranteed not to fail due to a race condition with itself.
-            fs::create_dir_all(parent)?;
-        }
+        let parent = staging_parent(self.path);
+        // NOTE: `create_dir_all` is safe to call concurrently with other
+        // processes attempting to create the same directory:
+        //
+        //  Notable exception [to the error conditions] is made for
+        //  situations where any of the directories specified in the path
+        //  could not be created as it was being created concurrently. Such
+        //  cases are considered to be successful. That is, calling
+        //  create_dir_all concurrently from multiple threads or processes
+        //  is guaranteed not to fail due to a race condition with itself.
+        fs::create_dir_all(parent)?;
 
         let lock_file_path = self.lock_path();
-        let lock_file =
-            OpenOptions::new().read(true).write(true).create(true).open(&lock_file_path)?;
+        let lock_file = OpenOptions::new()
+            .read(true)
+            .write(true)
+            .create(true)
+            .truncate(false)
+            .open(&lock_file_path)?;
 
         <_ as fs2::FileExt>::lock_exclusive(&lock_file)?;
 
-        let staging_dir = self.staging();
-
-        struct StagingGuard<'a> {
-            staging_dir: &'a Path,
+        struct StagingGuard {
+            staging_dir: Option<tempfile::TempDir>,
             lock_file: File,
-            completed: bool,
         }
 
-        impl Drop for StagingGuard<'_> {
+        impl Drop for StagingGuard {
             fn drop(&mut self) {
-                if !self.completed {
-                    let _ = fs::remove_dir_all(&self.staging_dir);
-                }
+                // Remove any unpromoted staging directory before releasing the
+                // exclusive lock so serialized callers observe a clean state.
+                drop(self.staging_dir.take());
                 let _ = <_ as fs2::FileExt>::unlock(&self.lock_file);
             }
         }
 
-        // A guard that will clean up even if `populate` panics.
-        let mut guard = StagingGuard { staging_dir: &staging_dir, lock_file, completed: false };
+        // A guard that unlocks `lock_file` and cleans up any staging directory
+        // even if `populate` errors or panics.
+        let mut guard = StagingGuard { staging_dir: None, lock_file };
 
         // Handle the case where, while we were waiting to acquire the lock,
         // another process populated the directory.
         if let Ok(dir) = self.check_exists() {
-            guard.completed = true;
             return Ok(dir);
         }
 
-        // Clean up from any previous failed attempt to populate the directory.
-        let _ = fs::remove_dir_all(&guard.staging_dir);
-        fs::create_dir_all(&guard.staging_dir)?;
+        // Allocate a fresh private (`0o700` on Unix) temporary staging
+        // directory per attempt rather than reusing a fixed `<dst>.staging`
+        // path. That prevents leftover unwritable files or directories from an
+        // earlier failed attempt (or a pre-existing legacy `<dst>.staging`)
+        // from poisoning or blocking subsequent installs.
+        let staging_prefix = self.staging_prefix();
+        let mut builder = tempfile::Builder::new();
+        builder.prefix(&staging_prefix).suffix(".staging");
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt as _;
+            builder.permissions(fs::Permissions::from_mode(0o700));
+        }
+        let staging_dir = builder.tempdir_in(parent)?;
+        let staging_path = staging_dir.path().to_path_buf();
+        guard.staging_dir = Some(staging_dir);
 
-        populate(&guard.staging_dir)?;
+        populate(&staging_path)?;
 
-        fs::rename(&guard.staging_dir, self.path).map_err(|e| {
+        fs::rename(&staging_path, self.path).map_err(|e| {
             std::io::Error::new(
                 e.kind(),
                 format!(
@@ -141,15 +164,33 @@ impl<'a> ManagedDirName<'a> {
             )
         })?;
 
-        guard.completed = true;
+        // Disarm `TempDir`'s delete-on-drop only after the atomic rename has
+        // promoted the staging tree to `self.path`.
+        if let Some(dir) = guard.staging_dir.take() {
+            let _ = dir.keep();
+        }
         Ok(ManagedDir { path: self.path })
     }
 
-    fn staging(&self) -> PathBuf {
-        let mut file_name =
-            self.path.file_name().expect("ManagedDirName path must have a filename").to_os_string();
-        file_name.push(".staging");
-        self.path.with_file_name(file_name)
+    fn staging_prefix(&self) -> OsString {
+        // Keep a bounded prefix of the target directory name for debuggability
+        // while staying well below filesystem `NAME_MAX` limits once
+        // `tempfile`'s random suffix and `.staging` suffix are appended.
+        const MAX_NAME_PREFIX_BYTES: usize = 64;
+        let name = self.path.file_name().expect("ManagedDirName path must have a filename");
+        let mut prefix = OsString::from(".staging-");
+        if name.len() <= MAX_NAME_PREFIX_BYTES {
+            prefix.push(name);
+            prefix.push(".");
+        } else if let Some(s) = name.to_str() {
+            let mut end = MAX_NAME_PREFIX_BYTES;
+            while !s.is_char_boundary(end) {
+                end -= 1;
+            }
+            prefix.push(&s[..end]);
+            prefix.push(".");
+        }
+        prefix
     }
 
     // NOTE: It's important that `lock_path` returns a lock path whose name
@@ -163,7 +204,7 @@ impl<'a> ManagedDirName<'a> {
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     use std::{fs, path::Path};
 
     use super::*;
@@ -219,7 +260,7 @@ mod tests {
 
         let res = managed.check_exists_or_create(|staging| {
             fs::write(staging.join("partial.txt"), "partial").unwrap();
-            Err(std::io::Error::new(std::io::ErrorKind::Other, "simulated error"))
+            Err(std::io::Error::other("simulated error"))
         });
         assert!(res.is_err());
 
@@ -424,5 +465,108 @@ mod tests {
             .unwrap();
         assert!(expected_lock.exists(), "Lockfile permanently remains on disk");
         assert!(!is_locked(&expected_lock), "Lockfile must be in the 'unlocked' state");
+    }
+
+    #[test]
+    fn test_staging_parent_handles_single_component_and_nested_paths() {
+        assert_eq!(staging_parent(Path::new("install_target")), Path::new("."));
+        assert_eq!(staging_parent(Path::new("cache/install_target")), Path::new("cache"));
+    }
+
+    #[cfg(unix)]
+    pub(crate) struct UnixRestorePermissions<'a> {
+        pub(crate) root: &'a Path,
+    }
+
+    #[cfg(unix)]
+    impl Drop for UnixRestorePermissions<'_> {
+        fn drop(&mut self) {
+            fn restore(dir: &Path) {
+                use std::os::unix::fs::PermissionsExt as _;
+                let _ = fs::set_permissions(dir, fs::Permissions::from_mode(0o755));
+                if let Ok(entries) = fs::read_dir(dir) {
+                    for entry in entries.flatten() {
+                        let path = entry.path();
+                        if entry.file_type().is_ok_and(|ft| ft.is_dir()) {
+                            restore(&path);
+                        }
+                    }
+                }
+            }
+            restore(self.root);
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn test_failed_unwritable_staging_dir_does_not_poison_or_block_retry() {
+        use std::os::unix::fs::PermissionsExt as _;
+
+        let temp = tempfile::tempdir().unwrap();
+        let _restore = UnixRestorePermissions { root: temp.path() };
+        let dst = temp.path().join("install_target");
+        let managed = ManagedDirName::new(&dst);
+
+        let mut first_staging = None;
+        let first = managed.check_exists_or_create(|staging| {
+            first_staging = Some(staging.to_path_buf());
+            let unexpected = staging.join("unexpected");
+            fs::create_dir_all(&unexpected).unwrap();
+            fs::write(unexpected.join("marker.txt"), b"UNVERIFIED").unwrap();
+            fs::set_permissions(&unexpected, fs::Permissions::from_mode(0o555)).unwrap();
+
+            let blocked_bin = staging.join("bin");
+            fs::create_dir_all(&blocked_bin).unwrap();
+            fs::set_permissions(&blocked_bin, fs::Permissions::from_mode(0o000)).unwrap();
+
+            Err(std::io::Error::other("simulated failure"))
+        });
+        assert!(first.is_err());
+        assert!(!dst.exists());
+
+        let mut second_staging = None;
+        let dir = managed
+            .check_exists_or_create(|staging| {
+                second_staging = Some(staging.to_path_buf());
+                fs::write(staging.join("official.txt"), b"authentic").unwrap();
+                Ok(())
+            })
+            .unwrap();
+
+        assert_eq!(dir.path, dst.as_path());
+        assert_ne!(first_staging, second_staging);
+        assert_eq!(fs::read_to_string(dst.join("official.txt")).unwrap(), "authentic");
+        assert!(!dst.join("unexpected").exists());
+        assert!(!dst.join("bin").exists());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn test_staging_dir_is_private_and_ignores_legacy_staging_dir() {
+        use std::os::unix::fs::PermissionsExt as _;
+
+        let temp = tempfile::tempdir().unwrap();
+        let _restore = UnixRestorePermissions { root: temp.path() };
+        let dst = temp.path().join("install_target");
+        let legacy_staging = temp.path().join("install_target.staging");
+        let legacy_unexpected = legacy_staging.join("unexpected");
+        fs::create_dir_all(&legacy_unexpected).unwrap();
+        fs::write(legacy_unexpected.join("marker.txt"), b"POISON").unwrap();
+        fs::set_permissions(&legacy_unexpected, fs::Permissions::from_mode(0o555)).unwrap();
+        fs::set_permissions(&legacy_staging, fs::Permissions::from_mode(0o555)).unwrap();
+
+        let managed = ManagedDirName::new(&dst);
+        managed
+            .check_exists_or_create(|staging| {
+                assert_ne!(staging, legacy_staging);
+                let mode = fs::metadata(staging).unwrap().permissions().mode() & 0o777;
+                assert_eq!(mode, 0o700);
+                fs::write(staging.join("official.txt"), b"clean").unwrap();
+                Ok(())
+            })
+            .unwrap();
+
+        assert_eq!(fs::read_to_string(dst.join("official.txt")).unwrap(), "clean");
+        assert!(!dst.join("unexpected").exists());
     }
 }
