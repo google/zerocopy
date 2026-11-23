@@ -69,7 +69,7 @@ class PrebuildBundledOleansTests(unittest.TestCase):
 
             mir_ast = root / "trusted/lean/Trusted/MirAst.lean"
             mir_ast.write_text("module\nprelude\npublic import Init.Core\n", encoding="utf-8")
-            (root / "trusted/cargo-anneal/src/bundle.rs").write_text(
+            (root / "trusted/cargo-anneal/src/trusted_bundle.rs").write_text(
                 'pub const TRUSTED_BUNDLE_SOURCES: &[&str] = &[\n'
                 '    "trusted/lean/Trusted/MirAst.lean",\n'
                 '];\n',
@@ -232,7 +232,7 @@ sys.exit(1)
             (root / "trusted/lean/Trusted/MirAst.lean").write_text(
                 "prelude\nimport Init.Core\n", encoding="utf-8"
             )
-            (root / "trusted/cargo-anneal/src/bundle.rs").write_text(
+            (root / "trusted/cargo-anneal/src/trusted_bundle.rs").write_text(
                 'pub const TRUSTED_BUNDLE_SOURCES: &[&str] = &[\n'
                 '    "trusted/lean/Trusted/MirAst.lean",\n'
                 '];\n',
@@ -346,7 +346,7 @@ sys.exit(1)
                 json.dumps({"modules": {"Init.Core": {}}, "graph": {"Init.Core": []}}),
                 encoding="utf-8",
             )
-            (root / "trusted/cargo-anneal/src/bundle.rs").write_text(
+            (root / "trusted/cargo-anneal/src/trusted_bundle.rs").write_text(
                 'pub const TRUSTED_BUNDLE_SOURCES: &[&str] = &["trusted/lean/Trusted.lean"];\n',
                 encoding="utf-8",
             )
@@ -429,7 +429,7 @@ sys.exit(1)
             barrel.write_text("prelude\nimport Trusted.Leaf\n", encoding="utf-8")
             downstream.write_text("prelude\nimport Trusted.Barrel\n", encoding="utf-8")
 
-            (root / "trusted/cargo-anneal/src/bundle.rs").write_text(
+            (root / "trusted/cargo-anneal/src/trusted_bundle.rs").write_text(
                 'pub const TRUSTED_BUNDLE_SOURCES: &[&str] = &[\n'
                 '    "trusted/lean/Trusted/Leaf.lean",\n'
                 '    "trusted/lean/Trusted/Barrel.lean",\n'
@@ -628,6 +628,14 @@ sys.exit(1)
             prebuild_bundled_oleans.compute_cache_key(entry),
             "c3a4decebcd8ececefe5514fad6d3b409e7f8da2da1496de5310d612a7b89e09",
         )
+
+    def test_loads_real_repo_trusted_and_theory_manifests(self):
+        anneal_root = Path(__file__).resolve().parents[1]
+        trusted = prebuild_bundled_oleans.load_trusted_module_sources(anneal_root)
+        theory = prebuild_bundled_oleans.load_theory_module_sources(anneal_root)
+        self.assertIn("Trusted", trusted)
+        self.assertIn("Trusted.MirSemantics", trusted)
+        self.assertIn("Anneal.MirWp", theory)
 
 
 if __name__ == "__main__":

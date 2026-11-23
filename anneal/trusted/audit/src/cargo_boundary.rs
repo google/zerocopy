@@ -8,8 +8,9 @@
 
 //! Enforces repository Cargo workspace containment, `Cargo.lock` provenance,
 //! and `trusted/root-manifest.sha256` verification ([`check_cargo_boundary`]).
-//! A separate check, [`verify_bundled_resources`], verifies embedded
-//! `bundled_resources.rs` canonical-source parity.
+//! A separate check, [`verify_bundled_resources`], verifies canonical-source
+//! bundle invariants (`build.rs` generation inputs, provenance inventory, and
+//! `bundled_theory.json` parity).
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
@@ -18,10 +19,13 @@ use std::path::{Component, Path};
 use serde::Deserialize;
 
 use cargo_anneal::bundle::{
-    BundleError, render_bundled_resources, render_bundled_theory, validate_bundle_destination,
-    validate_theory_bundle_destination,
+    BundleError, LEGACY_BUNDLE_DESTINATION, render_bundled_resources_parts,
+    render_bundled_theory, validate_bundle_source, validate_theory_bundle_destination,
 };
-use cargo_anneal::{Failure, is_clean_relative_path, is_sha256_hex, regular, sha256_file};
+use cargo_anneal::{
+    EMBEDDED_BUNDLE_SOURCES, EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON, Failure,
+    is_clean_relative_path, is_sha256_hex, regular, sha256_file,
+};
 
 use crate::miri_pin::verify_upstream_pin;
 
@@ -288,35 +292,93 @@ fn map_bundle_error(err: BundleError) -> Failure {
     }
 }
 
-/// Verify that `trusted/cargo-anneal/src/bundled_resources.rs`,
+/// Verify that `trusted/cargo-anneal/build.rs`,
+/// `trusted/cargo-anneal/src/trusted_bundle.rs`,
 /// `trusted/cargo-anneal/src/bundled_theory.json`, `theory/bundle-manifest.json`,
 /// and every canonical source in [`cargo_anneal::bundle::TRUSTED_BUNDLE_SOURCES`],
 /// [`cargo_anneal::bundle::THEORY_BUNDLE_MANIFEST`], and
 /// [`cargo_anneal::bundle::PROVENANCE_SOURCES`] are regular files under
-/// regular directories and match [`render_bundled_resources`] and
-/// [`render_bundled_theory`] byte-for-byte.
+/// regular directories, that legacy checked-in `src/bundled_resources.rs` and
+/// transient `packaged/` staging directories are absent, and that canonical
+/// bundle rendering matches `cargo-anneal`'s compiled-in
+/// [`EMBEDDED_BUNDLE_SOURCES`] / [`EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON`]
+/// and `bundled_theory.json` byte-for-byte.
 pub fn verify_bundled_resources(checkout: &Path) -> Result<(), Failure> {
     let phase = "bundle-manifest";
-    let (destination, permissions) =
-        validate_bundle_destination(checkout).map_err(map_bundle_error)?;
-    if permissions.is_none() {
-        return Err(Failure::policy(
-            phase,
-            format!("missing bundled_resources.rs: {}", destination.display()),
-        ));
+    validate_bundle_source(checkout, "trusted/cargo-anneal/build.rs")
+        .map_err(map_bundle_error)?;
+    validate_bundle_source(checkout, "trusted/cargo-anneal/src/trusted_bundle.rs")
+        .map_err(map_bundle_error)?;
+    let legacy_destination = checkout.join(LEGACY_BUNDLE_DESTINATION);
+    match fs::symlink_metadata(&legacy_destination) {
+        Ok(_) => {
+            return Err(Failure::policy(
+                phase,
+                format!(
+                    "legacy checked-in bundled_resources.rs must be absent: {}",
+                    legacy_destination.display()
+                ),
+            ));
+        }
+        Err(err) if err.kind() == std::io::ErrorKind::NotFound => {}
+        Err(err) => {
+            return Err(Failure::operational(
+                phase,
+                format!("cannot inspect {}: {err}", legacy_destination.display()),
+            ));
+        }
     }
-    let expected = render_bundled_resources(checkout).map_err(map_bundle_error)?;
-    let actual = fs::read(&destination).map_err(|e| {
-        Failure::operational(phase, format!("cannot read {}: {e}", destination.display()))
-    })?;
-    if actual != expected.as_bytes() {
+
+    let expected = render_bundled_resources_parts(checkout).map_err(map_bundle_error)?;
+    if expected.entries.len() != EMBEDDED_BUNDLE_SOURCES.len() {
         return Err(Failure::policy(
             phase,
             format!(
-                "{} differs from canonical bundled sources; run regenerate_bundle",
-                destination.display()
+                "embedded cargo-anneal BUNDLE entry count ({}) differs from canonical checkout \
+                 sources ({}); rebuild cargo-anneal and anneal-audit",
+                EMBEDDED_BUNDLE_SOURCES.len(),
+                expected.entries.len(),
             ),
         ));
+    }
+    for ((exp_path, exp_src), (emb_path, emb_src)) in
+        expected.entries.iter().zip(EMBEDDED_BUNDLE_SOURCES.iter())
+    {
+        if exp_path != emb_path || exp_src.as_str() != *emb_src {
+            return Err(Failure::policy(
+                phase,
+                format!(
+                    "embedded cargo-anneal BUNDLE entry {exp_path} differs from canonical \
+                     checkout sources; rebuild cargo-anneal and anneal-audit"
+                ),
+            ));
+        }
+    }
+    if expected.provenance_json != EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON {
+        return Err(Failure::policy(
+            phase,
+            "embedded cargo-anneal CORRESPONDENCE_PROVENANCE_JSON differs from canonical \
+             checkout sources; rebuild cargo-anneal and anneal-audit",
+        ));
+    }
+    let packaged_dir = checkout.join("trusted/cargo-anneal/packaged");
+    match fs::symlink_metadata(&packaged_dir) {
+        Ok(_) => {
+            return Err(Failure::policy(
+                phase,
+                format!(
+                    "transient packaged/ staging directory must not be checked in: {}",
+                    packaged_dir.display()
+                ),
+            ));
+        }
+        Err(err) if err.kind() == std::io::ErrorKind::NotFound => {}
+        Err(err) => {
+            return Err(Failure::operational(
+                phase,
+                format!("cannot inspect {}: {err}", packaged_dir.display()),
+            ));
+        }
     }
 
     let (theory_destination, theory_permissions) =
@@ -718,7 +780,30 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
                 format!("disallowed package.build or package.workspace in {member}/Cargo.toml"),
             ));
         }
-        if fs::symlink_metadata(checkout.join(member).join("build.rs")).is_ok() {
+        let build_rs_path = checkout.join(member).join("build.rs");
+        if member == "trusted/cargo-anneal" {
+            match fs::symlink_metadata(&build_rs_path) {
+                Ok(meta) if !meta.file_type().is_symlink() && meta.file_type().is_file() => {}
+                Ok(_) => {
+                    return Err(Failure::policy(
+                        phase,
+                        format!("build script must be a regular file: {member}/build.rs"),
+                    ));
+                }
+                Err(err) if err.kind() == std::io::ErrorKind::NotFound => {
+                    return Err(Failure::policy(
+                        phase,
+                        format!("missing required build script {member}/build.rs"),
+                    ));
+                }
+                Err(err) => {
+                    return Err(Failure::operational(
+                        phase,
+                        format!("cannot inspect {member}/build.rs: {err}"),
+                    ));
+                }
+            }
+        } else if fs::symlink_metadata(&build_rs_path).is_ok() {
             return Err(Failure::new(
                 1,
                 phase,
@@ -753,11 +838,13 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
 /// `require_mir_wp` is enabled) [`verify_bundled_resources`] whenever any
 /// Cargo, root-manifest, or vendored Miri TCB path is present.
 ///
-/// Bundle parity follows `require_mir_wp` because the bundle embeds
-/// `Trusted.MirAst`, `Trusted.MirSemantics`, and `Anneal.MirWp`: only
-/// synthetic unit-test fixtures disable it, and they omit those sources.
-/// `anneal-audit` always runs with `require_mir_wp` enabled, so deleting
-/// `bundled_resources.rs` (with or without its generator) fails closed.
+/// Bundle parity follows `require_mir_wp` because the embedded bundle holds
+/// `Trusted.MirAst`, `Trusted.MirSemantics`, `Anneal.MirWp`, and correspondence
+/// sources: only synthetic unit-test fixtures disable it when substituting stub
+/// sources or bypassing embedded parity. `anneal-audit` always enables
+/// `require_mir_wp`, so missing `build.rs` or `trusted_bundle.rs`,
+/// reintroduced legacy `src/bundled_resources.rs`, or drifted canonical sources
+/// fail closed.
 pub(crate) fn check_checkout_cargo_hygiene(
     checkout: &Path,
     require_mir_wp: bool,

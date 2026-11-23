@@ -169,6 +169,10 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             restore["with"]["key"],
         )
         self.assertNotIn(
+            "anneal/trusted/cargo-anneal/src/trusted_bundle.rs",
+            restore["with"]["key"],
+        )
+        self.assertNotIn(
             "anneal/trusted/rustc-capture/**", restore["with"]["key"]
         )
         self.assertNotIn("anneal/Cargo.lock", restore["with"]["key"])
@@ -436,16 +440,32 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                         by_id[step_id]["run"],
                         f"{job_name}.{step_id} missing {flag}",
                     )
-        # Verify BOTH `cargo publish --dry-run` and `cargo test --no-run` in
-        # `installed-smoke.package` receive all four optimization `--config`
-        # flags so Cargo does not recompile deps at opt-level=0.
+        # Verify `regenerate_bundle --stage-package`, `cargo publish --dry-run`,
+        # and `cargo test --no-run` in `installed-smoke.package` each receive
+        # all four optimization `--config` flags so Cargo does not recompile
+        # deps at opt-level=0, and pin the clean-tree/single-file/cleanup guards
+        # required for `--allow-dirty`.
         pkg_run = next(
             s["run"]
             for s in jobs["installed-smoke"]["steps"]
             if s.get("id") == "package"
         )
-        publish_block, test_block = pkg_run.split("prepared_manifest=", 1)
+        pre_test_block, test_block = pkg_run.split("prepared_manifest=", 1)
+        stage_block, publish_block = pre_test_block.split("cargo publish --dry-run", 1)
+        self.assertIn(
+            'clean_status="$(git status --porcelain --untracked-files=all)"',
+            stage_block,
+        )
+        self.assertIn('test -z "$clean_status"', stage_block)
+        self.assertIn("trap 'rm -rf trusted/cargo-anneal/packaged' EXIT", stage_block)
+        self.assertIn("--stage-package", stage_block)
+        self.assertIn(
+            'test "$staged_status" = '
+            '"?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs"',
+            stage_block,
+        )
         for flag in full_opt_flags:
+            self.assertIn(flag, stage_block, f"regenerate_bundle missing {flag}")
             self.assertIn(flag, publish_block, f"cargo publish missing {flag}")
             self.assertIn(flag, test_block, f"packaged cargo test missing {flag}")
 

@@ -190,20 +190,26 @@ fn check_provenance_and_toolchain(ok: &anneal_testkit::VerifySuccessReceipt) {
     }
     assert!(prov["note"].as_str().unwrap().contains("anneal-audit --require-correspondence"));
 
-    let bundled_source =
-        fs::read_to_string(anneal_root().join("trusted/cargo-anneal/src/bundled_resources.rs"))
-            .unwrap();
-    let provenance_lines: Vec<&str> = bundled_source
-        .lines()
-        .filter_map(|line| {
-            line.strip_prefix("const CORRESPONDENCE_PROVENANCE_JSON: &str = ")
-                .and_then(|rest| rest.strip_suffix(';'))
-        })
-        .collect();
-    assert_eq!(provenance_lines.len(), 1);
-    let raw_json: String = serde_json::from_str(provenance_lines[0]).unwrap();
-    let bundled_prov: Value = serde_json::from_str(&raw_json).unwrap();
+    let bundled_prov: Value =
+        serde_json::from_str(cargo_anneal::EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON).unwrap();
     assert_eq!(prov, &bundled_prov);
+
+    let rendered_py = std::process::Command::new("python3")
+        .arg("-B")
+        .arg(anneal_root().join("ci/render_correspondence_provenance.py"))
+        .arg("--anneal-root")
+        .arg(anneal_root())
+        .output()
+        .unwrap();
+    assert!(
+        rendered_py.status.success(),
+        "render_correspondence_provenance.py failed: {}",
+        String::from_utf8_lossy(&rendered_py.stderr)
+    );
+    assert_eq!(
+        String::from_utf8(rendered_py.stdout).unwrap(),
+        cargo_anneal::EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON
+    );
 
     if let Ok(install_root) = env::var("ANNEAL_TEST_INSTALL_ROOT")
         && !install_root.is_empty()

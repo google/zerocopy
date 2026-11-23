@@ -30,6 +30,10 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use walkdir::WalkDir;
 
+pub use crate::trusted_bundle::{
+    LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, is_sha256_hex, sha256_bytes,
+};
+
 /// Represents a JSON value at the `TrustedBoundary.lean` IPC boundary.
 pub type Json = serde_json::Value;
 
@@ -74,20 +78,6 @@ pub const LOCKED_LEAN_SHA256: [&str; 4] = [
     "998f0cc2a5a754cc66df1f33b85e1447528737ff15012db35d8c501754b02f1e",
     LOCKED_LEAN_X86_64_LINUX_SHA256,
 ];
-
-/// Names the pinned SHA-256 manifest digest of all
-/// `<prefix>/lib/lean/{Init,Std,Lean}*` `.olean`, `.olean.server`, and
-/// `.olean.private` artifacts in the pinned Lean 4.34.1 toolchain, computed
-/// over sorted `"{rel_path}:{sha256}\n"` lines.
-///
-/// Pinned `Checker::tool_admission` verifies this manifest before running
-/// `TrustedBoundary.lean` (so both `anneal-audit` Pass 1/2 and
-/// `cargo-anneal verify` authenticate the sysroot `.olean` dependency cone of
-/// the standalone inspector), and `anneal-audit` Pass 2 additionally extracts
-/// the sorted `.sysrootFoundation` module list before compiling or loading
-/// `.vendorMiri` and `.sysrootFoundation` modules.
-pub const LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256: &str =
-    "2fa0ec692ae74051072ed105a66054843dcb711eb702bb64dc7947b96ea4fcdf";
 
 /// Represents a structured audit or verification failure distinguishing
 /// reported frontend/source or policy rejections (`code == 1`) from
@@ -939,15 +929,6 @@ pub fn regular(path: &Path, phase: &str) -> Result<(), Failure> {
     Ok(())
 }
 
-/// Compute the lowercase hex-encoded FIPS 180-4 SHA-256 digest of `data`.
-pub fn sha256_bytes(data: &[u8]) -> String {
-    let mut hex = String::with_capacity(64);
-    for byte in Sha256::digest(data) {
-        let _ = write!(&mut hex, "{byte:02x}");
-    }
-    hex
-}
-
 /// Verify that `path` is a regular file and return its lowercase hex SHA-256
 /// digest.
 pub fn sha256_file(path: &Path, phase: &str) -> Result<String, Failure> {
@@ -966,11 +947,6 @@ pub fn stage_regular_file(src: &Path, dst: &Path, phase: &str) -> Result<String,
     fs::write(dst, &bytes)
         .map_err(|e| Failure::new(2, phase, format!("cannot write {}: {e}", dst.display())))?;
     Ok(sha)
-}
-
-/// Return `true` if `s` is a 64-character ASCII hex digest.
-pub fn is_sha256_hex(s: &str) -> bool {
-    s.len() == 64 && s.bytes().all(|b| b.is_ascii_hexdigit())
 }
 
 /// Return `true` if `s` is a valid ASCII Lean module identifier component.

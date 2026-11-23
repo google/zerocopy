@@ -40,7 +40,14 @@ pub mod setup;
 mod stage;
 mod target;
 mod toolchain;
+mod trusted_bundle;
 mod verify;
+
+#[doc(hidden)]
+pub const EMBEDDED_BUNDLE_SOURCES: &[(&str, &str)] = verify::EMBEDDED_BUNDLE_SOURCES;
+#[doc(hidden)]
+pub const EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON: &str =
+    verify::EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON;
 
 pub use sandbox::{ActiveSandbox, SandboxMode};
 pub use stage::Checker;

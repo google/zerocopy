@@ -119,8 +119,43 @@ class ReleaseWorkflowTests(unittest.TestCase):
                 else:
                     self.assertIn(ref, (None, "${{ github.sha }}"))
                 self.assertEqual(checkout["with"]["persist-credentials"], "false")
-        [publish] = [step["run"] for step in publisher["steps"] if "run" in step]
-        self.assertEqual(publish, "cargo publish --locked -p cargo-anneal --registry crates-io")
+        stage, publish = [step for step in publisher["steps"] if "run" in step]
+        self.assertNotIn("CARGO_REGISTRY_TOKEN", stage.get("env", {}))
+        self.assertEqual(
+            stage["run"].strip(),
+            "\n".join((
+                "set -euo pipefail",
+                'clean_status="$(git status --porcelain --untracked-files=all)"',
+                'test -z "$clean_status"',
+                "trap 'rm -rf trusted/cargo-anneal/packaged' ERR",
+                (
+                    "cargo run --locked -p cargo-anneal --example regenerate_bundle"
+                    " -- --root . --stage-package"
+                ),
+                'staged_status="$(git status --porcelain --untracked-files=all)"',
+                (
+                    'test "$staged_status" = '
+                    '"?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs"'
+                ),
+            )),
+        )
+        self.assertEqual(
+            publish["env"],
+            {"CARGO_REGISTRY_TOKEN": "${{ steps.anneal-auth.outputs.token }}"},
+        )
+        self.assertEqual(
+            publish["run"].strip(),
+            "\n".join((
+                "set -euo pipefail",
+                "trap 'rm -rf trusted/cargo-anneal/packaged' EXIT",
+                'staged_status="$(git status --porcelain --untracked-files=all)"',
+                (
+                    'test "$staged_status" = '
+                    '"?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs"'
+                ),
+                "cargo publish --locked --allow-dirty -p cargo-anneal --registry crates-io",
+            )),
+        )
 
     def test_qualification_checks_environment_and_exercises_the_packaged_cli(self):
         detect = self.jobs["check-anneal-release"]
@@ -139,7 +174,19 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertIn("required_reviewers", protections["run"])
         self.assertIn("deployment-branch-policies", protections["run"])
         self.assertIn("--require-pinned --archive-base", package["run"])
-        self.assertIn("cargo package --locked -p cargo-anneal", package["run"])
+        self.assertIn(
+            'clean_status="$(git status --porcelain --untracked-files=all)"',
+            package["run"],
+        )
+        self.assertIn('test -z "$clean_status"', package["run"])
+        self.assertIn("trap 'rm -rf trusted/cargo-anneal/packaged' EXIT", package["run"])
+        self.assertIn("--stage-package", package["run"])
+        self.assertIn(
+            'test "$staged_status" = '
+            '"?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs"',
+            package["run"],
+        )
+        self.assertIn("cargo package --locked --allow-dirty -p cargo-anneal", package["run"])
         self.assertIn("ci/probe_alpha.py", package["run"])
 
     def test_anneal_github_release_uses_the_successfully_published_commit(self):

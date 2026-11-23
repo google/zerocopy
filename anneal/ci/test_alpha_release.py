@@ -14,7 +14,7 @@ import tomllib
 import unittest
 
 from alpha_release import (
-    LOCK_PATH, MANIFEST, MANIFEST_PATH, ROOT_HASH_PATH, UNPINNED, archive,
+    ARCHIVE_INPUTS, LOCK_PATH, MANIFEST, MANIFEST_PATH, REPO, ROOT_HASH_PATH, UNPINNED, archive,
     archive_url, check_archive_base, pin, prepare, release_to_publish, version_to_publish,
 )
 
@@ -202,3 +202,12 @@ class AlphaReleaseTest(unittest.TestCase):
                         check_archive_base(repo, source, self.version)
                     self.assertIn(relative, str(failure.exception).splitlines())
                     git("revert", "--no-edit", "HEAD")
+
+    def test_archive_inputs_exist_and_include_prebuild_script(self):
+        for rel in ARCHIVE_INPUTS:
+            with self.subTest(path=rel):
+                self.assertTrue((REPO / rel).exists(), rel)
+        self.assertIn("anneal/ci/prebuild_bundled_oleans.py", ARCHIVE_INPUTS)
+        self.assertIn("anneal/ci/render_correspondence_provenance.py", ARCHIVE_INPUTS)
+        self.assertNotIn("anneal/trusted/cargo-anneal/src/bundle.rs", ARCHIVE_INPUTS)
+        self.assertNotIn("anneal/trusted/cargo-anneal/src/bundled_resources.rs", ARCHIVE_INPUTS)

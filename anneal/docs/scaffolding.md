@@ -279,12 +279,15 @@ aside any partial `installation/` directory inside `<copy>` before retrying.
 Check `cargo-anneal` crate packaging and task markers from `anneal/`:
 
 ```bash
-cargo publish --locked --dry-run -p cargo-anneal
+cargo run --locked -p cargo-anneal --example regenerate_bundle -- --root . --stage-package
+cargo publish --locked --dry-run --allow-dirty -p cargo-anneal
+rm -rf trusted/cargo-anneal/packaged
 ./ci/check_todo.sh
 ```
 
-`cargo publish --dry-run` requires a clean tree unless `--allow-dirty` is
-passed (retain `git diff` alongside dirty test results). In CI, the packaging
+`cargo publish --dry-run` requires `--allow-dirty` after staging
+`trusted/cargo-anneal/packaged/bundled_resources.rs` (remove the transient
+`packaged/` directory afterward to keep the tree clean). In CI, the packaging
 check also runs
 `cargo test --locked --manifest-path "$prepared_manifest" --no-run` against the
 unpacked `target/package/cargo-anneal-<version>/Cargo.toml` so missing excluded

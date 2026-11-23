@@ -337,8 +337,11 @@
             leanTheory = ./theory;
             targetInspector = ./trusted/audit/TrustedBoundary.lean;
             targetLibraryLock = ./trusted/audit/library-lock.json;
-            bundledResources = ./trusted/cargo-anneal/src/bundled_resources.rs;
-            bundleManifestSource = ./trusted/cargo-anneal/src/bundle.rs;
+            trustedBundleSource = ./trusted/cargo-anneal/src/trusted_bundle.rs;
+            upstreamPin = ./vendor/lean-miri/UPSTREAM_PIN.json;
+            correspondenceAdapters = ./trusted/correspondence;
+            correspondenceProofs = ./correspondence;
+            renderProvenanceScript = ./ci/render_correspondence_provenance.py;
             prebuildOleansScript = ./ci/prebuild_bundled_oleans.py;
 
             buildPhase = ''
@@ -353,20 +356,17 @@
               cp "$targetInspector" "$TMPDIR/dist_staging/share/anneal/trusted/audit/TrustedBoundary.lean"
               cp "$targetLibraryLock" "$TMPDIR/dist_staging/share/anneal/trusted/audit/library-lock.json"
 
-              # Copy correspondence provenance verbatim from the parity-checked
-              # `CORRESPONDENCE_PROVENANCE_JSON` constant embedded in
-              # `bundled_resources.rs` so the archive metadata and `cargo-anneal
-              # verify` receipts share one canonical source of truth.
-              provenance_literal="$(sed -n \
-                's/^const CORRESPONDENCE_PROVENANCE_JSON: &str = \(.*\);$/\1/p' \
-                "$bundledResources")"
-              if [ "$(printf '%s\n' "$provenance_literal" | sed '/^$/d' | wc -l)" -ne 1 ]; then
-                echo "ERROR: expected unique CORRESPONDENCE_PROVENANCE_JSON in $bundledResources" >&2
-                exit 1
-              fi
-              printf '%s\n' "$provenance_literal" \
-                | jq -e -r . \
-                > "$TMPDIR/dist_staging/share/anneal/correspondence-provenance.json"
+              # Render correspondence provenance directly from the canonical
+              # inputs so archive metadata and `cargo-anneal verify` receipts
+              # share one deterministic schema and inventory without checking
+              # in a monolithic `bundled_resources.rs`.
+              python3 -B "$renderProvenanceScript" \
+                --trusted-bundle-rs "$trustedBundleSource" \
+                --upstream-pin "$upstreamPin" \
+                --correspondence-adapters-dir "$correspondenceAdapters" \
+                --correspondence-proofs-dir "$correspondenceProofs" \
+                --trusted-lean-dir "$leanFoundation" \
+                --output "$TMPDIR/dist_staging/share/anneal/correspondence-provenance.json"
               jq -e 'type == "object" and .schema_version == 1' \
                 "$TMPDIR/dist_staging/share/anneal/correspondence-provenance.json" \
                 > /dev/null
@@ -378,7 +378,7 @@
               # theory modules so cold `cargo-anneal verify` reuses them across
               # invocations without lowering verification replay coverage.
               mkdir -p "$TMPDIR/prebuild_src/trusted/cargo-anneal/src"
-              cp "$bundleManifestSource" "$TMPDIR/prebuild_src/trusted/cargo-anneal/src/bundle.rs"
+              cp "$trustedBundleSource" "$TMPDIR/prebuild_src/trusted/cargo-anneal/src/trusted_bundle.rs"
               cp -r "$TMPDIR/dist_staging/share/anneal/trusted/audit" "$TMPDIR/prebuild_src/trusted/audit"
               cp -r "$TMPDIR/dist_staging/share/anneal/trusted/lean" "$TMPDIR/prebuild_src/trusted/lean"
               cp -r "$TMPDIR/dist_staging/share/anneal/theory" "$TMPDIR/prebuild_src/theory"

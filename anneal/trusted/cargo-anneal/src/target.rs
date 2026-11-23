@@ -3013,7 +3013,7 @@ mod tests {
     use crate::toolchain::LOCKED_LEAN_SHA256;
 
     mod embedded {
-        include!("bundled_resources.rs");
+        include!(concat!(env!("OUT_DIR"), "/bundled_resources.rs"));
 
         pub fn entries() -> &'static [(&'static str, &'static str)] {
             let _ = CORRESPONDENCE_PROVENANCE_JSON;

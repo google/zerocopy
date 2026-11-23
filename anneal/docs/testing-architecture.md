@@ -131,9 +131,10 @@ anneal/
 │   │   └── src/{lib,main,cli,cargo_boundary,miri_pin,repo_audit}.rs
 │   ├── cargo-anneal/                  # package = "cargo-anneal" (published CLI/lib)
 │   │   ├── Cargo.toml                 # Zero tests/ exclusion list; zero wait-timeout dev-dep
+│   │   ├── build.rs                   # Generates $OUT_DIR/bundled_resources.rs from canonical sources
 │   │   ├── assets/scalar/             # Runtime assets for `cargo-anneal skill --example` (97L)
 │   │   ├── skills/cargo-anneal/
-│   │   └── src/{lib,main,bundle,bundled_resources,cli,diagnostics,init,olean_cache,sandbox,setup,stage,target,toolchain,verify}.rs
+│   │   └── src/{lib,main,bundle,cli,diagnostics,init,olean_cache,sandbox,setup,stage,target,toolchain,trusted_bundle,verify}.rs
 │   │       # (+ bundled_theory.json; target #4016 adds ndjson_comparator.rs)
 │   ├── rustc-capture/                 # package = "anneal-rustc-capture" (#![feature(rustc_private)])
 │   │   ├── Cargo.toml
@@ -243,8 +244,11 @@ under five invariants (with optional target hardening to require all three
    WorkspaceZone::Tests`, `M/Cargo.toml` must declare literal `package.publish =
    false` (`Some(toml::Value::Boolean(false))`); `publish = ["..."]`, `publish =
    true`, and omitted `publish` all fail closed.
-3. **Build-Script, Proc-Macro, and Override Prohibition:** Neither zone may set
-   `package.build`, `package.workspace`, or contain `build.rs`. Across `[lib]`,
+3. **Build-Script, Proc-Macro, and Override Prohibition:**
+   `trusted/cargo-anneal/build.rs` is required as a regular file to emit
+   `$OUT_DIR/bundled_resources.rs` deterministically; neither zone may set
+   `package.build` or `package.workspace`, and no other crate in either zone may
+   contain `build.rs`. Across `[lib]`,
    `[[bin]]`, `[[example]]`, `[[test]]`, and `[[bench]]`,
    `validate_member_target` mechanically rejects `proc-macro = true` /
    `proc_macro = true` and `crate-type = ["proc-macro"]` / `crate_type =

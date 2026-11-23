@@ -13,7 +13,7 @@
 //! `cargo_anneal`'s private Lean toolchain and staging substrate to enforce
 //! Anneal's repository-CI invariants across Pass 1 (`trusted/lean/` +
 //! `theory/`, Cargo DAG containment, `root-manifest.sha256`, and
-//! `bundled_resources.rs` parity) and Pass 2 (`vendor/lean-miri/`,
+//! bundle parity) and Pass 2 (`vendor/lean-miri/`,
 //! `trusted/correspondence/`, and `correspondence/`).
 
 mod cargo_boundary;

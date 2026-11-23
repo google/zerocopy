@@ -117,14 +117,14 @@ def module_name_from_rel(rel_path: str, prefix: str) -> str:
 
 
 def load_trusted_module_sources(anneal_root: Path) -> dict[str, Path]:
-    bundle_rs = anneal_root / "trusted/cargo-anneal/src/bundle.rs"
-    text = bundle_rs.read_text(encoding="utf-8")
+    trusted_bundle_rs = anneal_root / "trusted/cargo-anneal/src/trusted_bundle.rs"
+    text = trusted_bundle_rs.read_text(encoding="utf-8")
     start = text.find("pub const TRUSTED_BUNDLE_SOURCES")
     if start < 0:
-        raise RuntimeError(f"missing TRUSTED_BUNDLE_SOURCES in {bundle_rs}")
+        raise RuntimeError(f"missing TRUSTED_BUNDLE_SOURCES in {trusted_bundle_rs}")
     end = text.find("];", start)
     if end < 0:
-        raise RuntimeError(f"unterminated TRUSTED_BUNDLE_SOURCES in {bundle_rs}")
+        raise RuntimeError(f"unterminated TRUSTED_BUNDLE_SOURCES in {trusted_bundle_rs}")
     modules: dict[str, Path] = {}
     for rel in TRUSTED_SOURCE_RE.findall(text[start:end]):
         mod = module_name_from_rel(rel, "trusted/lean/")
