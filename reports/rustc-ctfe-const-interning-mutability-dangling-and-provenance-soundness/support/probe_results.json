@@ -1,0 +1,254 @@
+{
+  "probe_suite": "ctfe_const_interning_mutability_dangling_and_provenance",
+  "rust_commit_sha": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "total_cases": 30,
+  "experiments": {
+    "a_stack_mut_unsafe_cell_and_dangling": {
+      "stack_mut_owned_cell_and_static_atomic_ok": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "X=42 CELL=12 ATOMIC_PREV=77 ATOMIC_NOW=80",
+        "run_stderr": ""
+      },
+      "dangling_alloc_raw_ptr_in_final_const_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: encountered dangling pointer in final value of constant\n --> probe.rs:1:1\n  |\n1 | const DANGLE_RAW: *const u32 = {\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error"
+      },
+      "int_raw_ptr_stored_ok": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "INT_PTR_ADDR=0x1000",
+        "run_stderr": ""
+      },
+      "dangling_raw_deref_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0080]: memory access failed: alloc2 has been freed, so this pointer is dangling\n --> probe.rs:6:14\n  |\n6 |     unsafe { *p }\n  |              ^^ evaluation of `DEREF_DANGLE` failed here\n\nnote: erroneous constant encountered\n  --> probe.rs:10:20\n   |\n10 |     println!(\"{}\", DEREF_DANGLE);\n   |                    ^^^^^^^^^^^^\n\nnote: erroneous constant encountered\n  --> probe.rs:10:20\n   |\n10 |     println!(\"{}\", DEREF_DANGLE);\n   |                    ^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "dangling_ref_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0080]: constructing invalid value of type &u32: encountered a dangling reference (use-after-free)\n --> probe.rs:1:1\n  |\n1 | const DANGLE_REF: &u32 = unsafe {\n  | ^^^^^^^^^^^^^^^^^^^^^^ it is undefined behavior to use this value\n  |\n  = note: the rules on what exactly is undefined behavior aren't clear, so this check might be overzealous. Please open an issue on the rustc repository if you believe it should not be considered undefined behavior.\n  = note: the raw bytes of the constant (size: 8, align: 8) {\n              \u257e\u2500\u2500\u2500\u2500\u2500alloc2<imm>\u2500\u2500\u2500\u2500\u2500\u257c                         \u2502 \u257e\u2500\u2500\u2500\u2500\u2500\u2500\u257c\n          }\n\nnote: erroneous constant encountered\n  --> probe.rs:10:21\n   |\n10 |     println!(\"{}\", *DANGLE_REF);\n   |                     ^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "unsafe_cell_ref_in_const_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0492]: interior mutable shared borrows of temporaries that have their lifetime extended until the end of the program are not allowed\n --> probe.rs:3:40\n  |\n3 | const BAD_CELL_REF: &UnsafeCell<u32> = &UnsafeCell::new(5);\n  |                                        ^^^^^^^^^^^^^^^^^^^ this borrow of an interior mutable value refers to such a temporary\n  |\n  = note: temporaries in constants and statics can have their lifetime extended until the end of the program\n  = note: to avoid accidentally creating global mutable state, such temporaries must be immutable\n  = help: if you really want global mutable state, try replacing the temporary by an interior mutable `static` or a `static mut`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0492`."
+      },
+      "unsafe_cell_transmute_in_const_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0080]: constructing invalid value of type &UnsafeCell<u32>: at .<deref>, encountered `UnsafeCell` in read-only memory\n --> probe.rs:3:1\n  |\n3 | const BAD_CELL_TRANSMUTE: &UnsafeCell<u32> = unsafe {\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ it is undefined behavior to use this value\n  |\n  = note: the rules on what exactly is undefined behavior aren't clear, so this check might be overzealous. Please open an issue on the rustc repository if you believe it should not be considered undefined behavior.\n  = note: the raw bytes of the constant (size: 8, align: 8) {\n              \u257e\u2500\u2500\u2500\u2500\u2500alloc3<imm>\u2500\u2500\u2500\u2500\u2500\u257c                         \u2502 \u257e\u2500\u2500\u2500\u2500\u2500\u2500\u257c\n          }\n\nnote: erroneous constant encountered\n --> probe.rs:8:13\n  |\n8 |     let _ = BAD_CELL_TRANSMUTE;\n  |             ^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "unsafe_cell_union_transmute_in_const_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0080]: constructing invalid value of type &CellOrInt: at .<deref>, encountered `UnsafeCell` in read-only memory\n  --> probe.rs:10:1\n   |\n10 | const BAD_UNION_CELL: &CellOrInt = unsafe {\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ it is undefined behavior to use this value\n   |\n   = note: the rules on what exactly is undefined behavior aren't clear, so this check might be overzealous. Please open an issue on the rustc repository if you believe it should not be considered undefined behavior.\n   = note: the raw bytes of the constant (size: 8, align: 8) {\n               \u257e\u2500\u2500\u2500\u2500\u2500alloc3<imm>\u2500\u2500\u2500\u2500\u2500\u257c                         \u2502 \u257e\u2500\u2500\u2500\u2500\u2500\u2500\u257c\n           }\n\nnote: erroneous constant encountered\n  --> probe.rs:15:13\n   |\n15 |     let _ = BAD_UNION_CELL;\n   |             ^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "mut_ref_escaping_const_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0764]: mutable borrows of temporaries that have their lifetime extended until the end of the program are not allowed\n --> probe.rs:1:31\n  |\n1 | const BAD_MUT_REF: &mut u32 = &mut 1u32;\n  |                               ^^^^^^^^^ this mutable borrow refers to such a temporary\n  |\n  = note: temporaries in constants and statics can have their lifetime extended until the end of the program\n  = note: to avoid accidentally creating global mutable state, such temporaries must be immutable\n  = help: if you really want global mutable state, try replacing the temporary by an interior mutable `static` or a `static mut`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0764`."
+      },
+      "mut_ref_transmute_to_readonly_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0080]: constructing invalid value of type &mut u32: encountered mutable reference or box pointing to read-only memory\n --> probe.rs:1:1\n  |\n1 | const BAD_TRANSMUTE_MUT: &mut u32 = unsafe {\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ it is undefined behavior to use this value\n  |\n  = note: the rules on what exactly is undefined behavior aren't clear, so this check might be overzealous. Please open an issue on the rustc repository if you believe it should not be considered undefined behavior.\n  = note: the raw bytes of the constant (size: 8, align: 8) {\n              \u257e\u2500\u2500\u2500\u2500\u2500alloc3<imm>\u2500\u2500\u2500\u2500\u2500\u257c                         \u2502 \u257e\u2500\u2500\u2500\u2500\u2500\u2500\u257c\n          }\n\nnote: erroneous constant encountered\n --> probe.rs:7:13\n  |\n7 |     let _ = BAD_TRANSMUTE_MUT;\n  |             ^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "zst_promoted_mut_and_zst_cell_exceptions_ok": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "ZST_MUT_LEN=0 ZST_CELL_SIZE=0 ZST_MUT_ARR_LEN=0",
+        "run_stderr": ""
+      },
+      "zst_unsafecell_direct_borrow_still_e0492_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0492]: interior mutable shared borrows of temporaries that have their lifetime extended until the end of the program are not allowed\n --> probe.rs:3:42\n  |\n3 | const ZST_CELL_BORROW: &UnsafeCell<()> = &UnsafeCell::new(());\n  |                                          ^^^^^^^^^^^^^^^^^^^^ this borrow of an interior mutable value refers to such a temporary\n  |\n  = note: temporaries in constants and statics can have their lifetime extended until the end of the program\n  = note: to avoid accidentally creating global mutable state, such temporaries must be immutable\n  = help: if you really want global mutable state, try replacing the temporary by an interior mutable `static` or a `static mut`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0492`."
+      },
+      "static_mut_nested_mut_alloc_ok": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "S_MUT_0=99 S_MUT_1=20",
+        "run_stderr": ""
+      }
+    },
+    "b_ctfe_provenance_enforcement": {
+      "provenance_valid_inbounds": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "INBOUNDS_VAL=30",
+        "run_stderr": ""
+      },
+      "int_to_ptr_deref_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0080]: memory access failed: attempting to access 1 byte, but got 0x1000[noalloc] which is a dangling pointer (it has no provenance)\n --> probe.rs:1:36\n  |\n1 | const INT_PTR_DEREF: u8 = unsafe { *(0x1000usize as *const u8) };\n  |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `INT_PTR_DEREF` failed here\n\nnote: erroneous constant encountered\n --> probe.rs:4:20\n  |\n4 |     println!(\"{}\", INT_PTR_DEREF);\n  |                    ^^^^^^^^^^^^^\n\nnote: erroneous constant encountered\n --> probe.rs:4:20\n  |\n4 |     println!(\"{}\", INT_PTR_DEREF);\n  |                    ^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "int_to_ptr_zero_add_ok": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "INT_PTR_ZERO_ADD=0x1000",
+        "run_stderr": ""
+      },
+      "int_to_ptr_nonzero_add_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0080]: in-bounds pointer arithmetic failed: attempting to offset pointer by 1 byte, but got 0x1000[noalloc] which is a dangling pointer (it has no provenance)\n --> probe.rs:1:43\n  |\n1 | ... u8 = unsafe { (0x1000usize as *const u8).add(1) };\n  |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `INT_PTR_ADD_1` failed here\n\nnote: erroneous constant encountered\n --> probe.rs:4:13\n  |\n4 |     let _ = INT_PTR_ADD_1;\n  |             ^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "oob_ptr_add_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0080]: in-bounds pointer arithmetic failed: attempting to offset pointer by 10 bytes, but got alloc2 which is only 2 bytes from the end of the allocation\n --> probe.rs:3:14\n  |\n3 |     unsafe { arr.as_ptr().add(10) }\n  |              ^^^^^^^^^^^^^^^^^^^^ evaluation of `OOB_ADD` failed here\n\nnote: erroneous constant encountered\n --> probe.rs:7:13\n  |\n7 |     let _ = OOB_ADD;\n  |             ^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "oob_wrapping_add_static_stored_ok": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "OOB_WRAP_OFFSET=10",
+        "run_stderr": ""
+      },
+      "oob_wrapping_add_deref_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0080]: memory access failed: attempting to access 1 byte, but got alloc2+0xa which is at or beyond the end of the allocation of size 2 bytes\n --> probe.rs:3:14\n  |\n3 |     unsafe { *arr.as_ptr().wrapping_add(10) }\n  |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `WRAP_DEREF` failed here\n\nnote: erroneous constant encountered\n --> probe.rs:7:13\n  |\n7 |     let _ = WRAP_DEREF;\n  |             ^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "ptr_cmp_different_allocs_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: pointers cannot be reliably compared during const eval\n --> probe.rs:4:5\n  |\n4 |     (&raw const a) == (&raw const b)\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #53020 <https://github.com/rust-lang/rust/issues/53020> for more information\n\nerror: aborting due to 1 previous error"
+      },
+      "ptr_cmp_int_ptrs_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: pointers cannot be reliably compared during const eval\n --> probe.rs:1:28\n  |\n1 | ...bool = (0x1000usize as *const u8) == (0x1000usize as *const u8);\n  |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #53020 <https://github.com/rust-lang/rust/issues/53020> for more information\n\nerror: aborting due to 1 previous error"
+      },
+      "ptr_to_int_cast_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: pointers cannot be cast to integers during const eval\n --> probe.rs:2:27\n  |\n2 | const PTR_TO_INT: usize = (&raw const S) as usize;\n  |                           ^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: at compile-time, pointers do not have an integer value\n  = note: avoiding this restriction via `transmute`, `union`, or raw pointers leads to compile-time undefined behavior\n\nerror: aborting due to 1 previous error"
+      },
+      "offset_from_same_static_ok": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "SAME_DIFF=2",
+        "run_stderr": ""
+      },
+      "offset_from_diff_alloc_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0080]: `ptr_offset_from` called on two different pointers that are not both derived from the same allocation\n   --> probe.rs:3:36\n    |\n  3 | ...= unsafe { (&raw const B).offset_from(A.as_ptr()) };\n    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `CROSS_DIFF` failed inside this call\n    |\nnote: inside `std::ptr::const_ptr::<impl *const u32>::offset_from`\n   --> <toolchain-home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/const_ptr.rs:619:18\n    |\n619 |         unsafe { intrinsics::ptr_offset_from(self, origin) }\n    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the failure occurred here\n\nnote: erroneous constant encountered\n --> probe.rs:6:20\n  |\n6 |     println!(\"{}\", CROSS_DIFF);\n  |                    ^^^^^^^^^^\n\nnote: erroneous constant encountered\n --> probe.rs:6:20\n  |\n6 |     println!(\"{}\", CROSS_DIFF);\n  |                    ^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "ptr_cmp_unleashed_runtime_binary_ptr_op_rejected": {
+        "edition": "2024",
+        "extra_args": [
+          "-Z",
+          "unleash-the-miri-inside-of-you"
+        ],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0080]: pointer arithmetic or comparison is not supported at compile-time\n --> probe.rs:4:5\n  |\n4 |     (&raw const a) == (&raw const b)\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `CMP_UNLEASHED` failed here\n\nnote: erroneous constant encountered\n --> probe.rs:8:20\n  |\n8 |     println!(\"{}\", CMP_UNLEASHED);\n  |                    ^^^^^^^^^^^^^\n\nnote: erroneous constant encountered\n --> probe.rs:8:20\n  |\n8 |     println!(\"{}\", CMP_UNLEASHED);\n  |                    ^^^^^^^^^^^^^\n\nwarning: skipping const checks\n  |\nhelp: skipping check that does not even have a feature gate\n --> probe.rs:4:5\n  |\n4 |     (&raw const a) == (&raw const b)\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0080`."
+      }
+    },
+    "c_const_referencing_static_and_static_mut": {
+      "const_ref_to_static_atomic_and_ptr_to_static_mut_ok": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "REF_TO_STATIC=99 READ_IMM_STATIC=99 ATOMIC_PREV=5 ATOMIC_NOW=7 PTR_TO_MUT_STATIC_AFTER=456",
+        "run_stderr": ""
+      },
+      "const_read_atomic_static_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0080]: constant accesses mutable global memory\n --> probe.rs:4:35\n  |\n4 | ...= unsafe { *(&raw const ATOMIC_STATIC as *const u32) };\n  |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `READ_ATOMIC` failed here\n\nnote: erroneous constant encountered\n --> probe.rs:7:20\n  |\n7 |     println!(\"{}\", READ_ATOMIC);\n  |                    ^^^^^^^^^^^\n\nnote: erroneous constant encountered\n --> probe.rs:7:20\n  |\n7 |     println!(\"{}\", READ_ATOMIC);\n  |                    ^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "const_reading_mut_static_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0080]: constant accesses mutable global memory\n --> probe.rs:2:39\n  |\n2 | const READ_MUT_STATIC: u32 = unsafe { MUT_STATIC };\n  |                                       ^^^^^^^^^^ evaluation of `READ_MUT_STATIC` failed here\n\nnote: erroneous constant encountered\n --> probe.rs:5:20\n  |\n5 |     println!(\"{}\", READ_MUT_STATIC);\n  |                    ^^^^^^^^^^^^^^^\n\nnote: erroneous constant encountered\n --> probe.rs:5:20\n  |\n5 |     println!(\"{}\", READ_MUT_STATIC);\n  |                    ^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "const_transmute_imm_static_to_unsafecell_rejected": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0080]: constructing invalid value of type &UnsafeCell<u32>: at .<deref>, encountered `UnsafeCell` in read-only memory\n --> probe.rs:4:1\n  |\n4 | const BAD_CELL_TO_IMM_STATIC: &UnsafeCell<u32> = unsafe {\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ it is undefined behavior to use this value\n  |\n  = note: the rules on what exactly is undefined behavior aren't clear, so this check might be overzealous. Please open an issue on the rustc repository if you believe it should not be considered undefined behavior.\n  = note: the raw bytes of the constant (size: 8, align: 8) {\n              \u257e\u2500\u2500\u2500\u2500\u2500alloc1<imm>\u2500\u2500\u2500\u2500\u2500\u257c                         \u2502 \u257e\u2500\u2500\u2500\u2500\u2500\u2500\u257c\n          }\n\nnote: erroneous constant encountered\n --> probe.rs:9:13\n  |\n9 |     let _ = BAD_CELL_TO_IMM_STATIC;\n  |             ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      }
+    }
+  }
+}
