@@ -234,6 +234,24 @@ impl PathMapper {
     }
 }
 
+/// Dynamic-linker environment variable prefixes forbidden inside sandboxed
+/// child `extra_env` maps.
+const FORBIDDEN_LOADER_ENV_PREFIXES: &[&str] = &["LD_", "DYLD_"];
+
+/// Refuse any dynamic-linker environment variable (`LD_*`, `DYLD_*`) in a
+/// [`SandboxPolicy::extra_env`] map before spawning a child process.
+pub fn reject_forbidden_loader_env(extra_env: &BTreeMap<String, String>) -> Result<(), Failure> {
+    for key in extra_env.keys() {
+        if FORBIDDEN_LOADER_ENV_PREFIXES.iter().any(|prefix| key.starts_with(prefix)) {
+            return Err(Failure::operational(
+                "sandbox",
+                format!("refusing dynamic linker environment variable {key} in sandbox extra_env"),
+            ));
+        }
+    }
+    Ok(())
+}
+
 /// Optional host system library/loader paths (`ENOENT`-skipped in both tiers).
 #[cfg(target_os = "linux")]
 const OPTIONAL_SYS_PATHS: &[&str] = &[
@@ -245,6 +263,69 @@ const OPTIONAL_SYS_PATHS: &[&str] = &[
     "/etc/ld.so.conf",
     "/etc/ld.so.conf.d",
 ];
+
+/// Standard host library directory prefixes already mounted read-only under
+/// `OPTIONAL_SYS_PATHS` or `/nix/store`.
+#[cfg(any(target_os = "linux", test))]
+const STANDARD_LOADER_LIB_PREFIXES: &[&str] =
+    &["/lib", "/lib64", "/usr/lib", "/usr/lib64", "/nix/store"];
+
+/// Return `true` when `dir` is equal to or nested under one of the standard
+/// system library roots (`/lib`, `/lib64`, `/usr/lib`, `/usr/lib64`, or
+/// `/nix/store`).
+#[cfg(any(target_os = "linux", test))]
+fn is_under_standard_loader_prefix(dir: &Path) -> bool {
+    STANDARD_LOADER_LIB_PREFIXES.iter().any(|prefix| dir.starts_with(prefix))
+}
+
+/// Derive validated custom read-only loader library directories from an ELF
+/// binary's resolved `PT_INTERP` paths.
+///
+/// Standard system loaders (`/lib64/ld-linux-x86-64.so.2`,
+/// `/usr/lib/.../ld-linux-...`, `/nix/store/...`) are already covered by
+/// `OPTIONAL_SYS_PATHS` or `/nix/store` and return an empty list. Custom
+/// sysroot loaders (such as musl or self-contained glibc sysroots) place their
+/// sibling `libc.so.6`/`libm.so.6` alongside `PT_INTERP`; this validates each
+/// custom parent directory through [`validate_toolchain_mount_dir`] so broad
+/// host prefixes (`/`, `/usr`, `/tmp`, `/home`, `$HOME`, `cwd`, `stage_root`)
+/// are refused fail-closed while legitimate dedicated sysroot library
+/// directories are mounted strictly read-only.
+#[cfg(any(target_os = "linux", test))]
+pub fn resolve_pt_interp_lib_dirs(
+    pt_interp_paths: &[PathBuf],
+    stage_root: Option<&Path>,
+) -> Result<Vec<PathBuf>, Failure> {
+    let mut dirs = BTreeSet::new();
+    for interp in pt_interp_paths {
+        let Some(parent) = interp.parent() else {
+            continue;
+        };
+        if !parent.is_absolute() || is_under_standard_loader_prefix(parent) {
+            continue;
+        }
+        let canon_parent = fs::canonicalize(parent).map_err(|e| {
+            Failure::operational(
+                "sandbox",
+                format!("cannot canonicalize PT_INTERP parent directory {}: {e}", parent.display()),
+            )
+        })?;
+        if !fs::metadata(&canon_parent).is_ok_and(|m| m.is_dir()) {
+            return Err(Failure::operational(
+                "sandbox",
+                format!(
+                    "PT_INTERP parent path {} is not a directory",
+                    canon_parent.display()
+                ),
+            ));
+        }
+        if is_under_standard_loader_prefix(&canon_parent) {
+            continue;
+        }
+        validate_toolchain_mount_dir(&canon_parent, stage_root, "PT_INTERP loader library directory")?;
+        dirs.insert(canon_parent);
+    }
+    Ok(dirs.into_iter().collect())
+}
 
 /// Forbidden broad host roots that may never be mounted as a toolchain prefix
 /// or resolved toolchain library directory under `ExecSeal` (`/` is handled by
@@ -698,6 +779,9 @@ pub struct SandboxRuntime {
     pub toolchain_ro_mounts: Vec<MountSpec>,
     pub extra_toolchain_mounts: Vec<MountSpec>,
     pub pt_interp_paths: Vec<PathBuf>,
+    /// Validated custom read-only parent directories of `PT_INTERP` outside
+    /// standard system library roots and `/nix/store`.
+    pub pt_interp_lib_dirs: Vec<PathBuf>,
     pub needs_nix_store: bool,
     pub landlock_abi: i32,
 }
@@ -835,6 +919,7 @@ impl SandboxRuntime {
                 toolchain_ro_mounts: Vec::new(),
                 extra_toolchain_mounts: Vec::new(),
                 pt_interp_paths: Vec::new(),
+                pt_interp_lib_dirs: Vec::new(),
                 needs_nix_store: false,
                 landlock_abi: 0,
             });
@@ -880,6 +965,7 @@ impl SandboxRuntime {
         stage_root: &Path,
     ) -> Result<Self, Failure> {
         let pt_interp_paths = resolve_pt_interp_paths(&exec_lean).unwrap_or_default();
+        let pt_interp_lib_dirs = resolve_pt_interp_lib_dirs(&pt_interp_paths, Some(stage_root))?;
         let needs_nix_store = exec_lean.starts_with("/nix/store")
             || pt_interp_paths.iter().any(|p| p.starts_with("/nix/store"));
         let (toolchain_ro_mounts, extra_toolchain_mounts) =
@@ -895,6 +981,7 @@ impl SandboxRuntime {
                     toolchain_ro_mounts: toolchain_ro_mounts.clone(),
                     extra_toolchain_mounts: extra_toolchain_mounts.clone(),
                     pt_interp_paths: pt_interp_paths.clone(),
+                    pt_interp_lib_dirs: pt_interp_lib_dirs.clone(),
                     needs_nix_store,
                     landlock_abi: 0,
                 };
@@ -919,6 +1006,21 @@ impl SandboxRuntime {
             Ok((abi, interps)) => {
                 let nix = exec_lean.starts_with("/nix/store")
                     || interps.iter().any(|p| p.starts_with("/nix/store"));
+                let interp_lib_dirs =
+                    match resolve_pt_interp_lib_dirs(&interps, Some(stage_root)) {
+                        Ok(dirs) => dirs,
+                        Err(err) => {
+                            return Err(Failure::operational(
+                                "sandbox",
+                                format!(
+                                    "elaborator containment unavailable; pass \
+                                     --allow-unsandboxed-elaboration to opt out (tainted). \
+                                     Tier 1: {bwrap_err}; Tier 2: {}",
+                                    err.message
+                                ),
+                            ));
+                        }
+                    };
                 let candidate = Self {
                     backend: ActiveSandbox::LinuxLandlockSeccomp,
                     bwrap_path: None,
@@ -927,6 +1029,7 @@ impl SandboxRuntime {
                     toolchain_ro_mounts,
                     extra_toolchain_mounts,
                     pt_interp_paths: interps,
+                    pt_interp_lib_dirs: interp_lib_dirs,
                     needs_nix_store: nix,
                     landlock_abi: abi,
                 };
@@ -1628,6 +1731,7 @@ fn drain_bounded(mut reader: impl Read, limit: usize) -> Vec<u8> {
 }
 
 fn run_unsandboxed(policy: &SandboxPolicy) -> Result<Output, Failure> {
+    reject_forbidden_loader_env(&policy.extra_env)?;
     let cwd = policy.child_cwd.as_ref().map_or(policy.rw_tmp.host.as_path(), |m| m.host.as_path());
     let mut cmd = Command::new(&policy.exec_bin);
     cmd.args(&policy.args)
@@ -1678,7 +1782,8 @@ mod linux {
 
     use super::{
         MountSpec, OPTIONAL_SYS_PATHS, PathMapper, RLIMIT_FSIZE_BYTES, RLIMIT_NOFILE_LIMIT,
-        SandboxPolicy, SandboxRuntime, make_tree_writable, resolve_pt_interp_paths, set_mode,
+        SandboxPolicy, SandboxRuntime, make_tree_writable, reject_forbidden_loader_env,
+        resolve_pt_interp_lib_dirs, resolve_pt_interp_paths, set_mode,
         spawn_and_wait_with_timeout,
     };
     use crate::toolchain::Failure;
@@ -2328,6 +2433,9 @@ mod linux {
         if runtime.needs_nix_store && fs::metadata("/nix/store").is_ok() {
             landlock_add_path(ruleset.0, Path::new("/nix/store"), LL_RO_DIR, true)?;
         }
+        for interp_dir in &runtime.pt_interp_lib_dirs {
+            landlock_add_path(ruleset.0, interp_dir, LL_RO_DIR, false)?;
+        }
 
         // 4. Read-only mounts (strictly separating file vs dir masks).
         for MountSpec { host, .. } in policy
@@ -2501,6 +2609,7 @@ mod linux {
         runtime: &SandboxRuntime,
         policy: &SandboxPolicy,
     ) -> Result<Output, Failure> {
+        reject_forbidden_loader_env(&policy.extra_env)?;
         let bwrap = runtime.bwrap_path.as_ref().ok_or_else(|| {
             Failure::operational("sandbox", "missing bwrap binary path for LinuxBwrap")
         })?;
@@ -2541,6 +2650,20 @@ mod linux {
         }
         if runtime.needs_nix_store {
             cmd.args(["--ro-bind-try", "/nix/store", "/nix/store"]);
+        }
+        for interp_dir in &runtime.pt_interp_lib_dirs {
+            cmd.arg("--ro-bind").arg(interp_dir).arg(interp_dir);
+        }
+        for interp in &runtime.pt_interp_paths {
+            if let Some(parent) = interp.parent()
+                && parent.is_absolute()
+                && !super::is_under_standard_loader_prefix(parent)
+                && let Ok(canon_parent) = fs::canonicalize(parent)
+                && canon_parent != parent
+                && runtime.pt_interp_lib_dirs.contains(&canon_parent)
+            {
+                cmd.arg("--ro-bind").arg(&canon_parent).arg(parent);
+            }
         }
         for MountSpec { host, child } in policy
             .ro_mounts
@@ -2596,6 +2719,7 @@ mod linux {
         runtime: &SandboxRuntime,
         policy: &SandboxPolicy,
     ) -> Result<Output, Failure> {
+        reject_forbidden_loader_env(&policy.extra_env)?;
         let ruleset = build_landlock_ruleset(runtime, policy)?;
         let ruleset_fd = ruleset.0;
         let mut compiled = build_seccomp_bpf();
@@ -2703,6 +2827,7 @@ mod linux {
         })?;
         let (abi, interps) =
             check_tier2_preconditions(&exec_bin).map_err(|e| Failure::operational("sandbox", e))?;
+        let pt_interp_lib_dirs = resolve_pt_interp_lib_dirs(&interps, None)?;
         let needs_nix_store = exec_bin.starts_with("/nix/store")
             || interps.iter().any(|p| p.starts_with("/nix/store"));
         let (toolchain_ro_mounts, extra_toolchain_mounts) =
@@ -2715,6 +2840,7 @@ mod linux {
             toolchain_ro_mounts,
             extra_toolchain_mounts,
             pt_interp_paths: interps,
+            pt_interp_lib_dirs,
             needs_nix_store,
             landlock_abi: abi,
         })
@@ -2735,6 +2861,7 @@ mod linux {
             Failure::operational("sandbox", format!("canonicalize toolchain_dir: {e}"))
         })?;
         let interps = resolve_pt_interp_paths(&exec_bin).unwrap_or_default();
+        let pt_interp_lib_dirs = resolve_pt_interp_lib_dirs(&interps, None)?;
         let needs_nix_store = exec_bin.starts_with("/nix/store")
             || interps.iter().any(|p| p.starts_with("/nix/store"));
         let (toolchain_ro_mounts, extra_toolchain_mounts) =
@@ -2747,6 +2874,7 @@ mod linux {
             toolchain_ro_mounts,
             extra_toolchain_mounts,
             pt_interp_paths: interps,
+            pt_interp_lib_dirs,
             needs_nix_store,
             landlock_abi: 0,
         })
@@ -2846,6 +2974,7 @@ mod tests {
                 }],
                 extra_toolchain_mounts: Vec::new(),
                 pt_interp_paths: Vec::new(),
+                pt_interp_lib_dirs: Vec::new(),
                 needs_nix_store: false,
                 landlock_abi: 3,
             };
@@ -3120,6 +3249,7 @@ mod tests {
                 }],
                 extra_toolchain_mounts: Vec::new(),
                 pt_interp_paths: Vec::new(),
+                pt_interp_lib_dirs: Vec::new(),
                 needs_nix_store: nix,
                 landlock_abi: 0,
             };
@@ -3127,6 +3257,68 @@ mod tests {
             let bind = rt.extra_exec_bind().expect("expected single-file exec bind");
             assert_eq!(bind.host, PathBuf::from(exec));
             assert_eq!(bind.child, rt.child_exec_path());
+        }
+    }
+
+    #[test]
+    fn reject_forbidden_loader_env_blocks_ld_and_dyld_overrides() {
+        let clean = BTreeMap::from([
+            ("LEAN_PATH".to_string(), "/work/lib".to_string()),
+            ("LANG".to_string(), "C".to_string()),
+        ]);
+        assert!(reject_forbidden_loader_env(&clean).is_ok());
+
+        for key in [
+            "LD_LIBRARY_PATH",
+            "LD_PRELOAD",
+            "LD_AUDIT",
+            "DYLD_LIBRARY_PATH",
+            "DYLD_INSERT_LIBRARIES",
+        ] {
+            let dirty = BTreeMap::from([(key.to_string(), "/evil".to_string())]);
+            let err = reject_forbidden_loader_env(&dirty).unwrap_err();
+            assert!(err.message.contains(key), "{key}: {err:?}");
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn resolve_pt_interp_lib_dirs_skips_standard_allows_custom_sysroot_and_rejects_broad_roots() {
+        // 1. Standard system paths and `/nix/store` need no extra custom mount.
+        let standard = vec![
+            PathBuf::from("/lib64/ld-linux-x86-64.so.2"),
+            PathBuf::from("/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2"),
+            PathBuf::from("/nix/store/abc-glibc-2.39/lib/ld-linux-x86-64.so.2"),
+        ];
+        assert!(resolve_pt_interp_lib_dirs(&standard, None).unwrap().is_empty());
+
+        // 2. A dedicated custom sysroot loader directory outside standard roots
+        //    is validated and returned canonically.
+        let dir = tempfile::tempdir().unwrap();
+        let custom_lib = dir.path().join("custom-sysroot/lib64");
+        fs::create_dir_all(&custom_lib).unwrap();
+        let custom_loader = custom_lib.join("ld-linux-x86-64.so.2");
+        fs::write(&custom_loader, b"loader").unwrap();
+        let stage = dir.path().join("stage");
+        fs::create_dir_all(&stage).unwrap();
+
+        let resolved =
+            resolve_pt_interp_lib_dirs(&[custom_loader], Some(&stage)).unwrap();
+        assert_eq!(resolved, vec![fs::canonicalize(&custom_lib).unwrap()]);
+
+        // 3. Broad host roots and stage-overlapping directories must fail closed.
+        let stage_loader = stage.join("ld-linux-x86-64.so.2");
+        fs::write(&stage_loader, b"loader").unwrap();
+        for bad in [
+            PathBuf::from("/tmp/ld-linux-x86-64.so.2"),
+            PathBuf::from("/usr/ld-linux-x86-64.so.2"),
+            stage_loader,
+        ] {
+            assert!(
+                resolve_pt_interp_lib_dirs(std::slice::from_ref(&bad), Some(&stage)).is_err(),
+                "expected {} to fail closed",
+                bad.display()
+            );
         }
     }
 }

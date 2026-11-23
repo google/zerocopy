@@ -1796,6 +1796,210 @@ fn linux_residency_accepts_symlinked_sysroot_and_rejects_mismatched_driver_inode
     assert!(!bad_output_dir.exists());
 }
 
+#[cfg(target_os = "linux")]
+#[test]
+fn logical_symlinked_sysroot_preserves_path_and_rejects_mismatched_libllvm_and_loader_injection() {
+    use std::os::unix::fs::symlink;
+
+    let real_sysroot = sysroot();
+    let fixture = Capture::new(b"pub fn selected(x: u64) -> u64 { x }\n");
+
+    // 1. Virtual CAS-style symlink forest accessed through a top-level logical
+    //    directory symlink, with a decoy `./lib/rustlib` in `AT_FDCWD`.
+    //    Capture must succeed, preserve the logical sysroot path rather than
+    //    canonicalizing it away, and never consult `./lib/rustlib`.
+    let tree_sysroot = fixture.directory.path().join("cas-tree-sysroot");
+    std::fs::create_dir_all(tree_sysroot.join("bin")).unwrap();
+    std::fs::create_dir_all(tree_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib"))
+        .unwrap();
+    symlink(
+        real_sysroot.join("bin/rustc"),
+        tree_sysroot.join("bin/rustc"),
+    )
+    .unwrap();
+    for entry in std::fs::read_dir(real_sysroot.join("lib")).unwrap() {
+        let entry = entry.unwrap();
+        if entry.file_name() == "rustlib" {
+            continue;
+        }
+        symlink(
+            entry.path(),
+            tree_sysroot.join("lib").join(entry.file_name()),
+        )
+        .unwrap();
+    }
+    for entry in
+        std::fs::read_dir(real_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib")).unwrap()
+    {
+        let entry = entry.unwrap();
+        symlink(
+            entry.path(),
+            tree_sysroot
+                .join("lib/rustlib/x86_64-unknown-linux-gnu/lib")
+                .join(entry.file_name()),
+        )
+        .unwrap();
+    }
+    let logical_sysroot = fixture.directory.path().join("logical-sysroot-link");
+    symlink(&tree_sysroot, &logical_sysroot).unwrap();
+
+    // Plant a decoy `./lib/rustlib` inside `AT_FDCWD` to confirm explicit
+    // `--sysroot` overrides `rustc`'s default relative lookup unconditionally.
+    std::fs::create_dir_all(fixture.directory.path().join("lib/rustlib")).unwrap();
+    std::fs::write(
+        fixture.directory.path().join("lib/rustlib/decoy.rlib"),
+        b"decoy",
+    )
+    .unwrap();
+
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+        .current_dir(fixture.directory.path())
+        .arg("capture")
+        .arg("--crate-root")
+        .arg(&fixture.source)
+        .arg("--crate-name=session")
+        .arg("--target=x86_64-unknown-linux-gnu")
+        .arg("--out-dir")
+        .arg(&fixture.output)
+        .arg("--sysroot")
+        .arg(&logical_sysroot)
+        .arg("--select=selected")
+        .arg("--source-file")
+        .arg(&fixture.source)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "logical symlinked sysroot capture failed:\n{}\n{}",
+        stdout(&output),
+        stderr(&output)
+    );
+    let manifest = fixture.manifest();
+    assert_eq!(
+        manifest["compiler"]["sysroot"],
+        logical_sysroot.to_str().unwrap(),
+        "expected logical sysroot path to be preserved without canonicalization: {manifest}"
+    );
+
+    // 2. Replacing `libLLVM*` in the sysroot with a distinct file inode while
+    //    keeping `librustc_driver-*.so` matching simulates a spliced mismatched
+    //    `libLLVM.so` via `LD_LIBRARY_PATH` and must fail closed as `tool_failed`.
+    //    Replace `libLLVM*` in both `lib/` and `lib/rustlib/<host>/lib/` because
+    //    multi-component sysroots (such as those including `llvm-tools`) place a
+    //    copy in both directories that deduplicating stores can hardlink to the
+    //    same `(st_dev, st_ino)`.
+    let bad_llvm_sysroot = fixture.directory.path().join("bad-llvm-sysroot");
+    std::fs::create_dir_all(bad_llvm_sysroot.join("bin")).unwrap();
+    std::fs::create_dir_all(bad_llvm_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib"))
+        .unwrap();
+    symlink(
+        real_sysroot.join("bin/rustc"),
+        bad_llvm_sysroot.join("bin/rustc"),
+    )
+    .unwrap();
+    let mut replaced_llvm = false;
+    for entry in std::fs::read_dir(real_sysroot.join("lib")).unwrap() {
+        let entry = entry.unwrap();
+        let name = entry.file_name();
+        if name == "rustlib" {
+            continue;
+        }
+        if let Some(name_str) = name.to_str()
+            && name_str.starts_with("libLLVM")
+        {
+            std::fs::write(bad_llvm_sysroot.join("lib").join(&name), b"mismatched-llvm").unwrap();
+            replaced_llvm = true;
+            continue;
+        }
+        symlink(entry.path(), bad_llvm_sysroot.join("lib").join(name)).unwrap();
+    }
+    for entry in
+        std::fs::read_dir(real_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib")).unwrap()
+    {
+        let entry = entry.unwrap();
+        let name = entry.file_name();
+        if let Some(name_str) = name.to_str()
+            && name_str.starts_with("libLLVM")
+        {
+            std::fs::write(
+                bad_llvm_sysroot
+                    .join("lib/rustlib/x86_64-unknown-linux-gnu/lib")
+                    .join(&name),
+                b"mismatched-llvm",
+            )
+            .unwrap();
+            replaced_llvm = true;
+            continue;
+        }
+        symlink(
+            entry.path(),
+            bad_llvm_sysroot
+                .join("lib/rustlib/x86_64-unknown-linux-gnu/lib")
+                .join(name),
+        )
+        .unwrap();
+    }
+    if replaced_llvm {
+        let bad_llvm_out = fixture.directory.path().join("bad-llvm-out");
+        let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+            .current_dir(fixture.directory.path())
+            .arg("capture")
+            .arg("--crate-root")
+            .arg(&fixture.source)
+            .arg("--crate-name=session")
+            .arg("--target=x86_64-unknown-linux-gnu")
+            .arg("--out-dir")
+            .arg(&bad_llvm_out)
+            .arg("--sysroot")
+            .arg(&bad_llvm_sysroot)
+            .arg("--select=selected")
+            .arg("--source-file")
+            .arg(&fixture.source)
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(1), "{output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "tool_failed", "{failure}");
+        assert!(
+            failure.to_string().contains("libLLVM")
+                && failure.to_string().contains("does not match any library in sysroot"),
+            "expected closed-world libLLVM residency rejection, got {failure}"
+        );
+        assert!(!bad_llvm_out.exists());
+    }
+
+    // 3. Ambient dynamic-linker injection variables must fail closed before
+    //    entering the compiler session.
+    let preload_out = fixture.directory.path().join("preload-out");
+    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+        .current_dir(fixture.directory.path())
+        .env("LD_DYNAMIC_WEAK", "1")
+        .arg("capture")
+        .arg("--crate-root")
+        .arg(&fixture.source)
+        .arg("--crate-name=session")
+        .arg("--target=x86_64-unknown-linux-gnu")
+        .arg("--out-dir")
+        .arg(&preload_out)
+        .arg("--sysroot")
+        .arg(&logical_sysroot)
+        .arg("--select=selected")
+        .arg("--source-file")
+        .arg(&fixture.source)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    let failure = status(&output);
+    assert_eq!(failure["status"], "tool_failed", "{failure}");
+    assert!(
+        failure
+            .to_string()
+            .contains("forbidden dynamic linker environment variable is set: LD_DYNAMIC_WEAK"),
+        "{failure}"
+    );
+    assert!(!preload_out.exists());
+}
+
 #[test]
 fn sysroot_only_gate_admits_no_std_core_and_refuses_proc_macro_and_extern_crates() {
     let no_std_fixture = Capture::new(b"#![no_std]\npub fn selected(x: u64) -> u64 { x }\n");

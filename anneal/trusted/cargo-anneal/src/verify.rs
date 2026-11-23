@@ -1227,6 +1227,37 @@ fn select_tools(args: &VerifyArgs) -> Result<SelectedTools> {
     }
 }
 
+/// Normalize `path` lexically to an absolute path without resolving symlinks,
+/// preserving virtual symlink-forest topologies (such as `<sysroot>/bin/rustc`
+/// beside `<sysroot>/lib/rustlib`).
+fn normalize_lexical_absolute(path: &Path) -> std::io::Result<PathBuf> {
+    use std::path::Component;
+
+    let abs = if path.is_absolute() {
+        path.to_path_buf()
+    } else {
+        std::env::current_dir()?.join(path)
+    };
+    let mut normalized = PathBuf::new();
+    for component in abs.components() {
+        match component {
+            Component::Prefix(prefix) => normalized.push(prefix.as_os_str()),
+            Component::RootDir => normalized.push(component.as_os_str()),
+            Component::CurDir => {}
+            Component::ParentDir => {
+                if !normalized.pop() {
+                    return Err(std::io::Error::new(
+                        std::io::ErrorKind::InvalidInput,
+                        format!("cannot normalize parent component past root: {}", path.display()),
+                    ));
+                }
+            }
+            Component::Normal(part) => normalized.push(part),
+        }
+    }
+    Ok(normalized)
+}
+
 fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     let start = Instant::now();
     let mut originals = Vec::new();
@@ -1344,7 +1375,7 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         .arg(&capture_dir)
         .current_dir(&rust_stage);
     if let Some(sysroot) = &tools.sysroot {
-        let sysroot = fs::canonicalize(sysroot).map_err(|e| io("sysroot", e))?;
+        let sysroot = normalize_lexical_absolute(sysroot).map_err(|e| io("sysroot", e))?;
         if !fs::metadata(&sysroot).map_err(|e| io("sysroot", e))?.is_dir() {
             return Err(error(
                 "tool_failed",
@@ -3228,5 +3259,20 @@ mod tests {
             assert_eq!(retain_err.phase, "retention");
             assert!(!retain_dest.exists(), "failed retention must never publish stale result.json");
         }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn normalize_lexical_absolute_preserves_symlinked_sysroot_topology() {
+        let dir = tempfile::tempdir().unwrap();
+        let target = dir.path().join("cas-tree");
+        fs::create_dir_all(&target).unwrap();
+        let link = dir.path().join("logical-sysroot");
+        std::os::unix::fs::symlink(&target, &link).unwrap();
+
+        let messy = link.join("subdir/..");
+        let normalized = normalize_lexical_absolute(&messy).unwrap();
+        assert_eq!(normalized, link);
+        assert_ne!(normalized, fs::canonicalize(&link).unwrap());
     }
 }

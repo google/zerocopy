@@ -324,6 +324,11 @@ struct Callbacks<'a> {
 impl rustc_driver::Callbacks for Callbacks<'_> {
     fn config(&mut self, config: &mut interface::Config) {
         crate::driver::configure(config);
+        // Pin both explicit and default sysroot unconditionally to the
+        // pre-verified logical sysroot so `rustc_session::filesearch` can
+        // never fall back to `AT_FDCWD` `./lib/rustlib`.
+        config.opts.sysroot.explicit = Some(self.verified_sysroot.to_path_buf());
+        config.opts.sysroot.default = self.verified_sysroot.to_path_buf();
         if let Err(reason) = validate_compiler_options(&config.opts) {
             if let Ok(mut reads) = self.reads.lock() {
                 reads.tool_errors.push(reason.clone());
@@ -436,6 +441,9 @@ fn validate_compiler_args(compiler_args: &[String]) -> Result<(), Failure> {
 }
 
 fn validate_compiler_options(opts: &Options) -> Result<(), String> {
+    if opts.sysroot.explicit.is_none() {
+        return Err("explicit --sysroot is required during capture".into());
+    }
     if opts.externs.iter().next().is_some() {
         return Err("external crate flags (--extern) are forbidden during capture".into());
     }
@@ -624,14 +632,10 @@ fn collect(
             "only 64-bit little-endian targets are modeled",
         ));
     }
-    let sysroot = tcx
-        .sess
-        .opts
-        .sysroot
-        .path()
-        .canonicalize()
-        .map_err(Failure::io)?;
-    if sysroot != verified_sysroot {
+    let sysroot = identity::normalize_logical_sysroot(tcx.sess.opts.sysroot.path())?;
+    let session_sysroot_id = identity::dir_dev_ino(&sysroot).map_err(Failure::io)?;
+    let verified_sysroot_id = identity::dir_dev_ino(verified_sysroot).map_err(Failure::io)?;
+    if sysroot != verified_sysroot || session_sysroot_id != verified_sysroot_id {
         return Err(Failure::tool(
             "compiler session sysroot diverged from verified sysroot",
         ));
@@ -928,9 +932,7 @@ pub fn run(args: &Args, verified_sysroot: &Path) -> Result<ir::Manifest, Failure
         "-Zmir-preserve-ub".into(),
         format!("--out-dir={}", compiler_path(&args.out_dir)?),
     ];
-    if let Some(sysroot) = &args.sysroot {
-        compiler_args.push(format!("--sysroot={}", compiler_path(sysroot)?));
-    }
+    compiler_args.push(format!("--sysroot={}", compiler_path(verified_sysroot)?));
     // The pinned driver expands argument files before parsing compiler options:
     // "Replaces any `@file` arguments with the contents of `file`, with each
     // line of `file` as a separate argument." Keep cfg text attached to its

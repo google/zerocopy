@@ -153,14 +153,16 @@ fn run(mut args: Args) -> Result<serde_json::Value, Failure> {
     args.source_file.dedup();
     args.cfg.sort();
     args.cfg.dedup();
-    // Resolve explicit or packaged sysroot and verify compiler identity and
-    // Linux driver residency before creating publication directories or
-    // entering rustc's fatal-error handler.
+    // Resolve explicit or packaged sysroot lexically (preserving virtual
+    // symlink-forest layouts such as `<sysroot>/bin/rustc` beside
+    // `<sysroot>/lib/rustlib`) and verify compiler identity and Linux driver
+    // residency via open-FD `(st_dev, st_ino)` + SHA-256 before creating
+    // publication directories or entering rustc's fatal-error handler.
     let raw_sysroot = match args.sysroot.take() {
         Some(sysroot) => sysroot,
         None => driver::resolve_packaged_sysroot().map_err(Failure::tool)?,
     };
-    let sysroot = raw_sysroot.canonicalize().map_err(Failure::io)?;
+    let sysroot = identity::normalize_logical_sysroot(&raw_sysroot)?;
     args.sysroot = Some(sysroot.clone());
     identity::verify_compiler(&sysroot, &args.target)?;
     // Keep compiler side effects outside the public artifact pair. The
