@@ -1,0 +1,62 @@
+{
+  "topics": [
+    "anneal",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/mir",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc compiler and core library (upstream main source)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "277240238554297f93fa9ee3c7643dfa03ccbbb4"
+      }
+    },
+    {
+      "name": "rustc and Miri nightly toolchain (executed compiler, MIR dumps, and rustlib source)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+      }
+    },
+    {
+      "name": "google/zerocopy (upstream main source)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "dc2008d87d8a4efbb391b2ef01c7fa31538d9d75"
+      }
+    },
+    {
+      "name": "google/zerocopy crate (executed Unalign<T> probes)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+        "version": "0.8.64"
+      }
+    },
+    {
+      "name": "Anneal Lean MIR trusted computing base",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}
