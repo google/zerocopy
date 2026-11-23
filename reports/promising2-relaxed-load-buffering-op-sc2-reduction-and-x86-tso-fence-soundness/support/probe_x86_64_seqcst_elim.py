@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Reproducible probe of LLVM GlobalOpt / InstCombine / SROA / DSE boundaries
-for x86_64 SeqCst atomic store-buffer draining under rustc -Copt-level=3 [-Clto=fat].
+for x86_64 SeqCst and Release/AcqRel atomic store-buffer draining under
+rustc -Copt-level=3 -Clto=fat.
 """
 
 import pathlib
@@ -18,6 +19,7 @@ use core::sync::atomic::{compiler_fence, fence, AtomicUsize, Ordering};
 
 pub static X: AtomicUsize = AtomicUsize::new(0);
 pub static Y: AtomicUsize = AtomicUsize::new(0);
+pub static Z: AtomicUsize = AtomicUsize::new(0);
 pub static PUB_ADDR: AtomicUsize = AtomicUsize::new(0);
 pub static BIT_OUT: AtomicUsize = AtomicUsize::new(0);
 
@@ -32,8 +34,10 @@ static PRIV_DSE_TWO_STORES: AtomicUsize = AtomicUsize::new(0);
 pub extern "C" fn keep_io_live(vx: usize, vy: usize) -> usize {
     X.store(vx, Ordering::Relaxed);
     Y.store(vy, Ordering::Relaxed);
+    Z.store(vx, Ordering::Relaxed);
     X.load(Ordering::Relaxed)
         .wrapping_add(Y.load(Ordering::Relaxed))
+        .wrapping_add(Z.load(Ordering::Relaxed))
         .wrapping_add(PUB_ADDR.load(Ordering::Relaxed))
         .wrapping_add(BIT_OUT.load(Ordering::Relaxed))
         .wrapping_add(PRIV_SAME_INIT.load(Ordering::SeqCst))
@@ -78,10 +82,62 @@ pub extern "C" fn elim_local_expose_roundtrip() -> usize {
 }
 
 #[no_mangle]
+pub extern "C" fn elim_local_branch_ne0() -> usize {
+    X.store(1, Ordering::Relaxed);
+    let local = AtomicUsize::new(0);
+    let addr = (&local as *const AtomicUsize).expose_provenance();
+    if addr != 0 {
+        local.store(1, Ordering::SeqCst);
+    }
+    compiler_fence(Ordering::SeqCst);
+    Y.load(Ordering::Relaxed)
+}
+
+#[no_mangle]
+pub extern "C" fn elim_idempotent_add0_rlx() -> usize {
+    X.store(1, Ordering::Relaxed);
+    let _ = Z.fetch_add(0, Ordering::Relaxed);
+    compiler_fence(Ordering::SeqCst);
+    Y.load(Ordering::Relaxed)
+}
+
+#[no_mangle]
+pub extern "C" fn elim_idempotent_add0_acq() -> usize {
+    X.store(1, Ordering::Relaxed);
+    let _ = Z.fetch_add(0, Ordering::Acquire);
+    compiler_fence(Ordering::SeqCst);
+    Y.load(Ordering::Relaxed)
+}
+
+#[no_mangle]
+pub extern "C" fn elim_idempotent_add0_rel() -> usize {
+    X.store(1, Ordering::Relaxed);
+    let _ = Z.fetch_add(0, Ordering::Release);
+    compiler_fence(Ordering::SeqCst);
+    Y.load(Ordering::Relaxed)
+}
+
+#[no_mangle]
+pub extern "C" fn elim_idempotent_add0_acqrel() -> usize {
+    X.store(1, Ordering::Relaxed);
+    let _ = Z.fetch_add(0, Ordering::AcqRel);
+    compiler_fence(Ordering::SeqCst);
+    Y.load(Ordering::Relaxed)
+}
+
+#[no_mangle]
 pub extern "C" fn keep_hw_fence_sc() -> usize {
     X.store(1, Ordering::Release);
     fence(Ordering::SeqCst);
     Y.load(Ordering::Acquire)
+}
+
+#[no_mangle]
+pub extern "C" fn keep_idempotent_add0_sc() -> usize {
+    X.store(1, Ordering::Relaxed);
+    let _ = Z.fetch_add(0, Ordering::SeqCst);
+    compiler_fence(Ordering::SeqCst);
+    Y.load(Ordering::Relaxed)
 }
 
 #[no_mangle]
@@ -187,9 +243,15 @@ def main() -> int:
         "elim_priv_same_init",
         "elim_box_leaked_unescaped",
         "elim_local_expose_roundtrip",
+        "elim_local_branch_ne0",
+        "elim_idempotent_add0_rlx",
+        "elim_idempotent_add0_acq",
+        "elim_idempotent_add0_rel",
+        "elim_idempotent_add0_acqrel",
     ]
     preserved = [
         "keep_hw_fence_sc",
+        "keep_idempotent_add0_sc",
         "keep_published_exposed_addr",
         "keep_branched_exposed_addr",
         "keep_priv_diff_init_with_load",
@@ -209,7 +271,7 @@ def main() -> int:
     dse_body = extract_fn_asm(asm_text, "keep_dse_two_seqcst_stores")
     assert len(re.findall(r"\bxchgq\b", dse_body)) == 2, f"expected 2 xchgq in DSE check, got:\n{dse_body}"
 
-    print("PASS: x86_64 -Copt-level=3 -Clto=fat SeqCst elimination boundary verified.")
+    print(f"PASS: x86_64 -Copt-level=3 -Clto=fat SeqCst/RMW elimination boundary verified ({len(eliminated)} eliminated, {len(preserved)} preserved).")
     for line in rustc.strip().splitlines()[:2]:
         print(" ", line)
     return 0
