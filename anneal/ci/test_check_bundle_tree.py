@@ -30,6 +30,7 @@ def populate_valid_bundle(root: Path) -> None:
         "lean/bin",
         "lean/lib",
         "bin",
+        "share/anneal/prebuilt",
         "share/anneal/trusted/audit",
     ):
         (root / rel_dir).mkdir(parents=True, exist_ok=True)

@@ -76,6 +76,10 @@ impl Bundle {
     fn lean(&self) -> PathBuf {
         self.root.join("lean/bin/lean")
     }
+
+    pub(crate) fn prebuilt_dir(&self) -> PathBuf {
+        self.root.join("share/anneal/prebuilt")
+    }
 }
 
 /// Installs or resolves the Anneal toolchain archive in the user-global cache
@@ -1331,6 +1335,10 @@ mod tests {
         );
         assert_eq!(bundle.sysroot(), Path::new("/opt/anneal-bundle/rust"));
         assert_eq!(bundle.lean(), Path::new("/opt/anneal-bundle/lean/bin/lean"));
+        assert_eq!(
+            bundle.prebuilt_dir(),
+            Path::new("/opt/anneal-bundle/share/anneal/prebuilt")
+        );
     }
 
     #[test]

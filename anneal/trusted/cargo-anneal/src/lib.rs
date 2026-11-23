@@ -26,6 +26,7 @@
 
 #[doc(hidden)]
 pub mod bundle;
+mod olean_cache;
 #[doc(hidden)]
 pub mod sandbox;
 mod stage;

@@ -29,6 +29,8 @@ FULL_BUNDLE_FILES = (
     "lean/bin/lean",
     "bin/anneal-rustc-capture",
     "share/anneal/correspondence-provenance.json",
+    "share/anneal/prebuilt/manifest.json",
+    "share/anneal/prebuilt/TrustedBoundary.olean",
     "share/anneal/trusted/audit/TrustedBoundary.lean",
 )
 FULL_BUNDLE_DIRS = ("rust", "rust/lib", "lean", "bin", "share/anneal")

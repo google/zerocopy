@@ -120,6 +120,21 @@
 
           rust = rustBuildEnvironment system;
           inherit (rust) rustToolchain rustRuntimeLibraryPath rustCompilerForBuild;
+          leanToolchainForBuild = self.packages.${system}.lean-toolchain;
+          leanRuntimeLibraryPath = pkgs.lib.makeLibraryPath [
+            pkgs.stdenv.cc.cc.lib
+            pkgs.stdenv.cc.libc
+            pkgs.zlib
+          ];
+          leanCompilerForBuild = if pkgs.stdenv.isLinux then
+            pkgs.writeShellScript "anneal-build-lean" ''
+              export LEAN_SYSROOT="${leanToolchainForBuild}"
+              export LD_LIBRARY_PATH="${leanToolchainForBuild}/lib/lean:${leanRuntimeLibraryPath}"
+              exec ${pkgs.stdenv.cc.bintools.dynamicLinker} \
+                --library-path "$LD_LIBRARY_PATH" \
+                ${leanToolchainForBuild}/bin/lean "$@"
+            ''
+          else "${leanToolchainForBuild}/bin/lean";
         in
         {
           # Download and unpack the multi-component Rust toolchain as a
@@ -307,6 +322,7 @@
               gnused
               gnutar
               jq
+              python3
               zstd
             ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
               patchelf
@@ -314,12 +330,15 @@
 
             rustToolchain = self.packages.${system}.rust-toolchain;
             leanToolchain = self.packages.${system}.lean-toolchain;
+            leanExec = leanCompilerForBuild;
             rustcCapture = self.packages.${system}.rustc-capture;
             leanFoundation = ./trusted/lean;
             leanTheory = ./theory;
             targetInspector = ./trusted/audit/TrustedBoundary.lean;
             targetLibraryLock = ./trusted/audit/library-lock.json;
             bundledResources = ./trusted/cargo-anneal/src/bundled_resources.rs;
+            bundleManifestSource = ./trusted/cargo-anneal/src/bundle.rs;
+            prebuildOleansScript = ./ci/prebuild_bundled_oleans.py;
 
             buildPhase = ''
               set -euo pipefail
@@ -353,6 +372,28 @@
 
               chmod -R u+w "$TMPDIR/dist_staging"
 
+              # Prebuild deterministic, content-addressed `.olean` artifacts for
+              # `TrustedBoundary.lean`, `Trusted.*`, and bundled `Anneal.*`
+              # theory modules so cold `cargo-anneal verify` reuses them across
+              # invocations without lowering verification replay coverage.
+              mkdir -p "$TMPDIR/prebuild_src/trusted/cargo-anneal/src"
+              cp "$bundleManifestSource" "$TMPDIR/prebuild_src/trusted/cargo-anneal/src/bundle.rs"
+              cp -r "$TMPDIR/dist_staging/share/anneal/trusted/audit" "$TMPDIR/prebuild_src/trusted/audit"
+              cp -r "$TMPDIR/dist_staging/share/anneal/trusted/lean" "$TMPDIR/prebuild_src/trusted/lean"
+              cp -r "$TMPDIR/dist_staging/share/anneal/theory" "$TMPDIR/prebuild_src/theory"
+              prebuild_jobs="''${NIX_BUILD_CORES:-4}"
+              if [ "$prebuild_jobs" -le 0 ] 2>/dev/null || [ "$prebuild_jobs" -gt 4 ] 2>/dev/null; then
+                prebuild_jobs=4
+              fi
+              python3 -B "$prebuildOleansScript" \
+                --anneal-root "$TMPDIR/prebuild_src" \
+                --lean-bin "$leanToolchain/bin/lean" \
+                --lean-exec "$leanExec" \
+                --lean-prefix "$leanToolchain" \
+                --output-dir "$TMPDIR/dist_staging/share/anneal/prebuilt" \
+                --jobs "$prebuild_jobs"
+              chmod -R u+w "$TMPDIR/dist_staging/share/anneal/prebuilt"
+
               ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
                 # Carry the compiler's non-libc runtime dependencies beside
                 # its libraries. Dereference the Nix symlinks so relocation
@@ -382,6 +423,10 @@
                 "$rustToolchain/bin/cargo" \
                 "$rustToolchain/bin/rustc" \
                 "$TMPDIR/dist_staging/share/anneal/correspondence-provenance.json" \
+                "$TMPDIR/dist_staging/share/anneal/prebuilt/manifest.json" \
+                "$TMPDIR/dist_staging/share/anneal/prebuilt/TrustedBoundary.olean" \
+                "$TMPDIR/dist_staging/share/anneal/prebuilt/lib/Trusted/MirAst.olean" \
+                "$TMPDIR/dist_staging/share/anneal/prebuilt/lib/Anneal/MirWp.olean" \
                 "$TMPDIR/dist_staging/share/anneal/trusted/audit/TrustedBoundary.lean" \
                 "$TMPDIR/dist_staging/share/anneal/trusted/audit/library-lock.json" \
                 "$TMPDIR/dist_staging/share/anneal/trusted/lean/foundation-lock.json" \
@@ -456,6 +501,10 @@
                 rust/bin/cargo
                 rust/bin/rustc
                 share/anneal/correspondence-provenance.json
+                share/anneal/prebuilt/manifest.json
+                share/anneal/prebuilt/TrustedBoundary.olean
+                share/anneal/prebuilt/lib/Trusted/MirAst.olean
+                share/anneal/prebuilt/lib/Anneal/MirWp.olean
                 share/anneal/trusted/audit/TrustedBoundary.lean
                 share/anneal/trusted/audit/library-lock.json
                 share/anneal/trusted/lean/foundation-lock.json
