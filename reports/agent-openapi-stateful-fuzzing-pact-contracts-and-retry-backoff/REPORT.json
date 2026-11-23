@@ -1,0 +1,139 @@
+{
+  "topics": [
+    "agents/api-integration",
+    "agents/benchmark-methodology",
+    "agents/tool-use",
+    "security/rest-api-checkers",
+    "systems/pagination",
+    "systems/rate-limiting",
+    "systems/retry-backoff",
+    "tooling/json-schema",
+    "tooling/openapi",
+    "verification/contract-testing",
+    "verification/stateful-fuzzing"
+  ],
+  "subjects": [
+    {
+      "name": "OpenAPI Specification v3.0.3, v3.0.4, v3.1.0, and v3.1.1 (OAI/OpenAPI-Specification)",
+      "identity": {
+        "author_date": "2026-10-18T17:34:56Z",
+        "committer_date": "2026-10-18T17:34:56Z",
+        "repository": "OAI/OpenAPI-Specification",
+        "revision": "4f86429f134f7e48b6351563549b4502fc69de52",
+        "versions": "3.0.3 (2020-02-20), 3.0.4 (2024-10-24), 3.1.0 (2021-02-15), 3.1.1 (2024-10-24)"
+      }
+    },
+    {
+      "name": "Schemathesis Property-Based and Stateful Web API Fuzzer (schemathesis/schemathesis; Hatfield-Dodds & Dygalo, ICSE-Companion 2022)",
+      "identity": {
+        "arxiv": "2112.10328v1",
+        "author_date": "2026-11-22T18:23:53Z",
+        "committer_date": "2026-11-22T18:23:53Z",
+        "doi": "10.1145/3510454.3528637",
+        "repository": "schemathesis/schemathesis",
+        "revision": "f5ed7dd331b2d6e1c60bca984dd8b5dce76b30af"
+      }
+    },
+    {
+      "name": "RESTler Stateful REST API Fuzzer and Cloud Security Checkers (microsoft/restler-fuzzer; Atlidakis, Godefroid, & Polishchuk, ICSE 2019 & ICST 2020)",
+      "identity": {
+        "arxiv": "1806.09739v1",
+        "author_date": "2026-02-13T01:53:46Z",
+        "committer_date": "2026-02-13T01:53:46Z",
+        "icse_doi": "10.1109/ICSE.2019.00083",
+        "icst_doi": "10.1109/ICST46399.2020.00046",
+        "repository": "microsoft/restler-fuzzer",
+        "revision": "6d984deedbc54aad957fa3da0c7e9e5df23a2aee"
+      }
+    },
+    {
+      "name": "REST API Test Generation Benchmark Study (Kim, Xin, Sinha, & Orso, ISSTA 2022)",
+      "identity": {
+        "arxiv": "2204.08348v3",
+        "doi": "10.1145/3533767.3534401",
+        "venue": "ISSTA 2022, pp. 289-301",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Pact Reference Rust Matching and Provider Verifier Engine (pact-foundation/pact-reference)",
+      "identity": {
+        "author_date": "2026-11-23T03:37:43Z",
+        "committer_date": "2026-11-23T04:09:39Z",
+        "repository": "pact-foundation/pact-reference",
+        "revision": "4a24afcf08e0f0502141deae87591fd040dc25e8"
+      }
+    },
+    {
+      "name": "Pact Broker Matrix and can-i-deploy Deployment Gate (pact-foundation/pact_broker)",
+      "identity": {
+        "author_date": "2026-09-29T00:00:37Z",
+        "committer_date": "2026-11-15T00:57:07Z",
+        "repository": "pact-foundation/pact_broker",
+        "revision": "6298abd2d4394e0255c944a9fbbc451402d766a6"
+      }
+    },
+    {
+      "name": "Gorilla APIBench and Berkeley Function Calling Leaderboard (ShishirPatil/gorilla; Patil et al., NeurIPS 2024 & ICML 2025)",
+      "identity": {
+        "author_date": "2026-03-23T11:40:47Z",
+        "committer_date": "2026-03-23T11:40:47Z",
+        "gorilla_arxiv": "2305.15334v1",
+        "gorilla_doi": "10.52202/079017-4020",
+        "icml_proceedings": "https://proceedings.mlr.press/v267/patil25a.html",
+        "repository": "ShishirPatil/gorilla",
+        "revision": "6ea57973c7a6097fd7c5915698c54c17c5b1b6c8"
+      }
+    },
+    {
+      "name": "RestGPT and RestBench Real-World RESTful API Harness (Yifan-Song793/RestGPT; Song et al., 2023)",
+      "identity": {
+        "arxiv": "2306.06624v2",
+        "author_date": "2023-09-28T01:12:57Z",
+        "committer_date": "2023-09-28T01:12:57Z",
+        "doi": "10.48550/arXiv.2306.06624",
+        "repository": "Yifan-Song793/RestGPT",
+        "revision": "d99012860cb45323975bf5780152d7aa44f390f5"
+      }
+    },
+    {
+      "name": "ToolLLM and ToolBench RapidAPI Evaluation Harness (OpenBMB/ToolBench; Qin et al., ICLR 2024)",
+      "identity": {
+        "arxiv": "2307.16789v2",
+        "author_date": "2025-05-21T15:46:57Z",
+        "committer_date": "2025-05-21T15:46:57Z",
+        "openreview": "dHng2O0Jjr",
+        "repository": "OpenBMB/ToolBench",
+        "revision": "d56fdd89faf8c91fa135090b212bb9057ee5cfc2"
+      }
+    },
+    {
+      "name": "IETF HTTP Semantics (RFC 9110, STD 97), Additional HTTP Status Codes (RFC 6585), and Web Linking (RFC 8288)",
+      "identity": {
+        "rfc6585_doi": "10.17487/RFC6585",
+        "rfc8288_doi": "10.17487/RFC8288",
+        "rfc9110_doi": "10.17487/RFC9110",
+        "standard": "RFC 9110 (STD 97, June 2022); RFC 6585 (April 2012); RFC 8288 (October 2017)"
+      }
+    },
+    {
+      "name": "AWS Architecture Exponential Backoff and Jitter Simulator (aws-samples/aws-arch-backoff-simulator; Brooker, 2015)",
+      "identity": {
+        "author_date": "2015-02-25T22:59:28Z",
+        "blog_url": "https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/",
+        "committer_date": "2015-02-25T22:59:28Z",
+        "repository": "aws-samples/aws-arch-backoff-simulator",
+        "revision": "66cb169277051eea207dbef8c7f71767fe6af144"
+      }
+    },
+    {
+      "name": "SQL Keyset Pagination Indexing Analysis (Winand, SQL Performance Explained, 2012)",
+      "identity": {
+        "isbn": "978-3950307802",
+        "url": "https://use-the-index-luke.com/no-offset",
+        "year": "2012"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

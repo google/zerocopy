@@ -1,0 +1,167 @@
+{
+  "topics": [
+    "agents/package-hallucination",
+    "agents/supply-chain",
+    "cargo/audit",
+    "security/sbom",
+    "security/slopsquatting",
+    "security/vex",
+    "security/vulnerability-reachability",
+    "tooling/govulncheck",
+    "tooling/osv-scanner",
+    "tooling/syft",
+    "tooling/trivy",
+    "verification/static-analysis"
+  ],
+  "subjects": [
+    {
+      "name": "Go Vulnerability Management and Reachability Analyzer (golang/vuln govulncheck)",
+      "identity": {
+        "author_date": "2026-11-17T19:45:13Z",
+        "committer_date": "2026-11-17T20:25:28Z",
+        "repository": "golang/vuln",
+        "revision": "ef4cb2f7cae47fe3e21fc596455f694951867b29"
+      }
+    },
+    {
+      "name": "Go Variable Type Analysis Call-Graph Engine (golang/tools go/callgraph/vta)",
+      "identity": {
+        "author_date": "2026-11-12T05:14:24Z",
+        "committer_date": "2026-11-20T20:49:33Z",
+        "repository": "golang/tools",
+        "revision": "70e48cd7db64b457438d8d171c8734478f84a52f"
+      }
+    },
+    {
+      "name": "OSV-Scanner Source, Rust DWARF, and SCALIBR Reachability Enricher (google/osv-scanner)",
+      "identity": {
+        "author_date": "2026-11-22T17:45:21Z",
+        "committer_date": "2026-11-22T17:45:21Z",
+        "repository": "google/osv-scanner",
+        "revision": "925d1b4cf77c4dd26540672f6fa045a3a8327754"
+      }
+    },
+    {
+      "name": "RustSec Advisory Auditor and Binary Dependency Scanner (rustsec/rustsec cargo-audit)",
+      "identity": {
+        "author_date": "2026-11-22T18:51:51Z",
+        "committer_date": "2026-11-22T18:51:51Z",
+        "repository": "rustsec/rustsec",
+        "revision": "9284e112641a1992f022711395389d9246aa9837"
+      }
+    },
+    {
+      "name": "OpenSSF Open Source Vulnerability Schema Specification (ossf/osv-schema)",
+      "identity": {
+        "author_date": "2026-11-23T02:22:57Z",
+        "committer_date": "2026-11-23T02:22:57Z",
+        "repository": "ossf/osv-schema",
+        "revision": "e34af15e6f05eff600d1223c05f60d39b53bc131"
+      }
+    },
+    {
+      "name": "Syft SBOM Generator and CycloneDX/SPDX Format Serializers (anchore/syft)",
+      "identity": {
+        "author_date": "2026-11-23T01:26:41Z",
+        "committer_date": "2026-11-23T01:26:41Z",
+        "repository": "anchore/syft",
+        "revision": "9ad9aa5e80a6762c33b0344d252ec669ae53afdc"
+      }
+    },
+    {
+      "name": "Trivy Python Dependency Parser and OpenVEX/CSAF/CycloneDX VEX Filter (aquasecurity/trivy)",
+      "identity": {
+        "author_date": "2026-11-20T11:14:25Z",
+        "committer_date": "2026-11-20T11:14:25Z",
+        "repository": "aquasecurity/trivy",
+        "revision": "edf9f5c13d27ba1f6b1bc747f2f41a383dc56dc9"
+      }
+    },
+    {
+      "name": "OpenVEX Go Reference Library (openvex/go-vex)",
+      "identity": {
+        "author_date": "2026-11-19T02:07:24Z",
+        "committer_date": "2026-11-19T02:07:24Z",
+        "repository": "openvex/go-vex",
+        "revision": "42a83ee2b1ae9e8b1cde8f5161dc869fc76fdefa"
+      }
+    },
+    {
+      "name": "OpenVEX Specification v0.2.0 (openvex/spec)",
+      "identity": {
+        "author_date": "2026-10-30T19:59:30Z",
+        "committer_date": "2026-10-30T19:59:30Z",
+        "repository": "openvex/spec",
+        "revision": "93139bd2c65390b504e47f82f11c50451289f93a",
+        "version": "v0.2.0"
+      }
+    },
+    {
+      "name": "LLM Package Hallucination Benchmark and Parser Suite (Spracks/PackageHallucination; Spracklen et al., USENIX Security 2025)",
+      "identity": {
+        "arxiv": "2406.10279",
+        "author_date": "2026-08-14T02:17:03Z",
+        "committer_date": "2026-08-14T02:17:03Z",
+        "isbn": "978-1-939133-52-6",
+        "repository": "Spracks/PackageHallucination",
+        "revision": "bd3031cce6a0007997a0604d3ad3365031ed79b2",
+        "venue": "USENIX Security 2025, pp. 3687-3706"
+      }
+    },
+    {
+      "name": "Eclipse Steady / Vulas Code-Centric Reachability Studies (Ponta, Plate, & Sabetta, ICSME 2018 & EMSE 2020)",
+      "identity": {
+        "arxiv": "1806.05893",
+        "emse_doi": "10.1007/s10664-020-09830-x",
+        "icsme_doi": "10.1109/ICSME.2018.00054",
+        "venues": "ICSME 2018, pp. 449-460; Empirical Software Engineering 25(5), pp. 3175-3215 (2020)"
+      }
+    },
+    {
+      "name": "Maven Ecosystem Fine-Grained Call-Graph Reachability Study (Mir, Keshani, & Proksch, SANER 2023)",
+      "identity": {
+        "arxiv": "2301.07972",
+        "doi": "10.1109/SANER56733.2023.00028",
+        "venue": "SANER 2023, pp. 201-211"
+      }
+    },
+    {
+      "name": "VEX-Bench LLM Exploitability and Justification Benchmark (Shi et al., EMNLP 2026)",
+      "identity": {
+        "arxiv": "2609.08040v1",
+        "doi": "10.18653/2026.emnlp-main.2615",
+        "venue": "EMNLP 2026, pp. 59409-59425"
+      }
+    },
+    {
+      "name": "SBOM-Based Vulnerability Management and Generator Accuracy Studies (Zhou et al., CODASPY 2026; Cofano et al., TrustCom 2024; Yu et al., DSN 2024; O'Donoghue et al., SCORED 2024)",
+      "identity": {
+        "codaspy_arxiv": "2511.20313v2",
+        "codaspy_doi": "10.1145/3800506.3803490",
+        "dsn_doi": "10.1109/DSN58291.2024.00018",
+        "scored_doi": "10.1145/3689944.3696164",
+        "trustcom_arxiv": "2409.01214v1",
+        "trustcom_doi": "10.1109/TrustCom63139.2024.00077"
+      }
+    },
+    {
+      "name": "Wild SBOM Declared Dependency Graph Connectivity Study (Zieba-Kozarzewski, 2026)",
+      "identity": {
+        "arxiv": "2607.22140v3",
+        "doi": "10.48550/arXiv.2607.22140",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Frontier-Cohort Universal Package Hallucinations and Inference-Time Defenses (Churilov, 2026; Djire et al., ASE 2026)",
+      "identity": {
+        "ase_arxiv": "2608.22652v1",
+        "ase_doi": "10.1145/3832783.3837555",
+        "churilov_arxiv": "2605.17062v3",
+        "churilov_zenodo_doi": "10.5281/zenodo.19859120",
+        "venue": "ASE 2026, pp. 3290-3302; arXiv:2605.17062v3 (2026)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

@@ -1,0 +1,191 @@
+{
+  "topics": [
+    "agents/dockerfile-repair",
+    "agents/dockerfile-synthesis",
+    "agents/environment-synthesis",
+    "build/buildkit",
+    "build/dockerfile",
+    "build/llb",
+    "build/oci-image",
+    "build/reproducible-builds",
+    "security/container-secrets",
+    "security/oci-whiteouts",
+    "tooling/hadolint",
+    "tooling/shellcheck",
+    "verification/reproducible-builds"
+  ],
+  "subjects": [
+    {
+      "name": "BuildKit Concurrent, Cache-Efficient, and Dockerfile-Agnostic Builder Toolkit (moby/buildkit)",
+      "identity": {
+        "commit_date": "2026-11-20",
+        "repository": "moby/buildkit",
+        "revision": "dd75b4955087a5a2d52188d6ce25b509b323280e"
+      }
+    },
+    {
+      "name": "Hadolint Dockerfile AST Linter and ShellCheck Integration (hadolint/hadolint)",
+      "identity": {
+        "commit_date": "2026-10-19",
+        "repository": "hadolint/hadolint",
+        "revision": "1d901b9c0b0d0445d19b1a9128d89fa55bb4604e"
+      }
+    },
+    {
+      "name": "OCI Image Format Specification post-v1.1.1 main (opencontainers/image-spec)",
+      "identity": {
+        "commit_date": "2026-10-22",
+        "repository": "opencontainers/image-spec",
+        "revision": "4feed4a6674e59d301b9294f187ac46acb2de99f"
+      }
+    },
+    {
+      "name": "OCI Image Format Specification v1.1.1 Release (opencontainers/image-spec)",
+      "identity": {
+        "repository": "opencontainers/image-spec",
+        "revision": "147f9c13cedb47a0c4d9a11a222961073d585877",
+        "version": "v1.1.1"
+      }
+    },
+    {
+      "name": "Binnacle Phased Bash-in-Docker AST Parser and Tree Association Rule Miner (jjhenkel/binnacle-icse2020)",
+      "identity": {
+        "commit_date": "2022-03-19",
+        "repository": "jjhenkel/binnacle-icse2020",
+        "revision": "00a8fb5220377211b059b35539be4594b703d106"
+      }
+    },
+    {
+      "name": "ko Deterministic OCI Container Image Builder for Go Applications (ko-build/ko)",
+      "identity": {
+        "commit_date": "2026-11-20",
+        "repository": "ko-build/ko",
+        "revision": "caaefc6f61be03dffdc114f4ba6ca763ef61003d"
+      }
+    },
+    {
+      "name": "kaniko Userspace Container Image Builder (GoogleContainerTools/kaniko, archived)",
+      "identity": {
+        "commit_date": "2025-06-03",
+        "repository": "GoogleContainerTools/kaniko",
+        "revision": "236ba5690eda9170d0157aa8137ebbeb09d38685"
+      }
+    },
+    {
+      "name": "An Empirical Analysis of the Docker Container Ecosystem on GitHub (Cito et al., MSR 2017)",
+      "identity": {
+        "doi": "10.1109/MSR.2017.67",
+        "pages": "323-333",
+        "venue": "IEEE/ACM 14th International Conference on Mining Software Repositories (MSR 2017)",
+        "year": "2017"
+      }
+    },
+    {
+      "name": "DockerizeMe: Automatic Inference of Environment Dependencies for Python Code Snippets (Horton & Parnin, ICSE 2019)",
+      "identity": {
+        "doi": "10.1109/ICSE.2019.00047",
+        "pages": "328-338",
+        "venue": "IEEE/ACM 41st International Conference on Software Engineering (ICSE 2019)",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "Learning from, Understanding, and Supporting DevOps Artifacts for Docker (Henkel et al., ICSE 2020, Binnacle)",
+      "identity": {
+        "arxiv": "2002.03064",
+        "doi": "10.1145/3377811.3380406",
+        "pages": "38-49",
+        "venue": "ACM/IEEE 42nd International Conference on Software Engineering (ICSE 2020)",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Characterizing the Occurrence of Dockerfile Smells in Open-Source Software: An Empirical Study (Wu et al., IEEE Access 2020)",
+      "identity": {
+        "doi": "10.1109/ACCESS.2020.2973750",
+        "pages": "34127-34139",
+        "venue": "IEEE Access, Vol. 8",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Shipwright: A Human-in-the-Loop System for Dockerfile Repair (Henkel et al., ICSE 2021)",
+      "identity": {
+        "arxiv": "2103.02591",
+        "doi": "10.1109/ICSE43902.2021.00106",
+        "pages": "1148-1160",
+        "venue": "IEEE/ACM 43rd International Conference on Software Engineering (ICSE 2021)",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "Revisiting Dockerfiles in Open Source Software Over Time (Eng & Hindle, MSR 2021)",
+      "identity": {
+        "arxiv": "2103.12298",
+        "doi": "10.1109/MSR52588.2021.00057",
+        "pages": "449-459",
+        "venue": "IEEE/ACM 18th International Conference on Mining Software Repositories (MSR 2021)",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "Reproducible Builds: Increasing the Integrity of Software Supply Chains (Lamb & Zacchiroli, IEEE Software 2022)",
+      "identity": {
+        "arxiv": "2104.06020",
+        "doi": "10.1109/MS.2021.3073045",
+        "pages": "62-70",
+        "venue": "IEEE Software, Vol. 39, No. 2",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Secrets Revealed in Container Images: An Internet-wide Study on Occurrence and Impact (Dahlmanns et al., ACM ASIA CCS 2023)",
+      "identity": {
+        "arxiv": "2307.03958",
+        "doi": "10.1145/3579856.3590329",
+        "pages": "797-811",
+        "venue": "ACM Asia Conference on Computer and Communications Security (ASIA CCS 2023)",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Empirical Study of the Docker Smells Impact on the Image Size (Durieux, ICSE 2024, Parfum)",
+      "identity": {
+        "arxiv": "2312.13888",
+        "doi": "10.1145/3597503.3639143",
+        "pages": "1-12",
+        "venue": "IEEE/ACM 46th International Conference on Software Engineering (ICSE 2024)",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Repo2Run: Automated Building Executable Environment for Code Repository at Scale (Hu et al., NeurIPS 2025)",
+      "identity": {
+        "arxiv": "2502.13681v4",
+        "doi": "10.52202/085713-1096",
+        "pages": "36770-36809",
+        "venue": "Advances in Neural Information Processing Systems 38 (39th Conference on Neural Information Processing Systems, NeurIPS 2025)",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Multi-Docker-Eval: A 'Shovel of the Gold Rush' Benchmark on Automatic Environment Building for Software Engineering (Fu et al., Findings of ACL 2026)",
+      "identity": {
+        "arxiv": "2512.06915",
+        "doi": "10.18653/v1/2026.findings-acl.889",
+        "pages": "17911-17927",
+        "venue": "Findings of the Association for Computational Linguistics: ACL 2026",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Docker Does Not Guarantee Reproducibility (Malka, Zacchiroli, & Zimmermann, 2026)",
+      "identity": {
+        "arxiv": "2601.12811v1",
+        "doi": "10.48550/arXiv.2601.12811",
+        "year": "2026"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

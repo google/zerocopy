@@ -1,0 +1,149 @@
+{
+  "topics": [
+    "agents/observability",
+    "agents/log-analysis",
+    "agents/slo-monitoring",
+    "systems/log-parsing",
+    "systems/distributed-tracing",
+    "systems/tail-sampling",
+    "systems/time-series-metrics",
+    "systems/cardinality-limits",
+    "tooling/opentelemetry",
+    "tooling/prometheus"
+  ],
+  "subjects": [
+    {
+      "name": "Drain3 Online Log Template Miner (logpai/Drain3)",
+      "identity": {
+        "commit_date": "2025-02-04T02:49:05Z",
+        "repository": "logpai/Drain3",
+        "revision": "0fb6d6e1828838fa05c8f6fa5cda878e02ea79c7"
+      }
+    },
+    {
+      "name": "LogPai Automated Log Parsing Toolkit and Evaluator (logpai/logparser; Zhu et al., ICSE-SEIP 2019)",
+      "identity": {
+        "arxiv": "1811.03509",
+        "commit_date": "2025-06-10T23:50:48Z",
+        "doi": "10.1109/ICSE-SEIP.2019.00021",
+        "repository": "logpai/logparser",
+        "revision": "d9d4180784cde9afef990eeeb458591011933f9b",
+        "venue": "ICSE-SEIP 2019, pp. 121-130"
+      }
+    },
+    {
+      "name": "Loghub-2.0 Large-Scale Log Parsing Benchmark (logpai/loghub-2.0; Jiang et al., ISSTA 2024)",
+      "identity": {
+        "arxiv": "2308.10828",
+        "commit_date": "2025-10-08T13:14:48Z",
+        "doi": "10.1145/3650212.3652123",
+        "repository": "logpai/loghub-2.0",
+        "revision": "ac4aad2ea86f561e5a0acbc6587fa28b487259f9",
+        "venue": "ISSTA 2024, pp. 223-234"
+      }
+    },
+    {
+      "name": "LILAC LLM-Assisted Log Parser and Adaptive Parsing Cache (logpai/LILAC; Jiang et al., PACMSE/FSE 2024)",
+      "identity": {
+        "arxiv": "2310.01796v3",
+        "commit_date": "2024-02-03T17:46:03Z",
+        "doi": "10.1145/3643733",
+        "repository": "logpai/LILAC",
+        "revision": "163d199f95ddf419044c53681f2b474a9c2d45ce",
+        "venue": "PACMSE Vol. 1, No. FSE, pp. 137-160 (July 2024)"
+      }
+    },
+    {
+      "name": "OpenTelemetry Collector Contrib Tail Sampling Processor and Sampling Package (open-telemetry/opentelemetry-collector-contrib)",
+      "identity": {
+        "commit_date": "2026-11-20T22:29:47Z",
+        "repository": "open-telemetry/opentelemetry-collector-contrib",
+        "revision": "8f589e911d179010b94d8e4695269d22ea3a90ab"
+      }
+    },
+    {
+      "name": "OpenTelemetry Specification: TraceState Probability Sampling and Metrics SDK Cardinality Limits (open-telemetry/opentelemetry-specification)",
+      "identity": {
+        "commit_date": "2026-11-20T16:20:56Z",
+        "repository": "open-telemetry/opentelemetry-specification",
+        "revision": "c216b8227a6c893fdb148135a780fc4e7762d0b3"
+      }
+    },
+    {
+      "name": "OpenTelemetry Go Metrics SDK and Cardinality Limit Aggregators (open-telemetry/opentelemetry-go)",
+      "identity": {
+        "commit_date": "2026-11-20T18:23:11Z",
+        "repository": "open-telemetry/opentelemetry-go",
+        "revision": "7b56b60e1fcc467fb7e4d9ccd948d3b3f2b6bf3b"
+      }
+    },
+    {
+      "name": "Prometheus TSDB Head and MemPostings Inverted Index (prometheus/prometheus)",
+      "identity": {
+        "author_date": "2026-11-20T12:35:43Z",
+        "commit_date": "2026-11-20T15:56:48Z",
+        "repository": "prometheus/prometheus",
+        "revision": "06170caaea449ce139982c9ca9ddb5bf499ad488"
+      }
+    },
+    {
+      "name": "W3C Trace Context Recommendation (w3c/trace-context)",
+      "identity": {
+        "published_date": "2021-11-23",
+        "repository": "w3c/trace-context",
+        "revision": "acab820be9db7b3433668baa5cdd43f57f4c4be0",
+        "url": "https://www.w3.org/TR/2021/REC-trace-context-1-20211123/"
+      }
+    },
+    {
+      "name": "Drain Fixed-Depth Prefix-Tree Online Log Parser (He, Zhu, Zheng, & Lyu, IEEE ICWS 2017)",
+      "identity": {
+        "doi": "10.1109/ICWS.2017.13",
+        "venue": "2017 IEEE International Conference on Web Services (ICWS), pp. 33-40",
+        "year": "2017"
+      }
+    },
+    {
+      "name": "Log Template Identification Accuracy Taxonomy (Khan, Shin, Bianculli, & Briand, ICSE 2022)",
+      "identity": {
+        "doi": "10.1145/3510003.3510101",
+        "venue": "ICSE '22, pp. 1095-1106",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Canopy End-to-End Performance Tracing and Analysis System (Kaldor et al., SOSP 2017)",
+      "identity": {
+        "doi": "10.1145/3132747.3132749",
+        "venue": "SOSP '17, pp. 34-50",
+        "year": "2017"
+      }
+    },
+    {
+      "name": "Sifter Unbiased Online Path-Embedding Trace Sampler (Las-Casas, Papakerashvili, Anand, & Mace, SoCC 2019)",
+      "identity": {
+        "doi": "10.1145/3357223.3362736",
+        "venue": "SoCC '19, pp. 312-324",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "Hindsight Retroactive Edge-Case Distributed Tracing System (Zhang, Xie, Anand, Vigfusson, & Mace, NSDI 2023)",
+      "identity": {
+        "arxiv": "2202.05769",
+        "isbn": "978-1-939133-33-5",
+        "venue": "USENIX NSDI '23, pp. 321-339",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Monarch Planet-Scale In-Memory Time Series Database (Adams et al., PVLDB 2020)",
+      "identity": {
+        "doi": "10.14778/3181-3194",
+        "venue": "PVLDB Vol. 13, No. 12, pp. 3181-3194",
+        "year": "2020"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

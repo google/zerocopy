@@ -4516,6 +4516,364 @@
         "tooling/agent-harnesses"
       ]
     },
+    "agent-dependency-reachability-vex-discrepancies-and-slopsquatting": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "author_date": "2026-11-17T19:45:13Z",
+            "committer_date": "2026-11-17T20:25:28Z",
+            "repository": "golang/vuln",
+            "revision": "ef4cb2f7cae47fe3e21fc596455f694951867b29"
+          },
+          "name": "Go Vulnerability Management and Reachability Analyzer (golang/vuln govulncheck)"
+        },
+        {
+          "identity": {
+            "author_date": "2026-11-12T05:14:24Z",
+            "committer_date": "2026-11-20T20:49:33Z",
+            "repository": "golang/tools",
+            "revision": "70e48cd7db64b457438d8d171c8734478f84a52f"
+          },
+          "name": "Go Variable Type Analysis Call-Graph Engine (golang/tools go/callgraph/vta)"
+        },
+        {
+          "identity": {
+            "author_date": "2026-11-22T17:45:21Z",
+            "committer_date": "2026-11-22T17:45:21Z",
+            "repository": "google/osv-scanner",
+            "revision": "925d1b4cf77c4dd26540672f6fa045a3a8327754"
+          },
+          "name": "OSV-Scanner Source, Rust DWARF, and SCALIBR Reachability Enricher (google/osv-scanner)"
+        },
+        {
+          "identity": {
+            "author_date": "2026-11-22T18:51:51Z",
+            "committer_date": "2026-11-22T18:51:51Z",
+            "repository": "rustsec/rustsec",
+            "revision": "9284e112641a1992f022711395389d9246aa9837"
+          },
+          "name": "RustSec Advisory Auditor and Binary Dependency Scanner (rustsec/rustsec cargo-audit)"
+        },
+        {
+          "identity": {
+            "author_date": "2026-11-23T02:22:57Z",
+            "committer_date": "2026-11-23T02:22:57Z",
+            "repository": "ossf/osv-schema",
+            "revision": "e34af15e6f05eff600d1223c05f60d39b53bc131"
+          },
+          "name": "OpenSSF Open Source Vulnerability Schema Specification (ossf/osv-schema)"
+        },
+        {
+          "identity": {
+            "author_date": "2026-11-23T01:26:41Z",
+            "committer_date": "2026-11-23T01:26:41Z",
+            "repository": "anchore/syft",
+            "revision": "9ad9aa5e80a6762c33b0344d252ec669ae53afdc"
+          },
+          "name": "Syft SBOM Generator and CycloneDX/SPDX Format Serializers (anchore/syft)"
+        },
+        {
+          "identity": {
+            "author_date": "2026-11-20T11:14:25Z",
+            "committer_date": "2026-11-20T11:14:25Z",
+            "repository": "aquasecurity/trivy",
+            "revision": "edf9f5c13d27ba1f6b1bc747f2f41a383dc56dc9"
+          },
+          "name": "Trivy Python Dependency Parser and OpenVEX/CSAF/CycloneDX VEX Filter (aquasecurity/trivy)"
+        },
+        {
+          "identity": {
+            "author_date": "2026-11-19T02:07:24Z",
+            "committer_date": "2026-11-19T02:07:24Z",
+            "repository": "openvex/go-vex",
+            "revision": "42a83ee2b1ae9e8b1cde8f5161dc869fc76fdefa"
+          },
+          "name": "OpenVEX Go Reference Library (openvex/go-vex)"
+        },
+        {
+          "identity": {
+            "author_date": "2026-10-30T19:59:30Z",
+            "committer_date": "2026-10-30T19:59:30Z",
+            "repository": "openvex/spec",
+            "revision": "93139bd2c65390b504e47f82f11c50451289f93a",
+            "version": "v0.2.0"
+          },
+          "name": "OpenVEX Specification v0.2.0 (openvex/spec)"
+        },
+        {
+          "identity": {
+            "arxiv": "2406.10279",
+            "author_date": "2026-08-14T02:17:03Z",
+            "committer_date": "2026-08-14T02:17:03Z",
+            "isbn": "978-1-939133-52-6",
+            "repository": "Spracks/PackageHallucination",
+            "revision": "bd3031cce6a0007997a0604d3ad3365031ed79b2",
+            "venue": "USENIX Security 2025, pp. 3687-3706"
+          },
+          "name": "LLM Package Hallucination Benchmark and Parser Suite (Spracks/PackageHallucination; Spracklen et al., USENIX Security 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "1806.05893",
+            "emse_doi": "10.1007/s10664-020-09830-x",
+            "icsme_doi": "10.1109/ICSME.2018.00054",
+            "venues": "ICSME 2018, pp. 449-460; Empirical Software Engineering 25(5), pp. 3175-3215 (2020)"
+          },
+          "name": "Eclipse Steady / Vulas Code-Centric Reachability Studies (Ponta, Plate, & Sabetta, ICSME 2018 & EMSE 2020)"
+        },
+        {
+          "identity": {
+            "arxiv": "2301.07972",
+            "doi": "10.1109/SANER56733.2023.00028",
+            "venue": "SANER 2023, pp. 201-211"
+          },
+          "name": "Maven Ecosystem Fine-Grained Call-Graph Reachability Study (Mir, Keshani, & Proksch, SANER 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "2609.08040v1",
+            "doi": "10.18653/2026.emnlp-main.2615",
+            "venue": "EMNLP 2026, pp. 59409-59425"
+          },
+          "name": "VEX-Bench LLM Exploitability and Justification Benchmark (Shi et al., EMNLP 2026)"
+        },
+        {
+          "identity": {
+            "codaspy_arxiv": "2511.20313v2",
+            "codaspy_doi": "10.1145/3800506.3803490",
+            "dsn_doi": "10.1109/DSN58291.2024.00018",
+            "scored_doi": "10.1145/3689944.3696164",
+            "trustcom_arxiv": "2409.01214v1",
+            "trustcom_doi": "10.1109/TrustCom63139.2024.00077"
+          },
+          "name": "SBOM-Based Vulnerability Management and Generator Accuracy Studies (Zhou et al., CODASPY 2026; Cofano et al., TrustCom 2024; Yu et al., DSN 2024; O'Donoghue et al., SCORED 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2607.22140v3",
+            "doi": "10.48550/arXiv.2607.22140",
+            "year": "2026"
+          },
+          "name": "Wild SBOM Declared Dependency Graph Connectivity Study (Zieba-Kozarzewski, 2026)"
+        },
+        {
+          "identity": {
+            "ase_arxiv": "2608.22652v1",
+            "ase_doi": "10.1145/3832783.3837555",
+            "churilov_arxiv": "2605.17062v3",
+            "churilov_zenodo_doi": "10.5281/zenodo.19859120",
+            "venue": "ASE 2026, pp. 3290-3302; arXiv:2605.17062v3 (2026)"
+          },
+          "name": "Frontier-Cohort Universal Package Hallucinations and Inference-Time Defenses (Churilov, 2026; Djire et al., ASE 2026)"
+        }
+      ],
+      "topics": [
+        "agents/package-hallucination",
+        "agents/supply-chain",
+        "cargo/audit",
+        "security/sbom",
+        "security/slopsquatting",
+        "security/vex",
+        "security/vulnerability-reachability",
+        "tooling/govulncheck",
+        "tooling/osv-scanner",
+        "tooling/syft",
+        "tooling/trivy",
+        "verification/static-analysis"
+      ]
+    },
+    "agent-dockerfile-llb-caching-whiteout-secrets-and-oci-reproducibility": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2026-11-20",
+            "repository": "moby/buildkit",
+            "revision": "dd75b4955087a5a2d52188d6ce25b509b323280e"
+          },
+          "name": "BuildKit Concurrent, Cache-Efficient, and Dockerfile-Agnostic Builder Toolkit (moby/buildkit)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-10-19",
+            "repository": "hadolint/hadolint",
+            "revision": "1d901b9c0b0d0445d19b1a9128d89fa55bb4604e"
+          },
+          "name": "Hadolint Dockerfile AST Linter and ShellCheck Integration (hadolint/hadolint)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-10-22",
+            "repository": "opencontainers/image-spec",
+            "revision": "4feed4a6674e59d301b9294f187ac46acb2de99f"
+          },
+          "name": "OCI Image Format Specification post-v1.1.1 main (opencontainers/image-spec)"
+        },
+        {
+          "identity": {
+            "repository": "opencontainers/image-spec",
+            "revision": "147f9c13cedb47a0c4d9a11a222961073d585877",
+            "version": "v1.1.1"
+          },
+          "name": "OCI Image Format Specification v1.1.1 Release (opencontainers/image-spec)"
+        },
+        {
+          "identity": {
+            "commit_date": "2022-03-19",
+            "repository": "jjhenkel/binnacle-icse2020",
+            "revision": "00a8fb5220377211b059b35539be4594b703d106"
+          },
+          "name": "Binnacle Phased Bash-in-Docker AST Parser and Tree Association Rule Miner (jjhenkel/binnacle-icse2020)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-20",
+            "repository": "ko-build/ko",
+            "revision": "caaefc6f61be03dffdc114f4ba6ca763ef61003d"
+          },
+          "name": "ko Deterministic OCI Container Image Builder for Go Applications (ko-build/ko)"
+        },
+        {
+          "identity": {
+            "commit_date": "2025-06-03",
+            "repository": "GoogleContainerTools/kaniko",
+            "revision": "236ba5690eda9170d0157aa8137ebbeb09d38685"
+          },
+          "name": "kaniko Userspace Container Image Builder (GoogleContainerTools/kaniko, archived)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/MSR.2017.67",
+            "pages": "323-333",
+            "venue": "IEEE/ACM 14th International Conference on Mining Software Repositories (MSR 2017)",
+            "year": "2017"
+          },
+          "name": "An Empirical Analysis of the Docker Container Ecosystem on GitHub (Cito et al., MSR 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICSE.2019.00047",
+            "pages": "328-338",
+            "venue": "IEEE/ACM 41st International Conference on Software Engineering (ICSE 2019)",
+            "year": "2019"
+          },
+          "name": "DockerizeMe: Automatic Inference of Environment Dependencies for Python Code Snippets (Horton & Parnin, ICSE 2019)"
+        },
+        {
+          "identity": {
+            "arxiv": "2002.03064",
+            "doi": "10.1145/3377811.3380406",
+            "pages": "38-49",
+            "venue": "ACM/IEEE 42nd International Conference on Software Engineering (ICSE 2020)",
+            "year": "2020"
+          },
+          "name": "Learning from, Understanding, and Supporting DevOps Artifacts for Docker (Henkel et al., ICSE 2020, Binnacle)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ACCESS.2020.2973750",
+            "pages": "34127-34139",
+            "venue": "IEEE Access, Vol. 8",
+            "year": "2020"
+          },
+          "name": "Characterizing the Occurrence of Dockerfile Smells in Open-Source Software: An Empirical Study (Wu et al., IEEE Access 2020)"
+        },
+        {
+          "identity": {
+            "arxiv": "2103.02591",
+            "doi": "10.1109/ICSE43902.2021.00106",
+            "pages": "1148-1160",
+            "venue": "IEEE/ACM 43rd International Conference on Software Engineering (ICSE 2021)",
+            "year": "2021"
+          },
+          "name": "Shipwright: A Human-in-the-Loop System for Dockerfile Repair (Henkel et al., ICSE 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2103.12298",
+            "doi": "10.1109/MSR52588.2021.00057",
+            "pages": "449-459",
+            "venue": "IEEE/ACM 18th International Conference on Mining Software Repositories (MSR 2021)",
+            "year": "2021"
+          },
+          "name": "Revisiting Dockerfiles in Open Source Software Over Time (Eng & Hindle, MSR 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2104.06020",
+            "doi": "10.1109/MS.2021.3073045",
+            "pages": "62-70",
+            "venue": "IEEE Software, Vol. 39, No. 2",
+            "year": "2022"
+          },
+          "name": "Reproducible Builds: Increasing the Integrity of Software Supply Chains (Lamb & Zacchiroli, IEEE Software 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2307.03958",
+            "doi": "10.1145/3579856.3590329",
+            "pages": "797-811",
+            "venue": "ACM Asia Conference on Computer and Communications Security (ASIA CCS 2023)",
+            "year": "2023"
+          },
+          "name": "Secrets Revealed in Container Images: An Internet-wide Study on Occurrence and Impact (Dahlmanns et al., ACM ASIA CCS 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "2312.13888",
+            "doi": "10.1145/3597503.3639143",
+            "pages": "1-12",
+            "venue": "IEEE/ACM 46th International Conference on Software Engineering (ICSE 2024)",
+            "year": "2024"
+          },
+          "name": "Empirical Study of the Docker Smells Impact on the Image Size (Durieux, ICSE 2024, Parfum)"
+        },
+        {
+          "identity": {
+            "arxiv": "2502.13681v4",
+            "doi": "10.52202/085713-1096",
+            "pages": "36770-36809",
+            "venue": "Advances in Neural Information Processing Systems 38 (39th Conference on Neural Information Processing Systems, NeurIPS 2025)",
+            "year": "2025"
+          },
+          "name": "Repo2Run: Automated Building Executable Environment for Code Repository at Scale (Hu et al., NeurIPS 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2512.06915",
+            "doi": "10.18653/v1/2026.findings-acl.889",
+            "pages": "17911-17927",
+            "venue": "Findings of the Association for Computational Linguistics: ACL 2026",
+            "year": "2026"
+          },
+          "name": "Multi-Docker-Eval: A 'Shovel of the Gold Rush' Benchmark on Automatic Environment Building for Software Engineering (Fu et al., Findings of ACL 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2601.12811v1",
+            "doi": "10.48550/arXiv.2601.12811",
+            "year": "2026"
+          },
+          "name": "Docker Does Not Guarantee Reproducibility (Malka, Zacchiroli, & Zimmermann, 2026)"
+        }
+      ],
+      "topics": [
+        "agents/dockerfile-repair",
+        "agents/dockerfile-synthesis",
+        "agents/environment-synthesis",
+        "build/buildkit",
+        "build/dockerfile",
+        "build/llb",
+        "build/oci-image",
+        "build/reproducible-builds",
+        "security/container-secrets",
+        "security/oci-whiteouts",
+        "tooling/hadolint",
+        "tooling/shellcheck",
+        "verification/reproducible-builds"
+      ]
+    },
     "agent-early-overlap-detection-speculative-merge-and-shared-findings-ledgers": {
       "observed_at": "2026-11-22",
       "subjects": [
@@ -5934,6 +6292,155 @@
         "tooling/agent-harnesses"
       ]
     },
+    "agent-log-template-mining-tail-sampling-and-metric-cardinality": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2025-02-04T02:49:05Z",
+            "repository": "logpai/Drain3",
+            "revision": "0fb6d6e1828838fa05c8f6fa5cda878e02ea79c7"
+          },
+          "name": "Drain3 Online Log Template Miner (logpai/Drain3)"
+        },
+        {
+          "identity": {
+            "arxiv": "1811.03509",
+            "commit_date": "2025-06-10T23:50:48Z",
+            "doi": "10.1109/ICSE-SEIP.2019.00021",
+            "repository": "logpai/logparser",
+            "revision": "d9d4180784cde9afef990eeeb458591011933f9b",
+            "venue": "ICSE-SEIP 2019, pp. 121-130"
+          },
+          "name": "LogPai Automated Log Parsing Toolkit and Evaluator (logpai/logparser; Zhu et al., ICSE-SEIP 2019)"
+        },
+        {
+          "identity": {
+            "arxiv": "2308.10828",
+            "commit_date": "2025-10-08T13:14:48Z",
+            "doi": "10.1145/3650212.3652123",
+            "repository": "logpai/loghub-2.0",
+            "revision": "ac4aad2ea86f561e5a0acbc6587fa28b487259f9",
+            "venue": "ISSTA 2024, pp. 223-234"
+          },
+          "name": "Loghub-2.0 Large-Scale Log Parsing Benchmark (logpai/loghub-2.0; Jiang et al., ISSTA 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.01796v3",
+            "commit_date": "2024-02-03T17:46:03Z",
+            "doi": "10.1145/3643733",
+            "repository": "logpai/LILAC",
+            "revision": "163d199f95ddf419044c53681f2b474a9c2d45ce",
+            "venue": "PACMSE Vol. 1, No. FSE, pp. 137-160 (July 2024)"
+          },
+          "name": "LILAC LLM-Assisted Log Parser and Adaptive Parsing Cache (logpai/LILAC; Jiang et al., PACMSE/FSE 2024)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-20T22:29:47Z",
+            "repository": "open-telemetry/opentelemetry-collector-contrib",
+            "revision": "8f589e911d179010b94d8e4695269d22ea3a90ab"
+          },
+          "name": "OpenTelemetry Collector Contrib Tail Sampling Processor and Sampling Package (open-telemetry/opentelemetry-collector-contrib)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-20T16:20:56Z",
+            "repository": "open-telemetry/opentelemetry-specification",
+            "revision": "c216b8227a6c893fdb148135a780fc4e7762d0b3"
+          },
+          "name": "OpenTelemetry Specification: TraceState Probability Sampling and Metrics SDK Cardinality Limits (open-telemetry/opentelemetry-specification)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-20T18:23:11Z",
+            "repository": "open-telemetry/opentelemetry-go",
+            "revision": "7b56b60e1fcc467fb7e4d9ccd948d3b3f2b6bf3b"
+          },
+          "name": "OpenTelemetry Go Metrics SDK and Cardinality Limit Aggregators (open-telemetry/opentelemetry-go)"
+        },
+        {
+          "identity": {
+            "author_date": "2026-11-20T12:35:43Z",
+            "commit_date": "2026-11-20T15:56:48Z",
+            "repository": "prometheus/prometheus",
+            "revision": "06170caaea449ce139982c9ca9ddb5bf499ad488"
+          },
+          "name": "Prometheus TSDB Head and MemPostings Inverted Index (prometheus/prometheus)"
+        },
+        {
+          "identity": {
+            "published_date": "2021-11-23",
+            "repository": "w3c/trace-context",
+            "revision": "acab820be9db7b3433668baa5cdd43f57f4c4be0",
+            "url": "https://www.w3.org/TR/2021/REC-trace-context-1-20211123/"
+          },
+          "name": "W3C Trace Context Recommendation (w3c/trace-context)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICWS.2017.13",
+            "venue": "2017 IEEE International Conference on Web Services (ICWS), pp. 33-40",
+            "year": "2017"
+          },
+          "name": "Drain Fixed-Depth Prefix-Tree Online Log Parser (He, Zhu, Zheng, & Lyu, IEEE ICWS 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3510003.3510101",
+            "venue": "ICSE '22, pp. 1095-1106",
+            "year": "2022"
+          },
+          "name": "Log Template Identification Accuracy Taxonomy (Khan, Shin, Bianculli, & Briand, ICSE 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3132747.3132749",
+            "venue": "SOSP '17, pp. 34-50",
+            "year": "2017"
+          },
+          "name": "Canopy End-to-End Performance Tracing and Analysis System (Kaldor et al., SOSP 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3357223.3362736",
+            "venue": "SoCC '19, pp. 312-324",
+            "year": "2019"
+          },
+          "name": "Sifter Unbiased Online Path-Embedding Trace Sampler (Las-Casas, Papakerashvili, Anand, & Mace, SoCC 2019)"
+        },
+        {
+          "identity": {
+            "arxiv": "2202.05769",
+            "isbn": "978-1-939133-33-5",
+            "venue": "USENIX NSDI '23, pp. 321-339",
+            "year": "2023"
+          },
+          "name": "Hindsight Retroactive Edge-Case Distributed Tracing System (Zhang, Xie, Anand, Vigfusson, & Mace, NSDI 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.14778/3181-3194",
+            "venue": "PVLDB Vol. 13, No. 12, pp. 3181-3194",
+            "year": "2020"
+          },
+          "name": "Monarch Planet-Scale In-Memory Time Series Database (Adams et al., PVLDB 2020)"
+        }
+      ],
+      "topics": [
+        "agents/observability",
+        "agents/log-analysis",
+        "agents/slo-monitoring",
+        "systems/log-parsing",
+        "systems/distributed-tracing",
+        "systems/tail-sampling",
+        "systems/time-series-metrics",
+        "systems/cardinality-limits",
+        "tooling/opentelemetry",
+        "tooling/prometheus"
+      ]
+    },
     "agent-mixed-initiative-collaboration-user-simulators-and-pedagogical-scaffolding": {
       "observed_at": "2026-11-22",
       "subjects": [
@@ -6374,6 +6881,145 @@
         "verification/dom-geometry",
         "verification/wcag-2.2",
         "verification/benchmark-evaluators"
+      ]
+    },
+    "agent-openapi-stateful-fuzzing-pact-contracts-and-retry-backoff": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "author_date": "2026-10-18T17:34:56Z",
+            "committer_date": "2026-10-18T17:34:56Z",
+            "repository": "OAI/OpenAPI-Specification",
+            "revision": "4f86429f134f7e48b6351563549b4502fc69de52",
+            "versions": "3.0.3 (2020-02-20), 3.0.4 (2024-10-24), 3.1.0 (2021-02-15), 3.1.1 (2024-10-24)"
+          },
+          "name": "OpenAPI Specification v3.0.3, v3.0.4, v3.1.0, and v3.1.1 (OAI/OpenAPI-Specification)"
+        },
+        {
+          "identity": {
+            "arxiv": "2112.10328v1",
+            "author_date": "2026-11-22T18:23:53Z",
+            "committer_date": "2026-11-22T18:23:53Z",
+            "doi": "10.1145/3510454.3528637",
+            "repository": "schemathesis/schemathesis",
+            "revision": "f5ed7dd331b2d6e1c60bca984dd8b5dce76b30af"
+          },
+          "name": "Schemathesis Property-Based and Stateful Web API Fuzzer (schemathesis/schemathesis; Hatfield-Dodds & Dygalo, ICSE-Companion 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "1806.09739v1",
+            "author_date": "2026-02-13T01:53:46Z",
+            "committer_date": "2026-02-13T01:53:46Z",
+            "icse_doi": "10.1109/ICSE.2019.00083",
+            "icst_doi": "10.1109/ICST46399.2020.00046",
+            "repository": "microsoft/restler-fuzzer",
+            "revision": "6d984deedbc54aad957fa3da0c7e9e5df23a2aee"
+          },
+          "name": "RESTler Stateful REST API Fuzzer and Cloud Security Checkers (microsoft/restler-fuzzer; Atlidakis, Godefroid, & Polishchuk, ICSE 2019 & ICST 2020)"
+        },
+        {
+          "identity": {
+            "arxiv": "2204.08348v3",
+            "doi": "10.1145/3533767.3534401",
+            "venue": "ISSTA 2022, pp. 289-301",
+            "year": "2022"
+          },
+          "name": "REST API Test Generation Benchmark Study (Kim, Xin, Sinha, & Orso, ISSTA 2022)"
+        },
+        {
+          "identity": {
+            "author_date": "2026-11-23T03:37:43Z",
+            "committer_date": "2026-11-23T04:09:39Z",
+            "repository": "pact-foundation/pact-reference",
+            "revision": "4a24afcf08e0f0502141deae87591fd040dc25e8"
+          },
+          "name": "Pact Reference Rust Matching and Provider Verifier Engine (pact-foundation/pact-reference)"
+        },
+        {
+          "identity": {
+            "author_date": "2026-09-29T00:00:37Z",
+            "committer_date": "2026-11-15T00:57:07Z",
+            "repository": "pact-foundation/pact_broker",
+            "revision": "6298abd2d4394e0255c944a9fbbc451402d766a6"
+          },
+          "name": "Pact Broker Matrix and can-i-deploy Deployment Gate (pact-foundation/pact_broker)"
+        },
+        {
+          "identity": {
+            "author_date": "2026-03-23T11:40:47Z",
+            "committer_date": "2026-03-23T11:40:47Z",
+            "gorilla_arxiv": "2305.15334v1",
+            "gorilla_doi": "10.52202/079017-4020",
+            "icml_proceedings": "https://proceedings.mlr.press/v267/patil25a.html",
+            "repository": "ShishirPatil/gorilla",
+            "revision": "6ea57973c7a6097fd7c5915698c54c17c5b1b6c8"
+          },
+          "name": "Gorilla APIBench and Berkeley Function Calling Leaderboard (ShishirPatil/gorilla; Patil et al., NeurIPS 2024 & ICML 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2306.06624v2",
+            "author_date": "2023-09-28T01:12:57Z",
+            "committer_date": "2023-09-28T01:12:57Z",
+            "doi": "10.48550/arXiv.2306.06624",
+            "repository": "Yifan-Song793/RestGPT",
+            "revision": "d99012860cb45323975bf5780152d7aa44f390f5"
+          },
+          "name": "RestGPT and RestBench Real-World RESTful API Harness (Yifan-Song793/RestGPT; Song et al., 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "2307.16789v2",
+            "author_date": "2025-05-21T15:46:57Z",
+            "committer_date": "2025-05-21T15:46:57Z",
+            "openreview": "dHng2O0Jjr",
+            "repository": "OpenBMB/ToolBench",
+            "revision": "d56fdd89faf8c91fa135090b212bb9057ee5cfc2"
+          },
+          "name": "ToolLLM and ToolBench RapidAPI Evaluation Harness (OpenBMB/ToolBench; Qin et al., ICLR 2024)"
+        },
+        {
+          "identity": {
+            "rfc6585_doi": "10.17487/RFC6585",
+            "rfc8288_doi": "10.17487/RFC8288",
+            "rfc9110_doi": "10.17487/RFC9110",
+            "standard": "RFC 9110 (STD 97, June 2022); RFC 6585 (April 2012); RFC 8288 (October 2017)"
+          },
+          "name": "IETF HTTP Semantics (RFC 9110, STD 97), Additional HTTP Status Codes (RFC 6585), and Web Linking (RFC 8288)"
+        },
+        {
+          "identity": {
+            "author_date": "2015-02-25T22:59:28Z",
+            "blog_url": "https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/",
+            "committer_date": "2015-02-25T22:59:28Z",
+            "repository": "aws-samples/aws-arch-backoff-simulator",
+            "revision": "66cb169277051eea207dbef8c7f71767fe6af144"
+          },
+          "name": "AWS Architecture Exponential Backoff and Jitter Simulator (aws-samples/aws-arch-backoff-simulator; Brooker, 2015)"
+        },
+        {
+          "identity": {
+            "isbn": "978-3950307802",
+            "url": "https://use-the-index-luke.com/no-offset",
+            "year": "2012"
+          },
+          "name": "SQL Keyset Pagination Indexing Analysis (Winand, SQL Performance Explained, 2012)"
+        }
+      ],
+      "topics": [
+        "agents/api-integration",
+        "agents/benchmark-methodology",
+        "agents/tool-use",
+        "security/rest-api-checkers",
+        "systems/pagination",
+        "systems/rate-limiting",
+        "systems/retry-backoff",
+        "tooling/json-schema",
+        "tooling/openapi",
+        "verification/contract-testing",
+        "verification/stateful-fuzzing"
       ]
     },
     "agent-performance-engineering-kernel-autotuning-and-benchmark-rigor": {
