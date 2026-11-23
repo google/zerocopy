@@ -1,0 +1,409 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "validator_probes": {
+    "v1_start_block_pred_custom_mir_hir_reject": {
+      "name": "v1_start_block_pred",
+      "args": [
+        "-Zvalidate-mir=yes"
+      ],
+      "rc": 1,
+      "has_broken_mir": false,
+      "broken_mir_lines": [
+        "error[E0425]: cannot find value `bb0` in this scope",
+        "  --> <TMP>/v1_start_block_pred.rs:14:18",
+        "   |",
+        "14 |             Goto(bb0)"
+      ],
+      "stderr_head": "error[E0425]: cannot find value `bb0` in this scope\n  --> <TMP>/v1_start_block_pred.rs:14:18\n   |\n14 |             Goto(bb0)\n   |                  ^^^\n   |\nhelp: a local variable with a similar name exists\n   |\n14 -             Goto(bb0)\n14 +             Goto(bb1)\n   |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0425`.",
+      "stdout_head": ""
+    },
+    "v2_normal_to_cleanup_edge": {
+      "name": "v2_normal_to_cleanup",
+      "args": [
+        "-Zvalidate-mir=yes"
+      ],
+      "rc": 101,
+      "has_broken_mir": true,
+      "broken_mir_lines": [
+        "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:156:27: broken MIR in Item(DefId(0:5 ~ v2_normal_to_cleanup[27d2]::normal_to_cleanup)) (after phase change to runtime-post-cleanup) at bb0[0]:",
+        "                                Normal edge to BasicBlockData { statements: [], after_last_stmt_debuginfos: StmtDebugInfos([]), terminator: Some(resume), is_cleanup: true } violates unwind invariants (cleanup false -> true)",
+        "  --> <TMP>/v2_normal_to_cleanup.rs:10:13",
+        "   |"
+      ],
+      "stderr_head": "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:156:27: broken MIR in Item(DefId(0:5 ~ v2_normal_to_cleanup[27d2]::normal_to_cleanup)) (after phase change to runtime-post-cleanup) at bb0[0]:\n                                Normal edge to BasicBlockData { statements: [], after_last_stmt_debuginfos: StmtDebugInfos([]), terminator: Some(resume), is_cleanup: true } violates unwind invariants (cleanup false -> true)\n  --> <TMP>/v2_normal_to_cleanup.rs:10:13\n   |\n10 |             Goto(clean_bb)\n   |             ^^^^^^^^^^^^^^\n\n\nthread 'rustc' (2802783) panicked at <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:156:27:\nBox<dyn Any>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: please attach the file at `<TMP>/rustc-ice-2026-11-23T01_22_20-2802772.txt` to your bug report\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n",
+      "stdout_head": ""
+    },
+    "v3_cleanup_to_normal_edge": {
+      "name": "v3_cleanup_to_normal",
+      "args": [
+        "-Zvalidate-mir=yes"
+      ],
+      "rc": 101,
+      "has_broken_mir": true,
+      "broken_mir_lines": [
+        "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:156:27: broken MIR in Item(DefId(0:6 ~ v3_cleanup_to_normal[f875]::cleanup_to_normal)) (after phase change to runtime-post-cleanup) at bb2[0]:",
+        "                                Normal edge to BasicBlockData { statements: [_0 = const 1_u32], after_last_stmt_debuginfos: StmtDebugInfos([]), terminator: Some(return), is_cleanup: false } violates unwind invariants (cleanup true -> false)",
+        "  --> <TMP>/v3_cleanup_to_normal.rs:21:13",
+        "   |"
+      ],
+      "stderr_head": "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:156:27: broken MIR in Item(DefId(0:6 ~ v3_cleanup_to_normal[f875]::cleanup_to_normal)) (after phase change to runtime-post-cleanup) at bb2[0]:\n                                Normal edge to BasicBlockData { statements: [_0 = const 1_u32], after_last_stmt_debuginfos: StmtDebugInfos([]), terminator: Some(return), is_cleanup: false } violates unwind invariants (cleanup true -> false)\n  --> <TMP>/v3_cleanup_to_normal.rs:21:13\n   |\n21 |             Goto(ok_bb)\n   |             ^^^^^^^^^^^\n\n\nthread 'rustc' (2802803) panicked at <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:156:27:\nBox<dyn Any>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: please attach the file at `<TMP>/rustc-ice-2026-11-23T01_22_20-2802785.txt` to your bug report\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n",
+      "stdout_head": ""
+    },
+    "v4_unwind_to_normal_edge": {
+      "name": "v4_unwind_to_normal",
+      "args": [
+        "-Zvalidate-mir=yes"
+      ],
+      "rc": 101,
+      "has_broken_mir": true,
+      "broken_mir_lines": [
+        "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:156:27: broken MIR in Item(DefId(0:6 ~ v4_unwind_to_normal[36d1]::unwind_to_normal)) (after phase change to runtime-post-cleanup) at bb0[0]:",
+        "                                Unwind edge to BasicBlockData { statements: [_0 = const 2_u32], after_last_stmt_debuginfos: StmtDebugInfos([]), terminator: Some(return), is_cleanup: false } violates unwind invariants (cleanup false -> false)",
+        "  --> <TMP>/v4_unwind_to_normal.rs:14:13",
+        "   |"
+      ],
+      "stderr_head": "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:156:27: broken MIR in Item(DefId(0:6 ~ v4_unwind_to_normal[36d1]::unwind_to_normal)) (after phase change to runtime-post-cleanup) at bb0[0]:\n                                Unwind edge to BasicBlockData { statements: [_0 = const 2_u32], after_last_stmt_debuginfos: StmtDebugInfos([]), terminator: Some(return), is_cleanup: false } violates unwind invariants (cleanup false -> false)\n  --> <TMP>/v4_unwind_to_normal.rs:14:13\n   |\n14 | ...   Call(_u = may_panic(), ReturnTo(ok_bb), UnwindCleanup(bad_target))\n   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n\nthread 'rustc' (2802821) panicked at <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:156:27:\nBox<dyn Any>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: please attach the file at `<TMP>/rustc-ice-2026-11-23T01_22_21-2802811.txt` to your bug report\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n",
+      "stdout_head": ""
+    },
+    "v5_unwind_cleanup_in_cleanup": {
+      "name": "v5_unwind_cleanup_in_cleanup",
+      "args": [
+        "-Zvalidate-mir=yes"
+      ],
+      "rc": 101,
+      "has_broken_mir": true,
+      "broken_mir_lines": [
+        "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:252:26: broken MIR in Item(DefId(0:6 ~ v5_unwind_cleanup_in_cleanup[7edb]::unwind_cleanup_in_cleanup)) (after phase change to runtime-post-cleanup) at bb2[0]:",
+        "                                `UnwindAction::Cleanup` in cleanup block",
+        "  --> <TMP>/v5_unwind_cleanup_in_cleanup.rs:21:13",
+        "   |"
+      ],
+      "stderr_head": "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:252:26: broken MIR in Item(DefId(0:6 ~ v5_unwind_cleanup_in_cleanup[7edb]::unwind_cleanup_in_cleanup)) (after phase change to runtime-post-cleanup) at bb2[0]:\n                                `UnwindAction::Cleanup` in cleanup block\n  --> <TMP>/v5_unwind_cleanup_in_cleanup.rs:21:13\n   |\n21 |             Call(_u = may_panic(), ReturnTo(clean2), UnwindCleanup(clean2))\n   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n\nthread 'rustc' (2802837) panicked at <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:252:26:\nBox<dyn Any>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: please attach the file at `<TMP>/rustc-ice-2026-11-23T01_22_21-2802827.txt` to your bug report\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n",
+      "stdout_head": ""
+    },
+    "v6_return_from_cleanup": {
+      "name": "v6_return_from_cleanup",
+      "args": [
+        "-Zvalidate-mir=yes"
+      ],
+      "rc": 101,
+      "has_broken_mir": true,
+      "broken_mir_lines": [
+        "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:509:26: broken MIR in Item(DefId(0:6 ~ v6_return_from_cleanup[9e1c]::return_from_cleanup)) (after phase change to runtime-post-cleanup) at bb2[1]:",
+        "                                Cannot `Return` from cleanup basic block",
+        "  --> <TMP>/v6_return_from_cleanup.rs:22:13",
+        "   |"
+      ],
+      "stderr_head": "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:509:26: broken MIR in Item(DefId(0:6 ~ v6_return_from_cleanup[9e1c]::return_from_cleanup)) (after phase change to runtime-post-cleanup) at bb2[1]:\n                                Cannot `Return` from cleanup basic block\n  --> <TMP>/v6_return_from_cleanup.rs:22:13\n   |\n22 |             Return()\n   |             ^^^^^^^^\n\n\nthread 'rustc' (2802850) panicked at <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:509:26:\nBox<dyn Any>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: please attach the file at `<TMP>/rustc-ice-2026-11-23T01_22_21-2802840.txt` to your bug report\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n",
+      "stdout_head": ""
+    },
+    "v7_resume_in_nounwind_extern_c": {
+      "name": "v7_resume_in_nounwind",
+      "args": [
+        "-Zvalidate-mir=yes"
+      ],
+      "rc": 101,
+      "has_broken_mir": true,
+      "broken_mir_lines": [
+        "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:497:26: broken MIR in Item(DefId(0:6 ~ v7_resume_in_nounwind[2cc2]::resume_in_nounwind)) (after phase change to runtime-post-cleanup) at bb2[0]:",
+        "                                Cannot `UnwindResume` in a function that cannot unwind",
+        "  --> <TMP>/v7_resume_in_nounwind.rs:21:13",
+        "   |"
+      ],
+      "stderr_head": "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:497:26: broken MIR in Item(DefId(0:6 ~ v7_resume_in_nounwind[2cc2]::resume_in_nounwind)) (after phase change to runtime-post-cleanup) at bb2[0]:\n                                Cannot `UnwindResume` in a function that cannot unwind\n  --> <TMP>/v7_resume_in_nounwind.rs:21:13\n   |\n21 |             UnwindResume()\n   |             ^^^^^^^^^^^^^^\n\n\nthread 'rustc' (2802863) panicked at <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:497:26:\nBox<dyn Any>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: please attach the file at `<TMP>/rustc-ice-2026-11-23T01_22_21-2802852.txt` to your bug report\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n",
+      "stdout_head": ""
+    },
+    "v8_cleanup_control_flow_diamond": {
+      "name": "v8_cleanup_diamond",
+      "args": [
+        "-Zvalidate-mir=yes"
+      ],
+      "rc": 101,
+      "has_broken_mir": true,
+      "broken_mir_lines": [
+        "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:212:37: broken MIR in Item(DefId(0:6 ~ v8_cleanup_diamond[4246]::cleanup_diamond)) (after phase change to runtime-post-cleanup) at bb4[0]:",
+        "                                Cleanup control flow violation: The blocks dominated by bb4 have edges to both bb6 and bb5",
+        "  --> <TMP>/v8_cleanup_diamond.rs:27:13",
+        "   |"
+      ],
+      "stderr_head": "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:212:37: broken MIR in Item(DefId(0:6 ~ v8_cleanup_diamond[4246]::cleanup_diamond)) (after phase change to runtime-post-cleanup) at bb4[0]:\n                                Cleanup control flow violation: The blocks dominated by bb4 have edges to both bb6 and bb5\n  --> <TMP>/v8_cleanup_diamond.rs:27:13\n   |\n27 | /             match flag {\n28 | |                 true => clean_b,\n29 | |                 _ => clean_c,\n30 | |             }\n   | |_____________^\n\n\nthread 'rustc' (2802875) panicked at <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:212:37:\nBox<dyn Any>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: please attach the file at `<TMP>/rustc-ice-2026-11-23T01_22_21-2802865.txt` to your bug report",
+      "stdout_head": ""
+    },
+    "v9_runtime_nested_deref": {
+      "name": "v9_runtime_nested_deref",
+      "args": [
+        "-Zvalidate-mir=yes"
+      ],
+      "rc": 101,
+      "has_broken_mir": true,
+      "broken_mir_lines": [
+        "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:82:25: broken MIR in Item(DefId(0:5 ~ v9_runtime_nested_deref[43f3]::runtime_nested_deref)) (after phase change to runtime-optimized) at bb0[0]:",
+        "                                place (*(*_1)) has deref as a later projection (it is only permitted as the first projection)",
+        "  --> <TMP>/v9_runtime_nested_deref.rs:10:13",
+        "   |"
+      ],
+      "stderr_head": "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:82:25: broken MIR in Item(DefId(0:5 ~ v9_runtime_nested_deref[43f3]::runtime_nested_deref)) (after phase change to runtime-optimized) at bb0[0]:\n                                place (*(*_1)) has deref as a later projection (it is only permitted as the first projection)\n  --> <TMP>/v9_runtime_nested_deref.rs:10:13\n   |\n10 |             RET = *(*p);\n   |             ^^^^^^^^^^^\n\n\nthread 'rustc' (2802887) panicked at <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:82:25:\nBox<dyn Any>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: please attach the file at `<TMP>/rustc-ice-2026-11-23T01_22_21-2802877.txt` to your bug report\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n",
+      "stdout_head": ""
+    },
+    "v10_runtime_box_deref": {
+      "name": "v10_runtime_box_deref",
+      "args": [
+        "-Zvalidate-mir=yes"
+      ],
+      "rc": 101,
+      "has_broken_mir": true,
+      "broken_mir_lines": [
+        "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:82:25: broken MIR in Item(DefId(0:5 ~ v10_runtime_box_deref[78a7]::runtime_box_deref)) (after pass LowerIntrinsics) at bb0[0]:",
+        "                                std::boxed::Box<u32> dereferenced after ElaborateBoxDerefs",
+        "  --> <TMP>/v10_runtime_box_deref.rs:10:13",
+        "   |"
+      ],
+      "stderr_head": "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:82:25: broken MIR in Item(DefId(0:5 ~ v10_runtime_box_deref[78a7]::runtime_box_deref)) (after pass LowerIntrinsics) at bb0[0]:\n                                std::boxed::Box<u32> dereferenced after ElaborateBoxDerefs\n  --> <TMP>/v10_runtime_box_deref.rs:10:13\n   |\n10 |             RET = *b;\n   |             ^^^^^^^^\n\n\nthread 'rustc' (2802899) panicked at <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:82:25:\nBox<dyn Any>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: please attach the file at `<TMP>/rustc-ice-2026-11-23T01_22_21-2802889.txt` to your bug report\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n",
+      "stdout_head": ""
+    },
+    "v11_unconditional_optimized_validation_without_flag": {
+      "name": "v11_no_flag_broken",
+      "args": [],
+      "rc": 101,
+      "has_broken_mir": true,
+      "broken_mir_lines": [
+        "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:494:26: broken MIR in Item(DefId(0:5 ~ v11_no_flag_broken[4983]::normal_to_cleanup)) (after phase change to runtime-optimized) at bb0[0]:",
+        "                                Cannot `UnwindResume` from non-cleanup basic block",
+        "  --> <TMP>/v11_no_flag_broken.rs:13:13",
+        "   |"
+      ],
+      "stderr_head": "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:494:26: broken MIR in Item(DefId(0:5 ~ v11_no_flag_broken[4983]::normal_to_cleanup)) (after phase change to runtime-optimized) at bb0[0]:\n                                Cannot `UnwindResume` from non-cleanup basic block\n  --> <TMP>/v11_no_flag_broken.rs:13:13\n   |\n13 |             UnwindResume()\n   |             ^^^^^^^^^^^^^^\n\n\nthread 'rustc' (2802911) panicked at <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:494:26:\nBox<dyn Any>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: please attach the file at `<TMP>/rustc-ice-2026-11-23T01_22_21-2802901.txt` to your bug report\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n",
+      "stdout_head": ""
+    },
+    "v12_terminate_incleanup_in_normal_block": {
+      "name": "v12_terminate_incleanup_in_normal",
+      "args": [
+        "-Zvalidate-mir=yes"
+      ],
+      "rc": 101,
+      "has_broken_mir": true,
+      "broken_mir_lines": [
+        "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:267:26: broken MIR in Item(DefId(0:6 ~ v12_terminate_incleanup_in_normal[6e6c]::terminate_incleanup_in_normal)) (after phase change to runtime-post-cleanup) at bb0[0]:",
+        "                                `UnwindAction::Terminate(InCleanup)` in a non-cleanup block",
+        "  --> <TMP>/v12_terminate_incleanup_in_normal.rs:14:13",
+        "   |"
+      ],
+      "stderr_head": "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:267:26: broken MIR in Item(DefId(0:6 ~ v12_terminate_incleanup_in_normal[6e6c]::terminate_incleanup_in_normal)) (after phase change to runtime-post-cleanup) at bb0[0]:\n                                `UnwindAction::Terminate(InCleanup)` in a non-cleanup block\n  --> <TMP>/v12_terminate_incleanup_in_normal.rs:14:13\n   |\n14 | ...   Call(_u = may_panic(), ReturnTo(ok_bb), UnwindTerminate(UnwindTerminateReason::InCleanup))\n   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n\nthread 'rustc' (2802927) panicked at <RUSTC_SRC>/compiler/rustc_mir_transform/src/validate.rs:267:26:\nBox<dyn Any>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\nnote: using internal features is not supported and expected to cause internal compiler errors when used incorrectly\n\nnote: please attach the file at `<TMP>/rustc-ice-2026-11-23T01_22_21-2802917.txt` to your bug report\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n",
+      "stdout_head": ""
+    }
+  },
+  "ssa_locals_probes": {
+    "s1_freeze_vs_nonfreeze_cell": {
+      "compile_rc": 0,
+      "native_run_rc": 0,
+      "native_stdout": "FREEZE=43 CELL=100",
+      "miri_rc": 0,
+      "miri_stdout": "FREEZE=43 CELL=100",
+      "miri_stderr_head": "   Compiling miri_s1 v0.1.0 (<TMP>/miri_s1_crate)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.16s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/miri_s1`",
+      "freeze_folded_const_43_in_gvn": true,
+      "non_freeze_folded_const_43_in_gvn": false,
+      "freeze_gvn_after": "// MIR for `freeze_shared_borrow` after GVN\n\nfn freeze_shared_borrow() -> u32 {\n    let mut _0: u32;\n    let _1: u32;\n    let _3: &u32;\n    let _4: ();\n    let mut _5: &u32;\n    let mut _6: u32;\n    scope 1 {\n        debug x => _1;\n        let _2: &u32;\n        scope 2 {\n            debug r => _2;\n        }\n    }\n\n    bb0: {\n        StorageLive(_1);\n        _1 = const 42_u32;\n        StorageLive(_2);\n        nop;\n        _3 = &_1;\n        _2 = copy _3;\n        nop;\n        StorageLive(_5);\n        _5 = copy _3;\n        _4 = touch_u32(copy _3) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_5);\n        StorageLive(_6);\n        _6 = const 42_u32;\n        _0 = const 43_u32;\n        StorageDead(_6);\n        StorageDead(_2);\n        StorageDead(_1);\n        return;\n    }\n}\n",
+      "non_freeze_gvn_after": "// MIR for `non_freeze_cell_shared_borrow` after GVN\n\nfn non_freeze_cell_shared_borrow() -> u32 {\n    let mut _0: u32;\n    let _1: std::cell::Cell<u32>;\n    let _3: &std::cell::Cell<u32>;\n    let _4: ();\n    let mut _5: &std::cell::Cell<u32>;\n    let mut _6: u32;\n    scope 1 {\n        debug c => _1;\n        let _2: &std::cell::Cell<u32>;\n        scope 2 {\n            debug r => _2;\n            scope 5 (inlined Cell::<u32>::get) {\n                let mut _8: *mut u32;\n                scope 6 (inlined UnsafeCell::<u32>::get) {\n                    let mut _9: *const std::cell::UnsafeCell<u32>;\n                }\n            }\n        }\n    }\n    scope 3 (inlined Cell::<u32>::new) {\n        let mut _7: std::cell::UnsafeCell<u32>;\n        scope 4 (inlined UnsafeCell::<u32>::new) {\n        }\n    }\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_6);\n        _6 = const 42_u32;\n        StorageLive(_7);\n        _7 = const UnsafeCell::<u32> {{ value: 42_u32 }};\n        _1 = const Cell::<u32> {{ value: UnsafeCell::<u32> {{ value: 42_u32 }} }};\n        StorageDead(_7);\n        StorageDead(_6);\n        StorageLive(_2);\n        nop;\n        _3 = &_1;\n        _2 = copy _3;\n        nop;\n        StorageLive(_5);\n        _5 = copy _3;\n        _4 = mutate_cell(copy _3) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_5);\n        StorageLive(_8);\n        StorageLive(_9);\n        _9 = &raw const (_1.0: std::cell::UnsafeCell<u32>);\n        _8 = copy _9 as *mut u32 (PtrToPtr);\n        StorageDead(_9);\n        _0 = copy (*_8);\n        StorageDead(_8);\n        StorageDead(_2);\n        StorageDead(_1);\n        return;\n    }\n}\n"
+    },
+    "s2_copy_prop_return_place_and_borrowed_barrier": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "stdout": "TEMP=12 ARG=9 SAME_ADDR=false",
+      "dumps": {
+        "copy_arg_to_ret_after": "// MIR for `copy_arg_to_ret` after CopyProp\n\nfn copy_arg_to_ret(_1: u64) -> u64 {\n    debug arg => _1;\n    let mut _0: u64;\n    let _2: u64;\n    scope 1 {\n        debug a => _1;\n    }\n\n    bb0: {\n        _0 = copy _1;\n        return;\n    }\n}\n",
+        "copy_arg_to_ret_before": "// MIR for `copy_arg_to_ret` before CopyProp\n\nfn copy_arg_to_ret(_1: u64) -> u64 {\n    debug arg => _1;\n    let mut _0: u64;\n    let _2: u64;\n    scope 1 {\n        debug a => _2;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = copy _1;\n        StorageDead(_2);\n        return;\n    }\n}\n",
+        "copy_borrowed_distinct_addrs_after": "// MIR for `copy_borrowed_distinct_addrs` after CopyProp\n\nfn copy_borrowed_distinct_addrs(_1: u64) -> bool {\n    debug x => _1;\n    let mut _0: bool;\n    let _2: u64;\n    let _4: &u64;\n    let _5: &u64;\n    scope 1 {\n        debug a => _2;\n        let _3: u64;\n        scope 2 {\n            debug b => _3;\n        }\n    }\n    scope 3 (inlined core::num::<impl u64>::wrapping_add) {\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = Add(copy _1, const 1_u64);\n        StorageLive(_3);\n        _3 = copy _2;\n        StorageLive(_4);\n        _4 = &_2;\n        StorageLive(_5);\n        _5 = &_3;\n        _0 = observe_addrs(copy _4, copy _5) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        StorageDead(_2);\n        StorageDead(_5);\n        StorageDead(_4);\n        return;\n    }\n}\n",
+        "copy_borrowed_distinct_addrs_before": "// MIR for `copy_borrowed_distinct_addrs` before CopyProp\n\nfn copy_borrowed_distinct_addrs(_1: u64) -> bool {\n    debug x => _1;\n    let mut _0: bool;\n    let _2: u64;\n    let _4: &u64;\n    let _5: &u64;\n    scope 1 {\n        debug a => _2;\n        let _3: u64;\n        scope 2 {\n            debug b => _3;\n        }\n    }\n    scope 3 (inlined core::num::<impl u64>::wrapping_add) {\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = Add(copy _1, const 1_u64);\n        StorageLive(_3);\n        _3 = copy _2;\n        StorageLive(_4);\n        _4 = &_2;\n        StorageLive(_5);\n        _5 = &_3;\n        _0 = observe_addrs(copy _4, copy _5) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        StorageDead(_2);\n        StorageDead(_5);\n        StorageDead(_4);\n        return;\n    }\n}\n",
+        "copy_chain_temp_to_ret_after": "// MIR for `copy_chain_temp_to_ret` after CopyProp\n\nfn copy_chain_temp_to_ret(_1: u64) -> u64 {\n    debug x => _1;\n    let mut _0: u64;\n    let _2: u64;\n    scope 1 {\n        debug t1 => _0;\n        let _3: u64;\n        scope 2 {\n            debug t2 => _0;\n            let _4: u64;\n            scope 3 {\n                debug t3 => _0;\n            }\n        }\n    }\n    scope 4 (inlined core::num::<impl u64>::wrapping_add) {\n    }\n\n    bb0: {\n        _0 = Add(copy _1, const 7_u64);\n        return;\n    }\n}\n",
+        "copy_chain_temp_to_ret_before": "// MIR for `copy_chain_temp_to_ret` before CopyProp\n\nfn copy_chain_temp_to_ret(_1: u64) -> u64 {\n    debug x => _1;\n    let mut _0: u64;\n    let _2: u64;\n    scope 1 {\n        debug t1 => _2;\n        let _3: u64;\n        scope 2 {\n            debug t2 => _3;\n            let _4: u64;\n            scope 3 {\n                debug t3 => _4;\n            }\n        }\n    }\n    scope 4 (inlined core::num::<impl u64>::wrapping_add) {\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = Add(copy _1, const 7_u64);\n        StorageLive(_3);\n        _3 = copy _2;\n        StorageLive(_4);\n        _4 = copy _2;\n        _0 = copy _2;\n        StorageDead(_4);\n        StorageDead(_3);\n        StorageDead(_2);\n        return;\n    }\n}\n"
+      }
+    },
+    "s3_unreachable_block_ssa_survival": {
+      "name": "s3_unreachable_block",
+      "args": [
+        "-Zmir-opt-level=2",
+        "-Zvalidate-mir=yes"
+      ],
+      "rc": 0,
+      "has_broken_mir": false,
+      "broken_mir_lines": [],
+      "stderr_head": "",
+      "stdout_head": ""
+    }
+  },
+  "check_pointers_probes": {
+    "p1_mir_instrumentation_matrix": {
+      "compile_rc": 0,
+      "functions": {
+        "read_u32": {
+          "CheckAlignment": {
+            "changed": true,
+            "has_misaligned_assert": true,
+            "has_null_assert": false,
+            "has_unwind_unreachable": true,
+            "has_align_const": true,
+            "has_size_const": false,
+            "after_mir": "// MIR for `read_u32` after CheckAlignment\n\nfn read_u32(_1: *const u32) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let mut _2: *const ();\n    let mut _3: usize;\n    let mut _4: usize;\n    let mut _5: usize;\n    let mut _6: bool;\n\n    bb0: {\n        _2 = copy _1 as *const () (PtrToPtr);\n        _3 = copy _2 as usize (Transmute);\n        _4 = Sub(const <u32 as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _5 = BitAnd(copy _3, copy _4);\n        _6 = Eq(copy _5, const 0_usize);\n        assert(copy _6, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <u32 as std::mem::SizedTypeProperties>::ALIGN, copy _3) -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _0 = copy (*_1);\n        return;\n    }\n}\n"
+          },
+          "CheckNull": {
+            "changed": true,
+            "has_misaligned_assert": true,
+            "has_null_assert": true,
+            "has_unwind_unreachable": true,
+            "has_align_const": true,
+            "has_size_const": true,
+            "after_mir": "// MIR for `read_u32` after CheckNull\n\nfn read_u32(_1: *const u32) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let mut _2: *const ();\n    let mut _3: usize;\n    let mut _4: usize;\n    let mut _5: usize;\n    let mut _6: bool;\n    let mut _7: *const ();\n    let mut _8: usize;\n    let mut _9: bool;\n    let mut _10: bool;\n    let mut _11: bool;\n    let mut _12: bool;\n\n    bb0: {\n        _2 = copy _1 as *const () (PtrToPtr);\n        _3 = copy _2 as usize (Transmute);\n        _4 = Sub(const <u32 as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _5 = BitAnd(copy _3, copy _4);\n        _6 = Eq(copy _5, const 0_usize);\n        assert(copy _6, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <u32 as std::mem::SizedTypeProperties>::ALIGN, copy _3) -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _7 = copy _1 as *const () (PtrToPtr);\n        _8 = copy _7 as usize (Transmute);\n        _9 = Ne(const <u32 as std::mem::SizedTypeProperties>::SIZE, const 0_usize);\n        _10 = Eq(copy _8, const 0_usize);\n        _11 = BitAnd(copy _10, copy _9);\n        _12 = Not(copy _11);\n        assert(copy _12, \"null pointer dereference occurred\") -> [success: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        _0 = copy (*_1);\n        return;\n    }\n}\n"
+          }
+        },
+        "read_u8": {
+          "CheckAlignment": {
+            "changed": false,
+            "has_misaligned_assert": false,
+            "has_null_assert": false,
+            "has_unwind_unreachable": false,
+            "has_align_const": false,
+            "has_size_const": false,
+            "after_mir": "// MIR for `read_u8` after CheckAlignment\n\nfn read_u8(_1: *const u8) -> u8 {\n    debug p => _1;\n    let mut _0: u8;\n\n    bb0: {\n        _0 = copy (*_1);\n        return;\n    }\n}\n"
+          },
+          "CheckNull": {
+            "changed": true,
+            "has_misaligned_assert": false,
+            "has_null_assert": true,
+            "has_unwind_unreachable": true,
+            "has_align_const": false,
+            "has_size_const": true,
+            "after_mir": "// MIR for `read_u8` after CheckNull\n\nfn read_u8(_1: *const u8) -> u8 {\n    debug p => _1;\n    let mut _0: u8;\n    let mut _2: *const ();\n    let mut _3: usize;\n    let mut _4: bool;\n    let mut _5: bool;\n    let mut _6: bool;\n    let mut _7: bool;\n\n    bb0: {\n        _2 = copy _1 as *const () (PtrToPtr);\n        _3 = copy _2 as usize (Transmute);\n        _4 = Ne(const <u8 as std::mem::SizedTypeProperties>::SIZE, const 0_usize);\n        _5 = Eq(copy _3, const 0_usize);\n        _6 = BitAnd(copy _5, copy _4);\n        _7 = Not(copy _6);\n        assert(copy _7, \"null pointer dereference occurred\") -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _0 = copy (*_1);\n        return;\n    }\n}\n"
+          }
+        },
+        "read_zst": {
+          "CheckAlignment": {
+            "changed": true,
+            "has_misaligned_assert": true,
+            "has_null_assert": false,
+            "has_unwind_unreachable": true,
+            "has_align_const": true,
+            "has_size_const": false,
+            "after_mir": "// MIR for `read_zst` after CheckAlignment\n\nfn read_zst(_1: *const ()) -> () {\n    debug p => _1;\n    let mut _0: ();\n    let mut _2: *const ();\n    let mut _3: usize;\n    let mut _4: usize;\n    let mut _5: usize;\n    let mut _6: bool;\n\n    bb0: {\n        _2 = copy _1 as *const () (PtrToPtr);\n        _3 = copy _2 as usize (Transmute);\n        _4 = Sub(const <() as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _5 = BitAnd(copy _3, copy _4);\n        _6 = Eq(copy _5, const 0_usize);\n        assert(copy _6, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <() as std::mem::SizedTypeProperties>::ALIGN, copy _3) -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _0 = copy (*_1);\n        return;\n    }\n}\n"
+          },
+          "CheckNull": {
+            "changed": true,
+            "has_misaligned_assert": true,
+            "has_null_assert": true,
+            "has_unwind_unreachable": true,
+            "has_align_const": true,
+            "has_size_const": true,
+            "after_mir": "// MIR for `read_zst` after CheckNull\n\nfn read_zst(_1: *const ()) -> () {\n    debug p => _1;\n    let mut _0: ();\n    let mut _2: *const ();\n    let mut _3: usize;\n    let mut _4: usize;\n    let mut _5: usize;\n    let mut _6: bool;\n    let mut _7: *const ();\n    let mut _8: usize;\n    let mut _9: bool;\n    let mut _10: bool;\n    let mut _11: bool;\n    let mut _12: bool;\n\n    bb0: {\n        _2 = copy _1 as *const () (PtrToPtr);\n        _3 = copy _2 as usize (Transmute);\n        _4 = Sub(const <() as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _5 = BitAnd(copy _3, copy _4);\n        _6 = Eq(copy _5, const 0_usize);\n        assert(copy _6, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <() as std::mem::SizedTypeProperties>::ALIGN, copy _3) -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _7 = copy _1 as *const () (PtrToPtr);\n        _8 = copy _7 as usize (Transmute);\n        _9 = Ne(const <() as std::mem::SizedTypeProperties>::SIZE, const 0_usize);\n        _10 = Eq(copy _8, const 0_usize);\n        _11 = BitAnd(copy _10, copy _9);\n        _12 = Not(copy _11);\n        assert(copy _12, \"null pointer dereference occurred\") -> [success: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        _0 = copy (*_1);\n        return;\n    }\n}\n"
+          }
+        },
+        "borrow_zst": {
+          "CheckAlignment": {
+            "changed": true,
+            "has_misaligned_assert": true,
+            "has_null_assert": false,
+            "has_unwind_unreachable": true,
+            "has_align_const": true,
+            "has_size_const": false,
+            "after_mir": "// MIR for `borrow_zst` after CheckAlignment\n\nfn borrow_zst(_1: *const ()) -> &() {\n    debug p => _1;\n    let mut _0: &();\n    let _2: &();\n    let mut _3: *const ();\n    let mut _4: usize;\n    let mut _5: usize;\n    let mut _6: usize;\n    let mut _7: bool;\n\n    bb0: {\n        StorageLive(_2);\n        _3 = copy _1 as *const () (PtrToPtr);\n        _4 = copy _3 as usize (Transmute);\n        _5 = Sub(const <() as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _6 = BitAnd(copy _4, copy _5);\n        _7 = Eq(copy _6, const 0_usize);\n        assert(copy _7, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <() as std::mem::SizedTypeProperties>::ALIGN, copy _4) -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _2 = &(*_1);\n        _0 = &(*_2);\n        StorageDead(_2);\n        return;\n    }\n}\n"
+          },
+          "CheckNull": {
+            "changed": true,
+            "has_misaligned_assert": true,
+            "has_null_assert": true,
+            "has_unwind_unreachable": true,
+            "has_align_const": true,
+            "has_size_const": false,
+            "after_mir": "// MIR for `borrow_zst` after CheckNull\n\nfn borrow_zst(_1: *const ()) -> &() {\n    debug p => _1;\n    let mut _0: &();\n    let _2: &();\n    let mut _3: *const ();\n    let mut _4: usize;\n    let mut _5: usize;\n    let mut _6: usize;\n    let mut _7: bool;\n    let mut _8: *const ();\n    let mut _9: usize;\n    let mut _10: bool;\n    let mut _11: bool;\n    let mut _12: bool;\n\n    bb0: {\n        StorageLive(_2);\n        _3 = copy _1 as *const () (PtrToPtr);\n        _4 = copy _3 as usize (Transmute);\n        _5 = Sub(const <() as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _6 = BitAnd(copy _4, copy _5);\n        _7 = Eq(copy _6, const 0_usize);\n        assert(copy _7, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <() as std::mem::SizedTypeProperties>::ALIGN, copy _4) -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _8 = copy _1 as *const () (PtrToPtr);\n        _9 = copy _8 as usize (Transmute);\n        _10 = Eq(copy _9, const 0_usize);\n        _11 = BitAnd(copy _10, const true);\n        _12 = Not(copy _11);\n        assert(copy _12, \"null pointer dereference occurred\") -> [success: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        _2 = &(*_1);\n        _0 = &(*_2);\n        StorageDead(_2);\n        return;\n    }\n}\n"
+          }
+        },
+        "borrow_u8_field": {
+          "CheckAlignment": {
+            "changed": false,
+            "has_misaligned_assert": false,
+            "has_null_assert": false,
+            "has_unwind_unreachable": false,
+            "has_align_const": false,
+            "has_size_const": false,
+            "after_mir": "// MIR for `borrow_u8_field` after CheckAlignment\n\nfn borrow_u8_field(_1: *const Pair) -> &u8 {\n    debug p => _1;\n    let mut _0: &u8;\n    let _2: &u8;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = &((*_1).1: u8);\n        _0 = &(*_2);\n        StorageDead(_2);\n        return;\n    }\n}\n"
+          },
+          "CheckNull": {
+            "changed": true,
+            "has_misaligned_assert": false,
+            "has_null_assert": true,
+            "has_unwind_unreachable": true,
+            "has_align_const": false,
+            "has_size_const": false,
+            "after_mir": "// MIR for `borrow_u8_field` after CheckNull\n\nfn borrow_u8_field(_1: *const Pair) -> &u8 {\n    debug p => _1;\n    let mut _0: &u8;\n    let _2: &u8;\n    let mut _3: *const ();\n    let mut _4: usize;\n    let mut _5: bool;\n    let mut _6: bool;\n    let mut _7: bool;\n\n    bb0: {\n        StorageLive(_2);\n        _3 = copy _1 as *const () (PtrToPtr);\n        _4 = copy _3 as usize (Transmute);\n        _5 = Eq(copy _4, const 0_usize);\n        _6 = BitAnd(copy _5, const true);\n        _7 = Not(copy _6);\n        assert(copy _7, \"null pointer dereference occurred\") -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _2 = &((*_1).1: u8);\n        _0 = &(*_2);\n        StorageDead(_2);\n        return;\n    }\n}\n"
+          }
+        },
+        "read_u8_field": {
+          "CheckAlignment": {
+            "changed": true,
+            "has_misaligned_assert": true,
+            "has_null_assert": false,
+            "has_unwind_unreachable": true,
+            "has_align_const": true,
+            "has_size_const": false,
+            "after_mir": "// MIR for `read_u8_field` after CheckAlignment\n\nfn read_u8_field(_1: *const Pair) -> u8 {\n    debug p => _1;\n    let mut _0: u8;\n    let mut _2: *const ();\n    let mut _3: usize;\n    let mut _4: usize;\n    let mut _5: usize;\n    let mut _6: bool;\n\n    bb0: {\n        _2 = copy _1 as *const () (PtrToPtr);\n        _3 = copy _2 as usize (Transmute);\n        _4 = Sub(const <Pair as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _5 = BitAnd(copy _3, copy _4);\n        _6 = Eq(copy _5, const 0_usize);\n        assert(copy _6, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <Pair as std::mem::SizedTypeProperties>::ALIGN, copy _3) -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _0 = copy ((*_1).1: u8);\n        return;\n    }\n}\n"
+          },
+          "CheckNull": {
+            "changed": true,
+            "has_misaligned_assert": true,
+            "has_null_assert": true,
+            "has_unwind_unreachable": true,
+            "has_align_const": true,
+            "has_size_const": true,
+            "after_mir": "// MIR for `read_u8_field` after CheckNull\n\nfn read_u8_field(_1: *const Pair) -> u8 {\n    debug p => _1;\n    let mut _0: u8;\n    let mut _2: *const ();\n    let mut _3: usize;\n    let mut _4: usize;\n    let mut _5: usize;\n    let mut _6: bool;\n    let mut _7: *const ();\n    let mut _8: usize;\n    let mut _9: bool;\n    let mut _10: bool;\n    let mut _11: bool;\n    let mut _12: bool;\n\n    bb0: {\n        _2 = copy _1 as *const () (PtrToPtr);\n        _3 = copy _2 as usize (Transmute);\n        _4 = Sub(const <Pair as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _5 = BitAnd(copy _3, copy _4);\n        _6 = Eq(copy _5, const 0_usize);\n        assert(copy _6, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <Pair as std::mem::SizedTypeProperties>::ALIGN, copy _3) -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _7 = copy _1 as *const () (PtrToPtr);\n        _8 = copy _7 as usize (Transmute);\n        _9 = Ne(const <Pair as std::mem::SizedTypeProperties>::SIZE, const 0_usize);\n        _10 = Eq(copy _8, const 0_usize);\n        _11 = BitAnd(copy _10, copy _9);\n        _12 = Not(copy _11);\n        assert(copy _12, \"null pointer dereference occurred\") -> [success: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        _0 = copy ((*_1).1: u8);\n        return;\n    }\n}\n"
+          }
+        }
+      }
+    },
+    "p2_runtime_ub_checks": {
+      "compile_rc": 0,
+      "cases": {
+        "misaligned": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": "\nthread 'main' (2803233) panicked at <TMP>/p2_ub_check_runtime.rs:4:5:\nmisaligned pointer dereference: address must be a multiple of 0x4 but is 0x7ffee6ca6c15\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting."
+        },
+        "null": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": "\nthread 'main' (2803234) panicked at <TMP>/p2_ub_check_runtime.rs:4:5:\nnull pointer dereference occurred\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting."
+        },
+        "null_zst_read": {
+          "rc": 0,
+          "stdout": "ZST_READ_OK",
+          "stderr_head": ""
+        },
+        "null_zst_borrow": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": "\nthread 'main' (2803236) panicked at <TMP>/p2_ub_check_runtime.rs:26:35:\nnull pointer dereference occurred\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting."
+        },
+        "misaligned_borrow_u8_field": {
+          "rc": 0,
+          "stdout": "BORROW_U8_FIELD=170",
+          "stderr_head": ""
+        }
+      }
+    },
+    "p3_terminator_statement_only_gap": {
+      "compile_rc": 0,
+      "has_broken_mir": false,
+      "stderr_head": "",
+      "passes": {
+        "CheckAlignment": {
+          "changed": false,
+          "before_mir": "// MIR for `call_arg_deref_terminator` before CheckAlignment\n\nfn call_arg_deref_terminator(_1: *const u32) -> u32 {\n    let mut _0: u32;\n\n    bb0: {\n        _0 = sink(copy (*_1)) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        return;\n    }\n}\n",
+          "after_mir": "// MIR for `call_arg_deref_terminator` after CheckAlignment\n\nfn call_arg_deref_terminator(_1: *const u32) -> u32 {\n    let mut _0: u32;\n\n    bb0: {\n        _0 = sink(copy (*_1)) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        return;\n    }\n}\n"
+        },
+        "CheckNull": {
+          "changed": false,
+          "before_mir": "// MIR for `call_arg_deref_terminator` before CheckNull\n\nfn call_arg_deref_terminator(_1: *const u32) -> u32 {\n    let mut _0: u32;\n\n    bb0: {\n        _0 = sink(copy (*_1)) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        return;\n    }\n}\n",
+          "after_mir": "// MIR for `call_arg_deref_terminator` after CheckNull\n\nfn call_arg_deref_terminator(_1: *const u32) -> u32 {\n    let mut _0: u32;\n\n    bb0: {\n        _0 = sink(copy (*_1)) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        return;\n    }\n}\n"
+        }
+      }
+    }
+  }
+}
