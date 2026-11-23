@@ -1165,3 +1165,143 @@ fn taint_monoid_combines_all_three_allow_flags_in_canonical_order() {
         "pre-sandbox failure must omit elaboration_sandbox: {receipt}"
     );
 }
+
+#[test]
+fn verify_rejects_smuggled_env_key_in_request_json() {
+    use std::fs;
+
+    let project = tempfile::tempdir().unwrap();
+    let request = project.path().join("request.json");
+    fs::write(
+        &request,
+        serde_json::to_vec(&serde_json::json!({
+            "schema_version": 1,
+            "compilation": {
+                "source_root": ".",
+                "crate_root": "lib.rs",
+                "crate_name": "demo",
+                "env": { "A=B": "C" },
+                "source_files": ["lib.rs"]
+            },
+            "scope": { "kind": "selected_unit", "roots": ["f"] },
+            "proof": {
+                "source_root": ".",
+                "sources": []
+            }
+        }))
+        .unwrap(),
+    )
+    .unwrap();
+    let mut cmd = command(Route::Direct, project.path());
+    cmd.args(["verify", "--request"]).arg(&request);
+    #[cfg(not(feature = "setup"))]
+    cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+    let output = cmd.output().unwrap();
+    assert_result(&output, 1, "", "");
+    let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(receipt["status"], "unsupported", "{receipt}");
+    assert_eq!(receipt["phase"], "request", "{receipt}");
+    assert!(
+        receipt["detail"].as_str().unwrap_or("").contains("must not contain '='"),
+        "{receipt}"
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
+    use std::fs;
+    use std::os::unix::fs::PermissionsExt;
+
+    let project = tempfile::tempdir().unwrap();
+    fs::write(project.path().join("lib.rs"), b"pub fn f() -> u64 { 0 }\n").unwrap();
+    fs::write(project.path().join("Spec.lean"), b"").unwrap();
+    fs::write(project.path().join("Proof.lean"), b"").unwrap();
+    let sysroot = project.path().join("sysroot");
+    fs::create_dir_all(&sysroot).unwrap();
+    let fake_lean = project.path().join("lean");
+    fs::write(&fake_lean, b"#!/bin/sh\nexit 0\n").unwrap();
+    fs::set_permissions(&fake_lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+    let recorded_args = project.path().join("capture_args.txt");
+    let fake_capture = project.path().join("fake-capture");
+    // Emit a syntactically valid schema-4 capture manifest whose
+    // `configuration.env` disagrees with the requested `--env` binding.
+    let script = format!(
+        "#!/bin/sh\n\
+         out_dir=\"\"\n\
+         : > \"{args_file}\"\n\
+         while [ \"$#\" -gt 0 ]; do\n\
+           printf '%s\\n' \"$1\" >> \"{args_file}\"\n\
+           if [ \"$1\" = \"--out-dir\" ]; then\n\
+             shift\n\
+             out_dir=\"$1\"\n\
+             printf '%s\\n' \"$1\" >> \"{args_file}\"\n\
+           fi\n\
+           shift\n\
+         done\n\
+         mkdir -p \"$out_dir\"\n\
+         cat > \"$out_dir/capture.json\" <<'JSON'\n\
+         {{\n\
+           \"schema_version\": 4,\n\
+           \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\n\
+           \"configuration\": {{\n\
+             \"crate_name\": \"demo\",\n\
+             \"target\": \"x86_64-unknown-linux-gnu\",\n\
+             \"edition\": \"2024\",\n\
+             \"cfg\": [],\n\
+             \"env\": {{\"CARGO_PKG_VERSION\": \"0.0.0-mismatch\"}}\n\
+           }},\n\
+           \"source_files\": [],\n\
+           \"census\": [],\n\
+           \"selected\": [],\n\
+           \"program\": {{\"scope\": {{\"kind\": \"selected_unit\", \"roots\": [\"f\"]}}, \"bodies\": []}}\n\
+         }}\n\
+         JSON\n\
+         printf '{{\"status\":\"captured\"}}\\n'\n",
+        args_file = recorded_args.display(),
+    );
+    fs::write(&fake_capture, script).unwrap();
+    fs::set_permissions(&fake_capture, fs::Permissions::from_mode(0o755)).unwrap();
+
+    let output = command(Route::Direct, project.path())
+        .args([
+            "verify",
+            "--capture",
+            fake_capture.to_str().unwrap(),
+            "--sysroot",
+            sysroot.to_str().unwrap(),
+            "--lean",
+            fake_lean.to_str().unwrap(),
+            "rustc",
+            "lib.rs",
+            "--crate-name",
+            "demo",
+            "--env",
+            "CARGO_PKG_VERSION=0.8.64",
+            "--select",
+            "f",
+            "--spec-file",
+            "Spec=Spec.lean",
+            "--proof-file",
+            "Proof=Proof.lean",
+        ])
+        .output()
+        .unwrap();
+    assert_result(&output, 2, "", "");
+    let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(receipt["status"], "tool_failed", "{receipt}");
+    assert_eq!(receipt["phase"], "capture", "{receipt}");
+    assert!(
+        receipt["detail"]
+            .as_str()
+            .unwrap_or("")
+            .contains("capture differs from the requested compilation or scope"),
+        "{receipt}"
+    );
+    let args_text = fs::read_to_string(&recorded_args).unwrap();
+    assert!(
+        args_text.lines().any(|line| line == "--env=CARGO_PKG_VERSION=0.8.64"),
+        "expected --env=CARGO_PKG_VERSION=0.8.64 in capture args:\n{args_text}"
+    );
+}

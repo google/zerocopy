@@ -332,6 +332,7 @@ fn whole_crate_item(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract
 
 struct Callbacks<'a> {
     args: &'a Args,
+    declared_env: &'a BTreeMap<String, String>,
     verified_sysroot: &'a Path,
     verified_compiler: &'a identity::VerifiedCompiler,
     scope: &'a ir::Scope,
@@ -352,6 +353,17 @@ impl rustc_driver::Callbacks for Callbacks<'_> {
                 reads.tool_errors.push(reason.clone());
             }
             EarlyDiagCtxt::new(config.opts.error_format).early_fatal(reason);
+        }
+        // Populate `rustc`'s logical compile-time environment directly instead
+        // of mutating process environment variables or passing `--env-set`
+        // through argv. `lookup_env` checks `cx.sess.opts.logical_env.get(var)`
+        // before falling back to `std::env::var(var)`, so explicit `--env`
+        // bindings override ambient values without exposing them to the
+        // compiler process environment or response-file expansion.
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_builtin_macros/src/env.rs#L21-L29
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/config.rs#L1436
+        for (key, value) in self.declared_env {
+            config.opts.logical_env.insert(key.clone(), value.clone());
         }
         config.override_queries = Some(override_queries);
         config.file_loader = Some(Box::new(RecordingLoader::new(
@@ -381,6 +393,7 @@ impl rustc_driver::Callbacks for Callbacks<'_> {
         self.result = Some(collect(
             tcx,
             self.args,
+            self.declared_env,
             self.verified_sysroot,
             self.verified_compiler,
             self.scope,
@@ -447,6 +460,11 @@ fn validate_compiler_args(compiler_args: &[String]) -> Result<(), Failure> {
                 "external crate and library search arguments are forbidden: {arg}"
             )));
         }
+        if arg == "--env-set" || arg.starts_with("--env-set=") {
+            return Err(Failure::tool(format!(
+                "raw compiler --env-set arguments are forbidden: {arg}"
+            )));
+        }
         if arg == "--crate-type"
             || (arg.starts_with("--crate-type=")
                 && !matches!(arg.as_str(), "--crate-type=lib" | "--crate-type=rlib"))
@@ -479,6 +497,9 @@ fn validate_compiler_options(opts: &Options) -> Result<(), String> {
     }
     if !opts.unstable_opts.mir_preserve_ub {
         return Err("-Zmir-preserve-ub must be enabled during capture".into());
+    }
+    if !opts.logical_env.is_empty() {
+        return Err("raw compiler --env-set flags are forbidden during capture".into());
     }
     Ok(())
 }
@@ -636,9 +657,65 @@ fn verify_session_sysroot(
     Ok(sysroot)
 }
 
+/// Verify that every compile-time environment variable read recorded in
+/// `tcx.sess.env_depinfo` matches an explicitly declared `--env KEY=VALUE`
+/// binding.
+///
+/// `rustc` records `(var, value.as_ref().ok().copied())` for both `env!` and
+/// `option_env!`, including absent variables (`None`). Requiring every
+/// observed key to exist in `declared` with an exact `Some(expected)` match
+/// keeps undeclared reads—whether present or absent in the ambient
+/// environment—fail-closed while permitting explicitly bound values.
+fn check_env_depinfo<'a>(
+    declared: &BTreeMap<String, String>,
+    observed: impl IntoIterator<Item = (&'a str, Option<&'a str>)>,
+) -> Result<(), Failure> {
+    let mut entries: Vec<(&'a str, Option<&'a str>)> = observed.into_iter().collect();
+    entries.sort_unstable();
+    for (name, value) in entries {
+        let Some(expected) = declared.get(name) else {
+            return Err(Failure::unsupported(format!(
+                "environment-dependent source inputs are unsupported: undeclared variable {name}"
+            )));
+        };
+        if value != Some(expected.as_str()) {
+            return Err(Failure::unsupported(format!(
+                "environment-dependent source inputs are unsupported: observed value for {name} \
+                 disagreed with declared --env binding"
+            )));
+        }
+    }
+    Ok(())
+}
+
+/// Verify that every emitted or whole-crate-admitted `EnumTy.id` maps to a
+/// unique local enum definition in the compiled crate.
+fn check_admitted_enum_collisions(
+    tcx: TyCtxt<'_>,
+    all_local_enums: &BTreeMap<u32, Vec<LocalDefId>>,
+    admitted_enum_ids: &BTreeSet<u32>,
+) -> Result<(), Failure> {
+    for &id in admitted_enum_ids {
+        let Some(defs) = all_local_enums.get(&id) else {
+            return Err(Failure::tool(format!(
+                "captured enum id {id} has no matching local enum definition"
+            )));
+        };
+        if defs.len() > 1 {
+            return Err(Failure::unsupported(format!(
+                "enum identity collision: {} and {} share id {id}",
+                tcx.def_path_str(defs[0]),
+                tcx.def_path_str(defs[1]),
+            )));
+        }
+    }
+    Ok(())
+}
+
 fn collect(
     tcx: TyCtxt<'_>,
     args: &Args,
+    declared_env: &BTreeMap<String, String>,
     verified_sysroot: &Path,
     verified_compiler: &identity::VerifiedCompiler,
     scope: &ir::Scope,
@@ -703,23 +780,24 @@ fn collect(
     let mut unsupported = Vec::new();
     // `extract::ty` admits only crate-local enums and keys each one by
     // `extract::enum_id`, so every emitted `EnumTy.id` belongs to a definition
-    // visited here. Refusing a key shared by two local enum definitions,
-    // whether or not either is captured, makes each emitted key denote one
-    // enum. Distinct definitions can share a key through digest truncation or
-    // an identical printed path.
-    let mut enum_ids = BTreeMap::new();
+    // visited here. Record all local enum definitions by key, then after
+    // admission refuse any emitted (or whole-crate-admitted) key shared by two
+    // local definitions. That preserves global uniqueness for every key that
+    // enters `ir::Program` without letting unreferenced colliding enums (such
+    // as macro-expanded `const _: () = { enum ... }` blocks) abort unrelated
+    // selected-unit captures.
+    let mut enum_ids: BTreeMap<u32, Vec<LocalDefId>> = BTreeMap::new();
+    let mut admitted_enum_ids = BTreeSet::new();
     for def in tcx.iter_local_def_id() {
         let path = tcx.def_path_str(def);
         let kind = tcx.def_kind(def);
-        if matches!(kind, DefKind::Enum) {
+        let enum_key = if matches!(kind, DefKind::Enum) {
             let id = extract::enum_id(tcx, def.to_def_id());
-            if let Some(previous) = enum_ids.insert(id, def) {
-                return Err(Failure::unsupported(format!(
-                    "enum identity collision: {} and {path} share id {id}",
-                    tcx.def_path_str(previous)
-                )));
-            }
-        }
+            enum_ids.entry(id).or_default().push(def);
+            Some(id)
+        } else {
+            None
+        };
         let has_body = body_owners.contains(&def.local_def_index.as_u32());
         let is_required = required(tcx, def, kind, has_body);
         // Selected-unit claims cover only the requested callable bodies. Keep
@@ -756,7 +834,11 @@ fn collect(
         };
         match admission {
             Ok(()) if callable(kind) => selected_defs.push(def),
-            Ok(()) => {}
+            Ok(()) => {
+                if let Some(id) = enum_key {
+                    admitted_enum_ids.insert(id);
+                }
+            }
             Err(reason) => unsupported.push(ir::Unsupported {
                 def_id: def.local_def_index.as_u32(),
                 path,
@@ -822,19 +904,39 @@ fn collect(
             "crate-local native libraries are unsupported",
         ));
     }
-    // The manifest binds file bytes and explicit flags, not ambient environment
-    // values. rustc records "Environment variables accessed during the build
-    // and their values when they exist"; accepting these would leave part of
-    // the compilation subject outside the input binding. `env!` and
-    // `option_env!` both insert `(var, value.as_ref().ok().copied())`, so an
-    // absent variable is recorded too: setting it would change the expansion.
+    for body in &bodies {
+        body.collect_enum_ids(&mut admitted_enum_ids);
+    }
+    check_admitted_enum_collisions(tcx, &enum_ids, &admitted_enum_ids)?;
+    // Defense in depth: confirm `rustc`'s logical environment still matches the
+    // explicit `--env` map installed in `Callbacks::config`.
+    if tcx.sess.opts.logical_env.len() != declared_env.len()
+        || !declared_env
+            .iter()
+            .all(|(k, v)| tcx.sess.opts.logical_env.get(k) == Some(v))
+    {
+        return Err(Failure::tool(
+            "compiler logical environment diverged from declared --env bindings",
+        ));
+    }
+    // The manifest binds file bytes, explicit flags, and explicitly declared
+    // `--env KEY=VALUE` bindings, never ambient environment values. rustc
+    // records "Environment variables accessed during the build and their values
+    // when they exist"; `env!` and `option_env!` both insert
+    // `(var, value.as_ref().ok().copied())`, so undeclared variables—present or
+    // absent—are refused here while declared bindings are checked against the
+    // exact value rustc observed.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/session.rs#L155-L159
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_builtin_macros/src/env.rs#L54-L55
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_builtin_macros/src/env.rs#L133-L134
-    if !tcx.sess.env_depinfo.borrow().is_empty() {
-        return Err(Failure::unsupported(
-            "environment-dependent source inputs are unsupported",
-        ));
+    {
+        let env_depinfo = tcx.sess.env_depinfo.borrow();
+        check_env_depinfo(
+            declared_env,
+            env_depinfo
+                .iter()
+                .map(|(var, value)| (var.as_str(), value.as_ref().map(rustc_span::Symbol::as_str))),
+        )?;
     }
     let reads = reads
         .lock()
@@ -905,6 +1007,7 @@ fn collect(
             edition: args.edition.clone(),
             target: args.target.clone(),
             cfg: args.cfg.clone(),
+            env: declared_env.clone(),
             opt_level: 0,
             debug_assertions: false,
             overflow_checks: false,
@@ -938,6 +1041,7 @@ fn check_current_inputs(reads: &Reads) -> Result<(), Failure> {
 
 pub(crate) fn run(
     args: &Args,
+    declared_env: &BTreeMap<String, String>,
     verified_sysroot: &Path,
     verified_compiler: &identity::VerifiedCompiler,
 ) -> Result<ir::Manifest, Failure> {
@@ -999,6 +1103,7 @@ pub(crate) fn run(
     let reads = Arc::new(Mutex::new(Reads::default()));
     let mut callbacks = Callbacks {
         args,
+        declared_env,
         verified_sysroot,
         verified_compiler,
         scope: &scope,
@@ -1079,6 +1184,8 @@ mod tests {
             vec!["--extern=foo=libfoo.rlib".to_owned()],
             vec!["-L".to_owned(), "/tmp/deps".to_owned()],
             vec!["-L/tmp/deps".to_owned()],
+            vec!["--env-set".to_owned(), "FOO=bar".to_owned()],
+            vec!["--env-set=FOO=bar".to_owned()],
             vec!["--crate-type=proc-macro".to_owned()],
             vec!["--crate-type=dylib".to_owned()],
             vec!["--crate-type".to_owned(), "proc-macro".to_owned()],
@@ -1103,6 +1210,58 @@ mod tests {
 
         opts.unstable_opts.mir_preserve_ub = true;
         assert!(validate_compiler_options(&opts).is_ok());
+
+        opts.logical_env.insert("FOO".to_owned(), "bar".to_owned());
+        let err = validate_compiler_options(&opts).unwrap_err();
+        assert!(err.contains("--env-set"), "{err}");
+    }
+
+    #[test]
+    fn env_depinfo_gate_requires_exact_declared_bindings() {
+        let empty = BTreeMap::new();
+        assert!(check_env_depinfo(&empty, []).is_ok());
+
+        let declared = BTreeMap::from([
+            ("CARGO_PKG_VERSION".to_owned(), "0.8.64".to_owned()),
+            ("UNUSED".to_owned(), "val".to_owned()),
+        ]);
+        assert!(check_env_depinfo(&declared, []).is_ok());
+        assert!(check_env_depinfo(&declared, [("CARGO_PKG_VERSION", Some("0.8.64"))]).is_ok());
+
+        let undeclared_present =
+            check_env_depinfo(&declared, [("AMBIENT", Some("secret"))]).unwrap_err();
+        assert_eq!(undeclared_present.status, "unsupported");
+        assert!(
+            undeclared_present.diagnostics[0]
+                .contains("environment-dependent source inputs are unsupported")
+                && undeclared_present.diagnostics[0].contains("AMBIENT"),
+            "{undeclared_present:?}"
+        );
+
+        let undeclared_absent = check_env_depinfo(&declared, [("MISSING", None)]).unwrap_err();
+        assert_eq!(undeclared_absent.status, "unsupported");
+        assert!(
+            undeclared_absent.diagnostics[0]
+                .contains("environment-dependent source inputs are unsupported")
+                && undeclared_absent.diagnostics[0].contains("MISSING"),
+            "{undeclared_absent:?}"
+        );
+
+        let mismatched =
+            check_env_depinfo(&declared, [("CARGO_PKG_VERSION", Some("0.8.65"))]).unwrap_err();
+        assert_eq!(mismatched.status, "unsupported");
+        assert!(
+            mismatched.diagnostics[0].contains("disagreed with declared --env binding"),
+            "{mismatched:?}"
+        );
+
+        let observed_none =
+            check_env_depinfo(&declared, [("CARGO_PKG_VERSION", None)]).unwrap_err();
+        assert_eq!(observed_none.status, "unsupported");
+        assert!(
+            observed_none.diagnostics[0].contains("disagreed with declared --env binding"),
+            "{observed_none:?}"
+        );
     }
 
     #[cfg(unix)]

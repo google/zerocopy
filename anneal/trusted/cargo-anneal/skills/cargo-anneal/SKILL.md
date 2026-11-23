@@ -46,8 +46,8 @@ cargo anneal verify --request path/to/request.json > path/to/new-receipt.json
 
 Build systems that already resolve source files and module mappings (including
 symlinked runfiles) can invoke `cargo anneal verify rustc <crate_root>
---crate-name <name> --spec-file <Mod>=<path> --proof-file <Mod>=<path> ...`
-directly instead of writing `request.json`.
+--crate-name <name> [--env KEY=VALUE ...] --spec-file <Mod>=<path>
+--proof-file <Mod>=<path> ...` directly instead of writing `request.json`.
 
 ## Create a request and proof when needed
 
@@ -60,11 +60,12 @@ returns zero in the captured MIR model.
    "roots": ["module::function"]}` with non-empty crate-relative Rust
    definition paths (`UnitTheorem`), or to `{"kind": "crate"}` with no `roots`
    field (`CrateTheorem` across the whole crate). Set the Rust edition, target,
-   and `cfg` for the intended compilation, and include `crate_root` in
-   `source_files`. The `proof` section lists Lean modules with `specification`
-   or `proof` roles. Each `source_root` resolves relative to the request file's
-   directory or to an existing out-of-tree directory; list regular files by
-   clean relative paths inside their canonicalized `source_root`.
+   `cfg`, and optional `env` (`KEY -> VALUE` map for `env!`/`option_env!`) for
+   the intended compilation, and include `crate_root` in `source_files`. The
+   `proof` section lists Lean modules with `specification` or `proof` roles.
+   Each `source_root` resolves relative to the request file's directory or to an
+   existing out-of-tree directory; list regular files by clean relative paths
+   inside their canonicalized `source_root`.
 2. Write the property and proof in their declared Lean modules. The default
    declarations are `Spec.specs` and `Proof.verify`. Express actual caller
    preconditions for an `unsafe` function in `Specs.safety`. A predicate of
