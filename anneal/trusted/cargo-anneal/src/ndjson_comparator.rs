@@ -146,25 +146,25 @@ const CRATE_MK_NAME: &str = "Trusted.MirSemantics.Crate.mk";
 
 /// Interned canonical identifier for a Lean `Name` in [`CanonicalArena`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct CanonNameId(u32);
+pub struct CanonNameId(pub(crate) u32);
 
 /// Interned canonical identifier for a Lean `Level` in [`CanonicalArena`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct CanonLevelId(u32);
+pub struct CanonLevelId(pub(crate) u32);
 
 /// Interned canonical identifier for a Lean `Expr` in [`CanonicalArena`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct CanonExprId(u32);
+pub struct CanonExprId(pub(crate) u32);
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-enum CanonName {
+pub(crate) enum CanonName {
     Anonymous,
     Str(CanonNameId, String),
     Num(CanonNameId, u64),
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-enum CanonLevel {
+pub(crate) enum CanonLevel {
     Zero,
     Succ(CanonLevelId),
     Max(CanonLevelId, CanonLevelId),
@@ -193,7 +193,7 @@ pub enum BinderInfo {
 /// on export traversal order. All fields are still strictly validated during
 /// NDJSON parsing before interning.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-enum CanonExpr {
+pub(crate) enum CanonExpr {
     BVar(u64),
     Sort(CanonLevelId),
     Const(CanonNameId, Vec<CanonLevelId>),
@@ -309,6 +309,7 @@ pub enum CanonConstInfo {
         num_indices: u64,
         all: Vec<CanonNameId>,
         ctors: Vec<CanonNameId>,
+        recs: Vec<CanonNameId>,
         num_nested: u64,
         is_rec: bool,
         is_unsafe: bool,
@@ -340,7 +341,7 @@ pub enum CanonConstInfo {
 }
 
 impl CanonConstInfo {
-    fn kind_label(&self) -> &'static str {
+    pub(crate) fn kind_label(&self) -> &'static str {
         match self {
             Self::Axiom { .. } => "axiom",
             Self::Defn { .. } => "def",
@@ -353,7 +354,7 @@ impl CanonConstInfo {
         }
     }
 
-    fn is_unsafe_or_partial(&self) -> bool {
+    pub(crate) fn is_unsafe_or_partial(&self) -> bool {
         match self {
             Self::Axiom { is_unsafe, .. }
             | Self::Opaque { is_unsafe, .. }
@@ -364,36 +365,68 @@ impl CanonConstInfo {
             Self::Thm { .. } | Self::Quot { .. } => false,
         }
     }
+
+    pub(crate) fn level_params(&self) -> &[CanonNameId] {
+        match self {
+            Self::Axiom { level_params, .. }
+            | Self::Defn { level_params, .. }
+            | Self::Thm { level_params, .. }
+            | Self::Opaque { level_params, .. }
+            | Self::Quot { level_params, .. }
+            | Self::Induct { level_params, .. }
+            | Self::Ctor { level_params, .. }
+            | Self::Rec { level_params, .. } => level_params,
+        }
+    }
+
+    pub(crate) fn ty(&self) -> CanonExprId {
+        match self {
+            Self::Axiom { ty, .. }
+            | Self::Defn { ty, .. }
+            | Self::Thm { ty, .. }
+            | Self::Opaque { ty, .. }
+            | Self::Quot { ty, .. }
+            | Self::Induct { ty, .. }
+            | Self::Ctor { ty, .. }
+            | Self::Rec { ty, .. } => *ty,
+        }
+    }
 }
 
 /// Shared hash-consing arena normalizing per-file NDJSON table indices into
 /// canonical identities.
 #[derive(Debug)]
 pub struct CanonicalArena {
-    names: Vec<CanonName>,
+    pub(crate) names: Vec<CanonName>,
     name_ids: HashMap<CanonName, CanonNameId>,
     name_strings: Vec<String>,
-    string_to_name: HashMap<String, CanonNameId>,
-    levels: Vec<CanonLevel>,
+    pub(crate) levels: Vec<CanonLevel>,
     level_ids: HashMap<CanonLevel, CanonLevelId>,
-    exprs: Vec<CanonExpr>,
+    pub(crate) exprs: Vec<CanonExpr>,
     expr_ids: HashMap<CanonExpr, CanonExprId>,
-    anonymous_name: CanonNameId,
-    zero_level: CanonLevelId,
-    nat_name: CanonNameId,
-    string_name: CanonNameId,
-    opt_param_name: CanonNameId,
+    pub(crate) anonymous_name: CanonNameId,
+    pub(crate) zero_level: CanonLevelId,
+    pub(crate) nat_name: CanonNameId,
+    pub(crate) nat_zero_name: CanonNameId,
+    pub(crate) nat_succ_name: CanonNameId,
+    pub(crate) string_name: CanonNameId,
+    pub(crate) string_of_list_name: CanonNameId,
+    pub(crate) char_name: CanonNameId,
+    pub(crate) char_of_nat_name: CanonNameId,
+    pub(crate) list_name: CanonNameId,
+    pub(crate) list_nil_name: CanonNameId,
+    pub(crate) list_cons_name: CanonNameId,
+    pub(crate) opt_param_name: CanonNameId,
 }
 
 impl CanonicalArena {
     /// Construct an arena pre-seeded with `Name.anonymous`, `Level.zero`,
-    /// `Nat`, `String`, and `optParam`.
+    /// literal desugaring primitives, and `optParam`.
     pub fn new() -> Self {
         let mut arena = Self {
             names: Vec::with_capacity(4096),
             name_ids: HashMap::with_capacity(4096),
             name_strings: Vec::with_capacity(4096),
-            string_to_name: HashMap::with_capacity(4096),
             levels: Vec::with_capacity(256),
             level_ids: HashMap::with_capacity(256),
             exprs: Vec::with_capacity(16384),
@@ -401,18 +434,34 @@ impl CanonicalArena {
             anonymous_name: CanonNameId(0),
             zero_level: CanonLevelId(0),
             nat_name: CanonNameId(0),
+            nat_zero_name: CanonNameId(0),
+            nat_succ_name: CanonNameId(0),
             string_name: CanonNameId(0),
+            string_of_list_name: CanonNameId(0),
+            char_name: CanonNameId(0),
+            char_of_nat_name: CanonNameId(0),
+            list_name: CanonNameId(0),
+            list_nil_name: CanonNameId(0),
+            list_cons_name: CanonNameId(0),
             opt_param_name: CanonNameId(0),
         };
         arena.anonymous_name = arena.intern_name(CanonName::Anonymous);
         arena.zero_level = arena.intern_level(CanonLevel::Zero);
         arena.nat_name = arena.intern_dotted_name("Nat");
+        arena.nat_zero_name = arena.intern_dotted_name("Nat.zero");
+        arena.nat_succ_name = arena.intern_dotted_name("Nat.succ");
         arena.string_name = arena.intern_dotted_name("String");
+        arena.string_of_list_name = arena.intern_dotted_name("String.ofList");
+        arena.char_name = arena.intern_dotted_name("Char");
+        arena.char_of_nat_name = arena.intern_dotted_name("Char.ofNat");
+        arena.list_name = arena.intern_dotted_name("List");
+        arena.list_nil_name = arena.intern_dotted_name("List.nil");
+        arena.list_cons_name = arena.intern_dotted_name("List.cons");
         arena.opt_param_name = arena.intern_dotted_name("optParam");
         arena
     }
 
-    fn intern_name(&mut self, name: CanonName) -> CanonNameId {
+    pub(crate) fn intern_name(&mut self, name: CanonName) -> CanonNameId {
         if let Some(&id) = self.name_ids.get(&name) {
             return id;
         }
@@ -430,15 +479,15 @@ impl CanonicalArena {
         let id = CanonNameId(self.names.len() as u32);
         self.names.push(name.clone());
         self.name_ids.insert(name, id);
-        self.string_to_name.insert(rendered.clone(), id);
         self.name_strings.push(rendered);
         id
     }
 
-    /// Intern a dotted ASCII Lean name such as `"Expected.claim"`.
+    /// Intern a dotted ASCII Lean name such as `"Expected.claim"` into its
+    /// exact multi-segment `CanonName::Str` spine.
     pub fn intern_dotted_name(&mut self, dotted: &str) -> CanonNameId {
-        if let Some(&id) = self.string_to_name.get(dotted) {
-            return id;
+        if dotted.is_empty() {
+            return self.anonymous_name;
         }
         let mut cur = self.anonymous_name;
         for seg in dotted.split('.') {
@@ -454,7 +503,7 @@ impl CanonicalArena {
 
     /// Strip Lean's `_private.<module>.<idx>` prefix and any `_root_` prefix,
     /// mirroring `TrustedBoundary.privateToUserName`.
-    fn strip_private_and_root(&self, id: CanonNameId) -> &str {
+    pub(crate) fn strip_private_and_root(&self, id: CanonNameId) -> &str {
         let mut parts: Vec<(bool, &str)> = Vec::new();
         let mut cur = id;
         loop {
@@ -496,7 +545,7 @@ impl CanonicalArena {
 
     /// Return `true` if constant `id` belongs to `module` (either as
     /// `<module>.*` / `<module>` or `_private.<module>.<idx>.*`).
-    fn belongs_to_module(&self, id: CanonNameId, module: &str) -> bool {
+    pub(crate) fn belongs_to_module(&self, id: CanonNameId, module: &str) -> bool {
         let full = self.name_str(id);
         if full == module
             || (full.starts_with(module) && full.as_bytes().get(module.len()) == Some(&b'.'))
@@ -526,7 +575,7 @@ impl CanonicalArena {
         }
     }
 
-    fn intern_level(&mut self, level: CanonLevel) -> CanonLevelId {
+    pub(crate) fn intern_level(&mut self, level: CanonLevel) -> CanonLevelId {
         if let Some(&id) = self.level_ids.get(&level) {
             return id;
         }
@@ -536,7 +585,7 @@ impl CanonicalArena {
         id
     }
 
-    fn intern_expr(&mut self, expr: CanonExpr) -> CanonExprId {
+    pub(crate) fn intern_expr(&mut self, expr: CanonExpr) -> CanonExprId {
         if let Some(&id) = self.expr_ids.get(&expr) {
             return id;
         }
@@ -553,7 +602,7 @@ impl CanonicalArena {
     /// the elaboration-only default term `d` and traverse only `α` (matching
     /// `ProofLib/TrustedClosure.lean`), preventing elaboration defaults from
     /// polluting statement-origin checks.
-    fn collect_expr_consts(
+    pub(crate) fn collect_expr_consts(
         &self,
         root_expr: CanonExprId,
         strip_opt_params: bool,
@@ -598,9 +647,17 @@ impl CanonicalArena {
                 }
                 CanonExpr::NatLit(_) => {
                     out.insert(self.nat_name);
+                    out.insert(self.nat_zero_name);
+                    out.insert(self.nat_succ_name);
                 }
                 CanonExpr::StrLit(_) => {
                     out.insert(self.string_name);
+                    out.insert(self.string_of_list_name);
+                    out.insert(self.char_name);
+                    out.insert(self.char_of_nat_name);
+                    out.insert(self.list_name);
+                    out.insert(self.list_nil_name);
+                    out.insert(self.list_cons_name);
                 }
             }
         }
@@ -608,27 +665,46 @@ impl CanonicalArena {
 
     /// Collect every constant referenced by a declaration's type, value,
     /// mutual-block peers, and inductive/recursor metadata.
-    fn collect_const_deps(
+    pub(crate) fn collect_const_deps(
         &self,
         info: &CanonConstInfo,
         strip_opt_params: bool,
+    ) -> BTreeSet<CanonNameId> {
+        self.collect_const_deps_filtered(info, strip_opt_params, false)
+    }
+
+    /// Collect constants referenced by `info`, optionally skipping `Thm.value`
+    /// (`skip_thm_value = true`) when inspecting only a theorem's statement
+    /// cone without descending into its proof body.
+    pub(crate) fn collect_const_deps_filtered(
+        &self,
+        info: &CanonConstInfo,
+        strip_opt_params: bool,
+        skip_thm_value: bool,
     ) -> BTreeSet<CanonNameId> {
         let mut deps = BTreeSet::new();
         match info {
             CanonConstInfo::Axiom { ty, .. } | CanonConstInfo::Quot { ty, .. } => {
                 self.collect_expr_consts(*ty, strip_opt_params, &mut deps);
             }
+            CanonConstInfo::Thm { ty, value, all, .. } => {
+                self.collect_expr_consts(*ty, strip_opt_params, &mut deps);
+                if !skip_thm_value {
+                    self.collect_expr_consts(*value, strip_opt_params, &mut deps);
+                    deps.extend(all.iter().copied());
+                }
+            }
             CanonConstInfo::Defn { ty, value, all, .. }
-            | CanonConstInfo::Thm { ty, value, all, .. }
             | CanonConstInfo::Opaque { ty, value, all, .. } => {
                 self.collect_expr_consts(*ty, strip_opt_params, &mut deps);
                 self.collect_expr_consts(*value, strip_opt_params, &mut deps);
                 deps.extend(all.iter().copied());
             }
-            CanonConstInfo::Induct { ty, all, ctors, .. } => {
+            CanonConstInfo::Induct { ty, all, ctors, recs, .. } => {
                 self.collect_expr_consts(*ty, strip_opt_params, &mut deps);
                 deps.extend(all.iter().copied());
                 deps.extend(ctors.iter().copied());
+                deps.extend(recs.iter().copied());
             }
             CanonConstInfo::Ctor { ty, induct, .. } => {
                 self.collect_expr_consts(*ty, strip_opt_params, &mut deps);
@@ -648,7 +724,7 @@ impl CanonicalArena {
 
     /// Build the canonical `Expected.claim` application expression:
     /// `canonical_root (Trusted.MirSemantics.Crate.mk subject specification)`.
-    fn build_canonical_claim_expr(
+    pub(crate) fn build_canonical_claim_expr(
         &mut self,
         canonical_root: &str,
         subject: &str,
@@ -690,13 +766,24 @@ pub struct ExportMeta {
     pub lean_githash: String,
 }
 
+/// Atomic mutual or nested inductive family record (`types`, `ctors`, `recs`)
+/// exported as a single `{"inductive": ...}` object in NDJSON v3.1.0.
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct CanonInductiveBlock {
+    pub types: Vec<CanonNameId>,
+    pub ctors: Vec<CanonNameId>,
+    pub recs: Vec<CanonNameId>,
+}
+
 /// Parsed constant table from one NDJSON export file, interned into a shared
 /// [`CanonicalArena`].
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ExportedEnv {
     pub meta: ExportMeta,
     pub constants: HashMap<CanonNameId, CanonConstInfo>,
     pub const_order: Vec<CanonNameId>,
+    pub blocks: Vec<CanonInductiveBlock>,
+    pub inductive_blocks: HashMap<CanonNameId, usize>,
 }
 
 /// Parse one NDJSON export stream into `arena`, failing closed on malformed
@@ -714,12 +801,16 @@ pub fn parse_ndjson_reader<R: BufRead>(
     let mut expr_map: HashMap<u64, CanonExprId> = HashMap::with_capacity(16384);
     let mut constants: HashMap<CanonNameId, CanonConstInfo> = HashMap::with_capacity(1024);
     let mut const_order: Vec<CanonNameId> = Vec::with_capacity(1024);
+    let mut blocks: Vec<CanonInductiveBlock> = Vec::new();
+    let mut inductive_blocks: HashMap<CanonNameId, usize> = HashMap::new();
 
     let mut lines = reader.lines();
     let first_line = lines
         .next()
         .ok_or_else(|| Failure::policy(label, format!("{label}: empty NDJSON export")))?
-        .map_err(|e| Failure::operational(label, format!("{label}: I/O error reading line 1: {e}")))?;
+        .map_err(|e| {
+            Failure::operational(label, format!("{label}: I/O error reading line 1: {e}"))
+        })?;
     let meta = parse_meta_line(&first_line, label)?;
 
     let mut line_no: usize = 1;
@@ -737,9 +828,8 @@ pub fn parse_ndjson_reader<R: BufRead>(
         if line.is_empty() {
             continue;
         }
-        let val: Value = serde_json::from_str(&line).map_err(|e| {
-            Failure::policy(label, format!("{label}:{line_no}: invalid JSON: {e}"))
-        })?;
+        let val: Value = serde_json::from_str(&line)
+            .map_err(|e| Failure::policy(label, format!("{label}:{line_no}: invalid JSON: {e}")))?;
         let obj = val.as_object().ok_or_else(|| {
             Failure::policy(label, format!("{label}:{line_no}: expected JSON object"))
         })?;
@@ -751,12 +841,14 @@ pub fn parse_ndjson_reader<R: BufRead>(
             &mut expr_map,
             &mut constants,
             &mut const_order,
+            &mut blocks,
+            &mut inductive_blocks,
             label,
             line_no,
         )?;
     }
 
-    Ok(ExportedEnv { meta, constants, const_order })
+    Ok(ExportedEnv { meta, constants, const_order, blocks, inductive_blocks })
 }
 
 /// Parse an NDJSON export file from disk while enforcing [`MAX_NDJSON_BYTES`]
@@ -896,8 +988,9 @@ fn req_obj<'a>(
     label: &str,
     line_no: usize,
 ) -> Result<&'a serde_json::Map<String, Value>, Failure> {
-    val.as_object()
-        .ok_or_else(|| Failure::policy(label, format!("{label}:{line_no}: expected object in {ctx}")))
+    val.as_object().ok_or_else(|| {
+        Failure::policy(label, format!("{label}:{line_no}: expected object in {ctx}"))
+    })
 }
 
 fn lookup_name(
@@ -951,6 +1044,29 @@ fn lookup_name_list(
     Ok(out)
 }
 
+fn lookup_level_params(
+    arr: &[Value],
+    name_map: &HashMap<u64, CanonNameId>,
+    arena: &CanonicalArena,
+    label: &str,
+    line_no: usize,
+) -> Result<Vec<CanonNameId>, Failure> {
+    let list = lookup_name_list(arr, name_map, label, line_no)?;
+    let mut seen = BTreeSet::new();
+    for &id in &list {
+        if !seen.insert(id) {
+            return Err(Failure::policy(
+                label,
+                format!(
+                    "{label}:{line_no}: duplicate universe level parameter `{}`",
+                    arena.name_str(id)
+                ),
+            ));
+        }
+    }
+    Ok(list)
+}
+
 fn parse_binder_info(s: &str, label: &str, line_no: usize) -> Result<BinderInfo, Failure> {
     match s {
         "default" => Ok(BinderInfo::Default),
@@ -990,6 +1106,8 @@ fn parse_record(
     expr_map: &mut HashMap<u64, CanonExprId>,
     constants: &mut HashMap<CanonNameId, CanonConstInfo>,
     const_order: &mut Vec<CanonNameId>,
+    blocks: &mut Vec<CanonInductiveBlock>,
+    inductive_blocks: &mut HashMap<CanonNameId, usize>,
     label: &str,
     line_no: usize,
 ) -> Result<(), Failure> {
@@ -1268,8 +1386,13 @@ fn parse_record(
     if let Some(v) = obj.get("axiom") {
         let d = req_obj(v, "axiom", label, line_no)?;
         let name = lookup_name(name_map, req_u64(d, "name", label, line_no)?, label, line_no)?;
-        let level_params =
-            lookup_name_list(req_arr(d, "levelParams", label, line_no)?, name_map, label, line_no)?;
+        let level_params = lookup_level_params(
+            req_arr(d, "levelParams", label, line_no)?,
+            name_map,
+            arena,
+            label,
+            line_no,
+        )?;
         let ty = lookup_expr(expr_map, req_u64(d, "type", label, line_no)?, label, line_no)?;
         let is_unsafe = req_bool(d, "isUnsafe", label, line_no)?;
         return insert_const(
@@ -1285,8 +1408,13 @@ fn parse_record(
     if let Some(v) = obj.get("def") {
         let d = req_obj(v, "def", label, line_no)?;
         let name = lookup_name(name_map, req_u64(d, "name", label, line_no)?, label, line_no)?;
-        let level_params =
-            lookup_name_list(req_arr(d, "levelParams", label, line_no)?, name_map, label, line_no)?;
+        let level_params = lookup_level_params(
+            req_arr(d, "levelParams", label, line_no)?,
+            name_map,
+            arena,
+            label,
+            line_no,
+        )?;
         let ty = lookup_expr(expr_map, req_u64(d, "type", label, line_no)?, label, line_no)?;
         let value = lookup_expr(expr_map, req_u64(d, "value", label, line_no)?, label, line_no)?;
         let hints = parse_hints(d.get("hints"), label, line_no)?;
@@ -1315,8 +1443,13 @@ fn parse_record(
     if let Some(v) = obj.get("thm") {
         let d = req_obj(v, "thm", label, line_no)?;
         let name = lookup_name(name_map, req_u64(d, "name", label, line_no)?, label, line_no)?;
-        let level_params =
-            lookup_name_list(req_arr(d, "levelParams", label, line_no)?, name_map, label, line_no)?;
+        let level_params = lookup_level_params(
+            req_arr(d, "levelParams", label, line_no)?,
+            name_map,
+            arena,
+            label,
+            line_no,
+        )?;
         let ty = lookup_expr(expr_map, req_u64(d, "type", label, line_no)?, label, line_no)?;
         let value = lookup_expr(expr_map, req_u64(d, "value", label, line_no)?, label, line_no)?;
         let all = lookup_name_list(req_arr(d, "all", label, line_no)?, name_map, label, line_no)?;
@@ -1333,8 +1466,13 @@ fn parse_record(
     if let Some(v) = obj.get("opaque") {
         let d = req_obj(v, "opaque", label, line_no)?;
         let name = lookup_name(name_map, req_u64(d, "name", label, line_no)?, label, line_no)?;
-        let level_params =
-            lookup_name_list(req_arr(d, "levelParams", label, line_no)?, name_map, label, line_no)?;
+        let level_params = lookup_level_params(
+            req_arr(d, "levelParams", label, line_no)?,
+            name_map,
+            arena,
+            label,
+            line_no,
+        )?;
         let ty = lookup_expr(expr_map, req_u64(d, "type", label, line_no)?, label, line_no)?;
         let value = lookup_expr(expr_map, req_u64(d, "value", label, line_no)?, label, line_no)?;
         // Lean's `LeanExport/Parse.lean` treats missing `isUnsafe` on `opaque`
@@ -1363,8 +1501,13 @@ fn parse_record(
     if let Some(v) = obj.get("quot") {
         let d = req_obj(v, "quot", label, line_no)?;
         let name = lookup_name(name_map, req_u64(d, "name", label, line_no)?, label, line_no)?;
-        let level_params =
-            lookup_name_list(req_arr(d, "levelParams", label, line_no)?, name_map, label, line_no)?;
+        let level_params = lookup_level_params(
+            req_arr(d, "levelParams", label, line_no)?,
+            name_map,
+            arena,
+            label,
+            line_no,
+        )?;
         let ty = lookup_expr(expr_map, req_u64(d, "type", label, line_no)?, label, line_no)?;
         let kind = match req_str(d, "kind", label, line_no)? {
             "type" => QuotKind::Type,
@@ -1390,12 +1533,35 @@ fn parse_record(
     }
     if let Some(v) = obj.get("inductive") {
         let d = req_obj(v, "inductive", label, line_no)?;
-        for t in req_arr(d, "types", label, line_no)? {
+        let raw_types = req_arr(d, "types", label, line_no)?;
+        if raw_types.is_empty() {
+            return Err(Failure::policy(
+                label,
+                format!("{label}:{line_no}: inductive record must declare at least one type"),
+            ));
+        }
+        let raw_ctors = req_arr(d, "ctors", label, line_no)?;
+        let raw_recs = req_arr(d, "recs", label, line_no)?;
+
+        let mut block_recs = Vec::with_capacity(raw_recs.len());
+        for r in raw_recs {
+            let rd = req_obj(r, "recInfo", label, line_no)?;
+            block_recs.push(lookup_name(
+                name_map,
+                req_u64(rd, "name", label, line_no)?,
+                label,
+                line_no,
+            )?);
+        }
+
+        let mut block_types = Vec::with_capacity(raw_types.len());
+        for t in raw_types {
             let td = req_obj(t, "inductInfo", label, line_no)?;
             let name = lookup_name(name_map, req_u64(td, "name", label, line_no)?, label, line_no)?;
-            let level_params = lookup_name_list(
+            let level_params = lookup_level_params(
                 req_arr(td, "levelParams", label, line_no)?,
                 name_map,
+                arena,
                 label,
                 line_no,
             )?;
@@ -1423,6 +1589,7 @@ fn parse_record(
                     num_indices,
                     all,
                     ctors,
+                    recs: block_recs.clone(),
                     num_nested,
                     is_rec,
                     is_unsafe,
@@ -1431,13 +1598,16 @@ fn parse_record(
                 label,
                 line_no,
             )?;
+            block_types.push(name);
         }
-        for c in req_arr(d, "ctors", label, line_no)? {
+        let mut block_ctors = Vec::with_capacity(raw_ctors.len());
+        for c in raw_ctors {
             let cd = req_obj(c, "ctorInfo", label, line_no)?;
             let name = lookup_name(name_map, req_u64(cd, "name", label, line_no)?, label, line_no)?;
-            let level_params = lookup_name_list(
+            let level_params = lookup_level_params(
                 req_arr(cd, "levelParams", label, line_no)?,
                 name_map,
+                arena,
                 label,
                 line_no,
             )?;
@@ -1466,13 +1636,15 @@ fn parse_record(
                 label,
                 line_no,
             )?;
+            block_ctors.push(name);
         }
-        for r in req_arr(d, "recs", label, line_no)? {
+        for r in raw_recs {
             let rd = req_obj(r, "recInfo", label, line_no)?;
             let name = lookup_name(name_map, req_u64(rd, "name", label, line_no)?, label, line_no)?;
-            let level_params = lookup_name_list(
+            let level_params = lookup_level_params(
                 req_arr(rd, "levelParams", label, line_no)?,
                 name_map,
+                arena,
                 label,
                 line_no,
             )?;
@@ -1527,6 +1699,15 @@ fn parse_record(
                 line_no,
             )?;
         }
+        let block_idx = blocks.len();
+        for &member in block_types.iter().chain(block_ctors.iter()).chain(block_recs.iter()) {
+            inductive_blocks.insert(member, block_idx);
+        }
+        blocks.push(CanonInductiveBlock {
+            types: block_types,
+            ctors: block_ctors,
+            recs: block_recs,
+        });
         return Ok(());
     }
     Err(Failure::policy(
@@ -1623,6 +1804,8 @@ pub struct NdjsonAuditVerdict {
     pub subject_closure: Vec<ClosureEntry>,
     pub model_closure: Vec<ClosureEntry>,
     pub specification_closure: Vec<ClosureEntry>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub axiom_promotion: Option<crate::m3_linker::AxiomPromotionReport>,
 }
 
 /// Single advisory anti-vacuity warning emitted by legacy `"target-audit"`.
@@ -1857,10 +2040,13 @@ pub fn validate_ndjson_verdict(
             return Err(Failure::policy("ndjson-comparator", "con-leche quorum check missing"));
         }
     }
+    if let Some(promo) = &verdict.axiom_promotion {
+        crate::m3_linker::validate_axiom_promotion_report(promo, &verdict.axioms)?;
+    }
     Ok(())
 }
 
-fn validate_axiom_list(
+pub(crate) fn validate_axiom_list(
     axioms: &[String],
     allow_sorry_in_proof: bool,
     phase: &str,
@@ -2425,12 +2611,16 @@ pub fn verify_ndjson_structure(
     })
 }
 
-struct BfsResult {
-    visited: BTreeSet<CanonNameId>,
-    parent: HashMap<CanonNameId, CanonNameId>,
+pub(crate) struct BfsResult {
+    pub(crate) visited: BTreeSet<CanonNameId>,
+    pub(crate) parent: HashMap<CanonNameId, CanonNameId>,
 }
 
-fn bfs_cone(arena: &CanonicalArena, env: &ExportedEnv, roots: &[CanonNameId]) -> BfsResult {
+pub(crate) fn bfs_cone(
+    arena: &CanonicalArena,
+    env: &ExportedEnv,
+    roots: &[CanonNameId],
+) -> BfsResult {
     let mut visited = BTreeSet::new();
     let mut parent = HashMap::new();
     let mut queue = VecDeque::new();
@@ -2456,7 +2646,7 @@ fn bfs_cone(arena: &CanonicalArena, env: &ExportedEnv, roots: &[CanonNameId]) ->
 
 /// Format a shortest-path dependency chain from a root declaration to `target`
 /// (harvested from `ProofLib/TrustedClosure.lean`'s `findBlamePath`).
-fn format_blame_path(
+pub(crate) fn format_blame_path(
     arena: &CanonicalArena,
     parent: &HashMap<CanonNameId, CanonNameId>,
     target: CanonNameId,
@@ -2477,7 +2667,7 @@ fn format_blame_path(
     chain.join(" -> ")
 }
 
-fn build_closure_entries(
+pub(crate) fn build_closure_entries(
     arena: &CanonicalArena,
     visited: &BTreeSet<CanonNameId>,
     role_modules: &[String],
@@ -2492,10 +2682,9 @@ fn build_closure_entries(
 
     for &cid in visited {
         let name = arena.name_str(cid);
-        if let Some(&module) = sorted_mods
-            .iter()
-            .find(|&&m| name == m || (name.starts_with(m) && name.as_bytes().get(m.len()) == Some(&b'.')))
-        {
+        if let Some(&module) = sorted_mods.iter().find(|&&m| {
+            name == m || (name.starts_with(m) && name.as_bytes().get(m.len()) == Some(&b'.'))
+        }) {
             covered_modules.insert(module);
             entries.push(ClosureEntry { name: name.to_owned(), module: module.to_owned() });
         }
@@ -3077,6 +3266,7 @@ mod tests {
                 name: "Spec.specs".to_owned(),
                 module: "Spec".to_owned(),
             }],
+            axiom_promotion: None,
         };
         let check = |v: &NdjsonAuditVerdict, allow_sorry: bool| {
             validate_ndjson_verdict(

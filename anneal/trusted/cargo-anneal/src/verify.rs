@@ -221,6 +221,10 @@ pub struct VerifyArgs {
     /// directly inside `ExecSeal` on Lean `v4.35.0+`.
     #[arg(long, global = true)]
     paranoid_quorum: bool,
+    /// Disable M3 lambda-lifted promotion of bundled `Anneal.*` theorems and
+    /// replay the full unpruned theory proof cone across external kernels.
+    #[arg(long, global = true)]
+    full_theory_replay: bool,
     /// Explicit Lean memory limit in MiB (`-M<MB>`; `resolve-imports` enforces
     /// a 4096 MiB floor).
     #[arg(
@@ -1820,6 +1824,7 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     checker.set_no_rebuild_bundled(args.no_rebuild_bundled);
     checker.set_prebuilt_olean_dir(tools.prebuilt_dir);
     checker.set_paranoid_quorum(args.paranoid_quorum);
+    checker.set_full_theory_replay(args.full_theory_replay);
     let audit_result = checker.run_target(&audit_request);
     let active_sandbox_opt = checker.active_sandbox();
     let sandbox_label = active_sandbox_opt.map(ActiveSandbox::as_str);
@@ -2870,6 +2875,7 @@ mod tests {
             allow_unsandboxed_elaboration: false,
             allow_sorry_in_proof: false,
             paranoid_quorum: false,
+            full_theory_replay: false,
             lean_memory_mb: None,
             no_cache: false,
             no_rebuild_bundled: false,
@@ -2896,6 +2902,7 @@ mod tests {
                         artifacts: None,
                         export_lean_lib: false,
                         paranoid_quorum: false,
+                        full_theory_replay: false,
                         lean_memory_mb: None,
                         no_cache: false,
                         no_rebuild_bundled: false,
@@ -3280,6 +3287,7 @@ mod tests {
             allow_unsandboxed_elaboration: false,
             allow_sorry_in_proof: false,
             paranoid_quorum: false,
+            full_theory_replay: false,
             lean_memory_mb: None,
             no_cache: false,
             no_rebuild_bundled: false,
@@ -3319,6 +3327,7 @@ mod tests {
                 allow_unsandboxed_elaboration: false,
                 allow_sorry_in_proof: false,
                 paranoid_quorum: false,
+                full_theory_replay: false,
                 lean_memory_mb: None,
                 no_cache: false,
                 no_rebuild_bundled: false,

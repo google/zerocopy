@@ -28,6 +28,8 @@
 #[doc(hidden)]
 pub mod bundle;
 #[forbid(unsafe_code)]
+pub mod m3_linker;
+#[forbid(unsafe_code)]
 pub mod ndjson_comparator;
 mod olean_cache;
 #[doc(hidden)]
@@ -36,8 +38,17 @@ mod stage;
 mod target;
 mod toolchain;
 
+pub use m3_linker::{
+    AxiomPromotionReport, CalleeContractOrigin, DigestMode, LiftedHypothesisRecord,
+    M3LinkShardInput, M3VerificationResult, ModularShardNode, PromotedTheoremAllowlist,
+    PromotedTheoremEntry, VerifiedShardSummary, ZeroAxiomLinkOutcome, build_promoted_allowlist,
+    build_promoted_allowlist_filtered, compute_cone_digest, compute_decl_digest, emit_ndjson,
+    link_m3_shards_to_zero_axioms, verify_modular_shard_dag, verify_ndjson_and_apply_m3,
+    verify_shard_binders_against_m3_env,
+};
 pub use ndjson_comparator::{
-    ClosureEntry, LegacySpecWarning, LegacyTargetAuditVerdict, NdjsonAuditVerdict,
+    CanonExprId, CanonInductiveBlock, CanonLevelId, CanonNameId, CanonicalArena, ClosureEntry,
+    ExportMeta, ExportedEnv, LegacySpecWarning, LegacyTargetAuditVerdict, NdjsonAuditVerdict,
     PINNED_INIT_PRIMITIVES, STANDARD_PERMITTED_AXIOMS, SkippedKernel, StructuralCompareRequest,
     StructuralCompareSummary,
 };

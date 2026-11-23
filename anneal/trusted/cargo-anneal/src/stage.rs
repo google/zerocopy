@@ -94,6 +94,15 @@ fn init_primitives_cache() -> &'static Mutex<InitPrimitivesCacheMap> {
     CACHE.get_or_init(|| Mutex::new(BTreeMap::new()))
 }
 
+type TheoryAllowlistCacheKey = (PathBuf, String, String);
+type TheoryAllowlistCacheMap =
+    BTreeMap<TheoryAllowlistCacheKey, BTreeMap<String, crate::m3_linker::PromotedTheoremEntry>>;
+
+pub(crate) fn theory_allowlist_cache() -> &'static Mutex<TheoryAllowlistCacheMap> {
+    static CACHE: OnceLock<Mutex<TheoryAllowlistCacheMap>> = OnceLock::new();
+    CACHE.get_or_init(|| Mutex::new(BTreeMap::new()))
+}
+
 /// Fields needed from Lean's JSON diagnostic stream, not inspector JSON IPC.
 #[derive(Deserialize)]
 struct LeanCompileDiagnostic {
@@ -814,6 +823,7 @@ pub struct Checker {
     admitted: Option<AdmittedToolchain>,
     allow_unpinned_lean: bool,
     paranoid_quorum: bool,
+    full_theory_replay: bool,
     lean_memory_mb: Option<u32>,
     #[cfg(test)]
     expected_sysroot_manifest_sha256_for_test: Option<String>,
@@ -909,6 +919,7 @@ impl Checker {
             admitted: None,
             allow_unpinned_lean: false,
             paranoid_quorum: false,
+            full_theory_replay: false,
             lean_memory_mb: None,
             #[cfg(test)]
             expected_sysroot_manifest_sha256_for_test: None,
@@ -938,6 +949,17 @@ impl Checker {
     /// Return whether `--paranoid-quorum` is enabled.
     pub fn paranoid_quorum(&self) -> bool {
         self.paranoid_quorum
+    }
+
+    /// Configure whether Action `5c` disables M3 lambda-lifted promotion of
+    /// bundled `Anneal.*` theorems and replays full theory proof cones.
+    pub fn set_full_theory_replay(&mut self, enabled: bool) {
+        self.full_theory_replay = enabled;
+    }
+
+    /// Return whether `--full-theory-replay` is enabled.
+    pub fn full_theory_replay(&self) -> bool {
+        self.full_theory_replay
     }
 
     /// Configure OS-level elaborator containment mode (`ExecSeal`).
@@ -3599,8 +3621,8 @@ impl Checker {
                 format!("unexpected output files from {phase} leanexport"),
             ));
         }
-        if !output.status.success() {
-            let stderr = String::from_utf8_lossy(&output.stderr);
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        if !output.status.success() || stderr.contains("PANIC at") {
             return Err(Failure::policy(
                 phase,
                 format!(
@@ -3676,16 +3698,25 @@ impl Checker {
 
         let lib_dir = self.stage.join("lib");
         for module in trusted_modules {
-            let rel = format!("{}.olean", module.replace('.', "/"));
-            let src = lib_dir.join(&rel);
-            let dst = expected_lib.join(&rel);
-            if let Some(parent) = dst.parent() {
-                fs::create_dir_all(parent).map_err(|e| {
-                    Failure::operational(phase, format!("cannot create {}: {e}", parent.display()))
-                })?;
-            }
-            if fs::hard_link(&src, &dst).is_err() {
-                copy_readonly_file(&src, &dst, phase)?;
+            let stem = module.replace('.', "/");
+            for suffix in ["olean", "olean.server", "olean.private"] {
+                let rel = format!("{stem}.{suffix}");
+                let src = lib_dir.join(&rel);
+                if suffix != "olean" && !src.exists() {
+                    continue;
+                }
+                let dst = expected_lib.join(&rel);
+                if let Some(parent) = dst.parent() {
+                    fs::create_dir_all(parent).map_err(|e| {
+                        Failure::operational(
+                            phase,
+                            format!("cannot create {}: {e}", parent.display()),
+                        )
+                    })?;
+                }
+                if fs::hard_link(&src, &dst).is_err() {
+                    copy_readonly_file(&src, &dst, phase)?;
+                }
             }
         }
         let ndjson_dir = self.stage.join("ndjson");
@@ -3698,6 +3729,60 @@ impl Checker {
             expected_declaration.to_string(),
         ];
         let sha = self.run_sandboxed_leanexport(phase, Some(&expected_lib), &args, &dest)?;
+        Ok((dest, sha))
+    }
+
+    /// Export requested bundled `Anneal.*` theorem cones from an isolated
+    /// `stage/theory_lib/` directory mounting strictly `{Model, BundledTheory}`
+    /// `.olean*` artifacts (zero user `Proof`, `Spec`, `Captured`, or
+    /// `Expected` artifacts).
+    pub(crate) fn export_ndjson_theory_cone(
+        &mut self,
+        model_and_theory_modules: &[String],
+        active_theory_modules: &[String],
+        requested_theorems: &[String],
+        filename: &str,
+    ) -> Result<(PathBuf, String), Failure> {
+        let phase = "ndjson-export-theory";
+        let theory_lib = self.stage.join("theory_lib");
+        if theory_lib.exists() {
+            make_tree_writable(&theory_lib);
+            let _ = fs::remove_dir_all(&theory_lib);
+        }
+        create_dir_mode(&theory_lib, 0o700)?;
+
+        let lib_dir = self.stage.join("lib");
+        for module in model_and_theory_modules {
+            let stem = module.replace('.', "/");
+            for suffix in ["olean", "olean.server", "olean.private"] {
+                let rel = format!("{stem}.{suffix}");
+                let src = lib_dir.join(&rel);
+                if suffix != "olean" && !src.exists() {
+                    continue;
+                }
+                let dst = theory_lib.join(&rel);
+                if let Some(parent) = dst.parent() {
+                    fs::create_dir_all(parent).map_err(|e| {
+                        Failure::operational(
+                            phase,
+                            format!("cannot create {}: {e}", parent.display()),
+                        )
+                    })?;
+                }
+                if fs::hard_link(&src, &dst).is_err() {
+                    copy_readonly_file(&src, &dst, phase)?;
+                }
+            }
+        }
+
+        let ndjson_dir = self.stage.join("ndjson");
+        create_dir_mode(&ndjson_dir, 0o700)?;
+        let dest = ndjson_dir.join(filename);
+
+        let mut args = active_theory_modules.to_vec();
+        args.push("--".to_string());
+        args.extend(requested_theorems.iter().cloned());
+        let sha = self.run_sandboxed_leanexport(phase, Some(&theory_lib), &args, &dest)?;
         Ok((dest, sha))
     }
 

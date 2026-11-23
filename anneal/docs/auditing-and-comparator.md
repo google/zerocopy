@@ -148,18 +148,29 @@ verifier backed by independent stock Lean `v4.35.0+` kernels.
   4. **Quotient primitive post-check:** Confirms `Quot`, `Quot.mk`,
      `Quot.lift`, and `Quot.ind` match the pinned kernel-synthesized primitive
      definitions.
-  5. **Independent dual-kernel checking (`nanoda_bin` + `con-ron`):** Invokes
-     both **`nanoda_bin`** (memory-safe Rust checker configured with
-     `"unpermitted_axiom_hard_error": true` and the closed 3-axiom allowlist)
-     and **`con-ron`** (formally verified independent kernel bundled in stock
-     Lean `v4.35.0+`) over `proof_full.ndjson`. Both checkers must exit `0`.
-     Verdict serialization uses strict `#[serde(deny_unknown_fields)]` typed
-     Rust structures rather than untyped JSON maps.
+  5. **M3 lambda-lifted bundled-theory discharge and dual-kernel checking
+     (`nanoda_bin` + `con-ron`):** By default, `5c` verifies referenced bundled
+     `Anneal.*` theorems against a SHA-256 Merkle statement-cone allowlist
+     exported from isolated `theory_lib/` `.olean` artifacts, lifts pure
+     proof-only theorems into outer `ForallE`/`Lam` binders on `Proof.verify`
+     (preserving each lifted theorem's transitive foundation axioms and
+     `Trusted.*` model closure in the `axiomPromotion` verdict block), and
+     emits a pruned, zero-custom-axiom `proof_m3.ndjson` stream
+     (`--full-theory-replay` disables M3 and replays `proof_full.ndjson`
+     verbatim). `5c` then invokes both **`nanoda_bin`** (memory-safe Rust
+     checker configured with `"unpermitted_axiom_hard_error": true` and the
+     closed 3-axiom allowlist) and **`con-ron`** (formally verified independent
+     kernel bundled in stock Lean `v4.35.0+`) over the active NDJSON stream.
+     Both checkers must exit `0`. Verdict serialization uses strict
+     `#[serde(deny_unknown_fields)]` typed Rust structures rather than untyped
+     JSON maps.
 
 For mega-crates whose exported proof cones exceed single-process budgets, an
 optional action **`5d` (`AnnealLinkShardNdjson`)** runs `5a`/`5b`/`5c` per
-depth-$D=1$ zero-axiom shard and verifies the parameterized implication
-composition in pure Rust (see
+shard, verifies strict acyclicity via Tarjan's strongly connected components
+algorithm over the union of MIR direct calls, indirect-call provenance, and M3
+lifted proof hypotheses, and optionally stitches M3 shards against full
+`Anneal.*` theorem bodies into a single zero-custom-axiom NDJSON stream (see
 [build-systems-and-receipts.md](build-systems-and-receipts.md)).
 
 ### Optional paranoid multi-kernel CI mode

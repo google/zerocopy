@@ -25,13 +25,16 @@ use serde::{Deserialize, Serialize};
 use serde_json::json;
 
 use crate::{
+    m3_linker::{
+        PromotedTheoremAllowlist, build_promoted_allowlist_filtered, verify_ndjson_and_apply_m3,
+    },
     ndjson_comparator::{
-        CanonicalArena, NdjsonAuditVerdict, NdjsonTimingMs, PINNED_INIT_PRIMITIVES, SkippedKernel,
-        StructuralCompareRequest, parse_ndjson_file, parse_ndjson_reader,
-        validate_legacy_target_verdict, validate_ndjson_verdict, verify_ndjson_structure,
+        CanonConstInfo, CanonicalArena, NdjsonAuditVerdict, NdjsonTimingMs, PINNED_INIT_PRIMITIVES,
+        SkippedKernel, StructuralCompareRequest, parse_ndjson_file, parse_ndjson_reader,
+        validate_legacy_target_verdict, validate_ndjson_verdict,
     },
     sandbox::set_mode,
-    stage::Checker,
+    stage::{Checker, theory_allowlist_cache},
     toolchain::{
         AdmittedToolchain, Failure, ImportEdge, Json, PreflightResult, TOOLCHAIN,
         compute_unpinned_foundation_closure, default_compile_workers, hash_unpinned_sysroot_module,
@@ -652,10 +655,10 @@ impl Checker {
             Failure::operational("target-audit", format!("cannot encode validated report: {e}"))
         })
     }
+
 }
 
 impl Checker {
-
     /// Authenticate the requested installed-library import closure.
     ///
     /// Library hashes pin their bytes but do not admit their declarations as
@@ -1373,23 +1376,56 @@ impl Checker {
             forbidden_expected_roots,
             forbidden_expected_modules,
             capture_modules,
-            model_modules,
+            model_modules: model_modules.clone(),
             specification_modules,
         };
-        let summary = verify_ndjson_structure(
+
+        let full_theory_replay = self.full_theory_replay();
+        let allowlist = if full_theory_replay {
+            PromotedTheoremAllowlist::empty("0".repeat(64))
+        } else {
+            self.resolve_bundled_theory_allowlist(
+                request,
+                &init_cached.bytes,
+                &model_modules,
+                &mut arena,
+                &proof_env,
+            )?
+        };
+
+        let m3_outcome = verify_ndjson_and_apply_m3(
             &mut arena,
             &init_env,
             &expected_env,
             &proof_env,
+            &proof_ndjson_sha256,
             &compare_req,
+            &allowlist,
+            full_theory_replay,
         )?;
+        let summary = m3_outcome.summary;
+        let promotion_report = m3_outcome.promotion_report;
+
+        let active_kernel_ndjson_path = if let Some((m3_bytes, _)) = &m3_outcome.rewritten_ndjson {
+            let m3_path = self.stage.join("ndjson").join("proof_m3.ndjson");
+            if m3_path.exists() {
+                set_mode(&m3_path, 0o600)?;
+            }
+            fs::write(&m3_path, m3_bytes.as_bytes()).map_err(|e| {
+                Failure::operational("ndjson-comparator", format!("write proof_m3.ndjson: {e}"))
+            })?;
+            set_mode(&m3_path, 0o400)?;
+            m3_path
+        } else {
+            proof_path.clone()
+        };
         let rust_compare_ms = t_cmp.elapsed().as_millis() as u64;
 
         // Action 5c (Part 2): execute dual independent kernels by default:
         // 1. `nanoda_bin` (Rust, `"unpermitted_axiom_hard_error": true`)
         // 2. `con-ron` (formally verified Rust arena kernel, `--verified`)
         let t_nanoda = Instant::now();
-        self.run_ndjson_nanoda(&proof_path, request.allow_sorry_in_proof)?;
+        self.run_ndjson_nanoda(&active_kernel_ndjson_path, request.allow_sorry_in_proof)?;
         let nanoda_ms = t_nanoda.elapsed().as_millis() as u64;
         let mut kernels_passed = vec!["nanoda_bin".to_owned()];
         let mut kernels_skipped = Vec::new();
@@ -1406,15 +1442,15 @@ impl Checker {
             0
         } else {
             let t_con = Instant::now();
-            self.run_ndjson_con_ron(&proof_path)?;
+            self.run_ndjson_con_ron(&active_kernel_ndjson_path)?;
             kernels_passed.push("con-ron".to_owned());
             t_con.elapsed().as_millis() as u64
         };
 
-        // Optional `--paranoid-quorum`: cross-check `proof_full.ndjson` across
-        // two additional independent bundled Lean `v4.35.0+` kernels
-        // (`con-leche` and `lean4lean --import`) directly inside `ExecSeal`
-        // for a four-independent-kernel quorum.
+        // Optional `--paranoid-quorum`: cross-check `proof_m3.ndjson` (or
+        // `proof_full.ndjson`) across two additional independent bundled Lean
+        // `v4.35.0+` kernels (`con-leche` and `lean4lean --import`) directly
+        // inside `ExecSeal` for a four-independent-kernel quorum.
         let paranoid_quorum = self.paranoid_quorum();
         let paranoid_quorum_ms = if paranoid_quorum {
             let t_pq = Instant::now();
@@ -1424,10 +1460,10 @@ impl Checker {
                     reason: "sorryAx_present_under_allow_sorry_in_proof".to_owned(),
                 });
             } else {
-                self.run_ndjson_con_leche(&proof_path)?;
+                self.run_ndjson_con_leche(&active_kernel_ndjson_path)?;
                 kernels_passed.push("con-leche".to_owned());
             }
-            self.run_ndjson_lean4lean(&proof_path)?;
+            self.run_ndjson_lean4lean(&active_kernel_ndjson_path)?;
             kernels_passed.push("lean4lean".to_owned());
             t_pq.elapsed().as_millis() as u64
         } else {
@@ -1467,6 +1503,7 @@ impl Checker {
             subject_closure: summary.subject_closure,
             model_closure: summary.model_closure,
             specification_closure: summary.specification_closure,
+            axiom_promotion: Some(promotion_report),
         };
         validate_ndjson_verdict(
             &verdict,
@@ -1479,6 +1516,205 @@ impl Checker {
         )?;
         serde_json::to_value(&verdict)
             .map_err(|e| Failure::operational("ndjson-comparator", e.to_string()))
+    }
+
+    /// Resolve and cache the Merkle-pinned [`PromotedTheoremAllowlist`] for any
+    /// authenticated `bundled_theory.json` `Anneal.*` theorems referenced in
+    /// `proof_env`.
+    fn resolve_bundled_theory_allowlist(
+        &mut self,
+        request: &TargetAuditRequest,
+        init_bytes: &[u8],
+        model_modules: &[String],
+        arena: &mut CanonicalArena,
+        proof_env: &crate::ndjson_comparator::ExportedEnv,
+    ) -> Result<PromotedTheoremAllowlist, Failure> {
+        let bundled = crate::bundle::embedded_theory_bundle()
+            .map_err(|e| Failure::operational("m3-allowlist", e.to_string()))?;
+        let bundled_shas: BTreeMap<String, String> = bundled
+            .modules
+            .iter()
+            .map(|m| {
+                (
+                    m.path
+                        .trim_start_matches("theory/")
+                        .trim_end_matches(".lean")
+                        .replace('/', "."),
+                    m.sha256.clone(),
+                )
+            })
+            .collect();
+
+        // Only modules in `request.modules` whose `(module, expected_sha256)`
+        // matches `bundled_theory.json` verbatim are eligible for promotion!
+        let mut active_theory_modules: Vec<String> = Vec::new();
+        for m in &request.modules {
+            if m.role == TargetRole::Proof
+                && let Some(expected_sha) = bundled_shas.get(&m.module)
+                && expected_sha == &m.expected_sha256
+                && self.admitted()?.artifacts.contains_key(&m.module)
+            {
+                active_theory_modules.push(m.module.clone());
+            }
+        }
+        active_theory_modules.sort();
+        active_theory_modules.dedup();
+        if active_theory_modules.is_empty() {
+            return Ok(PromotedTheoremAllowlist::empty(bundled.manifest_sha256));
+        }
+
+        // Collect frontier non-`_private` `Thm` declarations in
+        // `active_theory_modules` via BFS from `[theorem_id, expected_id]`,
+        // stepping only into the statement types (`skip_value = true`) of
+        // bundled theory theorems so internal sub-lemmas inside their proof
+        // bodies are not needlessly re-exported or Merkle-hashed.
+        let is_active_theory_thm = |arena: &CanonicalArena, cid: crate::CanonNameId| -> bool {
+            let full = arena.name_str(cid);
+            if full.starts_with("_private.") {
+                return false;
+            }
+            if !matches!(proof_env.constants.get(&cid), Some(CanonConstInfo::Thm { .. })) {
+                return false;
+            }
+            active_theory_modules.iter().any(|m| {
+                full == m || (full.starts_with(m) && full.as_bytes().get(m.len()) == Some(&b'.'))
+            })
+        };
+        let thm_root_id = arena.intern_dotted_name(&request.theorem_name);
+        let exp_root_id = arena.intern_dotted_name(&request.expected_declaration);
+        let mut frontier_ids: BTreeSet<crate::CanonNameId> = BTreeSet::new();
+        let mut visited_ids: BTreeSet<crate::CanonNameId> = BTreeSet::new();
+        let mut queue: VecDeque<crate::CanonNameId> = VecDeque::new();
+        for seed in [thm_root_id, exp_root_id] {
+            if proof_env.constants.contains_key(&seed) && visited_ids.insert(seed) {
+                queue.push_back(seed);
+            }
+        }
+        while let Some(cid) = queue.pop_front() {
+            let Some(ci) = proof_env.constants.get(&cid) else {
+                continue;
+            };
+            let is_front = is_active_theory_thm(arena, cid);
+            if is_front {
+                frontier_ids.insert(cid);
+            }
+            for dep in arena.collect_const_deps_filtered(ci, false, is_front) {
+                if proof_env.constants.contains_key(&dep) && visited_ids.insert(dep) {
+                    queue.push_back(dep);
+                }
+            }
+        }
+        let mut candidate_thms: Vec<String> =
+            frontier_ids.into_iter().map(|cid| arena.name_str(cid).to_owned()).collect();
+        candidate_thms.sort();
+        candidate_thms.dedup();
+        if candidate_thms.is_empty() {
+            return Ok(PromotedTheoremAllowlist::empty(bundled.manifest_sha256));
+        }
+
+        // Build cache key binding sysroot, leanexport binary, bundled theory
+        // manifest, AND exact staged `Model` module digests.
+        let mut model_sig_parts: Vec<String> = request
+            .modules
+            .iter()
+            .filter(|m| m.role == TargetRole::Model)
+            .map(|m| format!("{}:{}", m.module, m.expected_sha256))
+            .collect();
+        model_sig_parts.sort();
+        let combined_manifest_key = sha256_bytes(
+            format!("{}|{}", bundled.manifest_sha256, model_sig_parts.join(",")).as_bytes(),
+        );
+
+        let (prefix, leanexport_sha) = {
+            let adm = self.admitted()?;
+            let tools = adm.ndjson_tools.as_ref().ok_or_else(|| {
+                Failure::operational("m3-allowlist", "NDJSON tools unavailable in sysroot")
+            })?;
+            (adm.prefix.clone(), tools.leanexport_sha256.clone())
+        };
+        let cache_key = (prefix, leanexport_sha, combined_manifest_key);
+
+        let mut missing_thms: Vec<String> = Vec::new();
+        let mut entries = BTreeMap::new();
+        {
+            let map = theory_allowlist_cache().lock().unwrap_or_else(|e| e.into_inner());
+            if let Some(cached_entries) = map.get(&cache_key) {
+                for t in &candidate_thms {
+                    if let Some(ent) = cached_entries.get(t) {
+                        entries.insert(t.clone(), ent.clone());
+                    } else {
+                        missing_thms.push(t.clone());
+                    }
+                }
+            } else {
+                missing_thms = candidate_thms.clone();
+            }
+        }
+
+        if !missing_thms.is_empty() {
+            let mut model_and_theory: Vec<String> = model_modules
+                .iter()
+                .filter(|m| self.admitted().map(|a| a.artifacts.contains_key(*m)).unwrap_or(false))
+                .cloned()
+                .collect();
+            model_and_theory.extend(active_theory_modules.iter().cloned());
+            model_and_theory.sort();
+            model_and_theory.dedup();
+
+            let (theory_ndjson_path, expected_theory_sha) = self.export_ndjson_theory_cone(
+                &model_and_theory,
+                &active_theory_modules,
+                &missing_thms,
+                "theory_cone.ndjson",
+            )?;
+            let mut th_arena = CanonicalArena::new();
+            let th_init_env = parse_ndjson_reader(
+                io::BufReader::new(init_bytes),
+                &mut th_arena,
+                "init_primitives_cone",
+            )?;
+            let (th_env, parsed_th_sha) =
+                parse_ndjson_file(&theory_ndjson_path, &mut th_arena, "theory_cone")?;
+            if parsed_th_sha != expected_theory_sha {
+                return Err(Failure::operational(
+                    "m3-allowlist",
+                    "theory_cone.ndjson changed before verification",
+                ));
+            }
+            let filter_set: BTreeSet<String> = missing_thms.iter().cloned().collect();
+            let built = build_promoted_allowlist_filtered(
+                &mut th_arena,
+                &th_init_env,
+                &th_env,
+                &active_theory_modules,
+                model_modules,
+                &bundled.manifest_sha256,
+                Some(&filter_set),
+            )?;
+            for req_thm in &missing_thms {
+                let Some(ent) = built.entries.get(req_thm) else {
+                    return Err(Failure::policy(
+                        "m3-allowlist",
+                        format!(
+                            "proof export defines unauthenticated `Anneal.*` theorem `{req_thm}` \
+                             absent from bundled theory"
+                        ),
+                    ));
+                };
+                entries.insert(req_thm.clone(), ent.clone());
+            }
+            let mut map = theory_allowlist_cache().lock().unwrap_or_else(|e| e.into_inner());
+            let bucket = map.entry(cache_key).or_default();
+            for (k, v) in built.entries {
+                bucket.insert(k, v);
+            }
+        }
+
+        Ok(PromotedTheoremAllowlist {
+            schema_version: 1,
+            theory_manifest_sha256: bundled.manifest_sha256,
+            entries,
+        })
     }
 }
 
