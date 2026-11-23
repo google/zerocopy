@@ -399,8 +399,8 @@ fn verifies_real_source_and_rejects_boundary_mutations() {
             .len(),
         64
     );
-    assert_eq!(provenance["patched_files"].as_array().unwrap().len(), 13);
-    assert_eq!(provenance["correspondence_proofs"].as_object().unwrap().len(), 16);
+    assert_eq!(provenance["patched_files"].as_array().unwrap().len(), 10);
+    assert_eq!(provenance["correspondence_proofs"].as_object().unwrap().len(), 17);
     for proof_key in [
         "correspondence/Anneal/MirCorrespondence/InitAndSim.lean",
         "correspondence/Anneal/MirCorrespondenceProof.lean",
