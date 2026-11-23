@@ -4924,6 +4924,581 @@ private def decodeProofExport (raw : Json) : IO DecodedProofExport := do
     csimp := ← decodeNameSet "csimp" }
   return { modules := decodedMods, overrides }
 
+/-! ## Anti-Vacuity Specification Linting (Advisory Quality Warnings)
+
+These helpers detect common accidental specification mistakes (`Specs.safety`
+reducing to `False`, `Specs.property` reducing to `True`, non-trivial
+`Specs.property` ignoring its `Program` argument, and unused user-named
+bindings in `TargetRole::Specification` definitions) and surface them via
+`"specWarnings"` without blocking verification or weakening kernel checks.
+Per `THREAT_MODEL.md` section 2.2, these warnings are quality aids for authors,
+not security defenses against adversarial specifications. -/
+
+/-- Single advisory anti-vacuity specification warning emitted by
+`"target-audit"`. -/
+structure SpecLintWarning where
+  code : String
+  declaration : String
+  message : String
+  body : Option String := none
+  deriving BEq
+
+/-- Canonical sort/dedup key for deterministic warning output. -/
+def SpecLintWarning.sortKey (w : SpecLintWarning) : String :=
+  w.code ++ "\x00" ++ w.declaration ++ "\x00" ++
+    w.body.getD "" ++ "\x00" ++ w.message
+
+/-- Serialize a [`SpecLintWarning`] in camelCase wire format for
+`"specWarnings"`. -/
+def SpecLintWarning.toJson (w : SpecLintWarning) : Json :=
+  let base := [
+    ("code", Json.str w.code),
+    ("declaration", Json.str w.declaration),
+    ("message", Json.str w.message)
+  ]
+  let fields := match w.body with
+    | some b => base ++ [("body", Json.str b)]
+    | none => base
+  Json.mkObj fields
+
+/-- Run `Kernel.whnf`, preserving `e` intact if kernel reduction raises an
+exception on an out-of-fuel or unreduced subexpression. -/
+def kernelWhnfSafe (env : Environment) (lctx : LocalContext)
+    (e : Expr) : Expr :=
+  match Kernel.whnf env lctx e with
+  | .ok r => r
+  | .error _ => e
+
+/-- Recover concrete `Nat` literals (bounded recursion). -/
+partial def extractNatLit? (env : Environment) (lctx : LocalContext)
+    (e : Expr) (fuel : Nat := 32) : Option Nat :=
+  match fuel with
+  | 0 => none
+  | fuel + 1 =>
+    match e with
+    | .lit (.natVal n) => some n
+    | .mdata _ b => extractNatLit? env lctx b fuel
+    | .const ``Nat.zero _ => some 0
+    | .app (.const ``Nat.succ _) k =>
+      (extractNatLit? env lctx k fuel).map (· + 1)
+    | _ =>
+      let fn := e.getAppFn
+      let args := e.getAppArgs
+      if fn.constName? == some ``OfNat.ofNat && args.size == 3 then
+        extractNatLit? env lctx args[1]! fuel
+      else
+        match e with
+        | .const n lvls =>
+          match env.checked.get.find? n with
+          | some ci =>
+            if ci.levelParams.length == lvls.length then
+              match ci.value? true with
+              | some v =>
+                extractNatLit? env lctx
+                  (v.instantiateLevelParams ci.levelParams lvls) fuel
+              | none => none
+            else
+              none
+          | none => none
+        | _ =>
+          let e' := kernelWhnfSafe env lctx e
+          if e' == e then none else extractNatLit? env lctx e' fuel
+
+/-- Recover a `String` from a Lean `List Char` expression (such as the list
+passed to `String.ofList` by `anneal-rustc-capture`), supporting balanced
+`++` list concatenation and `Char.ofNat` elements. -/
+def extractCharListString? (env : Environment) (lctx : LocalContext)
+    (listExpr : Expr) (maxChars : Nat := 512) : Option String := Id.run do
+  let mut cur := listExpr
+  let mut chars : Array Char := #[]
+  for _ in [0:maxChars] do
+    cur := kernelWhnfSafe env lctx cur
+    let fn := cur.getAppFn
+    let args := cur.getAppArgs
+    if fn.constName? == some ``List.nil && args.size == 1 then
+      return some (String.ofList chars.toList)
+    if fn.constName? == some ``List.cons && args.size == 3 then
+      let head := args[1]!
+      let codeOpt :=
+        if head.getAppFn.constName? == some ``Char.ofNat &&
+            head.getAppArgs.size == 1 then
+          extractNatLit? env lctx head.getAppArgs[0]!
+        else
+          extractNatLit? env lctx (mkApp (mkConst ``Char.toNat) head)
+      let some code := codeOpt | return none
+      chars := chars.push (Char.ofNat code)
+      cur := args[2]!
+    else
+      return none
+  return none
+
+/-- Unfold `.const` definitions shallowly and reduce via `Kernel.whnf` to
+recover concrete `String` literals or `String.ofList [...]` terms before
+calling `Kernel.whnf` on compound terms. -/
+partial def extractStringLit? (env : Environment) (lctx : LocalContext)
+    (e : Expr) (fuel : Nat := 16) : Option String :=
+  match fuel with
+  | 0 => none
+  | fuel + 1 =>
+    match e with
+    | .lit (.strVal s) => some s
+    | .mdata _ b => extractStringLit? env lctx b fuel
+    | .const n lvls =>
+      match env.checked.get.find? n with
+      | some ci =>
+        if ci.levelParams.length == lvls.length then
+          match ci.value? true with
+          | some v =>
+            extractStringLit? env lctx
+              (v.instantiateLevelParams ci.levelParams lvls) fuel
+          | none => none
+        else
+          none
+      | none => none
+    | _ =>
+      let fn := e.getAppFn
+      let args := e.getAppArgs
+      if fn.constName? == some ``String.ofList && args.size == 1 then
+        extractCharListString? env lctx args[0]!
+      else
+        match kernelWhnfSafe env lctx e with
+        | .lit (.strVal s) => some s
+        | e' =>
+          let fn' := e'.getAppFn
+          let args' := e'.getAppArgs
+          if fn'.constName? == some ``String.ofList && args'.size == 1 then
+            extractCharListString? env lctx args'[0]!
+          else if e' == e then
+            none
+          else
+            extractStringLit? env lctx e' fuel
+
+/-- Recover concrete `Bool` literals. -/
+partial def extractBoolLit? (env : Environment) (lctx : LocalContext)
+    (e : Expr) (fuel : Nat := 16) : Option Bool :=
+  match fuel with
+  | 0 => none
+  | fuel + 1 =>
+    match kernelWhnfSafe env lctx e with
+    | .const ``Bool.true _ => some true
+    | .const ``Bool.false _ => some false
+    | e' =>
+      if e' == e then none
+      else extractBoolLit? env lctx e' fuel
+
+/-- Decide whether two expressions are provably equal (`some true`) or distinct
+(`some false`) via literal or inductive constructor head inspection. -/
+def structurallyDisjointEq? (env : Environment) (lctx : LocalContext)
+    (lhs rhs : Expr) (fuel : Nat := 8) : Option Bool :=
+  match fuel with
+  | 0 => none
+  | fuel + 1 =>
+    if let (some s1, some s2) :=
+        (extractStringLit? env lctx lhs, extractStringLit? env lctx rhs) then
+      some (s1 == s2)
+    else if let (some n1, some n2) :=
+        (extractNatLit? env lctx lhs, extractNatLit? env lctx rhs) then
+      some (n1 == n2)
+    else if let (some b1, some b2) :=
+        (extractBoolLit? env lctx lhs, extractBoolLit? env lctx rhs) then
+      some (b1 == b2)
+    else
+      let l := kernelWhnfSafe env lctx lhs
+      let r := kernelWhnfSafe env lctx rhs
+      let lFn := l.getAppFn
+      let rFn := r.getAppFn
+      match lFn.constName?, rFn.constName? with
+      | some c1, some c2 =>
+        match env.checked.get.find? c1, env.checked.get.find? c2 with
+        | some (.ctorInfo i1), some (.ctorInfo i2) =>
+          if i1.induct == i2.induct && c1 != c2 then
+            some false
+          else if c1 == c2 && c1 == ``List.cons &&
+              l.getAppArgs.size == 3 && r.getAppArgs.size == 3 then
+            let la := l.getAppArgs
+            let ra := r.getAppArgs
+            match structurallyDisjointEq? env lctx la[1]! ra[1]! fuel with
+            | some false => some false
+            | _ => structurallyDisjointEq? env lctx la[2]! ra[2]! fuel
+          else
+            none
+        | _, _ => none
+      | _, _ => none
+
+/-- Return `true` when `ty` WHNF-reduces to a known inhabited ground type so
+`∀ (_ : ty), False` is safely identified as unsatisfiable without confusing
+negations `P → False`. -/
+def isKnownInhabitedDomain (env : Environment) (lctx : LocalContext)
+    (ty : Expr) : Bool :=
+  let ty := kernelWhnfSafe env lctx ty
+  let fn := ty.getAppFn
+  match fn.constName? with
+  | some n =>
+    n == ``Nat || n == ``String || n == ``Bool || n == ``Unit ||
+      n == ``PUnit || n == ``List || n == `Trusted.MirAst.Program ||
+      n == `Trusted.MirModel.Val
+  | none => false
+
+mutual
+
+/-- Return `true` when `e` reduces syntactically/structurally (under bounded
+recursion) to a trivially true proposition such as `True`, `a = a`,
+`False → P`, or `P ∧ Q` with both conjuncts trivially true. -/
+partial def isTrivialTrueProp (env : Environment) (lctx : LocalContext)
+    (nextIdx : Nat) (fuel : Nat) (e : Expr) : Bool :=
+  match fuel with
+  | 0 => false
+  | fuel + 1 =>
+    let e := kernelWhnfSafe env lctx e
+    if e == mkConst ``True then
+      true
+    else
+      match e with
+      | .forallE n d b _ =>
+        if isTrivialFalseProp env lctx nextIdx fuel d then
+          true
+        else
+          let fv : FVarId := { name := Name.num `_anneal_lint_v nextIdx }
+          let lctx' := lctx.mkLocalDecl fv n d .default .default
+          isTrivialTrueProp env lctx' (nextIdx + 1) fuel
+            (b.instantiate1 (.fvar fv))
+      | _ =>
+        let fn := e.getAppFn
+        let args := e.getAppArgs
+        match fn.constName?, args.size with
+        | some ``Not, 1 =>
+          isTrivialFalseProp env lctx nextIdx fuel args[0]!
+        | some ``And, 2 =>
+          isTrivialTrueProp env lctx nextIdx fuel args[0]! &&
+            isTrivialTrueProp env lctx nextIdx fuel args[1]!
+        | some ``Or, 2 =>
+          isTrivialTrueProp env lctx nextIdx fuel args[0]! ||
+            isTrivialTrueProp env lctx nextIdx fuel args[1]!
+        | some ``Iff, 2 =>
+          (isTrivialTrueProp env lctx nextIdx fuel args[0]! &&
+            isTrivialTrueProp env lctx nextIdx fuel args[1]!) ||
+          (isTrivialFalseProp env lctx nextIdx fuel args[0]! &&
+            isTrivialFalseProp env lctx nextIdx fuel args[1]!) ||
+          args[0]! == args[1]!
+        | some ``Eq, 3 =>
+          args[1]! == args[2]! ||
+            structurallyDisjointEq? env lctx args[1]! args[2]! == some true ||
+            (match Kernel.isDefEq env lctx args[1]! args[2]! with
+            | .ok ok => ok
+            | .error _ => false)
+        | some ``ite, 5 =>
+          isTrivialTrueProp env lctx nextIdx fuel args[3]! &&
+            isTrivialTrueProp env lctx nextIdx fuel args[4]!
+        | some ``dite, 5 =>
+          let fvT : FVarId := { name := Name.num `_anneal_lint_v nextIdx }
+          let fvE : FVarId := { name := Name.num `_anneal_lint_v (nextIdx + 1) }
+          let lctxT := lctx.mkLocalDecl fvT `h args[1]! .default .default
+          let lctxE := lctx.mkLocalDecl fvE `h
+            (mkApp (mkConst ``Not) args[1]!) .default .default
+          isTrivialTrueProp env lctxT (nextIdx + 2) fuel
+            (mkApp args[3]! (.fvar fvT)) &&
+          isTrivialTrueProp env lctxE (nextIdx + 2) fuel
+            (mkApp args[4]! (.fvar fvE))
+        | _, _ => false
+
+/-- Return `true` when `e` reduces syntactically/structurally (under bounded
+recursion) to a trivially unsatisfiable proposition such as `False`,
+`¬ True`, `∃ x, False`, `0 = 1`, or `False ∧ P`. -/
+partial def isTrivialFalseProp (env : Environment) (lctx : LocalContext)
+    (nextIdx : Nat) (fuel : Nat) (e : Expr) : Bool :=
+  match fuel with
+  | 0 => false
+  | fuel + 1 =>
+    let e := kernelWhnfSafe env lctx e
+    if e == mkConst ``False then
+      true
+    else
+      match e with
+      | .forallE n d b _ =>
+        if isKnownInhabitedDomain env lctx d then
+          let fv : FVarId := { name := Name.num `_anneal_lint_v nextIdx }
+          let lctx' := lctx.mkLocalDecl fv n d .default .default
+          isTrivialFalseProp env lctx' (nextIdx + 1) fuel
+            (b.instantiate1 (.fvar fv))
+        else
+          false
+      | _ =>
+        let fn := e.getAppFn
+        let args := e.getAppArgs
+        match fn.constName?, args.size with
+        | some ``Exists, 2 =>
+          let fv : FVarId := { name := Name.num `_anneal_lint_v nextIdx }
+          let lctx' := lctx.mkLocalDecl fv `x args[0]! .default .default
+          isTrivialFalseProp env lctx' (nextIdx + 1) fuel
+            (mkApp args[1]! (.fvar fv))
+        | some ``Not, 1 =>
+          isTrivialTrueProp env lctx nextIdx fuel args[0]!
+        | some ``And, 2 =>
+          isTrivialFalseProp env lctx nextIdx fuel args[0]! ||
+            isTrivialFalseProp env lctx nextIdx fuel args[1]!
+        | some ``Or, 2 =>
+          isTrivialFalseProp env lctx nextIdx fuel args[0]! &&
+            isTrivialFalseProp env lctx nextIdx fuel args[1]!
+        | some ``Iff, 2 =>
+          (isTrivialTrueProp env lctx nextIdx fuel args[0]! &&
+            isTrivialFalseProp env lctx nextIdx fuel args[1]!) ||
+          (isTrivialFalseProp env lctx nextIdx fuel args[0]! &&
+            isTrivialTrueProp env lctx nextIdx fuel args[1]!)
+        | some ``Eq, 3 =>
+          structurallyDisjointEq? env lctx args[1]! args[2]! == some false
+        | some ``ite, 5 =>
+          isTrivialFalseProp env lctx nextIdx fuel args[3]! &&
+            isTrivialFalseProp env lctx nextIdx fuel args[4]!
+        | some ``dite, 5 =>
+          let fvT : FVarId := { name := Name.num `_anneal_lint_v nextIdx }
+          let fvE : FVarId := { name := Name.num `_anneal_lint_v (nextIdx + 1) }
+          let lctxT := lctx.mkLocalDecl fvT `h args[1]! .default .default
+          let lctxE := lctx.mkLocalDecl fvE `h
+            (mkApp (mkConst ``Not) args[1]!) .default .default
+          isTrivialFalseProp env lctxT (nextIdx + 2) fuel
+            (mkApp args[3]! (.fvar fvT)) &&
+          isTrivialFalseProp env lctxE (nextIdx + 2) fuel
+            (mkApp args[4]! (.fvar fvE))
+        | _, _ => false
+
+end
+
+/-- Summary of a captured MIR body needed for per-function `Specs.safety`
+linting without reducing `locals` or `basicBlocks`. -/
+structure CapturedBodySummary where
+  argumentCount : Nat
+  isUnsafe : Bool
+  identityExpr : Expr
+  identityText : Option String
+  deriving Inhabited
+
+/-- Unfold `List Body` from `Trusted.MirAst.Program` up to `maxBodies`. -/
+def extractCapturedBodies (env : Environment) (subjectName : Name)
+    (maxBodies : Nat := 256) : Array CapturedBodySummary := Id.run do
+  let some subjectInfo := env.checked.get.find? subjectName | return #[]
+  let progTy := mkConst `Trusted.MirAst.Program
+  let isMirProg := match Kernel.isDefEq env {} subjectInfo.type progTy with
+    | .ok b => b
+    | .error _ => false
+  if !isMirProg then
+    return #[]
+  let progExpr := kernelWhnfSafe env {} (mkConst subjectName)
+  let progFn := progExpr.getAppFn
+  let progArgs := progExpr.getAppArgs
+  if progFn.constName? != some `Trusted.MirAst.Program.mk ||
+      progArgs.size != 5 then
+    return #[]
+  let mut cur := progArgs[0]!
+  let mut out : Array CapturedBodySummary := #[]
+  for _ in [0:maxBodies] do
+    cur := kernelWhnfSafe env {} cur
+    let fn := cur.getAppFn
+    let args := cur.getAppArgs
+    if fn.constName? == some ``List.cons && args.size == 3 then
+      let bodyExpr := kernelWhnfSafe env {} args[1]!
+      let bFn := bodyExpr.getAppFn
+      let bArgs := bodyExpr.getAppArgs
+      if bFn.constName? == some `Trusted.MirAst.Body.mk &&
+          bArgs.size == 5 then
+        let argCount := (extractNatLit? env {} bArgs[0]!).getD 0
+        let isUnsafe := (extractBoolLit? env {} bArgs[3]!).getD false
+        let identityExpr := bArgs[4]!
+        let identityText := extractStringLit? env {} identityExpr
+        out := out.push {
+          argumentCount := argCount
+          isUnsafe, identityExpr, identityText }
+      cur := args[2]!
+    else
+      break
+  return out
+
+/-- Build a Lean list expression `[e_0, ..., e_{n-1}]` of element type `elemTy`.
+-/
+def mkListExpr (elemTy : Expr) (elems : List Expr) : Expr :=
+  elems.foldr
+    (fun head tail =>
+      mkApp3 (mkConst ``List.cons [Level.zero]) elemTy head tail)
+    (mkApp (mkConst ``List.nil [Level.zero]) elemTy)
+
+/-- Return `true` when `n` is an author-written variable name rather than a
+wildcard, anonymous arrow domain, instance binder, or macro-hygiene name. -/
+def isUserNamedBinder (n : Name) (bi : BinderInfo) : Bool :=
+  !bi.isInstImplicit &&
+  !n.isAnonymous &&
+  !n.hasMacroScopes &&
+  match n with
+  | .str .anonymous s => !s.startsWith "_" && !s.endsWith "✝" && s != "this"
+  | _ => false
+
+/-- Return `true` when `ci` is a compiler-generated definition (projection,
+aux recursor, matcher, splitter, noConfusion, ctorIdx, etc.) rather than an
+author-written specification definition. -/
+def isCompilerGeneratedSpecDef (env : Environment)
+    (ci : ConstantInfo) : Bool :=
+  let userName := privateToUserName ci.name
+  let generatedSuffix := match userName with
+    | .str _ suffix =>
+      let suffixes := [
+        "noConfusionType", "ctorIdx", "toCtorIdx", "splitter", "inj", "injEq"
+      ]
+      suffixes.contains suffix
+    | _ => false
+  generatedSuffix || userName.isInternalDetail ||
+    isAuxRecursor env ci.name || isNoConfusion env ci.name ||
+    env.isProjectionFn ci.name
+
+/-- Collect user-named bindings (in `.lam`, `.forallE`, `.letE`) whose loose
+bound variable index `0` never occurs in the body expression. -/
+partial def collectUnusedBindersExpr : Expr → Array String
+  | .lam n d b bi =>
+    let here := if isUserNamedBinder n bi && !b.hasLooseBVar 0
+      then #[n.toString] else #[]
+    here ++ collectUnusedBindersExpr d ++ collectUnusedBindersExpr b
+  | .forallE n d b bi =>
+    let here := if isUserNamedBinder n bi && !b.hasLooseBVar 0
+      then #[n.toString] else #[]
+    here ++ collectUnusedBindersExpr d ++ collectUnusedBindersExpr b
+  | .letE n t v b _ =>
+    let here := if isUserNamedBinder n .default && !b.hasLooseBVar 0
+      then #[n.toString] else #[]
+    here ++ collectUnusedBindersExpr t ++ collectUnusedBindersExpr v ++
+      collectUnusedBindersExpr b
+  | .app f a => collectUnusedBindersExpr f ++ collectUnusedBindersExpr a
+  | .mdata _ b => collectUnusedBindersExpr b
+  | .proj _ _ b => collectUnusedBindersExpr b
+  | _ => #[]
+
+/-- Deduplicate strings preserving first-seen order. -/
+def dedupStrings (xs : Array String) : Array String :=
+  xs.foldl (init := #[]) fun acc s =>
+    if acc.contains s then acc else acc.push s
+
+/-- Peel `Specs.safety : Specs → String → List Val → Prop` and
+`Specs.property : Specs → Program → Prop` domain types from `env`. -/
+def mirSpecDomainTypes? (env : Environment) :
+    Option (Expr × Expr × Expr × Expr) := do
+  let safetyInfo ← env.checked.get.find? `Trusted.MirSemantics.Specs.safety
+  let .forallE _ _ (.forallE _ idTy (.forallE _ argsTy _ _) _) _ :=
+    safetyInfo.type | none
+  let argsTyWhnf := kernelWhnfSafe env {} argsTy
+  let valTy ← match argsTyWhnf.getAppFn.constName?, argsTyWhnf.getAppArgs with
+    | some ``List, #[elemTy] => some elemTy
+    | _, _ => none
+  let propInfo ← env.checked.get.find? `Trusted.MirSemantics.Specs.property
+  let .forallE _ _ (.forallE _ progTy _ _) _ := propInfo.type | none
+  some (idTy, argsTy, valTy, progTy)
+
+/-- Run advisory anti-vacuity specification linting over the replayed target
+environment, returning sorted deduplicated [`SpecLintWarning`]s. -/
+def inspectSpecVacuity (env : Environment) (subjectName specName : Name)
+    (specAllConsts : List Name) : Array SpecLintWarning := Id.run do
+  let mut warnings : Array SpecLintWarning := #[]
+  let specAllSorted := specAllConsts.toArray.qsort Name.lt
+  -- 1. Syntactic unused user-named bindings across author-written
+  --    TargetRole::Specification definitions.
+  for n in specAllSorted do
+    if let some ci := env.checked.get.find? n then
+      if ci matches .defnInfo _ then
+        unless isCompilerGeneratedSpecDef env ci do
+          if let some val := ci.value? true then
+            let unused := dedupStrings (collectUnusedBindersExpr val)
+            unless unused.isEmpty do
+              let listStr := String.intercalate ", " unused.toList
+              let declStr := (privateToUserName n).toString
+              warnings := warnings.push {
+                code := "unused_spec_binding"
+                declaration := declStr
+                message :=
+                  s!"unused argument binding(s) in `{declStr}`: {listStr}"
+              }
+  -- 2. Semantic Trusted.MirSemantics.Specs checks (only when `specName`
+  --    actually has type `Trusted.MirSemantics.Specs`, skipping mock tests).
+  let specsTy := mkConst `Trusted.MirSemantics.Specs
+  let isMirSpecs := match env.checked.get.find? specName with
+    | some specInfo =>
+      match Kernel.isDefEq env {} specInfo.type specsTy with
+      | .ok b => b
+      | .error _ => false
+    | none => false
+  if isMirSpecs then
+    if let some (idTy, argsTy, valTy, progTy) := mirSpecDomainTypes? env then
+      let specDeclStr := (privateToUserName specName).toString
+      let safetyFn := mkApp (mkConst `Trusted.MirSemantics.Specs.safety)
+        (mkConst specName)
+      let propFn := mkApp (mkConst `Trusted.MirSemantics.Specs.property)
+        (mkConst specName)
+      -- 2a. Global `Specs.safety` satisfiability check with opaque
+      --     `(id, args)`.
+      let idFVar : FVarId := { name := `_anneal_lint_safety_id }
+      let argsFVar : FVarId := { name := `_anneal_lint_safety_args }
+      let lctxSafety := ({} : LocalContext)
+        |>.mkLocalDecl idFVar `id idTy .default .default
+        |>.mkLocalDecl argsFVar `args argsTy .default .default
+      let globalSafety := mkApp2 safetyFn (.fvar idFVar) (.fvar argsFVar)
+      if isTrivialFalseProp env lctxSafety 100 16 globalSafety then
+        warnings := warnings.push {
+          code := "unsatisfiable_safety"
+          declaration := specDeclStr
+          message :=
+            "Specs.safety reduces to a trivially unsatisfiable " ++
+            "proposition regardless of function identity or arguments"
+        }
+      else
+        -- 2b. Per-unsafe-body `Specs.safety` satisfiability check (catches
+        --     typos or wrong argument arities on unsafe bodies).
+        let bodies := extractCapturedBodies env subjectName
+        let maxCheckedArgs : Nat := 32
+        for idx in [0:bodies.size] do
+          if let some body := bodies[idx]? then
+            if body.isUnsafe && body.argumentCount <= maxCheckedArgs then
+              let mut lctxBody : LocalContext := {}
+              let mut argExprs : List Expr := []
+              for aIdx in [0:body.argumentCount] do
+                let fv : FVarId := { name := Name.num `_anneal_lint_arg aIdx }
+                lctxBody := lctxBody.mkLocalDecl fv `arg valTy .default .default
+                argExprs := argExprs ++ [.fvar fv]
+              let argsListExpr := mkListExpr valTy argExprs
+              let idArg := match body.identityText with
+                | some s => .lit (.strVal s)
+                | none => body.identityExpr
+              let bodySafety := mkApp2 safetyFn idArg argsListExpr
+              if isTrivialFalseProp env lctxBody 100 16 bodySafety then
+                let bodyLabel := body.identityText.getD s!"body#{idx}"
+                warnings := warnings.push {
+                  code := "unsatisfiable_safety"
+                  declaration := specDeclStr
+                  body := some bodyLabel
+                  message :=
+                    s!"Specs.safety reduces to a trivially unsatisfiable " ++
+                    s!"proposition for unsafe body `{bodyLabel}` " ++
+                    s!"({body.argumentCount} arg(s))"
+                }
+      -- 2c. `Specs.property` triviality & `Program`-ignorance check.
+      let progFVar : FVarId := { name := `_anneal_lint_prog }
+      let lctxProp := ({} : LocalContext)
+        |>.mkLocalDecl progFVar `p progTy .default .default
+      let propApplied := mkApp propFn (.fvar progFVar)
+      let propReduced := kernelWhnfSafe env lctxProp propApplied
+      if isTrivialTrueProp env lctxProp 100 16 propReduced then
+        warnings := warnings.push {
+          code := "trivial_property"
+          declaration := specDeclStr
+          message :=
+            "Specs.property reduces to a trivially true proposition"
+        }
+      else if !propReduced.containsFVar progFVar then
+        warnings := warnings.push {
+          code := "unused_spec_binding"
+          declaration := specDeclStr
+          message :=
+            "Specs.property ignores its `Program` argument (normalized " ++
+            "body does not reference the captured program)"
+        }
+  -- Sort and deduplicate deterministically.
+  let sorted := warnings.qsort (fun a b => a.sortKey < b.sortKey)
+  sorted.foldl (init := #[]) fun acc w =>
+    if acc.contains w then acc else acc.push w
+
 /-- Execute Phase 4 (`"target-audit"`) on compiled target artifacts.
 
 Target auditing never opens or maps any untrusted authored `Proof` `.olean` in
@@ -5311,6 +5886,9 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
     nodes.toArray.qsort Name.lt |>.mapM fun n => do
       return Json.mkObj [("name", toJson n),
         ("module", toJson (← originOf n))]
+  let specWarnings :=
+    (inspectSpecVacuity checkedEnv subjectName specName specAllConsts).map
+      SpecLintWarning.toJson
   return Json.mkObj [("theorem", toJson theoremName),
     ("canonicalRoot", toJson canonicalRoot), ("subject", toJson subjectName),
     ("specification", toJson specName), ("graph", combinedGraph),
@@ -5321,7 +5899,8 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
     ("checkedAlternateProofs", toJson alternateProofs.size),
     ("subjectClosure", .arr (← describe subjectClosure)),
     ("modelClosure", .arr (← describe modelClosure)),
-    ("specificationClosure", .arr (← describe specClosure))]
+    ("specificationClosure", .arr (← describe specClosure)),
+    ("specWarnings", .arr specWarnings)]
 
 /-- Dispatch a repository or target inspection request. -/
 def run (j : Json) : IO Json := do

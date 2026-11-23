@@ -1564,3 +1564,228 @@ fn balances_large_captured_lists_through_lean_and_target_audit() {
     wide_enum_src.push_str("}\npub fn use_wide(_: WideEnum) -> u64 { 0 }\n");
     run_capture_and_audit("wide_enum", &wide_enum_src, 1);
 }
+
+#[test]
+fn anti_vacuity_lint_clean_spin_and_unsafe_identity() {
+    let tools = Tools::discover();
+
+    // 1. Clean `scalar` proof emits empty `spec_warnings` and clean stderr.
+    let clean = Fixture::new();
+    clean.write("rust/lib.rs", include_str!("fixtures/scalar/lib.rs"));
+    clean.write("lean/Spec.lean", include_str!("fixtures/scalar/Spec.lean"));
+    clean.write("lean/Proof.lean", include_str!("fixtures/scalar/Proof.lean"));
+    let clean_res = clean.run(&tools, "lint-clean", &clean.request);
+    clean_res.expect(0, "crate_verified", None);
+    assert_eq!(clean_res.value["spec_warnings"], json!([]));
+    assert!(
+        clean_res.output.stderr.is_empty(),
+        "clean proof must keep empty stderr, got: {}",
+        String::from_utf8_lossy(&clean_res.output.stderr)
+    );
+
+    // 2. Global `Specs.safety := fun _ _ => False` emits `unsatisfiable_safety`.
+    let spin = Fixture::new();
+    spin.write("rust/lib.rs", include_str!("fixtures/spin/lib.rs"));
+    spin.write("lean/Spec.lean", include_str!("fixtures/spin/Spec.lean"));
+    spin.write("lean/Proof.lean", include_str!("fixtures/spin/Proof.lean"));
+    let spin_res = spin.run(&tools, "lint-spin", &spin.request);
+    spin_res.expect(0, "crate_verified", None);
+    let spin_warnings = spin_res.value["spec_warnings"].as_array().unwrap();
+    assert!(
+        spin_warnings.iter().any(|w| w["code"] == "unsatisfiable_safety"),
+        "expected unsatisfiable_safety warning in {spin_warnings:?}"
+    );
+    let spin_stderr = String::from_utf8_lossy(&spin_res.output.stderr);
+    assert!(
+        spin_stderr.contains("WARNING [anti-vacuity: unsatisfiable_safety]"),
+        "expected CLI warning on stderr, got: {spin_stderr}"
+    );
+
+    // 3. Per-body `False` safety + `trivial_property` on `unsafe_identity`.
+    let unsafe_id = Fixture::new();
+    unsafe_id.write("rust/lib.rs", include_str!("fixtures/unsafe_identity/lib.rs"));
+    unsafe_id.write("lean/Spec.lean", include_str!("fixtures/unsafe_identity/Spec.lean"));
+    unsafe_id.write("lean/Proof.lean", include_str!("fixtures/unsafe_identity/Proof.lean"));
+    let unsafe_res = unsafe_id.run(&tools, "lint-unsafe-id", &unsafe_id.request);
+    unsafe_res.expect(0, "crate_verified", None);
+    let unsafe_warnings = unsafe_res.value["spec_warnings"].as_array().unwrap();
+    assert!(
+        unsafe_warnings.iter().any(|w| {
+            w["code"] == "unsatisfiable_safety" && w["body"] == "rust-path-v1::locked"
+        }),
+        "expected per-body unsatisfiable_safety on locked: {unsafe_warnings:?}"
+    );
+    assert!(
+        !unsafe_warnings
+            .iter()
+            .any(|w| w["body"] == "rust-path-v1::open"),
+        "clean unsafe body must not trigger unsatisfiable_safety: {unsafe_warnings:?}"
+    );
+    assert!(
+        unsafe_warnings.iter().any(|w| w["code"] == "trivial_property"),
+        "expected trivial_property in {unsafe_warnings:?}"
+    );
+}
+
+#[test]
+fn anti_vacuity_lint_unused_bindings_and_wrong_arity() {
+    let tools = Tools::discover();
+
+    // 4. Unused named bindings + non-trivial `Specs.property` ignoring `Program`.
+    let unused = Fixture::new();
+    unused.write("rust/lib.rs", include_str!("fixtures/scalar/lib.rs"));
+    unused.write(
+        "lean/Spec.lean",
+        "\
+prelude
+import Trusted.MirSemantics
+
+namespace Spec
+
+open Trusted.MirAst Trusted.MirSemantics
+
+noncomputable def helper (unusedArg : Nat) (_ : Nat) : Prop := True
+
+noncomputable def ignoredProp (_ : Program) : Prop := ∃ n : Nat, n = 0
+
+noncomputable def specs : Specs :=
+  ⟨fun unusedSafety _ => helper 0 0, ignoredProp⟩
+
+end Spec
+",
+    );
+    unused.write(
+        "lean/Proof.lean",
+        "\
+prelude
+import Expected
+import Anneal.MirWp
+
+namespace Proof
+
+open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
+
+theorem execution :
+    execProg (entryProgForBody Captured.program 0) 2 { args := [] }
+      (fun _ => True) := trivial
+
+theorem safeBody :
+    WellFormed (entryProgForBody Captured.program 0) { args := [] } :=
+  (wellFormed_and_spec_of_wp (entryProgForBody Captured.program 0)
+    { args := [] } 2 (fun _ => True)
+    (wpProg_of_execProg execution)).1.1
+
+theorem verify : Expected.claim := by
+  refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ⟨0, rfl⟩⟩
+  intro id body found
+  cases id with
+  | zero =>
+      have same : Captured.program.bodies[0] = body := Option.some.inj found
+      subst body
+      refine ⟨found, rfl, ?_⟩
+      intro args valid _
+      cases args with
+      | nil => exact safeBody
+      | cons _ _ => cases valid
+  | succ id => cases found
+
+end Proof
+",
+    );
+    let unused_res = unused.run(&tools, "lint-unused", &unused.request);
+    unused_res.expect(0, "crate_verified", None);
+    let unused_warnings = unused_res.value["spec_warnings"].as_array().unwrap();
+    assert!(
+        unused_warnings
+            .iter()
+            .any(|w| w["code"] == "unused_spec_binding"
+                && w["declaration"] == "Spec.helper"
+                && w["message"].as_str().is_some_and(|m| m.contains("unusedArg"))),
+        "expected unused_spec_binding for Spec.helper: {unused_warnings:?}"
+    );
+    assert!(
+        unused_warnings
+            .iter()
+            .any(|w| w["code"] == "unused_spec_binding"
+                && w["declaration"] == "Spec.specs"
+                && w["message"].as_str().is_some_and(|m| m.contains("unusedSafety"))),
+        "expected unused_spec_binding for unusedSafety in Spec.specs: {unused_warnings:?}"
+    );
+    assert!(
+        unused_warnings
+            .iter()
+            .any(|w| w["code"] == "unused_spec_binding"
+                && w["declaration"] == "Spec.specs"
+                && w["message"]
+                    .as_str()
+                    .is_some_and(|m| m.contains("ignores its `Program` argument"))),
+        "expected unused_spec_binding for Program-ignoring property: {unused_warnings:?}"
+    );
+    assert!(
+        !unused_warnings.iter().any(|w| w["code"] == "trivial_property"),
+        "non-trivial property must not trigger trivial_property: {unused_warnings:?}"
+    );
+
+    // 5. Wrong-arity safety match on an `unsafe fn` flags per-body `unsatisfiable_safety`.
+    let arity = Fixture::new();
+    arity.write("rust/lib.rs", "pub unsafe fn bad_arity() -> u64 { 0 }\n");
+    arity.write(
+        "lean/Spec.lean",
+        "\
+prelude
+import Trusted.MirSemantics
+
+namespace Spec
+
+open Trusted.MirAst Trusted.MirSemantics
+
+noncomputable def specs : Specs :=
+  ⟨fun fn args =>
+    match args with
+    | [_] => fn = \"rust-path-v1::bad_arity\"
+    | _ => False,
+   fun _ => True⟩
+
+end Spec
+",
+    );
+    arity.write(
+        "lean/Proof.lean",
+        "\
+prelude
+import Expected
+
+namespace Proof
+
+open Trusted.MirAst Trusted.MirSemantics
+
+theorem verify : Expected.claim := by
+  refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, trivial⟩
+  intro id body found
+  cases id with
+  | zero =>
+      have same : Captured.program.bodies[0] = body := Option.some.inj found
+      subst body
+      refine ⟨found, rfl, ?_⟩
+      intro args valid safety
+      have bad : False := by
+        cases args with
+        | nil => exact safety rfl
+        | cons _ _ => cases valid
+      exact False.elim bad
+  | succ id => cases found
+
+end Proof
+",
+    );
+    let arity_res = arity.run(&tools, "lint-arity", &arity.request);
+    arity_res.expect(0, "crate_verified", None);
+    let arity_warnings = arity_res.value["spec_warnings"].as_array().unwrap();
+    assert!(
+        arity_warnings.iter().any(|w| {
+            w["code"] == "unsatisfiable_safety"
+                && w["body"] == "rust-path-v1::bad_arity"
+        }),
+        "expected wrong-arity unsatisfiable_safety warning: {arity_warnings:?}"
+    );
+}

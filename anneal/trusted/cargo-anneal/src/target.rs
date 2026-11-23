@@ -357,6 +357,21 @@ struct TargetClosureEntry {
     module: String,
 }
 
+/// Single advisory anti-vacuity warning emitted by `"target-audit"`.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct TargetSpecWarning {
+    code: String,
+    declaration: String,
+    message: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    body: Option<String>,
+}
+
+/// Closed set of anti-vacuity lint warning codes emitted by `"target-audit"`.
+const VALID_SPEC_WARNING_CODES: &[&str] =
+    &["unsatisfiable_safety", "trivial_property", "unused_spec_binding"];
+
 /// Strict typed schema for the `"result"` payload emitted by `"target-audit"`.
 ///
 /// Deserializing directly into this `#[serde(deny_unknown_fields)]` struct and
@@ -381,6 +396,8 @@ struct TargetAuditReport {
     subject_closure: Vec<TargetClosureEntry>,
     model_closure: Vec<TargetClosureEntry>,
     specification_closure: Vec<TargetClosureEntry>,
+    #[serde(default)]
+    spec_warnings: Vec<TargetSpecWarning>,
 }
 
 /// Validate every invariant of a deserialized [`TargetAuditReport`] against
@@ -518,6 +535,26 @@ fn validate_target_audit_report(
             "target-audit",
             "target-audit reported non-empty sorryDeclarations without allow_sorry_in_proof",
         ));
+    }
+    for warning in &report.spec_warnings {
+        if !VALID_SPEC_WARNING_CODES.contains(&warning.code.as_str()) {
+            return Err(Failure::operational(
+                "target-audit",
+                format!("target-audit reported unknown specWarnings code `{}`", warning.code),
+            ));
+        }
+        if warning.declaration.is_empty() || warning.message.is_empty() {
+            return Err(Failure::operational(
+                "target-audit",
+                "target-audit reported malformed specWarnings entry with empty declaration/message",
+            ));
+        }
+        if warning.body.as_deref().is_some_and(str::is_empty) {
+            return Err(Failure::operational(
+                "target-audit",
+                "target-audit reported malformed specWarnings entry with empty body label",
+            ));
+        }
     }
     Ok(())
 }
@@ -4566,5 +4603,68 @@ mod tests {
         assert!(validate_target_audit_report(&sorry_rep, &sorry_req, &valid_graph).is_err());
         sorry_rep.sorry_declarations.push("Proof.hole".into());
         validate_target_audit_report(&sorry_rep, &sorry_req, &valid_graph).unwrap();
+
+        let mut valid_with_warnings = valid.clone();
+        valid_with_warnings.spec_warnings = vec![TargetSpecWarning {
+            code: "trivial_property".into(),
+            declaration: "Spec.specs".into(),
+            message: "Specs.property reduces to True".into(),
+            body: None,
+        }];
+        validate_target_audit_report(&valid_with_warnings, &request, &valid_graph).unwrap();
+
+        for (label, mutator) in [
+            (
+                "unknown spec warning code",
+                Box::new(|r: &mut TargetAuditReport| {
+                    r.spec_warnings.push(TargetSpecWarning {
+                        code: "bogus_code".into(),
+                        declaration: "Spec.specs".into(),
+                        message: "bad".into(),
+                        body: None,
+                    });
+                }) as Box<dyn FnOnce(&mut TargetAuditReport)>,
+            ),
+            (
+                "empty warning declaration",
+                Box::new(|r: &mut TargetAuditReport| {
+                    r.spec_warnings.push(TargetSpecWarning {
+                        code: "trivial_property".into(),
+                        declaration: String::new(),
+                        message: "bad".into(),
+                        body: None,
+                    });
+                }),
+            ),
+            (
+                "empty warning message",
+                Box::new(|r: &mut TargetAuditReport| {
+                    r.spec_warnings.push(TargetSpecWarning {
+                        code: "trivial_property".into(),
+                        declaration: "Spec.specs".into(),
+                        message: String::new(),
+                        body: None,
+                    });
+                }),
+            ),
+            (
+                "empty warning body",
+                Box::new(|r: &mut TargetAuditReport| {
+                    r.spec_warnings.push(TargetSpecWarning {
+                        code: "unsatisfiable_safety".into(),
+                        declaration: "Spec.specs".into(),
+                        message: "bad".into(),
+                        body: Some(String::new()),
+                    });
+                }),
+            ),
+        ] {
+            let mut bad = valid.clone();
+            mutator(&mut bad);
+            assert!(
+                validate_target_audit_report(&bad, &request, &valid_graph).is_err(),
+                "expected spec_warnings rejection for {label}"
+            );
+        }
     }
 }
