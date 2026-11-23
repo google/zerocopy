@@ -1,0 +1,341 @@
+{
+  "probe_id": "wide-ptr-dst-size-of-val-and-known-layout",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "host_arch": "x86_64",
+  "experiments": {
+    "a_wide_ptr_eq_vs_addr_eq": {
+      "slice_and_dyn_eq_vs_addr_eq_exec": {
+        "edition": "2024",
+        "compile_returncode": 0,
+        "compile_stderr": "warning: method `tag` is never used\n --> <tmp>/wide_ptr_probe.rs:6:8\n  |\n5 | trait Tr {\n  |       -- method in this trait\n6 |     fn tag(&self) -> u8;\n  |        ^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: method `extra` is never used\n  --> <tmp>/wide_ptr_probe.rs:10:8\n   |\n 9 | trait SubTr: Tr {\n   |       ----- method in this trait\n10 |     fn extra(&self) -> u8;\n   |        ^^^^^\n\nwarning: field `0` is never read\n  --> <tmp>/wide_ptr_probe.rs:15:14\n   |\n15 | struct Inner(u8);\n   |        ----- ^^\n   |        |\n   |        field in this struct\n   |\n   = help: consider removing this field\n\nwarning: 3 warnings emitted\n\n",
+        "run_returncode": 0,
+        "run_stdout": "SLICE_ADDR_EQ=true SLICE_EQ_DIFF=false SLICE_EQ_SAME=true SLICE_OFF_ADDR_EQ=false SLICE_OFF_EQ=false SLICE_THIN_CAST_EQ=true DYN_ADDR_EQ=true DYN_EQ_DIFF_VTABLE=false DYN_EQ_SAME_VTABLE=true DYN_EQ_COPIED=true DYN_EQ_UPCAST=false DIFF_TYPES_ADDR_EQ=true DIFF_TYPES_PTR_EQ=true",
+        "parsed": {
+          "SLICE_ADDR_EQ": "true",
+          "SLICE_EQ_DIFF": "false",
+          "SLICE_EQ_SAME": "true",
+          "SLICE_OFF_ADDR_EQ": "false",
+          "SLICE_OFF_EQ": "false",
+          "SLICE_THIN_CAST_EQ": "true",
+          "DYN_ADDR_EQ": "true",
+          "DYN_EQ_DIFF_VTABLE": "false",
+          "DYN_EQ_SAME_VTABLE": "true",
+          "DYN_EQ_COPIED": "true",
+          "DYN_EQ_UPCAST": "false",
+          "DIFF_TYPES_ADDR_EQ": "true",
+          "DIFF_TYPES_PTR_EQ": "true"
+        }
+      },
+      "slice_and_dyn_eq_vs_addr_eq_miri": {
+        "edition": "2024",
+        "command": "cargo +nightly miri run --offline",
+        "returncode": 0,
+        "stdout": "SLICE_ADDR_EQ=true SLICE_EQ_DIFF=false SLICE_EQ_SAME=true SLICE_OFF_ADDR_EQ=false SLICE_OFF_EQ=false SLICE_THIN_CAST_EQ=true DYN_ADDR_EQ=true DYN_EQ_DIFF_VTABLE=false DYN_EQ_SAME_VTABLE=false DYN_EQ_COPIED=true DYN_EQ_UPCAST=false DIFF_TYPES_ADDR_EQ=true DIFF_TYPES_PTR_EQ=false",
+        "stderr": "   Compiling miri_wide_ptr v0.1.0 (<tmp>/miri_wide_ptr)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.19s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/miri_wide_ptr`\nwarning: method `tag` is never used\n --> src/main.rs:6:8\n  |\n5 | trait Tr {\n  |       -- method in this trait\n6 |     fn tag(&self) -> u8;\n  |        ^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: method `extra` is never used\n  --> src/main.rs:10:8\n   |\n 9 | trait SubTr: Tr {\n   |       ----- method in this trait\n10 |     fn extra(&self) -> u8;\n   |        ^^^^^\n\nwarning: field `0` is never read\n  --> src/main.rs:15:14\n   |\n15 | struct Inner(u8);\n   |        ----- ^^\n   |        |\n   |        field in this struct\n   |\n   = help: consider removing this field\n\n",
+        "parsed": {
+          "SLICE_ADDR_EQ": "true",
+          "SLICE_EQ_DIFF": "false",
+          "SLICE_EQ_SAME": "true",
+          "SLICE_OFF_ADDR_EQ": "false",
+          "SLICE_OFF_EQ": "false",
+          "SLICE_THIN_CAST_EQ": "true",
+          "DYN_ADDR_EQ": "true",
+          "DYN_EQ_DIFF_VTABLE": "false",
+          "DYN_EQ_SAME_VTABLE": "false",
+          "DYN_EQ_COPIED": "true",
+          "DYN_EQ_UPCAST": "false",
+          "DIFF_TYPES_ADDR_EQ": "true",
+          "DIFF_TYPES_PTR_EQ": "false"
+        },
+        "miri_seed_sweep_0_to_15": {
+          "seed_count": 16,
+          "dyn_eq_same_vtable_true_count": 0,
+          "dyn_eq_same_vtable_false_count": 16,
+          "samples": [
+            {
+              "seed": 0,
+              "dyn_eq_same_vtable": "false",
+              "dyn_addr_eq": "true",
+              "dyn_eq_copied": "true"
+            },
+            {
+              "seed": 1,
+              "dyn_eq_same_vtable": "false",
+              "dyn_addr_eq": "true",
+              "dyn_eq_copied": "true"
+            },
+            {
+              "seed": 2,
+              "dyn_eq_same_vtable": "false",
+              "dyn_addr_eq": "true",
+              "dyn_eq_copied": "true"
+            },
+            {
+              "seed": 3,
+              "dyn_eq_same_vtable": "false",
+              "dyn_addr_eq": "true",
+              "dyn_eq_copied": "true"
+            },
+            {
+              "seed": 4,
+              "dyn_eq_same_vtable": "false",
+              "dyn_addr_eq": "true",
+              "dyn_eq_copied": "true"
+            },
+            {
+              "seed": 5,
+              "dyn_eq_same_vtable": "false",
+              "dyn_addr_eq": "true",
+              "dyn_eq_copied": "true"
+            },
+            {
+              "seed": 6,
+              "dyn_eq_same_vtable": "false",
+              "dyn_addr_eq": "true",
+              "dyn_eq_copied": "true"
+            },
+            {
+              "seed": 7,
+              "dyn_eq_same_vtable": "false",
+              "dyn_addr_eq": "true",
+              "dyn_eq_copied": "true"
+            },
+            {
+              "seed": 8,
+              "dyn_eq_same_vtable": "false",
+              "dyn_addr_eq": "true",
+              "dyn_eq_copied": "true"
+            },
+            {
+              "seed": 9,
+              "dyn_eq_same_vtable": "false",
+              "dyn_addr_eq": "true",
+              "dyn_eq_copied": "true"
+            },
+            {
+              "seed": 10,
+              "dyn_eq_same_vtable": "false",
+              "dyn_addr_eq": "true",
+              "dyn_eq_copied": "true"
+            },
+            {
+              "seed": 11,
+              "dyn_eq_same_vtable": "false",
+              "dyn_addr_eq": "true",
+              "dyn_eq_copied": "true"
+            },
+            {
+              "seed": 12,
+              "dyn_eq_same_vtable": "false",
+              "dyn_addr_eq": "true",
+              "dyn_eq_copied": "true"
+            },
+            {
+              "seed": 13,
+              "dyn_eq_same_vtable": "false",
+              "dyn_addr_eq": "true",
+              "dyn_eq_copied": "true"
+            },
+            {
+              "seed": 14,
+              "dyn_eq_same_vtable": "false",
+              "dyn_addr_eq": "true",
+              "dyn_eq_copied": "true"
+            },
+            {
+              "seed": 15,
+              "dyn_eq_same_vtable": "false",
+              "dyn_addr_eq": "true",
+              "dyn_eq_copied": "true"
+            }
+          ]
+        }
+      },
+      "wide_ptr_eq_vs_addr_eq_llvm_ir": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=2",
+          "--emit=llvm-ir"
+        ],
+        "compile_returncode": 0,
+        "compile_stderr": "warning: ambiguous wide pointer comparison, the comparison includes metadata which may not be expected\n  --> <tmp>/wide_ptr_ir.rs:17:5\n   |\n17 |     a != b\n   |     ^^^^^^\n   |\n   = note: `#[warn(ambiguous_wide_pointer_comparisons)]` on by default\nhelp: use `std::ptr::addr_eq` or untyped pointers to only compare their addresses\n   |\n17 -     a != b\n17 +     !std::ptr::addr_eq(a, b)\n   |\n\nwarning: 1 warning emitted\n\n",
+        "llvm_ir_functions": {
+          "define noundef zeroext i1 @cmp_dyn_addr_eq(ptr noundef readnone captures(address) %a.0, ptr noalias noundef readonly align 8 captures(none) dereferenceable(32) %a.1, ptr noundef readnone captures(address) %b.0, ptr noalias noundef readonly align 8 captures(none) dereferenceable(32) %b.1) unnamed_addr #0 {": [
+            "define noundef zeroext i1 @cmp_dyn_addr_eq(ptr noundef readnone captures(address) %a.0, ptr noalias noundef readonly align 8 captures(none) dereferenceable(32) %a.1, ptr noundef readnone captures(address) %b.0, ptr noalias noundef readonly align 8 captures(none) dereferenceable(32) %b.1) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = icmp eq ptr %a.0, %b.0",
+            "  ret i1 %_0",
+            "}"
+          ],
+          "define noundef zeroext i1 @cmp_dyn_ptr_eq(ptr noundef readnone captures(address) %a.0, ptr noalias noundef readonly align 8 captures(address) dereferenceable(32) %a.1, ptr noundef readnone captures(address) %b.0, ptr noalias noundef readonly align 8 captures(address) dereferenceable(32) %b.1) unnamed_addr #0 {": [
+            "define noundef zeroext i1 @cmp_dyn_ptr_eq(ptr noundef readnone captures(address) %a.0, ptr noalias noundef readonly align 8 captures(address) dereferenceable(32) %a.1, ptr noundef readnone captures(address) %b.0, ptr noalias noundef readonly align 8 captures(address) dereferenceable(32) %b.1) unnamed_addr #0 {",
+            "start:",
+            "  %0 = icmp eq ptr %a.0, %b.0",
+            "  %1 = icmp eq ptr %a.1, %b.1",
+            "  %_0 = and i1 %0, %1",
+            "  ret i1 %_0",
+            "}"
+          ],
+          "define noundef zeroext i1 @cmp_dyn_ptr_ne(ptr noundef readnone captures(address) %a.0, ptr noalias noundef readonly align 8 captures(address) dereferenceable(32) %a.1, ptr noundef readnone captures(address) %b.0, ptr noalias noundef readonly align 8 captures(address) dereferenceable(32) %b.1) unnamed_addr #0 {": [
+            "define noundef zeroext i1 @cmp_dyn_ptr_ne(ptr noundef readnone captures(address) %a.0, ptr noalias noundef readonly align 8 captures(address) dereferenceable(32) %a.1, ptr noundef readnone captures(address) %b.0, ptr noalias noundef readonly align 8 captures(address) dereferenceable(32) %b.1) unnamed_addr #0 {",
+            "start:",
+            "  %0 = icmp ne ptr %a.0, %b.0",
+            "  %1 = icmp ne ptr %a.1, %b.1",
+            "  %_0 = or i1 %0, %1",
+            "  ret i1 %_0",
+            "}"
+          ],
+          "define noundef zeroext i1 @cmp_slice_addr_eq(ptr noundef readnone captures(address) %a.0, i64 noundef %a.1, ptr noundef readnone captures(address) %b.0, i64 noundef %b.1) unnamed_addr #0 {": [
+            "define noundef zeroext i1 @cmp_slice_addr_eq(ptr noundef readnone captures(address) %a.0, i64 noundef %a.1, ptr noundef readnone captures(address) %b.0, i64 noundef %b.1) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = icmp eq ptr %a.0, %b.0",
+            "  ret i1 %_0",
+            "}"
+          ],
+          "define noundef zeroext i1 @cmp_slice_ptr_eq(ptr noundef readnone captures(address) %a.0, i64 noundef %a.1, ptr noundef readnone captures(address) %b.0, i64 noundef %b.1) unnamed_addr #0 {": [
+            "define noundef zeroext i1 @cmp_slice_ptr_eq(ptr noundef readnone captures(address) %a.0, i64 noundef %a.1, ptr noundef readnone captures(address) %b.0, i64 noundef %b.1) unnamed_addr #0 {",
+            "start:",
+            "  %0 = icmp eq ptr %a.0, %b.0",
+            "  %1 = icmp eq i64 %a.1, %b.1",
+            "  %_0 = and i1 %0, %1",
+            "  ret i1 %_0",
+            "}"
+          ]
+        }
+      }
+    },
+    "b_custom_dst_size_of_val_and_zerocopy": {
+      "custom_dst_dynamic_sizing_exec": {
+        "edition": "2024",
+        "compile_returncode": 0,
+        "compile_stderr": "warning: method `id` is never used\n --> <tmp>/custom_dst_probe.rs:5:8\n  |\n4 | trait Tr {\n  |       -- method in this trait\n5 |     fn id(&self) -> u8;\n  |        ^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n",
+        "run_returncode": 0,
+        "run_stdout": "U32_3=(16,4) U32_0=(4,4) U8_3=(4,1) DYN_SMALL=(2,1) DYN_BIG=(32,16) H6_U8_3=(12,4) H6_DYN_BIG=(32,16) PACKED2_U32_3=(14,2)",
+        "parsed": {
+          "U32_3": "(16,4)",
+          "U32_0": "(4,4)",
+          "U8_3": "(4,1)",
+          "DYN_SMALL": "(2,1)",
+          "DYN_BIG": "(32,16)",
+          "H6_U8_3": "(12,4)",
+          "H6_DYN_BIG": "(32,16)",
+          "PACKED2_U32_3": "(14,2)"
+        }
+      },
+      "custom_dst_dynamic_sizing_miri": {
+        "edition": "2024",
+        "command": "cargo +nightly miri run --offline",
+        "returncode": 0,
+        "stdout": "U32_3=(16,4) U32_0=(4,4) U8_3=(4,1) DYN_SMALL=(2,1) DYN_BIG=(32,16) H6_U8_3=(12,4) H6_DYN_BIG=(32,16) PACKED2_U32_3=(14,2)",
+        "stderr": "   Compiling miri_custom_dst v0.1.0 (<tmp>/miri_custom_dst)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.19s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/miri_custom_dst`\nwarning: method `id` is never used\n --> src/main.rs:5:8\n  |\n4 | trait Tr {\n  |       -- method in this trait\n5 |     fn id(&self) -> u8;\n  |        ^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\n",
+        "parsed": {
+          "U32_3": "(16,4)",
+          "U32_0": "(4,4)",
+          "U8_3": "(4,1)",
+          "DYN_SMALL": "(2,1)",
+          "DYN_BIG": "(32,16)",
+          "H6_U8_3": "(12,4)",
+          "H6_DYN_BIG": "(32,16)",
+          "PACKED2_U32_3": "(14,2)"
+        }
+      },
+      "custom_dst_dynamic_sizing_llvm_ir": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=2",
+          "--emit=llvm-ir"
+        ],
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "llvm_ir_functions": {
+          "define { i64, i64 } @header6_dyn_size_align(ptr noundef nonnull readnone align 4 captures(none) %p.0, ptr noalias noundef readonly align 8 captures(none) dereferenceable(32) %p.1) unnamed_addr #0 {": [
+            "define { i64, i64 } @header6_dyn_size_align(ptr noundef nonnull readnone align 4 captures(none) %p.0, ptr noalias noundef readonly align 8 captures(none) dereferenceable(32) %p.1) unnamed_addr #0 {",
+            "start:",
+            "  %0 = getelementptr inbounds nuw i8, ptr %p.1, i64 8",
+            "  %1 = load i64, ptr %0, align 8, !range !4, !invariant.load !5",
+            "  %2 = getelementptr inbounds nuw i8, ptr %p.1, i64 16",
+            "  %3 = load i64, ptr %2, align 8, !range !6, !invariant.load !5",
+            "  %4 = tail call i64 @llvm.umax.i64(i64 %3, i64 4)",
+            "  %5 = add nuw i64 %1, 5",
+            "  %6 = add nuw i64 %5, %4",
+            "  %7 = sub nsw i64 0, %4",
+            "  %_2 = and i64 %6, %7",
+            "  %8 = insertvalue { i64, i64 } poison, i64 %_2, 0",
+            "  %9 = insertvalue { i64, i64 } %8, i64 %4, 1",
+            "  ret { i64, i64 } %9",
+            "}"
+          ],
+          "define { i64, i64 } @packed2_slice_u32_size_align(ptr noalias noundef readonly align 2 captures(none) dereferenceable(2) %p.0, i64 noundef %p.1) unnamed_addr #1 {": [
+            "define { i64, i64 } @packed2_slice_u32_size_align(ptr noalias noundef readonly align 2 captures(none) dereferenceable(2) %p.0, i64 noundef %p.1) unnamed_addr #1 {",
+            "start:",
+            "  %0 = shl nuw nsw i64 %p.1, 2",
+            "  %1 = or disjoint i64 %0, 2",
+            "  %2 = insertvalue { i64, i64 } poison, i64 %1, 0",
+            "  %3 = insertvalue { i64, i64 } %2, i64 2, 1",
+            "  ret { i64, i64 } %3",
+            "}"
+          ],
+          "define { i64, i64 } @packet_dyn_size_align(ptr noundef nonnull readnone captures(none) %p.0, ptr noalias noundef readonly align 8 captures(none) dereferenceable(32) %p.1) unnamed_addr #0 {": [
+            "define { i64, i64 } @packet_dyn_size_align(ptr noundef nonnull readnone captures(none) %p.0, ptr noalias noundef readonly align 8 captures(none) dereferenceable(32) %p.1) unnamed_addr #0 {",
+            "start:",
+            "  %0 = getelementptr inbounds nuw i8, ptr %p.1, i64 8",
+            "  %1 = load i64, ptr %0, align 8, !range !4, !invariant.load !5",
+            "  %2 = getelementptr inbounds nuw i8, ptr %p.1, i64 16",
+            "  %3 = load i64, ptr %2, align 8, !range !6, !invariant.load !5",
+            "  %4 = add nuw i64 %3, %1",
+            "  %5 = sub nsw i64 0, %3",
+            "  %_2 = and i64 %4, %5",
+            "  %6 = insertvalue { i64, i64 } poison, i64 %_2, 0",
+            "  %7 = insertvalue { i64, i64 } %6, i64 %3, 1",
+            "  ret { i64, i64 } %7",
+            "}"
+          ],
+          "define { i64, i64 } @packet_slice_u32_size_align(ptr noalias noundef readonly align 4 captures(none) dereferenceable(4) %p.0, i64 noundef %p.1) unnamed_addr #1 {": [
+            "define { i64, i64 } @packet_slice_u32_size_align(ptr noalias noundef readonly align 4 captures(none) dereferenceable(4) %p.0, i64 noundef %p.1) unnamed_addr #1 {",
+            "start:",
+            "  %0 = shl nuw nsw i64 %p.1, 2",
+            "  %1 = add nuw i64 %0, 7",
+            "  %_2 = and i64 %1, -4",
+            "  %2 = insertvalue { i64, i64 } poison, i64 %_2, 0",
+            "  %3 = insertvalue { i64, i64 } %2, i64 4, 1",
+            "  ret { i64, i64 } %3",
+            "}"
+          ]
+        }
+      },
+      "real_zerocopy_known_layout_probe": {
+        "zerocopy_version": "0.8.64",
+        "zerocopy_checkout_revision": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+        "edition_zerocopy": "2021",
+        "edition_probe": "2024",
+        "lib_compile_returncode": 0,
+        "lib_compile_stderr": "",
+        "probe_compile_returncode": 0,
+        "probe_compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "ZC_U32_3=Some(12) MEM_U32_3=12 ZC_U8_3=Some(3) ZC_OVERFLOW=None ZC_U8_USIZE_MAX=Some(18446744073709551615) VALID_3=true VALID_MAX=false VALID_U8_IMAX=true VALID_U8_OVER=false VALID_ZST_MAX=true RAW_SZ=Some(12) PKT_U32_3=Some(16) PKT_U32_0=Some(4) PKT_U32_MAX=None PKT_U8_3=Some(4) H6_U8_3=Some(12) H6_U8_0=Some(8) PACKED2_U32_3=Some(14)",
+        "parsed": {
+          "ZC_U32_3": "Some(12)",
+          "MEM_U32_3": "12",
+          "ZC_U8_3": "Some(3)",
+          "ZC_OVERFLOW": "None",
+          "ZC_U8_USIZE_MAX": "Some(18446744073709551615)",
+          "VALID_3": "true",
+          "VALID_MAX": "false",
+          "VALID_U8_IMAX": "true",
+          "VALID_U8_OVER": "false",
+          "VALID_ZST_MAX": "true",
+          "RAW_SZ": "Some(12)",
+          "PKT_U32_3": "Some(16)",
+          "PKT_U32_0": "Some(4)",
+          "PKT_U32_MAX": "None",
+          "PKT_U8_3": "Some(4)",
+          "H6_U8_3": "Some(12)",
+          "H6_U8_0": "Some(8)",
+          "PACKED2_U32_3": "Some(14)"
+        }
+      }
+    }
+  }
+}

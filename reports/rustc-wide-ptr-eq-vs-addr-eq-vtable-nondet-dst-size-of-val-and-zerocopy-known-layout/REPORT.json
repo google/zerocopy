@@ -1,0 +1,61 @@
+{
+  "topics": [
+    "anneal",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/abi",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler, core library, and Miri interpreter (main)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "277240238554297f93fa9ee3c7643dfa03ccbbb4"
+      }
+    },
+    {
+      "name": "Rust compiler, LLVM backend, and Miri toolchain (executed nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly (LLVM 22.1.6, miri 0.1.0)"
+      }
+    },
+    {
+      "name": "zerocopy crate upstream main",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "e86eb0281380bdc278f4b4b3788dc9525ef59035"
+      }
+    },
+    {
+      "name": "zerocopy crate (compiled and executed 0.8.64 release line)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+        "version": "0.8.64"
+      }
+    },
+    {
+      "name": "Anneal Trusted MIR specification",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}
