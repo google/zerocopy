@@ -1,0 +1,1550 @@
+{
+  "compiler_info": {
+    "rustc_vv": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+    "polonius_z_help": [
+      "-Z                                      polonius=val -- enable polonius-based borrow-checker (default: no)"
+    ],
+    "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+    "stable_rustc_vv": null
+  },
+  "flag_triad_smoke": {
+    "nightly_default_no_flag": {
+      "flags": [
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2024"
+      ],
+      "rc": 0,
+      "accepted": true,
+      "error_codes": [],
+      "stderr": ""
+    },
+    "z_polonius_off": {
+      "flags": [
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2024",
+        "-Zpolonius=off"
+      ],
+      "rc": 1,
+      "accepted": false,
+      "error_codes": [],
+      "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+    },
+    "z_polonius_bare": {
+      "flags": [
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2024",
+        "-Zpolonius"
+      ],
+      "rc": 0,
+      "accepted": true,
+      "error_codes": [],
+      "stderr": ""
+    },
+    "z_polonius_next": {
+      "flags": [
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2024",
+        "-Zpolonius=next"
+      ],
+      "rc": 0,
+      "accepted": true,
+      "error_codes": [],
+      "stderr": ""
+    },
+    "z_polonius_legacy": {
+      "flags": [
+        "--crate-type",
+        "lib",
+        "--edition",
+        "2024",
+        "-Zpolonius=legacy"
+      ],
+      "rc": 0,
+      "accepted": true,
+      "error_codes": [],
+      "stderr": ""
+    }
+  },
+  "experiments": {
+    "a1_polonius_problem_case_3_hashmap_get": {
+      "family": "A_polonius_triad",
+      "edition": "2024",
+      "source": "use std::collections::HashMap;\n\npub fn get_or_insert<'a>(map: &'a mut HashMap<u32, String>, key: u32) -> &'a str {\n    if let Some(v) = map.get(&key) {\n        return v;\n    }\n    map.insert(key, String::from(\"default\"));\n    map.get(&key).unwrap()\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0502"
+          ],
+          "stderr": "error[E0502]: cannot borrow `*map` as mutable because it is also borrowed as immutable\n --> <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:5\n  |\n3 | pub fn get_or_insert<'a>(map: &'a mut HashMap<u32, String>, key: u32) -> ...\n  |                      -- lifetime `'a` defined here\n4 |     if let Some(v) = map.get(&key) {\n  |                      --- immutable borrow occurs here\n5 |         return v;\n  |                - returning this value requires that `*map` is borrowed for `'a`\n6 |     }\n7 |     map.insert(key, String::from(\"default\"));\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable borrow occurs here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0502`."
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        }
+      }
+    },
+    "a2_polonius_hashmap_get_mut_return": {
+      "family": "A_polonius_triad",
+      "edition": "2024",
+      "source": "use std::collections::HashMap;\n\npub fn get_mut_or_insert<'a>(map: &'a mut HashMap<u32, String>, key: u32) -> &'a mut str {\n    if let Some(v) = map.get_mut(&key) {\n        return v;\n    }\n    map.insert(key, String::from(\"default\"));\n    map.get_mut(&key).unwrap()\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0499"
+          ],
+          "stderr": "error[E0499]: cannot borrow `*map` as mutable more than once at a time\n --> <tmp>/a2_polonius_hashmap_get_mut_return.rs:7:5\n  |\n3 | pub fn get_mut_or_insert<'a>(map: &'a mut HashMap<u32, String>, key: u32)...\n  |                          -- lifetime `'a` defined here\n4 |     if let Some(v) = map.get_mut(&key) {\n  |                      --- first mutable borrow occurs here\n5 |         return v;\n  |                - returning this value requires that `*map` is borrowed for `'a`\n6 |     }\n7 |     map.insert(key, String::from(\"default\"));\n  |     ^^^ second mutable borrow occurs here\n\nerror[E0499]: cannot borrow `*map` as mutable more than once at a time\n --> <tmp>/a2_polonius_hashmap_get_mut_return.rs:8:5\n  |\n3 | pub fn get_mut_or_insert<'a>(map: &'a mut HashMap<u32, String>, key: u32)...\n  |                          -- lifetime `'a` defined here\n4 |     if let Some(v) = map.get_mut(&key) {\n  |                      --- first mutable borrow occurs here\n5 |         return v;\n  |                - returning this value requires that `*map` is borrowed for `'a`\n...\n8 |     map.get_mut(&key).unwrap()\n  |     ^^^ second mutable borrow occurs here\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0499`."
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        }
+      }
+    },
+    "a3_polonius_3way_separator_flow_sensitive_invariance": {
+      "family": "A_polonius_triad",
+      "edition": "2024",
+      "source": "use std::cell::Cell;\n\npub struct Invariant<'l>(Cell<&'l ()>);\n\nfn create_invariant<'l>() -> Invariant<'l> {\n    Invariant(Cell::new(&()))\n}\n\npub fn flow_sensitive_invariance<'a, 'b>(choice: bool) -> Result<Invariant<'a>, Invariant<'b>> {\n    let returned_value = create_invariant();\n    if choice { Ok(returned_value) } else { Err(returned_value) }\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: lifetime may not live long enough\n  --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17\n   |\n 9 | pub fn flow_sensitive_invariance<'a, 'b>(choice: bool) -> Result<Invaria...\n   |                                  --  -- lifetime `'b` defined here\n   |                                  |\n   |                                  lifetime `'a` defined here\n10 |     let returned_value = create_invariant();\n11 |     if choice { Ok(returned_value) } else { Err(returned_value) }\n   |                 ^^^^^^^^^^^^^^^^^^ function was supposed to return data with lifetime `'a` but it is returning data with lifetime `'b`\n   |\n   = help: consider adding the following bound: `'b: 'a`\n   = note: requirement occurs because of the type `Invariant<'_>`, which makes the generic argument `'_` invariant\n   = note: the struct `Invariant<'l>` is invariant over the parameter `'l`\n   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance\n\nerror: lifetime may not live long enough\n  --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45\n   |\n 9 | ...ive_invariance<'a, 'b>(choice: bool) -> Result<Invariant<'a>, Invaria...\n   |                   --  -- lifetime `'b` defined here\n   |                   |\n   |                   lifetime `'a` defined here\n10 | ...alue = create_invariant();\n11 | ...(returned_value) } else { Err(returned_value) }\n   |                              ^^^^^^^^^^^^^^^^^^^ function was supposed to return data with lifetime `'b` but it is returning data with lifetime `'a`\n   |\n   = help: consider adding the following bound: `'a: 'b`\n   = note: requirement occurs because of the type `Invariant<'_>`, which makes the generic argument `'_` invariant\n   = note: the struct `Invariant<'l>` is invariant over the parameter `'l`\n   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance\n\nhelp: `'a` and `'b` must be the same: replace one with the other\n\nerror: aborting due to 2 previous errors"
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": "warning: field `0` is never read\n --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:3:26\n  |\n3 | pub struct Invariant<'l>(Cell<&'l ()>);\n  |            ---------     ^^^^^^^^^^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted"
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: lifetime may not live long enough\n  --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17\n   |\n 9 | pub fn flow_sensitive_invariance<'a, 'b>(choice: bool) -> Result<Invaria...\n   |                                  --  -- lifetime `'b` defined here\n   |                                  |\n   |                                  lifetime `'a` defined here\n10 |     let returned_value = create_invariant();\n11 |     if choice { Ok(returned_value) } else { Err(returned_value) }\n   |                 ^^^^^^^^^^^^^^^^^^ function was supposed to return data with lifetime `'a` but it is returning data with lifetime `'b`\n   |\n   = help: consider adding the following bound: `'b: 'a`\n   = note: requirement occurs because of the type `Invariant<'_>`, which makes the generic argument `'_` invariant\n   = note: the struct `Invariant<'l>` is invariant over the parameter `'l`\n   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance\n\nerror: lifetime may not live long enough\n  --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45\n   |\n 9 | ...ive_invariance<'a, 'b>(choice: bool) -> Result<Invariant<'a>, Invaria...\n   |                   --  -- lifetime `'b` defined here\n   |                   |\n   |                   lifetime `'a` defined here\n10 | ...alue = create_invariant();\n11 | ...(returned_value) } else { Err(returned_value) }\n   |                              ^^^^^^^^^^^^^^^^^^^ function was supposed to return data with lifetime `'b` but it is returning data with lifetime `'a`\n   |\n   = help: consider adding the following bound: `'a: 'b`\n   = note: requirement occurs because of the type `Invariant<'_>`, which makes the generic argument `'_` invariant\n   = note: the struct `Invariant<'l>` is invariant over the parameter `'l`\n   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance\n\nhelp: `'a` and `'b` must be the same: replace one with the other\n\nerror: aborting due to 2 previous errors"
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": "warning: field `0` is never read\n --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:3:26\n  |\n3 | pub struct Invariant<'l>(Cell<&'l ()>);\n  |            ---------     ^^^^^^^^^^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted"
+        }
+      }
+    },
+    "a4_polonius_flow_sensitive_covariant_control": {
+      "family": "A_polonius_triad",
+      "edition": "2024",
+      "source": "pub struct Covariant<'l>(&'l ());\n\nfn create_covariant<'l>() -> Covariant<'l> {\n    Covariant(&())\n}\n\npub fn flow_sensitive_covariant<'a, 'b>(choice: bool) -> Result<Covariant<'a>, Covariant<'b>> {\n    let returned_value = create_covariant();\n    if choice { Ok(returned_value) } else { Err(returned_value) }\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": "warning: field `0` is never read\n --> <tmp>/a4_polonius_flow_sensitive_covariant_control.rs:1:26\n  |\n1 | pub struct Covariant<'l>(&'l ());\n  |            ---------     ^^^^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted"
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": "warning: field `0` is never read\n --> <tmp>/a4_polonius_flow_sensitive_covariant_control.rs:1:26\n  |\n1 | pub struct Covariant<'l>(&'l ());\n  |            ---------     ^^^^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted"
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": "warning: field `0` is never read\n --> <tmp>/a4_polonius_flow_sensitive_covariant_control.rs:1:26\n  |\n1 | pub struct Covariant<'l>(&'l ());\n  |            ---------     ^^^^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted"
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": "warning: field `0` is never read\n --> <tmp>/a4_polonius_flow_sensitive_covariant_control.rs:1:26\n  |\n1 | pub struct Covariant<'l>(&'l ());\n  |            ---------     ^^^^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted"
+        }
+      }
+    },
+    "a5_polonius_invariant_backward_time_travel_reject": {
+      "family": "A_polonius_triad",
+      "edition": "2024",
+      "source": "pub fn invariant_time_travel_must_reject() -> i32 {\n    let mut a = 0i32;\n    let mut b = 1i32;\n    let mut p = &mut a;\n    let q = &mut p;\n    *q = &mut b;\n    b = 3;\n    *p\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0506"
+          ],
+          "stderr": "error[E0506]: cannot assign to `b` because it is borrowed\n --> <tmp>/a5_polonius_invariant_backward_time_travel_reject.rs:7:5\n  |\n6 |     *q = &mut b;\n  |          ------ `b` is borrowed here\n7 |     b = 3;\n  |     ^^^^^ `b` is assigned to here but it was already borrowed\n8 |     *p\n  |     -- borrow later used here\n\nwarning: value assigned to `b` is never read\n --> <tmp>/a5_polonius_invariant_backward_time_travel_reject.rs:7:5\n  |\n7 |     b = 3;\n  |     ^^^^^\n  |\n  = help: maybe it is overwritten before being read?\n  = note: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0506`."
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0506"
+          ],
+          "stderr": "error[E0506]: cannot assign to `b` because it is borrowed\n --> <tmp>/a5_polonius_invariant_backward_time_travel_reject.rs:7:5\n  |\n6 |     *q = &mut b;\n  |          ------ `b` is borrowed here\n7 |     b = 3;\n  |     ^^^^^ `b` is assigned to here but it was already borrowed\n8 |     *p\n  |     -- borrow later used here\n\nwarning: value assigned to `b` is never read\n --> <tmp>/a5_polonius_invariant_backward_time_travel_reject.rs:7:5\n  |\n7 |     b = 3;\n  |     ^^^^^\n  |\n  = help: maybe it is overwritten before being read?\n  = note: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0506`."
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0506"
+          ],
+          "stderr": "error[E0506]: cannot assign to `b` because it is borrowed\n --> <tmp>/a5_polonius_invariant_backward_time_travel_reject.rs:7:5\n  |\n6 |     *q = &mut b;\n  |          ------ `b` is borrowed here\n7 |     b = 3;\n  |     ^^^^^ `b` is assigned to here but it was already borrowed\n8 |     *p\n  |     -- borrow later used here\n\nwarning: value assigned to `b` is never read\n --> <tmp>/a5_polonius_invariant_backward_time_travel_reject.rs:7:5\n  |\n7 |     b = 3;\n  |     ^^^^^\n  |\n  = help: maybe it is overwritten before being read?\n  = note: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0506`."
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0506"
+          ],
+          "stderr": "error[E0506]: cannot assign to `b` because it is borrowed\n --> <tmp>/a5_polonius_invariant_backward_time_travel_reject.rs:7:5\n  |\n6 |     *q = &mut b;\n  |          ------ `b` is borrowed here\n7 |     b = 3;\n  |     ^^^^^ `b` is assigned to here but it was already borrowed\n8 |     *p\n  |     -- borrow later used here\n\nwarning: value assigned to `b` is never read\n --> <tmp>/a5_polonius_invariant_backward_time_travel_reject.rs:7:5\n  |\n7 |     b = 3;\n  |     ^^^^^\n  |\n  = help: maybe it is overwritten before being read?\n  = note: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0506`."
+        }
+      }
+    },
+    "b1_ed2024_rpit_default_captures_all_lifetimes_err": {
+      "family": "B_rpit_member_constraints",
+      "edition": "2024",
+      "source": "fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug {\n    x\n}\n\npub fn caller() {\n    let a = 1;\n    let mut b = 2;\n    let r = rpit_default(&a, &b);\n    b = 3;\n    let _ = (r, b);\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0506"
+          ],
+          "stderr": "error[E0506]: cannot assign to `b` because it is borrowed\n  --> <tmp>/b1_ed2024_rpit_default_captures_all_lifetimes_err.rs:9:5\n   |\n 8 |     let r = rpit_default(&a, &b);\n   |                              -- `b` is borrowed here\n 9 |     b = 3;\n   |     ^^^^^ `b` is assigned to here but it was already borrowed\n10 |     let _ = (r, b);\n   |              - borrow later used here\n   |\nnote: this call may capture more lifetimes than intended, because Rust 2024 has adjusted the `impl Trait` lifetime capture rules\n  --> <tmp>/b1_ed2024_rpit_default_captures_all_lifetimes_err.rs:8:13\n   |\n 8 |     let r = rpit_default(&a, &b);\n   |             ^^^^^^^^^^^^^^^^^^^^\nhelp: use the precise capturing `use<...>` syntax to make the captures explicit\n   |\n 1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<> {\n   |                                                                           +++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0506`."
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0506"
+          ],
+          "stderr": "error[E0506]: cannot assign to `b` because it is borrowed\n  --> <tmp>/b1_ed2024_rpit_default_captures_all_lifetimes_err.rs:9:5\n   |\n 8 |     let r = rpit_default(&a, &b);\n   |                              -- `b` is borrowed here\n 9 |     b = 3;\n   |     ^^^^^ `b` is assigned to here but it was already borrowed\n10 |     let _ = (r, b);\n   |              - borrow later used here\n   |\nnote: this call may capture more lifetimes than intended, because Rust 2024 has adjusted the `impl Trait` lifetime capture rules\n  --> <tmp>/b1_ed2024_rpit_default_captures_all_lifetimes_err.rs:8:13\n   |\n 8 |     let r = rpit_default(&a, &b);\n   |             ^^^^^^^^^^^^^^^^^^^^\nhelp: use the precise capturing `use<...>` syntax to make the captures explicit\n   |\n 1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<> {\n   |                                                                           +++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0506`."
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0506"
+          ],
+          "stderr": "error[E0506]: cannot assign to `b` because it is borrowed\n  --> <tmp>/b1_ed2024_rpit_default_captures_all_lifetimes_err.rs:9:5\n   |\n 8 |     let r = rpit_default(&a, &b);\n   |                              -- `b` is borrowed here\n 9 |     b = 3;\n   |     ^^^^^ `b` is assigned to here but it was already borrowed\n10 |     let _ = (r, b);\n   |              - borrow later used here\n   |\nnote: this call may capture more lifetimes than intended, because Rust 2024 has adjusted the `impl Trait` lifetime capture rules\n  --> <tmp>/b1_ed2024_rpit_default_captures_all_lifetimes_err.rs:8:13\n   |\n 8 |     let r = rpit_default(&a, &b);\n   |             ^^^^^^^^^^^^^^^^^^^^\nhelp: use the precise capturing `use<...>` syntax to make the captures explicit\n   |\n 1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<> {\n   |                                                                           +++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0506`."
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0506"
+          ],
+          "stderr": "error[E0506]: cannot assign to `b` because it is borrowed\n  --> <tmp>/b1_ed2024_rpit_default_captures_all_lifetimes_err.rs:9:5\n   |\n 8 |     let r = rpit_default(&a, &b);\n   |                              -- `b` is borrowed here\n 9 |     b = 3;\n   |     ^^^^^ `b` is assigned to here but it was already borrowed\n10 |     let _ = (r, b);\n   |              - borrow later used here\n   |\nnote: this call may capture more lifetimes than intended, because Rust 2024 has adjusted the `impl Trait` lifetime capture rules\n  --> <tmp>/b1_ed2024_rpit_default_captures_all_lifetimes_err.rs:8:13\n   |\n 8 |     let r = rpit_default(&a, &b);\n   |             ^^^^^^^^^^^^^^^^^^^^\nhelp: use the precise capturing `use<...>` syntax to make the captures explicit\n   |\n 1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<> {\n   |                                                                           +++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0506`."
+        }
+      }
+    },
+    "b2_ed2021_rpit_without_capture_err": {
+      "family": "B_rpit_member_constraints",
+      "edition": "2021",
+      "source": "fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug {\n    x\n}\n\npub fn caller() {\n    let a = 1;\n    let mut b = 2;\n    let r = rpit_default(&a, &b);\n    b = 3;\n    let _ = (r, b);\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2021"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0700"
+          ],
+          "stderr": "error[E0700]: hidden type for `impl Debug` captures lifetime that does not appear in bounds\n --> <tmp>/b2_ed2021_rpit_without_capture_err.rs:2:5\n  |\n1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug {\n  |                 --                                  --------------------- opaque type defined here\n  |                 |\n  |                 hidden type `&'a i32` captures the lifetime `'a` as defined here\n2 |     x\n  |     ^\n  |\nhelp: add a `use<...>` bound to explicitly capture `'a`\n  |\n1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<'a> {\n  |                                                                           +++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2021",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2021",
+            "-Zpolonius"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0700"
+          ],
+          "stderr": "error[E0700]: hidden type for `impl Debug` captures lifetime that does not appear in bounds\n --> <tmp>/b2_ed2021_rpit_without_capture_err.rs:2:5\n  |\n1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug {\n  |                 --                                  --------------------- opaque type defined here\n  |                 |\n  |                 hidden type `&'a i32` captures the lifetime `'a` as defined here\n2 |     x\n  |     ^\n  |\nhelp: add a `use<...>` bound to explicitly capture `'a`\n  |\n1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<'a> {\n  |                                                                           +++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2021",
+            "-Zpolonius=next"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0700"
+          ],
+          "stderr": "error[E0700]: hidden type for `impl Debug` captures lifetime that does not appear in bounds\n --> <tmp>/b2_ed2021_rpit_without_capture_err.rs:2:5\n  |\n1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug {\n  |                 --                                  --------------------- opaque type defined here\n  |                 |\n  |                 hidden type `&'a i32` captures the lifetime `'a` as defined here\n2 |     x\n  |     ^\n  |\nhelp: add a `use<...>` bound to explicitly capture `'a`\n  |\n1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<'a> {\n  |                                                                           +++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2021",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0700"
+          ],
+          "stderr": "error[E0700]: hidden type for `impl Debug` captures lifetime that does not appear in bounds\n --> <tmp>/b2_ed2021_rpit_without_capture_err.rs:2:5\n  |\n1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug {\n  |                 --                                  --------------------- opaque type defined here\n  |                 |\n  |                 hidden type `&'a i32` captures the lifetime `'a` as defined here\n2 |     x\n  |     ^\n  |\nhelp: add a `use<...>` bound to explicitly capture `'a`\n  |\n1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<'a> {\n  |                                                                           +++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+        }
+      }
+    },
+    "b3_ed2024_rpit_use_precise_captures_ok": {
+      "family": "B_rpit_member_constraints",
+      "edition": "2024",
+      "source": "fn rpit_precise<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<'a> {\n    x\n}\n\npub fn caller() {\n    let a = 1;\n    let mut b = 2;\n    let r = rpit_precise(&a, &b);\n    b = 3;\n    let _ = (r, b);\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        }
+      }
+    },
+    "b4_opaque_member_constraint_incomparable_choices_err": {
+      "family": "B_rpit_member_constraints",
+      "edition": "2024",
+      "source": "pub fn member_incomparable<'a, 'b>(\n    x: &'a str,\n    y: &'b str,\n    cond: bool,\n) -> impl core::fmt::Display + use<'a, 'b> {\n    if cond { x } else { y }\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0700"
+          ],
+          "stderr": "error[E0700]: hidden type for `impl std::fmt::Display` captures lifetime that does not appear in bounds\n --> <tmp>/b4_opaque_member_constraint_incomparable_choices_err.rs:6:26\n  |\n5 | ) -> impl core::fmt::Display + use<'a, 'b> {\n  |      ------------------------------------- opaque type defined here\n6 |     if cond { x } else { y }\n  |                          ^\n  |\n  = note: hidden type `&str` captures lifetime `'_`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0700"
+          ],
+          "stderr": "error[E0700]: hidden type for `impl std::fmt::Display` captures lifetime that does not appear in bounds\n --> <tmp>/b4_opaque_member_constraint_incomparable_choices_err.rs:6:26\n  |\n5 | ) -> impl core::fmt::Display + use<'a, 'b> {\n  |      ------------------------------------- opaque type defined here\n6 |     if cond { x } else { y }\n  |                          ^\n  |\n  = note: hidden type `&str` captures lifetime `'_`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0700"
+          ],
+          "stderr": "error[E0700]: hidden type for `impl std::fmt::Display` captures lifetime that does not appear in bounds\n --> <tmp>/b4_opaque_member_constraint_incomparable_choices_err.rs:6:26\n  |\n5 | ) -> impl core::fmt::Display + use<'a, 'b> {\n  |      ------------------------------------- opaque type defined here\n6 |     if cond { x } else { y }\n  |                          ^\n  |\n  = note: hidden type `&str` captures lifetime `'_`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0700"
+          ],
+          "stderr": "error[E0700]: hidden type for `impl std::fmt::Display` captures lifetime that does not appear in bounds\n --> <tmp>/b4_opaque_member_constraint_incomparable_choices_err.rs:6:26\n  |\n5 | ) -> impl core::fmt::Display + use<'a, 'b> {\n  |      ------------------------------------- opaque type defined here\n6 |     if cond { x } else { y }\n  |                          ^\n  |\n  = note: hidden type `&str` captures lifetime `'_`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+        }
+      }
+    },
+    "b5_opaque_member_constraint_ordered_choices_ok": {
+      "family": "B_rpit_member_constraints",
+      "edition": "2024",
+      "source": "pub fn member_ordered<'a, 'b>(\n    x: &'a str,\n    y: &'b str,\n    cond: bool,\n) -> impl core::fmt::Display + use<'a, 'b>\nwhere\n    'a: 'b,\n{\n    if cond { x } else { y }\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        }
+      }
+    },
+    "b6_opaque_member_constraint_unique_upper_bound_ok": {
+      "family": "B_rpit_member_constraints",
+      "edition": "2024",
+      "source": "use core::cell::Cell;\n\npub fn member_with_cell<'a, 'b>(\n    x: Cell<&'a str>,\n    _y: Cell<&'b str>,\n) -> impl Sized + use<'a, 'b> {\n    x\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        }
+      }
+    },
+    "b7_opaque_member_constraint_static_promoted_ok": {
+      "family": "B_rpit_member_constraints",
+      "edition": "2024",
+      "source": "pub fn member_static<'a, 'b>(x: &'static str) -> impl core::fmt::Display + use<'a, 'b> {\n    x\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        }
+      }
+    },
+    "b8_opaque_member_constraint_diamond_min_ok": {
+      "family": "B_rpit_member_constraints",
+      "edition": "2024",
+      "source": "pub fn member_diamond<'a, 'b, 'c>(\n    x: &'a str,\n    y: &'b str,\n    cond: bool,\n) -> impl core::fmt::Display + use<'a, 'b, 'c>\nwhere\n    'a: 'c,\n    'b: 'c,\n{\n    if cond { x } else { y }\n}\n\npub fn call_diamond_with_locals(cond: bool) -> usize {\n    let s1 = String::from(\"alpha\");\n    let s2 = String::from(\"beta\");\n    let out = member_diamond::<'_, '_, '_>(&s1, &s2, cond);\n    out.to_string().len()\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        }
+      }
+    },
+    "c1_two_phase_shared_read_before_activation_ok": {
+      "family": "C_two_phase_borrows",
+      "edition": "2024",
+      "source": "pub fn two_phase_shared_read() -> usize {\n    let mut v = vec![10usize, 20, 30];\n    v.push(v.len());\n    v.len()\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        }
+      }
+    },
+    "c2_two_phase_conflicting_write_before_activation_err": {
+      "family": "C_two_phase_borrows",
+      "edition": "2024",
+      "source": "pub fn two_phase_conflicting_write() {\n    let mut v = vec![10usize, 20, 30];\n    v.push({\n        v.clear();\n        42\n    });\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0499"
+          ],
+          "stderr": "error[E0499]: cannot borrow `v` as mutable more than once at a time\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:4:9\n  |\n3 |     v.push({\n  |     - ---- first borrow later used by call\n  |     |\n  |     first mutable borrow occurs here\n4 |         v.clear();\n  |         ^ second mutable borrow occurs here\n  |\nhelp: try adding a local storing this argument...\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:4:9\n  |\n4 |         v.clear();\n  |         ^^^^^^^^^\nhelp: ...and then using that local as the argument to this call\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:3:5\n  |\n3 | /     v.push({\n4 | |         v.clear();\n5 | |         42\n6 | |     });\n  | |______^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`."
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0499"
+          ],
+          "stderr": "error[E0499]: cannot borrow `v` as mutable more than once at a time\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:4:9\n  |\n3 |     v.push({\n  |     - ---- first borrow later used by call\n  |     |\n  |     first mutable borrow occurs here\n4 |         v.clear();\n  |         ^ second mutable borrow occurs here\n  |\nhelp: try adding a local storing this argument...\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:4:9\n  |\n4 |         v.clear();\n  |         ^^^^^^^^^\nhelp: ...and then using that local as the argument to this call\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:3:5\n  |\n3 | /     v.push({\n4 | |         v.clear();\n5 | |         42\n6 | |     });\n  | |______^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`."
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0499"
+          ],
+          "stderr": "error[E0499]: cannot borrow `v` as mutable more than once at a time\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:4:9\n  |\n3 |     v.push({\n  |     - ---- first borrow later used by call\n  |     |\n  |     first mutable borrow occurs here\n4 |         v.clear();\n  |         ^ second mutable borrow occurs here\n  |\nhelp: try adding a local storing this argument...\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:4:9\n  |\n4 |         v.clear();\n  |         ^^^^^^^^^\nhelp: ...and then using that local as the argument to this call\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:3:5\n  |\n3 | /     v.push({\n4 | |         v.clear();\n5 | |         42\n6 | |     });\n  | |______^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`."
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0499"
+          ],
+          "stderr": "error[E0499]: cannot borrow `v` as mutable more than once at a time\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:4:9\n  |\n3 |     v.push({\n  |     - ---- first borrow later used by call\n  |     |\n  |     first mutable borrow occurs here\n4 |         v.clear();\n  |         ^ second mutable borrow occurs here\n  |\nhelp: try adding a local storing this argument...\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:4:9\n  |\n4 |         v.clear();\n  |         ^^^^^^^^^\nhelp: ...and then using that local as the argument to this call\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:3:5\n  |\n3 | /     v.push({\n4 | |         v.clear();\n5 | |         42\n6 | |     });\n  | |______^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`."
+        }
+      }
+    },
+    "c3_two_phase_nested_mut_reservation_conflict_err": {
+      "family": "C_two_phase_borrows",
+      "edition": "2024",
+      "source": "pub fn two_phase_nested_push() {\n    let mut v = vec![10usize, 20, 30];\n    v.push({\n        v.push(99);\n        42\n    });\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0499"
+          ],
+          "stderr": "error[E0499]: cannot borrow `v` as mutable more than once at a time\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:4:9\n  |\n3 |     v.push({\n  |     - ---- first borrow later used by call\n  |     |\n  |     first mutable borrow occurs here\n4 |         v.push(99);\n  |         ^ second mutable borrow occurs here\n  |\nhelp: try adding a local storing this argument...\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:4:9\n  |\n4 |         v.push(99);\n  |         ^^^^^^^^^^\nhelp: ...and then using that local as the argument to this call\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:3:5\n  |\n3 | /     v.push({\n4 | |         v.push(99);\n5 | |         42\n6 | |     });\n  | |______^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`."
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0499"
+          ],
+          "stderr": "error[E0499]: cannot borrow `v` as mutable more than once at a time\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:4:9\n  |\n3 |     v.push({\n  |     - ---- first borrow later used by call\n  |     |\n  |     first mutable borrow occurs here\n4 |         v.push(99);\n  |         ^ second mutable borrow occurs here\n  |\nhelp: try adding a local storing this argument...\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:4:9\n  |\n4 |         v.push(99);\n  |         ^^^^^^^^^^\nhelp: ...and then using that local as the argument to this call\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:3:5\n  |\n3 | /     v.push({\n4 | |         v.push(99);\n5 | |         42\n6 | |     });\n  | |______^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`."
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0499"
+          ],
+          "stderr": "error[E0499]: cannot borrow `v` as mutable more than once at a time\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:4:9\n  |\n3 |     v.push({\n  |     - ---- first borrow later used by call\n  |     |\n  |     first mutable borrow occurs here\n4 |         v.push(99);\n  |         ^ second mutable borrow occurs here\n  |\nhelp: try adding a local storing this argument...\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:4:9\n  |\n4 |         v.push(99);\n  |         ^^^^^^^^^^\nhelp: ...and then using that local as the argument to this call\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:3:5\n  |\n3 | /     v.push({\n4 | |         v.push(99);\n5 | |         42\n6 | |     });\n  | |______^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`."
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0499"
+          ],
+          "stderr": "error[E0499]: cannot borrow `v` as mutable more than once at a time\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:4:9\n  |\n3 |     v.push({\n  |     - ---- first borrow later used by call\n  |     |\n  |     first mutable borrow occurs here\n4 |         v.push(99);\n  |         ^ second mutable borrow occurs here\n  |\nhelp: try adding a local storing this argument...\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:4:9\n  |\n4 |         v.push(99);\n  |         ^^^^^^^^^^\nhelp: ...and then using that local as the argument to this call\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:3:5\n  |\n3 | /     v.push({\n4 | |         v.push(99);\n5 | |         42\n6 | |     });\n  | |______^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`."
+        }
+      }
+    },
+    "c4_non_two_phase_explicit_mut_borrow_shared_read_err": {
+      "family": "C_two_phase_borrows",
+      "edition": "2024",
+      "source": "pub fn explicit_mut_borrow_read_conflict() -> usize {\n    let mut v = vec![10usize, 20, 30];\n    let r = &mut v;\n    let len = v.len();\n    r.push(len);\n    v.len()\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0502"
+          ],
+          "stderr": "error[E0502]: cannot borrow `v` as immutable because it is also borrowed as mutable\n --> <tmp>/c4_non_two_phase_explicit_mut_borrow_shared_read_err.rs:4:15\n  |\n3 |     let r = &mut v;\n  |             ------ mutable borrow occurs here\n4 |     let len = v.len();\n  |               ^ immutable borrow occurs here\n5 |     r.push(len);\n  |     - mutable borrow later used here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0502`."
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0502"
+          ],
+          "stderr": "error[E0502]: cannot borrow `v` as immutable because it is also borrowed as mutable\n --> <tmp>/c4_non_two_phase_explicit_mut_borrow_shared_read_err.rs:4:15\n  |\n3 |     let r = &mut v;\n  |             ------ mutable borrow occurs here\n4 |     let len = v.len();\n  |               ^ immutable borrow occurs here\n5 |     r.push(len);\n  |     - mutable borrow later used here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0502`."
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0502"
+          ],
+          "stderr": "error[E0502]: cannot borrow `v` as immutable because it is also borrowed as mutable\n --> <tmp>/c4_non_two_phase_explicit_mut_borrow_shared_read_err.rs:4:15\n  |\n3 |     let r = &mut v;\n  |             ------ mutable borrow occurs here\n4 |     let len = v.len();\n  |               ^ immutable borrow occurs here\n5 |     r.push(len);\n  |     - mutable borrow later used here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0502`."
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0502"
+          ],
+          "stderr": "error[E0502]: cannot borrow `v` as immutable because it is also borrowed as mutable\n --> <tmp>/c4_non_two_phase_explicit_mut_borrow_shared_read_err.rs:4:15\n  |\n3 |     let r = &mut v;\n  |             ------ mutable borrow occurs here\n4 |     let len = v.len();\n  |               ^ immutable borrow occurs here\n5 |     r.push(len);\n  |     - mutable borrow later used here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0502`."
+        }
+      }
+    },
+    "c5_two_phase_prior_shared_borrow_ends_before_activation_ok": {
+      "family": "C_two_phase_borrows",
+      "edition": "2024",
+      "source": "pub fn two_phase_prior_shared_ends_ok() -> usize {\n    let mut v = vec![10usize, 20, 30];\n    let r = &v[0];\n    v.push(*r);\n    v.len()\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "error_codes": [],
+          "stderr": ""
+        }
+      }
+    },
+    "c6_two_phase_prior_shared_borrow_live_at_activation_err": {
+      "family": "C_two_phase_borrows",
+      "edition": "2024",
+      "source": "pub fn two_phase_prior_shared_live_err() -> usize {\n    let mut v = vec![10usize, 20, 30];\n    let r = &v[0];\n    v.push(*r);\n    *r\n}\n",
+      "modes": {
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0502"
+          ],
+          "stderr": "error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immutable\n --> <tmp>/c6_two_phase_prior_shared_borrow_live_at_activation_err.rs:4:5\n  |\n3 |     let r = &v[0];\n  |              - immutable borrow occurs here\n4 |     v.push(*r);\n  |     ^^^^^^^^^^ mutable borrow occurs here\n5 |     *r\n  |     -- immutable borrow later used here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0502`."
+        },
+        "z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [],
+          "stderr": "error: incorrect value `off` for unstable option `polonius` - either no value or `legacy` (the default), or `next` was expected"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0502"
+          ],
+          "stderr": "error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immutable\n --> <tmp>/c6_two_phase_prior_shared_borrow_live_at_activation_err.rs:4:5\n  |\n3 |     let r = &v[0];\n  |              - immutable borrow occurs here\n4 |     v.push(*r);\n  |     ^^^^^^^^^^ mutable borrow occurs here\n5 |     *r\n  |     -- immutable borrow later used here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0502`."
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0502"
+          ],
+          "stderr": "error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immutable\n --> <tmp>/c6_two_phase_prior_shared_borrow_live_at_activation_err.rs:4:5\n  |\n3 |     let r = &v[0];\n  |              - immutable borrow occurs here\n4 |     v.push(*r);\n  |     ^^^^^^^^^^ mutable borrow occurs here\n5 |     *r\n  |     -- immutable borrow later used here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0502`."
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "error_codes": [
+            "E0502"
+          ],
+          "stderr": "error[E0502]: cannot borrow `v` as mutable because it is also borrowed as immutable\n --> <tmp>/c6_two_phase_prior_shared_borrow_live_at_activation_err.rs:4:5\n  |\n3 |     let r = &v[0];\n  |              - immutable borrow occurs here\n4 |     v.push(*r);\n  |     ^^^^^^^^^^ mutable borrow occurs here\n5 |     *r\n  |     -- immutable borrow later used here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0502`."
+        }
+      }
+    }
+  },
+  "mir_dumps": {
+    "a3_default_nll": {
+      "rc": 1,
+      "files": {
+        "a3_polonius_3way_separator_flow_sensitive_invariance.create_invariant.-------.nll.0.mir": "// MIR for `create_invariant` 0 nll\n\n| Free Region Mapping\n| '?0 | Global | ['?0, '?2, '?1]\n| '?1 | Local | ['?2, '?1]\n| '?2 | Local | ['?2]\n|\n| Inferred Region Values\n| '?0 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?0, '?1, '?2}\n| '?1 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?2 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?2}\n| '?3 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?4 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?5 | U0 | {}\n| '?6 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?7 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?8 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?9 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?10 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?11 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?12 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?13 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?14 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?15 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?16 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n|\n| Inference Constraints\n| '?0 live at {bb0[0..=6], bb1[0..=4], bb2[0]}\n| '?1 live at {bb0[0..=6], bb1[0..=4], bb2[0]}\n| '?2 live at {bb0[0..=6], bb1[0..=4], bb2[0]}\n| '?6 live at {bb0[3]}\n| '?7 live at {bb0[4]}\n| '?8 live at {bb0[5]}\n| '?9 live at {bb0[6]}\n| '?10 live at {bb1[1]}\n| '?1: '?11 due to BoringNoLocation at All(<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:5:30: 5:43) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:5:30: 5:43 (#0)\n| '?3: '?4 due to Boring at Single(bb0[3]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?4: '?6 due to Boring at Single(bb0[3]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?6: '?4 due to Boring at Single(bb0[3]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?6: '?15 due to Boring at Single(bb0[3]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?7: '?14 due to Boring at Single(bb0[4]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?8: '?13 due to Boring at Single(bb0[5]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?9: '?12 due to Boring at Single(bb0[6]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29 (#0)\n| '?9: '?16 due to TypeAnnotation(GenericArg) at Single(bb0[6]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29 (#0)\n| '?10: '?11 due to Return(Normal) at Single(bb1[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:5: 6:30 (#0)\n| '?10: '?12 due to Boring at Single(bb1[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:5: 6:30 (#0)\n| '?11: '?1 due to BoringNoLocation at All(<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:5:30: 5:43) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:5:30: 5:43 (#0)\n| '?11: '?10 due to Return(Normal) at Single(bb1[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:5: 6:30 (#0)\n| '?12: '?9 due to Boring at Single(bb0[6]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29 (#0)\n| '?12: '?10 due to Boring at Single(bb1[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:5: 6:30 (#0)\n| '?13: '?9 due to CallArgument(Some(FnDef(DefId(2:6115 ~ core[5f43]::cell::{impl#9}::new), [&'{erased} ()]))) at Single(bb0[6]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29 (#0)\n| '?14: '?8 due to Boring at Single(bb0[5]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?15: '?7 due to Boring at Single(bb0[4]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?16: '?9 due to TypeAnnotation(GenericArg) at Single(bb0[6]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29 (#0)\n|\n| User Type Annotations\n| 0: user_ty: Canonical { value: TypeOf(DefId(2:6115 ~ core[5f43]::cell::{impl#9}::new), UserArgs { args: [^c_0], user_self_ty: Some(UserSelfTy { impl_def_id: DefId(2:6113 ~ core[5f43]::cell::{impl#9}), self_ty: std::cell::Cell<^c_1> }) }), max_universe: U0, var_kinds: [Ty { ui: U0, sub_root: 0 }, Ty { ui: U0, sub_root: 1 }] }, span: <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:24, inferred_ty: fn(&()) -> std::cell::Cell<&()> {std::cell::Cell::<&()>::new}\n|\nfn create_invariant() -> Invariant<'_> {\n    let mut _0: Invariant<'_>;           // return place in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:5:30: 5:43\n    let mut _1: std::cell::Cell<&()>;    // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29\n    let mut _2: &();                     // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n    let _3: &();                         // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n    let _4: ();                          // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:26: 6:28\n    let mut _5: &();                     // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n\n    bb0: {\n        StorageLive(_1);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29\n        StorageLive(_2);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n        StorageLive(_3);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n        _5 = const create_invariant::<'_>::promoted[0]; // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n                                         // + const_: Const { ty: &(), val: Unevaluated(create_invariant, ['?5], Some(promoted[0])) }\n        _3 = &(*_5);                     // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n        _2 = &(*_3);                     // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n        _1 = Cell::<&()>::new(move _2) -> [return: bb1, unwind: bb2]; // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:24\n                                         // + user_ty: UserType(0)\n                                         // + const_: Const { ty: fn(&()) -> Cell<&()> {Cell::<&()>::new}, val: Value(Cell::<&()>::new) }\n    }\n\n    bb1: {\n        StorageDead(_2);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:28: 6:29\n        _0 = Invariant::<'_>(move _1);   // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:5: 6:30\n        StorageDead(_3);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:29: 6:30\n        StorageDead(_1);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:29: 6:30\n        return;                          // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:7:2: 7:2\n    }\n\n    bb2 (cleanup): {\n        resume;                          // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:5:1: 7:2\n    }\n}\n",
+        "a3_polonius_3way_separator_flow_sensitive_invariance.flow_sensitive_invariance.-------.nll.0.mir": "// MIR for `flow_sensitive_invariance` 0 nll\n\n| Free Region Mapping\n| '?0 | Global | ['?0, '?3, '?1, '?2]\n| '?1 | Local | ['?3, '?1]\n| '?2 | Local | ['?3, '?2]\n| '?3 | Local | ['?3]\n|\n| Inferred Region Values\n| '?0 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?0, '?1, '?2, '?3}\n| '?1 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?2 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?3 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?3}\n| '?4 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?5 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?6 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?7 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?8 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?9 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?10 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?11 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?12 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?13 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n|\n| Inference Constraints\n| '?0 live at {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0]}\n| '?1 live at {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0]}\n| '?2 live at {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0]}\n| '?3 live at {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0]}\n| '?4 live at {bb0[1]}\n| '?5 live at {bb2[2]}\n| '?6 live at {bb2[2]}\n| '?7 live at {bb3[2]}\n| '?8 live at {bb3[2]}\n| '?1: '?9 due to BoringNoLocation at All(<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95 (#0)\n| '?2: '?10 due to BoringNoLocation at All(<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95 (#0)\n| '?4: '?11 due to Assignment at Single(bb0[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:26: 10:44 (#0)\n| '?5: '?9 due to Return(Normal) at Single(bb2[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35 (#0)\n| '?5: '?12 due to Boring at Single(bb2[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35 (#0)\n| '?6: '?10 due to Return(Normal) at Single(bb2[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35 (#0)\n| '?7: '?9 due to Return(Normal) at Single(bb3[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64 (#0)\n| '?8: '?10 due to Return(Normal) at Single(bb3[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64 (#0)\n| '?8: '?13 due to Boring at Single(bb3[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64 (#0)\n| '?9: '?1 due to BoringNoLocation at All(<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95 (#0)\n| '?9: '?5 due to Return(Normal) at Single(bb2[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35 (#0)\n| '?9: '?7 due to Return(Normal) at Single(bb3[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64 (#0)\n| '?10: '?2 due to BoringNoLocation at All(<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95 (#0)\n| '?10: '?6 due to Return(Normal) at Single(bb2[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35 (#0)\n| '?10: '?8 due to Return(Normal) at Single(bb3[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64 (#0)\n| '?11: '?4 due to Assignment at Single(bb0[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:26: 10:44 (#0)\n| '?11: '?12 due to Usage at Single(bb2[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:20: 11:34 (#0)\n| '?11: '?13 due to Usage at Single(bb3[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:49: 11:63 (#0)\n| '?12: '?5 due to Boring at Single(bb2[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35 (#0)\n| '?12: '?11 due to Usage at Single(bb2[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:20: 11:34 (#0)\n| '?13: '?8 due to Boring at Single(bb3[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64 (#0)\n| '?13: '?11 due to Usage at Single(bb3[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:49: 11:63 (#0)\n|\nfn flow_sensitive_invariance(_1: bool) -> Result<Invariant<'_>, Invariant<'_>> {\n    debug choice => _1;                  // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:42: 9:48\n    let mut _0: std::result::Result<Invariant<'_>, Invariant<'_>>; // return place in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95\n    let _2: Invariant<'_>;               // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:9: 10:23\n    let mut _3: bool;                    // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:8: 11:14\n    let mut _4: Invariant<'_>;           // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:20: 11:34\n    let mut _5: Invariant<'_>;           // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:49: 11:63\n    scope 1 {\n        debug returned_value => _2;      // in scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:9: 10:23\n    }\n\n    bb0: {\n        StorageLive(_2);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:9: 10:23\n        _2 = create_invariant::<'_>() -> [return: bb1, unwind: bb5]; // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:26: 10:44\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:26: 10:42\n                                         // + const_: Const { ty: fn() -> Invariant<'_> {create_invariant::<'_>}, val: Value(create_invariant::<'_>) }\n    }\n\n    bb1: {\n        FakeRead(ForLet(None), _2);      // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:9: 10:23\n        StorageLive(_3);                 // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:8: 11:14\n        _3 = copy _1;                    // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:8: 11:14\n        switchInt(move _3) -> [0: bb3, otherwise: bb2]; // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:8: 11:14\n    }\n\n    bb2: {\n        StorageLive(_4);                 // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:20: 11:34\n        _4 = move _2;                    // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:20: 11:34\n        _0 = Result::<Invariant<'_>, Invariant<'_>>::Ok(move _4); // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35\n        StorageDead(_4);                 // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:34: 11:35\n        goto -> bb4;                     // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:5: 11:66\n    }\n\n    bb3: {\n        StorageLive(_5);                 // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:49: 11:63\n        _5 = move _2;                    // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:49: 11:63\n        _0 = Result::<Invariant<'_>, Invariant<'_>>::Err(move _5); // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64\n        StorageDead(_5);                 // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:63: 11:64\n        goto -> bb4;                     // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:5: 11:66\n    }\n\n    bb4: {\n        StorageDead(_3);                 // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:65: 11:66\n        StorageDead(_2);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:12:1: 12:2\n        return;                          // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:12:2: 12:2\n    }\n\n    bb5 (cleanup): {\n        resume;                          // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:1: 12:2\n    }\n}\n",
+        "a3_polonius_3way_separator_flow_sensitive_invariance.create_invariant.-------.nll.0.regioncx.all.dot": "digraph RegionInferenceContext {\n    r0[label=\"\\'?0 (\\'static)\"][shape=\"box\"];\n    r1[label=\"\\'?1 (\\'l)\"][shape=\"box\"];\n    r2[label=\"\\'?2\"][shape=\"box\"];\n    r3[label=\"\\'?3 (ex<\\'_>)\"][shape=\"box\"];\n    r4[label=\"\\'?4 (ex<\\'_>)\"][shape=\"box\"];\n    r5[label=\"\\'?5 (ex<\\'_>)\"][shape=\"box\"];\n    r6[label=\"\\'?6 (ex<\\'_>)\"][shape=\"box\"];\n    r7[label=\"\\'?7 (ex<\\'_>)\"][shape=\"box\"];\n    r8[label=\"\\'?8 (ex<\\'_>)\"][shape=\"box\"];\n    r9[label=\"\\'?9 (ex<\\'_>)\"][shape=\"box\"];\n    r10[label=\"\\'?10 (ex<\\'_>)\"][shape=\"box\"];\n    r11[label=\"\\'?11 (ex<\\'_>)\"][shape=\"box\"];\n    r12[label=\"\\'?12 (ex<\\'_>)\"][shape=\"box\"];\n    r13[label=\"\\'?13 (ex<\\'_>)\"][shape=\"box\"];\n    r14[label=\"\\'?14 (ex<\\'_>)\"][shape=\"box\"];\n    r15[label=\"\\'?15 (ex<\\'_>)\"][shape=\"box\"];\n    r16[label=\"\\'?16 (ex<\\'_>)\"][shape=\"box\"];\n    r3 -> r4[label=\"bb0[3]\"];\n    r6 -> r4[label=\"bb0[3]\"];\n    r4 -> r6[label=\"bb0[3]\"];\n    r6 -> r15[label=\"bb0[3]\"];\n    r15 -> r7[label=\"bb0[4]\"];\n    r7 -> r14[label=\"bb0[4]\"];\n    r14 -> r8[label=\"bb0[5]\"];\n    r8 -> r13[label=\"bb0[5]\"];\n    r16 -> r9[label=\"bb0[6]\"];\n    r9 -> r16[label=\"bb0[6]\"];\n    r12 -> r9[label=\"bb0[6]\"];\n    r9 -> r12[label=\"bb0[6]\"];\n    r13 -> r9[label=\"bb0[6]\"];\n    r10 -> r12[label=\"bb1[1]\"];\n    r12 -> r10[label=\"bb1[1]\"];\n    r11 -> r10[label=\"bb1[1]\"];\n    r10 -> r11[label=\"bb1[1]\"];\n    r1 -> r11[label=\"All(...)\"];\n    r11 -> r1[label=\"All(...)\"];\n}\n",
+        "a3_polonius_3way_separator_flow_sensitive_invariance.flow_sensitive_invariance.-------.nll.0.regioncx.all.dot": "digraph RegionInferenceContext {\n    r0[label=\"\\'?0 (\\'static)\"][shape=\"box\"];\n    r1[label=\"\\'?1 (\\'a)\"][shape=\"box\"];\n    r2[label=\"\\'?2 (\\'b)\"][shape=\"box\"];\n    r3[label=\"\\'?3\"][shape=\"box\"];\n    r4[label=\"\\'?4 (ex<\\'_>)\"][shape=\"box\"];\n    r5[label=\"\\'?5 (ex<\\'_>)\"][shape=\"box\"];\n    r6[label=\"\\'?6 (ex<\\'_>)\"][shape=\"box\"];\n    r7[label=\"\\'?7 (ex<\\'_>)\"][shape=\"box\"];\n    r8[label=\"\\'?8 (ex<\\'_>)\"][shape=\"box\"];\n    r9[label=\"\\'?9 (ex<\\'_>)\"][shape=\"box\"];\n    r10[label=\"\\'?10 (ex<\\'_>)\"][shape=\"box\"];\n    r11[label=\"\\'?11 (ex<\\'_>)\"][shape=\"box\"];\n    r12[label=\"\\'?12 (ex<\\'_>)\"][shape=\"box\"];\n    r13[label=\"\\'?13 (ex<\\'_>)\"][shape=\"box\"];\n    r11 -> r4[label=\"bb0[1]\"];\n    r4 -> r11[label=\"bb0[1]\"];\n    r12 -> r11[label=\"bb2[1]\"];\n    r11 -> r12[label=\"bb2[1]\"];\n    r5 -> r12[label=\"bb2[2]\"];\n    r12 -> r5[label=\"bb2[2]\"];\n    r9 -> r5[label=\"bb2[2]\"];\n    r5 -> r9[label=\"bb2[2]\"];\n    r10 -> r6[label=\"bb2[2]\"];\n    r6 -> r10[label=\"bb2[2]\"];\n    r13 -> r11[label=\"bb3[1]\"];\n    r11 -> r13[label=\"bb3[1]\"];\n    r8 -> r13[label=\"bb3[2]\"];\n    r13 -> r8[label=\"bb3[2]\"];\n    r9 -> r7[label=\"bb3[2]\"];\n    r7 -> r9[label=\"bb3[2]\"];\n    r10 -> r8[label=\"bb3[2]\"];\n    r8 -> r10[label=\"bb3[2]\"];\n    r1 -> r9[label=\"All(...)\"];\n    r9 -> r1[label=\"All(...)\"];\n    r2 -> r10[label=\"All(...)\"];\n    r10 -> r2[label=\"All(...)\"];\n}\n"
+      }
+    },
+    "a3_next_nll": {
+      "rc": 1,
+      "files": {
+        "a3_polonius_3way_separator_flow_sensitive_invariance.create_invariant.-------.nll.0.mir": "// MIR for `create_invariant` 0 nll\n\n| Free Region Mapping\n| '?0 | Global | ['?0, '?2, '?1]\n| '?1 | Local | ['?2, '?1]\n| '?2 | Local | ['?2]\n|\n| Inferred Region Values\n| '?0 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?0, '?1, '?2}\n| '?1 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?2 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?2}\n| '?3 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?4 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?5 | U0 | {}\n| '?6 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?7 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?8 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?9 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?10 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?11 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?12 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?13 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?14 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?15 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?16 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n|\n| Inference Constraints\n| '?0 live at {bb0[0..=6], bb1[0..=4], bb2[0]}\n| '?1 live at {bb0[0..=6], bb1[0..=4], bb2[0]}\n| '?2 live at {bb0[0..=6], bb1[0..=4], bb2[0]}\n| '?6 live at {bb0[3]}\n| '?7 live at {bb0[4]}\n| '?8 live at {bb0[5]}\n| '?9 live at {bb0[6]}\n| '?10 live at {bb1[1]}\n| '?11 live at {bb1[2..=4]}\n| '?12 live at {bb1[0..=1]}\n| '?13 live at {bb0[6]}\n| '?14 live at {bb0[5]}\n| '?15 live at {bb0[4]}\n| '?1: '?11 due to BoringNoLocation at All(<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:5:30: 5:43) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:5:30: 5:43 (#0)\n| '?3: '?4 due to Boring at Single(bb0[3]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?4: '?6 due to Boring at Single(bb0[3]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?6: '?4 due to Boring at Single(bb0[3]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?6: '?15 due to Boring at Single(bb0[3]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?7: '?14 due to Boring at Single(bb0[4]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?8: '?13 due to Boring at Single(bb0[5]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?9: '?12 due to Boring at Single(bb0[6]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29 (#0)\n| '?9: '?16 due to TypeAnnotation(GenericArg) at Single(bb0[6]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29 (#0)\n| '?10: '?11 due to Return(Normal) at Single(bb1[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:5: 6:30 (#0)\n| '?10: '?12 due to Boring at Single(bb1[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:5: 6:30 (#0)\n| '?11: '?1 due to BoringNoLocation at All(<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:5:30: 5:43) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:5:30: 5:43 (#0)\n| '?11: '?10 due to Return(Normal) at Single(bb1[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:5: 6:30 (#0)\n| '?12: '?9 due to Boring at Single(bb0[6]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29 (#0)\n| '?12: '?10 due to Boring at Single(bb1[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:5: 6:30 (#0)\n| '?13: '?9 due to CallArgument(Some(FnDef(DefId(2:6115 ~ core[5f43]::cell::{impl#9}::new), [&'{erased} ()]))) at Single(bb0[6]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29 (#0)\n| '?14: '?8 due to Boring at Single(bb0[5]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?15: '?7 due to Boring at Single(bb0[4]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?16: '?9 due to TypeAnnotation(GenericArg) at Single(bb0[6]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29 (#0)\n|\n| User Type Annotations\n| 0: user_ty: Canonical { value: TypeOf(DefId(2:6115 ~ core[5f43]::cell::{impl#9}::new), UserArgs { args: [^c_0], user_self_ty: Some(UserSelfTy { impl_def_id: DefId(2:6113 ~ core[5f43]::cell::{impl#9}), self_ty: std::cell::Cell<^c_1> }) }), max_universe: U0, var_kinds: [Ty { ui: U0, sub_root: 0 }, Ty { ui: U0, sub_root: 1 }] }, span: <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:24, inferred_ty: fn(&()) -> std::cell::Cell<&()> {std::cell::Cell::<&()>::new}\n|\nfn create_invariant() -> Invariant<'_> {\n    let mut _0: Invariant<'_>;           // return place in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:5:30: 5:43\n    let mut _1: std::cell::Cell<&()>;    // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29\n    let mut _2: &();                     // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n    let _3: &();                         // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n    let _4: ();                          // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:26: 6:28\n    let mut _5: &();                     // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n\n    bb0: {\n        StorageLive(_1);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29\n        StorageLive(_2);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n        StorageLive(_3);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n        _5 = const create_invariant::<'_>::promoted[0]; // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n                                         // + const_: Const { ty: &(), val: Unevaluated(create_invariant, ['?5], Some(promoted[0])) }\n        _3 = &(*_5);                     // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n        _2 = &(*_3);                     // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n        _1 = Cell::<&()>::new(move _2) -> [return: bb1, unwind: bb2]; // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:24\n                                         // + user_ty: UserType(0)\n                                         // + const_: Const { ty: fn(&()) -> Cell<&()> {Cell::<&()>::new}, val: Value(Cell::<&()>::new) }\n    }\n\n    bb1: {\n        StorageDead(_2);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:28: 6:29\n        _0 = Invariant::<'_>(move _1);   // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:5: 6:30\n        StorageDead(_3);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:29: 6:30\n        StorageDead(_1);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:29: 6:30\n        return;                          // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:7:2: 7:2\n    }\n\n    bb2 (cleanup): {\n        resume;                          // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:5:1: 7:2\n    }\n}\n",
+        "a3_polonius_3way_separator_flow_sensitive_invariance.flow_sensitive_invariance.-------.nll.0.mir": "// MIR for `flow_sensitive_invariance` 0 nll\n\n| Free Region Mapping\n| '?0 | Global | ['?0, '?3, '?1, '?2]\n| '?1 | Local | ['?3, '?1]\n| '?2 | Local | ['?3, '?2]\n| '?3 | Local | ['?3]\n|\n| Inferred Region Values\n| '?0 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?0, '?1, '?2, '?3}\n| '?1 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?2 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?3 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?3}\n| '?4 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?5 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?6 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?7 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?8 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?9 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?10 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?11 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?12 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?13 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n|\n| Inference Constraints\n| '?0 live at {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0]}\n| '?1 live at {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0]}\n| '?2 live at {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0]}\n| '?3 live at {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0]}\n| '?4 live at {bb0[1]}\n| '?5 live at {bb2[2]}\n| '?6 live at {bb2[2]}\n| '?7 live at {bb3[2]}\n| '?8 live at {bb3[2]}\n| '?9 live at {bb2[3..=4], bb3[3..=4], bb4[0..=2]}\n| '?10 live at {bb2[3..=4], bb3[3..=4], bb4[0..=2]}\n| '?11 live at {bb1[0..=3], bb2[0..=1], bb3[0..=1]}\n| '?12 live at {bb2[2]}\n| '?13 live at {bb3[2]}\n| '?1: '?9 due to BoringNoLocation at All(<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95 (#0)\n| '?2: '?10 due to BoringNoLocation at All(<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95 (#0)\n| '?4: '?11 due to Assignment at Single(bb0[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:26: 10:44 (#0)\n| '?5: '?9 due to Return(Normal) at Single(bb2[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35 (#0)\n| '?5: '?12 due to Boring at Single(bb2[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35 (#0)\n| '?6: '?10 due to Return(Normal) at Single(bb2[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35 (#0)\n| '?7: '?9 due to Return(Normal) at Single(bb3[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64 (#0)\n| '?8: '?10 due to Return(Normal) at Single(bb3[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64 (#0)\n| '?8: '?13 due to Boring at Single(bb3[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64 (#0)\n| '?9: '?1 due to BoringNoLocation at All(<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95 (#0)\n| '?9: '?5 due to Return(Normal) at Single(bb2[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35 (#0)\n| '?9: '?7 due to Return(Normal) at Single(bb3[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64 (#0)\n| '?10: '?2 due to BoringNoLocation at All(<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95 (#0)\n| '?10: '?6 due to Return(Normal) at Single(bb2[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35 (#0)\n| '?10: '?8 due to Return(Normal) at Single(bb3[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64 (#0)\n| '?11: '?4 due to Assignment at Single(bb0[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:26: 10:44 (#0)\n| '?11: '?12 due to Usage at Single(bb2[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:20: 11:34 (#0)\n| '?11: '?13 due to Usage at Single(bb3[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:49: 11:63 (#0)\n| '?12: '?5 due to Boring at Single(bb2[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35 (#0)\n| '?12: '?11 due to Usage at Single(bb2[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:20: 11:34 (#0)\n| '?13: '?8 due to Boring at Single(bb3[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64 (#0)\n| '?13: '?11 due to Usage at Single(bb3[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:49: 11:63 (#0)\n|\nfn flow_sensitive_invariance(_1: bool) -> Result<Invariant<'_>, Invariant<'_>> {\n    debug choice => _1;                  // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:42: 9:48\n    let mut _0: std::result::Result<Invariant<'_>, Invariant<'_>>; // return place in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95\n    let _2: Invariant<'_>;               // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:9: 10:23\n    let mut _3: bool;                    // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:8: 11:14\n    let mut _4: Invariant<'_>;           // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:20: 11:34\n    let mut _5: Invariant<'_>;           // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:49: 11:63\n    scope 1 {\n        debug returned_value => _2;      // in scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:9: 10:23\n    }\n\n    bb0: {\n        StorageLive(_2);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:9: 10:23\n        _2 = create_invariant::<'_>() -> [return: bb1, unwind: bb5]; // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:26: 10:44\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:26: 10:42\n                                         // + const_: Const { ty: fn() -> Invariant<'_> {create_invariant::<'_>}, val: Value(create_invariant::<'_>) }\n    }\n\n    bb1: {\n        FakeRead(ForLet(None), _2);      // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:9: 10:23\n        StorageLive(_3);                 // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:8: 11:14\n        _3 = copy _1;                    // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:8: 11:14\n        switchInt(move _3) -> [0: bb3, otherwise: bb2]; // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:8: 11:14\n    }\n\n    bb2: {\n        StorageLive(_4);                 // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:20: 11:34\n        _4 = move _2;                    // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:20: 11:34\n        _0 = Result::<Invariant<'_>, Invariant<'_>>::Ok(move _4); // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35\n        StorageDead(_4);                 // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:34: 11:35\n        goto -> bb4;                     // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:5: 11:66\n    }\n\n    bb3: {\n        StorageLive(_5);                 // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:49: 11:63\n        _5 = move _2;                    // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:49: 11:63\n        _0 = Result::<Invariant<'_>, Invariant<'_>>::Err(move _5); // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64\n        StorageDead(_5);                 // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:63: 11:64\n        goto -> bb4;                     // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:5: 11:66\n    }\n\n    bb4: {\n        StorageDead(_3);                 // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:65: 11:66\n        StorageDead(_2);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:12:1: 12:2\n        return;                          // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:12:2: 12:2\n    }\n\n    bb5 (cleanup): {\n        resume;                          // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:1: 12:2\n    }\n}\n"
+      }
+    },
+    "a3_legacy_nll": {
+      "rc": 0,
+      "files": {
+        "a3_polonius_3way_separator_flow_sensitive_invariance.create_invariant.-------.nll.0.mir": "// MIR for `create_invariant` 0 nll\n\n| Free Region Mapping\n| '?0 | Global | ['?0, '?2, '?1]\n| '?1 | Local | ['?2, '?1]\n| '?2 | Local | ['?2]\n|\n| Inferred Region Values\n| '?0 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?0, '?1, '?2}\n| '?1 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?2 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?2}\n| '?3 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?4 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?5 | U0 | {}\n| '?6 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?7 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?8 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?9 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?10 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?11 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?12 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?13 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?14 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?15 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n| '?16 | U0 | {bb0[0..=6], bb1[0..=4], bb2[0], '?1}\n|\n| Inference Constraints\n| '?0 live at {bb0[0..=6], bb1[0..=4], bb2[0]}\n| '?1 live at {bb0[0..=6], bb1[0..=4], bb2[0]}\n| '?2 live at {bb0[0..=6], bb1[0..=4], bb2[0]}\n| '?6 live at {bb0[3]}\n| '?7 live at {bb0[4]}\n| '?8 live at {bb0[5]}\n| '?9 live at {bb0[6]}\n| '?10 live at {bb1[1]}\n| '?1: '?11 due to BoringNoLocation at All(<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:5:30: 5:43) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:5:30: 5:43 (#0)\n| '?3: '?4 due to Boring at Single(bb0[3]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?4: '?6 due to Boring at Single(bb0[3]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?6: '?4 due to Boring at Single(bb0[3]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?6: '?15 due to Boring at Single(bb0[3]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?7: '?14 due to Boring at Single(bb0[4]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?8: '?13 due to Boring at Single(bb0[5]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?9: '?12 due to Boring at Single(bb0[6]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29 (#0)\n| '?9: '?16 due to TypeAnnotation(GenericArg) at Single(bb0[6]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29 (#0)\n| '?10: '?11 due to Return(Normal) at Single(bb1[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:5: 6:30 (#0)\n| '?10: '?12 due to Boring at Single(bb1[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:5: 6:30 (#0)\n| '?11: '?1 due to BoringNoLocation at All(<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:5:30: 5:43) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:5:30: 5:43 (#0)\n| '?11: '?10 due to Return(Normal) at Single(bb1[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:5: 6:30 (#0)\n| '?12: '?9 due to Boring at Single(bb0[6]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29 (#0)\n| '?12: '?10 due to Boring at Single(bb1[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:5: 6:30 (#0)\n| '?13: '?9 due to CallArgument(Some(FnDef(DefId(2:6115 ~ core[5f43]::cell::{impl#9}::new), [&'{erased} ()]))) at Single(bb0[6]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29 (#0)\n| '?14: '?8 due to Boring at Single(bb0[5]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?15: '?7 due to Boring at Single(bb0[4]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28 (#0)\n| '?16: '?9 due to TypeAnnotation(GenericArg) at Single(bb0[6]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29 (#0)\n|\n| User Type Annotations\n| 0: user_ty: Canonical { value: TypeOf(DefId(2:6115 ~ core[5f43]::cell::{impl#9}::new), UserArgs { args: [^c_0], user_self_ty: Some(UserSelfTy { impl_def_id: DefId(2:6113 ~ core[5f43]::cell::{impl#9}), self_ty: std::cell::Cell<^c_1> }) }), max_universe: U0, var_kinds: [Ty { ui: U0, sub_root: 0 }, Ty { ui: U0, sub_root: 1 }] }, span: <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:24, inferred_ty: fn(&()) -> std::cell::Cell<&()> {std::cell::Cell::<&()>::new}\n|\nfn create_invariant() -> Invariant<'_> {\n    let mut _0: Invariant<'_>;           // return place in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:5:30: 5:43\n    let mut _1: std::cell::Cell<&()>;    // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29\n    let mut _2: &();                     // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n    let _3: &();                         // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n    let _4: ();                          // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:26: 6:28\n    let mut _5: &();                     // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n\n    bb0: {\n        StorageLive(_1);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29\n        StorageLive(_2);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n        StorageLive(_3);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n        _5 = const create_invariant::<'_>::promoted[0]; // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n                                         // + const_: Const { ty: &(), val: Unevaluated(create_invariant, ['?5], Some(promoted[0])) }\n        _3 = &(*_5);                     // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n        _2 = &(*_3);                     // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:25: 6:28\n        _1 = Cell::<&()>::new(move _2) -> [return: bb1, unwind: bb2]; // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:29\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:15: 6:24\n                                         // + user_ty: UserType(0)\n                                         // + const_: Const { ty: fn(&()) -> Cell<&()> {Cell::<&()>::new}, val: Value(Cell::<&()>::new) }\n    }\n\n    bb1: {\n        StorageDead(_2);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:28: 6:29\n        _0 = Invariant::<'_>(move _1);   // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:5: 6:30\n        StorageDead(_3);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:29: 6:30\n        StorageDead(_1);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:6:29: 6:30\n        return;                          // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:7:2: 7:2\n    }\n\n    bb2 (cleanup): {\n        resume;                          // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:5:1: 7:2\n    }\n}\n",
+        "a3_polonius_3way_separator_flow_sensitive_invariance.flow_sensitive_invariance.-------.nll.0.mir": "// MIR for `flow_sensitive_invariance` 0 nll\n\n| Free Region Mapping\n| '?0 | Global | ['?0, '?3, '?1, '?2]\n| '?1 | Local | ['?3, '?1]\n| '?2 | Local | ['?3, '?2]\n| '?3 | Local | ['?3]\n|\n| Inferred Region Values\n| '?0 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?0, '?1, '?2, '?3}\n| '?1 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?2 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?3 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?3}\n| '?4 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?5 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?6 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?7 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?8 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?9 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?10 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?11 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?12 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n| '?13 | U0 | {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0], '?1, '?2}\n|\n| Inference Constraints\n| '?0 live at {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0]}\n| '?1 live at {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0]}\n| '?2 live at {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0]}\n| '?3 live at {bb0[0..=1], bb1[0..=3], bb2[0..=4], bb3[0..=4], bb4[0..=2], bb5[0]}\n| '?4 live at {bb0[1]}\n| '?5 live at {bb2[2]}\n| '?6 live at {bb2[2]}\n| '?7 live at {bb3[2]}\n| '?8 live at {bb3[2]}\n| '?1: '?9 due to BoringNoLocation at All(<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95 (#0)\n| '?2: '?10 due to BoringNoLocation at All(<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95 (#0)\n| '?4: '?11 due to Assignment at Single(bb0[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:26: 10:44 (#0)\n| '?5: '?9 due to Return(Normal) at Single(bb2[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35 (#0)\n| '?5: '?12 due to Boring at Single(bb2[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35 (#0)\n| '?6: '?10 due to Return(Normal) at Single(bb2[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35 (#0)\n| '?7: '?9 due to Return(Normal) at Single(bb3[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64 (#0)\n| '?8: '?10 due to Return(Normal) at Single(bb3[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64 (#0)\n| '?8: '?13 due to Boring at Single(bb3[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64 (#0)\n| '?9: '?1 due to BoringNoLocation at All(<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95 (#0)\n| '?9: '?5 due to Return(Normal) at Single(bb2[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35 (#0)\n| '?9: '?7 due to Return(Normal) at Single(bb3[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64 (#0)\n| '?10: '?2 due to BoringNoLocation at All(<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95 (#0)\n| '?10: '?6 due to Return(Normal) at Single(bb2[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35 (#0)\n| '?10: '?8 due to Return(Normal) at Single(bb3[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64 (#0)\n| '?11: '?4 due to Assignment at Single(bb0[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:26: 10:44 (#0)\n| '?11: '?12 due to Usage at Single(bb2[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:20: 11:34 (#0)\n| '?11: '?13 due to Usage at Single(bb3[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:49: 11:63 (#0)\n| '?12: '?5 due to Boring at Single(bb2[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35 (#0)\n| '?12: '?11 due to Usage at Single(bb2[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:20: 11:34 (#0)\n| '?13: '?8 due to Boring at Single(bb3[2]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64 (#0)\n| '?13: '?11 due to Usage at Single(bb3[1]) (<tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:49: 11:63 (#0)\n|\nfn flow_sensitive_invariance(_1: bool) -> Result<Invariant<'_>, Invariant<'_>> {\n    debug choice => _1;                  // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:42: 9:48\n    let mut _0: std::result::Result<Invariant<'_>, Invariant<'_>>; // return place in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:59: 9:95\n    let _2: Invariant<'_>;               // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:9: 10:23\n    let mut _3: bool;                    // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:8: 11:14\n    let mut _4: Invariant<'_>;           // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:20: 11:34\n    let mut _5: Invariant<'_>;           // in scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:49: 11:63\n    scope 1 {\n        debug returned_value => _2;      // in scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:9: 10:23\n    }\n\n    bb0: {\n        StorageLive(_2);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:9: 10:23\n        _2 = create_invariant::<'_>() -> [return: bb1, unwind: bb5]; // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:26: 10:44\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:26: 10:42\n                                         // + const_: Const { ty: fn() -> Invariant<'_> {create_invariant::<'_>}, val: Value(create_invariant::<'_>) }\n    }\n\n    bb1: {\n        FakeRead(ForLet(None), _2);      // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:10:9: 10:23\n        StorageLive(_3);                 // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:8: 11:14\n        _3 = copy _1;                    // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:8: 11:14\n        switchInt(move _3) -> [0: bb3, otherwise: bb2]; // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:8: 11:14\n    }\n\n    bb2: {\n        StorageLive(_4);                 // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:20: 11:34\n        _4 = move _2;                    // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:20: 11:34\n        _0 = Result::<Invariant<'_>, Invariant<'_>>::Ok(move _4); // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17: 11:35\n        StorageDead(_4);                 // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:34: 11:35\n        goto -> bb4;                     // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:5: 11:66\n    }\n\n    bb3: {\n        StorageLive(_5);                 // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:49: 11:63\n        _5 = move _2;                    // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:49: 11:63\n        _0 = Result::<Invariant<'_>, Invariant<'_>>::Err(move _5); // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45: 11:64\n        StorageDead(_5);                 // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:63: 11:64\n        goto -> bb4;                     // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:5: 11:66\n    }\n\n    bb4: {\n        StorageDead(_3);                 // scope 1 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:65: 11:66\n        StorageDead(_2);                 // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:12:1: 12:2\n        return;                          // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:12:2: 12:2\n    }\n\n    bb5 (cleanup): {\n        resume;                          // scope 0 at <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:1: 12:2\n    }\n}\n"
+      }
+    },
+    "a1_next_nll": {
+      "rc": 0,
+      "files": {
+        "a1_polonius_problem_case_3_hashmap_get.get_or_insert.-------.nll.0.mir": "// MIR for `get_or_insert` 0 nll\n\n| Free Region Mapping\n| '?0 | Global | ['?0, '?2, '?1]\n| '?1 | Local | ['?2, '?1]\n| '?2 | Local | ['?2]\n|\n| Inferred Region Values\n| '?0 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?0, '?1, '?2}\n| '?1 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?2 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?2}\n| '?3 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?4 | U0 | {bb0[6..=8]}\n| '?5 | U0 | {bb0[7..=8]}\n| '?6 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?7 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?8 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?9 | U0 | {bb5[6..=10], bb6[0]}\n| '?10 | U0 | {bb5[10]}\n| '?11 | U0 | {bb5[10]}\n| '?12 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?13 | U0 | {bb8[9..=11]}\n| '?14 | U0 | {bb8[10..=11]}\n| '?15 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?16 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?17 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?18 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?19 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?20 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?21 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?22 | U0 | {bb0[8]}\n| '?23 | U0 | {bb0[7..=8]}\n| '?24 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?25 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?26 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?27 | U0 | {bb5[7..=10], bb6[0]}\n| '?28 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?29 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?30 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?31 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?32 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?33 | U0 | {bb8[11]}\n| '?34 | U0 | {bb8[10..=11]}\n| '?35 | U0 | {bb5[10]}\n| '?36 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?37 | U0 | {bb0[8]}\n| '?38 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?39 | U0 | {bb6[0]}\n| '?40 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n| '?41 | U0 | {bb8[11]}\n| '?42 | U0 | {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0], '?1}\n|\n| Inference Constraints\n| '?0 live at {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0]}\n| '?1 live at {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0]}\n| '?2 live at {bb0[0..=8], bb1[0..=4], bb2[0], bb3[0..=5], bb4[0..=7], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=11], bb9[0..=2], bb10[0..=1], bb11[0..=6], bb12[0], bb13[0], bb14[0]}\n| '?3 live at {bb0[3]}\n| '?4 live at {bb0[6]}\n| '?5 live at {bb0[7]}\n| '?6 live at {bb3[1]}\n| '?7 live at {bb3[4]}\n| '?8 live at {bb4[0]}\n| '?9 live at {bb5[6]}\n| '?10 live at {bb5[10]}\n| '?11 live at {bb5[10]}\n| '?12 live at {bb8[6]}\n| '?13 live at {bb8[9]}\n| '?14 live at {bb8[10]}\n| '?15 live at {bb9[2]}\n| '?16 live at {bb10[0]}\n| '?17 live at {bb11[0]}\n| '?18 live at {bb4[1..=7], bb11[1..=6], bb12[0]}\n| '?19 live at {bb0[0..=8], bb1[0..=4], bb2[0], bb5[0..=10], bb6[0], bb7[0..=3], bb8[0..=6]}\n| '?20 live at {bb1[0..=4], bb2[0], bb3[0..=1]}\n| '?21 live at {bb0[4..=8]}\n| '?22 live at {bb0[8]}\n| '?23 live at {bb0[7]}\n| '?24 live at {bb3[2..=4]}\n| '?25 live at {bb4[0]}\n| '?26 live at {bb3[5]}\n| '?27 live at {bb5[7..=10], bb6[0]}\n| '?28 live at {bb11[0]}\n| '?29 live at {bb10[1]}\n| '?30 live at {bb10[0]}\n| '?31 live at {bb9[0..=2]}\n| '?32 live at {bb8[7..=11]}\n| '?33 live at {bb8[11]}\n| '?34 live at {bb8[10]}\n| '?36 live at {bb0[8]}\n| '?37 live at {bb0[8]}\n| '?38 live at {bb3[5]}\n| '?39 live at {bb6[0]}\n| '?40 live at {bb8[11]}\n| '?41 live at {bb8[11]}\n| '?42 live at {bb10[1]}\n| '?1: '?18 due to BoringNoLocation at All(<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:3:74: 3:81) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:3:74: 3:81 (#0)\n| '?1: '?19 due to BoringNoLocation at All(<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:3:26: 3:29) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:3:26: 3:29 (#0)\n| '?3: '?21 due to Boring at Single(bb0[3]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:22: 4:25 (#0)\n| '?4: '?23 due to Boring at Single(bb0[6]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:30: 4:34 (#0)\n| '?5: '?22 due to Boring at Single(bb0[7]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:30: 4:34 (#0)\n| '?6: '?24 due to Assignment at Single(bb3[1]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:17: 4:18 (#0)\n| '?7: '?26 due to Boring at Single(bb3[4]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:5:16: 5:17 (#0)\n| '?8: '?18 due to Return(Normal) at Single(bb4[0]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:5:16: 5:17 (#0)\n| '?9: '?27 due to Boring at Single(bb5[6]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:5: 7:8 (#0)\n| '?10: '?35 due to TypeAnnotation(GenericArg) at Single(bb5[10]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:21: 7:44 (#0)\n| '?11: '?10 due to CallArgument(Some(FnDef(DefId(2:3736 ~ core[5f43]::convert::From::from), [std::string::String, &'{erased} str]))) at Single(bb5[10]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:21: 7:44 (#0)\n| '?12: '?32 due to Boring at Single(bb8[6]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:8 (#0)\n| '?13: '?34 due to Boring at Single(bb8[9]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:13: 8:17 (#0)\n| '?14: '?33 due to Boring at Single(bb8[10]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:13: 8:17 (#0)\n| '?15: '?30 due to Boring at Single(bb9[2]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27 (#0)\n| '?16: '?29 due to Boring at Single(bb10[0]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27 (#0)\n| '?17: '?18 due to Return(Normal) at Single(bb11[0]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27 (#0)\n| '?18: '?1 due to BoringNoLocation at All(<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:3:74: 3:81) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:3:74: 3:81 (#0)\n| '?19: '?1 due to BoringNoLocation at All(<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:3:26: 3:29) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:3:26: 3:29 (#0)\n| '?19: '?3 due to Boring at Single(bb0[3]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:22: 4:25 (#0)\n| '?19: '?9 due to Boring at Single(bb5[6]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:5: 7:8 (#0)\n| '?19: '?12 due to Boring at Single(bb8[6]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:8 (#0)\n| '?20: '?6 due to Boring at Single(bb3[1]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:17: 4:18 (#0)\n| '?21: '?36 due to CallArgument(Some(FnDef(DefId(1:1053 ~ std[b67b]::collections::hash::map::{impl#4}::get), [u32, std::string::String, std::hash::RandomState, std::alloc::Global, u32]))) at Single(bb0[8]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:22: 4:35 (#0)\n| '?22: '?37 due to CallArgument(Some(FnDef(DefId(1:1053 ~ std[b67b]::collections::hash::map::{impl#4}::get), [u32, std::string::String, std::hash::RandomState, std::alloc::Global, u32]))) at Single(bb0[8]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:22: 4:35 (#0)\n| '?23: '?5 due to Boring at Single(bb0[7]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:30: 4:34 (#0)\n| '?24: '?7 due to Boring at Single(bb3[4]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:5:16: 5:17 (#0)\n| '?25: '?8 due to Boring at Single(bb4[0]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:5:16: 5:17 (#0)\n| '?26: '?38 due to Boring at Single(bb3[5]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:5:16: 5:17 (#0)\n| '?27: '?39 due to CallArgument(Some(FnDef(DefId(1:1071 ~ std[b67b]::collections::hash::map::{impl#4}::insert), [u32, std::string::String, std::hash::RandomState, std::alloc::Global]))) at Single(bb6[0]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:5: 7:45 (#0)\n| '?28: '?17 due to Boring at Single(bb11[0]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27 (#0)\n| '?29: '?42 due to Boring at Single(bb10[1]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27 (#0)\n| '?30: '?16 due to Boring at Single(bb10[0]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27 (#0)\n| '?31: '?15 due to CallArgument(Some(FnDef(DefId(2:11004 ~ core[5f43]::option::{impl#0}::unwrap), [&'{erased} std::string::String]))) at Single(bb9[2]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27 (#0)\n| '?32: '?40 due to CallArgument(Some(FnDef(DefId(1:1053 ~ std[b67b]::collections::hash::map::{impl#4}::get), [u32, std::string::String, std::hash::RandomState, std::alloc::Global, u32]))) at Single(bb8[11]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:18 (#0)\n| '?33: '?41 due to CallArgument(Some(FnDef(DefId(1:1053 ~ std[b67b]::collections::hash::map::{impl#4}::get), [u32, std::string::String, std::hash::RandomState, std::alloc::Global, u32]))) at Single(bb8[11]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:18 (#0)\n| '?34: '?14 due to Boring at Single(bb8[10]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:13: 8:17 (#0)\n| '?35: '?10 due to TypeAnnotation(GenericArg) at Single(bb5[10]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:21: 7:44 (#0)\n| '?36: '?20 due to Boring at Single(bb0[8]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:22: 4:35 (#0)\n| '?38: '?25 due to Boring at Single(bb3[5]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:5:16: 5:17 (#0)\n| '?40: '?31 due to Boring at Single(bb8[11]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:18 (#0)\n| '?42: '?28 due to Boring at Single(bb10[1]) (<tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27 (#0)\n|\n| Borrows\n| bw0: issued at bb0[3] in '?3\n| bw1: issued at bb0[6] in '?4\n| bw2: issued at bb5[6] in '?9\n| bw3: issued at bb8[6] in '?12\n| bw4: issued at bb8[9] in '?13\n|\n| User Type Annotations\n| 0: user_ty: Canonical { value: TypeOf(DefId(2:3736 ~ core[5f43]::convert::From::from), UserArgs { args: [std::string::String, ^c_0], user_self_ty: None }), max_universe: U0, var_kinds: [Ty { ui: U0, sub_root: 0 }] }, span: <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:21: 7:33, inferred_ty: fn(&str) -> std::string::String {<std::string::String as std::convert::From<&str>>::from}\n|\nfn get_or_insert(_1: &mut HashMap<u32, String>, _2: u32) -> &str {\n    debug map => _1;                     // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:3:26: 3:29\n    debug key => _2;                     // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:3:61: 3:64\n    let mut _0: &str;                    // return place in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:3:74: 3:81\n    let _3: ();                          // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:5: 6:6\n    let mut _4: std::option::Option<&std::string::String>; // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:22: 4:35\n    let mut _5: &std::collections::HashMap<u32, std::string::String>; // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:22: 4:25\n    let mut _6: &u32;                    // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:30: 4:34\n    let _7: &u32;                        // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:30: 4:34\n    let mut _8: isize;                   // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:12: 4:19\n    let mut _10: !;                      // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:36: 6:6\n    let _11: &str;                       // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:5:16: 5:17\n    let mut _12: &std::string::String;   // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:5:16: 5:17\n    let _13: std::option::Option<std::string::String>; // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:5: 7:45\n    let mut _14: &mut std::collections::HashMap<u32, std::string::String>; // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:5: 7:8\n    let mut _15: u32;                    // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:16: 7:19\n    let mut _16: std::string::String;    // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:21: 7:44\n    let _17: &str;                       // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27\n    let mut _18: &std::string::String;   // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27\n    let _19: &std::string::String;       // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27\n    let mut _20: std::option::Option<&std::string::String>; // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:18\n    let mut _21: &std::collections::HashMap<u32, std::string::String>; // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:8\n    let mut _22: &u32;                   // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:13: 8:17\n    let _23: &u32;                       // in scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:13: 8:17\n    scope 1 {\n        debug v => _9;                   // in scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:17: 4:18\n        let _9: &std::string::String;    // in scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:17: 4:18\n    }\n\n    bb0: {\n        StorageLive(_3);                 // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:5: 6:6\n        StorageLive(_4);                 // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:22: 4:35\n        StorageLive(_5);                 // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:22: 4:25\n        _5 = &(*_1);                     // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:22: 4:25\n        StorageLive(_6);                 // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:30: 4:34\n        StorageLive(_7);                 // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:30: 4:34\n        _7 = &_2;                        // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:30: 4:34\n        _6 = &(*_7);                     // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:30: 4:34\n        _4 = HashMap::<u32, String>::get::<u32>(move _5, move _6) -> [return: bb1, unwind: bb14]; // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:22: 4:35\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:26: 4:29\n                                         // + const_: Const { ty: for<'a, 'b> fn(&'a HashMap<u32, String>, &'b u32) -> Option<&'a String> {HashMap::<u32, String>::get::<u32>}, val: Value(HashMap::<u32, String>::get::<u32>) }\n    }\n\n    bb1: {\n        StorageDead(_6);                 // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:34: 4:35\n        StorageDead(_5);                 // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:34: 4:35\n        PlaceMention(_4);                // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:22: 4:35\n        _8 = discriminant(_4);           // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:22: 4:35\n        switchInt(move _8) -> [1: bb2, otherwise: bb5]; // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:12: 4:19\n    }\n\n    bb2: {\n        falseEdge -> [real: bb3, imaginary: bb5]; // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:12: 4:19\n    }\n\n    bb3: {\n        StorageLive(_9);                 // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:17: 4:18\n        _9 = copy ((_4 as Some).0: &std::string::String); // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:4:17: 4:18\n        StorageLive(_11);                // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:5:16: 5:17\n        StorageLive(_12);                // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:5:16: 5:17\n        _12 = &(*_9);                    // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:5:16: 5:17\n        _11 = <String as Deref>::deref(move _12) -> [return: bb4, unwind: bb14]; // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:5:16: 5:17\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:5:16: 5:17\n                                         // + const_: Const { ty: for<'a> fn(&'a String) -> &'a <String as Deref>::Target {<String as Deref>::deref}, val: Value(<String as Deref>::deref) }\n    }\n\n    bb4: {\n        _0 = &(*_11);                    // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:5:16: 5:17\n        StorageDead(_12);                // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:5:16: 5:17\n        StorageDead(_11);                // scope 1 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:5:17: 5:18\n        StorageDead(_9);                 // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:6:5: 6:6\n        StorageDead(_7);                 // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:6:5: 6:6\n        StorageDead(_4);                 // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:6:5: 6:6\n        StorageDead(_3);                 // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:6:5: 6:6\n        goto -> bb12;                    // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:9:2: 9:2\n    }\n\n    bb5: {\n        StorageDead(_7);                 // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:6:5: 6:6\n        StorageDead(_4);                 // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:6:5: 6:6\n        _3 = const ();                   // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:6:6: 6:6\n        StorageDead(_3);                 // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:6:5: 6:6\n        StorageLive(_13);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:5: 7:45\n        StorageLive(_14);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:5: 7:8\n        _14 = &mut (*_1);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:5: 7:8\n        StorageLive(_15);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:16: 7:19\n        _15 = copy _2;                   // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:16: 7:19\n        StorageLive(_16);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:21: 7:44\n        _16 = <String as From<&str>>::from(const \"default\") -> [return: bb6, unwind: bb14]; // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:21: 7:44\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:21: 7:33\n                                         // + user_ty: UserType(0)\n                                         // + const_: Const { ty: fn(&str) -> String {<String as From<&str>>::from}, val: Value(<String as From<&str>>::from) }\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:34: 7:43\n                                         // + const_: Const { ty: &str, val: Value(\"default\") }\n    }\n\n    bb6: {\n        _13 = HashMap::<u32, String>::insert(move _14, move _15, move _16) -> [return: bb7, unwind: bb13]; // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:5: 7:45\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:9: 7:15\n                                         // + const_: Const { ty: for<'a> fn(&'a mut HashMap<u32, String>, u32, String) -> Option<String> {HashMap::<u32, String>::insert}, val: Value(HashMap::<u32, String>::insert) }\n    }\n\n    bb7: {\n        StorageDead(_16);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:44: 7:45\n        StorageDead(_15);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:44: 7:45\n        StorageDead(_14);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:44: 7:45\n        drop(_13) -> [return: bb8, unwind: bb14]; // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:45: 7:46\n    }\n\n    bb8: {\n        StorageDead(_13);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:45: 7:46\n        StorageLive(_17);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27\n        StorageLive(_18);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27\n        StorageLive(_19);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27\n        StorageLive(_20);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:18\n        StorageLive(_21);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:8\n        _21 = &(*_1);                    // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:8\n        StorageLive(_22);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:13: 8:17\n        StorageLive(_23);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:13: 8:17\n        _23 = &_2;                       // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:13: 8:17\n        _22 = &(*_23);                   // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:13: 8:17\n        _20 = HashMap::<u32, String>::get::<u32>(move _21, move _22) -> [return: bb9, unwind: bb14]; // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:18\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:9: 8:12\n                                         // + const_: Const { ty: for<'a, 'b> fn(&'a HashMap<u32, String>, &'b u32) -> Option<&'a String> {HashMap::<u32, String>::get::<u32>}, val: Value(HashMap::<u32, String>::get::<u32>) }\n    }\n\n    bb9: {\n        StorageDead(_22);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:17: 8:18\n        StorageDead(_21);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:17: 8:18\n        _19 = Option::<&String>::unwrap(move _20) -> [return: bb10, unwind: bb14]; // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:19: 8:25\n                                         // + const_: Const { ty: fn(Option<&String>) -> &String {Option::<&String>::unwrap}, val: Value(Option::<&String>::unwrap) }\n    }\n\n    bb10: {\n        _18 = &(*_19);                   // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27\n        _17 = <String as Deref>::deref(move _18) -> [return: bb11, unwind: bb14]; // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27\n                                         // + const_: Const { ty: for<'a> fn(&'a String) -> &'a <String as Deref>::Target {<String as Deref>::deref}, val: Value(<String as Deref>::deref) }\n    }\n\n    bb11: {\n        _0 = &(*_17);                    // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:5: 8:27\n        StorageDead(_23);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:26: 8:27\n        StorageDead(_20);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:26: 8:27\n        StorageDead(_19);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:26: 8:27\n        StorageDead(_18);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:26: 8:27\n        StorageDead(_17);                // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:8:26: 8:27\n        goto -> bb12;                    // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:9:2: 9:2\n    }\n\n    bb12: {\n        return;                          // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:9:2: 9:2\n    }\n\n    bb13 (cleanup): {\n        drop(_16) -> [return: bb14, unwind terminate(cleanup)]; // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:44: 7:45\n    }\n\n    bb14 (cleanup): {\n        resume;                          // scope 0 at <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:3:1: 9:2\n    }\n}\n\nalloc1 (size: 7, align: 1) {\n    64 65 66 61 75 6c 74                            \u2502 default\n}\n"
+      }
+    },
+    "c1_default_built_nll": {
+      "rc": 0,
+      "files": {
+        "c1_two_phase_shared_read_before_activation_ok.two_phase_shared_read.1-1-000.built.after.mir": "// MIR for `two_phase_shared_read` after built\n\n| User Type Annotations\n| 0: user_ty: Canonical { value: TypeOf(DefId(3:683 ~ alloc[60cf]::boxed::{impl#0}::new_uninit), UserArgs { args: [^c_0], user_self_ty: Some(UserSelfTy { impl_def_id: DefId(3:680 ~ alloc[60cf]::boxed::{impl#0}), self_ty: std::boxed::Box<^c_1, ^c_2> }) }), max_universe: U0, var_kinds: [Ty { ui: U0, sub_root: 0 }, Ty { ui: U0, sub_root: 1 }, Ty { ui: U0, sub_root: 2 }] }, span: <toolchain>:59:52: 59:82, inferred_ty: fn() -> std::boxed::Box<std::mem::MaybeUninit<[usize; 3]>> {std::boxed::Box::<[usize; 3]>::new_uninit}\n|\nfn two_phase_shared_read() -> usize {\n    let mut _0: usize;\n    let mut _1: std::vec::Vec<usize>;\n    let mut _2: std::boxed::Box<std::mem::MaybeUninit<[usize; 3]>>;\n    let mut _3: std::boxed::Box<std::mem::MaybeUninit<[usize; 3]>>;\n    let _4: ();\n    let mut _5: &mut std::vec::Vec<usize>;\n    let mut _6: usize;\n    let mut _7: &std::vec::Vec<usize>;\n    let mut _8: &std::vec::Vec<usize>;\n    scope 1 {\n        debug v => _1;\n    }\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = Box::<[usize; 3]>::new_uninit() -> [return: bb1, unwind: bb10];\n    }\n\n    bb1: {\n        ((((*_3).1: std::mem::ManuallyDrop<[usize; 3]>).0: std::mem::MaybeDangling<[usize; 3]>).0: [usize; 3]) = [const 10_usize, const 20_usize, const 30_usize];\n        _2 = move _3;\n        drop(_3) -> [return: bb2, unwind: bb9];\n    }\n\n    bb2: {\n        StorageDead(_3);\n        _1 = std::boxed::box_assume_init_into_vec_unsafe::<usize, 3>(move _2) -> [return: bb3, unwind: bb9];\n    }\n\n    bb3: {\n        StorageDead(_2);\n        FakeRead(ForLet(None), _1);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = &mut _1;\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = &_1;\n        _6 = Vec::<usize>::len(move _7) -> [return: bb4, unwind: bb8];\n    }\n\n    bb4: {\n        StorageDead(_7);\n        _4 = Vec::<usize>::push(move _5, move _6) -> [return: bb5, unwind: bb8];\n    }\n\n    bb5: {\n        StorageDead(_6);\n        StorageDead(_5);\n        StorageDead(_4);\n        StorageLive(_8);\n        _8 = &_1;\n        _0 = Vec::<usize>::len(move _8) -> [return: bb6, unwind: bb8];\n    }\n\n    bb6: {\n        StorageDead(_8);\n        drop(_1) -> [return: bb7, unwind: bb10];\n    }\n\n    bb7: {\n        StorageDead(_1);\n        return;\n    }\n\n    bb8 (cleanup): {\n        drop(_1) -> [return: bb10, unwind terminate(cleanup)];\n    }\n\n    bb9 (cleanup): {\n        drop(_2) -> [return: bb10, unwind terminate(cleanup)];\n    }\n\n    bb10 (cleanup): {\n        resume;\n    }\n}\n",
+        "c1_two_phase_shared_read_before_activation_ok.two_phase_shared_read.-------.nll.0.mir": "// MIR for `two_phase_shared_read` 0 nll\n\n| Free Region Mapping\n| '?0 | Global | ['?0, '?1]\n| '?1 | Local | ['?1]\n|\n| Inferred Region Values\n| '?0 | U0 | {bb0[0..=3], bb1[0..=2], bb2[0..=1], bb3[0..=8], bb4[0..=1], bb5[0..=5], bb6[0..=1], bb7[0..=1], bb8[0], bb9[0], bb10[0], '?0, '?1}\n| '?1 | U0 | {bb0[0..=3], bb1[0..=2], bb2[0..=1], bb3[0..=8], bb4[0..=1], bb5[0..=5], bb6[0..=1], bb7[0..=1], bb8[0], bb9[0], bb10[0], '?1}\n| '?2 | U0 | {bb3[4..=8], bb4[0..=1]}\n| '?3 | U0 | {bb3[7..=8]}\n| '?4 | U0 | {bb5[4..=5]}\n| '?5 | U0 | {bb3[5..=8], bb4[0..=1]}\n| '?6 | U0 | {bb3[8]}\n| '?7 | U0 | {bb5[5]}\n| '?8 | U0 | {bb3[8]}\n| '?9 | U0 | {bb4[1]}\n| '?10 | U0 | {bb5[5]}\n|\n| Inference Constraints\n| '?0 live at {bb0[0..=3], bb1[0..=2], bb2[0..=1], bb3[0..=8], bb4[0..=1], bb5[0..=5], bb6[0..=1], bb7[0..=1], bb8[0], bb9[0], bb10[0]}\n| '?1 live at {bb0[0..=3], bb1[0..=2], bb2[0..=1], bb3[0..=8], bb4[0..=1], bb5[0..=5], bb6[0..=1], bb7[0..=1], bb8[0], bb9[0], bb10[0]}\n| '?2 live at {bb3[4]}\n| '?3 live at {bb3[7]}\n| '?4 live at {bb5[4]}\n| '?5 live at {bb3[5..=8], bb4[0..=1]}\n| '?6 live at {bb3[8]}\n| '?7 live at {bb5[5]}\n| '?8 live at {bb3[8]}\n| '?9 live at {bb4[1]}\n| '?10 live at {bb5[5]}\n| '?2: '?5 due to Boring at Single(bb3[4]) (<tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:5: 3:6 (#0)\n| '?3: '?6 due to Boring at Single(bb3[7]) (<tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:12: 3:13 (#0)\n| '?4: '?7 due to Boring at Single(bb5[4]) (<tmp>/c1_two_phase_shared_read_before_activation_ok.rs:4:5: 4:6 (#0)\n| '?5: '?9 due to CallArgument(Some(FnDef(DefId(3:9803 ~ alloc[60cf]::vec::{impl#43}::push), [usize, std::alloc::Global]))) at Single(bb4[1]) (<tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:5: 3:20 (#0)\n| '?6: '?8 due to CallArgument(Some(FnDef(DefId(3:8612 ~ alloc[60cf]::vec::{impl#1}::len), [usize, std::alloc::Global]))) at Single(bb3[8]) (<tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:12: 3:19 (#0)\n| '?7: '?10 due to CallArgument(Some(FnDef(DefId(3:8612 ~ alloc[60cf]::vec::{impl#1}::len), [usize, std::alloc::Global]))) at Single(bb5[5]) (<tmp>/c1_two_phase_shared_read_before_activation_ok.rs:4:5: 4:12 (#0)\n|\n| Borrows\n| bw0: issued at bb3[4] in '?2\n| bw1: issued at bb3[7] in '?3\n| bw2: issued at bb5[4] in '?4\n|\n| User Type Annotations\n| 0: user_ty: Canonical { value: TypeOf(DefId(3:683 ~ alloc[60cf]::boxed::{impl#0}::new_uninit), UserArgs { args: [^c_0], user_self_ty: Some(UserSelfTy { impl_def_id: DefId(3:680 ~ alloc[60cf]::boxed::{impl#0}), self_ty: std::boxed::Box<^c_1, ^c_2> }) }), max_universe: U0, var_kinds: [Ty { ui: U0, sub_root: 0 }, Ty { ui: U0, sub_root: 1 }, Ty { ui: U0, sub_root: 2 }] }, span: <toolchain>:59:52: 59:82, inferred_ty: fn() -> std::boxed::Box<std::mem::MaybeUninit<[usize; 3]>> {std::boxed::Box::<[usize; 3]>::new_uninit}\n|\nfn two_phase_shared_read() -> usize {\n    let mut _0: usize;                   // return place in scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:1:35: 1:40\n    let mut _1: std::vec::Vec<usize>;    // in scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:2:9: 2:14\n    let mut _2: std::boxed::Box<std::mem::MaybeUninit<[usize; 3]>>; // in scope 0 at <toolchain>:59:13: 59:96\n    let mut _3: std::boxed::Box<std::mem::MaybeUninit<[usize; 3]>>; // in scope 0 at <toolchain>:59:52: 59:84\n    let _4: ();                          // in scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:5: 3:20\n    let mut _5: &mut std::vec::Vec<usize>; // in scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:5: 3:6\n    let mut _6: usize;                   // in scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:12: 3:19\n    let mut _7: &std::vec::Vec<usize>;   // in scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:12: 3:13\n    let mut _8: &std::vec::Vec<usize>;   // in scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:4:5: 4:6\n    scope 1 {\n        debug v => _1;                   // in scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:2:9: 2:14\n    }\n\n    bb0: {\n        StorageLive(_1);                 // scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:2:9: 2:14\n        StorageLive(_2);                 // scope 0 at <toolchain>:59:13: 59:96\n        StorageLive(_3);                 // scope 0 at <toolchain>:59:52: 59:84\n        _3 = Box::<[usize; 3]>::new_uninit() -> [return: bb1, unwind: bb10]; // scope 0 at <toolchain>:59:52: 59:84\n                                         // mir::ConstOperand\n                                         // + span: <toolchain>:59:52: 59:82\n                                         // + user_ty: UserType(0)\n                                         // + const_: Const { ty: fn() -> Box<MaybeUninit<[usize; 3]>> {Box::<[usize; 3]>::new_uninit}, val: Value(Box::<[usize; 3]>::new_uninit) }\n    }\n\n    bb1: {\n        ((((*_3).1: std::mem::ManuallyDrop<[usize; 3]>).0: std::mem::MaybeDangling<[usize; 3]>).0: [usize; 3]) = [const 10_usize, const 20_usize, const 30_usize]; // scope 0 at <toolchain>:59:86: 59:95\n        _2 = move _3;                    // scope 0 at <toolchain>:59:13: 59:96\n        drop(_3) -> [return: bb2, unwind: bb9]; // scope 0 at <toolchain>:59:95: 59:96\n    }\n\n    bb2: {\n        StorageDead(_3);                 // scope 0 at <toolchain>:59:95: 59:96\n        _1 = std::boxed::box_assume_init_into_vec_unsafe::<usize, 3>(move _2) -> [return: bb3, unwind: bb9]; // scope 0 at <toolchain>:58:9: 60:10\n                                         // mir::ConstOperand\n                                         // + span: <toolchain>:58:9: 58:55\n                                         // + const_: Const { ty: fn(Box<MaybeUninit<[usize; 3]>>) -> Vec<usize> {std::boxed::box_assume_init_into_vec_unsafe::<usize, 3>}, val: Value(std::boxed::box_assume_init_into_vec_unsafe::<usize, 3>) }\n    }\n\n    bb3: {\n        StorageDead(_2);                 // scope 0 at <toolchain>:60:9: 60:10\n        FakeRead(ForLet(None), _1);      // scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:2:9: 2:14\n        StorageLive(_4);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:5: 3:20\n        StorageLive(_5);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:5: 3:6\n        _5 = &mut _1;                    // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:5: 3:6\n        StorageLive(_6);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:12: 3:19\n        StorageLive(_7);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:12: 3:13\n        _7 = &_1;                        // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:12: 3:13\n        _6 = Vec::<usize>::len(move _7) -> [return: bb4, unwind: bb8]; // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:12: 3:19\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:14: 3:17\n                                         // + const_: Const { ty: for<'a> fn(&'a Vec<usize>) -> usize {Vec::<usize>::len}, val: Value(Vec::<usize>::len) }\n    }\n\n    bb4: {\n        StorageDead(_7);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:18: 3:19\n        _4 = Vec::<usize>::push(move _5, move _6) -> [return: bb5, unwind: bb8]; // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:5: 3:20\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:7: 3:11\n                                         // + const_: Const { ty: for<'a> fn(&'a mut Vec<usize>, usize) {Vec::<usize>::push}, val: Value(Vec::<usize>::push) }\n    }\n\n    bb5: {\n        StorageDead(_6);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:19: 3:20\n        StorageDead(_5);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:19: 3:20\n        StorageDead(_4);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:20: 3:21\n        StorageLive(_8);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:4:5: 4:6\n        _8 = &_1;                        // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:4:5: 4:6\n        _0 = Vec::<usize>::len(move _8) -> [return: bb6, unwind: bb8]; // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:4:5: 4:12\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:4:7: 4:10\n                                         // + const_: Const { ty: for<'a> fn(&'a Vec<usize>) -> usize {Vec::<usize>::len}, val: Value(Vec::<usize>::len) }\n    }\n\n    bb6: {\n        StorageDead(_8);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:4:11: 4:12\n        drop(_1) -> [return: bb7, unwind: bb10]; // scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:5:1: 5:2\n    }\n\n    bb7: {\n        StorageDead(_1);                 // scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:5:1: 5:2\n        return;                          // scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:5:2: 5:2\n    }\n\n    bb8 (cleanup): {\n        drop(_1) -> [return: bb10, unwind terminate(cleanup)]; // scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:5:1: 5:2\n    }\n\n    bb9 (cleanup): {\n        drop(_2) -> [return: bb10, unwind terminate(cleanup)]; // scope 0 at <toolchain>:60:9: 60:10\n    }\n\n    bb10 (cleanup): {\n        resume;                          // scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:1:1: 5:2\n    }\n}\n"
+      }
+    }
+  },
+  "miri_tree_borrows": {
+    "tb_two_phase_vec_push_len": {
+      "rc": 0,
+      "stdout": "len=4 last=3",
+      "stderr": "Compiling tb_two_phase_vec_push_len v0.1.0 (<tmp>/miri_tb_two_phase_vec_push_len)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.73s\n     Running `<toolchain> runner target/miri/x86_64-unknown-linux-gnu/debug/tb_two_phase_vec_push_len`"
+    },
+    "tb_two_phase_prior_shared_read": {
+      "rc": 0,
+      "stdout": "len=4 last=10",
+      "stderr": "Compiling tb_two_phase_prior_shared_read v0.1.0 (<tmp>/miri_tb_two_phase_prior_shared_read)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.01s\n     Running `<toolchain> runner target/miri/x86_64-unknown-linux-gnu/debug/tb_two_phase_prior_shared_read`"
+    },
+    "tb_protected_mut_foreign_read_ub": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "Compiling tb_protected_mut_foreign_read_ub v0.1.0 (<tmp>/miri_tb_protected_mut_foreign_read_ub)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.73s\n     Running `<toolchain> runner target/miri/x86_64-unknown-linux-gnu/debug/tb_protected_mut_foreign_read_ub`\nerror: Undefined Behavior: write access through <309> at alloc151[0x0] is forbidden\n --> src/main.rs:3:5\n  |\n3 |     *x = 99;\n  |     ^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a potential bug in the program: it performed an invalid operation, but the Tree Borrows rules it violated are still experimental\n  = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/tree-borrows.md for further information\n  = help: the accessed tag <309> has state Reserved (conflicted) which forbids this child write access\nhelp: the accessed tag <309> was created here, in the initial state Reserved\n --> src/main.rs:1:30\n  |\n1 | unsafe fn protected_conflict(x: &mut i32, raw: *const i32) {\n  |                              ^\nhelp: the accessed tag <309> later transitioned to Reserved (conflicted) due to a foreign read access at offsets [0x0..0x4]\n --> src/main.rs:2:23\n  |\n2 |     let _v = unsafe { *raw };\n  |                       ^^^^\n  = help: this transition corresponds to a temporary loss of write permissions until function exit\n  = note: stack backtrace:\n          0: protected_conflict\n              at src/main.rs:3:5: 3:12\n          1: main\n              at src/main.rs:9:14: 9:45\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+    }
+  }
+}

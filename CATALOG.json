@@ -98922,6 +98922,90 @@
         "verification/compiler-verification"
       ]
     },
+    "rustc-borrowck-polonius-flag-triad-rpit-member-constraints-and-two-phase-borrows": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "fde8dfd638478da758f93f0e8d9b74d7907f0c9e"
+          },
+          "name": "rustc upstream main (rustc_session::config/options, rustc_borrowck, rustc_mir_build, miri tree_borrows, bootstrap)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11), LLVM 23.1.5"
+          },
+          "name": "rustc 1.102.0-nightly toolchain (CFG_DEFAULT_POLONIUS_NEXT enabled; Polonius::DEFAULT == Polonius::Next)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+          },
+          "name": "rustc upstream source snapshot (2026-09-11) pinned alongside the preserved 1.102.0-nightly / 1.100.0 differential results"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0 (2026-11-09), LLVM 23.1.5"
+          },
+          "name": "rustc 1.100.0 stable release (NLL default baseline in preserved differential probe)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (2026-05-31), miri 0.1.0, LLVM 22.1.6"
+          },
+          "name": "rustc and Miri 1.98.0-nightly toolchain (pre-flip Polonius::DEFAULT == Polonius::Off; live 19-case probe and Tree Borrows runs)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference (impl Trait RPIT capturing and method-call two-phase autoref semantics)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFCs 2025, 2094, 3498, and 3654 (two-phase borrows, NLL, Edition 2024 lifetime capture)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal verified Rust semantics and compiler capture driver"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/frontend",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/borrowck",
+        "verification"
+      ]
+    },
     "rustc-boxraw-deref-transmute-critical-call-edges-and-mir-pipeline-closure": {
       "observed_at": "2026-11-21",
       "subjects": [

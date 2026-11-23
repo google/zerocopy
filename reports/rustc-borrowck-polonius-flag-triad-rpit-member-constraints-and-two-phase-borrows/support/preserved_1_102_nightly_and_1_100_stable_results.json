@@ -1,0 +1,1045 @@
+{
+  "probe_id": "E3-86",
+  "study": "E3-86",
+  "title": "NLL Region Inference, Opaque Type Member Constraints (Edition 2024 RPIT use<...>), Two-Phase Borrows, and Polonius (-Zpolonius / -Zpolonius=next / -Zpolonius=legacy)",
+  "rust_commit_sha": "49d734536222bf28bb6d07d885b3a81d145981da",
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "rustc_stable_version": "rustc 1.100.0 (0ef1bc386 2026-11-09)\nbinary: rustc\ncommit-hash: 0ef1bc386059596dada8fb65b50425aab2ea637a\ncommit-date: 2026-11-09\nhost: x86_64-unknown-linux-gnu\nrelease: 1.100.0\nLLVM version: 23.1.5",
+  "compiler_flag_semantics_finding": {
+    "summary": "In rustc 1.102.0-nightly (3ef0c22cd 2026-11-11), CFG_DEFAULT_POLONIUS_NEXT is active so Polonius::DEFAULT == Polonius::Next; bare -Zpolonius parses to Polonius::Legacy, -Zpolonius=next parses to Polonius::Next, and -Zpolonius=off is required to run pure NLL (Polonius::Off).",
+    "anchors": [
+      "compiler/rustc_session/src/config.rs:3651-3654",
+      "compiler/rustc_session/src/options.rs:980-996",
+      "compiler/rustc_session/src/options.rs:2351-2355"
+    ]
+  },
+  "source_anchors": {
+    "nll_region_inference": [
+      {
+        "path": "compiler/rustc_borrowck/src/lib.rs",
+        "lines": "428-459",
+        "symbol": "do_mir_borrowck",
+        "note": "Invokes nll::compute_regions, nll::dump_nll_mir, and polonius::dump_polonius_mir before MirBorrowckCtxt dataflow/error checks."
+      },
+      {
+        "path": "compiler/rustc_borrowck/src/nll.rs",
+        "lines": "113-204",
+        "symbol": "nll::compute_regions",
+        "note": "Lowers placeholder outlives constraints into SCCs, emits legacy Polonius facts if requested, computes Polonius::Next loan liveness if enabled, constructs RegionInferenceContext, runs legacy polonius_engine::Output::compute if enabled, and calls regioncx.solve."
+      },
+      {
+        "path": "compiler/rustc_borrowck/src/region_infer/mod.rs",
+        "lines": "478-563",
+        "symbol": "RegionInferenceContext::solve, propagate_constraints",
+        "note": "Propagates region values over ConstraintSccIndex DAG in dependency order, checks type tests, and dispatches either check_polonius_subset_errors (legacy) or check_universal_regions."
+      },
+      {
+        "path": "compiler/rustc_borrowck/src/constraints/mod.rs",
+        "lines": "19-93",
+        "symbol": "OutlivesConstraintSet, OutlivesConstraint",
+        "note": "Stores sup: RegionVid, sub: RegionVid, and Locations (All vs Single) used both by NLL SCC propagation and Polonius localization."
+      }
+    ],
+    "opaque_member_constraints": [
+      {
+        "path": "compiler/rustc_borrowck/src/region_infer/opaque_types/mod.rs",
+        "lines": "203-242",
+        "symbol": "compute_definition_site_hidden_types",
+        "note": "Collects defining uses into a throwaway RegionCtxt, applies member constraints, and resolves definition-site hidden types."
+      },
+      {
+        "path": "compiler/rustc_borrowck/src/region_infer/opaque_types/mod.rs",
+        "lines": "529-600",
+        "symbol": "apply_definition_site_hidden_types",
+        "note": "Replaces erased non-member regions with fresh existential NLL vars and equates instantiated final hidden type with each use."
+      },
+      {
+        "path": "compiler/rustc_borrowck/src/region_infer/opaque_types/mod.rs",
+        "lines": "697-784",
+        "symbol": "name_regions_for_member_constraint, infer_opaque_definition_from_instantiation",
+        "note": "Maps constrained region vids to universal regions for diagnostics and remaps generic parameters to opaque declaration params."
+      },
+      {
+        "path": "compiler/rustc_borrowck/src/region_infer/opaque_types/member_constraints.rs",
+        "lines": "14-139",
+        "symbol": "apply_member_constraints, apply_member_constraint",
+        "note": "Walks constraint SCCs in topological order, filters arg_regions by lower bounds (outlived_by) and upper bounds (rev_scc_graph.upper_bounds), extracts totally_ordered_subset, and picks unique minimum choice region (bailing if incomparable)."
+      },
+      {
+        "path": "compiler/rustc_borrowck/src/region_infer/opaque_types/member_constraints.rs",
+        "lines": "141-195",
+        "symbol": "CollectMemberConstraintsVisitor",
+        "note": "Visits hidden_type free regions while skipping Bivariant/uncaptured alias lifetime arguments via opt_alias_variances (supporting RPIT use<...> precise capturing)."
+      }
+    ],
+    "two_phase_borrows": [
+      {
+        "path": "compiler/rustc_mir_build/src/thir/cx/expr.rs",
+        "lines": "1700-1713",
+        "symbol": "ToBorrowKind",
+        "note": "Converts AutoBorrowMutability::Mut { allow_two_phase_borrow: AllowTwoPhase::Yes } to mir::MutBorrowKind::TwoPhaseBorrow."
+      },
+      {
+        "path": "compiler/rustc_borrowck/src/borrow_set.rs",
+        "lines": "130-151, 442-472, 523-568",
+        "symbol": "TwoPhaseActivation, BorrowData, BorrowSet::visit_assign / visit_local",
+        "note": "Records two-phase borrow assigned to a temporary as NotActivated at reserve_location, then transitions to ActivatedAt(location) on the unique later use of that temporary."
+      },
+      {
+        "path": "compiler/rustc_borrowck/src/path_utils.rs",
+        "lines": "60-120",
+        "symbol": "is_active",
+        "note": "Returns false inside the dominance diamond strictly between reserve_location.successor and activation_location, true after activation or outside the diamond."
+      },
+      {
+        "path": "compiler/rustc_borrowck/src/lib.rs",
+        "lines": "1271-1375, 1876-1899, 2425-2447",
+        "symbol": "check_access_for_conflict, check_activations, check_access_permissions",
+        "note": "Permits Read accesses when !is_active(dominators, borrow, location), while Reservation, Activation, and Write accesses conflict with reserved borrows."
+      },
+      {
+        "path": "compiler/rustc_borrowck/src/places_conflict.rs",
+        "lines": "81-112",
+        "symbol": "places_conflict, borrow_conflicts_with_place",
+        "note": "Checks path overlap for reservations and conflicting accesses."
+      }
+    ],
+    "polonius_next_and_legacy": [
+      {
+        "path": "compiler/rustc_session/src/config.rs",
+        "lines": "3634-3664",
+        "symbol": "Polonius",
+        "note": "Defines Off, Legacy, Next and CFG_DEFAULT_POLONIUS_NEXT compile-time switch."
+      },
+      {
+        "path": "compiler/rustc_session/src/options.rs",
+        "lines": "980-996, 2351-2355, 2756-2757",
+        "symbol": "parse_polonius, POLONIUS_HELP",
+        "note": "Bare -Zpolonius selects Legacy; -Zpolonius=next selects Next; -Zpolonius=off selects Off."
+      },
+      {
+        "path": "compiler/rustc_borrowck/src/polonius/mod.rs",
+        "lines": "60-215",
+        "symbol": "LiveLoans, PoloniusContext, PoloniusContext::compute_loan_liveness, LoanLivenessVisitor",
+        "note": "Implements -Zpolonius=next loan liveness over LocalizedConstraintGraph and documents time-traveling + kills reachability approximation."
+      },
+      {
+        "path": "compiler/rustc_borrowck/src/polonius/constraints.rs",
+        "lines": "34-328",
+        "symbol": "LocalizedNode, LocalizedConstraintGraph, compute_forward_successor, compute_backward_successor",
+        "note": "Localizes Single vs All outlives constraints across CFG points and adds forward/backward/bidirectional edges by region variance."
+      },
+      {
+        "path": "compiler/rustc_borrowck/src/polonius/liveness_constraints.rs",
+        "lines": "12-75",
+        "symbol": "record_live_region_variance, VarianceExtractor",
+        "note": "Extracts covariant/contravariant/invariant direction per live region for -Zpolonius=next."
+      },
+      {
+        "path": "compiler/rustc_borrowck/src/dataflow.rs",
+        "lines": "255-295, 365-417",
+        "symbol": "PoloniusOutOfScopePrecomputer, Borrows::new",
+        "note": "Uses regioncx.is_loan_live_at(loan_idx, location) under Polonius::Next to kill loans when they leave live regions."
+      },
+      {
+        "path": "compiler/rustc_borrowck/src/polonius/legacy/mod.rs",
+        "lines": "38-66",
+        "symbol": "polonius::legacy::emit_facts",
+        "note": "Extracts AllFacts (moves, universal regions, CFG edges, loan kills, invalidations, accesses, outlives) for legacy polonius_engine."
+      },
+      {
+        "path": "compiler/rustc_borrowck/src/lib.rs",
+        "lines": "1252-1268",
+        "symbol": "MirBorrowckCtxt::borrows_in_scope",
+        "note": "Queries polonius_output.errors_at(location) in legacy mode, or dataflow Borrows state in NLL / Polonius::Next mode."
+      }
+    ]
+  },
+  "experiments": {
+    "a1_polonius_problem_case_3_hashmap_get": {
+      "edition": "2024",
+      "source": "use std::collections::HashMap;\n\npub fn get_or_insert<'a>(map: &'a mut HashMap<u32, String>, key: u32) -> &'a str {\n    if let Some(v) = map.get(&key) {\n        return v;\n    }\n    map.insert(key, String::from(\"default\"));\n    map.get(&key).unwrap()\n}\n",
+      "modes": {
+        "nll_explicit_z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0502]: cannot borrow `*map` as mutable because it is also borrowed as immutable\n --> <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:5\n  |\n3 | pub fn get_or_insert<'a>(map: &'a mut HashMap<u32, String>, key: u32) -> ...\n  |                      -- lifetime `'a` defined here\n4 |     if let Some(v) = map.get(&key) {\n  |                      --- immutable borrow occurs here\n5 |         return v;\n  |                - returning this value requires that `*map` is borrowed for `'a`\n6 |     }\n7 |     map.insert(key, String::from(\"default\"));\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable borrow occurs here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0502`."
+        },
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "stable_baseline_nll": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0502]: cannot borrow `*map` as mutable because it is also borrowed as immutable\n --> <tmp>/a1_polonius_problem_case_3_hashmap_get.rs:7:5\n  |\n3 | pub fn get_or_insert<'a>(map: &'a mut HashMap<u32, String>, key: u32) -> ...\n  |                      -- lifetime `'a` defined here\n4 |     if let Some(v) = map.get(&key) {\n  |                      --- immutable borrow occurs here\n5 |         return v;\n  |                - returning this value requires that `*map` is borrowed for `'a`\n6 |     }\n7 |     map.insert(key, String::from(\"default\"));\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable borrow occurs here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0502`."
+        }
+      },
+      "polonius_dump_files_generated": [
+        "a1_polonius_problem_case_3_hashmap_get.get_or_insert.-------.polonius.0.html"
+      ]
+    },
+    "a2_polonius_hashmap_get_mut_return": {
+      "edition": "2024",
+      "source": "use std::collections::HashMap;\n\npub fn get_mut_or_insert<'a>(map: &'a mut HashMap<u32, String>, key: u32) -> &'a mut str {\n    if let Some(v) = map.get_mut(&key) {\n        return v;\n    }\n    map.insert(key, String::from(\"default\"));\n    map.get_mut(&key).unwrap()\n}\n",
+      "modes": {
+        "nll_explicit_z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0499]: cannot borrow `*map` as mutable more than once at a time\n --> <tmp>/a2_polonius_hashmap_get_mut_return.rs:7:5\n  |\n3 | pub fn get_mut_or_insert<'a>(map: &'a mut HashMap<u32, String>, key: u32)...\n  |                          -- lifetime `'a` defined here\n4 |     if let Some(v) = map.get_mut(&key) {\n  |                      --- first mutable borrow occurs here\n5 |         return v;\n  |                - returning this value requires that `*map` is borrowed for `'a`\n6 |     }\n7 |     map.insert(key, String::from(\"default\"));\n  |     ^^^ second mutable borrow occurs here\n\nerror[E0499]: cannot borrow `*map` as mutable more than once at a time\n --> <tmp>/a2_polonius_hashmap_get_mut_return.rs:8:5\n  |\n3 | pub fn get_mut_or_insert<'a>(map: &'a mut HashMap<u32, String>, key: u32)...\n  |                          -- lifetime `'a` defined here\n4 |     if let Some(v) = map.get_mut(&key) {\n  |                      --- first mutable borrow occurs here\n5 |         return v;\n  |                - returning this value requires that `*map` is borrowed for `'a`\n...\n8 |     map.get_mut(&key).unwrap()\n  |     ^^^ second mutable borrow occurs here\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0499`."
+        },
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "stable_baseline_nll": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0499]: cannot borrow `*map` as mutable more than once at a time\n --> <tmp>/a2_polonius_hashmap_get_mut_return.rs:7:5\n  |\n3 | pub fn get_mut_or_insert<'a>(map: &'a mut HashMap<u32, String>, key: u32)...\n  |                          -- lifetime `'a` defined here\n4 |     if let Some(v) = map.get_mut(&key) {\n  |                      --- first mutable borrow occurs here\n5 |         return v;\n  |                - returning this value requires that `*map` is borrowed for `'a`\n6 |     }\n7 |     map.insert(key, String::from(\"default\"));\n  |     ^^^ second mutable borrow occurs here\n\nerror[E0499]: cannot borrow `*map` as mutable more than once at a time\n --> <tmp>/a2_polonius_hashmap_get_mut_return.rs:8:5\n  |\n3 | pub fn get_mut_or_insert<'a>(map: &'a mut HashMap<u32, String>, key: u32)...\n  |                          -- lifetime `'a` defined here\n4 |     if let Some(v) = map.get_mut(&key) {\n  |                      --- first mutable borrow occurs here\n5 |         return v;\n  |                - returning this value requires that `*map` is borrowed for `'a`\n...\n8 |     map.get_mut(&key).unwrap()\n  |     ^^^ second mutable borrow occurs here\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0499`."
+        }
+      }
+    },
+    "a3_polonius_3way_separator_flow_sensitive_invariance": {
+      "edition": "2024",
+      "source": "use std::cell::Cell;\n\npub struct Invariant<'l>(Cell<&'l ()>);\n\nfn create_invariant<'l>() -> Invariant<'l> {\n    Invariant(Cell::new(&()))\n}\n\npub fn flow_sensitive_invariance<'a, 'b>(choice: bool) -> Result<Invariant<'a>, Invariant<'b>> {\n    let returned_value = create_invariant();\n    if choice { Ok(returned_value) } else { Err(returned_value) }\n}\n",
+      "modes": {
+        "nll_explicit_z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error: lifetime may not live long enough\n  --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17\n   |\n 9 | pub fn flow_sensitive_invariance<'a, 'b>(choice: bool) -> Result<Invaria...\n   |                                  --  -- lifetime `'b` defined here\n   |                                  |\n   |                                  lifetime `'a` defined here\n10 |     let returned_value = create_invariant();\n11 |     if choice { Ok(returned_value) } else { Err(returned_value) }\n   |                 ^^^^^^^^^^^^^^^^^^ function was supposed to return data with lifetime `'a` but it is returning data with lifetime `'b`\n   |\n   = help: consider adding the following bound: `'b: 'a`\n   = note: requirement occurs because of the type `Invariant<'_>`, which makes the generic argument `'_` invariant\n   = note: the struct `Invariant<'l>` is invariant over the parameter `'l`\n   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance\n\nerror: lifetime may not live long enough\n  --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45\n   |\n 9 | ...ive_invariance<'a, 'b>(choice: bool) -> Result<Invariant<'a>, Invaria...\n   |                   --  -- lifetime `'b` defined here\n   |                   |\n   |                   lifetime `'a` defined here\n10 | ...alue = create_invariant();\n11 | ...(returned_value) } else { Err(returned_value) }\n   |                              ^^^^^^^^^^^^^^^^^^^ function was supposed to return data with lifetime `'b` but it is returning data with lifetime `'a`\n   |\n   = help: consider adding the following bound: `'a: 'b`\n   = note: requirement occurs because of the type `Invariant<'_>`, which makes the generic argument `'_` invariant\n   = note: the struct `Invariant<'l>` is invariant over the parameter `'l`\n   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance\n\nerror: one or more lifetime errors were found in this item\n --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:8\n  |\n9 | pub fn flow_sensitive_invariance<'a, 'b>(choice: bool) -> Result<Invarian...\n  |        ^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = help: `'a` and `'b` must be the same: replace one with the other\n\nerror: aborting due to 3 previous errors"
+        },
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error: lifetime may not live long enough\n  --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17\n   |\n 9 | pub fn flow_sensitive_invariance<'a, 'b>(choice: bool) -> Result<Invaria...\n   |                                  --  -- lifetime `'b` defined here\n   |                                  |\n   |                                  lifetime `'a` defined here\n10 |     let returned_value = create_invariant();\n11 |     if choice { Ok(returned_value) } else { Err(returned_value) }\n   |                 ^^^^^^^^^^^^^^^^^^ function was supposed to return data with lifetime `'a` but it is returning data with lifetime `'b`\n   |\n   = help: consider adding the following bound: `'b: 'a`\n   = note: requirement occurs because of the type `Invariant<'_>`, which makes the generic argument `'_` invariant\n   = note: the struct `Invariant<'l>` is invariant over the parameter `'l`\n   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance\n\nerror: lifetime may not live long enough\n  --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45\n   |\n 9 | ...ive_invariance<'a, 'b>(choice: bool) -> Result<Invariant<'a>, Invaria...\n   |                   --  -- lifetime `'b` defined here\n   |                   |\n   |                   lifetime `'a` defined here\n10 | ...alue = create_invariant();\n11 | ...(returned_value) } else { Err(returned_value) }\n   |                              ^^^^^^^^^^^^^^^^^^^ function was supposed to return data with lifetime `'b` but it is returning data with lifetime `'a`\n   |\n   = help: consider adding the following bound: `'a: 'b`\n   = note: requirement occurs because of the type `Invariant<'_>`, which makes the generic argument `'_` invariant\n   = note: the struct `Invariant<'l>` is invariant over the parameter `'l`\n   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance\n\nerror: one or more lifetime errors were found in this item\n --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:8\n  |\n9 | pub fn flow_sensitive_invariance<'a, 'b>(choice: bool) -> Result<Invarian...\n  |        ^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = help: `'a` and `'b` must be the same: replace one with the other\n\nerror: aborting due to 3 previous errors"
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": "warning: field `0` is never read\n --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:3:26\n  |\n3 | pub struct Invariant<'l>(Cell<&'l ()>);\n  |            ---------     ^^^^^^^^^^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted"
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error: lifetime may not live long enough\n  --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17\n   |\n 9 | pub fn flow_sensitive_invariance<'a, 'b>(choice: bool) -> Result<Invaria...\n   |                                  --  -- lifetime `'b` defined here\n   |                                  |\n   |                                  lifetime `'a` defined here\n10 |     let returned_value = create_invariant();\n11 |     if choice { Ok(returned_value) } else { Err(returned_value) }\n   |                 ^^^^^^^^^^^^^^^^^^ function was supposed to return data with lifetime `'a` but it is returning data with lifetime `'b`\n   |\n   = help: consider adding the following bound: `'b: 'a`\n   = note: requirement occurs because of the type `Invariant<'_>`, which makes the generic argument `'_` invariant\n   = note: the struct `Invariant<'l>` is invariant over the parameter `'l`\n   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance\n\nerror: lifetime may not live long enough\n  --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45\n   |\n 9 | ...ive_invariance<'a, 'b>(choice: bool) -> Result<Invariant<'a>, Invaria...\n   |                   --  -- lifetime `'b` defined here\n   |                   |\n   |                   lifetime `'a` defined here\n10 | ...alue = create_invariant();\n11 | ...(returned_value) } else { Err(returned_value) }\n   |                              ^^^^^^^^^^^^^^^^^^^ function was supposed to return data with lifetime `'b` but it is returning data with lifetime `'a`\n   |\n   = help: consider adding the following bound: `'a: 'b`\n   = note: requirement occurs because of the type `Invariant<'_>`, which makes the generic argument `'_` invariant\n   = note: the struct `Invariant<'l>` is invariant over the parameter `'l`\n   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance\n\nerror: one or more lifetime errors were found in this item\n --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:8\n  |\n9 | pub fn flow_sensitive_invariance<'a, 'b>(choice: bool) -> Result<Invarian...\n  |        ^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = help: `'a` and `'b` must be the same: replace one with the other\n\nerror: aborting due to 3 previous errors"
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": "warning: field `0` is never read\n --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:3:26\n  |\n3 | pub struct Invariant<'l>(Cell<&'l ()>);\n  |            ---------     ^^^^^^^^^^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted"
+        },
+        "stable_baseline_nll": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error: lifetime may not live long enough\n  --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:17\n   |\n 9 | pub fn flow_sensitive_invariance<'a, 'b>(choice: bool) -> Result<Invaria...\n   |                                  --  -- lifetime `'b` defined here\n   |                                  |\n   |                                  lifetime `'a` defined here\n10 |     let returned_value = create_invariant();\n11 |     if choice { Ok(returned_value) } else { Err(returned_value) }\n   |                 ^^^^^^^^^^^^^^^^^^ function was supposed to return data with lifetime `'a` but it is returning data with lifetime `'b`\n   |\n   = help: consider adding the following bound: `'b: 'a`\n   = note: requirement occurs because of the type `Invariant<'_>`, which makes the generic argument `'_` invariant\n   = note: the struct `Invariant<'l>` is invariant over the parameter `'l`\n   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance\n\nerror: lifetime may not live long enough\n  --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:11:45\n   |\n 9 | ...ive_invariance<'a, 'b>(choice: bool) -> Result<Invariant<'a>, Invaria...\n   |                   --  -- lifetime `'b` defined here\n   |                   |\n   |                   lifetime `'a` defined here\n10 | ...alue = create_invariant();\n11 | ...(returned_value) } else { Err(returned_value) }\n   |                              ^^^^^^^^^^^^^^^^^^^ function was supposed to return data with lifetime `'b` but it is returning data with lifetime `'a`\n   |\n   = help: consider adding the following bound: `'a: 'b`\n   = note: requirement occurs because of the type `Invariant<'_>`, which makes the generic argument `'_` invariant\n   = note: the struct `Invariant<'l>` is invariant over the parameter `'l`\n   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance\n\nerror: one or more lifetime errors were found in this item\n --> <tmp>/a3_polonius_3way_separator_flow_sensitive_invariance.rs:9:8\n  |\n9 | pub fn flow_sensitive_invariance<'a, 'b>(choice: bool) -> Result<Invarian...\n  |        ^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = help: `'a` and `'b` must be the same: replace one with the other\n\nerror: aborting due to 3 previous errors"
+        }
+      }
+    },
+    "b1_ed2024_rpit_default_captures_all_lifetimes_err": {
+      "edition": "2024",
+      "source": "fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug {\n    x\n}\n\npub fn caller() {\n    let a = 1;\n    let mut b = 2;\n    let r = rpit_default(&a, &b);\n    b = 3;\n    let _ = (r, b);\n}\n",
+      "modes": {
+        "nll_explicit_z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0506]: cannot assign to `b` because it is borrowed\n  --> <tmp>/b1_ed2024_rpit_default_captures_all_lifetimes_err.rs:9:5\n   |\n 8 |     let r = rpit_default(&a, &b);\n   |                              -- `b` is borrowed here\n 9 |     b = 3;\n   |     ^^^^^ `b` is assigned to here but it was already borrowed\n10 |     let _ = (r, b);\n   |              - borrow later used here\n   |\nnote: this call may capture more lifetimes than intended, because Rust 2024 has adjusted the `impl Trait` lifetime capture rules\n  --> <tmp>/b1_ed2024_rpit_default_captures_all_lifetimes_err.rs:8:13\n   |\n 8 |     let r = rpit_default(&a, &b);\n   |             ^^^^^^^^^^^^^^^^^^^^\nhelp: use the precise capturing `use<...>` syntax to make the captures explicit\n   |\n 1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<> {\n   |                                                                           +++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0506`."
+        },
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0506]: cannot assign to `b` because it is borrowed\n  --> <tmp>/b1_ed2024_rpit_default_captures_all_lifetimes_err.rs:9:5\n   |\n 8 |     let r = rpit_default(&a, &b);\n   |                              -- `b` is borrowed here\n 9 |     b = 3;\n   |     ^^^^^ `b` is assigned to here but it was already borrowed\n10 |     let _ = (r, b);\n   |              - borrow later used here\n   |\nnote: this call may capture more lifetimes than intended, because Rust 2024 has adjusted the `impl Trait` lifetime capture rules\n  --> <tmp>/b1_ed2024_rpit_default_captures_all_lifetimes_err.rs:8:13\n   |\n 8 |     let r = rpit_default(&a, &b);\n   |             ^^^^^^^^^^^^^^^^^^^^\nhelp: use the precise capturing `use<...>` syntax to make the captures explicit\n   |\n 1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<> {\n   |                                                                           +++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0506`."
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0506]: cannot assign to `b` because it is borrowed\n  --> <tmp>/b1_ed2024_rpit_default_captures_all_lifetimes_err.rs:9:5\n   |\n 8 |     let r = rpit_default(&a, &b);\n   |                              -- `b` is borrowed here\n 9 |     b = 3;\n   |     ^^^^^ `b` is assigned to here but it was already borrowed\n10 |     let _ = (r, b);\n   |              - borrow later used here\n   |\nnote: this call may capture more lifetimes than intended, because Rust 2024 has adjusted the `impl Trait` lifetime capture rules\n  --> <tmp>/b1_ed2024_rpit_default_captures_all_lifetimes_err.rs:8:13\n   |\n 8 |     let r = rpit_default(&a, &b);\n   |             ^^^^^^^^^^^^^^^^^^^^\nhelp: use the precise capturing `use<...>` syntax to make the captures explicit\n   |\n 1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<> {\n   |                                                                           +++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0506`."
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0506]: cannot assign to `b` because it is borrowed\n  --> <tmp>/b1_ed2024_rpit_default_captures_all_lifetimes_err.rs:9:5\n   |\n 8 |     let r = rpit_default(&a, &b);\n   |                              -- `b` is borrowed here\n 9 |     b = 3;\n   |     ^^^^^ `b` is assigned to here but it was already borrowed\n10 |     let _ = (r, b);\n   |              - borrow later used here\n   |\nnote: this call may capture more lifetimes than intended, because Rust 2024 has adjusted the `impl Trait` lifetime capture rules\n  --> <tmp>/b1_ed2024_rpit_default_captures_all_lifetimes_err.rs:8:13\n   |\n 8 |     let r = rpit_default(&a, &b);\n   |             ^^^^^^^^^^^^^^^^^^^^\nhelp: use the precise capturing `use<...>` syntax to make the captures explicit\n   |\n 1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<> {\n   |                                                                           +++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0506`."
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0506]: cannot assign to `b` because it is borrowed\n  --> <tmp>/b1_ed2024_rpit_default_captures_all_lifetimes_err.rs:9:5\n   |\n 8 |     let r = rpit_default(&a, &b);\n   |                              -- `b` is borrowed here\n 9 |     b = 3;\n   |     ^^^^^ `b` is assigned to here but it was already borrowed\n10 |     let _ = (r, b);\n   |              - borrow later used here\n   |\nnote: this call may capture more lifetimes than intended, because Rust 2024 has adjusted the `impl Trait` lifetime capture rules\n  --> <tmp>/b1_ed2024_rpit_default_captures_all_lifetimes_err.rs:8:13\n   |\n 8 |     let r = rpit_default(&a, &b);\n   |             ^^^^^^^^^^^^^^^^^^^^\nhelp: use the precise capturing `use<...>` syntax to make the captures explicit\n   |\n 1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<> {\n   |                                                                           +++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0506`."
+        }
+      }
+    },
+    "b2_ed2021_rpit_without_capture_err": {
+      "edition": "2021",
+      "source": "fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug {\n    x\n}\n\npub fn caller() {\n    let a = 1;\n    let mut b = 2;\n    let r = rpit_default(&a, &b);\n    b = 3;\n    let _ = (r, b);\n}\n",
+      "modes": {
+        "nll_explicit_z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2021",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0700]: hidden type for `impl Debug` captures lifetime that does not appear in bounds\n --> <tmp>/b2_ed2021_rpit_without_capture_err.rs:1:1\n  |\n1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug {\n  | ^^^^^^^^^^^^^^^^--^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^---------------------\n  |                 |                                   |\n  |                 |                                   opaque type defined here\n  |                 hidden type `&'a i32` captures the lifetime `'a` as defined here\n  |\nhelp: add a `use<...>` bound to explicitly capture `'a`\n  |\n1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<'a> {\n  |                                                                           +++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+        },
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2021"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0700]: hidden type for `impl Debug` captures lifetime that does not appear in bounds\n --> <tmp>/b2_ed2021_rpit_without_capture_err.rs:1:1\n  |\n1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug {\n  | ^^^^^^^^^^^^^^^^--^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^---------------------\n  |                 |                                   |\n  |                 |                                   opaque type defined here\n  |                 hidden type `&'a i32` captures the lifetime `'a` as defined here\n  |\nhelp: add a `use<...>` bound to explicitly capture `'a`\n  |\n1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<'a> {\n  |                                                                           +++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2021",
+            "-Zpolonius"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0700]: hidden type for `impl Debug` captures lifetime that does not appear in bounds\n --> <tmp>/b2_ed2021_rpit_without_capture_err.rs:1:1\n  |\n1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug {\n  | ^^^^^^^^^^^^^^^^--^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^---------------------\n  |                 |                                   |\n  |                 |                                   opaque type defined here\n  |                 hidden type `&'a i32` captures the lifetime `'a` as defined here\n  |\nhelp: add a `use<...>` bound to explicitly capture `'a`\n  |\n1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<'a> {\n  |                                                                           +++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2021",
+            "-Zpolonius=next"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0700]: hidden type for `impl Debug` captures lifetime that does not appear in bounds\n --> <tmp>/b2_ed2021_rpit_without_capture_err.rs:1:1\n  |\n1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug {\n  | ^^^^^^^^^^^^^^^^--^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^---------------------\n  |                 |                                   |\n  |                 |                                   opaque type defined here\n  |                 hidden type `&'a i32` captures the lifetime `'a` as defined here\n  |\nhelp: add a `use<...>` bound to explicitly capture `'a`\n  |\n1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<'a> {\n  |                                                                           +++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2021",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0700]: hidden type for `impl Debug` captures lifetime that does not appear in bounds\n --> <tmp>/b2_ed2021_rpit_without_capture_err.rs:1:1\n  |\n1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug {\n  | ^^^^^^^^^^^^^^^^--^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^---------------------\n  |                 |                                   |\n  |                 |                                   opaque type defined here\n  |                 hidden type `&'a i32` captures the lifetime `'a` as defined here\n  |\nhelp: add a `use<...>` bound to explicitly capture `'a`\n  |\n1 | fn rpit_default<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<'a> {\n  |                                                                           +++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+        }
+      }
+    },
+    "b3_ed2024_rpit_use_precise_captures_ok": {
+      "edition": "2024",
+      "source": "fn rpit_precise<'a, 'b>(x: &'a i32, _y: &'b i32) -> impl core::fmt::Debug + use<'a> {\n    x\n}\n\npub fn caller() {\n    let a = 1;\n    let mut b = 2;\n    let r = rpit_precise(&a, &b);\n    b = 3;\n    let _ = (r, b);\n}\n",
+      "modes": {
+        "nll_explicit_z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        }
+      }
+    },
+    "b4_opaque_member_constraint_incomparable_choices_err": {
+      "edition": "2024",
+      "source": "pub fn member_incomparable<'a, 'b>(\n    x: &'a str,\n    y: &'b str,\n    cond: bool,\n) -> impl core::fmt::Display + use<'a, 'b> {\n    if cond { x } else { y }\n}\n",
+      "modes": {
+        "nll_explicit_z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0700]: hidden type for `impl std::fmt::Display` captures lifetime that does not appear in bounds\n --> <tmp>/b4_opaque_member_constraint_incomparable_choices_err.rs:1:1\n  |\n1 | / pub fn member_incomparable<'a, 'b>(\n2 | |     x: &'a str,\n3 | |     y: &'b str,\n4 | |     cond: bool,\n5 | | ) -> impl core::fmt::Display + use<'a, 'b> {\n  | |______------------------------------------^\n  |        |\n  |        opaque type defined here\n  |\n  = note: hidden type `&str` captures lifetime `'_`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+        },
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0700]: hidden type for `impl std::fmt::Display` captures lifetime that does not appear in bounds\n --> <tmp>/b4_opaque_member_constraint_incomparable_choices_err.rs:1:1\n  |\n1 | / pub fn member_incomparable<'a, 'b>(\n2 | |     x: &'a str,\n3 | |     y: &'b str,\n4 | |     cond: bool,\n5 | | ) -> impl core::fmt::Display + use<'a, 'b> {\n  | |______------------------------------------^\n  |        |\n  |        opaque type defined here\n  |\n  = note: hidden type `&str` captures lifetime `'_`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0700]: hidden type for `impl std::fmt::Display` captures lifetime that does not appear in bounds\n --> <tmp>/b4_opaque_member_constraint_incomparable_choices_err.rs:1:1\n  |\n1 | / pub fn member_incomparable<'a, 'b>(\n2 | |     x: &'a str,\n3 | |     y: &'b str,\n4 | |     cond: bool,\n5 | | ) -> impl core::fmt::Display + use<'a, 'b> {\n  | |______------------------------------------^\n  |        |\n  |        opaque type defined here\n  |\n  = note: hidden type `&str` captures lifetime `'_`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0700]: hidden type for `impl std::fmt::Display` captures lifetime that does not appear in bounds\n --> <tmp>/b4_opaque_member_constraint_incomparable_choices_err.rs:1:1\n  |\n1 | / pub fn member_incomparable<'a, 'b>(\n2 | |     x: &'a str,\n3 | |     y: &'b str,\n4 | |     cond: bool,\n5 | | ) -> impl core::fmt::Display + use<'a, 'b> {\n  | |______------------------------------------^\n  |        |\n  |        opaque type defined here\n  |\n  = note: hidden type `&str` captures lifetime `'_`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0700]: hidden type for `impl std::fmt::Display` captures lifetime that does not appear in bounds\n --> <tmp>/b4_opaque_member_constraint_incomparable_choices_err.rs:1:1\n  |\n1 | / pub fn member_incomparable<'a, 'b>(\n2 | |     x: &'a str,\n3 | |     y: &'b str,\n4 | |     cond: bool,\n5 | | ) -> impl core::fmt::Display + use<'a, 'b> {\n  | |______------------------------------------^\n  |        |\n  |        opaque type defined here\n  |\n  = note: hidden type `&str` captures lifetime `'_`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+        }
+      }
+    },
+    "b5_opaque_member_constraint_ordered_choices_ok": {
+      "edition": "2024",
+      "source": "pub fn member_ordered<'a, 'b>(\n    x: &'a str,\n    y: &'b str,\n    cond: bool,\n) -> impl core::fmt::Display + use<'a, 'b>\nwhere\n    'a: 'b,\n{\n    if cond { x } else { y }\n}\n",
+      "modes": {
+        "nll_explicit_z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        }
+      }
+    },
+    "b6_opaque_member_constraint_unique_upper_bound_ok": {
+      "edition": "2024",
+      "source": "use core::cell::Cell;\n\npub fn member_with_cell<'a, 'b>(\n    x: Cell<&'a str>,\n    _y: Cell<&'b str>,\n) -> impl Sized + use<'a, 'b> {\n    x\n}\n",
+      "modes": {
+        "nll_explicit_z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        }
+      }
+    },
+    "c1_two_phase_shared_read_before_activation_ok": {
+      "edition": "2024",
+      "source": "pub fn two_phase_shared_read() -> usize {\n    let mut v = vec![10usize, 20, 30];\n    v.push(v.len());\n    v.len()\n}\n",
+      "modes": {
+        "nll_explicit_z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 0,
+          "accepted": true,
+          "stderr": ""
+        }
+      },
+      "mir_dumps_nll": {
+        "c1_two_phase_shared_read_before_activation_ok.two_phase_shared_read.-------.nll.0.mir": "// MIR for `two_phase_shared_read` 0 nll\n\n| Free Region Mapping\n| '?0 | Global | ['?0, '?1]\n| '?1 | Local | ['?1]\n|\n| Inferred Region Values\n| '?0 | U0 | {bb0[0..=3], bb1[0..=2], bb2[0..=1], bb3[0..=8], bb4[0..=1], bb5[0..=5], bb6[0..=1], bb7[0..=1], bb8[0], bb9[0], bb10[0], '?0, '?1}\n| '?1 | U0 | {bb0[0..=3], bb1[0..=2], bb2[0..=1], bb3[0..=8], bb4[0..=1], bb5[0..=5], bb6[0..=1], bb7[0..=1], bb8[0], bb9[0], bb10[0], '?1}\n| '?2 | U0 | {bb3[4..=8], bb4[0..=1]}\n| '?3 | U0 | {bb3[7..=8]}\n| '?4 | U0 | {bb5[4..=5]}\n| '?5 | U0 | {bb3[5..=8], bb4[0..=1]}\n| '?6 | U0 | {bb3[8]}\n| '?7 | U0 | {bb5[5]}\n| '?8 | U0 | {bb3[8]}\n| '?9 | U0 | {bb4[1]}\n| '?10 | U0 | {bb5[5]}\n|\n| Inference Constraints\n| '?0 live at {bb0[0..=3], bb1[0..=2], bb2[0..=1], bb3[0..=8], bb4[0..=1], bb5[0..=5], bb6[0..=1], bb7[0..=1], bb8[0], bb9[0], bb10[0]}\n| '?1 live at {bb0[0..=3], bb1[0..=2], bb2[0..=1], bb3[0..=8], bb4[0..=1], bb5[0..=5], bb6[0..=1], bb7[0..=1], bb8[0], bb9[0], bb10[0]}\n| '?2 live at {bb3[4]}\n| '?3 live at {bb3[7]}\n| '?4 live at {bb5[4]}\n| '?5 live at {bb3[5..=8], bb4[0..=1]}\n| '?6 live at {bb3[8]}\n| '?7 live at {bb5[5]}\n| '?8 live at {bb3[8]}\n| '?9 live at {bb4[1]}\n| '?10 live at {bb5[5]}\n| '?2: '?5 due to Boring at Single(bb3[4]) (<tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:5: 3:6 (#0)\n| '?3: '?6 due to Boring at Single(bb3[7]) (<tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:12: 3:13 (#0)\n| '?4: '?7 due to Boring at Single(bb5[4]) (<tmp>/c1_two_phase_shared_read_before_activation_ok.rs:4:5: 4:6 (#0)\n| '?5: '?9 due to CallArgument(Some(FnDef(DefId(3:11252 ~ alloc[1a53]::vec::{impl#44}::push), Binder { value: [usize, std::alloc::Global], bound_vars: [] }))) at Single(bb4[1]) (<tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:5: 3:20 (#0)\n| '?6: '?8 due to CallArgument(Some(FnDef(DefId(3:9896 ~ alloc[1a53]::vec::{impl#1}::len), Binder { value: [usize, std::alloc::Global], bound_vars: [] }))) at Single(bb3[8]) (<tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:12: 3:19 (#0)\n| '?7: '?10 due to CallArgument(Some(FnDef(DefId(3:9896 ~ alloc[1a53]::vec::{impl#1}::len), Binder { value: [usize, std::alloc::Global], bound_vars: [] }))) at Single(bb5[5]) (<tmp>/c1_two_phase_shared_read_before_activation_ok.rs:4:5: 4:12 (#0)\n|\n| Borrows\n| bw0: issued at bb3[4] in '?2\n| bw1: issued at bb3[7] in '?3\n| bw2: issued at bb5[4] in '?4\n|\n| User Type Annotations\n| 0: user_ty: Canonical { value: TypeOf(Box<^c_0>::new_uninit at <impl boxed::<{impl#9}> for Box<^c_1, ^c_2>>), max_universe: U0, var_kinds: [Ty { ui: U0, sub_root: 0 }, Ty { ui: U0, sub_root: 1 }, Ty { ui: U0, sub_root: 2 }] }, span: <local>:60:52: 60:82, inferred_ty: fn() -> std::boxed::Box<std::mem::MaybeUninit<[usize; 3]>> {std::boxed::Box::<[usize; 3]>::new_uninit}\n|\nfn two_phase_shared_read() -> usize {\n    let mut _0: usize;                   // return place in scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:1:35: 1:40\n    let mut _1: std::vec::Vec<usize>;    // in scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:2:9: 2:14\n    let mut _2: std::boxed::Box<std::mem::MaybeUninit<[usize; 3]>>; // in scope 0 at <local>:60:13: 60:96\n    let mut _3: std::boxed::Box<std::mem::MaybeUninit<[usize; 3]>>; // in scope 0 at <local>:60:52: 60:84\n    let _4: ();                          // in scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:5: 3:20\n    let mut _5: &mut std::vec::Vec<usize>; // in scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:5: 3:6\n    let mut _6: usize;                   // in scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:12: 3:19\n    let mut _7: &std::vec::Vec<usize>;   // in scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:12: 3:13\n    let mut _8: &std::vec::Vec<usize>;   // in scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:4:5: 4:6\n    scope 1 {\n        debug v => _1;                   // in scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:2:9: 2:14\n    }\n\n    bb0: {\n        StorageLive(_1);                 // scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:2:9: 2:14\n        StorageLive(_2);                 // scope 0 at <local>:60:13: 60:96\n        StorageLive(_3);                 // scope 0 at <local>:60:52: 60:84\n        _3 = Box::<[usize; 3]>::new_uninit() -> [return: bb1, unwind: bb10]; // scope 0 at <local>:60:52: 60:84\n                                         // mir::ConstOperand\n                                         // + span: <local>:60:52: 60:82\n                                         // + user_ty: UserType(0)\n                                         // + const_: Const { ty: fn() -> Box<MaybeUninit<[usize; 3]>> {Box::<[usize; 3]>::new_uninit}, val: Value(Box::<[usize; 3]>::new_uninit) }\n    }\n\n    bb1: {\n        (((*_3).1: std::mem::ManuallyDrop<[usize; 3]>).0: [usize; 3]) = [const 10_usize, const 20_usize, const 30_usize]; // scope 0 at <local>:60:86: 60:95\n        _2 = move _3;                    // scope 0 at <local>:60:13: 60:96\n        drop(_3) -> [return: bb2, unwind: bb9]; // scope 0 at <local>:60:95: 60:96\n    }\n\n    bb2: {\n        StorageDead(_3);                 // scope 0 at <local>:60:95: 60:96\n        _1 = std::boxed::box_assume_init_into_vec_unsafe::<usize, 3>(move _2) -> [return: bb3, unwind: bb9]; // scope 0 at <local>:59:9: 61:10\n                                         // mir::ConstOperand\n                                         // + span: <local>:59:9: 59:55\n                                         // + const_: Const { ty: fn(Box<MaybeUninit<[usize; 3]>>) -> Vec<usize> {std::boxed::box_assume_init_into_vec_unsafe::<usize, 3>}, val: Value(std::boxed::box_assume_init_into_vec_unsafe::<usize, 3>) }\n    }\n\n    bb3: {\n        StorageDead(_2);                 // scope 0 at <local>:61:9: 61:10\n        FakeRead(ForLet(None), _1);      // scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:2:9: 2:14\n        StorageLive(_4);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:5: 3:20\n        StorageLive(_5);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:5: 3:6\n        _5 = &mut _1;                    // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:5: 3:6\n        StorageLive(_6);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:12: 3:19\n        StorageLive(_7);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:12: 3:13\n        _7 = &_1;                        // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:12: 3:13\n        _6 = Vec::<usize>::len(move _7) -> [return: bb4, unwind: bb8]; // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:12: 3:19\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:14: 3:17\n                                         // + const_: Const { ty: for<'a> fn(&'a Vec<usize>) -> usize {Vec::<usize>::len}, val: Value(Vec::<usize>::len) }\n    }\n\n    bb4: {\n        StorageDead(_7);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:18: 3:19\n        _4 = Vec::<usize>::push(move _5, move _6) -> [return: bb5, unwind: bb8]; // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:5: 3:20\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:7: 3:11\n                                         // + const_: Const { ty: for<'a> fn(&'a mut Vec<usize>, usize) {Vec::<usize>::push}, val: Value(Vec::<usize>::push) }\n    }\n\n    bb5: {\n        StorageDead(_6);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:19: 3:20\n        StorageDead(_5);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:19: 3:20\n        StorageDead(_4);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:3:20: 3:21\n        StorageLive(_8);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:4:5: 4:6\n        _8 = &_1;                        // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:4:5: 4:6\n        _0 = Vec::<usize>::len(move _8) -> [return: bb6, unwind: bb8]; // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:4:5: 4:12\n                                         // mir::ConstOperand\n                                         // + span: <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:4:7: 4:10\n                                         // + const_: Const { ty: for<'a> fn(&'a Vec<usize>) -> usize {Vec::<usize>::len}, val: Value(Vec::<usize>::len) }\n    }\n\n    bb6: {\n        StorageDead(_8);                 // scope 1 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:4:11: 4:12\n        drop(_1) -> [return: bb7, unwind: bb10]; // scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:5:1: 5:2\n    }\n\n    bb7: {\n        StorageDead(_1);                 // scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:5:1: 5:2\n        return;                          // scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:5:2: 5:2\n    }\n\n    bb8 (cleanup): {\n        drop(_1) -> [return: bb10, unwind terminate(cleanup)]; // scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:5:1: 5:2\n    }\n\n    bb9 (cleanup): {\n        drop(_2) -> [return: bb10, unwind terminate(cleanup)]; // scope 0 at <local>:61:9: 61:10\n    }\n\n    bb10 (cleanup): {\n        resume;                          // scope 0 at <tmp>/c1_two_phase_shared_read_before_activation_ok.rs:1:1: 5:2\n    }\n}\n",
+        "c1_two_phase_shared_read_before_activation_ok.two_phase_shared_read.1-1-000.built.after.mir": "// MIR for `two_phase_shared_read` after built\n\n| User Type Annotations\n| 0: user_ty: Canonical { value: TypeOf(Box<^c_0>::new_uninit at <impl boxed::<{impl#9}> for Box<^c_1, ^c_2>>), max_universe: U0, var_kinds: [Ty { ui: U0, sub_root: 0 }, Ty { ui: U0, sub_root: 1 }, Ty { ui: U0, sub_root: 2 }] }, span: <local>:60:52: 60:82, inferred_ty: fn() -> std::boxed::Box<std::mem::MaybeUninit<[usize; 3]>> {std::boxed::Box::<[usize; 3]>::new_uninit}\n|\nfn two_phase_shared_read() -> usize {\n    let mut _0: usize;\n    let mut _1: std::vec::Vec<usize>;\n    let mut _2: std::boxed::Box<std::mem::MaybeUninit<[usize; 3]>>;\n    let mut _3: std::boxed::Box<std::mem::MaybeUninit<[usize; 3]>>;\n    let _4: ();\n    let mut _5: &mut std::vec::Vec<usize>;\n    let mut _6: usize;\n    let mut _7: &std::vec::Vec<usize>;\n    let mut _8: &std::vec::Vec<usize>;\n    scope 1 {\n        debug v => _1;\n    }\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = Box::<[usize; 3]>::new_uninit() -> [return: bb1, unwind: bb10];\n    }\n\n    bb1: {\n        (((*_3).1: std::mem::ManuallyDrop<[usize; 3]>).0: [usize; 3]) = [const 10_usize, const 20_usize, const 30_usize];\n        _2 = move _3;\n        drop(_3) -> [return: bb2, unwind: bb9];\n    }\n\n    bb2: {\n        StorageDead(_3);\n        _1 = std::boxed::box_assume_init_into_vec_unsafe::<usize, 3>(move _2) -> [return: bb3, unwind: bb9];\n    }\n\n    bb3: {\n        StorageDead(_2);\n        FakeRead(ForLet(None), _1);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = &mut _1;\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = &_1;\n        _6 = Vec::<usize>::len(move _7) -> [return: bb4, unwind: bb8];\n    }\n\n    bb4: {\n        StorageDead(_7);\n        _4 = Vec::<usize>::push(move _5, move _6) -> [return: bb5, unwind: bb8];\n    }\n\n    bb5: {\n        StorageDead(_6);\n        StorageDead(_5);\n        StorageDead(_4);\n        StorageLive(_8);\n        _8 = &_1;\n        _0 = Vec::<usize>::len(move _8) -> [return: bb6, unwind: bb8];\n    }\n\n    bb6: {\n        StorageDead(_8);\n        drop(_1) -> [return: bb7, unwind: bb10];\n    }\n\n    bb7: {\n        StorageDead(_1);\n        return;\n    }\n\n    bb8 (cleanup): {\n        drop(_1) -> [return: bb10, unwind terminate(cleanup)];\n    }\n\n    bb9 (cleanup): {\n        drop(_2) -> [return: bb10, unwind terminate(cleanup)];\n    }\n\n    bb10 (cleanup): {\n        resume;\n    }\n}\n"
+      }
+    },
+    "c2_two_phase_conflicting_write_before_activation_err": {
+      "edition": "2024",
+      "source": "pub fn two_phase_conflicting_write() {\n    let mut v = vec![10usize, 20, 30];\n    v.push({\n        v.clear();\n        42\n    });\n}\n",
+      "modes": {
+        "nll_explicit_z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0499]: cannot borrow `v` as mutable more than once at a time\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:4:9\n  |\n3 |     v.push({\n  |     - ---- first borrow later used by call\n  |     |\n  |     first mutable borrow occurs here\n4 |         v.clear();\n  |         ^ second mutable borrow occurs here\n  |\nhelp: try adding a local storing this argument...\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:4:9\n  |\n4 |         v.clear();\n  |         ^^^^^^^^^\nhelp: ...and then using that local as the argument to this call\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:3:5\n  |\n3 | /     v.push({\n4 | |         v.clear();\n5 | |         42\n6 | |     });\n  | |______^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`."
+        },
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0499]: cannot borrow `v` as mutable more than once at a time\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:4:9\n  |\n3 |     v.push({\n  |     - ---- first borrow later used by call\n  |     |\n  |     first mutable borrow occurs here\n4 |         v.clear();\n  |         ^ second mutable borrow occurs here\n  |\nhelp: try adding a local storing this argument...\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:4:9\n  |\n4 |         v.clear();\n  |         ^^^^^^^^^\nhelp: ...and then using that local as the argument to this call\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:3:5\n  |\n3 | /     v.push({\n4 | |         v.clear();\n5 | |         42\n6 | |     });\n  | |______^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`."
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0499]: cannot borrow `v` as mutable more than once at a time\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:4:9\n  |\n3 |     v.push({\n  |     - ---- first borrow later used by call\n  |     |\n  |     first mutable borrow occurs here\n4 |         v.clear();\n  |         ^ second mutable borrow occurs here\n  |\nhelp: try adding a local storing this argument...\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:4:9\n  |\n4 |         v.clear();\n  |         ^^^^^^^^^\nhelp: ...and then using that local as the argument to this call\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:3:5\n  |\n3 | /     v.push({\n4 | |         v.clear();\n5 | |         42\n6 | |     });\n  | |______^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`."
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0499]: cannot borrow `v` as mutable more than once at a time\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:4:9\n  |\n3 |     v.push({\n  |     - ---- first borrow later used by call\n  |     |\n  |     first mutable borrow occurs here\n4 |         v.clear();\n  |         ^ second mutable borrow occurs here\n  |\nhelp: try adding a local storing this argument...\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:4:9\n  |\n4 |         v.clear();\n  |         ^^^^^^^^^\nhelp: ...and then using that local as the argument to this call\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:3:5\n  |\n3 | /     v.push({\n4 | |         v.clear();\n5 | |         42\n6 | |     });\n  | |______^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`."
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0499]: cannot borrow `v` as mutable more than once at a time\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:4:9\n  |\n3 |     v.push({\n  |     - ---- first borrow later used by call\n  |     |\n  |     first mutable borrow occurs here\n4 |         v.clear();\n  |         ^ second mutable borrow occurs here\n  |\nhelp: try adding a local storing this argument...\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:4:9\n  |\n4 |         v.clear();\n  |         ^^^^^^^^^\nhelp: ...and then using that local as the argument to this call\n --> <tmp>/c2_two_phase_conflicting_write_before_activation_err.rs:3:5\n  |\n3 | /     v.push({\n4 | |         v.clear();\n5 | |         42\n6 | |     });\n  | |______^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`."
+        }
+      }
+    },
+    "c3_two_phase_nested_mut_reservation_conflict_err": {
+      "edition": "2024",
+      "source": "pub fn two_phase_nested_push() {\n    let mut v = vec![10usize, 20, 30];\n    v.push({\n        v.push(99);\n        42\n    });\n}\n",
+      "modes": {
+        "nll_explicit_z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0499]: cannot borrow `v` as mutable more than once at a time\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:4:9\n  |\n3 |     v.push({\n  |     - ---- first borrow later used by call\n  |     |\n  |     first mutable borrow occurs here\n4 |         v.push(99);\n  |         ^ second mutable borrow occurs here\n  |\nhelp: try adding a local storing this argument...\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:4:9\n  |\n4 |         v.push(99);\n  |         ^^^^^^^^^^\nhelp: ...and then using that local as the argument to this call\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:3:5\n  |\n3 | /     v.push({\n4 | |         v.push(99);\n5 | |         42\n6 | |     });\n  | |______^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`."
+        },
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0499]: cannot borrow `v` as mutable more than once at a time\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:4:9\n  |\n3 |     v.push({\n  |     - ---- first borrow later used by call\n  |     |\n  |     first mutable borrow occurs here\n4 |         v.push(99);\n  |         ^ second mutable borrow occurs here\n  |\nhelp: try adding a local storing this argument...\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:4:9\n  |\n4 |         v.push(99);\n  |         ^^^^^^^^^^\nhelp: ...and then using that local as the argument to this call\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:3:5\n  |\n3 | /     v.push({\n4 | |         v.push(99);\n5 | |         42\n6 | |     });\n  | |______^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`."
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0499]: cannot borrow `v` as mutable more than once at a time\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:4:9\n  |\n3 |     v.push({\n  |     - ---- first borrow later used by call\n  |     |\n  |     first mutable borrow occurs here\n4 |         v.push(99);\n  |         ^ second mutable borrow occurs here\n  |\nhelp: try adding a local storing this argument...\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:4:9\n  |\n4 |         v.push(99);\n  |         ^^^^^^^^^^\nhelp: ...and then using that local as the argument to this call\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:3:5\n  |\n3 | /     v.push({\n4 | |         v.push(99);\n5 | |         42\n6 | |     });\n  | |______^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`."
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0499]: cannot borrow `v` as mutable more than once at a time\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:4:9\n  |\n3 |     v.push({\n  |     - ---- first borrow later used by call\n  |     |\n  |     first mutable borrow occurs here\n4 |         v.push(99);\n  |         ^ second mutable borrow occurs here\n  |\nhelp: try adding a local storing this argument...\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:4:9\n  |\n4 |         v.push(99);\n  |         ^^^^^^^^^^\nhelp: ...and then using that local as the argument to this call\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:3:5\n  |\n3 | /     v.push({\n4 | |         v.push(99);\n5 | |         42\n6 | |     });\n  | |______^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`."
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0499]: cannot borrow `v` as mutable more than once at a time\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:4:9\n  |\n3 |     v.push({\n  |     - ---- first borrow later used by call\n  |     |\n  |     first mutable borrow occurs here\n4 |         v.push(99);\n  |         ^ second mutable borrow occurs here\n  |\nhelp: try adding a local storing this argument...\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:4:9\n  |\n4 |         v.push(99);\n  |         ^^^^^^^^^^\nhelp: ...and then using that local as the argument to this call\n --> <tmp>/c3_two_phase_nested_mut_reservation_conflict_err.rs:3:5\n  |\n3 | /     v.push({\n4 | |         v.push(99);\n5 | |         42\n6 | |     });\n  | |______^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`."
+        }
+      }
+    },
+    "c4_non_two_phase_explicit_mut_borrow_shared_read_err": {
+      "edition": "2024",
+      "source": "pub fn explicit_mut_borrow_read_conflict() -> usize {\n    let mut v = vec![10usize, 20, 30];\n    let r = &mut v;\n    let len = v.len();\n    r.push(len);\n    v.len()\n}\n",
+      "modes": {
+        "nll_explicit_z_polonius_off": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=off"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0502]: cannot borrow `v` as immutable because it is also borrowed as mutable\n --> <tmp>/c4_non_two_phase_explicit_mut_borrow_shared_read_err.rs:4:15\n  |\n3 |     let r = &mut v;\n  |             ------ mutable borrow occurs here\n4 |     let len = v.len();\n  |               ^ immutable borrow occurs here\n5 |     r.push(len);\n  |     - mutable borrow later used here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0502`."
+        },
+        "nightly_default_no_flag": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0502]: cannot borrow `v` as immutable because it is also borrowed as mutable\n --> <tmp>/c4_non_two_phase_explicit_mut_borrow_shared_read_err.rs:4:15\n  |\n3 |     let r = &mut v;\n  |             ------ mutable borrow occurs here\n4 |     let len = v.len();\n  |               ^ immutable borrow occurs here\n5 |     r.push(len);\n  |     - mutable borrow later used here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0502`."
+        },
+        "z_polonius_bare": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0502]: cannot borrow `v` as immutable because it is also borrowed as mutable\n --> <tmp>/c4_non_two_phase_explicit_mut_borrow_shared_read_err.rs:4:15\n  |\n3 |     let r = &mut v;\n  |             ------ mutable borrow occurs here\n4 |     let len = v.len();\n  |               ^ immutable borrow occurs here\n5 |     r.push(len);\n  |     - mutable borrow later used here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0502`."
+        },
+        "z_polonius_next": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=next"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0502]: cannot borrow `v` as immutable because it is also borrowed as mutable\n --> <tmp>/c4_non_two_phase_explicit_mut_borrow_shared_read_err.rs:4:15\n  |\n3 |     let r = &mut v;\n  |             ------ mutable borrow occurs here\n4 |     let len = v.len();\n  |               ^ immutable borrow occurs here\n5 |     r.push(len);\n  |     - mutable borrow later used here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0502`."
+        },
+        "z_polonius_legacy": {
+          "flags": [
+            "--crate-type",
+            "lib",
+            "--edition",
+            "2024",
+            "-Zpolonius=legacy"
+          ],
+          "rc": 1,
+          "accepted": false,
+          "stderr": "error[E0502]: cannot borrow `v` as immutable because it is also borrowed as mutable\n --> <tmp>/c4_non_two_phase_explicit_mut_borrow_shared_read_err.rs:4:15\n  |\n3 |     let r = &mut v;\n  |             ------ mutable borrow occurs here\n4 |     let len = v.len();\n  |               ^ immutable borrow occurs here\n5 |     r.push(len);\n  |     - mutable borrow later used here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0502`."
+        }
+      }
+    }
+  }
+}
