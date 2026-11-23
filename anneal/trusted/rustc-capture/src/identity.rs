@@ -236,65 +236,6 @@ fn is_valid_host_triple(host: &str) -> bool {
             .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'_' | b'.' | b'-'))
 }
 
-/// Return `true` for a valid unparenthesized `-dev` compiler version string
-/// such as `1.101.0-dev` produced by custom source builds with no embedded
-/// parenthesized commit hash.
-fn is_unparenthesized_dev_version(version: &str) -> bool {
-    let Some(core) = version.strip_suffix("-dev") else {
-        return false;
-    };
-    let mut parts = core.split('.');
-    let Some(major) = parts.next() else {
-        return false;
-    };
-    let Some(minor) = parts.next() else {
-        return false;
-    };
-    let Some(patch) = parts.next() else {
-        return false;
-    };
-    parts.next().is_none()
-        && [major, minor, patch]
-            .into_iter()
-            .all(|part| !part.is_empty() && part.bytes().all(|b| b.is_ascii_digit()))
-}
-
-/// Confirm that the linked driver's version string agrees with `commit-hash`
-/// from `<sysroot>/bin/rustc --version --verbose`.
-///
-/// Standard builds embed a parenthesized short prefix of the full hex commit
-/// hash (`1.98.0-nightly (f8a08b688 2026-05-30)`). Custom source `-dev`
-/// builds without parenthesized commit metadata (`1.101.0-dev`) are accepted
-/// when `commit-hash` is `"unknown"` or a full 40-digit hex SHA-1; builds
-/// carrying parenthesized metadata still require an exact commit-prefix match.
-fn linked_version_matches_commit(linked_version: &str, commit: &str) -> bool {
-    if is_unparenthesized_dev_version(linked_version) {
-        return commit == "unknown"
-            || (commit.len() == 40 && commit.bytes().all(|b| b.is_ascii_hexdigit()));
-    }
-    if commit.len() < 9 || !commit.bytes().all(|b| b.is_ascii_hexdigit()) {
-        return false;
-    }
-    let short = &commit[..9];
-    let needle = format!("({short}");
-    let Some(pos) = linked_version.find(&needle) else {
-        return false;
-    };
-    let tail = &linked_version[pos + needle.len()..];
-    let mut tail_bytes = tail.as_bytes().iter();
-    let mut commit_bytes = commit.as_bytes()[9..].iter();
-    loop {
-        match tail_bytes.next() {
-            Some(b' ' | b')') => return true,
-            Some(&tb) => match commit_bytes.next() {
-                Some(&cb) if tb.eq_ignore_ascii_case(&cb) => continue,
-                _ => return false,
-            },
-            None => return false,
-        }
-    }
-}
-
 fn is_rustc_driver_filename(name: &str) -> bool {
     name.starts_with("librustc_driver-") && name.ends_with(".so")
 }
@@ -1584,11 +1525,10 @@ pub(crate) fn verify_compiler(sysroot: &Path, target: &str) -> Result<VerifiedCo
             verbose.version
         )));
     }
-    if !linked_version_matches_commit(linked_version, &verbose.commit) {
-        return Err(Failure::tool(format!(
-            "sysroot rustc commit ({}) does not match linked rustc version ({linked_version})",
-            verbose.commit
-        )));
+    if verbose.commit != ir::COMPILER_COMMIT {
+        return Err(Failure::tool(
+            "sysroot rustc does not match the pinned full compiler commit",
+        ));
     }
     if !is_valid_host_triple(&verbose.host) {
         return Err(Failure::tool(format!(
@@ -1602,11 +1542,6 @@ pub(crate) fn verify_compiler(sysroot: &Path, target: &str) -> Result<VerifiedCo
             "sysroot rustc host ({}) does not match linked rustc host ({linked_host})",
             verbose.host
         )));
-    }
-    if verbose.commit != ir::COMPILER_COMMIT {
-        return Err(Failure::tool(
-            "sysroot rustc does not match the pinned full compiler commit",
-        ));
     }
 
     let driver = verify_driver_residency(sysroot, &verbose.host)?;
@@ -1749,25 +1684,15 @@ mod tests {
     }
 
     #[test]
-    fn linked_version_commit_binding_validates_short_prefix() {
-        let ver = "1.98.0-nightly (f8a08b688 2026-05-30)";
-        assert!(linked_version_matches_commit(
-            ver,
-            "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
-        ));
-        assert!(linked_version_matches_commit(
-            "1.98.0-dev (f8a08b688cbe)",
-            "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
-        ));
-        assert!(!linked_version_matches_commit(
-            ver,
-            "0000000000000000000000000000000000000000"
-        ));
-        assert!(!linked_version_matches_commit(ver, "f8a08b68"));
-        assert!(!linked_version_matches_commit(
-            "1.98.0-nightly (f8a08b688zzz 2026-05-30)",
-            "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
-        ));
+    fn pinned_compiler_version_embeds_pinned_commit_prefix() {
+        assert_eq!(ir::COMPILER_COMMIT.len(), 40);
+        assert!(ir::COMPILER_COMMIT.bytes().all(|b| b.is_ascii_hexdigit()));
+        let prefix = &ir::COMPILER_COMMIT[..9];
+        assert!(
+            ir::COMPILER_VERSION.contains(prefix),
+            "ir::COMPILER_VERSION ({}) must contain pinned commit prefix ({prefix})",
+            ir::COMPILER_VERSION
+        );
     }
 
     #[test]
@@ -1790,21 +1715,7 @@ LLVM version: 22.1.6\n";
     }
 
     #[test]
-    fn unparenthesized_dev_versions_and_loader_env_guards_behave_as_specified() {
-        // Valid 0-paren `-dev` versions authenticate cleanly with `"unknown"`
-        // or a full 40-hex commit-hash, while rejecting malformed commits.
-        assert!(linked_version_matches_commit("1.101.0-dev", "unknown"));
-        assert!(linked_version_matches_commit(
-            "1.101.0-dev",
-            "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
-        ));
-        assert!(!linked_version_matches_commit("1.101.0-dev", "short"));
-        assert!(!linked_version_matches_commit("1.101.0", "unknown"));
-        assert!(!linked_version_matches_commit(
-            "1.98.0-nightly (f8a08b688 2026-05-30)",
-            "unknown"
-        ));
-
+    fn loader_env_guards_behave_as_specified() {
         // Ambient loader injection variables must fail closed on presence
         // (including empty strings for presence-triggered flags such as
         // `LD_DYNAMIC_WEAK=""` and `DYLD_FORCE_FLAT_NAMESPACE=""`), while clean
