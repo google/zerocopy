@@ -25,6 +25,7 @@ import Anneal.ClassicalEm
 import Anneal.MirTotal
 import Anneal.Core
 import Anneal.ByteSubLens
+import Anneal.CnfOrd
 import Anneal.PureLift
 
 namespace Anneal
@@ -41,7 +42,8 @@ fuel-bounded MIR weakest-precondition machinery (`Anneal.MirWp`), the computable
 MIR step mirrors and unbounded-depth bridges (`Anneal.MirTotal`), the
 block-tree, separation-logic, and stage-cut core (`Anneal.Core`), lawful
 sub-allocation byte lenses and `&mut` method call summaries
-(`Anneal.ByteSubLens`), and `Anneal.PureLift`.
+(`Anneal.ByteSubLens`), constructive `< ω^ω` Cantor Normal Form ordinals and
+multi-rank termination (`Anneal.CnfOrd`), and `Anneal.PureLift`.
 -/
 
 end Anneal
