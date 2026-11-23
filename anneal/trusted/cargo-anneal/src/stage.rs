@@ -714,6 +714,71 @@ fn resolve_static_toolchain(lean: &Path) -> Result<(PathBuf, PathBuf), Failure> 
     ))
 }
 
+/// Require a canonical pinned `x86_64` Linux Lean executable to reside under
+/// `<prefix>/bin/<name>` so its ELF `$ORIGIN/..` `DT_RUNPATH` resolves to a
+/// known sysroot prefix rather than an arbitrary sibling directory.
+fn require_pinned_lean_bin_prefix(canon_lean: &Path) -> Result<&Path, Failure> {
+    let Some(bin_dir) = canon_lean.parent() else {
+        return Err(Failure::new(
+            2,
+            "toolchain",
+            format!(
+                "pinned x86_64 Linux Lean binary {} must reside under <prefix>/bin/",
+                canon_lean.display()
+            ),
+        ));
+    };
+    if bin_dir.file_name() != Some(OsStr::new("bin")) {
+        return Err(Failure::new(
+            2,
+            "toolchain",
+            format!(
+                "pinned x86_64 Linux Lean binary {} must reside under <prefix>/bin/",
+                canon_lean.display()
+            ),
+        ));
+    }
+    bin_dir.parent().ok_or_else(|| {
+        Failure::new(
+            2,
+            "toolchain",
+            format!(
+                "pinned x86_64 Linux Lean binary {} must reside under <prefix>/bin/",
+                canon_lean.display()
+            ),
+        )
+    })
+}
+
+/// Verify Lean runtime shared libraries for `prefix` and, when `exec_lean`
+/// canonicalizes outside `prefix`, also for `exec_lean`'s `$ORIGIN/..`
+/// directory. Fails closed if a pinned `x86_64` Linux executable is not under
+/// `<dir>/bin/<name>`.
+fn verify_pinned_exec_and_prefix_runtime_libs(
+    prefix: &Path,
+    exec_lean: &Path,
+    lean_sha: &str,
+) -> Result<bool, Failure> {
+    let prefix_verified =
+        crate::toolchain::verify_sysroot_runtime_libs_for_sha(prefix, lean_sha)?;
+    if !prefix_verified {
+        return Ok(false);
+    }
+    let exec_prefix = require_pinned_lean_bin_prefix(exec_lean)?;
+    if exec_prefix != prefix {
+        let exec_verified =
+            crate::toolchain::verify_sysroot_runtime_libs_for_sha(exec_prefix, lean_sha)?;
+        if !exec_verified {
+            return Err(Failure::new(
+                2,
+                "toolchain",
+                "runtime shared-library verification state differs across sysroot paths",
+            ));
+        }
+    }
+    Ok(true)
+}
+
 /// Executes Lean 4.34.1 compilation and `TrustedBoundary.lean` inspection
 /// inside a private `0o700` staging directory with optional OS containment
 /// (`ExecSeal`).
@@ -1382,13 +1447,16 @@ impl Checker {
     /// Authenticating the sysroot `{Init,Std,Lean}*` `.olean`, `.olean.server`,
     /// and `.olean.private` manifest here covers the compiled `.olean*` modules
     /// loaded by the standalone inspector (`TrustedBoundary.lean`) before any
-    /// inspector mode executes. Sysroot `.ir`/`.ir.sig` companions outside
-    /// `foundation-lock.json` and `library-lock.json`, as well as the Lean
-    /// shared libraries that the executable loads (which contain the kernel and
-    /// elaborator), remain unhashed and identified only by `lean --version`, so
-    /// their integrity rests on the uncompromised execution environment that
-    /// `THREAT_MODEL.md` assumes. Library source/`.ir` digests are checked
-    /// later, when target imports reach them.
+    /// inspector mode executes. For `x86_64-unknown-linux-gnu`, pinned
+    /// admission also authenticates Lean's runtime shared libraries and
+    /// linker scripts under `<prefix>/lib` and `<prefix>/lib/lean` against
+    /// `LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS` (both before probing and after
+    /// `--print-prefix`). Sysroot `.ir`/`.ir.sig` companions outside
+    /// `foundation-lock.json` and `library-lock.json`, as well as Lean shared
+    /// libraries on uncatalogued triples, remain unhashed and identified only
+    /// by `lean --version`, so their integrity rests on the uncompromised
+    /// execution environment that `THREAT_MODEL.md` assumes. Library
+    /// source/`.ir` digests are checked later, when target imports reach them.
     #[doc(hidden)]
     pub fn tool_admission(&mut self) -> Result<&mut AdmittedToolchain, Failure> {
         let inspector_src = self.root.join("trusted/audit/TrustedBoundary.lean");
@@ -1458,79 +1526,122 @@ impl Checker {
         #[cfg(not(test))]
         let expected_sysroot_sha: String = LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256.to_owned();
 
-        let (actual_version, expected_lean_sha, prefix, exec_lean, artifacts) =
-            if self.sandbox_mode == SandboxMode::Unsandboxed {
-                let actual_version =
-                    self.process("version", &["--version".to_string()])?.trim().to_string();
-                let Some(expected_lean_sha) = parsed_lock.distributions.get(&actual_version) else {
-                    return Err(Failure::new(
-                        2,
-                        "toolchain",
-                        format!("Lean version/commit differs from lock: {actual_version}"),
-                    ));
-                };
-                if !expected_lean_sha.eq_ignore_ascii_case(&lean_sha) {
-                    return Err(Failure::new(
-                        2,
-                        "toolchain",
-                        format!(
-                            "Lean binary SHA-256 mismatch for {actual_version}: expected \
-                             {expected_lean_sha}, got {lean_sha}"
-                        ),
-                    ));
-                }
+        let (
+            actual_version,
+            expected_lean_sha,
+            prefix,
+            exec_lean,
+            artifacts,
+            runtime_libs_verified,
+        ) = if self.sandbox_mode == SandboxMode::Unsandboxed {
+            let canon_self_lean = fs::canonicalize(&self.lean).map_err(|e| {
+                Failure::new(
+                    2,
+                    "toolchain",
+                    format!("cannot canonicalize {}: {e}", self.lean.display()),
+                )
+            })?;
+            // Verify the executable's `$ORIGIN/..` runtime DSOs before
+            // running `--version` or `--print-prefix` even in unsandboxed
+            // pinned mode (e.g., `anneal-audit` Pass 1 or
+            // `--allow-unsandboxed-elaboration`), failing closed if the pinned
+            // `x86_64` Linux binary does not reside under `<prefix>/bin/`.
+            let pre_exec_libs_verified = if lean_sha
+                .eq_ignore_ascii_case(crate::toolchain::LOCKED_LEAN_X86_64_LINUX_SHA256)
+            {
+                let self_prefix = require_pinned_lean_bin_prefix(&canon_self_lean)?;
+                crate::toolchain::verify_sysroot_runtime_libs_for_sha(self_prefix, &lean_sha)?
+            } else {
+                false
+            };
+            let actual_version =
+                self.process("version", &["--version".to_string()])?.trim().to_string();
+            let Some(expected_lean_sha) = parsed_lock.distributions.get(&actual_version) else {
+                return Err(Failure::new(
+                    2,
+                    "toolchain",
+                    format!("Lean version/commit differs from lock: {actual_version}"),
+                ));
+            };
+            if !expected_lean_sha.eq_ignore_ascii_case(&lean_sha) {
+                return Err(Failure::new(
+                    2,
+                    "toolchain",
+                    format!(
+                        "Lean binary SHA-256 mismatch for {actual_version}: expected \
+                         {expected_lean_sha}, got {lean_sha}"
+                    ),
+                ));
+            }
 
-                let prefix_raw =
-                    self.process("prefix", &["--print-prefix".to_string()])?.trim().to_string();
-                let prefix = fs::canonicalize(&prefix_raw).map_err(|e| {
-                    Failure::new(2, "toolchain", format!("cannot resolve prefix: {e}"))
+            let prefix_raw =
+                self.process("prefix", &["--print-prefix".to_string()])?.trim().to_string();
+            let prefix = fs::canonicalize(&prefix_raw).map_err(|e| {
+                Failure::new(2, "toolchain", format!("cannot resolve prefix: {e}"))
+            })?;
+            let prefix_lean = prefix.join("bin/lean");
+            let exec_lean = if prefix_lean.exists() {
+                let resolved = fs::canonicalize(&prefix_lean).map_err(|e| {
+                    Failure::new(
+                        2,
+                        "toolchain",
+                        format!("cannot canonicalize {}: {e}", prefix_lean.display()),
+                    )
                 })?;
-                let prefix_lean = prefix.join("bin/lean");
-                let canon_self_lean =
-                    fs::canonicalize(&self.lean).unwrap_or_else(|_| self.lean.clone());
-                let exec_lean = if prefix_lean.exists() {
-                    let resolved = fs::canonicalize(&prefix_lean).map_err(|e| {
-                        Failure::new(
+                // Re-authenticate `exec_lean` against `foundation-lock.json`
+                // whenever `prefix/bin/lean` resolves to a different binary
+                // than `self.lean`.
+                if resolved != canon_self_lean {
+                    let exec_sha = sha256_file_deref(&resolved, "toolchain")?;
+                    if !expected_lean_sha.eq_ignore_ascii_case(&exec_sha) {
+                        return Err(Failure::new(
                             2,
                             "toolchain",
-                            format!("cannot canonicalize {}: {e}", prefix_lean.display()),
-                        )
-                    })?;
-                    // Re-authenticate `exec_lean` against `foundation-lock.json`
-                    // whenever `prefix/bin/lean` resolves to a different binary
-                    // than `self.lean`.
-                    if resolved != canon_self_lean {
-                        let exec_sha = sha256_file_deref(&resolved, "toolchain")?;
-                        if !expected_lean_sha.eq_ignore_ascii_case(&exec_sha) {
-                            return Err(Failure::new(
-                                2,
-                                "toolchain",
-                                format!(
-                                    "resolved Lean binary {} SHA-256 differs from lock: \
-                                     expected {expected_lean_sha}, got {exec_sha}",
-                                    resolved.display()
-                                ),
-                            ));
-                        }
+                            format!(
+                                "resolved Lean binary {} SHA-256 differs from lock: \
+                                 expected {expected_lean_sha}, got {exec_sha}",
+                                resolved.display()
+                            ),
+                        ));
                     }
-                    resolved
-                } else {
-                    canon_self_lean
-                };
-                let mut artifacts = BTreeMap::new();
-                for (module, record) in &parsed_lock.modules {
-                    let mod_arts =
-                        verify_installed_module_record(&prefix, module, record, "foundation")?;
-                    artifacts.insert(module.clone(), mod_arts);
                 }
-                verify_sysroot_foundation_dir(
-                    &prefix.join("lib/lean"),
-                    &foundation_modules,
-                    &expected_sysroot_sha,
-                )
-                .map_err(|err| Failure::new(err.code, "toolchain", err.message))?;
-                (actual_version, expected_lean_sha.clone(), prefix, exec_lean, artifacts)
+                resolved
             } else {
+                canon_self_lean
+            };
+            let mut artifacts = BTreeMap::new();
+            for (module, record) in &parsed_lock.modules {
+                let mod_arts =
+                    verify_installed_module_record(&prefix, module, record, "foundation")?;
+                artifacts.insert(module.clone(), mod_arts);
+            }
+            verify_sysroot_foundation_dir(
+                &prefix.join("lib/lean"),
+                &foundation_modules,
+                &expected_sysroot_sha,
+            )
+            .map_err(|err| Failure::new(err.code, "toolchain", err.message))?;
+            let runtime_libs_verified = verify_pinned_exec_and_prefix_runtime_libs(
+                &prefix,
+                &exec_lean,
+                expected_lean_sha,
+            )?;
+            if pre_exec_libs_verified != runtime_libs_verified {
+                return Err(Failure::new(
+                    2,
+                    "toolchain",
+                    "runtime shared-library verification state differs across sysroot paths",
+                ));
+            }
+            (
+                actual_version,
+                expected_lean_sha.clone(),
+                prefix,
+                exec_lean,
+                artifacts,
+                runtime_libs_verified,
+            )
+        } else {
                 let (prefix, exec_lean) = resolve_static_toolchain(&self.lean)?;
                 let exec_sha = sha256_file_deref(&exec_lean, "toolchain")?;
                 if !parsed_lock.distributions.values().any(|s| s.eq_ignore_ascii_case(&exec_sha)) {
@@ -1558,6 +1669,11 @@ impl Checker {
                     &expected_sysroot_sha,
                 )
                 .map_err(|err| Failure::new(err.code, "toolchain", err.message))?;
+                let pre_libs_verified = verify_pinned_exec_and_prefix_runtime_libs(
+                    &prefix,
+                    &exec_lean,
+                    &exec_sha,
+                )?;
                 let runtime =
                     SandboxRuntime::probe(self.sandbox_mode, &exec_lean, &prefix, &self.stage)?;
                 self.probed_backend = Some(runtime.backend);
@@ -1617,8 +1733,27 @@ impl Checker {
                         ),
                     ));
                 }
+                let post_libs_verified = verify_pinned_exec_and_prefix_runtime_libs(
+                    &prefix,
+                    &exec_lean,
+                    expected_lean_sha,
+                )?;
+                if pre_libs_verified != post_libs_verified {
+                    return Err(Failure::new(
+                        2,
+                        "toolchain",
+                        "runtime shared-library verification state changed during pinned admission",
+                    ));
+                }
                 self.sandbox_runtime = Some(runtime);
-                (actual_version, expected_lean_sha.clone(), prefix, exec_lean, artifacts)
+                (
+                    actual_version,
+                    expected_lean_sha.clone(),
+                    prefix,
+                    exec_lean,
+                    artifacts,
+                    post_libs_verified,
+                )
             };
 
         let library_lock_path = self.root.join("trusted/audit/library-lock.json");
@@ -1671,6 +1806,7 @@ impl Checker {
             expected_lean_sha: Some(expected_lean_sha.clone()),
             sysroot_manifest_sha256: Some(expected_sysroot_sha.to_owned()),
             inspector_olean: None,
+            runtime_libs_verified,
         });
         Ok(self.admitted.as_mut().unwrap())
     }
@@ -1779,6 +1915,7 @@ impl Checker {
             expected_lean_sha: None,
             sysroot_manifest_sha256: None,
             inspector_olean: None,
+            runtime_libs_verified: false,
         });
         Ok(self.admitted.as_mut().unwrap())
     }
@@ -1844,6 +1981,7 @@ impl Checker {
         let adm = self.admitted()?;
         let exec_lean = adm.exec_lean.clone();
         let prefix = adm.prefix.clone();
+        let adm_runtime_libs_verified = adm.runtime_libs_verified;
         if self.sandbox_mode != SandboxMode::Unsandboxed
             && let Some(expected_sha) = &adm.expected_lean_sha
         {
@@ -1855,6 +1993,18 @@ impl Checker {
                         "resolved exec_lean {} SHA-256 differs from lock: expected {expected_sha}, got {actual_sha}",
                         exec_lean.display()
                     ),
+                ));
+            }
+            let ready_libs_verified = verify_pinned_exec_and_prefix_runtime_libs(
+                &prefix,
+                &exec_lean,
+                expected_sha,
+            )?;
+            if ready_libs_verified != adm_runtime_libs_verified {
+                return Err(Failure::new(
+                    2,
+                    "toolchain",
+                    "runtime shared-library verification state changed before sandbox readiness",
                 ));
             }
         }
@@ -3673,6 +3823,7 @@ mod process_tests {
             expected_lean_sha: None,
             sysroot_manifest_sha256: None,
             inspector_olean: None,
+            runtime_libs_verified: false,
         });
         assert_eq!(checker.default_lean_memory_limit_mb(None), 2048);
         assert_eq!(checker.default_lean_memory_limit_mb(Some("target-audit")), 2048);
@@ -4071,6 +4222,7 @@ mod process_tests {
             expected_lean_sha: None,
             sysroot_manifest_sha256: None,
             inspector_olean: Some((olean.clone(), sha256_file(&olean, "test").unwrap())),
+            runtime_libs_verified: false,
         });
 
         checker.verify_artifact_ledger(&[]).unwrap();

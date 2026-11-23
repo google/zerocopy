@@ -328,8 +328,11 @@ explicitly passed (producing a tainted Receipt v3).
 - **Decoupled binary admission (`tool_admission()`):**
   - *Pinned mode (`!allow_unpinned_lean`):* Preserves zero-unhashed-exec by
     hashing `sha256_file_deref(&self.lean)` against `foundation-lock.json`
-    **before** running `--version` or `--print-prefix`, then confirming
-    `canon_prefix/bin/lean` matches the locked digest during sandbox readiness.
+    and verifying `x86_64` Linux runtime shared libraries against
+    `LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS` **before** running `--version` or
+    `--print-prefix`, then confirming `canon_prefix/bin/lean` and the runtime
+    shared libraries still match the locked digests after probing and during
+    sandbox readiness.
   - *Unpinned mode (`allow_unpinned_lean`):* Under `ExecSeal` (`!Unsandboxed`),
     `tool_admission_unpinned` resolves `(canon_prefix, exec_lean)` statically on
     disk from `<prefix>/bin/lean` (with `<prefix>/lib/lean`) or

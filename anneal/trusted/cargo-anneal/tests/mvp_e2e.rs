@@ -363,23 +363,43 @@ fn verifies_real_source_and_rejects_boundary_mutations() {
     }
     // Only locked digests authenticate toolchain files. The receipt keeps them
     // apart from the recorded capture digest and from unhashed components.
-    assert_eq!(
-        accepted.value["toolchain_identity"],
-        json!({
-            "sha256_locked": [
-                "Lean executable in foundation-lock.json",
-                "foundation-lock.json modules",
-                "Lean sysroot Init/Std/Lean .olean artifacts in LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256",
-                "imported library-lock.json modules"
-            ],
-            "sha256_recorded": ["capture executable as capture_binary_sha256"],
-            "unhashed": [
-                "Lean shared libraries, identified by lean --version",
-                "Lean sysroot .ir/.ir.sig companions outside the locks",
-                "Rust compiler and sysroot, identified by their reported commit"
-            ]
-        })
-    );
+    if cfg!(all(target_os = "linux", target_arch = "x86_64")) {
+        assert_eq!(
+            accepted.value["toolchain_identity"],
+            json!({
+                "sha256_locked": [
+                    "Lean executable in foundation-lock.json",
+                    "Lean runtime shared libraries in LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS",
+                    "foundation-lock.json modules",
+                    "Lean sysroot Init/Std/Lean .olean artifacts in LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256",
+                    "imported library-lock.json modules"
+                ],
+                "sha256_recorded": ["capture executable as capture_binary_sha256"],
+                "unhashed": [
+                    "Lean sysroot .ir/.ir.sig companions outside the locks",
+                    "Rust compiler and sysroot, identified by their reported commit"
+                ]
+            })
+        );
+    } else {
+        assert_eq!(
+            accepted.value["toolchain_identity"],
+            json!({
+                "sha256_locked": [
+                    "Lean executable in foundation-lock.json",
+                    "foundation-lock.json modules",
+                    "Lean sysroot Init/Std/Lean .olean artifacts in LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256",
+                    "imported library-lock.json modules"
+                ],
+                "sha256_recorded": ["capture executable as capture_binary_sha256"],
+                "unhashed": [
+                    "Lean shared libraries, identified by lean --version",
+                    "Lean sysroot .ir/.ir.sig companions outside the locks",
+                    "Rust compiler and sysroot, identified by their reported commit"
+                ]
+            })
+        );
+    }
     let provenance = &accepted.value["correspondence_provenance"];
     assert_eq!(provenance["schema_version"], 1);
     assert_eq!(provenance["upstream_repository"], "https://github.com/proofs-rs/lean-miri.git");

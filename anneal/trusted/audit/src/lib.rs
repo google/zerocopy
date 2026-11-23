@@ -21,7 +21,8 @@ mod miri_pin;
 mod repo_audit;
 
 pub use cargo_anneal::{
-    AdmittedToolchain, Failure, IR_PARTS, ImportEdge, Json, LOCKED_LEAN_SHA256, ModuleArtifacts,
+    AdmittedToolchain, Failure, IR_PARTS, ImportEdge, Json, LOCKED_LEAN_SHA256,
+    LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS, LOCKED_LEAN_X86_64_LINUX_SHA256, ModuleArtifacts,
     OLEAN_PARTS, PARTS, TOOLCHAIN, TargetAuditRequest, TargetBindings, TargetModule, TargetRole,
     bundle, default_lean_path, is_clean_relative_path, is_lean_ident, is_sha256_hex, regular,
     sha256_bytes, sha256_file, stage_regular_file, topo_sort_modules,

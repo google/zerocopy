@@ -62,13 +62,17 @@ pub const IR_PARTS: [&str; 2] = ["ir.sig", "ir"];
 pub const PARTS: [&str; 5] = ["olean", "olean.server", "olean.private", "ir.sig", "ir"];
 
 /// Lists the pinned SHA-256 digests of the official Lean 4.34.1 `bin/lean`
-/// binaries from `trusted/lean/foundation-lock.json`. They cover only that
-/// executable file, not the Lean shared libraries it loads.
+/// binaries from `trusted/lean/foundation-lock.json`.
+///
+/// For `x86_64-unknown-linux-gnu` (`LOCKED_LEAN_X86_64_LINUX_SHA256`), runtime
+/// shared libraries under `<prefix>/lib` and `<prefix>/lib/lean` are
+/// additionally pinned in [`LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS`]; runtime
+/// shared libraries on the other triples remain uncatalogued here.
 pub const LOCKED_LEAN_SHA256: [&str; 4] = [
     "79fb1d26fa5a39385d59fdc48a711a14b0710ca6480271acce99b4d177cea085",
     "1b370cfcbf44e80d1b004ab1b1ab9a4c73951f9f7c242140bcff9bc577576554",
     "998f0cc2a5a754cc66df1f33b85e1447528737ff15012db35d8c501754b02f1e",
-    "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+    LOCKED_LEAN_X86_64_LINUX_SHA256,
 ];
 
 /// Names the pinned SHA-256 manifest digest of all
@@ -328,6 +332,10 @@ pub struct AdmittedToolchain {
     /// Staged precompiled `control/TrustedBoundary.olean` built once per
     /// `Checker` from `control/TrustedBoundary.lean`, plus its SHA-256 digest.
     pub(crate) inspector_olean: Option<(PathBuf, String)>,
+    /// Whether this toolchain's runtime shared libraries were verified against
+    /// a pinned runtime-library allowlist
+    /// (`LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS`).
+    pub runtime_libs_verified: bool,
 }
 
 impl AdmittedToolchain {
@@ -1489,6 +1497,215 @@ where
         return Err(err);
     }
     Ok(())
+}
+
+/// SHA-256 digest of the pinned `leanprover/lean4:v4.34.1` `bin/lean` stub for
+/// `x86_64-unknown-linux-gnu` (`foundation-lock.json` `distributions`).
+pub const LOCKED_LEAN_X86_64_LINUX_SHA256: &str =
+    "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550";
+
+/// Core Lean runtime shared libraries required under `<prefix>/lib/` on
+/// `x86_64-unknown-linux-gnu`.
+const REQUIRED_LEAN_X86_64_LINUX_RUNTIME_LIBS: &[&str] = &[
+    "lean/libInit_shared.so",
+    "lean/libLake_shared.so",
+    "lean/libleanshared.so",
+    "lean/libleanshared_1.so",
+    "lean/libleanshared_2.so",
+];
+
+/// Canonical SHA-256 allowlist for all shared libraries and linker scripts
+/// shipped under `<prefix>/lib/` in `leanprover/lean4:v4.34.1` for
+/// `x86_64-unknown-linux-gnu` (including both `elan` and Anneal omnibus
+/// distributions).
+pub const LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS: &[(&str, &str)] = &[
+    ("glibc/ld-linux-x86.so", "cf102aa2866d69b6b1b6f5195da0031deb7fbae374a0c2f677a1fffc9e01f3f2"),
+    ("glibc/ld.so", "cf102aa2866d69b6b1b6f5195da0031deb7fbae374a0c2f677a1fffc9e01f3f2"),
+    ("glibc/libc.so", "e256592ceadd9c7c4256e92e845b0899d297d5bd4a6ad932048db5cd5e799e0d"),
+    ("glibc/libdl.so", "fc529305501bfce8aa9f614c041c936827cefed5c2c533abbb1867d5ebf84a55"),
+    ("glibc/libm.so", "dd9e596df3c48d1805c235fc5b89161c4942dc6641200a813fa75914152d04e9"),
+    ("glibc/libpthread.so", "27ba14f60ea7a4d46579879c87e206de33eaac0ccd130d87e6ef4cb3fa28cf86"),
+    ("glibc/librt.so", "542ef722b42111dbeaa9f1f6579b933e7bbf1c95466f4dc3604d7905d657e924"),
+    ("lean/libInit_shared.so", "07f8c1156271ab6ec36c14c3031b5572329325d5f73dde3e89a1615d88f4e5cb"),
+    ("lean/libLake_shared.so", "ef0eb8942cd68ffb61ae573850a7181f70860580959e296c6e1a0e31ec50a38a"),
+    ("lean/libleanshared.so", "6b30cc963d065fc9d2f87f7e9cbe0682b23000ae5425bccd769c5d477fa74f13"),
+    ("lean/libleanshared_1.so", "69e900c025f40bf05c14f5b9ec48071b3130e34c96a7c45ee2eb5b6f307e19e6"),
+    ("lean/libleanshared_2.so", "38d0a03750b2e8d51161885ad597a8b4f6d3b85215c5a52aecd2b3753273cf3f"),
+    ("libLLVM-22.so", "5145af96bc961289f6dff7efc0dc7f75cbc4b91634aa3b5d517749dce5f3f300"),
+    ("libLLVM.so", "5145af96bc961289f6dff7efc0dc7f75cbc4b91634aa3b5d517749dce5f3f300"),
+    ("libLLVM.so.22.1", "5145af96bc961289f6dff7efc0dc7f75cbc4b91634aa3b5d517749dce5f3f300"),
+    ("libatomic.so", "b2d3f7d9ebf9a0d5dc9caedcb33a43f6ac1b33221ada1f029147d8a66db43c09"),
+    ("libatomic.so.1", "b2d3f7d9ebf9a0d5dc9caedcb33a43f6ac1b33221ada1f029147d8a66db43c09"),
+    ("libatomic.so.1.2.0", "b2d3f7d9ebf9a0d5dc9caedcb33a43f6ac1b33221ada1f029147d8a66db43c09"),
+    ("libc++.so", "9a82146864488c9d491a6e60be5af3ca986a9af57f6057763c5c0a8dda85a66e"),
+    ("libc++.so.1", "0ec88ab403524f6c3bc3d9029772b97d9af08837267a2973bf6b24fa79119704"),
+    ("libc++.so.1.0", "0ec88ab403524f6c3bc3d9029772b97d9af08837267a2973bf6b24fa79119704"),
+    ("libc++abi.so", "3cb42a1a34f48dd20da4aa7559e634ca2eaeab6b019869fd060f90128ae3cb8b"),
+    ("libc++abi.so.1", "3cb42a1a34f48dd20da4aa7559e634ca2eaeab6b019869fd060f90128ae3cb8b"),
+    ("libc++abi.so.1.0", "3cb42a1a34f48dd20da4aa7559e634ca2eaeab6b019869fd060f90128ae3cb8b"),
+    ("libclang-cpp.so", "e11640dbbd29d2abebcdb62f8e90e8a965d7276df914e3cdcfd5263f427208eb"),
+    ("libclang-cpp.so.22.1", "e11640dbbd29d2abebcdb62f8e90e8a965d7276df914e3cdcfd5263f427208eb"),
+    ("libgcc_s.so", "69a56a9993b7729b29b274e65016031c81f2397f176ed5ad44d59bd50425e0bd"),
+    ("libgcc_s.so.1", "3f499bb3b14f33c5c321f52015d385c145c7bd4551a66c5fcff4262c833f2d2a"),
+    ("libunwind.so", "c54929622b0991b21088050bf3f23d6756d3d2e082acd293b0e788ddc901da72"),
+    ("libunwind.so.1", "c54929622b0991b21088050bf3f23d6756d3d2e082acd293b0e788ddc901da72"),
+    ("libunwind.so.1.0", "c54929622b0991b21088050bf3f23d6756d3d2e082acd293b0e788ddc901da72"),
+    ("libz.so", "d0aeafffcfe309a107a857dfa1f9afd0db90796d32c2b735a3959eccb317f5b4"),
+    ("libz.so.1", "d0aeafffcfe309a107a857dfa1f9afd0db90796d32c2b735a3959eccb317f5b4"),
+    ("libz.so.1.2.11", "d0aeafffcfe309a107a857dfa1f9afd0db90796d32c2b735a3959eccb317f5b4"),
+];
+
+fn is_dynamic_runtime_lib_candidate(name: &str) -> bool {
+    name.ends_with(".so")
+        || name.contains(".so.")
+        || name.ends_with(".dylib")
+        || name.ends_with(".dll")
+}
+
+fn check_no_dynamic_libs_in_bin(bin_dir: &Path) -> Result<(), Failure> {
+    let entries = fs::read_dir(bin_dir).map_err(|err| {
+        Failure::new(
+            2,
+            "toolchain",
+            format!("cannot read Lean sysroot bin directory {}: {err}", bin_dir.display()),
+        )
+    })?;
+    for entry in entries {
+        let entry = entry.map_err(|err| {
+            Failure::new(
+                2,
+                "toolchain",
+                format!("cannot inspect Lean sysroot bin directory {}: {err}", bin_dir.display()),
+            )
+        })?;
+        let name = entry.file_name();
+        let name_str = name.to_string_lossy();
+        if is_dynamic_runtime_lib_candidate(&name_str) {
+            return Err(Failure::new(
+                2,
+                "toolchain",
+                format!("unexpected runtime shared library in Lean sysroot: bin/{name_str}"),
+            ));
+        }
+    }
+    Ok(())
+}
+
+fn walk_and_check_runtime_lib_dir(
+    lib_root: &Path,
+    dir: &Path,
+    allowed: &BTreeMap<&str, &str>,
+    seen: &mut BTreeSet<String>,
+) -> Result<(), Failure> {
+    let entries = fs::read_dir(dir).map_err(|err| {
+        Failure::new(
+            2,
+            "toolchain",
+            format!("cannot read Lean sysroot lib directory {}: {err}", dir.display()),
+        )
+    })?;
+    for entry in entries {
+        let entry = entry.map_err(|err| {
+            Failure::new(
+                2,
+                "toolchain",
+                format!("cannot inspect Lean sysroot lib directory {}: {err}", dir.display()),
+            )
+        })?;
+        let path = entry.path();
+        let rel = path.strip_prefix(lib_root).map_err(|err| {
+            Failure::operational("toolchain", format!("runtime lib relative path failure: {err}"))
+        })?;
+        let rel_str = rel
+            .components()
+            .map(|c| c.as_os_str().to_string_lossy().into_owned())
+            .collect::<Vec<_>>()
+            .join("/");
+        let lmeta = fs::symlink_metadata(&path).map_err(|err| {
+            Failure::new(
+                2,
+                "toolchain",
+                format!("cannot stat Lean sysroot lib entry lib/{rel_str}: {err}"),
+            )
+        })?;
+        let ftype = lmeta.file_type();
+        if ftype.is_dir() {
+            walk_and_check_runtime_lib_dir(lib_root, &path, allowed, seen)?;
+            continue;
+        }
+        if ftype.is_symlink()
+            && fs::metadata(&path).is_ok_and(|meta| meta.is_dir())
+        {
+            if matches!(rel_str.as_str(), "lean/Lake" | "lean/LeanChecker") {
+                walk_and_check_runtime_lib_dir(lib_root, &path, allowed, seen)?;
+                continue;
+            }
+            return Err(Failure::new(
+                2,
+                "toolchain",
+                format!("unexpected symlinked directory in Lean sysroot: lib/{rel_str}"),
+            ));
+        }
+        let name = entry.file_name();
+        let name_str = name.to_string_lossy();
+        if !is_dynamic_runtime_lib_candidate(&name_str) {
+            continue;
+        }
+        let Some(&expected_sha) = allowed.get(rel_str.as_str()) else {
+            return Err(Failure::new(
+                2,
+                "toolchain",
+                format!("unexpected runtime shared library in Lean sysroot: lib/{rel_str}"),
+            ));
+        };
+        let actual_sha = sha256_file_deref(&path, "toolchain")
+            .map_err(|err| Failure::new(2, "toolchain", err.message))?;
+        if !expected_sha.eq_ignore_ascii_case(&actual_sha) {
+            return Err(Failure::new(
+                2,
+                "toolchain",
+                format!(
+                    "Lean runtime shared library SHA-256 mismatch for lib/{rel_str}: \
+                     expected {expected_sha}, got {actual_sha}"
+                ),
+            ));
+        }
+        seen.insert(rel_str);
+    }
+    Ok(())
+}
+
+/// Authenticate Lean's dynamically loaded runtime shared libraries under
+/// `<prefix>/lib` (and reject unexpected dynamic libraries in `<prefix>/bin`
+/// or `<prefix>/lib`) against pinned distribution digests.
+///
+/// Returns `Ok(true)` when runtime shared libraries for `lean_sha256` were
+/// checked and matched, or `Ok(false)` only for distributions whose runtime
+/// shared-library manifest is not yet catalogued in this build (currently
+/// non-`x86_64-unknown-linux-gnu` triples).
+pub fn verify_sysroot_runtime_libs_for_sha(
+    prefix: &Path,
+    lean_sha256: &str,
+) -> Result<bool, Failure> {
+    if !lean_sha256.eq_ignore_ascii_case(LOCKED_LEAN_X86_64_LINUX_SHA256) {
+        return Ok(false);
+    }
+    check_no_dynamic_libs_in_bin(&prefix.join("bin"))?;
+    let lib_root = prefix.join("lib");
+    let allowed: BTreeMap<&str, &str> =
+        LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS.iter().copied().collect();
+    let mut seen = BTreeSet::new();
+    walk_and_check_runtime_lib_dir(&lib_root, &lib_root, &allowed, &mut seen)?;
+    for &required in REQUIRED_LEAN_X86_64_LINUX_RUNTIME_LIBS {
+        if !seen.contains(required) {
+            return Err(Failure::new(
+                2,
+                "toolchain",
+                format!("missing required Lean runtime shared library: lib/{required}"),
+            ));
+        }
+    }
+    Ok(true)
 }
 
 #[cfg(test)]

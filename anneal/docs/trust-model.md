@@ -214,9 +214,12 @@ staging, and `ExecSeal` OS-sandboxing code
 [`trusted/cargo-anneal/`](../trusted/cargo-anneal) together with `ClaimAudit`
 in [`TrustedBoundary.lean`](../trusted/audit/TrustedBoundary.lean). In pinned
 mode, tool admission authenticates the `Init`/`Std`/`Lean` sysroot `.olean`
-companion manifest (`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`) while leaving
-sysroot `.ir`/`.ir.sig` companions outside `foundation-lock.json` unhashed
-(`lean --version` only), and the target checker additionally verifies the
+companion manifest (`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`) and, on
+`x86_64` Linux, the Lean runtime shared libraries under `lib/` and
+`lib/lean/` (`LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS`), while leaving
+sysroot `.ir`/`.ir.sig` companions outside `foundation-lock.json` (and shared
+libraries on uncatalogued triples) unhashed (`lean --version` only), and the
+target checker additionally verifies the
 narrower imported `library-lock.json` source and companion digests (or
 dynamically discovers and records the `Init.*`/`Std.*` sysroot import closure
 when opted in with `--allow-unpinned-lean`), enforces pre-elaboration
@@ -620,14 +623,17 @@ To include these files in `trusted/`'s effective TCB without relocating them,
   (`trusted/lean/foundation-lock.json`): Pins the SHA-256 digests of the `lean`
   executable and all `Init.*` prelude source and `.olean` companion files,
   verified by both the Nix toolchain build (`flake.nix`) and `anneal-audit`.
-- **`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`**
+- **`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256` and
+  `LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS`**
   (`trusted/cargo-anneal/src/toolchain.rs`): Pins one SHA-256 digest over the
   sorted `"{rel_path}:{sha256}"` lines of every `{Init,Std,Lean}*` `.olean`,
   `.olean.server`, and `.olean.private` file in the pinned toolchain's
-  `lib/lean/`, verified by `Checker::tool_admission()` before invoking
-  `TrustedBoundary.lean` (protecting both `anneal-audit` and pinned
-  `cargo-anneal verify`) and reused by Pass 2 before compiling or loading
-  `.vendorMiri` and `.sysrootFoundation` modules.
+  `lib/lean/`, and (on `x86_64` Linux) pins the 34 runtime shared libraries
+  and linker scripts under `lib/` and `lib/lean/`, verified by
+  `Checker::tool_admission()` before invoking `TrustedBoundary.lean`
+  (protecting both `anneal-audit` and pinned `cargo-anneal verify`) and reused
+  by Pass 2 before compiling or loading `.vendorMiri` and `.sysrootFoundation`
+  modules.
 - **[`UPSTREAM_PIN.json`](../vendor/lean-miri/UPSTREAM_PIN.json)**
   (`vendor/lean-miri/UPSTREAM_PIN.json`):
   Pins the upstream commit and SHA-256 digest of every file in
