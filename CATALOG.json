@@ -27731,6 +27731,172 @@
         "ffi/c-abi"
       ]
     },
+    "cli-tty-human-and-machine-output-for-verification-tools": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "cli-guidelines/cli-guidelines",
+            "revision": "697d6a29fc8c93d3981a755c0c7683507ad39c3e"
+          },
+          "name": "Command Line Interface Guidelines (clig.dev)"
+        },
+        {
+          "identity": {
+            "repository": "jcs/no_color",
+            "revision": "278b6afc683b38452a7b462c13aae5f0f89cee48"
+          },
+          "name": "NO_COLOR specification (no-color.org)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "930a674da900a73c1dfbe16be62c42e75bdfdfc0"
+          },
+          "name": "Cargo package manager and terminal shell"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "5debe6a1244452beced762385f88a51857a915fc"
+          },
+          "name": "Rust compiler diagnostic emitter"
+        },
+        {
+          "identity": {
+            "repository": "astral-sh/uv",
+            "revision": "264d8b4a5e10d195d2cc2a34dffa807cfbe6298c"
+          },
+          "name": "uv Python package manager"
+        },
+        {
+          "identity": {
+            "repository": "astral-sh/ruff",
+            "revision": "3c06ae6c84b54b5eb4cc1bc611043d5b978bfa7f"
+          },
+          "name": "Ruff Python linter and formatter"
+        },
+        {
+          "identity": {
+            "executed_version": "15.1.0",
+            "repository": "BurntSushi/ripgrep",
+            "revision": "4a51093f78bfbef86d89275f4916fd6b6039fe9e"
+          },
+          "name": "ripgrep line-oriented search tool"
+        },
+        {
+          "identity": {
+            "executed_version": "2.103.3",
+            "repository": "cli/cli",
+            "revision": "de06af2c2ea536d5722fda35dc2001565f9b9f64"
+          },
+          "name": "GitHub CLI (gh)"
+        },
+        {
+          "identity": {
+            "repository": "cli/go-gh",
+            "revision": "4e83b33c301de3d1d4d30df34db06648f898c389"
+          },
+          "name": "go-gh terminal ASCII and C1 sanitizer"
+        },
+        {
+          "identity": {
+            "repository": "NixOS/nix",
+            "revision": "7dc6d7f2144c509b70c08c011d0adf76d2153927"
+          },
+          "name": "Nix package manager logger and progress bar"
+        },
+        {
+          "identity": {
+            "repository": "sharkdp/hyperfine",
+            "revision": "c5161524980522320c7d3425e714cc0965a869a5"
+          },
+          "name": "hyperfine command-line benchmarking tool"
+        },
+        {
+          "identity": {
+            "executed_version": "0.67.0",
+            "repository": "model-checking/kani",
+            "revision": "87c87010eda7797d7fa14033ca68bcbe17184a63"
+          },
+          "name": "Kani Rust Verifier"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "1ce6a59bd72713cf486a7660097fe5ac57519617"
+          },
+          "name": "Verus Rust verifier"
+        },
+        {
+          "identity": {
+            "repository": "dafny-lang/dafny",
+            "revision": "427892ac6f36204c6a1c760b328b74e0715a0efa"
+          },
+          "name": "Dafny verification-aware programming language CLI"
+        },
+        {
+          "identity": {
+            "repository": "creusot-rs/creusot",
+            "revision": "faeb61f5b5a8ffda94fde1f100ef96a1d798088b"
+          },
+          "name": "Creusot deductive verifier for Rust"
+        },
+        {
+          "identity": {
+            "repository": "rustsec/rustsec",
+            "revision": "bafea68f94f3b9587f826c5b7ceda78955c5ba84"
+          },
+          "name": "cargo-audit (RustSec)"
+        },
+        {
+          "identity": {
+            "executed_version": "0.14.3",
+            "repository": "EmbarkStudios/cargo-deny",
+            "revision": "6d512893fcfea934e8e69c5df44132a4970c42d0"
+          },
+          "name": "cargo-deny dependency linter"
+        },
+        {
+          "identity": {
+            "executed_version": "0.8.0",
+            "repository": "mozilla/cargo-vet",
+            "revision": "a9bde85910409be3d2d61e6f6ff6ba7a521f0412"
+          },
+          "name": "cargo-vet supply-chain audit tool"
+        },
+        {
+          "identity": {
+            "executed_version": "1.23.1",
+            "repository": "zizmorcore/zizmor",
+            "revision": "0af0be985a4cae71ecfaa64ef574a94b35dc722a"
+          },
+          "name": "zizmor GitHub Actions static analyzer"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "231ef9a28b27a9a7ebabdbfa40c84cfb22744c24"
+          },
+          "name": "Lean 4 and Lake build system"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "d3362d9a657e2f943d25a0812f7b13b93e60af4d"
+          },
+          "name": "cargo-anneal verification CLI (zerocopy)"
+        }
+      ],
+      "topics": [
+        "tooling/cli",
+        "tooling/diagnostics",
+        "verification/ux",
+        "anneal/cli",
+        "cargo",
+        "security/terminal-sanitization"
+      ]
+    },
     "closure-upvar-defunctionalization-symbolic-vtables-and-trait-coherence-laws": {
       "observed_at": "2026-11-20",
       "subjects": [
