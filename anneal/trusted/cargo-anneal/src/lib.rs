@@ -20,10 +20,10 @@
 //! the sysroot `{Init,Std,Lean}*` `.olean` manifest
 //! (`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`), the `x86_64` Linux Lean
 //! runtime shared libraries (`LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS`), and the
-//! imported `library-lock.json` modules. Sysroot `.ir`/`.ir.sig` companions
-//! outside the locks (and Lean shared libraries on uncatalogued triples) are
-//! identified only by `lean --version`, under the uncompromised execution
-//! environment that `THREAT_MODEL.md` assumes.
+//! 4-tree `Init`/`Std` sysroot digests in `library-lock.json`. Sysroot
+//! `.ir`/`.ir.sig` companions outside the locks (and Lean shared libraries on
+//! uncatalogued triples) are identified only by `lean --version`, under the
+//! uncompromised execution environment that `THREAT_MODEL.md` assumes.
 
 #[doc(hidden)]
 pub mod bundle;

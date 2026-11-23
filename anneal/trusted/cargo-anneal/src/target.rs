@@ -28,10 +28,11 @@ use crate::{
     stage::Checker,
     toolchain::{
         AdmittedToolchain, Failure, ImportEdge, Json, PreflightResult, TOOLCHAIN,
-        compute_unpinned_foundation_closure, default_compile_workers, hash_unpinned_sysroot_module,
+        collect_pinned_sysroot_module_artifacts, compute_unpinned_foundation_closure,
+        default_compile_workers, hash_unpinned_sysroot_module, is_allowed_pinned_library_module,
         is_allowed_unpinned_sysroot_module, is_lean_ident, is_sha256_hex, sha256_bytes,
         sha256_file, sha256_file_deref, stage_regular_file, topo_sort_modules,
-        verify_installed_module_record,
+        validate_pinned_library_graph,
     },
 };
 
@@ -669,10 +670,12 @@ impl Checker {
 
     /// Authenticate the requested installed-library import closure.
     ///
-    /// Library hashes pin their bytes but do not admit their declarations as
-    /// axioms. The inspector replays every logically reached declaration into
-    /// the original foundation environment. A library can import only another
-    /// locked library or the original foundation, never target source modules.
+    /// Library hashes pin their 4-tree sysroot contents without admitting their
+    /// declarations as axioms. The inspector replays every logically reached
+    /// declaration onto the foundation environment, verifies the 4-tree
+    /// `library-lock.json` sysroot digests, resolves requested `Init.*`/`Std.*`
+    /// imports dynamically via `"resolve-imports"`, and admits their transitive
+    /// sysroot `.olean` artifacts and edges.
     pub(crate) fn admit_libraries(
         &mut self,
         roots: impl IntoIterator<Item = String>,
@@ -683,29 +686,86 @@ impl Checker {
         };
         let prefix = adm.prefix.clone();
         let foundation = adm.foundation_graph.clone();
-        let mut pending: Vec<String> = roots.into_iter().collect();
-        let mut needed = BTreeSet::new();
-        while let Some(module) = pending.pop() {
+        let already_admitted = adm.library_modules.clone();
+        let mut resolve_roots = BTreeSet::new();
+        for module in roots {
+            if foundation.contains_key(&module) || already_admitted.contains(&module) {
+                continue;
+            }
+            if !is_allowed_pinned_library_module(&module) {
+                if module.starts_with("Init.") || module.starts_with("Std.") {
+                    return Err(Failure::operational("library-lock", "invalid module record"));
+                }
+                continue;
+            }
+            let olean_path =
+                prefix.join("lib/lean").join(format!("{}.olean", module.replace('.', "/")));
+            match fs::symlink_metadata(&olean_path) {
+                Ok(meta) => {
+                    if meta.file_type().is_symlink() || !meta.file_type().is_file() {
+                        continue;
+                    }
+                    resolve_roots.insert(module);
+                }
+                Err(e) if e.kind() == io::ErrorKind::NotFound => continue,
+                Err(e) => {
+                    return Err(Failure::operational(
+                        "library-lock",
+                        format!("cannot inspect {}: {e}", olean_path.display()),
+                    ));
+                }
+            }
+        }
+        if resolve_roots.is_empty() {
+            return Ok(());
+        }
+        lock.verify_prefix(&prefix, "library-lock")?;
+        let roots_vec: Vec<String> = resolve_roots.into_iter().collect();
+        let resolved_graph = self.resolve_sysroot_imports(&roots_vec)?;
+        validate_pinned_library_graph(&resolved_graph)?;
+        for module in &roots_vec {
+            if !resolved_graph.contains_key(module) {
+                return Err(Failure::operational(
+                    "resolve-imports",
+                    format!("resolve-imports omitted requested root {module}"),
+                ));
+            }
+        }
+        for (module, edges) in &resolved_graph {
+            if let Some(expected_edges) = foundation.get(module)
+                && expected_edges != edges
+            {
+                return Err(Failure::operational(
+                    "library-lock",
+                    format!("resolved foundation import edges changed for {module}"),
+                ));
+            }
+        }
+        let mut reachable = BTreeSet::new();
+        let mut queue: VecDeque<String> = roots_vec.iter().cloned().collect();
+        while let Some(module) = queue.pop_front() {
+            if !reachable.insert(module.clone()) {
+                continue;
+            }
+            if let Some(edges) = resolved_graph.get(&module) {
+                for edge in edges {
+                    if !reachable.contains(&edge.module) {
+                        queue.push_back(edge.module.clone());
+                    }
+                }
+            }
+        }
+        for (module, edges) in resolved_graph {
             if foundation.contains_key(&module)
-                || !lock.modules.contains_key(&module)
-                || !needed.insert(module.clone())
+                || !reachable.contains(&module)
+                || self.admitted()?.library_modules.contains(&module)
             {
                 continue;
             }
-            pending.extend(lock.graph[&module].iter().map(|e| e.module.clone()));
-        }
-        for module in needed {
-            if self.admitted()?.library_modules.contains(&module) {
-                continue;
-            }
-            if !target_name_valid(&module) {
-                return Err(Failure::operational("library-lock", "invalid module record"));
-            }
-            let record = &lock.modules[&module];
-            let artifacts = verify_installed_module_record(&prefix, &module, record, "library")?;
+            let artifacts = collect_pinned_sysroot_module_artifacts(&prefix, &module, "library")?;
             let adm = self.admitted_mut()?;
             adm.artifacts.insert(module.clone(), artifacts);
-            adm.graph.insert(module.clone(), lock.graph[&module].clone());
+            adm.graph.insert(module.clone(), edges);
             adm.library_modules.insert(module);
         }
         Ok(())
@@ -863,10 +923,6 @@ impl Checker {
                     adm.sysroot_package_roots.contains(root_pkg)
                 } else {
                     adm.foundation_graph.contains_key(&module.module)
-                        || adm
-                            .library_lock
-                            .as_ref()
-                            .is_some_and(|l| l.modules.contains_key(&module.module))
                 };
             if !target_name_valid(&module.module)
                 || roles.contains_key(&module.module)
@@ -1323,22 +1379,16 @@ mod admission_tests {
     use serde_json::json;
 
     use super::*;
-    use crate::toolchain::{TOOLCHAIN, compute_sysroot_manifest_sha256_for_test};
+    use crate::toolchain::{LibraryLock, TOOLCHAIN, compute_sysroot_manifest_sha256_for_test};
 
     const VERSION: &str = "Lean (version 4.34.1, synthetic admission fixture)";
     const FOUNDATION: &str = "Init.Prelude";
     const LIBRARY: &str = "Init.Data.BitVec.Basic";
     const LIBRARY_USER: &str = "Init.Data.BitVec.Lemmas";
+    const STD_LIBRARY: &str = "Std.Data.TreeMap";
 
     fn edge(module: &str) -> Json {
         json!({"module": module, "importAll": false, "isExported": true, "isMeta": false})
-    }
-
-    /// Return a copy of `value` with `change` applied.
-    fn changed(value: &Json, change: impl FnOnce(&mut Json)) -> Json {
-        let mut value = value.clone();
-        change(&mut value);
-        value
     }
 
     /// Install `module`'s source and `.olean` under `prefix` and return a lock
@@ -1371,7 +1421,6 @@ mod admission_tests {
         root: PathBuf,
         prefix: PathBuf,
         lean: PathBuf,
-        records: BTreeMap<&'static str, Json>,
         sysroot_manifest_sha256: String,
     }
 
@@ -1382,9 +1431,22 @@ mod admission_tests {
             let root = base.join("bundle");
             let prefix = base.join("prefix");
             let lean = base.join("lean");
-            // Simulate compiling the inspector through Door 1 so a valid
-            // request reaches `TrustedBoundaryEntry.lean` for `"headers"`
-            // (`exit 3`, vs `exit 4` on any unexpected invocation).
+            let resolve_graph_path = base.join("resolve-graph.json");
+            let default_graph = json!({
+                "ok": true,
+                "result": {
+                    "graph": {
+                        FOUNDATION: [],
+                        LIBRARY: [edge(FOUNDATION)],
+                        LIBRARY_USER: [edge(LIBRARY)],
+                        STD_LIBRARY: [edge(LIBRARY)],
+                    }
+                }
+            });
+            fs::write(&resolve_graph_path, default_graph.to_string()).unwrap();
+            // Simulate compiling the inspector through Door 1 so `"headers"`
+            // reaches `TrustedBoundaryEntry.lean` (`exit 3`), while
+            // `"resolve-imports"` returns the staged `resolve-graph.json`.
             let marker = base.join("headers-ran.marker");
             fs::write(
                 &lean,
@@ -1401,6 +1463,10 @@ while [ "$#" -gt 1 ]; do
             exit 0
             ;;
         --run:*/TrustedBoundaryEntry.lean)
+            if [ "$#" -ge 4 ] && grep -q '"resolve-imports"' "$3"; then
+                cat '{}' > "$4"
+                exit 0
+            fi
             printf 'ran\n' >> '{}'
             exit 3
             ;;
@@ -1410,6 +1476,7 @@ done
 exit 4
 "#,
                     prefix.display(),
+                    resolve_graph_path.display(),
                     marker.display()
                 ),
             )
@@ -1418,12 +1485,12 @@ exit 4
                 use std::os::unix::fs::PermissionsExt;
                 fs::set_permissions(&lean, fs::Permissions::from_mode(0o755)).unwrap();
             }
-            let records: BTreeMap<_, _> = [FOUNDATION, LIBRARY, LIBRARY_USER]
+            let records: BTreeMap<_, _> = [FOUNDATION, LIBRARY, LIBRARY_USER, STD_LIBRARY]
                 .into_iter()
                 .map(|module| (module, install(&prefix, module)))
                 .collect();
-            for dir_rel in ["Init", "Std", "Lean"] {
-                fs::create_dir_all(prefix.join("lib/lean").join(dir_rel)).unwrap();
+            for dir_rel in ["lib/lean/Init", "lib/lean/Std", "lib/lean/Lean", "src/lean/Init", "src/lean/Std"] {
+                fs::create_dir_all(prefix.join(dir_rel)).unwrap();
             }
             fs::write(prefix.join("lib/lean/Lean/Replay.olean"), b"synthetic lean replay\n")
                 .unwrap();
@@ -1446,28 +1513,19 @@ exit 4
                 fs::create_dir_all(path.parent().unwrap()).unwrap();
                 fs::write(path, contents).unwrap();
             }
-            Self { _dir: dir, base, root, prefix, lean, records, sysroot_manifest_sha256 }
+            Self { _dir: dir, base, root, prefix, lean, sysroot_manifest_sha256 }
         }
 
-        /// Return a valid catalog in which `LIBRARY_USER` imports `LIBRARY`.
-        fn library_lock(&self) -> Json {
-            json!({
-                "schema": 1,
-                "toolchain": TOOLCHAIN,
-                "modules": {
-                    LIBRARY: self.records[LIBRARY],
-                    LIBRARY_USER: self.records[LIBRARY_USER],
-                },
-                "graph": {
-                    LIBRARY: [edge(FOUNDATION)],
-                    LIBRARY_USER: [edge(LIBRARY)],
-                },
-            })
+        /// Return the canonical 4-line recursive sysroot tree digest lock.
+        fn library_lock(&self) -> String {
+            LibraryLock::compute_for_prefix(&self.prefix, "fixture")
+                .expect("test sysroot trees should hash cleanly")
+                .render()
         }
 
-        fn write_library_lock(&self, lock: &Json) {
+        fn write_library_lock(&self, lock: &str) {
             let path = self.root.join("trusted/audit/library-lock.json");
-            fs::write(path, lock.to_string()).unwrap();
+            fs::write(path, lock).unwrap();
         }
 
         fn checker(&self) -> Checker {
@@ -1525,49 +1583,49 @@ exit 4
         checker.admit_libraries([root.to_owned()])
     }
 
-    /// Tool admission validates the whole library catalog before any target
-    /// input. Library digests wait until an import reaches the library.
+    /// Tool admission validates the 4-line sysroot lock against all four
+    /// `Init`/`Std` directory trees before any target input.
     #[test]
     fn tool_admission_rejects_invalid_library_catalogs() {
         let toolchain = Toolchain::new();
-        // Controls: an absent catalog and the valid catalog both pass, so
+        // Controls: an absent catalog and the valid 4-line lock both pass, so
         // each refusal below follows from its single change.
         assert!(toolchain.checker().tool_admission().unwrap().library_lock.is_none());
         let valid = toolchain.library_lock();
+        let expected_lock = LibraryLock::parse(&valid).unwrap();
         toolchain.write_library_lock(&valid);
         let mut checker = toolchain.checker();
         let admitted = checker.tool_admission().unwrap();
-        assert_eq!(admitted.library_lock.as_ref().map(|lock| lock.modules.len()), Some(2));
+        assert_eq!(admitted.library_lock.as_ref(), Some(&expected_lock));
         assert!(admitted.library_modules.is_empty());
 
+        let valid_lines: Vec<&str> = valid.lines().collect();
+        assert_eq!(valid_lines.len(), 4);
+        let missing_line = format!("{}\n", valid_lines[..3].join("\n"));
+        let duplicate_line = format!("{}\n{}", valid, valid_lines[0]);
+        let unknown_label = format!(
+            "{}\n{}  lean/lib/lean/Lean/**\n",
+            valid_lines[..3].join("\n"),
+            "0".repeat(64)
+        );
+        let bad_hex = format!(
+            "{}  lean/lib/lean/Init/**\n{}\n",
+            "z".repeat(64),
+            valid_lines[1..].join("\n")
+        );
+        let extra_line = format!("{valid}{}  lean/lib/lean/Extra/**\n", "a".repeat(64));
+        let legacy_json = "{\"schema\":1}\n".to_owned();
+        let crlf_lock = valid.replace('\n', "\r\n");
+
         for (case, lock) in [
-            ("schema", changed(&valid, |lock| lock["schema"] = json!(2))),
-            (
-                "toolchain",
-                changed(&valid, |lock| {
-                    lock["toolchain"] = json!("leanprover/lean4:v4.34.0");
-                }),
-            ),
-            (
-                "graph inventory",
-                changed(&valid, |lock| {
-                    let graph = lock["graph"].as_object_mut().unwrap();
-                    assert!(graph.remove(LIBRARY_USER).is_some());
-                }),
-            ),
-            (
-                "foundation overlap",
-                changed(&valid, |lock| {
-                    lock["modules"][FOUNDATION] = toolchain.records[FOUNDATION].clone();
-                    lock["graph"][FOUNDATION] = json!([]);
-                }),
-            ),
-            (
-                "unlocked import",
-                changed(&valid, |lock| {
-                    lock["graph"][LIBRARY_USER] = json!([edge("Init.Missing")]);
-                }),
-            ),
+            ("empty", String::new()),
+            ("missing line", missing_line),
+            ("duplicate line", duplicate_line),
+            ("unknown label", unknown_label),
+            ("bad hex", bad_hex),
+            ("extra line", extra_line),
+            ("legacy json", legacy_json),
+            ("crlf", crlf_lock),
         ] {
             toolchain.write_library_lock(&lock);
             assert_eq!(
@@ -1577,36 +1635,24 @@ exit 4
             );
         }
 
-        for (lock, message) in [
-            (
-                changed(&valid, |lock| {
-                    let parts = lock["modules"][LIBRARY]["parts"].as_object_mut().unwrap();
-                    assert!(parts.remove("ir").is_some());
-                }),
-                format!("incomplete artifact-part policy for {LIBRARY}"),
-            ),
-            (
-                changed(&valid, |lock| {
-                    lock["modules"][LIBRARY]["parts"]["ir"] = json!("not a digest");
-                }),
-                format!("invalid part digest in {LIBRARY}"),
-            ),
-        ] {
-            toolchain.write_library_lock(&lock);
-            assert_eq!(
-                toolchain.checker().tool_admission().unwrap_err(),
-                Failure::operational("library-lock", message)
-            );
-        }
-
-        toolchain.write_library_lock(&changed(&valid, |lock| lock["unexpected"] = json!(true)));
-        let failure = toolchain.checker().tool_admission().unwrap_err();
-        assert_eq!((failure.code, failure.phase.as_str()), (2, "library-lock"), "{failure}");
-        assert!(failure.message.contains("unknown field `unexpected`"), "{failure}");
+        // Mismatching tree digest (corrupted digest on valid tree) fails
+        // closed.
+        let mismatched = format!(
+            "{}  lean/lib/lean/Init/**\n{}\n",
+            "f".repeat(64),
+            valid_lines[1..].join("\n")
+        );
+        toolchain.write_library_lock(&mismatched);
+        let mismatch_err = toolchain.checker().tool_admission().unwrap_err();
+        assert_eq!((mismatch_err.code, mismatch_err.phase.as_str()), (2, "library-lock"));
+        assert!(
+            mismatch_err.message.contains("sysroot tree lean/lib/lean/Init/** SHA-256 mismatch"),
+            "{mismatch_err}"
+        );
 
         // The catalog must be the bundle's own regular file.
         let linked = toolchain.base.join("linked-library-lock.json");
-        fs::write(&linked, valid.to_string()).unwrap();
+        fs::write(&linked, &valid).unwrap();
         let path = toolchain.root.join("trusted/audit/library-lock.json");
         fs::remove_file(&path).unwrap();
         std::os::unix::fs::symlink(&linked, &path).unwrap();
@@ -1615,8 +1661,9 @@ exit 4
         assert!(failure.message.starts_with("expected a regular file: "), "{failure}");
     }
 
-    /// A target source cannot take the name of a locked foundation or library
-    /// module, whose authenticated artifacts it would otherwise replace.
+    /// A target source cannot take the name of a locked foundation or reserved
+    /// toolchain module root
+    /// (`Init`, `Std`, `Lean`, `Lake`, `TrustedBoundary`).
     #[test]
     fn run_target_rejects_modules_named_like_locked_modules() {
         let toolchain = Toolchain::new();
@@ -1631,6 +1678,7 @@ exit 4
         for module in [
             FOUNDATION,
             LIBRARY,
+            STD_LIBRARY,
             "Init",
             "Init.System.IO",
             "Std",
@@ -1660,22 +1708,24 @@ exit 4
         }
     }
 
-    /// Library digests are checked when a target import reaches the library.
-    /// Tool admission still accepts the catalog after an artifact changes.
+    /// Library 4-tree digests are verified on tool admission and re-checked
+    /// against TOCTOU mutations when `admit_libraries` resolves
+    /// `Init.*`/`Std.*` closures.
     #[test]
     fn admit_libraries_rejects_changed_artifacts_in_the_import_closure() {
         let toolchain = Toolchain::new();
         toolchain.write_library_lock(&toolchain.library_lock());
-        // Control: unchanged bytes admit the root and the library it imports.
+        // Control: unchanged trees admit `Init.*` and `Std.*` closures.
         let mut checker = toolchain.checker();
         checker.tool_admission().unwrap();
-        checker.admit_libraries([LIBRARY_USER.to_owned()]).unwrap();
+        checker.admit_libraries([STD_LIBRARY.to_owned()]).unwrap();
         let admitted = checker.admitted().unwrap();
         assert_eq!(
             admitted.library_modules,
-            BTreeSet::from([LIBRARY.to_owned(), LIBRARY_USER.to_owned()])
+            BTreeSet::from([LIBRARY.to_owned(), STD_LIBRARY.to_owned()])
         );
         assert!(admitted.artifacts.contains_key(LIBRARY));
+        assert!(admitted.artifacts.contains_key(STD_LIBRARY));
 
         // Prepare a second admitted checker before mutating disk bytes so we
         // also exercise post-admission `admit_libraries` enforcement without
@@ -1696,22 +1746,13 @@ exit 4
             );
         }
         // The pre-admitted checker still catches the post-admission TOCTOU
-        // artifact swap in `admit_libraries` when a target import reaches the
-        // library or a module that imports it.
-        let expected = Failure::operational(
-            "library",
-            format!(
-                "library artifact SHA-256 mismatch for Init/Data/BitVec/Basic.olean: \
-                 expected {}, got {}",
-                toolchain.records[LIBRARY]["parts"]["olean"].as_str().unwrap(),
-                sha256_file(&olean, "fixture").unwrap()
-            ),
-        );
+        // artifact swap in `admit_libraries`.
         for root in [LIBRARY, LIBRARY_USER] {
-            assert_eq!(
-                toctou_checker.admit_libraries([root.to_owned()]),
-                Err(expected.clone()),
-                "{root}"
+            let err = toctou_checker.admit_libraries([root.to_owned()]).unwrap_err();
+            assert_eq!((err.code, err.phase.as_str()), (2, "library-lock"), "{err}");
+            assert!(
+                err.message.contains("sysroot tree lean/lib/lean/Init/** SHA-256 mismatch"),
+                "{root}: {err}"
             );
         }
     }
@@ -1755,52 +1796,62 @@ exit 4
         assert!(!checker.execution_began());
     }
 
-    /// Each reached record also binds its source bytes and the absence of
-    /// companion parts locked as absent, and its name must fit the target
-    /// module-name protocol.
+    /// Each reached sysroot tree also binds `.lean` sources, forbids extra
+    /// unpinned files (such as `.ir` additions) inside the trees, rejects
+    /// disallowed transitive sysroot imports, and rejects invalid names.
     #[test]
     fn admit_libraries_rejects_changed_sources_extra_parts_and_invalid_names() {
         let toolchain = Toolchain::new();
         toolchain.write_library_lock(&toolchain.library_lock());
         let source = toolchain.prefix.join("src/lean/Init/Data/BitVec/Basic.lean");
         fs::write(&source, b"changed library source").unwrap();
-        assert_eq!(
-            admit(&toolchain, LIBRARY_USER),
-            Err(Failure::operational(
-                "library",
-                format!(
-                    "library source SHA-256 mismatch for {LIBRARY}: expected {}, got {}",
-                    toolchain.records[LIBRARY]["sourceSha256"].as_str().unwrap(),
-                    sha256_file(&source, "fixture").unwrap()
-                )
-            ))
+        let err = admit(&toolchain, LIBRARY_USER).unwrap_err();
+        assert_eq!((err.code, err.phase.as_str()), (2, "library-lock"), "{err}");
+        assert!(
+            err.message.contains("sysroot tree lean/src/lean/Init/** SHA-256 mismatch"),
+            "{err}"
         );
 
         let toolchain = Toolchain::new();
         toolchain.write_library_lock(&toolchain.library_lock());
         let ir = toolchain.prefix.join("lib/lean/Init/Data/BitVec/Basic.ir");
         fs::write(&ir, b"unlocked companion part").unwrap();
-        assert_eq!(
-            admit(&toolchain, LIBRARY),
-            Err(Failure::operational(
-                "library",
-                "unexpected companion part: Init/Data/BitVec/Basic.ir"
-            ))
+        let err = admit(&toolchain, LIBRARY).unwrap_err();
+        assert_eq!((err.code, err.phase.as_str()), (2, "library-lock"), "{err}");
+        assert!(
+            err.message.contains("sysroot tree lean/lib/lean/Init/** SHA-256 mismatch"),
+            "{err}"
         );
 
-        // The catalog accepts this record, but admission refuses its name
-        // before reading any of its files.
         let toolchain = Toolchain::new();
-        let invalid = "Init.Data.7Bad";
-        toolchain.write_library_lock(&changed(&toolchain.library_lock(), |lock| {
-            lock["modules"][invalid] = toolchain.records[LIBRARY].clone();
-            lock["graph"][invalid] = json!([]);
-            lock["graph"][LIBRARY_USER] = json!([edge(LIBRARY), edge(invalid)]);
-        }));
+        toolchain.write_library_lock(&toolchain.library_lock());
         assert_eq!(
-            admit(&toolchain, LIBRARY_USER),
+            admit(&toolchain, "Init.Data.7Bad"),
             Err(Failure::operational("library-lock", "invalid module record"))
         );
+
+        // Disallowed transitive imports (`Init`, `Std`, or `Lean.*`) returned
+        // by `"resolve-imports"` fail closed in
+        // `validate_pinned_library_graph`.
+        let toolchain = Toolchain::new();
+        toolchain.write_library_lock(&toolchain.library_lock());
+        fs::write(
+            toolchain.base.join("resolve-graph.json"),
+            json!({
+                "ok": true,
+                "result": {
+                    "graph": {
+                        LIBRARY: [edge("Init")],
+                        "Init": [],
+                    }
+                }
+            })
+            .to_string(),
+        )
+        .unwrap();
+        let err = admit(&toolchain, LIBRARY).unwrap_err();
+        assert_eq!((err.code, err.phase.as_str()), (1, "sysroot"), "{err}");
+        assert!(err.message.contains("only Init.* and Std.* are permitted"), "{err}");
     }
 }
 
@@ -2470,11 +2521,9 @@ exit 4
         fs::copy(&real_lean, &copied_lean).unwrap();
         fs::set_permissions(&copied_lean, fs::Permissions::from_mode(0o755)).unwrap();
 
-        copy_dir_filtered(
-            &real_prefix.join("src/lean/Init"),
-            &syn_prefix.join("src/lean/Init"),
-            false,
-        );
+        for src_sub in ["src/lean/Init", "src/lean/Std"] {
+            copy_dir_filtered(&real_prefix.join(src_sub), &syn_prefix.join(src_sub), false);
+        }
         let dst_lib_lean = syn_prefix.join("lib/lean");
         fs::create_dir_all(&dst_lib_lean).unwrap();
         // Copy Lean's shared libraries in `<prefix>/lib` so sandboxed
@@ -2498,7 +2547,7 @@ exit 4
             let dst_path = dst_lib_lean.join(&name);
             let ft = fs::symlink_metadata(&src_path).unwrap().file_type();
             if matches!(name_str.as_ref(), "Init" | "Std" | "Lean") {
-                copy_dir_filtered(&src_path, &dst_path, name_str != "Init");
+                copy_dir_filtered(&src_path, &dst_path, name_str == "Lean");
             } else if ["Init.", "Std.", "Lean."].iter().any(|p| name_str.starts_with(p)) {
                 if ft.is_file() {
                     fs::copy(&src_path, &dst_path).unwrap();
@@ -2572,6 +2621,11 @@ exit 4
             &syn_prefix.join("src/lean/Init"),
             false,
         );
+        copy_dir_filtered(
+            &real_prefix.join("src/lean/Std"),
+            &syn_prefix.join("src/lean/Std"),
+            false,
+        );
         let dst_lib_lean = syn_prefix.join("lib/lean");
         fs::create_dir_all(&dst_lib_lean).unwrap();
         for entry in fs::read_dir(real_prefix.join("lib")).unwrap() {
@@ -2592,7 +2646,7 @@ exit 4
             let dst_path = dst_lib_lean.join(&name);
             let ft = fs::symlink_metadata(&src_path).unwrap().file_type();
             if matches!(name_str.as_ref(), "Init" | "Std" | "Lean") {
-                copy_dir_filtered(&src_path, &dst_path, name_str != "Init");
+                copy_dir_filtered(&src_path, &dst_path, name_str == "Lean");
             } else if ["Init.", "Std.", "Lean."].iter().any(|p| name_str.starts_with(p)) {
                 if ft.is_file() {
                     fs::copy(&src_path, &dst_path).unwrap();

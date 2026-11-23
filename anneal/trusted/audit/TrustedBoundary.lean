@@ -13,6 +13,15 @@ import Lean.Util.PtrSet
 import Lean.Compiler.ImplementedByAttr
 import Lean.Compiler.ExternAttr
 import Lean.Compiler.CSimpAttr
+import Lean.Meta.Match.MatcherInfo
+import Lean.Meta.Match.MatchEqs
+import Lean.Meta.Constructions.SparseCasesOn
+import Lean.Meta.Constructions.SparseCasesOnEq
+import Lean.Meta.Tactic.FunInd
+import Lean.Meta.CongrTheorems
+import Lean.Meta.Injective
+import Lean.Meta.MethodSpecs
+import Lean.Compiler.Old
 
 /-!
 # Trusted Boundary and Kernel Environment Inspector (`TrustedBoundary.lean`)
@@ -161,10 +170,10 @@ this file across ten JSON IPC modes (`run` and `main`):
   definitional equality of both `Expected` and the submitted proof theorem
   against the canonical `CrateTheorem`/`UnitTheorem` kernel application, and
   rejects `@[implemented_by]`, `@[extern]`, and `@[csimp]` metadata on logically
-  reached declarations that differs from the authenticated foundation and
-  library metadata. Those comparisons read serialized attribute entries, which
-  the importer attaches even without `loadExts`: `getParam?` for
-  `@[implemented_by]` and `@[extern]`, and `csimpEntries` for `@[csimp]`.
+  reached declarations authored by target source modules (`Proof` overrides via
+  `proofExport.overrides` and non-proof `.source` modules via
+  `finalizeImport`-populated `getModuleEntries` on `env`, with `loadExts := false`
+  and no separate metadata environment import).
 
 ## Module origin partitions and authority relations
 
@@ -764,6 +773,67 @@ bridges while keeping `Trusted` and all other imports closed. -/
 def allowedTheoryImportAllModules : List Name :=
   [`Init.Data.Nat.Bitwise.Basic]
 
+/-- Term, tactic, and macro syntax kinds carrying elaboration/compile-time
+I/O or debug side effects, rejected explicitly in both Pass-1 `"preflight"`
+and `"spec-preflight"`. -/
+def forbiddenPureTermKinds : NameSet := .ofList [
+  ``Lean.includeStr,
+  `Lean.Parser.Term.dbgTrace, `Lean.Parser.Term.idbg,
+  `Lean.Parser.Term.doDbgTrace, `Lean.Parser.Term.doIdbg,
+  `Lean.Parser.Tactic.dbgTrace, `termPrintln!__]
+
+/-- Pure-signature debug, dynamic-library loading, and file-embedding
+identifiers rejected explicitly in both Pass-1 `"preflight"` and
+`"spec-preflight"`, closing `Init/Util.lean`'s `lean_dbg_*` externs,
+`Lean.LoadDynlib` / `loadDynlib` / `loadPlugin`, and `includeStr`. -/
+def forbiddenPureIdentifiers : List Name := [
+  `dbgTrace, `dbgTraceVal, `dbgTraceIfShared,
+  `dbgStackTrace, `dbgStackTraceIf, `dbgSleep,
+  `lean_dbg_trace, `lean_dbg_trace_if_shared,
+  `lean_dbg_stack_trace, `lean_dbg_sleep,
+  `loadDynlib, `loadPlugin,
+  `lean_load_dynlib, `lean_load_plugin,
+  `lean_dynlib_load, `lean_dynlib_get, `lean_dynlib_symbol_run_as_init,
+  `includeStr]
+
+/-- Exact `System.Platform` declarations admitted in target specifications. -/
+def allowedSystemPlatformDecls : List Name := [
+  `System.Platform.numBits,
+  `System.Platform.getNumBits,
+  `System.Platform.numBits_eq]
+
+/-- Root namespaces forbidden in pure source preflight and specifications (`IO`,
+`BaseIO`, `EIO`, `EST`, `ST`, `Task`, `System`, `Lake`, plus `Lean` in
+specifications). -/
+def forbiddenPureRootNamespaces : List Name := [
+  `Lake, `IO, `BaseIO, `EIO, `EST, `ST, `Task, `System]
+
+/-- Sub-namespaces exposing filesystem, system, UV event-loop, or dynamic
+library loading primitives beneath otherwise-admitted roots (`Init`, `Std`,
+`Lean`). -/
+def forbiddenSysUvPrefixes : List Name := [
+  `Init.System, `Std.Internal.UV, `Internal.UV,
+  `Lean.LoadDynlib, `Lean.loadDynlib, `Lean.loadPlugin, `Lean.Dynlib,
+  `Dynlib]
+
+/-- Return `true` when `n` (ignoring `_root_`) matches or is nested beneath a
+forbidden I/O, `Init.System.*`, `Std.Internal.UV.*`, `Lean.LoadDynlib`, or
+effectful root namespace. -/
+def isForbiddenPureNamespace (n : Name) (banLeanRoot : Bool := false) : Bool :=
+  let u := n.replacePrefix rootNamespace .anonymous
+  let r := u.getRoot
+  forbiddenPureRootNamespaces.contains r ||
+    (banLeanRoot && r == `Lean) ||
+    forbiddenSysUvPrefixes.any fun pre => u == pre || pre.isPrefixOf u
+
+/-- Return `true` when imported module `m` belongs to `Lean.*`, `Lake.*`,
+`Init.System.*`, or `Std.Internal.UV.*`. -/
+def isForbiddenPureImport (m : Name) : Bool :=
+  let r := m.getRoot
+  r == `Lean || r == `Lake ||
+    m == `Init.System || (`Init.System).isPrefixOf m ||
+    m == `Std.Internal.UV || (`Std.Internal.UV).isPrefixOf m
+
 /-- Return `true` if `id` is a valid user-written identifier with non-empty
 string components, no macro scopes, and no `_root_` namespace escape. -/
 def isValidSourceIdent (id : Name) : Bool :=
@@ -892,6 +962,54 @@ def inspectNodeKind (k : SyntaxNodeKind) (args : Array Syntax)
     unless allowedAttributeNames.contains attrName do
       fail s!"unsupported attribute removal {attrName}"
 
+/-- Enumerate every namespace that `Lean.ResolveName.resolveNamespace` could
+resolve `id` to under *any* sub-environment of `parserEnv` given lexical
+namespace `currNs` and conservative `openDecls`:
+- every non-empty prefix `p` of `currNs` with `id` appended (`p ++ id`),
+- the root candidate `id.replacePrefix rootNamespace .anonymous`, and
+- every `ns ++ id` for each `OpenDecl.simple ns _` in `openDecls`.
+
+Checking every candidate—instead of stopping at the innermost existing
+namespace in the union `parserEnv` as `resolveNamespaceUsingScope?` does—closes
+decoy-namespace shadowing when an unimported module declares a namespace with
+the same suffix as a real scoped namespace. -/
+def candidateOpenNamespaces (currNs : Name) (openDecls : List OpenDecl)
+    (id : Name) : List Name :=
+  let rec scopeCandidates : Name → List Name
+    | .anonymous => [id.replacePrefix rootNamespace .anonymous]
+    | ns@(.str p _) => (ns ++ id) :: scopeCandidates p
+    | _ => []
+  let openCandidates := openDecls.filterMap fun
+    | OpenDecl.simple ns _ => some (ns ++ id)
+    | _ => none
+  (scopeCandidates currNs ++ openCandidates).eraseDups
+
+/-- Extend `openDecls` conservatively across an admitted `Parser.Command.open`
+(`openSimple`) node so `Parser.Command.in` and `Parser.Command.mutual` inspect
+their scoped commands under the opened namespaces without elaborating or running
+parser callbacks. -/
+def extendOpenDeclsForOpenCmd (currNs : Name) (openDecls : List OpenDecl)
+    (openStx : Syntax) : List OpenDecl :=
+  if !openStx.isOfKind ``Parser.Command.open then
+    openDecls
+  else
+    let openDecl := openStx[1]
+    if !openDecl.isOfKind ``Parser.Command.openSimple then
+      openDecls
+    else
+      openDecl[0].getArgs.foldl (init := openDecls) fun ods idStx =>
+        let id := idStx.getId
+        let hasOpenDecl (ns : Name) : Bool :=
+          ods.any fun
+            | OpenDecl.simple existing _ => existing == ns
+            | _ => false
+        let cands := candidateOpenNamespaces currNs ods id
+        let ods' := cands.foldl (init := ods) fun acc ns =>
+          if hasOpenDecl ns then acc else OpenDecl.simple ns [] :: acc
+        let stripped := id.replacePrefix rootNamespace .anonymous
+        if hasOpenDecl stripped then ods'
+        else OpenDecl.simple stripped [] :: ods'
+
 /-- Recursively validate syntax tree `s` in a single top-down pass against the
 closed `allowedKinds` allowlist during `"preflight"` (with `requirePrelude :=
 true`) or `"headers"` (with `requirePrelude := false`). Pattern-matching
@@ -899,19 +1017,51 @@ exhaustively on `Syntax` rejects recovery placeholders (`.missing`), validates
 every identifier with `isValidSourceIdent`, and requires every non-`null`
 `Syntax.node` kind to belong to `allowedKinds` and satisfy `inspectNodeKind`. -/
 partial def inspectSyntax (allowedKinds : NameSet) (s : Syntax)
-    (requirePrelude : Bool := true) : IO Unit := do
+    (requirePrelude : Bool := true)
+    (currNs : Name := .anonymous) (openDecls : List OpenDecl := [])
+    (checkPureRefs : Bool := true) :
+    IO Unit := do
   match s with
   | .missing => fail "unexpected missing syntax node"
   | .atom _ _ => pure ()
   | .ident _ _ val _ =>
     unless isValidSourceIdent val do
       fail s!"invalid identifier {val}"
+    if checkPureRefs then
+      let checkPureIdent (cand : Name) : IO Unit := do
+        if forbiddenPureIdentifiers.contains cand || isForbiddenPureNamespace cand then
+          fail s!"disallowed reference {val}"
+      checkPureIdent val
+      for cand in candidateOpenNamespaces currNs openDecls val do
+        checkPureIdent cand
   | .node _ k args =>
+    if forbiddenPureTermKinds.contains k then
+      fail s!"disallowed syntax {k}"
     unless k == nullKind || allowedKinds.contains k do
       fail s!"unsupported syntax kind {k}"
     inspectNodeKind k args requirePrelude
-    for child in args do
-      inspectSyntax allowedKinds child requirePrelude
+    if k == ``Parser.Command.in && checkPureRefs then
+      inspectSyntax allowedKinds args[0]! requirePrelude currNs openDecls
+        checkPureRefs
+      inspectSyntax allowedKinds args[1]! requirePrelude currNs openDecls
+        checkPureRefs
+      let nextOpen := extendOpenDeclsForOpenCmd currNs openDecls args[0]!
+      inspectSyntax allowedKinds args[2]! requirePrelude currNs nextOpen
+        checkPureRefs
+    else if k == ``Parser.Command.mutual && checkPureRefs then
+      inspectSyntax allowedKinds args[0]! requirePrelude currNs openDecls
+        checkPureRefs
+      let mut mutOpen := openDecls
+      for child in args[1]!.getArgs do
+        inspectSyntax allowedKinds child requirePrelude currNs mutOpen
+          checkPureRefs
+        mutOpen := extendOpenDeclsForOpenCmd currNs mutOpen child
+      inspectSyntax allowedKinds args[2]! requirePrelude currNs openDecls
+        checkPureRefs
+    else
+      for child in args do
+        inspectSyntax allowedKinds child requirePrelude currNs openDecls
+          checkPureRefs
 
 /-- Collect every namespace that registers at least one scoped entry in any
 registered `ScopedEnvExtension` of `env` (including
@@ -941,28 +1091,6 @@ def collectScopedNamespacePrefixes (scopedNamespaces : NameSet) : NameSet :=
     | .str p _ => insertPrefixes acc p
     | _ => acc
 
-/-- Enumerate every namespace that `Lean.ResolveName.resolveNamespace` could
-resolve `id` to under *any* sub-environment of `parserEnv` given lexical
-namespace `currNs` and conservative `openDecls`:
-- every non-empty prefix `p` of `currNs` with `id` appended (`p ++ id`),
-- the root candidate `id.replacePrefix rootNamespace .anonymous`, and
-- every `ns ++ id` for each `OpenDecl.simple ns _` in `openDecls`.
-
-Checking every candidate—instead of stopping at the innermost existing
-namespace in the union `parserEnv` as `resolveNamespaceUsingScope?` does—closes
-decoy-namespace shadowing when an unimported module declares a namespace with
-the same suffix as a real scoped namespace. -/
-def candidateOpenNamespaces (currNs : Name) (openDecls : List OpenDecl)
-    (id : Name) : List Name :=
-  let rec scopeCandidates : Name → List Name
-    | .anonymous => [id.replacePrefix rootNamespace .anonymous]
-    | ns@(.str p _) => (ns ++ id) :: scopeCandidates p
-    | _ => []
-  let openCandidates := openDecls.filterMap fun
-    | OpenDecl.simple ns _ => some (ns ++ id)
-    | _ => none
-  (scopeCandidates currNs ++ openCandidates).eraseDups
-
 /-- Lexical scope frame tracked by `parseAndInspectCommands`, mirroring Lean's
 `Elab.Command.Scope` (`header`, `currNamespace`, `openDecls`) so
 `Parser.parseCommand` sees the same lexical namespace and `open` context as
@@ -983,11 +1111,16 @@ def nameOfParseScopes : List ParseScope → Nat → Name
     if s.header == "" then .anonymous
     else .str (nameOfParseScopes ss n) s.header
 
-/-- Reject `ns` if it registers any scoped entry in `scopedNamespaces`. -/
+/-- Reject `ns` if it registers any scoped entry in `scopedNamespaces` or
+belongs to a forbidden I/O, `Init.System.*`, `Std.Internal.UV.*`, or
+`Lean.LoadDynlib` namespace. Scoped-extension rejection runs first so existing
+diagnostics for `open Lean.PostprocessTraces` stay intact. -/
 def rejectScopedNamespace (scopedNamespaces : NameSet) (how : String)
     (ns : Name) : IO Unit := do
   if scopedNamespaces.contains ns then
     fail s!"cannot {how} namespace {ns} with scoped syntax or extensions"
+  if isForbiddenPureNamespace ns then
+    fail s!"cannot {how} forbidden namespace {ns}"
 
 /-- Push each component of `header` as a lexical `namespace` or `section` scope
 onto `(parserEnv, scopes)`, rejecting any newly entered namespace present in
@@ -1108,6 +1241,7 @@ partial def applyCommandScope (scopedNamespaces scopedPrefixes : NameSet)
           added := true
       if !added then
         let stripped := id.replacePrefix rootNamespace .anonymous
+        rejectScopedNamespace scopedNamespaces "open" stripped
         if !hasOpenDecl openDecls stripped then
           openDecls := OpenDecl.simple stripped [] :: openDecls
     return (parserEnv, { top with openDecls := openDecls } :: scopes.tail!)
@@ -1164,7 +1298,7 @@ partial def parseAndInspectCommands (ctx : Parser.InputContext)
     throw <| IO.userError "parser made no progress"
   unless allowedCommandKinds.contains stx.getKind do
     fail s!"unsupported command {stx.getKind}"
-  inspectSyntax allowedKinds stx
+  inspectSyntax allowedKinds stx true top.currNamespace top.openDecls
   let (nextEnv, nextScopes) ←
     applyCommandScope scopedNamespaces scopedPrefixes parserEnv scopes stx
   parseAndInspectCommands ctx scopedNamespaces scopedPrefixes nextEnv nextScopes
@@ -1235,7 +1369,7 @@ def inspectSource (scopedNamespaces scopedPrefixes : NameSet)
   let (header, initial, log) ← Parser.parseHeader ctx
   if log.hasErrors || initial.recovering then
     fail s!"header parser error in {moduleName}"
-  inspectSyntax allowedKinds header.raw
+  inspectSyntax allowedKinds header.raw (checkPureRefs := false)
   let isModule := Elab.HeaderSyntax.isModule header
   let imports := Elab.HeaderSyntax.imports header
   for imp in imports do
@@ -1249,6 +1383,8 @@ def inspectSource (scopedNamespaces scopedPrefixes : NameSet)
           allowedTheoryImportAllModules.contains imp.module
       unless allowImportAll do
         fail "import modifiers are unsupported"
+    if isForbiddenPureImport imp.module then
+      fail s!"disallowed sysroot import {imp.module} in {moduleName}"
   let rootScope : ParseScope :=
     { header := "", currNamespace := .anonymous, openDecls := [] }
   parseAndInspectCommands ctx scopedNamespaces scopedPrefixes parserEnv
@@ -1264,9 +1400,10 @@ def inspectSource (scopedNamespaces scopedPrefixes : NameSet)
   (non-exported) imports and permit `import all` strictly when
   `allowTheoryImportAll = true` and the target is in
   `allowedTheoryImportAllModules`.
-- Every target rejects `Lean.*`/`Lake.*` imports and any `isMeta` edge other
-  than Lean 4's synthetic `!hasPrelude` `Init(isMeta = true)` paired with a
-  non-meta `Init` edge. -/
+- Every target rejects `Lean.*`/`Lake.*`, `Init.System.*`, and
+  `Std.Internal.UV.*` imports, and any `isMeta` edge other than Lean 4's
+  synthetic `!hasPrelude` `Init(isMeta = true)` paired with a non-meta
+  `Init` edge. -/
 def validateTargetImports (context : String) (imports : Array Import)
     (allowModule : Bool := false) (allowTheoryImportAll : Bool := false) :
     IO Unit := do
@@ -1283,9 +1420,7 @@ def validateTargetImports (context : String) (imports : Array Import)
     if imp.isMeta then
       unless imp.module == `Init && hasNonMetaInit do
         fail s!"meta import {imp.module} is unsupported in {context}"
-    let root := imp.module.getRoot
-    if imp.module == `Lean || root == `Lean ||
-        imp.module == `Lake || root == `Lake then
+    if isForbiddenPureImport imp.module then
       fail s!"disallowed sysroot import {imp.module} in {context}"
 
 /-- Read and validate a target source header (`"headers"`), admitting Lean 4
@@ -1301,12 +1436,12 @@ def inspectHeader (moduleName : Name) (path : System.FilePath) : IO Json := do
   let isModule := Elab.HeaderSyntax.isModule header
   if isModule && !isBundledRuntimeModuleName moduleName then
     fail s!"module system header is unsupported in {moduleName}"
-  inspectSyntax (.ofList allowedHeaderKinds) header.raw
-    (requirePrelude := false)
   let imports := Elab.HeaderSyntax.imports header
   validateTargetImports moduleName.toString imports
     (allowModule := isModule)
     (allowTheoryImportAll := isAnnealModuleName moduleName)
+  inspectSyntax (.ofList allowedHeaderKinds) header.raw
+    (requirePrelude := false) (checkPureRefs := false)
   return Json.mkObj [
     ("module", toJson moduleName),
     ("imports", toJson imports),
@@ -1386,8 +1521,8 @@ def forbiddenSpecModifierKinds : List Name := [
 
 /-- Root namespaces forbidden in specification lexical scopes and references
 (except `System.Platform.{numBits, getNumBits, numBits_eq}`). -/
-def forbiddenSpecRootNamespaces : List Name := [
-  `Lean, `Lake, `IO, `BaseIO, `EIO, `EST, `ST, `Task, `System]
+def forbiddenSpecRootNamespaces : List Name :=
+  `Lean :: forbiddenPureRootNamespaces
 
 /-- Identifier components forbidden anywhere in specification references,
 dot-projections, `open`, and `export` declarations (`autoParam` evaluates a
@@ -1399,11 +1534,14 @@ def forbiddenSpecIdentifierComponents : List String := [
   "autoParam", "panic", "panicCore", "panicWithPos", "panicWithPosWithDecl",
   "outOfBounds", "repeatM", "sliceOrPanic"]
 
-/-- Exact `System.Platform` declarations admitted in target specifications. -/
-def allowedSystemPlatformDecls : List Name := [
-  `System.Platform.numBits,
-  `System.Platform.getNumBits,
-  `System.Platform.numBits_eq]
+/-- Root-level and extern identifiers forbidden in specifications (`autoParam`
+evaluates a stored `Lean.Syntax` tactic script during elaboration, bypassing
+syntactic tactic inspection; `panic*` constants carry runtime panic side
+effects; and `forbiddenPureIdentifiers` covers debug, dynamic-library, and
+`includeStr` externs). -/
+def forbiddenSpecIdentifiers : List Name :=
+  [`autoParam, `panic, `panicCore, `panicWithPos, `panicWithPosWithDecl] ++
+    forbiddenPureIdentifiers
 
 /-- Simple attributes permitted inside `@[...]` in target specifications. -/
 def allowedSpecSimpleAttrs : List Name := [
@@ -1713,7 +1851,7 @@ def validateSpecDecideTactic (args : Array Syntax) : IO Unit := do
 
 /-- Reject `ns` if its root belongs to `forbiddenSpecRootNamespaces`. -/
 def rejectForbiddenSpecNamespace (how : String) (ns : Name) : IO Unit := do
-  if forbiddenSpecRootNamespaces.contains ns.getRoot then
+  if isForbiddenPureNamespace ns (banLeanRoot := true) then
     fail s!"cannot {how} forbidden namespace {ns} in specification"
 
 /-- Validate an `open` declaration node (`openSimple`, `openOnly`, `openHiding`,
@@ -1923,11 +2061,17 @@ partial def inspectSpecSyntax (commandLikeKinds tacticLikeKinds : NameSet)
       fail s!"invalid identifier {val} in specification"
     if hasUnsafeRecComponent val then
       fail s!"disallowed _unsafe_rec identifier {val} in specification"
-    if hasForbiddenSpecIdentComponent val || hasBangComponent val then
-      fail s!"disallowed identifier {val} in specification"
-    if forbiddenSpecRootNamespaces.contains val.getRoot then
-      unless allowedSystemPlatformDecls.contains val do
-        fail s!"disallowed reference {val} in specification"
+    let checkSpecIdent (cand : Name) : IO Unit := do
+      if hasForbiddenSpecIdentComponent cand || hasBangComponent cand then
+        fail s!"disallowed identifier {val} in specification"
+      if forbiddenSpecIdentifiers.contains cand then
+        fail s!"disallowed identifier {val} in specification"
+      if isForbiddenPureNamespace cand (banLeanRoot := true) then
+        unless allowedSystemPlatformDecls.contains cand do
+          fail s!"disallowed reference {val} in specification"
+    checkSpecIdent val
+    for cand in candidateOpenNamespaces currNs openDecls val do
+      checkSpecIdent cand
   | .node _ k args =>
     if k != nullKind then
       if forbiddenSpecModifierKinds.contains k then
@@ -2184,10 +2328,10 @@ def preflightSpecs (j : Json) (foundation : Array Name) : IO Json := do
       fail s!"header parser error in specification {moduleName}"
     if Elab.HeaderSyntax.isModule header then
       fail s!"module system header is unsupported in specification {moduleName}"
-    inspectSyntax (.ofList allowedHeaderKinds) header.raw
-      (requirePrelude := false)
     let imports := Elab.HeaderSyntax.imports header
     validateTargetImports moduleName.toString imports
+    inspectSyntax (.ofList allowedHeaderKinds) header.raw
+      (requirePrelude := false) (checkPureRefs := false)
     let rootScope : ParseScope :=
       { header := "", currNamespace := .anonymous, openDecls := [] }
     parseAndInspectSpecCommands ctx commandLikeKinds tacticLikeKinds env
@@ -2395,21 +2539,21 @@ def hasCompoundName : Name → Bool
   | .str .anonymous _ | .num .anonymous _ | .anonymous => false
   | _ => true
 
-/-- Return `true` when `s` is a Lean 4 lazily-generated equational, unfolding,
-sparse-cases, functional-induction, congruence, or constructor-injectivity
-theorem suffix (matching Lean 4's `registerReservedNamePredicate`
-generators). -/
-def isGeneratedEqTheoremSuffix (s : String) : Bool :=
-  s == "eq_def" || s == "eq_unfold" || s == "else_eq" || s == "induct" ||
-    s == "induct_unfolding" || s == "fun_cases" ||
-    s == "fun_cases_unfolding" || s == "congr_simp" || s == "hinj" ||
-    match s.toList with
-    | 'e' :: 'q' :: '_' :: d :: ds => d.isDigit && ds.all Char.isDigit
-    | 'h' :: 'c' :: 'o' :: 'n' :: 'g' :: 'r' :: '_' :: d :: ds =>
-      d.isDigit && ds.all Char.isDigit
-    | 'c' :: 'o' :: 'n' :: 'g' :: 'r' :: '_' :: 'e' :: 'q' :: '_' :: d :: ds =>
-      d.isDigit && ds.all Char.isDigit
-    | _ => false
+/-- Return `true` when `ci` is safe and non-partial, matching the subset of
+declarations replayed by `Lean.Kernel.Environment.replay` (`!ci.isUnsafe &&
+!ci.isPartial`). -/
+def isCEnv (ci : ConstantInfo) : Bool :=
+  !ci.isUnsafe && !ci.isPartial
+
+/-- Return `true` when `a` and `b` are `.thmInfo` declarations matching Lean 4's
+realized-theorem header-equality condition (`subsumesInfo`: equal `name`,
+`type`, `levelParams`, and mutual block `all`). -/
+def sameRealizedThmHeader (a b : ConstantInfo) : Bool :=
+  match a, b with
+  | .thmInfo ta, .thmInfo tb =>
+    a.name == b.name && a.type == b.type &&
+    a.levelParams == b.levelParams && ta.all == tb.all
+  | _, _ => false
 
 /-- Return `true` when `n` is defined in an imported module whose role in
 `roles` satisfies `pred`. -/
@@ -2425,53 +2569,98 @@ def constHasRole (env : Environment) (roles : Std.HashMap Name ρ)
     | none => false
   | none => false
 
-/-- Return `true` when `cs` is a non-empty list of ASCII decimal digits. -/
-def isNonEmptyDigits : List Char → Bool
-  | d :: ds => d.isDigit && ds.all Char.isDigit
-  | [] => false
+/-- Collect every pattern-matcher name recorded in `Meta.Match.Extension` across
+all `.olean` modules loaded in `env` (populated by `finalizeImport` even with
+`loadExts := false`). -/
+def collectAllMatchers (env : Environment) : NameSet := Id.run do
+  let mut matchers : NameSet := {}
+  for modIdx in Array.range env.header.moduleData.size do
+    for entry in
+        Lean.Meta.Match.Extension.extension.getModuleEntries env modIdx do
+      matchers := matchers.insert entry.name
+  return matchers
 
-/-- Return `true` when `s` is a compiler-generated matcher, sparse-cases,
-congruence, or equation child suffix permitted immediately beneath a generated
-`<parent>.splitter` declaration. Arbitrary user-chosen names under a
-`.splitter` namespace (such as `evil`) are excluded. -/
-def isGeneratedSplitterChildSuffix (s : String) : Bool :=
-  isGeneratedEqTheoremSuffix s || s == "splitter" ||
-    match s.toList with
-    | 'm' :: 'a' :: 't' :: 'c' :: 'h' :: '_' :: rest => isNonEmptyDigits rest
-    | '_' :: 's' :: 'p' :: 'a' :: 'r' :: 's' :: 'e' :: 'C' :: 'a' :: 's' ::
-        'e' :: 's' :: 'O' :: 'n' :: '_' :: rest => isNonEmptyDigits rest
-    | 'c' :: 'o' :: 'n' :: 'g' :: 'r' :: '_' :: rest => isNonEmptyDigits rest
-    | _ => false
+/-- Return `true` when `s` is non-empty and consists strictly of `pfx`
+followed by one or more ASCII decimal digits (used for `_sparseCasesOn_<N>`
+inside unimported `TargetRole::Proof` modules). -/
+def isDigitsAfterPrefix (pfx s : String) : Bool :=
+  match s.dropPrefix? pfx with
+  | some rest => !rest.isEmpty && rest.all Char.isDigit
+  | none => false
 
-/-- Return `true` when `n` is `<parent>.splitter` or a compiler-generated
-auxiliary nested beneath `<parent>.splitter` (such as
-`<parent>.splitter._sparseCasesOn_8` or `...else_eq`) for an already-imported
-compound constant `parent` satisfying `isOrigin`. -/
-def isGeneratedSplitterSubtree (isOrigin : Name → Bool) : Name → Bool
-  | .str parent "splitter" => hasCompoundName parent && isOrigin parent
-  | .str parent suffix =>
-    isGeneratedSplitterChildSuffix suffix &&
-      isGeneratedSplitterSubtree isOrigin parent
-  | _ => false
+/-- Return `true` when `(n, userN)` (with `userN := privateToUserName n`) is
+either an imported compound declaration satisfying `isOrigin`, or an admissible
+compiler-generated matcher/`splitter`/`SparseCasesOn` parent whose ancestor
+chain terminates at an imported compound declaration satisfying `isOrigin`. -/
+partial def isUpstreamHelperRoot (env : Environment) (allMatchers : NameSet)
+    (isOrigin : Name → Bool) (allowUnimportedProofSparse : Bool)
+    (n userN : Name) : Bool :=
+  if hasCompoundName userN && isOrigin userN then
+    true
+  else
+    match n, userN with
+    | .str rawParent _, .str userParent "splitter" =>
+      (allMatchers.contains rawParent || allMatchers.contains userParent) &&
+        isUpstreamHelperRoot env allMatchers isOrigin
+          allowUnimportedProofSparse rawParent userParent
+    | .str rawParent _, .str userParent suffix =>
+      let isKnownSparse :=
+        (Lean.Meta.getSparseCasesOnInfoCore env n).isSome ||
+          (Lean.Meta.getSparseCasesOnInfoCore env userN).isSome
+      let isKnownMatcher := allMatchers.contains n || allMatchers.contains userN
+      if isKnownSparse || isKnownMatcher then
+        isUpstreamHelperRoot env allMatchers isOrigin
+          allowUnimportedProofSparse rawParent userParent
+      else if allowUnimportedProofSparse &&
+          isDigitsAfterPrefix "_sparseCasesOn_" suffix then
+        isUpstreamHelperRoot env allMatchers isOrigin
+          allowUnimportedProofSparse rawParent userParent
+      else
+        false
+    | _, _ => false
 
 /-- Return `true` when `ci` is a Lean 4 lazily-generated helper attached to an
-already-imported compound constant satisfying `isOrigin`:
-- a `.thmInfo` with a generated equation, induction, or congruence suffix
-  (public or `_private.<mod>.0.<parent>.<suffix>`), or
-- a private `.defnInfo`/`.thmInfo` at or beneath `<parent>.splitter`
-  (`_private.<mod>.0.<parent>.splitter` and its compiler-generated auxiliaries
-  such as `_sparseCasesOn_8`). -/
-def isGeneratedEqHelper (isOrigin : Name → Bool)
-    (ci : ConstantInfo) : Bool :=
-  let userName := privateToUserName ci.name
-  match ci, userName with
-  | .thmInfo _, .str parent suffix =>
-    (hasCompoundName parent && isGeneratedEqTheoremSuffix suffix &&
-      isOrigin parent) ||
-    (isPrivateName ci.name && isGeneratedSplitterSubtree isOrigin userName)
-  | .defnInfo _, _ =>
-    isPrivateName ci.name && isGeneratedSplitterSubtree isOrigin userName
-  | _, _ => false
+already-imported compound constant satisfying `isOrigin`, verified through
+Lean's kernel and extension metadata (`Lean.isReservedName`,
+`Meta.Match.Extension.extension`, and `Meta.getSparseCasesOnInfoCore`).
+`allowUnimportedProofSparse` is enabled only for exported `TargetRole::Proof`
+constants whose `.olean` is never loaded into `env`. -/
+def isRealizedOrCompilerHelper (env : Environment) (allMatchers : NameSet)
+    (isOrigin : Name → Bool) (ci : ConstantInfo)
+    (allowUnimportedProofSparse : Bool := false) : Bool :=
+  let n := ci.name
+  let userN := privateToUserName n
+  let hasParent :=
+    isUpstreamHelperRoot env allMatchers isOrigin allowUnimportedProofSparse
+  match ci, n, userN with
+  | .thmInfo _, .str rawParent _, .str userParent suffix =>
+    ((Lean.isReservedName env n || Lean.isReservedName env userN) &&
+      hasParent rawParent userParent) ||
+    ((allMatchers.contains rawParent || allMatchers.contains userParent) &&
+      (suffix == "splitter" || Lean.Meta.isEqnReservedNameSuffix suffix ||
+        Lean.Meta.Match.isCongrEqnReservedNameSuffix suffix) &&
+      hasParent rawParent userParent) ||
+    (allowUnimportedProofSparse && suffix == "else_eq" &&
+      match rawParent, userParent with
+      | .str gp _, .str ugp upSuffix =>
+        isDigitsAfterPrefix "_sparseCasesOn_" upSuffix && hasParent gp ugp
+      | _, _ => false)
+  | .defnInfo _, .str rawParent _, .str userParent suffix =>
+    isPrivateName n &&
+      if suffix == "splitter" then
+        (allMatchers.contains rawParent || allMatchers.contains userParent) &&
+          hasParent rawParent userParent
+      else if (Lean.Meta.getSparseCasesOnInfoCore env n).isSome ||
+          (Lean.Meta.getSparseCasesOnInfoCore env userN).isSome then
+        hasParent rawParent userParent
+      else if allowUnimportedProofSparse &&
+          isDigitsAfterPrefix "_sparseCasesOn_" suffix then
+        match rawParent, userParent with
+        | .str _ _, .str _ "splitter" => hasParent rawParent userParent
+        | _, _ => false
+      else
+        false
+  | _, _, _ => false
 
 /-- Enforce per-constant policy invariants on a constant `ci` defined in Anneal
 repository module `m` with `SourceRole` `role` (shared across Pass 1 and
@@ -2482,28 +2671,33 @@ Pass 2):
   `private` declarations inside `namespace Trusted` are also caught), except
   lazily-synthesized equation theorems and private matcher splitters attached
   to an already-imported compound `Trusted` constant
-  (`isGeneratedEqHelper isTrustedConst`).
+  (`isRealizedOrCompilerHelper env allMatchers isTrustedConst ci`).
 - No repository module may declare any `kernelAcceleratedNames` constant or any
   constant (including theorems and `private` declarations) whose `userRoot`
   belongs to `reservedKernelRoots`, except lazily-synthesized equation theorems
   and private matcher splitters attached to an already-imported compound
-  sysroot/foundation constant (`isGeneratedEqHelper isFoundationConst`).
+  sysroot/foundation constant
+  (`isRealizedOrCompilerHelper env allMatchers isFoundationConst ci`).
 - Non-`Trusted` modules cannot declare `opaque` constants.
-- No repository module may declare `unsafe`, `partial`, `axiom`, or `quot`
-  constants, or omit a definition body. -/
-def validateRepoConstant (m : Name) (role : SourceRole)
+- No repository module may declare `unsafe`, `axiom`, or `quot` constants,
+  unpaired `partial` constants, or omit a definition body. When
+  `allowPairedPartial` is `true`, a safe `isPartial` `.defnInfo` matching
+  `Compiler.isUnsafeRecName?` is deferred to the enclosing module's pairing
+  check. -/
+def validateRepoConstant (env : Environment) (allMatchers : NameSet)
+    (m : Name) (role : SourceRole)
     (isTrustedConst isFoundationConst : Name → Bool)
-    (ci : ConstantInfo) : IO Unit := do
+    (ci : ConstantInfo) (allowPairedPartial : Bool := false) : IO Unit := do
   let isTrusted := role matches .trusted _
   let userName := privateToUserName ci.name
   let userRoot := userName.getRoot
   if !isTrusted && userRoot == `Trusted &&
-      !isGeneratedEqHelper isTrustedConst ci then
+      !isRealizedOrCompilerHelper env allMatchers isTrustedConst ci then
     fail (s!"non-Trusted module {m} cannot declare constant {ci.name} " ++
       "in Trusted namespace")
   if kernelAcceleratedNames.contains userName ||
       (reservedKernelRoots.contains userRoot &&
-        !isGeneratedEqHelper isFoundationConst ci) then
+        !isRealizedOrCompilerHelper env allMatchers isFoundationConst ci) then
     fail (s!"repository module {m} cannot declare constant {ci.name} " ++
       s!"in reserved kernel namespace {userRoot}")
   if !isTrusted && (ci matches .opaqueInfo _) then
@@ -2513,10 +2707,19 @@ def validateRepoConstant (m : Name) (role : SourceRole)
       s!"Trusted axiom {ci.name}"
     else
       s!"strict axiom declaration {ci.name} in {m}")
-  if isTrusted then
-    ensureReplayableConstant "Trusted declaration" "" ci
-  else
-    ensureReplayableConstant "declaration" s!" in {m}" ci
+  let checkReplayable :=
+    if allowPairedPartial && ci.isPartial && !ci.isUnsafe &&
+        (ci matches .defnInfo _) &&
+        (Compiler.isUnsafeRecName? ci.name).isSome then
+      if ci.hasValue true && (ci.value? true).isNone then
+        fail s!"missing stored body {ci.name}"
+      else
+        pure ()
+    else if isTrusted then
+      ensureReplayableConstant "Trusted declaration" "" ci
+    else
+      ensureReplayableConstant "declaration" s!" in {m}" ci
+  checkReplayable
 
 /-- Enforce `violation?` across every kernel dependency edge of `locals`. -/
 def checkDeclarationEdges (env : Environment) (roles : Std.HashMap Name ρ)
@@ -2574,63 +2777,115 @@ partial def closure (lookup : Name → IO ConstantInfo)
         reachedAxioms
 
 /-- Reconcile one serialized inventory value with the selected declaration.
-Pinned modules may repeat a theorem with another proof of the same proposition;
-every such proof still needs its own dependency closure and fresh kernel check.
-Definitions and source declarations cannot change their stored meaning. -/
-def inventoryAlternates (stored ci : ConstantInfo) (pinned : Bool) :
+Any module exporting a realized `.thmInfo` theorem already exported by another
+module must satisfy `sameRealizedThmHeader` (`name`, `type`, `levelParams`, and
+`all`), and every differing proof body is retained in `alternateProofs` for
+fresh kernel verification via `checkAlternateProofs`. Non-theorem declarations
+cannot change kind, safety, universe parameters, type, or value. -/
+def inventoryAlternates (stored ci : ConstantInfo) :
     IO (Array ConstantInfo) := do
   unless stored.type == ci.type do
     fail s!"stored declaration type differs from inventory {ci.name}"
-  -- Equal proof expressions do not establish equal universes or mutual-block
-  -- dependencies: declarationEdges also follows ci.all. Check this metadata
-  -- before the equal-value fast path, so it cannot discard an unexamined edge.
-  -- The pinned importer also requires matching levelParams and all, while
-  -- saying "we do not check whether the theorem `value` field match". Preserve
-  -- that distinction locally rather than relying on an earlier import check.
-  -- https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Environment.lean#L2261-L2278
-  match pinned, stored, ci with
-  | true, .thmInfo a, .thmInfo b =>
-    unless a.levelParams == b.levelParams && a.all == b.all do
-      fail s!"inconsistent pinned theorem metadata {ci.name}"
-  | _, _, _ => pure ()
-  if stored.value? true == ci.value? true then return #[]
-  match pinned, stored, ci with
-  | true, .thmInfo _, .thmInfo _ =>
-    -- Replay may reuse a selected theorem already in its foundation base.
-    -- Retain both values so that optimization cannot hide either proof body.
-    return #[stored, ci]
-  | _, _, _ => fail s!"stored declaration differs from inventory {ci.name}"
+  match stored, ci with
+  | .thmInfo a, .thmInfo b =>
+    unless sameRealizedThmHeader stored ci do
+      fail s!"inconsistent theorem metadata {ci.name}"
+    if a.value == b.value then
+      return #[]
+    else
+      -- Replay may reuse a selected theorem already in its base or another
+      -- module. Retain both values so deduplication never hides an ill-typed
+      -- proof body.
+      return #[stored, ci]
+  | _, _ =>
+    unless kind stored == kind ci && stored.isUnsafe == ci.isUnsafe &&
+        stored.isPartial == ci.isPartial &&
+        stored.levelParams == ci.levelParams &&
+        stored.value? true == ci.value? true do
+      fail s!"stored declaration differs from inventory {ci.name}"
+    return #[]
 
 /-- Validate and record the `.olean` inventory (`constants` and
 `extraConstNames`) of one Anneal repository module `mName` (`srcRole`) across
-Pass 1 and Pass 2. -/
-def collectRepoModuleConstants (env : Environment) (roles : Std.HashMap Name ρ)
-    (isTrustedConst isFoundationConst : Name → Bool) (mName : Name)
-    (srcRole : SourceRole) (data : ModuleData)
-    (locals : Std.HashMap Name ConstantInfo) (extraNames : NameSet) :
-    IO (Std.HashMap Name ConstantInfo × NameSet) := do
+Pass 1 and Pass 2. Supports Lean 4 universal realized-theorem sharing
+(`sameRealizedThmHeader` + `alternateProofs`) and 4-part `p._unsafe_rec` pairing
+while excluding non-`isCEnv` helpers from replayable `locals`. -/
+def collectRepoModuleConstants (env : Environment) (allMatchers : NameSet)
+    (roles : Std.HashMap Name ρ)
+    (isTrustedConst isFoundationConst : Name → Bool)
+    (canShareRealizedFrom : ρ → Bool)
+    (edgeViolation? : Name → ρ → Name → Name → ρ → Option String)
+    (mName : Name) (srcRole : SourceRole) (mOriginRole : ρ) (data : ModuleData)
+    (locals : Std.HashMap Name ConstantInfo)
+    (pairedUnsafeRecs : Std.HashMap Name Name)
+    (extraNames : NameSet) (alternateProofs : Array ConstantInfo)
+    (altRoots : List Name) :
+    IO (Std.HashMap Name ConstantInfo × Std.HashMap Name Name × NameSet ×
+      Array ConstantInfo × List Name) := do
   let mut locals := locals
+  let mut pairedUnsafeRecs := pairedUnsafeRecs
   let mut extraNames := extraNames
+  let mut alternateProofs := alternateProofs
+  let mut altRoots := altRoots
+  let mut modSeen : NameSet := {}
+  let mut modConsts : Std.HashMap Name ConstantInfo := {}
+  let mut pendingUnsafeRecs : Array (ConstantInfo × Name) := #[]
   for ci in data.constants do
-    if locals.contains ci.name then
+    if modSeen.contains ci.name then
       fail s!"duplicate declaration {ci.name}"
-    let (orig, _) ← constProvenance env roles ci.name
-    unless orig == mName do
-      fail s!"inventory origin mismatch {ci.name}"
+    modSeen := modSeen.insert ci.name
+    let (orig, origRole) ← constProvenance env roles ci.name
     let stored ← lookupConst env ci.name "stored declaration"
-    discard <| inventoryAlternates stored ci false
-    validateRepoConstant mName srcRole isTrustedConst isFoundationConst ci
-    locals := locals.insert ci.name ci
+    if orig == mName then
+      if locals.contains ci.name || pairedUnsafeRecs.contains ci.name then
+        fail s!"duplicate declaration {ci.name}"
+      let origAlts ← inventoryAlternates stored ci
+      alternateProofs := alternateProofs ++ origAlts
+      for p in origAlts do
+        altRoots := (← declarationEdges p).toList ++ altRoots
+      validateRepoConstant env allMatchers mName srcRole isTrustedConst
+        isFoundationConst ci (allowPairedPartial := true)
+      modConsts := modConsts.insert ci.name ci
+      if ci.isPartial then
+        let some parent := Compiler.isUnsafeRecName? ci.name
+          | fail s!"unsafe/partial declaration {ci.name} in {mName}"
+        pendingUnsafeRecs := pendingUnsafeRecs.push (ci, parent)
+      else
+        locals := locals.insert ci.name ci
+    else
+      unless canShareRealizedFrom origRole &&
+          sameRealizedThmHeader stored ci do
+        fail s!"inventory origin mismatch {ci.name}"
+      validateRepoConstant env allMatchers mName srcRole isTrustedConst
+        isFoundationConst ci
+      alternateProofs := alternateProofs ++ (← inventoryAlternates stored ci)
+      let deps ← declarationEdges ci
+      for dep in deps do
+        let (depOrigin, depRole) ← constProvenance env roles dep
+        if let some msg :=
+            edgeViolation? ci.name mOriginRole dep depOrigin depRole then
+          fail msg
+        if pairedUnsafeRecs.contains dep then
+          fail s!"paired _unsafe_rec helper {dep} cannot be referenced logically"
+      altRoots := deps.toList ++ altRoots
+  for (unsafeCi, parent) in pendingUnsafeRecs do
+    match modConsts.get? parent with
+    | some (parentCi@(.defnInfo _)) =>
+      unless isCEnv parentCi do
+        fail s!"unsafe/partial declaration {unsafeCi.name} in {mName}"
+      pairedUnsafeRecs := pairedUnsafeRecs.insert unsafeCi.name parent
+    | _ =>
+      fail s!"unsafe/partial declaration {unsafeCi.name} in {mName}"
   for n in data.extraConstNames do
     let (orig, _) ← constProvenance env roles n
     unless orig == mName do
       fail s!"IR helper provenance mismatch {n}"
     if (env.checked.get.find? n).isSome then
-      unless locals.contains n do
+      unless locals.contains n || pairedUnsafeRecs.contains n do
         fail s!"uninventoried kernel compiler helper {n}"
     else if srcRole matches .trusted _ then
       extraNames := extraNames.insert n
-  return (locals, extraNames)
+  return (locals, pairedUnsafeRecs, extraNames, alternateProofs, altRoots)
 
 /-! ## Explicit raw-`UInt64` cached-metadata validation -/
 
@@ -3005,15 +3260,19 @@ constants, the compiler-only (IR) names of `Trusted` modules, and any alternate
 serialized foundation theorem proofs for replay checking. -/
 def verifyAndCollectLocals (env : Environment)
     (roles : Std.HashMap Name RepoOrigin) :
-    IO (Std.HashMap Name ConstantInfo × NameSet × Array ConstantInfo) := do
+    IO (Std.HashMap Name ConstantInfo × Std.HashMap Name Name × NameSet ×
+      Array ConstantInfo × List Name) := do
   let loadedMods : NameSet :=
     .ofList (env.header.modules.toList.map (·.module))
   for (reqMod, _) in roles do
     unless loadedMods.contains reqMod do
       fail s!"missing required module {reqMod}"
+  let allMatchers := collectAllMatchers env
   let mut locals : Std.HashMap Name ConstantInfo := {}
+  let mut pairedUnsafeRecs : Std.HashMap Name Name := {}
   let mut extraNames : NameSet := {}
   let mut alternateProofs : Array ConstantInfo := #[]
+  let mut altRoots : List Name := []
   for m in env.header.modules, data in env.header.moduleData do
     unless data.constNames == data.constants.map ConstantInfo.name do
       fail s!"invalid inventory {m.module}"
@@ -3022,13 +3281,17 @@ def verifyAndCollectLocals (env : Environment)
     checkHeaderImports roles m.module role data RepoOrigin.importViolation?
     match role with
     | .foundation =>
+      let mut modSeen : NameSet := {}
       for ci in data.constants do
+        if modSeen.contains ci.name then
+          fail s!"duplicate declaration {ci.name}"
+        modSeen := modSeen.insert ci.name
         let (_, origRole) ← constProvenance env roles ci.name
         let stored ← lookupConst env ci.name "stored declaration"
         unless origRole == .foundation do
           fail s!"inventory origin mismatch {ci.name}"
         alternateProofs := alternateProofs ++
-          (← inventoryAlternates stored ci true)
+          (← inventoryAlternates stored ci)
       for n in data.extraConstNames do
         let (_, origRole) ← constProvenance env roles n
         unless origRole == .foundation do
@@ -3037,16 +3300,22 @@ def verifyAndCollectLocals (env : Environment)
       let isTrustedConst := constHasRole env roles
         (fun r => r matches .repo (.trusted _))
       let isFoundationConst := constHasRole env roles (· == .foundation)
-      let (nextLocals, nextExtras) ←
-        collectRepoModuleConstants env roles isTrustedConst isFoundationConst
-          m.module srcRole data locals extraNames
+      let (nextLocals, nextPaired, nextExtras, nextAlts, nextAltRoots) ←
+        collectRepoModuleConstants env allMatchers roles isTrustedConst
+          isFoundationConst (fun _ => true) RepoOrigin.edgeViolation?
+          m.module srcRole role data locals pairedUnsafeRecs extraNames
+          alternateProofs altRoots
       locals := nextLocals
+      pairedUnsafeRecs := nextPaired
       extraNames := nextExtras
+      alternateProofs := nextAlts
+      altRoots := nextAltRoots
   for (n, _) in env.checked.get.constants do
     let (_, origRole) ← constProvenance env roles n
-    if origRole != .foundation && !locals.contains n then
+    if origRole != .foundation && !locals.contains n &&
+        !pairedUnsafeRecs.contains n then
       fail s!"uninventoried constant {n}"
-  return (locals, extraNames, alternateProofs)
+  return (locals, pairedUnsafeRecs, extraNames, alternateProofs, altRoots)
 
 /-- Verify that `aliasName` is a universe-monomorphic `.defnInfo` abbreviation
 (`ReducibilityHints.abbrev`) in `expectedMod` whose body is directly
@@ -3212,7 +3481,8 @@ def audit (j : Json) (env : Environment) (foundation : Array Name)
   validateGraph j env
   let axiomPolicy ← field (α := Array (String × String)) j "axioms"
   let roles ← buildRepoOrigins j foundation trusted theory
-  let (locals, extraNames, alternateProofs) ← verifyAndCollectLocals env roles
+  let (locals, pairedUnsafeRecs, extraNames, alternateProofs, altRoots) ←
+    verifyAndCollectLocals env roles
   checkDeclarationEdges env roles locals RepoOrigin.edgeViolation?
   let requireMirWp := (j.getObjValAs? Bool "requireMirWp").toOption.getD true
   verifyMirWpCoreTheorems env roles locals requireMirWp
@@ -3226,12 +3496,15 @@ def audit (j : Json) (env : Environment) (foundation : Array Name)
         ("kind", toJson (kind ci)), ("trustStatus", toJson tier.render),
         ("dependencies", toJson deps)]
     | .foundation | .repo .theory => return acc
-  let mut allLocalRoots := locals.fold (init := []) fun acc n _ => n :: acc
+  let mut allLocalRoots := locals.fold (init := altRoots) fun acc n _ => n :: acc
   for ci in alternateProofs do
     allLocalRoots := ci.name :: (← declarationEdges ci).toList ++ allLocalRoots
   let provenance := constProvenance env roles
+  let onVisit (n _m : Name) (_role : RepoOrigin) (ci : ConstantInfo) : IO Unit := do
+    if pairedUnsafeRecs.contains n || !isCEnv ci then
+      fail s!"paired _unsafe_rec helper {n} cannot be referenced logically"
   let (allAxioms, allVisited) ←
-    closure (lookupConst env) provenance axiomPolicy allLocalRoots
+    closure (lookupConst env) provenance axiomPolicy allLocalRoots onVisit
   -- Replay repository constants through the kernel against only the locked
   -- foundation (`loadExts := false`).
   let base ← importEnv j foundation
@@ -3360,11 +3633,17 @@ sibling-module `.thmInfo` duplicates (lazily synthesized equation or
 def verifyAndCollectCorrLocals (env : Environment)
     (roles : Std.HashMap Name CorrOrigin) (corrModules : NameSet) :
     IO (Std.HashMap Name ConstantInfo × Std.HashMap Name ConstantInfo ×
-      Std.HashMap Name ConstantInfo) := do
+      Std.HashMap Name ConstantInfo × Array ConstantInfo ×
+      Array ConstantInfo × Std.HashMap Name Name × List Name) := do
+  let allMatchers := collectAllMatchers env
   let mut repoLocals : Std.HashMap Name ConstantInfo := {}
   let mut corrLocals : Std.HashMap Name ConstantInfo := {}
   let mut vendorLocals : Std.HashMap Name ConstantInfo := {}
   let mut vendorOrigSeen : NameSet := {}
+  let mut pairedUnsafeRecs : Std.HashMap Name Name := {}
+  let mut alternateProofs : Array ConstantInfo := #[]
+  let mut vendorAlternateProofs : Array ConstantInfo := #[]
+  let mut altRoots : List Name := []
   for m in env.header.modules, data in env.header.moduleData do
     unless data.constNames == data.constants.map ConstantInfo.name do
       fail s!"invalid inventory {m.module}"
@@ -3387,11 +3666,15 @@ def verifyAndCollectCorrLocals (env : Environment)
         unless origRole == .vendorMiri do
           fail s!"inventory origin mismatch {ci.name}"
         let stored ← lookupConst env ci.name "stored declaration"
-        unless kind stored == kind ci && stored.isUnsafe == ci.isUnsafe &&
-            stored.isPartial == ci.isPartial && stored.type == ci.type &&
-            stored.value? true == ci.value? true &&
-            stored.levelParams == ci.levelParams do
-          fail s!"stored declaration differs from inventory {ci.name}"
+        if orig == m.module then
+          unless kind stored == kind ci && stored.isUnsafe == ci.isUnsafe &&
+              stored.isPartial == ci.isPartial && stored.type == ci.type &&
+              stored.value? true == ci.value? true &&
+              stored.levelParams == ci.levelParams do
+            fail s!"stored declaration differs from inventory {ci.name}"
+        else
+          unless sameRealizedThmHeader stored ci do
+            fail s!"duplicate declaration {ci.name}"
         if ci.isAxiom then
           fail (s!"vendor Miri module {m.module} cannot declare axiom " ++
             s!"{ci.name}")
@@ -3416,13 +3699,15 @@ def verifyAndCollectCorrLocals (env : Environment)
           vendorOrigSeen := vendorOrigSeen.insert ci.name
         match vendorLocals.get? ci.name with
         | some prev =>
-          -- Sibling vendor modules can independently synthesize identical
-          -- equation (`*.eq_1`) or `congr_simp` theorems on demand; reject any
-          -- non-theorem or non-identical duplicate.
-          unless (ci matches .thmInfo _) && (prev matches .thmInfo _) &&
-              prev.type == ci.type && prev.value? true == ci.value? true &&
-              prev.levelParams == ci.levelParams do
+          unless sameRealizedThmHeader prev ci do
             fail s!"duplicate declaration {ci.name}"
+          vendorAlternateProofs := vendorAlternateProofs ++
+            (← inventoryAlternates prev ci)
+          for dep in ← declarationEdges ci do
+            let (depOrig, depRole) ← constProvenance env roles dep
+            if let some msg :=
+                CorrOrigin.edgeViolation? ci.name .vendorMiri dep depOrig depRole then
+              fail msg
         | none =>
           vendorLocals := vendorLocals.insert ci.name ci
     | .repo srcRole =>
@@ -3430,13 +3715,21 @@ def verifyAndCollectCorrLocals (env : Environment)
         (fun r => r matches .repo (.trusted _))
       let isFoundationConst := constHasRole env roles
         (fun r => r == .foundation || r == .sysrootFoundation)
-      let (nextLocals, _) ←
-        collectRepoModuleConstants env roles isTrustedConst isFoundationConst
-          m.module srcRole data repoLocals {}
+      let (nextLocals, nextPaired, _, nextAlts, nextAltRoots) ←
+        collectRepoModuleConstants env allMatchers roles isTrustedConst
+          isFoundationConst
+          (fun r => !(r matches .vendorMiri))
+          CorrOrigin.edgeViolation? m.module srcRole role data repoLocals
+          pairedUnsafeRecs {} alternateProofs altRoots
       repoLocals := nextLocals
+      pairedUnsafeRecs := nextPaired
+      alternateProofs := nextAlts
+      altRoots := nextAltRoots
       if corrModules.contains m.module then
         for ci in data.constants do
-          corrLocals := corrLocals.insert ci.name ci
+          unless pairedUnsafeRecs.contains ci.name do
+            if repoLocals.contains ci.name then
+              corrLocals := corrLocals.insert ci.name ci
   for (n, _) in vendorLocals do
     unless vendorOrigSeen.contains n do
       fail s!"inventory origin mismatch {n}"
@@ -3450,9 +3743,10 @@ def verifyAndCollectCorrLocals (env : Environment)
       unless vendorLocals.contains n do
         fail s!"uninventoried vendor Miri constant {n}"
     | .repo _ =>
-      unless repoLocals.contains n do
+      unless repoLocals.contains n || pairedUnsafeRecs.contains n do
         fail s!"uninventoried constant {n}"
-  return (repoLocals, corrLocals, vendorLocals)
+  return (repoLocals, corrLocals, vendorLocals, alternateProofs,
+    vendorAlternateProofs, pairedUnsafeRecs, altRoots)
 
 /-- Traverse the transitive constant-level dependency cone starting from
 `pending` in the Pass 2 environment, verifying via `closure` that:
@@ -4024,13 +4318,22 @@ def collectCorrEnv (j : Json)
     (corrModSet : NameSet) :
     IO (Std.HashMap Name CorrOrigin × Std.HashMap Name ConstantInfo ×
       Std.HashMap Name ConstantInfo × Std.HashMap Name ConstantInfo ×
-      Array Name) := do
+      Array ConstantInfo × Array ConstantInfo × Std.HashMap Name Name ×
+      List Name × Array Name) := do
   let env ← importCorrEnv (foundation ++ allTrusted ++ allTheory ++ vendorMiri)
   let roles ← classifyCorrModules j env foundation allTrusted
     allTheory vendorMiri
-  let (repoLocals, corrLocals, vendorLocals) ←
+  let (repoLocals, corrLocals, vendorLocals, repoAlternateProofs,
+      vendorAlternateProofs, pairedUnsafeRecs, repoAltRoots) ←
     verifyAndCollectCorrLocals env roles corrModSet
   checkDeclarationEdges env roles repoLocals CorrOrigin.edgeViolation?
+  for (_, ci) in repoLocals do
+    for dep in ← declarationEdges ci do
+      if pairedUnsafeRecs.contains dep then
+        fail s!"paired _unsafe_rec helper {dep} cannot be referenced logically"
+  for dep in repoAltRoots do
+    if pairedUnsafeRecs.contains dep then
+      fail s!"paired _unsafe_rec helper {dep} cannot be referenced logically"
   let sysrootBaseMods := env.header.modules.filterMap fun m =>
     match roles.get? m.module with
     | some .foundation | some .sysrootFoundation => some m.module
@@ -4039,7 +4342,9 @@ def collectCorrEnv (j : Json)
     vendorLocals.fold (init := ({} : Std.HashMap Name ConstantInfo))
       fun acc n ci =>
         if ci.isPartial then acc else acc.insert n ci
-  return (roles, repoLocals, corrLocals, vendorReplayLocals, sysrootBaseMods)
+  return (roles, repoLocals, corrLocals, vendorReplayLocals,
+    repoAlternateProofs, vendorAlternateProofs, pairedUnsafeRecs, repoAltRoots,
+    sysrootBaseMods)
 
 /-- Initialize `Lean.searchPathRef` from `leanSysroot` and explicit staged
 directories `sp`, ignoring ambient `LEAN_PATH` (which is used only to bootstrap
@@ -4073,6 +4378,7 @@ reference to them from a replayed declaration fails kernel replay with
 def replayCorrAndVendor (sysrootStr : String)
     (roles : Std.HashMap Name CorrOrigin) (sysrootBaseMods : Array Name)
     (vendorReplayLocals repoLocals corrLocals : Std.HashMap Name ConstantInfo)
+    (vendorAlternateProofs repoAlternateProofs : Array ConstantInfo)
     (replayRepo : Bool) : IO (Nat × Nat) := do
   initHermeticSearchPath sysrootStr
   let baseEnv ← importCorrEnv sysrootBaseMods
@@ -4086,6 +4392,7 @@ def replayCorrAndVendor (sysrootStr : String)
       fail s!"vendor Miri constant {n} shadows sysroot declaration"
   let replayedVendor ← replayKernelEnv baseEnv.toKernelEnv vendorReplayLocals
     "vendor Miri kernel replay failed"
+  checkAlternateProofs replayedVendor vendorAlternateProofs
   let miriReplayed :=
     vendorReplayLocals.fold (init := (0 : Nat)) fun acc n _ =>
       if (replayedVendor.find? n).isSome then acc + 1 else acc
@@ -4096,6 +4403,7 @@ def replayCorrAndVendor (sysrootStr : String)
       fail s!"repository constant {n} shadows vendor/sysroot declaration"
   let replayedRepo ← replayKernelEnv replayedVendor repoLocals
     "correspondence kernel replay failed"
+  checkAlternateProofs replayedRepo repoAlternateProofs
   let corrReplayed :=
     corrLocals.fold (init := (0 : Nat)) fun acc n _ =>
       if repoLocals.contains n && (replayedRepo.find? n).isSome then acc + 1
@@ -4114,6 +4422,7 @@ def verifyCorrConesAndClaims
     (foundation allTrusted allTheory vendorMiri : Array Name)
     (roles : Std.HashMap Name CorrOrigin)
     (corrLocals : Std.HashMap Name ConstantInfo) (corrModSet : NameSet)
+    (repoAltRoots : List Name) (repoAlternateProofs : Array ConstantInfo)
     (axiomPolicy : Array (String × String)) :
     IO (Array Name × Nat × Array Name × Nat) := do
   let env ← importCorrEnv (foundation ++ allTrusted ++ allTheory ++ vendorMiri)
@@ -4123,7 +4432,9 @@ def verifyCorrConesAndClaims
     return (miriAxioms, miriVisited.size, #[], 0)
   verifyCorrespondenceClaims env corrLocals
   verifyRefEvaluatorIndependence env roles corrModSet axiomPolicy
-  let corrRoots := corrLocals.fold (init := []) fun acc n _ => n :: acc
+  let mut corrRoots := corrLocals.fold (init := repoAltRoots) fun acc n _ => n :: acc
+  for ci in repoAlternateProofs do
+    corrRoots := ci.name :: (← declarationEdges ci).toList ++ corrRoots
   let (corrAxioms, corrVisited) ←
     closureCorr env roles axiomPolicy corrRoots
   return (miriAxioms, miriVisited.size, corrAxioms, corrVisited.size)
@@ -4157,16 +4468,18 @@ def auditCorrespondence (j : Json) (sysrootStr : String)
   let allTrusted := baseTrusted ++ corrTrusted
   let allTheory := baseTheory ++ corrTheory
   let corrModSet : NameSet := .ofList (corrTrusted.toList ++ corrTheory.toList)
-  let (roles, repoLocals, corrLocals, vendorReplayLocals, sysrootBaseMods) ←
+  let (roles, repoLocals, corrLocals, vendorReplayLocals, repoAlternateProofs,
+      vendorAlternateProofs, _pairedUnsafeRecs, repoAltRoots, sysrootBaseMods) ←
     collectCorrEnv j foundation allTrusted allTheory vendorMiri corrModSet
   let (miriReplayed, corrReplayed) ←
     replayCorrAndVendor sysrootStr roles sysrootBaseMods vendorReplayLocals
-      repoLocals corrLocals (!corrModSet.isEmpty)
+      repoLocals corrLocals vendorAlternateProofs repoAlternateProofs
+      (!corrModSet.isEmpty)
   -- Restore the Pass 2 search path dropped during sysroot-only vendor replay.
   initHermeticSearchPath sysrootStr (spRaw.toList.map System.FilePath.mk)
   let (miriAxioms, miriVisitedSize, corrAxioms, corrVisitedSize) ←
     verifyCorrConesAndClaims foundation allTrusted allTheory vendorMiri roles
-      corrLocals corrModSet axiomPolicy
+      corrLocals corrModSet repoAltRoots repoAlternateProofs axiomPolicy
   return Json.mkObj [
     ("miriReplay", toJson true),
     ("miriReplayedDeclarations", toJson miriReplayed),
@@ -4179,34 +4492,6 @@ def auditCorrespondence (j : Json) (sysrootStr : String)
     ("correspondenceAxioms", toJson corrAxioms)]
 
 /-! ## Phase 4: External target verification (`"target-audit"`) -/
-
-/-- Collect every serialized `@[csimp]` entry of `env` under the declaration it
-replaces, as `(scope, toDeclName, thmName)` in module and entry order. `scope`
-names the namespace of a scoped entry and is `none` for a global entry.
-
-Target-audit imports keep `loadExts := false`, so `CSimp.ext` keeps its initial
-state: the pinned importer says "every extension will have its initial value
-as its state". The serialized module entries remain readable. With
-`loadExts := true`, the pinned import callback would map each global entry's
-`fromDeclName` to its last entry and apply a scoped entry only where its
-namespace is opened. Comparing every entry is stricter than comparing that map.
-https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Environment.lean#L2427-L2431
-https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/ScopedEnvExtension.lean#L61-L74
-https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Compiler/CSimpAttr.lean#L33-L38 -/
-def csimpEntries (env : Environment) :
-    NameMap (Array (Option Name × Name × Name)) := Id.run do
-  let mut entries : NameMap (Array (Option Name × Name × Name)) := {}
-  for modIdx in Array.range env.header.moduleData.size do
-    for entry in Compiler.CSimp.ext.ext.getModuleEntries env modIdx do
-      let e := match entry with
-        | .global e | .scoped _ e => e
-      let scope : Option Name := match entry with
-        | .global _ => none
-        | .scoped ns _ => some ns
-      let previous := (entries.find? e.fromDeclName).getD #[]
-      entries := entries.insert e.fromDeclName
-        (previous.push (scope, e.toDeclName, e.thmName))
-  return entries
 
 /-- Return `true` when `n` (ignoring private prefixes) names `Lean.Syntax` or a
 declaration beneath `Lean.Syntax`. -/
@@ -4244,15 +4529,15 @@ def isForbiddenSpecTransitiveConst (n : Name) : Bool :=
   else if [`Lean.Macro, `Lean.Elab, `Lean.Core, `Lean.Meta,
       `Lean.Environment, `Lean.Compiler, `Lean.Internal,
       `Lean.Loop, `repeatM,
+      `Lean.LoadDynlib, `Lean.loadDynlib, `Lean.loadPlugin, `Lean.Dynlib,
       `Lean.getGithash, `Lean.version,
-      `System.FilePath, `System.SearchPath, `System.Uri].any
+      `Init.System, `Std.Internal.UV, `Dynlib].any
         (fun pre => u == pre || pre.isPrefixOf u) then
     true
-  else if u == `System.Platform || (`System.Platform).isPrefixOf u then
+  else if r == `System then
     !(allowedSystemPlatformDecls.any fun ok => u == ok || ok.isPrefixOf u)
   else
-    [`dbgTrace, `dbgTraceVal, `dbgTraceIfShared,
-      `dbgSleep, `dbgStackTrace, `dbgStackTraceIf].contains u
+    forbiddenPureIdentifiers.contains u
 
 /-- Check the exact first three parts of the 4-part `p._unsafe_rec` pairing
 invariant for a `.source .specification` constant `ci` in module `m`:
@@ -4264,11 +4549,10 @@ def pairedSpecUnsafeRecParent? (env : Environment) (m : Name)
     (ci : ConstantInfo) : IO (Option Name) := do
   if !ci.isPartial || ci.isUnsafe || !(ci matches .defnInfo _) then
     return none
-  let .str parent "_unsafe_rec" := ci.name | return none
+  let some parent := Compiler.isUnsafeRecName? ci.name | return none
   let some parentCi := env.checked.get.find? parent | return none
   let parentOrig ← origin env parent
-  if parentOrig == m && (parentCi matches .defnInfo _) &&
-      !parentCi.isUnsafe && !parentCi.isPartial then
+  if parentOrig == m && (parentCi matches .defnInfo _) && isCEnv parentCi then
     return some parent
   return none
 
@@ -4348,7 +4632,7 @@ def runTargetClosurePhase
       match role with
       | .foundation | .library => pure ()
       | .source _ => fail s!"target library inventory origin mismatch {n}"
-      let alternatives ← inventoryAlternates ci exportedCi true
+      let alternatives ← inventoryAlternates ci exportedCi
       for proof in alternatives do
         let altDeps ← declarationEdges proof
         let merged := (st.edgesCache.getD n {}) ++ altDeps
@@ -5809,6 +6093,26 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
           if roles.get? imp.module == some (.source .proof) then
             fail s!"target authority violation {modName} imports {imp.module}"
   let env ← importEnv j nonProofRoots
+  let allMatchers := collectAllMatchers env
+  -- Collect all compiler overrides authored by non-proof `.source` modules
+  -- directly from `finalizeImport`-populated module entries (no `loadExts`
+  -- and no duplicate `foundation ++ libraries` metadata environment) together
+  -- with the `Proof` overrides exported by `"target-export"`.
+  let mut sourceImplementedBy := proofExport.overrides.implementedBy
+  let mut sourceExternDecls := proofExport.overrides.externDecls
+  let mut sourceCsimp := proofExport.overrides.csimp
+  for modIdx in Array.range env.header.modules.size do
+    let m := env.header.modules[modIdx]!
+    if roles.get? m.module matches some (.source _) then
+      for (declName, _) in
+          Compiler.implementedByAttr.ext.getModuleEntries env modIdx do
+        sourceImplementedBy := sourceImplementedBy.insert declName
+      for (declName, _) in externAttr.ext.getModuleEntries env modIdx do
+        sourceExternDecls := sourceExternDecls.insert declName
+      for entry in Compiler.CSimp.ext.ext.getModuleEntries env modIdx do
+        let e := match entry with
+          | .global e | .scoped _ e => e
+        sourceCsimp := sourceCsimp.insert e.fromDeclName
   -- Reconstruct the combined module import graph (`nonProofEnv` + exported
   -- `Proof` modules) and verify exact equality against the admitted DAG.
   let mut seenExportedProofMods : NameSet := {}
@@ -5841,6 +6145,7 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
   let mut libraryExports : Std.HashMap Name (Array ConstantInfo) := {}
   let mut specAllConsts : List Name := []
   let mut pairedSpecUnsafeRecs : Array (Name × Name) := #[]
+  let mut pendingSourceAlternates : Array (TargetRole × ConstantInfo × ConstantInfo) := #[]
   for m in env.header.modules, data in env.header.moduleData do
     let some role := roles.get? m.module
       | fail s!"foreign target module {m.module}"
@@ -5871,29 +6176,45 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
           targetRole == .proof && isAnnealModuleName m.module)
       unless data.constNames == data.constants.map ConstantInfo.name do
         fail s!"invalid target inventory {m.module}"
+      let mut modSeen : NameSet := {}
       for ci in data.constants do
+        if modSeen.contains ci.name then
+          fail s!"duplicate target declaration {ci.name}"
+        modSeen := modSeen.insert ci.name
         let userRoot := (privateToUserName ci.name).getRoot
         if targetRole != .model && userRoot == `Trusted &&
-            !isGeneratedEqHelper isModelConst ci then
+            !isRealizedOrCompilerHelper env allMatchers isModelConst ci then
           fail (s!"non-model target module {m.module} cannot declare " ++
             s!"constant {ci.name} in Trusted namespace")
         if reservedKernelRoots.contains userRoot &&
-            !isGeneratedEqHelper isSysrootConst ci then
+            !isRealizedOrCompilerHelper env allMatchers isSysrootConst ci then
           fail (s!"target module {m.module} cannot declare constant " ++
             s!"{ci.name} in reserved kernel namespace {userRoot}")
-        if sourceInventory.contains ci.name then
-          fail s!"duplicate target declaration {ci.name}"
-        unless (← origin env ci.name) == m.module do
-          fail s!"target inventory origin mismatch {ci.name}"
+        let actualOrig ← origin env ci.name
         let stored ← lookupConst env ci.name "target dependency"
-        unless stored.type == ci.type && stored.value? true == ci.value? true do
-          fail s!"stored target declaration differs {ci.name}"
-        sourceInventory := sourceInventory.insert ci.name
-        if targetRole == .specification then
-          if let some parent ← pairedSpecUnsafeRecParent? env m.module ci then
-            pairedSpecUnsafeRecs := pairedSpecUnsafeRecs.push (ci.name, parent)
-          else
-            specAllConsts := ci.name :: specAllConsts
+        if actualOrig == m.module then
+          if sourceInventory.contains ci.name then
+            fail s!"duplicate target declaration {ci.name}"
+          if !(stored.type == ci.type &&
+              stored.value? true == ci.value? true &&
+              kind stored == kind ci && stored.isUnsafe == ci.isUnsafe &&
+              stored.isPartial == ci.isPartial &&
+              stored.levelParams == ci.levelParams) then
+            unless sameRealizedThmHeader stored ci do
+              fail s!"stored target declaration differs {ci.name}"
+            pendingSourceAlternates :=
+              pendingSourceAlternates.push (targetRole, stored, ci)
+          sourceInventory := sourceInventory.insert ci.name
+          if targetRole == .specification then
+            if let some parent ← pairedSpecUnsafeRecParent? env m.module ci then
+              pairedSpecUnsafeRecs := pairedSpecUnsafeRecs.push (ci.name, parent)
+            else
+              specAllConsts := ci.name :: specAllConsts
+        else
+          unless sameRealizedThmHeader stored ci do
+            fail s!"target inventory origin mismatch {ci.name}"
+          pendingSourceAlternates :=
+            pendingSourceAlternates.push (targetRole, stored, ci)
   let mut proofOrigins : Std.HashMap Name Name := {}
   let mut proofConsts : Std.HashMap Name ConstantInfo := {}
   for pm in proofExport.modules do
@@ -5905,20 +6226,38 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
       (allowTheoryImportAll := allowModuleArtifact)
     unless pm.constNames == pm.constants.map ConstantInfo.name do
       fail s!"invalid target inventory {pm.moduleName}"
+    let mut modSeen : NameSet := {}
     for ci in pm.constants do
+      if modSeen.contains ci.name then
+        fail s!"duplicate target declaration {ci.name}"
+      modSeen := modSeen.insert ci.name
       let userRoot := (privateToUserName ci.name).getRoot
-      if userRoot == `Trusted && !isGeneratedEqHelper isModelConst ci then
+      if userRoot == `Trusted &&
+          !isRealizedOrCompilerHelper env allMatchers isModelConst ci
+            (allowUnimportedProofSparse := true) then
         fail (s!"non-model target module {pm.moduleName} cannot declare " ++
           s!"constant {ci.name} in Trusted namespace")
       if reservedKernelRoots.contains userRoot &&
-          !isGeneratedEqHelper isSysrootConst ci then
+          !isRealizedOrCompilerHelper env allMatchers isSysrootConst ci
+            (allowUnimportedProofSparse := true) then
         fail (s!"target module {pm.moduleName} cannot declare constant " ++
           s!"{ci.name} in reserved kernel namespace {userRoot}")
-      if (env.checked.get.find? ci.name).isSome || sourceInventory.contains ci.name then
-        fail s!"duplicate target declaration {ci.name}"
-      sourceInventory := sourceInventory.insert ci.name
-      proofOrigins := proofOrigins.insert ci.name pm.moduleName
-      proofConsts := proofConsts.insert ci.name ci
+      if let some stored := env.checked.get.find? ci.name then
+        unless sameRealizedThmHeader stored ci do
+          fail s!"duplicate target declaration {ci.name}"
+        pendingSourceAlternates :=
+          pendingSourceAlternates.push (.proof, stored, ci)
+      else if let some stored := proofConsts.get? ci.name then
+        unless sameRealizedThmHeader stored ci do
+          fail s!"duplicate target declaration {ci.name}"
+        pendingSourceAlternates :=
+          pendingSourceAlternates.push (.proof, stored, ci)
+      else
+        if sourceInventory.contains ci.name then
+          fail s!"duplicate target declaration {ci.name}"
+        sourceInventory := sourceInventory.insert ci.name
+        proofOrigins := proofOrigins.insert ci.name pm.moduleName
+        proofConsts := proofConsts.insert ci.name ci
   let originOf (n : Name) : IO Name := do
     if let some idx := env.getModuleIdxFor? n then
       let some modName := env.header.moduleNames[idx.toNat]?
@@ -5988,18 +6327,61 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
   unless axiomPolicy == #[("Classical.choice", "Init.Prelude"),
       ("Quot.sound", "Init.Prelude"), ("propext", "Init.Core")] do
     fail "target axiom policy differs from the original foundation"
+  -- Pre-validate alternate realizations in `.source` inventories so
+  -- `.specification` alternate edges enter Phase 1 + `specQueue` (transitive
+  -- ban) and every kept alternate proof's dependencies enter `phase2Roots`
+  -- for kernel replay.
+  let mut specAltDeps : List Name := []
+  let mut phase2Roots : List Name := [theoremName]
+  let mut sourceAlternateProofs : Array ConstantInfo := #[]
+  for (altRole, stored, ci) in pendingSourceAlternates do
+    let altDeps ← declarationEdges ci
+    for dep in altDeps do
+      let (depMod, depRole) ← provenance dep
+      if dep == `sorryAx && depMod == `Init.Prelude then
+        if !allowSorryInProof || altRole != .proof then
+          fail s!"unapproved axiom {dep} from {depMod}"
+      else
+        if let some msg :=
+            TargetOrigin.edgeViolation?
+              ci.name (.source altRole) dep depRole then
+          fail msg
+        if altRole == .specification then
+          if isLeanSyntaxConst dep || isPanicSpecConst dep then
+            fail s!"specification declaration {ci.name} cannot reference {dep}"
+          specAltDeps := dep :: specAltDeps
+        else
+          phase2Roots := dep :: phase2Roots
+    let alts ← inventoryAlternates stored ci
+    for idx in [:alts.size] do
+      let p := alts[idx]!
+      let pDeps ← declarationEdges p
+      let skipSorryProof :=
+        altRole == .proof && allowSorryInProof && pDeps.contains `sorryAx
+      unless skipSorryProof do
+        sourceAlternateProofs := sourceAlternateProofs.push p
+        if idx == 0 then
+          -- First entry is `stored` (matching `lookup p.name`).
+          phase2Roots := p.name :: pDeps.toList ++ phase2Roots
+        else
+          for dep in pDeps do
+            if dep == `sorryAx then
+              let (depMod, _) ← provenance dep
+              if depMod == `Init.Prelude then
+                fail s!"unapproved axiom {dep} from {depMod}"
+            phase2Roots := dep :: phase2Roots
   -- Phase 1: Claim and whole-specification closure (strict 3-axiom ceiling,
   -- zero `sorryAx`, non-opaque specs, no direct `Lean.Syntax` edges).
   let claimRoots := [
     expectedName, canonicalRoot, crateCtor, subjectName, specName]
   let phase1State ← runTargetClosurePhase lookup provenance axiomPolicy
     libraryInventories libraryExports true allowSorryInProof {}
-    (claimRoots ++ specAllConsts) {}
+    (claimRoots ++ specAllConsts ++ specAltDeps) {}
   let phase1Closure := phase1State.visited
   -- Narrowed transitive effect/meta/`System`/debug ban across every constant
   -- transitively reachable from any `TargetRole::Specification` declaration.
   let mut specSeen : NameSet := {}
-  let mut specQueue : List Name := specAllConsts
+  let mut specQueue : List Name := specAllConsts ++ specAltDeps
   while !specQueue.isEmpty do
     let n :: rest := specQueue | break
     specQueue := rest
@@ -6016,11 +6398,11 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
   -- and admitting `sorryAx` strictly on proof-only edges when requested.
   let phase2State ← runTargetClosurePhase lookup provenance axiomPolicy
     libraryInventories libraryExports false allowSorryInProof phase1Closure
-    [theoremName] phase1State
+    phase2Roots phase1State
   let reached := phase2State.visited
   let axioms := phase2State.axioms.toArray.qsort Name.lt
   let sorryDecls := phase2State.sorryDecls.toArray.qsort Name.lt
-  let alternateProofs := phase2State.alternateProofs
+  let alternateProofs := phase2State.alternateProofs ++ sourceAlternateProofs
   -- Meaning surfaces follow the canonical claim's dependencies, independently
   -- of which proof helpers establish it. Those helpers still belong to reached
   -- and undergo replay, but editing them must not redefine the reviewed claim.
@@ -6038,11 +6420,13 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
       if let .source targetRole := role then
         let userRoot := (privateToUserName n).getRoot
         if targetRole != .model && userRoot == `Trusted &&
-            !isGeneratedEqHelper isModelConst ci then
+            !isRealizedOrCompilerHelper env allMatchers isModelConst ci
+              (allowUnimportedProofSparse := (proofConsts.get? n).isSome) then
           fail (s!"non-model target dependency {n} cannot live in " ++
             "Trusted namespace")
         if reservedKernelRoots.contains userRoot &&
-            !isGeneratedEqHelper isSysrootConst ci then
+            !isRealizedOrCompilerHelper env allMatchers isSysrootConst ci
+              (allowUnimportedProofSparse := (proofConsts.get? n).isSome) then
           fail (s!"target dependency {n} cannot live in reserved kernel " ++
             s!"namespace {userRoot}")
         unless sourceInventory.contains n do
@@ -6091,40 +6475,15 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
     "target theorem type differs from Expected"
     (Kernel.isDefEq checkedEnv {} theoremInfo.type canonical)
   -- Compiler replacement attributes do not affect logical reduction. Reject
-  -- authored changes nevertheless, including changes to an imported helper.
-  -- Compare against authenticated toolchain metadata so ordinary pinned extern
-  -- implementations of Nat/BitVec operations remain available.
-  --
-  -- Keep both metadata environments at loadExts := false; env is the target
-  -- import above. With loadExts, the pinned importer runs every imported
-  -- [init] declaration, after runInitAttrs checks that initializers are
-  -- enabled: "`enableInitializersExecution` must be run before calling
-  -- `importModules (loadExts := true)`". Builtin import callbacks also
-  -- evaluate imported declarations; KeyedDeclsAttribute's ofOLeanEntry calls
-  -- evalConstCheck. That code would run in the process whose result file the
-  -- runner accepts. The implemented_by and extern lookups need no callback:
-  -- the pinned ParametricAttribute import callback is
-  -- `fun _ => pure ([], {})`, and getParam? reads an imported declaration's
-  -- `ext.getModuleEntries env modIdx`. csimpEntries reads csimp entries the
-  -- same way.
-  -- https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Compiler/InitAttr.lean#L198-L203
-  -- https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/KeyedDeclsAttribute.lean#L118-L127
-  -- https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Attributes.lean#L263-L281
-  -- https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Attributes.lean#L306-L321
-  let fixedMetadata ← importEnv j (foundation ++ libraries)
-  let fixedCSimp := csimpEntries fixedMetadata
-  let targetCSimp := csimpEntries env
+  -- authored changes nevertheless, including any override on a logically
+  -- reached declaration authored by a non-proof `.source` module (via
+  -- `finalizeImport`-populated `getModuleEntries` on `env`) or by a `Proof`
+  -- module (via `proofExport.overrides`), without importing a duplicate
+  -- `foundation ++ libraries` metadata environment.
   for n in reached do
-    if proofExport.overrides.implementedBy.contains n ||
-        proofExport.overrides.externDecls.contains n then
+    if sourceImplementedBy.contains n || sourceExternDecls.contains n then
       fail s!"unchecked compiler override on logical dependency {n}"
-    if proofExport.overrides.csimp.contains n then
-      fail s!"authored compiler replacement on logical dependency {n}"
-    unless Compiler.getImplementedBy? fixedMetadata n ==
-        Compiler.getImplementedBy? env n &&
-        getExternAttrData? fixedMetadata n == getExternAttrData? env n do
-      fail s!"unchecked compiler override on logical dependency {n}"
-    unless fixedCSimp.find? n == targetCSimp.find? n do
+    if sourceCsimp.contains n then
       fail s!"authored compiler replacement on logical dependency {n}"
   -- Subject helpers can determine captured program data without appearing in
   -- the model or specification. Report their own logical closure as well, so

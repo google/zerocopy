@@ -23,6 +23,7 @@ import tempfile
 import unittest
 
 import perf_tracking
+import prebuild_bundled_oleans
 
 
 def _make_record(
@@ -231,11 +232,28 @@ class MockCollectionTests(unittest.TestCase):
                 }
             )
         )
+        # Mock Lean sysroot + binary inside an omnibus-style bundle dir
+        # (`bundle/lean` beside `bundle/share/anneal/prebuilt/manifest.json`).
+        bundle_dir = root / "bundle"
+        lean_prefix = bundle_dir / "lean"
+        (lean_prefix / "lib/lean/Init").mkdir(parents=True)
+        (lean_prefix / "lib/lean/Std").mkdir(parents=True)
+        (lean_prefix / "src/lean/Init").mkdir(parents=True)
+        (lean_prefix / "src/lean/Std").mkdir(parents=True)
+        (lean_prefix / "bin").mkdir(parents=True)
+        (bundle_dir / "share/anneal/prebuilt").mkdir(parents=True)
+        (bundle_dir / "share/anneal/prebuilt/manifest.json").write_text(
+            json.dumps({"schema_version": 1, "entries": []}),
+            encoding="utf-8",
+        )
+        (lean_prefix / "lib/lean/Init/Core.olean").write_bytes(b"core")
+
         (anneal / "trusted/lean/foundation-lock.json").write_text(
             json.dumps({"modules": {"Init.Core": {}}, "graph": {"Init.Core": []}})
         )
         (anneal / "trusted/audit/library-lock.json").write_text(
-            json.dumps({"modules": {}, "graph": {}})
+            prebuild_bundled_oleans.render_library_lock_for_prefix(lean_prefix),
+            encoding="utf-8",
         )
 
         # Scalar fixture
@@ -272,18 +290,6 @@ class MockCollectionTests(unittest.TestCase):
         ):
             subprocess.run(cmd, cwd=repo, check=True)
 
-        # Mock Lean sysroot + binary inside an omnibus-style bundle dir
-        # (`bundle/lean` beside `bundle/share/anneal/prebuilt/manifest.json`).
-        bundle_dir = root / "bundle"
-        lean_prefix = bundle_dir / "lean"
-        (lean_prefix / "lib/lean/Init").mkdir(parents=True)
-        (lean_prefix / "bin").mkdir(parents=True)
-        (bundle_dir / "share/anneal/prebuilt").mkdir(parents=True)
-        (bundle_dir / "share/anneal/prebuilt/manifest.json").write_text(
-            json.dumps({"schema_version": 1, "entries": []}),
-            encoding="utf-8",
-        )
-        (lean_prefix / "lib/lean/Init/Core.olean").write_bytes(b"core")
         lean_log = root / "lean_invocations.jsonl"
         fake_lean = lean_prefix / "bin/lean"
         fake_lean.write_text(

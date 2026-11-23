@@ -144,11 +144,46 @@ struct InspectorOkTypedResponse<T> {
     result: T,
 }
 
+const LEAN_STDERR_PANIC_MARKERS: &[&str] = &[
+    "PANIC at ",
+    "INTERNAL PANIC:",
+    "PANIC: ",
+    "lean_internal_panic",
+    "internal exception #",
+    "internal exception:",
+    "internal exception ",
+];
+
+fn detect_lean_stderr_panic(stderr: &str) -> Option<&'static str> {
+    stderr
+        .lines()
+        .find_map(|line| LEAN_STDERR_PANIC_MARKERS.iter().copied().find(|m| line.contains(m)))
+}
+
+fn check_lean_stderr_panic(label: &str, output: &Output) -> Result<(), Failure> {
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    if let Some(marker) = detect_lean_stderr_panic(&stderr) {
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        return Err(Failure::new(
+            2,
+            label,
+            format!(
+                "Lean runtime panic marker `{marker}` on stderr (exit {:?}): stdout:\n{}\nstderr:\n{}",
+                output.status.code(),
+                stdout.trim(),
+                stderr.trim()
+            ),
+        ));
+    }
+    Ok(())
+}
+
 fn check_lean_output(
     label: &str,
     output: Output,
     ordinary_rejection: bool,
 ) -> Result<String, Failure> {
+    check_lean_stderr_panic(label, &output)?;
     if !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr);
         let stdout = String::from_utf8_lossy(&output.stdout);
@@ -1832,28 +1867,10 @@ impl Checker {
         let library_lock_path = self.root.join("trusted/audit/library-lock.json");
         let library_lock = if fs::symlink_metadata(&library_lock_path).is_ok() {
             regular(&library_lock_path, "library-lock")?;
-            let lock: LibraryLock = serde_json::from_slice(
-                &fs::read(&library_lock_path)
-                    .map_err(|e| Failure::operational("library-lock", e.to_string()))?,
-            )
-            .map_err(|e| Failure::operational("library-lock", e.to_string()))?;
-            if lock.schema != 1
-                || lock.toolchain != TOOLCHAIN
-                || !lock.modules.keys().eq(lock.graph.keys())
-                || lock.modules.keys().any(|m| parsed_lock.modules.contains_key(m))
-                || lock.graph.values().flatten().any(|e| {
-                    !lock.modules.contains_key(&e.module)
-                        && !parsed_lock.modules.contains_key(&e.module)
-                })
-            {
-                return Err(Failure::operational(
-                    "library-lock",
-                    "invalid checked-library catalog",
-                ));
-            }
-            for (module, record) in &lock.modules {
-                record.validate_schema(module, "library-lock")?;
-            }
+            let raw = fs::read_to_string(&library_lock_path)
+                .map_err(|e| Failure::operational("library-lock", e.to_string()))?;
+            let lock = LibraryLock::parse(&raw)?;
+            lock.verify_prefix(&prefix, "library-lock")?;
             Some(lock)
         } else {
             None
@@ -2278,6 +2295,7 @@ impl Checker {
         let output = output?;
 
         let label = format!("compile-{module}");
+        check_lean_stderr_panic(&label, &output)?;
         if !output.status.success() {
             let stderr = String::from_utf8_lossy(&output.stderr);
             let stdout = String::from_utf8_lossy(&output.stdout);
@@ -2903,6 +2921,7 @@ impl Checker {
         let output = output?;
 
         let label = format!("compile-{module}");
+        check_lean_stderr_panic(&label, &output)?;
         if !output.status.success() {
             let stderr = String::from_utf8_lossy(&output.stderr);
             let stdout = String::from_utf8_lossy(&output.stdout);
@@ -3106,6 +3125,7 @@ impl Checker {
                         return Err(err);
                     }
                 };
+                check_lean_stderr_panic(compile_phase, &output)?;
                 if !output.status.success() {
                     let _ = fs::remove_dir_all(&out_dir);
                     let stderr = String::from_utf8_lossy(&output.stderr);
@@ -3164,6 +3184,7 @@ impl Checker {
                 let output = runtime.execute(&policy);
                 let _ = fs::remove_dir_all(&tmp_dir);
                 let output = output?;
+                check_lean_stderr_panic(compile_phase, &output)?;
                 if !output.status.success() {
                     let stderr = String::from_utf8_lossy(&output.stderr);
                     return Err(Failure::new(
@@ -3394,6 +3415,7 @@ impl Checker {
         let _ = fs::remove_dir_all(&tmp_dir);
         let output = output?;
 
+        check_lean_stderr_panic(mode, &output)?;
         // Door 1 validates `runs/<n>/out` on BOTH exit 0 and exit 1.
         let door1_bytes = validate_inspector_result(&out_dir, "result.json")?;
         if !output.status.success() {
@@ -3455,6 +3477,7 @@ impl Checker {
             .launch_lean_with_path(&args, Some(OsStr::new("control")))
             .map_err(|e| Failure::new(2, mode, format!("could not execute Lean: {e}")))?;
 
+        check_lean_stderr_panic(mode, &output)?;
         if !output.status.success() {
             if output.status.code() == Some(1)
                 && result_path.is_file()
@@ -4839,5 +4862,75 @@ exit 1
         let proof_args = build_lean_compile_args(setup, out, src, 2048, false, true, false);
         assert!(!proof_args.iter().any(|a| a.contains("autoImplicit")));
         assert!(!proof_args.iter().any(|a| a.contains("relaxedAutoImplicit")));
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn lean_stderr_panic_markers_fail_closed_even_at_exit_zero() {
+        use std::os::unix::process::ExitStatusExt;
+
+        let ok_status = std::process::ExitStatus::from_raw(0);
+        for marker_line in [
+            "PANIC at Lean.Elab.Foo Foo.lean:12:4: unexpected state",
+            "INTERNAL PANIC: broken invariant",
+            "PANIC: Promise.result!: empty",
+            "lean_internal_panic_out_of_memory",
+            "uncaught exception: internal exception #17",
+            "internal exception: unknown binder",
+            "internal exception foo",
+        ] {
+            let err = check_lean_output(
+                "unit",
+                Output {
+                    status: ok_status,
+                    stdout: b"{}".to_vec(),
+                    stderr: format!("{marker_line}\n").into_bytes(),
+                },
+                true,
+            )
+            .expect_err("panic marker at exit 0 must fail closed");
+            assert_eq!(err.code, 2, "{err}");
+            assert!(err.message.contains("Lean runtime panic marker"), "{err}");
+        }
+
+        // Benign warnings or user identifiers mentioning "PANIC" without any
+        // Lean runtime panic prefix must not trigger a false positive.
+        let out = check_lean_output(
+            "unit",
+            Output {
+                status: ok_status,
+                stdout: b"ok\n".to_vec(),
+                stderr: b"warning: unused declaration `PANIC_HANDLER`\ninfo: internal check\n"
+                    .to_vec(),
+            },
+            false,
+        )
+        .expect("benign stderr diagnostic must pass");
+        assert_eq!(out, "ok\n");
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn run_lean_script_fails_closed_when_exit_zero_emits_panic_stderr() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = fs::canonicalize(dir.path()).unwrap();
+        let inspector = root.join("trusted/audit/TrustedBoundary.lean");
+        fs::create_dir_all(inspector.parent().unwrap()).unwrap();
+        fs::write(&inspector, "-- stub\n").unwrap();
+
+        let mut checker = shell_checker(&root);
+        let err = checker
+            .process(
+                "probe",
+                &[
+                    "-c".to_owned(),
+                    "printf 'PANIC at Fake.Mod Fake.lean:1:1: simulated VM panic\\n' >&2; \
+                     printf 'ok\\n'; exit 0"
+                        .to_owned(),
+                ],
+            )
+            .expect_err("zero exit with panic stderr must fail closed");
+        assert_eq!(err.code, 2, "{err}");
+        assert!(err.message.contains("Lean runtime panic marker"), "{err}");
     }
 }

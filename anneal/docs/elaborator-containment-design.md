@@ -493,8 +493,10 @@ command elaboration, zero tactic allowlist on `proof/`):
 `"target-audit"` runs inside `ExecSeal` with `trustLevel := 0`,
 `plugins := #[]`, and `loadExts := false`, verifying `!data.isModule`,
 `oleanParts.size == 1 && irParts.isEmpty`, and strictly public kernel-relevant
-`fixedMetadata` (`getImplementedBy?`, `getExternAttrData?`, `csimpEntries`)—with
-**no** brittle blacklist over internal `ModuleData.entries` extension names:
+compiler-override metadata (`getImplementedBy?`, `getExternAttrData?`,
+`csimpEntries` read directly from `finalizeImport`-populated `getModuleEntries`
+on `env`)—with **no** brittle blacklist over internal `ModuleData.entries`
+extension names:
 
 1. **Phase 1 (Claim and whole-specification closure):** Seeds `expectedReached`
    from all five canonical roots (`[expectedName, canonicalRoot, crateCtor,
@@ -625,6 +627,6 @@ Continuous integration and test suites enforce these design invariants:
 | **Custom `linux_userns_pivot` (`unshare` + `pivot_root`) in `cargo-anneal`** | Adds ~150–200 LOC of fragile `unsafe` mount-namespace code to the TCB (false-confidence risk vs. hardened upstream `bwrap`) and still fails identically to `bwrap` (`EROFS` on `/proc/self/uid_map`) inside `nsjail` containers with RO `/proc`. |
 | **`bwrap`-only in `cargo-anneal` (no Tier 2 Landlock/Seccomp)** | Fails inside unmodified `nsjail` CI containers (`EROFS` on `/proc/self/uid_map`), forcing downstream infra to weaken `nsjail` (`/proc` RW) and package `bwrap` in prebuilts or run CI unsandboxed. |
 | **Tier 2 seccomp denylist instead of fail-closed allowlist** | Live red-team probes bypassed a denylist via `shmat`, `*xattrat`, `inotify`, `fcntl(F_SETLEASE)`, and `ioctl(FS_IOC_SETFLAGS)`. A fail-closed dual-arch allowlist closes unknown syscalls by construction. |
-| **Internal `ModuleData.entries` extension blacklist in `"target-audit"`** | Broke every `inductive` declaration (`Lean.Elab.Term.elabAsElim`) and created perpetual breakage across rolling Lean releases. `loadExts := false` plus public `fixedMetadata` (`implemented_by`, `extern`, `csimp`) is strictly cleaner and kernel-exact. |
+| **Internal `ModuleData.entries` extension blacklist in `"target-audit"`** | Broke every `inductive` declaration (`Lean.Elab.Term.elabAsElim`) and created perpetual breakage across rolling Lean releases. `loadExts := false` plus direct `getModuleEntries` checks (`implemented_by`, `extern`, `csimp`) is strictly cleaner and kernel-exact. |
 | **Additive Receipt Schema v2** | Carried a redundant 1-field wrapper object (`elaboration_containment: { os_sandbox }`) and mixed v2/v3 validation semantics to avoid updating two consumers. Bumping cleanly to v3 flattens `elaboration_sandbox` and enforces one uniform taint law. |
 | **macOS `sandbox-exec` backend in TCB** | Deprecated by Apple and unverified in Linux-only CI; failing closed unless `--allow-unsandboxed-elaboration` is explicit avoids untested security theater. |
