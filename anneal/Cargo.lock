@@ -146,7 +146,7 @@ checksum = "fc652a48c352aef3ea3aed32080501cf3ef6ed5da78602a020c991775b0aff04"
 
 [[package]]
 name = "cargo-anneal"
-version = "0.2.0-alpha.9"
+version = "0.2.0-alpha.10"
 dependencies = [
  "clap",
  "exocrate",
