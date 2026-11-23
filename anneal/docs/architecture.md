@@ -603,8 +603,10 @@ edition settings, and resolved dependency crate hashes.
 Rather than parsing `.rs` files standalone, `cargo anneal` accepts an explicit
 configured compilation (`--request` or `verify rustc`, passing exact compiler
 flags and crate configuration to `rustc-capture`), or discovers library entry
-inputs via `cargo metadata` (`--manifest-path`, for dependency-free,
-feature-free libraries under Anneal's fixed x86-64 Linux scalar profile). Full
+inputs and enabled Cargo features via `cargo metadata` (`--manifest-path`, for
+libraries with no required normal or build dependencies — dev-dependencies and
+inactive optional dependencies are ignored — under Anneal's fixed x86-64 Linux
+scalar profile). Full
 Cargo build-graph interception (via `RUSTC_WORKSPACE_WRAPPER`) is planned.
 
 ### Guarding against post-monomorphization and late compiler errors

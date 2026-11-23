@@ -46,7 +46,7 @@ cargo anneal verify --request path/to/request.json > path/to/receipt.json
 ```
 
 Other entrypoints:
-- Cargo packages: `cargo anneal verify --manifest-path path/to/Cargo.toml --proof-dir path/to/proofs`
+- Cargo packages: `cargo anneal verify --manifest-path path/to/Cargo.toml --proof-dir path/to/proofs [--no-default-features] [--features <list>] [--all-features]`
 - Build systems with explicit inputs: `cargo anneal verify rustc <crate_root> --crate-name <name> [--env KEY=VALUE ...] --spec-file <Mod>=<path> --proof-file <Mod>=<path> ...`
 
 ## Create a request and starter proof

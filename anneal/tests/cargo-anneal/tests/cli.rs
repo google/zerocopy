@@ -681,17 +681,32 @@ fn cargo_shortcut_declares_only_its_documented_source_namespace() {
     fs::create_dir(package.join("proof")).unwrap();
     fs::create_dir(package.join(".hidden")).unwrap();
     fs::create_dir(package.join("target")).unwrap();
+    fs::create_dir(package.join("benches")).unwrap();
+    fs::create_dir(package.join("tests")).unwrap();
+    fs::create_dir(package.join("examples")).unwrap();
     fs::write(
         package.join("Cargo.toml"),
-        "[package]\nname = \"source_namespace\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+        "[package]\nname = \"source_namespace\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n\
+         [features]\ndefault = [\"std\"]\nstd = []\ni128 = []\n\n\
+         [dev-dependencies]\nquickcheck = { path = \"../unused-dev\" }\n",
     )
     .unwrap();
+    fs::create_dir_all(project.path().join("unused-dev/src")).unwrap();
+    fs::write(
+        project.path().join("unused-dev/Cargo.toml"),
+        "[package]\nname = \"quickcheck\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+    )
+    .unwrap();
+    fs::write(project.path().join("unused-dev/src/lib.rs"), b"").unwrap();
     fs::write(package.join("src/lib.rs"), b"pub fn zero() -> u64 { include!(\"zero.inc\") }\n")
         .unwrap();
     fs::write(package.join("src/unused.rs"), b"unused declared input\n").unwrap();
     fs::write(package.join("src/zero.inc"), b"0u64\n").unwrap();
     fs::write(package.join(".hidden/ignored.rs"), b"not a shortcut input\n").unwrap();
     fs::write(package.join("target/ignored.rs"), b"not a shortcut input\n").unwrap();
+    fs::write(package.join("benches/bench.rs"), b"not a shortcut input\n").unwrap();
+    fs::write(package.join("tests/it.rs"), b"not a shortcut input\n").unwrap();
+    fs::write(package.join("examples/demo.rs"), b"not a shortcut input\n").unwrap();
     fs::write(package.join("proof/Spec.lean"), b"not compiled by this check\n").unwrap();
     let evidence = project.path().join("evidence");
     // A missing capture tool stops after request construction and staging,
@@ -728,10 +743,131 @@ fn cargo_shortcut_declares_only_its_documented_source_namespace() {
         request["compilation"]["source_files"],
         serde_json::json!(["src/lib.rs", "src/unused.rs"])
     );
+    assert_eq!(
+        request["compilation"]["cfg"],
+        serde_json::json!(["feature=\"default\"", "feature=\"std\""])
+    );
     assert!(!evidence.join("rust/src/zero.inc").exists());
     assert!(!evidence.join("rust/.hidden").exists());
     assert!(!evidence.join("rust/target").exists());
+    assert!(!evidence.join("rust/benches").exists());
+    assert!(!evidence.join("rust/tests").exists());
+    assert!(!evidence.join("rust/examples").exists());
     assert!(!evidence.join("rust/proof").exists());
+}
+
+fn run_cargo_shortcut_probe(
+    project: &Path,
+    package: &Path,
+    evidence: &Path,
+    extra_args: &[&str],
+) -> (std::process::Output, serde_json::Value) {
+    let mut child = command(Route::Direct, project);
+    let mut paths = vec![Path::new(env!("CARGO")).parent().unwrap().to_path_buf()];
+    if let Some(path) = env::var_os("PATH") {
+        paths.extend(env::split_paths(&path));
+    }
+    child
+        .env("PATH", env::join_paths(paths).unwrap())
+        .arg("verify")
+        .arg("--manifest-path")
+        .arg(package.join("Cargo.toml"))
+        .arg("--proof-dir")
+        .arg(package.join("proof"))
+        .args(extra_args)
+        .arg("--capture")
+        .arg(project.join("missing-capture"))
+        .arg("--sysroot")
+        .arg(project)
+        .arg("--artifacts")
+        .arg(evidence);
+    #[cfg(not(feature = "setup"))]
+    child.arg("--lean").arg(project.join("missing-lean"));
+    let output = child.output().unwrap();
+    let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    (output, receipt)
+}
+
+#[test]
+fn cargo_shortcut_handles_rlib_shared_target_paths_and_bin_required_features() {
+    use std::fs;
+    // 1. `[lib] crate-type = ["rlib"]` with a non-primary target outside
+    // top-level `tests/`/`benches/`/`examples/` and a shared `[[test]]` path.
+    let project = tempfile::tempdir().unwrap();
+    let pkg_rlib = project.path().join("rlib-pkg");
+    fs::create_dir_all(pkg_rlib.join("src")).unwrap();
+    fs::create_dir(pkg_rlib.join("proof")).unwrap();
+    fs::write(
+        pkg_rlib.join("Cargo.toml"),
+        "[package]\nname = \"rlib_pkg\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n\
+         [lib]\ncrate-type = [\"rlib\"]\npath = \"src/lib.rs\"\n\n\
+         [[bench]]\nname = \"custom_bench\"\npath = \"src/custom_bench.rs\"\n\n\
+         [[test]]\nname = \"shared_path\"\npath = \"src/lib.rs\"\n",
+    )
+    .unwrap();
+    fs::write(pkg_rlib.join("src/lib.rs"), b"pub fn id(x: u64) -> u64 { x }\n").unwrap();
+    fs::write(pkg_rlib.join("src/custom_bench.rs"), b"fn main() {}\n").unwrap();
+    fs::write(pkg_rlib.join("proof/Spec.lean"), b"-- placeholder\n").unwrap();
+    let ev_rlib = project.path().join("ev-rlib");
+    let (out_rlib, rec_rlib) = run_cargo_shortcut_probe(project.path(), &pkg_rlib, &ev_rlib, &[]);
+    assert_result(&out_rlib, 2, "", "");
+    assert_eq!(rec_rlib["phase"], "capture-tool", "{rec_rlib}");
+    let req_rlib: serde_json::Value =
+        serde_json::from_slice(&fs::read(ev_rlib.join("request.json")).unwrap()).unwrap();
+    assert_eq!(req_rlib["compilation"]["crate_type"], "lib");
+    assert_eq!(req_rlib["compilation"]["source_files"], serde_json::json!(["src/lib.rs"]));
+
+    // 2. Primary `[lib]` placed inside `tests/lib.rs` with Cargo autotests
+    // enabled keeps `tests/lib.rs` while still filtering `tests/other.rs`.
+    let pkg_tests_lib = project.path().join("tests-lib-pkg");
+    fs::create_dir_all(pkg_tests_lib.join("tests")).unwrap();
+    fs::create_dir(pkg_tests_lib.join("proof")).unwrap();
+    fs::write(
+        pkg_tests_lib.join("Cargo.toml"),
+        "[package]\nname = \"tests_lib_pkg\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n\
+         [lib]\npath = \"tests/lib.rs\"\n",
+    )
+    .unwrap();
+    fs::write(pkg_tests_lib.join("tests/lib.rs"), b"pub fn one() -> u64 { 1 }\n").unwrap();
+    fs::write(pkg_tests_lib.join("tests/other.rs"), b"#[test] fn t() {}\n").unwrap();
+    fs::write(pkg_tests_lib.join("proof/Spec.lean"), b"-- placeholder\n").unwrap();
+    let ev_tests_lib = project.path().join("ev-tests-lib");
+    let (out_tl, rec_tl) =
+        run_cargo_shortcut_probe(project.path(), &pkg_tests_lib, &ev_tests_lib, &[]);
+    assert_result(&out_tl, 2, "", "");
+    assert_eq!(rec_tl["phase"], "capture-tool", "{rec_tl}");
+    let req_tl: serde_json::Value =
+        serde_json::from_slice(&fs::read(ev_tests_lib.join("request.json")).unwrap()).unwrap();
+    assert_eq!(req_tl["compilation"]["crate_root"], "tests/lib.rs");
+    assert_eq!(req_tl["compilation"]["source_files"], serde_json::json!(["tests/lib.rs"]));
+
+    // 3. `[[bin]]` with `required-features` fails closed unless enabled.
+    let pkg_bin = project.path().join("bin-req-feat");
+    fs::create_dir_all(pkg_bin.join("src")).unwrap();
+    fs::create_dir(pkg_bin.join("proof")).unwrap();
+    fs::write(
+        pkg_bin.join("Cargo.toml"),
+        "[package]\nname = \"bin_req\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n\
+         [[bin]]\nname = \"bin_req\"\npath = \"src/main.rs\"\nrequired-features = [\"cli\"]\n\n\
+         [features]\ncli = []\n",
+    )
+    .unwrap();
+    fs::write(pkg_bin.join("src/main.rs"), b"fn main() {}\n").unwrap();
+    fs::write(pkg_bin.join("proof/Spec.lean"), b"-- placeholder\n").unwrap();
+    let ev_bin_fail = project.path().join("ev-bin-fail");
+    let (out_bf, rec_bf) = run_cargo_shortcut_probe(project.path(), &pkg_bin, &ev_bin_fail, &[]);
+    assert_result(&out_bf, 1, "", "");
+    assert_eq!(rec_bf["status"], "unsupported", "{rec_bf}");
+    assert_eq!(rec_bf["phase"], "cargo", "{rec_bf}");
+    assert!(
+        rec_bf["detail"].as_str().unwrap_or_default().contains("requires Cargo feature `cli`"),
+        "{rec_bf}"
+    );
+    let ev_bin_ok = project.path().join("ev-bin-ok");
+    let (out_bo, rec_bo) =
+        run_cargo_shortcut_probe(project.path(), &pkg_bin, &ev_bin_ok, &["--features", "cli"]);
+    assert_result(&out_bo, 2, "", "");
+    assert_eq!(rec_bo["phase"], "capture-tool", "{rec_bo}");
 }
 
 #[cfg(not(feature = "setup"))]
@@ -1587,11 +1723,7 @@ fn init_scaffolds_cargo_and_standalone_without_overwriting() {
         let no_manifest = command(route, project.path()).arg("init").output().unwrap();
         assert_result(&no_manifest, 1, "", "no Cargo.toml found");
 
-        fs::write(
-            project.path().join("Cargo.toml"),
-            "[workspace]\nmembers = [\"a\"]\n",
-        )
-        .unwrap();
+        fs::write(project.path().join("Cargo.toml"), "[workspace]\nmembers = [\"a\"]\n").unwrap();
         let workspace = command(route, project.path()).arg("init").output().unwrap();
         assert_result(&workspace, 1, "", "virtual workspace");
 
@@ -1631,18 +1763,25 @@ fn failure_receipts_emit_actionable_hints_while_preserving_detail() {
     use std::fs;
 
     let project = tempfile::tempdir().unwrap();
-    fs::create_dir_all(project.path().join("crate_feat/src")).unwrap();
-    fs::create_dir_all(project.path().join("crate_feat/proof")).unwrap();
+    fs::create_dir_all(project.path().join("crate_proc_macro/src")).unwrap();
+    fs::create_dir_all(project.path().join("crate_proc_macro/proof")).unwrap();
     fs::write(
-        project.path().join("crate_feat/Cargo.toml"),
-        "[package]\nname = \"feat_demo\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n[features]\nfoo = []\n",
+        project.path().join("crate_proc_macro/Cargo.toml"),
+        "[package]\nname = \"pm_demo\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n[lib]\nproc-macro = true\n",
     )
     .unwrap();
-    fs::write(project.path().join("crate_feat/src/lib.rs"), b"pub fn f() -> u64 { 0 }\n").unwrap();
+    fs::write(project.path().join("crate_proc_macro/src/lib.rs"), b"pub fn f() -> u64 { 0 }\n")
+        .unwrap();
 
     // 1. Missing Cargo manifest names the path and sets a clear hint.
     let missing_manifest = command(Route::Direct, project.path())
-        .args(["verify", "--manifest-path", "absent/Cargo.toml", "--proof-dir", "crate_feat/proof"])
+        .args([
+            "verify",
+            "--manifest-path",
+            "absent/Cargo.toml",
+            "--proof-dir",
+            "crate_proc_macro/proof",
+        ])
         .args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"])
         .output()
         .unwrap();
@@ -1657,9 +1796,9 @@ fn failure_receipts_emit_actionable_hints_while_preserving_detail() {
         .args([
             "verify",
             "--manifest-path",
-            "crate_feat/Cargo.toml",
+            "crate_proc_macro/Cargo.toml",
             "--proof-dir",
-            "crate_feat/proof",
+            "crate_proc_macro/proof",
             "--capture",
             "cap",
             "--sysroot",
@@ -1674,7 +1813,7 @@ fn failure_receipts_emit_actionable_hints_while_preserving_detail() {
     assert_eq!(feat_receipt["phase"], "cargo");
     assert_eq!(
         feat_receipt["detail"],
-        "Cargo features require an explicit configured compilation request"
+        "build scripts and procedural macros need an explicit configured compilation"
     );
     assert!(feat_receipt["hint"].as_str().unwrap().contains("--request"), "{feat_receipt}");
 

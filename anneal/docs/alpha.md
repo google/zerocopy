@@ -20,12 +20,13 @@ those terms. -->
 > -> [Stage 2 (Broad systems coverage and TCB reduction, `#4096`)](https://github.com/google/zerocopy/issues/4096).
 
 The developer alpha checks selected Rust functions or scalar crates on x86-64
-Linux with glibc, such as Ubuntu 24.04. It compiles a dependency-free library
-or single binary target with the pinned compiler and checks the authored Lean
-proof against the captured MIR, the stated specification, and Anneal's safety
-obligations. A successful receipt (`"schema_version": 3`) identifies the
-verified scope, compilation configuration, input digests, containment backend,
-and assumptions.
+Linux with glibc, such as Ubuntu 24.04. It compiles a library or single binary
+target with no required normal or build dependencies (dev-dependencies and
+inactive optional dependencies are ignored) using the pinned compiler and
+checks the authored Lean proof against the captured MIR, the stated
+specification, and Anneal's safety obligations. A successful receipt
+(`"schema_version": 3`) identifies the verified scope, compilation
+configuration, input digests, containment backend, and assumptions.
 
 On Linux, `ExecSeal` isolates target Lean preflight, elaboration, and audit by
 default inside Tier 1 `linux_bwrap` or Tier 2 `linux_landlock_seccomp`
@@ -65,9 +66,11 @@ canonicalized `source_root`. Set `scope` to
 explicit concrete monomorphizations; `UnitTheorem`, returning
 `selected_unit_verified`) or `{"kind": "crate"}` (`CrateTheorem`, returning
 `crate_verified`), and list the `specification` and `proof` Lean modules under
-`proof.sources`. For a dependency-free, feature-free Cargo crate with a single
-library or binary target, `--manifest-path <Cargo.toml> --proof-dir <dir>`
-(with optional `--panic unwind|abort`, `--select <path>`, and
+`proof.sources`. For a Cargo crate with a single library or binary target and
+no required normal or build dependencies (dev-dependencies and inactive
+optional dependencies are ignored), `--manifest-path <Cargo.toml>
+--proof-dir <dir>` (with optional `--no-default-features`, `--features <list>`,
+`--all-features`, `--panic unwind|abort`, `--select <path>`, and
 `--instantiate <JSON>`) constructs the same request automatically.
 
 ## Stage 0 / MIR Profile v1: supported vs. refused
@@ -82,7 +85,7 @@ semantics.
 | **Types** | `bool`, `char`, 8- through 128-bit and pointer-sized integers (`i8`..`i128`, `isize`, `u8`..`u128`, `usize` on 64-bit targets), `()`, `!`, `core::cmp::Ordering`, `(T, bool)` overflowing-arithmetic pairs (via `core::intrinsics::*_with_overflow`), and non-generic inhabited crate-local fieldless enums (including pure scalar explicit discriminants). | References and raw pointers (`&T`, `&mut T`, `*const T`, `*mut T`), slices, arrays, structs, unions, enums with payloads, uninhabited zero-variant enums, floats, general tuples, and generic types. |
 | **Statements & rvalues** | `Assign` (`Use` on retag-noop scalar types, unary `Not`/`Neg`, binary bitwise/shift/wrapping-arithmetic/`*WithOverflow`/comparison/`Cmp`/unchecked `Div`/`Rem`, `CastKind::IntToInt`, `Discriminant`), `StorageLive`, `StorageDead`, bare unprojected `PlaceMention`, and `Nop`. | Place projections (fields, indexing, dereferencing, projected `PlaceMention`), `Aggregate` rvalues, `PtrMetadata`, pointer/float/`Transmute` casts, and inline assembly. |
 | **Terminators & operands** | `Goto`, `SwitchInt`, `Return`, `Unreachable`, and diverging calls (`TerminatorKind::Call` with `target: None` and non-`Use` `CallSource`, lowered to fail-closed `unsupported` when reachable); `Copy`/`Move` on unprojected locals; scalar constants (including `Const::Unevaluated`, `Const::Ty(Value)`, and read-only provenance-free `.rodata` `ConstValue::Indirect` / `GlobalAlloc::Memory` scalars evaluated via CTFE alongside `required_consts`) and `ZeroSized` unit/single-variant-enum constants. | Returning `Call` terminators (`target: Some(_)`, including `overflowing_*` methods under `-Copt-level=0`) and `CallSource::Use`, runtime `Assert` terminators (including ordinary Rust `/` and `%`), `Drop`, unwind/abort terminators, and constants whose CTFE evaluation fails or refers to `static`, mutable, or provenance-bearing memory. |
-| **Crate scope & items** | Dependency-free, feature-free single `lib` or `bin` crates (`Scope::Crate` or `Scope::SelectedUnit`, configurable `--panic unwind|abort`, and crate-local `#[panic_handler]` in `bin` selected-unit scope); non-generic free and associated functions (and, in `Scope::Crate`, safe `trait` declarations, safe `impl` blocks, bodyless safe Rust-ABI trait methods, non-generic pure-value `const`/`assoc const` items, and pure scalar `AnonConst` items), plus explicitly requested concrete monomorphizations (`instantiations` / `--instantiate`) in `Scope::SelectedUnit`. | External crate dependencies, Cargo features, multi-target crates, uninstantiated polymorphic generics, closures, crate-local `#[panic_handler]` in `lib` or whole-crate scope, `struct`/`union`/`static`/`InlineConst` owners, bodyless free functions, and `unsafe`/unmodeled `trait`/`impl`/`const`/`AnonConst` items in whole-crate scope, global assembly, and proc-macro crates. |
+| **Crate scope & items** | Single `lib` or `bin` crates with no required normal or build dependencies (dev-dependencies and inactive optional dependencies are ignored; `Scope::Crate` or `Scope::SelectedUnit`, Cargo `[features]` via `--features`/`--all-features`/`--no-default-features`, configurable `--panic unwind|abort`, and crate-local `#[panic_handler]` in `bin` selected-unit scope); non-generic free and associated functions (and, in `Scope::Crate`, safe `trait` declarations, safe `impl` blocks, bodyless safe Rust-ABI trait methods, non-generic pure-value `const`/`assoc const` items, and pure scalar `AnonConst` items), plus explicitly requested concrete monomorphizations (`instantiations` / `--instantiate`) in `Scope::SelectedUnit`. | Required normal or build external crate dependencies, multi-target crates, uninstantiated polymorphic generics, closures, crate-local `#[panic_handler]` in `lib` or whole-crate scope, `struct`/`union`/`static`/`InlineConst` owners, bodyless free functions, and `unsafe`/unmodeled `trait`/`impl`/`const`/`AnonConst` items in whole-crate scope, global assembly, and proc-macro crates. |
 
 For a realistic scalar example, `ci/verify_starnix_e2e.py` checks Starnix's
 `ebpf_core` endianness conversion using symbolic MIR helpers in `Anneal.MirWp`.
@@ -131,9 +134,13 @@ toolchain integration:
   on `tool_failed` (exit `2`).
 - `--lean-memory-mb <MB>`: sets Lean's `-M<MB>` memory limit (`resolve-imports`
   enforces a `4096` MiB floor).
-- `--no-default-features`: building `cargo-anneal` without its default `setup`
-  feature omits remote archive download support (`exocrate`); pass explicit
-  `--capture`, `--sysroot`, and `--lean` paths when running `verify`.
+
+When building `cargo-anneal` itself with Cargo's `--no-default-features` flag
+(for example, `cargo install --locked --no-default-features cargo-anneal`), the
+default `setup` feature and remote archive download support (`exocrate`) are
+omitted, so pass explicit `--capture`, `--sysroot`, and `--lean` paths to
+`verify`. On `cargo anneal verify --manifest-path`, `--no-default-features`
+instead disables default features of the target crate being verified.
 
 Each `--allow-*` relaxation flag follows Receipt Schema v3's Uniform
 Flag-Driven Taint Law: passing the flag prints a `TAINTED` warning banner on

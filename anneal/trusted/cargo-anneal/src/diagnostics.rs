@@ -35,14 +35,16 @@ const CARGO_RULES: &[DetailRule] = &[
     },
     DetailRule {
         needle: "Cargo shortcut",
-        hint: "The `--manifest-path` Cargo shortcut supports dependency-free, feature-free library \
-               crates without build scripts or proc-macros. For other crates, pass `--request \
-               <file>` (run `cargo anneal skill --example` for a template) or `verify rustc`.",
+        hint: "The `--manifest-path` Cargo shortcut supports single library or binary crates \
+               without active normal/build dependencies, build scripts, or proc-macros (use \
+               `--features`, `--all-features`, or `--no-default-features` to configure package \
+               features). For other crates, pass `--request <file>` (run `cargo anneal skill \
+               --example` for a template) or `verify rustc`.",
     },
     DetailRule {
         needle: "explicit configured compilation",
-        hint: "The `--manifest-path` Cargo shortcut rejects features, build scripts, proc-macros, \
-               and `.cargo`/toolchain overrides. Use `cargo anneal verify --request <file>` (see \
+        hint: "The `--manifest-path` Cargo shortcut rejects build scripts, proc-macros, and \
+               `.cargo`/toolchain overrides. Use `cargo anneal verify --request <file>` (see \
                `cargo anneal skill --example`) or `verify rustc`.",
     },
 ];
@@ -394,13 +396,23 @@ mod tests {
         let hint = hint_for_failure("compiler_failed", "capture", "{}").unwrap();
         assert!(hint.contains("stderr"), "{hint}");
 
-        let cargo_hint = hint_for_failure(
+        let shortcut_hint = hint_for_failure(
             "unsupported",
             "cargo",
-            "Cargo features require an explicit configured compilation request",
+            "Cargo shortcut requires a dependency-free crate; pass `--request` for crates with dependencies",
         )
         .unwrap();
-        assert!(cargo_hint.contains("--request"), "{cargo_hint}");
+        assert!(shortcut_hint.contains("--features"), "{shortcut_hint}");
+        assert!(shortcut_hint.contains("--request"), "{shortcut_hint}");
+
+        let compiled_hint = hint_for_failure(
+            "unsupported",
+            "cargo",
+            "build scripts and procedural macros need an explicit configured compilation",
+        )
+        .unwrap();
+        assert!(compiled_hint.contains("build scripts"), "{compiled_hint}");
+        assert!(compiled_hint.contains("--request"), "{compiled_hint}");
     }
 
     #[test]
