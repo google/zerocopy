@@ -1627,13 +1627,12 @@ noncomputable def ValidEntryArgs (body : Body) (args : List Val) : Prop :=
   checkArgsMatch args ((body.locals.drop 1).take body.argumentCount) = true
 
 noncomputable def bodiesHaveUniqueIdentities (bodies : List Body) : Bool :=
-  bodies.all (fun b => !stringBeq b.identity "") &&
-    stringListPairwiseNe (bodies.map (fun b => b.identity))
+  bodiesHaveUniqueIdentitiesAux bodies .empty
 
 noncomputable def BodyStaticAdmitted (p : Program) (body : Body) : Bool :=
   Nat.beq p.pointerWidthBits 64 &&
     Nat.beq p.mirProfileVersion 1 &&
-    !stringBeq body.identity "" &&
+    !stringIsEmpty body.identity &&
     !body.basicBlocks.isEmpty &&
     Nat.blt body.argumentCount body.locals.length &&
     storageAnnotationsInBounds body &&
@@ -1694,10 +1693,11 @@ These definitions pin five properties directly in the trusted theorem surface:
 3. **Non-emptiness, valid entry, and collision-free identities:**
    `ProgramVerified` enforces `p.pointerWidthBits = 64`, `p.mirProfileVersion =
    1`, `!p.bodies.isEmpty = true`, `p.entryDefId < p.bodies.length`,
-   `bodiesHaveUniqueIdentities p.bodies = true` (using pure UTF-8 byte equality
-   `stringBeq` and `stringListPairwiseNe` over `foundation-lock.json` so two
-   bodies can never alias in `specs.safety` or carry an empty identity), and
-   `specs.property p`.
+   `bodiesHaveUniqueIdentities p.bodies = true` (inserting each exact UTF-8
+   byte key `IdentityKey` into an Okasaki Red-Black tree whose rebalance cases
+   preserve in-order key sequence, and rejecting empty keys, using only
+   `foundation-lock.json` imports, so two bodies can never alias in
+   `specs.safety` or carry an empty identity), and `specs.property p`.
 4. **Fail-closed `.crate` vs. `.unit` scope gating and producer obligations:**
    `CrateTheorem` requires `c.program.scope = .crate` and `UnitTheorem`
    requires `c.program.scope = .unit` (`Program.scope` carries no Lean field

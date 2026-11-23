@@ -10,6 +10,8 @@
 module
 prelude
 public import Init.NotationExtra
+public import Init.Data.ByteArray.Bootstrap
+public import Init.Data.List.Basic
 public import Trusted.MirAst.Types
 public import Trusted.MirAst.Statements
 public import Trusted.MirAst.Terminators
@@ -96,6 +98,29 @@ structure Body where
   basicBlocks : List BasicBlock
   isUnsafe : Bool := false
   identity : String := ""
+
+/-- Total, kernel-reducible UTF-8 string concatenation used by
+`anneal-rustc-capture` to balance long function identities into `<= 16`-char
+`String.ofList` leaves so Lean kernel reduction stays `O(log L)` instead of
+hitting `maxRecDepth` inside `List.utf8Encode`.
+
+Intentionally omits `noncomputable` (with zero recursion and zero
+`._unsafe_rec` helpers) so captured `Captured.body_*` constants remain plain
+computable `def`s. -/
+def stringAppend (a b : String) : String :=
+  ⟨a.toByteArray.append b.toByteArray,
+    match a.isValidUTF8, b.isValidUTF8 with
+    | ByteArray.IsValidUTF8.intro m1 hm1, ByteArray.IsValidUTF8.intro m2 hm2 =>
+      ⟨m1 ++ m2,
+        Eq.trans (congrArg (fun x => x.append b.toByteArray) hm1)
+          (Eq.trans (congrArg (fun y => (List.utf8Encode m1).append y) hm2)
+            (Eq.symm
+              (Eq.trans
+                (congrArg List.toByteArray
+                  (@List.flatMap_append _ _ m1 m2 String.utf8EncodeChar))
+                (@List.toByteArray_append'
+                  (m1.flatMap String.utf8EncodeChar)
+                  (m2.flatMap String.utf8EncodeChar)))))⟩⟩
 
 /-- Capture scope of a `Program`, distinguishing whole-crate verification
 (`.crate`, covering every executable body in the compiled crate via

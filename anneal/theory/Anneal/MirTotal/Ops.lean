@@ -1193,6 +1193,10 @@ theorem stringBeqComp_eq (a b : String) : stringBeqComp a b = stringBeq a b := b
   unfold stringBeqComp stringBeq
   exact listBeqUInt8Comp_eq _ _
 
+/-- Agreement between `List.isEmpty` on UTF-8 bytes and `stringIsEmpty`. -/
+theorem stringIsEmptyComp_eq (s : String) :
+    s.toByteArray.data.toList.isEmpty = stringIsEmpty s := rfl
+
 /-- Computable mirror of `Trusted.MirSemantics.tagBitsToDiscrBits`. -/
 @[expose] def tagBitsToDiscrBitsComp (tagW : IntWidth) (tagS : Bool) (discrW : IntWidth)
     (tagBits : BitVec 128) : BitVec 128 :=

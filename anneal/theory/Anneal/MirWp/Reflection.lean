@@ -588,7 +588,7 @@ theorem initState_eq_ok {p : Program} {body : Body} {args : List Val}
   rw [h_args]
   cases h1 : Nat.beq p.pointerWidthBits 64 <;>
     cases h2 : Nat.beq p.mirProfileVersion 1 <;>
-    cases hid : stringBeq body.identity "" <;>
+    cases hid : stringIsEmpty body.identity <;>
     cases h3 : body.basicBlocks.isEmpty <;>
     cases h4 : Nat.blt body.argumentCount body.locals.length <;>
     cases h5 : storageAnnotationsInBounds body <;>

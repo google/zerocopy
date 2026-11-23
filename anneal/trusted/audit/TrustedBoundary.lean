@@ -5271,8 +5271,10 @@ def extractCharListString? (env : Environment) (lctx : LocalContext)
   return none
 
 /-- Unfold `.const` definitions shallowly and reduce via `Kernel.whnf` to
-recover concrete `String` literals or `String.ofList [...]` terms before
-calling `Kernel.whnf` on compound terms. -/
+recover concrete `String` literals, `String.ofList [...]` terms, or
+`Trusted.MirAst.stringAppend a b` trees (which `anneal-rustc-capture` emits
+for identities longer than 16 characters) before calling `Kernel.whnf` on
+compound terms. -/
 partial def extractStringLit? (env : Environment) (lctx : LocalContext)
     (e : Expr) (fuel : Nat := 16) : Option String :=
   match fuel with
@@ -5298,6 +5300,12 @@ partial def extractStringLit? (env : Environment) (lctx : LocalContext)
       let args := e.getAppArgs
       if fn.constName? == some ``String.ofList && args.size == 1 then
         extractCharListString? env lctx args[0]!
+      else if fn.constName? == some `Trusted.MirAst.stringAppend &&
+          args.size == 2 then
+        match extractStringLit? env lctx args[0]! fuel,
+            extractStringLit? env lctx args[1]! fuel with
+        | some a, some b => some (a ++ b)
+        | _, _ => none
       else
         match kernelWhnfSafe env lctx e with
         | .lit (.strVal s) => some s

@@ -1416,7 +1416,7 @@ by `tyEq`. -/
     (body : Body) : Bool :=
   Nat.beq p.pointerWidthBits 64 &&
     Nat.beq p.mirProfileVersion 1 &&
-    !stringBeqComp body.identity "" &&
+    !body.identity.toByteArray.data.toList.isEmpty &&
     !body.basicBlocks.isEmpty &&
     Nat.blt body.argumentCount body.locals.length &&
     storageAnnotationsInBoundsComp body &&
@@ -1430,7 +1430,7 @@ theorem bodyStaticAdmittedBy_eq (tyEq : MirTy → MirTy → Bool)
     (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) (p : Program) (body : Body) :
     bodyStaticAdmittedBy tyEq p body = BodyStaticAdmitted p body := by
   unfold bodyStaticAdmittedBy BodyStaticAdmitted
-  rw [stringBeqComp_eq, storageAnnotationsInBoundsComp_eq,
+  rw [stringIsEmptyComp_eq, storageAnnotationsInBoundsComp_eq,
       discriminantTypesValidBy_eq tyEq hTyEq,
       castTypesValidBy_eq tyEq hTyEq,
       listAll_congr body.locals isSupportedScalarOrUnitTyComp_eq]
