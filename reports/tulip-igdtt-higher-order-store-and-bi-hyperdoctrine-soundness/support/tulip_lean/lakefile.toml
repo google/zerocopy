@@ -1,0 +1,6 @@
+name = "tulip_lean"
+version = "0.1.0"
+defaultTargets = ["TulipModel"]
+
+[[lean_lib]]
+name = "TulipModel"

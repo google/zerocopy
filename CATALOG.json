@@ -50804,6 +50804,81 @@
         "minirust/semantics"
       ]
     },
+    "guarded-interaction-trees-ordinal-synthetic-domains-and-iris-lean": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "2307.08514-eprint.tar.gz",
+            "arxiv": "2307.08514",
+            "doi": "10.1145/3632854",
+            "sha256": "92f3635d654b4a181d1c2ee962eb1bf087d7769847133a6f959fd1d3db8c7d4f"
+          },
+          "name": "Guarded Interaction Trees POPL 2024 paper"
+        },
+        {
+          "identity": {
+            "repository": "logsem/gitrees",
+            "revision": "d399582dd69fd3a74aa194c88e422903704c3702"
+          },
+          "name": "Guarded Interaction Trees Coq mechanization"
+        },
+        {
+          "identity": {
+            "repository": "logsem/synthetic_domains",
+            "revision": "7780965ae4f13faad212a29aea6eded5b7c3a159"
+          },
+          "name": "Ordinal step-indexed synthetic domain theory mechanization"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/iris-lean",
+            "revision": "354ee07b3b47fc2c3fbf4e5f07887e10456fceae"
+          },
+          "name": "Iris-Lean"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/iris-lean",
+            "revision": "81bc350bc469a4a3a7a42bc22bc88e5bf0c927d0"
+          },
+          "name": "Iris-Lean earlier baseline"
+        },
+        {
+          "identity": {
+            "repository": "rocq-iris/iris",
+            "revision": "2fe2f450add5678d9a2492343c638ccdb428a677"
+          },
+          "name": "Iris Rocq framework"
+        },
+        {
+          "identity": {
+            "artifact": "2308.02906v2-eprint.tar.gz",
+            "arxiv": "2308.02906v2",
+            "doi": "10.46298/entics.12232",
+            "sha256": "c9851affe7c18b76e03fa3862e6304cc8f8c134f4fa252168e00f8951871ed17"
+          },
+          "name": "TULIP denotational program logic paper"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3b0f2862196c6a8af9eb0025ee650252694013dd",
+            "version": "4.28.0-rc1"
+          },
+          "name": "Lean 4 toolchain"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/iris",
+        "verification/separation-logic",
+        "pl/denotational-semantics",
+        "pl/guarded-recursion",
+        "ffi/interoperability",
+        "lean/mechanization"
+      ]
+    },
     "gustavsson-sands-space-improvement-bakewell-runciman-space-models-forster-kunze-roth-reasonable-space-devriese-approximate-back-translation-and-ahmed-blume-closure-conversion": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -82502,6 +82577,215 @@
         "systems/engineering-retrospectives",
         "pl/ergonomics-critiques",
         "compilers/incremental-architecture"
+      ]
+    },
+    "precompiled-theorems-split-phase-checking-and-reflective-schemas-prior-art-2026": {
+      "observed_at": "2026-10-31",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "joshlf/anneal",
+            "revision": "76fad1a1befa2e4c038d88c3a1bbbe873acb1322"
+          },
+          "name": "Anneal boundary auditor and verification pipeline (main)"
+        },
+        {
+          "identity": {
+            "branch": "trusted-core",
+            "repository": "joshlf/anneal",
+            "revision": "e6a0b2da5ec39a4c0cfd22bf323885022837b5dc"
+          },
+          "name": "Anneal Trusted.Refinement and Trusted.StepResult semantics (trusted-core)"
+        },
+        {
+          "identity": {
+            "branch": "mir-to-x86",
+            "repository": "joshlf/anneal",
+            "revision": "4f45f0a391a921ced9c9dc773b9a040dbc215d14"
+          },
+          "name": "Anneal MIR and x86-64 symbolic and WP evaluators (mir-to-x86)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 kernel environment and typechecker (v4.34.1)"
+        },
+        {
+          "identity": {
+            "repository": "rocq-prover/rocq",
+            "revision": "0b9568e12875891c1b9463fa3548f36384ea6f99"
+          },
+          "name": "Rocq Prover kernel opaque proof handling and SSReflect reflection"
+        },
+        {
+          "identity": {
+            "repository": "PrincetonUniversity/VST",
+            "revision": "3c37c2e2b574e23aee8fdd1684aa0ffed227491e"
+          },
+          "name": "Verified Software Toolchain (VST-Floyd canonical forward symbolic execution)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-018-9457-5",
+            "title": "VST-Floyd: A Separation Logic Tool to Verify Correctness of C Programs",
+            "venue": "Journal of Automated Reasoning 61(1-4), 2018"
+          },
+          "name": "VST-Floyd JAR 2018 publication"
+        },
+        {
+          "identity": {
+            "repository": "iris/refinedc",
+            "revision": "2e89846baeaa7f65cbe17e3ae7297a8ed5b4feca",
+            "secondary-revision": "d057583986651a28047164581f05fbee3a83ed9d"
+          },
+          "name": "RefinedC and Lithium automated separation-logic interpreter"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454036",
+            "title": "RefinedC: Automating the Foundational Verification of C Code with Refined Ownership Types",
+            "venue": "PLDI 2021"
+          },
+          "name": "RefinedC PLDI 2021 publication"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656422",
+            "repository": "lgaeher/refinedrust-dev",
+            "revision": "8a07f4f2e6a499625b4b25e94f0b2ab78592cb52",
+            "zenodo-record": "21636474"
+          },
+          "name": "RefinedRust development repository and PLDI 2024 artifact"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523432",
+            "title": "Diaframe: Automated Verification of Fine-Grained Concurrent Programs in Iris",
+            "venue": "PLDI 2022"
+          },
+          "name": "Diaframe PLDI 2022 publication"
+        },
+        {
+          "identity": {
+            "iris-lean-repository": "leanprover-community/iris-lean",
+            "iris-lean-revision": "81bc35088ba67d465db008f5261a9b341eb6cf6c",
+            "repository": "rocq-iris/iris",
+            "revision": "8e4909593a3a84f850d224a344cbd3a380672088"
+          },
+          "name": "Iris separation logic framework in Rocq and Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "HOL-Theorem-Prover/HOL",
+            "revision": "68c9d77e53532cb258e09421952efe3957f40276"
+          },
+          "name": "HOL4 TheoryReader disk_thm persistence and Thm.compute / cv_compute"
+        },
+        {
+          "identity": {
+            "candle-doi": "10.4230/LIPIcs.ITP.2022.3",
+            "cv-compute-doi": "10.4230/LIPIcs.ITP.2021.27",
+            "cv-trans-doi": "10.4230/LIPIcs.ITP.2023.17",
+            "title": "Fast, Verified Computation for HOL and Verified Compilation to cv_compute"
+          },
+          "name": "HOL4 cv_compute and cv_trans ITP 2021 / 2022 / 2023 publications"
+        },
+        {
+          "identity": {
+            "repository": "jrh13/hol-light",
+            "revision": "233b83c3202370e03c54de2bd090e4d34f677e91",
+            "secondary-revision": "b19af6934759eed622d7aca25092367f81656eee"
+          },
+          "name": "HOL Light stateless LCF kernel"
+        },
+        {
+          "identity": {
+            "repository": "awslabs/s2n-bignum",
+            "revision": "9f2cd960e11892a582e7facb0c191b4a2959ea91",
+            "secondary-revision": "4d1356a7470663c752660a59375dc3a9ef548428"
+          },
+          "name": "AWS s2n-bignum machine-code verification suite"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2594291.2594296",
+            "repository": "seL4/l4v",
+            "revision": "12c300e75bb0ca0c82f76496fafacd7e614c0aba",
+            "venue": "PLDI 2014"
+          },
+          "name": "seL4 AutoCorres 5-phase C abstraction framework"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.ITP.2019.21",
+            "repository": "lammich/isabelle_llvm",
+            "revision": "6be37a9c3cae74a1134dbef2979e312abb5f7f42",
+            "sepref-doi": "10.1007/978-3-319-22102-1_17"
+          },
+          "name": "Isabelle_LLVM and Sepref relational refinement framework"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3372885.3373824",
+            "repository": "digama0/mm0",
+            "revision": "0d414c0bfdaaeb7fea571895127abc1fa5a3d956",
+            "venue": "CPP 2020"
+          },
+          "name": "Metamath Zero (.mmb binary format and C verifier)"
+        },
+        {
+          "identity": {
+            "lambdapi-repository": "Deducteam/lambdapi",
+            "lambdapi-revision": "72cc2f10d391932fe078ba5a401765e29a1d4cb7",
+            "repository": "Deducteam/Dedukti",
+            "revision": "f3c0eba869ddd46f2e75c123a59f2b612076dba0"
+          },
+          "name": "Dedukti and Lambdapi lambda-Pi-calculus modulo rewriting"
+        },
+        {
+          "identity": {
+            "doi": "10.6092/issn.1972-5787/1979",
+            "jar-doi": "10.1007/s10817-010-9183-1",
+            "title": "An Introduction to Small Scale Reflection in Coq"
+          },
+          "name": "SSReflect small-scale reflection JFR 2010 publication"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-08970-6_24",
+            "esop-doi": "10.1007/978-3-662-49498-1_19",
+            "repository": "gmalecha/mirror-core",
+            "revision": "b962fbca15b0b5a4653f66d29d7115bb04ebd4f3"
+          },
+          "name": "MirrorCore and RTac compositional computational reflection"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/audit",
+        "anneal/kernel-replay",
+        "anneal/theory",
+        "anneal/tcb",
+        "lean/kernel",
+        "lean/olean",
+        "lean/reflection",
+        "verification/rocq-separate-compilation",
+        "verification/vst-symbolic-execution",
+        "verification/iris-lithium",
+        "verification/refinedc",
+        "verification/refinedrust",
+        "verification/hol4-cv-compute",
+        "verification/hol-light-s2n-bignum",
+        "verification/isabelle-autocorres",
+        "verification/isabelle-sepref",
+        "verification/mm0-mmb",
+        "pl/dedukti",
+        "pl/ssreflect",
+        "verification/mirrorcore-rtac"
       ]
     },
     "predicate-transformer-healthiness-and-relational-semantics": {
@@ -121754,6 +122038,68 @@
         "verification/iris",
         "verification/adequacy",
         "lean",
+        "lean/mechanization"
+      ]
+    },
+    "tulip-igdtt-higher-order-store-and-bi-hyperdoctrine-soundness": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "2308.02906v2-eprint.tar.gz",
+            "arxiv": "2308.02906v2",
+            "doi": "10.46298/entics.12232",
+            "sha256": "c9851affe7c18b76e03fa3862e6304cc8f8c134f4fa252168e00f8951871ed17"
+          },
+          "name": "TULIP denotational program logic paper"
+        },
+        {
+          "identity": {
+            "artifact": "2308.02906v2.pdf",
+            "arxiv": "2308.02906v2",
+            "doi": "10.46298/entics.12232",
+            "sha256": "d49e526ae4675630e883ec328fb8582458ac2049f13ce476dece23da39c0eb29"
+          },
+          "name": "TULIP published PDF"
+        },
+        {
+          "identity": {
+            "artifact": "2210.02169-eprint.tar.gz",
+            "arxiv": "2210.02169",
+            "sha256": "70d4c83fb758066195bb74caede63b30c94b3e06bb4c340e7cab6e2a5b7c1315"
+          },
+          "name": "Denotational semantics of general store and polymorphism paper"
+        },
+        {
+          "identity": {
+            "repository": "jonsterling/coq-sgdt",
+            "revision": "3a69fbc09ef34ae00792e1fd8563d39a957baf7e"
+          },
+          "name": "coq-sgdt Coq mechanization"
+        },
+        {
+          "identity": {
+            "artifact": "2003.05386-eprint.tar.gz",
+            "arxiv": "2003.05386",
+            "sha256": "d91982d7cb7d4cd79d9f54355726be54407118e69e70577bfeff6fe34b56565a"
+          },
+          "name": "Local Local Reasoning BI-hyperdoctrine paper"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3b0f2862196c6a8af9eb0025ee650252694013dd",
+            "version": "4.28.0-rc1"
+          },
+          "name": "Lean 4 toolchain"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/separation-logic",
+        "pl/denotational-semantics",
+        "pl/guarded-recursion",
+        "pl/type-theory",
         "lean/mechanization"
       ]
     },

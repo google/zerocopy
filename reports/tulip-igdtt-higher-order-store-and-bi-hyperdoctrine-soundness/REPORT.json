@@ -1,0 +1,62 @@
+{
+  "topics": [
+    "verification",
+    "verification/separation-logic",
+    "pl/denotational-semantics",
+    "pl/guarded-recursion",
+    "pl/type-theory",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "TULIP denotational program logic paper",
+      "identity": {
+        "doi": "10.46298/entics.12232",
+        "arxiv": "2308.02906v2",
+        "artifact": "2308.02906v2-eprint.tar.gz",
+        "sha256": "c9851affe7c18b76e03fa3862e6304cc8f8c134f4fa252168e00f8951871ed17"
+      }
+    },
+    {
+      "name": "TULIP published PDF",
+      "identity": {
+        "doi": "10.46298/entics.12232",
+        "arxiv": "2308.02906v2",
+        "artifact": "2308.02906v2.pdf",
+        "sha256": "d49e526ae4675630e883ec328fb8582458ac2049f13ce476dece23da39c0eb29"
+      }
+    },
+    {
+      "name": "Denotational semantics of general store and polymorphism paper",
+      "identity": {
+        "arxiv": "2210.02169",
+        "artifact": "2210.02169-eprint.tar.gz",
+        "sha256": "70d4c83fb758066195bb74caede63b30c94b3e06bb4c340e7cab6e2a5b7c1315"
+      }
+    },
+    {
+      "name": "coq-sgdt Coq mechanization",
+      "identity": {
+        "repository": "jonsterling/coq-sgdt",
+        "revision": "3a69fbc09ef34ae00792e1fd8563d39a957baf7e"
+      }
+    },
+    {
+      "name": "Local Local Reasoning BI-hyperdoctrine paper",
+      "identity": {
+        "arxiv": "2003.05386",
+        "artifact": "2003.05386-eprint.tar.gz",
+        "sha256": "d91982d7cb7d4cd79d9f54355726be54407118e69e70577bfeff6fe34b56565a"
+      }
+    },
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3b0f2862196c6a8af9eb0025ee650252694013dd",
+        "version": "4.28.0-rc1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

@@ -1,0 +1,75 @@
+{
+  "topics": [
+    "verification",
+    "verification/iris",
+    "verification/separation-logic",
+    "pl/denotational-semantics",
+    "pl/guarded-recursion",
+    "ffi/interoperability",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Guarded Interaction Trees POPL 2024 paper",
+      "identity": {
+        "doi": "10.1145/3632854",
+        "arxiv": "2307.08514",
+        "artifact": "2307.08514-eprint.tar.gz",
+        "sha256": "92f3635d654b4a181d1c2ee962eb1bf087d7769847133a6f959fd1d3db8c7d4f"
+      }
+    },
+    {
+      "name": "Guarded Interaction Trees Coq mechanization",
+      "identity": {
+        "repository": "logsem/gitrees",
+        "revision": "d399582dd69fd3a74aa194c88e422903704c3702"
+      }
+    },
+    {
+      "name": "Ordinal step-indexed synthetic domain theory mechanization",
+      "identity": {
+        "repository": "logsem/synthetic_domains",
+        "revision": "7780965ae4f13faad212a29aea6eded5b7c3a159"
+      }
+    },
+    {
+      "name": "Iris-Lean",
+      "identity": {
+        "repository": "leanprover-community/iris-lean",
+        "revision": "354ee07b3b47fc2c3fbf4e5f07887e10456fceae"
+      }
+    },
+    {
+      "name": "Iris-Lean earlier baseline",
+      "identity": {
+        "repository": "leanprover-community/iris-lean",
+        "revision": "81bc350bc469a4a3a7a42bc22bc88e5bf0c927d0"
+      }
+    },
+    {
+      "name": "Iris Rocq framework",
+      "identity": {
+        "repository": "rocq-iris/iris",
+        "revision": "2fe2f450add5678d9a2492343c638ccdb428a677"
+      }
+    },
+    {
+      "name": "TULIP denotational program logic paper",
+      "identity": {
+        "doi": "10.46298/entics.12232",
+        "arxiv": "2308.02906v2",
+        "artifact": "2308.02906v2-eprint.tar.gz",
+        "sha256": "c9851affe7c18b76e03fa3862e6304cc8f8c134f4fa252168e00f8951871ed17"
+      }
+    },
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3b0f2862196c6a8af9eb0025ee650252694013dd",
+        "version": "4.28.0-rc1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}
