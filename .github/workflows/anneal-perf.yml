@@ -28,6 +28,8 @@ concurrency:
 
 jobs:
   collect-and-publish:
+    # Job and `publish` step names are matched by `.github/workflows/docs.yml`
+    # via the Actions API; update both files together if renamed.
     name: Collect and publish performance telemetry
     if: github.repository == 'google/zerocopy'
     runs-on: ubuntu-24.04
@@ -134,7 +136,7 @@ jobs:
             --root "$install_root" \
             >> "$GITHUB_ENV"
 
-      - name: Collect performance metrics and check budgets
+      - name: Collect and validate performance metrics
         id: collect
         env:
           PROFILE_NAME: github-ubuntu-24.04-x86_64
@@ -151,10 +153,8 @@ jobs:
             --cold-no-cache-repeats 1 \
             --output "$RECORD_PATH"
           /usr/bin/python3 -I -B ci/perf_tracking.py validate "$RECORD_PATH"
-          /usr/bin/python3 -I -B ci/perf_tracking.py check-budgets "$RECORD_PATH" \
-            --budgets ci/perf_budgets.json
 
-      - name: Publish telemetry and dashboard
+      - name: Publish telemetry and dashboard # Name matched by `.github/workflows/docs.yml`
         id: publish
         env:
           GH_TOKEN: ${{ github.token }}
@@ -250,3 +250,12 @@ jobs:
             echo "Failed to push telemetry to benchmark-data after 5 attempts" >&2
             exit 1
           fi
+
+      - name: Check performance budgets
+        id: check-budgets
+        env:
+          RECORD_PATH: ${{ runner.temp }}/anneal-perf-record.json
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 -I -B ci/perf_tracking.py check-budgets "$RECORD_PATH" \
+            --budgets ci/perf_budgets.json
