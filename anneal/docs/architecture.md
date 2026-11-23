@@ -386,7 +386,7 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   (`theory/Anneal/{MirWp,LoopInv,LinearArith,BitVec,BitVecArith}.lean`,
   `theory/Anneal/{InitLemmas,ClassicalEm,Firewall,LeBytes,ListChunks}.lean`,
   `theory/Anneal/{NatBitwise,BitTrieLrat,PTree,SpineForce}.lean`,
-  `theory/Anneal/{ByteRun,ByteSubLens,CnfOrd,F2Simd}/`,
+  `theory/Anneal/{ByteRun,ByteSubLens,CallStackUnwind,CnfOrd,F2Simd}/`,
   `theory/Anneal/{OverflowCastJoin,PureLift,RefFrame}/`, and planned
   `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
@@ -398,18 +398,19 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `@Nat.rec` iteration combinators, a radix-2 trie RUP-only LRAT UNSAT checker,
   run-decomposed mixed-`InitMask` padded-aggregate and `[T; N]` `Repeat`
   byte-copy laws (`ByteRun`), lawful sub-allocation byte lenses and
-  `@[irreducible]` `&mut` method call summaries (`ByteSubLens`), constructive
-  `< ω^ω` Cantor Normal Form ordinals and multi-rank worklist termination
-  (`CnfOrd`), $\mathbb{F}_2$-linear, $\mathbb{F}_2$-bilinear, and cone-sliced
-  SIMD certificate evaluators (`F2Simd`), `@[irreducible]` stage-cut interval
-  joins for overflowing tuple arithmetic and `intToInt` casts
-  (`OverflowCastJoin`), 4-way call-continuation `&mut` writeback frames and
-  ranged Tree Borrows protectors (`RefFrame`), functional borrow lifting,
-  separation-logic frame rules, and proof automation built against
-  $M_{\text{anneal}}$ and `StableAst` / `StableSemantics` (`cargo-anneal`
-  bundles the scalar and MIR proof libraries under `theory/Anneal/`, compiling
-  and auditing only the transitive `Anneal.*` closure imported by target proof
-  modules).
+  `@[irreducible]` `&mut` method call summaries (`ByteSubLens`), modular
+  `@[irreducible]` call-stack framing and multi-level unwind cleanup
+  propagation (`CallStackUnwind`), constructive `< ω^ω` Cantor Normal Form
+  ordinals and multi-rank worklist termination (`CnfOrd`),
+  $\mathbb{F}_2$-linear, $\mathbb{F}_2$-bilinear, and cone-sliced SIMD
+  certificate evaluators (`F2Simd`), `@[irreducible]` stage-cut interval joins
+  for overflowing tuple arithmetic and `intToInt` casts (`OverflowCastJoin`),
+  4-way call-continuation `&mut` writeback frames and ranged Tree Borrows
+  protectors (`RefFrame`), functional borrow lifting, separation-logic frame
+  rules, and proof automation built against $M_{\text{anneal}}$ and
+  `StableAst` / `StableSemantics` (`cargo-anneal` bundles the scalar and MIR
+  proof libraries under `theory/Anneal/`, compiling and auditing only the
+  transitive `Anneal.*` closure imported by target proof modules).
 
 #### Why $M_{\text{anneal}}$'s step rules and `theory/` do not expand the TCB
 
@@ -523,6 +524,7 @@ anneal/
     │   ├── BitVecArith.lean        # Constructive BitVec range & arithmetic
     │   ├── ByteRun.lean            # Mixed-InitMask padded & Repeat byte-copy laws (+ ByteRun/)
     │   ├── ByteSubLens.lean        # Sub-alloc byte lenses & &mut summaries (+ ByteSubLens/)
+    │   ├── CallStackUnwind.lean    # Modular CallSpecCut & unwind cleanup (+ CallStackUnwind/)
     │   ├── ClassicalEm.lean        # Diaconescu excluded middle and choice
     │   ├── CnfOrd.lean             # Constructive < ω^ω CNF ordinals & worklists (+ CnfOrd/)
     │   ├── Core.lean               # BlockTree, SepPCM & StepStageCut (+ Core/)
