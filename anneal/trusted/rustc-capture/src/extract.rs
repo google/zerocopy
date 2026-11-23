@@ -394,14 +394,18 @@ fn rvalue<'tcx>(tcx: TyCtxt<'tcx>, value: &mir::Rvalue<'tcx>) -> Result<ir::Rval
     })
 }
 
-/// Storage markers survive capture. Their documented effect is that
-/// "Using a local ... while it is unallocated is UB."
+/// Storage markers survive capture (`"Using a local in any way (not only
+/// reading/writing from it) while it is unallocated is UB."`).
 /// `PlaceMention` survives capture because `-Zmir-preserve-ub` disables
-/// `RemovePlaceMention`; mentions of places with projections (such as `**pp`
-/// or field projections) fail closed explicitly because evaluating a projected
-/// place can perform loads and trigger UB, while bare unprojected locals are
-/// recorded as [`ir::Statement::PlaceMention`] and validated as `Sized` in
-/// [`ir::Body::try_new`]. `Nop` alone has no effect.
+/// `RemovePlaceMention`; mentions with projections fail closed because
+/// `"When executed at runtime, this computes the given place, but then
+/// discards it without doing a load."` can dereference pointers or project
+/// fields, while unprojected `Sized` locals are recorded as
+/// [`ir::Statement::PlaceMention`], validated as `Sized` in
+/// [`ir::Body::try_new`], and lowered to `StatementKind.nop` matching Miri
+/// (`eval_place` + `local_to_place` check only local bounds without `.access()`
+/// or loading memory; see `Trusted/MirSemantics.lean` and
+/// `Trusted/MirAst/Statements.lean`). `Nop` alone has no effect.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L364-L393
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L442-L443
 fn statement<'tcx>(tcx: TyCtxt<'tcx>, stmt: &mir::StatementKind<'tcx>) -> Result<ir::Statement> {
@@ -435,9 +439,11 @@ fn statement<'tcx>(tcx: TyCtxt<'tcx>, stmt: &mir::StatementKind<'tcx>) -> Result
 /// future `Call` lowering can run.
 ///
 /// Under `#![feature(ergonomic_clones)]`, `rustc_codegen_ssa` runs
-/// `optimize_use_clone` after `Runtime(PostCleanup)` capture and rewrites
-/// `CallSource::Use` calls on `&T` (`T: Copy`) to bitwise copies even when
-/// `<T as Clone>::clone` is non-trivial, diverging from captured MIR and Miri.
+/// `optimize_use_clone` after `Runtime(PostCleanup)` capture (`"Replace
+/// `clone` calls that come from `use` statements with direct copies if
+/// possible."`), which can rewrite `CallSource::Use` calls on `&T` (`T: Copy`)
+/// to bitwise copies even when `<T as Clone>::clone` is non-trivial, diverging
+/// from captured MIR and Miri.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/mir/mod.rs#L217-L224
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/mir/mod.rs#L350-L407
 fn check_call_source(call_source: mir::CallSource) -> Result<()> {

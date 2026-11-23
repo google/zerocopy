@@ -83,6 +83,16 @@ fragment returns `.unsupported` before write-time `DeadLocal` fires; for
 `.use`, $M_{\text{anneal}}$ checks uninitialized input before writing while
 `rustc`'s `copy_op` validates after writing (both producing `.undefined`).
 
+For an unprojected `Sized` local, capture lowers
+`StatementKind::PlaceMention(place)` to `StatementKind.nop`, matching Miri's
+operational semantics (`rustc_const_eval`'s `local_to_place` and
+`vendor/lean-miri`'s `localToPlace`), which check only local bounds without
+calling `.access()` or checking allocation/liveness for `Sized` locals; although
+`compiler/rustc_middle/src/mir/syntax.rs` states for `StorageLive` /
+`StorageDead` that "Using a local in any way (not only reading/writing from it)
+while it is unallocated is UB.", both Miri engines treat bare `PlaceMention` of
+a `Sized` local as a no-op (see `Trusted/MirAst/Statements.lean`).
+
 Key semantic correspondence points:
 
 1. **Two-pole fault classification (`FaultKind`):**
