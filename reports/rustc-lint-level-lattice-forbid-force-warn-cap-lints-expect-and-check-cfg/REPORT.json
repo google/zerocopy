@@ -1,0 +1,81 @@
+{
+  "topics": [
+    "anneal",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/hir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc 1.98.0-nightly (executed by the 70-case probe suite)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+        "host": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "rustc 1.98.0-nightly (compiler pinned by Anneal; source compared)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)"
+      }
+    },
+    {
+      "name": "rustc 1.102.0-nightly (source audited across lint levels and cfg parsing)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+      }
+    },
+    {
+      "name": "rustc main branch head on the observation date (source audited)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "277240238554297f93fa9ee3c7643dfa03ccbbb4",
+        "branch": "main"
+      }
+    },
+    {
+      "name": "Anneal (trusted rustc-capture session & compiler wrapper)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+        "branch": "main"
+      }
+    },
+    {
+      "name": "Lean 4 (kernel toolchain checking LintLevelLatticeCapLintsAndCheckCfgSoundness.lean)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Rust RFCs (RFC 1193 cap-lints, RFC 2383 lint expectations and reasons)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+        "branch": "main"
+      }
+    },
+    {
+      "name": "The Rust Reference (diagnostics.md)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+        "branch": "master"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

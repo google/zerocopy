@@ -1,0 +1,1650 @@
+{
+  "schema": "rustc-lint-lattice-check-cfg-probe/1",
+  "rustc_vv": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "rustc_release": "1.98.0-nightly",
+  "rustc_commit_hash": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "host": "x86_64-unknown-linux-gnu",
+  "platform": "Linux-7.1.6-1rodete1-amd64-x86_64-with-glibc2.43",
+  "cases": {
+    "a01_forbid_overruled_by_allow_e0453": {
+      "case_id": "a01",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "6187b5dd21f9bf159dc6983ca0919c8d1e969081e084b7841fda6cd6d4a96264",
+      "source": "#![forbid(unsafe_code)]\n\n#[allow(unsafe_code)]\nfn f() {\n    unsafe {}\n}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error[E0453]: allow(unsafe_code) incompatible with previous forbid\n --> probe.rs:3:9\n  |\n1 | #![forbid(unsafe_code)]\n  |           ----------- `forbid` level set here\n2 |\n3 | #[allow(unsafe_code)]\n  |         ^^^^^^^^^^^ overruled by previous forbid\n\nerror: usage of an `unsafe` block\n --> probe.rs:5:5\n  |\n5 |     unsafe {}\n  |     ^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> probe.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> probe.rs:5:5\n  |\n5 |     unsafe {}\n  |     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 2 previous errors; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0453`."
+    },
+    "a02_forbid_overruled_by_expect_e0453": {
+      "case_id": "a02",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "4aebf90ff378061b1034c3df922b5863f84c256107aa60cfd1f68063aa6bf499",
+      "source": "#![forbid(unsafe_code)]\n#[expect(unsafe_code)]\nfn f() {\n    unsafe {}\n}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error[E0453]: expect(unsafe_code) incompatible with previous forbid\n --> probe.rs:2:10\n  |\n1 | #![forbid(unsafe_code)]\n  |           ----------- `forbid` level set here\n2 | #[expect(unsafe_code)]\n  |          ^^^^^^^^^^^ overruled by previous forbid\n\nerror: usage of an `unsafe` block\n --> probe.rs:4:5\n  |\n4 |     unsafe {}\n  |     ^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> probe.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> probe.rs:4:5\n  |\n4 |     unsafe {}\n  |     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 2 previous errors; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0453`."
+    },
+    "a03_forbid_overruled_by_warn_e0453": {
+      "case_id": "a03",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "ef8ea71493a71e5ccdf92574f792fe1ea18e4162dd15c526d56a0dffe6d96ae3",
+      "source": "#![forbid(unsafe_code)]\n#[warn(unsafe_code)]\nfn f() {\n    unsafe {}\n}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error[E0453]: warn(unsafe_code) incompatible with previous forbid\n --> probe.rs:2:8\n  |\n1 | #![forbid(unsafe_code)]\n  |           ----------- `forbid` level set here\n2 | #[warn(unsafe_code)]\n  |        ^^^^^^^^^^^ overruled by previous forbid\n\nerror: usage of an `unsafe` block\n --> probe.rs:4:5\n  |\n4 |     unsafe {}\n  |     ^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> probe.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> probe.rs:4:5\n  |\n4 |     unsafe {}\n  |     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 2 previous errors; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0453`."
+    },
+    "a04_forbid_with_inner_deny_ignored": {
+      "case_id": "a04",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "db1107e0d781c1e277ed1764feb902658fd0812a4c9ce218bf662be5c525112c",
+      "source": "#![forbid(unsafe_code)]\n#[deny(unsafe_code)]\nfn f() {\n    unsafe {}\n}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error: usage of an `unsafe` block\n --> probe.rs:4:5\n  |\n4 |     unsafe {}\n  |     ^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> probe.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> probe.rs:4:5\n  |\n4 |     unsafe {}\n  |     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nwarning: function `f` is never used\n --> probe.rs:3:4\n  |\n3 | fn f() {\n  |    ^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 2 warnings emitted"
+    },
+    "a05_forbid_deny_then_allow_still_e0453": {
+      "case_id": "a05",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "f71383055c965f45173cce69e0bc2fa2621131da7d84e5894af42f8449fd8055",
+      "source": "#![forbid(unsafe_code)]\n#[deny(unsafe_code)]\n#[allow(unsafe_code)]\nfn f() {\n    unsafe {}\n}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error[E0453]: allow(unsafe_code) incompatible with previous forbid\n --> probe.rs:3:9\n  |\n1 | #![forbid(unsafe_code)]\n  |           ----------- `forbid` level set here\n2 | #[deny(unsafe_code)]\n3 | #[allow(unsafe_code)]\n  |         ^^^^^^^^^^^ overruled by previous forbid\n\nerror: usage of an `unsafe` block\n --> probe.rs:5:5\n  |\n5 |     unsafe {}\n  |     ^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> probe.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> probe.rs:5:5\n  |\n5 |     unsafe {}\n  |     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 2 previous errors; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0453`."
+    },
+    "a06_allow_then_forbid_same_item_valid": {
+      "case_id": "a06",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "cc9483fa0f882f464900803c97a184d5b6cedb33690b004800220a452a3eb26c",
+      "source": "#[allow(unsafe_code)]\n#[forbid(unsafe_code)]\nfn f() {\n    unsafe {}\n}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error: usage of an `unsafe` block\n --> probe.rs:4:5\n  |\n4 |     unsafe {}\n  |     ^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> probe.rs:2:10\n  |\n2 | #[forbid(unsafe_code)]\n  |          ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> probe.rs:4:5\n  |\n4 |     unsafe {}\n  |     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nwarning: function `f` is never used\n --> probe.rs:3:4\n  |\n3 | fn f() {\n  |    ^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 2 warnings emitted"
+    },
+    "a07_forbid_group_vs_member_allow_fcw": {
+      "case_id": "a07",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "a35124e8ad4670600b8cffff1659f40ff08b4bb8806a69ba8ea2096d92837c89",
+      "source": "#![forbid(unused)]\n#[allow(dead_code)]\nfn unused_fn() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: allow(dead_code) incompatible with previous forbid\n --> probe.rs:2:9\n  |\n1 | #![forbid(unused)]\n  |           ------ `forbid` level set here\n2 | #[allow(dead_code)]\n  |         ^^^^^^^^^ overruled by previous forbid\n  |\n  = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!\n  = note: for more information, see issue #81670 <https://github.com/rust-lang/rust/issues/81670>\n  = note: `#[warn(forbidden_lint_groups)]` (part of `#[warn(future_incompatible)]`) on by default\n\nwarning: 1 warning emitted"
+    },
+    "a08_forbid_group_vs_same_group_allow_fcw": {
+      "case_id": "a08",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "b48b928c974e7d8f987ace5ad8d416f648cb9650b97e1a78eb5670d035c0eec4",
+      "source": "#![forbid(unused)]\n#[allow(unused)]\nfn unused_fn() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: allow(unused) incompatible with previous forbid\n --> probe.rs:2:9\n  |\n1 | #![forbid(unused)]\n  |           ------ `forbid` level set here\n2 | #[allow(unused)]\n  |         ^^^^^^ overruled by previous forbid\n  |\n  = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!\n  = note: for more information, see issue #81670 <https://github.com/rust-lang/rust/issues/81670>\n  = note: `#[warn(forbidden_lint_groups)]` (part of `#[warn(future_incompatible)]`) on by default\n\nwarning: 1 warning emitted"
+    },
+    "a09_forbid_group_vs_member_expect_fcw": {
+      "case_id": "a09",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "a5627ca87df1ae689ad64c97cf55fdbb4ff8e9f0f87ab0f700862dd6b77f47d1",
+      "source": "#![forbid(unused)]\n#[expect(dead_code)]\nfn unused_fn() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: expect(dead_code) incompatible with previous forbid\n --> probe.rs:2:10\n  |\n1 | #![forbid(unused)]\n  |           ------ `forbid` level set here\n2 | #[expect(dead_code)]\n  |          ^^^^^^^^^ overruled by previous forbid\n  |\n  = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!\n  = note: for more information, see issue #81670 <https://github.com/rust-lang/rust/issues/81670>\n  = note: `#[warn(forbidden_lint_groups)]` (part of `#[warn(future_incompatible)]`) on by default\n\nwarning: 1 warning emitted"
+    },
+    "a10_cli_forbid_group_vs_member_allow_fcw": {
+      "case_id": "a10",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "-F",
+        "unused"
+      ],
+      "source_sha256": "e06a231cf0eac197d46ddf22572082e240867c99af37e9e53e945649dbee3f24",
+      "source": "#[allow(dead_code)]\nfn unused_fn() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-F",
+        "unused",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: allow(dead_code) incompatible with previous forbid\n --> probe.rs:1:9\n  |\n1 | #[allow(dead_code)]\n  |         ^^^^^^^^^ overruled by previous forbid\n  |\n  = note: `forbid` lint level was set on command line (`-F unused`)\n  = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!\n  = note: for more information, see issue #81670 <https://github.com/rust-lang/rust/issues/81670>\n  = note: `#[warn(forbidden_lint_groups)]` (part of `#[warn(future_incompatible)]`) on by default\n\nwarning: 1 warning emitted"
+    },
+    "a11_forbid_warnings_vs_member_allow_dead_code": {
+      "case_id": "a11",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "ec65424af876a2882034cf091d304a754e39297cf39f62606a61f014bd40d316",
+      "source": "#![forbid(warnings)]\n#[allow(dead_code)]\nfn unused_fn() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: allow(dead_code) incompatible with previous forbid\n --> probe.rs:2:9\n  |\n1 | #![forbid(warnings)]\n  |           -------- `forbid` level set here\n2 | #[allow(dead_code)]\n  |         ^^^^^^^^^ overruled by previous forbid\n  |\n  = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!\n  = note: for more information, see issue #81670 <https://github.com/rust-lang/rust/issues/81670>\n  = note: `#[warn(forbidden_lint_groups)]` (part of `#[warn(future_incompatible)]`) on by default\n\nwarning: 1 warning emitted"
+    },
+    "a11b_forbid_warnings_vs_allow_default_lint_unsafe": {
+      "case_id": "a11b",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "e0c285c2f3afebc668309d9896eeabf8ee8f9a77c094d986554d085439280475",
+      "source": "#![forbid(warnings)]\n#[allow(unsafe_code)]\npub fn f() { unsafe {} }\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error: unnecessary `unsafe` block\n --> probe.rs:3:14\n  |\n3 | pub fn f() { unsafe {} }\n  |              ^^^^^^ unnecessary `unsafe` block\n  |\nnote: the lint level is defined here\n --> probe.rs:1:11\n  |\n1 | #![forbid(warnings)]\n  |           ^^^^^^^^\n  = note: `#[forbid(unused_unsafe)]` implied by `#[forbid(warnings)]`\n\nerror: aborting due to 1 previous error"
+    },
+    "a11c_forbid_warnings_vs_warn_then_allow_unsafe": {
+      "case_id": "a11c",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "b6f88aa1541f2cad0f215161b435e89e77af303855b81af8ddb3d7c74b6e0a84",
+      "source": "#![forbid(warnings)]\n#[warn(unsafe_code)]\n#[allow(unsafe_code)]\npub fn f() { unsafe {} }\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "warning: allow(unsafe_code) incompatible with previous forbid\n --> probe.rs:3:9\n  |\n1 | #![forbid(warnings)]\n  |           -------- `forbid` level set here\n2 | #[warn(unsafe_code)]\n3 | #[allow(unsafe_code)]\n  |         ^^^^^^^^^^^ overruled by previous forbid\n  |\n  = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!\n  = note: for more information, see issue #81670 <https://github.com/rust-lang/rust/issues/81670>\n  = note: `#[warn(forbidden_lint_groups)]` (part of `#[warn(future_incompatible)]`) on by default\n\nerror: unnecessary `unsafe` block\n --> probe.rs:4:14\n  |\n4 | pub fn f() { unsafe {} }\n  |              ^^^^^^ unnecessary `unsafe` block\n  |\nnote: the lint level is defined here\n --> probe.rs:1:11\n  |\n1 | #![forbid(warnings)]\n  |           ^^^^^^^^\n  = note: `#[forbid(unused_unsafe)]` implied by `#[forbid(warnings)]`\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+    },
+    "a11d_forbid_unused_allow_then_warn_dead_code": {
+      "case_id": "a11d",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "db7651aaf6ee88568f73cd30b4c09d98cbc778ea35940fca6f9abf5b53adcc22",
+      "source": "#![forbid(unused)]\n#[allow(dead_code)]\n#[warn(dead_code)]\nfn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: allow(dead_code) incompatible with previous forbid\n --> probe.rs:2:9\n  |\n1 | #![forbid(unused)]\n  |           ------ `forbid` level set here\n2 | #[allow(dead_code)]\n  |         ^^^^^^^^^ overruled by previous forbid\n  |\n  = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!\n  = note: for more information, see issue #81670 <https://github.com/rust-lang/rust/issues/81670>\n  = note: `#[warn(forbidden_lint_groups)]` (part of `#[warn(future_incompatible)]`) on by default\n\nwarning: function `unused` is never used\n --> probe.rs:4:4\n  |\n4 | fn unused() {}\n  |    ^^^^^^\n  |\nnote: the lint level is defined here\n --> probe.rs:3:8\n  |\n3 | #[warn(dead_code)]\n  |        ^^^^^^^^^\n\nwarning: 2 warnings emitted"
+    },
+    "a12_forbid_warnings_vs_allow_warnings_fcw": {
+      "case_id": "a12",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "790499d8d3074f8e0df86b827599eb886a55b58f194cfc8c4dd1350fabdef0d2",
+      "source": "#![forbid(warnings)]\n#[allow(warnings)]\nfn unused_fn() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: allow(warnings) incompatible with previous forbid\n --> probe.rs:2:9\n  |\n1 | #![forbid(warnings)]\n  |           -------- `forbid` level set here\n2 | #[allow(warnings)]\n  |         ^^^^^^^^ overruled by previous forbid\n  |\n  = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!\n  = note: for more information, see issue #81670 <https://github.com/rust-lang/rust/issues/81670>\n  = note: `#[warn(forbidden_lint_groups)]` (part of `#[warn(future_incompatible)]`) on by default\n\nwarning: 1 warning emitted"
+    },
+    "a12b_direct_forbid_then_group_forbid_then_allow_downgrades": {
+      "case_id": "a12b",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "b8481465ab52288f8db8ec7a5edded964de9e86d38f2a1ccc57638bb4b5a01dd",
+      "source": "#![forbid(dead_code)]\n#[forbid(unused)]\n#[allow(dead_code)]\nfn unused_fn() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: allow(dead_code) incompatible with previous forbid\n --> probe.rs:3:9\n  |\n2 | #[forbid(unused)]\n  |          ------ `forbid` level set here\n3 | #[allow(dead_code)]\n  |         ^^^^^^^^^ overruled by previous forbid\n  |\n  = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!\n  = note: for more information, see issue #81670 <https://github.com/rust-lang/rust/issues/81670>\n  = note: `#[warn(forbidden_lint_groups)]` (part of `#[warn(future_incompatible)]`) on by default\n\nwarning: 1 warning emitted"
+    },
+    "a13_cap_lints_uncapped_default_rejected": {
+      "case_id": "a13",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "7228c90109e509bda60928e1e5ef34c9478138d155ccfe077c7a0f814061531c",
+      "source": "#![forbid(unsafe_code)]\n#![deny(dead_code)]\n\nfn unused() {\n    unsafe {}\n}\nfn main() {\n    println!(\"CAP_LINTS_OK\");\n}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error: usage of an `unsafe` block\n --> probe.rs:5:5\n  |\n5 |     unsafe {}\n  |     ^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> probe.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> probe.rs:5:5\n  |\n5 |     unsafe {}\n  |     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: function `unused` is never used\n --> probe.rs:4:4\n  |\n4 | fn unused() {\n  |    ^^^^^^\n  |\nnote: the lint level is defined here\n --> probe.rs:2:9\n  |\n2 | #![deny(dead_code)]\n  |         ^^^^^^^^^\n\nerror: aborting due to 2 previous errors; 1 warning emitted"
+    },
+    "a14_cap_lints_warn_downgrades_forbid_and_deny": {
+      "case_id": "a14",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--cap-lints=warn"
+      ],
+      "source_sha256": "7228c90109e509bda60928e1e5ef34c9478138d155ccfe077c7a0f814061531c",
+      "source": "#![forbid(unsafe_code)]\n#![deny(dead_code)]\n\nfn unused() {\n    unsafe {}\n}\nfn main() {\n    println!(\"CAP_LINTS_OK\");\n}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--cap-lints=warn",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: usage of an `unsafe` block\n --> probe.rs:5:5\n  |\n5 |     unsafe {}\n  |     ^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> probe.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> probe.rs:5:5\n  |\n5 |     unsafe {}\n  |     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nwarning: function `unused` is never used\n --> probe.rs:4:4\n  |\n4 | fn unused() {\n  |    ^^^^^^\n  |\nnote: the lint level is defined here\n --> probe.rs:2:9\n  |\n2 | #![deny(dead_code)]\n  |         ^^^^^^^^^\n\nwarning: 3 warnings emitted",
+      "run_returncode": 0,
+      "run_stdout": "CAP_LINTS_OK",
+      "run_stderr": ""
+    },
+    "a15_cap_lints_allow_silences_forbid_and_deny": {
+      "case_id": "a15",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--cap-lints=allow"
+      ],
+      "source_sha256": "7228c90109e509bda60928e1e5ef34c9478138d155ccfe077c7a0f814061531c",
+      "source": "#![forbid(unsafe_code)]\n#![deny(dead_code)]\n\nfn unused() {\n    unsafe {}\n}\nfn main() {\n    println!(\"CAP_LINTS_OK\");\n}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--cap-lints=allow",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "CAP_LINTS_OK",
+      "run_stderr": ""
+    },
+    "a16_cap_lints_deny_caps_forbid_to_deny": {
+      "case_id": "a16",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--cap-lints=deny"
+      ],
+      "source_sha256": "7228c90109e509bda60928e1e5ef34c9478138d155ccfe077c7a0f814061531c",
+      "source": "#![forbid(unsafe_code)]\n#![deny(dead_code)]\n\nfn unused() {\n    unsafe {}\n}\nfn main() {\n    println!(\"CAP_LINTS_OK\");\n}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--cap-lints=deny",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error: usage of an `unsafe` block\n --> probe.rs:5:5\n  |\n5 |     unsafe {}\n  |     ^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> probe.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> probe.rs:5:5\n  |\n5 |     unsafe {}\n  |     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: function `unused` is never used\n --> probe.rs:4:4\n  |\n4 | fn unused() {\n  |    ^^^^^^\n  |\nnote: the lint level is defined here\n --> probe.rs:2:9\n  |\n2 | #![deny(dead_code)]\n  |         ^^^^^^^^^\n\nerror: aborting due to 2 previous errors; 1 warning emitted"
+    },
+    "a17_cap_lints_deny_removes_e0453": {
+      "case_id": "a17",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--cap-lints=deny"
+      ],
+      "source_sha256": "6187b5dd21f9bf159dc6983ca0919c8d1e969081e084b7841fda6cd6d4a96264",
+      "source": "#![forbid(unsafe_code)]\n\n#[allow(unsafe_code)]\nfn f() {\n    unsafe {}\n}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--cap-lints=deny",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: unnecessary `unsafe` block\n --> probe.rs:5:5\n  |\n5 |     unsafe {}\n  |     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nwarning: function `f` is never used\n --> probe.rs:4:4\n  |\n4 | fn f() {\n  |    ^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 2 warnings emitted",
+      "run_returncode": 0,
+      "run_stdout": "",
+      "run_stderr": ""
+    },
+    "a18_cap_lints_warn_removes_e0453": {
+      "case_id": "a18",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--cap-lints=warn"
+      ],
+      "source_sha256": "6187b5dd21f9bf159dc6983ca0919c8d1e969081e084b7841fda6cd6d4a96264",
+      "source": "#![forbid(unsafe_code)]\n\n#[allow(unsafe_code)]\nfn f() {\n    unsafe {}\n}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--cap-lints=warn",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: unnecessary `unsafe` block\n --> probe.rs:5:5\n  |\n5 |     unsafe {}\n  |     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nwarning: function `f` is never used\n --> probe.rs:4:4\n  |\n4 | fn f() {\n  |    ^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 2 warnings emitted",
+      "run_returncode": 0,
+      "run_stdout": "",
+      "run_stderr": ""
+    },
+    "a19_cap_lints_allow_removes_e0453": {
+      "case_id": "a19",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--cap-lints=allow"
+      ],
+      "source_sha256": "6187b5dd21f9bf159dc6983ca0919c8d1e969081e084b7841fda6cd6d4a96264",
+      "source": "#![forbid(unsafe_code)]\n\n#[allow(unsafe_code)]\nfn f() {\n    unsafe {}\n}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--cap-lints=allow",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "",
+      "run_stderr": ""
+    },
+    "a20_cap_lints_repeated_allow_then_forbid": {
+      "case_id": "a20",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--cap-lints=allow",
+        "--cap-lints=forbid"
+      ],
+      "source_sha256": "10b776561fcf8810c4d3517ef5581eec40e540203cf2e63158d01c1119fbb6e5",
+      "source": "#![forbid(unsafe_code)]\nfn main() { unsafe {} }\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--cap-lints=allow",
+        "--cap-lints=forbid",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": ""
+    },
+    "a21_cap_lints_repeated_forbid_then_allow": {
+      "case_id": "a21",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--cap-lints=forbid",
+        "--cap-lints=allow"
+      ],
+      "source_sha256": "10b776561fcf8810c4d3517ef5581eec40e540203cf2e63158d01c1119fbb6e5",
+      "source": "#![forbid(unsafe_code)]\nfn main() { unsafe {} }\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--cap-lints=forbid",
+        "--cap-lints=allow",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error: usage of an `unsafe` block\n --> probe.rs:2:13\n  |\n2 | fn main() { unsafe {} }\n  |             ^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> probe.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> probe.rs:2:13\n  |\n2 | fn main() { unsafe {} }\n  |             ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+    },
+    "a22_cli_forbid_dead_code": {
+      "case_id": "a22",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "-F",
+        "dead_code"
+      ],
+      "source_sha256": "087a11aef4fbf7e9f4c61d52ed4c032ddf3672016e620b2ac49b8174da7ed6a0",
+      "source": "fn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-F",
+        "dead_code",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error: function `unused` is never used\n --> probe.rs:1:4\n  |\n1 | fn unused() {}\n  |    ^^^^^^\n  |\n  = note: requested on the command line with `-F dead-code`\n\nerror: aborting due to 1 previous error"
+    },
+    "a23_cli_forbid_then_allow_sticky": {
+      "case_id": "a23",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "-F",
+        "dead_code",
+        "-A",
+        "dead_code"
+      ],
+      "source_sha256": "087a11aef4fbf7e9f4c61d52ed4c032ddf3672016e620b2ac49b8174da7ed6a0",
+      "source": "fn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-F",
+        "dead_code",
+        "-A",
+        "dead_code",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error: function `unused` is never used\n --> probe.rs:1:4\n  |\n1 | fn unused() {}\n  |    ^^^^^^\n  |\n  = note: requested on the command line with `-F dead-code`\n\nerror: aborting due to 1 previous error"
+    },
+    "a24_cli_allow_then_forbid_raises": {
+      "case_id": "a24",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "-A",
+        "dead_code",
+        "-F",
+        "dead_code"
+      ],
+      "source_sha256": "087a11aef4fbf7e9f4c61d52ed4c032ddf3672016e620b2ac49b8174da7ed6a0",
+      "source": "fn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-A",
+        "dead_code",
+        "-F",
+        "dead_code",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error: function `unused` is never used\n --> probe.rs:1:4\n  |\n1 | fn unused() {}\n  |    ^^^^^^\n  |\n  = note: requested on the command line with `-F dead-code`\n\nerror: aborting due to 1 previous error"
+    },
+    "a25_cli_deny_then_allow_overrides": {
+      "case_id": "a25",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "-D",
+        "dead_code",
+        "-A",
+        "dead_code"
+      ],
+      "source_sha256": "087a11aef4fbf7e9f4c61d52ed4c032ddf3672016e620b2ac49b8174da7ed6a0",
+      "source": "fn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-D",
+        "dead_code",
+        "-A",
+        "dead_code",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": ""
+    },
+    "a26_cli_allow_then_deny_overrides": {
+      "case_id": "a26",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "-A",
+        "dead_code",
+        "-D",
+        "dead_code"
+      ],
+      "source_sha256": "087a11aef4fbf7e9f4c61d52ed4c032ddf3672016e620b2ac49b8174da7ed6a0",
+      "source": "fn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-A",
+        "dead_code",
+        "-D",
+        "dead_code",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error: function `unused` is never used\n --> probe.rs:1:4\n  |\n1 | fn unused() {}\n  |    ^^^^^^\n  |\n  = note: requested on the command line with `-D dead-code`\n\nerror: aborting due to 1 previous error"
+    },
+    "a27_force_warn_overrides_allow": {
+      "case_id": "a27",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--force-warn",
+        "dead_code"
+      ],
+      "source_sha256": "042149a80f46f714d7a2a6bc9a4eea9df12bca509564a01ee7b6f63b0edf997f",
+      "source": "#[allow(dead_code)]\nfn unused_item() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--force-warn",
+        "dead_code",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: function `unused_item` is never used\n --> probe.rs:2:4\n  |\n2 | fn unused_item() {}\n  |    ^^^^^^^^^^^\n  |\n  = note: requested on the command line with `--force-warn dead-code`\n\nwarning: 1 warning emitted"
+    },
+    "a28_force_warn_bypasses_cap_lints_allow": {
+      "case_id": "a28",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--cap-lints=allow",
+        "--force-warn",
+        "dead_code"
+      ],
+      "source_sha256": "042149a80f46f714d7a2a6bc9a4eea9df12bca509564a01ee7b6f63b0edf997f",
+      "source": "#[allow(dead_code)]\nfn unused_item() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--cap-lints=allow",
+        "--force-warn",
+        "dead_code",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: function `unused_item` is never used\n --> probe.rs:2:4\n  |\n2 | fn unused_item() {}\n  |    ^^^^^^^^^^^\n  |\n  = note: requested on the command line with `--force-warn dead-code`\n\nwarning: 1 warning emitted"
+    },
+    "a29_force_warn_beats_forbid_attr": {
+      "case_id": "a29",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--force-warn",
+        "dead_code"
+      ],
+      "source_sha256": "932e17959d012346ca2547291588825774675d4c45926ef5a9d2b911db532cac",
+      "source": "#![forbid(dead_code)]\nfn unused_item() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--force-warn",
+        "dead_code",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: function `unused_item` is never used\n --> probe.rs:2:4\n  |\n2 | fn unused_item() {}\n  |    ^^^^^^^^^^^\n  |\n  = note: requested on the command line with `--force-warn dead-code`\n\nwarning: 1 warning emitted"
+    },
+    "a30_cli_force_warn_then_forbid_keeps_force_warn": {
+      "case_id": "a30",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--force-warn",
+        "dead_code",
+        "-F",
+        "dead_code"
+      ],
+      "source_sha256": "087a11aef4fbf7e9f4c61d52ed4c032ddf3672016e620b2ac49b8174da7ed6a0",
+      "source": "fn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--force-warn",
+        "dead_code",
+        "-F",
+        "dead_code",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: function `unused` is never used\n --> probe.rs:1:4\n  |\n1 | fn unused() {}\n  |    ^^^^^^\n  |\n  = note: requested on the command line with `--force-warn dead-code`\n\nwarning: 1 warning emitted"
+    },
+    "a31_cli_forbid_then_force_warn_keeps_forbid": {
+      "case_id": "a31",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "-F",
+        "dead_code",
+        "--force-warn",
+        "dead_code"
+      ],
+      "source_sha256": "087a11aef4fbf7e9f4c61d52ed4c032ddf3672016e620b2ac49b8174da7ed6a0",
+      "source": "fn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-F",
+        "dead_code",
+        "--force-warn",
+        "dead_code",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error: function `unused` is never used\n --> probe.rs:1:4\n  |\n1 | fn unused() {}\n  |    ^^^^^^\n  |\n  = note: requested on the command line with `-F dead-code`\n\nerror: aborting due to 1 previous error"
+    },
+    "a32_cli_force_warn_warnings_rejected": {
+      "case_id": "a32",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--force-warn",
+        "warnings"
+      ],
+      "source_sha256": "536e506bb90914c243a12b397b9a998f85ae2cbd9ba02dfd03a9e155ca5ca0f4",
+      "source": "fn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--force-warn",
+        "warnings",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error[E0602]: `warnings` lint group is not supported with \u00b4--force-warn\u00b4\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0602`."
+    },
+    "a33_cli_allow_warnings_vs_crate_warn_warnings": {
+      "case_id": "a33",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "-A",
+        "warnings"
+      ],
+      "source_sha256": "58882307b93d743e053acc0ff246222decb6ab739175c0ec5fa9a02ac5d1b5f4",
+      "source": "#![warn(warnings)]\n#[warn(dead_code)]\nfn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-A",
+        "warnings",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": ""
+    },
+    "a33b_cli_allow_warnings_vs_crate_deny_dead_code": {
+      "case_id": "a33b",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "-A",
+        "warnings"
+      ],
+      "source_sha256": "ae5845adb2cb43d95ff6003fb16ce2ed7d9ce07cfb84b3a06f61634de3d666c7",
+      "source": "#![deny(dead_code)]\nfn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-A",
+        "warnings",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error: function `unused` is never used\n --> probe.rs:2:4\n  |\n2 | fn unused() {}\n  |    ^^^^^^\n  |\nnote: the lint level is defined here\n --> probe.rs:1:9\n  |\n1 | #![deny(dead_code)]\n  |         ^^^^^^^^^\n\nerror: aborting due to 1 previous error"
+    },
+    "a34_cli_allow_warnings_then_warn_warnings_cli": {
+      "case_id": "a34",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "-A",
+        "warnings",
+        "-W",
+        "warnings"
+      ],
+      "source_sha256": "087a11aef4fbf7e9f4c61d52ed4c032ddf3672016e620b2ac49b8174da7ed6a0",
+      "source": "fn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-A",
+        "warnings",
+        "-W",
+        "warnings",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: function `unused` is never used\n --> probe.rs:1:4\n  |\n1 | fn unused() {}\n  |    ^^^^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted"
+    },
+    "a35_expect_fulfilled_silent": {
+      "case_id": "a35",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "2d46b16b796520b4b6da3bccb6688f237f6d1e1704e9b4fc08db91f5f9322f06",
+      "source": "#[expect(dead_code)]\nfn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": ""
+    },
+    "a36_expect_unfulfilled_warn_with_reason": {
+      "case_id": "a36",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "1c4d28a3a4e21f54c2adc4454566bd3742399032c7bcaaf6d834b98aa287eb33",
+      "source": "#[expect(dead_code, reason = \"kept for probe\")]\nfn used() {}\nfn main() { used(); }\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: this lint expectation is unfulfilled\n --> probe.rs:1:10\n  |\n1 | #[expect(dead_code, reason = \"kept for probe\")]\n  |          ^^^^^^^^^\n  |\n  = note: kept for probe\n  = note: `#[warn(unfulfilled_lint_expectations)]` on by default\n\nwarning: 1 warning emitted"
+    },
+    "a37_expect_fulfilled_with_cli_allow": {
+      "case_id": "a37",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "-A",
+        "dead_code"
+      ],
+      "source_sha256": "2d46b16b796520b4b6da3bccb6688f237f6d1e1704e9b4fc08db91f5f9322f06",
+      "source": "#[expect(dead_code)]\nfn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-A",
+        "dead_code",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": ""
+    },
+    "a38_expect_unfulfilled_with_cli_allow_still_warns": {
+      "case_id": "a38",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "-A",
+        "dead_code"
+      ],
+      "source_sha256": "784da4570d48b59af7c5648eb0680d2db6491369b5c83ec2568447cf8ecf4554",
+      "source": "#[expect(dead_code)]\nfn used() {}\nfn main() { used(); }\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-A",
+        "dead_code",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: this lint expectation is unfulfilled\n --> probe.rs:1:10\n  |\n1 | #[expect(dead_code)]\n  |          ^^^^^^^^^\n  |\n  = note: `#[warn(unfulfilled_lint_expectations)]` on by default\n\nwarning: 1 warning emitted"
+    },
+    "a39_expect_unfulfilled_suppressed_by_cli_allow_warnings": {
+      "case_id": "a39",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "-A",
+        "warnings"
+      ],
+      "source_sha256": "784da4570d48b59af7c5648eb0680d2db6491369b5c83ec2568447cf8ecf4554",
+      "source": "#[expect(dead_code)]\nfn used() {}\nfn main() { used(); }\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-A",
+        "warnings",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": ""
+    },
+    "a40_expect_fulfilled_suppressed_by_cap_lints_allow": {
+      "case_id": "a40",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--cap-lints=allow"
+      ],
+      "source_sha256": "2d46b16b796520b4b6da3bccb6688f237f6d1e1704e9b4fc08db91f5f9322f06",
+      "source": "#[expect(dead_code)]\nfn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--cap-lints=allow",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": ""
+    },
+    "a41_expect_unfulfilled_suppressed_by_cap_lints_allow": {
+      "case_id": "a41",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--cap-lints=allow"
+      ],
+      "source_sha256": "784da4570d48b59af7c5648eb0680d2db6491369b5c83ec2568447cf8ecf4554",
+      "source": "#[expect(dead_code)]\nfn used() {}\nfn main() { used(); }\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--cap-lints=allow",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": ""
+    },
+    "a42_expect_fulfilled_with_force_warn": {
+      "case_id": "a42",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--force-warn",
+        "dead_code"
+      ],
+      "source_sha256": "2d46b16b796520b4b6da3bccb6688f237f6d1e1704e9b4fc08db91f5f9322f06",
+      "source": "#[expect(dead_code)]\nfn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--force-warn",
+        "dead_code",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: function `unused` is never used\n --> probe.rs:2:4\n  |\n2 | fn unused() {}\n  |    ^^^^^^\n  |\n  = note: requested on the command line with `--force-warn dead-code`\n\nwarning: 1 warning emitted"
+    },
+    "a43_expect_unfulfilled_with_force_warn": {
+      "case_id": "a43",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--force-warn",
+        "dead_code"
+      ],
+      "source_sha256": "784da4570d48b59af7c5648eb0680d2db6491369b5c83ec2568447cf8ecf4554",
+      "source": "#[expect(dead_code)]\nfn used() {}\nfn main() { used(); }\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--force-warn",
+        "dead_code",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: this lint expectation is unfulfilled\n --> probe.rs:1:10\n  |\n1 | #[expect(dead_code)]\n  |          ^^^^^^^^^\n  |\n  = note: `#[warn(unfulfilled_lint_expectations)]` on by default\n\nwarning: 1 warning emitted"
+    },
+    "a44_expect_overridden_by_inner_allow_unfulfilled": {
+      "case_id": "a44",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "a582bd712f90b4a4a06783cc21ddfab7c47c449f6aba9ac2d9544e0b99b87619",
+      "source": "#[expect(dead_code)]\n#[allow(dead_code)]\nfn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: this lint expectation is unfulfilled\n --> probe.rs:1:10\n  |\n1 | #[expect(dead_code)]\n  |          ^^^^^^^^^\n  |\n  = note: `#[warn(unfulfilled_lint_expectations)]` on by default\n\nwarning: 1 warning emitted"
+    },
+    "a45_expect_overridden_by_inner_allow_under_force_warn": {
+      "case_id": "a45",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--force-warn",
+        "dead_code"
+      ],
+      "source_sha256": "a582bd712f90b4a4a06783cc21ddfab7c47c449f6aba9ac2d9544e0b99b87619",
+      "source": "#[expect(dead_code)]\n#[allow(dead_code)]\nfn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--force-warn",
+        "dead_code",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: function `unused` is never used\n --> probe.rs:3:4\n  |\n3 | fn unused() {}\n  |    ^^^^^^\n  |\n  = note: requested on the command line with `--force-warn dead-code`\n\nwarning: this lint expectation is unfulfilled\n --> probe.rs:1:10\n  |\n1 | #[expect(dead_code)]\n  |          ^^^^^^^^^\n  |\n  = note: `#[warn(unfulfilled_lint_expectations)]` on by default\n\nwarning: 2 warnings emitted"
+    },
+    "a46_expect_unfulfilled_lint_expectations_ignored": {
+      "case_id": "a46",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "5492953ba02bbebfd8e2c40ea5c095ed0d262c9d09442c362a1924b631443993",
+      "source": "#[expect(unfulfilled_lint_expectations)]\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: this lint expectation is unfulfilled\n --> probe.rs:1:10\n  |\n1 | #[expect(unfulfilled_lint_expectations)]\n  |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: the `unfulfilled_lint_expectations` lint can't be expected and will always produce this message\n  = note: `#[warn(unfulfilled_lint_expectations)]` on by default\n\nwarning: 1 warning emitted"
+    },
+    "a47_later_allow_overrides_earlier_warn": {
+      "case_id": "a47",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "3994e436772462b7d566573d851060afcff3f9a9ccfb483e8361e9ebb9fe38e6",
+      "source": "#[warn(dead_code)]\n#[allow(dead_code)]\nfn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": ""
+    },
+    "a48_later_warn_overrides_earlier_allow": {
+      "case_id": "a48",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "411b3513672c4158274355f0ef5f0d7c297513d77a8538b853e906bedc1164df",
+      "source": "#[allow(dead_code)]\n#[warn(dead_code)]\nfn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: function `unused` is never used\n --> probe.rs:3:4\n  |\n3 | fn unused() {}\n  |    ^^^^^^\n  |\nnote: the lint level is defined here\n --> probe.rs:2:8\n  |\n2 | #[warn(dead_code)]\n  |        ^^^^^^^^^\n\nwarning: 1 warning emitted"
+    },
+    "a49_nested_scope_overrides_crate_deny": {
+      "case_id": "a49",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "19cd1a09157e475e3eac07abe78e2f7913f906235f2a7f726585b2e903a5cd09",
+      "source": "#![deny(dead_code)]\n#[allow(dead_code)]\nfn unused() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": ""
+    },
+    "b01_check_cfg_expected_fast_silent": {
+      "case_id": "b01",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--check-cfg=cfg(feature, values(\"fast\"))"
+      ],
+      "source_sha256": "2e66e36e74fd41dd0623037d14c5d0a96050a0c2462f23d8ab905fd06f756341",
+      "source": "#[cfg(feature = \"fast\")]\nfn fast_fn() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--check-cfg=cfg(feature, values(\"fast\"))",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "",
+      "run_stderr": ""
+    },
+    "b02_check_cfg_typo_and_unknown_name_warn": {
+      "case_id": "b02",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--check-cfg=cfg(feature, values(\"fast\"))"
+      ],
+      "source_sha256": "2b1ea70f1ec0ab0c4cea2ebdabfe86b1f683f110e3a7522af089b1d538bcc122",
+      "source": "#[cfg(feature = \"typo\")]\nfn a() {}\n#[cfg(unknown_flag)]\nfn b() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--check-cfg=cfg(feature, values(\"fast\"))",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: unexpected `cfg` condition value: `typo`\n --> probe.rs:1:7\n  |\n1 | #[cfg(feature = \"typo\")]\n  |       ^^^^^^^^^^^^^^^^\n  |\n  = note: expected values for `feature` are: `fast`\n  = help: to expect this configuration use `--check-cfg=cfg(feature, values(\"typo\"))`\n  = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration\n  = note: `#[warn(unexpected_cfgs)]` on by default\n\nwarning: unexpected `cfg` condition name: `unknown_flag`\n --> probe.rs:3:7\n  |\n3 | #[cfg(unknown_flag)]\n  |       ^^^^^^^^^^^^\n  |\n  = help: expected names are: `feature` and 32 more\n  = help: to expect this configuration use `--check-cfg=cfg(unknown_flag)`\n  = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration\n\nwarning: 2 warnings emitted"
+    },
+    "b03_check_cfg_checks_false_cfg_attr_predicate": {
+      "case_id": "b03",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--check-cfg=cfg(feature, values(\"fast\"))"
+      ],
+      "source_sha256": "aba50629bc0ad3c2cd9bb35a0ee1a42253ac3a943ee657e2671f3151f95b9264",
+      "source": "#[cfg_attr(unknown_pred, allow(dead_code))]\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--check-cfg=cfg(feature, values(\"fast\"))",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: unexpected `cfg` condition name: `unknown_pred`\n --> probe.rs:1:12\n  |\n1 | #[cfg_attr(unknown_pred, allow(dead_code))]\n  |            ^^^^^^^^^^^^\n  |\n  = help: expected names are: `feature` and 32 more\n  = help: to expect this configuration use `--check-cfg=cfg(unknown_pred)`\n  = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration\n  = note: `#[warn(unexpected_cfgs)]` on by default\n\nwarning: 1 warning emitted"
+    },
+    "b04_cfg_attr_false_strips_malformed_and_unknown_inner_attrs": {
+      "case_id": "b04",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--check-cfg=cfg(feature, values(\"fast\"))"
+      ],
+      "source_sha256": "9122ed3fbe5c888098cb45cdae4e2fb404389c01bc15c9df77c0fcf462f5207e",
+      "source": "#![forbid(unsafe_code)]\n#[cfg_attr(false, inline(bogus_never_valid))]\n#[cfg_attr(false, cfg(unknown_nested_cfg))]\n#[cfg_attr(false, allow(nonexistent_bogus_lint))]\n#[cfg_attr(false, allow(unsafe_code))]\nfn helper() -> u32 { 7 }\nfn main() { println!(\"CFG_ATTR_STRIPPED={}\", helper()); }\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--check-cfg=cfg(feature, values(\"fast\"))",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "",
+      "run_returncode": 0,
+      "run_stdout": "CFG_ATTR_STRIPPED=7",
+      "run_stderr": ""
+    },
+    "b05_cfg_attr_true_rejects_malformed_inner_attr": {
+      "case_id": "b05",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "67493d18adf1e94683aa2e70cac8caf45a06c21beb0654f7756736fc97918d51",
+      "source": "#[cfg_attr(true, inline(bogus_never_valid))]\nfn f() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error[E0539]: malformed `inline` attribute input\n --> probe.rs:1:18\n  |\n1 | #[cfg_attr(true, inline(bogus_never_valid))]\n  |                  ^^^^^^^-----------------^\n  |                         |\n  |                         valid arguments are `always` or `never`\n  |\n  = note: for more information, visit <https://doc.rust-lang.org/reference/attributes/codegen.html#the-inline-attribute>\nhelp: try changing it to one of the following valid forms of the attribute\n  |\n1 - #[cfg_attr(true, inline(bogus_never_valid))]\n1 + #[cfg_attr(true, inline)]\n  |\n1 - #[cfg_attr(true, inline(bogus_never_valid))]\n1 + #[cfg_attr(true, inline(always))]\n  |\n1 - #[cfg_attr(true, inline(bogus_never_valid))]\n1 + #[cfg_attr(true, inline(never))]\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0539`."
+    },
+    "b06a_cfg_attr_true_triggers_e0453_and_unexpected_cfgs": {
+      "case_id": "b06a",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--check-cfg=cfg(feature, values(\"fast\"))"
+      ],
+      "source_sha256": "185b1843d96fb4114b4dd2ee7ae3895736ee51ae0caea5c126e07a28937e226c",
+      "source": "#![forbid(unsafe_code)]\n#[cfg_attr(true, allow(unsafe_code))]\nfn f1() { unsafe {} }\n#[cfg_attr(true, cfg(unknown_nested_cfg))]\nfn f2() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--check-cfg=cfg(feature, values(\"fast\"))",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "warning: unexpected `cfg` condition name: `unknown_nested_cfg`\n --> probe.rs:4:22\n  |\n4 | #[cfg_attr(true, cfg(unknown_nested_cfg))]\n  |                      ^^^^^^^^^^^^^^^^^^\n  |\n  = help: expected names are: `feature` and 32 more\n  = help: to expect this configuration use `--check-cfg=cfg(unknown_nested_cfg)`\n  = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration\n  = note: `#[warn(unexpected_cfgs)]` on by default\n\nerror[E0453]: allow(unsafe_code) incompatible with previous forbid\n --> probe.rs:2:24\n  |\n1 | #![forbid(unsafe_code)]\n  |           ----------- `forbid` level set here\n2 | #[cfg_attr(true, allow(unsafe_code))]\n  |                        ^^^^^^^^^^^ overruled by previous forbid\n\nerror: usage of an `unsafe` block\n --> probe.rs:3:11\n  |\n3 | fn f1() { unsafe {} }\n  |           ^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> probe.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> probe.rs:3:11\n  |\n3 | fn f1() { unsafe {} }\n  |           ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 2 previous errors; 2 warnings emitted\n\nFor more information about this error, try `rustc --explain E0453`."
+    },
+    "b06b_cfg_attr_true_allow_plus_false_cfg_strips_item_before_e0453": {
+      "case_id": "b06b",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--check-cfg=cfg(feature, values(\"fast\"))"
+      ],
+      "source_sha256": "44d522b480504b1a3c8881d0307fb184ae19ce62ce55b274d8eca569040fc2b0",
+      "source": "#![forbid(unsafe_code)]\n#[cfg_attr(true, allow(unsafe_code))]\n#[cfg_attr(true, cfg(unknown_nested_cfg))]\nfn f() { unsafe {} }\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--check-cfg=cfg(feature, values(\"fast\"))",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: unexpected `cfg` condition name: `unknown_nested_cfg`\n --> probe.rs:3:22\n  |\n3 | #[cfg_attr(true, cfg(unknown_nested_cfg))]\n  |                      ^^^^^^^^^^^^^^^^^^\n  |\n  = help: expected names are: `feature` and 32 more\n  = help: to expect this configuration use `--check-cfg=cfg(unknown_nested_cfg)`\n  = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration\n  = note: `#[warn(unexpected_cfgs)]` on by default\n\nwarning: 1 warning emitted"
+    },
+    "b07_cfg_attr_false_still_requires_attr_item_syntax": {
+      "case_id": "b07",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [],
+      "source_sha256": "76c965324b962b23fd9540103f8c740c3c62bbd7d4636a27fe89b86fc40b607b",
+      "source": "#[cfg_attr(false, 123_not_an_attr)]\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 1,
+      "compile_stdout": "",
+      "compile_stderr": "error: expected identifier, found `123_not_an_attr`\n --> probe.rs:1:19\n  |\n1 | #[cfg_attr(false, 123_not_an_attr)]\n  |                   ^^^^^^^^^^^^^^^ expected identifier\n  |\nhelp: identifiers cannot start with a number\n --> probe.rs:1:19\n  |\n1 | #[cfg_attr(false, 123_not_an_attr)]\n  |                   ^^^^\n\nerror: aborting due to 1 previous error"
+    },
+    "b08_cfg_false_strips_unvalidated_inner_attrs_and_e0453": {
+      "case_id": "b08",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--check-cfg=cfg(feature, values(\"fast\"))"
+      ],
+      "source_sha256": "5a8f6d0c39d62773b4493be6b4336cc3a99949a9371f09e97aee23db465a6811",
+      "source": "#![forbid(unsafe_code)]\n#[cfg(false)]\n#[inline(bogus_never_valid)]\n#[allow(unsafe_code)]\nfn stripped() { unsafe {} }\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--check-cfg=cfg(feature, values(\"fast\"))",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": ""
+    },
+    "b09_cfg_false_short_circuits_second_cfg_attr_only_in_order": {
+      "case_id": "b09",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--check-cfg=cfg()"
+      ],
+      "source_sha256": "de7bc13ee0ef526fd24b8c1960a5bf2df690b602d6ad4d1c6c8c6851588aab86",
+      "source": "#[cfg(false)]\n#[cfg(unknown_second_cfg)]\nfn skipped() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--check-cfg=cfg()",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": ""
+    },
+    "b10_cfg_unknown_first_then_cfg_false_warns": {
+      "case_id": "b10",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--check-cfg=cfg()"
+      ],
+      "source_sha256": "71823405529e7e635d67b52cf4202eac655d7da0108c8468b931da2c5953e293",
+      "source": "#[cfg(unknown_first_cfg)]\n#[cfg(false)]\nfn warns_first() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--check-cfg=cfg()",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: unexpected `cfg` condition name: `unknown_first_cfg`\n --> probe.rs:1:7\n  |\n1 | #[cfg(unknown_first_cfg)]\n  |       ^^^^^^^^^^^^^^^^^\n  |\n  = help: to expect this configuration use `--check-cfg=cfg(unknown_first_cfg)`\n  = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration\n  = note: `#[warn(unexpected_cfgs)]` on by default\n\nwarning: 1 warning emitted"
+    },
+    "b11_check_cfg_cap_lints_allow_vs_force_warn_unexpected_cfgs": {
+      "case_id": "b11",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--check-cfg=cfg()",
+        "--cap-lints=allow",
+        "--force-warn",
+        "unexpected_cfgs"
+      ],
+      "source_sha256": "cf93cf1697a193abfdcbc6bad7669186c4dfeb6e0306cb0ebbbe6711daffe69b",
+      "source": "#[cfg(unknown_flag)]\nfn f() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--check-cfg=cfg()",
+        "--cap-lints=allow",
+        "--force-warn",
+        "unexpected_cfgs",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: unexpected `cfg` condition name: `unknown_flag`\n --> probe.rs:1:7\n  |\n1 | #[cfg(unknown_flag)]\n  |       ^^^^^^^^^^^^\n  |\n  = help: to expect this configuration use `--check-cfg=cfg(unknown_flag)`\n  = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration\n  = note: requested on the command line with `--force-warn unexpected-cfgs`\n\nwarning: 1 warning emitted"
+    },
+    "b12a_crate_expect_covers_item_unexpected_cfgs": {
+      "case_id": "b12a",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--check-cfg=cfg()"
+      ],
+      "source_sha256": "37de7adf13e2a263c8af86e08c44a23031ac68bdf5ecaf575d5165f2c0ba81e9",
+      "source": "#![expect(unexpected_cfgs)]\n#[cfg(unknown_flag)]\nfn f() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--check-cfg=cfg()",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": ""
+    },
+    "b12b_item_expect_misses_own_cfg_even_when_active": {
+      "case_id": "b12b",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--check-cfg=cfg()",
+        "--cfg=unknown_flag"
+      ],
+      "source_sha256": "90a83cf1ce3761acda575d77cf6d10d618298b85f4751f7a2062b5da95e92e49",
+      "source": "#[expect(unexpected_cfgs)]\n#[cfg(unknown_flag)]\nfn f() {}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--check-cfg=cfg()",
+        "--cfg=unknown_flag",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": "warning: unexpected `cfg` condition name: `unknown_flag`\n --> probe.rs:2:7\n  |\n2 | #[cfg(unknown_flag)]\n  |       ^^^^^^^^^^^^\n  |\n  = help: to expect this configuration use `--check-cfg=cfg(unknown_flag)`\n  = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg.html> for more information about checking conditional configuration\n  = note: `#[warn(unexpected_cfgs)]` on by default\n\nwarning: function `f` is never used\n --> probe.rs:3:4\n  |\n3 | fn f() {}\n  |    ^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: this lint expectation is unfulfilled\n --> probe.rs:1:10\n  |\n1 | #[expect(unexpected_cfgs)]\n  |          ^^^^^^^^^^^^^^^\n  |\n  = note: `#[warn(unfulfilled_lint_expectations)]` on by default\n\nwarning: 3 warnings emitted"
+    },
+    "b12c_item_expect_covers_cfg_macro_inside_body": {
+      "case_id": "b12c",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--check-cfg=cfg()"
+      ],
+      "source_sha256": "12ed9dfbc518f87031ab7226bcf1d8e04ae2d291338d57abde78ff9bc94e4edc",
+      "source": "#[expect(unexpected_cfgs)]\nfn f() -> bool { cfg!(unknown_flag) }\nfn main() { let _ = f(); }\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--check-cfg=cfg()",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": ""
+    },
+    "b12d_mod_expect_covers_inner_item_cfg": {
+      "case_id": "b12d",
+      "edition": "2024",
+      "crate_type": "bin",
+      "extra_args": [
+        "--check-cfg=cfg()"
+      ],
+      "source_sha256": "6fd00fa7bd3d7d09c7dd16384fb67ad52a958387b51e0e956285e6ad2539f006",
+      "source": "#[expect(unexpected_cfgs)]\nmod m {\n    #[cfg(unknown_flag)]\n    pub fn f() {}\n}\nfn main() {}\n",
+      "compile_cmd": [
+        "rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "--color=never",
+        "--check-cfg=cfg()",
+        "-o",
+        "probe_bin",
+        "probe.rs"
+      ],
+      "compile_returncode": 0,
+      "compile_stdout": "",
+      "compile_stderr": ""
+    }
+  }
+}

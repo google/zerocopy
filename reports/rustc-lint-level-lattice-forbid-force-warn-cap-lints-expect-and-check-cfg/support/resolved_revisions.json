@@ -1,0 +1,75 @@
+{
+  "observed_at": "2026-11-23",
+  "repositories": {
+    "rust-lang/rust": {
+      "main_head": {
+        "ref": "main",
+        "sha": "277240238554297f93fa9ee3c7643dfa03ccbbb4",
+        "commit_date": "2026-11-23T14:50:10Z",
+        "title": "Auto merge of #166397 - JonathanBrouwer:rollup-20jrOKj, r=JonathanBrouwer"
+      },
+      "executed_probe_toolchain": {
+        "version": "1.98.0-nightly (14210df0e 2026-05-31)",
+        "sha": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "commit_date": "2026-05-31T20:13:59Z",
+        "title": "Auto merge of #157219 - jhpratt:rollup-70ooTMg, r=jhpratt"
+      },
+      "anneal_pinned_toolchain": {
+        "version": "1.98.0-nightly (f8a08b688 2026-05-30)",
+        "sha": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "commit_date": "2026-05-30T17:09:19Z",
+        "title": "Auto merge of #157161 - JonathanBrouwer:rollup-3MNUPwu, r=JonathanBrouwer"
+      },
+      "prior_empirical_toolchain": {
+        "version": "1.102.0-nightly (3ef0c22cd 2026-11-11)",
+        "sha": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "commit_date": "2026-11-11T17:59:24Z",
+        "title": "Auto merge of #165821 - JonathanBrouwer:rollup-TeJSwaI, r=JonathanBrouwer"
+      },
+      "historical_seed_reference": {
+        "sha": "49d734536222bf28bb6d07d885b3a81d145981da",
+        "commit_date": "2026-09-11T16:23:06Z",
+        "title": "Reuse computed layouts in transmutability tree conversion"
+      }
+    },
+    "rust-lang/rfcs": {
+      "ref": "main",
+      "sha": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+      "commit_date": "2026-11-14T17:21:49Z"
+    },
+    "rust-lang/reference": {
+      "ref": "master",
+      "sha": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+      "commit_date": "2026-11-17T20:49:56Z"
+    },
+    "leanprover/lean4": {
+      "ref": "v4.34.1",
+      "sha": "5045d0056413266e57c625dcd7c365b10e377c52",
+      "commit_date": "2026-09-24T17:27:27Z"
+    },
+    "joshlf/anneal": {
+      "main": {
+        "ref": "main",
+        "sha": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+        "commit_date": "2026-11-19T21:39:21Z"
+      },
+      "unstable": {
+        "ref": "unstable",
+        "sha": "da6917c5cc574a4e06543576b9508c5221467bd1",
+        "commit_date": "2026-11-23T07:25:34Z"
+      }
+    },
+    "google/zerocopy": {
+      "main": {
+        "ref": "main",
+        "sha": "e86eb0281380bdc278f4b4b3788dc9525ef59035",
+        "commit_date": "2026-11-23T19:46:20Z"
+      },
+      "reference": {
+        "ref": "reference",
+        "sha": "04c640285c14cd715f59436b89883cbcf1e1dcec",
+        "commit_date": "2026-11-23T20:36:13Z"
+      }
+    }
+  }
+}

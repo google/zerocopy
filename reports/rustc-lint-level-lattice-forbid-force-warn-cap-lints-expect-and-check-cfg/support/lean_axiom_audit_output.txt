@@ -1,0 +1,266 @@
+'RustcLintAndCfgModel.AstAttr._sizeOf_2_eq' does not depend on any axioms
+'RustcLintAndCfgModel.AstAttr.brecOn.eq' does not depend on any axioms
+'RustcLintAndCfgModel.AstAttr.brecOn_1.eq' does not depend on any axioms
+'RustcLintAndCfgModel.AstAttr.builtinAttr.inj' does not depend on any axioms
+'RustcLintAndCfgModel.AstAttr.builtinAttr.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.AstAttr.builtinAttr.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.AstAttr.cfg.inj' does not depend on any axioms
+'RustcLintAndCfgModel.AstAttr.cfg.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.AstAttr.cfg.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.AstAttr.cfgAttr.inj' does not depend on any axioms
+'RustcLintAndCfgModel.AstAttr.cfgAttr.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.AstAttr.cfgAttr.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.AstAttr.cfgAttrTrace.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.AstAttr.lintAttr.inj' does not depend on any axioms
+'RustcLintAndCfgModel.AstAttr.lintAttr.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.AstAttr.lintAttr.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.AttrOrCliTargetName.groupCustom.inj' does not depend on any axioms
+'RustcLintAndCfgModel.AttrOrCliTargetName.groupCustom.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.AttrOrCliTargetName.groupCustom.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.AttrOrCliTargetName.groupUnused.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.AttrOrCliTargetName.groupWarnings.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.AttrOrCliTargetName.lint.inj' does not depend on any axioms
+'RustcLintAndCfgModel.AttrOrCliTargetName.lint.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.AttrOrCliTargetName.lint.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.BuilderDiag.forbiddenLintGroupsFCW.inj' does not depend on any axioms
+'RustcLintAndCfgModel.BuilderDiag.forbiddenLintGroupsFCW.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.BuilderDiag.forbiddenLintGroupsFCW.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.BuilderDiag.overruledAttributeE0453.inj' does not depend on any axioms
+'RustcLintAndCfgModel.BuilderDiag.overruledAttributeE0453.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.BuilderDiag.overruledAttributeE0453.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.CanonExpectId.beq_eq_true_iff' depends on axioms: [propext]
+'RustcLintAndCfgModel.CanonExpectId.beq_refl' depends on axioms: [propext]
+'RustcLintAndCfgModel.CanonExpectId.beq_sound' depends on axioms: [propext]
+'RustcLintAndCfgModel.CanonExpectId.mk.inj' does not depend on any axioms
+'RustcLintAndCfgModel.CanonExpectId.mk.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.CanonExpectId.mk.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.CfgPred._sizeOf_2_eq' does not depend on any axioms
+'RustcLintAndCfgModel.CfgPred.all.inj' does not depend on any axioms
+'RustcLintAndCfgModel.CfgPred.all.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.CfgPred.all.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.CfgPred.any.inj' does not depend on any axioms
+'RustcLintAndCfgModel.CfgPred.any.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.CfgPred.any.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.CfgPred.boolLit.inj' does not depend on any axioms
+'RustcLintAndCfgModel.CfgPred.boolLit.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.CfgPred.boolLit.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.CfgPred.brecOn.eq' does not depend on any axioms
+'RustcLintAndCfgModel.CfgPred.brecOn_1.eq' does not depend on any axioms
+'RustcLintAndCfgModel.CfgPred.nameVal.inj' does not depend on any axioms
+'RustcLintAndCfgModel.CfgPred.nameVal.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.CfgPred.nameVal.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.CfgPred.not.inj' does not depend on any axioms
+'RustcLintAndCfgModel.CfgPred.not.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.CfgPred.not.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.CheckCfg.mk.inj' does not depend on any axioms
+'RustcLintAndCfgModel.CheckCfg.mk.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.CheckCfg.mk.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.CheckCfg.obsEq_refl' depends on axioms: [propext]
+'RustcLintAndCfgModel.CheckCfg.obsEq_symm' depends on axioms: [propext]
+'RustcLintAndCfgModel.CheckCfg.obsEq_trans' depends on axioms: [propext]
+'RustcLintAndCfgModel.CheckCfgDiag.unexpectedCfgName.inj' does not depend on any axioms
+'RustcLintAndCfgModel.CheckCfgDiag.unexpectedCfgName.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.CheckCfgDiag.unexpectedCfgName.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.CheckCfgDiag.unexpectedCfgValue.inj' does not depend on any axioms
+'RustcLintAndCfgModel.CheckCfgDiag.unexpectedCfgValue.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.CheckCfgDiag.unexpectedCfgValue.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.CheckCfgSpec.cfgAny.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.CheckCfgSpec.cfgEmpty.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.CheckCfgSpec.cfgName.inj' does not depend on any axioms
+'RustcLintAndCfgModel.CheckCfgSpec.cfgName.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.CheckCfgSpec.cfgName.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.CliFlag.capLints.inj' does not depend on any axioms
+'RustcLintAndCfgModel.CliFlag.capLints.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.CliFlag.capLints.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.CliFlag.lintOpt.inj' does not depend on any axioms
+'RustcLintAndCfgModel.CliFlag.lintOpt.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.CliFlag.lintOpt.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.CliMap.set_other' depends on axioms: [propext]
+'RustcLintAndCfgModel.CliMap.set_self' depends on axioms: [propext]
+'RustcLintAndCfgModel.DeclaredExpectation.mk.inj' does not depend on any axioms
+'RustcLintAndCfgModel.DeclaredExpectation.mk.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.DeclaredExpectation.mk.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.DiagCtxtState.mk.inj' does not depend on any axioms
+'RustcLintAndCfgModel.DiagCtxtState.mk.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.DiagCtxtState.mk.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.EmittedDiag.mk.inj' does not depend on any axioms
+'RustcLintAndCfgModel.EmittedDiag.mk.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.EmittedDiag.mk.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.EmittedDiagLevel.err.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.EmittedDiagLevel.expectSilent.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.EmittedDiagLevel.forceWarning.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.EmittedDiagLevel.futureCompatOnlyAllow.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.EmittedDiagLevel.warning.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.ExpandOutput.mk.inj' does not depend on any axioms
+'RustcLintAndCfgModel.ExpandOutput.mk.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.ExpandOutput.mk.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.ExpectedValues.accepts_join' depends on axioms: [propext]
+'RustcLintAndCfgModel.ExpectedValues.any.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.ExpectedValues.join_any_left' depends on axioms: [propext]
+'RustcLintAndCfgModel.ExpectedValues.join_any_right' depends on axioms: [propext]
+'RustcLintAndCfgModel.ExpectedValues.join_assoc' depends on axioms: [propext]
+'RustcLintAndCfgModel.ExpectedValues.join_comm_obs' depends on axioms: [propext]
+'RustcLintAndCfgModel.ExpectedValues.memOptStr_append' depends on axioms: [propext]
+'RustcLintAndCfgModel.ExpectedValues.some.inj' does not depend on any axioms
+'RustcLintAndCfgModel.ExpectedValues.some.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.ExpectedValues.some.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.FrontEndError.builderDiag.inj' does not depend on any axioms
+'RustcLintAndCfgModel.FrontEndError.builderDiag.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.FrontEndError.builderDiag.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.FrontEndError.checkCfgLint.inj' does not depend on any axioms
+'RustcLintAndCfgModel.FrontEndError.checkCfgLint.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.FrontEndError.checkCfgLint.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.FrontEndError.malformedAttrInput.inj' does not depend on any axioms
+'RustcLintAndCfgModel.FrontEndError.malformedAttrInput.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.FrontEndError.malformedAttrInput.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.ItemCompileOutcome.mk.inj' does not depend on any axioms
+'RustcLintAndCfgModel.ItemCompileOutcome.mk.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.ItemCompileOutcome.mk.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LevelSpec.mk.inj' does not depend on any axioms
+'RustcLintAndCfgModel.LevelSpec.mk.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.LevelSpec.mk.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LevelSpec.wf_allow' depends on axioms: [propext]
+'RustcLintAndCfgModel.LevelSpec.wf_deny' depends on axioms: [propext]
+'RustcLintAndCfgModel.LevelSpec.wf_expect' depends on axioms: [propext]
+'RustcLintAndCfgModel.LevelSpec.wf_forbid' depends on axioms: [propext]
+'RustcLintAndCfgModel.LevelSpec.wf_forceWarn' depends on axioms: [propext]
+'RustcLintAndCfgModel.LevelSpec.wf_warn' depends on axioms: [propext]
+'RustcLintAndCfgModel.LintLevel.allow.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.allow_le' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.beq_eq_true_iff' depends on axioms: [propext]
+'RustcLintAndCfgModel.LintLevel.deny.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.expect.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.forbid.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.forceWarn.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.fromCapStr_never_expect' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.fromCapStr_never_forceWarn' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.isError_iff' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.le_antisymm' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.le_forbid' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.le_min' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.le_refl' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.le_total' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.le_trans' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.min_allow_right' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.min_assoc' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.min_comm' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.min_expect_warn' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.min_forbid_right' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.min_idem' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.min_le_left' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.min_le_right' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.rank_injective' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevel.warn.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevelSource.commandLine.inj' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevelSource.commandLine.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.LintLevelSource.commandLine.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevelSource.defaultSrc.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevelSource.nodeSrc.inj' does not depend on any axioms
+'RustcLintAndCfgModel.LintLevelSource.nodeSrc.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.LintLevelSource.nodeSrc.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LintMeta.mk.inj' does not depend on any axioms
+'RustcLintAndCfgModel.LintMeta.mk.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.LintMeta.mk.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LintName.beq_eq_true_iff' depends on axioms: [propext]
+'RustcLintAndCfgModel.LintName.beq_refl' depends on axioms: [propext]
+'RustcLintAndCfgModel.LintName.beq_sound' depends on axioms: [propext]
+'RustcLintAndCfgModel.LintName.custom.inj' does not depend on any axioms
+'RustcLintAndCfgModel.LintName.custom.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.LintName.custom.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LintName.deadCode.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LintName.forbiddenLintGroups.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LintName.unexpectedCfgs.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LintName.unfulfilledLintExpectations.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LintName.unsafeCode.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LintName.unusedVariables.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LintName.warnings.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.LintSessionOpts.mk.inj' does not depend on any axioms
+'RustcLintAndCfgModel.LintSessionOpts.mk.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.LintSessionOpts.mk.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.RawExpectId.stable.inj' does not depend on any axioms
+'RustcLintAndCfgModel.RawExpectId.stable.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.RawExpectId.stable.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.RawExpectId.unstable.inj' does not depend on any axioms
+'RustcLintAndCfgModel.RawExpectId.unstable.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.RawExpectId.unstable.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.ScopeState.mk.inj' does not depend on any axioms
+'RustcLintAndCfgModel.ScopeState.mk.injEq' depends on axioms: [propext]
+'RustcLintAndCfgModel.ScopeState.mk.sizeOf_spec' does not depend on any axioms
+'RustcLintAndCfgModel.ScopeState.setSpec_other' depends on axioms: [propext]
+'RustcLintAndCfgModel.ScopeState.setSpec_self' depends on axioms: [propext]
+'RustcLintAndCfgModel.addCmd_forbid_sticky' depends on axioms: [propext]
+'RustcLintAndCfgModel.addCmd_forceWarn_sticky' depends on axioms: [propext]
+'RustcLintAndCfgModel.addCmd_nonSticky_overridable' depends on axioms: [propext]
+'RustcLintAndCfgModel.applyAttrList_direct_forbid_invariant' depends on axioms: [propext]
+'RustcLintAndCfgModel.applyCheckCfgSpec_comm_obs' depends on axioms: [propext]
+'RustcLintAndCfgModel.boolEq_eq_true_iff' depends on axioms: [propext]
+'RustcLintAndCfgModel.canonicalize_early_late_agree' does not depend on any axioms
+'RustcLintAndCfgModel.capLints_allow_silences_expect_and_unfulfilled' depends on axioms: [propext]
+'RustcLintAndCfgModel.cap_flag_first_wins' does not depend on any axioms
+'RustcLintAndCfgModel.cap_flag_irrelevant_to_lintOpts' does not depend on any axioms
+'RustcLintAndCfgModel.cfgAttr_false_erases_inner_attrs_before_validation' depends on axioms: [propext]
+'RustcLintAndCfgModel.cfgAttr_false_zero_errors_when_pred_valid' depends on axioms: [propext]
+'RustcLintAndCfgModel.cfgAttr_true_allow_plus_false_cfg_strips_before_e0453' depends on axioms: [propext]
+'RustcLintAndCfgModel.cfgAttr_true_exposes_malformed_and_e0453' depends on axioms: [propext]
+'RustcLintAndCfgModel.checkAtom_congr' depends on axioms: [propext]
+'RustcLintAndCfgModel.checkCfg_soundness' depends on axioms: [propext]
+'RustcLintAndCfgModel.checkCfg_soundness_list' depends on axioms: [propext]
+'RustcLintAndCfgModel.cli_allow_warnings_suppresses_crate_warn_but_not_deny_or_expect' depends on axioms: [propext]
+'RustcLintAndCfgModel.direct_forbid_group_forbid_allow_loophole_witness' depends on axioms: [propext]
+'RustcLintAndCfgModel.emitLintBase_only_adds_spec_lintId' depends on axioms: [propext]
+'RustcLintAndCfgModel.emitLintBase_preserves_fulfilled_mem' depends on axioms: [propext]
+'RustcLintAndCfgModel.evalInCfg._sparseCasesOn_1.else_eq' depends on axioms: [propext]
+'RustcLintAndCfgModel.evalInCfg.eq_def' depends on axioms: [propext]
+'RustcLintAndCfgModel.expandAttrList._sparseCasesOn_1.else_eq' depends on axioms: [propext]
+'RustcLintAndCfgModel.expandAttrList.eq_def' depends on axioms: [propext]
+'RustcLintAndCfgModel.expect_fulfillment_exact_conservation' depends on axioms: [propext]
+'RustcLintAndCfgModel.expect_inner_allow_drops_id_under_forceWarn' depends on axioms: [propext]
+'RustcLintAndCfgModel.expect_self_unfulfilled_ignored' depends on axioms: [propext]
+'RustcLintAndCfgModel.expect_under_forceWarn_fulfills_and_warns' depends on axioms: [propext]
+'RustcLintAndCfgModel.external_macro_never_fulfills_expect' depends on axioms: [propext]
+'RustcLintAndCfgModel.forbid_warnings_promotes_dead_code_but_not_unsafe_code' depends on axioms: [propext]
+'RustcLintAndCfgModel.insertSpec_cap_below_forbid_no_e0453' depends on axioms: [propext]
+'RustcLintAndCfgModel.insertSpec_direct_forbid_unoverridable' depends on axioms: [propext]
+'RustcLintAndCfgModel.insertSpec_group_forbid_emits_fcw_and_lowers' depends on axioms: [propext]
+'RustcLintAndCfgModel.insertSpec_preserves_WF' depends on axioms: [propext]
+'RustcLintAndCfgModel.insertSpec_under_forceWarn' depends on axioms: [propext]
+'RustcLintAndCfgModel.isFulfilled_iff_mem' depends on axioms: [propext]
+'RustcLintAndCfgModel.ite_false_pf' does not depend on any axioms
+'RustcLintAndCfgModel.ite_true_pf' does not depend on any axioms
+'RustcLintAndCfgModel.item_expect_misses_own_cfg_while_parent_expect_catches' depends on axioms: [propext]
+'RustcLintAndCfgModel.listAll_append' does not depend on any axioms
+'RustcLintAndCfgModel.listAny_append' does not depend on any axioms
+'RustcLintAndCfgModel.listAny_eq_false_of_all_false' does not depend on any axioms
+'RustcLintAndCfgModel.listAny_eq_true_of_mem' does not depend on any axioms
+'RustcLintAndCfgModel.listMem_of_listAny_true' does not depend on any axioms
+'RustcLintAndCfgModel.natEq_eq_true_iff' depends on axioms: [propext]
+'RustcLintAndCfgModel.natEq_refl' depends on axioms: [propext]
+'RustcLintAndCfgModel.natEq_sound' depends on axioms: [propext]
+'RustcLintAndCfgModel.natLe_antisymm' does not depend on any axioms
+'RustcLintAndCfgModel.natLe_refl' does not depend on any axioms
+'RustcLintAndCfgModel.natLe_total' does not depend on any axioms
+'RustcLintAndCfgModel.natLe_trans' does not depend on any axioms
+'RustcLintAndCfgModel.no_check_cfg_never_emits' depends on axioms: [propext]
+'RustcLintAndCfgModel.predAtomWellTyped.eq_def' depends on axioms: [propext]
+'RustcLintAndCfgModel.predAtomWellTypedList_empty' depends on axioms: [propext]
+'RustcLintAndCfgModel.predAtomWellTypedList_iff_forall' depends on axioms: [propext]
+'RustcLintAndCfgModel.predAtomWellTyped_empty' depends on axioms: [propext]
+'RustcLintAndCfgModel.reveal_capLints_allow_silences_forbid' depends on axioms: [propext]
+'RustcLintAndCfgModel.reveal_driverCap_always_bounds' depends on axioms: [propext]
+'RustcLintAndCfgModel.reveal_forceWarn_bypasses_capLints_allow' depends on axioms: [propext]
+'RustcLintAndCfgModel.reveal_le_lintCap_unless_forceWarn' depends on axioms: [propext]
+'RustcLintAndCfgModel.validateCfgPred.eq_def' depends on axioms: [propext]
+'RustcLintAndCfgModel.validateCfgPredList_congr' depends on axioms: [propext]
+'RustcLintAndCfgModel.validateCfgPred_congr' depends on axioms: [propext]
+'RustcLintAndCfgModel.witness_a01_forbid_allow_e0453' depends on axioms: [propext]
+'RustcLintAndCfgModel.witness_a05_forbid_deny_allow_e0453' depends on axioms: [propext]
+'RustcLintAndCfgModel.witness_a07_group_forbid_fcw_lowers' depends on axioms: [propext]
+'RustcLintAndCfgModel.witness_a17_a19_cap_lints_matrix' depends on axioms: [propext]
+'RustcLintAndCfgModel.witness_a28_a42_force_warn_cap_allow_expect' depends on axioms: [propext]
+'RustcLintAndCfgModel.witness_a30_a31_cli_symmetry' depends on axioms: [propext]
+'RustcLintAndCfgModel.witness_b04_b05_cfg_attr_matrix' depends on axioms: [propext]
+--- SUMMARY ---
+THEOREMS_AUDITED=261
+DEFS_AUDITED=564
+UNSAFE_REC_COUNT=0
+FORBIDDEN_AXIOM_HITS=0
