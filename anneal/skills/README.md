@@ -20,7 +20,9 @@ rules and the task routing table.
 | Skill | Source | Purpose |
 | :--- | :--- | :--- |
 | [`change-review`](change-review/SKILL.md) | Repository-owned | Local and hosted review workflow, risk sizing, pipelining, and receipts ([maintainer contract](../docs/review-policy-design.md)) |
+| [`proof-scaling`](proof-scaling/SKILL.md) | Repository-owned | Lean proof scaling, representation shifts, bundled `Anneal.*` libraries, Pass-1 `TrustedBoundary` rules, and cliff escape |
 | [`source-control`](source-control/SKILL.md) | Repository-owned | Adapted from [`google/zerocopy`'s Contributing Guide](https://github.com/google/zerocopy/discussions/1318); commits, worker quarantine, publication, and stacks |
+| [`spec-authoring`](spec-authoring/SKILL.md) | Repository-owned | Body-last spec archaeology, total-logic defaults, anti-echo, `[A4]` pre-proof sanity, and `Spec` isolation |
 | [`trust-review`](trust-review/SKILL.md) | Repository-owned | Derived from [`META_PRINCIPLES.md`](../META_PRINCIPLES.md), [`PRINCIPLES.md`](../PRINCIPLES.md), [`THREAT_MODEL.md`](../THREAT_MODEL.md), and [`docs/trust-model.md`](../docs/trust-model.md) |
 
 Anneal's Pass 1 containment applies across all skill roots (see
