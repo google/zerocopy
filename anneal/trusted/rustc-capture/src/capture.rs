@@ -10,7 +10,7 @@
 //! authenticates the compiler/sysroot distribution and stages declared inputs;
 //! these checks do not defend against a compromised execution environment.
 
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, HashSet};
 use std::io;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex, OnceLock};
@@ -23,7 +23,7 @@ use rustc_hir::LangItem;
 use rustc_hir::def::DefKind;
 use rustc_interface::interface;
 use rustc_middle::mir;
-use rustc_middle::ty::TyCtxt;
+use rustc_middle::ty::{self, TyCtxt};
 use rustc_middle::util::Providers;
 use rustc_session::EarlyDiagCtxt;
 use rustc_session::config::{CrateType, Options};
@@ -32,7 +32,7 @@ use rustc_span::source_map::{FileLoader, RealFileLoader};
 use rustc_span::{FileName, sym};
 use rustc_target::spec::PanicStrategy as RustcPanicStrategy;
 
-use crate::{Args, Failure, extract, identity, ir};
+use crate::{Args, Failure, extract, identity, ir, mono};
 
 // rustc query providers are function pointers, so the hook cannot borrow a
 // callback instance. These cells hold one process's session authority and owned
@@ -40,33 +40,33 @@ use crate::{Args, Failure, extract, identity, ir};
 // second capture, avoiding stale bodies or selectors from another compilation.
 type Provider = for<'tcx> fn(TyCtxt<'tcx>, LocalDefId) -> &'tcx Steal<mir::Body<'tcx>>;
 static DEFAULT_PROVIDER: OnceLock<Provider> = OnceLock::new();
-static SELECTION: OnceLock<ir::Scope> = OnceLock::new();
-static CAPTURED: Mutex<BTreeMap<u32, extract::Result<ir::Body>>> = Mutex::new(BTreeMap::new());
+static CAPTURE_STARTED: OnceLock<()> = OnceLock::new();
+static OBSERVED_HOOK: Mutex<BTreeSet<u32>> = Mutex::new(BTreeSet::new());
 
-/// The query returns `Steal<Body>` and later queries consume it. Call the
-/// original provider, copy the admitted syntax while it is available, and
-/// return the exact original result. The compiler explicitly supports this:
-/// "can be overridden by custom rustc drivers".
+/// The query returns `Steal<Body>` and later codegen queries consume it. Call
+/// the original provider, record that it ran for this callable `LocalDefId`,
+/// and return the exact original result without running CTFE inside the active
+/// query frame (evaluating a self-referential `const fn`'s `const { ... }`
+/// inside the hook would trigger a `rustc` query cycle `E0391`). Extraction
+/// runs immediately after the query returns in `collect`, before codegen can
+/// steal the body; `mir_for_ctfe` clones `ConstFn` bodies without stealing.
+/// The compiler explicitly supports overriding this query: "can be overridden
+/// by custom rustc drivers".
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/lib.rs#L495-L503
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/lib.rs#L567-L598
 ///
-/// Early snapshots do not decide coverage. The independent compiler census is
-/// enumerated in full before selecting or assembling any output program.
+/// Early hook observation does not decide coverage. The independent compiler
+/// census is enumerated in full before selecting or assembling any output.
 fn hook<'tcx>(tcx: TyCtxt<'tcx>, def: LocalDefId) -> &'tcx Steal<mir::Body<'tcx>> {
     let provider = DEFAULT_PROVIDER
         .get()
         .expect("provider installed before queries");
     let original = provider(tcx, def);
-    let selection = SELECTION.get().expect("selection installed before queries");
-    let matches_scope = match selection {
-        ir::Scope::Crate => true,
-        ir::Scope::SelectedUnit { roots } => roots.contains(&tcx.def_path_str(def)),
-    };
-    if callable(tcx.def_kind(def)) && matches_scope {
-        let result = extract::body(tcx, def, &original.borrow());
-        CAPTURED
+    if callable(tcx.def_kind(def)) {
+        OBSERVED_HOOK
             .lock()
-            .expect("capture mutex poisoned")
-            .insert(def.local_def_index.as_u32(), result);
+            .expect("capture hook mutex poisoned")
+            .insert(def.local_def_index.as_u32());
     }
     original
 }
@@ -908,7 +908,7 @@ fn collect(
         // item, so an unsupported owner cannot disappear with its body.
         let selected = match scope {
             ir::Scope::Crate => is_required,
-            ir::Scope::SelectedUnit { roots } => {
+            ir::Scope::SelectedUnit { roots, .. } => {
                 let matched = roots.contains(&path);
                 if matched {
                     found.insert(path.clone());
@@ -948,7 +948,7 @@ fn collect(
             }),
         }
     }
-    if let ir::Scope::SelectedUnit { roots } = scope
+    if let ir::Scope::SelectedUnit { roots, .. } = scope
         && &found != roots
     {
         return Err(Failure::unsupported(format!(
@@ -958,23 +958,32 @@ fn collect(
     }
     // A provider is only called when a query is demanded. Force every selected
     // body before code generation, with no incremental cache or fallback to
-    // optimized MIR. The hook records bodies before later stealing. The query
-    // is declared `no_hash` without `cache_on_disk_if`, and capture passes no
-    // `-Cincremental`, so no stored result can stand in for the provider call.
+    // optimized MIR. Confirm the provider hook fired and the body is unstolen,
+    // then extract outside the query frame so CTFE cannot cycle on self-calls.
+    // The query is declared `no_hash` without `cache_on_disk_if`, and capture
+    // passes no `-Cincremental`, so no stored result can stand in for the
+    // provider call.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/queries.rs#L638-L641
     let mut bodies = Vec::new();
     let mut selected = Vec::new();
-    for def in selected_defs {
+    let mut seen_instances = HashSet::new();
+    for &def in &selected_defs {
         let key = def.local_def_index.as_u32();
-        let _ = tcx.mir_drops_elaborated_and_const_checked(def);
-        let result = CAPTURED
+        let steal = tcx.mir_drops_elaborated_and_const_checked(def);
+        let observed = OBSERVED_HOOK
             .lock()
-            .map_err(|_| Failure::tool("capture mutex poisoned"))?
-            .get(&key)
-            .cloned()
-            .unwrap_or_else(|| Err("compiler did not provide Runtime(PostCleanup) MIR".into()));
+            .map_err(|_| Failure::tool("capture hook mutex poisoned"))?
+            .contains(&key);
+        let result = if !observed {
+            Err("compiler did not provide Runtime(PostCleanup) MIR".into())
+        } else if steal.is_stolen() {
+            Err("Runtime(PostCleanup) MIR was already stolen before capture".into())
+        } else {
+            extract::body(tcx, def, &steal.borrow())
+        };
         match result {
             Ok(body) => {
+                seen_instances.insert(ty::Instance::mono(tcx, def.to_def_id()));
                 selected.push(ir::SelectedBody {
                     def_id: key,
                     path: tcx.def_path_str(def),
@@ -987,6 +996,48 @@ fn collect(
                 path: tcx.def_path_str(def),
                 reason,
             }),
+        }
+    }
+    if let ir::Scope::SelectedUnit { instantiations, .. } = scope {
+        for inst in instantiations {
+            match mono::instantiate_body(tcx, &inst.path, &inst.args) {
+                Ok(resolved) => {
+                    if !seen_instances.insert(resolved.instance) {
+                        continue;
+                    }
+                    let inst_path = extract::instance_path(tcx, resolved.instance);
+                    let key = resolved.resolved_local.local_def_index.as_u32();
+                    let observed = OBSERVED_HOOK
+                        .lock()
+                        .map_err(|_| Failure::tool("capture hook mutex poisoned"))?
+                        .contains(&key);
+                    let extracted = if !observed {
+                        Err("compiler did not provide Runtime(PostCleanup) MIR".into())
+                    } else {
+                        extract::instantiated_body(tcx, &resolved)
+                    };
+                    match extracted {
+                        Ok(body) => {
+                            selected.push(ir::SelectedBody {
+                                def_id: key,
+                                path: inst_path,
+                                body_index: bodies.len(),
+                            });
+                            bodies.push(body);
+                        }
+                        Err(reason) => unsupported.push(ir::Unsupported {
+                            def_id: key,
+                            path: inst_path,
+                            reason,
+                        }),
+                    }
+                }
+                Err(reason) => unsupported.push(ir::Unsupported {
+                    def_id: 0,
+                    path: format!("{}<{}>", inst.path, inst.args.join(", ")),
+                    reason,
+                }),
+            }
         }
     }
     if tcx.dcx().has_errors().is_some() {
@@ -1150,8 +1201,8 @@ pub(crate) fn run(
     verified_compiler: &identity::VerifiedCompiler,
 ) -> Result<ir::Manifest, Failure> {
     let scope = args.resolved_scope()?;
-    SELECTION
-        .set(scope.clone())
+    CAPTURE_STARTED
+        .set(())
         .map_err(|_| Failure::tool("one capture invocation per process is required"))?;
     let requested_crate_type: ir::CrateType = args.crate_type.into();
     let requested_panic: ir::PanicStrategy = args.panic.into();

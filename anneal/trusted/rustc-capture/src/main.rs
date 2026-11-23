@@ -17,11 +17,13 @@ extern crate rustc_ast;
 extern crate rustc_data_structures;
 extern crate rustc_driver;
 extern crate rustc_hir;
+extern crate rustc_infer;
 extern crate rustc_interface;
 extern crate rustc_middle;
 extern crate rustc_session;
 extern crate rustc_span;
 extern crate rustc_target;
+extern crate rustc_trait_selection;
 
 mod capture;
 mod driver;
@@ -29,6 +31,7 @@ mod extract;
 mod identity;
 mod ir;
 mod lean;
+mod mono;
 mod publication;
 
 use std::collections::{BTreeMap, BTreeSet};
@@ -75,7 +78,7 @@ impl From<CliPanicStrategy> for ir::PanicStrategy {
     name = "anneal-rustc-capture capture",
     version,
     about = "Capture pinned Runtime(PostCleanup) MIR",
-    group(ArgGroup::new("selection").required(true).args(["select", "scope"]))
+    group(ArgGroup::new("selection").required(true).multiple(true).args(["select", "instantiate", "scope"]))
 )]
 pub struct Args {
     #[arg(long)]
@@ -95,8 +98,18 @@ pub struct Args {
     #[arg(long)]
     out_dir: PathBuf,
     // Capture these callable roots without claiming coverage of other items.
-    #[arg(long, action = clap::ArgAction::Append)]
+    #[arg(long, action = clap::ArgAction::Append, conflicts_with = "scope")]
     select: Vec<String>,
+    /// Capture concrete generic instantiations as JSON
+    /// (`{"path":...,"args":[...]}`).
+    #[arg(
+        long,
+        action = clap::ArgAction::Append,
+        value_name = "JSON",
+        conflicts_with = "scope",
+        value_parser = parse_instantiation
+    )]
+    instantiate: Vec<ir::Instantiation>,
     // Require admission of every required item in the compiler census.
     #[arg(long, value_parser = ["crate"])]
     scope: Option<String>,
@@ -121,6 +134,11 @@ pub struct Args {
     source_file: Vec<PathBuf>,
 }
 
+fn parse_instantiation(raw: &str) -> Result<ir::Instantiation, String> {
+    serde_json::from_str::<ir::Instantiation>(raw)
+        .map_err(|e| format!("invalid --instantiate JSON {raw:?}: {e}"))
+}
+
 fn parse_env_binding(raw: &str) -> Result<(String, String), String> {
     let Some((key, value)) = raw.split_once('=') else {
         return Err(format!("expected KEY=VALUE environment binding, got {raw:?}"));
@@ -140,10 +158,12 @@ impl Args {
             return Ok(ir::Scope::Crate);
         }
         let roots: BTreeSet<String> = self.select.iter().cloned().collect();
-        if roots.is_empty() {
+        let instantiations: BTreeSet<ir::Instantiation> =
+            self.instantiate.iter().cloned().collect();
+        if roots.is_empty() && instantiations.is_empty() {
             return Err(Failure::unsupported("empty selected scope"));
         }
-        Ok(ir::Scope::SelectedUnit { roots })
+        Ok(ir::Scope::SelectedUnit { roots, instantiations })
     }
 
     pub(crate) fn resolved_env(&self) -> Result<BTreeMap<String, String>, Failure> {

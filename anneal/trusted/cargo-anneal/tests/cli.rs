@@ -1426,3 +1426,128 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
         );
     }
 }
+
+#[test]
+fn verify_passes_instantiate_flags_and_rejects_mismatched_capture_scope() {
+    use std::fs;
+    use std::os::unix::fs::PermissionsExt;
+
+    let project = tempfile::tempdir().unwrap();
+    fs::write(project.path().join("lib.rs"), b"pub fn id<T>(x: T) -> T { x }\n").unwrap();
+    fs::write(project.path().join("Spec.lean"), b"-- spec\n").unwrap();
+    fs::write(project.path().join("Proof.lean"), b"-- proof\n").unwrap();
+
+    // Malformed `--instantiate` JSON and `--request` + `--instantiate` conflict
+    // must fail CLI validation with exit 2 and empty stdout.
+    for bad in [
+        &[
+            "verify",
+            "--request",
+            "r.json",
+            "--instantiate",
+            r#"{"path":"id","args":["usize"]}"#,
+        ][..],
+        &[
+            "verify",
+            "rustc",
+            "lib.rs",
+            "--crate-name",
+            "demo",
+            "--instantiate",
+            "not-json",
+            "--spec-file",
+            "Spec=Spec.lean",
+            "--proof-file",
+            "Proof=Proof.lean",
+        ][..],
+    ] {
+        let output = command(Route::Direct, project.path()).args(bad).output().unwrap();
+        assert_result(&output, 2, "", "error:");
+        assert!(output.stdout.is_empty(), "{bad:?}: {output:?}");
+    }
+
+    let sysroot = project.path().join("sysroot");
+    fs::create_dir(&sysroot).unwrap();
+    let fake_lean = project.path().join("fake-lean");
+    fs::write(&fake_lean, b"#!/bin/sh\nexit 0\n").unwrap();
+    fs::set_permissions(&fake_lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+    let recorded_args = project.path().join("capture.args");
+    let fake_capture = project.path().join("fake-capture");
+    // Emit a capture manifest whose scope omits the requested instantiation so
+    // cargo-anneal rejects the mismatched scope before invoking Lean.
+    let script = format!(
+        "#!/bin/sh\n\
+         set -eu\n\
+         printf '%s\\n' \"$@\" > {args_file:?}\n\
+         out_dir=''\n\
+         while [ \"$#\" -gt 0 ]; do\n\
+           if [ \"$1\" = '--out-dir' ]; then\n\
+             shift\n\
+             out_dir=\"$1\"\n\
+           fi\n\
+           shift\n\
+         done\n\
+         mkdir -p \"$out_dir\"\n\
+         cat > \"$out_dir/capture.json\" <<'JSON'\n\
+         {{\n\
+           \"schema_version\": 4,\n\
+           \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\n\
+           \"configuration\": {{\n\
+             \"crate_name\": \"demo\",\n\
+             \"target\": \"x86_64-unknown-linux-gnu\",\n\
+             \"edition\": \"2024\",\n\
+             \"cfg\": [],\n\
+             \"env\": {{}}\n\
+           }},\n\
+           \"source_files\": [],\n\
+           \"census\": [],\n\
+           \"selected\": [],\n\
+           \"program\": {{\"scope\": {{\"kind\": \"selected_unit\", \"roots\": []}}, \"bodies\": []}}\n\
+         }}\n\
+         JSON\n\
+         printf '{{\"status\":\"captured\"}}\\n'\n",
+        args_file = recorded_args.display(),
+    );
+    fs::write(&fake_capture, script).unwrap();
+    fs::set_permissions(&fake_capture, fs::Permissions::from_mode(0o755)).unwrap();
+
+    let output = command(Route::Direct, project.path())
+        .args([
+            "verify",
+            "--capture",
+            fake_capture.to_str().unwrap(),
+            "--sysroot",
+            sysroot.to_str().unwrap(),
+            "--lean",
+            fake_lean.to_str().unwrap(),
+            "rustc",
+            "lib.rs",
+            "--crate-name",
+            "demo",
+            "--instantiate",
+            r#"{"path":"id","args":["usize"]}"#,
+            "--spec-file",
+            "Spec=Spec.lean",
+            "--proof-file",
+            "Proof=Proof.lean",
+        ])
+        .output()
+        .unwrap();
+    assert_result(&output, 2, "", "");
+    let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(receipt["status"], "tool_failed", "{receipt}");
+    assert_eq!(receipt["phase"], "capture", "{receipt}");
+    assert!(
+        receipt["detail"]
+            .as_str()
+            .unwrap_or("")
+            .contains("capture differs from the requested compilation or scope"),
+        "{receipt}"
+    );
+    let args_text = fs::read_to_string(&recorded_args).unwrap();
+    assert!(
+        args_text.lines().any(|line| line == r#"{"path":"id","args":["usize"]}"#),
+        "expected serialized --instantiate JSON in capture args:\n{args_text}"
+    );
+}

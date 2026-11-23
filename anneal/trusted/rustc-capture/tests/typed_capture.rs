@@ -1295,15 +1295,6 @@ fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_
             "unsupported rvalue",
         ),
         (
-            "const_enum_required_consts",
-            b"#[repr(i8)]\n\
-              pub enum NarrowSigned { Neg = -1, Pos = 1 }\n\
-              const NEG: NarrowSigned = NarrowSigned::Neg;\n\
-              pub fn make_neg() -> NarrowSigned { NEG }\n",
-            &["--select=make_neg"],
-            "required constants are unavailable",
-        ),
-        (
             "payload_unit_variant",
             b"pub enum Payload { None, Some(u8) }\n\
               pub fn f() -> Payload { Payload::None }\n",
@@ -3087,4 +3078,394 @@ pub fn id(x: u64) -> u64 { x }
     assert_eq!(static_out.status.code(), Some(1), "{static_out:?}");
     assert_eq!(status(&static_out)["status"], "unsupported");
     static_bad.assert_no_capture_artifacts();
+}
+
+#[test]
+fn required_consts_and_unevaluated_constants_capture_and_typecheck_in_lean() {
+    let source = b"#[repr(i8)]\n\
+        pub enum NarrowSigned { Neg = -1, Pos = 1 }\n\
+        const NEG: NarrowSigned = NarrowSigned::Neg;\n\
+        const ANSWER: u64 = 19 + 23;\n\
+        const UNIT: () = ();\n\
+        pub fn make_neg() -> NarrowSigned { NEG }\n\
+        pub fn inline_const_ok() -> u64 {\n\
+            const { assert!(core::mem::size_of::<usize>() == 8); }\n\
+            ANSWER\n\
+        }\n\
+        pub fn make_unit() -> () { UNIT }\n";
+    let fixture = Capture::new(source);
+    let output = fixture
+        .command()
+        .args([
+            "--select=make_neg",
+            "--select=inline_const_ok",
+            "--select=make_unit",
+        ])
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "expected required_consts capture to succeed:\n{}\n{}",
+        stdout(&output),
+        stderr(&output)
+    );
+    let manifest = fixture.manifest();
+    assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 3);
+    let lean_text = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
+    assert!(
+        lean_text.contains("ConstLit.scalar (BitVec.ofNat 128 255)"),
+        "expected evaluated NarrowSigned::Neg (-1i8 = 255) in Lean:\n{lean_text}"
+    );
+    assert!(
+        lean_text.contains("ConstLit.scalar (BitVec.ofNat 128 42)"),
+        "expected evaluated ANSWER (42) in Lean:\n{lean_text}"
+    );
+    assert!(
+        lean_text.contains("ConstLit.zeroSized"),
+        "expected evaluated UNIT zeroSized constant in Lean:\n{lean_text}"
+    );
+    compile_captured_lean_if_trusted_sources_present(&fixture.output.join("Captured.lean"));
+}
+
+#[test]
+fn required_consts_post_monomorphization_errors_fail_closed() {
+    let dead_branch_pme = b"pub fn pme<T>() -> usize {\n\
+            if false {\n\
+                const { assert!(core::mem::size_of::<T>() > 0); }\n\
+            }\n\
+            1\n\
+        }\n";
+    let ok_fixture = Capture::new(dead_branch_pme);
+    let ok_out = ok_fixture
+        .command()
+        .arg("--instantiate")
+        .arg(r#"{"path":"pme","args":["usize"]}"#)
+        .output()
+        .unwrap();
+    assert!(
+        ok_out.status.success(),
+        "expected non-ZST PME check to pass:\n{}\n{}",
+        stdout(&ok_out),
+        stderr(&ok_out)
+    );
+
+    let fail_fixture = Capture::new(dead_branch_pme);
+    let fail_out = fail_fixture
+        .command()
+        .arg("--instantiate")
+        .arg(r#"{"path":"pme","args":["()"]}"#)
+        .output()
+        .unwrap();
+    assert_eq!(fail_out.status.code(), Some(1), "{fail_out:?}");
+    let failure = status(&fail_out);
+    assert!(
+        failure["status"] == "compiler_failed" || failure["status"] == "unsupported",
+        "expected fail-closed PME refusal, got {failure}"
+    );
+    fail_fixture.assert_no_capture_artifacts();
+
+    let promoted_pme = b"pub fn promoted_pme<T>() -> usize {\n\
+            if false {\n\
+                let _ = &const { assert!(core::mem::size_of::<T>() > 0); };\n\
+            }\n\
+            2\n\
+        }\n";
+    let promo_fail = Capture::new(promoted_pme);
+    let promo_out = promo_fail
+        .command()
+        .arg("--instantiate")
+        .arg(r#"{"path":"promoted_pme","args":["()"]}"#)
+        .output()
+        .unwrap();
+    assert_eq!(promo_out.status.code(), Some(1), "{promo_out:?}");
+    let promo_failure = status(&promo_out);
+    assert!(
+        promo_failure["status"] == "compiler_failed" || promo_failure["status"] == "unsupported",
+        "expected fail-closed promoted PME refusal, got {promo_failure}"
+    );
+    promo_fail.assert_no_capture_artifacts();
+
+    let assoc_const_pme = b"pub trait Guard: Sized {\n\
+            const OK: usize = {\n\
+                assert!(core::mem::size_of::<Self>() > 0);\n\
+                core::mem::size_of::<Self>()\n\
+            };\n\
+        }\n\
+        impl Guard for u64 {}\n\
+        impl Guard for () {}\n\
+        pub fn read_guard<T: Guard>() -> usize { T::OK }\n";
+    let assoc_ok = Capture::new(assoc_const_pme);
+    let assoc_ok_out = assoc_ok
+        .command()
+        .arg("--instantiate")
+        .arg(r#"{"path":"read_guard","args":["u64"]}"#)
+        .output()
+        .unwrap();
+    assert!(
+        assoc_ok_out.status.success(),
+        "expected associated const Guard::<u64> to pass:\n{}\n{}",
+        stdout(&assoc_ok_out),
+        stderr(&assoc_ok_out)
+    );
+    let assoc_lean = std::fs::read_to_string(assoc_ok.output.join("Captured.lean")).unwrap();
+    assert!(
+        assoc_lean.contains("ConstLit.scalar (BitVec.ofNat 128 8)"),
+        "{assoc_lean}"
+    );
+
+    let assoc_fail = Capture::new(assoc_const_pme);
+    let assoc_fail_out = assoc_fail
+        .command()
+        .arg("--instantiate")
+        .arg(r#"{"path":"read_guard","args":["()"]}"#)
+        .output()
+        .unwrap();
+    assert_eq!(assoc_fail_out.status.code(), Some(1), "{assoc_fail_out:?}");
+    assoc_fail.assert_no_capture_artifacts();
+}
+
+#[test]
+fn explicit_concrete_monomorphization_captures_generics_consts_lifetimes_and_trait_impls() {
+    let source = b"pub fn non_generic(x: u64) -> u64 { x }\n\
+        pub fn id<T>(x: T) -> T { x }\n\
+        pub fn add_const<const N: usize>(x: usize) -> usize { x + N }\n\
+        pub fn with_lt<'a, T: 'a>(x: u64) -> u64 { x }\n\
+        pub trait Tag {\n\
+            fn tag() -> u8;\n\
+        }\n\
+        impl Tag for core::mem::ManuallyDrop<u8> {\n\
+            fn tag() -> u8 { 7 }\n\
+        }\n";
+    let fixture = Capture::new(source);
+    let output = fixture
+        .command()
+        .arg("--select=non_generic")
+        .arg("--instantiate")
+        .arg(r#"{"path":"id","args":["usize"]}"#)
+        .arg("--instantiate")
+        .arg(r#"{"path":"id","args":["bool"]}"#)
+        .arg("--instantiate")
+        .arg(r#"{"path":"add_const","args":["42"]}"#)
+        .arg("--instantiate")
+        .arg(r#"{"path":"with_lt","args":["'static","usize"]}"#)
+        .arg("--instantiate")
+        .arg(r#"{"path":"with_lt","args":["usize"]}"#)
+        .arg("--instantiate")
+        .arg(r#"{"path":"Tag::tag","args":["core::mem::ManuallyDrop<u8>"]}"#)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "expected monomorphic instantiation capture to succeed:\n{}\n{}",
+        stdout(&output),
+        stderr(&output)
+    );
+    let manifest = fixture.manifest();
+    let identities: Vec<&str> = manifest["program"]["bodies"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|b| b["identity"].as_str().unwrap())
+        .collect();
+    // `with_lt<'static, usize>` and `with_lt<usize>` normalize to the same
+    // concrete `ty::Instance` and deduplicate to one body.
+    assert_eq!(identities.len(), 6, "unexpected identities: {identities:?}");
+    assert!(identities.contains(&"rust-path-v1::non_generic"));
+    assert!(identities.contains(&"rust-path-v1::id::<usize>"));
+    assert!(identities.contains(&"rust-path-v1::id::<bool>"));
+    assert!(identities.contains(&"rust-path-v1::add_const::<42>"));
+    assert!(identities
+        .iter()
+        .any(|id| id.contains("with_lt") && id.contains("usize")));
+    assert!(identities
+        .iter()
+        .any(|id| id.contains("ManuallyDrop<u8> as Tag>::tag")));
+    let lean_text = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
+    assert!(
+        lean_text.contains("ConstLit.scalar (BitVec.ofNat 128 42)"),
+        "{lean_text}"
+    );
+    assert!(
+        lean_text.contains("ConstLit.scalar (BitVec.ofNat 128 7)"),
+        "{lean_text}"
+    );
+    compile_captured_lean_if_trusted_sources_present(&fixture.output.join("Captured.lean"));
+}
+
+#[test]
+fn explicit_concrete_monomorphization_refuses_unsatisfied_bounds_and_invalid_requests() {
+    let source = b"pub trait Tag { fn tag() -> u8; }\n\
+        impl Tag for u8 { fn tag() -> u8 { 1 } }\n\
+        pub fn id<T>(x: T) -> T { x }\n\
+        pub extern \"C\" fn bad_abi<T>(x: u64) -> u64 { x }\n\
+        #[target_feature(enable = \"avx2\")]\n\
+        pub fn bad_tf<T>(x: u64) -> u64 { x }\n";
+
+    let cases: &[(&str, &str, &str)] = &[
+        (
+            "unsatisfied_trait_bound",
+            r#"{"path":"Tag::tag","args":["bool"]}"#,
+            "trait or well-formedness predicates unsatisfied",
+        ),
+        (
+            "wrong_arity",
+            r#"{"path":"id","args":["usize","u8"]}"#,
+            "expects 1 generic arguments",
+        ),
+        (
+            "malformed_arg_syntax",
+            r#"{"path":"id","args":["usize u8"]}"#,
+            "trailing tokens",
+        ),
+        (
+            "unknown_path",
+            r#"{"path":"missing_fn","args":["usize"]}"#,
+            "was not found",
+        ),
+        (
+            "bad_abi_generic",
+            r#"{"path":"bad_abi","args":["usize"]}"#,
+            "only non-variadic Rust ABI functions are admitted",
+        ),
+        (
+            "bad_target_feature_generic",
+            r#"{"path":"bad_tf","args":["usize"]}"#,
+            "target-feature entry obligations are unsupported",
+        ),
+    ];
+
+    for (name, inst_json, expected) in cases {
+        let fixture = Capture::new(source);
+        let output = fixture
+            .command()
+            .arg("--instantiate")
+            .arg(inst_json)
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        assert!(
+            failure.to_string().contains(expected),
+            "{name}: expected {expected:?}, got {failure}"
+        );
+        fixture.assert_no_capture_artifacts();
+    }
+}
+
+#[test]
+fn explicit_monomorphization_enforces_crate_roots_region_bounds_and_self_const_fn() {
+    // External crate roots must not silently fall back to local crate types,
+    // and leading `::` must require a known crate root.
+    let path_source = b"pub struct LocalOnly;\n\
+        pub fn tag<T>() -> u64 { 1 }\n";
+    for (name, inst_json, expected) in [
+        (
+            "missing_external_does_not_fallback_to_local",
+            r#"{"path":"tag","args":["core::LocalOnly"]}"#,
+            "could not be resolved",
+        ),
+        (
+            "leading_colons_reject_unqualified_local_type",
+            r#"{"path":"tag","args":["::LocalOnly"]}"#,
+            "unknown crate `LocalOnly`",
+        ),
+        (
+            "leading_colons_reject_crate_keyword",
+            r#"{"path":"tag","args":["::crate::LocalOnly"]}"#,
+            "invalid leading `::crate`",
+        ),
+    ] {
+        let fixture = Capture::new(path_source);
+        let output = fixture
+            .command()
+            .arg("--instantiate")
+            .arg(inst_json)
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        assert!(
+            failure.to_string().contains(expected),
+            "{name}: expected {expected:?}, got {failure}"
+        );
+        fixture.assert_no_capture_artifacts();
+    }
+
+    // Higher-ranked region/outlives obligations must be checked by region
+    // resolution, while valid `'static` impls must not feed `ReErased` back
+    // into `InferCtxt`.
+    let region_source = b"pub trait Hr<'a> {}\n\
+        impl Hr<'static> for u8 {}\n\
+        pub fn hrtb_outlives<T>() -> u64 where for<'a> &'a T: 'static { 1 }\n\
+        pub fn hrtb_trait<T>() -> u64 where for<'a> T: Hr<'a> { 2 }\n\
+        pub trait StaticOnly { fn v() -> u64; }\n\
+        impl StaticOnly for &'static u8 { fn v() -> u64 { 9 } }\n\
+        pub fn call_static<T: StaticOnly>() -> u64 { 3 }\n";
+    for (name, inst_json) in [
+        ("hrtb_outlives_unsatisfied", r#"{"path":"hrtb_outlives","args":["u8"]}"#),
+        ("hrtb_trait_unsatisfied", r#"{"path":"hrtb_trait","args":["u8"]}"#),
+    ] {
+        let fixture = Capture::new(region_source);
+        let output = fixture
+            .command()
+            .arg("--instantiate")
+            .arg(inst_json)
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        assert!(
+            failure.to_string().contains("region or outlives predicates unsatisfied"),
+            "{name}: expected region/outlives refusal, got {failure}"
+        );
+        fixture.assert_no_capture_artifacts();
+    }
+
+    let ok_static = Capture::new(region_source);
+    let ok_static_out = ok_static
+        .command()
+        .arg("--instantiate")
+        .arg(r#"{"path":"call_static","args":["&'static u8"]}"#)
+        .arg("--instantiate")
+        .arg(r#"{"path":"StaticOnly::v","args":["&'static u8"]}"#)
+        .output()
+        .unwrap();
+    assert!(
+        ok_static_out.status.success(),
+        "expected &'static u8 impl instantiations to succeed:\n{}\n{}",
+        stdout(&ok_static_out),
+        stderr(&ok_static_out)
+    );
+    assert_eq!(ok_static.manifest()["program"]["bodies"].as_array().unwrap().len(), 2);
+
+    // A non-generic `const fn` referencing a `const` backed by another
+    // `const fn`, plus a generic `const fn` whose associated-const impl
+    // evaluates another instantiation of the same `const fn` (`helper::<u8>`),
+    // must evaluate cleanly outside the MIR provider hook without triggering a
+    // query cycle.
+    let self_const_source = b"pub const fn add_one(n: u64) -> u64 { n + 1 }\n\
+        const HELPER_VAL: u64 = add_one(41);\n\
+        pub const fn uses_const_fn() -> u64 { HELPER_VAL }\n\
+        pub trait Base { const VAL: u64; }\n\
+        impl Base for u8 { const VAL: u64 = 1; }\n\
+        impl Base for u16 { const VAL: u64 = helper::<u8>(); }\n\
+        pub const fn helper<T: Base>() -> u64 { T::VAL }\n";
+    let self_fixture = Capture::new(self_const_source);
+    let self_out = self_fixture
+        .command()
+        .arg("--select=uses_const_fn")
+        .arg("--instantiate")
+        .arg(r#"{"path":"helper","args":["u16"]}"#)
+        .output()
+        .unwrap();
+    assert!(
+        self_out.status.success(),
+        "expected const-fn capture without query cycle:\n{}\n{}",
+        stdout(&self_out),
+        stderr(&self_out)
+    );
+    assert_eq!(self_fixture.manifest()["program"]["bodies"].as_array().unwrap().len(), 2);
 }
