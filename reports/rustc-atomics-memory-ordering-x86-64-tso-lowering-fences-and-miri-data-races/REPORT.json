@@ -1,0 +1,68 @@
+{
+  "topics": [
+    "anneal",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/codegen",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust compiler, core library, and Miri source tree (HEAD)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "277240238554297f93fa9ee3c7643dfa03ccbbb4"
+      }
+    },
+    {
+      "name": "rust-lang/rust toolchain (rustc 1.98.0-nightly 2026-05-31, miri 0.1.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly"
+      }
+    },
+    {
+      "name": "llvm/llvm-project X86 backend source tree (HEAD)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "ad79ef44876165477272af224c28d1e83637574d"
+      }
+    },
+    {
+      "name": "llvm/llvm-project LLVM 22.1.6 release (toolchain codegen backend)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "fc4aad7b5db3fff421df9a9637605b9ca5667881",
+        "version": "llvmorg-22.1.6"
+      }
+    },
+    {
+      "name": "joshlf/anneal trusted Lean MIR semantics and lean-miri concurrency port",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "rust-lang/miri upstream concurrency engine",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
+      }
+    },
+    {
+      "name": "leanprover/lean4 theorem prover and kernel type checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

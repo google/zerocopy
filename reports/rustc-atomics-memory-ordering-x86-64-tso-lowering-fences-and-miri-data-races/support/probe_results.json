@@ -1,0 +1,618 @@
+{
+  "observed_at_utc": "2026-11-23T22:38:51Z",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "experiments": {
+    "a_llvm_ir_and_asm_lowering": {
+      "x86_64_O2_default": {
+        "target": "x86_64-unknown-linux-gnu",
+        "extra_args": [
+          "-C",
+          "opt-level=2"
+        ],
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "llvm_ir_by_fn": {
+          "load_relaxed": [
+            "define noundef i64 @load_relaxed(ptr noundef nonnull readonly align 8 captures(none) %a) unnamed_addr #0 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  %0 = load atomic i64, ptr %a monotonic, align 8",
+            "  ret i64 %0",
+            "}"
+          ],
+          "load_acquire": [
+            "define noundef i64 @load_acquire(ptr noundef nonnull readonly align 8 captures(none) %a) unnamed_addr #0 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  %0 = load atomic i64, ptr %a acquire, align 8",
+            "  ret i64 %0",
+            "}"
+          ],
+          "load_seqcst": [
+            "define noundef i64 @load_seqcst(ptr noundef nonnull readonly align 8 captures(none) %a) unnamed_addr #0 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  %0 = load atomic i64, ptr %a seq_cst, align 8",
+            "  ret i64 %0",
+            "}"
+          ],
+          "store_relaxed": [
+            "define void @store_relaxed(ptr noundef nonnull writeonly align 8 captures(none) %a, i64 noundef %v) unnamed_addr #0 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  store atomic i64 %v, ptr %a monotonic, align 8",
+            "  ret void",
+            "}"
+          ],
+          "store_release": [
+            "define void @store_release(ptr noundef nonnull writeonly align 8 captures(none) %a, i64 noundef %v) unnamed_addr #0 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  store atomic i64 %v, ptr %a release, align 8",
+            "  ret void",
+            "}"
+          ],
+          "store_seqcst": [
+            "define void @store_seqcst(ptr noundef nonnull writeonly align 8 captures(none) %a, i64 noundef %v) unnamed_addr #0 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  store atomic i64 %v, ptr %a seq_cst, align 8",
+            "  ret void",
+            "}"
+          ],
+          "swap_relaxed": [
+            "define noundef i64 @swap_relaxed(ptr noundef nonnull align 8 captures(none) %a, i64 noundef %v) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = atomicrmw xchg ptr %a, i64 %v monotonic, align 8",
+            "  ret i64 %_0",
+            "}"
+          ],
+          "swap_acqrel": [
+            "define noundef i64 @swap_acqrel(ptr noundef nonnull align 8 captures(none) %a, i64 noundef %v) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = atomicrmw xchg ptr %a, i64 %v acq_rel, align 8",
+            "  ret i64 %_0",
+            "}"
+          ],
+          "swap_seqcst": [
+            "define noundef i64 @swap_seqcst(ptr noundef nonnull align 8 captures(none) %a, i64 noundef %v) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = atomicrmw xchg ptr %a, i64 %v seq_cst, align 8",
+            "  ret i64 %_0",
+            "}"
+          ],
+          "fetch_add_relaxed": [
+            "define noundef i64 @fetch_add_relaxed(ptr noundef nonnull align 8 captures(none) %a, i64 noundef %v) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = atomicrmw add ptr %a, i64 %v monotonic, align 8",
+            "  ret i64 %_0",
+            "}"
+          ],
+          "fetch_add_acquire": [
+            "define noundef i64 @fetch_add_acquire(ptr noundef nonnull align 8 captures(none) %a, i64 noundef %v) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = atomicrmw add ptr %a, i64 %v acquire, align 8",
+            "  ret i64 %_0",
+            "}"
+          ],
+          "fetch_add_release": [
+            "define noundef i64 @fetch_add_release(ptr noundef nonnull align 8 captures(none) %a, i64 noundef %v) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = atomicrmw add ptr %a, i64 %v release, align 8",
+            "  ret i64 %_0",
+            "}"
+          ],
+          "fetch_add_acqrel": [
+            "define noundef i64 @fetch_add_acqrel(ptr noundef nonnull align 8 captures(none) %a, i64 noundef %v) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = atomicrmw add ptr %a, i64 %v acq_rel, align 8",
+            "  ret i64 %_0",
+            "}"
+          ],
+          "fetch_add_seqcst": [
+            "define noundef i64 @fetch_add_seqcst(ptr noundef nonnull align 8 captures(none) %a, i64 noundef %v) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = atomicrmw add ptr %a, i64 %v seq_cst, align 8",
+            "  ret i64 %_0",
+            "}"
+          ],
+          "fetch_or_used_acqrel": [
+            "define noundef i64 @fetch_or_used_acqrel(ptr noundef nonnull align 8 captures(none) %a, i64 noundef %v) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = atomicrmw or ptr %a, i64 %v acq_rel, align 8",
+            "  ret i64 %_0",
+            "}"
+          ],
+          "fetch_or_discarded_acqrel": [
+            "define void @fetch_or_discarded_acqrel(ptr noundef nonnull align 8 captures(none) %a, i64 noundef %v) unnamed_addr #0 {",
+            "start:",
+            "  %_3 = atomicrmw or ptr %a, i64 %v acq_rel, align 8",
+            "  ret void",
+            "}"
+          ],
+          "cas_strong_acqrel_acquire": [
+            "define noundef zeroext i1 @cas_strong_acqrel_acquire(ptr noundef nonnull align 8 captures(none) %a, i64 noundef %cur, i64 noundef %new) unnamed_addr #0 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  %0 = cmpxchg ptr %a, i64 %cur, i64 %new acq_rel acquire, align 8",
+            "  %_8.sroa.18.0.in.i = extractvalue { i64, i1 } %0, 1",
+            "  ret i1 %_8.sroa.18.0.in.i",
+            "}"
+          ],
+          "cas_strong_seqcst_seqcst": [
+            "define noundef zeroext i1 @cas_strong_seqcst_seqcst(ptr noundef nonnull align 8 captures(none) %a, i64 noundef %cur, i64 noundef %new) unnamed_addr #0 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  %0 = cmpxchg ptr %a, i64 %cur, i64 %new seq_cst seq_cst, align 8",
+            "  %_8.sroa.18.0.in.i = extractvalue { i64, i1 } %0, 1",
+            "  ret i1 %_8.sroa.18.0.in.i",
+            "}"
+          ],
+          "cas_weak_relaxed_relaxed": [
+            "define noundef zeroext i1 @cas_weak_relaxed_relaxed(ptr noundef nonnull align 8 captures(none) %a, i64 noundef %cur, i64 noundef %new) unnamed_addr #0 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  %0 = cmpxchg weak ptr %a, i64 %cur, i64 %new monotonic monotonic, align 8",
+            "  %_8.sroa.18.0.in.i = extractvalue { i64, i1 } %0, 1",
+            "  ret i1 %_8.sroa.18.0.in.i",
+            "}"
+          ],
+          "cas_weak_acqrel_acquire": [
+            "define noundef zeroext i1 @cas_weak_acqrel_acquire(ptr noundef nonnull align 8 captures(none) %a, i64 noundef %cur, i64 noundef %new) unnamed_addr #0 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  %0 = cmpxchg weak ptr %a, i64 %cur, i64 %new acq_rel acquire, align 8",
+            "  %_8.sroa.18.0.in.i = extractvalue { i64, i1 } %0, 1",
+            "  ret i1 %_8.sroa.18.0.in.i",
+            "}"
+          ],
+          "cas_u32_strong_acqrel_acquire": [
+            "define noundef zeroext i1 @cas_u32_strong_acqrel_acquire(ptr noundef nonnull align 4 captures(none) %a, i32 noundef %cur, i32 noundef %new) unnamed_addr #0 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  %0 = cmpxchg ptr %a, i32 %cur, i32 %new acq_rel acquire, align 4",
+            "  %1 = extractvalue { i32, i1 } %0, 1",
+            "  ret i1 %1",
+            "}"
+          ],
+          "fetch_and_u8_discarded_acqrel": [
+            "define void @fetch_and_u8_discarded_acqrel(ptr noundef nonnull captures(none) %a, i8 noundef zeroext %v) unnamed_addr #0 {",
+            "start:",
+            "  %_3 = atomicrmw and ptr %a, i8 %v acq_rel, align 1",
+            "  ret void",
+            "}"
+          ],
+          "hw_fence_acquire": [
+            "define void @hw_fence_acquire() unnamed_addr #2 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  fence acquire",
+            "  ret void",
+            "}"
+          ],
+          "hw_fence_release": [
+            "define void @hw_fence_release() unnamed_addr #2 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  fence release",
+            "  ret void",
+            "}"
+          ],
+          "hw_fence_acqrel": [
+            "define void @hw_fence_acqrel() unnamed_addr #2 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  fence acq_rel",
+            "  ret void",
+            "}"
+          ],
+          "hw_fence_seqcst": [
+            "define void @hw_fence_seqcst() unnamed_addr #2 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  fence seq_cst",
+            "  ret void",
+            "}"
+          ],
+          "comp_fence_acquire_only": [
+            "define void @comp_fence_acquire_only() unnamed_addr #1 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  fence syncscope(\"singlethread\") acquire",
+            "  ret void",
+            "}"
+          ],
+          "comp_fence_seqcst_only": [
+            "define void @comp_fence_seqcst_only() unnamed_addr #1 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  fence syncscope(\"singlethread\") seq_cst",
+            "  ret void",
+            "}"
+          ],
+          "comp_fence_seqcst_two_loads": [
+            "define noundef i64 @comp_fence_seqcst_two_loads(ptr noundef nonnull readonly align 8 captures(none) %a) unnamed_addr #2 personality ptr @rust_eh_personality {",
+            "bb3:",
+            "  %0 = load atomic i64, ptr %a monotonic, align 8",
+            "  fence syncscope(\"singlethread\") seq_cst",
+            "  %1 = load atomic i64, ptr %a monotonic, align 8",
+            "  %_0 = add i64 %1, %0",
+            "  ret i64 %_0",
+            "}"
+          ],
+          "no_fence_two_loads": [
+            "define noundef i64 @no_fence_two_loads(ptr noundef nonnull readonly align 8 captures(none) %a) unnamed_addr #0 personality ptr @rust_eh_personality {",
+            "bb2:",
+            "  %0 = load atomic i64, ptr %a monotonic, align 8",
+            "  %1 = load atomic i64, ptr %a monotonic, align 8",
+            "  %_0 = add i64 %1, %0",
+            "  ret i64 %_0",
+            "}"
+          ],
+          "hw_fence_acqrel_with_loads": [
+            "define noundef i64 @hw_fence_acqrel_with_loads(ptr noundef nonnull readonly align 8 captures(none) %a) unnamed_addr #2 personality ptr @rust_eh_personality {",
+            "bb3:",
+            "  %0 = load atomic i64, ptr %a monotonic, align 8",
+            "  fence acq_rel",
+            "  %1 = load atomic i64, ptr %a monotonic, align 8",
+            "  %_0 = add i64 %1, %0",
+            "  ret i64 %_0",
+            "}"
+          ],
+          "raw_ptr_two_loads_no_fence": [
+            "define noundef range(i64 0, -1) i64 @raw_ptr_two_loads_no_fence(ptr noundef readonly captures(none) %p) unnamed_addr #3 {",
+            "start:",
+            "  %x = load i64, ptr %p, align 8, !noundef !4",
+            "  %_0 = shl i64 %x, 1",
+            "  ret i64 %_0",
+            "}"
+          ],
+          "raw_ptr_two_loads_with_cfence": [
+            "define noundef i64 @raw_ptr_two_loads_with_cfence(ptr noundef readonly captures(none) %p) unnamed_addr #1 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  %x = load i64, ptr %p, align 8, !noundef !4",
+            "  fence syncscope(\"singlethread\") seq_cst",
+            "  %y = load i64, ptr %p, align 8, !noundef !4",
+            "  %_0 = add i64 %y, %x",
+            "  ret i64 %_0",
+            "}"
+          ],
+          "raw_ptr_two_stores_no_fence": [
+            "define void @raw_ptr_two_stores_no_fence(ptr noundef writeonly captures(none) initializes((0, 8)) %p) unnamed_addr #4 {",
+            "start:",
+            "  store i64 2, ptr %p, align 8",
+            "  ret void",
+            "}"
+          ],
+          "raw_ptr_two_stores_with_cfence": [
+            "define void @raw_ptr_two_stores_with_cfence(ptr noundef writeonly captures(none) initializes((0, 8)) %p) unnamed_addr #1 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  store i64 1, ptr %p, align 8",
+            "  fence syncscope(\"singlethread\") seq_cst",
+            "  store i64 2, ptr %p, align 8",
+            "  ret void",
+            "}"
+          ]
+        },
+        "asm_by_fn": {
+          "load_relaxed": [
+            "movq\t(%rdi), %rax",
+            "retq"
+          ],
+          "load_acquire": [
+            "movq\t(%rdi), %rax",
+            "retq"
+          ],
+          "load_seqcst": [
+            "movq\t(%rdi), %rax",
+            "retq"
+          ],
+          "store_relaxed": [
+            "movq\t%rsi, (%rdi)",
+            "retq"
+          ],
+          "store_release": [
+            "movq\t%rsi, (%rdi)",
+            "retq"
+          ],
+          "store_seqcst": [
+            "xchgq\t%rsi, (%rdi)",
+            "retq"
+          ],
+          "swap_relaxed": [
+            "movq\t%rsi, %rax",
+            "xchgq\t%rax, (%rdi)",
+            "retq"
+          ],
+          "swap_acqrel": [
+            "movq\t%rsi, %rax",
+            "xchgq\t%rax, (%rdi)",
+            "retq"
+          ],
+          "swap_seqcst": [
+            "movq\t%rsi, %rax",
+            "xchgq\t%rax, (%rdi)",
+            "retq"
+          ],
+          "fetch_add_relaxed": [
+            "movq\t%rsi, %rax",
+            "lock\t\txaddq\t%rax, (%rdi)",
+            "retq"
+          ],
+          "fetch_add_acquire": [
+            "movq\t%rsi, %rax",
+            "lock\t\txaddq\t%rax, (%rdi)",
+            "retq"
+          ],
+          "fetch_add_release": [
+            "movq\t%rsi, %rax",
+            "lock\t\txaddq\t%rax, (%rdi)",
+            "retq"
+          ],
+          "fetch_add_acqrel": [
+            "movq\t%rsi, %rax",
+            "lock\t\txaddq\t%rax, (%rdi)",
+            "retq"
+          ],
+          "fetch_add_seqcst": [
+            "movq\t%rsi, %rax",
+            "lock\t\txaddq\t%rax, (%rdi)",
+            "retq"
+          ],
+          "fetch_or_used_acqrel": [
+            "movq\t(%rdi), %rax",
+            "movq\t%rax, %rcx",
+            "orq\t%rsi, %rcx",
+            "lock\t\tcmpxchgq\t%rcx, (%rdi)",
+            "jne\t.LBB15_1",
+            "retq"
+          ],
+          "fetch_or_discarded_acqrel": [
+            "lock\t\torq\t%rsi, (%rdi)",
+            "retq"
+          ],
+          "cas_strong_acqrel_acquire": [
+            "movq\t%rsi, %rax",
+            "lock\t\tcmpxchgq\t%rdx, (%rdi)",
+            "sete\t%al",
+            "retq"
+          ],
+          "cas_strong_seqcst_seqcst": [
+            "movq\t%rsi, %rax",
+            "lock\t\tcmpxchgq\t%rdx, (%rdi)",
+            "sete\t%al",
+            "retq"
+          ],
+          "cas_weak_relaxed_relaxed": [
+            "movq\t%rsi, %rax",
+            "lock\t\tcmpxchgq\t%rdx, (%rdi)",
+            "sete\t%al",
+            "retq"
+          ],
+          "cas_weak_acqrel_acquire": [
+            "movq\t%rsi, %rax",
+            "lock\t\tcmpxchgq\t%rdx, (%rdi)",
+            "sete\t%al",
+            "retq"
+          ],
+          "cas_u32_strong_acqrel_acquire": [
+            "movl\t%esi, %eax",
+            "lock\t\tcmpxchgl\t%edx, (%rdi)",
+            "sete\t%al",
+            "retq"
+          ],
+          "fetch_and_u8_discarded_acqrel": [
+            "lock\t\tandb\t%sil, (%rdi)",
+            "retq"
+          ],
+          "hw_fence_acquire": [
+            "#MEMBARRIER",
+            "retq"
+          ],
+          "hw_fence_release": [
+            "#MEMBARRIER",
+            "retq"
+          ],
+          "hw_fence_acqrel": [
+            "#MEMBARRIER",
+            "retq"
+          ],
+          "hw_fence_seqcst": [
+            "lock\t\torl\t$0, -64(%rsp)",
+            "retq"
+          ],
+          "comp_fence_acquire_only": [
+            "#MEMBARRIER",
+            "retq"
+          ],
+          "comp_fence_seqcst_only": [
+            "#MEMBARRIER",
+            "retq"
+          ],
+          "comp_fence_seqcst_two_loads": [
+            "movq\t(%rdi), %rcx",
+            "#MEMBARRIER",
+            "movq\t(%rdi), %rax",
+            "addq\t%rcx, %rax",
+            "retq"
+          ],
+          "no_fence_two_loads": [
+            "movq\t(%rdi), %rcx",
+            "movq\t(%rdi), %rax",
+            "addq\t%rcx, %rax",
+            "retq"
+          ],
+          "hw_fence_acqrel_with_loads": [
+            "movq\t(%rdi), %rcx",
+            "#MEMBARRIER",
+            "movq\t(%rdi), %rax",
+            "addq\t%rcx, %rax",
+            "retq"
+          ],
+          "raw_ptr_two_loads_no_fence": [
+            "movq\t(%rdi), %rax",
+            "addq\t%rax, %rax",
+            "retq"
+          ],
+          "raw_ptr_two_loads_with_cfence": [
+            "movq\t(%rdi), %rax",
+            "#MEMBARRIER",
+            "addq\t(%rdi), %rax",
+            "retq"
+          ],
+          "raw_ptr_two_stores_no_fence": [
+            "movq\t$2, (%rdi)",
+            "retq"
+          ],
+          "raw_ptr_two_stores_with_cfence": [
+            "movq\t$1, (%rdi)",
+            "#MEMBARRIER",
+            "movq\t$2, (%rdi)",
+            "retq"
+          ]
+        }
+      },
+      "x86_64_O2_no_redzone": {
+        "target": "x86_64-unknown-linux-gnu",
+        "extra_args": [
+          "-C",
+          "opt-level=2",
+          "-C",
+          "no-redzone=yes"
+        ],
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "llvm_ir_by_fn": {
+          "hw_fence_seqcst": [
+            "define void @hw_fence_seqcst() unnamed_addr #2 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  fence seq_cst",
+            "  ret void",
+            "}"
+          ],
+          "hw_fence_acqrel": [
+            "define void @hw_fence_acqrel() unnamed_addr #2 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  fence acq_rel",
+            "  ret void",
+            "}"
+          ],
+          "store_seqcst": [
+            "define void @store_seqcst(ptr noundef nonnull writeonly align 8 captures(none) %a, i64 noundef %v) unnamed_addr #0 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  store atomic i64 %v, ptr %a seq_cst, align 8",
+            "  ret void",
+            "}"
+          ]
+        },
+        "asm_by_fn": {
+          "hw_fence_seqcst": [
+            "lock\t\torl\t$0, (%rsp)",
+            "retq"
+          ],
+          "hw_fence_acqrel": [
+            "#MEMBARRIER",
+            "retq"
+          ],
+          "store_seqcst": [
+            "xchgq\t%rsi, (%rdi)",
+            "retq"
+          ]
+        }
+      },
+      "i686_O2_default_sse2": {
+        "target": "i686-unknown-linux-gnu",
+        "extra_args": [
+          "-C",
+          "opt-level=2"
+        ],
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "llvm_ir_by_fn": {
+          "hw_fence_seqcst": [
+            "define void @hw_fence_seqcst() unnamed_addr #2 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  fence seq_cst",
+            "  ret void",
+            "}"
+          ],
+          "hw_fence_acqrel": [
+            "define void @hw_fence_acqrel() unnamed_addr #2 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  fence acq_rel",
+            "  ret void",
+            "}"
+          ]
+        },
+        "asm_by_fn": {
+          "hw_fence_seqcst": [
+            "mfence",
+            "retl"
+          ],
+          "hw_fence_acqrel": [
+            "#MEMBARRIER",
+            "retl"
+          ]
+        }
+      },
+      "i686_O2_nosse2": {
+        "target": "i686-unknown-linux-gnu",
+        "extra_args": [
+          "-C",
+          "opt-level=2",
+          "-C",
+          "target-feature=-sse2"
+        ],
+        "compile_returncode": 0,
+        "compile_stderr": "warning: target feature `sse2` must be enabled to ensure that the ABI of the current target can be implemented correctly\n  |\n  = note: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!\n  = note: for more information, see issue #116344 <https://github.com/rust-lang/rust/issues/116344>\n\nwarning: 1 warning emitted",
+        "llvm_ir_by_fn": {
+          "hw_fence_seqcst": [
+            "define void @hw_fence_seqcst() unnamed_addr #2 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  fence seq_cst",
+            "  ret void",
+            "}"
+          ],
+          "hw_fence_acqrel": [
+            "define void @hw_fence_acqrel() unnamed_addr #2 personality ptr @rust_eh_personality {",
+            "bb1:",
+            "  fence acq_rel",
+            "  ret void",
+            "}"
+          ]
+        },
+        "asm_by_fn": {
+          "hw_fence_seqcst": [
+            "lock\t\torl\t$0, (%esp)",
+            "retl"
+          ],
+          "hw_fence_acqrel": [
+            "#MEMBARRIER",
+            "retl"
+          ]
+        }
+      }
+    },
+    "b_miri_thread_sync_vs_data_race": {
+      "miri_release_acquire_message_passing_ok": {
+        "edition": "2024",
+        "command": "cargo +nightly miri run --offline",
+        "returncode": 0,
+        "stdout": "MIRI_ACQ_REL_OK=42",
+        "stderr": "Compiling miri_probe v0.1.0 (<tmp>/miri_release_acquire_message_passing_ok)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.25s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/miri_probe`"
+      },
+      "miri_relaxed_unsynchronized_data_race_ub": {
+        "edition": "2024",
+        "command": "cargo +nightly miri run --offline",
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "Compiling miri_probe v0.1.0 (<tmp>/miri_relaxed_unsynchronized_data_race_ub)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.21s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/miri_probe`\nerror: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `main` at alloc248+0x10\n  --> src/main.rs:26:29\n   |\n26 |     let observed = unsafe { *shared.data.get() };\n   |                             ^^^^^^^^^^^^^^^^^^ (2) just happened here\n   |\nhelp: and (1) occurred earlier here\n  --> src/main.rs:20:18\n   |\n20 |         unsafe { *s_writer.data.get() = 42; }\n   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: this is on thread `main`\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+      },
+      "miri_release_fence_acquire_fence_ok": {
+        "edition": "2024",
+        "command": "cargo +nightly miri run --offline",
+        "returncode": 0,
+        "stdout": "MIRI_FENCE_ACQ_REL_OK=42",
+        "stderr": "Compiling miri_probe v0.1.0 (<tmp>/miri_release_fence_acquire_fence_ok)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.23s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/miri_probe`"
+      },
+      "miri_compiler_fence_non_sync_data_race_ub": {
+        "edition": "2024",
+        "command": "cargo +nightly miri run --offline",
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "Compiling miri_probe v0.1.0 (<tmp>/miri_compiler_fence_non_sync_data_race_ub)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.20s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/miri_probe`\nerror: Undefined Behavior: Data race detected between (1) non-atomic write on thread `unnamed-1` and (2) non-atomic read on thread `main` at alloc248+0x10\n  --> src/main.rs:28:29\n   |\n28 |     let observed = unsafe { *shared.data.get() };\n   |                             ^^^^^^^^^^^^^^^^^^ (2) just happened here\n   |\nhelp: and (1) occurred earlier here\n  --> src/main.rs:20:18\n   |\n20 |         unsafe { *s_writer.data.get() = 42; }\n   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: this is on thread `main`\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+      },
+      "miri_cas_weak_spurious_failure_check": {
+        "edition": "2024",
+        "command": "cargo +nightly miri run --offline",
+        "returncode": 0,
+        "stdout": "MIRI_CAS_WEAK_OK final=64 spurious_failures=222",
+        "stderr": "Compiling miri_probe v0.1.0 (<tmp>/miri_cas_weak_spurious_failure_check)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.20s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/miri_probe`"
+      }
+    }
+  }
+}
