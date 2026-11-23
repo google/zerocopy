@@ -417,7 +417,7 @@ def prebuild(
 
         # Schedule dynamic parallel compilation over the DAG of bundled modules.
         pending = set(bundled_sources.keys())
-        in_flight: dict[object, tuple[str, Path, bytes, list[dict]]] = {}
+        in_flight: dict[object, tuple[str, Path, bytes, bool, list[dict]]] = {}
         compiled_entries: dict[str, dict] = {}
         setup_dir = tmp / "setups"
         setup_dir.mkdir(parents=True)
@@ -434,12 +434,15 @@ def prebuild(
                     edges = bundled_edges[mod]
                     closure = transitive_closure(full_graph, edges)
                     import_arts = {dep: full_arts[dep] for dep in closure}
+                    src_path = bundled_sources[mod]
+                    src_bytes = src_path.read_bytes()
+                    is_mod = source_starts_with_module_keyword(src_bytes)
                     setup_path = setup_dir / f"{mod}.setup.json"
                     setup_path.write_text(
                         json.dumps(
                             {
                                 "name": mod,
-                                "isModule": False,
+                                "isModule": is_mod,
                                 "imports": edges,
                                 "importArts": import_arts,
                                 "dynlibs": [],
@@ -449,8 +452,6 @@ def prebuild(
                         ),
                         encoding="utf-8",
                     )
-                    src_path = bundled_sources[mod]
-                    src_bytes = src_path.read_bytes()
                     out_olean = output_dir / "lib" / f"{mod.replace('.', '/')}.olean"
                     out_olean.parent.mkdir(parents=True, exist_ok=True)
                     args = [
@@ -464,14 +465,14 @@ def prebuild(
                         str(src_path),
                     ]
                     fut = pool.submit(run_lean, lean_exec_resolved, args, cwd=tmp)
-                    in_flight[fut] = (mod, out_olean, src_bytes, edges)
+                    in_flight[fut] = (mod, out_olean, src_bytes, is_mod, edges)
 
                 if not in_flight:
                     raise RuntimeError(f"dependency cycle across bundled modules: {sorted(pending)}")
 
                 done, _ = wait(in_flight.keys(), return_when=FIRST_COMPLETED)
                 for fut in done:
-                    mod, out_olean, src_bytes, edges = in_flight.pop(fut)
+                    mod, out_olean, src_bytes, is_mod, edges = in_flight.pop(fut)
                     res = fut.result()
                     if res.returncode != 0:
                         raise RuntimeError(
@@ -506,7 +507,7 @@ def prebuild(
                         "lean_sha256": lean_sha256,
                         "sysroot_manifest_sha256": sysroot_manifest_sha256,
                         "source_sha256": sha256_bytes(src_bytes),
-                        "is_module": source_starts_with_module_keyword(src_bytes),
+                        "is_module": is_mod,
                         "flags": list(CANONICAL_COMPILE_FLAGS),
                         "imports": [
                             {

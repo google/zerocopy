@@ -146,6 +146,140 @@ sys.exit(1)
             self.assertTrue((out_dir / "lib/Anneal/MirWp.olean").is_file())
             self.assertTrue((out_dir / "manifest.json").is_file())
 
+    def test_prebuild_keeps_setup_is_module_consistent_with_manifest(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "anneal"
+            lean_prefix = Path(tmp) / "sysroot"
+            out_dir = Path(tmp) / "prebuilt"
+            recorded_setups = Path(tmp) / "recorded_setups.jsonl"
+            (lean_prefix / "lib/lean/Init").mkdir(parents=True)
+            (lean_prefix / "bin").mkdir(parents=True)
+            (lean_prefix / "lib/lean/Init/Core.olean").write_bytes(
+                b"olean\x02synthetic-core"
+            )
+
+            (root / "trusted/audit").mkdir(parents=True)
+            (root / "trusted/lean/Trusted").mkdir(parents=True)
+            (root / "trusted/cargo-anneal/src").mkdir(parents=True)
+            (root / "theory/Anneal").mkdir(parents=True)
+
+            (root / "trusted/audit/TrustedBoundary.lean").write_text(
+                "-- inspector\n", encoding="utf-8"
+            )
+            (root / "trusted/lean/foundation-lock.json").write_text(
+                json.dumps(
+                    {
+                        "modules": {"Init.Core": {}},
+                        "graph": {"Init.Core": []},
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (root / "trusted/audit/library-lock.json").write_text(
+                json.dumps({"modules": {}, "graph": {}}),
+                encoding="utf-8",
+            )
+
+            (root / "trusted/lean/Trusted/MirAst.lean").write_text(
+                "prelude\nimport Init.Core\n", encoding="utf-8"
+            )
+            (root / "trusted/cargo-anneal/src/bundle.rs").write_text(
+                'pub const TRUSTED_BUNDLE_SOURCES: &[&str] = &[\n'
+                '    "trusted/lean/Trusted/MirAst.lean",\n'
+                '];\n',
+                encoding="utf-8",
+            )
+
+            wp = root / "theory/Anneal/MirWp.lean"
+            wp.write_text(
+                "-- leading comment\nmodule\nprelude\nimport Trusted.MirAst\n",
+                encoding="utf-8",
+            )
+            wp_sha = prebuild_bundled_oleans.sha256_file(wp)
+            (root / "theory/bundle-manifest.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "modules": [
+                            {
+                                "path": "theory/Anneal/MirWp.lean",
+                                "sha256": wp_sha,
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            fake_lean = lean_prefix / "bin/lean"
+            fake_lean.write_text(
+                f"""#!/usr/bin/env python3
+import json, pathlib, sys
+args = sys.argv[1:]
+if "--run" in args:
+    res = {{
+        "ok": True,
+        "result": {{
+            "headers": [
+                {{
+                    "module": "Trusted.MirAst",
+                    "imports": [{{"module": "Init.Core", "isExported": True, "importAll": False, "isMeta": False}}],
+                }},
+                {{
+                    "module": "Anneal.MirWp",
+                    "imports": [{{"module": "Trusted.MirAst", "isExported": True, "importAll": False, "isMeta": False}}],
+                }},
+            ]
+        }},
+    }}
+    pathlib.Path(args[-1]).write_text(json.dumps(res))
+    sys.exit(0)
+if "--setup" in args:
+    setup = json.loads(pathlib.Path(args[args.index("--setup") + 1]).read_text())
+    with pathlib.Path({str(recorded_setups)!r}).open("a", encoding="utf-8") as f:
+        f.write(json.dumps({{"name": setup["name"], "isModule": setup["isModule"]}}) + "\\n")
+if "-o" in args:
+    out = pathlib.Path(args[args.index("-o") + 1])
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_bytes(b"olean\\x024.34.1\\x00" + out.name.encode())
+    sys.exit(0)
+sys.exit(1)
+""",
+                encoding="utf-8",
+            )
+            fake_lean.chmod(stat.S_IRWXU)
+
+            manifest = prebuild_bundled_oleans.prebuild(
+                anneal_root=root,
+                lean_bin=fake_lean,
+                lean_exec=fake_lean,
+                lean_prefix=lean_prefix,
+                output_dir=out_dir,
+                jobs=1,
+            )
+            setup_by_mod = {
+                row["name"]: row["isModule"]
+                for row in (
+                    json.loads(line)
+                    for line in recorded_setups.read_text(encoding="utf-8").splitlines()
+                )
+            }
+            by_mod = {
+                e["module"]: e
+                for e in manifest["entries"]
+                if e["kind"] == "module"
+            }
+            self.assertEqual(
+                setup_by_mod,
+                {"Trusted.MirAst": False, "Anneal.MirWp": True},
+            )
+            for mod, expected in (
+                ("Trusted.MirAst", False),
+                ("Anneal.MirWp", True),
+            ):
+                self.assertEqual(by_mod[mod]["is_module"], expected)
+                self.assertEqual(setup_by_mod[mod], by_mod[mod]["is_module"])
+
 
 if __name__ == "__main__":
     unittest.main()

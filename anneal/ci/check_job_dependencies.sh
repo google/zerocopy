@@ -10,24 +10,108 @@
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
-which yq > /dev/null
+
+if ! command -v yq >/dev/null 2>&1; then
+  echo "Error: yq is required on PATH" >&2
+  exit 1
+fi
+
 failed=0
+
+report_failure() {
+  echo "$1" | tee -a "${GITHUB_STEP_SUMMARY:-/dev/null}" >&2
+  failed=1
+}
 
 # Verify that every PR or reusable workflow defines an `all-jobs-succeed` gate
 # whose `needs` lists every other job in that workflow, so branch protection
 # cannot miss a job result.
 shopt -s nullglob
-for i in ../.github/workflows/anneal-current.yml .github/workflows/*.yml .github/workflows/*.yaml; do
-  if yq -e '.on | has("pull_request") or has("workflow_call")' "$i" >/dev/null 2>&1; then
-    missing=$(comm -23 \
-      <(yq -r '.jobs | keys | .[]' "$i" | grep -v '^all-jobs-succeed$' | sort -u) \
-      <(yq -r '.jobs["all-jobs-succeed"].needs[]?' "$i" | sort -u))
+workflows=(
+  ../.github/workflows/anneal.yml
+  ../.github/workflows/anneal-current.yml
+  .github/workflows/*.yml
+  .github/workflows/*.yaml
+)
 
-    if [ -n "$missing" ]; then
-      missing_jobs="$(echo "$missing" | tr '\n' ' ')"
-      echo "$i: all-jobs-succeed missing dependencies on some jobs: $missing_jobs" | tee -a "${GITHUB_STEP_SUMMARY:-/dev/null}" >&2
-      failed=1
-    fi
+for i in "${workflows[@]}"; do
+  # Explicitly validate YAML parseability before inspecting `.on` so malformed
+  # or empty workflow files never silently skip the dependency check.
+  if ! yq -e '.' "$i" >/dev/null; then
+    report_failure "$i: failed to parse workflow YAML"
+    continue
+  fi
+
+  # Handle both `kislyuk/yq` (`string`/`array`/`object`/`null`) and
+  # `mikefarah/yq` v4 (`!!str`/`!!seq`/`!!map`/`!!null`) type names.
+  on_type=$(yq -r '.on | type' "$i")
+  triggers_pr_or_call=0
+  case "$on_type" in
+    string|'!!str')
+      on_val=$(yq -r '.on' "$i")
+      if [ "$on_val" = "pull_request" ] || [ "$on_val" = "workflow_call" ]; then
+        triggers_pr_or_call=1
+      fi
+      ;;
+    array|'!!seq')
+      on_entries=$(yq -r '.on[]' "$i")
+      if [ -n "$on_entries" ] && grep -Fxq -e 'pull_request' -e 'workflow_call' <<< "$on_entries"; then
+        triggers_pr_or_call=1
+      fi
+      ;;
+    object|'!!map')
+      on_keys=$(yq -r '.on | keys | .[]' "$i")
+      if [ -n "$on_keys" ] && grep -Fxq -e 'pull_request' -e 'workflow_call' <<< "$on_keys"; then
+        triggers_pr_or_call=1
+      fi
+      ;;
+    *)
+      report_failure "$i: missing or unsupported 'on' trigger type: $on_type"
+      continue
+      ;;
+  esac
+
+  if [ "$triggers_pr_or_call" -eq 0 ]; then
+    continue
+  fi
+
+  jobs_type=$(yq -r '.jobs | type' "$i")
+  if [ "$jobs_type" != "object" ] && [ "$jobs_type" != "!!map" ]; then
+    report_failure "$i: missing or invalid 'jobs' mapping (got $jobs_type)"
+    continue
+  fi
+
+  all_jobs=$(yq -r '.jobs | keys | .[]' "$i")
+  if [ -z "$all_jobs" ] || ! grep -Fxq 'all-jobs-succeed' <<< "$all_jobs"; then
+    report_failure "$i: missing required all-jobs-succeed job"
+    continue
+  fi
+
+  needs_type=$(yq -r '.jobs["all-jobs-succeed"].needs | type' "$i")
+  needs_jobs=""
+  case "$needs_type" in
+    array|'!!seq')
+      needs_jobs=$(yq -r '.jobs["all-jobs-succeed"].needs[]' "$i")
+      ;;
+    null|'!!null')
+      needs_jobs=""
+      ;;
+    *)
+      report_failure "$i: all-jobs-succeed.needs must be a YAML sequence (got $needs_type)"
+      continue
+      ;;
+  esac
+
+  other_jobs=$(printf '%s\n' "$all_jobs" | awk 'NF && $0 != "all-jobs-succeed"' | LC_ALL=C sort -u)
+  sorted_needs=$(printf '%s\n' "$needs_jobs" | awk 'NF' | LC_ALL=C sort -u)
+
+  missing=$(comm -23 \
+    <(if [ -n "$other_jobs" ]; then printf '%s\n' "$other_jobs"; fi) \
+    <(if [ -n "$sorted_needs" ]; then printf '%s\n' "$sorted_needs"; fi))
+
+  if [ -n "$missing" ]; then
+    missing_jobs=$(printf '%s\n' "$missing" | tr '\n' ' ')
+    report_failure "$i: all-jobs-succeed missing dependencies on some jobs: $missing_jobs"
   fi
 done
 

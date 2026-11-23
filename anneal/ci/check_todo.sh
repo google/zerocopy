@@ -9,6 +9,23 @@
 # those terms.
 
 set -euo pipefail
+
+# Resolve explicit relative path arguments against the caller's working
+# directory before switching to the `anneal/` root.
+caller_pwd=$(pwd -P)
+resolved_paths=()
+for arg in "$@"; do
+  if [ -z "$arg" ]; then
+    echo "Error: path argument must not be empty" >&2
+    exit 1
+  fi
+  if [[ "$arg" == /* ]]; then
+    resolved_paths+=("$arg")
+  else
+    resolved_paths+=("$caller_pwd/$arg")
+  fi
+done
+
 cd "$(dirname "$0")/.."
 
 # This allows us to leave XODO comments in this file and have them still be
@@ -24,61 +41,138 @@ rg --version >/dev/null
 # -H: Print filename (default for multiple files/recursive)
 # -n: Print line number
 # -w: Match whole words
-# Match TODO, TODO-check-disable, and TODO-check-enable
+# Match the keyword and its check-disable / check-enable directives.
 PATTERN="$KEYWORD|$KEYWORD-check-disable|$KEYWORD-check-enable"
+
+# Run a search command (`rg` or `git grep`) whose exit status is:
+#   0: matches found
+#   1: no matches found (allowed)
+#   >=2: operational error (fail closed)
+run_search_allow_nomatch() {
+  local rc=0
+  "$@" || rc=$?
+  if [ "$rc" -ne 0 ] && [ "$rc" -ne 1 ]; then
+    return "$rc"
+  fi
+  return 0
+}
 
 # Discover all commits relative to `main` (falling back to `HEAD` when on `main`
 # itself). Do not pass `--no-merges`: on a GitHub `pull_request` checkout,
 # `HEAD` is a synthetic merge of `main` (`HEAD^1`) and the PR tip (`HEAD^2`), so
 # `origin/main..HEAD` traverses `HEAD^2` and audits every commit in the PR
 # (including authored merge commits) as well as the merged tree at `HEAD`.
-base_ref=""
-if git rev-parse --verify --quiet origin/main >/dev/null 2>&1; then
-  base_ref="origin/main"
-elif git rev-parse --verify --quiet main >/dev/null 2>&1; then
-  base_ref="main"
+in_git_repo=0
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  in_git_repo=1
 fi
 
 commits=""
-if [ -n "$base_ref" ]; then
-  commits=$(git rev-list "${base_ref}..HEAD" 2>/dev/null || true)
+if [ "$in_git_repo" -eq 1 ]; then
+  base_ref=""
+  if git rev-parse --verify --quiet origin/main >/dev/null 2>&1; then
+    base_ref="origin/main"
+  elif git rev-parse --verify --quiet main >/dev/null 2>&1; then
+    base_ref="main"
+  fi
+
+  if [ -n "$base_ref" ]; then
+    commits=$(git rev-list "${base_ref}..HEAD")
+  fi
+  if [ -z "$commits" ] && git rev-parse --verify --quiet HEAD >/dev/null 2>&1; then
+    commits=$(git rev-list -n 1 HEAD)
+  fi
 fi
-if [ -z "$commits" ]; then
-  commits=$(git rev-list -n 1 HEAD 2>/dev/null || true)
+
+exit_code=0
+
+report_marker() {
+  local line="$1"
+  if [ "$exit_code" -eq 0 ]; then
+    echo "Found $KEYWORD markers in the codebase." >&2
+    echo "$KEYWORD is used for tasks that should be done before merging a PR; if you want to leave a message in the codebase, use FIXME." >&2
+    echo "If you need to allow a $KEYWORD in source or docs, wrap it in $KEYWORD-check-disable and $KEYWORD-check-enable (commit messages may not use disable directives)." >&2
+    echo "" >&2
+    exit_code=1
+  fi
+  echo "$line" >&2
+}
+
+# Audit commit messages separately from source/doc files so check-disable
+# directives in commit messages can never suppress task markers.
+for commit in $commits; do
+  short_commit=$(git rev-parse --short=12 "$commit")
+  commit_msg=$(git log -1 --pretty=%B "$commit")
+  msg_matches=$(run_search_allow_nomatch rg -n -w "$PATTERN" <<< "$commit_msg")
+  if [ -n "$msg_matches" ]; then
+    while IFS= read -r m; do
+      [ -z "$m" ] && continue
+      report_marker "COMMIT_MESSAGE(${short_commit}):${m}"
+    done <<< "$msg_matches"
+  fi
+done
+
+worktree_dirty=0
+if [ "$in_git_repo" -eq 1 ]; then
+  status_out=$(git status --porcelain)
+  if [ -n "$status_out" ]; then
+    worktree_dirty=1
+  fi
 fi
 
 # Vendored dependencies have their own task-marker norms; enforce this only on
-# code we maintain.
-output=$({
-  if [ "$#" -gt 0 ] || [ -z "$commits" ] || [ -n "$(git status --porcelain 2>/dev/null || true)" ]; then
-    rg -H -n -w --glob '!**/vendor/**' "$PATTERN" "$@" || true
+# code we maintain. Run each search at top level rather than inside a compound
+# `$(...)` subshell so `set -e` never drops an intermediate non-zero exit code.
+output=""
+append_output() {
+  local chunk="$1"
+  if [ -n "$chunk" ]; then
+    if [ -n "$output" ]; then
+      output+=$'\n'"$chunk"
+    else
+      output="$chunk"
+    fi
   fi
+}
 
-  for commit in $commits; do
-    short_commit=$(git rev-parse --short=12 "$commit")
-    git log -1 --pretty=%B "$commit" 2>/dev/null \
-      | rg -n -w "$PATTERN" \
-      | sed "s/^/COMMIT_MESSAGE(${short_commit}):/" || true
-    git grep -I -n -w -E "$PATTERN" "$short_commit" -- "$@" ':!**/vendor/**' 2>/dev/null \
-      | sed "s/^${short_commit}:/${short_commit}@/" || true
-  done
-})
+if [ "${#resolved_paths[@]}" -gt 0 ]; then
+  wt_matches=$(run_search_allow_nomatch rg --no-heading -H -n -w --glob '!**/vendor/**' "$PATTERN" -- "${resolved_paths[@]}")
+  append_output "$wt_matches"
+elif [ -z "$commits" ] || [ "$worktree_dirty" -eq 1 ]; then
+  wt_matches=$(run_search_allow_nomatch rg --no-heading -H -n -w --glob '!**/vendor/**' "$PATTERN" -- .)
+  append_output "$wt_matches"
+fi
+
+for commit in $commits; do
+  short_commit=$(git rev-parse --short=12 "$commit")
+  if [ "${#resolved_paths[@]}" -gt 0 ]; then
+    tree_matches=$(run_search_allow_nomatch git grep -I -n -w -E "$PATTERN" "$short_commit" -- "${resolved_paths[@]}" ':!**/vendor/**')
+  else
+    tree_matches=$(run_search_allow_nomatch git grep -I -n -w -E "$PATTERN" "$short_commit" -- ':!**/vendor/**')
+  fi
+  if [ -n "$tree_matches" ]; then
+    while IFS= read -r m; do
+      [ -z "$m" ] && continue
+      append_output "${m/#"${short_commit}:"/"${short_commit}@"}"
+    done <<< "$tree_matches"
+  fi
+done
 
 if [ -z "$output" ]; then
-  exit 0
+  exit "$exit_code"
 fi
 
 # Track the disabled state for each file. Since we process lines in order for
 # each file, we can maintain state. However, rg output might interleave files if
 # not sorted, but usually it's grouped. To be safe, we sort the output by
 # filename and line number.
-sorted_output=$(echo "$output" | LC_ALL=C sort -t: -k1,1 -k2,2n)
+sorted_output=$(printf '%s\n' "$output" | LC_ALL=C sort -t: -k1,1 -k2,2n)
 
-exit_code=0
 current_file=""
 disabled=0
 
 while IFS= read -r line; do
+  [ -z "$line" ] && continue
   if [[ "$line" =~ ^([^:]+):([0-9]+):(.*)$ ]]; then
     file="${BASH_REMATCH[1]}"
     content="${BASH_REMATCH[3]}"
@@ -98,16 +192,9 @@ while IFS= read -r line; do
     disabled=0
   elif [[ "$content" == *"$KEYWORD"* ]]; then
     if [ "$disabled" -eq 0 ]; then
-      if [ "$exit_code" -eq 0 ]; then
-        echo "Found $KEYWORD markers in the codebase." >&2
-        echo "$KEYWORD is used for tasks that should be done before merging a PR; if you want to leave a message in the codebase, use FIXME." >&2
-        echo "If you need to allow a $KEYWORD, wrap it in $KEYWORD-check-disable and $KEYWORD-check-enable." >&2
-        echo "" >&2
-        exit_code=1
-      fi
-      echo "$line" >&2
+      report_marker "$line"
     fi
   fi
 done <<< "$sorted_output"
 
-exit $exit_code
+exit "$exit_code"
