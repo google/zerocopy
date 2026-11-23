@@ -101,7 +101,7 @@ theorem refLayoutDataForTy_isUnsized (ty : MirTy) :
   | bool | unit | never | char | ordering | ref _ _ | rawPtr _ _
   | unsupported => rfl
   | enum ety =>
-    dsimp only [refLayoutDataForTy, refEnumLayoutData]
+    dsimp only [refLayoutDataForTy, refAsEnumTy?, refEnumLayoutData]
     cases ety.tagRepr <;> rfl
   | tuple fs =>
     cases fs with
@@ -155,7 +155,8 @@ theorem refLayoutDataForTy_isZst_move_deinit (ty : MirTy)
               | zeroSized =>
                 have h_imm : optValToMiriImm (.enum ety)
                     (some (.enumVal ety k)) = .uninit := by
-                  dsimp only [optValToMiriImm, valToMiriImmediate]
+                  dsimp only [optValToMiriImm, valToMiriImmediate,
+                    refAsEnumTy?, refEnumVariantOfVal?]
                   rw [h_tr]
                 rw [h_imm]; rfl
               | scalar tagW tagS =>
@@ -169,7 +170,7 @@ theorem refLayoutDataForTy_isZst_move_deinit (ty : MirTy)
                           .Direct 0
                           (Array.mk (ety.discriminants.map
                             (fun _ => refInhabitedVariantLayout))) } := by
-                  dsimp only [refLayoutDataForTy, refEnumLayoutData]
+                  dsimp only [refLayoutDataForTy, refAsEnumTy?, refEnumLayoutData]
                   rw [h_tr]
                 have h_nz : (refLayoutDataForTy (.enum ety)).isZst = false := by
                   rw [h_ld]; cases tagW <;> rfl
@@ -1023,7 +1024,7 @@ private theorem readImmediate_imm_nonprim_err (ty : MirTy)
                   { st.machine with pendingMoveDeinit := false } } := by
         dsimp only [Miri.Interpreter.PlaceMachine.readImmediate,
           localMemoryLayout, refLocalLayoutForTy, refLayoutDataForTy,
-          refEnumLayoutData]
+          refAsEnumTy?, refEnumLayoutData]
         rw [h_tr]; rfl
       exact ⟨_, _, h_eq, rfl⟩
     | scalar tagW tagS =>
@@ -1035,7 +1036,7 @@ private theorem readImmediate_imm_nonprim_err (ty : MirTy)
                   { st.machine with pendingMoveDeinit := false } } := by
         dsimp only [Miri.Interpreter.PlaceMachine.readImmediate,
           localMemoryLayout, refLocalLayoutForTy, refLayoutDataForTy,
-          refEnumLayoutData]
+          refAsEnumTy?, refEnumLayoutData]
         rw [h_tr]
         cases tagW <;> rfl
       exact ⟨_, _, h_eq, rfl⟩
@@ -2701,41 +2702,49 @@ private theorem discrHooks_discriminantLayout (rp : RefProg) (c : Choice)
     (h_res : resolveTy rp.types (tyIdFor rp.types ty) = some ty) :
     (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)).discriminantLayout
         c (tyIdFor rp.types ty) st =
-      match ty with
-      | .enum ety =>
+      match refAsEnumTy? ty with
+      | some ety =>
         if refEnumAdmitted ety then
           .ok (refLocalLayoutForTy rp.types (.int ety.discrWidth ety.discrSigned)) st
         else
           .error (.unsupported "unadmitted enum in discriminantLayout") st
-      | .ordering => .ok (refLocalLayoutForTy rp.types (.int .i8 true)) st
-      | _ => .error (.unsupported "discriminant on non-enum type") st := by
+      | none => .error (.unsupported "discriminant on non-enum type") st := by
   dsimp only [Miri.Interpreter.ExecutionMachine.discriminantHooks, refExecCfg,
     Miri.Interpreter.ExecutionMachine.withValidation, refExecutionConfig,
     refDiscriminantLeaves]
   rw [h_res]
-  cases ty <;> rfl
+  rfl
 
-private theorem discrHooks_projectRead_imm_enum (rp : RefProg) (c : Choice)
-    (ety : EnumTy) (tagW : IntWidth) (tagS : Bool)
+private theorem discrHooks_discriminantLayout_enumLike (rp : RefProg)
+    (c : Choice) {ty : MirTy} {ety : EnumTy}
+    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
+    (h_el : EnumLike rp.types ty ety)
+    (h_adm : enumAdmitted ety = true) :
+    (Miri.Interpreter.ExecutionMachine.discriminantHooks
+        (refExecCfg rp)).discriminantLayout c (tyIdFor rp.types ty) st =
+      .ok (refLocalLayoutForTy rp.types
+        (.int ety.discrWidth ety.discrSigned)) st := by
+  have h_ref_adm : refEnumAdmitted ety = true := by
+    rw [refEnumAdmitted_eq]; exact h_adm
+  rw [discrHooks_discriminantLayout rp c ty st h_el.2, h_el.1]
+  dsimp only; rw [h_ref_adm]; rfl
+
+private theorem discrHooks_projectRead_imm_enumLike (rp : RefProg) (c : Choice)
+    {ty : MirTy} {ety : EnumTy} (tagW : IntWidth) (tagS : Bool)
     (imm : Miri.Interpreter.Immediate Miri.Memory.Provenance)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
-    (h_tr : ety.tagRepr = .scalar tagW tagS)
-    (h_res : resolveTy rp.types (tyIdFor rp.types (.enum ety)) = some (.enum ety)) :
+    (h_el : EnumLike rp.types ty ety)
+    (h_tr : ety.tagRepr = .scalar tagW tagS) :
     (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)).projectRead
-        c ⟨.immediate imm, refLocalLayoutForTy rp.types (.enum ety)⟩ 0 st =
+        c ⟨.immediate imm, refLocalLayoutForTy rp.types ty⟩ 0 st =
       .ok ⟨.immediate imm, refLocalLayoutForTy rp.types (.int tagW tagS)⟩ st := by
   have h_proj_field :
       Miri.Interpreter.projectField (refProjectionCx rp.types)
-          ⟨.immediate imm, refLocalLayoutForTy rp.types (.enum ety)⟩ 0 =
+          ⟨.immediate imm, refLocalLayoutForTy rp.types ty⟩ 0 =
         .ok ⟨.immediate imm, refLocalLayoutForTy rp.types (.int tagW tagS)⟩ := by
-    dsimp only [Miri.Interpreter.projectField, refProjectionCx,
-      refProjectFieldLayout, refLocalLayoutForTy, refLayoutDataForTy,
-      refEnumLayoutData, Miri.Interpreter.OpTy.offsetWithMeta,
-      Miri.Interpreter.projectionImmediateOffset,
-      bind, Bind.bind, Except.bind, pure, Pure.pure, Except.pure]
-    rw [h_res]
-    dsimp only
-    rw [h_tr]
+    dsimp only [Miri.Interpreter.projectField, refProjectionCx]
+    rw [enumLike_projectField0 h_el h_tr, enumLike_layout h_el,
+      refEnumLayoutData_scalar ety tagW tagS h_tr]
     cases tagW <;> cases tagS <;> cases imm <;> rfl
   dsimp only [Miri.Interpreter.ExecutionMachine.discriminantHooks, refExecCfg,
     Miri.Interpreter.ExecutionMachine.withValidation, refExecutionConfig,
@@ -2745,29 +2754,49 @@ private theorem discrHooks_projectRead_imm_enum (rp : RefProg) (c : Choice)
   rw [eStateM_bind_pure, h_proj_field]
   rfl
 
-/-- Shared core of `readDiscriminant` on an initialized scalar-tag immediate:
-`ty` (a fieldless enum or `core::cmp::Ordering`) is laid out as the
-scalar-tagged enum descriptor `ety`, and the discriminant hooks agree with
-`ety` on `ty`'s `TyId`. -/
-private theorem discrHooks_readDiscriminant_scalar_core (rp : RefProg)
+private theorem discrHooks_variantForDiscriminant_enumLike (rp : RefProg)
+    (c : Choice) {ty : MirTy} {ety : EnumTy} (bits : BitVec 128)
+    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
+    (h_el : EnumLike rp.types ty ety) :
+    (Miri.Interpreter.ExecutionMachine.discriminantHooks
+        (refExecCfg rp)).variantForDiscriminant c (tyIdFor rp.types ty)
+          bits st =
+      .ok (refFindDiscrVariant? bits ety.discriminants) st := by
+  dsimp only [Miri.Interpreter.ExecutionMachine.discriminantHooks,
+    refExecCfg, Miri.Interpreter.ExecutionMachine.withValidation,
+    refExecutionConfig, refDiscriminantLeaves]
+  rw [h_el.2]
+  dsimp only [Option.bind]
+  rw [h_el.1]
+
+private theorem discrHooks_discriminantValue_enumLike (rp : RefProg)
+    (c : Choice) {ty : MirTy} {ety : EnumTy} (variant disc : Nat)
+    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
+    (h_el : EnumLike rp.types ty ety)
+    (h_get_d : MirSemantics.getElem? ety.discriminants variant = some disc) :
+    (Miri.Interpreter.ExecutionMachine.discriminantHooks
+        (refExecCfg rp)).discriminantValue c (tyIdFor rp.types ty)
+          variant st =
+      .ok (some (tyIdFor rp.types (.int ety.discrWidth ety.discrSigned),
+        BitVec.ofNat 128 disc)) st := by
+  dsimp only [Miri.Interpreter.ExecutionMachine.discriminantHooks,
+    refExecCfg, Miri.Interpreter.ExecutionMachine.withValidation,
+    refExecutionConfig, refDiscriminantLeaves]
+  rw [h_el.2]
+  dsimp only [Option.bind]
+  rw [h_el.1]
+  dsimp only
+  rw [h_get_d]
+
+/-- `Discriminant.readDiscriminant` on an initialized scalar-tag immediate of an
+`EnumLike` local type (`.enum ety` or `core::cmp::Ordering`). -/
+private theorem discrHooks_readDiscriminant_scalar_ok (rp : RefProg)
     (c : Choice) (ty : MirTy) (ety : EnumTy) (tagW : IntWidth) (tagS : Bool)
     (variant disc : Nat)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
+    (h_el : EnumLike rp.types ty ety)
     (h_tr : ety.tagRepr = .scalar tagW tagS)
     (h_adm : enumAdmitted ety = true)
-    (h_lay : refLayoutDataForTy ty = refEnumLayoutData ety)
-    (h_dl : (Miri.Interpreter.ExecutionMachine.discriminantHooks
-        (refExecCfg rp)).discriminantLayout c (tyIdFor rp.types ty) st =
-      .ok (refLocalLayoutForTy rp.types
-        (.int ety.discrWidth ety.discrSigned)) st)
-    (h_pr : ∀ imm, (Miri.Interpreter.ExecutionMachine.discriminantHooks
-        (refExecCfg rp)).projectRead c
-          ⟨.immediate imm, refLocalLayoutForTy rp.types ty⟩ 0 st =
-      .ok ⟨.immediate imm, refLocalLayoutForTy rp.types (.int tagW tagS)⟩ st)
-    (h_vf : ∀ bits, (Miri.Interpreter.ExecutionMachine.discriminantHooks
-        (refExecCfg rp)).variantForDiscriminant c (tyIdFor rp.types ty)
-          bits st =
-      .ok (refFindDiscrVariant? bits ety.discriminants) st)
     (h_get_d : MirSemantics.getElem? ety.discriminants variant = some disc)
     (h_pmd : st.machine.pendingMoveDeinit = false) :
     Miri.Interpreter.Discriminant.readDiscriminant
@@ -2777,10 +2806,13 @@ private theorem discrHooks_readDiscriminant_scalar_core (rp : RefProg)
           refLocalLayoutForTy rp.types ty⟩ st =
       .ok variant st := by
   let dh := Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)
+  have h_lay : refLayoutDataForTy ty = refEnumLayoutData ety :=
+    enumLike_layoutData h_el.1
+  have h_dl := discrHooks_discriminantLayout_enumLike rp c st h_el h_adm
   have h_tl : dh.tagLayout c (.Union (value := .Int (toMiriInteger tagW) tagS)) st =
       .ok (refLocalLayoutForTy rp.types (.int (intWidthOfMiriInteger (toMiriInteger tagW)) tagS)) st := rfl
-  have h_pr' := h_pr
-    (.scalar (.fromScalarInt (miriScalar tagW (BitVec.ofNat 128 disc))))
+  have h_pr' := discrHooks_projectRead_imm_enumLike rp c tagW tagS
+    (.scalar (.fromScalarInt (miriScalar tagW (BitVec.ofNat 128 disc)))) st h_el h_tr
   have h_ri : dh.readImmediate c
       ⟨.immediate (.scalar (.fromScalarInt (miriScalar tagW (BitVec.ofNat 128 disc)))),
         refLocalLayoutForTy rp.types (.int tagW tagS)⟩ st =
@@ -2821,7 +2853,7 @@ private theorem discrHooks_readDiscriminant_scalar_core (rp : RefProg)
       h_tag_all h_get_d)
   have h_vf' : dh.variantForDiscriminant c (tyIdFor rp.types ty)
       (BitVec.ofNat 128 disc) st = .ok (some variant) st := by
-    have h := h_vf (BitVec.ofNat 128 disc)
+    have h := discrHooks_variantForDiscriminant_enumLike rp c (BitVec.ofNat 128 disc) st h_el
     rw [refFindDiscrVariant?_eq, findDiscrVariant?_of_enumAdmitted h_adm h_get_d] at h
     exact h
   dsimp only [Miri.Interpreter.Discriminant.readDiscriminant, bind, Bind.bind]
@@ -2909,22 +2941,14 @@ private theorem discrHooks_readDiscriminant_scalar_core (rp : RefProg)
     rw [eStateM_bind_pure, h_uninh_v]
     rfl
 
-/-- Shared core of `readDiscriminant` on an uninitialized immediate of a type
-`ty` laid out as the scalar-tagged enum descriptor `ety`. -/
-private theorem discrHooks_readDiscriminant_scalar_uninit_core (rp : RefProg)
+/-- `Discriminant.readDiscriminant` on an uninitialized immediate of an
+`EnumLike` scalar-tagged local type fails with `.undefinedBehavior`. -/
+private theorem discrHooks_readDiscriminant_scalar_uninit_ub (rp : RefProg)
     (c : Choice) (ty : MirTy) (ety : EnumTy) (tagW : IntWidth) (tagS : Bool)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
+    (h_el : EnumLike rp.types ty ety)
     (h_tr : ety.tagRepr = .scalar tagW tagS)
-    (h_lay : refLayoutDataForTy ty = refEnumLayoutData ety)
-    (h_dl : (Miri.Interpreter.ExecutionMachine.discriminantHooks
-        (refExecCfg rp)).discriminantLayout c (tyIdFor rp.types ty) st =
-      .ok (refLocalLayoutForTy rp.types
-        (.int ety.discrWidth ety.discrSigned)) st)
-    (h_pr : (Miri.Interpreter.ExecutionMachine.discriminantHooks
-        (refExecCfg rp)).projectRead c
-          ⟨.immediate .uninit, refLocalLayoutForTy rp.types ty⟩ 0 st =
-      .ok ⟨.immediate .uninit, refLocalLayoutForTy rp.types (.int tagW tagS)⟩
-        st)
+    (h_adm : enumAdmitted ety = true)
     (h_pmd : st.machine.pendingMoveDeinit = false) :
     ∃ msg,
       Miri.Interpreter.Discriminant.readDiscriminant
@@ -2932,6 +2956,8 @@ private theorem discrHooks_readDiscriminant_scalar_uninit_core (rp : RefProg)
           ⟨.immediate .uninit, refLocalLayoutForTy rp.types ty⟩ st =
         .error (.undefinedBehavior msg) st := by
   let dh := Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)
+  have h_dl := discrHooks_discriminantLayout_enumLike rp c st h_el h_adm
+  have h_pr := discrHooks_projectRead_imm_enumLike rp c tagW tagS .uninit st h_el h_tr
   have h_tl : dh.tagLayout c (.Union (value := .Int (toMiriInteger tagW) tagS)) st =
       .ok (refLocalLayoutForTy rp.types (.int (intWidthOfMiriInteger (toMiriInteger tagW)) tagS)) st := rfl
   let ⟨msg, h_ri⟩ := readImmediate_imm_int_uninit tagW tagS rp.types st h_pmd
@@ -2941,8 +2967,7 @@ private theorem discrHooks_readDiscriminant_scalar_uninit_core (rp : RefProg)
   have h_vars : (refLocalLayoutForTy rp.types ty).layout.variants =
       .Multiple (.Union (value := .Int (toMiriInteger tagW) tagS)) .Direct 0
         (ety.discriminants.map (fun _ => refInhabitedVariantLayout)).toArray := by
-    dsimp only [refLocalLayoutForTy]
-    rw [h_lay]
+    rw [enumLike_layout h_el]
     dsimp only [refEnumLayoutData]
     rw [h_tr]
   refine ⟨msg, ?_⟩
@@ -2957,22 +2982,13 @@ private theorem discrHooks_readDiscriminant_scalar_uninit_core (rp : RefProg)
   change (EStateM.bind (dh.readImmediate c _) _ st) = _
   rw [eStateM_bind_err h_ri']
 
-/-- Shared core of `discriminantForVariant` for a type `ty` whose discriminant
-hooks return the admitted enum descriptor `ety`'s discriminant `disc` for
-`variant`. -/
-private theorem discrHooks_discriminantForVariant_core (rp : RefProg)
+/-- `Discriminant.discriminantForVariant` for an `EnumLike` local type whose
+admitted descriptor `ety` maps `variant` to `disc`. -/
+private theorem discrHooks_discriminantForVariant_ok (rp : RefProg)
     (c : Choice) (ty : MirTy) (ety : EnumTy) (variant disc : Nat)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
+    (h_el : EnumLike rp.types ty ety)
     (h_adm : enumAdmitted ety = true)
-    (h_dl : (Miri.Interpreter.ExecutionMachine.discriminantHooks
-        (refExecCfg rp)).discriminantLayout c (tyIdFor rp.types ty) st =
-      .ok (refLocalLayoutForTy rp.types
-        (.int ety.discrWidth ety.discrSigned)) st)
-    (h_dv : (Miri.Interpreter.ExecutionMachine.discriminantHooks
-        (refExecCfg rp)).discriminantValue c (tyIdFor rp.types ty) variant
-          st =
-      .ok (some (tyIdFor rp.types (.int ety.discrWidth ety.discrSigned),
-        BitVec.ofNat 128 disc)) st)
     (h_get_d : MirSemantics.getElem? ety.discriminants variant = some disc) :
     Miri.Interpreter.Discriminant.discriminantForVariant
         (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)) c
@@ -2980,6 +2996,8 @@ private theorem discrHooks_discriminantForVariant_core (rp : RefProg)
       .ok ⟨.scalar (.fromScalarInt (miriScalar ety.discrWidth (BitVec.ofNat 128 disc))),
         refLocalLayoutForTy rp.types (.int ety.discrWidth ety.discrSigned)⟩ st := by
   let dh := Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)
+  have h_dl := discrHooks_discriminantLayout_enumLike rp c st h_el h_adm
+  have h_dv := discrHooks_discriminantValue_enumLike rp c variant disc st h_el h_get_d
   let ⟨h_all, _, _⟩ := enumAdmitted_parts h_adm
   have hd_blt : Nat.blt disc (Nat.pow 2 ety.discrWidth.bitWidth) = true :=
     list_all_mirGetElem? (p := fun d => Nat.blt d (Nat.pow 2 ety.discrWidth.bitWidth))
@@ -3017,237 +3035,6 @@ private theorem discrHooks_discriminantForVariant_core (rp : RefProg)
   simp only [h_ne_ty, Bool.false_eq_true, ite_false]
   rw [eStateM_bind_pure, h_dl_sz, h_from_uint]
   rfl
-
-private theorem discrHooks_discriminantLayout_enum (rp : RefProg) (c : Choice)
-    (ety : EnumTy) (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
-    (h_adm : enumAdmitted ety = true)
-    (h_res : resolveTy rp.types (tyIdFor rp.types (.enum ety)) = some (.enum ety)) :
-    (Miri.Interpreter.ExecutionMachine.discriminantHooks
-        (refExecCfg rp)).discriminantLayout c (tyIdFor rp.types (.enum ety)) st =
-      .ok (refLocalLayoutForTy rp.types
-        (.int ety.discrWidth ety.discrSigned)) st := by
-  have h_ref_adm : refEnumAdmitted ety = true := by
-    rw [refEnumAdmitted_eq]; exact h_adm
-  rw [discrHooks_discriminantLayout rp c (.enum ety) st h_res]
-  dsimp only; rw [h_ref_adm]; rfl
-
-private theorem discrHooks_variantForDiscriminant_enum (rp : RefProg)
-    (c : Choice) (ety : EnumTy) (bits : BitVec 128)
-    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
-    (h_res : resolveTy rp.types (tyIdFor rp.types (.enum ety)) = some (.enum ety)) :
-    (Miri.Interpreter.ExecutionMachine.discriminantHooks
-        (refExecCfg rp)).variantForDiscriminant c (tyIdFor rp.types (.enum ety))
-          bits st =
-      .ok (refFindDiscrVariant? bits ety.discriminants) st := by
-  dsimp only [Miri.Interpreter.ExecutionMachine.discriminantHooks,
-    refExecCfg, Miri.Interpreter.ExecutionMachine.withValidation,
-    refExecutionConfig, refDiscriminantLeaves]
-  rw [h_res]
-
-private theorem discrHooks_readDiscriminant_scalar_ok (rp : RefProg) (c : Choice)
-    (ety : EnumTy) (tagW : IntWidth) (tagS : Bool) (variant disc : Nat)
-    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
-    (h_tr : ety.tagRepr = .scalar tagW tagS)
-    (h_adm : enumAdmitted ety = true)
-    (h_res : resolveTy rp.types (tyIdFor rp.types (.enum ety)) = some (.enum ety))
-    (h_get_d : MirSemantics.getElem? ety.discriminants variant = some disc)
-    (h_pmd : st.machine.pendingMoveDeinit = false) :
-    Miri.Interpreter.Discriminant.readDiscriminant
-        (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)) c
-        ⟨.immediate (.scalar (.fromScalarInt (miriScalar tagW (BitVec.ofNat 128 disc)))),
-          refLocalLayoutForTy rp.types (.enum ety)⟩ st =
-      .ok variant st :=
-  discrHooks_readDiscriminant_scalar_core rp c (.enum ety) ety tagW tagS
-    variant disc st h_tr h_adm rfl
-    (discrHooks_discriminantLayout_enum rp c ety st h_adm h_res)
-    (fun imm =>
-      discrHooks_projectRead_imm_enum rp c ety tagW tagS imm st h_tr h_res)
-    (fun bits => discrHooks_variantForDiscriminant_enum rp c ety bits st h_res)
-    h_get_d h_pmd
-
-private theorem discrHooks_readDiscriminant_scalar_uninit_ub (rp : RefProg) (c : Choice)
-    (ety : EnumTy) (tagW : IntWidth) (tagS : Bool)
-    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
-    (h_tr : ety.tagRepr = .scalar tagW tagS)
-    (h_adm : enumAdmitted ety = true)
-    (h_res : resolveTy rp.types (tyIdFor rp.types (.enum ety)) = some (.enum ety))
-    (h_pmd : st.machine.pendingMoveDeinit = false) :
-    ∃ msg,
-      Miri.Interpreter.Discriminant.readDiscriminant
-          (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)) c
-          ⟨.immediate .uninit, refLocalLayoutForTy rp.types (.enum ety)⟩ st =
-        .error (.undefinedBehavior msg) st :=
-  discrHooks_readDiscriminant_scalar_uninit_core rp c (.enum ety) ety tagW tagS
-    st h_tr rfl
-    (discrHooks_discriminantLayout_enum rp c ety st h_adm h_res)
-    (discrHooks_projectRead_imm_enum rp c ety tagW tagS .uninit st h_tr h_res)
-    h_pmd
-
-private theorem discrHooks_discriminantForVariant_ok (rp : RefProg) (c : Choice)
-    (ety : EnumTy) (variant disc : Nat)
-    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
-    (h_adm : enumAdmitted ety = true)
-    (h_res : resolveTy rp.types (tyIdFor rp.types (.enum ety)) = some (.enum ety))
-    (h_get_d : MirSemantics.getElem? ety.discriminants variant = some disc) :
-    Miri.Interpreter.Discriminant.discriminantForVariant
-        (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)) c
-        (tyIdFor rp.types (.enum ety)) variant st =
-      .ok ⟨.scalar (.fromScalarInt (miriScalar ety.discrWidth (BitVec.ofNat 128 disc))),
-        refLocalLayoutForTy rp.types (.int ety.discrWidth ety.discrSigned)⟩ st := by
-  have h_dv : (Miri.Interpreter.ExecutionMachine.discriminantHooks
-      (refExecCfg rp)).discriminantValue c (tyIdFor rp.types (.enum ety))
-        variant st =
-      .ok (some (tyIdFor rp.types (.int ety.discrWidth ety.discrSigned),
-        BitVec.ofNat 128 disc)) st := by
-    dsimp only [Miri.Interpreter.ExecutionMachine.discriminantHooks,
-      refExecCfg, Miri.Interpreter.ExecutionMachine.withValidation,
-      refExecutionConfig, refDiscriminantLeaves]
-    rw [h_res]
-    dsimp only
-    rw [h_get_d]
-  exact discrHooks_discriminantForVariant_core rp c (.enum ety) ety variant disc
-    st h_adm (discrHooks_discriminantLayout_enum rp c ety st h_adm h_res) h_dv
-    h_get_d
-
-/-! ### `core::cmp::Ordering` discriminants
-
-$M_{\text{ref}}$ lays out `MirTy.ordering` as `refEnumLayoutData
-refOrderingEnumTy`, and the `.ordering` arms of the discriminant hooks mirror
-the enum arms on `refOrderingEnumTy`, so these lemmas instantiate the
-scalar-tag cores above with `ety := refOrderingEnumTy`. -/
-
-/-- Variant index of a `core::cmp::Ordering` value in `refOrderingEnumTy`. -/
-noncomputable def orderingVariantIdx : OrderingVal → Nat
-  | .less => 0
-  | .equal => 1
-  | .greater => 2
-
-theorem valToMiriImmediate_ordering (ord : OrderingVal) :
-    valToMiriImmediate .ordering (.ordering ord) =
-      .scalar (.fromScalarInt
-        (miriScalar .i8 (BitVec.ofNat 128 (orderingTagBits ord)))) := by
-  cases ord <;> rfl
-
-private theorem refOrderingEnumTy_admitted :
-    enumAdmitted refOrderingEnumTy = true := rfl
-
-private theorem refOrderingEnumTy_getElem? (ord : OrderingVal) :
-    MirSemantics.getElem? refOrderingEnumTy.discriminants
-        (orderingVariantIdx ord) = some (orderingTagBits ord) := by
-  cases ord <;> rfl
-
-private theorem discrHooks_discriminantLayout_ordering (rp : RefProg)
-    (c : Choice) (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
-    (h_res : resolveTy rp.types (tyIdFor rp.types .ordering) = some .ordering) :
-    (Miri.Interpreter.ExecutionMachine.discriminantHooks
-        (refExecCfg rp)).discriminantLayout c (tyIdFor rp.types .ordering) st =
-      .ok (refLocalLayoutForTy rp.types
-        (.int refOrderingEnumTy.discrWidth refOrderingEnumTy.discrSigned)) st := by
-  rw [discrHooks_discriminantLayout rp c .ordering st h_res]
-  rfl
-
-private theorem discrHooks_projectRead_imm_ordering (rp : RefProg) (c : Choice)
-    (imm : Miri.Interpreter.Immediate Miri.Memory.Provenance)
-    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
-    (h_res : resolveTy rp.types (tyIdFor rp.types .ordering) = some .ordering) :
-    (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)).projectRead
-        c ⟨.immediate imm, refLocalLayoutForTy rp.types .ordering⟩ 0 st =
-      .ok ⟨.immediate imm, refLocalLayoutForTy rp.types (.int .i8 true)⟩ st := by
-  have h_proj_field :
-      Miri.Interpreter.projectField (refProjectionCx rp.types)
-          ⟨.immediate imm, refLocalLayoutForTy rp.types .ordering⟩ 0 =
-        .ok ⟨.immediate imm, refLocalLayoutForTy rp.types (.int .i8 true)⟩ := by
-    dsimp only [Miri.Interpreter.projectField, refProjectionCx,
-      refProjectFieldLayout, refLocalLayoutForTy, refLayoutDataForTy,
-      refEnumLayoutData, Miri.Interpreter.OpTy.offsetWithMeta,
-      Miri.Interpreter.projectionImmediateOffset,
-      bind, Bind.bind, Except.bind, pure, Pure.pure, Except.pure]
-    rw [h_res]
-    cases imm <;> rfl
-  dsimp only [Miri.Interpreter.ExecutionMachine.discriminantHooks, refExecCfg,
-    Miri.Interpreter.ExecutionMachine.withValidation, refExecutionConfig,
-    Miri.Interpreter.ExecutionMachine.operandHooks,
-    Miri.Interpreter.OperandMachine.field, bind, Bind.bind]
-  change (EStateM.bind (EStateM.pure (refProjectionCx rp.types)) _ st) = _
-  rw [eStateM_bind_pure, h_proj_field]
-  rfl
-
-private theorem discrHooks_variantForDiscriminant_ordering (rp : RefProg)
-    (c : Choice) (bits : BitVec 128)
-    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
-    (h_res : resolveTy rp.types (tyIdFor rp.types .ordering) = some .ordering) :
-    (Miri.Interpreter.ExecutionMachine.discriminantHooks
-        (refExecCfg rp)).variantForDiscriminant c (tyIdFor rp.types .ordering)
-          bits st =
-      .ok (refFindDiscrVariant? bits refOrderingEnumTy.discriminants) st := by
-  dsimp only [Miri.Interpreter.ExecutionMachine.discriminantHooks,
-    refExecCfg, Miri.Interpreter.ExecutionMachine.withValidation,
-    refExecutionConfig, refDiscriminantLeaves]
-  rw [h_res]
-
-private theorem discrHooks_readDiscriminant_ordering_ok (rp : RefProg) (c : Choice)
-    (ord : OrderingVal) (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
-    (h_res : resolveTy rp.types (tyIdFor rp.types .ordering) = some .ordering)
-    (h_pmd : st.machine.pendingMoveDeinit = false) :
-    Miri.Interpreter.Discriminant.readDiscriminant
-        (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)) c
-        ⟨.immediate (valToMiriImmediate .ordering (.ordering ord)),
-          refLocalLayoutForTy rp.types .ordering⟩ st =
-      .ok (orderingVariantIdx ord) st := by
-  rw [valToMiriImmediate_ordering]
-  exact discrHooks_readDiscriminant_scalar_core rp c .ordering
-    refOrderingEnumTy .i8 true (orderingVariantIdx ord) (orderingTagBits ord)
-    st rfl refOrderingEnumTy_admitted rfl
-    (discrHooks_discriminantLayout_ordering rp c st h_res)
-    (fun imm => discrHooks_projectRead_imm_ordering rp c imm st h_res)
-    (fun bits => discrHooks_variantForDiscriminant_ordering rp c bits st h_res)
-    (refOrderingEnumTy_getElem? ord) h_pmd
-
-private theorem discrHooks_readDiscriminant_ordering_uninit_ub (rp : RefProg)
-    (c : Choice) (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
-    (h_res : resolveTy rp.types (tyIdFor rp.types .ordering) = some .ordering)
-    (h_pmd : st.machine.pendingMoveDeinit = false) :
-    ∃ msg,
-      Miri.Interpreter.Discriminant.readDiscriminant
-          (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)) c
-          ⟨.immediate .uninit, refLocalLayoutForTy rp.types .ordering⟩ st =
-        .error (.undefinedBehavior msg) st :=
-  discrHooks_readDiscriminant_scalar_uninit_core rp c .ordering
-    refOrderingEnumTy .i8 true st rfl rfl
-    (discrHooks_discriminantLayout_ordering rp c st h_res)
-    (discrHooks_projectRead_imm_ordering rp c .uninit st h_res) h_pmd
-
-private theorem discrHooks_discriminantForVariant_ordering_ok (rp : RefProg)
-    (c : Choice) (ord : OrderingVal)
-    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
-    (h_res : resolveTy rp.types (tyIdFor rp.types .ordering) = some .ordering) :
-    Miri.Interpreter.Discriminant.discriminantForVariant
-        (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)) c
-        (tyIdFor rp.types .ordering) (orderingVariantIdx ord) st =
-      .ok ⟨.scalar (.fromScalarInt
-          (miriScalar .i8 (BitVec.ofNat 128 (orderingTagBits ord)))),
-        refLocalLayoutForTy rp.types (.int .i8 true)⟩ st := by
-  have h_dv : (Miri.Interpreter.ExecutionMachine.discriminantHooks
-      (refExecCfg rp)).discriminantValue c (tyIdFor rp.types .ordering)
-        (orderingVariantIdx ord) st =
-      .ok (some (tyIdFor rp.types
-          (.int refOrderingEnumTy.discrWidth refOrderingEnumTy.discrSigned),
-        BitVec.ofNat 128 (orderingTagBits ord))) st := by
-    dsimp only [Miri.Interpreter.ExecutionMachine.discriminantHooks,
-      refExecCfg, Miri.Interpreter.ExecutionMachine.withValidation,
-      refExecutionConfig, refDiscriminantLeaves]
-    rw [h_res]
-    cases ord <;> rfl
-  exact discrHooks_discriminantForVariant_core rp c .ordering refOrderingEnumTy
-    (orderingVariantIdx ord) (orderingTagBits ord) st refOrderingEnumTy_admitted
-    (discrHooks_discriminantLayout_ordering rp c st h_res) h_dv
-    (refOrderingEnumTy_getElem? ord)
-
-/-- The M_anneal discriminant is well-typed. -/
-theorem checkVal_orderingDiscr (ord : OrderingVal) :
-    checkVal (.scalar ⟨.i8, true, BitVec.ofNat 128 (orderingTagBits ord)⟩)
-      (.int .i8 true) = true := by
-  cases ord <;> rfl
 
 /-! ## Section 6: `PlaceDynamic.evalPlace`, Writes, and `evalRvalueIntoPlace` -/
 
@@ -4759,22 +4546,15 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
     (h_pl : decodePlace rp.types rdst = some dst)
     (h_rv : decodeRvalue rp.types rrv = some rv)
     (h_discr_ty :
-      ∀ (src : Place) (ety : EnumTy) (dstTy : MirTy),
+      ∀ (src : Place) (srcTy : MirTy) (ety : EnumTy) (dstTy : MirTy),
         rv = .discriminant src →
         dst.projection.isEmpty = true →
         src.projection.isEmpty = true →
-        MirSemantics.getElem? body.locals src.localId = some (.enum ety) →
+        MirSemantics.getElem? body.locals src.localId = some srcTy →
+        refAsEnumTy? srcTy = some ety →
         MirSemantics.getElem? body.locals dst.localId = some dstTy →
         enumAdmitted ety = true →
         dstTy = .int ety.discrWidth ety.discrSigned)
-    (h_ord_discr_ty :
-      ∀ (src : Place) (dstTy : MirTy),
-        rv = .discriminant src →
-        dst.projection.isEmpty = true →
-        src.projection.isEmpty = true →
-        MirSemantics.getElem? body.locals src.localId = some .ordering →
-        MirSemantics.getElem? body.locals dst.localId = some dstTy →
-        dstTy = .int .i8 true)
     (h_cast_ty :
       ∀ (opnd : Operand) (castTy dstTy : MirTy),
         rv = .cast .intToInt opnd castTy →
@@ -5355,7 +5135,7 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                   have h_src_res := h_loc_res src.localId srcTy h_sty
                   have h_dl_non_enum :
                       ∀ (t : MirTy),
-                        (match t with | .enum _ | .ordering => False | _ => True) →
+                        refAsEnumTy? t = none →
                         resolveTy rp.types (tyIdFor rp.types t) = some t →
                         Miri.Interpreter.Discriminant.readDiscriminant
                           (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)) c
@@ -5368,61 +5148,159 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                       ((Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)).discriminantLayout
                         c (tyIdFor rp.types t)) _ st) = _
                     dsimp only [EStateM.bind]
-                    rw [discrHooks_discriminantLayout rp c t st h_tr]
-                    cases t with
-                    | enum _ => exact False.elim h_ne
-                    | ordering => exact False.elim h_ne
-                    | _ => rfl
+                    rw [discrHooks_discriminantLayout rp c t st h_tr, h_ne]
+                  have h_finish_discr :
+                      ∀ (rhs : Except FaultKind (List LocalSlot × MemoryState))
+                        {t : MirTy} {ety : EnumTy} {opt : Option Val}
+                        {v disc : Nat},
+                        EnumLike rp.types t ety →
+                        enumAdmitted ety = true →
+                        dstTy = .int ety.discrWidth ety.discrSigned →
+                        MirSemantics.getElem? ety.discriminants v = some disc →
+                        Miri.Interpreter.Discriminant.readDiscriminant
+                          (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)) c
+                          ⟨.immediate (optValToMiriImm t opt),
+                            refLocalLayoutForTy rp.types t⟩ st = .ok v st →
+                        (truncateBits ety.discrWidth (BitVec.ofNat 128 disc) =
+                          BitVec.ofNat 128 disc →
+                          rhs = writePlace slots amem dst.localId dstTy
+                            (.scalar ⟨ety.discrWidth, ety.discrSigned,
+                              BitVec.ofNat 128 disc⟩)) →
+                        match rhs with
+                        | .error k =>
+                          ∃ err st',
+                            EStateM.bind
+                              (Miri.Interpreter.Discriminant.readDiscriminant
+                                (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)) c
+                                ⟨.immediate (optValToMiriImm t opt),
+                                  refLocalLayoutForTy rp.types t⟩)
+                              (fun variant =>
+                                EStateM.bind
+                                  (Miri.Interpreter.Discriminant.discriminantForVariant
+                                    (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp))
+                                    c (tyIdFor rp.types t) variant)
+                                  (fun discr =>
+                                    Miri.Interpreter.writePlaceImmediate
+                                      (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp)).place
+                                      c discr.imm
+                                      ⟨.local 0 dst.localId none (LocalsIdentity.ofAllocationToken 0),
+                                        refLocalLayoutForTy rp.types dstTy⟩)) st =
+                              .error err st' ∧ stepErrorFaultKind err = k
+                        | .ok (slots', _) =>
+                          EStateM.bind
+                            (Miri.Interpreter.Discriminant.readDiscriminant
+                              (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)) c
+                              ⟨.immediate (optValToMiriImm t opt),
+                                refLocalLayoutForTy rp.types t⟩)
+                            (fun variant =>
+                              EStateM.bind
+                                (Miri.Interpreter.Discriminant.discriminantForVariant
+                                  (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp))
+                                  c (tyIdFor rp.types t) variant)
+                                (fun discr =>
+                                  Miri.Interpreter.writePlaceImmediate
+                                    (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp)).place
+                                    c discr.imm
+                                    ⟨.local 0 dst.localId none (LocalsIdentity.ofAllocationToken 0),
+                                      refLocalLayoutForTy rp.types dstTy⟩)) st =
+                            .ok () (mkSimState rp defId rbody blockIdx stmtIdx
+                              body.locals slots' retPlace mem ctrl cm) := by
+                    intro rhs t ety opt v disc h_el h_adm h_dst_eq h_dv h_rd h_rhs_fn
+                    subst h_dst_eq
+                    let ⟨h_all, _, _⟩ := enumAdmitted_parts h_adm
+                    have hd_blt : Nat.blt disc (Nat.pow 2 ety.discrWidth.bitWidth) = true :=
+                      list_all_mirGetElem?
+                        (p := fun d => Nat.blt d (Nat.pow 2 ety.discrWidth.bitWidth))
+                        h_all h_dv
+                    have hd_mod : disc < Nat.pow 2 ety.discrWidth.bitWidth :=
+                      Nat.blt_eq.mp hd_blt
+                    have hd_u128 : disc < Nat.pow 2 128 :=
+                      Nat.lt_of_lt_of_le hd_mod (intWidth_pow_le_128 ety.discrWidth)
+                    have h_trunc_eq :
+                        truncateBits ety.discrWidth (BitVec.ofNat 128 disc) =
+                          BitVec.ofNat 128 disc := by
+                      apply BitVec.eq_of_toNat_eq
+                      rw [toNat_truncateBits, BitVec.toNat_ofNat,
+                        Nat.mod_eq_of_lt hd_u128]
+                      exact Nat.mod_eq_of_lt hd_mod
+                    have h_rhs := h_rhs_fn h_trunc_eq
+                    subst h_rhs
+                    have h_dfv := discrHooks_discriminantForVariant_ok rp c t ety
+                      v disc st h_el h_adm h_dv
+                    rw [eStateM_bind_ok h_rd]
+                    change (match (_ : Except FaultKind (List LocalSlot × MemoryState)) with
+                      | Except.error k =>
+                        ∃ err st',
+                          EStateM.bind
+                            (Miri.Interpreter.Discriminant.discriminantForVariant _ c
+                              (tyIdFor rp.types t) v) _ st =
+                            EStateM.Result.error err st' ∧ _
+                      | Except.ok (slots', _) =>
+                        EStateM.bind
+                          (Miri.Interpreter.Discriminant.discriminantForVariant _ c
+                            (tyIdFor rp.types t) v) _ st = _)
+                    rw [eStateM_bind_ok h_dfv]
+                    have h_cv_d :
+                        checkVal (.scalar ⟨ety.discrWidth, ety.discrSigned,
+                          BitVec.ofNat 128 disc⟩)
+                          (.int ety.discrWidth ety.discrSigned) = true :=
+                      checkVal_scalar_of_trunc ety.discrWidth ety.discrSigned _
+                        h_trunc_eq
+                    have h_aw := assertAndWrite_local_eq rp c defId rbody blockIdx
+                      stmtIdx body.locals slots amem retPlace mem ctrl cm dst.localId
+                      (.int ety.discrWidth ety.discrSigned)
+                      (.int ety.discrWidth ety.discrSigned)
+                      (.scalar ⟨ety.discrWidth, ety.discrSigned, BitVec.ofNat 128 disc⟩)
+                      dstSlot h_dty h_dsl h_dst_res h_inv h_cv_d
+                    dsimp only at h_aw
+                    rw [beq_self_eq_true, ite_true_eq] at h_aw
+                    exact h_aw
                   cases srcTy with
                   | bool | int _ _ | unit | never | char | tuple _ | ref _ _
                   | rawPtr _ _ | unsupported =>
-                    rw [eStateM_bind_err (h_dl_non_enum _ trivial h_src_res)]
+                    rw [eStateM_bind_err (h_dl_non_enum _ rfl h_src_res)]
                     exact ⟨_, _, rfl, rfl⟩
                   | ordering =>
+                    have h_el : EnumLike rp.types .ordering refOrderingEnumTy :=
+                      ⟨rfl, h_src_res⟩
                     have h_dst_eq : dstTy = .int .i8 true :=
-                      h_ord_discr_ty src dstTy rfl h_dpe h_spe h_sty h_dty
-                    subst h_dst_eq
+                      h_discr_ty src .ordering refOrderingEnumTy dstTy rfl h_dpe
+                        h_spe h_sty rfl h_dty mem_refOrderingEnumTy_admitted
                     have h_smS := SlotsMatchTys.getElem? h_inv h_sty h_ssl
                     dsimp only [evalOrderingDiscriminantOfVal]
                     cases srcOpt with
                     | none =>
                       dsimp only [optValToMiriImm]
-                      let ⟨_, h_ub⟩ := discrHooks_readDiscriminant_ordering_uninit_ub
-                        rp c st h_src_res rfl
+                      let ⟨_, h_ub⟩ := discrHooks_readDiscriminant_scalar_uninit_ub
+                        rp c .ordering refOrderingEnumTy .i8 true st h_el rfl
+                        mem_refOrderingEnumTy_admitted rfl
                       rw [eStateM_bind_err h_ub]
                       exact ⟨_, _, rfl, rfl⟩
                     | some sv =>
                       let ⟨ord, h_sv_eq⟩ := checkVal_ordering_inv h_smS
                       subst h_sv_eq
-                      have h_rd := discrHooks_readDiscriminant_ordering_ok rp c ord
-                        st h_src_res rfl
-                      have h_dfv := discrHooks_discriminantForVariant_ordering_ok rp
-                        c ord st h_src_res
-                      dsimp only [optValToMiriImm]
-                      rw [eStateM_bind_ok h_rd]
-                      change (match
-                          (_ : Except FaultKind (List LocalSlot × MemoryState)) with
-                        | Except.error k =>
-                          ∃ err st',
-                            EStateM.bind
-                              (Miri.Interpreter.Discriminant.discriminantForVariant
-                                _ c (tyIdFor rp.types .ordering)
-                                (orderingVariantIdx ord)) _ st =
-                              EStateM.Result.error err st' ∧ _
-                        | Except.ok (slots', _) =>
-                          EStateM.bind
-                            (Miri.Interpreter.Discriminant.discriminantForVariant
-                              _ c (tyIdFor rp.types .ordering)
-                              (orderingVariantIdx ord)) _ st = _)
-                      rw [eStateM_bind_ok h_dfv]
-                      have h_aw := assertAndWrite_local_eq rp c defId rbody blockIdx
-                        stmtIdx body.locals slots amem retPlace mem ctrl cm dst.localId
-                        (.int .i8 true) (.int .i8 true)
-                        (.scalar ⟨.i8, true, BitVec.ofNat 128 (orderingTagBits ord)⟩)
-                        dstSlot h_dty h_dsl h_dst_res h_inv (checkVal_orderingDiscr ord)
-                      dsimp only at h_aw
-                      rw [beq_self_eq_true, ite_true_eq] at h_aw
-                      exact h_aw
+                      have h_imm_eq :
+                          optValToMiriImm .ordering (some (.ordering ord)) =
+                            .scalar (.fromScalarInt
+                              (miriScalar .i8 (BitVec.ofNat 128 (orderingTagBits ord)))) :=
+                        valToMiriImmediate_scalar_enumLike rfl
+                          (orderingVariant_enumVariantOfVal ord) rfl
+                          (orderingVariant_getElem? ord)
+                      have h_rd :
+                          Miri.Interpreter.Discriminant.readDiscriminant
+                            (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)) c
+                            ⟨.immediate (optValToMiriImm .ordering (some (.ordering ord))),
+                              refLocalLayoutForTy rp.types .ordering⟩ st =
+                            .ok (orderingVariantIdx ord) st := by
+                        rw [h_imm_eq]
+                        exact discrHooks_readDiscriminant_scalar_ok rp c .ordering
+                          refOrderingEnumTy .i8 true (orderingVariantIdx ord)
+                          (orderingTagBits ord) st h_el rfl
+                          mem_refOrderingEnumTy_admitted
+                          (orderingVariant_getElem? ord) rfl
+                      exact h_finish_discr _ h_el mem_refOrderingEnumTy_admitted
+                        h_dst_eq (orderingVariant_getElem? ord) h_rd
+                        (fun _ => rfl)
                   | enum ety =>
                     dsimp only [evalDiscriminantOfVal]
                     cases h_adm : enumAdmitted ety with
@@ -5442,13 +5320,15 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                             c (tyIdFor rp.types (.enum ety))) _ st) = _
                         dsimp only [EStateM.bind]
                         rw [discrHooks_discriminantLayout rp c (.enum ety) st h_src_res]
-                        dsimp only; rw [h_ref_adm]; rfl
+                        dsimp only [refAsEnumTy?]; rw [h_ref_adm]; rfl
                       rw [eStateM_bind_err h_dl_err]
                       exact ⟨_, _, rfl, rfl⟩
                     | true =>
+                      have h_el : EnumLike rp.types (.enum ety) ety :=
+                        ⟨rfl, h_src_res⟩
                       have h_dst_eq : dstTy = .int ety.discrWidth ety.discrSigned :=
-                        h_discr_ty src ety dstTy rfl h_dpe h_spe h_sty h_dty h_adm
-                      subst h_dst_eq
+                        h_discr_ty src (.enum ety) ety dstTy rfl h_dpe h_spe h_sty
+                          rfl h_dty h_adm
                       have h_smS := SlotsMatchTys.getElem? h_inv h_sty h_ssl
                       have h_ref_adm : refEnumAdmitted ety = true := by
                         rw [refEnumAdmitted_eq]; exact h_adm
@@ -5456,100 +5336,43 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                       cases h_tr : ety.tagRepr with
                       | zeroSized =>
                         have h_zst_rd :
-                            Miri.Interpreter.Discriminant.readDiscriminant
-                              (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)) c
-                              ⟨.immediate (optValToMiriImm (.enum ety) srcOpt),
-                                refLocalLayoutForTy rp.types (.enum ety)⟩ st =
-                              .ok 0 st := by
+                            ∀ (opt : Option Val),
+                              Miri.Interpreter.Discriminant.readDiscriminant
+                                (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)) c
+                                ⟨.immediate (optValToMiriImm (.enum ety) opt),
+                                  refLocalLayoutForTy rp.types (.enum ety)⟩ st =
+                                .ok 0 st := by
+                          intro opt
                           dsimp only [Miri.Interpreter.Discriminant.readDiscriminant, bind, Bind.bind]
-                          have h_dl : (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)).discriminantLayout
-                              c (tyIdFor rp.types (.enum ety)) st =
-                              .ok (refLocalLayoutForTy rp.types (.int ety.discrWidth ety.discrSigned)) st := by
-                            rw [discrHooks_discriminantLayout rp c (.enum ety) st h_src_res]
-                            dsimp only; rw [h_ref_adm]; rfl
+                          have h_dl := discrHooks_discriminantLayout_enumLike rp c
+                            st h_el h_adm
                           change (EStateM.bind
                             ((Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)).discriminantLayout
                               c (tyIdFor rp.types (.enum ety))) _ st) = _
                           rw [eStateM_bind_ok h_dl]
                           have h_vars : (refLocalLayoutForTy rp.types (.enum ety)).layout.variants = .Single 0 := by
-                            dsimp only [refLocalLayoutForTy, refLayoutDataForTy, refEnumLayoutData]
+                            dsimp only [refLocalLayoutForTy, refLayoutDataForTy,
+                              refAsEnumTy?, refEnumLayoutData]
                             rw [h_tr]; rfl
                           have h_uninh : (refLocalLayoutForTy rp.types (.enum ety)).layout.isUninhabited = false := by
-                            dsimp only [refLocalLayoutForTy, refLayoutDataForTy, refEnumLayoutData]
+                            dsimp only [refLocalLayoutForTy, refLayoutDataForTy,
+                              refAsEnumTy?, refEnumLayoutData]
                             rw [h_tr]; rfl
                           rw [h_vars, h_uninh]; rfl
-                        let ⟨h_all, _, h_tag_len⟩ := enumAdmitted_parts h_adm
+                        let ⟨_, _, h_tag_len⟩ := enumAdmitted_parts h_adm
                         rw [h_tr] at h_tag_len
                         have h_len1 : ety.discriminants.length = 1 :=
                           Nat.eq_of_beq_eq_true h_tag_len
                         let ⟨disc, h_d0⟩ := mirGetElem?_some_of_lt
                           (xs := ety.discriminants) (i := 0) (by rw [h_len1]; exact Nat.zero_lt_one)
-                        have h_dfv := discrHooks_discriminantForVariant_ok rp c ety 0 disc st
-                          h_adm h_src_res h_d0
-                        have hd_blt : Nat.blt disc (Nat.pow 2 ety.discrWidth.bitWidth) = true :=
-                          list_all_mirGetElem?
-                            (p := fun d => Nat.blt d (Nat.pow 2 ety.discrWidth.bitWidth))
-                            h_all h_d0
-                        have hd_mod : disc < Nat.pow 2 ety.discrWidth.bitWidth :=
-                          Nat.blt_eq.mp hd_blt
-                        have hd_u128 : disc < Nat.pow 2 128 :=
-                          Nat.lt_of_lt_of_le hd_mod (intWidth_pow_le_128 ety.discrWidth)
-                        have h_trunc_eq :
-                            truncateBits ety.discrWidth (BitVec.ofNat 128 disc) =
-                              BitVec.ofNat 128 disc := by
-                          apply BitVec.eq_of_toNat_eq
-                          rw [toNat_truncateBits, BitVec.toNat_ofNat,
-                            Nat.mod_eq_of_lt hd_u128]
-                          exact Nat.mod_eq_of_lt hd_mod
-                        have h_cv_d :
-                            checkVal (.scalar ⟨ety.discrWidth, ety.discrSigned,
-                              truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩)
-                              (.int ety.discrWidth ety.discrSigned) = true :=
-                          checkVal_scalar_of_trunc ety.discrWidth ety.discrSigned _
-                            (truncateBits_idem ety.discrWidth (BitVec.ofNat 128 disc))
-                        have h_finish_0 :
-                            match writePlace slots amem dst.localId
-                                (.int ety.discrWidth ety.discrSigned)
-                                (.scalar ⟨ety.discrWidth, ety.discrSigned,
-                                  truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩) with
-                            | .error k =>
-                              ∃ err st',
-                                Miri.Interpreter.writePlaceImmediate
-                                  (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp)).place c
-                                  (.scalar (.fromScalarInt (miriScalar ety.discrWidth (BitVec.ofNat 128 disc))))
-                                  ⟨.local 0 dst.localId none (LocalsIdentity.ofAllocationToken 0),
-                                    refLocalLayoutForTy rp.types (.int ety.discrWidth ety.discrSigned)⟩ st =
-                                  .error err st' ∧ stepErrorFaultKind err = k
-                            | .ok (slots', _) =>
-                              Miri.Interpreter.writePlaceImmediate
-                                (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp)).place c
-                                (.scalar (.fromScalarInt (miriScalar ety.discrWidth (BitVec.ofNat 128 disc))))
-                                ⟨.local 0 dst.localId none (LocalsIdentity.ofAllocationToken 0),
-                                  refLocalLayoutForTy rp.types (.int ety.discrWidth ety.discrSigned)⟩ st =
-                                .ok () (mkSimState rp defId rbody blockIdx stmtIdx
-                                  body.locals slots' retPlace mem ctrl cm) := by
-                          have h_aw := assertAndWrite_local_eq rp c defId rbody blockIdx
-                            stmtIdx body.locals slots amem retPlace mem ctrl cm dst.localId
-                            (.int ety.discrWidth ety.discrSigned)
-                            (.int ety.discrWidth ety.discrSigned)
-                            (.scalar ⟨ety.discrWidth, ety.discrSigned,
-                              truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩)
-                            dstSlot h_dty h_dsl h_dst_res h_inv h_cv_d
-                          dsimp only at h_aw
-                          rw [beq_self_eq_true, ite_true_eq] at h_aw
-                          dsimp only [valToMiriImmediate] at h_aw
-                          have h_ms :
-                              miriScalar ety.discrWidth (truncateBits ety.discrWidth (BitVec.ofNat 128 disc)) =
-                                miriScalar ety.discrWidth (BitVec.ofNat 128 disc) := by
-                            rw [h_trunc_eq]
-                          rw [h_ms] at h_aw
-                          exact h_aw
-                        rw [eStateM_bind_ok h_zst_rd]
-                        change (match (_ : Except FaultKind (List LocalSlot × MemoryState)) with | Except.error k => ∃ err st', EStateM.bind (Miri.Interpreter.Discriminant.discriminantForVariant _ c (tyIdFor rp.types (.enum ety)) 0) _ st = EStateM.Result.error err st' ∧ _ | Except.ok (slots', _) => EStateM.bind (Miri.Interpreter.Discriminant.discriminantForVariant _ c (tyIdFor rp.types (.enum ety)) 0) _ st = _)
-                        rw [eStateM_bind_ok h_dfv]
                         cases srcOpt with
                         | none =>
-                          dsimp only; rw [h_d0]; exact h_finish_0
+                          exact h_finish_discr _ h_el h_adm h_dst_eq h_d0
+                            (h_zst_rd none) (fun h_trunc_eq => by
+                              dsimp only
+                              rw [h_d0]
+                              dsimp only
+                              rw [h_trunc_eq])
                         | some sv =>
                           let ⟨v, h_sv_eq, _, h_v_lt⟩ := checkVal_enum_inv h_smS
                           subst h_sv_eq
@@ -5561,17 +5384,19 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                               exact False.elim (Nat.not_lt_zero n
                                 (Nat.lt_of_succ_lt_succ h_v_lt))
                           subst h_v0
-                          dsimp only
-                          rw [EnumTy.beq_refl]
-                          dsimp only [Nat.beq, Bool.and_self, ite_true_eq]
-                          rw [h_d0]
-                          exact h_finish_0
+                          exact h_finish_discr _ h_el h_adm h_dst_eq h_d0
+                            (h_zst_rd _) (fun h_trunc_eq => by
+                              dsimp only
+                              rw [EnumTy.beq_refl, h_d0]
+                              dsimp only
+                              rw [h_trunc_eq]
+                              rfl)
                       | scalar tagW tagS =>
                         cases srcOpt with
                         | none =>
                           dsimp only [optValToMiriImm]
                           let ⟨msg, h_ub⟩ := discrHooks_readDiscriminant_scalar_uninit_ub
-                            rp c ety tagW tagS st h_tr h_adm h_src_res rfl
+                            rp c (.enum ety) ety tagW tagS st h_el h_tr h_adm rfl
                           rw [eStateM_bind_err h_ub]
                           exact ⟨_, _, rfl, rfl⟩
                         | some sv =>
@@ -5580,74 +5405,25 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                           let ⟨disc, h_dv⟩ := mirGetElem?_some_of_lt h_v_lt
                           have h_imm_eq :
                               optValToMiriImm (.enum ety) (some (.enumVal ety v)) =
-                                .scalar (.fromScalarInt (miriScalar tagW (BitVec.ofNat 128 disc))) := by
-                            dsimp only [optValToMiriImm, valToMiriImmediate]
-                            rw [h_tr, h_dv]
-                          rw [h_imm_eq]
-                          have h_rd := discrHooks_readDiscriminant_scalar_ok rp c ety
-                            tagW tagS v disc st h_tr h_adm h_src_res h_dv rfl
-                          have h_dfv := discrHooks_discriminantForVariant_ok rp c ety
-                            v disc st h_adm h_src_res h_dv
-                          rw [eStateM_bind_ok h_rd]
-                          change (match (_ : Except FaultKind (List LocalSlot × MemoryState)) with | Except.error k => ∃ err st', EStateM.bind (Miri.Interpreter.Discriminant.discriminantForVariant _ c (tyIdFor rp.types (.enum ety)) v) _ st = EStateM.Result.error err st' ∧ _ | Except.ok (slots', _) => EStateM.bind (Miri.Interpreter.Discriminant.discriminantForVariant _ c (tyIdFor rp.types (.enum ety)) v) _ st = _)
-                          rw [eStateM_bind_ok h_dfv]
-                          let ⟨h_all, _, _⟩ := enumAdmitted_parts h_adm
-                          have hd_blt : Nat.blt disc (Nat.pow 2 ety.discrWidth.bitWidth) = true :=
-                            list_all_mirGetElem?
-                              (p := fun d => Nat.blt d (Nat.pow 2 ety.discrWidth.bitWidth))
-                              h_all h_dv
-                          have hd_mod : disc < Nat.pow 2 ety.discrWidth.bitWidth :=
-                            Nat.blt_eq.mp hd_blt
-                          have hd_u128 : disc < Nat.pow 2 128 :=
-                            Nat.lt_of_lt_of_le hd_mod (intWidth_pow_le_128 ety.discrWidth)
-                          have h_trunc_eq :
-                              truncateBits ety.discrWidth (BitVec.ofNat 128 disc) =
-                                BitVec.ofNat 128 disc := by
-                            apply BitVec.eq_of_toNat_eq
-                            rw [toNat_truncateBits, BitVec.toNat_ofNat,
-                              Nat.mod_eq_of_lt hd_u128]
-                            exact Nat.mod_eq_of_lt hd_mod
-                          have h_cv_d :
-                              checkVal (.scalar ⟨ety.discrWidth, ety.discrSigned,
-                                truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩)
-                                (.int ety.discrWidth ety.discrSigned) = true :=
-                            checkVal_scalar_of_trunc ety.discrWidth ety.discrSigned _
-                              (truncateBits_idem ety.discrWidth (BitVec.ofNat 128 disc))
-                          have h_aw := assertAndWrite_local_eq rp c defId rbody blockIdx
-                            stmtIdx body.locals slots amem retPlace mem ctrl cm dst.localId
-                            (.int ety.discrWidth ety.discrSigned)
-                            (.int ety.discrWidth ety.discrSigned)
-                            (.scalar ⟨ety.discrWidth, ety.discrSigned,
-                              truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩)
-                            dstSlot h_dty h_dsl h_dst_res h_inv h_cv_d
-                          dsimp only at h_aw
-                          rw [beq_self_eq_true, ite_true_eq] at h_aw
-                          dsimp only [valToMiriImmediate] at h_aw
-                          have h_ms :
-                              miriScalar ety.discrWidth (truncateBits ety.discrWidth (BitVec.ofNat 128 disc)) =
-                                miriScalar ety.discrWidth (BitVec.ofNat 128 disc) := by
-                            rw [h_trunc_eq]
-                          rw [h_ms] at h_aw
-                          have h_wp_eq :
-                              (match
-                                (if (ety.beq ety && v.blt ety.discriminants.length) = true then
-                                  match MirSemantics.getElem? ety.discriminants v with
-                                  | some disc =>
-                                    Except.ok
-                                      (Val.scalar ⟨ety.discrWidth, ety.discrSigned,
-                                        truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩, slots, amem)
-                                  | none => Except.error FaultKind.unsupported
-                                else Except.error FaultKind.unsupported) with
-                               | Except.error k => Except.error k
-                               | Except.ok (val, localsAfterRval, memAfterRval) =>
-                                 writePlace localsAfterRval memAfterRval dst.localId
-                                   (.int ety.discrWidth ety.discrSigned) val) =
-                              writePlace slots amem dst.localId (.int ety.discrWidth ety.discrSigned)
-                                (.scalar ⟨ety.discrWidth, ety.discrSigned,
-                                  truncateBits ety.discrWidth (BitVec.ofNat 128 disc)⟩) := by
-                            rw [EnumTy.beq_refl, Nat.blt_eq.mpr h_v_lt]
-                            rw [Bool.and_self, ite_true_eq, h_dv]
-                          rw [← h_wp_eq] at h_aw
-                          exact h_aw
+                                .scalar (.fromScalarInt (miriScalar tagW (BitVec.ofNat 128 disc))) :=
+                            valToMiriImmediate_scalar_enumLike (ty := .enum ety)
+                              (v := .enumVal ety v) rfl rfl h_tr h_dv
+                          have h_rd :
+                              Miri.Interpreter.Discriminant.readDiscriminant
+                                (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)) c
+                                ⟨.immediate (optValToMiriImm (.enum ety) (some (.enumVal ety v))),
+                                  refLocalLayoutForTy rp.types (.enum ety)⟩ st =
+                                .ok v st := by
+                            rw [h_imm_eq]
+                            exact discrHooks_readDiscriminant_scalar_ok rp c
+                              (.enum ety) ety tagW tagS v disc st h_el h_tr h_adm
+                              h_dv rfl
+                          exact h_finish_discr _ h_el h_adm h_dst_eq h_dv h_rd
+                            (fun h_trunc_eq => by
+                              dsimp only
+                              rw [EnumTy.beq_refl, Nat.blt_eq.mpr h_v_lt,
+                                Bool.and_self, ite_true_eq, h_dv]
+                              dsimp only
+                              rw [h_trunc_eq])
 
 end Anneal.MirCorrespondence

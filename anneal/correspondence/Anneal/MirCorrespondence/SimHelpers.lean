@@ -409,7 +409,7 @@ theorem refHasPadding_ok (types : List MirTy) (ty : MirTy) :
   | unsupported => exact ⟨_, rfl⟩
   | enum ety =>
     dsimp only [refHasPadding, refLocalLayoutForTy, refLayoutDataForTy,
-      refEnumLayoutData]
+      refAsEnumTy?, refEnumLayoutData]
     cases ety.tagRepr <;> exact ⟨_, rfl⟩
   | tuple fs =>
     cases fs with

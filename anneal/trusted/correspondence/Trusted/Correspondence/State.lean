@@ -268,12 +268,34 @@ noncomputable def refEnumAdmitted (ety : EnumTy) : Bool :=
           | none => false
         | .error _ => false)
 
+/-- `core::cmp::Ordering` as a fieldless enum descriptor: a `#[repr(i8)]`
+enum with the signed `i8` tag and discriminant bit patterns `255` (`Less`,
+`-1_i8`), `0` (`Equal`), and `1` (`Greater`) (`library/core/src/cmp.rs`,
+`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`). $M_{\text{ref}}$
+lays out, validates, and reads the discriminant of `MirTy.ordering` through
+this descriptor; `id` is never consulted. -/
+noncomputable def refOrderingEnumTy : EnumTy := {
+  id := 0
+  discrWidth := .i8
+  discrSigned := true
+  tagRepr := .scalar .i8 true
+  discriminants := [255, 0, 1]
+}
+
+/-- Project enum-like `MirTy` values (`.enum ety` and `core::cmp::Ordering`) to
+the fieldless `EnumTy` descriptor governing their layout, projections,
+discriminant reads, and shallow validation in $M_{\text{ref}}$. -/
+noncomputable def refAsEnumTy? : MirTy → Option EnumTy
+  | .enum ety => some ety
+  | .ordering => some refOrderingEnumTy
+  | _ => none
+
 /-- Independent $M_{\text{ref}}$ check that every unprojected
 `Assign(dst, Discriminant(src))` in `rbody` whose `src` has an admitted
-fieldless enum type `.enum ety` (or the type `core::cmp::Ordering`) and whose
-`dst` is in bounds has destination type `.int ety.discrWidth ety.discrSigned`
-(`.int .i8 true` for `Ordering`), matching `rustc`'s MIR well-typedness
-invariant for `Rvalue::Discriminant`. -/
+enum-like type (`refAsEnumTy? srcTy = some ety`, covering `.enum ety` and
+`core::cmp::Ordering`) and whose `dst` is in bounds has destination type
+`.int ety.discrWidth ety.discrSigned` (`.int .i8 true` for `Ordering`),
+matching `rustc`'s MIR well-typedness invariant for `Rvalue::Discriminant`. -/
 noncomputable def refDiscriminantTypesValid (localTys : List MirTy)
     (rbody : RefBody) : Bool :=
   rbody.basicBlocks.all (fun bb =>
@@ -285,8 +307,8 @@ noncomputable def refDiscriminantTypesValid (localTys : List MirTy)
           if dst.projection.isEmpty && src.projection.isEmpty then
             match MirSemantics.getElem? localTys src.localId with
             | some srcTy =>
-              match srcTy with
-              | .enum ety =>
+              match refAsEnumTy? srcTy with
+              | some ety =>
                 match MirSemantics.getElem? localTys dst.localId with
                 | some dstTy =>
                   if refEnumAdmitted ety then
@@ -294,11 +316,7 @@ noncomputable def refDiscriminantTypesValid (localTys : List MirTy)
                   else
                     true
                 | none => true
-              | .ordering =>
-                match MirSemantics.getElem? localTys dst.localId with
-                | some dstTy => MirTy.beq dstTy (.int .i8 true)
-                | none => true
-              | _ => true
+              | none => true
             | none => true
           else
             true
@@ -594,31 +612,18 @@ noncomputable def refEnumLayoutData (ety : EnumTy) : Miri.ABI.LayoutData :=
       variants := .Multiple tag .Direct 0 variants
     }
 
-/-- `core::cmp::Ordering` as a fieldless enum descriptor: a `#[repr(i8)]`
-enum with the signed `i8` tag and discriminant bit patterns `255` (`Less`,
-`-1_i8`), `0` (`Equal`), and `1` (`Greater`) (`library/core/src/cmp.rs`,
-`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`). $M_{\text{ref}}$
-lays out, validates, and reads the discriminant of `MirTy.ordering` through
-this descriptor; `id` is never consulted. -/
-noncomputable def refOrderingEnumTy : EnumTy := {
-  id := 0
-  discrWidth := .i8
-  discrSigned := true
-  tagRepr := .scalar .i8 true
-  discriminants := [255, 0, 1]
-}
-
 /-- Canonical `Miri.ABI.LayoutData` for any `MirTy` in $M_{\text{ref}}$. -/
 noncomputable def refLayoutDataForTy : MirTy → Miri.ABI.LayoutData
   | .int w s => refScalarLayoutData w s
   | .bool => refBoolLayoutData
   | .char => refCharLayoutData
-  | .ordering => refEnumLayoutData refOrderingEnumTy
   | .unit => refUnitLayoutData
   | .never => refNeverLayoutData
-  | .enum ety => refEnumLayoutData ety
   | .tuple [.int w s, .bool] => refOverflowPairLayoutData w s
-  | _ => refUnitLayoutData
+  | ty =>
+    match refAsEnumTy? ty with
+    | some ety => refEnumLayoutData ety
+    | none => refUnitLayoutData
 
 /-- Canonical `Miri.Interpreter.LocalLayout` pairing `tyIdFor types ty` with
 `refLayoutDataForTy ty`. -/
@@ -767,23 +772,24 @@ noncomputable def toMiriBody (types : List MirTy) (rbody : RefBody) :
 
 /-! ## Constant Decoding, Value Encoding, and Entry Initialization -/
 
-/-- The `core::cmp::Ordering` value whose `i8` tag bit pattern is `tag`
-(`refOrderingEnumTy.discriminants`: `255` for `Less`, `0` for `Equal`, `1` for
-`Greater`), resolved through `refFindDiscrVariant?`, or `none` for an invalid
-tag. -/
-noncomputable def refOrderingOfTag (tag : BitVec 128) : Option OrderingVal :=
-  match refFindDiscrVariant? tag refOrderingEnumTy.discriminants with
-  | some 0 => some .less
-  | some 1 => some .equal
-  | some 2 => some .greater
-  | _ => none
+/-- Construct the runtime `Val` for variant index `v` of an enum-like `MirTy`
+(`.enum ety` or `core::cmp::Ordering`: `0` -> `Less`, `1` -> `Equal`, `2` ->
+`Greater`). -/
+noncomputable def refValOfEnumVariant? : MirTy → Nat → Option Val
+  | .enum ety, v => some (.enumVal ety v)
+  | .ordering, 0 => some (.ordering .less)
+  | .ordering, 1 => some (.ordering .equal)
+  | .ordering, 2 => some (.ordering .greater)
+  | _, _ => none
 
-/-- The `i8` value of a `core::cmp::Ordering` (`-1`, `0`, or `1`), as
-`Miri.Interpreter.ScalarOps.finish` computes it for `BinOp::Cmp`. -/
-noncomputable def refOrderingToInt : OrderingVal → Int
-  | .less => Neg.neg 1
-  | .equal => 0
-  | .greater => 1
+/-- Extract the variant index of a runtime `Val` at an enum-like `MirTy`
+(`.enum _` or `core::cmp::Ordering`). -/
+noncomputable def refEnumVariantOfVal? : MirTy → Val → Option Nat
+  | .enum _, .enumVal _ v => some v
+  | .ordering, .ordering .less => some 0
+  | .ordering, .ordering .equal => some 1
+  | .ordering, .ordering .greater => some 2
+  | _, _ => none
 
 /-- Reference constant-literal decoder calling
 `Miri.Memory.ScalarInt.tryFromUInt` and `Miri.Memory.ScalarInt.tryToBool`
@@ -814,32 +820,33 @@ noncomputable def evalRefConstLit : MirTy → ConstLit → Except FaultKind Val
       | .error (.invalidChar _) => .error .undefined
       | .error _ => .error .unsupported
     | _ => .error .unsupported
-  | .ordering, .scalar bits =>
-    match Miri.Memory.ScalarInt.tryFromUInt bits (Miri.ABI.Size.ofBytes 1) with
-    | .ok (some sc) =>
-      match refOrderingOfTag sc.data with
-      | some ord => .ok (.ordering ord)
-      | none => .error .undefined
-    | _ => .error .unsupported
-  | .enum ety, .zeroSized =>
-    if refIsZstEnumTy ety then .ok (.enumVal ety 0) else .error .unsupported
-  | .enum ety, .scalar bits =>
-    match ety.tagRepr with
-    | .zeroSized => .error .unsupported
-    | .scalar tagW tagS =>
-      if !refEnumAdmitted ety then
-        .error .unsupported
-      else
-        match Miri.Memory.ScalarInt.tryFromUInt bits (toMiriSize tagW) with
-        | .ok (some sc) =>
-          match refMiriTagToDiscrBits tagW tagS ety.discrWidth sc.data with
-          | some discrBits =>
-            match refFindDiscrVariant? discrBits ety.discriminants with
-            | some v => .ok (.enumVal ety v)
-            | none => .error .undefined
-          | none => .error .unsupported
-        | _ => .error .unsupported
-  | _, _ => .error .unsupported
+  | ty, .zeroSized =>
+    match refAsEnumTy? ty, refValOfEnumVariant? ty 0 with
+    | some ety, some val =>
+      if refIsZstEnumTy ety then .ok val else .error .unsupported
+    | _, _ => .error .unsupported
+  | ty, .scalar bits =>
+    match refAsEnumTy? ty with
+    | some ety =>
+      match ety.tagRepr with
+      | .zeroSized => .error .unsupported
+      | .scalar tagW tagS =>
+        if !refEnumAdmitted ety then
+          .error .unsupported
+        else
+          match Miri.Memory.ScalarInt.tryFromUInt bits (toMiriSize tagW) with
+          | .ok (some sc) =>
+            match refMiriTagToDiscrBits tagW tagS ety.discrWidth sc.data with
+            | some discrBits =>
+              match refFindDiscrVariant? discrBits ety.discriminants with
+              | some v =>
+                match refValOfEnumVariant? ty v with
+                | some val => .ok val
+                | none => .error .unsupported
+              | none => .error .undefined
+            | none => .error .unsupported
+          | _ => .error .unsupported
+    | none => .error .unsupported
 
 /-- Reference value validity and type check calling
 `Miri.Memory.ScalarInt.tryFromUInt`, `Miri.Memory.ScalarInt.ofBool`, and
@@ -881,11 +888,12 @@ noncomputable def checkRefArgsMatch : List Val → List MirTy → Bool
 - `.scalar sv` -> `.scalar (.fromScalarInt (miriScalar sv.width sv.bits))`
 - `.bool b` -> `.scalar (.fromBool b)`
 - `.char c` -> `.scalar (.fromChar c)`
-- `.ordering ord` -> the 1-byte scalar of `refOrderingToInt ord`
-  (`Scalar.fromInt`, as `ScalarOps.finish` builds a `BinOp::Cmp` result)
-- `.unit` and `.zeroSized` `.enumVal` -> `.uninit` (canonical ZST immediate)
-- `.scalar tagW _` `.enumVal ety v` -> `.scalar (.fromScalarInt (miriScalar
-  tagW (BitVec.ofNat 128 disc)))` for `ety.discriminants[v]`
+- `.unit` and `.zeroSized` enum-like values -> `.uninit` (canonical ZST
+  immediate)
+- `.scalar tagW _` enum-like values (`.enumVal ety v` and `.ordering ord` via
+  `refAsEnumTy?`) -> `.scalar (.fromScalarInt (miriScalar tagW (BitVec.ofNat
+  128 disc)))` for `ety.discriminants[v]` (`255`, `0`, or `1` for `Ordering`,
+  matching `ScalarOps.finish` on `BinOp::Cmp`)
 - overflow pair `.tuple [.scalar sv, .bool b]` -> `.scalarPair (.fromScalarInt
   (miriScalar w sv.bits)) (.fromBool b)`, as `ScalarOps.finish` builds a
   `BinOp::*WithOverflow` result. -/
@@ -897,23 +905,20 @@ noncomputable def valToMiriImmediate :
     .scalar (.fromBool b)
   | .char, .char c =>
     .scalar (.fromChar c)
-  | .ordering, .ordering ord =>
-    match Miri.Memory.Scalar.fromInt (refOrderingToInt ord)
-        (Miri.ABI.Size.ofBytes 1) with
-    | .ok sc => .scalar sc
-    | .error _ => .uninit
   | .unit, .unit => .uninit
-  | .enum ety, .enumVal _ v =>
-    match ety.tagRepr with
-    | .zeroSized => .uninit
-    | .scalar tagW _ =>
-      match MirSemantics.getElem? ety.discriminants v with
-      | some disc =>
-        .scalar (.fromScalarInt (miriScalar tagW (BitVec.ofNat 128 disc)))
-      | none => .uninit
   | .tuple [.int w _, .bool], .tuple [.scalar sv, .bool b] =>
     .scalarPair (.fromScalarInt (miriScalar w sv.bits)) (.fromBool b)
-  | _, _ => .uninit
+  | ty, val =>
+    match refAsEnumTy? ty, refEnumVariantOfVal? ty val with
+    | some ety, some v =>
+      match ety.tagRepr with
+      | .zeroSized => .uninit
+      | .scalar tagW _ =>
+        match MirSemantics.getElem? ety.discriminants v with
+        | some disc =>
+          .scalar (.fromScalarInt (miriScalar tagW (BitVec.ofNat 128 disc)))
+        | none => .uninit
+    | _, _ => .uninit
 
 /-- Encode an $M_{\text{anneal}}$ `MemPlace` into the real
 `Miri.Interpreter.MemPlace` of a sized local's stack allocation: a pointer at
@@ -993,38 +998,6 @@ noncomputable def refReadReturnVal
     Except FaultKind Val :=
   match retTy with
   | .unit => .ok .unit
-  | .enum ety =>
-    match ety.tagRepr with
-    | .zeroSized =>
-      if refIsZstEnumTy ety then .ok (.enumVal ety 0)
-      else .error .unsupported
-    | .scalar tagW tagS =>
-      if !refEnumAdmitted ety then
-        .error .unsupported
-      else
-        match retPlace.mplace.ptr.provenance with
-        | some (.concrete allocId _) =>
-          match memory.live.find? (fun entry => entry.1 == allocId) with
-          | none => .error .unsupported
-          | some (_, localAlloc) =>
-            let range := Miri.Memory.allocRange Miri.ABI.Size.ZERO
-              (toMiriSize tagW)
-            match localAlloc.allocation.readScalar
-                Miri.ABI.RuntimeTargetDataLayout.default.base range false with
-            | .ok sc =>
-              match sc.tryToScalarInt with
-              | .ok (.integer sci) =>
-                match refMiriTagToDiscrBits tagW tagS ety.discrWidth
-                    sci.data with
-                | some discrBits =>
-                  match refFindDiscrVariant? discrBits ety.discriminants with
-                  | some v => .ok (.enumVal ety v)
-                  | none => .error .undefined
-                | none => .error .unsupported
-              | _ => .error .unsupported
-            | .error (.invalidUninitBytes _) => .error .undefined
-            | .error _ => .error .unsupported
-        | _ => .error .unsupported
   | .int w s =>
     match retPlace.mplace.ptr.provenance with
     | some (.concrete allocId _) =>
@@ -1083,26 +1056,6 @@ noncomputable def refReadReturnVal
         | .error (.invalidUninitBytes _) => .error .undefined
         | .error _ => .error .unsupported
     | _ => .error .unsupported
-  | .ordering =>
-    match retPlace.mplace.ptr.provenance with
-    | some (.concrete allocId _) =>
-      match memory.live.find? (fun entry => entry.1 == allocId) with
-      | none => .error .unsupported
-      | some (_, localAlloc) =>
-        let range := Miri.Memory.allocRange Miri.ABI.Size.ZERO
-          (Miri.ABI.Size.ofBytes 1)
-        match localAlloc.allocation.readScalar
-            Miri.ABI.RuntimeTargetDataLayout.default.base range false with
-        | .ok sc =>
-          match sc.tryToScalarInt with
-          | .ok (.integer sci) =>
-            match refOrderingOfTag sci.data with
-            | some ord => .ok (.ordering ord)
-            | none => .error .undefined
-          | _ => .error .unsupported
-        | .error (.invalidUninitBytes _) => .error .undefined
-        | .error _ => .error .unsupported
-    | _ => .error .unsupported
   | .tuple [.int w s, .bool] =>
     match retPlace.mplace.ptr.provenance with
     | some (.concrete allocId _) =>
@@ -1134,7 +1087,48 @@ noncomputable def refReadReturnVal
         | .error (.invalidUninitBytes _) => .error .undefined
         | .error _ => .error .unsupported
     | _ => .error .unsupported
-  | _ => .error .unsupported
+  | ty =>
+    match refAsEnumTy? ty with
+    | some ety =>
+      match ety.tagRepr with
+      | .zeroSized =>
+        if refIsZstEnumTy ety then
+          match refValOfEnumVariant? ty 0 with
+          | some val => .ok val
+          | none => .error .unsupported
+        else
+          .error .unsupported
+      | .scalar tagW tagS =>
+        if !refEnumAdmitted ety then
+          .error .unsupported
+        else
+          match retPlace.mplace.ptr.provenance with
+          | some (.concrete allocId _) =>
+            match memory.live.find? (fun entry => entry.1 == allocId) with
+            | none => .error .unsupported
+            | some (_, localAlloc) =>
+              let range := Miri.Memory.allocRange Miri.ABI.Size.ZERO
+                (toMiriSize tagW)
+              match localAlloc.allocation.readScalar
+                  Miri.ABI.RuntimeTargetDataLayout.default.base range false with
+              | .ok sc =>
+                match sc.tryToScalarInt with
+                | .ok (.integer sci) =>
+                  match refMiriTagToDiscrBits tagW tagS ety.discrWidth
+                      sci.data with
+                  | some discrBits =>
+                    match refFindDiscrVariant? discrBits ety.discriminants with
+                    | some v =>
+                      match refValOfEnumVariant? ty v with
+                      | some val => .ok val
+                      | none => .error .unsupported
+                    | none => .error .undefined
+                  | none => .error .unsupported
+                | _ => .error .unsupported
+              | .error (.invalidUninitBytes _) => .error .undefined
+              | .error _ => .error .unsupported
+          | _ => .error .unsupported
+    | none => .error .unsupported
 
 /-- Initialize real `Miri.Interpreter.LocalState` entries at function entry,
 pre-populating `layout := some (refLocalLayoutForTy types ty)` on every local,

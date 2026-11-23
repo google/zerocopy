@@ -32,6 +32,148 @@ namespace Anneal.MirCorrespondence
 open Trusted Trusted.MirAst Trusted.MirSemantics Trusted.Correspondence
 open Miri.ABI Miri.Memory Miri.Interpreter
 
+private theorem copyReturn_scalar_enumLike_ok (rp : RefProg) (c : Choice)
+    (retTy : MirTy) (ety : EnumTy) (tagW : IntWidth) (tagS : Bool)
+    (retVal : Val) (variant : Nat)
+    (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
+      Miri.TreeBorrows.BorrowTree Unit)
+    {rawAlloc : Allocation Miri.Memory.Provenance Unit}
+    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
+    (h_el : EnumLike rp.types retTy ety)
+    (h_tr : ety.tagRepr = .scalar tagW tagS)
+    (h_adm : enumAdmitted ety = true)
+    (h_ev : refEnumVariantOfVal? retTy retVal = some variant)
+    (h_ve : refValOfEnumVariant? retTy variant = some retVal)
+    (h_v_lt : variant < ety.discriminants.length)
+    (h_raw : Allocation.tryNew (Prov := Miri.Memory.Provenance)
+      (refLocalLayoutForTy rp.types retTy).layout.size Align.ONE .Uninit
+      (fun n _ => some (Array.replicate n.bytes.toNat 0)) = .ok rawAlloc)
+    (h_mem : st.machine.memory =
+      { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, rawAlloc.withExtra
+          (Miri.TreeBorrows.BorrowTree.new Miri.Memory.BorTag.one
+            (refLocalLayoutForTy rp.types retTy).layout.size)⟩)]) })
+    (h_dr : st.machine.dataRace = none)
+    (h_pmd : st.machine.pendingMoveDeinit = false) :
+    let h := Miri.Interpreter.ExecutionMachine.withValidation
+      (refExecutionConfig rp) refLimits
+    ∃ mem',
+      Miri.Interpreter.copyRuntimePlace
+          (Miri.Interpreter.ExecutionMachine.projectionHooks h).place h.copy c
+          ⟨.immediate (valToMiriImmediate retTy retVal),
+            refLocalLayoutForTy rp.types retTy⟩
+          ⟨.memory retMemPlace, refLocalLayoutForTy rp.types retTy⟩ true st =
+        .ok () { st with machine := { st.machine with memory := mem' } } ∧
+      refReadReturnVal mem' retTy
+        ⟨retMemPlace, refLocalLayoutForTy rp.types retTy⟩ = .ok retVal := by
+  intro h
+  let ⟨disc, h_get_d⟩ := mirGetElem?_some_of_lt h_v_lt
+  rw [valToMiriImmediate_scalar_enumLike h_el.1 h_ev h_tr h_get_d]
+  have h_lsz : (refLocalLayoutForTy rp.types retTy).layout.size =
+      toMiriSize tagW := by
+    rw [enumLike_layout h_el, refEnumLayoutData_scalar ety tagW tagS h_tr]
+    rfl
+  rw [h_lsz] at h_raw h_mem
+  let ⟨after, h_wm, h_rd, h_cp, h_asz, h_amut, _⟩ :=
+    writeMemory_retPlace_scalar tagW (refLocalLayoutForTy rp.types retTy)
+      (.Union (value := .Int (toMiriInteger tagW) tagS))
+      (BitVec.ofNat 128 disc) mem1 st
+      (by rw [enumLike_layout h_el, refEnumLayoutData_scalar ety tagW tagS h_tr]
+          rfl)
+      h_lsz
+      (by cases tagW <;> cases tagS <;> rfl)
+      trivial h_raw h_mem h_dr
+  let mem' : Miri.Memory.MemoryState Miri.Memory.Provenance
+      Miri.TreeBorrows.BorrowTree Unit :=
+    { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
+  let st1 := { st with machine := { st.machine with memory := mem' } }
+  have h_val : Miri.Interpreter.ValidityVisitor.validatePlace
+      (refValHooks rp.types) c 8
+      ⟨.memory retMemPlace, refLocalLayoutForTy rp.types retTy⟩
+      false true st1 = .ok () st1 :=
+    validatePlace_mem_scalar_step rp.types c tagW _ st1 h_lsz
+      (visit_mem_scalar_enum_ok rp.types c 7 6 rfl retTy ety tagW tagS variant
+        disc mem1 after st1 h_tr h_adm h_el h_get_d h_pmd rfl h_asz h_amut h_rd
+        h_cp)
+  refine ⟨mem',
+    copyRuntimePlace_imm_to_mem_step rp c retTy _ retMemPlace st st1 _ h_pmd
+      h_wm h_val, ?_⟩
+  have h_ref_adm : refEnumAdmitted ety = true := by
+    rw [refEnumAdmitted_eq]; exact h_adm
+  let ⟨_, _, h_tag_all⟩ := enumAdmitted_parts h_adm
+  rw [h_tr] at h_tag_all
+  have h_tag_ok : tagBitsToDiscrBits tagW tagS ety.discrWidth
+      (truncateBits tagW (BitVec.ofNat 128 disc)) = BitVec.ofNat 128 disc :=
+    eq_of_beq (list_all_mirGetElem?
+      (p := fun d =>
+        tagBitsToDiscrBits tagW tagS ety.discrWidth
+          (truncateBits tagW (BitVec.ofNat 128 d)) == BitVec.ofNat 128 d)
+      h_tag_all h_get_d)
+  have h_as := h_el.1
+  cases retTy <;> cases h_as <;> (
+    dsimp only [refReadReturnVal, refAsEnumTy?, retMemPlace, retPtr, mem']
+    rw [h_tr]
+    dsimp only
+    rw [h_ref_adm, mem_ite_not_true_eq, singleton_live_find]
+    dsimp only
+    rw [h_rd]
+    dsimp only
+    rw [scalar_tryToScalarInt_fromScalarInt]
+    dsimp only
+    rw [miriScalar_data, refMiriTagToDiscrBits_eq, h_tag_ok]
+    dsimp only
+    rw [refFindDiscrVariant?_eq, findDiscrVariant?_of_enumAdmitted h_adm h_get_d]
+    dsimp only
+    rw [h_ve])
+
+private theorem copyReturn_scalar_enumLike_uninit_ub (rp : RefProg)
+    (c : Choice) (retTy : MirTy) (ety : EnumTy) (tagW : IntWidth) (tagS : Bool)
+    (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
+      Miri.TreeBorrows.BorrowTree Unit)
+    {rawAlloc : Allocation Miri.Memory.Provenance Unit}
+    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
+    (h_el : EnumLike rp.types retTy ety)
+    (h_tr : ety.tagRepr = .scalar tagW tagS)
+    (h_raw : Allocation.tryNew (Prov := Miri.Memory.Provenance)
+      (refLocalLayoutForTy rp.types retTy).layout.size Align.ONE .Uninit
+      (fun n _ => some (Array.replicate n.bytes.toNat 0)) = .ok rawAlloc)
+    (h_mem : st.machine.memory =
+      { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, rawAlloc.withExtra
+          (Miri.TreeBorrows.BorrowTree.new Miri.Memory.BorTag.one
+            (refLocalLayoutForTy rp.types retTy).layout.size)⟩)]) })
+    (h_dr : st.machine.dataRace = none)
+    (h_pmd : st.machine.pendingMoveDeinit = false) :
+    let h := Miri.Interpreter.ExecutionMachine.withValidation
+      (refExecutionConfig rp) refLimits
+    ∃ msg st',
+      Miri.Interpreter.copyRuntimePlace
+          (Miri.Interpreter.ExecutionMachine.projectionHooks h).place h.copy c
+          ⟨.immediate .uninit, refLocalLayoutForTy rp.types retTy⟩
+          ⟨.memory retMemPlace, refLocalLayoutForTy rp.types retTy⟩ true st =
+        .error (.undefinedBehavior msg) st' := by
+  intro h
+  have h_lsz : (refLocalLayoutForTy rp.types retTy).layout.size =
+      toMiriSize tagW := by
+    rw [enumLike_layout h_el, refEnumLayoutData_scalar ety tagW tagS h_tr]
+    rfl
+  have h_uns :
+      (localMemoryLayout
+        (refLocalLayoutForTy rp.types retTy)).backendRepr.isUnsized = false := by
+    rw [enumLike_layout h_el, refEnumLayoutData_scalar ety tagW tagS h_tr]
+    rfl
+  rw [h_lsz] at h_raw h_mem
+  let ⟨after, info, h_wm, h_rd, h_asz, _, _⟩ :=
+    writeMemory_retPlace_uninit tagW (refLocalLayoutForTy rp.types retTy)
+      mem1 st h_uns h_lsz h_raw h_mem h_dr
+  let mem' : Miri.Memory.MemoryState Miri.Memory.Provenance
+      Miri.TreeBorrows.BorrowTree Unit :=
+    { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
+  let st1 := { st with machine := { st.machine with memory := mem' } }
+  let ⟨msg, h_vis⟩ := visit_mem_scalar_enum_uninit_ub rp.types c 7 6 rfl
+    retTy ety tagW tagS info mem1 after st1 h_tr h_el rfl h_asz h_rd
+  exact ⟨msg, st1, copyRuntimePlace_imm_to_mem_step rp c retTy .uninit
+    retMemPlace st st1 _ h_pmd h_wm
+    (validatePlace_mem_ub_step rp.types c _ st1 st1 msg h_vis)⟩
+
 /-- Executing `ExecutionControl.hooks.copyReturn` (`copyRuntimePlace` into the
 fresh caller-owned `retPlace` allocation) on an initialized Day-1 return value
 `v` succeeds, updates only `st.machine.memory` to `mem'`, and satisfies
@@ -191,14 +333,15 @@ theorem copyReturn_ok (rp : RefProg) (c : Choice) (retTy : MirTy) (v : Val)
             | succ n => exact False.elim (Nat.not_lt_zero n (Nat.lt_of_succ_lt_succ h_v_lt))
           subst h_v0
           have h_vimm : valToMiriImmediate (.enum ety) (.enumVal ety 0) = .uninit := by
-            dsimp only [valToMiriImmediate]; rw [h_tr]
+            dsimp only [valToMiriImmediate, refAsEnumTy?, refEnumVariantOfVal?]
+            rw [h_tr]
           rw [h_vimm]
           have h_lml :
               localMemoryLayout (refLocalLayoutForTy rp.types (.enum ety)) =
                 ⟨Size.ZERO, Align.ONE, .Memory (sized := true),
                   some (tyIdFor rp.types (.enum ety))⟩ := by
             dsimp only [localMemoryLayout, refLocalLayoutForTy, refLayoutDataForTy,
-              refEnumLayoutData]
+              refAsEnumTy?, refEnumLayoutData]
             rw [h_tr]; rfl
           have h_wm : Miri.Interpreter.PlaceMachine.writeMemory refAccessConfig
               (fun _ => true) .uninit
@@ -210,7 +353,8 @@ theorem copyReturn_ok (rp : RefProg) (c : Choice) (retTy : MirTy) (v : Val)
               h_lml rfl rfl (fun _ => rfl) st
           have h_sz0 : (refLocalLayoutForTy rp.types (.enum ety)).layout.size =
               Size.ZERO := by
-            dsimp only [refLocalLayoutForTy, refLayoutDataForTy, refEnumLayoutData]
+            dsimp only [refLocalLayoutForTy, refLayoutDataForTy, refAsEnumTy?,
+              refEnumLayoutData]
             rw [h_tr]; rfl
           have h_val : Miri.Interpreter.ValidityVisitor.validatePlace
               (refValHooks rp.types) c 8
@@ -218,12 +362,11 @@ theorem copyReturn_ok (rp : RefProg) (c : Choice) (retTy : MirTy) (v : Val)
               false true st = .ok () st :=
             validatePlace_mem_zst_step rp.types c _ st h_sz0
               (visit_local_fieldless_enum rp.types c 7 _ _ (.enum ety) ety 0
-                st rfl
-                (Or.inl ⟨rfl, h_res⟩)
+                st rfl ⟨rfl, h_res⟩
                 (by dsimp only [refLocalLayoutForTy, refLayoutDataForTy,
-                      refEnumLayoutData]; rw [h_tr]; rfl)
+                      refAsEnumTy?, refEnumLayoutData]; rw [h_tr]; rfl)
                 (by dsimp only [refLocalLayoutForTy, refLayoutDataForTy,
-                      refEnumLayoutData]; rw [h_tr]; rfl)
+                      refAsEnumTy?, refEnumLayoutData]; rw [h_tr]; rfl)
                 rfl)
           have h_st_eq :
               ({ st with machine := { st.machine with memory := st.machine.memory } } :
@@ -233,71 +376,13 @@ theorem copyReturn_ok (rp : RefProg) (c : Choice) (retTy : MirTy) (v : Val)
           · rw [h_st_eq]
             exact copyRuntimePlace_imm_to_mem_step rp c (.enum ety) .uninit
               retMemPlace st st _ h_pmd h_wm h_val
-          · dsimp only [refReadReturnVal]
+          · dsimp only [refReadReturnVal, refAsEnumTy?, refValOfEnumVariant?]
             rw [h_tr, refIsZstEnumTy_eq, h_zst]
             rfl
         | scalar tagW tagS =>
-          let ⟨disc, h_get_d⟩ := mirGetElem?_some_of_lt h_v_lt
-          have h_vimm : valToMiriImmediate (.enum ety) (.enumVal ety variant) =
-              .scalar (.fromScalarInt (miriScalar tagW (BitVec.ofNat 128 disc))) := by
-            dsimp only [valToMiriImmediate]
-            rw [h_tr, h_get_d]
-          rw [h_vimm]
-          have h_lsz : (refLocalLayoutForTy rp.types (.enum ety)).layout.size =
-              toMiriSize tagW := by
-            dsimp only [refLocalLayoutForTy, refLayoutDataForTy, refEnumLayoutData]
-            rw [h_tr]; rfl
-          rw [h_lsz] at h_raw h_mem
-          let ⟨after, h_wm, h_rd, h_cp, h_asz, h_amut, _⟩ :=
-            writeMemory_retPlace_scalar tagW (refLocalLayoutForTy rp.types (.enum ety))
-              (.Union (value := .Int (toMiriInteger tagW) tagS))
-              (BitVec.ofNat 128 disc) mem1 st
-              (by dsimp only [localMemoryLayout, refLocalLayoutForTy,
-                    refLayoutDataForTy, refEnumLayoutData]; rw [h_tr]; rfl)
-              h_lsz
-              (by cases tagW <;> cases tagS <;> rfl)
-              trivial h_raw h_mem h_dr
-          let mem' : Miri.Memory.MemoryState Miri.Memory.Provenance
-              Miri.TreeBorrows.BorrowTree Unit :=
-            { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
-          let st1 := { st with machine := { st.machine with memory := mem' } }
-          have h_val : Miri.Interpreter.ValidityVisitor.validatePlace
-              (refValHooks rp.types) c 8
-              ⟨.memory retMemPlace, refLocalLayoutForTy rp.types (.enum ety)⟩
-              false true st1 = .ok () st1 :=
-            validatePlace_mem_scalar_step rp.types c tagW _ st1 h_lsz
-              (visit_mem_scalar_enum_ok rp.types c 7 6 rfl (.enum ety) ety
-                tagW tagS variant disc mem1 after st1 h_tr h_adm
-                (Or.inl ⟨rfl, h_res⟩) h_get_d
-                h_pmd rfl
-                h_asz h_amut h_rd h_cp)
-          refine ⟨mem',
-            copyRuntimePlace_imm_to_mem_step rp c (.enum ety) _ retMemPlace
-              st st1 _ h_pmd h_wm h_val, ?_⟩
-          have h_ref_adm : refEnumAdmitted ety = true := by
-            rw [refEnumAdmitted_eq]; exact h_adm
-          let ⟨_, _, h_tag_all⟩ := enumAdmitted_parts h_adm
-          rw [h_tr] at h_tag_all
-          have h_tag_ok : tagBitsToDiscrBits tagW tagS ety.discrWidth
-              (truncateBits tagW (BitVec.ofNat 128 disc)) = BitVec.ofNat 128 disc :=
-            eq_of_beq (list_all_mirGetElem?
-              (p := fun d =>
-                tagBitsToDiscrBits tagW tagS ety.discrWidth
-                  (truncateBits tagW (BitVec.ofNat 128 d)) == BitVec.ofNat 128 d)
-              h_tag_all h_get_d)
-          dsimp only [refReadReturnVal, retMemPlace, retPtr, mem']
-          rw [h_tr]
-          dsimp only
-          rw [h_ref_adm, mem_ite_not_true_eq, singleton_live_find]
-          dsimp only
-          rw [h_rd]
-          dsimp only
-          rw [scalar_tryToScalarInt_fromScalarInt]
-          dsimp only
-          rw [miriScalar_data, refMiriTagToDiscrBits_eq, h_tag_ok]
-          dsimp only
-          rw [refFindDiscrVariant?_eq,
-            findDiscrVariant?_of_enumAdmitted h_adm h_get_d]
+          exact copyReturn_scalar_enumLike_ok rp c (.enum ety) ety tagW tagS
+            (.enumVal ety variant) variant mem1 st ⟨rfl, h_res⟩ h_tr h_adm rfl
+            rfl h_v_lt h_raw h_mem h_dr h_pmd
       | inr h_rest4 =>
       cases h_rest4 with
       | inl h_c =>
@@ -354,47 +439,12 @@ theorem copyReturn_ok (rp : RefProg) (c : Choice) (retTy : MirTy) (v : Val)
       | inl h_o =>
         let ⟨o, hty, hv⟩ := h_o
         subst hty hv
-        let ⟨variant, h_get_d⟩ := ordering_variant o
-        rw [mem_valToMiriImmediate_ordering]
-        have h_lsz : (refLocalLayoutForTy rp.types .ordering).layout.size =
-            toMiriSize .i8 := rfl
-        rw [h_lsz] at h_raw h_mem
-        let ⟨after, h_wm, h_rd, h_cp, h_asz, h_amut, _⟩ :=
-          writeMemory_retPlace_scalar .i8
-            (refLocalLayoutForTy rp.types .ordering)
-            (.Union (value := .Int (toMiriInteger .i8) true))
-            (BitVec.ofNat 128 (orderingTagBits o)) mem1 st rfl h_lsz rfl trivial
-            h_raw h_mem h_dr
-        let mem' : Miri.Memory.MemoryState Miri.Memory.Provenance
-            Miri.TreeBorrows.BorrowTree Unit :=
-          { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
-        let st1 := { st with machine := { st.machine with memory := mem' } }
-        have h_val : Miri.Interpreter.ValidityVisitor.validatePlace
-            (refValHooks rp.types) c 8
-            ⟨.memory retMemPlace, refLocalLayoutForTy rp.types .ordering⟩
-            false true st1 = .ok () st1 :=
-          validatePlace_mem_scalar_step rp.types c .i8 _ st1 h_lsz
-            (visit_mem_scalar_enum_ok rp.types c 7 6 rfl .ordering
-              refOrderingEnumTy .i8 true variant (orderingTagBits o) mem1 after
-              st1 rfl mem_refOrderingEnumTy_admitted (Or.inr ⟨rfl, rfl, h_res⟩)
-              h_get_d h_pmd rfl h_asz h_amut h_rd h_cp)
-        refine ⟨mem',
-          copyRuntimePlace_imm_to_mem_step rp c .ordering _ retMemPlace st st1 _
-            h_pmd h_wm h_val, ?_⟩
-        dsimp only [refReadReturnVal, retMemPlace, retPtr, mem']
-        rw [singleton_live_find]
-        dsimp only
-        have h_rd1 : after.readScalar RuntimeTargetDataLayout.default.base
-            (allocRange Size.ZERO (Size.ofBytes 1)) false =
-            .ok (.fromScalarInt
-              (miriScalar .i8 (BitVec.ofNat 128 (orderingTagBits o)))) :=
-          h_rd
-        rw [h_rd1]
-        dsimp only
-        rw [scalar_tryToScalarInt_fromScalarInt]
-        dsimp only
-        rw [miriScalar_data]
-        cases o <;> rfl
+        exact copyReturn_scalar_enumLike_ok rp c .ordering refOrderingEnumTy
+          .i8 true (.ordering o) (orderingVariantIdx o) mem1 st ⟨rfl, h_res⟩
+          rfl mem_refOrderingEnumTy_admitted (orderingVariant_enumVariantOfVal o)
+          (orderingVariant_valOfEnumVariant o)
+          (mirGetElem?_lt_of_some (orderingVariant_getElem? o))
+          h_raw h_mem h_dr h_pmd
       | inr h_p =>
         let ⟨w, s, bits, b, hty, hv, h_trunc⟩ := h_p
         subst hty hv
@@ -489,30 +539,8 @@ theorem copyReturn_uninit_ub (rp : RefProg) (c : Choice) (retTy : MirTy)
       rw [h_supp] at h_zst
       cases h_zst
     | scalar tagW tagS =>
-      have h_lsz : (refLocalLayoutForTy rp.types (.enum ety)).layout.size =
-          toMiriSize tagW := by
-        dsimp only [refLocalLayoutForTy, refLayoutDataForTy, refEnumLayoutData]
-        rw [h_tr]; rfl
-      have h_uns :
-          (localMemoryLayout (refLocalLayoutForTy rp.types (.enum ety))).backendRepr.isUnsized =
-            false := by
-        dsimp only [localMemoryLayout, refLocalLayoutForTy, refLayoutDataForTy,
-          refEnumLayoutData]
-        rw [h_tr]; rfl
-      rw [h_lsz] at h_raw h_mem
-      let ⟨after, info, h_wm, h_rd, h_asz, _, _⟩ :=
-        writeMemory_retPlace_uninit tagW (refLocalLayoutForTy rp.types (.enum ety))
-          mem1 st h_uns h_lsz h_raw h_mem h_dr
-      let mem' : Miri.Memory.MemoryState Miri.Memory.Provenance
-          Miri.TreeBorrows.BorrowTree Unit :=
-        { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
-      let st1 := { st with machine := { st.machine with memory := mem' } }
-      let ⟨msg, h_vis⟩ := visit_mem_scalar_enum_uninit_ub rp.types c 7 6 rfl
-        (.enum ety) ety tagW tagS info mem1 after st1 h_tr (Or.inl ⟨rfl, h_res⟩)
-        rfl h_asz h_rd
-      exact ⟨msg, st1, copyRuntimePlace_imm_to_mem_step rp c (.enum ety) .uninit
-        retMemPlace st st1 _ h_pmd h_wm
-        (validatePlace_mem_ub_step rp.types c _ st1 st1 msg h_vis)⟩
+      exact copyReturn_scalar_enumLike_uninit_ub rp c (.enum ety) ety tagW tagS
+        mem1 st ⟨rfl, h_res⟩ h_tr h_raw h_mem h_dr h_pmd
   | char =>
     have h_lsz : (refLocalLayoutForTy rp.types .char).layout.size =
         toMiriSize .i32 := rfl
@@ -530,22 +558,8 @@ theorem copyReturn_uninit_ub (rp : RefProg) (c : Choice) (retTy : MirTy)
       retMemPlace st st1 _ h_pmd h_wm
       (validatePlace_mem_ub_step rp.types c _ st1 st1 msg h_vis)⟩
   | ordering =>
-    have h_lsz : (refLocalLayoutForTy rp.types .ordering).layout.size =
-        toMiriSize .i8 := rfl
-    rw [h_lsz] at h_raw h_mem
-    let ⟨after, info, h_wm, h_rd, h_asz, _, _⟩ :=
-      writeMemory_retPlace_uninit .i8 (refLocalLayoutForTy rp.types .ordering)
-        mem1 st rfl h_lsz h_raw h_mem h_dr
-    let mem' : Miri.Memory.MemoryState Miri.Memory.Provenance
-        Miri.TreeBorrows.BorrowTree Unit :=
-      { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
-    let st1 := { st with machine := { st.machine with memory := mem' } }
-    let ⟨msg, h_vis⟩ := visit_mem_scalar_enum_uninit_ub rp.types c 7 6 rfl
-      .ordering refOrderingEnumTy .i8 true info mem1 after st1 rfl
-      (Or.inr ⟨rfl, rfl, h_res⟩) rfl h_asz h_rd
-    exact ⟨msg, st1, copyRuntimePlace_imm_to_mem_step rp c .ordering .uninit
-      retMemPlace st st1 _ h_pmd h_wm
-      (validatePlace_mem_ub_step rp.types c _ st1 st1 msg h_vis)⟩
+    exact copyReturn_scalar_enumLike_uninit_ub rp c .ordering refOrderingEnumTy
+      .i8 true mem1 st ⟨rfl, h_res⟩ rfl h_raw h_mem h_dr h_pmd
   | tuple fs =>
     let ⟨w, s, h_fs⟩ := isOverflowPairTy_inv h_supp
     subst h_fs
