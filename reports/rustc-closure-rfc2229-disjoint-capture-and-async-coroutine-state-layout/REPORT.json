@@ -1,0 +1,47 @@
+{
+  "topics": [
+    "anneal",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/mir",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc nightly compiler and source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly (2026-05-31)"
+      }
+    },
+    {
+      "name": "rustc upstream compiler source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "960ba7cf7e8666ecb449402ca82b6e9e631bd227"
+      }
+    },
+    {
+      "name": "Anneal MIR verification frontend",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 kernel and elaborator",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}
