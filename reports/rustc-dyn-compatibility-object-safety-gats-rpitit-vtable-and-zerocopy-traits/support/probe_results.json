@@ -1,0 +1,613 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "groups": {
+    "a_violations": {
+      "i_sized_self_supertrait_e0038": {
+        "name": "i_sized_self_supertrait_e0038",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0038]: the trait `NeedsSized` is not dyn compatible\n --> probe.rs:5:21\n  |\n5 | pub fn use_dyn(_x: &dyn NeedsSized) {}\n  |                     ^^^^^^^^^^^^^^ `NeedsSized` is not dyn compatible\n  |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n --> probe.rs:2:19\n  |\n2 | trait NeedsSized: Sized {\n  |       ----------  ^^^^^ ...because it requires `Self: Sized`\n  |       |\n  |       this trait is not dyn compatible...\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0038`.",
+        "error_codes": [
+          "E0038"
+        ]
+      },
+      "i_sized_self_where_e0038": {
+        "name": "i_sized_self_where_e0038",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0038]: the trait `NeedsSizedWhere` is not dyn compatible\n --> probe.rs:5:21\n  |\n5 | pub fn use_dyn(_x: &dyn NeedsSizedWhere) {}\n  |                     ^^^^^^^^^^^^^^^^^^^ `NeedsSizedWhere` is not dyn compatible\n  |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n --> probe.rs:2:35\n  |\n2 | trait NeedsSizedWhere where Self: Sized {\n  |       ---------------             ^^^^^ ...because it requires `Self: Sized`\n  |       |\n  |       this trait is not dyn compatible...\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0038`.",
+        "error_codes": [
+          "E0038"
+        ]
+      },
+      "i_supertrait_self_type_arg_e0038": {
+        "name": "i_supertrait_self_type_arg_e0038",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: the size for values of type `Self` cannot be known at compilation time\n --> probe.rs:3:12\n  |\n3 | trait Bad: Super<Self> {}\n  |            ^^^^^^^^^^^ doesn't have a size known at compile-time\n  |\nnote: required by an implicit `Sized` bound in `Super`\n --> probe.rs:2:13\n  |\n2 | trait Super<T> {}\n  |             ^ required by the implicit `Sized` requirement on this type parameter in `Super`\nhelp: consider further restricting `Self`\n  |\n3 | trait Bad: Super<Self> + Sized {}\n  |                        +++++++\nhelp: consider relaxing the implicit `Sized` restriction\n  |\n2 | trait Super<T: ?Sized> {}\n  |              ++++++++\n\nerror[E0038]: the trait `Bad` is not dyn compatible\n --> probe.rs:4:25\n  |\n4 | pub fn use_dyn(_x: &dyn Bad) {}\n  |                         ^^^ `Bad` is not dyn compatible\n  |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n --> probe.rs:3:12\n  |\n3 | trait Bad: Super<Self> {}\n  |       ---  ^^^^^^^^^^^ ...because it uses `Self` as a type parameter\n  |       |\n  |       this trait is not dyn compatible...\nhelp: consider using an opaque type instead\n  |\n4 - pub fn use_dyn(_x: &dyn Bad) {}\n4 + pub fn use_dyn(_x: &impl Bad) {}\n  |\n\nerror: aborting due to 2 previous errors\n\nSome errors have detailed explanations: E0038, E0277.\nFor more information about an error, try `rustc --explain E0038`.",
+        "error_codes": [
+          "E0038",
+          "E0277"
+        ]
+      },
+      "i_supertrait_self_proj_input_e0038": {
+        "name": "i_supertrait_self_proj_input_e0038",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0038]: the trait `Bad` is not dyn compatible\n --> probe.rs:4:25\n  |\n4 | pub fn use_dyn(_x: &dyn Bad<Out = u32>) {}\n  |                         ^^^^^^^^^^^^^^ `Bad` is not dyn compatible\n  |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n --> probe.rs:3:12\n  |\n3 | trait Bad: Sup<Self::Out> { type Out; }\n  |       ---  ^^^^^^^^^^^^^^ ...because it uses `Self` as a type parameter\n  |       |\n  |       this trait is not dyn compatible...\nhelp: consider using an opaque type instead\n  |\n4 - pub fn use_dyn(_x: &dyn Bad<Out = u32>) {}\n4 + pub fn use_dyn(_x: &impl Bad<Out = u32>) {}\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0038`.",
+        "error_codes": [
+          "E0038"
+        ]
+      },
+      "i_supertrait_self_proj_output_ok": {
+        "name": "i_supertrait_self_proj_output_ok",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "SUPERTRAIT_PROJ_OUT=17",
+        "run_stderr": ""
+      },
+      "ii_generic_method_e0038": {
+        "name": "ii_generic_method_e0038",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0038]: the trait `HasGeneric` is not dyn compatible\n --> probe.rs:5:21\n  |\n5 | pub fn use_dyn(_x: &dyn HasGeneric) {}\n  |                     ^^^^^^^^^^^^^^ `HasGeneric` is not dyn compatible\n  |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n --> probe.rs:3:8\n  |\n2 | trait HasGeneric {\n  |       ---------- this trait is not dyn compatible...\n3 |     fn foo<T>(&self, x: T);\n  |        ^^^ ...because method `foo` has generic type parameters\n  = help: consider moving `foo` to another trait\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0038`.",
+        "error_codes": [
+          "E0038"
+        ]
+      },
+      "ii_generic_method_where_self_sized_ok": {
+        "name": "ii_generic_method_where_self_sized_ok",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "SIZED_EXEMPT_OK=7 DYN_OK=42",
+        "run_stderr": ""
+      },
+      "ii_generic_method_where_self_sized_dyn_call_rejected": {
+        "name": "ii_generic_method_where_self_sized_dyn_call_rejected",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: the `foo` method cannot be invoked on a trait object\n --> probe.rs:7:7\n  |\n3 |     fn foo<T>(&self, x: T) -> T where Self: Sized;\n  |                                             ----- this has a `Sized` requirement\n...\n7 |     d.foo(7u32)\n  |       ^^^\n\nerror: aborting due to 1 previous error",
+        "error_codes": []
+      },
+      "iii_static_method_e0038": {
+        "name": "iii_static_method_e0038",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0038]: the trait `HasStatic` is not dyn compatible\n --> probe.rs:5:21\n  |\n5 | pub fn use_dyn(_x: &dyn HasStatic) {}\n  |                     ^^^^^^^^^^^^^ `HasStatic` is not dyn compatible\n  |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n --> probe.rs:3:8\n  |\n2 | trait HasStatic {\n  |       --------- this trait is not dyn compatible...\n3 |     fn make() -> u32;\n  |        ^^^^ ...because associated function `make` has no `self` parameter\nhelp: consider turning `make` into a method by giving it a `&self` argument\n  |\n3 |     fn make(&self) -> u32;\n  |             +++++\nhelp: alternatively, consider constraining `make` so it does not apply to trait objects\n  |\n3 |     fn make() -> u32 where Self: Sized;\n  |                      +++++++++++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0038`.",
+        "error_codes": [
+          "E0038"
+        ]
+      },
+      "iii_static_method_where_self_sized_ok": {
+        "name": "iii_static_method_where_self_sized_ok",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "STATIC_EXEMPT_OK=11",
+        "run_stderr": ""
+      },
+      "iv_self_input_output_e0038": {
+        "name": "iv_self_input_output_e0038",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0038]: the trait `SelfInOut` is not dyn compatible\n --> probe.rs:6:21\n  |\n6 | pub fn use_dyn(_x: &dyn SelfInOut) {}\n  |                     ^^^^^^^^^^^^^ `SelfInOut` is not dyn compatible\n  |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n --> probe.rs:3:27\n  |\n2 | trait SelfInOut {\n  |       --------- this trait is not dyn compatible...\n3 |     fn take(&self, other: Self);\n  |                           ^^^^ ...because method `take` references the `Self` type in this parameter\n4 |     fn make(&self) -> Self;\n  |                       ^^^^ ...because method `make` references the `Self` type in its return type\n  = help: consider moving `take` to another trait\n  = help: consider moving `make` to another trait\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0038`.",
+        "error_codes": [
+          "E0038"
+        ]
+      },
+      "v_by_val_self_allowed_in_dyn_box_call_e0161": {
+        "name": "v_by_val_self_allowed_in_dyn_box_call_e0161",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0161]: cannot move a value of type `dyn ByVal`\n  --> probe.rs:10:5\n   |\n10 |     b.by_val()\n   |     ^ the size of `dyn ByVal` cannot be statically determined\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0161`.",
+        "error_codes": [
+          "E0161"
+        ]
+      },
+      "v_by_val_self_allowed_in_dyn_ref_call_e0161_e0507": {
+        "name": "v_by_val_self_allowed_in_dyn_ref_call_e0161_e0507",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0161]: cannot move a value of type `dyn ByVal`\n --> probe.rs:6:5\n  |\n6 |     r.by_val()\n  |     ^ the size of `dyn ByVal` cannot be statically determined\n\nerror[E0507]: cannot move out of `*r` which is behind a shared reference\n --> probe.rs:6:5\n  |\n6 |     r.by_val()\n  |     ^ -------- `*r` moved due to this method call\n  |     |\n  |     move occurs because `*r` has type `dyn ByVal`, which does not implement the `Copy` trait\n  |\nnote: `ByVal::by_val` takes ownership of the receiver `self`, which moves `*r`\n --> probe.rs:3:15\n  |\n3 |     fn by_val(self) -> u32;\n  |               ^^^^\n\nerror: aborting due to 2 previous errors\n\nSome errors have detailed explanations: E0161, E0507.\nFor more information about an error, try `rustc --explain E0161`.",
+        "error_codes": [
+          "E0161",
+          "E0507"
+        ]
+      },
+      "v_by_val_self_allowed_in_dyn_unused_ok": {
+        "name": "v_by_val_self_allowed_in_dyn_unused_ok",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "warning: method `by_val` is never used\n --> probe.rs:3:8\n  |\n2 | trait ByVal {\n  |       ----- method in this trait\n3 |     fn by_val(self) -> u32;\n  |        ^^^^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "BY_VAL_TYPE_ALLOWED_PEEK=41",
+        "run_stderr": ""
+      },
+      "v_by_val_where_self_sized_call_rejected": {
+        "name": "v_by_val_where_self_sized_call_rejected",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: the `by_val` method cannot be invoked on a trait object\n --> probe.rs:7:7\n  |\n3 |     fn by_val(self) -> u32 where Self: Sized;\n  |                                        ----- this has a `Sized` requirement\n...\n7 |     b.by_val()\n  |       ^^^^^^\n\nerror: aborting due to 1 previous error",
+        "error_codes": []
+      },
+      "v_by_val_unsized_fn_params_nightly_ok": {
+        "name": "v_by_val_unsized_fn_params_nightly_ok",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "warning: the feature `unsized_fn_params` is internal to the compiler or standard library\n --> probe.rs:2:12\n  |\n2 | #![feature(unsized_fn_params)]\n  |            ^^^^^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: 1 warning emitted",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "UNSIZED_FN_PARAMS_OK=42",
+        "run_stderr": ""
+      },
+      "v_box_dyn_fnonce_stable_ok": {
+        "name": "v_box_dyn_fnonce_stable_ok",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "BOX_DYN_FNONCE_LEN=9",
+        "run_stderr": ""
+      },
+      "vi_assoc_const_e0038": {
+        "name": "vi_assoc_const_e0038",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0038]: the trait `HasConst` is not dyn compatible\n --> probe.rs:6:21\n  |\n6 | pub fn use_dyn(_x: &dyn HasConst) {}\n  |                     ^^^^^^^^^^^^ `HasConst` is not dyn compatible\n  |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n --> probe.rs:3:11\n  |\n2 | trait HasConst {\n  |       -------- this trait is not dyn compatible...\n3 |     const C: usize;\n  |           ^ ...because it contains associated const `C`\n  = help: consider moving `C` to another trait\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0038`.",
+        "error_codes": [
+          "E0038"
+        ]
+      },
+      "vi_assoc_const_where_self_sized_e0658": {
+        "name": "vi_assoc_const_where_self_sized_e0658",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0658]: generic const items are experimental\n --> probe.rs:3:20\n  |\n3 |     const C: usize where Self: Sized;\n  |                    ^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #113521 <https://github.com/rust-lang/rust/issues/113521> for more information\n  = help: add `#![feature(generic_const_items)]` to the crate attributes to enable\n  = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0658`.",
+        "error_codes": [
+          "E0658"
+        ]
+      },
+      "vi_assoc_const_nightly_generic_const_items_self_sized_ok": {
+        "name": "vi_assoc_const_nightly_generic_const_items_self_sized_ok",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "warning: the feature `generic_const_items` is incomplete and may not be safe to use and/or cause compiler crashes\n --> probe.rs:2:12\n  |\n2 | #![feature(generic_const_items)]\n  |            ^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #113521 <https://github.com/rust-lang/rust/issues/113521> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "GENERIC_CONST_ITEMS_SELF_SIZED_OK=99",
+        "run_stderr": ""
+      },
+      "vii_assoc_ty_non_gat_missing_e0191": {
+        "name": "vii_assoc_ty_non_gat_missing_e0191",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0191]: the value of the associated type `Out` in `HasAssoc` must be specified\n --> probe.rs:6:25\n  |\n3 |     type Out;\n  |     -------- `Out` defined here\n...\n6 | pub fn missing(_x: &dyn HasAssoc) {}\n  |                         ^^^^^^^^\n  |\nhelp: specify the associated type\n  |\n6 | pub fn missing(_x: &dyn HasAssoc<Out = /* Type */>) {}\n  |                                 ++++++++++++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0191`.",
+        "error_codes": [
+          "E0191"
+        ]
+      },
+      "vii_assoc_ty_non_gat_specified_ok": {
+        "name": "vii_assoc_ty_non_gat_specified_ok",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "ASSOC_TY_OK=123",
+        "run_stderr": ""
+      },
+      "vii_gat_e0038": {
+        "name": "vii_gat_e0038",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0038]: the trait `HasGat` is not dyn compatible\n --> probe.rs:6:25\n  |\n6 | pub fn use_dyn<'b>(_x: &dyn HasGat<Item<'b> = &'b u32>) {}\n  |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `HasGat` is not dyn compatible\n  |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n --> probe.rs:3:10\n  |\n2 | trait HasGat {\n  |       ------ this trait is not dyn compatible...\n3 |     type Item<'a> where Self: 'a;\n  |          ^^^^ ...because it contains generic associated type `Item`\n  = help: consider moving `Item` to another trait\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0038`.",
+        "error_codes": [
+          "E0038"
+        ]
+      },
+      "vii_gat_where_self_sized_ok": {
+        "name": "vii_gat_where_self_sized_ok",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "GAT_EXEMPT_TAG=55 CONCRETE_BORROW=55",
+        "run_stderr": ""
+      },
+      "vii_gat_where_self_sized_unused_bound_lint": {
+        "name": "vii_gat_where_self_sized_unused_bound_lint",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "warning: unnecessary associated type bound for dyn-incompatible associated type\n  --> probe.rs:11:36\n   |\n11 | pub fn use_dyn(d: &dyn HasGatSized<Item<'static> = u32>) -> u32 {\n   |                                    ^^^^^^^^^^^^^^^^^^^ help: remove this bound\n   |\n   = note: this associated type has a `where Self: Sized` bound, and while the associated type can be specified, it cannot be used because trait objects are never `Sized`\n   = note: `#[warn(unused_associated_type_bounds)]` on by default\n\nwarning: trait `HasGatSized` is more private than the item `use_dyn`\n  --> probe.rs:11:1\n   |\n11 | pub fn use_dyn(d: &dyn HasGatSized<Item<'static> = u32>) -> u32 {\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function `use_dyn` is reachable at visibility `pub`\n   |\nnote: but trait `HasGatSized` is only usable at visibility `pub(crate)`\n  --> probe.rs:2:1\n   |\n 2 | trait HasGatSized {\n   | ^^^^^^^^^^^^^^^^^\n   = note: `#[warn(private_interfaces)]` on by default\n\nwarning: struct `S` is never constructed\n --> probe.rs:6:8\n  |\n6 | struct S(u32);\n  |        ^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 3 warnings emitted",
+        "error_codes": []
+      },
+      "viii_rpitit_and_async_fn_e0038": {
+        "name": "viii_rpitit_and_async_fn_e0038",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0038]: the trait `HasRpitit` is not dyn compatible\n --> probe.rs:8:24\n  |\n8 | pub fn use_rpitit(_x: &dyn HasRpitit) {}\n  |                        ^^^^^^^^^^^^^ `HasRpitit` is not dyn compatible\n  |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n --> probe.rs:3:23\n  |\n2 | trait HasRpitit {\n  |       --------- this trait is not dyn compatible...\n3 |     fn make(&self) -> impl core::fmt::Debug;\n  |                       ^^^^^^^^^^^^^^^^^^^^^ ...because method `make` references an `impl Trait` type in its return type\n  = help: consider moving `make` to another trait\n\nerror[E0038]: the trait `HasAsync` is not dyn compatible\n --> probe.rs:9:23\n  |\n9 | pub fn use_async(_x: &dyn HasAsync) {}\n  |                       ^^^^^^^^^^^^ `HasAsync` is not dyn compatible\n  |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n --> probe.rs:6:14\n  |\n5 | trait HasAsync {\n  |       -------- this trait is not dyn compatible...\n6 |     async fn run(&self) -> u32;\n  |              ^^^ ...because method `run` is `async`\n  = help: consider moving `run` to another trait\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0038`.",
+        "error_codes": [
+          "E0038"
+        ]
+      },
+      "viii_rpitit_and_async_fn_where_self_sized_ok": {
+        "name": "viii_rpitit_and_async_fn_where_self_sized_ok",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "warning: method `make` is never used\n --> probe.rs:3:8\n  |\n2 | trait HasRpititExempt {\n  |       --------------- method in this trait\n3 |     fn make(&self) -> impl core::fmt::Debug where Self: Sized;\n  |        ^^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: method `run` is never used\n --> probe.rs:7:14\n  |\n6 | trait HasAsyncExempt {\n  |       -------------- method in this trait\n7 |     async fn run(&self) -> u32 where Self: Sized;\n  |              ^^^\n\nwarning: 2 warnings emitted",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "RPITIT_EXEMPT=88 ASYNC_EXEMPT=88",
+        "run_stderr": ""
+      },
+      "ix_where_self_clone_elaborates_to_sized_ok": {
+        "name": "ix_where_self_clone_elaborates_to_sized_ok",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "CLONE_ELAB_SIZED_TAG=30 CONCRETE_F=31",
+        "run_stderr": ""
+      },
+      "ix_where_self_clone_dyn_call_rejected": {
+        "name": "ix_where_self_clone_dyn_call_rejected",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: the `f` method cannot be invoked on a trait object\n --> probe.rs:6:7\n  |\n6 |     d.f()\n  |       ^ this has a `Sized` requirement\n\nerror: aborting due to 1 previous error",
+        "error_codes": []
+      },
+      "ix_where_self_non_auto_unsized_e0038": {
+        "name": "ix_where_self_non_auto_unsized_e0038",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0038]: the trait `WhereNonAutoUnsized` is not dyn compatible\n --> probe.rs:6:21\n  |\n6 | pub fn use_dyn(_x: &dyn WhereNonAutoUnsized) {}\n  |                     ^^^^^^^^^^^^^^^^^^^^^^^ `WhereNonAutoUnsized` is not dyn compatible\n  |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n --> probe.rs:4:8\n  |\n3 | trait WhereNonAutoUnsized {\n  |       ------------------- this trait is not dyn compatible...\n4 |     fn f(&self) -> u32 where Self: NonAuto;\n  |        ^ ...because method `f` references the `Self` type in its `where` clause\n  = help: consider moving `f` to another trait\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0038`.",
+        "error_codes": [
+          "E0038"
+        ]
+      },
+      "ix_where_self_static_and_auto_ok": {
+        "name": "ix_where_self_static_and_auto_ok",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "PLAIN=10 SEND=12 STATIC=11 RC_PLAIN=20",
+        "run_stderr": ""
+      },
+      "ix_where_self_send_called_without_send_e0277": {
+        "name": "ix_where_self_send_called_without_send_e0277",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: `dyn WhereSend` cannot be sent between threads safely\n --> probe.rs:6:7\n  |\n6 |     d.f_send()\n  |       ^^^^^^ `dyn WhereSend` cannot be sent between threads safely\n  |\n  = help: the trait `Send` is not implemented for `dyn WhereSend`\nnote: required by a bound in `WhereSend::f_send`\n --> probe.rs:3:41\n  |\n3 |     fn f_send(&self) -> u32 where Self: Send;\n  |                                         ^^^^ required by this bound in `WhereSend::f_send`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.",
+        "error_codes": [
+          "E0277"
+        ]
+      },
+      "x_async_fn_traits_stable_e0038_vs_e0191": {
+        "name": "x_async_fn_traits_stable_e0038_vs_e0191",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0038]: the trait `AsyncFnMut` is not dyn compatible\n  --> probe.rs:3:20\n   |\n 3 | pub fn f1(_x: &dyn AsyncFn() -> u32) {}\n   |                    ^^^^^^^^^^^^^^^^ `AsyncFnMut` is not dyn compatible\n   |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n  --> /rustc-sysroot/lib/rustlib/src/rust/library/core/src/ops/async_function.rs:28:10\n   |\n28 |     type CallRefFuture<'a>: Future<Output = Self::Output>\n   |          ^^^^^^^^^^^^^ the trait is not dyn compatible because it contains generic associated type `CallRefFuture`\n\nerror[E0038]: the trait `AsyncFnMut` is not dyn compatible\n  --> probe.rs:4:20\n   |\n 4 | pub fn f2(_x: &dyn AsyncFnMut() -> u32) {}\n   |                    ^^^^^^^^^^^^^^^^^^^ `AsyncFnMut` is not dyn compatible\n   |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n  --> /rustc-sysroot/lib/rustlib/src/rust/library/core/src/ops/async_function.rs:28:10\n   |\n28 |     type CallRefFuture<'a>: Future<Output = Self::Output>\n   |          ^^^^^^^^^^^^^ the trait is not dyn compatible because it contains generic associated type `CallRefFuture`\n\nerror[E0191]: the value of the associated type `CallOnceFuture` in `AsyncFnOnce()` must be specified\n --> probe.rs:5:20\n  |\n5 | pub fn f3(_x: &dyn AsyncFnOnce() -> u32) {}\n  |                    ^^^^^^^^^^^^^^^^^^^^\n  |\nhelp: specify the associated type\n  |\n5 | pub fn f3(_x: &dyn AsyncFnOnce() -> u32<CallOnceFuture = /* Type */>) {}\n  |                                        +++++++++++++++++++++++++++++\n\nerror: aborting due to 3 previous errors\n\nSome errors have detailed explanations: E0038, E0191.\nFor more information about an error, try `rustc --explain E0038`.",
+        "error_codes": [
+          "E0038",
+          "E0191"
+        ]
+      },
+      "x_box_dyn_async_fn_once_nightly_ok": {
+        "name": "x_box_dyn_async_fn_once_nightly_ok",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "BOX_DYN_ASYNC_FN_ONCE=64",
+        "run_stderr": ""
+      }
+    },
+    "b_receivers": {
+      "valid_std_dyn_receivers": {
+        "name": "valid_std_dyn_receivers",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "REF=40 MUT=42 BOX=42 RC=43 ARC=44 PIN_REF=42 PIN_MUT=42 PIN_BOX=45 PIN_RC=46 PIN_ARC=47",
+        "run_stderr": ""
+      },
+      "undispatchable_double_indirection_e0038": {
+        "name": "undispatchable_double_indirection_e0038",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0038]: the trait `BadRecv` is not dyn compatible\n --> probe.rs:7:21\n  |\n7 | pub fn use_dyn(_x: &dyn BadRecv) {}\n  |                     ^^^^^^^^^^^ `BadRecv` is not dyn compatible\n  |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n --> probe.rs:4:22\n  |\n3 | trait BadRecv {\n  |       ------- this trait is not dyn compatible...\n4 |     fn dbl_ref(self: &&Self) -> u32;\n  |                      ^^^^^^ ...because method `dbl_ref`'s `self` parameter cannot be dispatched on\n5 |     fn rc_box(self: Rc<Box<Self>>) -> u32;\n  |                     ^^^^^^^^^^^^^ ...because method `rc_box`'s `self` parameter cannot be dispatched on\nhelp: consider changing method `dbl_ref`'s `self` parameter to be `&self`\n  |\n4 -     fn dbl_ref(self: &&Self) -> u32;\n4 +     fn dbl_ref(self: &Self) -> u32;\n  |\nhelp: consider changing method `rc_box`'s `self` parameter to be `&self`\n  |\n5 -     fn rc_box(self: Rc<Box<Self>>) -> u32;\n5 +     fn rc_box(self: &Self) -> u32;\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0038`.",
+        "error_codes": [
+          "E0038"
+        ]
+      },
+      "raw_ptr_receiver_stable_e0658": {
+        "name": "raw_ptr_receiver_stable_e0658",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0658]: `*const Self` cannot be used as the type of `self` without the `arbitrary_self_types_pointers` feature\n --> probe.rs:3:18\n  |\n3 |     fn raw(self: *const Self) -> usize;\n  |                  ^^^^^^^^^^^\n  |\n  = note: see issue #44874 <https://github.com/rust-lang/rust/issues/44874> for more information\n  = help: add `#![feature(arbitrary_self_types_pointers)]` to the crate attributes to enable\n  = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date\n  = help: consider changing to `self`, `&self`, `&mut self`, or a type implementing `Receiver` such as `self: Box<Self>`, `self: Rc<Self>`, or `self: Arc<Self>`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0658`.",
+        "error_codes": [
+          "E0658"
+        ]
+      },
+      "raw_ptr_receiver_nightly_arbitrary_ok": {
+        "name": "raw_ptr_receiver_nightly_arbitrary_ok",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "RAW_PTR_DYN=99",
+        "run_stderr": ""
+      },
+      "custom_dispatch_from_dyn_wrapper_nightly_ok": {
+        "name": "custom_dispatch_from_dyn_wrapper_nightly_ok",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "CUSTOM_DISPATCH_FROM_DYN=77",
+        "run_stderr": ""
+      }
+    },
+    "c_vtable_ir": {
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "vtable_count": 2,
+      "vtables": [
+        {
+          "global_def": "@vtable.0 = private unnamed_addr constant <{ ptr, [16 x i8], ptr, [8 x i8], ptr, ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc2rc2RcmEECsXdCfStjyhV_9vtable_ir, [16 x i8] c\"\\08\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\", ptr @_RNvXs_CsXdCfStjyhV_9vtable_irINtNtCs8jjFDZd5IFg_5alloc2rc2RcmENtB4_9SlotProbe2m1, [8 x i8] undef, ptr @_RNSNvYINtNtCs8jjFDZd5IFg_5alloc2rc2RcmENtCsXdCfStjyhV_9vtable_ir9SlotProbe8m_by_val6vtableBD_, ptr @_RNvXs_CsXdCfStjyhV_9vtable_irINtNtCs8jjFDZd5IFg_5alloc2rc2RcmENtB4_9SlotProbe2m2 }>, align 8",
+          "slot_count": 6,
+          "slots": [
+            "ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueINtNtCs8jjFDZd5IFg_5alloc2rc2RcmEECsXdCfStjyhV_9vtable_ir",
+            "[16 x i8] c\"\\08\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\"",
+            "ptr @_RNvXs_CsXdCfStjyhV_9vtable_irINtNtCs8jjFDZd5IFg_5alloc2rc2RcmENtB4_9SlotProbe2m1",
+            "[8 x i8] undef",
+            "ptr @_RNSNvYINtNtCs8jjFDZd5IFg_5alloc2rc2RcmENtCsXdCfStjyhV_9vtable_ir9SlotProbe8m_by_val6vtableBD_",
+            "ptr @_RNvXs_CsXdCfStjyhV_9vtable_irINtNtCs8jjFDZd5IFg_5alloc2rc2RcmENtB4_9SlotProbe2m2"
+          ]
+        },
+        {
+          "global_def": "@vtable.1 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr, ptr }> <{ [24 x i8] c\"\\00\\00\\00\\00\\00\\00\\00\\00\\04\\00\\00\\00\\00\\00\\00\\00\\04\\00\\00\\00\\00\\00\\00\\00\", ptr @_RNvXCsXdCfStjyhV_9vtable_irmNtB2_9SlotProbe2m1, ptr @_RNvXCsXdCfStjyhV_9vtable_irmNtB2_9SlotProbe6m_send, ptr @_RNSNvYmNtCsXdCfStjyhV_9vtable_ir9SlotProbe8m_by_val6vtableB7_, ptr @_RNvXCsXdCfStjyhV_9vtable_irmNtB2_9SlotProbe2m2 }>, align 8",
+          "slot_count": 5,
+          "slots": [
+            "[24 x i8] c\"\\00\\00\\00\\00\\00\\00\\00\\00\\04\\00\\00\\00\\00\\00\\00\\00\\04\\00\\00\\00\\00\\00\\00\\00\"",
+            "ptr @_RNvXCsXdCfStjyhV_9vtable_irmNtB2_9SlotProbe2m1",
+            "ptr @_RNvXCsXdCfStjyhV_9vtable_irmNtB2_9SlotProbe6m_send",
+            "ptr @_RNSNvYmNtCsXdCfStjyhV_9vtable_ir9SlotProbe8m_by_val6vtableB7_",
+            "ptr @_RNvXCsXdCfStjyhV_9vtable_irmNtB2_9SlotProbe2m2"
+          ]
+        }
+      ]
+    },
+    "d_zerocopy_traits": {
+      "zerocopy_compile": {
+        "edition": "2021",
+        "cargo_pkg_version": "0.8.64",
+        "features": [],
+        "compile_returncode": 0,
+        "compile_stderr": ""
+      },
+      "Immutable_dyn_ok": {
+        "name": "zc_Immutable_dyn_ok",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "warning: field `0` is never read\n --> probe.rs:3:14\n  |\n3 | struct MyVal(u32);\n  |        ----- ^^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "ZC_IMMUTABLE_DYN_OK=1 SIZE=4",
+        "run_stderr": ""
+      },
+      "Unaligned_dyn_ok": {
+        "name": "zc_Unaligned_dyn_ok",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "warning: field `0` is never read\n --> probe.rs:3:15\n  |\n3 | struct MyByte(u8);\n  |        ------ ^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "ZC_UNALIGNED_DYN_OK=1 SIZE=1",
+        "run_stderr": ""
+      },
+      "KnownLayout_e0038": {
+        "name": "zc_KnownLayout_e0038",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0038]: the trait `KnownLayout` is not dyn compatible\n   --> probe.rs:3:15\n    |\n  3 | pub fn f(_x: &dyn KnownLayout<PointerMetadata = (), MaybeUninit = u32>) {}\n    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `KnownLayout` is not dyn compatible\n    |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n   --> google/zerocopy/zerocopy/src/lib.rs:797:11\n    |\n797 |     const LAYOUT: DstLayout;\n    |           ^^^^^^ the trait is not dyn compatible because it contains associated const `LAYOUT`\n...\n803 |     fn raw_from_ptr_len(bytes: NonNull<u8>, meta: Self::PointerMetadata...\n    |        ^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `raw_from_ptr_len` has no `self` parameter\n...\n812 |     fn pointer_to_metadata(ptr: *mut Self) -> Self::PointerMetadata;\n    |        ^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `pointer_to_metadata` has no `self` parameter\n...\n828 |     fn size_of_val_raw(ptr: NonNull<Self>) -> Option<usize> {\n    |        ^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `size_of_val_raw` has no `self` parameter\n...\n838 |     fn raw_dangling() -> NonNull<Self> {\n    |        ^^^^^^^^^^^^ the trait is not dyn compatible because associated function `raw_dangling` has no `self` parameter\n...\n870 |     fn size_for_metadata(meta: Self::PointerMetadata) -> Option<usize> {\n    |        ^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `size_for_metadata` has no `self` parameter\n...\n887 |     unsafe fn size_for_metadata_unchecked(meta: Self::PointerMetadata) ...\n    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `size_for_metadata_unchecked` has no `self` parameter\n...\n904 |     fn is_valid_metadata(meta: Self::PointerMetadata) -> bool {\n    |        ^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `is_valid_metadata` has no `self` parameter\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0038`.",
+        "error_codes": [
+          "E0038"
+        ]
+      },
+      "TryFromBytes_e0038": {
+        "name": "zc_TryFromBytes_e0038",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0038]: the trait `TryFromBytes` is not dyn compatible\n    --> probe.rs:3:15\n     |\n   3 | pub fn f(_x: &dyn TryFromBytes) {}\n     |               ^^^^^^^^^^^^^^^^ `TryFromBytes` is not dyn compatible\n     |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n    --> google/zerocopy/zerocopy/src/lib.rs:1997:8\n     |\n1997 |     fn is_safe<A>(candidate: Maybe<'_, Self, A>) -> bool\n     |        ^^^^^^^ the trait is not dyn compatible because associated function `is_safe` has no `self` parameter\n...\n2100 |     fn try_ref_from_bytes(source: &[u8]) -> Result<&Self, TryCastError...\n     |        ^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_ref_from_bytes` has no `self` parameter\n...\n2223 |     fn try_ref_from_prefix(source: &[u8]) -> Result<(&Self, &[u8]), Tr...\n     |        ^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_ref_from_prefix` has no `self` parameter\n...\n2333 |     fn try_ref_from_suffix(source: &[u8]) -> Result<(&[u8], &Self), Tr...\n     |        ^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_ref_from_suffix` has no `self` parameter\n...\n2427 |     fn try_mut_from_bytes(bytes: &mut [u8]) -> Result<&mut Self, TryCa...\n     |        ^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_mut_from_bytes` has no `self` parameter\n...\n2536 |     fn try_mut_from_prefix(\n     |        ^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_mut_from_prefix` has no `self` parameter\n...\n2636 |     fn try_mut_from_suffix(\n     |        ^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_mut_from_suffix` has no `self` parameter\n...\n2741 |     fn try_ref_from_bytes_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_ref_from_bytes_with_elems` has no `self` parameter\n...\n2862 |     fn try_ref_from_prefix_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_ref_from_prefix_with_elems` has no `self` parameter\n...\n2970 |     fn try_ref_from_suffix_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_ref_from_suffix_with_elems` has no `self` parameter\n...\n3066 |     fn try_mut_from_bytes_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_mut_from_bytes_with_elems` has no `self` parameter\n...\n3177 |     fn try_mut_from_prefix_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_mut_from_prefix_with_elems` has no `self` parameter\n...\n3277 |     fn try_mut_from_suffix_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_mut_from_suffix_with_elems` has no `self` parameter\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0038`.",
+        "error_codes": [
+          "E0038"
+        ]
+      },
+      "FromZeros_e0038": {
+        "name": "zc_FromZeros_e0038",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0038]: the trait `FromZeros` is not dyn compatible\n    --> probe.rs:3:15\n     |\n   3 | pub fn f(_x: &dyn FromZeros) {}\n     |               ^^^^^^^^^^^^^ `FromZeros` is not dyn compatible\n     |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n    --> google/zerocopy/zerocopy/src/lib.rs:1997:8\n     |\n1997 |     fn is_safe<A>(candidate: Maybe<'_, Self, A>) -> bool\n     |        ^^^^^^^ the trait is not dyn compatible because associated function `is_safe` has no `self` parameter\n...\n2100 |     fn try_ref_from_bytes(source: &[u8]) -> Result<&Self, TryCastError...\n     |        ^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_ref_from_bytes` has no `self` parameter\n...\n2223 |     fn try_ref_from_prefix(source: &[u8]) -> Result<(&Self, &[u8]), Tr...\n     |        ^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_ref_from_prefix` has no `self` parameter\n...\n2333 |     fn try_ref_from_suffix(source: &[u8]) -> Result<(&[u8], &Self), Tr...\n     |        ^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_ref_from_suffix` has no `self` parameter\n...\n2427 |     fn try_mut_from_bytes(bytes: &mut [u8]) -> Result<&mut Self, TryCa...\n     |        ^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_mut_from_bytes` has no `self` parameter\n...\n2536 |     fn try_mut_from_prefix(\n     |        ^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_mut_from_prefix` has no `self` parameter\n...\n2636 |     fn try_mut_from_suffix(\n     |        ^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_mut_from_suffix` has no `self` parameter\n...\n2741 |     fn try_ref_from_bytes_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_ref_from_bytes_with_elems` has no `self` parameter\n...\n2862 |     fn try_ref_from_prefix_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_ref_from_prefix_with_elems` has no `self` parameter\n...\n2970 |     fn try_ref_from_suffix_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_ref_from_suffix_with_elems` has no `self` parameter\n...\n3066 |     fn try_mut_from_bytes_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_mut_from_bytes_with_elems` has no `self` parameter\n...\n3177 |     fn try_mut_from_prefix_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_mut_from_prefix_with_elems` has no `self` parameter\n...\n3277 |     fn try_mut_from_suffix_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_mut_from_suffix_with_elems` has no `self` parameter\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0038`.",
+        "error_codes": [
+          "E0038"
+        ]
+      },
+      "FromBytes_e0038": {
+        "name": "zc_FromBytes_e0038",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0038]: the trait `FromBytes` is not dyn compatible\n    --> probe.rs:3:15\n     |\n   3 | pub fn f(_x: &dyn FromBytes) {}\n     |               ^^^^^^^^^^^^^ `FromBytes` is not dyn compatible\n     |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n    --> google/zerocopy/zerocopy/src/lib.rs:1997:8\n     |\n1997 |     fn is_safe<A>(candidate: Maybe<'_, Self, A>) -> bool\n     |        ^^^^^^^ the trait is not dyn compatible because associated function `is_safe` has no `self` parameter\n...\n2100 |     fn try_ref_from_bytes(source: &[u8]) -> Result<&Self, TryCastError...\n     |        ^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_ref_from_bytes` has no `self` parameter\n...\n2223 |     fn try_ref_from_prefix(source: &[u8]) -> Result<(&Self, &[u8]), Tr...\n     |        ^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_ref_from_prefix` has no `self` parameter\n...\n2333 |     fn try_ref_from_suffix(source: &[u8]) -> Result<(&[u8], &Self), Tr...\n     |        ^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_ref_from_suffix` has no `self` parameter\n...\n2427 |     fn try_mut_from_bytes(bytes: &mut [u8]) -> Result<&mut Self, TryCa...\n     |        ^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_mut_from_bytes` has no `self` parameter\n...\n2536 |     fn try_mut_from_prefix(\n     |        ^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_mut_from_prefix` has no `self` parameter\n...\n2636 |     fn try_mut_from_suffix(\n     |        ^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_mut_from_suffix` has no `self` parameter\n...\n2741 |     fn try_ref_from_bytes_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_ref_from_bytes_with_elems` has no `self` parameter\n...\n2862 |     fn try_ref_from_prefix_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_ref_from_prefix_with_elems` has no `self` parameter\n...\n2970 |     fn try_ref_from_suffix_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_ref_from_suffix_with_elems` has no `self` parameter\n...\n3066 |     fn try_mut_from_bytes_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_mut_from_bytes_with_elems` has no `self` parameter\n...\n3177 |     fn try_mut_from_prefix_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_mut_from_prefix_with_elems` has no `self` parameter\n...\n3277 |     fn try_mut_from_suffix_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `try_mut_from_suffix_with_elems` has no `self` parameter\n...\n4484 |     fn ref_from_bytes(source: &[u8]) -> Result<&Self, CastError<&[u8],...\n     |        ^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `ref_from_bytes` has no `self` parameter\n...\n4596 |     fn ref_from_prefix(source: &[u8]) -> Result<(&Self, &[u8]), CastEr...\n     |        ^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `ref_from_prefix` has no `self` parameter\n...\n4690 |     fn ref_from_suffix(source: &[u8]) -> Result<(&[u8], &Self), CastEr...\n     |        ^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `ref_from_suffix` has no `self` parameter\n...\n4774 |     fn mut_from_bytes(source: &mut [u8]) -> Result<&mut Self, CastErro...\n     |        ^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `mut_from_bytes` has no `self` parameter\n...\n4865 |     fn mut_from_prefix(\n     |        ^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `mut_from_prefix` has no `self` parameter\n...\n4946 |     fn mut_from_suffix(\n     |        ^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `mut_from_suffix` has no `self` parameter\n...\n5038 |     fn ref_from_bytes_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `ref_from_bytes_with_elems` has no `self` parameter\n...\n5137 |     fn ref_from_prefix_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `ref_from_prefix_with_elems` has no `self` parameter\n...\n5231 |     fn ref_from_suffix_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `ref_from_suffix_with_elems` has no `self` parameter\n...\n5312 |     fn mut_from_bytes_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `mut_from_bytes_with_elems` has no `self` parameter\n...\n5402 |     fn mut_from_prefix_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `mut_from_prefix_with_elems` has no `self` parameter\n...\n5487 |     fn mut_from_suffix_with_elems(\n     |        ^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait is not dyn compatible because associated function `mut_from_suffix_with_elems` has no `self` parameter\n...\n5722 |     fn ref_from(source: &[u8]) -> Option<&Self>\n     |        ^^^^^^^^ the trait is not dyn compatible because associated function `ref_from` has no `self` parameter\n...\n5733 |     fn mut_from(source: &mut [u8]) -> Option<&mut Self>\n     |        ^^^^^^^^ the trait is not dyn compatible because associated function `mut_from` has no `self` parameter\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0038`.",
+        "error_codes": [
+          "E0038"
+        ]
+      },
+      "IntoBytes_e0038": {
+        "name": "zc_IntoBytes_e0038",
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0038]: the trait `IntoBytes` is not dyn compatible\n    --> probe.rs:3:15\n     |\n   3 | pub fn f(_x: &dyn IntoBytes) {}\n     |               ^^^^^^^^^^^^^ `IntoBytes` is not dyn compatible\n     |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n    --> google/zerocopy/zerocopy/src/lib.rs:6089:8\n     |\n6089 |     fn as_bytes(&self) -> &[u8]\n     |        ^^^^^^^^ the trait is not dyn compatible because method `as_bytes` references the `Self` type in its `where` clause\n...\n6165 |     fn as_mut_bytes(&mut self) -> &mut [u8]\n     |        ^^^^^^^^^^^^ the trait is not dyn compatible because method `as_mut_bytes` references the `Self` type in its `where` clause\n...\n6265 |     fn write_to(&self, dst: &mut [u8]) -> Result<(), SizeError<&Self, ...\n     |        ^^^^^^^^\n     |        |\n     |        the trait is not dyn compatible because method `write_to` references the `Self` type in its return type\n     |        the trait is not dyn compatible because method `write_to` references the `Self` type in its `where` clause\n...\n6351 |     fn write_to_prefix(&self, dst: &mut [u8]) -> Result<(), SizeError<...\n     |        ^^^^^^^^^^^^^^^\n     |        |\n     |        the trait is not dyn compatible because method `write_to_prefix` references the `Self` type in its return type\n     |        the trait is not dyn compatible because method `write_to_prefix` references the `Self` type in its `where` clause\n...\n6446 |     fn write_to_suffix(&self, dst: &mut [u8]) -> Result<(), SizeError<...\n     |        ^^^^^^^^^^^^^^^\n     |        |\n     |        the trait is not dyn compatible because method `write_to_suffix` references the `Self` type in its return type\n     |        the trait is not dyn compatible because method `write_to_suffix` references the `Self` type in its `where` clause\n...\n6528 |     fn as_bytes_mut(&mut self) -> &mut [u8]\n     |        ^^^^^^^^^^^^ the trait is not dyn compatible because method `as_bytes_mut` references the `Self` type in its `where` clause\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0038`.",
+        "error_codes": [
+          "E0038"
+        ]
+      }
+    }
+  }
+}

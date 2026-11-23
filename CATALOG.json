@@ -102938,6 +102938,75 @@
         "verification"
       ]
     },
+    "rustc-dyn-compatibility-object-safety-gats-rpitit-vtable-and-zerocopy-traits": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "277240238554297f93fa9ee3c7643dfa03ccbbb4"
+          },
+          "name": "Rust compiler and core/alloc libraries (dyn_compatibility, vtable layout, DispatchFromDyn, VTable call shims, and AsyncFn traits)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "Executed rustc 1.98.0-nightly compiler toolchain (probe and LLVM IR vtable emission baseline)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference (Traits: Dyn compatibility section)"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "e86eb0281380bdc278f4b4b3788dc9525ef59035",
+            "version": "0.8.64"
+          },
+          "name": "google/zerocopy upstream main source audited for trait definitions (Immutable, Unaligned, KnownLayout, TryFromBytes, FromZeros, FromBytes, IntoBytes)"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+            "version": "0.8.64"
+          },
+          "name": "google/zerocopy compiled crate baseline for live rustc trait-object probes"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal trusted Lean MIR model and TrustedBoundary kernel-purity inspector"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel checker (strict noncomputable verification)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/traits",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "verification"
+      ]
+    },
     "rustc-dynamic-linking-loader-contracts-and-code-signing": {
       "observed_at": "2026-11-13",
       "subjects": [
