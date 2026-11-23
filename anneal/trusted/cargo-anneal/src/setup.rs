@@ -134,6 +134,23 @@ fn clone_location(location: &exocrate::Location) -> exocrate::Location {
     }
 }
 
+fn resolve_installation_dir_with(
+    mut resolve: impl FnMut() -> io::Result<PathBuf>,
+) -> io::Result<PathBuf> {
+    // `exocrate 0.3.0`'s `check_exists` performs `is_dir()` then
+    // `try_exists()`, so a concurrent `fs::rename` between those two stats
+    // produces a spurious `AlreadyExists`. A single retry resolves the newly
+    // renamed directory while still failing closed on real non-directories.
+    match resolve() {
+        Err(err) if err.kind() == io::ErrorKind::AlreadyExists => resolve(),
+        res => res,
+    }
+}
+
+fn resolve_installation_dir(location: &exocrate::Location) -> io::Result<PathBuf> {
+    resolve_installation_dir_with(|| CONFIG.resolve_installation_dir(clone_location(location)))
+}
+
 fn sibling_lock_path(dir: &Path, suffix: &str) -> io::Result<PathBuf> {
     let parent = dir.parent().ok_or_else(|| {
         io::Error::new(
@@ -678,7 +695,7 @@ fn install_local_with_seed_hook(
 ) -> io::Result<Bundle> {
     // Validate the caller's archive before initializing any cache directory.
     ensure_local_archive_readable(&path)?;
-    let dir = match CONFIG.resolve_installation_dir(clone_location(&location)) {
+    let dir = match resolve_installation_dir(&location) {
         Ok(existing) => existing,
         Err(err) if err.kind() == io::ErrorKind::NotFound => {
             after_resolve_absent();
@@ -722,7 +739,7 @@ fn install_from_source(
     location: exocrate::Location,
 ) -> Result<Bundle, String> {
     let source = get_source()?;
-    match CONFIG.resolve_installation_dir(clone_location(&location)) {
+    match resolve_installation_dir(&location) {
         Ok(dir) => match acquire_bundle_lease(&dir) {
             Ok(bundle) => Ok(bundle),
             Err(AcquireLeaseError::MissingOrIncomplete(_)) => {
@@ -1268,7 +1285,7 @@ pub(crate) fn installed_bundle_at(location: exocrate::Location) -> Result<Option
     // Verification discovery must not turn a missing installation into an
     // implicit download or installation. None lets the caller use its explicit
     // development tool or sibling executable instead.
-    let dir = match CONFIG.resolve_installation_dir(location) {
+    let dir = match resolve_installation_dir(&location) {
         Ok(dir) => dir,
         Err(err) if err.kind() == io::ErrorKind::NotFound => return Ok(None),
         Err(err) => {
@@ -2776,5 +2793,45 @@ mod tests {
             assert_eq!(fs::read(&outside_target).unwrap(), b"untouched");
             assert_eq!(fs::read(root.join("marker.txt")).unwrap(), b"archive v1");
         }
+    }
+
+    #[test]
+    fn resolve_installation_dir_retries_once_on_already_exists_toctou() {
+        use std::cell::Cell;
+
+        let calls = Cell::new(0usize);
+        let recovered = resolve_installation_dir_with(|| {
+            let n = calls.get();
+            calls.set(n + 1);
+            if n == 0 {
+                Err(io::Error::new(
+                    io::ErrorKind::AlreadyExists,
+                    "Path exists but is not a directory",
+                ))
+            } else {
+                Ok(PathBuf::from("/cache/recovered-bundle"))
+            }
+        })
+        .expect("single AlreadyExists TOCTOU recovers on retry");
+        assert_eq!(recovered, PathBuf::from("/cache/recovered-bundle"));
+        assert_eq!(calls.get(), 2);
+
+        let non_dir_calls = Cell::new(0usize);
+        let non_dir_err = resolve_installation_dir_with(|| {
+            non_dir_calls.set(non_dir_calls.get() + 1);
+            Err(io::Error::new(io::ErrorKind::AlreadyExists, "Path exists but is not a directory"))
+        })
+        .expect_err("persistent non-directory must still fail closed");
+        assert_eq!(non_dir_err.kind(), io::ErrorKind::AlreadyExists);
+        assert_eq!(non_dir_calls.get(), 2);
+
+        let not_found_calls = Cell::new(0usize);
+        let not_found_err = resolve_installation_dir_with(|| {
+            not_found_calls.set(not_found_calls.get() + 1);
+            Err(io::Error::new(io::ErrorKind::NotFound, "Managed directory does not exist"))
+        })
+        .expect_err("NotFound must propagate immediately without retrying");
+        assert_eq!(not_found_err.kind(), io::ErrorKind::NotFound);
+        assert_eq!(not_found_calls.get(), 1);
     }
 }

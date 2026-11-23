@@ -55,18 +55,20 @@ impl<'a> ManagedDirName<'a> {
 
     /// Checks if the directory exists.
     pub(crate) fn check_exists(self) -> IoResult<ManagedDir<'a>> {
-        if self.path.is_dir() {
-            Ok(ManagedDir { path: self.path })
-        } else if self.path.try_exists()? {
-            Err(std::io::Error::new(
+        // Perform one `fs::metadata` call (following symlinks) so a concurrent
+        // atomic `fs::rename` into `self.path` cannot fall between `is_dir()`
+        // and `try_exists()` and spuriously report `AlreadyExists`.
+        match fs::metadata(self.path) {
+            Ok(meta) if meta.is_dir() => Ok(ManagedDir { path: self.path }),
+            Ok(_) => Err(std::io::Error::new(
                 std::io::ErrorKind::AlreadyExists,
                 "Path exists but is not a directory",
-            ))
-        } else {
-            Err(std::io::Error::new(
+            )),
+            Err(err) if err.kind() == std::io::ErrorKind::NotFound => Err(std::io::Error::new(
                 std::io::ErrorKind::NotFound,
                 "Managed directory does not exist",
-            ))
+            )),
+            Err(err) => Err(err),
         }
     }
 
@@ -568,5 +570,91 @@ pub(crate) mod tests {
 
         assert_eq!(fs::read_to_string(dst.join("official.txt")).unwrap(), "clean");
         assert!(!dst.join("unexpected").exists());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn test_check_exists_symlink_semantics() {
+        use std::os::unix::fs::symlink;
+
+        let temp = tempfile::tempdir().unwrap();
+        let real_dir = temp.path().join("real_dir");
+        fs::create_dir(&real_dir).unwrap();
+        let dir_link = temp.path().join("dir_link");
+        symlink(&real_dir, &dir_link).unwrap();
+
+        let dir = ManagedDirName::new(&dir_link).check_exists().unwrap();
+        assert_eq!(dir.path, dir_link.as_path());
+
+        let real_file = temp.path().join("real_file");
+        fs::write(&real_file, b"file").unwrap();
+        let file_link = temp.path().join("file_link");
+        symlink(&real_file, &file_link).unwrap();
+
+        let file_err = ManagedDirName::new(&file_link).check_exists().unwrap_err();
+        assert_eq!(file_err.kind(), std::io::ErrorKind::AlreadyExists);
+
+        let dangling_link = temp.path().join("dangling_link");
+        symlink(temp.path().join("missing_target"), &dangling_link).unwrap();
+
+        let dangling_err = ManagedDirName::new(&dangling_link).check_exists().unwrap_err();
+        assert_eq!(dangling_err.kind(), std::io::ErrorKind::NotFound);
+    }
+
+    #[test]
+    fn test_check_exists_concurrent_rename_never_reports_already_exists() {
+        use std::{
+            sync::{
+                Arc, Barrier,
+                atomic::{AtomicBool, Ordering},
+            },
+            thread,
+        };
+
+        const ITERATIONS: usize = 500;
+        let temp = tempfile::tempdir().unwrap();
+
+        for i in 0..ITERATIONS {
+            let staging = temp.path().join(format!("staging-{i}"));
+            let dst = temp.path().join(format!("target-{i}"));
+            fs::create_dir(&staging).unwrap();
+            fs::write(staging.join("ready"), b"ok").unwrap();
+
+            let barrier = Arc::new(Barrier::new(2));
+            let renamed = Arc::new(AtomicBool::new(false));
+            let b_reader = Arc::clone(&barrier);
+            let r_reader = Arc::clone(&renamed);
+            let dst_reader = dst.clone();
+
+            let reader = thread::spawn(move || {
+                b_reader.wait();
+                loop {
+                    match ManagedDirName::new(&dst_reader).check_exists() {
+                        Ok(dir) => {
+                            assert_eq!(dir.path, dst_reader.as_path());
+                            break;
+                        }
+                        Err(err) if err.kind() == std::io::ErrorKind::NotFound => {
+                            if r_reader.load(Ordering::Acquire) {
+                                // One more check after observing `renamed` must
+                                // see the renamed directory.
+                                let dir = ManagedDirName::new(&dst_reader).check_exists().unwrap();
+                                assert_eq!(dir.path, dst_reader.as_path());
+                                break;
+                            }
+                            thread::yield_now();
+                        }
+                        Err(err) => {
+                            panic!("unexpected check_exists error during atomic rename: {err}");
+                        }
+                    }
+                }
+            });
+
+            barrier.wait();
+            fs::rename(&staging, &dst).unwrap();
+            renamed.store(true, Ordering::Release);
+            reader.join().unwrap();
+        }
     }
 }
