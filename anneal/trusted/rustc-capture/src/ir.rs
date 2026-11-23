@@ -9,7 +9,7 @@
 //! Owned capture data. Metadata and semantic constructors stay separate so that
 //! Rust names and paths never become executable Lean source.
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::path::PathBuf;
 
 use serde::ser::SerializeSeq;
@@ -968,11 +968,34 @@ impl Program {
     }
 }
 
+/// Linkage mode observed for `rustc_driver::run_compiler` in the live process.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum DriverLinkage {
+    /// `rustc_driver::run_compiler` lives in a dynamically loaded
+    /// `librustc_driver-*.so` verified against the sysroot.
+    DynamicDso,
+    /// `rustc_driver::run_compiler` is statically linked into the capture
+    /// executable itself (zero `librustc_driver-*.so` mapped).
+    StaticExe,
+}
+
+/// Authenticated compiler driver identity returned by Linux residency checks
+/// and recorded in the capture manifest.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct DriverIdentity {
+    pub linkage: DriverLinkage,
+    pub driver_sha256: String,
+    pub dso_digests: BTreeMap<String, String>,
+}
+
 #[derive(Debug, Serialize)]
 pub struct Compiler {
     pub commit: &'static str,
     pub version: &'static str,
     pub sysroot: PathBuf,
+    pub rustc_sha256: String,
+    pub driver: DriverIdentity,
 }
 
 #[derive(Debug, Serialize)]

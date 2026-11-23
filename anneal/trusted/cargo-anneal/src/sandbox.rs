@@ -278,6 +278,44 @@ fn is_under_standard_loader_prefix(dir: &Path) -> bool {
     STANDARD_LOADER_LIB_PREFIXES.iter().any(|prefix| dir.starts_with(prefix))
 }
 
+/// Reserved child-namespace mount roots inside `run_bwrap` that custom
+/// `PT_INTERP` directory bindings must never shadow or overlap.
+#[cfg(any(target_os = "linux", test))]
+const RESERVED_BWRAP_CHILD_ROOTS: &[&str] = &["/work", "/toolchain", "/dev", "/proc", "/etc"];
+
+/// Return `true` when `path` equals or lies under a reserved `bwrap` child
+/// mount root.
+#[cfg(any(target_os = "linux", test))]
+fn is_reserved_bwrap_child_path(path: &Path) -> bool {
+    RESERVED_BWRAP_CHILD_ROOTS.iter().any(|root| path.starts_with(root))
+}
+
+/// Validate a custom `PT_INTERP` directory path (canonical host source or
+/// logical symlink bind destination) against traversal components, reserved
+/// `bwrap` child roots, broad host roots, `stage_root`, `$HOME`, and `cwd`.
+#[cfg(any(target_os = "linux", test))]
+fn validate_pt_interp_dir(
+    dir: &Path,
+    stage_root: Option<&Path>,
+    role: &str,
+) -> Result<(), Failure> {
+    use std::path::Component;
+
+    if dir.components().any(|c| matches!(c, Component::CurDir | Component::ParentDir)) {
+        return Err(Failure::operational(
+            "sandbox",
+            format!("refusing non-normalized {role} {} for sandbox mount", dir.display()),
+        ));
+    }
+    if is_reserved_bwrap_child_path(dir) {
+        return Err(Failure::operational(
+            "sandbox",
+            format!("refusing reserved sandbox path {} as {role}", dir.display()),
+        ));
+    }
+    validate_toolchain_mount_dir(dir, stage_root, role)
+}
+
 /// Derive validated custom read-only loader library directories from an ELF
 /// binary's resolved `PT_INTERP` paths.
 ///
@@ -285,11 +323,13 @@ fn is_under_standard_loader_prefix(dir: &Path) -> bool {
 /// `/usr/lib/.../ld-linux-...`, `/nix/store/...`) are already covered by
 /// `OPTIONAL_SYS_PATHS` or `/nix/store` and return an empty list. Custom
 /// sysroot loaders (such as musl or self-contained glibc sysroots) place their
-/// sibling `libc.so.6`/`libm.so.6` alongside `PT_INTERP`; this validates each
-/// custom parent directory through [`validate_toolchain_mount_dir`] so broad
-/// host prefixes (`/`, `/usr`, `/tmp`, `/home`, `$HOME`, `cwd`, `stage_root`)
-/// are refused fail-closed while legitimate dedicated sysroot library
-/// directories are mounted strictly read-only.
+/// sibling `libc.so.6`/`libm.so.6` alongside `PT_INTERP`; this validates both
+/// each canonical parent directory and any distinct logical symlink parent
+/// directory through [`validate_pt_interp_dir`] so broad host prefixes (`/`,
+/// `/usr`, `/tmp`, `/home`, `$HOME`, `cwd`, `stage_root`) and reserved child
+/// roots (`/work`, `/toolchain`, `/dev`, `/proc`, `/etc`) are refused
+/// fail-closed while legitimate dedicated sysroot library directories are
+/// mounted strictly read-only.
 #[cfg(any(target_os = "linux", test))]
 pub fn resolve_pt_interp_lib_dirs(
     pt_interp_paths: &[PathBuf],
@@ -321,10 +361,65 @@ pub fn resolve_pt_interp_lib_dirs(
         if is_under_standard_loader_prefix(&canon_parent) {
             continue;
         }
-        validate_toolchain_mount_dir(&canon_parent, stage_root, "PT_INTERP loader library directory")?;
+        validate_pt_interp_dir(&canon_parent, stage_root, "PT_INTERP loader library directory")?;
+        if canon_parent != parent {
+            validate_pt_interp_dir(
+                parent,
+                stage_root,
+                "PT_INTERP logical loader library directory",
+            )?;
+        }
         dirs.insert(canon_parent);
     }
     Ok(dirs.into_iter().collect())
+}
+
+/// Build the validated read-only `bwrap` bind mounts for custom `PT_INTERP`
+/// library directories and any distinct logical symlink parent directories.
+///
+/// Every bind destination is validated against [`validate_pt_interp_dir`]
+/// before emission so a symlinked `PT_INTERP` parent can never shadow reserved
+/// child roots (`/work`, `/toolchain`, `/dev`, `/proc`, `/etc`) or broad host
+/// prefixes.
+#[cfg(any(target_os = "linux", test))]
+fn resolve_pt_interp_bwrap_mounts(
+    pt_interp_paths: &[PathBuf],
+    pt_interp_lib_dirs: &[PathBuf],
+    stage_root: Option<&Path>,
+) -> Result<Vec<MountSpec>, Failure> {
+    let mut mounts = Vec::new();
+    let mut seen = BTreeSet::new();
+    for interp_dir in pt_interp_lib_dirs {
+        validate_pt_interp_dir(interp_dir, stage_root, "PT_INTERP loader library directory")?;
+        let key = (interp_dir.clone(), interp_dir.clone());
+        if seen.insert(key) {
+            mounts.push(MountSpec { host: interp_dir.clone(), child: interp_dir.clone() });
+        }
+    }
+    for interp in pt_interp_paths {
+        let Some(parent) = interp.parent() else {
+            continue;
+        };
+        if !parent.is_absolute() || is_under_standard_loader_prefix(parent) {
+            continue;
+        }
+        let Ok(canon_parent) = fs::canonicalize(parent) else {
+            continue;
+        };
+        if canon_parent != parent && pt_interp_lib_dirs.contains(&canon_parent) {
+            validate_pt_interp_dir(
+                parent,
+                stage_root,
+                "PT_INTERP logical loader library directory",
+            )?;
+            let child = parent.to_path_buf();
+            let key = (canon_parent.clone(), child.clone());
+            if seen.insert(key) {
+                mounts.push(MountSpec { host: canon_parent, child });
+            }
+        }
+    }
+    Ok(mounts)
 }
 
 /// Forbidden broad host roots that may never be mounted as a toolchain prefix
@@ -2651,19 +2746,12 @@ mod linux {
         if runtime.needs_nix_store {
             cmd.args(["--ro-bind-try", "/nix/store", "/nix/store"]);
         }
-        for interp_dir in &runtime.pt_interp_lib_dirs {
-            cmd.arg("--ro-bind").arg(interp_dir).arg(interp_dir);
-        }
-        for interp in &runtime.pt_interp_paths {
-            if let Some(parent) = interp.parent()
-                && parent.is_absolute()
-                && !super::is_under_standard_loader_prefix(parent)
-                && let Ok(canon_parent) = fs::canonicalize(parent)
-                && canon_parent != parent
-                && runtime.pt_interp_lib_dirs.contains(&canon_parent)
-            {
-                cmd.arg("--ro-bind").arg(&canon_parent).arg(parent);
-            }
+        for MountSpec { host, child } in super::resolve_pt_interp_bwrap_mounts(
+            &runtime.pt_interp_paths,
+            &runtime.pt_interp_lib_dirs,
+            None,
+        )? {
+            cmd.arg("--ro-bind").arg(host).arg(child);
         }
         for MountSpec { host, child } in policy
             .ro_mounts
@@ -3318,6 +3406,95 @@ mod tests {
                 resolve_pt_interp_lib_dirs(std::slice::from_ref(&bad), Some(&stage)).is_err(),
                 "expected {} to fail closed",
                 bad.display()
+            );
+        }
+
+        // 4. Symlinked logical `PT_INTERP` parent directories must be validated
+        //    just like their canonical targets: valid dedicated symlinked dirs
+        //    bind both canonical and logical paths, while symlinks overlapping
+        //    `stage_root`, containing `..`, or targeting reserved bwrap roots
+        //    (`/work`, `/toolchain`, `/dev`, `/proc`, `/etc`) fail closed.
+        let canon_custom_lib = fs::canonicalize(&custom_lib).unwrap();
+        let valid_link_dir = dir.path().join("linked-sysroot/lib64");
+        fs::create_dir_all(valid_link_dir.parent().unwrap()).unwrap();
+        std::os::unix::fs::symlink(&custom_lib, &valid_link_dir).unwrap();
+        let valid_link_loader = valid_link_dir.join("ld-linux-x86-64.so.2");
+        let resolved_link_dirs =
+            resolve_pt_interp_lib_dirs(std::slice::from_ref(&valid_link_loader), Some(&stage))
+                .unwrap();
+        assert_eq!(resolved_link_dirs, vec![canon_custom_lib.clone()]);
+        let bwrap_mounts = resolve_pt_interp_bwrap_mounts(
+            std::slice::from_ref(&valid_link_loader),
+            &resolved_link_dirs,
+            Some(&stage),
+        )
+        .unwrap();
+        assert_eq!(
+            bwrap_mounts,
+            vec![
+                MountSpec { host: canon_custom_lib.clone(), child: canon_custom_lib.clone() },
+                MountSpec { host: canon_custom_lib.clone(), child: valid_link_dir },
+            ]
+        );
+
+        // Symlink inside `stage_root` pointing to valid `custom_lib`: canonical
+        // target is outside `stage_root`, so both `resolve_pt_interp_lib_dirs`
+        // and `resolve_pt_interp_bwrap_mounts` must still reject the logical
+        // parent path.
+        let stage_symlink_dir = stage.join("linked-lib64");
+        std::os::unix::fs::symlink(&custom_lib, &stage_symlink_dir).unwrap();
+        let stage_symlink_loader = stage_symlink_dir.join("ld-linux-x86-64.so.2");
+        assert!(
+            resolve_pt_interp_lib_dirs(std::slice::from_ref(&stage_symlink_loader), Some(&stage))
+                .is_err(),
+            "expected symlinked PT_INTERP parent under stage_root to fail closed"
+        );
+        assert!(
+            resolve_pt_interp_bwrap_mounts(
+                std::slice::from_ref(&stage_symlink_loader),
+                &resolved_link_dirs,
+                Some(&stage),
+            )
+            .is_err(),
+            "expected bwrap mount builder to reject symlinked parent under stage_root"
+        );
+
+        // Non-normalized `..` path and reserved bwrap child roots must fail closed.
+        let traversal_loader =
+            dir.path().join("linked-sysroot/sub/../lib64/ld-linux-x86-64.so.2");
+        fs::create_dir_all(dir.path().join("linked-sysroot/sub")).unwrap();
+        assert!(
+            resolve_pt_interp_lib_dirs(std::slice::from_ref(&traversal_loader), Some(&stage))
+                .is_err()
+        );
+        assert!(
+            resolve_pt_interp_bwrap_mounts(
+                std::slice::from_ref(&traversal_loader),
+                &resolved_link_dirs,
+                Some(&stage),
+            )
+            .is_err()
+        );
+        for reserved in [
+            "/work",
+            "/work/custom/lib",
+            "/toolchain",
+            "/toolchain/custom/lib",
+            "/dev",
+            "/dev/custom/lib",
+            "/proc",
+            "/proc/custom/lib",
+            "/etc",
+            "/etc/custom/lib",
+        ] {
+            let path = PathBuf::from(reserved);
+            assert!(
+                validate_pt_interp_dir(&path, None, "test").is_err(),
+                "expected reserved bwrap root {reserved} to fail closed"
+            );
+            assert!(
+                resolve_pt_interp_bwrap_mounts(&[], std::slice::from_ref(&path), None).is_err(),
+                "expected bwrap mount builder to reject reserved root {reserved}"
             );
         }
     }

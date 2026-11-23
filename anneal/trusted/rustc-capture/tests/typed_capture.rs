@@ -1880,6 +1880,40 @@ fn logical_symlinked_sysroot_preserves_path_and_rejects_mismatched_libllvm_and_l
         logical_sysroot.to_str().unwrap(),
         "expected logical sysroot path to be preserved without canonicalization: {manifest}"
     );
+    let is_sha256 = |val: &serde_json::Value| {
+        val.as_str()
+            .is_some_and(|s| s.len() == 64 && s.bytes().all(|b| b.is_ascii_hexdigit()))
+    };
+    assert!(
+        is_sha256(&manifest["compiler"]["rustc_sha256"]),
+        "expected 64-hex rustc_sha256 in manifest: {manifest}"
+    );
+    let driver = &manifest["compiler"]["driver"];
+    let linkage = driver["linkage"].as_str().unwrap();
+    assert!(
+        matches!(linkage, "dynamic_dso" | "static_exe"),
+        "unexpected driver linkage: {driver}"
+    );
+    assert!(
+        is_sha256(&driver["driver_sha256"]),
+        "expected 64-hex driver_sha256 in manifest: {driver}"
+    );
+    let dso_digests = driver["dso_digests"].as_object().unwrap();
+    for (name, digest) in dso_digests {
+        assert!(
+            is_sha256(digest),
+            "expected 64-hex digest for {name}: {driver}"
+        );
+    }
+    if linkage == "dynamic_dso" {
+        assert!(
+            dso_digests
+                .iter()
+                .any(|(name, digest)| name.starts_with("librustc_driver-")
+                    && digest == &driver["driver_sha256"]),
+            "expected dynamic driver digest recorded in dso_digests: {driver}"
+        );
+    }
 
     // 2. Replacing `libLLVM*` in the sysroot with a distinct file inode while
     //    keeping `librustc_driver-*.so` matching simulates a spliced mismatched
@@ -1939,6 +1973,12 @@ fn logical_symlinked_sysroot_preserves_path_and_rejects_mismatched_libllvm_and_l
         )
         .unwrap();
     }
+    if dso_digests.keys().any(|k| k.starts_with("libLLVM")) {
+        assert!(
+            replaced_llvm,
+            "expected sysroot to contain libLLVM* when dynamic libLLVM is mapped"
+        );
+    }
     if replaced_llvm {
         let bad_llvm_out = fixture.directory.path().join("bad-llvm-out");
         let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
@@ -1968,36 +2008,46 @@ fn logical_symlinked_sysroot_preserves_path_and_rejects_mismatched_libllvm_and_l
         assert!(!bad_llvm_out.exists());
     }
 
-    // 3. Ambient dynamic-linker injection variables must fail closed before
-    //    entering the compiler session.
-    let preload_out = fixture.directory.path().join("preload-out");
-    let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
-        .current_dir(fixture.directory.path())
-        .env("LD_DYNAMIC_WEAK", "1")
-        .arg("capture")
-        .arg("--crate-root")
-        .arg(&fixture.source)
-        .arg("--crate-name=session")
-        .arg("--target=x86_64-unknown-linux-gnu")
-        .arg("--out-dir")
-        .arg(&preload_out)
-        .arg("--sysroot")
-        .arg(&logical_sysroot)
-        .arg("--select=selected")
-        .arg("--source-file")
-        .arg(&fixture.source)
-        .output()
-        .unwrap();
-    assert_eq!(output.status.code(), Some(1), "{output:?}");
-    let failure = status(&output);
-    assert_eq!(failure["status"], "tool_failed", "{failure}");
-    assert!(
-        failure
-            .to_string()
-            .contains("forbidden dynamic linker environment variable is set: LD_DYNAMIC_WEAK"),
-        "{failure}"
-    );
-    assert!(!preload_out.exists());
+    // 3. Ambient dynamic-linker injection variables must fail closed on
+    //    presence (including empty-string values for presence-triggered flags)
+    //    before entering the compiler session.
+    for (idx, (var, val)) in [
+        ("LD_DYNAMIC_WEAK", "1"),
+        ("LD_DYNAMIC_WEAK", ""),
+        ("DYLD_FORCE_FLAT_NAMESPACE", ""),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let preload_out = fixture.directory.path().join(format!("preload-out-{idx}"));
+        let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture"))
+            .current_dir(fixture.directory.path())
+            .env(var, val)
+            .arg("capture")
+            .arg("--crate-root")
+            .arg(&fixture.source)
+            .arg("--crate-name=session")
+            .arg("--target=x86_64-unknown-linux-gnu")
+            .arg("--out-dir")
+            .arg(&preload_out)
+            .arg("--sysroot")
+            .arg(&logical_sysroot)
+            .arg("--select=selected")
+            .arg("--source-file")
+            .arg(&fixture.source)
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(1), "{var}={val:?}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "tool_failed", "{var}={val:?}: {failure}");
+        assert!(
+            failure
+                .to_string()
+                .contains(&format!("forbidden dynamic linker environment variable is set: {var}")),
+            "{var}={val:?}: {failure}"
+        );
+        assert!(!preload_out.exists());
+    }
 }
 
 #[test]

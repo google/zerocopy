@@ -20,6 +20,7 @@ use std::process::Command;
 
 use sha2::{Digest, Sha256};
 
+use crate::ir::{DriverIdentity, DriverLinkage};
 use crate::{Failure, ir};
 
 /// Dynamic-linker environment variables that inject foreign code or alter
@@ -39,25 +40,13 @@ const FORBIDDEN_LOADER_ENV_VARS: &[&str] = &[
 #[cfg(unix)]
 pub(crate) type DevIno = (u64, u64);
 
-/// Linkage mode observed for `rustc_driver::run_compiler` in the live process.
-#[cfg(any(target_os = "linux", test))]
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(crate) enum DriverLinkage {
-    /// `rustc_driver::run_compiler` lives in a dynamically loaded
-    /// `librustc_driver-*.so` verified against the sysroot.
-    DynamicDso,
-    /// `rustc_driver::run_compiler` is statically linked into the capture
-    /// executable itself (zero `librustc_driver-*.so` mapped).
-    StaticExe,
-}
-
-/// Authenticated compiler driver identity returned by Linux residency checks.
-#[cfg(any(target_os = "linux", test))]
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) struct DriverIdentity {
-    pub(crate) linkage: DriverLinkage,
-    pub(crate) driver_sha256: String,
-    pub(crate) dso_digests: BTreeMap<String, String>,
+/// Authenticated compiler identity and pinned sysroot directory inode returned
+/// by [`verify_compiler`] for downstream TOCTOU checks and manifest emission.
+pub(crate) struct VerifiedCompiler {
+    #[cfg(unix)]
+    pub(crate) sysroot_id: DevIno,
+    pub(crate) rustc_sha256: String,
+    pub(crate) driver: DriverIdentity,
 }
 
 /// Format a SHA-256 digest as lowercase hex using a byte loop compatible with
@@ -138,17 +127,21 @@ pub(crate) fn normalize_logical_sysroot(raw: &Path) -> Result<PathBuf, Failure> 
 
 /// Reject ambient dynamic-linker injection variables from an environment pair
 /// iterator.
+///
+/// Rejection triggers on key presence regardless of value because loaders treat
+/// empty values as active for presence-triggered flags such as glibc
+/// `LD_DYNAMIC_WEAK` and macOS `DYLD_FORCE_FLAT_NAMESPACE`.
 fn reject_loader_env_in<I, K, V>(vars: I) -> Result<(), Failure>
 where
     I: IntoIterator<Item = (K, V)>,
     K: AsRef<OsStr>,
     V: AsRef<OsStr>,
 {
-    for (key, value) in vars {
+    for (key, _value) in vars {
         let Some(key_str) = key.as_ref().to_str() else {
             continue;
         };
-        if FORBIDDEN_LOADER_ENV_VARS.contains(&key_str) && !value.as_ref().is_empty() {
+        if FORBIDDEN_LOADER_ENV_VARS.contains(&key_str) {
             return Err(Failure::tool(format!(
                 "forbidden dynamic linker environment variable is set: {key_str}"
             )));
@@ -334,13 +327,17 @@ fn maps_pathname_basename(pathname: &[u8]) -> Option<&str> {
 
 /// Standard OS C/loader library roots allowed for non-toolchain runtime DSOs
 /// (`libc`, `libm`, `libdl`, `libgcc_s`, `libz`, `ld-linux`, etc.).
+///
+/// Blanket `/nix/store/` is intentionally excluded so unrelated user-added Nix
+/// store paths cannot shadow non-toolchain DSOs (`libz.so.1`, `libgcc_s.so.1`,
+/// etc.); Nix-packaged binaries authenticate their exact store library
+/// directories via `PT_INTERP` and `DT_RUNPATH`/`DT_RPATH`.
 #[cfg(any(target_os = "linux", test))]
 const ALLOWED_SYSTEM_RUNTIME_PREFIXES: &[&[u8]] = &[
     b"/lib/",
     b"/lib64/",
     b"/usr/lib/",
     b"/usr/lib64/",
-    b"/nix/store/",
 ];
 
 /// Return `true` if a non-deleted `/proc/self/maps` pathname refers to a
@@ -374,21 +371,169 @@ fn is_allowed_system_runtime_path(pathname: &[u8], pt_interp_dirs: &[PathBuf]) -
     }
 }
 
-/// Parse an ELF64 little-endian binary's `PT_INTERP` header and return the
-/// parent directories (logical and canonical, deduplicated) of its dynamic
-/// loader so custom-sysroot/Nix/musl C runtime libraries resolve cleanly.
-#[cfg(target_os = "linux")]
-fn read_elf64_pt_interp_dirs(exec_path: &Path) -> Vec<PathBuf> {
-    use std::io::{Read, Seek, SeekFrom};
+/// Broad host directories that must never be admitted as custom `PT_INTERP`
+/// runtime library prefixes (mirroring `cargo-anneal`'s
+/// `validate_toolchain_mount_dir` guard).
+#[cfg(any(target_os = "linux", test))]
+const FORBIDDEN_BROAD_PT_INTERP_DIRS: &[&str] = &[
+    "/bin",
+    "/boot",
+    "/dev",
+    "/etc",
+    "/home",
+    "/mnt",
+    "/media",
+    "/nix/store",
+    "/opt",
+    "/proc",
+    "/root",
+    "/run",
+    "/sbin",
+    "/srv",
+    "/sys",
+    "/tmp",
+    "/usr",
+    "/usr/bin",
+    "/usr/local",
+    "/usr/local/bin",
+    "/usr/share",
+    "/Users",
+    "/var",
+    "/var/tmp",
+];
 
-    let Ok(mut file) = fs::File::open(exec_path) else {
-        return Vec::new();
+/// Return `true` if `dir` is a dedicated, normalized absolute directory that
+/// does not match a broad host prefix or encompass `$HOME` or the current
+/// working directory.
+#[cfg(any(target_os = "linux", test))]
+fn is_allowed_pt_interp_dir(dir: &Path) -> bool {
+    use std::path::Component;
+
+    if !dir.is_absolute() {
+        return false;
+    }
+    if dir
+        .components()
+        .any(|c| matches!(c, Component::CurDir | Component::ParentDir))
+    {
+        return false;
+    }
+    let normal_count = dir
+        .components()
+        .filter(|c| matches!(c, Component::Normal(_)))
+        .count();
+    if normal_count < 2
+        || FORBIDDEN_BROAD_PT_INTERP_DIRS
+            .iter()
+            .any(|bad| dir == Path::new(bad))
+    {
+        return false;
+    }
+    if let Some(home_os) = std::env::var_os("HOME")
+        && !home_os.is_empty()
+    {
+        let home_raw = PathBuf::from(home_os);
+        let canon_home = fs::canonicalize(&home_raw).unwrap_or(home_raw);
+        if canon_home.starts_with(dir) {
+            return false;
+        }
+    }
+    if let Ok(cwd) = std::env::current_dir() {
+        let canon_cwd = fs::canonicalize(&cwd).unwrap_or(cwd);
+        if canon_cwd.starts_with(dir) {
+            return false;
+        }
+    }
+    true
+}
+
+/// Translate an ELF64 virtual address range `[vaddr, vaddr + len)` into a file
+/// offset using the binary's `PT_LOAD` program headers.
+#[cfg(all(any(target_os = "linux", test), unix))]
+fn elf64_vaddr_to_offset(loads: &[(u64, u64, u64)], vaddr: u64, len: u64) -> Option<u64> {
+    for &(p_vaddr, p_offset, p_filesz) in loads {
+        let Some(rel) = vaddr.checked_sub(p_vaddr) else {
+            continue;
+        };
+        let Some(end) = rel.checked_add(len) else {
+            continue;
+        };
+        if end <= p_filesz {
+            return p_offset.checked_add(rel);
+        }
+    }
+    None
+}
+
+/// Expand ELF `$ORIGIN` / `${ORIGIN}` tokens in a single `DT_RUNPATH` /
+/// `DT_RPATH` entry relative to `origin_dir`, lexically normalizing any
+/// `..` segments (such as `$ORIGIN/../rust/lib`) without touching the
+/// filesystem, and insert validated logical and canonical directories.
+#[cfg(all(any(target_os = "linux", test), unix))]
+fn insert_validated_runpath_dir(entry: &str, origin_dir: Option<&Path>, dirs: &mut BTreeSet<PathBuf>) {
+    if entry.is_empty() {
+        return;
+    }
+    let expanded = if entry.contains("$ORIGIN") || entry.contains("${ORIGIN}") {
+        let Some(origin_str) = origin_dir.and_then(|p| p.to_str()) else {
+            return;
+        };
+        entry
+            .replace("${ORIGIN}", origin_str)
+            .replace("$ORIGIN", origin_str)
+    } else {
+        entry.to_owned()
     };
-    let Ok(file_len) = file.metadata().map(|m| m.len()) else {
-        return Vec::new();
-    };
+    let candidate = Path::new(&expanded);
+    if !candidate.is_absolute() {
+        return;
+    }
+    if let Ok(normalized) = candidate.normalize_lexically()
+        && is_allowed_pt_interp_dir(&normalized)
+    {
+        dirs.insert(normalized);
+    }
+    if let Ok(canon) = fs::canonicalize(candidate)
+        && is_allowed_pt_interp_dir(&canon)
+    {
+        dirs.insert(canon);
+    }
+}
+
+/// Result of inspecting an ELF64 little-endian binary's `PT_INTERP` and
+/// `DT_RUNPATH`/`DT_RPATH` headers.
+#[cfg(any(target_os = "linux", test))]
+struct Elf64PtInterp {
+    has_pt_interp: bool,
+    dirs: Vec<PathBuf>,
+}
+
+/// Parse an ELF64 little-endian binary's `PT_INTERP` and `PT_DYNAMIC`
+/// (`DT_RUNPATH` / `DT_RPATH`) headers (optionally authenticating the opened
+/// descriptor against `expected_dev_ino`) and return whether a `PT_INTERP`
+/// segment exists together with the validated runtime library directories
+/// (logical and canonical, deduplicated).
+#[cfg(all(any(target_os = "linux", test), unix))]
+fn inspect_elf64_pt_interp(
+    exec_path: &Path,
+    expected_dev_ino: Option<DevIno>,
+) -> Option<Elf64PtInterp> {
+    use std::io::{Read, Seek, SeekFrom};
+    use std::os::unix::fs::MetadataExt;
+
+    let mut file = fs::File::open(exec_path).ok()?;
+    let meta = file.metadata().ok()?;
+    if !meta.is_file() {
+        return None;
+    }
+    if let Some(expected) = expected_dev_ino
+        && (meta.dev(), meta.ino()) != expected
+    {
+        return None;
+    }
+    let file_len = meta.len();
     if file_len < 64 {
-        return Vec::new();
+        return None;
     }
     let mut ehdr = [0u8; 64];
     if file.read_exact(&mut ehdr).is_err()
@@ -396,75 +541,202 @@ fn read_elf64_pt_interp_dirs(exec_path: &Path) -> Vec<PathBuf> {
         || ehdr[4] != 2
         || ehdr[5] != 1
     {
-        return Vec::new();
+        return None;
     }
     let e_phoff = u64::from_le_bytes(ehdr[32..40].try_into().unwrap());
     let e_phentsize = u16::from_le_bytes(ehdr[54..56].try_into().unwrap()) as u64;
     let e_phnum = u16::from_le_bytes(ehdr[56..58].try_into().unwrap()) as u64;
     if e_phnum == 0 || e_phentsize < 56 {
-        return Vec::new();
+        return None;
     }
-    let Some(ph_table_bytes) = e_phentsize.checked_mul(e_phnum) else {
-        return Vec::new();
-    };
-    let Some(ph_end) = e_phoff.checked_add(ph_table_bytes) else {
-        return Vec::new();
-    };
+    let ph_table_bytes = e_phentsize.checked_mul(e_phnum)?;
+    let ph_end = e_phoff.checked_add(ph_table_bytes)?;
     if ph_end > file_len || ph_table_bytes > 4 * 1024 * 1024 {
-        return Vec::new();
+        return None;
     }
     if file.seek(SeekFrom::Start(e_phoff)).is_err() {
-        return Vec::new();
+        return None;
     }
     let mut table = vec![0u8; ph_table_bytes as usize];
     if file.read_exact(&mut table).is_err() {
-        return Vec::new();
+        return None;
     }
+    const PT_LOAD: u32 = 1;
+    const PT_DYNAMIC: u32 = 2;
     const PT_INTERP: u32 = 3;
+    let mut has_pt_interp = false;
     let mut dirs = BTreeSet::new();
+    let mut loads: Vec<(u64, u64, u64)> = Vec::new();
+    let mut dynamic_seg: Option<(u64, u64)> = None;
     for i in 0..(e_phnum as usize) {
         let base = i * (e_phentsize as usize);
         let p_type = u32::from_le_bytes(table[base..base + 4].try_into().unwrap());
-        if p_type != PT_INTERP {
-            continue;
-        }
         let p_offset = u64::from_le_bytes(table[base + 8..base + 16].try_into().unwrap());
+        let p_vaddr = u64::from_le_bytes(table[base + 16..base + 24].try_into().unwrap());
         let p_filesz = u64::from_le_bytes(table[base + 32..base + 40].try_into().unwrap());
-        if p_filesz == 0 || p_filesz > 4096 {
-            continue;
+        match p_type {
+            PT_LOAD => loads.push((p_vaddr, p_offset, p_filesz)),
+            PT_DYNAMIC => {
+                if dynamic_seg.is_none() {
+                    dynamic_seg = Some((p_offset, p_filesz));
+                }
+            }
+            PT_INTERP if !has_pt_interp => {
+                has_pt_interp = true;
+                if p_filesz == 0 || p_filesz > 4096 {
+                    continue;
+                }
+                let Some(end) = p_offset.checked_add(p_filesz) else {
+                    continue;
+                };
+                if end > file_len || file.seek(SeekFrom::Start(p_offset)).is_err() {
+                    continue;
+                }
+                let mut raw = vec![0u8; p_filesz as usize];
+                if file.read_exact(&mut raw).is_err() {
+                    continue;
+                }
+                let nul_pos = raw.iter().position(|&b| b == 0).unwrap_or(raw.len());
+                let Ok(interp_str) = std::str::from_utf8(&raw[..nul_pos]) else {
+                    continue;
+                };
+                if interp_str.is_empty() {
+                    continue;
+                }
+                let interp_path = Path::new(interp_str);
+                if let Some(parent) = interp_path.parent()
+                    && is_allowed_pt_interp_dir(parent)
+                {
+                    dirs.insert(parent.to_path_buf());
+                }
+                if let Ok(canon) = fs::canonicalize(interp_path)
+                    && let Some(parent) = canon.parent()
+                    && is_allowed_pt_interp_dir(parent)
+                {
+                    dirs.insert(parent.to_path_buf());
+                }
+            }
+            _ => {}
         }
-        let Some(end) = p_offset.checked_add(p_filesz) else {
-            continue;
-        };
-        if end > file_len || file.seek(SeekFrom::Start(p_offset)).is_err() {
-            continue;
+    }
+
+    // Parse `DT_RUNPATH` (preferred per ELF spec) or `DT_RPATH` from
+    // `PT_DYNAMIC` so Nix-packaged and `$ORIGIN`-relative binaries authenticate
+    // their pinned C runtime library directories without opening all of
+    // `/nix/store/`.
+    if let Some((dyn_off, dyn_sz)) = dynamic_seg
+        && (16..=1024 * 1024).contains(&dyn_sz)
+        && let Some(dyn_end) = dyn_off.checked_add(dyn_sz)
+        && dyn_end <= file_len
+        && file.seek(SeekFrom::Start(dyn_off)).is_ok()
+    {
+        let mut dyn_bytes = vec![0u8; dyn_sz as usize];
+        if file.read_exact(&mut dyn_bytes).is_ok() {
+            const DT_NULL: i64 = 0;
+            const DT_STRTAB: i64 = 5;
+            const DT_STRSZ: i64 = 10;
+            const DT_RPATH: i64 = 15;
+            const DT_RUNPATH: i64 = 29;
+            let mut strtab_vaddr = None;
+            let mut strsz = None;
+            let mut rpath_off = None;
+            let mut runpath_off = None;
+            for chunk in dyn_bytes.chunks_exact(16) {
+                let d_tag = i64::from_le_bytes(chunk[0..8].try_into().unwrap());
+                let d_val = u64::from_le_bytes(chunk[8..16].try_into().unwrap());
+                match d_tag {
+                    DT_NULL => break,
+                    DT_STRTAB => strtab_vaddr = Some(d_val),
+                    DT_STRSZ => strsz = Some(d_val),
+                    DT_RPATH => rpath_off = Some(d_val),
+                    DT_RUNPATH => runpath_off = Some(d_val),
+                    _ => {}
+                }
+            }
+            if let (Some(sv), Some(ss), Some(path_off)) =
+                (strtab_vaddr, strsz, runpath_off.or(rpath_off))
+                && ss > 0
+                && ss <= 4 * 1024 * 1024
+                && path_off < ss
+                && let Some(strtab_file_off) = elf64_vaddr_to_offset(&loads, sv, ss)
+                && let Some(strtab_end) = strtab_file_off.checked_add(ss)
+                && strtab_end <= file_len
+                && file.seek(SeekFrom::Start(strtab_file_off)).is_ok()
+            {
+                let mut strtab = vec![0u8; ss as usize];
+                if file.read_exact(&mut strtab).is_ok() {
+                    let tail = &strtab[path_off as usize..];
+                    let nul = tail.iter().position(|&b| b == 0).unwrap_or(tail.len());
+                    if let Ok(runpath_str) = std::str::from_utf8(&tail[..nul]) {
+                        let canon_exec = fs::canonicalize(exec_path).ok();
+                        let origin_dir = canon_exec
+                            .as_deref()
+                            .and_then(Path::parent)
+                            .or_else(|| exec_path.parent());
+                        for entry in runpath_str.split(':') {
+                            insert_validated_runpath_dir(entry, origin_dir, &mut dirs);
+                        }
+                    }
+                }
+            }
         }
-        let mut raw = vec![0u8; p_filesz as usize];
-        if file.read_exact(&mut raw).is_err() {
-            continue;
+    }
+
+    Some(Elf64PtInterp {
+        has_pt_interp,
+        dirs: dirs.into_iter().collect(),
+    })
+}
+
+/// Resolve validated custom dynamic-loader runtime library directories for
+/// both direct launches (`/proc/self/exe` is the capture binary) and explicit
+/// dynamic-loader launches (`/proc/self/exe` is `ld-linux-*.so.*` without a
+/// `PT_INTERP` segment while `self_addr` maps the capture binary itself).
+#[cfg(all(any(target_os = "linux", test), unix))]
+fn resolve_runtime_pt_interp_dirs(
+    maps_bytes: &[u8],
+    self_addr: usize,
+    self_exe: &Path,
+) -> Vec<PathBuf> {
+    use std::os::unix::ffi::OsStrExt;
+
+    let mut dirs = BTreeSet::new();
+    let Ok((self_dev_ino, self_vma_path)) =
+        resolve_mapping_dev_ino(maps_bytes, self_addr, "capture executable")
+    else {
+        return Vec::new();
+    };
+    let self_exe_is_capture = regular_file_dev_ino(self_exe).ok() == Some(self_dev_ino);
+    if self_exe_is_capture {
+        if let Some(info) = inspect_elf64_pt_interp(self_exe, Some(self_dev_ino)) {
+            dirs.extend(info.dirs);
         }
-        let nul_pos = raw.iter().position(|&b| b == 0).unwrap_or(raw.len());
-        let Ok(interp_str) = std::str::from_utf8(&raw[..nul_pos]) else {
-            continue;
-        };
-        if interp_str.is_empty() {
-            continue;
+    } else {
+        // Explicit dynamic-loader launch (`ld-linux.so /path/to/binary`):
+        // read `PT_INTERP` from the capture binary VMA (verified by open-FD
+        // `(st_dev, st_ino)`), and when `/proc/self/exe` is an ELF dynamic
+        // linker without `PT_INTERP`, also admit its validated parent library
+        // directory so custom-sysroot loaders and sibling `libc.so.6` resolve.
+        let vma_path = Path::new(OsStr::from_bytes(self_vma_path));
+        if let Some(info) = inspect_elf64_pt_interp(vma_path, Some(self_dev_ino)) {
+            dirs.extend(info.dirs);
         }
-        let interp_path = Path::new(interp_str);
-        if let Some(parent) = interp_path.parent()
-            && parent.is_absolute()
-            && parent != Path::new("/")
+        if let Some(loader_info) = inspect_elf64_pt_interp(self_exe, None)
+            && !loader_info.has_pt_interp
         {
-            dirs.insert(parent.to_path_buf());
+            if let Ok(canon_loader) = fs::canonicalize(self_exe)
+                && let Some(parent) = canon_loader.parent()
+                && is_allowed_pt_interp_dir(parent)
+            {
+                dirs.insert(parent.to_path_buf());
+            }
+            if self_exe != Path::new("/proc/self/exe")
+                && let Some(parent) = self_exe.parent()
+                && is_allowed_pt_interp_dir(parent)
+            {
+                dirs.insert(parent.to_path_buf());
+            }
         }
-        if let Ok(canon) = fs::canonicalize(interp_path)
-            && let Some(parent) = canon.parent()
-            && parent.is_absolute()
-            && parent != Path::new("/")
-        {
-            dirs.insert(parent.to_path_buf());
-        }
-        break;
     }
     dirs.into_iter().collect()
 }
@@ -634,15 +906,16 @@ fn resolve_driver_mapping_dev_ino(
     resolve_mapping_dev_ino(maps_bytes, driver_addr, "rustc driver").map(|(dev_ino, _)| dev_ino)
 }
 
+/// Map from sysroot library `(st_dev, st_ino)` to `(filename, path)`.
+#[cfg(all(any(target_os = "linux", test), unix))]
+type SysrootLibMap = BTreeMap<DevIno, (String, PathBuf)>;
+
 /// Collect all regular library files under `<sysroot>/lib` and
 /// `<sysroot>/lib/rustlib/<host>/lib`, indexed by kernel `(st_dev, st_ino)`.
 /// Symlinks (such as virtual CAS symlink forests) are followed so their
 /// backing inode matches `/proc/self/maps`.
 #[cfg(all(any(target_os = "linux", test), unix))]
-fn collect_sysroot_library_entries(
-    sysroot: &Path,
-    host: &str,
-) -> Result<BTreeMap<(u64, u64), (String, PathBuf)>, Failure> {
+fn collect_sysroot_library_entries(sysroot: &Path, host: &str) -> Result<SysrootLibMap, Failure> {
     if !is_valid_host_triple(host) {
         return Err(Failure::tool(format!(
             "invalid rustc host triple: {host:?}"
@@ -731,6 +1004,275 @@ fn match_and_hash_sysroot_driver(
     )))
 }
 
+/// Return `true` if `dir` lies under a standard system runtime root (`/lib`,
+/// `/lib64`, `/usr/lib`, `/usr/lib64`) that needs no custom symlink scanning.
+#[cfg(all(any(target_os = "linux", test), unix))]
+fn is_standard_runtime_dir(dir: &Path) -> bool {
+    use std::os::unix::ffi::OsStrExt;
+    let bytes = dir.as_os_str().as_bytes();
+    matches!(bytes, b"/lib" | b"/lib64" | b"/usr/lib" | b"/usr/lib64")
+        || ALLOWED_SYSTEM_RUNTIME_PREFIXES
+            .iter()
+            .any(|prefix| bytes.starts_with(prefix))
+}
+
+/// Return `true` if a canonical symlink target inside an authenticated runtime
+/// directory is non-toolchain and resolves under either a standard OS runtime
+/// root or a validated runtime directory.
+#[cfg(all(any(target_os = "linux", test), unix))]
+fn is_allowed_runtime_symlink_target(canon: &Path) -> bool {
+    use std::os::unix::ffi::OsStrExt;
+    if !canon.is_absolute() {
+        return false;
+    }
+    if canon
+        .file_name()
+        .and_then(|name| name.to_str())
+        .is_some_and(is_toolchain_dso_filename)
+    {
+        return false;
+    }
+    let bytes = canon.as_os_str().as_bytes();
+    if ALLOWED_SYSTEM_RUNTIME_PREFIXES
+        .iter()
+        .any(|prefix| bytes.starts_with(prefix))
+    {
+        return true;
+    }
+    canon.parent().is_some_and(is_allowed_pt_interp_dir)
+}
+
+/// Record `(st_dev, st_ino)` -> canonical path for non-toolchain symlinked
+/// runtime libraries directly inside `dir` whose canonical target passes
+/// [`is_allowed_runtime_symlink_target`].
+///
+/// Nix packages split outputs such as `gcc-lib` and `gcc-libgcc` place a
+/// `libgcc_s.so.1` symlink inside `gcc-lib/lib` (the binary's `DT_RUNPATH`
+/// directory) targeting `gcc-libgcc/lib/libgcc_s.so.1`; Linux records the
+/// canonical target in `/proc/self/maps`, so authenticating symlink targets
+/// reachable directly from validated `PT_INTERP`/`DT_RUNPATH` directories by
+/// `(st_dev, st_ino)` admits split-package runtime DSOs without reopening
+/// blanket `/nix/store/` access.
+#[cfg(all(any(target_os = "linux", test), unix))]
+fn collect_dir_runtime_symlinks(
+    dir: &Path,
+    symlink_targets: &mut BTreeMap<DevIno, PathBuf>,
+) {
+    const MAX_SYMLINK_TARGETS: usize = 1024;
+
+    if is_standard_runtime_dir(dir) || symlink_targets.len() >= MAX_SYMLINK_TARGETS {
+        return;
+    }
+    let Ok(entries) = fs::read_dir(dir) else {
+        return;
+    };
+    for entry in entries.flatten() {
+        if symlink_targets.len() >= MAX_SYMLINK_TARGETS {
+            break;
+        }
+        let Ok(ft) = entry.file_type() else {
+            continue;
+        };
+        if !ft.is_symlink() {
+            continue;
+        }
+        let entry_path = entry.path();
+        let Some(entry_name) = entry_path.file_name().and_then(|n| n.to_str()) else {
+            continue;
+        };
+        if is_toolchain_dso_filename(entry_name) {
+            continue;
+        }
+        let Ok(canon) = fs::canonicalize(&entry_path) else {
+            continue;
+        };
+        if !is_allowed_runtime_symlink_target(&canon) {
+            continue;
+        }
+        let Ok(dev_ino) = regular_file_dev_ino(&canon) else {
+            continue;
+        };
+        symlink_targets.entry(dev_ino).or_insert(canon);
+    }
+}
+
+/// Authenticated non-toolchain runtime directory closure and per-file symlink
+/// `(st_dev, st_ino)` allowlist derived from `PT_INTERP` and transitive
+/// `DT_RUNPATH`/`DT_RPATH` dependencies.
+#[cfg(all(any(target_os = "linux", test), unix))]
+struct RuntimeClosure {
+    dirs: Vec<PathBuf>,
+    symlink_dev_inos: BTreeSet<DevIno>,
+}
+
+#[cfg(all(any(target_os = "linux", test), unix))]
+impl RuntimeClosure {
+    /// Resolve the transitive runtime closure across `pt_interp_dirs`,
+    /// symlinks inside those directories, and `DT_RUNPATH`/`DT_RPATH` headers
+    /// of already-authenticated mapped ELF binaries.
+    fn resolve(
+        pt_interp_dirs: &[PathBuf],
+        exec_mappings: &BTreeMap<DevIno, Vec<u8>>,
+        sysroot_libs: &SysrootLibMap,
+        self_dev_ino: DevIno,
+        driver_dev_ino: DevIno,
+    ) -> Self {
+        use std::os::unix::ffi::OsStrExt;
+
+        const MAX_DIRS: usize = 256;
+        const MAX_INSPECTED_ELFS: usize = 256;
+
+        let mut dirs: BTreeSet<PathBuf> = pt_interp_dirs.iter().cloned().collect();
+        let mut symlink_targets: BTreeMap<DevIno, PathBuf> = BTreeMap::new();
+        let mut scanned_dirs: BTreeSet<PathBuf> = BTreeSet::new();
+        let mut inspected_dev_inos: BTreeSet<DevIno> = BTreeSet::new();
+
+        let has_unmatched_mapping =
+            |dirs_vec: &[PathBuf], symlink_targets: &BTreeMap<DevIno, PathBuf>| {
+                exec_mappings.iter().any(|(&dev_ino, pathname)| {
+                    if dev_ino == self_dev_ino
+                        || dev_ino == driver_dev_ino
+                        || sysroot_libs.contains_key(&dev_ino)
+                    {
+                        return false;
+                    }
+                    if is_allowed_system_runtime_path(pathname, dirs_vec) {
+                        return false;
+                    }
+                    let is_toolchain = maps_pathname_basename(pathname)
+                        .is_some_and(is_toolchain_dso_filename);
+                    is_toolchain || !symlink_targets.contains_key(&dev_ino)
+                })
+            };
+
+        let initial_dirs: Vec<PathBuf> = dirs.iter().cloned().collect();
+        if !has_unmatched_mapping(&initial_dirs, &symlink_targets) {
+            return Self {
+                dirs: initial_dirs,
+                symlink_dev_inos: BTreeSet::new(),
+            };
+        }
+
+        loop {
+            let mut progressed = false;
+            let pending_dirs: Vec<PathBuf> = dirs
+                .iter()
+                .filter(|dir| !scanned_dirs.contains(*dir))
+                .cloned()
+                .collect();
+            for dir in pending_dirs {
+                scanned_dirs.insert(dir.clone());
+                let before = symlink_targets.len();
+                collect_dir_runtime_symlinks(&dir, &mut symlink_targets);
+                if symlink_targets.len() > before {
+                    progressed = true;
+                }
+            }
+
+            if inspected_dev_inos.len() < MAX_INSPECTED_ELFS && dirs.len() < MAX_DIRS {
+                for (&dev_ino, pathname) in exec_mappings {
+                    if inspected_dev_inos.len() >= MAX_INSPECTED_ELFS || dirs.len() >= MAX_DIRS {
+                        break;
+                    }
+                    if inspected_dev_inos.contains(&dev_ino) {
+                        continue;
+                    }
+                    let elf_path: Option<&Path> =
+                        if let Some((_, sys_path)) = sysroot_libs.get(&dev_ino) {
+                            Some(sys_path.as_path())
+                        } else if let Some(sym_path) = symlink_targets.get(&dev_ino) {
+                            Some(sym_path.as_path())
+                        } else if !pathname.ends_with(b" (deleted)")
+                            && !maps_pathname_basename(pathname)
+                                .is_some_and(is_toolchain_dso_filename)
+                        {
+                            let raw_path = Path::new(OsStr::from_bytes(pathname));
+                            if dirs.iter().any(|dir| raw_path.starts_with(dir)) {
+                                Some(raw_path)
+                            } else {
+                                None
+                            }
+                        } else {
+                            None
+                        };
+                    let Some(path) = elf_path else {
+                        continue;
+                    };
+                    inspected_dev_inos.insert(dev_ino);
+                    if let Some(info) = inspect_elf64_pt_interp(path, Some(dev_ino)) {
+                        for dir in info.dirs {
+                            if dirs.len() >= MAX_DIRS {
+                                break;
+                            }
+                            if dirs.insert(dir) {
+                                progressed = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            let dirs_vec: Vec<PathBuf> = dirs.iter().cloned().collect();
+            if !progressed || !has_unmatched_mapping(&dirs_vec, &symlink_targets) {
+                return Self {
+                    dirs: dirs_vec,
+                    symlink_dev_inos: symlink_targets.into_keys().collect(),
+                };
+            }
+        }
+    }
+
+    fn is_allowed(&self, dev_ino: DevIno, pathname: &[u8]) -> bool {
+        if is_allowed_system_runtime_path(pathname, &self.dirs) {
+            return true;
+        }
+        !pathname.ends_with(b" (deleted)")
+            && pathname.starts_with(b"/")
+            && !maps_pathname_basename(pathname).is_some_and(is_toolchain_dso_filename)
+            && self.symlink_dev_inos.contains(&dev_ino)
+    }
+}
+
+/// Authenticate non-self, non-driver executable mappings in `/proc/self/maps`
+/// against `sysroot_libs` and `runtime_closure`, hashing any mapped sysroot
+/// libraries by open-FD `(st_dev, st_ino)`.
+#[cfg(all(any(target_os = "linux", test), unix))]
+fn verify_exec_mappings_residency(
+    exec_mappings: &BTreeMap<DevIno, Vec<u8>>,
+    sysroot_libs: &SysrootLibMap,
+    runtime_closure: &RuntimeClosure,
+    self_dev_ino: DevIno,
+    driver_dev_ino: DevIno,
+    sysroot: &Path,
+    dso_digests: &mut BTreeMap<String, String>,
+) -> Result<(), Failure> {
+    for (&dev_ino, pathname) in exec_mappings {
+        if dev_ino == self_dev_ino || dev_ino == driver_dev_ino {
+            continue;
+        }
+        if let Some((name, path)) = sysroot_libs.get(&dev_ino) {
+            if !dso_digests.contains_key(name) {
+                let digest = open_and_hash_if_dev_ino_matches(path, dev_ino)
+                    .map_err(Failure::io)?
+                    .ok_or_else(|| {
+                        Failure::tool(format!(
+                            "sysroot library {} changed inode during residency verification",
+                            path.display()
+                        ))
+                    })?;
+                dso_digests.insert(name.clone(), digest);
+            }
+        } else if !runtime_closure.is_allowed(dev_ino, pathname) {
+            return Err(Failure::tool(format!(
+                "loaded executable mapping {} does not belong to verified sysroot {} or standard system libraries",
+                String::from_utf8_lossy(pathname),
+                sysroot.display()
+            )));
+        }
+    }
+    Ok(())
+}
+
 /// Verify closed-world executable DSO residency across `/proc/self/maps` for
 /// both dynamically linked (`librustc_driver-*.so` + transitive toolchain
 /// DSOs such as `libLLVM*.so*`) and statically linked (`rustc_driver` linked
@@ -803,42 +1345,36 @@ fn verify_maps_residency(
     }
 
     let mut dso_digests = BTreeMap::new();
+    let runtime_closure = RuntimeClosure::resolve(
+        pt_interp_dirs,
+        &exec_mappings,
+        &sysroot_libs,
+        self_dev_ino,
+        driver_dev_ino,
+    );
 
     if driver_dev_ino == self_dev_ino {
         // Static-linked `rustc_private` driver: `rustc_driver::run_compiler`
         // resides inside the capture executable itself. Refuse any stray
         // dynamically loaded toolchain DSO (`librustc_*`, `libLLVM*`, etc.),
         // validate all remaining executable mappings against sysroot or
-        // standard system runtime paths, and hash the capture executable via
-        // an open-FD `(st_dev, st_ino)` match.
+        // standard/authenticated runtime paths, and hash the capture
+        // executable via an open-FD `(st_dev, st_ino)` match.
         if let Some((_, stray_path)) = toolchain_mappings.iter().next() {
             return Err(Failure::tool(format!(
                 "statically linked capture driver unexpectedly mapped toolchain DSO: {}",
                 String::from_utf8_lossy(stray_path)
             )));
         }
-        for (&dev_ino, pathname) in &exec_mappings {
-            if dev_ino == self_dev_ino {
-                continue;
-            }
-            if let Some((name, path)) = sysroot_libs.get(&dev_ino) {
-                let digest = open_and_hash_if_dev_ino_matches(path, dev_ino)
-                    .map_err(Failure::io)?
-                    .ok_or_else(|| {
-                        Failure::tool(format!(
-                            "sysroot library {} changed inode during residency verification",
-                            path.display()
-                        ))
-                    })?;
-                dso_digests.insert(name.clone(), digest);
-            } else if !is_allowed_system_runtime_path(pathname, pt_interp_dirs) {
-                return Err(Failure::tool(format!(
-                    "loaded executable mapping {} does not belong to verified sysroot {} or standard system libraries",
-                    String::from_utf8_lossy(pathname),
-                    sysroot.display()
-                )));
-            }
-        }
+        verify_exec_mappings_residency(
+            &exec_mappings,
+            &sysroot_libs,
+            &runtime_closure,
+            self_dev_ino,
+            driver_dev_ino,
+            sysroot,
+            &mut dso_digests,
+        )?;
         let exe_sha256 = match open_and_hash_if_dev_ino_matches(self_exe_path, self_dev_ino) {
             Ok(Some(digest)) => digest,
             _ => {
@@ -890,30 +1426,15 @@ fn verify_maps_residency(
         dso_digests.insert(name.clone(), digest);
     }
 
-    for (&dev_ino, pathname) in &exec_mappings {
-        if dev_ino == self_dev_ino || dev_ino == driver_dev_ino {
-            continue;
-        }
-        if let Some((name, path)) = sysroot_libs.get(&dev_ino) {
-            if !dso_digests.contains_key(name) {
-                let digest = open_and_hash_if_dev_ino_matches(path, dev_ino)
-                    .map_err(Failure::io)?
-                    .ok_or_else(|| {
-                        Failure::tool(format!(
-                            "sysroot library {} changed inode during residency verification",
-                            path.display()
-                        ))
-                    })?;
-                dso_digests.insert(name.clone(), digest);
-            }
-        } else if !is_allowed_system_runtime_path(pathname, pt_interp_dirs) {
-            return Err(Failure::tool(format!(
-                "loaded executable mapping {} does not belong to verified sysroot {} or standard system libraries",
-                String::from_utf8_lossy(pathname),
-                sysroot.display()
-            )));
-        }
-    }
+    verify_exec_mappings_residency(
+        &exec_mappings,
+        &sysroot_libs,
+        &runtime_closure,
+        self_dev_ino,
+        driver_dev_ino,
+        sysroot,
+        &mut dso_digests,
+    )?;
 
     Ok(DriverIdentity {
         linkage: DriverLinkage::DynamicDso,
@@ -961,7 +1482,7 @@ fn verify_driver_residency(sysroot: &Path, host: &str) -> Result<DriverIdentity,
     let driver_addr = rustc_driver::run_compiler as *const () as usize;
     let maps_bytes = fs::read("/proc/self/maps").map_err(Failure::io)?;
     let self_exe = Path::new("/proc/self/exe");
-    let pt_interp_dirs = read_elf64_pt_interp_dirs(self_exe);
+    let pt_interp_dirs = resolve_runtime_pt_interp_dirs(&maps_bytes, self_addr, self_exe);
     verify_maps_residency(
         &maps_bytes,
         sysroot,
@@ -974,7 +1495,7 @@ fn verify_driver_residency(sysroot: &Path, host: &str) -> Result<DriverIdentity,
 }
 
 #[cfg(not(target_os = "linux"))]
-fn verify_driver_residency(_sysroot: &Path, _host: &str) -> Result<(), Failure> {
+fn verify_driver_residency(_sysroot: &Path, _host: &str) -> Result<DriverIdentity, Failure> {
     Err(Failure::unsupported(
         "typed MIR capture requires Linux to authenticate the loaded rustc driver",
     ))
@@ -985,8 +1506,19 @@ fn verify_driver_residency(_sysroot: &Path, _host: &str) -> Result<(), Failure> 
 /// the pinned commit, pre/post `<sysroot>/bin/rustc` TOCTOU identity, and
 /// Linux closed-world driver residency before entering `rustc`'s fatal-error
 /// handler.
-pub(crate) fn verify_compiler(sysroot: &Path, target: &str) -> Result<(), Failure> {
+///
+/// Returns the pinned sysroot directory `(st_dev, st_ino)` together with the
+/// authenticated `rustc` and driver/DSO SHA-256 digests so downstream capture
+/// checks can detect symlink retargeting and emit the digests in the manifest.
+pub(crate) fn verify_compiler(sysroot: &Path, target: &str) -> Result<VerifiedCompiler, Failure> {
     reject_ambient_loader_env()?;
+    #[cfg(unix)]
+    let sysroot_id = dir_dev_ino(sysroot).map_err(|error| {
+        Failure::tool(format!(
+            "invalid Rust sysroot layout at {}: {error}",
+            sysroot.display()
+        ))
+    })?;
     if !sysroot.is_dir()
         || !sysroot.join("lib").is_dir()
         || !sysroot.join("lib/rustlib").is_dir()
@@ -1077,8 +1609,22 @@ pub(crate) fn verify_compiler(sysroot: &Path, target: &str) -> Result<(), Failur
         ));
     }
 
-    verify_driver_residency(sysroot, &verbose.host)?;
-    Ok(())
+    let driver = verify_driver_residency(sysroot, &verbose.host)?;
+    #[cfg(unix)]
+    {
+        let sysroot_id_after = dir_dev_ino(sysroot).map_err(Failure::io)?;
+        if sysroot_id_after != sysroot_id {
+            return Err(Failure::tool(
+                "sysroot directory changed during compiler identity verification",
+            ));
+        }
+    }
+    Ok(VerifiedCompiler {
+        #[cfg(unix)]
+        sysroot_id,
+        rustc_sha256,
+        driver,
+    })
 }
 
 #[cfg(test)]
@@ -1259,13 +1805,230 @@ LLVM version: 22.1.6\n";
             "unknown"
         ));
 
-        // Ambient loader injection variables must fail closed while clean
+        // Ambient loader injection variables must fail closed on presence
+        // (including empty strings for presence-triggered flags such as
+        // `LD_DYNAMIC_WEAK=""` and `DYLD_FORCE_FLAT_NAMESPACE=""`), while clean
         // environments pass.
-        assert!(reject_loader_env_in([("PATH", "/usr/bin"), ("LD_PRELOAD", "")]).is_ok());
+        assert!(reject_loader_env_in([("PATH", "/usr/bin"), ("LANG", "C")]).is_ok());
         for bad in FORBIDDEN_LOADER_ENV_VARS {
-            let err = reject_loader_env_in([(*bad, "/tmp/injected.so")]).unwrap_err();
-            assert!(err.diagnostics[0].contains(bad), "{bad}: {err:?}");
+            for val in ["", "/tmp/injected.so"] {
+                let err = reject_loader_env_in([(*bad, val)]).unwrap_err();
+                assert!(
+                    err.diagnostics[0].contains(bad),
+                    "{bad}={val:?}: {err:?}"
+                );
+            }
         }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn pt_interp_resolution_handles_explicit_loader_and_filters_broad_dirs() {
+        let make_elf64 = |pt_interp: Option<&[u8]>| {
+            let mut bytes = vec![0u8; 64 + 56];
+            bytes[0..4].copy_from_slice(b"\x7fELF");
+            bytes[4] = 2; // ELFCLASS64
+            bytes[5] = 1; // ELFDATA2LSB
+            bytes[32..40].copy_from_slice(&64u64.to_le_bytes()); // e_phoff
+            bytes[54..56].copy_from_slice(&56u16.to_le_bytes()); // e_phentsize
+            bytes[56..58].copy_from_slice(&1u16.to_le_bytes()); // e_phnum
+            if let Some(interp) = pt_interp {
+                let offset = bytes.len() as u64;
+                let mut nul_terminated = interp.to_vec();
+                nul_terminated.push(0);
+                let filesz = nul_terminated.len() as u64;
+                bytes[64..68].copy_from_slice(&3u32.to_le_bytes()); // PT_INTERP
+                bytes[64 + 8..64 + 16].copy_from_slice(&offset.to_le_bytes());
+                bytes[64 + 32..64 + 40].copy_from_slice(&filesz.to_le_bytes());
+                bytes.extend_from_slice(&nul_terminated);
+            } else {
+                // Single PT_LOAD segment, zero PT_INTERP segments (as on ld-linux.so).
+                bytes[64..68].copy_from_slice(&1u32.to_le_bytes());
+            }
+            bytes
+        };
+
+        let dir = tempfile::tempdir().unwrap();
+        let custom_lib = dir.path().join("custom-glibc/lib64");
+        let capture_dir = dir.path().join("bin");
+        fs::create_dir_all(&custom_lib).unwrap();
+        fs::create_dir_all(&capture_dir).unwrap();
+
+        let custom_loader = custom_lib.join("ld-linux-x86-64.so.2");
+        fs::write(&custom_loader, make_elf64(None)).unwrap();
+
+        let capture_with_custom_interp = capture_dir.join("capture-custom");
+        fs::write(
+            &capture_with_custom_interp,
+            make_elf64(Some(custom_loader.to_str().unwrap().as_bytes())),
+        )
+        .unwrap();
+
+        let capture_with_std_interp = capture_dir.join("capture-std");
+        fs::write(
+            &capture_with_std_interp,
+            make_elf64(Some(b"/lib64/ld-linux-x86-64.so.2")),
+        )
+        .unwrap();
+
+        let capture_with_broad_interp = capture_dir.join("capture-broad");
+        fs::write(
+            &capture_with_broad_interp,
+            make_elf64(Some(b"/tmp/ld-linux-x86-64.so.2")),
+        )
+        .unwrap();
+
+        // 1. Broad directories and traversal paths are filtered out.
+        for bad in [
+            Path::new("/"),
+            Path::new("/tmp"),
+            Path::new("/home"),
+            Path::new("/nix/store"),
+            Path::new("/usr"),
+            Path::new("/usr/local"),
+            Path::new("/opt"),
+            Path::new("/var/tmp"),
+            Path::new("/opt/foo/../bar"),
+            Path::new("relative/lib"),
+        ] {
+            assert!(!is_allowed_pt_interp_dir(bad), "expected broad dir rejected: {}", bad.display());
+        }
+        // Arbitrary unauthenticated `/nix/store/` DSOs are refused unless
+        // their specific store directory is authenticated via `PT_INTERP` or
+        // `DT_RUNPATH`.
+        assert!(!is_allowed_system_runtime_path(
+            b"/nix/store/attacker-evil-zlib/lib/libz.so.1",
+            &[]
+        ));
+        assert!(is_allowed_system_runtime_path(
+            b"/nix/store/pinned-zlib/lib/libz.so.1",
+            &[PathBuf::from("/nix/store/pinned-zlib/lib")]
+        ));
+
+        // Verify `DT_RUNPATH` extraction (including `$ORIGIN/../rust/lib` and
+        // pinned `/nix/store/<pkg>/lib`, while still filtering `/nix/store`).
+        let runpath_elf = capture_dir.join("capture-runpath");
+        let runpath_str = b"/nix/store/pinned-zlib/lib:$ORIGIN/../custom-glibc/lib64:/nix/store:/tmp\0";
+        let mut elf = vec![0u8; 64 + 56 * 2];
+        elf[0..4].copy_from_slice(b"\x7fELF");
+        elf[4] = 2;
+        elf[5] = 1;
+        elf[32..40].copy_from_slice(&64u64.to_le_bytes()); // e_phoff
+        elf[54..56].copy_from_slice(&56u16.to_le_bytes()); // e_phentsize
+        elf[56..58].copy_from_slice(&2u16.to_le_bytes()); // e_phnum
+        let dyn_offset = elf.len() as u64;
+        let dyn_size = (4 * 16) as u64;
+        let strtab_offset = dyn_offset + dyn_size;
+        let strtab_size = runpath_str.len() as u64;
+        let total_size = strtab_offset + strtab_size;
+        // PHDR 0: PT_LOAD covering the entire file at vaddr == file offset.
+        elf[64..68].copy_from_slice(&1u32.to_le_bytes());
+        elf[64 + 8..64 + 16].copy_from_slice(&0u64.to_le_bytes());
+        elf[64 + 16..64 + 24].copy_from_slice(&0u64.to_le_bytes());
+        elf[64 + 32..64 + 40].copy_from_slice(&total_size.to_le_bytes());
+        // PHDR 1: PT_DYNAMIC
+        let p1 = 64 + 56;
+        elf[p1..p1 + 4].copy_from_slice(&2u32.to_le_bytes());
+        elf[p1 + 8..p1 + 16].copy_from_slice(&dyn_offset.to_le_bytes());
+        elf[p1 + 32..p1 + 40].copy_from_slice(&dyn_size.to_le_bytes());
+        // Dynamic table entries: DT_STRTAB(5), DT_STRSZ(10), DT_RUNPATH(29), DT_NULL(0)
+        for (tag, val) in [
+            (5i64, strtab_offset),
+            (10i64, strtab_size),
+            (29i64, 0u64),
+            (0i64, 0u64),
+        ] {
+            elf.extend_from_slice(&tag.to_le_bytes());
+            elf.extend_from_slice(&val.to_le_bytes());
+        }
+        elf.extend_from_slice(runpath_str);
+        fs::write(&runpath_elf, &elf).unwrap();
+        let runpath_info = inspect_elf64_pt_interp(&runpath_elf, None).unwrap();
+        assert!(
+            runpath_info
+                .dirs
+                .contains(&PathBuf::from("/nix/store/pinned-zlib/lib")),
+            "expected pinned nix store runpath dir in {:?}",
+            runpath_info.dirs
+        );
+        assert!(
+            runpath_info.dirs.contains(&fs::canonicalize(&custom_lib).unwrap()),
+            "expected $ORIGIN-expanded dir in {:?}",
+            runpath_info.dirs
+        );
+        assert!(!runpath_info.dirs.contains(&PathBuf::from("/nix/store")));
+        assert!(!runpath_info.dirs.contains(&PathBuf::from("/tmp")));
+        assert!(is_allowed_pt_interp_dir(&custom_lib));
+        let broad_info = inspect_elf64_pt_interp(&capture_with_broad_interp, None).unwrap();
+        assert!(broad_info.has_pt_interp);
+        assert!(broad_info.dirs.is_empty());
+
+        let fmt_dev_ino = |p: &Path| {
+            let (dev, ino) = regular_file_dev_ino(p).unwrap();
+            let major = ((dev >> 8) & 0xfff) | ((dev >> 32) & !0xfff);
+            let minor = (dev & 0xff) | ((dev >> 12) & !0xff);
+            format!("{major:02x}:{minor:02x} {ino}")
+        };
+
+        // 2. Explicit dynamic-loader launch (`/proc/self/exe` = custom loader
+        //    without `PT_INTERP`, `self_vma_path` = capture binary with
+        //    standard `PT_INTERP`) discovers `custom_lib` and passes residency.
+        let std_cap_id = fmt_dev_ino(&capture_with_std_interp);
+        let loader_id = fmt_dev_ino(&custom_loader);
+        let explicit_maps = format!(
+            "555555554000-555555558000 r-xp 00000000 {std_cap_id}   {}\n\
+             7f0000300000-7f0000400000 r-xp 00000000 {loader_id}   {}\n\
+             7f0000400000-7f0000500000 r-xp 00000000 08:01 778   {}/libc.so.6\n",
+            capture_with_std_interp.display(),
+            custom_loader.display(),
+            custom_lib.display(),
+        );
+        let resolved_dirs = resolve_runtime_pt_interp_dirs(
+            explicit_maps.as_bytes(),
+            0x5555_5555_5000,
+            &custom_loader,
+        );
+        let canon_custom_lib = fs::canonicalize(&custom_lib).unwrap();
+        assert!(
+            resolved_dirs.contains(&canon_custom_lib),
+            "expected explicit loader dir in {resolved_dirs:?}"
+        );
+
+        let static_sysroot = dir.path().join("static-sysroot");
+        fs::create_dir_all(static_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib"))
+            .unwrap();
+        let id = verify_maps_residency(
+            explicit_maps.as_bytes(),
+            &static_sysroot,
+            "x86_64-unknown-linux-gnu",
+            0x5555_5555_5000,
+            0x5555_5555_6000,
+            &custom_loader,
+            &resolved_dirs,
+        )
+        .unwrap();
+        assert_eq!(id.linkage, DriverLinkage::StaticExe);
+
+        // 3. Explicit launch via a different loader where `self_vma_path` has a
+        //    custom `PT_INTERP` still extracts `self_vma_path`'s `PT_INTERP`
+        //    directory even when `self_exe` itself has no `PT_INTERP`.
+        let other_loader = dir.path().join("alt-loader/ld-linux.so");
+        fs::create_dir_all(other_loader.parent().unwrap()).unwrap();
+        fs::write(&other_loader, make_elf64(None)).unwrap();
+        let custom_cap_id = fmt_dev_ino(&capture_with_custom_interp);
+        let custom_vma_maps = format!(
+            "555555554000-555555558000 r-xp 00000000 {custom_cap_id}   {}\n",
+            capture_with_custom_interp.display(),
+        );
+        let vma_dirs = resolve_runtime_pt_interp_dirs(
+            custom_vma_maps.as_bytes(),
+            0x5555_5555_5000,
+            &other_loader,
+        );
+        assert!(
+            vma_dirs.contains(&canon_custom_lib),
+            "expected capture VMA PT_INTERP dir in {vma_dirs:?}"
+        );
     }
 
     #[cfg(unix)]
@@ -1431,6 +2194,204 @@ LLVM version: 22.1.6\n";
         assert!(
             err.diagnostics[0].contains("statically linked capture driver unexpectedly mapped"),
             "{err:?}"
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn runtime_closure_authenticates_split_symlinks_and_transitive_runpath() {
+        use std::os::unix::fs::symlink;
+
+        let make_runpath_elf = |runpath: &[u8]| {
+            let mut elf = vec![0u8; 64 + 56 * 2];
+            elf[0..4].copy_from_slice(b"\x7fELF");
+            elf[4] = 2; // ELFCLASS64
+            elf[5] = 1; // ELFDATA2LSB
+            elf[32..40].copy_from_slice(&64u64.to_le_bytes()); // e_phoff
+            elf[54..56].copy_from_slice(&56u16.to_le_bytes()); // e_phentsize
+            elf[56..58].copy_from_slice(&2u16.to_le_bytes()); // e_phnum
+            let dyn_offset = elf.len() as u64;
+            let dyn_size = (4 * 16) as u64;
+            let strtab_offset = dyn_offset + dyn_size;
+            let mut strtab = runpath.to_vec();
+            strtab.push(0);
+            let strtab_size = strtab.len() as u64;
+            let total_size = strtab_offset + strtab_size;
+            // PHDR 0: PT_LOAD covering the entire file at vaddr == file offset.
+            elf[64..68].copy_from_slice(&1u32.to_le_bytes());
+            elf[64 + 8..64 + 16].copy_from_slice(&0u64.to_le_bytes());
+            elf[64 + 16..64 + 24].copy_from_slice(&0u64.to_le_bytes());
+            elf[64 + 32..64 + 40].copy_from_slice(&total_size.to_le_bytes());
+            // PHDR 1: PT_DYNAMIC
+            let p1 = 64 + 56;
+            elf[p1..p1 + 4].copy_from_slice(&2u32.to_le_bytes());
+            elf[p1 + 8..p1 + 16].copy_from_slice(&dyn_offset.to_le_bytes());
+            elf[p1 + 32..p1 + 40].copy_from_slice(&dyn_size.to_le_bytes());
+            for (tag, val) in [
+                (5i64, strtab_offset), // DT_STRTAB
+                (10i64, strtab_size),  // DT_STRSZ
+                (29i64, 0u64),         // DT_RUNPATH
+                (0i64, 0u64),          // DT_NULL
+            ] {
+                elf.extend_from_slice(&tag.to_le_bytes());
+                elf.extend_from_slice(&val.to_le_bytes());
+            }
+            elf.extend_from_slice(&strtab);
+            elf
+        };
+
+        let dir = tempfile::tempdir().unwrap();
+        let sysroot = dir.path().join("sysroot");
+        let gcc_lib = dir.path().join("gcc-15.2.0-lib/lib");
+        let gcc_libgcc = dir.path().join("gcc-15.2.0-libgcc/lib");
+        let trans_dep_lib = dir.path().join("trans-dep/lib");
+        let evil_lib = dir.path().join("attacker-evil/lib");
+        fs::create_dir_all(sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib")).unwrap();
+        fs::create_dir_all(&gcc_lib).unwrap();
+        fs::create_dir_all(&gcc_libgcc).unwrap();
+        fs::create_dir_all(&trans_dep_lib).unwrap();
+        fs::create_dir_all(&evil_lib).unwrap();
+
+        let self_bin = dir.path().join("anneal-rustc-capture");
+        let driver_so = sysroot.join("lib/librustc_driver-abc.so");
+        // `libstdc++.so.6` in `gcc_lib` declares a transitive `DT_RUNPATH` to `trans_dep_lib`.
+        let libstdcxx = gcc_lib.join("libstdc++.so.6");
+        let real_libgcc = gcc_libgcc.join("libgcc_s.so.1");
+        let unrelated_libgcc_pkg = gcc_libgcc.join("libunrelated.so");
+        let trans_so = trans_dep_lib.join("libtrans.so.1");
+        let evil_libgcc = evil_lib.join("libgcc_s.so.1");
+        let llvm_target = dir.path().join("outside/libLLVM.so.22");
+        fs::create_dir_all(llvm_target.parent().unwrap()).unwrap();
+
+        fs::write(&self_bin, b"self").unwrap();
+        fs::write(&driver_so, b"driver").unwrap();
+        fs::write(
+            &libstdcxx,
+            make_runpath_elf(trans_dep_lib.to_str().unwrap().as_bytes()),
+        )
+        .unwrap();
+        fs::write(&real_libgcc, b"real-libgcc").unwrap();
+        fs::write(&unrelated_libgcc_pkg, b"unrelated").unwrap();
+        fs::write(&trans_so, b"trans").unwrap();
+        fs::write(&evil_libgcc, b"evil-libgcc").unwrap();
+        fs::write(&llvm_target, b"evil-llvm").unwrap();
+
+        // Split-output Nix symlink: `gcc-lib/lib/libgcc_s.so.1 -> gcc-libgcc/lib/libgcc_s.so.1`.
+        symlink(&real_libgcc, gcc_lib.join("libgcc_s.so.1")).unwrap();
+        // Symlink inside `gcc-lib/lib` pointing to a toolchain DSO or `cwd` must NEVER admit it.
+        symlink(&llvm_target, gcc_lib.join("libnot_llvm_alias.so")).unwrap();
+        if let Ok(cwd) = std::env::current_dir() {
+            assert!(!is_allowed_runtime_symlink_target(&cwd.join("libcwd.so")));
+        }
+        assert!(!is_allowed_runtime_symlink_target(Path::new("/tmp/libbad.so")));
+        assert!(!is_allowed_runtime_symlink_target(Path::new("/nix/store/libbad.so")));
+        assert!(!is_allowed_runtime_symlink_target(&llvm_target));
+
+        let fmt_dev_ino = |p: &Path| {
+            let (dev, ino) = regular_file_dev_ino(p).unwrap();
+            let major = ((dev >> 8) & 0xfff) | ((dev >> 32) & !0xfff);
+            let minor = (dev & 0xff) | ((dev >> 12) & !0xff);
+            format!("{major:02x}:{minor:02x} {ino}")
+        };
+
+        let self_id = fmt_dev_ino(&self_bin);
+        let driver_id = fmt_dev_ino(&driver_so);
+        let stdcxx_id = fmt_dev_ino(&libstdcxx);
+        let libgcc_id = fmt_dev_ino(&real_libgcc);
+        let unrelated_id = fmt_dev_ino(&unrelated_libgcc_pkg);
+        let trans_id = fmt_dev_ino(&trans_so);
+        let evil_id = fmt_dev_ino(&evil_libgcc);
+        let llvm_id = fmt_dev_ino(&llvm_target);
+
+        // 1. Valid split-output symlink (`gcc-lib/lib/libgcc_s.so.1 -> gcc-libgcc/...`)
+        //    plus transitive `DT_RUNPATH` (`libstdc++.so.6 -> trans-dep/lib/libtrans.so.1`) pass.
+        let valid_maps = format!(
+            "555555554000-555555558000 r-xp 00000000 {self_id}   {}\n\
+             7f0000100000-7f0000200000 r-xp 00000000 {driver_id}   {}\n\
+             7f0000200000-7f0000300000 r-xp 00000000 {stdcxx_id}   {}\n\
+             7f0000300000-7f0000400000 r-xp 00000000 {libgcc_id}   {}\n\
+             7f0000400000-7f0000500000 r-xp 00000000 {trans_id}   {}\n",
+            self_bin.display(),
+            driver_so.display(),
+            libstdcxx.display(),
+            real_libgcc.display(),
+            trans_so.display(),
+        );
+        verify_maps_residency(
+            valid_maps.as_bytes(),
+            &sysroot,
+            "x86_64-unknown-linux-gnu",
+            0x5555_5555_5000,
+            0x7f00_0015_0000,
+            &self_bin,
+            std::slice::from_ref(&gcc_lib),
+        )
+        .unwrap();
+
+        // 2. Unrelated sibling file inside `gcc-libgcc/lib` (never symlinked from `gcc-lib/lib`) fails.
+        let sibling_maps = format!(
+            "555555554000-555555558000 r-xp 00000000 {self_id}   {}\n\
+             7f0000100000-7f0000200000 r-xp 00000000 {driver_id}   {}\n\
+             7f0000300000-7f0000400000 r-xp 00000000 {unrelated_id}   {}\n",
+            self_bin.display(),
+            driver_so.display(),
+            unrelated_libgcc_pkg.display(),
+        );
+        assert!(
+            verify_maps_residency(
+                sibling_maps.as_bytes(),
+                &sysroot,
+                "x86_64-unknown-linux-gnu",
+                0x5555_5555_5000,
+                0x7f00_0015_0000,
+                &self_bin,
+                std::slice::from_ref(&gcc_lib),
+            )
+            .is_err()
+        );
+
+        // 3. Unauthenticated `/nix/store/attacker-evil/lib/libgcc_s.so.1` fails closed.
+        let evil_maps = format!(
+            "555555554000-555555558000 r-xp 00000000 {self_id}   {}\n\
+             7f0000100000-7f0000200000 r-xp 00000000 {driver_id}   {}\n\
+             7f0000300000-7f0000400000 r-xp 00000000 {evil_id}   {}\n",
+            self_bin.display(),
+            driver_so.display(),
+            evil_libgcc.display(),
+        );
+        assert!(
+            verify_maps_residency(
+                evil_maps.as_bytes(),
+                &sysroot,
+                "x86_64-unknown-linux-gnu",
+                0x5555_5555_5000,
+                0x7f00_0015_0000,
+                &self_bin,
+                std::slice::from_ref(&gcc_lib),
+            )
+            .is_err()
+        );
+
+        // 4. Symlink inside `gcc-lib/lib` targeting a toolchain DSO (`libLLVM*`) is rejected.
+        let llvm_symlink_maps = format!(
+            "555555554000-555555558000 r-xp 00000000 {self_id}   {}\n\
+             7f0000100000-7f0000200000 r-xp 00000000 {driver_id}   {}\n\
+             7f0000300000-7f0000400000 r-xp 00000000 {llvm_id}   {}\n",
+            self_bin.display(),
+            driver_so.display(),
+            llvm_target.display(),
+        );
+        assert!(
+            verify_maps_residency(
+                llvm_symlink_maps.as_bytes(),
+                &sysroot,
+                "x86_64-unknown-linux-gnu",
+                0x5555_5555_5000,
+                0x7f00_0015_0000,
+                &self_bin,
+                std::slice::from_ref(&gcc_lib),
+            )
+            .is_err()
         );
     }
 }
