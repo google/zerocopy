@@ -23,10 +23,13 @@ use std::{
 
 use crate::{
     ActiveSandbox, Checker, SandboxMode, TOOLCHAIN, TargetAuditRequest, TargetBindings,
-    TargetModule, TargetRole, read_regular_file_deref, read_regular_file_strict, sha256_bytes,
+    TargetModule, TargetRole,
+    claim_cache::{ClaimCache, ClaimEvidenceKeyInput, ClaimModuleDigest, REPLAY_POSTURE_TAG},
+    read_regular_file_deref, read_regular_file_strict, sha256_bytes,
+    target::validate_cached_audit_json,
 };
 use clap::{
-    Args, Subcommand,
+    Args, Subcommand, ValueEnum,
     builder::{OsStringValueParser, TypedValueParser as _},
     error::ErrorKind,
 };
@@ -243,9 +246,28 @@ pub struct VerifyArgs {
     /// `TrustedBoundary` when absent from prebuilt or local `.olean` caches.
     #[arg(long, global = true, conflicts_with = "no_cache")]
     no_rebuild_bundled: bool,
+    /// Claim cache mode (`full-receipt` reuses audited pass evidence when all
+    /// capture/spec/proof/toolchain/policy inputs match; `off` skips it).
+    #[arg(long, global = true, value_enum, conflicts_with = "no_cache")]
+    claim_cache_mode: Option<ClaimCacheMode>,
+    /// Override the directory used for cached claim-verification evidence.
+    #[arg(long, global = true, value_name = "DIR", conflicts_with = "no_cache")]
+    claim_cache_dir: Option<PathBuf>,
     /// Direct rustc-style verification subcommand.
     #[command(subcommand)]
     command: Option<VerifySubcommand>,
+}
+
+/// Caching mode for verified unit claim receipts (`--claim-cache-mode`).
+#[derive(Clone, Copy, Debug, PartialEq, Eq, ValueEnum)]
+enum ClaimCacheMode {
+    /// Reuse audited claim evidence when capture, spec, proof, toolchain,
+    /// sysroot, and host policy inputs match identically.
+    #[value(name = "full-receipt")]
+    FullReceipt,
+    /// Skip claim-receipt caching while leaving `.olean` caching enabled.
+    #[value(name = "off")]
+    Off,
 }
 
 #[derive(Subcommand)]
@@ -497,6 +519,18 @@ impl VerifyArgs {
             return Err(cmd.error(
                 ErrorKind::ArgumentConflict,
                 "`--no-cache` and `--no-rebuild-bundled` cannot be used together",
+            ));
+        }
+        if self.no_cache && (self.claim_cache_mode.is_some() || self.claim_cache_dir.is_some()) {
+            return Err(cmd.error(
+                ErrorKind::ArgumentConflict,
+                "`--no-cache` cannot be used with `--claim-cache-mode` or `--claim-cache-dir`",
+            ));
+        }
+        if self.claim_cache_dir.as_deref().is_some_and(|p| p.as_os_str().is_empty()) {
+            return Err(cmd.error(
+                ErrorKind::InvalidValue,
+                "`--claim-cache-dir` must not be empty",
             ));
         }
         #[cfg(not(feature = "setup"))]
@@ -1432,6 +1466,17 @@ fn normalize_lexical_absolute(path: &Path) -> std::io::Result<PathBuf> {
     Ok(normalized)
 }
 
+/// Resolve `path` against `current_dir` while stripping `.` segments and
+/// preserving `..` so ancestor checks catch `symlink/..` traversals.
+fn resolve_cache_dir_preserving_parents(path: &Path) -> std::io::Result<PathBuf> {
+    let abs = if path.is_absolute() {
+        path.to_path_buf()
+    } else {
+        std::env::current_dir()?.join(path)
+    };
+    Ok(crate::claim_cache::strip_cur_dir_components(&abs))
+}
+
 fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     let start = Instant::now();
     let mut originals = Vec::new();
@@ -1704,6 +1749,20 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         });
     }
     let model_manifest_sha256 = sha256_bytes(&encoded(&model_identity)?);
+    let bundle_file_digest = |rel_path: &str| -> Result<String> {
+        model_identity
+            .iter()
+            .find(|(rel, _)| rel == rel_path)
+            .map(|(_, sha)| sha.clone())
+            .ok_or_else(|| {
+                error("tool_failed", "bundle", format!("missing {rel_path} from staged bundle"))
+            })
+    };
+    let foundation_lock_sha256 = bundle_file_digest("trusted/lean/foundation-lock.json")?;
+    let library_lock_sha256 = bundle_file_digest("trusted/audit/library-lock.json")?;
+    let correspondence_provenance_sha256 = sha256_bytes(CORRESPONDENCE_PROVENANCE_JSON.as_bytes());
+    let canonical_scope = serde_json::to_string(&request.scope)
+        .map_err(|e| error("tool_failed", "claim-cache", e.to_string()))?;
     let captured_lean = capture_dir.join("Captured.lean");
     modules.push(TargetModule {
         module: "Captured".to_owned(),
@@ -1845,24 +1904,167 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     checker.set_use_olean_cache(!args.no_cache);
     checker.set_no_rebuild_bundled(args.no_rebuild_bundled);
     checker.set_prebuilt_olean_dir(tools.prebuilt_dir);
-    let audit_result = checker.run_target(&audit_request);
-    let active_sandbox_opt = checker.active_sandbox();
-    let sandbox_label = active_sandbox_opt.map(ActiveSandbox::as_str);
-    let audit = match audit_result {
-        Ok(audit) => audit,
-        Err(e) => {
-            return Err(handle_failed_target_audit(
-                &checker,
-                work,
-                args.export_lean_lib,
-                sandbox_label,
-                e,
-            ));
-        }
+
+    let effective_claim_cache_mode = if args.no_cache {
+        ClaimCacheMode::Off
+    } else {
+        args.claim_cache_mode.unwrap_or(ClaimCacheMode::FullReceipt)
     };
-    let Some(active_sandbox) = active_sandbox_opt else {
-        return Err(error("tool_failed", "sandbox", "sandbox selection did not complete"));
+    let explicit_claim_cache_dir = args
+        .claim_cache_dir
+        .as_deref()
+        .map(resolve_cache_dir_preserving_parents)
+        .transpose()
+        .map_err(|e| error("tool_failed", "claim-cache", format!("invalid --claim-cache-dir: {e}")))?;
+    let claim_cache = ClaimCache::from_policy(
+        explicit_claim_cache_dir,
+        effective_claim_cache_mode == ClaimCacheMode::Off,
+    )
+    .map_err(|e| error("tool_failed", claim_failure_phase(&e.phase), e.message))?;
+
+    let build_claim_key_input = |checker: &Checker,
+                                 sandbox: ActiveSandbox,
+                                 sysroot_sha: String|
+     -> Result<ClaimEvidenceKeyInput> {
+        let (inspector_source_sha256, lean_binary_sha256, lean_version, runtime_libs_verified) =
+            checker.claim_toolchain_identity().map_err(|e| {
+                error("tool_failed", claim_failure_phase(&e.phase), e.message)
+                    .with_sandbox(Some(sandbox.as_str()))
+            })?;
+        let mut key_modules: Vec<ClaimModuleDigest> = audit_request
+            .modules
+            .iter()
+            .map(|m| ClaimModuleDigest {
+                module: m.module.clone(),
+                role: m.role.as_str().to_owned(),
+                sha256: m.expected_sha256.to_ascii_lowercase(),
+            })
+            .collect();
+        key_modules.sort_by(|a, b| a.module.cmp(&b.module).then(a.role.cmp(&b.role)));
+        Ok(ClaimEvidenceKeyInput {
+            canonical_scope: canonical_scope.clone(),
+            modules: key_modules,
+            theorem_module: audit_request.theorem_module.clone(),
+            theorem_name: audit_request.theorem_name.clone(),
+            expected_module: audit_request.expected_module.clone(),
+            expected_declaration: audit_request.expected_declaration.clone(),
+            canonical_root: audit_request.canonical_root.clone(),
+            subject_declaration: audit_request.subject_declaration.clone(),
+            specification_declaration: audit_request.specification_declaration.clone(),
+            model_manifest_sha256: model_manifest_sha256.clone(),
+            specification_manifest_sha256: specification_manifest_sha256.clone(),
+            correspondence_provenance_sha256: correspondence_provenance_sha256.clone(),
+            foundation_lock_sha256: foundation_lock_sha256.clone(),
+            library_lock_sha256: library_lock_sha256.clone(),
+            inspector_source_sha256,
+            lean_binary_sha256,
+            lean_version,
+            sysroot_manifest_sha256: sysroot_sha,
+            runtime_libs_verified,
+            active_sandbox: sandbox.as_str().to_owned(),
+            allow_unpinned_lean: args.allow_unpinned_lean,
+            allow_sorry_in_proof: args.allow_sorry_in_proof,
+            replay_posture: REPLAY_POSTURE_TAG.to_owned(),
+        })
     };
+
+    let (audit, active_sandbox, from_claim_cache, cache_status, pending_claim_store) =
+        if effective_claim_cache_mode == ClaimCacheMode::FullReceipt && !args.export_lean_lib {
+            let (admitted_sandbox, sysroot_sha) =
+                match checker.admit_target_for_claim_cache(&audit_request) {
+                    Ok(v) => v,
+                    Err(e) => {
+                        let sandbox_label = checker.active_sandbox().map(ActiveSandbox::as_str);
+                        return Err(handle_failed_target_audit(
+                            &checker,
+                            work,
+                            args.export_lean_lib,
+                            sandbox_label,
+                            e,
+                        ));
+                    }
+                };
+            let key_input = build_claim_key_input(&checker, admitted_sandbox, sysroot_sha)?;
+            let key_hex = key_input.cache_key();
+            match claim_cache.lookup(&key_input) {
+                Ok(Some(mut cached_audit)) => {
+                    let adm = checker.admitted().map_err(|e| {
+                        error("tool_failed", claim_failure_phase(&e.phase), e.message)
+                            .with_sandbox(Some(admitted_sandbox.as_str()))
+                    })?;
+                    validate_cached_audit_json(&mut cached_audit, &audit_request, adm).map_err(
+                        |e| {
+                            error("tool_failed", "claim-cache", e.message)
+                                .with_sandbox(Some(admitted_sandbox.as_str()))
+                        },
+                    )?;
+                    (
+                        cached_audit,
+                        admitted_sandbox,
+                        true,
+                        "claim_cache_hit",
+                        Some((key_input, key_hex)),
+                    )
+                }
+                Ok(None) => {
+                    let audit = match checker.run_target_from_admitted(&audit_request) {
+                        Ok(audit) => audit,
+                        Err(e) => {
+                            return Err(handle_failed_target_audit(
+                                &checker,
+                                work,
+                                args.export_lean_lib,
+                                Some(admitted_sandbox.as_str()),
+                                e,
+                            ));
+                        }
+                    };
+                    (audit, admitted_sandbox, false, "verified_fresh", Some((key_input, key_hex)))
+                }
+                Err(e) => {
+                    return Err(error("tool_failed", claim_failure_phase(&e.phase), e.message)
+                        .with_sandbox(Some(admitted_sandbox.as_str())));
+                }
+            }
+        } else {
+            let audit = match checker.run_target(&audit_request) {
+                Ok(audit) => audit,
+                Err(e) => {
+                    let sandbox_label = checker.active_sandbox().map(ActiveSandbox::as_str);
+                    return Err(handle_failed_target_audit(
+                        &checker,
+                        work,
+                        args.export_lean_lib,
+                        sandbox_label,
+                        e,
+                    ));
+                }
+            };
+            let Some(active_sandbox) = checker.active_sandbox() else {
+                return Err(error(
+                    "tool_failed",
+                    "sandbox",
+                    "sandbox selection did not complete",
+                ));
+            };
+            if effective_claim_cache_mode == ClaimCacheMode::FullReceipt {
+                let sysroot_sha = checker.ensure_sysroot_manifest_sha256().map_err(|e| {
+                    error("tool_failed", claim_failure_phase(&e.phase), e.message)
+                        .with_sandbox(Some(active_sandbox.as_str()))
+                })?;
+                let key_input = build_claim_key_input(&checker, active_sandbox, sysroot_sha)?;
+                let key_hex = key_input.cache_key();
+                (
+                    audit,
+                    active_sandbox,
+                    false,
+                    "bypassed_export_lean_lib",
+                    Some((key_input, key_hex)),
+                )
+            } else {
+                (audit, active_sandbox, false, "claim_cache_disabled", None)
+            }
+        };
     if (active_sandbox == ActiveSandbox::None) != args.allow_unsandboxed_elaboration {
         return Err(error(
             "tool_failed",
@@ -2017,6 +2219,9 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         "status": status,
         "taint_reasons": taint_reasons,
         "elaboration_sandbox": active_sandbox.as_str(),
+        "from_claim_cache": from_claim_cache,
+        "cache_status": cache_status,
+        "claim_cache_key": pending_claim_store.as_ref().map(|(_, key)| key.as_str()),
         "experimental": true,
         "request_sha256": request_sha256,
         "capture_sha256": capture_sha256,
@@ -2083,6 +2288,14 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         .insert("spec_warnings".into(), Value::Array(spec_warnings));
     let result_bytes =
         encoded(&result).map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?;
+    if !from_claim_cache
+        && let Some((ref key_input, _)) = pending_claim_store
+    {
+        claim_cache
+            .store(key_input, &audit)
+            .map_err(|e| error("tool_failed", claim_failure_phase(&e.phase), e.message))
+            .map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?;
+    }
     finalize_passing_artifacts(work, &result_bytes, args.export_lean_lib, |dest| {
         checker.export_target_oleans_gated(dest, true)
     })
@@ -2297,6 +2510,17 @@ fn verification_stage() -> std::io::Result<tempfile::TempDir> {
         builder.permissions(fs::Permissions::from_mode(0o700));
     }
     builder.tempdir_in(parent)
+}
+
+fn claim_failure_phase(phase: &str) -> &'static str {
+    match phase {
+        "sandbox" => "sandbox",
+        "admission" => "admission",
+        "toolchain" => "toolchain",
+        "olean-cache" => "olean-cache",
+        "target-input" => "target-input",
+        _ => "claim-cache",
+    }
 }
 
 fn handle_failed_target_audit(
@@ -2896,6 +3120,8 @@ mod tests {
             lean_memory_mb: None,
             no_cache: false,
             no_rebuild_bundled: false,
+            claim_cache_mode: None,
+            claim_cache_dir: None,
             command: None,
         };
         let crate_scope = Scope::Crate {};
@@ -2925,6 +3151,8 @@ mod tests {
                         lean_memory_mb: None,
                         no_cache: false,
                         no_rebuild_bundled: false,
+                        claim_cache_mode: None,
+                        claim_cache_dir: None,
                         command: None,
                     };
                     let taints = active_taints(&args);
@@ -3329,6 +3557,8 @@ mod tests {
             lean_memory_mb: None,
             no_cache: false,
             no_rebuild_bundled: false,
+            claim_cache_mode: None,
+            claim_cache_dir: None,
             command: None,
         };
 
@@ -3368,6 +3598,8 @@ mod tests {
                 lean_memory_mb: None,
                 no_cache: false,
                 no_rebuild_bundled: false,
+                claim_cache_mode: None,
+                claim_cache_dir: None,
                 command: None,
             };
             let err = select_tools(&args).err().expect("missing tools must fail");

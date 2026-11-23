@@ -58,6 +58,12 @@ pub struct VerifySuccessReceipt {
     #[serde(default)]
     pub sorry_declarations: Option<Vec<Value>>,
     #[serde(default)]
+    pub from_claim_cache: Option<bool>,
+    #[serde(default)]
+    pub cache_status: Option<String>,
+    #[serde(default)]
+    pub claim_cache_key: Option<String>,
+    #[serde(default)]
     pub artifacts: Option<String>,
 }
 

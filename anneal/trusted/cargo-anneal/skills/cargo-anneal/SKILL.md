@@ -99,12 +99,18 @@ Inspect `status`, `phase`, and `detail` together; check stderr if stdout is empt
 For diagnostics, rerun with `--artifacts <dir>` (add `--export-lean-lib` to
 copy Door-1-verified `.olean` files to `<dir>/lean-lib/`, omitting `proof`
 `.olean`s on `proof_failed` exit `1` and exporting nothing on `tool_failed` exit
-`2`). Receipt Schema v3 (`"schema_version": 3`) enforces a Uniform Flag-Driven
-Taint Law across `--allow-unpinned-lean` (records `unpinned_lean`),
-`--allow-unsandboxed-elaboration` (`"elaboration_sandbox": "none"`), and
-`--allow-sorry-in-proof` (records `sorry_declarations` in `proof` modules
-only): each flag prints `TAINTED` on stderr and appends `"unpinned_lean"`,
-`"unsandboxed_elaboration"`, or `"sorry_in_proof"` to `taint_reasons`.
+`2`). By default (`--claim-cache-mode full-receipt`), `verify` reuses audited
+`"target-audit"` evidence under `$XDG_CACHE_HOME/anneal/claim-cache` (override
+via `--claim-cache-dir <dir>` or disable via `--claim-cache-mode off` or
+`--no-cache`, while `--export-lean-lib` bypasses lookup yet still updates the
+cache on pass). Receipt v3 (`"schema_version": 3`) distinguishes cached hits
+from fresh runs via `from_claim_cache`, `cache_status`, and `claim_cache_key`,
+and enforces a Uniform Flag-Driven Taint Law across `--allow-unpinned-lean`
+(records `unpinned_lean`), `--allow-unsandboxed-elaboration`
+(`"elaboration_sandbox": "none"`), and `--allow-sorry-in-proof` (records
+`sorry_declarations` in `proof` modules only): each flag prints `TAINTED` on
+stderr and appends `"unpinned_lean"`, `"unsandboxed_elaboration"`, or
+`"sorry_in_proof"` to `taint_reasons`.
 
 On exit `0` (`selected_unit_verified` / `crate_verified`, or `tainted_*` when
 `taint_reasons` is non-empty), inspect `status`, `taint_reasons`,

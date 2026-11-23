@@ -24,6 +24,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::json;
 
 use crate::{
+    ActiveSandbox,
     sandbox::set_mode,
     stage::Checker,
     toolchain::{
@@ -67,6 +68,18 @@ pub enum TargetRole {
 }
 
 impl TargetRole {
+    /// Return the camelCase protocol string (`"model"`, `"specification"`,
+    /// `"capture"`, `"expected"`, or `"proof"`).
+    pub(crate) const fn as_str(self) -> &'static str {
+        match self {
+            Self::Model => "model",
+            Self::Specification => "specification",
+            Self::Capture => "capture",
+            Self::Expected => "expected",
+            Self::Proof => "proof",
+        }
+    }
+
     /// Proofs may depend on reviewed inputs, but the reverse direction would
     /// let an unreviewed helper redefine the claim. Check this relation before
     /// elaboration and again over actual compiled declaration edges: an import
@@ -577,10 +590,729 @@ fn validate_target_audit_report(
     Ok(())
 }
 
+/// Independently validate a cached `"target-audit"` JSON payload against the
+/// live `TargetAuditRequest` and [`AdmittedToolchain`], then refresh only its
+/// host-computed `bindings` field to the live `request.bindings` after checking
+/// model and specification manifest parity.
+pub(crate) fn validate_cached_audit_json(
+    audit: &mut Json,
+    request: &TargetAuditRequest,
+    adm: &AdmittedToolchain,
+) -> Result<(), Failure> {
+    for name in [
+        &request.theorem_module,
+        &request.theorem_name,
+        &request.expected_module,
+        &request.expected_declaration,
+        &request.canonical_root,
+        &request.subject_declaration,
+        &request.specification_declaration,
+    ] {
+        if !target_name_valid(name) {
+            return Err(Failure::policy(
+                "target-input",
+                format!("target name is outside the ASCII dotted-name protocol: {name}"),
+            ));
+        }
+    }
+    let Some(obj) = audit.as_object() else {
+        return Err(Failure::operational("claim-cache", "cached audit payload must be a JSON object"));
+    };
+    let mut report_obj = obj.clone();
+    let cached_identities = report_obj.remove("moduleIdentities");
+    let cached_bindings_val = report_obj.remove("bindings");
+    let cached_sources_val = report_obj.remove("sources");
+    let cached_toolchain_val = report_obj.remove("toolchain");
+    let cached_unpinned_val = report_obj.remove("unpinnedLean");
+
+    let report: TargetAuditReport = serde_json::from_value(Json::Object(report_obj)).map_err(|e| {
+        Failure::operational("claim-cache", format!("invalid cached TargetAuditReport: {e}"))
+    })?;
+    if report.checked_alternate_proofs != 0 {
+        return Err(Failure::operational(
+            "claim-cache",
+            format!(
+                "cached audit reported checkedAlternateProofs={} (expected 0)",
+                report.checked_alternate_proofs
+            ),
+        ));
+    }
+    if cached_toolchain_val.as_ref().and_then(Json::as_str) != Some(adm.version.as_str()) {
+        return Err(Failure::operational(
+            "claim-cache",
+            "cached audit toolchain version does not match live admitted toolchain",
+        ));
+    }
+
+    let request_modules_by_name: BTreeMap<&str, &TargetModule> =
+        request.modules.iter().map(|m| (m.module.as_str(), m)).collect();
+    let Some(sources_arr) = cached_sources_val.as_ref().and_then(Json::as_array) else {
+        return Err(Failure::operational("claim-cache", "cached audit missing sources array"));
+    };
+    if sources_arr.is_empty() {
+        return Err(Failure::operational("claim-cache", "cached audit sources array is empty"));
+    }
+    let mut seen_sources = BTreeSet::new();
+    for entry in sources_arr {
+        let Some(entry_obj) = entry.as_object() else {
+            return Err(Failure::operational(
+                "claim-cache",
+                "cached audit source entry must be an object",
+            ));
+        };
+        let Some(module) = entry_obj.get("module").and_then(Json::as_str) else {
+            return Err(Failure::operational(
+                "claim-cache",
+                "cached audit source entry missing module",
+            ));
+        };
+        if !seen_sources.insert(module.to_owned()) {
+            return Err(Failure::operational(
+                "claim-cache",
+                format!("duplicate module {module} in cached audit sources"),
+            ));
+        }
+        let Some(role) = entry_obj.get("role").and_then(Json::as_str) else {
+            return Err(Failure::operational(
+                "claim-cache",
+                format!("cached audit source {module} missing role"),
+            ));
+        };
+        let Some(source_sha) = entry_obj.get("sourceSha256").and_then(Json::as_str) else {
+            return Err(Failure::operational(
+                "claim-cache",
+                format!("cached audit source {module} missing sourceSha256"),
+            ));
+        };
+        let Some(req_mod) = request_modules_by_name.get(module) else {
+            return Err(Failure::operational(
+                "claim-cache",
+                format!("cached audit source {module} absent from live request"),
+            ));
+        };
+        if role != req_mod.role.as_str()
+            || !source_sha.eq_ignore_ascii_case(&req_mod.expected_sha256)
+        {
+            return Err(Failure::operational(
+                "claim-cache",
+                format!("cached audit source {module} differs from live request"),
+            ));
+        }
+    }
+    for req_mod in &request.modules {
+        let required_in_sources = req_mod.role != TargetRole::Proof
+            || !is_bundled_theory_module(&req_mod.module)
+            || req_mod.module == request.theorem_module;
+        if required_in_sources && !seen_sources.contains(&req_mod.module) {
+            return Err(Failure::operational(
+                "claim-cache",
+                format!("cached audit sources missing required module {}", req_mod.module),
+            ));
+        }
+    }
+    if !seen_sources.contains(&request.theorem_module)
+        || !seen_sources.contains(&request.expected_module)
+    {
+        return Err(Failure::operational(
+            "claim-cache",
+            "cached audit sources missing theorem or expected module",
+        ));
+    }
+
+    // Re-hash live modules and reject sysroot collisions before inspecting the
+    // cached graph or closures.
+    validate_request_modules_against_admitted(request, adm)?;
+
+    // Independently validate `report.graph` against the admitted foundation
+    // graph, library/unpinned DAG, and `TargetRole::allows` before running
+    // `validate_target_audit_report`.
+    validate_cached_audit_graph(&report.graph, &seen_sources, &request_modules_by_name, adm)?;
+    validate_target_audit_report(&report, request, &report.graph)
+        .map_err(|e| Failure::operational("claim-cache", e.message))?;
+
+    validate_cached_module_identities(
+        cached_identities.as_ref(),
+        &report,
+        &seen_sources,
+        &request_modules_by_name,
+        adm,
+    )?;
+
+    for digest in [
+        &request.bindings.request_sha256,
+        &request.bindings.capture_sha256,
+        &request.bindings.model_manifest_sha256,
+        &request.bindings.specification_manifest_sha256,
+    ] {
+        if !is_sha256_hex(digest) {
+            return Err(Failure::policy("target-input", "invalid subject binding digest"));
+        }
+    }
+    let Some(bindings_val) = cached_bindings_val else {
+        return Err(Failure::operational("claim-cache", "cached audit missing bindings"));
+    };
+    let cached_bindings: TargetBindings = serde_json::from_value(bindings_val).map_err(|e| {
+        Failure::operational("claim-cache", format!("invalid cached audit bindings: {e}"))
+    })?;
+    if !cached_bindings
+        .model_manifest_sha256
+        .eq_ignore_ascii_case(&request.bindings.model_manifest_sha256)
+        || !cached_bindings
+            .specification_manifest_sha256
+            .eq_ignore_ascii_case(&request.bindings.specification_manifest_sha256)
+    {
+        return Err(Failure::operational(
+            "claim-cache",
+            "cached audit model/specification bindings differ from live request",
+        ));
+    }
+
+    if adm.unpinned {
+        let Some(unpinned_obj) = cached_unpinned_val.as_ref().and_then(Json::as_object) else {
+            return Err(Failure::operational(
+                "claim-cache",
+                "cached audit missing unpinnedLean metadata",
+            ));
+        };
+        let Some(admitted_lean_sha) = adm.lean_binary_sha256.as_deref() else {
+            return Err(Failure::operational(
+                "target-provenance",
+                "missing admitted unpinned Lean binary digest",
+            ));
+        };
+        let sysroot_modules_sha256 = unpinned_sysroot_modules_sha256(adm)?;
+        if unpinned_obj.get("expectedToolchain").and_then(Json::as_str) != Some(TOOLCHAIN)
+            || unpinned_obj.get("observedVersion").and_then(Json::as_str)
+                != Some(adm.version.as_str())
+            || unpinned_obj
+                .get("leanBinarySha256")
+                .and_then(Json::as_str)
+                .is_none_or(|s| !s.eq_ignore_ascii_case(admitted_lean_sha))
+            || unpinned_obj
+                .get("sysrootModulesSha256")
+                .and_then(Json::as_str)
+                .is_none_or(|s| !s.eq_ignore_ascii_case(&sysroot_modules_sha256))
+            || unpinned_obj.get("admittedSysrootModuleCount").and_then(Json::as_u64)
+                != Some(adm.unpinned_records.len() as u64)
+            || unpinned_obj.get("foundationModules") != Some(&json!(adm.foundation_modules()))
+        {
+            return Err(Failure::operational(
+                "claim-cache",
+                "cached audit unpinnedLean metadata differs from live admitted toolchain",
+            ));
+        }
+    } else if cached_unpinned_val.is_some() {
+        return Err(Failure::operational(
+            "claim-cache",
+            "cached audit unexpectedly contains unpinnedLean for pinned toolchain",
+        ));
+    }
+
+    let live_bindings = serde_json::to_value(&request.bindings)
+        .map_err(|e| Failure::operational("claim-cache", e.to_string()))?;
+    audit.as_object_mut().expect("checked object above").insert("bindings".into(), live_bindings);
+    Ok(())
+}
+
+fn validate_cached_audit_graph(
+    graph: &BTreeMap<String, Vec<ImportEdge>>,
+    seen_sources: &BTreeSet<String>,
+    request_modules_by_name: &BTreeMap<&str, &TargetModule>,
+    adm: &AdmittedToolchain,
+) -> Result<(), Failure> {
+    for (module, expected_edges) in &adm.foundation_graph {
+        if graph.get(module) != Some(expected_edges) {
+            return Err(Failure::operational(
+                "claim-cache",
+                format!("cached audit graph missing or altered foundation module {module}"),
+            ));
+        }
+    }
+    let mut target_edges = BTreeMap::new();
+    for (module, edges) in graph {
+        for edge in edges {
+            if !graph.contains_key(&edge.module) {
+                return Err(Failure::operational(
+                    "claim-cache",
+                    format!("cached audit graph edge {} -> {} missing target", module, edge.module),
+                ));
+            }
+        }
+        if let Some(expected) = adm.foundation_graph.get(module) {
+            if edges != expected {
+                return Err(Failure::operational(
+                    "claim-cache",
+                    format!("cached audit graph altered foundation edges for {module}"),
+                ));
+            }
+            continue;
+        }
+        if adm.unpinned && adm.unpinned_records.contains_key(module) {
+            if adm.graph.get(module) != Some(edges) {
+                return Err(Failure::operational(
+                    "claim-cache",
+                    format!("cached audit graph altered unpinned sysroot module {module}"),
+                ));
+            }
+            continue;
+        }
+        if !adm.unpinned
+            && let Some(lib_edges) = adm.library_lock.as_ref().and_then(|l| l.graph.get(module))
+        {
+            if edges != lib_edges {
+                return Err(Failure::operational(
+                    "claim-cache",
+                    format!("cached audit graph altered library module {module}"),
+                ));
+            }
+            continue;
+        }
+        let Some(&req_mod) = request_modules_by_name.get(module.as_str()) else {
+            return Err(Failure::operational(
+                "claim-cache",
+                format!("cached audit graph contains unknown module {module}"),
+            ));
+        };
+        if !seen_sources.contains(module) {
+            return Err(Failure::operational(
+                "claim-cache",
+                format!("cached audit graph module {module} missing from sources"),
+            ));
+        }
+        let allow_theory_import_all =
+            req_mod.role == TargetRole::Proof && is_bundled_theory_module(module);
+        let has_non_meta_init = edges.iter().any(|e| e.module == "Init" && !e.is_meta);
+        for edge in edges {
+            if edge.import_all
+                && !(allow_theory_import_all
+                    && ALLOWED_THEORY_IMPORT_ALL_MODULES.contains(&edge.module.as_str()))
+            {
+                return Err(Failure::operational(
+                    "claim-cache",
+                    format!("cached audit graph contains unsupported import_all in {module}"),
+                ));
+            }
+            if edge.is_meta && !(edge.module == "Init" && has_non_meta_init) {
+                return Err(Failure::operational(
+                    "claim-cache",
+                    format!("cached audit graph contains unsupported meta import in {module}"),
+                ));
+            }
+            if let Some(dep_req) = request_modules_by_name.get(edge.module.as_str()) {
+                if !seen_sources.contains(&edge.module) || !req_mod.role.allows(dep_req.role) {
+                    return Err(Failure::operational(
+                        "claim-cache",
+                        format!(
+                            "cached audit graph violates role policy: {module} -> {}",
+                            edge.module
+                        ),
+                    ));
+                }
+            } else {
+                let admitted_external = if adm.unpinned {
+                    adm.unpinned_records.contains_key(&edge.module)
+                } else {
+                    adm.foundation_graph.contains_key(&edge.module)
+                        || adm
+                            .library_lock
+                            .as_ref()
+                            .is_some_and(|l| l.modules.contains_key(&edge.module))
+                };
+                if !admitted_external {
+                    return Err(Failure::operational(
+                        "claim-cache",
+                        format!("cached audit graph references unadmitted import {}", edge.module),
+                    ));
+                }
+            }
+        }
+        target_edges.insert(module.clone(), edges.clone());
+    }
+    let mut reachable = BTreeSet::new();
+    let mut queue = VecDeque::new();
+    for src in seen_sources {
+        if !graph.contains_key(src) {
+            return Err(Failure::operational(
+                "claim-cache",
+                format!("cached audit graph missing source module {src}"),
+            ));
+        }
+        if reachable.insert(src.clone()) {
+            queue.push_back(src.clone());
+        }
+    }
+    while let Some(curr) = queue.pop_front() {
+        if let Some(edges) = graph.get(&curr) {
+            for edge in edges {
+                if reachable.insert(edge.module.clone()) {
+                    queue.push_back(edge.module.clone());
+                }
+            }
+        }
+    }
+    for module in graph.keys() {
+        if !adm.foundation_graph.contains_key(module) && !reachable.contains(module) {
+            return Err(Failure::operational(
+                "claim-cache",
+                format!("cached audit graph contains unreachable non-foundation module {module}"),
+            ));
+        }
+    }
+    topo_sort_modules(seen_sources.clone(), &target_edges, "cached audit target import cycle")?;
+    Ok(())
+}
+
+fn validate_cached_module_identities(
+    cached_identities: Option<&Json>,
+    report: &TargetAuditReport,
+    seen_sources: &BTreeSet<String>,
+    request_modules_by_name: &BTreeMap<&str, &TargetModule>,
+    adm: &AdmittedToolchain,
+) -> Result<(), Failure> {
+    let Some(ids_obj) = cached_identities.and_then(Json::as_object) else {
+        return Err(Failure::operational("claim-cache", "cached audit missing moduleIdentities"));
+    };
+    if !ids_obj.contains_key("Captured") {
+        return Err(Failure::operational(
+            "claim-cache",
+            "cached audit missing moduleIdentities.Captured",
+        ));
+    }
+    for entry in report
+        .subject_closure
+        .iter()
+        .chain(&report.model_closure)
+        .chain(&report.specification_closure)
+    {
+        if !ids_obj.contains_key(&entry.module) {
+            return Err(Failure::operational(
+                "claim-cache",
+                format!("cached audit moduleIdentities missing closure module {}", entry.module),
+            ));
+        }
+    }
+    for (module, val) in ids_obj {
+        let Some(source_val) = val.as_object().and_then(|o| o.get("sourceSha256")) else {
+            return Err(Failure::operational(
+                "claim-cache",
+                format!("cached audit moduleIdentities.{module} missing sourceSha256"),
+            ));
+        };
+        if let Some(&req_mod) = request_modules_by_name.get(module.as_str()) {
+            let Some(source_sha) = source_val.as_str() else {
+                return Err(Failure::operational(
+                    "claim-cache",
+                    format!(
+                        "cached audit moduleIdentities.{module} sourceSha256 must be a string"
+                    ),
+                ));
+            };
+            if !is_sha256_hex(source_sha)
+                || !seen_sources.contains(module)
+                || !source_sha.eq_ignore_ascii_case(&req_mod.expected_sha256)
+            {
+                return Err(Failure::operational(
+                    "claim-cache",
+                    format!("cached audit moduleIdentities.{module} digest mismatch"),
+                ));
+            }
+        } else if adm.unpinned {
+            let Some(rec) = adm.unpinned_records.get(module) else {
+                return Err(Failure::operational(
+                    "claim-cache",
+                    format!("cached audit moduleIdentities.{module} absent from unpinned sysroot"),
+                ));
+            };
+            let matches = match (&rec.source_sha256, source_val) {
+                (Some(expected), Json::String(actual)) => {
+                    is_sha256_hex(actual) && actual.eq_ignore_ascii_case(expected)
+                }
+                (None, Json::Null) => true,
+                _ => false,
+            };
+            if !matches {
+                return Err(Failure::operational(
+                    "claim-cache",
+                    format!("cached audit moduleIdentities.{module} sysroot digest mismatch"),
+                ));
+            }
+        } else {
+            let Some(source_sha) = source_val.as_str() else {
+                return Err(Failure::operational(
+                    "claim-cache",
+                    format!(
+                        "cached audit moduleIdentities.{module} sourceSha256 must be a string"
+                    ),
+                ));
+            };
+            if !is_sha256_hex(source_sha) {
+                return Err(Failure::operational(
+                    "claim-cache",
+                    format!("cached audit moduleIdentities.{module} has invalid sourceSha256"),
+                ));
+            }
+            let is_admitted_sysroot = adm.foundation_graph.contains_key(module)
+                || adm.library_lock.as_ref().is_some_and(|l| l.modules.contains_key(module));
+            if !is_admitted_sysroot {
+                return Err(Failure::operational(
+                    "claim-cache",
+                    format!("cached audit moduleIdentities.{module} is not an admitted module"),
+                ));
+            }
+            let src_path =
+                adm.prefix.join("src/lean").join(format!("{}.lean", module.replace('.', "/")));
+            let live_sha = sha256_file(&src_path, "claim-cache")?;
+            if !source_sha.eq_ignore_ascii_case(&live_sha) {
+                return Err(Failure::operational(
+                    "claim-cache",
+                    format!("cached audit moduleIdentities.{module} live sysroot digest mismatch"),
+                ));
+            }
+        }
+    }
+    Ok(())
+}
+
+fn validate_request_modules_against_admitted(
+    request: &TargetAuditRequest,
+    adm: &AdmittedToolchain,
+) -> Result<(), Failure> {
+    let mut roles = BTreeMap::new();
+    for module in &request.modules {
+        let root_pkg = module.module.split('.').next().unwrap_or("");
+        let collides_with_sysroot = is_reserved_toolchain_module(&module.module)
+            || if adm.unpinned {
+                adm.sysroot_package_roots.contains(root_pkg)
+            } else {
+                adm.foundation_graph.contains_key(&module.module)
+                    || adm
+                        .library_lock
+                        .as_ref()
+                        .is_some_and(|l| l.modules.contains_key(&module.module))
+            };
+        if !target_name_valid(&module.module)
+            || roles.contains_key(&module.module)
+            || collides_with_sysroot
+        {
+            return Err(Failure::policy(
+                "target-input",
+                format!("duplicate, reserved or invalid module {}", module.module),
+            ));
+        }
+        if !is_sha256_hex(&module.expected_sha256) {
+            return Err(Failure::policy("target-input", "invalid source digest"));
+        }
+        let actual = sha256_file(&module.source, "target-input")?;
+        if !actual.eq_ignore_ascii_case(&module.expected_sha256) {
+            return Err(Failure::policy(
+                "target-input",
+                format!("source digest differs for {}", module.module),
+            ));
+        }
+        roles.insert(module.module.clone(), module.role);
+    }
+    if roles.get(&request.theorem_module) != Some(&TargetRole::Proof)
+        || roles.get(&request.expected_module) != Some(&TargetRole::Expected)
+        || !roles.values().any(|r| *r == TargetRole::Model)
+        || !roles.values().any(|r| *r == TargetRole::Capture)
+        || !roles.values().any(|r| *r == TargetRole::Specification)
+    {
+        return Err(Failure::policy("target-input", "missing or incorrect target authority roles"));
+    }
+    Ok(())
+}
+
 /// Run `"target-export"` (isolated proof-artifact export) followed by
 /// `"target-audit"` (verdict-producing replay with zero `Proof` `.olean`s
 /// mounted or imported) and validate the strict [`TargetAuditReport`] schema.
+struct StagedTargetHeaders {
+    staged: BTreeMap<String, PathBuf>,
+    roles: BTreeMap<String, TargetRole>,
+    imports: BTreeMap<String, Vec<ImportEdge>>,
+    is_module: BTreeMap<String, bool>,
+    filtered_request: TargetAuditRequest,
+}
+
 impl Checker {
+    /// Admit the toolchain (and unpinned sysroot import closure when
+    /// `--allow-unpinned-lean` is active) plus the live Lean sysroot manifest
+    /// digest before querying or populating the incremental claim cache.
+    pub(crate) fn admit_target_for_claim_cache(
+        &mut self,
+        request: &TargetAuditRequest,
+    ) -> Result<(ActiveSandbox, String), Failure> {
+        self.reset_stage()?;
+        self.tool_admission()?;
+        if self.admitted()?.unpinned {
+            let parsed = self.stage_and_parse_target_headers(request)?;
+            let external_imports: Vec<String> = parsed
+                .imports
+                .values()
+                .flatten()
+                .filter(|e| !parsed.roles.contains_key(&e.module))
+                .map(|e| e.module.clone())
+                .collect();
+            self.admit_unpinned_sysroot(external_imports)?;
+            let ro_dir = self.stage.join("ro");
+            if ro_dir.exists() {
+                crate::sandbox::make_tree_writable(&ro_dir);
+                fs::remove_dir_all(&ro_dir).map_err(|e| {
+                    Failure::operational(
+                        "snapshot",
+                        format!("cannot clean {}: {e}", ro_dir.display()),
+                    )
+                })?;
+            }
+        }
+        let sysroot_manifest_sha256 = self.ensure_sysroot_manifest_sha256()?;
+        let active_sandbox = self.active_sandbox().ok_or_else(|| {
+            Failure::operational("sandbox", "sandbox selection did not complete during admission")
+        })?;
+        Ok((active_sandbox, sysroot_manifest_sha256))
+    }
+
+    fn stage_and_parse_target_headers(
+        &mut self,
+        request: &TargetAuditRequest,
+    ) -> Result<StagedTargetHeaders, Failure> {
+        for digest in [
+            &request.bindings.request_sha256,
+            &request.bindings.capture_sha256,
+            &request.bindings.model_manifest_sha256,
+            &request.bindings.specification_manifest_sha256,
+        ] {
+            if !is_sha256_hex(digest) {
+                return Err(Failure::policy("target-input", "invalid subject binding digest"));
+            }
+        }
+        for name in [
+            &request.theorem_module,
+            &request.theorem_name,
+            &request.expected_module,
+            &request.expected_declaration,
+            &request.canonical_root,
+            &request.subject_declaration,
+            &request.specification_declaration,
+        ] {
+            if !target_name_valid(name) {
+                return Err(Failure::policy(
+                    "target-input",
+                    format!("target name is outside the ASCII dotted-name protocol: {name}"),
+                ));
+            }
+        }
+        // Authenticate each source before using its claimed role or name.
+        // Compiling adjacent caller artifacts would bypass this ownership
+        // partition even when their import names looked correct.
+        //
+        // One role and staged path belong to each source. Reject overlap with
+        // locked modules so callers cannot replace foundation or library data.
+        let mut staged = BTreeMap::new();
+        let mut roles = BTreeMap::new();
+        for module in &request.modules {
+            let adm = self.admitted()?;
+            let root_pkg = module.module.split('.').next().unwrap_or("");
+            let collides_with_sysroot = is_reserved_toolchain_module(&module.module)
+                || if adm.unpinned {
+                    adm.sysroot_package_roots.contains(root_pkg)
+                } else {
+                    adm.foundation_graph.contains_key(&module.module)
+                        || adm
+                            .library_lock
+                            .as_ref()
+                            .is_some_and(|l| l.modules.contains_key(&module.module))
+                };
+            if !target_name_valid(&module.module)
+                || roles.contains_key(&module.module)
+                || collides_with_sysroot
+            {
+                return Err(Failure::policy(
+                    "target-input",
+                    format!("duplicate, reserved or invalid module {}", module.module),
+                ));
+            }
+            if !is_sha256_hex(&module.expected_sha256) {
+                return Err(Failure::policy("target-input", "invalid source digest"));
+            }
+            let dest =
+                self.stage.join("ro").join(format!("{}.lean", module.module.replace('.', "/")));
+            stage_regular_file(&module.source, &dest, "target-input")?;
+            if !sha256_file(&dest, "target-input")?.eq_ignore_ascii_case(&module.expected_sha256) {
+                return Err(Failure::policy(
+                    "target-input",
+                    format!("source digest differs for {}", module.module),
+                ));
+            }
+            set_mode(&dest, 0o444)?;
+            staged.insert(module.module.clone(), dest);
+            roles.insert(module.module.clone(), module.role);
+        }
+        if roles.get(&request.theorem_module) != Some(&TargetRole::Proof)
+            || roles.get(&request.expected_module) != Some(&TargetRole::Expected)
+            || !roles.values().any(|r| *r == TargetRole::Model)
+            || !roles.values().any(|r| *r == TargetRole::Capture)
+            || !roles.values().any(|r| *r == TargetRole::Specification)
+        {
+            return Err(Failure::policy(
+                "target-input",
+                "missing or incorrect target authority roles",
+            ));
+        }
+        // Read imports before elaboration to establish the complete module
+        // graph and reject missing or forbidden dependencies. This is an
+        // early structural check; compiled dependency checks remain needed
+        // because elaborators can introduce references not visible here.
+        let header_sources: Vec<(String, PathBuf)> =
+            staged.iter().map(|(n, p)| (n.clone(), p.clone())).collect();
+        let headers: PreflightResult =
+            serde_json::from_value(self.inspect_headers(&header_sources)?)
+                .map_err(|e| Failure::operational("headers", e.to_string()))?;
+        let mut imports = BTreeMap::new();
+        let mut is_module = BTreeMap::new();
+        for header in headers.headers {
+            if !staged.contains_key(&header.module) || imports.contains_key(&header.module) {
+                return Err(Failure::policy("headers", "duplicate or foreign source header"));
+            }
+            if header.is_module && !is_allowed_module_target(&header.module, roles[&header.module])
+            {
+                return Err(Failure::policy(
+                    "headers",
+                    format!("module system header is unsupported in {}", header.module),
+                ));
+            }
+            is_module.insert(header.module.clone(), header.is_module);
+            imports.insert(header.module, header.imports);
+        }
+        if imports.len() != staged.len() {
+            return Err(Failure::policy("headers", "incomplete target source header inventory"));
+        }
+        // Retain every non-bundled target module plus only those bundled
+        // `Anneal.*` theory modules reachable from them via parsed imports.
+        let retained = reachable_target_modules(request, &imports);
+        imports.retain(|module, _| retained.contains(module));
+        is_module.retain(|module, _| retained.contains(module));
+        roles.retain(|module, _| retained.contains(module));
+        staged.retain(|module, _| retained.contains(module));
+        let filtered_request = TargetAuditRequest {
+            modules: request
+                .modules
+                .iter()
+                .filter(|m| retained.contains(&m.module))
+                .cloned()
+                .collect(),
+            theorem_module: request.theorem_module.clone(),
+            theorem_name: request.theorem_name.clone(),
+            expected_module: request.expected_module.clone(),
+            expected_declaration: request.expected_declaration.clone(),
+            canonical_root: request.canonical_root.clone(),
+            subject_declaration: request.subject_declaration.clone(),
+            specification_declaration: request.specification_declaration.clone(),
+            allow_sorry_in_proof: request.allow_sorry_in_proof,
+            bindings: request.bindings.clone(),
+        };
+        Ok(StagedTargetHeaders { staged, roles, imports, is_module, filtered_request })
+    }
+
     /// Run `"target-audit"` mode over compiled target artifacts.
     #[doc(hidden)]
     pub fn inspect_target(&mut self, request: &TargetAuditRequest) -> Result<Json, Failure> {
@@ -821,141 +1553,15 @@ impl Checker {
     pub fn run_target(&mut self, request: &TargetAuditRequest) -> Result<Json, Failure> {
         self.reset_stage()?;
         self.tool_admission()?;
-        for digest in [
-            &request.bindings.request_sha256,
-            &request.bindings.capture_sha256,
-            &request.bindings.model_manifest_sha256,
-            &request.bindings.specification_manifest_sha256,
-        ] {
-            if !is_sha256_hex(digest) {
-                return Err(Failure::policy("target-input", "invalid subject binding digest"));
-            }
-        }
-        for name in [
-            &request.theorem_module,
-            &request.theorem_name,
-            &request.expected_module,
-            &request.expected_declaration,
-            &request.canonical_root,
-            &request.subject_declaration,
-            &request.specification_declaration,
-        ] {
-            if !target_name_valid(name) {
-                return Err(Failure::policy(
-                    "target-input",
-                    format!("target name is outside the ASCII dotted-name protocol: {name}"),
-                ));
-            }
-        }
-        // Authenticate each source before using its claimed role or name.
-        // Compiling adjacent caller artifacts would bypass this ownership
-        // partition even when their import names looked correct.
-        //
-        // One role and staged path belong to each source. Reject overlap with
-        // locked modules so callers cannot replace foundation or library data.
-        let mut staged = BTreeMap::new();
-        let mut roles = BTreeMap::new();
-        for module in &request.modules {
-            let adm = self.admitted()?;
-            let root_pkg = module.module.split('.').next().unwrap_or("");
-            let collides_with_sysroot = is_reserved_toolchain_module(&module.module)
-                || if adm.unpinned {
-                    adm.sysroot_package_roots.contains(root_pkg)
-                } else {
-                    adm.foundation_graph.contains_key(&module.module)
-                        || adm
-                            .library_lock
-                            .as_ref()
-                            .is_some_and(|l| l.modules.contains_key(&module.module))
-                };
-            if !target_name_valid(&module.module)
-                || roles.contains_key(&module.module)
-                || collides_with_sysroot
-            {
-                return Err(Failure::policy(
-                    "target-input",
-                    format!("duplicate, reserved or invalid module {}", module.module),
-                ));
-            }
-            if !is_sha256_hex(&module.expected_sha256) {
-                return Err(Failure::policy("target-input", "invalid source digest"));
-            }
-            let dest =
-                self.stage.join("ro").join(format!("{}.lean", module.module.replace('.', "/")));
-            stage_regular_file(&module.source, &dest, "target-input")?;
-            if !sha256_file(&dest, "target-input")?.eq_ignore_ascii_case(&module.expected_sha256) {
-                return Err(Failure::policy(
-                    "target-input",
-                    format!("source digest differs for {}", module.module),
-                ));
-            }
-            set_mode(&dest, 0o444)?;
-            staged.insert(module.module.clone(), dest);
-            roles.insert(module.module.clone(), module.role);
-        }
-        if roles.get(&request.theorem_module) != Some(&TargetRole::Proof)
-            || roles.get(&request.expected_module) != Some(&TargetRole::Expected)
-            || !roles.values().any(|r| *r == TargetRole::Model)
-            || !roles.values().any(|r| *r == TargetRole::Capture)
-            || !roles.values().any(|r| *r == TargetRole::Specification)
-        {
-            return Err(Failure::policy(
-                "target-input",
-                "missing or incorrect target authority roles",
-            ));
-        }
-        // Read imports before elaboration to establish the complete module
-        // graph and reject missing or forbidden dependencies. This is an
-        // early structural check; compiled dependency checks remain needed
-        // because elaborators can introduce references not visible here.
-        let header_sources: Vec<(String, PathBuf)> =
-            staged.iter().map(|(n, p)| (n.clone(), p.clone())).collect();
-        let headers: PreflightResult =
-            serde_json::from_value(self.inspect_headers(&header_sources)?)
-                .map_err(|e| Failure::operational("headers", e.to_string()))?;
-        let mut imports = BTreeMap::new();
-        let mut is_module = BTreeMap::new();
-        for header in headers.headers {
-            if !staged.contains_key(&header.module) || imports.contains_key(&header.module) {
-                return Err(Failure::policy("headers", "duplicate or foreign source header"));
-            }
-            if header.is_module && !is_allowed_module_target(&header.module, roles[&header.module])
-            {
-                return Err(Failure::policy(
-                    "headers",
-                    format!("module system header is unsupported in {}", header.module),
-                ));
-            }
-            is_module.insert(header.module.clone(), header.is_module);
-            imports.insert(header.module, header.imports);
-        }
-        if imports.len() != staged.len() {
-            return Err(Failure::policy("headers", "incomplete target source header inventory"));
-        }
-        // Retain every non-bundled target module plus only those bundled
-        // `Anneal.*` theory modules reachable from them via parsed imports.
-        let retained = reachable_target_modules(request, &imports);
-        imports.retain(|module, _| retained.contains(module));
-        is_module.retain(|module, _| retained.contains(module));
-        roles.retain(|module, _| retained.contains(module));
-        staged.retain(|module, _| retained.contains(module));
-        let filtered_request = TargetAuditRequest {
-            modules: request
-                .modules
-                .iter()
-                .filter(|m| retained.contains(&m.module))
-                .cloned()
-                .collect(),
-            theorem_module: request.theorem_module.clone(),
-            theorem_name: request.theorem_name.clone(),
-            expected_module: request.expected_module.clone(),
-            expected_declaration: request.expected_declaration.clone(),
-            canonical_root: request.canonical_root.clone(),
-            subject_declaration: request.subject_declaration.clone(),
-            specification_declaration: request.specification_declaration.clone(),
-            allow_sorry_in_proof: request.allow_sorry_in_proof,
-            bindings: request.bindings.clone(),
-        };
+        self.run_target_from_admitted(request)
+    }
+
+    pub(crate) fn run_target_from_admitted(
+        &mut self,
+        request: &TargetAuditRequest,
+    ) -> Result<Json, Failure> {
+        let StagedTargetHeaders { staged, roles, imports, is_module, filtered_request } =
+            self.stage_and_parse_target_headers(request)?;
         if self.admitted()?.unpinned {
             let external_imports: Vec<String> = imports
                 .values()

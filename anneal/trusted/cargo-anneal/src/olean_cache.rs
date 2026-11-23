@@ -132,7 +132,7 @@ impl OleanCacheKeyInput {
     }
 }
 
-fn feed_len_str(h: &mut Sha256, s: &str) {
+pub(crate) fn feed_len_str(h: &mut Sha256, s: &str) {
     h.update((s.len() as u64).to_le_bytes());
     h.update(s.as_bytes());
 }
@@ -200,6 +200,18 @@ pub(crate) fn is_cacheable_bundled_module(module: &str) -> bool {
         || module.starts_with("Anneal.")
 }
 
+/// Derive a disk cache directory (`<cache>/anneal/<leaf>`) from explicit
+/// `HOME` and optional `XDG_CACHE_HOME` without reading process env vars.
+pub(crate) fn cache_dir_with_leaf_from_env_vars(
+    home: Option<&OsStr>,
+    xdg_cache_home: Option<&OsStr>,
+    leaf: &str,
+) -> Option<PathBuf> {
+    let home = home.filter(|v| !v.is_empty()).map(PathBuf::from)?;
+    let base = cache_dir_for_platform(cfg!(target_os = "macos"), xdg_cache_home, &home);
+    Some(base.join("anneal").join(leaf))
+}
+
 /// Derive a per-user disk cache directory (`<cache>/anneal/olean-cache`)
 /// from explicit `HOME` and optional `XDG_CACHE_HOME` values without reading
 /// ambient process environment variables.
@@ -207,9 +219,7 @@ pub(crate) fn cache_dir_from_env_vars(
     home: Option<&OsStr>,
     xdg_cache_home: Option<&OsStr>,
 ) -> Option<PathBuf> {
-    let home = home.filter(|v| !v.is_empty()).map(PathBuf::from)?;
-    let base = cache_dir_for_platform(cfg!(target_os = "macos"), xdg_cache_home, &home);
-    Some(base.join("anneal/olean-cache"))
+    cache_dir_with_leaf_from_env_vars(home, xdg_cache_home, "olean-cache")
 }
 
 /// Derive the default per-user disk cache directory (`<cache>/anneal/olean-cache`)
@@ -454,26 +464,11 @@ impl OleanCache {
             .map_err(|e| Failure::operational("olean-cache", e.to_string()))?;
         set_mode(&meta_tmp, 0o444)?;
 
-        let lock_path = v1_dir.join(format!("{key}.lock"));
-        let _lock = acquire_exclusive_flock(&lock_path)?;
-        if !probe_existing_non_symlink_dir(&entry_dir, true)? {
-            let staged_path = tmp.keep();
-            if let Err(err) = fs::rename(&staged_path, &entry_dir) {
-                crate::sandbox::make_tree_writable(&staged_path);
-                let _ = fs::remove_dir_all(&staged_path);
-                if !probe_existing_non_symlink_dir(&entry_dir, true)? {
-                    return Err(Failure::operational(
-                        "olean-cache",
-                        format!("cannot publish cache entry {}: {err}", entry_dir.display()),
-                    ));
-                }
-            }
-        }
-        Ok(())
+        publish_staged_cache_entry_dir(&v1_dir, &key, tmp, "olean-cache")
     }
 }
 
-fn is_unwritable_cache_init_err(err: &Failure) -> bool {
+pub(crate) fn is_unwritable_cache_init_err(err: &Failure) -> bool {
     let lower = err.message.to_ascii_lowercase();
     lower.contains("permission denied")
         || lower.contains("read-only file system")
@@ -637,23 +632,92 @@ fn materialize_loaded_parts(
     Ok(CachedHitArtifact { materialized_parts })
 }
 
+/// Atomically publish `tmp` into `<v1_dir>/<key>` under `<v1_dir>/<key>.lock`
+/// after checking no symlink or foreign-owned dir appeared concurrently.
+pub(crate) fn publish_staged_cache_entry_dir(
+    v1_dir: &Path,
+    key: &str,
+    tmp: tempfile::TempDir,
+    phase: &str,
+) -> Result<(), Failure> {
+    publish_staged_cache_entry_dir_with_ready(v1_dir, key, tmp, phase, None)
+}
+
+/// Atomically publish `tmp` into `<v1_dir>/<key>` under `<v1_dir>/<key>.lock`,
+/// replacing incomplete existing dirs missing `ready_rel` when set.
+pub(crate) fn publish_staged_cache_entry_dir_with_ready(
+    v1_dir: &Path,
+    key: &str,
+    tmp: tempfile::TempDir,
+    phase: &str,
+    ready_rel: Option<&str>,
+) -> Result<(), Failure> {
+    let entry_dir = v1_dir.join(key);
+    let lock_path = v1_dir.join(format!("{key}.lock"));
+    let _lock = acquire_exclusive_flock_with_phase(&lock_path, phase)?;
+    let existing = probe_existing_non_symlink_dir_with_phase(&entry_dir, phase, true)?;
+    let needs_replace = if existing {
+        match ready_rel {
+            Some(rel) => !probe_existing_regular_file_with_phase(&entry_dir.join(rel), phase, true)?,
+            None => false,
+        }
+    } else {
+        false
+    };
+    if needs_replace {
+        crate::sandbox::make_tree_writable(&entry_dir);
+        fs::remove_dir_all(&entry_dir).map_err(|err| {
+            Failure::operational(
+                phase,
+                format!("cannot remove incomplete cache entry {}: {err}", entry_dir.display()),
+            )
+        })?;
+    }
+    if !existing || needs_replace {
+        let staged_path = tmp.keep();
+        if let Err(err) = fs::rename(&staged_path, &entry_dir) {
+            crate::sandbox::make_tree_writable(&staged_path);
+            let _ = fs::remove_dir_all(&staged_path);
+            if !probe_existing_non_symlink_dir_with_phase(&entry_dir, phase, true)? {
+                return Err(Failure::operational(
+                    phase,
+                    format!("cannot publish cache entry {}: {err}", entry_dir.display()),
+                ));
+            }
+        }
+    }
+    Ok(())
+}
+
 fn ensure_private_cache_root(disk_dir: &Path) -> Result<(), Failure> {
+    ensure_private_cache_root_with_phase(disk_dir, "olean-cache")
+}
+
+/// Ensure every component of `disk_dir` exists as a non-symlink directory
+/// (`0o700` on create) owned by the current effective UID.
+pub(crate) fn ensure_private_cache_root_with_phase(
+    disk_dir: &Path,
+    phase: &str,
+) -> Result<(), Failure> {
     if !disk_dir.is_absolute() {
         return Err(Failure::operational(
-            "olean-cache",
+            phase,
             format!("cache path must be absolute: {}", disk_dir.display()),
         ));
     }
     let mut cur = PathBuf::new();
+    let mut has_normal = false;
     for comp in disk_dir.components() {
         match comp {
+            Component::Prefix(prefix) => cur.push(prefix.as_os_str()),
             Component::RootDir => cur.push(comp.as_os_str()),
             Component::Normal(seg) => {
+                has_normal = true;
                 cur.push(seg);
-                if let Some(meta) = probe_symlink_metadata(&cur)? {
+                if let Some(meta) = probe_symlink_metadata_with_phase(&cur, phase)? {
                     if meta.file_type().is_symlink() || !meta.is_dir() {
                         return Err(Failure::operational(
-                            "olean-cache",
+                            phase,
                             format!(
                                 "refusing symlink or non-directory cache ancestor {}",
                                 cur.display()
@@ -666,13 +730,72 @@ fn ensure_private_cache_root(disk_dir: &Path) -> Result<(), Failure> {
             }
             _ => {
                 return Err(Failure::operational(
-                    "olean-cache",
+                    phase,
                     format!("invalid cache path component in {}", disk_dir.display()),
                 ));
             }
         }
     }
-    verify_non_symlink_dir(disk_dir, "olean-cache", true)
+    if !has_normal {
+        return Err(Failure::operational(
+            phase,
+            format!("refusing filesystem root as cache directory: {}", disk_dir.display()),
+        ));
+    }
+    verify_non_symlink_dir(disk_dir, phase, true)
+}
+
+/// Walk `disk_dir` without creating dirs, failing closed on any symlink,
+/// non-directory, or foreign UID. Returns `Ok(false)` when `disk_dir` or an
+/// ancestor does not exist yet.
+pub(crate) fn validate_existing_cache_ancestors(
+    disk_dir: &Path,
+    phase: &str,
+) -> Result<bool, Failure> {
+    if !disk_dir.is_absolute() {
+        return Err(Failure::operational(
+            phase,
+            format!("cache path must be absolute: {}", disk_dir.display()),
+        ));
+    }
+    let mut cur = PathBuf::new();
+    let mut last_meta: Option<fs::Metadata> = None;
+    for comp in disk_dir.components() {
+        match comp {
+            Component::Prefix(prefix) => cur.push(prefix.as_os_str()),
+            Component::RootDir => cur.push(comp.as_os_str()),
+            Component::Normal(seg) => {
+                cur.push(seg);
+                let Some(meta) = probe_symlink_metadata_with_phase(&cur, phase)? else {
+                    return Ok(false);
+                };
+                if meta.file_type().is_symlink() || !meta.is_dir() {
+                    return Err(Failure::operational(
+                        phase,
+                        format!(
+                            "refusing symlink or non-directory cache ancestor {}",
+                            cur.display()
+                        ),
+                    ));
+                }
+                last_meta = Some(meta);
+            }
+            _ => {
+                return Err(Failure::operational(
+                    phase,
+                    format!("invalid cache path component in {}", disk_dir.display()),
+                ));
+            }
+        }
+    }
+    let Some(meta) = last_meta else {
+        return Err(Failure::operational(
+            phase,
+            format!("refusing filesystem root as cache directory: {}", disk_dir.display()),
+        ));
+    };
+    verify_non_symlink_dir_meta(disk_dir, &meta, phase, true)?;
+    Ok(true)
 }
 
 /// Inspect `path` without following symlinks, treating only
@@ -680,11 +803,18 @@ fn ensure_private_cache_root(disk_dir: &Path) -> Result<(), Failure> {
 /// other OS metadata errors (`PermissionDenied`, `NotADirectory`, `ELOOP`,
 /// `EIO`).
 fn probe_symlink_metadata(path: &Path) -> Result<Option<fs::Metadata>, Failure> {
+    probe_symlink_metadata_with_phase(path, "olean-cache")
+}
+
+fn probe_symlink_metadata_with_phase(
+    path: &Path,
+    phase: &str,
+) -> Result<Option<fs::Metadata>, Failure> {
     match fs::symlink_metadata(path) {
         Ok(meta) => Ok(Some(meta)),
         Err(e) if e.kind() == io::ErrorKind::NotFound => Ok(None),
         Err(e) => Err(Failure::operational(
-            "olean-cache",
+            phase,
             format!("cannot inspect {}: {e}", path.display()),
         )),
     }
@@ -694,28 +824,45 @@ fn probe_symlink_metadata(path: &Path) -> Result<Option<fs::Metadata>, Failure> 
 /// absent (`NotFound`) and rejecting symlinks, non-directories, owner UID
 /// mismatches (when `require_owner_uid`), and other OS errors.
 fn probe_existing_non_symlink_dir(dir: &Path, require_owner_uid: bool) -> Result<bool, Failure> {
-    let Some(meta) = probe_symlink_metadata(dir)? else {
+    probe_existing_non_symlink_dir_with_phase(dir, "olean-cache", require_owner_uid)
+}
+
+pub(crate) fn probe_existing_non_symlink_dir_with_phase(
+    dir: &Path,
+    phase: &str,
+    require_owner_uid: bool,
+) -> Result<bool, Failure> {
+    let Some(meta) = probe_symlink_metadata_with_phase(dir, phase)? else {
         return Ok(false);
     };
-    verify_non_symlink_dir_meta(dir, &meta, "olean-cache", require_owner_uid)?;
+    verify_non_symlink_dir_meta(dir, &meta, phase, require_owner_uid)?;
     Ok(true)
 }
 
 /// Probe `path` without following symlinks, returning `Ok(false)` only when
 /// absent (`NotFound`) and rejecting symlinks, non-regular files, owner UID
 /// mismatches (when `require_owner_uid`), and other OS errors.
+#[cfg_attr(not(test), allow(dead_code))]
 fn probe_existing_regular_file(path: &Path, require_owner_uid: bool) -> Result<bool, Failure> {
-    let Some(meta) = probe_symlink_metadata(path)? else {
+    probe_existing_regular_file_with_phase(path, "olean-cache", require_owner_uid)
+}
+
+pub(crate) fn probe_existing_regular_file_with_phase(
+    path: &Path,
+    phase: &str,
+    require_owner_uid: bool,
+) -> Result<bool, Failure> {
+    let Some(meta) = probe_symlink_metadata_with_phase(path, phase)? else {
         return Ok(false);
     };
     if meta.file_type().is_symlink() || !meta.is_file() {
         return Err(Failure::operational(
-            "olean-cache",
+            phase,
             format!("cache path {} must be a regular non-symlink file", path.display()),
         ));
     }
     if require_owner_uid {
-        verify_meta_owner_uid(path, &meta)?;
+        verify_meta_owner_uid_with_phase(path, &meta, phase)?;
     }
     Ok(true)
 }
@@ -739,7 +886,7 @@ fn verify_non_symlink_dir_meta(
         ));
     }
     if require_owner_uid {
-        verify_meta_owner_uid(dir, meta)?;
+        verify_meta_owner_uid_with_phase(dir, meta, phase)?;
     }
     Ok(())
 }
@@ -796,13 +943,21 @@ fn verify_owner_uid(path: &Path) -> Result<(), Failure> {
 }
 
 fn verify_meta_owner_uid(path: &Path, meta: &fs::Metadata) -> Result<(), Failure> {
+    verify_meta_owner_uid_with_phase(path, meta, "olean-cache")
+}
+
+fn verify_meta_owner_uid_with_phase(
+    path: &Path,
+    meta: &fs::Metadata,
+    phase: &str,
+) -> Result<(), Failure> {
     #[cfg(unix)]
     {
         // SAFETY: `geteuid` has no preconditions and always succeeds.
         let uid = unsafe { libc::geteuid() };
         if meta.uid() != uid {
             return Err(Failure::operational(
-                "olean-cache",
+                phase,
                 format!(
                     "cache path {} owner uid {} differs from current uid {uid}",
                     path.display(),
@@ -811,11 +966,15 @@ fn verify_meta_owner_uid(path: &Path, meta: &fs::Metadata) -> Result<(), Failure
             ));
         }
     }
-    let _ = (path, meta);
+    let _ = (path, meta, phase);
     Ok(())
 }
 
-fn read_regular_nofollow_capped(path: &Path, max_bytes: u64, phase: &str) -> Result<Vec<u8>, Failure> {
+pub(crate) fn read_regular_nofollow_capped(
+    path: &Path,
+    max_bytes: u64,
+    phase: &str,
+) -> Result<Vec<u8>, Failure> {
     let mut opts = OpenOptions::new();
     opts.read(true);
     #[cfg(unix)]
@@ -838,7 +997,7 @@ fn read_regular_nofollow_capped(path: &Path, max_bytes: u64, phase: &str) -> Res
     Ok(buf)
 }
 
-struct FlockGuard {
+pub(crate) struct FlockGuard {
     _file: fs::File,
 }
 
@@ -855,7 +1014,10 @@ impl Drop for FlockGuard {
     }
 }
 
-fn acquire_exclusive_flock(lock_path: &Path) -> Result<FlockGuard, Failure> {
+pub(crate) fn acquire_exclusive_flock_with_phase(
+    lock_path: &Path,
+    phase: &str,
+) -> Result<FlockGuard, Failure> {
     let mut opts = OpenOptions::new();
     opts.create(true).read(true).write(true);
     #[cfg(unix)]
@@ -864,7 +1026,7 @@ fn acquire_exclusive_flock(lock_path: &Path) -> Result<FlockGuard, Failure> {
         opts.custom_flags(libc::O_NOFOLLOW);
     }
     let file = opts.open(lock_path).map_err(|e| {
-        Failure::operational("olean-cache", format!("cannot open lock {}: {e}", lock_path.display()))
+        Failure::operational(phase, format!("cannot open lock {}: {e}", lock_path.display()))
     })?;
     #[cfg(unix)]
     {
@@ -881,7 +1043,7 @@ fn acquire_exclusive_flock(lock_path: &Path) -> Result<FlockGuard, Failure> {
         };
         if rc != 0 {
             return Err(Failure::operational(
-                "olean-cache",
+                phase,
                 format!(
                     "cannot lock {}: {}",
                     lock_path.display(),
