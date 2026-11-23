@@ -202,6 +202,45 @@ class ProbeReportingTests(unittest.TestCase):
         )
         self.assertEqual(list(self.root.glob("anneal-toolchain-probe.*")), [])
 
+    def test_relative_tmpdir_and_cdpath_pass_clean_up_and_retain_abs_path(self):
+        rel_tmp = self.root / "rel_tmp"
+        rel_tmp.mkdir()
+        decoy_cdpath = self.root / "cdpath_decoy"
+        (decoy_cdpath / "rel_tmp").mkdir(parents=True)
+        self.environment["CDPATH"] = str(decoy_cdpath)
+
+        self.write_complete_fake_installation(include_callback_note=True)
+        for rel_value in ("./rel_tmp", "rel_tmp"):
+            with self.subTest(tmpdir=rel_value):
+                self.environment["TMPDIR"] = rel_value
+                result = self.invoke(self.installation)
+                self.assertEqual(
+                    result.returncode,
+                    0,
+                    f"stdout={result.stdout!r}\nstderr={result.stderr!r}",
+                )
+                self.assertEqual(
+                    list(rel_tmp.glob("anneal-toolchain-probe.*")), []
+                )
+
+        # On failure with a relative TMPDIR, evidence is retained under the
+        # canonical absolute path inside `rel_tmp`.
+        self.environment["TMPDIR"] = "./rel_tmp"
+        self.write_rustc(47)
+        result = self.invoke(self.installation)
+        self.assertEqual(result.returncode, 47)
+        directories = list(rel_tmp.glob("anneal-toolchain-probe.*"))
+        self.assertEqual(len(directories), 1)
+        retained = directories[0].resolve()
+        self.assertTrue(retained.is_absolute())
+        self.assertIn(
+            b"Toolchain probe evidence retained at " + os.fsencode(retained),
+            result.stderr,
+        )
+        self.assertEqual(
+            (retained / "rustc-version.status").read_bytes(), b"47\n"
+        )
+
     def test_driver_without_callback_note_fails_and_retains_probe(self):
         self.write_complete_fake_installation(include_callback_note=False)
         result = self.invoke(self.installation)

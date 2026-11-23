@@ -9,17 +9,20 @@
 # those terms.
 
 set -euo pipefail
+unset CDPATH
 
 if [ "$#" -ne 1 ] || [[ "$1" != /* ]] || [ ! -d "$1" ]; then
   echo "usage: bash ci/probe_toolchain.sh /absolute/installation/root" >&2
   exit 2
 fi
-install_root="$(cd "$1" && pwd -P)"
+install_root="$(cd -- "$1" && pwd -P)"
 probe="$(mktemp -d "${TMPDIR:-/tmp}/anneal-toolchain-probe.XXXXXX")"
+probe="$(cd -- "$probe" && pwd -P)"
 
 finish() {
   status=$?
   if [ "$status" -eq 0 ]; then
+    cd / || :
     rm -rf "$probe"
   else
     # A closed log stream must not replace the probe's failure status.
@@ -46,7 +49,7 @@ run_tool() {
   return "$reporting_status"
 }
 
-cd "$probe"
+cd -- "$probe"
 expected_rust_re='^rustc 1\.98\.0-nightly \(f8a08b688 2026-05-30\)$'
 expected_rustdoc_re='^rustdoc 1\.98\.0-nightly \(f8a08b688 2026-05-30\)$'
 run_tool rustc-version env -i "$install_root/rust/bin/rustc" --version
