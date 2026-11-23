@@ -1,0 +1,986 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "rustc_commit_sha": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "a_inline_const_required_consts_pme_timing": {
+    "mono_dead_pub": {
+      "emit_metadata": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "--emit=metadata"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=0"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0080]: attempt to divide `1_u32` by zero\n --> <tmp>/probe.rs:3:17\n  |\n3 |         const { 1u32 / 0 }\n  |                 ^^^^^^^^ evaluation of `mono_dead_const::{constant#0}` failed here\n\nnote: erroneous constant encountered\n --> <tmp>/probe.rs:3:9\n  |\n3 |         const { 1u32 / 0 }\n  |         ^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "lib_opt2": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt2_miropt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2",
+          "-Zmir-opt-level=0"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    "mono_dead_noinline": {
+      "emit_metadata": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "--emit=metadata"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=0"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0080]: attempt to divide `1_u32` by zero\n --> <tmp>/probe.rs:4:17\n  |\n4 |         const { 1u32 / 0 }\n  |                 ^^^^^^^^ evaluation of `mono_dead_const::{constant#0}` failed here\n\nnote: erroneous constant encountered\n --> <tmp>/probe.rs:4:9\n  |\n4 |         const { 1u32 / 0 }\n  |         ^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "lib_opt2": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0080]: attempt to divide `1_u32` by zero\n --> <tmp>/probe.rs:4:17\n  |\n4 |         const { 1u32 / 0 }\n  |                 ^^^^^^^^ evaluation of `mono_dead_const::{constant#0}` failed here\n\nnote: erroneous constant encountered\n --> <tmp>/probe.rs:4:9\n  |\n4 |         const { 1u32 / 0 }\n  |         ^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "lib_opt2_miropt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2",
+          "-Zmir-opt-level=0"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0080]: attempt to divide `1_u32` by zero\n --> <tmp>/probe.rs:4:17\n  |\n4 |         const { 1u32 / 0 }\n  |                 ^^^^^^^^ evaluation of `mono_dead_const::{constant#0}` failed here\n\nnote: erroneous constant encountered\n --> <tmp>/probe.rs:4:9\n  |\n4 |         const { 1u32 / 0 }\n  |         ^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      }
+    },
+    "mono_dead_bin": {
+      "emit_metadata": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=bin",
+          "--emit=metadata"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "bin_opt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=bin",
+          "-Copt-level=0"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0080]: attempt to divide `1_u32` by zero\n --> <tmp>/probe.rs:3:17\n  |\n3 |         const { 1u32 / 0 }\n  |                 ^^^^^^^^ evaluation of `mono_dead_const::{constant#0}` failed here\n\nnote: erroneous constant encountered\n --> <tmp>/probe.rs:3:9\n  |\n3 |         const { 1u32 / 0 }\n  |         ^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "bin_opt2": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=bin",
+          "-Copt-level=2"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0080]: attempt to divide `1_u32` by zero\n --> <tmp>/probe.rs:3:17\n  |\n3 |         const { 1u32 / 0 }\n  |                 ^^^^^^^^ evaluation of `mono_dead_const::{constant#0}` failed here\n\nnote: erroneous constant encountered\n --> <tmp>/probe.rs:3:9\n  |\n3 |         const { 1u32 / 0 }\n  |         ^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      }
+    },
+    "mono_live_pub": {
+      "emit_metadata": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "--emit=metadata"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=0"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0080]: attempt to divide `1_u32` by zero\n --> <tmp>/probe.rs:2:13\n  |\n2 |     const { 1u32 / 0 }\n  |             ^^^^^^^^ evaluation of `mono_live_const::{constant#0}` failed here\n\nnote: erroneous constant encountered\n --> <tmp>/probe.rs:2:5\n  |\n2 |     const { 1u32 / 0 }\n  |     ^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "lib_opt2": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0080]: attempt to divide `1_u32` by zero\n --> <tmp>/probe.rs:2:13\n  |\n2 |     const { 1u32 / 0 }\n  |             ^^^^^^^^ evaluation of `mono_live_const::{constant#0}` failed here\n\nnote: erroneous constant encountered\n --> <tmp>/probe.rs:2:5\n  |\n2 |     const { 1u32 / 0 }\n  |     ^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "lib_opt2_miropt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2",
+          "-Zmir-opt-level=0"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0080]: attempt to divide `1_u32` by zero\n --> <tmp>/probe.rs:2:13\n  |\n2 |     const { 1u32 / 0 }\n  |             ^^^^^^^^ evaluation of `mono_live_const::{constant#0}` failed here\n\nnote: erroneous constant encountered\n --> <tmp>/probe.rs:2:5\n  |\n2 |     const { 1u32 / 0 }\n  |     ^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      }
+    },
+    "after_return_unreachable": {
+      "emit_metadata": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "--emit=metadata"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=0"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt2": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt2_miropt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2",
+          "-Zmir-opt-level=0"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    "generic_uninstantiated_dead": {
+      "emit_metadata": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "--emit=metadata"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=0"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt2": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt2_miropt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2",
+          "-Zmir-opt-level=0"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    "generic_uninstantiated_live_param": {
+      "emit_metadata": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "--emit=metadata"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=0"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt2": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt2_miropt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2",
+          "-Zmir-opt-level=0"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    "generic_uninstantiated_live_nonparam": {
+      "emit_metadata": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "--emit=metadata"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=0"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt2": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0080]: attempt to divide `1_u32` by zero\n --> <tmp>/probe.rs:2:13\n  |\n2 |     const { 1u32 / 0 }\n  |             ^^^^^^^^ evaluation of `gen_live_nonparam::<T>::{constant#0}` failed here\n\nnote: erroneous constant encountered\n --> <tmp>/probe.rs:2:13\n  |\n2 |     const { 1u32 / 0 }\n  |             ^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "lib_opt2_miropt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2",
+          "-Zmir-opt-level=0"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    "generic_instantiated_dead": {
+      "emit_metadata": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "--emit=metadata"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=0"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0080]: attempt to divide `1_usize` by zero\n --> <tmp>/probe.rs:3:17\n  |\n3 |         const { 1usize / (core::mem::size_of::<T>() * 0) }\n  |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `gen_dead_const::<u8>::{constant#0}` failed here\n\nnote: erroneous constant encountered\n --> <tmp>/probe.rs:3:9\n  |\n3 |         const { 1usize / (core::mem::size_of::<T>() * 0) }\n  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nnote: the above error was encountered while instantiating `fn gen_dead_const::<u8>`\n --> <tmp>/probe.rs:9:5\n  |\n9 |     gen_dead_const::<u8>()\n  |     ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "lib_opt2": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt2_miropt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2",
+          "-Zmir-opt-level=0"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0080]: attempt to divide `1_usize` by zero\n --> <tmp>/probe.rs:3:17\n  |\n3 |         const { 1usize / (core::mem::size_of::<T>() * 0) }\n  |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `gen_dead_const::<u8>::{constant#0}` failed here\n\nnote: erroneous constant encountered\n --> <tmp>/probe.rs:3:9\n  |\n3 |         const { 1usize / (core::mem::size_of::<T>() * 0) }\n  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nnote: the above error was encountered while instantiating `fn gen_dead_const::<u8>`\n --> <tmp>/probe.rs:9:5\n  |\n9 |     gen_dead_const::<u8>()\n  |     ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      }
+    },
+    "generic_instantiated_dead_noinline": {
+      "emit_metadata": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "--emit=metadata"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=0"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0080]: attempt to divide `1_usize` by zero\n --> <tmp>/probe.rs:3:17\n  |\n3 |         const { 1usize / (core::mem::size_of::<T>() * 0) }\n  |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `gen_dead_const::<u8>::{constant#0}` failed here\n\nnote: erroneous constant encountered\n --> <tmp>/probe.rs:3:9\n  |\n3 |         const { 1usize / (core::mem::size_of::<T>() * 0) }\n  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nnote: the above error was encountered while instantiating `fn gen_dead_const::<u8>`\n  --> <tmp>/probe.rs:10:5\n   |\n10 |     gen_dead_const::<u8>()\n   |     ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "lib_opt2": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0080]: attempt to divide `1_usize` by zero\n --> <tmp>/probe.rs:3:17\n  |\n3 |         const { 1usize / (core::mem::size_of::<T>() * 0) }\n  |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `gen_dead_const::<u8>::{constant#0}` failed here\n\nnote: erroneous constant encountered\n --> <tmp>/probe.rs:3:9\n  |\n3 |         const { 1usize / (core::mem::size_of::<T>() * 0) }\n  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "lib_opt2_miropt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2",
+          "-Zmir-opt-level=0"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0080]: attempt to divide `1_usize` by zero\n --> <tmp>/probe.rs:3:17\n  |\n3 |         const { 1usize / (core::mem::size_of::<T>() * 0) }\n  |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `gen_dead_const::<u8>::{constant#0}` failed here\n\nnote: erroneous constant encountered\n --> <tmp>/probe.rs:3:9\n  |\n3 |         const { 1usize / (core::mem::size_of::<T>() * 0) }\n  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nnote: the above error was encountered while instantiating `fn gen_dead_const::<u8>`\n  --> <tmp>/probe.rs:10:5\n   |\n10 |     gen_dead_const::<u8>()\n   |     ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      }
+    },
+    "promoted_dead_rvalue": {
+      "emit_metadata": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "--emit=metadata"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=0"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt2": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt2_miropt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2",
+          "-Zmir-opt-level=0"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    "promoted_dead_inline_const": {
+      "emit_metadata": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "--emit=metadata"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "lib_opt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=0"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0080]: attempt to divide `1_u32` by zero\n --> <tmp>/probe.rs:3:26\n  |\n3 |         let r = &const { 1u32 / 0 };\n  |                          ^^^^^^^^ evaluation of `dead_inline_const_ref::{constant#0}` failed here\n\nnote: erroneous constant encountered\n --> <tmp>/probe.rs:3:18\n  |\n3 |         let r = &const { 1u32 / 0 };\n  |                  ^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "lib_opt2": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0080]: attempt to divide `1_u32` by zero\n --> <tmp>/probe.rs:3:26\n  |\n3 |         let r = &const { 1u32 / 0 };\n  |                          ^^^^^^^^ evaluation of `dead_inline_const_ref::{constant#0}` failed here\n\nnote: erroneous constant encountered\n --> <tmp>/probe.rs:3:18\n  |\n3 |         let r = &const { 1u32 / 0 };\n  |                  ^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "lib_opt2_miropt0": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib",
+          "-Copt-level=2",
+          "-Zmir-opt-level=0"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0080]: attempt to divide `1_u32` by zero\n --> <tmp>/probe.rs:3:26\n  |\n3 |         let r = &const { 1u32 / 0 };\n  |                          ^^^^^^^^ evaluation of `dead_inline_const_ref::{constant#0}` failed here\n\nnote: erroneous constant encountered\n --> <tmp>/probe.rs:3:18\n  |\n3 |         let r = &const { 1u32 / 0 };\n  |                  ^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+      }
+    }
+  },
+  "b_const_block_promotion_and_lifetime_extension": {
+    "positive_and_miri": {
+      "rustc_opt0": {
+        "cmd": [
+          "rustc",
+          "src/main.rs",
+          "--edition=2021",
+          "-Copt-level=0",
+          "-o",
+          "bin_o0"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": "warning: type `HasDrop` is more private than the item `promoted_empty_drop_array`\n  --> src/main.rs:21:1\n   |\n21 | pub fn promoted_empty_drop_array() -> &'static [HasDrop; 0] {\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function `promoted_empty_drop_array` is reachable at visibility `pub`\n   |\nnote: but type `HasDrop` is only usable at visibility `pub(crate)`\n  --> src/main.rs:6:1\n   |\n 6 | struct HasDrop(u32);\n   | ^^^^^^^^^^^^^^\n   = note: `#[warn(private_interfaces)]` on by default\n\nwarning: type `HasDrop` is more private than the item `promoted_const_block_empty_drop_array`\n  --> src/main.rs:27:1\n   |\n27 | pub fn promoted_const_block_empty_drop_array() -> &'static [HasDrop; 0] {\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function `promoted_const_block_empty_drop_array` is reachable at visibility `pub`\n   |\nnote: but type `HasDrop` is only usable at visibility `pub(crate)`\n  --> src/main.rs:6:1\n   |\n 6 | struct HasDrop(u32);\n   | ^^^^^^^^^^^^^^\n\nwarning: 2 warnings emitted"
+      },
+      "native_opt0": {
+        "cmd": [
+          "./bin_o0"
+        ],
+        "returncode": 0,
+        "stdout": "PROM=30 EMPTY=0 EMPTY_C=0 CELL=6 DROP_VAL=7 DROPS=1",
+        "stderr": ""
+      },
+      "llvm_ir_opt0": {
+        "promoted_const_block": "define dso_local align 4 ptr @promoted_const_block() unnamed_addr #2 {\nstart:\n  ret ptr @alloc_0e3505805f4905816c1bd644811a7869\n}\n",
+        "promoted_empty_drop_array": "define dso_local align 4 ptr @promoted_empty_drop_array() unnamed_addr #2 {\nstart:\n  ret ptr inttoptr (i64 4 to ptr)\n}\n",
+        "promoted_const_block_empty_drop_array": "define dso_local align 4 ptr @promoted_const_block_empty_drop_array() unnamed_addr #2 {\nstart:\n  ret ptr inttoptr (i64 4 to ptr)\n}\n",
+        "non_promoted_cell_const_block": "define dso_local i32 @non_promoted_cell_const_block() unnamed_addr #2 {\nstart:\n  %_2 = alloca [4 x i8], align 4\n  store i32 5, ptr %_2, align 4\n; call <core::cell::Cell<u32>>::get\n  %_5 = call i32 @_RNvMs8_NtCs8b4M6GsfcPr_4core4cellINtB5_4CellmE3getCscNtYg2vSlvG_4main(ptr align 4 %_2) #8\n  %_6.0 = add i32 %_5, 1\n  %_6.1 = icmp ult i32 %_6.0, %_5\n  br i1 %_6.1, label %panic, label %bb2\n\nbb2:                                              ; preds = %start\n; call <core::cell::Cell<u32>>::set\n  call void @_RNvMs7_NtCs8b4M6GsfcPr_4core4cellINtB5_4CellmE3setCscNtYg2vSlvG_4main(ptr align 4 %_2, i32 %_6.0) #8\n; call <core::cell::Cell<u32>>::get\n  %_0 = call i32 @_RNvMs8_NtCs8b4M6GsfcPr_4core4cellINtB5_4CellmE3getCscNtYg2vSlvG_4main(ptr align 4 %_2) #8\n  ret i32 %_0\n\npanic:                                            ; preds = %start\n; call core::panicking::panic_const::panic_const_add_overflow\n  call void @_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8 @alloc_b0f115799b50c7b5f558b512b4a507b3) #7\n  unreachable\n}\n",
+        "non_promoted_drop_const_block": "define dso_local { i32, i64 } @non_promoted_drop_const_block() unnamed_addr #2 {\nstart:\n  %_6 = alloca [4 x i8], align 4\n; call <core::sync::atomic::Atomic<usize>>::load\n  %before = call i64 @_RNvMs1k_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicjE4loadCscNtYg2vSlvG_4main(ptr align 8 @_RNvCscNtYg2vSlvG_4main5DROPS, i8 0) #8\n  store i32 7, ptr %_6, align 4\n  %val = load i32, ptr %_6, align 4\n; call core::ptr::drop_glue::<main::HasDrop>\n  call void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCscNtYg2vSlvG_4main7HasDropEBD_(ptr align 4 %_6)\n; call <core::sync::atomic::Atomic<usize>>::load\n  %after = call i64 @_RNvMs1k_NtNtCs8b4M6GsfcPr_4core4sync6atomicINtB6_6AtomicjE4loadCscNtYg2vSlvG_4main(ptr align 8 @_RNvCscNtYg2vSlvG_4main5DROPS, i8 0) #8\n  %_11.0 = sub i64 %after, %before\n  %_11.1 = icmp ult i64 %after, %before\n  br i1 %_11.1, label %panic, label %bb4\n\nbb4:                                              ; preds = %start\n  %0 = insertvalue { i32, i64 } poison, i32 %val, 0\n  %1 = insertvalue { i32, i64 } %0, i64 %_11.0, 1\n  ret { i32, i64 } %1\n\npanic:                                            ; preds = %start\n; call core::panicking::panic_const::panic_const_sub_overflow\n  call void @_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const24panic_const_sub_overflow(ptr align 8 @alloc_4935d93ef18b6c713170d1439ebae2e6) #7\n  unreachable\n}\n"
+      },
+      "rustc_opt2": {
+        "cmd": [
+          "rustc",
+          "src/main.rs",
+          "--edition=2021",
+          "-Copt-level=2",
+          "-o",
+          "bin_o2"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": "warning: type `HasDrop` is more private than the item `promoted_empty_drop_array`\n  --> src/main.rs:21:1\n   |\n21 | pub fn promoted_empty_drop_array() -> &'static [HasDrop; 0] {\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function `promoted_empty_drop_array` is reachable at visibility `pub`\n   |\nnote: but type `HasDrop` is only usable at visibility `pub(crate)`\n  --> src/main.rs:6:1\n   |\n 6 | struct HasDrop(u32);\n   | ^^^^^^^^^^^^^^\n   = note: `#[warn(private_interfaces)]` on by default\n\nwarning: type `HasDrop` is more private than the item `promoted_const_block_empty_drop_array`\n  --> src/main.rs:27:1\n   |\n27 | pub fn promoted_const_block_empty_drop_array() -> &'static [HasDrop; 0] {\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function `promoted_const_block_empty_drop_array` is reachable at visibility `pub`\n   |\nnote: but type `HasDrop` is only usable at visibility `pub(crate)`\n  --> src/main.rs:6:1\n   |\n 6 | struct HasDrop(u32);\n   | ^^^^^^^^^^^^^^\n\nwarning: 2 warnings emitted"
+      },
+      "native_opt2": {
+        "cmd": [
+          "./bin_o2"
+        ],
+        "returncode": 0,
+        "stdout": "PROM=30 EMPTY=0 EMPTY_C=0 CELL=6 DROP_VAL=7 DROPS=1",
+        "stderr": ""
+      },
+      "llvm_ir_opt2": {
+        "promoted_const_block": "define dso_local noundef nonnull align 4 ptr @promoted_const_block() unnamed_addr #3 {\nstart:\n  ret ptr @alloc_0e3505805f4905816c1bd644811a7869\n}\n",
+        "promoted_empty_drop_array": "@promoted_empty_drop_array = unnamed_addr alias ptr (), ptr @promoted_const_block_empty_drop_array",
+        "promoted_const_block_empty_drop_array": "define dso_local noundef nonnull align 4 ptr @promoted_const_block_empty_drop_array() unnamed_addr #3 {\nstart:\n  ret ptr inttoptr (i64 4 to ptr)\n}\n",
+        "non_promoted_cell_const_block": "define dso_local noundef i32 @non_promoted_cell_const_block() unnamed_addr #3 {\nstart:\n  ret i32 6\n}\n",
+        "non_promoted_drop_const_block": "define dso_local { i32, i64 } @non_promoted_drop_const_block() unnamed_addr #4 {\nstart:\n  %0 = load atomic i64, ptr @_RNvCscNtYg2vSlvG_4main5DROPS monotonic, align 8\n  %_2.i.i = atomicrmw add ptr @_RNvCscNtYg2vSlvG_4main5DROPS, i64 1 monotonic, align 8\n  %1 = load atomic i64, ptr @_RNvCscNtYg2vSlvG_4main5DROPS monotonic, align 8\n  %_7 = sub i64 %1, %0\n  %2 = insertvalue { i32, i64 } { i32 7, i64 poison }, i64 %_7, 1\n  ret { i32, i64 } %2\n}\n"
+      },
+      "mir_excerpts": {
+        "promoted_const_block.runtime-post-cleanup.after.mir": "// MIR for `promoted_const_block` after runtime-post-cleanup\n\nfn promoted_const_block() -> &u32 {\n    let mut _0: &u32;\n    let _1: &u32;\n    let _2: u32;\n    let mut _3: &u32;\n\n    bb0: {\n        StorageLive(_1);\n        _3 = const promoted_const_block::promoted[0];\n        _1 = &(*_3);\n        _0 = &(*_1);\n        StorageDead(_1);\n        return;\n    }\n}\n",
+        "promoted_const_block.runtime-optimized.after.mir": "// MIR for `promoted_const_block` after runtime-optimized\n\nfn promoted_const_block() -> &u32 {\n    let mut _0: &u32;\n\n    bb0: {\n        _0 = const promoted_const_block::promoted[0];\n        return;\n    }\n}\n",
+        "promoted_empty_drop_array.runtime-post-cleanup.after.mir": "// MIR for `promoted_empty_drop_array` after runtime-post-cleanup\n\nfn promoted_empty_drop_array() -> &[HasDrop; 0] {\n    let mut _0: &[HasDrop; 0];\n    let _1: &[HasDrop; 0];\n    let _2: [HasDrop; 0];\n    let mut _3: &[HasDrop; 0];\n\n    bb0: {\n        StorageLive(_1);\n        _3 = const promoted_empty_drop_array::promoted[0];\n        _1 = &(*_3);\n        _0 = &(*_1);\n        StorageDead(_1);\n        return;\n    }\n}\n",
+        "promoted_empty_drop_array.runtime-optimized.after.mir": "// MIR for `promoted_empty_drop_array` after runtime-optimized\n\nfn promoted_empty_drop_array() -> &[HasDrop; 0] {\n    let mut _0: &[HasDrop; 0];\n\n    bb0: {\n        _0 = const promoted_empty_drop_array::promoted[0];\n        return;\n    }\n}\n",
+        "promoted_const_block_empty_drop_array.runtime-post-cleanup.after.mir": "// MIR for `promoted_const_block_empty_drop_array` after runtime-post-cleanup\n\nfn promoted_const_block_empty_drop_array() -> &[HasDrop; 0] {\n    let mut _0: &[HasDrop; 0];\n    let _1: &[HasDrop; 0];\n    let _2: [HasDrop; 0];\n    let mut _3: &[HasDrop; 0];\n\n    bb0: {\n        StorageLive(_1);\n        _3 = const promoted_const_block_empty_drop_array::promoted[0];\n        _1 = &(*_3);\n        _0 = &(*_1);\n        StorageDead(_1);\n        return;\n    }\n}\n",
+        "promoted_const_block_empty_drop_array.runtime-optimized.after.mir": "// MIR for `promoted_const_block_empty_drop_array` after runtime-optimized\n\nfn promoted_const_block_empty_drop_array() -> &[HasDrop; 0] {\n    let mut _0: &[HasDrop; 0];\n\n    bb0: {\n        _0 = const promoted_const_block_empty_drop_array::promoted[0];\n        return;\n    }\n}\n",
+        "non_promoted_cell_const_block.runtime-post-cleanup.after.mir": "// MIR for `non_promoted_cell_const_block` after runtime-post-cleanup\n\nfn non_promoted_cell_const_block() -> u32 {\n    let mut _0: u32;\n    let _1: &std::cell::Cell<u32>;\n    let _2: &std::cell::Cell<u32>;\n    let _3: std::cell::Cell<u32>;\n    let _4: ();\n    let mut _5: &std::cell::Cell<u32>;\n    let mut _6: u32;\n    let mut _7: u32;\n    let mut _8: &std::cell::Cell<u32>;\n    let mut _9: (u32, bool);\n    let mut _10: &std::cell::Cell<u32>;\n    scope 1 {\n        debug r => _1;\n    }\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = const non_promoted_cell_const_block::{constant#0};\n        _2 = &_3;\n        _1 = &(*_2);\n        StorageDead(_2);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = &(*_1);\n        StorageLive(_6);\n        StorageLive(_7);\n        StorageLive(_8);\n        _8 = &(*_1);\n        _7 = Cell::<u32>::get(move _8) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_8);\n        _9 = AddWithOverflow(copy _7, const 1_u32);\n        assert(!move (_9.1: bool), \"attempt to compute `{} + {}`, which would overflow\", move _7, const 1_u32) -> [success: bb2, unwind continue];\n    }\n\n    bb2: {\n        _6 = move (_9.0: u32);\n        StorageDead(_7);\n        _4 = Cell::<u32>::set(move _5, move _6) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        StorageDead(_6);\n        StorageDead(_5);\n        StorageDead(_4);\n        StorageLive(_10);\n        _10 = &(*_1);\n        _0 = Cell::<u32>::get(move _10) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        StorageDead(_10);\n        StorageDead(_3);\n        StorageDead(_1);\n        return;\n    }\n}\n",
+        "non_promoted_cell_const_block.runtime-optimized.after.mir": "// MIR for `non_promoted_cell_const_block` after runtime-optimized\n\nfn non_promoted_cell_const_block() -> u32 {\n    let mut _0: u32;\n    let _1: &std::cell::Cell<u32>;\n    let _2: std::cell::Cell<u32>;\n    let _3: ();\n    let mut _4: u32;\n    let mut _5: u32;\n    let mut _6: (u32, bool);\n    scope 1 {\n        debug r => _1;\n    }\n\n    bb0: {\n        _2 = const non_promoted_cell_const_block::{constant#0};\n        _1 = &_2;\n        _5 = Cell::<u32>::get(copy _1) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _6 = AddWithOverflow(copy _5, const 1_u32);\n        assert(!move (_6.1: bool), \"attempt to compute `{} + {}`, which would overflow\", move _5, const 1_u32) -> [success: bb2, unwind continue];\n    }\n\n    bb2: {\n        _4 = move (_6.0: u32);\n        _3 = Cell::<u32>::set(copy _1, move _4) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        _0 = Cell::<u32>::get(copy _1) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        return;\n    }\n}\n",
+        "non_promoted_drop_const_block.runtime-post-cleanup.after.mir": "// MIR for `non_promoted_drop_const_block` after runtime-post-cleanup\n\nfn non_promoted_drop_const_block() -> (u32, usize) {\n    let mut _0: (u32, usize);\n    let _1: usize;\n    let mut _2: &std::sync::atomic::Atomic<usize>;\n    let _3: &std::sync::atomic::Atomic<usize>;\n    let mut _4: std::sync::atomic::Ordering;\n    let _7: &HasDrop;\n    let _8: HasDrop;\n    let mut _10: &std::sync::atomic::Atomic<usize>;\n    let _11: &std::sync::atomic::Atomic<usize>;\n    let mut _12: std::sync::atomic::Ordering;\n    let mut _13: u32;\n    let mut _14: usize;\n    let mut _15: usize;\n    let mut _16: usize;\n    let mut _17: (usize, bool);\n    scope 1 {\n        debug before => _1;\n        let _5: u32;\n        let _6: &HasDrop;\n        scope 2 {\n            debug val => _5;\n            let _9: usize;\n            scope 4 {\n                debug after => _9;\n            }\n        }\n        scope 3 {\n            debug r => _6;\n        }\n    }\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = const {alloc1: &Atomic<usize>};\n        _2 = &(*_3);\n        StorageLive(_4);\n        _4 = std::sync::atomic::Ordering::Relaxed;\n        _1 = Atomic::<usize>::load(move _2, move _4) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        StorageDead(_2);\n        StorageDead(_3);\n        StorageLive(_5);\n        StorageLive(_6);\n        StorageLive(_7);\n        StorageLive(_8);\n        _8 = const non_promoted_drop_const_block::{constant#0};\n        _7 = &_8;\n        _6 = &(*_7);\n        StorageDead(_7);\n        _5 = copy ((*_6).0: u32);\n        drop(_8) -> [return: bb2, unwind: bb5];\n    }\n\n    bb2: {\n        StorageDead(_8);\n        StorageDead(_6);\n        StorageLive(_9);\n        StorageLive(_10);\n        StorageLive(_11);\n        _11 = const {alloc1: &Atomic<usize>};\n        _10 = &(*_11);\n        StorageLive(_12);\n        _12 = std::sync::atomic::Ordering::Relaxed;\n        _9 = Atomic::<usize>::load(move _10, move _12) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        StorageDead(_12);\n        StorageDead(_10);\n        StorageDead(_11);\n        StorageLive(_13);\n        _13 = copy _5;\n        StorageLive(_14);\n        StorageLive(_15);\n        _15 = copy _9;\n        StorageLive(_16);\n        _16 = copy _1;\n        _17 = SubWithOverflow(copy _15, copy _16);\n        assert(!move (_17.1: bool), \"attempt to compute `{} - {}`, which would overflow\", move _15, move _16) -> [success: bb4, unwind continue];\n    }\n\n    bb4: {\n        _14 = move (_17.0: usize);\n        StorageDead(_16);\n        StorageDead(_15);\n        _0 = (move _13, move _14);\n        StorageDead(_14);\n        StorageDead(_13);\n        StorageDead(_9);\n        StorageDead(_5);\n        StorageDead(_1);\n        return;\n    }\n\n    bb5 (cleanup): {\n        resume;\n    }\n}\n\nalloc1 (static: DROPS, size: 8, align: 8) {\n    00 00 00 00 00 00 00 00                         \u2502 ........\n}\n",
+        "non_promoted_drop_const_block.runtime-optimized.after.mir": "// MIR for `non_promoted_drop_const_block` after runtime-optimized\n\nfn non_promoted_drop_const_block() -> (u32, usize) {\n    let mut _0: (u32, usize);\n    let _1: usize;\n    let mut _2: &std::sync::atomic::Atomic<usize>;\n    let mut _3: std::sync::atomic::Ordering;\n    let _5: &HasDrop;\n    let _6: HasDrop;\n    let mut _8: &std::sync::atomic::Atomic<usize>;\n    let mut _9: std::sync::atomic::Ordering;\n    let mut _10: usize;\n    let mut _11: (usize, bool);\n    scope 1 {\n        debug before => _1;\n        let _4: u32;\n        scope 2 {\n            debug val => _4;\n            let _7: usize;\n            scope 4 {\n                debug after => _7;\n            }\n        }\n        scope 3 {\n            debug r => _5;\n        }\n    }\n\n    bb0: {\n        _2 = const {alloc1: &Atomic<usize>};\n        _3 = std::sync::atomic::Ordering::Relaxed;\n        _1 = Atomic::<usize>::load(move _2, move _3) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _6 = const non_promoted_drop_const_block::{constant#0};\n        _5 = &_6;\n        _4 = copy ((*_5).0: u32);\n        drop(_6) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _8 = const {alloc1: &Atomic<usize>};\n        _9 = std::sync::atomic::Ordering::Relaxed;\n        _7 = Atomic::<usize>::load(move _8, move _9) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        _11 = SubWithOverflow(copy _7, copy _1);\n        assert(!move (_11.1: bool), \"attempt to compute `{} - {}`, which would overflow\", copy _7, copy _1) -> [success: bb4, unwind continue];\n    }\n\n    bb4: {\n        _10 = move (_11.0: usize);\n        _0 = (copy _4, move _10);\n        return;\n    }\n}\n\nalloc1 (static: DROPS, size: 8, align: 8) {\n    00 00 00 00 00 00 00 00                         \u2502 ........\n}\n"
+      },
+      "miri_stacked_borrows": {
+        "cmd": [
+          "cargo",
+          "miri",
+          "run"
+        ],
+        "returncode": 0,
+        "stdout": "PROM=30 EMPTY=0 EMPTY_C=0 CELL=6 DROP_VAL=7 DROPS=1",
+        "stderr": "Compiling probe_b v0.1.0 (<tmp>)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.15s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_b`\nwarning: type `HasDrop` is more private than the item `promoted_empty_drop_array`\n  --> src/main.rs:21:1\n   |\n21 | pub fn promoted_empty_drop_array() -> &'static [HasDrop; 0] {\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function `promoted_empty_drop_array` is reachable at visibility `pub`\n   |\nnote: but type `HasDrop` is only usable at visibility `pub(crate)`\n  --> src/main.rs:6:1\n   |\n 6 | struct HasDrop(u32);\n   | ^^^^^^^^^^^^^^\n   = note: `#[warn(private_interfaces)]` on by default\n\nwarning: type `HasDrop` is more private than the item `promoted_const_block_empty_drop_array`\n  --> src/main.rs:27:1\n   |\n27 | pub fn promoted_const_block_empty_drop_array() -> &'static [HasDrop; 0] {\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function `promoted_const_block_empty_drop_array` is reachable at visibility `pub`\n   |\nnote: but type `HasDrop` is only usable at visibility `pub(crate)`\n  --> src/main.rs:6:1\n   |\n 6 | struct HasDrop(u32);\n   | ^^^^^^^^^^^^^^"
+      },
+      "miri_tree_borrows": {
+        "cmd": [
+          "cargo",
+          "miri",
+          "run"
+        ],
+        "returncode": 0,
+        "stdout": "PROM=30 EMPTY=0 EMPTY_C=0 CELL=6 DROP_VAL=7 DROPS=1",
+        "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_b`\nwarning: type `HasDrop` is more private than the item `promoted_empty_drop_array`\n  --> src/main.rs:21:1\n   |\n21 | pub fn promoted_empty_drop_array() -> &'static [HasDrop; 0] {\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function `promoted_empty_drop_array` is reachable at visibility `pub`\n   |\nnote: but type `HasDrop` is only usable at visibility `pub(crate)`\n  --> src/main.rs:6:1\n   |\n 6 | struct HasDrop(u32);\n   | ^^^^^^^^^^^^^^\n   = note: `#[warn(private_interfaces)]` on by default\n\nwarning: type `HasDrop` is more private than the item `promoted_const_block_empty_drop_array`\n  --> src/main.rs:27:1\n   |\n27 | pub fn promoted_const_block_empty_drop_array() -> &'static [HasDrop; 0] {\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function `promoted_const_block_empty_drop_array` is reachable at visibility `pub`\n   |\nnote: but type `HasDrop` is only usable at visibility `pub(crate)`\n  --> src/main.rs:6:1\n   |\n 6 | struct HasDrop(u32);\n   | ^^^^^^^^^^^^^^"
+      }
+    },
+    "lifetime_promotion_matrix": {
+      "negative_interior_mutable_cell_static": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0515]: cannot return reference to temporary value\n --> <tmp>/probe.rs:3:5\n  |\n3 |     &const { Cell::new(5) }\n  |     ^----------------------\n  |     ||\n  |     |temporary value created here\n  |     returns a reference to data owned by the current function\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0515`."
+      },
+      "negative_needs_drop_const_block_static": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0515]: cannot return reference to temporary value\n --> <tmp>/probe.rs:4:5\n  |\n4 |     &const { HasDrop(1) }\n  |     ^--------------------\n  |     ||\n  |     |temporary value created here\n  |     returns a reference to data owned by the current function\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0515`."
+      },
+      "negative_needs_drop_rvalue_static": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0515]: cannot return reference to temporary value\n --> <tmp>/probe.rs:4:5\n  |\n4 |     &HasDrop(1)\n  |     ^----------\n  |     ||\n  |     |temporary value created here\n  |     returns a reference to data owned by the current function\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0515`."
+      },
+      "negative_mut_const_block_static": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "error[E0515]: cannot return reference to temporary value\n --> <tmp>/probe.rs:2:5\n  |\n2 |     &mut const { 5u32 }\n  |     ^^^^^--------------\n  |     |    |\n  |     |    temporary value created here\n  |     returns a reference to data owned by the current function\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0515`."
+      },
+      "positive_mut_empty_drop_array_literal_static": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": "warning: field `0` is never read\n --> <tmp>/probe.rs:1:20\n  |\n1 | pub struct HasDrop(u32);\n  |            ------- ^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted"
+      },
+      "positive_mut_empty_drop_array_const_block_static": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": "warning: field `0` is never read\n --> <tmp>/probe.rs:1:20\n  |\n1 | pub struct HasDrop(u32);\n  |            ------- ^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted"
+      }
+    }
+  },
+  "c_pattern_type_valtree_niche_and_unlistable": {
+    "runtime_llvm_miri": {
+      "native_runs_opt2": {
+        "ok": {
+          "cmd": [
+            "./bin_o2",
+            "ok"
+          ],
+          "returncode": 0,
+          "stdout": "OK=5 NONE=0 SZ=4 OPT_SZ=4 OPT_OT=1 OPT2_OT=1 OPT_NZI8=1 IN_RANGE=true IMPOSSIBLE=false",
+          "stderr": ""
+        },
+        "zero": {
+          "cmd": [
+            "./bin_o2",
+            "zero"
+          ],
+          "returncode": 0,
+          "stdout": "OK=5 NONE=0 SZ=4 OPT_SZ=4 OPT_OT=1 OPT2_OT=1 OPT_NZI8=1 IN_RANGE=true IMPOSSIBLE=false",
+          "stderr": ""
+        },
+        "eleven": {
+          "cmd": [
+            "./bin_o2",
+            "eleven"
+          ],
+          "returncode": 0,
+          "stdout": "OK=5 NONE=0 SZ=4 OPT_SZ=4 OPT_OT=1 OPT2_OT=1 OPT_NZI8=1 IN_RANGE=true IMPOSSIBLE=false",
+          "stderr": ""
+        }
+      },
+      "miri_runs": {
+        "stacked_borrows__ok": {
+          "cmd": [
+            "cargo",
+            "miri",
+            "run",
+            "--",
+            "ok"
+          ],
+          "returncode": 0,
+          "stdout": "OK=5 NONE=0 SZ=4 OPT_SZ=4 OPT_OT=1 OPT2_OT=1 OPT_NZI8=1 IN_RANGE=true IMPOSSIBLE=false",
+          "stderr": "Compiling probe_c v0.1.0 (<tmp>)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.16s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_c ok`\nwarning: the feature `pattern_types` is internal to the compiler or standard library\n --> src/main.rs:1:12\n  |\n1 | #![feature(pattern_types, pattern_type_macro)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default"
+        },
+        "stacked_borrows__zero": {
+          "cmd": [
+            "cargo",
+            "miri",
+            "run",
+            "--",
+            "zero"
+          ],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_c zero`\nwarning: the feature `pattern_types` is internal to the compiler or standard library\n --> src/main.rs:1:12\n  |\n1 | #![feature(pattern_types, pattern_type_macro)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: Undefined Behavior: constructing invalid value of type (u32) is 1..=10: encountered 0, but expected something in the range 1..=10\n  --> src/main.rs:41:35\n   |\n41 |         let bad: Small = unsafe { core::mem::transmute(0u32) };\n   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+        },
+        "stacked_borrows__eleven": {
+          "cmd": [
+            "cargo",
+            "miri",
+            "run",
+            "--",
+            "eleven"
+          ],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_c eleven`\nwarning: the feature `pattern_types` is internal to the compiler or standard library\n --> src/main.rs:1:12\n  |\n1 | #![feature(pattern_types, pattern_type_macro)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: Undefined Behavior: constructing invalid value of type (u32) is 1..=10: encountered 11, but expected something in the range 1..=10\n  --> src/main.rs:44:35\n   |\n44 |         let bad: Small = unsafe { core::mem::transmute(11u32) };\n   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+        },
+        "tree_borrows__ok": {
+          "cmd": [
+            "cargo",
+            "miri",
+            "run",
+            "--",
+            "ok"
+          ],
+          "returncode": 0,
+          "stdout": "OK=5 NONE=0 SZ=4 OPT_SZ=4 OPT_OT=1 OPT2_OT=1 OPT_NZI8=1 IN_RANGE=true IMPOSSIBLE=false",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_c ok`\nwarning: the feature `pattern_types` is internal to the compiler or standard library\n --> src/main.rs:1:12\n  |\n1 | #![feature(pattern_types, pattern_type_macro)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default"
+        },
+        "tree_borrows__zero": {
+          "cmd": [
+            "cargo",
+            "miri",
+            "run",
+            "--",
+            "zero"
+          ],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_c zero`\nwarning: the feature `pattern_types` is internal to the compiler or standard library\n --> src/main.rs:1:12\n  |\n1 | #![feature(pattern_types, pattern_type_macro)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: Undefined Behavior: constructing invalid value of type (u32) is 1..=10: encountered 0, but expected something in the range 1..=10\n  --> src/main.rs:41:35\n   |\n41 |         let bad: Small = unsafe { core::mem::transmute(0u32) };\n   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+        },
+        "tree_borrows__eleven": {
+          "cmd": [
+            "cargo",
+            "miri",
+            "run",
+            "--",
+            "eleven"
+          ],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_c eleven`\nwarning: the feature `pattern_types` is internal to the compiler or standard library\n --> src/main.rs:1:12\n  |\n1 | #![feature(pattern_types, pattern_type_macro)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: Undefined Behavior: constructing invalid value of type (u32) is 1..=10: encountered 11, but expected something in the range 1..=10\n  --> src/main.rs:44:35\n   |\n44 |         let bad: Small = unsafe { core::mem::transmute(11u32) };\n   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+        }
+      },
+      "llvm_ir": {
+        "opt_0": {
+          "unwrap_opt_small": "define dso_local i32 @unwrap_opt_small(i32 %0) unnamed_addr #5 {\nstart:\n  %_0 = alloca [4 x i8], align 4\n  %o = alloca [4 x i8], align 4\n  store i32 %0, ptr %o, align 4\n  %1 = load i32, ptr %o, align 4\n  %2 = icmp eq i32 %1, 0\n  %_2 = select i1 %2, i64 0, i64 1\n  %3 = trunc nuw i64 %_2 to i1\n  br i1 %3, label %bb3, label %bb2\n\nbb3:                                              ; preds = %start\n  %v = load i32, ptr %o, align 4\n  store i32 %v, ptr %_0, align 4\n  br label %bb4\n\nbb2:                                              ; preds = %start\n  store i32 0, ptr %_0, align 4\n  br label %bb4\n\nbb4:                                              ; preds = %bb3, %bb2\n  %4 = load i32, ptr %_0, align 4\n  ret i32 %4\n\nbb1:                                              ; No predecessors!\n  unreachable\n}\n",
+          "range_check_after_small": "define dso_local zeroext i1 @range_check_after_small(i32 %v) unnamed_addr #5 {\nstart:\n  %_0 = alloca [1 x i8], align 1\n  %_3 = icmp uge i32 %v, 1\n  br i1 %_3, label %bb1, label %bb2\n\nbb2:                                              ; preds = %start\n  store i8 0, ptr %_0, align 1\n  br label %bb3\n\nbb1:                                              ; preds = %start\n  %0 = icmp ule i32 %v, 10\n  %1 = zext i1 %0 to i8\n  store i8 %1, ptr %_0, align 1\n  br label %bb3\n\nbb3:                                              ; preds = %bb1, %bb2\n  %2 = load i8, ptr %_0, align 1\n  %3 = trunc nuw i8 %2 to i1\n  ret i1 %3\n}\n",
+          "impossible_check_after_small": "define dso_local zeroext i1 @impossible_check_after_small(i32 %v) unnamed_addr #5 {\nstart:\n  %_0 = alloca [1 x i8], align 1\n  %_3 = icmp eq i32 %v, 0\n  br i1 %_3, label %bb1, label %bb2\n\nbb2:                                              ; preds = %start\n  %0 = icmp eq i32 %v, 11\n  %1 = zext i1 %0 to i8\n  store i8 %1, ptr %_0, align 1\n  br label %bb3\n\nbb1:                                              ; preds = %start\n  store i8 1, ptr %_0, align 1\n  br label %bb3\n\nbb3:                                              ; preds = %bb1, %bb2\n  %2 = load i8, ptr %_0, align 1\n  %3 = trunc nuw i8 %2 to i1\n  ret i1 %3\n}\n"
+        },
+        "opt_2": {
+          "unwrap_opt_small": "define dso_local noundef range(i32 0, 11) i32 @unwrap_opt_small(i32 noundef returned range(i32 0, 11) %0) unnamed_addr #4 {\nstart:\n  ret i32 %0\n}\n",
+          "range_check_after_small": "define dso_local noundef zeroext i1 @range_check_after_small(i32 noundef range(i32 1, 11) %v) unnamed_addr #4 {\nstart:\n  ret i1 true\n}\n",
+          "impossible_check_after_small": "define dso_local noundef zeroext i1 @impossible_check_after_small(i32 noundef range(i32 1, 11) %v) unnamed_addr #4 {\nstart:\n  ret i1 false\n}\n"
+        }
+      }
+    },
+    "compile_and_exhaustiveness_matrix": {
+      "ctfe_const_bad_zero": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "warning: the feature `pattern_types` is internal to the compiler or standard library\n --> <tmp>/probe.rs:1:12\n  |\n1 | #![feature(pattern_types, pattern_type_macro)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror[E0080]: constructing invalid value of type (u32) is 1..=10: encountered 0, but expected something in the range 1..=10\n --> <tmp>/probe.rs:2:1\n  |\n2 | pub const BAD: pattern_type!(u32 is 1..=10) = unsafe { core::mem::transmu...\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ it is undefined behavior to use this value\n  |\n  = note: the rules on what exactly is undefined behavior aren't clear, so this check might be overzealous. Please open an issue on the rustc repository if you believe it should not be considered undefined behavior.\n  = note: the raw bytes of the constant (size: 4, align: 4) {\n              00 00 00 00                                     \u2502 ....\n          }\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "ctfe_const_bad_eleven": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "warning: the feature `pattern_types` is internal to the compiler or standard library\n --> <tmp>/probe.rs:1:12\n  |\n1 | #![feature(pattern_types, pattern_type_macro)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror[E0080]: constructing invalid value of type (u32) is 1..=10: encountered 11, but expected something in the range 1..=10\n --> <tmp>/probe.rs:2:1\n  |\n2 | pub const BAD: pattern_type!(u32 is 1..=10) = unsafe { core::mem::transmu...\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ it is undefined behavior to use this value\n  |\n  = note: the rules on what exactly is undefined behavior aren't clear, so this check might be overzealous. Please open an issue on the rustc repository if you believe it should not be considered undefined behavior.\n  = note: the raw bytes of the constant (size: 4, align: 4) {\n              0b 00 00 00                                     \u2502 ....\n          }\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "ctfe_const_bad_or_zero": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "warning: the feature `pattern_types` is internal to the compiler or standard library\n --> <tmp>/probe.rs:1:12\n  |\n1 | #![feature(pattern_types, pattern_type_macro)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror[E0080]: constructing invalid value of type (i8) is (i8::MIN..=-1 | 1..): encountered 0, but expected something greater or equal to 1\n --> <tmp>/probe.rs:2:1\n  |\n2 | pub const BAD: pattern_type!(i8 is -128..=-1 | 1..=127) = unsafe { core::...\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ it is undefined behavior to use this value\n  |\n  = note: the rules on what exactly is undefined behavior aren't clear, so this check might be overzealous. Please open an issue on the rustc repository if you believe it should not be considered undefined behavior.\n  = note: the raw bytes of the constant (size: 1, align: 1) {\n              00                                              \u2502 .\n          }\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0080`."
+      },
+      "ctfe_const_good_five": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": "warning: the feature `pattern_types` is internal to the compiler or standard library\n --> <tmp>/probe.rs:1:12\n  |\n1 | #![feature(pattern_types, pattern_type_macro)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: 1 warning emitted"
+      },
+      "exhaustiveness_empty_pat_match_unlistable": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "warning: the feature `pattern_types` is internal to the compiler or standard library\n --> <tmp>/probe.rs:1:12\n  |\n1 | #![feature(pattern_types, pattern_type_macro)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror[E0004]: non-exhaustive patterns: type `(u32) is 1..=0` is non-empty\n --> <tmp>/probe.rs:3:38\n  |\n3 | pub fn m(x: EmptyPat) -> u32 { match x {} }\n  |                                      ^\n  |\n  = note: the matched value is of type `(u32) is 1..=0`\nhelp: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern as shown\n  |\n3 ~ pub fn m(x: EmptyPat) -> u32 { match x {\n4 +     _ => todo!(),\n  |\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0004`."
+      },
+      "layout_empty_pat_size_of_wrap_error": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "warning: the feature `pattern_types` is internal to the compiler or standard library\n --> <tmp>/probe.rs:1:12\n  |\n1 | #![feature(pattern_types, pattern_type_macro)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: pattern type ranges cannot wrap: 1..=0\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+      },
+      "exhaustiveness_wild_only_ok": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": "warning: the feature `pattern_types` is internal to the compiler or standard library\n --> <tmp>/probe.rs:1:12\n  |\n1 | #![feature(pattern_types, pattern_type_macro)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: 1 warning emitted"
+      },
+      "match_const_pat_non_structural": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "warning: the feature `pattern_types` is internal to the compiler or standard library\n --> <tmp>/probe.rs:1:12\n  |\n1 | #![feature(pattern_types, pattern_type_macro)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: constant of non-structural type `(u32) is 1..=10` in a pattern\n --> <tmp>/probe.rs:4:39\n  |\n3 | pub const C1: Small = unsafe { core::mem::transmute(1u32) };\n  | ------------------- constant defined here\n4 | pub fn m(x: Small) -> u32 { match x { C1 => 1, _ => 0 } }\n  |                                       ^^ constant of non-structural type\n  |\n  = note: see https://doc.rust-lang.org/stable/std/marker/trait.StructuralPartialEq.html for details\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+      },
+      "const_generic_pat_rejected": {
+        "cmd": [
+          "rustc",
+          "<tmp>/probe.rs",
+          "--edition=2021",
+          "--crate-type=lib"
+        ],
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "warning: the feature `pattern_types` is internal to the compiler or standard library\n --> <tmp>/probe.rs:1:12\n  |\n1 | #![feature(pattern_types, pattern_type_macro, adt_const_params)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror[E0741]: `(u32) is 1..=10` can't be used as a const parameter type\n --> <tmp>/probe.rs:3:23\n  |\n3 | pub struct K<const X: Small>;\n  |                       ^^^^^\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0741`."
+      }
+    }
+  }
+}
