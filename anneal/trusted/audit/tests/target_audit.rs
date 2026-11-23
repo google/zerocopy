@@ -1698,6 +1698,49 @@ fn spec_preflight_parse_tree_round_trip_and_negative_guards() {
             "namespace N\nscoped instance : Inhabited Unit := ⟨()⟩\nend N\n",
             "disallowed modifier Lean.Parser.Term.scoped",
         ),
+        (
+            "term-mod-cast",
+            "theorem mc (n : Nat) : (n : Int) = (n : Int) := mod_cast (rfl : n = n)\n",
+            "disallowed syntax Lean.modCast",
+        ),
+        (
+            "term-panic",
+            "def p : Nat := panic! \"boom\"\n",
+            "disallowed syntax Lean.Parser.Term.panic",
+        ),
+        (
+            "term-unreachable",
+            "def u : Nat := unreachable!\n",
+            "disallowed syntax Lean.Parser.Term.unreachable",
+        ),
+        (
+            "term-assert",
+            "def a : Nat := assert! true; 0\n",
+            "disallowed syntax Lean.Parser.Term.assert",
+        ),
+        (
+            "term-debug-assert",
+            "def da : Nat := debug_assert! true; 0\n",
+            "disallowed syntax Lean.Parser.Term.debugAssert",
+        ),
+        (
+            "direct-panic-core",
+            "def pc : Nat := panicCore \"boom\"\n",
+            "disallowed identifier panicCore",
+        ),
+        (
+            "contract-decl-val",
+            "def contracted (n : Nat) : Nat\n\
+             requires True\n\
+             ensures _ => True\n\
+             := n\n",
+            "disallowed syntax Lean.Parser.Command.contractDeclVal",
+        ),
+        (
+            "term-qed-try",
+            "theorem t : True := ∎\n",
+            "disallowed syntax «term∎»",
+        ),
     ];
 
     // 1. Live parse-tree round-trip probe + exhaustive check of all negative

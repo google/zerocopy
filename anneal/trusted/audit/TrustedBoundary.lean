@@ -1316,8 +1316,9 @@ def forbiddenSpecRootNamespaces : List Name := [
 
 /-- Root-level identifiers forbidden in specifications (`autoParam` evaluates a
 stored `Lean.Syntax` tactic script during elaboration, bypassing syntactic
-tactic inspection). -/
-def forbiddenSpecIdentifiers : List Name := [`autoParam]
+tactic inspection; `panic*` constants carry runtime panic side effects). -/
+def forbiddenSpecIdentifiers : List Name := [
+  `autoParam, `panic, `panicCore, `panicWithPos, `panicWithPosWithDecl]
 
 /-- Exact `System.Platform` declarations admitted in target specifications. -/
 def allowedSystemPlatformDecls : List Name := [
@@ -1411,14 +1412,28 @@ def allowedSpecTacticKinds : NameSet :=
     `Lean.Parser.Tactic.rcasesPat.tuple, `Lean.Parser.Tactic.rcasesPat.one,
     `Lean.Parser.Tactic.rintroPat.one, `Lean.Parser.Tactic.rintroPat.binder]
 
-/-- Term and `doElem` meta/debug/quotation/parser-macro syntax kinds rejected
-anywhere in a target specification. `Lean.includeStr` and `Lean.byElab` use
-double-backtick resolution so renames in `Init` fail inspector compilation. -/
+/-- Term, `doElem`, and declaration-value meta/debug/panic/contract/quotation
+syntax kinds rejected anywhere in a target specification.
+
+`Lean.includeStr` and `Lean.byElab` use double-backtick resolution so renames
+in `Init` fail inspector compilation. This denylist is an interim guard pending
+migration of specification term/`doElem` inspection to a closed allowlist
+mirroring Pass 1 (`allowedTrustedSyntaxKinds`). -/
 def forbiddenSpecTermKinds : NameSet := .ofList [
   ``Lean.includeStr, ``Lean.byElab,
   ``Parser.Term.sorry, ``Parser.Term.unsafe,
   ``Parser.Term.quotedName, ``Parser.Term.doubleQuotedName,
   ``Parser.Term.binderTactic,
+  `Lean.modCast,
+  `Lean.Parser.Term.panic, `Lean.Parser.Term.unreachable,
+  `Lean.Parser.Term.assert, `Lean.Parser.Term.debugAssert,
+  `Lean.Parser.Term.doAssert, `Lean.Parser.Term.doAssertion,
+  `Lean.Parser.Term.doDebugAssert,
+  `Lean.Parser.Command.contractDeclVal,
+  `Lean.Parser.Command.requiresClause,
+  `Lean.Parser.Command.ensuresClause,
+  `«term∎»,
+  `Std.DTreeMap.Internal.Impl.«term✓»,
   `Lean.Parser.Term.dbgTrace, `Lean.Parser.Term.idbg,
   `Lean.Parser.Term.doDbgTrace, `Lean.Parser.Term.doIdbg,
   `Lean.Parser.Term.matchExpr, `Lean.Parser.Term.letExpr,
@@ -4086,6 +4101,17 @@ def isLeanSyntaxConst (n : Name) : Bool :=
   let u := (privateToUserName n).replacePrefix rootNamespace .anonymous
   u == `Lean.Syntax || (`Lean.Syntax).isPrefixOf u
 
+/-- Return `true` when `n` (ignoring private prefixes) names one of Lean's
+runtime panic primitives.
+
+Checked directly on every `TargetRole::Specification` declaration (rather than
+transitively through `Init`/`Std` library internals) because `Init.Data.String`
+helpers reached by `deriving Repr` legitimately reference `panicWithPosWithDecl`
+internally, whereas authored specification code must never invoke `panic*`. -/
+def isPanicSpecConst (n : Name) : Bool :=
+  let u := (privateToUserName n).replacePrefix rootNamespace .anonymous
+  [`panic, `panicCore, `panicWithPos, `panicWithPosWithDecl].contains u
+
 /-- Narrowed transitive effect/meta/`System`/debug ban enforced across all
 declarations reachable from any `TargetRole::Specification` module. Preserves
 `System.Platform.{numBits, getNumBits, numBits_eq}` (and their compiler-private
@@ -4175,7 +4201,7 @@ def runTargetClosurePhase
       if ci matches .opaqueInfo _ then
         fail s!"opaque declaration {n} is not allowed in specification"
       for dep in deps do
-        if isLeanSyntaxConst dep then
+        if isLeanSyntaxConst dep || isPanicSpecConst dep then
           fail s!"specification declaration {n} cannot reference {dep}"
     for dep in deps do
       let (depMod, depRole) ← provenance dep

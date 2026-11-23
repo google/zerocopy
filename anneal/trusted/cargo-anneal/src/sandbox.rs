@@ -784,6 +784,12 @@ pub fn validate_dedicated_toolchain_lib_dir(
 pub struct SandboxRuntime {
     pub backend: ActiveSandbox,
     pub bwrap_path: Option<PathBuf>,
+    /// Whether Tier 1 `bwrap` enforces the seccomp-BPF syscall allowlist via
+    /// `--seccomp` (always `true` on `x86_64`/`aarch64` Linux).
+    pub bwrap_seccomp_active: bool,
+    /// Whether Tier 1 `bwrap` disables nested user namespaces via
+    /// `--unshare-user --disable-userns` (probed against the host `bwrap`).
+    pub bwrap_disable_userns: bool,
     pub exec_lean: PathBuf,
     pub toolchain_dir: PathBuf,
     pub toolchain_ro_mounts: Vec<MountSpec>,
@@ -924,6 +930,8 @@ impl SandboxRuntime {
             return Ok(Self {
                 backend: ActiveSandbox::None,
                 bwrap_path: None,
+                bwrap_seccomp_active: false,
+                bwrap_disable_userns: false,
                 exec_lean,
                 toolchain_dir,
                 toolchain_ro_mounts: Vec::new(),
@@ -983,22 +991,38 @@ impl SandboxRuntime {
 
         let bwrap_err = match find_bwrap_binary() {
             Some(bwrap_path) => {
-                let candidate = Self {
-                    backend: ActiveSandbox::LinuxBwrap,
-                    bwrap_path: Some(bwrap_path),
-                    exec_lean: exec_lean.clone(),
-                    toolchain_dir: toolchain_dir.clone(),
-                    toolchain_ro_mounts: toolchain_ro_mounts.clone(),
-                    extra_toolchain_mounts: extra_toolchain_mounts.clone(),
-                    pt_interp_paths: pt_interp_paths.clone(),
-                    pt_interp_lib_dirs: pt_interp_lib_dirs.clone(),
-                    needs_nix_store,
-                    landlock_abi: 0,
-                };
-                match run_functional_lean_probe(&candidate, stage_root) {
-                    Ok(()) => return Ok(candidate),
-                    Err(err) => format!("linux_bwrap probe failed: {}", err.message),
+                // Prefer `--unshare-user --disable-userns` to block nested
+                // user namespaces inside Tier 1, falling back to `false` only
+                // if the host `bwrap`/kernel does not support `--disable-userns`
+                // while still keeping `--seccomp` enforced on x86_64/aarch64.
+                let seccomp_supported = cfg!(any(target_arch = "x86_64", target_arch = "aarch64"));
+                let mut last_err = String::new();
+                for disable_userns in [true, false] {
+                    let candidate = Self {
+                        backend: ActiveSandbox::LinuxBwrap,
+                        bwrap_path: Some(bwrap_path.clone()),
+                        bwrap_seccomp_active: seccomp_supported,
+                        bwrap_disable_userns: disable_userns,
+                        exec_lean: exec_lean.clone(),
+                        toolchain_dir: toolchain_dir.clone(),
+                        toolchain_ro_mounts: toolchain_ro_mounts.clone(),
+                        extra_toolchain_mounts: extra_toolchain_mounts.clone(),
+                        pt_interp_paths: pt_interp_paths.clone(),
+                        pt_interp_lib_dirs: pt_interp_lib_dirs.clone(),
+                        needs_nix_store,
+                        landlock_abi: 0,
+                    };
+                    match run_functional_lean_probe(&candidate, stage_root) {
+                        Ok(()) => return Ok(candidate),
+                        Err(err) => {
+                            last_err = format!(
+                                "linux_bwrap probe failed (disable_userns={disable_userns}): {}",
+                                err.message
+                            );
+                        }
+                    }
                 }
+                last_err
             }
             None => {
                 "linux_bwrap unavailable: neither /usr/bin/bwrap nor /bin/bwrap exists".to_string()
@@ -1034,6 +1058,8 @@ impl SandboxRuntime {
                 let candidate = Self {
                     backend: ActiveSandbox::LinuxLandlockSeccomp,
                     bwrap_path: None,
+                    bwrap_seccomp_active: false,
+                    bwrap_disable_userns: false,
                     exec_lean,
                     toolchain_dir,
                     toolchain_ro_mounts,
@@ -1854,7 +1880,7 @@ mod linux {
         ffi::CString,
         fs,
         io::{self, Read},
-        os::unix::{ffi::OsStrExt, process::CommandExt},
+        os::unix::{ffi::OsStrExt, io::AsRawFd, process::CommandExt},
         path::{Path, PathBuf},
         process::{Command, Output},
     };
@@ -2683,6 +2709,61 @@ mod linux {
         }
     }
 
+    /// Build a pipe pre-loaded with the compiled Tier 2 seccomp-BPF allowlist
+    /// for `bwrap --seccomp <fd>` and return its read end.
+    ///
+    /// Under `bwrap --unshare-all --as-pid-1`, the confined executable runs as
+    /// PID 1 inside its isolated PID namespace, so self-targeted `kill`/`tgkill`
+    /// guards are patched to PID `1`. The entire BPF program is ~1 KiB, well
+    /// below Linux's minimum 64 KiB pipe buffer, so writing the program and
+    /// closing the write end before `spawn` never blocks.
+    #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
+    pub(crate) fn prepare_bwrap_seccomp_pipe() -> Result<std::os::unix::io::OwnedFd, Failure> {
+        use std::io::Write as _;
+        use std::os::unix::io::{FromRawFd, OwnedFd};
+
+        let mut compiled = build_seccomp_bpf();
+        compiled.filter[compiled.kill_pid_idx].k = 1;
+        compiled.filter[compiled.tgkill_pid_idx].k = 1;
+
+        let mut fds = [0 as libc::c_int; 2];
+        // SAFETY: `fds` is a valid writable 2-element `c_int` array.
+        if unsafe { libc::pipe2(fds.as_mut_ptr(), libc::O_CLOEXEC) } != 0 {
+            let err = io::Error::last_os_error();
+            return Err(Failure::operational(
+                "sandbox",
+                format!("pipe2 for bwrap seccomp filter failed: {err}"),
+            ));
+        }
+        // SAFETY: `pipe2` succeeded and returned two freshly opened unique FDs.
+        let read_fd = unsafe { OwnedFd::from_raw_fd(fds[0]) };
+        let mut write_file = unsafe { fs::File::from_raw_fd(fds[1]) };
+
+        let byte_len = std::mem::size_of_val(compiled.filter.as_slice());
+        // SAFETY: `SockFilter` is `#[repr(C)]` plain-old-data (`u16, u8, u8, u32`)
+        // with no padding bytes; `compiled.filter` stays alive across `write_all`.
+        let bytes = unsafe {
+            std::slice::from_raw_parts(compiled.filter.as_ptr().cast::<u8>(), byte_len)
+        };
+        write_file.write_all(bytes).map_err(|e| {
+            Failure::operational("sandbox", format!("writing bwrap seccomp BPF failed: {e}"))
+        })?;
+        drop(write_file);
+        Ok(read_fd)
+    }
+
+    /// Probe whether `bwrap_path --help` advertises `--disable-userns`.
+    pub(super) fn bwrap_help_supports_disable_userns(bwrap_path: &Path) -> bool {
+        Command::new(bwrap_path)
+            .arg("--help")
+            .env_clear()
+            .output()
+            .is_ok_and(|out| {
+                String::from_utf8_lossy(&out.stdout).contains("--disable-userns")
+                    || String::from_utf8_lossy(&out.stderr).contains("--disable-userns")
+            })
+    }
+
     /// Execute `policy` under Tier 1 (`linux_bwrap`).
     pub(super) fn run_bwrap(
         runtime: &SandboxRuntime,
@@ -2693,6 +2774,15 @@ mod linux {
             Failure::operational("sandbox", "missing bwrap binary path for LinuxBwrap")
         })?;
         let ro_devs = BwrapRoDevices::create(&policy.rw_out.host)?;
+        #[cfg(any(target_arch = "x86_64", target_arch = "aarch64"))]
+        let seccomp_read_fd = if runtime.bwrap_seccomp_active {
+            Some(prepare_bwrap_seccomp_pipe()?)
+        } else {
+            None
+        };
+        #[cfg(not(any(target_arch = "x86_64", target_arch = "aarch64")))]
+        let seccomp_read_fd: Option<std::os::unix::io::OwnedFd> = None;
+
         let mut cmd = Command::new(bwrap);
         cmd.env_clear().env("PATH", "/usr/bin:/bin");
         // Note: `run_bwrap` calls `setsid()` in `pre_exec` (below) rather than
@@ -2702,8 +2792,13 @@ mod linux {
         // `kill(-bwrap_pid, SIGKILL)` atomically tears down the entire PID
         // namespace on wall-clock timeout without relying on
         // `--die-with-parent` alone.
+        cmd.arg("--unshare-all");
+        if runtime.bwrap_disable_userns {
+            // `bwrap` requires explicit `--unshare-user` alongside
+            // `--disable-userns` even when `--unshare-all` is set.
+            cmd.args(["--unshare-user", "--disable-userns"]);
+        }
         cmd.args([
-            "--unshare-all",
             "--as-pid-1",
             "--cap-drop",
             "ALL",
@@ -2721,6 +2816,9 @@ mod linux {
             "/dev/null",
             "/dev/null",
         ]);
+        if let Some(fd) = &seccomp_read_fd {
+            cmd.arg("--seccomp").arg(fd.as_raw_fd().to_string());
+        }
         cmd.arg("--ro-bind").arg(&ro_devs.zero).arg("/dev/zero");
         cmd.arg("--ro-bind").arg(&ro_devs.urandom).arg("/dev/urandom");
         cmd.args(["--proc", "/proc"]);
@@ -2783,13 +2881,26 @@ mod linux {
 
         // SAFETY: `getpid()` has no preconditions.
         let parent_pid = unsafe { libc::getpid() };
-        // SAFETY: `apply_process_hygiene` invokes strictly async-signal-safe
-        // libc syscalls (`setsid`, `prctl`, `getppid`, `close_range`,
-        // `setrlimit`) with zero allocations or locks.
+        let preserve_seccomp_fd = seccomp_read_fd.as_ref().map(AsRawFd::as_raw_fd);
+        // SAFETY: `apply_process_hygiene` and `fcntl(F_SETFD, 0)` invoke
+        // strictly async-signal-safe libc syscalls with zero allocations or
+        // locks. Clearing `FD_CLOEXEC` strictly on `preserve_seccomp_fd` after
+        // `close_inherited_fds_cloexec` lets `bwrap --seccomp <fd>` read the
+        // BPF program while every other descriptor `>= 3` closes on `exec`.
         unsafe {
-            cmd.pre_exec(move || apply_process_hygiene(parent_pid, true));
+            cmd.pre_exec(move || {
+                apply_process_hygiene(parent_pid, true)?;
+                if let Some(fd) = preserve_seccomp_fd
+                    && libc::fcntl(fd, libc::F_SETFD, 0) < 0
+                {
+                    return Err(io::Error::last_os_error());
+                }
+                Ok(())
+            });
         }
-        spawn_and_wait_with_timeout(cmd, policy.timeout, "sandbox-bwrap")
+        let result = spawn_and_wait_with_timeout(cmd, policy.timeout, "sandbox-bwrap");
+        drop(seccomp_read_fd);
+        result
     }
 
     /// Execute `policy` under Tier 2 (`linux_landlock_seccomp`).
@@ -2914,6 +3025,8 @@ mod linux {
         Ok(SandboxRuntime {
             backend: super::ActiveSandbox::LinuxLandlockSeccomp,
             bwrap_path: None,
+            bwrap_seccomp_active: false,
+            bwrap_disable_userns: false,
             exec_lean: exec_bin,
             toolchain_dir,
             toolchain_ro_mounts,
@@ -2945,9 +3058,12 @@ mod linux {
             || interps.iter().any(|p| p.starts_with("/nix/store"));
         let (toolchain_ro_mounts, extra_toolchain_mounts) =
             SandboxRuntime::discover_toolchain_mounts(&toolchain_dir, None)?;
+        let bwrap_disable_userns = bwrap_help_supports_disable_userns(&bwrap_path);
         Ok(SandboxRuntime {
             backend: super::ActiveSandbox::LinuxBwrap,
             bwrap_path: Some(bwrap_path),
+            bwrap_seccomp_active: cfg!(any(target_arch = "x86_64", target_arch = "aarch64")),
+            bwrap_disable_userns,
             exec_lean: exec_bin,
             toolchain_dir,
             toolchain_ro_mounts,
@@ -3045,6 +3161,8 @@ mod tests {
             let rt = SandboxRuntime {
                 backend,
                 bwrap_path: Some(PathBuf::from("/usr/bin/bwrap")),
+                bwrap_seccomp_active: true,
+                bwrap_disable_userns: true,
                 exec_lean: PathBuf::from("/opt/lean/bin/lean"),
                 toolchain_dir: custom_prefix.clone(),
                 toolchain_ro_mounts: vec![MountSpec {
@@ -3356,6 +3474,8 @@ mod tests {
             let rt = SandboxRuntime {
                 backend: ActiveSandbox::LinuxBwrap,
                 bwrap_path: Some(PathBuf::from("/usr/bin/bwrap")),
+                bwrap_seccomp_active: true,
+                bwrap_disable_userns: true,
                 exec_lean: PathBuf::from(exec),
                 toolchain_dir: PathBuf::from(prefix),
                 toolchain_ro_mounts: vec![MountSpec {
@@ -3435,5 +3555,21 @@ mod tests {
                 bad.display()
             );
         }
+    }
+
+    #[cfg(all(target_os = "linux", any(target_arch = "x86_64", target_arch = "aarch64")))]
+    #[test]
+    fn bwrap_seccomp_pipe_contains_complete_pid1_bpf_program() {
+        let mut expected = linux::build_seccomp_bpf();
+        expected.filter[expected.kill_pid_idx].k = 1;
+        expected.filter[expected.tgkill_pid_idx].k = 1;
+
+        let read_fd = linux::prepare_bwrap_seccomp_pipe().unwrap();
+        let mut file = fs::File::from(read_fd);
+        let mut raw = Vec::new();
+        file.read_to_end(&mut raw).unwrap();
+        let expected_len = std::mem::size_of_val(expected.filter.as_slice());
+        assert_eq!(raw.len(), expected_len);
+        assert!(!raw.is_empty() && raw.len() % 8 == 0);
     }
 }

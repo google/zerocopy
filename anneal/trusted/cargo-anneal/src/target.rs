@@ -35,6 +35,21 @@ use crate::{
     },
 };
 
+/// Module root namespaces reserved for the Lean toolchain and inspector in both
+/// pinned and unpinned modes.
+///
+/// Reserving these roots prevents authored target modules from claiming names
+/// such as `Init.System.IO`, `Lean.Elab`, or `TrustedBoundary` that would
+/// shadow sysroot or inspector modules in exported `LEAN_PATH` directories.
+const RESERVED_TOOLCHAIN_MODULE_ROOTS: &[&str] =
+    &["Init", "Std", "Lean", "Lake", "TrustedBoundary"];
+
+/// Return whether `module` belongs to a reserved toolchain or inspector root.
+fn is_reserved_toolchain_module(module: &str) -> bool {
+    let root_pkg = module.split('.').next().unwrap_or("");
+    RESERVED_TOOLCHAIN_MODULE_ROOTS.contains(&root_pkg)
+}
+
 /// The authority of a source module in a target verification request.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -787,16 +802,17 @@ impl Checker {
         let mut roles = BTreeMap::new();
         for module in &request.modules {
             let adm = self.admitted()?;
-            let collides_with_sysroot = if adm.unpinned {
-                let root_pkg = module.module.split('.').next().unwrap_or("");
-                adm.sysroot_package_roots.contains(root_pkg)
-            } else {
-                adm.foundation_graph.contains_key(&module.module)
-                    || adm
-                        .library_lock
-                        .as_ref()
-                        .is_some_and(|l| l.modules.contains_key(&module.module))
-            };
+            let root_pkg = module.module.split('.').next().unwrap_or("");
+            let collides_with_sysroot = is_reserved_toolchain_module(&module.module)
+                || if adm.unpinned {
+                    adm.sysroot_package_roots.contains(root_pkg)
+                } else {
+                    adm.foundation_graph.contains_key(&module.module)
+                        || adm
+                            .library_lock
+                            .as_ref()
+                            .is_some_and(|l| l.modules.contains_key(&module.module))
+                };
             if !target_name_valid(&module.module)
                 || roles.contains_key(&module.module)
                 || collides_with_sysroot
@@ -1533,7 +1549,20 @@ exit 4
         assert_eq!((failure.code, failure.phase.as_str()), (2, "headers"), "{failure}");
         assert!(failure.message.starts_with("Lean exited Some(3)"), "{failure}");
         assert!(toolchain.base.join("headers-ran.marker").is_file());
-        for module in [FOUNDATION, LIBRARY] {
+        for module in [
+            FOUNDATION,
+            LIBRARY,
+            "Init",
+            "Init.System.IO",
+            "Std",
+            "Std.Data.Custom",
+            "Lean",
+            "Lean.Elab",
+            "Lake",
+            "Lake.DSL",
+            "TrustedBoundary",
+            "TrustedBoundary.Extra",
+        ] {
             let mut shadowing = request.clone();
             shadowing.modules.push(TargetModule {
                 module: module.to_owned(),
@@ -2369,20 +2398,36 @@ exit 4
         );
         let dst_lib_lean = syn_prefix.join("lib/lean");
         fs::create_dir_all(&dst_lib_lean).unwrap();
+        // Copy Lean's shared libraries in `<prefix>/lib` so sandboxed
+        // `tool_admission` (which executes `--version`/`--print-prefix` inside
+        // ExecSeal) can resolve `DT_RUNPATH` without escaping symlinks.
+        for entry in fs::read_dir(real_prefix.join("lib")).unwrap() {
+            let entry = entry.unwrap();
+            let src_path = entry.path();
+            if entry.file_type().unwrap().is_file() {
+                let dst_path = syn_prefix.join("lib").join(entry.file_name());
+                fs::hard_link(&src_path, &dst_path)
+                    .or_else(|_| fs::copy(&src_path, &dst_path).map(|_| ()))
+                    .unwrap();
+            }
+        }
         for entry in fs::read_dir(real_prefix.join("lib/lean")).unwrap() {
             let entry = entry.unwrap();
             let name = entry.file_name();
             let name_str = name.to_string_lossy();
             let src_path = entry.path();
             let dst_path = dst_lib_lean.join(&name);
+            let ft = fs::symlink_metadata(&src_path).unwrap().file_type();
             if matches!(name_str.as_ref(), "Init" | "Std" | "Lean") {
                 copy_dir_filtered(&src_path, &dst_path, name_str != "Init");
             } else if ["Init.", "Std.", "Lean."].iter().any(|p| name_str.starts_with(p)) {
-                if fs::symlink_metadata(&src_path).unwrap().file_type().is_file() {
+                if ft.is_file() {
                     fs::copy(&src_path, &dst_path).unwrap();
                 }
-            } else {
-                symlink(&src_path, &dst_path).unwrap();
+            } else if ft.is_file() {
+                fs::hard_link(&src_path, &dst_path)
+                    .or_else(|_| fs::copy(&src_path, &dst_path).map(|_| ()))
+                    .unwrap();
             }
         }
 

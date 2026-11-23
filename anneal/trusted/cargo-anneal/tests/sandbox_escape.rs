@@ -1108,3 +1108,84 @@ fn sandbox_rejects_broad_prefixes_and_hides_prefix_sibling_files() {
     }
     make_tree_writable(&sym_base);
 }
+
+#[test]
+fn tier1_bwrap_enforces_seccomp_and_disables_nested_userns() {
+    const CHECK_ENV: &str = "ANNEAL_TIER1_SECCOMP_CHECK";
+    if env::var_os(CHECK_ENV).is_some() {
+        let status = fs::read_to_string("/proc/self/status").expect("read /proc/self/status");
+        assert!(
+            status.lines().any(|l| l.trim() == "Seccomp:\t2"),
+            "expected Seccomp: 2 (SECCOMP_MODE_FILTER) inside Tier 1 bwrap, got:\n{status}"
+        );
+        // SAFETY: probe syscalls with valid constants; failure with EPERM is asserted.
+        unsafe {
+            let sock = libc::socket(libc::AF_INET, libc::SOCK_STREAM, 0);
+            assert_eq!(sock, -1, "AF_INET socket must be blocked by Tier 1 seccomp");
+            assert_eq!(
+                std::io::Error::last_os_error().raw_os_error(),
+                Some(libc::EPERM),
+                "expected EPERM from Tier 1 seccomp on socket()"
+            );
+
+            let unshare_rc = libc::unshare(libc::CLONE_NEWUSER);
+            assert_eq!(
+                unshare_rc, -1,
+                "unshare(CLONE_NEWUSER) must be blocked inside Tier 1 bwrap"
+            );
+            assert_eq!(
+                std::io::Error::last_os_error().raw_os_error(),
+                Some(libc::EPERM),
+                "expected EPERM from Tier 1 seccomp/disable-userns on unshare()"
+            );
+
+            let fork_rc = libc::fork();
+            assert_eq!(fork_rc, -1, "fork() must be blocked by Tier 1 seccomp");
+            assert_eq!(
+                std::io::Error::last_os_error().raw_os_error(),
+                Some(libc::EPERM),
+                "expected EPERM from Tier 1 seccomp on fork()"
+            );
+        }
+        return;
+    }
+
+    let exe = fs::canonicalize(env::current_exe().unwrap()).unwrap();
+    let exe_dir = exe.parent().unwrap().to_path_buf();
+    let runtime = force_tier1_runtime(&exe, &exe_dir).unwrap();
+    assert!(
+        runtime.bwrap_seccomp_active,
+        "Tier 1 runtime must enable seccomp-BPF on x86_64/aarch64 Linux"
+    );
+
+    let base_dir = tempfile::tempdir().unwrap();
+    let base = fs::canonicalize(base_dir.path()).unwrap();
+    let out_dir = base.join("out");
+    let tmp_dir = base.join("tmp");
+    create_dir_mode(&out_dir, 0o700).unwrap();
+    create_dir_mode(&tmp_dir, 0o700).unwrap();
+
+    let mut extra_env = BTreeMap::new();
+    extra_env.insert(CHECK_ENV.to_string(), "1".to_string());
+    let policy = SandboxPolicy {
+        exec_bin: exe.clone(),
+        args: vec![
+            "--exact".to_string(),
+            "tier1_bwrap_enforces_seccomp_and_disables_nested_userns".to_string(),
+            "--nocapture".to_string(),
+        ],
+        ro_mounts: Vec::new(),
+        rw_out: MountSpec { host: out_dir, child: PathBuf::from("/work/out") },
+        rw_tmp: MountSpec { host: tmp_dir, child: PathBuf::from("/work/tmp") },
+        child_cwd: None,
+        extra_env,
+        timeout: Duration::from_secs(30),
+    };
+    let output = runtime.execute(&policy).unwrap();
+    assert!(
+        output.status.success(),
+        "Tier 1 seccomp/disable-userns probe failed:\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&output.stdout),
+        String::from_utf8_lossy(&output.stderr)
+    );
+}
