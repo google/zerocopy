@@ -467,6 +467,22 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         self.assertIn("bwrap --unshare-all", starnix_step["run"])
         self.assertIn('--cli "$ANNEAL_TEST_CARGO_ANNEAL"', starnix_step["run"])
 
+        zc_step = next(
+            s for s in jobs["installed-smoke"]["steps"]
+            if s.get("id") == "verify_zerocopy"
+        )
+        self.assertIn("ci/verify_zerocopy.py", zc_step["run"])
+        self.assertIn("bwrap --unshare-all", zc_step["run"])
+        self.assertIn('--cli "$ANNEAL_TEST_CARGO_ANNEAL"', zc_step["run"])
+        self.assertIn('--jobs "$ANNEAL_TEST_JOBS"', zc_step["run"])
+        for token in (
+            "ACTIONS_CACHE_URL",
+            "ACTIONS_RESULTS_URL",
+            "ACTIONS_RUNTIME_TOKEN",
+            "ACTIONS_RUNTIME_URL",
+        ):
+            self.assertEqual(zc_step.get("env", {}).get(token), "")
+
     def test_parallel_workspace_tests_job_wired_into_gate_and_isolated(self):
         jobs = self.workflow["jobs"]
         for parallel_job in ("installed-smoke", "workspace-tests"):
