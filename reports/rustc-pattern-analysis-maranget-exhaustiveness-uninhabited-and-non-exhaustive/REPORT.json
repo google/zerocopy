@@ -1,0 +1,60 @@
+{
+  "topics": [
+    "anneal",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/hir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc compiler (rustc_pattern_analysis, THIR check_match, HIR pat, MIR UnreachablePropagation & MatchBranchSimplification)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "toolchain": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+      }
+    },
+    {
+      "name": "rust-lang/rust (upstream pattern_analysis comparison baseline)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+      }
+    },
+    {
+      "name": "rust-lang/rust (main branch primary-source comparison)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "960ba7cf7e8666ecb449402ca82b6e9e631bd227"
+      }
+    },
+    {
+      "name": "Anneal MIR verifier semantics and trusted capture driver (main)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Anneal MIR verifier (unstable)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "da6917c5cc574a4e06543576b9508c5221467bd1"
+      }
+    },
+    {
+      "name": "Lean 4 kernel and elaboration toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

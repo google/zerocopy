@@ -1,0 +1,270 @@
+{
+  "probe_suite": "rustc_pattern_analysis_maranget_exhaustiveness",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "groups": {
+    "a_uninhabited_matching_and_mir": {
+      "void_and_result_void_opt0": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [
+          "-Copt-level=0",
+          "-Zdump-mir=UnreachablePropagation|MatchBranchSimplification|built",
+          "-Zdump-mir-dir=<tmp>/mir_opt0"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "UNWRAP_VOID=(77,99)",
+        "run_stderr": "",
+        "mir_dumps": {
+          "a1_void_res.unwrap_void_res.1-1-000.built.after.mir": "// MIR for `unwrap_void_res` after built\n\nfn unwrap_void_res(_1: Result<u32, Void>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: u32;\n    let _4: Void;\n    let mut _5: !;\n    scope 1 {\n        debug x => _3;\n    }\n    scope 2 {\n        debug v => _4;\n    }\n\n    bb0: {\n        PlaceMention(_1);\n        _2 = discriminant(_1);\n        switchInt(move _2) -> [0: bb2, 1: bb4, otherwise: bb1];\n    }\n\n    bb1: {\n        FakeRead(ForMatchedPlace(None), _1);\n        unreachable;\n    }\n\n    bb2: {\n        falseEdge -> [real: bb6, imaginary: bb4];\n    }\n\n    bb3: {\n        goto -> bb1;\n    }\n\n    bb4: {\n        StorageLive(_4);\n        _4 = move ((_1 as Err).0: Void);\n        StorageLive(_5);\n        PlaceMention(_4);\n        FakeRead(ForMatchedPlace(None), _4);\n        unreachable;\n    }\n\n    bb5: {\n        goto -> bb1;\n    }\n\n    bb6: {\n        StorageLive(_3);\n        _3 = copy ((_1 as Ok).0: u32);\n        _0 = copy _3;\n        StorageDead(_3);\n        goto -> bb9;\n    }\n\n    bb7: {\n        unreachable;\n    }\n\n    bb8: {\n        StorageDead(_5);\n        StorageDead(_4);\n        goto -> bb9;\n    }\n\n    bb9: {\n        return;\n    }\n}",
+          "a1_void_res.unwrap_void_res_implicit.1-1-000.built.after.mir": "// MIR for `unwrap_void_res_implicit` after built\n\nfn unwrap_void_res_implicit(_1: Result<u32, Void>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: u32;\n    scope 1 {\n        debug x => _3;\n    }\n\n    bb0: {\n        PlaceMention(_1);\n        _2 = discriminant(_1);\n        switchInt(move _2) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        FakeRead(ForMatchedPlace(None), _1);\n        unreachable;\n    }\n\n    bb2: {\n        StorageLive(_3);\n        _3 = copy ((_1 as Ok).0: u32);\n        _0 = copy _3;\n        StorageDead(_3);\n        goto -> bb4;\n    }\n\n    bb3: {\n        goto -> bb1;\n    }\n\n    bb4: {\n        return;\n    }\n}"
+        }
+      },
+      "void_and_result_void_opt1": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [
+          "-Copt-level=1",
+          "-Zdump-mir=UnreachablePropagation|MatchBranchSimplification|built",
+          "-Zdump-mir-dir=<tmp>/mir_opt1"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "UNWRAP_VOID=(77,99)",
+        "run_stderr": "",
+        "mir_dumps": {
+          "a1_void_res.unwrap_void_res.1-1-000.built.after.mir": "// MIR for `unwrap_void_res` after built\n\nfn unwrap_void_res(_1: Result<u32, Void>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: u32;\n    let _4: Void;\n    let mut _5: !;\n    scope 1 {\n        debug x => _3;\n    }\n    scope 2 {\n        debug v => _4;\n    }\n\n    bb0: {\n        PlaceMention(_1);\n        _2 = discriminant(_1);\n        switchInt(move _2) -> [0: bb2, 1: bb4, otherwise: bb1];\n    }\n\n    bb1: {\n        FakeRead(ForMatchedPlace(None), _1);\n        unreachable;\n    }\n\n    bb2: {\n        falseEdge -> [real: bb6, imaginary: bb4];\n    }\n\n    bb3: {\n        goto -> bb1;\n    }\n\n    bb4: {\n        StorageLive(_4);\n        _4 = move ((_1 as Err).0: Void);\n        StorageLive(_5);\n        PlaceMention(_4);\n        FakeRead(ForMatchedPlace(None), _4);\n        unreachable;\n    }\n\n    bb5: {\n        goto -> bb1;\n    }\n\n    bb6: {\n        StorageLive(_3);\n        _3 = copy ((_1 as Ok).0: u32);\n        _0 = copy _3;\n        StorageDead(_3);\n        goto -> bb9;\n    }\n\n    bb7: {\n        unreachable;\n    }\n\n    bb8: {\n        StorageDead(_5);\n        StorageDead(_4);\n        goto -> bb9;\n    }\n\n    bb9: {\n        return;\n    }\n}",
+          "a1_void_res.unwrap_void_res.3-2-007.UnreachablePropagation.after.mir": "// MIR for `unwrap_void_res` after UnreachablePropagation\n\nfn unwrap_void_res(_1: Result<u32, Void>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: u32;\n    let _4: Void;\n    let mut _5: !;\n    let mut _6: bool;\n    scope 1 {\n        debug x => _3;\n    }\n    scope 2 {\n        debug v => const ZeroSized: Void;\n    }\n\n    bb0: {\n        _2 = discriminant(_1);\n        _6 = Eq(copy _2, const 0_isize);\n        assume(move _6);\n        goto -> bb3;\n    }\n\n    bb1: {\n        unreachable;\n    }\n\n    bb2: {\n        nop;\n        nop;\n        nop;\n        unreachable;\n    }\n\n    bb3: {\n        StorageLive(_3);\n        _3 = copy ((_1 as Ok).0: u32);\n        _0 = copy _3;\n        StorageDead(_3);\n        return;\n    }\n}",
+          "a1_void_res.unwrap_void_res.3-2-007.UnreachablePropagation.before.mir": "// MIR for `unwrap_void_res` before UnreachablePropagation\n\nfn unwrap_void_res(_1: Result<u32, Void>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: u32;\n    let _4: Void;\n    let mut _5: !;\n    scope 1 {\n        debug x => _3;\n    }\n    scope 2 {\n        debug v => const ZeroSized: Void;\n    }\n\n    bb0: {\n        _2 = discriminant(_1);\n        switchInt(move _2) -> [0: bb3, 1: bb1, otherwise: bb1];\n    }\n\n    bb1: {\n        unreachable;\n    }\n\n    bb2: {\n        nop;\n        nop;\n        nop;\n        unreachable;\n    }\n\n    bb3: {\n        StorageLive(_3);\n        _3 = copy ((_1 as Ok).0: u32);\n        _0 = copy _3;\n        StorageDead(_3);\n        return;\n    }\n}",
+          "a1_void_res.unwrap_void_res.3-2-018.MatchBranchSimplification.after.mir": "// MIR for `unwrap_void_res` after MatchBranchSimplification\n\nfn unwrap_void_res(_1: Result<u32, Void>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: u32;\n    let mut _4: bool;\n    scope 1 {\n        debug x => _3;\n    }\n    scope 2 {\n        debug v => const ZeroSized: Void;\n    }\n\n    bb0: {\n        _2 = discriminant(_1);\n        _4 = Eq(copy _2, const 0_isize);\n        assume(move _4);\n        StorageLive(_3);\n        _3 = copy ((_1 as Ok).0: u32);\n        _0 = copy _3;\n        StorageDead(_3);\n        return;\n    }\n}",
+          "a1_void_res.unwrap_void_res.3-2-018.MatchBranchSimplification.before.mir": "// MIR for `unwrap_void_res` before MatchBranchSimplification\n\nfn unwrap_void_res(_1: Result<u32, Void>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: u32;\n    let mut _4: bool;\n    scope 1 {\n        debug x => _3;\n    }\n    scope 2 {\n        debug v => const ZeroSized: Void;\n    }\n\n    bb0: {\n        _2 = discriminant(_1);\n        _4 = Eq(copy _2, const 0_isize);\n        assume(move _4);\n        StorageLive(_3);\n        _3 = copy ((_1 as Ok).0: u32);\n        _0 = copy _3;\n        StorageDead(_3);\n        return;\n    }\n}",
+          "a1_void_res.unwrap_void_res_implicit.1-1-000.built.after.mir": "// MIR for `unwrap_void_res_implicit` after built\n\nfn unwrap_void_res_implicit(_1: Result<u32, Void>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: u32;\n    scope 1 {\n        debug x => _3;\n    }\n\n    bb0: {\n        PlaceMention(_1);\n        _2 = discriminant(_1);\n        switchInt(move _2) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        FakeRead(ForMatchedPlace(None), _1);\n        unreachable;\n    }\n\n    bb2: {\n        StorageLive(_3);\n        _3 = copy ((_1 as Ok).0: u32);\n        _0 = copy _3;\n        StorageDead(_3);\n        goto -> bb4;\n    }\n\n    bb3: {\n        goto -> bb1;\n    }\n\n    bb4: {\n        return;\n    }\n}",
+          "a1_void_res.unwrap_void_res_implicit.3-2-007.UnreachablePropagation.after.mir": "// MIR for `unwrap_void_res_implicit` after UnreachablePropagation\n\nfn unwrap_void_res_implicit(_1: Result<u32, Void>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: u32;\n    let mut _4: bool;\n    scope 1 {\n        debug x => _3;\n    }\n\n    bb0: {\n        _2 = discriminant(_1);\n        _4 = Eq(copy _2, const 0_isize);\n        assume(move _4);\n        goto -> bb2;\n    }\n\n    bb1: {\n        unreachable;\n    }\n\n    bb2: {\n        StorageLive(_3);\n        _3 = copy ((_1 as Ok).0: u32);\n        _0 = copy _3;\n        StorageDead(_3);\n        return;\n    }\n}",
+          "a1_void_res.unwrap_void_res_implicit.3-2-007.UnreachablePropagation.before.mir": "// MIR for `unwrap_void_res_implicit` before UnreachablePropagation\n\nfn unwrap_void_res_implicit(_1: Result<u32, Void>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: u32;\n    scope 1 {\n        debug x => _3;\n    }\n\n    bb0: {\n        _2 = discriminant(_1);\n        switchInt(move _2) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        unreachable;\n    }\n\n    bb2: {\n        StorageLive(_3);\n        _3 = copy ((_1 as Ok).0: u32);\n        _0 = copy _3;\n        StorageDead(_3);\n        return;\n    }\n}",
+          "a1_void_res.unwrap_void_res_implicit.3-2-018.MatchBranchSimplification.after.mir": "// MIR for `unwrap_void_res_implicit` after MatchBranchSimplification\n\nfn unwrap_void_res_implicit(_1: Result<u32, Void>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: u32;\n    let mut _4: bool;\n    scope 1 {\n        debug x => _3;\n    }\n\n    bb0: {\n        _2 = discriminant(_1);\n        _4 = Eq(copy _2, const 0_isize);\n        assume(move _4);\n        StorageLive(_3);\n        _3 = copy ((_1 as Ok).0: u32);\n        _0 = copy _3;\n        StorageDead(_3);\n        return;\n    }\n}",
+          "a1_void_res.unwrap_void_res_implicit.3-2-018.MatchBranchSimplification.before.mir": "// MIR for `unwrap_void_res_implicit` before MatchBranchSimplification\n\nfn unwrap_void_res_implicit(_1: Result<u32, Void>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: u32;\n    let mut _4: bool;\n    scope 1 {\n        debug x => _3;\n    }\n\n    bb0: {\n        _2 = discriminant(_1);\n        _4 = Eq(copy _2, const 0_isize);\n        assume(move _4);\n        StorageLive(_3);\n        _3 = copy ((_1 as Ok).0: u32);\n        _0 = copy _3;\n        StorageDead(_3);\n        return;\n    }\n}"
+        }
+      },
+      "deref_result_void_default": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0004]: non-exhaustive patterns: `Err(_)` not covered\n   --> <tmp>/a2_deref_default.rs:3:11\n    |\n  3 |     match *r {\n    |           ^^ pattern `Err(_)` not covered\n    |\nnote: `Result<u32, Void>` defined here\n   --> <home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:557:1\n    |\n557 | pub enum Result<T, E> {\n    | ^^^^^^^^^^^^^^^^^^^^^\n...\n566 |     Err(#[stable(feature = \"rust1\", since = \"1.0.0\")] E),\n    |     --- not covered\n    = note: the matched value is of type `Result<u32, Void>`\n    = note: `Void` is uninhabited but is not being matched by value, so a wildcard `_` is required\nhelp: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown\n    |\n  4 ~         Ok(x) => x,\n  5 ~         Err(_) => todo!(),\n    |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0004`."
+      },
+      "deref_result_void_exhaustive_patterns": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "DEREF_RES=55",
+        "run_stderr": ""
+      },
+      "never_type_and_result_never": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "warning: unreachable call\n  --> <tmp>/a3_never.rs:12:19\n   |\n12 |         Err(n) => absurd(n),\n   |                   ^^^^^^ - any code following this expression is unreachable\n   |                   |\n   |                   unreachable call\n   |\n   = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+        "run_returncode": 0,
+        "run_stdout": "UNWRAP_NEVER=88",
+        "run_stderr": ""
+      },
+      "ref_void_empty_default": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0004]: non-exhaustive patterns: type `&Void` is non-empty\n --> <tmp>/a4_ref_void_empty_default.rs:3:11\n  |\n3 |     match r {}\n  |           ^\n  |\nnote: `Void` defined here\n --> <tmp>/a4_ref_void_empty_default.rs:1:10\n  |\n1 | pub enum Void {}\n  |          ^^^^\n  = note: the matched value is of type `&Void`\n  = note: references are always considered inhabited\nhelp: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern as shown\n  |\n3 ~     match r {\n4 +         _ => todo!(),\n5 ~     }\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0004`."
+      },
+      "ref_void_empty_exhaustive_patterns": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0004]: non-exhaustive patterns: type `&Void` is non-empty\n --> <tmp>/a4_ref_void_empty_exhaustive_patterns.rs:4:11\n  |\n4 |     match r {}\n  |           ^\n  |\nnote: `Void` defined here\n --> <tmp>/a4_ref_void_empty_exhaustive_patterns.rs:2:10\n  |\n2 | pub enum Void {}\n  |          ^^^^\n  = note: the matched value is of type `&Void`\n  = note: references are always considered inhabited\nhelp: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern as shown\n  |\n4 ~     match r {\n5 +         _ => todo!(),\n6 ~     }\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0004`."
+      },
+      "ref_void_deref_empty_default": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": ""
+      },
+      "ref_void_wildcard_default": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": ""
+      },
+      "private_uninhabited_inside_mod_empty_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": ""
+      },
+      "private_uninhabited_outside_mod_empty_e0004": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0004]: non-exhaustive patterns: type `Priv` is non-empty\n  --> <tmp>/a5_private_uninhabited_outside_mod_empty_e0004.rs:12:11\n   |\n12 |     match p {}\n   |           ^\n   |\nnote: `Priv` defined here\n  --> <tmp>/a5_private_uninhabited_outside_mod_empty_e0004.rs:3:16\n   |\n 3 |     pub struct Priv {\n   |                ^^^^\n   = note: the matched value is of type `Priv`\nhelp: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern as shown\n   |\n12 ~     match p {\n13 +         _ => todo!(),\n14 ~     }\n   |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0004`."
+      },
+      "private_uninhabited_outside_mod_cover_pub_tag_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "warning: function `inside_empty` is never used\n --> <tmp>/a5_private_uninhabited_outside_mod_cover_pub_tag_ok.rs:7:12\n  |\n7 |     pub fn inside_empty(p: Priv) -> u32 {\n  |            ^^^^^^^^^^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted"
+      }
+    },
+    "b_cross_crate_non_exhaustive": {
+      "upstream_defining_crate_without_wildcard_ok": {
+        "edition": "2024",
+        "crate_type": "rlib",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": ""
+      },
+      "downstream_non_exhaustive_enum_without_wildcard_e0004": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [
+          "--extern",
+          "up=<tmp>/libup.rlib"
+        ],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0004]: non-exhaustive patterns: `_` not covered\n --> <tmp>/dn_downstream_non_exhaustive_enum_without_wildcard_e0004.rs:3:11\n  |\n3 |     match s {\n  |           ^ pattern `_` not covered\n  |\nnote: `Status` defined here\n --> <tmp>/up.rs:2:1\n  |\n2 | pub enum Status {\n  | ^^^^^^^^^^^^^^^\n  = note: the matched value is of type `Status`\n  = note: `Status` is marked as non-exhaustive, so a wildcard `_` is necessary to match exhaustively\nhelp: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown\n  |\n5 ~         up::Status::Err => 2,\n6 ~         _ => todo!(),\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0004`."
+      },
+      "downstream_single_variant_non_exhaustive_without_wildcard_e0004": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [
+          "--extern",
+          "up=<tmp>/libup.rlib"
+        ],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0004]: non-exhaustive patterns: `_` not covered\n --> <tmp>/dn_downstream_single_variant_non_exhaustive_without_wildcard_e0004.rs:3:11\n  |\n3 |     match x {\n  |           ^ pattern `_` not covered\n  |\nnote: `SingleNonExh` defined here\n --> <tmp>/up.rs:8:1\n  |\n8 | pub enum SingleNonExh {\n  | ^^^^^^^^^^^^^^^^^^^^^\n  = note: the matched value is of type `SingleNonExh`\n  = note: `SingleNonExh` is marked as non-exhaustive, so a wildcard `_` is necessary to match exhaustively\nhelp: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown\n  |\n4 ~         up::SingleNonExh::Only => 1,\n5 ~         _ => todo!(),\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0004`."
+      },
+      "downstream_non_exhaustive_enum_with_wildcard_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [
+          "--extern",
+          "up=<tmp>/libup.rlib"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "STAT=(1,2)",
+        "run_stderr": ""
+      },
+      "downstream_non_exhaustive_struct_without_dotdot_e0638": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [
+          "--extern",
+          "up=<tmp>/libup.rlib"
+        ],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0638]: `..` required with struct marked as non-exhaustive\n --> <tmp>/dn_downstream_non_exhaustive_struct_without_dotdot_e0638.rs:3:9\n  |\n3 |     let up::Config { port } = c;\n  |         ^^^^^^^^^^^^^^^^^^^\n  |\nhelp: add `..` at the end of the field list to ignore all other fields\n  |\n3 |     let up::Config { port , .. } = c;\n  |                           ++++\n\nerror: pattern requires `..` due to inaccessible fields\n --> <tmp>/dn_downstream_non_exhaustive_struct_without_dotdot_e0638.rs:3:9\n  |\n3 |     let up::Config { port } = c;\n  |         ^^^^^^^^^^^^^^^^^^^\n  |\nhelp: ignore the inaccessible and unused fields\n  |\n3 |     let up::Config { port, .. } = c;\n  |                          ++++\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0638`."
+      },
+      "downstream_non_exhaustive_allpub_struct_without_dotdot_e0638": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [
+          "--extern",
+          "up=<tmp>/libup.rlib"
+        ],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0638]: `..` required with struct marked as non-exhaustive\n --> <tmp>/dn_downstream_non_exhaustive_allpub_struct_without_dotdot_e0638.rs:3:9\n  |\n3 |     let up::AllPub { port } = a;\n  |         ^^^^^^^^^^^^^^^^^^^\n  |\nhelp: add `..` at the end of the field list to ignore all other fields\n  |\n3 |     let up::AllPub { port , .. } = a;\n  |                           ++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0638`."
+      },
+      "downstream_non_exhaustive_variant_without_dotdot_e0638": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [
+          "--extern",
+          "up=<tmp>/libup.rlib"
+        ],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0638]: `..` required with variant marked as non-exhaustive\n --> <tmp>/dn_downstream_non_exhaustive_variant_without_dotdot_e0638.rs:4:9\n  |\n4 |         up::Ev::V { a } => a,\n  |         ^^^^^^^^^^^^^^^\n  |\nhelp: add `..` at the end of the field list to ignore all other fields\n  |\n4 |         up::Ev::V { a , .. } => a,\n  |                       ++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0638`."
+      },
+      "downstream_non_exhaustive_struct_with_dotdot_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [
+          "--extern",
+          "up=<tmp>/libup.rlib"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "PORT=8080",
+        "run_stderr": ""
+      }
+    },
+    "c_guards_ranges_and_unreachable_patterns": {
+      "guarded_arms_non_exhaustive_e0004": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0004]: non-exhaustive patterns: `i32::MIN..=i32::MAX` not covered\n --> <tmp>/c_guarded_arms_non_exhaustive_e0004.rs:2:11\n  |\n2 |     match x {\n  |           ^ pattern `i32::MIN..=i32::MAX` not covered\n  |\n  = note: the matched value is of type `i32`\n  = note: match arms with guards don't count towards exhaustivity\nhelp: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown\n  |\n4 ~         n if n < 0 => -1,\n5 ~         i32::MIN..=i32::MAX => todo!(),\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0004`."
+      },
+      "guarded_bool_non_exhaustive_e0004": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0004]: non-exhaustive patterns: `true` and `false` not covered\n --> <tmp>/c_guarded_bool_non_exhaustive_e0004.rs:2:11\n  |\n2 |     match b {\n  |           ^ patterns `true` and `false` not covered\n  |\n  = note: the matched value is of type `bool`\n  = note: match arms with guards don't count towards exhaustivity\nhelp: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern, a match arm with multiple or-patterns as shown, or multiple match arms\n  |\n4 ~         false if !flag => 0,\n5 ~         true | false => todo!(),\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0004`."
+      },
+      "usize_max_range_non_exhaustive_e0004": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0004]: non-exhaustive patterns: `usize::MAX..` not covered\n --> <tmp>/c_usize_max_range_non_exhaustive_e0004.rs:2:11\n  |\n2 |     match x {\n  |           ^ pattern `usize::MAX..` not covered\n  |\n  = note: the matched value is of type `usize`\n  = note: `usize::MAX` is not treated as exhaustive, so half-open ranges are necessary to match exhaustively\nhelp: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown\n  |\n3 ~         0..=usize::MAX => 1,\n4 ~         usize::MAX.. => todo!(),\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0004`."
+      },
+      "integer_ranges_and_unreachable_patterns_lint": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "warning: unreachable pattern\n  --> <tmp>/c_integer_ranges_and_unreachable_patterns_lint.rs:12:9\n   |\n12 |         7 => 255,\n   |         ^ no value can reach this\n   |\nnote: multiple earlier patterns match some of the same values\n  --> <tmp>/c_integer_ranges_and_unreachable_patterns_lint.rs:12:9\n   |\n10 |         0..=10 => 100,\n   |         ------ matches some of the same values\n11 |         5..=15 => 200,\n   |         ------ matches some of the same values\n12 |         7 => 255,\n   |         ^ collectively making this unreachable\n   = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+        "run_returncode": 0,
+        "run_stdout": "U8=(1,2) SHAD=(100,200,0,100) GSHAD=(255,100)",
+        "run_stderr": ""
+      }
+    }
+  }
+}
