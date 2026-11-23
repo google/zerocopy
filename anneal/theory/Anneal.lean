@@ -32,6 +32,7 @@ public import Anneal.CnfOrd
 public import Anneal.F2Simd
 public import Anneal.OverflowCastJoin
 public import Anneal.PureLift
+public import Anneal.RefFrame
 
 public section
 
@@ -54,7 +55,8 @@ summaries (`Anneal.ByteSubLens`), constructive `< ω^ω` Cantor Normal Form
 ordinals and multi-rank termination (`Anneal.CnfOrd`), $\mathbb{F}_2$-linear
 and $\mathbb{F}_2$-bilinear SIMD certificate evaluators (`Anneal.F2Simd`),
 stage-cut interval joins for overflowing arithmetic and casts
-(`Anneal.OverflowCastJoin`), and `Anneal.PureLift`.
+(`Anneal.OverflowCastJoin`), `Anneal.PureLift`, and 4-way call-continuation
+`&mut` writeback frames and ranged Tree Borrows protectors (`Anneal.RefFrame`).
 -/
 
 end Anneal
