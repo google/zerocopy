@@ -3,6 +3,7 @@
     "anneal/architecture",
     "anneal/theory",
     "lean/mechanization",
+    "llvm/optimizations",
     "rust/atomics",
     "rust/concurrency",
     "verification/concurrency"
@@ -24,6 +25,14 @@
       }
     },
     {
+      "name": "rust-lang/rust (host nightly rustc 1.102.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
       "name": "crossbeam-epoch crate",
       "identity": {
         "crate": "crossbeam-epoch",
@@ -40,5 +49,5 @@
       }
     }
   ],
-  "observed_at": "2026-11-22"
+  "observed_at": "2026-11-23"
 }

@@ -16,11 +16,12 @@ Sound verification of arbitrary weak-memory Rust programs—including `Ordering:
 3. **`TargetMemModel` Separation of Portable C++20 vs. `x86-TSO` `compiler_fence(SeqCst)` (`crossbeam-epoch 0.9.21`):**
    - On `crossbeam-epoch`'s `#[cfg(target_arch = "x86_64")]` epoch-pinning idiom (`atomic_xchg::<usize, SeqCst>(x, 1); compiler_fence(SeqCst); atomic_load::<usize, Acquire>(y)`, `internal.rs:212-225`), `x86_64-unknown-linux-gnu` emits `xchgq %rax, (%rdi); movq (%rsi), %rax` (omitting `portable_fence_sc_pattern`'s extra `lock orl $0, -64(%rsp)` because `xchgq` already drains the `x86-TSO` store buffer), whereas `aarch64-apple-darwin` (`ARMv8.3 +rcpc`) emits `swpal x8, x8, [x0]; ldapr x0, [x1]` without `dmb ish` (where `[W & L]; po; [R & Q]` permits `(0, 0)`).
    - Parameterizing operational transitions by `TargetMemModel` (`portableCpp20` vs. `x86Tso`) proves both halves (`tso_xchg_forbids_0_0_and_portable_allows_0_0`): `portableCpp20` admits halted `(0, 0)` (`portableCpp20_allows_xchg_cfence_acq_0_0`), while `x86Tso` forbids halted `(0, 0)` across all reachable states (`x86Tso_forbids_xchg_cfence_acq_0_0`).
+   - Under `-Copt-level=3 -Clto=fat` (`rustc 1.102.0-nightly 3ef0c22cd`), LLVM `InstCombine`/`SROA` eliminates `SeqCst` stores on unescaped stack/`Box` allocations (including local `with_exposed_provenance(expose_provenance(&local))` roundtrips whose integer never escapes or branches) while preserving `xchgq` once an exposed-provenance integer is written to shared memory or branched upon; LLVM `GlobalOpt` eliminates `SeqCst` `store` (never `atomicrmw` or `cmpxchg`) on uncaptured internal globals that have zero loads or only store their initializer constant.
 
 ## Applicability
 
 - **Repository & Auditor Target:** `google/zerocopy` @ `ae3c943b7b1004d839ddb8d0dad65eacba158d58` (`anneal/trusted/audit/TrustedBoundary.lean` and `anneal/trusted/lean/foundation-lock.json` pinning `leanprover/lean4:v4.34.1` @ `5045d0056413266e57c625dcd7c365b10e377c52`).
-- **Compiler & Crate Subjects:** `rustc 1.98.0-nightly` (`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`) emitting `-Copt-level=3` assembly for `aarch64-unknown-linux-gnu`, `aarch64-apple-darwin`, `riscv64gc-unknown-linux-gnu`, and `x86_64-unknown-linux-gnu`, and `crossbeam-epoch 0.9.21` (`sha256: dc74980687109a3b14c72fd458107bf0baa1da1a1a805e178d15501ba9b86d9d`).
+- **Compiler & Crate Subjects:** `rustc 1.98.0-nightly` (`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`) emitting `-Copt-level=3` assembly for `aarch64-unknown-linux-gnu`, `aarch64-apple-darwin`, `riscv64gc-unknown-linux-gnu`, and `x86_64-unknown-linux-gnu`, and `crossbeam-epoch 0.9.21` (`sha256: dc74980687109a3b14c72fd458107bf0baa1da1a1a805e178d15501ba9b86d9d`); and `rustc 1.102.0-nightly` (`3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1`) emitting `--target=x86_64-unknown-linux-gnu -Copt-level=3 -Clto=fat` assembly for LLVM `GlobalOpt`/`InstCombine`/`SROA`/`DSE` `SeqCst` store-elimination boundary checks.
 
 ## Findings
 
@@ -66,6 +67,24 @@ Sound verification of arbitrary weak-memory Rust programs—including `Ordering:
 6. `releaseOnly_exact_bisimulation`: Proves `(PS2ThreadStep tid s mem s' mem' ∧ (∀ m, m ∈ mem' → m.promisedBy = none)) ↔ PromiseFreeThreadStep tid s mem s' mem'` under `CmdAllWritesRelease s.cmd` and unpromised `mem` (refuting `PS2ThreadStep.promise` directly via `no_promise_when_allWritesRelease` without relying on the post-state conjunct).
 7. `portableCpp20_allows_xchg_cfence_acq_0_0`, `x86Tso_forbids_xchg_cfence_acq_0_0`, & `tso_xchg_forbids_0_0_and_portable_allows_0_0`: Proves the exact `(0, 0)` separation between `TargetMemModel.portableCpp20` and `TargetMemModel.x86Tso` on `crossbeamInitTarget`.
 
+### 4. LLVM `GlobalOpt`, `InstCombine`, and `SROA` Elimination Boundaries for `x86_64` `SeqCst` Store-Buffer Draining
+
+`Basis: execution (rustc -Copt-level=3 -Clto=fat assembly output) + derived`
+
+Modeling `x86-TSO` `compiler_fence(SeqCst)` soundness requires distinguishing `Ordering::SeqCst` operations that are guaranteed to emit a store-buffer-draining `x86_64` instruction (`xchg`, `lock cmpxchg`, `lock xadd`, `lock orl`, or `mfence`) from operations whose `SeqCst` store is legally eliminated in LLVM IR prior to `x86_64` instruction selection (`support/probe_x86_64_seqcst_elim.py`, verified under `rustc 1.102.0-nightly 3ef0c22cd` with `--target=x86_64-unknown-linux-gnu -Copt-level=3 -Clto=fat`):
+
+| `x86_64` `SeqCst` / `compiler_fence(SeqCst)` Idiom | Emitted `x86_64` Serialization Instruction (`-O3 -Clto=fat`) | Store-Buffer Drain Soundness |
+| :--- | :--- | :--- |
+| `fence(Ordering::SeqCst)` (`keep_hw_fence_sc`) | `lock orl $0, -64(%rsp)` | **Sound unconditionally** (not tied to an allocation). |
+| Unescaped stack/`Box::new`/`Box::leak` `store(1, SeqCst)` (`elim_box_leaked_unescaped`) | *None* (`0` `xchgq` / `lock`) | **Unsound to drain** (`AllocMalloctoGlobal` / `SROA` / `DSE` removes the unescaped store). |
+| Local `with_exposed_provenance(expose_provenance(&local))` + `store(1, SeqCst)` (`elim_local_expose_roundtrip`) | *None* (`0` `xchgq` / `lock`) | **Unsound to drain** (`InstCombine` folds `inttoptr(ptrtoint(&local))` -> `&local` when the exposed integer neither escapes to shared memory nor feeds control flow). |
+| `expose_provenance(&local)` published via `PUB_ADDR.store(addr, Release)` or branched on (`if addr & 8 != 0`) before `local.store(1, SeqCst)` (`keep_published_exposed_addr`, `keep_branched_exposed_addr`) | `xchgq %rax, -8(%rsp)` | **Sound to drain** (`CaptureTracking` marks `local` captured once an exposed-provenance integer is written to shared memory or branched upon). |
+| Uncaptured internal `static` `store(v, SeqCst)` with `0` loads (`elim_priv_write_only`) or `v == init` (`elim_priv_same_init`) | *None* (`0` `xchgq` / `lock`) | **Unsound to drain** (`GlobalOpt` `processInternalGlobal` deletes write-only internal globals and constant-folds internal globals that only ever store their initializer constant, allowing `X = 1; DUMMY.store(1, SeqCst); cfence(SeqCst); r1 = Y` \|\| `Y = 1; _ = DUMMY.load(SeqCst); cfence(SeqCst); r2 = X` to observe `(0, 0)` on `x86_64` hardware). |
+| Uncaptured internal `static` `store(v, SeqCst)` with `v != init` and `>= 1` reachable load (`keep_priv_diff_init_with_load`), or back-to-back `SeqCst` stores (`keep_dse_two_seqcst_stores`) | `xchgq` (`2` `xchgq` on back-to-back stores) | **Sound to drain** (`GlobalOpt` `TryToShrinkGlobalToBoolean` and `DSE` both skip `isStrongerThanMonotonic` `SeqCst` stores once `>= 2` values are observable). |
+| Atomic RMW / `compare_exchange` (`swap(1, SeqCst)` or `compare_exchange(0, 0, SeqCst, Relaxed)`, even on uncaptured internal `static` storing `init`, `keep_priv_swap_same_init`, `keep_priv_cas_same_init`) | `xchgq` / `lock cmpxchgq` | **Sound to drain** (`GlobalOpt` does not fold `AtomicRMWInst` or `AtomicCmpXchgInst`; note that `Relaxed`/`Acquire`-only RMWs still permit LLVM middle-end sinking of unrelated `Relaxed`/`Release` stores and therefore drain only the RMW's own location). |
+
+Consequently, an operational `x86_64` model must not treat `AllocKind.global` alone as sufficient for `SeqCst` `store` store-buffer draining, nor defer allocation escape until `with_exposed_provenance` dereference: stack/heap allocations become `escaped` as soon as `Prov.exact` or an `expose_provenance`-tainted integer is written to shared memory, passed to `spawn`, returned externally, or branched upon, and `AllocKind.global` `SeqCst` `store` drains the global `x86_64` store buffer only when the global's address is captured or (`valBytes != initBytes` and the global has at least one reachable load/RMW).
+
 ## Boundaries
 
 1. **Standalone Operational Model vs. `Trusted.MirSemantics` Wiring:** Although `PromisingReductionProof.lean` imports `Trusted.MirSemantics` and `Anneal.Core.SepPCM` and passes `TrustedBoundary.lean` with `"requireMirWp": true`, its theorems are proved over the standalone `Cmd` / `Msg` / `View2` transition relations in that module rather than wired into `Trusted.MirSemantics.Step`.
@@ -77,7 +96,8 @@ Sound verification of arbitrary weak-memory Rust programs—including `Ordering:
 ## Evidence
 
 - `support/Anneal/PromisingReductionProof.lean` — `2,449` lines, SHA-256 `3ccbb2bd49d82d10a28818680ee0f4f652c877bb30519f977e143dcd99d931a0`, zero-`sorry` Lean 4.34.1 mechanization of Theorems 1–5 (`12` exported theorems, `[propext]` only).
-- `support/verify_promising2_op_sc2_and_tso.py` — reproducible multi-target `#![no_core]` `rustc` assembly probe, `Fraction`-timestamp `PS2-OpSC2'` + `TargetMemModel` state-space explorer with paired non-vacuity ablations, and 5-gate `TrustedBoundary.lean` replay driver against `google/zerocopy` @ `ae3c943b7b1004d839ddb8d0dad65eacba158d58`.
+- `support/verify_promising2_op_sc2_and_tso.py` — reproducible multi-target `#![no_core]` `rustc` assembly probe, `Fraction`-timestamp `PS2-OpSC2'` + `TargetMemModel` state-space explorer with paired non-vacuity ablations, and 5-gate `TrustedBoundary.lean` replay driver against `google/zerocopy` @ `ae3c943b7b1004d839ddb8d0dad65eacba158d58`. (Acquired `2026-11-22`.)
+- `support/probe_x86_64_seqcst_elim.py` — reproducible `x86_64-unknown-linux-gnu` `-Copt-level=3 -Clto=fat` assembly probe verifying LLVM `GlobalOpt`, `InstCombine`, `SROA`, and `DSE` elimination vs. preservation across `11` `SeqCst` store, RMW, `compare_exchange`, hardware-fence, and `expose_provenance` test cases under `rustc 1.102.0-nightly` (`3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1`). (Acquired `2026-11-23`.)
 
 ## Revalidation
 
@@ -85,4 +105,5 @@ Sound verification of arbitrary weak-memory Rust programs—including `Ordering:
 ZEROCOPY_REPO=/path/to/zerocopy \
   ZEROCOPY_REV=ae3c943b7b1004d839ddb8d0dad65eacba158d58 \
   python3 -B reports/promising2-relaxed-load-buffering-op-sc2-reduction-and-x86-tso-fence-soundness/support/verify_promising2_op_sc2_and_tso.py
+python3 -B reports/promising2-relaxed-load-buffering-op-sc2-reduction-and-x86-tso-fence-soundness/support/probe_x86_64_seqcst_elim.py
 ```

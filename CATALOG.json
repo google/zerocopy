@@ -83780,7 +83780,7 @@
       ]
     },
     "promising2-relaxed-load-buffering-op-sc2-reduction-and-x86-tso-fence-soundness": {
-      "observed_at": "2026-11-22",
+      "observed_at": "2026-11-23",
       "subjects": [
         {
           "identity": {
@@ -83796,6 +83796,14 @@
             "version": "1.98.0-nightly"
           },
           "name": "rust-lang/rust (anneal pinned rustc 1.98.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rust-lang/rust (host nightly rustc 1.102.0-nightly)"
         },
         {
           "identity": {
@@ -83818,6 +83826,7 @@
         "anneal/architecture",
         "anneal/theory",
         "lean/mechanization",
+        "llvm/optimizations",
         "rust/atomics",
         "rust/concurrency",
         "verification/concurrency"
