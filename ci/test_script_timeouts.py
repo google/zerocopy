@@ -22,6 +22,7 @@ SCRIPTS = REPO_ROOT / "ci" / "scripts"
 # Wall-clock limit in seconds for each check entrypoint.
 LIMITS = {
     "run_anneal_mir_eval_check.sh": 1800,
+    "run_anneal_spec_check.sh": 1800,
     "run_exocrate_test.sh": 1800,
     "run_fmt_domain.sh": 1800,
     "run_meta_actions.sh": 1800,

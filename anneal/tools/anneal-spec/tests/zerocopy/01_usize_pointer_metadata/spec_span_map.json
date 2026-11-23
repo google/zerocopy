@@ -1,0 +1,90 @@
+{
+  "columns": "1-based Unicode scalar values",
+  "entries": [
+    {
+      "lean_decl": "Spec.fn0_id",
+      "lean_line_end": 33,
+      "lean_line_start": 31,
+      "rust": {
+        "end_byte": 773,
+        "file": "tests/zerocopy/01_usize_pointer_metadata/spec.rs",
+        "hi_col": 49,
+        "hi_line": 15,
+        "lo_col": 9,
+        "lo_line": 15,
+        "start_byte": 733
+      }
+    },
+    {
+      "lean_decl": "Spec.fn0_post",
+      "lean_line_end": 38,
+      "lean_line_start": 35,
+      "rust": {
+        "end_byte": 722,
+        "file": "tests/zerocopy/01_usize_pointer_metadata/spec.rs",
+        "hi_col": 58,
+        "hi_line": 14,
+        "lo_col": 31,
+        "lo_line": 14,
+        "start_byte": 695
+      }
+    },
+    {
+      "lean_decl": "Spec.fn0_contract",
+      "lean_line_end": 43,
+      "lean_line_start": 40,
+      "rust": {
+        "end_byte": 724,
+        "file": "tests/zerocopy/01_usize_pointer_metadata/spec.rs",
+        "hi_col": 60,
+        "hi_line": 14,
+        "lo_col": 9,
+        "lo_line": 14,
+        "start_byte": 673
+      }
+    },
+    {
+      "lean_decl": "Spec.fn1_id",
+      "lean_line_end": 47,
+      "lean_line_start": 45,
+      "rust": {
+        "end_byte": 878,
+        "file": "tests/zerocopy/01_usize_pointer_metadata/spec.rs",
+        "hi_col": 40,
+        "hi_line": 18,
+        "lo_col": 9,
+        "lo_line": 18,
+        "start_byte": 847
+      }
+    },
+    {
+      "lean_decl": "Spec.fn1_post",
+      "lean_line_end": 52,
+      "lean_line_start": 49,
+      "rust": {
+        "end_byte": 836,
+        "file": "tests/zerocopy/01_usize_pointer_metadata/spec.rs",
+        "hi_col": 61,
+        "hi_line": 17,
+        "lo_col": 31,
+        "lo_line": 17,
+        "start_byte": 806
+      }
+    },
+    {
+      "lean_decl": "Spec.fn1_contract",
+      "lean_line_end": 57,
+      "lean_line_start": 54,
+      "rust": {
+        "end_byte": 838,
+        "file": "tests/zerocopy/01_usize_pointer_metadata/spec.rs",
+        "hi_col": 63,
+        "hi_line": 17,
+        "lo_col": 9,
+        "lo_line": 17,
+        "start_byte": 784
+      }
+    }
+  ],
+  "schema_version": 1
+}

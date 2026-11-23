@@ -532,6 +532,83 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         self.assertIn("ci/render_correspondence_provenance.py", self.pack_script)
 
 
+    def test_installed_smoke_verifies_anneal_spec_units_in_bwrap(self):
+        # The untrusted `tools/anneal-spec` lowering is built from its own
+        # locked workspace and run against the installed toolchain inside a
+        # fresh sandbox that sees the checkout read-only.
+        smoke = self._runner_mode("installed-smoke")
+        start = smoke.index('SPEC_TARGET="${SCRATCH_ROOT}/anneal-spec-target"')
+        end = smoke.index('rm -rf "$SPEC_TARGET" "$SPEC_CARGO_HOME"\n', start)
+        window = smoke[start:end]
+        self.assertLess(smoke.index("ci/verify_zerocopy.py"), start)
+        # The build itself runs in its own sandbox, before the verifier's,
+        # with no access to the installed tools or the rest of the scratch
+        # root.
+        build_end = window.index(
+            '"$SPEC_CARGO" build --locked --offline -p anneal-spec-lower'
+        )
+        build = window[window.index("bwrap --unshare-all"):build_end]
+        self.assertIn("--clearenv --cap-drop ALL", build)
+        # `apply_bundle_env` points `RUSTC` into the unmounted installed
+        # bundle, so the build must name the image's toolchain explicitly.
+        self.assertIn("SPEC_RUSTC=/opt/anneal-nix/build-rustc\n", window)
+        self.assertIn(
+            "SPEC_CARGO=/opt/anneal-nix/rust-toolchain/bin/cargo\n", window
+        )
+        self.assertIn('--setenv RUSTC "$SPEC_RUSTC"', build)
+        self.assertIn("--ro-bind /opt/anneal-nix /opt/anneal-nix", build)
+        self.assertNotIn("${RUSTC", build)
+        self.assertNotIn("command -v", window)
+        self.assertIn('--chdir "$PWD/tools/anneal-spec"', build)
+        self.assertIn('--bind "$SPEC_TARGET" /target', build)
+        self.assertIn("--ro-bind /opt/anneal-cargo-vendor", build)
+        self.assertNotIn("ANNEAL_TEST_", build)
+        self.assertNotIn("SCRATCH_ROOT", build)
+        self.assertLess(
+            build_end, window.index("ci/verify_anneal_spec_zerocopy.py")
+        )
+        self.assertIn("bwrap --unshare-all --die-with-parent", window)
+        self.assertIn("--clearenv --cap-drop ALL", window)
+        self.assertIn('--ro-bind "$REPO_ROOT" "$REPO_ROOT"', window)
+        self.assertIn('--ro-bind "$SPEC_TARGET" "$SPEC_TARGET"', window)
+        self.assertIn("ci/verify_anneal_spec_zerocopy.py", window)
+        self.assertIn('--lower "$SPEC_TARGET/debug/anneal-spec-lower"', window)
+        self.assertIn('--jobs "$ANNEAL_TEST_JOBS"', window)
+
+    def test_tools_anneal_spec_check_is_scoped_and_offline(self):
+        checks = {c["id"]: c for c in self.checks_cfg["checks"]}
+        check = checks["tools-anneal-spec"]
+        self.assertEqual(
+            check["command"], ["./ci/scripts/run_anneal_spec_check.sh"]
+        )
+        self.assertEqual(check["caches"], ["anneal-spec-cargo-v1"])
+        self.assertEqual(
+            self.checks_cfg["caches"]["anneal-spec-cargo-v1"]["cargo_locked"],
+            {"workspace": "anneal/tools/anneal-spec/Cargo.toml"},
+        )
+        self.assertIn(
+            {
+                "kind": "cargo_workspace",
+                "manifest_path": "anneal/tools/anneal-spec/Cargo.toml",
+            },
+            check["inputs"],
+        )
+        ci_test_globs = [
+            glob
+            for entry in checks["anneal-ci-tests"]["inputs"]
+            for glob in entry.get("include", [])
+        ]
+        self.assertIn("ci/scripts/run_anneal_spec_check.sh", ci_test_globs)
+        script = (REPO_ROOT / "ci/scripts/run_anneal_spec_check.sh").read_text()
+        self.assertIn("export CARGO_NET_OFFLINE=true", script)
+        for needle in (
+            "clippy --locked --offline --workspace --all-targets",
+            "test --locked --offline --workspace",
+            '--src-root . --check "$unit" "$unit/spec.rs"',
+        ):
+            self.assertIn(needle, script)
+
+
 class PrHygieneWorkflowTests(unittest.TestCase):
     """`check_pr_hygiene.py` reads Git history and PR event metadata, which
     `ci-core` sandboxes do not provide, so it runs in its own workflow. The

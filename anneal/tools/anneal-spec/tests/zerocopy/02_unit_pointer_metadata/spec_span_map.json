@@ -1,0 +1,90 @@
+{
+  "columns": "1-based Unicode scalar values",
+  "entries": [
+    {
+      "lean_decl": "Spec.fn0_id",
+      "lean_line_end": 26,
+      "lean_line_start": 24,
+      "rust": {
+        "end_byte": 742,
+        "file": "tests/zerocopy/02_unit_pointer_metadata/spec.rs",
+        "hi_col": 50,
+        "hi_line": 15,
+        "lo_col": 9,
+        "lo_line": 15,
+        "start_byte": 701
+      }
+    },
+    {
+      "lean_decl": "Spec.fn0_post",
+      "lean_line_end": 31,
+      "lean_line_start": 28,
+      "rust": {
+        "end_byte": 690,
+        "file": "tests/zerocopy/02_unit_pointer_metadata/spec.rs",
+        "hi_col": 55,
+        "hi_line": 14,
+        "lo_col": 31,
+        "lo_line": 14,
+        "start_byte": 666
+      }
+    },
+    {
+      "lean_decl": "Spec.fn0_contract",
+      "lean_line_end": 36,
+      "lean_line_start": 33,
+      "rust": {
+        "end_byte": 692,
+        "file": "tests/zerocopy/02_unit_pointer_metadata/spec.rs",
+        "hi_col": 57,
+        "hi_line": 14,
+        "lo_col": 9,
+        "lo_line": 14,
+        "start_byte": 644
+      }
+    },
+    {
+      "lean_decl": "Spec.fn1_id",
+      "lean_line_end": 40,
+      "lean_line_start": 38,
+      "rust": {
+        "end_byte": 844,
+        "file": "tests/zerocopy/02_unit_pointer_metadata/spec.rs",
+        "hi_col": 40,
+        "hi_line": 18,
+        "lo_col": 9,
+        "lo_line": 18,
+        "start_byte": 813
+      }
+    },
+    {
+      "lean_decl": "Spec.fn1_post",
+      "lean_line_end": 44,
+      "lean_line_start": 42,
+      "rust": {
+        "end_byte": 802,
+        "file": "tests/zerocopy/02_unit_pointer_metadata/spec.rs",
+        "hi_col": 58,
+        "hi_line": 17,
+        "lo_col": 31,
+        "lo_line": 17,
+        "start_byte": 775
+      }
+    },
+    {
+      "lean_decl": "Spec.fn1_contract",
+      "lean_line_end": 49,
+      "lean_line_start": 46,
+      "rust": {
+        "end_byte": 804,
+        "file": "tests/zerocopy/02_unit_pointer_metadata/spec.rs",
+        "hi_col": 60,
+        "hi_line": 17,
+        "lo_col": 9,
+        "lo_line": 17,
+        "start_byte": 753
+      }
+    }
+  ],
+  "schema_version": 1
+}

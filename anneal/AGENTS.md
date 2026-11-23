@@ -179,10 +179,12 @@ never proves defect absence or substitutes for CI or merge gates.
     `build.rs`, proc-macro, `Makefile`, `GNUmakefile`, `Justfile`, `lakefile*`,
     `lean-toolchain`, `.nix`, workflow, `.pre-commit-config.yaml`, shell/Python
     script (except unexecuted pinned `vendor/lean-miri/` provenance files), or
-    `.lean` file outside `theory/`, `correspondence/`, `tests/`, and pinned
-    `vendor/lean-miri/`. In `tests/`, allow only `publish = false`,
+    `.lean` file outside `theory/`, `correspondence/`, `tests/`, `tools/`, and
+    pinned `vendor/lean-miri/`. In `tests/`, allow only `publish = false`,
     build-script/proc-macro-free test crates with one-way `tests/` ->
-    `trusted/` deps.
+    `trusted/` deps. In `tools/`, allow only `publish = false`, `build.rs`-free
+    crates in workspaces excluded from the root workspace (`proc-macro`
+    allowed), with no `trusted/` or `tests/` -> `tools/` deps.
   - *`theory/`/`correspondence/` purity and `TrustedBoundary.lean` exclusions:*
     Use only pure declarations and tactics admitted by `TrustedBoundary.lean`'s
     allowlists (`trusted/{lean,correspondence}/` stay tactic-free). Reject

@@ -32,12 +32,14 @@ case "$FMT_DOMAIN" in
     ;;
   tools)
     NIGHTLY="${PIN_RUST_TOOLCHAINS__NIGHTLY:-$(./zerocopy/cargo.sh --version nightly)}"
+    # Keep in sync with `ci/check_fmt.sh`, which explains `--all`.
     for manifest in \
+      anneal/tools/anneal-spec/Cargo.toml \
       tools/cargo-zerocopy/Cargo.toml \
       tools/generate-readme/Cargo.toml \
       tools/ui-runner/Cargo.toml \
       tools/anneal-mir-eval/Cargo.toml; do
-      cargo +"$NIGHTLY" fmt --manifest-path "$manifest" --check >&2
+      cargo +"$NIGHTLY" fmt --manifest-path "$manifest" --all --check >&2
     done
     ;;
   exocrate)

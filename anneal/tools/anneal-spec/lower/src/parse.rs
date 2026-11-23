@@ -1,0 +1,1239 @@
+// Copyright 2026 The Fuchsia Authors
+//
+// Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+// <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+// license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+// This file may not be copied, modified, or distributed except according to
+// those terms.
+
+//! Parsing of specification clauses, expressions, and attachment forms.
+//!
+//! Clause expressions are parsed by a dedicated Pratt parser over token trees
+//! rather than by `syn::Expr`, for two reasons: `==>` and `<==>` are not Rust
+//! operators, and several Rust spellings that `syn` accepts silently (eager
+//! `&`, `!a == b`, chained comparisons) must be rejected with a diagnostic.
+
+use std::collections::BTreeSet;
+
+use proc_macro2::{Delimiter, Span, TokenStream, TokenTree};
+use quote::ToTokens;
+use syn::{
+    parse::{Parse, ParseStream},
+    spanned::Spanned,
+    Attribute, Token,
+};
+
+use crate::{
+    ast::{
+        BinOp, Clause, Effect, Expr, ExprKind, IntTy, Param, PureFn, SpannedClause, SpecFn, Ty,
+        UnOp,
+    },
+    diag::Diagnostic,
+};
+
+/// Multi-character operators, longest first so matching is maximal munch.
+const OPERATORS: &[&str] = &[
+    "<==>", "==>", "<<=", ">>=", "==", "!=", "<=", ">=", "&&", "||", "<<", ">>", "+=", "-=", "*=",
+    "/=", "%=", "^=", "&=", "|=", "::", "->", "=>", "..", "<", ">", "=", "!", "&", "|", "^", "+",
+    "-", "*", "/", "%", ".", ",", ";", ":", "?", "#", "@", "$", "~",
+];
+
+#[derive(Clone, Debug)]
+enum Tok {
+    Ident(String, Span),
+    Lit(proc_macro2::Literal, Span),
+    Op(String, Span),
+    Group(Delimiter, TokenStream, Span),
+}
+
+impl Tok {
+    fn span(&self) -> Span {
+        match self {
+            Tok::Ident(_, s) | Tok::Lit(_, s) | Tok::Op(_, s) | Tok::Group(_, _, s) => *s,
+        }
+    }
+
+    fn is_op(&self, op: &str) -> bool {
+        matches!(self, Tok::Op(o, _) if o == op)
+    }
+}
+
+fn join(a: Span, b: Span) -> Span {
+    a.join(b).unwrap_or(a)
+}
+
+/// Flattens a token stream, combining joint punctuation into operators.
+fn tokenize(stream: TokenStream) -> Vec<Tok> {
+    let mut out = Vec::new();
+    let mut pending: Vec<(char, Span)> = Vec::new();
+    let flush = |pending: &mut Vec<(char, Span)>, out: &mut Vec<Tok>| {
+        let mut i = 0;
+        while i < pending.len() {
+            let rest: String = pending[i..].iter().map(|(c, _)| *c).collect();
+            let len = OPERATORS
+                .iter()
+                .find(|op| rest.starts_with(**op))
+                .map_or(1, |op| op.chars().count());
+            let text: String = pending[i..i + len].iter().map(|(c, _)| *c).collect();
+            let span = join(pending[i].1, pending[i + len - 1].1);
+            out.push(Tok::Op(text, span));
+            i += len;
+        }
+        pending.clear();
+    };
+    for tt in stream {
+        match tt {
+            TokenTree::Punct(p) => {
+                pending.push((p.as_char(), p.span()));
+                if p.spacing() == proc_macro2::Spacing::Alone {
+                    flush(&mut pending, &mut out);
+                }
+            }
+            other => {
+                flush(&mut pending, &mut out);
+                match other {
+                    TokenTree::Ident(i) => out.push(Tok::Ident(i.to_string(), i.span())),
+                    TokenTree::Literal(l) => {
+                        let span = l.span();
+                        out.push(Tok::Lit(l, span));
+                    }
+                    TokenTree::Group(g) => {
+                        out.push(Tok::Group(g.delimiter(), g.stream(), g.span()))
+                    }
+                    TokenTree::Punct(_) => unreachable!(),
+                }
+            }
+        }
+    }
+    flush(&mut pending, &mut out);
+    out
+}
+
+fn binop(op: &str) -> Option<BinOp> {
+    Some(match op {
+        "<==>" => BinOp::Iff,
+        "==>" => BinOp::Implies,
+        "||" => BinOp::Or,
+        "&&" => BinOp::And,
+        "==" => BinOp::Eq,
+        "!=" => BinOp::Ne,
+        "<" => BinOp::Lt,
+        "<=" => BinOp::Le,
+        ">" => BinOp::Gt,
+        ">=" => BinOp::Ge,
+        "|" => BinOp::BitOr,
+        "^" => BinOp::BitXor,
+        "&" => BinOp::BitAnd,
+        "<<" => BinOp::Shl,
+        ">>" => BinOp::Shr,
+        "+" => BinOp::Add,
+        "-" => BinOp::Sub,
+        "*" => BinOp::Mul,
+        "/" => BinOp::Div,
+        "%" => BinOp::Rem,
+        _ => return None,
+    })
+}
+
+/// `(left, right)` binding powers. A larger right power than left makes an
+/// operator left-associative; `==>` is right-associative.
+fn binding_power(op: BinOp) -> (u8, u8) {
+    match op {
+        BinOp::Iff => (1, 2),
+        BinOp::Implies => (4, 3),
+        BinOp::Or => (5, 6),
+        BinOp::And => (7, 8),
+        BinOp::Eq | BinOp::Ne | BinOp::Lt | BinOp::Le | BinOp::Gt | BinOp::Ge => (9, 10),
+        BinOp::BitOr => (11, 12),
+        BinOp::BitXor => (13, 14),
+        BinOp::BitAnd => (15, 16),
+        BinOp::Shl | BinOp::Shr => (17, 18),
+        BinOp::Add | BinOp::Sub => (19, 20),
+        BinOp::Mul | BinOp::Div | BinOp::Rem => (21, 22),
+    }
+}
+
+const PREFIX_BP: u8 = 23;
+
+struct ExprParser {
+    toks: Vec<Tok>,
+    pos: usize,
+    end_span: Span,
+}
+
+impl ExprParser {
+    fn new(stream: TokenStream, end_span: Span) -> Self {
+        ExprParser { toks: tokenize(stream), pos: 0, end_span }
+    }
+
+    fn peek(&self) -> Option<&Tok> {
+        self.toks.get(self.pos)
+    }
+
+    fn next(&mut self) -> Option<Tok> {
+        let t = self.toks.get(self.pos).cloned();
+        self.pos += 1;
+        t
+    }
+
+    fn parse_all(mut self) -> Result<Expr, Diagnostic> {
+        let e = self.parse(0)?;
+        if let Some(t) = self.peek() {
+            return Err(unexpected(t));
+        }
+        Ok(e)
+    }
+
+    fn parse(&mut self, min_bp: u8) -> Result<Expr, Diagnostic> {
+        let mut lhs = self.parse_prefix()?;
+        loop {
+            let Some(tok) = self.peek().cloned() else { break };
+            let Tok::Op(op, op_span) = &tok else { return Err(unexpected(&tok)) };
+            if op == "," {
+                return Err(unexpected(&tok));
+            }
+            let Some(bin) = binop(op) else {
+                return Err(match op.as_str() {
+                    "=" | "+=" | "-=" | "*=" | "/=" | "%=" | "^=" | "&=" | "|=" | "<<=" | ">>=" => {
+                        Diagnostic::new(
+                            "E_ANNEAL_IMPURE_SPEC_EXPR",
+                            *op_span,
+                            format!("assignment `{op}` is not allowed in a specification"),
+                        )
+                        .help("specifications are pure; compare with `==` instead")
+                    }
+                    "." => Diagnostic::new(
+                        "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+                        *op_span,
+                        "method calls and field accesses are not supported in profile v1 \
+                         specifications",
+                    )
+                    .help("use a `#[anneal::pure]` helper or a built-in intrinsic"),
+                    _ => unexpected(&tok),
+                });
+            };
+            let (l_bp, r_bp) = binding_power(bin);
+            if l_bp < min_bp {
+                break;
+            }
+            self.pos += 1;
+            if bin.is_comparison() {
+                if let ExprKind::Binary(prev, _, _) = &lhs.kind {
+                    if prev.is_comparison() {
+                        return Err(Diagnostic::new(
+                            "E_ANNEAL_CHAINED_COMPARISON",
+                            *op_span,
+                            "comparison operators cannot be chained",
+                        )
+                        .help("join the comparisons with `&&`"));
+                    }
+                }
+                if matches!(bin, BinOp::Eq | BinOp::Ne) {
+                    if let ExprKind::Unary(UnOp::Not, _) = &lhs.kind {
+                        return Err(Diagnostic::new(
+                            "E_ANNEAL_AMBIGUOUS_NEGATION",
+                            lhs.span,
+                            format!("`!a {} b` negates only `a`, which is easy to misread", op),
+                        )
+                        .help(format!("write `(!a) {op} b` or `!(a {op} b)`")));
+                    }
+                }
+            }
+            let rhs = self.parse(r_bp)?;
+            let span = join(lhs.span, rhs.span);
+            lhs = Expr { kind: ExprKind::Binary(bin, Box::new(lhs), Box::new(rhs)), span };
+        }
+        Ok(lhs)
+    }
+
+    fn parse_prefix(&mut self) -> Result<Expr, Diagnostic> {
+        let Some(tok) = self.next() else {
+            return Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_SYNTAX",
+                self.end_span,
+                "expected an expression",
+            ));
+        };
+        match tok {
+            Tok::Op(op, span) if op == "!" || op == "-" => {
+                let un = if op == "!" { UnOp::Not } else { UnOp::Neg };
+                let inner = self.parse(PREFIX_BP)?;
+                let span = join(span, inner.span);
+                Ok(Expr { kind: ExprKind::Unary(un, Box::new(inner)), span })
+            }
+            Tok::Op(op, span) if op == "&" || op == "*" => Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+                span,
+                format!(
+                    "prefix `{op}` (references and dereferences) is not supported in profile v1"
+                ),
+            )),
+            Tok::Lit(lit, span) => parse_literal(lit, span),
+            Tok::Ident(name, span) => self.parse_ident(name, span),
+            Tok::Group(Delimiter::Parenthesis, inner, span) => {
+                if inner.is_empty() {
+                    return Ok(Expr { kind: ExprKind::Unit, span });
+                }
+                let e = ExprParser::new(inner, span).parse_all()?;
+                Ok(Expr { kind: ExprKind::Paren(Box::new(e)), span })
+            }
+            Tok::Group(Delimiter::Brace, _, span) => Err(Diagnostic::new(
+                "E_ANNEAL_IMPURE_SPEC_EXPR",
+                span,
+                "block expressions are not allowed in a specification",
+            )
+            .help("only `math { ... }` takes a block")),
+            other => Err(unexpected(&other)),
+        }
+    }
+
+    fn parse_ident(&mut self, name: String, span: Span) -> Result<Expr, Diagnostic> {
+        match name.as_str() {
+            "true" | "false" => {
+                return Ok(Expr { kind: ExprKind::Bool(name == "true"), span });
+            }
+            "let" | "if" | "match" | "loop" | "while" | "for" | "return" | "unsafe" | "async"
+            | "move" => {
+                return Err(Diagnostic::new(
+                    "E_ANNEAL_IMPURE_SPEC_EXPR",
+                    span,
+                    format!("`{name}` is not allowed in a profile v1 specification"),
+                ));
+            }
+            _ => {}
+        }
+        if self.peek().is_some_and(|t| t.is_op("::")) {
+            return Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+                span,
+                "paths are not supported in profile v1 specifications",
+            ));
+        }
+        match self.peek().cloned() {
+            Some(Tok::Group(Delimiter::Parenthesis, inner, gspan)) => {
+                self.pos += 1;
+                let full = join(span, gspan);
+                let args = parse_args(inner, gspan)?;
+                let one = |args: Vec<Expr>, what: &str| -> Result<Box<Expr>, Diagnostic> {
+                    let mut args = args;
+                    if args.len() != 1 {
+                        return Err(Diagnostic::new(
+                            "E_ANNEAL_SPEC_SYNTAX",
+                            full,
+                            format!("`{what}` takes exactly one argument"),
+                        ));
+                    }
+                    Ok(Box::new(args.remove(0)))
+                };
+                match name.as_str() {
+                    "math" => Ok(Expr { kind: ExprKind::Math(one(args, "math")?), span: full }),
+                    "old" => Ok(Expr { kind: ExprKind::Old(one(args, "old")?), span: full }),
+                    _ => Ok(Expr { kind: ExprKind::Call(name, args), span: full }),
+                }
+            }
+            Some(Tok::Group(Delimiter::Brace, inner, gspan)) if name == "math" => {
+                self.pos += 1;
+                let e = ExprParser::new(inner, gspan).parse_all()?;
+                Ok(Expr { kind: ExprKind::Math(Box::new(e)), span: join(span, gspan) })
+            }
+            _ => Ok(Expr { kind: ExprKind::Ident(name), span }),
+        }
+    }
+}
+
+fn unexpected(t: &Tok) -> Diagnostic {
+    let what = match t {
+        Tok::Ident(s, _) | Tok::Op(s, _) => format!("`{s}`"),
+        Tok::Lit(l, _) => format!("`{l}`"),
+        Tok::Group(..) => "group".to_string(),
+    };
+    Diagnostic::new("E_ANNEAL_SPEC_SYNTAX", t.span(), format!("unexpected {what}"))
+}
+
+/// Splits `stream` at top-level commas.
+fn split_commas(stream: TokenStream) -> Vec<TokenStream> {
+    let mut parts = vec![TokenStream::new()];
+    for tt in stream {
+        if matches!(&tt, TokenTree::Punct(p) if p.as_char() == ',') {
+            parts.push(TokenStream::new());
+        } else {
+            parts.last_mut().unwrap().extend([tt]);
+        }
+    }
+    if parts.last().is_some_and(TokenStream::is_empty) {
+        parts.pop();
+    }
+    parts
+}
+
+fn parse_args(stream: TokenStream, span: Span) -> Result<Vec<Expr>, Diagnostic> {
+    split_commas(stream).into_iter().map(|part| ExprParser::new(part, span).parse_all()).collect()
+}
+
+fn parse_literal(lit: proc_macro2::Literal, span: Span) -> Result<Expr, Diagnostic> {
+    match syn::Lit::new(lit) {
+        syn::Lit::Bool(b) => Ok(Expr { kind: ExprKind::Bool(b.value), span }),
+        syn::Lit::Int(i) => {
+            let value = i.base10_parse::<u128>().map_err(|e| {
+                Diagnostic::new("E_ANNEAL_SPEC_SYNTAX", span, format!("invalid integer: {e}"))
+            })?;
+            let suffix = match i.suffix() {
+                "" => None,
+                s => Some(int_ty(s).ok_or_else(|| {
+                    Diagnostic::new(
+                        "E_ANNEAL_UNSUPPORTED_TYPE",
+                        span,
+                        format!("unsupported integer suffix `{s}`"),
+                    )
+                })?),
+            };
+            Ok(Expr { kind: ExprKind::Int(value, suffix), span })
+        }
+        _ => Err(Diagnostic::new(
+            "E_ANNEAL_SPEC_UNSUPPORTED_EXPR",
+            span,
+            "only integer and boolean literals are supported in profile v1",
+        )),
+    }
+}
+
+/// Parses an expression from a token stream (used for helper bodies).
+pub fn parse_expr(stream: TokenStream, span: Span) -> Result<Expr, Diagnostic> {
+    ExprParser::new(stream, span).parse_all()
+}
+
+pub fn int_ty(name: &str) -> Option<IntTy> {
+    let (signed, rest) = match name.as_bytes().first()? {
+        b'u' => (false, &name[1..]),
+        b'i' => (true, &name[1..]),
+        _ => return None,
+    };
+    if rest == "size" {
+        return Some(IntTy { bits: 64, signed, pointer_sized: true });
+    }
+    let bits: u32 = rest.parse().ok()?;
+    matches!(bits, 8 | 16 | 32 | 64 | 128).then_some(IntTy { bits, signed, pointer_sized: false })
+}
+
+/// Parses the arguments of one `anneal::spec(...)` attribute.
+pub fn parse_clauses(stream: TokenStream, span: Span) -> Result<Vec<SpannedClause>, Diagnostic> {
+    let mut clauses = Vec::new();
+    for part in split_commas(stream) {
+        let toks = tokenize(part.clone());
+        let Some(Tok::Ident(name, name_span)) = toks.first().cloned() else {
+            let s = toks.first().map_or(span, Tok::span);
+            return Err(Diagnostic::new("E_ANNEAL_SPEC_SYNTAX", s, "expected a clause name"));
+        };
+        let clause_span = toks.iter().map(Tok::span).fold(name_span, join);
+        let effect = |e| Ok(Clause::Effect(e));
+        let clause: Result<Clause, Diagnostic> = match (name.as_str(), &toks[1..]) {
+            ("total", []) => effect(Effect::Total),
+            ("terminates", []) => effect(Effect::Terminates),
+            ("no_panic", []) => effect(Effect::NoPanic),
+            ("no_unwind", []) => effect(Effect::NoUnwind),
+            ("may_diverge", []) => effect(Effect::MayDiverge),
+            ("may_unwind", []) => effect(Effect::MayUnwind),
+            ("may_panic", []) => effect(Effect::MayPanic),
+            ("no_abort", _) => Err(Diagnostic::new(
+                "E_ANNEAL_UNSUPPORTED_CLAUSE",
+                name_span,
+                "`no_abort` is not supported: every contract already rules out aborting",
+            )),
+            ("target", [eq, Tok::Lit(lit, lspan)]) if eq.is_op("=") => {
+                match syn::Lit::new(lit.clone()) {
+                    syn::Lit::Str(s) => Ok(Clause::Target(s.value())),
+                    _ => Err(Diagnostic::new(
+                        "E_ANNEAL_SPEC_SYNTAX",
+                        *lspan,
+                        "`target` takes a string literal",
+                    )),
+                }
+            }
+            ("requires", [Tok::Group(Delimiter::Parenthesis, inner, g)]) => {
+                parse_expr(inner.clone(), *g).map(Clause::Requires)
+            }
+            ("safety_requires", [Tok::Group(Delimiter::Parenthesis, inner, g)]) => {
+                parse_expr(inner.clone(), *g).map(Clause::SafetyRequires)
+            }
+            ("ensures", [Tok::Group(Delimiter::Parenthesis, inner, g)]) => {
+                parse_ensures(inner.clone(), *g)
+            }
+            (
+                "cases" | "modifies" | "ensures_err" | "ensures_unwind" | "after_expiry"
+                | "unwinds_if" | "decreases" | "witness" | "must_reject",
+                _,
+            ) => Err(Diagnostic::new(
+                "E_ANNEAL_UNSUPPORTED_CLAUSE",
+                name_span,
+                format!("`{name}` is not supported by the profile v1 lowering yet"),
+            )),
+            (
+                "requires" | "safety_requires" | "ensures" | "total" | "terminates" | "no_panic"
+                | "no_unwind" | "may_diverge" | "may_unwind" | "may_panic" | "target",
+                _,
+            ) => Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_SYNTAX",
+                clause_span,
+                format!("malformed `{name}` clause"),
+            )),
+            _ => Err(Diagnostic::new(
+                "E_ANNEAL_UNKNOWN_CLAUSE",
+                name_span,
+                format!("unknown specification clause `{name}`"),
+            )),
+        };
+        clauses.push(SpannedClause { clause: clause?, span: clause_span });
+    }
+    Ok(clauses)
+}
+
+fn parse_ensures(stream: TokenStream, span: Span) -> Result<Clause, Diagnostic> {
+    let tts: Vec<TokenTree> = stream.into_iter().collect();
+    let is_bar = |t: &TokenTree| matches!(t, TokenTree::Punct(p) if p.as_char() == '|');
+    // `|ret| Q`, `|_| Q`, or `|| Q`; a missing closure head binds nothing.
+    let (binder, skip) = match tts.as_slice() {
+        [a, TokenTree::Ident(i), b, ..] if is_bar(a) && is_bar(b) => {
+            (if i == "_" { None } else { Some(i.to_string()) }, 3)
+        }
+        [a, b, ..] if is_bar(a) && is_bar(b) => (None, 2),
+        _ => (None, 0),
+    };
+    let body = parse_expr(tts[skip..].iter().cloned().collect(), span)?;
+    Ok(Clause::Ensures { binder, body })
+}
+
+/// Resolves a Rust type to a profile v1 specification type.
+pub fn parse_type(ty: &syn::Type, self_ty: Option<Ty>) -> Result<Ty, Diagnostic> {
+    match ty {
+        syn::Type::Tuple(t) if t.elems.is_empty() => Ok(Ty::Unit),
+        syn::Type::Paren(p) => parse_type(&p.elem, self_ty),
+        syn::Type::Path(p) if p.qself.is_none() && p.path.get_ident().is_some() => {
+            let name = p.path.get_ident().unwrap().to_string();
+            match name.as_str() {
+                "bool" => Ok(Ty::Bool),
+                "Self" => self_ty.ok_or_else(|| {
+                    Diagnostic::new(
+                        "E_ANNEAL_UNSUPPORTED_TYPE",
+                        ty.span(),
+                        "`Self` is only meaningful inside an `impl` block",
+                    )
+                }),
+                n => int_ty(n).map(Ty::Int).ok_or_else(|| unsupported_type(ty)),
+            }
+        }
+        _ => Err(unsupported_type(ty)),
+    }
+}
+
+fn unsupported_type(ty: &syn::Type) -> Diagnostic {
+    Diagnostic::new(
+        "E_ANNEAL_UNSUPPORTED_TYPE",
+        ty.span(),
+        format!(
+            "type `{}` is not supported by profile v1 specifications",
+            ty.to_token_stream().to_string().replace(' ', "")
+        ),
+    )
+    .help("profile v1 supports `bool`, `()`, and fixed-width integers")
+}
+
+fn token_path(tokens: TokenStream) -> String {
+    tokens.to_string().replace(' ', "")
+}
+
+/// The anneal attribute an item carries, if any.
+enum AnnealAttr {
+    Spec(TokenStream, Span),
+    Pure,
+    VacuousOk(String),
+}
+
+/// Recognizes `#[anneal::X(..)]`, `#[X(..)]` (inside `external_spec!`), and
+/// `#[cfg_attr(anneal, anneal::X(..))]`. Returns `Ok(None)` for unrelated
+/// attributes such as `#[inline]` or doc comments.
+///
+/// Every `anneal::` path it accepts is recorded in `handled`, so that
+/// [`ignored_anneal_paths`] can report forms this parser does not understand
+/// (such as `#[cfg_attr(all(anneal), anneal::spec(..))]`) instead of
+/// dropping them silently.
+fn classify_attr(
+    attr: &Attribute,
+    bare_ok: bool,
+    handled: &mut Vec<Span>,
+) -> Result<Option<AnnealAttr>, Diagnostic> {
+    let meta = &attr.meta;
+    if meta.path().is_ident("cfg_attr") {
+        let syn::Meta::List(list) = meta else { return Ok(None) };
+        let parts = split_commas(list.tokens.clone());
+        let [pred, inner] = parts.as_slice() else { return Ok(None) };
+        if token_path(pred.clone()) != "anneal" {
+            return Ok(None);
+        }
+        let inner_meta: syn::Meta = syn::parse2(inner.clone())?;
+        return classify_meta(&inner_meta, attr.span(), false, handled);
+    }
+    classify_meta(meta, attr.span(), bare_ok, handled)
+}
+
+fn classify_meta(
+    meta: &syn::Meta,
+    span: Span,
+    bare_ok: bool,
+    handled: &mut Vec<Span>,
+) -> Result<Option<AnnealAttr>, Diagnostic> {
+    let path = meta.path();
+    let segs: Vec<String> = path.segments.iter().map(|s| s.ident.to_string()).collect();
+    let name = match segs.as_slice() {
+        [a, n] if a == "anneal" => {
+            handled.push(path.segments[0].ident.span());
+            n.as_str()
+        }
+        [n] if bare_ok => n.as_str(),
+        _ => return Ok(None),
+    };
+    match (name, meta) {
+        ("spec", syn::Meta::List(l)) => Ok(Some(AnnealAttr::Spec(l.tokens.clone(), span))),
+        ("pure", syn::Meta::Path(_)) => Ok(Some(AnnealAttr::Pure)),
+        ("vacuous_ok", syn::Meta::List(l)) => {
+            let nv: syn::MetaNameValue = syn::parse2(l.tokens.clone())?;
+            let reason = match (&nv.value, nv.path.is_ident("reason")) {
+                (syn::Expr::Lit(syn::ExprLit { lit: syn::Lit::Str(s), .. }), true)
+                    if !s.value().trim().is_empty() && !s.value().chars().any(is_hidden_char) =>
+                {
+                    s.value()
+                }
+                _ => {
+                    return Err(Diagnostic::new(
+                        "E_ANNEAL_VACUOUS_OK_REASON",
+                        span,
+                        "`vacuous_ok` requires a non-empty `reason = \"...\"` without control \
+                         or invisible characters",
+                    ))
+                }
+            };
+            Ok(Some(AnnealAttr::VacuousOk(reason)))
+        }
+        ("spec" | "pure" | "vacuous_ok", _) => Err(Diagnostic::new(
+            "E_ANNEAL_SPEC_SYNTAX",
+            span,
+            format!("malformed `anneal::{name}` attribute"),
+        )),
+        (other, _) if segs.len() == 2 => Err(Diagnostic::new(
+            "E_ANNEAL_UNKNOWN_ATTRIBUTE",
+            span,
+            format!("unknown attribute `anneal::{other}`"),
+        )),
+        _ => Ok(None),
+    }
+}
+
+/// Control and format characters, which can hide or reorder text.
+fn is_hidden_char(c: char) -> bool {
+    c.is_control()
+        || matches!(c, '\u{AD}' | '\u{61C}' | '\u{180E}' | '\u{200B}'..='\u{200F}'
+            | '\u{2028}'..='\u{202E}' | '\u{2060}'..='\u{206F}' | '\u{FEFF}')
+}
+
+struct FnAttrs {
+    spec: Option<(TokenStream, Span)>,
+    pure: bool,
+    vacuous_ok: Option<(String, Span)>,
+}
+
+impl FnAttrs {
+    fn reject_vacuous_ok(&self, why: &str) -> Result<(), Diagnostic> {
+        match &self.vacuous_ok {
+            Some((_, span)) => Err(Diagnostic::new(
+                "E_ANNEAL_VACUOUS_OK_REASON",
+                *span,
+                format!("`vacuous_ok` has no effect {why}"),
+            )),
+            None => Ok(()),
+        }
+    }
+}
+
+fn collect_attrs(
+    attrs: &[Attribute],
+    bare_ok: bool,
+    handled: &mut Vec<Span>,
+) -> Result<FnAttrs, Diagnostic> {
+    let mut out = FnAttrs { spec: None, pure: false, vacuous_ok: None };
+    for attr in attrs {
+        match classify_attr(attr, bare_ok, handled)? {
+            Some(AnnealAttr::Spec(tokens, span)) => {
+                if out.spec.is_some() {
+                    return Err(Diagnostic::new(
+                        "E_ANNEAL_DUPLICATE_CLAUSE",
+                        span,
+                        "an item may carry at most one `anneal::spec` attribute",
+                    ));
+                }
+                out.spec = Some((tokens, span));
+            }
+            Some(AnnealAttr::Pure) => out.pure = true,
+            Some(AnnealAttr::VacuousOk(r)) => {
+                if out.vacuous_ok.is_some() {
+                    return Err(Diagnostic::new(
+                        "E_ANNEAL_DUPLICATE_CLAUSE",
+                        attr.span(),
+                        "an item may carry at most one `anneal::vacuous_ok` attribute",
+                    ));
+                }
+                out.vacuous_ok = Some((r, attr.span()));
+            }
+            None => {}
+        }
+    }
+    Ok(out)
+}
+
+fn params_of(sig: &syn::Signature, self_ty: Option<Ty>) -> Result<Vec<Param>, Diagnostic> {
+    if !sig.generics.params.is_empty() || sig.generics.where_clause.is_some() {
+        return Err(Diagnostic::new(
+            "E_ANNEAL_UNSUPPORTED_TYPE",
+            sig.generics.span(),
+            "generic functions are not supported by profile v1 specifications",
+        ));
+    }
+    let mut params = Vec::new();
+    let mut seen = BTreeSet::new();
+    for input in &sig.inputs {
+        match input {
+            syn::FnArg::Receiver(r) => {
+                if r.reference.is_some() || r.colon_token.is_some() {
+                    return Err(Diagnostic::new(
+                        "E_ANNEAL_UNSUPPORTED_TYPE",
+                        r.span(),
+                        "only a by-value `self` receiver is supported in profile v1",
+                    ));
+                }
+                let ty = self_ty.ok_or_else(|| {
+                    Diagnostic::new(
+                        "E_ANNEAL_UNSUPPORTED_TYPE",
+                        r.span(),
+                        "`self` is only meaningful inside an `impl` block",
+                    )
+                })?;
+                if !seen.insert("self".to_string()) {
+                    return Err(Diagnostic::new(
+                        "E_ANNEAL_SPEC_SYNTAX",
+                        r.span(),
+                        "duplicate parameter name `self`",
+                    ));
+                }
+                params.push(Param { name: "self".into(), ty, span: r.span() });
+            }
+            syn::FnArg::Typed(pt) => {
+                let syn::Pat::Ident(pi) = &*pt.pat else {
+                    return Err(Diagnostic::new(
+                        "E_ANNEAL_SPEC_SYNTAX",
+                        pt.pat.span(),
+                        "parameters must be plain identifiers",
+                    ));
+                };
+                let name = pi.ident.to_string();
+                if !seen.insert(name.clone()) {
+                    return Err(Diagnostic::new(
+                        "E_ANNEAL_SPEC_SYNTAX",
+                        pi.ident.span(),
+                        format!("duplicate parameter name `{name}`"),
+                    ));
+                }
+                params.push(Param { name, ty: parse_type(&pt.ty, self_ty)?, span: pt.span() });
+            }
+        }
+    }
+    Ok(params)
+}
+
+fn ret_of_spec(sig: &syn::Signature, self_ty: Option<Ty>) -> Result<Ty, Diagnostic> {
+    match &sig.output {
+        syn::ReturnType::Default => Ok(Ty::Unit),
+        syn::ReturnType::Type(_, ty) => match &**ty {
+            syn::Type::Never(_) => Ok(Ty::Never),
+            _ => parse_type(ty, self_ty),
+        },
+    }
+}
+
+fn ret_of(sig: &syn::Signature, self_ty: Option<Ty>) -> Result<Ty, Diagnostic> {
+    match &sig.output {
+        syn::ReturnType::Default => Ok(Ty::Unit),
+        syn::ReturnType::Type(_, ty) => parse_type(ty, self_ty),
+    }
+}
+
+/// Builds a [`SpecFn`] from a signature and its `anneal::spec` attribute.
+pub fn spec_fn(
+    path: String,
+    sig: &syn::Signature,
+    self_ty: Option<Ty>,
+    spec: (TokenStream, Span),
+    vacuous_ok: Option<String>,
+) -> Result<SpecFn, Diagnostic> {
+    let clauses = parse_clauses(spec.0, spec.1)?;
+    Ok(SpecFn {
+        path,
+        params: params_of(sig, self_ty)?,
+        ret: ret_of_spec(sig, self_ty)?,
+        is_unsafe: sig.unsafety.is_some(),
+        clauses,
+        vacuous_ok,
+        sig_span: sig.span(),
+        attr_span: spec.1,
+        file: 0,
+    })
+}
+
+/// Helper names that would be shadowed by built-in intrinsics, or that are not
+/// plain ASCII identifiers and so might not name the same thing in Lean.
+fn reserved_helper_name(name: &str) -> bool {
+    name == "math"
+        || name == "old"
+        || name.starts_with("wrapping_")
+        || name.starts_with("no_overflow_")
+        || !name.chars().all(|c| c.is_ascii_alphanumeric() || c == '_')
+}
+
+fn pure_fn(sig: &syn::Signature, body: &syn::Block) -> Result<PureFn, Diagnostic> {
+    if reserved_helper_name(&sig.ident.to_string()) {
+        return Err(Diagnostic::new(
+            "E_ANNEAL_RESERVED_HELPER_NAME",
+            sig.ident.span(),
+            format!(
+                "`{}` cannot name a `#[anneal::pure]` helper: it is reserved for an \
+                 intrinsic or is not an ASCII identifier",
+                sig.ident
+            ),
+        ));
+    }
+    if sig.unsafety.is_some() {
+        return Err(Diagnostic::new(
+            "E_ANNEAL_IMPURE_SPEC_EXPR",
+            sig.span(),
+            "`#[anneal::pure]` helpers cannot be `unsafe`",
+        ));
+    }
+    let expr = match body.stmts.as_slice() {
+        [syn::Stmt::Expr(e, None)] => e,
+        _ => {
+            return Err(Diagnostic::new(
+                "E_ANNEAL_IMPURE_SPEC_EXPR",
+                body.span(),
+                "a `#[anneal::pure]` helper body must be a single expression",
+            ))
+        }
+    };
+    Ok(PureFn {
+        name: sig.ident.to_string(),
+        params: params_of(sig, None)?,
+        ret: ret_of(sig, None)?,
+        body: parse_expr(expr.to_token_stream(), body.span())?,
+        span: sig.span(),
+        file: 0,
+    })
+}
+
+/// Specification items collected from one file, before checking.
+#[derive(Default)]
+pub struct Collected {
+    pub fns: Vec<SpecFn>,
+    pub helpers: Vec<PureFn>,
+    /// Spans of the `anneal` segment of every `anneal::` path consumed.
+    pub handled: Vec<Span>,
+}
+
+impl Collected {
+    fn push_helper(
+        &mut self,
+        attrs: &FnAttrs,
+        sig: &syn::Signature,
+        block: &syn::Block,
+    ) -> Result<(), Diagnostic> {
+        if attrs.spec.is_some() {
+            return Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_SYNTAX",
+                sig.span(),
+                "a `#[anneal::pure]` helper cannot also carry `anneal::spec`",
+            ));
+        }
+        attrs.reject_vacuous_ok("on a `#[anneal::pure]` helper")?;
+        self.helpers.push(pure_fn(sig, block)?);
+        Ok(())
+    }
+}
+
+fn join_path(prefix: &[String], name: &str) -> String {
+    prefix.iter().map(String::as_str).chain([name]).collect::<Vec<_>>().join("::")
+}
+
+fn type_path(ty: &syn::Type) -> Result<String, Diagnostic> {
+    match ty {
+        syn::Type::Tuple(t) if t.elems.is_empty() => Ok("()".into()),
+        syn::Type::Path(p)
+            if p.qself.is_none() && p.path.segments.iter().all(|s| s.arguments.is_none()) =>
+        {
+            Ok(token_path(p.path.to_token_stream()))
+        }
+        _ => Err(unsupported_type(ty)),
+    }
+}
+
+fn trait_path(path: &syn::Path) -> Result<String, Diagnostic> {
+    if path.segments.iter().any(|s| !s.arguments.is_none()) {
+        return Err(Diagnostic::new(
+            "E_ANNEAL_UNSUPPORTED_TYPE",
+            path.span(),
+            "generic traits are not supported by profile v1 specifications",
+        ));
+    }
+    Ok(token_path(path.to_token_stream()))
+}
+
+fn self_spec_ty(ty: &syn::Type) -> Option<Ty> {
+    parse_type(ty, None).ok()
+}
+
+/// `impl Trait for Ty { fn ...; }` inside `external_spec!`.
+struct ExtImpl {
+    trait_path: syn::Path,
+    self_ty: syn::Type,
+    fns: Vec<ExtFn>,
+}
+
+/// A bodiless function declaration, or a helper with a body.
+struct ExtFn {
+    attrs: Vec<Attribute>,
+    sig: syn::Signature,
+    body: Option<syn::Block>,
+}
+
+enum ExtItem {
+    Impl(ExtImpl),
+    Mod(syn::Path, Vec<ExtFn>),
+    Fn(ExtFn),
+}
+
+impl Parse for ExtFn {
+    fn parse(input: ParseStream<'_>) -> syn::Result<Self> {
+        let attrs = input.call(Attribute::parse_outer)?;
+        let sig: syn::Signature = input.parse()?;
+        let body = if input.peek(Token![;]) {
+            input.parse::<Token![;]>()?;
+            None
+        } else {
+            Some(input.parse()?)
+        };
+        Ok(ExtFn { attrs, sig, body })
+    }
+}
+
+fn parse_fns(input: ParseStream<'_>) -> syn::Result<Vec<ExtFn>> {
+    let mut fns = Vec::new();
+    while !input.is_empty() {
+        fns.push(input.parse()?);
+    }
+    Ok(fns)
+}
+
+struct ExternalSpec(Vec<ExtItem>);
+
+impl Parse for ExternalSpec {
+    fn parse(input: ParseStream<'_>) -> syn::Result<Self> {
+        let mut items = Vec::new();
+        while !input.is_empty() {
+            if input.peek(Token![impl]) {
+                input.parse::<Token![impl]>()?;
+                let trait_path: syn::Path = input.call(syn::Path::parse_mod_style)?;
+                input.parse::<Token![for]>()?;
+                let self_ty: syn::Type = input.parse()?;
+                let content;
+                syn::braced!(content in input);
+                items.push(ExtItem::Impl(ExtImpl {
+                    trait_path,
+                    self_ty,
+                    fns: parse_fns(&content)?,
+                }));
+            } else if input.peek(Token![mod]) {
+                input.parse::<Token![mod]>()?;
+                let path = input.call(syn::Path::parse_mod_style)?;
+                let content;
+                syn::braced!(content in input);
+                items.push(ExtItem::Mod(path, parse_fns(&content)?));
+            } else {
+                items.push(ExtItem::Fn(input.parse()?));
+            }
+        }
+        Ok(ExternalSpec(items))
+    }
+}
+
+fn require_spec(attrs: &FnAttrs, sig: &syn::Signature) -> Result<(TokenStream, Span), Diagnostic> {
+    attrs.spec.clone().ok_or_else(|| {
+        Diagnostic::new(
+            "E_ANNEAL_SPEC_SYNTAX",
+            sig.span(),
+            "a function declared in `external_spec!` needs an `anneal::spec` attribute",
+        )
+    })
+}
+
+fn collect_ext_fn(
+    out: &mut Collected,
+    f: &ExtFn,
+    path: String,
+    self_ty: Option<Ty>,
+) -> Result<(), Diagnostic> {
+    let attrs = collect_attrs(&f.attrs, true, &mut out.handled)?;
+    if attrs.pure {
+        let Some(body) = &f.body else {
+            return Err(Diagnostic::new(
+                "E_ANNEAL_SPEC_SYNTAX",
+                f.sig.span(),
+                "a `#[anneal::pure]` helper needs a body",
+            ));
+        };
+        return out.push_helper(&attrs, &f.sig, body);
+    }
+    if let Some(body) = &f.body {
+        return Err(Diagnostic::new(
+            "E_ANNEAL_SPEC_SYNTAX",
+            body.span(),
+            "functions declared in `external_spec!` take no body; end the declaration with `;`",
+        ));
+    }
+    let spec = require_spec(&attrs, &f.sig)?;
+    let vacuous_ok = attrs.vacuous_ok.map(|(r, _)| r);
+    out.fns.push(apply_target(spec_fn(path, &f.sig, self_ty, spec, vacuous_ok)?)?);
+    Ok(())
+}
+
+/// Parses the body of one `external_spec! { ... }` invocation. Paths inside
+/// are relative to the crate root.
+pub fn parse_external(tokens: TokenStream, out: &mut Collected) -> Result<(), Diagnostic> {
+    let ExternalSpec(items) = syn::parse2(tokens)?;
+    for item in items {
+        match item {
+            ExtItem::Impl(imp) => {
+                let ty_path = type_path(&imp.self_ty)?;
+                let tr = trait_path(&imp.trait_path)?;
+                let self_ty = self_spec_ty(&imp.self_ty);
+                for f in &imp.fns {
+                    let path = format!("<{ty_path} as {tr}>::{}", f.sig.ident);
+                    collect_ext_fn(out, f, path, self_ty)?;
+                }
+            }
+            ExtItem::Mod(path, fns) => {
+                let prefix: Vec<String> =
+                    path.segments.iter().map(|s| s.ident.to_string()).collect();
+                for f in &fns {
+                    collect_ext_fn(out, f, join_path(&prefix, &f.sig.ident.to_string()), None)?;
+                }
+            }
+            ExtItem::Fn(f) => {
+                let name = f.sig.ident.to_string();
+                collect_ext_fn(out, &f, name, None)?;
+            }
+        }
+    }
+    Ok(())
+}
+
+fn is_external_spec_macro(path: &syn::Path) -> bool {
+    let segs: Vec<String> = path.segments.iter().map(|s| s.ident.to_string()).collect();
+    matches!(segs.as_slice(), [n] if n == "external_spec")
+        || matches!(segs.as_slice(), [a, n] if a == "anneal" && n == "external_spec")
+}
+
+/// Applies a `target = "..."` clause, which overrides the derived path.
+///
+/// The path is emitted into `Spec.lean`, so it is restricted to characters
+/// that can appear in a Rust item path: in particular, no `/`, quote,
+/// backslash, or control character can open a Lean comment or end a string.
+fn apply_target(mut f: SpecFn) -> Result<SpecFn, Diagnostic> {
+    for c in &f.clauses {
+        if let Clause::Target(t) = &c.clause {
+            let ok = !t.is_empty()
+                && t.chars().all(|ch| ch.is_ascii_alphanumeric() || "_:<>(),[]&*;' ".contains(ch));
+            if !ok {
+                return Err(Diagnostic::new(
+                    "E_ANNEAL_INVALID_TARGET",
+                    c.span,
+                    format!("`{}` is not a Rust item path", t.escape_debug()),
+                ));
+            }
+            f.path = t.clone();
+        }
+    }
+    Ok(f)
+}
+
+/// Walks the items of one Rust source file whose module path is `module`,
+/// collecting inline `#[cfg_attr(anneal, anneal::spec(...))]` items and
+/// `anneal::external_spec!` invocations.
+pub fn collect_items(
+    items: &[syn::Item],
+    module: &[String],
+    out: &mut Collected,
+) -> Result<(), Diagnostic> {
+    for item in items {
+        match item {
+            syn::Item::Fn(f) => {
+                let attrs = collect_attrs(&f.attrs, false, &mut out.handled)?;
+                if attrs.pure {
+                    out.push_helper(&attrs, &f.sig, &f.block)?;
+                } else if let Some(spec) = attrs.spec.clone() {
+                    let path = join_path(module, &f.sig.ident.to_string());
+                    let vacuous_ok = attrs.vacuous_ok.map(|(r, _)| r);
+                    out.fns.push(apply_target(spec_fn(path, &f.sig, None, spec, vacuous_ok)?)?);
+                } else {
+                    attrs.reject_vacuous_ok("without an `anneal::spec` attribute")?;
+                }
+            }
+            syn::Item::Impl(imp) => {
+                let self_ty = self_spec_ty(&imp.self_ty);
+                for ii in &imp.items {
+                    let syn::ImplItem::Fn(f) = ii else { continue };
+                    let attrs = collect_attrs(&f.attrs, false, &mut out.handled)?;
+                    if attrs.pure {
+                        return Err(Diagnostic::new(
+                            "E_ANNEAL_SPEC_SYNTAX",
+                            f.sig.span(),
+                            "`#[anneal::pure]` helpers must be free functions",
+                        ));
+                    }
+                    let Some(spec) = attrs.spec.clone() else {
+                        attrs.reject_vacuous_ok("without an `anneal::spec` attribute")?;
+                        continue;
+                    };
+                    let base = if module.is_empty() {
+                        match &imp.trait_ {
+                            Some((None, tr, _)) => {
+                                format!(
+                                    "<{} as {}>::{}",
+                                    type_path(&imp.self_ty)?,
+                                    trait_path(tr)?,
+                                    f.sig.ident
+                                )
+                            }
+                            _ => String::new(),
+                        }
+                    } else {
+                        String::new()
+                    };
+                    let vacuous_ok = attrs.vacuous_ok.map(|(r, _)| r);
+                    let spec_f = apply_target(spec_fn(base, &f.sig, self_ty, spec, vacuous_ok)?)?;
+                    if spec_f.path.is_empty() {
+                        return Err(Diagnostic::new(
+                            "E_ANNEAL_TARGET_REQUIRED",
+                            f.sig.span(),
+                            "this `impl` method requires an explicit `target = \"...\"` clause",
+                        ));
+                    }
+                    out.fns.push(spec_f);
+                }
+            }
+            syn::Item::Mod(m) => {
+                if let Some((_, items)) = &m.content {
+                    let mut sub = module.to_vec();
+                    sub.push(m.ident.to_string());
+                    collect_items(items, &sub, out)?;
+                }
+            }
+            syn::Item::Macro(m) if is_external_spec_macro(&m.mac.path) => {
+                if m.mac.path.segments.len() == 2 {
+                    out.handled.push(m.mac.path.segments[0].ident.span());
+                }
+                parse_external(m.mac.tokens.clone(), out)?;
+            }
+            _ => {}
+        }
+    }
+    Ok(())
+}
+
+/// `anneal::` uses this parser cannot follow, with a diagnostic code:
+/// - `anneal::{spec,pure,vacuous_ok,external_spec}` paths that are not in
+///   `handled`, i.e. in positions this parser does not read (for example
+///   inside a function body or a `cfg_attr` with another predicate), which
+///   would otherwise be dropped silently; and
+/// - imports or renames of the crate (`use anneal::*`, `use anneal::{..}`,
+///   `use anneal as a`, `extern crate anneal as a`), after which a bare
+///   `#[spec(..)]` or `#[a::spec(..)]` would be a live attribute this parser
+///   does not recognize.
+pub fn ignored_anneal_paths(stream: TokenStream, handled: &[Span]) -> Vec<(Span, &'static str)> {
+    fn key(s: Span) -> (usize, usize) {
+        (s.start().line, s.start().column)
+    }
+    fn walk(
+        stream: TokenStream,
+        handled: &[(usize, usize)],
+        in_attr: bool,
+        out: &mut Vec<(Span, &'static str)>,
+    ) {
+        let tts: Vec<TokenTree> = stream.into_iter().collect();
+        let is_attr_bracket = |idx: usize| -> bool {
+            let bang_bracket = idx >= 2
+                && matches!(tts.get(idx - 2), Some(TokenTree::Punct(p)) if p.as_char() == '#')
+                && matches!(tts.get(idx - 1), Some(TokenTree::Punct(p)) if p.as_char() == '!');
+            let hash_bracket = idx >= 1
+                && matches!(tts.get(idx - 1), Some(TokenTree::Punct(p)) if p.as_char() == '#');
+            bang_bracket || hash_bracket
+        };
+        let colon =
+            |j: usize| matches!(tts.get(j), Some(TokenTree::Punct(p)) if p.as_char() == ':');
+        for (i, tt) in tts.iter().enumerate() {
+            if let TokenTree::Group(g) = tt {
+                let next_attr =
+                    in_attr || (g.delimiter() == Delimiter::Bracket && is_attr_bracket(i));
+                walk(g.stream(), handled, next_attr, out);
+            }
+            let TokenTree::Ident(id) = tt else { continue };
+            let path = colon(i + 1) && colon(i + 2);
+            if id == "anneal" {
+                let renamed = matches!(tts.get(i + 1), Some(TokenTree::Ident(n)) if n == "as");
+                let glob = path
+                    && matches!(tts.get(i + 3), Some(TokenTree::Punct(p)) if p.as_char() == '*')
+                    || path
+                        && matches!(tts.get(i + 3), Some(TokenTree::Group(g))
+                            if g.delimiter() == Delimiter::Brace);
+                let named = path
+                    && matches!(tts.get(i + 3), Some(TokenTree::Ident(n))
+                        if ["spec", "pure", "vacuous_ok", "external_spec"].iter().any(|k| n == k));
+                if renamed || glob {
+                    out.push((id.span(), "E_ANNEAL_UNSUPPORTED_IMPORT"));
+                } else if named && !handled.contains(&key(id.span())) {
+                    out.push((id.span(), "E_ANNEAL_IGNORED_ATTRIBUTE"));
+                }
+            } else if path {
+                // Reject Cargo-renamed `#[alias::spec(...)]` attributes and
+                // `alias::external_spec! { ... }` invocations that bypass
+                // `id == "anneal"`.
+                let Some(TokenTree::Ident(n)) = tts.get(i + 3) else { continue };
+                let name = n.to_string();
+                let is_attr = in_attr && matches!(name.as_str(), "spec" | "pure" | "vacuous_ok");
+                let is_macro = name == "external_spec"
+                    && matches!(tts.get(i + 4), Some(TokenTree::Punct(p)) if p.as_char() == '!')
+                    && matches!(tts.get(i + 5), Some(TokenTree::Group(_)));
+                if is_attr || is_macro {
+                    out.push((id.span(), "E_ANNEAL_UNSUPPORTED_IMPORT"));
+                }
+            }
+        }
+    }
+    let handled: Vec<_> = handled.iter().map(|s| key(*s)).collect();
+    let mut out = Vec::new();
+    walk(stream, &handled, false, &mut out);
+    out
+}
+
+/// Checks only the syntax of an `anneal::spec(...)` argument list.
+pub fn check_clause_syntax(stream: TokenStream, span: Span) -> Result<(), Diagnostic> {
+    parse_clauses(stream, span).map(|_| ())
+}
+
+/// Checks only the syntax of an `external_spec! { ... }` body.
+pub fn check_external_syntax(stream: TokenStream) -> Result<(), Diagnostic> {
+    parse_external(stream, &mut Collected::default())
+}

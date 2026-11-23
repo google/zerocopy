@@ -1,0 +1,48 @@
+{
+  "columns": "1-based Unicode scalar values",
+  "entries": [
+    {
+      "lean_decl": "Spec.fn0_id",
+      "lean_line_end": 20,
+      "lean_line_start": 18,
+      "rust": {
+        "end_byte": 737,
+        "file": "tests/zerocopy/03_macros_unsafe/spec.rs",
+        "hi_col": 29,
+        "hi_line": 15,
+        "lo_col": 9,
+        "lo_line": 15,
+        "start_byte": 717
+      }
+    },
+    {
+      "lean_decl": "Spec.fn0_post",
+      "lean_line_end": 24,
+      "lean_line_start": 22,
+      "rust": {
+        "end_byte": 706,
+        "file": "tests/zerocopy/03_macros_unsafe/spec.rs",
+        "hi_col": 55,
+        "hi_line": 14,
+        "lo_col": 31,
+        "lo_line": 14,
+        "start_byte": 682
+      }
+    },
+    {
+      "lean_decl": "Spec.fn0_contract",
+      "lean_line_end": 29,
+      "lean_line_start": 26,
+      "rust": {
+        "end_byte": 708,
+        "file": "tests/zerocopy/03_macros_unsafe/spec.rs",
+        "hi_col": 57,
+        "hi_line": 14,
+        "lo_col": 9,
+        "lo_line": 14,
+        "start_byte": 660
+      }
+    }
+  ],
+  "schema_version": 1
+}

@@ -202,6 +202,10 @@ cargo_locked = { workspace = "exocrate/Cargo.toml" }
 mount = "/cargo-home"
 cargo_locked = { workspace = "tools/anneal-mir-eval/Cargo.toml" }
 
+[caches.anneal-spec-cargo-v1]
+mount = "/cargo-home"
+cargo_locked = { workspace = "anneal/tools/anneal-spec/Cargo.toml" }
+
 [caches.anneal-cargo-v1]
 mount = "/cargo-home"
 cargo_locked = { workspace = "anneal/Cargo.toml" }
@@ -748,8 +752,10 @@ inputs = [
     "rustfmt.toml",
     "tools/**/*.rs",
     "tools/**/Cargo.toml",
+    "anneal/tools/**/*.rs",
+    "anneal/tools/**/Cargo.toml",
     "ci/scripts/run_fmt_domain.sh",
-  ], exclude = ["tools/**/target/**"] },
+  ], exclude = ["tools/**/target/**", "anneal/tools/**/target/**"] },
 ]
 command = ["./ci/scripts/run_fmt_domain.sh"]
 env = { FMT_DOMAIN = "tools" }
@@ -796,6 +802,23 @@ inputs = [
 ]
 env = { CARGO_HOME = "/cargo-home" }
 command = ["./ci/scripts/run_anneal_mir_eval_check.sh"]
+
+[[checks]]
+id = "tools-anneal-spec"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+pins = ["rust-toolchains"]
+caches = ["anneal-spec-cargo-v1"]
+writable_dirs = ["anneal/tools/anneal-spec/target"]
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "anneal/tools/anneal-spec/Cargo.toml" },
+  { kind = "glob", include = [
+    "anneal/tools/anneal-spec/tests/**",
+    "ci/scripts/run_anneal_spec_check.sh",
+  ] },
+]
+env = { CARGO_HOME = "/cargo-home" }
+command = ["./ci/scripts/run_anneal_spec_check.sh"]
 
 [[checks]]
 id = "tools-test"
@@ -960,6 +983,7 @@ inputs = [
     ".github/release_notes.py",
     "ci/checks.toml",
     "ci/docker/anneal-tc.Dockerfile",
+    "ci/scripts/run_anneal_spec_check.sh",
     "zerocopy/Cargo.toml",
     "zerocopy/proofs/**",
     "zerocopy/zerocopy-derive/Cargo.toml",

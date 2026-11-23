@@ -63,7 +63,9 @@ cargo run --locked -p anneal-audit -- \
   [`CI (Trusted)`](../../.github/workflows/ci-core-trusted.yml) workflows call
   the [current verifier checks](../../ci/checks.toml).
   The current checks build and install the archive, audit the trust boundary,
-  and test the Rust workspace.
+  test the Rust workspace, and verify the `anneal-spec` `zerocopy` units;
+  `tools-anneal-spec` lints and tests the untrusted `anneal-spec` tool and
+  checks that its golden `Spec.lean` files are fresh.
 - The [release workflows](alpha.md#cut-the-release) prepare and publish
   the [Anneal alpha](alpha.md).
 - The [Gate 2 review guide](codex-review.md) describes review gates and the

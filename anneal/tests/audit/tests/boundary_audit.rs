@@ -787,6 +787,10 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
         "tests/itree_diff/Cargo.toml",
         "tests/rustc-capture/Cargo.toml",
         "tests/differential/Cargo.toml",
+        "tools/anneal-spec/Cargo.toml",
+        "tools/anneal-spec/Cargo.lock",
+        "tools/anneal-spec/lower/Cargo.toml",
+        "tools/anneal-spec/macros/Cargo.toml",
     ] {
         let dest = fix.root.join(rel);
         fs::create_dir_all(dest.parent().unwrap()).unwrap();
@@ -814,7 +818,7 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
     assert!(
         err_member
             .message
-            .contains("workspace member outside trusted/ or tests/: crates/untrusted-helper"),
+            .contains("workspace member outside trusted/, tests/, or tools/: crates/untrusted-helper"),
         "unexpected error: {err_member}"
     );
 
@@ -845,7 +849,7 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
     .unwrap();
     let err_dep = fix.check_expected(Some(1), Some("cargo-boundary"), Some(false)).unwrap_err();
     assert!(err_dep.message.contains(
-        "trusted/rustc-capture path dependency points outside trusted/ or tests/: crates/untrusted-helper"
+        "trusted/rustc-capture path dependency points outside trusted/, tests/, or tools/: crates/untrusted-helper"
     ));
 
     fs::copy(
@@ -877,7 +881,7 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
         fix.check_expected(Some(1), Some("cargo-boundary"), Some(false)).unwrap_err();
     assert!(
         err_test_dep.message.contains(
-            "tests/audit path dependency points outside trusted/ or tests/: crates/untrusted-helper"
+            "tests/audit path dependency points outside trusted/, tests/, or tools/: crates/untrusted-helper"
         ),
         "unexpected error: {err_test_dep}"
     );
@@ -1292,8 +1296,9 @@ members = [
     // Case 12: Unclean member paths (bare `trusted`, `tests`, trailing `/`,
     // or non-compliant `workspace.exclude` crates) are rejected.
     for (bad_member, expected_diag) in [
-        ("trusted", "outside trusted/ or tests/: trusted"),
-        ("tests", "outside trusted/ or tests/: tests"),
+        ("trusted", "outside trusted/, tests/, or tools/: trusted"),
+        ("tests", "outside trusted/, tests/, or tools/: tests"),
+        ("tools", "outside trusted/, tests/, or tools/: tools"),
         ("trusted/", "unclean member path: trusted/"),
         ("tests/../trusted/audit", "unclean member path: tests/../trusted/audit"),
     ] {
@@ -1324,6 +1329,431 @@ members = [
     .unwrap();
     let err_excl = check_cargo_boundary(ws.work_dir()).unwrap_err();
     assert!(err_excl.message.contains("publish = false"), "{err_excl}");
+
+    ws.stage().unwrap().finish(Ok(())).unwrap();
+}
+
+/// Asserts that `check_cargo_boundary(dir)` fails as a `"cargo-boundary"`
+/// policy rejection (`code == 1`) whose message contains `needle`.
+fn assert_cargo_boundary_rejects(dir: &Path, needle: &str) {
+    let err = check_cargo_boundary(dir).unwrap_err();
+    assert_eq!(err.code, 1, "{needle}: {err}");
+    assert_eq!(err.phase, "cargo-boundary", "{needle}: {err}");
+    assert!(err.message.contains(needle), "expected {needle:?}, got: {err}");
+}
+
+/// Verifies the untrusted `tools/` zone (`WorkspaceZone::Tools = 2`):
+/// - `tools/` crates may not be root `workspace.members` and must instead be
+///   excluded standalone crates or workspaces;
+/// - `trusted/` -> `tools/` and `tests/` -> `tools/` dependencies are rejected;
+/// - `tools/` crates must set `publish = false` and forbid `build.rs`;
+/// - `proc-macro = true` is allowed in `tools/` only;
+/// - excluded standalone `[workspace]` tools under `tools/` require resolver
+///   `"2"`, no `workspace.exclude`, and clean member paths, and validate
+///   members and `Cargo.lock` provenance;
+/// - `tools/` must be a regular directory free of symlinks and of
+///   unregistered `Cargo.toml` / `Cargo.lock` files in any letter case;
+/// - `[patch]` / `[replace]` are rejected in every member and excluded
+///   manifest, and each `Cargo.lock` may list without a `source` only the
+///   crates it resolves and their transitive `path` dependencies.
+#[test]
+fn enforces_three_zone_tools_cargo_boundary() {
+    use std::time::Duration;
+
+    let checkout = repo_root();
+    let mut ws =
+        anneal_testkit::WorkspaceBuilder::new("anneal-tools-zone-audit-", Duration::from_secs(10))
+            .unwrap();
+    ws.seed_minimal_audit_locks(&checkout).unwrap();
+
+    let write_base = |ws: &mut anneal_testkit::WorkspaceBuilder,
+                      members_extra: &str,
+                      exclude: &str| {
+        ws.write_work_file(
+            "Cargo.toml",
+            format!(
+                "[workspace]\nresolver = \"2\"\nmembers = [\n    \"trusted/rustc-capture\",\n    \"tests/audit\",\n{members_extra}]\n{exclude}"
+            )
+            .as_bytes(),
+        )
+        .unwrap();
+        ws.write_work_file(
+            "trusted/rustc-capture/Cargo.toml",
+            b"[package]\nname = \"anneal-rustc-capture\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+        )
+        .unwrap();
+        ws.write_work_file(
+            "tests/audit/Cargo.toml",
+            b"[package]\nname = \"anneal-audit-tests\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\n",
+        )
+        .unwrap();
+    };
+
+    // Standalone excluded `[workspace]` under `tools/mytool` with
+    // `proc-macro = true` passes.
+    let mytool_ws_toml: &[u8] =
+        b"[workspace]\nresolver = \"2\"\nmembers = [\"core\", \"macros\"]\n";
+    let mytool_lock: &[u8] = b"version = 4\n[[package]]\nname = \"mytool-core\"\nversion = \"0.1.0\"\n[[package]]\nname = \"mytool-macros\"\nversion = \"0.1.0\"\n";
+    let mytool_core_toml: &[u8] = b"[package]\nname = \"mytool-core\"\nversion = \"0.1.0\"\nedition = \"2021\"\npublish = false\n";
+    write_base(&mut ws, "", "exclude = [\"tools/mytool\"]\n");
+    ws.write_work_file("tools/mytool/Cargo.toml", mytool_ws_toml).unwrap();
+    ws.write_work_file("tools/mytool/Cargo.lock", mytool_lock).unwrap();
+    ws.write_work_file("tools/mytool/core/Cargo.toml", mytool_core_toml).unwrap();
+    ws.write_work_file(
+        "tools/mytool/macros/Cargo.toml",
+        b"[package]\nname = \"mytool-macros\"\nversion = \"0.1.0\"\nedition = \"2021\"\npublish = false\n[lib]\nproc-macro = true\n[dependencies]\nmytool-core = { path = \"../core\" }\n",
+    )
+    .unwrap();
+    check_cargo_boundary(ws.work_dir()).unwrap();
+
+    // Unregistered `Cargo.toml` under `tools/` is rejected, in any letter
+    // case.
+    for name in ["Cargo.toml", "cargo.toml", "CARGO.TOML"] {
+        ws.write_work_file(
+            format!("tools/rogue/{name}"),
+            b"[package]\nname = \"rogue\"\nversion = \"0.1.0\"\nedition = \"2021\"\npublish = false\n",
+        )
+        .unwrap();
+        assert_cargo_boundary_rejects(
+            ws.work_dir(),
+            &format!("unregistered Cargo manifest under tools/: tools/rogue/{name}"),
+        );
+        fs::remove_dir_all(ws.work_dir().join("tools/rogue")).unwrap();
+    }
+
+    // A case variant next to a registered manifest is not the registered
+    // path, so it is rejected too.
+    ws.write_work_file("tools/mytool/core/cargo.toml", mytool_core_toml).unwrap();
+    assert_cargo_boundary_rejects(
+        ws.work_dir(),
+        "unregistered Cargo manifest under tools/: tools/mytool/core/cargo.toml",
+    );
+    fs::remove_file(ws.work_dir().join("tools/mytool/core/cargo.toml")).unwrap();
+
+    // Unregistered `Cargo.lock` under `tools/` is rejected, in any letter
+    // case, including a case variant beside the registered lockfile.
+    for rel in [
+        "tools/mytool/core/Cargo.lock",
+        "tools/mytool/core/cargo.lock",
+        "tools/mytool/core/CARGO.LOCK",
+        "tools/mytool/Cargo.LOCK",
+    ] {
+        ws.write_work_file(rel, mytool_lock).unwrap();
+        assert_cargo_boundary_rejects(
+            ws.work_dir(),
+            &format!("unregistered Cargo.lock under tools/: {rel}"),
+        );
+        fs::remove_file(ws.work_dir().join(rel)).unwrap();
+    }
+
+    // Symlinks under `tools/` are rejected, whether they point at a file or
+    // at a directory that would otherwise hide an unregistered manifest.
+    let hidden_dir = ws.root_dir().join("hidden-tool");
+    fs::create_dir_all(&hidden_dir).unwrap();
+    fs::write(
+        hidden_dir.join("Cargo.toml"),
+        b"[package]\nname = \"hidden\"\nversion = \"0.1.0\"\npublish = false\n",
+    )
+    .unwrap();
+    for (link, target) in [
+        ("tools/mytool/linked-dir", hidden_dir.clone()),
+        ("tools/mytool/core/linked.rs", hidden_dir.join("Cargo.toml")),
+    ] {
+        symlink(&target, ws.work_dir().join(link)).unwrap();
+        assert_cargo_boundary_rejects(ws.work_dir(), "disallowed symlink under tools/");
+        fs::remove_file(ws.work_dir().join(link)).unwrap();
+    }
+    check_cargo_boundary(ws.work_dir()).unwrap();
+
+    // Untrusted `Cargo.lock` inside `tools/mytool` is rejected.
+    ws.write_work_file(
+        "tools/mytool/Cargo.lock",
+        b"version = 4\n[[package]]\nname = \"rogue-local\"\nversion = \"0.1.0\"\n",
+    )
+    .unwrap();
+    assert_cargo_boundary_rejects(
+        ws.work_dir(),
+        "untrusted local package without source in Cargo.lock: rogue-local",
+    );
+    ws.write_work_file("tools/mytool/Cargo.lock", mytool_lock).unwrap();
+
+    // `tools/` member missing `publish = false` is rejected.
+    ws.write_work_file(
+        "tools/mytool/core/Cargo.toml",
+        b"[package]\nname = \"mytool-core\"\nversion = \"0.1.0\"\nedition = \"2021\"\n",
+    )
+    .unwrap();
+    assert_cargo_boundary_rejects(ws.work_dir(), "publish = false");
+    ws.write_work_file("tools/mytool/core/Cargo.toml", mytool_core_toml).unwrap();
+
+    // `[patch]` and `[replace]` (in any spelling) in an excluded workspace's
+    // member are rejected.
+    for (table, label) in [
+        ("[patch.crates-io]\nrogue = { path = \"../../../outside\" }\n", "[patch]"),
+        ("[replace]\n\"rogue:0.1.0\" = { path = \"../../../outside\" }\n", "[replace]"),
+        ("[Patch.crates-io]\nrogue = { path = \"../../../outside\" }\n", "[Patch]"),
+    ] {
+        ws.write_work_file(
+            "tools/mytool/core/Cargo.toml",
+            format!(
+                "[package]\nname = \"mytool-core\"\nversion = \"0.1.0\"\nedition = \"2021\"\npublish = false\n{table}"
+            )
+            .as_bytes(),
+        )
+        .unwrap();
+        assert_cargo_boundary_rejects(
+            ws.work_dir(),
+            &format!("disallowed {label} section in tools/mytool/core/Cargo.toml"),
+        );
+    }
+    ws.write_work_file("tools/mytool/core/Cargo.toml", mytool_core_toml).unwrap();
+
+    // `tools/` member with `build.rs` is rejected.
+    ws.write_work_file("tools/mytool/core/build.rs", b"fn main() {}\n").unwrap();
+    assert_cargo_boundary_rejects(
+        ws.work_dir(),
+        "disallowed build script tools/mytool/core/build.rs",
+    );
+    fs::remove_file(ws.work_dir().join("tools/mytool/core/build.rs")).unwrap();
+
+    // Missing `Cargo.lock` in an excluded `tools/` workspace fails closed.
+    fs::remove_file(ws.work_dir().join("tools/mytool/Cargo.lock")).unwrap();
+    assert_cargo_boundary_rejects(ws.work_dir(), "missing required Cargo.lock");
+    ws.write_work_file("tools/mytool/Cargo.lock", mytool_lock).unwrap();
+
+    // Nested `.cargo/` and `rust-toolchain*` overrides under `tools/` are
+    // rejected.
+    ws.write_work_file("tools/mytool/core/.cargo/config.toml", b"[build]\n").unwrap();
+    assert_cargo_boundary_rejects(ws.work_dir(), "forbidden Cargo/toolchain override under tools/");
+    fs::remove_dir_all(ws.work_dir().join("tools/mytool/core/.cargo")).unwrap();
+
+    ws.write_work_file("tools/mytool/core/rust-toolchain.toml", b"[toolchain]\n").unwrap();
+    assert_cargo_boundary_rejects(ws.work_dir(), "forbidden Cargo/toolchain override under tools/");
+    fs::remove_file(ws.work_dir().join("tools/mytool/core/rust-toolchain.toml")).unwrap();
+
+    // The excluded `tools/` `[workspace]` must use resolver `"2"`, must not
+    // declare `workspace.exclude`, and must list only clean member paths.
+    // A member cannot escape `tools/` once its path is clean, so the clean
+    // check is the containment check.
+    for (ws_toml, expected) in [
+        (
+            "[workspace]\nresolver = \"1\"\nmembers = [\"core\", \"macros\"]\n".to_string(),
+            "tools/mytool/Cargo.toml [workspace] resolver must be \"2\"".to_string(),
+        ),
+        (
+            "[workspace]\nmembers = [\"core\", \"macros\"]\n".to_string(),
+            "tools/mytool/Cargo.toml [workspace] resolver must be \"2\"".to_string(),
+        ),
+        (
+            "[workspace]\nresolver = \"2\"\nmembers = [\"core\", \"macros\"]\nexclude = [\"core\"]\n"
+                .to_string(),
+            "tools/mytool/Cargo.toml must not declare workspace.exclude".to_string(),
+        ),
+    ]
+    .into_iter()
+    .chain(["../../trusted/rustc-capture", "./core", "core/", "core\\\\x", "/abs"].map(|bad| {
+        (
+            format!("[workspace]\nresolver = \"2\"\nmembers = [\"macros\", \"{bad}\"]\n"),
+            format!("unclean member path in tools/mytool/Cargo.toml: {}", bad.replace("\\\\", "\\")),
+        )
+    })) {
+        ws.write_work_file("tools/mytool/Cargo.toml", ws_toml.as_bytes()).unwrap();
+        assert_cargo_boundary_rejects(ws.work_dir(), &expected);
+    }
+    ws.write_work_file("tools/mytool/Cargo.toml", mytool_ws_toml).unwrap();
+    check_cargo_boundary(ws.work_dir()).unwrap();
+
+    // Hybrid `[workspace]` + `[package]` or `[patch]` in excluded `tools/`
+    // fails closed.
+    for extra in [
+        "[package]\nname = \"hybrid\"\nversion = \"0.1.0\"\npublish = false\n",
+        "[patch.crates-io]\nrogue = { path = \"../../outside\" }\n",
+    ] {
+        ws.write_work_file(
+            "tools/mytool/Cargo.toml",
+            format!("[workspace]\nresolver = \"2\"\nmembers = [\"core\", \"macros\"]\n{extra}")
+                .as_bytes(),
+        )
+        .unwrap();
+        assert_cargo_boundary_rejects(ws.work_dir(), "may contain only [workspace]");
+    }
+
+    // Excluded single-crate `tools/single` requires `Cargo.lock` and rejects
+    // `.cargo/`.
+    fs::remove_dir_all(ws.work_dir().join("tools/mytool")).unwrap();
+    let single_toml = |extra: &str| {
+        format!(
+            "[package]\nname = \"tools-single\"\nversion = \"0.1.0\"\nedition = \"2021\"\npublish = false\n{extra}"
+        )
+    };
+    write_base(&mut ws, "", "exclude = [\"tools/single\"]\n");
+    ws.write_work_file("tools/single/Cargo.toml", single_toml("").as_bytes()).unwrap();
+    assert_cargo_boundary_rejects(ws.work_dir(), "missing required Cargo.lock");
+    let single_lock: &[u8] =
+        b"version = 4\n[[package]]\nname = \"tools-single\"\nversion = \"0.1.0\"\n";
+    ws.write_work_file("tools/single/Cargo.lock", single_lock).unwrap();
+    check_cargo_boundary(ws.work_dir()).unwrap();
+    ws.write_work_file("tools/single/.cargo/config.toml", b"[build]\n").unwrap();
+    assert_cargo_boundary_rejects(ws.work_dir(), "forbidden Cargo/toolchain override");
+    fs::remove_dir_all(ws.work_dir().join("tools/single/.cargo")).unwrap();
+
+    // An excluded single crate is its own Cargo root, so `[patch]` and
+    // `[replace]` in it are rejected.
+    for (table, label) in [
+        ("[patch.crates-io]\nanneal-testkit = { path = \"../../../outside\" }\n", "[patch]"),
+        ("[replace]\n\"anneal-testkit:0.1.0\" = { path = \"../../../outside\" }\n", "[replace]"),
+        ("[PATCH.crates-io]\nanneal-testkit = { path = \"../../../outside\" }\n", "[PATCH]"),
+    ] {
+        ws.write_work_file(
+            "tools/single/Cargo.toml",
+            single_toml(&format!("[dependencies]\nanneal-testkit = \"0.1.0\"\n{table}")).as_bytes(),
+        )
+        .unwrap();
+        assert_cargo_boundary_rejects(
+            ws.work_dir(),
+            &format!("disallowed {label} section in tools/single/Cargo.toml"),
+        );
+    }
+    ws.write_work_file("tools/single/Cargo.toml", single_toml("").as_bytes()).unwrap();
+
+    // Its `Cargo.lock` may name without a `source` only itself and its
+    // transitive `path` dependencies, not other root workspace members.
+    let single_lock_with = |extra: &[&str]| {
+        let mut lock = String::from_utf8(single_lock.to_vec()).unwrap();
+        for name in extra {
+            lock.push_str(&format!("[[package]]\nname = \"{name}\"\nversion = \"0.1.0\"\n"));
+        }
+        lock
+    };
+    ws.write_work_file(
+        "tools/single/Cargo.lock",
+        single_lock_with(&["anneal-audit-tests"]).as_bytes(),
+    )
+    .unwrap();
+    assert_cargo_boundary_rejects(
+        ws.work_dir(),
+        "untrusted local package without source in Cargo.lock: anneal-audit-tests",
+    );
+    ws.write_work_file(
+        "tools/single/Cargo.toml",
+        single_toml("[dependencies]\nanneal-audit-tests = { path = \"../../tests/audit\" }\n")
+            .as_bytes(),
+    )
+    .unwrap();
+    check_cargo_boundary(ws.work_dir()).unwrap();
+    ws.write_work_file(
+        "tests/audit/Cargo.toml",
+        b"[package]\nname = \"anneal-audit-tests\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\n[dependencies]\nanneal-rustc-capture = { path = \"../../trusted/rustc-capture\" }\n",
+    )
+    .unwrap();
+    ws.write_work_file(
+        "tools/single/Cargo.lock",
+        single_lock_with(&["anneal-audit-tests", "anneal-rustc-capture"]).as_bytes(),
+    )
+    .unwrap();
+    check_cargo_boundary(ws.work_dir()).unwrap();
+
+    // The root `Cargo.lock` may not name an excluded `tools/` crate.
+    let root_lock = "version = 4\n[[package]]\nname = \"anneal-rustc-capture\"\nversion = \"0.1.0\"\n[[package]]\nname = \"anneal-audit-tests\"\nversion = \"0.1.0\"\n";
+    ws.write_work_file("Cargo.lock", root_lock.as_bytes()).unwrap();
+    check_cargo_boundary(ws.work_dir()).unwrap();
+    ws.write_work_file(
+        "Cargo.lock",
+        format!("{root_lock}[[package]]\nname = \"tools-single\"\nversion = \"0.1.0\"\n")
+            .as_bytes(),
+    )
+    .unwrap();
+    assert_cargo_boundary_rejects(
+        ws.work_dir(),
+        "untrusted local package without source in Cargo.lock: tools-single",
+    );
+    fs::remove_file(ws.work_dir().join("Cargo.lock")).unwrap();
+    write_base(&mut ws, "", "exclude = [\"tools/single\"]\n");
+    ws.write_work_file("tools/single/Cargo.toml", single_toml("").as_bytes()).unwrap();
+    ws.write_work_file("tools/single/Cargo.lock", single_lock).unwrap();
+    check_cargo_boundary(ws.work_dir()).unwrap();
+
+    // `[patch]` and `[replace]` are rejected in root members too, and in an
+    // excluded `tests/` crate, whose `Cargo.lock` is optional.
+    ws.write_work_file(
+        "tests/audit/Cargo.toml",
+        b"[package]\nname = \"anneal-audit-tests\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\n[patch.crates-io]\nrogue = { path = \"../../../outside\" }\n",
+    )
+    .unwrap();
+    assert_cargo_boundary_rejects(
+        ws.work_dir(),
+        "disallowed [patch] section in tests/audit/Cargo.toml",
+    );
+    write_base(&mut ws, "", "exclude = [\"tools/single\", \"tests/excl\"]\n");
+    ws.write_work_file(
+        "tests/excl/Cargo.toml",
+        b"[package]\nname = \"tests-excl\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\n",
+    )
+    .unwrap();
+    check_cargo_boundary(ws.work_dir()).unwrap();
+    ws.write_work_file(
+        "tests/excl/Cargo.toml",
+        b"[package]\nname = \"tests-excl\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\n[replace]\n\"rogue:0.1.0\" = { git = \"https://example.com/rogue.git\" }\n",
+    )
+    .unwrap();
+    assert_cargo_boundary_rejects(
+        ws.work_dir(),
+        "disallowed [replace] section in tests/excl/Cargo.toml",
+    );
+
+    // `[workspace]` in an excluded crate outside `tools/` is rejected.
+    ws.write_work_file("tests/excl/Cargo.toml", b"[workspace]\nresolver = \"2\"\nmembers = []\n")
+        .unwrap();
+    assert_cargo_boundary_rejects(
+        ws.work_dir(),
+        "disallowed [workspace] in excluded crate outside tools/: tests/excl",
+    );
+    fs::remove_dir_all(ws.work_dir().join("tests/excl")).unwrap();
+    write_base(&mut ws, "", "exclude = [\"tools/single\"]\n");
+    check_cargo_boundary(ws.work_dir()).unwrap();
+
+    // A `tools/` crate may not be a root workspace member, because its
+    // proc-macros would then build in the root workspace.
+    write_base(&mut ws, "    \"tools/single\",\n", "");
+    assert_cargo_boundary_rejects(
+        ws.work_dir(),
+        "tools/ crate must be in workspace.exclude, not workspace.members: tools/single",
+    );
+
+    // `trusted/` -> `tools/` and `tests/` -> `tools/` are rejected.
+    write_base(&mut ws, "", "exclude = [\"tools/single\"]\n");
+    ws.write_work_file(
+        "trusted/rustc-capture/Cargo.toml",
+        b"[package]\nname = \"anneal-rustc-capture\"\nversion = \"0.1.0\"\nedition = \"2024\"\n[dependencies]\ntools-single = { path = \"../../tools/single\" }\n",
+    )
+    .unwrap();
+    assert_cargo_boundary_rejects(
+        ws.work_dir(),
+        "trusted/rustc-capture (Trusted) path dependency violates monotonic boundary targeting tools/single (Tools)",
+    );
+    write_base(&mut ws, "", "exclude = [\"tools/single\"]\n");
+
+    ws.write_work_file(
+        "tests/audit/Cargo.toml",
+        b"[package]\nname = \"anneal-audit-tests\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\n[dependencies]\ntools-single = { path = \"../../tools/single\" }\n",
+    )
+    .unwrap();
+    assert_cargo_boundary_rejects(
+        ws.work_dir(),
+        "tests/audit (Tests) path dependency violates monotonic boundary targeting tools/single (Tools)",
+    );
+
+    // `tools/` itself must be a regular directory: a file or a symlink to a
+    // directory is rejected.
+    write_base(&mut ws, "", "");
+    fs::remove_dir_all(ws.work_dir().join("tools")).unwrap();
+    check_cargo_boundary(ws.work_dir()).unwrap();
+    ws.write_work_file("tools", b"not a directory\n").unwrap();
+    assert_cargo_boundary_rejects(ws.work_dir(), "tools/ must be a regular directory");
+    fs::remove_file(ws.work_dir().join("tools")).unwrap();
+    symlink(&hidden_dir, ws.work_dir().join("tools")).unwrap();
+    assert_cargo_boundary_rejects(ws.work_dir(), "tools/ must be a regular directory");
+    fs::remove_file(ws.work_dir().join("tools")).unwrap();
 
     ws.stage().unwrap().finish(Ok(())).unwrap();
 }
