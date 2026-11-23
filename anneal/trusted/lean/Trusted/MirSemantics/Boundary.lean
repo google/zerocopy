@@ -197,10 +197,12 @@ noncomputable def ValidEntryArgs (body : Body) (args : List Val) : Prop :=
   checkArgsMatch args ((body.locals.drop 1).take body.argumentCount) = true
 
 /-- Check that all bodies in `bodies` carry non-empty, pairwise-distinct
-`identity` keys so two functions can never collide in `Specs.safety`. -/
+`identity` keys so two functions can never collide in `Specs.safety`. Uses a
+single pass over `bodies` into a balanced Red-Black Tree (`IdentityRbTree`) so
+crate-scale captures stay $O(N \log N)$ and shallow within Lean's default
+`maxRecDepth`. -/
 noncomputable def bodiesHaveUniqueIdentities (bodies : List Body) : Bool :=
-  bodies.all (fun b => !stringBeq b.identity "") &&
-    stringListPairwiseNe (bodies.map (fun b => b.identity))
+  bodiesHaveUniqueIdentitiesAux bodies .empty
 
 /-- Unconditional static admission predicate for `(p, body)`: checks 64-bit
 target layout, MIR semantic profile version 1, non-empty `body.identity`,
@@ -212,7 +214,7 @@ parameters and `ValidEntryArgs body args` is vacuously empty. -/
 noncomputable def BodyStaticAdmitted (p : Program) (body : Body) : Bool :=
   Nat.beq p.pointerWidthBits 64 &&
     Nat.beq p.mirProfileVersion 1 &&
-    !stringBeq body.identity "" &&
+    !stringIsEmpty body.identity &&
     !body.basicBlocks.isEmpty &&
     Nat.blt body.argumentCount body.locals.length &&
     storageAnnotationsInBounds body &&

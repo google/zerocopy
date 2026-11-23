@@ -26,35 +26,45 @@ prelude\nimport Trusted.MirAst\n\nnamespace Captured\n\n";
 
 const MAX_LIST_CHUNK_LEN: usize = 16;
 
-fn join_balanced_slice<T>(
+fn join_balanced_with<T>(
     chunks: &[T],
     indent: Option<usize>,
+    empty: &str,
+    join_op: &str,
     render_leaf: &impl Fn(&T, Option<usize>) -> String,
 ) -> String {
     match chunks {
-        [] => "[]".into(),
+        [] => empty.into(),
         [single] => render_leaf(single, indent),
         _ => {
             let mid = chunks.len() / 2;
             let (left, right) = chunks.split_at(mid);
             match indent {
                 None => format!(
-                    "(_root_.List.append {} {})",
-                    join_balanced_slice(left, None, render_leaf),
-                    join_balanced_slice(right, None, render_leaf)
+                    "({join_op} {} {})",
+                    join_balanced_with(left, None, empty, join_op, render_leaf),
+                    join_balanced_with(right, None, empty, join_op, render_leaf)
                 ),
                 Some(col) => {
                     let child_col = col + 2;
                     let pad = " ".repeat(child_col);
                     format!(
-                        "(_root_.List.append {}\n{pad}{})",
-                        join_balanced_slice(left, Some(child_col), render_leaf),
-                        join_balanced_slice(right, Some(child_col), render_leaf)
+                        "({join_op} {}\n{pad}{})",
+                        join_balanced_with(left, Some(child_col), empty, join_op, render_leaf),
+                        join_balanced_with(right, Some(child_col), empty, join_op, render_leaf)
                     )
                 }
             }
         }
     }
+}
+
+fn join_balanced_slice<T>(
+    chunks: &[T],
+    indent: Option<usize>,
+    render_leaf: &impl Fn(&T, Option<usize>) -> String,
+) -> String {
+    join_balanced_with(chunks, indent, "[]", "_root_.List.append", render_leaf)
 }
 
 fn list_literal_at<T>(
@@ -315,12 +325,24 @@ fn terminator_at(term: &Terminator, indent: usize) -> String {
 /// Rust characters are Unicode scalar values; numeric Char constructors retain
 /// them even when a name contains quotes, backslashes or other syntax. This
 /// keeps every emitted token fixed or numeric and requires no escaping grammar.
+/// Chunk strings longer than `MAX_LIST_CHUNK_LEN` characters into a balanced
+/// binary tree of `Trusted.MirAst.stringAppend` over `<= 16`-character
+/// `(_root_.String.ofList [...])` leaves so Lean kernel evaluation avoids
+/// `List.utf8Encode`'s linear `ByteArray.push` recursion (`maxRecDepth`).
 fn identity_at(value: &str, indent: usize) -> String {
     let characters: Vec<char> = value.chars().collect();
-    let chars_list = list_chunk_lines(&characters, indent + 2, |ch| {
-        format!("(_root_.Char.ofNat {})", u32::from(*ch))
-    });
-    format!("(_root_.String.ofList {chars_list})")
+    let chunks: Vec<&[char]> = characters.chunks(MAX_LIST_CHUNK_LEN).collect();
+    join_balanced_with(
+        &chunks,
+        (chunks.len() > 1).then_some(indent),
+        "(_root_.String.ofList [])",
+        "Trusted.MirAst.stringAppend",
+        &|chunk, _| {
+            let chars_list =
+                list_literal(chunk, |ch| format!("(_root_.Char.ofNat {})", u32::from(*ch)));
+            format!("(_root_.String.ofList {chars_list})")
+        },
+    )
 }
 
 #[cfg(test)]
@@ -510,10 +532,46 @@ mod tests {
 
     #[test]
     fn identity_names_are_only_numeric_character_data() {
+        assert_eq!(identity(""), "(_root_.String.ofList [])");
         assert_eq!(
             identity("a\"\\\nλ/- --"),
             "(_root_.String.ofList [(_root_.Char.ofNat 97), (_root_.Char.ofNat 34), (_root_.Char.ofNat 92), (_root_.Char.ofNat 10), (_root_.Char.ofNat 955), (_root_.Char.ofNat 47), (_root_.Char.ofNat 45), (_root_.Char.ofNat 32), (_root_.Char.ofNat 45), (_root_.Char.ofNat 45)])"
         );
+        let seventeen = identity("0123456789abcdefX");
+        assert!(
+            seventeen.starts_with("(Trusted.MirAst.stringAppend (_root_.String.ofList ["),
+            "{seventeen}"
+        );
+        assert_list_literals_at_most(&seventeen, MAX_LIST_CHUNK_LEN);
+
+        // Balanced `stringAppend` trees print their leaves in concatenation
+        // order, so reading every `Char.ofNat` code point left to right must
+        // reproduce the original identity, including multibyte characters
+        // that straddle leaf boundaries.
+        fn decode(rendered: &str) -> String {
+            rendered
+                .split("(_root_.Char.ofNat ")
+                .skip(1)
+                .map(|rest| {
+                    let code: u32 = rest[..rest.find(')').unwrap()].parse().unwrap();
+                    char::from_u32(code).unwrap()
+                })
+                .collect()
+        }
+        for value in [
+            "0123456789abcdefX".to_owned(),
+            "λ".repeat(17),
+            format!("rust-path-v1::{}::λ_{}", "m".repeat(40), "é".repeat(60)),
+            "x".repeat(16 * 9 + 3),
+        ] {
+            let rendered = identity(&value);
+            assert_eq!(decode(&rendered), value, "{rendered}");
+            assert!(rendered.contains("Trusted.MirAst.stringAppend"), "{rendered}");
+            assert_list_literals_at_most(&rendered, MAX_LIST_CHUNK_LEN);
+        }
+        let sixteen = "λ".repeat(16);
+        assert!(!identity(&sixteen).contains("stringAppend"));
+        assert_eq!(decode(&identity(&sixteen)), sixteen);
     }
 
     #[test]

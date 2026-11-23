@@ -92,6 +92,9 @@ declaration carries the modifier itself. Remaining non-recursive value
 definitions that do not call `noncomputable` helpers, together with
 `Prop`-valued definitions, carry `noncomputable` by uniform convention so one
 rule covers every definition and adding recursion or a call to a `noncomputable`
-helper never requires a modifier change. Type abbreviations such as `DefId`
+helper never requires a modifier change (with the single intentional exception
+of `Body.lean`'s non-recursive `stringAppend`, which stays computable so
+`anneal-rustc-capture` can assemble chunked `String` literals inside plain
+`def`s without `dependsOnNoncomputable`). Type abbreviations such as `DefId`
 define types rather than terms and carry no modifier.
 -/

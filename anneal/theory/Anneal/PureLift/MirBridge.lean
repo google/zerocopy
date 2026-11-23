@@ -2950,15 +2950,8 @@ theorem mirCastTypesValid_eq (body : Body)
 `Trusted.MirSemantics.BodyStaticAdmitted`. -/
 theorem mirBodyStaticAdmitted_eq (p : Program) (body : Body) :
     mirBodyStaticAdmitted p body = BodyStaticAdmitted p body := by
-  unfold mirBodyStaticAdmitted BodyStaticAdmitted
-  have hStr :
-      body.identity.toByteArray.data.toList.isEmpty =
-      stringBeq body.identity "" := by
-    unfold stringBeq
-    have hEmpty : "".toByteArray.data.toList = [] := rfl
-    rw [hEmpty]
-    cases body.identity.toByteArray.data.toList <;> rfl
-  rw [hStr, mirStorageAnnotationsInBounds_eq body,
+  unfold mirBodyStaticAdmitted BodyStaticAdmitted stringIsEmpty
+  rw [mirStorageAnnotationsInBounds_eq body,
       mirDiscriminantTypesValid_eq body,
       mirListAll_eq _ _ mirIsSupportedScalarOrUnitTy_eq body.locals]
   cases hSup : body.locals.all isSupportedScalarOrUnitTy with

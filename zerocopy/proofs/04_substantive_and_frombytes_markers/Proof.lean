@@ -10,8 +10,6 @@ prelude
 import Expected
 import Anneal.MirWp
 
-set_option maxRecDepth 4096
-
 namespace Proof
 
 open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp

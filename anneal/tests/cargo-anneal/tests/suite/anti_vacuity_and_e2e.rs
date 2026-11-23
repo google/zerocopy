@@ -598,3 +598,215 @@ fn onboarding_init_and_diagnostic_hints_e2e() {
         "{ref_receipt}"
     );
 }
+
+#[test]
+fn verifies_crate_with_over_100_long_identity_bodies_at_default_max_rec_depth() {
+    let staged = new_workspace("anneal-long-id-").stage().unwrap();
+    let work = staged.work_dir();
+    let req = write_scalar_baseline(work);
+
+    // Generate 105 free functions inside long nested modules so every captured
+    // identity exceeds 100 characters and shares a 120-character prefix. This
+    // exercises the O(N log N) `bodiesHaveUniqueIdentities` balanced tree on
+    // worst-case shared-prefix comparisons and the balanced-append
+    // `BodyStaticAdmitted` path end-to-end at default `maxRecDepth = 512`.
+    // Whole-crate scope refuses traits, so long trait-impl paths are covered
+    // by the selected-unit proofs under `zerocopy/proofs/`.
+    let outer = "long_identity_scaling_outer_module_for_balanced_tree";
+    let inner = "long_identity_scaling_inner_module_for_balanced_tree";
+    let mut rust_src = format!("pub mod {outer} {{\n    pub mod {inner} {{\n");
+    for i in 0..105 {
+        let _ = writeln!(&mut rust_src, "        pub fn fn_{i:03}() -> u64 {{ 0 }}");
+    }
+    rust_src.push_str("    }\n}\n");
+    fs::write(work.join("rust/lib.rs"), rust_src).unwrap();
+
+    let proof = lean_source(
+        "import Expected\nimport Anneal.MirWp",
+        r#"namespace Proof
+
+open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
+
+private def expectedBlocks : List BasicBlock :=
+  [{ statements :=
+       [.assign { localId := 0, projection := [] }
+         (.use (.constant { ty := .int .i64 false, lit := .scalar (BitVec.ofNat 128 0) }))]
+   , terminator := .return_
+   , cleanup := false }]
+
+private def isZeroBody (b : Body) : Bool :=
+  match b with
+  | { argumentCount := 0
+    , locals := [.int .i64 false]
+    , basicBlocks := [{
+        statements := [.assign { localId := 0, projection := [] }
+          (.use (.constant { ty := .int .i64 false, lit := .scalar k }))]
+        terminator := .return_
+        cleanup := false }]
+    , isUnsafe := false
+    , identity := _ } => k == BitVec.ofNat 128 0
+  | _ => false
+
+private noncomputable def allZeroBodiesAdm (p : Program) (bs : List Body) : Bool :=
+  bs.foldr (fun b acc => isZeroBody b && BodyStaticAdmitted p b && acc) true
+
+private theorem and3 {a b c : Bool} (h : (a && b && c) = true) :
+    a = true ∧ b = true ∧ c = true := by
+  cases a <;> cases b <;> cases c <;> first | exact ⟨rfl, rfl, rfl⟩ | cases h
+
+private theorem allZeroBodiesAdm_getElem {p : Program} :
+    ∀ {bs : List Body} {k : Nat} {b : Body},
+      allZeroBodiesAdm p bs = true →
+      Trusted.MirSemantics.getElem? bs k = some b →
+      isZeroBody b = true ∧ BodyStaticAdmitted p b = true
+  | [], _, _, _, hGet => by cases hGet
+  | b₀ :: rest, 0, b, hAll, hGet => by
+    injection hGet with hEq
+    subst hEq
+    have h := and3 (a := isZeroBody b₀) (b := BodyStaticAdmitted p b₀)
+      (c := allZeroBodiesAdm p rest) hAll
+    exact ⟨h.1, h.2.1⟩
+  | b₀ :: rest, k + 1, b, hAll, hGet =>
+    allZeroBodiesAdm_getElem
+      (and3 (a := isZeroBody b₀) (b := BodyStaticAdmitted p b₀)
+        (c := allZeroBodiesAdm p rest) hAll).2.2
+      hGet
+
+private theorem all_bodies_adm :
+    allZeroBodiesAdm Captured.program Captured.program.bodies = true := rfl
+
+private theorem zeroBody_runs (ident : String) :
+    Runs
+      { argumentCount := 0
+      , locals := [.int .i64 false]
+      , basicBlocks := expectedBlocks
+      , isUnsafe := false
+      , identity := ident }
+      2 [] (.scalar ⟨.i64, false, BitVec.ofNat 128 0⟩) := rfl
+
+private theorem zeroBody_verified {defId : DefId} {body : Body}
+    (hGet : Trusted.MirSemantics.getElem? Captured.program.bodies defId = some body)
+    (hShape : isZeroBody body = true)
+    (hAdm : BodyStaticAdmitted Captured.program body = true) :
+    BodyVerified Captured.program defId body (Spec.specs.safety body.identity) := by
+  unfold isZeroBody at hShape
+  split at hShape
+  · case h_1 k _ =>
+    have hk : k = BitVec.ofNat 128 0 := beq_iff_eq.mp hShape
+    subst hk
+    refine bodyVerified_of_safe hGet hAdm (fun args valid _ => ?_)
+    have hNil : args = [] := checkArgsMatch_nil_iff.mp valid
+    subst hNil
+    exact (run_initial_success (zeroBody_runs _)).1
+  · cases hShape
+
+private theorem execution :
+    execProg (entryProgForBody Captured.program 0) 2 { args := [] }
+      (fun outcome => outcome = Spec.expectedReturn) := rfl
+
+private theorem totalCorrectness : Spec.returnsZero Captured.program := by
+  have ⟨post, terminates, out, returned, result⟩ :=
+    wellFormed_and_spec_of_wp (entryProgForBody Captured.program 0)
+      { args := [] } 2 (fun outcome => outcome = Spec.expectedReturn)
+      (wpProg_of_execProg execution)
+  exact ⟨post, terminates, result ▸ returned⟩
+
+-- Kernel-checked negative boundaries and shared-prefix long-identity checks
+-- at default `maxRecDepth = 512`, assembled like captured identities from
+-- balanced `<= 16`-character literal leaves.
+private def longSharedPrefix : String :=
+  Trusted.MirAst.stringAppend
+    (Trusted.MirAst.stringAppend
+      (Trusted.MirAst.stringAppend "rust-path-v1::lo" "ng_identity_scal")
+      (Trusted.MirAst.stringAppend "ing_outer_module" "_for_balanced_tr"))
+    (Trusted.MirAst.stringAppend
+      (Trusted.MirAst.stringAppend "ee::long_identit" "y_scaling_inner_")
+      (Trusted.MirAst.stringAppend "module_for_balan" "ced_tree::fn_"))
+
+private theorem duplicate_identities_rejected :
+    bodiesHaveUniqueIdentities [Captured.body_0, Captured.body_0] = false := rfl
+
+-- A trailing duplicate must be caught by every arm of the four-way unrolled
+-- pass (list lengths 3 through 7), and a duplicate of a body deep inside the
+-- balanced tree of all 105 captured bodies must be found as well.
+private theorem trailing_duplicate_rejected_len3 :
+    bodiesHaveUniqueIdentities
+      [Captured.body_0, Captured.body_1, Captured.body_0] = false := rfl
+
+private theorem trailing_duplicate_rejected_len4 :
+    bodiesHaveUniqueIdentities
+      [Captured.body_0, Captured.body_1, Captured.body_2, Captured.body_0] =
+      false := rfl
+
+private theorem trailing_duplicate_rejected_len5 :
+    bodiesHaveUniqueIdentities
+      [Captured.body_0, Captured.body_1, Captured.body_2, Captured.body_3,
+       Captured.body_0] = false := rfl
+
+private theorem trailing_duplicate_rejected_len6 :
+    bodiesHaveUniqueIdentities
+      [Captured.body_0, Captured.body_1, Captured.body_2, Captured.body_3,
+       Captured.body_4, Captured.body_2] = false := rfl
+
+private theorem trailing_duplicate_rejected_len7 :
+    bodiesHaveUniqueIdentities
+      [Captured.body_0, Captured.body_1, Captured.body_2, Captured.body_3,
+       Captured.body_4, Captured.body_5, Captured.body_3] = false := rfl
+
+private theorem deep_duplicate_rejected :
+    bodiesHaveUniqueIdentities
+      (Captured.program.bodies ++ [Captured.body_57]) = false := rfl
+
+private theorem long_shared_prefix_duplicate_rejected :
+    bodiesHaveUniqueIdentities
+      [{ Captured.body_0 with identity := Trusted.MirAst.stringAppend longSharedPrefix "a" },
+       { Captured.body_0 with identity := Trusted.MirAst.stringAppend longSharedPrefix "a" }] =
+      false := rfl
+
+private theorem long_shared_prefix_distinct_accepted :
+    bodiesHaveUniqueIdentities
+      [{ Captured.body_0 with identity := Trusted.MirAst.stringAppend longSharedPrefix "a" },
+       { Captured.body_0 with identity := Trusted.MirAst.stringAppend longSharedPrefix "b" }] =
+      true := rfl
+
+private theorem empty_identity_rejected :
+    BodyStaticAdmitted Captured.program { Captured.body_0 with identity := "" } = false := rfl
+
+theorem verify : Expected.claim := by
+  refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, totalCorrectness⟩
+  intro defId body found
+  have ⟨hShape, hAdm⟩ := allZeroBodiesAdm_getElem all_bodies_adm found
+  exact zeroBody_verified found hShape hAdm
+
+end Proof"#,
+    );
+    fs::write(work.join("lean/Proof.lean"), proof).unwrap();
+
+    let req_path = write_json_file(&work.join("request.json"), &req);
+    let artifacts = work.join("scaling_105_crate");
+    let accepted = run_verify_strs(
+        &staged,
+        &["--request", req_path.to_str().unwrap(), "--artifacts", artifacts.to_str().unwrap()],
+    );
+    let receipt = expect_verified(&accepted, "crate_verified", true);
+    assert_eq!(
+        receipt.audit.get("exactType").and_then(Value::as_bool),
+        Some(true),
+        "{receipt:?}"
+    );
+
+    let captured_lean = fs::read_to_string(artifacts.join("capture/Captured.lean")).unwrap();
+    assert!(
+        captured_lean.contains("Trusted.MirAst.stringAppend"),
+        "expected long identities to use balanced Trusted.MirAst.stringAppend"
+    );
+
+    let captured_json: Value =
+        serde_json::from_slice(&fs::read(artifacts.join("capture/capture.json")).unwrap()).unwrap();
+    let bodies = captured_json["program"]["bodies"].as_array().unwrap();
+    assert_eq!(bodies.len(), 105, "expected 105 captured bodies");
+    for body in bodies {
+        let identity = body["identity"].as_str().unwrap();
+        assert!(identity.len() > 100, "expected a > 100-char identity, got {identity:?}");
+    }
+}

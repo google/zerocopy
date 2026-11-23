@@ -47,15 +47,169 @@ over `UInt8`) without expanding `foundation-lock.json` to import
 noncomputable def stringBeq (a b : String) : Bool :=
   List.beq a.toByteArray.data.toList b.toByteArray.data.toList
 
-/-- Check that `x` does not occur in `ys` under `stringBeq`. -/
-noncomputable def stringNotElem (x : String) : List String → Bool
-  | [] => true
-  | y :: ys => !stringBeq x y && stringNotElem x ys
+/-- Check whether `s` has no UTF-8 bytes without comparing against `""`. -/
+noncomputable def stringIsEmpty (s : String) : Bool :=
+  s.toByteArray.data.toList.isEmpty
 
-/-- Check that all strings in a `List String` are pairwise distinct. -/
-noncomputable def stringListPairwiseNe : List String → Bool
-  | [] => true
-  | x :: xs => stringNotElem x xs && stringListPairwiseNe xs
+/-- Three-way comparison outcome for balanced-tree key ordering. -/
+inductive ByteCmp where
+  | lt
+  | eq
+  | gt
+
+/-- Compare two `UInt8` bytes without requiring `Decidable` instances outside
+the locked foundation imports. -/
+noncomputable def byteCmp (x y : UInt8) : ByteCmp :=
+  if Nat.blt x.toNat y.toNat then .lt
+  else if Nat.blt y.toNat x.toNat then .gt
+  else .eq
+
+/-- Lexicographic byte-list comparison (`ByteCmp`). -/
+noncomputable def byteListCmp : List UInt8 → List UInt8 → ByteCmp
+  | [], [] => .eq
+  | [], _ :: _ => .lt
+  | _ :: _, [] => .gt
+  | x :: xs, y :: ys =>
+    match byteCmp x y with
+    | .lt => .lt
+    | .gt => .gt
+    | .eq => byteListCmp xs ys
+
+/-- Compare two byte lists 8 bytes per recursive call so long equal-prefix
+identities stay shallow under `maxRecDepth`. -/
+noncomputable def byteListCmp8 : List UInt8 → List UInt8 → ByteCmp
+  | a1 :: a2 :: a3 :: a4 :: a5 :: a6 :: a7 :: a8 :: as,
+    b1 :: b2 :: b3 :: b4 :: b5 :: b6 :: b7 :: b8 :: bs =>
+    match byteCmp a1 b1 with
+    | .lt => .lt | .gt => .gt | .eq =>
+      match byteCmp a2 b2 with
+      | .lt => .lt | .gt => .gt | .eq =>
+        match byteCmp a3 b3 with
+        | .lt => .lt | .gt => .gt | .eq =>
+          match byteCmp a4 b4 with
+          | .lt => .lt | .gt => .gt | .eq =>
+            match byteCmp a5 b5 with
+            | .lt => .lt | .gt => .gt | .eq =>
+              match byteCmp a6 b6 with
+              | .lt => .lt | .gt => .gt | .eq =>
+                match byteCmp a7 b7 with
+                | .lt => .lt | .gt => .gt | .eq =>
+                  match byteCmp a8 b8 with
+                  | .lt => .lt | .gt => .gt | .eq => byteListCmp8 as bs
+  | xs, ys => byteListCmp xs ys
+
+/-- Deterministic position-weighted byte checksum over `List UInt8` (unrolled
+4 bytes per step). Used purely as a fast comparison pre-key in `IdentityKey`;
+any checksum collision falls back to exact `byteListCmp8` comparison. -/
+noncomputable def byteListTag (w sum : Nat) : List UInt8 → Nat
+  | a1 :: a2 :: a3 :: a4 :: rest =>
+    byteListTag (w + 4)
+      (sum + w * a1.toNat + (w + 1) * a2.toNat +
+        (w + 2) * a3.toNat + (w + 3) * a4.toNat)
+      rest
+  | a1 :: rest => byteListTag (w + 1) (sum + w * a1.toNat) rest
+  | [] => sum
+
+/-- Total comparison key pairing a deterministic checksum tag with the exact
+UTF-8 byte sequence. For keys built by `identityRbInsertBody` (where
+`tag = byteListTag 1 0 bytes`), `k1.bytes = k2.bytes ↔ identityKeyCmp k1 k2 =
+.eq`. -/
+structure IdentityKey where
+  tag : Nat
+  bytes : List UInt8
+
+/-- Strict total order comparison over `IdentityKey`: compares `tag` first in
+$O(1)$ (`Nat.blt`) and falls back to exact `byteListCmp8` when tags match. -/
+noncomputable def identityKeyCmp (a b : IdentityKey) : ByteCmp :=
+  if Nat.blt a.tag b.tag then .lt
+  else if Nat.blt b.tag a.tag then .gt
+  else byteListCmp8 a.bytes b.bytes
+
+/-- Red-Black tree node color for balanced $O(N \log N)$ identity uniqueness
+checking. -/
+inductive IdentityRbColor where
+  | red
+  | black
+
+/-- Balanced Red-Black tree storing already-seen non-empty body `IdentityKey`s.
+-/
+inductive IdentityRbTree where
+  | empty
+  | node :
+      IdentityRbColor → IdentityRbTree → IdentityKey → IdentityRbTree →
+        IdentityRbTree
+
+/-- Okasaki Red-Black rebalance step preserving in-order key sequence. -/
+noncomputable def identityRbBalance :
+    IdentityRbColor → IdentityRbTree → IdentityKey → IdentityRbTree →
+      IdentityRbTree
+  | .black, .node .red (.node .red a x b) y c, z, d =>
+    .node .red (.node .black a x b) y (.node .black c z d)
+  | .black, .node .red a x (.node .red b y c), z, d =>
+    .node .red (.node .black a x b) y (.node .black c z d)
+  | .black, a, x, .node .red (.node .red b y c) z d =>
+    .node .red (.node .black a x b) y (.node .black c z d)
+  | .black, a, x, .node .red b y (.node .red c z d) =>
+    .node .red (.node .black a x b) y (.node .black c z d)
+  | c, a, x, b => .node c a x b
+
+/-- Insert `k` into `t`, returning `none` if an equal key is already present. -/
+noncomputable def identityRbInsertAux (k : IdentityKey) :
+    IdentityRbTree → Option IdentityRbTree
+  | .empty => some (.node .red .empty k .empty)
+  | .node c l x r =>
+    match identityKeyCmp k x with
+    | .lt =>
+      match identityRbInsertAux k l with
+      | none => none
+      | some l' => some (identityRbBalance c l' x r)
+    | .eq => none
+    | .gt =>
+      match identityRbInsertAux k r with
+      | none => none
+      | some r' => some (identityRbBalance c l x r')
+
+/-- Balanced insert returning `none` on collision and recoloring the root
+black. -/
+noncomputable def identityRbInsert (k : IdentityKey) (t : IdentityRbTree) :
+    Option IdentityRbTree :=
+  match identityRbInsertAux k t with
+  | none => none
+  | some .empty => some .empty
+  | some (.node _ l x r) => some (.node .black l x r)
+
+/-- Insert one `Body`'s `identity`, returning `none` if `body.identity` is
+empty or already present in `t`. -/
+noncomputable def identityRbInsertBody (b : Body) (t : IdentityRbTree) :
+    Option IdentityRbTree :=
+  match b.identity.toByteArray.data.toList with
+  | [] => none
+  | bs => identityRbInsert ⟨byteListTag 1 0 bs, bs⟩ t
+
+/-- Bind helper over `Option IdentityRbTree` for chaining body insertions. -/
+noncomputable def identityRbInsertBodyOpt (b : Body) :
+    Option IdentityRbTree → Option IdentityRbTree
+  | none => none
+  | some t => identityRbInsertBody b t
+
+/-- Single-pass balanced-tree uniqueness check unrolled 4 bodies per recursive
+step so crates with hundreds of captured bodies remain well within Lean's
+default `maxRecDepth`. -/
+noncomputable def bodiesHaveUniqueIdentitiesAux :
+    List Body → IdentityRbTree → Bool
+  | [], _ => true
+  | [b1], t => (identityRbInsertBody b1 t).isSome
+  | [b1, b2], t =>
+    (identityRbInsertBodyOpt b2 (identityRbInsertBody b1 t)).isSome
+  | [b1, b2, b3], t =>
+    (identityRbInsertBodyOpt b3
+      (identityRbInsertBodyOpt b2 (identityRbInsertBody b1 t))).isSome
+  | b1 :: b2 :: b3 :: b4 :: bs, t =>
+    match identityRbInsertBodyOpt b4
+        (identityRbInsertBodyOpt b3
+          (identityRbInsertBodyOpt b2 (identityRbInsertBody b1 t))) with
+    | none => false
+    | some t' => bodiesHaveUniqueIdentitiesAux bs t'
 
 /-- Extend or truncate an in-memory scalar enum tag `tagBits` of primitive
 representation `(tagW, tagS)` to the enum's discriminant bit width `discrW`,
