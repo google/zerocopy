@@ -333,6 +333,7 @@ fn whole_crate_item(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract
 struct Callbacks<'a> {
     args: &'a Args,
     verified_sysroot: &'a Path,
+    verified_compiler: &'a identity::VerifiedCompiler,
     scope: &'a ir::Scope,
     reads: Arc<Mutex<Reads>>,
     result: Option<Result<ir::Manifest, Failure>>,
@@ -381,6 +382,7 @@ impl rustc_driver::Callbacks for Callbacks<'_> {
             tcx,
             self.args,
             self.verified_sysroot,
+            self.verified_compiler,
             self.scope,
             &self.reads,
         ));
@@ -616,10 +618,29 @@ fn verify_sysroot_only_crates(
     Ok(())
 }
 
+/// Verify that the active compiler session's logical sysroot matches the
+/// pre-verified logical path and still resolves to the directory `(st_dev,
+/// st_ino)` recorded before `identity::verify_compiler` ran.
+fn verify_session_sysroot(
+    session_sysroot: &Path,
+    verified_sysroot: &Path,
+    verified_sysroot_id: identity::DevIno,
+) -> Result<PathBuf, Failure> {
+    let sysroot = identity::normalize_logical_sysroot(session_sysroot)?;
+    let session_sysroot_id = identity::dir_dev_ino(&sysroot).map_err(Failure::io)?;
+    if sysroot != verified_sysroot || session_sysroot_id != verified_sysroot_id {
+        return Err(Failure::tool(
+            "compiler session sysroot diverged from verified sysroot",
+        ));
+    }
+    Ok(sysroot)
+}
+
 fn collect(
     tcx: TyCtxt<'_>,
     args: &Args,
     verified_sysroot: &Path,
+    verified_compiler: &identity::VerifiedCompiler,
     scope: &ir::Scope,
     reads: &Arc<Mutex<Reads>>,
 ) -> Result<ir::Manifest, Failure> {
@@ -649,14 +670,11 @@ fn collect(
             "only 64-bit little-endian targets are modeled",
         ));
     }
-    let sysroot = identity::normalize_logical_sysroot(tcx.sess.opts.sysroot.path())?;
-    let session_sysroot_id = identity::dir_dev_ino(&sysroot).map_err(Failure::io)?;
-    let verified_sysroot_id = identity::dir_dev_ino(verified_sysroot).map_err(Failure::io)?;
-    if sysroot != verified_sysroot || session_sysroot_id != verified_sysroot_id {
-        return Err(Failure::tool(
-            "compiler session sysroot diverged from verified sysroot",
-        ));
-    }
+    let sysroot = verify_session_sysroot(
+        tcx.sess.opts.sysroot.path(),
+        verified_sysroot,
+        verified_compiler.sysroot_id,
+    )?;
     verify_sysroot_only_crates(tcx, verified_sysroot, &args.target)?;
     // "Defined lang items can come from the current crate or its dependencies."
     // Only the pinned sysroot may supply them for the scalar profile.
@@ -878,6 +896,8 @@ fn collect(
             commit: ir::COMPILER_COMMIT,
             version: ir::COMPILER_VERSION,
             sysroot,
+            rustc_sha256: verified_compiler.rustc_sha256.clone(),
+            driver: verified_compiler.driver.clone(),
         },
         configuration: ir::Configuration {
             crate_root: args.crate_root.clone(),
@@ -916,7 +936,11 @@ fn check_current_inputs(reads: &Reads) -> Result<(), Failure> {
     Ok(())
 }
 
-pub fn run(args: &Args, verified_sysroot: &Path) -> Result<ir::Manifest, Failure> {
+pub(crate) fn run(
+    args: &Args,
+    verified_sysroot: &Path,
+    verified_compiler: &identity::VerifiedCompiler,
+) -> Result<ir::Manifest, Failure> {
     let scope = args.resolved_scope()?;
     SELECTION
         .set(scope.clone())
@@ -976,6 +1000,7 @@ pub fn run(args: &Args, verified_sysroot: &Path) -> Result<ir::Manifest, Failure
     let mut callbacks = Callbacks {
         args,
         verified_sysroot,
+        verified_compiler,
         scope: &scope,
         reads: reads.clone(),
         result: None,
@@ -1020,6 +1045,11 @@ pub fn run(args: &Args, verified_sysroot: &Path) -> Result<ir::Manifest, Failure
         ));
     }
     check_current_inputs(&reads)?;
+    let _ = verify_session_sysroot(
+        verified_sysroot,
+        verified_sysroot,
+        verified_compiler.sysroot_id,
+    )?;
     Ok(manifest)
 }
 
@@ -1186,6 +1216,38 @@ mod tests {
                 identity::regular_file_dev_ino,
             )
             .is_err()
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn session_sysroot_check_detects_symlink_retargeting_toctou() {
+        use std::os::unix::fs::symlink;
+
+        let dir = tempfile::tempdir().unwrap();
+        let sysroot_a = dir.path().join("sysroot-a");
+        let sysroot_b = dir.path().join("sysroot-b");
+        std::fs::create_dir_all(&sysroot_a).unwrap();
+        std::fs::create_dir_all(&sysroot_b).unwrap();
+
+        let logical_link = dir.path().join("logical-sysroot");
+        symlink(&sysroot_a, &logical_link).unwrap();
+        let verified_logical = identity::normalize_logical_sysroot(&logical_link).unwrap();
+        let pinned_id = identity::dir_dev_ino(&verified_logical).unwrap();
+
+        assert_eq!(
+            verify_session_sysroot(&logical_link, &verified_logical, pinned_id).unwrap(),
+            verified_logical
+        );
+
+        // Retarget the symlink to a different directory inode while preserving
+        // the logical path: checking against `pinned_id` must fail closed.
+        std::fs::remove_file(&logical_link).unwrap();
+        symlink(&sysroot_b, &logical_link).unwrap();
+        let err = verify_session_sysroot(&logical_link, &verified_logical, pinned_id).unwrap_err();
+        assert!(
+            err.diagnostics[0].contains("compiler session sysroot diverged from verified sysroot"),
+            "{err:?}"
         );
     }
 }

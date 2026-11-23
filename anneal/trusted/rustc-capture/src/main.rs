@@ -164,13 +164,13 @@ fn run(mut args: Args) -> Result<serde_json::Value, Failure> {
     };
     let sysroot = identity::normalize_logical_sysroot(&raw_sysroot)?;
     args.sysroot = Some(sysroot.clone());
-    identity::verify_compiler(&sysroot, &args.target)?;
+    let verified = identity::verify_compiler(&sysroot, &args.target)?;
     // Keep compiler side effects outside the public artifact pair. The
     // publication owner cleans up staging on every error and unwind; only its
     // completed directory rename permits a captured status below.
     let publication = publication::Publication::new(&args.out_dir).map_err(Failure::io)?;
     args.out_dir = publication.compiler_dir();
-    let manifest = capture::run(&args, &sysroot)?;
+    let manifest = capture::run(&args, &sysroot, &verified)?;
     let json =
         serde_json::to_vec_pretty(&manifest).map_err(|error| Failure::tool(error.to_string()))?;
     let lean = lean::render(&manifest.program);
