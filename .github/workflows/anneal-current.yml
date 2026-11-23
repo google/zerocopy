@@ -1173,6 +1173,111 @@ jobs:
             wall_clock_timeout_kills_process_group_in_tier1_and_tier2 \
             tier1_as_pid1_prevents_post_exit_out_writes
 
+  release-lock:
+    name: Anneal release merge lock
+    if: github.event_name == 'merge_group' && vars.ANNEAL_RELEASE_LOCK != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    env:
+      ACTIONS_CACHE_URL: ''
+      ACTIONS_RESULTS_URL: ''
+      ACTIONS_RUNTIME_TOKEN: ''
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Enforce release-only merge queue allowlist
+        id: lock
+        working-directory: .
+        env:
+          ANNEAL_RELEASE_LOCK: ${{ vars.ANNEAL_RELEASE_LOCK }}
+          BASE_SHA: ${{ github.event.merge_group.base_sha }}
+        run: |
+          set -euo pipefail
+          python3 -I -B - <<'PY'
+          from datetime import datetime, timezone
+          import os
+          import re
+          import subprocess
+          import sys
+
+          ALLOWED = {
+              "anneal/trusted/cargo-anneal/Cargo.toml",
+              "anneal/Cargo.lock",
+              "anneal/trusted/root-manifest.sha256",
+          }
+          lock = os.environ.get("ANNEAL_RELEASE_LOCK", "")
+          if not lock:
+              sys.exit("Missing ANNEAL_RELEASE_LOCK; failing closed.")
+
+          if ";expires=" in lock:
+              label, raw_ts = lock.split(";expires=", 1)
+              if not label.strip() or ";" in label:
+                  sys.exit(
+                      f"Malformed ANNEAL_RELEASE_LOCK ({lock!r}); "
+                      "expected '<label>' or '<label>;expires=YYYY-MM-DDTHH:MM:SSZ'."
+                  )
+              m = re.fullmatch(
+                  r"(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z", raw_ts
+              )
+              if m is None:
+                  sys.exit(
+                      f"Malformed ANNEAL_RELEASE_LOCK expiry ({lock!r}); "
+                      "expected '<label>;expires=YYYY-MM-DDTHH:MM:SSZ'."
+                  )
+              try:
+                  expires = datetime(*map(int, m.groups()), tzinfo=timezone.utc)
+              except ValueError as exc:
+                  sys.exit(f"Invalid ANNEAL_RELEASE_LOCK expiry ({lock!r}): {exc}")
+              if datetime.now(timezone.utc) >= expires:
+                  print(
+                      f"Release lock ({lock}) expired at {raw_ts}; allowing merge_group."
+                  )
+                  sys.exit(0)
+          elif ";" in lock:
+              sys.exit(
+                  f"Malformed ANNEAL_RELEASE_LOCK ({lock!r}); "
+                  "expected '<label>' or '<label>;expires=YYYY-MM-DDTHH:MM:SSZ'."
+              )
+
+          base_sha = os.environ.get("BASE_SHA", "")
+          if not re.fullmatch(r"[0-9a-f]{40}", base_sha):
+              sys.exit(f"Invalid or missing merge_group.base_sha: {base_sha!r}")
+
+          subprocess.run(
+              ["git", "fetch", "--no-tags", "--depth=1", "origin", base_sha],
+              check=True,
+          )
+          diff = subprocess.check_output([
+              "git",
+              "-c",
+              "diff.relative=false",
+              "diff",
+              "--no-renames",
+              "--name-only",
+              "-z",
+              base_sha,
+              "HEAD",
+          ])
+          changed = [
+              p.decode("utf-8", "surrogateescape") for p in diff.split(b"\0") if p
+          ]
+          disallowed = [p for p in changed if p not in ALLOWED]
+          if not changed or disallowed:
+              print(
+                  f"Merge queue is locked for Anneal release ({lock}); "
+                  "only the 3-file release PR may merge while ANNEAL_RELEASE_LOCK is set.",
+                  file=sys.stderr,
+              )
+              if disallowed:
+                  print("Disallowed files: " + ", ".join(disallowed), file=sys.stderr)
+              sys.exit(1)
+
+          print(f"Release lock ({lock}): allowing pure Anneal release PR.")
+          PY
+
   all-jobs-succeed:
       name: Current Anneal checks succeeded
       # Run even when a dependency fails, is skipped, or is cancelled, then
@@ -1180,7 +1285,7 @@ jobs:
       # success in branch protection, so this aggregation must fail closed.
       if: ${{ always() }}
       runs-on: ubuntu-latest
-      needs: [static-checks, build-exocrate, test-and-verify, installed-smoke, workspace-tests, sandbox-aarch64]
+      needs: [static-checks, build-exocrate, test-and-verify, installed-smoke, workspace-tests, sandbox-aarch64, release-lock]
       steps:
         - name: Reject workflow cancellation
           if: ${{ cancelled() }}
@@ -1190,13 +1295,18 @@ jobs:
         - name: Require every dependency to succeed
           working-directory: .
           env:
+            EVENT_NAME: ${{ github.event_name }}
+            ANNEAL_RELEASE_LOCK: ${{ vars.ANNEAL_RELEASE_LOCK }}
             NEEDS_JSON: ${{ toJSON(needs) }}
           run: |
             set -euo pipefail
-            jq -e '
+            jq -e --arg event "$EVENT_NAME" --arg release_lock "$ANNEAL_RELEASE_LOCK" '
               type == "object" and length > 0 and
               all(
                 to_entries[];
-                .value.result == "success"
+                if .key == "release-lock" and ($event != "merge_group" or $release_lock == "")
+                then (.value.result == "skipped" or ($event == "merge_group" and .value.result == "success"))
+                else .value.result == "success"
+                end
               )
             ' <<< "$NEEDS_JSON"
