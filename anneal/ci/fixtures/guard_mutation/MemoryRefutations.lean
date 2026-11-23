@@ -188,4 +188,54 @@ theorem refute_mem_align_offset_mod_check :
       .error .undefined :=
   rfl
 
+/-- Live mutable 4-byte allocation whose bytes are all `.uninit`. -/
+noncomputable def uninitMut4Alloc : Allocation := {
+  allocId := 1
+  alignLog2 := 0
+  mutability := .mut
+  bytes := List.replicate 4 .uninit
+  live := true
+}
+
+/-- Guard `mem_v2_ptr_add_null_nonzero`: offsetting a provenance-free (null)
+pointer by a nonzero byte delta faults with `.undefined`. -/
+theorem refute_mem_v2_ptr_add_null_nonzero :
+    ptrAddInMem MemoryState.empty 1 ⟨none, 0, .isize⟩ 1 = .error .undefined :=
+  rfl
+
+/-- Guard `mem_v2_ptr_add_oob`: offsetting a live pointer past the end of its
+allocation faults with `.undefined`. -/
+theorem refute_mem_v2_ptr_add_oob :
+    ptrAddInMem (singleAllocMem liveMut4Alloc) 1 ⟨some 1, 2, .isize⟩ 3 =
+      .error .undefined :=
+  rfl
+
+/-- Guard `mem_v2_slice_null`: constructing even a zero-length slice from a
+null (`⟨none, 0, .isize⟩`) pointer faults with `.undefined`. -/
+theorem refute_mem_v2_slice_null :
+    sliceFromRawPartsCheck MemoryState.empty false 1 0 ⟨none, 0, .isize⟩ 0 =
+      .error .undefined :=
+  rfl
+
+/-- Guard `mem_v2_slice_readonly`: constructing a mutable slice (`&mut [u8]`)
+over a `.shared` allocation faults with `.undefined`. -/
+theorem refute_mem_v2_slice_readonly :
+    sliceFromRawPartsCheck (singleAllocMem shared4Alloc) true 1 0 ⟨some 1, 0, .isize⟩ 4 =
+      .error .undefined :=
+  rfl
+
+/-- Guard `mem_v2_slice_uninit`: constructing a byte slice over uninitialized
+bytes faults with `.undefined`. -/
+theorem refute_mem_v2_slice_uninit :
+    sliceFromRawPartsCheck (singleAllocMem uninitMut4Alloc) false 1 0
+      ⟨some 1, 0, .isize⟩ 4 = .error .undefined :=
+  rfl
+
+/-- Guard `mem_v2_slice_get_unchecked_oob`: subslicing with `endOff > len`
+faults with `.undefined` even when the underlying allocation has extra bytes. -/
+theorem refute_mem_v2_slice_get_unchecked_oob :
+    sliceGetUncheckedCheck (singleAllocMem liveMut8Alloc) ⟨some 1, 0, .isize⟩ 4 1 6 =
+      .error .undefined :=
+  rfl
+
 end GuardMutation

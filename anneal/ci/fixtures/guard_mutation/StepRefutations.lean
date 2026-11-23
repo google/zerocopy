@@ -216,4 +216,60 @@ theorem refute_step_force_alloc_dead_local :
      | .error _ => False) :=
   trivial
 
+/-- Guard `step_v2_write_readonly`: storing through `*const u8`
+(`ptrMut = .shared`) into a live `.mut` allocation faults with `.undefined`. -/
+theorem refute_step_v2_write_readonly :
+    (match writePlaceV2
+        [.unit, .rawPtr .shared (.int .i8 false)]
+        [.immediate (some .unit), .immediate (some (.ptr ⟨some 1, 0, .isize⟩))]
+        { allocations := [{
+            allocId := 1
+            alignLog2 := 0
+            mutability := .mut
+            bytes := [.init 0 none]
+            live := true
+          }], nextAllocId := 2 }
+        { localId := 1, projection := [.deref] }
+        (.int .i8 false)
+        (.scalar ⟨.i8, false, BitVec.ofNat 128 7⟩) with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Profile v2 program taking a shared reference to stack parameter `_1 : u8`
+and attempting to return it. -/
+noncomputable def progDanglingStackRefV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [{
+    argumentCount := 1
+    locals := [.ref .shared (.int .i8 false), .int .i8 false]
+    basicBlocks := [{
+      statements := [
+        .assign { localId := 0, projection := [] }
+          (.ref .shared { localId := 1, projection := [] })
+      ]
+      terminator := .return_
+    }]
+    isUnsafe := false
+    identity := "guard_mutation::dangling_stack_ref_v2"
+  }]
+}
+
+/-- Guard `step_v2_return_dangling_stack_ref`: returning a reference to a
+callee-allocated stack local faults with `.undefined`. -/
+theorem refute_step_v2_return_dangling_stack_ref :
+    (match initStateV2 progDanglingStackRefV2
+        { args := [.scalar ⟨.i8, false, BitVec.ofNat 128 42⟩] } with
+     | .ok s₀ =>
+       match evalStepV2 progDanglingStackRefV2 s₀ with
+       | .step s₁ =>
+         match evalStepV2 progDanglingStackRefV2 s₁ with
+         | .fault .undefined => True
+         | _ => False
+       | _ => False
+     | .error _ => False) :=
+  trivial
+
 end GuardMutation

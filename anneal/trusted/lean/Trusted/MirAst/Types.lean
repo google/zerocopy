@@ -262,8 +262,13 @@ Constructor correspondence:
   (regions are erased at runtime).
 - `.rawPtr mutability pointee` corresponds to
   `TyKind::RawPtr(pointee, mutability)`.
+- `.slice elem` corresponds to `TyKind::Slice(elem)`; it is unsized and
+  appears only behind `.ref` or `.rawPtr` (Profile v2).
+- `.rangeTo elem` and `.rangeFrom elem` correspond to the
+  `core::ops::RangeTo<elem>` and `core::ops::RangeFrom<elem>` `Adt`s used to
+  index slices (Profile v2).
 - `.unsupported` represents all other `TyKind` variants (`Float`,
-  non-fieldless-enum `Adt`, `Foreign`, `Str`, `Array`, `Pat`, `Slice`, `FnDef`,
+  other non-fieldless-enum `Adt`, `Foreign`, `Str`, `Array`, `Pat`, `FnDef`,
   `FnPtr`, `Dynamic`, `Closure`, `CoroutineClosure`, `Coroutine`, etc.), causing
   $M_{\text{anneal}}$ to fail closed with `FaultKind.unsupported`. -/
 inductive MirTy where
@@ -277,7 +282,17 @@ inductive MirTy where
   | tuple (fields : List MirTy)
   | ref (mutability : Mutability) (pointee : MirTy)
   | rawPtr (mutability : Mutability) (pointee : MirTy)
+  | slice (elem : MirTy)
+  | rangeTo (elem : MirTy)
+  | rangeFrom (elem : MirTy)
   | unsupported
+
+/-- Return `true` when `ty` is an unsized dynamically-sized MIR type
+(`.slice _`), which may appear behind `.ref` or `.rawPtr` but cannot be stored
+directly in a local slot by value. -/
+noncomputable def isUnsizedTy : MirTy → Bool
+  | .slice _ => true
+  | _ => false
 
 /-- Explicit structural equality on `IntWidth` (avoiding `deriving BEq` inside
 `Trusted.*` so `TrustedBoundary.lean` sees only pure kernel definitions). -/
@@ -329,6 +344,9 @@ mutual
     | .tuple fs₁, .tuple fs₂ => MirTy.beqList fs₁ fs₂
     | .ref m₁ p₁, .ref m₂ p₂ => Mutability.beq m₁ m₂ && MirTy.beq p₁ p₂
     | .rawPtr m₁ p₁, .rawPtr m₂ p₂ => Mutability.beq m₁ m₂ && MirTy.beq p₁ p₂
+    | .slice e₁, .slice e₂ => MirTy.beq e₁ e₂
+    | .rangeTo e₁, .rangeTo e₂ => MirTy.beq e₁ e₂
+    | .rangeFrom e₁, .rangeFrom e₂ => MirTy.beq e₁ e₂
     | .unsupported, .unsupported => true
     | _, _ => false
 

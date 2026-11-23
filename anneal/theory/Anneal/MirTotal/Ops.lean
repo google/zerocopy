@@ -454,9 +454,9 @@ theorem isOverflowPairTyComp_eq (ty : MirTy) :
         | nil => rfl
         | cons f2 r2 => cases f2 <;> cases r2 <;> rfl
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _ | rawPtr _ _
-      | unsupported => rfl
+      | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
   | bool | int _ _ | unit | never | char | ordering | enum _ | ref _ _ | rawPtr _ _
-  | unsupported => rfl
+  | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
 
 /-- Computable mirror of `BinOp.isShift`. -/
 @[expose] def binOpIsShiftComp (op : BinOp) : Bool :=
@@ -1012,11 +1012,13 @@ theorem evalBinOpComp_eq (op : BinOp) (lhs rhs : Val) :
               (evalArithOpComp_eq _ l.width l.signed (decodeScalar l) (decodeScalar r))
           | rw [truncateBitsComp_eq l.width l.bits, truncateBitsComp_eq r.width r.bits,
               truncateBitsComp_eq l.width _]
-    | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+    | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
   | bool l =>
     cases rhs with
     | bool r => cases l <;> cases r <;> cases op <;> rfl
-    | scalar _ | ptr _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+    | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+    | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
   | char l =>
     cases rhs with
     | char r =>
@@ -1028,8 +1030,10 @@ theorem evalBinOpComp_eq (op : BinOp) (lhs rhs : Val) :
           | (rw [intBltComp_eq_dec]; exact rfl)
           | (rw [intBleComp_eq_dec]; exact rfl)
           | rw [cmpOrderingOfIntComp_eq]
-    | scalar _ | ptr _ | bool _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
-  | ptr _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+    | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+    | bool _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+  | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+  | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.intLikeBits`. -/
 @[expose] def intLikeBitsComp (v : Val) : Option Nat :=
@@ -1050,7 +1054,8 @@ theorem intLikeBitsComp_eq (v : Val) : intLikeBitsComp v = intLikeBits v := by
     unfold intLikeBitsComp intLikeBits
     dsimp only
     rw [decodeScalarComp_eq, bvOfIntComp_eq, truncateBitsComp_eq]
-  | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+  | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+  | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.evalIntToIntCast`. -/
 @[expose] def evalIntToIntCastComp (v : Val) (castTy : MirTy) : Except FaultKind Val :=
@@ -1076,7 +1081,7 @@ theorem evalIntToIntCastComp_eq (v : Val) (castTy : MirTy) :
       dsimp only
       rw [truncateBitsComp_eq]
     | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _ | rawPtr _ _
-    | unsupported => rfl
+    | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.evalUnOp`. -/
 @[expose] def evalUnOpComp (op : UnOp) (v : Val) : Except FaultKind Val :=
@@ -1106,7 +1111,8 @@ theorem evalUnOpComp_eq (op : UnOp) (v : Val) : evalUnOpComp op v = evalUnOp op 
       cases truncateScalar sv.width sv.signed (intNot (decodeScalar sv)) with
       | error _ => rfl
       | ok p => cases p; rfl
-    | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+    | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
   | neg =>
     cases v with
     | scalar sv =>
@@ -1118,7 +1124,8 @@ theorem evalUnOpComp_eq (op : UnOp) (v : Val) : evalUnOpComp op v = evalUnOp op 
         cases truncateScalar sv.width true (Neg.neg (decodeScalar sv)) with
         | error _ => rfl
         | ok p => cases p; rfl
-    | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+    | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
   | ptrMetadata => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.natNotElem`. -/
@@ -1346,10 +1353,12 @@ theorem valTy?Comp_eq (v : Val) : valTy?Comp v = v.ty? := by
             cases r2 with
             | nil => dsimp only [valTy?Comp, Val.ty?]; rw [scalarWfComp_eq]
             | cons _ _ => rfl
-          | scalar _ | ptr _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
-          | bytes _ => rfl
-      | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
-  | ptr _ | bool _ | char _ | ordering _ | unit | bytes _ => rfl
+          | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+          | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+      | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+      | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+  | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+  | bool _ | char _ | ordering _ | unit | bytes _ => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.isSupportedScalarOrUnitTy`. -/
 @[expose] def isSupportedScalarOrUnitTyComp (ty : MirTy) : Bool :=
@@ -1367,7 +1376,7 @@ theorem isSupportedScalarOrUnitTyComp_eq (ty : MirTy) :
   | enum ety => exact enumAdmittedComp_eq ety
   | tuple fs => exact isOverflowPairTyComp_eq (.tuple fs)
   | bool | int _ _ | char | ordering | unit | never | ref _ _ | rawPtr _ _
-  | unsupported => rfl
+  | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.liveUninitSlot`. -/
 @[expose] def liveUninitSlotComp (ty : MirTy) : LocalSlot :=
@@ -1384,7 +1393,7 @@ theorem liveUninitSlotComp_eq (ty : MirTy) : liveUninitSlotComp ty = liveUninitS
     dsimp only [liveUninitSlotComp, liveUninitSlot]
     rw [isZstEnumTyComp_eq]
   | bool | int _ _ | char | ordering | unit | never | tuple _ | ref _ _ | rawPtr _ _
-  | unsupported => rfl
+  | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.isPrimitiveReadableTy`. -/
 @[expose] def isPrimitiveReadableTyComp (ty : MirTy) : Bool :=
@@ -1400,7 +1409,7 @@ theorem isPrimitiveReadableTyComp_eq (ty : MirTy) :
   cases ty with
   | tuple fs => exact isOverflowPairTyComp_eq (.tuple fs)
   | bool | int _ _ | char | ordering | unit | never | enum _ | ref _ _ | rawPtr _ _
-  | unsupported => rfl
+  | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.isIntLikeTy`. -/
 @[expose] def isIntLikeTyComp (ty : MirTy) : Bool :=
@@ -1478,10 +1487,11 @@ theorem layoutOfTyComp_eq (ty : MirTy) : layoutOfTyComp ty = layoutOfTy ty := by
             | nil => dsimp only [layoutOfTyComp, layoutOfTy]; rw [overflowPairLayoutComp_eq]
             | cons _ _ => rfl
           | int _ _ | char | ordering | unit | never | enum _ | tuple _ | ref _ _ | rawPtr _ _
-          | unsupported => rfl
+          | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
       | bool | char | ordering | unit | never | enum _ | tuple _ | ref _ _ | rawPtr _ _
-      | unsupported => rfl
-  | bool | char | ordering | unit | never | ref _ _ | rawPtr _ _ | unsupported => rfl
+      | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+  | bool | char | ordering | unit | never | ref _ _ | rawPtr _ _ | slice _ | rangeTo _
+  | rangeFrom _ | unsupported => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.entryMemory`. -/
 @[expose] def entryMemoryComp : MemoryState := { nextAllocId := 2, allocations := [] }
@@ -1716,7 +1726,8 @@ theorem evalConstLitComp_eq (ty : MirTy) (lit : ConstLit) :
           tagBitsToDiscrBitsComp_eq, findDiscrVariant?Comp_eq]
         cases findDiscrVariant?
           (tagBitsToDiscrBits tagW tagS ety.discrWidth bits) ety.discriminants <;> rfl
-  | unit | never | tuple _ | ref _ _ | rawPtr _ _ | unsupported =>
+  | unit | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
+  | unsupported =>
     cases lit <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.leBytesOfNat`. -/
@@ -1873,10 +1884,11 @@ theorem decodeValComp_eq (endian : TargetEndian) (ty : MirTy) (bytes : List Allo
                     cases evalConstLit .bool
                       (.scalar (BitVec.ofNat 128 (decodeUInt endian boolRaw))) <;> rfl
           | int _ _ | char | ordering | unit | never | enum _ | tuple _ | ref _ _ | rawPtr _ _
-          | unsupported => rfl
+          | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
       | bool | char | ordering | unit | never | enum _ | tuple _ | ref _ _ | rawPtr _ _
-      | unsupported => rfl
-  | bool | int _ _ | char | ordering | unit | enum _ | ref _ _ | rawPtr _ _ | unsupported =>
+      | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+  | bool | int _ _ | char | ordering | unit | enum _ | ref _ _ | rawPtr _ _
+  | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
     dsimp only [decodeValComp, decodeVal]
     rw [layoutOfTyComp_eq]
     cases layoutOfTy _ with

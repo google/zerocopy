@@ -49,15 +49,29 @@ const CARGO_RULES: &[DetailRule] = &[
 
 const UNSUPPORTED_CAPTURE_RULES: &[DetailRule] = &[
     DetailRule {
+        needle: "body mixes reference and raw-pointer locals",
+        hint: "Profile v2 does not model Rust's pointer aliasing rules, so a function may use \
+               references or raw pointers but not both. Functions that turn raw pointers into \
+               references (such as `core::slice::from_raw_parts`) are not supported yet.",
+    },
+    DetailRule {
+        needle: "outside the Profile v2 type fragment",
+        hint: "Profile v2 admits single-level references and raw pointers to scalars and integer \
+               slices (`&T`, `&mut T`, `&[T]`, `*const T`, `*mut T`); nested references, \
+               pointers to references, and references to other types are not supported yet. \
+               Refactor the selected function or narrow scope with `--select <fn>`.",
+    },
+    DetailRule {
         needle: "unsupported type: &",
-        hint: "Profile v1 covers pointer-free scalar, bool, char, unit, `Ordering`, and fieldless \
-               enum values; references are not supported yet. Refactor the selected function to \
-               take scalar values by value or narrow scope with `--select <fn>`.",
+        hint: "Profile v2 admits single-level references to scalars and integer slices only; \
+               references to other types are not supported yet. Refactor the selected function \
+               or narrow scope with `--select <fn>`.",
     },
     DetailRule {
         needle: "unsupported type: *",
-        hint: "Profile v1 covers pointer-free scalar values only; raw pointers are not supported \
-               yet. Test a pointer-free helper or narrow scope with `--select <fn>`.",
+        hint: "Profile v2 admits single-level raw pointers to scalars and integer slices only; \
+               raw pointers to other types are not supported yet. Narrow scope with \
+               `--select <fn>`.",
     },
     DetailRule {
         needle: "unsupported terminator: Assert",
@@ -371,12 +385,12 @@ mod tests {
         let ref_detail = serde_json::json!({
             "status": "unsupported",
             "diagnostics": ["1 required obligations are unsupported"],
-            "unsupported": [{"def_id": 3, "path": "take_ref", "reason": "unsupported type: &'{erased} u64"}],
+            "unsupported": [{"def_id": 3, "path": "take_ref", "reason": "local _1 of type Ref { mutability: Not, pointee: Ref { mutability: Not, pointee: Int(U64) } } is outside the Profile v2 type fragment"}],
         })
         .to_string();
         let hint = hint_for_failure("unsupported", "capture", &ref_detail).unwrap();
         assert!(hint.contains("`take_ref`"), "{hint}");
-        assert!(hint.contains("references are not supported"), "{hint}");
+        assert!(hint.contains("nested references"), "{hint}");
 
         let assert_detail = serde_json::json!({
             "status": "unsupported",

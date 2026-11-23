@@ -394,6 +394,261 @@ noncomputable def deinitIndirect (mem : MemoryState) (ty : MirTy)
   | none => .error .unsupported
   | some layout => writeUninit mem place layout.size layout.alignLog2
 
+/-! ## Profile v2 Byte Codec, Indirect Access, and Reference Validity -/
+
+/-- Accumulate uniform provenance across remaining bytes of an encoded pointer. -/
+noncomputable def provMatch :
+    Option AllocId → List AllocByte → Option (Option AllocId)
+  | _, .uninit :: _ => none
+  | cur, [] => some cur
+  | cur, .init _ p :: rest =>
+    let next :=
+      match cur, p with
+      | some a, some b => if Nat.beq a b then some a else none
+      | _, _ => none
+    provMatch next rest
+
+/-- Check initialization and extract uniform provenance across `bytes`.
+Returns `none` if any byte is `.uninit`, `some (some aid)` if every byte carries
+the identical provenance `some aid`, and `some none` if any byte lacks or
+disagrees on provenance. -/
+noncomputable def readPtrProv? : List AllocByte → Option (Option AllocId)
+  | [] => none
+  | .uninit :: _ => none
+  | .init _ p :: rest => provMatch p rest
+
+/-- Profile v2 byte encoder: encodes thin/wide pointers (preserving `allocId`
+provenance on the pointer bytes) and `RangeTo`/`RangeFrom`, delegating all
+Profile v1 scalar, enum, and overflow-pair types to `encodeVal`. -/
+noncomputable def encodeValV2 (endian : TargetEndian) (ty : MirTy) (v : Val) :
+    Except FaultKind (List AllocByte) :=
+  if !checkValV2 v ty then
+    .error .unsupported
+  else
+    match ty, v with
+    | .rawPtr _ pt, .ptr p | .ref _ pt, .ptr p =>
+      if isUnsizedTy pt then
+        .error .unsupported
+      else
+        .ok ((encodeUInt endian 8 p.offsetBytes.toNat).map
+          (fun b => AllocByte.init b p.allocId))
+    | .rawPtr _ (.slice _), .slicePtr p len
+    | .ref _ (.slice _), .slicePtr p len =>
+      .ok ((encodeUInt endian 8 p.offsetBytes.toNat).map
+          (fun b => AllocByte.init b p.allocId) ++
+        (encodeUInt endian 8 len.toNat).map
+          (fun b => AllocByte.init b none))
+    | .rangeTo (.int .isize false), .rangeTo e =>
+      .ok ((encodeUInt endian 8 e.toNat).map (fun b => AllocByte.init b none))
+    | .rangeFrom (.int .isize false), .rangeFrom s =>
+      .ok ((encodeUInt endian 8 s.toNat).map (fun b => AllocByte.init b none))
+    | _, _ => encodeVal endian ty v
+
+/-- Profile v2 byte decoder: decodes thin/wide pointers (recovering uniform
+byte provenance) and `RangeTo`/`RangeFrom`, delegating all Profile v1 types
+to `decodeVal`. -/
+noncomputable def decodeValV2 (endian : TargetEndian) (ty : MirTy)
+    (bytes : List AllocByte) : Except FaultKind (Option Val) :=
+  match ty with
+  | .rawPtr _ pt | .ref _ pt =>
+    if isUnsizedTy pt then
+      match pt with
+      | .slice _ =>
+        if !Nat.beq bytes.length 16 then
+          .error .unsupported
+        else
+          let pBytes := bytes.take 8
+          let lBytes := bytes.drop 8
+          match initBytes? pBytes, readPtrProv? pBytes, initBytes? lBytes with
+          | some pRaw, some prov, some lRaw =>
+            let p : PtrVal := ⟨prov, UInt64.ofNat (decodeUInt endian pRaw), .isize⟩
+            let len := UInt64.ofNat (decodeUInt endian lRaw)
+            .ok (some (.slicePtr p len))
+          | _, _, _ => .ok none
+      | _ => .error .unsupported
+    else
+      if !Nat.beq bytes.length 8 then
+        .error .unsupported
+      else
+        match initBytes? bytes, readPtrProv? bytes with
+        | some pRaw, some prov =>
+          .ok (some (.ptr ⟨prov, UInt64.ofNat (decodeUInt endian pRaw), .isize⟩))
+        | _, _ => .ok none
+  | .rangeTo (.int .isize false) =>
+    if !Nat.beq bytes.length 8 then
+      .error .unsupported
+    else
+      match initBytes? bytes with
+      | none => .ok none
+      | some raw => .ok (some (.rangeTo (UInt64.ofNat (decodeUInt endian raw))))
+  | .rangeFrom (.int .isize false) =>
+    if !Nat.beq bytes.length 8 then
+      .error .unsupported
+    else
+      match initBytes? bytes with
+      | none => .ok none
+      | some raw => .ok (some (.rangeFrom (UInt64.ofNat (decodeUInt endian raw))))
+  | _ => decodeVal endian ty bytes
+
+/-- Profile v2 typed load from `place` in `mem`. -/
+noncomputable def loadIndirectV2 (mem : MemoryState) (ty : MirTy)
+    (place : MemPlace) : Except FaultKind (Option Val) :=
+  match layoutOfTyV2 ty with
+  | none => .error .unsupported
+  | some layout =>
+    match readBytes mem place layout.size layout.alignLog2 with
+    | .error k => .error k
+    | .ok bytes => decodeValV2 profileV2TargetEndian ty bytes
+
+/-- Profile v2 typed store into `place` in `mem`. -/
+noncomputable def storeIndirectV2 (mem : MemoryState) (ty : MirTy)
+    (place : MemPlace) (v : Val) : Except FaultKind MemoryState :=
+  match layoutOfTyV2 ty with
+  | none => .error .unsupported
+  | some layout =>
+    match encodeValV2 profileV2TargetEndian ty v with
+    | .error k => .error k
+    | .ok bytes => writeBytes mem place layout.alignLog2 bytes
+
+/-- Profile v2 indirect local deinitialization (`writeUninit`). -/
+noncomputable def deinitIndirectV2 (mem : MemoryState) (ty : MirTy)
+    (place : MemPlace) : Except FaultKind MemoryState :=
+  match layoutOfTyV2 ty with
+  | none => .error .unsupported
+  | some layout => writeUninit mem place layout.size layout.alignLog2
+
+/-- Validate Rust language validity invariants for a `&T`, `&mut T`, `&[u8]`,
+or `&mut [u8]` value `v` in `m`: non-null, provenance-backed (except valid
+aligned non-null `len = 0` slices), live allocation, bounds, alignment,
+mutability for `.mut`, and initialized valid pointee value. -/
+noncomputable def refValidInMem (m : MemoryState) (reqMut : Mutability)
+    (pointee : MirTy) (v : Val) : Except FaultKind Unit :=
+  match pointee, v with
+  | .slice (.int w _), .slicePtr p len =>
+    let lay := intLayout w
+    match sliceFromRawPartsCheck m (Mutability.beq reqMut .mut) lay.size lay.alignLog2 p len with
+    | .ok _ => .ok ()
+    | .error k => .error k
+  | .slice _, _ => .error .unsupported
+  | _, .ptr p =>
+    match layoutOfTyV2 pointee with
+    | none => .error .unsupported
+    | some lay =>
+      match p.allocId with
+      | none =>
+        if Nat.beq p.offsetBytes.toNat 0 || Nat.blt 0 lay.size then
+          .error .undefined
+        else if !Nat.beq (Nat.mod p.offsetBytes.toNat (Nat.pow 2 lay.alignLog2)) 0 then
+          .error .undefined
+        else
+          match decodeValV2 profileV2TargetEndian pointee [] with
+          | .ok (some _) => .ok ()
+          | .ok none => .error .undefined
+          | .error k => .error k
+      | some aid =>
+        match findAllocation aid m.allocations with
+        | none => .error .undefined
+        | some a =>
+          if !a.live || !isInBounds a p.offsetBytes.toNat lay.size ||
+              !isAligned a p.offsetBytes.toNat lay.alignLog2 then
+            .error .undefined
+          else if Mutability.beq reqMut .mut && !Mutability.beq a.mutability .mut then
+            .error .undefined
+          else
+            let sliceBytes := (a.bytes.drop p.offsetBytes.toNat).take lay.size
+            match decodeValV2 profileV2TargetEndian pointee sliceBytes with
+            | .ok (some _) => .ok ()
+            | .ok none => .error .undefined
+            | .error k => .error k
+  | _, _ => .error .unsupported
+
+mutual
+  /-- Validate all references inside `v` (including tuple components) against
+  `m`. Raw pointers `.rawPtr` are not constrained by reference validity. -/
+  noncomputable def refsValidInMem (m : MemoryState) : MirTy → Val → Bool
+    | .ref reqMut pt, v =>
+      match refValidInMem m reqMut pt v with
+      | .ok () => true
+      | .error _ => false
+    | .tuple ts, .tuple vs => refsValidInMemList m ts vs
+    | _, _ => true
+
+  noncomputable def refsValidInMemList (m : MemoryState) :
+      List MirTy → List Val → Bool
+    | [], [] => true
+    | t :: ts, v :: vs => refsValidInMem m t v && refsValidInMemList m ts vs
+    | _, _ => false
+end
+
+mutual
+  /-- Extract provenance-backed `(isMut, allocId, offset, byteSize)` access
+  spans for every reference component inside `(ty, v)`. -/
+  noncomputable def refAccessSpans :
+      MirTy → Val → List (Bool × AllocId × Nat × Nat)
+    | .ref reqMut (.slice (.int w _)), .slicePtr p len =>
+      let lay := intLayout w
+      match p.allocId with
+      | some aid => [(Mutability.beq reqMut .mut, aid, p.offsetBytes.toNat, len.toNat * lay.size)]
+      | none => []
+    | .ref reqMut pt, .ptr p =>
+      match layoutOfTyV2 pt, p.allocId with
+      | some lay, some aid => [(Mutability.beq reqMut .mut, aid, p.offsetBytes.toNat, lay.size)]
+      | _, _ => []
+    | .tuple ts, .tuple vs => refAccessSpansList ts vs
+    | _, _ => []
+
+  noncomputable def refAccessSpansList :
+      List MirTy → List Val → List (Bool × AllocId × Nat × Nat)
+    | [], [] => []
+    | t :: ts, v :: vs => refAccessSpans t v ++ refAccessSpansList ts vs
+    | _, _ => []
+end
+
+mutual
+  /-- Extract all allocation ids referenced by any `.ref` inside `(ty, v)`. -/
+  noncomputable def refAllocIds : MirTy → Val → List AllocId
+    | .ref _ (.slice _), .slicePtr p _ =>
+      match p.allocId with
+      | some aid => [aid]
+      | none => []
+    | .ref _ _, .ptr p =>
+      match p.allocId with
+      | some aid => [aid]
+      | none => []
+    | .tuple ts, .tuple vs => refAllocIdsList ts vs
+    | _, _ => []
+
+  noncomputable def refAllocIdsList : List MirTy → List Val → List AllocId
+    | [], [] => []
+    | t :: ts, v :: vs => refAllocIds t v ++ refAllocIdsList ts vs
+    | _, _ => []
+end
+
+/-- Check that every reference's provenance `allocId` belongs to `cm` (so callee
+stack references can never escape past return). -/
+noncomputable def refsStayInCallerMem (cm : CallerMemory) (ty : MirTy)
+    (v : Val) : Bool :=
+  (refAllocIds ty v).all (fun aid => (findAllocation aid cm.allocations).isSome)
+
+noncomputable def spanDisjoint (a b : Bool × AllocId × Nat × Nat) : Bool :=
+  let (m1, id1, s1, n1) := a
+  let (m2, id2, s2, n2) := b
+  if !(m1 || m2) || Nat.beq n1 0 || Nat.beq n2 0 || !Nat.beq id1 id2 then
+    true
+  else
+    Nat.ble (s1 + n1) s2 || Nat.ble (s2 + n2) s1
+
+noncomputable def spanDisjointWith (a : Bool × AllocId × Nat × Nat) :
+    List (Bool × AllocId × Nat × Nat) → Bool
+  | [] => true
+  | b :: rest => spanDisjoint a b && spanDisjointWith a rest
+
+/-- Check pairwise disjointness across active mutable borrow byte spans. -/
+noncomputable def spansPairwiseDisjoint :
+    List (Bool × AllocId × Nat × Nat) → Bool
+  | [] => true
+  | a :: rest => spanDisjointWith a rest && spansPairwiseDisjoint rest
+
 end Trusted.MirSemantics
 
 end

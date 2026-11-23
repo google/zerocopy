@@ -127,6 +127,8 @@ end BinOp
   $M_{\text{anneal}}$ to fail closed with `FaultKind.unsupported`. -/
 inductive CastKind where
   | intToInt
+  | ptrToPtr
+  | intToPtr
   | unsupported
 
 /-- MIR unary operators (`rustc_middle::mir::UnOp` in
@@ -172,10 +174,11 @@ Constructor correspondence:
   > (`StatementKind::Assign`)
 
   A retag is therefore a no-op for `WithRetag::No` and for values that contain
-  no references or boxes, which covers every type that $M_{\text{anneal}}$
-  executes (`.bool`, `.int`, `.unit`, `.never`, and admitted fieldless
-  `.enum`). A retagging `Use(_, WithRetag::Yes)` of any other type lowers to
-  `.unsupported` until stacked/tree-borrows retagging is modeled.
+  no references or boxes, which covers every Profile v1 type (`.bool`,
+  `.int`, `.unit`, `.never`, and admitted fieldless `.enum`). A retagging
+  `Use(_, WithRetag::Yes)` of any other type lowers to `.useRetag`, which
+  Profile v2 executes by re-validating the contained references
+  (`refsValidInMem`) without modeling Stacked or Tree Borrows tags.
 - `.binaryOp op lhs rhs` corresponds to `Rvalue::BinaryOp(op, (lhs, rhs))`.
 - `.unaryOp op opnd` corresponds to `Rvalue::UnaryOp(op, opnd)`.
 - `.cast kind opnd ty` corresponds to `Rvalue::Cast(kind, opnd, ty)`
@@ -195,13 +198,18 @@ Constructor correspondence:
 - `.addressOf mutability place` corresponds to `Rvalue::RawPtr(kind, place)`.
 - `.aggregateTuple fields` corresponds to
   `Rvalue::Aggregate(AggregateKind::Tuple, fields)`.
+- `.aggregateRangeTo elemTy endOp` and `.aggregateRangeFrom elemTy startOp`
+  correspond to `Rvalue::Aggregate(AggregateKind::Adt, ..)` constructing
+  `core::ops::RangeTo { end }` and `core::ops::RangeFrom { start }`
+  (Profile v2).
+- `.useRetag op` corresponds to a retagging `Use(op, WithRetag::Yes)` of a
+  type that is not retag-free.
 - `.unsupported` represents all other `Rvalue` variants (`Repeat`,
-  `ThreadLocalRef`, non-tuple `Aggregate` (including direct fieldless
+  `ThreadLocalRef`, other `Aggregate`s (including direct fieldless
   enum construction `Rvalue::Aggregate(AggregateKind::Adt, [])`, which is
   intentionally out of scope and lowers fail-closed to `.unsupported` in favor
   of constant and discriminant operations), `CopyForDeref`,
-  `WrapUnsafeBinder`, `Reborrow`, and a retagging `Use(_, WithRetag::Yes)` of a
-  type that contains references or boxes).
+  `WrapUnsafeBinder`, and `Reborrow`).
 -/
 inductive Rvalue where
   | use (op : Operand)
@@ -209,9 +217,12 @@ inductive Rvalue where
   | unaryOp (op : UnOp) (opnd : Operand)
   | cast (kind : CastKind) (opnd : Operand) (ty : MirTy)
   | discriminant (place : Place)
+  | useRetag (op : Operand)
   | ref (mutability : Mutability) (place : Place)
   | addressOf (mutability : Mutability) (place : Place)
   | aggregateTuple (fields : List Operand)
+  | aggregateRangeTo (elemTy : MirTy) (endOp : Operand)
+  | aggregateRangeFrom (elemTy : MirTy) (startOp : Operand)
   | unsupported
 
 end Trusted.MirAst

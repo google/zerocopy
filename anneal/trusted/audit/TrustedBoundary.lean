@@ -3472,7 +3472,10 @@ def verifyMirWpCoreTheorems (env : Environment)
     for (aliasName, targetName) in [
         (`Trusted.Crate, `Trusted.MirSemantics.Crate),
         (`Trusted.CrateTheorem, `Trusted.MirSemantics.CrateTheorem),
-        (`Trusted.UnitTheorem, `Trusted.MirSemantics.UnitTheorem)] do
+        (`Trusted.UnitTheorem, `Trusted.MirSemantics.UnitTheorem),
+        (`Trusted.CrateV2, `Trusted.MirSemantics.CrateV2),
+        (`Trusted.CrateTheoremV2, `Trusted.MirSemantics.CrateTheoremV2),
+        (`Trusted.UnitTheoremV2, `Trusted.MirSemantics.UnitTheoremV2)] do
       requireMirPublicAlias env locals semMod aliasName targetName
 
 /-- Execute Phase 2 (`"audit"`) on the compiled `.olean` environment `env`. -/
@@ -6300,7 +6303,12 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
     fail "target and Expected must have no universe parameters"
   unless expectedInfo.type == .sort .zero do fail "Expected must have type Prop"
   let canonicalRoot := (← field (α := String) target "canonicalRoot").toName
-  let crateCtor : Name := `Trusted.MirSemantics.Crate.mk
+  let crateCtor : Name :=
+    if canonicalRoot == `Trusted.MirSemantics.CrateTheoremV2 ||
+        canonicalRoot == `Trusted.MirSemantics.UnitTheoremV2 then
+      `Trusted.MirSemantics.CrateV2.mk
+    else
+      `Trusted.MirSemantics.Crate.mk
   let subjectName := (← field (α := String) target "subjectDeclaration").toName
   let specName :=
     (← field (α := String) target "specificationDeclaration").toName
@@ -6316,6 +6324,11 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
     | _ => fail s!"incorrect canonical input origin {n}"
     unless (← lookup n).levelParams.isEmpty do
       fail s!"canonical input has universe parameters {n}"
+  unless canonicalRoot == `Trusted.MirSemantics.CrateTheorem ||
+      canonicalRoot == `Trusted.MirSemantics.UnitTheorem ||
+      canonicalRoot == `Trusted.MirSemantics.CrateTheoremV2 ||
+      canonicalRoot == `Trusted.MirSemantics.UnitTheoremV2 do
+    fail s!"unexpected canonical root {canonicalRoot}"
   -- Build the proposition directly from authenticated kernel names. Imported
   -- syntax, namespaces and elaborators may change the compiled Expected body;
   -- that convenience definition is therefore checked against this expression.

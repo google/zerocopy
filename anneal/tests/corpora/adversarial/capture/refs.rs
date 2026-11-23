@@ -6,29 +6,27 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-// === case: alloc_passthrough_with_spec ===
-//@ fail(capture): "alloc_passthrough: unsupported type: &'{erased} usize"
+// === case: nested_ref_rejected ===
+//@ fail(capture): "outside the Profile v2 type fragment"
 
-/// Reference parameter/local with ordinary doc comment (no synthesis tags).
-pub fn alloc_passthrough(x: usize) -> usize {
-    let r = &x;
-    *r
+/// Nested reference parameter.
+pub fn nested_ref_passthrough(r: &&usize, x: usize) -> usize {
+    let _ = **r;
+    x
 }
 
-// === case: alloc_passthrough_unannotated ===
-//@ fail(capture): "alloc_passthrough: unsupported type: &'{erased} usize"
+// === case: unsized_str_ref_rejected ===
+//@ fail(capture): "unsized_str_passthrough: unsupported type: str"
 
-pub fn alloc_passthrough(x: usize) -> usize {
-    let r = &x;
-    *r
+pub fn unsized_str_passthrough(s: &str) -> usize {
+    let _ = s;
+    0
 }
 
-// === case: wrong_alloc_passthrough ===
-//@ fail(capture): "alloc_passthrough: unsupported type: &'{erased} usize"
+// === case: ptr_to_ref_rejected ===
+//@ fail(capture): "outside the Profile v2 type fragment"
 
-pub fn alloc_passthrough(x: usize) -> usize {
-    let zero = 0usize;
-    let r = &zero;
-    let _ = x;
-    *r
+pub fn ptr_to_ref_passthrough(p: *const &usize) -> usize {
+    let _ = p;
+    0
 }

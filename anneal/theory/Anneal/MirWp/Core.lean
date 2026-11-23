@@ -562,6 +562,181 @@ theorem negativeCanary_of_execFault {p : Program} {q : Query} {fuel : Nat}
     NegativeCanaryClaim p q expectedFault otherFault :=
   negativeCanary_of_wpFault h_ne (wpFaultProg_of_execFaultProg h_exec)
 
+/-! ## Part II: Profile v2 Fuel-Bounded Execution & Adequacy -/
+
+/-- Fuel-bounded execution predicate over deterministic Profile v2
+small-step transitions `evalStepV2 p`. -/
+@[expose] def execOutcomeStateV2 (p : Program) (onDone : TerminalOut → Prop)
+    (onFault : FaultKind → Prop) (fuel : Nat) (s : State) : Prop :=
+  @Nat.rec (fun _ => State → Prop)
+    (fun _ => False)
+    (fun _ ih st =>
+      match evalStepV2 p st with
+      | .step st' => ih st'
+      | .done out => onDone out
+      | .fault k => onFault k)
+    fuel s
+
+/-- Profile v2 state-level normal-termination predicate. -/
+abbrev execStateV2 (p : Program) (fuel : Nat) (s : State)
+    (post : TerminalOut → Prop) : Prop :=
+  execOutcomeStateV2 p post (fun _ => False) fuel s
+
+/-- Whole-program Profile v2 normal-termination predicate starting from
+`initStateV2 p q`. -/
+@[expose] def execProgV2 (p : Program) (fuel : Nat) (q : Query)
+    (post : TerminalOut → Prop) : Prop :=
+  match initStateV2 p q with
+  | .error _ => False
+  | .ok s₀ => execStateV2 p fuel s₀ post
+
+/-- Prepend a single `StepV2 p s₁ (.step s₂)` to a `ReachesV2 p s₂ s₃` chain. -/
+theorem ReachesV2.head {p : Program} {s₁ s₂ s₃ : State}
+    (h_first : StepV2 p s₁ (.step s₂))
+    (h_rest : ReachesV2 p s₂ s₃) :
+    ReachesV2 p s₁ s₃ := by
+  induction h_rest with
+  | refl => exact ReachesV2.tail (ReachesV2.refl s₁) h_first
+  | tail _ h_last ih => exact ReachesV2.tail ih h_last
+
+/-- Any state reachable via `ReachesV2` preserves `execOutcomeStateV2` at some
+positive remaining fuel. -/
+theorem execOutcomeStateV2_of_reaches
+    {p : Program} {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
+    {s₁ s₂ : State} {fuel : Nat}
+    (h_exec : execOutcomeStateV2 p onDone onFault fuel s₁)
+    (h_reach : ReachesV2 p s₁ s₂) :
+    ∃ fuel', execOutcomeStateV2 p onDone onFault fuel' s₂ := by
+  induction h_reach with
+  | refl => exact ⟨fuel, h_exec⟩
+  | @tail sMid sNext _ h_step ih =>
+    let ⟨fuel₁, h_e₁⟩ := ih
+    cases fuel₁ with
+    | zero => exact False.elim h_e₁
+    | succ fuel₂ =>
+      let ⟨c, _, h_eval⟩ := h_step
+      have h_eval' : evalStepV2 p sMid = .step sNext := h_eval
+      change (match evalStepV2 p sMid with
+        | .step st' => execOutcomeStateV2 p onDone onFault fuel₂ st'
+        | .done out => onDone out
+        | .fault k => onFault k) at h_e₁
+      rw [h_eval'] at h_e₁
+      exact ⟨fuel₂, h_e₁⟩
+
+/-- Every state satisfying `execOutcomeStateV2` reaches a terminal `.done` or
+`.fault` step within `fuel` steps. -/
+theorem exists_terminal_of_execOutcomeStateV2
+    {p : Program} {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
+    {fuel : Nat} {s : State}
+    (h_exec : execOutcomeStateV2 p onDone onFault fuel s) :
+    ∃ s_end res, ReachesV2 p s s_end ∧ StepV2 p s_end res ∧
+      match res with
+      | .step _ => False
+      | .done out => onDone out
+      | .fault k => onFault k := by
+  induction fuel generalizing s with
+  | zero => exact False.elim h_exec
+  | succ f ih =>
+    change (match evalStepV2 p s with
+      | .step st' => execOutcomeStateV2 p onDone onFault f st'
+      | .done out => onDone out
+      | .fault k => onFault k) at h_exec
+    cases h_eval : evalStepV2 p s with
+    | step s' =>
+      rw [h_eval] at h_exec
+      let ⟨s_end, res, h_reach, h_term, h_res⟩ := ih h_exec
+      exact ⟨s_end, res, ReachesV2.head ⟨0, rfl, h_eval⟩ h_reach, h_term, h_res⟩
+    | done out =>
+      rw [h_eval] at h_exec
+      exact ⟨s, .done out, ReachesV2.refl s, ⟨0, rfl, h_eval⟩, h_exec⟩
+    | fault k =>
+      rw [h_eval] at h_exec
+      exact ⟨s, .fault k, ReachesV2.refl s, ⟨0, rfl, h_eval⟩, h_exec⟩
+
+/-- No state satisfying `execOutcomeStateV2` admits an infinite `StepV2`
+trace. -/
+theorem not_infinite_trace_of_execOutcomeStateV2
+    {p : Program} {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop} :
+    ∀ {fuel : Nat} (trace : Nat → State),
+      execOutcomeStateV2 p onDone onFault fuel (trace 0) →
+      (∀ n : Nat, StepV2 p (trace n) (.step (trace (n + 1)))) →
+      False
+  | 0, _, h_exec, _ => h_exec
+  | fuel + 1, trace, h_exec, h_steps => by
+    let ⟨c, _, h_eval⟩ := h_steps 0
+    have h_eval' : evalStepV2 p (trace 0) = .step (trace 1) := h_eval
+    change (match evalStepV2 p (trace 0) with
+      | .step st' => execOutcomeStateV2 p onDone onFault fuel st'
+      | .done out => onDone out
+      | .fault k => onFault k) at h_exec
+    rw [h_eval'] at h_exec
+    exact not_infinite_trace_of_execOutcomeStateV2 (fun n => trace (n + 1))
+      h_exec (fun n => h_steps (n + 1))
+
+/-- Exact-outcome adequacy theorem for Profile v2 `execProgV2`: derives
+`WellFormedV2`, `BehaviorV2`, `¬ DivergesV2`, and `SatisfiesPostV2` directly. -/
+theorem spec_and_behaviorV2_of_exec_eq {p : Program} {q : Query} {fuel : Nat}
+    {out : TerminalOut}
+    (h_exec : execProgV2 p fuel q (fun o => o = out)) :
+    WellFormedV2 p q ∧ BehaviorV2 p q out ∧ ¬ DivergesV2 p q ∧
+      ∀ post : TerminalOut → Prop, post out → SatisfiesPostV2 p q post := by
+  have h_ndiv : ¬ DivergesV2 p q := by
+    intro h_div
+    let ⟨s₀, h_init, trace, h_tr0, h_steps⟩ := h_div
+    unfold execProgV2 at h_exec
+    rw [h_init, ← h_tr0] at h_exec
+    exact not_infinite_trace_of_execOutcomeStateV2 trace h_exec h_steps
+  unfold execProgV2 at h_exec
+  cases h_init : initStateV2 p q with
+  | error _ => rw [h_init] at h_exec; exact False.elim h_exec
+  | ok s₀ =>
+    rw [h_init] at h_exec
+    have h_wf : WellFormedV2 p q := by
+      refine ⟨⟨s₀, h_init, fun _ _ => ⟨0, rfl⟩⟩, ?_⟩
+      intro k h_fault
+      unfold ReachesResultV2 at h_fault
+      rw [h_init] at h_fault
+      let ⟨s, h_reach, c, hc, h_eval⟩ := h_fault
+      let ⟨fuel', h_e'⟩ := execOutcomeStateV2_of_reaches h_exec h_reach
+      cases fuel' with
+      | zero => exact False.elim h_e'
+      | succ f' =>
+        have h_eval' : evalStepV2 p s = .fault k := h_eval
+        change (match evalStepV2 p s with
+          | .step st' => execOutcomeStateV2 p (fun o => o = out) (fun _ => False) f' st'
+          | .done o => o = out
+          | .fault _ => False) at h_e'
+        rw [h_eval'] at h_e'
+        exact h_e'
+    have h_beh : BehaviorV2 p q out := by
+      let ⟨s_end, res, h_reach, h_term, h_res⟩ :=
+        exists_terminal_of_execOutcomeStateV2 h_exec
+      cases res with
+      | step _ => exact False.elim h_res
+      | fault _ => exact False.elim h_res
+      | done out' =>
+        dsimp only at h_res
+        subst h_res
+        unfold BehaviorV2 ReachesResultV2
+        rw [h_init]
+        exact ⟨s_end, h_reach, h_term⟩
+    refine ⟨h_wf, h_beh, h_ndiv, fun post h_post => ⟨h_wf, fun out' h_b => ?_⟩⟩
+    unfold BehaviorV2 ReachesResultV2 at h_b
+    rw [h_init] at h_b
+    let ⟨s, h_reach, c, hc, h_eval⟩ := h_b
+    let ⟨fuel', h_e'⟩ := execOutcomeStateV2_of_reaches h_exec h_reach
+    cases fuel' with
+    | zero => exact False.elim h_e'
+    | succ f' =>
+      have h_eval' : evalStepV2 p s = .done out' := h_eval
+      change (match evalStepV2 p s with
+        | .step st' => execOutcomeStateV2 p (fun o => o = out) (fun _ => False) f' st'
+        | .done o => o = out
+        | .fault _ => False) at h_e'
+      rw [h_eval'] at h_e'
+      rw [h_e']
+      exact h_post
+
 end Anneal.MirWp
 
 end

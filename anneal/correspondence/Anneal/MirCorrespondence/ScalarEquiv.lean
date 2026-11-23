@@ -254,7 +254,8 @@ theorem evalRefUnOp_eq (op : UnOp) (v : Val) :
     evalRefUnOp op v = evalUnOp op v := by
   cases v with
   | bool b => cases op <;> rfl
-  | unit | enumVal _ _ | ptr _ | tuple _ | bytes _ | char _ | ordering _ =>
+  | unit | enumVal _ _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+  | tuple _ | bytes _ | char _ | ordering _ =>
     cases op <;> rfl
   | scalar sv =>
     cases sv with
@@ -1234,22 +1235,23 @@ theorem evalCharBinOp_eq (op : BinOp) (l r : Char) :
 theorem evalRefBinOp_eq (op : BinOp) (lhs rhs : Val) :
     evalRefBinOp op lhs rhs = evalBinOp op lhs rhs := by
   cases lhs with
-  | unit | enumVal _ _ | ptr _ | tuple _ | bytes _ | ordering _ =>
+  | unit | enumVal _ _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+  | tuple _ | bytes _ | ordering _ =>
     cases rhs <;> rfl
   | bool l =>
     cases rhs with
-    | unit | enumVal _ _ | ptr _ | tuple _ | bytes _ | scalar _ | char _
-    | ordering _ => rfl
+    | unit | enumVal _ _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+    | tuple _ | bytes _ | scalar _ | char _ | ordering _ => rfl
     | bool r => cases op <;> cases l <;> cases r <;> rfl
   | char l =>
     cases rhs with
-    | unit | enumVal _ _ | ptr _ | tuple _ | bytes _ | scalar _ | bool _
-    | ordering _ => rfl
+    | unit | enumVal _ _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+    | tuple _ | bytes _ | scalar _ | bool _ | ordering _ => rfl
     | char r => exact evalCharBinOp_eq op l r
   | scalar l =>
     cases rhs with
-    | unit | enumVal _ _ | ptr _ | tuple _ | bytes _ | bool _ | char _
-    | ordering _ => rfl
+    | unit | enumVal _ _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+    | tuple _ | bytes _ | bool _ | char _ | ordering _ => rfl
     | scalar r =>
       cases l with
       | mk w₁ s₁ bits₁ =>

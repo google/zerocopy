@@ -3160,6 +3160,9 @@ impl MirWpSyntheticSpec {
              def Crate : Prop := True\n\
              def CrateTheorem : Prop := True\n\
              def UnitTheorem : Prop := True\n\
+             def CrateV2 : Prop := True\n\
+             def CrateTheoremV2 : Prop := True\n\
+             def UnitTheoremV2 : Prop := True\n\
              def BodyVerified : Prop := True\n\
              def initState : Prop := True\n\
              def evalStep : Prop := True\n\
@@ -3202,6 +3205,9 @@ impl MirWpSyntheticSpec {
             ("Crate", "abbrev Crate := Trusted.MirSemantics.Crate"),
             ("CrateTheorem", "noncomputable abbrev CrateTheorem := Trusted.MirSemantics.CrateTheorem"),
             ("UnitTheorem", "noncomputable abbrev UnitTheorem := Trusted.MirSemantics.UnitTheorem"),
+            ("CrateV2", "abbrev CrateV2 := Trusted.MirSemantics.CrateV2"),
+            ("CrateTheoremV2", "noncomputable abbrev CrateTheoremV2 := Trusted.MirSemantics.CrateTheoremV2"),
+            ("UnitTheoremV2", "noncomputable abbrev UnitTheoremV2 := Trusted.MirSemantics.UnitTheoremV2"),
         ] {
             match self.public_alias_overrides.get(alias_name) {
                 Some(None) => {}

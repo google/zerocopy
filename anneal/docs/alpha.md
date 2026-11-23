@@ -75,7 +75,8 @@ library or binary target, `--manifest-path <Cargo.toml> --proof-dir <dir>`
 The alpha runs on the x86-64 Linux scalar MIR profile (Profile v1) with
 `-Zmir-preserve-ub` enforced during capture (`#4114`). Any construct outside
 this profile returns an explicit fail-closed refusal rather than approximating
-semantics.
+semantics, unless it belongs to the experimental
+[Profile v2](#experimental-mir-profile-v2-borrowed-slices-and-raw-pointers).
 
 | Category | Supported today (Profile v1) | Refused today (fail-closed) |
 | :--- | :--- | :--- |
@@ -86,6 +87,41 @@ semantics.
 
 For a realistic scalar example, `ci/verify_starnix_e2e.py` checks Starnix's
 `ebpf_core` endianness conversion using symbolic MIR helpers in `Anneal.MirWp`.
+
+## Experimental MIR Profile v2: borrowed slices and raw pointers
+
+Capture selects Profile v2 (`mirProfileVersion = 2`) when a selected body uses
+any of its additions; everything else stays on Profile v1. Profile v2 bodies
+are checked against `UnitTheoremV2` or `CrateTheoremV2`. Their receipts list
+an "experimental Profile v2 MIR semantics" assumption and mark
+`correspondence_provenance` inapplicable, because Pass 2 relates only Profile
+v1 rules to `vendor/lean-miri/`.
+
+| Category | Added by Profile v2 | Refused (fail-closed) |
+| :--- | :--- | :--- |
+| **Types** | General tuples; single-level `&T`, `&mut T`, `*const T`, and `*mut T` whose pointee is a Profile v1 scalar, `()`, an admitted enum, an overflow pair, or an integer slice `[T]`; `RangeTo<usize>` and `RangeFrom<usize>`; lifetime-only generic signatures. | Nested references or pointers (`&&T`, `*const &T`, `&[&T]`), `str`, structs, arrays, and the remaining Profile v1 refusals. |
+| **Bodies** | Bodies whose locals include references or raw pointers, but not both. | Bodies whose locals mix references and raw pointers, because Profile v2 does not model Rust's pointer aliasing rules (Stacked or Tree Borrows). For example, `<&mut [u8] as SplitByteSlice>::split_at_unchecked`, which uses `as_mut_ptr` and `from_raw_parts_mut`, is refused. |
+| **Statements & rvalues** | `Ref` and `RawPtr` (address-of) of locals and dereferenced places, assignment through dereferenced places, `PtrToPtr` and `IntToPtr` casts, `PtrMetadata`, `Offset`, `RangeTo`/`RangeFrom` aggregates, copy reads of tuple, overflow-pair, and range fields, and `Use` with retags. | Other pointer casts, index projections, field projections after a dereference, and other aggregates. |
+| **Terminators** | `Assert` and returning calls to a closed set of `core` functions: `<[T]>::{len, as_ptr, as_mut_ptr, get_unchecked}` (with `..n` or `n..`), `core::slice::from_raw_parts{,_mut}`, `<*const T>::add`, `<*mut T>::add`, and `usize::unchecked_sub`. | Every other call. |
+
+Each query (`Query`) supplies caller memory (`callerMem`) alongside its
+arguments. `SpecsV2` pairs per-function safety preconditions (`safety`,
+required only of `unsafe` functions) with a whole-program `property`.
+`ValidEntryArgsV2` requires live, in-bounds, aligned, initialized reference
+arguments in caller allocations, and disjoint mutable references.
+Raw pointer arguments are unconstrained, so an `unsafe` function's `safety`
+precondition must state their liveness, bounds, alignment, initialization, and
+mutability. Mutability here means the allocation's mutability: Profile v2
+does not track pointer aliasing permissions, so callers must also pass raw
+pointers whose provenance permits the accesses the function makes (for
+example, not a pointer derived from a live `&T` that the function writes
+through). Profile v2 encodes memory little-endian, matching the only targets
+capture admits.
+
+`tests/cargo-anneal/tests/profile_v2_e2e.rs` verifies the unmodified
+`zerocopy/src/byte_slice.rs` `<&[u8] as SplitByteSlice>::split_at_unchecked`
+under `UnitTheoremV2`, plus raw-pointer load and store fixtures under
+`CrateTheoremV2`.
 
 ### Bundled proof libraries and specification boundaries
 

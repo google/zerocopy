@@ -133,8 +133,56 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
             {
                 Ok(ir::Ty::OverflowPair(ity))
             } else {
-                Err(format!("unsupported type: {t:?}"))
+                let mut fields = Vec::with_capacity(elements.len());
+                for elem in elements {
+                    let ft = ty(tcx, elem)?;
+                    if !ft.is_sized() {
+                        return Err(format!("unsized tuple element in {t:?} is unsupported"));
+                    }
+                    fields.push(ft);
+                }
+                Ok(ir::Ty::Tuple { fields })
             }
+        }
+        ty::Tuple(elements) => {
+            let mut fields = Vec::with_capacity(elements.len());
+            for elem in elements {
+                let ft = ty(tcx, elem)?;
+                if !ft.is_sized() {
+                    return Err(format!("unsized tuple element in {t:?} is unsupported"));
+                }
+                fields.push(ft);
+            }
+            Ok(ir::Ty::Tuple { fields })
+        }
+        ty::Ref(_region, pointee, mutability) => {
+            let mutability = match mutability {
+                rustc_ast::Mutability::Not => ir::Mutability::Shared,
+                rustc_ast::Mutability::Mut => ir::Mutability::Mut,
+            };
+            Ok(ir::Ty::Ref {
+                mutability,
+                pointee: Box::new(ty(tcx, pointee)?),
+            })
+        }
+        ty::RawPtr(pointee, mutability) => {
+            let mutability = match mutability {
+                rustc_ast::Mutability::Not => ir::Mutability::Shared,
+                rustc_ast::Mutability::Mut => ir::Mutability::Mut,
+            };
+            Ok(ir::Ty::RawPtr {
+                mutability,
+                pointee: Box::new(ty(tcx, pointee)?),
+            })
+        }
+        ty::Slice(elem) => {
+            let elem_ty = ty(tcx, elem)?;
+            if !elem_ty.is_sized() {
+                return Err(format!("unsized slice element in {t:?} is unsupported"));
+            }
+            Ok(ir::Ty::Slice {
+                elem: Box::new(elem_ty),
+            })
         }
         ty::Uint(_) | ty::Int(_) => Ok(ir::Ty::Int(int_ty(t)?)),
         // `core::cmp::Ordering` ("a lang item only so that `BinOp::Cmp` in MIR
@@ -147,6 +195,36 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
                 && tcx.is_lang_item(adt.did(), rustc_hir::LangItem::OrderingEnum) =>
         {
             Ok(ir::Ty::Ordering)
+        }
+        ty::Adt(adt, args)
+            if args.len() == 1
+                && matches!(
+                    core_def_path(tcx, adt.did()).as_deref(),
+                    Some("core::ops::range::RangeTo" | "core::ops::range::RangeFrom")
+                ) =>
+        {
+            let path = core_def_path(tcx, adt.did()).expect("checked above");
+            let Some(arg_ty) = args[0].as_type() else {
+                return Err(format!("unsupported range type: {t:?}"));
+            };
+            let elem = ty(tcx, arg_ty)?;
+            if elem
+                != ir::Ty::Int(IntTy {
+                    width: IntWidth::Isize,
+                    signed: false,
+                })
+            {
+                return Err(format!("unsupported range index type in {t:?}"));
+            }
+            match path.as_str() {
+                "core::ops::range::RangeTo" => Ok(ir::Ty::RangeTo {
+                    elem: Box::new(elem),
+                }),
+                "core::ops::range::RangeFrom" => Ok(ir::Ty::RangeFrom {
+                    elem: Box::new(elem),
+                }),
+                _ => unreachable!("guarded above"),
+            }
         }
         // `Trusted.MirAst.EnumTy` keys nominal enum identity by the `u32` that
         // `enum_id` derives from the enum's semantic path, so the key does not
@@ -204,6 +282,28 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
 /// `Place` has a local plus projections. This fragment admits the empty
 /// projection only, preserving the compiler local index without renumbering.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1182-L1188
+fn place<'tcx>(tcx: TyCtxt<'tcx>, place: &mir::Place<'tcx>) -> Result<ir::Place> {
+    let mut projection = Vec::with_capacity(place.projection.len());
+    for elem in place.projection.iter() {
+        match elem {
+            mir::ProjectionElem::Deref => projection.push(ir::PlaceElem::Deref),
+            mir::ProjectionElem::Field(idx, field_ty) => projection.push(ir::PlaceElem::Field {
+                index: idx.as_usize(),
+                ty: ty(tcx, field_ty)?,
+            }),
+            other => {
+                return Err(format!(
+                    "unsupported place projection `{other:?}` in `{place:?}`"
+                ));
+            }
+        }
+    }
+    Ok(ir::Place {
+        local: place.local.as_u32(),
+        projection,
+    })
+}
+
 fn local(place: &mir::Place<'_>) -> Result<u32> {
     if !place.projection.is_empty() {
         return Err(format!("place projections are unsupported: {place:?}"));
@@ -340,12 +440,22 @@ fn operand<'tcx>(
     op: &mir::Operand<'tcx>,
 ) -> Result<ir::Operand> {
     match op {
-        mir::Operand::Copy(place) => Ok(ir::Operand::Copy {
-            local: local(place)?,
-        }),
-        mir::Operand::Move(place) => Ok(ir::Operand::Move {
-            local: local(place)?,
-        }),
+        mir::Operand::Copy(p) => {
+            let p = place(tcx, p)?;
+            if p.projection.is_empty() {
+                Ok(ir::Operand::Copy { local: p.local })
+            } else {
+                Ok(ir::Operand::CopyPlace { place: p })
+            }
+        }
+        mir::Operand::Move(p) => {
+            let p = place(tcx, p)?;
+            if p.projection.is_empty() {
+                Ok(ir::Operand::Move { local: p.local })
+            } else {
+                Ok(ir::Operand::MovePlace { place: p })
+            }
+        }
         mir::Operand::Constant(constant) => {
             let raw_ty = constant.const_.ty();
             let t = ty(tcx, raw_ty)?;
@@ -369,8 +479,14 @@ fn operand<'tcx>(
                 ir::Ty::Never => {
                     return Err("the never type has no scalar constants".into());
                 }
-                ir::Ty::OverflowPair(_) => {
-                    return Err("overflow-pair tuple constants are unsupported".into());
+                ir::Ty::OverflowPair(_)
+                | ir::Ty::Tuple { .. }
+                | ir::Ty::Ref { .. }
+                | ir::Ty::RawPtr { .. }
+                | ir::Ty::Slice { .. }
+                | ir::Ty::RangeTo { .. }
+                | ir::Ty::RangeFrom { .. } => {
+                    return Err(format!("constants of compound/pointer type {t:?} are unsupported"));
                 }
                 ir::Ty::Int(ity) => ity.width.bits(),
                 ir::Ty::Enum(ety) => match ety.tag_repr() {
@@ -454,30 +570,32 @@ fn read_rodata_scalar_from_alloc<Prov: Provenance>(
     Ok(scalar_int.to_bits_unchecked())
 }
 
-/// Extract MIR unary operators (`Not` and `Neg`), refusing `PtrMetadata`
-/// ("Gets the metadata `M` from a `*const`/`*mut`/`&`/`&mut`").
+/// Extract MIR unary operators (`Not`, `Neg`, and `PtrMetadata`, which "Gets
+/// the metadata `M` from a `*const`/`*mut`/`&`/`&mut`"; Profile v2 executes it
+/// on single-level references and raw pointers).
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1603-L1617
 fn un_op(op: mir::UnOp) -> Result<ir::UnOp> {
     Ok(match op {
         mir::UnOp::Not => ir::UnOp::Not,
         mir::UnOp::Neg => ir::UnOp::Neg,
-        mir::UnOp::PtrMetadata => return Err(format!("unsupported unary operator: {op:?}")),
+        mir::UnOp::PtrMetadata => ir::UnOp::PtrMetadata,
     })
 }
 
-/// Extract MIR cast kinds, admitting only `CastKind::IntToInt` and refusing
-/// pointer, float, transmute, and subtype casts exhaustively.
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1491-L1532
 fn cast_kind(kind: mir::CastKind) -> Result<ir::CastKind> {
     match kind {
         mir::CastKind::IntToInt => Ok(ir::CastKind::IntToInt),
+        mir::CastKind::PtrToPtr => Ok(ir::CastKind::PtrToPtr),
+        mir::CastKind::PointerWithExposedProvenance => Ok(ir::CastKind::IntToPtr),
+        mir::CastKind::PointerCoercion(
+            rustc_middle::ty::adjustment::PointerCoercion::MutToConstPointer,
+            _,
+        ) => Ok(ir::CastKind::PtrToPtr),
         mir::CastKind::PointerExposeProvenance
-        | mir::CastKind::PointerWithExposedProvenance
         | mir::CastKind::PointerCoercion(..)
         | mir::CastKind::FloatToInt
         | mir::CastKind::FloatToFloat
         | mir::CastKind::IntToFloat
-        | mir::CastKind::PtrToPtr
         | mir::CastKind::FnPtrToPtr
         | mir::CastKind::Transmute
         | mir::CastKind::Subtype => Err(format!("unsupported cast kind: {kind:?}")),
@@ -512,6 +630,7 @@ fn bin_op(op: mir::BinOp) -> Result<ir::BinOp> {
         mir::BinOp::Gt => ir::BinOp::Gt,
         mir::BinOp::Ge => ir::BinOp::Ge,
         mir::BinOp::Cmp => ir::BinOp::Cmp,
+        mir::BinOp::Offset => ir::BinOp::Offset,
         other => return Err(format!("unsupported binary operator: {other:?}")),
     })
 }
@@ -529,13 +648,24 @@ fn bin_op(op: mir::BinOp) -> Result<ir::BinOp> {
 fn rvalue<'tcx>(
     tcx: TyCtxt<'tcx>,
     typing_env: TypingEnv<'tcx>,
+    local_decls: &mir::LocalDecls<'tcx>,
     value: &mir::Rvalue<'tcx>,
 ) -> Result<ir::Rvalue> {
     Ok(match value {
-        mir::Rvalue::Use(op, with_retag) => ir::Rvalue::Use {
-            operand: operand(tcx, typing_env, op)?,
-            with_retag: with_retag.yes(),
-        },
+        mir::Rvalue::Use(op, with_retag) => {
+            let op_ty = ty(tcx, op.ty(local_decls, tcx))?;
+            let operand_ir = operand(tcx, typing_env, op)?;
+            if with_retag.yes() && !op_ty.is_retag_noop() {
+                ir::Rvalue::UseRetag {
+                    operand: operand_ir,
+                }
+            } else {
+                ir::Rvalue::Use {
+                    operand: operand_ir,
+                    with_retag: with_retag.yes(),
+                }
+            }
+        }
         mir::Rvalue::BinaryOp(op, values) => ir::Rvalue::Binary {
             op: bin_op(*op)?,
             left: operand(tcx, typing_env, &values.0)?,
@@ -553,10 +683,61 @@ fn rvalue<'tcx>(
         mir::Rvalue::Discriminant(place) => ir::Rvalue::Discriminant {
             local: local(place)?,
         },
-        // This also refuses `Aggregate(Tuple, ..)` and `Aggregate(Adt, ..)`.
-        // `Trusted.MirSemantics` models unit constants via `Use` and overflow
-        // pairs via `*WithOverflow`, and rejects tuple and ADT `Aggregate`
-        // rvalues with `.unsupported`.
+        mir::Rvalue::Ref(_region, borrow_kind, p) => {
+            let mutability = match borrow_kind {
+                mir::BorrowKind::Shared => ir::Mutability::Shared,
+                mir::BorrowKind::Mut { .. } => ir::Mutability::Mut,
+                mir::BorrowKind::Fake(_) => {
+                    return Err(format!("unsupported fake borrow: {borrow_kind:?}"));
+                }
+            };
+            ir::Rvalue::Ref {
+                mutability,
+                place: place(tcx, p)?,
+            }
+        }
+        mir::Rvalue::RawPtr(raw_kind, p) => {
+            let mutability = match raw_kind {
+                mir::RawPtrKind::Const => ir::Mutability::Shared,
+                mir::RawPtrKind::Mut => ir::Mutability::Mut,
+                mir::RawPtrKind::FakeForPtrMetadata => {
+                    return Err("fake raw ptr for PtrMetadata is unsupported".into());
+                }
+            };
+            ir::Rvalue::AddressOf {
+                mutability,
+                place: place(tcx, p)?,
+            }
+        }
+        mir::Rvalue::Aggregate(agg_kind, ops) => match &**agg_kind {
+            mir::AggregateKind::Tuple if !ops.is_empty() => {
+                let mut fields = Vec::with_capacity(ops.len());
+                for op in ops.iter() {
+                    fields.push(operand(tcx, typing_env, op)?);
+                }
+                ir::Rvalue::AggregateTuple { fields }
+            }
+            mir::AggregateKind::Adt(adt_did, _variant, substs, _, _)
+                if substs.len() == 1 && ops.len() == 1 =>
+            {
+                let Some(path) = core_def_path(tcx, *adt_did) else {
+                    return Err(format!("unsupported non-core ADT aggregate: {value:?}"));
+                };
+                let Some(arg_ty) = substs[0].as_type() else {
+                    return Err(format!("unsupported ADT aggregate: {value:?}"));
+                };
+                let elem_ty = ty(tcx, arg_ty)?;
+                let op = operand(tcx, typing_env, &ops[rustc_abi::FieldIdx::from_u32(0)])?;
+                match path.as_str() {
+                    "core::ops::range::RangeTo" => ir::Rvalue::AggregateRangeTo { elem_ty, end: op },
+                    "core::ops::range::RangeFrom" => {
+                        ir::Rvalue::AggregateRangeFrom { elem_ty, start: op }
+                    }
+                    _ => return Err(format!("unsupported ADT aggregate: {value:?}")),
+                }
+            }
+            _ => return Err(format!("unsupported rvalue aggregate: {value:?}")),
+        },
         other => return Err(format!("unsupported rvalue: {other:?}")),
     })
 }
@@ -578,13 +759,22 @@ fn rvalue<'tcx>(
 fn statement<'tcx>(
     tcx: TyCtxt<'tcx>,
     typing_env: TypingEnv<'tcx>,
+    local_decls: &mir::LocalDecls<'tcx>,
     stmt: &mir::StatementKind<'tcx>,
 ) -> Result<ir::Statement> {
     Ok(match stmt {
-        mir::StatementKind::Assign(value) => ir::Statement::Assign {
-            local: local(&value.0)?,
-            value: rvalue(tcx, typing_env, &value.1)?,
-        },
+        mir::StatementKind::Assign(value) => {
+            let p = place(tcx, &value.0)?;
+            let rv = rvalue(tcx, typing_env, local_decls, &value.1)?;
+            if p.projection.is_empty() {
+                ir::Statement::Assign {
+                    local: p.local,
+                    value: rv,
+                }
+            } else {
+                ir::Statement::AssignPlace { place: p, value: rv }
+            }
+        }
         mir::StatementKind::StorageLive(local) => ir::Statement::StorageLive {
             local: local.as_u32(),
         },
@@ -632,7 +822,84 @@ fn check_call_source(call_source: mir::CallSource) -> Result<()> {
     }
 }
 
+fn core_def_path(tcx: TyCtxt<'_>, def: DefId) -> Option<String> {
+    if tcx.crate_name(def.krate).as_str() != "core" {
+        return None;
+    }
+    Some(rustc_middle::ty::print::with_no_trimmed_paths!(
+        rustc_middle::ty::print::with_no_visible_paths!(tcx.def_path_str(def))
+    ))
+}
+
+fn core_call_op<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    def_id: DefId,
+    fn_args: ty::GenericArgsRef<'tcx>,
+) -> Result<ir::CoreCallOp> {
+    let Some(path) = core_def_path(tcx, def_id) else {
+        return Err(format!(
+            "external call to non-core def `{}` is unsupported",
+            tcx.def_path_str(def_id)
+        ));
+    };
+    match path.as_str() {
+        "core::slice::<impl [T]>::len" => Ok(ir::CoreCallOp::SliceLen),
+        "core::slice::<impl [T]>::as_ptr" => Ok(ir::CoreCallOp::SliceAsPtr),
+        "core::slice::<impl [T]>::as_mut_ptr" => Ok(ir::CoreCallOp::SliceAsMutPtr),
+        "core::slice::raw::from_raw_parts" | "core::slice::from_raw_parts" => {
+            Ok(ir::CoreCallOp::SliceFromRawParts)
+        }
+        "core::slice::raw::from_raw_parts_mut" | "core::slice::from_raw_parts_mut" => {
+            Ok(ir::CoreCallOp::SliceFromRawPartsMut)
+        }
+        "core::slice::<impl [T]>::get_unchecked" => {
+            let usize_ty = ir::Ty::Int(IntTy {
+                width: IntWidth::Isize,
+                signed: false,
+            });
+            let idx_ty = fn_args
+                .get(1)
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing index type argument in {path}"))?;
+            match ty(tcx, idx_ty)? {
+                ir::Ty::RangeTo { elem: e } if *e == usize_ty => {
+                    Ok(ir::CoreCallOp::SliceGetUncheckedRangeTo)
+                }
+                ir::Ty::RangeFrom { elem: e } if *e == usize_ty => {
+                    Ok(ir::CoreCallOp::SliceGetUncheckedRangeFrom)
+                }
+                other => Err(format!(
+                    "unsupported get_unchecked index type {other:?}"
+                )),
+            }
+        }
+        "core::ptr::const_ptr::<impl *const T>::add" => {
+            let pt = fn_args
+                .first()
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing pointee type in {path}"))?;
+            Ok(ir::CoreCallOp::PtrAdd {
+                mutability: ir::Mutability::Shared,
+                pointee: ty(tcx, pt)?,
+            })
+        }
+        "core::ptr::mut_ptr::<impl *mut T>::add" => {
+            let pt = fn_args
+                .first()
+                .and_then(|a| a.as_type())
+                .ok_or_else(|| format!("missing pointee type in {path}"))?;
+            Ok(ir::CoreCallOp::PtrAdd {
+                mutability: ir::Mutability::Mut,
+                pointee: ty(tcx, pt)?,
+            })
+        }
+        "core::num::<impl usize>::unchecked_sub" => Ok(ir::CoreCallOp::UsizeUncheckedSub),
+        _ => Err(format!("unsupported core call `{path}`")),
+    }
+}
+
 /// `SwitchInt` evaluates its operand and selects an explicit or otherwise edge.
+/// `Assert` evaluates its boolean condition (refusing cleanup unwinds).
 /// `Unreachable` is retained because "Executing this terminator is UB."
 /// Diverging calls (`TerminatorKind::Call { target: None, .. }`, e.g.
 /// `zx_process_exit -> !` or `_start -> !`) never return to a continuation
@@ -643,10 +910,11 @@ fn check_call_source(call_source: mir::CallSource) -> Result<()> {
 /// `.fault .unsupported` in `Trusted.MirSemantics` if reachable while
 /// permitting verified functions whose diverging guard branches are proved
 /// unreachable.
-/// Returning calls (`target: Some(_)`), `Drop`, unwind, assembly, and all
-/// other terminators stay refused at capture time.
-/// `TerminatorKind::Call` explicitly runs [`check_call_source`] first so
-/// `CallSource::Use` fails closed even for diverging calls.
+/// Returning calls (`target: Some(_)`) admit only the closed [`ir::CoreCallOp`]
+/// Profile v2 intrinsic table without cleanup unwinds; all other returning
+/// calls, indirect calls, `Drop`, unwinds, assembly, and other terminators stay
+/// refused at capture time. `TerminatorKind::Call` runs [`check_call_source`]
+/// first so `CallSource::Use` fails closed even for diverging calls.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L692-L740
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L800-L821
 fn terminator<'tcx>(
@@ -666,18 +934,72 @@ fn terminator<'tcx>(
                 .collect(),
             otherwise: targets.otherwise().as_u32(),
         },
+        mir::TerminatorKind::Assert {
+            cond,
+            expected,
+            msg,
+            target,
+            unwind,
+        } => {
+            if matches!(unwind, mir::UnwindAction::Cleanup(_)) {
+                return Err("cleanup unwinds on assert are unsupported".into());
+            }
+            let msg_ir = match &**msg {
+                mir::AssertMessage::Overflow(op, ..) => ir::AssertKind::Overflow {
+                    op: bin_op(*op)?,
+                },
+                mir::AssertMessage::OverflowNeg(..) => ir::AssertKind::OverflowNeg,
+                mir::AssertMessage::DivisionByZero(..) => ir::AssertKind::DivByZero,
+                mir::AssertMessage::RemainderByZero(..) => ir::AssertKind::RemByZero,
+                mir::AssertMessage::BoundsCheck { .. } => ir::AssertKind::BoundsCheck,
+                mir::AssertMessage::MisalignedPointerDereference { .. } => {
+                    ir::AssertKind::MisalignedPtrDeref
+                }
+                mir::AssertMessage::NullPointerDereference => ir::AssertKind::NullPtrDeref,
+                other => return Err(format!("unsupported assert message: {other:?}")),
+            };
+            ir::Terminator::Assert {
+                cond: operand(tcx, typing_env, cond)?,
+                expected: *expected,
+                msg: msg_ir,
+                target: target.as_u32(),
+            }
+        }
         mir::TerminatorKind::Return => ir::Terminator::Ret,
         mir::TerminatorKind::Unreachable => ir::Terminator::Unreachable,
         mir::TerminatorKind::Call {
-            call_source,
+            func,
+            args,
+            destination,
             target,
+            unwind,
+            call_source,
             ..
         } => {
             check_call_source(*call_source)?;
-            if target.is_none() {
-                ir::Terminator::Unsupported
-            } else {
-                return Err(format!("unsupported terminator: {term:?}"));
+            let Some(target_bb) = target else {
+                return Ok(ir::Terminator::Unsupported);
+            };
+            if matches!(unwind, mir::UnwindAction::Cleanup(_)) {
+                return Err("cleanup unwinds on call are unsupported".into());
+            }
+            let mir::Operand::Constant(func_const) = func else {
+                return Err(format!("indirect call is unsupported: {term:?}"));
+            };
+            let ty::FnDef(def_id, fn_args) = *func_const.const_.ty().kind() else {
+                return Err(format!("non-FnDef call is unsupported: {term:?}"));
+            };
+            let op = core_call_op(tcx, def_id, fn_args)?;
+            let mut arg_ops = Vec::with_capacity(args.len());
+            for a in args {
+                arg_ops.push(operand(tcx, typing_env, &a.node)?);
+            }
+            let dst = place(tcx, destination)?;
+            ir::Terminator::CoreCall {
+                op,
+                args: arg_ops,
+                dst,
+                target: target_bb.as_u32(),
             }
         }
         other => return Err(format!("unsupported terminator: {other:?}")),
@@ -1057,15 +1379,27 @@ fn body_inner<'tcx>(
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/generics.rs#L153-L156
     let (signature, identity) = match instance {
         None => {
-            if tcx.generics_of(def).count() != 0 {
-                return Err("generic functions require quantified instantiation obligations".into());
+            let mut cur_gen = Some(def.to_def_id());
+            while let Some(did) = cur_gen {
+                let gens = tcx.generics_of(did);
+                for param in &gens.own_params {
+                    if !matches!(param.kind, ty::GenericParamDefKind::Lifetime) {
+                        return Err(
+                            "generic functions require quantified instantiation obligations".into(),
+                        );
+                    }
+                }
+                if !tcx.predicates_of(did).predicates.is_empty() {
+                    return Err("functions with generic or lifetime bounds are unsupported".into());
+                }
+                cur_gen = gens.parent;
             }
-            // With generics refused, the identity instantiation is the only
-            // one. `skip_binder` "is only valid when you are either extracting
-            // data that does not reference any generic arguments": the ABI,
-            // C-variadic, and safety flags read below live in `fn_sig_kind`,
-            // separately from the argument and return types that late-bound
-            // regions can reference.
+            // With non-lifetime generics and bounds refused, the identity
+            // instantiation is the only one. `skip_binder` "is only valid when
+            // you are either extracting data that does not reference any
+            // generic arguments": the ABI, C-variadic, and safety flags read
+            // below live in `fn_sig_kind`, separately from the argument and
+            // return types that late-bound regions can reference.
             // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/unnormalized.rs#L96-L100
             // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/binder.rs#L164-L170
             // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/ty_kind.rs#L899-L904
@@ -1127,6 +1461,10 @@ fn body_inner<'tcx>(
         .iter()
         .map(|decl| ty(tcx, decl.ty))
         .collect::<Result<Vec<_>>>()?;
+    // Enforce the Profile v2 local fragment before lowering statements so
+    // disallowed local types (e.g. `&&T` or `*const &T`) report the type
+    // boundary error rather than secondary statement errors inside the body.
+    ir::validate_local_tys(&local_tys)?;
     let blocks = body
         .basic_blocks
         .iter_enumerated()
@@ -1136,7 +1474,7 @@ fn body_inner<'tcx>(
                 .iter()
                 .enumerate()
                 .map(|(index, stmt)| {
-                    statement(tcx, typing_env, &stmt.kind)
+                    statement(tcx, typing_env, &body.local_decls, &stmt.kind)
                         .map_err(|error| format!("{id:?} statement {index}: {error}"))
                 })
                 .collect::<Result<Vec<_>>>()?;
@@ -1506,23 +1844,25 @@ mod tests {
     fn operator_and_cast_extractors_admit_modeled_variants_and_refuse_others() {
         assert_eq!(un_op(mir::UnOp::Not).unwrap(), ir::UnOp::Not);
         assert_eq!(un_op(mir::UnOp::Neg).unwrap(), ir::UnOp::Neg);
-        assert!(
-            un_op(mir::UnOp::PtrMetadata)
-                .unwrap_err()
-                .contains("unsupported unary operator")
-        );
+        assert_eq!(un_op(mir::UnOp::PtrMetadata).unwrap(), ir::UnOp::PtrMetadata);
 
         assert_eq!(
             cast_kind(mir::CastKind::IntToInt).unwrap(),
             ir::CastKind::IntToInt
         );
+        assert_eq!(
+            cast_kind(mir::CastKind::PtrToPtr).unwrap(),
+            ir::CastKind::PtrToPtr
+        );
+        assert_eq!(
+            cast_kind(mir::CastKind::PointerWithExposedProvenance).unwrap(),
+            ir::CastKind::IntToPtr
+        );
         for refused_cast in [
             mir::CastKind::PointerExposeProvenance,
-            mir::CastKind::PointerWithExposedProvenance,
             mir::CastKind::FloatToInt,
             mir::CastKind::FloatToFloat,
             mir::CastKind::IntToFloat,
-            mir::CastKind::PtrToPtr,
             mir::CastKind::FnPtrToPtr,
             mir::CastKind::Transmute,
             mir::CastKind::Subtype,
@@ -1538,6 +1878,7 @@ mod tests {
             (mir::BinOp::SubWithOverflow, ir::BinOp::SubWithOverflow),
             (mir::BinOp::MulWithOverflow, ir::BinOp::MulWithOverflow),
             (mir::BinOp::Cmp, ir::BinOp::Cmp),
+            (mir::BinOp::Offset, ir::BinOp::Offset),
         ] {
             assert_eq!(bin_op(mir_op).unwrap(), expected);
         }
@@ -1547,7 +1888,6 @@ mod tests {
             mir::BinOp::MulUnchecked,
             mir::BinOp::ShlUnchecked,
             mir::BinOp::ShrUnchecked,
-            mir::BinOp::Offset,
         ] {
             let err = bin_op(refused_bin).unwrap_err();
             assert!(err.contains("unsupported binary operator"), "{err}");

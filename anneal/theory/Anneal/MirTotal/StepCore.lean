@@ -59,37 +59,37 @@ exceeds `fuel`. -/
         match b with
         | .bool => true
         | .int _ _ | .unit | .never | .char | .ordering | .enum _ | .tuple _
-        | .ref _ _ | .rawPtr _ _ | .unsupported => false
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .rangeTo _ | .rangeFrom _ | .unsupported => false
       | .int w1 s1 =>
         match b with
         | .int w2 s2 => intWidthBeqComp w1 w2 && boolBeqComp s1 s2
         | .bool | .unit | .never | .char | .ordering | .enum _ | .tuple _
-        | .ref _ _ | .rawPtr _ _ | .unsupported => false
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .rangeTo _ | .rangeFrom _ | .unsupported => false
       | .unit =>
         match b with
         | .unit => true
         | .bool | .int _ _ | .never | .char | .ordering | .enum _ | .tuple _
-        | .ref _ _ | .rawPtr _ _ | .unsupported => false
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .rangeTo _ | .rangeFrom _ | .unsupported => false
       | .never =>
         match b with
         | .never => true
         | .bool | .int _ _ | .unit | .char | .ordering | .enum _ | .tuple _
-        | .ref _ _ | .rawPtr _ _ | .unsupported => false
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .rangeTo _ | .rangeFrom _ | .unsupported => false
       | .char =>
         match b with
         | .char => true
         | .bool | .int _ _ | .unit | .never | .ordering | .enum _ | .tuple _
-        | .ref _ _ | .rawPtr _ _ | .unsupported => false
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .rangeTo _ | .rangeFrom _ | .unsupported => false
       | .ordering =>
         match b with
         | .ordering => true
         | .bool | .int _ _ | .unit | .never | .char | .enum _ | .tuple _
-        | .ref _ _ | .rawPtr _ _ | .unsupported => false
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .rangeTo _ | .rangeFrom _ | .unsupported => false
       | .enum e1 =>
         match b with
         | .enum e2 => enumTyBeqComp e1 e2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .tuple _
-        | .ref _ _ | .rawPtr _ _ | .unsupported => false
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .rangeTo _ | .rangeFrom _ | .unsupported => false
       | .tuple fs1 =>
         match b with
         | .tuple fs2 =>
@@ -101,22 +101,37 @@ exceeds `fuel`. -/
             (fun ys => match ys with | [] => true | _ :: _ => false)
             fs1 fs2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
-        | .ref _ _ | .rawPtr _ _ | .unsupported => false
+        | .ref _ _ | .rawPtr _ _ | .slice _ | .rangeTo _ | .rangeFrom _ | .unsupported => false
       | .ref m1 p1 =>
         match b with
         | .ref m2 p2 => mutabilityBeqComp m1 m2 && ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
-        | .tuple _ | .rawPtr _ _ | .unsupported => false
+        | .tuple _ | .rawPtr _ _ | .slice _ | .rangeTo _ | .rangeFrom _ | .unsupported => false
       | .rawPtr m1 p1 =>
         match b with
         | .rawPtr m2 p2 => mutabilityBeqComp m1 m2 && ih p1 p2
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
-        | .tuple _ | .ref _ _ | .unsupported => false
+        | .tuple _ | .ref _ _ | .slice _ | .rangeTo _ | .rangeFrom _ | .unsupported => false
+      | .slice p1 =>
+        match b with
+        | .slice p2 => ih p1 p2
+        | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
+        | .tuple _ | .ref _ _ | .rawPtr _ _ | .rangeTo _ | .rangeFrom _ | .unsupported => false
+      | .rangeTo p1 =>
+        match b with
+        | .rangeTo p2 => ih p1 p2
+        | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
+        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .rangeFrom _ | .unsupported => false
+      | .rangeFrom p1 =>
+        match b with
+        | .rangeFrom p2 => ih p1 p2
+        | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
+        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .rangeTo _ | .unsupported => false
       | .unsupported =>
         match b with
         | .unsupported => true
         | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
-        | .tuple _ | .ref _ _ | .rawPtr _ _ => false)
+        | .tuple _ | .ref _ _ | .rawPtr _ _ | .slice _ | .rangeTo _ | .rangeFrom _ => false)
     fuel
 
 /-! ## `tyEq`-Parameterized Value Encoding and Indirect Stores -/
@@ -188,15 +203,18 @@ theorem encodeValBy_eq (tyEq : MirTy → MirTy → Bool)
     | int w _ =>
       cases v with
       | scalar _ => dsimp only; rw [byteSizeComp_eq, encodeUIntComp_eq]
-      | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+      | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+      | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
     | char =>
       cases v with
       | char _ => dsimp only; rw [encodeUIntComp_eq]
-      | scalar _ | ptr _ | bool _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+      | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+      | bool _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
     | ordering =>
       cases v with
       | ordering ord => dsimp only; rw [encodeUIntComp_eq]; cases ord <;> rfl
-      | scalar _ | ptr _ | bool _ | char _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+      | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+      | bool _ | char _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
     | enum ety =>
       cases v with
       | enumVal _ variant =>
@@ -209,7 +227,8 @@ theorem encodeValBy_eq (tyEq : MirTy → MirTy → Bool)
           cases Trusted.MirSemantics.getElem? ety.discriminants variant with
           | none => rfl
           | some disc => dsimp only; rw [encodeUIntComp_eq]
-      | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit | tuple _ | bytes _ => rfl
+      | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+      | bool _ | char _ | ordering _ | unit | tuple _ | bytes _ => rfl
     | tuple fs =>
       cases fs with
       | nil => rfl
@@ -239,17 +258,21 @@ theorem encodeValBy_eq (tyEq : MirTy → MirTy → Bool)
                           cases vr2 with
                           | nil => dsimp only; rw [byteSizeComp_eq, encodeUIntComp_eq]
                           | cons _ _ => rfl
-                        | scalar _ | ptr _ | char _ | ordering _ | unit | enumVal _ _
+                        | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+                        | char _ | ordering _ | unit | enumVal _ _
                         | tuple _ | bytes _ => rfl
-                    | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _
+                    | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+                    | bool _ | char _ | ordering _ | unit | enumVal _ _
                     | tuple _ | bytes _ => rfl
-                | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _
+                | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+                | bool _ | char _ | ordering _ | unit | enumVal _ _
                 | bytes _ => rfl
             | int _ _ | char | ordering | unit | never | enum _ | tuple _
-            | ref _ _ | rawPtr _ _ | unsupported => rfl
+            | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
         | bool | char | ordering | unit | never | enum _ | tuple _
-        | ref _ _ | rawPtr _ _ | unsupported => rfl
-    | bool | unit | never | ref _ _ | rawPtr _ _ | unsupported => cases v <;> rfl
+        | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+    | bool | unit | never | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
+    | unsupported => cases v <;> rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.storeIndirect` parameterized by
 `tyEq`. -/
@@ -463,7 +486,8 @@ theorem evalDiscriminantOfValComp_eq (ety : EnumTy) (optVal : Option Val)
         rw [enumTyBeqComp_eq, compGetElem?_eq]
         cases Trusted.MirSemantics.getElem? ety.discriminants 0 <;>
           first | rfl | (dsimp only; rw [truncateBitsComp_eq])
-      | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit | tuple _ | bytes _ => rfl
+      | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+      | bool _ | char _ | ordering _ | unit | tuple _ | bytes _ => rfl
   | scalar _ _ =>
     cases optVal with
     | none => rfl
@@ -474,7 +498,8 @@ theorem evalDiscriminantOfValComp_eq (ety : EnumTy) (optVal : Option Val)
         rw [enumTyBeqComp_eq, compGetElem?_eq]
         cases Trusted.MirSemantics.getElem? ety.discriminants var <;>
           first | rfl | (dsimp only; rw [truncateBitsComp_eq])
-      | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit | tuple _ | bytes _ => rfl
+      | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+      | bool _ | char _ | ordering _ | unit | tuple _ | bytes _ => rfl
 
 /-- Computable mirror of
 `Trusted.MirSemantics.evalOrderingDiscriminantOfVal`. -/
@@ -625,7 +650,7 @@ theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
         cases evalUnOp op v <;> rfl
   | cast ck opnd castTy =>
     cases ck with
-    | unsupported => rfl
+    | ptrToPtr | intToPtr | unsupported => rfl
     | intToInt =>
       dsimp only [evalRvalueBy, evalRvalue]
       rw [evalOperandToSlotComp_eq bodyLocals locals mem isIntLikeTyComp isIntLikeTy
@@ -685,8 +710,9 @@ theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
               | error _ => rfl
               | ok optVal => exact evalOrderingDiscriminantOfValComp_eq _ _ _
             | bool | int _ _ | char | unit | never | tuple _ | ref _ _ | rawPtr _ _
-            | unsupported => rfl
-  | ref _ _ | addressOf _ _ | aggregateTuple _ | unsupported => rfl
+            | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+  | useRetag _ | ref _ _ | addressOf _ _ | aggregateTuple _ | aggregateRangeTo _
+  | aggregateRangeFrom _ | unsupported => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.writePlace` parameterized by
 `tyEq`. -/
@@ -1008,7 +1034,7 @@ theorem evalCharSwitchBranchesComp_eq (discr : Char) (otherwise : BasicBlockId)
       | .error k => .fault k
       | .ok target =>
         jumpToBlockComp { frame with locals := localsAfterDiscr } memAfterDiscr callerMem target
-  | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _ | .unsupported =>
+  | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _ | .coreCall _ _ _ _ _ | .unsupported =>
     .fault .unsupported
 
 /-- Agreement between `evalTerminatorComp` and `evalTerminator`. -/
@@ -1018,7 +1044,8 @@ theorem evalTerminatorComp_eq (body : Body) (bb : BasicBlock)
       evalTerminator body bb frame mem callerMem := by
   unfold evalTerminatorComp evalTerminator
   cases bb.terminator with
-  | goto _ | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _ | unsupported => rfl
+  | goto _ | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
+  | coreCall _ _ _ _ _ | unsupported => rfl
   | return_ =>
     dsimp only
     cases bb.cleanup with
@@ -1065,7 +1092,8 @@ theorem evalTerminatorComp_eq (body : Body) (bb : BasicBlock)
             dsimp only
             rw [evalCharSwitchBranchesComp_eq]
             cases evalCharSwitchBranches c targets.otherwise targets.branches <;> rfl
-          | ptr _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
+          | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+          | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
             dsimp only
             cases targets.branches <;> rfl
 
@@ -1269,8 +1297,9 @@ theorem discriminantTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
   | nop | storageLive _ | storageDead _ | unsupported => rfl
   | assign dst rv =>
     cases rv with
-    | use _ | binaryOp _ _ _ | unaryOp _ _ | cast _ _ _ | ref _ _ | addressOf _ _
-    | aggregateTuple _ | unsupported => rfl
+    | use _ | useRetag _ | binaryOp _ _ _ | unaryOp _ _ | cast _ _ _ | ref _ _
+    | addressOf _ _ | aggregateTuple _ | aggregateRangeTo _ | aggregateRangeFrom _
+    | unsupported => rfl
     | discriminant src =>
       dsimp only
       cases (dst.projection.isEmpty && src.projection.isEmpty) with
@@ -1296,7 +1325,7 @@ theorem discriminantTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
             | none => rfl
             | some dstTy => exact hTyEq dstTy (.int .i8 true)
           | bool | int _ _ | char | unit | never | tuple _ | ref _ _ | rawPtr _ _
-          | unsupported => rfl
+          | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
 
 /-- Computable mirror of `Trusted.MirSemantics.castTypesValid` parameterized by
 `tyEq`. -/
@@ -1326,11 +1355,12 @@ theorem castTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
   | nop | storageLive _ | storageDead _ | unsupported => rfl
   | assign dst rv =>
     cases rv with
-    | use _ | binaryOp _ _ _ | unaryOp _ _ | discriminant _ | ref _ _ | addressOf _ _
-    | aggregateTuple _ | unsupported => rfl
+    | use _ | useRetag _ | binaryOp _ _ _ | unaryOp _ _ | discriminant _ | ref _ _
+    | addressOf _ _ | aggregateTuple _ | aggregateRangeTo _ | aggregateRangeFrom _
+    | unsupported => rfl
     | cast ck _ castTy =>
       cases ck with
-      | unsupported => rfl
+      | ptrToPtr | intToPtr | unsupported => rfl
       | intToInt =>
         dsimp only
         cases dst.projection.isEmpty with

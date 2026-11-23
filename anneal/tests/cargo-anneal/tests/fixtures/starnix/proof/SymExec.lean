@@ -466,7 +466,8 @@ theorem sRvalue_sound {tys : List MirTy} {ls ls' : List SSlot} {dst : MirTy}
         · cases hd
       · cases h
     · cases h
-  | unaryOp | cast | ref | addressOf | aggregateTuple | unsupported => cases h
+  | unaryOp | cast | ref | addressOf | aggregateTuple | useRetag
+  | aggregateRangeTo | aggregateRangeFrom | unsupported => cases h
 
 /-- Whether `writePlace` accepts this value at type `ty`. -/
 noncomputable def SVal.check (ty : MirTy) : SVal → Bool

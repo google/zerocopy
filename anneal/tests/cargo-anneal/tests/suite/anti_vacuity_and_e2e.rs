@@ -519,7 +519,7 @@ fn onboarding_init_and_diagnostic_hints_e2e() {
 
     // 2. Cargo `init` + unmodified starter proof emits a concise Lean placeholder hint,
     //    `example` in `Spec.lean` emits a spec-preflight hint, and `take_ref` capture
-    //    emits a Profile v1 reference hint while preserving existing `detail` contracts.
+    //    emits a nested-reference hint while preserving existing `detail` contracts.
     let krate = dir.join("crate_demo");
     fs::create_dir_all(krate.join("src")).unwrap();
     fs::create_dir_all(krate.join("empty_proof")).unwrap();
@@ -586,7 +586,7 @@ fn onboarding_init_and_diagnostic_hints_e2e() {
         "{spec_receipt}"
     );
 
-    fs::write(krate.join("src/lib.rs"), "pub fn take_ref(x: &u64) -> u64 { *x }\n").unwrap();
+    fs::write(krate.join("src/lib.rs"), "pub fn take_ref(x: &&u64) -> u64 { **x }\n").unwrap();
     let ref_out = staged.exec(&hole_inv).unwrap().process;
     assert_outcome_exit(&ref_out, 1).unwrap();
     let ref_receipt: Value = serde_json::from_slice(&ref_out.stdout).unwrap();

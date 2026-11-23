@@ -620,7 +620,7 @@ theorem evalTerminator_frame_retag (body : Body) (bb : BasicBlock)
               intro s' hStep
               injection hStep with hEq; subst hEq
               exact ⟨_, rfl, h_id⟩
-          | ptr _ | ordering _ | unit | tuple _ | bytes _ | enumVal _ _ =>
+          | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | ordering _ | unit | tuple _ | bytes _ | enumVal _ _ =>
             dsimp only
             cases targets.branches with
             | nil =>
@@ -629,7 +629,7 @@ theorem evalTerminator_frame_retag (body : Body) (bb : BasicBlock)
               injection hStep with hEq; subst hEq
               exact ⟨_, rfl, h_id⟩
             | cons _ _ => exact ⟨(fun _ h => by cases h), rfl⟩
-  | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _ | unsupported =>
+  | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
     exact ⟨(fun _ h => by cases h), rfl⟩
 
 /-- Combined single-step `IsSingleFrame0` preservation and `retagDefId`

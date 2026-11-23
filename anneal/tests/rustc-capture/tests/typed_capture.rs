@@ -868,9 +868,16 @@ fn retag_flags_are_recorded_on_scalar_use_and_reference_assignments_are_refused(
 
     let ref_fixture = Capture::new(b"pub fn selected(x: &u64) -> &u64 { x }\n");
     let output = ref_fixture.selected_command().output().unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert_eq!(ref_fixture.manifest()["program"]["mir_profile_version"], 2);
+    let ref_lean = std::fs::read_to_string(ref_fixture.output.join("Captured.lean")).unwrap();
+    assert!(ref_lean.contains("Trusted.MirAst.Rvalue.useRetag"), "{ref_lean}");
+
+    let unsupported_ref = Capture::new(b"pub fn selected(x: &str) -> &str { x }\n");
+    let output = unsupported_ref.selected_command().output().unwrap();
     assert_eq!(output.status.code(), Some(1), "{output:?}");
     assert_eq!(status(&output)["status"], "unsupported", "{output:?}");
-    ref_fixture.assert_no_capture_artifacts();
+    unsupported_ref.assert_no_capture_artifacts();
 }
 
 #[test]
@@ -887,9 +894,10 @@ fn tuple_aggregate_empty() {
 fn tuple_aggregate_non_empty() {
     let fixture = Capture::new(b"pub fn selected(x: u64) -> (u64, u64) { (x, x) }\n");
     let output = fixture.selected_command().output().unwrap();
-    assert_eq!(output.status.code(), Some(1), "{output:?}");
-    assert_eq!(status(&output)["status"], "unsupported", "{output:?}");
-    fixture.assert_no_capture_artifacts();
+    assert!(output.status.success(), "{output:?}");
+    assert_eq!(fixture.manifest()["program"]["mir_profile_version"], 2);
+    let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
+    assert!(lean.contains("Trusted.MirAst.Rvalue.aggregateTuple"), "{lean}");
 }
 
 #[test]
@@ -2229,7 +2237,9 @@ pub fn selected(x: Signed128) -> i128 {
 
 #[test]
 fn unmodeled_projections_tuples_casts_and_operators_fail_closed() {
-    let refused_cases: &[(&str, &[u8], &str)] = &[
+    // Under Profile v2, tuple aggregates, `.field` projections, and
+    // `TerminatorKind::Assert` are captured at `mir_profile_version == 2`.
+    let v2_admitted_cases: &[(&str, &[u8])] = &[
         (
             "overflow_pair_field_0_projection",
             b"#![feature(core_intrinsics)]\n\
@@ -2237,7 +2247,6 @@ fn unmodeled_projections_tuples_casts_and_operators_fail_closed() {
               pub fn selected(a: u32, b: u32) -> u32 {\n\
                   core::intrinsics::add_with_overflow(a, b).0\n\
               }\n",
-            "place projections are unsupported",
         ),
         (
             "overflow_pair_field_1_projection",
@@ -2246,37 +2255,45 @@ fn unmodeled_projections_tuples_casts_and_operators_fail_closed() {
               pub fn selected(a: u32, b: u32) -> bool {\n\
                   core::intrinsics::add_with_overflow(a, b).1\n\
               }\n",
-            "place projections are unsupported",
         ),
         (
             "overflow_pair_tuple_aggregate",
             b"pub fn selected(x: u32, flag: bool) -> (u32, bool) { (x, flag) }\n",
-            "unsupported rvalue",
         ),
         (
             "non_overflow_pair_tuple_bool_int",
             b"pub fn selected(p: (bool, u32)) -> (bool, u32) { p }\n",
-            "unsupported type",
         ),
         (
             "non_overflow_pair_tuple_char_bool",
             b"pub fn selected(p: (char, bool)) -> (char, bool) { p }\n",
-            "unsupported type",
         ),
         (
             "triple_tuple",
             b"pub fn selected(p: (u32, bool, bool)) -> (u32, bool, bool) { p }\n",
-            "unsupported type",
+        ),
+        (
+            "checked_div_assert_terminator",
+            b"pub fn selected(a: u32, b: u32) -> u32 { a / b }\n",
+        ),
+    ];
+    for (name, source) in v2_admitted_cases {
+        let fixture = Capture::new(source);
+        let output = fixture.selected_command().output().unwrap();
+        assert!(output.status.success(), "{name}: {output:?}");
+        assert_eq!(fixture.manifest()["program"]["mir_profile_version"], 2, "{name}");
+    }
+
+    let refused_cases: &[(&str, &[u8], &str)] = &[
+        (
+            "slice_index_projection",
+            b"pub fn selected(s: &[u8], i: usize) -> u8 { s[i] }\n",
+            "unsupported place projection",
         ),
         (
             "checked_add_option_call",
             b"pub fn selected(a: u32, b: u32) -> Option<u32> { a.checked_add(b) }\n",
             "unsupported type",
-        ),
-        (
-            "checked_div_assert_terminator",
-            b"pub fn selected(a: u32, b: u32) -> u32 { a / b }\n",
-            "unsupported terminator",
         ),
         (
             "transmute_cast_kind",
@@ -3180,8 +3197,9 @@ fn whole_crate_admits_safe_traits_impls_consts_and_refuses_unsafe_or_extern_obli
 
     // Builtin `#[derive(Clone, Copy, PartialEq, Eq)]` emits `TrivialClone`,
     // `Copy`, `StructuralPartialEq`, `Clone`, `PartialEq`, and `Eq` impls: all
-    // six impl items pass `whole_crate_item`, leaving only the `&self` method
-    // bodies unsupported until reference capture is enabled.
+    // six impl items pass `whole_crate_item`. Profile v2 captures the `&self`
+    // bodies of `clone` and `assert_receiver_is_total_eq`, leaving only
+    // `PartialEq::eq`, which reads a discriminant through a reference.
     let derived_crate = b"\
         #[derive(Clone, Copy, PartialEq, Eq)]\n\
         pub enum Derived { A, B }\n\
@@ -3192,13 +3210,15 @@ fn whole_crate_admits_safe_traits_impls_consts_and_refuses_unsafe_or_extern_obli
     let drv_failure = status(&drv_out);
     assert_eq!(drv_failure["status"], "unsupported", "{drv_failure}");
     let drv_unsup = drv_failure["unsupported"].as_array().unwrap();
-    assert_eq!(drv_unsup.len(), 3, "{drv_failure}");
-    for item in drv_unsup {
-        assert!(
-            item["reason"].as_str().unwrap().contains("unsupported type: &'{erased} Derived"),
-            "{drv_failure}"
-        );
-    }
+    assert_eq!(drv_unsup.len(), 1, "{drv_failure}");
+    assert!(
+        drv_unsup[0]["path"].as_str().unwrap().contains("as std::cmp::PartialEq>::eq"),
+        "{drv_failure}"
+    );
+    assert!(
+        drv_unsup[0]["reason"].as_str().unwrap().contains("place projections are unsupported"),
+        "{drv_failure}"
+    );
     drv_fixture.assert_no_capture_artifacts();
 
     // Pure `Struct`-typed `Const` (`Hash([0; 32])`) and its `AnonConst` length
@@ -3341,6 +3361,84 @@ fn whole_crate_admits_safe_traits_impls_consts_and_refuses_unsafe_or_extern_obli
             failure.to_string().contains(expected),
             "{name}: expected {expected:?}, got {failure}"
         );
+        fixture.assert_no_capture_artifacts();
+    }
+}
+
+#[test]
+fn captures_profile_v2_slice_and_raw_pointer_bodies_while_keeping_v1_scalar_unchanged() {
+    let v2_src = b"\
+        pub unsafe fn split_slice<'a>(s: &'a [u8], mid: usize) -> (&'a [u8], &'a [u8]) {\n\
+            unsafe { (s.get_unchecked(..mid), s.get_unchecked(mid..)) }\n\
+        }\n\
+        pub unsafe fn load_u32(p: *const u32) -> u32 {\n\
+            unsafe { *p }\n\
+        }\n\
+        pub unsafe fn store_u8(p: *mut u8, v: u8) {\n\
+            unsafe { *p = v; }\n\
+        }\n";
+    let v2 = Capture::new(v2_src);
+    let out = v2.command().arg("--scope=crate").output().unwrap();
+    assert!(
+        out.status.success(),
+        "Profile v2 capture should succeed:\n{}\n{}",
+        stdout(&out),
+        stderr(&out)
+    );
+    let manifest = v2.manifest();
+    assert_eq!(manifest["program"]["mir_profile_version"], 2, "{manifest}");
+    let lean = std::fs::read_to_string(v2.output.join("Captured.lean")).unwrap();
+    assert!(lean.contains("mirProfileVersion := 2"), "{lean}");
+    assert!(lean.contains("MirTy.slice"), "{lean}");
+    assert!(lean.contains("MirTy.rawPtr"), "{lean}");
+    assert!(lean.contains("CoreCallOp."), "{lean}");
+
+    // Pure scalar Profile v1 crates must remain at mir_profile_version == 1.
+    let v1 = Capture::new(b"pub fn xor(a: u64, b: u64) -> u64 { a ^ b }\n");
+    let v1_out = v1.command().arg("--scope=crate").output().unwrap();
+    assert!(v1_out.status.success(), "{v1_out:?}");
+    assert_eq!(v1.manifest()["program"]["mir_profile_version"], 1);
+}
+
+#[test]
+fn profile_v2_refuses_unsupported_pointer_casts_and_unsized_types() {
+    for (name, source) in [
+        (
+            "expose-provenance-cast",
+            "pub fn selected(p: *const u8) -> usize { p as usize }\n",
+        ),
+        (
+            "ptr-transmute",
+            "pub unsafe fn selected(p: *const u8) -> usize {\n\
+                 unsafe { core::mem::transmute::<*const u8, usize>(p) }\n\
+             }\n",
+        ),
+        (
+            "str-slice",
+            "pub fn selected(s: &str) -> usize { s.len() }\n",
+        ),
+        (
+            "signed-ptr-offset",
+            "pub unsafe fn selected(p: *const u8, off: isize) -> *const u8 {\n\
+                 unsafe { p.offset(off) }\n\
+             }\n",
+        ),
+        (
+            "nested-ref",
+            "pub fn selected<'a>(r: &'a &'a u8) -> u8 { **r }\n",
+        ),
+        (
+            "ptr-to-ref",
+            "pub unsafe fn selected<'a>(p: *mut &'a u8, x: &'a u8) {\n\
+                 unsafe { *p = x; }\n\
+             }\n",
+        ),
+    ] {
+        let fixture = Capture::new(source.as_bytes());
+        let output = fixture.selected_command().output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
         fixture.assert_no_capture_artifacts();
     }
 }

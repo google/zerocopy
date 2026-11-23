@@ -261,6 +261,134 @@ noncomputable def writeUninit (m : MemoryState) (place : MemPlace)
     (size alignLog2 : Nat) : Except FaultKind MemoryState :=
   writeBytes m place alignLog2 (List.replicate size .uninit)
 
+/-! ## Profile v2 Caller Memory and Pointer/Slice Checks -/
+
+/-- Upper bound `isize::MAX + 1` on a 64-bit target (`2^63` bytes). -/
+noncomputable def isizeMaxBytes : Nat :=
+  Nat.pow 2 63
+
+/-- Validate that all allocations in `cm` carry non-zero, pairwise-distinct
+`allocId`s, fit within 64-bit `isize::MAX`, and stay within Rust's maximum
+alignment (`2^29`). -/
+noncomputable def allocIdsValid (seen : List AllocId) : List Allocation → Bool
+  | [] => true
+  | a :: rest =>
+    !Nat.beq a.allocId 0 &&
+      natNotElem a.allocId seen &&
+      Nat.blt a.bytes.length isizeMaxBytes &&
+      Nat.ble a.alignLog2 29 &&
+      allocIdsValid (a.allocId :: seen) rest
+
+/-- Structural validity of caller-provided memory for Profile v2. -/
+noncomputable def validCallerMemory (cm : CallerMemory) : Bool :=
+  allocIdsValid [] cm.allocations
+
+/-- Compute the largest `allocId` appearing in `allocs` (or `0` when empty). -/
+noncomputable def maxAllocId : List Allocation → AllocId
+  | [] => 0
+  | a :: rest => Nat.max a.allocId (maxAllocId rest)
+
+/-- Build the Profile v2 entry `MemoryState` containing `cm.allocations`,
+advancing `nextAllocId` past every caller allocation id (and past `entryMemory`'s
+reserved id `1`) so callee stack allocations can never alias `cm`. -/
+noncomputable def entryMemoryWithCaller (cm : CallerMemory) : MemoryState :=
+  { nextAllocId := Nat.max entryMemory.nextAllocId (maxAllocId cm.allocations + 1)
+    allocations := cm.allocations }
+
+/-- Extract the post-execution caller-visible allocations from `m` in the
+original order of `orig.allocations` so caller-memory mutations are observable
+on return without exposing callee stack allocations. -/
+noncomputable def extractCallerAllocations (m : MemoryState) :
+    List Allocation → List Allocation
+  | [] => []
+  | a :: rest =>
+    let updated := (findAllocation a.allocId m.allocations).getD a
+    updated :: extractCallerAllocations m rest
+
+/-- Snapshot caller-visible allocations from `m` on return. -/
+noncomputable def extractCallerMemory (orig : CallerMemory) (m : MemoryState) :
+    CallerMemory :=
+  ⟨extractCallerAllocations m orig.allocations⟩
+
+/-- Check that every byte in `bs` is initialized (`.init _ _`). -/
+noncomputable def isSliceAllInit : List AllocByte → Bool
+  | [] => true
+  | .init _ _ :: rest => isSliceAllInit rest
+  | .uninit :: _ => false
+
+/-- Checked Rust `pointer::add` in `m`: requires byte delta `count * elemSize`
+strictly below `isize::MAX + 1`, and for provenance-bearing pointers requires a
+live allocation whose bounds cover `[offset, offset + count * elemSize]`.
+Without provenance, only a zero delta is valid (matching `pointer::add(0)`). -/
+noncomputable def ptrAddInMem (m : MemoryState) (elemSize : Nat) (p : PtrVal)
+    (count : Nat) : Except FaultKind PtrVal :=
+  let delta := count * elemSize
+  if !Nat.blt delta isizeMaxBytes then
+    .error .undefined
+  else
+    match p.allocId with
+    | none =>
+      if Nat.beq delta 0 then
+        .ok p
+      else
+        .error .undefined
+    | some aid =>
+      match findAllocation aid m.allocations with
+      | none => .error .undefined
+      | some a =>
+        if !a.live || !Nat.ble (p.offsetBytes.toNat + delta) a.bytes.length then
+          .error .undefined
+        else
+          .ok { p with offsetBytes := UInt64.ofNat (p.offsetBytes.toNat + delta) }
+
+/-- Validate `&[u8]` / `&mut [u8]` slice preconditions in `m`
+(`core::slice::from_raw_parts` and `from_raw_parts_mut` / `Ref` validity):
+- `len * elemSize < 2^63` (`isize::MAX` bound);
+- non-null & aligned even when `len == 0` (`withoutProvenance 0` always faults);
+- for non-zero length (or any provenance-bearing slice pointer): live allocation,
+  in-bounds `[offset, offset + totalBytes]`, `isAligned a offset elemAlignLog2`,
+  mutable allocation when `isMut = true`, and initialized element bytes. -/
+noncomputable def sliceFromRawPartsCheck (m : MemoryState) (isMut : Bool)
+    (elemSize elemAlignLog2 : Nat) (p : PtrVal) (len : UInt64) :
+    Except FaultKind Val :=
+  let totalBytes := len.toNat * elemSize
+  if !Nat.blt totalBytes isizeMaxBytes then
+    .error .undefined
+  else
+    match p.allocId with
+    | none =>
+      if Nat.beq p.offsetBytes.toNat 0 || Nat.blt 0 totalBytes then
+        .error .undefined
+      else if !Nat.beq (Nat.mod p.offsetBytes.toNat (Nat.pow 2 elemAlignLog2)) 0 then
+        .error .undefined
+      else
+        .ok (.slicePtr p len)
+    | some aid =>
+      match findAllocation aid m.allocations with
+      | none => .error .undefined
+      | some a =>
+        if !a.live || !isInBounds a p.offsetBytes.toNat totalBytes ||
+            !isAligned a p.offsetBytes.toNat elemAlignLog2 then
+          .error .undefined
+        else if isMut && !Mutability.beq a.mutability .mut then
+          .error .undefined
+        else if !isSliceAllInit ((a.bytes.drop p.offsetBytes.toNat).take totalBytes) then
+          .error .undefined
+        else
+          .ok (.slicePtr p len)
+
+/-- Checked `slice::get_unchecked` subslice on `[u8]` (`[startOff..endOff]` of
+slice `(p, len)`): requires `startOff <= endOff <= len`, advancing `p` by
+`startOff` via `ptrAddInMem`. -/
+noncomputable def sliceGetUncheckedCheck (m : MemoryState) (p : PtrVal)
+    (len startOff endOff : Nat) : Except FaultKind Val :=
+  if !Nat.ble startOff endOff || !Nat.ble endOff len then
+    .error .undefined
+  else
+    match ptrAddInMem m 1 p startOff with
+    | .error k => .error k
+    | .ok p' => .ok (.slicePtr p' (UInt64.ofNat (endOff - startOff)))
+
 end Trusted.MirSemantics
 
 end

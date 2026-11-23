@@ -75,7 +75,7 @@ incrementally.
 | Document | Status | Scope |
 | :--- | :--- | :--- |
 | [Design overview](design.md) | Current + planned | Detailed verification workflow, library-centric model, specification modes, and incremental adoption. |
-| [MIR verifier alpha](alpha.md) | Current (Stage 0) | Exact Profile v1 scalar MIR subset, `verify` usage, taint flags, and alpha releases. |
+| [MIR verifier alpha](alpha.md) | Current (Stage 0) | Exact Profile v1 scalar MIR subset, the experimental Profile v2 borrowed-slice and raw-pointer subset, `verify` usage, taint flags, and alpha releases. |
 | [Scaffolding and testing](scaffolding.md) | Current | Running workspace tests, `installed_smoke`, packaging checks, and failure bundles. |
 | [Multi-step MIR architecture](architecture.md) | Current + planned | Three-stage MIR pipeline, repository layout, and compiler integration. |
 | [Trust model and boundary enforcement](trust-model.md) | Current | The `trusted/` boundary, dependency pins, and repository CI audits. |

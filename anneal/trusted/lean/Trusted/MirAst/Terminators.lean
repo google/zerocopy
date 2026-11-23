@@ -104,6 +104,20 @@ inductive AssertKind where
   | nullPtrDeref
   | unsupported
 
+/-- Closed set of modeled `core` library calls in Profile v2
+(`TerminatorKind.coreCall`). Every unmodeled external `Call` remains
+`.unsupported`. -/
+inductive CoreCallOp where
+  | sliceLen
+  | sliceAsPtr
+  | sliceAsMutPtr
+  | sliceFromRawParts
+  | sliceFromRawPartsMut
+  | sliceGetUncheckedRangeTo
+  | sliceGetUncheckedRangeFrom
+  | ptrAdd (mutability : Mutability) (pointee : MirTy)
+  | usizeUncheckedSub
+
 /-- A MIR basic-block terminator (`rustc_middle::mir::TerminatorKind` in
 `compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
 `8144389c895da997dbdecaa635e41d6a50be6ffd`):
@@ -156,6 +170,8 @@ inductive TerminatorKind where
   | assert (cond : Operand) (expected : Bool) (msg : AssertKind)
       (target : BasicBlockId) (unwind : UnwindAction)
   | call (callee : DefId) (args : List Operand) (dst : Place)
+      (target : Option BasicBlockId) (unwind : UnwindAction)
+  | coreCall (op : CoreCallOp) (args : List Operand) (dst : Place)
       (target : Option BasicBlockId) (unwind : UnwindAction)
   | unsupported
 

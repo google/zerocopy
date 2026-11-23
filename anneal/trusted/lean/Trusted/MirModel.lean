@@ -120,6 +120,9 @@ exactly the Unicode scalar values that Rust's `char` admits), and
 inductive Val where
   | scalar (v : ScalarVal)
   | ptr (p : PtrVal)
+  | slicePtr (p : PtrVal) (len : UInt64)
+  | rangeTo (endOffset : UInt64)
+  | rangeFrom (startOffset : UInt64)
   | bool (b : Bool)
   | char (c : Char)
   | ordering (ord : OrderingVal)

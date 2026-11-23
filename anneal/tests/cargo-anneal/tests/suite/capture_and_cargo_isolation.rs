@@ -120,7 +120,7 @@ fn verify_runs_real_capture_before_spec_or_proof_audit_error() {
 
     let good_rs = fs::read(corpus_path("scalar_specs/annotated_id/lib.rs")).unwrap();
     let bad_spec = fs::read(corpus_path("scalar_specs/spec_unknown_ident_rejected/Spec.lean")).unwrap();
-    let bad_mir_rs = b"pub fn unsupported_raw_ptr(x: *const u8) -> usize { x as usize }\n";
+    let bad_mir_rs = b"pub fn unsupported_str(s: &str) -> usize { let _ = s; 0 }\n";
     let proof_lean = fs::read(corpus_path("scalar_specs/annotated_id/Proof.lean")).unwrap();
 
     // 1. Valid crate + bad `Spec.lean` runs capture first.
@@ -178,7 +178,7 @@ fn verify_runs_real_capture_before_spec_or_proof_audit_error() {
         &staged,
         &["--request", r2_path.to_str().unwrap(), "--artifacts", art2.to_str().unwrap()],
     );
-    expect_failed(&run2, 1, "unsupported", Some("capture"), "unsupported type: *const u8");
+    expect_failed(&run2, 1, "unsupported", Some("capture"), "unsupported type: str");
     assert!(!art2.join("capture/Captured.lean").exists());
 }
 

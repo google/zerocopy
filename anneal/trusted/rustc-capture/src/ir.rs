@@ -236,6 +236,37 @@ pub const fn is_unicode_scalar(bits: u128) -> bool {
     bits <= 0x10_FFFF && !(0xD800 <= bits && bits <= 0xDFFF)
 }
 
+/// Mutability qualifier matching `Trusted.MirAst.Mutability`.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Mutability {
+    Shared,
+    Mut,
+}
+
+impl Mutability {
+    pub const fn lean_name(self) -> &'static str {
+        match self {
+            Self::Shared => "shared",
+            Self::Mut => "mut",
+        }
+    }
+}
+
+fn serialize_boxed_ty<S: Serializer>(val: &Ty, serializer: S) -> Result<S::Ok, S::Error> {
+    let v = serde_json::to_value(val).map_err(serde::ser::Error::custom)?;
+    v.serialize(serializer)
+}
+
+fn serialize_ty_slice<S: Serializer>(vals: &[Ty], serializer: S) -> Result<S::Ok, S::Error> {
+    let mut seq = serializer.serialize_seq(Some(vals.len()))?;
+    for val in vals {
+        let v = serde_json::to_value(val).map_err(serde::ser::Error::custom)?;
+        seq.serialize_element(&v)?;
+    }
+    seq.end()
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Ty {
@@ -247,6 +278,32 @@ pub enum Ty {
     Int(IntTy),
     Enum(EnumTy),
     OverflowPair(IntTy),
+    Tuple {
+        #[serde(serialize_with = "serialize_ty_slice")]
+        fields: Vec<Ty>,
+    },
+    Ref {
+        mutability: Mutability,
+        #[serde(serialize_with = "serialize_boxed_ty")]
+        pointee: Box<Ty>,
+    },
+    RawPtr {
+        mutability: Mutability,
+        #[serde(serialize_with = "serialize_boxed_ty")]
+        pointee: Box<Ty>,
+    },
+    Slice {
+        #[serde(serialize_with = "serialize_boxed_ty")]
+        elem: Box<Ty>,
+    },
+    RangeTo {
+        #[serde(serialize_with = "serialize_boxed_ty")]
+        elem: Box<Ty>,
+    },
+    RangeFrom {
+        #[serde(serialize_with = "serialize_boxed_ty")]
+        elem: Box<Ty>,
+    },
 }
 
 impl Ty {
@@ -260,12 +317,11 @@ impl Ty {
     /// `WithRetag::Yes` sets `RetagMode::Default` during `copyOp`, which calls
     /// `retagSafePointer` only inside `ValidityVisitor::checkSafe` on safe
     /// pointers (`&T`, `&mut T`, `Box<T>`). For reference-free scalar, `char`,
-    /// `Ordering`, unit, never, fieldless-enum, and `(int, bool)` overflow-pair
-    /// types, `WithRetag::Yes` and `WithRetag::No` have identical semantics.
-    /// Any future `Ty` variant capable of carrying references or `Box` must
-    /// return `false` so capture fails closed rather than erasing active
-    /// retags.
-    pub const fn is_retag_noop(&self) -> bool {
+    /// `Ordering`, unit, never, fieldless-enum, raw-pointer, range, and `(int,
+    /// bool)` overflow-pair types, `WithRetag::Yes` and `WithRetag::No` have
+    /// identical semantics. Any reference-bearing type returns `false` so
+    /// capture never erases active retags (`Rvalue::UseRetag` instead).
+    pub fn is_retag_noop(&self) -> bool {
         match self {
             Self::Bool
             | Self::Char
@@ -274,7 +330,13 @@ impl Ty {
             | Self::Never
             | Self::Int(_)
             | Self::Enum(_)
-            | Self::OverflowPair(_) => true,
+            | Self::OverflowPair(_)
+            | Self::RawPtr { .. }
+            | Self::Slice { .. }
+            | Self::RangeTo { .. }
+            | Self::RangeFrom { .. } => true,
+            Self::Ref { .. } => false,
+            Self::Tuple { fields } => fields.iter().all(Self::is_retag_noop),
         }
     }
 
@@ -291,14 +353,17 @@ impl Ty {
     /// `lean-miri`'s `Miri.Interpreter.localToPlace`, evaluating an unprojected
     /// `PlaceMention` of a `Sized` local returns `Place::Local` without reading
     /// memory or checking liveness (an exact operational no-op), whereas an
-    /// unsized local accesses its local operand and checks liveness. Any future
-    /// unsized `Ty` variant must return `false` so capture fails closed rather
-    /// than rendering `Statement::PlaceMention` as `StatementKind.nop`.
+    /// unsized local accesses its local operand and checks liveness. Unsized
+    /// [`Ty`] variants (such as [`Self::Slice`]) return `false` so capture
+    /// fails closed rather than rendering `Statement::PlaceMention` as
+    /// `StatementKind.nop`.
     /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/interpret/step.rs#L117-L119
     /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/interpret/place.rs#L519-L536
     /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/interpret/stack.rs#L610-L631
-    pub const fn is_sized(&self) -> bool {
+    pub fn is_sized(&self) -> bool {
         match self {
+            Self::Slice { .. } => false,
+            Self::Tuple { fields } => fields.iter().all(Self::is_sized),
             Self::Bool
             | Self::Char
             | Self::Ordering
@@ -306,19 +371,115 @@ impl Ty {
             | Self::Never
             | Self::Int(_)
             | Self::Enum(_)
+            | Self::OverflowPair(_)
+            | Self::Ref { .. }
+            | Self::RawPtr { .. }
+            | Self::RangeTo { .. }
+            | Self::RangeFrom { .. } => true,
+        }
+    }
+
+    /// Whether this type belongs to the Profile v1 scalar/unit/enum/pair
+    /// fragment.
+    pub fn is_supported_scalar_or_unit(&self) -> bool {
+        matches!(
+            self,
+            Self::Bool
+                | Self::Int(_)
+                | Self::Char
+                | Self::Ordering
+                | Self::Unit
+                | Self::Never
+                | Self::Enum(_)
+                | Self::OverflowPair(_)
+        )
+    }
+
+    /// Whether this type is admitted as a Profile v2 local type (matching
+    /// `Trusted.MirSemantics.isSupportedV2LocalTy`). Forbids nested
+    /// references/pointers inside pointees (`&&T`, `*mut &T`, `&[&T]`).
+    pub fn is_supported_v2_local(&self) -> bool {
+        match self {
+            Self::Bool
+            | Self::Int(_)
+            | Self::Char
+            | Self::Ordering
+            | Self::Unit
+            | Self::Never
+            | Self::Enum(_)
             | Self::OverflowPair(_) => true,
+            Self::Tuple { fields } => fields.iter().all(Self::is_supported_v2_local),
+            Self::Ref { pointee, .. } | Self::RawPtr { pointee, .. } => match &**pointee {
+                Self::Slice { elem } => matches!(&**elem, Self::Int(_)),
+                other => other.is_supported_scalar_or_unit(),
+            },
+            Self::RangeTo { elem } | Self::RangeFrom { elem } => {
+                **elem
+                    == Self::Int(IntTy {
+                        width: IntWidth::Isize,
+                        signed: false,
+                    })
+            }
+            Self::Slice { .. } => false,
+        }
+    }
+
+    /// Whether this type is a reference or a tuple containing one, mirroring
+    /// `Trusted.MirSemantics.tyHasRefV2`.
+    pub fn has_ref_v2(&self) -> bool {
+        match self {
+            Self::Ref { .. } => true,
+            Self::Tuple { fields } => fields.iter().any(Self::has_ref_v2),
+            _ => false,
+        }
+    }
+
+    /// Whether this type is a raw pointer or a tuple containing one, mirroring
+    /// `Trusted.MirSemantics.tyHasRawPtrV2`.
+    pub fn has_raw_ptr_v2(&self) -> bool {
+        match self {
+            Self::RawPtr { .. } => true,
+            Self::Tuple { fields } => fields.iter().any(Self::has_raw_ptr_v2),
+            _ => false,
+        }
+    }
+
+    /// Whether this type uses Profile v2 extensions.
+    pub fn is_profile_v2(&self) -> bool {
+        match self {
+            Self::Tuple { .. }
+            | Self::Ref { .. }
+            | Self::RawPtr { .. }
+            | Self::Slice { .. }
+            | Self::RangeTo { .. }
+            | Self::RangeFrom { .. } => true,
+            Self::Bool
+            | Self::Char
+            | Self::Ordering
+            | Self::Unit
+            | Self::Never
+            | Self::Int(_)
+            | Self::Enum(_)
+            | Self::OverflowPair(_) => false,
         }
     }
 
     /// Record every nominal [`EnumTy::id`] embedded in this type.
-    ///
-    /// Keep the match exhaustive so any future compound type variant must
-    /// recurse into its constituent types rather than hiding an enum key from
-    /// collision checks.
     pub fn collect_enum_ids(&self, out: &mut BTreeSet<u32>) {
         match self {
             Self::Enum(ety) => {
                 out.insert(ety.id());
+            }
+            Self::Tuple { fields } => {
+                for f in fields {
+                    f.collect_enum_ids(out);
+                }
+            }
+            Self::Ref { pointee, .. } | Self::RawPtr { pointee, .. } => {
+                pointee.collect_enum_ids(out);
+            }
+            Self::Slice { elem } | Self::RangeTo { elem } | Self::RangeFrom { elem } => {
+                elem.collect_enum_ids(out);
             }
             Self::Bool
             | Self::Char
@@ -345,10 +506,8 @@ pub enum ConstLit {
 /// Validate that `with_retag` is admitted for destination type `dst_ty`.
 ///
 /// `lean.rs` renders `Rvalue::Use` without its retag flag, so the flag may be
-/// erased only when [`Ty::is_retag_noop`] holds for the destination type.
-/// Every admitted [`Ty`] variant is retag-noop, so this check cannot fail for
-/// any admitted type; `admit_retag` holds the refusal itself, which stays
-/// unit-tested until a reference-bearing variant makes it reachable.
+/// erased only when [`Ty::is_retag_noop`] holds for the destination type
+/// (retagging `Use` on reference-bearing types uses [`Rvalue::UseRetag`]).
 pub fn check_use_retag(dst_ty: &Ty, with_retag: bool) -> Result<(), String> {
     admit_retag(dst_ty.is_retag_noop(), with_retag)
 }
@@ -367,10 +526,8 @@ fn admit_retag(retag_noop: bool, with_retag: bool) -> Result<(), String> {
 /// `lean.rs` renders an unprojected [`Statement::PlaceMention`] as
 /// `Trusted.MirAst.StatementKind.nop`, which is sound only when the place has
 /// no projections (enforced in `extract.rs`) and its local type is `Sized`
-/// (`local_to_place` neither loads memory nor checks liveness). Every admitted
-/// [`Ty`] variant is `Sized`, so this check cannot fail for any admitted type;
-/// `admit_place_mention` holds the refusal itself, which stays unit-tested
-/// until an unsized variant makes it reachable.
+/// (`local_to_place` neither loads memory nor checks liveness; unsized
+/// [`Ty::Slice`] returns `false` from [`Ty::is_sized`]).
 pub fn check_place_mention(local_ty: &Ty) -> Result<(), String> {
     admit_place_mention(local_ty.is_sized())
 }
@@ -448,6 +605,15 @@ pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
             }
             Ok(())
         }
+        (
+            Ty::Tuple { .. }
+            | Ty::Ref { .. }
+            | Ty::RawPtr { .. }
+            | Ty::Slice { .. }
+            | Ty::RangeTo { .. }
+            | Ty::RangeFrom { .. },
+            _,
+        ) => Err(format!("constants of compound/pointer type {ty:?} are unsupported")),
         (Ty::Enum(ety), lit) => match (ety.tag_repr, lit) {
             (EnumTagRepr::ZeroSized, ConstLit::ZeroSized) => Ok(()),
             (EnumTagRepr::ZeroSized, ConstLit::Scalar { .. }) => {
@@ -477,9 +643,34 @@ pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
+pub enum PlaceElem {
+    Deref,
+    Field { index: usize, ty: Ty },
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct Place {
+    pub local: u32,
+    pub projection: Vec<PlaceElem>,
+}
+
+impl Place {
+    pub fn collect_enum_ids(&self, out: &mut BTreeSet<u32>) {
+        for elem in &self.projection {
+            if let PlaceElem::Field { ty, .. } = elem {
+                ty.collect_enum_ids(out);
+            }
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Operand {
     Copy { local: u32 },
     Move { local: u32 },
+    CopyPlace { place: Place },
+    MovePlace { place: Place },
     Constant { ty: Ty, lit: ConstLit },
 }
 
@@ -487,27 +678,36 @@ impl Operand {
     fn collect_enum_ids(&self, out: &mut BTreeSet<u32>) {
         match self {
             Self::Copy { .. } | Self::Move { .. } => {}
+            Self::CopyPlace { place } | Self::MovePlace { place } => place.collect_enum_ids(out),
             Self::Constant { ty, .. } => ty.collect_enum_ids(out),
+        }
+    }
+
+    pub fn is_profile_v2(&self) -> bool {
+        match self {
+            Self::CopyPlace { .. } | Self::MovePlace { .. } => true,
+            Self::Copy { .. } | Self::Move { .. } => false,
+            Self::Constant { ty, .. } => ty.is_profile_v2(),
         }
     }
 }
 
-/// Admitted MIR unary operators (`rustc_middle::mir::UnOp`, "The `!` operator
-/// for logical inversion" and "The `-` operator for negation").
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1603-L1617
+/// Admitted MIR unary operators (`rustc_middle::mir::UnOp`).
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum UnOp {
     Not,
     Neg,
+    PtrMetadata,
 }
 
-/// Admitted MIR cast kinds (`rustc_middle::mir::CastKind::IntToInt`).
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1491-L1532
+/// Admitted MIR cast kinds.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CastKind {
     IntToInt,
+    PtrToPtr,
+    IntToPtr,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -533,6 +733,7 @@ pub enum BinOp {
     Gt,
     Ge,
     Cmp,
+    Offset,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -541,6 +742,9 @@ pub enum Rvalue {
     Use {
         operand: Operand,
         with_retag: bool,
+    },
+    UseRetag {
+        operand: Operand,
     },
     Binary {
         op: BinOp,
@@ -559,12 +763,32 @@ pub enum Rvalue {
     Discriminant {
         local: u32,
     },
+    Ref {
+        mutability: Mutability,
+        place: Place,
+    },
+    AddressOf {
+        mutability: Mutability,
+        place: Place,
+    },
+    AggregateTuple {
+        fields: Vec<Operand>,
+    },
+    AggregateRangeTo {
+        elem_ty: Ty,
+        end: Operand,
+    },
+    AggregateRangeFrom {
+        elem_ty: Ty,
+        start: Operand,
+    },
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Statement {
     Assign { local: u32, value: Rvalue },
+    AssignPlace { place: Place, value: Rvalue },
     StorageLive { local: u32 },
     StorageDead { local: u32 },
     PlaceMention { local: u32 },
@@ -607,6 +831,35 @@ impl PanicStrategy {
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum AssertKind {
+    Overflow { op: BinOp },
+    OverflowNeg,
+    DivByZero,
+    RemByZero,
+    BoundsCheck,
+    MisalignedPtrDeref,
+    NullPtrDeref,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum CoreCallOp {
+    SliceLen,
+    SliceAsPtr,
+    SliceAsMutPtr,
+    SliceFromRawParts,
+    SliceFromRawPartsMut,
+    SliceGetUncheckedRangeTo,
+    SliceGetUncheckedRangeFrom,
+    PtrAdd {
+        mutability: Mutability,
+        pointee: Ty,
+    },
+    UsizeUncheckedSub,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Terminator {
@@ -618,6 +871,18 @@ pub enum Terminator {
         #[serde(serialize_with = "serialize_switch_targets_decimal")]
         targets: Vec<(u128, u32)>,
         otherwise: u32,
+    },
+    Assert {
+        cond: Operand,
+        expected: bool,
+        msg: AssertKind,
+        target: u32,
+    },
+    CoreCall {
+        op: CoreCallOp,
+        args: Vec<Operand>,
+        dst: Place,
+        target: u32,
     },
     Ret,
     Unreachable,
@@ -697,12 +962,42 @@ fn check_binary_types(op: BinOp, l_ty: &Ty, r_ty: &Ty, dst_ty: &Ty) -> Result<()
                 ))
             }
         }
+        BinOp::Offset => match (l_ty, r_ty) {
+            (Ty::RawPtr { pointee, .. }, Ty::Int(IntTy { width: IntWidth::Isize, signed: true }))
+                if pointee.is_sized() && dst_ty == l_ty =>
+            {
+                Ok(())
+            }
+            _ => Err(format!(
+                "invalid pointer offset types: ({l_ty:?}, {r_ty:?}) -> {dst_ty:?}"
+            )),
+        },
     }
 }
 
 /// Check static operand and destination typing for [`Rvalue::Unary`], matching
-/// `Trusted.MirSemantics.evalUnOp`.
+/// `Trusted.MirSemantics.evalUnOp` and `UnOp.ptrMetadata`.
 fn check_unary_types(op: UnOp, op_ty: &Ty, dst_ty: &Ty) -> Result<(), String> {
+    if op == UnOp::PtrMetadata {
+        return match op_ty {
+            Ty::Ref { pointee, .. } | Ty::RawPtr { pointee, .. } => match &**pointee {
+                Ty::Slice { .. }
+                    if *dst_ty
+                        == Ty::Int(IntTy {
+                            width: IntWidth::Isize,
+                            signed: false,
+                        }) =>
+                {
+                    Ok(())
+                }
+                pt if pt.is_sized() && *dst_ty == Ty::Unit => Ok(()),
+                _ => Err(format!(
+                    "invalid PtrMetadata destination {dst_ty:?} for {op_ty:?}"
+                )),
+            },
+            _ => Err(format!("invalid PtrMetadata operand type {op_ty:?}")),
+        };
+    }
     if op_ty != dst_ty {
         return Err("unary rvalue operand type disagrees with destination local".into());
     }
@@ -713,12 +1008,7 @@ fn check_unary_types(op: UnOp, op_ty: &Ty, dst_ty: &Ty) -> Result<(), String> {
     }
 }
 
-/// Check static source, target, and destination typing for [`Rvalue::Cast`],
-/// matching `cast_from_int_like` ("can take 'int-like' input type ... to
-/// int/float/char types", where `ty::Char` executes
-/// `u8::try_from(v).unwrap().into()`) and `Trusted.MirSemantics.castTypesValid`
-/// / `evalIntToIntCast`.
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/interpret/cast.rs#L258-L312
+/// Check static source, target, and destination typing for [`Rvalue::Cast`].
 fn check_cast_types(kind: CastKind, src_ty: &Ty, cast_ty: &Ty, dst_ty: &Ty) -> Result<(), String> {
     if cast_ty != dst_ty {
         return Err("cast target type disagrees with destination local".into());
@@ -733,6 +1023,25 @@ fn check_cast_types(kind: CastKind, src_ty: &Ty, cast_ty: &Ty, dst_ty: &Ty) -> R
             }),
             Ty::Char,
         ) => Ok(()),
+        (
+            CastKind::PtrToPtr,
+            Ty::Ref { pointee: src_pt, .. } | Ty::RawPtr { pointee: src_pt, .. },
+            Ty::RawPtr { pointee: dst_pt, .. },
+        ) => match (&**src_pt, &**dst_pt) {
+            (Ty::Slice { elem: e1 }, Ty::Slice { elem: e2 }) if e1 == e2 => Ok(()),
+            (s, d) if s.is_sized() && d.is_sized() => Ok(()),
+            _ => Err(format!(
+                "unsupported PtrToPtr cast from {src_ty:?} to {cast_ty:?}"
+            )),
+        },
+        (
+            CastKind::IntToPtr,
+            Ty::Int(IntTy {
+                width: IntWidth::Isize,
+                signed: false,
+            }),
+            Ty::RawPtr { pointee, .. },
+        ) if pointee.is_sized() => Ok(()),
         _ => Err(format!(
             "unsupported cast {kind:?} from {src_ty:?} to {cast_ty:?}"
         )),
@@ -780,10 +1089,43 @@ fn check_switch_targets(discr_ty: &Ty, targets: &[(u128, u32)]) -> Result<(), St
                 Err("non-empty SwitchInt branches on overflow-pair tuple are unsupported".into())
             }
         }
-        Ty::Unit | Ty::Never | Ty::Ordering | Ty::Enum(_) => Err(format!(
+        Ty::Unit
+        | Ty::Never
+        | Ty::Ordering
+        | Ty::Enum(_)
+        | Ty::Tuple { .. }
+        | Ty::Ref { .. }
+        | Ty::RawPtr { .. }
+        | Ty::Slice { .. }
+        | Ty::RangeTo { .. }
+        | Ty::RangeFrom { .. } => Err(format!(
             "SwitchInt operand type {discr_ty:?} is not primitive-switchable"
         )),
     }
+}
+
+/// Validates that every local in a MIR body is `Sized` and belongs to the
+/// Profile v2 local type fragment (`Trusted.MirSemantics.isSupportedV2LocalTy`).
+pub(crate) fn validate_local_tys(local_tys: &[Ty]) -> Result<(), String> {
+    for (idx, lty) in local_tys.iter().enumerate() {
+        if !lty.is_sized() {
+            return Err(format!("unsized local _{idx} of type {lty:?} is unsupported"));
+        }
+        if !lty.is_supported_v2_local() {
+            return Err(format!(
+                "local _{idx} of type {lty:?} is outside the Profile v2 type fragment"
+            ));
+        }
+    }
+    // Mirrors `Trusted.MirSemantics.bodyMixesRefsAndRawPtrsV2`: Profile v2 has
+    // no aliasing model, so it admits no body that could derive references
+    // from raw pointers or access referenced memory through them.
+    if local_tys.iter().any(Ty::has_ref_v2) && local_tys.iter().any(Ty::has_raw_ptr_v2) {
+        return Err("body mixes reference and raw-pointer locals, which Profile v2 \
+             refuses because it does not model Rust's pointer aliasing rules"
+            .to_string());
+    }
+    Ok(())
 }
 
 /// Validated MIR function body enforcing
@@ -833,21 +1175,273 @@ impl Body {
                 local_tys.len()
             ));
         }
+        validate_local_tys(&local_tys)?;
         fn check_local<'a>(local_tys: &'a [Ty], local: u32, role: &str) -> Result<&'a Ty, String> {
             local_tys
                 .get(local as usize)
                 .ok_or_else(|| format!("{role} local {local} out of bounds"))
         }
-        fn check_operand<'a>(local_tys: &'a [Ty], op: &'a Operand) -> Result<&'a Ty, String> {
-            match op {
-                Operand::Copy { local } | Operand::Move { local } => {
-                    check_local(local_tys, *local, "operand")
-                }
-                Operand::Constant { ty, lit } => {
-                    validate_constant(ty, *lit)?;
-                    Ok(ty)
+        fn check_place(
+            local_tys: &[Ty],
+            place: &Place,
+            role: &str,
+            allow_unsized_deref: bool,
+            require_mut_deref: bool,
+        ) -> Result<Ty, String> {
+            let base = check_local(local_tys, place.local, role)?;
+            let mut cur = base.clone();
+            let mut saw_deref = false;
+            for (step, elem) in place.projection.iter().enumerate() {
+                match elem {
+                    PlaceElem::Deref => {
+                        if saw_deref || step != 0 {
+                            return Err("nested or post-field deref projections are unsupported".into());
+                        }
+                        saw_deref = true;
+                        match &cur {
+                            Ty::Ref { mutability, pointee } | Ty::RawPtr { mutability, pointee } => {
+                                if require_mut_deref && *mutability != Mutability::Mut {
+                                    return Err("cannot write through shared pointer/reference".into());
+                                }
+                                if !allow_unsized_deref && !pointee.is_sized() {
+                                    return Err(format!(
+                                        "unsized deref of {pointee:?} is unsupported here"
+                                    ));
+                                }
+                                cur = (**pointee).clone();
+                            }
+                            _ => return Err(format!("cannot deref non-pointer local type {cur:?}")),
+                        }
+                    }
+                    PlaceElem::Field { index, ty } => {
+                        if saw_deref {
+                            return Err("field projection after deref is unsupported".into());
+                        }
+                        let usize_ty = Ty::Int(IntTy {
+                            width: IntWidth::Isize,
+                            signed: false,
+                        });
+                        let expected_field = match &cur {
+                            Ty::Tuple { fields } => fields.get(*index).cloned(),
+                            Ty::OverflowPair(ity) if *index == 0 => Some(Ty::Int(*ity)),
+                            Ty::OverflowPair(_) if *index == 1 => Some(Ty::Bool),
+                            Ty::RangeTo { elem: e } | Ty::RangeFrom { elem: e }
+                                if *index == 0 && **e == usize_ty =>
+                            {
+                                Some(usize_ty)
+                            }
+                            _ => None,
+                        };
+                        let Some(expected) = expected_field else {
+                            return Err(format!("unsupported field {index} projection on {cur:?}"));
+                        };
+                        if expected != *ty {
+                            return Err(format!(
+                                "field {index} projection type {ty:?} disagrees with {expected:?}"
+                            ));
+                        }
+                        cur = expected;
+                    }
                 }
             }
+            Ok(cur)
+        }
+        fn check_operand<'a>(local_tys: &'a [Ty], op: &'a Operand) -> Result<Ty, String> {
+            match op {
+                Operand::Copy { local } | Operand::Move { local } => {
+                    Ok(check_local(local_tys, *local, "operand")?.clone())
+                }
+                Operand::CopyPlace { place } => check_place(local_tys, place, "operand", false, false),
+                Operand::MovePlace { place } => check_place(local_tys, place, "operand", false, false),
+                Operand::Constant { ty, lit } => {
+                    validate_constant(ty, *lit)?;
+                    Ok(ty.clone())
+                }
+            }
+        }
+        fn check_rvalue(local_tys: &[Ty], dst_ty: &Ty, value: &Rvalue) -> Result<(), String> {
+            let usize_ty = Ty::Int(IntTy {
+                width: IntWidth::Isize,
+                signed: false,
+            });
+            match value {
+                Rvalue::Use {
+                    operand,
+                    with_retag,
+                } => {
+                    check_use_retag(dst_ty, *with_retag)?;
+                    let op_ty = check_operand(local_tys, operand)?;
+                    if &op_ty != dst_ty {
+                        return Err(
+                            "use rvalue operand type disagrees with destination local".into()
+                        );
+                    }
+                }
+                Rvalue::UseRetag { operand } => {
+                    if dst_ty.is_retag_noop() {
+                        return Err("UseRetag requires a reference-bearing destination type".into());
+                    }
+                    let op_ty = check_operand(local_tys, operand)?;
+                    if &op_ty != dst_ty {
+                        return Err(
+                            "retag use operand type disagrees with destination local".into()
+                        );
+                    }
+                }
+                Rvalue::Binary { op, left, right } => {
+                    let l_ty = check_operand(local_tys, left)?;
+                    let r_ty = check_operand(local_tys, right)?;
+                    check_binary_types(*op, &l_ty, &r_ty, dst_ty)?;
+                }
+                Rvalue::Unary { op, operand } => {
+                    let op_ty = check_operand(local_tys, operand)?;
+                    check_unary_types(*op, &op_ty, dst_ty)?;
+                }
+                Rvalue::Cast {
+                    cast_kind,
+                    operand,
+                    ty,
+                } => {
+                    let src_ty = check_operand(local_tys, operand)?;
+                    check_cast_types(*cast_kind, &src_ty, ty, dst_ty)?;
+                }
+                Rvalue::Discriminant { local: src } => {
+                    let expected_discr = match check_local(local_tys, *src, "discriminant")? {
+                        Ty::Enum(ety) => ety.discr(),
+                        Ty::Ordering => IntTy {
+                            width: IntWidth::I8,
+                            signed: true,
+                        },
+                        _ => {
+                            return Err(
+                                "discriminant rvalue requires a fieldless enum or Ordering local"
+                                    .into(),
+                            );
+                        }
+                    };
+                    if *dst_ty != Ty::Int(expected_discr) {
+                        return Err(
+                            "discriminant rvalue destination type disagrees with enum discriminant"
+                                .into(),
+                        );
+                    }
+                }
+                Rvalue::Ref { mutability, place } => {
+                    if place.projection.len() > 1
+                        || (place.projection.len() == 1
+                            && !matches!(place.projection[0], PlaceElem::Deref))
+                    {
+                        return Err("unsupported projection in Rvalue::Ref".into());
+                    }
+                    if *mutability == Mutability::Mut && place.projection.len() == 1 {
+                        let base = check_local(local_tys, place.local, "ref")?;
+                        if matches!(
+                            base,
+                            Ty::Ref {
+                                mutability: Mutability::Shared,
+                                ..
+                            }
+                        ) {
+                            return Err("cannot reborrow &mut from shared & reference".into());
+                        }
+                    }
+                    let pointee = check_place(local_tys, place, "ref", true, false)?;
+                    let expected = Ty::Ref {
+                        mutability: *mutability,
+                        pointee: Box::new(pointee),
+                    };
+                    if *dst_ty != expected {
+                        return Err(format!(
+                            "Rvalue::Ref type {expected:?} disagrees with destination {dst_ty:?}"
+                        ));
+                    }
+                }
+                Rvalue::AddressOf { mutability, place } => {
+                    if place.projection.len() > 1
+                        || (place.projection.len() == 1
+                            && !matches!(place.projection[0], PlaceElem::Deref))
+                    {
+                        return Err("unsupported projection in Rvalue::AddressOf".into());
+                    }
+                    if *mutability == Mutability::Mut && place.projection.len() == 1 {
+                        let base = check_local(local_tys, place.local, "addressOf")?;
+                        if matches!(
+                            base,
+                            Ty::Ref {
+                                mutability: Mutability::Shared,
+                                ..
+                            }
+                        ) {
+                            return Err("cannot take &raw mut from shared & reference".into());
+                        }
+                    }
+                    let pointee = check_place(local_tys, place, "addressOf", true, false)?;
+                    let expected = Ty::RawPtr {
+                        mutability: *mutability,
+                        pointee: Box::new(pointee),
+                    };
+                    if *dst_ty != expected {
+                        return Err(format!(
+                            "Rvalue::AddressOf type {expected:?} disagrees with destination {dst_ty:?}"
+                        ));
+                    }
+                }
+                Rvalue::AggregateTuple { fields } => {
+                    let overflow_fields;
+                    let dst_fields: &[Ty] = match dst_ty {
+                        Ty::Tuple { fields } => fields.as_slice(),
+                        Ty::OverflowPair(ity) => {
+                            overflow_fields = [Ty::Int(*ity), Ty::Bool];
+                            &overflow_fields
+                        }
+                        _ => {
+                            return Err(format!(
+                                "AggregateTuple requires Tuple destination type, got {dst_ty:?}"
+                            ));
+                        }
+                    };
+                    if fields.len() != dst_fields.len() {
+                        return Err("AggregateTuple arity disagrees with destination tuple".into());
+                    }
+                    for (field_op, expected_ty) in fields.iter().zip(dst_fields.iter()) {
+                        let got = check_operand(local_tys, field_op)?;
+                        if &got != expected_ty {
+                            return Err(format!(
+                                "AggregateTuple field type {got:?} disagrees with {expected_ty:?}"
+                            ));
+                        }
+                    }
+                }
+                Rvalue::AggregateRangeTo { elem_ty, end } => {
+                    if *elem_ty != usize_ty
+                        || *dst_ty
+                            != (Ty::RangeTo {
+                                elem: Box::new(usize_ty.clone()),
+                            })
+                    {
+                        return Err("AggregateRangeTo requires RangeTo<usize>".into());
+                    }
+                    let got = check_operand(local_tys, end)?;
+                    if got != usize_ty {
+                        return Err("AggregateRangeTo end operand must be usize".into());
+                    }
+                }
+                Rvalue::AggregateRangeFrom { elem_ty, start } => {
+                    if *elem_ty != usize_ty
+                        || *dst_ty
+                            != (Ty::RangeFrom {
+                                elem: Box::new(usize_ty.clone()),
+                            })
+                    {
+                        return Err("AggregateRangeFrom requires RangeFrom<usize>".into());
+                    }
+                    let got = check_operand(local_tys, start)?;
+                    if got != usize_ty {
+                        return Err("AggregateRangeFrom start operand must be usize".into());
+                    }
+                }
+            }
+            Ok(())
         }
         let num_blocks = blocks.len();
         let check_block = |target: u32| -> Result<(), String> {
@@ -862,64 +1456,22 @@ impl Body {
             for stmt in &block.statements {
                 match stmt {
                     Statement::Assign { local, value } => {
-                        let dst_ty = check_local(&local_tys, *local, "assignment")?;
-                        match value {
-                            Rvalue::Use {
-                                operand,
-                                with_retag,
-                            } => {
-                                check_use_retag(dst_ty, *with_retag)?;
-                                let op_ty = check_operand(&local_tys, operand)?;
-                                if op_ty != dst_ty {
-                                    return Err(
-                                        "use rvalue operand type disagrees with destination local"
-                                            .into(),
-                                    );
-                                }
-                            }
-                            Rvalue::Binary { op, left, right } => {
-                                let l_ty = check_operand(&local_tys, left)?;
-                                let r_ty = check_operand(&local_tys, right)?;
-                                check_binary_types(*op, l_ty, r_ty, dst_ty)?;
-                            }
-                            Rvalue::Unary { op, operand } => {
-                                let op_ty = check_operand(&local_tys, operand)?;
-                                check_unary_types(*op, op_ty, dst_ty)?;
-                            }
-                            Rvalue::Cast {
-                                cast_kind,
-                                operand,
-                                ty,
-                            } => {
-                                let src_ty = check_operand(&local_tys, operand)?;
-                                check_cast_types(*cast_kind, src_ty, ty, dst_ty)?;
-                            }
-                            Rvalue::Discriminant { local: src } => {
-                                let expected_discr = match check_local(
-                                    &local_tys,
-                                    *src,
-                                    "discriminant",
-                                )? {
-                                    Ty::Enum(ety) => ety.discr(),
-                                    Ty::Ordering => IntTy {
-                                        width: IntWidth::I8,
-                                        signed: true,
-                                    },
-                                    _ => {
-                                        return Err(
-                                            "discriminant rvalue requires a fieldless enum or Ordering local"
-                                                .into(),
-                                        );
-                                    }
-                                };
-                                if *dst_ty != Ty::Int(expected_discr) {
-                                    return Err(
-                                        "discriminant rvalue destination type disagrees with enum discriminant"
-                                            .into(),
-                                    );
-                                }
-                            }
+                        let dst_ty = check_local(&local_tys, *local, "assignment")?.clone();
+                        check_rvalue(&local_tys, &dst_ty, value)?;
+                    }
+                    Statement::AssignPlace { place, value } => {
+                        if place.projection != vec![PlaceElem::Deref] && !place.projection.is_empty()
+                        {
+                            return Err("AssignPlace supports only empty or single [Deref] projection".into());
                         }
+                        let dst_ty = check_place(
+                            &local_tys,
+                            place,
+                            "assignment",
+                            false,
+                            !place.projection.is_empty(),
+                        )?;
+                        check_rvalue(&local_tys, &dst_ty, value)?;
                     }
                     Statement::StorageLive { local } => {
                         check_local(&local_tys, *local, "storage annotation")?;
@@ -951,11 +1503,144 @@ impl Body {
                     otherwise,
                 } => {
                     let discr_ty = check_operand(&local_tys, operand)?;
-                    check_switch_targets(discr_ty, targets)?;
+                    check_switch_targets(&discr_ty, targets)?;
                     for &(_, target) in targets {
                         check_block(target)?;
                     }
                     check_block(*otherwise)?;
+                }
+                Terminator::Assert {
+                    cond,
+                    target,
+                    ..
+                } => {
+                    let cond_ty = check_operand(&local_tys, cond)?;
+                    if cond_ty != Ty::Bool {
+                        return Err(format!("Assert condition must be bool, got {cond_ty:?}"));
+                    }
+                    check_block(*target)?;
+                }
+                Terminator::CoreCall {
+                    op,
+                    args,
+                    dst,
+                    target,
+                } => {
+                    if !dst.projection.is_empty() {
+                        return Err("CoreCall destination must be an unprojected local".into());
+                    }
+                    let dst_ty = check_local(&local_tys, dst.local, "core call destination")?.clone();
+                    let arg_tys = args
+                        .iter()
+                        .map(|op| check_operand(&local_tys, op))
+                        .collect::<Result<Vec<_>, _>>()?;
+                    let usize_ty = Ty::Int(IntTy {
+                        width: IntWidth::Isize,
+                        signed: false,
+                    });
+                    match (op, arg_tys.as_slice()) {
+                        (
+                            CoreCallOp::SliceLen,
+                            [Ty::Ref { pointee, .. }],
+                        ) if matches!(&**pointee, Ty::Slice { elem: e } if matches!(&**e, Ty::Int(_)))
+                            && dst_ty == usize_ty => {}
+                        (
+                            CoreCallOp::SliceAsPtr,
+                            [Ty::Ref { pointee, .. }],
+                        ) => match (&**pointee, &dst_ty) {
+                            (
+                                Ty::Slice { elem: e1 },
+                                Ty::RawPtr {
+                                    mutability: Mutability::Shared,
+                                    pointee: e2,
+                                },
+                            ) if e1 == e2 && e1.is_sized() => {}
+                            _ => return Err("CoreCall SliceAsPtr type mismatch".into()),
+                        },
+                        (
+                            CoreCallOp::SliceAsMutPtr,
+                            [Ty::Ref {
+                                mutability: Mutability::Mut,
+                                pointee,
+                            }],
+                        ) => match (&**pointee, &dst_ty) {
+                            (
+                                Ty::Slice { elem: e1 },
+                                Ty::RawPtr {
+                                    mutability: Mutability::Mut,
+                                    pointee: e2,
+                                },
+                            ) if e1 == e2 && e1.is_sized() => {}
+                            _ => return Err("CoreCall SliceAsMutPtr type mismatch".into()),
+                        },
+                        (
+                            CoreCallOp::SliceFromRawParts,
+                            [Ty::RawPtr { pointee: e1, .. }, len_ty],
+                        ) if matches!(&**e1, Ty::Int(_))
+                            && *len_ty == usize_ty
+                            && dst_ty
+                                == Ty::Ref {
+                                    mutability: Mutability::Shared,
+                                    pointee: Box::new(Ty::Slice { elem: e1.clone() }),
+                                } => {}
+                        (
+                            CoreCallOp::SliceFromRawPartsMut,
+                            [Ty::RawPtr {
+                                mutability: Mutability::Mut,
+                                pointee: e1,
+                            }, len_ty],
+                        ) if matches!(&**e1, Ty::Int(_))
+                            && *len_ty == usize_ty
+                            && dst_ty
+                                == Ty::Ref {
+                                    mutability: Mutability::Mut,
+                                    pointee: Box::new(Ty::Slice { elem: e1.clone() }),
+                                } => {}
+                        (
+                            CoreCallOp::SliceGetUncheckedRangeTo,
+                            [Ty::Ref {
+                                mutability: in_mut,
+                                pointee,
+                            }, Ty::RangeTo { elem: idx_ty }],
+                        ) if **idx_ty == usize_ty
+                            && matches!(&**pointee, Ty::Slice { elem: e } if **e == Ty::Int(IntTy { width: IntWidth::I8, signed: false }))
+                            && matches!(&dst_ty, Ty::Ref { mutability: out_mut, pointee: dst_pt } if dst_pt == pointee && !(*in_mut == Mutability::Shared && *out_mut == Mutability::Mut)) => {}
+                        (
+                            CoreCallOp::SliceGetUncheckedRangeFrom,
+                            [Ty::Ref {
+                                mutability: in_mut,
+                                pointee,
+                            }, Ty::RangeFrom { elem: idx_ty }],
+                        ) if **idx_ty == usize_ty
+                            && matches!(&**pointee, Ty::Slice { elem: e } if **e == Ty::Int(IntTy { width: IntWidth::I8, signed: false }))
+                            && matches!(&dst_ty, Ty::Ref { mutability: out_mut, pointee: dst_pt } if dst_pt == pointee && !(*in_mut == Mutability::Shared && *out_mut == Mutability::Mut)) => {}
+                        (
+                            CoreCallOp::PtrAdd {
+                                mutability,
+                                pointee,
+                            },
+                            [Ty::RawPtr {
+                                mutability: arg_mut,
+                                pointee: arg_pt,
+                            }, count_ty],
+                        ) if arg_mut == mutability
+                            && **arg_pt == *pointee
+                            && pointee.is_sized()
+                            && *count_ty == usize_ty
+                            && dst_ty
+                                == Ty::RawPtr {
+                                    mutability: *mutability,
+                                    pointee: Box::new(pointee.clone()),
+                                } => {}
+                        (CoreCallOp::UsizeUncheckedSub, [l_ty, r_ty])
+                            if *l_ty == usize_ty && *r_ty == usize_ty && dst_ty == usize_ty => {}
+                        _ => {
+                            return Err(format!(
+                                "invalid CoreCall {op:?} arguments {arg_tys:?} -> {dst_ty:?}"
+                            ));
+                        }
+                    }
+                    check_block(*target)?;
                 }
                 Terminator::Ret | Terminator::Unreachable | Terminator::Unsupported => {}
             }
@@ -989,20 +1674,98 @@ impl Body {
         &self.identity
     }
 
+    /// Whether this body requires Profile v2 execution rules
+    /// (`mir_profile_version = 2`).
+    pub fn uses_profile_v2(&self) -> bool {
+        if self.local_tys.iter().any(Ty::is_profile_v2) {
+            return true;
+        }
+        for block in &self.blocks {
+            for stmt in &block.statements {
+                match stmt {
+                    Statement::AssignPlace { .. } => return true,
+                    Statement::Assign { value, .. } => match value {
+                        Rvalue::Use { operand, .. } => {
+                            if operand.is_profile_v2() {
+                                return true;
+                            }
+                        }
+                        Rvalue::Binary { op, left, right } => {
+                            if *op == BinOp::Offset || left.is_profile_v2() || right.is_profile_v2()
+                            {
+                                return true;
+                            }
+                        }
+                        Rvalue::Unary { op, operand } => {
+                            if *op == UnOp::PtrMetadata || operand.is_profile_v2() {
+                                return true;
+                            }
+                        }
+                        Rvalue::Cast {
+                            cast_kind,
+                            operand,
+                            ty,
+                        } => {
+                            if *cast_kind != CastKind::IntToInt
+                                || operand.is_profile_v2()
+                                || ty.is_profile_v2()
+                            {
+                                return true;
+                            }
+                        }
+                        Rvalue::Discriminant { .. } => {}
+                        Rvalue::UseRetag { .. }
+                        | Rvalue::Ref { .. }
+                        | Rvalue::AddressOf { .. }
+                        | Rvalue::AggregateTuple { .. }
+                        | Rvalue::AggregateRangeTo { .. }
+                        | Rvalue::AggregateRangeFrom { .. } => return true,
+                    },
+                    Statement::StorageLive { .. }
+                    | Statement::StorageDead { .. }
+                    | Statement::PlaceMention { .. }
+                    | Statement::Nop => {}
+                }
+            }
+            match &block.terminator {
+                Terminator::SwitchInt { operand, .. } => {
+                    if operand.is_profile_v2() {
+                        return true;
+                    }
+                }
+                Terminator::Assert { .. } | Terminator::CoreCall { .. } => return true,
+                Terminator::Goto { .. }
+                | Terminator::Ret
+                | Terminator::Unreachable
+                | Terminator::Unsupported => {}
+            }
+        }
+        false
+    }
+
     /// Record every nominal [`EnumTy::id`] referenced anywhere in this body.
-    ///
-    /// Exhaustive matching guarantees that any future statement, rvalue,
-    /// operand, or terminator variant carrying a [`Ty`] must update this
-    /// traversal so emitted enum keys cannot bypass collision checks.
     pub fn collect_enum_ids(&self, out: &mut BTreeSet<u32>) {
         for ty in &self.local_tys {
             ty.collect_enum_ids(out);
         }
         for block in &self.blocks {
             for stmt in &block.statements {
-                match stmt {
-                    Statement::Assign { value, .. } => match value {
-                        Rvalue::Use { operand, .. } | Rvalue::Unary { operand, .. } => {
+                let (place_opt, value_opt) = match stmt {
+                    Statement::Assign { value, .. } => (None, Some(value)),
+                    Statement::AssignPlace { place, value } => (Some(place), Some(value)),
+                    Statement::StorageLive { .. }
+                    | Statement::StorageDead { .. }
+                    | Statement::PlaceMention { .. }
+                    | Statement::Nop => (None, None),
+                };
+                if let Some(p) = place_opt {
+                    p.collect_enum_ids(out);
+                }
+                if let Some(value) = value_opt {
+                    match value {
+                        Rvalue::Use { operand, .. }
+                        | Rvalue::UseRetag { operand }
+                        | Rvalue::Unary { operand, .. } => {
                             operand.collect_enum_ids(out);
                         }
                         Rvalue::Binary { left, right, .. } => {
@@ -1013,16 +1776,38 @@ impl Body {
                             operand.collect_enum_ids(out);
                             ty.collect_enum_ids(out);
                         }
+                        Rvalue::Ref { place, .. } | Rvalue::AddressOf { place, .. } => {
+                            place.collect_enum_ids(out);
+                        }
+                        Rvalue::AggregateTuple { fields } => {
+                            for f in fields {
+                                f.collect_enum_ids(out);
+                            }
+                        }
+                        Rvalue::AggregateRangeTo { elem_ty, end } => {
+                            elem_ty.collect_enum_ids(out);
+                            end.collect_enum_ids(out);
+                        }
+                        Rvalue::AggregateRangeFrom { elem_ty, start } => {
+                            elem_ty.collect_enum_ids(out);
+                            start.collect_enum_ids(out);
+                        }
                         Rvalue::Discriminant { .. } => {}
-                    },
-                    Statement::StorageLive { .. }
-                    | Statement::StorageDead { .. }
-                    | Statement::PlaceMention { .. }
-                    | Statement::Nop => {}
+                    }
                 }
             }
             match &block.terminator {
                 Terminator::SwitchInt { operand, .. } => operand.collect_enum_ids(out),
+                Terminator::Assert { cond, .. } => cond.collect_enum_ids(out),
+                Terminator::CoreCall { op, args, dst, .. } => {
+                    if let CoreCallOp::PtrAdd { pointee, .. } = op {
+                        pointee.collect_enum_ids(out);
+                    }
+                    for a in args {
+                        a.collect_enum_ids(out);
+                    }
+                    dst.collect_enum_ids(out);
+                }
                 Terminator::Goto { .. }
                 | Terminator::Ret
                 | Terminator::Unreachable
@@ -1045,7 +1830,6 @@ pub struct Instantiation {
     pub path: String,
     pub args: Vec<String>,
 }
-
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Scope {
@@ -1063,6 +1847,7 @@ pub enum Scope {
 #[derive(Debug, Serialize)]
 pub struct Program {
     scope: Scope,
+    mir_profile_version: u32,
     bodies: Vec<Body>,
 }
 
@@ -1086,11 +1871,24 @@ impl Program {
                 ));
             }
         }
-        Ok(Self { scope, bodies })
+        let mir_profile_version = if bodies.iter().any(Body::uses_profile_v2) {
+            2
+        } else {
+            1
+        };
+        Ok(Self {
+            scope,
+            mir_profile_version,
+            bodies,
+        })
     }
 
     pub fn scope(&self) -> &Scope {
         &self.scope
+    }
+
+    pub fn mir_profile_version(&self) -> u32 {
+        self.mir_profile_version
     }
 
     pub fn bodies(&self) -> &[Body] {
@@ -1201,6 +1999,33 @@ pub struct Manifest {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn validate_local_tys_rejects_mixed_refs_and_raw_ptrs() {
+        let u8_ty = Ty::Int(IntTy {
+            width: IntWidth::I8,
+            signed: false,
+        });
+        let shared_ref = Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(u8_ty.clone()),
+        };
+        let raw_ptr = Ty::RawPtr {
+            mutability: Mutability::Mut,
+            pointee: Box::new(u8_ty.clone()),
+        };
+        assert!(validate_local_tys(&[Ty::Unit, shared_ref.clone()]).is_ok());
+        assert!(validate_local_tys(&[Ty::Unit, raw_ptr.clone()]).is_ok());
+        let mixed = validate_local_tys(&[Ty::Unit, shared_ref.clone(), raw_ptr.clone()]);
+        assert!(mixed.unwrap_err().contains("body mixes reference and raw-pointer locals"));
+        let nested = validate_local_tys(&[
+            Ty::Tuple {
+                fields: vec![shared_ref, u8_ty],
+            },
+            raw_ptr,
+        ]);
+        assert!(nested.unwrap_err().contains("body mixes reference and raw-pointer locals"));
+    }
 
     #[test]
     fn body_try_new_rejects_mismatched_use_and_discriminant_destination_types() {

@@ -667,7 +667,8 @@ theorem integerCast_u128_to_char (bits : BitVec 128) :
 theorem evalRefConstLit_eq (ty : MirTy) (lit : ConstLit) :
     evalRefConstLit ty lit = evalConstLit ty lit := by
   cases ty with
-  | unit | never | tuple _ | ref _ _ | rawPtr _ _ | unsupported =>
+  | unit | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | rangeTo _
+  | rangeFrom _ | unsupported =>
     cases lit <;> rfl
   | char =>
     cases lit with
@@ -855,7 +856,8 @@ theorem checkRefVal_tuple_eq (fs : List Val) (ty : MirTy) :
 theorem checkRefVal_eq (v : Val) (ty : MirTy) :
     checkRefVal v ty = checkVal v ty := by
   cases v with
-  | unit | ptr _ | bytes _ | ordering _ => cases ty <;> rfl
+  | unit | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ | ordering _ =>
+    cases ty <;> rfl
   | bool b => cases ty <;> cases b <;> rfl
   | char c =>
     cases ty with
@@ -879,7 +881,7 @@ theorem checkRefVal_eq (v : Val) (ty : MirTy) :
     | mk vw vs vbits =>
       cases ty with
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | unsupported =>
+      | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
         dsimp only [checkRefVal, checkVal, Val.ty?]
         cases (ScalarVal.wf ⟨vw, vs, vbits⟩) <;> rfl
       | int w s =>
@@ -1309,7 +1311,7 @@ theorem checkVal_eq_true_inv {v : Val} {ty : MirTy}
     subst h_fs
     exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr
       ⟨w, s, bits, b, h_ty, rfl, h_tr⟩)))))
-  | ptr _ | bytes _ => cases h
+  | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ => cases h
 
 theorem checkVal_int_inv {v : Val} {w : IntWidth} {s : Bool}
     (h : checkVal v (.int w s) = true) :
@@ -1937,11 +1939,34 @@ private theorem refDiscrStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
           cases h_p : decodePlace ts rp with
           | none => rw [h_p] at h_rv; cases h_rv
           | some _ => rw [h_p] at h_rv; injection h_rv with h; subst h; rfl
+        | useRetag ro =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_o : decodeOperand ts ro with
+          | none => rw [h_o] at h_rv; cases h_rv
+          | some _ => rw [h_o] at h_rv; injection h_rv with h; subst h; rfl
         | aggregateTuple rops =>
           dsimp only [decodeRvalue] at h_rv
           cases h_os : mapOption (decodeOperand ts) rops with
           | none => rw [h_os] at h_rv; cases h_rv
           | some _ => rw [h_os] at h_rv; injection h_rv with h; subst h; rfl
+        | aggregateRangeTo rty ro =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_t : MirSemantics.getElem? ts rty with
+          | none => rw [h_t] at h_rv; cases h_rv
+          | some _ =>
+            cases h_o : decodeOperand ts ro with
+            | none => rw [h_t, h_o] at h_rv; cases h_rv
+            | some _ =>
+              rw [h_t, h_o] at h_rv; injection h_rv with h; subst h; rfl
+        | aggregateRangeFrom rty ro =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_t : MirSemantics.getElem? ts rty with
+          | none => rw [h_t] at h_rv; cases h_rv
+          | some _ =>
+            cases h_o : decodeOperand ts ro with
+            | none => rw [h_t, h_o] at h_rv; cases h_rv
+            | some _ =>
+              rw [h_t, h_o] at h_rv; injection h_rv with h; subst h; rfl
         | unsupported => injection h_rv with h; subst h; rfl
 
 private theorem refCastStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
@@ -1986,7 +2011,7 @@ private theorem refCastStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
               subst h_rv_eq
               let ⟨h_did, h_demp⟩ := decodePlace_inv h_d
               cases k with
-              | unsupported => rfl
+              | unsupported | ptrToPtr | intToPtr => rfl
               | intToInt =>
                 dsimp only [refCastStmtOk, castStmtOk]
                 rw [h_demp, h_did, h_t]
@@ -2009,6 +2034,11 @@ private theorem refCastStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
           cases h_o : decodeOperand ts ro with
           | none => rw [h_o] at h_rv; cases h_rv
           | some _ => rw [h_o] at h_rv; injection h_rv with h; subst h; rfl
+        | useRetag ro =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_o : decodeOperand ts ro with
+          | none => rw [h_o] at h_rv; cases h_rv
+          | some _ => rw [h_o] at h_rv; injection h_rv with h; subst h; rfl
         | ref _ rp =>
           dsimp only [decodeRvalue] at h_rv
           cases h_p : decodePlace ts rp with
@@ -2024,6 +2054,24 @@ private theorem refCastStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
           cases h_os : mapOption (decodeOperand ts) rops with
           | none => rw [h_os] at h_rv; cases h_rv
           | some _ => rw [h_os] at h_rv; injection h_rv with h; subst h; rfl
+        | aggregateRangeTo rty ro =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_t : MirSemantics.getElem? ts rty with
+          | none => rw [h_t] at h_rv; cases h_rv
+          | some _ =>
+            cases h_o : decodeOperand ts ro with
+            | none => rw [h_t, h_o] at h_rv; cases h_rv
+            | some _ =>
+              rw [h_t, h_o] at h_rv; injection h_rv with h; subst h; rfl
+        | aggregateRangeFrom rty ro =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_t : MirSemantics.getElem? ts rty with
+          | none => rw [h_t] at h_rv; cases h_rv
+          | some _ =>
+            cases h_o : decodeOperand ts ro with
+            | none => rw [h_t, h_o] at h_rv; cases h_rv
+            | some _ =>
+              rw [h_t, h_o] at h_rv; injection h_rv with h; subst h; rfl
         | unsupported => injection h_rv with h; subst h; rfl
 
 theorem refDiscriminantTypesValid_eq {ts : List MirTy} {rbody : RefBody}

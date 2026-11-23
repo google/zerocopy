@@ -1024,6 +1024,217 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         theorem_name="refute_boundary_body_static_admitted",
         needs_wf_helper=False,
     ),
+    # ------------------------------------------------------------------
+    # Profile v2 memory, step, and boundary guards (12 guards)
+    # ------------------------------------------------------------------
+    MirSemanticsGuard(
+        guard_id="mem_v2_ptr_add_null_nonzero",
+        target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
+        target_module="Trusted/MirSemantics/Memory",
+        description="ptrAddInMem rejects nonzero offset on provenance-free (null) pointer as UB",
+        anchor=(
+            "    | none =>\n"
+            "      if Nat.beq delta 0 then\n"
+            "        .ok p\n"
+            "      else\n"
+            "        .error .undefined"
+        ),
+        replacement=(
+            "    | none =>\n"
+            "      if true then\n"
+            "        .ok p\n"
+            "      else\n"
+            "        .error .undefined"
+        ),
+        fixture_module="MemoryRefutations",
+        theorem_name="refute_mem_v2_ptr_add_null_nonzero",
+        sanity_module="MemorySanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="mem_v2_ptr_add_oob",
+        target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
+        target_module="Trusted/MirSemantics/Memory",
+        description="ptrAddInMem rejects offset past end of allocation as UB",
+        anchor=(
+            "      | some a =>\n"
+            "        if !a.live || !Nat.ble (p.offsetBytes.toNat + delta) a.bytes.length then\n"
+            "          .error .undefined"
+        ),
+        replacement=(
+            "      | some a =>\n"
+            "        if !a.live || false then\n"
+            "          .error .undefined"
+        ),
+        fixture_module="MemoryRefutations",
+        theorem_name="refute_mem_v2_ptr_add_oob",
+        sanity_module="MemorySanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="mem_v2_slice_null",
+        target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
+        target_module="Trusted/MirSemantics/Memory",
+        description="sliceFromRawPartsCheck rejects null pointer even for zero-length slices as UB",
+        anchor=(
+            "    | none =>\n"
+            "      if Nat.beq p.offsetBytes.toNat 0 || Nat.blt 0 totalBytes then\n"
+            "        .error .undefined"
+        ),
+        replacement=(
+            "    | none =>\n"
+            "      if false || Nat.blt 0 totalBytes then\n"
+            "        .error .undefined"
+        ),
+        fixture_module="MemoryRefutations",
+        theorem_name="refute_mem_v2_slice_null",
+        sanity_module="MemorySanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="mem_v2_slice_readonly",
+        target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
+        target_module="Trusted/MirSemantics/Memory",
+        description="sliceFromRawPartsCheck rejects mutable slice over .shared allocation as UB",
+        anchor=(
+            "        else if isMut && !Mutability.beq a.mutability .mut then\n"
+            "          .error .undefined"
+        ),
+        replacement=(
+            "        else if false then\n"
+            "          .error .undefined"
+        ),
+        fixture_module="MemoryRefutations",
+        theorem_name="refute_mem_v2_slice_readonly",
+        sanity_module="MemorySanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="mem_v2_slice_uninit",
+        target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
+        target_module="Trusted/MirSemantics/Memory",
+        description="sliceFromRawPartsCheck rejects uninitialized bytes in slice span as UB",
+        anchor=(
+            "        else if !isSliceAllInit ((a.bytes.drop p.offsetBytes.toNat).take totalBytes) then\n"
+            "          .error .undefined\n"
+            "        else\n"
+            "          .ok (.slicePtr p len)"
+        ),
+        replacement=(
+            "        else if false then\n"
+            "          .error .undefined\n"
+            "        else\n"
+            "          .ok (.slicePtr p len)"
+        ),
+        fixture_module="MemoryRefutations",
+        theorem_name="refute_mem_v2_slice_uninit",
+        sanity_module="MemorySanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="mem_v2_slice_get_unchecked_oob",
+        target_file="trusted/lean/Trusted/MirSemantics/Memory.lean",
+        target_module="Trusted/MirSemantics/Memory",
+        description="sliceGetUncheckedCheck rejects endOff > len out-of-bounds subslice as UB",
+        anchor=(
+            "    (len startOff endOff : Nat) : Except FaultKind Val :=\n"
+            "  if !Nat.ble startOff endOff || !Nat.ble endOff len then\n"
+            "    .error .undefined"
+        ),
+        replacement=(
+            "    (len startOff endOff : Nat) : Except FaultKind Val :=\n"
+            "  if !Nat.ble startOff endOff || false then\n"
+            "    .error .undefined"
+        ),
+        fixture_module="MemoryRefutations",
+        theorem_name="refute_mem_v2_slice_get_unchecked_oob",
+        sanity_module="MemorySanity",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_write_readonly",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="writePlaceV2 rejects dereference store through a .shared raw pointer as UB",
+        anchor=(
+            "          if isUnsizedTy pt || !MirTy.beq pt dstTy then\n"
+            "            .error .unsupported\n"
+            "          else if !Mutability.beq ptrMut .mut then\n"
+            "            .error .undefined"
+        ),
+        replacement=(
+            "          if isUnsizedTy pt || !MirTy.beq pt dstTy then\n"
+            "            .error .unsupported\n"
+            "          else if false then\n"
+            "            .error .undefined"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_write_readonly",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_return_dangling_stack_ref",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalTerminatorV2 .return_ rejects returning a reference to a callee stack local as UB",
+        anchor=(
+            "          if !refsStayInCallerMem callerMem retTy retVal ||\n"
+            "              !refsValidInMem mem retTy retVal ||\n"
+            "              !spansPairwiseDisjoint (refAccessSpans retTy retVal) then\n"
+            "            .fault .undefined"
+        ),
+        replacement=(
+            "          if false ||\n"
+            "              !refsValidInMem mem retTy retVal ||\n"
+            "              !spansPairwiseDisjoint (refAccessSpans retTy retVal) then\n"
+            "            .fault .undefined"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_return_dangling_stack_ref",
+    ),
+    MirSemanticsGuard(
+        guard_id="boundary_v2_wellformed_forbids_faults",
+        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
+        target_module="Trusted/MirSemantics/Boundary",
+        description="WellFormedV2 forbids reachable faults",
+        anchor="  (∀ k : FaultKind, ¬ ReachesResultV2 p q (.fault k))",
+        replacement="  True",
+        fixture_module="BoundaryRefutations",
+        theorem_name="refute_boundary_v2_wellformed_forbids_faults",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="boundary_v2_safe_fn_ignores_safety_pre",
+        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
+        target_module="Trusted/MirSemantics/Boundary",
+        description="BodyVerifiedV2 ignores safetyPre for safe functions",
+        anchor="    (body.isUnsafe = true → safetyPre q) →",
+        replacement="    safetyPre q →",
+        fixture_module="BoundaryRefutations",
+        theorem_name="refute_boundary_v2_safe_fn_ignores_safety_pre",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="boundary_v2_body_static_admitted",
+        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
+        target_module="Trusted/MirSemantics/Boundary",
+        description="BodyVerifiedV2 requires BodyStaticAdmittedV2 unconditionally",
+        anchor="  BodyStaticAdmittedV2 p body = true ∧",
+        replacement="  True ∧",
+        fixture_module="BoundaryRefutations",
+        theorem_name="refute_boundary_v2_body_static_admitted",
+        needs_wf_helper=False,
+    ),
+    MirSemanticsGuard(
+        guard_id="boundary_v2_rejects_mixed_refs_and_raw_ptrs",
+        target_file="trusted/lean/Trusted/MirSemantics/Boundary.lean",
+        target_module="Trusted/MirSemantics/Boundary",
+        description="BodyStaticAdmittedV2 rejects bodies mixing refs and raw pointers",
+        anchor="    !bodyMixesRefsAndRawPtrsV2 body &&",
+        replacement="    true &&",
+        fixture_module="BoundaryRefutations",
+        theorem_name="refute_boundary_v2_rejects_mixed_refs_and_raw_ptrs",
+        needs_wf_helper=False,
+    ),
 )
 
 

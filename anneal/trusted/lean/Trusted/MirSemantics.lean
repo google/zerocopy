@@ -826,6 +826,17 @@ noncomputable abbrev CrateTheorem := Trusted.MirSemantics.CrateTheorem
 (`Trusted.UnitTheorem`). -/
 noncomputable abbrev UnitTheorem := Trusted.MirSemantics.UnitTheorem
 
+/-- Profile v2 captured crate + specification bundle alias
+(`Trusted.CrateV2`). -/
+abbrev CrateV2 := Trusted.MirSemantics.CrateV2
+
+/-- Profile v2 whole-crate verification obligation
+(`Trusted.CrateTheoremV2`). -/
+noncomputable abbrev CrateTheoremV2 := Trusted.MirSemantics.CrateTheoremV2
+
+/-- Profile v2 proof-unit verification obligation (`Trusted.UnitTheoremV2`). -/
+noncomputable abbrev UnitTheoremV2 := Trusted.MirSemantics.UnitTheoremV2
+
 end Trusted
 
 end

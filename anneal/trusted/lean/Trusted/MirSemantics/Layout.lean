@@ -57,6 +57,18 @@ which matches the data layout that `Trusted.Correspondence` passes to
 observe byte order must take it from the captured target data layout. -/
 noncomputable def profileTargetEndian : TargetEndian := .big
 
+/-- Byte order of the MIR semantic profile version 2
+(`Program.mirProfileVersion = 2`).
+
+Profile version 2 can observe byte order: raw pointers load and store
+multi-byte integers from caller-supplied bytes (`loadIndirectV2`,
+`storeIndirectV2`), and pointer and slice metadata occupy memory. The capture
+adapter admits only 64-bit little-endian targets (`checked_target_profile`
+in `trusted/rustc-capture/src/capture.rs` refuses every other data layout),
+so profile version 2 fixes little-endian order to match the captured
+target. -/
+noncomputable def profileV2TargetEndian : TargetEndian := .little
+
 /-- Size and alignment of a sized type, corresponding to the `size` and
 `align` fields of `rustc_abi::LayoutData` (`compiler/rustc_abi/src/lib.rs`,
 `rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`):
@@ -161,6 +173,20 @@ noncomputable def layoutOfTy : MirTy → Option LayoutData
       | .scalar tagW _ => some (intLayout tagW)
   | .tuple [.int w _, .bool] => some (overflowPairLayout w)
   | _ => none
+
+/-- Layout of a Profile v2 local or pointee type (`layoutOfTy` extended with
+64-bit thin pointers `⟨8, 3⟩`, 64-bit wide slice pointers `⟨16, 3⟩`, and
+`RangeTo<usize>` / `RangeFrom<usize>` `⟨8, 3⟩`). Returns `none` for unsized
+`.slice` directly and unsupported aggregates. -/
+noncomputable def layoutOfTyV2 (ty : MirTy) : Option LayoutData :=
+  match layoutOfTy ty with
+  | some l => some l
+  | none =>
+    match ty with
+    | .rawPtr _ pt | .ref _ pt =>
+      if isUnsizedTy pt then some ⟨16, 3⟩ else some ⟨8, 3⟩
+    | .rangeTo (.int .isize false) | .rangeFrom (.int .isize false) => some ⟨8, 3⟩
+    | _ => none
 
 end Trusted.MirSemantics
 

@@ -460,6 +460,65 @@ noncomputable def isIntLikeTy : MirTy → Bool
   | .bool | .int _ _ | .char => true
   | _ => false
 
+/-! ## Profile v2 Value and Type Predicates -/
+
+/- Profile v2 static local and pointee type admission and runtime value checks. -/
+
+mutual
+  /-- Return `true` when `ty` is a valid Profile v2 sized local type
+  (scalars, booleans, `char`, `Ordering`, `()`, `!`, admitted fieldless enums,
+  tuples, `RangeTo`/`RangeFrom` over `usize`, and flat non-nested pointers or
+  references to scalar/unit/enum/overflow-pair or integer-slice pointees).
+  Nested references/pointers inside pointees (`&&T`, `*mut &T`, `&[&T]`) are
+  rejected fail-closed so `refValidInMem` and `refsStayInCallerMem` remain
+  complete without recursive heap reference graphs. -/
+  noncomputable def isSupportedV2LocalTy : MirTy → Bool
+    | .bool | .int _ _ | .char | .ordering | .unit | .never => true
+    | .enum ety => enumAdmitted ety
+    | .tuple fs => isSupportedV2LocalTyList fs
+    | .ref _ (.slice (.int _ _)) | .rawPtr _ (.slice (.int _ _)) => true
+    | .ref _ pt | .rawPtr _ pt => isSupportedScalarOrUnitTy pt
+    | .rangeTo (.int .isize false) | .rangeFrom (.int .isize false) => true
+    | _ => false
+
+  noncomputable def isSupportedV2LocalTyList : List MirTy → Bool
+    | [] => true
+    | t :: ts => isSupportedV2LocalTy t && isSupportedV2LocalTyList ts
+end
+
+mutual
+  /-- Validate runtime value `v` against Profile v2 static type `ty`, matching
+  Profile v1 `checkVal` on scalar/enum/unit types and adding thin pointers, wide
+  slice pointers, `RangeTo`/`RangeFrom`, and general tuples. -/
+  noncomputable def checkValV2 : Val → MirTy → Bool
+    | .scalar sv, .int w s => checkVal (.scalar sv) (.int w s)
+    | .bool b, .bool => checkVal (.bool b) .bool
+    | .char c, .char => checkVal (.char c) .char
+    | .ordering ord, .ordering => checkVal (.ordering ord) .ordering
+    | .unit, .unit => true
+    | .enumVal ety v, .enum ety' => checkVal (.enumVal ety v) (.enum ety')
+    | .ptr p, .rawPtr _ pt => !isUnsizedTy pt && IntWidth.beq p.width .isize
+    | .ptr p, .ref _ pt => !isUnsizedTy pt && IntWidth.beq p.width .isize
+    | .slicePtr p _, .rawPtr _ (.slice _) => IntWidth.beq p.width .isize
+    | .slicePtr p _, .ref _ (.slice _) => IntWidth.beq p.width .isize
+    | .rangeTo _, .rangeTo (.int .isize false) => true
+    | .rangeFrom _, .rangeFrom (.int .isize false) => true
+    | .tuple vs, .tuple ts => checkValV2List vs ts
+    | _, _ => false
+
+  noncomputable def checkValV2List : List Val → List MirTy → Bool
+    | [], [] => true
+    | v :: vs, t :: ts => checkValV2 v t && checkValV2List vs ts
+    | _, _ => false
+end
+
+/-- Check that Profile v2 argument list `vs` matches parameter type list `tys`
+in length and well-formed runtime value representation. -/
+noncomputable def checkArgsMatchV2 : List Val → List MirTy → Bool
+  | [], [] => true
+  | v :: vs, ty :: tys => checkValV2 v ty && checkArgsMatchV2 vs tys
+  | _, _ => false
+
 end Trusted.MirSemantics
 
 end

@@ -40,12 +40,13 @@ pub fn id(x: usize) -> usize {
 // === case: uncalled_private_fn_rejected ===
 //@ fail(capture): "unused_bad: unsupported type"
 
-fn unused_bad(r: &usize) -> usize {
-    *r
+fn unused_bad(s: &str) -> usize {
+    let _ = s;
+    0
 }
 
 pub fn id(x: usize) -> usize {
-    let _ = unused_bad as fn(&usize) -> usize;
+    let _ = unused_bad as fn(&str) -> usize;
     x
 }
 
@@ -53,8 +54,9 @@ pub fn id(x: usize) -> usize {
 //@ fail(capture): "completely_unused: unsupported type"
 
 #[allow(dead_code)]
-fn completely_unused(r: &usize) -> usize {
-    *r
+fn completely_unused(s: &str) -> usize {
+    let _ = s;
+    0
 }
 
 pub fn id(x: usize) -> usize {

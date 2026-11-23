@@ -363,7 +363,7 @@ theorem evalTerminator_step_inv {body : Body} {bb : BasicBlock}
           exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
     · cases h_step
   | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
-  | unsupported =>
+  | coreCall _ _ _ _ _ | unsupported =>
     cases h_step
   | switchInt discr targets =>
     dsimp only [evalTerminator] at h_step
@@ -401,7 +401,8 @@ theorem evalTerminator_step_inv {body : Body} {bb : BasicBlock}
         · cases h_step
         · injection h_step with h_eq
           refine ⟨_, h_eq.symm, rfl, h_inv₁, h_pc0 _ localsAfterDiscr⟩
-      | unit | enumVal _ _ | tuple _ | ptr _ | bytes _ | ordering _ =>
+      | unit | enumVal _ _ | tuple _ | ptr _ | slicePtr _ _ | rangeTo _
+      | rangeFrom _ | bytes _ | ordering _ =>
         dsimp only at h_step
         cases h_br : targets.branches with
         | cons _ _ => rw [h_br] at h_step; cases h_step
@@ -2174,8 +2175,8 @@ private theorem switchInt_forIn_char (rp : RefProg) (c : Choice)
           cases Nat.beq ch.toNat cc.toNat
           · exact ih
           · rfl
-        | scalar _ | ptr _ | bool _ | ordering _ | unit | enumVal _ _
-        | tuple _ | bytes _ =>
+        | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _
+        | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
           exact False.elim h_cmp
 
 private theorem switchInt_forIn_pair (rp : RefProg) (c : Choice)
@@ -2334,7 +2335,7 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
       dsimp only [evalTerminator]
       rw [← h_eq]
       exact ⟨_, _, rfl, rfl⟩
-  | call _ rargs rdst _ _ =>
+  | call _ rargs rdst _ _ | coreCall _ rargs rdst _ _ =>
     intro res
     rw [h_rt] at h_term_dec
     dsimp only [decodeTerminator, optMap2] at h_term_dec
