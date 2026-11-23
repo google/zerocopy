@@ -2757,7 +2757,30 @@ fn ergonomic_clones_and_call_source_use_fail_closed_at_capture() {
     assert_eq!(output.status.code(), Some(1), "{output:?}");
     let failure = status(&output);
     assert_eq!(failure["status"], "unsupported", "{failure}");
+    assert!(
+        failure.to_string().contains("ergonomic_clones")
+            && failure.to_string().contains("optimize_use_clone"),
+        "expected explicit ergonomic_clones/optimize_use_clone refusal on use site, got {failure}"
+    );
     use_site.assert_no_capture_artifacts();
+
+    // Even a bodyless crate enabling `#![feature(ergonomic_clones)]` under
+    // `--scope=crate` must fail closed before reaching per-body extraction.
+    let bodyless_crate = Capture::new(
+        b"#![feature(ergonomic_clones)]\n\
+          #![allow(incomplete_features)]\n\
+          pub struct Empty;\n",
+    );
+    let output = bodyless_crate.command().arg("--scope=crate").output().unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    let failure = status(&output);
+    assert_eq!(failure["status"], "unsupported", "{failure}");
+    assert!(
+        failure.to_string().contains("ergonomic_clones")
+            && failure.to_string().contains("optimize_use_clone"),
+        "expected explicit ergonomic_clones/optimize_use_clone refusal on bodyless crate, got {failure}"
+    );
+    bodyless_crate.assert_no_capture_artifacts();
 }
 
 #[test]
