@@ -390,6 +390,7 @@ skill table. Record a 3–5 bullet PR-comment or branch-handoff
 | Simplifying or generalizing conceptual models, semantic interfaces, schemas, protocols, or instructions | [`model-refinement`](../skills/model-refinement/SKILL.md) |
 | Coordinating multi-agent conceptual model refinement across theories, designs, schemas, or instructions | [`swarm-model-refinement`](../skills/swarm-model-refinement/SKILL.md), [`model-refinement`](../skills/model-refinement/SKILL.md) |
 | Creating, revising, evaluating, or retiring agent skills or maintainer guidance | [`skill-authorship`](../skills/skill-authorship/SKILL.md), [`model-refinement`](../skills/model-refinement/SKILL.md) |
+| Verifying Rust, authoring specs, or scaling Lean proofs | [`cargo-anneal`](trusted/cargo-anneal/skills/cargo-anneal/SKILL.md), [`spec-authoring`](skills/spec-authoring/SKILL.md), [`proof-scaling`](skills/proof-scaling/SKILL.md) |
 | Leading ambiguous efforts, recovering requirements, evaluating architecture, or recovering context | [`tech-lead`](../skills/tech-lead/SKILL.md), plus writing skills |
 | Multi-round research on Rust/`rustc`/Lean 4 or harvesting findings into the reference corpus (with user approval) | [`reference-research`](https://github.com/google/zerocopy/blob/reference/skills/reference-research/SKILL.md) (`google/zerocopy` `reference` branch; see [Technical reference corpus](#technical-reference-corpus)) |
 

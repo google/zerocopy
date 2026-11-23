@@ -1,136 +1,114 @@
 ---
 name: cargo-anneal
 description: >-
-  Use when checking whether cargo-anneal can verify a Rust function or scalar
-  crate, preparing a request or Lean proof, or interpreting a verification
-  receipt.
+  Use when running cargo-anneal setup or verify, preparing a request or starter
+  proof, diagnosing verification exits, or interpreting a Receipt v3 file. Not
+  for authoring or auditing specs at length (use spec-authoring), scaling Lean
+  proofs past OOM or Tabu cliffs (use proof-scaling), or editing Anneal itself.
 ---
 
 # Verify Rust code with Anneal
 
-Anneal verifies a subset of Rust. Support depends on the installed version and
-the requested scope and compilation. Use `cargo anneal --version` and the
-matching release's documentation for orientation. Run the intended request to
-learn whether that build can verify the user's code.
+Anneal verifies a subset of Rust. Support depends on the installed version,
+target triple, compilation flags, and scope. Check `cargo anneal --version` and
+run the intended request to verify what that build accepts.
 
 On Linux, `ExecSeal` sandboxes target Lean preflight, elaboration, and audit
 by default (`linux_bwrap` or `linux_landlock_seccomp`, recorded in
-`elaboration_sandbox`), whereas Rust compilation (`rustc`) still runs as the
-caller. Run the verifier in an isolated execution environment when working with
-untrusted Rust inputs or build scripts, on non-Linux hosts, or with
-`--allow-unsandboxed-elaboration`.
+`elaboration_sandbox`), whereas Rust compilation (`rustc`) runs as the caller.
+Run the verifier in an isolated environment for untrusted Rust inputs or build
+scripts, on non-Linux hosts, or when passing `--allow-unsandboxed-elaboration`.
+
+## Companion skills
+
+- Authoring, translating, or auditing specifications (`Spec.lean` / `Spec.*`,
+  vacuity, anti-echo, Intent Decisions): use **`spec-authoring`**
+  (`anneal/skills/spec-authoring/SKILL.md` in `google/zerocopy`).
+- Scaling proofs past bounded `execProg`, reducing Lean RSS/timeouts, or
+  escaping verification cliffs: use **`proof-scaling`**
+  (`anneal/skills/proof-scaling/SKILL.md` in `google/zerocopy`).
 
 ## Run the project's verification
 
-Identify the Rust function or crate scope, the intended property, and any
-caller preconditions. If the project has a request and proof for that claim,
-use them with its toolchain. If setup is needed, run `cargo anneal setup` for a
-published build (reusing an existing cached installation for this version), or
-run `cargo anneal setup --local-archive <path>` to install a local archive and
-replace any existing installation for this version. Pass `--clear-old` to remove
-older cached toolchain directories without prompting (on an interactive terminal
-without `--clear-old`, `setup` prompts before removing them; in automated or
-agent shells with a pseudo-TTY, pass `--clear-old` or redirect stdin from
-`/dev/null` so the prompt cannot block). Use the same user and cache for setup
-and verification; the cache lock coordinates concurrent runs so each `verify`
-observes one complete toolchain. To keep an existing cached installation
-untouched on Linux, point `XDG_CACHE_HOME` at a separate directory.
-Builds compiled with `--no-default-features` omit `setup` and require explicit
-`--capture`, `--sysroot`, and `--lean` paths.
+Identify the Rust function or crate scope, intended property, and caller
+preconditions. If setup is needed, run `cargo anneal setup` (reuses an existing
+cached toolchain for that version) or `cargo anneal setup --local-archive <path>`
+to install a local archive. Pass `--clear-old` (or redirect stdin from
+`/dev/null`) in non-interactive shells so cleanup prompts cannot block. Use the
+same user and `XDG_CACHE_HOME` across `setup` and `verify`. Builds compiled with
+`--no-default-features` omit `setup` and require `--capture`, `--sysroot`, and
+`--lean`.
 
-Run the request, save stdout to a new receipt file, and record the exit status.
+Run verification, save stdout to a receipt file, and keep its exit code:
 
 ```sh
-cargo anneal verify --request path/to/request.json > path/to/new-receipt.json
+cargo anneal verify --request path/to/request.json > path/to/receipt.json
 ```
 
-Build systems that already resolve source files and module mappings (including
-symlinked runfiles) can invoke `cargo anneal verify rustc <crate_root>
---crate-name <name> [--env KEY=VALUE ...] --spec-file <Mod>=<path>
---proof-file <Mod>=<path> ...` directly instead of writing `request.json`.
+Other entrypoints:
+- Cargo packages: `cargo anneal verify --manifest-path path/to/Cargo.toml --proof-dir path/to/proofs`
+- Build systems with explicit inputs: `cargo anneal verify rustc <crate_root> --crate-name <name> [--env KEY=VALUE ...] --spec-file <Mod>=<path> --proof-file <Mod>=<path> ...`
 
-## Create a request and proof when needed
+## Create a request and starter proof
 
-Run `cargo anneal skill --example` to print a complete working example from the
-installed CLI. Save the four files together in a scratch directory to try it.
-The example proves that a safe function with no arguments terminates and always
-returns zero in the captured MIR model.
+Run `cargo anneal skill --example` to print a complete 4-file working example
+from the installed CLI. Save the files together in a temporary directory to
+test your environment; it proves termination and a zero return for a safe
+no-argument function in the captured MIR model.
 
-1. For request schema `1`, set `scope` either to `{"kind": "selected_unit",
-   "roots": ["module::function"]}` with non-empty crate-relative Rust
-   definition paths (`UnitTheorem`), or to `{"kind": "crate"}` with no `roots`
-   field (`CrateTheorem` across the whole crate). Set the Rust edition, target,
-   `cfg`, and optional `env` (`KEY -> VALUE` map for `env!`/`option_env!`) for
-   the intended compilation, and include `crate_root` in `source_files`. The
-   `proof` section lists Lean modules with `specification` or `proof` roles.
-   Each `source_root` resolves relative to the request file's directory or to an
-   existing out-of-tree directory; list regular files by clean relative paths
-   inside their canonicalized `source_root`.
-2. Write the property and proof in their declared Lean modules. The default
-   declarations are `Spec.specs` and `Proof.verify`. Express actual caller
-   preconditions for an `unsafe` function in `Specs.safety`. A predicate of
-   `False` excludes every caller of an unsafe function. Check which calls the
-   predicate admits before claiming that callers may rely on the proof.
-3. Import `Expected` in the proof and prove `Expected.claim`. Anneal generates
-   `Captured.lean` from the Rust compilation and `Expected.lean` from that
-   capture and the specification. Keep the requested scope, configuration,
-   property, and caller preconditions fixed while diagnosing the proof. Discuss
-   any proposed change to the verification claim with the user.
+1. For request schema `1`, set `scope` to `{"kind": "selected_unit", "roots": ["mod::fn"]}`
+   (`UnitTheorem`) or `{"kind": "crate"}` (`CrateTheorem`). Set `edition`,
+   `target`, `cfg`, optional `env` (`KEY -> VALUE` map for `env!`/`option_env!`),
+   and `source_files` (including `crate_root`) inside clean relative paths
+   under `source_root`.
+2. Write the contract in `specification` modules (defaults `Spec.specs`,
+   `Specs.safety`, `Specs.property`) and proofs in `proof` modules (`Proof.verify`).
+   For `unsafe` functions, express real caller preconditions in `Specs.safety`;
+   `False` vacuously admits zero callers. Keep `scope`, `cfg`, and specs fixed
+   during proof debugging, and follow **`spec-authoring`** before any spec change.
+3. Import `Expected` in `Proof` and prove `Expected.claim`. Proof modules (never
+   `specification` modules) may import bundled 3-axiom `Anneal.*` libraries
+   listed in `theory/bundle-manifest.json` (`Anneal.MirWp`, `Anneal.LoopInv`,
+   `Anneal.BitVec`, `Anneal.LinearArith`, `Anneal.BitTrieLrat`), compiled and
+   audited on demand when imported.
+4. Keep Lean imports tight: import `prelude` plus only targeted `Init.*`
+   modules (`~4` imports, `~152 MiB` peak RSS). Monolithic `import Init`
+   (`~473 MiB`) fails closed in pinned `verify` unless `--allow-unpinned-lean`
+   is passed. Pass `--lean-memory-mb <MB>` (or run inside a host cgroup memory
+   cap such as `systemd-run --user --scope -p MemoryMax=...`).
 
-The example uses `execProg` to check a bounded execution of its captured body.
-`wellFormed_and_spec_of_wp` turns that check into safety, a postcondition, and
-termination in the model. Proof modules (not `specification` modules) may also
-import bundled 3-axiom `Anneal.*` proof libraries (such as `Anneal.MirWp`,
-`Anneal.LoopInv`, and `Anneal.BitVec`; see `theory/bundle-manifest.json` in the
-Anneal repository for the full bundled module list), compiled and audited on
-demand when imported. When
-adapting the example, run the request with `--artifacts <new-directory>`. In
-`capture/capture.json`, inspect `selected` for the body index and `program` for
-the MIR. Choose fuel to cover the executed MIR steps through the return. Use
-`generated/Expected.lean` to inspect the goal. For functions with arguments,
-address all permitted inputs when the claim requires it.
+When adapting the example, pass `--artifacts <new-dir>`. Inspect `selected` and
+`program` in `capture/capture.json` plus the goal in `generated/Expected.lean`.
+Move to **`proof-scaling`** as soon as direct `execProg` / `simp` stalls.
 
-## Diagnose limitations and report results
+## Diagnose failures and read Receipt v3 honestly
 
-Read `status`, `phase`, and `detail` together. When stdout has no receipt,
-inspect stderr for a command-line or execution error.
+Inspect `status`, `phase`, and `detail` together; check stderr if stdout is empty.
 
-- For `unsupported`, read the detail before drawing a conclusion about Rust
-  support. Correct request, selector, file, or module errors. When the detail
-  names an unsupported target or Rust construct, report what this version
-  refused for the requested scope and compilation.
-- For `compiler_failed`, inspect the Rust diagnostics. For `tool_failed`,
-  diagnose the named phase, such as setup or artifact retention.
-- For `proof_failed`, inspect the Lean or audit diagnostic and the generated
-  obligation. The failure may require a change to the proof or expose a gap
-  between the implementation and specification.
+- `unsupported`: Fix invalid request/selector/path errors, or report exactly
+  which target or Rust construct this version refused.
+- `compiler_failed`: Fix the reported Rust diagnostics first.
+- `tool_failed`: Diagnose the named setup, capture, sandbox, or artifact phase.
+- `proof_failed`: **Step 0 — Day-2 Rust bug triage before proof hacking.**
+  Compare `generated/Expected.lean` and `capture/Captured.lean` against the
+  Rust implementation to check whether the Rust code actually violates its
+  specification (missing bounds/overflow guard, off-by-one, or unintended panic
+  path). Never silently weaken `Specs.safety` or `Specs.property` to make a
+  proof pass; escalate any implementation-vs-intent mismatch to the user.
 
-For diagnostics, rerun with `--artifacts` and a fresh UTF-8 directory path
-under an existing parent (adding `--export-lean-lib` to promote Door-1-verified
-`.olean` files to `<artifacts>/lean-lib/`, omitting authored `proof` `.olean`s
-on `proof_failed` exit `1` and exporting nothing on `tool_failed` exit `2`, or
-`--lean-memory-mb <MB>` to adjust Lean's `-M` limit). Retained
-`capture/Captured.lean` shows that the compiler adapter produced a Lean
-representation of the MIR, and `generated/Expected.lean` shows that Anneal
-generated the obligation. Receipt Schema v3 (`"schema_version": 3`) applies a
-Uniform Flag-Driven Taint Law across `--allow-unpinned-lean` (requiring
-`--lean <path>`, recording the discovered `Init.*`/`Std.*` closure in
-`unpinned_lean`), `--allow-unsandboxed-elaboration` (`"elaboration_sandbox":
-"none"`), and `--allow-sorry-in-proof` (authored `proof` modules only,
-recording `sorry_declarations`): each active flag prints a `TAINTED` stderr
-warning and adds its reason (`"sorry_in_proof"`, `"unpinned_lean"`,
-`"unsandboxed_elaboration"`) to `taint_reasons`. Use the receipt to determine
-the outcome.
+For diagnostics, rerun with `--artifacts <dir>` (add `--export-lean-lib` to
+copy Door-1-verified `.olean` files to `<dir>/lean-lib/`, omitting `proof`
+`.olean`s on `proof_failed` exit `1` and exporting nothing on `tool_failed` exit
+`2`). Receipt Schema v3 (`"schema_version": 3`) enforces a Uniform Flag-Driven
+Taint Law across `--allow-unpinned-lean` (records `unpinned_lean`),
+`--allow-unsandboxed-elaboration` (`"elaboration_sandbox": "none"`), and
+`--allow-sorry-in-proof` (records `sorry_declarations` in `proof` modules
+only): each flag prints `TAINTED` on stderr and appends `"unpinned_lean"`,
+`"unsandboxed_elaboration"`, or `"sorry_in_proof"` to `taint_reasons`.
 
-With exit `0` and `selected_unit_verified` or `crate_verified` (or
-`tainted_selected_unit_verified` / `tainted_crate_verified` when
-`taint_reasons` is non-empty), compare the checked specification and applicable
-caller preconditions with the user's intent. The receipt's
-`audit.specificationClosure` identifies definitions to inspect. Report the
-property actually checked and any gap with the request, along with the verified
-scope, compilation configuration, `elaboration_sandbox`, `taint_reasons` (and
-`sorry_declarations` when present), material assumptions, and deferred checks.
-Keep the input identities with the receipt. A successful receipt can be large.
-Read `status`, `taint_reasons`, `elaboration_sandbox`, `scope`, and
-`configuration` first, then inspect the relevant audit entries and the
-specification itself.
+On exit `0` (`selected_unit_verified` / `crate_verified`, or `tainted_*` when
+`taint_reasons` is non-empty), inspect `status`, `taint_reasons`,
+`elaboration_sandbox`, `scope`, `configuration`, `audit.specificationClosure`,
+and the spec declarations themselves. Report honestly: state exact verified
+units, `cfg`/target triple, sandbox/taint qualifiers, non-vacuity (`Specs.safety`),
+material assumptions, and any unverified callers or deferred checks.

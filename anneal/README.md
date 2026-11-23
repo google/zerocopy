@@ -204,8 +204,8 @@ install it and check a runnable proof.
 
 ## Agent skill
 
-Run `cargo anneal skill` to print the bundled `SKILL.md` without setting up
-the Anneal toolchain.
+Run `cargo anneal skill` to print the bundled `cargo-anneal` `SKILL.md`
+without setting up the Anneal toolchain.
 
 To make the skill discoverable before an agent runs `cargo anneal`, install it
 with [GitHub CLI][gh-skill]. Set `ANNEAL_REV` to the release tag or source
@@ -217,6 +217,11 @@ gh skill install google/zerocopy \
   anneal/trusted/cargo-anneal/skills/cargo-anneal/SKILL.md \
   --agent codex --scope project --pin "${ANNEAL_REV:?set the source revision}"
 ```
+
+For authoring formal specifications or scaling larger Lean proofs, see the
+companion [spec-authoring](skills/spec-authoring/SKILL.md) and
+[proof-scaling](skills/proof-scaling/SKILL.md) skills in the
+[Anneal skills index](skills/README.md).
 
 Choose the `--agent` value for your host. Commit the installed skill to share
 it with teammates and agents working in fresh checkouts.

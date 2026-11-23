@@ -61,6 +61,69 @@ FORBIDDEN_SKILL_CONFIGS = frozenset(
     {"agents.md", "agents.override.md", "claude.md", "gemini.md",
      "lean-toolchain"}
 )
+MAX_SKILL_LINES = 300
+# Existing repository skills exceeding `MAX_SKILL_LINES` are grandfathered at
+# their current line counts so they cannot bloat further.
+GRANDFATHERED_SKILL_LINE_CAPS: Dict[str, int] = {
+    "anneal/skills/change-review/SKILL.md": 483,
+    "anneal/skills/source-control/SKILL.md": 439,
+    "anneal/skills/trust-review/SKILL.md": 331,
+    "skills/architectural-design/SKILL.md": 462,
+    "skills/model-refinement/SKILL.md": 307,
+    "skills/research-wheel/SKILL.md": 353,
+    "skills/swarm-model-refinement/SKILL.md": 391,
+    "skills/unsafe-rust/SKILL.md": 364,
+}
+# Codex reads `AGENTS.md` from repository root down to cwd within a 32 KiB
+# default budget (`project_doc_max_bytes = 32768`), reserving 1024 B for user
+# global instructions (see `anneal/docs/review-policy-design.md`).
+CODEX_AGENTS_MD_BUDGET_BYTES = 31744
+AGENTS_SCAN_PRUNE_DIRS = frozenset({".git", ".lake", "target"})
+THEORY_TACTIC_KIND_TO_TOKEN: Dict[str, Optional[str]] = {
+    "Parser.Term.byTactic": None,
+    "Parser.Term.binderTactic": None,
+    "Lean.Parser.Tactic.apply": "apply",
+    "Lean.Parser.Tactic.cases": "cases",
+    "Lean.Parser.Tactic.change": "change",
+    "Lean.Parser.Tactic.constructor": "constructor",
+    "Lean.Parser.Tactic.decide": "decide",
+    "Lean.Parser.Tactic.dsimp": "dsimp",
+    "Lean.Parser.Tactic.elimTarget": None,
+    "Lean.Parser.Tactic.exact": "exact",
+    "Lean.Parser.Tactic.first": "first",
+    "Lean.Parser.Tactic.induction": "induction",
+    "Lean.Parser.Tactic.inductionAlt": None,
+    "Lean.Parser.Tactic.inductionAltLHS": None,
+    "Lean.Parser.Tactic.inductionAlts": None,
+    "Lean.Parser.Tactic.injection": "injection",
+    "Lean.Parser.Tactic.intro": "intro",
+    "Lean.Parser.Tactic.left": "left",
+    "Lean.Parser.Tactic.location": None,
+    "Lean.Parser.Tactic.locationHyp": None,
+    "Lean.Parser.Tactic.optConfig": None,
+    "Lean.Parser.Tactic.paren": None,
+    "Lean.Parser.Tactic.refine": "refine",
+    "Lean.Parser.Tactic.revert": "revert",
+    "Lean.Parser.Tactic.right": "right",
+    "Lean.Parser.Tactic.rwRule": None,
+    "Lean.Parser.Tactic.rwRuleSeq": None,
+    "Lean.Parser.Tactic.rwSeq": "rw",
+    "Lean.Parser.Tactic.simp": "simp",
+    "Lean.Parser.Tactic.simpLemma": None,
+    "Lean.Parser.Tactic.subst": "subst",
+    "Lean.Parser.Tactic.tacticHave__": "have",
+    "Lean.Parser.Tactic.tacticLet__": "let",
+    "Lean.Parser.Tactic.«tacticNomatch_,,»": "nomatch",
+    "Lean.Parser.Tactic.tacticRepeat_": "repeat",
+    "Lean.Parser.Tactic.tacticRfl": "rfl",
+    "Lean.Parser.Tactic.tacticSeq": None,
+    "Lean.Parser.Tactic.tacticSeq1Indented": None,
+    "Lean.Parser.Tactic.«tactic_<;>_»": "<;>",
+    "Lean.Parser.Tactic.unfold": "unfold",
+    "tacticFunext___": "funext",
+}
+ANNEAL_MODULE_RE = re.compile(r"\b(Anneal(?:\.[A-Z][A-Za-z0-9_]*)+)\b")
+BACKTICK_TOKEN_RE = re.compile(r"`([^`\n]+)`")
 
 
 class SkillCheckError(Exception):
@@ -1133,6 +1196,15 @@ def validate_skill_tree(
                     raise fail(
                         f"{repo_rel}: frontmatter description must be non-empty"
                     )
+                line_count = len(text.splitlines())
+                max_lines = GRANDFATHERED_SKILL_LINE_CAPS.get(
+                    repo_rel, MAX_SKILL_LINES
+                )
+                if line_count > max_lines:
+                    raise fail(
+                        f"{repo_rel}: SKILL.md has {line_count} lines, "
+                        f"exceeding limit of {max_lines}"
+                    )
                 md_bodies.append((full_path, body))
             else:
                 md_bodies.append((full_path, text))
@@ -1291,23 +1363,305 @@ def check_repository(repo_root: Path) -> None:
                 )
 
     validate_anneal_skills_json(resolved_root)
+    validate_agents_docs(resolved_root, slug_cache)
+    validate_proof_scaling_sync(
+        resolved_root, anneal_skill_names, cargo_anneal_skill_names
+    )
 
-    # Also check skill routing links in subtree AGENTS.md files when present.
-    for rel_agents in ("zerocopy/AGENTS.md", "anneal/AGENTS.md"):
-        agents_path = resolved_root / rel_agents
+
+def _extract_marked_block(text: str, label: str, repo_rel: str) -> str:
+    begin = f"<!-- {label}:begin -->"
+    end = f"<!-- {label}:end -->"
+    if text.count(begin) != 1 or text.count(end) != 1:
+        raise fail(
+            f"{repo_rel}: expected exactly one {begin!r} and {end!r} marker"
+        )
+    start = text.find(begin)
+    stop = text.find(end)
+    if stop < start + len(begin):
+        raise fail(f"{repo_rel}: {end!r} appears before {begin!r}")
+    return text[start + len(begin) : stop]
+
+
+LEAN_NAME_TOKEN_RE = re.compile(
+    r"`+((?:[A-Za-z0-9_]+|«[^»]+»)(?:\.(?:[A-Za-z0-9_]+|«[^»]+»))*)"
+)
+
+
+ALLOWED_THEORY_TACTIC_START_RE = re.compile(
+    r"\bdef\s+allowedTheoryTacticKinds\s*:\s*List\s+Name\s*:=\s*\["
+)
+
+
+def _strip_lean_comments(text: str, tb_rel: str) -> str:
+    """Replace Lean `--` and nested `/- ... -/` comments with spaces, preserving newlines."""
+    out: List[str] = []
+    i = 0
+    n = len(text)
+    block_depth = 0
+    in_string = False
+    in_guillemet = False
+    while i < n:
+        ch = text[i]
+        nxt = text[i + 1] if i + 1 < n else ""
+        if block_depth > 0:
+            if ch == "/" and nxt == "-":
+                block_depth += 1
+                out.extend((" ", " "))
+                i += 2
+            elif ch == "-" and nxt == "/":
+                block_depth -= 1
+                out.extend((" ", " "))
+                i += 2
+            elif ch == "\n":
+                out.append("\n")
+                i += 1
+            else:
+                out.append(" ")
+                i += 1
+            continue
+        if in_string:
+            out.append(ch)
+            if ch == "\\" and i + 1 < n:
+                out.append(nxt)
+                i += 2
+                continue
+            if ch == '"':
+                in_string = False
+            i += 1
+            continue
+        if in_guillemet:
+            out.append(ch)
+            if ch == "»":
+                in_guillemet = False
+            i += 1
+            continue
+        if ch == "-" and nxt == "-":
+            out.extend((" ", " "))
+            i += 2
+            while i < n and text[i] != "\n":
+                out.append(" ")
+                i += 1
+            continue
+        if ch == "/" and nxt == "-":
+            block_depth = 1
+            out.extend((" ", " "))
+            i += 2
+            continue
+        if ch == '"':
+            in_string = True
+        elif ch == "'" and (
+            i == 0 or not (text[i - 1].isalnum() or text[i - 1] in "_?!")
+        ):
+            # Lex Lean Char literals like `'"'` or `'\''` without confusing `rfl'`.
+            if nxt == "\\" and i + 3 < n and text[i + 3] == "'":
+                out.extend(text[i : i + 4])
+                i += 4
+                continue
+            if nxt not in ("", "\n") and i + 2 < n and text[i + 2] == "'":
+                out.extend(text[i : i + 3])
+                i += 3
+                continue
+        elif ch == "«":
+            in_guillemet = True
+        out.append(ch)
+        i += 1
+    if block_depth != 0:
+        raise fail(f"{tb_rel}: unterminated Lean block comment")
+    return "".join(out)
+
+
+def parse_allowed_theory_tactics(tb_path: Path, tb_rel: str) -> Set[str]:
+    """Parse `allowedTheoryTacticKinds` from `TrustedBoundary.lean`."""
+    tb_text = _strip_lean_comments(
+        decode_clean_utf8(tb_path.read_bytes(), tb_rel), tb_rel
+    )
+    match = ALLOWED_THEORY_TACTIC_START_RE.search(tb_text)
+    if match is None:
+        raise fail(f"{tb_rel}: missing def allowedTheoryTacticKinds")
+    body_start = match.end()
+    body_end = tb_text.find("]", body_start)
+    if body_end == -1:
+        raise fail(f"{tb_rel}: unterminated allowedTheoryTacticKinds list")
+    raw_block = tb_text[body_start:body_end]
+    leftover = LEAN_NAME_TOKEN_RE.sub("", raw_block).replace(",", "").strip()
+    if leftover:
+        raise fail(
+            f"{tb_rel}: unparsed token(s) in allowedTheoryTacticKinds: {leftover!r}"
+        )
+    tokens: Set[str] = set()
+    for kind in LEAN_NAME_TOKEN_RE.findall(raw_block):
+        if kind not in THEORY_TACTIC_KIND_TO_TOKEN:
+            raise fail(
+                f"{tb_rel}: unmapped allowedTheoryTacticKinds entry {kind!r}; "
+                "update THEORY_TACTIC_KIND_TO_TOKEN in ci/check_skills.py"
+            )
+        mapped = THEORY_TACTIC_KIND_TO_TOKEN[kind]
+        if mapped is not None:
+            tokens.add(mapped)
+    if not tokens:
+        raise fail(f"{tb_rel}: parsed empty allowedTheoryTacticKinds set")
+    return tokens
+
+
+def load_bundled_anneal_modules(
+    repo_root: Path, manifest_path: Path, rel: str
+) -> Set[str]:
+    """Load `Anneal.*` module names from `theory/bundle-manifest.json`."""
+    data = load_strict_json(decode_clean_utf8(manifest_path.read_bytes(), rel), rel)
+    if not isinstance(data, dict) or not isinstance(data.get("modules"), list):
+        raise fail(f"{rel}: expected JSON object with 'modules' list")
+    modules: Set[str] = set()
+    for entry in data["modules"]:
+        if not isinstance(entry, dict) or not isinstance(entry.get("path"), str):
+            raise fail(f"{rel}: malformed module entry {entry!r}")
+        raw_path = entry["path"]
+        posix_path = check_safe_path_string(raw_path, f"{rel}: module path")
+        posix_str = posix_path.as_posix()
+        if not posix_str.startswith("theory/") or not posix_str.endswith(".lean"):
+            raise fail(f"{rel}: unexpected module path {raw_path!r}")
+        mod_rel = f"anneal/{posix_str}"
+        mod_path = repo_root / mod_rel
+        if not (mod_path.exists() or mod_path.is_symlink()):
+            raise fail(f"{rel}: bundled module file missing at {mod_rel}")
+        assert_symlink_free_within_repo(repo_root, mod_path, mod_rel)
+        if not mod_path.is_file():
+            raise fail(f"{rel}: bundled module path is not a file: {mod_rel}")
+        mod = posix_str[len("theory/") : -len(".lean")].replace("/", ".")
+        modules.add(mod)
+    return modules
+
+
+def validate_agents_docs(repo_root: Path, slug_cache: Dict[Path, Set[str]]) -> None:
+    """Validate root/subtree `AGENTS.md` links, overrides, and Codex size budget."""
+    for rel_agents in ("AGENTS.md", "zerocopy/AGENTS.md", "anneal/AGENTS.md"):
+        agents_path = repo_root / rel_agents
         if agents_path.exists() or agents_path.is_symlink():
-            assert_symlink_free_within_repo(
-                resolved_root, agents_path, rel_agents
-            )
-            agents_text = decode_clean_utf8(
-                agents_path.read_bytes(), rel_agents
-            )
-            slug_cache[agents_path] = github_heading_slugs(
-                agents_text, rel_agents
-            )
-            validate_markdown_links(
-                resolved_root, agents_path, agents_text, slug_cache
-            )
+            assert_symlink_free_within_repo(repo_root, agents_path, rel_agents)
+            agents_text = decode_clean_utf8(agents_path.read_bytes(), rel_agents)
+            slug_cache[agents_path] = github_heading_slugs(agents_text, rel_agents)
+            validate_markdown_links(repo_root, agents_path, agents_text, slug_cache)
+
+    anneal_dir = repo_root / "anneal"
+    anneal_agents_paths: List[Path] = []
+    if anneal_dir.exists() or anneal_dir.is_symlink():
+        assert_symlink_free_within_repo(repo_root, anneal_dir, "anneal")
+        for dirpath, dirnames, filenames in os.walk(anneal_dir, followlinks=False):
+            cur = Path(dirpath)
+            kept_dirs: List[str] = []
+            for d in sorted(dirnames):
+                sub = cur / d
+                rel_sub = sub.relative_to(repo_root).as_posix()
+                if d in AGENTS_SCAN_PRUNE_DIRS:
+                    if sub.is_symlink():
+                        assert_symlink_free_within_repo(repo_root, sub, rel_sub)
+                    continue
+                assert_symlink_free_within_repo(repo_root, sub, rel_sub)
+                kept_dirs.append(d)
+            dirnames[:] = kept_dirs
+            for name in sorted(filenames):
+                if name == "AGENTS.override.md":
+                    rel = (cur / name).relative_to(repo_root).as_posix()
+                    raise fail(
+                        f"{rel}: AGENTS.override.md is forbidden under anneal/"
+                    )
+                if name == "AGENTS.md":
+                    p = cur / name
+                    rel = p.relative_to(repo_root).as_posix()
+                    assert_symlink_free_within_repo(repo_root, p, rel)
+                    anneal_agents_paths.append(p)
+
+    root_override = repo_root / "AGENTS.override.md"
+    if root_override.exists() or root_override.is_symlink():
+        raise fail("AGENTS.override.md: repository-root override is forbidden")
+
+    root_agents = repo_root / "AGENTS.md"
+    if not (root_agents.exists() or anneal_agents_paths):
+        return
+
+    total_bytes = 0
+    if root_agents.exists():
+        total_bytes += root_agents.lstat().st_size
+    for p in anneal_agents_paths:
+        total_bytes += p.lstat().st_size
+    if total_bytes >= CODEX_AGENTS_MD_BUDGET_BYTES:
+        raise fail(
+            f"combined AGENTS.md size {total_bytes} B reaches or exceeds "
+            f"Codex budget of {CODEX_AGENTS_MD_BUDGET_BYTES} B"
+        )
+
+
+def validate_proof_scaling_sync(
+    repo_root: Path,
+    anneal_skill_names: Set[str],
+    cargo_anneal_skill_names: Set[str],
+) -> None:
+    """Keep `proof-scaling` & `cargo-anneal` synced with `TrustedBoundary.lean` and `bundle-manifest.json`."""
+    tb_rel = "anneal/trusted/audit/TrustedBoundary.lean"
+    manifest_rel = "anneal/theory/bundle-manifest.json"
+    tb_path = repo_root / tb_rel
+    manifest_path = repo_root / manifest_rel
+
+    bundled_modules: Optional[Set[str]] = None
+    if manifest_path.exists() or manifest_path.is_symlink():
+        assert_symlink_free_within_repo(repo_root, manifest_path, manifest_rel)
+        bundled_modules = load_bundled_anneal_modules(
+            repo_root, manifest_path, manifest_rel
+        )
+
+    if "cargo-anneal" in cargo_anneal_skill_names:
+        ca_rel = "anneal/trusted/cargo-anneal/skills/cargo-anneal/SKILL.md"
+        ca_text = decode_clean_utf8((repo_root / ca_rel).read_bytes(), ca_rel)
+        ca_mods = sorted(set(ANNEAL_MODULE_RE.findall(ca_text)))
+        if ca_mods and bundled_modules is None:
+            raise fail(f"{ca_rel}: missing {manifest_rel} to verify bundled modules")
+        for mod in ca_mods:
+            if mod not in bundled_modules:
+                raise fail(
+                    f"{ca_rel}: cited {mod!r} is missing from {manifest_rel}"
+                )
+
+    if "proof-scaling" not in anneal_skill_names:
+        return
+
+    ps_rel = "anneal/skills/proof-scaling/SKILL.md"
+    ps_text = decode_clean_utf8((repo_root / ps_rel).read_bytes(), ps_rel)
+
+    if not (tb_path.exists() or tb_path.is_symlink()):
+        raise fail(f"{ps_rel}: missing {tb_rel} to verify Pass-1 tactics")
+    assert_symlink_free_within_repo(repo_root, tb_path, tb_rel)
+    expected_tactics = parse_allowed_theory_tactics(tb_path, tb_rel)
+    tactic_block = _extract_marked_block(ps_text, "pass1-tactic-allowlist", ps_rel)
+    skill_tactics = set(BACKTICK_TOKEN_RE.findall(tactic_block))
+    missing = sorted(expected_tactics - skill_tactics)
+    extra = sorted(skill_tactics - expected_tactics)
+    if missing or extra:
+        raise fail(
+            f"{ps_rel}: Pass-1 tactic allowlist out of sync with {tb_rel} "
+            f"(missing={missing}, extra={extra})"
+        )
+
+    if bundled_modules is None:
+        raise fail(f"{ps_rel}: missing {manifest_rel} to verify bundled modules")
+    bundled_block = _extract_marked_block(ps_text, "pass1-bundled-modules", ps_rel)
+    block_mods = set(ANNEAL_MODULE_RE.findall(bundled_block))
+    if not block_mods:
+        raise fail(f"{ps_rel}: pass1-bundled-modules block cites no Anneal.* modules")
+    bad_bundled = sorted(block_mods - bundled_modules)
+    if bad_bundled:
+        raise fail(
+            f"{ps_rel}: bundled modules missing from {manifest_rel}: {bad_bundled}"
+        )
+    for mod in sorted(set(ANNEAL_MODULE_RE.findall(ps_text))):
+        if mod in bundled_modules:
+            continue
+        mod_rel = f"anneal/theory/{mod.replace('.', '/')}.lean"
+        mod_path = repo_root / mod_rel
+        if not (mod_path.exists() or mod_path.is_symlink()):
+            raise fail(f"{ps_rel}: cited {mod!r} missing at {mod_rel}")
+        assert_symlink_free_within_repo(repo_root, mod_path, mod_rel)
+        if not mod_path.is_file():
+            raise fail(f"{ps_rel}: cited {mod!r} missing at {mod_rel}")
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:

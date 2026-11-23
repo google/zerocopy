@@ -641,6 +641,224 @@ class CheckSkillsTests(unittest.TestCase):
             )
             self.assert_fails_with(repo, "duplicate skill name(s)")
 
+    def test_skill_line_limit_and_grandfathered_caps(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = self.build_fixture(Path(tmp))
+            # Non-grandfathered skill at 300 lines passes; at 301 fails.
+            md = repo / "anneal" / "skills" / "policy-review" / "SKILL.md"
+            header = (
+                "---\nname: policy-review\ndescription: ok\n---\n\n# Heading\n"
+            )
+            pad_300 = header + ("line\n" * (300 - len(header.splitlines())))
+            self.assertEqual(len(pad_300.splitlines()), 300)
+            md.write_text(pad_300, encoding="utf-8")
+            check_skills.check_repository(repo)
+
+            md.write_text(pad_300 + "overflow\n", encoding="utf-8")
+            self.assert_fails_with(repo, "exceeding limit of 300")
+            md.write_text(pad_300, encoding="utf-8")
+
+            # Grandfathered `skills/unsafe-rust/SKILL.md` capped at 364 lines.
+            unsafe_md = repo / "skills" / "unsafe-rust" / "SKILL.md"
+            u_hdr = "---\nname: unsafe-rust\ndescription: ok\n---\n\n# H\n"
+            cap = check_skills.GRANDFATHERED_SKILL_LINE_CAPS[
+                "skills/unsafe-rust/SKILL.md"
+            ]
+            u_at_cap = u_hdr + ("line\n" * (cap - len(u_hdr.splitlines())))
+            unsafe_md.write_text(u_at_cap, encoding="utf-8")
+            check_skills.check_repository(repo)
+
+            unsafe_md.write_text(u_at_cap + "bloat\n", encoding="utf-8")
+            self.assert_fails_with(repo, f"exceeding limit of {cap}")
+
+    def test_agents_md_budget_links_and_override_ban(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = self.build_fixture(Path(tmp))
+            root_agents = repo / "AGENTS.md"
+            anneal_agents = repo / "anneal" / "AGENTS.md"
+
+            # Broken link in root `AGENTS.md` fails closed.
+            root_agents.write_text(
+                "# Root\n\nSee [broken](does-not-exist.md).\n",
+                encoding="utf-8",
+            )
+            self.assert_fails_with(repo, "target does not exist")
+
+            root_agents.write_text("# Root\n", encoding="utf-8")
+            check_skills.check_repository(repo)
+
+            # `AGENTS.override.md` rejected at root and under `anneal/`.
+            root_override = repo / "AGENTS.override.md"
+            root_override.write_text("# Override\n", encoding="utf-8")
+            self.assert_fails_with(repo, "repository-root override is forbidden")
+            root_override.unlink()
+
+            sub_dir = repo / "anneal" / "sub"
+            sub_dir.mkdir(parents=True)
+            sub_override = sub_dir / "AGENTS.override.md"
+            sub_override.write_text("# Override\n", encoding="utf-8")
+            self.assert_fails_with(repo, "AGENTS.override.md is forbidden")
+            sub_override.unlink()
+
+            # Symlinked pruned directory under `anneal/` fails closed.
+            outside_target = Path(tmp) / "outside_target"
+            outside_target.mkdir()
+            symlink_target = repo / "anneal" / "target"
+            symlink_target.symlink_to(outside_target)
+            self.assert_fails_with(repo, "symlink forbidden: anneal/target")
+            symlink_target.unlink()
+
+            # Budget `< 31744`: exact `31743` passes, `31744` fails.
+            root_len = root_agents.lstat().st_size
+            budget = check_skills.CODEX_AGENTS_MD_BUDGET_BYTES
+            anneal_agents.write_bytes(b"a" * (budget - 1 - root_len))
+            check_skills.check_repository(repo)
+
+            anneal_agents.write_bytes(b"a" * (budget - root_len))
+            self.assert_fails_with(repo, f"Codex budget of {budget} B")
+
+    def test_proof_scaling_and_cargo_anneal_boundary_sync(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = self.build_fixture(Path(tmp))
+            tb_path = repo / "anneal" / "trusted" / "audit" / "TrustedBoundary.lean"
+            tb_path.parent.mkdir(parents=True)
+            tb_base = (
+                "def allowedTheoryTacticKinds : List Name := [\n"
+                "  ``Parser.Term.byTactic,\n"
+                "  `Lean.Parser.Tactic.apply,\n"
+                "  `Lean.Parser.Tactic.exact,\n"
+                "  `Lean.Parser.Tactic.«tactic_<;>_»,\n"
+                "  `Lean.Parser.Tactic.«tacticNomatch_,,»,\n"
+                "  `tacticFunext___\n"
+                "]\n"
+            )
+            tb_path.write_text(tb_base, encoding="utf-8")
+
+            theory_dir = repo / "anneal" / "theory" / "Anneal"
+            theory_dir.mkdir(parents=True)
+            (theory_dir / "LinearArith.lean").write_text("-- ok\n", encoding="utf-8")
+            (theory_dir / "PureLift.lean").write_text("-- ok\n", encoding="utf-8")
+            manifest = repo / "anneal" / "theory" / "bundle-manifest.json"
+            manifest.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "modules": [
+                            {"path": "theory/Anneal/LinearArith.lean", "sha256": "0" * 64}
+                        ],
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            ps_body = (
+                "# Proof Scaling\n\n"
+                "<!-- pass1-bundled-modules:begin -->\n"
+                "`Anneal.LinearArith`\n"
+                "<!-- pass1-bundled-modules:end -->\n\n"
+                "Also `Anneal.PureLift` in-tree.\n\n"
+                "<!-- pass1-tactic-allowlist:begin -->\n"
+                "`apply`, `exact`, `<;>`, `nomatch`, `funext`\n"
+                "<!-- pass1-tactic-allowlist:end -->\n"
+            )
+            ps_md = write_skill_md(
+                repo / "anneal" / "skills" / "proof-scaling",
+                "proof-scaling",
+                body=ps_body,
+            )
+            full_ps = ps_md.read_text(encoding="utf-8")
+            (repo / "anneal" / "skills" / "README.md").write_text(
+                "# Anneal skills\n\nSee "
+                "[`policy-review`](policy-review/SKILL.md#heading), "
+                "[`proof-scaling`](proof-scaling/SKILL.md#proof-scaling), and "
+                "[shared skills](../../skills/README.md#skills).\n",
+                encoding="utf-8",
+            )
+            ca_md = (
+                repo
+                / "anneal"
+                / "trusted"
+                / "cargo-anneal"
+                / "skills"
+                / "cargo-anneal"
+                / "SKILL.md"
+            )
+            ca_base = (
+                "---\nname: cargo-anneal\ndescription: ok\n---\n\n"
+                "# CA\n\nUse `Anneal.LinearArith`.\n"
+            )
+            ca_md.write_text(ca_base, encoding="utf-8")
+            check_skills.check_repository(repo)
+
+            # Missing tactic in `proof-scaling` fails closed.
+            ps_md.write_text(
+                full_ps.replace(", `funext`", ""), encoding="utf-8"
+            )
+            self.assert_fails_with(repo, "Pass-1 tactic allowlist out of sync")
+            ps_md.write_text(full_ps, encoding="utf-8")
+
+            # Unmapped parser kind in `TrustedBoundary.lean` fails closed.
+            tb_path.write_text(
+                tb_base.replace("`tacticFunext___", "`tacticFunext___, `Lean.Parser.Tactic.omega"),
+                encoding="utf-8",
+            )
+            self.assert_fails_with(repo, "unmapped allowedTheoryTacticKinds entry")
+
+            # Comment containing `def allowedTheoryTacticKinds` or `]` must not
+            # mis-anchor or prematurely terminate parsing.
+            tb_with_comments = (
+                "/-- Docstring mentioning def allowedTheoryTacticKinds : List Name := [ -/\n"
+                + tb_base.replace(
+                    "`Lean.Parser.Tactic.exact,",
+                    "-- comment with closing ]\n  `Lean.Parser.Tactic.exact,",
+                )
+            )
+            tb_path.write_text(tb_with_comments, encoding="utf-8")
+            check_skills.check_repository(repo)
+            tb_path.write_text(tb_base, encoding="utf-8")
+
+            # Missing or symlinked bundled module file in `bundle-manifest.json`
+            # fails closed even before checking non-bundled modules.
+            (theory_dir / "LinearArith.lean").unlink()
+            self.assert_fails_with(repo, "bundled module file missing")
+            outside_b = Path(tmp) / "outside_bundled.lean"
+            outside_b.write_text("-- bad\n", encoding="utf-8")
+            (theory_dir / "LinearArith.lean").symlink_to(outside_b)
+            self.assert_fails_with(repo, "symlink forbidden")
+            (theory_dir / "LinearArith.lean").unlink()
+            (theory_dir / "LinearArith.lean").write_text("-- ok\n", encoding="utf-8")
+            check_skills.check_repository(repo)
+
+            # Unbundled module listed in `pass1-bundled-modules` fails closed.
+            ps_md.write_text(
+                full_ps.replace(
+                    "`Anneal.LinearArith`", "`Anneal.LinearArith`, `Anneal.PureLift`"
+                ),
+                encoding="utf-8",
+            )
+            self.assert_fails_with(repo, "bundled modules missing")
+            ps_md.write_text(full_ps, encoding="utf-8")
+
+            # Nonexistent `Anneal.Phantom` cited in `proof-scaling` or `cargo-anneal` fails.
+            ps_md.write_text(full_ps + "Use `Anneal.Phantom`.\n", encoding="utf-8")
+            self.assert_fails_with(repo, "missing at anneal/theory/Anneal/Phantom.lean")
+            ps_md.write_text(full_ps, encoding="utf-8")
+
+            ca_md.write_text(ca_base + "Use `Anneal.Phantom`.\n", encoding="utf-8")
+            self.assert_fails_with(repo, "missing from anneal/theory/bundle-manifest.json")
+            ca_md.write_text(ca_base, encoding="utf-8")
+
+            # Ancestor directory symlink under `anneal/theory/` fails closed.
+            outside_lean = Path(tmp) / "outside_lean"
+            outside_lean.mkdir()
+            (outside_lean / "PureLift.lean").write_text("-- ok\n", encoding="utf-8")
+            (theory_dir / "PureLift.lean").unlink()
+            (theory_dir / "LinearArith.lean").unlink()
+            theory_dir.rmdir()
+            theory_dir.symlink_to(outside_lean)
+            self.assert_fails_with(repo, "symlink forbidden: anneal/theory/Anneal")
+
 
 if __name__ == "__main__":
     unittest.main()
