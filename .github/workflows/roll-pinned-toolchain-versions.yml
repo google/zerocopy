@@ -104,6 +104,20 @@ jobs:
             grep -Fx "pinned-$VERSION_NAME = \"$VERSION\"" \
               zerocopy/Cargo.toml >/dev/null
 
+            if [ -f ci/pins/rust-toolchains.toml ]; then
+              PIN_REGEX="^$VERSION_NAME = \"[a-z0-9\.-]*\"$"
+              PIN_MATCH="$(grep -Ec "$PIN_REGEX" ci/pins/rust-toolchains.toml || true)"
+              if [ "$PIN_MATCH" -ne 1 ]; then
+                echo "Expected one '$PIN_REGEX' in ci/pins/rust-toolchains.toml; found $PIN_MATCH" >&2
+                exit 1
+              fi
+              sed -i -e \
+                "s/$PIN_REGEX/$VERSION_NAME = \"$VERSION\"/" \
+                ci/pins/rust-toolchains.toml
+              grep -Fx "$VERSION_NAME = \"$VERSION\"" \
+                ci/pins/rust-toolchains.toml >/dev/null
+            fi
+
             # Run `cargo fix` in case there are any warnings or errors
             # introduced on this new toolchain that we can fix automatically.
             # This is best-effort, so we don't let failure cause the whole job
@@ -155,6 +169,143 @@ jobs:
           PR_NUMBER: ${{ steps.submit-pr.outputs.pull-request-number }}
         run: gh pr edit "$PR_NUMBER" --add-label "hide-from-release-notes"
           
+  # `zerocopy/ci/release_crate_version.sh` pins the semver baseline to the
+  # version a release PR supersedes, since the new version is not yet on
+  # crates.io. This job advances the pin to the newest published release once
+  # it appears, so after a release the baseline lags only until the next weekly
+  # run or a manual `workflow_dispatch`.
+  roll_semver_baseline:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write # Required to create pull requests
+    name: Roll semver baseline on main
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Advance semver baseline
+        id: advance
+        run: |
+          set -euo pipefail
+
+          PIN_FILE=ci/pins/semver-baseline.toml
+          if [ ! -f "$PIN_FILE" ]; then
+            echo "No $PIN_FILE; nothing to roll."
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Require exactly one line of each edited form so a reorganized
+          # manifest fails visibly instead of being partially rewritten.
+          CRATE_MATCH="$(
+            grep -Ec '^version = "[0-9]+\.[0-9]+\.[0-9]+"$' \
+              zerocopy/Cargo.toml || true
+          )"
+          if [ "$CRATE_MATCH" -ne 1 ]; then
+            echo "Expected one version line in zerocopy/Cargo.toml; found $CRATE_MATCH" >&2
+            exit 1
+          fi
+          VER_MATCH="$(
+            grep -Ec '^version = "[0-9]+\.[0-9]+\.[0-9]+"$' "$PIN_FILE" || true
+          )"
+          if [ "$VER_MATCH" -ne 1 ]; then
+            echo "Expected one version line in $PIN_FILE; found $VER_MATCH" >&2
+            exit 1
+          fi
+          SHA_MATCH="$(
+            grep -Ec '^crate-sha256 = "[0-9a-f]{64}"$' "$PIN_FILE" || true
+          )"
+          if [ "$SHA_MATCH" -ne 1 ]; then
+            echo "Expected one crate-sha256 line in $PIN_FILE; found $SHA_MATCH" >&2
+            exit 1
+          fi
+
+          CRATE_VERSION="$(
+            sed -nE 's/^version = "([0-9]+\.[0-9]+\.[0-9]+)"$/\1/p' \
+              zerocopy/Cargo.toml
+          )"
+          SERIES="${CRATE_VERSION%.*}"
+          MAX_PATCH="${CRATE_VERSION##*.}"
+          OLD_VERSION="$(
+            sed -nE 's/^version = "([0-9]+\.[0-9]+\.[0-9]+)"$/\1/p' "$PIN_FILE"
+          )"
+          OLD_SHA="$(
+            sed -nE 's/^crate-sha256 = "([0-9a-f]{64})"$/\1/p' "$PIN_FILE"
+          )"
+
+          # Pick the newest non-yanked release in the same major.minor series
+          # that does not exceed the in-tree version, from the crates.io
+          # sparse index that `release_crate_version.sh` also reads.
+          INDEX="$(curl -fsSL --retry 3 "https://index.crates.io/ze/ro/zerocopy")"
+          test -n "$INDEX"
+          BASELINE="$(
+            jq -rs --arg series "$SERIES" --argjson max "$MAX_PATCH" '
+              [ .[]
+                | select(.yanked == false)
+                | select(.vers | test("^[0-9]+\\.[0-9]+\\.[0-9]+$"))
+                | select((.vers | split(".")[0:2] | join(".")) == $series)
+                | select((.vers | split(".")[2] | tonumber) <= $max) ]
+              | max_by(.vers | split(".")[2] | tonumber)
+              | select(. != null)
+              | "\(.vers) \(.cksum)"
+            ' <<< "$INDEX"
+          )"
+          if [ -z "$BASELINE" ]; then
+            # E.g. a release PR bumped to a new `major.minor` that is not yet
+            # published; keep the current pin until it is.
+            echo "No published zerocopy $SERIES.x <= $CRATE_VERSION yet; keeping the pin."
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          BASELINE_VERSION="${BASELINE%% *}"
+          BASELINE_SHA="${BASELINE#* }"
+          if ! [[ "$BASELINE_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] \
+              || ! [[ "$BASELINE_SHA" =~ ^[0-9a-f]{64}$ ]]; then
+            echo "Malformed crates.io index record for zerocopy: $BASELINE" >&2
+            exit 1
+          fi
+
+          if [ "$BASELINE_VERSION" = "$OLD_VERSION" ] \
+              && [ "$BASELINE_SHA" = "$OLD_SHA" ]; then
+            echo "$PIN_FILE already pins zerocopy $BASELINE_VERSION."
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          sed -i -E -e \
+            "s/^version = \"[0-9]+\.[0-9]+\.[0-9]+\"$/version = \"$BASELINE_VERSION\"/" \
+            "$PIN_FILE"
+          sed -i -E -e \
+            "s/^crate-sha256 = \"[0-9a-f]{64}\"$/crate-sha256 = \"$BASELINE_SHA\"/" \
+            "$PIN_FILE"
+          grep -Fx "version = \"$BASELINE_VERSION\"" "$PIN_FILE" >/dev/null
+          grep -Fx "crate-sha256 = \"$BASELINE_SHA\"" "$PIN_FILE" >/dev/null
+
+          echo "ZC_SEMVER_BASELINE=$BASELINE_VERSION" >> "$GITHUB_ENV"
+          echo "updated=true" >> "$GITHUB_OUTPUT"
+      - name: Submit PR
+        id: submit-pr
+        if: steps.advance.outputs.updated == 'true'
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1 # zizmor: ignore[superfluous-actions]
+        with:
+          commit-message: "[ci] Roll semver baseline"
+          author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
+          committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
+          title: "[ci] Roll semver baseline"
+          branch: roll-semver-baseline-to-${{ env.ZC_SEMVER_BASELINE }}-for-main
+          push-to-fork: google-pr-creation-bot/zerocopy
+          token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }} # zizmor: ignore[secrets-outside-env]
+
+      - name: Add labels
+        if: steps.submit-pr.outputs.pull-request-operation == 'created'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ steps.submit-pr.outputs.pull-request-number }}
+        run: gh pr edit "$PR_NUMBER" --add-label "hide-from-release-notes"
+
   roll_kani:
     runs-on: ubuntu-latest
     permissions:
@@ -198,20 +349,66 @@ jobs:
           fi
           echo "ZC_KANI_LATEST=$KANI_LATEST" >> "$GITHUB_ENV"
 
-          # Update the `kani-version:` argument in-place.
-          MATCH_COUNT="$(
-            grep -Ec '^ *kani-version: [0-9]+\.[0-9]+\.[0-9]+$' \
-              .github/workflows/ci.yml || true
-          )"
-          if [ "$MATCH_COUNT" -ne 1 ]; then
-            echo "Expected exactly one Kani version in ci.yml; found $MATCH_COUNT" >&2
+          # Update `ci/pins/kani-pin.toml` (when present) and legacy `ci.yml`
+          # (when present on `v0.7.x` or pre-cutover `main`).
+          UPDATED_KANI=0
+          if [ -f ci/pins/kani-pin.toml ]; then
+            PIN_MATCH="$(
+              grep -Ec '^version = "[0-9]+\.[0-9]+\.[0-9]+"$' \
+                ci/pins/kani-pin.toml || true
+            )"
+            if [ "$PIN_MATCH" -ne 1 ]; then
+              echo "Expected one version pin in ci/pins/kani-pin.toml; found $PIN_MATCH" >&2
+              exit 1
+            fi
+            SHA_MATCH="$(
+              grep -Ec '^bundle-sha256 = "[0-9a-f]{64}"$' \
+                ci/pins/kani-pin.toml || true
+            )"
+            if [ "$SHA_MATCH" -ne 1 ]; then
+              echo "Expected one bundle-sha256 in ci/pins/kani-pin.toml; found $SHA_MATCH" >&2
+              exit 1
+            fi
+            KANI_BUNDLE_TMP="$(mktemp)"
+            trap 'rm -f "$KANI_BUNDLE_TMP"' EXIT
+            curl -fsSL --retry 3 -o "$KANI_BUNDLE_TMP" \
+              "https://github.com/model-checking/kani/releases/download/kani-${KANI_LATEST}/kani-${KANI_LATEST}-x86_64-unknown-linux-gnu.tar.gz"
+            KANI_BUNDLE_SHA="$(sha256sum "$KANI_BUNDLE_TMP" | awk '{print $1}')"
+            rm -f "$KANI_BUNDLE_TMP"
+            if ! [[ "$KANI_BUNDLE_SHA" =~ ^[0-9a-f]{64}$ ]]; then
+              echo "Failed to compute SHA-256 for Kani $KANI_LATEST bundle" >&2
+              exit 1
+            fi
+            sed -i -E -e \
+              "s/^version = \"[0-9]+\.[0-9]+\.[0-9]+\"$/version = \"$KANI_LATEST\"/" \
+              ci/pins/kani-pin.toml
+            sed -i -E -e \
+              "s/^bundle-sha256 = \"[0-9a-f]{64}\"$/bundle-sha256 = \"$KANI_BUNDLE_SHA\"/" \
+              ci/pins/kani-pin.toml
+            grep -Fx "version = \"$KANI_LATEST\"" ci/pins/kani-pin.toml >/dev/null
+            grep -Fx "bundle-sha256 = \"$KANI_BUNDLE_SHA\"" ci/pins/kani-pin.toml >/dev/null
+            UPDATED_KANI=1
+          fi
+          if [ -f .github/workflows/ci.yml ]; then
+            MATCH_COUNT="$(
+              grep -Ec '^ *kani-version: [0-9]+\.[0-9]+\.[0-9]+$' \
+                .github/workflows/ci.yml || true
+            )"
+            if [ "$MATCH_COUNT" -ne 1 ]; then
+              echo "Expected exactly one Kani version in ci.yml; found $MATCH_COUNT" >&2
+              exit 1
+            fi
+            sed -i -E -e \
+              "s/^( *kani-version:)( [0-9]+\.[0-9]+\.[0-9]+)/\1 $KANI_LATEST/" \
+              .github/workflows/ci.yml
+            grep -E "^ *kani-version: $KANI_LATEST$" \
+              .github/workflows/ci.yml >/dev/null
+            UPDATED_KANI=1
+          fi
+          if [ "$UPDATED_KANI" -ne 1 ]; then
+            echo "Neither ci/pins/kani-pin.toml nor .github/workflows/ci.yml found" >&2
             exit 1
           fi
-          sed -i -E -e \
-            "s/^( *kani-version:)( [0-9]+\.[0-9]+\.[0-9]+)/\1 $KANI_LATEST/" \
-            .github/workflows/ci.yml
-          grep -E "^ *kani-version: $KANI_LATEST$" \
-            .github/workflows/ci.yml >/dev/null
       - name: Submit PR
         id: submit-pr
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1 # zizmor: ignore[superfluous-actions]

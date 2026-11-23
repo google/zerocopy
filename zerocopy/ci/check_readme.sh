@@ -11,13 +11,16 @@
 set -eo pipefail
 cd "$(dirname "$0")/.."
 
-# Install again in case the installation failed during the
-# `generate_cache` step. We treat that step as best-effort and
-# suppress all errors from it.
-(
-  cd ..
-  cargo install -q cargo-readme --version 3.2.0
-)
+if ! command -v cargo-readme >/dev/null 2>&1; then
+  (
+    cd ..
+    cargo install -q cargo-readme --version 3.2.0
+  )
+fi
 
-diff <(cd .. && cargo -q run --locked --manifest-path tools/generate-readme/Cargo.toml) README.md >&2
+if [[ -n "${GENERATE_README_BIN:-}" ]]; then
+  diff <("$GENERATE_README_BIN") README.md >&2
+else
+  diff <(cd .. && cargo -q run --locked --manifest-path tools/generate-readme/Cargo.toml) README.md >&2
+fi
 exit $?

@@ -14,5 +14,10 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 # This helper is the single version contract for codegen snapshot generation
 # and validation. Keep the exact requirement here rather than duplicating it in
 # workflow YAML, where the two call sites could drift silently.
-"$ROOT/zerocopy/cargo.sh" +nightly install --quiet --locked \
-  --version '=0.2.62' cargo-show-asm
+if [[ -n "${CARGO_SHOW_ASM_TOOLCHAIN:-}" ]]; then
+  cargo "+${CARGO_SHOW_ASM_TOOLCHAIN}" install --quiet --locked \
+    --version '=0.2.62' cargo-show-asm
+else
+  "$ROOT/zerocopy/cargo.sh" +nightly install --quiet --locked \
+    --version '=0.2.62' cargo-show-asm
+fi

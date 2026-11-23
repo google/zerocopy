@@ -13,7 +13,7 @@ cd "$(dirname "$0")/.."
 which yq > /dev/null
 failed=0
 
-for i in $(find .github -iname '*.yaml' -or -iname '*.yml'); do
+while IFS= read -r -d '' i; do
   # Select jobs that are triggered by pull request.
   if yq -e '.on | has("pull_request")' "$i" 2>/dev/null >/dev/null; then
     # Check if the file has an `all-jobs-succeed` job.
@@ -25,12 +25,17 @@ for i in $(find .github -iname '*.yaml' -or -iname '*.yml'); do
 
       if [ -n "$missing" ]; then
         missing_jobs="$(echo "$missing" | tr '\n' ' ')"
-        echo "$i: all-jobs-succeed missing dependencies on some jobs: $missing_jobs" | tee -a $GITHUB_STEP_SUMMARY >&2
+        msg="$i: all-jobs-succeed missing dependencies on some jobs: $missing_jobs"
+        if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+          echo "$msg" | tee -a "$GITHUB_STEP_SUMMARY" >&2
+        else
+          echo "$msg" >&2
+        fi
         failed=1
       fi
     fi
   fi
-done
+done < <(find .github \( -iname '*.yaml' -o -iname '*.yml' \) -print0 | sort -z)
 
 if [ "$failed" -eq 1 ]; then
   exit 1
