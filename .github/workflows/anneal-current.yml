@@ -120,7 +120,13 @@ jobs:
           cargo clippy --locked --no-deps -p cargo-anneal --no-default-features \
             --lib --bins -- -A clippy::type_complexity -D warnings
           cargo clippy --locked --no-deps -p cargo-anneal-tests --no-default-features \
-            --test cli -- -A clippy::type_complexity -D warnings
+            --test cli --test inspect -- -A clippy::type_complexity -D warnings
+      - name: Check pure core (wasm32-unknown-unknown)
+        run: |
+          set -euo pipefail
+          rustup target add wasm32-unknown-unknown
+          RUSTFLAGS="-D warnings" cargo check --locked -p cargo-anneal \
+            --no-default-features --lib --target wasm32-unknown-unknown
 
   build-exocrate:
     if: ${{ github.event_name != 'pull_request' || inputs.run_heavy }}
@@ -1152,7 +1158,7 @@ jobs:
             --config 'profile.dev.package.digest.opt-level=3' \
             --config 'profile.dev.package.sha2.opt-level=3' \
             --config 'profile.dev.package.zstd-sys.opt-level=3' \
-            --test cli
+            --test cli --test inspect
           cargo test --workspace --locked \
             --config 'profile.dev.package.cpufeatures.opt-level=3' \
             --config 'profile.dev.package.digest.opt-level=3' \

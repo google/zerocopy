@@ -10,7 +10,7 @@
 
 #[cfg(feature = "setup")]
 use crate::setup;
-use crate::{init, verify};
+use crate::{init, inspect, verify};
 
 /// Package version of `cargo-anneal` for CLI version output and external test
 /// assertions.
@@ -67,11 +67,14 @@ enum Command {
     /// Capture a configured compilation and check its authored source proof.
     #[command(after_help = "Run `cargo anneal skill` to print the bundled agent skill.")]
     Verify(Box<verify::VerifyArgs>),
+    /// Offline inspection and comparison of Receipt Schema v3 JSON envelopes.
+    Inspect(Box<inspect::InspectArgs>),
 }
 
 enum Action {
     Print(String),
     Verify(Box<verify::VerifyArgs>),
+    Inspect(Box<inspect::InspectArgs>),
 }
 
 #[derive(Debug)]
@@ -87,8 +90,10 @@ fn parse(mut args: Vec<OsString>) -> Result<Cli, clap::Error> {
         args.remove(1);
     }
     let cli = Cli::try_parse_from(args)?;
-    if let Some(Command::Verify(ref verify_args)) = cli.command {
-        verify_args.validate(Cli::command())?;
+    match cli.command {
+        Some(Command::Verify(ref verify_args)) => verify_args.validate(Cli::command())?,
+        Some(Command::Inspect(ref inspect_args)) => inspect_args.validate(Cli::command())?,
+        _ => {}
     }
     Ok(cli)
 }
@@ -126,6 +131,7 @@ fn dispatch(
             Ok(Action::Print(include_str!("../skills/cargo-anneal/SKILL.md").to_owned()))
         }
         Some(Command::Verify(args)) => Ok(Action::Verify(args)),
+        Some(Command::Inspect(args)) => Ok(Action::Inspect(args)),
     }
 }
 
@@ -139,6 +145,7 @@ fn dispatch(cli: Cli) -> Result<Action, String> {
             Ok(Action::Print(include_str!("../skills/cargo-anneal/SKILL.md").to_owned()))
         }
         Some(Command::Verify(args)) => Ok(Action::Verify(args)),
+        Some(Command::Inspect(args)) => Ok(Action::Inspect(args)),
     }
 }
 
@@ -185,6 +192,7 @@ pub fn main() -> ExitCode {
             ExitCode::SUCCESS
         }
         Ok(Action::Verify(args)) => verify::main(*args),
+        Ok(Action::Inspect(args)) => inspect::main(*args),
         Err(Failure::Arguments(error)) => {
             eprint!("{error}");
             ExitCode::from(2)
@@ -223,7 +231,7 @@ mod tests {
     fn output(action: Action) -> String {
         match action {
             Action::Print(output) => output,
-            Action::Verify(_) => panic!("expected printable output"),
+            Action::Verify(_) | Action::Inspect(_) => panic!("expected printable output"),
         }
     }
 
@@ -551,6 +559,37 @@ mod tests {
             cli.command,
             Some(Command::Setup { local_archive: Some(actual), clear_old: false })
                 if actual.as_os_str() == path
+        ));
+    }
+
+    #[test]
+    fn inspect_dispatch_and_validation_work() {
+        for route in [vec!["cargo-anneal", "inspect"], vec!["cargo-anneal", "anneal", "inspect"]] {
+            let mut argv = route;
+            argv.push("receipt.json");
+            let action = run_without_install(args(&argv)).expect("parse inspect");
+            assert!(matches!(
+                action,
+                Action::Inspect(ref a)
+                    if a.receipt.as_deref() == Some(std::path::Path::new("receipt.json"))
+            ));
+        }
+
+        assert!(matches!(
+            run_without_install(args(&["cargo-anneal", "inspect", "--diff", "-", "-"])),
+            Err(Failure::Arguments(_))
+        ));
+
+        assert!(matches!(
+            run_without_install(args(&[
+                "cargo-anneal",
+                "inspect",
+                "--diff",
+                "a.json",
+                "b.json",
+                "--check",
+            ])),
+            Err(Failure::Arguments(_))
         ));
     }
 }

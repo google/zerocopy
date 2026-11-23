@@ -651,7 +651,8 @@ case "$MODE" in
     ;;
 
   clippy)
-    # Runs on `zc-stable-msrv` (which installs `clippy`; `anneal-tc` omits it).
+    # Runs on `zc-stable-msrv` (which installs `clippy` and
+    # `wasm32-unknown-unknown`; `anneal-tc` omits them).
     if ! cargo clippy --version >/dev/null 2>&1; then
       echo "error: cargo clippy is required for mode 'clippy' (run on zc-stable-msrv)" >&2
       exit 1
@@ -662,8 +663,11 @@ case "$MODE" in
       -- -A clippy::type_complexity -D warnings
     cargo clippy --locked --offline --no-deps \
       -p cargo-anneal-tests --no-default-features \
-      --test cli \
+      --test cli --test inspect \
       -- -A clippy::type_complexity -D warnings
+    RUSTFLAGS="-D warnings" cargo check --locked --offline \
+      -p cargo-anneal --no-default-features \
+      --lib --target wasm32-unknown-unknown
     ;;
 
   sandbox)
@@ -765,7 +769,7 @@ case "$MODE" in
         --lib --bin cargo-anneal
       cargo test --locked --offline -p cargo-anneal-tests --no-default-features \
         "${FULL_OPT_ARGS[@]}" \
-        --test cli
+        --test cli --test inspect
       cargo test --workspace --locked --offline \
         "${FULL_OPT_ARGS[@]}" \
         --doc

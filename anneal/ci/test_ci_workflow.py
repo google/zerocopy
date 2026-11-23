@@ -656,6 +656,52 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             upload_names.append(upload["with"]["name"])
         self.assertEqual(len(upload_names), len(set(upload_names)), upload_names)
 
+    def test_static_checks_enforces_wasm32_core_and_offline_inspect(self):
+        jobs = self.workflow["jobs"]
+        static_steps = jobs["static-checks"]["steps"]
+        wasm_step = next(
+            (
+                s
+                for s in static_steps
+                if s.get("name") == "Check pure core (wasm32-unknown-unknown)"
+            ),
+            None,
+        )
+        self.assertIsNotNone(wasm_step, "static-checks must check wasm32 core")
+        self.assertIn("rustup target add wasm32-unknown-unknown", wasm_step["run"])
+        self.assertIn(
+            'RUSTFLAGS="-D warnings" cargo check --locked -p cargo-anneal',
+            wasm_step["run"],
+        )
+        self.assertIn("--no-default-features --lib --target wasm32-unknown-unknown", wasm_step["run"])
+
+        offline_clippy = next(
+            s
+            for s in static_steps
+            if s.get("name") == "Check offline cargo-anneal (--no-default-features) with Clippy"
+        )
+        self.assertIn("--test cli --test inspect", offline_clippy["run"])
+
+        self.assertTrue(
+            any(
+                "--test cli --test inspect" in s.get("run", "")
+                for s in jobs["workspace-tests"]["steps"]
+            ),
+            "workspace-tests must run --test inspect under --no-default-features",
+        )
+
+        # Mirror coverage in `ci-core` adapter (`anneal/ci/run_anneal_check.sh`)
+        # so the pure-core wasm32 and offline inspect gates survive cutover.
+        adapter = (
+            Path(__file__).resolve().parent / "run_anneal_check.sh"
+        ).read_text(encoding="utf-8")
+        self.assertIn("--lib --target wasm32-unknown-unknown", adapter)
+        self.assertGreaterEqual(
+            adapter.count("--test cli --test inspect"),
+            2,
+            "run_anneal_check.sh must include --test inspect in both clippy and ws-test",
+        )
+
     def test_all_jobs_succeed_run_heavy_gating(self):
         jobs = self.workflow["jobs"]
         self.assertNotIn("release-lock", jobs)
