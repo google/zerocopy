@@ -729,251 +729,6 @@ theorem writeMemory_retPlace_uninit (w : IntWidth)
       _ rfl h_wm_op,
     h_rd, h_asz, h_amut, h_aal⟩
 
-private theorem readImmediateFromMplaceRaw_retPlace_I8
-    (s : Bool) (al : Align) (vr : Miri.ABI.WrappingRange) (cty : Option Nat)
-    (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
-      Miri.TreeBorrows.BorrowTree Unit)
-    (after : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
-    (machine : Miri.Interpreter.MachineHooks.MachineState Unit RefUser)
-    (cfg : Miri.Interpreter.PlaceMachine.AccessConfig Unit RefUser)
-    (h_acc :
-      let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
-      let layout : Miri.Interpreter.MemoryOperandLayout :=
-        ⟨Size.ofBytes 1, al,
-          .Scalar (.Initialized (value := .Int .I8 s) (validRange := vr)), cty⟩
-      Miri.Interpreter.getPlaceAlloc mem ⟨machine, none⟩
-          ⟨retMemPlace, layout⟩ RuntimeTargetDataLayout.default true none
-          cfg.globalHooks (Miri.Interpreter.PlaceMachine.accessHooks cfg)
-          cfg.dynamicLayout =
-        ⟨mem, ⟨machine, none⟩,
-          some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 1), after⟩,
-          .ok (some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 1), after⟩)⟩) :
-    let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
-    let layout : Miri.Interpreter.MemoryOperandLayout :=
-      ⟨Size.ofBytes 1, al,
-        .Scalar (.Initialized (value := .Int .I8 s) (validRange := vr)), cty⟩
-    Miri.Interpreter.readImmediateFromMplaceRaw mem ⟨machine, none⟩
-        ⟨retMemPlace, layout⟩ RuntimeTargetDataLayout.default true none
-        cfg.globalHooks (Miri.Interpreter.PlaceMachine.accessHooks cfg)
-        cfg.dynamicLayout =
-      match after.readScalar RuntimeTargetDataLayout.default.base
-          (allocRange Size.ZERO (Size.ofBytes 1)) false with
-      | .ok sc =>
-        ⟨mem, ⟨machine, none⟩,
-          some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 1), after⟩,
-          .ok (some ⟨.scalar sc, layout⟩)⟩
-      | .error err =>
-        ⟨mem, ⟨machine, none⟩,
-          some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 1), after⟩,
-          .error (.allocation err)⟩ := by
-  intro mem layout
-  dsimp only [Miri.Interpreter.readImmediateFromMplaceRaw, Id.run, pure,
-    Pure.pure, bind, Bind.bind, layout, Miri.ABI.BackendRepr.isUnsized]
-  rw [h_acc]
-  simp only [Bool.false_eq_true, ite_false]
-  change Miri.Interpreter.readImmediateFromMplaceRaw.match_3 _
-    (Except.mapError Miri.Interpreter.MemoryOperandError.allocation
-      (after.readScalar RuntimeTargetDataLayout.default.base
-        (allocRange Size.ZERO (Size.ofBytes 1)) false)) _ _ = _
-  cases after.readScalar RuntimeTargetDataLayout.default.base
-      (allocRange Size.ZERO (Size.ofBytes 1)) false <;> rfl
-
-private theorem readImmediateFromMplaceRaw_retPlace_I16
-    (s : Bool) (al : Align) (vr : Miri.ABI.WrappingRange) (cty : Option Nat)
-    (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
-      Miri.TreeBorrows.BorrowTree Unit)
-    (after : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
-    (machine : Miri.Interpreter.MachineHooks.MachineState Unit RefUser)
-    (cfg : Miri.Interpreter.PlaceMachine.AccessConfig Unit RefUser)
-    (h_acc :
-      let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
-      let layout : Miri.Interpreter.MemoryOperandLayout :=
-        ⟨Size.ofBytes 2, al,
-          .Scalar (.Initialized (value := .Int .I16 s) (validRange := vr)), cty⟩
-      Miri.Interpreter.getPlaceAlloc mem ⟨machine, none⟩
-          ⟨retMemPlace, layout⟩ RuntimeTargetDataLayout.default true none
-          cfg.globalHooks (Miri.Interpreter.PlaceMachine.accessHooks cfg)
-          cfg.dynamicLayout =
-        ⟨mem, ⟨machine, none⟩,
-          some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 2), after⟩,
-          .ok (some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 2), after⟩)⟩) :
-    let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
-    let layout : Miri.Interpreter.MemoryOperandLayout :=
-      ⟨Size.ofBytes 2, al,
-        .Scalar (.Initialized (value := .Int .I16 s) (validRange := vr)), cty⟩
-    Miri.Interpreter.readImmediateFromMplaceRaw mem ⟨machine, none⟩
-        ⟨retMemPlace, layout⟩ RuntimeTargetDataLayout.default true none
-        cfg.globalHooks (Miri.Interpreter.PlaceMachine.accessHooks cfg)
-        cfg.dynamicLayout =
-      match after.readScalar RuntimeTargetDataLayout.default.base
-          (allocRange Size.ZERO (Size.ofBytes 2)) false with
-      | .ok sc =>
-        ⟨mem, ⟨machine, none⟩,
-          some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 2), after⟩,
-          .ok (some ⟨.scalar sc, layout⟩)⟩
-      | .error err =>
-        ⟨mem, ⟨machine, none⟩,
-          some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 2), after⟩,
-          .error (.allocation err)⟩ := by
-  intro mem layout
-  dsimp only [Miri.Interpreter.readImmediateFromMplaceRaw, Id.run, pure,
-    Pure.pure, bind, Bind.bind, layout, Miri.ABI.BackendRepr.isUnsized]
-  rw [h_acc]
-  simp only [Bool.false_eq_true, ite_false]
-  change Miri.Interpreter.readImmediateFromMplaceRaw.match_3 _
-    (Except.mapError Miri.Interpreter.MemoryOperandError.allocation
-      (after.readScalar RuntimeTargetDataLayout.default.base
-        (allocRange Size.ZERO (Size.ofBytes 2)) false)) _ _ = _
-  cases after.readScalar RuntimeTargetDataLayout.default.base
-      (allocRange Size.ZERO (Size.ofBytes 2)) false <;> rfl
-
-private theorem readImmediateFromMplaceRaw_retPlace_I32
-    (s : Bool) (al : Align) (vr : Miri.ABI.WrappingRange) (cty : Option Nat)
-    (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
-      Miri.TreeBorrows.BorrowTree Unit)
-    (after : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
-    (machine : Miri.Interpreter.MachineHooks.MachineState Unit RefUser)
-    (cfg : Miri.Interpreter.PlaceMachine.AccessConfig Unit RefUser)
-    (h_acc :
-      let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
-      let layout : Miri.Interpreter.MemoryOperandLayout :=
-        ⟨Size.ofBytes 4, al,
-          .Scalar (.Initialized (value := .Int .I32 s) (validRange := vr)), cty⟩
-      Miri.Interpreter.getPlaceAlloc mem ⟨machine, none⟩
-          ⟨retMemPlace, layout⟩ RuntimeTargetDataLayout.default true none
-          cfg.globalHooks (Miri.Interpreter.PlaceMachine.accessHooks cfg)
-          cfg.dynamicLayout =
-        ⟨mem, ⟨machine, none⟩,
-          some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 4), after⟩,
-          .ok (some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 4), after⟩)⟩) :
-    let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
-    let layout : Miri.Interpreter.MemoryOperandLayout :=
-      ⟨Size.ofBytes 4, al,
-        .Scalar (.Initialized (value := .Int .I32 s) (validRange := vr)), cty⟩
-    Miri.Interpreter.readImmediateFromMplaceRaw mem ⟨machine, none⟩
-        ⟨retMemPlace, layout⟩ RuntimeTargetDataLayout.default true none
-        cfg.globalHooks (Miri.Interpreter.PlaceMachine.accessHooks cfg)
-        cfg.dynamicLayout =
-      match after.readScalar RuntimeTargetDataLayout.default.base
-          (allocRange Size.ZERO (Size.ofBytes 4)) false with
-      | .ok sc =>
-        ⟨mem, ⟨machine, none⟩,
-          some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 4), after⟩,
-          .ok (some ⟨.scalar sc, layout⟩)⟩
-      | .error err =>
-        ⟨mem, ⟨machine, none⟩,
-          some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 4), after⟩,
-          .error (.allocation err)⟩ := by
-  intro mem layout
-  dsimp only [Miri.Interpreter.readImmediateFromMplaceRaw, Id.run, pure,
-    Pure.pure, bind, Bind.bind, layout, Miri.ABI.BackendRepr.isUnsized]
-  rw [h_acc]
-  simp only [Bool.false_eq_true, ite_false]
-  change Miri.Interpreter.readImmediateFromMplaceRaw.match_3 _
-    (Except.mapError Miri.Interpreter.MemoryOperandError.allocation
-      (after.readScalar RuntimeTargetDataLayout.default.base
-        (allocRange Size.ZERO (Size.ofBytes 4)) false)) _ _ = _
-  cases after.readScalar RuntimeTargetDataLayout.default.base
-      (allocRange Size.ZERO (Size.ofBytes 4)) false <;> rfl
-
-private theorem readImmediateFromMplaceRaw_retPlace_I64
-    (s : Bool) (al : Align) (vr : Miri.ABI.WrappingRange) (cty : Option Nat)
-    (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
-      Miri.TreeBorrows.BorrowTree Unit)
-    (after : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
-    (machine : Miri.Interpreter.MachineHooks.MachineState Unit RefUser)
-    (cfg : Miri.Interpreter.PlaceMachine.AccessConfig Unit RefUser)
-    (h_acc :
-      let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
-      let layout : Miri.Interpreter.MemoryOperandLayout :=
-        ⟨Size.ofBytes 8, al,
-          .Scalar (.Initialized (value := .Int .I64 s) (validRange := vr)), cty⟩
-      Miri.Interpreter.getPlaceAlloc mem ⟨machine, none⟩
-          ⟨retMemPlace, layout⟩ RuntimeTargetDataLayout.default true none
-          cfg.globalHooks (Miri.Interpreter.PlaceMachine.accessHooks cfg)
-          cfg.dynamicLayout =
-        ⟨mem, ⟨machine, none⟩,
-          some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 8), after⟩,
-          .ok (some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 8), after⟩)⟩) :
-    let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
-    let layout : Miri.Interpreter.MemoryOperandLayout :=
-      ⟨Size.ofBytes 8, al,
-        .Scalar (.Initialized (value := .Int .I64 s) (validRange := vr)), cty⟩
-    Miri.Interpreter.readImmediateFromMplaceRaw mem ⟨machine, none⟩
-        ⟨retMemPlace, layout⟩ RuntimeTargetDataLayout.default true none
-        cfg.globalHooks (Miri.Interpreter.PlaceMachine.accessHooks cfg)
-        cfg.dynamicLayout =
-      match after.readScalar RuntimeTargetDataLayout.default.base
-          (allocRange Size.ZERO (Size.ofBytes 8)) false with
-      | .ok sc =>
-        ⟨mem, ⟨machine, none⟩,
-          some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 8), after⟩,
-          .ok (some ⟨.scalar sc, layout⟩)⟩
-      | .error err =>
-        ⟨mem, ⟨machine, none⟩,
-          some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 8), after⟩,
-          .error (.allocation err)⟩ := by
-  intro mem layout
-  dsimp only [Miri.Interpreter.readImmediateFromMplaceRaw, Id.run, pure,
-    Pure.pure, bind, Bind.bind, layout, Miri.ABI.BackendRepr.isUnsized]
-  rw [h_acc]
-  simp only [Bool.false_eq_true, ite_false]
-  change Miri.Interpreter.readImmediateFromMplaceRaw.match_3 _
-    (Except.mapError Miri.Interpreter.MemoryOperandError.allocation
-      (after.readScalar RuntimeTargetDataLayout.default.base
-        (allocRange Size.ZERO (Size.ofBytes 8)) false)) _ _ = _
-  cases after.readScalar RuntimeTargetDataLayout.default.base
-      (allocRange Size.ZERO (Size.ofBytes 8)) false <;> rfl
-
-private theorem readImmediateFromMplaceRaw_retPlace_I128
-    (s : Bool) (al : Align) (vr : Miri.ABI.WrappingRange) (cty : Option Nat)
-    (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
-      Miri.TreeBorrows.BorrowTree Unit)
-    (after : Allocation Miri.Memory.Provenance Miri.TreeBorrows.BorrowTree)
-    (machine : Miri.Interpreter.MachineHooks.MachineState Unit RefUser)
-    (cfg : Miri.Interpreter.PlaceMachine.AccessConfig Unit RefUser)
-    (h_acc :
-      let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
-      let layout : Miri.Interpreter.MemoryOperandLayout :=
-        ⟨Size.ofBytes 16, al,
-          .Scalar (.Initialized (value := .Int .I128 s) (validRange := vr)), cty⟩
-      Miri.Interpreter.getPlaceAlloc mem ⟨machine, none⟩
-          ⟨retMemPlace, layout⟩ RuntimeTargetDataLayout.default true none
-          cfg.globalHooks (Miri.Interpreter.PlaceMachine.accessHooks cfg)
-          cfg.dynamicLayout =
-        ⟨mem, ⟨machine, none⟩,
-          some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 16), after⟩,
-          .ok (some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 16), after⟩)⟩) :
-    let mem := { mem1 with live := (Array.mk [(retAllocId, ⟨.stack, after⟩)]) }
-    let layout : Miri.Interpreter.MemoryOperandLayout :=
-      ⟨Size.ofBytes 16, al,
-        .Scalar (.Initialized (value := .Int .I128 s) (validRange := vr)), cty⟩
-    Miri.Interpreter.readImmediateFromMplaceRaw mem ⟨machine, none⟩
-        ⟨retMemPlace, layout⟩ RuntimeTargetDataLayout.default true none
-        cfg.globalHooks (Miri.Interpreter.PlaceMachine.accessHooks cfg)
-        cfg.dynamicLayout =
-      match after.readScalar RuntimeTargetDataLayout.default.base
-          (allocRange Size.ZERO (Size.ofBytes 16)) false with
-      | .ok sc =>
-        ⟨mem, ⟨machine, none⟩,
-          some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 16), after⟩,
-          .ok (some ⟨.scalar sc, layout⟩)⟩
-      | .error err =>
-        ⟨mem, ⟨machine, none⟩,
-          some ⟨retAllocId, allocRange Size.ZERO (Size.ofBytes 16), after⟩,
-          .error (.allocation err)⟩ := by
-  intro mem layout
-  dsimp only [Miri.Interpreter.readImmediateFromMplaceRaw, Id.run, pure,
-    Pure.pure, bind, Bind.bind, layout, Miri.ABI.BackendRepr.isUnsized]
-  rw [h_acc]
-  simp only [Bool.false_eq_true, ite_false]
-  change Miri.Interpreter.readImmediateFromMplaceRaw.match_3 _
-    (Except.mapError Miri.Interpreter.MemoryOperandError.allocation
-      (after.readScalar RuntimeTargetDataLayout.default.base
-        (allocRange Size.ZERO (Size.ofBytes 16)) false)) _ _ = _
-  cases after.readScalar RuntimeTargetDataLayout.default.base
-      (allocRange Size.ZERO (Size.ofBytes 16)) false <;> rfl
-
 theorem readImmediateFromMplaceRaw_retPlace_int_aux
     (w : IntWidth) (s : Bool) (al : Align) (vr : Miri.ABI.WrappingRange)
     (cty : Option Nat)
@@ -1016,13 +771,21 @@ theorem readImmediateFromMplaceRaw_retPlace_int_aux
         ⟨mem, ⟨machine, none⟩,
           some ⟨retAllocId, allocRange Size.ZERO (toMiriSize w), after⟩,
           .error (.allocation err)⟩ := by
-  cases w with
-  | i8 => exact readImmediateFromMplaceRaw_retPlace_I8 s al vr cty mem1 after machine cfg h_acc
-  | i16 => exact readImmediateFromMplaceRaw_retPlace_I16 s al vr cty mem1 after machine cfg h_acc
-  | i32 => exact readImmediateFromMplaceRaw_retPlace_I32 s al vr cty mem1 after machine cfg h_acc
-  | i64 => exact readImmediateFromMplaceRaw_retPlace_I64 s al vr cty mem1 after machine cfg h_acc
-  | i128 => exact readImmediateFromMplaceRaw_retPlace_I128 s al vr cty mem1 after machine cfg h_acc
-  | isize => exact readImmediateFromMplaceRaw_retPlace_I64 s al vr cty mem1 after machine cfg h_acc
+  cases h_rd : after.readScalar RuntimeTargetDataLayout.default.base
+      (allocRange Size.ZERO (toMiriSize w)) false <;>
+    cases w <;> (
+      intro mem layout
+      dsimp only [Miri.Interpreter.readImmediateFromMplaceRaw, Id.run, pure,
+        Pure.pure, bind, Bind.bind, layout, Miri.ABI.BackendRepr.isUnsized]
+      rw [h_acc]
+      simp only [Bool.false_eq_true, ite_false]
+      change Miri.Interpreter.readImmediateFromMplaceRaw.match_3 _
+        (Except.mapError Miri.Interpreter.MemoryOperandError.allocation
+          (after.readScalar RuntimeTargetDataLayout.default.base
+            (allocRange Size.ZERO layout.size) false)) _ _ = _
+      dsimp only [layout]
+      rw [h_rd]
+      rfl)
 
 theorem readImmediateFromMplaceRaw_retPlace_core (types : List MirTy)
     (w : IntWidth) (ty : MirTy)
@@ -1203,28 +966,6 @@ theorem validatePlace_mem_ub_step (types : List MirTy) (c : Choice)
   dsimp only [Miri.Interpreter.placeToOp, Miri.Interpreter.placeToOpCore,
     bind, Bind.bind, EStateM.bind, pure, Pure.pure, EStateM.pure]
   rw [mem_ite_false_eq, h_vis]
-
-/-- `refHasPadding` succeeds on every canonical $M_{\text{ref}}$ layout. -/
-private theorem refHasPadding_ok (types : List MirTy) (ty : MirTy) :
-    ∃ b, refHasPadding (refLocalLayoutForTy types ty) = .ok b := by
-  cases ty with
-  | unit | never | bool | int _ _ | char | ordering | ref _ _ | rawPtr _ _
-  | unsupported => exact ⟨_, rfl⟩
-  | tuple fs =>
-    cases refLayoutDataForTy_tuple fs with
-    | inl h =>
-      refine ⟨true, ?_⟩
-      dsimp only [refHasPadding, refLocalLayoutForTy]
-      rw [h]; rfl
-    | inr h =>
-      let ⟨w, _, _, h_eq⟩ := h
-      dsimp only [refHasPadding, refLocalLayoutForTy]
-      rw [h_eq]
-      cases w <;> exact ⟨_, rfl⟩
-  | enum ety =>
-    dsimp only [refHasPadding, refLocalLayoutForTy, refLayoutDataForTy,
-      refEnumLayoutData]
-    cases ety.tagRepr <;> exact ⟨_, rfl⟩
 
 theorem copyRuntimePlace_imm_to_mem_step (rp : RefProg) (c : Choice)
     (ty : MirTy) (imm : Immediate Miri.Memory.Provenance)

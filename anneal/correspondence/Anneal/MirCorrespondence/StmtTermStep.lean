@@ -42,31 +42,6 @@ invariant preservation (`evalStep_step_inv`).
 
 /-! ## Section 1: List, Codec, and Step-Invariant Helpers -/
 
-private theorem eStateM_bind_ok {ε σ α β : Type} {m : EStateM ε σ α}
-    {f : α → EStateM ε σ β} {s s₁ : σ} {a : α}
-    (h : m s = .ok a s₁) :
-    EStateM.bind m f s = f a s₁ := by
-  dsimp only [EStateM.bind]; rw [h]
-
-private theorem eStateM_bind_err {ε σ α β : Type} {m : EStateM ε σ α}
-    {f : α → EStateM ε σ β} {s s₁ : σ} {e : ε}
-    (h : m s = .error e s₁) :
-    EStateM.bind m f s = .error e s₁ := by
-  dsimp only [EStateM.bind]; rw [h]
-
-private theorem eStateM_bind_pure {ε σ α β : Type} (a : α)
-    (f : α → EStateM ε σ β) (s : σ) :
-    EStateM.bind (EStateM.pure a) f s = f a s := rfl
-
-private theorem ite_false_eq {α : Type} (a b : α) :
-    (if false = true then a else b) = b := rfl
-
-private theorem ite_true_eq {α : Type} (a b : α) :
-    (if true = true then a else b) = a := rfl
-
-private theorem ite_not_true_eq {α : Type} (a b : α) :
-    (if (!true) = true then a else b) = b := rfl
-
 theorem getElem?_none_of_setElem?_none {α : Type} {xs : List α} {i : Nat}
     {v : α}
     (h : MirSemantics.setElem? xs i v = none) :
@@ -96,18 +71,6 @@ theorem getElem?_some_of_setElem?_some {α : Type} {xs xs' : List α} {i : Nat}
       cases h_r : MirSemantics.setElem? rest j v with
       | none => rw [h_r] at h; cases h
       | some _ => exact ih h_r
-
-private theorem mirSetElem?_some_of_lt {α : Type} (xs : List α) (i : Nat)
-    (v : α) (hi : i < xs.length) :
-    ∃ xs', MirSemantics.setElem? xs i v = some xs' := by
-  induction xs generalizing i with
-  | nil => cases hi
-  | cons x rest ih =>
-    cases i with
-    | zero => exact ⟨v :: rest, rfl⟩
-    | succ j =>
-      let ⟨rest', h_r⟩ := ih j (Nat.lt_of_succ_lt_succ hi)
-      exact ⟨x :: rest', by dsimp only [MirSemantics.setElem?]; rw [h_r]⟩
 
 theorem decodeBasicBlock_inv {ts : List MirTy} {rbb : RefBasicBlock}
     {bb : BasicBlock}
@@ -1297,60 +1260,6 @@ private theorem returnFromCurrentFrame_ref_eq (rp : RefProg) (c : Choice)
 private theorem bvToInt_eq_toInt {n : Nat} (x : BitVec n) :
     bvToInt x = x.toInt := rfl
 
-private theorem toNat_bvExtractLsb_trunc (w : IntWidth) (a : BitVec 128) :
-    (bvExtractLsb (w.bitWidth - 1) 0 (truncateBits w a)).toNat =
-      (truncateBits w a).toNat := by
-  dsimp only [bvExtractLsb, bvExtractLsb']
-  rw [nat_shiftRight_zero, BitVec.toNat_ofNat, intWidth_lsb_width,
-    toNat_truncateBits]
-  exact Nat.mod_eq_of_lt (Nat.mod_lt a.toNat (intWidth_modulus_pos w))
-
-private theorem signExtendBits_inj (w : IntWidth) (a b : BitVec 128)
-    (h : signExtendBits w (truncateBits w a) =
-      signExtendBits w (truncateBits w b)) :
-    truncateBits w a = truncateBits w b := by
-  dsimp only [signExtendBits] at h
-  rw [bvToInt_eq_toInt, bvToInt_eq_toInt, ← bitVec_signExtend_eq,
-    ← bitVec_signExtend_eq, BitVec.toInt_signExtend, BitVec.toInt_signExtend] at h
-  have h_eq_low : ∀ {k : Nat} (x y : BitVec k),
-      k ≤ 128 →
-      x.toInt.bmod (HPow.hPow 2 (min 128 k)) =
-        y.toInt.bmod (HPow.hPow 2 (min 128 k)) →
-      x = y := by
-    intro k x y hk hbmod
-    rw [Nat.min_eq_right hk, ← BitVec.toInt_ofInt, BitVec.ofInt_toInt,
-      ← BitVec.toInt_ofInt, BitVec.ofInt_toInt] at hbmod
-    exact BitVec.toInt_inj.mp hbmod
-  have hk : w.bitWidth - 1 - 0 + 1 ≤ 128 := by cases w <;> decide
-  have hlow := h_eq_low _ _ hk h
-  apply BitVec.eq_of_toNat_eq
-  rw [← toNat_bvExtractLsb_trunc w a, ← toNat_bvExtractLsb_trunc w b, hlow]
-
-private theorem decodeScalar_eq_iff (w : IntWidth) (s : Bool)
-    (a b : BitVec 128) :
-    (decodeScalar ⟨w, s, a⟩ == decodeScalar ⟨w, s, b⟩) =
-      (truncateBits w a == truncateBits w b) := by
-  cases h_tb : (truncateBits w a == truncateBits w b) with
-  | true =>
-    have h_eq := eq_of_beq h_tb
-    dsimp only [decodeScalar]
-    rw [h_eq]
-    exact beq_self_eq_true _
-  | false =>
-    cases h_dc : (decodeScalar ⟨w, s, a⟩ == decodeScalar ⟨w, s, b⟩) with
-    | false => rfl
-    | true =>
-      have h_eq := eq_of_beq h_dc
-      have h_teq : truncateBits w a = truncateBits w b := by
-        cases s with
-        | true => exact signExtendBits_inj w a b h_eq
-        | false =>
-          dsimp only [decodeScalar, ite_false_eq] at h_eq
-          injection h_eq with h_nat
-          exact BitVec.eq_of_toNat_eq h_nat
-      rw [h_teq, beq_self_eq_true] at h_tb
-      cases h_tb
-
 private theorem bitVec_ofNat_toNat_128 (x : BitVec 128) :
     BitVec.ofNat 128 x.toNat = x := by
   apply BitVec.eq_of_toNat_eq
@@ -1444,7 +1353,7 @@ private theorem compareSwitchCase_scalar_ref_eq (rp : RefProg) (c : Choice)
       change Except.ok (Val.bool
         (decodeScalar { width := w, signed := s, bits := bits } ==
          decodeScalar { width := w, signed := s, bits := caseBits })) = _
-      rw [decodeScalar_eq_iff]
+      rw [decodeScalar_beq_eq]
     rw [h_ev] at h_bin
     let ⟨resTy, h_res_cv, _, h_ok_bin⟩ := h_bin
     have h_rty : resTy = .bool := by
@@ -1468,11 +1377,6 @@ private theorem scalarOps_classify_bool' (rp : RefProg) (c : Choice)
     Miri.Interpreter.ExecutionMachine.withValidation, refExecutionConfig,
     refScalarLeaves]
   rw [resolveTy_tyIdFor_of_aux (code := 0) rfl]
-
-private theorem eStateM_bind_error {ε σ α β : Type} {x : EStateM ε σ α}
-    {f : α → EStateM ε σ β} {s s' : σ} {e : ε}
-    (h : x s = .error e s') : EStateM.bind x f s = .error e s' := by
-  dsimp only [EStateM.bind]; rw [h]
 
 private theorem eStateM_bind_congr {ε σ α β : Type}
     {x y : EStateM ε σ α} {f g : α → EStateM ε σ β} {s : σ}
@@ -1654,7 +1558,7 @@ private theorem compareSwitchCase_bool_ref_eq (rp : RefProg) (c : Choice)
       | false =>
         rw [h1, ite_false_eq] at h_step_bin
         dsimp only [ite_false_eq]
-        rw [eStateM_bind_error h_step_bin]
+        rw [eStateM_bind_err h_step_bin]
         exact ⟨_, rfl, rfl⟩
 
 private theorem forIn_list_map_congr {α β σ : Type} (l : List α) (init : σ)
@@ -2100,7 +2004,7 @@ private theorem compareSwitchCase_char_ref_eq (rp : RefProg) (c : Choice)
     | false =>
       rw [h_u, ite_false_eq] at h_step_bin
       dsimp only [ite_false_eq]
-      rw [eStateM_bind_error h_step_bin]
+      rw [eStateM_bind_err h_step_bin]
       exact ⟨_, rfl, rfl⟩
     | true =>
       rw [h_u, ite_true_eq] at h_step_bin
@@ -2227,8 +2131,8 @@ private theorem compareSwitchCase_pair_ref_eq (rp : RefProg) (c : Choice)
         ((Miri.Interpreter.ExecutionMachine.scalarHooks h).classify c
           (tyIdFor rp.types (.tuple [.int w s, .bool])))
         _ st) = _
-      rw [eStateM_bind_error (scalarOps_classify_pair' rp c st w s h_res)]
-    rw [eStateM_bind_error h_bin]
+      rw [eStateM_bind_err (scalarOps_classify_pair' rp c st w s h_res)]
+    rw [eStateM_bind_err h_bin]
     exact ⟨_, rfl, rfl⟩
 
 

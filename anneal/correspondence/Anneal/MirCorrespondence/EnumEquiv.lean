@@ -46,10 +46,7 @@ theorem nat_lt_of_blt_eq_true {a b : Nat} (h : Nat.blt a b = true) : a < b :=
 theorem nat_shiftRight_zero (n : Nat) : Nat.shiftRight n 0 = n := rfl
 
 theorem ite_false_eq_true {α : Type} (a b : α) :
-    (if false = true then a else b) = b := rfl
-
-theorem ite_true_eq_true {α : Type} (a b : α) :
-    (if true = true then a else b) = a := rfl
+    (if false = true then a else b) = b := ite_false_eq a b
 
 theorem intWidth_lsb_width (w : IntWidth) :
     w.bitWidth - 1 - 0 + 1 = w.bitWidth := by
@@ -696,14 +693,14 @@ theorem evalRefConstLit_eq (ty : MirTy) (lit : ConstLit) :
         cases enumAdmitted ety with
         | false => rfl
         | true =>
-          rw [Bool.not_true, ite_false_eq_true, Bool.false_or]
+          rw [Bool.not_true, ite_false_eq, Bool.false_or]
           rw [tryFromUInt_eq_truncateFromUInt,
               truncateFromUInt_eq_miriScalar tagW bits]
           dsimp only [bind, Except.bind, pure, Except.pure]
           cases h_ov : (truncateBits tagW bits != bits) with
           | true => rfl
           | false =>
-            rw [ite_false_eq_true]
+            rw [ite_false_eq]
             dsimp only
             rw [miriScalar_data, refMiriTagToDiscrBits_eq,
               truncateBits_eq_of_beq_false h_ov]
@@ -985,7 +982,7 @@ private theorem bvSignExtend_toNat_mod {n m : Nat} (hn : n ≤ m)
       nat_sub_sub_eq_add_sub hu_le h_pow_le, h_sub_eq]
     exact (Nat.mul_add_mod _ _ _).trans (Nat.mod_eq_of_lt u.isLt)
 
-private theorem signExtendBits_inj (w : IntWidth) (x y : BitVec 128)
+theorem signExtendBits_inj (w : IntWidth) (x y : BitVec 128)
     (h : signExtendBits w (truncateBits w x) =
       signExtendBits w (truncateBits w y)) :
     truncateBits w x = truncateBits w y := by
@@ -1128,7 +1125,7 @@ theorem findDiscrVariantAux_of_getElem? {idx v d : Nat} {ds : List Nat}
       injection h_get with h_xd
       subst h_xd
       dsimp only [findDiscrVariantAux]
-      rw [beq_self_eq_true, ite_true_eq_true, Nat.add_zero]
+      rw [beq_self_eq_true, ite_true_eq, Nat.add_zero]
     | succ v' =>
       have h_get' : MirSemantics.getElem? rest v' = some d := h_get
       have h_d128_b : Nat.blt d (Nat.pow 2 128) = true :=
@@ -1144,7 +1141,7 @@ theorem findDiscrVariantAux_of_getElem? {idx v d : Nat} {ds : List Nat}
           exact False.elim
             (h_xd_ne (bitVec128_ofNat_inj h_x_lt h_d128 (eq_of_beq h_b)))
       dsimp only [findDiscrVariantAux]
-      rw [h_beq_false, ite_false_eq_true]
+      rw [h_beq_false, ite_false_eq]
       have h_ih := ih (idx := idx + 1) h_rest128 h_pw_rest h_get'
       have h_ar : idx + 1 + v' = idx + (v' + 1) :=
         Nat.add_right_comm idx 1 v'

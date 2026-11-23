@@ -135,6 +135,11 @@ theorem mirSetElem?_eq_list_set {α : Type} (xs : List α) (i : Nat) (v : α)
       dsimp only [MirSemantics.setElem?, List.set]
       rw [ih j (Nat.lt_of_succ_lt_succ h)]
 
+theorem mirSetElem?_some_of_lt {α : Type} (xs : List α) (i : Nat) (v : α)
+    (hi : i < xs.length) :
+    ∃ xs', MirSemantics.setElem? xs i v = some xs' :=
+  ⟨xs.set i v, mirSetElem?_eq_list_set xs i v hi⟩
+
 theorem array_set_eq_mirSetElem? {α : Type} {xs xs' : List α} {i : Nat}
     {v : α} (h_lt : i < (Array.mk xs).size)
     (h_set : MirSemantics.setElem? xs i v = some xs') :
@@ -182,6 +187,33 @@ theorem getElem?_some_of_length_eq {α β : Type} {xs : List α} {ys : List β}
       cases i with
       | zero => exact ⟨b, rfl⟩
       | succ j => exact @ih bs j h_len h_x
+
+/-! ## Shared `EStateM` and Conditional Reduction Lemmas -/
+
+theorem eStateM_bind_ok {ε σ α β : Type} {m : EStateM ε σ α}
+    {f : α → EStateM ε σ β} {s s₁ : σ} {a : α}
+    (h : m s = .ok a s₁) :
+    EStateM.bind m f s = f a s₁ := by
+  dsimp only [EStateM.bind]; rw [h]
+
+theorem eStateM_bind_err {ε σ α β : Type} {m : EStateM ε σ α}
+    {f : α → EStateM ε σ β} {s s₁ : σ} {e : ε}
+    (h : m s = .error e s₁) :
+    EStateM.bind m f s = .error e s₁ := by
+  dsimp only [EStateM.bind]; rw [h]
+
+theorem eStateM_bind_pure {ε σ α β : Type} (a : α)
+    (f : α → EStateM ε σ β) (s : σ) :
+    EStateM.bind (EStateM.pure a) f s = f a s := rfl
+
+theorem ite_false_eq {α : Type} (a b : α) :
+    (if false = true then a else b) = b := rfl
+
+theorem ite_true_eq {α : Type} (a b : α) :
+    (if true = true then a else b) = a := rfl
+
+theorem ite_not_true_eq {α : Type} (a b : α) :
+    (if (!true) = true then a else b) = b := rfl
 
 /-! ## Canonical `TyId` Resolution (`tyIdFor`, `resolveTy`, `canonicalTyId`) -/
 
@@ -367,6 +399,34 @@ theorem refLayoutOfTyId_tyIdFor_of_resolve {ts : List MirTy} {ty : MirTy}
     refLayoutOfTyId ts (tyIdFor ts ty) = .ok (refLocalLayoutForTy ts ty) := by
   dsimp only [refLayoutOfTyId]
   rw [h]
+
+/-- `refHasPadding` succeeds on every canonical $M_{\text{ref}}$ layout. -/
+theorem refHasPadding_ok (types : List MirTy) (ty : MirTy) :
+    ∃ b, refHasPadding (refLocalLayoutForTy types ty) = .ok b := by
+  cases ty with
+  | int w s => cases w <;> cases s <;> exact ⟨_, rfl⟩
+  | bool | unit | never | char | ordering | ref _ _ | rawPtr _ _
+  | unsupported => exact ⟨_, rfl⟩
+  | enum ety =>
+    dsimp only [refHasPadding, refLocalLayoutForTy, refLayoutDataForTy,
+      refEnumLayoutData]
+    cases ety.tagRepr <;> exact ⟨_, rfl⟩
+  | tuple fs =>
+    cases fs with
+    | nil => exact ⟨_, rfl⟩
+    | cons f rest =>
+      cases rest with
+      | nil => cases f <;> exact ⟨_, rfl⟩
+      | cons g rest₂ =>
+        cases rest₂ with
+        | cons _ _ => cases f <;> cases g <;> exact ⟨_, rfl⟩
+        | nil =>
+          cases f with
+          | int w s =>
+            cases g with
+            | bool => cases w <;> cases s <;> exact ⟨_, rfl⟩
+            | _ => exact ⟨_, rfl⟩
+          | _ => exact ⟨_, rfl⟩
 
 /-! ## `SlotMatchesTy`, `SlotsMatchTys`, and `liftLocals` Lemmas -/
 

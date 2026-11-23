@@ -1206,15 +1206,6 @@ theorem fault_equivalence_at_choices_claim_holds_base :
 
 /-! ## Vendored `ExecutionMachine` & `OperandMachine` Wiring Claim -/
 
-private theorem eStateM_bind_ok {ε σ α β : Type} {x : EStateM ε σ α}
-    {f : α → EStateM ε σ β} {s s' : σ} {a : α}
-    (h : x s = .ok a s') : EStateM.bind x f s = f a s' := by
-  dsimp only [EStateM.bind]; rw [h]
-
-private theorem eStateM_bind_pure {ε σ α β : Type} (a : α)
-    (f : α → EStateM ε σ β) (s : σ) :
-    EStateM.bind (EStateM.pure a) f s = f a s := rfl
-
 theorem miri_move_deinit_wiring_claim_holds_base : MiriMoveDeinitWiringClaim := by
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro K U C O X Host _ cfg limits c state
