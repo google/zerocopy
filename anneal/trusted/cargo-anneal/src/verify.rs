@@ -640,17 +640,20 @@ fn module_of(name: &str) -> Result<String> {
     Ok(name.rsplit_once('.').unwrap().0.to_owned())
 }
 
-/// Return whether `module` names a runner-owned module or namespace.
+/// Return whether `module` names a runner-owned or toolchain-reserved module
+/// or namespace.
 ///
-/// The `Trusted` and `Anneal` namespaces hold the installed model and theory.
-/// The `Captured` and `Expected` modules are the captured subject and the
-/// generated claim. Names already used by staged modules are also rejected as
-/// duplicates; reserving whole namespaces covers names that no bundled module
-/// uses yet.
+/// The `Trusted` and `Anneal` namespaces hold the installed model and theory,
+/// `Captured` and `Expected` are the captured subject and generated claim, and
+/// `Init`, `Std`, `Lean`, `Lake`, and `TrustedBoundary` are reserved for the
+/// Lean toolchain and inspector in both pinned and unpinned modes so exported
+/// `LEAN_PATH` directories cannot shadow sysroot or inspector modules.
 fn reserved_proof_module(module: &str) -> bool {
-    matches!(module, "Expected" | "Captured" | "Trusted" | "Anneal")
-        || module.starts_with("Trusted.")
-        || module.starts_with("Anneal.")
+    matches!(module, "Expected" | "Captured")
+        || matches!(
+            module.split('.').next(),
+            Some("Trusted" | "Anneal" | "Init" | "Std" | "Lean" | "Lake" | "TrustedBoundary")
+        )
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -2330,13 +2333,31 @@ mod tests {
             "Expected",
             "Anneal",
             "Anneal.Shadow",
+            "Init",
+            "Init.System.IO",
+            "Std",
+            "Std.Data.Foo",
+            "Lean",
+            "Lean.Elab",
+            "Lake",
+            "Lake.DSL",
+            "TrustedBoundary",
+            "TrustedBoundary.Helper",
         ] {
             assert!(reserved_proof_module(reserved), "{reserved}");
         }
         // A prefix within a component or a later component reserves nothing.
-        for authored in
-            ["Spec", "Proof", "TrustedHelper", "AnnealProof", "Proof.Trusted", "Spec.Expected"]
-        {
+        for authored in [
+            "Spec",
+            "Proof",
+            "TrustedHelper",
+            "AnnealProof",
+            "InitHelper",
+            "LeanProof",
+            "Proof.Trusted",
+            "Proof.Init",
+            "Spec.Expected",
+        ] {
             assert!(!reserved_proof_module(authored), "{authored}");
         }
     }

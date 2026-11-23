@@ -498,9 +498,10 @@ fn try_resolve_elan_proxy_candidate(
 }
 
 /// Resolve `(canon_prefix, canon_exec_lean)` statically on disk without
-/// executing any child process so unpinned admission under `ExecSeal` never
-/// runs an untrusted launcher unsandboxed on the host.
-fn resolve_static_unpinned_toolchain(lean: &Path) -> Result<(PathBuf, PathBuf), Failure> {
+/// executing any child process so toolchain admission under `ExecSeal` (in
+/// both pinned and unpinned modes) never runs an unsandboxed launcher on the
+/// host.
+fn resolve_static_toolchain(lean: &Path) -> Result<(PathBuf, PathBuf), Failure> {
     let meta = fs::metadata(lean).map_err(|e| {
         Failure::new(
             2,
@@ -1220,7 +1221,10 @@ impl Checker {
 
         // Preserve zero-unhashed-exec: hash `self.lean` against
         // `foundation-lock.json` before invoking `--version` or
-        // `--print-prefix`.
+        // `--print-prefix`. When `ExecSeal` containment is active, resolve the
+        // sysroot statically and run both `--version` and `--print-prefix`
+        // inside the sandbox (matching unpinned mode) so no Lean binary or
+        // unhashed shared library executes directly on the host.
         let lean_sha = sha256_file_deref(&self.lean, "toolchain")?;
         if !parsed_lock.distributions.values().any(|s| s.eq_ignore_ascii_case(&lean_sha)) {
             return Err(Failure::new(
@@ -1230,81 +1234,177 @@ impl Checker {
             ));
         }
 
-        let actual_version =
-            self.process("version", &["--version".to_string()])?.trim().to_string();
-        let Some(expected_lean_sha) = parsed_lock.distributions.get(&actual_version) else {
-            return Err(Failure::new(
-                2,
-                "toolchain",
-                format!("Lean version/commit differs from lock: {actual_version}"),
-            ));
-        };
-        if !expected_lean_sha.eq_ignore_ascii_case(&lean_sha) {
-            return Err(Failure::new(
-                2,
-                "toolchain",
-                format!(
-                    "Lean binary SHA-256 mismatch for {actual_version}: expected {expected_lean_sha}, got {lean_sha}"
-                ),
-            ));
-        }
+        let foundation_modules: BTreeSet<String> = parsed_lock.modules.keys().cloned().collect();
+        #[cfg(test)]
+        let expected_sysroot_sha: String = self
+            .expected_sysroot_manifest_sha256_for_test
+            .clone()
+            .unwrap_or_else(|| LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256.to_owned());
+        #[cfg(not(test))]
+        let expected_sysroot_sha: String = LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256.to_owned();
 
-        let prefix_raw =
-            self.process("prefix", &["--print-prefix".to_string()])?.trim().to_string();
-        let prefix = fs::canonicalize(&prefix_raw)
-            .map_err(|e| Failure::new(2, "toolchain", format!("cannot resolve prefix: {e}")))?;
-        let prefix_lean = prefix.join("bin/lean");
-        let canon_self_lean = fs::canonicalize(&self.lean).unwrap_or_else(|_| self.lean.clone());
-        let exec_lean = if prefix_lean.exists() {
-            let resolved = fs::canonicalize(&prefix_lean).map_err(|e| {
-                Failure::new(
-                    2,
-                    "toolchain",
-                    format!("cannot canonicalize {}: {e}", prefix_lean.display()),
-                )
-            })?;
-            // Re-authenticate `exec_lean` against `foundation-lock.json`
-            // whenever `prefix/bin/lean` resolves to a different binary than
-            // `self.lean` (covers both sandboxed and unsandboxed pinned runs).
-            if resolved != canon_self_lean {
-                let exec_sha = sha256_file_deref(&resolved, "toolchain")?;
-                if !expected_lean_sha.eq_ignore_ascii_case(&exec_sha) {
+        let (actual_version, expected_lean_sha, prefix, exec_lean, artifacts) =
+            if self.sandbox_mode == SandboxMode::Unsandboxed {
+                let actual_version =
+                    self.process("version", &["--version".to_string()])?.trim().to_string();
+                let Some(expected_lean_sha) = parsed_lock.distributions.get(&actual_version) else {
+                    return Err(Failure::new(
+                        2,
+                        "toolchain",
+                        format!("Lean version/commit differs from lock: {actual_version}"),
+                    ));
+                };
+                if !expected_lean_sha.eq_ignore_ascii_case(&lean_sha) {
                     return Err(Failure::new(
                         2,
                         "toolchain",
                         format!(
-                            "resolved Lean binary {} SHA-256 differs from lock: \
-                             expected {expected_lean_sha}, got {exec_sha}",
-                            resolved.display()
+                            "Lean binary SHA-256 mismatch for {actual_version}: expected \
+                             {expected_lean_sha}, got {lean_sha}"
                         ),
                     ));
                 }
-            }
-            resolved
-        } else {
-            canon_self_lean
-        };
 
-        let mut artifacts = BTreeMap::new();
-        for (module, record) in &parsed_lock.modules {
-            let mod_arts = verify_installed_module_record(&prefix, module, record, "foundation")?;
-            artifacts.insert(module.clone(), mod_arts);
-        }
-
-        let foundation_modules: BTreeSet<String> = parsed_lock.modules.keys().cloned().collect();
-        #[cfg(test)]
-        let expected_sysroot_sha = self
-            .expected_sysroot_manifest_sha256_for_test
-            .as_deref()
-            .unwrap_or(LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256);
-        #[cfg(not(test))]
-        let expected_sysroot_sha = LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256;
-        verify_sysroot_foundation_dir(
-            &prefix.join("lib/lean"),
-            &foundation_modules,
-            expected_sysroot_sha,
-        )
-        .map_err(|err| Failure::new(err.code, "toolchain", err.message))?;
+                let prefix_raw =
+                    self.process("prefix", &["--print-prefix".to_string()])?.trim().to_string();
+                let prefix = fs::canonicalize(&prefix_raw).map_err(|e| {
+                    Failure::new(2, "toolchain", format!("cannot resolve prefix: {e}"))
+                })?;
+                let prefix_lean = prefix.join("bin/lean");
+                let canon_self_lean =
+                    fs::canonicalize(&self.lean).unwrap_or_else(|_| self.lean.clone());
+                let exec_lean = if prefix_lean.exists() {
+                    let resolved = fs::canonicalize(&prefix_lean).map_err(|e| {
+                        Failure::new(
+                            2,
+                            "toolchain",
+                            format!("cannot canonicalize {}: {e}", prefix_lean.display()),
+                        )
+                    })?;
+                    // Re-authenticate `exec_lean` against `foundation-lock.json`
+                    // whenever `prefix/bin/lean` resolves to a different binary
+                    // than `self.lean`.
+                    if resolved != canon_self_lean {
+                        let exec_sha = sha256_file_deref(&resolved, "toolchain")?;
+                        if !expected_lean_sha.eq_ignore_ascii_case(&exec_sha) {
+                            return Err(Failure::new(
+                                2,
+                                "toolchain",
+                                format!(
+                                    "resolved Lean binary {} SHA-256 differs from lock: \
+                                     expected {expected_lean_sha}, got {exec_sha}",
+                                    resolved.display()
+                                ),
+                            ));
+                        }
+                    }
+                    resolved
+                } else {
+                    canon_self_lean
+                };
+                let mut artifacts = BTreeMap::new();
+                for (module, record) in &parsed_lock.modules {
+                    let mod_arts =
+                        verify_installed_module_record(&prefix, module, record, "foundation")?;
+                    artifacts.insert(module.clone(), mod_arts);
+                }
+                verify_sysroot_foundation_dir(
+                    &prefix.join("lib/lean"),
+                    &foundation_modules,
+                    &expected_sysroot_sha,
+                )
+                .map_err(|err| Failure::new(err.code, "toolchain", err.message))?;
+                (actual_version, expected_lean_sha.clone(), prefix, exec_lean, artifacts)
+            } else {
+                let (prefix, exec_lean) = resolve_static_toolchain(&self.lean)?;
+                let exec_sha = sha256_file_deref(&exec_lean, "toolchain")?;
+                if !parsed_lock.distributions.values().any(|s| s.eq_ignore_ascii_case(&exec_sha)) {
+                    return Err(Failure::new(
+                        2,
+                        "toolchain",
+                        format!(
+                            "resolved Lean binary {} SHA-256 differs from lock: {exec_sha}",
+                            exec_lean.display()
+                        ),
+                    ));
+                }
+                // Authenticate foundation modules and the full `Init`/`Std`/
+                // `Lean` sysroot manifest BEFORE launching even the sandboxed
+                // probe or `--version`/`--print-prefix` queries.
+                let mut artifacts = BTreeMap::new();
+                for (module, record) in &parsed_lock.modules {
+                    let mod_arts =
+                        verify_installed_module_record(&prefix, module, record, "foundation")?;
+                    artifacts.insert(module.clone(), mod_arts);
+                }
+                verify_sysroot_foundation_dir(
+                    &prefix.join("lib/lean"),
+                    &foundation_modules,
+                    &expected_sysroot_sha,
+                )
+                .map_err(|err| Failure::new(err.code, "toolchain", err.message))?;
+                let runtime =
+                    SandboxRuntime::probe(self.sandbox_mode, &exec_lean, &prefix, &self.stage)?;
+                self.probed_backend = Some(runtime.backend);
+                let actual_version = self
+                    .run_sandboxed_lean_query(&runtime, "version", &["--version".to_string()])?
+                    .trim()
+                    .to_string();
+                let Some(expected_lean_sha) = parsed_lock.distributions.get(&actual_version) else {
+                    return Err(Failure::new(
+                        2,
+                        "toolchain",
+                        format!("Lean version/commit differs from lock: {actual_version}"),
+                    ));
+                };
+                if !expected_lean_sha.eq_ignore_ascii_case(&lean_sha)
+                    || !expected_lean_sha.eq_ignore_ascii_case(&exec_sha)
+                {
+                    return Err(Failure::new(
+                        2,
+                        "toolchain",
+                        format!(
+                            "Lean binary SHA-256 mismatch for {actual_version}: expected \
+                             {expected_lean_sha}, got launcher={lean_sha}, resolved={exec_sha}"
+                        ),
+                    ));
+                }
+                let printed_prefix = self
+                    .run_sandboxed_lean_query(&runtime, "prefix", &["--print-prefix".to_string()])?
+                    .trim()
+                    .to_string();
+                let printed_path = Path::new(&printed_prefix);
+                let prefix_matches = if runtime.backend == ActiveSandbox::LinuxBwrap {
+                    printed_path == Path::new("/toolchain")
+                } else {
+                    printed_path == prefix.as_path()
+                        || exec_lean.parent().and_then(Path::parent) == Some(printed_path)
+                };
+                if !prefix_matches {
+                    return Err(Failure::new(
+                        2,
+                        "toolchain",
+                        format!(
+                            "sandboxed --print-prefix ({printed_prefix}) disagrees with resolved \
+                             pinned sysroot {}",
+                            prefix.display()
+                        ),
+                    ));
+                }
+                let post_probe_sha = sha256_file_deref(&exec_lean, "toolchain")?;
+                if !expected_lean_sha.eq_ignore_ascii_case(&post_probe_sha) {
+                    return Err(Failure::new(
+                        2,
+                        "toolchain",
+                        format!(
+                            "resolved Lean binary {} changed during pinned admission",
+                            exec_lean.display()
+                        ),
+                    ));
+                }
+                self.sandbox_runtime = Some(runtime);
+                (actual_version, expected_lean_sha.clone(), prefix, exec_lean, artifacts)
+            };
 
         let library_lock_path = self.root.join("trusted/audit/library-lock.json");
         let library_lock = if fs::symlink_metadata(&library_lock_path).is_ok() {
@@ -1390,7 +1490,7 @@ impl Checker {
             };
             (version, prefix, exec_lean)
         } else {
-            let (prefix, exec_lean) = resolve_static_unpinned_toolchain(&self.lean)?;
+            let (prefix, exec_lean) = resolve_static_toolchain(&self.lean)?;
             let pre_probe_sha = sha256_file_deref(&exec_lean, "toolchain")
                 .map_err(|e| Failure::operational("toolchain", e.message))?;
             let runtime =
@@ -3894,5 +3994,55 @@ mod process_tests {
             checker.sandbox_runtime.is_none(),
             "failed admission must not cache unverified sandbox_runtime"
         );
+    }
+
+    #[test]
+    fn pinned_admission_runs_version_and_prefix_inside_exec_seal() {
+        let lean = crate::default_lean_path();
+        if !lean.is_file() {
+            return;
+        }
+        let anneal_root = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap();
+
+        // 1. Pinned admission under default ExecSeal probes and caches
+        //    `sandbox_runtime` while running `--version` and `--print-prefix`
+        //    inside the sandbox.
+        let mut ok_checker = Checker::new(anneal_root, Some(&lean)).unwrap();
+        let adm = ok_checker.tool_admission().unwrap().clone();
+        assert!(!adm.unpinned);
+        assert!(
+            ok_checker.sandbox_runtime.is_some(),
+            "pinned ExecSeal admission must probe and cache sandbox_runtime"
+        );
+        assert!(
+            matches!(
+                ok_checker.active_sandbox(),
+                Some(ActiveSandbox::LinuxBwrap | ActiveSandbox::LinuxLandlockSeccomp)
+            ),
+            "expected sandboxed backend after pinned admission, got {:?}",
+            ok_checker.active_sandbox()
+        );
+
+        // 2. A 1ns child timeout trips on the sandboxed `--version` query
+        //    inside pinned admission (proving the query ran through
+        //    `run_sandboxed_lean_query` rather than an unsandboxed host call).
+        let mut timeout_checker = Checker::new(anneal_root, Some(&lean)).unwrap();
+        timeout_checker.set_child_timeout(Duration::from_nanos(1));
+        let err = timeout_checker
+            .tool_admission()
+            .expect_err("1ns query timeout must fail pinned admission inside ExecSeal");
+        assert_eq!(err.phase, "sandbox-timeout", "{err}");
+        assert!(
+            matches!(
+                timeout_checker.active_sandbox(),
+                Some(ActiveSandbox::LinuxBwrap | ActiveSandbox::LinuxLandlockSeccomp)
+            ),
+            "expected probed active_sandbox after post-probe pinned query timeout"
+        );
+        assert!(timeout_checker.sandbox_runtime.is_none());
     }
 }
