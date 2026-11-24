@@ -1,0 +1,34 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/lean-sharding",
+    "anneal/performance",
+    "anneal/tcb-boundaries",
+    "lean/olean",
+    "lean/scaling"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal workspace in google/zerocopy",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "e8dcb7f08edbc19485c9e7980333607ebbff5f48"
+      }
+    },
+    {
+      "name": "Lean 4 toolchain (pinned primary compiler)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lean 4 toolchain and external NDJSON proof checkers",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.35.0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

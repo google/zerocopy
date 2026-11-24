@@ -1,0 +1,35 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/audit",
+    "anneal/ci",
+    "anneal/performance",
+    "anneal/testing",
+    "lean/olean",
+    "rust/cargo-workspace"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal workspace in google/zerocopy",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "74d509c8529b05e0e4839cc739d6da2fe0841e41"
+      }
+    },
+    {
+      "name": "Lean 4 (v4.34.1 pinned baseline)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lean 4 (v4.35.0 NDJSON export and external kernels)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.35.0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

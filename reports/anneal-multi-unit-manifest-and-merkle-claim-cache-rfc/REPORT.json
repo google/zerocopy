@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/caching",
+    "anneal/cli",
+    "anneal/performance",
+    "anneal/rust-capture",
+    "cargo/manifest"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal workspace and zerocopy crate in google/zerocopy",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "a68641199cdfa99f96cb62f0cde921c9d36bfb22",
+        "anneal_version": "v0.2.0-alpha.8",
+        "zerocopy_version": "v0.8.64"
+      }
+    },
+    {
+      "name": "Pinned Rust compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

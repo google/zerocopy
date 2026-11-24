@@ -1,0 +1,36 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/audit",
+    "anneal/merkle-linking",
+    "anneal/ndjson-comparator",
+    "lean/kernel",
+    "security/supply-chain"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal workspace in google/zerocopy (origin/main baseline)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "a68641199cdfa99f96cb62f0cde921c9d36bfb22"
+      }
+    },
+    {
+      "name": "Anneal NDJSON comparator PR #4147 in google/zerocopy",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "57118044690e2026c3f29415780bd5ce75fab211",
+        "pull_request": "#4147"
+      }
+    },
+    {
+      "name": "Lean 4 toolchain and external NDJSON proof checkers",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.35.0",
+        "nanoda_bin_version": "0.4.19"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

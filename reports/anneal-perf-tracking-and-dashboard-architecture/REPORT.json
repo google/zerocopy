@@ -1,0 +1,44 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/benchmarks",
+    "anneal/ci",
+    "anneal/performance",
+    "lean/olean",
+    "tooling/dashboards"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal workspace in google/zerocopy",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "a68641199cdfa99f96cb62f0cde921c9d36bfb22",
+        "version": "0.2.0-alpha.8"
+      }
+    },
+    {
+      "name": "google/zerocopy benchmark-data orphan branch",
+      "identity": {
+        "repository": "google/zerocopy",
+        "branch": "benchmark-data",
+        "revision": "d07175ed40ac6605442525427efbd86c76f8b199"
+      }
+    },
+    {
+      "name": "Linux kernel exec_mm_put_old RSS accounting",
+      "identity": {
+        "repository": "torvalds/linux",
+        "file": "fs/exec.c",
+        "line": "918"
+      }
+    },
+    {
+      "name": "zizmor GitHub Actions security auditor",
+      "identity": {
+        "tool": "zizmor",
+        "version": "v1.23.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

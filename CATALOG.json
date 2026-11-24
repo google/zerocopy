@@ -14675,6 +14675,42 @@
         "rustc/driver"
       ]
     },
+    "anneal-lambda-lifted-m3-merkle-linker-rfc": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "a68641199cdfa99f96cb62f0cde921c9d36bfb22"
+          },
+          "name": "Anneal workspace in google/zerocopy (origin/main baseline)"
+        },
+        {
+          "identity": {
+            "pull_request": "#4147",
+            "repository": "google/zerocopy",
+            "revision": "57118044690e2026c3f29415780bd5ce75fab211"
+          },
+          "name": "Anneal NDJSON comparator PR #4147 in google/zerocopy"
+        },
+        {
+          "identity": {
+            "nanoda_bin_version": "0.4.19",
+            "repository": "leanprover/lean4",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4 toolchain and external NDJSON proof checkers"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/audit",
+        "anneal/merkle-linking",
+        "anneal/ndjson-comparator",
+        "lean/kernel",
+        "security/supply-chain"
+      ]
+    },
     "anneal-law-defi-mechanism-design-voting-and-medical-survey": {
       "observed_at": "2026-10-31",
       "subjects": [
@@ -15788,6 +15824,35 @@
         "verification/translation-validation"
       ]
     },
+    "anneal-multi-unit-manifest-and-merkle-claim-cache-rfc": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "anneal_version": "v0.2.0-alpha.8",
+            "repository": "google/zerocopy",
+            "revision": "a68641199cdfa99f96cb62f0cde921c9d36bfb22",
+            "zerocopy_version": "v0.8.64"
+          },
+          "name": "Anneal workspace and zerocopy crate in google/zerocopy"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+          },
+          "name": "Pinned Rust compiler"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/caching",
+        "anneal/cli",
+        "anneal/performance",
+        "anneal/rust-capture",
+        "cargo/manifest"
+      ]
+    },
     "anneal-nix-toolchain-packaging-and-binary-relocation": {
       "observed_at": "2026-11-12",
       "subjects": [
@@ -15947,6 +16012,50 @@
         "lake/artifact-cache",
         "lake/readonly-dependencies",
         "lake/manifest"
+      ]
+    },
+    "anneal-perf-tracking-and-dashboard-architecture": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "a68641199cdfa99f96cb62f0cde921c9d36bfb22",
+            "version": "0.2.0-alpha.8"
+          },
+          "name": "Anneal workspace in google/zerocopy"
+        },
+        {
+          "identity": {
+            "branch": "benchmark-data",
+            "repository": "google/zerocopy",
+            "revision": "d07175ed40ac6605442525427efbd86c76f8b199"
+          },
+          "name": "google/zerocopy benchmark-data orphan branch"
+        },
+        {
+          "identity": {
+            "file": "fs/exec.c",
+            "line": "918",
+            "repository": "torvalds/linux"
+          },
+          "name": "Linux kernel exec_mm_put_old RSS accounting"
+        },
+        {
+          "identity": {
+            "tool": "zizmor",
+            "version": "v1.23.1"
+          },
+          "name": "zizmor GitHub Actions security auditor"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/benchmarks",
+        "anneal/ci",
+        "anneal/performance",
+        "lean/olean",
+        "tooling/dashboards"
       ]
     },
     "anneal-pme-mir-semantics-and-polar-ctfe-admission": {
@@ -17422,6 +17531,40 @@
         "domains/aerospace/mode-confusion"
       ]
     },
+    "anneal-tarjan-scc-olean-sharding-rfc": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "e8dcb7f08edbc19485c9e7980333607ebbff5f48"
+          },
+          "name": "Anneal workspace in google/zerocopy"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain (pinned primary compiler)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4 toolchain and external NDJSON proof checkers"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/lean-sharding",
+        "anneal/performance",
+        "anneal/tcb-boundaries",
+        "lean/olean",
+        "lean/scaling"
+      ]
+    },
     "anneal-tcb-realizability-external-calls-and-mutation-testing": {
       "observed_at": "2026-04-12",
       "subjects": [
@@ -17476,6 +17619,62 @@
         "anneal/x86-semantics",
         "lean/elaboration-probes",
         "lean/kernel-verification"
+      ]
+    },
+    "anneal-testing-and-verification-architecture-rfc": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "74d509c8529b05e0e4839cc739d6da2fe0841e41"
+          },
+          "name": "Anneal workspace in google/zerocopy"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 (v4.34.1 pinned baseline)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4 (v4.35.0 NDJSON export and external kernels)"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/audit",
+        "anneal/ci",
+        "anneal/performance",
+        "anneal/testing",
+        "lean/olean",
+        "rust/cargo-workspace"
+      ]
+    },
+    "anneal-theory-bundle-manifest-decoupling-design": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "compared_prs": "#4036 (34006cc8fe), #4092",
+            "path": "anneal/",
+            "repository": "google/zerocopy"
+          },
+          "name": "Anneal workspace in google/zerocopy (theory bundle manifest decoupling design)"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/audit",
+        "anneal/tcb-boundaries",
+        "anneal/theory-bundling",
+        "lean/module-bundling",
+        "rust/cargo-packaging"
       ]
     },
     "anneal-trusted-boundary-audit-olean-stubbing-and-conservativity": {
@@ -25959,6 +26158,41 @@
         "smt/alethe",
         "smt/sat/lrat",
         "lean/kernel-reduction"
+      ]
+    },
+    "cargo-anneal-receipt-inspect-and-terminal-sanitization-rfc": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "d3362d9a65"
+          },
+          "name": "Anneal workspace in google/zerocopy"
+        },
+        {
+          "identity": {
+            "crates": "serde, serde_json",
+            "versions": "1.0.229, 1.0.154"
+          },
+          "name": "serde and serde_json crates (isolated duplicate-key probe)"
+        },
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "425401baa150b7a009b2a46780c3e9b4cf31555f"
+          },
+          "name": "google/zerocopy:reference corpus baseline"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/audit",
+        "anneal/cli",
+        "anneal/receipts",
+        "security/input-sanitization",
+        "security/supply-chain"
       ]
     },
     "cargo-profile-and-compiler-flag-census-in-the-wild": {

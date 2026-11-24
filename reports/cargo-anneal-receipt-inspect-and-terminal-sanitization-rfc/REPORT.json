@@ -1,0 +1,35 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/audit",
+    "anneal/cli",
+    "anneal/receipts",
+    "security/input-sanitization",
+    "security/supply-chain"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal workspace in google/zerocopy",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "d3362d9a65"
+      }
+    },
+    {
+      "name": "serde and serde_json crates (isolated duplicate-key probe)",
+      "identity": {
+        "crates": "serde, serde_json",
+        "versions": "1.0.229, 1.0.154"
+      }
+    },
+    {
+      "name": "google/zerocopy:reference corpus baseline",
+      "identity": {
+        "repository": "google/zerocopy",
+        "branch": "reference",
+        "revision": "425401baa150b7a009b2a46780c3e9b4cf31555f"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

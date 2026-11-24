@@ -1,0 +1,21 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/audit",
+    "anneal/tcb-boundaries",
+    "anneal/theory-bundling",
+    "lean/module-bundling",
+    "rust/cargo-packaging"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal workspace in google/zerocopy (theory bundle manifest decoupling design)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "path": "anneal/",
+        "compared_prs": "#4036 (34006cc8fe), #4092"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}
