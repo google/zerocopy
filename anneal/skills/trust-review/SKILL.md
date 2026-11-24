@@ -261,7 +261,7 @@ or audit them is permitted).
   without a digest check; verify it never fires automatically in place of
   pinned downloads, and flag any development-only verification bypass per
   `PRINCIPLES.md` that omits explicit user-visible warning). Challenge any
-  added or updated crate dependency in `trusted/` against `AGENTS.md`
+  added or updated crate dependency in `trusted/` against `skills/README.md`
   dependency rules (standard crates, conservative transitive trees, pinned
   `crates.io` checksums).
 

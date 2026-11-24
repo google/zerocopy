@@ -14,7 +14,8 @@ review, trust-boundary, and source-control policy skills live in
 [`../anneal/skills/`](../anneal/skills/README.md). See
 [`../zerocopy/AGENTS.md`](../zerocopy/AGENTS.md) and
 [`../anneal/AGENTS.md`](../anneal/AGENTS.md) for subtree standing rules and task
-routing.
+routing; Anneal's task-routing table lives in
+[`../anneal/skills/README.md`](../anneal/skills/README.md#task-routing).
 
 ## Repository-owned skills
 
@@ -42,7 +43,7 @@ out of these roots.
 rounds. The [Anneal reference corpus guidance][reference-corpus] applies
 when working with the separately distributed corpus.
 
-[reference-corpus]: ../anneal/AGENTS.md#technical-reference-corpus
+[reference-corpus]: ../anneal/skills/README.md#technical-reference-corpus
 
 | Skill | Source | Upstream path & revision |
 | :--- | :--- | :--- |
