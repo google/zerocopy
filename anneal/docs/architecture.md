@@ -387,7 +387,7 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `theory/Anneal/{InitLemmas,ClassicalEm,Firewall,LeBytes,ListChunks}.lean`,
   `theory/Anneal/{NatBitwise,BitTrieLrat,PTree,SpineForce}.lean`,
   `theory/Anneal/{ByteRun,ByteSubLens,CnfOrd,F2Simd}/`,
-  `theory/Anneal/{OverflowCastJoin,PureLift}/`, and planned
+  `theory/Anneal/{OverflowCastJoin,PureLift,RefFrame}/`, and planned
   `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
   Diaconescu classical excluded middle and existential choice, WHNF and
@@ -403,8 +403,9 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   (`CnfOrd`), $\mathbb{F}_2$-linear, $\mathbb{F}_2$-bilinear, and cone-sliced
   SIMD certificate evaluators (`F2Simd`), `@[irreducible]` stage-cut interval
   joins for overflowing tuple arithmetic and `intToInt` casts
-  (`OverflowCastJoin`), functional borrow lifting, separation-logic frame rules,
-  and proof automation built against
+  (`OverflowCastJoin`), 4-way call-continuation `&mut` writeback frames and
+  ranged Tree Borrows protectors (`RefFrame`), functional borrow lifting,
+  separation-logic frame rules, and proof automation built against
   $M_{\text{anneal}}$ and `StableAst` / `StableSemantics` (`cargo-anneal`
   bundles the scalar and MIR proof libraries under `theory/Anneal/`, compiling
   and auditing only the transitive `Anneal.*` closure imported by target proof
@@ -539,6 +540,7 @@ anneal/
     │   ├── PTree.lean              # Canonical positive radix trie & framing
     │   ├── PureLift.lean           # Functional borrow-lifting calculus
     │   ├── PureLift/
+    │   ├── RefFrame.lean           # 4-way call-continuation &mut frames & ranged TB (+ RefFrame/)
     │   └── SpineForce.lean         # CPS spine-forcing & @Nat.rec combinators
     ├── Framework/                  # [planned] Generic simulation lemmas
     └── Rust/                       # [planned] StableAst/, Passes/, Wp/
