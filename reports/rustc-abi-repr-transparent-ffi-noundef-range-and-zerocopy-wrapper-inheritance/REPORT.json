@@ -1,0 +1,90 @@
+{
+  "topics": [
+    "anneal",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/abi",
+    "ffi",
+    "ffi/calling-conventions",
+    "lean",
+    "lean/mechanization",
+    "llvm",
+    "rust",
+    "rust/calling-conventions",
+    "rustc",
+    "rustc/abi",
+    "verification",
+    "zerocopy"
+  ],
+  "subjects": [
+    {
+      "name": "rustc nightly toolchain (1.98.0-nightly, LLVM 22.1.6)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly",
+        "llvm_version": "22.1.6"
+      }
+    },
+    {
+      "name": "Miri interpreter (bundled with rustc 1.98.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (upstream main source comparison)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "20fe935d50367c0ff8872c2ebfa050c5c99d9201"
+      }
+    },
+    {
+      "name": "rust-lang/rust (historical layout/ABI reference revision)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+      }
+    },
+    {
+      "name": "zerocopy crate (0.8.64, compiled and source-audited)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+        "version": "0.8.64"
+      }
+    },
+    {
+      "name": "google/zerocopy (upstream main source comparison)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "617bb7bbdca0134bf2a9b79b89b7e991e133275b"
+      }
+    },
+    {
+      "name": "Anneal verification framework (main source audit)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "The Rust Reference (type layout specification)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover (formalization toolchain)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

@@ -1,0 +1,533 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "zerocopy_crate_dir_version": [
+    "version = \"0.8.64\"",
+    "description = \"Zerocopy makes zero-cost memory manipulation effortless. We write \\\"unsafe\\\" so you don't have to.\"",
+    "categories = [",
+    "    \"embedded\","
+  ],
+  "zerocopy_git_head": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+  "experiments": {
+    "a_extern_c_llvm_ir_and_runtime_checks": {
+      "llvm_ir_signatures": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=2",
+          "-Zmerge-functions=disabled",
+          "--emit=llvm-ir"
+        ],
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "llvm_ir_by_fn": {
+          "bare_u32": [
+            "define noundef i32 @bare_u32(i32 noundef returned %x) unnamed_addr #0 {",
+            "start:",
+            "  ret i32 %x",
+            "}"
+          ],
+          "wrap_u32": [
+            "define noundef i32 @wrap_u32(i32 noundef returned %x) unnamed_addr #0 {",
+            "start:",
+            "  ret i32 %x",
+            "}"
+          ],
+          "bare_nz": [
+            "define noundef range(i32 1, 0) i32 @bare_nz(i32 noundef returned range(i32 1, 0) %x) unnamed_addr #0 {",
+            "start:",
+            "  ret i32 %x",
+            "}"
+          ],
+          "wrap_nz": [
+            "define noundef range(i32 1, 0) i32 @wrap_nz(i32 noundef returned range(i32 1, 0) %x) unnamed_addr #0 {",
+            "start:",
+            "  ret i32 %x",
+            "}"
+          ],
+          "bare_nzi32": [
+            "define noundef range(i32 1, 0) i32 @bare_nzi32(i32 noundef returned range(i32 1, 0) %x) unnamed_addr #0 {",
+            "start:",
+            "  ret i32 %x",
+            "}"
+          ],
+          "wrap_nzi32": [
+            "define noundef range(i32 1, 0) i32 @wrap_nzi32(i32 noundef returned range(i32 1, 0) %x) unnamed_addr #0 {",
+            "start:",
+            "  ret i32 %x",
+            "}"
+          ],
+          "wrap_nz_nested": [
+            "define noundef range(i32 1, 0) i32 @wrap_nz_nested(i32 noundef returned range(i32 1, 0) %x) unnamed_addr #0 {",
+            "start:",
+            "  ret i32 %x",
+            "}"
+          ],
+          "bare_bool": [
+            "define noundef zeroext i1 @bare_bool(i1 noundef returned zeroext %x) unnamed_addr #0 {",
+            "start:",
+            "  ret i1 %x",
+            "}"
+          ],
+          "wrap_bool": [
+            "define noundef zeroext i1 @wrap_bool(i1 noundef returned zeroext %x) unnamed_addr #0 {",
+            "start:",
+            "  ret i1 %x",
+            "}"
+          ],
+          "bare_ref": [
+            "define noundef nonnull align 4 ptr @bare_ref(ptr noalias noundef readonly returned align 4 captures(ret: address, read_provenance) dereferenceable(4) %x) unnamed_addr #0 {",
+            "start:",
+            "  ret ptr %x",
+            "}"
+          ],
+          "wrap_ref": [
+            "define noundef nonnull align 4 ptr @wrap_ref(ptr noalias noundef readonly returned align 4 captures(ret: address, read_provenance) dereferenceable(4) %x) unnamed_addr #0 {",
+            "start:",
+            "  ret ptr %x",
+            "}"
+          ],
+          "md_nz": [
+            "define noundef range(i32 1, 0) i32 @md_nz(i32 noundef returned range(i32 1, 0) %x) unnamed_addr #0 {",
+            "start:",
+            "  ret i32 %x",
+            "}"
+          ],
+          "md_ref": [
+            "define noundef nonnull align 4 ptr @md_ref(ptr noundef nonnull readnone returned align 4 captures(ret: address, provenance) %x) unnamed_addr #0 {",
+            "start:",
+            "  ret ptr %x",
+            "}"
+          ],
+          "mu_nz": [
+            "define i32 @mu_nz(i32 returned %x) unnamed_addr #0 {",
+            "start:",
+            "  ret i32 %x",
+            "}"
+          ],
+          "mu_ref": [
+            "define ptr @mu_ref(ptr readnone returned captures(ret: address, provenance) %x) unnamed_addr #0 {",
+            "start:",
+            "  ret ptr %x",
+            "}"
+          ],
+          "repr_c_u32": [
+            "define i32 @repr_c_u32(i32 returned %0) unnamed_addr #0 {",
+            "start:",
+            "  ret i32 %0",
+            "}"
+          ],
+          "repr_c_nz": [
+            "define i32 @repr_c_nz(i32 returned %0) unnamed_addr #0 {",
+            "start:",
+            "  ret i32 %0",
+            "}"
+          ],
+          "bare_slice_len": [
+            "define noundef i64 @bare_slice_len({ i64, i64 } %0) unnamed_addr #1 {",
+            "start:",
+            "  %.fca.1.extract = extractvalue { i64, i64 } %0, 1",
+            "  ret i64 %.fca.1.extract",
+            "}"
+          ],
+          "wrap_slice_len": [
+            "define noundef i64 @wrap_slice_len({ i64, i64 } %0) unnamed_addr #1 {",
+            "start:",
+            "  %.fca.1.extract = extractvalue { i64, i64 } %0, 1",
+            "  ret i64 %.fca.1.extract",
+            "}"
+          ],
+          "bare_slice_len_rust": [
+            "define noundef range(i64 0, 2305843009213693952) i64 @bare_slice_len_rust(ptr noalias noundef nonnull readonly align 4 captures(none) %s.0, i64 noundef returned range(i64 0, 2305843009213693952) %s.1) unnamed_addr #0 {",
+            "start:",
+            "  ret i64 %s.1",
+            "}"
+          ],
+          "wrap_slice_len_rust": [
+            "define noundef i64 @wrap_slice_len_rust(ptr noalias noundef nonnull readonly align 4 captures(none) %s.0, i64 noundef returned %s.1) unnamed_addr #0 {",
+            "start:",
+            "  ret i64 %s.1",
+            "}"
+          ]
+        },
+        "default_o2_compile_returncode": 0,
+        "default_o2_merge_functions_aliases": [
+          "@bare_nzi32 = unnamed_addr alias i32 (i32), ptr @bare_nz",
+          "@md_nz = unnamed_addr alias i32 (i32), ptr @bare_nz",
+          "@repr_c_nz = unnamed_addr alias i32 (i32), ptr @mu_nz",
+          "@repr_c_u32 = unnamed_addr alias i32 (i32), ptr @mu_nz",
+          "@wrap_bool = unnamed_addr alias i1 (i1), ptr @bare_bool",
+          "@wrap_nz = unnamed_addr alias i32 (i32), ptr @bare_nz",
+          "@wrap_nz_nested = unnamed_addr alias i32 (i32), ptr @bare_nz",
+          "@wrap_nzi32 = unnamed_addr alias i32 (i32), ptr @bare_nz",
+          "@wrap_ref = unnamed_addr alias ptr (ptr), ptr @bare_ref",
+          "@wrap_slice_len = unnamed_addr alias i64 ({ i64, i64 }), ptr @bare_slice_len",
+          "@wrap_u32 = unnamed_addr alias i32 (i32), ptr @bare_u32"
+        ],
+        "o0_compile_returncode": 0,
+        "o0_llvm_ir_by_fn": {
+          "bare_nz": [
+            "define i32 @bare_nz(i32 %x) unnamed_addr #0 {",
+            "start:",
+            "  ret i32 %x",
+            "}"
+          ],
+          "wrap_nz": [
+            "define i32 @wrap_nz(i32 %x) unnamed_addr #0 {",
+            "start:",
+            "  ret i32 %x",
+            "}"
+          ],
+          "md_nz": [
+            "define i32 @md_nz(i32 %x) unnamed_addr #0 {",
+            "start:",
+            "  ret i32 %x",
+            "}"
+          ],
+          "mu_nz": [
+            "define i32 @mu_nz(i32 %x) unnamed_addr #0 {",
+            "start:",
+            "  ret i32 %x",
+            "}"
+          ],
+          "wrap_bool": [
+            "define zeroext i1 @wrap_bool(i1 zeroext %x) unnamed_addr #0 {",
+            "start:",
+            "  ret i1 %x",
+            "}"
+          ],
+          "wrap_ref": [
+            "define align 4 ptr @wrap_ref(ptr align 4 %x) unnamed_addr #0 {",
+            "start:",
+            "  ret ptr %x",
+            "}"
+          ],
+          "repr_c_nz": [
+            "define i32 @repr_c_nz(i32 %0) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = alloca [4 x i8], align 4",
+            "  %1 = alloca [4 x i8], align 4",
+            "  %x = alloca [4 x i8], align 4",
+            "  store i32 %0, ptr %1, align 4",
+            "  call void @llvm.memcpy.p0.p0.i64(ptr align 4 %x, ptr align 4 %1, i64 4, i1 false)",
+            "  call void @llvm.memcpy.p0.p0.i64(ptr align 4 %_0, ptr align 4 %x, i64 4, i1 false)",
+            "  %2 = load i32, ptr %_0, align 4",
+            "  ret i32 %2",
+            "}"
+          ]
+        }
+      },
+      "cross_target_llvm_ir": {
+        "aarch64-unknown-linux-gnu": {
+          "returncode": 0,
+          "stderr": "",
+          "llvm_ir_by_fn": {
+            "bare_nz": [
+              "define noundef range(i32 1, 0) i32 @bare_nz(i32 noundef returned range(i32 1, 0) %x) unnamed_addr #0 {",
+              "start:",
+              "  ret i32 %x",
+              "}"
+            ],
+            "wrap_nz": [
+              "define noundef range(i32 1, 0) i32 @wrap_nz(i32 noundef returned range(i32 1, 0) %x) unnamed_addr #0 {",
+              "start:",
+              "  ret i32 %x",
+              "}"
+            ],
+            "md_nz": [
+              "define noundef range(i32 1, 0) i32 @md_nz(i32 noundef returned range(i32 1, 0) %x) unnamed_addr #0 {",
+              "start:",
+              "  ret i32 %x",
+              "}"
+            ],
+            "mu_nz": [
+              "define i32 @mu_nz(i32 returned %x) unnamed_addr #0 {",
+              "start:",
+              "  ret i32 %x",
+              "}"
+            ],
+            "repr_c_nz": [
+              "define range(i64 0, 4294967296) i64 @repr_c_nz(i64 %0) unnamed_addr #0 {",
+              "start:",
+              "  %_0.sroa.0.0.insert.ext = and i64 %0, 4294967295",
+              "  ret i64 %_0.sroa.0.0.insert.ext",
+              "}"
+            ],
+            "wrap_bool": [
+              "define noundef zeroext i1 @wrap_bool(i1 noundef returned zeroext %x) unnamed_addr #0 {",
+              "start:",
+              "  ret i1 %x",
+              "}"
+            ],
+            "wrap_ref": [
+              "define noundef nonnull align 4 ptr @wrap_ref(ptr noalias noundef readonly returned align 4 captures(ret: address, read_provenance) dereferenceable(4) %x) unnamed_addr #0 {",
+              "start:",
+              "  ret ptr %x",
+              "}"
+            ]
+          }
+        },
+        "i686-unknown-linux-gnu": {
+          "returncode": 0,
+          "stderr": "",
+          "llvm_ir_by_fn": {
+            "bare_nz": [
+              "define noundef range(i32 1, 0) i32 @bare_nz(i32 noundef returned range(i32 1, 0) %x) unnamed_addr #0 {",
+              "start:",
+              "  ret i32 %x",
+              "}"
+            ],
+            "wrap_nz": [
+              "define noundef range(i32 1, 0) i32 @wrap_nz(i32 noundef returned range(i32 1, 0) %x) unnamed_addr #0 {",
+              "start:",
+              "  ret i32 %x",
+              "}"
+            ],
+            "md_nz": [
+              "define noundef range(i32 1, 0) i32 @md_nz(i32 noundef returned range(i32 1, 0) %x) unnamed_addr #0 {",
+              "start:",
+              "  ret i32 %x",
+              "}"
+            ],
+            "mu_nz": [
+              "define i32 @mu_nz(i32 returned %x) unnamed_addr #0 {",
+              "start:",
+              "  ret i32 %x",
+              "}"
+            ],
+            "repr_c_nz": [
+              "define void @repr_c_nz(ptr dead_on_unwind noalias noundef writable writeonly sret([4 x i8]) align 4 captures(none) dereferenceable(4) initializes((0, 4)) %_0, ptr noalias noundef readonly byval([4 x i8]) align 4 captures(none) dereferenceable(4) %x) unnamed_addr #2 {",
+              "start:",
+              "  %0 = load i32, ptr %x, align 4",
+              "  store i32 %0, ptr %_0, align 4",
+              "  ret void",
+              "}"
+            ],
+            "wrap_bool": [
+              "define noundef zeroext i1 @wrap_bool(i1 noundef returned zeroext %x) unnamed_addr #0 {",
+              "start:",
+              "  ret i1 %x",
+              "}"
+            ],
+            "wrap_ref": [
+              "define noundef nonnull align 4 ptr @wrap_ref(ptr noalias noundef readonly returned align 4 captures(ret: address, read_provenance) dereferenceable(4) %x) unnamed_addr #0 {",
+              "start:",
+              "  ret ptr %x",
+              "}"
+            ]
+          }
+        }
+      },
+      "negative_compile_checks": {
+        "transparent_align4_zst_rejected": {
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "error[E0690]: transparent struct needs at most one field with non-trivial size or alignment, but has 2\n --> <tmp>/transparent_align4_zst_rejected.rs:4:1\n  |\n4 | pub struct BadTransparent([u32; 0], NonZeroU32);\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^ --------  ---------- this field has non-zero size or requires alignment\n  | |                         |\n  | |                         this field has non-zero size or requires alignment\n  | needs at most one field with non-trivial size or alignment, but has 2\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0690`."
+        },
+        "transparent_with_repr_c_rejected": {
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "error[E0692]: transparent struct cannot have other repr hints\n --> <tmp>/transparent_with_repr_c_rejected.rs:2:8\n  |\n2 | #[repr(transparent, C)]\n  |        ^^^^^^^^^^^  ^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0692`."
+        }
+      },
+      "abi_roundtrip_and_maybe_uninit_exec": {
+        "edition": "2024",
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "WRAP_U32=99 VIA_BARE=7 VIA_WRAP=42 MD=5 BOOL=true REF=123 MU_INIT=11 MU_SIZE=4",
+        "run_stderr": ""
+      },
+      "abi_roundtrip_and_maybe_uninit_miri": {
+        "edition": "2024",
+        "command": "cargo +nightly miri run --offline",
+        "returncode": 0,
+        "stdout": "WRAP_U32=99 VIA_BARE=7 VIA_WRAP=42 MD=5 BOOL=true REF=123 MU_INIT=11 MU_SIZE=4",
+        "stderr": "Compiling miri_probe_a v0.1.0 (<tmp>/miri_a)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.28s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/miri_probe_a`"
+      },
+      "miri_ub_negative_controls": {
+        "ub_manually_drop_nonzero_uninit": {
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "Compiling ub_manually_drop_nonzero_uninit v0.1.0 (<tmp>/miri_ub_manually_drop_nonzero_uninit)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.55s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/ub_manually_drop_nonzero_uninit`\nwarning: the type `std::mem::ManuallyDrop<std::num::NonZero<u32>>` does not permit being left uninitialized\n --> src/main.rs:7:50\n  |\n7 | ...> = unsafe { MaybeUninit::uninit().assume_init() };\n  |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this code causes undefined behavior when executed\n  |\n  = note: `std::mem::ManuallyDrop<std::num::NonZero<u32>>` must be non-null\n  = note: because `std::mem::MaybeDangling<std::num::NonZero<u32>>` must be non-null\n  = note: because `std::num::NonZero<u32>` must be non-null\n  = note: because `core::num::niche_types::NonZeroU32Inner` must be non-null\n  = note: `#[warn(invalid_value)]` on by default\n\nerror: Undefined Behavior: reading memory at alloc156[0x0..0x4], but memory is uninitialized at [0x0..0x4], and this operation requires initialized memory\n --> src/main.rs:7:50\n  |\n7 | ...> = unsafe { MaybeUninit::uninit().assume_init() };\n  |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nUninitialized memory occurred at alloc156[0x0..0x4], in this allocation:\nalloc156 (stack variable, size: 4, align: 4) {\n    __ __ __ __                                     \u2502 \u2591\u2591\u2591\u2591\n}\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+        },
+        "ub_wrap_nz_zero": {
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "Compiling ub_wrap_nz_zero v0.1.0 (<tmp>/miri_ub_wrap_nz_zero)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.19s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/ub_wrap_nz_zero`\nwarning: the type `WrapNz` does not permit zero-initialization\n --> src/main.rs:9:32\n  |\n9 |     let bad: WrapNz = unsafe { core::mem::transmute::<u32, WrapNz>(0) };\n  |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this code causes undefined behavior when executed\n  |\n  = note: `WrapNz` must be non-null\nnote: because `std::num::NonZero<u32>` must be non-null (in this struct field)\n --> src/main.rs:5:43\n  |\n5 | pub struct WrapNz(PhantomData<*const ()>, pub NonZeroU32, ());\n  |                                           ^^^^^^^^^^^^^^\n  = note: because `core::num::niche_types::NonZeroU32Inner` must be non-null\n  = note: `#[warn(invalid_value)]` on by default\n\nerror: Undefined Behavior: constructing invalid value of type WrapNz: at .1.0.0, encountered 0, but expected something greater or equal to 1\n --> src/main.rs:9:32\n  |\n9 |     let bad: WrapNz = unsafe { core::mem::transmute::<u32, WrapNz>(0) };\n  |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+        },
+        "ub_maybe_uninit_assume_init_zero": {
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "Compiling ub_maybe_uninit_assume_init_zero v0.1.0 (<tmp>/miri_ub_maybe_uninit_assume_init_zero)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.20s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/ub_maybe_uninit_assume_init_zero`\nerror: Undefined Behavior: constructing invalid value of type std::num::NonZero<u32>: at .0.0, encountered 0, but expected something greater or equal to 1\n --> src/main.rs:8:25\n  |\n8 |     let _bad = unsafe { passed.assume_init() };\n  |                         ^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        },
+        "ub_repr_c_nz_abi_mismatch": {
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "Compiling ub_repr_c_nz_abi_mismatch v0.1.0 (<tmp>/miri_ub_repr_c_nz_abi_mismatch)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.20s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/ub_repr_c_nz_abi_mismatch`\nerror: Undefined Behavior: calling a function whose parameter #1 has type std::num::NonZero<u32> passing argument of type ReprCNz\n --> src/main.rs:7:27\n  |\n7 | pub extern \"C\" fn bare_nz(x: NonZeroU32) -> NonZeroU32 { x }\n  |                           ^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = help: this means these two types are not *guaranteed* to be ABI-compatible across all targets\n  = help: if you think this code should be accepted anyway, please report an issue with Miri\n  = note: stack backtrace:\n          0: bare_nz\n              at src/main.rs:7:27: 7:28\n          1: main\n              at src/main.rs:13:22: 13:74\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        }
+      }
+    },
+    "b_zerocopy_readonly_vs_unalign_abi": {
+      "edition_zerocopy": "2021",
+      "edition_probe": "2024",
+      "zerocopy_cfgs": [
+        "--cfg",
+        "no_zerocopy_allocator_api_1_100_0"
+      ],
+      "zerocopy_rlib_returncode": 0,
+      "zerocopy_rlib_stderr": "",
+      "ir_compile_returncode": 0,
+      "ir_compile_stderr": "",
+      "llvm_ir_by_fn": {
+        "zc_readonly_u32": [
+          "define noundef i32 @zc_readonly_u32(i32 noundef returned %x) unnamed_addr #0 {",
+          "start:",
+          "  ret i32 %x",
+          "}"
+        ],
+        "zc_readonly_nz": [
+          "define noundef range(i32 1, 0) i32 @zc_readonly_nz(i32 noundef returned range(i32 1, 0) %x) unnamed_addr #0 {",
+          "start:",
+          "  ret i32 %x",
+          "}"
+        ],
+        "zc_readonly_ref": [
+          "define noundef nonnull align 4 ptr @zc_readonly_ref(ptr noalias noundef readonly returned align 4 captures(ret: address, read_provenance) dereferenceable(4) %x) unnamed_addr #0 {",
+          "start:",
+          "  ret ptr %x",
+          "}"
+        ],
+        "zc_unalign_u32": [
+          "define i32 @zc_unalign_u32(i32 returned %0) unnamed_addr #0 {",
+          "start:",
+          "  ret i32 %0",
+          "}"
+        ],
+        "zc_unalign_nz": [
+          "define i32 @zc_unalign_nz(i32 returned %0) unnamed_addr #0 {",
+          "start:",
+          "  ret i32 %0",
+          "}"
+        ],
+        "zc_unalign_u8_nz": [
+          "define i8 @zc_unalign_u8_nz(i8 returned %0) unnamed_addr #0 {",
+          "start:",
+          "  ret i8 %0",
+          "}"
+        ],
+        "zc_unalign_ref": [
+          "define i64 @zc_unalign_ref(i64 returned %0) unnamed_addr #0 {",
+          "start:",
+          "  ret i64 %0",
+          "}"
+        ],
+        "zc_rust_readonly_nz": [
+          "define noundef range(i32 1, 0) i32 @zc_rust_readonly_nz(i32 noundef returned range(i32 1, 0) %x) unnamed_addr #0 {",
+          "start:",
+          "  ret i32 %x",
+          "}"
+        ],
+        "zc_rust_unalign_nz": [
+          "define noundef i32 @zc_rust_unalign_nz(i32 noundef returned %0) unnamed_addr #0 {",
+          "start:",
+          "  ret i32 %0",
+          "}"
+        ]
+      },
+      "default_o2_returncode": 0,
+      "default_o2_merge_functions_aliases": [
+        "@zc_rust_readonly_nz = unnamed_addr alias i32 (i32), ptr @zc_readonly_nz",
+        "@zc_rust_unalign_nz = unnamed_addr alias i32 (i32), ptr @zc_readonly_u32",
+        "@zc_unalign_u32 = unnamed_addr alias i32 (i32), ptr @zc_unalign_nz"
+      ],
+      "cross_target_llvm_ir": {
+        "aarch64-unknown-linux-gnu": {
+          "zerocopy_rlib_returncode": 0,
+          "probe_returncode": 0,
+          "stderr": "",
+          "llvm_ir_by_fn": {
+            "zc_readonly_nz": [
+              "define noundef range(i32 1, 0) i32 @zc_readonly_nz(i32 noundef returned range(i32 1, 0) %x) unnamed_addr #0 {",
+              "start:",
+              "  ret i32 %x",
+              "}"
+            ],
+            "zc_unalign_nz": [
+              "define range(i64 0, 4294967296) i64 @zc_unalign_nz(i64 %0) unnamed_addr #0 {",
+              "start:",
+              "  %_0.sroa.0.0.insert.ext = and i64 %0, 4294967295",
+              "  ret i64 %_0.sroa.0.0.insert.ext",
+              "}"
+            ],
+            "zc_unalign_u8_nz": [
+              "define range(i64 0, 256) i64 @zc_unalign_u8_nz(i64 %0) unnamed_addr #0 {",
+              "start:",
+              "  %_0.sroa.0.0.insert.ext = and i64 %0, 255",
+              "  ret i64 %_0.sroa.0.0.insert.ext",
+              "}"
+            ],
+            "zc_unalign_ref": [
+              "define i64 @zc_unalign_ref(i64 returned %0) unnamed_addr #0 {",
+              "start:",
+              "  ret i64 %0",
+              "}"
+            ]
+          }
+        },
+        "i686-unknown-linux-gnu": {
+          "zerocopy_rlib_returncode": 0,
+          "probe_returncode": 0,
+          "stderr": "",
+          "llvm_ir_by_fn": {
+            "zc_readonly_nz": [
+              "define noundef range(i32 1, 0) i32 @zc_readonly_nz(i32 noundef returned range(i32 1, 0) %x) unnamed_addr #0 {",
+              "start:",
+              "  ret i32 %x",
+              "}"
+            ],
+            "zc_unalign_nz": [
+              "define void @zc_unalign_nz(ptr dead_on_unwind noalias noundef writable writeonly sret([4 x i8]) align 1 captures(none) dereferenceable(4) initializes((0, 4)) %_0, ptr noalias noundef readonly byval([4 x i8]) align 4 captures(none) dereferenceable(4) %x) unnamed_addr #1 {",
+              "start:",
+              "  %0 = load i32, ptr %x, align 4",
+              "  store i32 %0, ptr %_0, align 1",
+              "  ret void",
+              "}"
+            ],
+            "zc_unalign_u8_nz": [
+              "define void @zc_unalign_u8_nz(ptr dead_on_unwind noalias noundef writable writeonly sret([1 x i8]) align 1 captures(none) dereferenceable(1) initializes((0, 1)) %_0, ptr noalias noundef readonly byval([1 x i8]) align 4 captures(none) dereferenceable(1) %x) unnamed_addr #1 {",
+              "start:",
+              "  %0 = load i8, ptr %x, align 4",
+              "  store i8 %0, ptr %_0, align 1",
+              "  ret void",
+              "}"
+            ],
+            "zc_unalign_ref": [
+              "define void @zc_unalign_ref(ptr dead_on_unwind noalias noundef writable writeonly sret([4 x i8]) align 1 captures(none) dereferenceable(4) initializes((0, 4)) %_0, ptr noalias noundef readonly byval([4 x i8]) align 4 captures(none) dereferenceable(4) %x) unnamed_addr #1 {",
+              "start:",
+              "  %0 = load i32, ptr %x, align 4",
+              "  store i32 %0, ptr %_0, align 1",
+              "  ret void",
+              "}"
+            ]
+          }
+        }
+      },
+      "bin_compile_returncode": 0,
+      "bin_compile_stderr": "",
+      "bin_run_returncode": 0,
+      "bin_run_stdout": "RO_SIZE=4 RO_ALIGN=4 RO_VAL=77 RO_VIA_BARE=91 UA_SIZE=4 UA_ALIGN=1 UA_VAL=88",
+      "bin_run_stderr": "",
+      "miri_readonly_and_unalign_run": {
+        "returncode": 0,
+        "stdout": "RO_SIZE=4 RO_ALIGN=4 RO_VAL=77 RO_VIA_BARE=91 UA_SIZE=4 UA_ALIGN=1 UA_VAL=88",
+        "stderr": "Locking 6 packages to latest Rust 1.98.0-nightly compatible versions\n   Compiling zerocopy v0.8.64 (<zerocopy>)\nwarning: function `miri_promise_symbolic_alignment` is never used\n  --> <zerocopy>/src/util/mod.rs:71:19\n   |\n71 |     pub(crate) fn miri_promise_symbolic_alignment(ptr: *const (), align:...\n   |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   |\n   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: `zerocopy` (lib) generated 1 warning\n   Compiling miri_probe_b v0.1.0 (<tmp>/miri_b)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 7.75s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/miri_probe_b`"
+      },
+      "miri_unalign_as_bare_nz_mismatch": {
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "Locking 6 packages to latest Rust 1.98.0-nightly compatible versions\n   Compiling zerocopy v0.8.64 (<zerocopy>)\nwarning: function `miri_promise_symbolic_alignment` is never used\n  --> <zerocopy>/src/util/mod.rs:71:19\n   |\n71 |     pub(crate) fn miri_promise_symbolic_alignment(ptr: *const (), align:...\n   |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   |\n   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: `zerocopy` (lib) generated 1 warning\n   Compiling miri_probe_b_mismatch v0.1.0 (<tmp>/miri_b_mismatch)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 8.26s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/miri_probe_b_mismatch`\nerror: Undefined Behavior: calling a function whose parameter #1 has type zerocopy::Unalign<std::num::NonZero<u32>> passing argument of type std::num::NonZero<u32>\n --> src/main.rs:6:33\n  |\n6 | pub extern \"C\" fn zc_unalign_nz(x: Unalign<NonZeroU32>) -> Unalign<NonZer...\n  |                                 ^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = help: this means these two types are not *guaranteed* to be ABI-compatible across all targets\n  = help: if you think this code should be accepted anyway, please report an issue with Miri\n  = note: stack backtrace:\n          0: zc_unalign_nz\n              at src/main.rs:6:33: 6:34\n          1: main\n              at src/main.rs:14:22: 14:67\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+      }
+    }
+  }
+}
