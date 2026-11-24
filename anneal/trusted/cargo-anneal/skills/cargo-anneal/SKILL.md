@@ -61,7 +61,11 @@ and a zero return for a safe no-argument function in the captured MIR model.
    (`UnitTheorem`) or `{"kind": "crate"}` (`CrateTheorem`). Set `edition`,
    `target`, `cfg`, optional `env` (`KEY -> VALUE` map for `env!`/`option_env!`),
    and `source_files` (including `crate_root`) inside clean relative paths
-   under `source_root`.
+   under `source_root`. Only when verifying `library/core` itself, set
+   `"stdlib_crate": "core"` (`verify rustc --stdlib-crate core`) with
+   `crate_name` `core`, selected roots, and every staged `library/` file
+   `core` reads; this admits `core`'s own language items, and the receipt's
+   `configuration` records it.
 2. Write the contract in `specification` modules (defaults `Spec.specs`,
    `Specs.safety`, `Specs.property`) and proofs in `proof` modules
    (`Proof.verify`).

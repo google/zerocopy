@@ -73,6 +73,19 @@ impl From<CliPanicStrategy> for ir::PanicStrategy {
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, ValueEnum)]
+pub enum CliStdlibCrate {
+    Core,
+}
+
+impl From<CliStdlibCrate> for ir::StdlibCrate {
+    fn from(value: CliStdlibCrate) -> Self {
+        match value {
+            CliStdlibCrate::Core => Self::Core,
+        }
+    }
+}
+
 #[derive(Debug, Parser)]
 #[command(
     name = "anneal-rustc-capture capture",
@@ -132,6 +145,14 @@ pub struct Args {
     /// ambient module or include-file reads.
     #[arg(long, required = true, action = clap::ArgAction::Append)]
     source_file: Vec<PathBuf>,
+    /// Capture the named standard-library crate from its unmodified sources.
+    /// This capability admits the crate's own language items and skips
+    /// object emission. It requires a library crate whose `--crate-name`
+    /// matches, selected roots, a compilation that loads no other crate, no
+    /// `miri` cfg, and any crate-local `Ordering` language item to have the
+    /// modeled shape. The capability is recorded in `capture.json`.
+    #[arg(long, value_enum)]
+    stdlib_crate: Option<CliStdlibCrate>,
 }
 
 fn parse_instantiation(raw: &str) -> Result<ir::Instantiation, String> {

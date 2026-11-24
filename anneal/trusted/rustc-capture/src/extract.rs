@@ -139,8 +139,11 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
         ty::Uint(_) | ty::Int(_) => Ok(ir::Ty::Int(int_ty(t)?)),
         // `core::cmp::Ordering` ("a lang item only so that `BinOp::Cmp` in MIR
         // can return it") maps to `Trusted.MirAst.MirTy.ordering` before the
-        // crate-local fieldless enum arm (`capture.rs` separately refuses
-        // crate-local language items).
+        // crate-local fieldless enum arm (`capture.rs` refuses crate-local
+        // language items except under `--stdlib-crate`, where
+        // `check_local_ordering` validates a local `Ordering`'s shape; any
+        // new language-item-keyed arm needs a matching check in
+        // `check_stdlib_capability`).
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/cmp.rs#L400-L415
         ty::Adt(adt, args)
             if args.is_empty()
@@ -647,6 +650,13 @@ fn check_call_source(call_source: mir::CallSource) -> Result<()> {
 /// other terminators stay refused at capture time.
 /// `TerminatorKind::Call` explicitly runs [`check_call_source`] first so
 /// `CallSource::Use` fails closed even for diverging calls.
+///
+/// Admitting a returning call, `Drop`, or `Assert` also widens what
+/// `capture.rs` must check under `--stdlib-crate` (language items such as the
+/// `panic_*` family and `drop_in_place` would then shape captured behavior)
+/// and what metadata-only emission must evaluate (callee `required_consts`);
+/// update `check_stdlib_capability` and the emission note in `capture::run`
+/// first.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L692-L740
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L800-L821
 fn terminator<'tcx>(
