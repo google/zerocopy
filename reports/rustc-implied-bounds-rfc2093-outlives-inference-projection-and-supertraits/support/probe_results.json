@@ -1,0 +1,419 @@
+{
+  "experiments": {
+    "a_implied_bounds_and_rfc2093_boundaries": {
+      "assoc_type_ref_missing_outlives_e0309": {
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0309]: the parameter type `T` may not live long enough\n --> <tmp>/assoc_type_ref_missing_outlives_e0309.rs:6:5\n  |\n5 | impl<'a, T> Assoc<'a, T> for S {\n  |      -- the parameter type `T` must be valid for the lifetime `'a` as defined here...\n6 |     type Out = &'a T;\n  |     ^^^^^^^^ ...so that the reference type `&'a T` does not outlive the data it points at\n  |\nhelp: consider adding an explicit lifetime bound\n  |\n5 | impl<'a, T: 'a> Assoc<'a, T> for S {\n  |           ++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0309`.",
+        "description": "Associated type RHS &'a T in impl<'a, T> Assoc<'a, T> for S does not imply T: 'a (E0309).",
+        "extra_flags": [],
+        "passed": true,
+        "source_sha256": "724657710c9d46f1290406a59a947472c7c7373f3e4b43ccdb2c6ed372f4feed"
+      },
+      "explicit_outlives_changes_default_object_bound_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "Explicit where T: 'a changes trait object default in ExplicitRef<'a, dyn Dummy> to +'a.",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "OBJ_DEFAULT_OK=1",
+        "source_sha256": "e0302c29beb48a1e8d11b49e9093870675289888ab5716640ed1aa14f8c531cc"
+      },
+      "fn_implied_ref_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "Function input &'a T supplies implied bound T: 'a via assumed_wf_types.",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "IMPLIED_FN_OK=1",
+        "source_sha256": "4bf2f30023a0c84d24fdcbc1b11618ba764261c6966ed34896e5d8cffc2bdd2e"
+      },
+      "fn_implied_return_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "Function return type Option<&'a T> is in assumed_wf_types (inputs_and_output) and implies T: 'a.",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "IMPLIED_RET_OK=1",
+        "source_sha256": "5cd5dee955d3ca9099d95c5ac2b1486071dd1eb9d558fabd19bbc30a2a9706d6"
+      },
+      "fn_implied_static_ref_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "Function input &'static T implies T: 'static (implied_outlives_bounds keeps ReStatic, unlike RFC 2093).",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "FN_STATIC_OK=1",
+        "source_sha256": "2b723bab0e111a7badeb7376cb1dfd50416efca28d89b374f505fa851ee8b6a3"
+      },
+      "impl_for_static_ref_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "impl<T> StaticTr for &'static T assumes &'static T is WF, implying T: 'static inside impl body.",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "IMPL_STATIC_OK=7",
+        "source_sha256": "bba8d9f1a67404777d4d2cfd70ad34e6418e98036bad6d0bdd4e1b3e17a04d1a"
+      },
+      "rfc2093_runs_after_default_object_bound": {
+        "compile_returncode": 1,
+        "compile_stderr": "error: lifetime may not live long enough\n --> <tmp>/rfc2093_runs_after_default_object_bound.rs:4:5\n  |\n3 | fn default_obj<'a>(x: &'a dyn Dummy) -> InferredRef<'a, dyn Dummy> {\n  |                -- lifetime `'a` defined here\n4 |     InferredRef(x)\n  |     ^^^^^^^^^^^^^^ returning this value requires that `'a` must outlive `'static`\n  |\nhelp: to declare that the trait object captures data from argument `x`, you can add an explicit `'a` lifetime bound\n  |\n3 | fn default_obj<'a>(x: &'a dyn Dummy) -> InferredRef<'a, dyn Dummy + 'a> {\n  |                                                                   ++++\n\nerror: aborting due to 1 previous error",
+        "description": "RFC 599/1156 default object lifetime runs before RFC 2093, defaulting InferredRef<'a, dyn Dummy> to +'static.",
+        "extra_flags": [],
+        "passed": true,
+        "source_sha256": "13933e7c1749c3d0c9877b077f7e32974f0339c29b335283b11ee84411dd1a91"
+      },
+      "rustc_dump_inferred_outlives_oracle": {
+        "compile_returncode": 1,
+        "compile_stderr": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <tmp>/rustc_dump_inferred_outlives_oracle.rs:1:12\n  |\n1 | #![feature(rustc_attrs, lazy_type_alias)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `lazy_type_alias` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/rustc_dump_inferred_outlives_oracle.rs:1:25\n  |\n1 | #![feature(rustc_attrs, lazy_type_alias)]\n  |                         ^^^^^^^^^^^^^^^\n  |\n  = note: see issue #112792 <https://github.com/rust-lang/rust/issues/112792> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror: rustc_dump_inferred_outlives\n --> <tmp>/rustc_dump_inferred_outlives_oracle.rs:6:1\n  |\n6 | struct Ref<'a, T>(&'a T);\n  | ^^^^^^^^^^^^^^^^^\n  |\n  = note: T: 'a\n\nerror: rustc_dump_inferred_outlives\n --> <tmp>/rustc_dump_inferred_outlives_oracle.rs:8:1\n  |\n8 | struct StaticRef<T: 'static>(&'static T);\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: rustc_dump_inferred_outlives\n  --> <tmp>/rustc_dump_inferred_outlives_oracle.rs:10:1\n   |\n10 | struct Wrap<'a, T: Id>(&'a <T as Id>::Out);\n   | ^^^^^^^^^^^^^^^^^^^^^^\n   |\n   = note: <T as Id>::Out: 'a\n\nerror: rustc_dump_inferred_outlives\n  --> <tmp>/rustc_dump_inferred_outlives_oracle.rs:12:1\n   |\n12 | struct FnHolder<T>(for<'b> fn(&'b T));\n   | ^^^^^^^^^^^^^^^^^^\n\nerror: rustc_dump_inferred_outlives\n  --> <tmp>/rustc_dump_inferred_outlives_oracle.rs:14:1\n   |\n14 | struct Outer<'a, T> {\n   | ^^^^^^^^^^^^^^^^^^^\n   |\n   = note: T: 'a\n\nerror: rustc_dump_inferred_outlives\n  --> <tmp>/rustc_dump_inferred_outlives_oracle.rs:19:1\n   |\n19 | enum Either<'a, T> {\n   | ^^^^^^^^^^^^^^^^^^\n   |\n   = note: T: 'a\n\nerror: rustc_dump_inferred_outlives\n  --> <tmp>/rustc_dump_inferred_outlives_oracle.rs:24:1\n   |\n24 | struct NestedStatic<U: 'static>(StaticRef<U>);\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: rustc_dump_inferred_outlives\n  --> <tmp>/rustc_dump_inferred_outlives_oracle.rs:26:1\n   |\n26 | type CheckedAlias<'a, T> = &'a T;\n   | ^^^^^^^^^^^^^^^^^^^^^^^^\n   |\n   = note: T: 'a\n\nerror: aborting due to 8 previous errors; 2 warnings emitted",
+        "description": "Direct compiler dump via #[rustc_dump_inferred_outlives] confirming exact inferred_outlives_of sets.",
+        "extra_flags": [],
+        "passed": true,
+        "source_sha256": "754164353f433f996e0d20298b5b2f254c50543c129b3668644415a8d789662d"
+      },
+      "struct_for_binder_late_bound_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "Late-bound region 'b in for<'b> fn(&'b T) is excluded by is_free_region(ReBound) == false.",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "LATE_BOUND_OK=1",
+        "source_sha256": "630fa5d4f959ebfc53400b3fed10d92a40a2bc0c84b67e7eb9b0acd527a1f1fe"
+      },
+      "struct_mutual_rec_fixpoint_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "Fixed-point inferred_outlives_of propagates T: 'a across Inner -> Outer <-> Either.",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "MUTUAL_FIXPOINT_OK=1",
+        "source_sha256": "af8a5e1ed8b8691b1b9c37956d00b7ae74c9596320252cdb0aa50eb0f88247bf"
+      },
+      "struct_nested_static_ref_e0310": {
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0310]: the parameter type `U` may not live long enough\n --> <tmp>/struct_nested_static_ref_e0310.rs:2:19\n  |\n2 | struct Wrapper<U>(StaticRef<U>);\n  |                   ^^^^^^^^^^^^\n  |                   |\n  |                   the parameter type `U` must be valid for the static lifetime...\n  |                   ...so that the type `U` will meet its required lifetime bounds...\n  |\nnote: ...that is required by this bound\n --> <tmp>/struct_nested_static_ref_e0310.rs:1:21\n  |\n1 | struct StaticRef<T: 'static>(&'static T);\n  |                     ^^^^^^^\nhelp: consider adding an explicit lifetime bound\n  |\n2 | struct Wrapper<U: 'static>(StaticRef<U>);\n  |                 +++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0310`.",
+        "description": "Wrapping StaticRef<U: 'static> in Wrapper<U> does not propagate T: 'static via inferred_outlives_of (E0310).",
+        "extra_flags": [],
+        "passed": true,
+        "source_sha256": "9ed96d815a2555d2f096f231fcd5e03f748ba8f6672f9cb9b7781edad03845ef"
+      },
+      "struct_proj_allows_assoc_outlives_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "Component::Alias infers <T as Id>::Out: 'a on Wrap<'a, T: Id>(&'a <T as Id>::Out).",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "PROJ_ASSOC_OUTLIVES_OK=1",
+        "source_sha256": "2ce8fab03ff617121395e03dfc53b29bcc2e01eed2b3ea3469b62dd15ffd5130"
+      },
+      "struct_proj_rejects_param_outlives_e0309": {
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0309]: the parameter type `T` may not live long enough\n --> <tmp>/struct_proj_rejects_param_outlives_e0309.rs:7:5\n  |\n6 | fn check_param<'a, T: Id>(_: Wrap<'a, T>) {\n  |                -- the parameter type `T` must be valid for the lifetime `'a` as defined here...\n7 |     req_outlives::<'a, T>();\n  |     ^^^^^^^^^^^^^^^^^^^^^ ...so that the type `T` will meet its required lifetime bounds\n  |\nhelp: consider adding an explicit lifetime bound\n  |\n6 | fn check_param<'a, T: Id + 'a>(_: Wrap<'a, T>) {\n  |                          ++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0309`.",
+        "description": "Wrap<'a, T: Id>(&'a <T as Id>::Out) infers <T as Id>::Out: 'a, NOT T: 'a (E0309).",
+        "extra_flags": [],
+        "passed": true,
+        "source_sha256": "2ca40513ed096142e198b09ac43f3130504b515e12b7e6e350ca358f90374d3b"
+      },
+      "struct_proj_unnormalized_impl_e0309": {
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0309]: the parameter type `T` may not live long enough\n --> <tmp>/struct_proj_unnormalized_impl_e0309.rs:8:12\n  |\n7 | struct Holder<'a, T> {\n  |               -- the parameter type `T` must be valid for the lifetime `'a` as defined here...\n8 |     field: <Vec<T> as MakeRef<'a>>::Type,\n  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ...so that the type `T` will meet its required lifetime bounds\n  |\nhelp: consider adding an explicit lifetime bound\n  |\n7 | struct Holder<'a, T: 'a> {\n  |                    ++++\n\nerror[E0309]: the parameter type `T` may not live long enough\n --> <tmp>/struct_proj_unnormalized_impl_e0309.rs:8:12\n  |\n7 | struct Holder<'a, T> {\n  |               -- the parameter type `T` must be valid for the lifetime `'a` as defined here...\n8 |     field: <Vec<T> as MakeRef<'a>>::Type,\n  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ...so that the reference type `&'a T` does not outlive the data it points at\n  |\nhelp: consider adding an explicit lifetime bound\n  |\n7 | struct Holder<'a, T: 'a> {\n  |                    ++++\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0309`.",
+        "description": "RFC 2093 walks unnormalized projections and ignores impl where bounds, causing E0309 on struct Holder.",
+        "extra_flags": [],
+        "passed": true,
+        "source_sha256": "1e13dfeddd56b5500e4c992436fc14477c93442c1ed8ffa2fdb736056b33e993"
+      },
+      "struct_ref_impl_inherits_rfc2093_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "Inherent impl<'a, T> Ref<'a, T> inherits RFC 2093 T: 'a bound via assumed_wf_types(Impl).",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "IMPL_INHERIT_OK=1",
+        "source_sha256": "32efc004f5e8ff44ab7ae8e9291f274168a6de28d9bbb81be3e1baef1e948781"
+      },
+      "struct_ref_rfc2093_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "RFC 2093 infers T: 'a on struct Ref<'a, T>(&'a T) without explicit where clause.",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "RFC2093_STRUCT_OK=1",
+        "source_sha256": "b1f9bc20a66b71530d4b2e27127c2d0e9f9361a0aad5b6aacedd401be2684400"
+      },
+      "struct_static_ref_explicit_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "Explicit T: 'static satisfies WF on StaticRef<T: 'static>(&'static T).",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "STATIC_EXPLICIT_OK=1",
+        "source_sha256": "1f1b1ef4c8685d69cddcb6acea9bfcdff1d9708f3b818a5400b7ae1e84490e96"
+      },
+      "struct_static_ref_no_outlives_e0310": {
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0310]: the parameter type `T` may not live long enough\n --> <tmp>/struct_static_ref_no_outlives_e0310.rs:1:21\n  |\n1 | struct StaticRef<T>(&'static T);\n  |                     ^^^^^^^^^^\n  |                     |\n  |                     the parameter type `T` must be valid for the static lifetime...\n  |                     ...so that the reference type `&'static T` does not outlive the data it points at\n  |\nhelp: consider adding an explicit lifetime bound\n  |\n1 | struct StaticRef<T: 'static>(&'static T);\n  |                   +++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0310`.",
+        "description": "is_free_region(ReStatic) == false prevents inferring T: 'static on StaticRef<T>(&'static T), causing E0310.",
+        "extra_flags": [],
+        "passed": true,
+        "source_sha256": "4df818a974108a5304c08a8af81185fe3eebd1973bd577c30efa8ff07fae7ed4"
+      },
+      "struct_union_enum_rfc2093_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "RFC 2093 infers T: 'a for Struct, Enum, and Union definitions.",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "UNION_ENUM_OK=1",
+        "source_sha256": "de47e56184f6bc145739d1f5fa11a17b027ae606b6f07a19637e3f418a65bfd1"
+      },
+      "trait_impl_for_ref_requires_wf_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "impl<'a, T> MyTrait for &'a T assumes &'a T is WF, implying T: 'a inside impl methods.",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "IMPL_FOR_REF_OK=1",
+        "source_sha256": "fe7e1fc14b54a8c624898dab7e18070e1566d37c321b91bee9259d4d3037f256"
+      },
+      "trait_method_caller_missing_implied_e0309": {
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0309]: the parameter type `T` may not live long enough\n --> <tmp>/trait_method_caller_missing_implied_e0309.rs:4:5\n  |\n3 | fn caller<'a, T, X: Tr<'a, T>>(_x: X) {\n  |           -- the parameter type `T` must be valid for the lifetime `'a` as defined here...\n4 |     need::<'a, T>();\n  |     ^^^^^^^^^^^^^ ...so that the type `T` will meet its required lifetime bounds\n  |\nhelp: consider adding an explicit lifetime bound\n  |\n3 | fn caller<'a, T: 'a, X: Tr<'a, T>>(_x: X) {\n  |                ++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0309`.",
+        "description": "Trait header Tr<'a, T> does not imply T: 'a at caller site (assumed_wf_types(Trait) is empty -> E0309).",
+        "extra_flags": [],
+        "passed": true,
+        "source_sha256": "046c40a2f757a508dda4b01d2d0730feb765ca406f9cad32d1ba945672376444"
+      },
+      "type_alias_lazy_checked_early_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "warning: the feature `lazy_type_alias` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/type_alias_lazy_checked_early_ok.rs:1:12\n  |\n1 | #![feature(lazy_type_alias)]\n  |            ^^^^^^^^^^^^^^^\n  |\n  = note: see issue #112792 <https://github.com/rust-lang/rust/issues/112792> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted",
+        "description": "With #![feature(lazy_type_alias)], CheckedAlias<'a, T> = &'a T infers T: 'a and succeeds.",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "CHECKED_ALIAS_OK=12",
+        "source_sha256": "8a0ce7847164a88e7f39dab6c5ec172c08f14e8079ec9ff22e65805446686fe9"
+      },
+      "type_alias_lazy_checked_static_e0310": {
+        "compile_returncode": 1,
+        "compile_stderr": "warning: the feature `lazy_type_alias` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/type_alias_lazy_checked_static_e0310.rs:1:12\n  |\n1 | #![feature(lazy_type_alias)]\n  |            ^^^^^^^^^^^^^^^\n  |\n  = note: see issue #112792 <https://github.com/rust-lang/rust/issues/112792> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror[E0310]: the parameter type `T` may not live long enough\n --> <tmp>/type_alias_lazy_checked_static_e0310.rs:2:1\n  |\n2 | type StaticAlias<T> = &'static T;\n  | ^^^^^^^^^^^^^^^^^^^\n  | |\n  | the parameter type `T` must be valid for the static lifetime...\n  | ...so that the reference type `&'static T` does not outlive the data it points at\n  |\nhelp: consider adding an explicit lifetime bound\n  |\n2 | type StaticAlias<T: 'static> = &'static T;\n  |                   +++++++++\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0310`.",
+        "description": "With #![feature(lazy_type_alias)], StaticAlias<T> = &'static T undergoes WF check and fails E0310.",
+        "extra_flags": [],
+        "passed": true,
+        "source_sha256": "d89c1d7b535bbafc4294360f3b0395fb4881033acebfa343c3996d59312c3a94"
+      },
+      "type_alias_unchecked_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "Default (non-lazy/unchecked) type alias &'a T skips inferred_outlives_of and WF checking.",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "LAZY_ALIAS_OK=11",
+        "source_sha256": "31da2dc10db77df2e6e3285da6603cc2e98e239e4e05818356dc02b0ba29777c"
+      },
+      "type_alias_unchecked_static_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "Default unchecked type alias &'static T is accepted without T: 'static until instantiated.",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "STATIC_ALIAS_UNCHECKED=42",
+        "source_sha256": "30e3eae3d5e5d9724aaf7d96e8540b79173b60961e19c72939f4432d149b1a26"
+      }
+    },
+    "b_supertrait_elaboration_and_projection_norm": {
+      "diamond_conflicting_supertrait_proj_e0284": {
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0284]: type annotations needed: cannot satisfy `<Self as Base>::Item == u32`\n --> <tmp>/diamond_conflicting_supertrait_proj_e0284.rs:6:13\n  |\n6 | trait Both: Left + Right {}\n  |             ^^^^ cannot satisfy `<Self as Base>::Item == u32`\n  |\nnote: required by a bound in `Left`\n --> <tmp>/diamond_conflicting_supertrait_proj_e0284.rs:4:18\n  |\n4 | trait Left: Base<Item = u32> {}\n  |                  ^^^^^^^^^^ required by this bound in `Left`\n\nerror[E0284]: type annotations needed\n --> <tmp>/diamond_conflicting_supertrait_proj_e0284.rs:7:21\n  |\n7 | fn take<T: Both>(x: <T as Base>::Item) -> u32 {\n  |                     ^^^^^^^^^^^^^^^^^ cannot infer type\n  |\n  = note: cannot satisfy `<T as Base>::Item == _`\n\nerror[E0284]: type annotations needed: cannot satisfy `<T as Base>::Item == u32`\n --> <tmp>/diamond_conflicting_supertrait_proj_e0284.rs:7:21\n  |\n7 | fn take<T: Both>(x: <T as Base>::Item) -> u32 {\n  |                     ^^^^^^^^^^^^^^^^^ cannot satisfy `<T as Base>::Item == u32`\n\nerror: aborting due to 3 previous errors\n\nFor more information about this error, try `rustc --explain E0284`.",
+        "description": "Conflicting diamond supertrait projections produce ProjectionCandidateSet::Ambiguous -> E0284.",
+        "extra_flags": [],
+        "passed": true,
+        "source_sha256": "706700212c82c718ff11927ccd60360b40ccdb62f6347485976c813288c2fd75"
+      },
+      "diamond_consistent_supertrait_proj_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "Consistent diamond supertraits (Left: Base<Item=u32>, Right: Base<Item=u32>) deduplicate in ProjectionCandidateSet.",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "DIAMOND_NORM=99",
+        "source_sha256": "5c105bec89b4d0c0c97d95a65e3b44542c0fe89ed09958a62062813345ef90a1"
+      },
+      "normalized_sig_implies_inner_outlives_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "deeply_normalize before compute_implied_outlives_bounds extracts U: 'a from T: Id<Out = &'a U> input T::Out.",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "NORM_IMPLIED_OK=1",
+        "source_sha256": "049ee3a107727051378a811471f16dfd5d54805883696483efae55235298fd88"
+      },
+      "struct_where_not_implied_in_impl_e0277": {
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0277]: can't compare `T` with `T`\n --> <tmp>/struct_where_not_implied_in_impl_e0277.rs:2:9\n  |\n2 | impl<T> NeedEq<T> {\n  |         ^^^^^^^^^ no implementation for `T == T`\n  |\nnote: required by a bound in `NeedEq`\n --> <tmp>/struct_where_not_implied_in_impl_e0277.rs:1:18\n  |\n1 | struct NeedEq<T: PartialEq>(T);\n  |                  ^^^^^^^^^ required by this bound in `NeedEq`\nhelp: consider restricting type parameter `T` with trait `PartialEq`\n  |\n2 | impl<T: std::cmp::PartialEq> NeedEq<T> {\n  |       +++++++++++++++++++++\n\nerror[E0277]: can't compare `T` with `T`\n --> <tmp>/struct_where_not_implied_in_impl_e0277.rs:3:14\n  |\n3 |     fn same(&self, other: &Self) -> bool {\n  |              ^^^^ no implementation for `T == T`\n  |\nnote: required by a bound in `NeedEq`\n --> <tmp>/struct_where_not_implied_in_impl_e0277.rs:1:18\n  |\n1 | struct NeedEq<T: PartialEq>(T);\n  |                  ^^^^^^^^^ required by this bound in `NeedEq`\nhelp: consider restricting type parameter `T` with trait `PartialEq`\n  |\n2 | impl<T: std::cmp::PartialEq> NeedEq<T> {\n  |       +++++++++++++++++++++\n\nerror[E0369]: binary operation `==` cannot be applied to type `T`\n --> <tmp>/struct_where_not_implied_in_impl_e0277.rs:4:16\n  |\n4 |         self.0 == other.0\n  |         ------ ^^ ------- T\n  |         |\n  |         T\n  |\nhelp: consider restricting type parameter `T` with trait `PartialEq`\n  |\n2 | impl<T: std::cmp::PartialEq> NeedEq<T> {\n  |       +++++++++++++++++++++\n\nerror: aborting due to 3 previous errors\n\nSome errors have detailed explanations: E0277, E0369.\nFor more information about an error, try `rustc --explain E0277`.",
+        "description": "Struct trait where-bound NeedEq<T: PartialEq> is not implied into impl<T> NeedEq<T> (E0277 + E0369).",
+        "extra_flags": [],
+        "passed": true,
+        "source_sha256": "26f3e07c253579cc8468ccd7c23fea2b2b215829d6a28fec4cb1cdfa8e96e408"
+      },
+      "supertrait_elaboration_and_norm_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "Supertrait bound Sub: Base<Item = u32> elaborates into T: Base and <T as Base>::Item == u32.",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "SUPERTRAIT_NORM=42",
+        "source_sha256": "87e942097559492a49f804aa070fd43a251f2eec5a19a24bd4424368f3371270"
+      },
+      "trait_alias_all_filter_elaborates_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "Trait aliases use PredicateFilter::All, elaborating non-Self T: 'a in caller<'a, T, X: Alias<'a, T>>.",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "TRAIT_ALIAS_ELAB_OK=1",
+        "source_sha256": "547442663502de4ed93cfff14e72aa4e6816bc3cf1567addab13dc83704474a4"
+      },
+      "trait_assoc_outlives_elaborates_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "PredicateFilter::SelfAndAssociatedTypeBounds elaborates Self::Assoc: 'a from trait Tr<'a> { type Assoc: 'a; }.",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "ASSOC_ELAB_OK=1",
+        "source_sha256": "ce6d5cff07f4cee28418c827572f9dbb71eda721a97a57c50b40d9442cc7289a"
+      },
+      "trait_param_bound_not_implied_by_filter_e0309": {
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0309]: the parameter type `T` may not live long enough\n --> <tmp>/trait_param_bound_not_implied_by_filter_e0309.rs:3:21\n  |\n3 | fn caller<'a, T, X: Tr<'a, T>>(_x: X) {\n  |           --        ^^^^^^^^^ ...so that the type `T` will meet its required lifetime bounds...\n  |           |\n  |           the parameter type `T` must be valid for the lifetime `'a` as defined here...\n  |\nnote: ...that is required by this bound\n --> <tmp>/trait_param_bound_not_implied_by_filter_e0309.rs:1:17\n  |\n1 | trait Tr<'a, T: 'a> {}\n  |                 ^^\nhelp: consider adding an explicit lifetime bound\n  |\n3 | fn caller<'a, T: 'a, X: Tr<'a, T>>(_x: X) {\n  |                ++++\n\nerror[E0309]: the parameter type `T` may not live long enough\n --> <tmp>/trait_param_bound_not_implied_by_filter_e0309.rs:4:5\n  |\n3 | fn caller<'a, T, X: Tr<'a, T>>(_x: X) {\n  |           -- the parameter type `T` must be valid for the lifetime `'a` as defined here...\n4 |     need::<'a, T>();\n  |     ^^^^^^^^^^^^^ ...so that the type `T` will meet its required lifetime bounds\n  |\nhelp: consider adding an explicit lifetime bound\n  |\n3 | fn caller<'a, T: 'a, X: Tr<'a, T>>(_x: X) {\n  |                ++++\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0309`.",
+        "description": "PredicateFilter::SelfAndAssociatedTypeBounds excludes non-Self param bound T: 'a on trait Tr<'a, T: 'a> (E0309).",
+        "extra_flags": [],
+        "passed": true,
+        "source_sha256": "3007e24986ad73136803c029673bbbe414963d8d2e556d7e206512fc499c0da1"
+      },
+      "trait_self_outlives_elaborates_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "PredicateFilter::SelfAndAssociatedTypeBounds elaborates Self: 'a from trait Tr<'a>: 'a into caller ParamEnv.",
+        "extra_flags": [],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "SELF_ELAB_OK=1",
+        "source_sha256": "84d83747b49b5c94fe2f83f655b555f04e35443b6037e5853105ba47ad61fef0"
+      }
+    },
+    "c_next_solver_differential": {
+      "next_solver_fn_implied_ref_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "With -Znext-solver: fn f<'a, T>(&'a T) still implies T: 'a.",
+        "extra_flags": [
+          "-Znext-solver"
+        ],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "NEXT_FN_OK=1",
+        "source_sha256": "e5cc98552ad9305c2c5bbd35c0cbfc7f6af2ca4489873b69ce208b0b3407eeeb"
+      },
+      "next_solver_static_ref_e0310": {
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0310]: the parameter type `T` may not live long enough\n --> <tmp>/next_solver_static_ref_e0310.rs:1:21\n  |\n1 | struct StaticRef<T>(&'static T);\n  |                     ^^^^^^^^^^\n  |                     |\n  |                     the parameter type `T` must be valid for the static lifetime...\n  |                     ...so that the type `T` will meet its required lifetime bounds\n  |\nhelp: consider adding an explicit lifetime bound\n  |\n1 | struct StaticRef<T: 'static>(&'static T);\n  |                   +++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0310`.",
+        "description": "With -Znext-solver: StaticRef<T>(&'static T) still rejects with E0310.",
+        "extra_flags": [
+          "-Znext-solver"
+        ],
+        "passed": true,
+        "source_sha256": "4df818a974108a5304c08a8af81185fe3eebd1973bd577c30efa8ff07fae7ed4"
+      },
+      "next_solver_struct_where_not_implied_e0277": {
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0277]: can't compare `T` with `T`\n --> <tmp>/next_solver_struct_where_not_implied_e0277.rs:2:9\n  |\n2 | impl<T> NeedEq<T> {\n  |         ^^^^^^^^^ no implementation for `T == T`\n  |\nnote: required by a bound in `NeedEq`\n --> <tmp>/next_solver_struct_where_not_implied_e0277.rs:1:18\n  |\n1 | struct NeedEq<T: PartialEq>(T);\n  |                  ^^^^^^^^^ required by this bound in `NeedEq`\nhelp: consider restricting type parameter `T` with trait `PartialEq`\n  |\n2 | impl<T: std::cmp::PartialEq> NeedEq<T> {\n  |       +++++++++++++++++++++\n\nerror[E0277]: can't compare `T` with `T`\n --> <tmp>/next_solver_struct_where_not_implied_e0277.rs:3:14\n  |\n3 |     fn same(&self, other: &Self) -> bool {\n  |              ^^^^ no implementation for `T == T`\n  |\nnote: required by a bound in `NeedEq`\n --> <tmp>/next_solver_struct_where_not_implied_e0277.rs:1:18\n  |\n1 | struct NeedEq<T: PartialEq>(T);\n  |                  ^^^^^^^^^ required by this bound in `NeedEq`\nhelp: consider restricting type parameter `T` with trait `PartialEq`\n  |\n2 | impl<T: std::cmp::PartialEq> NeedEq<T> {\n  |       +++++++++++++++++++++\n\nerror[E0277]: can't compare `T` with `T`\n --> <tmp>/next_solver_struct_where_not_implied_e0277.rs:3:28\n  |\n3 |     fn same(&self, other: &Self) -> bool {\n  |                            ^^^^ no implementation for `T == T`\n  |\nnote: required by a bound in `NeedEq`\n --> <tmp>/next_solver_struct_where_not_implied_e0277.rs:1:18\n  |\n1 | struct NeedEq<T: PartialEq>(T);\n  |                  ^^^^^^^^^ required by this bound in `NeedEq`\nhelp: consider restricting type parameter `T` with trait `PartialEq`\n  |\n2 | impl<T: std::cmp::PartialEq> NeedEq<T> {\n  |       +++++++++++++++++++++\n\nerror[E0369]: binary operation `==` cannot be applied to type `T`\n --> <tmp>/next_solver_struct_where_not_implied_e0277.rs:4:16\n  |\n4 |         self.0 == other.0\n  |         ------ ^^ ------- T\n  |         |\n  |         T\n  |\nhelp: consider restricting type parameter `T` with trait `PartialEq`\n  |\n2 | impl<T: std::cmp::PartialEq> NeedEq<T> {\n  |       +++++++++++++++++++++\n\nerror: aborting due to 4 previous errors\n\nSome errors have detailed explanations: E0277, E0369.\nFor more information about an error, try `rustc --explain E0277`.",
+        "description": "With -Znext-solver: struct where NeedEq<T: PartialEq> is still not implied in impl<T> NeedEq<T> (E0277).",
+        "extra_flags": [
+          "-Znext-solver"
+        ],
+        "passed": true,
+        "source_sha256": "26f3e07c253579cc8468ccd7c23fea2b2b215829d6a28fec4cb1cdfa8e96e408"
+      },
+      "next_solver_supertrait_norm_ok": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "description": "With -Znext-solver: supertrait elaboration and projection normalization succeed.",
+        "extra_flags": [
+          "-Znext-solver"
+        ],
+        "passed": true,
+        "run_returncode": 0,
+        "run_stderr": "",
+        "run_stdout": "NEXT_SUPERTRAIT_NORM=42",
+        "source_sha256": "8590589fa2dda5680610ae66335dfe528dcaa8712163a8051857245774673a95"
+      },
+      "next_solver_trait_param_bound_e0309": {
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0309]: the parameter type `T` may not live long enough\n --> <tmp>/next_solver_trait_param_bound_e0309.rs:3:21\n  |\n3 | fn caller<'a, T, X: Tr<'a, T>>(_x: X) {\n  |           --        ^^^^^^^^^ ...so that the type `T` will meet its required lifetime bounds\n  |           |\n  |           the parameter type `T` must be valid for the lifetime `'a` as defined here...\n  |\nhelp: consider adding an explicit lifetime bound\n  |\n3 | fn caller<'a, T: 'a, X: Tr<'a, T>>(_x: X) {\n  |                ++++\n\nerror[E0309]: the parameter type `T` may not live long enough\n --> <tmp>/next_solver_trait_param_bound_e0309.rs:4:5\n  |\n3 | fn caller<'a, T, X: Tr<'a, T>>(_x: X) {\n  |           -- the parameter type `T` must be valid for the lifetime `'a` as defined here...\n4 |     need::<'a, T>();\n  |     ^^^^^^^^^^^^^ ...so that the type `T` will meet its required lifetime bounds\n  |\nhelp: consider adding an explicit lifetime bound\n  |\n3 | fn caller<'a, T: 'a, X: Tr<'a, T>>(_x: X) {\n  |                ++++\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0309`.",
+        "description": "With -Znext-solver: trait Tr<'a, T: 'a> still rejects caller without T: 'a (E0309).",
+        "extra_flags": [
+          "-Znext-solver"
+        ],
+        "passed": true,
+        "source_sha256": "3007e24986ad73136803c029673bbbe414963d8d2e556d7e206512fc499c0da1"
+      }
+    }
+  },
+  "rustc_version": {
+    "LLVM version": "22.1.6",
+    "binary": "rustc",
+    "commit-date": "2026-05-31",
+    "commit-hash": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "host": "x86_64-unknown-linux-gnu",
+    "raw": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+    "release": "1.98.0-nightly",
+    "version_line": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+  },
+  "summary": {
+    "failed": 0,
+    "passed": 39,
+    "total": 39
+  }
+}
