@@ -160,6 +160,8 @@ build_omnibus_archive() {
         ;;
     esac
   done < "$stage_root/theory_manifest_paths.txt"
+  cp trusted/audit/SpecPreflight.lean \
+    "$stage_root/dist_staging/share/anneal/trusted/audit/SpecPreflight.lean"
   cp trusted/audit/TrustedBoundary.lean \
     "$stage_root/dist_staging/share/anneal/trusted/audit/TrustedBoundary.lean"
   cp trusted/audit/library-lock.json \
@@ -224,11 +226,13 @@ build_omnibus_archive() {
     "$rust_tc/bin/rustc" \
     "$stage_root/dist_staging/share/anneal/correspondence-provenance.json" \
     "$stage_root/dist_staging/share/anneal/prebuilt/manifest.json" \
+    "$stage_root/dist_staging/share/anneal/prebuilt/SpecPreflight.olean" \
     "$stage_root/dist_staging/share/anneal/prebuilt/TrustedBoundary.olean" \
     "$stage_root/dist_staging/share/anneal/prebuilt/lib/Trusted/MirAst.olean" \
     "$stage_root/dist_staging/share/anneal/prebuilt/lib/Anneal/MirWp.olean" \
     "$stage_root/dist_staging/share/anneal/prebuilt/lib/Anneal/Scalar.olean" \
     "$stage_root/dist_staging/share/anneal/prebuilt/lib/Anneal/Wp.olean" \
+    "$stage_root/dist_staging/share/anneal/trusted/audit/SpecPreflight.lean" \
     "$stage_root/dist_staging/share/anneal/trusted/audit/TrustedBoundary.lean" \
     "$stage_root/dist_staging/share/anneal/trusted/audit/library-lock.json" \
     "$stage_root/dist_staging/share/anneal/trusted/lean/foundation-lock.json" \
@@ -451,11 +455,13 @@ pack_omnibus_archive() {
     rust/bin/rustdoc
     share/anneal/correspondence-provenance.json
     share/anneal/prebuilt/manifest.json
+    share/anneal/prebuilt/SpecPreflight.olean
     share/anneal/prebuilt/TrustedBoundary.olean
     share/anneal/prebuilt/lib/Trusted/MirAst.olean
     share/anneal/prebuilt/lib/Anneal/MirWp.olean
     share/anneal/prebuilt/lib/Anneal/Scalar.olean
     share/anneal/prebuilt/lib/Anneal/Wp.olean
+    share/anneal/trusted/audit/SpecPreflight.lean
     share/anneal/trusted/audit/TrustedBoundary.lean
     share/anneal/trusted/audit/library-lock.json
     share/anneal/trusted/lean/foundation-lock.json

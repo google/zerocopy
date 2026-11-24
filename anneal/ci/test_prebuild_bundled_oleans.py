@@ -68,6 +68,8 @@ class PrebuildBundledOleansTests(unittest.TestCase):
 
             inspector = root / "trusted/audit/TrustedBoundary.lean"
             inspector.write_text("-- inspector\n", encoding="utf-8")
+            spec_preflight = root / "trusted/audit/SpecPreflight.lean"
+            spec_preflight.write_text("-- spec preflight\n", encoding="utf-8")
             (root / "trusted/lean/foundation-lock.json").write_text(
                 json.dumps(
                     {
@@ -180,6 +182,7 @@ sys.exit(1)
                 set(by_mod.keys()),
                 {
                     ("inspector", "TrustedBoundary"),
+                    ("inspector", "SpecPreflight"),
                     ("module", "Trusted.MirAst"),
                     ("module", "Anneal.MirWp"),
                 },
@@ -203,6 +206,7 @@ sys.exit(1)
             self.assertEqual(len(mir_wp_entry["imports"][0]["transitive_sha256"]), 64)
             self.assertEqual(len(prebuild_bundled_oleans.compute_cache_key(mir_wp_entry)), 64)
             self.assertTrue((out_dir / "TrustedBoundary.olean").is_file())
+            self.assertTrue((out_dir / "SpecPreflight.olean").is_file())
             self.assertTrue((out_dir / "lib/Trusted/MirAst.olean").is_file())
             self.assertTrue((out_dir / "lib/Trusted/MirAst.olean.server").is_file())
             self.assertTrue((out_dir / "lib/Trusted/MirAst.olean.private").is_file())
@@ -229,6 +233,9 @@ sys.exit(1)
 
             (root / "trusted/audit/TrustedBoundary.lean").write_text(
                 "-- inspector\n", encoding="utf-8"
+            )
+            (root / "trusted/audit/SpecPreflight.lean").write_text(
+                "-- spec preflight\n", encoding="utf-8"
             )
             (root / "trusted/lean/foundation-lock.json").write_text(
                 json.dumps(
@@ -357,6 +364,7 @@ sys.exit(1)
             (root / "trusted/cargo-anneal/src").mkdir(parents=True)
             (root / "theory").mkdir(parents=True)
             (root / "trusted/audit/TrustedBoundary.lean").write_text("-- inspector\n", encoding="utf-8")
+            (root / "trusted/audit/SpecPreflight.lean").write_text("-- spec preflight\n", encoding="utf-8")
             (root / "trusted/lean/foundation-lock.json").write_text(
                 json.dumps({"modules": {"Init.Core": {}}, "graph": {"Init.Core": []}}),
                 encoding="utf-8",
@@ -427,6 +435,9 @@ sys.exit(1)
             (root / "theory/Anneal").mkdir(parents=True)
             (root / "trusted/audit/TrustedBoundary.lean").write_text(
                 "-- inspector\n", encoding="utf-8"
+            )
+            (root / "trusted/audit/SpecPreflight.lean").write_text(
+                "-- spec preflight\n", encoding="utf-8"
             )
             (root / "trusted/lean/foundation-lock.json").write_text(
                 json.dumps({"modules": {"Init.Core": {}}, "graph": {"Init.Core": []}}),

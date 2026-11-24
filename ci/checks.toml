@@ -1094,6 +1094,7 @@ inputs = [
     "anneal/ci/check_guard_mutation.py",
     "anneal/ci/fixtures/guard_mutation/**",
     "anneal/trusted/lean/**",
+    "anneal/trusted/audit/SpecPreflight.lean",
     "anneal/trusted/audit/TrustedBoundary.lean",
   ] },
   # Root config overrides that `run_anneal_check.sh` rejects.

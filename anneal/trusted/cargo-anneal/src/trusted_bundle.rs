@@ -45,6 +45,7 @@ pub const LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256: &str =
 /// `$OUT_DIR/bundled_theory.json`, keeping `trusted/` registrations decoupled
 /// from untrusted proof-library additions.
 pub const TRUSTED_BUNDLE_SOURCES: &[&str] = &[
+    "trusted/audit/SpecPreflight.lean",
     "trusted/audit/TrustedBoundary.lean",
     "trusted/audit/library-lock.json",
     "trusted/lean/foundation-lock.json",

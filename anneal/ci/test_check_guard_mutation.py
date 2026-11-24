@@ -16,6 +16,7 @@ verify the GitHub Actions workflow wiring in `anneal-current.yml`.
 """
 
 import hashlib
+import re
 import json
 from pathlib import Path
 import stat
@@ -411,6 +412,123 @@ class GuardMutationUnitTests(unittest.TestCase):
         self.assertEqual(report["killed"], 1)
         self.assertEqual(report["survived"], 0)
         self.assertEqual(report["errors"], 0)
+
+    def test_spec_preflight_parity_with_trusted_boundary(self):
+        audit_dir = ANNEAL_ROOT / "trusted/audit"
+        tb_text = (audit_dir / "TrustedBoundary.lean").read_text(encoding="utf-8")
+        sp_text = (audit_dir / "SpecPreflight.lean").read_text(encoding="utf-8")
+
+        decl_re = re.compile(
+            r"^(?:(?:private|protected|unsafe|noncomputable) )*(?:partial )?"
+            r"def ([A-Za-z_][A-Za-z0-9_'!?]*)",
+            re.M,
+        )
+        boundary_re = re.compile(
+            r"^(?:/--|/-!|--|@\[|(?:(?:private|protected|unsafe|noncomputable) )*"
+            r"(?:partial )?def |structure |inductive |abbrev |theorem |instance |"
+            r"namespace |end |open |section |#)",
+            re.M,
+        )
+
+        def def_blocks(text: str) -> dict[str, list[str]]:
+            # Map every top-level `def` name to its whitespace-normalized
+            # body, which runs to the next top-level declaration or comment.
+            blocks: dict[str, list[str]] = {}
+            for m in decl_re.finditer(text):
+                nxt = boundary_re.search(text, m.end())
+                body = text[m.start() : nxt.start() if nxt else len(text)]
+                blocks.setdefault(m.group(1), []).append(" ".join(body.split()))
+            return blocks
+
+        tb_defs = def_blocks(tb_text)
+        sp_defs = def_blocks(sp_text)
+        # Entry points that intentionally differ (TrustedBoundary serves the
+        # repository and legacy target-audit modes as well) and helpers only
+        # SpecPreflight defines.
+        divergent = {"run", "main"}
+        # Definitions that differ only by these whitespace-normalized
+        # substitutions: SpecPreflight checks headers with its own
+        # `inspectHeaderSyntax` instead of the general `inspectSyntax`.
+        header_check = (
+            "inspectSyntax (.ofList allowedHeaderKinds) header.raw "
+            "(requirePrelude := false) (checkPureRefs := false)",
+            "inspectHeaderSyntax header.raw (requirePrelude := false)",
+        )
+        substituted = {"inspectHeader": [header_check], "preflightSpecs": [header_check]}
+        spec_preflight_only = {
+            "importSysrootEnv",
+            "inspectHeaderSyntax",
+            "encodeCanonName",
+            "collectSysrootConsts",
+            "collectTargetConsts",
+            "isPairedUnsafeRec",
+            "isRealizedTheoremName",
+            "sameConstantInfo",
+        }
+        for name, body in sp_defs.items():
+            if name in divergent:
+                self.assertIn(name, tb_defs, name)
+                continue
+            if name in spec_preflight_only:
+                self.assertNotIn(name, tb_defs, f"`{name}` is now shared; check parity")
+                continue
+            self.assertIn(name, tb_defs, f"SpecPreflight.lean defines unshared `{name}`")
+            expected = tb_defs[name]
+            for old, new in substituted.get(name, []):
+                self.assertEqual(
+                    [b.count(old) for b in expected], [1] * len(expected), name
+                )
+                expected = [b.replace(old, new) for b in expected]
+            self.assertEqual(
+                body,
+                expected,
+                f"SpecPreflight.lean drifted from TrustedBoundary.lean on `{name}`",
+            )
+        # Guard against a vacuous comparison: every security-relevant
+        # specification admission definition must be among the shared ones.
+        for required in (
+            "allowedHeaderKinds",
+            "allowedSystemPlatformDecls",
+            "forbiddenPureIdentifiers",
+            "forbiddenPureRootNamespaces",
+            "forbiddenSysUvPrefixes",
+            "isForbiddenPureNamespace",
+            "isForbiddenPureImport",
+            "forbiddenSpecRootNamespaces",
+            "forbiddenSpecDeclRootNamespaces",
+            "forbiddenSpecIdentifierComponents",
+            "forbiddenSpecIdentifiers",
+            "forbiddenSpecModifierKinds",
+            "allowedSpecCommandKinds",
+            "allowedSpecTacticKinds",
+            "rejectForbiddenSpecNamespace",
+            "rejectForbiddenSpecDeclNamespace",
+            "pushSpecScopes",
+            "checkSpecDeclNamespace",
+            "inspectSpecSyntax",
+            "applySpecScope",
+            "parseAndInspectSpecCommands",
+            "inspectHeader",
+            "preflightSpecs",
+        ):
+            self.assertIn(required, sp_defs, required)
+            self.assertNotIn(required, divergent | spec_preflight_only, required)
+
+        # `forbiddenSpecDeclRootNamespaces` (with the
+        # `forbiddenSpecRootNamespaces` prefix it extends) must cover every
+        # `reservedKernelRoots` root.
+        def name_list(text: str, name: str) -> set[str]:
+            block = def_blocks(text)[name][0]
+            return set(re.findall(r"`([A-Za-z_][A-Za-z0-9_.]*)", block))
+
+        reserved = name_list(tb_text, "reservedKernelRoots")
+        self.assertIn("Init", reserved)
+        covered = (
+            name_list(sp_text, "forbiddenSpecDeclRootNamespaces")
+            | name_list(sp_text, "forbiddenSpecRootNamespaces")
+            | name_list(sp_text, "forbiddenPureRootNamespaces")
+        )
+        self.assertEqual(reserved - covered, set())
 
 
 if __name__ == "__main__":

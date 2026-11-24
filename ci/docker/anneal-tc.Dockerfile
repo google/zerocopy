@@ -89,6 +89,7 @@ RUN mkdir -p /opt/nix-cache /opt/anneal-nix/runtime-libs /opt/anneal-cargo-vendo
       /tmp/anneal-seed/anneal/tests/itree_diff/src/bin && \
     touch /tmp/anneal-seed/anneal/ci/prebuild_bundled_oleans.py \
       /tmp/anneal-seed/anneal/ci/render_correspondence_provenance.py \
+      /tmp/anneal-seed/anneal/trusted/audit/SpecPreflight.lean \
       /tmp/anneal-seed/anneal/trusted/audit/TrustedBoundary.lean \
       /tmp/anneal-seed/anneal/trusted/audit/library-lock.json \
       /tmp/anneal-seed/anneal/trusted/audit/src/lib.rs \

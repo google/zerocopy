@@ -209,7 +209,7 @@ class MirSemanticsGuard:
 
 @dataclass(frozen=True)
 class AuditHeaderGuard:
-    """Single-guard mutation entry targeting `TrustedBoundary.lean` headers."""
+    """Single-guard mutation entry targeting `TrustedBoundary.lean` or `SpecPreflight.lean` headers."""
 
     guard_id: str
     target_file: str
@@ -1756,6 +1756,50 @@ AUDIT_HEADER_GUARDS: tuple[AuditHeaderGuard, ...] = (
         replacement="    false",
         negative_source="import Std.Internal.UV\n",
     ),
+    AuditHeaderGuard(
+        guard_id="spec_preflight_reject_lean_import",
+        target_file="trusted/audit/SpecPreflight.lean",
+        description="SpecPreflight isForbiddenPureImport rejects `import Lean` in target headers",
+        anchor=(
+            "  let r := m.getRoot\n"
+            "  r == `Lean || r == `Lake ||"
+        ),
+        replacement=(
+            "  let r := m.getRoot\n"
+            "  false || r == `Lake ||"
+        ),
+        negative_source="import Lean\n",
+    ),
+    AuditHeaderGuard(
+        guard_id="spec_preflight_reject_lake_import",
+        target_file="trusted/audit/SpecPreflight.lean",
+        description="SpecPreflight isForbiddenPureImport rejects `import Lake` in target headers",
+        anchor=(
+            "  let r := m.getRoot\n"
+            "  r == `Lean || r == `Lake ||"
+        ),
+        replacement=(
+            "  let r := m.getRoot\n"
+            "  r == `Lean || false ||"
+        ),
+        negative_source="import Lake\n",
+    ),
+    AuditHeaderGuard(
+        guard_id="spec_preflight_reject_init_system_import",
+        target_file="trusted/audit/SpecPreflight.lean",
+        description="SpecPreflight isForbiddenPureImport rejects `import Init.System.IO` in target headers",
+        anchor="    m == `Init.System || (`Init.System).isPrefixOf m ||",
+        replacement="    false ||",
+        negative_source="import Init.System.IO\n",
+    ),
+    AuditHeaderGuard(
+        guard_id="spec_preflight_reject_std_uv_import",
+        target_file="trusted/audit/SpecPreflight.lean",
+        description="SpecPreflight isForbiddenPureImport rejects `import Std.Internal.UV` in target headers",
+        anchor="    m == `Std.Internal.UV || (`Std.Internal.UV).isPrefixOf m",
+        replacement="    false",
+        negative_source="import Std.Internal.UV\n",
+    ),
 )
 
 
@@ -1927,9 +1971,10 @@ def _run_audit_headers(
     source_text: str,
     work_dir: Path,
     *,
+    module_name: str = "TrustedBoundary",
     timeout_sec: int,
 ) -> tuple[int, dict[str, object] | None, str]:
-    """Invoke precompiled `TrustedBoundary` in `"headers"` mode."""
+    """Invoke precompiled audit module (`TrustedBoundary` or `SpecPreflight`) in `"headers"` mode."""
     target_src = work_dir / "Target.lean"
     target_src.write_text(source_text, encoding="utf-8")
     req_path = work_dir / "req.json"
@@ -1945,7 +1990,7 @@ def _run_audit_headers(
         ),
         encoding="utf-8",
     )
-    runner_path.write_text("import TrustedBoundary\n", encoding="utf-8")
+    runner_path.write_text(f"import {module_name}\n", encoding="utf-8")
     proc = _run_lean(
         lean_bin,
         ["--run", str(runner_path), str(req_path), str(res_path)],
@@ -2183,7 +2228,9 @@ def _check_one_audit_guard(
         tmp_path = Path(tmp)
         mut_src_dir = tmp_path / "src"
         mut_src_dir.mkdir()
-        mut_tb = mut_src_dir / "TrustedBoundary.lean"
+        src_name = Path(guard.target_file).name
+        mod_name = Path(guard.target_file).stem
+        mut_tb = mut_src_dir / src_name
         mut_tb.write_text(mutated_text, encoding="utf-8")
         mut_olean_dir = tmp_path / "olean"
         mut_olean_dir.mkdir()
@@ -2191,7 +2238,7 @@ def _check_one_audit_guard(
         comp = _compile_module(
             lean_bin,
             mut_src_dir,
-            "TrustedBoundary",
+            mod_name,
             mut_olean_dir,
             lean_path=[],
             timeout_sec=timeout_sec,
@@ -2204,7 +2251,7 @@ def _check_one_audit_guard(
                 status="ERROR",
                 duration_sec=time.monotonic() - t0,
                 detail=(
-                    f"mutated TrustedBoundary.lean failed to compile: "
+                    f"mutated {src_name} failed to compile: "
                     f"{(comp.stdout + comp.stderr).strip()[:300]}"
                 ),
             )
@@ -2215,6 +2262,7 @@ def _check_one_audit_guard(
             sysroot,
             guard.negative_source,
             tmp_path,
+            module_name=mod_name,
             timeout_sec=timeout_sec,
         )
         if rc == 0 and isinstance(parsed, dict) and parsed.get("ok") is True:
@@ -2431,7 +2479,7 @@ def run_guard_mutation_suite(
             results.extend(mir_by_id[g.guard_id] for g in mir_guards)
 
         # --------------------------------------------------------------
-        # Suite 2: TrustedBoundary.lean header guards baseline + mutants
+        # Suite 2: Audit header guards baseline + mutants
         # --------------------------------------------------------------
         if audit_guards:
             t_audit_base = time.monotonic()
@@ -2439,20 +2487,24 @@ def run_guard_mutation_suite(
             tb_olean_dir = base_path / "tb_olean"
             tb_olean_dir.mkdir()
             tb_src_dir = anneal_root / "trusted/audit"
-            comp = _compile_module(
-                lean_bin,
-                tb_src_dir,
-                "TrustedBoundary",
-                tb_olean_dir,
-                lean_path=[],
-                timeout_sec=timeout_sec,
-            )
-            if comp.returncode != 0:
-                raise RuntimeError(
-                    "baseline TrustedBoundary.lean failed to compile:\n"
-                    f"{comp.stdout}\n{comp.stderr}"
-                )
+            compiled_mods: set[str] = set()
             for guard in audit_guards:
+                mod_name = Path(guard.target_file).stem
+                if mod_name not in compiled_mods:
+                    comp = _compile_module(
+                        lean_bin,
+                        tb_src_dir,
+                        mod_name,
+                        tb_olean_dir,
+                        lean_path=[],
+                        timeout_sec=timeout_sec,
+                    )
+                    if comp.returncode != 0:
+                        raise RuntimeError(
+                            f"baseline {Path(guard.target_file).name} failed to compile:\n"
+                            f"{comp.stdout}\n{comp.stderr}"
+                        )
+                    compiled_mods.add(mod_name)
                 check_dir = base_path / f"base_{guard.guard_id}"
                 check_dir.mkdir()
                 rc, parsed, out = _run_audit_headers(
@@ -2461,6 +2513,7 @@ def run_guard_mutation_suite(
                     sysroot,
                     guard.negative_source,
                     check_dir,
+                    module_name=mod_name,
                     timeout_sec=timeout_sec,
                 )
                 if not (
@@ -2470,7 +2523,7 @@ def run_guard_mutation_suite(
                     and parsed.get("category") == "policy"
                 ):
                     raise RuntimeError(
-                        f"baseline TrustedBoundary did not policy-reject "
+                        f"baseline {mod_name} did not policy-reject "
                         f"{guard.guard_id}: rc={rc} parsed={parsed!r} out={out}"
                     )
             baseline_sec += time.monotonic() - t_audit_base

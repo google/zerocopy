@@ -401,7 +401,18 @@ explicitly passed (producing a tainted Receipt v3).
   sandbox-consistency, `sorry_declarations`, and `result.json` write checks
   succeed (failing closed as `tool_failed` exit `2` on any export error).
 
-## 4. `ClaimAudit`: `"headers"`, `"spec-preflight"`, and `"target-audit"`
+## 4. `ClaimAudit` Modes and the Universal NDJSON Comparator
+
+On the pinned Lean `v4.34.1` toolchain, `trusted/audit/TrustedBoundary.lean`
+serves all runtime inspection modes (`"headers"`, `"spec-preflight"`,
+`"resolve-imports"`, and `"target-audit"`). On Lean `v4.35.0+` toolchains
+bundling `leanexport`, `nanoda_bin`, and `con-ron` and admitted with
+`--allow-unpinned-lean`, preflight and index modes (`"headers"`,
+`"spec-preflight"`, `"resolve-imports"`, `"sysroot-consts"`, and
+`"target-consts"`) run through `trusted/audit/SpecPreflight.lean`, and final
+verification runs through the pure-Rust Universal NDJSON Comparator
+(`5-init`/`5a`/`5b`/`5-pin`/`5c`, see
+[auditing and comparator](auditing-and-comparator.md)).
 
 `trusted/audit/TrustedBoundary.lean` retains its **exact 6 minimal imports**
 (`Lean.Elab.Import`, `Lean.Parser.Tactic`, `Lean.Replay`, and

@@ -10,19 +10,22 @@ those terms. -->
 
 > **Status: Target Architecture / In-Progress.**
 >
-> **Shipped today (Stage 0 alpha, [`#4095`](https://github.com/google/zerocopy/issues/4095)):**
-> `cargo-anneal` isolates target Lean elaboration inside Linux `ExecSeal`
-> (`linux_bwrap` or `linux_landlock_seccomp`), runs `spec-preflight` and
-> in-process `loadExts := false` kernel replay via `TrustedBoundary.lean`, and
-> emits Receipt Schema v3 (see [elaborator
-> containment](elaborator-containment-design.md) and [trust
-> model](trust-model.md)).
->
-> **Target architecture described here:** The Universal NDJSON Comparator
-> (`5a`/`5b`/`5c`) retiring in-process `.olean` target auditing on Lean
-> `v4.35.0+`, closed-allowlist `SpecPreflight`, `MirSemantics` Guard-Mutation
-> CI (`check_guard_mutation.py`), and non-adversarial `audit-spec` sanity
-> checks are in-progress target designs tracked across
+> **Dual target-audit engines (`v4.34.1` and `v4.35.0+`):** `cargo-anneal`
+> runs the **Universal NDJSON Comparator** (`5-init`/`5a`/`5b`/`5-pin`/`5c`,
+> with `SpecPreflight` serving `"headers"`, `"spec-preflight"`,
+> `"resolve-imports"`, `"sysroot-consts"`, and `"target-consts"`) only when
+> `--allow-unpinned-lean` is passed and stock Lean `v4.35.0+` comparator
+> binaries (`leanexport`, `nanoda_bin`, `con-ron`, plus optional `con-leche`
+> and `lean4lean`) exist under `<sysroot>/bin/`. Pinned admission never adopts
+> these binaries (no `v4.35.0+` comparator digests are pinned yet), so the
+> pinned `v4.34.1` release always uses `loadExts := false`
+> `TrustedBoundary.lean` replay. See
+> [elaborator containment](elaborator-containment-design.md) and
+> [trust model](trust-model.md).
+
+> **Remaining design items:** Phase 3 closed-allowlist `SpecPreflight`
+> grammar tightening (`TrapFreeHumanSpecAST`) and offline Pass 2 splitting
+> remain tracked across
 > [`#4012`](https://github.com/google/zerocopy/issues/4012),
 > [`#4096`](https://github.com/google/zerocopy/issues/4096), and
 > [`#4099`](https://github.com/google/zerocopy/issues/4099).
@@ -78,26 +81,31 @@ verifier backed by independent stock Lean `v4.35.0+` kernels.
                ▼                                           ▼
   ┌─────────────────────────────┐             ┌─────────────────────────────┐
   │ 5a: AnnealExportExpected    │             │ 5b: AnnealExportProof       │
-  │   leanexport Expected --    │             │   (ExecSeal / isolated RBE) │
-  │     Expected.claim          │             │   leanexport Proof --       │
-  │   -> expected_cone.ndjson   │             │     Proof.verify            │
-  └──────────────┬──────────────┘             │   -> proof_full.ndjson      │
-                 │                            └──────────────┬──────────────┘
-                 │      ┌──────────────────────────────┐     │
-                 │      │ Pinned per-toolchain         │     │
-                 │      │ init_primitives_cone.ndjson  │     │
-                 │      └──────────────┬───────────────┘     │
-                 ▼                     ▼                     ▼
+  │   leanexport <trusted mods> │             │   (ExecSeal / isolated RBE) │
+  │     -- Expected.claim       │             │   leanexport Proof --       │
+  │     + all Spec constants    │             │     Proof.verify            │
+  │     + target consts in 5b   │             │   -> proof_full.ndjson      │
+  │   -> expected_cone.ndjson   │             └──────────────┬──────────────┘
+  └──────────────┬──────────────┘                            │
+                 │   ┌──────────────────────────────────┐    │
+                 │   │ 5-init: init_primitives_cone     │    │
+                 │   │ (39 prims + 3 axioms + Plat)     │    │
+                 │   │ 5-pin: sysroot_pins (every       │    │
+                 │   │ sysroot-named constant used)     │    │
+                 │   │ (clean sysroot, 0 target .olean) │    │
+                 │   └────────────────┬─────────────────┘    │
+                 ▼                    ▼                      ▼
   ┌─────────────────────────────────────────────────────────────────────────┐
   │ 5c: AnnealVerifyNdjson (pure Rust, #![forbid(unsafe_code)], 0 .olean!)  │
-  │   1. Canonical hash-consed DAG identity:                                │
-  │        expected_cone ∪ init_primitives_cone ⊆ proof_full                │
-  │   2. Statement-origin isolation & optParam stripping on Expected.claim  │
-  │   3. Exact Proof.verify : Expected.claim, zero non-Init opaque/partial, │
-  │      and strict 3-axiom ceiling {propext, Classical.choice, Quot.sound} │
+  │   1. Closed exports; canonical DAG identity (`expected_bfs` ⊆ proof)    │
+  │   2. Authenticated origin: sysroot names pinned to 5-init/5-pin,        │
+  │      target-module constants (target-consts index) pinned to 5a,       │
+  │      Trusted/reserved-root isolation for proof-origin constants         │
+  │   3. Exact Proof.verify : Expected.claim, zero non-sysroot opaque or    │
+  │      partial/unsafe, strict 3-axiom ceiling, specification bans         │
   │   4. Quotient primitive post-check (Quot, Quot.mk, Quot.lift, Quot.ind) │
   │   5. Independent kernel replay: nanoda_bin + con-ron (stock v4.35.0+)   │
-  │      [+ optional paranoid multi-kernel CI quorum]                       │
+  │      [+ optional `--paranoid-quorum`: con-leche + lean4lean --import]   │
   └────────────────────────────────────┬────────────────────────────────────┘
                                        ▼
                         Strict typed Receipt v3 JSON
@@ -105,56 +113,109 @@ verifier backed by independent stock Lean `v4.35.0+` kernels.
 
 ### Exact contract of actions `5a`, `5b`, and `5c`
 
+- **`"target-consts"` (module index):** `SpecPreflight` imports the admitted
+  sysroot plus the compiled `Model`, `Capture`, `Specification`, and
+  `Expected` `.olean`s (never a `Proof` `.olean`; `loadExts := false`, no
+  initializers) and reports each module's exact constant inventory from
+  each module's `ModuleData`. Before importing, every target `.olean` passes
+  the same pre-import header, companion, and `isModule` validation as the
+  legacy `"target-audit"`. It rejects any `unsafe` target constant and any
+  non-realized constant that another loaded module also declares, and reports
+  the targets' `@[implemented_by]`/`@[extern]`/`@[csimp]` subjects, none of
+  which may be reached. Compiler-generated constants (anonymous and
+  `deriving` instances, structure constructors/projections, `where`/`let rec`
+  auxiliaries, matchers, `private` declarations) are thereby attributed to
+  their defining module. Unlike the legacy `"target-audit"`, the comparator
+  route does not inspect compiler-override attributes on `Proof`
+  declarations (their `.olean`s never load outside the sandboxed exporter;
+  such attributes cannot change kernel reduction), and receipts list that and
+  the anti-vacuity lint under `deferred`.
 - **Action `5a` (`AnnealExportExpected`):** Mounts strictly the trusted and
   reviewed statement closure (`Init.*`, `Trusted.*`, `Captured`, `Spec.*`, and
-  `Expected`) with **zero** `Anneal.*` or `Proof.*` modules present in the
-  filesystem. Invokes stock `leanexport` (`LEAN_ABORT_ON_PANIC=1`) to emit
-  `expected_cone.ndjson`, which is deterministic and cacheable across all proof
-  edits.
+  `Expected`, including `.olean.server`/`.olean.private` parts for `module`
+  files) with **zero** `Anneal.*` or `Proof.*` modules present in the
+  filesystem. Invokes stock `leanexport` (`LEAN_ABORT_ON_PANIC=1`, never
+  `--ignore-missing`, so an absent root or dependency aborts the export) over
+  `Expected.claim`, every `Specification` constant from the module index
+  (except paired well-founded `_unsafe_rec` auxiliaries, which are `partial`),
+  and roots covering every target-module constant that `proof_full.ndjson`
+  contains, emitting `expected_cone.ndjson`. It runs after `5b` for that
+  reason; the two exports share no inputs or outputs.
 - **Action `5b` (`AnnealExportProof`, sandboxed):** Mounts the read-only
   compiled proof closure inside `ExecSeal` (`bwrap` with `--seccomp` and
   `--disable-userns`, zero network, no access to `expected_cone.ndjson` or
   verdict output) or an isolated remote build container. Its sole output is the
   plain-text declaration stream `proof_full.ndjson`.
-- **Toolchain-pinned `init_primitives_cone.ndjson`:** Generated once per pinned
-  Lean release and locked by digest in the toolchain manifest. It pins all
-  `Init` kernel-extension and elaborator primitives trusted by external
-  checkers (`Nat.*` arithmetic/bitwise operations, `String.*`, `Char`, `List`,
-  `Bool`, `Eq`, `Quot.*`, `eagerReduce`, and
-  `optParam`/`autoParam`/`semiOutParam`/`outParam`). Pinning these primitives
+- **Action `5-init` (`init_primitives_cone.ndjson`):** Generated once per
+  `(sysroot, leanexport_sha256, sysroot_key)` from the clean `Init` module
+  with zero target `.olean`s mounted. It pins all 39 `Init` kernel-extension
+  and elaborator primitives (`Nat.*` arithmetic/bitwise operations, `String.*`,
+  `Char`, `List`, `Bool`, `Eq`, `Quot.*`, `eagerReduce`,
+  `optParam`/`autoParam`/`semiOutParam`/`outParam`), the 3 standard axioms
+  (`Classical.choice`, `Quot.sound`, `propext`), and
+  `System.Platform.{numBits, getNumBits, numBits_eq}`. Pinning these primitives
   unconditionally closes unused-primitive substitution attacks where an
   untrusted proof export could otherwise inject an altered definition for a
-  kernel-recognized primitive absent from a minimal `expected_cone.ndjson`.
-- **Action `5c` (`AnnealVerifyNdjson`):** A pure-Rust binary compiled with
-  `#![forbid(unsafe_code)]` and `overflow-checks = true` that never links or
-  invokes a C++ `.olean` loader. It parses the three NDJSON streams, enforces
-  five mandatory structural invariants, and invokes independent external
-  kernels:
-  1. **Canonical hash-consed DAG identity:** Normalizes declaration table
-     indices and verifies that every constant in `expected_cone.ndjson ∪
-     init_primitives_cone.ndjson`—including its kind, universe parameters,
-     type, value, and inductive/constructor/recursor metadata—appears
-     identically in `proof_full.ndjson`.
-  2. **Statement-origin isolation:** Strips elaboration-only `optParam`
-     wrappers and verifies that every constant referenced in `Expected.claim`
-     originates strictly in `Init ∪ Trusted ∪ Captured ∪ Spec ∪ Expected`.
+  kernel-recognized primitive absent from `expected_cone.ndjson`.
+- **Action `5-pin` (`sysroot_pins.ndjson`):** Re-exports, from the clean
+  admitted sysroot with zero target `.olean`s mounted, every constant of
+  `expected_cone.ndjson` or `proof_full.ndjson` whose name is in the
+  `"sysroot-consts"` inventory. Sysroot status is therefore never granted by
+  name alone: a proof module that redeclares a sysroot name (for example in a
+  module that never imports the defining sysroot module) must reproduce the
+  clean definition exactly.
+- **Action `5c` (`AnnealVerifyNdjson`):** A pure-Rust verifier compiled with
+  `#![forbid(unsafe_code)]` that never links or invokes a C++ `.olean` loader.
+  It checks metadata consistency across exports, enforces five mandatory
+  structural invariants, and invokes independent external kernels:
+  1. **Well-formed exports and canonical hash-consed DAG identity:** Requires
+     every export to declare each constant's dependencies before the constant
+     (except within one inductive record, which must be a consistent mutual
+     block), so a missing, forward, or cyclic reference fails closed;
+     normalizes declaration table
+     indices via structural `CanonName` trees (`Name` `.str`/`.num` nodes,
+     rejecting duplicate JSON keys), and verifies that `expected_bfs.visited`
+     appears in `proof_full.ndjson` and every constant common to both exports
+     matches identically.
+  2. **Authenticated origin and namespace isolation:** Every sysroot-named
+     constant in either export must equal its `5-init`/`5-pin` clean
+     re-export; every target-module constant in `proof_full.ndjson` must
+     appear in `expected_cone.ndjson`; every `expected_cone.ndjson` constant
+     must have one of those two origins; canonical inputs must come from their
+     designated roles, and the canonical root must be `CrateTheorem` or
+     `UnitTheorem` (applied to `Crate.mk`) or their Profile v2 counterparts
+     (applied to `CrateV2.mk`). Proof-origin constants may not use
+     `KERNEL_ACCELERATED_NAMES`, `RESERVED_KERNEL_ROOTS`, or the `Trusted`
+     root (except generated equation/splitter helpers of a pinned parent).
+     Strips elaboration-only `optParam` wrappers for statement-origin checks
+     and applies the direct and transitive specification bans to every
+     constant the `Specification` modules declare.
   3. **Exact theorem, opacity, and axiom checks:** Verifies that `Proof.verify`
      is a theorem with empty universe parameters whose type matches
-     `Expected.claim`, that its transitive cone contains zero non-`Init`
-     `opaque`, `unsafe`, or `partial` declarations, and that its axioms are a
-     subset of `{Classical.choice, Quot.sound, propext}` (admitting `sorryAx`
-     only when `--allow-sorry-in-proof` is passed, which unconditionally taints
-     Receipt v3).
+     `Expected.claim`, that its transitive cone and export contain zero
+     `unsafe`/`partial` declarations and zero non-sysroot `opaque` declarations
+     (permitting pinned sysroot `System.Platform.getNumBits`), and that its
+     axioms are a subset of `{Classical.choice, Quot.sound, propext}`
+     (admitting `sorryAx` only on proof-only edges when
+     `--allow-sorry-in-proof` is passed, which unconditionally taints Receipt
+     v3).
   4. **Quotient primitive post-check:** Confirms `Quot`, `Quot.mk`,
      `Quot.lift`, and `Quot.ind` match the pinned kernel-synthesized primitive
-     definitions.
+     definitions and rejects any foreign `.quotInfo` declaration.
   5. **Independent dual-kernel checking (`nanoda_bin` + `con-ron`):** Invokes
      both **`nanoda_bin`** (memory-safe Rust checker configured with
      `"unpermitted_axiom_hard_error": true` and the closed 3-axiom allowlist)
-     and **`con-ron`** (formally verified independent kernel bundled in stock
-     Lean `v4.35.0+`) over `proof_full.ndjson`. Both checkers must exit `0`.
+     and **`con-ron`** (`--verified`, formally verified Rust arena kernel
+     bundled in stock Lean `v4.35.0+`) over `proof_full.ndjson`. Both checkers
+     must exit `0` (with `con-ron` explicitly recorded in `kernelsSkipped`
+     only under tainted `--allow-sorry-in-proof` runs containing `sorryAx`).
      Verdict serialization uses strict `#[serde(deny_unknown_fields)]` typed
-     Rust structures rather than untyped JSON maps.
+     Rust structures recording binary SHA-256 digests rather than untyped JSON
+     maps. As with `TrustedBoundary.lean`'s `"target-audit"`, the verdict
+     carries the admitted module import `graph` and subject, model, and
+     specification closures listing exactly the reached declarations with
+     their defining modules, so `cargo anneal verify` applies its bundled-model
+     trust-tier and `candidate:*` checks unchanged.
 
 For mega-crates whose exported proof cones exceed single-process budgets, an
 optional action **`5d` (`AnnealLinkShardNdjson`)** runs `5a`/`5b`/`5c` per
@@ -166,20 +227,20 @@ composition in pure Rust (see
 
 Single-kernel verification remains vulnerable to an implementation bug in one
 checker. On Lean `v4.35.0+`, release cuts, merge queues, and nightly CI jobs
-can enable **paranoid multi-kernel mode**, invoking full multi-kernel NDJSON
-cross-checking (`lake comparator --challenge-from-export <expected+prims>
---solution-from-export <proof_full> --paranoid`) across `nanoda_bin`,
-`con-ron`, `lean4lean`, `con-leche`, and `leanchecker-paranoid --from-export`.
-The pure-Rust `5c` verifier remains the portable primary driver across all
-operating systems and build systems while paranoid CI mode serves as an
-independent multi-kernel cross-check oracle.
+can pass `--paranoid-quorum` (requiring `--allow-unpinned-lean` until a
+`v4.35.0+` toolchain is pinned in `foundation-lock.json`), invoking two
+additional independent kernels—**`con-leche`** and **`lean4lean --import`**—
+over `proof_full.ndjson` inside `ExecSeal` alongside `nanoda_bin` and `con-ron`
+for a four-independent-kernel quorum. The pure-Rust `5c` verifier remains the
+portable primary driver while `--paranoid-quorum` serves as a multi-kernel
+cross-check oracle.
 
 ### Retiring in-process `.olean` auditing and shrinking the runtime Lean TCB
 
 Retiring in-process `.olean` target replay transforms Anneal's runtime Lean
 audit surface:
 
-- **Runtime Lean TCB shrinks to parser-only `SpecPreflight`:** Once
+- **Runtime Lean TCB shrinks to a parser-only `SpecPreflight`:** Once
   `5a`/`5b`/`5c` replaces `TrustedBoundary.lean`'s target-replay blocks and
   Pass 2 `lean-miri` correspondence auditing is split into an offline CI-only
   module, the only Lean audit code bundled with `cargo-anneal` is a unified,
@@ -187,7 +248,10 @@ audit surface:
   zero `.olean` loading, zero elaboration). Moving from a syntax denylist to a
   closed allowlist blocks macros, custom delaborators, `implemented_by`/
   `extern`/`csimp` attributes, `autoImplicit true`, and unguarded `Nat`
-  subtraction or division on `Spec.*` modules.
+  subtraction or division on `Spec.*` modules. Today's `SpecPreflight` is not
+  yet parser-only: its `"sysroot-consts"` and `"target-consts"` modes import
+  the admitted sysroot and the compiled non-`Proof` target `.olean`s
+  (`loadExts := false`) to build constant-to-module indices.
 - **Hardened `ExecSeal` and out-of-band lock roots:** Local `ExecSeal` unifies
   Tier 1 `bwrap` with the Tier 2 `seccomp-bpf` allowlist (`--seccomp` and
   `--disable-userns`) so untrusted proof elaboration and `5b` export run under

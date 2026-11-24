@@ -455,7 +455,7 @@ pub fn diff_receipts(
         if b.audit_mode != h.audit_mode {
             let mode_rank = |m: Option<&str>| match m {
                 Some("paranoid") => 2u8,
-                Some("strict") => 1,
+                Some("strict" | "ndjson_comparator") => 1,
                 _ => 0,
             };
             let regressed = mode_rank(h.audit_mode.as_deref()) < mode_rank(b.audit_mode.as_deref());
@@ -1357,7 +1357,10 @@ mod tests {
     use serde_json::json;
 
     use super::*;
-    use crate::core::inspect::schema::{parse_and_validate_receipt, tests::sample_success_json};
+    use crate::core::inspect::schema::{
+        parse_and_validate_receipt,
+        tests::{sample_ndjson_success_json, sample_success_json},
+    };
 
     #[test]
     fn classifies_unstable_feature_additions_as_tier_a_and_removals_as_tier_b() {
@@ -1844,6 +1847,20 @@ mod tests {
                 pq_diff.changes
             );
         }
+
+        // Dropping from the NDJSON comparator to the default audit is Tier A.
+        let ndjson =
+            parse_and_validate_receipt(&serde_json::to_vec(&sample_ndjson_success_json()).unwrap())
+                .unwrap();
+        let mode_diff = diff_receipts(&ndjson, &base_w, false);
+        assert!(
+            mode_diff
+                .changes
+                .iter()
+                .any(|c| c.field == "audit.auditMode" && c.tier == DiffTier::TierA),
+            "{:?}",
+            mode_diff.changes
+        );
 
         // `--require-unchanged-specs` gates `audit.specification` symbol swaps
         // even when `specification_manifest_sha256` is unchanged.

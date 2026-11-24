@@ -13,7 +13,7 @@
 #[cfg(unix)]
 use std::os::unix::fs::{DirBuilderExt, PermissionsExt};
 use std::{
-    collections::{BTreeMap, BTreeSet},
+    collections::{BTreeMap, BTreeSet, HashMap},
     env,
     ffi::OsStr,
     fs, io,
@@ -29,6 +29,10 @@ use std::{
 use serde::Deserialize;
 use serde_json::json;
 
+use crate::ndjson_comparator::{
+    ExportPlan, MAX_NDJSON_BYTES, PINNED_INIT_PRIMITIVES, PINNED_SYSTEM_PLATFORM_DECLS,
+    STANDARD_PERMITTED_AXIOMS, build_nanoda_config_json,
+};
 use crate::olean_cache::{
     CacheKind, OleanCache, OleanCacheKeyInput, build_import_bindings, canonical_compile_flags,
     canonical_inspector_flags, is_cacheable_bundled_module, is_cacheable_target_shard_module,
@@ -44,18 +48,18 @@ use crate::toolchain::{
     AdmittedToolchain, FOUNDATION_AXIOMS, Failure, FoundationLock, ImportEdge, Json,
     LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, LibraryLock, ModuleArtifacts, OLEAN_PARTS, PARTS,
     ParallelDagPlan, TOOLCHAIN, compute_sysroot_manifest_sha256,
-    compute_unpinned_sysroot_manifest_sha256, default_lean_path, is_sha256_hex, regular,
-    run_parallel_dag, scan_sysroot_package_roots, sha256_bytes, sha256_file, sha256_file_deref,
-    stage_regular_file, transitive_import_closure, verify_installed_module_record,
-    verify_sysroot_foundation_dir,
+    compute_unpinned_sysroot_manifest_sha256, default_lean_path, discover_ndjson_comparator_tools,
+    is_sha256_hex, regular, run_parallel_dag, scan_sysroot_package_roots, sha256_bytes,
+    sha256_file, sha256_file_deref, stage_regular_file, transitive_import_closure,
+    verify_installed_module_record, verify_sysroot_foundation_dir,
 };
 
-/// Cache key for precompiled `TrustedBoundary.olean` artifacts held in process
-/// memory: `(lean_binary_sha256, canonical_sysroot_prefix, inspector_sha256)`.
+/// Cache key for precompiled `TrustedBoundary.olean` / `SpecPreflight.olean`
+/// artifacts held in process memory:
+/// `(lean_binary_sha256, canonical_sysroot_prefix, inspector_sha256)`.
 type InspectorCacheKey = (String, PathBuf, String);
 
-/// In-memory bytes and verified SHA-256 of Door-1-promoted
-/// `TrustedBoundary.olean`.
+/// In-memory bytes and verified SHA-256 of Door-1-promoted inspector `.olean`.
 #[derive(Debug)]
 struct CompiledInspectorArtifacts {
     bytes: Vec<u8>,
@@ -65,13 +69,68 @@ struct CompiledInspectorArtifacts {
 type InspectorCacheSlot = Arc<Mutex<Option<Arc<CompiledInspectorArtifacts>>>>;
 type InspectorCacheMap = BTreeMap<InspectorCacheKey, InspectorCacheSlot>;
 
-/// Process-wide cache of compiled `TrustedBoundary` `.olean*` parts keyed by
-/// admitted toolchain + inspector source digest. Each [`Checker`] materializes
-/// the bytes into its own private `0o700` stage directory so no `/tmp`
-/// directories outlive a run and concurrent callers never share writable paths.
+/// Process-wide cache of compiled `TrustedBoundary` / `SpecPreflight` `.olean`
+/// parts keyed by admitted toolchain + inspector source digest. Each
+/// [`Checker`] materializes the bytes into its own private `0o700` stage
+/// directory so no `/tmp` directories outlive a run and concurrent callers
+/// never share writable paths.
 fn compiled_inspector_cache() -> &'static Mutex<InspectorCacheMap> {
     static CACHE: OnceLock<Mutex<InspectorCacheMap>> = OnceLock::new();
     CACHE.get_or_init(|| Mutex::new(BTreeMap::new()))
+}
+
+/// Cached clean-sysroot `init_primitives_cone.ndjson` bytes and SHA-256 digest
+/// keyed by `(canonical_sysroot_prefix, leanexport_sha256, sysroot_key)`.
+#[derive(Debug)]
+pub(crate) struct CachedInitPrimitives {
+    pub bytes: Vec<u8>,
+    pub sha256: String,
+}
+
+type InitPrimitivesCacheKey = (PathBuf, String, String);
+type InitPrimitivesCacheSlot = Arc<Mutex<Option<Arc<CachedInitPrimitives>>>>;
+type InitPrimitivesCacheMap = BTreeMap<InitPrimitivesCacheKey, InitPrimitivesCacheSlot>;
+
+fn init_primitives_cache() -> &'static Mutex<InitPrimitivesCacheMap> {
+    static CACHE: OnceLock<Mutex<InitPrimitivesCacheMap>> = OnceLock::new();
+    CACHE.get_or_init(|| Mutex::new(BTreeMap::new()))
+}
+
+type SysrootConstsCacheKey = (PathBuf, String, String, Vec<String>, Vec<String>);
+type SysrootConstsMap = Arc<HashMap<String, String>>;
+type SysrootConstsCacheSlot = Arc<Mutex<Option<SysrootConstsMap>>>;
+type SysrootConstsCacheMap = BTreeMap<SysrootConstsCacheKey, SysrootConstsCacheSlot>;
+
+fn sysroot_consts_cache() -> &'static Mutex<SysrootConstsCacheMap> {
+    static CACHE: OnceLock<Mutex<SysrootConstsCacheMap>> = OnceLock::new();
+    CACHE.get_or_init(|| Mutex::new(BTreeMap::new()))
+}
+
+/// Digest binding a process-cache entry to the admitted sysroot's content:
+/// the pinned foundation manifest digest when one was verified, and
+/// otherwise the Lean binary digest together with every admitted unpinned
+/// module's `.olean*`/`.ir` part digests and source digest. Re-admitting a
+/// sysroot whose artifacts changed therefore misses both sysroot caches.
+fn sysroot_content_key(adm: &AdmittedToolchain) -> String {
+    if let Some(manifest) = &adm.sysroot_manifest_sha256 {
+        return manifest.clone();
+    }
+    let mut acc = format!("lean={}", adm.lean_sha256);
+    for (module, rec) in &adm.unpinned_records {
+        acc.push_str("\nmodule=");
+        acc.push_str(module);
+        let mut parts: Vec<&(String, String)> = rec.part_hashes.iter().collect();
+        parts.sort();
+        for (part, sha) in parts {
+            acc.push_str("\npart=");
+            acc.push_str(part);
+            acc.push('=');
+            acc.push_str(sha);
+        }
+        acc.push_str("\nsource=");
+        acc.push_str(rec.source_sha256.as_deref().unwrap_or("-"));
+    }
+    sha256_bytes(acc.as_bytes())
 }
 
 /// Fields needed from Lean's JSON diagnostic stream, not inspector JSON IPC.
@@ -142,6 +201,33 @@ struct InspectorErrResponse {
 struct InspectorOkTypedResponse<T> {
     ok: bool,
     result: T,
+}
+
+/// Upper bound on the summed byte length of one `leanexport` argument vector.
+///
+/// Linux bounds a single `execve` by `ARG_MAX` (commonly 2 MiB including the
+/// environment), so oversized `5a` / `5-pin` root lists fail closed here with
+/// a clear diagnostic rather than as an opaque `E2BIG` inside the sandbox.
+const MAX_LEANEXPORT_ARG_BYTES: usize = 1 << 20;
+
+/// Copy the comparator-verified `proof_full.ndjson` into a kernel's sandbox
+/// input directory read-only and re-hash the copy, so every kernel checks
+/// exactly the bytes whose SHA-256 the Rust comparator verified.
+fn copy_verified_kernel_input(
+    src: &Path,
+    dest: &Path,
+    expected_sha256: &str,
+    phase: &str,
+) -> Result<(), Failure> {
+    copy_readonly_file(src, dest, phase)?;
+    let actual = sha256_file(dest, phase)?;
+    if !actual.eq_ignore_ascii_case(expected_sha256) {
+        return Err(Failure::operational(
+            phase,
+            "kernel input proof_full.ndjson differs from the comparator-verified export",
+        ));
+    }
+    Ok(())
 }
 
 const LEAN_STDERR_PANIC_MARKERS: &[&str] = &[
@@ -1019,6 +1105,8 @@ pub struct Checker {
     counter: AtomicUsize,
     admitted: Option<AdmittedToolchain>,
     allow_unpinned_lean: bool,
+    paranoid_quorum: bool,
+    spec_preflight_mode_via_spec_preflight: bool,
     lean_memory_mb: Option<u32>,
     #[cfg(test)]
     expected_sysroot_manifest_sha256_for_test: Option<String>,
@@ -1113,6 +1201,8 @@ impl Checker {
             counter: AtomicUsize::new(0),
             admitted: None,
             allow_unpinned_lean: false,
+            paranoid_quorum: false,
+            spec_preflight_mode_via_spec_preflight: false,
             lean_memory_mb: None,
             #[cfg(test)]
             expected_sysroot_manifest_sha256_for_test: None,
@@ -1130,6 +1220,26 @@ impl Checker {
     #[cfg(test)]
     pub(crate) fn set_expected_sysroot_manifest_sha256_for_test(&mut self, sha: impl Into<String>) {
         self.expected_sysroot_manifest_sha256_for_test = Some(sha.into());
+    }
+
+    /// Configure whether Action `5c` additionally executes `con-leche` and
+    /// `lean4lean --import` directly inside `ExecSeal` alongside default
+    /// `nanoda_bin` + `con-ron` for a four-independent-kernel quorum.
+    pub fn set_paranoid_quorum(&mut self, enabled: bool) {
+        self.paranoid_quorum = enabled;
+    }
+
+    /// Return whether `--paranoid-quorum` is enabled.
+    pub fn paranoid_quorum(&self) -> bool {
+        self.paranoid_quorum
+    }
+
+    /// Test hook: serve `"spec-preflight"` from `SpecPreflight.lean` even
+    /// without the NDJSON comparator tools, so tests on the pinned toolchain
+    /// exercise the comparator route's specification preflight.
+    #[doc(hidden)]
+    pub fn set_spec_preflight_mode_via_spec_preflight(&mut self, enabled: bool) {
+        self.spec_preflight_mode_via_spec_preflight = enabled;
     }
 
     /// Configure OS-level elaborator containment mode (`ExecSeal`).
@@ -1692,6 +1802,7 @@ impl Checker {
     #[doc(hidden)]
     pub fn tool_admission(&mut self) -> Result<&mut AdmittedToolchain, Failure> {
         let inspector_src = self.root.join("trusted/audit/TrustedBoundary.lean");
+        let spec_preflight_src = self.root.join("trusted/audit/SpecPreflight.lean");
         let control_dir = self.stage.join("control");
         if control_dir.exists() {
             make_tree_writable(&control_dir);
@@ -1700,9 +1811,31 @@ impl Checker {
         let inspector = control_dir.join("TrustedBoundary.lean");
         let inspector_sha256 = stage_regular_file(&inspector_src, &inspector, "tool-snapshot")?;
         set_mode(&inspector, 0o444)?;
+        let (spec_preflight, spec_preflight_sha256) =
+            match fs::symlink_metadata(&spec_preflight_src) {
+                Ok(_) => {
+                    let sp_dest = control_dir.join("SpecPreflight.lean");
+                    let sp_sha =
+                        stage_regular_file(&spec_preflight_src, &sp_dest, "tool-snapshot")?;
+                    set_mode(&sp_dest, 0o444)?;
+                    (Some(sp_dest), Some(sp_sha))
+                }
+                Err(e) if e.kind() == io::ErrorKind::NotFound => (None, None),
+                Err(e) => {
+                    return Err(Failure::operational(
+                        "tool-snapshot",
+                        format!("cannot inspect {}: {e}", spec_preflight_src.display()),
+                    ));
+                }
+            };
         set_mode(&control_dir, 0o500)?;
         if self.allow_unpinned_lean {
-            return self.tool_admission_unpinned(inspector, inspector_sha256);
+            return self.tool_admission_unpinned(
+                inspector,
+                inspector_sha256,
+                spec_preflight,
+                spec_preflight_sha256,
+            );
         }
 
         let source = self.root.join("trusted/lean");
@@ -2003,6 +2136,8 @@ impl Checker {
         self.admitted = Some(AdmittedToolchain {
             inspector,
             inspector_sha256,
+            spec_preflight,
+            spec_preflight_sha256,
             lean_sha256: lean_sha,
             version: actual_version,
             prefix,
@@ -2021,6 +2156,8 @@ impl Checker {
             sysroot_manifest_sha256: Some(expected_sysroot_sha.to_owned()),
             inspector_olean: None,
             runtime_libs_verified,
+            spec_preflight_olean: None,
+            ndjson_tools: None,
         });
         Ok(self.admitted.as_mut().unwrap())
     }
@@ -2029,6 +2166,8 @@ impl Checker {
         &mut self,
         inspector: PathBuf,
         inspector_sha256: String,
+        spec_preflight: Option<PathBuf>,
+        spec_preflight_sha256: Option<String>,
     ) -> Result<&mut AdmittedToolchain, Failure> {
         let (version, prefix, exec_lean) = if self.sandbox_mode == SandboxMode::Unsandboxed {
             let version = self
@@ -2115,9 +2254,12 @@ impl Checker {
             .iter()
             .map(|(name, module)| ((*name).to_string(), (*module).to_string()))
             .collect();
+        let ndjson_tools = discover_ndjson_comparator_tools(&prefix)?;
         self.admitted = Some(AdmittedToolchain {
             inspector,
             inspector_sha256,
+            spec_preflight,
+            spec_preflight_sha256,
             lean_sha256: lean_binary_sha256.clone(),
             version,
             prefix,
@@ -2136,6 +2278,8 @@ impl Checker {
             sysroot_manifest_sha256: None,
             inspector_olean: None,
             runtime_libs_verified: false,
+            spec_preflight_olean: None,
+            ndjson_tools,
         });
         Ok(self.admitted.as_mut().unwrap())
     }
@@ -3205,6 +3349,24 @@ impl Checker {
                 ));
             }
         }
+        if let (Some(sp_path), Some(sp_sha)) = (&adm.spec_preflight, &adm.spec_preflight_sha256) {
+            let actual = sha256_file(sp_path, "artifact-ledger")?;
+            if !actual.eq_ignore_ascii_case(sp_sha) {
+                return Err(Failure::operational(
+                    "artifact-ledger",
+                    "staged SpecPreflight.lean changed during elaboration",
+                ));
+            }
+        }
+        if let Some((olean_path, expected_olean_sha)) = &adm.spec_preflight_olean {
+            let actual = sha256_file(olean_path, "artifact-ledger")?;
+            if !actual.eq_ignore_ascii_case(expected_olean_sha) {
+                return Err(Failure::operational(
+                    "artifact-ledger",
+                    "staged SpecPreflight.olean changed during elaboration",
+                ));
+            }
+        }
         for (path, expected_sha) in staged_sources {
             let actual = sha256_file(path, "artifact-ledger")?;
             if !actual.eq_ignore_ascii_case(expected_sha) {
@@ -3229,32 +3391,78 @@ impl Checker {
         Ok(())
     }
 
-    /// Compile staged `control/TrustedBoundary.lean` once per
-    /// `(lean_sha256, sysroot_prefix, inspector_sha256)` into
-    /// `control/TrustedBoundary.olean` (validated through Door 1 and pinned by
-    /// SHA-256 in [`AdmittedToolchain`]) so repeated inspector invocations
-    /// (`headers`, `spec-preflight`, `target-audit`, `preflight`, `audit`) load
-    /// the precompiled `.olean` instead of re-elaborating the full inspector
-    /// source on every call.
-    fn ensure_inspector_compiled(&mut self, mode: &str, direct: bool) -> Result<PathBuf, Failure> {
-        if let Some((olean_path, _)) = &self.admitted()?.inspector_olean {
-            return Ok(olean_path.clone());
+    /// Return whether `mode` should execute the minimal runtime
+    /// `SpecPreflight.lean` inspector instead of `TrustedBoundary.lean`.
+    ///
+    /// `"sysroot-consts"` and `"target-consts"` exist only in
+    /// `SpecPreflight.lean`, so they use it whenever it is staged (letting
+    /// pinned-toolchain tests exercise them); the shared preflight modes
+    /// switch to it only on the NDJSON comparator route.
+    fn uses_spec_preflight(&self, mode: &str) -> Result<bool, Failure> {
+        let adm = self.admitted()?;
+        if adm.spec_preflight.is_none() {
+            return Ok(false);
+        }
+        Ok(match mode {
+            "sysroot-consts" | "target-consts" => true,
+            "spec-preflight" if self.spec_preflight_mode_via_spec_preflight => true,
+            "headers" | "spec-preflight" | "resolve-imports" => adm.ndjson_tools.is_some(),
+            _ => false,
+        })
+    }
+
+    /// Compile staged `control/<stem>.lean` (`SpecPreflight.lean` for runtime
+    /// preflight and module-index modes, or `TrustedBoundary.lean` for offline
+    /// Pass 1/Pass 2 and transitional legacy `v4.34.1` `target-audit`) once per
+    /// `(lean_sha256, sysroot_prefix, source_sha256)` into
+    /// `control/<stem>.olean` (validated through Door 1 and pinned by SHA-256
+    /// in [`AdmittedToolchain`]).
+    fn ensure_inspector_compiled(
+        &mut self,
+        mode: &str,
+        direct: bool,
+        use_spec_preflight: bool,
+    ) -> Result<PathBuf, Failure> {
+        let stem = if use_spec_preflight { "SpecPreflight" } else { "TrustedBoundary" };
+        {
+            let adm = self.admitted()?;
+            let existing = if use_spec_preflight {
+                &adm.spec_preflight_olean
+            } else {
+                &adm.inspector_olean
+            };
+            if let Some((olean_path, _)) = existing {
+                return Ok(olean_path.clone());
+            }
         }
         let compile_phase = if direct { "compile-inspector" } else { mode };
         let (inspector_host, expected_sha, lean_sha, prefix) = {
             let adm = self.admitted()?;
-            (
-                adm.inspector.clone(),
-                adm.inspector_sha256.clone(),
-                adm.lean_sha256.clone(),
-                adm.prefix.clone(),
-            )
+            if use_spec_preflight {
+                (
+                    adm.spec_preflight.clone().ok_or_else(|| {
+                        Failure::operational(compile_phase, "missing staged SpecPreflight.lean")
+                    })?,
+                    adm.spec_preflight_sha256.clone().ok_or_else(|| {
+                        Failure::operational(compile_phase, "missing SpecPreflight.lean digest")
+                    })?,
+                    adm.lean_sha256.clone(),
+                    adm.prefix.clone(),
+                )
+            } else {
+                (
+                    adm.inspector.clone(),
+                    adm.inspector_sha256.clone(),
+                    adm.lean_sha256.clone(),
+                    adm.prefix.clone(),
+                )
+            }
         };
         let actual_sha = sha256_file(&inspector_host, compile_phase)?;
         if !actual_sha.eq_ignore_ascii_case(&expected_sha) {
             return Err(Failure::operational(
                 compile_phase,
-                "staged TrustedBoundary.lean changed before compilation",
+                format!("staged {stem}.lean changed before compilation"),
             ));
         }
         let runtime_opt = if direct {
@@ -3270,7 +3478,7 @@ impl Checker {
                 .map_err(|e| Failure::operational(compile_phase, e.to_string()))?;
             Some(OleanCacheKeyInput {
                 kind: CacheKind::Inspector,
-                module: "TrustedBoundary".to_owned(),
+                module: stem.to_owned(),
                 lean_sha256: lean_sha.clone(),
                 sysroot_manifest_sha256,
                 source_sha256: actual_sha.clone(),
@@ -3294,6 +3502,7 @@ impl Checker {
         let (olean_dest, olean_sha) = if let Some(cached) = guard.as_ref() {
             materialize_cached_inspector_olean(
                 &control_dir,
+                stem,
                 &cached.bytes,
                 &cached.sha256,
                 compile_phase,
@@ -3309,7 +3518,7 @@ impl Checker {
                     Failure::operational("olean-cache", "cached inspector missing primary olean")
                 })?;
             let promoted =
-                materialize_cached_inspector_olean(&control_dir, &bytes, &sha, compile_phase)?;
+                materialize_cached_inspector_olean(&control_dir, stem, &bytes, &sha, compile_phase)?;
             *guard =
                 Some(Arc::new(CompiledInspectorArtifacts { bytes, sha256: promoted.1.clone() }));
             promoted
@@ -3320,7 +3529,7 @@ impl Checker {
                     .stage
                     .join(format!("inspector-compile-{run_id:03}"));
                 create_dir_mode(&out_dir, 0o700)?;
-                let out_olean = out_dir.join("TrustedBoundary.olean");
+                let out_olean = out_dir.join(format!("{stem}.olean"));
                 let args = vec![
                     "-j1".to_string(),
                     mem_limit,
@@ -3353,13 +3562,13 @@ impl Checker {
                         format!("Lean exited {:?}: {}", output.status.code(), stderr.trim()),
                     ));
                 }
-                let promoted = promote_inspector_olean(&control_dir, &out_dir, compile_phase);
+                let promoted = promote_inspector_olean(&control_dir, stem, &out_dir, compile_phase);
                 let _ = fs::remove_dir_all(&out_dir);
                 promoted?
             } else {
                 let runtime = runtime_opt.expect("sandbox runtime initialized");
                 let (_run_dir, in_dir, out_dir, tmp_dir) = self.prepare_run_dirs()?;
-                let in_inspector = in_dir.join("TrustedBoundary.lean");
+                let in_inspector = in_dir.join(format!("{stem}.lean"));
                 copy_readonly_file(&inspector_host, &in_inspector, compile_phase)?;
                 set_mode(&in_dir, 0o500)?;
 
@@ -3376,7 +3585,7 @@ impl Checker {
                     child: PathBuf::from("/work/tmp"),
                 };
                 let mapper = PathMapper::new(&runtime, &ro_mounts, &rw_out, &rw_tmp);
-                let out_olean = out_dir.join("TrustedBoundary.olean");
+                let out_olean = out_dir.join(format!("{stem}.olean"));
                 let args = vec![
                     "-j1".to_string(),
                     mem_limit,
@@ -3411,7 +3620,7 @@ impl Checker {
                         format!("Lean exited {:?}: {}", output.status.code(), stderr.trim()),
                     ));
                 }
-                promote_inspector_olean(&control_dir, &out_dir, compile_phase)?
+                promote_inspector_olean(&control_dir, stem, &out_dir, compile_phase)?
             };
             if let Some(ref key_input) = inspector_cache_key {
                 self.olean_cache.store_compiled(
@@ -3429,7 +3638,12 @@ impl Checker {
         };
         drop(guard);
 
-        self.admitted.as_mut().unwrap().inspector_olean = Some((olean_dest.clone(), olean_sha));
+        let adm = self.admitted.as_mut().unwrap();
+        if use_spec_preflight {
+            adm.spec_preflight_olean = Some((olean_dest.clone(), olean_sha));
+        } else {
+            adm.inspector_olean = Some((olean_dest.clone(), olean_sha));
+        }
         Ok(olean_dest)
     }
 
@@ -3442,26 +3656,29 @@ impl Checker {
         Ok(Json::Object(map))
     }
 
-    /// Invoke staged `TrustedBoundary.lean` and deserialize the `"result"`
-    /// payload directly into a strict caller-defined schema `T` without passing
-    /// through an untyped map.
+    /// Invoke the staged Lean inspector (`SpecPreflight.lean` for runtime
+    /// preflight and module-index modes, or `TrustedBoundary.lean` for offline
+    /// Pass 1/Pass 2 and transitional legacy `v4.34.1` `target-audit`) and
+    /// deserialize `"result"` directly into a strict caller-defined schema `T`.
     pub(crate) fn invoke_inspector_typed<T: serde::de::DeserializeOwned>(
         &mut self,
         mode: &str,
         req: &Json,
     ) -> Result<T, Failure> {
+        let use_spec_preflight = self.uses_spec_preflight(mode)?;
         if self.sandbox_mode == SandboxMode::Unsandboxed && matches!(mode, "preflight" | "audit") {
-            let text = self.invoke_inspector_direct_text(mode, req)?;
+            let text = self.invoke_inspector_direct_text(mode, req, use_spec_preflight)?;
             return parse_inspector_ok_typed(mode, &text);
         }
 
-        let olean_host = self.ensure_inspector_compiled(mode, false)?;
+        let stem = if use_spec_preflight { "SpecPreflight" } else { "TrustedBoundary" };
+        let olean_host = self.ensure_inspector_compiled(mode, false, use_spec_preflight)?;
         let runtime = self.ensure_sandbox_ready()?;
         let (_run_dir, in_dir, out_dir, tmp_dir) = self.prepare_run_dirs()?;
 
-        copy_readonly_file(&olean_host, &in_dir.join("TrustedBoundary.olean"), mode)?;
-        let in_entry = in_dir.join("TrustedBoundaryEntry.lean");
-        fs::write(&in_entry, INSPECTOR_ENTRY_SOURCE).map_err(|e| {
+        copy_readonly_file(&olean_host, &in_dir.join(format!("{stem}.olean")), mode)?;
+        let in_entry = in_dir.join(format!("{stem}Entry.lean"));
+        fs::write(&in_entry, format!("import {stem}\n")).map_err(|e| {
             Failure::new(
                 2,
                 mode,
@@ -3476,10 +3693,11 @@ impl Checker {
         }];
         // Mount `stage/lib` (which holds compiled `Proof` `.olean`s) ONLY into
         // the isolated `"target-export"` child process, NEVER into the
-        // verdict-producing `"target-audit"` process. For `"target-audit"`,
-        // only explicitly listed non-proof target `.olean`s are staged into
-        // `in_dir/lib` below so authored `Proof` `.olean` bytes are physically
-        // absent from `"target-audit"`'s mount namespace and Landlock ruleset.
+        // verdict-producing `"target-audit"` process or the `"target-consts"`
+        // module index. For those two modes, only explicitly listed non-proof
+        // target `.olean`s are staged into `in_dir/lib` below so authored
+        // `Proof` `.olean` bytes are physically absent from their mount
+        // namespace and Landlock ruleset.
         let stage_lib_dir = self.stage.join("lib");
         if mode == "target-export" {
             create_dir_mode(&stage_lib_dir, 0o700)?;
@@ -3563,7 +3781,7 @@ impl Checker {
                                 for p in paths.iter_mut() {
                                     if let Some(s) = p.as_str() {
                                         let host_path = Path::new(s);
-                                        if mode == "target-audit"
+                                        if matches!(mode, "target-audit" | "target-consts")
                                             && let Ok(rel) = host_path.strip_prefix(&stage_lib_dir)
                                         {
                                             let dest = in_lib_dir.join(rel);
@@ -3662,14 +3880,20 @@ impl Checker {
         parse_inspector_ok_typed(mode, &resp_text)
     }
 
-    fn invoke_inspector_direct_text(&mut self, mode: &str, req: &Json) -> Result<String, Failure> {
-        let _olean_host = self.ensure_inspector_compiled(mode, true)?;
+    fn invoke_inspector_direct_text(
+        &mut self,
+        mode: &str,
+        req: &Json,
+        use_spec_preflight: bool,
+    ) -> Result<String, Failure> {
+        let stem = if use_spec_preflight { "SpecPreflight" } else { "TrustedBoundary" };
+        let _olean_host = self.ensure_inspector_compiled(mode, true, use_spec_preflight)?;
         let control_dir = self.stage.join("control");
-        let entry = control_dir.join("TrustedBoundaryEntry.lean");
+        let entry = control_dir.join(format!("{stem}Entry.lean"));
         let run_id = self.next_counter();
-        let stem = self.stage.join(format!("request-{run_id:03}-{mode}"));
-        let request_path = PathBuf::from(format!("{}.json", stem.display()));
-        let result_path = PathBuf::from(format!("{}.result.json", stem.display()));
+        let req_stem = self.stage.join(format!("request-{run_id:03}-{mode}"));
+        let request_path = PathBuf::from(format!("{}.json", req_stem.display()));
+        let result_path = PathBuf::from(format!("{}.result.json", req_stem.display()));
         let req_bytes = serde_json::to_vec(req)
             .map_err(|e| Failure::new(2, mode, format!("cannot serialize request: {e}")))?;
         fs::write(&request_path, req_bytes)
@@ -3717,6 +3941,682 @@ impl Checker {
 
         fs::read_to_string(&result_path)
             .map_err(|e| Failure::new(2, mode, format!("missing/malformed inspector result: {e}")))
+    }
+
+    /// Execute `leanexport` inside `ExecSeal` (`5-init`, `5a`, or `5b`),
+    /// mounting only the explicitly listed read-only `.olean` root directory
+    /// (if any) alongside the clean sysroot, verifying that `rw_out` stays
+    /// empty, re-hashing the binary after exit, and streaming NDJSON stdout
+    /// directly to `dest_ndjson`.
+    fn run_sandboxed_leanexport(
+        &mut self,
+        phase: &str,
+        extra_olean_root: Option<&Path>,
+        args: &[String],
+        dest_ndjson: &Path,
+    ) -> Result<String, Failure> {
+        let arg_bytes: usize = args.iter().map(|a| a.len() + 1).sum();
+        if arg_bytes > MAX_LEANEXPORT_ARG_BYTES {
+            return Err(Failure::operational(
+                phase,
+                format!(
+                    "leanexport command line needs {arg_bytes} bytes, above the \
+                     {MAX_LEANEXPORT_ARG_BYTES}-byte limit"
+                ),
+            ));
+        }
+        let (leanexport_host, expected_sha, sysroot_prefix, sysroot_lib_lean) = {
+            let adm = self.admitted()?;
+            let tools = adm.ndjson_tools.as_ref().ok_or_else(|| {
+                Failure::operational(phase, "NDJSON comparator binaries unavailable in sysroot")
+            })?;
+            (
+                tools.leanexport.clone(),
+                tools.leanexport_sha256.clone(),
+                adm.prefix.clone(),
+                adm.prefix.join("lib/lean"),
+            )
+        };
+        let actual_sha = sha256_file_deref(&leanexport_host, phase)?;
+        if !actual_sha.eq_ignore_ascii_case(&expected_sha) {
+            return Err(Failure::operational(
+                phase,
+                "leanexport binary changed before execution",
+            ));
+        }
+
+        let runtime = self.ensure_sandbox_ready()?;
+        let (_run_dir, in_dir, out_dir, tmp_dir) = self.prepare_run_dirs()?;
+        set_mode(&in_dir, 0o500)?;
+
+        let mut ro_mounts = vec![
+            MountSpec { host: in_dir, child: PathBuf::from("/work/in") },
+            MountSpec {
+                host: leanexport_host.clone(),
+                child: PathBuf::from("/toolchain/bin/leanexport"),
+            },
+        ];
+        if let Some(root) = extra_olean_root {
+            ro_mounts.push(MountSpec {
+                host: root.to_path_buf(),
+                child: PathBuf::from("/work/lib"),
+            });
+        }
+        let rw_out = MountSpec { host: out_dir.clone(), child: PathBuf::from("/work/out") };
+        let rw_tmp = MountSpec { host: tmp_dir.clone(), child: PathBuf::from("/work/tmp") };
+        let mapper = PathMapper::new(&runtime, &ro_mounts, &rw_out, &rw_tmp);
+
+        let sysroot_mapped = mapper.map_str(&sysroot_lib_lean)?;
+        let lean_path = if let Some(root) = extra_olean_root {
+            format!("{}:{sysroot_mapped}", mapper.map_str(root)?)
+        } else {
+            sysroot_mapped
+        };
+        let mut extra_env = BTreeMap::new();
+        extra_env.insert("LEAN_ABORT_ON_PANIC".to_string(), "1".to_string());
+        // Setting `LEAN_SYSROOT` lets `leanexport`'s `Lean.findSysroot` resolve
+        // the mounted toolchain root directly without spawning `lean
+        // --print-prefix` inside the sandbox.
+        extra_env.insert("LEAN_SYSROOT".to_string(), mapper.map_str(&sysroot_prefix)?);
+        extra_env.insert("LEAN_PATH".to_string(), lean_path);
+
+        let policy = SandboxPolicy {
+            exec_bin: leanexport_host.clone(),
+            args: args.to_vec(),
+            ro_mounts,
+            rw_out,
+            rw_tmp,
+            child_cwd: None,
+            extra_env,
+            timeout: self.child_timeout,
+        };
+        let output = runtime.execute_stdout_to_file(&policy, dest_ndjson, MAX_NDJSON_BYTES);
+        let out_nonempty = fs::read_dir(&out_dir)
+            .map(|mut entries| entries.next().is_some())
+            .unwrap_or(true);
+        let _ = fs::remove_dir_all(&tmp_dir);
+        let output = output?;
+        check_lean_stderr_panic(phase, &output)?;
+        let post_sha = sha256_file_deref(&leanexport_host, phase)?;
+        if !post_sha.eq_ignore_ascii_case(&expected_sha) {
+            return Err(Failure::operational(
+                phase,
+                "leanexport binary changed during verification",
+            ));
+        }
+        if out_nonempty {
+            return Err(Failure::operational(
+                "door1",
+                format!("unexpected output files from {phase} leanexport"),
+            ));
+        }
+        if !output.status.success() {
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            return Err(Failure::operational(
+                phase,
+                format!(
+                    "leanexport exited {:?}: {}",
+                    output.status.code(),
+                    stderr.trim()
+                ),
+            ));
+        }
+        sha256_file(dest_ndjson, phase)
+    }
+
+    /// Export (or retrieve from the process-wide cache) the clean sysroot
+    /// `init_primitives_cone.ndjson` pinning all 39 [`PINNED_INIT_PRIMITIVES`],
+    /// the 3 [`STANDARD_PERMITTED_AXIOMS`], and
+    /// [`PINNED_SYSTEM_PLATFORM_DECLS`].
+    ///
+    /// Mounting only the clean Lean sysroot (zero target `.olean`s) guarantees
+    /// that `init_primitives_cone.ndjson` cannot be influenced by untrusted
+    /// proof artifacts.
+    pub(crate) fn export_ndjson_init_primitives(
+        &mut self,
+    ) -> Result<Arc<CachedInitPrimitives>, Failure> {
+        let (prefix, leanexport_sha, sysroot_key) = {
+            let adm = self.admitted()?;
+            let tools = adm.ndjson_tools.as_ref().ok_or_else(|| {
+                Failure::operational(
+                    "ndjson-init-primitives",
+                    "NDJSON comparator binaries unavailable in sysroot",
+                )
+            })?;
+            let sysroot_key = sysroot_content_key(adm);
+            (adm.prefix.clone(), tools.leanexport_sha256.clone(), sysroot_key)
+        };
+        let slot = {
+            let mut map = init_primitives_cache().lock().unwrap_or_else(|e| e.into_inner());
+            map.entry((prefix, leanexport_sha, sysroot_key))
+                .or_insert_with(|| Arc::new(Mutex::new(None)))
+                .clone()
+        };
+        let mut guard = slot.lock().unwrap_or_else(|e| e.into_inner());
+        if let Some(cached) = guard.as_ref() {
+            return Ok(cached.clone());
+        }
+        let ndjson_dir = self.stage.join("ndjson");
+        create_dir_mode(&ndjson_dir, 0o700)?;
+        let dest = ndjson_dir.join("init_primitives_cone.ndjson");
+        let mut args = vec!["Init".to_string(), "--".to_string()];
+        args.extend(PINNED_INIT_PRIMITIVES.iter().map(|s| (*s).to_owned()));
+        args.extend(STANDARD_PERMITTED_AXIOMS.iter().map(|s| (*s).to_owned()));
+        args.extend(PINNED_SYSTEM_PLATFORM_DECLS.iter().map(|s| (*s).to_owned()));
+        let sha256 = self.run_sandboxed_leanexport("ndjson-init-primitives", None, &args, &dest)?;
+        let bytes = fs::read(&dest)
+            .map_err(|e| Failure::operational("ndjson-init-primitives", e.to_string()))?;
+        let entry = Arc::new(CachedInitPrimitives { bytes, sha256 });
+        *guard = Some(entry.clone());
+        Ok(entry)
+    }
+
+    /// Collect (and cache in process memory) the authenticated sysroot
+    /// `encodeCanonName -> moduleName` inventory via `SpecPreflight` mode
+    /// `"sysroot-consts"` (`loadExts := false`, zero target `.olean`s loaded).
+    pub(crate) fn collect_sysroot_consts_cached(
+        &mut self,
+    ) -> Result<Arc<HashMap<String, String>>, Failure> {
+        let (cache_key, req) = {
+            let adm = self.admitted()?;
+            let mut sorted_fnd: Vec<String> = adm.foundation_graph.keys().cloned().collect();
+            sorted_fnd.sort();
+            let mut sorted_libs: Vec<String> = adm.library_modules.iter().cloned().collect();
+            sorted_libs.sort();
+            let spec_pf_sha = adm.spec_preflight_sha256.clone().unwrap_or_default();
+            let sysroot_fp = sysroot_content_key(adm);
+            let arts_arr: Vec<Json> = adm
+                .artifacts
+                .iter()
+                .filter(|(k, _)| {
+                    adm.foundation_graph.contains_key(*k) || adm.library_modules.contains(*k)
+                })
+                .map(|(k, parts)| json!([k, parts.to_wire()]))
+                .collect();
+            let graph: BTreeMap<&str, &[ImportEdge]> = adm
+                .graph
+                .iter()
+                .filter(|(k, _)| {
+                    adm.foundation_graph.contains_key(*k) || adm.library_modules.contains(*k)
+                })
+                .map(|(k, v)| (k.as_str(), v.as_slice()))
+                .collect();
+            let req = json!({
+                "mode": "sysroot-consts",
+                "sysroot": adm.prefix.to_string_lossy(),
+                "artifacts": arts_arr,
+                "foundation": sorted_fnd,
+                "libraries": sorted_libs,
+                "graph": graph,
+            });
+            let cache_key =
+                (adm.prefix.clone(), spec_pf_sha, sysroot_fp, sorted_fnd, sorted_libs);
+            (cache_key, req)
+        };
+        let slot = {
+            let mut map = sysroot_consts_cache().lock().unwrap_or_else(|e| e.into_inner());
+            map.entry(cache_key)
+                .or_insert_with(|| Arc::new(Mutex::new(None)))
+                .clone()
+        };
+        let mut guard = slot.lock().unwrap_or_else(|e| e.into_inner());
+        if let Some(cached) = guard.as_ref() {
+            return Ok(cached.clone());
+        }
+        let resp = self.invoke_inspector("sysroot-consts", &req)?;
+        let entries = resp
+            .get("sysrootConsts")
+            .and_then(Json::as_array)
+            .ok_or_else(|| {
+                Failure::operational("sysroot-consts", "missing sysrootConsts inventory")
+            })?;
+        let mut out = HashMap::new();
+        for entry in entries {
+            let pair = entry.as_array().ok_or_else(|| {
+                Failure::operational("sysroot-consts", "malformed sysrootConsts entry")
+            })?;
+            if pair.len() != 2 {
+                return Err(Failure::operational(
+                    "sysroot-consts",
+                    "malformed sysrootConsts pair",
+                ));
+            }
+            let mod_name = pair[0].as_str().ok_or_else(|| {
+                Failure::operational("sysroot-consts", "malformed sysrootConsts module name")
+            })?;
+            let consts = pair[1].as_array().ok_or_else(|| {
+                Failure::operational("sysroot-consts", "malformed sysrootConsts constant array")
+            })?;
+            for c in consts {
+                let encoded = c.as_str().ok_or_else(|| {
+                    Failure::operational("sysroot-consts", "malformed sysrootConsts constant entry")
+                })?;
+                out.insert(encoded.to_owned(), mod_name.to_owned());
+            }
+        }
+        let arc = Arc::new(out);
+        *guard = Some(arc.clone());
+        Ok(arc)
+    }
+
+    /// Action `5a` (`AnnealExportExpected`): materialize an isolated
+    /// `stage/expected_lib/` containing strictly `{Model, Capture,
+    /// Specification, Expected}` `.olean`s (zero `Proof.*` or `Anneal.*` files
+    /// mounted) and export `plan.roots` with their dependencies to
+    /// `expected_cone.ndjson` via sandboxed `leanexport`.
+    ///
+    /// `--ignore-missing` is never passed: `leanexport` aborts on any absent
+    /// root or dependency instead of silently truncating the export.
+    pub(crate) fn export_ndjson_expected(
+        &mut self,
+        trusted_modules: &[String],
+        plan: &ExportPlan,
+        filename: &str,
+    ) -> Result<(PathBuf, String), Failure> {
+        let phase = "ndjson-export-expected";
+        let expected_lib = self.stage.join("expected_lib");
+        if expected_lib.exists() {
+            make_tree_writable(&expected_lib);
+            let _ = fs::remove_dir_all(&expected_lib);
+        }
+        create_dir_mode(&expected_lib, 0o700)?;
+
+        let lib_dir = self.stage.join("lib");
+        for module in trusted_modules {
+            let rel_base = module.replace('.', "/");
+            for part in OLEAN_PARTS {
+                let rel = format!("{rel_base}.{part}");
+                let src = lib_dir.join(&rel);
+                if *part == *"olean" || src.is_file() {
+                    let dst = expected_lib.join(&rel);
+                    copy_readonly_file(&src, &dst, phase)?;
+                }
+            }
+        }
+        let ndjson_dir = self.stage.join("ndjson");
+        create_dir_mode(&ndjson_dir, 0o700)?;
+        let dest = ndjson_dir.join(filename);
+
+        let mut args = plan.modules.clone();
+        args.push("--".to_string());
+        args.extend(plan.roots.iter().cloned());
+        let sha = self.run_sandboxed_leanexport(phase, Some(&expected_lib), &args, &dest)?;
+        Ok((dest, sha))
+    }
+
+    /// Action `5-pin`: re-export `plan.roots` (every sysroot-named constant
+    /// that `expected_cone` or `proof_full` uses) from the clean admitted
+    /// sysroot alone, with zero target `.olean`s mounted, so Action `5c` can
+    /// require each sysroot-named constant to equal its clean definition.
+    pub(crate) fn export_ndjson_sysroot_pins(
+        &mut self,
+        plan: &ExportPlan,
+        filename: &str,
+    ) -> Result<(PathBuf, String), Failure> {
+        let phase = "ndjson-sysroot-pins";
+        let ndjson_dir = self.stage.join("ndjson");
+        create_dir_mode(&ndjson_dir, 0o700)?;
+        let dest = ndjson_dir.join(filename);
+        let mut args = plan.modules.clone();
+        args.push("--".to_string());
+        args.extend(plan.roots.iter().cloned());
+        let sha = self.run_sandboxed_leanexport(phase, None, &args, &dest)?;
+        Ok((dest, sha))
+    }
+
+    /// Action `5b` (`AnnealExportProof`): export `proof_full.ndjson` from the
+    /// full compiled target library strictly inside `ExecSeal`, with read-only
+    /// `.olean` mounts, empty `rw_out`, and zero access to
+    /// `expected_cone.ndjson` or `result.json`.
+    pub(crate) fn export_ndjson_proof(
+        &mut self,
+        expected_module: &str,
+        theorem_module: &str,
+        expected_declaration: &str,
+        theorem_name: &str,
+        filename: &str,
+    ) -> Result<(PathBuf, String), Failure> {
+        let phase = "ndjson-export-proof";
+        let lib_dir = self.stage.join("lib");
+        let ndjson_dir = self.stage.join("ndjson");
+        create_dir_mode(&ndjson_dir, 0o700)?;
+        let dest = ndjson_dir.join(filename);
+
+        let mut args = vec![expected_module.to_string()];
+        if theorem_module != expected_module {
+            args.push(theorem_module.to_string());
+        }
+        args.push("--".to_string());
+        args.push(expected_declaration.to_string());
+        args.push(theorem_name.to_string());
+        let sha = self.run_sandboxed_leanexport(phase, Some(&lib_dir), &args, &dest)?;
+        Ok((dest, sha))
+    }
+
+    /// Run `nanoda_bin` over `proof_ndjson_host` inside `ExecSeal` with
+    /// `"unpermitted_axiom_hard_error": true` and `nat_extension` +
+    /// `string_extension` enabled.
+    pub(crate) fn run_ndjson_nanoda(
+        &mut self,
+        proof_ndjson_host: &Path,
+        proof_ndjson_sha256: &str,
+        allow_sorry_in_proof: bool,
+    ) -> Result<(), Failure> {
+        let phase = "ndjson-nanoda";
+        let (nanoda_host, expected_sha) = {
+            let adm = self.admitted()?;
+            let tools = adm.ndjson_tools.as_ref().ok_or_else(|| {
+                Failure::operational(phase, "nanoda_bin unavailable in sysroot")
+            })?;
+            (tools.nanoda_bin.clone(), tools.nanoda_bin_sha256.clone())
+        };
+        let actual_sha = sha256_file_deref(&nanoda_host, phase)?;
+        if !actual_sha.eq_ignore_ascii_case(&expected_sha) {
+            return Err(Failure::operational(
+                phase,
+                "nanoda_bin binary changed before execution",
+            ));
+        }
+
+        let runtime = self.ensure_sandbox_ready()?;
+        let (_run_dir, in_dir, out_dir, tmp_dir) = self.prepare_run_dirs()?;
+        let in_ndjson = in_dir.join("proof_full.ndjson");
+        copy_verified_kernel_input(proof_ndjson_host, &in_ndjson, proof_ndjson_sha256, phase)?;
+
+        let ro_mounts = vec![
+            MountSpec { host: in_dir.clone(), child: PathBuf::from("/work/in") },
+            MountSpec {
+                host: nanoda_host.clone(),
+                child: PathBuf::from("/toolchain/bin/nanoda_bin"),
+            },
+        ];
+        let rw_out = MountSpec { host: out_dir.clone(), child: PathBuf::from("/work/out") };
+        let rw_tmp = MountSpec { host: tmp_dir.clone(), child: PathBuf::from("/work/tmp") };
+        let mapper = PathMapper::new(&runtime, &ro_mounts, &rw_out, &rw_tmp);
+
+        let mapped_ndjson = mapper.map_str(&in_ndjson)?;
+        let cfg = build_nanoda_config_json(
+            &mapped_ndjson,
+            allow_sorry_in_proof,
+            crate::toolchain::default_compile_workers(4),
+        );
+        let cfg_host = in_dir.join("nanoda_config.json");
+        let cfg_bytes = serde_json::to_vec(&cfg)
+            .map_err(|e| Failure::operational(phase, format!("serialize nanoda config: {e}")))?;
+        fs::write(&cfg_host, cfg_bytes)
+            .map_err(|e| Failure::operational(phase, format!("write nanoda config: {e}")))?;
+        set_mode(&cfg_host, 0o444)?;
+        set_mode(&in_dir, 0o500)?;
+
+        let mut extra_env = BTreeMap::new();
+        extra_env.insert("LEAN_ABORT_ON_PANIC".to_string(), "1".to_string());
+        let policy = SandboxPolicy {
+            exec_bin: nanoda_host.clone(),
+            args: vec![mapper.map_str(&cfg_host)?],
+            ro_mounts,
+            rw_out,
+            rw_tmp,
+            child_cwd: None,
+            extra_env,
+            timeout: self.child_timeout,
+        };
+        let output = runtime.execute(&policy);
+        let out_nonempty = fs::read_dir(&out_dir)
+            .map(|mut entries| entries.next().is_some())
+            .unwrap_or(true);
+        let _ = fs::remove_dir_all(&tmp_dir);
+        let output = output?;
+        check_lean_stderr_panic(phase, &output)?;
+        let post_sha = sha256_file_deref(&nanoda_host, phase)?;
+        if !post_sha.eq_ignore_ascii_case(&expected_sha) {
+            return Err(Failure::operational(
+                phase,
+                "nanoda_bin binary changed during verification",
+            ));
+        }
+        if out_nonempty {
+            return Err(Failure::operational("door1", "unexpected output files from nanoda_bin"));
+        }
+        if !output.status.success() {
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            return Err(Failure::policy(
+                phase,
+                format!(
+                    "nanoda_bin rejected proof export (exit {:?}): {} {}",
+                    output.status.code(),
+                    stdout.trim(),
+                    stderr.trim()
+                ),
+            ));
+        }
+        Ok(())
+    }
+
+    /// Execute a standalone NDJSON kernel binary (`con-ron`, `con-leche`, or
+    /// `lean4lean`) over `proof_ndjson_host` inside `ExecSeal`, verifying the
+    /// binary SHA-256 against its admission digest before and after execution
+    /// and enforcing empty `rw_out`.
+    fn run_ndjson_standalone_kernel(
+        &mut self,
+        phase: &'static str,
+        kernel: StandaloneNdjsonKernel,
+        bin_host: PathBuf,
+        expected_sha: &str,
+        (proof_ndjson_host, proof_ndjson_sha256): (&Path, &str),
+    ) -> Result<(), Failure> {
+        let kernel_label = kernel.label();
+        let actual_sha = sha256_file_deref(&bin_host, phase)?;
+        if !actual_sha.eq_ignore_ascii_case(expected_sha) {
+            return Err(Failure::operational(
+                phase,
+                format!("{kernel_label} binary changed before execution"),
+            ));
+        }
+
+        let runtime = self.ensure_sandbox_ready()?;
+        let (_run_dir, in_dir, out_dir, tmp_dir) = self.prepare_run_dirs()?;
+        let in_ndjson = in_dir.join("proof_full.ndjson");
+        copy_verified_kernel_input(proof_ndjson_host, &in_ndjson, proof_ndjson_sha256, phase)?;
+        set_mode(&in_dir, 0o500)?;
+
+        let ro_mounts = vec![
+            MountSpec { host: in_dir, child: PathBuf::from("/work/in") },
+            MountSpec {
+                host: bin_host.clone(),
+                child: PathBuf::from(format!("/toolchain/bin/{kernel_label}")),
+            },
+        ];
+        let rw_out = MountSpec { host: out_dir.clone(), child: PathBuf::from("/work/out") };
+        let rw_tmp = MountSpec { host: tmp_dir.clone(), child: PathBuf::from("/work/tmp") };
+        let mapper = PathMapper::new(&runtime, &ro_mounts, &rw_out, &rw_tmp);
+
+        let mut args = kernel.args();
+        args.push(mapper.map_str(&in_ndjson)?);
+
+        let mut extra_env = BTreeMap::new();
+        extra_env.insert("LEAN_ABORT_ON_PANIC".to_string(), "1".to_string());
+        let policy = SandboxPolicy {
+            exec_bin: bin_host.clone(),
+            args,
+            ro_mounts,
+            rw_out,
+            rw_tmp,
+            child_cwd: None,
+            extra_env,
+            timeout: self.child_timeout,
+        };
+        let output = runtime.execute(&policy);
+        let out_nonempty = fs::read_dir(&out_dir)
+            .map(|mut entries| entries.next().is_some())
+            .unwrap_or(true);
+        let _ = fs::remove_dir_all(&tmp_dir);
+        let output = output?;
+        check_lean_stderr_panic(phase, &output)?;
+        let post_sha = sha256_file_deref(&bin_host, phase)?;
+        if !post_sha.eq_ignore_ascii_case(expected_sha) {
+            return Err(Failure::operational(
+                phase,
+                format!("{kernel_label} binary changed during verification"),
+            ));
+        }
+        if out_nonempty {
+            return Err(Failure::operational(
+                "door1",
+                format!("unexpected output files from {kernel_label}"),
+            ));
+        }
+        if !output.status.success() {
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            return Err(Failure::policy(
+                phase,
+                format!(
+                    "{kernel_label} rejected proof export (exit {:?}): {} {}",
+                    output.status.code(),
+                    stdout.trim(),
+                    stderr.trim()
+                ),
+            ));
+        }
+        Ok(())
+    }
+
+    /// Run `con-ron --verified` (the formally verified independent Rust arena
+    /// kernel bundled in Lean `v4.35.0+`) over `proof_ndjson_host` inside
+    /// `ExecSeal`.
+    pub(crate) fn run_ndjson_con_ron(
+        &mut self,
+        proof_ndjson_host: &Path,
+        proof_ndjson_sha256: &str,
+    ) -> Result<(), Failure> {
+        let phase = "ndjson-con-ron";
+        let (bin_host, expected_sha) = {
+            let adm = self.admitted()?;
+            let tools = adm.ndjson_tools.as_ref().ok_or_else(|| {
+                Failure::operational(phase, "con-ron unavailable in sysroot")
+            })?;
+            (tools.con_ron.clone(), tools.con_ron_sha256.clone())
+        };
+        self.run_ndjson_standalone_kernel(
+            phase,
+            StandaloneNdjsonKernel::ConRon,
+            bin_host,
+            &expected_sha,
+            (proof_ndjson_host, proof_ndjson_sha256),
+        )
+    }
+
+    /// Run `con-leche` (independent formally verified kernel bundled in Lean
+    /// `v4.35.0+`) over `proof_ndjson_host` inside `ExecSeal` for
+    /// `--paranoid-quorum`.
+    ///
+    /// Note on `lake comparator --paranoid`: Anneal executes the extra quorum
+    /// kernels (`con-leche` and `lean4lean --import`) directly inside
+    /// `ExecSeal` with SHA-256 pinning rather than delegating to `lake
+    /// comparator --paranoid`, because (1) `lake comparator` invokes
+    /// `nanoda_bin` with `"unpermitted_axiom_hard_error": false` and runs its
+    /// own nested sandbox outside `ExecSeal`, and (2) Lean `v4.35.0`'s
+    /// `Lean.Kernel.Environment.replay` (used by `leanchecker --from-export`
+    /// and `leanchecker-paranoid --from-export`) iterates `NameSet` in hash
+    /// order without pre-replaying implicit literal-reduction constants such as
+    /// `String.ofList`, causing false rejections on targets that reduce string
+    /// literals.
+    pub(crate) fn run_ndjson_con_leche(
+        &mut self,
+        proof_ndjson_host: &Path,
+        proof_ndjson_sha256: &str,
+    ) -> Result<(), Failure> {
+        let phase = "ndjson-con-leche";
+        let (bin_host, expected_sha) = {
+            let adm = self.admitted()?;
+            let tools = adm.ndjson_tools.as_ref().ok_or_else(|| {
+                Failure::operational(phase, "NDJSON comparator binaries unavailable in sysroot")
+            })?;
+            match (&tools.con_leche, &tools.con_leche_sha256) {
+                (Some(bin), Some(sha)) => (bin.clone(), sha.clone()),
+                _ => {
+                    return Err(Failure::operational(
+                        phase,
+                        "con-leche binary unavailable in sysroot for --paranoid-quorum",
+                    ));
+                }
+            }
+        };
+        self.run_ndjson_standalone_kernel(
+            phase,
+            StandaloneNdjsonKernel::ConLeche,
+            bin_host,
+            &expected_sha,
+            (proof_ndjson_host, proof_ndjson_sha256),
+        )
+    }
+
+    /// Run `lean4lean --import` (independent Lean 4 kernel implemented in Lean
+    /// 4, bundled in Lean `v4.35.0+`) over `proof_ndjson_host` inside
+    /// `ExecSeal` for `--paranoid-quorum`.
+    pub(crate) fn run_ndjson_lean4lean(
+        &mut self,
+        proof_ndjson_host: &Path,
+        proof_ndjson_sha256: &str,
+    ) -> Result<(), Failure> {
+        let phase = "ndjson-lean4lean";
+        let (bin_host, expected_sha) = {
+            let adm = self.admitted()?;
+            let tools = adm.ndjson_tools.as_ref().ok_or_else(|| {
+                Failure::operational(phase, "NDJSON comparator binaries unavailable in sysroot")
+            })?;
+            match (&tools.lean4lean, &tools.lean4lean_sha256) {
+                (Some(bin), Some(sha)) => (bin.clone(), sha.clone()),
+                _ => {
+                    return Err(Failure::operational(
+                        phase,
+                        "lean4lean binary unavailable in sysroot for --paranoid-quorum",
+                    ));
+                }
+            }
+        };
+        self.run_ndjson_standalone_kernel(
+            phase,
+            StandaloneNdjsonKernel::Lean4lean,
+            bin_host,
+            &expected_sha,
+            (proof_ndjson_host, proof_ndjson_sha256),
+        )
+    }
+}
+
+/// A standalone NDJSON kernel run over `proof_full.ndjson` inside `ExecSeal`.
+#[derive(Clone, Copy, Debug)]
+enum StandaloneNdjsonKernel {
+    ConRon,
+    ConLeche,
+    Lean4lean,
+}
+
+impl StandaloneNdjsonKernel {
+    const fn label(self) -> &'static str {
+        match self {
+            Self::ConRon => "con-ron",
+            Self::ConLeche => "con-leche",
+            Self::Lean4lean => "lean4lean",
+        }
+    }
+
+    /// Command-line arguments preceding the export path.
+    ///
+    /// `con-ron` and `con-leche` run in `--verified` mode with an explicitly
+    /// capped `--jobs`: left unset, each starts one worker per hardware
+    /// thread and reserves about 1 GiB of address space per worker, which
+    /// exhausts an address-space limit on many-core hosts.
+    fn args(self) -> Vec<String> {
+        match self {
+            Self::ConRon | Self::ConLeche => {
+                let jobs = crate::toolchain::default_compile_workers(2);
+                vec!["--verified".to_owned(), format!("--jobs={jobs}")]
+            }
+            Self::Lean4lean => vec!["--import".to_owned()],
+        }
     }
 }
 
@@ -3778,15 +4678,13 @@ fn prepare_run_dirs_at(
     Ok((run_dir, in_dir, out_dir, tmp_dir))
 }
 
-/// Minimal one-line Lean entrypoint executed by `lean --run` once staged
-/// `TrustedBoundary.lean` has been precompiled to `TrustedBoundary.olean`.
-const INSPECTOR_ENTRY_SOURCE: &str = "import TrustedBoundary\n";
-
-/// Materialize an already Door-1-validated in-memory `TrustedBoundary.olean`
-/// into `control_dir` (`0o444`), verify its SHA-256 digest, emit
-/// `TrustedBoundaryEntry.lean` (`0o444`), and re-lock `control_dir` (`0o500`).
+/// Materialize an already Door-1-validated in-memory inspector `.olean`
+/// (`SpecPreflight.olean` or `TrustedBoundary.olean`) into `control_dir`
+/// (`0o444`), emit `<stem>Entry.lean` (`0o444`), and re-lock `control_dir`
+/// (`0o500`).
 fn materialize_cached_inspector_olean(
     control_dir: &Path,
+    stem: &str,
     bytes: &[u8],
     expected_sha: &str,
     mode: &str,
@@ -3794,12 +4692,12 @@ fn materialize_cached_inspector_olean(
     if !sha256_bytes(bytes).eq_ignore_ascii_case(expected_sha) {
         return Err(Failure::operational(
             mode,
-            "in-memory precompiled TrustedBoundary.olean digest mismatch",
+            format!("in-memory precompiled {stem}.olean digest mismatch"),
         ));
     }
     set_mode(control_dir, 0o700)?;
     let written = (|| {
-        let olean_dest = control_dir.join("TrustedBoundary.olean");
+        let olean_dest = control_dir.join(format!("{stem}.olean"));
         if fs::symlink_metadata(&olean_dest).is_ok() {
             let _ = fs::remove_file(&olean_dest);
         }
@@ -3811,11 +4709,11 @@ fn materialize_cached_inspector_olean(
             )
         })?;
         set_mode(&olean_dest, 0o444)?;
-        let entry_dest = control_dir.join("TrustedBoundaryEntry.lean");
+        let entry_dest = control_dir.join(format!("{stem}Entry.lean"));
         if fs::symlink_metadata(&entry_dest).is_ok() {
             let _ = fs::remove_file(&entry_dest);
         }
-        fs::write(&entry_dest, INSPECTOR_ENTRY_SOURCE).map_err(|e| {
+        fs::write(&entry_dest, format!("import {stem}\n")).map_err(|e| {
             Failure::new(
                 2,
                 mode,
@@ -3829,26 +4727,28 @@ fn materialize_cached_inspector_olean(
     written.and_then(|pair| relock.map(|()| pair))
 }
 
-/// Promote a Door-1-validated `TrustedBoundary.olean` into `control_dir`
-/// (`0o444`), emit the static `TrustedBoundaryEntry.lean` (`0o444`), and
-/// unconditionally re-lock `control_dir` to `0o500`.
+/// Promote a Door-1-validated `<stem>.olean` into `control_dir` (`0o444`), emit
+/// `<stem>Entry.lean` (`0o444`), and unconditionally re-lock `control_dir` to
+/// `0o500`.
 fn promote_inspector_olean(
     control_dir: &Path,
+    stem: &str,
     out_dir: &Path,
     mode: &str,
 ) -> Result<(PathBuf, String), Failure> {
     set_mode(control_dir, 0o700)?;
     let promoted = (|| {
-        let olean_dest = control_dir.join("TrustedBoundary.olean");
+        let olean_filename = format!("{stem}.olean");
+        let olean_dest = control_dir.join(&olean_filename);
         if fs::symlink_metadata(&olean_dest).is_ok() {
             let _ = fs::remove_file(&olean_dest);
         }
-        let sha = validate_and_promote_olean(out_dir, "TrustedBoundary.olean", &olean_dest)?;
-        let entry_dest = control_dir.join("TrustedBoundaryEntry.lean");
+        let sha = validate_and_promote_olean(out_dir, &olean_filename, &olean_dest)?;
+        let entry_dest = control_dir.join(format!("{stem}Entry.lean"));
         if fs::symlink_metadata(&entry_dest).is_ok() {
             let _ = fs::remove_file(&entry_dest);
         }
-        fs::write(&entry_dest, INSPECTOR_ENTRY_SOURCE).map_err(|e| {
+        fs::write(&entry_dest, format!("import {stem}\n")).map_err(|e| {
             Failure::new(
                 2,
                 mode,
@@ -4159,6 +5059,8 @@ mod process_tests {
         checker.admitted = Some(AdmittedToolchain {
             inspector: checkout.path().join("TrustedBoundary.lean"),
             inspector_sha256: "0".repeat(64),
+            spec_preflight: None,
+            spec_preflight_sha256: None,
             lean_sha256: "0".repeat(64),
             version: "Lean 4.35".to_string(),
             prefix: checkout.path().to_path_buf(),
@@ -4177,6 +5079,8 @@ mod process_tests {
             sysroot_manifest_sha256: None,
             inspector_olean: None,
             runtime_libs_verified: false,
+            spec_preflight_olean: None,
+            ndjson_tools: None,
         });
         assert_eq!(checker.default_lean_memory_limit_mb(None), 2048);
         assert_eq!(checker.default_lean_memory_limit_mb(Some("target-audit")), 2048);
@@ -4558,6 +5462,8 @@ mod process_tests {
         checker.admitted = Some(AdmittedToolchain {
             inspector: inspector.clone(),
             inspector_sha256: sha256_file(&inspector, "test").unwrap(),
+            spec_preflight: None,
+            spec_preflight_sha256: None,
             lean_sha256: String::new(),
             version: "Lean 4.34.1".to_string(),
             prefix: root.clone(),
@@ -4576,6 +5482,8 @@ mod process_tests {
             sysroot_manifest_sha256: None,
             inspector_olean: Some((olean.clone(), sha256_file(&olean, "test").unwrap())),
             runtime_libs_verified: false,
+            spec_preflight_olean: None,
+            ndjson_tools: None,
         });
 
         checker.verify_artifact_ledger(&[]).unwrap();
@@ -5007,7 +5915,7 @@ exit 1
         c1.set_sandbox_mode(SandboxMode::Unsandboxed);
         c1.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
         c1.tool_admission().unwrap();
-        let _ = c1.ensure_inspector_compiled("headers", true).unwrap();
+        let _ = c1.ensure_inspector_compiled("headers", true, false).unwrap();
         c1.compile_lean_modules_parallel(
             &order, &sources, &imports, &is_module, "lib", false, false, 1,
         )
@@ -5024,7 +5932,7 @@ exit 1
         c2.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
         c2.set_no_rebuild_bundled(true);
         c2.tool_admission().unwrap();
-        let _ = c2.ensure_inspector_compiled("headers", true).unwrap();
+        let _ = c2.ensure_inspector_compiled("headers", true, false).unwrap();
         c2.compile_lean_modules_parallel(
             &order, &sources, &imports, &is_module, "lib", false, false, 1,
         )
@@ -5039,7 +5947,7 @@ exit 1
         c3.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
         c3.set_no_rebuild_bundled(true);
         c3.tool_admission().unwrap();
-        let _ = c3.ensure_inspector_compiled("headers", true).unwrap();
+        let _ = c3.ensure_inspector_compiled("headers", true, false).unwrap();
         let err = c3
             .compile_lean_modules_parallel(
                 &order, &sources, &imports, &is_module, "lib", false, false, 1,
@@ -5055,7 +5963,7 @@ exit 1
         c4.set_olean_disk_cache_dir_for_test(Some(disk_cache));
         c4.set_use_olean_cache(false);
         c4.tool_admission().unwrap();
-        let _ = c4.ensure_inspector_compiled("headers", true).unwrap();
+        let _ = c4.ensure_inspector_compiled("headers", true, false).unwrap();
         c4.compile_lean_modules_parallel(
             &order, &sources, &imports, &is_module, "lib", false, false, 1,
         )
@@ -5248,7 +6156,7 @@ exit 1
         c1.set_sandbox_mode(SandboxMode::Unsandboxed);
         c1.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
         c1.tool_admission().unwrap();
-        let _ = c1.ensure_inspector_compiled("headers", true).unwrap();
+        let _ = c1.ensure_inspector_compiled("headers", true, false).unwrap();
         c1.compile_lean_modules_parallel(
             &order_all, &sources, &imports, &is_module, "lib", false, false, 1,
         )
@@ -5264,7 +6172,7 @@ exit 1
         c2.set_sandbox_mode(SandboxMode::Unsandboxed);
         c2.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
         c2.tool_admission().unwrap();
-        let _ = c2.ensure_inspector_compiled("headers", true).unwrap();
+        let _ = c2.ensure_inspector_compiled("headers", true, false).unwrap();
         c2.compile_lean_modules_parallel(
             &order_prefix,
             &sources,
@@ -5287,7 +6195,7 @@ exit 1
         c3.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
         c3.set_no_rebuild_bundled(true);
         c3.tool_admission().unwrap();
-        let _ = c3.ensure_inspector_compiled("headers", true).unwrap();
+        let _ = c3.ensure_inspector_compiled("headers", true, false).unwrap();
         let err = c3
             .compile_lean_modules_parallel(
                 &order_all, &sources, &imports, &is_module, "lib", false, false, 1,
@@ -5304,7 +6212,7 @@ exit 1
         c4.set_sandbox_mode(SandboxMode::Unsandboxed);
         c4.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
         c4.tool_admission().unwrap();
-        let _ = c4.ensure_inspector_compiled("headers", true).unwrap();
+        let _ = c4.ensure_inspector_compiled("headers", true, false).unwrap();
         c4.compile_lean_modules_parallel(
             &order_all, &sources, &imports, &is_module, "lib", false, false, 1,
         )
@@ -5319,10 +6227,10 @@ exit 1
         let mut c5 = Checker::new_with_env(&root, Some(&lean), []).unwrap();
         c5.set_allow_unpinned_lean(true);
         c5.set_sandbox_mode(SandboxMode::Unsandboxed);
-        c5.set_olean_disk_cache_dir_for_test(Some(disk_cache));
+        c5.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
         c5.set_no_rebuild_bundled(true);
         c5.tool_admission().unwrap();
-        let _ = c5.ensure_inspector_compiled("headers", true).unwrap();
+        let _ = c5.ensure_inspector_compiled("headers", true, false).unwrap();
         c5.compile_lean_modules_parallel(
             &order_all, &sources, &imports, &is_module, "lib", false, false, 1,
         )
@@ -5393,6 +6301,10 @@ exit 1
             sysroot_manifest_sha256: None,
             inspector_olean: None,
             runtime_libs_verified: false,
+            ndjson_tools: None,
+            spec_preflight: None,
+            spec_preflight_sha256: None,
+            spec_preflight_olean: None,
         };
 
         let std_import = vec![ImportEdge {
@@ -5903,6 +6815,147 @@ exit 1
             "{zero_loop_err}"
         );
         assert!(!zero_loop_checker.execution_began());
+    }
+    #[test]
+    fn spec_preflight_uses_distinct_inspector_cache_key_and_supports_no_rebuild() {
+        use std::os::unix::fs::PermissionsExt;
+
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let root = base.join("bundle");
+        let prefix = base.join("sysroot");
+        let disk_cache = base.join("disk-cache");
+        let log_file = base.join("lean-compile.log");
+        fs::create_dir_all(prefix.join("lib/lean/Init")).unwrap();
+
+        fs::create_dir_all(root.join("trusted/audit")).unwrap();
+        fs::write(root.join("trusted/audit/TrustedBoundary.lean"), "-- trusted boundary\n")
+            .unwrap();
+        fs::write(root.join("trusted/audit/SpecPreflight.lean"), "-- spec preflight\n").unwrap();
+
+        let lean = base.join("lean");
+        fs::write(
+            &lean,
+            format!(
+                r#"#!/bin/sh
+case "$1" in
+    --version) printf 'Lean 4.34.1\n'; exit ;;
+    --print-prefix) printf '%s\n' '{}'; exit ;;
+esac
+out=""
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        -o) out="$2"; shift 2 ;;
+        *) shift ;;
+    esac
+done
+if [ -n "$out" ]; then
+    printf '%s\n' "$out" >> '{}'
+    printf 'olean\0024.34.1\000synthetic' > "$out"
+    exit 0
+fi
+exit 1
+"#,
+                prefix.display(),
+                log_file.display()
+            ),
+        )
+        .unwrap();
+        fs::set_permissions(&lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+        // Populate TrustedBoundary first, then ensure SpecPreflight still
+        // misses TrustedBoundary's cache key and compiles into its own slot.
+        let mut c1 = Checker::new_with_env(&root, Some(&lean), []).unwrap();
+        c1.set_allow_unpinned_lean(true);
+        c1.set_sandbox_mode(SandboxMode::Unsandboxed);
+        c1.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
+        c1.tool_admission().unwrap();
+        let tb = c1.ensure_inspector_compiled("target-audit", true, false).unwrap();
+        let sp = c1.ensure_inspector_compiled("headers", true, true).unwrap();
+        assert!(tb.ends_with("TrustedBoundary.olean"), "{}", tb.display());
+        assert!(sp.ends_with("SpecPreflight.olean"), "{}", sp.display());
+        let cold_lines: Vec<String> =
+            fs::read_to_string(&log_file).unwrap().lines().map(str::to_owned).collect();
+        assert_eq!(cold_lines.len(), 2, "expected distinct cold compiles: {cold_lines:?}");
+        fs::write(&log_file, b"").unwrap();
+
+        // Both inspectors must hit disk cache under `--no-rebuild-bundled`.
+        let mut c2 = Checker::new_with_env(&root, Some(&lean), []).unwrap();
+        c2.set_allow_unpinned_lean(true);
+        c2.set_sandbox_mode(SandboxMode::Unsandboxed);
+        c2.set_olean_disk_cache_dir_for_test(Some(disk_cache));
+        c2.set_no_rebuild_bundled(true);
+        c2.tool_admission().unwrap();
+        let tb2 = c2.ensure_inspector_compiled("target-audit", true, false).unwrap();
+        let sp2 = c2.ensure_inspector_compiled("headers", true, true).unwrap();
+        assert!(tb2.ends_with("TrustedBoundary.olean"), "{}", tb2.display());
+        assert!(sp2.ends_with("SpecPreflight.olean"), "{}", sp2.display());
+        assert_eq!(fs::read_to_string(&log_file).unwrap(), "", "warm --no-rebuild must not compile");
+    }
+
+    #[test]
+    fn arena_ndjson_kernels_run_verified_with_capped_jobs() {
+        let jobs = crate::toolchain::default_compile_workers(2);
+        assert!((1..=2).contains(&jobs), "{jobs}");
+        for kernel in [StandaloneNdjsonKernel::ConRon, StandaloneNdjsonKernel::ConLeche] {
+            assert_eq!(kernel.args(), ["--verified".to_owned(), format!("--jobs={jobs}")]);
+        }
+        assert_eq!(StandaloneNdjsonKernel::Lean4lean.args(), ["--import"]);
+    }
+
+    #[test]
+    fn sysroot_content_key_binds_unpinned_olean_part_digests() {
+        let root = PathBuf::from("/sysroot");
+        let mut adm = AdmittedToolchain {
+            inspector: root.join("TrustedBoundary.lean"),
+            inspector_sha256: String::new(),
+            lean_sha256: "lean".to_owned(),
+            version: "4.35.0".to_owned(),
+            prefix: root.clone(),
+            axioms: Vec::new(),
+            foundation_graph: BTreeMap::new(),
+            graph: BTreeMap::new(),
+            artifacts: BTreeMap::new(),
+            library_lock: None,
+            library_modules: BTreeSet::new(),
+            unpinned: true,
+            sysroot_package_roots: BTreeSet::new(),
+            unpinned_records: BTreeMap::new(),
+            lean_binary_sha256: None,
+            exec_lean: root.join("bin/lean"),
+            expected_lean_sha: None,
+            sysroot_manifest_sha256: None,
+            inspector_olean: None,
+            runtime_libs_verified: false,
+            ndjson_tools: None,
+            spec_preflight: None,
+            spec_preflight_sha256: None,
+            spec_preflight_olean: None,
+        };
+        let record = |olean: &str| crate::toolchain::UnpinnedSysrootArtifacts {
+            artifacts: ModuleArtifacts {
+                olean_parts: vec!["/sysroot/lib/lean/Init/Prelude.olean".to_owned()],
+                ir_parts: Vec::new(),
+            },
+            source_sha256: None,
+            part_hashes: vec![("olean".to_owned(), olean.to_owned())],
+        };
+        adm.unpinned_records.insert("Init.Prelude".to_owned(), record("aa"));
+        let base = sysroot_content_key(&adm);
+
+        // Changing only a `.olean` digest (same Lean binary, same source
+        // digest) changes the key.
+        adm.unpinned_records.insert("Init.Prelude".to_owned(), record("bb"));
+        let changed = sysroot_content_key(&adm);
+        assert_ne!(base, changed);
+
+        // An additional admitted module changes the key too.
+        adm.unpinned_records.insert("Init.Core".to_owned(), record("aa"));
+        assert_ne!(changed, sysroot_content_key(&adm));
+
+        // A verified pinned manifest digest is the key.
+        adm.sysroot_manifest_sha256 = Some("manifest".to_owned());
+        assert_eq!(sysroot_content_key(&adm), "manifest");
     }
 
     #[test]
