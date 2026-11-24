@@ -31,7 +31,7 @@ open Trusted.MirAst Trusted.MirSemantics
 (`Trusted.Correspondence.Config`)
 
 Constructs the concrete `Miri.Interpreter.ExecutionMachine.Config Unit RefUser
-Choice Unit Unit Unit` for a `RefProg`, wiring `deinitMovedPlace := true`,
+Choice Unit Unit Unit` for a `MiriProg`, wiring `deinitMovedPlace := true`,
 64-bit target layouts, `ValidityMemory.bind` shallow validation,
 `ExecutionScalar.Leaves`, `ExecutionLeaves.Discriminant`,
 `ExecutionCast.Leaves` (integer-like `IntToInt` casts only),
@@ -52,7 +52,7 @@ noncomputable def refLimits : Miri.Interpreter.ExecutionMachine.Limits := {
   validation := 8
 }
 
-/-- Pointer-arithmetic target for 64-bit `RefProg`s (`pointerSize = 8`). -/
+/-- Pointer-arithmetic target for 64-bit `MiriProg`s (`pointerSize = 8`). -/
 noncomputable def refPointerArithmetic : Miri.Memory.PointerArithmetic :=
   ⟨Miri.ABI.Size.ofBytes 8⟩
 
@@ -296,7 +296,7 @@ noncomputable def refBasePlaceProjectionHooks (types : List MirTy) :
 }
 
 /-- Decode a `Miri.MIR.ConstOperand` against `types` (strictly requiring an
-in-bounds `RefProg.types` index) via `evalRefConstLit` and encode it into a
+in-bounds `MiriProg.types` index) via `evalRefConstLit` and encode it into a
 typed `Miri.Interpreter.OpTy Miri.Memory.Provenance`. -/
 noncomputable def refEvalConstOperand (types : List MirTy)
     (c : Miri.MIR.ConstOperand)
@@ -1124,10 +1124,10 @@ noncomputable def refIntrinsicHooks (types : List MirTy) :
     mathHooks := none
   }
 
-/-- Canonical `Miri.Interpreter.ExecutionMachine.Config` for `rp : RefProg`,
+/-- Canonical `Miri.Interpreter.ExecutionMachine.Config` for `rp : MiriProg`,
 with `deinitMovedPlace := true` and real `ValidityMemory.bind` shallow
 validation. -/
-noncomputable def refExecutionConfig (rp : RefProg) :
+noncomputable def refExecutionConfig (rp : MiriProg) :
     Miri.Interpreter.ExecutionMachine.Config Unit RefUser Choice Unit Unit
       Unit :=
   let types := rp.types

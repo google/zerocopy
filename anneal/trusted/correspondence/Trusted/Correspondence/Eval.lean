@@ -69,7 +69,7 @@ rs.miri`:
 - All other errors (`.invalidBlock`, `.unsupported`, `.invalidProgram`,
   `.stack .cannotMakeReturnPlaceDead`, etc.) and `(_, .ok false)` map to
   `.blocked`. -/
-noncomputable def evalRefStep (rp : RefProg) (c : Choice)
+noncomputable def evalRefStep (rp : MiriProg) (c : Choice)
     (rs : RefState) : RefOutcome :=
   if !Nat.blt rs.stepsExecuted rs.maxSteps then
     .exhaustedStepLimit
@@ -96,20 +96,20 @@ noncomputable def evalRefStep (rp : RefProg) (c : Choice)
 /-- Reference single-step relation directly instantiating
 `Miri.Interpreter.ExecutionMachine.AllowedStep` over `refExecutionConfig rp`
 and admissible choices `c = 0`. -/
-def RefAllowedStep (rp : RefProg)
+def RefAllowedStep (rp : MiriProg)
     (before after : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (outcome : Except Miri.Interpreter.StepError Bool) : Prop :=
   Miri.Interpreter.ExecutionMachine.AllowedStep
     (refExecutionConfig rp) (fun _ c => c = 0) before after outcome
 
 /-- Relational small-step transition of $M_{\text{ref}}$. -/
-def RefStep (rp : RefProg) (rs : RefState)
+def RefStep (rp : MiriProg) (rs : RefState)
     (out : RefOutcome) : Prop :=
   ∃ c : Choice, ValidRefChoice rp rs c ∧ evalRefStep rp c rs = out
 
 /-- Unbounded finite-step reachability in $M_{\text{ref}}$, chaining `rs₃` from
 `RefStep rp rs₂ (.running rs₃)` unmodified. -/
-inductive RefReaches (rp : RefProg) : RefState → RefState → Prop where
+inductive RefReaches (rp : MiriProg) : RefState → RefState → Prop where
   | refl (rs : RefState) : RefReaches rp rs rs
   | tail {rs₁ rs₂ rs₃ : RefState} :
       RefReaches rp rs₁ rs₂ →
@@ -117,7 +117,7 @@ inductive RefReaches (rp : RefProg) : RefState → RefState → Prop where
       RefReaches rp rs₁ rs₃
 
 /-- Outcome `out` is reached from `(rp, q)` under step budget `maxSteps`. -/
-def RefReachesOutcome (rp : RefProg) (q : Query)
+def RefReachesOutcome (rp : MiriProg) (q : Query)
     (maxSteps : Nat) (out : RefOutcome) : Prop :=
   match initRefState rp q maxSteps with
   | .error k => out = faultToRefOutcome k
@@ -125,7 +125,7 @@ def RefReachesOutcome (rp : RefProg) (q : Query)
 
 /-- All-prefix well-formedness in $M_{\text{ref}}$: quantifies universally over
 all step budgets `maxSteps : Nat`. -/
-def RefWellFormed (rp : RefProg) (q : Query) : Prop :=
+def RefWellFormed (rp : MiriProg) (q : Query) : Prop :=
   ∀ maxSteps : Nat,
     (∃ rs₀ : RefState, initRefState rp q maxSteps = .ok rs₀ ∧
       ∀ rs : RefState, RefReaches rp rs₀ rs →
@@ -135,7 +135,7 @@ def RefWellFormed (rp : RefProg) (q : Query) : Prop :=
 
 /-- Observable terminal behavior in $M_{\text{ref}}$: quantifies existentially
 over a sufficient step budget `maxSteps : Nat`. -/
-def RefBehavior (rp : RefProg) (q : Query)
+def RefBehavior (rp : MiriProg) (q : Query)
     (out : TerminalOut) : Prop :=
   ∃ maxSteps : Nat, RefReachesOutcome rp q maxSteps (.returned out)
 
@@ -145,7 +145,7 @@ with `rs₀`, and there exists an infinite reference execution trace
 `n`, executing `trace n` with `stepsExecuted := n` and step budget
 `maxSteps := n + 1` transitions via `RefStep` to
 `.running { trace (n + 1) with stepsExecuted := n + 1, maxSteps := n + 1 }`. -/
-def RefDiverges (rp : RefProg) (q : Query) : Prop :=
+def RefDiverges (rp : MiriProg) (q : Query) : Prop :=
   ∃ rs₀ : RefState,
     initRefState rp q 0 = .ok rs₀ ∧
     ∃ trace : Nat → RefState,
@@ -161,7 +161,7 @@ def RefDiverges (rp : RefProg) (q : Query) : Prop :=
 
 /-- Choice-coupled finite-step reachability in $M_{\text{ref}}$ along an
 explicit sequence of admissible choices. -/
-inductive RefReachesAtChoices (rp : RefProg) :
+inductive RefReachesAtChoices (rp : MiriProg) :
     RefState → List Choice → RefState → Prop where
   | nil (rs : RefState) : RefReachesAtChoices rp rs [] rs
   | cons {rs₁ rs₂ rs₃ : RefState} {c : Choice} {cs : List Choice} :
@@ -172,7 +172,7 @@ inductive RefReachesAtChoices (rp : RefProg) :
 
 /-- Admissible finite execution prefix in $M_{\text{ref}}$ along `choices`
 under some sufficient step budget `maxSteps`. -/
-def RefValidPrefixAtChoices (rp : RefProg) (q : Query)
+def RefValidPrefixAtChoices (rp : MiriProg) (q : Query)
     (choices : List Choice) : Prop :=
   ∃ maxSteps : Nat, ∃ rs₀ rs : RefState,
     initRefState rp q maxSteps = .ok rs₀ ∧
@@ -181,7 +181,7 @@ def RefValidPrefixAtChoices (rp : RefProg) (q : Query)
 /-- Choice-coupled outcome reachability in $M_{\text{ref}}$ under step budget
 `maxSteps`: entry faults consume `choices = []`, while post-entry transitions
 consume `prefixChoices ++ [c]`. -/
-def RefReachesOutcomeAtChoices (rp : RefProg) (q : Query)
+def RefReachesOutcomeAtChoices (rp : MiriProg) (q : Query)
     (choices : List Choice) (maxSteps : Nat) (out : RefOutcome) : Prop :=
   match initRefState rp q maxSteps with
   | .error k => choices = [] ∧ out = faultToRefOutcome k
@@ -194,14 +194,14 @@ def RefReachesOutcomeAtChoices (rp : RefProg) (q : Query)
 
 /-- Choice-coupled observable terminal behavior in $M_{\text{ref}}$ along
 `choices`. -/
-def RefBehaviorAtChoices (rp : RefProg) (q : Query)
+def RefBehaviorAtChoices (rp : MiriProg) (q : Query)
     (choices : List Choice) (out : TerminalOut) : Prop :=
   ∃ maxSteps : Nat,
     RefReachesOutcomeAtChoices rp q choices maxSteps (.returned out)
 
 /-- Choice-coupled divergence in $M_{\text{ref}}$ along an infinite choice
 stream `choiceStream : Nat → Choice`. -/
-def RefDivergesAtChoices (rp : RefProg) (q : Query)
+def RefDivergesAtChoices (rp : MiriProg) (q : Query)
     (choiceStream : Nat → Choice) : Prop :=
   ∃ rs₀ : RefState,
     initRefState rp q 0 = .ok rs₀ ∧

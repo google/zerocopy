@@ -24,14 +24,14 @@ namespace Trusted.Correspondence
 open Trusted.MirAst Trusted.MirSemantics
 
 /-!
-# Reference Machine State, Layouts, AST Lowering, and Init
+# Reference Machine State, Layouts, and Init
 (`Trusted.Correspondence.State`)
 
 Defines the real `Miri.Interpreter.MachineHooks.State`-backed reference state
-(`RefUser`, `RefState`), `RefOutcome`, `Miri.ABI.LayoutData` adapters, real
-`Miri.MIR.Body` lowering (`toMiriBody`), return-allocation initialization
-(`refInitMemoryAndRetPlace`, `initRefState`), and return-value decoding
-(`refReadReturnVal`). Imports only `Init.*`, `Miri.*`, `Trusted.MirAst`,
+(`RefUser`, `RefState`), `RefOutcome`, `Miri.ABI.LayoutData` adapters,
+return-allocation initialization (`refInitMemoryAndRetPlace`, `initRefState`),
+and return-value decoding (`refReadReturnVal`) directly over `Miri.MIR.Body`
+in `MiriProg`. Imports only `Init.*`, `Miri.*`, `Trusted.MirAst`,
 `Trusted.MirModel`, and `Trusted.Correspondence.Codec`, never
 `Trusted.MirSemantics`.
 -/
@@ -108,7 +108,7 @@ inductive RefOutcome where
   | blocked
 
 /-- Admissible demonic choice predicate in $M_{\text{ref}}$. -/
-def ValidRefChoice (_rp : RefProg) (_rs : RefState)
+def ValidRefChoice (_rp : MiriProg) (_rs : RefState)
     (c : Choice) : Prop :=
   c = 0
 
@@ -120,28 +120,30 @@ noncomputable def faultToRefOutcome : FaultKind → RefOutcome
 
 /-! ## Static Body Checks in $M_{\text{ref}}$ -/
 
-/-- Whether `RefStatementKind` is a `StorageLive` or `StorageDead` annotation
-for `localId`. -/
-noncomputable def refStmtHasStorageMarker (localId : LocalId) :
-    RefStatementKind → Bool
-  | .storageLive id | .storageDead id => Nat.beq id localId
+/-- Whether `Miri.MIR.Statement` is a `StorageLive` or `StorageDead`
+annotation for `localId`. -/
+noncomputable def refStmtHasStorageMarker (localId : LocalId)
+    (stmt : Miri.MIR.Statement) : Bool :=
+  match stmt.kind with
+  | .StorageLive id | .StorageDead id => Nat.beq id localId
   | _ => false
 
-/-- Whether `rbody` contains a `StorageLive` or `StorageDead` annotation for
-`localId`. -/
-noncomputable def refHasStorageAnnotation (rbody : RefBody)
+/-- Whether `rbody : Miri.MIR.Body` contains a `StorageLive` or `StorageDead`
+annotation for `localId`. -/
+noncomputable def refHasStorageAnnotation (rbody : Miri.MIR.Body)
     (localId : LocalId) : Bool :=
-  rbody.basicBlocks.any (fun bb =>
-    bb.statements.any (refStmtHasStorageMarker localId))
+  rbody.basicBlocks.toList.any (fun bb =>
+    bb.statements.toList.any (refStmtHasStorageMarker localId))
 
 /-- Check that all `StorageLive` and `StorageDead` local indices in `rbody` are
-in bounds (`< rbody.locals.length`). -/
-noncomputable def refStorageAnnotationsInBounds (rbody : RefBody) : Bool :=
-  let numLocals := rbody.locals.length
-  rbody.basicBlocks.all (fun bb =>
-    bb.statements.all (fun stmt =>
-      match stmt with
-      | .storageLive id | .storageDead id => Nat.blt id numLocals
+in bounds (`< rbody.locals.size`). -/
+noncomputable def refStorageAnnotationsInBounds
+    (rbody : Miri.MIR.Body) : Bool :=
+  let numLocals := rbody.locals.size
+  rbody.basicBlocks.toList.all (fun bb =>
+    bb.statements.toList.all (fun stmt =>
+      match stmt.kind with
+      | .StorageLive id | .StorageDead id => Nat.blt id numLocals
       | _ => true))
 
 /-! ## Scalar, Integer, and Fieldless-Enum Adapters -/
@@ -291,62 +293,56 @@ noncomputable def refAsEnumTy? : MirTy → Option EnumTy
   | _ => none
 
 /-- Independent $M_{\text{ref}}$ check that every unprojected
-`Assign(dst, Discriminant(src))` in `rbody` whose `src` has an admitted
-enum-like type (`refAsEnumTy? srcTy = some ety`, covering `.enum ety` and
-`core::cmp::Ordering`) and whose `dst` is in bounds has destination type
+`Assign(dst, Discriminant(src))` in `rbody : Miri.MIR.Body` whose `src` has an
+admitted enum-like type (`refAsEnumTy? srcTy = some ety`, covering `.enum ety`
+and `core::cmp::Ordering`) and whose `dst` is in bounds has destination type
 `.int ety.discrWidth ety.discrSigned` (`.int .i8 true` for `Ordering`),
 matching `rustc`'s MIR well-typedness invariant for `Rvalue::Discriminant`. -/
 noncomputable def refDiscriminantTypesValid (localTys : List MirTy)
-    (rbody : RefBody) : Bool :=
-  rbody.basicBlocks.all (fun bb =>
-    bb.statements.all (fun stmt =>
-      match stmt with
-      | .assign dst rv =>
-        match rv with
-        | .discriminant src =>
-          if dst.projection.isEmpty && src.projection.isEmpty then
-            match MirSemantics.getElem? localTys src.localId with
-            | some srcTy =>
-              match refAsEnumTy? srcTy with
-              | some ety =>
-                match MirSemantics.getElem? localTys dst.localId with
-                | some dstTy =>
-                  if refEnumAdmitted ety then
-                    MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
-                  else
-                    true
-                | none => true
+    (rbody : Miri.MIR.Body) : Bool :=
+  rbody.basicBlocks.toList.all (fun bb =>
+    bb.statements.toList.all (fun stmt =>
+      match stmt.kind with
+      | .Assign dst (.Discriminant src) =>
+        if dst.projection.isEmpty && src.projection.isEmpty then
+          match MirSemantics.getElem? localTys src.localId with
+          | some srcTy =>
+            match refAsEnumTy? srcTy with
+            | some ety =>
+              match MirSemantics.getElem? localTys dst.localId with
+              | some dstTy =>
+                if refEnumAdmitted ety then
+                  MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
+                else
+                  true
               | none => true
             | none => true
-          else
-            true
-        | _ => true
+          | none => true
+        else
+          true
       | _ => true))
 
 /-- Independent $M_{\text{ref}}$ check that every unprojected
-`Assign(dst, Cast(IntToInt, _, castTy))` in `rbody` whose `dst` is in bounds
-has destination type `castTy` (`RefRvalue.cast` carries `castTy` as a `TyId`
-into `types`; an out-of-bounds `castTy` fails the check), matching `rustc`'s
-MIR well-typedness invariant that an assignment's place and rvalue have the
-same type. -/
+`Assign(dst, Cast(IntToInt, _, castTy))` in `rbody : Miri.MIR.Body` whose
+`dst` is in bounds has destination type `castTy` (`Miri.MIR.Rvalue.Cast` carries
+`castTy` as a `TyId` into `types`; an out-of-bounds `castTy` fails the check),
+matching `rustc`'s MIR well-typedness invariant that an assignment's place and
+rvalue have the same type. -/
 noncomputable def refCastTypesValid (types localTys : List MirTy)
-    (rbody : RefBody) : Bool :=
-  rbody.basicBlocks.all (fun bb =>
-    bb.statements.all (fun stmt =>
-      match stmt with
-      | .assign dst rv =>
-        match rv with
-        | .cast .intToInt _ castTyId =>
-          if dst.projection.isEmpty then
-            match MirSemantics.getElem? localTys dst.localId with
-            | some dstTy =>
-              match MirSemantics.getElem? types castTyId with
-              | some castTy => MirTy.beq dstTy castTy
-              | none => false
-            | none => true
-          else
-            true
-        | _ => true
+    (rbody : Miri.MIR.Body) : Bool :=
+  rbody.basicBlocks.toList.all (fun bb =>
+    bb.statements.toList.all (fun stmt =>
+      match stmt.kind with
+      | .Assign dst (.Cast .IntToInt _ castTyId) =>
+        if dst.projection.isEmpty then
+          match MirSemantics.getElem? localTys dst.localId with
+          | some dstTy =>
+            match MirSemantics.getElem? types castTyId with
+            | some castTy => MirTy.beq dstTy castTy
+            | none => false
+          | none => true
+        else
+          true
       | _ => true))
 
 /-- Independent $M_{\text{ref}}$ 0-byte ZST enum check (`Variants.Single 0`). -/
@@ -399,7 +395,7 @@ noncomputable def refLiveUninitSlot : MirTy → LocalSlot
 /-- Auxiliary offset code for built-in scalar/unit types (`bool`, `unit`, and
 the 12 integer types) when `ExecutionMachine` queries a compiler-known type
 (such as `boolLayout` or an enum tag integer type) not interned in
-`RefProg.types`. Indices `>= types.length` never collide with real `RefProg`
+`MiriProg.types`. Indices `>= types.length` never collide with real `MiriProg`
 `TyId`s. -/
 noncomputable def auxTyCode : MirTy → Option Nat
   | .bool => some 0
@@ -458,15 +454,6 @@ noncomputable def resolveTy (types : List MirTy) (tyId : TyId) :
       auxTyOfCode (tyId - types.length)
     else
       none
-
-/-- Normalize an in-bounds `RefProg` `TyId` to its first occurrence in `types`,
-so duplicate entries in non-canonical `RefProg.types` tables map to identical
-`Miri.MIR.TyId`s for `ScalarOps.assertSameType` and `Rvalue.assertRvalueLayout`
-while out-of-bounds `TyId`s remain out of bounds (`>= types.length`). -/
-noncomputable def canonicalTyId (types : List MirTy) (tyId : TyId) : TyId :=
-  match MirSemantics.getElem? types tyId with
-  | some ty => tyIdFor types ty
-  | none => tyId
 
 /-- Full unsigned `Miri.ABI.WrappingRange` for `sz : Miri.ABI.Size`. -/
 noncomputable def refFullWrappingRangeSize (sz : Miri.ABI.Size) :
@@ -632,143 +619,6 @@ noncomputable def refLocalLayoutForTy (types : List MirTy) (ty : MirTy) :
   ⟨tyIdFor types ty, refLayoutDataForTy ty⟩
 
 /-! ## Real `Miri.MIR` Syntax Lowering -/
-
-/-- Map `Trusted.MirAst.UnOp` to `Miri.MIR.UnOp`. -/
-noncomputable def toMiriUnOp : UnOp → Miri.MIR.UnOp
-  | .not => .Not
-  | .neg => .Neg
-  | .ptrMetadata => .PtrMetadata
-
-/-- Map `Trusted.MirAst.BinOp` to `Miri.MIR.BinOp`. -/
-noncomputable def toMiriBinOp : BinOp → Miri.MIR.BinOp
-  | .add => .Add
-  | .addUnchecked => .AddUnchecked
-  | .addWithOverflow => .AddWithOverflow
-  | .sub => .Sub
-  | .subUnchecked => .SubUnchecked
-  | .subWithOverflow => .SubWithOverflow
-  | .mul => .Mul
-  | .mulUnchecked => .MulUnchecked
-  | .mulWithOverflow => .MulWithOverflow
-  | .div => .Div
-  | .rem => .Rem
-  | .bitXor => .BitXor
-  | .bitAnd => .BitAnd
-  | .bitOr => .BitOr
-  | .shl => .Shl
-  | .shlUnchecked => .ShlUnchecked
-  | .shr => .Shr
-  | .shrUnchecked => .ShrUnchecked
-  | .eq => .Eq
-  | .lt => .Lt
-  | .le => .Le
-  | .ne => .Ne
-  | .ge => .Ge
-  | .gt => .Gt
-  | .cmp => .Cmp
-  | .offset => .Offset
-
-/-- Map `RefPlace` to `Miri.MIR.Place` (preserving `localId` and marking any
-non-empty projection with `.Deref` so `OperandMachine.evalPlaceToOp` and
-`PlaceDynamic.evalPlace` fail closed with `.unsupported` after checking local
-bounds/liveness). -/
-noncomputable def toMiriPlace (rp : RefPlace) : Miri.MIR.Place :=
-  ⟨rp.localId,
-    if rp.projection.isEmpty then Array.empty else Array.mk [.Deref]⟩
-
-/-- Map `RefOperand` to `Miri.MIR.Operand`, carrying the canonicalized
-`RefProg.types` index on `.Constant` operands (out-of-bounds indices remain
-out of bounds so `constantAt` fails closed). -/
-noncomputable def toMiriOperand (types : List MirTy) :
-    RefOperand → Miri.MIR.Operand
-  | .copy rp => .Copy (toMiriPlace rp)
-  | .move rp => .Move (toMiriPlace rp)
-  | .constant c =>
-    let cv : Miri.MIR.ConstValue :=
-      match c.lit with
-      | .scalar bits => .Scalar (.Int bits.toNat 16)
-      | .zeroSized => .ZeroSized
-    .Constant ⟨⟨0⟩, none, .Val cv (canonicalTyId types c.ty)⟩
-
-/-- Map `RefRvalue` to `Miri.MIR.Rvalue`. `.cast .intToInt` maps to
-`.Cast .IntToInt` with the canonicalized target `TyId`. Day-1 unmodeled
-rvalues (`.cast .unsupported`, `.ref`, `.addressOf`, `.aggregateTuple`, and
-`.unsupported`) map to the fail-closed
-sentinel `.CopyForDeref ⟨0, Array.empty⟩` that `evalRvalueIntoPlace` rejects
-immediately with `.invalidProgram` (`.blocked`), without evaluating unmodeled
-operands or forcing stack allocations. -/
-noncomputable def toMiriRvalue (types : List MirTy) :
-    RefRvalue → Miri.MIR.Rvalue
-  | .use op => .Use (toMiriOperand types op) .No
-  | .binaryOp op lhs rhs =>
-    .BinaryOp (toMiriBinOp op) (toMiriOperand types lhs)
-      (toMiriOperand types rhs)
-  | .unaryOp op opnd =>
-    .UnaryOp (toMiriUnOp op) (toMiriOperand types opnd)
-  | .cast .intToInt opnd ty =>
-    .Cast .IntToInt (toMiriOperand types opnd) (canonicalTyId types ty)
-  | .discriminant rp => .Discriminant (toMiriPlace rp)
-  | .cast .unsupported _ _ | .ref _ _ | .addressOf _ _ | .aggregateTuple _
-  | .unsupported =>
-    .CopyForDeref ⟨0, Array.empty⟩
-
-/-- Map `RefStatementKind` to `Miri.MIR.Statement`. `.unsupported` lowers to
-`.Assign ⟨0, #[]⟩ (.CopyForDeref ⟨0, #[]⟩)`, which `evalRvalueIntoPlace`
-rejects fail-closed with `.invalidProgram` (or `.invalidLocal 0` on an empty
-locals array), never triggering UB or mutating state. -/
-noncomputable def toMiriStatement (types : List MirTy) :
-    RefStatementKind → Miri.MIR.Statement
-  | .nop => { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .Nop }
-  | .storageLive localId =>
-    { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .StorageLive localId }
-  | .storageDead localId =>
-    { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .StorageDead localId }
-  | .assign dst rvalue =>
-    { sourceInfo := ⟨⟨0⟩, 0⟩
-      kind := .Assign (toMiriPlace dst) (toMiriRvalue types rvalue) }
-  | .unsupported =>
-    { sourceInfo := ⟨⟨0⟩, 0⟩
-      kind := .Assign ⟨0, Array.empty⟩ (.CopyForDeref ⟨0, Array.empty⟩) }
-
-/-- Map `RefTerminatorKind` to `Miri.MIR.Terminator`. Day-1 unmodeled
-terminators (`.unwindResume`, `.assert`, `.call`, and `.unsupported`) map to
-`.CoroutineDrop`, which `ControlFlow.evalTerminator` rejects fail-closed with
-`.invalidProgram` (`.blocked`). -/
-noncomputable def toMiriTerminator (types : List MirTy) :
-    RefTerminatorKind → Miri.MIR.Terminator
-  | .goto target =>
-    { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .Goto target Array.empty }
-  | .return_ =>
-    { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .Return }
-  | .unreachable =>
-    { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .Unreachable }
-  | .switchInt discr targets =>
-    { sourceInfo := ⟨⟨0⟩, 0⟩
-      kind := .SwitchInt (toMiriOperand types discr)
-        { cases := Array.mk
-            (targets.branches.map (fun b => .Case b.1.toNat b.2))
-          otherwise := targets.otherwise } }
-  | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _ | .unsupported =>
-    { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .CoroutineDrop }
-
-/-- Lower a `RefBasicBlock` to a `Miri.MIR.BasicBlock`. -/
-noncomputable def toMiriBasicBlock (types : List MirTy)
-    (rbb : RefBasicBlock) : Miri.MIR.BasicBlock := {
-  statements := Array.mk (rbb.statements.map (toMiriStatement types))
-  terminator := toMiriTerminator types rbb.terminator
-  cleanup := rbb.cleanup
-}
-
-/-- Lower a `RefBody` to a real `Miri.MIR.Body` (`Runtime(PostCleanup)` phase)
-whose local type table uses canonical `TyId`s. -/
-noncomputable def toMiriBody (types : List MirTy) (rbody : RefBody) :
-    Miri.MIR.Body := {
-  phase := .Runtime .PostCleanup
-  argumentCount := rbody.argumentCount
-  spreadArgument := none
-  locals := Array.mk (rbody.locals.map (canonicalTyId types))
-  basicBlocks := Array.mk (rbody.basicBlocks.map (toMiriBasicBlock types))
-}
 
 /-! ## Constant Decoding, Value Encoding, and Entry Initialization -/
 
@@ -1135,8 +985,8 @@ pre-populating `layout := some (refLocalLayoutForTy types ty)` on every local,
 matching `Miri.Interpreter.CallMachine.pushDone` (`alwaysLiveVarsAndTemps`)
 and `compiler/rustc_const_eval/src/interpret/stack.rs` (`rust-lang/rust`
 `8144389c895da997dbdecaa635e41d6a50be6ffd`). -/
-noncomputable def initRefLocalsLoop (types : List MirTy) (rbody : RefBody)
-    (args : List Val) :
+noncomputable def initRefLocalsLoop (types : List MirTy)
+    (rbody : Miri.MIR.Body) (args : List Val) :
     Nat → List MirTy →
       List (Miri.Interpreter.LocalState Miri.Memory.Provenance
         Miri.Interpreter.LocalLayout)
@@ -1159,14 +1009,14 @@ noncomputable def initRefLocalsLoop (types : List MirTy) (rbody : RefBody)
 /-- Construct a real `Miri.Interpreter.Frame` executing `defId`/`rbody` at
 `(blockIdx, stmtIdx)` with `locals` and caller-owned return destination
 `retPlace` (`returnContinuation := .stop false`). -/
-noncomputable def mkRefMiriFrame (types : List MirTy) (defId : DefId)
-    (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+noncomputable def mkRefMiriFrame (defId : DefId)
+    (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (locals : List (Miri.Interpreter.LocalState Miri.Memory.Provenance
       Miri.Interpreter.LocalLayout))
     (retPlace : Miri.Interpreter.MPlaceTy Miri.Memory.Provenance) :
     Miri.Interpreter.Frame Miri.Memory.Provenance
       Miri.Interpreter.LocalLayout Miri.Interpreter.MachineHooks.FrameExtra := {
-  body := toMiriBody types rbody
+  body := rbody
   bodyIdentity := Miri.Interpreter.BodyIdentity.ofCanonicalIndex defId
   functionInstance := { kind := .Item defId, args := Array.empty }
   extra := {
@@ -1216,7 +1066,7 @@ destinations, supported local types, and matching arguments; allocates the
 caller-owned return buffer in `MemoryState.empty`; and initializes a
 single-frame `Miri.Interpreter.MachineHooks.State` ready for
 `ExecutionMachine.step`. -/
-noncomputable def initRefState (rp : RefProg) (q : Query)
+noncomputable def initRefState (rp : MiriProg) (q : Query)
     (maxSteps : Nat) : Except FaultKind RefState :=
   if !Nat.beq rp.pointerWidthBits 64 || !Nat.beq rp.mirProfileVersion 1 then
     .error .unsupported
@@ -1226,10 +1076,10 @@ noncomputable def initRefState (rp : RefProg) (q : Query)
     match MirSemantics.getElem? rp.bodies rp.entryDefId with
     | none => .error .unsupported
     | some rbody =>
-      match decodeLocalTys rp.types rbody.locals with
+      match decodeLocalTys rp.types rbody.locals.toList with
       | none => .error .unsupported
       | some localTys =>
-        if rbody.basicBlocks.isEmpty then
+        if rbody.basicBlocks.toList.isEmpty then
           .error .unsupported
         else if !Nat.blt rbody.argumentCount localTys.length then
           .error .unsupported
@@ -1253,7 +1103,7 @@ noncomputable def initRefState (rp : RefProg) (q : Query)
               | .error k => .error k
               | .ok (mem, retPlace) =>
                 let rlocals := initRefLocalsLoop rp.types rbody q.args 0 localTys
-                let frame := mkRefMiriFrame rp.types rp.entryDefId rbody 0 0
+                let frame := mkRefMiriFrame rp.entryDefId rbody 0 0
                   rlocals retPlace
                 .ok {
                   miri := mkRefMiriState frame mem refInitControl q.callerMem

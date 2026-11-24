@@ -26,7 +26,7 @@ open Trusted Trusted.MirAst Trusted.MirSemantics Trusted.Correspondence
 # Simulation Invariant and Type-Table Helpers
 (`Anneal.MirCorrespondence.SimHelpers`)
 
-Proves canonical `TyId` resolution (`tyIdFor` / `resolveTy` / `canonicalTyId`),
+Proves canonical `TyId` resolution (`tyIdFor` / `resolveTy`),
 `SlotsMatchTys` and `liftLocals` structural lemmas, `Array` / `MirSemantics`
 indexing bridges, `SlotsMatchTys` preservation across `evalOperandToSlot`,
 `evalPrimitiveOperand`, `evalRvalue`, and `writePlace`, and right-injectivity
@@ -215,7 +215,7 @@ theorem ite_true_eq {α : Type} (a b : α) :
 theorem ite_not_true_eq {α : Type} (a b : α) :
     (if (!true) = true then a else b) = b := rfl
 
-/-! ## Canonical `TyId` Resolution (`tyIdFor`, `resolveTy`, `canonicalTyId`) -/
+/-! ## Canonical `TyId` Resolution (`tyIdFor`, `resolveTy`) -/
 
 theorem auxTyOfCode_auxTyCode {ty : MirTy} {code : Nat}
     (h : auxTyCode ty = some code) :
@@ -320,27 +320,142 @@ theorem tyIdFor_eq_iff_of_resolve {ts : List MirTy} {ty₁ ty₂ : MirTy}
     subst h_eq
     rfl
 
-theorem canonicalTyId_of_some {ts : List MirTy} {tyId : TyId} {ty : MirTy}
-    (h : MirSemantics.getElem? ts tyId = some ty) :
-    canonicalTyId ts tyId = tyIdFor ts ty ∧
-    MirSemantics.getElem? ts (canonicalTyId ts tyId) = some ty ∧
-    resolveTy ts (canonicalTyId ts tyId) = some ty := by
-  have h_c : canonicalTyId ts tyId = tyIdFor ts ty := by
-    dsimp only [canonicalTyId]
-    rw [h]
-  rw [h_c]
-  let ⟨h_g, h_r⟩ := resolveTy_tyIdFor_of_mem h
-  exact ⟨rfl, h_g, h_r⟩
+theorem decodeBasicBlock_inv {ts : List MirTy}
+    {rbb : Miri.MIR.BasicBlock} {bb : BasicBlock}
+    (h : decodeBasicBlock ts rbb = some bb) :
+    mapOption (fun st => decodeStmt ts st.kind) rbb.statements.toList =
+      some bb.statements ∧
+    decodeTerminator ts rbb.terminator.kind = some bb.terminator ∧
+    rbb.cleanup = bb.cleanup := by
+  dsimp only [decodeBasicBlock, optMap2] at h
+  cases h₁ : mapOption (fun st => decodeStmt ts st.kind)
+      rbb.statements.toList with
+  | none => rw [h₁] at h; cases h
+  | some stmts =>
+    cases h₂ : decodeTerminator ts rbb.terminator.kind with
+    | none => rw [h₁, h₂] at h; cases h
+    | some term =>
+      rw [h₁, h₂] at h
+      injection h with h_eq
+      subst h_eq
+      exact ⟨rfl, rfl, rfl⟩
 
-theorem canonicalTyId_of_none {ts : List MirTy} {tyId : TyId}
-    (h : MirSemantics.getElem? ts tyId = none) :
-    canonicalTyId ts tyId = tyId ∧
-    MirSemantics.getElem? ts (canonicalTyId ts tyId) = none := by
-  have h_c : canonicalTyId ts tyId = tyId := by
-    dsimp only [canonicalTyId]
-    rw [h]
-  rw [h_c]
-  exact ⟨rfl, h⟩
+theorem decodeBody_inv {ts : List MirTy} {bm : MiriBodyMeta}
+    {rbody : Miri.MIR.Body} {body : Body}
+    (h : decodeBody ts bm rbody = some body) :
+    rbody.phase = .Runtime .PostCleanup ∧
+    rbody.spreadArgument = none ∧
+    rbody.argumentCount = body.argumentCount ∧
+    decodeLocalTys ts rbody.locals.toList = some body.locals ∧
+    mapOption (decodeBasicBlock ts) rbody.basicBlocks.toList =
+      some body.basicBlocks ∧
+    bm.isUnsafe = body.isUnsafe ∧
+    bm.identity = body.identity := by
+  dsimp only [decodeBody] at h
+  cases h_ph : rbody.phase with
+  | Built => rw [h_ph] at h; cases h
+  | Analysis _ => rw [h_ph] at h; cases h
+  | Runtime rp_ph =>
+    cases rp_ph with
+    | Initial => rw [h_ph] at h; cases h
+    | Optimized => rw [h_ph] at h; cases h
+    | PostCleanup =>
+      cases h_sp : rbody.spreadArgument with
+      | some _ => rw [h_ph, h_sp] at h; cases h
+      | none =>
+        rw [h_ph, h_sp] at h
+        dsimp only [optMap2] at h
+        cases h₁ : decodeLocalTys ts rbody.locals.toList with
+        | none => rw [h₁] at h; cases h
+        | some locs =>
+          cases h₂ : mapOption (decodeBasicBlock ts)
+              rbody.basicBlocks.toList with
+          | none => rw [h₁, h₂] at h; cases h
+          | some bbs =>
+            rw [h₁, h₂] at h
+            injection h with h_eq
+            subst h_eq
+            exact ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+theorem decodeProg_inv {rp : MiriProg} {p : Program}
+    (h : decodeProg rp = some p) :
+    decodeBodies rp.types rp.bodies rp.bodyMeta = some p.bodies ∧
+    rp.entryDefId = p.entryDefId ∧
+    rp.pointerWidthBits = p.pointerWidthBits ∧
+    rp.mirProfileVersion = p.mirProfileVersion ∧
+    rp.scope = p.scope := by
+  dsimp only [decodeProg, optMap] at h
+  cases h_b : decodeBodies rp.types rp.bodies rp.bodyMeta with
+  | none => rw [h_b] at h; cases h
+  | some bodies =>
+    rw [h_b] at h
+    injection h with h_eq
+    subst h_eq
+    exact ⟨rfl, rfl, rfl, rfl, rfl⟩
+
+theorem decodeBodies_getElem?_some {ts : List MirTy}
+    {rbodies : List Miri.MIR.Body} {bms : List MiriBodyMeta}
+    {bodies : List Body}
+    (h_dec : decodeBodies ts rbodies bms = some bodies)
+    {i : Nat} {body : Body}
+    (h_get : MirSemantics.getElem? bodies i = some body) :
+    ∃ (rbody : Miri.MIR.Body) (bm : MiriBodyMeta),
+      MirSemantics.getElem? rbodies i = some rbody ∧
+      MirSemantics.getElem? bms i = some bm ∧
+      decodeBody ts bm rbody = some body := by
+  induction rbodies generalizing bms bodies i with
+  | nil =>
+    cases bms with
+    | nil =>
+      dsimp only [decodeBodies] at h_dec
+      injection h_dec with h_nil; subst h_nil; cases h_get
+    | cons _ _ => dsimp only [decodeBodies] at h_dec; cases h_dec
+  | cons rb rrest ih =>
+    cases bms with
+    | nil => dsimp only [decodeBodies] at h_dec; cases h_dec
+    | cons bm bmrest =>
+      dsimp only [decodeBodies, optMap2] at h_dec
+      cases h_b : decodeBody ts bm rb with
+      | none => rw [h_b] at h_dec; cases h_dec
+      | some b =>
+        rw [h_b] at h_dec
+        cases h_rest : decodeBodies ts rrest bmrest with
+        | none => rw [h_rest] at h_dec; cases h_dec
+        | some brest =>
+          rw [h_rest] at h_dec
+          injection h_dec with h_eq; subst h_eq
+          cases i with
+          | zero =>
+            injection h_get with h_b_eq; subst h_b_eq
+            exact ⟨rb, bm, rfl, rfl, h_b⟩
+          | succ j => exact ih h_rest h_get
+
+theorem decodeBodies_getElem?_none {ts : List MirTy}
+    {rbodies : List Miri.MIR.Body} {bms : List MiriBodyMeta}
+    {bodies : List Body}
+    (h_dec : decodeBodies ts rbodies bms = some bodies)
+    {i : Nat}
+    (h_none : MirSemantics.getElem? bodies i = none) :
+    MirSemantics.getElem? rbodies i = none := by
+  induction rbodies generalizing bms bodies i with
+  | nil => rfl
+  | cons rb rrest ih =>
+    cases bms with
+    | nil => dsimp only [decodeBodies] at h_dec; cases h_dec
+    | cons bm bmrest =>
+      dsimp only [decodeBodies, optMap2] at h_dec
+      cases h_b : decodeBody ts bm rb with
+      | none => rw [h_b] at h_dec; cases h_dec
+      | some b =>
+        rw [h_b] at h_dec
+        cases h_rest : decodeBodies ts rrest bmrest with
+        | none => rw [h_rest] at h_dec; cases h_dec
+        | some brest =>
+          rw [h_rest] at h_dec
+          injection h_dec with h_eq; subst h_eq
+          cases i with
+          | zero => cases h_none
+          | succ j => exact ih h_rest h_none
 
 theorem decodeLocalTys_mirGetElem? {ts : List MirTy} {tids : List TyId}
     {tys : List MirTy} {i : Nat} {ty : MirTy}
@@ -374,25 +489,15 @@ theorem decodeLocalTys_mirGetElem? {ts : List MirTy} {tids : List TyId}
           exact ⟨tid, rfl, h_t⟩
         | succ j => exact ih h_r h_get
 
-theorem decodeBody_local_mem_types {ts : List MirTy} {rbody : RefBody}
-    {body : Body} {i : Nat} {ty : MirTy}
-    (h_dec : decodeBody ts rbody = some body)
+theorem decodeBody_local_mem_types {ts : List MirTy} {bm : MiriBodyMeta}
+    {rbody : Miri.MIR.Body} {body : Body} {i : Nat} {ty : MirTy}
+    (h_dec : decodeBody ts bm rbody = some body)
     (h_get : MirSemantics.getElem? body.locals i = some ty) :
     ∃ tid : TyId,
-      MirSemantics.getElem? rbody.locals i = some tid ∧
+      MirSemantics.getElem? rbody.locals.toList i = some tid ∧
       MirSemantics.getElem? ts tid = some ty := by
-  dsimp only [decodeBody] at h_dec
-  cases h_locs : decodeLocalTys ts rbody.locals with
-  | none => rw [h_locs] at h_dec; cases h_dec
-  | some locs =>
-    rw [h_locs] at h_dec
-    cases h_bbs : mapOption (decodeBasicBlock ts) rbody.basicBlocks with
-    | none => rw [h_bbs] at h_dec; cases h_dec
-    | some bbs =>
-      rw [h_bbs] at h_dec
-      injection h_dec with h_b
-      subst h_b
-      exact decodeLocalTys_mirGetElem? h_locs h_get
+  let ⟨_, _, _, h_locs, _, _, _⟩ := decodeBody_inv h_dec
+  exact decodeLocalTys_mirGetElem? h_locs h_get
 
 theorem refLayoutOfTyId_tyIdFor_of_resolve {ts : List MirTy} {ty : MirTy}
     (h : resolveTy ts (tyIdFor ts ty) = some ty) :
@@ -1170,17 +1275,21 @@ theorem writePlace_slotsMatchTys {bodyLocals : List MirTy}
           exact ⟨SlotsMatchTys.setElem? (slot' := .immediate (some val))
             h_inv h_ty h_chk h_set, rfl⟩
 
-theorem decodePlace_inv {ts : List MirTy} {rp : RefPlace} {p : Place}
+theorem decodePlace_inv {ts : List MirTy} {rp : Miri.MIR.Place} {p : Place}
     (h : decodePlace ts rp = some p) :
     rp.localId = p.localId ∧ rp.projection.isEmpty = p.projection.isEmpty := by
   dsimp only [decodePlace] at h
-  cases h_proj : mapOption (decodeProjElem ts) rp.projection with
+  cases h_proj : mapOption (decodeProjElem ts) rp.projection.toList with
   | none => rw [h_proj] at h; cases h
   | some proj =>
     rw [h_proj] at h
     injection h with h_eq
     subst h_eq
-    exact ⟨rfl, mapOption_isEmpty h_proj⟩
+    refine ⟨rfl, ?_⟩
+    have h_ae : rp.projection.isEmpty = rp.projection.toList.isEmpty := by
+      cases rp.projection with
+      | mk l => cases l <;> rfl
+    exact h_ae.trans (mapOption_isEmpty h_proj)
 
 /-! ## Right-Injectivity of `SimulationInv` -/
 
@@ -1204,8 +1313,8 @@ theorem refState_unique_of_simulationInv_base :
   injection hinit₂ with h_pair
   injection h_pair with h_mem_eq h_rp_eq
   subst h_mem_eq
-  let ⟨body₁, rbody₁, hb₁, hrb₁, _, _, _, _, _, _, _, _, hrf₁⟩ := hframe₁
-  let ⟨body₂, rbody₂, hb₂, hrb₂, _, _, _, _, _, _, _, _, hrf₂⟩ := hframe₂
+  let ⟨body₁, rbody₁, _, hb₁, hrb₁, _, _, _, _, _, _, _, _, hrf₁⟩ := hframe₁
+  let ⟨body₂, rbody₂, _, hb₂, hrb₂, _, _, _, _, _, _, _, _, hrf₂⟩ := hframe₂
   rw [hb₁] at hb₂
   injection hb₂ with h_b_eq
   subst h_b_eq
@@ -1217,7 +1326,7 @@ theorem refState_unique_of_simulationInv_base :
     exact h_ctrl
   subst h_ctrl_eq
   have h_rf_eq : rf₁ = rf₂ := by
-    rw [hrf₁, hrf₂, h_rp_eq]
+    rw [hrf₁.2, hrf₂.2, h_rp_eq]
   subst h_rf_eq
   cases rs₁; cases rs₂
   dsimp only at hrt₁ hrt₂ h_rp_eq hmiri₁ hmiri₂ h_steps h_max

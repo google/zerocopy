@@ -103,11 +103,11 @@ preserving `retTy`, `retPlace`, `memory`, `maxSteps`, advancing `control` on
 terminators, and incrementing `stepsExecuted`. ($M_{\text{anneal}}$'s `mem`
 does not change on any step from a `SimulationInv` state, since only
 `.indirect` locals touch it.) -/
-noncomputable def mapStepRes (rp : RefProg) (body : Body)
-    (rbody : RefBody) (f : FrameState) (rs : RefState) :
+noncomputable def mapStepRes (rp : MiriProg) (body : Body)
+    (rbody : Miri.MIR.Body) (f : FrameState) (rs : RefState) :
     StepResult State TerminalOut → StepResult RefState TerminalOut
   | .step { frames := [f'], callerMem := cm, mem := _ } =>
-    let rf' := mkRefMiriFrame rp.types f'.defId rbody f'.blockIdx f'.stmtIdx
+    let rf' := mkRefMiriFrame f'.defId rbody f'.blockIdx f'.stmtIdx
       (liftLocals rp.types body.locals f'.locals) rs.retPlace
     let ctrl' := nextRefControlForStep body f rs.miri.machine.user.control
     .step {
@@ -128,15 +128,16 @@ noncomputable def stepResultToRefOutcome :
 
 /-- Frame-level one-to-one simulation invariant relating $M_{\text{anneal}}$
 frame `f` to its real `Miri.Interpreter.Frame` `rf`. -/
-def FrameSimInv (rp : RefProg) (p : Program) (f : FrameState)
+def FrameSimInv (rp : MiriProg) (p : Program) (f : FrameState)
     (retPlace : Miri.Interpreter.MPlaceTy Miri.Memory.Provenance)
     (rf : Miri.Interpreter.Frame Miri.Memory.Provenance
       Miri.Interpreter.LocalLayout
       Miri.Interpreter.MachineHooks.FrameExtra) : Prop :=
-  ∃ (body : Body) (rbody : RefBody),
+  ∃ (body : Body) (rbody : Miri.MIR.Body) (rmeta : MiriBodyMeta),
     MirSemantics.getElem? p.bodies f.defId = some body ∧
     MirSemantics.getElem? rp.bodies f.defId = some rbody ∧
-    decodeBody rp.types rbody = some body ∧
+    MirSemantics.getElem? rp.bodyMeta f.defId = some rmeta ∧
+    decodeBody rp.types rmeta rbody = some body ∧
     Nat.blt body.argumentCount body.locals.length = true ∧
     storageAnnotationsInBounds body = true ∧
     discriminantTypesValid body = true ∧
@@ -144,7 +145,7 @@ def FrameSimInv (rp : RefProg) (p : Program) (f : FrameState)
     body.locals.all isSupportedScalarOrUnitTy = true ∧
     SlotsMatchTys body.locals f.locals ∧
     FramePcInBounds body f ∧
-    rf = mkRefMiriFrame rp.types f.defId rbody f.blockIdx f.stmtIdx
+    rf = mkRefMiriFrame f.defId rbody f.blockIdx f.stmtIdx
       (liftLocals rp.types body.locals f.locals) retPlace
 
 /-- Type of the entry function's return place `_0`, which types the caller-owned
@@ -167,7 +168,7 @@ caller-owned return allocation (allocation id `1`), and $M_{\text{anneal}}$'s
 memory is `entryMemory` (no allocations, allocation id `1` reserved for the
 same return place). Without indirect locals (`SlotMatchesTy`), no step of
 either machine allocates, writes, or deallocates memory before `Return`. -/
-def SimulationInv (rp : RefProg) (p : Program) (s : State) (rs : RefState) :
+def SimulationInv (rp : MiriProg) (p : Program) (s : State) (rs : RefState) :
     Prop :=
   ∃ (f : FrameState)
     (rf : Miri.Interpreter.Frame Miri.Memory.Provenance

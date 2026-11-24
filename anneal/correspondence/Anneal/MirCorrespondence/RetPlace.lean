@@ -967,7 +967,7 @@ theorem validatePlace_mem_ub_step (types : List MirTy) (c : Choice)
     bind, Bind.bind, EStateM.bind, pure, Pure.pure, EStateM.pure]
   rw [mem_ite_false_eq, h_vis]
 
-theorem copyRuntimePlace_imm_to_mem_step (rp : RefProg) (c : Choice)
+theorem copyRuntimePlace_imm_to_mem_step (rp : MiriProg) (c : Choice)
     (ty : MirTy) (imm : Immediate Miri.Memory.Provenance)
     (mplace : Miri.Interpreter.MemPlace Miri.Memory.Provenance)
     (st st1 : Miri.Interpreter.MachineHooks.State Unit RefUser)

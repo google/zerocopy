@@ -51,20 +51,21 @@ all of their transitive dependencies (`Trusted.Correspondence`,
 
 This module defines five components:
 
-1. **Reference-indexed MIR syntax (`RefProg`):** Mirrors `Miri.MIR.Syntax` by
-   replacing inline structural `MirTy` values with `TyId := Nat` indices into a
-   single deduplicated program type table `RefProg.types : List MirTy`, while
-   carrying explicit `pointerWidthBits : Nat`, `mirProfileVersion : Nat`, and
-   `scope : VerificationScope`.
-2. **Canonical type-interning codec (`encodeProg` / `decodeProg`):** Interns
-   every structural `MirTy` in bottom-up topological order and provides an
+1. **Direct `Miri.MIR` reference target (`MiriProg`):** Targets upstream
+   `Miri.MIR.Body` directly while replacing inline structural `MirTy` values
+   with `TyId := Nat` indices into a single deduplicated program type table
+   `MiriProg.types : List MirTy`, carrying inert `bodyMeta : List
+   MiriBodyMeta` plus explicit `pointerWidthBits : Nat`, `mirProfileVersion :
+   Nat`, and `scope : VerificationScope`.
+2. **Direct canonical type-interning codec (`encodeToMiri` / `decodeProg`):**
+   Interns every structural `MirTy` in bottom-up topological order and lowers
+   `Trusted.MirAst.Program` directly in 2 hops to `MiriProg`, paired with an
    unconditional left-inverse decoder `decodeProg`.
 3. **Direct `Miri.Interpreter.ExecutionMachine.step` reference semantics
    ($M_{\text{ref}}$):** Wraps real `Miri.Interpreter.MachineHooks.State Unit
    RefUser` in `RefState`, allocates the caller-owned return place `retPlace`
-   in `Miri.Memory.MemoryState` (`refInitMemoryAndRetPlace`), lowers each
-   `RefBody` to a real `Miri.MIR.Body` (`toMiriBody`), and drives every
-   statement and terminator directly through
+   in `Miri.Memory.MemoryState` (`refInitMemoryAndRetPlace`), and drives every
+   `Miri.MIR.Body` directly through
    `Miri.Interpreter.ExecutionMachine.step (refExecutionConfig rp) refLimits c
    rs.miri` (`vendor/lean-miri`, pinned at `proofs-rs/lean-miri` commit
    `c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a`, `miri` commit
@@ -96,18 +97,18 @@ This module defines five components:
 /-- Trusted statement of the correspondence theorem between
 $M_{\text{anneal}}$ (`Trusted.MirSemantics`) and $M_{\text{ref}}$
 (`Trusted.Correspondence`). For every well-formed `(p, q)`:
-1. `encodeProg p` is well-formed in $M_{\text{ref}}$ under every step budget
+1. `encodeToMiri p` is well-formed in $M_{\text{ref}}$ under every step budget
    (UB transfer);
 2. both machines exhibit exactly the same terminal behaviors; and
-3. `(p, q)` diverges in $M_{\text{anneal}}$ if and only if `encodeProg p`
+3. `(p, q)` diverges in $M_{\text{anneal}}$ if and only if `encodeToMiri p`
    diverges in $M_{\text{ref}}$. -/
 def CorrespondenceClaim : Prop :=
   ∀ (p : Program) (q : Query),
     WellFormed p q →
-    RefWellFormed (encodeProg p) q ∧
+    RefWellFormed (encodeToMiri p) q ∧
     (∀ (out : TerminalOut),
-      Behavior p q out ↔ RefBehavior (encodeProg p) q out) ∧
-    (Diverges p q ↔ RefDiverges (encodeProg p) q)
+      Behavior p q out ↔ RefBehavior (encodeToMiri p) q out) ∧
+    (Diverges p q ↔ RefDiverges (encodeToMiri p) q)
 
 /-- Trusted statement of bidirectional fault equivalence for all
 `k : FaultKind` (`.undefined` ↔ `.ub` and `.unsupported` ↔ `.blocked`). -/
@@ -115,12 +116,12 @@ def FaultEquivalenceClaim : Prop :=
   ∀ (p : Program) (q : Query) (k : FaultKind),
     ReachesResult p q (.fault k) ↔
     ∃ maxSteps,
-      RefReachesOutcome (encodeProg p) q maxSteps (faultToRefOutcome k)
+      RefReachesOutcome (encodeToMiri p) q maxSteps (faultToRefOutcome k)
 
 /-- Unconditional choice-coupled correspondence claim across every `(p, q)`
 (not gated on `WellFormed p q`), preventing cross-branch outcome permutation
 when nondeterministic choices are introduced:
-1. UB transfer (`WellFormed p q → RefWellFormed (encodeProg p) q`);
+1. UB transfer (`WellFormed p q → RefWellFormed (encodeToMiri p) q`);
 2. unconditional forward totality across all valid finite prefixes
    (`RefValidPrefixAtChoices → ValidPrefixAtChoices`);
 3. choice-coupled terminal behavior simulation
@@ -129,15 +130,15 @@ when nondeterministic choices are introduced:
    (`RefDivergesAtChoices → DivergesAtChoices`). -/
 def CorrespondenceAtChoicesClaim : Prop :=
   ∀ (p : Program) (q : Query),
-    (WellFormed p q → RefWellFormed (encodeProg p) q) ∧
+    (WellFormed p q → RefWellFormed (encodeToMiri p) q) ∧
     (∀ (choices : List Choice),
-      RefValidPrefixAtChoices (encodeProg p) q choices →
+      RefValidPrefixAtChoices (encodeToMiri p) q choices →
         ValidPrefixAtChoices p q choices) ∧
     (∀ (choices : List Choice) (out : TerminalOut),
-      RefBehaviorAtChoices (encodeProg p) q choices out →
+      RefBehaviorAtChoices (encodeToMiri p) q choices out →
         BehaviorAtChoices p q choices out) ∧
     (∀ (choiceStream : Nat → Choice),
-      RefDivergesAtChoices (encodeProg p) q choiceStream →
+      RefDivergesAtChoices (encodeToMiri p) q choiceStream →
         DivergesAtChoices p q choiceStream)
 
 /-- Unconditional choice-coupled bidirectional fault equivalence for all
@@ -146,7 +147,7 @@ def FaultEquivalenceAtChoicesClaim : Prop :=
   ∀ (p : Program) (q : Query) (choices : List Choice) (k : FaultKind),
     ReachesResultAtChoices p q choices (.fault k) ↔
     ∃ maxSteps : Nat,
-      RefReachesOutcomeAtChoices (encodeProg p) q choices maxSteps
+      RefReachesOutcomeAtChoices (encodeToMiri p) q choices maxSteps
         (faultToRefOutcome k)
 
 /-- Trusted statement verifying the direct consumer-side wiring of
@@ -259,54 +260,56 @@ def MiriMoveDeinitWiringClaim : Prop :=
       Bind.bind (h.restoreInPlaceMovedBytes choice snap place)
         (fun _ => h.deinitInPlaceArgument choice place))
 
-/-- Trusted claim for `Anneal.MirCorrespondenceProof.decodeProg_encodeProg`. -/
+/-- Trusted claim for
+`Anneal.MirCorrespondenceProof.decodeProg_encodeProg`. -/
 def DecodeProgEncodeProgClaim : Prop :=
-  ∀ (p : Program), decodeProg (encodeProg p) = some p
+  ∀ (p : Program), decodeProg (encodeToMiri p) = some p
 
 /-- Trusted claim for
 `Anneal.MirCorrespondenceProof.encodeProg_types_canonical`. -/
 def EncodeProgTypesCanonicalClaim : Prop :=
-  ∀ (p : Program), typesAreCanonical (encodeProg p).types = true
+  ∀ (p : Program), typesAreCanonical (encodeToMiri p).types = true
 
 /-- Trusted claim for
 `Anneal.MirCorrespondenceProof.encodeStmt_no_dormant_noops`. -/
 def EncodeStmtNoDormantNoopsClaim : Prop :=
   ∀ (ts : List MirTy) (s : StatementKind),
-    encodeStmt ts s = .nop ↔ s = .nop
+    encodeStmt ts s = .Nop ↔ s = .nop
 
 /-- Trusted claim for
 `Anneal.MirCorrespondenceProof.encodeRvalue_binaryOp_iff`. -/
 def EncodeRvalueBinaryOpIffClaim : Prop :=
-  ∀ (ts : List MirTy) (rv : Rvalue) (op : BinOp) (l' r' : RefOperand),
-    encodeRvalue ts rv = .binaryOp op l' r' ↔
+  ∀ (ts : List MirTy) (rv : Rvalue) (op : BinOp) (l' r' : Miri.MIR.Operand),
+    encodeRvalue ts rv = .BinaryOp (toMiriBinOp op) l' r' ↔
       ∃ l r : Operand, rv = .binaryOp op l r ∧
         encodeOperand ts l = l' ∧ encodeOperand ts r = r'
 
 /-- Trusted claim for
 `Anneal.MirCorrespondenceProof.encodeRvalue_unaryOp_iff`. -/
 def EncodeRvalueUnaryOpIffClaim : Prop :=
-  ∀ (ts : List MirTy) (rv : Rvalue) (op : UnOp) (o' : RefOperand),
-    encodeRvalue ts rv = .unaryOp op o' ↔
+  ∀ (ts : List MirTy) (rv : Rvalue) (op : UnOp) (o' : Miri.MIR.Operand),
+    encodeRvalue ts rv = .UnaryOp (toMiriUnOp op) o' ↔
       ∃ o : Operand, rv = .unaryOp op o ∧ encodeOperand ts o = o'
 
 /-- Trusted claim for
 `Anneal.MirCorrespondenceProof.encodeStmt_assign_iff`. -/
 def EncodeStmtAssignIffClaim : Prop :=
-  ∀ (ts : List MirTy) (s : StatementKind) (dst' : RefPlace) (rv' : RefRvalue),
-    encodeStmt ts s = .assign dst' rv' ↔
+  ∀ (ts : List MirTy) (s : StatementKind)
+      (dst' : Miri.MIR.Place) (rv' : Miri.MIR.Rvalue),
+    encodeStmt ts s = .Assign dst' rv' ↔
       ∃ (dst : Place) (rv : Rvalue), s = .assign dst rv ∧
         encodePlace ts dst = dst' ∧ encodeRvalue ts rv = rv'
 
 /-- Trusted claim for
 `Anneal.MirCorrespondenceProof.state_unique_of_simulationInv`. -/
 def StateUniqueOfSimulationInvClaim : Prop :=
-  ∀ {rp : RefProg} {p : Program} {s₁ s₂ : State} {rs : RefState},
+  ∀ {rp : MiriProg} {p : Program} {s₁ s₂ : State} {rs : RefState},
     SimulationInv rp p s₁ rs → SimulationInv rp p s₂ rs → s₁ = s₂
 
 /-- Trusted claim for
 `Anneal.MirCorrespondenceProof.refState_unique_of_simulationInv`. -/
 def RefStateUniqueOfSimulationInvClaim : Prop :=
-  ∀ {rp : RefProg} {p : Program} {s : State} {rs₁ rs₂ : RefState},
+  ∀ {rp : MiriProg} {p : Program} {s : State} {rs₁ rs₂ : RefState},
     SimulationInv rp p s rs₁ → SimulationInv rp p s rs₂ →
     rs₁.stepsExecuted = rs₂.stepsExecuted →
     rs₁.maxSteps = rs₂.maxSteps →
@@ -315,7 +318,7 @@ def RefStateUniqueOfSimulationInvClaim : Prop :=
 
 /-- Trusted claim for `Anneal.MirCorrespondenceProof.initRefState_sim`. -/
 def InitRefStateSimClaim : Prop :=
-  ∀ {rp : RefProg} {p : Program} {q : Query} (maxSteps : Nat),
+  ∀ {rp : MiriProg} {p : Program} {q : Query} (maxSteps : Nat),
     decodeProg rp = some p →
     (∀ k, initState p q = .error k → initRefState rp q maxSteps = .error k) ∧
     (∀ s₀, initState p q = .ok s₀ →
@@ -326,8 +329,8 @@ def InitRefStateSimClaim : Prop :=
 
 /-- Trusted claim for `Anneal.MirCorrespondenceProof.evalRefStep_eq`. -/
 def EvalRefStepEqClaim : Prop :=
-  ∀ {rp : RefProg} {p : Program} {s : State} {rs : RefState}
-    {f : FrameState} {body : Body} {rbody : RefBody},
+  ∀ {rp : MiriProg} {p : Program} {s : State} {rs : RefState}
+    {f : FrameState} {body : Body} {rbody : Miri.MIR.Body},
     decodeProg rp = some p →
     SimulationInv rp p s rs →
     s.frames = [f] →
@@ -341,7 +344,7 @@ def EvalRefStepEqClaim : Prop :=
 
 /-- Trusted claim for `Anneal.MirCorrespondenceProof.sim_of_refStep`. -/
 def SimOfRefStepClaim : Prop :=
-  ∀ {rp : RefProg} {p : Program} {s : State} {rs rs' : RefState},
+  ∀ {rp : MiriProg} {p : Program} {s : State} {rs rs' : RefState},
     decodeProg rp = some p →
     SimulationInv rp p s rs →
     RefStep rp rs (.running rs') →
@@ -349,7 +352,7 @@ def SimOfRefStepClaim : Prop :=
 
 /-- Trusted claim for `Anneal.MirCorrespondenceProof.sim_of_refReaches`. -/
 def SimOfRefReachesClaim : Prop :=
-  ∀ {rp : RefProg} {p : Program} {s₀ : State} {rs₀ rs : RefState},
+  ∀ {rp : MiriProg} {p : Program} {s₀ : State} {rs₀ rs : RefState},
     decodeProg rp = some p →
     SimulationInv rp p s₀ rs₀ →
     RefReaches rp rs₀ rs →
@@ -359,31 +362,31 @@ def SimOfRefReachesClaim : Prop :=
 `Anneal.MirCorrespondenceProof.refWellFormed_of_wellFormed`. -/
 def RefWellFormedOfWellFormedClaim : Prop :=
   ∀ (p : Program) (q : Query),
-    WellFormed p q → RefWellFormed (encodeProg p) q
+    WellFormed p q → RefWellFormed (encodeToMiri p) q
 
 /-- Trusted claim for
 `Anneal.MirCorrespondenceProof.refBehavior_of_behavior`. -/
 def RefBehaviorOfBehaviorClaim : Prop :=
   ∀ (p : Program) (q : Query) (out : TerminalOut),
-    Behavior p q out → RefBehavior (encodeProg p) q out
+    Behavior p q out → RefBehavior (encodeToMiri p) q out
 
 /-- Trusted claim for
 `Anneal.MirCorrespondenceProof.behavior_of_refBehavior`. -/
 def BehaviorOfRefBehaviorClaim : Prop :=
   ∀ (p : Program) (q : Query) (out : TerminalOut),
-    RefBehavior (encodeProg p) q out → Behavior p q out
+    RefBehavior (encodeToMiri p) q out → Behavior p q out
 
 /-- Trusted claim for
 `Anneal.MirCorrespondenceProof.behavior_iff_refBehavior`. -/
 def BehaviorIffRefBehaviorClaim : Prop :=
   ∀ (p : Program) (q : Query) (out : TerminalOut),
-    Behavior p q out ↔ RefBehavior (encodeProg p) q out
+    Behavior p q out ↔ RefBehavior (encodeToMiri p) q out
 
 /-- Trusted claim for
 `Anneal.MirCorrespondenceProof.diverges_iff_refDiverges`. -/
 def DivergesIffRefDivergesClaim : Prop :=
   ∀ (p : Program) (q : Query),
-    Diverges p q ↔ RefDiverges (encodeProg p) q
+    Diverges p q ↔ RefDiverges (encodeToMiri p) q
 
 /-- Trusted claim for
 `Anneal.MirCorrespondenceProof.canary_D6_use_after_move_ub`. -/
@@ -391,7 +394,7 @@ def CanaryD6UseAfterMoveUbClaim : Prop :=
   ReachesResult progUseAfterMoveD6 queryU32_42 (.fault .undefined) ∧
   ¬ ReachesResult progUseAfterMoveD6 queryU32_42 (.fault .unsupported) ∧
   ¬ WellFormed progUseAfterMoveD6 queryU32_42 ∧
-  (∃ maxSteps, RefReachesOutcome (encodeProg progUseAfterMoveD6)
+  (∃ maxSteps, RefReachesOutcome (encodeToMiri progUseAfterMoveD6)
     queryU32_42 maxSteps .ub)
 
 /-- Trusted claim for
@@ -400,8 +403,8 @@ def CanaryD7aBinopCopyThenMoveOkClaim : Prop :=
   WellFormed progBinOpCopyThenMoveD7a queryU32_42 ∧
   Behavior progBinOpCopyThenMoveD7a queryU32_42
     (.returned ⟨u32Val 84, ⟨[]⟩⟩) ∧
-  RefWellFormed (encodeProg progBinOpCopyThenMoveD7a) queryU32_42 ∧
-  RefBehavior (encodeProg progBinOpCopyThenMoveD7a) queryU32_42
+  RefWellFormed (encodeToMiri progBinOpCopyThenMoveD7a) queryU32_42 ∧
+  RefBehavior (encodeToMiri progBinOpCopyThenMoveD7a) queryU32_42
     (.returned ⟨u32Val 84, ⟨[]⟩⟩)
 
 /-- Trusted claim for
@@ -411,7 +414,7 @@ def CanaryD7bBinopMoveThenCopyUbClaim : Prop :=
   ¬ ReachesResult progBinOpMoveThenCopyD7b queryU32_42
     (.fault .unsupported) ∧
   ¬ WellFormed progBinOpMoveThenCopyD7b queryU32_42 ∧
-  (∃ maxSteps, RefReachesOutcome (encodeProg progBinOpMoveThenCopyD7b)
+  (∃ maxSteps, RefReachesOutcome (encodeToMiri progBinOpMoveThenCopyD7b)
     queryU32_42 maxSteps .ub)
 
 /-- Trusted claim for
@@ -421,7 +424,7 @@ def CanaryD7cBinopMoveThenMoveUbClaim : Prop :=
   ¬ ReachesResult progBinOpMoveThenMoveD7c queryU32_42
     (.fault .unsupported) ∧
   ¬ WellFormed progBinOpMoveThenMoveD7c queryU32_42 ∧
-  (∃ maxSteps, RefReachesOutcome (encodeProg progBinOpMoveThenMoveD7c)
+  (∃ maxSteps, RefReachesOutcome (encodeToMiri progBinOpMoveThenMoveD7c)
     queryU32_42 maxSteps .ub)
 
 /-- Trusted claim for
@@ -429,8 +432,8 @@ def CanaryD7cBinopMoveThenMoveUbClaim : Prop :=
 def CanaryD8SelfMoveOkClaim : Prop :=
   WellFormed progSelfMoveD8 queryU32_42 ∧
   Behavior progSelfMoveD8 queryU32_42 (.returned ⟨u32Val 42, ⟨[]⟩⟩) ∧
-  RefWellFormed (encodeProg progSelfMoveD8) queryU32_42 ∧
-  RefBehavior (encodeProg progSelfMoveD8) queryU32_42
+  RefWellFormed (encodeToMiri progSelfMoveD8) queryU32_42 ∧
+  RefBehavior (encodeToMiri progSelfMoveD8) queryU32_42
     (.returned ⟨u32Val 42, ⟨[]⟩⟩)
 
 /-- Trusted claim for
@@ -438,8 +441,8 @@ def CanaryD8SelfMoveOkClaim : Prop :=
 def CanaryD9MoveUnitZstOkClaim : Prop :=
   WellFormed progMoveUnitZstD9 queryEmpty ∧
   Behavior progMoveUnitZstD9 queryEmpty (.returned ⟨.unit, ⟨[]⟩⟩) ∧
-  RefWellFormed (encodeProg progMoveUnitZstD9) queryEmpty ∧
-  RefBehavior (encodeProg progMoveUnitZstD9) queryEmpty
+  RefWellFormed (encodeToMiri progMoveUnitZstD9) queryEmpty ∧
+  RefBehavior (encodeToMiri progMoveUnitZstD9) queryEmpty
     (.returned ⟨.unit, ⟨[]⟩⟩)
 
 /-- Trusted claim for
@@ -448,10 +451,10 @@ def CanaryD10AddUncheckedOverflowUbClaim : Prop :=
   ReachesResult progAddUncheckedU32 queryU32MaxPlusOne
     (.fault .undefined) ∧
   ¬ WellFormed progAddUncheckedU32 queryU32MaxPlusOne ∧
-  (∃ maxSteps, RefReachesOutcome (encodeProg progAddUncheckedU32)
+  (∃ maxSteps, RefReachesOutcome (encodeToMiri progAddUncheckedU32)
     queryU32MaxPlusOne maxSteps .ub) ∧
   Behavior progAddU32 queryU32MaxPlusOne (.returned ⟨u32Val 0, ⟨[]⟩⟩) ∧
-  RefBehavior (encodeProg progAddU32) queryU32MaxPlusOne
+  RefBehavior (encodeToMiri progAddU32) queryU32MaxPlusOne
     (.returned ⟨u32Val 0, ⟨[]⟩⟩)
 
 /-- Trusted claim for
@@ -464,14 +467,14 @@ def CanaryD11EnumDiscriminantAndConstOkClaim : Prop :=
   WellFormed progEnumExplicitReprU8 queryEmpty ∧
   Behavior progEnumExplicitReprU8 queryEmpty
     (.returned ⟨u8Val 20, ⟨[]⟩⟩) ∧
-  RefWellFormed (encodeProg progEnumExplicitReprU8) queryEmpty ∧
-  RefBehavior (encodeProg progEnumExplicitReprU8) queryEmpty
+  RefWellFormed (encodeToMiri progEnumExplicitReprU8) queryEmpty ∧
+  RefBehavior (encodeToMiri progEnumExplicitReprU8) queryEmpty
     (.returned ⟨u8Val 20, ⟨[]⟩⟩) ∧
   WellFormed progEnumSignedTagIsize queryEmpty ∧
   Behavior progEnumSignedTagIsize queryEmpty
     (.returned ⟨scalarNatVal .isize true (Nat.pow 2 64 - 1), ⟨[]⟩⟩) ∧
-  RefWellFormed (encodeProg progEnumSignedTagIsize) queryEmpty ∧
-  RefBehavior (encodeProg progEnumSignedTagIsize) queryEmpty
+  RefWellFormed (encodeToMiri progEnumSignedTagIsize) queryEmpty ∧
+  RefBehavior (encodeToMiri progEnumSignedTagIsize) queryEmpty
     (.returned ⟨scalarNatVal .isize true (Nat.pow 2 64 - 1), ⟨[]⟩⟩)
 
 /-- Trusted claim for
@@ -483,14 +486,14 @@ def CanaryD12ZstEnumMoveAndDiscrOkClaim : Prop :=
   WellFormed progZstSingleEnumImplicitRet queryEmpty ∧
   Behavior progZstSingleEnumImplicitRet queryEmpty
     (.returned ⟨.enumVal canarySingleZstEnumTy 0, ⟨[]⟩⟩) ∧
-  RefWellFormed (encodeProg progZstSingleEnumImplicitRet) queryEmpty ∧
-  RefBehavior (encodeProg progZstSingleEnumImplicitRet) queryEmpty
+  RefWellFormed (encodeToMiri progZstSingleEnumImplicitRet) queryEmpty ∧
+  RefBehavior (encodeToMiri progZstSingleEnumImplicitRet) queryEmpty
     (.returned ⟨.enumVal canarySingleZstEnumTy 0, ⟨[]⟩⟩) ∧
   WellFormed progZstSingleEnumMoveAndDiscr queryEmpty ∧
   Behavior progZstSingleEnumMoveAndDiscr queryEmpty
     (.returned ⟨scalarNatVal .isize true 42, ⟨[]⟩⟩) ∧
-  RefWellFormed (encodeProg progZstSingleEnumMoveAndDiscr) queryEmpty ∧
-  RefBehavior (encodeProg progZstSingleEnumMoveAndDiscr) queryEmpty
+  RefWellFormed (encodeToMiri progZstSingleEnumMoveAndDiscr) queryEmpty ∧
+  RefBehavior (encodeToMiri progZstSingleEnumMoveAndDiscr) queryEmpty
     (.returned ⟨scalarNatVal .isize true 42, ⟨[]⟩⟩)
 
 /-- Trusted claim for
@@ -503,12 +506,12 @@ def CanaryD13EnumInvalidTagAndUninitUbClaim : Prop :=
   ReachesResult progEnumInvalidTagConstUb queryEmpty (.fault .undefined) ∧
   ¬ ReachesResult progEnumInvalidTagConstUb queryEmpty (.fault .unsupported) ∧
   ¬ WellFormed progEnumInvalidTagConstUb queryEmpty ∧
-  (∃ maxSteps, RefReachesOutcome (encodeProg progEnumInvalidTagConstUb)
+  (∃ maxSteps, RefReachesOutcome (encodeToMiri progEnumInvalidTagConstUb)
     queryEmpty maxSteps .ub) ∧
   ReachesResult progEnumUninitDiscrUb queryEmpty (.fault .undefined) ∧
   ¬ ReachesResult progEnumUninitDiscrUb queryEmpty (.fault .unsupported) ∧
   ¬ WellFormed progEnumUninitDiscrUb queryEmpty ∧
-  (∃ maxSteps, RefReachesOutcome (encodeProg progEnumUninitDiscrUb)
+  (∃ maxSteps, RefReachesOutcome (encodeToMiri progEnumUninitDiscrUb)
     queryEmpty maxSteps .ub)
 
 /-- Trusted claim for
@@ -527,23 +530,23 @@ def CanaryD14CharCmpAndSwitchOkClaim : Prop :=
   Behavior (mkBinOpProg .cmp .ordering .char .char)
     { args := [charVal 98, charVal 97] }
     (.returned ⟨.ordering .greater, ⟨[]⟩⟩) ∧
-  RefWellFormed (encodeProg (mkBinOpProg .cmp .ordering .char .char))
+  RefWellFormed (encodeToMiri (mkBinOpProg .cmp .ordering .char .char))
     { args := [charVal 98, charVal 97] } ∧
-  RefBehavior (encodeProg (mkBinOpProg .cmp .ordering .char .char))
+  RefBehavior (encodeToMiri (mkBinOpProg .cmp .ordering .char .char))
     { args := [charVal 98, charVal 97] }
     (.returned ⟨.ordering .greater, ⟨[]⟩⟩) ∧
   WellFormed (mkCmpDiscriminantProg i8Ty) { args := [i8Val 255, i8Val 1] } ∧
   Behavior (mkCmpDiscriminantProg i8Ty) { args := [i8Val 255, i8Val 1] }
     (.returned ⟨i8Val 255, ⟨[]⟩⟩) ∧
-  RefWellFormed (encodeProg (mkCmpDiscriminantProg i8Ty))
+  RefWellFormed (encodeToMiri (mkCmpDiscriminantProg i8Ty))
     { args := [i8Val 255, i8Val 1] } ∧
-  RefBehavior (encodeProg (mkCmpDiscriminantProg i8Ty))
+  RefBehavior (encodeToMiri (mkCmpDiscriminantProg i8Ty))
     { args := [i8Val 255, i8Val 1] } (.returned ⟨i8Val 255, ⟨[]⟩⟩) ∧
   WellFormed progCharSwitch { args := [charVal 97] } ∧
   Behavior progCharSwitch { args := [charVal 97] }
     (.returned ⟨u32Val 1, ⟨[]⟩⟩) ∧
-  RefWellFormed (encodeProg progCharSwitch) { args := [charVal 97] } ∧
-  RefBehavior (encodeProg progCharSwitch) { args := [charVal 97] }
+  RefWellFormed (encodeToMiri progCharSwitch) { args := [charVal 97] } ∧
+  RefBehavior (encodeToMiri progCharSwitch) { args := [charVal 97] }
     (.returned ⟨u32Val 1, ⟨[]⟩⟩)
 
 /-- Trusted claim for
@@ -558,23 +561,23 @@ def CanaryD15IntToIntCastClaim : Prop :=
   WellFormed (mkIntToIntCastProg i8Ty u32Ty) { args := [i8Val 255] } ∧
   Behavior (mkIntToIntCastProg i8Ty u32Ty) { args := [i8Val 255] }
     (.returned ⟨u32Val 4294967295, ⟨[]⟩⟩) ∧
-  RefWellFormed (encodeProg (mkIntToIntCastProg i8Ty u32Ty))
+  RefWellFormed (encodeToMiri (mkIntToIntCastProg i8Ty u32Ty))
     { args := [i8Val 255] } ∧
-  RefBehavior (encodeProg (mkIntToIntCastProg i8Ty u32Ty))
+  RefBehavior (encodeToMiri (mkIntToIntCastProg i8Ty u32Ty))
     { args := [i8Val 255] } (.returned ⟨u32Val 4294967295, ⟨[]⟩⟩) ∧
   WellFormed (mkIntToIntCastProg u8Ty .char) { args := [u8Val 200] } ∧
   Behavior (mkIntToIntCastProg u8Ty .char) { args := [u8Val 200] }
     (.returned ⟨charVal 200, ⟨[]⟩⟩) ∧
-  RefWellFormed (encodeProg (mkIntToIntCastProg u8Ty .char))
+  RefWellFormed (encodeToMiri (mkIntToIntCastProg u8Ty .char))
     { args := [u8Val 200] } ∧
-  RefBehavior (encodeProg (mkIntToIntCastProg u8Ty .char))
+  RefBehavior (encodeToMiri (mkIntToIntCastProg u8Ty .char))
     { args := [u8Val 200] } (.returned ⟨charVal 200, ⟨[]⟩⟩) ∧
   ReachesResult (mkIntToIntCastProg u32Ty .char) { args := [u32Val 300] }
     (.fault .unsupported) ∧
   ¬ ReachesResult (mkIntToIntCastProg u32Ty .char) { args := [u32Val 300] }
     (.fault .undefined) ∧
   ¬ WellFormed (mkIntToIntCastProg u32Ty .char) { args := [u32Val 300] } ∧
-  (∃ maxSteps, RefReachesOutcome (encodeProg (mkIntToIntCastProg u32Ty .char))
+  (∃ maxSteps, RefReachesOutcome (encodeToMiri (mkIntToIntCastProg u32Ty .char))
     { args := [u32Val 300] } maxSteps .blocked)
 
 /-- Trusted claim for
@@ -591,10 +594,10 @@ def CanaryD16WithOverflowOkClaim : Prop :=
     { args := [u8Val 255, u8Val 1] }
     (.returned ⟨.tuple [u8Val 0, .bool true], ⟨[]⟩⟩) ∧
   RefWellFormed
-    (encodeProg (mkBinOpProg .addWithOverflow (overflowPairTy u8Ty) u8Ty u8Ty))
+    (encodeToMiri (mkBinOpProg .addWithOverflow (overflowPairTy u8Ty) u8Ty u8Ty))
     { args := [u8Val 255, u8Val 1] } ∧
   RefBehavior
-    (encodeProg (mkBinOpProg .addWithOverflow (overflowPairTy u8Ty) u8Ty u8Ty))
+    (encodeToMiri (mkBinOpProg .addWithOverflow (overflowPairTy u8Ty) u8Ty u8Ty))
     { args := [u8Val 255, u8Val 1] }
     (.returned ⟨.tuple [u8Val 0, .bool true], ⟨[]⟩⟩) ∧
   WellFormed (mkBinOpProg .subWithOverflow (overflowPairTy i8Ty) i8Ty i8Ty)
@@ -603,10 +606,10 @@ def CanaryD16WithOverflowOkClaim : Prop :=
     { args := [i8Val 128, i8Val 1] }
     (.returned ⟨.tuple [i8Val 127, .bool true], ⟨[]⟩⟩) ∧
   RefWellFormed
-    (encodeProg (mkBinOpProg .subWithOverflow (overflowPairTy i8Ty) i8Ty i8Ty))
+    (encodeToMiri (mkBinOpProg .subWithOverflow (overflowPairTy i8Ty) i8Ty i8Ty))
     { args := [i8Val 128, i8Val 1] } ∧
   RefBehavior
-    (encodeProg (mkBinOpProg .subWithOverflow (overflowPairTy i8Ty) i8Ty i8Ty))
+    (encodeToMiri (mkBinOpProg .subWithOverflow (overflowPairTy i8Ty) i8Ty i8Ty))
     { args := [i8Val 128, i8Val 1] }
     (.returned ⟨.tuple [i8Val 127, .bool true], ⟨[]⟩⟩)
 
@@ -616,7 +619,7 @@ non-exhausted `RefStep` transition (`.running` or `.returned`) is witnessed by
 `RefAllowedStep` (instantiating `Miri.Interpreter.ExecutionMachine.AllowedStep`
 with `refLimits`). -/
 def RefStepSoundForAllowedStepClaim : Prop :=
-  ∀ (rp : RefProg) (rs : RefState) (out : RefOutcome),
+  ∀ (rp : MiriProg) (rs : RefState) (out : RefOutcome),
     Nat.blt rs.stepsExecuted rs.maxSteps = true →
     RefStep rp rs out →
     (∀ rs', out = .running rs' →

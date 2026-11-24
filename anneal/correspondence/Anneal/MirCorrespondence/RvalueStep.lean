@@ -47,12 +47,12 @@ def stepErrorFaultKind : Miri.Interpreter.StepError → FaultKind
   | .stack (.localExpectedLive _) => .undefined
   | _ => .unsupported
 
-/-- Validated `ExecutionMachine.Config` for `rp : RefProg`. -/
-noncomputable abbrev refExecCfg (rp : RefProg) :=
+/-- Validated `ExecutionMachine.Config` for `rp : MiriProg`. -/
+noncomputable abbrev refExecCfg (rp : MiriProg) :=
   Miri.Interpreter.ExecutionMachine.withValidation
     (refExecutionConfig rp) refLimits
 
-theorem refExecCfg_idempotent (rp : RefProg) :
+theorem refExecCfg_idempotent (rp : MiriProg) :
     Miri.Interpreter.ExecutionMachine.withValidation
       (refExecCfg rp) refLimits = refExecCfg rp := rfl
 
@@ -200,15 +200,15 @@ theorem refLayoutDataForTy_isZst_move_deinit (ty : MirTy)
 
 /-- Shorthand for a single-frame `Miri.Interpreter.Frame` backed by
 `liftLocals rp.types bodyLocals slots`. -/
-noncomputable abbrev mkSimFrame (rp : RefProg) (defId : DefId) (rbody : RefBody)
+noncomputable abbrev mkSimFrame (rp : MiriProg) (defId : DefId) (rbody : Miri.MIR.Body)
     (blockIdx : BasicBlockId) (stmtIdx : Nat) (bodyLocals : List MirTy)
     (slots : List LocalSlot) (retPlace : MPlaceTy Miri.Memory.Provenance) :=
-  mkRefMiriFrame rp.types defId rbody blockIdx stmtIdx
+  mkRefMiriFrame defId rbody blockIdx stmtIdx
     (liftLocals rp.types bodyLocals slots) retPlace
 
 /-- Shorthand for a single-frame `Miri.Interpreter.MachineHooks.State` backed by
 `mkSimFrame`. -/
-noncomputable abbrev mkSimState (rp : RefProg) (defId : DefId) (rbody : RefBody)
+noncomputable abbrev mkSimState (rp : MiriProg) (defId : DefId) (rbody : Miri.MIR.Body)
     (blockIdx : BasicBlockId) (stmtIdx : Nat) (bodyLocals : List MirTy)
     (slots : List LocalSlot) (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -255,8 +255,8 @@ private theorem array_forIn_singleton {ε σ α β : Type}
   | ok r s => cases r <;> rfl
   | error e s => rfl
 
-theorem mkSimFrame_getLocal_some (rp : RefProg) (defId : DefId)
-    (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+theorem mkSimFrame_getLocal_some (rp : MiriProg) (defId : DefId)
+    (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance) (id : LocalId)
     (ty : MirTy) (slot : LocalSlot)
@@ -279,8 +279,8 @@ theorem mkSimFrame_getLocal_some (rp : RefProg) (defId : DefId)
   rw [h_idx]
   rfl
 
-theorem mkSimFrame_getLocal_none_left (rp : RefProg) (defId : DefId)
-    (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+theorem mkSimFrame_getLocal_none_left (rp : MiriProg) (defId : DefId)
+    (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance) (id : LocalId)
     (h_ty : MirSemantics.getElem? bodyLocals id = none) :
@@ -293,8 +293,8 @@ theorem mkSimFrame_getLocal_none_left (rp : RefProg) (defId : DefId)
   rw [dite_eq_right h_not]
   rfl
 
-theorem mkSimFrame_getLocal_none_right (rp : RefProg) (defId : DefId)
-    (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+theorem mkSimFrame_getLocal_none_right (rp : MiriProg) (defId : DefId)
+    (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance) (id : LocalId)
     (h_sl : MirSemantics.getElem? slots id = none) :
@@ -307,8 +307,8 @@ theorem mkSimFrame_getLocal_none_right (rp : RefProg) (defId : DefId)
   rw [dite_eq_right h_not]
   rfl
 
-theorem mkSimFrame_getLocalOperand_dead (rp : RefProg) (defId : DefId)
-    (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+theorem mkSimFrame_getLocalOperand_dead (rp : MiriProg) (defId : DefId)
+    (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance) (id : LocalId)
     (ty : MirTy)
@@ -321,8 +321,8 @@ theorem mkSimFrame_getLocalOperand_dead (rp : RefProg) (defId : DefId)
     retPlace id ty .dead h_ty h_sl]
   rfl
 
-theorem mkSimFrame_getLocalOperand_live (rp : RefProg) (defId : DefId)
-    (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+theorem mkSimFrame_getLocalOperand_live (rp : MiriProg) (defId : DefId)
+    (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance) (id : LocalId)
     (ty : MirTy) (optVal : Option Val)
@@ -337,8 +337,8 @@ theorem mkSimFrame_getLocalOperand_live (rp : RefProg) (defId : DefId)
   rw [slotToMiriLocalValue_live]
   rfl
 
-theorem mkSimFrame_replaceLocalValue_some (rp : RefProg) (defId : DefId)
-    (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+theorem mkSimFrame_replaceLocalValue_some (rp : MiriProg) (defId : DefId)
+    (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots slots' : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance) (id : LocalId)
     (ty : MirTy) (slot slot' : LocalSlot)
@@ -373,7 +373,7 @@ theorem mkSimFrame_replaceLocalValue_some (rp : RefProg) (defId : DefId)
   rw [h_idx]
   dsimp only [refLocalStateOfSlot]
   change Except.ok ({
-    body := toMiriBody rp.types rbody,
+    body := rbody,
     bodyIdentity := BodyIdentity.ofCanonicalIndex defId,
     functionInstance := { kind := .Item defId, args := Array.empty },
     extra := { borrowTracker := none, catchUnwind := none, userRelevance := 255, dataRace := none },
@@ -389,8 +389,8 @@ theorem mkSimFrame_replaceLocalValue_some (rp : RefProg) (defId : DefId)
       Miri.Interpreter.LocalLayout Miri.Interpreter.MachineHooks.FrameExtra) = _
   rw [h_arr_set]
 
-theorem mkSimFrame_setLocalOperand_some (rp : RefProg) (defId : DefId)
-    (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+theorem mkSimFrame_setLocalOperand_some (rp : MiriProg) (defId : DefId)
+    (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots slots' : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance) (id : LocalId)
     (ty : MirTy) (optVal : Option Val) (optVal' : Option Val)
@@ -411,8 +411,8 @@ theorem mkSimFrame_setLocalOperand_some (rp : RefProg) (defId : DefId)
 
 /-! ## Section 2: `OperandMachine` (`localToOp`, `evalPlaceToOp`) -/
 
-private theorem currentFrame_mkSimState (rp : RefProg) (defId : DefId)
-    (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+private theorem currentFrame_mkSimState (rp : MiriProg) (defId : DefId)
+    (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -426,8 +426,8 @@ private theorem currentFrame_mkSimState (rp : RefProg) (defId : DefId)
         (mkSimState rp defId rbody blockIdx stmtIdx bodyLocals slots retPlace
           mem ctrl cm) := rfl
 
-theorem operandMachine_localToOp_ok (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+theorem operandMachine_localToOp_ok (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -465,8 +465,8 @@ theorem operandMachine_localToOp_ok (rp : RefProg) (c : Choice)
   simp only [h_un, Bool.false_eq_true, ite_false]
   rfl
 
-theorem operandMachine_localToOp_dead (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+theorem operandMachine_localToOp_dead (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -498,8 +498,8 @@ theorem operandMachine_localToOp_dead (rp : RefProg) (c : Choice)
   rw [eStateM_bind_pure, eStateM_bind_ok h_cf, h_go]
   rfl
 
-theorem operandMachine_localToOp_none (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+theorem operandMachine_localToOp_none (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -531,14 +531,36 @@ theorem operandMachine_localToOp_none (rp : RefProg) (c : Choice)
   rw [eStateM_bind_ok h_cf, h_gl]
   rfl
 
-theorem operandMachine_evalPlaceToOp_eq (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+private theorem refLayoutDataForTy_not_array (ty : MirTy) :
+    match (refLayoutDataForTy ty).fields with
+    | .Array _ _ => False
+    | _ => True := by
+  cases ty with
+  | enum ety =>
+    dsimp only [refLayoutDataForTy, refAsEnumTy?, refEnumLayoutData]
+    cases ety.tagRepr <;> exact True.intro
+  | tuple fs =>
+    dsimp only [refLayoutDataForTy]
+    cases fs with
+    | nil => exact True.intro
+    | cons a rest =>
+      cases a with
+      | int w s =>
+        cases rest with
+        | nil => exact True.intro
+        | cons b rest₂ =>
+          cases b <;> cases rest₂ <;> exact True.intro
+      | _ => exact True.intro
+  | _ => exact True.intro
+
+theorem operandMachine_evalPlaceToOp_eq (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
-    (cm : CallerMemory) (rpl : RefPlace) (pl : Place)
+    (cm : CallerMemory) (rpl : Miri.MIR.Place) (pl : Place)
     (known : Option LocalLayout)
     (h_pl : decodePlace rp.types rpl = some pl)
     (h_inv : SlotsMatchTys bodyLocals slots) :
@@ -546,7 +568,7 @@ theorem operandMachine_evalPlaceToOp_eq (rp : RefProg) (c : Choice)
       retPlace mem ctrl cm
     let res := Miri.Interpreter.OperandMachine.evalPlaceToOp
       (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
-      c (toMiriPlace rpl) known st
+      c rpl known st
     match MirSemantics.getElem? bodyLocals pl.localId,
         MirSemantics.getElem? slots pl.localId with
     | some _, some .dead =>
@@ -567,10 +589,10 @@ theorem operandMachine_evalPlaceToOp_eq (rp : RefProg) (c : Choice)
         EStateM.bind
           (Miri.Interpreter.OperandMachine.localToOp
             (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
-            c rpl.localId (if (toMiriPlace rpl).projection.isEmpty then known else none))
+            c rpl.localId (if rpl.projection.isEmpty then known else none))
           (fun op =>
             EStateM.bind
-              (forIn (toMiriPlace rpl).projection op
+              (forIn rpl.projection op
                 (fun elem op =>
                   EStateM.bind
                     (Miri.Interpreter.OperandMachine.project
@@ -580,7 +602,7 @@ theorem operandMachine_evalPlaceToOp_eq (rp : RefProg) (c : Choice)
               (fun op =>
                 EStateM.bind
                   ((Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp)).checkPlaceType
-                    c (toMiriPlace rpl) op)
+                    c rpl op)
                   (fun _ => EStateM.pure op)))
           st := by
     dsimp only [res, Miri.Interpreter.OperandMachine.evalPlaceToOp]
@@ -616,30 +638,175 @@ theorem operandMachine_evalPlaceToOp_eq (rp : RefProg) (c : Choice)
         cases h_pe : pl.projection.isEmpty with
         | true =>
           have h_rpe : rpl.projection.isEmpty = true := h_emp.trans h_pe
-          have h_proj_empty : (toMiriPlace rpl).projection = Array.empty := by
-            dsimp only [toMiriPlace]; rw [h_rpe]; rfl
+          have h_proj_empty : rpl.projection = Array.empty := by
+            cases h_arr : rpl.projection with
+            | mk xs =>
+              cases xs with
+              | nil => rfl
+              | cons _ _ =>
+                rw [h_arr] at h_rpe
+                simp only [Array.isEmpty] at h_rpe
+                cases h_rpe
           rw [h_proj_empty, ite_not_true_eq]
           dsimp only [EStateM.bind]
           rw [array_forIn_empty]
           rfl
         | false =>
           have h_rpe : rpl.projection.isEmpty = false := h_emp.trans h_pe
-          have h_proj_deref : (toMiriPlace rpl).projection = Array.mk [.Deref] := by
-            dsimp only [toMiriPlace]; rw [h_rpe]; rfl
-          rw [h_proj_deref, ite_not_false_eq]
-          dsimp only [EStateM.bind]
-          rw [array_forIn_singleton]
-          exact ⟨_, _, rfl, rfl⟩
+          dsimp only [Bool.not, ite_true_eq]
+          dsimp only [decodePlace] at h_pl
+          cases h_pr : mapOption (decodeProjElem rp.types) rpl.projection.toList with
+          | none => rw [h_pr] at h_pl; cases h_pl
+          | some pElems =>
+            cases h_arr : rpl.projection with
+            | mk xs =>
+              cases xs with
+              | nil =>
+                rw [h_arr] at h_rpe
+                cases h_rpe
+              | cons re rest =>
+                rw [h_arr] at h_pr
+                dsimp only [mapOption] at h_pr
+                cases h_re : decodeProjElem rp.types re with
+                | none => rw [h_re] at h_pr; cases h_pr
+                | some _ =>
+                  have h_proj_err :
+                      ∃ err st',
+                        Miri.Interpreter.OperandMachine.project
+                          (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
+                          c
+                          ⟨.immediate (optValToMiriImm ty optVal),
+                            refLocalLayoutForTy rp.types ty⟩
+                          re
+                          (mkSimState rp defId rbody blockIdx stmtIdx bodyLocals slots
+                            retPlace mem ctrl cm) = .error err st' ∧
+                        stepErrorFaultKind err = .unsupported := by
+                    cases re with
+                    | Deref =>
+                      cases optVal <;> exact ⟨_, _, rfl, rfl⟩
+                    | ConstantIndex offset minLength fromEnd =>
+                      cases fromEnd with
+                      | true => cases h_re
+                      | false =>
+                        have h_cx :
+                            (Miri.Interpreter.ExecutionMachine.operandHooks
+                              (refExecCfg rp)).compiler.projection c
+                              (mkSimState rp defId rbody blockIdx stmtIdx
+                                bodyLocals slots retPlace mem ctrl cm) =
+                              .ok (refProjectionCx rp.types)
+                                (mkSimState rp defId rbody blockIdx stmtIdx
+                                  bodyLocals slots retPlace mem ctrl cm) := rfl
+                        have h_nd :
+                            (Miri.MIR.ProjectionElem.ConstantIndex offset minLength false ==
+                              Miri.MIR.ProjectionElem.Deref) = false := rfl
+                        dsimp only [Miri.Interpreter.OperandMachine.project, bind,
+                          Bind.bind]
+                        rw [h_nd, ite_false_eq, eStateM_bind_ok h_cx]
+                        cases h_ov : (decide (offset ≥ HPow.hPow 2 64) ||
+                            decide (minLength ≥ HPow.hPow 2 64)) with
+                        | true =>
+                          have h_pr :
+                              Miri.Interpreter.project (refProjectionCx rp.types)
+                                ⟨.immediate (optValToMiriImm ty optVal),
+                                  refLocalLayoutForTy rp.types ty⟩
+                                (.ConstantIndex offset minLength false) =
+                                .error (.invariant "MIR index exceeds u64") := by
+                            dsimp only [Miri.Interpreter.project]
+                            rw [h_ov, ite_true_eq]
+                            rfl
+                          rw [h_pr]
+                          exact ⟨_, _, rfl, rfl⟩
+                        | false =>
+                          have h_pr :
+                              Miri.Interpreter.project (refProjectionCx rp.types)
+                                ⟨.immediate (optValToMiriImm ty optVal),
+                                  refLocalLayoutForTy rp.types ty⟩
+                                (.ConstantIndex offset minLength false) =
+                                .error (.invariant "len on non-array") := by
+                            dsimp only [Miri.Interpreter.project]
+                            rw [h_ov, ite_false_eq]
+                            dsimp only [Miri.Interpreter.projectConstantIndex,
+                              Miri.Interpreter.OpTy.len, bind, Bind.bind,
+                              pure, Pure.pure]
+                            have h_sz : (refLocalLayoutForTy rp.types ty).layout.isSized = true :=
+                              refLayoutDataForTy_isSized ty
+                            rw [h_sz]
+                            dsimp only [Bool.not, ite_false_eq, refLocalLayoutForTy]
+                            have h_na := refLayoutDataForTy_not_array ty
+                            cases h_f : (refLayoutDataForTy ty).fields with
+                            | Array _ _ => rw [h_f] at h_na; exact False.elim h_na
+                            | Primitive | Arbitrary _ _ | Union _ => rfl
+                          rw [h_pr]
+                          exact ⟨_, _, rfl, rfl⟩
+                    | PhantomDeref => exact ⟨_, _, rfl, rfl⟩
+                    | Field _ _ | Index _ | Subslice _ _ _ | Downcast _ _
+                    | OpaqueCast _ | UnwrapUnsafeBinder _ => cases h_re
+                  let ⟨err, st', h_pe_err, h_fk⟩ := h_proj_err
+                  have h_step_err :
+                      (EStateM.bind
+                        (Miri.Interpreter.OperandMachine.project
+                          (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
+                          c
+                          ⟨.immediate (optValToMiriImm ty optVal),
+                            refLocalLayoutForTy rp.types ty⟩
+                          re)
+                        (fun op' => EStateM.pure (ForInStep.yield op')))
+                        (mkSimState rp defId rbody blockIdx stmtIdx bodyLocals slots
+                          retPlace mem ctrl cm) = .error err st' := by
+                    dsimp only [EStateM.bind]
+                    rw [h_pe_err]
+                  have h_forin :
+                      forIn (Array.mk (re :: rest))
+                        (⟨.immediate (optValToMiriImm ty optVal),
+                          refLocalLayoutForTy rp.types ty⟩ :
+                          Miri.Interpreter.OpTy Miri.Memory.Provenance)
+                        (fun elem op =>
+                          EStateM.bind
+                            (Miri.Interpreter.OperandMachine.project
+                              (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
+                              c op elem)
+                            (fun op' => EStateM.pure (ForInStep.yield op')))
+                        (mkSimState rp defId rbody blockIdx stmtIdx bodyLocals slots
+                          retPlace mem ctrl cm) = .error err st' := by
+                    have h_toList :
+                        forIn (Array.mk (re :: rest))
+                          (⟨.immediate (optValToMiriImm ty optVal),
+                            refLocalLayoutForTy rp.types ty⟩ :
+                            Miri.Interpreter.OpTy Miri.Memory.Provenance)
+                          (fun elem op =>
+                            EStateM.bind
+                              (Miri.Interpreter.OperandMachine.project
+                                (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
+                                c op elem)
+                              (fun op' => EStateM.pure (ForInStep.yield op'))) =
+                        forIn (re :: rest : List Miri.MIR.ProjectionElem)
+                          (⟨.immediate (optValToMiriImm ty optVal),
+                            refLocalLayoutForTy rp.types ty⟩ :
+                            Miri.Interpreter.OpTy Miri.Memory.Provenance)
+                          (fun elem op =>
+                            EStateM.bind
+                              (Miri.Interpreter.OperandMachine.project
+                                (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
+                                c op elem)
+                              (fun op' => EStateM.pure (ForInStep.yield op'))) :=
+                      (Array.forIn_toList).symm
+                    rw [h_toList]
+                    dsimp only [forIn, forIn', List.forIn', List.forIn'.loop,
+                      bind, Bind.bind, EStateM.instMonad, Monad.toBind, EStateM.bind]
+                    rw [h_pe_err]
+                  dsimp only [EStateM.bind]
+                  rw [h_forin]
+                  exact ⟨err, st', rfl, h_fk⟩
 
-theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+theorem operandMachine_evalOperandAt_eq (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot) (amem : MemoryState)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
     (cm : CallerMemory) (path : Miri.Interpreter.OperandPath)
-    (rop : RefOperand) (op : Operand) (tyOk : MirTy → Bool)
+    (rop : Miri.MIR.Operand) (op : Operand) (tyOk : MirTy → Bool)
     (known : Option LocalLayout)
     (h_inv : SlotsMatchTys bodyLocals slots)
     (h_op : decodeOperand rp.types rop = some op) :
@@ -647,7 +814,7 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
       retPlace mem ctrl cm
     let res := Miri.Interpreter.OperandMachine.evalOperandAt
       (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
-      c path (toMiriOperand rp.types rop) known st
+      c path rop known st
     match evalOperandToSlot bodyLocals slots amem tyOk op with
     | .error k =>
       ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = k
@@ -658,7 +825,7 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
           retPlace mem ctrl cm) := by
   intro st res
   cases rop with
-  | copy rpl =>
+  | Copy rpl =>
     dsimp only [decodeOperand, optMap] at h_op
     cases h_pl : decodePlace rp.types rpl with
     | none => rw [h_pl] at h_op; cases h_op
@@ -669,11 +836,11 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
       change (match evalOperandToSlot bodyLocals slots amem tyOk (.copy pl) with
         | .error k => ∃ err st', Miri.Interpreter.OperandMachine.evalPlaceToOp
             (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
-            c (toMiriPlace rpl) known st = .error err st' ∧ stepErrorFaultKind err = k
+            c rpl known st = .error err st' ∧ stepErrorFaultKind err = k
         | .ok (ty, optVal, slots', _) =>
           Miri.Interpreter.OperandMachine.evalPlaceToOp
             (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
-            c (toMiriPlace rpl) known st =
+            c rpl known st =
             .ok ⟨.immediate (optValToMiriImm ty optVal), refLocalLayoutForTy rp.types ty⟩
               (mkSimState rp defId rbody blockIdx stmtIdx bodyLocals slots'
                 retPlace mem ctrl cm))
@@ -692,7 +859,7 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
             cases h_pe : pl.projection.isEmpty with
             | false => rw [h_pe] at h_ev; exact h_ev
             | true => rw [h_pe] at h_ev; exact h_ev
-  | move rpl =>
+  | Move rpl =>
     dsimp only [decodeOperand, optMap] at h_op
     cases h_pl : decodePlace rp.types rpl with
     | none => rw [h_pl] at h_op; cases h_op
@@ -709,7 +876,7 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
         let ⟨err, st', h_err, h_fk⟩ := h_ev
         refine ⟨err, st', ?_, h_fk⟩
         dsimp only [res, Miri.Interpreter.OperandMachine.evalOperandAt,
-          Miri.Interpreter.OperandMachine.evalOperand, toMiriOperand]
+          Miri.Interpreter.OperandMachine.evalOperand]
         rw [h_deinit]
         dsimp only [Bool.not, ite_false_eq, bind, Bind.bind, EStateM.bind]
         rw [h_err]
@@ -720,7 +887,7 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
           let ⟨err, st', h_err, h_fk⟩ := h_ev
           refine ⟨err, st', ?_, h_fk⟩
           dsimp only [res, Miri.Interpreter.OperandMachine.evalOperandAt,
-            Miri.Interpreter.OperandMachine.evalOperand, toMiriOperand]
+            Miri.Interpreter.OperandMachine.evalOperand]
           rw [h_deinit]
           dsimp only [Bool.not, ite_false_eq, bind, Bind.bind, EStateM.bind]
           rw [h_err]
@@ -731,7 +898,7 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
             let ⟨err, st', h_err, h_fk⟩ := h_ev
             refine ⟨err, st', ?_, h_fk⟩
             dsimp only [res, Miri.Interpreter.OperandMachine.evalOperandAt,
-              Miri.Interpreter.OperandMachine.evalOperand, toMiriOperand]
+              Miri.Interpreter.OperandMachine.evalOperand]
             rw [h_deinit]
             dsimp only [Bool.not, ite_false_eq, bind, Bind.bind, EStateM.bind]
             rw [h_err]
@@ -743,15 +910,13 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
               let ⟨err, st', h_err, h_fk⟩ := h_ev
               refine ⟨err, st', ?_, h_fk⟩
               dsimp only [res, Miri.Interpreter.OperandMachine.evalOperandAt,
-                Miri.Interpreter.OperandMachine.evalOperand, toMiriOperand]
+                Miri.Interpreter.OperandMachine.evalOperand]
               rw [h_deinit]
               dsimp only [Bool.not, ite_false_eq, bind, Bind.bind, EStateM.bind]
               rw [h_err]
             | true =>
               rw [h_pe] at h_ev
               have h_rpe : rpl.projection.isEmpty = true := h_emp.trans h_pe
-              have h_proj_empty : (toMiriPlace rpl).projection.isEmpty = true := by
-                dsimp only [toMiriPlace]; rw [h_rpe]; rfl
               have h_sm := SlotsMatchTys.getElem? h_inv h_ty h_sl
               have h_deinit_eq :
                   (if (refLocalLayoutForTy rp.types ty).layout.isZst then
@@ -770,59 +935,75 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
               have h_cf := currentFrame_mkSimState rp defId rbody blockIdx stmtIdx
                 bodyLocals slots retPlace mem ctrl cm
               dsimp only [res, Miri.Interpreter.OperandMachine.evalOperandAt,
-                Miri.Interpreter.OperandMachine.evalOperand, toMiriOperand]
+                Miri.Interpreter.OperandMachine.evalOperand]
               rw [h_deinit]
               dsimp only [Bool.not, ite_false_eq, bind, Bind.bind, pure, Pure.pure]
               rw [eStateM_bind_ok h_ev]
-              simp only [h_proj_empty, ite_true]
-              dsimp only [toMiriPlace]
+              simp only [h_rpe, ite_true]
               rw [h_id, h_deinit_eq, eStateM_bind_ok h_cf, h_rep]
               rfl
-  | constant rc =>
-    dsimp only [decodeOperand, optMap] at h_op
-    cases h_ty : MirSemantics.getElem? rp.types rc.ty with
-    | none => rw [h_ty] at h_op; cases h_op
-    | some ty =>
-      rw [h_ty] at h_op; injection h_op with h_eq; subst h_eq
-      have h_can := canonicalTyId_of_some h_ty
-      have h_get_can : MirSemantics.getElem? rp.types (tyIdFor rp.types ty) = some ty := by
-        let ⟨idx, h_idx⟩ := indexOfTy_some_of_mirGetElem? h_ty
-        dsimp only [tyIdFor]
-        rw [h_idx]
-        exact (indexOfTy_some_getElem? h_idx).1
-      cases rc with
-      | mk tyId lit =>
-        dsimp only at h_ty h_can
-        cases lit with
-        | scalar bits =>
-          have h_step :
-              res =
-                refEvalConstOperand rp.types
-                  ⟨⟨0⟩, none, .Val (.Scalar (.Int bits.toNat 16))
-                    (canonicalTyId rp.types tyId)⟩ st := rfl
-          dsimp only [evalOperandToSlot]
-          rw [h_step]
-          dsimp only [refEvalConstOperand]
-          rw [h_can.1, h_get_can, bitVec128_ofNat_toNat bits]
-          dsimp only
-          rw [evalRefConstLit_eq]
-          cases evalConstLit ty (.scalar bits) with
-          | error k => cases k <;> exact ⟨_, _, rfl, rfl⟩
-          | ok v => rfl
-        | zeroSized =>
-          have h_step :
-              res =
-                refEvalConstOperand rp.types
-                  ⟨⟨0⟩, none, .Val .ZeroSized (canonicalTyId rp.types tyId)⟩ st := rfl
-          dsimp only [evalOperandToSlot]
-          rw [h_step]
-          dsimp only [refEvalConstOperand]
-          rw [h_can.1, h_get_can]
-          dsimp only
-          rw [evalRefConstLit_eq]
-          cases evalConstLit ty .zeroSized with
-          | error k => cases k <;> exact ⟨_, _, rfl, rfl⟩
-          | ok v => rfl
+  | Constant rc =>
+    cases rc with
+    | mk span userTy val =>
+      cases val with
+      | Unevaluated _ _ => cases h_op
+      | Ty _ _ => cases h_op
+      | Val cv tyId =>
+        cases cv with
+        | ZeroSized =>
+          simp only [decodeOperand, decodeConstOperand, optMap] at h_op
+          cases h_ty : MirSemantics.getElem? rp.types tyId with
+          | none => rw [h_ty] at h_op; cases h_op
+          | some ty =>
+            rw [h_ty] at h_op; injection h_op with h_eq; subst h_eq
+            have h_step :
+                res =
+                  refEvalConstOperand rp.types
+                    ⟨span, userTy, .Val .ZeroSized tyId⟩ st := rfl
+            dsimp only [evalOperandToSlot]
+            rw [h_step]
+            dsimp only [refEvalConstOperand]
+            rw [h_ty]
+            dsimp only
+            rw [evalRefConstLit_eq]
+            cases evalConstLit ty .zeroSized with
+            | error k => cases k <;> exact ⟨_, _, rfl, rfl⟩
+            | ok v => rfl
+        | Scalar sc =>
+          cases sc with
+          | Ptr _ => cases h_op
+          | Int bitsNat size =>
+            cases Nat.decEq size 16 with
+            | isFalse h_ne =>
+              have h_none :
+                  decodeConstOperand rp.types
+                    ⟨span, userTy, .Val (.Scalar (.Int bitsNat size)) tyId⟩ = none := by
+                simp [decodeConstOperand, h_ne]
+              dsimp only [decodeOperand, optMap] at h_op
+              rw [h_none] at h_op
+              cases h_op
+            | isTrue h_seq =>
+              subst h_seq
+              simp only [decodeOperand, decodeConstOperand, optMap] at h_op
+              cases h_ty : MirSemantics.getElem? rp.types tyId with
+              | none => rw [h_ty] at h_op; cases h_op
+              | some ty =>
+                rw [h_ty] at h_op; injection h_op with h_eq; subst h_eq
+                have h_step :
+                    res =
+                      refEvalConstOperand rp.types
+                        ⟨span, userTy, .Val (.Scalar (.Int bitsNat 16)) tyId⟩ st := rfl
+                dsimp only [evalOperandToSlot]
+                rw [h_step]
+                dsimp only [refEvalConstOperand]
+                rw [h_ty]
+                dsimp only
+                rw [evalRefConstLit_eq]
+                cases evalConstLit ty (.scalar (BitVec.ofNat 128 bitsNat)) with
+                | error k => cases k <;> exact ⟨_, _, rfl, rfl⟩
+                | ok v => rfl
+        | Slice _ _ | Indirect _ _ => cases h_op
+  | RuntimeChecks _ => cases h_op
 
 /-! ## Section 3: Primitive Read (`PlaceMachine.readImmediate`) -/
 
@@ -1044,9 +1225,9 @@ private theorem readImmediate_imm_nonprim_err (ty : MirTy)
 /-- The type of every successfully evaluated operand is interned in
 `rp.types` (locals by `h_loc_res`, constants by `decodeOperand`), so its
 canonical `TyId` resolves back to it. -/
-theorem evalOperandToSlot_res (rp : RefProg) {bodyLocals : List MirTy}
+theorem evalOperandToSlot_res (rp : MiriProg) {bodyLocals : List MirTy}
     {slots : List LocalSlot} {amem : MemoryState} {tyOk : MirTy → Bool}
-    {rop : RefOperand} {op : Operand} {ty : MirTy} {optVal : Option Val}
+    {rop : Miri.MIR.Operand} {op : Operand} {ty : MirTy} {optVal : Option Val}
     {slots' : List LocalSlot} {amem' : MemoryState}
     (h_op : decodeOperand rp.types rop = some op)
     (h_loc_res : ∀ (id : LocalId) (t : MirTy),
@@ -1147,45 +1328,86 @@ theorem evalOperandToSlot_res (rp : RefProg) {bodyLocals : List MirTy}
                   exact h_local pl t h_t h_teq.symm
   | constant cst =>
     cases rop with
-    | copy rpl =>
+    | Copy rpl =>
       dsimp only [decodeOperand, optMap] at h_op
       cases h_p : decodePlace rp.types rpl with
       | none => rw [h_p] at h_op; cases h_op
       | some _ =>
         rw [h_p] at h_op; injection h_op with h_o; cases h_o
-    | move rpl =>
+    | Move rpl =>
       dsimp only [decodeOperand, optMap] at h_op
       cases h_p : decodePlace rp.types rpl with
       | none => rw [h_p] at h_op; cases h_op
       | some _ =>
         rw [h_p] at h_op; injection h_op with h_o; cases h_o
-    | constant rc =>
-      dsimp only [decodeOperand, optMap] at h_op
-      cases h_t : MirSemantics.getElem? rp.types rc.ty with
-      | none => rw [h_t] at h_op; cases h_op
-      | some t =>
-        rw [h_t] at h_op
-        injection h_op with h_oeq
-        injection h_oeq with h_ceq
-        subst h_ceq
-        dsimp only [evalOperandToSlot] at h_es
-        cases h_c : evalConstLit t rc.lit with
-        | error _ => rw [h_c] at h_es; cases h_es
-        | ok _ =>
-          rw [h_c] at h_es
-          injection h_es with htup; injection htup with h_teq _
-          subst h_teq
-          exact (resolveTy_tyIdFor_of_mem h_t).2
+    | RuntimeChecks _ => cases h_op
+    | Constant rc =>
+      cases rc with
+      | mk span userTy val =>
+        cases val with
+        | Unevaluated _ _ => cases h_op
+        | Ty _ _ => cases h_op
+        | Val cv tyId =>
+          cases cv with
+          | Slice _ _ | Indirect _ _ => cases h_op
+          | ZeroSized =>
+            simp only [decodeOperand, decodeConstOperand, optMap] at h_op
+            cases h_t : MirSemantics.getElem? rp.types tyId with
+            | none => rw [h_t] at h_op; cases h_op
+            | some t =>
+              rw [h_t] at h_op
+              injection h_op with h_oeq
+              injection h_oeq with h_ceq
+              subst h_ceq
+              dsimp only [evalOperandToSlot] at h_es
+              cases h_c : evalConstLit t .zeroSized with
+              | error _ => rw [h_c] at h_es; cases h_es
+              | ok _ =>
+                rw [h_c] at h_es
+                injection h_es with htup; injection htup with h_teq _
+                subst h_teq
+                exact (resolveTy_tyIdFor_of_mem h_t).2
+          | Scalar sc =>
+            cases sc with
+            | Ptr _ => cases h_op
+            | Int bitsNat size =>
+              cases Nat.decEq size 16 with
+              | isFalse h_ne =>
+                have h_none :
+                    decodeConstOperand rp.types
+                      ⟨span, userTy, .Val (.Scalar (.Int bitsNat size)) tyId⟩ = none := by
+                  simp [decodeConstOperand, h_ne]
+                dsimp only [decodeOperand, optMap] at h_op
+                rw [h_none] at h_op
+                cases h_op
+              | isTrue h_seq =>
+                subst h_seq
+                simp only [decodeOperand, decodeConstOperand, optMap] at h_op
+                cases h_t : MirSemantics.getElem? rp.types tyId with
+                | none => rw [h_t] at h_op; cases h_op
+                | some t =>
+                  rw [h_t] at h_op
+                  injection h_op with h_oeq
+                  injection h_oeq with h_ceq
+                  subst h_ceq
+                  dsimp only [evalOperandToSlot] at h_es
+                  cases h_c : evalConstLit t (.scalar (BitVec.ofNat 128 bitsNat)) with
+                  | error _ => rw [h_c] at h_es; cases h_es
+                  | ok _ =>
+                    rw [h_c] at h_es
+                    injection h_es with htup; injection htup with h_teq _
+                    subst h_teq
+                    exact (resolveTy_tyIdFor_of_mem h_t).2
 
-theorem evalPrimitiveOperand_ref_eq (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+theorem evalPrimitiveOperand_ref_eq (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot) (amem : MemoryState)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
     (cm : CallerMemory) (path : Miri.Interpreter.OperandPath)
-    (rop : RefOperand) (op : Operand) (known : Option LocalLayout)
+    (rop : Miri.MIR.Operand) (op : Operand) (known : Option LocalLayout)
     (h_inv : SlotsMatchTys bodyLocals slots)
     (h_op : decodeOperand rp.types rop = some op)
     (h_loc_res : ∀ (id : LocalId) (ty : MirTy),
@@ -1196,7 +1418,7 @@ theorem evalPrimitiveOperand_ref_eq (rp : RefProg) (c : Choice)
     let res := EStateM.bind
       (Miri.Interpreter.OperandMachine.evalOperandAt
         (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
-        c path (toMiriOperand rp.types rop) known)
+        c path rop known)
       (Miri.Interpreter.PlaceMachine.readImmediate refAccessConfig) st
     match evalPrimitiveOperand bodyLocals slots amem op with
     | .error k =>
@@ -1784,7 +2006,7 @@ private theorem integerOps_unary_no_invalidBool_invalidChar (op : UnOp)
   rw [h] at hw
   cases se <;> exact hw
 
-private theorem scalarOps_classify_bool (rp : RefProg) (c : Choice)
+private theorem scalarOps_classify_bool (rp : MiriProg) (c : Choice)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser) :
     (Miri.Interpreter.ExecutionMachine.scalarHooks (refExecCfg rp)).classify c
         (tyIdFor rp.types .bool) st = .ok .boolean st := by
@@ -1794,7 +2016,7 @@ private theorem scalarOps_classify_bool (rp : RefProg) (c : Choice)
     refScalarLeaves]
   rw [resolveTy_tyIdFor_of_aux (code := 0) rfl]
 
-private theorem scalarOps_classify_int (rp : RefProg) (c : Choice)
+private theorem scalarOps_classify_int (rp : MiriProg) (c : Choice)
     (w : IntWidth) (s : Bool)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser) :
     (Miri.Interpreter.ExecutionMachine.scalarHooks (refExecCfg rp)).classify c
@@ -1883,7 +2105,7 @@ private theorem checkVal_scalar_of_trunc (w : IntWidth) (s : Bool)
   rw [IntWidth.beq_refl]
   cases s <;> rfl
 
-private theorem scalarOps_bool_bin_unfold (rp : RefProg) (c : Choice)
+private theorem scalarOps_bool_bin_unfold (rp : MiriProg) (c : Choice)
     (op : BinOp) (lb rb : Bool)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser) :
     let sc := Miri.Interpreter.ExecutionMachine.scalarHooks (refExecCfg rp)
@@ -1928,7 +2150,7 @@ private noncomputable def refIntBinRes (types : List MirTy) (w : IntWidth)
     .ok ⟨valToMiriImmediate .ordering (.ordering (refOrderingOfMiri o)),
       refLocalLayoutForTy types .ordering⟩ st
 
-private theorem scalarHooks_overflowLayout_int (rp : RefProg) (c : Choice)
+private theorem scalarHooks_overflowLayout_int (rp : MiriProg) (c : Choice)
     (w : IntWidth) (s : Bool)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser) :
     (Miri.Interpreter.ExecutionMachine.scalarHooks (refExecCfg rp)).overflowLayout
@@ -1940,7 +2162,7 @@ private theorem scalarHooks_overflowLayout_int (rp : RefProg) (c : Choice)
     refScalarLeaves, refLocalLayoutForTy]
   rw [resolveTy_tyIdFor_int]
 
-private theorem scalarOps_int_bin_unfold (rp : RefProg) (c : Choice)
+private theorem scalarOps_int_bin_unfold (rp : MiriProg) (c : Choice)
     (op : BinOp) (w₁ w₂ : IntWidth) (s₁ s₂ : Bool) (b₁ b₂ : BitVec 128)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser) :
     let sc := Miri.Interpreter.ExecutionMachine.scalarHooks (refExecCfg rp)
@@ -2044,7 +2266,7 @@ private theorem scalarOps_int_bin_unfold (rp : RefProg) (c : Choice)
                 (scalarHooks_overflowLayout_int rp c _ s₁ st)]
               rfl))
 
-private theorem scalarOps_classify_char (rp : RefProg) (c : Choice)
+private theorem scalarOps_classify_char (rp : MiriProg) (c : Choice)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_res : resolveTy rp.types (tyIdFor rp.types .char) = some .char) :
     (Miri.Interpreter.ExecutionMachine.scalarHooks (refExecCfg rp)).classify c
@@ -2058,7 +2280,7 @@ private theorem scalarOps_classify_char (rp : RefProg) (c : Choice)
 /-- Classifying a `char` or overflow-pair type either fails closed
 (`.unsupported`) or yields `.character`; it never yields `.integer` or
 `.boolean`. -/
-private theorem scalarOps_classify_char_or_pair (rp : RefProg) (c : Choice)
+private theorem scalarOps_classify_char_or_pair (rp : MiriProg) (c : Choice)
     (ty : MirTy) (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_ty : ty = .char ∨ ∃ w s, ty = .tuple [.int w s, .bool]) :
     (∃ e, (Miri.Interpreter.ExecutionMachine.scalarHooks (refExecCfg rp)).classify
@@ -2083,7 +2305,7 @@ private theorem scalarOps_classify_char_or_pair (rp : RefProg) (c : Choice)
       exact Or.inl ⟨_, rfl, rfl⟩
 
 /-- `ScalarOps.binary` on two `char` operands. -/
-private theorem scalarOps_char_bin_unfold (rp : RefProg) (c : Choice)
+private theorem scalarOps_char_bin_unfold (rp : MiriProg) (c : Choice)
     (op : BinOp) (l r : Char)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_res : resolveTy rp.types (tyIdFor rp.types .char) = some .char) :
@@ -2178,7 +2400,7 @@ private theorem checkVal_pair_of_trunc (w : IntWidth) (s : Bool)
 
 /-- Result of an integer binary operator on `IntegerOps.binary`'s result
 `res0`: the reference value and the `ScalarOps.binary` result agree. -/
-private theorem refIntBinRes_handle (rp : RefProg) (op : BinOp)
+private theorem refIntBinRes_handle (rp : MiriProg) (op : BinOp)
     (w₁ w₂ : IntWidth) (s₁ s₂ : Bool) (b₁ b₂ : BitVec 128)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (res0 : Except IntegerOpError IntegerResult)
@@ -2227,7 +2449,7 @@ private theorem refIntBinRes_handle (rp : RefProg) (op : BinOp)
 
 /-- `ScalarOps.binary` fails closed with an asymmetric-type error when the left
 operand classifies as `boolean` or `character` and the operand types differ. -/
-private theorem scalarOps_binary_asym (rp : RefProg) (c : Choice) (op : BinOp)
+private theorem scalarOps_binary_asym (rp : MiriProg) (c : Choice) (op : BinOp)
     (lTy rTy : MirTy) (lImm rImm : Miri.Interpreter.Immediate Miri.Memory.Provenance)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (k : Miri.Interpreter.ScalarTypeClass)
@@ -2262,7 +2484,7 @@ private theorem scalarOps_binary_asym (rp : RefProg) (c : Choice) (op : BinOp)
           (StepError.invalidProgram "asymmetric scalar operand types")) _ st) = _
     rw [h_ne]; rfl
 
-theorem scalarOps_binary_ref_eq (rp : RefProg) (c : Choice) (op : BinOp)
+theorem scalarOps_binary_ref_eq (rp : MiriProg) (c : Choice) (op : BinOp)
     (lTy rTy : MirTy) (lVal rVal : Val)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_lcv : checkVal lVal lTy = true) (h_lpr : isPrimitiveReadableTy lTy = true)
@@ -2551,7 +2773,7 @@ theorem scalarOps_binary_ref_eq (rp : RefProg) (c : Choice) (op : BinOp)
         rw [h_ev]
         exact ⟨_, _, h_err, rfl⟩
 
-private theorem scalarOps_int_un_unfold (rp : RefProg) (c : Choice)
+private theorem scalarOps_int_un_unfold (rp : MiriProg) (c : Choice)
     (op : UnOp) (w : IntWidth) (s : Bool) (bits : BitVec 128)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser) :
     let sc := Miri.Interpreter.ExecutionMachine.scalarHooks (refExecCfg rp)
@@ -2576,7 +2798,7 @@ private theorem scalarOps_int_un_unfold (rp : RefProg) (c : Choice)
     cases Miri.Interpreter.IntegerOps.unary (toMiriUnOp op)
         (miriIntValue ⟨_, s, bits⟩) <;> rfl)
 
-theorem scalarOps_unary_ref_eq (rp : RefProg) (c : Choice) (op : UnOp)
+theorem scalarOps_unary_ref_eq (rp : MiriProg) (c : Choice) (op : UnOp)
     (ty : MirTy) (v : Val)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_cv : checkVal v ty = true) (h_pr : isPrimitiveReadableTy ty = true) :
@@ -2697,7 +2919,7 @@ theorem scalarOps_unary_ref_eq (rp : RefProg) (c : Choice) (op : UnOp)
 
 /-! ## Section 5: `Discriminant` Helpers -/
 
-private theorem discrHooks_discriminantLayout (rp : RefProg) (c : Choice)
+private theorem discrHooks_discriminantLayout (rp : MiriProg) (c : Choice)
     (ty : MirTy) (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_res : resolveTy rp.types (tyIdFor rp.types ty) = some ty) :
     (Miri.Interpreter.ExecutionMachine.discriminantHooks (refExecCfg rp)).discriminantLayout
@@ -2715,7 +2937,7 @@ private theorem discrHooks_discriminantLayout (rp : RefProg) (c : Choice)
   rw [h_res]
   rfl
 
-private theorem discrHooks_discriminantLayout_enumLike (rp : RefProg)
+private theorem discrHooks_discriminantLayout_enumLike (rp : MiriProg)
     (c : Choice) {ty : MirTy} {ety : EnumTy}
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_el : EnumLike rp.types ty ety)
@@ -2729,7 +2951,7 @@ private theorem discrHooks_discriminantLayout_enumLike (rp : RefProg)
   rw [discrHooks_discriminantLayout rp c ty st h_el.2, h_el.1]
   dsimp only; rw [h_ref_adm]; rfl
 
-private theorem discrHooks_projectRead_imm_enumLike (rp : RefProg) (c : Choice)
+private theorem discrHooks_projectRead_imm_enumLike (rp : MiriProg) (c : Choice)
     {ty : MirTy} {ety : EnumTy} (tagW : IntWidth) (tagS : Bool)
     (imm : Miri.Interpreter.Immediate Miri.Memory.Provenance)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
@@ -2754,7 +2976,7 @@ private theorem discrHooks_projectRead_imm_enumLike (rp : RefProg) (c : Choice)
   rw [eStateM_bind_pure, h_proj_field]
   rfl
 
-private theorem discrHooks_variantForDiscriminant_enumLike (rp : RefProg)
+private theorem discrHooks_variantForDiscriminant_enumLike (rp : MiriProg)
     (c : Choice) {ty : MirTy} {ety : EnumTy} (bits : BitVec 128)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_el : EnumLike rp.types ty ety) :
@@ -2769,7 +2991,7 @@ private theorem discrHooks_variantForDiscriminant_enumLike (rp : RefProg)
   dsimp only [Option.bind]
   rw [h_el.1]
 
-private theorem discrHooks_discriminantValue_enumLike (rp : RefProg)
+private theorem discrHooks_discriminantValue_enumLike (rp : MiriProg)
     (c : Choice) {ty : MirTy} {ety : EnumTy} (variant disc : Nat)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_el : EnumLike rp.types ty ety)
@@ -2790,7 +3012,7 @@ private theorem discrHooks_discriminantValue_enumLike (rp : RefProg)
 
 /-- `Discriminant.readDiscriminant` on an initialized scalar-tag immediate of an
 `EnumLike` local type (`.enum ety` or `core::cmp::Ordering`). -/
-private theorem discrHooks_readDiscriminant_scalar_ok (rp : RefProg)
+private theorem discrHooks_readDiscriminant_scalar_ok (rp : MiriProg)
     (c : Choice) (ty : MirTy) (ety : EnumTy) (tagW : IntWidth) (tagS : Bool)
     (variant disc : Nat)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
@@ -2943,7 +3165,7 @@ private theorem discrHooks_readDiscriminant_scalar_ok (rp : RefProg)
 
 /-- `Discriminant.readDiscriminant` on an uninitialized immediate of an
 `EnumLike` scalar-tagged local type fails with `.undefinedBehavior`. -/
-private theorem discrHooks_readDiscriminant_scalar_uninit_ub (rp : RefProg)
+private theorem discrHooks_readDiscriminant_scalar_uninit_ub (rp : MiriProg)
     (c : Choice) (ty : MirTy) (ety : EnumTy) (tagW : IntWidth) (tagS : Bool)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_el : EnumLike rp.types ty ety)
@@ -2984,7 +3206,7 @@ private theorem discrHooks_readDiscriminant_scalar_uninit_ub (rp : RefProg)
 
 /-- `Discriminant.discriminantForVariant` for an `EnumLike` local type whose
 admitted descriptor `ety` maps `variant` to `disc`. -/
-private theorem discrHooks_discriminantForVariant_ok (rp : RefProg)
+private theorem discrHooks_discriminantForVariant_ok (rp : MiriProg)
     (c : Choice) (ty : MirTy) (ety : EnumTy) (variant disc : Nat)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_el : EnumLike rp.types ty ety)
@@ -3038,8 +3260,8 @@ private theorem discrHooks_discriminantForVariant_ok (rp : RefProg)
 
 /-! ## Section 6: `PlaceDynamic.evalPlace`, Writes, and `evalRvalueIntoPlace` -/
 
-private theorem localToPlace_ok (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+private theorem localToPlace_ok (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -3076,8 +3298,8 @@ private theorem localToPlace_ok (rp : RefProg) (c : Choice)
   simp only [h_sz, ite_true]
   rfl
 
-private theorem localToPlace_oob (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+private theorem localToPlace_oob (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -3117,8 +3339,8 @@ private theorem localToPlace_oob (rp : RefProg) (c : Choice)
   dsimp only [Miri.Interpreter.localToPlace, bind, Bind.bind]
   rw [eStateM_bind_err h_pl]
 
-private theorem placeDynamic_evalPlace_local_ok (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+private theorem placeDynamic_evalPlace_local_ok (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -3144,8 +3366,8 @@ private theorem placeDynamic_evalPlace_local_ok (rp : RefProg) (c : Choice)
   rw [eStateM_bind_ok (array_forIn_empty _ _ st)]
   rfl
 
-private theorem placeDynamic_evalPlace_oob (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+private theorem placeDynamic_evalPlace_oob (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -3166,31 +3388,142 @@ private theorem placeDynamic_evalPlace_oob (rp : RefProg) (c : Choice)
   dsimp only [Miri.Interpreter.PlaceDynamic.evalPlace, bind, Bind.bind]
   rw [eStateM_bind_err h_lp]
 
-private theorem placeDynamic_evalPlace_deref_err (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+private theorem placeDynamic_evalPlace_proj_err (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
-    (cm : CallerMemory) (id : LocalId) (ty : MirTy) (slot : LocalSlot)
-    (h_ty : MirSemantics.getElem? bodyLocals id = some ty)
-    (h_sl : MirSemantics.getElem? slots id = some slot) :
+    (cm : CallerMemory) (rpl : Miri.MIR.Place) (pl : Place) (skip : Bool)
+    (ty : MirTy) (slot : LocalSlot)
+    (h_pl : decodePlace rp.types rpl = some pl)
+    (h_ne : pl.projection.isEmpty = false)
+    (h_ty : MirSemantics.getElem? bodyLocals rpl.localId = some ty)
+    (h_sl : MirSemantics.getElem? slots rpl.localId = some slot) :
     let st := mkSimState rp defId rbody blockIdx stmtIdx bodyLocals slots
       retPlace mem ctrl cm
-    Miri.Interpreter.PlaceDynamic.evalPlace
+    ∃ err st',
+      Miri.Interpreter.PlaceDynamic.evalPlace
         (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp))
-        c ⟨id, Array.mk [.Deref]⟩ true st =
-      .error (.unsupported "projections unsupported on Day 1") st := by
+        c rpl skip st = .error err st' ∧
+      stepErrorFaultKind err = .unsupported := by
   intro st
   have h_lp := localToPlace_ok rp c defId rbody blockIdx stmtIdx bodyLocals slots
-    retPlace mem ctrl cm id ty slot h_ty h_sl
-  dsimp only [Miri.Interpreter.PlaceDynamic.evalPlace, bind, Bind.bind]
-  rw [eStateM_bind_ok h_lp]
-  rfl
+    retPlace mem ctrl cm rpl.localId ty slot h_ty h_sl
+  have h_rpe : rpl.projection.isEmpty = false := (decodePlace_inv h_pl).2.trans h_ne
+  dsimp only [decodePlace] at h_pl
+  cases h_pr : mapOption (decodeProjElem rp.types) rpl.projection.toList with
+  | none => rw [h_pr] at h_pl; cases h_pl
+  | some _ =>
+    cases h_arr : rpl.projection with
+    | mk xs =>
+      cases xs with
+      | nil => rw [h_arr] at h_rpe; cases h_rpe
+      | cons re rest =>
+        rw [h_arr] at h_pr
+        dsimp only [mapOption] at h_pr
+        cases h_re : decodeProjElem rp.types re with
+        | none => rw [h_re] at h_pr; cases h_pr
+        | some _ =>
+          dsimp only [Miri.Interpreter.PlaceDynamic.evalPlace, bind, Bind.bind]
+          rw [eStateM_bind_ok h_lp, h_arr]
+          cases h_simple : (skip && (Array.mk (re :: rest) ==
+              Array.mk [Miri.MIR.ProjectionElem.Deref])) with
+          | true =>
+            dsimp only [ite_true_eq]
+            exact ⟨_, _, rfl, rfl⟩
+          | false =>
+            dsimp only [ite_false_eq]
+            have h_proj_err :
+                ∃ err st',
+                  Miri.Interpreter.PlaceDynamic.project
+                    (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp))
+                    c ⟨.local 0 rpl.localId none (LocalsIdentity.ofAllocationToken 0),
+                      refLocalLayoutForTy rp.types ty⟩
+                    re st = .error err st' ∧
+                  stepErrorFaultKind err = .unsupported := by
+              cases re with
+              | Deref => exact ⟨_, _, rfl, rfl⟩
+              | PhantomDeref => exact ⟨_, _, rfl, rfl⟩
+              | ConstantIndex offset minimum fromEnd =>
+                cases fromEnd with
+                | true => cases h_re
+                | false =>
+                  dsimp only [Miri.Interpreter.PlaceDynamic.project, bind, Bind.bind]
+                  cases h_ov : (decide (offset ≥ HPow.hPow 2 64) ||
+                      decide (minimum ≥ HPow.hPow 2 64)) with
+                  | true =>
+                    dsimp only [ite_true_eq]
+                    exact ⟨_, _, rfl, rfl⟩
+                  | false =>
+                    dsimp only [ite_false_eq,
+                      Miri.Interpreter.PlaceDynamic.constantIndex, bind, Bind.bind]
+                    have h_len_err :
+                        Miri.Interpreter.PlaceDynamic.length
+                          (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp))
+                          c
+                          ⟨.local 0 rpl.localId none (LocalsIdentity.ofAllocationToken 0),
+                            refLocalLayoutForTy rp.types ty⟩
+                          st =
+                          .error (.invalidProgram "length of non-array") st := by
+                      dsimp only [Miri.Interpreter.PlaceDynamic.length]
+                      have h_sz : (refLocalLayoutForTy rp.types ty).layout.isSized = true :=
+                        refLayoutDataForTy_isSized ty
+                      rw [h_sz]
+                      dsimp only [Bool.not, ite_false_eq, refLocalLayoutForTy]
+                      have h_na := refLayoutDataForTy_not_array ty
+                      cases h_f : (refLayoutDataForTy ty).fields with
+                      | Array _ _ => rw [h_f] at h_na; exact False.elim h_na
+                      | Primitive | Arbitrary _ _ | Union _ => rfl
+                    rw [eStateM_bind_err h_len_err]
+                    exact ⟨_, _, rfl, rfl⟩
+              | Field _ _ | Index _ | Subslice _ _ _ | Downcast _ _
+              | OpaqueCast _ | UnwrapUnsafeBinder _ => cases h_re
+            let ⟨err, st', h_pe_err, h_fk⟩ := h_proj_err
+            have h_forin :
+                forIn (Array.mk (re :: rest))
+                  (⟨.local 0 rpl.localId none (LocalsIdentity.ofAllocationToken 0),
+                    refLocalLayoutForTy rp.types ty⟩ :
+                    Miri.Interpreter.RuntimePlace Miri.Memory.Provenance)
+                  (fun elem place =>
+                    EStateM.bind
+                      (Miri.Interpreter.PlaceDynamic.project
+                        (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp))
+                        c place elem)
+                      (fun place' => pure (ForInStep.yield place')))
+                  st = .error err st' := by
+              have h_toList :
+                  forIn (Array.mk (re :: rest))
+                    (⟨.local 0 rpl.localId none (LocalsIdentity.ofAllocationToken 0),
+                      refLocalLayoutForTy rp.types ty⟩ :
+                      Miri.Interpreter.RuntimePlace Miri.Memory.Provenance)
+                    (fun elem place =>
+                      EStateM.bind
+                        (Miri.Interpreter.PlaceDynamic.project
+                          (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp))
+                          c place elem)
+                        (fun place' => pure (ForInStep.yield place'))) =
+                  forIn (re :: rest : List Miri.MIR.ProjectionElem)
+                    (⟨.local 0 rpl.localId none (LocalsIdentity.ofAllocationToken 0),
+                      refLocalLayoutForTy rp.types ty⟩ :
+                      Miri.Interpreter.RuntimePlace Miri.Memory.Provenance)
+                    (fun elem place =>
+                      EStateM.bind
+                        (Miri.Interpreter.PlaceDynamic.project
+                          (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp))
+                          c place elem)
+                        (fun place' => pure (ForInStep.yield place'))) :=
+                (Array.forIn_toList).symm
+              rw [h_toList]
+              dsimp only [forIn, forIn', List.forIn', List.forIn'.loop,
+                bind, Bind.bind, EStateM.instMonad, Monad.toBind, EStateM.bind]
+              rw [h_pe_err]
+            rw [eStateM_bind_err h_forin]
+            exact ⟨err, st', rfl, h_fk⟩
 
-private theorem writePlaceImmediateNoValidate_local_dead (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+private theorem writePlaceImmediateNoValidate_local_dead (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -3232,8 +3565,8 @@ private theorem writePlaceImmediateNoValidate_local_dead (rp : RefProg) (c : Cho
   simp only [h_sz, Bool.not_true, Bool.false_eq_true, ite_false]
   rw [eStateM_bind_err h_as]
 
-private theorem writePlaceImmediateNoValidate_local_live (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+private theorem writePlaceImmediateNoValidate_local_live (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots slots' : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -3299,8 +3632,8 @@ private theorem writePlaceImmediateNoValidate_local_live (rp : RefProg) (c : Cho
   rw [h_so]
   rfl
 
-private theorem writePlaceImmediate_local_ok (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+private theorem writePlaceImmediate_local_ok (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots slots' : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -3373,8 +3706,8 @@ private theorem writePlaceImmediate_local_ok (rp : RefProg) (c : Choice)
   rw [h_v]
   exact h_val
 
-private theorem copyRuntimePlace_imm_to_local (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+private theorem copyRuntimePlace_imm_to_local (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot) (amem : MemoryState)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -3590,8 +3923,8 @@ private theorem copyRuntimePlace_imm_to_local (rp : RefProg) (c : Choice)
 /-- Write a validated primitive/discriminant value `v` of type `resTy` into
 destination local `dstId` of type `dstTy`, matching `assertRvalueLayout` +
 `writePlaceImmediate` against `writePlace`. -/
-private theorem assertAndWrite_local_eq (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+private theorem assertAndWrite_local_eq (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot) (amem : MemoryState)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -3691,8 +4024,8 @@ private theorem assertAndWrite_local_eq (rp : RefProg) (c : Choice)
 
 /-! ### `Rvalue.cast .intToInt` -/
 
-private theorem castHooks_takePendingMoveDeinit (rp : RefProg)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+private theorem castHooks_takePendingMoveDeinit (rp : MiriProg)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -3706,7 +4039,7 @@ private theorem castHooks_takePendingMoveDeinit (rp : RefProg)
       .ok false (mkSimState rp defId rbody blockIdx stmtIdx bodyLocals slots
         retPlace mem ctrl cm) := rfl
 
-private theorem castHooks_destLayout (rp : RefProg)
+private theorem castHooks_destLayout (rp : MiriProg)
     (r : Miri.Interpreter.RuntimePlaceRef Miri.Memory.Provenance)
     (l : Miri.Interpreter.LocalLayout) :
     (Miri.Interpreter.ExecutionMachine.castHooks (refExecCfg rp)
@@ -3715,13 +4048,13 @@ private theorem castHooks_destLayout (rp : RefProg)
 private theorem refLocalLayoutForTy_ty (types : List MirTy) (ty : MirTy) :
     (refLocalLayoutForTy types ty).ty = tyIdFor types ty := rfl
 
-private theorem castHooks_enforceValidity (rp : RefProg) (c : Choice)
+private theorem castHooks_enforceValidity (rp : MiriProg) (c : Choice)
     (l : Miri.Interpreter.LocalLayout)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser) :
     (Miri.Interpreter.ExecutionMachine.castHooks (refExecCfg rp)
         refLimits).enforceValidity c l st = .ok true st := rfl
 
-private theorem castHooks_typeInfo (rp : RefProg) (c : Choice) (tid : TyId)
+private theorem castHooks_typeInfo (rp : MiriProg) (c : Choice) (tid : TyId)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser) :
     (Miri.Interpreter.ExecutionMachine.castHooks (refExecCfg rp)
         refLimits).typeInfo c tid st =
@@ -3731,7 +4064,7 @@ private theorem castHooks_typeInfo (rp : RefProg) (c : Choice) (tid : TyId)
       | some .char => .ok .character st
       | _ => .error (.unsupported "cast type unsupported") st := rfl
 
-private theorem castHooks_bind_typeInfo (rp : RefProg) (c : Choice)
+private theorem castHooks_bind_typeInfo (rp : MiriProg) (c : Choice)
     (tid : TyId) {α : Type}
     (f : Miri.Interpreter.CastTypeInfo →
       EStateM Miri.Interpreter.StepError
@@ -3750,14 +4083,14 @@ private theorem castHooks_bind_typeInfo (rp : RefProg) (c : Choice)
   | none => rfl
   | some t => cases t <;> rfl
 
-private theorem castHooks_readImmediate (rp : RefProg) (c : Choice)
+private theorem castHooks_readImmediate (rp : MiriProg) (c : Choice)
     (op : Miri.Interpreter.OpTy Miri.Memory.Provenance)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser) :
     (Miri.Interpreter.ExecutionMachine.castHooks (refExecCfg rp)
         refLimits).readImmediate c op st =
       Miri.Interpreter.PlaceMachine.readImmediate refAccessConfig op st := rfl
 
-private theorem castHooks_writeImmediate (rp : RefProg) (c : Choice)
+private theorem castHooks_writeImmediate (rp : MiriProg) (c : Choice)
     (imm : Miri.Interpreter.Immediate Miri.Memory.Provenance)
     (dest : Miri.Interpreter.RuntimePlace Miri.Memory.Provenance)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser) :
@@ -3790,7 +4123,7 @@ private theorem cast_scalar_toUInt_miriScalar (w : IntWidth)
   rw [h, scalarInt_toBits_miriScalar]
   rfl
 
-private theorem cast_intLikeValue_uint (rp : RefProg) (c : Choice)
+private theorem cast_intLikeValue_uint (rp : MiriProg) (c : Choice)
     (w : IntWidth) (bits : BitVec 128)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_res : resolveTy rp.types (tyIdFor rp.types (.int w false)) =
@@ -3843,7 +4176,7 @@ private theorem cast_scalar_toInt_miriScalar (w : IntWidth)
   rw [size_signExtend_eq]
   rfl
 
-private theorem cast_intLikeValue_sint (rp : RefProg) (c : Choice)
+private theorem cast_intLikeValue_sint (rp : MiriProg) (c : Choice)
     (w : IntWidth) (bits : BitVec 128)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_res : resolveTy rp.types (tyIdFor rp.types (.int w true)) =
@@ -3869,7 +4202,7 @@ private theorem cast_intLikeValue_sint (rp : RefProg) (c : Choice)
     cast_scalar_toInt_miriScalar]
   rfl
 
-private theorem cast_intLikeValue_bool (rp : RefProg) (c : Choice) (b : Bool)
+private theorem cast_intLikeValue_bool (rp : MiriProg) (c : Choice) (b : Bool)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_res : resolveTy rp.types (tyIdFor rp.types .bool) = some .bool) :
     Miri.Interpreter.Cast.intLikeValue
@@ -3888,7 +4221,7 @@ private theorem cast_intLikeValue_bool (rp : RefProg) (c : Choice) (b : Bool)
   rw [scalar_toBool_fromBool]
   cases b <;> rfl
 
-private theorem cast_intLikeValue_char (rp : RefProg) (c : Choice) (ch : Char)
+private theorem cast_intLikeValue_char (rp : MiriProg) (c : Choice) (ch : Char)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_res : resolveTy rp.types (tyIdFor rp.types .char) = some .char) :
     Miri.Interpreter.Cast.intLikeValue
@@ -3907,7 +4240,7 @@ private theorem cast_intLikeValue_char (rp : RefProg) (c : Choice) (ch : Char)
   rw [scalar_toChar_fromChar]
   rfl
 
-private theorem cast_castFromIntLike_int (rp : RefProg) (c : Choice)
+private theorem cast_castFromIntLike_int (rp : MiriProg) (c : Choice)
     (sc : Miri.Memory.Scalar Miri.Memory.Provenance)
     (src : Miri.Interpreter.LocalLayout) (n : Nat) (sg : Bool)
     (w : IntWidth) (s : Bool)
@@ -3931,7 +4264,7 @@ private theorem cast_castFromIntLike_int (rp : RefProg) (c : Choice)
   rw [refLocalLayoutForTy_int_size, integerCast_u128_to_int]
   rfl
 
-private theorem cast_castFromIntLike_char (rp : RefProg) (c : Choice)
+private theorem cast_castFromIntLike_char (rp : MiriProg) (c : Choice)
     (sc : Miri.Memory.Scalar Miri.Memory.Provenance)
     (src : Miri.Interpreter.LocalLayout) (n : Nat) (sg : Bool)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
@@ -3961,16 +4294,59 @@ private theorem cast_castFromIntLike_char (rp : RefProg) (c : Choice)
 
 /-- `Cast.cast .IntToInt` after a successful source read: the result is
 fixed by the destination type. -/
-private theorem cast_intToInt_core (rp : RefProg) (c : Choice)
+private theorem castHooks_resolveTarget (rp : MiriProg) (c : Choice)
+    (dstTid : TyId) (dstTy : MirTy)
+    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
+    (h_tid_res : resolveTy rp.types dstTid = some dstTy) :
+    (if (dstTid == (refLocalLayoutForTy rp.types dstTy).ty) = true then
+      EStateM.pure (refLocalLayoutForTy rp.types dstTy)
+    else
+      (Miri.Interpreter.ExecutionMachine.castHooks (refExecCfg rp) refLimits).layoutOf
+        c dstTid) st =
+      .ok (refLocalLayoutForTy rp.types dstTy) st := by
+  cases h_eq : (dstTid == (refLocalLayoutForTy rp.types dstTy).ty) with
+  | true =>
+    dsimp only [ite_true_eq]
+    rfl
+  | false =>
+    dsimp only [ite_false_eq, Miri.Interpreter.ExecutionMachine.castHooks, refExecCfg,
+      Miri.Interpreter.ExecutionMachine.withValidation, refExecutionConfig,
+      refCastLeaves, refLayoutOfTyId, Miri.Interpreter.ExecutionCast.hooks]
+    rw [h_tid_res]
+    rfl
+
+private theorem castHooks_bind_resolveTarget {β : Type} (rp : MiriProg) (c : Choice)
+    (dstTid : TyId) (dstTy : MirTy)
+    (k : Miri.Interpreter.LocalLayout →
+      Miri.Interpreter.PlaceM (Miri.Interpreter.MachineHooks.State Unit RefUser) β)
+    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
+    (h_tid_res : resolveTy rp.types dstTid = some dstTy) :
+    (if (dstTid == (refLocalLayoutForTy rp.types dstTy).ty) = true then
+      (EStateM.pure (refLocalLayoutForTy rp.types dstTy)).bind k
+    else
+      ((Miri.Interpreter.ExecutionMachine.castHooks (refExecCfg rp)
+        refLimits).layoutOf c dstTid).bind k) st =
+      k (refLocalLayoutForTy rp.types dstTy) st := by
+  cases h_eq : (dstTid == (refLocalLayoutForTy rp.types dstTy).ty) with
+  | true => rw [ite_true_eq]; rfl
+  | false =>
+    rw [ite_false_eq]
+    exact eStateM_bind_ok (by
+      have h_res := castHooks_resolveTarget rp c dstTid dstTy st h_tid_res
+      rw [h_eq, ite_false_eq] at h_res
+      exact h_res)
+
+private theorem cast_intToInt_core (rp : MiriProg) (c : Choice)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (dref : Miri.Interpreter.RuntimePlaceRef Miri.Memory.Provenance)
-    (srcTy dstTy : MirTy) (imm : Miri.Interpreter.Immediate
-        Miri.Memory.Provenance)
+    (srcTy dstTy : MirTy) (dstTid : TyId)
+    (imm : Miri.Interpreter.Immediate Miri.Memory.Provenance)
     (sc : Miri.Memory.Scalar Miri.Memory.Provenance) (n : Nat) (sg : Bool)
     (h_take : (Miri.Interpreter.ExecutionMachine.castHooks (refExecCfg rp)
         refLimits).takePendingMoveDeinit st = .ok false st)
     (h_src_res : resolveTy rp.types (tyIdFor rp.types srcTy) = some srcTy)
     (h_dst_res : resolveTy rp.types (tyIdFor rp.types dstTy) = some dstTy)
+    (h_tid_res : resolveTy rp.types dstTid = some dstTy)
     (h_il : isIntLikeTy srcTy = true) (h_n : n < HPow.hPow 2 128)
     (h_read : Miri.Interpreter.PlaceMachine.readImmediate refAccessConfig
         ⟨.immediate imm, refLocalLayoutForTy rp.types srcTy⟩ st =
@@ -3984,7 +4360,7 @@ private theorem cast_intToInt_core (rp : RefProg) (c : Choice)
         (Miri.Interpreter.ExecutionMachine.castHooks (refExecCfg rp) refLimits)
         c refLimits.casts
       ⟨.immediate imm, refLocalLayoutForTy rp.types srcTy⟩
-      .IntToInt (tyIdFor rp.types dstTy)
+      .IntToInt dstTid
       ⟨dref, refLocalLayoutForTy rp.types dstTy⟩ st
     let place :=
       (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp)).place
@@ -4006,8 +4382,9 @@ private theorem cast_intToInt_core (rp : RefProg) (c : Choice)
   intro res place
   have h_rd := (castHooks_readImmediate rp c _ st).trans h_read
   dsimp only [res, Miri.Interpreter.Cast.cast, bind, Bind.bind, pure, Pure.pure]
-  rw [eStateM_bind_ok h_take, castHooks_destLayout, refLocalLayoutForTy_ty,
-    beq_self_eq_true, ite_true_eq, eStateM_bind_pure, ite_false_eq,
+  rw [eStateM_bind_ok h_take, castHooks_destLayout,
+    castHooks_bind_resolveTarget rp c dstTid dstTy _ st h_tid_res,
+    ite_false_eq,
     eStateM_bind_ok (castHooks_enforceValidity rp c _ st), ite_true_eq,
     castHooks_bind_typeInfo]
   simp only [refLocalLayoutForTy_ty]
@@ -4247,27 +4624,29 @@ private theorem cast_checkVal_char_inv {v : Val}
   | _ => cases h_t
 
 /-- `Cast.cast .IntToInt` propagates a source-read error. -/
-private theorem cast_intToInt_readErr (rp : RefProg) (c : Choice)
+private theorem cast_intToInt_readErr (rp : MiriProg) (c : Choice)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (dref : Miri.Interpreter.RuntimePlaceRef Miri.Memory.Provenance)
-    (srcTy dstTy : MirTy) (imm : Miri.Interpreter.Immediate
-        Miri.Memory.Provenance)
+    (srcTy dstTy : MirTy) (dstTid : TyId)
+    (imm : Miri.Interpreter.Immediate Miri.Memory.Provenance)
     (e : Miri.Interpreter.StepError)
     (h_take : (Miri.Interpreter.ExecutionMachine.castHooks (refExecCfg rp)
         refLimits).takePendingMoveDeinit st = .ok false st)
     (h_src_res : resolveTy rp.types (tyIdFor rp.types srcTy) = some srcTy)
+    (h_tid_res : resolveTy rp.types dstTid = some dstTy)
     (h_il : isIntLikeTy srcTy = true)
     (h_read : Miri.Interpreter.PlaceMachine.readImmediate refAccessConfig
         ⟨.immediate imm, refLocalLayoutForTy rp.types srcTy⟩ st = .error e st) :
     Miri.Interpreter.Cast.cast (Miri.Interpreter.ExecutionMachine.castHooks
         (refExecCfg rp) refLimits) c refLimits.casts
         ⟨.immediate imm, refLocalLayoutForTy rp.types srcTy⟩
-        .IntToInt (tyIdFor rp.types dstTy)
+        .IntToInt dstTid
         ⟨dref, refLocalLayoutForTy rp.types dstTy⟩ st = .error e st := by
   have h_rd := (castHooks_readImmediate rp c _ st).trans h_read
   dsimp only [Miri.Interpreter.Cast.cast, bind, Bind.bind, pure, Pure.pure]
-  rw [eStateM_bind_ok h_take, castHooks_destLayout, refLocalLayoutForTy_ty,
-    beq_self_eq_true, ite_true_eq, eStateM_bind_pure, ite_false_eq,
+  rw [eStateM_bind_ok h_take, castHooks_destLayout,
+    castHooks_bind_resolveTarget rp c dstTid dstTy _ st h_tid_res,
+    ite_false_eq,
     eStateM_bind_ok (castHooks_enforceValidity rp c _ st), ite_true_eq,
     castHooks_bind_typeInfo]
   simp only [refLocalLayoutForTy_ty]
@@ -4279,25 +4658,27 @@ private theorem cast_intToInt_readErr (rp : RefProg) (c : Choice)
   | _ => cases h_il
 
 /-- `Cast.cast .IntToInt` rejects a source type that is not integer-like. -/
-private theorem cast_intToInt_nonIntLike (rp : RefProg) (c : Choice)
+private theorem cast_intToInt_nonIntLike (rp : MiriProg) (c : Choice)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (dref : Miri.Interpreter.RuntimePlaceRef Miri.Memory.Provenance)
-    (srcTy dstTy : MirTy) (imm : Miri.Interpreter.Immediate
-        Miri.Memory.Provenance)
+    (srcTy dstTy : MirTy) (dstTid : TyId)
+    (imm : Miri.Interpreter.Immediate Miri.Memory.Provenance)
     (h_take : (Miri.Interpreter.ExecutionMachine.castHooks (refExecCfg rp)
         refLimits).takePendingMoveDeinit st = .ok false st)
     (h_src_res : resolveTy rp.types (tyIdFor rp.types srcTy) = some srcTy)
+    (h_tid_res : resolveTy rp.types dstTid = some dstTy)
     (h_il : isIntLikeTy srcTy = false) :
     ∃ err st',
       Miri.Interpreter.Cast.cast (Miri.Interpreter.ExecutionMachine.castHooks
           (refExecCfg rp) refLimits) c refLimits.casts
           ⟨.immediate imm, refLocalLayoutForTy rp.types srcTy⟩
-          .IntToInt (tyIdFor rp.types dstTy)
+          .IntToInt dstTid
           ⟨dref, refLocalLayoutForTy rp.types dstTy⟩ st = .error err st' ∧
         stepErrorFaultKind err = .unsupported := by
   dsimp only [Miri.Interpreter.Cast.cast, bind, Bind.bind, pure, Pure.pure]
-  rw [eStateM_bind_ok h_take, castHooks_destLayout, refLocalLayoutForTy_ty,
-    beq_self_eq_true, ite_true_eq, eStateM_bind_pure, ite_false_eq,
+  rw [eStateM_bind_ok h_take, castHooks_destLayout,
+    castHooks_bind_resolveTarget rp c dstTid dstTy _ st h_tid_res,
+    ite_false_eq,
     eStateM_bind_ok (castHooks_enforceValidity rp c _ st), ite_true_eq,
     castHooks_bind_typeInfo]
   simp only [refLocalLayoutForTy_ty]
@@ -4311,15 +4692,15 @@ private theorem cast_intToInt_nonIntLike (rp : RefProg) (c : Choice)
 /-- Lockstep of `Cast.cast .IntToInt` with `evalIntToIntCast` + `writePlace`
 once the source value `v` has been read as the scalar `sc` whose `u128`
 intermediate is `intLikeBits v = some n`. -/
-private theorem cast_intToInt_some (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+private theorem cast_intToInt_some (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot) (amem : MemoryState)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
     (cm : CallerMemory)
-    (dstId : LocalId) (srcTy dstTy : MirTy) (dstSlot : LocalSlot)
+    (dstId : LocalId) (srcTy dstTy : MirTy) (dstTid : TyId) (dstSlot : LocalSlot)
     (imm : Miri.Interpreter.Immediate Miri.Memory.Provenance)
     (sc : Miri.Memory.Scalar Miri.Memory.Provenance) (n : Nat) (sg : Bool)
     (v : Val)
@@ -4327,6 +4708,7 @@ private theorem cast_intToInt_some (rp : RefProg) (c : Choice)
     (h_dst_sl : MirSemantics.getElem? slots dstId = some dstSlot)
     (h_src_res : resolveTy rp.types (tyIdFor rp.types srcTy) = some srcTy)
     (h_dst_res : resolveTy rp.types (tyIdFor rp.types dstTy) = some dstTy)
+    (h_tid_res : resolveTy rp.types dstTid = some dstTy)
     (h_inv : SlotsMatchTys bodyLocals slots)
     (h_il : isIntLikeTy srcTy = true) (h_n : n < HPow.hPow 2 128)
     (h_read : Miri.Interpreter.PlaceMachine.readImmediate refAccessConfig
@@ -4355,7 +4737,7 @@ private theorem cast_intToInt_some (rp : RefProg) (c : Choice)
         (Miri.Interpreter.ExecutionMachine.castHooks (refExecCfg rp) refLimits)
         c refLimits.casts
       ⟨.immediate imm, refLocalLayoutForTy rp.types srcTy⟩
-      .IntToInt (tyIdFor rp.types dstTy)
+      .IntToInt dstTid
       ⟨.local 0 dstId none (LocalsIdentity.ofAllocationToken 0),
         refLocalLayoutForTy rp.types dstTy⟩ st
     match
@@ -4370,10 +4752,10 @@ private theorem cast_intToInt_some (rp : RefProg) (c : Choice)
   intro st res
   have h_core := cast_intToInt_core rp c st
     (.local 0 dstId none (LocalsIdentity.ofAllocationToken 0)) srcTy
-        dstTy imm sc
+        dstTy dstTid imm sc
     n sg (castHooks_takePendingMoveDeinit rp defId rbody blockIdx stmtIdx
-      bodyLocals slots retPlace mem ctrl cm) h_src_res h_dst_res h_il h_n h_read
-    h_ilv
+      bodyLocals slots retPlace mem ctrl cm) h_src_res h_dst_res h_tid_res
+      h_il h_n h_read h_ilv
   dsimp only [res, evalIntToIntCast]
   rw [h_ilb]
   cases dstTy with
@@ -4410,19 +4792,20 @@ private theorem cast_intToInt_some (rp : RefProg) (c : Choice)
       exact ⟨_, _, h_core, rfl⟩
   | _ => exact h_core
 
-private theorem cast_intToInt_local_eq (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+private theorem cast_intToInt_local_eq (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rbody : Miri.MIR.Body) (blockIdx : BasicBlockId) (stmtIdx : Nat)
     (bodyLocals : List MirTy) (slots : List LocalSlot) (amem : MemoryState)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
-    (cm : CallerMemory) (dstId : LocalId) (srcTy dstTy : MirTy)
+    (cm : CallerMemory) (dstId : LocalId) (srcTy dstTy : MirTy) (dstTid : TyId)
     (optVal : Option Val) (dstSlot : LocalSlot)
     (h_dst_ty : MirSemantics.getElem? bodyLocals dstId = some dstTy)
     (h_dst_sl : MirSemantics.getElem? slots dstId = some dstSlot)
     (h_src_res : resolveTy rp.types (tyIdFor rp.types srcTy) = some srcTy)
     (h_dst_res : resolveTy rp.types (tyIdFor rp.types dstTy) = some dstTy)
+    (h_tid_res : resolveTy rp.types dstTid = some dstTy)
     (h_inv : SlotsMatchTys bodyLocals slots)
     (h_sm : SlotMatchesTy srcTy (.immediate optVal)) :
     let st := mkSimState rp defId rbody blockIdx stmtIdx bodyLocals slots
@@ -4432,7 +4815,7 @@ private theorem cast_intToInt_local_eq (rp : RefProg) (c : Choice)
       c refLimits.casts
       ⟨.immediate (optValToMiriImm srcTy optVal), refLocalLayoutForTy
           rp.types srcTy⟩
-      .IntToInt (tyIdFor rp.types dstTy)
+      .IntToInt dstTid
       ⟨.local 0 dstId none (LocalsIdentity.ofAllocationToken 0),
         refLocalLayoutForTy rp.types dstTy⟩ st
     match
@@ -4456,7 +4839,8 @@ private theorem cast_intToInt_local_eq (rp : RefProg) (c : Choice)
   cases h_il : isIntLikeTy srcTy with
   | false =>
     dsimp only [ite_not_false_eq]
-    exact cast_intToInt_nonIntLike rp c st _ srcTy dstTy _ h_take h_src_res h_il
+    exact cast_intToInt_nonIntLike rp c st _ srcTy dstTy dstTid _ h_take
+      h_src_res h_tid_res h_il
   | true =>
     dsimp only [ite_not_true_eq]
     cases optVal with
@@ -4465,16 +4849,16 @@ private theorem cast_intToInt_local_eq (rp : RefProg) (c : Choice)
       cases srcTy with
       | int w s =>
         let ⟨_, h_u⟩ := readImmediate_imm_int_uninit w s rp.types st h_pmd
-        exact ⟨_, _, cast_intToInt_readErr rp c st _ _ dstTy _ _ h_take
-          h_src_res h_il h_u, rfl⟩
+        exact ⟨_, _, cast_intToInt_readErr rp c st _ _ dstTy dstTid _ _ h_take
+          h_src_res h_tid_res h_il h_u, rfl⟩
       | bool =>
         let ⟨_, h_u⟩ := readImmediate_imm_bool_uninit rp.types st h_pmd
-        exact ⟨_, _, cast_intToInt_readErr rp c st _ _ dstTy _ _ h_take
-          h_src_res h_il h_u, rfl⟩
+        exact ⟨_, _, cast_intToInt_readErr rp c st _ _ dstTy dstTid _ _ h_take
+          h_src_res h_tid_res h_il h_u, rfl⟩
       | char =>
         let ⟨_, h_u⟩ := readImmediate_imm_char_uninit rp.types st h_pmd
-        exact ⟨_, _, cast_intToInt_readErr rp c st _ _ dstTy _ _ h_take
-          h_src_res h_il h_u, rfl⟩
+        exact ⟨_, _, cast_intToInt_readErr rp c st _ _ dstTy dstTid _ _ h_take
+          h_src_res h_tid_res h_il h_u, rfl⟩
       | _ => cases h_il
     | some v =>
       have h_cv : checkVal v srcTy = true := h_sm
@@ -4487,8 +4871,8 @@ private theorem cast_intToInt_local_eq (rp : RefProg) (c : Choice)
         | false =>
           exact cast_intToInt_some rp c defId rbody blockIdx stmtIdx
             bodyLocals slots amem retPlace mem ctrl cm dstId
-            (.int w false) dstTy dstSlot _ _ (truncateBits w bits).toNat false _
-            h_dst_ty h_dst_sl h_src_res h_dst_res h_inv h_il (BitVec.isLt _)
+            (.int w false) dstTy dstTid dstSlot _ _ (truncateBits w bits).toNat false _
+            h_dst_ty h_dst_sl h_src_res h_dst_res h_tid_res h_inv h_il (BitVec.isLt _)
             (readImmediate_imm_int_ok w false bits rp.types st h_pmd)
             (by
               rw [cast_bv_ofNat_toNat]
@@ -4497,9 +4881,9 @@ private theorem cast_intToInt_local_eq (rp : RefProg) (c : Choice)
         | true =>
           exact cast_intToInt_some rp c defId rbody blockIdx stmtIdx
             bodyLocals slots amem retPlace mem ctrl cm dstId
-            (.int w true) dstTy dstSlot _ _
+            (.int w true) dstTy dstTid dstSlot _ _
             (bvOfInt 128 (decodeScalar ⟨w, true, bits⟩)).toNat true _
-            h_dst_ty h_dst_sl h_src_res h_dst_res h_inv h_il (BitVec.isLt _)
+            h_dst_ty h_dst_sl h_src_res h_dst_res h_tid_res h_inv h_il (BitVec.isLt _)
             (readImmediate_imm_int_ok w true bits rp.types st h_pmd)
             (by
               rw [cast_bv_ofNat_toNat, ← bitVec_ofInt_eq]
@@ -4510,8 +4894,8 @@ private theorem cast_intToInt_local_eq (rp : RefProg) (c : Choice)
         subst h_v
         exact cast_intToInt_some rp c defId rbody blockIdx stmtIdx
             bodyLocals slots amem retPlace mem ctrl cm dstId
-          .bool dstTy dstSlot _ _ (if b then 1 else 0) false _
-          h_dst_ty h_dst_sl h_src_res h_dst_res h_inv h_il
+          .bool dstTy dstTid dstSlot _ _ (if b then 1 else 0) false _
+          h_dst_ty h_dst_sl h_src_res h_dst_res h_tid_res h_inv h_il
           (by cases b <;> decide)
           (readImmediate_imm_bool_ok b rp.types st h_pmd)
           (cast_intLikeValue_bool rp c b st h_src_res) rfl
@@ -4520,27 +4904,127 @@ private theorem cast_intToInt_local_eq (rp : RefProg) (c : Choice)
         subst h_v
         exact cast_intToInt_some rp c defId rbody blockIdx stmtIdx
             bodyLocals slots amem retPlace mem ctrl cm dstId
-          .char dstTy dstSlot _ _ ch.toNat false _
-          h_dst_ty h_dst_sl h_src_res h_dst_res h_inv h_il
+          .char dstTy dstTid dstSlot _ _ ch.toNat false _
+          h_dst_ty h_dst_sl h_src_res h_dst_res h_tid_res h_inv h_il
           (Nat.lt_trans ch.val.toBitVec.isLt (by decide))
           (readImmediate_imm_char_ok ch rp.types st h_pmd)
           (cast_intLikeValue_char rp c ch st h_src_res) rfl
       | _ => cases h_il
 
+private theorem toMiriBinOp_fromMiriBinOp {mop : Miri.MIR.BinOp} {op : BinOp}
+    (h : fromMiriBinOp mop = some op) : toMiriBinOp op = mop := by
+  cases mop <;> cases h <;> rfl
+
+private theorem toMiriUnOp_fromMiriUnOp {mop : Miri.MIR.UnOp} {op : UnOp}
+    (h : fromMiriUnOp mop = some op) : toMiriUnOp op = mop := by
+  cases mop <;> cases h <;> rfl
+
+private theorem evalRvalue_of_decodeCopyForDeref {ts : List MirTy}
+    {pl : Miri.MIR.Place} {rv : Rvalue}
+    (bodyLocals : List MirTy) (slots : List LocalSlot) (amem : MemoryState)
+    (dstTy : MirTy) (h : decodeCopyForDeref ts pl = some rv) :
+    evalRvalue bodyLocals slots amem dstTy rv = .error .unsupported := by
+  cases pl with
+  | mk lid elems =>
+    cases elems with
+    | mk xs =>
+      cases lid with
+      | zero =>
+        simp only [decodeCopyForDeref] at h
+        cases h_e : (Array.mk xs).isEmpty <;> rw [h_e] at h <;> cases h; rfl
+      | succ n =>
+        cases n with
+        | zero =>
+          simp only [decodeCopyForDeref] at h
+          cases xs with
+          | nil => cases h
+          | cons e es =>
+            cases e with
+            | OpaqueCast tyId =>
+              dsimp only at h
+              cases h_d : decodeOperandElems ts es with
+              | none => rw [h_d] at h; cases h
+              | some p =>
+                rw [h_d] at h
+                cases p with
+                | mk op' rem =>
+                  cases rem with
+                  | cons _ _ => cases h
+                  | nil =>
+                    cases h_t : MirSemantics.getElem? ts tyId with
+                    | none => rw [h_t] at h; cases h
+                    | some _ => rw [h_t] at h; cases h; rfl
+            | _ => cases h
+        | succ n =>
+          cases n with
+          | zero =>
+            simp only [decodeCopyForDeref, optMap2] at h
+            cases xs with
+            | nil => cases h
+            | cons e es =>
+              cases e with
+              | OpaqueCast mCode =>
+                cases es with
+                | nil => cases h
+                | cons e2 es2 =>
+                  cases e2 with
+                  | Index _ =>
+                    dsimp only at h
+                    cases h_m : natToMutability mCode <;> rw [h_m] at h
+                    · cases h
+                    · cases h_ps : mapOption (decodeProjElem ts) es2 <;> rw [h_ps] at h
+                      · cases h
+                      · cases h; rfl
+                  | _ => cases h
+              | _ => cases h
+          | succ n =>
+            cases n with
+            | zero =>
+              simp only [decodeCopyForDeref, optMap2] at h
+              cases xs with
+              | nil => cases h
+              | cons e es =>
+                cases e with
+                | OpaqueCast mCode =>
+                  cases es with
+                  | nil => cases h
+                  | cons e2 es2 =>
+                    cases e2 with
+                    | Index _ =>
+                      dsimp only at h
+                      cases h_m : natToMutability mCode <;> rw [h_m] at h
+                      · cases h
+                      · cases h_ps : mapOption (decodeProjElem ts) es2 <;> rw [h_ps] at h
+                        · cases h
+                        · cases h; rfl
+                    | _ => cases h
+                | _ => cases h
+            | succ n =>
+              cases n with
+              | zero =>
+                simp only [decodeCopyForDeref, optMap] at h
+                cases h_ops : decodeOperandListLoop xs.length ts xs <;>
+                    rw [h_ops] at h
+                · cases h
+                · cases h; rfl
+              | succ _ =>
+                simp only [decodeCopyForDeref] at h
+                cases h
+
 /-- Complete per-assignment step simulation of
 `Miri.Interpreter.evalRvalueIntoPlace (ExecutionMachine.rvalueHooks (refExecCfg
 rp) refLimits)` against `Trusted.MirSemantics.evalStatement`'s `.assign` arm. -/
-theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
-    (defId : DefId) (rbody : RefBody) (body : Body)
+theorem evalRvalueIntoPlace_ref_eq (rp : MiriProg) (c : Choice)
+    (defId : DefId) (rmeta : MiriBodyMeta) (rbody : Miri.MIR.Body) (body : Body)
     (blockIdx : BasicBlockId) (stmtIdx : Nat) (slots : List LocalSlot)
     (amem : MemoryState)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
-    (cm : CallerMemory) (rdst : RefPlace) (dst : Place)
-    (rrv : RefRvalue) (rv : Rvalue)
-    (h_bdec : decodeBody rp.types rbody = some body)
+    (cm : CallerMemory) (rdst : Miri.MIR.Place) (dst : Place)
+    (rrv : Miri.MIR.Rvalue) (rv : Rvalue)
+    (h_bdec : decodeBody rp.types rmeta rbody = some body)
     (h_supp : body.locals.all isSupportedScalarOrUnitTy = true)
     (h_inv : SlotsMatchTys body.locals slots)
     (h_pl : decodePlace rp.types rdst = some dst)
@@ -4565,7 +5049,7 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
       retPlace mem ctrl cm
     let res := Miri.Interpreter.evalRvalueIntoPlace
       (Miri.Interpreter.ExecutionMachine.rvalueHooks (refExecCfg rp) refLimits)
-      c (toMiriRvalue rp.types rrv) (toMiriPlace rdst) st
+      c rrv rdst st
     match
       (if !dst.projection.isEmpty then
         .error .unsupported
@@ -4599,44 +5083,50 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
     rw [refExecCfg_idempotent]
   cases h_dpe : dst.projection.isEmpty with
   | false =>
-    have h_rdpe : rdst.projection.isEmpty = false := h_demp.trans h_dpe
-    have h_tp : toMiriPlace rdst = ⟨dst.localId, Array.mk [.Deref]⟩ := by
-      dsimp only [toMiriPlace]; rw [h_rdpe, h_did]; rfl
     dsimp only [Bool.not, ite_true_eq]
     cases h_dty : MirSemantics.getElem? body.locals dst.localId with
     | none =>
       have h_err : res = .error (.stack (.invalidLocal dst.localId (liftLocals rp.types body.locals slots).length)) st := by
         dsimp only [res, Miri.Interpreter.evalRvalueIntoPlace, bind, Bind.bind]
-        rw [h_rvh_eq, h_tp]
+        rw [h_rvh_eq]
         change (EStateM.bind (Miri.Interpreter.PlaceDynamic.evalPlace
           (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp))
-          c ⟨dst.localId, Array.mk [.Deref]⟩ true) _ st) = _
-        rw [eStateM_bind_err (placeDynamic_evalPlace_oob rp c defId rbody blockIdx
-          stmtIdx body.locals slots retPlace mem ctrl cm ⟨dst.localId, Array.mk [.Deref]⟩
-          true (Or.inl h_dty))]
+          c rdst true) _ st) = _
+        have h_oob := placeDynamic_evalPlace_oob rp c defId rbody blockIdx
+          stmtIdx body.locals slots retPlace mem ctrl cm rdst true
+          (by rw [h_did]; exact Or.inl h_dty)
+        rw [h_did] at h_oob
+        rw [eStateM_bind_err h_oob]
       exact ⟨_, _, h_err, rfl⟩
     | some dstTy =>
       let ⟨dstSlot, h_dsl⟩ := getElem?_some_of_length_eq h_len.symm h_dty
-      have h_err : res = .error (.unsupported "projections unsupported on Day 1") st := by
+      let ⟨err, st', h_pe_err, h_fk⟩ := placeDynamic_evalPlace_proj_err rp c defId rbody
+        blockIdx stmtIdx body.locals slots retPlace mem ctrl cm rdst dst true dstTy
+        dstSlot h_pl h_dpe (by rw [h_did]; exact h_dty) (by rw [h_did]; exact h_dsl)
+      have h_err : res = .error err st' := by
         dsimp only [res, Miri.Interpreter.evalRvalueIntoPlace, bind, Bind.bind]
-        rw [h_rvh_eq, h_tp]
+        rw [h_rvh_eq]
         change (EStateM.bind (Miri.Interpreter.PlaceDynamic.evalPlace
           (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp))
-          c ⟨dst.localId, Array.mk [.Deref]⟩ true) _ st) = _
-        rw [eStateM_bind_err (placeDynamic_evalPlace_deref_err rp c defId rbody
-          blockIdx stmtIdx body.locals slots retPlace mem ctrl cm dst.localId
-          dstTy dstSlot h_dty h_dsl)]
-      exact ⟨_, _, h_err, rfl⟩
+          c rdst true) _ st) = _
+        rw [eStateM_bind_err h_pe_err]
+      exact ⟨err, st', h_err, h_fk⟩
   | true =>
     have h_rdpe : rdst.projection.isEmpty = true := h_demp.trans h_dpe
-    have h_tp : toMiriPlace rdst = ⟨dst.localId, Array.empty⟩ := by
-      dsimp only [toMiriPlace]; rw [h_rdpe, h_did]; rfl
+    have h_rdst_eq : rdst = ⟨dst.localId, Array.empty⟩ := by
+      cases rdst with
+      | mk lid proj =>
+        cases proj with
+        | mk xs =>
+          cases xs with
+          | nil => dsimp only at h_did; rw [h_did]; rfl
+          | cons _ _ => simp only [Array.isEmpty] at h_rdpe; cases h_rdpe
     dsimp only [Bool.not, ite_false_eq]
     cases h_dty : MirSemantics.getElem? body.locals dst.localId with
     | none =>
       have h_err : res = .error (.stack (.invalidLocal dst.localId (liftLocals rp.types body.locals slots).length)) st := by
         dsimp only [res, Miri.Interpreter.evalRvalueIntoPlace, bind, Bind.bind]
-        rw [h_rvh_eq, h_tp]
+        rw [h_rvh_eq, h_rdst_eq]
         change (EStateM.bind (Miri.Interpreter.PlaceDynamic.evalPlace
           (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp))
           c ⟨dst.localId, Array.empty⟩ true) _ st) = _
@@ -4653,42 +5143,28 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
         stmtIdx body.locals slots retPlace mem ctrl cm dst.localId true dstTy dstSlot
         h_dty h_dsl
       have h_copy_for_deref_err :
-          Miri.Interpreter.evalRvalueIntoPlace
-            (Miri.Interpreter.ExecutionMachine.rvalueHooks (refExecCfg rp) refLimits)
-            c (.CopyForDeref ⟨0, Array.empty⟩) (toMiriPlace rdst) st =
-          .error (.invalidProgram "CopyForDeref in runtime MIR") st := by
+          ∀ (pl : Miri.MIR.Place),
+            Miri.Interpreter.evalRvalueIntoPlace
+              (Miri.Interpreter.ExecutionMachine.rvalueHooks (refExecCfg rp) refLimits)
+              c (.CopyForDeref pl) rdst st =
+            .error (.invalidProgram "CopyForDeref in runtime MIR") st := by
+        intro pl
         dsimp only [Miri.Interpreter.evalRvalueIntoPlace, bind, Bind.bind]
-        rw [h_rvh_eq, h_tp]
+        rw [h_rvh_eq, h_rdst_eq]
         change (EStateM.bind (Miri.Interpreter.PlaceDynamic.evalPlace
           (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp))
           c ⟨dst.localId, Array.empty⟩ true) _ st) = _
         rw [eStateM_bind_ok h_eval_dst]; rfl
       cases rrv with
-      | ref _ _ =>
-        dsimp only [decodeRvalue, optMap] at h_rv
-        cases h_p : decodePlace rp.types _ with
-        | none => rw [h_p] at h_rv; cases h_rv
-        | some _ =>
-          rw [h_p] at h_rv; injection h_rv with h_eq; subst h_eq
-          exact ⟨_, _, h_copy_for_deref_err, rfl⟩
-      | addressOf _ _ =>
-        dsimp only [decodeRvalue, optMap] at h_rv
-        cases h_p : decodePlace rp.types _ with
-        | none => rw [h_p] at h_rv; cases h_rv
-        | some _ =>
-          rw [h_p] at h_rv; injection h_rv with h_eq; subst h_eq
-          exact ⟨_, _, h_copy_for_deref_err, rfl⟩
-      | aggregateTuple rops =>
-        dsimp only [decodeRvalue, optMap] at h_rv
-        cases h_ops : mapOption (decodeOperand rp.types) rops with
-        | none => rw [h_ops] at h_rv; cases h_rv
-        | some _ =>
-          rw [h_ops] at h_rv; injection h_rv with h_eq; subst h_eq
-          exact ⟨_, _, h_copy_for_deref_err, rfl⟩
-      | unsupported =>
-        injection h_rv with h_eq; subst h_eq
-        exact ⟨_, _, h_copy_for_deref_err, rfl⟩
-      | cast k rop rtid =>
+      | CopyForDeref pl =>
+        dsimp only [decodeRvalue] at h_rv
+        dsimp only
+        rw [evalRvalue_of_decodeCopyForDeref body.locals slots amem dstTy h_rv]
+        exact ⟨_, _, h_copy_for_deref_err pl, rfl⟩
+      | Cast k rop rtid =>
+        have h_ki : k = .IntToInt := by
+          cases k <;> first | rfl | cases h_rv
+        subst h_ki
         dsimp only [decodeRvalue, optMap2] at h_rv
         cases h_op : decodeOperand rp.types rop with
         | none => rw [h_op] at h_rv; cases h_rv
@@ -4697,83 +5173,83 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
           | none => rw [h_op, h_ct] at h_rv; cases h_rv
           | some castTy =>
             rw [h_op, h_ct] at h_rv; injection h_rv with h_eq; subst h_eq
-            cases k with
-            | unsupported => exact ⟨_, _, h_copy_for_deref_err, rfl⟩
-            | intToInt =>
-              have h_dst_eq : dstTy = castTy :=
-                h_cast_ty opnd castTy dstTy rfl h_dpe h_dty
-              subst h_dst_eq
-              have h_canon : canonicalTyId rp.types rtid = tyIdFor rp.types dstTy :=
-                (canonicalTyId_of_some h_ct).1
-              have h_ev := operandMachine_evalOperandAt_eq rp c defId rbody blockIdx
-                stmtIdx body.locals slots amem retPlace mem ctrl cm
-                (Miri.Interpreter.OperandPath.rvalue "operand") rop opnd
-                isIntLikeTy none h_inv h_op
-              have h_res_step :
-                  res =
-                    EStateM.bind
-                      (Miri.Interpreter.OperandMachine.evalOperandAt
-                        (Miri.Interpreter.ExecutionMachine.operandHooks
-                          (refExecCfg rp))
-                        c (Miri.Interpreter.OperandPath.rvalue "operand")
-                        (toMiriOperand rp.types rop) none)
-                      (fun srcOp =>
-                        Miri.Interpreter.Cast.cast
-                          (Miri.Interpreter.ExecutionMachine.castHooks
-                            (refExecCfg rp) refLimits)
-                          c refLimits.casts srcOp .IntToInt (tyIdFor rp.types dstTy)
-                          ⟨.local 0 dst.localId none
-                              (LocalsIdentity.ofAllocationToken 0),
-                            refLocalLayoutForTy rp.types dstTy⟩)
-                      st := by
-                dsimp only [res, toMiriRvalue, Miri.Interpreter.evalRvalueIntoPlace,
-                  bind, Bind.bind]
-                rw [h_rvh_eq, h_tp, h_canon]
-                change (EStateM.bind (Miri.Interpreter.PlaceDynamic.evalPlace
-                  (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp))
-                  c ⟨dst.localId, Array.empty⟩ true) _ st) = _
-                rw [eStateM_bind_ok h_eval_dst]
-                rfl
-              rw [h_res_step]
-              dsimp only [evalRvalue]
-              cases h_es : evalOperandToSlot body.locals slots amem isIntLikeTy
-                  opnd with
-              | error k =>
-                rw [h_es] at h_ev
-                let ⟨err, st', h_err, h_fk⟩ := h_ev
-                rw [eStateM_bind_err h_err]
-                exact ⟨err, st', rfl, h_fk⟩
-              | ok tup =>
-                let ⟨srcTy, optVal, slots₁, amem₁⟩ := tup
-                rw [h_es] at h_ev
-                rw [eStateM_bind_ok h_ev]
-                let ⟨h_inv₁, h_sm₁, _⟩ := evalOperandToSlot_slotsMatchTys h_inv h_es
-                have h_src_res := evalOperandToSlot_res rp h_op h_loc_res h_es
-                let ⟨dstSlot₁, h_dsl₁⟩ := getElem?_some_of_length_eq
-                  (SlotsMatchTys.length_eq h_inv₁).symm h_dty
-                have h_c := cast_intToInt_local_eq rp c defId rbody blockIdx
-                  stmtIdx body.locals slots₁ amem₁ retPlace mem ctrl cm dst.localId
-                  srcTy dstTy optVal dstSlot₁ h_dty h_dsl₁ h_src_res h_dst_res
-                  h_inv₁ h_sm₁
-                dsimp only at h_c
-                dsimp only
-                cases h_il : isIntLikeTy srcTy with
-                | false =>
-                  rw [h_il] at h_c
-                  exact h_c
-                | true =>
-                  rw [h_il] at h_c
-                  dsimp only [Bool.not, ite_false_eq] at h_c
-                  dsimp only [Bool.not, ite_false_eq]
-                  cases optVal with
-                  | none => exact h_c
-                  | some v =>
-                    dsimp only at h_c
-                    dsimp only
-                    cases h_cst : evalIntToIntCast v dstTy with
-                    | error k => rw [h_cst] at h_c; exact h_c
-                    | ok r => rw [h_cst] at h_c; exact h_c
-      | use rop =>
+            have h_dst_eq : dstTy = castTy :=
+              h_cast_ty opnd castTy dstTy rfl h_dpe h_dty
+            subst h_dst_eq
+            have h_tid_res : resolveTy rp.types rtid = some dstTy := by
+              dsimp only [resolveTy]; rw [h_ct]
+            have h_ev := operandMachine_evalOperandAt_eq rp c defId rbody blockIdx
+              stmtIdx body.locals slots amem retPlace mem ctrl cm
+              (Miri.Interpreter.OperandPath.rvalue "operand") rop opnd
+              isIntLikeTy none h_inv h_op
+            have h_res_step :
+                res =
+                  EStateM.bind
+                    (Miri.Interpreter.OperandMachine.evalOperandAt
+                      (Miri.Interpreter.ExecutionMachine.operandHooks
+                        (refExecCfg rp))
+                      c (Miri.Interpreter.OperandPath.rvalue "operand")
+                      rop none)
+                    (fun srcOp =>
+                      Miri.Interpreter.Cast.cast
+                        (Miri.Interpreter.ExecutionMachine.castHooks
+                          (refExecCfg rp) refLimits)
+                        c refLimits.casts srcOp .IntToInt rtid
+                        ⟨.local 0 dst.localId none
+                            (LocalsIdentity.ofAllocationToken 0),
+                          refLocalLayoutForTy rp.types dstTy⟩)
+                    st := by
+              dsimp only [res, Miri.Interpreter.evalRvalueIntoPlace,
+                bind, Bind.bind]
+              rw [h_rvh_eq, h_rdst_eq]
+              change (EStateM.bind (Miri.Interpreter.PlaceDynamic.evalPlace
+                (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp))
+                c ⟨dst.localId, Array.empty⟩ true) _ st) = _
+              rw [eStateM_bind_ok h_eval_dst]
+              rfl
+            rw [h_res_step]
+            dsimp only [evalRvalue]
+            cases h_es : evalOperandToSlot body.locals slots amem isIntLikeTy
+                opnd with
+            | error k =>
+              rw [h_es] at h_ev
+              let ⟨err, st', h_err, h_fk⟩ := h_ev
+              rw [eStateM_bind_err h_err]
+              exact ⟨err, st', rfl, h_fk⟩
+            | ok tup =>
+              let ⟨srcTy, optVal, slots₁, amem₁⟩ := tup
+              rw [h_es] at h_ev
+              rw [eStateM_bind_ok h_ev]
+              let ⟨h_inv₁, h_sm₁, _⟩ := evalOperandToSlot_slotsMatchTys h_inv h_es
+              have h_src_res := evalOperandToSlot_res rp h_op h_loc_res h_es
+              let ⟨dstSlot₁, h_dsl₁⟩ := getElem?_some_of_length_eq
+                (SlotsMatchTys.length_eq h_inv₁).symm h_dty
+              have h_c := cast_intToInt_local_eq rp c defId rbody blockIdx
+                stmtIdx body.locals slots₁ amem₁ retPlace mem ctrl cm dst.localId
+                srcTy dstTy rtid optVal dstSlot₁ h_dty h_dsl₁ h_src_res h_dst_res
+                h_tid_res h_inv₁ h_sm₁
+              dsimp only at h_c
+              dsimp only
+              cases h_il : isIntLikeTy srcTy with
+              | false =>
+                rw [h_il] at h_c
+                exact h_c
+              | true =>
+                rw [h_il] at h_c
+                dsimp only [Bool.not, ite_false_eq] at h_c
+                dsimp only [Bool.not, ite_false_eq]
+                cases optVal with
+                | none => exact h_c
+                | some v =>
+                  dsimp only at h_c
+                  dsimp only
+                  cases h_cst : evalIntToIntCast v dstTy with
+                  | error k => rw [h_cst] at h_c; exact h_c
+                  | ok r => rw [h_cst] at h_c; exact h_c
+      | Use rop um =>
+        have h_um : um = .No := by
+          cases um <;> first | rfl | cases h_rv
+        subst h_um
         dsimp only [decodeRvalue, optMap] at h_rv
         cases h_op : decodeOperand rp.types rop with
         | none => rw [h_op] at h_rv; cases h_rv
@@ -4790,7 +5266,7 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                   (Miri.Interpreter.OperandMachine.evalOperandAt
                     (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
                     c (Miri.Interpreter.OperandPath.rvalue "operand")
-                    (toMiriOperand rp.types rop)
+                    rop
                     (some (refLocalLayoutForTy rp.types dstTy)))
                   (fun srcOp =>
                     Miri.Interpreter.MachineHooks.withRetagMode .None
@@ -4800,9 +5276,9 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                         ⟨.local 0 dst.localId none (LocalsIdentity.ofAllocationToken 0),
                           refLocalLayoutForTy rp.types dstTy⟩ false))
                   st := by
-            dsimp only [res, toMiriRvalue, Miri.Interpreter.evalRvalueIntoPlace,
+            dsimp only [res, Miri.Interpreter.evalRvalueIntoPlace,
               bind, Bind.bind]
-            rw [h_rvh_eq, h_tp]
+            rw [h_rvh_eq, h_rdst_eq]
             change (EStateM.bind (Miri.Interpreter.PlaceDynamic.evalPlace
               (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp))
               c ⟨dst.localId, Array.empty⟩ true) _ st) = _
@@ -4858,58 +5334,188 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
               cases optVal with
               | none => exact h_cp
               | some v => exact h_cp
-      | binaryOp op rlhs rrhs =>
-        dsimp only [decodeRvalue, optMap2] at h_rv
-        cases h_l : decodeOperand rp.types rlhs with
-        | none => rw [h_l] at h_rv; cases h_rv
-        | some lhs =>
-          cases h_r : decodeOperand rp.types rrhs with
-          | none => rw [h_l, h_r] at h_rv; cases h_rv
-          | some rhs =>
-            rw [h_l, h_r] at h_rv; injection h_rv with h_eq; subst h_eq
+      | BinaryOp mop rlhs rrhs =>
+        dsimp only [decodeRvalue] at h_rv
+        cases h_op : fromMiriBinOp mop with
+        | none => rw [h_op] at h_rv; cases h_rv
+        | some op =>
+          rw [h_op] at h_rv
+          cases h_l : decodeOperand rp.types rlhs with
+          | none => rw [h_l] at h_rv; cases h_rv
+          | some lhs =>
+            cases h_r : decodeOperand rp.types rrhs with
+            | none => rw [h_l, h_r] at h_rv; cases h_rv
+            | some rhs =>
+              rw [h_l, h_r] at h_rv; injection h_rv with h_eq; subst h_eq
+              have h_mop_eq : mop = toMiriBinOp op :=
+                (toMiriBinOp_fromMiriBinOp h_op).symm
+              subst h_mop_eq
+              have h_res_step :
+                  res =
+                    EStateM.bind
+                      (Miri.Interpreter.OperandMachine.evalOperandAt
+                        (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
+                        c (Miri.Interpreter.OperandPath.rvalue "left")
+                        rlhs
+                        (if (toMiriBinOp op).leftHomogeneous then
+                          some (refLocalLayoutForTy rp.types dstTy) else none))
+                      (fun leftOp =>
+                        EStateM.bind
+                          (Miri.Interpreter.PlaceMachine.readImmediate refAccessConfig leftOp)
+                          (fun leftImm =>
+                            EStateM.bind
+                              (Miri.Interpreter.OperandMachine.evalOperandAt
+                                (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
+                                c (Miri.Interpreter.OperandPath.rvalue "right")
+                                rrhs
+                                (if (toMiriBinOp op).rightHomogeneous then
+                                  some leftImm.layout else none))
+                              (fun rightOp =>
+                                EStateM.bind
+                                  (Miri.Interpreter.PlaceMachine.readImmediate
+                                    refAccessConfig rightOp)
+                                  (fun rightImm =>
+                                    EStateM.bind
+                                      (Miri.Interpreter.ScalarOps.binary
+                                        (Miri.Interpreter.ExecutionMachine.scalarHooks
+                                          (refExecCfg rp))
+                                        c (toMiriBinOp op) leftImm rightImm)
+                                      (fun outImm =>
+                                        EStateM.bind
+                                          (if (outImm.layout ==
+                                              refLocalLayoutForTy rp.types
+                                                dstTy) = true then
+                                            EStateM.pure ()
+                                          else
+                                            EStateM.throw (.invalidProgram
+                                              "rvalue result layout mismatch"))
+                                          (fun _ =>
+                                            Miri.Interpreter.writePlaceImmediate
+                                              (Miri.Interpreter.ExecutionMachine.projectionHooks
+                                                (refExecCfg rp)).place
+                                              c outImm.imm
+                                              ⟨.local 0 dst.localId none
+                                                (LocalsIdentity.ofAllocationToken 0),
+                                                refLocalLayoutForTy rp.types dstTy⟩))))))
+                      st := by
+                dsimp only [res, Miri.Interpreter.evalRvalueIntoPlace,
+                  bind, Bind.bind]
+                rw [h_rvh_eq, h_rdst_eq]
+                change (EStateM.bind (Miri.Interpreter.PlaceDynamic.evalPlace
+                  (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp))
+                  c ⟨dst.localId, Array.empty⟩ true) _ st) = _
+                rw [eStateM_bind_ok h_eval_dst]
+                rfl
+              rw [h_res_step, ← eStateM_bind_assoc]
+              dsimp only [evalRvalue]
+              have h_evL := evalPrimitiveOperand_ref_eq rp c defId rbody blockIdx
+                stmtIdx body.locals slots amem retPlace mem ctrl cm
+                (Miri.Interpreter.OperandPath.rvalue "left") rlhs lhs
+                (if (toMiriBinOp op).leftHomogeneous then
+                  some (refLocalLayoutForTy rp.types dstTy) else none) h_inv h_l
+                  h_loc_res
+              cases h_pL : evalPrimitiveOperand body.locals slots amem lhs with
+              | error k =>
+                rw [h_pL] at h_evL
+                let ⟨err, st', h_err, h_fk⟩ := h_evL
+                rw [eStateM_bind_err h_err]
+                exact ⟨err, st', rfl, h_fk⟩
+              | ok tupL =>
+                let ⟨lVal, slots₁, amem₁⟩ := tupL
+                rw [h_pL] at h_evL
+                let ⟨lTy, h_lcv, h_lpr, h_lres, h_okL⟩ := h_evL
+                dsimp only
+                rw [eStateM_bind_ok h_okL, ← eStateM_bind_assoc]
+                have h_inv₁ := (evalPrimitiveOperand_slotsMatchTys h_inv h_pL).1
+                have h_evR := evalPrimitiveOperand_ref_eq rp c defId rbody blockIdx
+                  stmtIdx body.locals slots₁ amem₁ retPlace mem ctrl cm
+                  (Miri.Interpreter.OperandPath.rvalue "right") rrhs rhs
+                  (if (toMiriBinOp op).rightHomogeneous then
+                    some (refLocalLayoutForTy rp.types lTy) else none) h_inv₁ h_r
+                    h_loc_res
+                cases h_pR : evalPrimitiveOperand body.locals slots₁ amem₁ rhs with
+                | error k =>
+                  rw [h_pR] at h_evR
+                  let ⟨err, st', h_err, h_fk⟩ := h_evR
+                  rw [eStateM_bind_err h_err]
+                  exact ⟨err, st', rfl, h_fk⟩
+                | ok tupR =>
+                  let ⟨rVal, slots₂, amem₂⟩ := tupR
+                  rw [h_pR] at h_evR
+                  let ⟨rTy, h_rcv, h_rpr, _, h_okR⟩ := h_evR
+                  dsimp only
+                  rw [eStateM_bind_ok h_okR]
+                  have h_inv₂ := (evalPrimitiveOperand_slotsMatchTys h_inv₁ h_pR).1
+                  have h_bin := scalarOps_binary_ref_eq rp c op lTy rTy lVal rVal
+                    (mkSimState rp defId rbody blockIdx stmtIdx body.locals slots₂
+                      retPlace mem ctrl cm) h_lcv h_lpr h_rcv h_rpr h_lres
+                  cases h_eb : evalBinOp op lVal rVal with
+                  | error k =>
+                    rw [h_eb] at h_bin
+                    let ⟨err, st', h_err, h_fk⟩ := h_bin
+                    rw [eStateM_bind_err h_err]
+                    exact ⟨err, st', rfl, h_fk⟩
+                  | ok v =>
+                    rw [h_eb] at h_bin
+                    let ⟨resTy, h_vcv, h_vpr, h_okB⟩ := h_bin
+                    rw [eStateM_bind_ok h_okB, eStateM_bind_ite_pure]
+                    let ⟨dstSlot₂, h_dsl₂⟩ := getElem?_some_of_length_eq
+                      (SlotsMatchTys.length_eq h_inv₂).symm h_dty
+                    exact assertAndWrite_local_eq rp c defId rbody blockIdx stmtIdx
+                      body.locals slots₂ amem₂ retPlace mem ctrl cm dst.localId resTy
+                      dstTy v dstSlot₂ h_dty h_dsl₂
+                      h_dst_res h_inv₂
+                      h_vcv
+      | UnaryOp mop rop =>
+        dsimp only [decodeRvalue] at h_rv
+        cases h_op : fromMiriUnOp mop with
+        | none => rw [h_op] at h_rv; cases h_rv
+        | some op =>
+          rw [h_op] at h_rv
+          cases h_opnd : decodeOperand rp.types rop with
+          | none => rw [h_opnd] at h_rv; cases h_rv
+          | some opnd =>
+            rw [h_opnd] at h_rv; injection h_rv with h_eq; subst h_eq
+            have h_mop_eq : mop = toMiriUnOp op :=
+              (toMiriUnOp_fromMiriUnOp h_op).symm
+            subst h_mop_eq
             have h_res_step :
                 res =
                   EStateM.bind
                     (Miri.Interpreter.OperandMachine.evalOperandAt
                       (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
-                      c (Miri.Interpreter.OperandPath.rvalue "left")
-                      (toMiriOperand rp.types rlhs)
-                      (if (toMiriBinOp op).leftHomogeneous then
+                      c (Miri.Interpreter.OperandPath.rvalue "operand")
+                      rop
+                      (if (toMiriUnOp op).homogeneous then
                         some (refLocalLayoutForTy rp.types dstTy) else none))
-                    (fun leftOp =>
+                    (fun opVal =>
                       EStateM.bind
-                        (Miri.Interpreter.PlaceMachine.readImmediate refAccessConfig leftOp)
-                        (fun leftImm =>
+                        (Miri.Interpreter.PlaceMachine.readImmediate refAccessConfig opVal)
+                        (fun opImm =>
                           EStateM.bind
-                            (Miri.Interpreter.OperandMachine.evalOperandAt
-                              (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
-                              c (Miri.Interpreter.OperandPath.rvalue "right")
-                              (toMiriOperand rp.types rrhs)
-                              (if (toMiriBinOp op).rightHomogeneous then
-                                some leftImm.layout else none))
-                            (fun rightOp =>
+                            (Miri.Interpreter.ScalarOps.unary
+                              (Miri.Interpreter.ExecutionMachine.scalarHooks (refExecCfg rp))
+                              c (toMiriUnOp op) opImm)
+                            (fun outImm =>
                               EStateM.bind
-                                (Miri.Interpreter.PlaceMachine.readImmediate refAccessConfig rightOp)
-                                (fun rightImm =>
-                                  EStateM.bind
-                                    (Miri.Interpreter.ScalarOps.binary
-                                      (Miri.Interpreter.ExecutionMachine.scalarHooks (refExecCfg rp))
-                                      c (toMiriBinOp op) leftImm rightImm)
-                                    (fun outImm =>
-                                      EStateM.bind
-                                        (if (outImm.layout == refLocalLayoutForTy rp.types dstTy) = true then
-                                          EStateM.pure ()
-                                        else EStateM.throw (.invalidProgram "rvalue result layout mismatch"))
-                                        (fun _ =>
-                                          Miri.Interpreter.writePlaceImmediate
-                                            (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp)).place
-                                            c outImm.imm
-                                            ⟨.local 0 dst.localId none (LocalsIdentity.ofAllocationToken 0),
-                                              refLocalLayoutForTy rp.types dstTy⟩))))))
+                                (if (outImm.layout ==
+                                    refLocalLayoutForTy rp.types
+                                      dstTy) = true then
+                                  EStateM.pure ()
+                                else
+                                  EStateM.throw (.invalidProgram
+                                    "rvalue result layout mismatch"))
+                                (fun _ =>
+                                  Miri.Interpreter.writePlaceImmediate
+                                    (Miri.Interpreter.ExecutionMachine.projectionHooks
+                                      (refExecCfg rp)).place
+                                    c outImm.imm
+                                    ⟨.local 0 dst.localId none (LocalsIdentity.ofAllocationToken 0),
+                                      refLocalLayoutForTy rp.types dstTy⟩))))
                     st := by
-              dsimp only [res, toMiriRvalue, Miri.Interpreter.evalRvalueIntoPlace,
+              dsimp only [res, Miri.Interpreter.evalRvalueIntoPlace,
                 bind, Bind.bind]
-              rw [h_rvh_eq, h_tp]
+              rw [h_rvh_eq, h_rdst_eq]
               change (EStateM.bind (Miri.Interpreter.PlaceDynamic.evalPlace
                 (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp))
                 c ⟨dst.localId, Array.empty⟩ true) _ st) = _
@@ -4917,148 +5523,45 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
               rfl
             rw [h_res_step, ← eStateM_bind_assoc]
             dsimp only [evalRvalue]
-            have h_evL := evalPrimitiveOperand_ref_eq rp c defId rbody blockIdx
+            have h_evO := evalPrimitiveOperand_ref_eq rp c defId rbody blockIdx
               stmtIdx body.locals slots amem retPlace mem ctrl cm
-              (Miri.Interpreter.OperandPath.rvalue "left") rlhs lhs
-              (if (toMiriBinOp op).leftHomogeneous then
-                some (refLocalLayoutForTy rp.types dstTy) else none) h_inv h_l
+              (Miri.Interpreter.OperandPath.rvalue "operand") rop opnd
+              (if (toMiriUnOp op).homogeneous then
+                some (refLocalLayoutForTy rp.types dstTy) else none) h_inv h_opnd
                 h_loc_res
-            cases h_pL : evalPrimitiveOperand body.locals slots amem lhs with
+            cases h_pO : evalPrimitiveOperand body.locals slots amem opnd with
             | error k =>
-              rw [h_pL] at h_evL
-              let ⟨err, st', h_err, h_fk⟩ := h_evL
+              rw [h_pO] at h_evO
+              let ⟨err, st', h_err, h_fk⟩ := h_evO
               rw [eStateM_bind_err h_err]
               exact ⟨err, st', rfl, h_fk⟩
-            | ok tupL =>
-              let ⟨lVal, slots₁, amem₁⟩ := tupL
-              rw [h_pL] at h_evL
-              let ⟨lTy, h_lcv, h_lpr, h_lres, h_okL⟩ := h_evL
+            | ok tupO =>
+              let ⟨v, slots₁, amem₁⟩ := tupO
+              rw [h_pO] at h_evO
+              let ⟨vTy, h_vcv, h_vpr, _, h_okO⟩ := h_evO
               dsimp only
-              rw [eStateM_bind_ok h_okL, ← eStateM_bind_assoc]
-              have h_inv₁ := (evalPrimitiveOperand_slotsMatchTys h_inv h_pL).1
-              have h_evR := evalPrimitiveOperand_ref_eq rp c defId rbody blockIdx
-                stmtIdx body.locals slots₁ amem₁ retPlace mem ctrl cm
-                (Miri.Interpreter.OperandPath.rvalue "right") rrhs rhs
-                (if (toMiriBinOp op).rightHomogeneous then
-                  some (refLocalLayoutForTy rp.types lTy) else none) h_inv₁ h_r
-                  h_loc_res
-              cases h_pR : evalPrimitiveOperand body.locals slots₁ amem₁ rhs with
+              rw [eStateM_bind_ok h_okO]
+              have h_inv₁ := (evalPrimitiveOperand_slotsMatchTys h_inv h_pO).1
+              have h_un := scalarOps_unary_ref_eq rp c op vTy v
+                (mkSimState rp defId rbody blockIdx stmtIdx body.locals slots₁
+                  retPlace mem ctrl cm) h_vcv h_vpr
+              cases h_eu : evalUnOp op v with
               | error k =>
-                rw [h_pR] at h_evR
-                let ⟨err, st', h_err, h_fk⟩ := h_evR
+                rw [h_eu] at h_un
+                let ⟨err, st', h_err, h_fk⟩ := h_un
                 rw [eStateM_bind_err h_err]
                 exact ⟨err, st', rfl, h_fk⟩
-              | ok tupR =>
-                let ⟨rVal, slots₂, amem₂⟩ := tupR
-                rw [h_pR] at h_evR
-                let ⟨rTy, h_rcv, h_rpr, _, h_okR⟩ := h_evR
-                dsimp only
-                rw [eStateM_bind_ok h_okR]
-                have h_inv₂ := (evalPrimitiveOperand_slotsMatchTys h_inv₁ h_pR).1
-                have h_bin := scalarOps_binary_ref_eq rp c op lTy rTy lVal rVal
-                  (mkSimState rp defId rbody blockIdx stmtIdx body.locals slots₂
-                    retPlace mem ctrl cm) h_lcv h_lpr h_rcv h_rpr h_lres
-                cases h_eb : evalBinOp op lVal rVal with
-                | error k =>
-                  rw [h_eb] at h_bin
-                  let ⟨err, st', h_err, h_fk⟩ := h_bin
-                  rw [eStateM_bind_err h_err]
-                  exact ⟨err, st', rfl, h_fk⟩
-                | ok v =>
-                  rw [h_eb] at h_bin
-                  let ⟨resTy, h_vcv, h_vpr, h_okB⟩ := h_bin
-                  rw [eStateM_bind_ok h_okB, eStateM_bind_ite_pure]
-                  let ⟨dstSlot₂, h_dsl₂⟩ := getElem?_some_of_length_eq
-                    (SlotsMatchTys.length_eq h_inv₂).symm h_dty
-                  exact assertAndWrite_local_eq rp c defId rbody blockIdx stmtIdx
-                    body.locals slots₂ amem₂ retPlace mem ctrl cm dst.localId resTy
-                    dstTy v dstSlot₂ h_dty h_dsl₂
-                    h_dst_res h_inv₂
-                    h_vcv
-      | unaryOp op rop =>
-        dsimp only [decodeRvalue, optMap] at h_rv
-        cases h_op : decodeOperand rp.types rop with
-        | none => rw [h_op] at h_rv; cases h_rv
-        | some opnd =>
-          rw [h_op] at h_rv; injection h_rv with h_eq; subst h_eq
-          have h_res_step :
-              res =
-                EStateM.bind
-                  (Miri.Interpreter.OperandMachine.evalOperandAt
-                    (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
-                    c (Miri.Interpreter.OperandPath.rvalue "operand")
-                    (toMiriOperand rp.types rop)
-                    (if (toMiriUnOp op).homogeneous then
-                      some (refLocalLayoutForTy rp.types dstTy) else none))
-                  (fun opVal =>
-                    EStateM.bind
-                      (Miri.Interpreter.PlaceMachine.readImmediate refAccessConfig opVal)
-                      (fun opImm =>
-                        EStateM.bind
-                          (Miri.Interpreter.ScalarOps.unary
-                            (Miri.Interpreter.ExecutionMachine.scalarHooks (refExecCfg rp))
-                            c (toMiriUnOp op) opImm)
-                          (fun outImm =>
-                            EStateM.bind
-                              (if (outImm.layout == refLocalLayoutForTy rp.types dstTy) = true then
-                                EStateM.pure ()
-                              else EStateM.throw (.invalidProgram "rvalue result layout mismatch"))
-                              (fun _ =>
-                                Miri.Interpreter.writePlaceImmediate
-                                  (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp)).place
-                                  c outImm.imm
-                                  ⟨.local 0 dst.localId none (LocalsIdentity.ofAllocationToken 0),
-                                    refLocalLayoutForTy rp.types dstTy⟩))))
-                  st := by
-            dsimp only [res, toMiriRvalue, Miri.Interpreter.evalRvalueIntoPlace,
-              bind, Bind.bind]
-            rw [h_rvh_eq, h_tp]
-            change (EStateM.bind (Miri.Interpreter.PlaceDynamic.evalPlace
-              (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp))
-              c ⟨dst.localId, Array.empty⟩ true) _ st) = _
-            rw [eStateM_bind_ok h_eval_dst]
-            rfl
-          rw [h_res_step, ← eStateM_bind_assoc]
-          dsimp only [evalRvalue]
-          have h_evO := evalPrimitiveOperand_ref_eq rp c defId rbody blockIdx
-            stmtIdx body.locals slots amem retPlace mem ctrl cm
-            (Miri.Interpreter.OperandPath.rvalue "operand") rop opnd
-            (if (toMiriUnOp op).homogeneous then
-              some (refLocalLayoutForTy rp.types dstTy) else none) h_inv h_op
-              h_loc_res
-          cases h_pO : evalPrimitiveOperand body.locals slots amem opnd with
-          | error k =>
-            rw [h_pO] at h_evO
-            let ⟨err, st', h_err, h_fk⟩ := h_evO
-            rw [eStateM_bind_err h_err]
-            exact ⟨err, st', rfl, h_fk⟩
-          | ok tupO =>
-            let ⟨v, slots₁, amem₁⟩ := tupO
-            rw [h_pO] at h_evO
-            let ⟨vTy, h_vcv, h_vpr, _, h_okO⟩ := h_evO
-            dsimp only
-            rw [eStateM_bind_ok h_okO]
-            have h_inv₁ := (evalPrimitiveOperand_slotsMatchTys h_inv h_pO).1
-            have h_un := scalarOps_unary_ref_eq rp c op vTy v
-              (mkSimState rp defId rbody blockIdx stmtIdx body.locals slots₁
-                retPlace mem ctrl cm) h_vcv h_vpr
-            cases h_eu : evalUnOp op v with
-            | error k =>
-              rw [h_eu] at h_un
-              let ⟨err, st', h_err, h_fk⟩ := h_un
-              rw [eStateM_bind_err h_err]
-              exact ⟨err, st', rfl, h_fk⟩
-            | ok u =>
-              rw [h_eu] at h_un
-              let ⟨resTy, h_ucv, h_upr, h_okU⟩ := h_un
-              rw [eStateM_bind_ok h_okU, eStateM_bind_ite_pure]
-              let ⟨dstSlot₁, h_dsl₁⟩ := getElem?_some_of_length_eq
-                (SlotsMatchTys.length_eq h_inv₁).symm h_dty
-              exact assertAndWrite_local_eq rp c defId rbody blockIdx stmtIdx
-                body.locals slots₁ amem₁ retPlace mem ctrl cm dst.localId resTy dstTy
-                u dstSlot₁ h_dty h_dsl₁
-                h_dst_res h_inv₁ h_ucv
-      | discriminant rsrc =>
+              | ok u =>
+                rw [h_eu] at h_un
+                let ⟨resTy, h_ucv, h_upr, h_okU⟩ := h_un
+                rw [eStateM_bind_ok h_okU, eStateM_bind_ite_pure]
+                let ⟨dstSlot₁, h_dsl₁⟩ := getElem?_some_of_length_eq
+                  (SlotsMatchTys.length_eq h_inv₁).symm h_dty
+                exact assertAndWrite_local_eq rp c defId rbody blockIdx stmtIdx
+                  body.locals slots₁ amem₁ retPlace mem ctrl cm dst.localId resTy dstTy
+                  u dstSlot₁ h_dty h_dsl₁
+                  h_dst_res h_inv₁ h_ucv
+      | Discriminant rsrc =>
         dsimp only [decodeRvalue, optMap] at h_rv
         cases h_sp : decodePlace rp.types rsrc with
         | none => rw [h_sp] at h_rv; cases h_rv
@@ -5069,7 +5572,7 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                 EStateM.bind
                   (Miri.Interpreter.OperandMachine.evalPlaceToOp
                     (Miri.Interpreter.ExecutionMachine.operandHooks (refExecCfg rp))
-                    c (toMiriPlace rsrc) none)
+                    c rsrc none)
                   (fun srcOp =>
                     EStateM.bind
                       (Miri.Interpreter.Discriminant.readDiscriminant
@@ -5087,9 +5590,9 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                               ⟨.local 0 dst.localId none (LocalsIdentity.ofAllocationToken 0),
                                 refLocalLayoutForTy rp.types dstTy⟩)))
                   st := by
-            dsimp only [res, toMiriRvalue, Miri.Interpreter.evalRvalueIntoPlace,
+            dsimp only [res, Miri.Interpreter.evalRvalueIntoPlace,
               bind, Bind.bind]
-            rw [h_rvh_eq, h_tp]
+            rw [h_rvh_eq, h_rdst_eq]
             change (EStateM.bind (Miri.Interpreter.PlaceDynamic.evalPlace
               (Miri.Interpreter.ExecutionMachine.projectionHooks (refExecCfg rp))
               c ⟨dst.localId, Array.empty⟩ true) _ st) = _
@@ -5425,5 +5928,6 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                                 Bool.and_self, ite_true_eq, h_dv]
                               dsimp only
                               rw [h_trunc_eq])
+      | _ => cases h_rv
 
 end Anneal.MirCorrespondence

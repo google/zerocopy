@@ -31,20 +31,35 @@ open Trusted Trusted.MirAst Trusted.MirSemantics Trusted.Correspondence
 /-! ## Entry Initialization Simulation (`initRefState_sim_base`) -/
 
 theorem refStmtHasStorageMarker_eq {ts : List MirTy} {localId : LocalId}
-    {rstmt : RefStatementKind} {stmt : StatementKind}
-    (h : decodeStmt ts rstmt = some stmt) :
+    {rstmt : Miri.MIR.Statement} {stmt : StatementKind}
+    (h : decodeStmt ts rstmt.kind = some stmt) :
     refStmtHasStorageMarker localId rstmt =
       stmtHasStorageMarker localId stmt := by
-  cases rstmt with
-  | storageLive id =>
+  dsimp only [refStmtHasStorageMarker]
+  cases h_k : rstmt.kind with
+  | StorageLive id =>
+    rw [h_k] at h
     injection h with h_eq; subst h_eq; rfl
-  | storageDead id =>
+  | StorageDead id =>
+    rw [h_k] at h
     injection h with h_eq; subst h_eq; rfl
-  | nop =>
+  | Nop =>
+    rw [h_k] at h
     injection h with h_eq; subst h_eq; rfl
-  | unsupported =>
+  | Intrinsic intr =>
+    rw [h_k] at h
+    have h_u : intr = .Assume (.RuntimeChecks .UbChecks) := by
+      cases intr with
+      | Assume k =>
+        cases k with
+        | RuntimeChecks rc =>
+          cases rc <;> first | rfl | cases h
+        | _ => cases h
+      | _ => cases h
+    subst h_u
     injection h with h_eq; subst h_eq; rfl
-  | assign rdst rrv =>
+  | Assign rdst rrv =>
+    rw [h_k] at h
     dsimp only [decodeStmt, optMap2] at h
     cases h₁ : decodePlace ts rdst with
     | none => rw [h₁] at h; cases h
@@ -56,13 +71,14 @@ theorem refStmtHasStorageMarker_eq {ts : List MirTy} {localId : LocalId}
         injection h with h_eq
         subst h_eq
         rfl
+  | _ => rw [h_k] at h; cases h
 
-theorem refHasStorageAnnotation_eq {ts : List MirTy} {rbody : RefBody}
-    {body : Body}
-    (h : decodeBody ts rbody = some body) (localId : LocalId) :
+theorem refHasStorageAnnotation_eq {ts : List MirTy} {bm : MiriBodyMeta}
+    {rbody : Miri.MIR.Body} {body : Body}
+    (h : decodeBody ts bm rbody = some body) (localId : LocalId) :
     refHasStorageAnnotation rbody localId =
       hasStorageAnnotation body localId := by
-  let ⟨_, _, h_bbs, _, _⟩ := decodeBody_inv h
+  let ⟨_, _, _, _, h_bbs, _, _⟩ := decodeBody_inv h
   unfold refHasStorageAnnotation hasStorageAnnotation
   exact mapOption_any_eq
     (fun _ _ h_bb =>
@@ -70,8 +86,9 @@ theorem refHasStorageAnnotation_eq {ts : List MirTy} {rbody : RefBody}
         (decodeBasicBlock_inv h_bb).1)
     h_bbs
 
-noncomputable def refStmtInBounds (n : Nat) : RefStatementKind → Bool
-  | .storageLive id | .storageDead id => Nat.blt id n
+noncomputable def refStmtInBounds (n : Nat) (st : Miri.MIR.Statement) : Bool :=
+  match st.kind with
+  | .StorageLive id | .StorageDead id => Nat.blt id n
   | _ => true
 
 noncomputable def stmtInBounds (n : Nat) : StatementKind → Bool
@@ -79,15 +96,34 @@ noncomputable def stmtInBounds (n : Nat) : StatementKind → Bool
   | _ => true
 
 theorem refStmtInBounds_eq {ts : List MirTy} {n : Nat}
-    {rstmt : RefStatementKind} {stmt : StatementKind}
-    (h : decodeStmt ts rstmt = some stmt) :
+    {rstmt : Miri.MIR.Statement} {stmt : StatementKind}
+    (h : decodeStmt ts rstmt.kind = some stmt) :
     refStmtInBounds n rstmt = stmtInBounds n stmt := by
-  cases rstmt with
-  | storageLive id => injection h with h_eq; subst h_eq; rfl
-  | storageDead id => injection h with h_eq; subst h_eq; rfl
-  | nop => injection h with h_eq; subst h_eq; rfl
-  | unsupported => injection h with h_eq; subst h_eq; rfl
-  | assign rdst rrv =>
+  dsimp only [refStmtInBounds]
+  cases h_k : rstmt.kind with
+  | StorageLive id =>
+    rw [h_k] at h
+    injection h with h_eq; subst h_eq; rfl
+  | StorageDead id =>
+    rw [h_k] at h
+    injection h with h_eq; subst h_eq; rfl
+  | Nop =>
+    rw [h_k] at h
+    injection h with h_eq; subst h_eq; rfl
+  | Intrinsic intr =>
+    rw [h_k] at h
+    have h_u : intr = .Assume (.RuntimeChecks .UbChecks) := by
+      cases intr with
+      | Assume k =>
+        cases k with
+        | RuntimeChecks rc =>
+          cases rc <;> first | rfl | cases h
+        | _ => cases h
+      | _ => cases h
+    subst h_u
+    injection h with h_eq; subst h_eq; rfl
+  | Assign rdst rrv =>
+    rw [h_k] at h
     dsimp only [decodeStmt, optMap2] at h
     cases h₁ : decodePlace ts rdst with
     | none => rw [h₁] at h; cases h
@@ -99,29 +135,36 @@ theorem refStmtInBounds_eq {ts : List MirTy} {n : Nat}
         injection h with h_eq
         subst h_eq
         rfl
+  | _ => rw [h_k] at h; cases h
 
-theorem refStorageAnnotationsInBounds_eq {ts : List MirTy} {rbody : RefBody}
-    {body : Body}
-    (h : decodeBody ts rbody = some body) :
+theorem refStorageAnnotationsInBounds_eq {ts : List MirTy} {bm : MiriBodyMeta}
+    {rbody : Miri.MIR.Body} {body : Body}
+    (h : decodeBody ts bm rbody = some body) :
     refStorageAnnotationsInBounds rbody = storageAnnotationsInBounds body := by
-  let ⟨_, h_loc, h_bbs, _, _⟩ := decodeBody_inv h
+  let ⟨_, _, _, h_loc, h_bbs, _, _⟩ := decodeBody_inv h
+  have h_len : rbody.locals.size = body.locals.length := by
+    have h_l : rbody.locals.size = rbody.locals.toList.length := by
+      cases rbody.locals with
+      | mk xs => rfl
+    rw [h_l, mapOption_length h_loc]
   unfold refStorageAnnotationsInBounds storageAnnotationsInBounds
-  rw [mapOption_length h_loc]
+  rw [h_len]
   exact mapOption_all_eq
     (fun _ _ h_bb =>
       mapOption_all_eq (fun _ _ hs => refStmtInBounds_eq hs)
         (decodeBasicBlock_inv h_bb).1)
     h_bbs
 
-theorem initRefLocalsLoop_eq {ts : List MirTy} {rbody : RefBody} {body : Body}
-    (h : decodeBody ts rbody = some body) (args : List Val) (idx : Nat)
+theorem initRefLocalsLoop_eq {ts : List MirTy} {bm : MiriBodyMeta}
+    {rbody : Miri.MIR.Body} {body : Body}
+    (h : decodeBody ts bm rbody = some body) (args : List Val) (idx : Nat)
     (tys : List MirTy) :
     initRefLocalsLoop ts rbody args idx tys =
       liftLocals ts tys (initLocalsLoop body args idx tys) := by
   induction tys generalizing idx with
   | nil => rfl
   | cons ty rest ih =>
-    let ⟨h_arg, _, _, _, _⟩ := decodeBody_inv h
+    let ⟨_, _, h_arg, _, _, _, _⟩ := decodeBody_inv h
     dsimp only [initRefLocalsLoop, initLocalsLoop, liftLocals]
     rw [h_arg, refHasStorageAnnotation_eq h idx, refLiveUninitSlot_eq,
       ih (idx + 1)]
@@ -242,7 +285,7 @@ theorem getElem?_zero_of_blt {α : Type} {xs : List α} {n : Nat}
 
 theorem initRefState_sim_base : InitRefStateSimClaim := by
   intro rp p q maxSteps h_dec
-  let ⟨h_entry, h_width, h_prof, _, h_bodies⟩ := decodeProg_inv h_dec
+  let ⟨h_bodies, h_entry, h_width, h_prof, _⟩ := decodeProg_inv h_dec
   unfold initRefState initState
   rw [h_entry, h_width, h_prof]
   cases Nat.beq p.pointerWidthBits 64
@@ -257,13 +300,13 @@ theorem initRefState_sim_base : InitRefStateSimClaim := by
         intro k hk; injection hk with hk_eq; rw [← hk_eq]; rfl
       · cases h_b : MirSemantics.getElem? p.bodies p.entryDefId with
         | none =>
-          rw [(mapOption_getElem? h_bodies p.entryDefId).1 h_b]
+          rw [decodeBodies_getElem?_none h_bodies h_b]
           refine ⟨?_, fun s₀ hs₀ => by cases hs₀⟩
           intro k hk; injection hk with hk_eq; rw [← hk_eq]; rfl
         | some body =>
-          let ⟨rbody, h_rb_get, h_rb_dec⟩ :=
-            (mapOption_getElem? h_bodies p.entryDefId).2 body h_b
-          let ⟨h_arg, h_loc_dec, h_bbs_dec, _, _⟩ := decodeBody_inv h_rb_dec
+          let ⟨rbody, rmeta, h_rb_get, h_rm_get, h_rb_dec⟩ :=
+            decodeBodies_getElem?_some h_bodies h_b
+          let ⟨_, _, h_arg, h_loc_dec, h_bbs_dec, _, _⟩ := decodeBody_inv h_rb_dec
           rw [h_rb_get]
           dsimp only
           rw [h_loc_dec]
@@ -316,8 +359,8 @@ theorem initRefState_sim_base : InitRefStateSimClaim := by
                           refine ⟨_, rfl, ?_, rfl, rfl⟩
                           exact ⟨_, _, retTy, mem, refInitControl, h_dec,
                             rfl, rfl, rfl, h_entry_ret, rfl, h_init_mem,
-                            refControlValid_init, rfl, body, rbody, h_b,
-                            h_rb_get, h_rb_dec, h_blt, h_sa, h_dv, h_cv,
+                            refControlValid_init, rfl, body, rbody, rmeta, h_b,
+                            h_rb_get, h_rm_get, h_rb_dec, h_blt, h_sa, h_dv, h_cv,
                             h_supp,
                             initLocalsLoop_slotsMatchTys body q.args h_args,
                             fun _ _ => Nat.zero_le _, rfl⟩
@@ -326,7 +369,7 @@ theorem initRefState_sim_base : InitRefStateSimClaim := by
 
 /-! ## Single-Step and Multi-Step Simulation Helpers -/
 
-theorem simulationInv_with_counters {rp : RefProg} {p : Program} {s : State}
+theorem simulationInv_with_counters {rp : MiriProg} {p : Program} {s : State}
     {rs : RefState} (steps max : Nat) (h : SimulationInv rp p s rs) :
     SimulationInv rp p s { rs with stepsExecuted := steps, maxSteps := max } := by
   let ⟨f, rf, retTy, mem, ctrl, h_dec, hs, hm, hdef, hert, hrty, hinit, hctrl,
@@ -334,7 +377,7 @@ theorem simulationInv_with_counters {rp : RefProg} {p : Program} {s : State}
   exact ⟨f, rf, retTy, mem, ctrl, h_dec, hs, hm, hdef, hert, hrty, hinit, hctrl,
     hmiri, hframe⟩
 
-theorem simulationInv_of_with_counters {rp : RefProg} {p : Program} {s : State}
+theorem simulationInv_of_with_counters {rp : MiriProg} {p : Program} {s : State}
     {rs : RefState} {steps max : Nat}
     (h : SimulationInv rp p s
       { rs with stepsExecuted := steps, maxSteps := max }) :
@@ -351,7 +394,7 @@ theorem nat_blt_eq_true_of_lt {a b : Nat} (h : a < b) : Nat.blt a b = true := by
 /-- Choice-coupled single-step backward simulation: a running $M_{\text{ref}}$
 transition at choice `c` from a simulated state is matched by an
 $M_{\text{anneal}}$ transition at the exact same choice `c`. -/
-theorem sim_of_refStep_at_choice {rp : RefProg} {p : Program} {s : State}
+theorem sim_of_refStep_at_choice {rp : MiriProg} {p : Program} {s : State}
     {rs rs' : RefState} {c : Choice}
     (h_dec : decodeProg rp = some p)
     (h_sim : SimulationInv rp p s rs)
@@ -363,7 +406,7 @@ theorem sim_of_refStep_at_choice {rp : RefProg} {p : Program} {s : State}
       SimulationInv rp p s' rs' := by
   let ⟨f, rf, retTy, mem, ctrl, _, hs, hm, hdef, hert, hrty, hinit, hctrl,
     hmiri, hframe⟩ := h_sim
-  let ⟨body, rbody, hbody, hrbody, hbdec, harg, hsa, hdv, hcv, hsupp, hinv, hpc,
+  let ⟨body, rbody, rmeta, hbody, hrbody, hrmeta, hbdec, harg, hsa, hdv, hcv, hsupp, hinv, hpc,
     hrf⟩ := hframe
   cases h_lt : Nat.blt rs.stepsExecuted rs.maxSteps with
   | false =>
@@ -389,18 +432,20 @@ theorem sim_of_refStep_at_choice {rp : RefProg} {p : Program} {s : State}
         rw [hdef₁]; exact hbody
       have hrbody₁ : MirSemantics.getElem? rp.bodies f₁.defId = some rbody := by
         rw [hdef₁]; exact hrbody
+      have hrmeta₁ : MirSemantics.getElem? rp.bodyMeta f₁.defId = some rmeta := by
+        rw [hdef₁]; exact hrmeta
       have hctrl' : RefControlValid
           (nextRefControlForStep body f rs.miri.machine.user.control) := by
         rw [hmiri]
         exact refControlValid_nextRefControlForStep hctrl
       have hmem : rs.miri.machine.memory = mem := by rw [hmiri]; rfl
       refine ⟨s₁, hc, rfl, f₁,
-        mkRefMiriFrame rp.types f₁.defId rbody f₁.blockIdx f₁.stmtIdx
+        mkRefMiriFrame f₁.defId rbody f₁.blockIdx f₁.stmtIdx
           (liftLocals rp.types body.locals f₁.locals) rs.retPlace,
         retTy, mem, nextRefControlForStep body f rs.miri.machine.user.control,
         h_dec, ?_, ?_, hdef₁.trans hdef, hert, hrty, hinit, hctrl', ?_,
-        body, rbody, hbody₁, hrbody₁, hbdec, harg, hsa, hdv, hcv, hsupp, hinv₁,
-        hpc₁, rfl⟩
+        body, rbody, rmeta, hbody₁, hrbody₁, hrmeta₁, hbdec, harg, hsa, hdv, hcv, hsupp,
+        hinv₁, hpc₁, rfl⟩
       · rw [hs₁]
       · rw [hs₁]; exact hm
       · dsimp only
@@ -427,7 +472,7 @@ theorem sim_of_refReaches_base : SimOfRefReachesClaim := by
     exact ⟨s₃, Reaches.tail h_reach₂ h_step, h_sim₃⟩
 
 /-- Choice-coupled backward reachability simulation. -/
-theorem sim_of_refReachesAtChoices {rp : RefProg} {p : Program}
+theorem sim_of_refReachesAtChoices {rp : MiriProg} {p : Program}
     {s₀ : State} {rs₀ rs : RefState} {cs : List Choice}
     (h_dec : decodeProg rp = some p)
     (h_sim₀ : SimulationInv rp p s₀ rs₀)
@@ -445,7 +490,7 @@ theorem sim_of_refReachesAtChoices {rp : RefProg} {p : Program}
 exhausted, an $M_{\text{anneal}}$ transition at choice `c` from a simulated
 state is matched by one running $M_{\text{ref}}$ transition at the exact same
 choice `c`. -/
-theorem refStep_of_step_at_choice {rp : RefProg} {p : Program} {s s' : State}
+theorem refStep_of_step_at_choice {rp : MiriProg} {p : Program} {s s' : State}
     {rs : RefState} {c : Choice}
     (h_dec : decodeProg rp = some p)
     (h_sim : SimulationInv rp p s rs)
@@ -460,13 +505,13 @@ theorem refStep_of_step_at_choice {rp : RefProg} {p : Program} {s s' : State}
       rs'.maxSteps = rs.maxSteps := by
   let ⟨f, rf, retTy, mem, ctrl, _, hs, hm, hdef, hert, hrty, hinit, hctrl,
     hmiri, hframe⟩ := h_sim
-  let ⟨body, rbody, hbody, hrbody, hbdec, harg, hsa, hdv, hcv, hsupp, hinv, hpc,
+  let ⟨body, rbody, rmeta, hbody, hrbody, hrmeta, hbdec, harg, hsa, hdv, hcv, hsupp, hinv, hpc,
     hrf⟩ := hframe
   have h_ref_eq := evalRefStep_eq_base h_dec h_sim hs hbody hrbody h_lt c
   let ⟨f', hs', hdef', hinv', hpc'⟩ := evalStep_step_inv hs hbody hinv h_es
   rw [h_es, hs'] at h_ref_eq
   dsimp only [mapStepRes, stepResultToRefOutcome] at h_ref_eq
-  let rf' := mkRefMiriFrame rp.types f'.defId rbody f'.blockIdx f'.stmtIdx
+  let rf' := mkRefMiriFrame f'.defId rbody f'.blockIdx f'.stmtIdx
     (liftLocals rp.types body.locals f'.locals) rs.retPlace
   let ctrl' := nextRefControlForStep body f rs.miri.machine.user.control
   let rs' : RefState := {
@@ -478,13 +523,15 @@ theorem refStep_of_step_at_choice {rp : RefProg} {p : Program} {s s' : State}
     rw [hdef']; exact hbody
   have hrbody' : MirSemantics.getElem? rp.bodies f'.defId = some rbody := by
     rw [hdef']; exact hrbody
+  have hrmeta' : MirSemantics.getElem? rp.bodyMeta f'.defId = some rmeta := by
+    rw [hdef']; exact hrmeta
   have hctrl' : RefControlValid ctrl' := by
     dsimp only [ctrl']; rw [hmiri]; exact refControlValid_nextRefControlForStep hctrl
   have hmem : rs.miri.machine.memory = mem := by rw [hmiri]; rfl
   refine ⟨rs', hc, h_ref_eq, ?_, rfl, rfl⟩
   rw [hs']
   refine ⟨f', rf', retTy, mem, ctrl', h_dec, rfl, hm, hdef'.trans hdef, hert,
-    hrty, hinit, hctrl', ?_, body, rbody, hbody', hrbody', hbdec, harg, hsa,
+    hrty, hinit, hctrl', ?_, body, rbody, rmeta, hbody', hrbody', hrmeta', hbdec, harg, hsa,
     hdv, hcv, hsupp, hinv', hpc', rfl⟩
   dsimp only [rs']
   rw [hmem]
@@ -500,7 +547,7 @@ inductive ReachesN (p : Program) (s₁ : State) : Nat → State → Prop where
 
 /-- Step-indexed reachability in $M_{\text{ref}}$: `rs₂` is reached from `rs₁`
 in exactly `n` `.running` transitions. -/
-inductive RefReachesN (rp : RefProg) (rs₁ : RefState) :
+inductive RefReachesN (rp : MiriProg) (rs₁ : RefState) :
     Nat → RefState → Prop where
   | refl : RefReachesN rp rs₁ 0 rs₁
   | tail {n : Nat} {rs₂ rs₃ : RefState} :
@@ -517,7 +564,7 @@ theorem exists_reachesN_of_reaches {p : Program} {s₁ s₂ : State}
     let ⟨n, h_in⟩ := ih
     exact ⟨n + 1, ReachesN.tail h_in h_step⟩
 
-theorem refReaches_of_refReachesN {rp : RefProg} {rs₁ rs₂ : RefState}
+theorem refReaches_of_refReachesN {rp : MiriProg} {rs₁ rs₂ : RefState}
     {n : Nat} (h : RefReachesN rp rs₁ n rs₂) :
     RefReaches rp rs₁ rs₂ := by
   induction h with
@@ -527,7 +574,7 @@ theorem refReaches_of_refReachesN {rp : RefProg} {rs₁ rs₂ : RefState}
 /-- Forward simulation for one step: while the step budget is not exhausted,
 an $M_{\text{anneal}}$ transition from a simulated state is matched by one
 running $M_{\text{ref}}$ transition that re-establishes `SimulationInv`. -/
-theorem refStep_of_step {rp : RefProg} {p : Program} {s s' : State}
+theorem refStep_of_step {rp : MiriProg} {p : Program} {s s' : State}
     {rs : RefState}
     (h_dec : decodeProg rp = some p)
     (h_sim : SimulationInv rp p s rs)
@@ -546,7 +593,7 @@ theorem refStep_of_step {rp : RefProg} {p : Program} {s s' : State}
 /-- Step-indexed forward simulation: an `n`-step $M_{\text{anneal}}$ execution
 from a simulated state is matched by an `n`-step $M_{\text{ref}}$ execution
 whenever the reference step budget leaves room for `n` more steps. -/
-theorem refReachesN_of_reachesN {rp : RefProg} {p : Program} {n : Nat}
+theorem refReachesN_of_reachesN {rp : MiriProg} {p : Program} {n : Nat}
     {s₁ s₂ : State} {rs₁ : RefState}
     (h_dec : decodeProg rp = some p)
     (h_in : ReachesN p s₁ n s₂)
@@ -576,7 +623,7 @@ theorem refReachesN_of_reachesN {rp : RefProg} {p : Program} {n : Nat}
     · rw [h_max₃, h_max₂]
 
 /-- Choice-coupled forward reachability simulation. -/
-theorem refReachesAtChoices_of_reachesAtChoices {rp : RefProg} {p : Program}
+theorem refReachesAtChoices_of_reachesAtChoices {rp : MiriProg} {p : Program}
     {cs : List Choice} {s₁ s₂ : State} {rs₁ : RefState}
     (h_dec : decodeProg rp = some p)
     (h_reach : ReachesAtChoices p s₁ cs s₂)
@@ -610,11 +657,11 @@ theorem refReachesAtChoices_of_reachesAtChoices {rp : RefProg} {p : Program}
 /-! ## Aggregate Well-Formedness, Behavior, Divergence, and Fault Claims -/
 
 /-- UB transfer: if `(p, q)` is well-formed in $M_{\text{anneal}}$, then
-`encodeProg p` neither reaches `.ub` nor `.blocked` in $M_{\text{ref}}$ under
+`encodeToMiri p` neither reaches `.ub` nor `.blocked` in $M_{\text{ref}}$ under
 any step budget `maxSteps : Nat`. -/
 theorem refWellFormed_of_wellFormed_base : RefWellFormedOfWellFormedClaim := by
   intro p q h_wf
-  have h_dec : decodeProg (encodeProg p) = some p := decodeProg_encodeProg_base p
+  have h_dec : decodeProg (encodeToMiri p) = some p := decodeProg_encodeProg_base p
   let ⟨⟨s₀, h_init, _⟩, h_no_fault⟩ := h_wf
   intro maxSteps
   let ⟨rs₀, h_rinit, h_sim₀, _, _⟩ :=
@@ -626,7 +673,7 @@ theorem refWellFormed_of_wellFormed_base : RefWellFormedOfWellFormedClaim := by
     let ⟨rs, h_rreach, c, hc, h_reval⟩ := h_ub
     let ⟨s, h_reach, h_sim⟩ := sim_of_refReaches_base h_dec h_sim₀ h_rreach
     let ⟨f, _, _, _, _, _, hs, _, _, _, _, _, _, _, hframe⟩ := h_sim
-    let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, _, hinv, _, _⟩ := hframe
+    let ⟨body, rbody, _, hbody, hrbody, _, _, _, _, _, _, _, hinv, _, _⟩ := hframe
     cases h_lt : Nat.blt rs.stepsExecuted rs.maxSteps with
     | false =>
       unfold evalRefStep at h_reval
@@ -657,7 +704,7 @@ theorem refWellFormed_of_wellFormed_base : RefWellFormedOfWellFormedClaim := by
     let ⟨rs, h_rreach, c, hc, h_reval⟩ := h_blk
     let ⟨s, h_reach, h_sim⟩ := sim_of_refReaches_base h_dec h_sim₀ h_rreach
     let ⟨f, _, _, _, _, _, hs, _, _, _, _, _, _, _, hframe⟩ := h_sim
-    let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, _, hinv, _, _⟩ := hframe
+    let ⟨body, rbody, _, hbody, hrbody, _, _, _, _, _, _, _, hinv, _, _⟩ := hframe
     cases h_lt : Nat.blt rs.stepsExecuted rs.maxSteps with
     | false =>
       unfold evalRefStep at h_reval
@@ -684,11 +731,11 @@ theorem refWellFormed_of_wellFormed_base : RefWellFormedOfWellFormedClaim := by
           exact ⟨s, h_reach, c, hc, h_es⟩
 
 /-- Forward behavior transfer: every terminal behavior of `(p, q)` in
-$M_{\text{anneal}}$ is a reference behavior of `encodeProg p` (witnessed by
+$M_{\text{anneal}}$ is a reference behavior of `encodeToMiri p` (witnessed by
 step budget `n + 1` for an `n`-step execution). -/
 theorem refBehavior_of_behavior_base : RefBehaviorOfBehaviorClaim := by
   intro p q out h_beh
-  have h_dec : decodeProg (encodeProg p) = some p := decodeProg_encodeProg_base p
+  have h_dec : decodeProg (encodeToMiri p) = some p := decodeProg_encodeProg_base p
   unfold Behavior ReachesResult at h_beh
   cases h_init : initState p q with
   | error k =>
@@ -706,7 +753,7 @@ theorem refBehavior_of_behavior_base : RefBehaviorOfBehaviorClaim := by
     let ⟨rs_end, h_rreach, h_sim_end, h_steps_end, h_max_end⟩ :=
       refReachesN_of_reachesN h_dec h_in h_sim₀ h_budget
     let ⟨f, _, _, _, _, _, hs, _, _, _, _, _, _, _, hframe⟩ := h_sim_end
-    let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, _, _, _⟩ := hframe
+    let ⟨body, rbody, _, hbody, hrbody, _, _, _, _, _, _, _, _, _, _⟩ := hframe
     have h_lt : Nat.blt rs_end.stepsExecuted rs_end.maxSteps = true := by
       apply nat_blt_eq_true_of_lt
       rw [h_steps_end, h_steps₀, Nat.zero_add, h_max_end, h_max₀]
@@ -718,12 +765,12 @@ theorem refBehavior_of_behavior_base : RefBehaviorOfBehaviorClaim := by
     rw [h_rinit]
     exact ⟨rs_end, refReaches_of_refReachesN h_rreach, c, hc, h_reval⟩
 
-/-- Backward behavior transfer: every reference behavior of `encodeProg p` is
+/-- Backward behavior transfer: every reference behavior of `encodeToMiri p` is
 a terminal behavior of `(p, q)` in $M_{\text{anneal}}$, so $M_{\text{ref}}$
 has no outcomes that $M_{\text{anneal}}$ omits. -/
 theorem behavior_of_refBehavior_base : BehaviorOfRefBehaviorClaim := by
   intro p q out h_ref
-  have h_dec : decodeProg (encodeProg p) = some p := decodeProg_encodeProg_base p
+  have h_dec : decodeProg (encodeToMiri p) = some p := decodeProg_encodeProg_base p
   let ⟨maxSteps, h_out⟩ := h_ref
   unfold RefReachesOutcome at h_out
   unfold Behavior ReachesResult
@@ -738,7 +785,7 @@ theorem behavior_of_refBehavior_base : BehaviorOfRefBehaviorClaim := by
     let ⟨rs, h_rreach, c, hc, h_reval⟩ := h_out
     let ⟨s, h_reach, h_sim⟩ := sim_of_refReaches_base h_dec h_sim₀ h_rreach
     let ⟨f, _, _, _, _, _, hs, _, _, _, _, _, _, _, hframe⟩ := h_sim
-    let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, _, hinv, _, _⟩ := hframe
+    let ⟨body, rbody, _, hbody, hrbody, _, _, _, _, _, _, _, hinv, _, _⟩ := hframe
     cases h_lt : Nat.blt rs.stepsExecuted rs.maxSteps with
     | false =>
       unfold evalRefStep at h_reval
@@ -770,14 +817,14 @@ theorem behavior_iff_refBehavior_base : BehaviorIffRefBehaviorClaim :=
 /-- Advance a lifted $M_{\text{ref}}$ trace state across one $M_{\text{anneal}}$
 transition `(sPrev → sNext)` while preserving `retPlace`, `memory`, and
 advancing `control` via `nextRefControlForStep` at counters `(0, 0)`. -/
-noncomputable def stepRefTrace (rp : RefProg) (p : Program)
+noncomputable def stepRefTrace (rp : MiriProg) (p : Program)
     (sPrev sNext : State) (rsPrev : RefState) : RefState :=
   match sPrev.frames, sNext.frames with
   | [fPrev], [fNext] =>
     match MirSemantics.getElem? p.bodies fPrev.defId,
         MirSemantics.getElem? rp.bodies fPrev.defId with
     | some body, some rbody =>
-      let rf' := mkRefMiriFrame rp.types fNext.defId rbody fNext.blockIdx
+      let rf' := mkRefMiriFrame fNext.defId rbody fNext.blockIdx
         fNext.stmtIdx (liftLocals rp.types body.locals fNext.locals) rsPrev.retPlace
       let ctrl' := nextRefControlForStep body fPrev rsPrev.miri.machine.user.control
       { rsPrev with
@@ -789,7 +836,7 @@ noncomputable def stepRefTrace (rp : RefProg) (p : Program)
 
 /-- Recursively lift an infinite $M_{\text{anneal}}$ execution trace into a
 corresponding $M_{\text{ref}}$ execution trace starting at `rs₀`. -/
-noncomputable def liftTrace (rp : RefProg) (p : Program) (rs₀ : RefState)
+noncomputable def liftTrace (rp : MiriProg) (p : Program) (rs₀ : RefState)
     (trace : Nat → State) : Nat → RefState
   | 0 => rs₀
   | n + 1 =>
@@ -810,9 +857,9 @@ $M_{\text{ref}}$ trace along `choiceStream` is matched by an infinite
 $M_{\text{anneal}}$ trace along the exact same `choiceStream`. -/
 theorem divergesAtChoices_of_refDivergesAtChoices (p : Program) (q : Query)
     (choiceStream : Nat → Choice)
-    (h_rdiv : RefDivergesAtChoices (encodeProg p) q choiceStream) :
+    (h_rdiv : RefDivergesAtChoices (encodeToMiri p) q choiceStream) :
     DivergesAtChoices p q choiceStream := by
-  have h_dec : decodeProg (encodeProg p) = some p := decodeProg_encodeProg_base p
+  have h_dec : decodeProg (encodeToMiri p) = some p := decodeProg_encodeProg_base p
   let ⟨rs₀, h_rinit, rtrace, h_rt0, h_rstep⟩ := h_rdiv
   cases h_init : initState p q with
   | error k =>
@@ -825,7 +872,7 @@ theorem divergesAtChoices_of_refDivergesAtChoices (p : Program) (q : Query)
     injection h_rinit with h_eq
     subst h_eq
     let tr := traceFromChoices p s₀ choiceStream
-    have h_inv : ∀ n : Nat, SimulationInv (encodeProg p) p (tr n) (rtrace n) := by
+    have h_inv : ∀ n : Nat, SimulationInv (encodeToMiri p) p (tr n) (rtrace n) := by
       intro n
       induction n with
       | zero =>
@@ -856,11 +903,11 @@ theorem divergesAtChoices_of_refDivergesAtChoices (p : Program) (q : Query)
 
 /-- Divergence coincides exactly in $M_{\text{anneal}}$ and $M_{\text{ref}}$:
 `(p, q)` has an infinite execution trace in $M_{\text{anneal}}$ if and only if
-`encodeProg p` has an infinite running execution trace in $M_{\text{ref}}$. -/
+`encodeToMiri p` has an infinite running execution trace in $M_{\text{ref}}$. -/
 theorem diverges_iff_refDiverges_base : DivergesIffRefDivergesClaim := by
   intro p q
-  have h_dec : decodeProg (encodeProg p) = some p := decodeProg_encodeProg_base p
-  let rp := encodeProg p
+  have h_dec : decodeProg (encodeToMiri p) = some p := decodeProg_encodeProg_base p
+  let rp := encodeToMiri p
   constructor
   · intro h_div
     let ⟨s₀, h_init, trace, h_t0, h_step⟩ := h_div
@@ -882,13 +929,13 @@ theorem diverges_iff_refDiverges_base : DivergesIffRefDivergesClaim := by
         let ⟨c, hc, h_es⟩ := h_step m
         let ⟨f, rf, retTy, mem, ctrl, _, hs, hm, hdef, hert, hrty, hinit, hctrl,
           hmiri, hframe⟩ := ih
-        let ⟨body, rbody, hbody, hrbody, hbdec, harg, hsa, hdv, hcv, hsupp,
+        let ⟨body, rbody, rmeta, hbody, hrbody, hrmeta, hbdec, harg, hsa, hdv, hcv, hsupp,
           hinv, hpc, hrf⟩ := hframe
         let ⟨f', hs', hdef', hinv', hpc'⟩ := evalStep_step_inv hs hbody hinv h_es
         have h_next : rtrace (m + 1) =
             { rtrace m with
               miri := mkRefMiriState
-                (mkRefMiriFrame rp.types f'.defId rbody f'.blockIdx f'.stmtIdx
+                (mkRefMiriFrame f'.defId rbody f'.blockIdx f'.stmtIdx
                   (liftLocals rp.types body.locals f'.locals) (rtrace m).retPlace)
                 mem
                 (nextRefControlForStep body f ctrl)
@@ -907,11 +954,13 @@ theorem diverges_iff_refDiverges_base : DivergesIffRefDivergesClaim := by
           rw [hdef']; exact hbody
         have hrbody' : MirSemantics.getElem? rp.bodies f'.defId = some rbody := by
           rw [hdef']; exact hrbody
+        have hrmeta' : MirSemantics.getElem? rp.bodyMeta f'.defId = some rmeta := by
+          rw [hdef']; exact hrmeta
         exact ⟨f', _, retTy, mem, nextRefControlForStep body f ctrl, h_dec,
           congrArg State.frames hs', (congrArg State.mem hs').trans hm,
           hdef'.trans hdef, hert, hrty, hinit,
           refControlValid_nextRefControlForStep hctrl, by rw [hs'],
-          body, rbody, hbody', hrbody', hbdec, harg, hsa, hdv, hcv, hsupp,
+          body, rbody, rmeta, hbody', hrbody', hrmeta', hbdec, harg, hsa, hdv, hcv, hsupp,
           hinv', hpc', rfl⟩
     refine ⟨rs₀, h_rinit, rtrace, rfl, ?_⟩
     intro n
@@ -921,7 +970,7 @@ theorem diverges_iff_refDiverges_base : DivergesIffRefDivergesClaim := by
     let ⟨c, hc, h_es⟩ := h_step n
     let ⟨f, rf, retTy, mem, ctrl, _, hs, hm, hdef, hert, hrty, hinit, hctrl,
       hmiri, hframe⟩ := h_inv_step n
-    let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, _, hinv, _, _⟩ := hframe
+    let ⟨body, rbody, _, hbody, hrbody, _, _, _, _, _, _, _, hinv, _, _⟩ := hframe
     let ⟨f', hs', _, _, _⟩ := evalStep_step_inv hs hbody hinv h_es
     have h_ref_eq := evalRefStep_eq_base h_dec h_sim_n hs hbody hrbody h_lt c
     rw [h_es, hs'] at h_ref_eq
@@ -930,7 +979,7 @@ theorem diverges_iff_refDiverges_base : DivergesIffRefDivergesClaim := by
         { rtrace (n + 1) with stepsExecuted := n + 1, maxSteps := n + 1 } =
         { rtrace n with
           miri := mkRefMiriState
-            (mkRefMiriFrame rp.types f'.defId rbody f'.blockIdx f'.stmtIdx
+            (mkRefMiriFrame f'.defId rbody f'.blockIdx f'.stmtIdx
               (liftLocals rp.types body.locals f'.locals) (rtrace n).retPlace)
             (rtrace n).miri.machine.memory
             (nextRefControlForStep body f (rtrace n).miri.machine.user.control)
@@ -945,7 +994,7 @@ theorem diverges_iff_refDiverges_base : DivergesIffRefDivergesClaim := by
     exact ⟨c, hc, h_ref_eq⟩
   · intro h_rdiv
     let ⟨rs₀, h_rinit, rtrace, h_rt0, h_rstep⟩ := h_rdiv
-    have h_rdiv_c : RefDivergesAtChoices (encodeProg p) q (fun _ => 0) := by
+    have h_rdiv_c : RefDivergesAtChoices (encodeToMiri p) q (fun _ => 0) := by
       refine ⟨rs₀, h_rinit, rtrace, h_rt0, ?_⟩
       intro n
       let ⟨c, hc, h_ev⟩ := h_rstep n
@@ -959,12 +1008,12 @@ theorem diverges_iff_refDiverges_base : DivergesIffRefDivergesClaim := by
 /-- Main end-to-end operational correspondence theorem: for any
 `p : Program` and `q : Query`, if `WellFormed p q` holds in
 $M_{\text{anneal}}$, then:
-1. `RefWellFormed (encodeProg p) q` holds across all step budgets
+1. `RefWellFormed (encodeToMiri p) q` holds across all step budgets
    `maxSteps : Nat` in the real `ExecutionMachine.step` reference machine
    $M_{\text{ref}}$;
 2. `Behavior p q out` holds in $M_{\text{anneal}}$ exactly when
-   `RefBehavior (encodeProg p) q out` holds in $M_{\text{ref}}$; and
-3. `(p, q)` diverges in $M_{\text{anneal}}$ exactly when `encodeProg p`
+   `RefBehavior (encodeToMiri p) q out` holds in $M_{\text{ref}}$; and
+3. `(p, q)` diverges in $M_{\text{anneal}}$ exactly when `encodeToMiri p`
    diverges in $M_{\text{ref}}$. -/
 theorem anneal_corresponds_to_miri : CorrespondenceClaim :=
   fun p q h_wf =>
@@ -978,7 +1027,7 @@ one-to-one with `.ub` and `.blocked` in $M_{\text{ref}}$
 theorem reachesResult_fault_iff_refReachesOutcome :
     FaultEquivalenceClaim := by
   intro p q k
-  have h_dec : decodeProg (encodeProg p) = some p := decodeProg_encodeProg_base p
+  have h_dec : decodeProg (encodeToMiri p) = some p := decodeProg_encodeProg_base p
   constructor
   · intro h_res
     unfold ReachesResult at h_res
@@ -1002,7 +1051,7 @@ theorem reachesResult_fault_iff_refReachesOutcome :
       let ⟨rs_end, h_rreach, h_sim_end, h_steps_end, h_max_end⟩ :=
         refReachesN_of_reachesN h_dec h_in h_sim₀ h_budget
       let ⟨f, _, _, _, _, _, hs, _, _, _, _, _, _, _, hframe⟩ := h_sim_end
-      let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, _, _, _⟩ := hframe
+      let ⟨body, rbody, _, hbody, hrbody, _, _, _, _, _, _, _, _, _, _⟩ := hframe
       have h_lt : Nat.blt rs_end.stepsExecuted rs_end.maxSteps = true := by
         apply nat_blt_eq_true_of_lt
         rw [h_steps_end, h_steps₀, Nat.zero_add, h_max_end, h_max₀]
@@ -1029,7 +1078,7 @@ theorem reachesResult_fault_iff_refReachesOutcome :
       let ⟨rs, h_rreach, c, hc, h_reval⟩ := h_ref
       let ⟨s, h_reach, h_sim⟩ := sim_of_refReaches_base h_dec h_sim₀ h_rreach
       let ⟨f, _, _, _, _, _, hs, _, _, _, _, _, _, _, hframe⟩ := h_sim
-      let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, _, hinv, _, _⟩ := hframe
+      let ⟨body, rbody, _, hbody, hrbody, _, _, _, _, _, _, _, hinv, _, _⟩ := hframe
       cases h_lt : Nat.blt rs.stepsExecuted rs.maxSteps with
       | false =>
         unfold evalRefStep at h_reval
@@ -1061,7 +1110,7 @@ theorem reachesResult_fault_iff_refReachesOutcome :
 theorem correspondence_at_choices_claim_holds_base :
     CorrespondenceAtChoicesClaim := by
   intro p q
-  have h_dec : decodeProg (encodeProg p) = some p := decodeProg_encodeProg_base p
+  have h_dec : decodeProg (encodeToMiri p) = some p := decodeProg_encodeProg_base p
   refine ⟨refWellFormed_of_wellFormed_base p q, ?_, ?_, ?_⟩
   · intro choices h_pref
     let ⟨maxSteps, rs₀, rs, h_rinit, h_rreach⟩ := h_pref
@@ -1092,7 +1141,7 @@ theorem correspondence_at_choices_claim_holds_base :
       let ⟨prefixChoices, c, rs, h_ceq, h_rreach, hc, h_reval⟩ := h_out
       let ⟨s, h_reach, h_sim⟩ := sim_of_refReachesAtChoices h_dec h_sim₀ h_rreach
       let ⟨f, _, _, _, _, _, hs, _, _, _, _, _, _, _, hframe⟩ := h_sim
-      let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, _, hinv, _, _⟩ := hframe
+      let ⟨body, rbody, _, hbody, hrbody, _, _, _, _, _, _, _, hinv, _, _⟩ := hframe
       cases h_lt : Nat.blt rs.stepsExecuted rs.maxSteps with
       | false =>
         unfold evalRefStep at h_reval
@@ -1122,7 +1171,7 @@ theorem correspondence_at_choices_claim_holds_base :
 theorem fault_equivalence_at_choices_claim_holds_base :
     FaultEquivalenceAtChoicesClaim := by
   intro p q choices k
-  have h_dec : decodeProg (encodeProg p) = some p := decodeProg_encodeProg_base p
+  have h_dec : decodeProg (encodeToMiri p) = some p := decodeProg_encodeProg_base p
   constructor
   · intro h_res
     unfold ReachesResultAtChoices at h_res
@@ -1148,7 +1197,7 @@ theorem fault_equivalence_at_choices_claim_holds_base :
       let ⟨rs_end, h_rreach, h_sim_end, h_steps_end, h_max_end⟩ :=
         refReachesAtChoices_of_reachesAtChoices h_dec h_reach h_sim₀ h_budget
       let ⟨f, _, _, _, _, _, hs, _, _, _, _, _, _, _, hframe⟩ := h_sim_end
-      let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, _, _, _⟩ := hframe
+      let ⟨body, rbody, _, hbody, hrbody, _, _, _, _, _, _, _, _, _, _⟩ := hframe
       have h_lt : Nat.blt rs_end.stepsExecuted rs_end.maxSteps = true := by
         apply nat_blt_eq_true_of_lt
         rw [h_steps_end, h_steps₀, Nat.zero_add, h_max_end, h_max₀]
@@ -1179,7 +1228,7 @@ theorem fault_equivalence_at_choices_claim_holds_base :
       let ⟨prefixChoices, c, rs, h_ceq, h_rreach, hc, h_reval⟩ := h_ref
       let ⟨s, h_reach, h_sim⟩ := sim_of_refReachesAtChoices h_dec h_sim₀ h_rreach
       let ⟨f, _, _, _, _, _, hs, _, _, _, _, _, _, _, hframe⟩ := h_sim
-      let ⟨body, rbody, hbody, hrbody, _, _, _, _, _, _, hinv, _, _⟩ := hframe
+      let ⟨body, rbody, _, hbody, hrbody, _, _, _, _, _, _, _, hinv, _, _⟩ := hframe
       cases h_lt : Nat.blt rs.stepsExecuted rs.maxSteps with
       | false =>
         unfold evalRefStep at h_reval

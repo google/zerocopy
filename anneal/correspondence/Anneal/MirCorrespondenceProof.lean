@@ -59,27 +59,27 @@ theorem fault_equivalence_at_choices_claim_holds :
 theorem miri_move_deinit_wiring_claim_holds : MiriMoveDeinitWiringClaim :=
   miri_move_deinit_wiring_claim_holds_base
 
-/-- Unconditional codec round-trip theorem (`decodeProg ∘ encodeProg`). -/
+/-- Unconditional codec round-trip theorem (`decodeProg ∘ encodeToMiri`). -/
 theorem decodeProg_encodeProg : DecodeProgEncodeProgClaim :=
   decodeProg_encodeProg_base
 
-/-- Canonical type-table deduplication theorem for `encodeProg`. -/
+/-- Canonical type-table deduplication theorem for `encodeToMiri`. -/
 theorem encodeProg_types_canonical : EncodeProgTypesCanonicalClaim :=
   encodeProg_types_canonical_base
 
-/-- `encodeStmt` maps `.nop` and only `.nop` to `.nop`. -/
+/-- `encodeStmt` maps `.nop` and only `.nop` to `.Nop`. -/
 theorem encodeStmt_no_dormant_noops : EncodeStmtNoDormantNoopsClaim :=
   encodeStmt_no_dormant_noops_base
 
-/-- `encodeRvalue` maps `.binaryOp` and only `.binaryOp` to `.binaryOp`. -/
+/-- `encodeRvalue` maps `.binaryOp` and only `.binaryOp` to `.BinaryOp`. -/
 theorem encodeRvalue_binaryOp_iff : EncodeRvalueBinaryOpIffClaim :=
   encodeRvalue_binaryOp_iff_base
 
-/-- `encodeRvalue` maps `.unaryOp` and only `.unaryOp` to `.unaryOp`. -/
+/-- `encodeRvalue` maps `.unaryOp` and only `.unaryOp` to `.UnaryOp`. -/
 theorem encodeRvalue_unaryOp_iff : EncodeRvalueUnaryOpIffClaim :=
   encodeRvalue_unaryOp_iff_base
 
-/-- `encodeStmt` maps `.assign` and only `.assign` to `.assign`. -/
+/-- `encodeStmt` maps `.assign` and only `.assign` to `.Assign`. -/
 theorem encodeStmt_assign_iff : EncodeStmtAssignIffClaim :=
   encodeStmt_assign_iff_base
 

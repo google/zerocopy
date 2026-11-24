@@ -1677,26 +1677,23 @@ theorem liftLocals_inj (types : List MirTy) {tys : List MirTy}
       rw [slotToMiriLocalValue_inj hm₁ hm₂ h_val, ih h_tl₂ h_tl]
 
 private noncomputable def refDiscrStmtOk (localTys : List MirTy)
-    (stmt : RefStatementKind) : Bool :=
+    (stmt : Miri.MIR.StatementKind) : Bool :=
   match stmt with
-  | .assign dst rv =>
-    match rv with
-    | .discriminant src =>
-      if dst.projection.isEmpty && src.projection.isEmpty then
-        match MirSemantics.getElem? localTys src.localId with
-        | some srcTy =>
-          match refAsEnumTy? srcTy with
-          | some ety =>
-            match MirSemantics.getElem? localTys dst.localId with
-            | some dstTy =>
-              if refEnumAdmitted ety then
-                MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
-              else true
-            | none => true
+  | .Assign dst (.Discriminant src) =>
+    if dst.projection.isEmpty && src.projection.isEmpty then
+      match MirSemantics.getElem? localTys src.localId with
+      | some srcTy =>
+        match refAsEnumTy? srcTy with
+        | some ety =>
+          match MirSemantics.getElem? localTys dst.localId with
+          | some dstTy =>
+            if refEnumAdmitted ety then
+              MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
+            else true
           | none => true
         | none => true
-      else true
-    | _ => true
+      | none => true
+    else true
   | _ => true
 
 private noncomputable def discrStmtOk (localTys : List MirTy)
@@ -1727,21 +1724,18 @@ private noncomputable def discrStmtOk (localTys : List MirTy)
   | _ => true
 
 private noncomputable def refCastStmtOk (types localTys : List MirTy)
-    (stmt : RefStatementKind) : Bool :=
+    (stmt : Miri.MIR.StatementKind) : Bool :=
   match stmt with
-  | .assign dst rv =>
-    match rv with
-    | .cast .intToInt _ castTyId =>
-      if dst.projection.isEmpty then
-        match MirSemantics.getElem? localTys dst.localId with
-        | some dstTy =>
-          match MirSemantics.getElem? types castTyId with
-          | some castTy => MirTy.beq dstTy castTy
-          | none => false
-        | none => true
-      else
-        true
-    | _ => true
+  | .Assign dst (.Cast .IntToInt _ castTyId) =>
+    if dst.projection.isEmpty then
+      match MirSemantics.getElem? localTys dst.localId with
+      | some dstTy =>
+        match MirSemantics.getElem? types castTyId with
+        | some castTy => MirTy.beq dstTy castTy
+        | none => false
+      | none => true
+    else
+      true
   | _ => true
 
 private noncomputable def castStmtOk (localTys : List MirTy)
@@ -1761,97 +1755,150 @@ private noncomputable def castStmtOk (localTys : List MirTy)
 
 /-- Lift a per-statement equivalence between an $M_{\text{ref}}$ statement
 predicate `f` and an $M_{\text{anneal}}$ statement predicate `g` (under
-`decodeStmt`) to every statement of a decoded body. -/
-private theorem refBody_stmts_all_eq {ts : List MirTy} {rbody : RefBody}
-    {body : Body} (h_dec : decodeBody ts rbody = some body)
-    (f : RefStatementKind → Bool) (g : StatementKind → Bool)
-    (hfg : ∀ (rs : RefStatementKind) (s : StatementKind),
+`decodeStmt`) to every statement of a decoded `Miri.MIR.Body`. -/
+private theorem refBody_stmts_all_eq {ts : List MirTy} {bm : MiriBodyMeta}
+    {rbody : Miri.MIR.Body} {body : Body}
+    (h_dec : decodeBody ts bm rbody = some body)
+    (f : Miri.MIR.StatementKind → Bool) (g : StatementKind → Bool)
+    (hfg : ∀ (rs : Miri.MIR.StatementKind) (s : StatementKind),
       decodeStmt ts rs = some s → f rs = g s) :
-    rbody.basicBlocks.all (fun bb => bb.statements.all f) =
+    rbody.basicBlocks.toList.all
+        (fun bb => bb.statements.toList.all (fun st => f st.kind)) =
       body.basicBlocks.all (fun bb => bb.statements.all g) := by
-  dsimp only [decodeBody] at h_dec
-  cases h_locs : decodeLocalTys ts rbody.locals with
-  | none => rw [h_locs] at h_dec; cases h_dec
-  | some locs =>
-    rw [h_locs] at h_dec
-    cases h_bbs : mapOption (decodeBasicBlock ts) rbody.basicBlocks with
-    | none => rw [h_bbs] at h_dec; cases h_dec
-    | some bbs =>
-      rw [h_bbs] at h_dec
-      injection h_dec with h_b
-      subst h_b
-      have h_all_st : ∀ (rsts : List RefStatementKind)
-          (sts : List StatementKind),
-          mapOption (decodeStmt ts) rsts = some sts →
-          rsts.all f = sts.all g := by
-        intro rsts
-        induction rsts with
-        | nil =>
-          intro sts hm
-          dsimp only [mapOption] at hm
-          injection hm with h_n; subst h_n; rfl
-        | cons rs rrest ihs =>
-          intro sts hm
-          dsimp only [mapOption] at hm
-          cases h_s : decodeStmt ts rs with
-          | none => rw [h_s] at hm; cases hm
-          | some s =>
-            rw [h_s] at hm
-            cases h_rr : mapOption (decodeStmt ts) rrest with
-            | none => rw [h_rr] at hm; cases hm
-            | some srest =>
-              rw [h_rr] at hm
-              injection hm with h_c; subst h_c
-              dsimp only [List.all]
-              rw [hfg rs s h_s, ihs srest h_rr]
-      have h_all_bb : ∀ (rbbs : List RefBasicBlock) (bbs' : List BasicBlock),
-          mapOption (decodeBasicBlock ts) rbbs = some bbs' →
-          rbbs.all (fun bb => bb.statements.all f) =
-            bbs'.all (fun bb => bb.statements.all g) := by
-        intro rbbs
-        induction rbbs with
-        | nil =>
-          intro bbs' h_m
-          dsimp only [mapOption] at h_m
-          injection h_m with h_nil; subst h_nil; rfl
-        | cons rbb rest ih =>
-          intro bbs' h_m
-          dsimp only [mapOption] at h_m
-          cases h_bb : decodeBasicBlock ts rbb with
-          | none => rw [h_bb] at h_m; cases h_m
-          | some bb =>
-            rw [h_bb] at h_m
-            cases h_rest : mapOption (decodeBasicBlock ts) rest with
-            | none => rw [h_rest] at h_m; cases h_m
-            | some rest' =>
-              rw [h_rest] at h_m
-              injection h_m with h_cons; subst h_cons
-              dsimp only [List.all]
-              rw [ih rest' h_rest]
-              dsimp only [decodeBasicBlock] at h_bb
-              cases h_st : mapOption (decodeStmt ts) rbb.statements with
-              | none => rw [h_st] at h_bb; cases h_bb
-              | some stmts =>
-                rw [h_st] at h_bb
-                cases h_tm : decodeTerminator ts rbb.terminator with
-                | none => rw [h_tm] at h_bb; cases h_bb
-                | some tm =>
-                  rw [h_tm] at h_bb
-                  injection h_bb with h_bb_eq; subst h_bb_eq
-                  rw [h_all_st rbb.statements stmts h_st]
-      exact h_all_bb rbody.basicBlocks bbs h_bbs
+  let ⟨_, _, _, _, h_bbs, _, _⟩ := decodeBody_inv h_dec
+  exact mapOption_all_eq
+    (fun rbb bb h_bb =>
+      mapOption_all_eq (fun st s hs => hfg st.kind s hs)
+        (decodeBasicBlock_inv h_bb).1)
+    h_bbs
+
+private theorem decodeRvalue_discr_eq {ts : List MirTy}
+    {rrv : Miri.MIR.Rvalue} {rv : Rvalue}
+    (h : decodeRvalue ts rrv = some rv) :
+    (∀ rsrc, rrv = .Discriminant rsrc →
+      ∃ src, decodePlace ts rsrc = some src ∧ rv = .discriminant src) ∧
+    ((∀ rsrc, rrv ≠ .Discriminant rsrc) →
+      ∀ src, rv ≠ .discriminant src) := by
+  refine ⟨?_, ?_⟩
+  · intro rsrc h_eq
+    subst h_eq
+    dsimp only [decodeRvalue, optMap] at h
+    cases h_sp : decodePlace ts rsrc with
+    | none => rw [h_sp] at h; cases h
+    | some src =>
+      rw [h_sp] at h
+      injection h with h_rv
+      exact ⟨src, rfl, h_rv.symm⟩
+  · intro h_ne src h_rv
+    subst h_rv
+    cases rrv with
+    | Discriminant rsrc => exact h_ne rsrc rfl
+    | Use op r =>
+      cases r with
+      | No =>
+        dsimp only [decodeRvalue, optMap] at h
+        cases h_o : decodeOperand ts op <;> rw [h_o] at h <;> cases h
+      | Yes =>
+        dsimp only [decodeRvalue] at h
+        cases h
+    | BinaryOp op l r =>
+      dsimp only [decodeRvalue] at h
+      cases h_op : fromMiriBinOp op <;> rw [h_op] at h
+      · cases h
+      · cases h_l : decodeOperand ts l <;> rw [h_l] at h
+        · cases h
+        · cases h_r : decodeOperand ts r <;> rw [h_r] at h <;> cases h
+    | UnaryOp op o =>
+      dsimp only [decodeRvalue] at h
+      cases h_op : fromMiriUnOp op <;> rw [h_op] at h
+      · cases h
+      · cases h_o : decodeOperand ts o <;> rw [h_o] at h <;> cases h
+    | Cast k o tyId =>
+      cases k <;> dsimp only [decodeRvalue, optMap2] at h <;>
+        first
+        | cases h
+        | (cases h_o : decodeOperand ts o <;> rw [h_o] at h <;>
+            first | cases h | (cases h_t : MirSemantics.getElem? ts tyId <;>
+              rw [h_t] at h <;> cases h))
+    | CopyForDeref pl =>
+      exact (decodeCopyForDeref_not_discr_intCast h).1 src rfl
+    | _ => cases h
+
+private theorem decodeRvalue_intCast_eq {ts : List MirTy}
+    {rrv : Miri.MIR.Rvalue} {rv : Rvalue}
+    (h : decodeRvalue ts rrv = some rv) :
+    (∀ ro rty, rrv = .Cast .IntToInt ro rty →
+      ∃ op castTy, decodeOperand ts ro = some op ∧
+        MirSemantics.getElem? ts rty = some castTy ∧
+        rv = .cast .intToInt op castTy) ∧
+    ((∀ ro rty, rrv ≠ .Cast .IntToInt ro rty) →
+      ∀ op castTy, rv ≠ .cast .intToInt op castTy) := by
+  refine ⟨?_, ?_⟩
+  · intro ro rty h_eq
+    subst h_eq
+    dsimp only [decodeRvalue, optMap2] at h
+    cases h_o : decodeOperand ts ro with
+    | none => rw [h_o] at h; cases h
+    | some op =>
+      rw [h_o] at h
+      cases h_t : MirSemantics.getElem? ts rty with
+      | none => rw [h_t] at h; cases h
+      | some castTy =>
+        rw [h_t] at h
+        injection h with h_rv
+        exact ⟨op, castTy, rfl, rfl, h_rv.symm⟩
+  · intro h_ne op castTy h_rv
+    subst h_rv
+    cases rrv with
+    | Cast k ro rty =>
+      cases k with
+      | IntToInt => exact h_ne ro rty rfl
+      | _ => cases h
+    | Use o r =>
+      cases r with
+      | No =>
+        dsimp only [decodeRvalue, optMap] at h
+        cases h_o : decodeOperand ts o <;> rw [h_o] at h <;> cases h
+      | Yes =>
+        dsimp only [decodeRvalue] at h
+        cases h
+    | BinaryOp b l r =>
+      dsimp only [decodeRvalue] at h
+      cases h_b : fromMiriBinOp b <;> rw [h_b] at h
+      · cases h
+      · cases h_l : decodeOperand ts l <;> rw [h_l] at h
+        · cases h
+        · cases h_r : decodeOperand ts r <;> rw [h_r] at h <;> cases h
+    | UnaryOp u o =>
+      dsimp only [decodeRvalue] at h
+      cases h_u : fromMiriUnOp u <;> rw [h_u] at h
+      · cases h
+      · cases h_o : decodeOperand ts o <;> rw [h_o] at h <;> cases h
+    | Discriminant p =>
+      dsimp only [decodeRvalue, optMap] at h
+      cases h_p : decodePlace ts p <;> rw [h_p] at h <;> cases h
+    | CopyForDeref pl =>
+      exact (decodeCopyForDeref_not_discr_intCast h).2 op castTy rfl
+    | _ => cases h
 
 private theorem refDiscrStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
-    {rstmt : RefStatementKind} {stmt : StatementKind}
+    {rstmt : Miri.MIR.StatementKind} {stmt : StatementKind}
     (h_dec : decodeStmt ts rstmt = some stmt) :
     refDiscrStmtOk localTys rstmt = discrStmtOk localTys stmt := by
   cases rstmt with
-  | nop => injection h_dec with h; subst h; rfl
-  | storageLive _ => injection h_dec with h; subst h; rfl
-  | storageDead _ => injection h_dec with h; subst h; rfl
-  | unsupported => injection h_dec with h; subst h; rfl
-  | assign rdst rrv =>
-    dsimp only [decodeStmt] at h_dec
+  | Nop => injection h_dec with h; subst h; rfl
+  | StorageLive _ => injection h_dec with h; subst h; rfl
+  | StorageDead _ => injection h_dec with h; subst h; rfl
+  | Intrinsic ins =>
+    cases ins with
+    | Assume op =>
+      cases op with
+      | RuntimeChecks ck =>
+        cases ck <;> first | (injection h_dec with h; subst h; rfl) | cases h_dec
+      | _ => cases h_dec
+    | CopyNonOverlapping _ => cases h_dec
+  | Assign rdst rrv =>
+    dsimp only [decodeStmt, optMap2] at h_dec
     cases h_d : decodePlace ts rdst with
     | none => rw [h_d] at h_dec; cases h_dec
     | some dst =>
@@ -1862,99 +1909,66 @@ private theorem refDiscrStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
         rw [h_rv] at h_dec
         injection h_dec with h_s
         subst h_s
+        let ⟨h_pos, h_neg⟩ := decodeRvalue_discr_eq h_rv
         cases rrv with
-        | discriminant rsrc =>
-          dsimp only [decodeRvalue] at h_rv
-          cases h_sp : decodePlace ts rsrc with
-          | none => rw [h_sp] at h_rv; cases h_rv
-          | some src =>
-            rw [h_sp] at h_rv
-            injection h_rv with h_rv_eq
-            subst h_rv_eq
-            let ⟨h_did, h_demp⟩ := decodePlace_inv h_d
-            let ⟨h_sid, h_semp⟩ := decodePlace_inv h_sp
-            dsimp only [refDiscrStmtOk, discrStmtOk]
-            rw [h_demp, h_semp, h_did, h_sid]
-            cases (dst.projection.isEmpty && src.projection.isEmpty) with
-            | false => rfl
-            | true =>
-              cases MirSemantics.getElem? localTys src.localId with
-              | none => rfl
-              | some srcTy =>
-                cases srcTy with
-                | enum ety =>
-                  cases MirSemantics.getElem? localTys dst.localId with
-                  | none => rfl
-                  | some dstTy =>
-                    dsimp only [refAsEnumTy?]
+        | Discriminant rsrc =>
+          let ⟨src, h_sp, h_rv_eq⟩ := h_pos rsrc rfl
+          subst h_rv_eq
+          let ⟨h_did, h_demp⟩ := decodePlace_inv h_d
+          let ⟨h_sid, h_semp⟩ := decodePlace_inv h_sp
+          dsimp only [refDiscrStmtOk, discrStmtOk]
+          rw [h_demp, h_semp, h_did, h_sid]
+          cases (dst.projection.isEmpty && src.projection.isEmpty) with
+          | false => rfl
+          | true =>
+            cases MirSemantics.getElem? localTys src.localId with
+            | none => rfl
+            | some srcTy =>
+              cases srcTy with
+              | enum ety =>
+                cases MirSemantics.getElem? localTys dst.localId with
+                | none => rfl
+                | some dstTy =>
+                  dsimp only [refAsEnumTy?]
+                  rw [refEnumAdmitted_eq]
+              | ordering =>
+                cases MirSemantics.getElem? localTys dst.localId with
+                | none => rfl
+                | some dstTy =>
+                  have h_adm : refEnumAdmitted refOrderingEnumTy = true := by
                     rw [refEnumAdmitted_eq]
-                | ordering =>
-                  cases MirSemantics.getElem? localTys dst.localId with
-                  | none => rfl
-                  | some dstTy =>
-                    have h_adm : refEnumAdmitted refOrderingEnumTy = true := by
-                      rw [refEnumAdmitted_eq]
-                      rfl
-                    dsimp only [refAsEnumTy?]
-                    rw [h_adm]
                     rfl
-                | _ => rfl
-        | cast k ro rty =>
-          dsimp only [decodeRvalue] at h_rv
-          cases h_o : decodeOperand ts ro with
-          | none => rw [h_o] at h_rv; cases h_rv
-          | some _ =>
-            rw [h_o] at h_rv
-            cases h_t : MirSemantics.getElem? ts rty with
-            | none => rw [h_t] at h_rv; cases h_rv
-            | some _ => rw [h_t] at h_rv; injection h_rv with h; subst h; rfl
-        | use ro =>
-          dsimp only [decodeRvalue] at h_rv
-          cases h_o : decodeOperand ts ro with
-          | none => rw [h_o] at h_rv; cases h_rv
-          | some _ => rw [h_o] at h_rv; injection h_rv with h; subst h; rfl
-        | binaryOp _ rl rr =>
-          dsimp only [decodeRvalue] at h_rv
-          cases h_l : decodeOperand ts rl with
-          | none => rw [h_l] at h_rv; cases h_rv
-          | some _ =>
-            rw [h_l] at h_rv
-            cases h_r : decodeOperand ts rr with
-            | none => rw [h_r] at h_rv; cases h_rv
-            | some _ => rw [h_r] at h_rv; injection h_rv with h; subst h; rfl
-        | unaryOp _ ro =>
-          dsimp only [decodeRvalue] at h_rv
-          cases h_o : decodeOperand ts ro with
-          | none => rw [h_o] at h_rv; cases h_rv
-          | some _ => rw [h_o] at h_rv; injection h_rv with h; subst h; rfl
-        | ref _ rp =>
-          dsimp only [decodeRvalue] at h_rv
-          cases h_p : decodePlace ts rp with
-          | none => rw [h_p] at h_rv; cases h_rv
-          | some _ => rw [h_p] at h_rv; injection h_rv with h; subst h; rfl
-        | addressOf _ rp =>
-          dsimp only [decodeRvalue] at h_rv
-          cases h_p : decodePlace ts rp with
-          | none => rw [h_p] at h_rv; cases h_rv
-          | some _ => rw [h_p] at h_rv; injection h_rv with h; subst h; rfl
-        | aggregateTuple rops =>
-          dsimp only [decodeRvalue] at h_rv
-          cases h_os : mapOption (decodeOperand ts) rops with
-          | none => rw [h_os] at h_rv; cases h_rv
-          | some _ => rw [h_os] at h_rv; injection h_rv with h; subst h; rfl
-        | unsupported => injection h_rv with h; subst h; rfl
+                  dsimp only [refAsEnumTy?]
+                  rw [h_adm]
+                  rfl
+              | _ => rfl
+        | _ =>
+          have h_n : ∀ s, rv ≠ .discriminant s :=
+            h_neg (fun _ h_contra => by cases h_contra)
+          cases rv with
+          | discriminant s => exact False.elim (h_n s rfl)
+          | use _ | binaryOp _ _ _ | unaryOp _ _ | cast _ _ _
+          | ref _ _ | addressOf _ _ | aggregateTuple _ | unsupported => rfl
+  | _ => cases h_dec
 
 private theorem refCastStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
-    {rstmt : RefStatementKind} {stmt : StatementKind}
+    {rstmt : Miri.MIR.StatementKind} {stmt : StatementKind}
     (h_dec : decodeStmt ts rstmt = some stmt) :
     refCastStmtOk ts localTys rstmt = castStmtOk localTys stmt := by
   cases rstmt with
-  | nop => injection h_dec with h; subst h; rfl
-  | storageLive _ => injection h_dec with h; subst h; rfl
-  | storageDead _ => injection h_dec with h; subst h; rfl
-  | unsupported => injection h_dec with h; subst h; rfl
-  | assign rdst rrv =>
-    dsimp only [decodeStmt] at h_dec
+  | Nop => injection h_dec with h; subst h; rfl
+  | StorageLive _ => injection h_dec with h; subst h; rfl
+  | StorageDead _ => injection h_dec with h; subst h; rfl
+  | Intrinsic ins =>
+    cases ins with
+    | Assume op =>
+      cases op with
+      | RuntimeChecks ck =>
+        cases ck <;> first | (injection h_dec with h; subst h; rfl) | cases h_dec
+      | _ => cases h_dec
+    | CopyNonOverlapping _ => cases h_dec
+  | Assign rdst rrv =>
+    dsimp only [decodeStmt, optMap2] at h_dec
     cases h_d : decodePlace ts rdst with
     | none => rw [h_d] at h_dec; cases h_dec
     | some dst =>
@@ -1965,75 +1979,39 @@ private theorem refCastStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
         rw [h_rv] at h_dec
         injection h_dec with h_s
         subst h_s
+        let ⟨h_pos, h_neg⟩ := decodeRvalue_intCast_eq h_rv
         cases rrv with
-        | discriminant rsrc =>
-          dsimp only [decodeRvalue] at h_rv
-          cases h_sp : decodePlace ts rsrc with
-          | none => rw [h_sp] at h_rv; cases h_rv
-          | some _ =>
-            rw [h_sp] at h_rv; injection h_rv with h; subst h; rfl
-        | cast k ro rty =>
-          dsimp only [decodeRvalue] at h_rv
-          cases h_o : decodeOperand ts ro with
-          | none => rw [h_o] at h_rv; cases h_rv
-          | some op =>
-            rw [h_o] at h_rv
-            cases h_t : MirSemantics.getElem? ts rty with
-            | none => rw [h_t] at h_rv; cases h_rv
-            | some castTy =>
-              rw [h_t] at h_rv
-              injection h_rv with h_rv_eq
-              subst h_rv_eq
-              let ⟨h_did, h_demp⟩ := decodePlace_inv h_d
-              cases k with
-              | unsupported => rfl
-              | intToInt =>
-                dsimp only [refCastStmtOk, castStmtOk]
-                rw [h_demp, h_did, h_t]
-        | use ro =>
-          dsimp only [decodeRvalue] at h_rv
-          cases h_o : decodeOperand ts ro with
-          | none => rw [h_o] at h_rv; cases h_rv
-          | some _ => rw [h_o] at h_rv; injection h_rv with h; subst h; rfl
-        | binaryOp _ rl rr =>
-          dsimp only [decodeRvalue] at h_rv
-          cases h_l : decodeOperand ts rl with
-          | none => rw [h_l] at h_rv; cases h_rv
-          | some _ =>
-            rw [h_l] at h_rv
-            cases h_r : decodeOperand ts rr with
-            | none => rw [h_r] at h_rv; cases h_rv
-            | some _ => rw [h_r] at h_rv; injection h_rv with h; subst h; rfl
-        | unaryOp _ ro =>
-          dsimp only [decodeRvalue] at h_rv
-          cases h_o : decodeOperand ts ro with
-          | none => rw [h_o] at h_rv; cases h_rv
-          | some _ => rw [h_o] at h_rv; injection h_rv with h; subst h; rfl
-        | ref _ rp =>
-          dsimp only [decodeRvalue] at h_rv
-          cases h_p : decodePlace ts rp with
-          | none => rw [h_p] at h_rv; cases h_rv
-          | some _ => rw [h_p] at h_rv; injection h_rv with h; subst h; rfl
-        | addressOf _ rp =>
-          dsimp only [decodeRvalue] at h_rv
-          cases h_p : decodePlace ts rp with
-          | none => rw [h_p] at h_rv; cases h_rv
-          | some _ => rw [h_p] at h_rv; injection h_rv with h; subst h; rfl
-        | aggregateTuple rops =>
-          dsimp only [decodeRvalue] at h_rv
-          cases h_os : mapOption (decodeOperand ts) rops with
-          | none => rw [h_os] at h_rv; cases h_rv
-          | some _ => rw [h_os] at h_rv; injection h_rv with h; subst h; rfl
-        | unsupported => injection h_rv with h; subst h; rfl
+        | Cast k ro rty =>
+          cases k with
+          | IntToInt =>
+            let ⟨op, castTy, _, h_t, h_rv_eq⟩ := h_pos ro rty rfl
+            subst h_rv_eq
+            let ⟨h_did, h_demp⟩ := decodePlace_inv h_d
+            dsimp only [refCastStmtOk, castStmtOk]
+            rw [h_demp, h_did, h_t]
+          | _ => cases h_rv
+        | _ =>
+          have h_n : ∀ o c, rv ≠ .cast .intToInt o c :=
+            h_neg (fun _ _ h_contra => by cases h_contra)
+          cases rv with
+          | cast k o c =>
+            cases k with
+            | intToInt => exact False.elim (h_n o c rfl)
+            | unsupported => rfl
+          | use _ | binaryOp _ _ _ | unaryOp _ _ | discriminant _
+          | ref _ _ | addressOf _ _ | aggregateTuple _ | unsupported => rfl
+  | _ => cases h_dec
 
-theorem refDiscriminantTypesValid_eq {ts : List MirTy} {rbody : RefBody}
-    {body : Body} (h_dec : decodeBody ts rbody = some body) :
+theorem refDiscriminantTypesValid_eq {ts : List MirTy} {bm : MiriBodyMeta}
+    {rbody : Miri.MIR.Body} {body : Body}
+    (h_dec : decodeBody ts bm rbody = some body) :
     refDiscriminantTypesValid body.locals rbody = discriminantTypesValid body :=
   refBody_stmts_all_eq h_dec (refDiscrStmtOk body.locals)
     (discrStmtOk body.locals) (fun _ _ h => refDiscrStmtOk_eq h)
 
-theorem refCastTypesValid_eq {ts : List MirTy} {rbody : RefBody}
-    {body : Body} (h_dec : decodeBody ts rbody = some body) :
+theorem refCastTypesValid_eq {ts : List MirTy} {bm : MiriBodyMeta}
+    {rbody : Miri.MIR.Body} {body : Body}
+    (h_dec : decodeBody ts bm rbody = some body) :
     refCastTypesValid ts body.locals rbody = castTypesValid body :=
   refBody_stmts_all_eq h_dec (refCastStmtOk ts body.locals)
     (castStmtOk body.locals) (fun _ _ h => refCastStmtOk_eq h)
@@ -2060,11 +2038,11 @@ theorem state_unique_of_simulationInv_base :
   have h_cm : s₁.callerMem = s₂.callerMem := by
     have h_u := congrArg Miri.Interpreter.MachineHooks.MachineState.user h_machine
     exact congrArg RefUser.callerMem h_u
-  let ⟨body₁, rbody₁, hb₁, _, _, _, _, _, _, _, hsl₁, _, hrf₁⟩ :=
+  let ⟨body₁, rbody₁, _, hb₁, _, _, _, _, _, _, _, _, hsl₁, hrf₁⟩ :=
     hframe₁
-  let ⟨body₂, rbody₂, hb₂, _, _, _, _, _, _, _, hsl₂, _, hrf₂⟩ :=
+  let ⟨body₂, rbody₂, _, hb₂, _, _, _, _, _, _, _, _, hsl₂, hrf₂⟩ :=
     hframe₂
-  have h_rf_eq' := hrf₁.symm.trans hrf₂
+  have h_rf_eq' := hrf₁.2.symm.trans hrf₂.2
   have h_def : f₁.defId = f₂.defId := by
     have h_bi := congrArg Miri.Interpreter.Frame.bodyIdentity h_rf_eq'
     dsimp only [mkRefMiriFrame, Miri.Interpreter.BodyIdentity.ofCanonicalIndex]
