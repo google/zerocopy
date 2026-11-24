@@ -580,6 +580,154 @@ fn early_verification_failures_have_versioned_receipts() {
     }
 }
 
+#[test]
+fn unclaimable_artifact_destinations_fail_before_staging_or_request_reading() {
+    use std::{fs, path::PathBuf};
+    let project = tempfile::tempdir().unwrap();
+    let directory = project.path().join("existing-directory");
+    fs::create_dir(&directory).unwrap();
+    fs::write(directory.join("keep"), b"caller evidence").unwrap();
+    let file = project.path().join("existing-file");
+    fs::write(&file, b"caller file").unwrap();
+    // Relative destinations resolve against the working directory, which
+    // `command` sets to `project`.
+    let base_destinations = [
+        (directory.clone(), "already exists"),
+        (PathBuf::from("existing-directory"), "already exists"),
+        (file.clone(), "already exists"),
+        (project.path().join("missing-parent/out"), "artifact destination parent"),
+        (file.join("out"), "artifact destination parent"),
+        (project.path().join("missing-parent/."), "must end in a new directory name"),
+    ];
+    #[cfg(unix)]
+    let unix_destinations = {
+        let dangling = project.path().join("dangling-link");
+        std::os::unix::fs::symlink(project.path().join("absent-target"), &dangling).unwrap();
+        // With a trailing separator, `lstat` follows the link but `mkdir`
+        // still refuses it.
+        vec![(PathBuf::from("dangling-link/"), "already exists"), (dangling, "already exists")]
+    };
+    #[cfg(not(unix))]
+    let unix_destinations: [(PathBuf, &str); 0] = [];
+    let destinations: Vec<_> = base_destinations.into_iter().chain(unix_destinations).collect();
+    // A missing request and a missing temp parent would each fail later
+    // phases. The receipt must still name retention, showing the destination
+    // was rejected before staging, request parsing, capture, or Lean.
+    let missing_tmp = project.path().join("missing-temp");
+    for route in [Route::Direct, Route::Cargo] {
+        for (destination, detail) in &destinations {
+            let mut child = command(route, project.path());
+            child
+                .env("TMPDIR", &missing_tmp)
+                .arg("verify")
+                .arg("--request")
+                .arg(project.path().join("missing-request"))
+                .arg("--artifacts")
+                .arg(destination);
+            #[cfg(not(feature = "setup"))]
+            child.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+            let output = child.output().unwrap();
+            assert_result(&output, 2, "", "");
+            assert!(output.stderr.is_empty(), "{output:?}");
+            let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+            assert_eq!(receipt["schema_version"], 3, "{receipt}");
+            assert_eq!(receipt["status"], "tool_failed", "{receipt}");
+            assert_eq!(receipt["phase"], "retention", "{receipt}");
+            assert!(receipt["detail"].as_str().unwrap().contains(detail), "{receipt}");
+            assert!(receipt.get("artifacts").is_none(), "{receipt}");
+            assert!(!missing_tmp.exists());
+        }
+    }
+    assert_eq!(fs::read(directory.join("keep")).unwrap(), b"caller evidence");
+    assert_eq!(fs::read_dir(&directory).unwrap().count(), 1);
+    assert_eq!(fs::read(&file).unwrap(), b"caller file");
+    assert!(!project.path().join("missing-parent").exists());
+    assert!(!project.path().join("absent-target").exists());
+
+    // New paths inside an existing directory, including a relative single
+    // component, pass preflight and still retain rejected-request evidence.
+    // This control needs no compiler or Lean process.
+    let request = project.path().join("request.json");
+    fs::write(&request, b"not JSON\n").unwrap();
+    for (spelling, created) in [
+        (directory.join("fresh-evidence"), directory.join("fresh-evidence")),
+        (PathBuf::from("relative-evidence"), project.path().join("relative-evidence")),
+    ] {
+        let mut child = command(Route::Direct, project.path());
+        child.arg("verify").arg("--request").arg(&request).arg("--artifacts").arg(&spelling);
+        #[cfg(not(feature = "setup"))]
+        child.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+        let output = child.output().unwrap();
+        assert_result(&output, 1, "", "");
+        let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+        assert_eq!(receipt["status"], "unsupported", "{receipt}");
+        assert_eq!(receipt["phase"], "request", "{receipt}");
+        assert_eq!(receipt["artifacts"].as_str(), spelling.to_str());
+        assert!(created.is_dir());
+    }
+
+    // Late retention failure: an unwritable parent passes preflight (which does
+    // not check parent write permission), runs staging and request parsing, and
+    // fails in `retain_stage` (`phase: "retention"`, exit 2).
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt as _;
+
+        let readonly_parent = project.path().join("readonly-parent");
+        fs::create_dir(&readonly_parent).unwrap();
+        fs::set_permissions(&readonly_parent, fs::Permissions::from_mode(0o555)).unwrap();
+        let probe = readonly_parent.join("probe-perm");
+        match fs::create_dir(&probe) {
+            Ok(()) => {
+                let _ = fs::remove_dir(&probe);
+            }
+            Err(probe_err) => {
+                let late_dest = readonly_parent.join("late-retention-fail");
+                // Missing `TMPDIR` must fail in `staging` rather than
+                // `retention`, proving preflight admitted `late_dest`.
+                let missing_late_tmp = project.path().join("missing-late-temp");
+                let mut preflight_ok_cmd = command(Route::Direct, project.path());
+                preflight_ok_cmd
+                    .env("TMPDIR", &missing_late_tmp)
+                    .arg("verify")
+                    .arg("--request")
+                    .arg(&request)
+                    .arg("--artifacts")
+                    .arg(&late_dest);
+                #[cfg(not(feature = "setup"))]
+                preflight_ok_cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+                let preflight_ok_out = preflight_ok_cmd.output().unwrap();
+                assert_result(&preflight_ok_out, 2, "", "");
+                let preflight_ok_rec: serde_json::Value =
+                    serde_json::from_slice(&preflight_ok_out.stdout).unwrap();
+                assert_eq!(preflight_ok_rec["phase"], "staging", "{preflight_ok_rec}");
+
+                let mut late_cmd = command(Route::Direct, project.path());
+                late_cmd
+                    .arg("verify")
+                    .arg("--request")
+                    .arg(&request)
+                    .arg("--artifacts")
+                    .arg(&late_dest);
+                #[cfg(not(feature = "setup"))]
+                late_cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+                let late_out = late_cmd.output().unwrap();
+                assert_result(&late_out, 2, "", "");
+                let late_rec: serde_json::Value = serde_json::from_slice(&late_out.stdout).unwrap();
+                assert_eq!(late_rec["schema_version"], 3, "{late_rec}");
+                assert_eq!(late_rec["status"], "tool_failed", "{late_rec}");
+                assert_eq!(late_rec["phase"], "retention", "{late_rec}");
+                let late_detail = late_rec["detail"].as_str().unwrap();
+                assert!(!late_detail.starts_with("artifact destination"), "{late_rec}");
+                assert!(late_detail.contains(&probe_err.to_string()), "{late_rec}");
+                assert!(late_rec.get("artifacts").is_none(), "{late_rec}");
+                assert!(!late_dest.exists());
+            }
+        }
+        let _ = fs::set_permissions(&readonly_parent, fs::Permissions::from_mode(0o700));
+    }
+}
+
 #[cfg(all(target_os = "linux", feature = "setup"))]
 #[test]
 fn capture_discovery_prefers_explicit_then_installed_then_sibling() {

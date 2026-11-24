@@ -54,7 +54,9 @@ cargo run --locked -p cargo-anneal -- verify \
 The example proves that `zero()` returns zero. To experiment, make a copy of
 the fixture directory and change its Rust function to return one. The same
 proof then fails. `--artifacts <new-directory>` retains the captured Lean
-program, bound claim, and diagnostic evidence for proof development.
+program, bound claim, and diagnostic evidence for proof development. `verify`
+rejects a path that already exists, or whose parent is not an existing
+directory, before it starts any verification work.
 
 In `request.json`, each `source_root` resolves relative to the directory
 containing the request file or to an existing out-of-tree directory, and
