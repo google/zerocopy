@@ -392,7 +392,7 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `theory/Anneal/{InitLemmas,ClassicalEm,Firewall,LeBytes,ListChunks}.lean`,
   `theory/Anneal/{NatBitwise,BitTrieLrat,PTree,SpineForce}.lean`,
   `theory/Anneal/{ByteRun,ByteSubLens,CallStackUnwind,CnfOrd,F2Simd}/`,
-  `theory/Anneal/{OverflowCastJoin,PureLift,RefFrame}/`, and planned
+  `theory/Anneal/{AiPcc,OverflowCastJoin,PureLift,RefFrame}/`, and planned
   `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
   Diaconescu classical excluded middle and existential choice, WHNF and
@@ -401,8 +401,9 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   checker, constructive bitvector, byte-serialization, list-chunking, and
   canonical positive radix-trie framing proof libraries, CPS spine-forcing and
   `@Nat.rec` iteration combinators, a radix-2 trie RUP-only LRAT UNSAT checker,
-  run-decomposed mixed-`InitMask` padded-aggregate and `[T; N]` `Repeat`
-  byte-copy laws (`ByteRun`), lawful sub-allocation byte lenses and
+  reduced-product MIR abstract-interpretation proof-carrying-code (`AiPcc`)
+  checking, run-decomposed mixed-`InitMask` padded-aggregate and `[T; N]`
+  `Repeat` byte-copy laws (`ByteRun`), lawful sub-allocation byte lenses and
   `@[irreducible]` `&mut` method call summaries (`ByteSubLens`), modular
   `@[irreducible]` call-stack framing and multi-level unwind cleanup
   propagation (`CallStackUnwind`), constructive `< ω^ω` Cantor Normal Form
@@ -524,6 +525,7 @@ anneal/
 └── theory/                         # Stage 3 (Pass 1): Untrusted proofs
     ├── Anneal.lean
     ├── Anneal/
+    │   ├── AiPcc.lean              # Reduced-product MIR AI-PCC verifier (+ AiPcc/)
     │   ├── BitTrieLrat.lean        # Radix-2 trie RUP-only LRAT checker
     │   ├── BitVec.lean             # Constructive 3-axiom BitVec & tnum lemmas
     │   ├── BitVecArith.lean        # Constructive BitVec range & arithmetic

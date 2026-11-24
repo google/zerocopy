@@ -262,7 +262,13 @@ significant influences are listed here, but this list is far from exhaustive.
   functions adapt the `tnum` abstract domain formalized by Harishankar
   Vishwanathan, Matan Shachnai, Srinivas Narayana, and Santosh Nagarakatte in
   [Sound, Precise, and Fast Abstract Interpretation with Tristate
-  Numbers][tnum-paper] and used in the Linux kernel's eBPF verifier.
+  Numbers][tnum-paper] and used in the Linux kernel's eBPF verifier. Anneal's
+  reduced-product MIR abstract-interpretation checker (`Anneal.AiPcc`) combines
+  `tnum` with [wrapped intervals][wrapped-intervals] by Jorge A. Navas, Peter
+  Schachte, Harald Søndergaard, and Peter J. Stuckey, [arithmetical
+  congruences][congruences] by Philippe Granger, and single-pass cutpoint
+  post-fixpoint checking following François Bourdoncle's [weak topological
+  orderings][bourdoncle-wto].
 - Anneal's $\mathbb{F}_2$-linear and $\mathbb{F}_2$-bilinear SIMD and
   carryless-multiply certificate evaluators draw on Shay Gueron and Michael E.
   Kounavis's [carryless polynomial multiplication and reduction][clmul-gcm] and
@@ -325,6 +331,9 @@ significant influences are listed here, but this list is far from exhaustive.
 [aeneas-layouts]: https://github.com/AeneasVerif/aeneas/pull/1447
 [tree-lenses]: https://doi.org/10.1145/1232420.1232424
 [tnum-paper]: https://arxiv.org/abs/2105.05398
+[wrapped-intervals]: https://doi.org/10.1007/978-3-642-35182-2_9
+[congruences]: https://doi.org/10.1080/00207168908803778
+[bourdoncle-wto]: https://doi.org/10.1007/BFb0039704
 [clmul-gcm]: https://doi.org/10.1016/j.ipl.2010.04.011
 [mula-simd]: https://doi.org/10.1093/comjnl/bxx046
 [decompilation]: https://www.cl.cam.ac.uk/~mom22/decompilation/fmcad12.pdf
