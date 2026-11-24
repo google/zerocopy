@@ -441,15 +441,20 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
    full standalone kernel replay over all 160 vendored closure modules on every
    run (cold build and warm cache hit alike). In CI, the cache lives in
    `${{ runner.temp }}/anneal-miri-olean-cache` keyed on
-   `trusted/lean/lean-toolchain` and `vendor/lean-miri/UPSTREAM_PIN.json` (so pin
-   or toolchain updates automatically miss and compile cold inside `bwrap`),
-   merge-queue (`merge_group`), manual `workflow_dispatch`, and non-`main`/fork
-   `push` runs skip the cache action and omit `--miri-cache-dir`, and canonical
-   `main`-branch `push` runs use `lookup-only: true` plus `rm -rf` before
-   invoking `anneal-audit` so every landed or manually dispatched revision
-   performs a cold, OS-sandboxed from-source build as well as standalone kernel
-   replay while canonical `main` still seeds a missing default-branch cache
-   entry for pull requests.
+   `trusted/lean/lean-toolchain` and `vendor/lean-miri/UPSTREAM_PIN.json`
+   (so pin or toolchain updates automatically miss and compile cold inside
+   `bwrap`); `pull_request` consumes and seeds the branch-scoped cache (reading
+   from the default branch or PR branch), `merge_group` performs strictly
+   read-only cache restoration (skipping `save_miri_olean_cache`, verifying
+   every restored file's SHA-256 against `UPSTREAM_PIN.json`, with the workflow
+   audit step wiping the cache directory on a miss, and running full standalone
+   kernel replay unconditionally), any `workflow_dispatch` caller and
+   non-`main`/fork `push` runs skip the cache action and omit
+   `--miri-cache-dir`, and canonical `main`-branch `push` runs use
+   `lookup-only: true` plus `rm -rf` before invoking `anneal-audit` so every
+   landed revision performs a cold, OS-sandboxed from-source build as well as
+   standalone kernel replay while canonical `main` still seeds a missing
+   default-branch cache entry for pull requests and merge-group runs.
 3. **Dual Pass 2 preflight, OS-sandboxed Pass 2 elaboration, and `LEAN_PATH`
    isolation:** Pass 2 first runs foundation `"preflight"` to validate imports,
    cycles, trust tiers, and syntax—admitting imports in
@@ -559,9 +564,12 @@ tracked for a follow-up PR:
    sandboxing (active):** Pin authentication, sysroot locking, external
    `.olean` caching, OS-level `bwrap` process sandboxing of cold vendor
    elaboration, `"correspondence-preflight"`, and Pass 2 module compilation
-   (with fail-closed isolation on platforms without bubblewrap), and cold
-   builds on `merge_group`, `push` to `main`, `workflow_dispatch`, and
-   `UPSTREAM_PIN.json`/`lean-toolchain` changes are active in Pass 2 above.
+   (with fail-closed isolation on platforms without bubblewrap), read-only
+   SHA-256-verified `.olean` restoration on `merge_group` (with the workflow
+   audit step wiping the cache on a miss alongside unconditional standalone
+   kernel replay), and cold builds on `push` to `main`, any
+   `workflow_dispatch` caller, and `UPSTREAM_PIN.json`/`lean-toolchain`
+   changes are active in Pass 2 above.
    Every future `vendor/lean-miri/` pin update must expose and receive human
    semantic review of the resolved old-to-new reference-model diff—not only
    compile-time metaprograms and local patches—so pure, well-typed upstream

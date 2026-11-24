@@ -130,16 +130,21 @@ metaprograms strictly to an isolated build output directory before the outer
 auditor checks digests and runs standalone replay in a separate
 `loadExts := false` process), asserting exact byte-for-byte SHA-256 equality
 against the reproducible `.olean` digests pinned in `UPSTREAM_PIN.json`.
-External `.olean` caching is disabled by default and cached `.olean` files are
-never read on cold verification runs (`merge_group`, `push` to `main`, and `workflow_dispatch`) or
-whenever `UPSTREAM_PIN.json` or `trusted/lean/lean-toolchain` changes—so every
-pin update and landed commit verifies reproducible source-to-`.olean`
-compilation cold from source (canonical `main` pushes use `lookup-only: true`
-plus `rm -rf` before invoking `anneal-audit` so they compile cold while still
-seeding a missing default-branch cache entry for pull requests)—while opt-in
-external cache restoration on unchanged pins lives outside the checkout,
+External `.olean` caching is disabled by default (`anneal-audit` uses no cache
+unless `--miri-cache-dir` or `ANNEAL_MIRI_CACHE_DIR` is set), and cached
+`.olean` files are never read on cold verification runs (`push` to `main` and
+any `workflow_dispatch` caller) or whenever `UPSTREAM_PIN.json` or
+`trusted/lean/lean-toolchain` changes—so every pin update and landed commit
+verifies reproducible source-to-`.olean` compilation cold from source
+(canonical `main` pushes use `lookup-only: true` plus `rm -rf` before invoking
+`anneal-audit` so they compile cold while still seeding a missing
+default-branch cache entry for pull requests and merge-group runs)—while opt-in
+external cache restoration on unchanged pins (`pull_request` consuming/seeding
+and `merge_group` strictly read-only, with the workflow audit step wiping the
+cache directory on a miss before cold compilation) lives outside the checkout,
 rejects symlinks, and admits a cached `.olean` only when its SHA-256 matches
-that source-verified pin. Although vendored `vendor/lean-miri/` sources are not
+that source-verified pin. Although vendored
+`vendor/lean-miri/` sources are not
 passed through untrusted-`theory/` syntactic preflight (upstream `Miri.Input.*` and proof
 helpers retain compile-time metaprograms and `partial def`s audited under the
 SHA-256 pin in `trusted/audit/`), Pass 2 **replays every non-`isPartial` safe

@@ -146,9 +146,13 @@ re-confirm every affected gate whenever the identity changes:
 3. **Gate 3 — Green required CI:** All required GitHub Actions checks pass on
    GitHub's current pull-request test-merge commit for the exact final
    `(target_base, head)` (reported on `head` by `pull_request`-triggered
-   workflows), or on the merge queue's `merge_group` commit when merging via
-   GitHub's merge queue. GitHub reports checks per commit SHA, so a rewrite
-   that preserves the identity still needs green checks on the new `head`.
+   workflows), and—for any Anneal-relevant merge—either on the merge queue's
+   `merge_group` commit (always full-strength) or on a `pull_request` run with
+   the `run-ci` label attached (without `run-ci`, draft PRs skip
+   `current_anneal` including `static-checks` and skip heavy `ci.yml` jobs,
+   while ready Anneal-relevant `pull_request` runs execute only
+   `static-checks`). GitHub reports checks per commit SHA, so a rewrite that
+   preserves the identity still needs green checks on the new `head`.
 4. **Gate 4 — Bottom-of-stack ordering:** For stacked PRs, every lower PR in
    the stack has merged and this PR is rebased onto `main` so
    `merge_base == target_base` before merging or entering GitHub's merge queue

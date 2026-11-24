@@ -163,6 +163,22 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         self.assertNotIn("restore-keys", restore["with"])
         self.assertTrue(restore["with"]["path"].startswith("${{ runner.temp }}/"))
         self.assertNotIn("anneal/trusted/audit/**", restore["with"]["key"])
+        self.assertNotIn("anneal/theory/**", restore["with"]["key"])
+        self.assertNotIn(
+            "anneal/trusted/cargo-anneal/src/bundled_resources.rs",
+            restore["with"]["key"],
+        )
+        self.assertNotIn(
+            "anneal/trusted/rustc-capture/**", restore["with"]["key"]
+        )
+        self.assertNotIn("anneal/Cargo.lock", restore["with"]["key"])
+        for expected_input in (
+            "anneal/flake.nix",
+            "anneal/flake.lock",
+            "anneal/trusted/lean/lean-toolchain",
+            "anneal/trusted/lean/foundation-lock.json",
+        ):
+            self.assertIn(expected_input, restore["with"]["key"])
 
         expected_writer_if = (
             "github.event_name == 'push' "
@@ -176,6 +192,8 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         wipe_idx = populate_run.index('rm -rf "$RUNNER_TEMP/anneal-nix-cache"')
         mkdir_idx = populate_run.index('mkdir -p "$RUNNER_TEMP/anneal-nix-cache"')
         self.assertLess(wipe_idx, mkdir_idx)
+        self.assertIn("nix copy .#rust-toolchain .#lean-toolchain", populate_run)
+        self.assertNotIn("omnibus-archive", populate_run)
         save_nix = build_steps["save_nix_cache"]
         self.assertTrue(save_nix["uses"].startswith("actions/cache/save@"))
         self.assertEqual(save_nix["with"]["path"], restore["with"]["path"])
@@ -184,7 +202,7 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             "${{ steps.restore_nix_cache.outputs.cache-primary-key }}",
         )
 
-    def test_miri_olean_cache_compiles_cold_on_main_and_merge_group(self):
+    def test_miri_olean_cache_restores_verified_on_merge_group_and_compiles_cold_on_main(self):
         ordered_steps = self.workflow["jobs"]["test-and-verify"]["steps"]
         step_indices = {
             step["id"]: idx
@@ -207,7 +225,8 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         )
         self.assertEqual(
             restore["if"],
-            "${{ github.event_name == 'pull_request' || "
+            "${{ github.event_name == 'pull_request' "
+            "|| github.event_name == 'merge_group' || "
             "(github.event_name == 'push' "
             "&& github.repository == 'google/zerocopy' "
             "&& github.ref == 'refs/heads/main') }}",
@@ -221,6 +240,7 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
 
         save = test_steps["save_miri_olean_cache"]
         self.assertTrue(save["uses"].startswith("actions/cache/save@"))
+        self.assertNotIn("merge_group", save["if"])
         self.assertEqual(
             save["if"],
             "${{ steps.miri_olean_cache.outputs.cache-hit != 'true' && "
@@ -237,8 +257,9 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
 
         # Execute the `audit` step's argument-selection shell logic against a
         # stub `cargo` command to verify cold compilation on `push`,
-        # `merge_group`, `workflow_dispatch`, and unknown events, and seeding
-        # only on a missing `main` cache entry.
+        # `merge_group` misses, `workflow_dispatch`, and unknown events,
+        # read-only cache hits on `merge_group`, and seeding only on a missing
+        # `main` cache entry.
         audit_script = test_steps["audit"]["run"]
         with tempfile.TemporaryDirectory(prefix="anneal-ci-miri-cache-") as tmp:
             tmp_path = Path(tmp)
@@ -308,12 +329,35 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                     seen_cache.read_text().strip(),
                 )
 
-            # 1. merge_group, workflow_dispatch, and other non-PR events never
+            # 1. workflow_dispatch and unknown non-PR/non-MG events never
             # pass --miri-cache-dir.
-            for ev in ("merge_group", "workflow_dispatch", "schedule"):
+            for ev in ("workflow_dispatch", "schedule"):
                 args, _ = run_audit_case(
                     ev, "google/zerocopy", "refs/heads/main", ""
                 )
+                self.assertNotIn("--miri-cache-dir", args)
+
+            # 1b. merge_group uses read-only restored cache on cache-hit ==
+            # "true" (SHA-256 verified inside anneal-audit) and compiles cold
+            # on miss (wiping stale directory and omitting --miri-cache-dir).
+            args, seen = run_audit_case(
+                "merge_group",
+                "google/zerocopy",
+                "refs/heads/gh-readonly-queue/main/pr-1",
+                "true",
+                preseed=True,
+            )
+            self.assertEqual(seen, "exists")
+            self.assertIn("--miri-cache-dir", args)
+            for miss_val in ("false", ""):
+                args, seen = run_audit_case(
+                    "merge_group",
+                    "google/zerocopy",
+                    "refs/heads/gh-readonly-queue/main/pr-1",
+                    miss_val,
+                    preseed=True,
+                )
+                self.assertEqual(seen, "absent")
                 self.assertNotIn("--miri-cache-dir", args)
 
             # 2. push on main with cache hit wipes any pre-existing cache dir
@@ -649,6 +693,10 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             gate_step["env"]["EVENT_NAME"], "${{ github.event_name }}"
         )
         self.assertEqual(
+            gate_step["env"]["RUN_HEAVY"],
+            "${{ github.event_name != 'pull_request' || inputs.run_heavy }}",
+        )
+        self.assertEqual(
             gate_step["env"]["ANNEAL_RELEASE_LOCK"],
             "${{ vars.ANNEAL_RELEASE_LOCK }}",
         )
@@ -881,6 +929,22 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                     self.assertNotEqual(res.returncode, 0)
 
     def test_all_jobs_succeed_skip_handling_for_release_lock(self):
+        run_heavy_input = self.workflow["on"]["workflow_call"]["inputs"]["run_heavy"]
+        self.assertEqual(run_heavy_input["type"], "boolean")
+        self.assertEqual(run_heavy_input["default"], "true")
+        for heavy_job in (
+            "build-exocrate",
+            "test-and-verify",
+            "installed-smoke",
+            "workspace-tests",
+            "sandbox-aarch64",
+        ):
+            self.assertEqual(
+                self.workflow["jobs"][heavy_job]["if"],
+                "${{ github.event_name != 'pull_request' || inputs.run_heavy }}",
+                heavy_job,
+            )
+
         gate = self.workflow["jobs"]["all-jobs-succeed"]
         gate_step = next(
             s for s in gate["steps"]
@@ -889,7 +953,14 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         script = gate_step["run"]
         other_jobs = [j for j in gate["needs"] if j != "release-lock"]
 
-        def run_gate(event_name, lock_val, release_result, other_overrides=None):
+        def run_gate(
+            event_name,
+            lock_val,
+            release_result,
+            other_overrides=None,
+            *,
+            run_heavy="true",
+        ):
             needs = {j: {"result": "success"} for j in other_jobs}
             if other_overrides:
                 for k, v in other_overrides.items():
@@ -897,6 +968,7 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             needs["release-lock"] = {"result": release_result}
             env = os.environ.copy()
             env["EVENT_NAME"] = event_name
+            env["RUN_HEAVY"] = run_heavy
             env["ANNEAL_RELEASE_LOCK"] = lock_val
             env["NEEDS_JSON"] = json.dumps(needs)
             return subprocess.run(
@@ -933,6 +1005,68 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                     res.stdout + res.stderr,
                 )
 
+        # pull_request with run_heavy == "false" passes only when
+        # static-checks succeeded and all heavy/lock jobs were skipped.
+        pr_light_overrides = {
+            j: "skipped" for j in other_jobs if j != "static-checks"
+        }
+        self.assertEqual(
+            run_gate(
+                "pull_request",
+                "",
+                "skipped",
+                pr_light_overrides,
+                run_heavy="false",
+            ).returncode,
+            0,
+        )
+        # Non-PR events ignore run_heavy == "false" and require heavy jobs.
+        for non_pr in ("merge_group", "push", "workflow_dispatch"):
+            self.assertNotEqual(
+                run_gate(
+                    non_pr,
+                    "",
+                    "skipped",
+                    pr_light_overrides,
+                    run_heavy="false",
+                ).returncode,
+                0,
+                non_pr,
+            )
+        # Skipping static-checks or failing a heavy job on light PR fails
+        # closed.
+        self.assertNotEqual(
+            run_gate(
+                "pull_request",
+                "",
+                "skipped",
+                {**pr_light_overrides, "static-checks": "skipped"},
+                run_heavy="false",
+            ).returncode,
+            0,
+        )
+        self.assertNotEqual(
+            run_gate(
+                "pull_request",
+                "",
+                "skipped",
+                {**pr_light_overrides, "workspace-tests": "failure"},
+                run_heavy="false",
+            ).returncode,
+            0,
+        )
+        for bad_heavy in ("", "unexpected"):
+            self.assertNotEqual(
+                run_gate(
+                    "pull_request",
+                    "",
+                    "skipped",
+                    pr_light_overrides,
+                    run_heavy=bad_heavy,
+                ).returncode,
+                0,
+            )
+
         for bad_result in ("skipped", "failure", "cancelled"):
             res = run_gate(
                 "pull_request", "", "skipped", {"static-checks": bad_result}
@@ -961,6 +1095,8 @@ class PathFilterWorkflowTests(unittest.TestCase):
         pr_base_sha_override=None,
         pr_head_sha_override=None,
         drop_origin_main=False,
+        pr_draft=None,
+        pr_has_run_ci=None,
     ):
         script = next(
             step["run"]
@@ -1033,6 +1169,16 @@ class PathFilterWorkflowTests(unittest.TestCase):
             env.update({
                 "GITHUB_OUTPUT": str(gh_out),
                 "EVENT_NAME": event_name,
+                "PR_DRAFT": (
+                    pr_draft
+                    if pr_draft is not None
+                    else ("false" if event_name == "pull_request" else "")
+                ),
+                "PR_HAS_RUN_CI": (
+                    pr_has_run_ci
+                    if pr_has_run_ci is not None
+                    else ("false" if event_name == "pull_request" else "")
+                ),
                 "PR_BASE_SHA": (
                     pr_base_sha_override
                     if pr_base_sha_override is not None
@@ -1081,8 +1227,21 @@ class PathFilterWorkflowTests(unittest.TestCase):
                 git("add", rel)
 
     def test_detect_changes_classification_and_fail_closed_invariants(self):
-        # Verify least-privilege & token-stripping posture on both jobs.
+        # Verify least-privilege, token-stripping, and PR event triggers.
         for wf_name, wf in (("ci.yml", self.ci_wf), ("anneal.yml", self.anneal_wf)):
+            self.assertEqual(
+                wf["on"]["pull_request"]["types"],
+                [
+                    "opened",
+                    "synchronize",
+                    "reopened",
+                    "ready_for_review",
+                    "converted_to_draft",
+                    "labeled",
+                    "unlabeled",
+                ],
+                wf_name,
+            )
             job = wf["jobs"]["detect_changes"]
             self.assertEqual(job["permissions"], {"contents": "read"}, wf_name)
             for token in (
@@ -1097,18 +1256,106 @@ class PathFilterWorkflowTests(unittest.TestCase):
             self.assertEqual(
                 checkout["with"]["persist-credentials"], "false", wf_name
             )
+            self.assertEqual(
+                checkout["if"],
+                "github.event_name == 'pull_request' && "
+                "!contains(github.event.pull_request.labels.*.name, 'run-ci') "
+                "&& !github.event.pull_request.draft",
+                wf_name,
+            )
+            filter_step = next(
+                s for s in job["steps"] if s.get("id") == "filter"
+            )
+            self.assertEqual(
+                filter_step["env"]["EVENT_NAME"],
+                "${{ github.event_name }}",
+                wf_name,
+            )
+            self.assertEqual(
+                filter_step["env"]["PR_DRAFT"],
+                "${{ github.event.pull_request.draft }}",
+                wf_name,
+            )
+            self.assertEqual(
+                filter_step["env"]["PR_HAS_RUN_CI"],
+                "${{ contains(github.event.pull_request.labels.*.name, 'run-ci') }}",
+                wf_name,
+            )
+        self.assertEqual(
+            self.ci_wf["jobs"]["detect_changes"]["outputs"]["run_zerocopy"],
+            "${{ steps.filter.outputs.run_zerocopy }}",
+        )
+        self.assertEqual(
+            self.anneal_wf["jobs"]["detect_changes"]["outputs"]["run_anneal"],
+            "${{ steps.filter.outputs.run_anneal }}",
+        )
+        self.assertEqual(
+            self.anneal_wf["jobs"]["detect_changes"]["outputs"]["run_heavy"],
+            "${{ steps.filter.outputs.run_heavy }}",
+        )
+        self.assertEqual(
+            self.anneal_wf["jobs"]["current_anneal"]["with"]["run_heavy"],
+            "${{ needs.detect_changes.outputs.run_heavy != 'false' }}",
+        )
+        anneal_gate_step = next(
+            s
+            for s in self.anneal_wf["jobs"]["all-jobs-succeed"]["steps"]
+            if s.get("name") == "Require every dependency to succeed"
+        )
+        self.assertEqual(
+            anneal_gate_step["env"]["EVENT_NAME"],
+            "${{ github.event_name }}",
+        )
+        self.assertEqual(
+            anneal_gate_step["env"]["RUN_ANNEAL"],
+            "${{ needs.detect_changes.outputs.run_anneal }}",
+        )
+        self.assertEqual(
+            anneal_gate_step["env"]["RUN_HEAVY"],
+            "${{ needs.detect_changes.outputs.run_heavy }}",
+        )
+        self.assertEqual(
+            anneal_gate_step["env"]["NEEDS_JSON"],
+            "${{ toJSON(needs) }}",
+        )
 
         cases = [
-            # (label, event, commit_batches, exp_run_zerocopy, exp_run_anneal)
-            ("anneal_only_pr", "pull_request", [{"anneal/README.md": "a"}], "false", "true"),
-            ("anneal_only_2_commits", "pull_request", [{"anneal/a.md": "a"}, {"anneal/b.md": "b"}], "false", "true"),
-            ("zerocopy_only_pr", "pull_request", [{"zerocopy/src/lib.rs": "z"}], "true", "false"),
-            ("zerocopy_only_2_commits", "pull_request", [{"zerocopy/a.rs": "a"}, {"zerocopy/b.rs": "b"}], "true", "false"),
+            # (label, event, commit_batches, exp_run_zerocopy,
+            #  exp_run_anneal, exp_run_heavy)
+            ("anneal_only_pr", "pull_request", [{"anneal/README.md": "a"}], "false", "true", "false"),
+            ("anneal_only_2_commits", "pull_request", [{"anneal/a.md": "a"}, {"anneal/b.md": "b"}], "false", "true", "false"),
+            (
+                "zerocopy_proofs_only_pr",
+                "pull_request",
+                [{"zerocopy/proofs/01_usize_pointer_metadata/Proof.lean": "p"}],
+                "false",
+                "true",
+                "false",
+            ),
+            (
+                "anneal_plus_zerocopy_proofs_pr",
+                "pull_request",
+                [{"anneal/README.md": "a", "zerocopy/proofs/05/Spec.lean": "s"}],
+                "false",
+                "true",
+                "false",
+            ),
+            ("zerocopy_only_pr", "pull_request", [{"zerocopy/src/lib.rs": "z"}], "true", "false", "false"),
+            ("zerocopy_only_2_commits", "pull_request", [{"zerocopy/a.rs": "a"}, {"zerocopy/b.rs": "b"}], "true", "false", "false"),
+            (
+                "zerocopy_proofs_plus_src_pr",
+                "pull_request",
+                [{"zerocopy/proofs/01/Proof.lean": "p", "zerocopy/src/lib.rs": "z"}],
+                "true",
+                "true",
+                "false",
+            ),
             (
                 "non_anneal_prefixes",
                 "pull_request",
                 [{"evals/a.txt": "e", "tools/b.txt": "t", "maintainers/c.txt": "m"}],
                 "true",
+                "false",
                 "false",
             ),
             (
@@ -1124,25 +1371,27 @@ class PathFilterWorkflowTests(unittest.TestCase):
                 }],
                 "true",
                 "false",
+                "false",
             ),
-            ("exocrate_touches_both", "pull_request", [{"exocrate/src/lib.rs": "e"}], "true", "true"),
-            ("workflow_touches_both", "pull_request", [{".github/workflows/ci.yml": "w"}], "true", "true"),
-            ("ci_dir_touches_both", "pull_request", [{"ci/check_fmt.sh": "s"}], "true", "true"),
-            ("githooks_touches_both", "pull_request", [{"githooks/pre-push": "h"}], "true", "true"),
-            ("skills_dir_touches_both", "pull_request", [{"skills/commit-message/SKILL.md": "s"}], "true", "true"),
-            ("root_cargo_override", "pull_request", [{".cargo/config.toml": "x"}], "true", "true"),
-            ("root_rust_toolchain_override", "pull_request", [{"rust-toolchain.toml": "n"}], "true", "true"),
-            ("root_gitignore_touches_both", "pull_request", [{".gitignore": "g"}], "true", "true"),
-            ("root_rgignore_touches_both", "pull_request", [{".rgignore": "r"}], "true", "true"),
-            ("root_gemini_touches_both", "pull_request", [{".gemini/styleguide.md": "s"}], "true", "true"),
-            ("root_vscode_touches_both", "pull_request", [{".vscode/settings.json": "{}"}], "true", "true"),
-            ("mixed_pr", "pull_request", [{"anneal/a.txt": "a", "zerocopy/z.txt": "z"}], "true", "true"),
+            ("exocrate_touches_both", "pull_request", [{"exocrate/src/lib.rs": "e"}], "true", "true", "false"),
+            ("workflow_touches_both", "pull_request", [{".github/workflows/ci.yml": "w"}], "true", "true", "false"),
+            ("ci_dir_touches_both", "pull_request", [{"ci/check_fmt.sh": "s"}], "true", "true", "false"),
+            ("githooks_touches_both", "pull_request", [{"githooks/pre-push": "h"}], "true", "true", "false"),
+            ("skills_dir_touches_both", "pull_request", [{"skills/commit-message/SKILL.md": "s"}], "true", "true", "false"),
+            ("root_cargo_override", "pull_request", [{".cargo/config.toml": "x"}], "true", "true", "false"),
+            ("root_rust_toolchain_override", "pull_request", [{"rust-toolchain.toml": "n"}], "true", "true", "false"),
+            ("root_gitignore_touches_both", "pull_request", [{".gitignore": "g"}], "true", "true", "false"),
+            ("root_rgignore_touches_both", "pull_request", [{".rgignore": "r"}], "true", "true", "false"),
+            ("root_gemini_touches_both", "pull_request", [{".gemini/styleguide.md": "s"}], "true", "true", "false"),
+            ("root_vscode_touches_both", "pull_request", [{".vscode/settings.json": "{}"}], "true", "true", "false"),
+            ("mixed_pr", "pull_request", [{"anneal/a.txt": "a", "zerocopy/z.txt": "z"}], "true", "true", "false"),
             (
                 "stacked_pr_lower_zerocopy_upper_anneal",
                 "pull_request",
                 [{"zerocopy/src/lib.rs": "z"}, {"anneal/README.md": "a"}],
                 "true",
                 "true",
+                "false",
             ),
             (
                 "stacked_pr_lower_anneal_upper_zerocopy",
@@ -1150,17 +1399,67 @@ class PathFilterWorkflowTests(unittest.TestCase):
                 [{"anneal/README.md": "a"}, {"zerocopy/src/lib.rs": "z"}],
                 "true",
                 "true",
+                "false",
             ),
-            ("push_always_runs_both", "push", [{"anneal/README.md": "a"}], "true", "true"),
-            ("merge_group_always_runs_both", "merge_group", [{"zerocopy/src/lib.rs": "z"}], "true", "true"),
-            ("workflow_dispatch_always_runs_both", "workflow_dispatch", [{"anneal/README.md": "a"}], "true", "true"),
+            ("push_always_runs_both", "push", [{"anneal/README.md": "a"}], "true", "true", "true"),
+            ("merge_group_always_runs_both", "merge_group", [{"zerocopy/src/lib.rs": "z"}], "true", "true", "true"),
+            ("workflow_dispatch_always_runs_both", "workflow_dispatch", [{"anneal/README.md": "a"}], "true", "true", "true"),
         ]
-        for label, event, batches, exp_zc, exp_an in cases:
+        for label, event, batches, exp_zc, exp_an, exp_heavy in cases:
             with self.subTest(case=label):
                 zc_out = self._run_detect_changes(self.ci_wf, event, batches)
                 an_out = self._run_detect_changes(self.anneal_wf, event, batches)
                 self.assertEqual(zc_out["run_zerocopy"], exp_zc)
                 self.assertEqual(an_out["run_anneal"], exp_an)
+                self.assertEqual(an_out["run_heavy"], exp_heavy)
+
+        # Draft PRs without `run-ci` skip heavy jobs; explicit `run-ci` opts
+        # even Draft PRs into full CI.
+        for label, batch, run_ci, exp_zc, exp_an, exp_heavy in (
+            ("draft_zerocopy", [{"zerocopy/src/lib.rs": "z"}], "false", "false", "false", "false"),
+            ("draft_anneal", [{"anneal/README.md": "a"}], "false", "false", "false", "false"),
+            ("draft_with_run_ci", [{"zerocopy/src/lib.rs": "z"}], "true", "true", "true", "true"),
+        ):
+            with self.subTest(case=label):
+                zc_out = self._run_detect_changes(
+                    self.ci_wf, "pull_request", batch, pr_draft="true", pr_has_run_ci=run_ci
+                )
+                an_out = self._run_detect_changes(
+                    self.anneal_wf, "pull_request", batch, pr_draft="true", pr_has_run_ci=run_ci
+                )
+                self.assertEqual(zc_out["run_zerocopy"], exp_zc)
+                self.assertEqual(an_out["run_anneal"], exp_an)
+                self.assertEqual(an_out["run_heavy"], exp_heavy)
+
+        # Ready PRs with `run-ci` label run full PR CI in both workflows.
+        for label, batch in (
+            ("run_ci_anneal_only", [{"anneal/README.md": "a"}]),
+            ("run_ci_proofs_only", [{"zerocopy/proofs/01/Proof.lean": "p"}]),
+            ("run_ci_zerocopy_only", [{"zerocopy/src/lib.rs": "z"}]),
+        ):
+            with self.subTest(case=label):
+                zc_out = self._run_detect_changes(
+                    self.ci_wf, "pull_request", batch, pr_draft="false", pr_has_run_ci="true"
+                )
+                an_out = self._run_detect_changes(
+                    self.anneal_wf, "pull_request", batch, pr_draft="false", pr_has_run_ci="true"
+                )
+                self.assertEqual(zc_out["run_zerocopy"], "true")
+                self.assertEqual(an_out["run_anneal"], "true")
+                self.assertEqual(an_out["run_heavy"], "true")
+
+        # Non-PR events ignore ambient PR_DRAFT and always run everything.
+        for ev in ("merge_group", "push", "workflow_dispatch"):
+            with self.subTest(case=f"{ev}_ignores_draft"):
+                zc_out = self._run_detect_changes(
+                    self.ci_wf, ev, [{"anneal/README.md": "a"}], pr_draft="true"
+                )
+                an_out = self._run_detect_changes(
+                    self.anneal_wf, ev, [{"zerocopy/src/lib.rs": "z"}], pr_draft="true"
+                )
+                self.assertEqual(zc_out["run_zerocopy"], "true")
+                self.assertEqual(an_out["run_anneal"], "true")
+                self.assertEqual(an_out["run_heavy"], "true")
 
         # Decoy root `subprocess.py` in an untrusted PR must NOT be imported by
         # `python3 -I -B -` to spoof `run_*=false`.
@@ -1296,6 +1595,10 @@ class PathFilterWorkflowTests(unittest.TestCase):
         # `anneal.yml` so every error guard is exercised non-vacuously.
         fail_closed_cases = [
             ("empty_diff", [], [], {}),
+            ("empty_pr_draft", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_draft": ""}),
+            ("invalid_pr_draft", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_draft": "yes"}),
+            ("empty_pr_has_run_ci", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_has_run_ci": ""}),
+            ("invalid_pr_has_run_ci", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_has_run_ci": "1"}),
             ("missing_pr_base_sha", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_base_sha_override": ""}),
             ("invalid_pr_base_sha", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_base_sha_override": "0" * 40}),
             ("missing_pr_head_sha", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_head_sha_override": ""}),
@@ -1308,6 +1611,7 @@ class PathFilterWorkflowTests(unittest.TestCase):
                 an_out = self._run_detect_changes(self.anneal_wf, "pull_request", an_batches, **kwargs)
                 self.assertEqual(zc_out["run_zerocopy"], "true")
                 self.assertEqual(an_out["run_anneal"], "true")
+                self.assertEqual(an_out["run_heavy"], "true")
 
     def test_all_jobs_succeed_gates_fail_closed(self):
         for wf_name, wf, env_flag, always_on, gated_sample in [
@@ -1352,7 +1656,7 @@ class PathFilterWorkflowTests(unittest.TestCase):
             )
             deps = wf["jobs"]["all-jobs-succeed"]["needs"]
 
-            def eval_gate(event, run_flag, overrides=None):
+            def eval_gate(event, run_flag, overrides=None, run_heavy=None):
                 needs = {}
                 for d in deps:
                     if run_flag == "true":
@@ -1373,6 +1677,10 @@ class PathFilterWorkflowTests(unittest.TestCase):
                     env_flag: run_flag,
                     "NEEDS_JSON": json.dumps(needs),
                 })
+                if wf_name == "anneal.yml":
+                    env["RUN_HEAVY"] = (
+                        run_flag if run_heavy is None else run_heavy
+                    )
                 return subprocess.run(
                     [
                         "bash",
@@ -1420,6 +1728,30 @@ class PathFilterWorkflowTests(unittest.TestCase):
                         eval_gate(ev, "true", {"miri": "skipped"}),
                         0,
                         f"ci.yml:miri:{ev}",
+                    )
+            if wf_name == "anneal.yml":
+                self.assertEqual(
+                    eval_gate("pull_request", "true", run_heavy="false"),
+                    0,
+                )
+                for bad_event, bad_anneal, bad_heavy in [
+                    ("pull_request", "true", ""),
+                    ("pull_request", "true", "unexpected"),
+                    ("pull_request", "true", "True"),
+                    ("pull_request", "false", ""),
+                    ("pull_request", "false", "true"),
+                    ("merge_group", "true", "false"),
+                    ("push", "true", "false"),
+                    ("workflow_dispatch", "true", "false"),
+                    ("merge_group", "true", ""),
+                    ("merge_group", "false", "false"),
+                    ("push", "false", "false"),
+                    ("workflow_dispatch", "false", "false"),
+                ]:
+                    self.assertNotEqual(
+                        eval_gate(bad_event, bad_anneal, run_heavy=bad_heavy),
+                        0,
+                        f"anneal.yml:{bad_event}:{bad_anneal}:{bad_heavy}",
                     )
             # Skipped always-on job must fail closed.
             for job in always_on:

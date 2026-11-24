@@ -14,6 +14,18 @@ name: Build & Tests
     branches:
       - main
   pull_request:
+    # GitHub Actions does not support label-name filters on `pull_request`.
+    # Triggering on all `labeled`/`unlabeled` events keeps `run-ci` opt-in/out
+    # fail-closed under `cancel-in-progress: true`, at the trade-off of
+    # restarting an in-flight PR run on unrelated label edits.
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+      - converted_to_draft
+      - labeled
+      - unlabeled
   merge_group:
   # Useful for manually testing changes to this workflow. Because we check for
   # the merge queue by doing `github.event_name != 'pull_request'` rather than
@@ -66,7 +78,10 @@ jobs:
       run_zerocopy: ${{ steps.filter.outputs.run_zerocopy }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        if: github.event_name == 'pull_request'
+        if: >-
+          github.event_name == 'pull_request' &&
+          !contains(github.event.pull_request.labels.*.name, 'run-ci') &&
+          !github.event.pull_request.draft
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -75,6 +90,8 @@ jobs:
         id: filter
         env:
           EVENT_NAME: ${{ github.event_name }}
+          PR_DRAFT: ${{ github.event.pull_request.draft }}
+          PR_HAS_RUN_CI: ${{ contains(github.event.pull_request.labels.*.name, 'run-ci') }}
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
@@ -87,6 +104,20 @@ jobs:
 
           if os.environ["EVENT_NAME"] != "pull_request":
               print("run_zerocopy=true")
+              sys.exit(0)
+
+          pr_draft = os.environ.get("PR_DRAFT", "")
+          pr_has_run_ci = os.environ.get("PR_HAS_RUN_CI", "")
+          if pr_draft not in ("true", "false") or pr_has_run_ci not in ("true", "false"):
+              print("run_zerocopy=true")
+              sys.exit(0)
+
+          if pr_has_run_ci == "true":
+              print("run_zerocopy=true")
+              sys.exit(0)
+
+          if pr_draft == "true":
+              print("run_zerocopy=false")
               sys.exit(0)
 
           SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")
@@ -173,7 +204,10 @@ jobs:
           only_anneal = (
               ok
               and bool(paths)
-              and all(p.startswith("anneal/") for p in paths)
+              and all(
+                  p.startswith(("anneal/", "zerocopy/proofs/"))
+                  for p in paths
+              )
           )
           print(f"run_zerocopy={'false' if only_anneal else 'true'}")
           PY
