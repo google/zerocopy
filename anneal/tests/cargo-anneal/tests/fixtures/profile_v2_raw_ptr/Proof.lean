@@ -555,8 +555,9 @@ private theorem loadU32_correct (q : Query)
       | cons _ _ => cases a0 <;> (change False at hSafe; exact False.elim hSafe)
       | nil =>
         cases a0 with
-        | scalar _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _ | char _
-        | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => exact False.elim hSafe
+        | scalar _ | nonZero _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _
+        | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
+          exact False.elim hSafe
         | ptr pv =>
           dsimp only at hSafe
           cases hAid : pv.allocId with
@@ -671,12 +672,14 @@ private theorem storeU8_correct (q : Query)
         | cons _ _ => cases a0 <;> (try exact False.elim hSafe); cases a1 <;> exact False.elim hSafe
         | nil =>
           cases a0 with
-          | scalar _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _ | char _
-          | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => exact False.elim hSafe
+          | scalar _ | nonZero _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _
+          | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
+            exact False.elim hSafe
           | ptr pv =>
             cases a1 with
-            | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _ | char _
-            | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => exact False.elim hSafe
+            | ptr _ | nonZero _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _
+            | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
+              exact False.elim hSafe
             | scalar sv =>
               dsimp only at hSafe
               cases hAid : pv.allocId with

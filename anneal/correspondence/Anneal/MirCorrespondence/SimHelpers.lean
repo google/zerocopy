@@ -226,7 +226,7 @@ theorem auxTyOfCode_auxTyCode {ty : MirTy} {code : Nat}
   | int w s =>
     cases w <;> cases s <;> (injection h with hc; subst hc; rfl)
   | never | char | ordering | enum _ | tuple _ | ref _ _ | rawPtr _ _
-  | slice _ | rangeTo _ | rangeFrom _ | unsupported => cases h
+  | slice _ | rangeTo _ | rangeFrom _ | nonZero _ _ | unsupported => cases h
 
 theorem indexOfTy_some_getElem? {ts : List MirTy} {ty : MirTy} {idx : TyId}
     (h : indexOfTy ts ty = some idx) :
@@ -406,7 +406,7 @@ theorem refHasPadding_ok (types : List MirTy) (ty : MirTy) :
   cases ty with
   | int w s => cases w <;> cases s <;> exact ⟨_, rfl⟩
   | bool | unit | never | char | ordering | ref _ _ | rawPtr _ _
-  | slice _ | rangeTo _ | rangeFrom _ | unsupported => exact ⟨_, rfl⟩
+  | slice _ | rangeTo _ | rangeFrom _ | nonZero _ _ | unsupported => exact ⟨_, rfl⟩
   | enum ety =>
     dsimp only [refHasPadding, refLocalLayoutForTy, refLayoutDataForTy,
       refAsEnumTy?, refEnumLayoutData]
@@ -490,7 +490,7 @@ theorem slotMatchesTy_liveUninitSlot (ty : MirTy) :
   cases ty with
   | unit => rfl
   | bool | int _ _ | never | char | ordering | tuple _ | ref _ _ | rawPtr _ _
-  | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+  | slice _ | rangeTo _ | rangeFrom _ | nonZero _ _ | unsupported =>
     exact ⟨fun h => (by cases h), fun _ h => (by cases h)⟩
   | enum ety =>
     dsimp only [liveUninitSlot]
@@ -654,7 +654,7 @@ theorem evalConstLit_checkVal {ty : MirTy} {lit : ConstLit} {v : Val}
       injection h with hv; subst hv; rfl
     | scalar _ => cases h
   | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
-  | unsupported =>
+  | nonZero _ _ | unsupported =>
     cases lit <;> cases h
   | int w s =>
     cases lit with

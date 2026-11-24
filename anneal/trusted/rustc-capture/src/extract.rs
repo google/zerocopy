@@ -226,6 +226,27 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
                 _ => unreachable!("guarded above"),
             }
         }
+        // `core::num::NonZero<T>` (`library/core/src/num/nonzero.rs#L99-L100`,
+        // `#L125-L128`, `rust-lang/rust`
+        // `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+        // "`NonZero<T>` is guaranteed to have the same layout and bit validity
+        // as `T` with the exception that the all-zero bit pattern is invalid."
+        // Profile v2 admits primitive integers `T` only (excluding `char`).
+        ty::Adt(adt, args)
+            if args.len() == 1
+                && matches!(
+                    core_def_path(tcx, adt.did()).as_deref(),
+                    Some("core::num::nonzero::NonZero" | "core::num::NonZero")
+                ) =>
+        {
+            let Some(arg_ty) = args[0].as_type() else {
+                return Err(format!("unsupported NonZero type: {t:?}"));
+            };
+            if !matches!(arg_ty.kind(), ty::Uint(_) | ty::Int(_)) {
+                return Err(format!("unsupported NonZero element type: {t:?}"));
+            }
+            Ok(ir::Ty::NonZero(int_ty(arg_ty)?))
+        }
         // `Trusted.MirAst.EnumTy` keys nominal enum identity by the `u32` that
         // `enum_id` derives from the enum's semantic path, so the key does not
         // move when unrelated items shift compiler indices. Admission requires
@@ -488,7 +509,7 @@ fn operand<'tcx>(
                 | ir::Ty::RangeFrom { .. } => {
                     return Err(format!("constants of compound/pointer type {t:?} are unsupported"));
                 }
-                ir::Ty::Int(ity) => ity.width.bits(),
+                ir::Ty::Int(ity) | ir::Ty::NonZero(ity) => ity.width.bits(),
                 ir::Ty::Enum(ety) => match ety.tag_repr() {
                     ir::EnumTagRepr::ZeroSized => {
                         if matches!(const_val, mir::ConstValue::ZeroSized) {
@@ -894,6 +915,16 @@ fn core_call_op<'tcx>(
             })
         }
         "core::num::<impl usize>::unchecked_sub" => Ok(ir::CoreCallOp::UsizeUncheckedSub),
+        // `library/core/src/num/uint_macros.rs#L2620`, `#L3859` and
+        // `library/core/src/num/nonzero.rs#L421`, `#L483` (`rust-lang/rust`
+        // `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`).
+        "core::num::<impl usize>::wrapping_sub" => Ok(ir::CoreCallOp::UsizeWrappingSub),
+        "core::num::<impl usize>::is_power_of_two" => Ok(ir::CoreCallOp::UsizeIsPowerOfTwo),
+        "core::num::nonzero::NonZero::<T>::get" | "core::num::NonZero::<T>::get" => {
+            Ok(ir::CoreCallOp::NonZeroGet)
+        }
+        "core::num::nonzero::NonZero::<T>::new_unchecked"
+        | "core::num::NonZero::<T>::new_unchecked" => Ok(ir::CoreCallOp::NonZeroNewUnchecked),
         _ => Err(format!("unsupported core call `{path}`")),
     }
 }

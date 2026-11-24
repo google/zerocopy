@@ -304,6 +304,7 @@ pub enum Ty {
         #[serde(serialize_with = "serialize_boxed_ty")]
         elem: Box<Ty>,
     },
+    NonZero(IntTy),
 }
 
 impl Ty {
@@ -334,7 +335,8 @@ impl Ty {
             | Self::RawPtr { .. }
             | Self::Slice { .. }
             | Self::RangeTo { .. }
-            | Self::RangeFrom { .. } => true,
+            | Self::RangeFrom { .. }
+            | Self::NonZero(_) => true,
             Self::Ref { .. } => false,
             Self::Tuple { fields } => fields.iter().all(Self::is_retag_noop),
         }
@@ -375,7 +377,8 @@ impl Ty {
             | Self::Ref { .. }
             | Self::RawPtr { .. }
             | Self::RangeTo { .. }
-            | Self::RangeFrom { .. } => true,
+            | Self::RangeFrom { .. }
+            | Self::NonZero(_) => true,
         }
     }
 
@@ -411,6 +414,7 @@ impl Ty {
             Self::Tuple { fields } => fields.iter().all(Self::is_supported_v2_local),
             Self::Ref { pointee, .. } | Self::RawPtr { pointee, .. } => match &**pointee {
                 Self::Slice { elem } => matches!(&**elem, Self::Int(_)),
+                Self::NonZero(_) => true,
                 other => other.is_supported_scalar_or_unit(),
             },
             Self::RangeTo { elem } | Self::RangeFrom { elem } => {
@@ -420,6 +424,7 @@ impl Ty {
                         signed: false,
                     })
             }
+            Self::NonZero(_) => true,
             Self::Slice { .. } => false,
         }
     }
@@ -452,7 +457,8 @@ impl Ty {
             | Self::RawPtr { .. }
             | Self::Slice { .. }
             | Self::RangeTo { .. }
-            | Self::RangeFrom { .. } => true,
+            | Self::RangeFrom { .. }
+            | Self::NonZero(_) => true,
             Self::Bool
             | Self::Char
             | Self::Ordering
@@ -487,6 +493,7 @@ impl Ty {
             | Self::Unit
             | Self::Never
             | Self::Int(_)
+            | Self::NonZero(_)
             | Self::OverflowPair(_) => {}
         }
     }
@@ -602,6 +609,21 @@ pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
                     "scalar constant {bits:#x} exceeds {}-bit width",
                     ity.width.bits()
                 ));
+            }
+            Ok(())
+        }
+        (Ty::NonZero(_), ConstLit::ZeroSized) => {
+            Err("ZeroSized constant requires unit or zero-sized enum type".into())
+        }
+        (Ty::NonZero(ity), ConstLit::Scalar { bits }) => {
+            if bits > ity.width.mask() {
+                return Err(format!(
+                    "NonZero scalar constant {bits:#x} exceeds {}-bit width",
+                    ity.width.bits()
+                ));
+            }
+            if bits == 0 {
+                return Err("zero constant is invalid for NonZero<T>".into());
             }
             Ok(())
         }
@@ -858,6 +880,10 @@ pub enum CoreCallOp {
         pointee: Ty,
     },
     UsizeUncheckedSub,
+    UsizeWrappingSub,
+    UsizeIsPowerOfTwo,
+    NonZeroGet,
+    NonZeroNewUnchecked,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -1098,7 +1124,8 @@ fn check_switch_targets(discr_ty: &Ty, targets: &[(u128, u32)]) -> Result<(), St
         | Ty::RawPtr { .. }
         | Ty::Slice { .. }
         | Ty::RangeTo { .. }
-        | Ty::RangeFrom { .. } => Err(format!(
+        | Ty::RangeFrom { .. }
+        | Ty::NonZero(_) => Err(format!(
             "SwitchInt operand type {discr_ty:?} is not primitive-switchable"
         )),
     }
@@ -1634,6 +1661,14 @@ impl Body {
                                 } => {}
                         (CoreCallOp::UsizeUncheckedSub, [l_ty, r_ty])
                             if *l_ty == usize_ty && *r_ty == usize_ty && dst_ty == usize_ty => {}
+                        (CoreCallOp::UsizeWrappingSub, [l_ty, r_ty])
+                            if *l_ty == usize_ty && *r_ty == usize_ty && dst_ty == usize_ty => {}
+                        (CoreCallOp::UsizeIsPowerOfTwo, [arg_ty])
+                            if *arg_ty == usize_ty && dst_ty == Ty::Bool => {}
+                        (CoreCallOp::NonZeroGet, [Ty::NonZero(ity)])
+                            if dst_ty == Ty::Int(*ity) => {}
+                        (CoreCallOp::NonZeroNewUnchecked, [Ty::Int(ity)])
+                            if dst_ty == Ty::NonZero(*ity) => {}
                         _ => {
                             return Err(format!(
                                 "invalid CoreCall {op:?} arguments {arg_tys:?} -> {dst_ty:?}"

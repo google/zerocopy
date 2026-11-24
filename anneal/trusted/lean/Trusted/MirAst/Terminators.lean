@@ -106,7 +106,18 @@ inductive AssertKind where
 
 /-- Closed set of modeled `core` library calls in Profile v2
 (`TerminatorKind.coreCall`). Every unmodeled external `Call` remains
-`.unsupported`. -/
+`.unsupported`.
+
+Additional `core::num` entries (`rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+- `.usizeWrappingSub`: `usize::wrapping_sub`
+  (`library/core/src/num/uint_macros.rs#L2620`).
+- `.usizeIsPowerOfTwo`: `usize::is_power_of_two`
+  (`library/core/src/num/uint_macros.rs#L3859`).
+- `.nonZeroGet`: `NonZero::<T>::get`
+  (`library/core/src/num/nonzero.rs#L483`).
+- `.nonZeroNewUnchecked`: `NonZero::<T>::new_unchecked`
+  (`library/core/src/num/nonzero.rs#L421`). -/
 inductive CoreCallOp where
   | sliceLen
   | sliceAsPtr
@@ -117,6 +128,10 @@ inductive CoreCallOp where
   | sliceGetUncheckedRangeFrom
   | ptrAdd (mutability : Mutability) (pointee : MirTy)
   | usizeUncheckedSub
+  | usizeWrappingSub
+  | usizeIsPowerOfTwo
+  | nonZeroGet
+  | nonZeroNewUnchecked
 
 /-- A MIR basic-block terminator (`rustc_middle::mir::TerminatorKind` in
 `compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`

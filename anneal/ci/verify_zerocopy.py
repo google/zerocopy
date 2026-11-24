@@ -192,8 +192,15 @@ def validate_receipt(unit_name, returncode, stdout_text, stderr_text, expected_r
         axioms = audit.get("axioms")
         if not isinstance(axioms, list) or not set(axioms).issubset(ALLOWED_AXIOMS):
             failures.append(f"disallowed audit.axioms={axioms!r}")
-        if audit.get("canonicalRoot") != "Trusted.MirSemantics.UnitTheorem":
-            failures.append(f"canonicalRoot={audit.get('canonicalRoot')!r}")
+        canonical_root = audit.get("canonicalRoot")
+        if canonical_root == "Trusted.MirSemantics.UnitTheoremV2":
+            provenance = receipt.get("correspondence_provenance")
+            if not isinstance(provenance, dict) or provenance.get("applicable") is not False:
+                failures.append(
+                    "Profile v2 receipt without inapplicable correspondence_provenance"
+                )
+        elif canonical_root != "Trusted.MirSemantics.UnitTheorem":
+            failures.append(f"canonicalRoot={canonical_root!r}")
         bindings = audit.get("bindings")
         if not isinstance(bindings, dict):
             failures.append("missing audit.bindings")

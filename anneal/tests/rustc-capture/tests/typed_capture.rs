@@ -3442,3 +3442,48 @@ fn profile_v2_refuses_unsupported_pointer_casts_and_unsized_types() {
         fixture.assert_no_capture_artifacts();
     }
 }
+
+#[test]
+fn captures_nonzero_integer_wrappers_and_util_core_calls() {
+    let src = b"\
+        use core::num::NonZero;\n\
+        pub fn get_u8(x: NonZero<u8>) -> u8 { x.get() }\n\
+        pub fn min_i32() -> NonZero<i32> { NonZero::<i32>::MIN }\n\
+        pub unsafe fn make_usize(x: usize) -> NonZero<usize> {\n\
+            unsafe { NonZero::new_unchecked(x) }\n\
+        }\n\
+        pub fn sub_and_pow2(a: usize, b: usize) -> (usize, bool) {\n\
+            (a.wrapping_sub(b), a.is_power_of_two())\n\
+        }\n";
+    let cap = Capture::new(src);
+    let out = cap.command().arg("--scope=crate").output().unwrap();
+    assert!(
+        out.status.success(),
+        "NonZero Profile v2 capture should succeed:\n{}\n{}",
+        stdout(&out),
+        stderr(&out)
+    );
+    let manifest = cap.manifest();
+    assert_eq!(manifest["program"]["mir_profile_version"], 2, "{manifest}");
+    let lean = std::fs::read_to_string(cap.output.join("Captured.lean")).unwrap();
+    assert!(lean.contains("mirProfileVersion := 2"), "{lean}");
+    assert!(lean.contains("MirTy.nonZero"), "{lean}");
+    assert!(lean.contains("CoreCallOp.nonZeroGet"), "{lean}");
+    assert!(lean.contains("CoreCallOp.nonZeroNewUnchecked"), "{lean}");
+    assert!(lean.contains("CoreCallOp.usizeWrappingSub"), "{lean}");
+    assert!(lean.contains("CoreCallOp.usizeIsPowerOfTwo"), "{lean}");
+}
+
+#[test]
+fn profile_v2_refuses_nonzero_char_wrapper() {
+    let src = b"\
+        pub fn selected(c: core::num::NonZero<char>) -> u32 {\n\
+            c.get() as u32\n\
+        }\n";
+    let fixture = Capture::new(src);
+    let output = fixture.selected_command().output().unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    let failure = status(&output);
+    assert_eq!(failure["status"], "unsupported", "{failure}");
+    fixture.assert_no_capture_artifacts();
+}

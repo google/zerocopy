@@ -467,8 +467,10 @@ noncomputable def isIntLikeTy : MirTy → Bool
 mutual
   /-- Return `true` when `ty` is a valid Profile v2 sized local type
   (scalars, booleans, `char`, `Ordering`, `()`, `!`, admitted fieldless enums,
-  tuples, `RangeTo`/`RangeFrom` over `usize`, and flat non-nested pointers or
-  references to scalar/unit/enum/overflow-pair or integer-slice pointees).
+  tuples, `RangeTo`/`RangeFrom` over `usize`, `NonZero<T>` over primitive
+  integers, and flat non-nested pointers or
+  references to scalar/unit/enum/overflow-pair/`NonZero`/integer-slice
+  pointees).
   Nested references/pointers inside pointees (`&&T`, `*mut &T`, `&[&T]`) are
   rejected fail-closed so `refValidInMem` and `refsStayInCallerMem` remain
   complete without recursive heap reference graphs. -/
@@ -477,8 +479,10 @@ mutual
     | .enum ety => enumAdmitted ety
     | .tuple fs => isSupportedV2LocalTyList fs
     | .ref _ (.slice (.int _ _)) | .rawPtr _ (.slice (.int _ _)) => true
+    | .ref _ (.nonZero _ _) | .rawPtr _ (.nonZero _ _) => true
     | .ref _ pt | .rawPtr _ pt => isSupportedScalarOrUnitTy pt
     | .rangeTo (.int .isize false) | .rangeFrom (.int .isize false) => true
+    | .nonZero _ _ => true
     | _ => false
 
   noncomputable def isSupportedV2LocalTyList : List MirTy → Bool
@@ -503,6 +507,9 @@ mutual
     | .slicePtr p _, .ref _ (.slice _) => IntWidth.beq p.width .isize
     | .rangeTo _, .rangeTo (.int .isize false) => true
     | .rangeFrom _, .rangeFrom (.int .isize false) => true
+    | .nonZero sv, .nonZero w s =>
+      sv.wf && IntWidth.beq sv.width w && (sv.signed == s) &&
+        !Nat.beq sv.bits.toNat 0
     | .tuple vs, .tuple ts => checkValV2List vs ts
     | _, _ => false
 

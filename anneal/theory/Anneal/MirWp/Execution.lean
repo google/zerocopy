@@ -620,7 +620,7 @@ theorem evalTerminator_frame_retag (body : Body) (bb : BasicBlock)
               intro s' hStep
               injection hStep with hEq; subst hEq
               exact ⟨_, rfl, h_id⟩
-          | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | ordering _ | unit | tuple _ | bytes _ | enumVal _ _ =>
+          | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | nonZero _ | ordering _ | unit | tuple _ | bytes _ | enumVal _ _ =>
             dsimp only
             cases targets.branches with
             | nil =>

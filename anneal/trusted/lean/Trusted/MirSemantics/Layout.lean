@@ -175,9 +175,14 @@ noncomputable def layoutOfTy : MirTy → Option LayoutData
   | _ => none
 
 /-- Layout of a Profile v2 local or pointee type (`layoutOfTy` extended with
-64-bit thin pointers `⟨8, 3⟩`, 64-bit wide slice pointers `⟨16, 3⟩`, and
-`RangeTo<usize>` / `RangeFrom<usize>` `⟨8, 3⟩`). Returns `none` for unsized
-`.slice` directly and unsupported aggregates. -/
+64-bit thin pointers `⟨8, 3⟩`, 64-bit wide slice pointers `⟨16, 3⟩`,
+`RangeTo<usize>` / `RangeFrom<usize>` `⟨8, 3⟩`, and transparent integer-wrapper
+`NonZero<T>` matching `intLayout w`). Per
+`library/core/src/num/nonzero.rs#L99-L100` (`rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`),
+> "`NonZero<T>` is guaranteed to have the same layout and bit validity as `T`
+> with the exception that the all-zero bit pattern is invalid."
+Returns `none` for unsized `.slice` directly and unsupported aggregates. -/
 noncomputable def layoutOfTyV2 (ty : MirTy) : Option LayoutData :=
   match layoutOfTy ty with
   | some l => some l
@@ -186,6 +191,7 @@ noncomputable def layoutOfTyV2 (ty : MirTy) : Option LayoutData :=
     | .rawPtr _ pt | .ref _ pt =>
       if isUnsizedTy pt then some ⟨16, 3⟩ else some ⟨8, 3⟩
     | .rangeTo (.int .isize false) | .rangeFrom (.int .isize false) => some ⟨8, 3⟩
+    | .nonZero w s => layoutOfTy (.int w s)
     | _ => none
 
 end Trusted.MirSemantics

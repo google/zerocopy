@@ -154,6 +154,10 @@ mutual
     | rangeFrom e =>
       change MirTy.beq e e = true
       exact MirTy.beq_refl e
+    | nonZero w s =>
+      change (IntWidth.beq w w && (s == s)) = true
+      rw [IntWidth.beq_refl]
+      cases s <;> rfl
     | unsupported => rfl
 
   theorem MirTy.beqList_refl
@@ -228,6 +232,15 @@ mutual
       | rangeFrom e₂ =>
         change MirTy.beq e₁ e₂ = true at h
         rw [MirTy.eq_of_beq h]
+      | _ => cases h
+    | nonZero w₁ s₁ =>
+      cases b with
+      | nonZero w₂ s₂ =>
+        change (IntWidth.beq w₁ w₂ && (s₁ == s₂)) = true at h
+        cases h_w : IntWidth.beq w₁ w₂ <;> rw [h_w] at h
+        · cases h
+        · rw [IntWidth.eq_of_beq h_w]
+          cases s₁ <;> cases s₂ <;> first | rfl | cases h
       | _ => cases h
     | unsupported => cases b <;> first | rfl | cases h
 
@@ -618,6 +631,10 @@ mutual
       let ⟨h_sub_e, _⟩ := collectTy_spec acc e
       exact ⟨SubTable.trans h_sub_e
           (subTable_insertTy (.rangeFrom e) (collectTy acc e)),
+        fun _ h_sub => getElem?_lookupTyId_of_subTable h_sub⟩
+    | nonZero w s =>
+      dsimp only [collectTy]
+      exact ⟨subTable_insertTy (.nonZero w s) acc,
         fun _ h_sub => getElem?_lookupTyId_of_subTable h_sub⟩
     | tuple fs =>
       dsimp only [collectTy]
@@ -1058,6 +1075,9 @@ mutual
       dsimp only [collectTy]
       exact typesAreCanonical_insertTy (.rangeFrom e) (collectTy acc e)
         (collectTy_canonical acc e h)
+    | nonZero w s =>
+      dsimp only [collectTy]
+      exact typesAreCanonical_insertTy (.nonZero w s) acc h
     | tuple fs =>
       dsimp only [collectTy]
       exact typesAreCanonical_insertTy (.tuple fs) (collectTyList acc fs)

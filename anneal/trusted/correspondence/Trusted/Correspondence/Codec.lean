@@ -183,6 +183,7 @@ mutual
     | .slice elem => insertTy (.slice elem) (collectTy acc elem)
     | .rangeTo elem => insertTy (.rangeTo elem) (collectTy acc elem)
     | .rangeFrom elem => insertTy (.rangeFrom elem) (collectTy acc elem)
+    | .nonZero w s => insertTy (.nonZero w s) acc
     | .tuple fs => insertTy (.tuple fs) (collectTyList acc fs)
 
   /-- Intern a list of `MirTy` descriptors left-to-right. -/

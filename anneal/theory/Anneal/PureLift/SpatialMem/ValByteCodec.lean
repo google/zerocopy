@@ -45,7 +45,7 @@ Instantiates `SpatialCodec Val` (`u32TaggedByteCodec`) over computable
     | .i32 => (!sv.signed) && Nat.blt sv.bits.toNat 4294967296
     | .i8 | .i16 | .i64 | .i128 | .isize => false
   | .ptr _ | .bool _ | .char _ | .ordering _ | .unit | .enumVal _ _ | .tuple _
-  | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .bytes _ =>
+  | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .nonZero _ | .bytes _ =>
     false
 
 /-- Encodes canonical `u32` values into four `.rawByte` cells and wraps all
@@ -62,7 +62,7 @@ other `Val` inputs with a 2-cell `[.rawByte 1, .init v]` tag. -/
         [.rawByte 1, .init v]
     | .i8 | .i16 | .i64 | .i128 | .isize => [.rawByte 1, .init v]
   | .ptr _ | .bool _ | .char _ | .ordering _ | .unit | .enumVal _ _ | .tuple _
-  | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .bytes _ =>
+  | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .nonZero _ | .bytes _ =>
     [.rawByte 1, .init v]
 
 /-- Decodes four `.rawByte` cells back into a `u32` scalar or unwraps a
@@ -111,7 +111,7 @@ theorem u32TaggedDecode_u32TaggedEncode (v : Val) :
     u32TaggedDecode (u32TaggedEncode v) = some v := by
   cases v with
   | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | slicePtr _ _
-  | rangeTo _ | rangeFrom _ | bytes _ =>
+  | rangeTo _ | rangeFrom _ | nonZero _ | bytes _ =>
     rfl
   | scalar sv =>
     cases sv with

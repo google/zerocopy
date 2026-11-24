@@ -11,6 +11,7 @@ module
 prelude
 public import Init.NotationExtra
 public import Init.Data.BitVec.BasicAux
+public import Init.Data.Nat.Bitwise.Basic
 public import Init.Control.Except
 public import Trusted.MirAst
 public import Trusted.MirModel
@@ -951,7 +952,7 @@ noncomputable def evalOperandToSlotV2 (bodyLocals : List MirTy)
   | .copy place => readPlaceV2 bodyLocals locals mem false place
   | .move place => readPlaceV2 bodyLocals locals mem true place
   | .constant c =>
-    match evalConstLit c.ty c.lit with
+    match evalConstLitV2 c.ty c.lit with
     | .ok v => .ok (c.ty, some v, locals, mem)
     | .error k => .error k
 
@@ -1575,6 +1576,55 @@ noncomputable def execCoreCallOp (m : MemoryState) (op : CoreCallOp)
     else
       let diff := lSv.bits.toNat - rSv.bits.toNat
       .ok (.scalar ⟨.isize, false, truncateBits .isize (BitVec.ofNat 128 diff)⟩)
+  | .usizeWrappingSub,
+      [(.int .isize false, .scalar lSv), (.int .isize false, .scalar rSv)] =>
+    if !MirTy.beq dstTy (.int .isize false) || !lSv.wf || !rSv.wf then
+      .error .unsupported
+    else
+      -- `library/core/src/num/uint_macros.rs#L2606-L2607`, `#L2620-L2622`
+      -- (`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+      -- "Wrapping (modular) subtraction. Computes `self - rhs`,
+      -- wrapping around at the boundary of the type."
+      let diff :=
+        if Nat.ble rSv.bits.toNat lSv.bits.toNat then
+          lSv.bits.toNat - rSv.bits.toNat
+        else
+          Nat.pow 2 64 + lSv.bits.toNat - rSv.bits.toNat
+      .ok (.scalar ⟨.isize, false, truncateBits .isize (BitVec.ofNat 128 diff)⟩)
+  | .usizeIsPowerOfTwo, [(.int .isize false, .scalar sv)] =>
+    if !MirTy.beq dstTy .bool || !sv.wf then
+      .error .unsupported
+    else
+      -- `library/core/src/num/uint_macros.rs#L3847`, `#L3859-L3861`
+      -- (`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+      -- "Returns `true` if and only if `self == 2^k` for some unsigned
+      -- integer `k`." (`self.count_ones() == 1`, equivalent to
+      -- `n != 0 && (n & (n - 1)) == 0`.)
+      let n := sv.bits.toNat
+      .ok (.bool (!Nat.beq n 0 && Nat.beq (Nat.land n (n - 1)) 0))
+  | .nonZeroGet, [(.nonZero w s, .nonZero sc)] =>
+    -- `library/core/src/num/nonzero.rs#L479`, `#L483` (`rust-lang/rust`
+    -- `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+    -- "Returns the contained value as a primitive type."
+    if !MirTy.beq dstTy (.int w s) || !sc.wf || !IntWidth.beq sc.width w ||
+        !(sc.signed == s) then
+      .error .unsupported
+    else if Nat.beq sc.bits.toNat 0 then
+      .error .undefined
+    else
+      .ok (.scalar sc)
+  | .nonZeroNewUnchecked, [(.int w s, .scalar sc)] =>
+    -- `library/core/src/num/nonzero.rs#L415`, `#L421-L433` (`rust-lang/rust`
+    -- `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+    -- "The value must not be zero." Passing zero reaches
+    -- `intrinsics::unreachable()`, which is UB (`.error .undefined`).
+    if !MirTy.beq dstTy (.nonZero w s) || !sc.wf || !IntWidth.beq sc.width w ||
+        !(sc.signed == s) then
+      .error .unsupported
+    else if Nat.beq sc.bits.toNat 0 then
+      .error .undefined
+    else
+      .ok (.nonZero sc)
   | _, _ => .error .unsupported
 
 /-- Evaluate a basic block's `TerminatorKind` in Profile v2. -/

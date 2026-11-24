@@ -99,10 +99,10 @@ v1 rules to `vendor/lean-miri/`.
 
 | Category | Added by Profile v2 | Refused (fail-closed) |
 | :--- | :--- | :--- |
-| **Types** | General tuples; single-level `&T`, `&mut T`, `*const T`, and `*mut T` whose pointee is a Profile v1 scalar, `()`, an admitted enum, an overflow pair, or an integer slice `[T]`; `RangeTo<usize>` and `RangeFrom<usize>`; lifetime-only generic signatures. | Nested references or pointers (`&&T`, `*const &T`, `&[&T]`), `str`, structs, arrays, and the remaining Profile v1 refusals. |
+| **Types** | General tuples; `core::num::NonZero<T>` for primitive integer `T` (excluding `NonZero<char>`); single-level `&T`, `&mut T`, `*const T`, and `*mut T` whose pointee is a Profile v1 scalar, `()`, an admitted enum, an overflow pair, `NonZero<T>`, or an integer slice `[T]`; `RangeTo<usize>` and `RangeFrom<usize>`; lifetime-only generic signatures. | Nested references or pointers (`&&T`, `*const &T`, `&[&T]`), `NonZero<char>`, `str`, structs, arrays, and the remaining Profile v1 refusals. |
 | **Bodies** | Bodies whose locals include references or raw pointers, but not both. | Bodies whose locals mix references and raw pointers, because Profile v2 does not model Rust's pointer aliasing rules (Stacked or Tree Borrows). For example, `<&mut [u8] as SplitByteSlice>::split_at_unchecked`, which uses `as_mut_ptr` and `from_raw_parts_mut`, is refused. |
 | **Statements & rvalues** | `Ref` and `RawPtr` (address-of) of locals and dereferenced places, assignment through dereferenced places, `PtrToPtr` and `IntToPtr` casts, `PtrMetadata`, `Offset`, `RangeTo`/`RangeFrom` aggregates, copy reads of tuple, overflow-pair, and range fields, and `Use` with retags. | Other pointer casts, index projections, field projections after a dereference, and other aggregates. |
-| **Terminators** | `Assert` and returning calls to a closed set of `core` functions: `<[T]>::{len, as_ptr, as_mut_ptr, get_unchecked}` (with `..n` or `n..`), `core::slice::from_raw_parts{,_mut}`, `<*const T>::add`, `<*mut T>::add`, and `usize::unchecked_sub`. | Every other call. |
+| **Terminators** | `Assert` and returning calls to a closed set of `core` functions: `<[T]>::{len, as_ptr, as_mut_ptr, get_unchecked}` (with `..n` or `n..`), `core::slice::from_raw_parts{,_mut}`, `<*const T>::add`, `<*mut T>::add`, `usize::{unchecked_sub, wrapping_sub, is_power_of_two}`, and `NonZero::{get, new_unchecked}`. | Every other call. |
 
 Each query (`Query`) supplies caller memory (`callerMem`) alongside its
 arguments. `SpecsV2` pairs per-function safety preconditions (`safety`,
@@ -120,8 +120,10 @@ capture admits.
 
 `tests/cargo-anneal/tests/profile_v2_e2e.rs` verifies the unmodified
 `zerocopy/src/byte_slice.rs` `<&[u8] as SplitByteSlice>::split_at_unchecked`
-under `UnitTheoremV2`, plus raw-pointer load and store fixtures under
-`CrateTheoremV2`.
+under `UnitTheoremV2`, plus raw-pointer load/store and `NonZero<usize>`
+fixtures under `CrateTheoremV2`. `zerocopy/proofs/07_util_nonzero_alignment`
+verifies `util::{padding_needed_for, round_down_to_next_multiple_of_alignment,
+max, min}` under `UnitTheoremV2`.
 
 ### Bundled proof libraries and specification boundaries
 

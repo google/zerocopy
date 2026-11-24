@@ -668,7 +668,7 @@ theorem evalRefConstLit_eq (ty : MirTy) (lit : ConstLit) :
     evalRefConstLit ty lit = evalConstLit ty lit := by
   cases ty with
   | unit | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | rangeTo _
-  | rangeFrom _ | unsupported =>
+  | rangeFrom _ | nonZero _ _ | unsupported =>
     cases lit <;> rfl
   | char =>
     cases lit with
@@ -856,7 +856,7 @@ theorem checkRefVal_tuple_eq (fs : List Val) (ty : MirTy) :
 theorem checkRefVal_eq (v : Val) (ty : MirTy) :
     checkRefVal v ty = checkVal v ty := by
   cases v with
-  | unit | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ | ordering _ =>
+  | unit | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | nonZero _ | bytes _ | ordering _ =>
     cases ty <;> rfl
   | bool b => cases ty <;> cases b <;> rfl
   | char c =>
@@ -881,7 +881,7 @@ theorem checkRefVal_eq (v : Val) (ty : MirTy) :
     | mk vw vs vbits =>
       cases ty with
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+      | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | nonZero _ _ | unsupported =>
         dsimp only [checkRefVal, checkVal, Val.ty?]
         cases (ScalarVal.wf ⟨vw, vs, vbits⟩) <;> rfl
       | int w s =>
@@ -1311,7 +1311,7 @@ theorem checkVal_eq_true_inv {v : Val} {ty : MirTy}
     subst h_fs
     exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr
       ⟨w, s, bits, b, h_ty, rfl, h_tr⟩)))))
-  | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ => cases h
+  | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | nonZero _ | bytes _ => cases h
 
 theorem checkVal_int_inv {v : Val} {w : IntWidth} {s : Bool}
     (h : checkVal v (.int w s) = true) :

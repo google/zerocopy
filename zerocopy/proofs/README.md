@@ -25,6 +25,7 @@ overhead. CI continuously enforces every proof unit in
 | `02_unit_pointer_metadata` | `<() as PointerMetadata>::{from,to}_elem_count` | Universal constant `()` and `0usize` return; round-trip invariants; safe signatures (`isUnsafe = false`) | `["propext"]` |
 | `03_macros_unsafe` | `util::macros::__unsafe` | Exact identity, `isUnsafe = true`, zero-argument signature, non-vacuous safety precondition, total `()` return | `["propext"]` |
 | `04_substantive_and_frombytes_markers` | All 5 substantive items above plus `u8` derive-only sealing markers (`Immutable`, `TryFromBytes`, `FromZeros`, `FromBytes`) | Compositional 9-body `BodiesVerified` dispatch and functional postconditions | `["propext"]` |
+| `07_util_nonzero_alignment` | `util::{padding_needed_for, round_down_to_next_multiple_of_alignment, max, min}` | Total well-formed Profile v2 execution preserving `callerMem` over all `usize` and `NonZero<usize>` inputs; power-of-two padding, aligned round-down, and `NonZero<usize>` `max`/`min` postconditions | `["propext"]` |
 
 ## Reproducing Locally
 

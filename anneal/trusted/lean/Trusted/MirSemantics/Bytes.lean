@@ -417,9 +417,30 @@ noncomputable def readPtrProv? : List AllocByte → Option (Option AllocId)
   | .uninit :: _ => none
   | .init _ p :: rest => provMatch p rest
 
+/-- Profile v2 constant-literal evaluator (`evalConstLit` extended with
+`NonZero<T>` scalar constants). Per `library/core/src/num/nonzero.rs#L99-L100`
+(`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`),
+> "`NonZero<T>` is guaranteed to have the same layout and bit validity as `T`
+> with the exception that the all-zero bit pattern is invalid."
+Zero bit patterns yield `.error .undefined`. -/
+noncomputable def evalConstLitV2 : MirTy → ConstLit → Except FaultKind Val
+  | .nonZero w s, .scalar bits =>
+    if truncateBits w bits != bits then
+      .error .unsupported
+    else
+      let trunc := truncateBits w bits
+      if Nat.beq trunc.toNat 0 then
+        .error .undefined
+      else
+        .ok (.nonZero ⟨w, s, trunc⟩)
+  | ty, lit => evalConstLit ty lit
+
 /-- Profile v2 byte encoder: encodes thin/wide pointers (preserving `allocId`
-provenance on the pointer bytes) and `RangeTo`/`RangeFrom`, delegating all
-Profile v1 scalar, enum, and overflow-pair types to `encodeVal`. -/
+provenance on the pointer bytes), `RangeTo`/`RangeFrom`, and transparent
+`NonZero<T>` integers (same byte representation as `T`,
+`library/core/src/num/nonzero.rs#L99-L100`, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`), delegating all Profile v1 scalar,
+enum, and overflow-pair types to `encodeVal`. -/
 noncomputable def encodeValV2 (endian : TargetEndian) (ty : MirTy) (v : Val) :
     Except FaultKind (List AllocByte) :=
   if !checkValV2 v ty then
@@ -442,10 +463,16 @@ noncomputable def encodeValV2 (endian : TargetEndian) (ty : MirTy) (v : Val) :
       .ok ((encodeUInt endian 8 e.toNat).map (fun b => AllocByte.init b none))
     | .rangeFrom (.int .isize false), .rangeFrom s =>
       .ok ((encodeUInt endian 8 s.toNat).map (fun b => AllocByte.init b none))
+    | .nonZero w _, .nonZero sv =>
+      .ok ((encodeUInt endian w.byteSize sv.bits.toNat).map
+        (fun b => AllocByte.init b none))
     | _, _ => encodeVal endian ty v
 
 /-- Profile v2 byte decoder: decodes thin/wide pointers (recovering uniform
-byte provenance) and `RangeTo`/`RangeFrom`, delegating all Profile v1 types
+byte provenance), `RangeTo`/`RangeFrom`, and `NonZero<T>` (faulting with
+`.error .undefined` on the all-zero bit pattern per
+`library/core/src/num/nonzero.rs#L99-L100`, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`), delegating all Profile v1 types
 to `decodeVal`. -/
 noncomputable def decodeValV2 (endian : TargetEndian) (ty : MirTy)
     (bytes : List AllocByte) : Except FaultKind (Option Val) :=
@@ -488,6 +515,17 @@ noncomputable def decodeValV2 (endian : TargetEndian) (ty : MirTy)
       match initBytes? bytes with
       | none => .ok none
       | some raw => .ok (some (.rangeFrom (UInt64.ofNat (decodeUInt endian raw))))
+  | .nonZero w s =>
+    if !Nat.beq bytes.length w.byteSize then
+      .error .unsupported
+    else
+      match initBytes? bytes with
+      | none => .ok none
+      | some raw =>
+        match evalConstLitV2 (.nonZero w s)
+            (.scalar (BitVec.ofNat 128 (decodeUInt endian raw))) with
+        | .ok v => .ok (some v)
+        | .error k => .error k
   | _ => decodeVal endian ty bytes
 
 /-- Profile v2 typed load from `place` in `mem`. -/

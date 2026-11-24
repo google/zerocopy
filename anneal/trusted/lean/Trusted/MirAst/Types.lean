@@ -267,6 +267,17 @@ Constructor correspondence:
 - `.rangeTo elem` and `.rangeFrom elem` correspond to the
   `core::ops::RangeTo<elem>` and `core::ops::RangeFrom<elem>` `Adt`s used to
   index slices (Profile v2).
+- `.nonZero width signed` corresponds to `core::num::NonZero<T>`
+  (`library/core/src/num/nonzero.rs#L99-L100`, `#L125-L128`, `rust-lang/rust`
+  `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+  > "`NonZero<T>` is guaranteed to have the same layout and bit validity as
+  > `T` with the exception that the all-zero bit pattern is invalid."
+  > "`#[repr(transparent)]`
+  > `#[rustc_nonnull_optimization_guaranteed]`
+  > `#[rustc_diagnostic_item = "NonZero"]`
+  > `pub struct NonZero<T: ZeroablePrimitive>(T::NonZeroInner);`"
+  Profile v2 restricts `T` to primitive integer types (excluding
+  `NonZero<char>`).
 - `.unsupported` represents all other `TyKind` variants (`Float`,
   other non-fieldless-enum `Adt`, `Foreign`, `Str`, `Array`, `Pat`, `FnDef`,
   `FnPtr`, `Dynamic`, `Closure`, `CoroutineClosure`, `Coroutine`, etc.), causing
@@ -285,6 +296,7 @@ inductive MirTy where
   | slice (elem : MirTy)
   | rangeTo (elem : MirTy)
   | rangeFrom (elem : MirTy)
+  | nonZero (width : IntWidth) (signed : Bool)
   | unsupported
 
 /-- Return `true` when `ty` is an unsized dynamically-sized MIR type
@@ -347,6 +359,7 @@ mutual
     | .slice e₁, .slice e₂ => MirTy.beq e₁ e₂
     | .rangeTo e₁, .rangeTo e₂ => MirTy.beq e₁ e₂
     | .rangeFrom e₁, .rangeFrom e₂ => MirTy.beq e₁ e₂
+    | .nonZero w₁ s₁, .nonZero w₂ s₂ => IntWidth.beq w₁ w₂ && (s₁ == s₂)
     | .unsupported, .unsupported => true
     | _, _ => false
 

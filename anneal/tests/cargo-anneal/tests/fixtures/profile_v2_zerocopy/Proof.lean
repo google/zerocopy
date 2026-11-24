@@ -708,8 +708,8 @@ theorem checkValV2_slice_u8_inv {reqMut : Mutability} {v : Val}
     cases hW : ptr.width with
     | i8 | i16 | i32 | i64 | i128 => rw [hW] at h; cases h
     | isize => exact ⟨ptr, len, rfl, hW⟩
-  | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | ptr _
-  | rangeTo _ | rangeFrom _ | tuple _ | bytes _ => cases h
+  | scalar _ | nonZero _ | bool _ | char _ | ordering _ | unit | enumVal _ _
+  | ptr _ | rangeTo _ | rangeFrom _ | tuple _ | bytes _ => cases h
 
 theorem checkValV2_isize_inv {v : Val}
     (h : checkValV2 v (.int .isize false) = true) :
@@ -726,8 +726,8 @@ theorem checkValV2_isize_inv {v : Val}
       rw [hTrunc]
       exact beq_self_eq_true bits
     exact ⟨bits, hEq, hWf⟩
-  | slicePtr _ _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | ptr _
-  | rangeTo _ | rangeFrom _ | tuple _ | bytes _ => cases h
+  | slicePtr _ _ | nonZero _ | bool _ | char _ | ordering _ | unit | enumVal _ _
+  | ptr _ | rangeTo _ | rangeFrom _ | tuple _ | bytes _ => cases h
 
 theorem spansPairwiseDisjoint_slice_u8_pair
     {ptr pR : PtrVal} {lenL lenR : UInt64} {m1 m2 : Mutability}

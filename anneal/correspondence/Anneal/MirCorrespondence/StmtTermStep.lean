@@ -402,7 +402,7 @@ theorem evalTerminator_step_inv {body : Body} {bb : BasicBlock}
         · injection h_step with h_eq
           refine ⟨_, h_eq.symm, rfl, h_inv₁, h_pc0 _ localsAfterDiscr⟩
       | unit | enumVal _ _ | tuple _ | ptr _ | slicePtr _ _ | rangeTo _
-      | rangeFrom _ | bytes _ | ordering _ =>
+      | rangeFrom _ | nonZero _ | bytes _ | ordering _ =>
         dsimp only at h_step
         cases h_br : targets.branches with
         | cons _ _ => rw [h_br] at h_step; cases h_step
@@ -2175,8 +2175,8 @@ private theorem switchInt_forIn_char (rp : RefProg) (c : Choice)
           cases Nat.beq ch.toNat cc.toNat
           · exact ih
           · rfl
-        | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _
-        | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
+        | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | nonZero _
+        | bool _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
           exact False.elim h_cmp
 
 private theorem switchInt_forIn_pair (rp : RefProg) (c : Choice)

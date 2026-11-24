@@ -168,6 +168,54 @@ class VerifyZerocopyTests(unittest.TestCase):
                         "01_unit", rc, json.dumps(payload), "", ["util::macros::__unsafe"]
                     )
 
+    def test_validate_receipt_profile_v2_root_requires_inapplicable_provenance(self):
+        good_v2 = make_receipt(
+            correspondence_provenance={
+                "applicable": False,
+                "reason": "Profile v2 semantics are not covered by Pass 2",
+            },
+            audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+        )
+        parsed = verify_zerocopy.validate_receipt(
+            "07_unit", 0, json.dumps(good_v2), "", ["util::macros::__unsafe"]
+        )
+        self.assertEqual(parsed["audit"]["canonicalRoot"], "Trusted.MirSemantics.UnitTheoremV2")
+
+        bad_cases = [
+            (
+                "v2_missing_provenance",
+                make_receipt(audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"}),
+                "Profile v2 receipt without inapplicable",
+            ),
+            (
+                "v2_applicable_provenance",
+                make_receipt(
+                    correspondence_provenance={"applicable": True},
+                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+                ),
+                "Profile v2 receipt without inapplicable",
+            ),
+            (
+                "v2_truthy_zero_provenance",
+                make_receipt(
+                    correspondence_provenance={"applicable": 0},
+                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+                ),
+                "Profile v2 receipt without inapplicable",
+            ),
+            (
+                "unknown_root",
+                make_receipt(audit={"canonicalRoot": "Trusted.MirSemantics.CrateTheoremV2"}),
+                "canonicalRoot=",
+            ),
+        ]
+        for label, payload, needle in bad_cases:
+            with self.subTest(case=label):
+                with self.assertRaisesRegex(RuntimeError, needle):
+                    verify_zerocopy.validate_receipt(
+                        "07_unit", 0, json.dumps(payload), "", ["util::macros::__unsafe"]
+                    )
+
     def test_main_runs_with_mocked_cli_and_writes_summary(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

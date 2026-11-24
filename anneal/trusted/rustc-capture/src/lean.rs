@@ -176,6 +176,11 @@ fn ty_at(t: &Ty, indent: usize) -> String {
         Ty::RangeFrom { elem } => {
             format!("(Trusted.MirAst.MirTy.rangeFrom {})", ty_at(elem, indent))
         }
+        Ty::NonZero(ity) => format!(
+            "(Trusted.MirAst.MirTy.nonZero Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
         Ty::Enum(ety) => {
             let tag_repr = match ety.tag_repr() {
                 ir::EnumTagRepr::ZeroSized => "Trusted.MirAst.EnumTagRepr.zeroSized".into(),
@@ -416,6 +421,10 @@ fn core_call_op(op: &CoreCallOp, indent: usize) -> String {
             ty_at(pointee, indent)
         ),
         CoreCallOp::UsizeUncheckedSub => "Trusted.MirAst.CoreCallOp.usizeUncheckedSub".into(),
+        CoreCallOp::UsizeWrappingSub => "Trusted.MirAst.CoreCallOp.usizeWrappingSub".into(),
+        CoreCallOp::UsizeIsPowerOfTwo => "Trusted.MirAst.CoreCallOp.usizeIsPowerOfTwo".into(),
+        CoreCallOp::NonZeroGet => "Trusted.MirAst.CoreCallOp.nonZeroGet".into(),
+        CoreCallOp::NonZeroNewUnchecked => "Trusted.MirAst.CoreCallOp.nonZeroNewUnchecked".into(),
     }
 }
 

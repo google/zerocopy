@@ -2433,7 +2433,7 @@ theorem unitCanonicalZstCodec_lawful :
     cases v with
     | unit => rfl
     | scalar _ | ptr _ | bool _ | char _ | ordering _ | enumVal _ _
-    | tuple _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ => nomatch hDec
+    | tuple _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | nonZero _ | bytes _ => nomatch hDec
   · intro bs _ hLen _ _ _
     cases bs with
     | nil => rfl

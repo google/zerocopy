@@ -72,7 +72,7 @@ theorem slotToMiriLocalValue_liveUninit (ty : MirTy) :
   cases ty with
   | unit => rfl
   | bool | int _ _ | never | char | ordering | tuple _ | ref _ _ | rawPtr _ _
-  | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+  | slice _ | rangeTo _ | rangeFrom _ | nonZero _ _ | unsupported => rfl
   | enum ety =>
     dsimp only [liveUninitSlot]
     cases h_zst : isZstEnumTy ety with
@@ -99,7 +99,7 @@ theorem refLayoutDataForTy_isUnsized (ty : MirTy) :
   cases ty with
   | int w s => cases w <;> cases s <;> rfl
   | bool | unit | never | char | ordering | ref _ _ | rawPtr _ _
-  | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+  | slice _ | rangeTo _ | rangeFrom _ | nonZero _ _ | unsupported => rfl
   | enum ety =>
     dsimp only [refLayoutDataForTy, refAsEnumTy?, refEnumLayoutData]
     cases ety.tagRepr <;> rfl
@@ -965,7 +965,7 @@ theorem isPrimitiveReadableTy_cases {ty : MirTy}
   | int w s => exact Or.inr (Or.inl ⟨w, s, rfl⟩)
   | char => exact Or.inr (Or.inr (Or.inl rfl))
   | unit | never | ordering | enum _ | ref _ _ | rawPtr _ _
-  | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+  | slice _ | rangeTo _ | rangeFrom _ | nonZero _ _ | unsupported =>
     cases h
   | tuple fs =>
     cases fs with
@@ -997,7 +997,7 @@ private theorem readImmediate_imm_nonprim_err (ty : MirTy)
   cases ty with
   | bool | int _ _ | char => cases h_np
   | unit | never | ordering | ref _ _ | rawPtr _ _
-  | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+  | slice _ | rangeTo _ | rangeFrom _ | nonZero _ _ | unsupported =>
     exact ⟨_, _, rfl, rfl⟩
   | tuple fs =>
     cases fs with
@@ -5287,7 +5287,7 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                     exact h_aw
                   cases srcTy with
                   | bool | int _ _ | unit | never | char | tuple _ | ref _ _
-                  | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
+                  | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | nonZero _ _
                   | unsupported =>
                     rw [eStateM_bind_err (h_dl_non_enum _ rfl h_src_res)]
                     exact ⟨_, _, rfl, rfl⟩
