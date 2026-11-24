@@ -943,18 +943,27 @@ fn whole_crate_admits_pure_anon_consts_and_refuses_unsafe_or_call_anon_consts() 
         assert_eq!(manifest["schema_version"], 5, "{name}");
     }
 
-    // Pure arithmetic array-length `AnonConst` (`2 + 2`) is admitted while the
-    // surrounding function body still fails closed on the unsupported array
-    // local / `.len()` call rather than on `AnonConst`.
-    let array_len_fixture =
+    // Pure arithmetic array-length `AnonConst` (`2 + 2`) is admitted: simple
+    // `[0u8; 2 + 2]` `.len()` bodies capture in crate scope, while an array of
+    // references (`[&u8; 2 + 2]`) still fails closed on the unsupported element
+    // type rather than on `AnonConst`.
+    let array_ok_fixture =
         Capture::new(b"pub fn len_only() -> usize { let a = [0u8; 2 + 2]; a.len() }\n");
+    let array_ok_out = array_ok_fixture.command().arg("--scope=crate").output().unwrap();
+    assert!(array_ok_out.status.success(), "{array_ok_out:?}");
+
+    let array_len_fixture = Capture::new(
+        b"pub fn len_only<'a>(x: &'a u8) -> usize { let a = [x; 2 + 2]; a.len() }\n",
+    );
     let array_len_out = array_len_fixture.command().arg("--scope=crate").output().unwrap();
     assert_eq!(array_len_out.status.code(), Some(1), "{array_len_out:?}");
     let array_len_failure = status(&array_len_out);
     assert_eq!(array_len_failure["status"], "unsupported", "{array_len_failure}");
     assert!(
         !array_len_failure.to_string().contains("AnonConst")
-            && array_len_failure.to_string().contains("unsupported type"),
+            && array_len_failure
+                .to_string()
+                .contains("outside the Profile v2 type fragment"),
         "{array_len_failure}"
     );
     array_len_fixture.assert_no_capture_artifacts();
@@ -3947,29 +3956,30 @@ fn whole_crate_admits_safe_traits_impls_consts_and_refuses_unsafe_or_extern_obli
 
     // Builtin `#[derive(Clone, Copy, PartialEq, Eq)]` emits `TrivialClone`,
     // `Copy`, `StructuralPartialEq`, `Clone`, `PartialEq`, and `Eq` impls: all
-    // six impl items pass `whole_crate_item`. Profile v2 captures the `&self`
-    // bodies of `clone` and `assert_receiver_is_total_eq`, leaving only
-    // `PartialEq::eq`, which reads a discriminant through a reference.
+    // six impl items pass `whole_crate_item`, and Profile v2 captures the
+    // derived `clone`, `assert_receiver_is_total_eq`, and `PartialEq::eq`
+    // bodies (including projected discriminants through `&Derived`).
     let derived_crate = b"\
         #[derive(Clone, Copy, PartialEq, Eq)]\n\
         pub enum Derived { A, B }\n\
         pub fn ok(x: Derived) -> u8 { match x { Derived::A => 0, Derived::B => 1 } }\n";
     let drv_fixture = Capture::new(derived_crate);
     let drv_out = drv_fixture.command().arg("--scope=crate").output().unwrap();
-    assert_eq!(drv_out.status.code(), Some(1), "{drv_out:?}");
-    let drv_failure = status(&drv_out);
-    assert_eq!(drv_failure["status"], "unsupported", "{drv_failure}");
-    let drv_unsup = drv_failure["unsupported"].as_array().unwrap();
-    assert_eq!(drv_unsup.len(), 1, "{drv_failure}");
     assert!(
-        drv_unsup[0]["path"].as_str().unwrap().contains("as std::cmp::PartialEq>::eq"),
-        "{drv_failure}"
+        drv_out.status.success(),
+        "expected derived fieldless enum crate to capture:\n{}\n{}",
+        stdout(&drv_out),
+        stderr(&drv_out)
     );
+    let drv_manifest = drv_fixture.manifest();
     assert!(
-        drv_unsup[0]["reason"].as_str().unwrap().contains("place projections are unsupported"),
-        "{drv_failure}"
+        drv_manifest["selected"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|b| b["path"].as_str().unwrap().contains("as std::cmp::PartialEq>::eq")),
+        "{drv_manifest}"
     );
-    drv_fixture.assert_no_capture_artifacts();
 
     // Pure `Struct`-typed `Const` (`Hash([0; 32])`) and its `AnonConst` length
     // are admitted, leaving only the `Struct` definition itself unsupported.
@@ -4823,4 +4833,154 @@ fn tarjan_scc_sharding_preserves_lifetime_generic_method_and_trait_impl_edges() 
         cycle_callees.contains(&mark_idx),
         "cycle shard must record trait impl callee shard {mark_idx} in callee_shards: {step_a_shard}"
     );
+}
+
+#[test]
+fn profile_v2_captures_fixed_arrays_rodata_unsize_projected_discriminant_and_core_calls() {
+    let src = b"\
+        #[repr(u8)]\n\
+        pub enum Tag { Alpha = 1, Beta = 2 }\n\
+        const HEADER: [u8; 4] = [0x10, 0x20, 0x30, 0x40];\n\
+        pub fn pack_u64_u32(hi: u64, lo: u32) -> [u8; 12] {\n\
+            let [a0, a1, a2, a3, a4, a5, a6, a7] = hi.to_le_bytes();\n\
+            let [b0, b1, b2, b3] = lo.to_le_bytes();\n\
+            [a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3]\n\
+        }\n\
+        pub fn repeat_and_unsize(v: u8) -> usize {\n\
+            let arr = [v; 5];\n\
+            let s: &[u8] = &arr;\n\
+            s.len()\n\
+        }\n\
+        pub unsafe fn mut_unsize(arr: &mut [u8; 3]) -> &mut [u8] {\n\
+            arr\n\
+        }\n\
+        pub unsafe fn raw_unsize(p: *const [u8; 4]) -> *const [u8] {\n\
+            p\n\
+        }\n\
+        pub fn rodata_slice_len() -> usize {\n\
+            let s: &[u8] = &HEADER;\n\
+            s.len()\n\
+        }\n\
+        pub fn tag_eq(a: &Tag, b: &Tag) -> bool {\n\
+            match (a, b) {\n\
+                (Tag::Alpha, Tag::Alpha) | (Tag::Beta, Tag::Beta) => true,\n\
+                _ => false,\n\
+            }\n\
+        }\n\
+        pub fn array_eq(a: &[u8; 4]) -> bool {\n\
+            *a == HEADER\n\
+        }\n\
+        pub fn array_head_tail(a: [u8; 4]) -> u8 {\n\
+            let [first, .., last] = a;\n\
+            first + last\n\
+        }\n";
+    let cap = Capture::new(src);
+    let out = cap
+        .command()
+        .args([
+            "--select=pack_u64_u32",
+            "--select=repeat_and_unsize",
+            "--select=mut_unsize",
+            "--select=raw_unsize",
+            "--select=rodata_slice_len",
+            "--select=tag_eq",
+            "--select=array_eq",
+            "--select=array_head_tail",
+        ])
+        .output()
+        .unwrap();
+    assert!(
+        out.status.success(),
+        "Profile v2 array crate capture should succeed:\n{}\n{}",
+        stdout(&out),
+        stderr(&out)
+    );
+    let manifest = cap.manifest();
+    assert_eq!(manifest["program"]["mir_profile_version"], 2, "{manifest}");
+    let lean = std::fs::read_to_string(cap.output.join("Captured.lean")).unwrap();
+    assert!(lean.contains("MirTy.array"), "{lean}");
+    assert!(lean.contains("ProjectionElem.constantIndex"), "{lean}");
+    assert!(lean.contains("Rvalue.aggregateArray"), "{lean}");
+    assert!(lean.contains("Rvalue.repeat_"), "{lean}");
+    assert!(lean.contains("CastKind.unsize"), "{lean}");
+    assert!(lean.contains("CoreCallOp.intToLeBytes"), "{lean}");
+    assert!(lean.contains("CoreCallOp.arrayEq"), "{lean}");
+    assert!(lean.contains("ConstLit.rodataRef"), "{lean}");
+}
+
+#[test]
+fn profile_v2_refuses_unsupported_array_and_rodata_shapes() {
+    for (name, source, expected_reason) in [
+        (
+            "array-of-refs",
+            "pub fn selected<'a>(a: [&'a u8; 2]) -> u8 { *a[0] }\n",
+            "outside the Profile v2 type fragment",
+        ),
+        (
+            "array-of-overflow-pair",
+            "pub fn selected(a: [(u32, bool); 2]) -> u32 { a[0].0 }\n",
+            "outside the Profile v2 type fragment",
+        ),
+        (
+            "array-of-tuple",
+            "pub fn selected(a: [(u8, u16); 2]) -> u8 { a[0].0 }\n",
+            "outside the Profile v2 type fragment",
+        ),
+        (
+            "slice-pattern-from-end",
+            "pub fn selected(s: &[u8]) -> u8 {\n\
+                 match *s {\n\
+                     [.., last] => last,\n\
+                     [] => 0,\n\
+                 }\n\
+             }\n",
+            "PlaceMention with projections is unsupported",
+        ),
+        (
+            "slice-of-arrays",
+            "pub fn selected(s: &[[u8; 2]]) -> usize { s.len() }\n",
+            "outside the Profile v2 type fragment",
+        ),
+        (
+            "array-of-refs-partial-eq",
+            "pub fn selected<'a>(a: &[&'a u8; 2], b: &[&'a u8; 2]) -> bool { a == b }\n",
+            "outside the Profile v2 type fragment",
+        ),
+        (
+            "enum-array-custom-partial-eq",
+            "#[repr(u8)] pub enum Tag { A = 0, B = 1 }\n\
+             impl PartialEq for Tag { fn eq(&self, _: &Self) -> bool { true } }\n\
+             pub fn selected(a: &[Tag; 2], b: &[Tag; 2]) -> bool { *a == *b }\n",
+            "unsupported PartialEq::eq types",
+        ),
+        (
+            "wrapper-unsize",
+            "pub struct Wrap<T: ?Sized>(pub T);\n\
+             pub fn selected<'a>(w: &'a Wrap<[u8; 2]>) -> &'a Wrap<[u8]> { w }\n",
+            "unsupported type: Wrap",
+        ),
+        (
+            "rodata-with-provenance",
+            "const P: *const u8 = {\n\
+                 const INNER: &u8 = &7u8;\n\
+                 (&INNER as *const &u8).cast::<u8>()\n\
+             };\n\
+             pub fn selected() -> *const u8 { P }\n",
+            "provenance-bearing global allocation constants are unsupported",
+        ),
+    ] {
+        let fixture = Capture::new(source.as_bytes());
+        let output = fixture.selected_command().output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        let reason = failure["unsupported"][0]["reason"]
+            .as_str()
+            .unwrap_or_default();
+        assert!(
+            reason.contains(expected_reason),
+            "{name}: expected `{expected_reason}` in reason `{reason}` ({failure})"
+        );
+        fixture.assert_no_capture_artifacts();
+    }
 }

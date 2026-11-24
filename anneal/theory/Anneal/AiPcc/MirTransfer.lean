@@ -193,7 +193,7 @@ private theorem mirTy_beq_refl_supported {t : MirTy}
     rw [intWidth_beq_refl w]
     cases s <;> rfl
   | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
-  | slice _ | rangeTo _ | rangeFrom _
+  | slice _ | rangeTo _ | rangeFrom _ | array _ _
   | never | unsupported => nomatch h
 
 /-- Abstract constant literal evaluator matching `MirSemantics.evalConstLit`
@@ -249,7 +249,7 @@ theorem evalConstLitAbs_sound {locals : List LocalSlot} {c : ConstOperand}
             · exact ⟨rfl, absVal_const_isInit (bitWidthComp_valid w),
                 rfl, rfl, hLt,
                 absVal_const_sound_lt (bitWidthComp_valid w) hLt, True.intro⟩
-        | zeroSized => nomatch h
+        | zeroSized | rodataBytes _ | rodataRef _ => nomatch h
       | false =>
         cases lit with
         | scalar bits =>
@@ -270,7 +270,7 @@ theorem evalConstLitAbs_sound {locals : List LocalSlot} {c : ConstOperand}
             · exact ⟨rfl, absVal_const_isInit (bitWidthComp_valid w),
                 rfl, rfl, hLt,
                 absVal_const_sound_lt (bitWidthComp_valid w) hLt, True.intro⟩
-        | zeroSized => nomatch h
+        | zeroSized | rodataBytes _ | rodataRef _ _ _ _ => nomatch h
     | bool =>
       cases lit with
       | scalar bits =>
@@ -302,15 +302,15 @@ theorem evalConstLitAbs_sound {locals : List LocalSlot} {c : ConstOperand}
               exact h1.symm
             subst hBits1
             exact ⟨.bool true, rfl, rfl, rfl, True.intro⟩
-      | zeroSized => nomatch h
+      | zeroSized | rodataBytes _ | rodataRef _ _ _ _ => nomatch h
     | unit =>
       cases lit with
       | zeroSized =>
         injection h with hAv; subst hAv
         exact ⟨.unit, rfl, rfl, rfl⟩
-      | scalar _ => nomatch h
+      | scalar _ | rodataBytes _ | rodataRef _ _ _ _ => nomatch h
     | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
-    | slice _ | rangeTo _ | rangeFrom _
+    | slice _ | rangeTo _ | rangeFrom _ | array _ _
     | never | unsupported => cases lit <;> nomatch h
 
 /-- Abstract operand evaluation for `.copy`, `.move`, and `.constant` operands
@@ -492,7 +492,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                         · exact ⟨rfl, hInit, hDen.2.1, hDen.2.2.1, hDen.2.2.2.1,
                             hDen.2.2.2.2, hLoc⟩
                       | ptr _ | bool _ | char _ | ordering _ | unit
-                      | slicePtr _ _ | rangeTo _ | rangeFrom _
+                      | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
                       | enumVal _ _ | tuple _ | bytes _ =>
                         exact False.elim hDen.2
             | false =>
@@ -540,7 +540,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                         · exact ⟨rfl, hInit, hDen.2.1, hDen.2.2.1, hDen.2.2.2.1,
                             hDen.2.2.2.2, hLoc⟩
                       | ptr _ | bool _ | char _ | ordering _ | unit
-                      | slicePtr _ _ | rangeTo _ | rangeFrom _
+                      | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
                       | enumVal _ _ | tuple _ | bytes _ =>
                         exact False.elim hDen.2
           | bool =>
@@ -572,7 +572,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                       rw [ite_bool_false_t hNotProj]
                       rfl
                     | scalar _ | ptr _ | char _ | ordering _ | unit
-                    | slicePtr _ _ | rangeTo _ | rangeFrom _
+                    | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
                     | enumVal _ _ | tuple _ | bytes _ =>
                       exact False.elim hDen.2
           | unit =>
@@ -592,7 +592,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
               rw [ite_bool_false_t hNotProj]
               rfl
           | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
-          | slice _ | rangeTo _ | rangeFrom _
+          | slice _ | rangeTo _ | rangeFrom _ | array _ _
           | never | unsupported => nomatch hAbs
   | move place =>
     dsimp only [evalOperandAbs] at hAbs
@@ -668,7 +668,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                             · exact ⟨rfl, hInit, hDen.2.1, hDen.2.2.1, hDen.2.2.2.1,
                                 hDen.2.2.2.2, True.intro⟩
                         | ptr _ | bool _ | char _ | ordering _ | unit
-                        | slicePtr _ _ | rangeTo _ | rangeFrom _
+                        | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
                         | enumVal _ _ | tuple _ | bytes _ =>
                           exact False.elim hDen.2
             | false =>
@@ -719,7 +719,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                             · exact ⟨rfl, hInit, hDen.2.1, hDen.2.2.1, hDen.2.2.2.1,
                                 hDen.2.2.2.2, True.intro⟩
                         | ptr _ | bool _ | char _ | ordering _ | unit
-                        | slicePtr _ _ | rangeTo _ | rangeFrom _
+                        | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
                         | enumVal _ _ | tuple _ | bytes _ =>
                           exact False.elim hDen.2
           | bool =>
@@ -766,7 +766,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                             | top _ => exact ⟨rfl, True.intro⟩
                             | exact ev _ => exact ⟨rfl, hDen.2.1, True.intro⟩
                       | scalar _ | ptr _ | char _ | ordering _ | unit
-                      | slicePtr _ _ | rangeTo _ | rangeFrom _
+                      | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
                       | enumVal _ _ | tuple _ | bytes _ =>
                         exact False.elim hDen.2
           | unit =>
@@ -796,7 +796,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                   rw [ite_bool_false_t hNotProj, ← compSetElem?_eq, hSetConc]
                   rfl
           | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
-          | slice _ | rangeTo _ | rangeFrom _
+          | slice _ | rangeTo _ | rangeFrom _ | array _ _
           | never | unsupported => nomatch hAbs
 
 /-- Soundness of `evalOperandAbs` against `evalPrimitiveOperand` for unsigned
@@ -2002,11 +2002,11 @@ private theorem evalRvalueAbs_binaryOp_sint_sound {bodyLocals : List MirTy}
                   | exact hGo .shrUnchecked (Or.inr rfl)
               | _ => nomatch hAbs
             | ptr _ | bool _ | char _ | ordering _ | unit
-            | slicePtr _ _ | rangeTo _ | rangeFrom _
+            | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
             | enumVal _ _ | tuple _ | bytes _ =>
               exact False.elim hR2.2.1.2.2
           | ptr _ | bool _ | char _ | ordering _ | unit
-          | slicePtr _ _ | rangeTo _ | rangeFrom _
+          | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
           | enumVal _ _ | tuple _ | bytes _ =>
             exact False.elim hR1.2.1.2.2
     | sint w2 a2 srcR? =>
@@ -2388,11 +2388,11 @@ private theorem evalRvalueAbs_binaryOp_sint_sound {bodyLocals : List MirTy}
               | mulUnchecked | addWithOverflow | subWithOverflow
               | mulWithOverflow | cmp | offset => nomatch hAbs
             | ptr _ | bool _ | char _ | ordering _ | unit
-            | slicePtr _ _ | rangeTo _ | rangeFrom _
+            | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
             | enumVal _ _ | tuple _ | bytes _ =>
               exact False.elim hR2.2.1.2.2
           | ptr _ | bool _ | char _ | ordering _ | unit
-          | slicePtr _ _ | rangeTo _ | rangeFrom _
+          | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
           | enumVal _ _ | tuple _ | bytes _ =>
             exact False.elim hR1.2.1.2.2
 
@@ -2575,7 +2575,7 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                   · rw [hToNat]; exact hResLt
                   · rw [hToNat]; exact hResDen
               | ptr _ | bool _ | char _ | ordering _ | unit
-              | slicePtr _ _ | rangeTo _ | rangeFrom _
+              | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
               | enumVal _ _ | tuple _ | bytes _ =>
                 exact False.elim hR.2.1.2.2
     | not =>
@@ -2638,7 +2638,7 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                   · rw [hToNat]; exact hResLt
                   · rw [hToNat]; exact absVal_bitNot_sound (bitWidthComp_valid w) ha hInit
               | ptr _ | bool _ | char _ | ordering _ | unit
-              | slicePtr _ _ | rangeTo _ | rangeFrom _
+              | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
               | enumVal _ _ | tuple _ | bytes _ =>
                 exact False.elim hR.2.1.2.2
         | sint w a _ =>
@@ -2692,7 +2692,7 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                   · rw [hToNat]; exact hResLt
                   · rw [hToNat]; exact absVal_bitNot_sound (bitWidthComp_valid w) ha hInit
               | ptr _ | bool _ | char _ | ordering _ | unit
-              | slicePtr _ _ | rangeTo _ | rangeFrom _
+              | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
               | enumVal _ _ | tuple _ | bytes _ =>
                 exact False.elim hR.2.1.2.2
         | bool ba =>
@@ -2725,12 +2725,12 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                     exact ⟨bool_not_eq_of_eq hR.2.1.2.1,
                       relGuard_negate_sound hR.2.1.2.2⟩
               | scalar _ | ptr _ | char _ | ordering _ | unit
-              | slicePtr _ _ | rangeTo _ | rangeFrom _
+              | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
               | enumVal _ _ | tuple _ | bytes _ =>
                 exact False.elim hR.2.1.2
   | cast ck opnd castTy =>
     cases ck with
-    | unsupported | ptrToPtr | intToPtr => nomatch hAbs
+    | unsupported | ptrToPtr | intToPtr | unsize => nomatch hAbs
     | intToInt =>
       cases castTy with
       | int wDst sDst =>
@@ -2797,7 +2797,7 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                       · rw [hToNat]; exact hResLt
                       · rw [hToNat]; exact castUintAbs_sound ha hLt
                 | ptr _ | bool _ | char _ | ordering _ | unit
-                | slicePtr _ _ | rangeTo _ | rangeFrom _
+                | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
                 | enumVal _ _ | tuple _ | bytes _ =>
                   exact False.elim hR.2.1.2.2
             | sint wSrc a srcR? =>
@@ -2870,7 +2870,7 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                         | true =>
                           exact ⟨rfl, rfl, rfl, hRes.2, absVal_topInit_sound hRes.2⟩
                 | ptr _ | bool _ | char _ | ordering _ | unit
-                | slicePtr _ _ | rangeTo _ | rangeFrom _
+                | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
                 | enumVal _ _ | tuple _ | bytes _ =>
                   exact False.elim hR.2.1.2.2
             | bool ba =>
@@ -2927,11 +2927,11 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                         exact absVal_refineUleConst_sound (bitWidthComp_valid wDst)
                           (absVal_topInit_sound hnLt) rfl hnLe1
                 | scalar _ | ptr _ | char _ | ordering _ | unit
-                | slicePtr _ _ | rangeTo _ | rangeFrom _
+                | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
                 | enumVal _ _ | tuple _ | bytes _ =>
                   exact False.elim hR.2.1.2
       | unit | bool | char | rawPtr _ _ | ref _ _ | tuple _ | enum _
-      | slice _ | rangeTo _ | rangeFrom _
+      | slice _ | rangeTo _ | rangeFrom _ | array _ _
       | ordering | never | unsupported => nomatch hAbs
   | binaryOp op lhs rhs =>
     dsimp only [evalRvalueAbs] at hAbs
@@ -3412,11 +3412,11 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                     | mulUnchecked | addWithOverflow | subWithOverflow
                     | mulWithOverflow | cmp | offset => nomatch hAbs
                   | ptr _ | bool _ | char _ | ordering _ | unit
-                  | slicePtr _ _ | rangeTo _ | rangeFrom _
+                  | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
                   | enumVal _ _ | tuple _ | bytes _ =>
                     exact False.elim hR2.2.1.2.2
                 | ptr _ | bool _ | char _ | ordering _ | unit
-                | slicePtr _ _ | rangeTo _ | rangeFrom _
+                | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
                 | enumVal _ _ | tuple _ | bytes _ =>
                   exact False.elim hR1.2.1.2.2
           | sint w2 a2 _ =>
@@ -3508,11 +3508,11 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                         | exact hGo .shrUnchecked (Or.inr rfl)
                     | _ => nomatch hAbs
                   | ptr _ | bool _ | char _ | ordering _ | unit
-                  | slicePtr _ _ | rangeTo _ | rangeFrom _
+                  | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
                   | enumVal _ _ | tuple _ | bytes _ =>
                     exact False.elim hR2.2.1.2.2
                 | ptr _ | bool _ | char _ | ordering _ | unit
-                | slicePtr _ _ | rangeTo _ | rangeFrom _
+                | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
                 | enumVal _ _ | tuple _ | bytes _ =>
                   exact False.elim hR1.2.1.2.2
       | sint w1 a1 srcL? =>
@@ -3520,6 +3520,7 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
           (by dsimp only [evalRvalueAbs]; rw [hOp1]; exact hAbs)
   | ref _ _ | addressOf _ _ | aggregateTuple _ | discriminant _
   | useRetag _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _
+  | aggregateArray _ _ | repeat_ _ _ _
   | unsupported => nomatch hAbs
 
 /-! ## 3. Single-Step Statement & Terminator Abstract Transfer -/
@@ -3629,7 +3630,7 @@ theorem stepStmtAbs_sound {body : Body} {frame : FrameState}
                 injection hU with hEq; subst hEq
                 exact ⟨rfl, rfl⟩
               | char | rawPtr _ _ | ref _ _ | tuple _ | enum _
-              | slice _ | rangeTo _ | rangeFrom _
+              | slice _ | rangeTo _ | rangeFrom _ | array _ _
               | ordering | never | unsupported => nomatch hU
             have hEnv' := setMirAbsSlot_sound hEnv hTy hStep hSetConc hNewDen
             refine ⟨locals', ?_, hEnv'⟩
@@ -3759,7 +3760,7 @@ theorem stepStmtAbs_sound {body : Body} {frame : FrameState}
                                 | uint _ _ | sint _ _ | unit => nomatch hDstDen.1
                                 | bool _ => exact False.elim hDstDen.2
                               | ptr _ | bool _ | char _ | ordering _ | unit
-                              | slicePtr _ _ | rangeTo _ | rangeFrom _
+                              | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
                               | enumVal _ _ | tuple _ | bytes _ => rfl
                         have hLocalSintSame :
                             ∀ r w, localSintNat? localsAfterWrite r w =
@@ -3788,7 +3789,7 @@ theorem stepStmtAbs_sound {body : Body} {frame : FrameState}
                                 | uint _ _ | sint _ _ | unit => nomatch hDstDen.1
                                 | bool _ => exact False.elim hDstDen.2
                               | ptr _ | bool _ | char _ | ordering _ | unit
-                              | slicePtr _ _ | rangeTo _ | rangeFrom _
+                              | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
                               | enumVal _ _ | tuple _ | bytes _ => rfl
                         have hGuardPres :
                             ∀ (g : RelGuard), g.denote localsAfterRval bv →
@@ -3818,7 +3819,7 @@ theorem stepStmtAbs_sound {body : Body} {frame : FrameState}
                         | exact ev g =>
                           exact ⟨hR.2.2.1.2.1, hGuardPres g hR.2.2.1.2.2⟩
                       | scalar _ | ptr _ | char _ | ordering _ | unit
-                      | slicePtr _ _ | rangeTo _ | rangeFrom _
+                      | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
                       | enumVal _ _ | tuple _ | bytes _ =>
                         exact False.elim hR.2.2.1.2
                   have hEnv' := setMirAbsSlot_sound hR.2.2.2 hTy hStep hSetConc
@@ -4307,7 +4308,7 @@ theorem stepTermAbs_sound {body : Body} {bb : BasicBlock} {frame : FrameState}
                     dsimp only [evalTerminator]
                     rw [hT]; dsimp only; rw [hR.1]; dsimp only; rw [hSw]; rfl
           | scalar _ | ptr _ | char _ | ordering _ | unit
-          | slicePtr _ _ | rangeTo _ | rangeFrom _
+          | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
           | enumVal _ _ | tuple _ | bytes _ =>
             exact False.elim hR.2.1.2
       | uint w a srcReg? =>
@@ -4338,7 +4339,7 @@ theorem stepTermAbs_sound {body : Body} {bb : BasicBlock} {frame : FrameState}
                 dsimp only [evalTerminator]
                 rw [hT]; dsimp only; rw [hR.1]; dsimp only; rw [hTgt.1]; rfl
             | ptr _ | bool _ | char _ | ordering _ | unit
-            | slicePtr _ _ | rangeTo _ | rangeFrom _
+            | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
             | enumVal _ _ | tuple _ | bytes _ =>
               exact False.elim hR.2.1.2.2
       | sint w a srcReg? =>
@@ -4369,7 +4370,7 @@ theorem stepTermAbs_sound {body : Body} {bb : BasicBlock} {frame : FrameState}
                 dsimp only [evalTerminator]
                 rw [hT]; dsimp only; rw [hR.1]; dsimp only; rw [hTgt.1]; rfl
             | ptr _ | bool _ | char _ | ordering _ | unit
-            | slicePtr _ _ | rangeTo _ | rangeFrom _
+            | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
             | enumVal _ _ | tuple _ | bytes _ =>
               exact False.elim hR.2.1.2.2
   | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _

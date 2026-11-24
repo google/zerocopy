@@ -269,6 +269,7 @@ Constructor correspondence:
 
   > "/// The pointee of an array slice. Written as `[T]`.
   > Slice(I::Ty),"
+- `.array elem len` corresponds to `TyKind::Array(elem, len)` (Profile v2).
 - `.rangeTo elem` and `.rangeFrom elem` correspond to the
   `core::ops::RangeTo<elem>` and `core::ops::RangeFrom<elem>` `Adt`s used to
   index slices (Profile v2), each a struct with exactly one public field
@@ -289,7 +290,7 @@ Constructor correspondence:
 
   Profile v2 admits only `elem = usize` (`isSupportedV2LocalTy`).
 - `.unsupported` represents all other `TyKind` variants (`Float`,
-  other non-fieldless-enum `Adt`, `Foreign`, `Str`, `Array`, `Pat`, `FnDef`,
+  other non-fieldless-enum `Adt`, `Foreign`, `Str`, `Pat`, `FnDef`,
   `FnPtr`, `Dynamic`, `Closure`, `CoroutineClosure`, `Coroutine`, etc.), causing
   $M_{\text{anneal}}$ to fail closed with `FaultKind.unsupported`. -/
 inductive MirTy where
@@ -304,6 +305,7 @@ inductive MirTy where
   | ref (mutability : Mutability) (pointee : MirTy)
   | rawPtr (mutability : Mutability) (pointee : MirTy)
   | slice (elem : MirTy)
+  | array (elem : MirTy) (len : Nat)
   | rangeTo (elem : MirTy)
   | rangeFrom (elem : MirTy)
   | unsupported
@@ -366,6 +368,7 @@ mutual
     | .ref m₁ p₁, .ref m₂ p₂ => Mutability.beq m₁ m₂ && MirTy.beq p₁ p₂
     | .rawPtr m₁ p₁, .rawPtr m₂ p₂ => Mutability.beq m₁ m₂ && MirTy.beq p₁ p₂
     | .slice e₁, .slice e₂ => MirTy.beq e₁ e₂
+    | .array e₁ n₁, .array e₂ n₂ => Nat.beq n₁ n₂ && MirTy.beq e₁ e₂
     | .rangeTo e₁, .rangeTo e₂ => MirTy.beq e₁ e₂
     | .rangeFrom e₁, .rangeFrom e₂ => MirTy.beq e₁ e₂
     | .unsupported, .unsupported => true

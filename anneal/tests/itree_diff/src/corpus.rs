@@ -1516,7 +1516,7 @@ pub fn curated_corpus() -> Vec<TraceTestCase> {
         expected_ub: None,
         expected_conservative: Some(ExpectedConservativeSpec::new(
             ConservativeRefKind::Unwound,
-            "unsupported type: [u32; 4_usize]",
+            "unsupported place projection `Index(",
         )),
         disclosed_gap: None,
     });

@@ -205,6 +205,7 @@ private theorem borFalseElimC {a b : Bool} (h : (a || b) = false) :
   | .slicePtr _ _ => false
   | .rangeTo _ => false
   | .rangeFrom _ => false
+  | .array _ => false
 
 /-- Canary fixture helper `argsIsOneU32`. -/
 @[expose] def argsIsOneU32 (expected : Nat) (args : List Val) : Bool :=
@@ -330,6 +331,7 @@ private theorem eq_of_valIsU32_true (expected : Nat) (v : Val)
   | slicePtr _ _ => cases h
   | rangeTo _ => cases h
   | rangeFrom _ => cases h
+  | array _ => cases h
 
 /-- Canary fixture helper `u32Ty`. -/
 abbrev u32Ty : MirTy := .int .i32 false

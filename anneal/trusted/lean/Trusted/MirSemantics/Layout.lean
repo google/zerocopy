@@ -179,10 +179,47 @@ noncomputable def layoutOfTy : MirTy → Option LayoutData
   | .tuple [.int w _, .bool] => some (overflowPairLayout w)
   | _ => none
 
+/-- Non-array Profile v2 pointer/range layout helper shared by `layoutOfArrayV2`
+and `layoutOfTyV2` via `abbrev` so `layoutOfTyV2` stays non-recursive and
+`unfold layoutOfTyV2 layoutOfTy`-compatible. -/
+noncomputable abbrev layoutOfPtrOrRangeV2 : MirTy → Option LayoutData
+  | .rawPtr _ pt | .ref _ pt =>
+    if isUnsizedTy pt then some ⟨16, 3⟩ else some ⟨8, 3⟩
+  | .rangeTo (.int .isize false) | .rangeFrom (.int .isize false) => some ⟨8, 3⟩
+  | _ => none
+
+/-- Recursive helper for `layoutOfTyV2` on array element types `[T; N]`. -/
+noncomputable def layoutOfArrayV2 : MirTy → Option LayoutData
+  | .array elem len =>
+    match layoutOfArrayV2 elem with
+    | none => none
+    | some elemLay => some ⟨len * elemLay.size, elemLay.alignLog2⟩
+  | ty =>
+    match layoutOfTy ty with
+    | some l => some l
+    | none => layoutOfPtrOrRangeV2 ty
+
 /-- Layout of a Profile v2 local or pointee type (`layoutOfTy` extended with
-64-bit thin pointers `⟨8, 3⟩`, 64-bit wide slice pointers `⟨16, 3⟩`, and
-`RangeTo<usize>` / `RangeFrom<usize>` `⟨8, 3⟩`). Returns `none` for unsized
-`.slice` directly and unsupported aggregates.
+fixed-size arrays `[T; N]`, 64-bit thin pointers `⟨8, 3⟩`, 64-bit wide slice
+pointers `⟨16, 3⟩`, and `RangeTo<usize>` / `RangeFrom<usize>` `⟨8, 3⟩`). Returns
+`none` for unsized `.slice` directly and unsupported aggregates.
+
+Array layout matches the Rust Reference (`src/type-layout.md`,
+`rust-lang/reference` `a286e1ecb8ce193d50056e4bb042eea9b23876ef`):
+
+> "An array of `[T; N]` has a size of `size_of::<T>() * N` and the same
+> alignment of `T`. Arrays are laid out so that the zero-based `nth` element of
+> the array is offset from the start of the array by `n * size_of::<T>()`
+> bytes."
+
+And `rustc_abi::LayoutCalculator::array_like`
+(`compiler/rustc_abi/src/layout.rs`, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "fields: FieldsShape::Array { stride: element.size, count },
+> ...
+> align: element.align,
+> size,"
 
 The Rust Reference (`src/type-layout.md:60-70`, `rust-lang/reference`
 `ad35aca481751a06afeb23820a672b0f3b11a476`) guarantees the thin-pointer case
@@ -224,10 +261,11 @@ noncomputable def layoutOfTyV2 (ty : MirTy) : Option LayoutData :=
   | some l => some l
   | none =>
     match ty with
-    | .rawPtr _ pt | .ref _ pt =>
-      if isUnsizedTy pt then some ⟨16, 3⟩ else some ⟨8, 3⟩
-    | .rangeTo (.int .isize false) | .rangeFrom (.int .isize false) => some ⟨8, 3⟩
-    | _ => none
+    | .array elem len =>
+      match layoutOfArrayV2 elem with
+      | none => none
+      | some elemLay => some ⟨len * elemLay.size, elemLay.alignLog2⟩
+    | _ => layoutOfPtrOrRangeV2 ty
 
 end Trusted.MirSemantics
 

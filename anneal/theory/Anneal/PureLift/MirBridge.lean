@@ -392,6 +392,7 @@ theorem valDepthOk_mono :
     | slicePtr _ _ => rfl
     | rangeTo _ => rfl
     | rangeFrom _ => rfl
+    | array _ => rfl
     | bool _ => rfl
     | unit => rfl
     | char _ => rfl
@@ -408,6 +409,7 @@ theorem valDepthOk_mono :
     | slicePtr _ _ => rfl
     | rangeTo _ => rfl
     | rangeFrom _ => rfl
+    | array _ => rfl
     | bool _ => rfl
     | unit => rfl
     | char _ => rfl
@@ -468,6 +470,7 @@ theorem mir_getField_setField {d : Nat} (f : FieldIdx) (s a : Val)
   | slicePtr _ _ => nomatch hGet
   | rangeTo _ => nomatch hGet
   | rangeFrom _ => nomatch hGet
+  | array _ => nomatch hGet
   | bool _ => nomatch hGet
   | unit => nomatch hGet
   | char _ => nomatch hGet
@@ -507,6 +510,7 @@ theorem mir_setField_getField {d : Nat} (f : FieldIdx) (s a s' : Val)
   | slicePtr _ _ => nomatch hPut
   | rangeTo _ => nomatch hPut
   | rangeFrom _ => nomatch hPut
+  | array _ => nomatch hPut
   | bool _ => nomatch hPut
   | unit => nomatch hPut
   | char _ => nomatch hPut
@@ -547,6 +551,7 @@ theorem mir_setField_setField {d : Nat} (f : FieldIdx) (s a1 a2 s1 : Val)
   | slicePtr _ _ => nomatch hPut1
   | rangeTo _ => nomatch hPut1
   | rangeFrom _ => nomatch hPut1
+  | array _ => nomatch hPut1
   | bool _ => nomatch hPut1
   | unit => nomatch hPut1
   | char _ => nomatch hPut1
@@ -584,6 +589,7 @@ theorem mir_getField_setField_other {d : Nat} (f g : FieldIdx) (s a s' : Val)
   | slicePtr _ _ => nomatch hPut
   | rangeTo _ => nomatch hPut
   | rangeFrom _ => nomatch hPut
+  | array _ => nomatch hPut
   | bool _ => nomatch hPut
   | unit => nomatch hPut
   | char _ => nomatch hPut
@@ -651,6 +657,7 @@ theorem mir_setField_setField_comm {d : Nat} (f g : FieldIdx)
   | slicePtr _ _ => nomatch h1
   | rangeTo _ => nomatch h1
   | rangeFrom _ => nomatch h1
+  | array _ => nomatch h1
   | bool _ => nomatch h1
   | unit => nomatch h1
   | char _ => nomatch h1
@@ -793,6 +800,7 @@ theorem mir_decodeRef_getField {d : Nat} (f : FieldIdx) (v : Val)
   | slicePtr _ _ => nomatch hDec
   | rangeTo _ => nomatch hDec
   | rangeFrom _ => nomatch hDec
+  | array _ => nomatch hDec
   | bool _ => nomatch hDec
   | unit => nomatch hDec
   | char _ => nomatch hDec
@@ -879,6 +887,7 @@ theorem valDepthOk_remapMirValAt (oldLid newLid : LoanId) :
     | slicePtr _ _ => rfl
     | rangeTo _ => rfl
     | rangeFrom _ => rfl
+    | array _ => rfl
     | bool _ => rfl
     | unit => rfl
     | char _ => rfl
@@ -898,6 +907,7 @@ theorem remapMirValAt_eq_succ (oldLid newLid : LoanId) :
     | slicePtr _ _ => rfl
     | rangeTo _ => rfl
     | rangeFrom _ => rfl
+    | array _ => rfl
     | bool _ => rfl
     | unit => rfl
     | char _ => rfl
@@ -935,6 +945,7 @@ theorem remapMirValAt_eq_succ (oldLid newLid : LoanId) :
     | slicePtr _ _ => rfl
     | rangeTo _ => rfl
     | rangeFrom _ => rfl
+    | array _ => rfl
     | bool _ => rfl
     | unit => rfl
     | char _ => rfl
@@ -953,6 +964,7 @@ theorem mir_decodeRef_remapRefInVal {d : Nat} (oldLid newLid : LoanId)
   | slicePtr _ _ => rfl
   | rangeTo _ => rfl
   | rangeFrom _ => rfl
+  | array _ => rfl
   | bool _ => rfl
   | unit => rfl
   | char _ => rfl
@@ -1019,6 +1031,7 @@ theorem mir_getField_remapRefInVal {d : Nat} (oldLid newLid : LoanId)
   | slicePtr _ _ => rfl
   | rangeTo _ => rfl
   | rangeFrom _ => rfl
+  | array _ => rfl
   | bool _ => rfl
   | unit => rfl
   | char _ => rfl
@@ -1080,6 +1093,7 @@ theorem mir_remapRefInVal_leaf {d : Nat} (oldLid newLid : LoanId) (v : Val)
   | slicePtr _ _ => rfl
   | rangeTo _ => rfl
   | rangeFrom _ => rfl
+  | array _ => rfl
   | bool _ => rfl
   | unit => rfl
   | char _ => rfl
@@ -1143,6 +1157,7 @@ theorem valSizeBoundAt_eq_succ :
     | slicePtr _ _ => rfl
     | rangeTo _ => rfl
     | rangeFrom _ => rfl
+    | array _ => rfl
     | bool _ => rfl
     | unit => rfl
     | char _ => rfl
@@ -1175,6 +1190,7 @@ theorem valSizeBoundAt_eq_succ :
     | slicePtr _ _ => rfl
     | rangeTo _ => rfl
     | rangeFrom _ => rfl
+    | array _ => rfl
     | bool _ => rfl
     | unit => rfl
     | char _ => rfl
@@ -1239,6 +1255,7 @@ theorem mir_getField_lt_sizeBound {d : Nat} (f : FieldIdx) (v c : Val)
   | slicePtr _ _ => nomatch hGet
   | rangeTo _ => nomatch hGet
   | rangeFrom _ => nomatch hGet
+  | array _ => nomatch hGet
   | bool _ => nomatch hGet
   | unit => nomatch hGet
   | char _ => nomatch hGet
@@ -1857,6 +1874,7 @@ theorem mir_pure_lift_correspondence_transfer
       | .ref m₁ p₁, .ref m₂ p₂ => mirMutabilityBeq m₁ m₂ && ih p₁ p₂
       | .rawPtr m₁ p₁, .rawPtr m₂ p₂ => mirMutabilityBeq m₁ m₂ && ih p₁ p₂
       | .slice p₁, .slice p₂ => ih p₁ p₂
+      | .array p₁ n₁, .array p₂ n₂ => Nat.beq n₁ n₂ && ih p₁ p₂
       | .rangeTo p₁, .rangeTo p₂ => ih p₁ p₂
       | .rangeFrom p₁, .rangeFrom p₂ => ih p₁ p₂
       | .unsupported, .unsupported => true
@@ -2714,9 +2732,9 @@ theorem mirIsOverflowPairTy_eq (ty : MirTy) :
         | nil => rfl
         | cons t₂ r' => cases t₂ <;> cases r' <;> rfl
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => rfl
   | bool | int _ _ | unit | never | char | ordering | enum _ | ref _ _
-  | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+  | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => rfl
 
 theorem mirValTy?_eq (v : Val) : mirValTy? v = v.ty? := by
   cases v with
@@ -2750,11 +2768,11 @@ theorem mirValTy?_eq (v : Val) : mirValTy? v = v.ty? := by
             | cons _ _ => rfl
           | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
           | char _ | ordering _ | unit | enumVal _ _
-          | tuple _ | bytes _ => rfl
+          | tuple _ | array _ | bytes _ => rfl
       | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _ | char _
-      | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+      | ordering _ | unit | enumVal _ _ | tuple _ | array _ | bytes _ => rfl
   | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _ | char _
-  | ordering _ | unit | bytes _ => rfl
+  | ordering _ | unit | array _ | bytes _ => rfl
 
 /-- Every type that `Trusted.MirSemantics.Val.ty?` assigns to a value is in the
 supported local-type fragment `isSupportedScalarOrUnitTy`. -/
@@ -2807,10 +2825,10 @@ theorem valTy?_supported (v : Val) (vTy : MirTy) (hTy : v.ty? = some vTy) :
             | cons _ _ => nomatch hTy
           | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
           | char _ | ordering _ | unit | enumVal _ _
-          | tuple _ | bytes _ => nomatch hTy
+          | tuple _ | array _ | bytes _ => nomatch hTy
       | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _ | char _
-      | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => nomatch hTy
-  | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ => nomatch hTy
+      | ordering _ | unit | enumVal _ _ | tuple _ | array _ | bytes _ => nomatch hTy
+  | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | bytes _ => nomatch hTy
 
 theorem mirTyBeq_int_eq (w : IntWidth) (s : Bool) (b : MirTy) :
     mirTyBeq (.int w s) b = MirTy.beq (.int w s) b := by
@@ -2820,7 +2838,7 @@ theorem mirTyBeq_int_eq (w : IntWidth) (s : Bool) (b : MirTy) :
       (IntWidth.beq w w₂ && (s == s₂))
     rw [mirIntWidthBeq_eq]
   | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-  | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+  | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => rfl
 
 theorem mirTyBeq_overflowPair_eq (w : IntWidth) (s : Bool) (b : MirTy) :
     mirTyBeq (.tuple [.int w s, .bool]) b =
@@ -2836,9 +2854,9 @@ theorem mirTyBeq_overflowPair_eq (w : IntWidth) (s : Bool) (b : MirTy) :
         | nil => cases w <;> cases w₂ <;> rfl
         | cons t₂ r' => cases t₂ <;> cases r' <;> cases w <;> cases w₂ <;> rfl
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => rfl
   | bool | int _ _ | unit | never | char | ordering | enum _ | ref _ _
-  | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+  | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => rfl
 
 /-- `mirTyBeq a b` agrees with `MirTy.beq a b` whenever `a` is in the
 supported local-type fragment `isSupportedScalarOrUnitTy` (whose types nest at
@@ -2852,7 +2870,7 @@ theorem mirTyBeq_eq_of_supported (a b : MirTy)
     cases b with
     | enum ety₂ => exact mirEnumTyBeq_eq ety ety₂
     | bool | int _ _ | unit | never | char | ordering | tuple _ | ref _ _
-    | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+    | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => rfl
   | tuple fs =>
     cases fs with
     | nil => nomatch hSup
@@ -2868,12 +2886,12 @@ theorem mirTyBeq_eq_of_supported (a b : MirTy)
             | nil => exact mirTyBeq_overflowPair_eq w s b
             | cons _ _ => nomatch hSup
           | int _ _ | unit | never | char | ordering | enum _ | tuple _
-          | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
+          | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
           | unsupported => nomatch hSup
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => nomatch hSup
+      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => nomatch hSup
   | bool | unit | never | char | ordering => cases b <;> rfl
-  | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => nomatch hSup
+  | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => nomatch hSup
 
 /-- Exact unconditional agreement between `mirCheckVal` and
 `Trusted.MirSemantics.checkVal` across all runtime `Val`s and all `MirTy`s. -/
@@ -2892,7 +2910,7 @@ theorem mirIsSupportedScalarOrUnitTy_eq (ty : MirTy) :
   | enum ety => exact mirEnumAdmitted_eq ety
   | tuple fs => exact mirIsOverflowPairTy_eq (.tuple fs)
   | bool | int _ _ | unit | never | char | ordering | ref _ _ | rawPtr _ _
-  | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+  | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => rfl
 
 theorem mirLiveUninitSlot_eq (ty : MirTy) :
     mirLiveUninitSlot ty = liveUninitSlot ty := by
@@ -2901,7 +2919,7 @@ theorem mirLiveUninitSlot_eq (ty : MirTy) :
     dsimp only [mirLiveUninitSlot, liveUninitSlot]
     rw [mirIsZstEnumTy_eq ety]
   | bool | int _ _ | unit | never | char | ordering | tuple _ | ref _ _
-  | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+  | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => rfl
 
 theorem mirStorageAnnotationsInBounds_eq (body : Body) :
     mirStorageAnnotationsInBounds body = storageAnnotationsInBounds body := by
@@ -2987,7 +3005,7 @@ theorem mirDiscriminantTypesValid_eq (body : Body) :
                       (s == ety.discrSigned))
                   rw [mirIntWidthBeq_eq]
                 | bool | unit | never | char | ordering | enum _ | tuple _
-                | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+                | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => rfl
           | ordering =>
             cases Trusted.MirSemantics.getElem? body.locals dst.localId with
             | none => rfl
@@ -2995,11 +3013,12 @@ theorem mirDiscriminantTypesValid_eq (body : Body) :
               cases dstTy with
               | int w s => cases w <;> rfl
               | bool | unit | never | char | ordering | enum _ | tuple _
-              | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+              | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => rfl
           | bool | int _ _ | unit | never | char | tuple _ | ref _ _
-          | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+          | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => rfl
     | use _ | useRetag _ | binaryOp _ _ _ | unaryOp _ _ | cast _ _ _ | ref _ _
-    | addressOf _ _ | aggregateTuple _ | aggregateRangeTo _ | aggregateRangeFrom _
+    | addressOf _ _ | aggregateTuple _ | aggregateArray _ _ | repeat_ _ _ _
+    | aggregateRangeTo _ | aggregateRangeFrom _
     | unsupported => rfl
   | storageLive _ | storageDead _ | nop | unsupported => rfl
 
@@ -3069,9 +3088,10 @@ theorem mirCastTypesValid_eq (body : Body)
             exact mirTyBeq_eq_of_supported dstTy castTy
               (listAll_getElem? isSupportedScalarOrUnitTy body.locals
                 dst.localId dstTy hSup hGet)
-      | ptrToPtr | intToPtr | unsupported => rfl
+      | ptrToPtr | intToPtr | unsize | unsupported => rfl
     | use _ | useRetag _ | binaryOp _ _ _ | unaryOp _ _ | discriminant _ | ref _ _
-    | addressOf _ _ | aggregateTuple _ | aggregateRangeTo _ | aggregateRangeFrom _
+    | addressOf _ _ | aggregateTuple _ | aggregateArray _ _ | repeat_ _ _ _
+    | aggregateRangeTo _ | aggregateRangeFrom _
     | unsupported => rfl
   | storageLive _ | storageDead _ | nop | unsupported => rfl
 
@@ -3118,7 +3138,7 @@ theorem mirAssignTypesValid_eq (body : Body)
         cases rv with
         | discriminant _ | cast _ _ _ | ref _ _ | addressOf _ _
         | aggregateTuple _ | unsupported | useRetag _ | aggregateRangeTo _ _
-        | aggregateRangeFrom _ _ => rfl
+        | aggregateRangeFrom _ _ | aggregateArray _ _ | repeat_ _ _ _ => rfl
         | use opnd => exact mirLocalOperandMatchesTy_eq body.locals hSup opnd dstTy
         | binaryOp op lhs rhs =>
           dsimp only
@@ -3167,8 +3187,9 @@ private theorem isSupported_of_evalConstLit_ok {ty : MirTy} {lit : ConstLit}
         | false =>
           rw [Anneal.MirWp.ite_bool_true (by rw [hAdm]; rfl)] at hOk
           cases hOk
+    | rodataBytes _ | rodataRef _ _ _ _ => cases hOk
   | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
-  | unsupported =>
+  | array _ _ | unsupported =>
     cases lit <;> cases hOk
 
 private theorem mirCallArgsMatchBody_eq (bodyLocals : List MirTy)
@@ -3345,13 +3366,13 @@ theorem mirEvalConstLit_eq (ty : MirTy) (lit : ConstLit) :
     | scalar bits =>
       dsimp only [mirEvalConstLit, evalConstLit]
       rw [mirTruncateBits_eq_truncateBits]
-    | zeroSized => rfl
+    | zeroSized | rodataBytes _ | rodataRef _ _ _ _ => rfl
   | bool =>
     cases lit with
     | scalar bits =>
       dsimp only [mirEvalConstLit, evalConstLit]
       rw [mirTruncateBits_eq_truncateBits]
-    | zeroSized => rfl
+    | zeroSized | rodataBytes _ | rodataRef _ _ _ _ => rfl
   | unit =>
     cases lit <;> rfl
   | char =>
@@ -3359,19 +3380,20 @@ theorem mirEvalConstLit_eq (ty : MirTy) (lit : ConstLit) :
     | scalar bits =>
       dsimp only [mirEvalConstLit, evalConstLit]
       rw [mirTruncateBits_eq_truncateBits, mirIsUnicodeScalar_eq]
-    | zeroSized => rfl
+    | zeroSized | rodataBytes _ | rodataRef _ _ _ _ => rfl
   | ordering =>
     cases lit with
     | scalar bits =>
       dsimp only [mirEvalConstLit, evalConstLit]
       rw [mirTruncateBits_eq_truncateBits, mirOrderingOfTagBits_eq]
       rfl
-    | zeroSized => rfl
+    | zeroSized | rodataBytes _ | rodataRef _ _ _ _ => rfl
   | enum ety =>
     cases lit with
     | zeroSized =>
       dsimp only [mirEvalConstLit, evalConstLit]
       rw [mirIsZstEnumTy_eq ety]
+    | rodataBytes _ | rodataRef _ _ _ _ => rfl
     | scalar bits =>
       dsimp only [mirEvalConstLit, evalConstLit]
       cases ety.tagRepr with
@@ -3381,8 +3403,8 @@ theorem mirEvalConstLit_eq (ty : MirTy) (lit : ConstLit) :
         rw [mirEnumAdmitted_eq ety, mirTruncateBits_eq_truncateBits,
             mirTagBitsToDiscrBits_eq, mirFindDiscrVariant?_eq]
         rfl
-  | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
-  | unsupported =>
+  | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | array _ _
+  | rangeTo _ | rangeFrom _ | unsupported =>
     cases lit <;> rfl
 
 theorem mirDecodeScalar_eq (sv : ScalarVal) :
@@ -3429,7 +3451,7 @@ theorem mirEvalUnOpVal_eq (op : UnOp) (v : Val) :
       | error _ => rfl
       | ok pair => cases pair; rfl
     | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
-    | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
+    | char _ | ordering _ | unit | enumVal _ _ | tuple _ | array _ | bytes _ =>
       rfl
   | neg =>
     cases v with
@@ -3444,7 +3466,7 @@ theorem mirEvalUnOpVal_eq (op : UnOp) (v : Val) :
         | error _ => rfl
         | ok pair => cases pair; rfl
     | bool _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
-    | char _ | ordering _ | unit | enumVal _ _ | tuple _
+    | char _ | ordering _ | unit | enumVal _ _ | tuple _ | array _
     | bytes _ => rfl
   | ptrMetadata =>
     cases v <;> rfl
@@ -3585,24 +3607,24 @@ theorem mirEvalBinOpVal_eq (op : BinOp) (lhs rhs : Val) :
             rfl
           | shl | shlUnchecked | shr | shrUnchecked | offset => rfl
     | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
-    | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
+    | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | array _
     | bytes _ => rfl
   | bool l =>
     cases rhs with
     | bool r =>
       cases op <;> rfl
     | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
-    | char _ | ordering _ | unit | enumVal _ _ | tuple _
+    | char _ | ordering _ | unit | enumVal _ _ | tuple _ | array _
     | bytes _ => rfl
   | char l =>
     cases rhs with
     | char r =>
       cases op <;> rfl
     | scalar _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
-    | bool _ | ordering _ | unit | enumVal _ _ | tuple _
+    | bool _ | ordering _ | unit | enumVal _ _ | tuple _ | array _
     | bytes _ => rfl
   | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
-  | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => rfl
+  | ordering _ | unit | enumVal _ _ | tuple _ | array _ | bytes _ => rfl
 
 theorem mirIntLikeBits_eq (v : Val) : mirIntLikeBits v = intLikeBits v := by
   cases v with
@@ -3610,7 +3632,7 @@ theorem mirIntLikeBits_eq (v : Val) : mirIntLikeBits v = intLikeBits v := by
     dsimp only [mirIntLikeBits, intLikeBits]
     rw [mirBvOfInt_eq, mirDecodeScalar_eq, mirTruncateBits_eq_truncateBits]
   | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
-  | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
+  | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _ | array _
   | bytes _ => rfl
 
 /-- Success/failure agreement between computable `mirEvalIntToIntCast` and
@@ -3634,7 +3656,7 @@ theorem mirEvalIntToIntCast_eq (castTy : MirTy) (v : Val) :
       dsimp only
       cases Nat.ble bits 255 <;> rfl
     | bool | unit | never | ordering | enum _ | tuple _ | ref _ _
-    | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+    | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => rfl
 
 /-! ## Algorithmic Straight-Line MIR Lifter (`liftStraightLineMir`)
 

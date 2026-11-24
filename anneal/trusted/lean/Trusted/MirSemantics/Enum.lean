@@ -465,16 +465,48 @@ noncomputable def isIntLikeTy : MirTy → Bool
 /- Profile v2 static local and pointee type admission and runtime value checks.
 -/
 
+/-- Return `true` when `ty` is a fixed-size data type (scalars, units,
+admitted fieldless enums, and nested fixed-size arrays `[T; N]` thereof,
+excluding overflow pairs, references, and raw pointers) whose memory layout
+and byte representation are modeled in Profile v2. -/
+noncomputable def isSupportedV2DataTy : MirTy → Bool
+  | .array elem _ => isSupportedV2DataTy elem
+  | ty => !isOverflowPairTy ty && isSupportedScalarOrUnitTy ty
+
+/-- Return `true` when `ty` belongs to the Profile v2 structural `PartialEq`
+fragment (`bool`, integers, `char`, `()`, `Ordering`, and fixed-size arrays
+thereof), excluding user-defined `enum`s whose `PartialEq` impl may be
+non-structural (`library/core/src/marker.rs` and `library/core/src/cmp.rs`,
+`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "StructuralPartialEq for
+>     usize, u8, u16, u32, u64, u128,
+>     isize, i8, i16, i32, i64, i128,
+>     bool,
+>     char,
+>     ...
+>     (),
+>     {T, const N: usize} [T; N],"
+> "#[derive_const(Clone, Eq, PartialOrd, Ord, PartialEq)]
+> ...
+> pub enum Ordering {" -/
+noncomputable def isArrayEqElemSupported : MirTy → Bool
+  | .bool | .int _ _ | .char | .unit | .ordering => true
+  | .array elem _ => isArrayEqElemSupported elem
+  | _ => false
+
 mutual
   /-- Return `true` when `ty` is a valid Profile v2 sized local type
   (scalars, booleans, `char`, `Ordering`, `()`, `!`, admitted fieldless enums,
-  tuples, `RangeTo`/`RangeFrom` over `usize`, and flat non-nested pointers or
-  references to scalar/unit/enum or integer-slice pointees).
-  Nested references/pointers inside pointees (`&&T`, `*mut &T`, `&[&T]`) are
-  rejected fail-closed so `refValidInMem` and `refsStayInCallerMem` remain
-  complete without recursive heap reference graphs.
+  fixed-size arrays `[T; N]` of data types, tuples, `RangeTo`/`RangeFrom` over
+  `usize`, and flat non-nested pointers or references to scalar/unit/enum/
+  fixed-array or integer-slice pointees).
+  Nested references/pointers inside pointees (`&&T`, `*mut &T`, `&[&T]`,
+  `[&T; N]`) are rejected fail-closed so `refValidInMem` and
+  `refsStayInCallerMem` remain complete without recursive heap reference graphs.
 
-  Overflow-pair pointees (`&(T, bool)`, `*const (T, bool)`) are rejected too.
+  Overflow-pair pointees and array elements (`&(T, bool)`, `*const (T, bool)`,
+  `[(T, bool); N]`) are rejected too.
   The Rust Reference (`src/type-layout.md:94,184`, `rust-lang/reference`
   `ad35aca481751a06afeb23820a672b0f3b11a476`) leaves a tuple's field order
   and size unspecified:
@@ -491,10 +523,10 @@ mutual
   noncomputable def isSupportedV2LocalTy : MirTy → Bool
     | .bool | .int _ _ | .char | .ordering | .unit | .never => true
     | .enum ety => enumAdmitted ety
+    | .array elem _ => isSupportedV2DataTy elem
     | .tuple fs => isSupportedV2LocalTyList fs
     | .ref _ (.slice (.int _ _)) | .rawPtr _ (.slice (.int _ _)) => true
-    | .ref _ pt | .rawPtr _ pt =>
-      !isOverflowPairTy pt && isSupportedScalarOrUnitTy pt
+    | .ref _ pt | .rawPtr _ pt => isSupportedV2DataTy pt
     | .rangeTo (.int .isize false) | .rangeFrom (.int .isize false) => true
     | _ => false
 
@@ -503,10 +535,17 @@ mutual
     | t :: ts => isSupportedV2LocalTy t && isSupportedV2LocalTyList ts
 end
 
+/-- Validate uniform element types across a list of values (used for `[T; N]`
+array element checking without requiring `mutual` recursion). -/
+noncomputable def checkValUniformV2 (check : Val → Bool) : List Val → Bool
+  | [] => true
+  | v :: vs => check v && checkValUniformV2 check vs
+
 mutual
   /-- Validate runtime value `v` against Profile v2 static type `ty`, matching
-  Profile v1 `checkVal` on scalar/enum/unit types and adding thin pointers, wide
-  slice pointers, `RangeTo`/`RangeFrom`, and general tuples. -/
+  Profile v1 `checkVal` on scalar/enum/unit types and adding thin pointers,
+  wide slice pointers, fixed-size arrays, `RangeTo`/`RangeFrom`, and general
+  tuples. -/
   noncomputable def checkValV2 : Val → MirTy → Bool
     | .scalar sv, .int w s => checkVal (.scalar sv) (.int w s)
     | .bool b, .bool => checkVal (.bool b) .bool
@@ -520,6 +559,8 @@ mutual
     | .slicePtr p _, .ref _ (.slice _) => IntWidth.beq p.width .isize
     | .rangeTo _, .rangeTo (.int .isize false) => true
     | .rangeFrom _, .rangeFrom (.int .isize false) => true
+    | .array vs, .array elem len =>
+      Nat.beq vs.length len && checkValUniformV2 (fun v => checkValV2 v elem) vs
     | .tuple vs, .tuple ts => checkValV2List vs ts
     | _, _ => false
 

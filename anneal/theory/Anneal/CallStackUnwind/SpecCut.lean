@@ -1179,6 +1179,7 @@ checked on normal-return paths (`canNormal = true`); unwind-only calls
                 | .slicePtr _ _ => False
                 | .rangeTo _ => False
                 | .rangeFrom _ => False
+                | .array _ => False
             | .unwindResume =>
               checkCleanupBlock body frame.blockIdx = true ∧
               onDone (.unwound st.mem)
@@ -1661,6 +1662,12 @@ private theorem evalStep_single_never_unwound (p : Program) (c : Choice)
                     | cons _ _ => rw [hBr] at hUnw; cases hUnw
                     | nil =>
                       rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
+                  | array _ =>
+                    rw [hRes] at hUnw; dsimp only at hUnw
+                    cases hBr : tgts.branches with
+                    | cons _ _ => rw [hBr] at hUnw; cases hUnw
+                    | nil =>
+                      rw [hBr] at hUnw; unfold jumpToBlock at hUnw; cases hUnw
 
 private theorem evalStep_never_unwound (p : Program) (c : Choice) (s : State)
     (cm : CallerMemory) : evalStep p c s ≠ .done (.unwound cm) := by
@@ -1891,7 +1898,7 @@ private theorem evalTerminator_single_frame {body : Body} {bb : BasicBlock}
         | ok _ =>
           rw [hTg] at hTerm; unfold jumpToBlock at hTerm; cases hTerm; rfl
       | ptr _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _
-      | slicePtr _ _ | rangeTo _ | rangeFrom _ =>
+      | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ =>
         rw [hRes] at hTerm; dsimp only at hTerm
         cases hBr : tgts.branches with
         | cons _ _ => rw [hBr] at hTerm; cases hTerm
@@ -2769,6 +2776,13 @@ private theorem evalStep_step_preserves_callerMem (b : Body) (fr : FrameState)
                 | nil =>
                   rw [hBr] at hStep; unfold jumpToBlock at hStep
                   cases hStep; rfl
+              | array _ =>
+                rw [hRes] at hStep; dsimp only at hStep
+                cases hBr : tgts.branches with
+                | cons _ _ => rw [hBr] at hStep; cases hStep
+                | nil =>
+                  rw [hBr] at hStep; unfold jumpToBlock at hStep
+                  cases hStep; rfl
 
 private def stackModeCm? : StackMode → Option CallerMemory
   | .running _ _ _ cm => some cm
@@ -3048,7 +3062,8 @@ private theorem wpAssert_implies_stackExecutes
         | .bytes _ => False
         | .slicePtr _ _ => False
         | .rangeTo _ => False
-        | .rangeFrom _ => False) :
+        | .rangeFrom _ => False
+        | .array _ => False) :
     ∃ out,
       StackReaches implOf
         (.running ⟨callerLens, callees, body, frame⟩ [] mem cm)
@@ -3070,6 +3085,7 @@ private theorem wpAssert_implies_stackExecutes
     | slicePtr _ _ => rw [hRes] at hWp; exact False.elim hWp
     | rangeTo _ => rw [hRes] at hWp; exact False.elim hWp
     | rangeFrom _ => rw [hRes] at hWp; exact False.elim hWp
+    | array _ => rw [hRes] at hWp; exact False.elim hWp
     | bool b =>
       rw [hRes] at hWp
       dsimp only at hWp

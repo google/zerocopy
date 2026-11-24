@@ -1009,4 +1009,317 @@ theorem refute_step_nonroot_return_indirect_local :
       [] entryMemory ⟨[]⟩ = .fault .unsupported :=
   rfl
 
+/-- Guard `step_v2_constant_index_min_len`: `ConstantIndex` rejects arrays
+shorter than `minLength` as `.undefined`. -/
+theorem refute_step_v2_constant_index_min_len :
+    constantIndexOffset 2 0 4 false = .error .undefined :=
+  rfl
+
+/-- Guard `step_v2_constant_index_oob`: `ConstantIndex` rejects out-of-bounds
+indices `off ≥ len` as `.undefined`. -/
+theorem refute_step_v2_constant_index_oob :
+    constantIndexOffset 2 3 2 false = .error .undefined :=
+  rfl
+
+/-- Guard `step_v2_read_deref_proj_raw_misaligned`: reading a sub-field
+`(*p).1` (`bool`) through a misaligned `*const (u32, bool)` faults with
+`.undefined` even though the `bool` leaf itself has alignment 1. -/
+theorem refute_step_v2_read_deref_proj_raw_misaligned :
+    (match readPlaceV2
+        [.bool, .rawPtr .shared (.tuple [.int .i32 false, .bool])]
+        [.immediate none, .immediate (some (.ptr ⟨some 1, 1, .isize⟩))]
+        { allocations := [{
+            allocId := 1
+            alignLog2 := 2
+            mutability := .shared
+            bytes := [
+              .init 0 none, .init 0 none, .init 0 none, .init 0 none,
+              .init 0 none, .init 1 none, .init 0 none, .init 0 none
+            ]
+            live := true
+          }], nextAllocId := 2 }
+        false
+        { localId := 1, projection := [.deref, .field 1 .bool] } with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_read_deref_proj_no_prov_misaligned`: reading a zero-sized
+element `(*p)[0]` (`[u32; 0]`, align 4) through a provenance-free misaligned
+`*const [[u32; 0]; 2]` at address `2` faults with `.undefined`. -/
+theorem refute_step_v2_read_deref_proj_no_prov_misaligned :
+    (match readPlaceV2
+        [.array (.int .i32 false) 0,
+         .rawPtr .shared (.array (.array (.int .i32 false) 0) 2)]
+        [.immediate none, .immediate (some (.ptr ⟨none, 2, .isize⟩))]
+        MemoryState.empty
+        false
+        { localId := 1, projection := [.deref, .constantIndex 0 1 false] } with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_unsize_shared_to_mut`: `CastKind.unsize` rejects widening a
+shared `&[T; N]` into `&mut [T]` as `.undefined` even on a `.mut`
+allocation. -/
+theorem refute_step_v2_unsize_shared_to_mut :
+    (match evalRvalueV2
+        [.ref .mut (.slice (.int .i8 false)),
+         .ref .shared (.array (.int .i8 false) 2)]
+        [.immediate none, .immediate (some (.ptr ⟨some 1, 0, .isize⟩))]
+        { allocations := [{
+            allocId := 1
+            alignLog2 := 0
+            mutability := .mut
+            bytes := [.init 1 none, .init 2 none]
+            live := true
+          }], nextAllocId := 2 }
+        (.ref .mut (.slice (.int .i8 false)))
+        (.cast .unsize (.copy ⟨1, []⟩) (.ref .mut (.slice (.int .i8 false)))) with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_unsize_raw_shared_to_mut`: `CastKind.unsize` rejects
+widening `*const [T; N]` into `*mut [T]` as `.undefined`. -/
+theorem refute_step_v2_unsize_raw_shared_to_mut :
+    (match evalRvalueV2
+        [.rawPtr .mut (.slice (.int .i8 false)),
+         .rawPtr .shared (.array (.int .i8 false) 2)]
+        [.immediate none, .immediate (some (.ptr ⟨some 1, 0, .isize⟩))]
+        { allocations := [{
+            allocId := 1
+            alignLog2 := 0
+            mutability := .mut
+            bytes := [.init 1 none, .init 2 none]
+            live := true
+          }], nextAllocId := 2 }
+        (.rawPtr .mut (.slice (.int .i8 false)))
+        (.cast .unsize (.copy ⟨1, []⟩) (.rawPtr .mut (.slice (.int .i8 false)))) with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_unsize_src_mut_valid`: `CastKind.unsize` validates the
+source `&mut [T; N]` at `srcMut` (`.mut`), faulting `.undefined` over a
+`.shared` allocation even when the destination slice is `&[T]` (`.shared`). -/
+theorem refute_step_v2_unsize_src_mut_valid :
+    (match evalRvalueV2
+        [.ref .shared (.slice (.int .i8 false)),
+         .ref .mut (.array (.int .i8 false) 2)]
+        [.immediate none, .immediate (some (.ptr ⟨some 1, 0, .isize⟩))]
+        { allocations := [{
+            allocId := 1
+            alignLog2 := 0
+            mutability := .shared
+            bytes := [.init 1 none, .init 2 none]
+            live := true
+          }], nextAllocId := 2 }
+        (.ref .shared (.slice (.int .i8 false)))
+        (.cast .unsize (.copy ⟨1, []⟩)
+          (.ref .shared (.slice (.int .i8 false)))) with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_resolve_deref_proj_propagates_ub`: resolving an out-of-bounds
+`ConstantIndex` through `&mut [u8; 4]` propagates `.error .undefined` rather
+than collapsing it to `.error .unsupported`. -/
+theorem refute_step_v2_resolve_deref_proj_propagates_ub :
+    (match resolvePlaceDestV2
+        [.unit, .ref .mut (.array (.int .i8 false) 4)]
+        [.immediate none, .immediate (some (.ptr ⟨some 1, 0, .isize⟩))]
+        { allocations := [{
+            allocId := 1
+            alignLog2 := 0
+            mutability := .mut
+            bytes := [.init 0 none, .init 0 none, .init 0 none, .init 0 none]
+            live := true
+          }], nextAllocId := 2 }
+        { localId := 1, projection := [.deref, .constantIndex 5 4 false] }
+        (.int .i8 false) with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_rodata_bytes_data_ty_only`: evaluating `ConstLit.rodataBytes`
+at a reference type fails closed with `.error .unsupported` instead of decoding
+a null or dangling reference. -/
+theorem refute_step_v2_rodata_bytes_data_ty_only :
+    (match evalOperandToSlotV2
+        [.unit]
+        [.immediate none]
+        emptyMemory
+        (.constant ⟨.ref .mut (.int .i8 false),
+          .rodataBytes (List.replicate 8 (.init 0))⟩) with
+     | .error .unsupported => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_rodata_ref_mut`: evaluating `.rodataRef` at a mutable
+`&mut T` reference type fails closed with `.unsupported`. -/
+theorem refute_step_v2_rodata_ref_mut :
+    (match evalRodataRefConstV2
+        (.ref .mut (.int .i8 false)) [.init 5] 0 0 none
+        [.immediate none] emptyMemory with
+     | .error .unsupported => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_rodata_slice_ref_mut`: evaluating `.rodataRef` at a mutable
+`&mut [T]` slice reference type fails closed with `.unsupported`. -/
+theorem refute_step_v2_rodata_slice_ref_mut :
+    (match evalRodataRefConstV2
+        (.ref .mut (.slice (.int .i8 false))) [.init 5] 0 0 (some 1)
+        [.immediate none] emptyMemory with
+     | .error .unsupported => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_rodata_raw_ptr_mut`: evaluating `.rodataRef` at a mutable
+`*mut T` raw-pointer type fails closed with `.unsupported`. -/
+theorem refute_step_v2_rodata_raw_ptr_mut :
+    (match evalRodataRefConstV2
+        (.rawPtr .mut (.int .i8 false)) [.init 5] 0 0 none
+        [.immediate none] emptyMemory with
+     | .error .unsupported => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_rodata_raw_slice_mut`: evaluating `.rodataRef` at a mutable
+`*mut [T]` raw-slice type fails closed with `.unsupported`. -/
+theorem refute_step_v2_rodata_raw_slice_mut :
+    (match evalRodataRefConstV2
+        (.rawPtr .mut (.slice (.int .i8 false))) [.init 5] 0 0 (some 1)
+        [.immediate none] emptyMemory with
+     | .error .unsupported => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_array_eq_dangling_ref`: `CoreCallOp.arrayEq` validates
+reference operands via `refValidInMem`, faulting `.undefined` on `&mut [u8; 2]`
+over a `.shared` allocation (so skipping validation flips to `.ok true`). -/
+theorem refute_step_v2_array_eq_dangling_ref :
+    (match execCoreCallOp
+        { allocations := [{
+            allocId := 1
+            alignLog2 := 0
+            mutability := .shared
+            bytes := [.init 1 none, .init 2 none]
+            live := true
+          }], nextAllocId := 2 }
+        (.arrayEq (.int .i8 false) 2)
+        [(.ref .mut (.array (.int .i8 false) 2), .ptr ⟨some 1, 0, .isize⟩),
+         (.ref .shared (.array (.int .i8 false) 2), .ptr ⟨some 1, 0, .isize⟩)]
+        .bool with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_return_rodata_unsupported`: returning either a `&'static`
+reference or a `*const` raw pointer into a callee-allocated `.rodata`
+allocation faults with `.fault .unsupported` (neither `.undefined` nor
+returning a dangling allocation id). -/
+theorem refute_step_v2_return_rodata_unsupported :
+    let roMem : MemoryState := {
+      allocations := [{
+        allocId := 1
+        alignLog2 := 0
+        mutability := .shared
+        bytes := [.init 1 none, .init 2 none]
+        live := true
+      }]
+      nextAllocId := 2
+    }
+    let bb : BasicBlock := { statements := [], terminator := .return_, cleanup := false }
+    let refBody : Body := {
+      argumentCount := 0
+      locals := [.ref .shared (.slice (.int .i8 false))]
+      basicBlocks := [bb]
+    }
+    let ptrBody : Body := {
+      argumentCount := 0
+      locals := [.rawPtr .shared (.array (.int .i8 false) 2)]
+      basicBlocks := [bb]
+    }
+    let refFrame : FrameState := {
+      defId := 0
+      blockIdx := 0
+      stmtIdx := 0
+      locals := [.immediate (some (.slicePtr ⟨some 1, 0, .isize⟩ 2))]
+    }
+    let ptrFrame : FrameState := {
+      defId := 0
+      blockIdx := 0
+      stmtIdx := 0
+      locals := [.immediate (some (.ptr ⟨some 1, 0, .isize⟩))]
+    }
+    (match evalTerminatorV2 refBody bb refFrame roMem { allocations := [] } with
+     | .fault .unsupported => True
+     | _ => False) ∧
+    (match evalTerminatorV2 ptrBody bb ptrFrame roMem { allocations := [] } with
+     | .fault .unsupported => True
+     | _ => False) :=
+  ⟨trivial, trivial⟩
+
+/-- Guard `step_v2_read_indirect_proj_propagates_error`: reading an unsupported
+field projection from an uninitialized `.indirect` local propagates
+`.error .unsupported` from `projectMemoryLayoutV2` rather than falling back to
+a whole-local load and turning it into `.error .undefined`. -/
+theorem refute_step_v2_read_indirect_proj_propagates_error :
+    (match readPlaceV2
+        [.unit, .tuple [.int .i8 false, .bool]]
+        [.immediate none, .indirect ⟨1, 0⟩]
+        { allocations := [{
+            allocId := 1
+            alignLog2 := 0
+            mutability := .mut
+            bytes := [.uninit, .uninit]
+            live := true
+          }], nextAllocId := 2 }
+        false
+        { localId := 1, projection := [.field 5 .bool] } with
+     | .error .unsupported => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_resolve_local_proj_validates_first`: assigning to an
+out-of-bounds projected immediate local faults `.fault .undefined` during
+destination resolution before evaluating an `.unsupported` rvalue, and
+`updateValAtProjV2` updates `RangeTo`/`RangeFrom` `.field 0`. -/
+theorem refute_step_v2_resolve_local_proj_validates_first :
+    let body : Body := {
+      argumentCount := 0
+      locals := [.unit, .array (.int .i8 false) 4]
+      basicBlocks := []
+    }
+    let frame : FrameState := {
+      defId := 0
+      blockIdx := 0
+      stmtIdx := 0
+      locals := [.immediate none,
+        .immediate (some (.array [
+          .scalar ⟨.i8, false, 0⟩, .scalar ⟨.i8, false, 0⟩,
+          .scalar ⟨.i8, false, 0⟩, .scalar ⟨.i8, false, 0⟩
+        ]))]
+    }
+    let stmt : StatementKind :=
+      .assign
+        { localId := 1, projection := [.constantIndex 5 4 false] }
+        .unsupported
+    (match evalStatementV2 body frame emptyMemory
+        { allocations := [] } stmt with
+     | .fault .undefined => True
+     | _ => False) ∧
+    (match updateValAtProjV2
+        (.rangeTo (.int .isize false)) (.rangeTo 1)
+        [.field 0 (.int .isize false)] (.scalar ⟨.isize, false, 7⟩) with
+     | .ok (.rangeTo 7) => True
+     | _ => False) ∧
+    (match updateValAtProjV2
+        (.rangeFrom (.int .isize false)) (.rangeFrom 2)
+        [.field 0 (.int .isize false)] (.scalar ⟨.isize, false, 9⟩) with
+     | .ok (.rangeFrom 9) => True
+     | _ => False) :=
+  ⟨trivial, trivial, trivial⟩
 end GuardMutation

@@ -268,7 +268,8 @@ rejecting `.tuple`, `.ref`, `.unsupported`, and wide-pointer pointees. -/
     execLayoutOfTy ty
   | .rawPtr _ pointee =>
     if sizedPointeeAdmittedAt 8 pointee then some ⟨8, 3⟩ else none
-  | .tuple _ | .ref _ _ | .slice _ | .rangeTo _ | .rangeFrom _ | .unsupported => none
+  | .tuple _ | .ref _ _ | .slice _ | .array _ _ | .rangeTo _ | .rangeFrom _
+  | .unsupported => none
 
 /-- Computes the canonical 64-bit `(LayoutData, padMask)` for `spec`, agreeing
 identically with `Trusted.MirSemantics.layoutOfTy` on all Day-1 `.mirTy` types
@@ -454,14 +455,16 @@ theorem reprCLayout_extends_trusted_layoutOfTy (ty : MirTy) (l : LayoutData)
           execLayoutOfTy]
         rw [hAdm, hTag]
         rfl
-  | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => nomatch h
+  | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+  | unsupported => nomatch h
   | tuple fs =>
     cases fs with
     | nil => nomatch h
     | cons t1 r1 =>
       cases t1 with
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+      | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+      | unsupported =>
         cases r1 with
         | nil => nomatch h
         | cons _ r2 => cases r2 <;> nomatch h
@@ -471,7 +474,8 @@ theorem reprCLayout_extends_trusted_layoutOfTy (ty : MirTy) (l : LayoutData)
         | cons t2 r2 =>
           cases t2 with
           | int _ _ | unit | never | char | ordering | enum _ | tuple _
-          | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+          | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+          | unsupported =>
             cases r2 <;> nomatch h
           | bool =>
             cases r2 with
@@ -492,7 +496,8 @@ wide-pointer pointees). -/
     match v with
     | .ptr pv => mirIntWidthBeq pv.width .isize
     | _ => false
-  | .tuple _ | .ref _ _ | .slice _ | .rangeTo _ | .rangeFrom _ | .unsupported => false
+  | .tuple _ | .ref _ _ | .slice _ | .array _ _ | .rangeTo _ | .rangeFrom _
+  | .unsupported => false
 
 /-- Compatibility check between a symbolic `Val` and its declared
 `SpatialTargetSpec`, agreeing with `mirCheckVal` on Day-1 `.mirTy` scalars,
@@ -596,7 +601,8 @@ while `.rawPtr` 8-byte slices must encode `pv.offsetBytes` and carry
       sliceAllInitOptProv slice pv.allocId &&
       allocBytesListBeq slice expectedSlice
     | _ => false
-  | .tuple _ | .ref _ _ | .slice _ | .rangeTo _ | .rangeFrom _ | .unsupported => false
+  | .tuple _ | .ref _ _ | .slice _ | .array _ _ | .rangeTo _ | .rangeFrom _
+  | .unsupported => false
 
 /-- Codec-independent per-field byte-value, bidirectional provenance, and
 padding guard: verifies that `bytes` matches `spec`'s exact layout size, every
@@ -751,14 +757,16 @@ theorem valAndBytesMatchTargetSpec_false_of_true (spec : SpatialTargetSpec)
   | mirTy ty =>
     cases ty with
     | bool | int _ _ | unit | never | char | ordering | enum _ | ref _ _
-    | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported => exact h
+    | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+    | unsupported => exact h
     | tuple ts =>
       cases ts with
       | nil => exact h
       | cons t1 r1 =>
         cases t1 with
         | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-        | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+        | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
+        | unsupported =>
           cases r1 with
           | nil => exact h
           | cons _ r2 => cases r2 <;> exact h
@@ -768,7 +776,8 @@ theorem valAndBytesMatchTargetSpec_false_of_true (spec : SpatialTargetSpec)
           | cons t2 r2 =>
             cases t2 with
             | int _ _ | unit | never | char | ordering | enum _ | tuple _
-            | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+            | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _
+            | rangeFrom _ | unsupported =>
               cases r2 <;> exact h
             | bool =>
               cases r2 with
@@ -803,7 +812,8 @@ theorem valAndBytesMatchTargetSpec_false_of_true (spec : SpatialTargetSpec)
       rw [ite_bool_false rfl]
       cases v with
       | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _
-      | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ => nomatch h
+      | array _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ =>
+        nomatch h
       | tuple fVals =>
         exact reprCFieldsMatchBytes_false_of_true bytes fields fVals 0 0 h
 
@@ -1029,7 +1039,7 @@ handles whose `LoanId` or `SubPath` provenance slot equals `aid`; see
   natFold
     (fun x =>
       match x with
-      | .tuple _ => false
+      | .tuple _ | .array _ => false
       | .ptr p =>
         match p.allocId with
         | none => true
@@ -1044,7 +1054,8 @@ handles whose `LoanId` or `SubPath` provenance slot equals `aid`; see
         true)
     (fun _ ih x =>
       match x with
-      | .tuple fields => fields.foldr (fun c acc => ih c && acc) true
+      | .tuple fields | .array fields =>
+        fields.foldr (fun c acc => ih c && acc) true
       | .ptr p =>
         match p.allocId with
         | none => true
@@ -2648,13 +2659,13 @@ non-padding bytes and ignoring padding bytes `1..3`. -/
             | .i8 | .i16 | .i64 | .i128 | .isize => none
           | .i16 | .i32 | .i64 | .i128 | .isize => none
         | .ptr _ | .bool _ | .char _ | .ordering _ | .unit | .enumVal _ _ | .tuple _
-        | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .bytes _ =>
+        | .array _ | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .bytes _ =>
           none
       | .ptr _ | .bool _ | .char _ | .ordering _ | .unit | .enumVal _ _ | .tuple _
-      | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .bytes _ =>
+      | .array _ | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .bytes _ =>
         none
   | .scalar _ | .ptr _ | .bool _ | .char _ | .ordering _ | .unit | .enumVal _ _
-  | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .bytes _ =>
+  | .array _ | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .bytes _ =>
     none
 
 private theorem mirCheckVal_u8_ofNat {n : Nat} (hn : n < 256) :
@@ -3039,8 +3050,8 @@ theorem paddedU8U32MemCodec_lawful :
     exact ⟨hMemLen, hNonPad, rfl, hCompat, hBytesMatch, hDecMem, hDecSym⟩
   · intro v x hDec
     cases v with
-    | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | slicePtr _ _
-    | rangeTo _ | rangeFrom _ | bytes _ =>
+    | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _
+    | array _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ =>
       nomatch hDec
     | tuple fs =>
       cases fs with
@@ -3054,12 +3065,12 @@ theorem paddedU8U32MemCodec_lawful :
           | nil =>
             cases f0 with
             | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
-            | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ =>
+            | array _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ =>
               nomatch hDec
             | scalar sa =>
               cases f1 with
               | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
-              | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ =>
+              | array _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ =>
                 nomatch hDec
               | scalar sb =>
                 cases sa with
@@ -3271,13 +3282,13 @@ structure ProvPtrStruct where
             | .i8 | .i16 | .i32 | .i64 | .i128 => none
           | .i16 | .i32 | .i64 | .i128 | .isize => none
         | .scalar _ | .bool _ | .char _ | .ordering _ | .unit | .enumVal _ _ | .tuple _
-        | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .bytes _ =>
+        | .array _ | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .bytes _ =>
           none
       | .ptr _ | .bool _ | .char _ | .ordering _ | .unit | .enumVal _ _ | .tuple _
-      | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .bytes _ =>
+      | .array _ | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .bytes _ =>
         none
   | .scalar _ | .ptr _ | .bool _ | .char _ | .ordering _ | .unit | .enumVal _ _
-  | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .bytes _ =>
+  | .array _ | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .bytes _ =>
     none
 
 /-- Provenance-enforcing `TypedSpatialMemCodec` for `ProvPtrStruct` requiring
@@ -3660,8 +3671,8 @@ theorem provPtrPaddedMemCodec_lawful (expectedProv : AllocId) :
     exact ⟨hMemLen, hNonPad, hProv, hCompat, hBytesMatch, hDecMem, hDecSym⟩
   · intro v x hDec
     cases v with
-    | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | slicePtr _ _
-    | rangeTo _ | rangeFrom _ | bytes _ =>
+    | scalar _ | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _
+    | array _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ =>
       nomatch hDec
     | tuple fs =>
       cases fs with
@@ -3675,12 +3686,12 @@ theorem provPtrPaddedMemCodec_lawful (expectedProv : AllocId) :
           | nil =>
             cases f0 with
             | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
-            | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ =>
+            | array _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ =>
               nomatch hDec
             | scalar sa =>
               cases f1 with
               | scalar _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
-              | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ =>
+              | array _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ =>
                 nomatch hDec
               | ptr pv =>
                 cases sa with
@@ -3841,7 +3852,7 @@ theorem provPtrPaddedMemCodec_lawful (expectedProv : AllocId) :
         none
     | .i8 | .i16 | .i64 | .i128 | .isize => none
   | .ptr _ | .bool _ | .char _ | .ordering _ | .unit | .enumVal _ _
-  | .tuple _ | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .bytes _ => none
+  | .tuple _ | .array _ | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .bytes _ => none
 
 /-- Day-1 `TypedSpatialMemCodec` for `MirTy.int .i32 false` (`u32`). -/
 @[expose] def u32MemCodec : TypedSpatialMemCodec (BitVec 32) where
@@ -3975,7 +3986,7 @@ theorem u32MemCodec_lawful : LawfulTypedSpatialMemCodec u32MemCodec := by
   · intro v x hDec
     cases v with
     | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
-    | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ => nomatch hDec
+    | array _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bytes _ => nomatch hDec
     | scalar sb =>
       cases sb with
       | mk wb sgb bb =>
@@ -4262,7 +4273,8 @@ theorem mirTyBeqAt_sound (d : Nat) :
       cases b with
       | enum e2 => rw [mirEnumTyBeq_sound h]
       | _ => nomatch h
-    | tuple _ | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ => nomatch h
+    | tuple _ | array _ _ | ref _ _ | rawPtr _ _ | slice _ | rangeTo _
+    | rangeFrom _ => nomatch h
   | succ d ih =>
     intro a b h
     dsimp only [mirTyBeqAt, natFold, Nat.recCompiled] at h
@@ -4300,6 +4312,11 @@ theorem mirTyBeqAt_sound (d : Nat) :
     | slice p1 =>
       cases b with
       | slice p2 => rw [ih h]
+      | _ => nomatch h
+    | array p1 n1 =>
+      cases b with
+      | array p2 n2 =>
+        rw [natEq_of_beq n1 n2 (boolAnd_left h), ih (boolAnd_right h)]
       | _ => nomatch h
     | rangeTo p1 =>
       cases b with
@@ -4388,7 +4405,8 @@ private theorem specsFoldr_toCapturedMirTy_eq (ctx : BodySpatialCtx) :
         cases capTy with
         | unsupported => rw [hRest]
         | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-        | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ => nomatch hCap
+        | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _
+        | rangeFrom _ => nomatch hCap
 
 /-- Whenever `specsMatchBodyCtx ctx specs = true`, projecting `specs` via
 `SpatialTargetSpec.toCapturedMirTy` recovers `ctx.body.locals` identically. -/
@@ -4468,7 +4486,8 @@ private theorem specsFoldr_slot_sound (ctx : BodySpatialCtx) :
           have hAdt := boolAnd_right hHere
           cases capTy with
           | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
-          | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ => nomatch hCap
+          | ref _ _ | rawPtr _ _ | slice _ | array _ _ | rangeTo _
+          | rangeFrom _ => nomatch hCap
           | unsupported =>
             cases hFind : findUniqueAdtEntryForLocal ctx.adtLocals base with
             | none => rw [hFind] at hAdt; nomatch hAdt

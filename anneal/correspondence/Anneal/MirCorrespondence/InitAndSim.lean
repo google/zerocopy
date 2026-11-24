@@ -1107,7 +1107,7 @@ private theorem evalTerminator_preserves_meta {body : Body} {bb : BasicBlock}
           rw [h_sw] at h
         · cases h
         · exact h_jump _ h
-      | unit | enumVal _ _ | tuple _ | ptr _ | bytes _ | ordering _
+      | unit | enumVal _ _ | tuple _ | array _ | ptr _ | bytes _ | ordering _
       | slicePtr _ _ | rangeTo _ | rangeFrom _ =>
         dsimp only at h
         cases h_br : targets.branches with

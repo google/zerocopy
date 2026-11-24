@@ -138,6 +138,7 @@ inductive Val where
   | unit
   | enumVal (ty : EnumTy) (variant : Nat)
   | tuple (fields : List Val)
+  | array (elems : List Val)
   | bytes (data : List AllocByte)
 
 /-- Memory allocation: the caller-visible allocations of `CallerMemory` and the

@@ -94,6 +94,7 @@ For fieldless enums (`.enum ety`), constant decoding matches `op_to_const`
 `decodeVal` reuses `evalConstLit` to interpret the bytes read from memory, so
 constant operands and memory reads apply the same validity checks. -/
 noncomputable def evalConstLit : MirTy → ConstLit → Except FaultKind Val
+  | _, .rodataBytes _ | _, .rodataRef _ _ _ _ => .error .unsupported
   | .int w s, .scalar bits =>
     if truncateBits w bits != bits then
       .error .unsupported
@@ -419,9 +420,43 @@ noncomputable def readPtrProv? : List AllocByte → Option (Option AllocId)
   | .uninit :: _ => none
   | .init _ p :: rest => provMatch p rest
 
-/-- Profile v2 byte encoder: encodes thin/wide pointers (preserving `allocId`
-provenance on the pointer bytes) and `RangeTo`/`RangeFrom`, delegating all
-Profile v1 scalar, enum, and overflow-pair types to `encodeVal`.
+/-- Convert a provenance-free `.rodata` byte into an `AllocByte` with `none`
+provenance. -/
+noncomputable def rodataByteToAllocByte : RodataByte → AllocByte
+  | .uninit => .uninit
+  | .init b => .init b none
+
+/-- Encode a list of elements using a fixed element encoder (factored out to
+keep `encodeValV2` structurally recursive on `MirTy`). -/
+noncomputable def encodeValListWith
+    (f : Val → Except FaultKind (List AllocByte)) :
+    List Val → Except FaultKind (List AllocByte)
+  | [] => .ok []
+  | v :: vs =>
+    match f v, encodeValListWith f vs with
+    | .ok bs, .ok rest => .ok (bs ++ rest)
+    | .error k, _ => .error k
+    | _, .error k => .error k
+
+/-- Decode `count` fixed-size chunks using element decoder `f` (factored out to
+keep `decodeValV2` structurally recursive on `MirTy`). -/
+noncomputable def decodeFixedChunks (elemSize : Nat)
+    (f : List AllocByte → Except FaultKind (Option Val)) :
+    Nat → List AllocByte → Except FaultKind (Option (List Val))
+  | 0, bytes => if bytes.isEmpty then .ok (some []) else .error .unsupported
+  | count + 1, bytes =>
+    match f (bytes.take elemSize),
+        decodeFixedChunks elemSize f count (bytes.drop elemSize) with
+    | .error k, _ => .error k
+    | _, .error k => .error k
+    | .ok none, _ => .ok none
+    | _, .ok none => .ok none
+    | .ok (some v), .ok (some vs) => .ok (some (v :: vs))
+
+/-- Profile v2 byte encoder: encodes fixed-size arrays `[T; N]`, thin/wide
+pointers (preserving `allocId` provenance on the pointer bytes), and
+`RangeTo`/`RangeFrom`, delegating all Profile v1 scalar, enum, and
+overflow-pair types to `encodeVal`.
 
 A wide slice pointer is laid out as the `(ptr, meta)` scalar pair that
 `layoutOfTyV2` documents: 8 data-pointer bytes, then 8 bytes of `usize`
@@ -463,11 +498,45 @@ noncomputable def encodeValV2 (endian : TargetEndian) (ty : MirTy) (v : Val) :
       .ok ((encodeUInt endian 8 e.toNat).map (fun b => AllocByte.init b none))
     | .rangeFrom (.int .isize false), .rangeFrom s =>
       .ok ((encodeUInt endian 8 s.toNat).map (fun b => AllocByte.init b none))
+    | .array elem len, .array vs =>
+      if !Nat.beq vs.length len then
+        .error .unsupported
+      else
+        encodeValListWith (encodeValV2 endian elem) vs
     | _, _ => encodeVal endian ty v
 
-/-- Profile v2 byte decoder: decodes thin/wide pointers (recovering uniform
-byte provenance) and `RangeTo`/`RangeFrom`, delegating all Profile v1 types
-to `decodeVal`.
+/-- Helper for `decodeValV2` on `.rawPtr` and `.ref` types (thin/wide pointers
+and slices), factored out so `decodeValV2`'s equation lemma stays free of
+`Quot.sound`. -/
+noncomputable def decodePtrLikeV2 (endian : TargetEndian) (pt : MirTy)
+    (bytes : List AllocByte) : Except FaultKind (Option Val) :=
+  if isUnsizedTy pt then
+    match pt with
+    | .slice _ =>
+      if !Nat.beq bytes.length 16 then
+        .error .unsupported
+      else
+        let pBytes := bytes.take 8
+        let lBytes := bytes.drop 8
+        match initBytes? pBytes, readPtrProv? pBytes, initBytes? lBytes with
+        | some pRaw, some prov, some lRaw =>
+          let p : PtrVal := ⟨prov, UInt64.ofNat (decodeUInt endian pRaw), .isize⟩
+          let len := UInt64.ofNat (decodeUInt endian lRaw)
+          .ok (some (.slicePtr p len))
+        | _, _, _ => .ok none
+    | _ => .error .unsupported
+  else
+    if !Nat.beq bytes.length 8 then
+      .error .unsupported
+    else
+      match initBytes? bytes, readPtrProv? bytes with
+      | some pRaw, some prov =>
+        .ok (some (.ptr ⟨prov, UInt64.ofNat (decodeUInt endian pRaw), .isize⟩))
+      | _, _ => .ok none
+
+/-- Profile v2 byte decoder: decodes fixed-size arrays `[T; N]`, thin/wide
+pointers (recovering uniform byte provenance), and `RangeTo`/`RangeFrom`,
+delegating all Profile v1 types to `decodeVal`.
 
 This inverts `encodeValV2`. Any uninitialized byte yields `.ok none`, and the
 caller faults with `.undefined`: raw pointers and integers "must not be
@@ -476,48 +545,36 @@ If the 8 pointer bytes do not all carry the same `allocId`, the decoded
 pointer has no provenance and can be used only for zero-sized accesses. That
 choice is conservative. Length and range bytes ignore provenance, as integer
 loads do at runtime. -/
-noncomputable def decodeValV2 (endian : TargetEndian) (ty : MirTy)
-    (bytes : List AllocByte) : Except FaultKind (Option Val) :=
-  match ty with
-  | .rawPtr _ pt | .ref _ pt =>
-    if isUnsizedTy pt then
-      match pt with
-      | .slice _ =>
-        if !Nat.beq bytes.length 16 then
-          .error .unsupported
-        else
-          let pBytes := bytes.take 8
-          let lBytes := bytes.drop 8
-          match initBytes? pBytes, readPtrProv? pBytes, initBytes? lBytes with
-          | some pRaw, some prov, some lRaw =>
-            let p : PtrVal := ⟨prov, UInt64.ofNat (decodeUInt endian pRaw), .isize⟩
-            let len := UInt64.ofNat (decodeUInt endian lRaw)
-            .ok (some (.slicePtr p len))
-          | _, _, _ => .ok none
-      | _ => .error .unsupported
-    else
-      if !Nat.beq bytes.length 8 then
-        .error .unsupported
-      else
-        match initBytes? bytes, readPtrProv? bytes with
-        | some pRaw, some prov =>
-          .ok (some (.ptr ⟨prov, UInt64.ofNat (decodeUInt endian pRaw), .isize⟩))
-        | _, _ => .ok none
-  | .rangeTo (.int .isize false) =>
+noncomputable def decodeValV2 (endian : TargetEndian) :
+    MirTy → List AllocByte → Except FaultKind (Option Val)
+  | .rawPtr _ pt, bytes => decodePtrLikeV2 endian pt bytes
+  | .ref _ pt, bytes => decodePtrLikeV2 endian pt bytes
+  | .rangeTo (.int .isize false), bytes =>
     if !Nat.beq bytes.length 8 then
       .error .unsupported
     else
       match initBytes? bytes with
       | none => .ok none
       | some raw => .ok (some (.rangeTo (UInt64.ofNat (decodeUInt endian raw))))
-  | .rangeFrom (.int .isize false) =>
+  | .rangeFrom (.int .isize false), bytes =>
     if !Nat.beq bytes.length 8 then
       .error .unsupported
     else
       match initBytes? bytes with
       | none => .ok none
       | some raw => .ok (some (.rangeFrom (UInt64.ofNat (decodeUInt endian raw))))
-  | _ => decodeVal endian ty bytes
+  | .array elem len, bytes =>
+    match layoutOfTyV2 elem with
+    | none => .error .unsupported
+    | some elemLay =>
+      if !Nat.beq bytes.length (len * elemLay.size) then
+        .error .unsupported
+      else
+        match decodeFixedChunks elemLay.size (decodeValV2 endian elem) len bytes with
+        | .error k => .error k
+        | .ok none => .ok none
+        | .ok (some vs) => .ok (some (.array vs))
+  | ty, bytes => decodeVal endian ty bytes
 
 /-- Profile v2 typed load from `place` in `mem`. -/
 noncomputable def loadIndirectV2 (mem : MemoryState) (ty : MirTy)
@@ -646,6 +703,7 @@ mutual
       | .ok () => true
       | .error _ => false
     | .tuple ts, .tuple vs => refsValidInMemList m ts vs
+    | .array elem _, .array vs => refsValidInMemArray m elem vs
     | _, _ => true
 
   noncomputable def refsValidInMemList (m : MemoryState) :
@@ -653,6 +711,11 @@ mutual
     | [], [] => true
     | t :: ts, v :: vs => refsValidInMem m t v && refsValidInMemList m ts vs
     | _, _ => false
+
+  noncomputable def refsValidInMemArray (m : MemoryState) (elem : MirTy) :
+      List Val → Bool
+    | [] => true
+    | v :: vs => refsValidInMem m elem v && refsValidInMemArray m elem vs
 end
 
 mutual
@@ -670,6 +733,7 @@ mutual
       | some lay, some aid => [(Mutability.beq reqMut .mut, aid, p.offsetBytes.toNat, lay.size)]
       | _, _ => []
     | .tuple ts, .tuple vs => refAccessSpansList ts vs
+    | .array elem _, .array vs => refAccessSpansArray elem vs
     | _, _ => []
 
   noncomputable def refAccessSpansList :
@@ -677,6 +741,11 @@ mutual
     | [], [] => []
     | t :: ts, v :: vs => refAccessSpans t v ++ refAccessSpansList ts vs
     | _, _ => []
+
+  noncomputable def refAccessSpansArray (elem : MirTy) :
+      List Val → List (Bool × AllocId × Nat × Nat)
+    | [] => []
+    | v :: vs => refAccessSpans elem v ++ refAccessSpansArray elem vs
 end
 
 mutual
@@ -691,13 +760,72 @@ mutual
       | some aid => [aid]
       | none => []
     | .tuple ts, .tuple vs => refAllocIdsList ts vs
+    | .array elem _, .array vs => refAllocIdsArray elem vs
     | _, _ => []
 
   noncomputable def refAllocIdsList : List MirTy → List Val → List AllocId
     | [], [] => []
     | t :: ts, v :: vs => refAllocIds t v ++ refAllocIdsList ts vs
     | _, _ => []
+
+  noncomputable def refAllocIdsArray (elem : MirTy) : List Val → List AllocId
+    | [] => []
+    | v :: vs => refAllocIds elem v ++ refAllocIdsArray elem vs
 end
+
+mutual
+  /-- Extract all allocation ids referenced by any `.ref` or `.rawPtr` inside
+  `(ty, v)`. -/
+  noncomputable def ptrOrRefAllocIds : MirTy → Val → List AllocId
+    | .ref _ (.slice _), .slicePtr p _
+    | .rawPtr _ (.slice _), .slicePtr p _ =>
+      match p.allocId with
+      | some aid => [aid]
+      | none => []
+    | .ref _ _, .ptr p
+    | .rawPtr _ _, .ptr p =>
+      match p.allocId with
+      | some aid => [aid]
+      | none => []
+    | .tuple ts, .tuple vs => ptrOrRefAllocIdsList ts vs
+    | .array elem _, .array vs => ptrOrRefAllocIdsArray elem vs
+    | _, _ => []
+
+  noncomputable def ptrOrRefAllocIdsList : List MirTy → List Val → List AllocId
+    | [], [] => []
+    | t :: ts, v :: vs => ptrOrRefAllocIds t v ++ ptrOrRefAllocIdsList ts vs
+    | _, _ => []
+
+  noncomputable def ptrOrRefAllocIdsArray (elem : MirTy) :
+      List Val → List AllocId
+    | [] => []
+    | v :: vs => ptrOrRefAllocIds elem v ++ ptrOrRefAllocIdsArray elem vs
+end
+
+/-- Return `true` when `aid` identifies a callee-allocated immutable `.rodata`
+allocation (present in `mem` with `mutability = .shared`, absent from `cm`).
+Callee stack allocations always have `mutability = .mut`. -/
+noncomputable def isRodataAllocId (cm : CallerMemory) (mem : MemoryState)
+    (aid : AllocId) : Bool :=
+  match findAllocation aid cm.allocations with
+  | some _ => false
+  | none =>
+    match findAllocation aid mem.allocations with
+    | some a => Mutability.beq a.mutability .shared
+    | none => false
+
+/-- Check whether any allocation id in `ids` is a callee `.rodata`
+allocation. -/
+noncomputable def anyRodataAllocId (cm : CallerMemory) (mem : MemoryState) :
+    List AllocId → Bool
+  | [] => false
+  | aid :: rest => isRodataAllocId cm mem aid || anyRodataAllocId cm mem rest
+
+/-- Return `true` when any `.ref` or `.rawPtr` inside `(ty, v)` points into a
+callee-allocated immutable `.rodata` allocation. -/
+noncomputable def hasEscapingRodataPtr (cm : CallerMemory) (mem : MemoryState)
+    (ty : MirTy) (v : Val) : Bool :=
+  anyRodataAllocId cm mem (ptrOrRefAllocIds ty v)
 
 /-- Check that every reference's provenance `allocId` belongs to `cm` (so callee
 stack references can never escape past return). -/

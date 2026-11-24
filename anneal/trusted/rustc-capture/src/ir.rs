@@ -298,6 +298,11 @@ pub enum Ty {
         #[serde(serialize_with = "serialize_boxed_ty")]
         elem: Box<Ty>,
     },
+    Array {
+        #[serde(serialize_with = "serialize_boxed_ty")]
+        elem: Box<Ty>,
+        len: usize,
+    },
     RangeTo {
         #[serde(serialize_with = "serialize_boxed_ty")]
         elem: Box<Ty>,
@@ -338,6 +343,7 @@ impl Ty {
             | Self::RangeTo { .. }
             | Self::RangeFrom { .. } => true,
             Self::Ref { .. } => false,
+            Self::Array { elem, .. } => elem.is_retag_noop(),
             Self::Tuple { fields } => fields.iter().all(Self::is_retag_noop),
         }
     }
@@ -365,6 +371,7 @@ impl Ty {
     pub fn is_sized(&self) -> bool {
         match self {
             Self::Slice { .. } => false,
+            Self::Array { elem, .. } => elem.is_sized(),
             Self::Tuple { fields } => fields.iter().all(Self::is_sized),
             Self::Bool
             | Self::Char
@@ -397,18 +404,103 @@ impl Ty {
         )
     }
 
+    /// Whether this type belongs to the Profile v2 fixed-size data fragment
+    /// (`Trusted.MirSemantics.isSupportedV2DataTy`): scalars, units, enums,
+    /// and fixed arrays `[T; N]` without embedded refs, ptrs, or overflow
+    /// pairs.
+    pub fn is_supported_v2_data(&self) -> bool {
+        match self {
+            Self::Array { elem, .. } => elem.is_supported_v2_data(),
+            Self::OverflowPair(_) => false,
+            _ => self.is_supported_scalar_or_unit(),
+        }
+    }
+
+    /// Whether this type belongs to the Profile v2 structural `PartialEq`
+    /// fragment (`Trusted.MirSemantics.isArrayEqElemSupported`): primitives,
+    /// `Ordering`, `()`, and nested fixed-size arrays thereof, excluding enums
+    /// whose `PartialEq` impl may be non-structural.
+    pub fn is_array_eq_elem_supported(&self) -> bool {
+        match self {
+            Self::Bool | Self::Int(_) | Self::Char | Self::Ordering | Self::Unit => true,
+            Self::Array { elem, .. } => elem.is_array_eq_elem_supported(),
+            Self::Never
+            | Self::Enum(_)
+            | Self::OverflowPair(_)
+            | Self::Tuple { .. }
+            | Self::Ref { .. }
+            | Self::RawPtr { .. }
+            | Self::Slice { .. }
+            | Self::RangeTo { .. }
+            | Self::RangeFrom { .. } => false,
+        }
+    }
+
+    /// Layout `(size_bytes, align_log2)` matching
+    /// `Trusted.MirSemantics.layoutOfTyV2`.
+    pub fn v2_layout(&self) -> Option<(usize, u32)> {
+        match self {
+            Self::Bool | Self::Ordering => Some((1, 0)),
+            Self::Int(ity) => Some(match ity.width {
+                IntWidth::I8 => (1, 0),
+                IntWidth::I16 => (2, 1),
+                IntWidth::I32 => (4, 2),
+                IntWidth::I64 | IntWidth::Isize => (8, 3),
+                IntWidth::I128 => (16, 4),
+            }),
+            Self::Char => Some((4, 2)),
+            Self::Unit | Self::Never => Some((0, 0)),
+            Self::Enum(ety) => match ety.tag_repr() {
+                EnumTagRepr::ZeroSized => Some((0, 0)),
+                EnumTagRepr::Scalar(tag) => Self::Int(tag).v2_layout(),
+            },
+            Self::OverflowPair(ity) => {
+                let (w_bytes, align_log2) = Self::Int(*ity).v2_layout()?;
+                Some((2 * w_bytes, align_log2))
+            }
+            Self::Array { elem, len } => {
+                let (elem_size, align_log2) = elem.v2_layout()?;
+                let size = len.checked_mul(elem_size)?;
+                Some((size, align_log2))
+            }
+            Self::Ref { pointee, .. } | Self::RawPtr { pointee, .. } => {
+                Some(if matches!(&**pointee, Self::Slice { .. }) {
+                    (16, 3)
+                } else {
+                    (8, 3)
+                })
+            }
+            Self::RangeTo { elem } | Self::RangeFrom { elem }
+                if matches!(
+                    &**elem,
+                    Self::Int(IntTy {
+                        width: IntWidth::Isize,
+                        signed: false
+                    })
+                ) =>
+            {
+                Some((8, 3))
+            }
+            Self::Tuple { .. } | Self::Slice { .. } | Self::RangeTo { .. } | Self::RangeFrom { .. } => {
+                None
+            }
+        }
+    }
+
     /// Whether this type is admitted as a Profile v2 local type (matching
     /// `Trusted.MirSemantics.isSupportedV2LocalTy`). Forbids nested
-    /// references/pointers inside pointees (`&&T`, `*mut &T`, `&[&T]`).
+    /// references/pointers inside pointees (`&&T`, `*mut &T`, `&[&T]`,
+    /// `[&T; N]`).
     ///
-    /// Also forbids overflow-pair pointees (`&(T, bool)`, `*const (T, bool)`).
-    /// The Reference says "Tuples are laid out according to the [`Rust`
-    /// representation][`Rust`]." Beyond field alignment and non-overlap,
-    /// "There are no other guarantees of data layout made by this
-    /// representation." Yet `Trusted.MirSemantics.overflowPairLayout` fixes
-    /// one field order and size without a `layout_of` check. So overflow
-    /// pairs stay non-addressable locals that hold checked-operator results,
-    /// and no pointer can reach their bytes.
+    /// Also forbids overflow-pair pointees and array elements (`&(T, bool)`,
+    /// `*const (T, bool)`, `[(T, bool); N]`). The Reference says "Tuples are
+    /// laid out according to the [`Rust` representation][`Rust`]." Beyond
+    /// field alignment and non-overlap, "There are no other guarantees of data
+    /// layout made by this representation." Yet
+    /// `Trusted.MirSemantics.overflowPairLayout` fixes one field order and
+    /// size without a `layout_of` check. So overflow pairs stay
+    /// non-addressable locals that hold checked-operator results, and no
+    /// pointer can reach their bytes.
     /// https://github.com/rust-lang/reference/blob/ad35aca481751a06afeb23820a672b0f3b11a476/src/type-layout.md#L94
     /// https://github.com/rust-lang/reference/blob/ad35aca481751a06afeb23820a672b0f3b11a476/src/type-layout.md#L184
     pub fn is_supported_v2_local(&self) -> bool {
@@ -421,11 +513,11 @@ impl Ty {
             | Self::Never
             | Self::Enum(_)
             | Self::OverflowPair(_) => true,
+            Self::Array { elem, .. } => elem.is_supported_v2_data(),
             Self::Tuple { fields } => fields.iter().all(Self::is_supported_v2_local),
             Self::Ref { pointee, .. } | Self::RawPtr { pointee, .. } => match &**pointee {
                 Self::Slice { elem } => matches!(&**elem, Self::Int(_)),
-                Self::OverflowPair(_) => false,
-                other => other.is_supported_scalar_or_unit(),
+                other => other.is_supported_v2_data(),
             },
             Self::RangeTo { elem } | Self::RangeFrom { elem } => {
                 **elem
@@ -438,21 +530,23 @@ impl Ty {
         }
     }
 
-    /// Whether this type is a reference or a tuple containing one, mirroring
-    /// `Trusted.MirSemantics.tyHasRefV2`.
+    /// Whether this type is a reference or a tuple/array containing one,
+    /// mirroring `Trusted.MirSemantics.tyHasRefV2`.
     pub fn has_ref_v2(&self) -> bool {
         match self {
             Self::Ref { .. } => true,
+            Self::Array { elem, .. } => elem.has_ref_v2(),
             Self::Tuple { fields } => fields.iter().any(Self::has_ref_v2),
             _ => false,
         }
     }
 
-    /// Whether this type is a raw pointer or a tuple containing one, mirroring
-    /// `Trusted.MirSemantics.tyHasRawPtrV2`.
+    /// Whether this type is a raw pointer or a tuple/array containing one,
+    /// mirroring `Trusted.MirSemantics.tyHasRawPtrV2`.
     pub fn has_raw_ptr_v2(&self) -> bool {
         match self {
             Self::RawPtr { .. } => true,
+            Self::Array { elem, .. } => elem.has_raw_ptr_v2(),
             Self::Tuple { fields } => fields.iter().any(Self::has_raw_ptr_v2),
             _ => false,
         }
@@ -465,6 +559,7 @@ impl Ty {
             | Self::Ref { .. }
             | Self::RawPtr { .. }
             | Self::Slice { .. }
+            | Self::Array { .. }
             | Self::RangeTo { .. }
             | Self::RangeFrom { .. } => true,
             Self::Bool
@@ -496,7 +591,10 @@ impl Ty {
             Self::Ref { pointee, .. } | Self::RawPtr { pointee, .. } => {
                 pointee.collect_enum_ids(out);
             }
-            Self::Slice { elem } | Self::RangeTo { elem } | Self::RangeFrom { elem } => {
+            Self::Slice { elem }
+            | Self::Array { elem, .. }
+            | Self::RangeTo { elem }
+            | Self::RangeFrom { elem } => {
                 elem.collect_enum_ids(out);
             }
             Self::Bool
@@ -516,21 +614,40 @@ impl Ty {
             Self::Enum(ety) => 1 + ety.discriminants.len(),
             Self::Tuple { fields } => 1 + fields.iter().map(Self::ast_nodes).sum::<usize>(),
             Self::Ref { pointee, .. } | Self::RawPtr { pointee, .. } => 1 + pointee.ast_nodes(),
-            Self::Slice { elem } | Self::RangeTo { elem } | Self::RangeFrom { elem } => {
-                1 + elem.ast_nodes()
-            }
+            Self::Slice { elem }
+            | Self::Array { elem, .. }
+            | Self::RangeTo { elem }
+            | Self::RangeFrom { elem } => 1 + elem.ast_nodes(),
         }
     }
 }
 
-/// Constant literal payload matching `Trusted.MirAst.ConstLit` 1-to-1.
+/// Byte entry in immutable `.rodata` constant memory
+/// (`Trusted.MirAst.RodataByte`).
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum RodataByte {
+    Uninit,
+    Init { byte: u8 },
+}
+
+/// Constant literal payload matching `Trusted.MirAst.ConstLit` 1-to-1.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum ConstLit {
     ZeroSized,
     Scalar {
         #[serde(serialize_with = "serialize_u128_decimal")]
         bits: u128,
+    },
+    RodataBytes {
+        bytes: Vec<RodataByte>,
+    },
+    RodataRef {
+        bytes: Vec<RodataByte>,
+        align_log2: u32,
+        offset_bytes: usize,
+        slice_len: Option<usize>,
     },
 }
 
@@ -571,38 +688,32 @@ fn admit_place_mention(is_sized: bool) -> Result<(), String> {
     Ok(())
 }
 
-/// Validate a typed constant literal against `evalConstLit` invariants.
-pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
+/// Validate a typed constant literal against `evalConstLit` / Profile v2
+/// `.rodata` invariants.
+pub fn validate_constant(ty: &Ty, lit: &ConstLit) -> Result<(), String> {
     match (ty, lit) {
         (Ty::Unit, ConstLit::ZeroSized) => Ok(()),
-        (Ty::Unit, ConstLit::Scalar { .. }) => {
+        (Ty::Unit, ConstLit::Scalar { .. } | ConstLit::RodataBytes { .. } | ConstLit::RodataRef { .. }) => {
             Err("zero-sized constant must use ZeroSized literal".into())
         }
         (Ty::Never, ConstLit::ZeroSized) => {
             Err("ZeroSized constant requires unit or zero-sized enum type".into())
         }
-        (Ty::Never, ConstLit::Scalar { .. }) => {
-            Err("the never type has no scalar constants".into())
-        }
+        (Ty::Never, _) => Err("the never type has no constants".into()),
         (Ty::OverflowPair(_), _) => Err("overflow-pair tuple constants are unsupported".into()),
-        (Ty::Bool, ConstLit::ZeroSized) => {
-            Err("ZeroSized constant requires unit or zero-sized enum type".into())
-        }
         (Ty::Bool, ConstLit::Scalar { bits }) => {
             // `Scalar::to_bool` maps `0` and `1` to `false` and `true` and
             // raises `InvalidBool` for every other byte.
             // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/interpret/value.rs#L344-L351
-            if bits <= 1 {
+            if *bits <= 1 {
                 Ok(())
             } else {
                 Err("invalid Boolean constant".into())
             }
         }
-        (Ty::Char, ConstLit::ZeroSized) => {
-            Err("ZeroSized constant requires unit or zero-sized enum type".into())
-        }
+        (Ty::Bool, _) => Err("boolean constant must use Scalar literal".into()),
         (Ty::Char, ConstLit::Scalar { bits }) => {
-            if is_unicode_scalar(bits) {
+            if is_unicode_scalar(*bits) {
                 Ok(())
             } else {
                 Err(format!(
@@ -610,25 +721,21 @@ pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
                 ))
             }
         }
-        (Ty::Ordering, ConstLit::ZeroSized) => {
-            Err("ZeroSized constant requires unit or zero-sized enum type".into())
-        }
+        (Ty::Char, _) => Err("char constant must use Scalar literal".into()),
         (Ty::Ordering, ConstLit::Scalar { bits }) => {
             // `core::cmp::Ordering` is `#[repr(i8)]` whose "three variants
             // `Less`/`Equal`/`Greater` remain `-1_i8`/`0_i8`/`+1_i8`
             // respectively" (`0xff`, `0`, `1` as 8-bit unsigned tags).
             // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/cmp.rs#L400-L415
-            if matches!(bits, 0 | 1 | 0xff) {
+            if matches!(*bits, 0 | 1 | 0xff) {
                 Ok(())
             } else {
                 Err(format!("invalid Ordering tag constant {bits:#x}"))
             }
         }
-        (Ty::Int(_), ConstLit::ZeroSized) => {
-            Err("ZeroSized constant requires unit or zero-sized enum type".into())
-        }
+        (Ty::Ordering, _) => Err("Ordering constant must use Scalar literal".into()),
         (Ty::Int(ity), ConstLit::Scalar { bits }) => {
-            if bits > ity.width.mask() {
+            if *bits > ity.width.mask() {
                 return Err(format!(
                     "scalar constant {bits:#x} exceeds {}-bit width",
                     ity.width.bits()
@@ -636,8 +743,88 @@ pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
             }
             Ok(())
         }
+        (Ty::Int(_), _) => Err("integer constant must use Scalar literal".into()),
+        (Ty::Array { elem, .. }, ConstLit::RodataBytes { bytes }) => {
+            if !elem.is_supported_v2_data() {
+                return Err(format!(
+                    "unsupported element type {elem:?} in array constant"
+                ));
+            }
+            let Some((expected_size, _)) = ty.v2_layout() else {
+                return Err(format!("array constant type {ty:?} lacks layout"));
+            };
+            if bytes.len() != expected_size {
+                return Err(format!(
+                    "array constant byte length {} disagrees with layout size {expected_size}",
+                    bytes.len()
+                ));
+            }
+            Ok(())
+        }
         (
-            Ty::Tuple { .. }
+            Ty::Ref {
+                mutability: Mutability::Shared,
+                pointee,
+            }
+            | Ty::RawPtr {
+                mutability: Mutability::Shared,
+                pointee,
+            },
+            ConstLit::RodataRef {
+                bytes,
+                align_log2,
+                offset_bytes,
+                slice_len,
+            },
+        ) => match (&**pointee, slice_len) {
+            (Ty::Slice { elem }, Some(len)) if matches!(&**elem, Ty::Int(_)) => {
+                let Some((elem_size, elem_align_log2)) = elem.v2_layout() else {
+                    return Err(format!("slice element type {elem:?} lacks layout"));
+                };
+                let slice_bytes = len
+                    .checked_mul(elem_size)
+                    .ok_or_else(|| "rodata slice byte size overflow".to_string())?;
+                let end = offset_bytes
+                    .checked_add(slice_bytes)
+                    .ok_or_else(|| "rodata slice offset overflow".to_string())?;
+                if end > bytes.len() {
+                    return Err(format!(
+                        "rodata slice range [{offset_bytes}..{end}) exceeds rodata size {}",
+                        bytes.len()
+                    ));
+                }
+                let align_bytes = 1usize.checked_shl(elem_align_log2).unwrap_or(usize::MAX);
+                if *align_log2 < elem_align_log2 || *offset_bytes % align_bytes != 0 {
+                    return Err("rodata slice reference is misaligned".into());
+                }
+                Ok(())
+            }
+            (pt, None) if pt.is_supported_v2_data() => {
+                let Some((pt_size, pt_align_log2)) = pt.v2_layout() else {
+                    return Err(format!("rodata pointee type {pt:?} lacks layout"));
+                };
+                let end = offset_bytes
+                    .checked_add(pt_size)
+                    .ok_or_else(|| "rodata pointer offset overflow".to_string())?;
+                if end > bytes.len() {
+                    return Err(format!(
+                        "rodata pointer range [{offset_bytes}..{end}) exceeds rodata size {}",
+                        bytes.len()
+                    ));
+                }
+                let align_bytes = 1usize.checked_shl(pt_align_log2).unwrap_or(usize::MAX);
+                if *align_log2 < pt_align_log2 || *offset_bytes % align_bytes != 0 {
+                    return Err("rodata pointer is misaligned".into());
+                }
+                Ok(())
+            }
+            _ => Err(format!(
+                "unsupported rodata reference pointee {pointee:?} / slice_len {slice_len:?}"
+            )),
+        },
+        (
+            Ty::Array { .. }
+            | Ty::Tuple { .. }
             | Ty::Ref { .. }
             | Ty::RawPtr { .. }
             | Ty::Slice { .. }
@@ -647,20 +834,20 @@ pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
         ) => Err(format!("constants of compound/pointer type {ty:?} are unsupported")),
         (Ty::Enum(ety), lit) => match (ety.tag_repr, lit) {
             (EnumTagRepr::ZeroSized, ConstLit::ZeroSized) => Ok(()),
-            (EnumTagRepr::ZeroSized, ConstLit::Scalar { .. }) => {
+            (EnumTagRepr::ZeroSized, _) => {
                 Err("zero-sized constant must use ZeroSized literal".into())
             }
             (EnumTagRepr::Scalar(_), ConstLit::ZeroSized) => {
                 Err("ZeroSized constant requires unit or zero-sized enum type".into())
             }
             (EnumTagRepr::Scalar(tag), ConstLit::Scalar { bits }) => {
-                if bits > tag.width.mask() {
+                if *bits > tag.width.mask() {
                     return Err(format!(
                         "enum tag constant {bits:#x} exceeds {}-bit tag width",
                         tag.width.bits()
                     ));
                 }
-                let discr = tag_bits_to_discr_bits(tag, ety.discr().width, bits);
+                let discr = tag_bits_to_discr_bits(tag, ety.discr().width, *bits);
                 if !ety.discriminants.contains(&discr) {
                     return Err(format!(
                         "enum tag constant {bits:#x} does not match any declared variant"
@@ -668,6 +855,7 @@ pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
                 }
                 Ok(())
             }
+            (EnumTagRepr::Scalar(_), _) => Err("scalar enum constant must use Scalar literal".into()),
         },
     }
 }
@@ -676,7 +864,15 @@ pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum PlaceElem {
     Deref,
-    Field { index: usize, ty: Ty },
+    Field {
+        index: usize,
+        ty: Ty,
+    },
+    ConstantIndex {
+        offset: usize,
+        min_length: usize,
+        from_end: bool,
+    },
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -699,7 +895,7 @@ impl Place {
             .projection
             .iter()
             .map(|elem| match elem {
-                PlaceElem::Deref => 1,
+                PlaceElem::Deref | PlaceElem::ConstantIndex { .. } => 1,
                 PlaceElem::Field { ty, .. } => 1 + ty.ast_nodes(),
             })
             .sum::<usize>()
@@ -729,7 +925,9 @@ impl Operand {
         match self {
             Self::CopyPlace { .. } | Self::MovePlace { .. } => true,
             Self::Copy { .. } | Self::Move { .. } => false,
-            Self::Constant { ty, .. } => ty.is_profile_v2(),
+            Self::Constant { ty, lit } => {
+                ty.is_profile_v2() || !matches!(lit, ConstLit::ZeroSized | ConstLit::Scalar { .. })
+            }
         }
     }
 
@@ -768,6 +966,7 @@ pub enum CastKind {
     IntToInt,
     PtrToPtr,
     IntToPtr,
+    Unsize,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -824,7 +1023,7 @@ pub enum Rvalue {
         ty: Ty,
     },
     Discriminant {
-        local: u32,
+        place: Place,
     },
     Ref {
         mutability: Mutability,
@@ -836,6 +1035,15 @@ pub enum Rvalue {
     },
     AggregateTuple {
         fields: Vec<Operand>,
+    },
+    AggregateArray {
+        elem_ty: Ty,
+        elems: Vec<Operand>,
+    },
+    Repeat {
+        operand: Operand,
+        elem_ty: Ty,
+        count: usize,
     },
     AggregateRangeTo {
         elem_ty: Ty,
@@ -855,11 +1063,15 @@ impl Rvalue {
             | Self::Unary { operand, .. } => 1 + operand.ast_nodes(),
             Self::Binary { left, right, .. } => 1 + left.ast_nodes() + right.ast_nodes(),
             Self::Cast { operand, ty, .. } => 1 + operand.ast_nodes() + ty.ast_nodes(),
-            Self::Discriminant { .. } => 1,
+            Self::Discriminant { place } => 1 + place.ast_nodes(),
             Self::Ref { place, .. } | Self::AddressOf { place, .. } => 1 + place.ast_nodes(),
             Self::AggregateTuple { fields } => {
                 1 + fields.iter().map(Operand::ast_nodes).sum::<usize>()
             }
+            Self::AggregateArray { elem_ty, elems } => {
+                1 + elem_ty.ast_nodes() + elems.iter().map(Operand::ast_nodes).sum::<usize>()
+            }
+            Self::Repeat { elem_ty, operand, .. } => 1 + elem_ty.ast_nodes() + operand.ast_nodes(),
             Self::AggregateRangeTo { elem_ty, end } => 1 + elem_ty.ast_nodes() + end.ast_nodes(),
             Self::AggregateRangeFrom { elem_ty, start } => {
                 1 + elem_ty.ast_nodes() + start.ast_nodes()
@@ -983,6 +1195,13 @@ pub enum CoreCallOp {
         pointee: Ty,
     },
     UsizeUncheckedSub,
+    IntToLeBytes {
+        int_ty: IntTy,
+    },
+    ArrayEq {
+        elem: Ty,
+        len: usize,
+    },
 }
 
 /// A `core::num` arithmetic method that Profile v1 calls through its pinned
@@ -1080,10 +1299,12 @@ impl Terminator {
             Self::CoreCall { op, args, dst, .. } => {
                 let op_nodes = match op {
                     CoreCallOp::PtrAdd { pointee, .. } => 1 + pointee.ast_nodes(),
+                    CoreCallOp::ArrayEq { elem, .. } => 1 + elem.ast_nodes(),
                     CoreCallOp::SliceLen
                     | CoreCallOp::SliceGetUncheckedRangeTo
                     | CoreCallOp::SliceGetUncheckedRangeFrom
-                    | CoreCallOp::UsizeUncheckedSub => 1,
+                    | CoreCallOp::UsizeUncheckedSub
+                    | CoreCallOp::IntToLeBytes { .. } => 1,
                 };
                 1 + op_nodes + args.iter().map(Operand::ast_nodes).sum::<usize>() + dst.ast_nodes()
             }
@@ -1319,6 +1540,42 @@ fn check_cast_types(kind: CastKind, src_ty: &Ty, cast_ty: &Ty, dst_ty: &Ty) -> R
             }),
             Ty::RawPtr { pointee, .. },
         ) if pointee.is_sized() => Ok(()),
+        (CastKind::Unsize, src_ptr, dst_ptr) => match (src_ptr, dst_ptr) {
+            (
+                Ty::Ref {
+                    mutability: src_mut,
+                    pointee: src_pt,
+                },
+                Ty::Ref {
+                    mutability: dst_mut,
+                    pointee: dst_pt,
+                },
+            )
+            | (
+                Ty::RawPtr {
+                    mutability: src_mut,
+                    pointee: src_pt,
+                },
+                Ty::RawPtr {
+                    mutability: dst_mut,
+                    pointee: dst_pt,
+                },
+            ) => match (&**src_pt, &**dst_pt) {
+                (Ty::Array { elem: e1, .. }, Ty::Slice { elem: e2 })
+                    if e1 == e2
+                        && e1.is_sized()
+                        && !(*src_mut == Mutability::Shared && *dst_mut == Mutability::Mut) =>
+                {
+                    Ok(())
+                }
+                _ => Err(format!(
+                    "unsupported Unsize cast from {src_ty:?} to {cast_ty:?}"
+                )),
+            },
+            _ => Err(format!(
+                "unsupported Unsize cast from {src_ty:?} to {cast_ty:?}"
+            )),
+        },
         _ => Err(format!(
             "unsupported cast {kind:?} from {src_ty:?} to {cast_ty:?}"
         )),
@@ -1370,6 +1627,7 @@ fn check_switch_targets(discr_ty: &Ty, targets: &[(u128, u32)]) -> Result<(), St
         | Ty::Never
         | Ty::Ordering
         | Ty::Enum(_)
+        | Ty::Array { .. }
         | Ty::Tuple { .. }
         | Ty::Ref { .. }
         | Ty::RawPtr { .. }
@@ -1517,9 +1775,6 @@ impl Body {
                         }
                     }
                     PlaceElem::Field { index, ty } => {
-                        if saw_deref {
-                            return Err("field projection after deref is unsupported".into());
-                        }
                         let usize_ty = Ty::Int(IntTy {
                             width: IntWidth::Isize,
                             signed: false,
@@ -1544,6 +1799,32 @@ impl Body {
                             ));
                         }
                         cur = expected;
+                    }
+                    PlaceElem::ConstantIndex {
+                        offset,
+                        min_length,
+                        from_end,
+                    } => {
+                        let Ty::Array { elem, len } = &cur else {
+                            return Err(format!(
+                                "ConstantIndex projection requires fixed-size array type, got {cur:?}"
+                            ));
+                        };
+                        // Match `Trusted.MirSemantics.constantIndexOffset`:
+                        // `from_end` is a 1-based offset from `len`
+                        // (`1 <= offset <= len`), otherwise 0-based
+                        // (`offset < len`), with `len >= min_length`.
+                        let out_of_bounds = if *from_end {
+                            *offset == 0 || *offset > *len
+                        } else {
+                            *offset >= *len
+                        };
+                        if *len < *min_length || out_of_bounds {
+                            return Err(format!(
+                                "ConstantIndex [{offset} of min {min_length}, from_end={from_end}] out of bounds for array length {len}"
+                            ));
+                        }
+                        cur = (**elem).clone();
                     }
                 }
             }
@@ -1582,7 +1863,7 @@ impl Body {
                         .into(),
                 ),
                 Operand::Constant { ty, lit } => {
-                    validate_constant(ty, *lit)?;
+                    validate_constant(ty, lit)?;
                     Ok(ty.clone())
                 }
             }
@@ -1633,8 +1914,9 @@ impl Body {
                     let src_ty = check_operand(local_tys, operand)?;
                     check_cast_types(*cast_kind, &src_ty, ty, dst_ty)?;
                 }
-                Rvalue::Discriminant { local: src } => {
-                    let expected_discr = match check_local(local_tys, *src, "discriminant")? {
+                Rvalue::Discriminant { place } => {
+                    let src_ty = check_place(local_tys, place, "discriminant", false, false)?;
+                    let expected_discr = match &src_ty {
                         Ty::Enum(ety) => ety.discr(),
                         Ty::Ordering => IntTy {
                             width: IntWidth::I8,
@@ -1642,7 +1924,7 @@ impl Body {
                         },
                         _ => {
                             return Err(
-                                "discriminant rvalue requires a fieldless enum or Ordering local"
+                                "discriminant rvalue requires a fieldless enum or Ordering place"
                                     .into(),
                             );
                         }
@@ -1777,6 +2059,52 @@ impl Body {
                         }
                     }
                 }
+                Rvalue::AggregateArray { elem_ty, elems } => {
+                    let Ty::Array {
+                        elem: dst_elem,
+                        len: dst_len,
+                    } = dst_ty
+                    else {
+                        return Err(format!(
+                            "AggregateArray requires Array destination type, got {dst_ty:?}"
+                        ));
+                    };
+                    if elem_ty != &**dst_elem || elems.len() != *dst_len || !elem_ty.is_sized() {
+                        return Err("AggregateArray element type or length disagrees with destination array".into());
+                    }
+                    for op in elems {
+                        let got = check_operand(local_tys, op)?;
+                        if &got != elem_ty {
+                            return Err(format!(
+                                "AggregateArray element operand type {got:?} disagrees with {elem_ty:?}"
+                            ));
+                        }
+                    }
+                }
+                Rvalue::Repeat {
+                    operand,
+                    elem_ty,
+                    count,
+                } => {
+                    let Ty::Array {
+                        elem: dst_elem,
+                        len: dst_len,
+                    } = dst_ty
+                    else {
+                        return Err(format!(
+                            "Repeat requires Array destination type, got {dst_ty:?}"
+                        ));
+                    };
+                    if elem_ty != &**dst_elem || *count != *dst_len || !elem_ty.is_sized() {
+                        return Err("Repeat element type or length disagrees with destination array".into());
+                    }
+                    let got = check_operand(local_tys, operand)?;
+                    if &got != elem_ty {
+                        return Err(format!(
+                            "Repeat operand type {got:?} disagrees with {elem_ty:?}"
+                        ));
+                    }
+                }
                 Rvalue::AggregateRangeTo { elem_ty, end } => {
                     if *elem_ty != usize_ty
                         || *dst_ty
@@ -1825,16 +2153,14 @@ impl Body {
                         check_rvalue(&local_tys, &dst_ty, value)?;
                     }
                     Statement::AssignPlace { place, value } => {
-                        if place.projection != vec![PlaceElem::Deref] && !place.projection.is_empty()
-                        {
-                            return Err("AssignPlace supports only empty or single [Deref] projection".into());
-                        }
+                        let require_mut_deref =
+                            matches!(place.projection.first(), Some(PlaceElem::Deref));
                         let dst_ty = check_place(
                             &local_tys,
                             place,
                             "assignment",
                             false,
-                            !place.projection.is_empty(),
+                            require_mut_deref,
                         )?;
                         check_rvalue(&local_tys, &dst_ty, value)?;
                     }
@@ -1954,6 +2280,40 @@ impl Body {
                                 } => {}
                         (CoreCallOp::UsizeUncheckedSub, [l_ty, r_ty])
                             if *l_ty == usize_ty && *r_ty == usize_ty && dst_ty == usize_ty => {}
+                        (CoreCallOp::IntToLeBytes { int_ty }, [arg_ty])
+                            if *arg_ty == Ty::Int(*int_ty)
+                                && dst_ty
+                                    == Ty::Array {
+                                        elem: Box::new(Ty::Int(IntTy {
+                                            width: IntWidth::I8,
+                                            signed: false,
+                                        })),
+                                        len: (int_ty.width.bits() / 8) as usize,
+                                    } => {}
+                        (
+                            CoreCallOp::ArrayEq { elem, len },
+                            [
+                                Ty::Ref {
+                                    pointee: pt1,
+                                    ..
+                                },
+                                Ty::Ref {
+                                    pointee: pt2,
+                                    ..
+                                },
+                            ],
+                        ) if elem.is_array_eq_elem_supported()
+                            && **pt1
+                                == (Ty::Array {
+                                    elem: Box::new(elem.clone()),
+                                    len: *len,
+                                })
+                            && **pt2
+                                == (Ty::Array {
+                                    elem: Box::new(elem.clone()),
+                                    len: *len,
+                                })
+                            && dst_ty == Ty::Bool => {}
                         _ => {
                             return Err(format!(
                                 "invalid CoreCall {op:?} arguments {arg_tys:?} -> {dst_ty:?}"
@@ -2081,11 +2441,17 @@ impl Body {
                                 return true;
                             }
                         }
-                        Rvalue::Discriminant { .. } => {}
+                        Rvalue::Discriminant { place } => {
+                            if !place.projection.is_empty() {
+                                return true;
+                            }
+                        }
                         Rvalue::UseRetag { .. }
                         | Rvalue::Ref { .. }
                         | Rvalue::AddressOf { .. }
                         | Rvalue::AggregateTuple { .. }
+                        | Rvalue::AggregateArray { .. }
+                        | Rvalue::Repeat { .. }
                         | Rvalue::AggregateRangeTo { .. }
                         | Rvalue::AggregateRangeFrom { .. } => return true,
                     },
@@ -2186,6 +2552,18 @@ impl Body {
                                 f.collect_enum_ids(out);
                             }
                         }
+                        Rvalue::AggregateArray { elem_ty, elems } => {
+                            elem_ty.collect_enum_ids(out);
+                            for e in elems {
+                                e.collect_enum_ids(out);
+                            }
+                        }
+                        Rvalue::Repeat {
+                            operand, elem_ty, ..
+                        } => {
+                            operand.collect_enum_ids(out);
+                            elem_ty.collect_enum_ids(out);
+                        }
                         Rvalue::AggregateRangeTo { elem_ty, end } => {
                             elem_ty.collect_enum_ids(out);
                             end.collect_enum_ids(out);
@@ -2194,7 +2572,7 @@ impl Body {
                             elem_ty.collect_enum_ids(out);
                             start.collect_enum_ids(out);
                         }
-                        Rvalue::Discriminant { .. } => {}
+                        Rvalue::Discriminant { place } => place.collect_enum_ids(out),
                     }
                 }
             }
@@ -2202,8 +2580,10 @@ impl Body {
                 Terminator::SwitchInt { operand, .. } => operand.collect_enum_ids(out),
                 Terminator::Assert { cond, .. } => cond.collect_enum_ids(out),
                 Terminator::CoreCall { op, args, dst, .. } => {
-                    if let CoreCallOp::PtrAdd { pointee, .. } = op {
-                        pointee.collect_enum_ids(out);
+                    match op {
+                        CoreCallOp::PtrAdd { pointee, .. } => pointee.collect_enum_ids(out),
+                        CoreCallOp::ArrayEq { elem, .. } => elem.collect_enum_ids(out),
+                        _ => {}
                     }
                     for a in args {
                         a.collect_enum_ids(out);
@@ -2591,6 +2971,18 @@ mod tests {
         assert!(validate_local_tys(&[Ty::Unit, raw_ptr.clone()]).is_ok());
         let mixed = validate_local_tys(&[Ty::Unit, shared_ref.clone(), raw_ptr.clone()]);
         assert!(mixed.unwrap_err().contains("body mixes reference and raw-pointer locals"));
+        let nested_array_ref = Ty::Array {
+            elem: Box::new(shared_ref.clone()),
+            len: 2,
+        };
+        let nested_array_raw = Ty::Array {
+            elem: Box::new(raw_ptr.clone()),
+            len: 2,
+        };
+        assert!(nested_array_ref.has_ref_v2());
+        assert!(!nested_array_ref.has_raw_ptr_v2());
+        assert!(nested_array_raw.has_raw_ptr_v2());
+        assert!(!nested_array_raw.has_ref_v2());
         let nested = validate_local_tys(&[
             Ty::Tuple {
                 fields: vec![shared_ref, u8_ty],
@@ -2734,7 +3126,12 @@ mod tests {
             vec![Block {
                 statements: vec![Statement::Assign {
                     local: 0,
-                    value: Rvalue::Discriminant { local: 1 },
+                    value: Rvalue::Discriminant {
+                        place: Place {
+                            local: 1,
+                            projection: vec![],
+                        },
+                    },
                 }],
                 terminator: Terminator::Ret,
             }],
@@ -2956,40 +3353,40 @@ mod tests {
         assert_eq!(IntWidth::I128.mask(), u128::MAX);
         assert_eq!(IntWidth::I128.lean_name(), "i128");
 
-        assert!(validate_constant(&Ty::Unit, ConstLit::ZeroSized).is_ok());
-        assert!(validate_constant(&Ty::Unit, ConstLit::Scalar { bits: 0 }).is_err());
-        assert!(validate_constant(&Ty::Never, ConstLit::ZeroSized).is_err());
-        assert!(validate_constant(&Ty::Never, ConstLit::Scalar { bits: 0 }).is_err());
-        assert!(validate_constant(&ovf_u8, ConstLit::ZeroSized).is_err());
-        assert!(validate_constant(&ovf_u8, ConstLit::Scalar { bits: 0 }).is_err());
-        assert!(validate_constant(&Ty::Bool, ConstLit::ZeroSized).is_err());
-        assert!(validate_constant(&Ty::Bool, ConstLit::Scalar { bits: 0 }).is_ok());
-        assert!(validate_constant(&Ty::Bool, ConstLit::Scalar { bits: 1 }).is_ok());
-        assert!(validate_constant(&Ty::Bool, ConstLit::Scalar { bits: 2 }).is_err());
-        assert!(validate_constant(&Ty::Char, ConstLit::ZeroSized).is_err());
-        assert!(validate_constant(&Ty::Char, ConstLit::Scalar { bits: 0 }).is_ok());
-        assert!(validate_constant(&Ty::Char, ConstLit::Scalar { bits: 0xD7FF }).is_ok());
-        assert!(validate_constant(&Ty::Char, ConstLit::Scalar { bits: 0xD800 }).is_err());
-        assert!(validate_constant(&Ty::Char, ConstLit::Scalar { bits: 0xDFFF }).is_err());
-        assert!(validate_constant(&Ty::Char, ConstLit::Scalar { bits: 0xE000 }).is_ok());
-        assert!(validate_constant(&Ty::Char, ConstLit::Scalar { bits: 0x10_FFFF }).is_ok());
-        assert!(validate_constant(&Ty::Char, ConstLit::Scalar { bits: 0x11_0000 }).is_err());
-        assert!(validate_constant(&Ty::Ordering, ConstLit::ZeroSized).is_err());
-        assert!(validate_constant(&Ty::Ordering, ConstLit::Scalar { bits: 0 }).is_ok());
-        assert!(validate_constant(&Ty::Ordering, ConstLit::Scalar { bits: 1 }).is_ok());
-        assert!(validate_constant(&Ty::Ordering, ConstLit::Scalar { bits: 0xff }).is_ok());
-        assert!(validate_constant(&Ty::Ordering, ConstLit::Scalar { bits: 2 }).is_err());
-        assert!(validate_constant(&Ty::Ordering, ConstLit::Scalar { bits: 0x1ff }).is_err());
-        assert!(validate_constant(&u8_ty, ConstLit::ZeroSized).is_err());
-        assert!(validate_constant(&u8_ty, ConstLit::Scalar { bits: 255 }).is_ok());
-        assert!(validate_constant(&u8_ty, ConstLit::Scalar { bits: 256 }).is_err());
-        assert!(validate_constant(&u128_ty, ConstLit::Scalar { bits: u128::MAX }).is_ok());
-        assert!(validate_constant(&zst_enum, ConstLit::ZeroSized).is_ok());
-        assert!(validate_constant(&zst_enum, ConstLit::Scalar { bits: 0 }).is_err());
-        assert!(validate_constant(&scalar_enum, ConstLit::ZeroSized).is_err());
-        assert!(validate_constant(&scalar_enum, ConstLit::Scalar { bits: 0xff }).is_ok());
-        assert!(validate_constant(&scalar_enum, ConstLit::Scalar { bits: 1 }).is_ok());
-        assert!(validate_constant(&scalar_enum, ConstLit::Scalar { bits: 2 }).is_err());
+        assert!(validate_constant(&Ty::Unit, &ConstLit::ZeroSized).is_ok());
+        assert!(validate_constant(&Ty::Unit, &ConstLit::Scalar { bits: 0 }).is_err());
+        assert!(validate_constant(&Ty::Never, &ConstLit::ZeroSized).is_err());
+        assert!(validate_constant(&Ty::Never, &ConstLit::Scalar { bits: 0 }).is_err());
+        assert!(validate_constant(&ovf_u8, &ConstLit::ZeroSized).is_err());
+        assert!(validate_constant(&ovf_u8, &ConstLit::Scalar { bits: 0 }).is_err());
+        assert!(validate_constant(&Ty::Bool, &ConstLit::ZeroSized).is_err());
+        assert!(validate_constant(&Ty::Bool, &ConstLit::Scalar { bits: 0 }).is_ok());
+        assert!(validate_constant(&Ty::Bool, &ConstLit::Scalar { bits: 1 }).is_ok());
+        assert!(validate_constant(&Ty::Bool, &ConstLit::Scalar { bits: 2 }).is_err());
+        assert!(validate_constant(&Ty::Char, &ConstLit::ZeroSized).is_err());
+        assert!(validate_constant(&Ty::Char, &ConstLit::Scalar { bits: 0 }).is_ok());
+        assert!(validate_constant(&Ty::Char, &ConstLit::Scalar { bits: 0xD7FF }).is_ok());
+        assert!(validate_constant(&Ty::Char, &ConstLit::Scalar { bits: 0xD800 }).is_err());
+        assert!(validate_constant(&Ty::Char, &ConstLit::Scalar { bits: 0xDFFF }).is_err());
+        assert!(validate_constant(&Ty::Char, &ConstLit::Scalar { bits: 0xE000 }).is_ok());
+        assert!(validate_constant(&Ty::Char, &ConstLit::Scalar { bits: 0x10_FFFF }).is_ok());
+        assert!(validate_constant(&Ty::Char, &ConstLit::Scalar { bits: 0x11_0000 }).is_err());
+        assert!(validate_constant(&Ty::Ordering, &ConstLit::ZeroSized).is_err());
+        assert!(validate_constant(&Ty::Ordering, &ConstLit::Scalar { bits: 0 }).is_ok());
+        assert!(validate_constant(&Ty::Ordering, &ConstLit::Scalar { bits: 1 }).is_ok());
+        assert!(validate_constant(&Ty::Ordering, &ConstLit::Scalar { bits: 0xff }).is_ok());
+        assert!(validate_constant(&Ty::Ordering, &ConstLit::Scalar { bits: 2 }).is_err());
+        assert!(validate_constant(&Ty::Ordering, &ConstLit::Scalar { bits: 0x1ff }).is_err());
+        assert!(validate_constant(&u8_ty, &ConstLit::ZeroSized).is_err());
+        assert!(validate_constant(&u8_ty, &ConstLit::Scalar { bits: 255 }).is_ok());
+        assert!(validate_constant(&u8_ty, &ConstLit::Scalar { bits: 256 }).is_err());
+        assert!(validate_constant(&u128_ty, &ConstLit::Scalar { bits: u128::MAX }).is_ok());
+        assert!(validate_constant(&zst_enum, &ConstLit::ZeroSized).is_ok());
+        assert!(validate_constant(&zst_enum, &ConstLit::Scalar { bits: 0 }).is_err());
+        assert!(validate_constant(&scalar_enum, &ConstLit::ZeroSized).is_err());
+        assert!(validate_constant(&scalar_enum, &ConstLit::Scalar { bits: 0xff }).is_ok());
+        assert!(validate_constant(&scalar_enum, &ConstLit::Scalar { bits: 1 }).is_ok());
+        assert!(validate_constant(&scalar_enum, &ConstLit::Scalar { bits: 2 }).is_err());
     }
 
     #[test]
@@ -3223,14 +3620,24 @@ mod tests {
         assert!(
             one_stmt_body(
                 vec![i8_ty.clone(), Ty::Ordering],
-                Rvalue::Discriminant { local: 1 },
+                Rvalue::Discriminant {
+                    place: Place {
+                        local: 1,
+                        projection: vec![],
+                    },
+                },
             )
             .is_ok()
         );
         assert!(
             one_stmt_body(
                 vec![u8_ty.clone(), Ty::Ordering],
-                Rvalue::Discriminant { local: 1 },
+                Rvalue::Discriminant {
+                    place: Place {
+                        local: 1,
+                        projection: vec![],
+                    },
+                },
             )
             .is_err()
         );
@@ -3570,5 +3977,116 @@ mod tests {
         let mismatch = Program::try_new(Scope::Crate, vec![caller_bad_type, callee_body])
             .unwrap_err();
         assert!(mismatch.contains("disagrees with callee"), "{mismatch}");
+    }
+
+    #[test]
+    fn array_eq_rejects_enum_elements() {
+        let enum_ty = EnumTy::try_new(
+            303,
+            IntTy {
+                width: IntWidth::I8,
+                signed: false,
+            },
+            EnumTagRepr::Scalar(IntTy {
+                width: IntWidth::I8,
+                signed: false,
+            }),
+            vec![0, 1],
+        )
+        .unwrap();
+        let arr_ty = Ty::Array {
+            elem: Box::new(Ty::Enum(enum_ty.clone())),
+            len: 2,
+        };
+        let ref_arr_ty = Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(arr_ty),
+        };
+        let err = Body::try_new(
+            2,
+            false,
+            vec![Ty::Bool, ref_arr_ty.clone(), ref_arr_ty],
+            vec![
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::CoreCall {
+                        op: CoreCallOp::ArrayEq {
+                            elem: Ty::Enum(enum_ty),
+                            len: 2,
+                        },
+                        args: vec![Operand::Copy { local: 1 }, Operand::Copy { local: 2 }],
+                        dst: Place {
+                            local: 0,
+                            projection: vec![],
+                        },
+                        target: 1,
+                        unwind: UnwindAction::Continue,
+                    },
+                },
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Ret,
+                },
+            ],
+            "rust-path-v1::enum_array_eq".into(),
+        )
+        .unwrap_err();
+        assert!(err.contains("invalid CoreCall ArrayEq"), "{err}");
+    }
+
+    #[test]
+    fn constant_index_honors_from_end_matching_lean_semantics() {
+        let u8_ty = Ty::Int(IntTy {
+            width: IntWidth::I8,
+            signed: false,
+        });
+        for len in 0..=4usize {
+            let arr_ty = Ty::Array {
+                elem: Box::new(u8_ty.clone()),
+                len,
+            };
+            for min_length in 0..=5usize {
+                for offset in 0..=5usize {
+                    for from_end in [false, true] {
+                        let expected_ok = len >= min_length
+                            && if from_end {
+                                offset >= 1 && offset <= len
+                            } else {
+                                offset < len
+                            };
+                        let res = Body::try_new(
+                            1,
+                            false,
+                            vec![u8_ty.clone(), arr_ty.clone()],
+                            vec![Block {
+                                statements: vec![Statement::Assign {
+                                    local: 0,
+                                    value: Rvalue::Use {
+                                        operand: Operand::CopyPlace {
+                                            place: Place {
+                                                local: 1,
+                                                projection: vec![PlaceElem::ConstantIndex {
+                                                    offset,
+                                                    min_length,
+                                                    from_end,
+                                                }],
+                                            },
+                                        },
+                                        with_retag: false,
+                                    },
+                                }],
+                                terminator: Terminator::Ret,
+                            }],
+                            "rust-path-v1::const_idx_bounds".into(),
+                        );
+                        assert_eq!(
+                            res.is_ok(),
+                            expected_ok,
+                            "len={len} min_length={min_length} offset={offset} from_end={from_end}: {res:?}"
+                        );
+                    }
+                }
+            }
+        }
     }
 }

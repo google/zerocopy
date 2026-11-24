@@ -787,6 +787,7 @@ noncomputable def toMiriOperand (types : List MirTy) :
       match c.lit with
       | .scalar bits => .Scalar (.Int bits.toNat 16)
       | .zeroSized => .ZeroSized
+      | .rodataBytes _ | .rodataRef _ _ _ _ => .Indirect 0 0
     .Constant ⟨⟨0⟩, none, .Val cv (canonicalTyId types c.ty)⟩
 
 /-- Map `RefRvalue` to `Miri.MIR.Rvalue`. `.cast .intToInt` maps to
@@ -806,8 +807,10 @@ noncomputable def toMiriRvalue (types : List MirTy) :
   | .cast .intToInt opnd ty =>
     .Cast .IntToInt (toMiriOperand types opnd) (canonicalTyId types ty)
   | .discriminant rp => .Discriminant (toMiriPlace rp)
-  | .cast .ptrToPtr _ _ | .cast .intToPtr _ _ | .cast .unsupported _ _
+  | .cast .ptrToPtr _ _ | .cast .intToPtr _ _ | .cast .unsize _ _
+  | .cast .unsupported _ _
   | .useRetag _ | .ref _ _ | .addressOf _ _ | .aggregateTuple _
+  | .aggregateArray _ _ | .repeat_ _ _ _
   | .aggregateRangeTo _ _ | .aggregateRangeFrom _ _ | .unsupported =>
     .CopyForDeref ⟨0, Array.empty⟩
 
@@ -1027,6 +1030,7 @@ noncomputable def refEnumVariantOfVal? : MirTy → Val → Option Nat
 `read_discriminant` in `compiler/rustc_const_eval/src/interpret/discriminant.rs`
 (`rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`). -/
 noncomputable def evalRefConstLit : MirTy → ConstLit → Except FaultKind Val
+  | _, .rodataBytes _ | _, .rodataRef _ _ _ _ => .error .unsupported
   | .int w s, .scalar bits =>
     match Miri.Memory.ScalarInt.tryFromUInt bits (toMiriSize w) with
     | .ok (some sc) => .ok (.scalar ⟨w, s, sc.data⟩)

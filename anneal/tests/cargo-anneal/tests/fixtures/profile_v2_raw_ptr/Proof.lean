@@ -153,7 +153,7 @@ private theorem loadU32_correct (q : Query)
       | nil =>
         cases a0 with
         | scalar _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _ | char _
-        | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => exact False.elim hSafe
+        | ordering _ | unit | enumVal _ _ | tuple _ | array _ | bytes _ => exact False.elim hSafe
         | ptr pv =>
           dsimp only at hSafe
           cases hAid : pv.allocId with
@@ -286,11 +286,11 @@ private theorem storeU8_correct (q : Query)
         | nil =>
           cases a0 with
           | scalar _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _ | char _
-          | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => exact False.elim hSafe
+          | ordering _ | unit | enumVal _ _ | tuple _ | array _ | bytes _ => exact False.elim hSafe
           | ptr pv =>
             cases a1 with
             | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _ | char _
-            | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ => exact False.elim hSafe
+            | ordering _ | unit | enumVal _ _ | tuple _ | array _ | bytes _ => exact False.elim hSafe
             | scalar sv =>
               dsimp only at hSafe
               cases hAid : pv.allocId with

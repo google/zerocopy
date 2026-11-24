@@ -13,8 +13,8 @@
 use std::fmt::Write as _;
 
 use crate::ir::{
-    self, AssertKind, BinOp, CastKind, ConstLit, CoreCallOp, Operand, Place, PlaceElem, Rvalue,
-    Statement, SysrootNumKind, Terminator, Ty, UnOp,
+    self, AssertKind, BinOp, CastKind, ConstLit, CoreCallOp, Operand, Place, PlaceElem,
+    RodataByte, Rvalue, Statement, SysrootNumKind, Terminator, Ty, UnOp,
 };
 
 const LICENSE_PREAMBLE: &str = "-- Copyright 2026 The Fuchsia Authors\n--\n\
@@ -179,6 +179,9 @@ fn ty_at(t: &Ty, indent: usize) -> String {
             ty_at(pointee, indent)
         ),
         Ty::Slice { elem } => format!("(Trusted.MirAst.MirTy.slice {})", ty_at(elem, indent)),
+        Ty::Array { elem, len } => {
+            format!("(Trusted.MirAst.MirTy.array {} {len})", ty_at(elem, indent))
+        }
         Ty::RangeTo { elem } => format!("(Trusted.MirAst.MirTy.rangeTo {})", ty_at(elem, indent)),
         Ty::RangeFrom { elem } => {
             format!("(Trusted.MirAst.MirTy.rangeFrom {})", ty_at(elem, indent))
@@ -212,11 +215,39 @@ fn ty_at(t: &Ty, indent: usize) -> String {
     }
 }
 
-fn const_lit(lit: ConstLit) -> String {
+fn rodata_bytes_at(bytes: &[RodataByte], indent: usize) -> String {
+    list_chunk_lines(bytes, indent, |b| match b {
+        RodataByte::Uninit => "Trusted.MirAst.RodataByte.uninit".into(),
+        RodataByte::Init { byte } => format!("(Trusted.MirAst.RodataByte.init {byte})"),
+    })
+}
+
+fn const_lit_at(lit: &ConstLit, indent: usize) -> String {
     match lit {
         ConstLit::ZeroSized => "Trusted.MirAst.ConstLit.zeroSized".into(),
         ConstLit::Scalar { bits } => {
             format!("(Trusted.MirAst.ConstLit.scalar (BitVec.ofNat 128 {bits}))")
+        }
+        ConstLit::RodataBytes { bytes } => {
+            format!(
+                "(Trusted.MirAst.ConstLit.rodataBytes {})",
+                rodata_bytes_at(bytes, indent + 2)
+            )
+        }
+        ConstLit::RodataRef {
+            bytes,
+            align_log2,
+            offset_bytes,
+            slice_len,
+        } => {
+            let slice_str = match slice_len {
+                None => "none".into(),
+                Some(n) => format!("(some {n})"),
+            };
+            format!(
+                "(Trusted.MirAst.ConstLit.rodataRef {} {align_log2} {offset_bytes} {slice_str})",
+                rodata_bytes_at(bytes, indent + 2)
+            )
         }
     }
 }
@@ -230,6 +261,13 @@ fn place_at(place: &Place, indent: usize) -> String {
             PlaceElem::Field { index, ty } => format!(
                 "(Trusted.MirAst.ProjectionElem.field {index} {})",
                 ty_at(ty, indent)
+            ),
+            PlaceElem::ConstantIndex {
+                offset,
+                min_length,
+                from_end,
+            } => format!(
+                "(Trusted.MirAst.ProjectionElem.constantIndex {offset} {min_length} {from_end})"
             ),
         });
         format!("(Trusted.MirAst.Place.mk {} {projs})", place.local)
@@ -253,7 +291,7 @@ fn operand_at(op: &Operand, indent: usize) -> String {
         Operand::Constant { ty: t, lit } => format!(
             "(Trusted.MirAst.Operand.constant (Trusted.MirAst.ConstOperand.mk {} {}))",
             ty_at(t, indent),
-            const_lit(*lit)
+            const_lit_at(lit, indent)
         ),
     }
 }
@@ -271,6 +309,7 @@ fn cast_kind(kind: CastKind) -> &'static str {
         CastKind::IntToInt => "intToInt",
         CastKind::PtrToPtr => "ptrToPtr",
         CastKind::IntToPtr => "intToPtr",
+        CastKind::Unsize => "unsize",
     }
 }
 
@@ -334,8 +373,8 @@ fn rvalue_at(value: &Rvalue, indent: usize) -> String {
             operand_at(opnd, indent),
             ty_at(target_ty, indent)
         ),
-        Rvalue::Discriminant { local } => {
-            format!("(Trusted.MirAst.Rvalue.discriminant (Trusted.MirAst.Place.mk {local} []))")
+        Rvalue::Discriminant { place } => {
+            format!("(Trusted.MirAst.Rvalue.discriminant {})", place_at(place, indent))
         }
         Rvalue::Ref { mutability, place } => format!(
             "(Trusted.MirAst.Rvalue.ref Trusted.MirAst.Mutability.{} {})",
@@ -350,6 +389,20 @@ fn rvalue_at(value: &Rvalue, indent: usize) -> String {
         Rvalue::AggregateTuple { fields } => format!(
             "(Trusted.MirAst.Rvalue.aggregateTuple {})",
             list_pretty(fields, indent, operand_at)
+        ),
+        Rvalue::AggregateArray { elem_ty, elems } => format!(
+            "(Trusted.MirAst.Rvalue.aggregateArray {} {})",
+            ty_at(elem_ty, indent),
+            list_pretty(elems, indent, operand_at)
+        ),
+        Rvalue::Repeat {
+            operand,
+            elem_ty,
+            count,
+        } => format!(
+            "(Trusted.MirAst.Rvalue.repeat_ {} {} {count})",
+            operand_at(operand, indent),
+            ty_at(elem_ty, indent)
         ),
         Rvalue::AggregateRangeTo { elem_ty, end } => format!(
             "(Trusted.MirAst.Rvalue.aggregateRangeTo {} {})",
@@ -422,6 +475,15 @@ fn core_call_op(op: &CoreCallOp, indent: usize) -> String {
             ty_at(pointee, indent)
         ),
         CoreCallOp::UsizeUncheckedSub => "Trusted.MirAst.CoreCallOp.usizeUncheckedSub".into(),
+        CoreCallOp::IntToLeBytes { int_ty } => format!(
+            "(Trusted.MirAst.CoreCallOp.intToLeBytes Trusted.MirAst.IntWidth.{} {})",
+            int_ty.width.lean_name(),
+            int_ty.signed
+        ),
+        CoreCallOp::ArrayEq { elem, len } => format!(
+            "(Trusted.MirAst.CoreCallOp.arrayEq {} {len})",
+            ty_at(elem, indent)
+        ),
     }
 }
 

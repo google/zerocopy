@@ -134,6 +134,20 @@ Every other external `Call` remains `.unsupported`.
   (`.shared`) or `core::ptr::mut_ptr::<impl *mut T>::add` (`.mut`) with
   `T = pointee` (`ptrAddInMem`).
 - `.usizeUncheckedSub` is `core::num::<impl usize>::unchecked_sub`.
+- `.intToLeBytes width signed` is
+  `core::num::<impl int>::to_le_bytes`
+  (`library/core/src/num/{uint_macros,int_macros}.rs`, `rust-lang/rust`
+  `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+  > "Returns the memory representation of this integer as a byte array in
+  > little-endian byte order."
+- `.arrayEq elem len` is structural `<[T; N] as PartialEq>::eq`
+  (`library/core/src/array/equality.rs`, `rust-lang/rust`
+  `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+  > "Arrays are compared element-wise, and don't add any padding between
+  > elements, so when the elements are `BytewiseEq`, we can compare the entire
+  > array at once."
 
 Each semantic definition cited above quotes the corresponding `core` safety
 contract at `rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`. -/
@@ -143,6 +157,8 @@ inductive CoreCallOp where
   | sliceGetUncheckedRangeFrom
   | ptrAdd (mutability : Mutability) (pointee : MirTy)
   | usizeUncheckedSub
+  | intToLeBytes (width : IntWidth) (signed : Bool)
+  | arrayEq (elem : MirTy) (len : Nat)
 
 /-- Closed set of `core::num` primitive arithmetic operations supported via
 pinned sysroot-body lowering (verified at capture time against `core`'s

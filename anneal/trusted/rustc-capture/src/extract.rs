@@ -215,6 +215,21 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
                 elem: Box::new(elem_ty),
             })
         }
+        ty::Array(elem, len) => {
+            let elem_ty = ty(tcx, elem)?;
+            if !elem_ty.is_sized() {
+                return Err(format!("unsized array element in {t:?} is unsupported"));
+            }
+            let len_u64 = len
+                .try_to_target_usize(tcx)
+                .ok_or_else(|| format!("unevaluated or non-usize array length in {t:?}"))?;
+            let len_usize = usize::try_from(len_u64)
+                .map_err(|_| format!("array length {len_u64} overflows usize in {t:?}"))?;
+            Ok(ir::Ty::Array {
+                elem: Box::new(elem_ty),
+                len: len_usize,
+            })
+        }
         ty::Uint(_) | ty::Int(_) => Ok(ir::Ty::Int(int_ty(t)?)),
         // `core::cmp::Ordering` ("a lang item only so that `BinOp::Cmp` in MIR
         // can return it") maps to `Trusted.MirAst.MirTy.ordering` before the
@@ -332,6 +347,25 @@ fn place<'tcx>(tcx: TyCtxt<'tcx>, place: &mir::Place<'tcx>) -> Result<ir::Place>
                 index: idx.as_usize(),
                 ty: ty(tcx, field_ty)?,
             }),
+            mir::ProjectionElem::ConstantIndex {
+                offset,
+                min_length,
+                from_end,
+            } => {
+                let offset_usize = usize::try_from(offset).map_err(|_| {
+                    format!("ConstantIndex offset {offset} overflows usize in `{place:?}`")
+                })?;
+                let min_len_usize = usize::try_from(min_length).map_err(|_| {
+                    format!(
+                        "ConstantIndex min_length {min_length} overflows usize in `{place:?}`"
+                    )
+                })?;
+                projection.push(ir::PlaceElem::ConstantIndex {
+                    offset: offset_usize,
+                    min_length: min_len_usize,
+                    from_end,
+                });
+            }
             other => {
                 return Err(format!(
                     "unsupported place projection `{other:?}` in `{place:?}`"
@@ -520,10 +554,23 @@ fn operand<'tcx>(
                 ir::Ty::Never => {
                     return Err("the never type has no scalar constants".into());
                 }
+                ir::Ty::Array { .. } => {
+                    let lit = decode_rodata_array_lit(tcx, typing_env, const_val, raw_ty, &t)?;
+                    ir::validate_constant(&t, &lit)?;
+                    return Ok(ir::Operand::Constant { ty: t, lit });
+                }
+                ir::Ty::Ref { mutability, .. } | ir::Ty::RawPtr { mutability, .. } => {
+                    if *mutability != ir::Mutability::Shared {
+                        return Err(format!(
+                            "mutable constant references/pointers of type {t:?} are unsupported"
+                        ));
+                    }
+                    let lit = decode_rodata_ref_lit(tcx, const_val, &t)?;
+                    ir::validate_constant(&t, &lit)?;
+                    return Ok(ir::Operand::Constant { ty: t, lit });
+                }
                 ir::Ty::OverflowPair(_)
                 | ir::Ty::Tuple { .. }
-                | ir::Ty::Ref { .. }
-                | ir::Ty::RawPtr { .. }
                 | ir::Ty::Slice { .. }
                 | ir::Ty::RangeTo { .. }
                 | ir::Ty::RangeFrom { .. } => {
@@ -548,10 +595,189 @@ fn operand<'tcx>(
             };
             let bits = decode_scalar_bits(tcx, typing_env, const_val, raw_ty, width)?;
             let lit = ConstLit::Scalar { bits };
-            ir::validate_constant(&t, lit)?;
+            ir::validate_constant(&t, &lit)?;
             Ok(ir::Operand::Constant { ty: t, lit })
         }
         other => Err(format!("unsupported operand: {other:?}")),
+    }
+}
+
+/// Extract a slice of [`ir::RodataByte`] out of an immutable, provenance-free
+/// `GlobalAlloc::Memory` allocation (`Mutability::Not`), preserving initialized
+/// vs. uninitialized bytes via `InitMask`.
+fn read_rodata_bytes_from_alloc<Prov: Provenance>(
+    cx: &impl HasDataLayout,
+    alloc: &Allocation<Prov>,
+    offset: Size,
+    len: usize,
+) -> Result<(Vec<ir::RodataByte>, u32)> {
+    if cx.data_layout().endian != Endian::Little {
+        return Err("non-little-endian global allocation constants are unsupported".into());
+    }
+    if alloc.mutability != Mutability::Not {
+        return Err("mutable global allocations are unsupported in constants".into());
+    }
+    let start = usize::try_from(offset.bytes())
+        .map_err(|_| "rodata constant offset overflows usize")?;
+    let end = start
+        .checked_add(len)
+        .ok_or("rodata constant range overflows usize")?;
+    if end > alloc.len() {
+        return Err(format!(
+            "rodata constant range [{start}..{end}) exceeds allocation size {}",
+            alloc.len()
+        ));
+    }
+    let range = AllocRange {
+        start: offset,
+        size: Size::from_bytes(len),
+    };
+    if !alloc.provenance().range_empty(range, cx) {
+        return Err("provenance-bearing global allocation constants are unsupported".into());
+    }
+    let raw = alloc.inspect_with_uninit_and_ptr_outside_interpreter(start..end);
+    let init_mask = alloc.init_mask();
+    let mut bytes = Vec::with_capacity(len);
+    for (idx, &b) in raw.iter().enumerate() {
+        let pos = Size::from_bytes(start + idx);
+        if init_mask.get(pos) {
+            bytes.push(ir::RodataByte::Init { byte: b });
+        } else {
+            bytes.push(ir::RodataByte::Uninit);
+        }
+    }
+    let align_log2 = alloc.align.bytes().trailing_zeros();
+    Ok((bytes, align_log2))
+}
+
+fn decode_rodata_array_lit<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    value: mir::ConstValue,
+    raw_ty: ty::Ty<'tcx>,
+    ty_ir: &ir::Ty,
+) -> Result<ConstLit> {
+    let Some((expected_size, _)) = ty_ir.v2_layout() else {
+        return Err(format!("array constant type {ty_ir:?} lacks layout"));
+    };
+    let layout = tcx
+        .layout_of(typing_env.as_query_input(raw_ty))
+        .map_err(|err| format!("failed to compute layout for array constant {raw_ty:?}: {err}"))?;
+    if layout.is_unsized() || layout.size.bytes() as usize != expected_size {
+        return Err("array constant size disagrees with its layout".into());
+    }
+    match value {
+        mir::ConstValue::ZeroSized if expected_size == 0 => Ok(ConstLit::RodataBytes {
+            bytes: Vec::new(),
+        }),
+        mir::ConstValue::Scalar(mir::interpret::Scalar::Int(si)) => {
+            if tcx.data_layout().endian != Endian::Little {
+                return Err("non-little-endian array constants are unsupported".into());
+            }
+            if si.size().bytes() as usize != expected_size {
+                return Err("scalar array constant width disagrees with its type".into());
+            }
+            let le = si.to_bits_unchecked().to_le_bytes();
+            let bytes = le[..expected_size]
+                .iter()
+                .map(|&byte| ir::RodataByte::Init { byte })
+                .collect();
+            Ok(ConstLit::RodataBytes { bytes })
+        }
+        mir::ConstValue::Indirect { alloc_id, offset } => {
+            let GlobalAlloc::Memory(const_alloc) = tcx.global_alloc(alloc_id) else {
+                return Err("non-memory global allocations are unsupported in array constants".into());
+            };
+            let (bytes, _) =
+                read_rodata_bytes_from_alloc(&tcx, const_alloc.inner(), offset, expected_size)?;
+            Ok(ConstLit::RodataBytes { bytes })
+        }
+        other => Err(format!("unsupported array constant representation: {other:?}")),
+    }
+}
+
+fn decode_rodata_ref_lit<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    value: mir::ConstValue,
+    ty_ir: &ir::Ty,
+) -> Result<ConstLit> {
+    match value {
+        mir::ConstValue::Slice { alloc_id, meta } => {
+            let slice_len = usize::try_from(meta)
+                .map_err(|_| format!("rodata slice length {meta} overflows usize"))?;
+            let GlobalAlloc::Memory(const_alloc) = tcx.global_alloc(alloc_id) else {
+                return Err("non-memory global allocations are unsupported in slice constants".into());
+            };
+            let inner = const_alloc.inner();
+            let (bytes, align_log2) = read_rodata_bytes_from_alloc(&tcx, inner, Size::ZERO, inner.len())?;
+            // `ConstValue::Slice::alloc_id` in
+            // `compiler/rustc_middle/src/mir/consts.rs` (`rust-lang/rust`
+            // `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+            // > "The allocation storing the slice contents.
+            // > This always points to the beginning of the allocation."
+            Ok(ConstLit::RodataRef {
+                bytes,
+                align_log2,
+                offset_bytes: 0,
+                slice_len: Some(slice_len),
+            })
+        }
+        mir::ConstValue::Scalar(mir::interpret::Scalar::Ptr(ptr, _)) => {
+            let (prov, offset) = ptr.prov_and_relative_offset();
+            let alloc_id = prov.alloc_id();
+            let offset_bytes = usize::try_from(offset.bytes())
+                .map_err(|_| "rodata pointer offset overflows usize")?;
+            let GlobalAlloc::Memory(const_alloc) = tcx.global_alloc(alloc_id) else {
+                return Err("non-memory global allocations are unsupported in ref constants".into());
+            };
+            let inner = const_alloc.inner();
+            let (bytes, align_log2) = read_rodata_bytes_from_alloc(&tcx, inner, Size::ZERO, inner.len())?;
+            Ok(ConstLit::RodataRef {
+                bytes,
+                align_log2,
+                offset_bytes,
+                slice_len: None,
+            })
+        }
+        mir::ConstValue::Scalar(mir::interpret::Scalar::Int(si)) => {
+            if si.size().bytes() != 8 {
+                return Err(format!(
+                    "unexpected scalar width {} for rodata ref constant {ty_ir:?}",
+                    si.size().bytes()
+                ));
+            }
+            let (pt_size, pt_align) = match ty_ir {
+                ir::Ty::Ref { pointee, .. } | ir::Ty::RawPtr { pointee, .. } => match &**pointee {
+                    ir::Ty::Slice { elem } => elem.v2_layout().map(|(_, a)| (0, a)),
+                    pt => pt.v2_layout(),
+                },
+                _ => None,
+            }
+            .ok_or_else(|| format!("rodata ref type {ty_ir:?} lacks layout"))?;
+            let addr = si.to_bits_unchecked();
+            let align_bytes = 1u128.checked_shl(pt_align).unwrap_or(u128::MAX);
+            if pt_size == 0 && addr != 0 && addr % align_bytes == 0 {
+                let slice_len = match ty_ir {
+                    ir::Ty::Ref { pointee, .. } | ir::Ty::RawPtr { pointee, .. }
+                        if matches!(&**pointee, ir::Ty::Slice { .. }) =>
+                    {
+                        Some(0)
+                    }
+                    _ => None,
+                };
+                Ok(ConstLit::RodataRef {
+                    bytes: Vec::new(),
+                    align_log2: pt_align,
+                    offset_bytes: 0,
+                    slice_len,
+                })
+            } else {
+                Err(format!(
+                    "non-ZST or invalid dangling integer pointer in constant {ty_ir:?}"
+                ))
+            }
+        }
+        other => Err(format!("unsupported constant reference representation: {other:?}")),
     }
 }
 
@@ -624,20 +850,23 @@ fn un_op(op: mir::UnOp) -> Result<ir::UnOp> {
 }
 
 /// Extract MIR cast kinds: `IntToInt`, `PtrToPtr` (raw-to-raw pointer casts;
-/// `ir::Body::try_new` refuses reference sources), and
+/// `ir::Body::try_new` refuses reference sources),
 /// `PointerWithExposedProvenance` ("An address-to-pointer cast that picks up
-/// an exposed provenance", rendered as `ir::CastKind::IntToPtr`). Pointer,
-/// float, transmute, and subtype casts stay refused exhaustively.
+/// an exposed provenance", rendered as `ir::CastKind::IntToPtr`), and
+/// `PointerCoercion::Unsize` (rendered as `ir::CastKind::Unsize`;
+/// `ir::Body::try_new` admits only array-to-slice pointer/reference unsizing).
+/// Pointer-expose, float, transmute, and subtype casts stay refused
+/// exhaustively.
 ///
-/// `PointerCoercion` is refused outright rather than normalized. Upstream
-/// says `ArrayToPointer` and `MutToConstPointer` "are allowed in
+/// Every other `PointerCoercion` is refused outright rather than normalized.
+/// Upstream says `ArrayToPointer` and `MutToConstPointer` "are allowed in
 /// [`AnalysisPhase::Initial`] as they're needed for borrowck, but after that
 /// are forbidden (including in all phases of runtime MIR)", because
 /// `CleanupPostBorrowck` rewrites both: "just make them ordinary pointer casts
 /// instead" (`*cast_kind = CastKind::PtrToPtr;`). Neither can therefore reach
 /// `Runtime(PostCleanup)`, and the remaining coercions (`ReifyFnPointer`,
-/// `UnsafeFnPointer`, `ClosureFnPointer`, and `Unsize`) are unmodeled.
-/// Upstream also notes that "reference-to-raw-ptr casts are translated into
+/// `UnsafeFnPointer`, and `ClosureFnPointer`) are unmodeled. Upstream also
+/// notes that "reference-to-raw-ptr casts are translated into
 /// `&raw mut/const *r`, i.e., they are not actually casts."
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1491-L1532
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/cleanup_post_borrowck.rs#L44-L60
@@ -647,6 +876,10 @@ fn cast_kind(kind: mir::CastKind) -> Result<ir::CastKind> {
         mir::CastKind::IntToInt => Ok(ir::CastKind::IntToInt),
         mir::CastKind::PtrToPtr => Ok(ir::CastKind::PtrToPtr),
         mir::CastKind::PointerWithExposedProvenance => Ok(ir::CastKind::IntToPtr),
+        mir::CastKind::PointerCoercion(
+            rustc_middle::ty::adjustment::PointerCoercion::Unsize,
+            _,
+        ) => Ok(ir::CastKind::Unsize),
         mir::CastKind::PointerExposeProvenance
         | mir::CastKind::PointerCoercion(..)
         | mir::CastKind::FloatToInt
@@ -746,8 +979,8 @@ fn rvalue<'tcx>(
             operand: operand(tcx, typing_env, value)?,
             ty: ty(tcx, *target_ty)?,
         },
-        mir::Rvalue::Discriminant(place) => ir::Rvalue::Discriminant {
-            local: local(place)?,
+        mir::Rvalue::Discriminant(p) => ir::Rvalue::Discriminant {
+            place: place(tcx, p)?,
         },
         // `Ref` "Creates a reference of the indicated kind to the place";
         // its semantics "are essentially entirely a part of the aliasing
@@ -794,14 +1027,29 @@ fn rvalue<'tcx>(
                 place: place(tcx, p)?,
             }
         }
+        mir::Rvalue::Repeat(op, count) => {
+            let op_ir = operand(tcx, typing_env, op)?;
+            let elem_ty = ty(tcx, op.ty(local_decls, tcx))?;
+            let count_u64 = count
+                .try_to_target_usize(tcx)
+                .ok_or_else(|| format!("unevaluated repeat count in {value:?}"))?;
+            let count_usize = usize::try_from(count_u64)
+                .map_err(|_| format!("repeat count {count_u64} overflows usize in {value:?}"))?;
+            ir::Rvalue::Repeat {
+                operand: op_ir,
+                elem_ty,
+                count: count_usize,
+            }
+        }
         // `Aggregate` "Creates an aggregate value, like a tuple or struct."
-        // Non-empty tuples lower to `ir::Rvalue::AggregateTuple`; the empty
-        // tuple stays refused because unit values are `ZeroSized`
-        // constants. For `AggregateKind::Adt(def, variant, ..)`, "The second
-        // field is the variant index. It's equal to 0 for struct and union
-        // expressions." Only the sysroot `core::ops::range::{RangeTo,
-        // RangeFrom}` lang-item structs are admitted (see [`core_range`]),
-        // requiring `VariantIdx::ZERO` and exactly one operand (their single
+        // Arrays lower to `ir::Rvalue::AggregateArray`, and non-empty tuples
+        // lower to `ir::Rvalue::AggregateTuple`; the empty tuple stays refused
+        // because unit values are `ZeroSized` constants. For
+        // `AggregateKind::Adt(def, variant, ..)`, "The second field is the
+        // variant index. It's equal to 0 for struct and union expressions."
+        // Only the sysroot `core::ops::range::{RangeTo, RangeFrom}` lang-item
+        // structs are admitted (see [`core_range`]), requiring
+        // `VariantIdx::ZERO` and exactly one operand (their single
         // `end`/`start` field); the active-field slot is for unions and must
         // be `None`.
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1445-L1453
@@ -809,6 +1057,17 @@ fn rvalue<'tcx>(
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ops/range.rs#L192-L201
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ops/range.rs#L276-L285
         mir::Rvalue::Aggregate(agg_kind, ops) => match &**agg_kind {
+            mir::AggregateKind::Array(elem_ty) => {
+                let elem_ir = ty(tcx, *elem_ty)?;
+                let mut elems = Vec::with_capacity(ops.len());
+                for op in ops.iter() {
+                    elems.push(operand(tcx, typing_env, op)?);
+                }
+                ir::Rvalue::AggregateArray {
+                    elem_ty: elem_ir,
+                    elems,
+                }
+            }
             mir::AggregateKind::Tuple if !ops.is_empty() => {
                 let mut fields = Vec::with_capacity(ops.len());
                 for op in ops.iter() {
@@ -1087,6 +1346,108 @@ fn core_call_op<'tcx>(
             })
         }
         "core::num::<impl usize>::unchecked_sub" => Ok(ir::CoreCallOp::UsizeUncheckedSub),
+        "core::num::<impl u8>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
+            int_ty: IntTy {
+                width: IntWidth::I8,
+                signed: false,
+            },
+        }),
+        "core::num::<impl u16>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
+            int_ty: IntTy {
+                width: IntWidth::I16,
+                signed: false,
+            },
+        }),
+        "core::num::<impl u32>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
+            int_ty: IntTy {
+                width: IntWidth::I32,
+                signed: false,
+            },
+        }),
+        "core::num::<impl u64>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
+            int_ty: IntTy {
+                width: IntWidth::I64,
+                signed: false,
+            },
+        }),
+        "core::num::<impl u128>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
+            int_ty: IntTy {
+                width: IntWidth::I128,
+                signed: false,
+            },
+        }),
+        "core::num::<impl usize>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
+            int_ty: IntTy {
+                width: IntWidth::Isize,
+                signed: false,
+            },
+        }),
+        "core::num::<impl i8>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
+            int_ty: IntTy {
+                width: IntWidth::I8,
+                signed: true,
+            },
+        }),
+        "core::num::<impl i16>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
+            int_ty: IntTy {
+                width: IntWidth::I16,
+                signed: true,
+            },
+        }),
+        "core::num::<impl i32>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
+            int_ty: IntTy {
+                width: IntWidth::I32,
+                signed: true,
+            },
+        }),
+        "core::num::<impl i64>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
+            int_ty: IntTy {
+                width: IntWidth::I64,
+                signed: true,
+            },
+        }),
+        "core::num::<impl i128>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
+            int_ty: IntTy {
+                width: IntWidth::I128,
+                signed: true,
+            },
+        }),
+        "core::num::<impl isize>::to_le_bytes" => Ok(ir::CoreCallOp::IntToLeBytes {
+            int_ty: IntTy {
+                width: IntWidth::Isize,
+                signed: true,
+            },
+        }),
+        "core::cmp::PartialEq::eq" => {
+            if fn_args.len() != 2 {
+                return Err(format!(
+                    "unexpected type argument count {} in {path}",
+                    fn_args.len()
+                ));
+            }
+            let self_raw = fn_args[0]
+                .as_type()
+                .ok_or_else(|| format!("missing Self type argument in {path}"))?;
+            let rhs_raw = fn_args[1]
+                .as_type()
+                .ok_or_else(|| format!("missing Rhs type argument in {path}"))?;
+            let self_ty = ty(tcx, self_raw)?;
+            let rhs_ty = ty(tcx, rhs_raw)?;
+            match (self_ty, rhs_ty) {
+                (
+                    ir::Ty::Array { elem: e1, len: n1 },
+                    ir::Ty::Array { elem: e2, len: n2 },
+                ) if e1 == e2 && n1 == n2 && e1.is_array_eq_elem_supported() => {
+                    Ok(ir::CoreCallOp::ArrayEq {
+                        elem: *e1,
+                        len: n1,
+                    })
+                }
+                (s, r) => Err(format!(
+                    "unsupported PartialEq::eq types ({s:?}, {r:?})"
+                )),
+            }
+        }
         _ => Err(format!("unsupported core call `{path}`")),
     }
 }
@@ -2722,14 +3083,19 @@ mod tests {
             vec![ir::Block {
                 statements: vec![ir::Statement::Assign {
                     local: 0,
-                    value: ir::Rvalue::Discriminant { local: 1 },
+                    value: ir::Rvalue::Discriminant {
+                        place: ir::Place {
+                            local: 1,
+                            projection: vec![],
+                        },
+                    },
                 }],
                 terminator: ir::Terminator::Ret,
             }],
             "rust-path-v1::non_enum_discr".into(),
         )
         .unwrap_err();
-        assert!(non_enum_discr.contains("requires a fieldless enum or Ordering local"));
+        assert!(non_enum_discr.contains("requires a fieldless enum or Ordering place"));
     }
 
     #[test]
@@ -2764,12 +3130,19 @@ mod tests {
         }
         // `CleanupPostBorrowck` rewrites `MutToConstPointer` and
         // `ArrayToPointer` to `PtrToPtr` before `Runtime(PostCleanup)`, so
-        // capture refuses every `PointerCoercion` instead of normalizing it.
+        // capture refuses every `PointerCoercion` except `Unsize`.
         use rustc_middle::ty::adjustment::PointerCoercion;
+        assert_eq!(
+            cast_kind(mir::CastKind::PointerCoercion(
+                PointerCoercion::Unsize,
+                mir::CoercionSource::Implicit,
+            ))
+            .unwrap(),
+            ir::CastKind::Unsize
+        );
         for coercion in [
             PointerCoercion::MutToConstPointer,
             PointerCoercion::ArrayToPointer,
-            PointerCoercion::Unsize,
             PointerCoercion::UnsafeFnPointer,
         ] {
             let err = cast_kind(mir::CastKind::PointerCoercion(

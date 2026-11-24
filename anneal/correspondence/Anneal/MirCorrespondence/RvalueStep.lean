@@ -72,7 +72,7 @@ theorem slotToMiriLocalValue_liveUninit (ty : MirTy) :
   cases ty with
   | unit => rfl
   | bool | int _ _ | never | char | ordering | tuple _ | ref _ _ | rawPtr _ _
-  | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+  | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => rfl
   | enum ety =>
     dsimp only [liveUninitSlot]
     cases h_zst : isZstEnumTy ety with
@@ -99,7 +99,7 @@ theorem refLayoutDataForTy_isUnsized (ty : MirTy) :
   cases ty with
   | int w s => cases w <;> cases s <;> rfl
   | bool | unit | never | char | ordering | ref _ _ | rawPtr _ _
-  | slice _ | rangeTo _ | rangeFrom _ | unsupported => rfl
+  | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported => rfl
   | enum ety =>
     dsimp only [refLayoutDataForTy, refAsEnumTy?, refEnumLayoutData]
     cases ety.tagRepr <;> rfl
@@ -401,11 +401,13 @@ theorem rvalueCacheTouch_length (dstId : LocalId) (rv : Rvalue)
     · exact cacheTouch_length _ _
     · exact cacheTouch_length _ _
     · exact cacheTouch_length _ _
+    · exact cacheTouch_length _ _
   | discriminant src =>
     dsimp only [rvalueCacheTouch]
     rw [cacheTouch_length, cacheTouch_length]
   | ref _ _ | addressOf _ _ | aggregateTuple _ | unsupported | useRetag _
-  | aggregateRangeTo _ _ | aggregateRangeFrom _ _ =>
+  | aggregateRangeTo _ _ | aggregateRangeFrom _ _ | aggregateArray _ _
+  | repeat_ _ _ _ =>
     exact cacheTouch_length _ _
 
 theorem getElem?_cacheTouch_self {cache : List Bool} {id : Nat} {b : Bool}
@@ -1717,6 +1719,15 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
           cases evalConstLit ty .zeroSized with
           | error k => cases k <;> exact ⟨_, _, rfl, rfl⟩
           | ok v => rfl
+        | rodataBytes _ | rodataRef _ _ _ _ =>
+          have h_step :
+              res =
+                refEvalConstOperand rp.types
+                  ⟨⟨0⟩, none, .Val (.Indirect 0 0) (canonicalTyId rp.types tyId)⟩ st := rfl
+          dsimp only [evalOperandToSlot]
+          rw [h_step]
+          dsimp only [refEvalConstOperand]
+          exact ⟨_, _, rfl, rfl⟩
 
 /-! ## Section 3: Primitive Read (`PlaceMachine.readImmediate`) -/
 
@@ -1859,7 +1870,7 @@ theorem isPrimitiveReadableTy_cases {ty : MirTy}
   | int w s => exact Or.inr (Or.inl ⟨w, s, rfl⟩)
   | char => exact Or.inr (Or.inr (Or.inl rfl))
   | unit | never | ordering | enum _ | ref _ _ | rawPtr _ _
-  | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+  | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported =>
     cases h
   | tuple fs =>
     cases fs with
@@ -1891,7 +1902,7 @@ private theorem readImmediate_imm_nonprim_err (ty : MirTy)
   cases ty with
   | bool | int _ _ | char => cases h_np
   | unit | never | ordering | ref _ _ | rawPtr _ _
-  | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+  | slice _ | array _ _ | rangeTo _ | rangeFrom _ | unsupported =>
     exact ⟨_, _, rfl, rfl⟩
   | tuple fs =>
     cases fs with
@@ -5973,6 +5984,26 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
         | some _ =>
           rw [h_ops] at h_rv; injection h_rv with h_eq; subst h_eq
           exact ⟨_, _, h_copy_for_deref_err, rfl⟩
+      | aggregateArray tyId rops =>
+        dsimp only [decodeRvalue, optMap2] at h_rv
+        cases h_ty : MirSemantics.getElem? rp.types tyId with
+        | none => rw [h_ty] at h_rv; cases h_rv
+        | some _ =>
+          cases h_ops : mapOption (decodeOperand rp.types) rops with
+          | none => rw [h_ty, h_ops] at h_rv; cases h_rv
+          | some _ =>
+            rw [h_ty, h_ops] at h_rv; injection h_rv with h_eq; subst h_eq
+            exact ⟨_, _, h_copy_for_deref_err, rfl⟩
+      | repeat_ rop tyId _ =>
+        dsimp only [decodeRvalue, optMap2] at h_rv
+        cases h_op : decodeOperand rp.types rop with
+        | none => rw [h_op] at h_rv; cases h_rv
+        | some _ =>
+          cases h_ty : MirSemantics.getElem? rp.types tyId with
+          | none => rw [h_op, h_ty] at h_rv; cases h_rv
+          | some _ =>
+            rw [h_op, h_ty] at h_rv; injection h_rv with h_eq; subst h_eq
+            exact ⟨_, _, h_copy_for_deref_err, rfl⟩
       | aggregateRangeTo tyId rop =>
         dsimp only [decodeRvalue, optMap2] at h_rv
         cases h_ty : MirSemantics.getElem? rp.types tyId with
@@ -6006,7 +6037,7 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
           | some castTy =>
             rw [h_op, h_ct] at h_rv; injection h_rv with h_eq; subst h_eq
             cases k with
-            | unsupported | ptrToPtr | intToPtr =>
+            | unsupported | ptrToPtr | intToPtr | unsize =>
               exact ⟨_, _, h_copy_for_deref_err, rfl⟩
             | intToInt =>
               have h_dst_eq : dstTy = castTy :=
@@ -6655,7 +6686,7 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                     exact h_aw
                   cases srcTy with
                   | bool | int _ _ | unit | never | char | tuple _ | ref _ _
-                  | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
+                  | rawPtr _ _ | slice _ | array _ _ | rangeTo _ | rangeFrom _
                   | unsupported =>
                     rw [eStateM_bind_err (h_dl_non_enum _ rfl h_src_res)]
                     exact ⟨_, _, rfl, rfl⟩

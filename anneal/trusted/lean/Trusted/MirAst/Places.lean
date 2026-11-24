@@ -45,12 +45,15 @@ Corresponds to `rustc_middle::mir::ProjectionElem` in
 Constructor correspondence:
 - `.deref` corresponds to `ProjectionElem::Deref`.
 - `.field fieldIdx ty` corresponds to `ProjectionElem::Field(fieldIdx, ty)`.
+- `.constantIndex offset minLength fromEnd` corresponds to
+  `ProjectionElem::ConstantIndex { offset, min_length, from_end }` (Profile v2).
 - `.unsupported` represents all other `ProjectionElem` variants (`Index`,
-  `ConstantIndex`, `Subslice`, `Downcast`, `OpaqueCast`, `UnwrapUnsafeBinder`,
-  and `PhantomDeref`). -/
+  `Subslice`, `Downcast`, `OpaqueCast`, `UnwrapUnsafeBinder`, and
+  `PhantomDeref`). -/
 inductive ProjectionElem where
   | deref
   | field (fieldIdx : FieldIdx) (ty : MirTy)
+  | constantIndex (offset : Nat) (minLength : Nat) (fromEnd : Bool)
   | unsupported
 
 /-- A MIR place (`rustc_middle::mir::Place` in
@@ -68,6 +71,12 @@ structure Place where
   localId : LocalId
   projection : List ProjectionElem := []
 
+/-- Read-only constant-memory byte (`AllocByte` without pointer provenance,
+matching immutable provenance-free `GlobalAlloc::Memory` `.rodata` slices). -/
+inductive RodataByte where
+  | uninit
+  | init (val : UInt8)
+
 /-- Constant literal payload inside `ConstOperand`, corresponding to evaluated
 `rustc_middle::mir::ConstValue` (`compiler/rustc_middle/src/mir/consts.rs`,
 `rust-lang/rust` `8144389c895da997dbdecaa635e41d6a50be6ffd`):
@@ -78,11 +87,28 @@ structure Place where
 - `.scalar bits` corresponds to `ConstValue::Scalar(Scalar::Int(ScalarInt))`
   with raw 128-bit payload `bits`.
 - `.zeroSized` corresponds to `ConstValue::ZeroSized`.
-- Pointer/slice/indirect constants lower at the enclosing rvalue or statement
-  level to `.unsupported`. -/
+- `.rodataBytes bytes` corresponds to provenance-free by-value array constants
+  (`ConstValue::Indirect` / multi-byte `Scalar::Int`, Profile v2), per
+  `compiler/rustc_middle/src/mir/consts.rs` (`rust-lang/rust`
+  `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+  > "A value not representable by the other variants; needs to be stored
+  > in-memory."
+- `.rodataRef bytes alignLog2 offsetBytes sliceLen` corresponds to immutable
+  `.rodata` references/pointers (`Scalar::Ptr`, `ConstValue::Slice`, or
+  dangling aligned non-null zero-size `Scalar::Int` lowered to an empty
+  allocation at offset `0` because Profile v2 has no pointer-to-integer
+  observation) into a provenance-free `GlobalAlloc::Memory` allocation
+  (`compiler/rustc_middle/src/mir/interpret/mod.rs` and `consts.rs`,
+  `rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+  > "The alloc ID points to memory."
+  > "The allocation storing the slice contents.
+  > This always points to the beginning of the allocation." -/
 inductive ConstLit where
   | scalar (bits : BitVec 128)
   | zeroSized
+  | rodataBytes (bytes : List RodataByte)
+  | rodataRef (bytes : List RodataByte) (alignLog2 : Nat)
+      (offsetBytes : Nat) (sliceLen : Option Nat)
 
 /-- Typed constant operand carrying `ty : MirTy` and `lit : ConstLit` directly
 by value, corresponding to `rustc_middle::mir::ConstOperand` in

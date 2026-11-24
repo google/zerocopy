@@ -398,6 +398,7 @@ private theorem isU32Ty_eq {ty : MirTy} (h : isU32Ty ty = true) :
   | ref _ _ => cases h
   | rawPtr _ _ => cases h
   | slice _ => cases h
+  | array _ _ => cases h
   | rangeTo _ => cases h
   | rangeFrom _ => cases h
   | unsupported => cases h
@@ -434,6 +435,8 @@ private theorem isCopy1To0Stmt_eq {st : StatementKind}
           | useRetag _ => cases h
           | aggregateRangeTo _ _ => cases h
           | aggregateRangeFrom _ _ => cases h
+          | aggregateArray _ _ => cases h
+          | repeat_ _ _ _ => cases h
           | unsupported => cases h
           | use op =>
             cases op with
