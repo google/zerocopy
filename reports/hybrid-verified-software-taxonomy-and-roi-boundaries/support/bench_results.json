@@ -1,0 +1,45 @@
+{
+  "sssp": [
+    {"v": 250, "e": 999, "solve_ns": 9498, "check_ns": 1597, "fallback_ns": 6758, "check_pct": 16.81, "verified": true},
+    {"v": 1000, "e": 3999, "solve_ns": 90632, "check_ns": 16399, "fallback_ns": 63457, "check_pct": 18.09, "verified": true},
+    {"v": 4000, "e": 15999, "solve_ns": 515333, "check_ns": 79148, "fallback_ns": 295483, "check_pct": 15.36, "verified": true},
+    {"v": 16000, "e": 63999, "solve_ns": 3674086, "check_ns": 480977, "fallback_ns": 0, "check_pct": 13.09, "verified": true}
+  ],
+  "sssp_adv_bf": [
+    {"v": 250, "solve_ns": 24492, "check_ns": 2231, "fallback_ns": 310586, "fallback_vs_hybrid_x": 11.62},
+    {"v": 1000, "solve_ns": 120771, "check_ns": 7510, "fallback_ns": 5596148, "fallback_vs_hybrid_x": 43.62},
+    {"v": 2500, "solve_ns": 320574, "check_ns": 22178, "fallback_ns": 24085625, "fallback_vs_hybrid_x": 70.27}
+  ],
+  "sat3": [
+    {"vars": 14, "clauses": 59, "solve_ns": 11606, "check_ns": 557, "check_pct": 4.7992},
+    {"vars": 18, "clauses": 76, "solve_ns": 19702, "check_ns": 714, "check_pct": 3.6240},
+    {"vars": 22, "clauses": 93, "solve_ns": 49688, "check_ns": 826, "check_pct": 1.6624}
+  ],
+  "sort": [
+    {"n": 16, "raw_sort_ns": 66, "hyb_prod_ns": 127, "hyb_check_ns": 44, "hyb_total_ns": 171, "insertion_ns": 79, "check_vs_raw_pct": 66.67},
+    {"n": 64, "raw_sort_ns": 343, "hyb_prod_ns": 624, "hyb_check_ns": 127, "hyb_total_ns": 751, "insertion_ns": 671, "check_vs_raw_pct": 37.03},
+    {"n": 256, "raw_sort_ns": 1592, "hyb_prod_ns": 2874, "hyb_check_ns": 409, "hyb_total_ns": 3283, "insertion_ns": 11188, "check_vs_raw_pct": 25.69},
+    {"n": 2048, "raw_sort_ns": 21890, "hyb_prod_ns": 36263, "hyb_check_ns": 3604, "hyb_total_ns": 39867, "insertion_ns": 734851, "check_vs_raw_pct": 16.46},
+    {"n": 32768, "raw_sort_ns": 644267, "hyb_prod_ns": 1046042, "hyb_check_ns": 102666, "hyb_total_ns": 1148708, "insertion_ns": 0, "check_vs_raw_pct": 15.94},
+    {"n": 262144, "raw_sort_ns": 5175713, "hyb_prod_ns": 14451240, "hyb_check_ns": 3196336, "hyb_total_ns": 17647576, "insertion_ns": 0, "check_vs_raw_pct": 61.76}
+  ],
+  "matmul_freivalds": [
+    {"n": 16, "rounds": 20, "matmul_ns": 2380, "freivalds_ns": 9316, "check_pct": 391.43},
+    {"n": 32, "rounds": 20, "matmul_ns": 16528, "freivalds_ns": 34018, "check_pct": 205.82},
+    {"n": 64, "rounds": 20, "matmul_ns": 133097, "freivalds_ns": 135191, "check_pct": 101.57},
+    {"n": 128, "rounds": 20, "matmul_ns": 1297224, "freivalds_ns": 759418, "check_pct": 58.54},
+    {"n": 256, "rounds": 20, "matmul_ns": 10914202, "freivalds_ns": 2785550, "check_pct": 25.52}
+  ],
+  "lz77": [
+    {"bytes": 16384, "compressible": true, "chain": 1, "tokens": 1260, "solve_ns": 77201, "check_ns": 20358, "check_pct": 26.37},
+    {"bytes": 65536, "compressible": true, "chain": 1, "tokens": 5367, "solve_ns": 367113, "check_ns": 97346, "check_pct": 26.52},
+    {"bytes": 262144, "compressible": true, "chain": 1, "tokens": 21780, "solve_ns": 1615131, "check_ns": 386607, "check_pct": 23.94},
+    {"bytes": 65536, "compressible": true, "chain": 32, "tokens": 4076, "solve_ns": 782763, "check_ns": 95271, "check_pct": 12.17},
+    {"bytes": 262144, "compressible": true, "chain": 32, "tokens": 15521, "solve_ns": 4220755, "check_ns": 358141, "check_pct": 8.49},
+    {"bytes": 65536, "compressible": false, "chain": 1, "tokens": 2, "solve_ns": 689233, "check_ns": 263, "check_pct": 0.04}
+  ],
+  "linear_stream": [
+    {"bytes": 65536, "producer_ns": 21936, "recompute_check_ns": 21825, "overhead_pct": 99.49},
+    {"bytes": 1048576, "producer_ns": 412484, "recompute_check_ns": 417707, "overhead_pct": 101.27}
+  ]
+}
