@@ -55389,6 +55389,35 @@
         "domains/cps/runtime-monitoring"
       ]
     },
+    "hybrid-verified-software-contracts-fallback-and-ratcheting": {
+      "observed_at": "2026-11-24",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "path": "anneal/",
+            "repository": "google/zerocopy",
+            "revision": "7527dd2b9ae90b60d2ae8258ffd44bd0ee1e4d82"
+          },
+          "name": "Anneal verification architecture and MIR operational boundary"
+        }
+      ],
+      "topics": [
+        "anneal/theory",
+        "lean/mechanization",
+        "rust",
+        "verification/formalized-results",
+        "verification/hybrid",
+        "verification/refinement"
+      ]
+    },
     "hybridtrace-vectorization-slp-and-loop-certificate-library": {
       "observed_at": "2026-11-14",
       "subjects": [
