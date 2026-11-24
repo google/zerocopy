@@ -122,9 +122,10 @@ trusted/correspondence/Trusted/ Correspondence TCB specification (Pass 2)
 correspondence/Anneal/          Untrusted correspondence proof (Pass 2)
   MirCorrespondence/            Modular proofs (Codec, SimHelpers, ScalarEquiv,
                                 EnumEquiv, MemAlloc, ValidateLocal, ByteCodec,
-                                RetPlace, CopyReturnScalar, CopyReturnPair,
-                                MemRoundTrip, RvalueStep, StmtTermStep,
-                                InitAndSim, Canaries)
+                                LayoutAndAlign, MiriMemoryBridge, RetPlace,
+                                CopyReturnScalar, CopyReturnPair, MemRoundTrip,
+                                RvalueStep, StmtTermStep, InitAndSim, Canaries,
+                                RefinementBundles)
   MirCorrespondenceProof.lean   Public re-exports of all 37 locked witnesses
 
 trusted/audit/                  anneal-audit CLI, auditor library, and inspector
@@ -2215,6 +2216,22 @@ Each conjunct of `CorrespondenceClaim` closes a distinct gap:
   makes termination versus divergence observable. Terminal behaviors and
   faults alone cannot distinguish two machines that agree on every finite
   outcome while only one of them also permits an infinite execution.
+
+`RefinementBundles` packages the minimal backward-simulation refinement
+interface (`SafetyRefinementBundle` and `SafetyRefinementAtChoicesBundle`)
+separately from exact fault equivalence (`BiFaultEquivBundle` and
+`BiFaultEquivAtChoicesBundle`), derives specification, termination, and
+fault-refutation transfer theorems without auxiliary side conditions, and
+proves a concrete over-approximating encoder separating safety refinement from
+bidirectional fault equivalence. `LayoutAndAlign` and `MiriMemoryBridge` prove
+upstream-only `Miri.Memory` layout, alignment, byte-slice (`TrackedSliceMemRel`
+and `CallerMemorySliceRel` over `Miri.Memory.MemoryState`), stack-allocation
+coexistence, 64-bit pointer offset and `checkedBounds`, dead-allocation
+dereference, and pointer-in-memory provenance round-trip bridges against
+unmodified `vendor/lean-miri/` definitions (noting that on zero-sized accesses,
+`MirSemantics.readBytes` and `MirSemantics.writeBytes` skip `isAligned` while
+Miri's `checkPtrAlign` checks alignment independently of access size and
+`checkAndDerefPtr` returns `none` before allocation lookup).
 
 ### 5.3 One-to-One Simulation Invariant (`SimulationInv`)
 
