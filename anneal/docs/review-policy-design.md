@@ -354,7 +354,10 @@ against its canonical owner and required outcome:
     — reuses review evidence only within one PR and only for an unchanged
     identity (parent tree, tree, and commit message for a one-commit PR, so a
     tree change in a lower PR invalidates every one-commit PR above it, while
-    a rebase onto the lower PR's tree-identical squash commit does not), reruns
+    a rebase onto the lower PR's tree-identical squash commit does not), except
+    that the evaluator itself may carry a clean Gate 2 review across a rebase
+    it verifies changed none of the PR's file changes and touched neither the
+    review rules nor any PR file other than the root manifest, reruns
     preflight and CI on every new head, and requires a complete Gate 2 review on
     the PR for the current identity (an independent cross-family
     `anneal-gate2-review:v1` `COMMENT` review or legacy Codex summary) with no

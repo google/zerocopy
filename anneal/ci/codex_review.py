@@ -497,6 +497,310 @@ def _matches_gate2_identity(payload, head, base_sha, tree_sha,
     )
 
 
+# Rebase-only carry-forward. A base change may touch this PR file only when
+# the PR's own added and removed lines in it are unchanged: each line names
+# its file and digest, so a line's meaning does not depend on its context.
+CARRY_FORWARD_OVERLAP_PATHS = frozenset({"anneal/trusted/root-manifest.sha256"})
+# Base changes to the rules that govern reviews (or to this evaluator)
+# always need a new review: CI cannot tell whether they got stricter.
+CARRY_FORWARD_POLICY_PATHS = frozenset({
+    ".gemini/styleguide.md", "anneal/.gemini/styleguide.md",
+    "anneal/docs/codex-review.md", "anneal/docs/review-policy-design.md",
+    "anneal/docs/trust-model.md", "anneal/ci/codex_review.py",
+    "anneal/META_PRINCIPLES.md", "anneal/PRINCIPLES.md",
+    "anneal/THREAT_MODEL.md",
+})
+# Agent instruction files anywhere in the tree.
+CARRY_FORWARD_POLICY_BASENAMES = frozenset({
+    "AGENTS.md", "AGENTS.override.md", "CLAUDE.md", "GEMINI.md",
+})
+CARRY_FORWARD_POLICY_PREFIXES = (
+    ".github/", "anneal/.github/", "skills/", "anneal/skills/",
+)
+# GitHub truncates a commit's or comparison's file list at 300 entries.
+MAX_API_FILES = 300
+_DIFF_HEADER_RE = re.compile(r"^diff --git a/(.*) b/(.*)$")
+_DIFF_MODE_RE = re.compile(
+    r"^(?:old mode|new mode|new file mode|deleted file mode) ([0-7]{6})$"
+)
+_DIFF_INDEX_MODE_RE = re.compile(r"^index [0-9a-f]+\.\.[0-9a-f]+ ([0-7]{6})$")
+
+
+def _patch_change_lines(patch):
+    """A unified diff's added, removed, and no-newline lines, in order."""
+    return [line for line in patch.split("\n")
+            if line.startswith(("+", "-", "\\"))]
+
+
+def _file_change_key(entry, relaxed_paths):
+    if not isinstance(entry, dict):
+        raise ValueError("Invalid commit file entry")
+    name = entry.get("filename")
+    status = entry.get("status")
+    patch = entry.get("patch")
+    previous = entry.get("previous_filename")
+    blob = entry.get("sha")
+    if (not _is_non_empty_str(name) or not _is_non_empty_str(status)
+            or not isinstance(patch, str)
+            or (previous is not None and not _is_non_empty_str(previous))):
+        # A missing patch (binary or oversized file) cannot be compared.
+        raise ValueError("Uncomparable commit file entry")
+    if name in relaxed_paths and status == "modified":
+        # The base changed this allowlisted file, so its blob differs.
+        content = None
+    elif isinstance(blob, str) and SHA1_RE.fullmatch(blob) is not None:
+        # The base did not touch the file, so the result must be identical.
+        content = blob
+    else:
+        raise ValueError("Commit file entry has no blob SHA")
+    return name, (status, previous, content, tuple(_patch_change_lines(patch)))
+
+
+def rebase_only_patch_equivalent(old_files, new_files, relaxed_paths=frozenset()):
+    """Whether two one-commit patches make exactly the same changes.
+
+    Context lines and hunk positions may differ. The file set, statuses,
+    rename sources, added and removed lines, and resulting blobs may not,
+    except that `relaxed_paths` (allowlisted files the base changed) skip
+    the blob comparison.
+    """
+    if (not isinstance(old_files, list) or not isinstance(new_files, list)
+            or not old_files or len(old_files) >= MAX_API_FILES
+            or len(new_files) >= MAX_API_FILES):
+        return False
+    try:
+        old = dict(_file_change_key(f, relaxed_paths) for f in old_files)
+        new = dict(_file_change_key(f, relaxed_paths) for f in new_files)
+    except ValueError:
+        return False
+    return len(old) == len(old_files) and len(new) == len(new_files) and old == new
+
+
+def _change_set(files):
+    """A commit's file names and added and removed lines, base-independent.
+
+    Returns None when a file has no comparable patch.
+    """
+    if not isinstance(files, list) or len(files) >= MAX_API_FILES:
+        return None
+    changes = set()
+    for entry in files:
+        if (not isinstance(entry, dict) or not _is_non_empty_str(entry.get("filename"))
+                or not isinstance(entry.get("patch"), str)):
+            return None
+        changes.add((entry["filename"], tuple(_patch_change_lines(entry["patch"]))))
+    return frozenset(changes)
+
+
+def diff_file_modes(diff_text):
+    """Maps each file in a `git diff` to its mode header lines.
+
+    GitHub's JSON file list omits modes, so they come from the raw diff.
+    Returns None when the diff cannot be parsed.
+    """
+    if not isinstance(diff_text, str):
+        return None
+    modes, current = {}, None
+    for line in diff_text.split("\n"):
+        if line.startswith("diff --git "):
+            header = _DIFF_HEADER_RE.match(line)
+            if header is None or header.group(2) in modes:
+                return None
+            current = header.group(2)
+            modes[current] = []
+        elif current is None:
+            continue
+        elif line.startswith(("@@", "--- ", "+++ ", "Binary ")):
+            current = None
+        elif _DIFF_MODE_RE.match(line):
+            modes[current].append(line)
+        else:
+            index = _DIFF_INDEX_MODE_RE.match(line)
+            if index:
+                modes[current].append(f"index {index.group(1)}")
+    # `git diff` names a mode for every file; a section without one means
+    # an unexpected or truncated format.
+    if any(not lines for lines in modes.values()):
+        return None
+    return modes
+
+
+def pr_paths(files):
+    paths = set()
+    for entry in files:
+        if not isinstance(entry, dict) or not _is_non_empty_str(entry.get("filename")):
+            raise ValueError("Invalid commit file entry")
+        paths.add(entry["filename"])
+        previous = entry.get("previous_filename")
+        if previous is not None:
+            if not _is_non_empty_str(previous):
+                raise ValueError("Invalid commit file entry")
+            paths.add(previous)
+    return paths
+
+
+def base_drift_allows_carry_forward(compare_status, base_files, paths):
+    """Returns the allowlisted PR files the base touched, or None.
+
+    The base must have moved strictly forward without touching any PR file
+    outside the allowlist or any review-governing file; the caller still
+    requires the PR's own lines in the returned files to be unchanged.
+    """
+    if (compare_status != "ahead" or not isinstance(base_files, list)
+            or not base_files or len(base_files) >= MAX_API_FILES):
+        return None
+    relaxed = set()
+    for entry in base_files:
+        if not isinstance(entry, dict) or not _is_non_empty_str(entry.get("filename")):
+            return None
+        previous = entry.get("previous_filename")
+        if previous is not None and not _is_non_empty_str(previous):
+            return None
+        touched = {entry["filename"]} | ({previous} if previous else set())
+        if any(path in CARRY_FORWARD_POLICY_PATHS
+               or path.startswith(CARRY_FORWARD_POLICY_PREFIXES)
+               or path.rsplit("/", 1)[-1] in CARRY_FORWARD_POLICY_BASENAMES
+               for path in touched):
+            return None
+        for path in touched & paths:
+            if path not in CARRY_FORWARD_OVERLAP_PATHS:
+                return None
+            relaxed.add(path)
+    return frozenset(relaxed)
+
+
+def _carry_forward_blocked_by_history(comments, reviews, authorized_reviewers,
+                                      anchor_head, anchor_tree,
+                                      deleted_through=0):
+    """Whether any Gate 2 or Codex evidence on the anchor could still block.
+
+    Conservative: any legacy Codex summary that is not a completed clean
+    review stops the carry-forward, as does any Gate 2 item recorded on the
+    anchor's head or tree (every commit with the anchor's one-commit
+    identity has that tree) that has findings or fails on its own recorded
+    identity, mirroring which failures the normal rules keep blocking.
+    """
+    for source, entries in (("comment", comments), ("review", reviews)):
+        for item in entries:
+            if not authentic_gate2_item(item, authorized_reviewers):
+                continue
+            try:
+                payload, _, _, _ = parse_gate2_payload(
+                    item.get("body") or "", strict_identity_key=False,
+                )
+            except ValueError:
+                continue
+            if (payload["head_sha"] != anchor_head
+                    and payload["tree_sha"] != anchor_tree):
+                continue
+            if payload["findings"] or payload["verdict"] == "findings":
+                return True
+            if source == "comment" and item["id"] <= deleted_through:
+                continue
+            if _is_blocking_non_finding_failure(
+                    source, item, payload["head_sha"], payload["base_sha"],
+                    payload["tree_sha"]):
+                return True
+    for comment in comments:
+        if not authentic_summary(comment):
+            continue
+        try:
+            review = _parse_codex_summary(comment.get("body") or "")
+        except ValueError:
+            return True
+        if (review.get("status") != "completed"
+                or review.get("has_any_findings") is not False
+                or review.get("has_unresolved_findings") is not False):
+            return True
+    return False
+
+
+def _gate2_failure_heads(comments, reviews, authorized_reviewers):
+    """Heads named by authentic Gate 2 items that have findings or fail."""
+    heads = set()
+    for source, entries in (("comment", comments), ("review", reviews)):
+        for item in entries:
+            if not authentic_gate2_item(item, authorized_reviewers):
+                continue
+            try:
+                payload, _, _, _ = parse_gate2_payload(
+                    item.get("body") or "", strict_identity_key=False,
+                )
+            except ValueError:
+                continue
+            if (payload["findings"] or payload["verdict"] == "findings"
+                    or _is_blocking_non_finding_failure(
+                        source, item, payload["head_sha"], payload["base_sha"],
+                        payload["tree_sha"])):
+                heads.add(payload["head_sha"])
+    return heads
+
+
+def _carry_forward_result(head, comments, reviews, deleted_through, base_sha,
+                          tree_sha, authorized_reviewers, identity_key,
+                          verifier):
+    """Carry the latest clean Gate 2 review forward across a rebase.
+
+    The latest eligible Gate 2 item must be a clean review of an earlier
+    head on a different base. `verifier` must confirm with GitHub data
+    that the PR was only rebased and return that head's verified one-commit
+    identity key (see `GitHub.verify_rebase_carry_forward`); the review must
+    then pass on that verified identity with no blocking evidence left.
+    """
+    if not (isinstance(identity_key, str)
+            and ONE_IDENTITY_RE.fullmatch(identity_key) is not None
+            and base_sha is not None and tree_sha is not None):
+        return None
+    items = [
+        ("review", r) for r in reviews if authentic_gate2_item(r, authorized_reviewers)
+    ] + [
+        ("comment", c) for c in comments if authentic_gate2_item(c, authorized_reviewers)
+    ]
+    if not items:
+        return None
+    # The anchor must be the latest Gate 2 item of all, so a deletion can
+    # never hide a newer, still-present item behind it.
+    source, item = sorted(items, key=_gate2_item_sort_key)[-1]
+    if source == "comment" and item["id"] <= deleted_through:
+        return None
+    try:
+        payload, _, _, _ = parse_gate2_payload(item.get("body") or "")
+    except ValueError:
+        return None
+    a_head, a_base, a_tree = payload["head_sha"], payload["base_sha"], payload["tree_sha"]
+    if (payload["verdict"] != "clean" or payload["findings"]
+            or a_head == head or a_base == base_sha
+            or _carry_forward_blocked_by_history(
+                comments, reviews, authorized_reviewers, a_head, a_tree,
+                deleted_through)):
+        return None
+    # Findings or failures recorded on any other head may concern this
+    # same patch (for example on an earlier rebase), so the verifier must
+    # show that each such head's patch differs from the anchor's.
+    other_heads = sorted(_gate2_failure_heads(comments, reviews,
+                                              authorized_reviewers) - {a_head})
+    try:
+        anchor_ik = verifier(a_head, a_base, a_tree, head, base_sha, other_heads)
+    except (RuntimeError, ValueError, OSError):
+        return None
+    if not (isinstance(anchor_ik, str)
+            and ONE_IDENTITY_RE.fullmatch(anchor_ik) is not None):
+        return None
+    # The whole PR history, judged as of the anchor's verified identity,
+    # must pass; this also re-checks a structured identity_key.
+    anchor_res = review_result(
+        a_head, comments, deleted_through, None, reviews=reviews,
+        base_sha=a_base, tree_sha=a_tree,
+        authorized_reviewers=authorized_reviewers, identity_key=anchor_ik,
+    )
+    if anchor_res.state != "success":
+        return None
+    return Result(
+        "success",
+        f"Gate 2 review of {a_head[:12]} carried forward "
+        f"(rebase only, verified; {payload['reviewer_family']})",
+    )
+
 def _evaluate_gate2_item(source, item, head, base_sha, tree_sha, base_changed_at,
                          identity_key=None, historical_identities=None,
                          historical_trees=None,
@@ -924,7 +1228,8 @@ def review_codex_result(head, comments, deleted_through=0, base_changed_at=None,
 def review_result(head, comments, deleted_through=0, base_changed_at=None, *,
                   reviews=None, base_sha=None, tree_sha=None,
                   authorized_reviewers=None, identity_key=None,
-                  historical_identities=None, historical_trees=None):
+                  historical_identities=None, historical_trees=None,
+                  carry_forward_verifier=None):
     """Evaluate Gate 2 cross-family reviews and legacy Codex summaries."""
     codex_res = review_codex_result(
         head, comments, deleted_through=deleted_through,
@@ -944,6 +1249,16 @@ def review_result(head, comments, deleted_through=0, base_changed_at=None, *,
         historical_identities=historical_identities,
         historical_trees=historical_trees,
     )
+    if (gate2_res is not None and gate2_res.state == "pending"
+            and carry_forward_verifier is not None
+            and (codex_res is None or codex_res.state != "failure")):
+        carried = _carry_forward_result(
+            head, comments, reviews or (), deleted_through, base_sha,
+            tree_sha, authorized_reviewers, identity_key,
+            carry_forward_verifier,
+        )
+        if carried is not None:
+            return carried
     if gate2_res is None and codex_res is None:
         return Result("pending", "Waiting for a Gate 2 or Codex review")
     if gate2_res is None:
@@ -1140,6 +1455,101 @@ class GitHub:
             "parents": parents,
             "message": message,
         }
+
+    def request_text(self, path, accept):
+        request = Request(self.root + path,
+                          headers={"Authorization": f"Bearer {self.token}",
+                                   "Accept": accept,
+                                   "X-GitHub-Api-Version": "2022-11-28"})
+        try:
+            with urlopen(request, timeout=30) as response:
+                return response.read().decode("utf-8")
+        except HTTPError as error:
+            raise RuntimeError(
+                f"GitHub {request.get_method()}: HTTP {error.code}") from None
+
+    def commit_files(self, sha):
+        commit, _, _ = self._read_commit(sha)
+        files = commit.get("files")
+        if not isinstance(files, list):
+            raise RuntimeError("GitHub returned invalid commit files")
+        return files
+
+    def commit_diff(self, sha):
+        if not isinstance(sha, str) or not SHA1_RE.fullmatch(sha):
+            raise ValueError(f"Invalid commit SHA: {sha!r}")
+        return self.request_text(f"commits/{sha}", "application/vnd.github.diff")
+
+    def compare(self, base, head):
+        for sha in (base, head):
+            if not isinstance(sha, str) or not SHA1_RE.fullmatch(sha):
+                raise ValueError(f"Invalid commit SHA: {sha!r}")
+        data = self.request(f"compare/{base}...{head}")
+        if not isinstance(data, dict) or not isinstance(data.get("status"), str):
+            raise RuntimeError("GitHub returned invalid comparison")
+        files = data.get("files", [])
+        if not isinstance(files, list):
+            raise RuntimeError("GitHub returned invalid comparison files")
+        return data["status"], files
+
+    def verify_rebase_carry_forward(self, old_head, old_base, old_tree,
+                                    new_head, new_base, other_heads=()):
+        """Returns `old_head`'s one-commit identity key if `new_head` only
+        rebases it onto a later base, else None.
+
+        Both must be single commits on their (different) bases with the same
+        message and the same file changes and modes, `old_head` must have
+        the reviewed `old_tree`, and the base must have moved forward
+        without touching the PR's files (the allowlisted manifest excepted)
+        or the review rules. Each of `other_heads` (heads with findings or
+        failures) must make different changes than `old_head`, so that no
+        finding about this patch is skipped.
+        """
+        if old_base == new_base:
+            return None
+        commits = {}
+        for sha in (old_head, new_head):
+            commit, commit_obj, tree_sha = self._read_commit(sha)
+            parents = commit.get("parents")
+            files = commit.get("files")
+            message = commit_obj.get("message")
+            if (not isinstance(parents, list) or not isinstance(files, list)
+                    or not isinstance(message, str)):
+                return None
+            commits[sha] = (
+                [p.get("sha") if isinstance(p, dict) else None for p in parents],
+                tree_sha, message, files,
+            )
+        old_parents, old_tree_actual, old_message, old_files = commits[old_head]
+        new_parents, _, new_message, new_files = commits[new_head]
+        if (old_parents != [old_base] or new_parents != [new_base]
+                or old_tree_actual != old_tree or old_message != new_message):
+            return None
+        status, base_files = self.compare(old_base, new_base)
+        relaxed = base_drift_allows_carry_forward(
+            status, base_files, pr_paths(old_files) | pr_paths(new_files),
+        )
+        if relaxed is None or not rebase_only_patch_equivalent(
+                old_files, new_files, relaxed):
+            return None
+        names = {entry["filename"] for entry in new_files}
+        old_modes = diff_file_modes(self.commit_diff(old_head))
+        new_modes = diff_file_modes(self.commit_diff(new_head))
+        if (old_modes is None or new_modes is None or set(old_modes) != names
+                or old_modes != new_modes):
+            return None
+        old_changes = _change_set(old_files)
+        for sha in other_heads:
+            try:
+                other_files = self.commit_files(sha)
+            except (RuntimeError, ValueError):
+                return None
+            other_changes = _change_set(other_files)
+            if other_changes is None or other_changes == old_changes:
+                return None
+        parent_tree = self.commit_tree(old_base)
+        msg_sha256 = hashlib.sha256(old_message.encode("utf-8")).hexdigest()
+        return f"one:{parent_tree}:{old_tree}:{msg_sha256}"
 
     def commit_identity(self, head, base_sha):
         if not isinstance(base_sha, str) or not SHA1_RE.fullmatch(base_sha):
@@ -1464,6 +1874,7 @@ def reconcile(github, publish=False, requested_group=None):
                                 continue
                             raise
                     historical_trees[c_sha] = tree_cache[c_sha]
+            verify = getattr(github, "verify_rebase_carry_forward", None)
             results[number] = review_result(
                 head, pr_comments,
                 deleted_through, context.bases[number],
@@ -1474,6 +1885,7 @@ def reconcile(github, publish=False, requested_group=None):
                 identity_key=identity_key,
                 historical_identities=historical_identities,
                 historical_trees=historical_trees,
+                carry_forward_verifier=verify,
             )
             snapshots[number] = review_snapshot(pr_comments, pr_reviews, authorized)
         except (RuntimeError, ValueError, OSError) as error:

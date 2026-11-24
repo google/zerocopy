@@ -435,5 +435,5 @@ authorized**.
      claims against `git diff <new-base>..HEAD`;
   3. Scoped or full re-verification per
      [`change-review`](../change-review/SKILL.md#key-every-result-to-its-inputs)
-     (including deterministic preflight, plus fresh Gate 2 review whenever the
-     identity changed and CI before merge on the new `head`).
+     (deterministic preflight, fresh Gate 2 review on an identity change
+     absent an evaluator carry-forward, and CI before merge on the new `head`).
