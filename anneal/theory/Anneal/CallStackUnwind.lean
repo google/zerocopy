@@ -9,4 +9,3 @@
 module
 prelude
 public import Anneal.CallStackUnwind.SpecCut
-public import Anneal.CallStackUnwind.Canaries

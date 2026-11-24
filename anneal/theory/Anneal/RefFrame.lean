@@ -10,4 +10,3 @@ module
 prelude
 public import Anneal.RefFrame.Frame
 public import Anneal.RefFrame.RangedTree
-public import Anneal.RefFrame.Canaries

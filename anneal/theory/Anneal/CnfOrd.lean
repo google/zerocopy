@@ -10,4 +10,3 @@ module
 prelude
 public import Anneal.CnfOrd.Ord
 public import Anneal.CnfOrd.Worklist
-public import Anneal.CnfOrd.Canaries

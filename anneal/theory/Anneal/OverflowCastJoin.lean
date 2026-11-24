@@ -9,4 +9,6 @@
 module
 prelude
 public import Anneal.OverflowCastJoin.Join
-public import Anneal.OverflowCastJoin.Canaries
+
+-- `Anneal.OverflowCastJoin.Canaries` is decoupled from this runtime umbrella
+-- and audited standalone by Pass-1 `anneal-audit`.

@@ -541,7 +541,7 @@ anneal/
     │   ├── ListChunks.lean         # Ceiling division & fixed-size chunking
     │   ├── LoopInv.lean            # CFG loop-invariant & simulation combinators
     │   ├── MirTotal.lean           # Computable MIR step mirrors & bridges (+ MirTotal/)
-    │   ├── MirWp.lean              # Fuel-bounded MIR WP & canaries (+ MirWp/)
+    │   ├── MirWp.lean              # Fuel-bounded MIR WP (+ MirWp/, decoupled Canaries)
     │   ├── NatBitwise.lean         # Shared Nat.bitwise unfolding & bounds
     │   ├── OverflowCastJoin.lean   # Stage-cut joins for overflowing arithmetic & casts (+ OverflowCastJoin/)
     │   ├── PTree.lean              # Canonical positive radix trie & framing

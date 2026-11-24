@@ -9,4 +9,3 @@
 module
 prelude
 public import Anneal.ByteRun.Copy
-public import Anneal.ByteRun.Canaries

@@ -3417,10 +3417,9 @@ mod tests {
                 "Anneal.MirWp.Execution",
                 "Anneal.MirWp.Reflection",
                 "Anneal.MirWp.Scalars",
-                "Anneal.MirWp.Canaries",
                 "Anneal.NatBitwise",
             ],
-            &["Anneal.Unused"],
+            &["Anneal.Unused", "Anneal.MirWp.Canaries"],
         );
 
         // 3. Role isolation remains intact: `Specification -> Anneal.MirWp`
@@ -3731,9 +3730,8 @@ mod tests {
                 "Anneal.MirWp.Execution",
                 "Anneal.MirWp.Reflection",
                 "Anneal.MirWp.Scalars",
-                "Anneal.MirWp.Canaries",
             ],
-            &["Anneal.Unused"],
+            &["Anneal.Unused", "Anneal.MirWp.Canaries"],
         );
     }
 
@@ -4098,10 +4096,9 @@ mod tests {
                 "Anneal.MirWp.Execution",
                 "Anneal.MirWp.Reflection",
                 "Anneal.MirWp.Scalars",
-                "Anneal.MirWp.Canaries",
                 "Anneal.NatBitwise",
             ],
-            &["Anneal.Unused"],
+            &["Anneal.Unused", "Anneal.MirWp.Canaries"],
         );
     }
 

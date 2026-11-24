@@ -11,4 +11,3 @@ prelude
 public import Anneal.MirTotal.Ops
 public import Anneal.MirTotal.StepCore
 public import Anneal.MirTotal.ExecTotal
-public import Anneal.MirTotal.Canaries

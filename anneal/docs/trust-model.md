@@ -368,12 +368,14 @@ kernel-level audit:
      `.trusted (.candidate _)`).
 3. **MIR WP non-backsliding (`verifyMirWpCoreTheorems`):** Enabled by default
    (`require_mir_wp = true`); requires `Trusted.MirAst`,
-   `Trusted.MirSemantics`, and `Anneal.MirWp` to be present, verifies that
-   `wpProg` soundness, `wpFaultProg` soundness, and all 25 Pass 1 canaries
-   (including `CanaryMemoryLifecycleAnnealClaim`, which exercises
-   `forceAllocation`, `.indirect` locals, and `MemoryState`, and the `char`,
-   `BinOp.cmp`, `BinOp.*WithOverflow`, and `CastKind.intToInt` canaries) prove
-   their exact `Trusted.MirSemantics` `*Claim` propositions, and verifies via
+   `Trusted.MirSemantics`, `Anneal.MirWp`, and `Anneal.MirWp.Canaries` to be
+   present, verifies that `wpProg` soundness and `wpFaultProg` soundness in
+   `Anneal.MirWp` and all 25 Pass 1 canaries in decoupled
+   `Anneal.MirWp.Canaries` (including `CanaryMemoryLifecycleAnnealClaim`, which
+   exercises `forceAllocation`, `.indirect` locals, and `MemoryState`, and the
+   `char`, `BinOp.cmp`, `BinOp.*WithOverflow`, and `CastKind.intToInt`
+   canaries) prove their exact `Trusted.MirSemantics` `*Claim` propositions,
+   and verifies via
    `requireMirPublicAlias` that `Trusted.{Crate, CrateTheorem, UnitTheorem}` in
    `Trusted.MirSemantics` are universe-monomorphic `abbrev` declarations
    (kernel `ReducibilityHints.abbrev`) directly aliasing

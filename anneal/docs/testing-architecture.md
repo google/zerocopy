@@ -879,14 +879,14 @@ under `NestedBwrap` with `--network=none` and read-only `/nix` `overlayfs`):
 
 #### 6.2 Phased Rollout Roadmap (Landed Baseline vs. Remaining Stages)
 
-Waves 0 (core foundation), 1, and 2A have landed on `main`. Ad-hoc per-file
-line-coverage padding remains **frozen** until Wave 2B finishes decomposing the
-remaining `audit` and `rustc-capture` monoliths and Wave 3 completes the
-declarative corpora.
+Waves 0 (core foundation and `D1-A`), 1, and 2A have landed on `main`. Ad-hoc
+per-file line-coverage padding remains **frozen** until Wave 2B finishes
+decomposing the remaining `audit` and `rustc-capture` monoliths and Wave 3
+completes the declarative corpora.
 
 | Wave | Status on `main` | Scope & Concrete Deliverables | Sequencing & Acceptance Invariants |
 | :--- | :--- | :--- | :--- |
-| **Wave 0 (Foundation, Perf Pipeline, & `D1-A`)** | **Core Landed; `D1-A`, `#4016`/`#4109`, & `ci-core` In Progress** | **Landed on `main`:** `#4078` (balanced Lean list literals), `#4131` (`enum_id` scoping & `--env`), `#4137` (`ci/check_skills.py`), `#4138` (`ANNEAL_RELEASE_LOCK`), `#4139` (`6a0932de51`, Lean 4 `module` 3-part `.olean*` + `4.33`–`4.35` compat), `#4142` (`7c7f821539`, cross-family Gate 2), `#4148` (`d3362d9a65`, `zerocopy/proofs/` + `verify_zerocopy.py`), and `#4171`–`#4173`/`#4212` (`perf_tracking.py`, `perf_budgets.json`, static dashboard, and `anneal-perf.yml`).<br>**Remaining queue:** Execute **`D1-A`** (`*Canaries.lean` decoupled from runtime umbrellas; `Anneal.lean` and `share/anneal/theory` matched 1-for-1 to `bundle-manifest.json`), land `#4016`/`#4109` (`SpecPreflight.lean` + `ndjson_comparator` `5a`/`5b`/`5c` + multi-kernel `ExecSeal`), and complete `ci-core` onboarding (`#4077`, `#4079`, `#4140`, `#4141`; `#4125` relocates `docs/` if merged). | Zero `module` $\times$ `ndjson_comparator` regressions; `*Canaries.lean` excluded from `Anneal.lean` and user bundles while audited unconditionally in repository Pass-1 `anneal-audit`. |
+| **Wave 0 (Foundation, Perf Pipeline, & `D1-A`)** | **Core & `D1-A` Landed; `#4016`/`#4109` & `ci-core` In Progress** | **Landed on `main`:** `#4078` (balanced Lean list literals), `#4131` (`enum_id` scoping & `--env`), `#4137` (`ci/check_skills.py`), `#4138` (`ANNEAL_RELEASE_LOCK`), `#4139` (`6a0932de51`, Lean 4 `module` 3-part `.olean*` + `4.33`–`4.35` compat), `#4142` (`7c7f821539`, cross-family Gate 2), `#4148` (`d3362d9a65`, `zerocopy/proofs/` + `verify_zerocopy.py`), `#4171`–`#4173`/`#4212` (`perf_tracking.py`, `perf_budgets.json`, static dashboard, and `anneal-perf.yml`), and **`D1-A`** (`*Canaries*.lean` decoupled from runtime umbrellas; `Anneal.lean` and `share/anneal/theory` matched 1-for-1 to `bundle-manifest.json`).<br>**Remaining queue:** Land `#4016`/`#4109` (`SpecPreflight.lean` + `ndjson_comparator` `5a`/`5b`/`5c` + multi-kernel `ExecSeal`), and complete `ci-core` onboarding (`#4077`, `#4079`, `#4140`, `#4141`; `#4125` relocates `docs/` if merged). | Zero `module` $\times$ `ndjson_comparator` regressions; `*Canaries*.lean` excluded from `Anneal.lean` and user bundles while audited unconditionally in repository Pass-1 `anneal-audit`. |
 | **Wave 1 (`#4015` Two-Zone Split & `anneal-testkit`)** | **Landed (`#4154`, `#4159`); Optional Active-Member & CI `nextest` Follow-Up** | **Landed on `main`:** `#4154` (`348147c22d`, closing `#4015`) moved `trusted/{audit,cargo-anneal,rustc-capture}/tests/` into fenced `tests/{audit,cargo-anneal,rustc-capture}/` crates (`publish = false`, `*-test-bin` shims, `trusted/cargo-anneal/assets/scalar/`, lockstep policy updates keeping `anneal/AGENTS.md` at `30,654 B` below `check_skills.py`'s `31,744 B` cap); `#4159` (`aa8d82c9bb`) added the `WorkspaceZone::Trusted(0) < WorkspaceZone::Tests(1)` monotonic lattice and `proc-macro` ban in `cargo_boundary.rs`, `tests/testkit` (`anneal-testkit`: `toolchain`, `workspace`, `process`, `store_sim`, `corpora`, `assertions`), and `anneal/.config/nextest.toml`.<br>**Remaining follow-up:** Optionally tighten `cargo_boundary.rs` active-member checks for all three `trusted/*` crates in `workspace.members` (rejecting `workspace.exclude`), and switch CI test steps to `cargo nextest run --profile ci` (`D3-A`) once `anneal-tc` / `flake.nix` bundles `cargo-nextest`. | `anneal/trusted/` reduced by `31,016` LOC at `#4154`; 2-zone boundary + `proc-macro` negative/positive tests active; `cargo test --workspace --locked` preserved alongside `nextest`. |
 | **Wave 2A (`cargo-anneal` Split & `D2-A`)** | **Landed (`#4187`, `a508ef1ba6`)** | Executed **`D2-A`**: retired and deleted `integration.rs`, `mvp_e2e.rs`, and the `1,388`-line `/// anneal:*` doc-comment synthesizer; migrated `19` scalar spec/proof suites into `tests/corpora/scalar_specs/`, `27` capture-refusal cases into `tests/corpora/adversarial/capture/`, and `scalar`/`spin`/`unsafe_identity` into `tests/corpora/`; split `cargo-anneal-tests` into `<800`L submodules under `tests/cargo-anneal/tests/suite/` (`main.rs` + 7 submodules, including `split_store_bwrap.rs` exercising `run_in_simulated_nix_store` alongside `#4159`'s 5-cell `ElfStoreBuilder`). | Doc-comment synthesizer deleted; `cargo-anneal` `suite/*` submodules modularized atop `anneal-testkit`; simulated `/nix/store` `symlinkJoin` tests passing without host Nix. |
 | **Wave 2B (Remaining Monolith Decomposition & `support*.rs` Retirement)** | **Target** | Decompose `tests/audit/tests/boundary_audit.rs` (`10,632`L), `tests/audit/tests/target_audit.rs` (`3,035`L), and `tests/rustc-capture/tests/typed_capture.rs` (`3,122`L) into `<800`L domain submodules under single-binary `tests/suite/main.rs` targets; finish migrating `installed_smoke.rs`, `sandbox_escape.rs`, and `harness.rs` onto `anneal-testkit` and retire `tests/cargo-anneal/tests/support*.rs`. | Pure `anneal/tests/` refactoring (`0` `anneal/trusted/` edits); zero test files `> 1,000` lines; zero duplicated `Tools::discover` or `TempFixture` helpers. |
@@ -941,11 +941,12 @@ blast radii remain documented below for durable architectural rationale.
   `trusted/lean/` + `theory/` closure) and drags `*Canaries.lean` into
   user-imported runtime umbrellas (`Anneal.MirWp`, `Anneal.PureLift`).
 - **Options Considered:**
-  - **Option D1-A (Confirmed):** Decouple `*Canaries.lean` from runtime umbrella
-    modules (`Anneal.MirWp`, `Anneal.PureLift`, `Anneal.Core`, `Anneal`) and
-    from `theory/bundle-manifest.json` so `*Canaries.lean` are compiled and
-    audited strictly in Pass-1 repository `anneal-audit` (`test-and-verify`),
-    AND require `theory/Anneal.lean` + `share/anneal/theory` to match
+  - **Option D1-A (Confirmed & Landed):** Decouple `*Canaries*.lean` from
+    runtime umbrella modules (`Anneal.MirWp`, `Anneal.PureLift`, `Anneal.Core`,
+    `Anneal`, and sibling subsystem umbrellas) and from
+    `theory/bundle-manifest.json` so `*Canaries*.lean` are compiled and audited
+    strictly in Pass-1 repository `anneal-audit` (`test-and-verify`), AND
+    require `theory/Anneal.lean` + `share/anneal/theory` to match
     `theory/bundle-manifest.json` 1-for-1 (promoting mature modules like
     `PureLift` into `bundle-manifest.json` explicitly when shipped to users).
   - **Option D1-B:** Keep `theory/Anneal.lean` as a repository-wide superset
@@ -962,32 +963,55 @@ blast radii remain documented below for durable architectural rationale.
   NDJSON export bloat from user builds, and keeps `installed_smoke` well below
   its `120 s` ceiling. To keep repository non-backsliding and packaged smoke
   audits mutually consistent:
-  1. `TrustedBoundary.lean` (`verifyMirWpCoreTheorems`) always verifies
-     `Anneal.MirWp`'s core adequacy obligations (`WpSoundnessClaim`,
-     `WpFaultSoundnessClaim`, and public `Trusted.{Crate,CrateTheorem,
-     UnitTheorem}` aliases) whenever `Anneal.MirWp` is audited, and verifies the
-     25 `MirWp` canary `*Claim` proofs (`expectedProofMod =
-     Anneal.MirWp.Canaries`) whenever `Anneal.MirWp.Canaries` is present in the
-     audited `roles` graph;
+  1. `TrustedBoundary.lean` (`verifyMirWpCoreTheorems`) unconditionally requires
+     both `Anneal.MirWp` (`WpSoundnessClaim`, `WpFaultSoundnessClaim`, and
+     public `Trusted.{Crate,CrateTheorem,UnitTheorem}` aliases) and
+     `Anneal.MirWp.Canaries` (all 25 `MirWp` canary `*Claim` proofs with
+     `expectedProofMod = Anneal.MirWp.Canaries`) whenever `requireMirWp` is
+     `true` or any MIR/`PureLift`/`MirWp` module is loaded (no conditional
+     bypass when `Anneal.MirWp.Canaries` is absent);
   2. Repository Pass-1 `anneal-audit` (`repo_audit.rs`) dynamically discovers
-     all `.lean` files under `anneal/theory/` via `scan_lean_tree` and
-     unconditionally requires `Anneal.MirWp.Canaries` (and all repository
-     `*Canaries*.lean` modules) during repository checkout audits so deleting or
-     omitting a canary module fails closed; and
-  3. `installed_smoke.rs` (`audit-accepted`) audits the shipped runtime
-     `share/anneal/{trusted,theory}` closure (`Trusted` and `Anneal.MirWp` core
-     soundness claims) outside the repository checkout without packaging
-     `*Canaries.lean`.
-- **Blast Radius:** Touches `anneal/theory/**/Canaries.lean` import/re-export
-  edges in `Anneal.{MirWp,PureLift,Core,ByteRun,OverflowCastJoin}.lean` and
-  `Anneal.{ByteSubLens,CnfOrd,F2Simd,MirTotal}.lean`,
+     all `.lean` files under `anneal/theory/` via `scan_lean_tree`, auditing
+     and kernel-replaying the real `Trusted` + `Anneal.MirWp` +
+     `Anneal.MirWp.Canaries` closure alongside every decoupled
+     `*Canaries*.lean` suite present on disk (`TrustedBoundary.lean` requires
+     only `Anneal.MirWp.Canaries` among canary modules, while the repository
+     `boundary_audit` test
+     `theory_umbrella_and_manifest_exclude_canaries_and_match`, asserting named
+     canary suites and `canary_modules.len() >= 16`, guards against deleting
+     the other decoupled `*Canaries*.lean` modules); and
+  3. Because `share/anneal/theory` omits `*Canaries*.lean` and
+     `TrustedBoundary.lean` unconditionally requires `Anneal.MirWp.Canaries`,
+     `installed_smoke.rs` splits installed smoke coverage cleanly: `lean-file`
+     parses `share/anneal/theory/bundle-manifest.json`, walks all of
+     `share/anneal/theory` recursively (allowing only `bundle-manifest.json`,
+     root `Anneal.lean`, and `Anneal.*` modules with `0` `*Canaries*`), checks
+     1-for-1 `Anneal.*` parity across the installed tree,
+     `bundle-manifest.json`, and the transitive `Anneal` import closure, and
+     compiles the shipped `share/anneal/{trusted,theory}` closure with the
+     packaged `lean` binary, while `audit-accepted` exercises the standalone
+     `anneal-audit` binary's packaged locks, preflight, compilation, Phase-2
+     kernel replay, and `verifyMirWpCoreTheorems` enforcement on a
+     self-contained synthetic `Trusted.*` + `Anneal.MirWp` +
+     `Anneal.MirWp.Canaries` fixture (installed `audit-accepted` no longer
+     audits shipped `Trusted`/`MirWp` Lean sources directly).
+- **Blast Radius:** Touches `anneal/theory/**/Canaries*.lean` import/re-export
+  edges across `Anneal.{MirWp,PureLift,Core,ByteRun,ByteSubLens}` and
+  `Anneal.{CallStackUnwind,CnfOrd,F2Simd,MirTotal,OverflowCastJoin,RefFrame}`,
+  `anneal/theory/Anneal/MirWp/Canaries.lean`,
+  `anneal/correspondence/Anneal/MirCorrespondence/Canaries.lean`,
   `anneal/theory/Anneal.lean`, `anneal/theory/bundle-manifest.json` (removing
   `theory/Anneal/MirWp/Canaries.lean` and regenerating
   `trusted/cargo-anneal/src/bundled_theory.json` via `regenerate_bundle`),
   `anneal/flake.nix` (`share/anneal/theory` + `trusted/root-manifest.sha256`),
+  `anneal/trusted/lean/Trusted/MirSemantics.lean`,
+  `anneal/trusted/cargo-anneal/src/target.rs`,
   `anneal/trusted/audit/src/repo_audit.rs` +
-  `anneal/trusted/audit/TrustedBoundary.lean`, and
-  `anneal/tests/cargo-anneal/tests/installed_smoke.rs`.
+  `anneal/trusted/audit/TrustedBoundary.lean`,
+  `anneal/tests/audit/tests/boundary_audit.rs`,
+  `anneal/tests/cargo-anneal/tests/installed_smoke.rs`, and
+  `anneal/docs/{architecture,mir-correspondence-design}.md`,
+  `anneal/docs/{scaffolding,testing-architecture,trust-model}.md`.
 
 #### Decision D2: Retiring Doc-Comment Synthesis (`D2-A`, `#4187`)
 
@@ -1130,8 +1154,8 @@ blast radii remain documented below for durable architectural rationale.
 
 - **Specification Status:** **Confirmed Target Architecture (`D1-A`–`D4-A`
   Approved)** — Normative architecture in Partition 1 and policy decisions
-  `D1-A`–`D4-A` in §8 are locked in; Waves 0 (core foundation), 1, and 2A are
-  merged on `main`, and implementation continues across `D1-A` and Waves 2B–4.
+  `D1-A`–`D4-A` in §8 are locked in; Waves 0 (core foundation and `D1-A`), 1,
+  and 2A are merged on `main`, and implementation continues across Waves 2B–4.
 - **Primary Evidence Basis:**
   - *Direct source inspection & measured repository invariants (verified against
     initial design baseline `google/zerocopy@74d509c852` / `c351dd381a` and
