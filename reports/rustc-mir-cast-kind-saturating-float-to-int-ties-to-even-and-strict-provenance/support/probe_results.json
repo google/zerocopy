@@ -1,0 +1,763 @@
+{
+  "probe_suite": "mir_cast_kind_saturating_float_to_int_ties_to_even_and_strict_provenance",
+  "rust_commit_sha": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "toolchain_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6\nrustc 1.98.0-nightly (14210df0e 2026-05-31)",
+  "experiments": {
+    "a_llvm_ir_and_mir_casts": {
+      "o2_flags": [
+        "--edition=2024",
+        "-C",
+        "opt-level=2",
+        "--emit=llvm-ir"
+      ],
+      "nopass_flags": [
+        "--edition=2024",
+        "-C",
+        "opt-level=2",
+        "-C",
+        "no-prepopulate-passes",
+        "--emit=llvm-ir"
+      ],
+      "mir_flags": [
+        "--edition=2024",
+        "-C",
+        "opt-level=2",
+        "--emit=mir"
+      ],
+      "llvm_ir_o2": {
+        "cast_bool_u32": {
+          "signature": "define noundef range(i32 0, 2) i32 @cast_bool_u32(i1 noundef zeroext %b) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = zext i1 %b to i32",
+            "ret i32 %_0"
+          ]
+        },
+        "cast_f32_f64": {
+          "signature": "define noundef double @cast_f32_f64(float noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = fpext float %x to double",
+            "ret double %_0"
+          ]
+        },
+        "cast_f32_i8": {
+          "signature": "define noundef i8 @cast_f32_i8(float noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = tail call i8 @llvm.fptosi.sat.i8.f32(float %x)",
+            "ret i8 %_0"
+          ]
+        },
+        "cast_f32_u8": {
+          "signature": "define noundef i8 @cast_f32_u8(float noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = tail call i8 @llvm.fptoui.sat.i8.f32(float %x)",
+            "ret i8 %_0"
+          ]
+        },
+        "cast_f64_f32": {
+          "signature": "define noundef float @cast_f64_f32(double noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = fptrunc double %x to float",
+            "ret float %_0"
+          ]
+        },
+        "cast_f64_i32": {
+          "signature": "define noundef i32 @cast_f64_i32(double noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = tail call i32 @llvm.fptosi.sat.i32.f64(double %x)",
+            "ret i32 %_0"
+          ]
+        },
+        "cast_f64_u32": {
+          "signature": "define noundef i32 @cast_f64_u32(double noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = tail call i32 @llvm.fptoui.sat.i32.f64(double %x)",
+            "ret i32 %_0"
+          ]
+        },
+        "cast_fn_ptr_to_ptr": {
+          "signature": "define noundef nonnull ptr @cast_fn_ptr_to_ptr(ptr noundef nonnull readnone returned captures(ret: address, provenance) %f) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "ret ptr %f"
+          ]
+        },
+        "cast_i32_f32": {
+          "signature": "define noundef float @cast_i32_f32(i32 noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = sitofp i32 %x to float",
+            "ret float %_0"
+          ]
+        },
+        "cast_i8_u32": {
+          "signature": "define noundef range(i32 -128, 128) i32 @cast_i8_u32(i8 noundef signext %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = sext i8 %x to i32",
+            "ret i32 %_0"
+          ]
+        },
+        "cast_i8_u8_u32": {
+          "signature": "define noundef range(i32 0, 256) i32 @cast_i8_u8_u32(i8 noundef signext %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = zext i8 %x to i32",
+            "ret i32 %_0"
+          ]
+        },
+        "cast_ptr_addr_strict": {
+          "signature": "define noundef i64 @cast_ptr_addr_strict(ptr noundef %p) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = ptrtoint ptr %p to i64",
+            "ret i64 %_0"
+          ]
+        },
+        "cast_ptr_to_ptr": {
+          "signature": "define noundef ptr @cast_ptr_to_ptr(ptr noundef readnone returned captures(ret: address, provenance) %p) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "ret ptr %p"
+          ]
+        },
+        "cast_ptr_with_addr_strict": {
+          "signature": "define noundef ptr @cast_ptr_with_addr_strict(ptr noundef %p, i64 noundef %a) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_4 = ptrtoint ptr %p to i64",
+            "%_6 = sub i64 %a, %_4",
+            "%_7 = getelementptr i8, ptr %p, i64 %_6",
+            "ret ptr %_7"
+          ]
+        },
+        "cast_ptr_with_exposed": {
+          "signature": "define noundef ptr @cast_ptr_with_exposed(i64 noundef %a) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = inttoptr i64 %a to ptr",
+            "ret ptr %_0"
+          ]
+        },
+        "cast_u128_f32": {
+          "signature": "define noundef float @cast_u128_f32(i128 noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = uitofp i128 %x to float",
+            "ret float %_0"
+          ]
+        },
+        "cast_u32_f32": {
+          "signature": "define noundef float @cast_u32_f32(i32 noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = uitofp i32 %x to float",
+            "ret float %_0"
+          ]
+        },
+        "cast_u32_i8": {
+          "signature": "define noundef i8 @cast_u32_i8(i32 noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = trunc i32 %x to i8",
+            "ret i8 %_0"
+          ]
+        },
+        "cast_wide_to_thin": {
+          "signature": "define noundef ptr @cast_wide_to_thin({ i64, i64 } %0) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%.fca.0.extract = extractvalue { i64, i64 } %0, 0",
+            "%1 = inttoptr i64 %.fca.0.extract to ptr",
+            "ret ptr %1"
+          ]
+        },
+        "cast_wide_to_thin_rust_abi": {
+          "signature": "define noundef ptr @cast_wide_to_thin_rust_abi(ptr noundef readnone returned captures(ret: address, provenance) %p.0, i64 noundef %p.1) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "ret ptr %p.0"
+          ]
+        }
+      },
+      "llvm_ir_nopass": {
+        "cast_bool_u32": {
+          "signature": "define noundef i32 @cast_bool_u32(i1 noundef zeroext %b) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%0 = icmp ule i1 %b, true",
+            "call void @llvm.assume(i1 %0)",
+            "%_0 = zext i1 %b to i32",
+            "ret i32 %_0"
+          ]
+        },
+        "cast_f32_f64": {
+          "signature": "define noundef double @cast_f32_f64(float noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = fpext float %x to double",
+            "ret double %_0"
+          ]
+        },
+        "cast_f32_i8": {
+          "signature": "define noundef i8 @cast_f32_i8(float noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = call i8 @llvm.fptosi.sat.i8.f32(float %x)",
+            "ret i8 %_0"
+          ]
+        },
+        "cast_f32_u8": {
+          "signature": "define noundef i8 @cast_f32_u8(float noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = call i8 @llvm.fptoui.sat.i8.f32(float %x)",
+            "ret i8 %_0"
+          ]
+        },
+        "cast_f64_f32": {
+          "signature": "define noundef float @cast_f64_f32(double noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = fptrunc double %x to float",
+            "ret float %_0"
+          ]
+        },
+        "cast_f64_i32": {
+          "signature": "define noundef i32 @cast_f64_i32(double noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = call i32 @llvm.fptosi.sat.i32.f64(double %x)",
+            "ret i32 %_0"
+          ]
+        },
+        "cast_f64_u32": {
+          "signature": "define noundef i32 @cast_f64_u32(double noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = call i32 @llvm.fptoui.sat.i32.f64(double %x)",
+            "ret i32 %_0"
+          ]
+        },
+        "cast_fn_ptr_to_ptr": {
+          "signature": "define noundef ptr @cast_fn_ptr_to_ptr(ptr noundef nonnull %f) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%0 = icmp ne ptr %f, null",
+            "call void @llvm.assume(i1 %0)",
+            "ret ptr %f"
+          ]
+        },
+        "cast_i32_f32": {
+          "signature": "define noundef float @cast_i32_f32(i32 noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = sitofp i32 %x to float",
+            "ret float %_0"
+          ]
+        },
+        "cast_i8_u32": {
+          "signature": "define noundef i32 @cast_i8_u32(i8 noundef signext %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = sext i8 %x to i32",
+            "ret i32 %_0"
+          ]
+        },
+        "cast_i8_u8_u32": {
+          "signature": "define noundef i32 @cast_i8_u8_u32(i8 noundef signext %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = zext i8 %x to i32",
+            "ret i32 %_0"
+          ]
+        },
+        "cast_ptr_addr_strict": {
+          "signature": "define noundef i64 @cast_ptr_addr_strict(ptr noundef %p) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = ptrtoint ptr %p to i64",
+            "ret i64 %_0"
+          ]
+        },
+        "cast_ptr_expose": {
+          "signature": "define noundef i64 @cast_ptr_expose(ptr noundef %p) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = ptrtoint ptr %p to i64",
+            "ret i64 %_0"
+          ]
+        },
+        "cast_ptr_to_ptr": {
+          "signature": "define noundef ptr @cast_ptr_to_ptr(ptr noundef %p) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "ret ptr %p"
+          ]
+        },
+        "cast_ptr_with_addr_strict": {
+          "signature": "define noundef ptr @cast_ptr_with_addr_strict(ptr noundef %p, i64 noundef %a) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_4 = ptrtoint ptr %p to i64",
+            "%_6 = sub i64 %a, %_4",
+            "%_7 = getelementptr i8, ptr %p, i64 %_6",
+            "ret ptr %_7"
+          ]
+        },
+        "cast_ptr_with_exposed": {
+          "signature": "define noundef ptr @cast_ptr_with_exposed(i64 noundef %a) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = inttoptr i64 %a to ptr",
+            "ret ptr %_0"
+          ]
+        },
+        "cast_u128_f32": {
+          "signature": "define noundef float @cast_u128_f32(i128 noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = uitofp i128 %x to float",
+            "ret float %_0"
+          ]
+        },
+        "cast_u32_f32": {
+          "signature": "define noundef float @cast_u32_f32(i32 noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = uitofp i32 %x to float",
+            "ret float %_0"
+          ]
+        },
+        "cast_u32_i8": {
+          "signature": "define noundef i8 @cast_u32_i8(i32 noundef %x) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = trunc i32 %x to i8",
+            "ret i8 %_0"
+          ]
+        },
+        "cast_wide_to_thin": {
+          "signature": "define noundef ptr @cast_wide_to_thin({ i64, i64 } %0) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%1 = alloca [16 x i8], align 8",
+            "%p = alloca [16 x i8], align 8",
+            "call void @llvm.lifetime.start.p0(ptr %1)",
+            "store { i64, i64 } %0, ptr %1, align 8",
+            "call void @llvm.memcpy.p0.p0.i64(ptr align 8 %p, ptr align 8 %1, i64 16, i1 false)",
+            "call void @llvm.lifetime.end.p0(ptr %1)",
+            "%_0 = load ptr, ptr %p, align 8, !noundef !4",
+            "%2 = getelementptr inbounds i8, ptr %p, i64 8",
+            "%3 = load i64, ptr %2, align 8, !noundef !4",
+            "ret ptr %_0"
+          ]
+        },
+        "cast_wide_to_thin_rust_abi": {
+          "signature": "define noundef ptr @cast_wide_to_thin_rust_abi(ptr noundef %p.0, i64 noundef %p.1) unnamed_addr #1 {",
+          "instructions": [
+            "start:",
+            "ret ptr %p.0"
+          ]
+        },
+        "cast_without_provenance_strict": {
+          "signature": "define noundef ptr @cast_without_provenance_strict(i64 noundef %a) unnamed_addr #0 {",
+          "instructions": [
+            "start:",
+            "%_0 = inttoptr i64 %a to ptr",
+            "ret ptr %_0"
+          ]
+        }
+      },
+      "mir_casts": {
+        "cast_i8_u32": [
+          "_0 = copy _1 as u32 (IntToInt);"
+        ],
+        "cast_i8_u8_u32": [
+          "_2 = copy _1 as u8 (IntToInt);",
+          "_0 = move _2 as u32 (IntToInt);"
+        ],
+        "cast_u32_i8": [
+          "_0 = copy _1 as i8 (IntToInt);"
+        ],
+        "cast_bool_u32": [
+          "_0 = copy _1 as u32 (IntToInt);"
+        ],
+        "cast_f64_i32": [
+          "_0 = copy _1 as i32 (FloatToInt);"
+        ],
+        "cast_f64_u32": [
+          "_0 = copy _1 as u32 (FloatToInt);"
+        ],
+        "cast_f32_i8": [
+          "_0 = copy _1 as i8 (FloatToInt);"
+        ],
+        "cast_f32_u8": [
+          "_0 = copy _1 as u8 (FloatToInt);"
+        ],
+        "cast_i32_f32": [
+          "_0 = copy _1 as f32 (IntToFloat);"
+        ],
+        "cast_u32_f32": [
+          "_0 = copy _1 as f32 (IntToFloat);"
+        ],
+        "cast_u128_f32": [
+          "_0 = copy _1 as f32 (IntToFloat);"
+        ],
+        "cast_f64_f32": [
+          "_0 = copy _1 as f32 (FloatToFloat);"
+        ],
+        "cast_f32_f64": [
+          "_0 = copy _1 as f64 (FloatToFloat);"
+        ],
+        "cast_ptr_to_ptr": [
+          "_0 = copy _1 as *const u8 (PtrToPtr);"
+        ],
+        "cast_wide_to_thin": [
+          "_0 = copy _1 as *const u32 (PtrToPtr);"
+        ],
+        "cast_wide_to_thin_rust_abi": [
+          "_0 = copy _1 as *const u32 (PtrToPtr);"
+        ],
+        "cast_fn_ptr_to_ptr": [
+          "_0 = copy _1 as *const () (FnPtrToPtr);"
+        ],
+        "cast_ptr_expose": [
+          "_0 = copy _1 as usize (PointerExposeProvenance);"
+        ],
+        "cast_ptr_with_exposed": [
+          "_0 = copy _1 as *const u32 (PointerWithExposedProvenance);"
+        ],
+        "cast_ptr_addr_strict": [
+          "_0 = copy _1 as usize (Transmute);"
+        ],
+        "cast_ptr_with_addr_strict": [
+          "_4 = copy _1 as usize (Transmute);",
+          "_3 = move _4 as isize (IntToInt);",
+          "_5 = copy _2 as isize (IntToInt);",
+          "_8 = copy _1 as *const u8 (PtrToPtr);",
+          "_0 = copy _7 as *const u32 (PtrToPtr);"
+        ],
+        "cast_without_provenance_strict": [
+          "_0 = copy _1 as *const u32 (Transmute);"
+        ]
+      }
+    },
+    "b_numeric_and_ptr_casts_native_vs_miri": {
+      "native_o2_returncode": 0,
+      "native_o0_returncode": 0,
+      "native_stdout": "i8_to_u32=0xffffffff\ni8_u8_u32=255\nu32_trunc_pos_i8=120\nu32_trunc_neg_i8=-1\ni16_trunc_u8=255\nu32_max_i32=-1\nbool_t_u32=1 bool_f_i32=0\nnan_to_i32=0 neg_nan_to_i32=0 nan_to_u32=0 snan_f32_to_i32=0\ninf_to_u32=4294967295 inf_to_i32=2147483647 neg_inf_to_u32=0 neg_inf_to_i32=-2147483648\nneg_one_to_u32=0 neg_frac_to_u32=0 neg_frac_to_i32=0\ntwo_p31_f32_to_i32=2147483647 below_min_f32_to_i32=-2147483648\ntrunc_pos_f64=42 trunc_neg_f64=-42 clamp_u8_hi=255 clamp_i8_lo=-128 subnormal_to_i32=0\ntie_even_down=16777216.0 (0x4b800000) exact_plus2=16777218.0 (0x4b800001) tie_even_up=16777220.0 (0x4b800002) exact_plus4=16777220.0 (0x4b800002)\ni32_max_f32=2147483648.0 (0x4f000000) u128_max_f32_inf=true (0x7f800000) i128_min_f32_bits=0xff000000\nf64_tie_to_f32=16777216.0 (0x4b800000) f64_ovf_to_f32_inf=true\nwide_slice_val=10 wide_dyn_val=42 fn_res=77",
+      "miri_default": {
+        "miriflags": [],
+        "returncode": 0,
+        "stdout": "i8_to_u32=0xffffffff\ni8_u8_u32=255\nu32_trunc_pos_i8=120\nu32_trunc_neg_i8=-1\ni16_trunc_u8=255\nu32_max_i32=-1\nbool_t_u32=1 bool_f_i32=0\nnan_to_i32=0 neg_nan_to_i32=0 nan_to_u32=0 snan_f32_to_i32=0\ninf_to_u32=4294967295 inf_to_i32=2147483647 neg_inf_to_u32=0 neg_inf_to_i32=-2147483648\nneg_one_to_u32=0 neg_frac_to_u32=0 neg_frac_to_i32=0\ntwo_p31_f32_to_i32=2147483647 below_min_f32_to_i32=-2147483648\ntrunc_pos_f64=42 trunc_neg_f64=-42 clamp_u8_hi=255 clamp_i8_lo=-128 subnormal_to_i32=0\ntie_even_down=16777216.0 (0x4b800000) exact_plus2=16777218.0 (0x4b800001) tie_even_up=16777220.0 (0x4b800002) exact_plus4=16777220.0 (0x4b800002)\ni32_max_f32=2147483648.0 (0x4f000000) u128_max_f32_inf=true (0x7f800000) i128_min_f32_bits=0xff000000\nf64_tie_to_f32=16777216.0 (0x4b800000) f64_ovf_to_f32_inf=true\nwide_slice_val=10 wide_dyn_val=42 fn_res=77",
+        "stderr": ""
+      },
+      "miri_deterministic_floats": {
+        "miriflags": [
+          "-Zmiri-deterministic-floats"
+        ],
+        "returncode": 0,
+        "stdout": "i8_to_u32=0xffffffff\ni8_u8_u32=255\nu32_trunc_pos_i8=120\nu32_trunc_neg_i8=-1\ni16_trunc_u8=255\nu32_max_i32=-1\nbool_t_u32=1 bool_f_i32=0\nnan_to_i32=0 neg_nan_to_i32=0 nan_to_u32=0 snan_f32_to_i32=0\ninf_to_u32=4294967295 inf_to_i32=2147483647 neg_inf_to_u32=0 neg_inf_to_i32=-2147483648\nneg_one_to_u32=0 neg_frac_to_u32=0 neg_frac_to_i32=0\ntwo_p31_f32_to_i32=2147483647 below_min_f32_to_i32=-2147483648\ntrunc_pos_f64=42 trunc_neg_f64=-42 clamp_u8_hi=255 clamp_i8_lo=-128 subnormal_to_i32=0\ntie_even_down=16777216.0 (0x4b800000) exact_plus2=16777218.0 (0x4b800001) tie_even_up=16777220.0 (0x4b800002) exact_plus4=16777220.0 (0x4b800002)\ni32_max_f32=2147483648.0 (0x4f000000) u128_max_f32_inf=true (0x7f800000) i128_min_f32_bits=0xff000000\nf64_tie_to_f32=16777216.0 (0x4b800000) f64_ovf_to_f32_inf=true\nwide_slice_val=10 wide_dyn_val=42 fn_res=77",
+        "stderr": ""
+      },
+      "all_outputs_identical": true
+    },
+    "c_pointer_provenance_miri_matrix": {
+      "expose_and_with_exposed_cast": {
+        "default": {
+          "miriflags": [],
+          "returncode": 0,
+          "stdout": "EXPOSE_PROV_OK=42",
+          "stderr": "warning: integer-to-pointer cast\n --> <TMP>/expose_and_with_exposed_cast.rs:5:25\n  |\n5 |     let q: *const u32 = addr as *const u32;\n  |                         ^^^^^^^^^^^^^^^^^^ integer-to-pointer cast\n  |\n  = help: this program is using integer-to-pointer casts or (equivalently) `ptr::with_exposed_provenance`, which means that Miri might miss pointer bugs in this program\n  = help: see https://doc.rust-lang.org/nightly/std/ptr/fn.with_exposed_provenance.html for more details on that operation\n  = help: to ensure that Miri does not miss bugs in your program, use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead\n  = help: you can then set `MIRIFLAGS=-Zmiri-strict-provenance` to ensure you are not relying on `with_exposed_provenance` semantics\n  = help: alternatively, `MIRIFLAGS=-Zmiri-permissive-provenance` disables this warning"
+        },
+        "strict_provenance": {
+          "miriflags": [
+            "-Zmiri-strict-provenance"
+          ],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "error: unsupported operation: integer-to-pointer casts and `ptr::with_exposed_provenance` are not supported with `-Zmiri-strict-provenance`\n --> <TMP>/expose_and_with_exposed_cast.rs:5:25\n  |\n5 |     let q: *const u32 = addr as *const u32;\n  |                         ^^^^^^^^^^^^^^^^^^ unsupported operation occurred here\n  |\n  = help: use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error"
+        },
+        "permissive_provenance": {
+          "miriflags": [
+            "-Zmiri-permissive-provenance"
+          ],
+          "returncode": 0,
+          "stdout": "EXPOSE_PROV_OK=42",
+          "stderr": ""
+        },
+        "tree_borrows": {
+          "miriflags": [
+            "-Zmiri-tree-borrows"
+          ],
+          "returncode": 0,
+          "stdout": "EXPOSE_PROV_OK=42",
+          "stderr": "warning: integer-to-pointer cast\n --> <TMP>/expose_and_with_exposed_cast.rs:5:25\n  |\n5 |     let q: *const u32 = addr as *const u32;\n  |                         ^^^^^^^^^^^^^^^^^^ integer-to-pointer cast\n  |\n  = help: this program is using integer-to-pointer casts or (equivalently) `ptr::with_exposed_provenance`, which means that Miri might miss pointer bugs in this program\n  = help: see https://doc.rust-lang.org/nightly/std/ptr/fn.with_exposed_provenance.html for more details on that operation\n  = help: to ensure that Miri does not miss bugs in your program, use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead\n  = help: you can then set `MIRIFLAGS=-Zmiri-strict-provenance` to ensure you are not relying on `with_exposed_provenance` semantics\n  = help: Tree Borrows does not support integer-to-pointer casts, so the program is likely to go wrong when this pointer gets used"
+        }
+      },
+      "expose_fn_and_with_exposed_fn": {
+        "default": {
+          "miriflags": [],
+          "returncode": 0,
+          "stdout": "EXPOSE_FN_OK=42",
+          "stderr": "warning: integer-to-pointer cast\n --> <TMP>/expose_fn_and_with_exposed_fn.rs:5:25\n  |\n5 |     let q: *const u32 = core::ptr::with_exposed_provenance(addr);\n  |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ integer-to-pointer cast\n  |\n  = help: this program is using integer-to-pointer casts or (equivalently) `ptr::with_exposed_provenance`, which means that Miri might miss pointer bugs in this program\n  = help: see https://doc.rust-lang.org/nightly/std/ptr/fn.with_exposed_provenance.html for more details on that operation\n  = help: to ensure that Miri does not miss bugs in your program, use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead\n  = help: you can then set `MIRIFLAGS=-Zmiri-strict-provenance` to ensure you are not relying on `with_exposed_provenance` semantics\n  = help: alternatively, `MIRIFLAGS=-Zmiri-permissive-provenance` disables this warning"
+        },
+        "strict_provenance": {
+          "miriflags": [
+            "-Zmiri-strict-provenance"
+          ],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "error: unsupported operation: integer-to-pointer casts and `ptr::with_exposed_provenance` are not supported with `-Zmiri-strict-provenance`\n --> <TMP>/expose_fn_and_with_exposed_fn.rs:5:25\n  |\n5 |     let q: *const u32 = core::ptr::with_exposed_provenance(addr);\n  |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsupported operation occurred here\n  |\n  = help: use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error"
+        },
+        "permissive_provenance": {
+          "miriflags": [
+            "-Zmiri-permissive-provenance"
+          ],
+          "returncode": 0,
+          "stdout": "EXPOSE_FN_OK=42",
+          "stderr": ""
+        },
+        "tree_borrows": {
+          "miriflags": [
+            "-Zmiri-tree-borrows"
+          ],
+          "returncode": 0,
+          "stdout": "EXPOSE_FN_OK=42",
+          "stderr": "warning: integer-to-pointer cast\n --> <TMP>/expose_fn_and_with_exposed_fn.rs:5:25\n  |\n5 |     let q: *const u32 = core::ptr::with_exposed_provenance(addr);\n  |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ integer-to-pointer cast\n  |\n  = help: this program is using integer-to-pointer casts or (equivalently) `ptr::with_exposed_provenance`, which means that Miri might miss pointer bugs in this program\n  = help: see https://doc.rust-lang.org/nightly/std/ptr/fn.with_exposed_provenance.html for more details on that operation\n  = help: to ensure that Miri does not miss bugs in your program, use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead\n  = help: you can then set `MIRIFLAGS=-Zmiri-strict-provenance` to ensure you are not relying on `with_exposed_provenance` semantics\n  = help: Tree Borrows does not support integer-to-pointer casts, so the program is likely to go wrong when this pointer gets used"
+        }
+      },
+      "expose_only_no_int_to_ptr": {
+        "default": {
+          "miriflags": [],
+          "returncode": 0,
+          "stdout": "EXPOSE_ONLY_OK",
+          "stderr": ""
+        },
+        "strict_provenance": {
+          "miriflags": [
+            "-Zmiri-strict-provenance"
+          ],
+          "returncode": 0,
+          "stdout": "EXPOSE_ONLY_OK",
+          "stderr": ""
+        },
+        "permissive_provenance": {
+          "miriflags": [
+            "-Zmiri-permissive-provenance"
+          ],
+          "returncode": 0,
+          "stdout": "EXPOSE_ONLY_OK",
+          "stderr": ""
+        },
+        "tree_borrows": {
+          "miriflags": [
+            "-Zmiri-tree-borrows"
+          ],
+          "returncode": 0,
+          "stdout": "EXPOSE_ONLY_OK",
+          "stderr": ""
+        }
+      },
+      "strict_provenance_addr_with_addr": {
+        "default": {
+          "miriflags": [],
+          "returncode": 0,
+          "stdout": "STRICT_PROV_OK=42",
+          "stderr": ""
+        },
+        "strict_provenance": {
+          "miriflags": [
+            "-Zmiri-strict-provenance"
+          ],
+          "returncode": 0,
+          "stdout": "STRICT_PROV_OK=42",
+          "stderr": ""
+        },
+        "permissive_provenance": {
+          "miriflags": [
+            "-Zmiri-permissive-provenance"
+          ],
+          "returncode": 0,
+          "stdout": "STRICT_PROV_OK=42",
+          "stderr": ""
+        },
+        "tree_borrows": {
+          "miriflags": [
+            "-Zmiri-tree-borrows"
+          ],
+          "returncode": 0,
+          "stdout": "STRICT_PROV_OK=42",
+          "stderr": ""
+        }
+      },
+      "addr_without_expose_then_int_to_ptr_ub": {
+        "default": {
+          "miriflags": [],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "warning: integer-to-pointer cast\n --> <TMP>/addr_without_expose_then_int_to_ptr_ub.rs:5:25\n  |\n5 |     let q: *const u32 = a as *const u32;\n  |                         ^^^^^^^^^^^^^^^ integer-to-pointer cast\n  |\n  = help: this program is using integer-to-pointer casts or (equivalently) `ptr::with_exposed_provenance`, which means that Miri might miss pointer bugs in this program\n  = help: see https://doc.rust-lang.org/nightly/std/ptr/fn.with_exposed_provenance.html for more details on that operation\n  = help: to ensure that Miri does not miss bugs in your program, use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead\n  = help: you can then set `MIRIFLAGS=-Zmiri-strict-provenance` to ensure you are not relying on `with_exposed_provenance` semantics\n  = help: alternatively, `MIRIFLAGS=-Zmiri-permissive-provenance` disables this warning\nerror: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got 0x20b3c[noalloc] which is a dangling pointer (it has no provenance)\n --> <TMP>/addr_without_expose_then_int_to_ptr_ub.rs:6:22\n  |\n6 |     let v = unsafe { *q };\n  |                      ^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error; 1 warning emitted"
+        },
+        "strict_provenance": {
+          "miriflags": [
+            "-Zmiri-strict-provenance"
+          ],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "error: unsupported operation: integer-to-pointer casts and `ptr::with_exposed_provenance` are not supported with `-Zmiri-strict-provenance`\n --> <TMP>/addr_without_expose_then_int_to_ptr_ub.rs:5:25\n  |\n5 |     let q: *const u32 = a as *const u32;\n  |                         ^^^^^^^^^^^^^^^ unsupported operation occurred here\n  |\n  = help: use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error"
+        },
+        "permissive_provenance": {
+          "miriflags": [
+            "-Zmiri-permissive-provenance"
+          ],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got 0x20b3c[noalloc] which is a dangling pointer (it has no provenance)\n --> <TMP>/addr_without_expose_then_int_to_ptr_ub.rs:6:22\n  |\n6 |     let v = unsafe { *q };\n  |                      ^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error"
+        },
+        "tree_borrows": {
+          "miriflags": [
+            "-Zmiri-tree-borrows"
+          ],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "warning: integer-to-pointer cast\n --> <TMP>/addr_without_expose_then_int_to_ptr_ub.rs:5:25\n  |\n5 |     let q: *const u32 = a as *const u32;\n  |                         ^^^^^^^^^^^^^^^ integer-to-pointer cast\n  |\n  = help: this program is using integer-to-pointer casts or (equivalently) `ptr::with_exposed_provenance`, which means that Miri might miss pointer bugs in this program\n  = help: see https://doc.rust-lang.org/nightly/std/ptr/fn.with_exposed_provenance.html for more details on that operation\n  = help: to ensure that Miri does not miss bugs in your program, use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead\n  = help: you can then set `MIRIFLAGS=-Zmiri-strict-provenance` to ensure you are not relying on `with_exposed_provenance` semantics\n  = help: Tree Borrows does not support integer-to-pointer casts, so the program is likely to go wrong when this pointer gets used\nerror: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got 0x20b3c[noalloc] which is a dangling pointer (it has no provenance)\n --> <TMP>/addr_without_expose_then_int_to_ptr_ub.rs:6:22\n  |\n6 |     let v = unsafe { *q };\n  |                      ^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error; 1 warning emitted"
+        }
+      },
+      "without_provenance_deref_ub": {
+        "default": {
+          "miriflags": [],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got 0x20b34[noalloc] which is a dangling pointer (it has no provenance)\n --> <TMP>/without_provenance_deref_ub.rs:5:22\n  |\n5 |     let v = unsafe { *q };\n  |                      ^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error"
+        },
+        "strict_provenance": {
+          "miriflags": [
+            "-Zmiri-strict-provenance"
+          ],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got 0x20b34[noalloc] which is a dangling pointer (it has no provenance)\n --> <TMP>/without_provenance_deref_ub.rs:5:22\n  |\n5 |     let v = unsafe { *q };\n  |                      ^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error"
+        },
+        "permissive_provenance": {
+          "miriflags": [
+            "-Zmiri-permissive-provenance"
+          ],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got 0x20b34[noalloc] which is a dangling pointer (it has no provenance)\n --> <TMP>/without_provenance_deref_ub.rs:5:22\n  |\n5 |     let v = unsafe { *q };\n  |                      ^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error"
+        },
+        "tree_borrows": {
+          "miriflags": [
+            "-Zmiri-tree-borrows"
+          ],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got 0x20b34[noalloc] which is a dangling pointer (it has no provenance)\n --> <TMP>/without_provenance_deref_ub.rs:5:22\n  |\n5 |     let v = unsafe { *q };\n  |                      ^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error"
+        }
+      },
+      "without_provenance_zst_ok": {
+        "default": {
+          "miriflags": [],
+          "returncode": 0,
+          "stdout": "WITHOUT_PROV_ZST_OK",
+          "stderr": ""
+        },
+        "strict_provenance": {
+          "miriflags": [
+            "-Zmiri-strict-provenance"
+          ],
+          "returncode": 0,
+          "stdout": "WITHOUT_PROV_ZST_OK",
+          "stderr": ""
+        },
+        "permissive_provenance": {
+          "miriflags": [
+            "-Zmiri-permissive-provenance"
+          ],
+          "returncode": 0,
+          "stdout": "WITHOUT_PROV_ZST_OK",
+          "stderr": ""
+        },
+        "tree_borrows": {
+          "miriflags": [
+            "-Zmiri-tree-borrows"
+          ],
+          "returncode": 0,
+          "stdout": "WITHOUT_PROV_ZST_OK",
+          "stderr": ""
+        }
+      },
+      "wildcard_unexposed_target_alloc_ub": {
+        "default": {
+          "miriflags": [],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "warning: integer-to-pointer cast\n --> <TMP>/wildcard_unexposed_target_alloc_ub.rs:6:25\n  |\n6 |     let q: *const u32 = y_addr as *const u32;\n  |                         ^^^^^^^^^^^^^^^^^^^^ integer-to-pointer cast\n  |\n  = help: this program is using integer-to-pointer casts or (equivalently) `ptr::with_exposed_provenance`, which means that Miri might miss pointer bugs in this program\n  = help: see https://doc.rust-lang.org/nightly/std/ptr/fn.with_exposed_provenance.html for more details on that operation\n  = help: to ensure that Miri does not miss bugs in your program, use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead\n  = help: you can then set `MIRIFLAGS=-Zmiri-strict-provenance` to ensure you are not relying on `with_exposed_provenance` semantics\n  = help: alternatively, `MIRIFLAGS=-Zmiri-permissive-provenance` disables this warning\nerror: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got 0x20b48[noalloc] which is a dangling pointer (it has no provenance)\n --> <TMP>/wildcard_unexposed_target_alloc_ub.rs:7:22\n  |\n7 |     let v = unsafe { *q };\n  |                      ^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error; 1 warning emitted"
+        },
+        "strict_provenance": {
+          "miriflags": [
+            "-Zmiri-strict-provenance"
+          ],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "error: unsupported operation: integer-to-pointer casts and `ptr::with_exposed_provenance` are not supported with `-Zmiri-strict-provenance`\n --> <TMP>/wildcard_unexposed_target_alloc_ub.rs:6:25\n  |\n6 |     let q: *const u32 = y_addr as *const u32;\n  |                         ^^^^^^^^^^^^^^^^^^^^ unsupported operation occurred here\n  |\n  = help: use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error"
+        },
+        "permissive_provenance": {
+          "miriflags": [
+            "-Zmiri-permissive-provenance"
+          ],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got 0x20b48[noalloc] which is a dangling pointer (it has no provenance)\n --> <TMP>/wildcard_unexposed_target_alloc_ub.rs:7:22\n  |\n7 |     let v = unsafe { *q };\n  |                      ^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error"
+        },
+        "tree_borrows": {
+          "miriflags": [
+            "-Zmiri-tree-borrows"
+          ],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "warning: integer-to-pointer cast\n --> <TMP>/wildcard_unexposed_target_alloc_ub.rs:6:25\n  |\n6 |     let q: *const u32 = y_addr as *const u32;\n  |                         ^^^^^^^^^^^^^^^^^^^^ integer-to-pointer cast\n  |\n  = help: this program is using integer-to-pointer casts or (equivalently) `ptr::with_exposed_provenance`, which means that Miri might miss pointer bugs in this program\n  = help: see https://doc.rust-lang.org/nightly/std/ptr/fn.with_exposed_provenance.html for more details on that operation\n  = help: to ensure that Miri does not miss bugs in your program, use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead\n  = help: you can then set `MIRIFLAGS=-Zmiri-strict-provenance` to ensure you are not relying on `with_exposed_provenance` semantics\n  = help: Tree Borrows does not support integer-to-pointer casts, so the program is likely to go wrong when this pointer gets used\nerror: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got 0x20b48[noalloc] which is a dangling pointer (it has no provenance)\n --> <TMP>/wildcard_unexposed_target_alloc_ub.rs:7:22\n  |\n7 |     let v = unsafe { *q };\n  |                      ^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error; 1 warning emitted"
+        }
+      },
+      "wildcard_wrapping_offset_to_exposed_alloc_ok": {
+        "default": {
+          "miriflags": [],
+          "returncode": 0,
+          "stdout": "WILDCARD_SHIFT_OK=22",
+          "stderr": "warning: integer-to-pointer cast\n --> <TMP>/wildcard_wrapping_offset_to_exposed_alloc_ok.rs:7:29\n  |\n7 |     let q_wild: *const u8 = x_addr as *const u8;\n  |                             ^^^^^^^^^^^^^^^^^^^ integer-to-pointer cast\n  |\n  = help: this program is using integer-to-pointer casts or (equivalently) `ptr::with_exposed_provenance`, which means that Miri might miss pointer bugs in this program\n  = help: see https://doc.rust-lang.org/nightly/std/ptr/fn.with_exposed_provenance.html for more details on that operation\n  = help: to ensure that Miri does not miss bugs in your program, use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead\n  = help: you can then set `MIRIFLAGS=-Zmiri-strict-provenance` to ensure you are not relying on `with_exposed_provenance` semantics\n  = help: alternatively, `MIRIFLAGS=-Zmiri-permissive-provenance` disables this warning"
+        },
+        "strict_provenance": {
+          "miriflags": [
+            "-Zmiri-strict-provenance"
+          ],
+          "returncode": 1,
+          "stdout": "",
+          "stderr": "error: unsupported operation: integer-to-pointer casts and `ptr::with_exposed_provenance` are not supported with `-Zmiri-strict-provenance`\n --> <TMP>/wildcard_wrapping_offset_to_exposed_alloc_ok.rs:7:29\n  |\n7 |     let q_wild: *const u8 = x_addr as *const u8;\n  |                             ^^^^^^^^^^^^^^^^^^^ unsupported operation occurred here\n  |\n  = help: use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\nerror: aborting due to 1 previous error"
+        },
+        "permissive_provenance": {
+          "miriflags": [
+            "-Zmiri-permissive-provenance"
+          ],
+          "returncode": 0,
+          "stdout": "WILDCARD_SHIFT_OK=22",
+          "stderr": ""
+        },
+        "tree_borrows": {
+          "miriflags": [
+            "-Zmiri-tree-borrows"
+          ],
+          "returncode": 0,
+          "stdout": "WILDCARD_SHIFT_OK=22",
+          "stderr": "warning: integer-to-pointer cast\n --> <TMP>/wildcard_wrapping_offset_to_exposed_alloc_ok.rs:7:29\n  |\n7 |     let q_wild: *const u8 = x_addr as *const u8;\n  |                             ^^^^^^^^^^^^^^^^^^^ integer-to-pointer cast\n  |\n  = help: this program is using integer-to-pointer casts or (equivalently) `ptr::with_exposed_provenance`, which means that Miri might miss pointer bugs in this program\n  = help: see https://doc.rust-lang.org/nightly/std/ptr/fn.with_exposed_provenance.html for more details on that operation\n  = help: to ensure that Miri does not miss bugs in your program, use Strict Provenance APIs (https://doc.rust-lang.org/nightly/std/ptr/index.html#strict-provenance, https://crates.io/crates/sptr) instead\n  = help: you can then set `MIRIFLAGS=-Zmiri-strict-provenance` to ensure you are not relying on `with_exposed_provenance` semantics\n  = help: Tree Borrows does not support integer-to-pointer casts, so the program is likely to go wrong when this pointer gets used"
+        }
+      }
+    }
+  }
+}
