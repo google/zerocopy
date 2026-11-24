@@ -1,0 +1,3 @@
+module constants audited: 260 theorems, 513 definitions, 31 inductive types
+axioms reachable from the module: [Quot.sound, propext]
+audit passed: 0 _unsafe_rec; 0 axiom/opaque/unsafe/partial; 0 WellFounded/Acc.rec; 0 Classical.choice/sorryAx/ofReduceBool
