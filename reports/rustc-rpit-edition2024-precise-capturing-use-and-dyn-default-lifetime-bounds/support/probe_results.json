@@ -1,0 +1,262 @@
+{
+  "timestamp_utc": "2026-11-24T01:04:57Z",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "experiments": {
+    "a_edition2021_vs_2024_rpit_and_use_precise_capturing": {
+      "ed21_unannotated_rpit_does_not_capture_unused_ref": {
+        "edition": "2021",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "RPIT_OK=42",
+        "run_stderr": ""
+      },
+      "ed24_unannotated_rpit_captures_all_in_scope_lifetimes_rejected": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0597]: `local` does not live long enough\n  --> <tmp>/a2_ed24_unannotated.rs:9:23\n   |\n 7 |     let val = {\n   |         --- borrow later stored here\n 8 |         let local = 10u32;\n   |             ----- binding `local` declared here\n 9 |         capture_check(&local)\n   |                       ^^^^^^ borrowed value does not live long enough\n10 |     };\n   |     - `local` dropped here while still borrowed\n   |\nnote: this call may capture more lifetimes than intended, because Rust 2024 has adjusted the `impl Trait` lifetime capture rules\n  --> <tmp>/a2_ed24_unannotated.rs:9:9\n   |\n 9 |         capture_check(&local)\n   |         ^^^^^^^^^^^^^^^^^^^^^\nhelp: use the precise capturing `use<...>` syntax to make the captures explicit\n   |\n 1 | fn capture_check(x: &u32) -> impl Sized + use<> {\n   |                                         +++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0597`."
+      },
+      "ed24_rpit_use_empty_opts_out_of_lifetime_capture": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "ED24_USE_EMPTY=42",
+        "run_stderr": ""
+      },
+      "ed24_rpit_use_a_t_excludes_b_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "USE_A_T_EXCLUDES_B=77",
+        "run_stderr": ""
+      },
+      "ed24_rpit_use_a_t_still_captures_a_rejected": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0597]: `short_a` does not live long enough\n  --> <tmp>/a5_use_a_t_cap_a.rs:9:14\n   |\n 7 |     let r = {\n   |         - borrow later stored here\n 8 |         let short_a = 77u32;\n   |             ------- binding `short_a` declared here\n 9 |         pick(&short_a, &short_b, 0u8)\n   |              ^^^^^^^^ borrowed value does not live long enough\n10 |     };\n   |     - `short_a` dropped here while still borrowed\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0597`."
+      },
+      "ed24_rpit_use_a_t_indirectly_captures_t_lifetime_rejected": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0597]: `short_c` does not live long enough\n  --> <tmp>/a6_use_a_t_cap_via_t.rs:10:32\n   |\n 8 |     let r = {\n   |         - borrow later stored here\n 9 |         let short_c = 99u32;\n   |             ------- binding `short_c` declared here\n10 |         pick(&long_a, &long_b, &short_c)\n   |                                ^^^^^^^^ borrowed value does not live long enough\n11 |     };\n   |     - `short_c` dropped here while still borrowed\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0597`."
+      },
+      "ed24_rpit_use_omitting_in_scope_type_param_rejected": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: `impl Trait` must mention all type parameters in scope in `use<...>`\n --> <tmp>/a7_omit_t.rs:1:42\n  |\n1 | pub fn bad<'a, T>(_a: &'a u32, _t: T) -> impl Sized + use<'a> {\n  |                -                         ^^^^^^^^^^^^^^^^^^^^\n  |                |\n  |                type parameter is implicitly captured by this `impl Trait`\n  |\n  = note: currently, all type parameters are required to be mentioned in the precise captures list\n\nerror: aborting due to 1 previous error"
+      },
+      "ed24_rpit_use_lifetime_after_type_param_rejected": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: lifetime parameter `'a` must be listed before non-lifetime parameters\n --> <tmp>/a8_bad_order.rs:1:62\n  |\n1 | pub fn bad<'a, T>(_a: &'a u32, _t: T) -> impl Sized + use<T, 'a> {\n  |                                                           -  ^^\n  |                                                           |\n  |                                                           move the lifetime before this parameter\n\nerror: aborting due to 1 previous error"
+      },
+      "ed24_rpit_use_omitting_bound_lifetime_rejected": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: `impl Trait` captures lifetime parameter, but it is not mentioned in `use<...>` precise captures list\n --> <tmp>/a9_bound_omit.rs:1:55\n  |\n1 | pub fn bad<'a>(x: &'a u32) -> impl core::fmt::Debug + 'a + use<> {\n  |            --                 ------------------------^^-------- lifetime captured due to being mentioned in the bounds of the `impl Trait`\n  |            |\n  |            this lifetime parameter is captured\n\nerror: aborting due to 1 previous error"
+      },
+      "ed24_rpit_use_on_apit_rejected": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: `use<...>` precise capturing syntax not allowed in argument-position `impl Trait`\n --> <tmp>/a10_apit_use.rs:1:29\n  |\n1 | pub fn bad(_x: impl Sized + use<>) {}\n  |                             ^^^^^\n\nerror: aborting due to 1 previous error"
+      },
+      "ed24_rpit_use_elided_underscore_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "USE_ELIDED_UNDERSCORE=99",
+        "run_stderr": ""
+      },
+      "ed21_rpitit_captures_all_in_scope_by_default_rejected": {
+        "edition": "2021",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0597]: `local` does not live long enough\n  --> <tmp>/a12_ed21_rpitit.rs:14:16\n   |\n12 |     let val = {\n   |         --- borrow later stored here\n13 |         let local = 10u32;\n   |             ----- binding `local` declared here\n14 |         s.make(&local)\n   |                ^^^^^^ borrowed value does not live long enough\n15 |     };\n   |     - `local` dropped here while still borrowed\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0597`."
+      },
+      "ed21_rpit_use_optin_captures_ref_rejected": {
+        "edition": "2021",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0597]: `local` does not live long enough\n  --> <tmp>/a13_ed21_use_optin.rs:9:23\n   |\n 7 |     let val = {\n   |         --- borrow later stored here\n 8 |         let local = 10u32;\n   |             ----- binding `local` declared here\n 9 |         capture_check(&local)\n   |                       ^^^^^^ borrowed value does not live long enough\n10 |     };\n   |     - `local` dropped here while still borrowed\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0597`."
+      },
+      "ed24_rpit_callee_returning_uncaptured_lifetime_rejected": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0700]: hidden type for `impl Debug` captures lifetime that does not appear in bounds\n --> <tmp>/a14_callee_uncaptured.rs:2:5\n  |\n1 | pub fn bad<'a>(x: &'a u32) -> impl core::fmt::Debug + use<> {\n  |            --                 ----------------------------- opaque type defined here\n  |            |\n  |            hidden type `&'a u32` captures the lifetime `'a` as defined here\n2 |     x\n  |     ^\n  |\nhelp: add `'a` to the `use<...>` bound to explicitly capture it\n  |\n1 | pub fn bad<'a>(x: &'a u32) -> impl core::fmt::Debug + use<'a> {\n  |                                                           ++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0700`."
+      }
+    },
+    "b_dyn_trait_default_lifetime_elision": {
+      "box_dyn_defaults_to_static_rejected_with_ref_a": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: lifetime may not live long enough\n --> <tmp>/b1_box_dyn_static.rs:3:5\n  |\n2 | pub fn box_dyn<'a>(r: &'a u32) -> Box<dyn Debug> {\n  |                -- lifetime `'a` defined here\n3 |     Box::new(r)\n  |     ^^^^^^^^^^^ returning this value requires that `'a` must outlive `'static`\n  |\nhelp: to declare that the trait object captures data from argument `r`, you can add an explicit `'a` lifetime bound\n  |\n2 | pub fn box_dyn<'a>(r: &'a u32) -> Box<dyn Debug + 'a> {\n  |                                                 ++++\n\nerror: aborting due to 1 previous error"
+      },
+      "box_dyn_explicit_plus_a_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "BOX_DYN_A=1",
+        "run_stderr": ""
+      },
+      "box_dyn_underscore_in_return_uses_ordinary_elision_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "BOX_DYN_UNDERSCORE=4",
+        "run_stderr": ""
+      },
+      "ref_a_dyn_defaults_to_a_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "REF_DYN_A=2",
+        "run_stderr": ""
+      },
+      "ref_a_box_dyn_inner_box_overrides_outer_ref_a_with_static_rejected": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: lifetime may not live long enough\n --> <tmp>/b5_ref_a_box_dyn.rs:3:5\n  |\n2 | pub fn coerce<'a>(b: &'a Box<dyn Debug + 'a>) -> &'a Box<dyn Debug> {\n  |               -- lifetime `'a` defined here\n3 |     b\n  |     ^ returning this value requires that `'a` must outlive `'static`\n  |\nhelp: to declare that the trait object captures data from argument `b`, you can add an explicit `'a` lifetime bound\n  |\n2 | pub fn coerce<'a>(b: &'a Box<dyn Debug + 'a>) -> &'a Box<dyn Debug + 'a> {\n  |                                                                    ++++\n\nerror: aborting due to 1 previous error"
+      },
+      "ref_a_box_dyn_explicit_a_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "REF_BOX_DYN_EXPLICIT_A=5",
+        "run_stderr": ""
+      },
+      "struct_ref_a_dyn_defaults_to_a_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "STRUCT_DYN_A=3",
+        "run_stderr": ""
+      },
+      "struct_two_bounds_ambiguous_dyn_rejected_e0228": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0228]: cannot deduce the lifetime bound for this trait object type from context\n --> <tmp>/b8_two_bounds_e0228.rs:3:42\n  |\n3 | pub fn bad<'a, 'b>(_x: TwoBounds<'a, 'b, dyn Debug>) {}\n  |                                          ^^^^^^^^^\n  |\nhelp: please supply an explicit bound\n  |\n3 | pub fn bad<'a, 'b>(_x: TwoBounds<'a, 'b, dyn Debug + /* 'a */>) {}\n  |                                                    ++++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0228`."
+      },
+      "trait_with_late_bound_lifetime_box_dyn_falls_back_to_static_rejected": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: lifetime may not live long enough\n --> <tmp>/b9_trait_late_bound.rs:9:5\n  |\n8 | pub fn mk<'a>(r: &'a u32) -> Box<dyn BoundTrait<'a>> {\n  |           -- lifetime `'a` defined here\n9 |     Box::new(Wrap(r))\n  |     ^^^^^^^^^^^^^^^^^ returning this value requires that `'a` must outlive `'static`\n  |\nhelp: to declare that the trait object captures data from argument `r`, you can add an explicit `'a` lifetime bound\n  |\n8 | pub fn mk<'a>(r: &'a u32) -> Box<dyn BoundTrait<'a> + 'a> {\n  |                                                     ++++\n\nerror: aborting due to 1 previous error"
+      },
+      "trait_with_early_bound_lifetime_box_dyn_derives_a_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "TRAIT_EARLY_BOUND_DYN_A=6",
+        "run_stderr": ""
+      },
+      "in_body_box_dyn_infers_non_static_lifetime_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "IN_BODY_BOX_DYN=7",
+        "run_stderr": ""
+      },
+      "nested_ref_a_ref_b_dyn_defaults_to_inner_b_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "NESTED_REF_DYN_B=8",
+        "run_stderr": ""
+      },
+      "ref_a_of_refwrap_b_dyn_shadows_outer_a_with_b_ok": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": ""
+      }
+    }
+  }
+}

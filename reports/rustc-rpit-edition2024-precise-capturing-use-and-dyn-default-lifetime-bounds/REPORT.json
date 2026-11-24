@@ -1,0 +1,60 @@
+{
+  "topics": [
+    "anneal",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/hir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust HIR lowering, bound-variable resolution, and borrowck frontend",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "20fe935d50367c0ff8872c2ebfa050c5c99d9201"
+      }
+    },
+    {
+      "name": "rustc nightly toolchain (x86_64-unknown-linux-gnu)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "release": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+      }
+    },
+    {
+      "name": "Anneal Trusted MIR AST, operational semantics, and rustc capture driver",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 kernel and elaborator",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Rust RFCs (RFC 599, RFC 1156, RFC 3498, RFC 3617)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+      }
+    },
+    {
+      "name": "The Rust Reference (impl Trait, lifetime elision, and trait object default bounds)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    }
+  ],
+  "observed_at": "2026-11-24"
+}
