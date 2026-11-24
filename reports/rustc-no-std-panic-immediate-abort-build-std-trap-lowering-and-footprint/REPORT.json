@@ -1,0 +1,56 @@
+{
+  "topics": [
+    "anneal",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/codegen",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler and core library upstream source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "commit": "f7da9a42368f31abb02b8064bb93a11bf9ba9f5e"
+      }
+    },
+    {
+      "name": "Executed nightly Rust compiler toolchain and sysroot",
+      "identity": {
+        "release": "rustc 1.98.0-nightly",
+        "toolchain_commit_hash": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "commit_date": "2026-05-31",
+        "llvm_version": "22.1.6",
+        "host": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "LLVM compiler infrastructure upstream source (llvm.trap, X86 TRAP ud2, AArch64 BRK 1)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "commit": "354891a804ac4eefa45a9a546cceed4404b18b78"
+      }
+    },
+    {
+      "name": "Lean 4 kernel and tactic proof assistant",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "commit": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Anneal trusted MIR semantics and proof-audit boundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "branch": "main",
+        "commit": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    }
+  ],
+  "observed_at": "2026-11-24"
+}

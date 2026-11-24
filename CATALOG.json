@@ -108110,6 +108110,62 @@
         "verification"
       ]
     },
+    "rustc-no-std-panic-immediate-abort-build-std-trap-lowering-and-footprint": {
+      "observed_at": "2026-11-24",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "f7da9a42368f31abb02b8064bb93a11bf9ba9f5e",
+            "repository": "rust-lang/rust"
+          },
+          "name": "Rust compiler and core library upstream source"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-05-31",
+            "host": "x86_64-unknown-linux-gnu",
+            "llvm_version": "22.1.6",
+            "release": "rustc 1.98.0-nightly",
+            "toolchain_commit_hash": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          },
+          "name": "Executed nightly Rust compiler toolchain and sysroot"
+        },
+        {
+          "identity": {
+            "commit": "354891a804ac4eefa45a9a546cceed4404b18b78",
+            "repository": "llvm/llvm-project"
+          },
+          "name": "LLVM compiler infrastructure upstream source (llvm.trap, X86 TRAP ud2, AArch64 BRK 1)"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "repository": "leanprover/lean4",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 kernel and tactic proof assistant"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "commit": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+            "repository": "joshlf/anneal"
+          },
+          "name": "Anneal trusted MIR semantics and proof-audit boundary"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/codegen",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "verification"
+      ]
+    },
     "rustc-nondiverging-mir-intrinsics-assume-copynonoverlapping-and-unreachable-propagation": {
       "observed_at": "2026-11-21",
       "subjects": [

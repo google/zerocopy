@@ -1,0 +1,1486 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "rustc_commit_sha": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "llvm_version": "22.1.6",
+  "host": "x86_64-unknown-linux-gnu",
+  "experiments": {
+    "a_codegen_and_footprint_prebuilt_sysroot_vs_build_std_core": {
+      "prebuilt_sysroot": {
+        "sysroot_lib_panic_unwind": {
+          "crate_type": "lib",
+          "extra_args": [
+            "-Copt-level=2",
+            "--emit=llvm-ir,obj",
+            "-Cpanic=unwind"
+          ],
+          "compile_returncode": 0,
+          "compile_stdout": "",
+          "compile_stderr": "",
+          "functions": {
+            "div": [
+              "define noundef i32 @div(i32 noundef %a, i32 noundef %b) unnamed_addr #0 personality ptr @rust_eh_personality {",
+              "start:",
+              "  %_3 = icmp eq i32 %b, 0",
+              "  br i1 %_3, label %panic, label %bb1",
+              "",
+              "bb1:                                              ; preds = %start",
+              "  %_0 = udiv i32 %a, %b",
+              "  ret i32 %_0",
+              "",
+              "panic:                                            ; preds = %start",
+              "; invoke core::panicking::panic_const::panic_const_div_by_zero",
+              "  invoke void @_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const23panic_const_div_by_zero(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_7a7a58e2534fac7da137adb32bb56d67) #5",
+              "          to label %unreachable unwind label %terminate",
+              "",
+              "terminate:                                        ; preds = %panic",
+              "  %0 = landingpad { ptr, i32 }",
+              "          filter [0 x ptr] zeroinitializer",
+              "; call core::panicking::panic_cannot_unwind",
+              "  tail call void @_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind() #6",
+              "  unreachable",
+              "",
+              "unreachable:                                      ; preds = %panic",
+              "  unreachable",
+              "}"
+            ],
+            "idx": [
+              "define noundef i32 @idx(ptr noundef readonly captures(none) %s, i64 noundef %len, i64 noundef %i) unnamed_addr #0 personality ptr @rust_eh_personality {",
+              "start:",
+              "  %_4 = icmp ult i64 %i, %len",
+              "  br i1 %_4, label %bb1, label %panic",
+              "",
+              "bb1:                                              ; preds = %start",
+              "  %0 = getelementptr inbounds nuw i32, ptr %s, i64 %i",
+              "  %_0 = load i32, ptr %0, align 4, !noundef !4",
+              "  ret i32 %_0",
+              "",
+              "panic:                                            ; preds = %start",
+              "; invoke core::panicking::panic_bounds_check",
+              "  invoke void @_RNvNtCs8b4M6GsfcPr_4core9panicking18panic_bounds_check(i64 noundef %i, i64 noundef %len, ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_9e6d4df007cf8d22af90d7ed4611f96a) #5",
+              "          to label %unreachable unwind label %terminate",
+              "",
+              "terminate:                                        ; preds = %panic",
+              "  %1 = landingpad { ptr, i32 }",
+              "          filter [0 x ptr] zeroinitializer",
+              "; call core::panicking::panic_cannot_unwind",
+              "  tail call void @_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind() #6",
+              "  unreachable",
+              "",
+              "unreachable:                                      ; preds = %panic",
+              "  unreachable",
+              "}"
+            ]
+          },
+          "resolved_attributes": {
+            "div": "attributes #0 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "idx": "attributes #0 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+          },
+          "llvm_decls": [
+            "declare i32 @rust_eh_personality(...) unnamed_addr #1",
+            "declare void @_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const23panic_const_div_by_zero(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24)) unnamed_addr #2",
+            "declare void @_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind() unnamed_addr #3",
+            "declare void @_RNvNtCs8b4M6GsfcPr_4core9panicking18panic_bounds_check(i64 noundef, i64 noundef, ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24)) unnamed_addr #4"
+          ],
+          "metrics_by_fn": {
+            "div": {
+              "has_personality": true,
+              "instruction_line_count": 15,
+              "call_count": 2,
+              "invoke_count": 2,
+              "landingpad_count": 1,
+              "llvm_trap_count": 0
+            },
+            "idx": {
+              "has_personality": true,
+              "instruction_line_count": 16,
+              "call_count": 2,
+              "invoke_count": 2,
+              "landingpad_count": 1,
+              "llvm_trap_count": 0
+            }
+          },
+          "undefined_symbols_llvm_nm": [
+            "U _RNvNtCs8b4M6GsfcPr_4core9panicking18panic_bounds_check",
+            "U _RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind",
+            "U _RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const23panic_const_div_by_zero",
+            "U rust_eh_personality"
+          ],
+          "section_sizes": {
+            "text_bytes": 265,
+            "data_bytes": 56,
+            "bss_bytes": 0,
+            "dec_total_bytes": 321
+          },
+          "objdump_disassembly": "<tmp>/sysroot_lib_panic_unwind/panic_probe.o:\tfile format elf64-x86-64\n\nDisassembly of section .text.div:\n\n0000000000000000 <div>:\n       0: 50                           \tpushq\t%rax\n       1: 85 f6                        \ttestl\t%esi, %esi\n       3: 74 08                        \tje\t0xd <div+0xd>\n       5: 89 f8                        \tmovl\t%edi, %eax\n       7: 31 d2                        \txorl\t%edx, %edx\n       9: f7 f6                        \tdivl\t%esi\n       b: 59                           \tpopq\t%rcx\n       c: c3                           \tretq\n       d: 48 8d 3d 00 00 00 00         \tleaq\t(%rip), %rdi            # 0x14 <div+0x14>\n      14: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x1a <div+0x1a>\n      1a: 0f 0b                        \tud2\n      1c: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x22 <div+0x22>\n\nDisassembly of section .text.idx:\n\n0000000000000000 <idx>:\n       0: 50                           \tpushq\t%rax\n       1: 48 39 f2                     \tcmpq\t%rsi, %rdx\n       4: 73 05                        \tjae\t0xb <idx+0xb>\n       6: 8b 04 97                     \tmovl\t(%rdi,%rdx,4), %eax\n       9: 59                           \tpopq\t%rcx\n       a: c3                           \tretq\n       b: 48 8d 05 00 00 00 00         \tleaq\t(%rip), %rax            # 0x12 <idx+0x12>\n      12: 48 89 d7                     \tmovq\t%rdx, %rdi\n      15: 48 89 c2                     \tmovq\t%rax, %rdx\n      18: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x1e <idx+0x1e>\n      1e: 0f 0b                        \tud2\n      20: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x26 <idx+0x26>"
+        },
+        "sysroot_lib_panic_abort": {
+          "crate_type": "lib",
+          "extra_args": [
+            "-Copt-level=2",
+            "--emit=llvm-ir,obj",
+            "-Cpanic=abort"
+          ],
+          "compile_returncode": 0,
+          "compile_stdout": "",
+          "compile_stderr": "",
+          "functions": {
+            "div": [
+              "define noundef i32 @div(i32 noundef %a, i32 noundef %b) unnamed_addr #0 {",
+              "start:",
+              "  %_3 = icmp eq i32 %b, 0",
+              "  br i1 %_3, label %panic, label %bb1",
+              "",
+              "bb1:                                              ; preds = %start",
+              "  %_0 = udiv i32 %a, %b",
+              "  ret i32 %_0",
+              "",
+              "panic:                                            ; preds = %start",
+              "; call core::panicking::panic_const::panic_const_div_by_zero",
+              "  tail call void @_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const23panic_const_div_by_zero(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_7a7e4d61d8cf4df61ef7ad1d7b833e07) #3",
+              "  unreachable",
+              "}"
+            ],
+            "idx": [
+              "define noundef i32 @idx(ptr noundef readonly captures(none) %s, i64 noundef %len, i64 noundef %i) unnamed_addr #0 {",
+              "start:",
+              "  %_4 = icmp ult i64 %i, %len",
+              "  br i1 %_4, label %bb1, label %panic",
+              "",
+              "bb1:                                              ; preds = %start",
+              "  %0 = getelementptr inbounds nuw i32, ptr %s, i64 %i",
+              "  %_0 = load i32, ptr %0, align 4, !noundef !4",
+              "  ret i32 %_0",
+              "",
+              "panic:                                            ; preds = %start",
+              "; call core::panicking::panic_bounds_check",
+              "  tail call void @_RNvNtCs8b4M6GsfcPr_4core9panicking18panic_bounds_check(i64 noundef %i, i64 noundef %len, ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_5fa377fa22e16e79ae1a956bed50a6e2) #3",
+              "  unreachable",
+              "}"
+            ]
+          },
+          "resolved_attributes": {
+            "div": "attributes #0 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "idx": "attributes #0 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+          },
+          "llvm_decls": [
+            "declare void @_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const23panic_const_div_by_zero(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24)) unnamed_addr #1",
+            "declare void @_RNvNtCs8b4M6GsfcPr_4core9panicking18panic_bounds_check(i64 noundef, i64 noundef, ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24)) unnamed_addr #2"
+          ],
+          "metrics_by_fn": {
+            "div": {
+              "has_personality": false,
+              "instruction_line_count": 8,
+              "call_count": 2,
+              "invoke_count": 0,
+              "landingpad_count": 0,
+              "llvm_trap_count": 0
+            },
+            "idx": {
+              "has_personality": false,
+              "instruction_line_count": 9,
+              "call_count": 2,
+              "invoke_count": 0,
+              "landingpad_count": 0,
+              "llvm_trap_count": 0
+            }
+          },
+          "undefined_symbols_llvm_nm": [
+            "U _RNvNtCs8b4M6GsfcPr_4core9panicking18panic_bounds_check",
+            "U _RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const23panic_const_div_by_zero"
+          ],
+          "section_sizes": {
+            "text_bytes": 182,
+            "data_bytes": 48,
+            "bss_bytes": 0,
+            "dec_total_bytes": 230
+          },
+          "objdump_disassembly": "<tmp>/sysroot_lib_panic_abort/panic_probe.o:\tfile format elf64-x86-64\n\nDisassembly of section .text.div:\n\n0000000000000000 <div>:\n       0: 85 f6                        \ttestl\t%esi, %esi\n       2: 74 07                        \tje\t0xb <div+0xb>\n       4: 89 f8                        \tmovl\t%edi, %eax\n       6: 31 d2                        \txorl\t%edx, %edx\n       8: f7 f6                        \tdivl\t%esi\n       a: c3                           \tretq\n       b: 50                           \tpushq\t%rax\n       c: 48 8d 3d 00 00 00 00         \tleaq\t(%rip), %rdi            # 0x13 <div+0x13>\n      13: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x19 <div+0x19>\n\nDisassembly of section .text.idx:\n\n0000000000000000 <idx>:\n       0: 48 39 f2                     \tcmpq\t%rsi, %rdx\n       3: 73 04                        \tjae\t0x9 <idx+0x9>\n       5: 8b 04 97                     \tmovl\t(%rdi,%rdx,4), %eax\n       8: c3                           \tretq\n       9: 50                           \tpushq\t%rax\n       a: 48 8d 05 00 00 00 00         \tleaq\t(%rip), %rax            # 0x11 <idx+0x11>\n      11: 48 89 d7                     \tmovq\t%rdx, %rdi\n      14: 48 89 c2                     \tmovq\t%rax, %rdx\n      17: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x1d <idx+0x1d>"
+        },
+        "sysroot_lib_panic_immediate_abort_without_build_std": {
+          "crate_type": "lib",
+          "extra_args": [
+            "-Copt-level=2",
+            "--emit=llvm-ir,obj",
+            "-Zunstable-options",
+            "-Cpanic=immediate-abort"
+          ],
+          "compile_returncode": 0,
+          "compile_stdout": "",
+          "compile_stderr": "",
+          "functions": {
+            "div": [
+              "define noundef i32 @div(i32 noundef %a, i32 noundef %b) unnamed_addr #0 {",
+              "start:",
+              "  %_3 = icmp eq i32 %b, 0",
+              "  br i1 %_3, label %panic, label %bb1",
+              "",
+              "bb1:                                              ; preds = %start",
+              "  %_0 = udiv i32 %a, %b",
+              "  ret i32 %_0",
+              "",
+              "panic:                                            ; preds = %start",
+              "; call core::panicking::panic_const::panic_const_div_by_zero",
+              "  tail call void @_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const23panic_const_div_by_zero(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_c0b1d2fd9135aad6941894a9e7f2da5a) #3",
+              "  unreachable",
+              "}"
+            ],
+            "idx": [
+              "define noundef i32 @idx(ptr noundef readonly captures(none) %s, i64 noundef %len, i64 noundef %i) unnamed_addr #0 {",
+              "start:",
+              "  %_4 = icmp ult i64 %i, %len",
+              "  br i1 %_4, label %bb1, label %panic",
+              "",
+              "bb1:                                              ; preds = %start",
+              "  %0 = getelementptr inbounds nuw i32, ptr %s, i64 %i",
+              "  %_0 = load i32, ptr %0, align 4, !noundef !4",
+              "  ret i32 %_0",
+              "",
+              "panic:                                            ; preds = %start",
+              "; call core::panicking::panic_bounds_check",
+              "  tail call void @_RNvNtCs8b4M6GsfcPr_4core9panicking18panic_bounds_check(i64 noundef %i, i64 noundef %len, ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_c72bd2b7c9099a2f6ddf37b0defc68f6) #3",
+              "  unreachable",
+              "}"
+            ]
+          },
+          "resolved_attributes": {
+            "div": "attributes #0 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "idx": "attributes #0 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+          },
+          "llvm_decls": [
+            "declare void @_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const23panic_const_div_by_zero(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24)) unnamed_addr #1",
+            "declare void @_RNvNtCs8b4M6GsfcPr_4core9panicking18panic_bounds_check(i64 noundef, i64 noundef, ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24)) unnamed_addr #2"
+          ],
+          "metrics_by_fn": {
+            "div": {
+              "has_personality": false,
+              "instruction_line_count": 8,
+              "call_count": 2,
+              "invoke_count": 0,
+              "landingpad_count": 0,
+              "llvm_trap_count": 0
+            },
+            "idx": {
+              "has_personality": false,
+              "instruction_line_count": 9,
+              "call_count": 2,
+              "invoke_count": 0,
+              "landingpad_count": 0,
+              "llvm_trap_count": 0
+            }
+          },
+          "undefined_symbols_llvm_nm": [
+            "U _RNvNtCs8b4M6GsfcPr_4core9panicking18panic_bounds_check",
+            "U _RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const23panic_const_div_by_zero"
+          ],
+          "section_sizes": {
+            "text_bytes": 210,
+            "data_bytes": 48,
+            "bss_bytes": 0,
+            "dec_total_bytes": 258
+          },
+          "objdump_disassembly": "<tmp>/sysroot_lib_panic_immediate_abort_without_build_std/panic_probe.o:\tfile format elf64-x86-64\n\nDisassembly of section .text.div:\n\n0000000000000000 <div>:\n       0: 85 f6                        \ttestl\t%esi, %esi\n       2: 74 07                        \tje\t0xb <div+0xb>\n       4: 89 f8                        \tmovl\t%edi, %eax\n       6: 31 d2                        \txorl\t%edx, %edx\n       8: f7 f6                        \tdivl\t%esi\n       a: c3                           \tretq\n       b: 50                           \tpushq\t%rax\n       c: 48 8d 3d 00 00 00 00         \tleaq\t(%rip), %rdi            # 0x13 <div+0x13>\n      13: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x19 <div+0x19>\n\nDisassembly of section .text.idx:\n\n0000000000000000 <idx>:\n       0: 48 39 f2                     \tcmpq\t%rsi, %rdx\n       3: 73 04                        \tjae\t0x9 <idx+0x9>\n       5: 8b 04 97                     \tmovl\t(%rdi,%rdx,4), %eax\n       8: c3                           \tretq\n       9: 50                           \tpushq\t%rax\n       a: 48 8d 05 00 00 00 00         \tleaq\t(%rip), %rax            # 0x11 <idx+0x11>\n      11: 48 89 d7                     \tmovq\t%rdx, %rdi\n      14: 48 89 c2                     \tmovq\t%rax, %rdx\n      17: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x1d <idx+0x1d>"
+        },
+        "sysroot_immediate_abort_requires_unstable_options": {
+          "crate_type": "lib",
+          "extra_args": [
+            "-Copt-level=2",
+            "-Cpanic=immediate-abort"
+          ],
+          "compile_returncode": 1,
+          "compile_stdout": "",
+          "compile_stderr": "error: `-Cpanic=immediate-abort` requires `-Zunstable-options` and a nightly compiler"
+        },
+        "sysroot_cdylib_immediate_abort_rejected_core_panic_strategy_mismatch": {
+          "crate_type": "cdylib",
+          "extra_args": [
+            "-Copt-level=2",
+            "-Zunstable-options",
+            "-Cpanic=immediate-abort"
+          ],
+          "compile_returncode": 1,
+          "compile_stdout": "",
+          "compile_stderr": "error: the crate `core` was compiled with a panic strategy which is incompatible with `immediate-abort`\n\nerror: aborting due to 1 previous error"
+        },
+        "sysroot_cdylib_immediate_abort_with_panic_handler_also_rejected": {
+          "crate_type": "cdylib",
+          "extra_args": [
+            "-Copt-level=2",
+            "-Zunstable-options",
+            "-Cpanic=immediate-abort"
+          ],
+          "compile_returncode": 1,
+          "compile_stdout": "",
+          "compile_stderr": "error: the crate `core` was compiled with a panic strategy which is incompatible with `immediate-abort`\n\nerror: aborting due to 1 previous error"
+        },
+        "sysroot_lib_cfg_panic_immediate_abort_dual_cfg": {
+          "crate_type": "lib",
+          "extra_args": [
+            "-Copt-level=2",
+            "--emit=llvm-ir,obj",
+            "-Zunstable-options",
+            "-Cpanic=immediate-abort"
+          ],
+          "compile_returncode": 0,
+          "compile_stdout": "",
+          "compile_stderr": "",
+          "functions": {
+            "cfg_flags_mask": [
+              "define noundef i32 @cfg_flags_mask() unnamed_addr #0 {",
+              "start:",
+              "  ret i32 3",
+              "}"
+            ]
+          },
+          "resolved_attributes": {
+            "cfg_flags_mask": "attributes #0 = { mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+          },
+          "llvm_decls": [],
+          "metrics_by_fn": {
+            "cfg_flags_mask": {
+              "has_personality": false,
+              "instruction_line_count": 1,
+              "call_count": 0,
+              "invoke_count": 0,
+              "landingpad_count": 0,
+              "llvm_trap_count": 0
+            }
+          },
+          "undefined_symbols_llvm_nm": [],
+          "section_sizes": {
+            "text_bytes": 54,
+            "data_bytes": 0,
+            "bss_bytes": 0,
+            "dec_total_bytes": 54
+          },
+          "objdump_disassembly": "<tmp>/sysroot_lib_cfg_panic_immediate_abort_dual_cfg/panic_probe.o:\tfile format elf64-x86-64\n\nDisassembly of section .text.cfg_flags_mask:\n\n0000000000000000 <cfg_flags_mask>:\n       0: b8 03 00 00 00               \tmovl\t$0x3, %eax\n       5: c3                           \tretq"
+        }
+      },
+      "mir_post_cleanup": {
+        "unwind": {
+          "compile_returncode": 0,
+          "stages": {
+            "runtime-post-cleanup": {
+              "div": [
+                "// MIR for `div` after runtime-post-cleanup",
+                "",
+                "fn div(_1: u32, _2: u32) -> u32 {",
+                "    debug a => _1;",
+                "    debug b => _2;",
+                "    let mut _0: u32;",
+                "    let mut _3: u32;",
+                "    let mut _4: u32;",
+                "    let mut _5: bool;",
+                "",
+                "    bb0: {",
+                "        StorageLive(_3);",
+                "        _3 = copy _1;",
+                "        StorageLive(_4);",
+                "        _4 = copy _2;",
+                "        _5 = Eq(copy _4, const 0_u32);",
+                "        assert(!move _5, \"attempt to divide `{}` by zero\", copy _3) -> [success: bb1, unwind terminate(abi)];",
+                "    }",
+                "",
+                "    bb1: {",
+                "        _0 = Div(move _3, move _4);",
+                "        StorageDead(_4);",
+                "        StorageDead(_3);",
+                "        return;",
+                "    }",
+                "}"
+              ],
+              "idx": [
+                "// MIR for `idx` after runtime-post-cleanup",
+                "",
+                "fn idx(_1: *const u32, _2: usize, _3: usize) -> u32 {",
+                "    debug s => _1;",
+                "    debug len => _2;",
+                "    debug i => _3;",
+                "    let mut _0: u32;",
+                "    let _4: &[u32];",
+                "    let mut _5: *const u32;",
+                "    let mut _6: usize;",
+                "    let _7: usize;",
+                "    let mut _8: usize;",
+                "    let mut _9: bool;",
+                "    scope 1 {",
+                "        debug slice => _4;",
+                "    }",
+                "",
+                "    bb0: {",
+                "        StorageLive(_4);",
+                "        StorageLive(_5);",
+                "        _5 = copy _1;",
+                "        StorageLive(_6);",
+                "        _6 = copy _2;",
+                "        _4 = core::slice::from_raw_parts::<'_, u32>(move _5, move _6) -> [return: bb1, unwind terminate(abi)];",
+                "    }",
+                "",
+                "    bb1: {",
+                "        StorageDead(_6);",
+                "        StorageDead(_5);",
+                "        StorageLive(_7);",
+                "        _7 = copy _3;",
+                "        _8 = PtrMetadata(copy _4);",
+                "        _9 = Lt(copy _7, copy _8);",
+                "        assert(move _9, \"index out of bounds: the length is {} but the index is {}\", move _8, copy _7) -> [success: bb2, unwind terminate(abi)];",
+                "    }",
+                "",
+                "    bb2: {",
+                "        _0 = copy (*_4)[_7];",
+                "        StorageDead(_7);",
+                "        StorageDead(_4);",
+                "        return;",
+                "    }",
+                "}"
+              ]
+            },
+            "runtime-optimized": {
+              "div": [
+                "// MIR for `div` after runtime-optimized",
+                "",
+                "fn div(_1: u32, _2: u32) -> u32 {",
+                "    debug a => _1;",
+                "    debug b => _2;",
+                "    let mut _0: u32;",
+                "    let mut _3: bool;",
+                "",
+                "    bb0: {",
+                "        _3 = Eq(copy _2, const 0_u32);",
+                "        assert(!move _3, \"attempt to divide `{}` by zero\", copy _1) -> [success: bb1, unwind terminate(abi)];",
+                "    }",
+                "",
+                "    bb1: {",
+                "        _0 = Div(copy _1, copy _2);",
+                "        return;",
+                "    }",
+                "}"
+              ],
+              "idx": [
+                "// MIR for `idx` after runtime-optimized",
+                "",
+                "fn idx(_1: *const u32, _2: usize, _3: usize) -> u32 {",
+                "    debug s => _1;",
+                "    debug len => _2;",
+                "    debug i => _3;",
+                "    let mut _0: u32;",
+                "    let mut _4: bool;",
+                "    scope 1 {",
+                "        debug slice => _5;",
+                "    }",
+                "    scope 2 (inlined #[track_caller] core::slice::from_raw_parts::<'_, u32>) {",
+                "        let _5: *const [u32];",
+                "        scope 3 (inlined ub_checks::check_language_ub) {",
+                "            scope 4 (inlined ub_checks::check_language_ub::runtime) {",
+                "            }",
+                "        }",
+                "        scope 5 (inlined core::mem::size_of::<u32>) {",
+                "        }",
+                "        scope 6 (inlined core::mem::align_of::<u32>) {",
+                "        }",
+                "        scope 7 (inlined slice_from_raw_parts::<u32>) {",
+                "            scope 8 (inlined core::ptr::from_raw_parts::<[u32], u32>) {",
+                "            }",
+                "        }",
+                "    }",
+                "",
+                "    bb0: {",
+                "        _5 = *const [u32] from (copy _1, copy _2);",
+                "        _4 = Lt(copy _3, copy _2);",
+                "        assert(move _4, \"index out of bounds: the length is {} but the index is {}\", copy _2, copy _3) -> [success: bb1, unwind terminate(abi)];",
+                "    }",
+                "",
+                "    bb1: {",
+                "        _0 = copy (*_5)[_3];",
+                "        return;",
+                "    }",
+                "}"
+              ]
+            }
+          }
+        },
+        "abort": {
+          "compile_returncode": 0,
+          "stages": {
+            "runtime-post-cleanup": {
+              "div": [
+                "// MIR for `div` after runtime-post-cleanup",
+                "",
+                "fn div(_1: u32, _2: u32) -> u32 {",
+                "    debug a => _1;",
+                "    debug b => _2;",
+                "    let mut _0: u32;",
+                "    let mut _3: u32;",
+                "    let mut _4: u32;",
+                "    let mut _5: bool;",
+                "",
+                "    bb0: {",
+                "        StorageLive(_3);",
+                "        _3 = copy _1;",
+                "        StorageLive(_4);",
+                "        _4 = copy _2;",
+                "        _5 = Eq(copy _4, const 0_u32);",
+                "        assert(!move _5, \"attempt to divide `{}` by zero\", copy _3) -> [success: bb1, unwind unreachable];",
+                "    }",
+                "",
+                "    bb1: {",
+                "        _0 = Div(move _3, move _4);",
+                "        StorageDead(_4);",
+                "        StorageDead(_3);",
+                "        return;",
+                "    }",
+                "}"
+              ],
+              "idx": [
+                "// MIR for `idx` after runtime-post-cleanup",
+                "",
+                "fn idx(_1: *const u32, _2: usize, _3: usize) -> u32 {",
+                "    debug s => _1;",
+                "    debug len => _2;",
+                "    debug i => _3;",
+                "    let mut _0: u32;",
+                "    let _4: &[u32];",
+                "    let mut _5: *const u32;",
+                "    let mut _6: usize;",
+                "    let _7: usize;",
+                "    let mut _8: usize;",
+                "    let mut _9: bool;",
+                "    scope 1 {",
+                "        debug slice => _4;",
+                "    }",
+                "",
+                "    bb0: {",
+                "        StorageLive(_4);",
+                "        StorageLive(_5);",
+                "        _5 = copy _1;",
+                "        StorageLive(_6);",
+                "        _6 = copy _2;",
+                "        _4 = core::slice::from_raw_parts::<'_, u32>(move _5, move _6) -> [return: bb1, unwind unreachable];",
+                "    }",
+                "",
+                "    bb1: {",
+                "        StorageDead(_6);",
+                "        StorageDead(_5);",
+                "        StorageLive(_7);",
+                "        _7 = copy _3;",
+                "        _8 = PtrMetadata(copy _4);",
+                "        _9 = Lt(copy _7, copy _8);",
+                "        assert(move _9, \"index out of bounds: the length is {} but the index is {}\", move _8, copy _7) -> [success: bb2, unwind unreachable];",
+                "    }",
+                "",
+                "    bb2: {",
+                "        _0 = copy (*_4)[_7];",
+                "        StorageDead(_7);",
+                "        StorageDead(_4);",
+                "        return;",
+                "    }",
+                "}"
+              ]
+            },
+            "runtime-optimized": {
+              "div": [
+                "// MIR for `div` after runtime-optimized",
+                "",
+                "fn div(_1: u32, _2: u32) -> u32 {",
+                "    debug a => _1;",
+                "    debug b => _2;",
+                "    let mut _0: u32;",
+                "    let mut _3: bool;",
+                "",
+                "    bb0: {",
+                "        _3 = Eq(copy _2, const 0_u32);",
+                "        assert(!move _3, \"attempt to divide `{}` by zero\", copy _1) -> [success: bb1, unwind unreachable];",
+                "    }",
+                "",
+                "    bb1: {",
+                "        _0 = Div(copy _1, copy _2);",
+                "        return;",
+                "    }",
+                "}"
+              ],
+              "idx": [
+                "// MIR for `idx` after runtime-optimized",
+                "",
+                "fn idx(_1: *const u32, _2: usize, _3: usize) -> u32 {",
+                "    debug s => _1;",
+                "    debug len => _2;",
+                "    debug i => _3;",
+                "    let mut _0: u32;",
+                "    let mut _4: bool;",
+                "    scope 1 {",
+                "        debug slice => _5;",
+                "    }",
+                "    scope 2 (inlined #[track_caller] core::slice::from_raw_parts::<'_, u32>) {",
+                "        let _5: *const [u32];",
+                "        scope 3 (inlined ub_checks::check_language_ub) {",
+                "            scope 4 (inlined ub_checks::check_language_ub::runtime) {",
+                "            }",
+                "        }",
+                "        scope 5 (inlined core::mem::size_of::<u32>) {",
+                "        }",
+                "        scope 6 (inlined core::mem::align_of::<u32>) {",
+                "        }",
+                "        scope 7 (inlined slice_from_raw_parts::<u32>) {",
+                "            scope 8 (inlined core::ptr::from_raw_parts::<[u32], u32>) {",
+                "            }",
+                "        }",
+                "    }",
+                "",
+                "    bb0: {",
+                "        _5 = *const [u32] from (copy _1, copy _2);",
+                "        _4 = Lt(copy _3, copy _2);",
+                "        assert(move _4, \"index out of bounds: the length is {} but the index is {}\", copy _2, copy _3) -> [success: bb1, unwind unreachable];",
+                "    }",
+                "",
+                "    bb1: {",
+                "        _0 = copy (*_5)[_3];",
+                "        return;",
+                "    }",
+                "}"
+              ]
+            }
+          }
+        },
+        "immediate_abort": {
+          "compile_returncode": 0,
+          "stages": {
+            "runtime-post-cleanup": {
+              "div": [
+                "// MIR for `div` after runtime-post-cleanup",
+                "",
+                "fn div(_1: u32, _2: u32) -> u32 {",
+                "    debug a => _1;",
+                "    debug b => _2;",
+                "    let mut _0: u32;",
+                "    let mut _3: u32;",
+                "    let mut _4: u32;",
+                "    let mut _5: bool;",
+                "",
+                "    bb0: {",
+                "        StorageLive(_3);",
+                "        _3 = copy _1;",
+                "        StorageLive(_4);",
+                "        _4 = copy _2;",
+                "        _5 = Eq(copy _4, const 0_u32);",
+                "        assert(!move _5, \"attempt to divide `{}` by zero\", copy _3) -> [success: bb1, unwind unreachable];",
+                "    }",
+                "",
+                "    bb1: {",
+                "        _0 = Div(move _3, move _4);",
+                "        StorageDead(_4);",
+                "        StorageDead(_3);",
+                "        return;",
+                "    }",
+                "}"
+              ],
+              "idx": [
+                "// MIR for `idx` after runtime-post-cleanup",
+                "",
+                "fn idx(_1: *const u32, _2: usize, _3: usize) -> u32 {",
+                "    debug s => _1;",
+                "    debug len => _2;",
+                "    debug i => _3;",
+                "    let mut _0: u32;",
+                "    let _4: &[u32];",
+                "    let mut _5: *const u32;",
+                "    let mut _6: usize;",
+                "    let _7: usize;",
+                "    let mut _8: usize;",
+                "    let mut _9: bool;",
+                "    scope 1 {",
+                "        debug slice => _4;",
+                "    }",
+                "",
+                "    bb0: {",
+                "        StorageLive(_4);",
+                "        StorageLive(_5);",
+                "        _5 = copy _1;",
+                "        StorageLive(_6);",
+                "        _6 = copy _2;",
+                "        _4 = core::slice::from_raw_parts::<'_, u32>(move _5, move _6) -> [return: bb1, unwind unreachable];",
+                "    }",
+                "",
+                "    bb1: {",
+                "        StorageDead(_6);",
+                "        StorageDead(_5);",
+                "        StorageLive(_7);",
+                "        _7 = copy _3;",
+                "        _8 = PtrMetadata(copy _4);",
+                "        _9 = Lt(copy _7, copy _8);",
+                "        assert(move _9, \"index out of bounds: the length is {} but the index is {}\", move _8, copy _7) -> [success: bb2, unwind unreachable];",
+                "    }",
+                "",
+                "    bb2: {",
+                "        _0 = copy (*_4)[_7];",
+                "        StorageDead(_7);",
+                "        StorageDead(_4);",
+                "        return;",
+                "    }",
+                "}"
+              ]
+            },
+            "runtime-optimized": {
+              "div": [
+                "// MIR for `div` after runtime-optimized",
+                "",
+                "fn div(_1: u32, _2: u32) -> u32 {",
+                "    debug a => _1;",
+                "    debug b => _2;",
+                "    let mut _0: u32;",
+                "    let mut _3: bool;",
+                "",
+                "    bb0: {",
+                "        _3 = Eq(copy _2, const 0_u32);",
+                "        assert(!move _3, \"attempt to divide `{}` by zero\", copy _1) -> [success: bb1, unwind unreachable];",
+                "    }",
+                "",
+                "    bb1: {",
+                "        _0 = Div(copy _1, copy _2);",
+                "        return;",
+                "    }",
+                "}"
+              ],
+              "idx": [
+                "// MIR for `idx` after runtime-optimized",
+                "",
+                "fn idx(_1: *const u32, _2: usize, _3: usize) -> u32 {",
+                "    debug s => _1;",
+                "    debug len => _2;",
+                "    debug i => _3;",
+                "    let mut _0: u32;",
+                "    let mut _4: bool;",
+                "    scope 1 {",
+                "        debug slice => _5;",
+                "    }",
+                "    scope 2 (inlined #[track_caller] core::slice::from_raw_parts::<'_, u32>) {",
+                "        let _5: *const [u32];",
+                "        scope 3 (inlined ub_checks::check_language_ub) {",
+                "            scope 4 (inlined ub_checks::check_language_ub::runtime) {",
+                "            }",
+                "        }",
+                "        scope 5 (inlined core::mem::size_of::<u32>) {",
+                "        }",
+                "        scope 6 (inlined core::mem::align_of::<u32>) {",
+                "        }",
+                "        scope 7 (inlined slice_from_raw_parts::<u32>) {",
+                "            scope 8 (inlined core::ptr::from_raw_parts::<[u32], u32>) {",
+                "            }",
+                "        }",
+                "    }",
+                "",
+                "    bb0: {",
+                "        _5 = *const [u32] from (copy _1, copy _2);",
+                "        _4 = Lt(copy _3, copy _2);",
+                "        assert(move _4, \"index out of bounds: the length is {} but the index is {}\", copy _2, copy _3) -> [success: bb1, unwind unreachable];",
+                "    }",
+                "",
+                "    bb1: {",
+                "        _0 = copy (*_5)[_3];",
+                "        return;",
+                "    }",
+                "}"
+              ]
+            }
+          }
+        }
+      },
+      "rebuild_core_via_build_std": {
+        "build_std_core_lib_panic_unwind": {
+          "mode": "unwind",
+          "crate_type": "lib",
+          "target": "x86_64-unknown-linux-gnu",
+          "profile_flag": "--release",
+          "rustflags": "-Cpanic=unwind",
+          "command": "cargo rustc --offline -Zbuild-std=core --target x86_64-unknown-linux-gnu --release -- --emit=llvm-ir,obj",
+          "compile_returncode": 0,
+          "compile_stdout": "",
+          "compile_stderr": "Compiling compiler_builtins v0.1.160 (<sysroot>/lib/rustlib/src/rust/library/compiler-builtins/compiler-builtins)\n   Compiling core v0.0.0 (<sysroot>/lib/rustlib/src/rust/library/core)\n   Compiling panic_probe v0.1.0 (<tmp>/cargo_proj)\n    Finished `release` profile [optimized] target(s) in 1m 18s",
+          "functions": {
+            "div": [
+              "define noundef i32 @div(i32 noundef %a, i32 noundef %b) unnamed_addr #0 personality ptr @rust_eh_personality {",
+              "start:",
+              "  %_3 = icmp eq i32 %b, 0",
+              "  br i1 %_3, label %panic, label %bb1",
+              "",
+              "bb1:                                              ; preds = %start",
+              "  %_0 = udiv i32 %a, %b",
+              "  ret i32 %_0",
+              "",
+              "panic:                                            ; preds = %start",
+              "; invoke core::panicking::panic_const::panic_const_div_by_zero",
+              "  invoke void @_RNvNtNtCsekGeX7dq5mb_4core9panicking11panic_const23panic_const_div_by_zero(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_7ce256a47cfc7ce5f76261d223095138) #5",
+              "          to label %unreachable unwind label %terminate",
+              "",
+              "terminate:                                        ; preds = %panic",
+              "  %0 = landingpad { ptr, i32 }",
+              "          filter [0 x ptr] zeroinitializer",
+              "; call core::panicking::panic_cannot_unwind",
+              "  tail call void @_RNvNtCsekGeX7dq5mb_4core9panicking19panic_cannot_unwind() #6",
+              "  unreachable",
+              "",
+              "unreachable:                                      ; preds = %panic",
+              "  unreachable",
+              "}"
+            ],
+            "idx": [
+              "define noundef i32 @idx(ptr noundef readonly captures(none) %s, i64 noundef %len, i64 noundef %i) unnamed_addr #0 personality ptr @rust_eh_personality {",
+              "start:",
+              "  %_4 = icmp ult i64 %i, %len",
+              "  br i1 %_4, label %bb1, label %panic",
+              "",
+              "bb1:                                              ; preds = %start",
+              "  %0 = getelementptr inbounds nuw i32, ptr %s, i64 %i",
+              "  %_0 = load i32, ptr %0, align 4, !noundef !4",
+              "  ret i32 %_0",
+              "",
+              "panic:                                            ; preds = %start",
+              "; invoke core::panicking::panic_bounds_check",
+              "  invoke void @_RNvNtCsekGeX7dq5mb_4core9panicking18panic_bounds_check(i64 noundef %i, i64 noundef %len, ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_56f7f48061131e2c67042fb3fbc3ac7c) #5",
+              "          to label %unreachable unwind label %terminate",
+              "",
+              "terminate:                                        ; preds = %panic",
+              "  %1 = landingpad { ptr, i32 }",
+              "          filter [0 x ptr] zeroinitializer",
+              "; call core::panicking::panic_cannot_unwind",
+              "  tail call void @_RNvNtCsekGeX7dq5mb_4core9panicking19panic_cannot_unwind() #6",
+              "  unreachable",
+              "",
+              "unreachable:                                      ; preds = %panic",
+              "  unreachable",
+              "}"
+            ]
+          },
+          "resolved_attributes": {
+            "div": "attributes #0 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "idx": "attributes #0 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+          },
+          "llvm_decls": [
+            "declare i32 @rust_eh_personality(...) unnamed_addr #1",
+            "declare void @_RNvNtNtCsekGeX7dq5mb_4core9panicking11panic_const23panic_const_div_by_zero(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24)) unnamed_addr #2",
+            "declare void @_RNvNtCsekGeX7dq5mb_4core9panicking19panic_cannot_unwind() unnamed_addr #3",
+            "declare void @_RNvNtCsekGeX7dq5mb_4core9panicking18panic_bounds_check(i64 noundef, i64 noundef, ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24)) unnamed_addr #4"
+          ],
+          "metrics_by_fn": {
+            "div": {
+              "has_personality": true,
+              "instruction_line_count": 15,
+              "call_count": 2,
+              "invoke_count": 2,
+              "landingpad_count": 1,
+              "llvm_trap_count": 0
+            },
+            "idx": {
+              "has_personality": true,
+              "instruction_line_count": 16,
+              "call_count": 2,
+              "invoke_count": 2,
+              "landingpad_count": 1,
+              "llvm_trap_count": 0
+            }
+          },
+          "undefined_symbols_llvm_nm": [
+            "U _RNvNtCsekGeX7dq5mb_4core9panicking18panic_bounds_check",
+            "U _RNvNtCsekGeX7dq5mb_4core9panicking19panic_cannot_unwind",
+            "U _RNvNtNtCsekGeX7dq5mb_4core9panicking11panic_const23panic_const_div_by_zero",
+            "U rust_eh_personality"
+          ],
+          "section_sizes": {
+            "text_bytes": 211,
+            "data_bytes": 56,
+            "bss_bytes": 0,
+            "dec_total_bytes": 267
+          },
+          "objdump_disassembly": "<tmp>/cargo_target/x86_64-unknown-linux-gnu/release/deps/panic_probe-908c3fea00210373.o:\tfile format elf64-x86-64\n\nDisassembly of section .text.div:\n\n0000000000000000 <div>:\n       0: 50                           \tpushq\t%rax\n       1: 85 f6                        \ttestl\t%esi, %esi\n       3: 74 08                        \tje\t0xd <div+0xd>\n       5: 89 f8                        \tmovl\t%edi, %eax\n       7: 31 d2                        \txorl\t%edx, %edx\n       9: f7 f6                        \tdivl\t%esi\n       b: 59                           \tpopq\t%rcx\n       c: c3                           \tretq\n       d: 48 8d 3d 00 00 00 00         \tleaq\t(%rip), %rdi            # 0x14 <div+0x14>\n      14: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x1a <div+0x1a>\n      1a: 0f 0b                        \tud2\n      1c: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x22 <div+0x22>\n\nDisassembly of section .text.idx:\n\n0000000000000000 <idx>:\n       0: 50                           \tpushq\t%rax\n       1: 48 39 f2                     \tcmpq\t%rsi, %rdx\n       4: 73 05                        \tjae\t0xb <idx+0xb>\n       6: 8b 04 97                     \tmovl\t(%rdi,%rdx,4), %eax\n       9: 59                           \tpopq\t%rcx\n       a: c3                           \tretq\n       b: 48 8d 05 00 00 00 00         \tleaq\t(%rip), %rax            # 0x12 <idx+0x12>\n      12: 48 89 d7                     \tmovq\t%rdx, %rdi\n      15: 48 89 c2                     \tmovq\t%rax, %rdx\n      18: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x1e <idx+0x1e>\n      1e: 0f 0b                        \tud2\n      20: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x26 <idx+0x26>"
+        },
+        "build_std_core_lib_panic_abort": {
+          "mode": "abort",
+          "crate_type": "lib",
+          "target": "x86_64-unknown-linux-gnu",
+          "profile_flag": "--release",
+          "rustflags": "-Cpanic=abort",
+          "command": "cargo rustc --offline -Zbuild-std=core --target x86_64-unknown-linux-gnu --release -- --emit=llvm-ir,obj",
+          "compile_returncode": 0,
+          "compile_stdout": "",
+          "compile_stderr": "Compiling compiler_builtins v0.1.160 (<sysroot>/lib/rustlib/src/rust/library/compiler-builtins/compiler-builtins)\n   Compiling core v0.0.0 (<sysroot>/lib/rustlib/src/rust/library/core)\n   Compiling panic_probe v0.1.0 (<tmp>/cargo_proj)\n    Finished `release` profile [optimized] target(s) in 1m 18s",
+          "functions": {
+            "div": [
+              "define noundef i32 @div(i32 noundef %a, i32 noundef %b) unnamed_addr #0 {",
+              "start:",
+              "  %_3 = icmp eq i32 %b, 0",
+              "  br i1 %_3, label %panic, label %bb1",
+              "",
+              "bb1:                                              ; preds = %start",
+              "  %_0 = udiv i32 %a, %b",
+              "  ret i32 %_0",
+              "",
+              "panic:                                            ; preds = %start",
+              "; call core::panicking::panic_const::panic_const_div_by_zero",
+              "  tail call void @_RNvNtNtCsekGeX7dq5mb_4core9panicking11panic_const23panic_const_div_by_zero(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_7ce256a47cfc7ce5f76261d223095138) #3",
+              "  unreachable",
+              "}"
+            ],
+            "idx": [
+              "define noundef i32 @idx(ptr noundef readonly captures(none) %s, i64 noundef %len, i64 noundef %i) unnamed_addr #0 {",
+              "start:",
+              "  %_4 = icmp ult i64 %i, %len",
+              "  br i1 %_4, label %bb1, label %panic",
+              "",
+              "bb1:                                              ; preds = %start",
+              "  %0 = getelementptr inbounds nuw i32, ptr %s, i64 %i",
+              "  %_0 = load i32, ptr %0, align 4, !noundef !4",
+              "  ret i32 %_0",
+              "",
+              "panic:                                            ; preds = %start",
+              "; call core::panicking::panic_bounds_check",
+              "  tail call void @_RNvNtCsekGeX7dq5mb_4core9panicking18panic_bounds_check(i64 noundef %i, i64 noundef %len, ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_56f7f48061131e2c67042fb3fbc3ac7c) #3",
+              "  unreachable",
+              "}"
+            ]
+          },
+          "resolved_attributes": {
+            "div": "attributes #0 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "idx": "attributes #0 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+          },
+          "llvm_decls": [
+            "declare void @_RNvNtNtCsekGeX7dq5mb_4core9panicking11panic_const23panic_const_div_by_zero(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24)) unnamed_addr #1",
+            "declare void @_RNvNtCsekGeX7dq5mb_4core9panicking18panic_bounds_check(i64 noundef, i64 noundef, ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24)) unnamed_addr #2"
+          ],
+          "metrics_by_fn": {
+            "div": {
+              "has_personality": false,
+              "instruction_line_count": 8,
+              "call_count": 2,
+              "invoke_count": 0,
+              "landingpad_count": 0,
+              "llvm_trap_count": 0
+            },
+            "idx": {
+              "has_personality": false,
+              "instruction_line_count": 9,
+              "call_count": 2,
+              "invoke_count": 0,
+              "landingpad_count": 0,
+              "llvm_trap_count": 0
+            }
+          },
+          "undefined_symbols_llvm_nm": [
+            "U _RNvNtCsekGeX7dq5mb_4core9panicking18panic_bounds_check",
+            "U _RNvNtNtCsekGeX7dq5mb_4core9panicking11panic_const23panic_const_div_by_zero"
+          ],
+          "section_sizes": {
+            "text_bytes": 129,
+            "data_bytes": 48,
+            "bss_bytes": 0,
+            "dec_total_bytes": 177
+          },
+          "objdump_disassembly": "<tmp>/cargo_target/x86_64-unknown-linux-gnu/release/deps/panic_probe-7cf6fc8cee0c3d56.o:\tfile format elf64-x86-64\n\nDisassembly of section .text.div:\n\n0000000000000000 <div>:\n       0: 85 f6                        \ttestl\t%esi, %esi\n       2: 74 07                        \tje\t0xb <div+0xb>\n       4: 89 f8                        \tmovl\t%edi, %eax\n       6: 31 d2                        \txorl\t%edx, %edx\n       8: f7 f6                        \tdivl\t%esi\n       a: c3                           \tretq\n       b: 50                           \tpushq\t%rax\n       c: 48 8d 3d 00 00 00 00         \tleaq\t(%rip), %rdi            # 0x13 <div+0x13>\n      13: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x19 <div+0x19>\n\nDisassembly of section .text.idx:\n\n0000000000000000 <idx>:\n       0: 48 39 f2                     \tcmpq\t%rsi, %rdx\n       3: 73 04                        \tjae\t0x9 <idx+0x9>\n       5: 8b 04 97                     \tmovl\t(%rdi,%rdx,4), %eax\n       8: c3                           \tretq\n       9: 50                           \tpushq\t%rax\n       a: 48 8d 05 00 00 00 00         \tleaq\t(%rip), %rax            # 0x11 <idx+0x11>\n      11: 48 89 d7                     \tmovq\t%rdx, %rdi\n      14: 48 89 c2                     \tmovq\t%rax, %rdx\n      17: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x1d <idx+0x1d>"
+        },
+        "build_std_core_lib_panic_immediate_abort": {
+          "mode": "immediate-abort",
+          "crate_type": "lib",
+          "target": "x86_64-unknown-linux-gnu",
+          "profile_flag": "--release",
+          "rustflags": "-Zunstable-options -Cpanic=immediate-abort",
+          "command": "cargo rustc --offline -Zbuild-std=core --target x86_64-unknown-linux-gnu --release -- --emit=llvm-ir,obj",
+          "compile_returncode": 0,
+          "compile_stdout": "",
+          "compile_stderr": "Compiling compiler_builtins v0.1.160 (<sysroot>/lib/rustlib/src/rust/library/compiler-builtins/compiler-builtins)\n   Compiling core v0.0.0 (<sysroot>/lib/rustlib/src/rust/library/core)\n   Compiling panic_probe v0.1.0 (<tmp>/cargo_proj)\n    Finished `release` profile [optimized] target(s) in 1m 03s",
+          "functions": {
+            "div": [
+              "define noundef i32 @div(i32 noundef %a, i32 noundef %b) unnamed_addr #0 {",
+              "start:",
+              "  %_3 = icmp eq i32 %b, 0",
+              "  br i1 %_3, label %panic, label %bb1",
+              "",
+              "bb1:                                              ; preds = %start",
+              "  %_0 = udiv i32 %a, %b",
+              "  ret i32 %_0",
+              "",
+              "panic:                                            ; preds = %start",
+              "  tail call void @llvm.trap()",
+              "  unreachable",
+              "}"
+            ],
+            "idx": [
+              "define noundef i32 @idx(ptr noundef readonly captures(none) %s, i64 noundef %len, i64 noundef %i) unnamed_addr #1 {",
+              "start:",
+              "  %_4 = icmp ult i64 %i, %len",
+              "  br i1 %_4, label %bb1, label %panic",
+              "",
+              "bb1:                                              ; preds = %start",
+              "  %0 = getelementptr inbounds nuw i32, ptr %s, i64 %i",
+              "  %_0 = load i32, ptr %0, align 4, !noundef !4",
+              "  ret i32 %_0",
+              "",
+              "panic:                                            ; preds = %start",
+              "  tail call void @llvm.trap()",
+              "  unreachable",
+              "}"
+            ]
+          },
+          "resolved_attributes": {
+            "div": "attributes #0 = { nounwind nonlazybind memory(inaccessiblemem: write) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "idx": "attributes #1 = { nounwind nonlazybind memory(argmem: read, inaccessiblemem: write) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+          },
+          "llvm_decls": [
+            "declare void @llvm.trap() #2"
+          ],
+          "metrics_by_fn": {
+            "div": {
+              "has_personality": false,
+              "instruction_line_count": 8,
+              "call_count": 1,
+              "invoke_count": 0,
+              "landingpad_count": 0,
+              "llvm_trap_count": 1
+            },
+            "idx": {
+              "has_personality": false,
+              "instruction_line_count": 9,
+              "call_count": 1,
+              "invoke_count": 0,
+              "landingpad_count": 0,
+              "llvm_trap_count": 1
+            }
+          },
+          "undefined_symbols_llvm_nm": [],
+          "section_sizes": {
+            "text_bytes": 88,
+            "data_bytes": 0,
+            "bss_bytes": 0,
+            "dec_total_bytes": 88
+          },
+          "objdump_disassembly": "<tmp>/cargo_target/x86_64-unknown-linux-gnu/release/deps/panic_probe-1d32a22d6c9944f4.o:\tfile format elf64-x86-64\n\nDisassembly of section .text.div:\n\n0000000000000000 <div>:\n       0: 85 f6                        \ttestl\t%esi, %esi\n       2: 74 07                        \tje\t0xb <div+0xb>\n       4: 89 f8                        \tmovl\t%edi, %eax\n       6: 31 d2                        \txorl\t%edx, %edx\n       8: f7 f6                        \tdivl\t%esi\n       a: c3                           \tretq\n       b: 0f 0b                        \tud2\n\nDisassembly of section .text.idx:\n\n0000000000000000 <idx>:\n       0: 48 39 f2                     \tcmpq\t%rsi, %rdx\n       3: 73 04                        \tjae\t0x9 <idx+0x9>\n       5: 8b 04 97                     \tmovl\t(%rdi,%rdx,4), %eax\n       8: c3                           \tretq\n       9: 0f 0b                        \tud2"
+        },
+        "build_std_core_cdylib_immediate_abort_no_panic_handler_ok": {
+          "mode": "immediate-abort-cdylib-no-handler",
+          "crate_type": "cdylib",
+          "target": "x86_64-unknown-linux-gnu",
+          "profile_flag": "--release",
+          "rustflags": "-Zunstable-options -Cpanic=immediate-abort",
+          "command": "cargo rustc --offline -Zbuild-std=core --target x86_64-unknown-linux-gnu --release -- --emit=llvm-ir,obj",
+          "compile_returncode": 0,
+          "compile_stdout": "",
+          "compile_stderr": "Compiling panic_probe v0.1.0 (<tmp>/cargo_proj)\n    Finished `release` profile [optimized] target(s) in 0.86s",
+          "functions": {
+            "div": [
+              "define noundef i32 @div(i32 noundef %a, i32 noundef %b) unnamed_addr #0 {",
+              "start:",
+              "  %_3 = icmp eq i32 %b, 0",
+              "  br i1 %_3, label %panic, label %bb1",
+              "",
+              "bb1:                                              ; preds = %start",
+              "  %_0 = udiv i32 %a, %b",
+              "  ret i32 %_0",
+              "",
+              "panic:                                            ; preds = %start",
+              "  tail call void @llvm.trap()",
+              "  unreachable",
+              "}"
+            ],
+            "idx": [
+              "define noundef i32 @idx(ptr noundef readonly captures(none) %s, i64 noundef %len, i64 noundef %i) unnamed_addr #1 {",
+              "start:",
+              "  %_4 = icmp ult i64 %i, %len",
+              "  br i1 %_4, label %bb1, label %panic",
+              "",
+              "bb1:                                              ; preds = %start",
+              "  %0 = getelementptr inbounds nuw i32, ptr %s, i64 %i",
+              "  %_0 = load i32, ptr %0, align 4, !noundef !4",
+              "  ret i32 %_0",
+              "",
+              "panic:                                            ; preds = %start",
+              "  tail call void @llvm.trap()",
+              "  unreachable",
+              "}"
+            ]
+          },
+          "resolved_attributes": {
+            "div": "attributes #0 = { nounwind nonlazybind memory(inaccessiblemem: write) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "idx": "attributes #1 = { nounwind nonlazybind memory(argmem: read, inaccessiblemem: write) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+          },
+          "llvm_decls": [
+            "declare void @llvm.trap() #2"
+          ],
+          "metrics_by_fn": {
+            "div": {
+              "has_personality": false,
+              "instruction_line_count": 8,
+              "call_count": 1,
+              "invoke_count": 0,
+              "landingpad_count": 0,
+              "llvm_trap_count": 1
+            },
+            "idx": {
+              "has_personality": false,
+              "instruction_line_count": 9,
+              "call_count": 1,
+              "invoke_count": 0,
+              "landingpad_count": 0,
+              "llvm_trap_count": 1
+            }
+          },
+          "undefined_symbols_llvm_nm": [],
+          "section_sizes": {
+            "text_bytes": 88,
+            "data_bytes": 0,
+            "bss_bytes": 0,
+            "dec_total_bytes": 88
+          },
+          "objdump_disassembly": "<tmp>/cargo_target/x86_64-unknown-linux-gnu/release/deps/panic_probe.o:\tfile format elf64-x86-64\n\nDisassembly of section .text.div:\n\n0000000000000000 <div>:\n       0: 85 f6                        \ttestl\t%esi, %esi\n       2: 74 07                        \tje\t0xb <div+0xb>\n       4: 89 f8                        \tmovl\t%edi, %eax\n       6: 31 d2                        \txorl\t%edx, %edx\n       8: f7 f6                        \tdivl\t%esi\n       a: c3                           \tretq\n       b: 0f 0b                        \tud2\n\nDisassembly of section .text.idx:\n\n0000000000000000 <idx>:\n       0: 48 39 f2                     \tcmpq\t%rsi, %rdx\n       3: 73 04                        \tjae\t0x9 <idx+0x9>\n       5: 8b 04 97                     \tmovl\t(%rdi,%rdx,4), %eax\n       8: c3                           \tretq\n       9: 0f 0b                        \tud2",
+          "cdylib_undefined_symbols_llvm_nm": [
+            "w _ITM_deregisterTMCloneTable",
+            "w _ITM_registerTMCloneTable",
+            "w __cxa_finalize",
+            "w __gmon_start__"
+          ],
+          "cdylib_llvm_size_raw": "text\t   data\t    bss\t    dec\t    hex\tfilename\n    904\t    440\t   2113\t   3457\t    d81\t/tmp/tmp_oueztwt/cargo_target/x86_64-unknown-linux-gnu/release/libpanic_probe.so"
+        },
+        "build_std_core_lib_immediate_abort_opt0": {
+          "mode": "immediate-abort-opt0",
+          "crate_type": "lib",
+          "target": "x86_64-unknown-linux-gnu",
+          "profile_flag": "--profile=dev",
+          "rustflags": "-Zunstable-options -Cpanic=immediate-abort",
+          "command": "cargo rustc --offline -Zbuild-std=core --target x86_64-unknown-linux-gnu --profile=dev -- --emit=llvm-ir,obj",
+          "compile_returncode": 0,
+          "compile_stdout": "",
+          "compile_stderr": "Compiling compiler_builtins v0.1.160 (<sysroot>/lib/rustlib/src/rust/library/compiler-builtins/compiler-builtins)\n   Compiling core v0.0.0 (<sysroot>/lib/rustlib/src/rust/library/core)\n   Compiling panic_probe v0.1.0 (<tmp>/cargo_proj)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 09s",
+          "functions": {
+            "div": [
+              "define i32 @div(i32 %a, i32 %b) unnamed_addr #2 !dbg !385 {",
+              "start:",
+              "  %b.dbg.spill = alloca [4 x i8], align 4",
+              "  %a.dbg.spill = alloca [4 x i8], align 4",
+              "  store i32 %a, ptr %a.dbg.spill, align 4",
+              "    #dbg_declare(ptr %a.dbg.spill, !391, !DIExpression(), !393)",
+              "  store i32 %b, ptr %b.dbg.spill, align 4",
+              "    #dbg_declare(ptr %b.dbg.spill, !392, !DIExpression(), !394)",
+              "  %_3 = icmp eq i32 %b, 0, !dbg !395",
+              "  br i1 %_3, label %panic, label %bb1, !dbg !395",
+              "",
+              "bb1:                                              ; preds = %start",
+              "  %_0 = udiv i32 %a, %b, !dbg !395",
+              "  ret i32 %_0, !dbg !396",
+              "",
+              "panic:                                            ; preds = %start",
+              "; call core::panicking::panic_const::panic_const_div_by_zero",
+              "  call void @_RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const23panic_const_div_by_zeroCs29T8eJ0DlD9_11panic_probe(ptr align 8 @alloc_7ce256a47cfc7ce5f76261d223095138) #5, !dbg !395",
+              "  unreachable, !dbg !395",
+              "}"
+            ],
+            "idx": [
+              "define i32 @idx(ptr %s, i64 %len, i64 %i) unnamed_addr #2 !dbg !397 {",
+              "start:",
+              "  %slice.dbg.spill = alloca [16 x i8], align 8",
+              "  %i.dbg.spill = alloca [8 x i8], align 8",
+              "  %len.dbg.spill = alloca [8 x i8], align 8",
+              "  %s.dbg.spill = alloca [8 x i8], align 8",
+              "  store ptr %s, ptr %s.dbg.spill, align 8",
+              "    #dbg_declare(ptr %s.dbg.spill, !401, !DIExpression(), !406)",
+              "  store i64 %len, ptr %len.dbg.spill, align 8",
+              "    #dbg_declare(ptr %len.dbg.spill, !402, !DIExpression(), !407)",
+              "  store i64 %i, ptr %i.dbg.spill, align 8",
+              "    #dbg_declare(ptr %i.dbg.spill, !403, !DIExpression(), !408)",
+              "; call core::slice::raw::from_raw_parts::<u32>",
+              "  %0 = call { ptr, i64 } @_RINvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_partsmECs29T8eJ0DlD9_11panic_probe(ptr %s, i64 %len, ptr align 8 @alloc_76b429f05fd9ea620f824ca6a434dd13) #4, !dbg !409",
+              "  %slice.0 = extractvalue { ptr, i64 } %0, 0, !dbg !409",
+              "  %slice.1 = extractvalue { ptr, i64 } %0, 1, !dbg !409",
+              "  store ptr %slice.0, ptr %slice.dbg.spill, align 8, !dbg !409",
+              "  %1 = getelementptr inbounds i8, ptr %slice.dbg.spill, i64 8, !dbg !409",
+              "  store i64 %slice.1, ptr %1, align 8, !dbg !409",
+              "    #dbg_declare(ptr %slice.dbg.spill, !404, !DIExpression(), !410)",
+              "  %_6 = icmp ult i64 %i, %slice.1, !dbg !411",
+              "  br i1 %_6, label %bb2, label %panic, !dbg !411",
+              "",
+              "bb2:                                              ; preds = %start",
+              "  %2 = getelementptr inbounds nuw i32, ptr %slice.0, i64 %i, !dbg !411",
+              "  %_0 = load i32, ptr %2, align 4, !dbg !411",
+              "  ret i32 %_0, !dbg !412",
+              "",
+              "panic:                                            ; preds = %start",
+              "; call core::panicking::panic_bounds_check",
+              "  call void @_RNvNtCs5r1t1CfyC2T_4core9panicking18panic_bounds_checkCs29T8eJ0DlD9_11panic_probe(i64 %i, i64 %slice.1, ptr align 8 @alloc_56f7f48061131e2c67042fb3fbc3ac7c) #5, !dbg !411",
+              "  unreachable, !dbg !411",
+              "}"
+            ]
+          },
+          "resolved_attributes": {
+            "div": "attributes #2 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "idx": "attributes #2 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+          },
+          "llvm_decls": [
+            "declare void @llvm.trap() #3"
+          ],
+          "metrics_by_fn": {
+            "div": {
+              "has_personality": false,
+              "instruction_line_count": 14,
+              "call_count": 2,
+              "invoke_count": 0,
+              "landingpad_count": 0,
+              "llvm_trap_count": 0
+            },
+            "idx": {
+              "has_personality": false,
+              "instruction_line_count": 26,
+              "call_count": 4,
+              "invoke_count": 0,
+              "landingpad_count": 0,
+              "llvm_trap_count": 0
+            }
+          },
+          "undefined_symbols_llvm_nm": [
+            "U _RNvMNtNtCs5r1t1CfyC2T_4core3ptr9const_ptrPu13is_aligned_toB6_",
+            "U _RNvMNtNtCs5r1t1CfyC2T_4core3ptr9const_ptrPu7is_nullB6_"
+          ],
+          "section_sizes": {
+            "text_bytes": 1981,
+            "data_bytes": 96,
+            "bss_bytes": 0,
+            "dec_total_bytes": 2077
+          },
+          "objdump_disassembly": "<tmp>/cargo_target/x86_64-unknown-linux-gnu/debug/deps/panic_probe-3aabcd027f0f698c.o:\tfile format elf64-x86-64\n\nDisassembly of section .text._RINvNtCs5r1t1CfyC2T_4core3ptr20slice_from_raw_partsmECs29T8eJ0DlD9_11panic_probe:\n\n0000000000000000 <_RINvNtCs5r1t1CfyC2T_4core3ptr20slice_from_raw_partsmECs29T8eJ0DlD9_11panic_probe>:\n       0: 48 83 ec 18                  \tsubq\t$0x18, %rsp\n       4: 48 89 7c 24 08               \tmovq\t%rdi, 0x8(%rsp)\n       9: 48 89 74 24 10               \tmovq\t%rsi, 0x10(%rsp)\n       e: 48 8b 05 00 00 00 00         \tmovq\t(%rip), %rax            # 0x15 <_RINvNtCs5r1t1CfyC2T_4core3ptr20slice_from_raw_partsmECs29T8eJ0DlD9_11panic_probe+0x15>\n      15: ff d0                        \tcallq\t*%rax\n      17: 48 83 c4 18                  \taddq\t$0x18, %rsp\n      1b: c3                           \tretq\n\nDisassembly of section .text._RINvNtNtCs5r1t1CfyC2T_4core3ptr8metadata14from_raw_partsSmmECs29T8eJ0DlD9_11panic_probe:\n\n0000000000000000 <_RINvNtNtCs5r1t1CfyC2T_4core3ptr8metadata14from_raw_partsSmmECs29T8eJ0DlD9_11panic_probe>:\n       0: 48 89 f2                     \tmovq\t%rsi, %rdx\n       3: 48 89 f8                     \tmovq\t%rdi, %rax\n       6: 48 89 44 24 f0               \tmovq\t%rax, -0x10(%rsp)\n       b: 48 89 54 24 f8               \tmovq\t%rdx, -0x8(%rsp)\n      10: c3                           \tretq\n\nDisassembly of section .text._RINvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_partsmECs29T8eJ0DlD9_11panic_probe:\n\n0000000000000000 <_RINvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_partsmECs29T8eJ0DlD9_11panic_probe>:\n       0: 48 83 ec 28                  \tsubq\t$0x28, %rsp\n       4: 48 89 3c 24                  \tmovq\t%rdi, (%rsp)\n       8: 48 89 74 24 08               \tmovq\t%rsi, 0x8(%rsp)\n       d: 48 89 54 24 10               \tmovq\t%rdx, 0x10(%rsp)\n      12: 48 89 7c 24 18               \tmovq\t%rdi, 0x18(%rsp)\n      17: 48 89 74 24 20               \tmovq\t%rsi, 0x20(%rsp)\n      1c: e8 00 00 00 00               \tcallq\t0x21 <_RINvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_partsmECs29T8eJ0DlD9_11panic_probe+0x21>\n      21: a8 01                        \ttestb\t$0x1, %al\n      23: 75 17                        \tjne\t0x3c <_RINvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_partsmECs29T8eJ0DlD9_11panic_probe+0x3c>\n      25: 48 8b 74 24 08               \tmovq\t0x8(%rsp), %rsi\n      2a: 48 8b 3c 24                  \tmovq\t(%rsp), %rdi\n      2e: 48 8b 05 00 00 00 00         \tmovq\t(%rip), %rax            # 0x35 <_RINvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_partsmECs29T8eJ0DlD9_11panic_probe+0x35>\n      35: ff d0                        \tcallq\t*%rax\n      37: 48 83 c4 28                  \taddq\t$0x28, %rsp\n      3b: c3                           \tretq\n      3c: 4c 8b 44 24 10               \tmovq\t0x10(%rsp), %r8\n      41: 48 8b 4c 24 08               \tmovq\t0x8(%rsp), %rcx\n      46: 48 8b 3c 24                  \tmovq\t(%rsp), %rdi\n      4a: ba 04 00 00 00               \tmovl\t$0x4, %edx\n      4f: 48 89 d6                     \tmovq\t%rdx, %rsi\n      52: e8 00 00 00 00               \tcallq\t0x57 <_RINvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_partsmECs29T8eJ0DlD9_11panic_probe+0x57>\n      57: eb cc                        \tjmp\t0x25 <_RINvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_partsmECs29T8eJ0DlD9_11panic_probe+0x25>\n\nDisassembly of section .text._RNvMNtCs5r1t1CfyC2T_4core3stre3lenCs29T8eJ0DlD9_11panic_probe:\n\n0000000000000000 <_RNvMNtCs5r1t1CfyC2T_4core3stre3lenCs29T8eJ0DlD9_11panic_probe>:\n       0: 48 89 f0                     \tmovq\t%rsi, %rax\n       3: 48 89 7c 24 e0               \tmovq\t%rdi, -0x20(%rsp)\n       8: 48 89 44 24 e8               \tmovq\t%rax, -0x18(%rsp)\n       d: 48 89 7c 24 f0               \tmovq\t%rdi, -0x10(%rsp)\n      12: 48 89 44 24 f8               \tmovq\t%rax, -0x8(%rsp)\n      17: c3                           \tretq\n\nDisassembly of section .text._RNvMs4_NtCs5r1t1CfyC2T_4core3fmtNtB5_9Arguments8from_strCs29T8eJ0DlD9_11panic_probe:\n\n0000000000000000 <_RNvMs4_NtCs5r1t1CfyC2T_4core3fmtNtB5_9Arguments8from_strCs29T8eJ0DlD9_11panic_probe>:\n       0: 48 83 ec 28                  \tsubq\t$0x28, %rsp\n       4: 48 89 3c 24                  \tmovq\t%rdi, (%rsp)\n       8: 48 89 7c 24 08               \tmovq\t%rdi, 0x8(%rsp)\n       d: 48 89 74 24 10               \tmovq\t%rsi, 0x10(%rsp)\n      12: 48 89 7c 24 18               \tmovq\t%rdi, 0x18(%rsp)\n      17: 48 89 74 24 20               \tmovq\t%rsi, 0x20(%rsp)\n      1c: e8 00 00 00 00               \tcallq\t0x21 <_RNvMs4_NtCs5r1t1CfyC2T_4core3fmtNtB5_9Arguments8from_strCs29T8eJ0DlD9_11panic_probe+0x21>\n      21: 48 89 c1                     \tmovq\t%rax, %rcx\n      24: 48 8b 04 24                  \tmovq\t(%rsp), %rax\n      28: 48 8d 54 09 01               \tleaq\t0x1(%rcx,%rcx), %rdx\n      2d: 48 83 c4 28                  \taddq\t$0x28, %rsp\n      31: c3                           \tretq\n\nDisassembly of section .text._RNvNtCs5r1t1CfyC2T_4core9panicking18panic_bounds_checkCs29T8eJ0DlD9_11panic_probe:\n\n0000000000000000 <_RNvNtCs5r1t1CfyC2T_4core9panicking18panic_bounds_checkCs29T8eJ0DlD9_11panic_probe>:\n       0: 48 89 7c 24 f0               \tmovq\t%rdi, -0x10(%rsp)\n       5: 48 89 74 24 f8               \tmovq\t%rsi, -0x8(%rsp)\n       a: 0f 0b                        \tud2\n\nDisassembly of section .text._RNvNtCs5r1t1CfyC2T_4core9panicking18panic_nounwind_fmtCs29T8eJ0DlD9_11panic_probe:\n\n0000000000000000 <_RNvNtCs5r1t1CfyC2T_4core9panicking18panic_nounwind_fmtCs29T8eJ0DlD9_11panic_probe>:\n       0: 48 83 ec 38                  \tsubq\t$0x38, %rsp\n       4: 88 d0                        \tmovb\t%dl, %al\n       6: 48 89 7c 24 20               \tmovq\t%rdi, 0x20(%rsp)\n       b: 48 89 74 24 28               \tmovq\t%rsi, 0x28(%rsp)\n      10: 88 c2                        \tmovb\t%al, %dl\n      12: 80 e2 01                     \tandb\t$0x1, %dl\n      15: 88 54 24 37                  \tmovb\t%dl, 0x37(%rsp)\n      19: 48 89 7c 24 08               \tmovq\t%rdi, 0x8(%rsp)\n      1e: 48 89 74 24 10               \tmovq\t%rsi, 0x10(%rsp)\n      23: 24 01                        \tandb\t$0x1, %al\n      25: 88 44 24 18                  \tmovb\t%al, 0x18(%rsp)\n      29: 48 8b 7c 24 08               \tmovq\t0x8(%rsp), %rdi\n      2e: 48 8b 74 24 10               \tmovq\t0x10(%rsp), %rsi\n      33: 8a 44 24 18                  \tmovb\t0x18(%rsp), %al\n      37: 24 01                        \tandb\t$0x1, %al\n      39: 0f b6 d0                     \tmovzbl\t%al, %edx\n      3c: e8 00 00 00 00               \tcallq\t0x41 <_RNvNtCs5r1t1CfyC2T_4core9panicking18panic_nounwind_fmtCs29T8eJ0DlD9_11panic_probe+0x41>\n\nDisassembly of section .text._RNvNtCs5r1t1CfyC2T_4core9panicking9panic_fmtCs29T8eJ0DlD9_11panic_probe:\n\n0000000000000000 <_RNvNtCs5r1t1CfyC2T_4core9panicking9panic_fmtCs29T8eJ0DlD9_11panic_probe>:\n       0: 48 89 7c 24 f0               \tmovq\t%rdi, -0x10(%rsp)\n       5: 48 89 74 24 f8               \tmovq\t%rsi, -0x8(%rsp)\n       a: 0f 0b                        \tud2\n\nDisassembly of section .text._RNvNtCs5r1t1CfyC2T_4core9ub_checks16maybe_is_alignedCs29T8eJ0DlD9_11panic_probe:\n\n0000000000000000 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks16maybe_is_alignedCs29T8eJ0DlD9_11panic_probe>:\n       0: 48 83 ec 18                  \tsubq\t$0x18, %rsp\n       4: 48 89 7c 24 08               \tmovq\t%rdi, 0x8(%rsp)\n       9: 48 89 74 24 10               \tmovq\t%rsi, 0x10(%rsp)\n       e: e8 00 00 00 00               \tcallq\t0x13 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks16maybe_is_alignedCs29T8eJ0DlD9_11panic_probe+0x13>\n      13: 24 01                        \tandb\t$0x1, %al\n      15: 48 83 c4 18                  \taddq\t$0x18, %rsp\n      19: c3                           \tretq\n\nDisassembly of section .text._RNvNtCs5r1t1CfyC2T_4core9ub_checks17check_language_ubCs29T8eJ0DlD9_11panic_probe:\n\n0000000000000000 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks17check_language_ubCs29T8eJ0DlD9_11panic_probe>:\n       0: 50                           \tpushq\t%rax\n       1: e8 00 00 00 00               \tcallq\t0x6 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks17check_language_ubCs29T8eJ0DlD9_11panic_probe+0x6>\n       6: a8 01                        \ttestb\t$0x1, %al\n       8: 75 07                        \tjne\t0x11 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks17check_language_ubCs29T8eJ0DlD9_11panic_probe+0x11>\n       a: c6 44 24 07 00               \tmovb\t$0x0, 0x7(%rsp)\n       f: eb 05                        \tjmp\t0x16 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks17check_language_ubCs29T8eJ0DlD9_11panic_probe+0x16>\n      11: c6 44 24 07 01               \tmovb\t$0x1, 0x7(%rsp)\n      16: 8a 44 24 07                  \tmovb\t0x7(%rsp), %al\n      1a: 24 01                        \tandb\t$0x1, %al\n      1c: 59                           \tpopq\t%rcx\n      1d: c3                           \tretq\n\nDisassembly of section .text._RNvNtCs5r1t1CfyC2T_4core9ub_checks24is_valid_allocation_sizeCs29T8eJ0DlD9_11panic_probe:\n\n0000000000000000 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks24is_valid_allocation_sizeCs29T8eJ0DlD9_11panic_probe>:\n       0: 48 83 ec 28                  \tsubq\t$0x28, %rsp\n       4: 48 89 3c 24                  \tmovq\t%rdi, (%rsp)\n       8: 48 89 74 24 08               \tmovq\t%rsi, 0x8(%rsp)\n       d: 48 89 7c 24 18               \tmovq\t%rdi, 0x18(%rsp)\n      12: 48 89 74 24 20               \tmovq\t%rsi, 0x20(%rsp)\n      17: 48 83 ff 00                  \tcmpq\t$0x0, %rdi\n      1b: 74 0c                        \tje\t0x29 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks24is_valid_allocation_sizeCs29T8eJ0DlD9_11panic_probe+0x29>\n      1d: 48 8b 04 24                  \tmovq\t(%rsp), %rax\n      21: 48 83 f8 00                  \tcmpq\t$0x0, %rax\n      25: 74 27                        \tje\t0x4e <_RNvNtCs5r1t1CfyC2T_4core9ub_checks24is_valid_allocation_sizeCs29T8eJ0DlD9_11panic_probe+0x4e>\n      27: eb 0b                        \tjmp\t0x34 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks24is_valid_allocation_sizeCs29T8eJ0DlD9_11panic_probe+0x34>\n      29: 48 c7 44 24 10 ff ff ff ff   \tmovq\t$-0x1, 0x10(%rsp)\n      32: eb 26                        \tjmp\t0x5a <_RNvNtCs5r1t1CfyC2T_4core9ub_checks24is_valid_allocation_sizeCs29T8eJ0DlD9_11panic_probe+0x5a>\n      34: 48 8b 0c 24                  \tmovq\t(%rsp), %rcx\n      38: 48 b8 ff ff ff ff ff ff ff 7f\tmovabsq\t$0x7fffffffffffffff, %rax # imm = 0x7FFFFFFFFFFFFFFF\n      42: 31 d2                        \txorl\t%edx, %edx\n      44: 48 f7 f1                     \tdivq\t%rcx\n      47: 48 89 44 24 10               \tmovq\t%rax, 0x10(%rsp)\n      4c: eb 0c                        \tjmp\t0x5a <_RNvNtCs5r1t1CfyC2T_4core9ub_checks24is_valid_allocation_sizeCs29T8eJ0DlD9_11panic_probe+0x5a>\n      4e: 48 8d 3d 00 00 00 00         \tleaq\t(%rip), %rdi            # 0x55 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks24is_valid_allocation_sizeCs29T8eJ0DlD9_11panic_probe+0x55>\n      55: e8 00 00 00 00               \tcallq\t0x5a <_RNvNtCs5r1t1CfyC2T_4core9ub_checks24is_valid_allocation_sizeCs29T8eJ0DlD9_11panic_probe+0x5a>\n      5a: 48 8b 44 24 08               \tmovq\t0x8(%rsp), %rax\n      5f: 48 3b 44 24 10               \tcmpq\t0x10(%rsp), %rax\n      64: 0f 96 c0                     \tsetbe\t%al\n      67: 24 01                        \tandb\t$0x1, %al\n      69: 48 83 c4 28                  \taddq\t$0x28, %rsp\n      6d: c3                           \tretq\n\nDisassembly of section .text._RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCs29T8eJ0DlD9_11panic_probe:\n\n0000000000000000 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCs29T8eJ0DlD9_11panic_probe>:\n       0: 48 83 ec 28                  \tsubq\t$0x28, %rsp\n       4: 48 89 3c 24                  \tmovq\t%rdi, (%rsp)\n       8: 88 d0                        \tmovb\t%dl, %al\n       a: 88 44 24 0e                  \tmovb\t%al, 0xe(%rsp)\n       e: 48 89 7c 24 10               \tmovq\t%rdi, 0x10(%rsp)\n      13: 48 89 74 24 18               \tmovq\t%rsi, 0x18(%rsp)\n      18: 24 01                        \tandb\t$0x1, %al\n      1a: 88 44 24 27                  \tmovb\t%al, 0x27(%rsp)\n      1e: e8 00 00 00 00               \tcallq\t0x23 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCs29T8eJ0DlD9_11panic_probe+0x23>\n      23: a8 01                        \ttestb\t$0x1, %al\n      25: 75 07                        \tjne\t0x2e <_RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCs29T8eJ0DlD9_11panic_probe+0x2e>\n      27: c6 44 24 0f 00               \tmovb\t$0x0, 0xf(%rsp)\n      2c: eb 0a                        \tjmp\t0x38 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCs29T8eJ0DlD9_11panic_probe+0x38>\n      2e: 8a 44 24 0e                  \tmovb\t0xe(%rsp), %al\n      32: a8 01                        \ttestb\t$0x1, %al\n      34: 75 21                        \tjne\t0x57 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCs29T8eJ0DlD9_11panic_probe+0x57>\n      36: eb 0b                        \tjmp\t0x43 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCs29T8eJ0DlD9_11panic_probe+0x43>\n      38: 8a 44 24 0f                  \tmovb\t0xf(%rsp), %al\n      3c: 24 01                        \tandb\t$0x1, %al\n      3e: 48 83 c4 28                  \taddq\t$0x28, %rsp\n      42: c3                           \tretq\n      43: 48 8b 3c 24                  \tmovq\t(%rsp), %rdi\n      47: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x4d <_RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCs29T8eJ0DlD9_11panic_probe+0x4d>\n      4d: 34 ff                        \txorb\t$-0x1, %al\n      4f: 24 01                        \tandb\t$0x1, %al\n      51: 88 44 24 0f                  \tmovb\t%al, 0xf(%rsp)\n      55: eb e1                        \tjmp\t0x38 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCs29T8eJ0DlD9_11panic_probe+0x38>\n      57: c6 44 24 0f 01               \tmovb\t$0x1, 0xf(%rsp)\n      5c: eb da                        \tjmp\t0x38 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCs29T8eJ0DlD9_11panic_probe+0x38>\n\nDisassembly of section .text._RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const23panic_const_div_by_zeroCs29T8eJ0DlD9_11panic_probe:\n\n0000000000000000 <_RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const23panic_const_div_by_zeroCs29T8eJ0DlD9_11panic_probe>:\n       0: 50                           \tpushq\t%rax\n       1: 48 89 3c 24                  \tmovq\t%rdi, (%rsp)\n       5: 48 8d 3d 00 00 00 00         \tleaq\t(%rip), %rdi            # 0xc <_RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const23panic_const_div_by_zeroCs29T8eJ0DlD9_11panic_probe+0xc>\n       c: be 19 00 00 00               \tmovl\t$0x19, %esi\n      11: e8 00 00 00 00               \tcallq\t0x16 <_RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const23panic_const_div_by_zeroCs29T8eJ0DlD9_11panic_probe+0x16>\n      16: 48 89 c7                     \tmovq\t%rax, %rdi\n      19: 48 89 d6                     \tmovq\t%rdx, %rsi\n      1c: 48 8b 14 24                  \tmovq\t(%rsp), %rdx\n      20: e8 00 00 00 00               \tcallq\t0x25 <_RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const23panic_const_div_by_zeroCs29T8eJ0DlD9_11panic_probe+0x25>\n\nDisassembly of section .text._RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const24panic_const_shl_overflowCs29T8eJ0DlD9_11panic_probe:\n\n0000000000000000 <_RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const24panic_const_shl_overflowCs29T8eJ0DlD9_11panic_probe>:\n       0: 50                           \tpushq\t%rax\n       1: 48 89 3c 24                  \tmovq\t%rdi, (%rsp)\n       5: 48 8d 3d 00 00 00 00         \tleaq\t(%rip), %rdi            # 0xc <_RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const24panic_const_shl_overflowCs29T8eJ0DlD9_11panic_probe+0xc>\n       c: be 23 00 00 00               \tmovl\t$0x23, %esi\n      11: e8 00 00 00 00               \tcallq\t0x16 <_RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const24panic_const_shl_overflowCs29T8eJ0DlD9_11panic_probe+0x16>\n      16: 48 89 c7                     \tmovq\t%rax, %rdi\n      19: 48 89 d6                     \tmovq\t%rdx, %rsi\n      1c: 48 8b 14 24                  \tmovq\t(%rsp), %rdx\n      20: e8 00 00 00 00               \tcallq\t0x25 <_RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const24panic_const_shl_overflowCs29T8eJ0DlD9_11panic_probe+0x25>\n\nDisassembly of section .text._RNvNvNtCs5r1t1CfyC2T_4core9panicking18panic_nounwind_fmt7runtimeCs29T8eJ0DlD9_11panic_probe:\n\n0000000000000000 <_RNvNvNtCs5r1t1CfyC2T_4core9panicking18panic_nounwind_fmt7runtimeCs29T8eJ0DlD9_11panic_probe>:\n       0: 88 d0                        \tmovb\t%dl, %al\n       2: 48 89 7c 24 e8               \tmovq\t%rdi, -0x18(%rsp)\n       7: 48 89 74 24 f0               \tmovq\t%rsi, -0x10(%rsp)\n       c: 24 01                        \tandb\t$0x1, %al\n       e: 88 44 24 ff                  \tmovb\t%al, -0x1(%rsp)\n      12: 0f 0b                        \tud2\n\nDisassembly of section .text._RNvNvNtCs5r1t1CfyC2T_4core9ub_checks16maybe_is_aligned7runtimeCs29T8eJ0DlD9_11panic_probe:\n\n0000000000000000 <_RNvNvNtCs5r1t1CfyC2T_4core9ub_checks16maybe_is_aligned7runtimeCs29T8eJ0DlD9_11panic_probe>:\n       0: 48 83 ec 18                  \tsubq\t$0x18, %rsp\n       4: 48 89 7c 24 08               \tmovq\t%rdi, 0x8(%rsp)\n       9: 48 89 74 24 10               \tmovq\t%rsi, 0x10(%rsp)\n       e: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x14 <_RNvNvNtCs5r1t1CfyC2T_4core9ub_checks16maybe_is_aligned7runtimeCs29T8eJ0DlD9_11panic_probe+0x14>\n      14: 24 01                        \tandb\t$0x1, %al\n      16: 48 83 c4 18                  \taddq\t$0x18, %rsp\n      1a: c3                           \tretq\n\nDisassembly of section .text._RNvNvNtCs5r1t1CfyC2T_4core9ub_checks17check_language_ub7runtimeCs29T8eJ0DlD9_11panic_probe:\n\n0000000000000000 <_RNvNvNtCs5r1t1CfyC2T_4core9ub_checks17check_language_ub7runtimeCs29T8eJ0DlD9_11panic_probe>:\n       0: b0 01                        \tmovb\t$0x1, %al\n       2: 24 01                        \tandb\t$0x1, %al\n       4: c3                           \tretq\n\nDisassembly of section .text._RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCs29T8eJ0DlD9_11panic_probe:\n\n0000000000000000 <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCs29T8eJ0DlD9_11panic_probe>:\n       0: 48 83 ec 58                  \tsubq\t$0x58, %rsp\n       4: 48 89 54 24 08               \tmovq\t%rdx, 0x8(%rsp)\n       9: 48 89 f0                     \tmovq\t%rsi, %rax\n       c: 48 8b 74 24 08               \tmovq\t0x8(%rsp), %rsi\n      11: 48 89 44 24 10               \tmovq\t%rax, 0x10(%rsp)\n      16: 48 89 4c 24 18               \tmovq\t%rcx, 0x18(%rsp)\n      1b: 4c 89 44 24 20               \tmovq\t%r8, 0x20(%rsp)\n      20: 48 89 7c 24 28               \tmovq\t%rdi, 0x28(%rsp)\n      25: 48 89 44 24 30               \tmovq\t%rax, 0x30(%rsp)\n      2a: 48 89 74 24 38               \tmovq\t%rsi, 0x38(%rsp)\n      2f: 48 89 4c 24 40               \tmovq\t%rcx, 0x40(%rsp)\n      34: 48 8d 05 00 00 00 00         \tleaq\t(%rip), %rax            # 0x3b <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCs29T8eJ0DlD9_11panic_probe+0x3b>\n      3b: 48 89 44 24 48               \tmovq\t%rax, 0x48(%rsp)\n      40: 48 c7 44 24 50 17 01 00 00   \tmovq\t$0x117, 0x50(%rsp)      # imm = 0x117\n      49: 31 d2                        \txorl\t%edx, %edx\n      4b: e8 00 00 00 00               \tcallq\t0x50 <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCs29T8eJ0DlD9_11panic_probe+0x50>\n      50: a8 01                        \ttestb\t$0x1, %al\n      52: 75 23                        \tjne\t0x77 <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCs29T8eJ0DlD9_11panic_probe+0x77>\n      54: 48 8d 3d 00 00 00 00         \tleaq\t(%rip), %rdi            # 0x5b <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCs29T8eJ0DlD9_11panic_probe+0x5b>\n      5b: be 17 01 00 00               \tmovl\t$0x117, %esi            # imm = 0x117\n      60: e8 00 00 00 00               \tcallq\t0x65 <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCs29T8eJ0DlD9_11panic_probe+0x65>\n      65: 48 8b 4c 24 20               \tmovq\t0x20(%rsp), %rcx\n      6a: 48 89 c7                     \tmovq\t%rax, %rdi\n      6d: 48 89 d6                     \tmovq\t%rdx, %rsi\n      70: 31 d2                        \txorl\t%edx, %edx\n      72: e8 00 00 00 00               \tcallq\t0x77 <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCs29T8eJ0DlD9_11panic_probe+0x77>\n      77: 48 8b 74 24 18               \tmovq\t0x18(%rsp), %rsi\n      7c: 48 8b 7c 24 10               \tmovq\t0x10(%rsp), %rdi\n      81: e8 00 00 00 00               \tcallq\t0x86 <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCs29T8eJ0DlD9_11panic_probe+0x86>\n      86: a8 01                        \ttestb\t$0x1, %al\n      88: 75 02                        \tjne\t0x8c <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCs29T8eJ0DlD9_11panic_probe+0x8c>\n      8a: eb c8                        \tjmp\t0x54 <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCs29T8eJ0DlD9_11panic_probe+0x54>\n      8c: 48 83 c4 58                  \taddq\t$0x58, %rsp\n      90: c3                           \tretq\n\nDisassembly of section .text.div:\n\n0000000000000000 <div>:\n       0: 48 83 ec 18                  \tsubq\t$0x18, %rsp\n       4: 89 7c 24 08                  \tmovl\t%edi, 0x8(%rsp)\n       8: 89 74 24 0c                  \tmovl\t%esi, 0xc(%rsp)\n       c: 89 7c 24 10                  \tmovl\t%edi, 0x10(%rsp)\n      10: 89 74 24 14                  \tmovl\t%esi, 0x14(%rsp)\n      14: 83 fe 00                     \tcmpl\t$0x0, %esi\n      17: 74 11                        \tje\t0x2a <div+0x2a>\n      19: 8b 4c 24 0c                  \tmovl\t0xc(%rsp), %ecx\n      1d: 8b 44 24 08                  \tmovl\t0x8(%rsp), %eax\n      21: 31 d2                        \txorl\t%edx, %edx\n      23: f7 f1                        \tdivl\t%ecx\n      25: 48 83 c4 18                  \taddq\t$0x18, %rsp\n      29: c3                           \tretq\n      2a: 48 8d 3d 00 00 00 00         \tleaq\t(%rip), %rdi            # 0x31 <div+0x31>\n      31: e8 00 00 00 00               \tcallq\t0x36 <div+0x36>\n\nDisassembly of section .text.idx:\n\n0000000000000000 <idx>:\n       0: 48 83 ec 48                  \tsubq\t$0x48, %rsp\n       4: 48 89 54 24 10               \tmovq\t%rdx, 0x10(%rsp)\n       9: 48 89 7c 24 20               \tmovq\t%rdi, 0x20(%rsp)\n       e: 48 89 74 24 28               \tmovq\t%rsi, 0x28(%rsp)\n      13: 48 89 54 24 30               \tmovq\t%rdx, 0x30(%rsp)\n      18: 48 8d 15 00 00 00 00         \tleaq\t(%rip), %rdx            # 0x1f <idx+0x1f>\n      1f: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x25 <idx+0x25>\n      25: 48 89 c1                     \tmovq\t%rax, %rcx\n      28: 48 89 4c 24 08               \tmovq\t%rcx, 0x8(%rsp)\n      2d: 48 89 d0                     \tmovq\t%rdx, %rax\n      30: 48 8b 54 24 10               \tmovq\t0x10(%rsp), %rdx\n      35: 48 89 44 24 18               \tmovq\t%rax, 0x18(%rsp)\n      3a: 48 89 4c 24 38               \tmovq\t%rcx, 0x38(%rsp)\n      3f: 48 89 44 24 40               \tmovq\t%rax, 0x40(%rsp)\n      44: 48 39 c2                     \tcmpq\t%rax, %rdx\n      47: 73 12                        \tjae\t0x5b <idx+0x5b>\n      49: 48 8b 44 24 08               \tmovq\t0x8(%rsp), %rax\n      4e: 48 8b 4c 24 10               \tmovq\t0x10(%rsp), %rcx\n      53: 8b 04 88                     \tmovl\t(%rax,%rcx,4), %eax\n      56: 48 83 c4 48                  \taddq\t$0x48, %rsp\n      5a: c3                           \tretq\n      5b: 48 8b 74 24 18               \tmovq\t0x18(%rsp), %rsi\n      60: 48 8b 7c 24 10               \tmovq\t0x10(%rsp), %rdi\n      65: 48 8d 15 00 00 00 00         \tleaq\t(%rip), %rdx            # 0x6c <idx+0x6c>\n      6c: e8 00 00 00 00               \tcallq\t0x71 <idx+0x71>"
+        },
+        "build_std_core_cdylib_immediate_abort_opt0_no_handler_ok": {
+          "mode": "immediate-abort-cdylib-opt0-no-handler",
+          "crate_type": "cdylib",
+          "target": "x86_64-unknown-linux-gnu",
+          "profile_flag": "--profile=dev",
+          "rustflags": "-Zunstable-options -Cpanic=immediate-abort",
+          "command": "cargo rustc --offline -Zbuild-std=core --target x86_64-unknown-linux-gnu --profile=dev -- --emit=llvm-ir,obj",
+          "compile_returncode": 0,
+          "compile_stdout": "",
+          "compile_stderr": "Compiling panic_probe v0.1.0 (<tmp>/cargo_proj)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.66s",
+          "functions": {
+            "div": [
+              "define i32 @div(i32 %a, i32 %b) unnamed_addr #2 !dbg !385 {",
+              "start:",
+              "  %b.dbg.spill = alloca [4 x i8], align 4",
+              "  %a.dbg.spill = alloca [4 x i8], align 4",
+              "  store i32 %a, ptr %a.dbg.spill, align 4",
+              "    #dbg_declare(ptr %a.dbg.spill, !391, !DIExpression(), !393)",
+              "  store i32 %b, ptr %b.dbg.spill, align 4",
+              "    #dbg_declare(ptr %b.dbg.spill, !392, !DIExpression(), !394)",
+              "  %_3 = icmp eq i32 %b, 0, !dbg !395",
+              "  br i1 %_3, label %panic, label %bb1, !dbg !395",
+              "",
+              "bb1:                                              ; preds = %start",
+              "  %_0 = udiv i32 %a, %b, !dbg !395",
+              "  ret i32 %_0, !dbg !396",
+              "",
+              "panic:                                            ; preds = %start",
+              "; call core::panicking::panic_const::panic_const_div_by_zero",
+              "  call void @_RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const23panic_const_div_by_zeroCsaVnRkStznsL_11panic_probe(ptr align 8 @alloc_7ce256a47cfc7ce5f76261d223095138) #5, !dbg !395",
+              "  unreachable, !dbg !395",
+              "}"
+            ],
+            "idx": [
+              "define i32 @idx(ptr %s, i64 %len, i64 %i) unnamed_addr #2 !dbg !397 {",
+              "start:",
+              "  %slice.dbg.spill = alloca [16 x i8], align 8",
+              "  %i.dbg.spill = alloca [8 x i8], align 8",
+              "  %len.dbg.spill = alloca [8 x i8], align 8",
+              "  %s.dbg.spill = alloca [8 x i8], align 8",
+              "  store ptr %s, ptr %s.dbg.spill, align 8",
+              "    #dbg_declare(ptr %s.dbg.spill, !401, !DIExpression(), !406)",
+              "  store i64 %len, ptr %len.dbg.spill, align 8",
+              "    #dbg_declare(ptr %len.dbg.spill, !402, !DIExpression(), !407)",
+              "  store i64 %i, ptr %i.dbg.spill, align 8",
+              "    #dbg_declare(ptr %i.dbg.spill, !403, !DIExpression(), !408)",
+              "; call core::slice::raw::from_raw_parts::<u32>",
+              "  %0 = call { ptr, i64 } @_RINvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_partsmECsaVnRkStznsL_11panic_probe(ptr %s, i64 %len, ptr align 8 @alloc_76b429f05fd9ea620f824ca6a434dd13) #4, !dbg !409",
+              "  %slice.0 = extractvalue { ptr, i64 } %0, 0, !dbg !409",
+              "  %slice.1 = extractvalue { ptr, i64 } %0, 1, !dbg !409",
+              "  store ptr %slice.0, ptr %slice.dbg.spill, align 8, !dbg !409",
+              "  %1 = getelementptr inbounds i8, ptr %slice.dbg.spill, i64 8, !dbg !409",
+              "  store i64 %slice.1, ptr %1, align 8, !dbg !409",
+              "    #dbg_declare(ptr %slice.dbg.spill, !404, !DIExpression(), !410)",
+              "  %_6 = icmp ult i64 %i, %slice.1, !dbg !411",
+              "  br i1 %_6, label %bb2, label %panic, !dbg !411",
+              "",
+              "bb2:                                              ; preds = %start",
+              "  %2 = getelementptr inbounds nuw i32, ptr %slice.0, i64 %i, !dbg !411",
+              "  %_0 = load i32, ptr %2, align 4, !dbg !411",
+              "  ret i32 %_0, !dbg !412",
+              "",
+              "panic:                                            ; preds = %start",
+              "; call core::panicking::panic_bounds_check",
+              "  call void @_RNvNtCs5r1t1CfyC2T_4core9panicking18panic_bounds_checkCsaVnRkStznsL_11panic_probe(i64 %i, i64 %slice.1, ptr align 8 @alloc_56f7f48061131e2c67042fb3fbc3ac7c) #5, !dbg !411",
+              "  unreachable, !dbg !411",
+              "}"
+            ]
+          },
+          "resolved_attributes": {
+            "div": "attributes #2 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+            "idx": "attributes #2 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+          },
+          "llvm_decls": [
+            "declare void @llvm.trap() #3"
+          ],
+          "metrics_by_fn": {
+            "div": {
+              "has_personality": false,
+              "instruction_line_count": 14,
+              "call_count": 2,
+              "invoke_count": 0,
+              "landingpad_count": 0,
+              "llvm_trap_count": 0
+            },
+            "idx": {
+              "has_personality": false,
+              "instruction_line_count": 26,
+              "call_count": 4,
+              "invoke_count": 0,
+              "landingpad_count": 0,
+              "llvm_trap_count": 0
+            }
+          },
+          "undefined_symbols_llvm_nm": [
+            "U _RNvMNtNtCs5r1t1CfyC2T_4core3ptr9const_ptrPu13is_aligned_toB6_",
+            "U _RNvMNtNtCs5r1t1CfyC2T_4core3ptr9const_ptrPu7is_nullB6_"
+          ],
+          "section_sizes": {
+            "text_bytes": 2006,
+            "data_bytes": 96,
+            "bss_bytes": 0,
+            "dec_total_bytes": 2102
+          },
+          "objdump_disassembly": "<tmp>/cargo_target/x86_64-unknown-linux-gnu/debug/deps/panic_probe.o:\tfile format elf64-x86-64\n\nDisassembly of section .text._RINvNtCs5r1t1CfyC2T_4core3ptr20slice_from_raw_partsmECsaVnRkStznsL_11panic_probe:\n\n0000000000000000 <_RINvNtCs5r1t1CfyC2T_4core3ptr20slice_from_raw_partsmECsaVnRkStznsL_11panic_probe>:\n       0: 48 83 ec 18                  \tsubq\t$0x18, %rsp\n       4: 48 89 7c 24 08               \tmovq\t%rdi, 0x8(%rsp)\n       9: 48 89 74 24 10               \tmovq\t%rsi, 0x10(%rsp)\n       e: e8 00 00 00 00               \tcallq\t0x13 <_RINvNtCs5r1t1CfyC2T_4core3ptr20slice_from_raw_partsmECsaVnRkStznsL_11panic_probe+0x13>\n      13: 48 83 c4 18                  \taddq\t$0x18, %rsp\n      17: c3                           \tretq\n\nDisassembly of section .text._RINvNtNtCs5r1t1CfyC2T_4core3ptr8metadata14from_raw_partsSmmECsaVnRkStznsL_11panic_probe:\n\n0000000000000000 <_RINvNtNtCs5r1t1CfyC2T_4core3ptr8metadata14from_raw_partsSmmECsaVnRkStznsL_11panic_probe>:\n       0: 48 89 f2                     \tmovq\t%rsi, %rdx\n       3: 48 89 f8                     \tmovq\t%rdi, %rax\n       6: 48 89 44 24 f0               \tmovq\t%rax, -0x10(%rsp)\n       b: 48 89 54 24 f8               \tmovq\t%rdx, -0x8(%rsp)\n      10: c3                           \tretq\n\nDisassembly of section .text._RINvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_partsmECsaVnRkStznsL_11panic_probe:\n\n0000000000000000 <_RINvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_partsmECsaVnRkStznsL_11panic_probe>:\n       0: 48 83 ec 28                  \tsubq\t$0x28, %rsp\n       4: 48 89 3c 24                  \tmovq\t%rdi, (%rsp)\n       8: 48 89 74 24 08               \tmovq\t%rsi, 0x8(%rsp)\n       d: 48 89 54 24 10               \tmovq\t%rdx, 0x10(%rsp)\n      12: 48 89 7c 24 18               \tmovq\t%rdi, 0x18(%rsp)\n      17: 48 89 74 24 20               \tmovq\t%rsi, 0x20(%rsp)\n      1c: e8 00 00 00 00               \tcallq\t0x21 <_RINvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_partsmECsaVnRkStznsL_11panic_probe+0x21>\n      21: a8 01                        \ttestb\t$0x1, %al\n      23: 75 13                        \tjne\t0x38 <_RINvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_partsmECsaVnRkStznsL_11panic_probe+0x38>\n      25: 48 8b 74 24 08               \tmovq\t0x8(%rsp), %rsi\n      2a: 48 8b 3c 24                  \tmovq\t(%rsp), %rdi\n      2e: e8 00 00 00 00               \tcallq\t0x33 <_RINvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_partsmECsaVnRkStznsL_11panic_probe+0x33>\n      33: 48 83 c4 28                  \taddq\t$0x28, %rsp\n      37: c3                           \tretq\n      38: 4c 8b 44 24 10               \tmovq\t0x10(%rsp), %r8\n      3d: 48 8b 4c 24 08               \tmovq\t0x8(%rsp), %rcx\n      42: 48 8b 3c 24                  \tmovq\t(%rsp), %rdi\n      46: ba 04 00 00 00               \tmovl\t$0x4, %edx\n      4b: 48 89 d6                     \tmovq\t%rdx, %rsi\n      4e: e8 00 00 00 00               \tcallq\t0x53 <_RINvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_partsmECsaVnRkStznsL_11panic_probe+0x53>\n      53: eb d0                        \tjmp\t0x25 <_RINvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_partsmECsaVnRkStznsL_11panic_probe+0x25>\n\nDisassembly of section .text._RNvMNtCs5r1t1CfyC2T_4core3stre3lenCsaVnRkStznsL_11panic_probe:\n\n0000000000000000 <_RNvMNtCs5r1t1CfyC2T_4core3stre3lenCsaVnRkStznsL_11panic_probe>:\n       0: 48 89 f0                     \tmovq\t%rsi, %rax\n       3: 48 89 7c 24 e0               \tmovq\t%rdi, -0x20(%rsp)\n       8: 48 89 44 24 e8               \tmovq\t%rax, -0x18(%rsp)\n       d: 48 89 7c 24 f0               \tmovq\t%rdi, -0x10(%rsp)\n      12: 48 89 44 24 f8               \tmovq\t%rax, -0x8(%rsp)\n      17: c3                           \tretq\n\nDisassembly of section .text._RNvMs4_NtCs5r1t1CfyC2T_4core3fmtNtB5_9Arguments8from_strCsaVnRkStznsL_11panic_probe:\n\n0000000000000000 <_RNvMs4_NtCs5r1t1CfyC2T_4core3fmtNtB5_9Arguments8from_strCsaVnRkStznsL_11panic_probe>:\n       0: 48 83 ec 28                  \tsubq\t$0x28, %rsp\n       4: 48 89 3c 24                  \tmovq\t%rdi, (%rsp)\n       8: 48 89 7c 24 08               \tmovq\t%rdi, 0x8(%rsp)\n       d: 48 89 74 24 10               \tmovq\t%rsi, 0x10(%rsp)\n      12: 48 89 7c 24 18               \tmovq\t%rdi, 0x18(%rsp)\n      17: 48 89 74 24 20               \tmovq\t%rsi, 0x20(%rsp)\n      1c: e8 00 00 00 00               \tcallq\t0x21 <_RNvMs4_NtCs5r1t1CfyC2T_4core3fmtNtB5_9Arguments8from_strCsaVnRkStznsL_11panic_probe+0x21>\n      21: 48 89 c1                     \tmovq\t%rax, %rcx\n      24: 48 8b 04 24                  \tmovq\t(%rsp), %rax\n      28: 48 8d 54 09 01               \tleaq\t0x1(%rcx,%rcx), %rdx\n      2d: 48 83 c4 28                  \taddq\t$0x28, %rsp\n      31: c3                           \tretq\n\nDisassembly of section .text._RNvNtCs5r1t1CfyC2T_4core9panicking18panic_bounds_checkCsaVnRkStznsL_11panic_probe:\n\n0000000000000000 <_RNvNtCs5r1t1CfyC2T_4core9panicking18panic_bounds_checkCsaVnRkStznsL_11panic_probe>:\n       0: 48 89 7c 24 f0               \tmovq\t%rdi, -0x10(%rsp)\n       5: 48 89 74 24 f8               \tmovq\t%rsi, -0x8(%rsp)\n       a: 0f 0b                        \tud2\n\nDisassembly of section .text._RNvNtCs5r1t1CfyC2T_4core9panicking18panic_nounwind_fmtCsaVnRkStznsL_11panic_probe:\n\n0000000000000000 <_RNvNtCs5r1t1CfyC2T_4core9panicking18panic_nounwind_fmtCsaVnRkStznsL_11panic_probe>:\n       0: 48 83 ec 38                  \tsubq\t$0x38, %rsp\n       4: 88 d0                        \tmovb\t%dl, %al\n       6: 48 89 7c 24 20               \tmovq\t%rdi, 0x20(%rsp)\n       b: 48 89 74 24 28               \tmovq\t%rsi, 0x28(%rsp)\n      10: 88 c2                        \tmovb\t%al, %dl\n      12: 80 e2 01                     \tandb\t$0x1, %dl\n      15: 88 54 24 37                  \tmovb\t%dl, 0x37(%rsp)\n      19: 48 89 7c 24 08               \tmovq\t%rdi, 0x8(%rsp)\n      1e: 48 89 74 24 10               \tmovq\t%rsi, 0x10(%rsp)\n      23: 24 01                        \tandb\t$0x1, %al\n      25: 88 44 24 18                  \tmovb\t%al, 0x18(%rsp)\n      29: 48 8b 7c 24 08               \tmovq\t0x8(%rsp), %rdi\n      2e: 48 8b 74 24 10               \tmovq\t0x10(%rsp), %rsi\n      33: 8a 44 24 18                  \tmovb\t0x18(%rsp), %al\n      37: 24 01                        \tandb\t$0x1, %al\n      39: 0f b6 d0                     \tmovzbl\t%al, %edx\n      3c: e8 00 00 00 00               \tcallq\t0x41 <_RNvNtCs5r1t1CfyC2T_4core9panicking18panic_nounwind_fmtCsaVnRkStznsL_11panic_probe+0x41>\n\nDisassembly of section .text._RNvNtCs5r1t1CfyC2T_4core9panicking9panic_fmtCsaVnRkStznsL_11panic_probe:\n\n0000000000000000 <_RNvNtCs5r1t1CfyC2T_4core9panicking9panic_fmtCsaVnRkStznsL_11panic_probe>:\n       0: 48 89 7c 24 f0               \tmovq\t%rdi, -0x10(%rsp)\n       5: 48 89 74 24 f8               \tmovq\t%rsi, -0x8(%rsp)\n       a: 0f 0b                        \tud2\n\nDisassembly of section .text._RNvNtCs5r1t1CfyC2T_4core9ub_checks16maybe_is_alignedCsaVnRkStznsL_11panic_probe:\n\n0000000000000000 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks16maybe_is_alignedCsaVnRkStznsL_11panic_probe>:\n       0: 48 83 ec 18                  \tsubq\t$0x18, %rsp\n       4: 48 89 7c 24 08               \tmovq\t%rdi, 0x8(%rsp)\n       9: 48 89 74 24 10               \tmovq\t%rsi, 0x10(%rsp)\n       e: e8 00 00 00 00               \tcallq\t0x13 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks16maybe_is_alignedCsaVnRkStznsL_11panic_probe+0x13>\n      13: 24 01                        \tandb\t$0x1, %al\n      15: 48 83 c4 18                  \taddq\t$0x18, %rsp\n      19: c3                           \tretq\n\nDisassembly of section .text._RNvNtCs5r1t1CfyC2T_4core9ub_checks17check_language_ubCsaVnRkStznsL_11panic_probe:\n\n0000000000000000 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks17check_language_ubCsaVnRkStznsL_11panic_probe>:\n       0: 50                           \tpushq\t%rax\n       1: e8 00 00 00 00               \tcallq\t0x6 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks17check_language_ubCsaVnRkStznsL_11panic_probe+0x6>\n       6: a8 01                        \ttestb\t$0x1, %al\n       8: 75 07                        \tjne\t0x11 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks17check_language_ubCsaVnRkStznsL_11panic_probe+0x11>\n       a: c6 44 24 07 00               \tmovb\t$0x0, 0x7(%rsp)\n       f: eb 05                        \tjmp\t0x16 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks17check_language_ubCsaVnRkStznsL_11panic_probe+0x16>\n      11: c6 44 24 07 01               \tmovb\t$0x1, 0x7(%rsp)\n      16: 8a 44 24 07                  \tmovb\t0x7(%rsp), %al\n      1a: 24 01                        \tandb\t$0x1, %al\n      1c: 59                           \tpopq\t%rcx\n      1d: c3                           \tretq\n\nDisassembly of section .text._RNvNtCs5r1t1CfyC2T_4core9ub_checks24is_valid_allocation_sizeCsaVnRkStznsL_11panic_probe:\n\n0000000000000000 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks24is_valid_allocation_sizeCsaVnRkStznsL_11panic_probe>:\n       0: 48 83 ec 28                  \tsubq\t$0x28, %rsp\n       4: 48 89 3c 24                  \tmovq\t%rdi, (%rsp)\n       8: 48 89 74 24 08               \tmovq\t%rsi, 0x8(%rsp)\n       d: 48 89 7c 24 18               \tmovq\t%rdi, 0x18(%rsp)\n      12: 48 89 74 24 20               \tmovq\t%rsi, 0x20(%rsp)\n      17: 48 83 ff 00                  \tcmpq\t$0x0, %rdi\n      1b: 74 0c                        \tje\t0x29 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks24is_valid_allocation_sizeCsaVnRkStznsL_11panic_probe+0x29>\n      1d: 48 8b 04 24                  \tmovq\t(%rsp), %rax\n      21: 48 83 f8 00                  \tcmpq\t$0x0, %rax\n      25: 74 27                        \tje\t0x4e <_RNvNtCs5r1t1CfyC2T_4core9ub_checks24is_valid_allocation_sizeCsaVnRkStznsL_11panic_probe+0x4e>\n      27: eb 0b                        \tjmp\t0x34 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks24is_valid_allocation_sizeCsaVnRkStznsL_11panic_probe+0x34>\n      29: 48 c7 44 24 10 ff ff ff ff   \tmovq\t$-0x1, 0x10(%rsp)\n      32: eb 26                        \tjmp\t0x5a <_RNvNtCs5r1t1CfyC2T_4core9ub_checks24is_valid_allocation_sizeCsaVnRkStznsL_11panic_probe+0x5a>\n      34: 48 8b 0c 24                  \tmovq\t(%rsp), %rcx\n      38: 48 b8 ff ff ff ff ff ff ff 7f\tmovabsq\t$0x7fffffffffffffff, %rax # imm = 0x7FFFFFFFFFFFFFFF\n      42: 31 d2                        \txorl\t%edx, %edx\n      44: 48 f7 f1                     \tdivq\t%rcx\n      47: 48 89 44 24 10               \tmovq\t%rax, 0x10(%rsp)\n      4c: eb 0c                        \tjmp\t0x5a <_RNvNtCs5r1t1CfyC2T_4core9ub_checks24is_valid_allocation_sizeCsaVnRkStznsL_11panic_probe+0x5a>\n      4e: 48 8d 3d 00 00 00 00         \tleaq\t(%rip), %rdi            # 0x55 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks24is_valid_allocation_sizeCsaVnRkStznsL_11panic_probe+0x55>\n      55: e8 00 00 00 00               \tcallq\t0x5a <_RNvNtCs5r1t1CfyC2T_4core9ub_checks24is_valid_allocation_sizeCsaVnRkStznsL_11panic_probe+0x5a>\n      5a: 48 8b 44 24 08               \tmovq\t0x8(%rsp), %rax\n      5f: 48 3b 44 24 10               \tcmpq\t0x10(%rsp), %rax\n      64: 0f 96 c0                     \tsetbe\t%al\n      67: 24 01                        \tandb\t$0x1, %al\n      69: 48 83 c4 28                  \taddq\t$0x28, %rsp\n      6d: c3                           \tretq\n\nDisassembly of section .text._RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCsaVnRkStznsL_11panic_probe:\n\n0000000000000000 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCsaVnRkStznsL_11panic_probe>:\n       0: 48 83 ec 28                  \tsubq\t$0x28, %rsp\n       4: 48 89 3c 24                  \tmovq\t%rdi, (%rsp)\n       8: 88 d0                        \tmovb\t%dl, %al\n       a: 88 44 24 0e                  \tmovb\t%al, 0xe(%rsp)\n       e: 48 89 7c 24 10               \tmovq\t%rdi, 0x10(%rsp)\n      13: 48 89 74 24 18               \tmovq\t%rsi, 0x18(%rsp)\n      18: 24 01                        \tandb\t$0x1, %al\n      1a: 88 44 24 27                  \tmovb\t%al, 0x27(%rsp)\n      1e: e8 00 00 00 00               \tcallq\t0x23 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCsaVnRkStznsL_11panic_probe+0x23>\n      23: a8 01                        \ttestb\t$0x1, %al\n      25: 75 07                        \tjne\t0x2e <_RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCsaVnRkStznsL_11panic_probe+0x2e>\n      27: c6 44 24 0f 00               \tmovb\t$0x0, 0xf(%rsp)\n      2c: eb 0a                        \tjmp\t0x38 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCsaVnRkStznsL_11panic_probe+0x38>\n      2e: 8a 44 24 0e                  \tmovb\t0xe(%rsp), %al\n      32: a8 01                        \ttestb\t$0x1, %al\n      34: 75 21                        \tjne\t0x57 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCsaVnRkStznsL_11panic_probe+0x57>\n      36: eb 0b                        \tjmp\t0x43 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCsaVnRkStznsL_11panic_probe+0x43>\n      38: 8a 44 24 0f                  \tmovb\t0xf(%rsp), %al\n      3c: 24 01                        \tandb\t$0x1, %al\n      3e: 48 83 c4 28                  \taddq\t$0x28, %rsp\n      42: c3                           \tretq\n      43: 48 8b 3c 24                  \tmovq\t(%rsp), %rdi\n      47: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x4d <_RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCsaVnRkStznsL_11panic_probe+0x4d>\n      4d: 34 ff                        \txorb\t$-0x1, %al\n      4f: 24 01                        \tandb\t$0x1, %al\n      51: 88 44 24 0f                  \tmovb\t%al, 0xf(%rsp)\n      55: eb e1                        \tjmp\t0x38 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCsaVnRkStznsL_11panic_probe+0x38>\n      57: c6 44 24 0f 01               \tmovb\t$0x1, 0xf(%rsp)\n      5c: eb da                        \tjmp\t0x38 <_RNvNtCs5r1t1CfyC2T_4core9ub_checks29maybe_is_aligned_and_not_nullCsaVnRkStznsL_11panic_probe+0x38>\n\nDisassembly of section .text._RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const23panic_const_div_by_zeroCsaVnRkStznsL_11panic_probe:\n\n0000000000000000 <_RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const23panic_const_div_by_zeroCsaVnRkStznsL_11panic_probe>:\n       0: 50                           \tpushq\t%rax\n       1: 48 89 3c 24                  \tmovq\t%rdi, (%rsp)\n       5: 48 8d 3d 00 00 00 00         \tleaq\t(%rip), %rdi            # 0xc <_RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const23panic_const_div_by_zeroCsaVnRkStznsL_11panic_probe+0xc>\n       c: be 19 00 00 00               \tmovl\t$0x19, %esi\n      11: e8 00 00 00 00               \tcallq\t0x16 <_RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const23panic_const_div_by_zeroCsaVnRkStznsL_11panic_probe+0x16>\n      16: 48 89 c7                     \tmovq\t%rax, %rdi\n      19: 48 89 d6                     \tmovq\t%rdx, %rsi\n      1c: 48 8b 14 24                  \tmovq\t(%rsp), %rdx\n      20: e8 00 00 00 00               \tcallq\t0x25 <_RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const23panic_const_div_by_zeroCsaVnRkStznsL_11panic_probe+0x25>\n\nDisassembly of section .text._RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const24panic_const_shl_overflowCsaVnRkStznsL_11panic_probe:\n\n0000000000000000 <_RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const24panic_const_shl_overflowCsaVnRkStznsL_11panic_probe>:\n       0: 50                           \tpushq\t%rax\n       1: 48 89 3c 24                  \tmovq\t%rdi, (%rsp)\n       5: 48 8d 3d 00 00 00 00         \tleaq\t(%rip), %rdi            # 0xc <_RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const24panic_const_shl_overflowCsaVnRkStznsL_11panic_probe+0xc>\n       c: be 23 00 00 00               \tmovl\t$0x23, %esi\n      11: e8 00 00 00 00               \tcallq\t0x16 <_RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const24panic_const_shl_overflowCsaVnRkStznsL_11panic_probe+0x16>\n      16: 48 89 c7                     \tmovq\t%rax, %rdi\n      19: 48 89 d6                     \tmovq\t%rdx, %rsi\n      1c: 48 8b 14 24                  \tmovq\t(%rsp), %rdx\n      20: e8 00 00 00 00               \tcallq\t0x25 <_RNvNtNtCs5r1t1CfyC2T_4core9panicking11panic_const24panic_const_shl_overflowCsaVnRkStznsL_11panic_probe+0x25>\n\nDisassembly of section .text._RNvNvNtCs5r1t1CfyC2T_4core9panicking18panic_nounwind_fmt7runtimeCsaVnRkStznsL_11panic_probe:\n\n0000000000000000 <_RNvNvNtCs5r1t1CfyC2T_4core9panicking18panic_nounwind_fmt7runtimeCsaVnRkStznsL_11panic_probe>:\n       0: 88 d0                        \tmovb\t%dl, %al\n       2: 48 89 7c 24 e8               \tmovq\t%rdi, -0x18(%rsp)\n       7: 48 89 74 24 f0               \tmovq\t%rsi, -0x10(%rsp)\n       c: 24 01                        \tandb\t$0x1, %al\n       e: 88 44 24 ff                  \tmovb\t%al, -0x1(%rsp)\n      12: 0f 0b                        \tud2\n\nDisassembly of section .text._RNvNvNtCs5r1t1CfyC2T_4core9ub_checks16maybe_is_aligned7runtimeCsaVnRkStznsL_11panic_probe:\n\n0000000000000000 <_RNvNvNtCs5r1t1CfyC2T_4core9ub_checks16maybe_is_aligned7runtimeCsaVnRkStznsL_11panic_probe>:\n       0: 48 83 ec 18                  \tsubq\t$0x18, %rsp\n       4: 48 89 7c 24 08               \tmovq\t%rdi, 0x8(%rsp)\n       9: 48 89 74 24 10               \tmovq\t%rsi, 0x10(%rsp)\n       e: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x14 <_RNvNvNtCs5r1t1CfyC2T_4core9ub_checks16maybe_is_aligned7runtimeCsaVnRkStznsL_11panic_probe+0x14>\n      14: 24 01                        \tandb\t$0x1, %al\n      16: 48 83 c4 18                  \taddq\t$0x18, %rsp\n      1a: c3                           \tretq\n\nDisassembly of section .text._RNvNvNtCs5r1t1CfyC2T_4core9ub_checks17check_language_ub7runtimeCsaVnRkStznsL_11panic_probe:\n\n0000000000000000 <_RNvNvNtCs5r1t1CfyC2T_4core9ub_checks17check_language_ub7runtimeCsaVnRkStznsL_11panic_probe>:\n       0: b0 01                        \tmovb\t$0x1, %al\n       2: 24 01                        \tandb\t$0x1, %al\n       4: c3                           \tretq\n\nDisassembly of section .text._RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCsaVnRkStznsL_11panic_probe:\n\n0000000000000000 <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCsaVnRkStznsL_11panic_probe>:\n       0: 48 83 ec 58                  \tsubq\t$0x58, %rsp\n       4: 48 89 54 24 08               \tmovq\t%rdx, 0x8(%rsp)\n       9: 48 89 f0                     \tmovq\t%rsi, %rax\n       c: 48 8b 74 24 08               \tmovq\t0x8(%rsp), %rsi\n      11: 48 89 44 24 10               \tmovq\t%rax, 0x10(%rsp)\n      16: 48 89 4c 24 18               \tmovq\t%rcx, 0x18(%rsp)\n      1b: 4c 89 44 24 20               \tmovq\t%r8, 0x20(%rsp)\n      20: 48 89 7c 24 28               \tmovq\t%rdi, 0x28(%rsp)\n      25: 48 89 44 24 30               \tmovq\t%rax, 0x30(%rsp)\n      2a: 48 89 74 24 38               \tmovq\t%rsi, 0x38(%rsp)\n      2f: 48 89 4c 24 40               \tmovq\t%rcx, 0x40(%rsp)\n      34: 48 8d 05 00 00 00 00         \tleaq\t(%rip), %rax            # 0x3b <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCsaVnRkStznsL_11panic_probe+0x3b>\n      3b: 48 89 44 24 48               \tmovq\t%rax, 0x48(%rsp)\n      40: 48 c7 44 24 50 17 01 00 00   \tmovq\t$0x117, 0x50(%rsp)      # imm = 0x117\n      49: 31 d2                        \txorl\t%edx, %edx\n      4b: e8 00 00 00 00               \tcallq\t0x50 <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCsaVnRkStznsL_11panic_probe+0x50>\n      50: a8 01                        \ttestb\t$0x1, %al\n      52: 75 23                        \tjne\t0x77 <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCsaVnRkStznsL_11panic_probe+0x77>\n      54: 48 8d 3d 00 00 00 00         \tleaq\t(%rip), %rdi            # 0x5b <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCsaVnRkStznsL_11panic_probe+0x5b>\n      5b: be 17 01 00 00               \tmovl\t$0x117, %esi            # imm = 0x117\n      60: e8 00 00 00 00               \tcallq\t0x65 <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCsaVnRkStznsL_11panic_probe+0x65>\n      65: 48 8b 4c 24 20               \tmovq\t0x20(%rsp), %rcx\n      6a: 48 89 c7                     \tmovq\t%rax, %rdi\n      6d: 48 89 d6                     \tmovq\t%rdx, %rsi\n      70: 31 d2                        \txorl\t%edx, %edx\n      72: e8 00 00 00 00               \tcallq\t0x77 <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCsaVnRkStznsL_11panic_probe+0x77>\n      77: 48 8b 74 24 18               \tmovq\t0x18(%rsp), %rsi\n      7c: 48 8b 7c 24 10               \tmovq\t0x10(%rsp), %rdi\n      81: e8 00 00 00 00               \tcallq\t0x86 <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCsaVnRkStznsL_11panic_probe+0x86>\n      86: a8 01                        \ttestb\t$0x1, %al\n      88: 75 02                        \tjne\t0x8c <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCsaVnRkStznsL_11panic_probe+0x8c>\n      8a: eb c8                        \tjmp\t0x54 <_RNvNvNtNtCs5r1t1CfyC2T_4core5slice3raw14from_raw_parts18precondition_checkCsaVnRkStznsL_11panic_probe+0x54>\n      8c: 48 83 c4 58                  \taddq\t$0x58, %rsp\n      90: c3                           \tretq\n\nDisassembly of section .text.div:\n\n0000000000000000 <div>:\n       0: 48 83 ec 18                  \tsubq\t$0x18, %rsp\n       4: 89 7c 24 08                  \tmovl\t%edi, 0x8(%rsp)\n       8: 89 74 24 0c                  \tmovl\t%esi, 0xc(%rsp)\n       c: 89 7c 24 10                  \tmovl\t%edi, 0x10(%rsp)\n      10: 89 74 24 14                  \tmovl\t%esi, 0x14(%rsp)\n      14: 83 fe 00                     \tcmpl\t$0x0, %esi\n      17: 74 11                        \tje\t0x2a <div+0x2a>\n      19: 8b 4c 24 0c                  \tmovl\t0xc(%rsp), %ecx\n      1d: 8b 44 24 08                  \tmovl\t0x8(%rsp), %eax\n      21: 31 d2                        \txorl\t%edx, %edx\n      23: f7 f1                        \tdivl\t%ecx\n      25: 48 83 c4 18                  \taddq\t$0x18, %rsp\n      29: c3                           \tretq\n      2a: 48 8d 3d 00 00 00 00         \tleaq\t(%rip), %rdi            # 0x31 <div+0x31>\n      31: e8 00 00 00 00               \tcallq\t0x36 <div+0x36>\n\nDisassembly of section .text.idx:\n\n0000000000000000 <idx>:\n       0: 48 83 ec 48                  \tsubq\t$0x48, %rsp\n       4: 48 89 54 24 10               \tmovq\t%rdx, 0x10(%rsp)\n       9: 48 89 7c 24 20               \tmovq\t%rdi, 0x20(%rsp)\n       e: 48 89 74 24 28               \tmovq\t%rsi, 0x28(%rsp)\n      13: 48 89 54 24 30               \tmovq\t%rdx, 0x30(%rsp)\n      18: 48 8d 15 00 00 00 00         \tleaq\t(%rip), %rdx            # 0x1f <idx+0x1f>\n      1f: e8 00 00 00 00               \tcallq\t0x24 <idx+0x24>\n      24: 48 89 c1                     \tmovq\t%rax, %rcx\n      27: 48 89 4c 24 08               \tmovq\t%rcx, 0x8(%rsp)\n      2c: 48 89 d0                     \tmovq\t%rdx, %rax\n      2f: 48 8b 54 24 10               \tmovq\t0x10(%rsp), %rdx\n      34: 48 89 44 24 18               \tmovq\t%rax, 0x18(%rsp)\n      39: 48 89 4c 24 38               \tmovq\t%rcx, 0x38(%rsp)\n      3e: 48 89 44 24 40               \tmovq\t%rax, 0x40(%rsp)\n      43: 48 39 c2                     \tcmpq\t%rax, %rdx\n      46: 73 12                        \tjae\t0x5a <idx+0x5a>\n      48: 48 8b 44 24 08               \tmovq\t0x8(%rsp), %rax\n      4d: 48 8b 4c 24 10               \tmovq\t0x10(%rsp), %rcx\n      52: 8b 04 88                     \tmovl\t(%rax,%rcx,4), %eax\n      55: 48 83 c4 48                  \taddq\t$0x48, %rsp\n      59: c3                           \tretq\n      5a: 48 8b 74 24 18               \tmovq\t0x18(%rsp), %rsi\n      5f: 48 8b 7c 24 10               \tmovq\t0x10(%rsp), %rdi\n      64: 48 8d 15 00 00 00 00         \tleaq\t(%rip), %rdx            # 0x6b <idx+0x6b>\n      6b: e8 00 00 00 00               \tcallq\t0x70 <idx+0x70>",
+          "cdylib_undefined_symbols_llvm_nm": [
+            "w _ITM_deregisterTMCloneTable",
+            "w _ITM_registerTMCloneTable",
+            "w __cxa_finalize",
+            "w __gmon_start__"
+          ],
+          "cdylib_llvm_size_raw": "text\t   data\t    bss\t    dec\t    hex\tfilename\n   4087\t    600\t   2865\t   7552\t   1d80\t/tmp/tmp_oueztwt/cargo_target/x86_64-unknown-linux-gnu/debug/libpanic_probe.so"
+        },
+        "build_std_core_lib_panic_immediate_abort_aarch64": {
+          "mode": "immediate-abort-aarch64",
+          "crate_type": "lib",
+          "target": "aarch64-unknown-linux-gnu",
+          "profile_flag": "--release",
+          "rustflags": "-Zunstable-options -Cpanic=immediate-abort",
+          "command": "cargo rustc --offline -Zbuild-std=core --target aarch64-unknown-linux-gnu --release -- --emit=llvm-ir,obj",
+          "compile_returncode": 0,
+          "compile_stdout": "",
+          "compile_stderr": "Compiling compiler_builtins v0.1.160 (<sysroot>/lib/rustlib/src/rust/library/compiler-builtins/compiler-builtins)\n   Compiling core v0.0.0 (<sysroot>/lib/rustlib/src/rust/library/core)\n   Compiling panic_probe v0.1.0 (<tmp>/cargo_proj)\n    Finished `release` profile [optimized] target(s) in 2m 06s",
+          "functions": {
+            "div": [
+              "define noundef i32 @div(i32 noundef %a, i32 noundef %b) unnamed_addr #0 {",
+              "start:",
+              "  %_3 = icmp eq i32 %b, 0",
+              "  br i1 %_3, label %panic, label %bb1",
+              "",
+              "bb1:                                              ; preds = %start",
+              "  %_0 = udiv i32 %a, %b",
+              "  ret i32 %_0",
+              "",
+              "panic:                                            ; preds = %start",
+              "  tail call void @llvm.trap()",
+              "  unreachable",
+              "}"
+            ],
+            "idx": [
+              "define noundef i32 @idx(ptr noundef readonly captures(none) %s, i64 noundef %len, i64 noundef %i) unnamed_addr #1 {",
+              "start:",
+              "  %_4 = icmp ult i64 %i, %len",
+              "  br i1 %_4, label %bb1, label %panic",
+              "",
+              "bb1:                                              ; preds = %start",
+              "  %0 = getelementptr inbounds nuw i32, ptr %s, i64 %i",
+              "  %_0 = load i32, ptr %0, align 4, !noundef !4",
+              "  ret i32 %_0",
+              "",
+              "panic:                                            ; preds = %start",
+              "  tail call void @llvm.trap()",
+              "  unreachable",
+              "}"
+            ]
+          },
+          "resolved_attributes": {
+            "div": "attributes #0 = { nounwind memory(inaccessiblemem: write) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }",
+            "idx": "attributes #1 = { nounwind memory(argmem: read, inaccessiblemem: write) uwtable \"frame-pointer\"=\"non-leaf\" \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"generic\" \"target-features\"=\"+v8a,+outline-atomics\" }"
+          },
+          "llvm_decls": [
+            "declare void @llvm.trap() #2"
+          ],
+          "metrics_by_fn": {
+            "div": {
+              "has_personality": false,
+              "instruction_line_count": 8,
+              "call_count": 1,
+              "invoke_count": 0,
+              "landingpad_count": 0,
+              "llvm_trap_count": 1
+            },
+            "idx": {
+              "has_personality": false,
+              "instruction_line_count": 9,
+              "call_count": 1,
+              "invoke_count": 0,
+              "landingpad_count": 0,
+              "llvm_trap_count": 1
+            }
+          },
+          "undefined_symbols_llvm_nm": [],
+          "section_sizes": {
+            "text_bytes": 100,
+            "data_bytes": 0,
+            "bss_bytes": 0,
+            "dec_total_bytes": 100
+          },
+          "objdump_disassembly": "<tmp>/cargo_target/aarch64-unknown-linux-gnu/release/deps/panic_probe-30ab1ccd880a4236.o:\tfile format elf64-littleaarch64\n\nDisassembly of section .text.div:\n\n0000000000000000 <div>:\n       0: 34000061     \tcbz\tw1, 0xc <div+0xc>\n       4: 1ac10800     \tudiv\tw0, w0, w1\n       8: d65f03c0     \tret\n       c: d4200020     \tbrk\t#0x1\n\nDisassembly of section .text.idx:\n\n0000000000000000 <idx>:\n       0: eb01005f     \tcmp\tx2, x1\n       4: 54000062     \tb.hs\t0x10 <idx+0x10>\n       8: b8627800     \tldr\tw0, [x0, x2, lsl #2]\n       c: d65f03c0     \tret\n      10: d4200020     \tbrk\t#0x1"
+        }
+      }
+    },
+    "b_no_std_panic_handler_abi_and_omission": {
+      "valid_panic_handler_never_return_cdylib_ok": {
+        "crate_type": "cdylib",
+        "extra_args": [
+          "-Copt-level=2",
+          "-Cpanic=abort"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": ""
+      },
+      "invalid_panic_handler_unit_return_rejected_e0308": {
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0308]: `#[panic_handler]` function has wrong type\n --> <tmp>/invalid_panic_handler_unit_return_rejected_e0308/probe.rs:4:38\n  |\n4 | fn ph(_: &core::panic::PanicInfo) -> () {}\n  |                                      ^^ expected `!`, found `()`\n  |\n  = note: expected signature `for<'a, 'b> fn(&'a PanicInfo<'b>) -> !`\n             found signature `for<'a, 'b> fn(&'a PanicInfo<'b>) -> ()`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`."
+      },
+      "missing_panic_handler_cdylib_panic_abort_rejected": {
+        "crate_type": "cdylib",
+        "extra_args": [
+          "-Copt-level=2",
+          "-Cpanic=abort"
+        ],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: `#[panic_handler]` function required, but not found\n\nerror: aborting due to 1 previous error"
+      },
+      "missing_panic_handler_cdylib_panic_unwind_rejected": {
+        "crate_type": "cdylib",
+        "extra_args": [
+          "-Copt-level=2",
+          "-Cpanic=unwind"
+        ],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: `#[panic_handler]` function required, but not found\n\nerror: unwinding panics are not supported without std\n  |\n  = help: using nightly cargo, use -Zbuild-std with panic=\"abort\" to avoid unwinding\n  = note: since the core library is usually precompiled with panic=\"unwind\", rebuilding your crate with panic=\"abort\" may not be enough to fix the problem\n\nerror: aborting due to 2 previous errors"
+      },
+      "missing_panic_handler_rlib_panic_abort_ok": {
+        "crate_type": "rlib",
+        "extra_args": [
+          "-Copt-level=2",
+          "-Cpanic=abort"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": ""
+      }
+    }
+  }
+}
