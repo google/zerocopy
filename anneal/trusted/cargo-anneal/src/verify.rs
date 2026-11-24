@@ -121,6 +121,25 @@ impl CrateType {
     }
 }
 
+/// Standard-library crate for capture's opt-in `--stdlib-crate` capability,
+/// which admits that crate's own language items (see
+/// `check_stdlib_capability` in `trusted/rustc-capture/src/capture.rs`).
+/// Absent by default, so ordinary requests keep crate-local language items
+/// refused.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, clap::ValueEnum)]
+#[serde(rename_all = "snake_case")]
+enum StdlibCrate {
+    Core,
+}
+
+impl StdlibCrate {
+    const fn as_str(self) -> &'static str {
+        match self {
+            Self::Core => "core",
+        }
+    }
+}
+
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize, clap::ValueEnum)]
 #[serde(rename_all = "snake_case")]
 enum PanicStrategy {
@@ -316,6 +335,10 @@ struct RustcArgs {
     /// Additional Rust source file in the crate.
     #[arg(long)]
     source_file: Vec<PathBuf>,
+    /// Capture this standard-library crate (`core`) from its own sources,
+    /// admitting its language items; recorded in the receipt configuration.
+    #[arg(long, value_enum)]
+    stdlib_crate: Option<StdlibCrate>,
     /// Reviewed specification module mapping (`<MOD>=<PATH>`).
     #[arg(
         long,
@@ -585,6 +608,8 @@ struct Compilation {
     #[serde(default)]
     env: BTreeMap<String, String>,
     source_files: Vec<PathBuf>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    stdlib_crate: Option<StdlibCrate>,
 }
 
 fn edition() -> String {
@@ -1367,6 +1392,7 @@ fn cargo_request(args: &VerifyArgs, manifest_path: &Path) -> Result<(Request, Pa
                 cfg,
                 env: BTreeMap::new(),
                 source_files,
+                stdlib_crate: None,
             },
             scope,
             proof: Proof {
@@ -1601,6 +1627,7 @@ fn prepare_rustc_request(
             cfg: rustc.cfg.iter().cloned().collect(),
             env: rustc.env.iter().cloned().collect(),
             source_files,
+            stdlib_crate: rustc.stdlib_crate,
         },
         scope,
         proof: Proof {
@@ -1740,6 +1767,15 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         };
     if request.schema_version != 1 || request.compilation.source_files.is_empty() {
         return Err(error("unsupported", "request", "unsupported or empty compilation request"));
+    }
+    if request.compilation.stdlib_crate.is_some()
+        && !matches!(request.scope, Scope::SelectedUnit { .. })
+    {
+        return Err(error(
+            "unsupported",
+            "request",
+            "--stdlib-crate requires selected scope (`--select` or `--instantiate`)",
+        ));
     }
     for (key, value) in &request.compilation.env {
         validate_env_binding(key, value).map_err(|msg| error("unsupported", "request", msg))?;
@@ -1894,6 +1930,9 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     for source in &sources {
         command.arg("--source-file").arg(rust_stage.join(&source.relative_path));
     }
+    if let Some(stdlib_crate) = request.compilation.stdlib_crate {
+        command.args(["--stdlib-crate", stdlib_crate.as_str()]);
+    }
     let capture_start = Instant::now();
     let output = command.output().map_err(|e| io("capture", e))?;
     write(&work.join("capture.stdout"), &output.stdout)?;
@@ -1929,6 +1968,11 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         || manifest.configuration["edition"] != request.compilation.edition
         || manifest.configuration["cfg"] != json!(request.compilation.cfg)
         || manifest.configuration["env"] != json!(request.compilation.env)
+        // Capture records `stdlib_crate` only when its capability is active,
+        // so a capture with relaxed language-item admission never satisfies
+        // a request that did not ask for it (or vice versa).
+        || manifest.configuration.get("stdlib_crate").cloned()
+            != request.compilation.stdlib_crate.map(|krate| json!(krate.as_str()))
     {
         return Err(error(
             "tool_failed",
@@ -3722,6 +3766,7 @@ mod tests {
             cfg: vec!["foo".to_owned()],
             env: vec![("CARGO_PKG_VERSION".to_owned(), "0.8.64".to_owned())],
             source_file: vec![runfiles.join("lib.rs"), runfiles.join("helper.rs")],
+            stdlib_crate: None,
             spec_file: vec![ModuleFileArg {
                 module: "Contract".to_owned(),
                 path: runfiles.join("SpecHelper.lean"),
@@ -3781,6 +3826,7 @@ mod tests {
                 cfg: Vec::new(),
                 env: Vec::new(),
                 source_file: Vec::new(),
+                stdlib_crate: None,
                 spec_file: Vec::new(),
                 proof_file: Vec::new(),
                 spec_decl: DeclSpec { module: None, decl: "Spec.specs".to_owned() },
@@ -3989,6 +4035,7 @@ mod tests {
             cfg: Vec::new(),
             env: Vec::new(),
             source_file: Vec::new(),
+            stdlib_crate: None,
             spec_file: spec_files,
             proof_file: vec![ModuleFileArg { module: "Proof".to_owned(), path: proof.clone() }],
             spec_decl: DeclSpec {

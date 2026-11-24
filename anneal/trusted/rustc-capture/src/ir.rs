@@ -1128,6 +1128,24 @@ pub struct Compiler {
     pub driver: DriverIdentity,
 }
 
+/// Standard-library crate admitted by the explicit `--stdlib-crate`
+/// capability. Only `core` is modeled: it links no other crate, so all of its
+/// language items are its own definitions. `alloc` and `std` additionally
+/// need hashed `--extern` admission and are not representable here yet.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum StdlibCrate {
+    Core,
+}
+
+impl StdlibCrate {
+    pub const fn crate_name(self) -> &'static str {
+        match self {
+            Self::Core => "core",
+        }
+    }
+}
+
 #[derive(Debug, Serialize)]
 pub struct Configuration {
     pub crate_root: PathBuf,
@@ -1145,6 +1163,13 @@ pub struct Configuration {
     pub pointer_bits: u64,
     pub endian: &'static str,
     pub declared_source_files: Vec<PathBuf>,
+    /// Present only under the explicit `--stdlib-crate` capability, which
+    /// admits crate-local language items and selection-only metadata
+    /// emission (see `capture::check_stdlib_capability`). Omitted otherwise
+    /// so default captures keep their exact manifest bytes, and so a receipt
+    /// that embeds this configuration discloses every relaxation in effect.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stdlib_crate: Option<StdlibCrate>,
 }
 
 #[derive(Clone, Debug, Serialize)]

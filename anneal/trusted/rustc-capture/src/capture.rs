@@ -96,10 +96,18 @@ struct RecordingLoader {
     reads: Arc<Mutex<Reads>>,
     allowed: BTreeSet<PathBuf>,
     directories: BTreeSet<PathBuf>,
+    /// Absolute roots under which an undeclared text read is a diagnostic
+    /// snippet probe for an imported standard-library source (see
+    /// [`Self::is_snippet_probe`]), never an input of this compilation.
+    snippet_roots: Vec<PathBuf>,
 }
 
 impl RecordingLoader {
-    fn new(reads: Arc<Mutex<Reads>>, allowed: BTreeSet<PathBuf>) -> Self {
+    fn new(
+        reads: Arc<Mutex<Reads>>,
+        allowed: BTreeSet<PathBuf>,
+        snippet_roots: Vec<PathBuf>,
+    ) -> Self {
         // Directories are derived authority, not another ambient inventory.
         // Requiring every original parent prefix preserves normal ../ lookup
         // through declared ancestors without admitting missing/../file when an
@@ -112,7 +120,49 @@ impl RecordingLoader {
             reads,
             allowed,
             directories,
+            snippet_roots,
         }
+    }
+
+    /// Classify an undeclared text read as a diagnostic snippet probe.
+    ///
+    /// To render a span in an imported crate, rustc's `SourceMap` re-reads
+    /// that crate's source because "The compiler produces better error
+    /// messages if the sources of dependencies are available", and it
+    /// discards any failure:
+    /// `self.file_loader.read_file(&local_path).ok()`. The file then stays
+    /// marked absent, the same state as a sysroot without the `rust-src`
+    /// component. The decoder names sysroot sources `/rustc/<commit>/...`
+    /// or, when `rust-src` is installed, paths under the session's
+    /// `real_rust_source_base_dir` (`<sysroot>/lib/rustlib/src/rust`).
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_span/src/source_map.rs#L1058-L1083
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_metadata/src/rmeta/decoder.rs#L1784-L1793
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/config.rs#L2678-L2697
+    ///
+    /// Answering such a probe `NotFound` without a refusal lets a warning or
+    /// error that points into the sysroot render (or report its own compiler
+    /// failure) instead of failing as an undeclared read. No bytes are
+    /// returned or recorded, so the probe cannot change what rustc compiles
+    /// or enter the source binding. Every read that defines this crate's
+    /// contents (crate root, `#[path]` modules, `include!`, `include_str!`)
+    /// treats `NotFound` as a compiler error, so the probe roots cannot stand
+    /// in for an input. Binary reads, other prefixes, and lexical `..` escapes
+    /// out of a root stay hard refusals. So do relative paths: both decoder
+    /// names are absolute, and resolving a relative read against the working
+    /// directory would let ambient state decide the classification. The
+    /// roots themselves are absolute and lexically normalized by
+    /// [`snippet_roots`], so the component-wise prefix test compares like
+    /// with like.
+    fn is_snippet_probe(&self, path: &Path) -> bool {
+        if !path.is_absolute() {
+            return false;
+        }
+        let Ok(normalized) = path.normalize_lexically() else {
+            return false;
+        };
+        self.snippet_roots
+            .iter()
+            .any(|root| normalized.starts_with(root))
     }
 
     /// Resolve within the declared file-and-ancestor namespace. The standard
@@ -204,6 +254,31 @@ impl RecordingLoader {
     }
 }
 
+/// Roots under which an undeclared text read is a sysroot snippet probe:
+/// the compiler's virtual `/rustc/<commit>` prefix and, when the session
+/// has one, `real_rust_source_base_dir`. rustc joins that directory onto
+/// the sysroot and, if it is a symlink, will "Replace the symlink bootstrap
+/// creates, with its destination" (`candidate = symlink_dest;`, the raw
+/// `std::fs::read_link` result), so it may be relative or contain `.` and
+/// `..` components.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/config.rs#L2678-L2697
+///
+/// A relative value is dropped rather than resolved against the working
+/// directory. An absolute value is lexically normalized, as
+/// `is_snippet_probe` normalizes the probed path, and dropped if
+/// normalization fails. Dropping a root only turns its probes back into
+/// hard refusals.
+fn snippet_roots(real_rust_source_base_dir: Option<&Path>) -> Vec<PathBuf> {
+    let mut roots = vec![Path::new("/rustc").join(ir::COMPILER_COMMIT)];
+    if let Some(real) = real_rust_source_base_dir
+        && real.is_absolute()
+        && let Ok(real) = real.normalize_lexically()
+    {
+        roots.push(real);
+    }
+    roots
+}
+
 /// Hash the exact bytes returned to rustc, before SourceMap normalization.
 /// `FileLoader::read_file` must "return a String because we normalize source
 /// files"; binary inputs have a separate read method and are recorded too.
@@ -221,6 +296,12 @@ impl FileLoader for RecordingLoader {
     }
 
     fn read_file(&self, path: &Path) -> io::Result<String> {
+        if self.lookup(path).is_err() && self.is_snippet_probe(path) {
+            return Err(io::Error::new(
+                io::ErrorKind::NotFound,
+                "imported standard-library source is not a capture input",
+            ));
+        }
         let path = self.read_path(path)?;
         let text = RealFileLoader.read_file(&path)?;
         self.record(&path, text.as_bytes(), "text")?;
@@ -907,9 +988,16 @@ impl rustc_driver::Callbacks for Callbacks<'_> {
             config.opts.logical_env.insert(key.clone(), value.clone());
         }
         config.override_queries = Some(override_queries);
+        // Imported sysroot sources appear under the compiler's virtual
+        // `/rustc/<commit>` prefix or, with `rust-src` installed, under the
+        // session's own `real_rust_source_base_dir`, which rustc derives from
+        // the sysroot pinned above (following one symlink). Use the session
+        // value rather than recomputing it so the roots match the decoder's
+        // names. See `snippet_roots` and `RecordingLoader::is_snippet_probe`.
         config.file_loader = Some(Box::new(RecordingLoader::new(
             self.reads.clone(),
             self.args.source_file.iter().cloned().collect(),
+            snippet_roots(config.opts.real_rust_source_base_dir.as_deref()),
         )));
     }
 
@@ -1409,6 +1497,138 @@ fn verified_profile_config(tcx: TyCtxt<'_>) -> Result<CheckedProfileConfig, Fail
     })
 }
 
+/// Admit the explicit `--stdlib-crate` capability only for the exact crate it
+/// names, compiled in the configuration whose language items the extractor
+/// can trust.
+///
+/// Ordinary crates must not define language items: a crate-local `#[lang]`
+/// item would change what compiler-generated MIR means. A standard-library
+/// crate legitimately defines them, so the capability admits them only when
+/// all of the following hold:
+///
+/// - The local crate is the named crate (`core`), compiled as a library from
+///   selected roots (whole-crate scope is unmodeled for it).
+/// - No other crate is loaded (`tcx.crates(())` is empty), so every language
+///   item the compilation uses is a definition in the captured sources.
+///   `core` is `#![no_core]` and links nothing.
+/// - `cfg(miri)` is not set. `core::ub_checks::check_language_ub` computes
+///   its runtime answer as `!cfg!(miri) && intrinsics::ub_checks()` ("Disable
+///   UB checks in Miri"), so `cfg(miri)` would remove the
+///   `assert_unsafe_precondition!` checks that standard-library verification
+///   relies on, even though the manifest would record the cfg.
+///   https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/ub_checks.rs#L96-L108
+/// - Every language item the extractor gives special meaning has the shape
+///   that meaning assumes ([`check_local_ordering`]). Other language items
+///   reach the captured program only through compiler-generated MIR, which
+///   capture translates 1:1 like any other MIR.
+///
+/// The last condition holds only because the extractor's admitted subset is
+/// narrow: it refuses returning calls, `Drop`, `Assert`, references, and
+/// boxes. Before the extractor admits a construct whose meaning depends on a
+/// language item (for example the `panic_*` items behind `Assert`,
+/// `drop_in_place`, `UnsafeCell`/`Freeze` for retags, or `owned_box`), add a
+/// structural check of the local definition here, as for `Ordering`;
+/// otherwise a crate named `core` could supply a forged definition.
+fn check_stdlib_capability(
+    tcx: TyCtxt<'_>,
+    stdlib_crate: ir::StdlibCrate,
+    crate_type: ir::CrateType,
+    scope: &ir::Scope,
+) -> Result<(), Failure> {
+    let crate_name = tcx.crate_name(LOCAL_CRATE);
+    if crate_name.as_str() != stdlib_crate.crate_name() {
+        return Err(Failure::unsupported(format!(
+            "--stdlib-crate {} does not match crate name {crate_name}",
+            stdlib_crate.crate_name()
+        )));
+    }
+    if crate_type != ir::CrateType::Lib || !matches!(scope, ir::Scope::SelectedUnit { .. }) {
+        return Err(Failure::unsupported(
+            "--stdlib-crate requires a library crate and selected roots",
+        ));
+    }
+    if !tcx.crates(()).is_empty() {
+        return Err(Failure::unsupported(
+            "--stdlib-crate core requires a compilation that loads no other crate",
+        ));
+    }
+    if tcx.sess.config.iter().any(|&(name, _)| name == sym::miri) {
+        return Err(Failure::unsupported(
+            "cfg(miri) is forbidden under --stdlib-crate: it disables UB checks",
+        ));
+    }
+    check_local_ordering(tcx)
+}
+
+/// `extract::ty` maps the `Ordering` language item to
+/// `Trusted.MirAst.MirTy.ordering`, whose values are exactly `Less`,
+/// `Equal`, and `Greater` at `-1_i8`, `0_i8`, and `1_i8`. A dependency's
+/// `Ordering` comes from the authenticated sysroot; a crate-local one is
+/// checked against that shape here instead of being trusted by name. The
+/// pinned definition reads: "This is a lang item only so that `BinOp::Cmp` in
+/// MIR can return it. It has no special behavior, but does require that the
+/// three variants `Less`/`Equal`/`Greater` remain `-1_i8`/`0_i8`/`+1_i8`
+/// respectively."
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/cmp.rs#L400-L415
+fn check_local_ordering(tcx: TyCtxt<'_>) -> Result<(), Failure> {
+    let Some(def) = tcx.lang_items().get(LangItem::OrderingEnum) else {
+        return Ok(());
+    };
+    if !def.is_local() {
+        return Ok(());
+    }
+    let adt = tcx.adt_def(def);
+    let variants: Vec<(String, u128, bool)> = if adt.is_enum() {
+        adt.discriminants(tcx)
+            .map(|(index, discr)| {
+                let variant = adt.variant(index);
+                let fieldless = variant.fields.is_empty()
+                    && variant.ctor_kind() == Some(rustc_hir::def::CtorKind::Const);
+                (variant.name.to_string(), discr.val, fieldless)
+            })
+            .collect()
+    } else {
+        Vec::new()
+    };
+    // Only a plain `#[repr(i8)]` is modeled; `align`, `packed`, `C`,
+    // `transparent`, or `simd` would change the layout `MirTy.ordering`
+    // assumes.
+    let repr = adt.repr();
+    let repr_i8 = repr.int == Some(rustc_abi::IntegerType::Fixed(rustc_abi::Integer::I8, true))
+        && repr.align.is_none()
+        && repr.pack.is_none()
+        && !repr.c()
+        && !repr.transparent()
+        && !repr.simd();
+    if ordering_shape_matches(tcx.generics_of(def).count(), repr_i8, &variants) {
+        Ok(())
+    } else {
+        Err(Failure::unsupported(format!(
+            "crate-local Ordering language item {} does not have the modeled shape",
+            tcx.def_path_str(def)
+        )))
+    }
+}
+
+/// `Discr::val` is the "Bit representation of the discriminant (e.g.,
+/// `-1i8` is `0xFF_u128`)", so `Less = -1` under `repr(i8)` is `0xff`.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/util.rs#L35-L37
+fn ordering_shape_matches(
+    generic_count: usize,
+    repr_i8: bool,
+    variants: &[(String, u128, bool)],
+) -> bool {
+    const EXPECTED: [(&str, u128); 3] = [("Less", 0xff), ("Equal", 0), ("Greater", 1)];
+    generic_count == 0
+        && repr_i8
+        && variants.len() == EXPECTED.len()
+        && variants.iter().zip(EXPECTED).all(
+            |((name, value, fieldless), (expected_name, expected_value))| {
+                *fieldless && name == expected_name && *value == expected_value
+            },
+        )
+}
+
 fn collect(
     tcx: TyCtxt<'_>,
     args: &Args,
@@ -1447,19 +1667,26 @@ fn collect(
         )));
     }
     verify_sysroot_only_crates(tcx, verified_sysroot, &args.target, requested_crate_type)?;
+    let stdlib_crate = args.stdlib_crate.map(ir::StdlibCrate::from);
+    if let Some(stdlib_crate) = stdlib_crate {
+        check_stdlib_capability(tcx, stdlib_crate, requested_crate_type, scope)?;
+    }
     // "Defined lang items can come from the current crate or its dependencies."
     // Admit crate-local `#[panic_handler]` (`LangItem::PanicImpl`) only in
     // `SelectedUnit` scope on binary crates (`CrateType::Executable`); every
     // other crate-local lang item (and any `PanicImpl` in `Scope::Crate` or
-    // `CrateType::Lib`) stays refused.
+    // `CrateType::Lib`) stays refused unless the `--stdlib-crate` capability
+    // has passed `check_stdlib_capability` above.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir/src/lang_items.rs#L24-L67
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir/src/lang_items.rs#L289
-    if let Some((lang_item, _)) = tcx.lang_items().iter().find(|(lang_item, def)| {
-        def.is_local()
-            && !(requested_crate_type == ir::CrateType::Bin
-                && matches!(scope, ir::Scope::SelectedUnit { .. })
-                && matches!(lang_item, LangItem::PanicImpl))
-    }) {
+    if stdlib_crate.is_none()
+        && let Some((lang_item, _)) = tcx.lang_items().iter().find(|(lang_item, def)| {
+            def.is_local()
+                && !(requested_crate_type == ir::CrateType::Bin
+                    && matches!(scope, ir::Scope::SelectedUnit { .. })
+                    && matches!(lang_item, LangItem::PanicImpl))
+        })
+    {
         return Err(Failure::unsupported(format!(
             "crate-local language item {lang_item:?} is unsupported"
         )));
@@ -1787,6 +2014,7 @@ fn collect(
             pointer_bits: profile.pointer_bits,
             endian: profile.endian,
             declared_source_files: args.source_file.clone(),
+            stdlib_crate,
         },
         source_files: reads.files.values().cloned().collect(),
         census,
@@ -1823,6 +2051,11 @@ pub(crate) fn run(
         .map_err(|_| Failure::tool("one capture invocation per process is required"))?;
     let requested_crate_type: ir::CrateType = args.crate_type.into();
     let requested_panic: ir::PanicStrategy = args.panic.into();
+    let emit = if args.stdlib_crate.is_some() {
+        "--emit=metadata"
+    } else {
+        "--emit=metadata,obj"
+    };
     let mut compiler_args = vec![
         "anneal-rustc-capture".into(),
         compiler_path(&args.crate_root)?.to_string(),
@@ -1841,7 +2074,18 @@ pub(crate) fn run(
         // The collector says: "Always visit all `required_consts`, so that we
         // evaluate them and abort compilation if any of them errors."
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_monomorphize/src/collector.rs#L1347-L1353
-        "--emit=metadata,obj".into(),
+        //
+        // Under `--stdlib-crate`, request metadata only. Object emission would
+        // run code generation over every monomorphic item of the whole
+        // standard-library crate, not just the selection. The collector's
+        // guarantee still holds for everything that enters the captured
+        // program: `extract::body` evaluates every `required_consts` entry of
+        // each selected or instantiated body and refuses returning calls, so
+        // no other body's constants can reach it, and a diverging call lowers
+        // to `TerminatorKind.unsupported`. Adding returning calls must extend
+        // this evaluation to the callee closure before the capability admits
+        // them.
+        emit.into(),
         // This explicit profile belongs to the captured configuration, rather
         // than inheriting Cargo or host defaults. rustc says debug-assertions
         // controls "cfg(debug_assertions)" and overflow-checks controls
@@ -2346,5 +2590,172 @@ mod tests {
             err.diagnostics[0].contains("compiler session sysroot diverged from verified sysroot"),
             "{err:?}"
         );
+    }
+
+    #[test]
+    fn snippet_probes_under_sysroot_roots_are_not_found_without_refusal() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path().canonicalize().unwrap();
+        let declared = root.join("crate/lib.rs");
+        std::fs::create_dir_all(declared.parent().unwrap()).unwrap();
+        std::fs::write(&declared, "pub fn f() {}\n").unwrap();
+        let rust_src = root.join("sysroot/lib/rustlib/src/rust");
+        let rust_src_file = rust_src.join("library/core/src/lib.rs");
+        std::fs::create_dir_all(rust_src_file.parent().unwrap()).unwrap();
+        std::fs::write(&rust_src_file, "// sysroot source\n").unwrap();
+        let undeclared = root.join("crate/other.rs");
+        std::fs::write(&undeclared, "pub fn g() {}\n").unwrap();
+        let virtual_root = Path::new("/rustc").join(ir::COMPILER_COMMIT);
+
+        let reads = Arc::new(Mutex::new(Reads::default()));
+        let loader = RecordingLoader::new(
+            reads.clone(),
+            BTreeSet::from([declared.clone()]),
+            vec![virtual_root.clone(), rust_src.clone()],
+        );
+
+        // Text probes under either root: `NotFound`, no refusal, no record.
+        for probe in [
+            virtual_root.join("library/core/src/mem/mod.rs"),
+            rust_src_file.clone(),
+        ] {
+            let error = loader.read_file(&probe).unwrap_err();
+            assert_eq!(error.kind(), io::ErrorKind::NotFound, "{probe:?}");
+        }
+        {
+            let reads = reads.lock().unwrap();
+            assert!(reads.refusals.is_empty(), "{:?}", reads.refusals);
+            assert!(reads.files.is_empty());
+        }
+
+        // Declared inputs are still read and recorded.
+        assert_eq!(loader.read_file(&declared).unwrap(), "pub fn f() {}\n");
+
+        // Binary reads, other compiler commits, `..` escapes out of a root,
+        // and ordinary undeclared files all remain hard refusals.
+        assert!(loader.read_binary_file(&rust_src_file).is_err());
+        let refused = [
+            Path::new("/rustc/0000000000000000000000000000000000000000/library/core/src/lib.rs")
+                .to_path_buf(),
+            virtual_root.join("../../etc/passwd"),
+            rust_src.join("../../../../../crate/other.rs"),
+            undeclared.clone(),
+        ];
+        for path in &refused {
+            let error = loader.read_file(path).unwrap_err();
+            assert_ne!(error.kind(), io::ErrorKind::NotFound, "{path:?}");
+        }
+        let reads = reads.lock().unwrap();
+        assert_eq!(
+            reads.refusals.len(),
+            refused.len() + 1,
+            "{:?}",
+            reads.refusals
+        );
+        assert_eq!(reads.files.keys().collect::<Vec<_>>(), vec![&declared]);
+    }
+
+    #[test]
+    fn snippet_roots_are_absolute_and_lexically_normalized() {
+        let virtual_root = Path::new("/rustc").join(ir::COMPILER_COMMIT);
+        assert_eq!(snippet_roots(None), vec![virtual_root.clone()]);
+        // Relative values are dropped, never resolved against the working
+        // directory; so are absolute values that escape the filesystem root.
+        for dropped in ["lib/rustlib/src/rust", "../src/rust", "/..", "/a/../.."] {
+            assert_eq!(
+                snippet_roots(Some(Path::new(dropped))),
+                vec![virtual_root.clone()],
+                "{dropped:?}"
+            );
+        }
+        assert_eq!(
+            snippet_roots(Some(Path::new("/opt/rust/lib/./rustlib/x/../src/rust"))),
+            vec![virtual_root.clone(), PathBuf::from("/opt/rust/lib/rustlib/src/rust")]
+        );
+
+        // A probe under an unnormalized `real_rust_source_base_dir` (for
+        // example, a `read_link` target with `..`) is still classified.
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path().canonicalize().unwrap();
+        let rust_src_file = root.join("sysroot/lib/rustlib/src/rust/library/core/src/lib.rs");
+        std::fs::create_dir_all(rust_src_file.parent().unwrap()).unwrap();
+        std::fs::write(&rust_src_file, "// sysroot source\n").unwrap();
+        let unnormalized = root.join("sysroot/lib/rustlib/x/../src/./rust");
+        let reads = Arc::new(Mutex::new(Reads::default()));
+        let loader = RecordingLoader::new(
+            reads.clone(),
+            BTreeSet::new(),
+            snippet_roots(Some(&unnormalized)),
+        );
+        for probe in [
+            rust_src_file.clone(),
+            unnormalized.join("library/core/src/lib.rs"),
+        ] {
+            let error = loader.read_file(&probe).unwrap_err();
+            assert_eq!(error.kind(), io::ErrorKind::NotFound, "{probe:?}");
+        }
+        let reads = reads.lock().unwrap();
+        assert!(reads.refusals.is_empty(), "{:?}", reads.refusals);
+        assert!(reads.files.is_empty());
+    }
+
+    #[test]
+    fn relative_reads_are_never_snippet_probes() {
+        // Even with the working directory itself as a root, a relative read
+        // stays an undeclared-read refusal rather than a silent `NotFound`.
+        let cwd = std::env::current_dir().unwrap().canonicalize().unwrap();
+        let reads = Arc::new(Mutex::new(Reads::default()));
+        let loader = RecordingLoader::new(reads.clone(), BTreeSet::new(), vec![cwd.clone()]);
+        assert!(loader.is_snippet_probe(&cwd.join("Cargo.toml")));
+        for relative in ["Cargo.toml", "./Cargo.toml", "src/../Cargo.toml"] {
+            assert!(!loader.is_snippet_probe(Path::new(relative)), "{relative:?}");
+            let error = loader.read_file(Path::new(relative)).unwrap_err();
+            assert_ne!(error.kind(), io::ErrorKind::NotFound, "{relative:?}");
+        }
+        let reads = reads.lock().unwrap();
+        assert_eq!(reads.refusals.len(), 3, "{:?}", reads.refusals);
+        assert!(reads.files.is_empty());
+    }
+
+    #[test]
+    fn local_ordering_shape_must_match_the_modeled_lang_item() {
+        let shape = |entries: &[(&str, u128, bool)]| -> Vec<(String, u128, bool)> {
+            entries
+                .iter()
+                .map(|&(name, value, fieldless)| (name.to_owned(), value, fieldless))
+                .collect()
+        };
+        let pinned = shape(&[
+            ("Less", 0xff, true),
+            ("Equal", 0, true),
+            ("Greater", 1, true),
+        ]);
+        assert!(ordering_shape_matches(0, true, &pinned));
+
+        assert!(!ordering_shape_matches(1, true, &pinned), "generic");
+        assert!(!ordering_shape_matches(0, false, &pinned), "not repr(i8)");
+        for forged in [
+            shape(&[("Less", 0, true), ("Equal", 1, true), ("Greater", 2, true)]),
+            shape(&[
+                ("Greater", 1, true),
+                ("Equal", 0, true),
+                ("Less", 0xff, true),
+            ]),
+            shape(&[
+                ("Less", 0xff, true),
+                ("Equal", 0, false),
+                ("Greater", 1, true),
+            ]),
+            shape(&[("Less", 0xff, true), ("Equal", 0, true)]),
+            shape(&[
+                ("Less", 0xff, true),
+                ("Equal", 0, true),
+                ("Greater", 1, true),
+                ("Other", 2, true),
+            ]),
+            Vec::new(),
+        ] {
+            assert!(!ordering_shape_matches(0, true, &forged), "{forged:?}");
+        }
     }
 }
