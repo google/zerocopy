@@ -1,0 +1,727 @@
+{
+  "rustc_version_verbose": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "readelf_version": "GNU readelf (GNU Binutils for Debian) 2.47",
+  "experiments": {
+    "a_const_static_address_and_cycles": {
+      "llvm_ir_static_vs_promoted_unnamed_addr": {
+        "opt_level_0": {
+          "lib_compile_returncode": 0,
+          "llvm_ir_summary": {
+            "global_declarations": [
+              "@S = constant [8 x i8] c\"{\\00\\00\\00\\00\\00\\00\\00\", align 8",
+              "@S_DUP_1 = constant [8 x i8] c\"\\88wfUD3\\22\\11\", align 8",
+              "@S_DUP_2 = constant [8 x i8] c\"\\88wfUD3\\22\\11\", align 8",
+              "@_RNvCsaOB7WAnZlIb_19static_vs_const_lib8S_PRIV_1 = internal constant [8 x i8] c\"\\11\\00\\FF\\EE\\DD\\CC\\BB\\AA\", align 8",
+              "@_RNvCsaOB7WAnZlIb_19static_vs_const_lib8S_PRIV_2 = internal constant [8 x i8] c\"\\11\\00\\FF\\EE\\DD\\CC\\BB\\AA\", align 8",
+              "@alloc_011d402fc2fd12f79ff2bc7691f0df1d = private unnamed_addr constant [16 x i8] c\"\\01\\00\\00\\00\\00\\00\\00\\00\\02\\00\\00\\00\\00\\00\\00\\00\", align 8"
+            ],
+            "fn_signatures": [
+              "define ptr @get_const_dup_ptr() unnamed_addr #1 personality ptr @rust_eh_personality {",
+              "define ptr @get_const_ptr() unnamed_addr #1 personality ptr @rust_eh_personality {",
+              "define zeroext i1 @get_priv_statics_eq() unnamed_addr #1 personality ptr @rust_eh_personality {",
+              "define ptr @get_promoted_ptr() unnamed_addr #1 personality ptr @rust_eh_personality {",
+              "define ptr @get_s_ptr() unnamed_addr #1 {"
+            ],
+            "tls_intrinsic_calls": [],
+            "tls_intrinsic_decls": []
+          },
+          "readelf_rodata_sections": [
+            "[15] .rodata.S         PROGBITS        0000000000000000 0000e8 000008 00   A  0   0  8",
+            "[16] .rodata.S_DUP_1   PROGBITS        0000000000000000 0000f0 000008 00   A  0   0  8",
+            "[17] .rodata.S_DUP_2   PROGBITS        0000000000000000 0000f8 000008 00   A  0   0  8",
+            "[18] .rodata._RNvCsaOB7WAnZlIb_19static_vs_const_lib8S_PRIV_1 PROGBITS        0000000000000000 000100 000008 00   A  0   0  8",
+            "[19] .rodata._RNvCsaOB7WAnZlIb_19static_vs_const_lib8S_PRIV_2 PROGBITS        0000000000000000 000108 000008 00   A  0   0  8",
+            "[20] .rodata.cst16     PROGBITS        0000000000000000 000110 000010 10  AM  0   0  8"
+          ],
+          "bin_compile_returncode": 0,
+          "bin_run_returncode": 0,
+          "bin_run_stdout": "STATIC_ADDR_EQ=true STATIC_DUP_EQ=false STATIC_PRIV_DUP_EQ=false CONST_EQ_PROMOTED=true CONST_EQ_DUP=true"
+        },
+        "opt_level_2": {
+          "lib_compile_returncode": 0,
+          "llvm_ir_summary": {
+            "global_declarations": [
+              "@S = constant [8 x i8] c\"{\\00\\00\\00\\00\\00\\00\\00\", align 8",
+              "@S_DUP_1 = local_unnamed_addr constant [8 x i8] c\"\\88wfUD3\\22\\11\", align 8",
+              "@S_DUP_2 = local_unnamed_addr constant [8 x i8] c\"\\88wfUD3\\22\\11\", align 8",
+              "@_RNvCsaOB7WAnZlIb_19static_vs_const_lib8S_PRIV_1 = internal constant [8 x i8] c\"\\11\\00\\FF\\EE\\DD\\CC\\BB\\AA\", align 8",
+              "@_RNvCsaOB7WAnZlIb_19static_vs_const_lib8S_PRIV_2 = internal constant [8 x i8] c\"\\11\\00\\FF\\EE\\DD\\CC\\BB\\AA\", align 8",
+              "@alloc_011d402fc2fd12f79ff2bc7691f0df1d = private unnamed_addr constant [16 x i8] c\"\\01\\00\\00\\00\\00\\00\\00\\00\\02\\00\\00\\00\\00\\00\\00\\00\", align 8",
+              "@get_const_ptr = unnamed_addr alias ptr (), ptr @get_const_dup_ptr",
+              "@get_promoted_ptr = unnamed_addr alias ptr (), ptr @get_const_dup_ptr"
+            ],
+            "fn_signatures": [
+              "define noundef nonnull ptr @get_const_dup_ptr() unnamed_addr #0 {",
+              "define noundef zeroext i1 @get_priv_statics_eq() unnamed_addr #1 {",
+              "define noundef nonnull ptr @get_s_ptr() unnamed_addr #0 {"
+            ],
+            "tls_intrinsic_calls": [],
+            "tls_intrinsic_decls": []
+          },
+          "readelf_rodata_sections": [
+            "[ 9] .rodata.S         PROGBITS        0000000000000000 000088 000008 00   A  0   0  8",
+            "[10] .rodata.S_DUP_1   PROGBITS        0000000000000000 000090 000008 00   A  0   0  8",
+            "[11] .rodata.S_DUP_2   PROGBITS        0000000000000000 000098 000008 00   A  0   0  8",
+            "[12] .rodata._RNvCsaOB7WAnZlIb_19static_vs_const_lib8S_PRIV_1 PROGBITS        0000000000000000 0000a0 000008 00   A  0   0  8",
+            "[13] .rodata._RNvCsaOB7WAnZlIb_19static_vs_const_lib8S_PRIV_2 PROGBITS        0000000000000000 0000a8 000008 00   A  0   0  8",
+            "[14] .rodata.cst16     PROGBITS        0000000000000000 0000b0 000010 10  AM  0   0  8"
+          ],
+          "bin_compile_returncode": 0,
+          "bin_run_returncode": 0,
+          "bin_run_stdout": "STATIC_ADDR_EQ=true STATIC_DUP_EQ=false STATIC_PRIV_DUP_EQ=false CONST_EQ_PROMOTED=true CONST_EQ_DUP=true"
+        }
+      },
+      "llvm_constmerge_ablation": {
+        "unnamed_addr_pair": {
+          "opt_returncode": 0,
+          "post_constmerge_lines": [
+            "@UA_2 = private unnamed_addr constant [8 x i8] c\"ABCDEFGH\", align 8",
+            "%eq = icmp eq ptr @UA_2, @UA_2"
+          ],
+          "merged_to_single": true
+        },
+        "non_unnamed_addr_pair": {
+          "opt_returncode": 0,
+          "post_constmerge_lines": [
+            "@ST_1 = private constant [8 x i8] c\"ABCDEFGH\", align 8",
+            "@ST_2 = private constant [8 x i8] c\"ABCDEFGH\", align 8",
+            "%eq = icmp eq ptr @ST_1, @ST_2"
+          ],
+          "preserved_distinct": true
+        },
+        "mixed_unnamed_and_static": {
+          "opt_returncode": 0,
+          "post_constmerge_lines": [
+            "@UA_2 = private constant [8 x i8] c\"ABCDEFGH\", align 8",
+            "@ST_2 = private constant [8 x i8] c\"ABCDEFGH\", align 8",
+            "%eq = icmp eq ptr @UA_2, @UA_2",
+            "%eq = icmp eq ptr @UA_2, @ST_2"
+          ],
+          "total_surviving_globals": 2
+        }
+      },
+      "cyclic_static_value_e0391": {
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0391]: cycle detected when evaluating initializer of static `A`\n --> <tmp>/cyc_val.rs:1:17\n  |\n1 | static A: u32 = B;\n  |                 ^\n  |\nnote: ...which requires evaluating initializer of static `B`...\n --> <tmp>/cyc_val.rs:2:17\n  |\n2 | static B: u32 = A;\n  |                 ^\n  = note: ...which again requires evaluating initializer of static `A`, completing the cycle\n  = note: cycle used when running analysis passes on crate `cyc_val`\n  = note: see https://rustc-dev-guide.rust-lang.org/overview.html#queries and https://rustc-dev-guide.rust-lang.org/query.html for more information\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0391`.\n"
+      },
+      "cyclic_static_self_value": {
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0080]: encountered static that tried to access itself during initialization\n --> <tmp>/cyc_self_val.rs:1:17\n  |\n1 | static A: u32 = A;\n  |                 ^ evaluation of `A` failed here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`.\n"
+      },
+      "cyclic_const_ref_e0391": {
+        "compile_returncode": 1,
+        "compile_stderr": "error[E0391]: cycle detected when simplifying constant for the type system `A`\n --> <tmp>/cyc_const_ref.rs:2:1\n  |\n2 | const A: Node = Node(10, &B);\n  | ^^^^^^^^^^^^^\n  |\nnote: ...which requires const-evaluating + checking `A`...\n --> <tmp>/cyc_const_ref.rs:2:27\n  |\n2 | const A: Node = Node(10, &B);\n  |                           ^\nnote: ...which requires simplifying constant for the type system `B`...\n --> <tmp>/cyc_const_ref.rs:3:1\n  |\n3 | const B: Node = Node(20, &A);\n  | ^^^^^^^^^^^^^\nnote: ...which requires const-evaluating + checking `B`...\n --> <tmp>/cyc_const_ref.rs:3:27\n  |\n3 | const B: Node = Node(20, &A);\n  |                           ^\n  = note: ...which again requires simplifying constant for the type system `A`, completing the cycle\n  = note: cycle used when running analysis passes on crate `cyc_const_ref`\n  = note: see https://rustc-dev-guide.rust-lang.org/overview.html#queries and https://rustc-dev-guide.rust-lang.org/query.html for more information\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0391`.\n"
+      },
+      "cyclic_static_address_of_lazy_alloc": {
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "CYC_REF_OK=10,20 ROUNDTRIP=10,20 SELF_CYCLE_EQ=true AB_DISTINCT=true",
+        "llvm_ir_static_cycle_globals": [
+          "@_RNvCs3JFuYcwBINv_7cyc_ref1A = internal constant <{ ptr, [4 x i8], [4 x i8] }> <{ ptr @_RNvCs3JFuYcwBINv_7cyc_ref1B, [4 x i8] c\"\\0A\\00\\00\\00\", [4 x i8] undef }>, align 8",
+          "@_RNvCs3JFuYcwBINv_7cyc_ref1B = internal constant <{ ptr, [4 x i8], [4 x i8] }> <{ ptr @_RNvCs3JFuYcwBINv_7cyc_ref1A, [4 x i8] c\"\\14\\00\\00\\00\", [4 x i8] undef }>, align 8",
+          "@_RNvCs3JFuYcwBINv_7cyc_ref9SELF_NODE = internal constant <{ ptr, [4 x i8], [4 x i8] }> <{ ptr @_RNvCs3JFuYcwBINv_7cyc_ref9SELF_NODE, [4 x i8] c\"*\\00\\00\\00\", [4 x i8] undef }>, align 8"
+        ],
+        "mir_excerpt_lines": [
+          "static A: Node = {",
+          "        _3 = const {alloc1: &Node};",
+          "alloc1 (static: B)",
+          "static B: Node = {",
+          "        _3 = const {alloc2: &Node};",
+          "alloc2 (static: A)",
+          "static SELF_NODE: Node = {",
+          "        _3 = const {alloc5: &Node};",
+          "alloc5 (static: SELF_NODE)",
+          "        _5 = const {alloc2: &Node};",
+          "        _7 = const {alloc2: &Node};",
+          "        _9 = const {alloc2: &Node};",
+          "        _11 = const {alloc1: &Node};",
+          "        _15 = const {alloc5: &Node};",
+          "        _17 = const {alloc5: &Node};",
+          "        _22 = const {alloc2: &Node};",
+          "        _24 = const {alloc1: &Node};",
+          "alloc7 (size: 67, align: 1) {",
+          "alloc5 (static: SELF_NODE, size: 16, align: 8) {",
+          "    \u257e\u2500\u2500\u2500\u2500\u2500alloc5<imm>\u2500\u2500\u2500\u2500\u2500\u257c 2a 00 00 00 __ __ __ __ \u2502 \u257e\u2500\u2500\u2500\u2500\u2500\u2500\u257c*...\u2591\u2591\u2591\u2591",
+          "alloc2 (static: A, size: 16, align: 8) {",
+          "    \u257e\u2500\u2500\u2500\u2500\u2500alloc1<imm>\u2500\u2500\u2500\u2500\u2500\u257c 0a 00 00 00 __ __ __ __ \u2502 \u257e\u2500\u2500\u2500\u2500\u2500\u2500\u257c....\u2591\u2591\u2591\u2591",
+          "alloc1 (static: B, size: 16, align: 8) {",
+          "    \u257e\u2500\u2500\u2500\u2500\u2500alloc2<imm>\u2500\u2500\u2500\u2500\u2500\u257c 14 00 00 00 __ __ __ __ \u2502 \u257e\u2500\u2500\u2500\u2500\u2500\u2500\u257c....\u2591\u2591\u2591\u2591"
+        ]
+      }
+    },
+    "b_thread_local_tls_models_and_elf_sections": {
+      "pie_executable": {
+        "local-exec": {
+          "ir_obj_compile_returncode": 0,
+          "link_returncode": 0,
+          "llvm_ir_summary": {
+            "global_declarations": [
+              "@S_GLOBAL = constant [8 x i8] c\"{\\00\\00\\00\\00\\00\\00\\00\", align 8",
+              "@TLS_FREEZE_ZERO = thread_local(localexec) local_unnamed_addr constant [8 x i8] zeroinitializer, align 8",
+              "@TLS_NONZERO = thread_local(localexec) global [8 x i8] c\"\\07\\00\\00\\00\\00\\00\\00\\00\", align 8",
+              "@TLS_ZERO = thread_local(localexec) local_unnamed_addr global [8 x i8] zeroinitializer, align 8",
+              "@alloc_011d402fc2fd12f79ff2bc7691f0df1d = private unnamed_addr constant [16 x i8] c\"\\01\\00\\00\\00\\00\\00\\00\\00\\02\\00\\00\\00\\00\\00\\00\\00\", align 8"
+            ],
+            "fn_signatures": [
+              "define internal fastcc noundef i64 @_RNvCsinl5Jt2013z_13tls_probe_bin13read_tls_zero() unnamed_addr #3 {",
+              "define internal fastcc noundef i64 @_RNvCsinl5Jt2013z_13tls_probe_bin16read_tls_nonzero() unnamed_addr #3 {",
+              "define internal fastcc noundef i64 @_RNvCsinl5Jt2013z_13tls_probe_bin20read_tls_freeze_zero() unnamed_addr #4 {",
+              "define internal fastcc noundef ptr @_RNvCsinl5Jt2013z_13tls_probe_bin9get_s_ptr() unnamed_addr #4 {"
+            ],
+            "tls_intrinsic_calls": [
+              "%_8.i = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_NONZERO)",
+              "%_9.i = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_ZERO)",
+              "%_1 = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_ZERO)",
+              "%_1 = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_NONZERO)",
+              "%_15 = call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_NONZERO)"
+            ],
+            "tls_intrinsic_decls": [
+              "declare nonnull ptr @llvm.threadlocal.address.p0(ptr nonnull) #12"
+            ]
+          },
+          "readelf_obj_tls_sections": [
+            "[67] .rodata._RNvYNtNtNtNtCsfFlbQN6m3JZ_3std3sys5stdio4unix6StderrNtNtBa_2io5Write9write_allCsinl5Jt2013z_13tls_probe_bin PROGBITS        0000000000000000 0015dc 000010 00   A  0   0  4",
+            "[68] .rela.rodata._RNvYNtNtNtNtCsfFlbQN6m3JZ_3std3sys5stdio4unix6StderrNtNtBa_2io5Write9write_allCsinl5Jt2013z_13tls_probe_bin RELA            0000000000000000 0040e0 000060 18   I 121  67  8",
+            "[71] .rodata.S_GLOBAL  PROGBITS        0000000000000000 001618 000008 00   A  0   0  8",
+            "[72] .tdata.TLS_FREEZE_ZERO PROGBITS        0000000000000000 001620 000008 00 WAT  0   0  8",
+            "[73] .tdata.TLS_NONZERO PROGBITS        0000000000000000 001628 000008 00 WAT  0   0  8",
+            "[74] .tbss.TLS_ZERO    NOBITS          0000000000000000 001630 000008 00 WAT  0   0  8",
+            "[75] .rodata.str1.1    PROGBITS        0000000000000000 001630 000276 01 AMS  0   0  1",
+            "[76] .data.rel.ro..Lvtable.1 PROGBITS        0000000000000000 0018a8 000030 00  WA  0   0  8",
+            "[77] .rela.data.rel.ro..Lvtable.1 RELA            0000000000000000 004188 000048 18   I 121  76  8",
+            "[78] .data.rel.ro..Lvtable.2 PROGBITS        0000000000000000 0018d8 000020 00  WA  0   0  8",
+            "[79] .rela.data.rel.ro..Lvtable.2 RELA            0000000000000000 0041d0 000030 18   I 121  78  8",
+            "[80] .rodata..Lalloc_7a0078e56453c84a4274ce689b2bb39a PROGBITS        0000000000000000 0018f8 00000e 00   A  0   0  1",
+            "[81] .rodata.cst8      PROGBITS        0000000000000000 001908 000010 08  AM  0   0  8",
+            "[82] .data.rel.ro..Lalloc_faf9cca559baef91d711d25583e7f742 PROGBITS        0000000000000000 001918 000018 00  WA  0   0  8",
+            "[83] .rela.data.rel.ro..Lalloc_faf9cca559baef91d711d25583e7f742 RELA            0000000000000000 004200 000018 18   I 121  82  8",
+            "[84] .data.rel.ro..Lalloc_4791f621897be2fdceea78e62c5cad8c PROGBITS        0000000000000000 001930 000018 00  WA  0   0  8",
+            "[85] .rela.data.rel.ro..Lalloc_4791f621897be2fdceea78e62c5cad8c RELA            0000000000000000 004218 000018 18   I 121  84  8",
+            "[86] .rodata.cst16     PROGBITS        0000000000000000 001948 000010 10  AM  0   0  8",
+            "[87] .rodata..Lalloc_e3605bf48dd8479a638909176cc37fce PROGBITS        0000000000000000 001958 000016 00   A  0   0  1",
+            "[88] .data.rel.ro..Lalloc_78a7764eaf3bfcdde0399f26a8c0ce97 PROGBITS        0000000000000000 001970 000018 00  WA  0   0  8",
+            "[89] .rela.data.rel.ro..Lalloc_78a7764eaf3bfcdde0399f26a8c0ce97 RELA            0000000000000000 004230 000018 18   I 121  88  8",
+            "[90] .rodata..Lalloc_4c23e4e4eab94b4be2c22004108e9347 PROGBITS        0000000000000000 001988 000015 00   A  0   0  1",
+            "[91] .data.rel.ro..Lalloc_376c220ff79974724c8db34de318edbb PROGBITS        0000000000000000 0019a0 000018 00  WA  0   0  8",
+            "[92] .rela.data.rel.ro..Lalloc_376c220ff79974724c8db34de318edbb RELA            0000000000000000 004248 000018 18   I 121  91  8",
+            "[93] .data.rel.ro..Lalloc_ff2df9acf172b7e620d94e780da39934 PROGBITS        0000000000000000 0019b8 000018 00  WA  0   0  8",
+            "[94] .rela.data.rel.ro..Lalloc_ff2df9acf172b7e620d94e780da39934 RELA            0000000000000000 004260 000018 18   I 121  93  8",
+            "[95] .data.rel.ro..Lalloc_928beb34da7c20891dd0d80a39aef5cc PROGBITS        0000000000000000 0019d0 000018 00  WA  0   0  8",
+            "[96] .rela.data.rel.ro..Lalloc_928beb34da7c20891dd0d80a39aef5cc RELA            0000000000000000 004278 000018 18   I 121  95  8",
+            "[97] .data.rel.ro..Lalloc_416b4cab497f4030324e290aaa3c8a19 PROGBITS        0000000000000000 0019e8 000018 00  WA  0   0  8",
+            "[98] .rela.data.rel.ro..Lalloc_416b4cab497f4030324e290aaa3c8a19 RELA            0000000000000000 004290 000018 18   I 121  97  8",
+            "[99] .data.rel.ro..Lvtable.3 PROGBITS        0000000000000000 001a00 000020 00  WA  0   0  8",
+            "[100] .rela.data.rel.ro..Lvtable.3 RELA            0000000000000000 0042a8 000030 18   I 121  99  8",
+            "[101] .data.rel.ro..Lvtable.4 PROGBITS        0000000000000000 001a20 000020 00  WA  0   0  8",
+            "[102] .rela.data.rel.ro..Lvtable.4 RELA            0000000000000000 0042d8 000030 18   I 121 101  8",
+            "[103] .rodata..Lalloc_987f9181f01088182face37be6d0a1cd PROGBITS        0000000000000000 001a40 000029 00   A  0   0  1",
+            "[104] .data.rel.ro..Lalloc_bcb2c350d5d278e96c29f655ed512ce4 PROGBITS        0000000000000000 001a70 000018 00  WA  0   0  8",
+            "[105] .rela.data.rel.ro..Lalloc_bcb2c350d5d278e96c29f655ed512ce4 RELA            0000000000000000 004308 000018 18   I 121 104  8",
+            "[106] .data.rel.ro..Lalloc_1cb04db561e80b9308cb36d71fad2895 PROGBITS        0000000000000000 001a88 000018 00  WA  0   0  8",
+            "[107] .rela.data.rel.ro..Lalloc_1cb04db561e80b9308cb36d71fad2895 RELA            0000000000000000 004320 000018 18   I 121 106  8",
+            "[108] .rodata..Lalloc_58f213f5b48e0bea76ba0b429606a6b5 PROGBITS        0000000000000000 001aa0 00003e 00   A  0   0  1",
+            "[109] .rodata..Lalloc_8d68fcbc011419193bd208f22e2789d1 PROGBITS        0000000000000000 001ade 00001c 00   A  0   0  1",
+            "[110] .data.rel.ro..Lalloc_0c6bd0c1dc63d8d7fb1eb0c800f5dec2 PROGBITS        0000000000000000 001b00 000018 00  WA  0   0  8",
+            "[111] .rela.data.rel.ro..Lalloc_0c6bd0c1dc63d8d7fb1eb0c800f5dec2 RELA            0000000000000000 004338 000018 18   I 121 110  8",
+            "[112] .data.rel.ro..Lalloc_f1bb5de7b86bfcbe3e570b6391bd1636 PROGBITS        0000000000000000 001b18 000018 00  WA  0   0  8",
+            "[113] .rela.data.rel.ro..Lalloc_f1bb5de7b86bfcbe3e570b6391bd1636 RELA            0000000000000000 004350 000018 18   I 121 112  8"
+          ],
+          "readelf_obj_tls_relocs": [
+            "0000000000000037  0000007900000017 R_X86_64_TPOFF32       0000000000000000 TLS_NONZERO + 0",
+            "0000000000000040  0000007900000017 R_X86_64_TPOFF32       0000000000000000 TLS_NONZERO + 0",
+            "000000000000004d  0000007a00000017 R_X86_64_TPOFF32       0000000000000000 TLS_ZERO + 0",
+            "0000000000000005  0000007a00000017 R_X86_64_TPOFF32       0000000000000000 TLS_ZERO + 0",
+            "0000000000000005  0000007900000017 R_X86_64_TPOFF32       0000000000000000 TLS_NONZERO + 0",
+            "00000000000004a1  0000007900000017 R_X86_64_TPOFF32       0000000000000000 TLS_NONZERO + 0"
+          ],
+          "readelf_bin_pt_tls": [
+            "TLS            0x0556b0 0x00000000000576b0 0x00000000000576b0 0x000028 0x000070 R   0x8"
+          ],
+          "run_returncode": 0,
+          "run_stdout": "STATIC_ADDR_EQ=true CONST_EQ_PROMOTED=true TLS_MAIN=7 TLS_CHILD=99 TLS_ZERO_MAIN=0 TLS_ZERO_CHILD=123 TLS_PTR_DISTINCT=true"
+        },
+        "initial-exec": {
+          "ir_obj_compile_returncode": 0,
+          "link_returncode": 0,
+          "llvm_ir_summary": {
+            "global_declarations": [
+              "@S_GLOBAL = constant [8 x i8] c\"{\\00\\00\\00\\00\\00\\00\\00\", align 8",
+              "@TLS_FREEZE_ZERO = thread_local(initialexec) local_unnamed_addr constant [8 x i8] zeroinitializer, align 8",
+              "@TLS_NONZERO = thread_local(initialexec) global [8 x i8] c\"\\07\\00\\00\\00\\00\\00\\00\\00\", align 8",
+              "@TLS_ZERO = thread_local(initialexec) local_unnamed_addr global [8 x i8] zeroinitializer, align 8",
+              "@alloc_011d402fc2fd12f79ff2bc7691f0df1d = private unnamed_addr constant [16 x i8] c\"\\01\\00\\00\\00\\00\\00\\00\\00\\02\\00\\00\\00\\00\\00\\00\\00\", align 8"
+            ],
+            "fn_signatures": [
+              "define internal fastcc noundef i64 @_RNvCsinl5Jt2013z_13tls_probe_bin13read_tls_zero() unnamed_addr #3 {",
+              "define internal fastcc noundef i64 @_RNvCsinl5Jt2013z_13tls_probe_bin16read_tls_nonzero() unnamed_addr #3 {",
+              "define internal fastcc noundef i64 @_RNvCsinl5Jt2013z_13tls_probe_bin20read_tls_freeze_zero() unnamed_addr #4 {",
+              "define internal fastcc noundef ptr @_RNvCsinl5Jt2013z_13tls_probe_bin9get_s_ptr() unnamed_addr #4 {"
+            ],
+            "tls_intrinsic_calls": [
+              "%_8.i = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_NONZERO)",
+              "%_9.i = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_ZERO)",
+              "%_1 = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_ZERO)",
+              "%_1 = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_NONZERO)",
+              "%_15 = call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_NONZERO)"
+            ],
+            "tls_intrinsic_decls": [
+              "declare nonnull ptr @llvm.threadlocal.address.p0(ptr nonnull) #12"
+            ]
+          },
+          "readelf_obj_tls_sections": [
+            "[67] .rodata._RNvYNtNtNtNtCsfFlbQN6m3JZ_3std3sys5stdio4unix6StderrNtNtBa_2io5Write9write_allCsinl5Jt2013z_13tls_probe_bin PROGBITS        0000000000000000 0015dc 000010 00   A  0   0  4",
+            "[68] .rela.rodata._RNvYNtNtNtNtCsfFlbQN6m3JZ_3std3sys5stdio4unix6StderrNtNtBa_2io5Write9write_allCsinl5Jt2013z_13tls_probe_bin RELA            0000000000000000 0040c8 000060 18   I 121  67  8",
+            "[71] .rodata.S_GLOBAL  PROGBITS        0000000000000000 001618 000008 00   A  0   0  8",
+            "[72] .tdata.TLS_FREEZE_ZERO PROGBITS        0000000000000000 001620 000008 00 WAT  0   0  8",
+            "[73] .tdata.TLS_NONZERO PROGBITS        0000000000000000 001628 000008 00 WAT  0   0  8",
+            "[74] .tbss.TLS_ZERO    NOBITS          0000000000000000 001630 000008 00 WAT  0   0  8",
+            "[75] .rodata.str1.1    PROGBITS        0000000000000000 001630 000276 01 AMS  0   0  1",
+            "[76] .data.rel.ro..Lvtable.1 PROGBITS        0000000000000000 0018a8 000030 00  WA  0   0  8",
+            "[77] .rela.data.rel.ro..Lvtable.1 RELA            0000000000000000 004170 000048 18   I 121  76  8",
+            "[78] .data.rel.ro..Lvtable.2 PROGBITS        0000000000000000 0018d8 000020 00  WA  0   0  8",
+            "[79] .rela.data.rel.ro..Lvtable.2 RELA            0000000000000000 0041b8 000030 18   I 121  78  8",
+            "[80] .rodata..Lalloc_7a0078e56453c84a4274ce689b2bb39a PROGBITS        0000000000000000 0018f8 00000e 00   A  0   0  1",
+            "[81] .rodata.cst8      PROGBITS        0000000000000000 001908 000010 08  AM  0   0  8",
+            "[82] .data.rel.ro..Lalloc_faf9cca559baef91d711d25583e7f742 PROGBITS        0000000000000000 001918 000018 00  WA  0   0  8",
+            "[83] .rela.data.rel.ro..Lalloc_faf9cca559baef91d711d25583e7f742 RELA            0000000000000000 0041e8 000018 18   I 121  82  8",
+            "[84] .data.rel.ro..Lalloc_4791f621897be2fdceea78e62c5cad8c PROGBITS        0000000000000000 001930 000018 00  WA  0   0  8",
+            "[85] .rela.data.rel.ro..Lalloc_4791f621897be2fdceea78e62c5cad8c RELA            0000000000000000 004200 000018 18   I 121  84  8",
+            "[86] .rodata.cst16     PROGBITS        0000000000000000 001948 000010 10  AM  0   0  8",
+            "[87] .rodata..Lalloc_e3605bf48dd8479a638909176cc37fce PROGBITS        0000000000000000 001958 000016 00   A  0   0  1",
+            "[88] .data.rel.ro..Lalloc_78a7764eaf3bfcdde0399f26a8c0ce97 PROGBITS        0000000000000000 001970 000018 00  WA  0   0  8",
+            "[89] .rela.data.rel.ro..Lalloc_78a7764eaf3bfcdde0399f26a8c0ce97 RELA            0000000000000000 004218 000018 18   I 121  88  8",
+            "[90] .rodata..Lalloc_4c23e4e4eab94b4be2c22004108e9347 PROGBITS        0000000000000000 001988 000015 00   A  0   0  1",
+            "[91] .data.rel.ro..Lalloc_376c220ff79974724c8db34de318edbb PROGBITS        0000000000000000 0019a0 000018 00  WA  0   0  8",
+            "[92] .rela.data.rel.ro..Lalloc_376c220ff79974724c8db34de318edbb RELA            0000000000000000 004230 000018 18   I 121  91  8",
+            "[93] .data.rel.ro..Lalloc_ff2df9acf172b7e620d94e780da39934 PROGBITS        0000000000000000 0019b8 000018 00  WA  0   0  8",
+            "[94] .rela.data.rel.ro..Lalloc_ff2df9acf172b7e620d94e780da39934 RELA            0000000000000000 004248 000018 18   I 121  93  8",
+            "[95] .data.rel.ro..Lalloc_928beb34da7c20891dd0d80a39aef5cc PROGBITS        0000000000000000 0019d0 000018 00  WA  0   0  8",
+            "[96] .rela.data.rel.ro..Lalloc_928beb34da7c20891dd0d80a39aef5cc RELA            0000000000000000 004260 000018 18   I 121  95  8",
+            "[97] .data.rel.ro..Lalloc_416b4cab497f4030324e290aaa3c8a19 PROGBITS        0000000000000000 0019e8 000018 00  WA  0   0  8",
+            "[98] .rela.data.rel.ro..Lalloc_416b4cab497f4030324e290aaa3c8a19 RELA            0000000000000000 004278 000018 18   I 121  97  8",
+            "[99] .data.rel.ro..Lvtable.3 PROGBITS        0000000000000000 001a00 000020 00  WA  0   0  8",
+            "[100] .rela.data.rel.ro..Lvtable.3 RELA            0000000000000000 004290 000030 18   I 121  99  8",
+            "[101] .data.rel.ro..Lvtable.4 PROGBITS        0000000000000000 001a20 000020 00  WA  0   0  8",
+            "[102] .rela.data.rel.ro..Lvtable.4 RELA            0000000000000000 0042c0 000030 18   I 121 101  8",
+            "[103] .rodata..Lalloc_987f9181f01088182face37be6d0a1cd PROGBITS        0000000000000000 001a40 000029 00   A  0   0  1",
+            "[104] .data.rel.ro..Lalloc_bcb2c350d5d278e96c29f655ed512ce4 PROGBITS        0000000000000000 001a70 000018 00  WA  0   0  8",
+            "[105] .rela.data.rel.ro..Lalloc_bcb2c350d5d278e96c29f655ed512ce4 RELA            0000000000000000 0042f0 000018 18   I 121 104  8",
+            "[106] .data.rel.ro..Lalloc_1cb04db561e80b9308cb36d71fad2895 PROGBITS        0000000000000000 001a88 000018 00  WA  0   0  8",
+            "[107] .rela.data.rel.ro..Lalloc_1cb04db561e80b9308cb36d71fad2895 RELA            0000000000000000 004308 000018 18   I 121 106  8",
+            "[108] .rodata..Lalloc_58f213f5b48e0bea76ba0b429606a6b5 PROGBITS        0000000000000000 001aa0 00003e 00   A  0   0  1",
+            "[109] .rodata..Lalloc_8d68fcbc011419193bd208f22e2789d1 PROGBITS        0000000000000000 001ade 00001c 00   A  0   0  1",
+            "[110] .data.rel.ro..Lalloc_0c6bd0c1dc63d8d7fb1eb0c800f5dec2 PROGBITS        0000000000000000 001b00 000018 00  WA  0   0  8",
+            "[111] .rela.data.rel.ro..Lalloc_0c6bd0c1dc63d8d7fb1eb0c800f5dec2 RELA            0000000000000000 004320 000018 18   I 121 110  8",
+            "[112] .data.rel.ro..Lalloc_f1bb5de7b86bfcbe3e570b6391bd1636 PROGBITS        0000000000000000 001b18 000018 00  WA  0   0  8",
+            "[113] .rela.data.rel.ro..Lalloc_f1bb5de7b86bfcbe3e570b6391bd1636 RELA            0000000000000000 004338 000018 18   I 121 112  8"
+          ],
+          "readelf_obj_tls_relocs": [
+            "000000000000002e  0000007900000016 R_X86_64_GOTTPOFF      0000000000000000 TLS_NONZERO - 4",
+            "0000000000000049  0000007a00000016 R_X86_64_GOTTPOFF      0000000000000000 TLS_ZERO - 4",
+            "0000000000000003  0000007a00000016 R_X86_64_GOTTPOFF      0000000000000000 TLS_ZERO - 4",
+            "0000000000000003  0000007900000016 R_X86_64_GOTTPOFF      0000000000000000 TLS_NONZERO - 4",
+            "00000000000004a1  0000007900000016 R_X86_64_GOTTPOFF      0000000000000000 TLS_NONZERO - 4"
+          ],
+          "readelf_bin_pt_tls": [
+            "TLS            0x0556b0 0x00000000000576b0 0x00000000000576b0 0x000028 0x000070 R   0x8"
+          ],
+          "run_returncode": 0,
+          "run_stdout": "STATIC_ADDR_EQ=true CONST_EQ_PROMOTED=true TLS_MAIN=7 TLS_CHILD=99 TLS_ZERO_MAIN=0 TLS_ZERO_CHILD=123 TLS_PTR_DISTINCT=true"
+        },
+        "global-dynamic": {
+          "ir_obj_compile_returncode": 0,
+          "link_returncode": 0,
+          "llvm_ir_summary": {
+            "global_declarations": [
+              "@S_GLOBAL = constant [8 x i8] c\"{\\00\\00\\00\\00\\00\\00\\00\", align 8",
+              "@TLS_FREEZE_ZERO = thread_local local_unnamed_addr constant [8 x i8] zeroinitializer, align 8",
+              "@TLS_NONZERO = thread_local global [8 x i8] c\"\\07\\00\\00\\00\\00\\00\\00\\00\", align 8",
+              "@TLS_ZERO = thread_local local_unnamed_addr global [8 x i8] zeroinitializer, align 8",
+              "@alloc_011d402fc2fd12f79ff2bc7691f0df1d = private unnamed_addr constant [16 x i8] c\"\\01\\00\\00\\00\\00\\00\\00\\00\\02\\00\\00\\00\\00\\00\\00\\00\", align 8"
+            ],
+            "fn_signatures": [
+              "define internal fastcc noundef i64 @_RNvCsinl5Jt2013z_13tls_probe_bin13read_tls_zero() unnamed_addr #3 {",
+              "define internal fastcc noundef i64 @_RNvCsinl5Jt2013z_13tls_probe_bin16read_tls_nonzero() unnamed_addr #3 {",
+              "define internal fastcc noundef i64 @_RNvCsinl5Jt2013z_13tls_probe_bin20read_tls_freeze_zero() unnamed_addr #4 {",
+              "define internal fastcc noundef ptr @_RNvCsinl5Jt2013z_13tls_probe_bin9get_s_ptr() unnamed_addr #4 {"
+            ],
+            "tls_intrinsic_calls": [
+              "%_8.i = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_NONZERO)",
+              "%_9.i = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_ZERO)",
+              "%_1 = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_ZERO)",
+              "%_1 = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_NONZERO)",
+              "%_15 = call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_NONZERO)"
+            ],
+            "tls_intrinsic_decls": [
+              "declare nonnull ptr @llvm.threadlocal.address.p0(ptr nonnull) #12"
+            ]
+          },
+          "readelf_obj_tls_sections": [
+            "[67] .rodata._RNvYNtNtNtNtCsfFlbQN6m3JZ_3std3sys5stdio4unix6StderrNtNtBa_2io5Write9write_allCsinl5Jt2013z_13tls_probe_bin PROGBITS        0000000000000000 0015dc 000010 00   A  0   0  4",
+            "[68] .rela.rodata._RNvYNtNtNtNtCsfFlbQN6m3JZ_3std3sys5stdio4unix6StderrNtNtBa_2io5Write9write_allCsinl5Jt2013z_13tls_probe_bin RELA            0000000000000000 0040c8 000060 18   I 121  67  8",
+            "[71] .rodata.S_GLOBAL  PROGBITS        0000000000000000 001618 000008 00   A  0   0  8",
+            "[72] .tdata.TLS_FREEZE_ZERO PROGBITS        0000000000000000 001620 000008 00 WAT  0   0  8",
+            "[73] .tdata.TLS_NONZERO PROGBITS        0000000000000000 001628 000008 00 WAT  0   0  8",
+            "[74] .tbss.TLS_ZERO    NOBITS          0000000000000000 001630 000008 00 WAT  0   0  8",
+            "[75] .rodata.str1.1    PROGBITS        0000000000000000 001630 000276 01 AMS  0   0  1",
+            "[76] .data.rel.ro..Lvtable.1 PROGBITS        0000000000000000 0018a8 000030 00  WA  0   0  8",
+            "[77] .rela.data.rel.ro..Lvtable.1 RELA            0000000000000000 004170 000048 18   I 121  76  8",
+            "[78] .data.rel.ro..Lvtable.2 PROGBITS        0000000000000000 0018d8 000020 00  WA  0   0  8",
+            "[79] .rela.data.rel.ro..Lvtable.2 RELA            0000000000000000 0041b8 000030 18   I 121  78  8",
+            "[80] .rodata..Lalloc_7a0078e56453c84a4274ce689b2bb39a PROGBITS        0000000000000000 0018f8 00000e 00   A  0   0  1",
+            "[81] .rodata.cst8      PROGBITS        0000000000000000 001908 000010 08  AM  0   0  8",
+            "[82] .data.rel.ro..Lalloc_faf9cca559baef91d711d25583e7f742 PROGBITS        0000000000000000 001918 000018 00  WA  0   0  8",
+            "[83] .rela.data.rel.ro..Lalloc_faf9cca559baef91d711d25583e7f742 RELA            0000000000000000 0041e8 000018 18   I 121  82  8",
+            "[84] .data.rel.ro..Lalloc_4791f621897be2fdceea78e62c5cad8c PROGBITS        0000000000000000 001930 000018 00  WA  0   0  8",
+            "[85] .rela.data.rel.ro..Lalloc_4791f621897be2fdceea78e62c5cad8c RELA            0000000000000000 004200 000018 18   I 121  84  8",
+            "[86] .rodata.cst16     PROGBITS        0000000000000000 001948 000010 10  AM  0   0  8",
+            "[87] .rodata..Lalloc_e3605bf48dd8479a638909176cc37fce PROGBITS        0000000000000000 001958 000016 00   A  0   0  1",
+            "[88] .data.rel.ro..Lalloc_78a7764eaf3bfcdde0399f26a8c0ce97 PROGBITS        0000000000000000 001970 000018 00  WA  0   0  8",
+            "[89] .rela.data.rel.ro..Lalloc_78a7764eaf3bfcdde0399f26a8c0ce97 RELA            0000000000000000 004218 000018 18   I 121  88  8",
+            "[90] .rodata..Lalloc_4c23e4e4eab94b4be2c22004108e9347 PROGBITS        0000000000000000 001988 000015 00   A  0   0  1",
+            "[91] .data.rel.ro..Lalloc_376c220ff79974724c8db34de318edbb PROGBITS        0000000000000000 0019a0 000018 00  WA  0   0  8",
+            "[92] .rela.data.rel.ro..Lalloc_376c220ff79974724c8db34de318edbb RELA            0000000000000000 004230 000018 18   I 121  91  8",
+            "[93] .data.rel.ro..Lalloc_ff2df9acf172b7e620d94e780da39934 PROGBITS        0000000000000000 0019b8 000018 00  WA  0   0  8",
+            "[94] .rela.data.rel.ro..Lalloc_ff2df9acf172b7e620d94e780da39934 RELA            0000000000000000 004248 000018 18   I 121  93  8",
+            "[95] .data.rel.ro..Lalloc_928beb34da7c20891dd0d80a39aef5cc PROGBITS        0000000000000000 0019d0 000018 00  WA  0   0  8",
+            "[96] .rela.data.rel.ro..Lalloc_928beb34da7c20891dd0d80a39aef5cc RELA            0000000000000000 004260 000018 18   I 121  95  8",
+            "[97] .data.rel.ro..Lalloc_416b4cab497f4030324e290aaa3c8a19 PROGBITS        0000000000000000 0019e8 000018 00  WA  0   0  8",
+            "[98] .rela.data.rel.ro..Lalloc_416b4cab497f4030324e290aaa3c8a19 RELA            0000000000000000 004278 000018 18   I 121  97  8",
+            "[99] .data.rel.ro..Lvtable.3 PROGBITS        0000000000000000 001a00 000020 00  WA  0   0  8",
+            "[100] .rela.data.rel.ro..Lvtable.3 RELA            0000000000000000 004290 000030 18   I 121  99  8",
+            "[101] .data.rel.ro..Lvtable.4 PROGBITS        0000000000000000 001a20 000020 00  WA  0   0  8",
+            "[102] .rela.data.rel.ro..Lvtable.4 RELA            0000000000000000 0042c0 000030 18   I 121 101  8",
+            "[103] .rodata..Lalloc_987f9181f01088182face37be6d0a1cd PROGBITS        0000000000000000 001a40 000029 00   A  0   0  1",
+            "[104] .data.rel.ro..Lalloc_bcb2c350d5d278e96c29f655ed512ce4 PROGBITS        0000000000000000 001a70 000018 00  WA  0   0  8",
+            "[105] .rela.data.rel.ro..Lalloc_bcb2c350d5d278e96c29f655ed512ce4 RELA            0000000000000000 0042f0 000018 18   I 121 104  8",
+            "[106] .data.rel.ro..Lalloc_1cb04db561e80b9308cb36d71fad2895 PROGBITS        0000000000000000 001a88 000018 00  WA  0   0  8",
+            "[107] .rela.data.rel.ro..Lalloc_1cb04db561e80b9308cb36d71fad2895 RELA            0000000000000000 004308 000018 18   I 121 106  8",
+            "[108] .rodata..Lalloc_58f213f5b48e0bea76ba0b429606a6b5 PROGBITS        0000000000000000 001aa0 00003e 00   A  0   0  1",
+            "[109] .rodata..Lalloc_8d68fcbc011419193bd208f22e2789d1 PROGBITS        0000000000000000 001ade 00001c 00   A  0   0  1",
+            "[110] .data.rel.ro..Lalloc_0c6bd0c1dc63d8d7fb1eb0c800f5dec2 PROGBITS        0000000000000000 001b00 000018 00  WA  0   0  8",
+            "[111] .rela.data.rel.ro..Lalloc_0c6bd0c1dc63d8d7fb1eb0c800f5dec2 RELA            0000000000000000 004320 000018 18   I 121 110  8",
+            "[112] .data.rel.ro..Lalloc_f1bb5de7b86bfcbe3e570b6391bd1636 PROGBITS        0000000000000000 001b18 000018 00  WA  0   0  8",
+            "[113] .rela.data.rel.ro..Lalloc_f1bb5de7b86bfcbe3e570b6391bd1636 RELA            0000000000000000 004338 000018 18   I 121 112  8"
+          ],
+          "readelf_obj_tls_relocs": [
+            "000000000000002e  0000007900000016 R_X86_64_GOTTPOFF      0000000000000000 TLS_NONZERO - 4",
+            "0000000000000049  0000007a00000016 R_X86_64_GOTTPOFF      0000000000000000 TLS_ZERO - 4",
+            "0000000000000003  0000007a00000016 R_X86_64_GOTTPOFF      0000000000000000 TLS_ZERO - 4",
+            "0000000000000003  0000007900000016 R_X86_64_GOTTPOFF      0000000000000000 TLS_NONZERO - 4",
+            "00000000000004a1  0000007900000016 R_X86_64_GOTTPOFF      0000000000000000 TLS_NONZERO - 4"
+          ],
+          "readelf_bin_pt_tls": [
+            "TLS            0x0556b0 0x00000000000576b0 0x00000000000576b0 0x000028 0x000070 R   0x8"
+          ],
+          "run_returncode": 0,
+          "run_stdout": "STATIC_ADDR_EQ=true CONST_EQ_PROMOTED=true TLS_MAIN=7 TLS_CHILD=99 TLS_ZERO_MAIN=0 TLS_ZERO_CHILD=123 TLS_PTR_DISTINCT=true"
+        },
+        "local-dynamic": {
+          "ir_obj_compile_returncode": 0,
+          "link_returncode": 0,
+          "llvm_ir_summary": {
+            "global_declarations": [
+              "@S_GLOBAL = constant [8 x i8] c\"{\\00\\00\\00\\00\\00\\00\\00\", align 8",
+              "@TLS_FREEZE_ZERO = thread_local(localdynamic) local_unnamed_addr constant [8 x i8] zeroinitializer, align 8",
+              "@TLS_NONZERO = thread_local(localdynamic) global [8 x i8] c\"\\07\\00\\00\\00\\00\\00\\00\\00\", align 8",
+              "@TLS_ZERO = thread_local(localdynamic) local_unnamed_addr global [8 x i8] zeroinitializer, align 8",
+              "@alloc_011d402fc2fd12f79ff2bc7691f0df1d = private unnamed_addr constant [16 x i8] c\"\\01\\00\\00\\00\\00\\00\\00\\00\\02\\00\\00\\00\\00\\00\\00\\00\", align 8"
+            ],
+            "fn_signatures": [
+              "define internal fastcc noundef i64 @_RNvCsinl5Jt2013z_13tls_probe_bin13read_tls_zero() unnamed_addr #3 {",
+              "define internal fastcc noundef i64 @_RNvCsinl5Jt2013z_13tls_probe_bin16read_tls_nonzero() unnamed_addr #3 {",
+              "define internal fastcc noundef i64 @_RNvCsinl5Jt2013z_13tls_probe_bin20read_tls_freeze_zero() unnamed_addr #4 {",
+              "define internal fastcc noundef ptr @_RNvCsinl5Jt2013z_13tls_probe_bin9get_s_ptr() unnamed_addr #4 {"
+            ],
+            "tls_intrinsic_calls": [
+              "%_8.i = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_NONZERO)",
+              "%_9.i = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_ZERO)",
+              "%_1 = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_ZERO)",
+              "%_1 = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_NONZERO)",
+              "%_15 = call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_NONZERO)"
+            ],
+            "tls_intrinsic_decls": [
+              "declare nonnull ptr @llvm.threadlocal.address.p0(ptr nonnull) #12"
+            ]
+          },
+          "readelf_obj_tls_sections": [
+            "[67] .rodata._RNvYNtNtNtNtCsfFlbQN6m3JZ_3std3sys5stdio4unix6StderrNtNtBa_2io5Write9write_allCsinl5Jt2013z_13tls_probe_bin PROGBITS        0000000000000000 0015dc 000010 00   A  0   0  4",
+            "[68] .rela.rodata._RNvYNtNtNtNtCsfFlbQN6m3JZ_3std3sys5stdio4unix6StderrNtNtBa_2io5Write9write_allCsinl5Jt2013z_13tls_probe_bin RELA            0000000000000000 0040c8 000060 18   I 121  67  8",
+            "[71] .rodata.S_GLOBAL  PROGBITS        0000000000000000 001618 000008 00   A  0   0  8",
+            "[72] .tdata.TLS_FREEZE_ZERO PROGBITS        0000000000000000 001620 000008 00 WAT  0   0  8",
+            "[73] .tdata.TLS_NONZERO PROGBITS        0000000000000000 001628 000008 00 WAT  0   0  8",
+            "[74] .tbss.TLS_ZERO    NOBITS          0000000000000000 001630 000008 00 WAT  0   0  8",
+            "[75] .rodata.str1.1    PROGBITS        0000000000000000 001630 000276 01 AMS  0   0  1",
+            "[76] .data.rel.ro..Lvtable.1 PROGBITS        0000000000000000 0018a8 000030 00  WA  0   0  8",
+            "[77] .rela.data.rel.ro..Lvtable.1 RELA            0000000000000000 004170 000048 18   I 121  76  8",
+            "[78] .data.rel.ro..Lvtable.2 PROGBITS        0000000000000000 0018d8 000020 00  WA  0   0  8",
+            "[79] .rela.data.rel.ro..Lvtable.2 RELA            0000000000000000 0041b8 000030 18   I 121  78  8",
+            "[80] .rodata..Lalloc_7a0078e56453c84a4274ce689b2bb39a PROGBITS        0000000000000000 0018f8 00000e 00   A  0   0  1",
+            "[81] .rodata.cst8      PROGBITS        0000000000000000 001908 000010 08  AM  0   0  8",
+            "[82] .data.rel.ro..Lalloc_faf9cca559baef91d711d25583e7f742 PROGBITS        0000000000000000 001918 000018 00  WA  0   0  8",
+            "[83] .rela.data.rel.ro..Lalloc_faf9cca559baef91d711d25583e7f742 RELA            0000000000000000 0041e8 000018 18   I 121  82  8",
+            "[84] .data.rel.ro..Lalloc_4791f621897be2fdceea78e62c5cad8c PROGBITS        0000000000000000 001930 000018 00  WA  0   0  8",
+            "[85] .rela.data.rel.ro..Lalloc_4791f621897be2fdceea78e62c5cad8c RELA            0000000000000000 004200 000018 18   I 121  84  8",
+            "[86] .rodata.cst16     PROGBITS        0000000000000000 001948 000010 10  AM  0   0  8",
+            "[87] .rodata..Lalloc_e3605bf48dd8479a638909176cc37fce PROGBITS        0000000000000000 001958 000016 00   A  0   0  1",
+            "[88] .data.rel.ro..Lalloc_78a7764eaf3bfcdde0399f26a8c0ce97 PROGBITS        0000000000000000 001970 000018 00  WA  0   0  8",
+            "[89] .rela.data.rel.ro..Lalloc_78a7764eaf3bfcdde0399f26a8c0ce97 RELA            0000000000000000 004218 000018 18   I 121  88  8",
+            "[90] .rodata..Lalloc_4c23e4e4eab94b4be2c22004108e9347 PROGBITS        0000000000000000 001988 000015 00   A  0   0  1",
+            "[91] .data.rel.ro..Lalloc_376c220ff79974724c8db34de318edbb PROGBITS        0000000000000000 0019a0 000018 00  WA  0   0  8",
+            "[92] .rela.data.rel.ro..Lalloc_376c220ff79974724c8db34de318edbb RELA            0000000000000000 004230 000018 18   I 121  91  8",
+            "[93] .data.rel.ro..Lalloc_ff2df9acf172b7e620d94e780da39934 PROGBITS        0000000000000000 0019b8 000018 00  WA  0   0  8",
+            "[94] .rela.data.rel.ro..Lalloc_ff2df9acf172b7e620d94e780da39934 RELA            0000000000000000 004248 000018 18   I 121  93  8",
+            "[95] .data.rel.ro..Lalloc_928beb34da7c20891dd0d80a39aef5cc PROGBITS        0000000000000000 0019d0 000018 00  WA  0   0  8",
+            "[96] .rela.data.rel.ro..Lalloc_928beb34da7c20891dd0d80a39aef5cc RELA            0000000000000000 004260 000018 18   I 121  95  8",
+            "[97] .data.rel.ro..Lalloc_416b4cab497f4030324e290aaa3c8a19 PROGBITS        0000000000000000 0019e8 000018 00  WA  0   0  8",
+            "[98] .rela.data.rel.ro..Lalloc_416b4cab497f4030324e290aaa3c8a19 RELA            0000000000000000 004278 000018 18   I 121  97  8",
+            "[99] .data.rel.ro..Lvtable.3 PROGBITS        0000000000000000 001a00 000020 00  WA  0   0  8",
+            "[100] .rela.data.rel.ro..Lvtable.3 RELA            0000000000000000 004290 000030 18   I 121  99  8",
+            "[101] .data.rel.ro..Lvtable.4 PROGBITS        0000000000000000 001a20 000020 00  WA  0   0  8",
+            "[102] .rela.data.rel.ro..Lvtable.4 RELA            0000000000000000 0042c0 000030 18   I 121 101  8",
+            "[103] .rodata..Lalloc_987f9181f01088182face37be6d0a1cd PROGBITS        0000000000000000 001a40 000029 00   A  0   0  1",
+            "[104] .data.rel.ro..Lalloc_bcb2c350d5d278e96c29f655ed512ce4 PROGBITS        0000000000000000 001a70 000018 00  WA  0   0  8",
+            "[105] .rela.data.rel.ro..Lalloc_bcb2c350d5d278e96c29f655ed512ce4 RELA            0000000000000000 0042f0 000018 18   I 121 104  8",
+            "[106] .data.rel.ro..Lalloc_1cb04db561e80b9308cb36d71fad2895 PROGBITS        0000000000000000 001a88 000018 00  WA  0   0  8",
+            "[107] .rela.data.rel.ro..Lalloc_1cb04db561e80b9308cb36d71fad2895 RELA            0000000000000000 004308 000018 18   I 121 106  8",
+            "[108] .rodata..Lalloc_58f213f5b48e0bea76ba0b429606a6b5 PROGBITS        0000000000000000 001aa0 00003e 00   A  0   0  1",
+            "[109] .rodata..Lalloc_8d68fcbc011419193bd208f22e2789d1 PROGBITS        0000000000000000 001ade 00001c 00   A  0   0  1",
+            "[110] .data.rel.ro..Lalloc_0c6bd0c1dc63d8d7fb1eb0c800f5dec2 PROGBITS        0000000000000000 001b00 000018 00  WA  0   0  8",
+            "[111] .rela.data.rel.ro..Lalloc_0c6bd0c1dc63d8d7fb1eb0c800f5dec2 RELA            0000000000000000 004320 000018 18   I 121 110  8",
+            "[112] .data.rel.ro..Lalloc_f1bb5de7b86bfcbe3e570b6391bd1636 PROGBITS        0000000000000000 001b18 000018 00  WA  0   0  8",
+            "[113] .rela.data.rel.ro..Lalloc_f1bb5de7b86bfcbe3e570b6391bd1636 RELA            0000000000000000 004338 000018 18   I 121 112  8"
+          ],
+          "readelf_obj_tls_relocs": [
+            "000000000000002e  0000007900000016 R_X86_64_GOTTPOFF      0000000000000000 TLS_NONZERO - 4",
+            "0000000000000049  0000007a00000016 R_X86_64_GOTTPOFF      0000000000000000 TLS_ZERO - 4",
+            "0000000000000003  0000007a00000016 R_X86_64_GOTTPOFF      0000000000000000 TLS_ZERO - 4",
+            "0000000000000003  0000007900000016 R_X86_64_GOTTPOFF      0000000000000000 TLS_NONZERO - 4",
+            "00000000000004a1  0000007900000016 R_X86_64_GOTTPOFF      0000000000000000 TLS_NONZERO - 4"
+          ],
+          "readelf_bin_pt_tls": [
+            "TLS            0x0556b0 0x00000000000576b0 0x00000000000576b0 0x000028 0x000070 R   0x8"
+          ],
+          "run_returncode": 0,
+          "run_stdout": "STATIC_ADDR_EQ=true CONST_EQ_PROMOTED=true TLS_MAIN=7 TLS_CHILD=99 TLS_ZERO_MAIN=0 TLS_ZERO_CHILD=123 TLS_PTR_DISTINCT=true"
+        }
+      },
+      "cdylib_shared_object": {
+        "local-exec": {
+          "ir_obj_compile_returncode": 0,
+          "llvm_ir_summary": {
+            "global_declarations": [
+              "@TLS_FREEZE_ZERO = thread_local(localexec) local_unnamed_addr constant [8 x i8] zeroinitializer, align 8",
+              "@TLS_NONZERO = thread_local(localexec) local_unnamed_addr global [8 x i8] c\"\\07\\00\\00\\00\\00\\00\\00\\00\", align 8",
+              "@TLS_ZERO = thread_local(localexec) local_unnamed_addr global [8 x i8] zeroinitializer, align 8"
+            ],
+            "fn_signatures": [
+              "define noundef i64 @touch_tls(i64 noundef %delta) unnamed_addr #0 {"
+            ],
+            "tls_intrinsic_calls": [
+              "%_3 = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_NONZERO)",
+              "%_7 = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_ZERO)"
+            ],
+            "tls_intrinsic_decls": [
+              "declare nonnull ptr @llvm.threadlocal.address.p0(ptr nonnull) #1"
+            ]
+          },
+          "readelf_obj_tls_sections": [
+            "[ 5] .tdata.TLS_FREEZE_ZERO PROGBITS        0000000000000000 000070 000008 00 WAT  0   0  8",
+            "[ 6] .tdata.TLS_NONZERO PROGBITS        0000000000000000 000078 000008 00 WAT  0   0  8",
+            "[ 7] .tbss.TLS_ZERO    NOBITS          0000000000000000 000080 000008 00 WAT  0   0  8"
+          ],
+          "readelf_obj_tls_relocs": [
+            "0000000000000005  0000000400000017 R_X86_64_TPOFF32       0000000000000000 TLS_NONZERO + 0",
+            "000000000000000e  0000000400000017 R_X86_64_TPOFF32       0000000000000000 TLS_NONZERO + 0",
+            "0000000000000017  0000000500000017 R_X86_64_TPOFF32       0000000000000000 TLS_ZERO + 0",
+            "0000000000000024  0000000500000017 R_X86_64_TPOFF32       0000000000000000 TLS_ZERO + 0"
+          ],
+          "objdump_disasm_excerpt": [
+            "<tmp>/tls_cdy_local_exec.o:\tfile format elf64-x86-64",
+            "Disassembly of section .text.touch_tls:",
+            "0000000000000000 <touch_tls>:",
+            "0: 64 48 03 3c 25 00 00 00 00   \taddq\t%fs:0x0, %rdi",
+            "0000000000000005:  R_X86_64_TPOFF32\tTLS_NONZERO",
+            "9: 64 48 89 3c 25 00 00 00 00   \tmovq\t%rdi, %fs:0x0",
+            "000000000000000e:  R_X86_64_TPOFF32\tTLS_NONZERO",
+            "12: 64 48 8b 04 25 00 00 00 00   \tmovq\t%fs:0x0, %rax",
+            "0000000000000017:  R_X86_64_TPOFF32\tTLS_ZERO",
+            "1b: 48 8d 48 01                  \tleaq\t0x1(%rax), %rcx",
+            "1f: 64 48 89 0c 25 00 00 00 00   \tmovq\t%rcx, %fs:0x0",
+            "0000000000000024:  R_X86_64_TPOFF32\tTLS_ZERO",
+            "28: 48 01 f8                     \taddq\t%rdi, %rax",
+            "2b: 48 ff c0                     \tincq\t%rax",
+            "2e: c3                           \tretq"
+          ],
+          "cdylib_link_returncode": 1,
+          "cdylib_link_stderr_head": "error: linking with `cc` failed: exit status: 1\n  |\n  = note:  \"cc\" \"-Wl,--version-script=<tmp>/rustcqdJcem/list\" \"-Wl,--no-undefined-version\" \"-m64\" \"<tmp>/rustcqdJcem/symbols.o\" \"<2 object files omitted>\" \"-Wl,--as-needed\" \"-Wl,-Bstatic\" \"<sysroot>/lib/rustlib/x86_64-unknown-linux-gnu/lib/{libstd-*,libpanic_unwind-*,libobject-*,libmemchr-*,libaddr2line-*,libgimli-*,libcfg_if-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libminiz_oxide-*,libadler2-*,libunwind-*,liblibc-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib\" \"-Wl"
+        },
+        "initial-exec": {
+          "ir_obj_compile_returncode": 0,
+          "llvm_ir_summary": {
+            "global_declarations": [
+              "@TLS_FREEZE_ZERO = thread_local(initialexec) local_unnamed_addr constant [8 x i8] zeroinitializer, align 8",
+              "@TLS_NONZERO = thread_local(initialexec) local_unnamed_addr global [8 x i8] c\"\\07\\00\\00\\00\\00\\00\\00\\00\", align 8",
+              "@TLS_ZERO = thread_local(initialexec) local_unnamed_addr global [8 x i8] zeroinitializer, align 8"
+            ],
+            "fn_signatures": [
+              "define noundef i64 @touch_tls(i64 noundef %delta) unnamed_addr #0 {"
+            ],
+            "tls_intrinsic_calls": [
+              "%_3 = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_NONZERO)",
+              "%_7 = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_ZERO)"
+            ],
+            "tls_intrinsic_decls": [
+              "declare nonnull ptr @llvm.threadlocal.address.p0(ptr nonnull) #1"
+            ]
+          },
+          "readelf_obj_tls_sections": [
+            "[ 5] .tdata.TLS_FREEZE_ZERO PROGBITS        0000000000000000 000070 000008 00 WAT  0   0  8",
+            "[ 6] .tdata.TLS_NONZERO PROGBITS        0000000000000000 000078 000008 00 WAT  0   0  8",
+            "[ 7] .tbss.TLS_ZERO    NOBITS          0000000000000000 000080 000008 00 WAT  0   0  8"
+          ],
+          "readelf_obj_tls_relocs": [
+            "0000000000000003  0000000400000016 R_X86_64_GOTTPOFF      0000000000000000 TLS_NONZERO - 4",
+            "0000000000000012  0000000500000016 R_X86_64_GOTTPOFF      0000000000000000 TLS_ZERO - 4"
+          ],
+          "objdump_disasm_excerpt": [
+            "<tmp>/tls_cdy_initial_exec.o:\tfile format elf64-x86-64",
+            "Disassembly of section .text.touch_tls:",
+            "0000000000000000 <touch_tls>:",
+            "0: 48 8b 05 00 00 00 00         \tmovq\t(%rip), %rax            # 0x7 <touch_tls+0x7>",
+            "0000000000000003:  R_X86_64_GOTTPOFF\tTLS_NONZERO-0x4",
+            "7: 64 48 03 38                  \taddq\t%fs:(%rax), %rdi",
+            "b: 64 48 89 38                  \tmovq\t%rdi, %fs:(%rax)",
+            "f: 48 8b 05 00 00 00 00         \tmovq\t(%rip), %rax            # 0x16 <touch_tls+0x16>",
+            "0000000000000012:  R_X86_64_GOTTPOFF\tTLS_ZERO-0x4",
+            "16: 64 48 8b 08                  \tmovq\t%fs:(%rax), %rcx",
+            "1a: 48 8d 51 01                  \tleaq\t0x1(%rcx), %rdx",
+            "1e: 64 48 89 10                  \tmovq\t%rdx, %fs:(%rax)",
+            "22: 48 8d 04 39                  \tleaq\t(%rcx,%rdi), %rax",
+            "26: 48 ff c0                     \tincq\t%rax",
+            "29: c3                           \tretq"
+          ],
+          "cdylib_link_returncode": 0,
+          "cdylib_link_stderr_head": ""
+        },
+        "global-dynamic": {
+          "ir_obj_compile_returncode": 0,
+          "llvm_ir_summary": {
+            "global_declarations": [
+              "@TLS_FREEZE_ZERO = thread_local local_unnamed_addr constant [8 x i8] zeroinitializer, align 8",
+              "@TLS_NONZERO = thread_local local_unnamed_addr global [8 x i8] c\"\\07\\00\\00\\00\\00\\00\\00\\00\", align 8",
+              "@TLS_ZERO = thread_local local_unnamed_addr global [8 x i8] zeroinitializer, align 8"
+            ],
+            "fn_signatures": [
+              "define noundef i64 @touch_tls(i64 noundef %delta) unnamed_addr #0 {"
+            ],
+            "tls_intrinsic_calls": [
+              "%_3 = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_NONZERO)",
+              "%_7 = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_ZERO)"
+            ],
+            "tls_intrinsic_decls": [
+              "declare nonnull ptr @llvm.threadlocal.address.p0(ptr nonnull) #1"
+            ]
+          },
+          "readelf_obj_tls_sections": [
+            "[ 5] .tdata.TLS_FREEZE_ZERO PROGBITS        0000000000000000 000080 000008 00 WAT  0   0  8",
+            "[ 6] .tdata.TLS_NONZERO PROGBITS        0000000000000000 000088 000008 00 WAT  0   0  8",
+            "[ 7] .tbss.TLS_ZERO    NOBITS          0000000000000000 000090 000008 00 WAT  0   0  8"
+          ],
+          "readelf_obj_tls_relocs": [
+            "0000000000000008  0000000400000013 R_X86_64_TLSGD         0000000000000000 TLS_NONZERO - 4",
+            "0000000000000010  0000000500000004 R_X86_64_PLT32         0000000000000000 __tls_get_addr - 4",
+            "000000000000001e  0000000600000013 R_X86_64_TLSGD         0000000000000000 TLS_ZERO - 4",
+            "0000000000000026  0000000500000004 R_X86_64_PLT32         0000000000000000 __tls_get_addr - 4"
+          ],
+          "objdump_disasm_excerpt": [
+            "<tmp>/tls_cdy_global_dynamic.o:\tfile format elf64-x86-64",
+            "Disassembly of section .text.touch_tls:",
+            "0000000000000000 <touch_tls>:",
+            "0: 53                           \tpushq\t%rbx",
+            "1: 48 89 fb                     \tmovq\t%rdi, %rbx",
+            "4: 66 48 8d 3d 00 00 00 00      \tleaq\t(%rip), %rdi            # 0xc <touch_tls+0xc>",
+            "0000000000000008:  R_X86_64_TLSGD\tTLS_NONZERO-0x4",
+            "c: 66 66 48 e8 00 00 00 00      \tcallq\t0x14 <touch_tls+0x14>",
+            "0000000000000010:  R_X86_64_PLT32\t__tls_get_addr-0x4",
+            "14: 48 03 18                     \taddq\t(%rax), %rbx",
+            "17: 48 89 18                     \tmovq\t%rbx, (%rax)",
+            "1a: 66 48 8d 3d 00 00 00 00      \tleaq\t(%rip), %rdi            # 0x22 <touch_tls+0x22>",
+            "000000000000001e:  R_X86_64_TLSGD\tTLS_ZERO-0x4",
+            "22: 66 66 48 e8 00 00 00 00      \tcallq\t0x2a <touch_tls+0x2a>",
+            "0000000000000026:  R_X86_64_PLT32\t__tls_get_addr-0x4",
+            "2a: 48 8b 08                     \tmovq\t(%rax), %rcx",
+            "2d: 48 8d 51 01                  \tleaq\t0x1(%rcx), %rdx",
+            "31: 48 89 10                     \tmovq\t%rdx, (%rax)",
+            "34: 48 8d 04 19                  \tleaq\t(%rcx,%rbx), %rax",
+            "38: 48 ff c0                     \tincq\t%rax",
+            "3b: 5b                           \tpopq\t%rbx",
+            "3c: c3                           \tretq"
+          ],
+          "cdylib_link_returncode": 0,
+          "cdylib_link_stderr_head": ""
+        },
+        "local-dynamic": {
+          "ir_obj_compile_returncode": 0,
+          "llvm_ir_summary": {
+            "global_declarations": [
+              "@TLS_FREEZE_ZERO = thread_local(localdynamic) local_unnamed_addr constant [8 x i8] zeroinitializer, align 8",
+              "@TLS_NONZERO = thread_local(localdynamic) local_unnamed_addr global [8 x i8] c\"\\07\\00\\00\\00\\00\\00\\00\\00\", align 8",
+              "@TLS_ZERO = thread_local(localdynamic) local_unnamed_addr global [8 x i8] zeroinitializer, align 8"
+            ],
+            "fn_signatures": [
+              "define noundef i64 @touch_tls(i64 noundef %delta) unnamed_addr #0 {"
+            ],
+            "tls_intrinsic_calls": [
+              "%_3 = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_NONZERO)",
+              "%_7 = tail call align 8 ptr @llvm.threadlocal.address.p0(ptr @TLS_ZERO)"
+            ],
+            "tls_intrinsic_decls": [
+              "declare nonnull ptr @llvm.threadlocal.address.p0(ptr nonnull) #1"
+            ]
+          },
+          "readelf_obj_tls_sections": [
+            "[ 5] .tdata.TLS_FREEZE_ZERO PROGBITS        0000000000000000 000080 000008 00 WAT  0   0  8",
+            "[ 6] .tdata.TLS_NONZERO PROGBITS        0000000000000000 000088 000008 00 WAT  0   0  8",
+            "[ 7] .tbss.TLS_ZERO    NOBITS          0000000000000000 000090 000008 00 WAT  0   0  8"
+          ],
+          "readelf_obj_tls_relocs": [
+            "0000000000000007  0000000400000014 R_X86_64_TLSLD         0000000000000000 TLS_NONZERO - 4",
+            "000000000000000c  0000000500000004 R_X86_64_PLT32         0000000000000000 __tls_get_addr - 4",
+            "0000000000000013  0000000400000015 R_X86_64_DTPOFF32      0000000000000000 TLS_NONZERO + 0",
+            "000000000000001a  0000000400000015 R_X86_64_DTPOFF32      0000000000000000 TLS_NONZERO + 0",
+            "0000000000000021  0000000600000015 R_X86_64_DTPOFF32      0000000000000000 TLS_ZERO + 0",
+            "000000000000002c  0000000600000015 R_X86_64_DTPOFF32      0000000000000000 TLS_ZERO + 0"
+          ],
+          "objdump_disasm_excerpt": [
+            "<tmp>/tls_cdy_local_dynamic.o:\tfile format elf64-x86-64",
+            "Disassembly of section .text.touch_tls:",
+            "0000000000000000 <touch_tls>:",
+            "0: 53                           \tpushq\t%rbx",
+            "1: 48 89 fb                     \tmovq\t%rdi, %rbx",
+            "4: 48 8d 3d 00 00 00 00         \tleaq\t(%rip), %rdi            # 0xb <touch_tls+0xb>",
+            "0000000000000007:  R_X86_64_TLSLD\tTLS_NONZERO-0x4",
+            "b: e8 00 00 00 00               \tcallq\t0x10 <touch_tls+0x10>",
+            "000000000000000c:  R_X86_64_PLT32\t__tls_get_addr-0x4",
+            "10: 48 03 98 00 00 00 00         \taddq\t(%rax), %rbx",
+            "0000000000000013:  R_X86_64_DTPOFF32\tTLS_NONZERO",
+            "17: 48 89 98 00 00 00 00         \tmovq\t%rbx, (%rax)",
+            "000000000000001a:  R_X86_64_DTPOFF32\tTLS_NONZERO",
+            "1e: 48 8b 88 00 00 00 00         \tmovq\t(%rax), %rcx",
+            "0000000000000021:  R_X86_64_DTPOFF32\tTLS_ZERO",
+            "25: 48 8d 51 01                  \tleaq\t0x1(%rcx), %rdx",
+            "29: 48 89 90 00 00 00 00         \tmovq\t%rdx, (%rax)",
+            "000000000000002c:  R_X86_64_DTPOFF32\tTLS_ZERO",
+            "30: 48 8d 04 19                  \tleaq\t(%rcx,%rbx), %rax",
+            "34: 48 ff c0                     \tincq\t%rax",
+            "37: 5b                           \tpopq\t%rbx",
+            "38: c3                           \tretq"
+          ],
+          "cdylib_link_returncode": 0,
+          "cdylib_link_stderr_head": ""
+        }
+      }
+    }
+  }
+}

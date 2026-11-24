@@ -111829,6 +111829,91 @@
         "verification"
       ]
     },
+    "rustc-static-address-identity-cyclic-refs-unnamed-addr-and-thread-local-tls": {
+      "observed_at": "2026-11-24",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "Rust compiler (rustc) primary empirical baseline"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "058c701055c4b6f60f622d616afc0349911c38c3"
+          },
+          "name": "Rust compiler (rustc) upstream HEAD comparison baseline"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+          },
+          "name": "Rust compiler (rustc) intermediate upstream comparison revision"
+        },
+        {
+          "identity": {
+            "release_tag": "llvmorg-22.1.6",
+            "repository": "llvm/llvm-project",
+            "revision": "fc4aad7b5db3fff421df9a9637605b9ca5667881"
+          },
+          "name": "LLVM compiler infrastructure (upstream release matching bundled LLVM 22.1.6)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "9e1b2c3446261ab1a5063f442453510903ca80b8"
+          },
+          "name": "LLVM compiler infrastructure upstream HEAD comparison baseline"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal Lean 4 verification trust boundary and MIR model"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover and kernel typechecker"
+        },
+        {
+          "identity": {
+            "architecture": "x86_64-unknown-linux-gnu",
+            "package": "GNU Binutils for Debian",
+            "version": "2.47"
+          },
+          "name": "GNU Binutils ELF toolchain (readelf)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/codegen",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "rust",
+        "rustc",
+        "rustc/codegen",
+        "verification"
+      ]
+    },
     "rustc-static-elf-section-placement-interior-mutability-and-edition2024-unsafe-attrs": {
       "observed_at": "2026-11-23",
       "subjects": [

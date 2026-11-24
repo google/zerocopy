@@ -1,0 +1,143 @@
+{
+  "lean_file": "support/StaticAddressIdentityCyclesAndTlsModelsSoundness.lean",
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "standalone_flags": [
+    "-M2048",
+    "-DElab.async=false",
+    "-Ddebug.skipKernelTC=false",
+    "-DwarningAsError=true"
+  ],
+  "standalone_exit_code": 0,
+  "static_audit": {
+    "total_lines": 1739,
+    "nonempty_lines": 1596,
+    "code_lines": 1376,
+    "min_lines_required": 1100,
+    "meets_min_lines": true,
+    "banned_token_hits": {},
+    "plain_def_without_noncomputable_lines": [],
+    "theorem_count": 58,
+    "noncomputable_def_count": 51
+  },
+  "metam_audit": {
+    "ns_const_count": 657,
+    "unsafe_rec_count": 0,
+    "unsafe_const_count": 0,
+    "user_axiom_count": 0,
+    "opaque_count": 0,
+    "theorem_checked_count": 58,
+    "bad_axiom_theorem_count": 0
+  },
+  "axiom_counts_across_all_theorems": {
+    "Classical.choice": 0,
+    "sorryAx": 0,
+    "Lean.ofReduceBool_or_trustCompiler": 0,
+    "allowed_constructive_only_theorems": 58
+  },
+  "theorem_axioms": {
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.natBeq_refl": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.natBeq_eq": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.natBeq_false_of_ne": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.natBeq_symm": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.natBle_true_iff_le": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.natBlt_true_iff_lt": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.nat_lt_irrefl": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.nat_lt_trans": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.replicateVal_succ": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.replicateVal_length": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.replicateVal_getElem": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.listContainsNat_true_iff_mem": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.listContainsNat_false_iff_not_mem": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.assocLookup_cons_eq": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.assocLookup_cons_ne": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.assocLookup_insert_eq": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.assocLookup_insert_ne": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.listAll_true_iff": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.listSetAt_length": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.listGetWithDefault_setAt_eq": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.listGetWithDefault_setAt_ne": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.listGetWithDefault_lt_eq_getElem": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.lookupDecl_cons_eq": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.lookupDecl_cons_ne": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.lookupDecl_some_of_mem": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.reserveStaticsAux_some_of_static": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.reserveStaticsAux_allocId_ge": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.reserveStaticsAux_allocIds_injective": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.lookupDecl_mem": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.lookupDecl_declId_eq": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.evalExprAux_succeeds_under_rank": [
+      "propext",
+      "Quot.sound"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.two_phase_static_acyclicity_soundness": [
+      "propext",
+      "Quot.sound"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.static_addr_of_cycle_concrete_witness": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.self_value_cycle_never_ok": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.value_cycle_readval_never_ok": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.value_cycle_e0391_necessity": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.mutual_value_cycle_emits_e0391": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.const_ref_cycle_e0391_contrast": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.listNatBeq_refl": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.listNatBeq_eq": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.unnamed_addr_dedup_preserves_all_deref_observations": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.non_unnamed_addr_static_preserves_address_distinctness": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.exported_static_local_unnamed_addr_still_unmergeable": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.mixed_merge_downgrades_survivor_and_preserves_static_disjointness": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.freeze_zero_tls_in_tdata_not_tbss": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.cell_zero_tls_in_tbss_not_tdata": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.cell_nonzero_tls_in_tdata": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.tls_model_pie_upgrades_dynamic_and_cdylib_rejects_localexec": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.instantiateTlsBlock_length": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.instantiateTlsBlock_tdata_exact": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.instantiateTlsBlock_tbss_zero": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.tls_spawn_fresh_template_sound": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.tls_noninterference_step": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.tls_noninterference_trace": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.tls_write_updates_self_preserves_other_slots_and_threads": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.tls_main_child_concrete_witness": [],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.ce1_erroneous_unnamed_addr_on_static_breaks_disjointness": [
+      "propext"
+    ],
+    "StaticAddressIdentityCyclesAndTlsModelsSoundness.ce2_sharing_tls_ptr_across_threads_violates_isolation": [
+      "propext"
+    ]
+  }
+}
