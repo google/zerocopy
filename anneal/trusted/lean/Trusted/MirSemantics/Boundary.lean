@@ -399,16 +399,20 @@ noncomputable def ValidEntryArgsV2 (body : Body) (q : Query) : Prop :=
   spansPairwiseDisjoint (refAccessSpansList paramTys q.args) = true
 
 mutual
-  /-- Return `true` when `ty` is a reference or an option, range, tuple, or
-  fixed-size array containing one. Profile v2 pointees never contain
-  references or pointers (`isSupportedV2LocalTy`), so only algebraic and
-  fixed-array nesting need inspection. Kept exhaustive over `MirTy` so adding
-  new aggregate/container constructors forces updating reference tracking. -/
+  /-- Return `true` when `ty` is a reference or a `Box` (which the aliasing
+  models treat like a unique reference), or an option, range, tuple,
+  fixed-size array, or `Vec` containing one. Profile v2 pointees never
+  contain references or pointers (`isSupportedV2LocalTy`), so only
+  algebraic, container, and fixed-array nesting need inspection. Kept
+  exhaustive over `MirTy` so adding new aggregate/container constructors
+  forces updating reference tracking. -/
   noncomputable def tyHasRefV2 : MirTy → Bool
     | .ref _ _ => true
     | .array elem _ => tyHasRefV2 elem
     | .option e | .rangeTo e | .rangeFrom e | .range e => tyHasRefV2 e
+    | .box _ => true
     | .tuple fs => tyListHasRefV2 fs
+    | .vec elem => tyHasRefV2 elem
     | .bool | .int _ _ | .unit | .never | .char | .ordering | .enum _
     | .rawPtr _ _ | .slice _ | .str | .unsupported => false
 
@@ -589,6 +593,19 @@ pointers. A body without reference locals creates no references at all. Mixing
 references with any other raw-pointer local would let a body derive overlapping
 references from raw pointers, or access referenced memory through raw pointers,
 so `BodyStaticAdmittedV2` rejects such bodies.
+
+A `Box<P>` local counts as a reference (`tyHasRefV2`). The aliasing models
+retag a `Box` like a unique reference, so a body that also had raw-pointer
+locals could derive a raw pointer from the box and use it after the box is
+moved or through a cast to `*mut P`, which is undefined behavior that
+Profile v2 would not detect. The only `Box` dereference cast is therefore
+`boxAsRef`, which yields a validated `&P`. A `Vec<T>` local counts as neither
+a reference nor a raw pointer, although it owns a heap buffer: a body reaches
+that buffer only through the contracts in `AllocContracts`, which check the
+buffer on every use and return references rather than raw pointers. Raw
+pointers to `Vec` or `Box` handles are not admitted local types
+(`isSupportedV2LocalTy`), so no body can derive an alias of a heap buffer
+from raw pointers.
 
 This does not cover the aliasing permission of raw-pointer arguments: a
 raw-pointer-only body that writes through a `*mut` argument the caller derived

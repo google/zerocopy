@@ -21,6 +21,7 @@ public import Trusted.MirSemantics.Layout
 public import Trusted.MirSemantics.Memory
 public import Trusted.MirSemantics.Bytes
 public import Trusted.MirSemantics.CoreContracts
+public import Trusted.MirSemantics.AllocContracts
 
 @[expose] public section
 
@@ -1996,6 +1997,32 @@ noncomputable def evalFakeAddressOfRvalueV2 (bodyLocals : List MirTy)
     | _, _ => .error .unsupported
   | _ => .error .unsupported
 
+/-- Evaluate `CastKind.boxAsRef`: the shared dereference `&*b` of a
+`Box<pt>` value, checking `refValidInMem mem .shared pt` of the result. -/
+noncomputable def evalCastKindV2 (mem : MemoryState) (dstTy srcTy : MirTy)
+    (val : Val) (castTy : MirTy) : Except FaultKind Val :=
+  if !MirTy.beq dstTy castTy then
+    .error .unsupported
+  else
+    match srcTy, val, castTy with
+    | .box pt, .boxPtr p optLen, .ref .shared castPt =>
+      if !MirTy.beq pt castPt then
+        .error .unsupported
+      else
+        let ptrRes : Except FaultKind Val :=
+          match pt, optLen with
+          | .slice _, some len => .ok (.slicePtr p len)
+          | _, none =>
+            if isUnsizedTy pt then .error .unsupported else .ok (.ptr p)
+          | _, _ => .error .unsupported
+        match ptrRes with
+        | .error k => .error k
+        | .ok ptrVal =>
+          match refValidInMem mem .shared pt ptrVal with
+          | .error k => .error k
+          | .ok () => .ok ptrVal
+    | _, _, _ => .error .unsupported
+
 /-- Evaluate an `Rvalue` in Profile v2.
 
 The Profile v2 arms correspond to rustc as follows (`rust-lang/rust`
@@ -2039,6 +2066,8 @@ The Profile v2 arms correspond to rustc as follows (`rust-lang/rust`
   reference operands Lean also re-checks `refValidInMem`, which is
   conservative.
 - `.cast .ptrToPtr` is `CastKind::PtrToPtr` (see `evalPtrToPtrCastV2`).
+- `.cast .boxAsRef` is the shared dereference `&*b` of a `Box` (see
+  `evalCastKindV2`).
 - `.cast .intToPtr` is `CastKind::PointerWithExposedProvenance` from `usize`.
   The result has no provenance, exactly as in the CTFE machine
   (`compiler/rustc_const_eval/src/interpret/machine.rs:743-746`):
@@ -2245,6 +2274,14 @@ noncomputable def evalRvalueV2 (bodyLocals : List MirTy) (locals : List LocalSlo
           else
             .ok (.slicePtr p (UInt64.ofNat len), locals1, mem1)
         | _, _, _ => .error .unsupported
+  | .cast .boxAsRef opnd castTy =>
+    match evalOperandToSlotV2 bodyLocals locals mem opnd with
+    | .error k => .error k
+    | .ok (_, none, _, _) => .error .undefined
+    | .ok (srcTy, some val, locals1, mem1) =>
+      match evalCastKindV2 mem1 dstTy srcTy val castTy with
+      | .error k => .error k
+      | .ok res => .ok (res, locals1, mem1)
   | .discriminant place =>
     if !place.projection.isEmpty then
       match readPlaceV2 bodyLocals locals mem false place with
@@ -2859,7 +2896,9 @@ mutual
         | .scalar tagW _ => .scalar (intLayout tagW).alignLog2
     | .rangeTo (.int .isize false) | .rangeFrom (.int .isize false) => .scalar 3
     | .range (.int .isize false) => .scalarPair 3
-    | .ref _ pt | .rawPtr _ pt =>
+    -- A `Box<T>` handle is a pointer (`Unique<T>`), so `rustc` gives it the
+    -- reference's `Scalar`/`ScalarPair` representation.
+    | .ref _ pt | .rawPtr _ pt | .box pt =>
       if isUnsizedTy pt then .scalarPair 3 else .scalar 3
     | .array elem len =>
       match copyReprOfTyV2 elem with
@@ -2882,9 +2921,10 @@ mutual
       | .memory => .memoryCopy
     -- `Option<T>` stays `.memoryCopy` (the strictest class) even where `rustc`
     -- picks `Scalar`/`ScalarPair`: a `None` payload is uninit, so we do not
-    -- claim the immediate-copy path.
-    | .option _ | .slice _ | .str | .rangeTo _ | .rangeFrom _ | .range _
-    | .unsupported => .memoryCopy
+    -- claim the immediate-copy path. A `Vec` handle (pointer, capacity,
+    -- length) has three scalars and is therefore `BackendRepr::Memory`.
+    | .option _ | .vec _ | .slice _ | .str | .rangeTo _ | .rangeFrom _
+    | .range _ | .unsupported => .memoryCopy
 
   noncomputable def copyReprOfTupleFieldsV2 :
       List MirTy → Nat × TupleCopyPayloadV2
@@ -3558,7 +3598,10 @@ noncomputable def execCoreCallWithMem (m : MemoryState) (op : CoreCallOp)
   | .numWrappingShl _ _ | .numWrappingShr _ _ | .numLeadingZeros _ _
   | .numOverflowingAdd _ _ | .numOverflowingSub _ _ | .cmpMin _ _
   | .cmpMax _ _ | .memReplace _ | .optionIsSome _ | .optionIsNone _
-  | .optionTake _ | .optionUnwrap _ =>
+  | .optionTake _ | .optionUnwrap _ | .vecNew _ | .vecWithCapacity _
+  | .vecLen | .vecPush | .vecResize | .vecExtendFromSlice | .vecIndex
+  | .vecIndexMut | .vecDeref | .vecDerefMut | .vecReserve | .boxFromVec
+  | .boxDeref | .boxDerefMut | .boxClone | .boxNew _ =>
     execCoreContractOp m op args dstTy
   | .panicAbort => .error .unsupported
 
@@ -3619,6 +3662,56 @@ noncomputable def validatePanicAbortArgs (m : MemoryState) :
           .ok ()
   | _ => .error .unsupported
 
+/-- Execute a Profile v2 `CoreCallOp` in `m`, returning updated `MemoryState`
+for heap-allocating contracts (`execAllocCoreCall`) and delegating every other
+op to `execCoreCallWithMem`. -/
+noncomputable def execCoreCallOpWithMem (m : MemoryState) (op : CoreCallOp)
+    (args : List (MirTy × Val)) (dstTy : MirTy) :
+    Except FaultKind (Val × MemoryState) :=
+  match execAllocCoreCall m op args dstTy with
+  | some res => res
+  | none => execCoreCallWithMem m op args dstTy
+
+/-- Allocation ids of the returning frame's in-memory (`.indirect`) locals,
+which `rustc` deallocates when it pops the frame. -/
+noncomputable def frameLocalAllocIds : List LocalSlot → List AllocId
+  | [] => []
+  | .indirect mplace :: rest => mplace.allocId :: frameLocalAllocIds rest
+  | _ :: rest => frameLocalAllocIds rest
+
+/-- Allocation ids of `allocs`. -/
+noncomputable def allocIdsOf : List Allocation → List AllocId
+  | [] => []
+  | a :: rest => a.allocId :: allocIdsOf rest
+
+/-- Allocations created during the call that are still live on return: the
+mutable ones absent from the caller's `callerIds` that are not one of the
+returning frame's local allocations (`frameIds`). In Profile v2 these are the
+heap buffers of the `Vec` and `Box` contracts
+(`Trusted.MirSemantics.AllocContracts`), which outlive the call. Callee
+`.rodata` allocations (`.shared`, `isRodataAllocId`) are excluded: no returned
+value may point into them (`hasEscapingRodataPtr`). -/
+noncomputable def calleeLiveAllocations (callerIds frameIds : List AllocId) :
+    List Allocation → List Allocation
+  | [] => []
+  | a :: rest =>
+    if a.live && Mutability.beq a.mutability .mut &&
+        natNotElem a.allocId callerIds && natNotElem a.allocId frameIds then
+      a :: calleeLiveAllocations callerIds frameIds rest
+    else
+      calleeLiveAllocations callerIds frameIds rest
+
+/-- Caller-visible memory on a Profile v2 return: the caller's allocations as
+updated by the call (`extractCallerMemory`), followed by the heap buffers the
+call created and did not free (`calleeLiveAllocations`), so a returned or
+grown `Vec`/`Box` buffer is visible to `post`. The returning frame's local
+allocations are not visible. -/
+noncomputable def extractReturnMemoryV2 (callerMem : CallerMemory)
+    (mem : MemoryState) (frameLocals : List LocalSlot) : CallerMemory :=
+  ⟨(extractCallerMemory callerMem mem).allocations ++
+    calleeLiveAllocations (allocIdsOf callerMem.allocations)
+      (frameLocalAllocIds frameLocals) mem.allocations⟩
+
 /-- Evaluate a basic block's `TerminatorKind` in Profile v2.
 
 `.return_` faults with `.undefined` unless every returned reference is
@@ -3639,6 +3732,8 @@ Returned references are also considered live for the aliasing rules (lines
 memory would dangle (`refsStayInCallerMem`). Conservative divergence: a
 reference to a zero-sized callee local never dangles in Rust, but Lean rejects
 it.
+Heap buffers that the call created and did not free stay visible to the
+caller (`extractReturnMemoryV2`).
 
 `.assert` continues when the condition matches `expected`. Otherwise the
 terminator "initiates a panic"
@@ -3703,7 +3798,8 @@ noncomputable def evalTerminatorV2 (body : Body) (bb : BasicBlock)
               !spansPairwiseDisjoint (refAccessSpans retTy retVal) then
             .fault .undefined
           else
-            .done (.returned ⟨retVal, extractCallerMemory callerMem mem⟩)
+            .done (.returned
+              ⟨retVal, extractReturnMemoryV2 callerMem mem frame.locals⟩)
   | .unreachable => .fault .undefined
   | .switchInt discr targets =>
     match evalPrimitiveOperandV2 body.locals frame.locals mem discr with
@@ -3749,13 +3845,14 @@ noncomputable def evalTerminatorV2 (body : Body) (bb : BasicBlock)
         match evalArgOperandsV2 body.locals frame.locals mem args with
         | .error k => .fault k
         | .ok (typedArgs, locals1, mem1) =>
-          match execCoreCallWithMem mem1 op typedArgs dstTy with
+          match execCoreCallOpWithMem mem1 op typedArgs dstTy with
           | .error k => .fault k
-          | .ok (resVal, mem1') =>
-            match writePlaceV2 body.locals locals1 mem1' dst dstTy resVal with
+          | .ok (resVal, mem2) =>
+            match writePlaceV2 body.locals locals1 mem2 dst dstTy resVal with
             | .error k => .fault k
-            | .ok (locals2, mem2) =>
-              jumpToBlock { frame with locals := locals2 } mem2 callerMem target
+            | .ok (locals2, mem3) =>
+              jumpToBlock { frame with locals := locals2 } mem3 callerMem
+                target
   | .coreCall .panicAbort args dst none unwind =>
     if !dst.projection.isEmpty then
       .fault .unsupported

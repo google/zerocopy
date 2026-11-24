@@ -116,7 +116,7 @@ anneal/
 ├── .config/
 │   └── nextest.toml                   # Process-per-test profiles, slow-timeouts, heavy-lean slots
 ├── ci/
-│   ├── check_guard_mutation.py        # Lean TCB + auditor single-guard mutation runner (205 guards)
+│   ├── check_guard_mutation.py        # Lean TCB + auditor single-guard mutation runner (224 guards)
 │   ├── check_minirust_pin.py          # MiniRust pin, Lean hygiene & SpecAnchor CI check (+ manual --check-axioms)
 │   ├── perf_tracking.py               # Telemetry collector, validator, & Tier A/B regression gate
 │   ├── perf_budgets.json              # Tier A time, RSS, 3-part .olean*, binary, & unit budgets
@@ -653,7 +653,7 @@ anneal/tests/corpora/adversarial/
    newly passing `known_bug(#N, ...)` to `//@ pass`, **never** flipping
    `//@ pass` $\to$ `fail` or `//@ fail(...)` $\to$ `pass`.
 2. **Unified Guard-Ablation Schema (`guards.toml`, Target Wave 3):**
-   Extends Anneal's `205` cataloged Lean guards (`185` `Trusted/MirSemantics/*`
+   Extends Anneal's `224` cataloged Lean guards (`204` `Trusted/MirSemantics/*`
    + `8` header + `12` boundary guards in `ci/check_guard_mutation.py`, up from
    `46` at `c351dd381a`) to cover **Rust TCB guards** across
    `trusted/rustc-capture`, `trusted/audit`, and `trusted/cargo-anneal`:
@@ -1179,8 +1179,8 @@ blast radii remain documented below for durable architectural rationale.
 
 #### Decision D4: CI Tiering for Rust TCB Guard Ablation (`D4-A`)
 
-- **Context:** Lean TCB guard mutation (`205` guards in
-  `check_guard_mutation.py`: `185` `MirSemantics` + `8` header + `12` boundary
+- **Context:** Lean TCB guard mutation (`224` guards in
+  `check_guard_mutation.py`: `204` `MirSemantics` + `8` header + `12` boundary
   guards) reuses precompiled `BASE_TRUSTED_MODULES` and `TrustedBoundary` /
   `SpecPreflight` `.olean`s inside `NestedBwrap` (already running in Tier 1 PR
   CI). By contrast, mutating `N` Rust TCB guards in

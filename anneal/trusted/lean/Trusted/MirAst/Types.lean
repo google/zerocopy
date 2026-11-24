@@ -334,6 +334,8 @@ inductive MirTy where
   | slice (elem : MirTy)
   | str
   | array (elem : MirTy) (len : Nat)
+  | vec (elem : MirTy)
+  | box (pointee : MirTy)
   | rangeTo (elem : MirTy)
   | rangeFrom (elem : MirTy)
   | range (elem : MirTy)
@@ -400,6 +402,8 @@ mutual
     | .slice e₁, .slice e₂ => MirTy.beq e₁ e₂
     | .str, .str => true
     | .array e₁ n₁, .array e₂ n₂ => Nat.beq n₁ n₂ && MirTy.beq e₁ e₂
+    | .vec e₁, .vec e₂ => MirTy.beq e₁ e₂
+    | .box p₁, .box p₂ => MirTy.beq p₁ p₂
     | .rangeTo e₁, .rangeTo e₂ => MirTy.beq e₁ e₂
     | .rangeFrom e₁, .rangeFrom e₂ => MirTy.beq e₁ e₂
     | .range e₁, .range e₂ => MirTy.beq e₁ e₂

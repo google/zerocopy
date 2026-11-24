@@ -364,15 +364,17 @@ noncomputable def maxAllocAndProvId (allocs : List Allocation) : AllocId :=
   Nat.max (maxAllocId allocs) (maxAllocBytesProvId allocs)
 
 mutual
-  /-- Return `true` when `ty` is a raw pointer or an option, range, tuple, or
-  fixed-size array containing one. Kept exhaustive over `MirTy` so adding new
-  aggregate/container constructors forces updating raw-pointer freshness
-  tracking. -/
+  /-- Return `true` when `ty` is a raw pointer or an option, range, tuple,
+  fixed-size array, `Vec`, or `Box` containing one. Kept exhaustive over
+  `MirTy` so adding new aggregate/container constructors forces updating
+  raw-pointer freshness tracking. -/
   noncomputable def tyHasRawPtrV2 : MirTy → Bool
     | .rawPtr _ _ => true
     | .array elem _ => tyHasRawPtrV2 elem
     | .option e | .rangeTo e | .rangeFrom e | .range e => tyHasRawPtrV2 e
     | .tuple fs => tyListHasRawPtrV2 fs
+    | .vec elem => tyHasRawPtrV2 elem
+    | .box pointee => tyHasRawPtrV2 pointee
     | .bool | .int _ _ | .unit | .never | .char | .str | .ordering | .enum _
     | .ref _ _ | .slice _ | .unsupported => false
 
@@ -389,6 +391,8 @@ mutual
   noncomputable def maxValPtrAllocId : Val → AllocId
     | .ptr p => p.allocId.getD 0
     | .slicePtr p _ => p.allocId.getD 0
+    | .vec p _ _ => p.allocId.getD 0
+    | .boxPtr p _ => p.allocId.getD 0
     | .tuple vs => maxValPtrAllocIdList vs
     | .array vs => maxValPtrAllocIdList vs
     | .bytes bs => maxByteProvAllocId bs

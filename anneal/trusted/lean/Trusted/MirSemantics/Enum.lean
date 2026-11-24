@@ -440,6 +440,13 @@ noncomputable def isSupportedScalarOrUnitTy : MirTy → Bool
   | .tuple fs => isOverflowPairTy (.tuple fs)
   | _ => false
 
+/-- A supported scalar or unit type that may sit behind a pointer or inside a
+`Vec`, `Box`, or slice. Overflow pairs are excluded because their layout is
+fixed by the model rather than checked against `rustc` (see
+`isSupportedV2LocalTy`). -/
+noncomputable def isSupportedPointeeTy (t : MirTy) : Bool :=
+  !isOverflowPairTy t && isSupportedScalarOrUnitTy t
+
 /-- Initial state of a newly live local slot of type `ty`:
 In `rustc_const_eval`
 (`compiler/rustc_const_eval/src/interpret/discriminant.rs`, `rust-lang/rust`
@@ -575,8 +582,8 @@ noncomputable def isSizedNoRefV2Ty : MirTy → Bool
   | .bool | .int _ _ | .char | .ordering | .unit | .never => true
   | .enum ety => enumAdmitted ety
   | .option inner => isSizedNoRefV2Ty inner && isOptionPayloadSupportedV2 inner
-  | .tuple _ | .array _ _ | .ref _ _ | .rawPtr _ _ | .slice _ | .unsupported
-  | .str | .rangeTo _ | .rangeFrom _ | .range _ => false
+  | .tuple _ | .array _ _ | .vec _ | .box _ | .ref _ _ | .rawPtr _ _ | .slice _
+  | .unsupported | .str | .rangeTo _ | .rangeFrom _ | .range _ => false
 
 mutual
   /-- Return `true` when `ty` is structurally inhabited in Rust (has at least
@@ -593,6 +600,8 @@ mutual
   - `.ref _ (.slice _)` and `.ref _ .str`: always inhabited by `&[]` and `""`
     (`len = 0`), whereas a thin reference `.ref _ pt` requires
     `isInhabitedV2Ty pt`;
+  - `.vec _`: always inhabited by an empty `Vec`; `.box (.slice _)` by an
+    empty boxed slice, whereas `.box pt` requires `isInhabitedV2Ty pt`;
   - primitives (`.bool`, `.int`, `.char`, `.ordering`, `.unit`), `.rawPtr`, and
     `Range`/`RangeTo`/`RangeFrom` over `usize` are inhabited. -/
   noncomputable def isInhabitedV2Ty : MirTy → Bool
@@ -605,6 +614,9 @@ mutual
     | .ref _ (.slice _) | .ref _ .str => true
     | .ref _ pt => isInhabitedV2Ty pt
     | .rawPtr _ _ => true
+    | .vec _ => true
+    | .box (.slice _) => true
+    | .box pt => isInhabitedV2Ty pt
     | .rangeTo (.int .isize false) | .rangeFrom (.int .isize false)
     | .range (.int .isize false) => true
     | .rangeTo _ | .rangeFrom _ | .range _ => false
@@ -621,6 +633,13 @@ the union of the ref-free sized types handled by the core contracts
 noncomputable def isSupportedV2PointeeTy (pt : MirTy) : Bool :=
   isSizedNoRefV2Ty pt || isSupportedV2DataTy pt
 
+/-- Owned `Vec`/`Box` heap-handle types, which `&Vec<T>` / `&Box<T>`
+references point to (their element admission is checked by
+`isSupportedV2LocalTy`). -/
+noncomputable def isHeapHandleTyV2 : MirTy → Bool
+  | .vec _ | .box _ => true
+  | _ => false
+
 mutual
   /-- Return `true` when `ty` is a valid Profile v2 sized local type
   (scalars, booleans, `char`, `Ordering`, `()`, `!`, admitted fieldless enums,
@@ -630,10 +649,14 @@ mutual
   pointees).
   Nested references/pointers inside pointees (`&&T`, `*mut &T`, `&[&T]`,
   `[&T; N]`) are rejected fail-closed so `refValidInMem` and
-  `refsStayInCallerMem` remain complete without recursive heap reference graphs.
+  `refsStayInCallerMem` remain complete without recursive heap reference
+  graphs. References to `Vec` and `Box` handles are admitted but raw pointers
+  to them are not: Rust leaves the
+  layout of `Vec` unspecified, so the model's byte encoding of a handle
+  (`encodeValV2`) must not be observable by reinterpreting its bytes.
 
   Overflow-pair pointees and array elements (`&(T, bool)`, `*const (T, bool)`,
-  `[(T, bool); N]`) are rejected too.
+  `[(T, bool); N]`, and `Vec`, `Box`, and slice elements) are rejected too.
   The Rust Reference (`src/type-layout.md:94,184`, `rust-lang/reference`
   `ad35aca481751a06afeb23820a672b0f3b11a476`) leaves a tuple's field order
   and size unspecified:
@@ -652,8 +675,17 @@ mutual
     | .enum ety => enumAdmitted ety
     | .array elem _ => isSupportedV2DataTy elem
     | .tuple fs => isSupportedV2LocalTyList fs
+    | .vec elem => !isOverflowPairTy elem && isSupportedScalarOrUnitTy elem
+    | .box (.slice elem) =>
+      !isOverflowPairTy elem && isSupportedScalarOrUnitTy elem
+    | .box pt => !isOverflowPairTy pt && isSupportedScalarOrUnitTy pt
     | .ref _ (.slice elem) | .rawPtr _ (.slice elem) => isSizedNoRefV2Ty elem
     | .ref .shared .str => true
+    | .ref _ (.vec elem) =>
+      !isOverflowPairTy elem && isSupportedScalarOrUnitTy elem
+    | .ref _ (.box (.slice elem)) =>
+      !isOverflowPairTy elem && isSupportedScalarOrUnitTy elem
+    | .ref _ (.box pt) => !isOverflowPairTy pt && isSupportedScalarOrUnitTy pt
     | .ref _ pt | .rawPtr _ pt => isSupportedV2PointeeTy pt
     | .rangeTo (.int .isize false) | .rangeFrom (.int .isize false) => true
     | .range (.int .isize false) => true
@@ -689,6 +721,9 @@ mutual
     | .slicePtr p _, .rawPtr _ (.slice _) => IntWidth.beq p.width .isize
     | .slicePtr p _, .ref _ (.slice _) => IntWidth.beq p.width .isize
     | .slicePtr p _, .ref .shared .str => IntWidth.beq p.width .isize
+    | .vec p _ _, .vec _ => IntWidth.beq p.width .isize
+    | .boxPtr p none, .box pt => !isUnsizedTy pt && IntWidth.beq p.width .isize
+    | .boxPtr p (some _), .box (.slice _) => IntWidth.beq p.width .isize
     | .rangeTo _, .rangeTo (.int .isize false) => true
     | .rangeFrom _, .rangeFrom (.int .isize false) => true
     | .array vs, .array elem len =>

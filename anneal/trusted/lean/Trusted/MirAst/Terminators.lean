@@ -200,6 +200,23 @@ inductive CoreCallOp where
   | arrayEq (elem : MirTy) (len : Nat)
   | panicAbort
 
+  | vecNew (elem : MirTy)
+  | vecWithCapacity (elem : MirTy)
+  | vecLen
+  | vecPush
+  | vecResize
+  | vecExtendFromSlice
+  | vecIndex
+  | vecIndexMut
+  | vecDeref
+  | vecDerefMut
+  | vecReserve
+  | boxFromVec
+  | boxDeref
+  | boxDerefMut
+  | boxClone
+  | boxNew (pointee : MirTy)
+
 /-- Closed set of `core::num` primitive arithmetic operations supported via
 pinned sysroot-body lowering (verified at capture time against `core`'s
 `tcx.instance_mir`): checked-UB (`unchecked_{add,sub,mul}`) and wrapping

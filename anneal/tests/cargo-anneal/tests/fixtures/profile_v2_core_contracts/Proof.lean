@@ -18,6 +18,102 @@ namespace Proof
 
 open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
 
+/-! ## Profile v2 Return Memory -/
+
+private theorem rm2_natNotElem_false_of_mem {x : Nat} {xs : List Nat}
+    (h : x ∈ xs) : natNotElem x xs = false := by
+  induction h with
+  | head _ =>
+    unfold natNotElem
+    rw [Nat.beq_refl]
+    rfl
+  | tail _ _ ih =>
+    unfold natNotElem
+    rw [ih, Bool.and_false]
+
+private theorem rm2_mem_allocIdsOf {a : Allocation} {l : List Allocation}
+    (h : a ∈ l) : a.allocId ∈ allocIdsOf l := by
+  induction h with
+  | head _ => unfold allocIdsOf; exact .head _
+  | tail _ _ ih => unfold allocIdsOf; exact .tail _ ih
+
+private theorem rm2_calleeLive_nil_of_sub {ids f : List AllocId} :
+    ∀ {l : List Allocation}, (∀ a, a ∈ l → a.allocId ∈ ids) →
+      calleeLiveAllocations ids f l = []
+  | [], _ => rfl
+  | a :: _, h => by
+    unfold calleeLiveAllocations
+    rw [rm2_natNotElem_false_of_mem (h a (.head _)), Bool.and_false,
+      Bool.false_and]
+    exact rm2_calleeLive_nil_of_sub (fun b hb => h b (.tail _ hb))
+
+/-- If the call created no allocation outside the caller's ids, the Profile v2
+return memory is exactly the updated caller memory. -/
+private theorem rm2_extractReturnMemoryV2_eq {cm : CallerMemory}
+    {mem : MemoryState} (locals : List LocalSlot)
+    (h : ∀ a, a ∈ mem.allocations → a.allocId ∈ allocIdsOf cm.allocations) :
+    extractReturnMemoryV2 cm mem locals = extractCallerMemory cm mem := by
+  unfold extractReturnMemoryV2
+  rw [rm2_calleeLive_nil_of_sub h, List.append_nil]
+
+private theorem rm2_extractReturnMemoryV2_entry (cm : CallerMemory)
+    (locals : List LocalSlot) :
+    extractReturnMemoryV2 cm (entryMemoryWithCaller cm) locals =
+      extractCallerMemory cm (entryMemoryWithCaller cm) :=
+  rm2_extractReturnMemoryV2_eq locals (fun _ ha => rm2_mem_allocIdsOf ha)
+
+private theorem rm2_mem_replaceAllocation_ids {a' : Allocation}
+    {ids : List AllocId} :
+    ∀ {l : List Allocation}, (∀ a, a ∈ l → a.allocId ∈ ids) →
+      ∀ a, a ∈ replaceAllocation a' l → a.allocId ∈ ids
+  | [], _, _, h => by cases h
+  | b :: _, hl, a, ha => by
+    unfold replaceAllocation at ha
+    cases hB : Nat.beq b.allocId a'.allocId with
+    | true =>
+      rw [hB, ite_eq_left rfl] at ha
+      cases ha with
+      | head _ =>
+        rw [← Nat.eq_of_beq_eq_true hB]
+        exact hl b (.head _)
+      | tail _ hr => exact hl a (.tail _ hr)
+    | false =>
+      rw [hB, ite_eq_right (fun h => Bool.noConfusion h)] at ha
+      cases ha with
+      | head _ => exact hl b (.head _)
+      | tail _ hr =>
+        exact rm2_mem_replaceAllocation_ids (fun c hc => hl c (.tail _ hc)) a hr
+
+private theorem rm2_writeBytes_ids {ids : List AllocId} {m m' : MemoryState}
+    {place : MemPlace} {al : Nat} {bs : List AllocByte}
+    (h : writeBytes m place al bs = .ok m')
+    (hm : ∀ b, b ∈ m.allocations → b.allocId ∈ ids) :
+    ∀ b, b ∈ m'.allocations → b.allocId ∈ ids := by
+  unfold writeBytes at h
+  split at h
+  · cases h
+  · split at h
+    · split at h
+      · cases h
+      · cases h; exact hm
+    · split at h
+      · cases h
+      · split at h
+        · cases h
+        · cases h; exact rm2_mem_replaceAllocation_ids hm
+
+private theorem rm2_storeIndirectV2_ids {ids : List AllocId}
+    {m m' : MemoryState} {ty : MirTy} {place : MemPlace} {v : Val}
+    (h : storeIndirectV2 m ty place v = .ok m')
+    (hm : ∀ b, b ∈ m.allocations → b.allocId ∈ ids) :
+    ∀ b, b ∈ m'.allocations → b.allocId ∈ ids := by
+  unfold storeIndirectV2 at h
+  split at h
+  · cases h
+  · split at h
+    · cases h
+    · exact rm2_writeBytes_ids h hm
+
 /-! ## Step & Arithmetic Helpers -/
 
 private theorem ite_bool_false {α : Type u} {b : Bool} {t f : α}
@@ -559,9 +655,13 @@ private theorem evalStepV2_coreCall_ok {p : Program} {body : Body}
       .ok (typedArgs, locals1, mem1))
     (hCall : execCoreCallWithMem mem1 op typedArgs dstTy = .ok (resVal, mem1'))
     (hWr : writePlaceV2 body.locals locals1 mem1' dst dstTy resVal =
-      .ok (locals2, mem2)) :
+      .ok (locals2, mem2))
+    (hNon : execAllocCoreCall mem1 op typedArgs dstTy = none := by rfl) :
     evalStepV2 p ⟨[frame], cm, mem⟩ =
       .step ⟨[⟨frame.defId, target, 0, locals2, frame.sysrootOp?, frame.retDst?, frame.retTarget?⟩], cm, mem2⟩ := by
+  have hCall' : execCoreCallOpWithMem mem1 op typedArgs dstTy =
+      .ok (resVal, mem1') := by
+    unfold execCoreCallOpWithMem; rw [hNon]; exact hCall
   unfold evalStepV2
   dsimp only
   rw [hB]; dsimp only; rw [hBB]; dsimp only; rw [hNone]; dsimp only
@@ -570,9 +670,9 @@ private theorem evalStepV2_coreCall_ok {p : Program} {body : Body}
   rw [hTerm]; dsimp only
   rw [ite_bool_false (by rw [hEmp]; rfl)]
   rw [hDstTy]; dsimp only; rw [hArgs]; dsimp only
-  rw [hCall]; dsimp only; rw [hWr]; rfl
+  rw [hCall']; dsimp only; rw [hWr]; rfl
 
-private theorem evalTerminatorV2_return_ok {body : Body} {bb : BasicBlock}
+private theorem evalTerminatorV2_return_any {body : Body} {bb : BasicBlock}
     {frame : FrameState} {mem : MemoryState} {callerMem : CallerMemory}
     {retTy : MirTy} {retVal : Val} {ps : PanicStrategy} {hLocal oc : Bool}
     (hTerm : bb.terminator = .return_)
@@ -585,6 +685,29 @@ private theorem evalTerminatorV2_return_ok {body : Body} {bb : BasicBlock}
     (hValid : refsValidInMem mem retTy retVal = true)
     (hDisj : spansPairwiseDisjoint (refAccessSpans retTy retVal) = true) :
     evalTerminatorV2 body bb frame mem callerMem ps hLocal oc =
+      .done (.returned ⟨retVal, extractReturnMemoryV2 callerMem mem frame.locals⟩) := by
+  unfold evalTerminatorV2
+  rw [hTerm]
+  dsimp only
+  rw [ite_bool_false hCleanup, hRetTy, hRetSlot]
+  dsimp only
+  rw [ite_bool_false hNoRodata, ite_bool_false (by rw [hStay, hValid, hDisj]; rfl)]
+
+private theorem evalTerminatorV2_return_ok {body : Body} {bb : BasicBlock}
+    {frame : FrameState} {mem : MemoryState} {callerMem : CallerMemory}
+    {retTy : MirTy} {retVal : Val} {ps : PanicStrategy} {hLocal oc : Bool}
+    (hTerm : bb.terminator = .return_)
+    (hCleanup : bb.cleanup = false)
+    (hRetTy : Trusted.MirSemantics.getElem? body.locals 0 = some retTy)
+    (hRetSlot : Trusted.MirSemantics.getElem? frame.locals 0 =
+      some (.immediate (some retVal)))
+    (hNoRodata : hasEscapingRodataPtr callerMem mem retTy retVal = false)
+    (hStay : refsStayInCallerMem callerMem retTy retVal = true)
+    (hValid : refsValidInMem mem retTy retVal = true)
+    (hDisj : spansPairwiseDisjoint (refAccessSpans retTy retVal) = true)
+    (hIds : ∀ a, a ∈ mem.allocations →
+      a.allocId ∈ allocIdsOf callerMem.allocations) :
+    evalTerminatorV2 body bb frame mem callerMem ps hLocal oc =
       .done (.returned ⟨retVal, extractCallerMemory callerMem mem⟩) := by
   unfold evalTerminatorV2
   rw [hTerm]
@@ -592,6 +715,7 @@ private theorem evalTerminatorV2_return_ok {body : Body} {bb : BasicBlock}
   rw [ite_bool_false hCleanup, hRetTy, hRetSlot]
   dsimp only
   rw [ite_bool_false hNoRodata, ite_bool_false (by rw [hStay, hValid, hDisj]; rfl)]
+  rw [rm2_extractReturnMemoryV2_eq _ hIds]
 
 private theorem evalStepV2_switchInt_move_ok {p : Program} {body : Body}
     {bb : BasicBlock} {frame : FrameState} {mem : MemoryState}
@@ -629,7 +753,7 @@ private theorem evalStepV2_switchInt_move_ok {p : Program} {body : Body}
   rw [hBranch]
   rfl
 
-private theorem evalStepV2_return_ok {p : Program} {body : Body}
+private theorem evalStepV2_return_any {p : Program} {body : Body}
     {bb : BasicBlock} {frame : FrameState} {mem : MemoryState}
     {callerMem : CallerMemory} {retTy : MirTy} {retVal : Val}
     (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
@@ -647,12 +771,40 @@ private theorem evalStepV2_return_ok {p : Program} {body : Body}
     (hValid : refsValidInMem mem retTy retVal = true)
     (hDisj : spansPairwiseDisjoint (refAccessSpans retTy retVal) = true) :
     evalStepV2 p ⟨[frame], callerMem, mem⟩ =
+      .done (.returned ⟨retVal, extractReturnMemoryV2 callerMem mem frame.locals⟩) := by
+  unfold evalStepV2; dsimp only
+  rw [hB]; dsimp only; rw [hBB]; dsimp only; rw [hNone]; dsimp only
+  rw [ite_bool_true hLen]
+  exact evalTerminatorV2_return_any hTerm hCleanup hRetTy hRetSlot hNoRodata
+    hStay hValid hDisj
+
+private theorem evalStepV2_return_ok {p : Program} {body : Body}
+    {bb : BasicBlock} {frame : FrameState} {mem : MemoryState}
+    {callerMem : CallerMemory} {retTy : MirTy} {retVal : Val}
+    (hB : Trusted.MirSemantics.getElem? p.bodies frame.defId = some body)
+    (hBB : Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx =
+      some bb)
+    (hNone : Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx = none)
+    (hLen : Nat.beq frame.stmtIdx bb.statements.length = true)
+    (hTerm : bb.terminator = .return_)
+    (hCleanup : bb.cleanup = false)
+    (hRetTy : Trusted.MirSemantics.getElem? body.locals 0 = some retTy)
+    (hRetSlot : Trusted.MirSemantics.getElem? frame.locals 0 =
+      some (.immediate (some retVal)))
+    (hNoRodata : hasEscapingRodataPtr callerMem mem retTy retVal = false)
+    (hStay : refsStayInCallerMem callerMem retTy retVal = true)
+    (hValid : refsValidInMem mem retTy retVal = true)
+    (hDisj : spansPairwiseDisjoint (refAccessSpans retTy retVal) = true)
+    (hIds : ∀ a, a ∈ mem.allocations →
+      a.allocId ∈ allocIdsOf callerMem.allocations := by
+      exact fun _ ha => rm2_mem_allocIdsOf ha) :
+    evalStepV2 p ⟨[frame], callerMem, mem⟩ =
       .done (.returned ⟨retVal, extractCallerMemory callerMem mem⟩) := by
   unfold evalStepV2; dsimp only
   rw [hB]; dsimp only; rw [hBB]; dsimp only; rw [hNone]; dsimp only
   rw [ite_bool_true hLen]
   exact evalTerminatorV2_return_ok hTerm hCleanup hRetTy hRetSlot hNoRodata
-    hStay hValid hDisj
+    hStay hValid hDisj hIds
 
 /-! ## Caller Memory & Slice Helpers -/
 
@@ -1357,10 +1509,13 @@ private theorem checkArgsMatchV2_subslice_inv {args : List Val}
                       injection hbEq with hbSv; subst hbSv
                       exact ⟨ptr, len, aBits, bBits, rfl, hW, haT, hbT⟩
                     | optionVal optV => cases optV <;> cases h2
+                    | boxPtr _ bo => cases bo <;> cases h2
                     | _ => cases h2
                   | optionVal optV => cases optV <;> cases h1
+                  | boxPtr _ bo => cases bo <;> cases h1
                   | _ => cases h1
                 | optionVal optV => cases optV <;> cases h0
+                | boxPtr _ bo => cases bo <;> cases h0
                 | _ => cases h0
 
 private theorem subslice_pOut_eq {ptr pOut : PtrVal} {aBits : BitVec 128}
@@ -1638,6 +1793,7 @@ private theorem opt_unwrap_correct (q : Query)
               injection hEq with hSv; subst hSv
               exact ⟨bits, rfl, hT⟩
             | optionVal optV' => cases optV' <;> cases hChkV
+            | boxPtr _ bo => cases bo <;> cases hChkV
             | _ => cases hChkV
           let ⟨vBits, hvEq, hvTr⟩ := hVSc
           subst hvEq
@@ -1950,10 +2106,13 @@ private theorem checkArgsMatchV2_u64_u64_u32_inv {args : List Val}
                       injection hsEq with hsSv; subst hsSv
                       exact ⟨aBits, bBits, sBits, rfl, haT, hbT, hsT⟩
                     | optionVal optV => cases optV <;> cases h2
+                    | boxPtr _ bo => cases bo <;> cases h2
                     | _ => cases h2
                   | optionVal optV => cases optV <;> cases h1
+                  | boxPtr _ bo => cases bo <;> cases h1
                   | _ => cases h1
                 | optionVal optV => cases optV <;> cases h0
+                | boxPtr _ bo => cases bo <;> cases h0
                 | _ => cases h0
 
 @[irreducible]
@@ -2174,7 +2333,7 @@ private theorem checked_scalar_tail_ok (m : MemoryState)
     (evalStepV2_storageDead_imm_ok body2_at rfl rfl rfl rfl rfl)
   -- bb10 term: return_
   apply execV2_done
-    (evalStepV2_return_ok body2_at rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl)
+    (evalStepV2_return_any body2_at rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl)
   exact trivial
 
 private theorem checked_scalar_no_ovf_ok (m : MemoryState) (cm : CallerMemory)
@@ -2525,10 +2684,13 @@ private theorem checkArgsMatchV2_slice_mutU64_u64_inv {args : List Val}
                       injection hnEq with hnSv; subst hnSv
                       exact ⟨sPtr, sLen, dPtr, nBits, rfl, hsW, hdW, hnT⟩
                     | optionVal optV => cases optV <;> cases h2
+                    | boxPtr _ bo => cases bo <;> cases h2
                     | _ => cases h2
                   | optionVal optV => cases optV <;> cases h1
+                  | boxPtr _ bo => cases bo <;> cases h1
                   | _ => cases h1
                 | optionVal optV => cases optV <;> cases h0
+                | boxPtr _ bo => cases bo <;> cases h0
                 | _ => cases h0
 
 private theorem decodeValV2_u64_some {endian : TargetEndian}
@@ -2584,7 +2746,8 @@ private theorem execMemReplace_u64_ok (m : MemoryState) (p : PtrVal)
       true := checkVal_int_eq hNTr
   unfold refValidInMem at hValid
   dsimp only at hValid
-  rw [ite_bool_false (b := !isSupportedV2PointeeTy (.int .i64 false)) rfl] at hValid
+  rw [ite_bool_false (b := !isSupportedV2PointeeTy (.int .i64 false) &&
+      !isHeapHandleTyV2 (.int .i64 false)) rfl] at hValid
   cases hAid : p.allocId with
   | none =>
     rw [hAid] at hValid
@@ -2833,7 +2996,7 @@ private theorem slice_and_replace_correct (q : Query)
         apply execOutcomeStateV2_step (by rfl)
         -- bb2 term: return_
         apply execOutcomeStateV2_done
-          (evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl)
+          (evalStepV2_return_any rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl rfl)
         exact trivial
       exact wellFormedV2_of_exec hInit hExec
 
@@ -2919,7 +3082,8 @@ private theorem option_ops_of_valid (m : MemoryState) (p : PtrVal)
         .ok (.optionVal (optBits.map (fun b => .scalar ⟨.i64, false, b⟩)), m1) := by
   unfold refValidInMem at hValid
   dsimp only at hValid
-  rw [ite_bool_false (b := !isSupportedV2PointeeTy (.option (.int .i64 false))) rfl]
+  rw [ite_bool_false (b := !isSupportedV2PointeeTy (.option (.int .i64 false)) &&
+      !isHeapHandleTyV2 (.option (.int .i64 false))) rfl]
     at hValid
   cases hAid : p.allocId with
   | none =>
@@ -2961,7 +3125,8 @@ private theorem option_ops_of_valid (m : MemoryState) (p : PtrVal)
                 unfold refValidInMem
                 dsimp only
                 rw [ite_bool_false
-                  (b := !isSupportedV2PointeeTy (.option (.int .i64 false))) rfl]
+                  (b := !isSupportedV2PointeeTy (.option (.int .i64 false)) &&
+      !isHeapHandleTyV2 (.option (.int .i64 false))) rfl]
                 rw [hAid]; dsimp only
                 rw [hFind, layoutOfTyV2_opt_u64]; dsimp only
                 rw [ite_bool_false hBad, ite_bool_false (by rfl)]
@@ -3157,7 +3322,7 @@ private theorem take_option_correct (q : Query)
             apply execOutcomeStateV2_step (by rfl)
             -- bb2 term: return_
             apply execOutcomeStateV2_done (by
-              apply evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl
+              apply evalStepV2_return_any rfl rfl rfl rfl rfl rfl rfl rfl
               · cases optBits <;> rfl
               · cases optBits <;> rfl
               · cases optBits <;> rfl
@@ -3165,6 +3330,7 @@ private theorem take_option_correct (q : Query)
             exact trivial
           exact wellFormedV2_of_exec hInit hExec
       | optionVal optV => cases optV <;> cases hMatch
+      | boxPtr _ bo => cases bo <;> cases hMatch
       | _ => cases hMatch
 
 /-! ## Top-Level Profile v2 Claim -/

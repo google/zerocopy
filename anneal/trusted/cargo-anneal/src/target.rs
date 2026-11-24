@@ -6190,7 +6190,7 @@ mod tests {
                 (
                     "Proof",
                     TargetRole::Proof,
-                    "prelude\nimport Expected\nimport Anneal.MirWp.V2Memory\n\
+                    "prelude\nimport Expected\nimport Anneal.MirWp.V2StepShield\n\
                      open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp\n\
                      private theorem run_id_slice (q : Query)\n    \
                        (hValid : ValidEntryArgsV2 Captured.body0 q) :\n    \
@@ -6227,7 +6227,8 @@ mod tests {
                          dsimp only [evalStepV2, entryProgForBody, Captured.program,\n      \
                            Captured.body0, Captured.sliceTy, Trusted.MirSemantics.getElem?]\n    \
                          rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)\n      \
-                           hStay hRV spansDisjoint_single, hExt]\n    \
+                           hStay hRV spansDisjoint_single,\n      \
+                           extractReturnMemoryV2_entryMemory, hExt]\n    \
                          rfl)\n  \
                        rfl\n\
                      theorem Proof.verify : Expected.claim := by\n  \
@@ -6283,6 +6284,7 @@ mod tests {
                 "Anneal.MirWp.Reflection",
                 "Anneal.MirWp.Scalars",
                 "Anneal.MirWp.V2Memory",
+                "Anneal.MirWp.V2StepShield",
                 "Anneal.NatBitwise",
             ],
             &["Anneal.Unused", "Anneal.MirWp.Execution"],

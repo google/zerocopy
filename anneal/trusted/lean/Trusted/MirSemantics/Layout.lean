@@ -200,9 +200,10 @@ noncomputable def layoutOfArrayV2 : MirTy → Option LayoutData
     | none => layoutOfPtrOrRangeV2 ty
 
 /-- Layout of a Profile v2 local or pointee type (`layoutOfTy` extended with
-fixed-size arrays `[T; N]`, 64-bit thin pointers `⟨8, 3⟩`, 64-bit wide slice
-pointers `⟨16, 3⟩`, `RangeTo<usize>` / `RangeFrom<usize>` `⟨8, 3⟩`, and
-supported `Option<T>`). Returns `none` for unsized `.slice` directly,
+fixed-size arrays `[T; N]`, 64-bit thin pointers and `Box<T>` `⟨8, 3⟩`, 64-bit
+wide slice pointers and `Box<[T]>` `⟨16, 3⟩`, the model-internal `Vec<T>`
+handle `⟨24, 3⟩`, `RangeTo<usize>` / `RangeFrom<usize>` `⟨8, 3⟩`, and supported
+`Option<T>`). Returns `none` for unsized `.slice` directly,
 `Range<usize>`, general tuples other than Profile v1 overflow pairs, and
 unsupported aggregates.
 
@@ -295,6 +296,8 @@ noncomputable def layoutOfTyV2 (ty : MirTy) : Option LayoutData :=
       match layoutOfArrayV2 elem with
       | none => none
       | some elemLay => some ⟨len * elemLay.size, elemLay.alignLog2⟩
+    | .box pt => if isUnsizedTy pt then some ⟨16, 3⟩ else some ⟨8, 3⟩
+    | .vec _ => some ⟨24, 3⟩
     | .option inner =>
       if !isSizedNoRefV2Ty inner || !isOptionPayloadSupportedV2 inner then
         none

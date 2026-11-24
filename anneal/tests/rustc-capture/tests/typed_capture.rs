@@ -5255,6 +5255,43 @@ fn tuple_local_field_moves_are_captured() {
     assert!(lean.contains("Trusted.MirAst.ProjectionElem.field 0"), "{lean}");
 }
 
+#[test]
+fn overflow_pairs_are_refused_as_vec_box_and_slice_elements() {
+    // Like pointees, `Vec`, `Box`, and slice elements are addressable, so an
+    // overflow pair, whose layout capture never checks, may not be one.
+    for (name, source) in [
+        (
+            "vec-of-overflow-pair",
+            "pub fn selected(v: Vec<(u8, bool)>) -> Vec<(u8, bool)> { v }\n",
+        ),
+        (
+            "box-of-overflow-pair",
+            "pub fn selected(b: Box<(u32, bool)>) -> Box<(u32, bool)> { b }\n",
+        ),
+        (
+            "box-slice-of-overflow-pair",
+            "pub fn selected(b: Box<[(u8, bool)]>) -> Box<[(u8, bool)]> { b }\n",
+        ),
+        ("slice-of-overflow-pair", "pub fn selected(s: &[(u8, bool)]) -> &[(u8, bool)] { s }\n"),
+        (
+            "ref-to-vec-of-overflow-pair",
+            "pub fn selected(v: &Vec<(u8, bool)>) -> &Vec<(u8, bool)> { v }\n",
+        ),
+    ] {
+        let fixture = Capture::new(source.as_bytes());
+        let output = fixture.selected_command().arg("--panic=abort").output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        let text = failure.to_string();
+        assert!(
+            text.contains("OverflowPair") || text.contains("overflow pair"),
+            "{name}: {failure}"
+        );
+        fixture.assert_no_capture_artifacts();
+    }
+}
+
 /// Assert that a fixture captured nothing and failed with `expected` in its
 /// status JSON.
 fn assert_refused(name: &str, fixture: &Capture, output: &Output, expected: &str) {
@@ -6765,4 +6802,385 @@ pub fn div_var(x: u64, d: u64) -> u64 {
         "all primitive divisor Asserts must be captured verbatim:\n{div_lean}"
     );
     compile_captured_lean_if_trusted_sources_present(&div_lean_path);
+}
+
+#[test]
+fn captures_profile_v2_vec_and_box_operations_under_panic_abort() {
+    let alloc_src = br#"
+        use core::ops::{Deref, DerefMut};
+
+        pub fn vec_with_cap_and_reserve(cap: usize) -> (usize, usize, Vec<u8>) {
+            let mut v: Vec<u8> = Vec::with_capacity(cap);
+            v.reserve(4);
+            v.push(1);
+            let n = v.len();
+            let sl_len = DerefMut::deref_mut(&mut v).len();
+            (n, sl_len, v)
+        }
+
+        pub fn vec_full_ops_to_box(ext: &[u8]) -> (usize, u8, Box<[u8]>, Box<[u8]>) {
+            let mut v: Vec<u8> = Vec::new();
+            v.push(10);
+            v.push(20);
+            v.resize(4, 7);
+            v.extend_from_slice(ext);
+            let x0 = v[0];
+            v[1] = 42;
+            let _sl: &[u8] = v.deref();
+            let b: Box<[u8]> = Box::from(v);
+            let c: Box<[u8]> = b.clone();
+            let b_sl: &[u8] = &*b;
+            let n = b_sl.len();
+            let d_sl: &[u8] = Deref::deref(&c);
+            let _m = d_sl.len();
+            (n, x0, b, c)
+        }
+
+        pub fn box_new_and_deref(x: u64) -> (u64, Box<u64>) {
+            let b: Box<u64> = Box::new(x);
+            let y = *b;
+            (y, b)
+        }
+
+        pub fn box_and_slice_shared_len(s: &[u8], b: &Box<[u8]>) -> (usize, usize) {
+            (s.len(), b.len())
+        }
+    "#;
+    let fixture = Capture::new(alloc_src);
+    let out = fixture
+        .command()
+        .args(["--panic=abort", "--scope=crate"])
+        .output()
+        .unwrap();
+    assert!(
+        out.status.success(),
+        "Profile v2 Vec/Box capture should succeed under --panic=abort:\n{}\n{}",
+        stdout(&out),
+        stderr(&out)
+    );
+    let manifest = fixture.manifest();
+    assert_eq!(manifest["program"]["mir_profile_version"], 2, "{manifest}");
+    assert_eq!(manifest["configuration"]["panic"], "abort", "{manifest}");
+    let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
+    for needle in [
+        "MirTy.vec",
+        "MirTy.box",
+        "CastKind.boxAsRef",
+        "CoreCallOp.vecNew",
+        "CoreCallOp.vecWithCapacity",
+        "CoreCallOp.vecLen",
+        "CoreCallOp.vecPush",
+        "CoreCallOp.vecResize",
+        "CoreCallOp.vecExtendFromSlice",
+        "CoreCallOp.vecIndex",
+        "CoreCallOp.vecIndexMut",
+        "CoreCallOp.vecDeref",
+        "CoreCallOp.vecDerefMut",
+        "CoreCallOp.vecReserve",
+        "CoreCallOp.boxFromVec",
+        "CoreCallOp.boxDeref",
+        "CoreCallOp.boxClone",
+        "CoreCallOp.boxNew",
+    ] {
+        assert!(lean.contains(needle), "missing {needle} in Captured.lean:\n{lean}");
+    }
+}
+
+#[test]
+fn profile_v2_refuses_nested_and_unsupported_vec_box_shapes() {
+    for (name, source) in [
+        (
+            "vec-of-ref",
+            "pub fn selected<'a>(v: Vec<&'a u8>) -> usize { v.len() }\n",
+        ),
+        (
+            "box-of-ref",
+            "pub fn selected<'a>(b: Box<&'a u8>) -> u8 { **b }\n",
+        ),
+        (
+            "nested-vec",
+            "pub fn selected(v: Vec<Vec<u8>>) -> usize { v.len() }\n",
+        ),
+        (
+            "non-box-transmute",
+            "pub unsafe fn selected(v: Vec<u8>) -> [u8; 24] {\n\
+                 unsafe { core::mem::transmute::<Vec<u8>, [u8; 24]>(v) }\n\
+             }\n",
+        ),
+    ] {
+        let fixture = Capture::new(source.as_bytes());
+        let output = fixture
+            .selected_command()
+            .arg("--panic=abort")
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        fixture.assert_no_capture_artifacts();
+    }
+}
+
+/// Rust leaves the layout of `Vec` unspecified, so raw pointers to `Vec` or
+/// `Box` handles (which could reinterpret the model's handle encoding) are
+/// refused, as is `Vec` indexing by anything other than `usize`.
+#[test]
+fn profile_v2_refuses_vec_box_handle_raw_pointers_and_non_usize_index() {
+    for (name, source, needle) in [
+        (
+            "vec-handle-reinterpret",
+            "pub fn selected(v: Vec<u8>) -> (usize, Vec<u8>) {\n\
+                 let x = unsafe { *(&raw const v as *const usize) };\n\
+                 (x, v)\n\
+             }\n",
+            "outside the Profile v2 type fragment",
+        ),
+        (
+            "box-handle-raw-ptr",
+            "pub fn selected(b: Box<u8>) -> u8 {\n\
+                 let p = &raw const b;\n\
+                 unsafe { **p }\n\
+             }\n",
+            "outside the Profile v2 type fragment",
+        ),
+        (
+            "vec-range-index",
+            "pub fn selected(v: &Vec<u8>) -> usize { v[1..].len() }\n",
+            "non-`usize` index type",
+        ),
+    ] {
+        let fixture = Capture::new(source.as_bytes());
+        let output = fixture
+            .selected_command()
+            .arg("--panic=abort")
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        assert!(failure.to_string().contains(needle), "{name}: {failure}");
+        fixture.assert_no_capture_artifacts();
+    }
+}
+
+/// `Vec::extend_from_slice`, `Vec::resize`, and `Box::clone` are modeled as
+/// bitwise element copies, which matches Rust only for `TrivialClone`
+/// elements. An enum with a hand-written `Clone` that returns another variant
+/// is refused for each operation (`Box<T>` and `Box<[T]>` clones included),
+/// with or without `#[derive(Copy)]`; the same enum with
+/// `#[derive(Clone, Copy)]` is admitted.
+#[test]
+fn profile_v2_clone_based_alloc_ops_require_trivial_clone_elements() {
+    let manual = "pub enum E { A, B }\n\
+                  impl Clone for E { fn clone(&self) -> E { E::B } }\n";
+    let derived = "#[derive(Clone, Copy)]\npub enum E { A, B }\n";
+    let ops = [
+        (
+            "extend-from-slice",
+            "pub fn selected(v: &mut Vec<E>, s: &[E]) { v.extend_from_slice(s) }\n",
+        ),
+        (
+            "resize",
+            "pub fn selected(v: &mut Vec<E>, x: E) { v.resize(3, x) }\n",
+        ),
+        (
+            "box-clone",
+            "pub fn selected(b: &Box<E>) -> Box<E> { b.clone() }\n",
+        ),
+        (
+            "boxed-slice-clone",
+            "pub fn selected(b: &Box<[E]>) -> Box<[E]> { b.clone() }\n",
+        ),
+    ];
+    // `Copy` with a hand-written `Clone` is not `TrivialClone` either.
+    let copy_manual = "#[derive(Copy)]\npub enum E { A, B }\n\
+                       impl Clone for E { fn clone(&self) -> E { E::B } }\n";
+    for (name, body) in ops {
+        for prefix in [manual, copy_manual] {
+            let refused = Capture::new(format!("{prefix}{body}").as_bytes());
+            let output = refused.selected_command().arg("--panic=abort").output().unwrap();
+            assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+            let failure = status(&output);
+            assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+            assert!(
+                failure.to_string().contains("which is not `TrivialClone`"),
+                "{name}: {failure}"
+            );
+            refused.assert_no_capture_artifacts();
+        }
+
+        let admitted = Capture::new(format!("{derived}{body}").as_bytes());
+        let out = admitted.selected_command().arg("--panic=abort").output().unwrap();
+        assert!(
+            out.status.success(),
+            "{name}: derived Clone + Copy element should be admitted:\n{}\n{}",
+            stdout(&out),
+            stderr(&out)
+        );
+    }
+}
+
+/// Slices of every scalar element type are admitted local types, but the
+/// modeled slice functions such as `<[T]>::len` still require integer
+/// elements.
+#[test]
+fn profile_v2_admits_scalar_slices_but_slice_len_requires_int_elements() {
+    let admitted = Capture::new(
+        b"pub fn selected<'a>(s: &'a [bool]) -> &'a [bool] { s }\n",
+    );
+    let out = admitted.selected_command().arg("--panic=abort").output().unwrap();
+    assert!(out.status.success(), "{}\n{}", stdout(&out), stderr(&out));
+    let manifest = admitted.manifest();
+    assert_eq!(manifest["program"]["mir_profile_version"], 2, "{manifest}");
+    let lean = std::fs::read_to_string(admitted.output.join("Captured.lean")).unwrap();
+    assert!(lean.contains("MirTy.slice Trusted.MirAst.MirTy.bool"), "{lean}");
+
+    let refused = Capture::new(b"pub fn selected(s: &[bool]) -> usize { s.len() }\n");
+    let output = refused.selected_command().arg("--panic=abort").output().unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    let failure = status(&output);
+    assert_eq!(failure["status"], "unsupported", "{failure}");
+    refused.assert_no_capture_artifacts();
+}
+
+#[test]
+fn profile_v2_promotes_box_shared_deref_and_refuses_genuine_box_raw_ptr_mix() {
+    let shared_src = br#"
+        use core::ops::Deref;
+
+        pub fn slice_and_box_len(s: &[u8], b: &Box<[u8]>) -> (usize, usize, usize) {
+            let bs: &[u8] = &**b;
+            let bd: &[u8] = b.deref();
+            (s.len(), bs.len(), bd.len())
+        }
+
+        pub fn ref_and_box_u64(r: &u64, b: &Box<u64>) -> u64 {
+            *r + **b
+        }
+    "#;
+    let ok_fixture = Capture::new(shared_src);
+    let ok_out = ok_fixture
+        .command()
+        .args(["--panic=abort", "--scope=crate"])
+        .output()
+        .unwrap();
+    assert!(
+        ok_out.status.success(),
+        "shared Box deref alongside &T should succeed:\n{}\n{}",
+        stdout(&ok_out),
+        stderr(&ok_out)
+    );
+    let ok_lean = std::fs::read_to_string(ok_fixture.output.join("Captured.lean")).unwrap();
+    assert!(ok_lean.contains("CastKind.boxAsRef"), "{ok_lean}");
+    assert!(!ok_lean.contains("CastKind.boxAsRawPtr"), "{ok_lean}");
+    assert!(!ok_lean.contains("MirTy.rawPtr"), "{ok_lean}");
+
+    for (name, bad_src) in [
+        (
+            "ref-and-box-raw-cast",
+            "pub fn selected(s: &[u8], b: &Box<u64>) -> (usize, *const u64) {\n\
+                 (s.len(), &**b as *const u64)\n\
+             }\n",
+        ),
+        (
+            "ref-and-box-slice-raw-addr",
+            "pub fn selected(s: &[u8], b: &Box<[u8]>) -> (usize, *const [u8]) {\n\
+                 (s.len(), &raw const **b)\n\
+             }\n",
+        ),
+        // A `Box` counts as a reference, so a raw pointer derived from it mixes
+        // even without any `&T` local.
+        (
+            "box-raw-addr",
+            "pub unsafe fn selected(b: Box<u64>) -> (u64, Box<u64>) {\n\
+                 let p: *const u64 = &raw const (*b);\n\
+                 (unsafe { *p }, b)\n\
+             }\n",
+        ),
+        // Undefined behavior under Stacked and Tree Borrows: the write uses a
+        // pointer derived from `b` after `b` was moved, through a `*const` to
+        // `*mut` cast.
+        (
+            "box-write-after-move",
+            "pub fn selected() -> Box<u8> {\n\
+                 let b = Box::new(1u8);\n\
+                 let p = &raw const *b as *mut u8;\n\
+                 let c = b;\n\
+                 unsafe { *p = 2; }\n\
+                 c\n\
+             }\n",
+        ),
+    ] {
+        let bad_fixture = Capture::new(bad_src.as_bytes());
+        let bad_out = bad_fixture
+            .selected_command()
+            .arg("--panic=abort")
+            .output()
+            .unwrap();
+        assert_eq!(bad_out.status.code(), Some(1), "{name}: {bad_out:?}");
+        let failure = status(&bad_out);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        assert!(
+            failure.to_string().contains("body mixes reference and raw-pointer locals"),
+            "{name}: {failure}"
+        );
+        bad_fixture.assert_no_capture_artifacts();
+    }
+}
+
+#[test]
+fn profile_v2_refuses_local_owned_box_lang_item_under_stdlib_crate() {
+    // Under `--stdlib-crate=core` a crate may define its own
+    // `#[lang = "owned_box"]` item. Only the sysroot `alloc::boxed::Box` is a
+    // modeled `Box`, so this look-alike is an unsupported type.
+    let source = b"\
+        #![feature(no_core, lang_items, rustc_attrs)]\n\
+        #![no_core]\n\
+        #![rustc_coherence_is_core]\n\
+        #[lang = \"pointee_sized\"] pub trait PointeeSized {}\n\
+        #[lang = \"meta_sized\"] pub trait MetaSized: PointeeSized {}\n\
+        #[lang = \"sized\"] pub trait Sized: MetaSized {}\n\
+        #[lang = \"copy\"] pub trait Copy {}\n\
+        impl Copy for u64 {}\n\
+        #[lang = \"legacy_receiver\"] pub trait LegacyReceiver: PointeeSized {}\n\
+        impl<T: PointeeSized> LegacyReceiver for &T {}\n\
+        pub struct NonNull<T: ?Sized>(*const T);\n\
+        pub struct Unique<T: ?Sized>(NonNull<T>);\n\
+        #[lang = \"owned_box\"] pub struct FakeBox<T: ?Sized>(Unique<T>);\n\
+        pub fn selected(_b: &FakeBox<u64>) -> u64 { 0 }\n";
+    let fixture = Capture::new(source);
+    let output = fixture
+        .command_with("core", true)
+        .args(["--stdlib-crate=core", "--select=selected", "--panic=abort"])
+        .output()
+        .unwrap();
+    assert_refused("local owned_box lang item", &fixture, &output, "unsupported type");
+}
+
+#[test]
+fn profile_v2_refuses_local_alloc_vec_look_alike_in_crate_named_alloc() {
+    // The local crate is named `alloc` and defines its own `alloc::vec::Vec`.
+    // Modeled library items must come from the real `alloc` crate, so this
+    // look-alike is an unsupported type rather than a modeled `Vec`.
+    let fixture = Capture::new(
+        b"pub mod alloc {\n\
+              pub mod vec {\n\
+                  pub struct Vec<T>(pub T);\n\
+                  impl<T> Vec<T> {\n\
+                      pub fn new() -> Self where T: Default { Vec(T::default()) }\n\
+                  }\n\
+              }\n\
+          }\n\
+          pub fn selected() -> alloc::vec::Vec<u8> { alloc::vec::Vec::new() }\n",
+    );
+    let out = fixture
+        .command_with("alloc", true)
+        .args(["--select=selected", "--panic=abort"])
+        .output()
+        .unwrap();
+    assert_eq!(out.status.code(), Some(1), "{out:?}");
+    let failure = status(&out);
+    assert_eq!(failure["status"], "unsupported", "{failure}");
+    assert!(failure.to_string().contains("unsupported type: alloc::vec::Vec<u8>"), "{failure}");
+    fixture.assert_no_capture_artifacts();
 }

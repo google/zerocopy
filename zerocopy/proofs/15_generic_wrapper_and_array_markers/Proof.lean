@@ -2044,7 +2044,8 @@ private theorem checkVal_bool_inv {v : Val} (h : checkVal v .bool = true) :
   have hTy := checkVal_iff_ty?.mp h
   cases v with
   | bool b => exact ⟨b, rfl⟩
-  | unit | char _ | ordering _ | ptr _ | slicePtr _ _ | rangeTo _
+  | unit | char _ | ordering _ | ptr _ | slicePtr _ _ | vec _ _ _ | boxPtr _
+  | rangeTo _
   | rangeFrom _ | range _ _ | optionVal _ | array _ | bytes _ => cases hTy
   | scalar sv =>
     dsimp only [Val.ty?] at hTy

@@ -667,7 +667,7 @@ theorem integerCast_u128_to_char (bits : BitVec 128) :
 theorem evalRefConstLit_eq (ty : MirTy) (lit : ConstLit) :
     evalRefConstLit ty lit = evalConstLit ty lit := by
   cases ty with
-  | unit | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | str | array _ _
+  | unit | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | str | vec _ | box _ | array _ _
   | rangeTo _ | rangeFrom _ | range _ | option _ | unsupported =>
     cases lit <;> rfl
   | char =>
@@ -857,7 +857,7 @@ theorem checkRefVal_tuple_eq (fs : List Val) (ty : MirTy) :
 theorem checkRefVal_eq (v : Val) (ty : MirTy) :
     checkRefVal v ty = checkVal v ty := by
   cases v with
-  | unit | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
+  | unit | ptr _ | slicePtr _ _ | vec _ _ _ | boxPtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
   | bytes _
   | array _ | ordering _ =>
     cases ty <;> rfl
@@ -884,7 +884,7 @@ theorem checkRefVal_eq (v : Val) (ty : MirTy) :
     | mk vw vs vbits =>
       cases ty with
       | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
-      | rawPtr _ _ | slice _ | str | array _ _ | rangeTo _ | rangeFrom _
+      | rawPtr _ _ | slice _ | vec _ | box _ | str | array _ _ | rangeTo _ | rangeFrom _
       | range _ | option _
       | unsupported =>
         dsimp only [checkRefVal, checkVal, Val.ty?]
@@ -1316,7 +1316,7 @@ theorem checkVal_eq_true_inv {v : Val} {ty : MirTy}
     subst h_fs
     exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr
       ⟨w, s, bits, b, h_ty, rfl, h_tr⟩)))))
-  | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _
+  | ptr _ | slicePtr _ _ | vec _ _ _ | boxPtr _ _ | rangeTo _ | rangeFrom _ | array _
   | range _ _ | optionVal _
   | bytes _ => cases h
 
@@ -2095,7 +2095,7 @@ private theorem refCastStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
               subst h_rv_eq
               let ⟨h_did, h_demp⟩ := decodePlace_inv h_d
               cases k with
-              | unsupported | ptrToPtr | intToPtr | unsize => rfl
+              | unsupported | ptrToPtr | intToPtr | unsize | boxAsRef => rfl
               | intToInt =>
                 dsimp only [refCastStmtOk, castStmtOk]
                 rw [h_demp, h_did, h_t]

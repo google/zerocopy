@@ -312,8 +312,55 @@ theorem evalStepV2_goto {p : Program} {body : Body} {bb : BasicBlock}
       .step (stateV2 (frameV2 defId target 0 l) cm m) :=
   (evalStepV2_term hBody hBB hStmt hEnd).trans (evalTerminatorV2_goto hTerm)
 
+/-! ## Return memory -/
+
+private theorem natNotElem_false_of_mem {x : Nat} {xs : List Nat}
+    (h : x ∈ xs) : natNotElem x xs = false := by
+  induction h with
+  | head _ =>
+    unfold natNotElem
+    rw [Nat.beq_refl]
+    rfl
+  | tail _ _ ih =>
+    unfold natNotElem
+    rw [ih, Bool.and_false]
+
+private theorem mem_allocIdsOf {a : Allocation} {l : List Allocation}
+    (h : a ∈ l) : a.allocId ∈ allocIdsOf l := by
+  induction h with
+  | head _ => unfold allocIdsOf; exact .head _
+  | tail _ _ ih => unfold allocIdsOf; exact .tail _ ih
+
+private theorem calleeLive_nil_of_sub {ids f : List AllocId} :
+    ∀ {l : List Allocation}, (∀ a, a ∈ l → a.allocId ∈ ids) →
+      calleeLiveAllocations ids f l = []
+  | [], _ => rfl
+  | a :: _, h => by
+    unfold calleeLiveAllocations
+    rw [natNotElem_false_of_mem (h a (.head _)), Bool.and_false,
+      Bool.false_and]
+    exact calleeLive_nil_of_sub (fun b hb => h b (.tail _ hb))
+
+private theorem extractReturnMemoryV2_of_sub {cm : CallerMemory}
+    {mem : MemoryState} (locals : List LocalSlot)
+    (h : ∀ a, a ∈ mem.allocations → a.allocId ∈ allocIdsOf cm.allocations) :
+    extractReturnMemoryV2 cm mem locals = extractCallerMemory cm mem := by
+  unfold extractReturnMemoryV2
+  rw [calleeLive_nil_of_sub h, List.append_nil]
+
+/-- A Profile v2 return from a state whose memory is still the entry memory
+(so the call created no heap buffer) exposes exactly the caller's memory. -/
+theorem extractReturnMemoryV2_entryMemory (cm : CallerMemory)
+    (locals : List LocalSlot) :
+    extractReturnMemoryV2 cm (entryMemoryWithCaller cm) locals =
+      extractCallerMemory cm (entryMemoryWithCaller cm) :=
+  extractReturnMemoryV2_of_sub locals (fun _ ha => mem_allocIdsOf ha)
+
 /-- A `return` step that returns a value whose references stay in caller
-memory, in a body whose return type has no raw pointers. -/
+memory, in a body whose return type has no raw pointers. The caller sees its
+own memory followed by the heap buffers the call created and did not free
+(`extractReturnMemoryV2`); `extractReturnMemoryV2_entryMemory` reduces this to
+`extractCallerMemory` when the memory is still the entry memory. -/
 theorem evalStepV2_return_ok {p : Program} {body : Body} {bb : BasicBlock}
     {defId : DefId} {b i : Nat} {l : List LocalSlot}
     {cm : CallerMemory} {m : MemoryState} {retTy : MirTy} {retVal : Val}
@@ -331,7 +378,7 @@ theorem evalStepV2_return_ok {p : Program} {body : Body} {bb : BasicBlock}
     (hDisj : spansPairwiseDisjoint (refAccessSpans retTy retVal) = true)
     (hNoRaw : tyHasRawPtrV2 retTy = false := by rfl) :
     evalStepV2 p (stateV2 (frameV2 defId b i l) cm m) =
-      .done (.returned ⟨retVal, extractCallerMemory cm m⟩) :=
+      .done (.returned ⟨retVal, extractReturnMemoryV2 cm m l⟩) :=
   (evalStepV2_term hBody hBB hStmt hEnd).trans
     (evalTerminatorV2_return_ok hTerm hCleanup hRetTy hRetSlot hStay hValid
       hDisj hNoRaw)

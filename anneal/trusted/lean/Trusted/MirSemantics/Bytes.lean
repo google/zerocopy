@@ -518,6 +518,32 @@ noncomputable def encodeValV2 (endian : TargetEndian) (ty : MirTy) (v : Val) :
           (fun b => AllocByte.init b p.allocId) ++
         (encodeUInt endian 8 len.toNat).map
           (fun b => AllocByte.init b none))
+    -- `Vec` and `Box` handles use a model-internal encoding. Rust leaves the
+    -- layout of `Vec` unspecified (`library/alloc/src/vec/mod.rs:312-314`,
+    -- `rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`): "Most
+    -- fundamentally, `Vec` is and always will be a (pointer, capacity, length)
+    -- triplet. No more, no less. The order of these fields is completely
+    -- unspecified". The encoding is unobservable because Profile v2 admits
+    -- no raw pointer to a `Vec` or `Box` (`isSupportedV2LocalTy`), so only
+    -- the contracts in `AllocContracts` read and write these bytes.
+    | .vec _, .vec p cap len =>
+      .ok ((encodeUInt endian 8 p.offsetBytes.toNat).map
+          (fun b => AllocByte.init b p.allocId) ++
+        (encodeUInt endian 8 cap.toNat).map
+          (fun b => AllocByte.init b none) ++
+        (encodeUInt endian 8 len.toNat).map
+          (fun b => AllocByte.init b none))
+    | .box pt, .boxPtr p none =>
+      if isUnsizedTy pt then
+        .error .unsupported
+      else
+        .ok ((encodeUInt endian 8 p.offsetBytes.toNat).map
+          (fun b => AllocByte.init b p.allocId))
+    | .box (.slice _), .boxPtr p (some len) =>
+      .ok ((encodeUInt endian 8 p.offsetBytes.toNat).map
+          (fun b => AllocByte.init b p.allocId) ++
+        (encodeUInt endian 8 len.toNat).map
+          (fun b => AllocByte.init b none))
     | .rangeTo (.int .isize false), .rangeTo e =>
       .ok ((encodeUInt endian 8 e.toNat).map (fun b => AllocByte.init b none))
     | .rangeFrom (.int .isize false), .rangeFrom s =>
@@ -633,6 +659,50 @@ noncomputable def decodeValV2 (endian : TargetEndian) :
       | none => .ok none
       | some raw =>
         .ok (some (.rangeFrom (UInt64.ofNat (decodeUInt endian raw))))
+  -- Inverse of the model-internal `Vec` encoding in `encodeValV2`, which no
+  -- program can observe (see the comment there).
+  | .vec _, bytes =>
+    if !Nat.beq bytes.length 24 then
+      .error .unsupported
+    else
+      let pBytes := bytes.take 8
+      let cBytes := (bytes.drop 8).take 8
+      let lBytes := bytes.drop 16
+      match initBytes? pBytes, readPtrProv? pBytes,
+          initBytes? cBytes, initBytes? lBytes with
+      | some pRaw, some prov, some cRaw, some lRaw =>
+        let p : PtrVal :=
+          ⟨prov, UInt64.ofNat (decodeUInt endian pRaw), .isize⟩
+        let cap := UInt64.ofNat (decodeUInt endian cRaw)
+        let len := UInt64.ofNat (decodeUInt endian lRaw)
+        .ok (some (.vec p cap len))
+      | _, _, _, _ => .ok none
+  | .box pt, bytes =>
+    if isUnsizedTy pt then
+      match pt with
+      | .slice _ =>
+        if !Nat.beq bytes.length 16 then
+          .error .unsupported
+        else
+          let pBytes := bytes.take 8
+          let lBytes := bytes.drop 8
+          match initBytes? pBytes, readPtrProv? pBytes, initBytes? lBytes with
+          | some pRaw, some prov, some lRaw =>
+            let p : PtrVal :=
+              ⟨prov, UInt64.ofNat (decodeUInt endian pRaw), .isize⟩
+            let len := UInt64.ofNat (decodeUInt endian lRaw)
+            .ok (some (.boxPtr p (some len)))
+          | _, _, _ => .ok none
+      | _ => .error .unsupported
+    else
+      if !Nat.beq bytes.length 8 then
+        .error .unsupported
+      else
+        match initBytes? bytes, readPtrProv? bytes with
+        | some pRaw, some prov =>
+          let off := UInt64.ofNat (decodeUInt endian pRaw)
+          .ok (some (.boxPtr ⟨prov, off, .isize⟩ none))
+        | _, _ => .ok none
   | .option .bool, bytes =>
     if !Nat.beq bytes.length 1 then
       .error .unsupported
@@ -737,6 +807,159 @@ noncomputable def validateSliceElemsV2 (elem : MirTy)
     | .ok none => .error .undefined
     | .error k => .error k
 
+/-- Decode-check `count` consecutive initialized elements of `elem` (`elemSize`
+bytes each) inside a contiguous slice buffer. -/
+noncomputable def sliceElemsValidV2 (elem : MirTy) (elemSize : Nat) :
+    Nat → List AllocByte → Except FaultKind Unit
+  | 0, _ => .ok ()
+  | count + 1, bs =>
+    match decodeValV2 profileV2TargetEndian elem (bs.take elemSize) with
+    | .ok (some _) => sliceElemsValidV2 elem elemSize count (bs.drop elemSize)
+    | .ok none => .error .undefined
+    | .error k => .error k
+
+/-- Check whether `elem` is a plain integer type (where every initialized byte
+sequence is a valid value). -/
+noncomputable def isIntMirTy : MirTy → Bool
+  | .int _ _ => true
+  | _ => false
+
+/-- Validate a dangling or zero-length aligned non-null pointer with zero
+allocated capacity. -/
+noncomputable def zeroCapPtrValidInMem (m : MemoryState) (isMut : Bool)
+    (alignLog2 : Nat) (p : PtrVal) : Except FaultKind Unit :=
+  match p.allocId with
+  | none =>
+    let align := Nat.pow 2 alignLog2
+    if Nat.beq p.offsetBytes.toNat 0 ||
+        !Nat.beq (Nat.mod p.offsetBytes.toNat align) 0 then
+      .error .undefined
+    else
+      .ok ()
+  | some aid =>
+    match findAllocation aid m.allocations with
+    | none => .error .undefined
+    | some a =>
+      if !a.live || !isInBounds a p.offsetBytes.toNat 0 ||
+          !isAligned a p.offsetBytes.toNat alignLog2 then
+        .error .undefined
+      else if isMut && !Mutability.beq a.mutability .mut then
+        .error .undefined
+      else
+        .ok ()
+
+/-- Validate `len` initialized `elem` elements (out of `cap >= len` capacity
+slots) at `(p, elem)` in `m`. When `elemSize > 0` and `cap > 0`, `p` must
+carry live provenance in `m` covering `[offset, offset + cap * elemSize)` with
+alignment `elemAlignLog2`, mutable when `isMut = true`, and valid initialized
+element bytes over `[offset, offset + len * elemSize)`. -/
+noncomputable def heapBufValidInMem (m : MemoryState) (isMut : Bool)
+    (elem : MirTy) (p : PtrVal) (cap len : UInt64) : Except FaultKind Unit :=
+  if !IntWidth.beq p.width .isize then
+    .error .unsupported
+  else
+    match layoutOfTyV2 elem with
+    | none => .error .unsupported
+    | some lay =>
+      if !Nat.ble len.toNat cap.toNat then
+        .error .undefined
+      else
+        let capBytes := cap.toNat * lay.size
+        if !Nat.blt capBytes isizeMaxBytes then
+          .error .undefined
+        else if Nat.beq lay.size 0 then
+          match zeroCapPtrValidInMem m isMut lay.alignLog2 p with
+          | .error k => .error k
+          | .ok () =>
+            if Nat.beq len.toNat 0 then
+              .ok ()
+            else
+              match decodeValV2 profileV2TargetEndian elem [] with
+              | .ok (some _) => .ok ()
+              | .ok none => .error .undefined
+              | .error k => .error k
+        else if Nat.beq cap.toNat 0 then
+          zeroCapPtrValidInMem m isMut lay.alignLog2 p
+        else
+          match p.allocId with
+          | none => .error .undefined
+          | some aid =>
+            match findAllocation aid m.allocations with
+            | none => .error .undefined
+            | some a =>
+              if !a.live || !isInBounds a p.offsetBytes.toNat capBytes ||
+                  !isAligned a p.offsetBytes.toNat lay.alignLog2 then
+                .error .undefined
+              else if isMut && !Mutability.beq a.mutability .mut then
+                .error .undefined
+              else
+                let lenBytes := len.toNat * lay.size
+                let initSlice := (a.bytes.drop p.offsetBytes.toNat).take lenBytes
+                if !isSliceAllInit initSlice then
+                  .error .undefined
+                else if isIntMirTy elem then
+                  .ok ()
+                else
+                  sliceElemsValidV2 elem lay.size len.toNat initSlice
+
+/-- Validate the owned heap buffer of a `Vec<elem>` with `cap` slots (or of a
+`Box`, with `cap = len`). In addition to `heapBufValidInMem`, a non-empty
+buffer of a non-zero-sized `elem` must start at offset `0` of an allocation
+whose size is exactly `cap * size` bytes and whose alignment is exactly the
+alignment of `elem`. That is the layout `RawVecInner::current_memory`
+reconstructs and passes back to the allocator when the buffer grows, shrinks,
+or is freed (`library/alloc/src/raw_vec/mod.rs:633-645`, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "if elem_layout.size() == 0 || self.cap.as_inner() == 0 {
+>     None
+> } else {
+> ...
+>     let alloc_size = elem_layout.size().unchecked_mul(self.cap.as_inner());
+>     let layout = Layout::from_size_align_unchecked(alloc_size,
+> elem_layout.align());
+>     Some((self.ptr.into(), layout))"
+
+(The last three lines are dedented by four spaces, and the
+`from_size_align_unchecked` line is wrapped, here.) An allocation of any
+other layout is not one the buffer could have been allocated with. -/
+noncomputable def ownedHeapBufValidInMem (m : MemoryState) (isMut : Bool)
+    (elem : MirTy) (p : PtrVal) (cap len : UInt64) : Except FaultKind Unit :=
+  match heapBufValidInMem m isMut elem p cap len with
+  | .error k => .error k
+  | .ok () =>
+    match layoutOfTyV2 elem with
+    | none => .error .unsupported
+    | some lay =>
+      if Nat.beq lay.size 0 || Nat.beq cap.toNat 0 then
+        .ok ()
+      else
+        match p.allocId with
+        | none => .error .undefined
+        | some aid =>
+          match findAllocation aid m.allocations with
+          | none => .error .undefined
+          | some a =>
+            if !Nat.beq p.offsetBytes.toNat 0 ||
+                !Nat.beq a.bytes.length (cap.toNat * lay.size) ||
+                !Nat.beq a.alignLog2 lay.alignLog2 then
+              .error .undefined
+            else
+              .ok ()
+
+/-- Validate an owned `Box<pointee>` handle `(p, optLen)` in `m`. -/
+noncomputable def boxPointeeValidInMem (m : MemoryState) (isMut : Bool)
+    (pointee : MirTy) (p : PtrVal) (optLen : Option UInt64) :
+    Except FaultKind Unit :=
+  match pointee, optLen with
+  | .slice elem, some len => ownedHeapBufValidInMem m isMut elem p len len
+  | pt, none =>
+    if isUnsizedTy pt then
+      .error .unsupported
+    else
+      ownedHeapBufValidInMem m isMut pt p 1 1
+  | _, _ => .error .unsupported
+
 /-- UTF-8 validation state machine over `bs`, structurally recursive on the
 byte list. `need` counts the continuation bytes still expected for the current
 code point, and `lo`/`hi` bound the next continuation byte (the second byte of
@@ -788,6 +1011,29 @@ noncomputable def strSliceUtf8InMem (m : MemoryState) (p : PtrVal)
           match initBytes? slice with
           | none => false
           | some raw => validUtf8Bytes raw
+
+/-- The access span `(true, allocId, offset, cap * size)` of the heap buffer
+`(p, cap)` of `elem` slots that a `Vec` or `Box` owns, or `[]` when the buffer
+is empty or zero-sized or `p` carries no provenance. A `Vec` or `Box` owns its
+buffer uniquely, so the span is mutable. -/
+noncomputable def ownedBufAccessSpans (elem : MirTy) (p : PtrVal)
+    (cap : UInt64) : List (Bool × AllocId × Nat × Nat) :=
+  match layoutOfTyV2 elem, p.allocId with
+  | some lay, some aid =>
+    if Nat.beq (cap.toNat * lay.size) 0 then
+      []
+    else
+      [(true, aid, p.offsetBytes.toNat, cap.toNat * lay.size)]
+  | _, _ => []
+
+/-- The access spans of the heap buffer that an owned `Vec` or `Box` value
+`(ty, v)` owns (`ownedBufAccessSpans`), or `[]` for any other value. -/
+noncomputable def ownedHandleAccessSpans :
+    MirTy → Val → List (Bool × AllocId × Nat × Nat)
+  | .vec elem, .vec p cap _ => ownedBufAccessSpans elem p cap
+  | .box (.slice elem), .boxPtr p (some len) => ownedBufAccessSpans elem p len
+  | .box pt, .boxPtr p none => ownedBufAccessSpans pt p 1
+  | _, _ => []
 
 /-- Validate Rust language validity invariants for a `&T`, `&mut T`, `&[T]`,
 `&mut [T]`, or `&str` value `v` in `m`: non-null, provenance-backed (except
@@ -869,9 +1115,9 @@ noncomputable def refValidInMem (m : MemoryState) (reqMut : Mutability)
                 | some a =>
                   validateSliceElemsV2 elem a.bytes lay.size
                     p.offsetBytes.toNat len.toNat
-  | .slice _, _ | .str, _ => .error .unsupported
+  | .str, _ => .error .unsupported
   | _, .ptr p =>
-    if !isSupportedV2PointeeTy pointee then
+    if !isSupportedV2PointeeTy pointee && !isHeapHandleTyV2 pointee then
       .error .unsupported
     else
       match layoutOfTyV2 pointee with
@@ -886,7 +1132,14 @@ noncomputable def refValidInMem (m : MemoryState) (reqMut : Mutability)
             .error .undefined
           else
             match decodeValV2 profileV2TargetEndian pointee [] with
-            | .ok (some _) => .ok ()
+            | .ok (some decVal) =>
+              match pointee, decVal with
+              | .vec elem, .vec bufPtr cap len =>
+                ownedHeapBufValidInMem m (Mutability.beq reqMut .mut) elem bufPtr
+                  cap len
+              | .box pt, .boxPtr boxP optLen =>
+                boxPointeeValidInMem m (Mutability.beq reqMut .mut) pt boxP optLen
+              | _, _ => .ok ()
             | .ok none => .error .undefined
             | .error k => .error k
         | some aid =>
@@ -902,15 +1155,23 @@ noncomputable def refValidInMem (m : MemoryState) (reqMut : Mutability)
             else
               let sliceBytes := (a.bytes.drop p.offsetBytes.toNat).take lay.size
               match decodeValV2 profileV2TargetEndian pointee sliceBytes with
-              | .ok (some _) => .ok ()
+              | .ok (some decVal) =>
+                match pointee, decVal with
+                | .vec elem, .vec bufPtr cap len =>
+                  ownedHeapBufValidInMem m (Mutability.beq reqMut .mut) elem
+                    bufPtr cap len
+                | .box pt, .boxPtr boxP optLen =>
+                  boxPointeeValidInMem m (Mutability.beq reqMut .mut) pt boxP
+                    optLen
+                | _, _ => .ok ()
               | .ok none => .error .undefined
               | .error k => .error k
   | _, _ => .error .unsupported
 
 mutual
-  /-- Validate all references inside `v` (including `Option` and tuple
-  components) against `m`. Raw pointers `.rawPtr` are not constrained by
-  reference validity.
+  /-- Validate all references and owned heap handles inside `v` (including
+  `Option` and tuple components) against `m`. Raw pointers `.rawPtr` are not
+  constrained by reference validity.
 
   Validity is checked per field and never through a pointer indirection
   (`src/behavior-considered-undefined.md:186-187,176-178`,
@@ -926,7 +1187,7 @@ mutual
   The pointee of a raw pointer has no validity requirement, and initialization
   of the raw pointer itself is enforced by `checkValV2` and `decodeValV2`.
   Profile v2 pointees contain no references (`isSupportedV2LocalTy`), so the
-  recursion stops at the first reference. -/
+  recursion stops at the first reference or owned heap handle. -/
   noncomputable def refsValidInMem (m : MemoryState) : MirTy → Val → Bool
     | .ref reqMut pt, v =>
       match refValidInMem m reqMut pt v with
@@ -934,6 +1195,14 @@ mutual
       | .error _ => false
     | .option inner, .optionVal (some innerV) => refsValidInMem m inner innerV
     | .option _, .optionVal none => true
+    | .vec elem, .vec bufPtr cap len =>
+      match ownedHeapBufValidInMem m true elem bufPtr cap len with
+      | .ok () => true
+      | .error _ => false
+    | .box pt, .boxPtr boxP optLen =>
+      match boxPointeeValidInMem m true pt boxP optLen with
+      | .ok () => true
+      | .error _ => false
     | .tuple ts, .tuple vs => refsValidInMemList m ts vs
     | .array elem _, .array vs => refsValidInMemArray m elem vs
     | _, _ => true
@@ -952,7 +1221,11 @@ end
 
 mutual
   /-- Extract provenance-backed `(isMut, allocId, offset, byteSize)` access
-  spans for every reference component inside `(ty, v)`. -/
+  spans for every reference component inside `(ty, v)`, and the mutable span of
+  the heap buffer of every owned `Vec` or `Box` component
+  (`ownedBufAccessSpans`). The buffer behind a reference to a `Vec` or `Box`
+  handle is not included; receipts state its disjointness from that handle and
+  from every other argument as an assumption. -/
   noncomputable def refAccessSpans :
       MirTy → Val → List (Bool × AllocId × Nat × Nat)
     | .ref reqMut (.slice elem), .slicePtr p len =>
@@ -974,7 +1247,7 @@ mutual
     | .option _, .optionVal none => []
     | .tuple ts, .tuple vs => refAccessSpansList ts vs
     | .array elem _, .array vs => refAccessSpansArray elem vs
-    | _, _ => []
+    | ty, v => ownedHandleAccessSpans ty v
 
   noncomputable def refAccessSpansList :
       List MirTy → List Val → List (Bool × AllocId × Nat × Nat)

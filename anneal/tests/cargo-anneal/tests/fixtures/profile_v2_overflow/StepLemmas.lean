@@ -168,6 +168,7 @@ theorem args_u8 {args : List Val}
       let ⟨bits, hEq, hT⟩ := checkVal_int_iff.mp hv
       exact ⟨bits, by rw [hEq], hT⟩
     | optionVal o => cases o <;> cases hv
+    | boxPtr _ o => cases o <;> cases hv
     | _ => cases hv
 
 theorem decode_u8 {bits : BitVec 128} (hT : truncateBits .i8 bits = bits) :

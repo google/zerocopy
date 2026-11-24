@@ -26,7 +26,7 @@ noncomputable abbrev P : Program := entryProgForBody Captured.program 0
 theorem wrapping_run (cm : CallerMemory) (m : MemoryState) (bits : BitVec 128)
     (hT : truncateBits .i8 bits = bits) :
     Runs P (fun o => o = .returned ⟨u8 (BitVec.ofNat 128
-      ((bits.toNat + 1) % 256)), extractCallerMemory cm m⟩)
+      ((bits.toNat + 1) % 256)), extractReturnMemoryV2 cm m []⟩)
       (st 0 0 [N, im (u8 bits), D] cm m) := by
   have hC := checkVal_u8 hT
   have hLt : bits.toNat < 256 := by
@@ -89,7 +89,7 @@ theorem zero_pair_wellFormed (q : Query)
     have hInit : initStateV2 P1 ⟨[], cm⟩ = .ok s₀ :=
       initStateV2_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl hValid
     have hRuns : Runs P1 (fun o => o = .returned ⟨.tuple [u8 0#128, u8 0#128],
-        extractCallerMemory cm (entryMemoryWithCaller cm)⟩) s₀ :=
+        extractReturnMemoryV2 cm (entryMemoryWithCaller cm) []⟩) s₀ :=
       runs_step (s' := ⟨[⟨1, 0, 1, [im (.tuple [u8 0#128, u8 0#128])],
           none, none, none⟩], cm,
         entryMemoryWithCaller cm⟩) rfl (runs_done rfl rfl)

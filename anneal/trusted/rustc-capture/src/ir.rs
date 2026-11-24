@@ -304,6 +304,14 @@ pub enum Ty {
         elem: Box<Ty>,
         len: usize,
     },
+    Vec {
+        #[serde(serialize_with = "serialize_boxed_ty")]
+        elem: Box<Ty>,
+    },
+    Box {
+        #[serde(serialize_with = "serialize_boxed_ty")]
+        pointee: Box<Ty>,
+    },
     RangeTo {
         #[serde(serialize_with = "serialize_boxed_ty")]
         elem: Box<Ty>,
@@ -350,11 +358,12 @@ impl Ty {
             | Self::RawPtr { .. }
             | Self::Slice { .. }
             | Self::Str
+            | Self::Vec { .. }
             | Self::RangeTo { .. }
             | Self::RangeFrom { .. }
             | Self::Range { .. } => true,
             Self::Option { elem } => elem.is_retag_noop(),
-            Self::Ref { .. } => false,
+            Self::Ref { .. } | Self::Box { .. } => false,
             Self::Array { elem, .. } => elem.is_retag_noop(),
             Self::Tuple { fields } => fields.iter().all(Self::is_retag_noop),
         }
@@ -395,6 +404,8 @@ impl Ty {
             | Self::OverflowPair(_)
             | Self::Ref { .. }
             | Self::RawPtr { .. }
+            | Self::Vec { .. }
+            | Self::Box { .. }
             | Self::RangeTo { .. }
             | Self::RangeFrom { .. }
             | Self::Range { .. }
@@ -449,7 +460,9 @@ impl Ty {
             | Self::RangeTo { .. }
             | Self::RangeFrom { .. }
             | Self::Range { .. }
-            | Self::Option { .. } => false,
+            | Self::Option { .. }
+            | Self::Vec { .. }
+            | Self::Box { .. } => false,
         }
     }
 
@@ -487,6 +500,10 @@ impl Ty {
                     (8, 3)
                 })
             }
+            Self::Box { pointee } => Some(
+                if matches!(&**pointee, Self::Slice { .. } | Self::Str) { (16, 3) } else { (8, 3) },
+            ),
+            Self::Vec { .. } => Some((24, 3)),
             Self::RangeTo { elem } | Self::RangeFrom { elem }
                 if matches!(
                     &**elem,
@@ -547,6 +564,8 @@ impl Ty {
             Self::OverflowPair(_)
             | Self::Tuple { .. }
             | Self::Array { .. }
+            | Self::Vec { .. }
+            | Self::Box { .. }
             | Self::RangeTo { .. }
             | Self::RangeFrom { .. }
             | Self::Range { .. }
@@ -578,6 +597,15 @@ impl Ty {
     pub fn is_option_payload_supported_v2(&self) -> bool {
         matches!(self, Self::Unit | Self::Bool | Self::Ref { .. })
             || self.is_niche_free_option_payload()
+    }
+
+    /// Whether this type may sit behind a pointer, `Vec`, `Box`, or slice: a
+    /// supported scalar or unit type other than an overflow pair, whose
+    /// layout capture never checks (see [`Self::is_supported_v2_local`]).
+    /// Mirrors `Trusted.MirSemantics.isSupportedPointeeTy` and the pointee
+    /// arms of `Trusted.MirSemantics.isSupportedV2LocalTy`.
+    pub fn is_supported_pointee(&self) -> bool {
+        !matches!(self, Self::OverflowPair(_)) && self.is_supported_scalar_or_unit()
     }
 
     /// Whether this type is admitted as a Profile v2 local type (matching
@@ -613,13 +641,27 @@ impl Ty {
             | Self::OverflowPair(_) => true,
             Self::Array { elem, .. } => elem.is_supported_v2_data(),
             Self::Tuple { fields } => fields.iter().all(Self::is_supported_v2_local),
-            Self::Ref {
-                mutability,
-                pointee,
-            } => match (&**pointee, mutability) {
-                (Self::Slice { elem }, _) => elem.is_sized_no_ref(),
-                (Self::Str, Mutability::Shared) => true,
-                (other, _) => other.is_supported_v2_pointee(),
+            Self::Vec { elem } => elem.is_supported_pointee(),
+            Self::Box { pointee } => match &**pointee {
+                Self::Slice { elem } => elem.is_supported_pointee(),
+                other => other.is_supported_pointee(),
+            },
+            // References to `Vec`/`Box` are admitted, but raw pointers to them
+            // are not: `Vec`'s layout is unspecified ("The order of these
+            // fields is completely unspecified",
+            // `library/alloc/src/vec/mod.rs:312-314`, `rust-lang/rust`
+            // `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`), so a raw pointer
+            // could reinterpret the handle's bytes in a way the model's
+            // encoding (`Trusted.MirSemantics.encodeValV2`) does not match.
+            Self::Ref { mutability, pointee } => match &**pointee {
+                Self::Slice { elem } => elem.is_sized_no_ref(),
+                Self::Str if *mutability == Mutability::Shared => true,
+                Self::Vec { elem } => elem.is_supported_pointee(),
+                Self::Box { pointee: inner } => match &**inner {
+                    Self::Slice { elem } => elem.is_supported_pointee(),
+                    other => other.is_supported_pointee(),
+                },
+                other => other.is_supported_v2_pointee(),
             },
             Self::RawPtr { pointee, .. } => match &**pointee {
                 Self::Slice { elem } => elem.is_sized_no_ref(),
@@ -635,17 +677,19 @@ impl Ty {
         }
     }
 
-    /// Whether this type is a reference or an `Option`, range, or tuple/array
-    /// containing one, mirroring `Trusted.MirSemantics.tyHasRefV2`.
+    /// Whether this type is a reference or a `Box` (which the aliasing models
+    /// retag like a unique reference), or an `Option`, range, or tuple/array
+    /// or `Vec` containing one, mirroring `Trusted.MirSemantics.tyHasRefV2`.
     pub fn has_ref_v2(&self) -> bool {
         match self {
-            Self::Ref { .. } => true,
+            Self::Ref { .. } | Self::Box { .. } => true,
             Self::Array { elem, .. } => elem.has_ref_v2(),
             Self::Option { elem }
             | Self::RangeTo { elem }
             | Self::RangeFrom { elem }
             | Self::Range { elem } => elem.has_ref_v2(),
             Self::Tuple { fields } => fields.iter().any(Self::has_ref_v2),
+            Self::Vec { elem } => elem.has_ref_v2(),
             Self::Bool
             | Self::Char
             | Self::Ordering
@@ -660,8 +704,9 @@ impl Ty {
         }
     }
 
-    /// Whether this type is a raw pointer or an `Option`, range, or tuple/array
-    /// containing one, mirroring `Trusted.MirSemantics.tyHasRawPtrV2`.
+    /// Whether this type is a raw pointer or an `Option`, range, tuple, array,
+    /// `Vec`, or `Box` containing one, mirroring
+    /// `Trusted.MirSemantics.tyHasRawPtrV2`.
     pub fn has_raw_ptr_v2(&self) -> bool {
         match self {
             Self::RawPtr { .. } => true,
@@ -671,6 +716,8 @@ impl Ty {
             | Self::RangeFrom { elem }
             | Self::Range { elem } => elem.has_raw_ptr_v2(),
             Self::Tuple { fields } => fields.iter().any(Self::has_raw_ptr_v2),
+            Self::Vec { elem } => elem.has_raw_ptr_v2(),
+            Self::Box { pointee } => pointee.has_raw_ptr_v2(),
             Self::Bool
             | Self::Char
             | Self::Ordering
@@ -694,6 +741,8 @@ impl Ty {
             | Self::Slice { .. }
             | Self::Str
             | Self::Array { .. }
+            | Self::Vec { .. }
+            | Self::Box { .. }
             | Self::RangeTo { .. }
             | Self::RangeFrom { .. }
             | Self::Range { .. }
@@ -724,11 +773,14 @@ impl Ty {
                     f.collect_enum_ids(out);
                 }
             }
-            Self::Ref { pointee, .. } | Self::RawPtr { pointee, .. } => {
+            Self::Ref { pointee, .. }
+            | Self::RawPtr { pointee, .. }
+            | Self::Box { pointee } => {
                 pointee.collect_enum_ids(out);
             }
             Self::Slice { elem }
             | Self::Array { elem, .. }
+            | Self::Vec { elem }
             | Self::RangeTo { elem }
             | Self::RangeFrom { elem }
             | Self::Range { elem }
@@ -758,13 +810,16 @@ impl Ty {
             Self::OverflowPair(_) => 3,
             Self::Enum(ety) => 1 + ety.discriminants.len(),
             Self::Tuple { fields } => 1 + fields.iter().map(Self::ast_nodes).sum::<usize>(),
-            Self::Ref { pointee, .. } | Self::RawPtr { pointee, .. } => 1 + pointee.ast_nodes(),
+            Self::Ref { pointee, .. }
+            | Self::RawPtr { pointee, .. }
+            | Self::Box { pointee } => 1 + pointee.ast_nodes(),
             Self::Slice { elem }
             | Self::Array { elem, .. }
             | Self::RangeTo { elem }
             | Self::RangeFrom { elem }
             | Self::Range { elem }
-            | Self::Option { elem } => 1 + elem.ast_nodes(),
+            | Self::Option { elem }
+            | Self::Vec { elem } => 1 + elem.ast_nodes(),
         }
     }
 }
@@ -1013,6 +1068,8 @@ pub fn validate_constant(ty: &Ty, lit: &ConstLit) -> Result<(), String> {
             | Ty::RawPtr { .. }
             | Ty::Slice { .. }
             | Ty::Str
+            | Ty::Vec { .. }
+            | Ty::Box { .. }
             | Ty::RangeTo { .. }
             | Ty::RangeFrom { .. }
             | Ty::Range { .. }
@@ -1157,6 +1214,16 @@ pub enum CastKind {
     PtrToPtr,
     IntToPtr,
     Unsize,
+    /// The `*const P` that `ElaborateBoxDerefs` builds for a `*b` dereference
+    /// (`extract::try_peel_box_raw_ptr_transmute`). Internal to capture:
+    /// `extract::promote_box_as_ref` rewrites the admitted uses to `BoxAsRef`,
+    /// and `check_cast_types` refuses any that remain, because a body with a
+    /// `Box` and a raw-pointer local mixes references and raw pointers. It is
+    /// never rendered to Lean.
+    // RUSTC-WORKAROUND(#4367): exists only for rustc 1.98's `Box` deref
+    // lowering.
+    BoxAsRawPtr,
+    BoxAsRef,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -1449,12 +1516,25 @@ pub enum CoreCallOp {
         pointee: Ty,
     },
     UsizeUncheckedSub,
-    IntToLeBytes {
-        int_ty: IntTy,
-    },
-    ArrayEq {
-        elem: Ty,
-        len: usize,
+    IntToLeBytes { int_ty: IntTy },
+    ArrayEq { elem: Ty, len: usize },
+    VecNew { elem: Ty },
+    VecWithCapacity { elem: Ty },
+    VecLen,
+    VecPush,
+    VecResize,
+    VecExtendFromSlice,
+    VecIndex,
+    VecIndexMut,
+    VecDeref,
+    VecDerefMut,
+    VecReserve,
+    BoxFromVec,
+    BoxDeref,
+    BoxDerefMut,
+    BoxClone,
+    BoxNew {
+        pointee: Ty,
     },
     PanicAbort,
 }
@@ -1553,12 +1633,15 @@ impl Terminator {
             Self::Assert { cond, .. } => 2 + cond.ast_nodes(),
             Self::CoreCall { op, args, dst, .. } => {
                 let op_nodes = match op {
-                    CoreCallOp::PtrAdd { pointee, .. } => 1 + pointee.ast_nodes(),
+                    CoreCallOp::PtrAdd { pointee, .. }
+                    | CoreCallOp::BoxNew { pointee } => 1 + pointee.ast_nodes(),
                     CoreCallOp::SliceIndexRange { elem, .. }
                     | CoreCallOp::SliceIndexRangeFrom { elem, .. }
                     | CoreCallOp::SliceIsEmpty { elem }
                     | CoreCallOp::SliceSplitAt { elem, .. }
-                    | CoreCallOp::ArrayEq { elem, .. } => 1 + elem.ast_nodes(),
+                    | CoreCallOp::ArrayEq { elem, .. }
+                    | CoreCallOp::VecNew { elem }
+                    | CoreCallOp::VecWithCapacity { elem } => 1 + elem.ast_nodes(),
                     CoreCallOp::MemReplace { ty } => 1 + ty.ast_nodes(),
                     CoreCallOp::OptionIsSome { inner }
                     | CoreCallOp::OptionIsNone { inner }
@@ -1581,7 +1664,20 @@ impl Terminator {
                     | CoreCallOp::CmpMax(_)
                     | CoreCallOp::UsizeUncheckedSub
                     | CoreCallOp::IntToLeBytes { .. }
-                    | CoreCallOp::PanicAbort => 1,
+                    | CoreCallOp::PanicAbort
+                    | CoreCallOp::VecLen
+                    | CoreCallOp::VecPush
+                    | CoreCallOp::VecResize
+                    | CoreCallOp::VecExtendFromSlice
+                    | CoreCallOp::VecIndex
+                    | CoreCallOp::VecIndexMut
+                    | CoreCallOp::VecDeref
+                    | CoreCallOp::VecDerefMut
+                    | CoreCallOp::VecReserve
+                    | CoreCallOp::BoxFromVec
+                    | CoreCallOp::BoxDeref
+                    | CoreCallOp::BoxDerefMut
+                    | CoreCallOp::BoxClone => 1,
                 };
                 1 + op_nodes + args.iter().map(Operand::ast_nodes).sum::<usize>() + dst.ast_nodes()
             }
@@ -1872,6 +1968,18 @@ fn check_cast_types(kind: CastKind, src_ty: &Ty, cast_ty: &Ty, dst_ty: &Ty) -> R
                 "unsupported Unsize cast from {src_ty:?} to {cast_ty:?}"
             )),
         },
+        (CastKind::BoxAsRawPtr, _, _) => Err(format!(
+            "raw pointer {cast_ty:?} from a `Box` dereference mixes a `Box` with a \
+             raw-pointer local, which Profile v2 refuses"
+        )),
+        (
+            CastKind::BoxAsRef,
+            Ty::Box { pointee: src_pt },
+            Ty::Ref {
+                mutability: Mutability::Shared,
+                pointee: dst_pt,
+            },
+        ) if src_pt == dst_pt => Ok(()),
         _ => Err(format!(
             "unsupported cast {kind:?} from {src_ty:?} to {cast_ty:?}"
         )),
@@ -1929,6 +2037,8 @@ fn check_switch_targets(discr_ty: &Ty, targets: &[(u128, u32)]) -> Result<(), St
         | Ty::RawPtr { .. }
         | Ty::Slice { .. }
         | Ty::Str
+        | Ty::Vec { .. }
+        | Ty::Box { .. }
         | Ty::RangeTo { .. }
         | Ty::RangeFrom { .. }
         | Ty::Range { .. }
@@ -2135,13 +2245,10 @@ fn collect_fake_ptr_metadata_locals_v2(
 
 /// Validates that every local in a MIR body is `Sized` and belongs to the
 /// Profile v2 local type fragment
-/// (`Trusted.MirSemantics.isSupportedV2LocalTy`), exempting `fake_meta_locals`
-/// from the reference / raw-pointer mixing check
-/// (`Trusted.MirSemantics.bodyMixesRefsAndRawPtrsV2`).
-pub(crate) fn validate_local_tys_with_exemptions(
-    local_tys: &[Ty],
-    fake_meta_locals: &BTreeSet<usize>,
-) -> Result<(), String> {
+/// (`Trusted.MirSemantics.isSupportedV2LocalTy`), prior to aliasing-mix checks
+/// (which run after single-purpose `BoxAsRef` deref-temporary promotion in
+/// `extract`).
+pub(crate) fn validate_local_ty_fragment(local_tys: &[Ty]) -> Result<(), String> {
     for (idx, lty) in local_tys.iter().enumerate() {
         if !lty.is_sized() {
             return Err(format!("unsized local _{idx} of type {lty:?} is unsupported"));
@@ -2152,6 +2259,18 @@ pub(crate) fn validate_local_tys_with_exemptions(
             ));
         }
     }
+    Ok(())
+}
+
+/// Validates that every local in a MIR body belongs to the Profile v2 local
+/// type fragment and does not mix reference and raw-pointer locals
+/// (`Trusted.MirSemantics.bodyMixesRefsAndRawPtrsV2`), exempting
+/// `fake_meta_locals` from the mixing check.
+pub(crate) fn validate_local_tys_with_exemptions(
+    local_tys: &[Ty],
+    fake_meta_locals: &BTreeSet<usize>,
+) -> Result<(), String> {
+    validate_local_ty_fragment(local_tys)?;
     // Mirrors `Trusted.MirSemantics.bodyMixesRefsAndRawPtrsV2`: Profile v2 has
     // no aliasing model, so it admits no body that could derive references
     // from raw pointers or access referenced memory through them; metadata-only
@@ -3101,6 +3220,153 @@ impl Body {
                                 pointee,
                             }],
                         ) if **pointee == Ty::Str && dst_ty == Ty::Never => {}
+
+                        (CoreCallOp::VecNew { elem }, [])
+                            if elem.is_supported_pointee()
+                                && dst_ty == Ty::Vec { elem: Box::new(elem.clone()) } => {}
+                        (CoreCallOp::VecWithCapacity { elem }, [cap_ty])
+                            if elem.is_supported_pointee()
+                                && *cap_ty == usize_ty
+                                && dst_ty == Ty::Vec { elem: Box::new(elem.clone()) } => {}
+                        (CoreCallOp::VecLen, [Ty::Ref { pointee, .. }])
+                            if matches!(&**pointee, Ty::Vec { .. }) && dst_ty == usize_ty => {}
+                        (
+                            CoreCallOp::VecPush,
+                            [Ty::Ref {
+                                mutability: Mutability::Mut,
+                                pointee,
+                            }, val_ty],
+                        ) if matches!(&**pointee, Ty::Vec { elem } if **elem == *val_ty)
+                            && dst_ty == Ty::Unit => {}
+                        (
+                            CoreCallOp::VecResize,
+                            [Ty::Ref {
+                                mutability: Mutability::Mut,
+                                pointee,
+                            }, len_ty, val_ty],
+                        ) if matches!(&**pointee, Ty::Vec { elem } if **elem == *val_ty)
+                            && *len_ty == usize_ty
+                            && dst_ty == Ty::Unit => {}
+                        (
+                            CoreCallOp::VecExtendFromSlice,
+                            [Ty::Ref {
+                                mutability: Mutability::Mut,
+                                pointee,
+                            }, Ty::Ref {
+                                pointee: slice_pt,
+                                ..
+                            }],
+                        ) if matches!(
+                            (&**pointee, &**slice_pt),
+                            (Ty::Vec { elem: ve }, Ty::Slice { elem: se }) if ve == se
+                        ) && dst_ty == Ty::Unit => {}
+                        (CoreCallOp::VecIndex, [Ty::Ref { pointee, .. }, idx_ty])
+                            if *idx_ty == usize_ty
+                                && matches!(
+                                    (&**pointee, &dst_ty),
+                                    (
+                                        Ty::Vec { elem },
+                                        Ty::Ref {
+                                            mutability: Mutability::Shared,
+                                            pointee: dpt,
+                                        }
+                                    ) if elem == dpt
+                                ) => {}
+                        (
+                            CoreCallOp::VecIndexMut,
+                            [Ty::Ref {
+                                mutability: Mutability::Mut,
+                                pointee,
+                            }, idx_ty],
+                        ) if *idx_ty == usize_ty
+                            && matches!(
+                                (&**pointee, &dst_ty),
+                                (
+                                    Ty::Vec { elem },
+                                    Ty::Ref {
+                                        mutability: Mutability::Mut,
+                                        pointee: dpt,
+                                    }
+                                ) if elem == dpt
+                            ) => {}
+                        (CoreCallOp::VecDeref, [Ty::Ref { pointee, .. }])
+                            if matches!(
+                                (&**pointee, &dst_ty),
+                                (
+                                    Ty::Vec { elem },
+                                    Ty::Ref {
+                                        mutability: Mutability::Shared,
+                                        pointee: dpt,
+                                    }
+                                ) if matches!(&**dpt, Ty::Slice { elem: se } if se == elem)
+                            ) => {}
+                        (
+                            CoreCallOp::VecDerefMut,
+                            [Ty::Ref {
+                                mutability: Mutability::Mut,
+                                pointee,
+                            }],
+                        ) if matches!(
+                            (&**pointee, &dst_ty),
+                            (
+                                Ty::Vec { elem },
+                                Ty::Ref {
+                                    mutability: Mutability::Mut,
+                                    pointee: dpt,
+                                }
+                            ) if matches!(&**dpt, Ty::Slice { elem: se } if se == elem)
+                        ) => {}
+                        (
+                            CoreCallOp::VecReserve,
+                            [Ty::Ref {
+                                mutability: Mutability::Mut,
+                                pointee,
+                            }, add_ty],
+                        ) if matches!(&**pointee, Ty::Vec { .. })
+                            && *add_ty == usize_ty
+                            && dst_ty == Ty::Unit => {}
+                        (CoreCallOp::BoxFromVec, [Ty::Vec { elem }])
+                            if matches!(
+                                &dst_ty,
+                                Ty::Box { pointee }
+                                    if matches!(&**pointee, Ty::Slice { elem: se } if se == elem)
+                            ) => {}
+                        (CoreCallOp::BoxDeref, [Ty::Ref { pointee, .. }])
+                            if matches!(
+                                (&**pointee, &dst_ty),
+                                (
+                                    Ty::Box { pointee: inner },
+                                    Ty::Ref {
+                                        mutability: Mutability::Shared,
+                                        pointee: dpt,
+                                    }
+                                ) if inner == dpt
+                            ) => {}
+                        (
+                            CoreCallOp::BoxDerefMut,
+                            [Ty::Ref {
+                                mutability: Mutability::Mut,
+                                pointee,
+                            }],
+                        ) if matches!(
+                            (&**pointee, &dst_ty),
+                            (
+                                Ty::Box { pointee: inner },
+                                Ty::Ref {
+                                    mutability: Mutability::Mut,
+                                    pointee: dpt,
+                                }
+                            ) if inner == dpt
+                        ) => {}
+                        (CoreCallOp::BoxClone, [Ty::Ref { pointee, .. }])
+                            if matches!(&**pointee, Ty::Box { .. }) && **pointee == dst_ty => {}
+                        (CoreCallOp::BoxNew { pointee }, [val_ty])
+                            if *val_ty == *pointee
+                                && pointee.is_supported_pointee()
+                                && dst_ty
+                                    == Ty::Box {
+                                        pointee: Box::new(pointee.clone()),
+                                    } => {}
                         _ => {
                             return Err(format!(
                                 "invalid CoreCall {op:?} arguments {arg_tys:?} -> {dst_ty:?}"
@@ -3422,7 +3688,9 @@ impl Body {
                 Terminator::Assert { cond, .. } => cond.collect_enum_ids(out),
                 Terminator::CoreCall { op, args, dst, .. } => {
                     match op {
-                        CoreCallOp::PtrAdd { pointee, .. } | CoreCallOp::MemReplace { ty: pointee } => {
+                        CoreCallOp::PtrAdd { pointee, .. }
+                        | CoreCallOp::MemReplace { ty: pointee }
+                        | CoreCallOp::BoxNew { pointee } => {
                             pointee.collect_enum_ids(out);
                         }
                         CoreCallOp::ArrayEq { elem, .. }
@@ -3433,7 +3701,9 @@ impl Body {
                         | CoreCallOp::OptionIsSome { inner: elem }
                         | CoreCallOp::OptionIsNone { inner: elem }
                         | CoreCallOp::OptionTake { inner: elem }
-                        | CoreCallOp::OptionUnwrap { inner: elem } => {
+                        | CoreCallOp::OptionUnwrap { inner: elem }
+                        | CoreCallOp::VecNew { elem }
+                        | CoreCallOp::VecWithCapacity { elem } => {
                             elem.collect_enum_ids(out);
                         }
                         _ => {}
@@ -3873,7 +4143,7 @@ mod tests {
         assert!(!nested_array_raw.has_ref_v2());
         let nested = validate_local_tys(&[
             Ty::Tuple {
-                fields: vec![shared_ref.clone(), u8_ty],
+                fields: vec![shared_ref.clone(), u8_ty.clone()],
             },
             raw_ptr.clone(),
         ]);
@@ -3886,12 +4156,74 @@ mod tests {
         ]);
         assert!(opt_raw.unwrap_err().contains("body mixes reference and raw-pointer locals"));
         let opt_ref = validate_local_tys(&[
-            Ty::Option {
-                elem: Box::new(shared_ref),
-            },
-            raw_ptr,
+            Ty::Option { elem: Box::new(shared_ref.clone()) },
+            raw_ptr.clone(),
         ]);
         assert!(opt_ref.unwrap_err().contains("body mixes reference and raw-pointer locals"));
+        assert!(Ty::Vec { elem: Box::new(shared_ref.clone()) }.has_ref_v2());
+        assert!(Ty::Box { pointee: Box::new(shared_ref) }.has_ref_v2());
+        assert!(Ty::Vec { elem: Box::new(raw_ptr.clone()) }.has_raw_ptr_v2());
+        assert!(Ty::Box { pointee: Box::new(raw_ptr) }.has_raw_ptr_v2());
+        assert!(!Ty::Box { pointee: Box::new(u8_ty) }.has_raw_ptr_v2());
+    }
+
+    #[test]
+    fn body_try_new_checks_box_as_ref_cast_mutability() {
+        let u8_ty = Ty::Int(IntTy {
+            width: IntWidth::I8,
+            signed: false,
+        });
+        let box_u8 = Ty::Box {
+            pointee: Box::new(u8_ty.clone()),
+        };
+        let shared_ref = Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(u8_ty.clone()),
+        };
+        let mut_ref = Ty::Ref {
+            mutability: Mutability::Mut,
+            pointee: Box::new(u8_ty),
+        };
+        assert!(
+            Body::try_new(
+                1,
+                false,
+                vec![shared_ref.clone(), box_u8.clone()],
+                vec![Block {
+                    statements: vec![Statement::Assign {
+                        local: 0,
+                        value: Rvalue::Cast {
+                            cast_kind: CastKind::BoxAsRef,
+                            operand: Operand::Copy { local: 1 },
+                            ty: shared_ref,
+                        },
+                    }],
+                    terminator: Terminator::Ret,
+                }],
+                "box_as_ref_ok".into(),
+            )
+            .is_ok()
+        );
+        assert!(
+            Body::try_new(
+                1,
+                false,
+                vec![mut_ref.clone(), box_u8],
+                vec![Block {
+                    statements: vec![Statement::Assign {
+                        local: 0,
+                        value: Rvalue::Cast {
+                            cast_kind: CastKind::BoxAsRef,
+                            operand: Operand::Copy { local: 1 },
+                            ty: mut_ref,
+                        },
+                    }],
+                    terminator: Terminator::Ret,
+                }],
+                "box_as_ref_mut_err".into(),
+            )
+            .is_err()
+        );
     }
 
     #[test]
@@ -8466,5 +8798,173 @@ mod tests {
                 "expected Profile v2 for {v2_msg:?}"
             );
         }
+    }
+
+    #[test]
+    fn is_supported_pointee_refuses_overflow_pairs_and_non_scalars() {
+        let u8_ty = Ty::Int(IntTy {
+            width: IntWidth::I8,
+            signed: false,
+        });
+        for ty in [u8_ty.clone(), Ty::Bool, Ty::Char, Ty::Unit] {
+            assert!(ty.is_supported_pointee(), "{ty:?}");
+        }
+        let boxed = || Box::new(u8_ty.clone());
+        for ty in [
+            Ty::OverflowPair(IntTy {
+                width: IntWidth::I8,
+                signed: false,
+            }),
+            Ty::Tuple {
+                fields: vec![u8_ty.clone(), Ty::Bool],
+            },
+            Ty::Ref {
+                mutability: Mutability::Shared,
+                pointee: boxed(),
+            },
+            Ty::RawPtr {
+                mutability: Mutability::Mut,
+                pointee: boxed(),
+            },
+            Ty::Slice { elem: boxed() },
+            Ty::Array {
+                elem: boxed(),
+                len: 2,
+            },
+            Ty::Vec { elem: boxed() },
+            Ty::Box { pointee: boxed() },
+            Ty::Option { elem: boxed() },
+        ] {
+            assert!(!ty.is_supported_pointee(), "{ty:?}");
+        }
+    }
+
+    #[test]
+    fn box_and_vec_core_calls_and_box_as_ref_reject_mismatched_types() {
+        let u8_ty = Ty::Int(IntTy {
+            width: IntWidth::I8,
+            signed: false,
+        });
+        let u16_ty = Ty::Int(IntTy {
+            width: IntWidth::I16,
+            signed: false,
+        });
+        let usize_ty = Ty::Int(IntTy {
+            width: IntWidth::Isize,
+            signed: false,
+        });
+        let shared_ref = |pointee: &Ty| Ty::Ref {
+            mutability: Mutability::Shared,
+            pointee: Box::new(pointee.clone()),
+        };
+        let box_of = |pointee: &Ty| Ty::Box {
+            pointee: Box::new(pointee.clone()),
+        };
+        let vec_u8 = Ty::Vec {
+            elem: Box::new(u8_ty.clone()),
+        };
+        // Local 0 is the destination; locals 1.. are the arguments, in order.
+        let call = |op: CoreCallOp, local_tys: Vec<Ty>| {
+            let args = (1..local_tys.len() as u32)
+                .map(|local| Operand::Copy { local })
+                .collect();
+            Body::try_new(
+                local_tys.len() - 1,
+                false,
+                local_tys,
+                vec![
+                    Block {
+                        statements: vec![],
+                        terminator: Terminator::CoreCall {
+                            op,
+                            args,
+                            dst: Place {
+                                local: 0,
+                                projection: vec![],
+                            },
+                            target: Some(1),
+                            unwind: UnwindAction::Unreachable,
+                        },
+                    },
+                    Block {
+                        statements: vec![],
+                        terminator: Terminator::Ret,
+                    },
+                ],
+                "rust-path-v1::box_vec_core_call".into(),
+            )
+        };
+        let assert_invalid = |op: CoreCallOp, local_tys: Vec<Ty>| {
+            let err = call(op.clone(), local_tys.clone()).unwrap_err();
+            assert!(
+                err.contains("invalid CoreCall"),
+                "{op:?} {local_tys:?}: {err}"
+            );
+        };
+
+        // `VecLen` needs both a `&Vec<_>` argument and a `usize` destination.
+        call(
+            CoreCallOp::VecLen,
+            vec![usize_ty.clone(), shared_ref(&vec_u8)],
+        )
+        .unwrap();
+        assert_invalid(CoreCallOp::VecLen, vec![u8_ty.clone(), shared_ref(&vec_u8)]);
+        assert_invalid(
+            CoreCallOp::VecLen,
+            vec![usize_ty.clone(), shared_ref(&u8_ty)],
+        );
+
+        // `BoxDeref` maps `&Box<T>` to `&T` for the same `T`.
+        let ref_box_u8 = shared_ref(&box_of(&u8_ty));
+        call(
+            CoreCallOp::BoxDeref,
+            vec![shared_ref(&u8_ty), ref_box_u8.clone()],
+        )
+        .unwrap();
+        assert_invalid(
+            CoreCallOp::BoxDeref,
+            vec![shared_ref(&u16_ty), ref_box_u8.clone()],
+        );
+        assert_invalid(
+            CoreCallOp::BoxDeref,
+            vec![shared_ref(&u8_ty), shared_ref(&u8_ty)],
+        );
+
+        // `BoxClone` maps `&Box<T>` to `Box<T>` for the same `T`.
+        call(
+            CoreCallOp::BoxClone,
+            vec![box_of(&u8_ty), ref_box_u8.clone()],
+        )
+        .unwrap();
+        assert_invalid(CoreCallOp::BoxClone, vec![box_of(&u16_ty), ref_box_u8]);
+        assert_invalid(
+            CoreCallOp::BoxClone,
+            vec![u8_ty.clone(), shared_ref(&u8_ty)],
+        );
+
+        // `BoxNew { pointee: T }` maps a `T` to `Box<T>`.
+        let box_new_u8 = || CoreCallOp::BoxNew {
+            pointee: u8_ty.clone(),
+        };
+        call(box_new_u8(), vec![box_of(&u8_ty), u8_ty.clone()]).unwrap();
+        assert_invalid(box_new_u8(), vec![box_of(&u16_ty), u8_ty.clone()]);
+        assert_invalid(box_new_u8(), vec![box_of(&u8_ty), u16_ty.clone()]);
+
+        // `BoxAsRef` casts `Box<T>` to `&T` for the same `T`.
+        check_cast_types(
+            CastKind::BoxAsRef,
+            &box_of(&u8_ty),
+            &shared_ref(&u8_ty),
+            &shared_ref(&u8_ty),
+        )
+        .unwrap();
+        let err = check_cast_types(
+            CastKind::BoxAsRef,
+            &box_of(&u8_ty),
+            &shared_ref(&u16_ty),
+            &shared_ref(&u16_ty),
+        )
+        .unwrap_err();
+        assert!(err.contains("unsupported cast"), "{err}");
     }
 }

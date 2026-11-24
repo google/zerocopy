@@ -230,6 +230,14 @@ theorem mirTy_eq_of_beq : ∀ {a b : MirTy}, MirTy.beq a b = true → a = b
     cases b with
     | option t2 => exact congrArg MirTy.option (mirTy_eq_of_beq h)
     | _ => cases h
+  | .vec t1, b, h => by
+    cases b with
+    | vec t2 => exact congrArg MirTy.vec (mirTy_eq_of_beq h)
+    | _ => cases h
+  | .box t1, b, h => by
+    cases b with
+    | box t2 => exact congrArg MirTy.box (mirTy_eq_of_beq h)
+    | _ => cases h
   | .unsupported, b, h => by cases b <;> first | rfl | cases h
 
 theorem mirTyList_eq_of_beq : ∀ {l1 l2 : List MirTy}, MirTy.beqList l1 l2 = true → l1 = l2
@@ -1610,7 +1618,8 @@ theorem mrEncode_mrDecode_roundtrip (ty : MirTy) (v : Val)
               dsimp only [translateTy, translateEnumTy]
               rw [hrepr]
               exact hbs.2.1
-  | ptr _ | slicePtr _ _ | array _ | range _ _ | rangeTo _ | rangeFrom _ | optionVal _ =>
+  | ptr _ | slicePtr _ _ | array _ | range _ _ | rangeTo _ | rangeFrom _ | optionVal _
+  | vec _ _ _ | boxPtr _ _ =>
     dsimp only [Val.ty?] at hvty
     cases hvty
   | bytes _ =>
@@ -1773,6 +1782,7 @@ theorem mrDecode_replicate_uninit_none (ty : MirTy)
   | ordering => rfl
   | never => rfl
   | unit => cases hnonZst
+  | vec _ | box _ => cases hty
   | enum ety =>
     dsimp only [isSupportedScalarOrUnitTy] at hty
     dsimp only [isInhabitedZstTy, isZstEnumTy] at hnonZst
@@ -1880,7 +1890,7 @@ theorem translateTy_validSize_and_alignPos (ty : MirTy)
           | _ => cases hty
       | _ => cases hty
   | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | range _ | rangeTo _ | rangeFrom _
-  | option _ | unsupported =>
+  | option _ | vec _ | box _ | unsupported =>
     cases hty
 
 /-! ## State Relation (`StateRel`) and Memory Invariants -/
@@ -2365,7 +2375,7 @@ theorem liveUninitSlot_isImmediate (ty : MirTy) :
   | ordering => exact ⟨none, rfl⟩
   | ref _ _ => exact ⟨none, rfl⟩
   | rawPtr _ _ | slice _ | str | array _ _ | range _ | rangeTo _ | rangeFrom _
-  | option _ => exact ⟨none, rfl⟩
+  | option _ | vec _ | box _ => exact ⟨none, rfl⟩
   | tuple _ => exact ⟨none, rfl⟩
   | unsupported => exact ⟨none, rfl⟩
 
@@ -2465,7 +2475,7 @@ theorem liveUninitSlot_slotRel (exact : Bool) (mem : MrMemory) (ty : MirTy)
     exact ⟨ptr, id, List.replicate (translateTy (.tuple fs)).size.bytes .uninit,
       rfl, hlive, rfl, fun _ => rfl⟩
   | ref _ _ | rawPtr _ _ | slice _ | str | array _ _ | range _ | rangeTo _ | rangeFrom _
-  | option _ | unsupported =>
+  | option _ | vec _ | box _ | unsupported =>
     cases hty
 
 theorem localMapRemove_of_none (k : LocalName) (m : LocalMap)

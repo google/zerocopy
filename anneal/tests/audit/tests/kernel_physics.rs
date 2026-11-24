@@ -67,7 +67,10 @@ const ALLOWED_QUOT_SOUND_ENTRIES: &[(&str, &str)] = &[
 ///
 /// - `270 -> 271`: `Anneal.MirSymExec.mirTyEqExact._sparseCasesOn_N` from the
 ///   diagonal `MirTy.str` arm on the `MirTy` inductive.
-const MAX_SPARSE_CASES_ON: usize = 271;
+/// - `271 -> 275`: `mirTyEqExact`'s diagonal `MirTy.vec`/`MirTy.box` arms (+2)
+///   and the `refsValidInMem` match splitter that `Anneal.MirWp.V2Memory`
+///   unfolds gaining the `.vec`/`.box` arms (+2).
+const MAX_SPARSE_CASES_ON: usize = 275;
 
 fn repo_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap().to_path_buf()

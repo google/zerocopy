@@ -2362,7 +2362,7 @@ theorem not_isIntoBytes_of_uninit {endian : TargetEndian} {ty : MirTy}
         exact ⟨(), hBs.symm⟩
       | scalar _ | ptr _ | bool _ | char _ | ordering _ | enumVal _ _
       | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-      | array _ | tuple _ | bytes _ => nomatch hEnc
+      | array _ | tuple _ | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
   decode_ok_of_init bs hLen _ := by
     cases bs with
     | nil => exact rfl
@@ -2410,7 +2410,7 @@ theorem not_isIntoBytes_of_uninit {endian : TargetEndian} {ty : MirTy}
         exact ⟨b, hBs.symm⟩
       | scalar _ | ptr _ | char _ | ordering _ | unit | enumVal _ _
       | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-      | array _ | tuple _ | bytes _ => nomatch hEnc
+      | array _ | tuple _ | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
   decode_ok_of_init bs hLen hInit := by
     cases bs with
     | nil => nomatch hLen
@@ -2568,7 +2568,7 @@ theorem not_isIntoBytes_of_uninit {endian : TargetEndian} {ty : MirTy}
             fbc_bv_toNat_ofNat, Nat.mod_eq_of_lt hLtFbc]
       | ptr _ | bool _ | char _ | ordering _ | unit | enumVal _ _ | tuple _
       | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _ | optionVal _
-      | array _ | bytes _ => nomatch hEnc
+      | array _ | bytes _ | boxPtr _ _ | vec _ _ _ => nomatch hEnc
   decode_ok_of_init bs hLen hInit := by
     have hEq := decodeVal_int_eq_intBvCodec endian w s bs
     rw [ite_true_of ((nat_beq_iff _ _).mpr hLen)] at hEq

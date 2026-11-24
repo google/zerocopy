@@ -956,6 +956,45 @@ canaries on a 2-argument `usize` division MIR body:
    (`allowAbort := false`) when `behaviorPre := True` fails to exclude `b = 0`;
 4. `--panic unwind` rejects the panicking division body fail-closed even when
    `allowAbort := true` because non-abort panics fault `.unsupported`. -/
+private theorem canary_natNotElem_false_of_mem {x : Nat} {xs : List Nat}
+    (h : x ∈ xs) : natNotElem x xs = false := by
+  induction h with
+  | head _ =>
+    unfold natNotElem
+    rw [Nat.beq_refl]
+    rfl
+  | tail _ _ ih =>
+    unfold natNotElem
+    rw [ih, Bool.and_false]
+
+private theorem canary_mem_allocIdsOf {a : Allocation} {l : List Allocation}
+    (h : a ∈ l) : a.allocId ∈ allocIdsOf l := by
+  induction h with
+  | head _ => unfold allocIdsOf; exact .head _
+  | tail _ _ ih => unfold allocIdsOf; exact .tail _ ih
+
+private theorem canary_calleeLive_nil_of_sub {ids f : List AllocId} :
+    ∀ {l : List Allocation}, (∀ a, a ∈ l → a.allocId ∈ ids) →
+      calleeLiveAllocations ids f l = []
+  | [], _ => rfl
+  | a :: _, h => by
+    unfold calleeLiveAllocations
+    rw [canary_natNotElem_false_of_mem (h a (.head _)), Bool.and_false,
+      Bool.false_and]
+    exact canary_calleeLive_nil_of_sub (fun b hb => h b (.tail _ hb))
+
+/-- Returning from an unmodified entry memory exposes no callee-created heap
+allocation, so the Profile v2 return memory is the extracted caller memory. -/
+private theorem canary_extractReturnMemoryV2_entry (cm : CallerMemory)
+    (locals : List LocalSlot) :
+    extractReturnMemoryV2 cm (entryMemoryWithCaller cm) locals =
+      extractCallerMemory cm (entryMemoryWithCaller cm) := by
+  unfold extractReturnMemoryV2
+  rw [canary_calleeLive_nil_of_sub (ids := allocIdsOf cm.allocations)
+      (l := (entryMemoryWithCaller cm).allocations)
+      (fun _ ha => canary_mem_allocIdsOf (l := cm.allocations) ha),
+    List.append_nil]
+
 theorem canary_safe_contract_v2_div_usize :
     BodySatisfiesSafeContractV2 (divUsizeProgV2 .abort) 0 divUsizeBodyV2
       divUsizeContractAllowAbort ∧
@@ -1064,6 +1103,8 @@ theorem canary_safe_contract_v2_div_usize :
               none, none, none⟩],
             q.callerMem, entryMemoryWithCaller q.callerMem⟩ =
           .done (.returned ⟨divUsizeRetVal a b, q.callerMem⟩) := by
+        have hR0 : hasEscapingRodataPtr q.callerMem (entryMemoryWithCaller q.callerMem)
+            usizeTyV2 (divUsizeRetVal a b) = false := rfl
         have hR1 : (!refsStayInCallerMem q.callerMem usizeTyV2 (divUsizeRetVal a b)) = false := rfl
         have hR2 : (!refsValidInMem (entryMemoryWithCaller q.callerMem) usizeTyV2
             (divUsizeRetVal a b)) = false := rfl
@@ -1071,7 +1112,10 @@ theorem canary_safe_contract_v2_div_usize :
             (divUsizeRetVal a b))) = false := rfl
         unfold evalStepV2 evalTerminatorV2
         dsimp only [Trusted.MirSemantics.getElem?, divUsizeProgV2, divUsizeBodyV2]
-        change (if (!refsStayInCallerMem q.callerMem usizeTyV2 (divUsizeRetVal a b)) ||
+        change (if hasEscapingRodataPtr q.callerMem (entryMemoryWithCaller q.callerMem)
+              usizeTyV2 (divUsizeRetVal a b) then
+            StepResult.fault .unsupported
+          else if (!refsStayInCallerMem q.callerMem usizeTyV2 (divUsizeRetVal a b)) ||
               (!refsValidInMem (entryMemoryWithCaller q.callerMem) usizeTyV2
                 (divUsizeRetVal a b)) ||
               (!spansPairwiseDisjoint (refAccessSpans usizeTyV2
@@ -1079,8 +1123,10 @@ theorem canary_safe_contract_v2_div_usize :
             StepResult.fault .undefined
           else
             StepResult.done (TerminalOut.returned ⟨divUsizeRetVal a b,
-              extractCallerMemory q.callerMem (entryMemoryWithCaller q.callerMem)⟩)) = _
-        rw [hR1, hR2, hR3, extractCallerMemory_entry q.callerMem hCM]
+              extractReturnMemoryV2 q.callerMem (entryMemoryWithCaller q.callerMem)
+                _⟩)) = _
+        rw [hR0, hR1, hR2, hR3, canary_extractReturnMemoryV2_entry,
+          extractCallerMemory_entry q.callerMem hCM]
         rfl
       have hExec : execProgV2 (divUsizeProgV2 .abort) 4 q
           (fun o => o = .returned ⟨divUsizeRetVal a b, q.callerMem⟩) := by
@@ -1163,7 +1209,8 @@ private theorem validEntryBool_eq_singleton {isU : Bool} {args : List Val}
       · cases a with
         | bool b => exact ⟨b, rfl⟩
         | char _ | ordering _ | unit | ptr _ | bytes _ | slicePtr _ _
-          | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _ =>
+          | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
+          | boxPtr _ _ | vec _ _ _ =>
           cases hChk
         | scalar sv =>
           dsimp [checkVal, Val.ty?] at hChk

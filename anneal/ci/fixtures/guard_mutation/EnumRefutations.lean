@@ -15,8 +15,8 @@ import GuardRefuteWf
 
 Exercises both clauses of `isUnicodeScalar` (`<= 0x10ffff` and surrogate-range
 exclusion `[0xd800, 0xdfff]`) end-to-end through `evalConstLit` and
-`WellFormed`, and the Profile v2 rejection of overflow-pair pointee types in
-`isSupportedV2LocalTy`.
+`WellFormed`, and the Profile v2 rejection of overflow-pair pointee, `Vec`,
+`Box`, and slice element types in `isSupportedV2LocalTy`.
 -/
 
 namespace GuardMutation
@@ -55,5 +55,35 @@ theorem positive_enum_v2_overflow_pair_local :
     isSupportedV2LocalTy (.rawPtr .shared (.int .i8 false)) = true ∧
     isSupportedV2LocalTy (.ref .shared .bool) = true :=
   ⟨rfl, rfl, rfl⟩
+
+/-- Guard `enum_v2_overflow_pair_vec_elem`: a `Vec`'s elements are
+addressable, so no Profile v2 local may be a `Vec` of overflow pairs. -/
+theorem refute_enum_v2_overflow_pair_vec_elem :
+    isSupportedV2LocalTy (.vec (.tuple [.int .i8 false, .bool])) = false :=
+  rfl
+
+/-- Guard `enum_v2_overflow_pair_box_pointee`: no Profile v2 local may be a
+`Box` of an overflow pair. -/
+theorem refute_enum_v2_overflow_pair_box_pointee :
+    isSupportedV2LocalTy (.box (.tuple [.int .i32 true, .bool])) = false :=
+  rfl
+
+/-- Guard `enum_v2_overflow_pair_slice_elem`: no Profile v2 local may be a
+reference or raw pointer to a slice of overflow pairs. -/
+theorem refute_enum_v2_overflow_pair_slice_elem :
+    isSupportedV2LocalTy
+        (.ref .shared (.slice (.tuple [.int .i8 false, .bool]))) = false ∧
+    isSupportedV2LocalTy
+        (.rawPtr .mut (.slice (.tuple [.int .i16 true, .bool]))) = false :=
+  ⟨rfl, rfl⟩
+
+/-- Anti-overreach canary: `Vec`, `Box`, and slices of scalar elements remain
+admitted local types. -/
+theorem positive_enum_v2_vec_box_slice_scalar_elems :
+    isSupportedV2LocalTy (.vec (.int .i8 false)) = true ∧
+    isSupportedV2LocalTy (.box (.int .i64 false)) = true ∧
+    isSupportedV2LocalTy (.box (.slice .bool)) = true ∧
+    isSupportedV2LocalTy (.ref .shared (.slice .char)) = true :=
+  ⟨rfl, rfl, rfl, rfl⟩
 
 end GuardMutation

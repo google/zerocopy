@@ -230,6 +230,7 @@ theorem canary_aligned_stride8_loop_pcc_safe :
     rw [hBv]
   | ptr _ | bool _ | char _ | ordering _ | unit
   | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
+  | vec _ _ _ | boxPtr _ _
   | enumVal _ _ | tuple _ | bytes _ => exact False.elim hDen.2
 
 /-- 32-bit bitmask (`& 0xFF | 1` guaranteeing nonzero divisor in `[1, 255]`),
@@ -343,6 +344,7 @@ theorem canary_bitmask_div_cast_pcc_safe (a b : BitVec 128)
     exact ⟨sb, rfl, hLt32⟩
   | ptr _ | bool _ | char _ | ordering _ | unit
   | slicePtr _ _ | rangeTo _ | rangeFrom _ | array _ | range _ _ | optionVal _
+  | vec _ _ _ | boxPtr _ _
   | enumVal _ _ | tuple _ | bytes _ => exact False.elim hDen.2
 
 /-! ## Positive Controls, Aliasing, Guards, and CFG Merge Canaries -/

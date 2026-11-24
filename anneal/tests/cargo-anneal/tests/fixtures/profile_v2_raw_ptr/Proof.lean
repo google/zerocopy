@@ -18,6 +18,72 @@ namespace Proof
 
 open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
 
+/-! ## Profile v2 Return Memory -/
+
+theorem natNotElem_false_of_mem {x : Nat} {xs : List Nat}
+    (h : x ∈ xs) : natNotElem x xs = false := by
+  induction h with
+  | head _ =>
+    unfold natNotElem
+    rw [Nat.beq_refl]
+    rfl
+  | tail _ _ ih =>
+    unfold natNotElem
+    rw [ih, Bool.and_false]
+
+theorem mem_allocIdsOf {a : Allocation} {l : List Allocation}
+    (h : a ∈ l) : a.allocId ∈ allocIdsOf l := by
+  induction h with
+  | head _ => unfold allocIdsOf; exact .head _
+  | tail _ _ ih => unfold allocIdsOf; exact .tail _ ih
+
+/-- No allocation whose id the caller already owns is a callee allocation. -/
+theorem calleeLive_nil_of_sub {ids f : List AllocId} :
+    ∀ {l : List Allocation}, (∀ a, a ∈ l → a.allocId ∈ ids) →
+      calleeLiveAllocations ids f l = []
+  | [], _ => rfl
+  | a :: _, h => by
+    unfold calleeLiveAllocations
+    rw [natNotElem_false_of_mem (h a (.head _)), Bool.and_false,
+      Bool.false_and]
+    exact calleeLive_nil_of_sub (fun b hb => h b (.tail _ hb))
+
+/-- If the call created no allocation outside the caller's ids, the Profile v2
+return memory is exactly the updated caller memory. -/
+theorem extractReturnMemoryV2_eq {cm : CallerMemory} {mem : MemoryState}
+    (locals : List LocalSlot)
+    (h : ∀ a, a ∈ mem.allocations → a.allocId ∈ allocIdsOf cm.allocations) :
+    extractReturnMemoryV2 cm mem locals = extractCallerMemory cm mem := by
+  unfold extractReturnMemoryV2
+  rw [calleeLive_nil_of_sub h, List.append_nil]
+
+theorem extractReturnMemoryV2_entry (cm : CallerMemory)
+    (locals : List LocalSlot) :
+    extractReturnMemoryV2 cm (entryMemoryWithCaller cm) locals =
+      extractCallerMemory cm (entryMemoryWithCaller cm) :=
+  extractReturnMemoryV2_eq locals (fun _ ha => mem_allocIdsOf ha)
+
+theorem mem_replaceAllocation_ids {a' : Allocation} {ids : List AllocId} :
+    ∀ {l : List Allocation}, (∀ a, a ∈ l → a.allocId ∈ ids) →
+      ∀ a, a ∈ replaceAllocation a' l → a.allocId ∈ ids
+  | [], _, _, h => by cases h
+  | b :: _, hl, a, ha => by
+    unfold replaceAllocation at ha
+    cases hB : Nat.beq b.allocId a'.allocId with
+    | true =>
+      rw [hB, ite_eq_left rfl] at ha
+      cases ha with
+      | head _ =>
+        rw [← Nat.eq_of_beq_eq_true hB]
+        exact hl b (.head _)
+      | tail _ hr => exact hl a (.tail _ hr)
+    | false =>
+      rw [hB, ite_eq_right (fun h => Bool.noConfusion h)] at ha
+      cases ha with
+      | head _ => exact hl b (.head _)
+      | tail _ hr =>
+        exact mem_replaceAllocation_ids (fun c hc => hl c (.tail _ hc)) a hr
+
 /-- Profile v2 decodes memory little-endian, matching the 64-bit
 little-endian targets that capture admits. -/
 theorem profileV2_little_endian_canary :
@@ -97,7 +163,8 @@ private theorem storeU8_ok (cm : CallerMemory) (pv : PtrVal) (aid : AllocId)
     (hBounds : isInBounds a pv.offsetBytes.toNat 1 = true) :
     ∃ mem' : MemoryState,
       storeIndirectV2 (entryMemoryWithCaller cm) (.int .i8 false)
-        ⟨aid, pv.offsetBytes.toNat⟩ (.scalar sv) = .ok mem' := by
+        ⟨aid, pv.offsetBytes.toNat⟩ (.scalar sv) = .ok mem' ∧
+      ∀ b, b ∈ mem'.allocations → b.allocId ∈ allocIdsOf cm.allocations := by
   unfold storeIndirectV2
   rw [show layoutOfTyV2 (.int .i8 false) = some ⟨1, 0⟩ from rfl]
   dsimp only
@@ -123,7 +190,8 @@ private theorem storeU8_ok (cm : CallerMemory) (pv : PtrVal) (aid : AllocId)
     (by rw [hLen1]; rfl) hFind hLive hMut
     (by rw [hLen1]; exact hBounds) (isAligned_zero a pv.offsetBytes.toNat)
   rw [hWrite]
-  exact ⟨_, rfl⟩
+  exact ⟨_, rfl,
+    mem_replaceAllocation_ids (fun _ hb => mem_allocIdsOf hb)⟩
 
 private theorem loadU32_correct (q : Query)
     (hValid : ValidEntryArgsV2 Captured.body_0 q)
@@ -156,9 +224,10 @@ private theorem loadU32_correct (q : Query)
       | cons _ _ => cases a0 <;> (change False at hSafe; exact False.elim hSafe)
       | nil =>
         cases a0 with
-        | scalar _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _
-        | optionVal _ | bool _ | char _
-        | ordering _ | unit | enumVal _ _ | tuple _ | array _ | bytes _ => exact False.elim hSafe
+        | scalar _ | slicePtr _ _ | vec _ _ _ | boxPtr _ _ | rangeTo _
+        | rangeFrom _ | range _ _
+        | optionVal _ | bool _ | char _ | ordering _ | unit | enumVal _ _
+        | tuple _ | array _ | bytes _ => exact False.elim hSafe
         | ptr pv =>
           dsimp only at hSafe
           cases hAid : pv.allocId with
@@ -283,8 +352,10 @@ private theorem loadU32_correct (q : Query)
                     .done (.returned ⟨.scalar sv, cm⟩) := by
                   change StepResult.done
                     (TerminalOut.returned
-                      ⟨.scalar sv, extractCallerMemory cm (entryMemoryWithCaller cm)⟩) = _
-                  rw [extractCallerMemory_entry cm hCallerValid]
+                      ⟨.scalar sv,
+                        extractReturnMemoryV2 cm (entryMemoryWithCaller cm) _⟩) = _
+                  rw [extractReturnMemoryV2_entry,
+                    extractCallerMemory_entry cm hCallerValid]
                 have hExec : execProgV2 (entryProgForBody Captured.program 0) 4
                     ⟨[.ptr pv], cm⟩
                     (fun out => out = TerminalOut.returned ⟨.scalar sv, cm⟩) := by
@@ -333,14 +404,16 @@ private theorem storeU8_correct (q : Query)
           cases a1 <;> exact False.elim hSafe
         | nil =>
           cases a0 with
-          | scalar _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _
-          | optionVal _ | bool _ | char _
-          | ordering _ | unit | enumVal _ _ | tuple _ | array _ | bytes _ => exact False.elim hSafe
+          | scalar _ | slicePtr _ _ | vec _ _ _ | boxPtr _ _ | rangeTo _
+          | rangeFrom _ | range _ _
+          | optionVal _ | bool _ | char _ | ordering _ | unit | enumVal _ _
+          | tuple _ | array _ | bytes _ => exact False.elim hSafe
           | ptr pv =>
             cases a1 with
-            | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | range _ _
-            | optionVal _ | bool _ | char _
-            | ordering _ | unit | enumVal _ _ | tuple _ | array _ | bytes _ => exact False.elim hSafe
+            | ptr _ | slicePtr _ _ | vec _ _ _ | boxPtr _ _ | rangeTo _
+            | rangeFrom _ | range _ _
+            | optionVal _ | bool _ | char _ | ordering _ | unit | enumVal _ _
+            | tuple _ | array _ | bytes _ => exact False.elim hSafe
             | scalar sv =>
               dsimp only at hSafe
               cases hAid : pv.allocId with
@@ -363,7 +436,7 @@ private theorem storeU8_correct (q : Query)
                     | true => rfl
                     | false => rw [h2] at hArgsMatch'; exact Bool.noConfusion hArgsMatch'
                   match storeU8_ok cm pv aid a sv hSvWf hFind hLive hMut hBounds with
-                  | ⟨mem', hStore⟩ =>
+                  | ⟨mem', hStore, hIds⟩ =>
                     have hEntryEq1 :
                         entryMemoryForArgsV2 cm
                           ((Captured.body_1.locals.drop 1).take Captured.body_1.argumentCount)
@@ -504,7 +577,10 @@ private theorem storeU8_correct (q : Query)
                           [.immediate (some .unit), .immediate (some (.ptr pv)),
                            .immediate (some (.scalar sv)), .dead], none, none, none⟩],
                           cm, mem'⟩ =
-                        .done (.returned ⟨.unit, extractCallerMemory cm mem'⟩) := rfl
+                        .done (.returned ⟨.unit, extractCallerMemory cm mem'⟩) := by
+                      change StepResult.done (TerminalOut.returned
+                        ⟨.unit, extractReturnMemoryV2 cm mem' _⟩) = _
+                      rw [extractReturnMemoryV2_eq _ hIds]
                     have hExec : execProgV2 (entryProgForBody Captured.program 1) 8
                         ⟨[.ptr pv, .scalar sv], cm⟩
                         (fun out =>

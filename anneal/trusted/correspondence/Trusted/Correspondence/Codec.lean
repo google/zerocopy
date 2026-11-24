@@ -199,6 +199,8 @@ mutual
     | .rawPtr m p => insertTy (.rawPtr m p) (collectTy acc p)
     | .slice elem => insertTy (.slice elem) (collectTy acc elem)
     | .array elem len => insertTy (.array elem len) (collectTy acc elem)
+    | .vec elem => insertTy (.vec elem) (collectTy acc elem)
+    | .box pointee => insertTy (.box pointee) (collectTy acc pointee)
     | .rangeTo elem => insertTy (.rangeTo elem) (collectTy acc elem)
     | .rangeFrom elem => insertTy (.rangeFrom elem) (collectTy acc elem)
     | .range elem => insertTy (.range elem) (collectTy acc elem)

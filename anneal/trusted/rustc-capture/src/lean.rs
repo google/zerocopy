@@ -183,6 +183,8 @@ fn ty_at(t: &Ty, indent: usize) -> String {
         Ty::Array { elem, len } => {
             format!("(Trusted.MirAst.MirTy.array {} {len})", ty_at(elem, indent))
         }
+        Ty::Vec { elem } => format!("(Trusted.MirAst.MirTy.vec {})", ty_at(elem, indent)),
+        Ty::Box { pointee } => format!("(Trusted.MirAst.MirTy.box {})", ty_at(pointee, indent)),
         Ty::RangeTo { elem } => format!("(Trusted.MirAst.MirTy.rangeTo {})", ty_at(elem, indent)),
         Ty::RangeFrom { elem } => {
             format!("(Trusted.MirAst.MirTy.rangeFrom {})", ty_at(elem, indent))
@@ -316,6 +318,8 @@ fn cast_kind(kind: CastKind) -> &'static str {
         CastKind::PtrToPtr => "ptrToPtr",
         CastKind::IntToPtr => "intToPtr",
         CastKind::Unsize => "unsize",
+        CastKind::BoxAsRawPtr => unreachable!("refused by ir::check_cast_types"),
+        CastKind::BoxAsRef => "boxAsRef",
     }
 }
 
@@ -607,11 +611,37 @@ fn core_call_op(op: &CoreCallOp, indent: usize) -> String {
             int_ty.width.lean_name(),
             int_ty.signed
         ),
-        CoreCallOp::ArrayEq { elem, len } => format!(
-            "(Trusted.MirAst.CoreCallOp.arrayEq {} {len})",
+        CoreCallOp::ArrayEq { elem, len } => {
+            format!("(Trusted.MirAst.CoreCallOp.arrayEq {} {len})", ty_at(elem, indent))
+        }
+        CoreCallOp::VecNew { elem } => {
+            format!("(Trusted.MirAst.CoreCallOp.vecNew {})", ty_at(elem, indent))
+        }
+        CoreCallOp::VecWithCapacity { elem } => format!(
+            "(Trusted.MirAst.CoreCallOp.vecWithCapacity {})",
             ty_at(elem, indent)
         ),
         CoreCallOp::PanicAbort => "Trusted.MirAst.CoreCallOp.panicAbort".into(),
+
+        CoreCallOp::VecLen => "Trusted.MirAst.CoreCallOp.vecLen".into(),
+        CoreCallOp::VecPush => "Trusted.MirAst.CoreCallOp.vecPush".into(),
+        CoreCallOp::VecResize => "Trusted.MirAst.CoreCallOp.vecResize".into(),
+        CoreCallOp::VecExtendFromSlice => {
+            "Trusted.MirAst.CoreCallOp.vecExtendFromSlice".into()
+        }
+        CoreCallOp::VecIndex => "Trusted.MirAst.CoreCallOp.vecIndex".into(),
+        CoreCallOp::VecIndexMut => "Trusted.MirAst.CoreCallOp.vecIndexMut".into(),
+        CoreCallOp::VecDeref => "Trusted.MirAst.CoreCallOp.vecDeref".into(),
+        CoreCallOp::VecDerefMut => "Trusted.MirAst.CoreCallOp.vecDerefMut".into(),
+        CoreCallOp::VecReserve => "Trusted.MirAst.CoreCallOp.vecReserve".into(),
+        CoreCallOp::BoxFromVec => "Trusted.MirAst.CoreCallOp.boxFromVec".into(),
+        CoreCallOp::BoxDeref => "Trusted.MirAst.CoreCallOp.boxDeref".into(),
+        CoreCallOp::BoxDerefMut => "Trusted.MirAst.CoreCallOp.boxDerefMut".into(),
+        CoreCallOp::BoxClone => "Trusted.MirAst.CoreCallOp.boxClone".into(),
+        CoreCallOp::BoxNew { pointee } => format!(
+            "(Trusted.MirAst.CoreCallOp.boxNew {})",
+            ty_at(pointee, indent)
+        ),
     }
 }
 

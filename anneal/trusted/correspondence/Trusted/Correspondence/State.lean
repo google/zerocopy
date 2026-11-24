@@ -830,6 +830,7 @@ noncomputable def toMiriRvalue (types : List MirTy) :
     .Cast .IntToInt (toMiriOperand types opnd) (canonicalTyId types ty)
   | .discriminant rp => .Discriminant (toMiriPlace rp)
   | .cast .ptrToPtr _ _ | .cast .intToPtr _ _ | .cast .unsize _ _
+  | .cast .boxAsRef _ _
   | .cast .unsupported _ _
   | .useRetag _ | .ref _ _ | .addressOf _ _ | .fakeAddressOf _
   | .aggregateTuple _

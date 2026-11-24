@@ -64,6 +64,47 @@ private theorem extractCallerMemory_forArgs (cm : CallerMemory)
           (fun _ hz => by cases hz) (fun _ hz => by cases hz) hValid)
     rw [hEq]
 
+private theorem natNotElem_false_of_mem {x : Nat} {xs : List Nat}
+    (h : x ∈ xs) : natNotElem x xs = false := by
+  induction h with
+  | head _ =>
+    unfold natNotElem
+    rw [Nat.beq_refl]
+    rfl
+  | tail _ _ ih =>
+    unfold natNotElem
+    rw [ih, Bool.and_false]
+
+private theorem mem_allocIdsOf {a : Allocation} {l : List Allocation}
+    (h : a ∈ l) : a.allocId ∈ allocIdsOf l := by
+  induction h with
+  | head _ => unfold allocIdsOf; exact .head _
+  | tail _ _ ih => unfold allocIdsOf; exact .tail _ ih
+
+/-- No allocation whose id the caller already owns is a callee allocation. -/
+private theorem calleeLive_nil_of_sub {ids f : List AllocId} :
+    ∀ {l : List Allocation}, (∀ a, a ∈ l → a.allocId ∈ ids) →
+      calleeLiveAllocations ids f l = []
+  | [], _ => rfl
+  | a :: _, h => by
+    unfold calleeLiveAllocations
+    rw [natNotElem_false_of_mem (h a (.head _)), Bool.and_false,
+      Bool.false_and]
+    exact calleeLive_nil_of_sub (fun b hb => h b (.tail _ hb))
+
+/-- A return from the unchanged entry memory creates no callee heap buffer, so
+`extractReturnMemoryV2` hands the caller its memory back unchanged. -/
+private theorem extractReturnMemoryV2_forArgs (cm : CallerMemory)
+    (paramTys : List MirTy) (args : List Val) (locals : List LocalSlot)
+    (hValid : validCallerMemory cm = true) :
+    extractReturnMemoryV2 cm (entryMemoryForArgsV2 cm paramTys args) locals =
+      cm := by
+  unfold extractReturnMemoryV2
+  rw [calleeLive_nil_of_sub (fun a ha => by
+      rw [entryMemoryForArgsV2_allocations_eq] at ha
+      exact mem_allocIdsOf ha),
+    List.append_nil, extractCallerMemory_forArgs cm paramTys args hValid]
+
 /-! ## Unit-Returning Bodies (`_0 = const (); return`) -/
 
 /-- A one-parameter body whose return local starts as `()` and which steps by
@@ -86,7 +127,8 @@ private theorem unit_body_exec {defId : DefId} {body : Body} {t : MirTy}
       evalStepV2 (entryProgForBody Captured.program defId)
         (stateV2 (frameV2 defId 0 1
           [.immediate (some .unit), .immediate (some v)]) cm m) =
-      .done (.returned ⟨.unit, extractCallerMemory cm m⟩))
+      .done (.returned ⟨.unit, extractReturnMemoryV2 cm m
+        [.immediate (some .unit), .immediate (some v)]⟩))
     (q : Query) (hValid : ValidEntryArgsV2 body q) :
     execProgV2 (entryProgForBody Captured.program defId) 2 q
       (fun o => o = .returned ⟨.unit, q.callerMem⟩) := by
@@ -106,7 +148,7 @@ private theorem unit_body_exec {defId : DefId} {body : Body} {t : MirTy}
   rw [hInitState]
   apply execOutcomeStateV2_step (hStep1 v _ _)
   exact execOutcomeStateV2_done (hStep2 v _ _)
-    (by rw [extractCallerMemory_forArgs q.callerMem _ _ hCM])
+    (by rw [extractReturnMemoryV2_forArgs q.callerMem _ _ _ hCM])
 
 /-- `unit_body_exec` packaged as `BodyVerifiedV2` plus `unitBodyPost`. -/
 private theorem unit_body_verified {defId : DefId} {body : Body} {t : MirTy}
@@ -129,7 +171,8 @@ private theorem unit_body_verified {defId : DefId} {body : Body} {t : MirTy}
       evalStepV2 (entryProgForBody Captured.program defId)
         (stateV2 (frameV2 defId 0 1
           [.immediate (some .unit), .immediate (some v)]) cm m) =
-      .done (.returned ⟨.unit, extractCallerMemory cm m⟩)) :
+      .done (.returned ⟨.unit, extractReturnMemoryV2 cm m
+        [.immediate (some .unit), .immediate (some v)]⟩)) :
     BodyVerifiedV2 Captured.program defId body
       (Spec.specs.safety body.identity) ∧
     Spec.unitBodyPost Captured.program defId identity := by
@@ -150,7 +193,7 @@ private theorem body1_verified :
     (fun _ _ _ => evalStepV2_assign_local rfl rfl rfl rfl rfl
       (writePlaceDestV2_immediate_ok rfl rfl rfl))
     (fun _ _ _ => evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl
-      rfl rfl)
+      rfl rfl rfl)
 
 /-! ## Fieldless-Enum Pointees -/
 
@@ -180,15 +223,15 @@ private theorem enum_ref_load {m : MemoryState} {ety : EnumTy} {v : Val}
     | mk pAid off w =>
       unfold refValidInMem at hRef
       dsimp only at hRef
-      have hSupT : isSupportedV2PointeeTy (.enum ety) = true := by
-        cases hSup : isSupportedV2PointeeTy (.enum ety) with
-        | true => rfl
-        | false =>
-          rw [ite_bool_true (b := !isSupportedV2PointeeTy (.enum ety))
-            (by rw [hSup]; rfl)] at hRef
+      have hSupT : (!isSupportedV2PointeeTy (.enum ety) &&
+          !isHeapHandleTyV2 (.enum ety)) = false := by
+        cases hSup : (!isSupportedV2PointeeTy (.enum ety) &&
+            !isHeapHandleTyV2 (.enum ety)) with
+        | false => rfl
+        | true =>
+          rw [ite_bool_true hSup] at hRef
           nomatch hRef
-      rw [ite_bool_false (b := !isSupportedV2PointeeTy (.enum ety))
-        (by rw [hSupT]; rfl)] at hRef
+      rw [ite_bool_false hSupT] at hRef
       rw [hLay] at hRef
       cases pAid with
       | none =>
@@ -436,7 +479,9 @@ private theorem clone_body_exec {defId : DefId} {body : Body} {ety : EnumTy}
         (stateV2 (frameV2 defId 0 1
           [.immediate (some (.enumVal ety i)),
            .immediate (some (.ptr ⟨some aid, off, w⟩))]) cm m) =
-      .done (.returned ⟨.enumVal ety i, extractCallerMemory cm m⟩))
+      .done (.returned ⟨.enumVal ety i, extractReturnMemoryV2 cm m
+        [.immediate (some (.enumVal ety i)),
+         .immediate (some (.ptr ⟨some aid, off, w⟩))]⟩))
     (q : Query) (hValid : ValidEntryArgsV2 body q) :
     ∃ self v : Val, q.args = [self] ∧ Spec.derefEntry q ety self = some v ∧
       execProgV2 (entryProgForBody Captured.program defId) 2 q
@@ -473,7 +518,8 @@ private theorem clone_body_exec {defId : DefId} {body : Body} {ety : EnumTy}
   rw [hInitState]
   apply execOutcomeStateV2_step (hStep1 aid off w i _ _ hLoad hi)
   exact execOutcomeStateV2_done (hStep2 aid off w i _ _)
-    (by rw [extractCallerMemory_entry q.callerMem hCM])
+    (by rw [extractReturnMemoryV2_entryMemory,
+      extractCallerMemory_entry q.callerMem hCM])
 
 private theorem clone_body_verified {defId : DefId} {body : Body}
     {ety : EnumTy} {identity : String}
@@ -507,7 +553,9 @@ private theorem clone_body_verified {defId : DefId} {body : Body}
         (stateV2 (frameV2 defId 0 1
           [.immediate (some (.enumVal ety i)),
            .immediate (some (.ptr ⟨some aid, off, w⟩))]) cm m) =
-      .done (.returned ⟨.enumVal ety i, extractCallerMemory cm m⟩)) :
+      .done (.returned ⟨.enumVal ety i, extractReturnMemoryV2 cm m
+        [.immediate (some (.enumVal ety i)),
+         .immediate (some (.ptr ⟨some aid, off, w⟩))]⟩)) :
     BodyVerifiedV2 Captured.program defId body
       (Spec.specs.safety body.identity) ∧
     Spec.cloneBodyPost Captured.program defId identity ety := by
@@ -543,7 +591,7 @@ private theorem body0_verified :
         (by decide))
       (writePlaceDestV2_immediate_ok (order_check i hi) rfl rfl))
     (fun _ _ _ _ _ _ => evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl
-      rfl rfl rfl)
+      rfl rfl rfl rfl)
 
 private theorem castType_check (i : Nat) (hi : i < 2) :
     checkValV2 (.enumVal Spec.castTypeEnumTy i)
@@ -566,7 +614,7 @@ private theorem body3_verified :
         (by decide))
       (writePlaceDestV2_immediate_ok (castType_check i hi) rfl rfl))
     (fun _ _ _ _ _ _ => evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl
-      rfl rfl rfl)
+      rfl rfl rfl rfl)
 
 /-! ## `KnownLayout::pointer_to_metadata` Bodies (Bodies 4-18) -/
 
@@ -592,7 +640,8 @@ private theorem ptrMeta_verified {defId : DefId} {body : Body} {t : MirTy}
       evalStepV2 (entryProgForBody Captured.program defId)
         (stateV2 (frameV2 defId 0 1
           [.immediate (some .unit), .immediate (some v)]) cm m) =
-      .done (.returned ⟨.unit, extractCallerMemory cm m⟩)) :
+      .done (.returned ⟨.unit, extractReturnMemoryV2 cm m
+        [.immediate (some .unit), .immediate (some v)]⟩)) :
     BodyVerifiedV2 Captured.program defId body
       (Spec.specs.safety body.identity) ∧
     Spec.unitBodyPost Captured.program defId (Spec.ptrMetaId tyName) :=
@@ -606,7 +655,7 @@ private theorem body4_verified :
     (fun _ _ _ => evalStepV2_assign_local rfl rfl rfl rfl rfl
       (writePlaceDestV2_immediate_ok rfl rfl rfl))
     (fun _ _ _ => evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl
-      rfl rfl)
+      rfl rfl rfl)
 
 private theorem body5_verified :
     BodyVerifiedV2 Captured.program 5 Captured.body_5
@@ -616,7 +665,7 @@ private theorem body5_verified :
     (fun _ _ _ => evalStepV2_assign_local rfl rfl rfl rfl rfl
       (writePlaceDestV2_immediate_ok rfl rfl rfl))
     (fun _ _ _ => evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl
-      rfl rfl)
+      rfl rfl rfl)
 
 private theorem body6_verified :
     BodyVerifiedV2 Captured.program 6 Captured.body_6
@@ -626,7 +675,7 @@ private theorem body6_verified :
     (fun _ _ _ => evalStepV2_assign_local rfl rfl rfl rfl rfl
       (writePlaceDestV2_immediate_ok rfl rfl rfl))
     (fun _ _ _ => evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl
-      rfl rfl)
+      rfl rfl rfl)
 
 private theorem body7_verified :
     BodyVerifiedV2 Captured.program 7 Captured.body_7
@@ -636,7 +685,7 @@ private theorem body7_verified :
     (fun _ _ _ => evalStepV2_assign_local rfl rfl rfl rfl rfl
       (writePlaceDestV2_immediate_ok rfl rfl rfl))
     (fun _ _ _ => evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl
-      rfl rfl)
+      rfl rfl rfl)
 
 private theorem body8_verified :
     BodyVerifiedV2 Captured.program 8 Captured.body_8
@@ -646,7 +695,7 @@ private theorem body8_verified :
     (fun _ _ _ => evalStepV2_assign_local rfl rfl rfl rfl rfl
       (writePlaceDestV2_immediate_ok rfl rfl rfl))
     (fun _ _ _ => evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl
-      rfl rfl)
+      rfl rfl rfl)
 
 private theorem body9_verified :
     BodyVerifiedV2 Captured.program 9 Captured.body_9
@@ -656,7 +705,7 @@ private theorem body9_verified :
     (fun _ _ _ => evalStepV2_assign_local rfl rfl rfl rfl rfl
       (writePlaceDestV2_immediate_ok rfl rfl rfl))
     (fun _ _ _ => evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl
-      rfl rfl)
+      rfl rfl rfl)
 
 private theorem body10_verified :
     BodyVerifiedV2 Captured.program 10 Captured.body_10
@@ -666,7 +715,7 @@ private theorem body10_verified :
     (fun _ _ _ => evalStepV2_assign_local rfl rfl rfl rfl rfl
       (writePlaceDestV2_immediate_ok rfl rfl rfl))
     (fun _ _ _ => evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl
-      rfl rfl)
+      rfl rfl rfl)
 
 private theorem body11_verified :
     BodyVerifiedV2 Captured.program 11 Captured.body_11
@@ -676,7 +725,7 @@ private theorem body11_verified :
     (fun _ _ _ => evalStepV2_assign_local rfl rfl rfl rfl rfl
       (writePlaceDestV2_immediate_ok rfl rfl rfl))
     (fun _ _ _ => evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl
-      rfl rfl)
+      rfl rfl rfl)
 
 private theorem body12_verified :
     BodyVerifiedV2 Captured.program 12 Captured.body_12
@@ -686,7 +735,7 @@ private theorem body12_verified :
     (fun _ _ _ => evalStepV2_assign_local rfl rfl rfl rfl rfl
       (writePlaceDestV2_immediate_ok rfl rfl rfl))
     (fun _ _ _ => evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl
-      rfl rfl)
+      rfl rfl rfl)
 
 private theorem body13_verified :
     BodyVerifiedV2 Captured.program 13 Captured.body_13
@@ -696,7 +745,7 @@ private theorem body13_verified :
     (fun _ _ _ => evalStepV2_assign_local rfl rfl rfl rfl rfl
       (writePlaceDestV2_immediate_ok rfl rfl rfl))
     (fun _ _ _ => evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl
-      rfl rfl)
+      rfl rfl rfl)
 
 private theorem body14_verified :
     BodyVerifiedV2 Captured.program 14 Captured.body_14
@@ -706,7 +755,7 @@ private theorem body14_verified :
     (fun _ _ _ => evalStepV2_assign_local rfl rfl rfl rfl rfl
       (writePlaceDestV2_immediate_ok rfl rfl rfl))
     (fun _ _ _ => evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl
-      rfl rfl)
+      rfl rfl rfl)
 
 private theorem body15_verified :
     BodyVerifiedV2 Captured.program 15 Captured.body_15
@@ -716,7 +765,7 @@ private theorem body15_verified :
     (fun _ _ _ => evalStepV2_assign_local rfl rfl rfl rfl rfl
       (writePlaceDestV2_immediate_ok rfl rfl rfl))
     (fun _ _ _ => evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl
-      rfl rfl)
+      rfl rfl rfl)
 
 private theorem body16_verified :
     BodyVerifiedV2 Captured.program 16 Captured.body_16
@@ -726,7 +775,7 @@ private theorem body16_verified :
     (fun _ _ _ => evalStepV2_assign_local rfl rfl rfl rfl rfl
       (writePlaceDestV2_immediate_ok rfl rfl rfl))
     (fun _ _ _ => evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl
-      rfl rfl)
+      rfl rfl rfl)
 
 private theorem body17_verified :
     BodyVerifiedV2 Captured.program 17 Captured.body_17
@@ -736,7 +785,7 @@ private theorem body17_verified :
     (fun _ _ _ => evalStepV2_assign_local rfl rfl rfl rfl rfl
       (writePlaceDestV2_immediate_ok rfl rfl rfl))
     (fun _ _ _ => evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl
-      rfl rfl)
+      rfl rfl rfl)
 
 private theorem body18_verified :
     BodyVerifiedV2 Captured.program 18 Captured.body_18
@@ -746,7 +795,7 @@ private theorem body18_verified :
     (fun _ _ _ => evalStepV2_assign_local rfl rfl rfl rfl rfl
       (writePlaceDestV2_immediate_ok rfl rfl rfl))
     (fun _ _ _ => evalStepV2_return_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl
-      rfl rfl)
+      rfl rfl rfl)
 
 /-! ## `PartialEq::eq` Body (Body 2) -/
 
@@ -987,8 +1036,9 @@ private theorem body2_exec (q : Query)
     apply execOutcomeStateV2_step (by rfl)
     try dsimp only
     exact execOutcomeStateV2_done (evalStepV2_return_ok rfl rfl rfl rfl rfl
-      rfl rfl rfl rfl rfl rfl)
-      (by rw [extractCallerMemory_entry q.callerMem hCM])
+      rfl rfl rfl rfl rfl rfl rfl)
+      (by rw [extractReturnMemoryV2_entryMemory,
+        extractCallerMemory_entry q.callerMem hCM])
   exact hStepsTo i j hi hj hLoad1 hLoad2
 
 private theorem body2_verified :
