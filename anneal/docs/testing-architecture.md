@@ -1038,7 +1038,7 @@ blast radii remain documented below for durable architectural rationale.
      `ExecSoundnessClaimV2`, and public
      `Trusted.{Crate,CrateTheorem,UnitTheorem}` and
      `Trusted.{CrateV2,CrateTheoremV2,UnitTheoremV2}` aliases) and
-     `Anneal.MirWp.Canaries` (all 25 `MirWp` canary `*Claim` proofs with
+     `Anneal.MirWp.Canaries` (all 26 `MirWp` canary `*Claim` proofs with
      `expectedProofMod = Anneal.MirWp.Canaries`) whenever `requireMirWp` is
      `true` or any MIR/`PureLift`/`MirWp` module is loaded (no conditional
      bypass when `Anneal.MirWp.Canaries` is absent);

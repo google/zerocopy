@@ -99,11 +99,11 @@ theorem mem_cons_elim {α : Type} {a b : α} {l : List α}
   | tail _ hTail => exact Or.inr hTail
 
 /-- Canary total normal-return `EffectMask` fixture. -/
-@[expose] def canaryTotalEffects : EffectMask :=
+@[expose] def canaryTotalEffects : Trusted.Framework.EffectMask :=
   { terminates := true, noUnwind := true, noAbort := true }
 
 /-- Canary permissive partial `EffectMask` fixture. -/
-@[expose] def canaryPartialEffects : EffectMask :=
+@[expose] def canaryPartialEffects : Trusted.Framework.EffectMask :=
   { terminates := false, noUnwind := false, noAbort := false }
 
 /-- Complete Pass-1 claim proposition for `framework_canary`, exercising wire

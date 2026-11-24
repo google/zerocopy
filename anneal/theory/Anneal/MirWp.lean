@@ -47,7 +47,7 @@ machinery over `Trusted.MirAst` and `Trusted.MirSemantics`:
 2. **Width-Parametric Bitvector, Scalar, and Operator Adequacy:** Exact modular
    characterization and idempotence of `truncateBits`, totality and
    well-formedness of `truncateScalar`, and width/signedness-parametric operator
-   totality across all six `IntWidth` variants (with the 25 Pass 1 non-vacuity
+   totality across all six `IntWidth` variants (with the 26 Pass 1 non-vacuity
    and parameter-boundary canaries audited separately in `Anneal.MirWp.Canaries`
    without bloating user runtime imports).
 3. **Lawful Type Equality and `checkVal` / `ValidEntryArgs` Inversion:**

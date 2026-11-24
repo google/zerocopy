@@ -8,6 +8,7 @@
 
 mod anti_vacuity_and_e2e;
 mod capture_and_cargo_isolation;
+mod contracts;
 mod corpora_runner;
 mod helpers;
 mod host_and_stage_security;

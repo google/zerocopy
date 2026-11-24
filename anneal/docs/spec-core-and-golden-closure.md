@@ -8,19 +8,24 @@ those terms. -->
 
 # Specification Core v2 and Golden Spec-Closure Governance
 
-> **Status: Target Architecture / In-Progress.**
+> **Status: Target architecture, partly implemented.**
 >
-> **Shipped today (Stage 0 alpha, [`#4095`](https://github.com/google/zerocopy/issues/4095)):**
-> Specifications are written out-of-line in Lean `Spec.lean` modules over the
-> scalar MIR profile (`UnitTheorem` and `CrateTheorem`; see
-> [alpha guide](alpha.md)).
+> **Shipped today:** out-of-line `Spec.lean` modules over the scalar MIR
+> profile (`UnitTheorem` and `CrateTheorem`; see [alpha guide](alpha.md),
+> [`#4095`](https://github.com/google/zerocopy/issues/4095)); the contract
+> core in `Trusted.MirSemantics.Contract` (`EffectMask`, `FnContract`,
+> `ContractSignature`, `BodyContractSatisfied`, `ContractPreInhabited`,
+> `ContractEntry`, `ContractSpecs`, `scalarAsInt`); and `autoImplicit false` /
+> `relaxedAutoImplicit false` for specification modules, enforced by both
+> `"spec-preflight"` and Lean compilation.
 >
-> **Target architecture described here:** Specification Core v2 (`FnContract`,
-> `EffectMask`, `SpecEval`, `InvariantEnv`) and Always-Rendered Golden Spec
-> Closure + `CODEOWNERS`/`OWNERS` governance are pre-implementation target
-> designs tracked under
-> [`#4102`](https://github.com/google/zerocopy/issues/4102), sequenced after
-> Stage 1 audited TCB accounting
+> **Target design, not yet implemented:** everything else below, including
+> `EffectMask.le`, the `measure`, `InvariantEnv`, `SpecEval`, and abort-related
+> parts of the §1–§2 sketches (which therefore differ from the shipped
+> definitions), assumed-contract realizability, the Rust surface syntax, and
+> Golden Spec Closure rendering with `CODEOWNERS`/`OWNERS` governance. These are
+> tracked under [`#4102`](https://github.com/google/zerocopy/issues/4102) and
+> sequenced after Stage 1 audited TCB accounting
 > ([`#4012`](https://github.com/google/zerocopy/issues/4012)).
 
 Anneal's design goal is to let Rust programmers write ergonomic inline
@@ -56,10 +61,14 @@ into two fields:
 
 ```lean
 structure EffectMask where
-  terminates : Bool            -- forbids Diverges (true by default for verified
-                               -- specs; false by default for assumed contracts)
-  noUnwind   : Bool := false   -- forbids TerminalOut.unwound
-  noAbort    : Bool := false   -- forbids TerminalOut.aborted
+  terminates : Bool  -- forbids Diverges
+  noUnwind   : Bool  -- forbids TerminalOut.unwound
+  noAbort    : Bool  -- forbids TerminalOut.aborted (post-M1-Blocker-0)
+
+def EffectMask.le (m1 m2 : EffectMask) : Prop :=
+  (m1.terminates = true -> m2.terminates = true) ∧
+  (m1.noUnwind = true -> m2.noUnwind = true) ∧
+  (m1.noAbort = true -> m2.noAbort = true)
 
 structure FnContract where
   safetyPre   : Query -> Prop := fun _ => True
@@ -70,6 +79,14 @@ structure FnContract where
   effects     : EffectMask
   measure     : Option (Query -> Nat) := none
 ```
+
+`EffectMask` fields and `FnContract.effects` intentionally carry **no struct
+defaults** so Lean generates zero `._default` terms and every rendered or
+hand-written `Spec.lean` states all effect bits explicitly. Named constructors
+`EffectMask.totalNormal` and `EffectMask.partialAnyExit` capture the two
+canonical masks, and uniform positive polarity (`true` = stronger guarantee)
+gives `EffectMask.le` a clean pointwise Boolean product lattice for call-edge
+and trait/impl strengthening.
 
 - **`safetyPre` (active only when `body.isUnsafe = true`):** Defines
   `effectiveSafetyPre := (body.isUnsafe = true -> c.safetyPre q)`. On safe
@@ -82,25 +99,32 @@ structure FnContract where
 
 ### Total-by-default verified specs vs. partial-by-default assumed contracts
 
-`EffectMask.terminates` uses intentionally asymmetric defaults across verified
-obligations and assumed contracts so both directions fail safe:
+Verified specifications and unverified assumptions use intentionally asymmetric
+Layer-2 defaults across `EffectMask` so both directions fail safe:
 
-- **Verified functional specifications default to total correctness
-  (`¬ Diverges`, `terminates = true`):** Under partial correctness, a function
+- **Verified functional specifications default to Total Normal Return
+  (`EffectMask.totalNormal`: `terminates = true`, `noUnwind = true`, and
+  `noAbort = true` post-abort support):** Under partial correctness, a function
   can satisfy any postcondition trivially by diverging (`loop {}`), allowing
-  postcondition laundering through non-termination. Verified functional
-  specifications therefore require termination by default. Functions that may
-  legitimately diverge must declare an explicit opt-out on the human-reviewed
-  specification surface (`terminates = false`), making non-termination visible
-  in golden spec-closure review.
-- **Assumed external contracts remain partial correctness by default
-  (`terminates = false`, `#3091`):** Anneal never silently assumes progress
-  from unverified `#[anneal::trusted]` or `extern` callees. Leaving assumed
-  contracts partial by default avoids unstated liveness assumptions and
-  prevents callers from deriving `False` from diverging or `-> !` stubs; any
-  escalation to `terminates = true` on an assumed contract must appear
-  explicitly in the specification and Receipt v3 `tcb_shims[]` and discharge
-  `AssumedContractRealizable`.
+  postcondition laundering through non-termination; similarly, omitting panic
+  or abort guarantees silently hides panic paths. Verified functional
+  specifications therefore require normal termination by default (`95%+` of
+  loop-free systems code needs zero effect annotations). Authors opt out
+  explicitly on the human-reviewed surface via `may_diverge`
+  (`terminates = false`), `may_unwind` (`noUnwind = false`), `may_panic`, or
+  staged `may_abort`, making every permitted failure or divergence mode
+  visible in golden spec-closure review.
+- **Assumed external contracts remain partial by default
+  (`EffectMask.partialAnyExit`: `terminates = false`, `noUnwind = false`,
+  `noAbort = false`,
+  [`#3091`](https://github.com/google/zerocopy/issues/3091)):**
+  Anneal never silently assumes progress or panic-freedom from unverified
+  `#[anneal::trusted]` or `extern` callees. Leaving assumed contracts partial
+  by default `(false, false, false)` (save `extern "C"` `noUnwind = true`
+  below) avoids unstated liveness assumptions and prevents callers from
+  deriving `False` from diverging or `-> !` stubs; any escalation on an
+  assumed contract must appear explicitly in the specification and Receipt v3
+  `tcb_shims[]` and discharge `AssumedContractRealizable`.
 
 ### Four-way outcomes, `TerminalOut.aborted`, and foreign ABI consistency
 
@@ -168,7 +192,9 @@ follows a two-tier rule:
   1. The call crosses strictly downward between call-graph strongly connected
      components (acyclic stratification), or
   2. Every call edge inside a `terminates = true` SCC supplies a `decreases`
-     measure (`Query -> Nat`) and discharges `meas q_callee < meas q_caller`.
+     measure (`Query -> Nat`; surface `decreases(e)` checks an explicit
+     non-negativity guard `0 <= e` before converting to `Nat`) and discharges
+     `meas q_callee < meas q_caller`.
 
 ## 2. Primitive 2: Pure clause evaluation (`SpecEval`) and capture IR
 

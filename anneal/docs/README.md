@@ -107,7 +107,7 @@ incrementally.
 | :--- | :--- | :--- |
 | [Build systems and orthogonal Receipt v3](build-systems-and-receipts.md) | Target Architecture | Five-phase split-action contract (Cargo, Bazel, Soong, GN, Buck2), orthogonal Receipt v3, Tier 1/2 cross-crate MIR, `nominal`/`fixed-buckets=K` sharding, and Lean `module` / `v4.35.0`. |
 | [Auditing and Universal NDJSON Comparator](auditing-and-comparator.md) | Target Architecture | Universal NDJSON Comparator (`5a`/`5b`/`5c`, `nanoda_bin` + `con-ron`), `check_guard_mutation.py` CI, and honest non-adversarial `audit-spec` sanity checks. |
-| [Specification Core v2 and golden spec closure](spec-core-and-golden-closure.md) | Target Architecture | `FnContract` (`safetyPre`/`behaviorPre`), 8-mask `EffectMask` realizability, mutual-recursion stratification, and always-rendered golden spec closures under `CODEOWNERS`/`OWNERS`. |
+| [Specification Core v2 and golden spec closure](spec-core-and-golden-closure.md) | Current + Target Architecture | Shipped `Trusted.MirSemantics.Contract` core (`EffectMask`, `FnContract`, `ContractSignature`, `ContractSpecs`); target realizability, mutual-recursion stratification, and golden spec closures under `CODEOWNERS`/`OWNERS`. |
 | [Testing and verification architecture](testing-architecture.md) | Target Architecture | Two-zone `trusted/` vs. `tests/` isolation, `anneal-testkit` scaffolding, declarative `adversarial`/`differential`/`real_crates` corpora, performance and axiom gates, and `D1-A`–`D4-A` policy decisions. |
 | [Anneal–Aeneas interop bridge](aeneas-interop-bridge.md) | Planned Interop | Opt-in zero-TCB `anneal/interop/aeneas-bridge/` architecture, strict vs. liberal `.fail` refinement, MIR prerequisites, and `read_u64` / `write_uint` / `split_at_mut` canaries. |
 

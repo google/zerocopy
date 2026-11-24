@@ -3407,7 +3407,7 @@ def requireMirPublicAlias (env : Environment)
 are loaded as `.repo .theory` modules (whenever `requireMirWp` is `true` or any
 MIR/`PureLift` module is loaded), that the core weakest-precondition adequacy
 and fault-characterization theorems and the Profile v2 execution adequacy
-theorem in `Anneal.MirWp` and all 25 non-vacuity and parameter-boundary
+theorem in `Anneal.MirWp` and all 26 non-vacuity and parameter-boundary
 canaries in `Anneal.MirWp.Canaries` prove the exact `*Claim` propositions
 defined in `Trusted.MirSemantics`, and that the public
 `Trusted.{Crate, CrateTheorem, UnitTheorem, CrateV2, CrateTheoremV2,
@@ -3558,7 +3558,22 @@ def verifyMirWpCoreTheorems (env : Environment)
           `Anneal.MirWp.canary_negative_int_to_int_cast_anneal,
           [negClaim, `Trusted.MirSemantics.mkIntToIntCastProg,
             `Trusted.MirAst.MirTy.char,
-            `Trusted.MirSemantics.progCastUninitSourceUb])] do
+            `Trusted.MirSemantics.progCastUninitSourceUb]),
+        (`Trusted.MirSemantics.CanaryContractAnnealClaim,
+          `Anneal.MirWp.canary_contract_anneal,
+          [`Trusted.MirSemantics.EffectMask.totalNormal,
+            `Trusted.MirSemantics.EffectMask.partialAnyExit,
+            `Trusted.MirSemantics.FnContract,
+            `Trusted.MirSemantics.decodeScalar,
+            `Trusted.MirSemantics.scalarAsInt,
+            `Trusted.MirSemantics.BodyContractSatisfied,
+            `Trusted.MirSemantics.ContractPreInhabited,
+            `Trusted.MirSemantics.ContractSignature,
+            `Trusted.MirSemantics.bodyMatchesContractSignature,
+            `Trusted.MirSemantics.ContractEntry,
+            `Trusted.MirSemantics.ContractSpecs,
+            `Trusted.MirSemantics.contractEntryRbLookup,
+            `Trusted.MirSemantics.UnitTheorem])] do
       requireClaimProof env locals semMod canaryMod claimName none proofName
         reqConsts
     for (aliasName, targetName) in [

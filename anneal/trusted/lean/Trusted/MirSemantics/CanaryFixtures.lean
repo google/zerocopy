@@ -782,6 +782,50 @@ noncomputable def canaryValidCrate : Crate := {
   }
 }
 
+/-- Minimal single-block diverging body (`bb0: goto bb0`) exercising
+`EffectMask.terminates` refusal and acceptance in
+`CanaryContractAnnealClaim`. -/
+noncomputable def canaryContractLoopBody : Body := {
+  argumentCount := 0
+  locals := [.unit]
+  basicBlocks := [{
+    statements := []
+    terminator := .goto 0
+  }]
+  isUnsafe := false
+  identity := "canary::contract_loop"
+}
+
+/-- Guarded `Bool -> ()` body whose `false` path faults via `.unreachable`
+while `true` initializes `_0 = ()` and returns normally, exercising
+`BodyContractSatisfied` safety-precondition gating in
+`CanaryContractAnnealClaim`. -/
+noncomputable def canaryContractUnsafeGuardBody (isUnsafe : Bool) : Body := {
+  argumentCount := 1
+  locals := [.unit, .bool]
+  basicBlocks := [
+    {
+      statements := []
+      terminator := .switchInt (.copy ⟨1, []⟩) {
+        branches := [(BitVec.ofNat 128 0, 2)]
+        otherwise := 1
+      }
+    },
+    {
+      statements := [
+        .assign ⟨0, []⟩ (.use (.constant ⟨.unit, .zeroSized⟩))
+      ]
+      terminator := .return_
+    },
+    {
+      statements := []
+      terminator := .unreachable
+    }
+  ]
+  isUnsafe := isUnsafe
+  identity := "canary::contract_unsafe_guard"
+}
+
 end Trusted.MirSemantics
 
 end
