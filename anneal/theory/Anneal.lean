@@ -28,6 +28,7 @@ public import Anneal.MirTotal
 public import Anneal.Core
 public import Anneal.ByteRun
 public import Anneal.ByteSubLens
+public import Anneal.CallStackUnwind
 public import Anneal.CnfOrd
 public import Anneal.F2Simd
 public import Anneal.OverflowCastJoin
@@ -51,10 +52,11 @@ Umbrella module for Anneal's untrusted proof theory (`theory/`), re-exporting
 (`Anneal.MirTotal`), the block-tree, separation-logic, and stage-cut core
 (`Anneal.Core`), mixed-mask padded-aggregate and `[T; N]` byte-copy laws
 (`Anneal.ByteRun`), lawful sub-allocation byte lenses and `&mut` method call
-summaries (`Anneal.ByteSubLens`), constructive `< ω^ω` Cantor Normal Form
-ordinals and multi-rank termination (`Anneal.CnfOrd`), $\mathbb{F}_2$-linear
-and $\mathbb{F}_2$-bilinear SIMD certificate evaluators (`Anneal.F2Simd`),
-stage-cut interval joins for overflowing arithmetic and casts
+summaries (`Anneal.ByteSubLens`), modular `@[irreducible]` call-stack and unwind
+cleanup framing (`Anneal.CallStackUnwind`), constructive `< ω^ω` Cantor Normal
+Form ordinals and multi-rank termination (`Anneal.CnfOrd`),
+$\mathbb{F}_2$-linear and $\mathbb{F}_2$-bilinear SIMD certificate evaluators
+(`Anneal.F2Simd`), stage-cut interval joins for overflowing arithmetic and casts
 (`Anneal.OverflowCastJoin`), `Anneal.PureLift`, and 4-way call-continuation
 `&mut` writeback frames and ranged Tree Borrows protectors (`Anneal.RefFrame`).
 -/
