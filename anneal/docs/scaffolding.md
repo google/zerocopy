@@ -296,9 +296,29 @@ fixtures fail the build. The remaining fast repository checks in CI are:
 
 ```bash
 sha256sum --check --strict trusted/root-manifest.sha256
+python3 -I -B ci/check_pr_hygiene.py --base origin/main
 ./ci/check_job_dependencies.sh
 ./ci/check_actions.sh
 ./ci/check_flake_eval.sh
 ./ci/check_non_stable_version.sh
 python3 -B -m unittest discover -s ci -p 'test_*.py'
 ```
+
+`ci/check_pr_hygiene.py` fails fast on mechanical defects that reviewers
+otherwise report: commit-message layout and `Agent-authored-by:` trailers,
+`git diff --check`, Markdown and comment lines that exceed 80 columns, missing
+license headers on new files, review-round IDs, unpinned upstream citations in
+`trusted/lean/` and `trusted/rustc-capture/`, the cumulative `AGENTS.md` byte
+budget, and the `Code Review Rules` mirror. On pull requests, CI runs it
+against the PR's base and head; other events check only the tree. It reads Git
+objects without checking out or running candidate code, so reviewers can run a
+trusted base copy against a candidate head. Before publishing, also pass
+`--pr-body-file` and `--pr-title` to compare a single-commit PR's description
+and title with its commit (`--emit-pr-body` prints the expected description),
+and `--receipt-file` to check a Review Receipt. Besides its prose
+`Human review surface` block, a receipt carries one machine-checked footer,
+`<!-- anneal-receipt:v1 {...} -->`, which binds `target_base`, `merge_base`,
+`head`, and `tree` to full SHAs and lists every changed Human review surface
+path; `--emit-receipt-footer` prints it. `--json` emits a report for tooling,
+and `--skip-commit-messages` skips commit-message checks, which CI does for
+PRs whose GitHub author is a bot.

@@ -74,6 +74,30 @@ jobs:
         uses: DeterminateSystems/determinate-nix-action@92957199488000b908fdad19f63711000965d8f3 # v3.24.1
       - name: Run todo check
         run: ./ci/check_todo.sh
+      - name: Run PR hygiene check
+        # Pull requests lint their commits and diff; other events check only
+        # the tree-wide `AGENTS.md` budget and Code Review Rules mirror. PR
+        # descriptions and Review Receipts can change without a new run, so
+        # publishing and Gate 2 tooling check those with `--pr-body-file` and
+        # `--receipt-file` instead.
+        # Bots such as Dependabot write their own commit messages, so PRs
+        # whose GitHub-authenticated author is a bot skip those checks.
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_AUTHOR_TYPE: ${{ github.event.pull_request.user.type }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = pull_request ] && [ "$PR_AUTHOR_TYPE" = Bot ]; then
+            python3 -I -B ci/check_pr_hygiene.py --skip-commit-messages \
+              --base "$PR_BASE_SHA" --head "$PR_HEAD_SHA"
+          elif [ "$EVENT_NAME" = pull_request ]; then
+            python3 -I -B ci/check_pr_hygiene.py \
+              --base "$PR_BASE_SHA" --head "$PR_HEAD_SHA"
+          else
+            python3 -I -B ci/check_pr_hygiene.py
+          fi
       - name: Test release tooling and the Codex review gate
         # The review-gate tests use fake GitHub responses and make no status
         # writes.
