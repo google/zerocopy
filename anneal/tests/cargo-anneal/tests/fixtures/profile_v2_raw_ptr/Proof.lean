@@ -274,7 +274,7 @@ theorem initStateV2_ok_of {p : Program} {q : Query} {body : Body}
       ((body.locals.drop 1).take body.argumentCount) q.args = true)
     (hDisj : spansPairwiseDisjoint (refAccessSpansList
       ((body.locals.drop 1).take body.argumentCount) q.args) = true) :
-    initStateV2 p q = .ok ⟨[⟨p.entryDefId, 0, 0, initLocalsLoop body q.args 0 body.locals⟩],
+    initStateV2 p q = .ok ⟨[⟨p.entryDefId, 0, 0, initLocalsLoop body q.args 0 body.locals, none, none, none⟩],
       q.callerMem, entryMemoryWithCaller q.callerMem⟩ := by
   unfold initStateV2
   rw [hPW, hPV, hCM, hEntry]
@@ -577,7 +577,7 @@ private theorem loadU32_correct (q : Query)
               match loadU32_ok cm pv aid a hFind hLive hBounds hAlign hInit with
               | ⟨sv, hLoad, hVWf⟩ =>
                 have hStep0 : initStateV2 (entryProgForBody Captured.program 0) ⟨[.ptr pv], cm⟩ =
-                    .ok ⟨[⟨0, 0, 0, [.immediate none, .immediate (some (.ptr pv))]⟩],
+                    .ok ⟨[⟨0, 0, 0, [.immediate none, .immediate (some (.ptr pv))], none, none, none⟩],
                       cm, entryMemoryWithCaller cm⟩ :=
                   initStateV2_ok_of (p := entryProgForBody Captured.program 0) (q := ⟨[.ptr pv], cm⟩) (body := Captured.body_0)
                     rfl rfl hCallerValid rfl rfl rfl rfl rfl rfl rfl
@@ -602,9 +602,9 @@ private theorem loadU32_correct (q : Query)
                   dsimp only
                   rw [hLoad]
                 have hStep1 : evalStepV2 (entryProgForBody Captured.program 0)
-                    ⟨[⟨0, 0, 0, [.immediate none, .immediate (some (.ptr pv))]⟩],
+                    ⟨[⟨0, 0, 0, [.immediate none, .immediate (some (.ptr pv))], none, none, none⟩],
                       cm, entryMemoryWithCaller cm⟩ =
-                    .step ⟨[⟨0, 0, 1, [.immediate (some (Val.scalar sv)), .immediate (some (.ptr pv))]⟩],
+                    .step ⟨[⟨0, 0, 1, [.immediate (some (Val.scalar sv)), .immediate (some (.ptr pv))], none, none, none⟩],
                       cm, entryMemoryWithCaller cm⟩ := by
                   unfold evalStepV2
                   change (match evalRvalueV2 Captured.body_0.locals
@@ -615,7 +615,7 @@ private theorem loadU32_correct (q : Query)
                     | Except.ok (val, l1, m1) =>
                       match writePlaceV2 Captured.body_0.locals l1 m1 ⟨0, []⟩ (.int .i32 false) val with
                       | Except.error k => StepResult.fault k
-                      | Except.ok (l2, m2) => StepResult.step (State.mk [FrameState.mk 0 0 1 l2] cm m2)) = _
+                      | Except.ok (l2, m2) => StepResult.step (State.mk [FrameState.mk 0 0 1 l2 none none none] cm m2)) = _
                   have hRv : evalRvalueV2 Captured.body_0.locals
                       [.immediate none, .immediate (some (.ptr pv))]
                       (entryMemoryWithCaller cm) (.int .i32 false)
@@ -629,7 +629,7 @@ private theorem loadU32_correct (q : Query)
                   dsimp only
                   rw [writePlaceV2_immediate_ok hVWf rfl rfl]
                 have hStep2 : evalStepV2 (entryProgForBody Captured.program 0)
-                    ⟨[⟨0, 0, 1, [.immediate (some (Val.scalar sv)), .immediate (some (.ptr pv))]⟩],
+                    ⟨[⟨0, 0, 1, [.immediate (some (Val.scalar sv)), .immediate (some (.ptr pv))], none, none, none⟩],
                       cm, entryMemoryWithCaller cm⟩ =
                     .done (.returned ⟨.scalar sv, cm⟩) := by
                   change StepResult.done (TerminalOut.returned ⟨.scalar sv, extractCallerMemory cm (entryMemoryWithCaller cm)⟩) = _
@@ -714,26 +714,26 @@ private theorem storeU8_correct (q : Query)
                             .immediate (some (.ptr pv)),
                             .immediate (some (.scalar sv)),
                             .dead
-                          ]⟩], cm, entryMemoryWithCaller cm⟩ :=
+                          ], none, none, none⟩], cm, entryMemoryWithCaller cm⟩ :=
                       initStateV2_ok_of (p := entryProgForBody Captured.program 1) (q := ⟨[.ptr pv, .scalar sv], cm⟩) (body := Captured.body_1)
                         rfl rfl hCallerValid rfl rfl rfl rfl rfl rfl rfl
                         hArgsMatch hRefs hDisj
                     have hStep1 : evalStepV2 (entryProgForBody Captured.program 1)
-                        ⟨[⟨1, 0, 0, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .dead]⟩],
+                        ⟨[⟨1, 0, 0, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .dead], none, none, none⟩],
                           cm, entryMemoryWithCaller cm⟩ =
-                        .step ⟨[⟨1, 0, 1, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .immediate none]⟩],
+                        .step ⟨[⟨1, 0, 1, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .immediate none], none, none, none⟩],
                           cm, entryMemoryWithCaller cm⟩ := rfl
                     have hStep2 : evalStepV2 (entryProgForBody Captured.program 1)
-                        ⟨[⟨1, 0, 1, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .immediate none]⟩],
+                        ⟨[⟨1, 0, 1, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .immediate none], none, none, none⟩],
                           cm, entryMemoryWithCaller cm⟩ =
-                        .step ⟨[⟨1, 0, 2, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .immediate (some (.scalar sv))]⟩],
+                        .step ⟨[⟨1, 0, 2, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .immediate (some (.scalar sv))], none, none, none⟩],
                           cm, entryMemoryWithCaller cm⟩ := by
                       unfold evalStepV2
                       change (match writePlaceV2 Captured.body_1.locals
                           [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .immediate none]
                           (entryMemoryWithCaller cm) ⟨3, []⟩ (.int .i8 false) (.scalar sv) with
                         | Except.error k => StepResult.fault k
-                        | Except.ok (l2, m2) => StepResult.step (State.mk [FrameState.mk 1 0 2 l2] cm m2)) = _
+                        | Except.ok (l2, m2) => StepResult.step (State.mk [FrameState.mk 1 0 2 l2 none none none] cm m2)) = _
                       rw [writePlaceV2_immediate_ok hSvWf rfl rfl]
                     have hWp3 : writePlaceV2 Captured.body_1.locals
                         [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .immediate none]
@@ -769,29 +769,29 @@ private theorem storeU8_correct (q : Query)
                         | Except.error k => Except.error k) = _
                       rw [hStore]
                     have hStep3 : evalStepV2 (entryProgForBody Captured.program 1)
-                        ⟨[⟨1, 0, 2, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .immediate (some (.scalar sv))]⟩],
+                        ⟨[⟨1, 0, 2, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .immediate (some (.scalar sv))], none, none, none⟩],
                           cm, entryMemoryWithCaller cm⟩ =
-                        .step ⟨[⟨1, 0, 3, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .immediate none]⟩],
+                        .step ⟨[⟨1, 0, 3, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .immediate none], none, none, none⟩],
                           cm, mem'⟩ := by
                       unfold evalStepV2
                       change (match writePlaceV2 Captured.body_1.locals
                           [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .immediate none]
                           (entryMemoryWithCaller cm) ⟨1, [.deref]⟩ (.int .i8 false) (.scalar sv) with
                         | Except.error k => StepResult.fault k
-                        | Except.ok (l2, m2) => StepResult.step (State.mk [FrameState.mk 1 0 3 l2] cm m2)) = _
+                        | Except.ok (l2, m2) => StepResult.step (State.mk [FrameState.mk 1 0 3 l2 none none none] cm m2)) = _
                       rw [hWp3]
                     have hStep4 : evalStepV2 (entryProgForBody Captured.program 1)
-                        ⟨[⟨1, 0, 3, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .immediate none]⟩],
+                        ⟨[⟨1, 0, 3, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .immediate none], none, none, none⟩],
                           cm, mem'⟩ =
-                        .step ⟨[⟨1, 0, 4, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .dead]⟩],
+                        .step ⟨[⟨1, 0, 4, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .dead], none, none, none⟩],
                           cm, mem'⟩ := rfl
                     have hStep5 : evalStepV2 (entryProgForBody Captured.program 1)
-                        ⟨[⟨1, 0, 4, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .dead]⟩],
+                        ⟨[⟨1, 0, 4, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .dead], none, none, none⟩],
                           cm, mem'⟩ =
-                        .step ⟨[⟨1, 0, 5, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .dead]⟩],
+                        .step ⟨[⟨1, 0, 5, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .dead], none, none, none⟩],
                           cm, mem'⟩ := rfl
                     have hStep6 : evalStepV2 (entryProgForBody Captured.program 1)
-                        ⟨[⟨1, 0, 5, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .dead]⟩],
+                        ⟨[⟨1, 0, 5, [.immediate (some .unit), .immediate (some (.ptr pv)), .immediate (some (.scalar sv)), .dead], none, none, none⟩],
                           cm, mem'⟩ =
                         .done (.returned ⟨.unit, extractCallerMemory cm mem'⟩) := rfl
                     have hExec : execProgV2 (entryProgForBody Captured.program 1) 8 ⟨[.ptr pv, .scalar sv], cm⟩

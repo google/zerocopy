@@ -1569,7 +1569,7 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
 
     let recorded_args = project.path().join("capture_args.txt");
     let fake_capture = project.path().join("fake-capture");
-    // Emit a syntactically valid schema-4 capture manifest whose
+    // Emit a syntactically valid schema-5 capture manifest whose
     // `configuration.env` disagrees with the requested `--env` binding.
     let script = format!(
         "#!/bin/sh\n\
@@ -1587,7 +1587,7 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
          mkdir -p \"$out_dir\"\n\
          cat > \"$out_dir/capture.json\" <<'JSON'\n\
          {{\n\
-           \"schema_version\": 4,\n\
+           \"schema_version\": 5,\n\
            \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\n\
            \"configuration\": {{\n\
              \"crate_name\": \"demo\",\n\
@@ -1680,7 +1680,7 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
              mkdir -p \"$out_dir\"\n\
              cat > \"$out_dir/capture.json\" <<'JSON'\n\
              {{\n\
-               \"schema_version\": 4,\n\
+               \"schema_version\": 5,\n\
                \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\n\
                \"configuration\": {{\n\
                  \"crate_name\": \"demo\",\n\
@@ -1781,7 +1781,7 @@ fn verify_passes_stdlib_crate_flag_and_rejects_mismatched_capture_capability() {
              done\n\
              mkdir -p \"$out_dir\"\n\
              printf '{{\\n\
-               \"schema_version\": 4,\\n\
+               \"schema_version\": 5,\\n\
                \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\\n\
                \"configuration\": {{\\n\
                  \"crate_name\": \"core\",\\n\
@@ -1998,7 +1998,7 @@ fn verify_passes_instantiate_flags_and_rejects_mismatched_capture_scope() {
          mkdir -p \"$out_dir\"\n\
          cat > \"$out_dir/capture.json\" <<'JSON'\n\
          {{\n\
-           \"schema_version\": 4,\n\
+           \"schema_version\": 5,\n\
            \"compiler\": {{\"commit\": \"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\"}},\n\
            \"configuration\": {{\n\
              \"crate_name\": \"demo\",\n\

@@ -259,7 +259,7 @@ theorem cleanup_block_return_faults_unsupported
         (mkState 0 0 (initLocalsLoop body args 0 body.locals)) =
       .fault .unsupported := by
     unfold mkState bodyProg evalStep
-    dsimp only [Trusted.MirSemantics.getElem?]
+    dsimp only [activeFrameBody, Trusted.MirSemantics.getElem?]
     rw [hBb₀]
     cases bb₀ with
     | mk bS bT bC =>
@@ -489,7 +489,7 @@ theorem dropSpineCut_base_ret {body : Body} (bt : BlockTree BasicBlock)
   dsimp only [execOutcomeState, execStepOutcome]
   rw [execStepPred_succ_iff]
   unfold bodyProg evalStep
-  dsimp only [Trusted.MirSemantics.getElem?]
+  dsimp only [activeFrameBody, Trusted.MirSemantics.getElem?]
   rw [hGetBlk]
   dsimp only [Trusted.MirSemantics.getElem?, evalTerminator]
   rw [hRet0]
@@ -541,7 +541,7 @@ theorem dropSpineCut_prepend_storageDead {body : Body}
       { frames := [{ defId := 0, blockIdx := blk, stmtIdx := 0, locals := ls }],
         callerMem := cm, mem := mem } = .step sMid := by
     unfold bodyProg evalStep
-    dsimp only [Trusted.MirSemantics.getElem?]
+    dsimp only [activeFrameBody, Trusted.MirSemantics.getElem?]
     rw [hGetBlk]
     dsimp only [Trusted.MirSemantics.getElem?, evalStatement]
     rw [hDropBeqF]
@@ -553,7 +553,7 @@ theorem dropSpineCut_prepend_storageDead {body : Body}
     rfl
   have hStep1 : evalStep (bodyProg body) 0 sMid = .step sNext := by
     unfold sMid bodyProg evalStep
-    dsimp only [Trusted.MirSemantics.getElem?]
+    dsimp only [activeFrameBody, Trusted.MirSemantics.getElem?]
     rw [hGetBlk]
     rfl
   have hCut2 : MirStageCut (bodyProg body) 2

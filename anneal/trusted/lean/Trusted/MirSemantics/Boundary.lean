@@ -169,10 +169,14 @@ Explicit semantic scoping notes for human auditors:
    empty caller memory `{ args := args, callerMem := ⟨[]⟩ }`, matching
    `initState`'s rejection of non-empty `callerMem` while pointer and reference
    entry parameters remain outside the supported domain.
-2. **Interprocedural calls fail closed:** `entryProgForBody p defId` retains
-   `p.bodies` so the program environment carries all sibling definitions, while
-   any reachable `TerminatorKind.call` steps to `.fault .unsupported` and
-   therefore refutes `WellFormed` fail-closed.
+2. **Multi-frame intra-crate and pinned-sysroot calls:**
+   `TerminatorKind.call` pushes an intra-crate callee frame indexed in
+   `p.bodies`. `callsAdmitted` refuses calls to `unsafe fn` callees, so no
+   callee's `Specs.safety` is consulted at a call site; only the entry body's
+   precondition constrains a run. `TerminatorKind.sysrootCall` steps into the
+   pinned `sysrootNumBody op` (`core::num` verified at capture time against
+   `tcx.instance_mir`); indirect and unmodeled external calls fault with
+   `.fault .unsupported`.
 3. **Fault-freedom vs. termination (`WellFormed` vs. `Diverges`):**
    `WellFormed` establishes absence of `.fault .undefined` (UB) and
    `.fault .unsupported` (unmodeled constructs) across all executions while
@@ -207,20 +211,14 @@ noncomputable def bodiesHaveUniqueIdentities (bodies : List Body) : Bool :=
 /-- Unconditional static admission predicate for `(p, body)`: checks 64-bit
 target layout, MIR semantic profile version 1, non-empty `body.identity`,
 non-empty basic blocks, `argumentCount < locals.length`, in-bounds storage
-annotations, well-typed `Discriminant` and `Cast` destinations, and supported
-local types
-(`isSupportedScalarOrUnitTy`) even when `body` has uninhabited (`MirTy.never`)
-parameters and `ValidEntryArgs body args` is vacuously empty. -/
+annotations, well-typed `Discriminant` and `Cast` destinations, supported local
+types (`isSupportedScalarOrUnitTy`), valid intra-crate and pinned-sysroot
+call sites (`callsAdmitted`), and—whenever `body` contains any call—all bodies
+in `p.bodies` (`allCallBodiesStaticAdmitted`), even when `body` has
+uninhabited (`MirTy.never`) parameters and `ValidEntryArgs body args` is
+vacuously empty. -/
 noncomputable def BodyStaticAdmitted (p : Program) (body : Body) : Bool :=
-  Nat.beq p.pointerWidthBits 64 &&
-    Nat.beq p.mirProfileVersion 1 &&
-    !stringIsEmpty body.identity &&
-    !body.basicBlocks.isEmpty &&
-    Nat.blt body.argumentCount body.locals.length &&
-    storageAnnotationsInBounds body &&
-    discriminantTypesValid body &&
-    castTypesValid body &&
-    body.locals.all isSupportedScalarOrUnitTy
+  singleBodyStaticAdmitted p body && allCallBodiesStaticAdmitted p body
 
 /-- Verification judgment for a single MIR function body `body` at index `defId`
 in `p`:

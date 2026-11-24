@@ -3702,10 +3702,10 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
 
 /// Verifies Pass 2 non-backsliding enforcement (`--require-correspondence`):
 /// missing correspondence directories, `verifyCorrespondenceClaims` across all
-/// 37 required claims (including `CorrespondenceAtChoicesClaim`,
+/// 38 required claims (including `CorrespondenceAtChoicesClaim`,
 /// `FaultEquivalenceAtChoicesClaim`, `OperandMachine.evalOperand` wiring,
 /// `RefStepSoundForAllowedStepClaim`, `BytesCodecMatchesMiriClaim`, and the
-/// `D14`–`D16` `char`/`cmp`, cast, and overflow canaries), and
+/// `D14`–`D17` `char`/`cmp`, cast, overflow, and call canaries), and
 /// `verifyRefEvaluatorIndependence`
 /// (all 39 required live `ExecutionMachine` Miri primitives on
 /// `[evalRefStep, initRefState]` unmasked by `RefAllowedStep`,
@@ -3728,7 +3728,7 @@ fn enforces_correspondence_non_backsliding() {
     );
 
     // 2. Pass 2 (`InspectorRequest::CorrespondenceAudit`) enforces
-    // `verifyCorrespondenceClaims` (required constant references across all 37
+    // `verifyCorrespondenceClaims` (required constant references across all 38
     // claims and exact claim-type proof checking) and
     // `verifyRefEvaluatorIndependence` (39 live `ExecutionMachine` Miri
     // primitives on `[evalRefStep, initRefState]` without `RefAllowedStep`
@@ -3968,7 +3968,7 @@ fn enforces_correspondence_non_backsliding() {
         ));
     }
 
-    // Weakening D14–D16 canary claims fails closed.
+    // Weakening D14–D17 canary claims fails closed.
     for (claim, valid_conjunct, weakened_conjunct, dropped) in [
         (
             "CanaryD14CharCmpAndSwitchOkClaim",
@@ -3987,6 +3987,18 @@ fn enforces_correspondence_non_backsliding() {
             "Trusted.MirAst.BinOp.addWithOverflow = Trusted.MirAst.BinOp.subWithOverflow ∧",
             "Trusted.MirAst.BinOp.subWithOverflow = Trusted.MirAst.BinOp.subWithOverflow ∧",
             "Trusted.MirAst.BinOp.addWithOverflow",
+        ),
+        (
+            "CanaryD17CallAndSysrootCallClaim",
+            "progDirectCallD17 = progSysrootUncheckedAddOkD17 ∧",
+            "progSysrootUncheckedAddOkD17 = progSysrootUncheckedAddOkD17 ∧",
+            "Trusted.Correspondence.progDirectCallD17",
+        ),
+        (
+            "CanaryD17CallAndSysrootCallClaim",
+            "queryU16_19 = Trusted.MirSemantics.queryEmpty ∧",
+            "queryU16_19 = queryU16_19 ∧",
+            "Trusted.MirSemantics.queryEmpty",
         ),
     ] {
         harness.publish(

@@ -6,9 +6,9 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-// === case: wrapping_add_one_capture_unsupported ===
-//@ fail(capture): "add_one: bb0 terminator: unsupported core call"
+// === case: saturating_add_one_capture_unsupported ===
+//@ fail(capture): "add_one: bb0 terminator: unsupported core call `core::num::<impl usize>::saturating_add`"
 
 pub fn add_one(x: usize) -> usize {
-    x.wrapping_add(1)
+    x.saturating_add(1)
 }

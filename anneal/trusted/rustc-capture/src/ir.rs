@@ -23,8 +23,10 @@ use serde::{Serialize, Serializer};
 // `CastKind::IntToInt`, `BinOp::{Div, Rem, AddWithOverflow, SubWithOverflow,
 // MulWithOverflow, Cmp}`, and `Rvalue::{Unary, Cast}`, and enforces static
 // operand and destination typing across binary, unary, cast, discriminant, and
-// switch operations.
-pub const SCHEMA_VERSION: u32 = 4;
+// switch operations. Version 5 adds `Terminator::{Call, SysrootCall}` with
+// their `SysrootNumOp` (`SysrootNumKind`) payloads, and
+// `BinOp::{AddUnchecked, SubUnchecked, MulUnchecked}`.
+pub const SCHEMA_VERSION: u32 = 5;
 pub const COMPILER_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";
 pub const COMPILER_VERSION: &str = "1.98.0-nightly (f8a08b688 2026-05-30)";
 
@@ -747,6 +749,9 @@ pub enum BinOp {
     Add,
     Sub,
     Mul,
+    AddUnchecked,
+    SubUnchecked,
+    MulUnchecked,
     Div,
     Rem,
     AddWithOverflow,
@@ -914,6 +919,26 @@ pub enum CoreCallOp {
     UsizeUncheckedSub,
 }
 
+/// A `core::num` arithmetic method that Profile v1 calls through its pinned
+/// sysroot body (`Trusted.MirAst.SysrootNumKind`). Profile v2 instead models
+/// its `core` calls atomically through [`CoreCallOp`].
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SysrootNumKind {
+    UncheckedAdd,
+    UncheckedSub,
+    UncheckedMul,
+    WrappingAdd,
+    WrappingSub,
+    WrappingMul,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct SysrootNumOp {
+    pub kind: SysrootNumKind,
+    pub ty: IntTy,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Terminator {
@@ -940,9 +965,44 @@ pub enum Terminator {
         target: u32,
         unwind: UnwindAction,
     },
+    Call {
+        callee: usize,
+        args: Vec<Operand>,
+        dst: u32,
+        target: Option<u32>,
+        unwind: UnwindAction,
+    },
+    SysrootCall {
+        op: SysrootNumOp,
+        args: Vec<Operand>,
+        dst: u32,
+        target: Option<u32>,
+        unwind: UnwindAction,
+    },
     Ret,
     Unreachable,
     Unsupported,
+}
+
+/// Pairwise local-disjointness of `.move` call operands and `dst`, matching
+/// `Trusted.MirSemantics.moveDefinitelyDisjoint`.
+fn check_move_disjoint(args: &[Operand], dst: u32) -> Result<(), String> {
+    let mut seen = BTreeSet::new();
+    for arg in args {
+        match arg {
+            Operand::Move { local } if !seen.insert(*local) => {
+                return Err(format!("duplicate Move operand local _{local} in call"));
+            }
+            Operand::CopyPlace { .. } | Operand::MovePlace { .. } => {
+                return Err("call operands must be unprojected locals or constants".into());
+            }
+            _ => {}
+        }
+    }
+    if !seen.insert(dst) {
+        return Err(format!("call destination _{dst} aliases a Move operand"));
+    }
+    Ok(())
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -961,7 +1021,14 @@ fn check_binary_types(op: BinOp, l_ty: &Ty, r_ty: &Ty, dst_ty: &Ty) -> Result<()
                 "invalid shift operand or destination types: ({l_ty:?}, {r_ty:?}) -> {dst_ty:?}"
             )),
         },
-        BinOp::Add | BinOp::Sub | BinOp::Mul | BinOp::Div | BinOp::Rem => match (l_ty, r_ty) {
+        BinOp::Add
+        | BinOp::Sub
+        | BinOp::Mul
+        | BinOp::AddUnchecked
+        | BinOp::SubUnchecked
+        | BinOp::MulUnchecked
+        | BinOp::Div
+        | BinOp::Rem => match (l_ty, r_ty) {
             (Ty::Int(l_ity), Ty::Int(r_ity)) if l_ity == r_ity && *dst_ty == Ty::Int(*l_ity) => {
                 Ok(())
             }
@@ -1775,6 +1842,53 @@ impl Body {
                     }
                     check_block(*target)?;
                 }
+                Terminator::Call {
+                    args, dst, target, ..
+                } => {
+                    for arg in args {
+                        check_operand(&local_tys, arg)?;
+                    }
+                    check_local(&local_tys, *dst, "call destination")?;
+                    check_move_disjoint(args, *dst)?;
+                    if let Some(target_block) = target {
+                        check_block(*target_block)?;
+                    }
+                }
+                Terminator::SysrootCall {
+                    op,
+                    args,
+                    dst,
+                    target,
+                    ..
+                } => {
+                    if args.len() != 2 {
+                        return Err(format!(
+                            "sysroot numeric call expects 2 arguments, got {}",
+                            args.len()
+                        ));
+                    }
+                    let expected_ty = Ty::Int(op.ty);
+                    for (idx, arg) in args.iter().enumerate() {
+                        let arg_ty = check_operand(&local_tys, arg)?;
+                        if arg_ty != expected_ty {
+                            return Err(format!(
+                                "sysroot numeric call argument {idx} type {arg_ty:?} \
+                                 disagrees with {expected_ty:?}"
+                            ));
+                        }
+                    }
+                    let dst_ty = check_local(&local_tys, *dst, "sysroot call destination")?;
+                    if *dst_ty != expected_ty {
+                        return Err(format!(
+                            "sysroot numeric call destination type {dst_ty:?} \
+                             disagrees with {expected_ty:?}"
+                        ));
+                    }
+                    check_move_disjoint(args, *dst)?;
+                    if let Some(target_block) = target {
+                        check_block(*target_block)?;
+                    }
+                }
                 Terminator::Ret | Terminator::Unreachable | Terminator::Unsupported => {}
             }
         }
@@ -1867,7 +1981,12 @@ impl Body {
                     }
                 }
                 Terminator::Assert { .. } | Terminator::CoreCall { .. } => return true,
-                Terminator::Goto { .. }
+                // Intra-crate and `core::num` sysroot calls are Profile v1
+                // terminators; `Program::try_new` refuses them in a Profile v2
+                // program.
+                Terminator::Call { .. }
+                | Terminator::SysrootCall { .. }
+                | Terminator::Goto { .. }
                 | Terminator::Ret
                 | Terminator::Unreachable
                 | Terminator::Unsupported => {}
@@ -1945,6 +2064,11 @@ impl Body {
                     }
                     dst.collect_enum_ids(out);
                 }
+                Terminator::Call { args, .. } | Terminator::SysrootCall { args, .. } => {
+                    for arg in args {
+                        arg.collect_enum_ids(out);
+                    }
+                }
                 Terminator::Goto { .. }
                 | Terminator::Ret
                 | Terminator::Unreachable
@@ -2018,11 +2142,80 @@ impl Program {
                 ));
             }
         }
+        for body in &bodies {
+            for block in &body.blocks {
+                if let Terminator::Call {
+                    callee, args, dst, ..
+                } = &block.terminator
+                {
+                    let callee_body = bodies.get(*callee).ok_or_else(|| {
+                        format!(
+                            "call target body index {callee} out of bounds for {} bodies",
+                            bodies.len()
+                        )
+                    })?;
+                    if args.len() != callee_body.arg_count {
+                        return Err(format!(
+                            "call argument count {} disagrees with callee {} arity {}",
+                            args.len(),
+                            callee_body.identity,
+                            callee_body.arg_count
+                        ));
+                    }
+                    let dst_ty = &body.local_tys[*dst as usize];
+                    if *dst_ty != callee_body.local_tys[0] {
+                        return Err(format!(
+                            "call destination type {dst_ty:?} disagrees with callee {} return type {:?}",
+                            callee_body.identity,
+                            callee_body.local_tys[0]
+                        ));
+                    }
+                    for (idx, arg) in args.iter().enumerate() {
+                        let arg_ty = match arg {
+                            Operand::Copy { local } | Operand::Move { local } => {
+                                &body.local_tys[*local as usize]
+                            }
+                            Operand::Constant { ty, .. } => ty,
+                            Operand::CopyPlace { .. } | Operand::MovePlace { .. } => {
+                                return Err(format!(
+                                    "call argument {idx} must be an unprojected local or constant"
+                                ));
+                            }
+                        };
+                        let param_ty = &callee_body.local_tys[1 + idx];
+                        if arg_ty != param_ty {
+                            return Err(format!(
+                                "call argument {idx} type {arg_ty:?} disagrees with callee {} parameter type {param_ty:?}",
+                                callee_body.identity
+                            ));
+                        }
+                    }
+                }
+            }
+        }
         let mir_profile_version = if bodies.iter().any(Body::uses_profile_v2) {
             2
         } else {
             1
         };
+        // `Trusted.MirSemantics.evalStepV2` executes a single frame and faults
+        // on `.call` and `.sysrootCall`, so refuse them here rather than emit
+        // a program whose calls can only fault.
+        if mir_profile_version == 2
+            && let Some(body) = bodies.iter().find(|body| {
+                body.blocks.iter().any(|block| {
+                    matches!(
+                        block.terminator,
+                        Terminator::Call { .. } | Terminator::SysrootCall { .. }
+                    )
+                })
+            })
+        {
+            return Err(format!(
+                "{} makes a Profile v1 call in a Profile v2 program",
+                body.identity
+            ));
+        }
         Ok(Self {
             scope,
             overflow_checks,
@@ -2998,5 +3191,181 @@ mod tests {
             term_json["blocks"][0]["terminator"],
             serde_json::json!({ "kind": "unsupported" })
         );
+    }
+
+    #[test]
+    fn call_sysroot_call_and_unchecked_arith_validation() {
+        let u16_ty = Ty::Int(IntTy {
+            width: IntWidth::I16,
+            signed: false,
+        });
+        let u32_ty = Ty::Int(IntTy {
+            width: IntWidth::I32,
+            signed: false,
+        });
+        let isize_discr = IntTy {
+            width: IntWidth::Isize,
+            signed: true,
+        };
+        let enum_a = EnumTy::try_new(303, isize_discr, EnumTagRepr::ZeroSized, vec![0]).unwrap();
+        let enum_ty = Ty::Enum(enum_a);
+
+        // Unchecked integer arithmetic admits matching IntTy
+        // operands/destination.
+        for op in [
+            BinOp::AddUnchecked,
+            BinOp::SubUnchecked,
+            BinOp::MulUnchecked,
+        ] {
+            assert!(Body::try_new(
+                2,
+                false,
+                vec![u16_ty.clone(), u16_ty.clone(), u16_ty.clone()],
+                vec![Block {
+                    statements: vec![Statement::Assign {
+                        local: 0,
+                        value: Rvalue::Binary {
+                            op,
+                            left: Operand::Copy { local: 1 },
+                            right: Operand::Copy { local: 2 },
+                        },
+                    }],
+                    terminator: Terminator::Ret,
+                }],
+                format!("rust-path-v1::unchecked_{op:?}"),
+            )
+            .is_ok());
+        }
+
+        // Duplicate Move operand or Move aliasing dst fails closed.
+        let dup_move = Body::try_new(
+            1,
+            false,
+            vec![u16_ty.clone(), u16_ty.clone()],
+            vec![
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::SysrootCall {
+                        op: SysrootNumOp {
+                            kind: SysrootNumKind::UncheckedAdd,
+                            ty: IntTy {
+                                width: IntWidth::I16,
+                                signed: false,
+                            },
+                        },
+                        args: vec![Operand::Move { local: 1 }, Operand::Move { local: 1 }],
+                        dst: 0,
+                        target: Some(1),
+                        unwind: UnwindAction::Continue,
+                    },
+                },
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Ret,
+                },
+            ],
+            "rust-path-v1::dup_move".into(),
+        )
+        .unwrap_err();
+        assert!(dup_move.contains("duplicate Move operand"), "{dup_move}");
+
+        let alias_dst = Body::try_new(
+            1,
+            false,
+            vec![u16_ty.clone(), u16_ty.clone()],
+            vec![
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Call {
+                        callee: 0,
+                        args: vec![Operand::Move { local: 0 }],
+                        dst: 0,
+                        target: Some(1),
+                        unwind: UnwindAction::Continue,
+                    },
+                },
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Ret,
+                },
+            ],
+            "rust-path-v1::alias_dst".into(),
+        )
+        .unwrap_err();
+        assert!(alias_dst.contains("aliases a Move operand"), "{alias_dst}");
+
+        // Cross-body Program::try_new rejects oob callee, arity mismatch, and
+        // argument/return type mismatch, while admitting matching signatures.
+        let callee_body = Body::try_new(
+            1,
+            false,
+            vec![enum_ty.clone(), enum_ty.clone()],
+            vec![Block {
+                statements: vec![Statement::Assign {
+                    local: 0,
+                    value: Rvalue::Use {
+                        operand: Operand::Move { local: 1 },
+                        with_retag: false,
+                    },
+                }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::callee_enum".into(),
+        )
+        .unwrap();
+        let caller_ok = Body::try_new(
+            1,
+            false,
+            vec![enum_ty.clone(), enum_ty.clone()],
+            vec![
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Call {
+                        callee: 1,
+                        args: vec![Operand::Copy { local: 1 }],
+                        dst: 0,
+                        target: Some(1),
+                        unwind: UnwindAction::Continue,
+                    },
+                },
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Ret,
+                },
+            ],
+            "rust-path-v1::caller_ok".into(),
+        )
+        .unwrap();
+        let prog_ok = Program::try_new(Scope::Crate, vec![caller_ok, callee_body.clone()]).unwrap();
+        let mut ids = BTreeSet::new();
+        prog_ok.bodies()[0].collect_enum_ids(&mut ids);
+        assert!(ids.contains(&303));
+
+        let caller_bad_type = Body::try_new(
+            1,
+            false,
+            vec![u32_ty.clone(), u32_ty],
+            vec![
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Call {
+                        callee: 1,
+                        args: vec![Operand::Copy { local: 1 }],
+                        dst: 0,
+                        target: Some(1),
+                        unwind: UnwindAction::Continue,
+                    },
+                },
+                Block {
+                    statements: vec![],
+                    terminator: Terminator::Ret,
+                },
+            ],
+            "rust-path-v1::caller_bad_type".into(),
+        )
+        .unwrap();
+        let mismatch = Program::try_new(Scope::Crate, vec![caller_bad_type, callee_body])
+            .unwrap_err();
+        assert!(mismatch.contains("disagrees with callee"), "{mismatch}");
     }
 }

@@ -858,6 +858,208 @@ theorem BlockTree.valid_modify_of_setElem? {α : Type} {xs xs' : List α}
 
 /-! ## `BlockTree`-Accelerated Single-Body MIR Step Evaluator -/
 
+private theorem attachCallersComp_nil_evalStatementBy
+    (tyEq : MirTy → MirTy → Bool) (body : Body) (frame : FrameState)
+    (mem : MemoryState) (callerMem : CallerMemory) (stmt : StatementKind) :
+    Anneal.MirTotal.attachCallersComp []
+        (Anneal.MirTotal.evalStatementBy tyEq body frame mem callerMem stmt) =
+      Anneal.MirTotal.evalStatementBy tyEq body frame mem callerMem stmt := by
+  unfold Anneal.MirTotal.evalStatementBy
+  cases stmt with
+  | nop | unsupported => rfl
+  | storageLive lid =>
+    dsimp only
+    cases Anneal.MirTotal.compGetElem? body.locals lid with
+    | none => rfl
+    | some _ =>
+      dsimp only
+      cases Anneal.MirTotal.compGetElem? frame.locals lid with
+      | none => rfl
+      | some old =>
+        dsimp only
+        cases Anneal.MirTotal.compSetElem? frame.locals lid _ with
+        | none => rfl
+        | some _ =>
+          dsimp only
+          cases Anneal.MirTotal.deallocateLocalComp mem old <;> rfl
+  | storageDead lid =>
+    dsimp only
+    cases Nat.beq lid 0 with
+    | true => rfl
+    | false =>
+      cases Anneal.MirTotal.compGetElem? frame.locals lid with
+      | none => rfl
+      | some old =>
+        dsimp only
+        cases Anneal.MirTotal.compSetElem? frame.locals lid .dead with
+        | none => rfl
+        | some _ =>
+          dsimp only
+          cases Anneal.MirTotal.deallocateLocalComp mem old <;> rfl
+  | assign dst rv =>
+    dsimp only
+    cases (!dst.projection.isEmpty) with
+    | true => rfl
+    | false =>
+      cases Anneal.MirTotal.compGetElem? body.locals dst.localId with
+      | none => rfl
+      | some dstTy =>
+        dsimp only
+        cases Anneal.MirTotal.evalRvalueBy tyEq body.locals frame.locals mem
+            dstTy rv with
+        | error _ => rfl
+        | ok triple =>
+          dsimp only
+          cases triple with
+          | mk v rest =>
+            cases rest with
+            | mk ls₁ m₁ =>
+              dsimp only
+              cases Anneal.MirTotal.writePlaceBy tyEq ls₁ m₁ dst.localId dstTy
+                  v with
+              | error _ => rfl
+              | ok pair => cases pair; rfl
+
+private theorem attachCallersComp_nil_evalTerminatorComp (body : Body)
+    (bb : BasicBlock) (frame : FrameState) (mem : MemoryState)
+    (callerMem : CallerMemory) :
+    Anneal.MirTotal.attachCallersComp []
+        (Anneal.MirTotal.evalTerminatorComp body bb frame mem callerMem) =
+      Anneal.MirTotal.evalTerminatorComp body bb frame mem callerMem := by
+  unfold Anneal.MirTotal.evalTerminatorComp
+  cases bb.terminator with
+  | goto _ | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
+  | sysrootCall _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported => rfl
+  | return_ =>
+    dsimp only
+    cases bb.cleanup with
+    | true => rfl
+    | false =>
+      cases Anneal.MirTotal.compGetElem? frame.locals 0 with
+      | none => rfl
+      | some slot =>
+        cases slot with
+        | dead => rfl
+        | partialTuple _ => rfl
+        | immediate opt => cases opt <;> rfl
+        | indirect mplace =>
+          dsimp only
+          cases Anneal.MirTotal.compGetElem? body.locals 0 with
+          | none => rfl
+          | some retTy =>
+            dsimp only
+            cases Anneal.MirTotal.loadIndirectComp mem retTy mplace with
+            | error _ => rfl
+            | ok opt => cases opt <;> rfl
+  | switchInt discr targets =>
+    dsimp only
+    cases Anneal.MirTotal.evalPrimitiveOperandComp body.locals frame.locals mem
+        discr with
+    | error _ => rfl
+    | ok triple =>
+      dsimp only
+      cases triple with
+      | mk dv rest =>
+        cases rest with
+        | mk ls₁ m₁ =>
+          dsimp only
+          cases dv with
+          | scalar sv =>
+            dsimp only
+            cases Anneal.MirTotal.evalSwitchBranchesComp sv.width sv.bits
+                targets.otherwise targets.branches <;> rfl
+          | bool b =>
+            dsimp only
+            cases Anneal.MirTotal.evalBoolSwitchBranchesComp b targets.otherwise
+                targets.branches <;> rfl
+          | char c =>
+            dsimp only
+            cases Anneal.MirTotal.evalCharSwitchBranchesComp c targets.otherwise
+                targets.branches <;> rfl
+          | ptr _ | ordering _ | unit | tuple _ | bytes _ | enumVal _ _
+          | slicePtr _ _ | rangeTo _ | rangeFrom _ =>
+            dsimp only
+            cases targets.branches <;> rfl
+
+/-- Shared proof equating any indexed single-body step evaluator (such as
+`evalMirStepBlockTreeBy` or `evalMirStepChunk8By`) with `evalMirStepBy` on
+`Anneal.MirWp.bodyProg body` for every `s : State`. -/
+private theorem evalMirStepIndexed_eq_evalMirStepBy
+    (tyEq : MirTy → MirTy → Bool) (body : Body)
+    (lookupFn : Nat → Option BasicBlock)
+    (hLookup : ∀ idx, lookupFn idx = Anneal.MirTotal.compGetElem?
+      body.basicBlocks idx)
+    (s : State) :
+    (match s.frames with
+     | [frame] =>
+       match frame.sysrootOp? with
+       | some _ => evalMirStepBy tyEq (Anneal.MirWp.bodyProg body) 0 s
+       | none =>
+         if !Nat.beq frame.defId 0 then .fault .unsupported
+         else
+           match lookupFn frame.blockIdx with
+           | none => .fault .unsupported
+           | some bb =>
+             match compGetElem? bb.statements frame.stmtIdx with
+             | some stmt => evalStatementBy tyEq body frame s.mem s.callerMem stmt
+             | none =>
+               if Nat.beq frame.stmtIdx bb.statements.length then
+                 match bb.terminator with
+                 | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ =>
+                   evalMirStepBy tyEq (Anneal.MirWp.bodyProg body) 0 s
+                 | _ => evalTerminatorComp body bb frame s.mem s.callerMem
+               else
+                 .fault .unsupported
+     | _ :: _ :: _ => evalMirStepBy tyEq (Anneal.MirWp.bodyProg body) 0 s
+     | [] => .fault .unsupported) =
+      evalMirStepBy tyEq (Anneal.MirWp.bodyProg body) 0 s := by
+  cases s with
+  | mk frames callerMem mem =>
+    cases frames with
+    | nil => rfl
+    | cons frame tail =>
+      cases tail with
+      | cons _ _ => rfl
+      | nil =>
+        cases frame with
+        | mk defId blockIdx stmtIdx locals sysrootOp? retDst? retTarget? =>
+          cases sysrootOp? with
+          | some _ => rfl
+          | none =>
+            cases defId with
+            | succ _ => rfl
+            | zero =>
+              dsimp only
+              unfold evalMirStepBy Anneal.MirWp.bodyProg
+              dsimp only [activeFrameBodyComp]
+              rw [show compGetElem? [body] 0 = some body from rfl]
+              dsimp only
+              rw [hLookup blockIdx]
+              cases hBB : compGetElem? body.basicBlocks blockIdx with
+              | none => rfl
+              | some bb =>
+                dsimp only
+                cases hSt : compGetElem? bb.statements stmtIdx with
+                | some stmt =>
+                  exact (attachCallersComp_nil_evalStatementBy tyEq body
+                    ⟨0, blockIdx, stmtIdx, locals, none, retDst?, retTarget?⟩ mem
+                    callerMem stmt).symm
+                | none =>
+                  dsimp only
+                  cases hLen : Nat.beq stmtIdx bb.statements.length with
+                  | false => rfl
+                  | true =>
+                    cases hT : bb.terminator with
+                    | return_ => rfl
+                    | call _ _ _ _ _ | sysrootCall _ _ _ _ _ =>
+                      rw [ite_bool_false (rfl : (!Nat.zero.beq 0) = false)]
+                      rw [ite_bool_true rfl]
+                    | goto _ | switchInt _ _ | unreachable | unwindResume
+                    | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+                      exact (attachCallersComp_nil_evalTerminatorComp body bb
+                        ⟨0, blockIdx, stmtIdx, locals, none, retDst?, retTarget?⟩
+                        mem callerMem).symm
+
 /-- Single-body MIR step evaluator (`0` `noncomputable`) indexing basic blocks
 via `bt.lookup` (`O(bt.depth)` trie steps on a normalized `BlockTree`). -/
 @[expose] def evalMirStepBlockTreeBy (tyEq : MirTy → MirTy → Bool)
@@ -865,19 +1067,26 @@ via `bt.lookup` (`O(bt.depth)` trie steps on a normalized `BlockTree`). -/
     StepResult State TerminalOut :=
   match s.frames with
   | [frame] =>
-    if !Nat.beq frame.defId 0 then .fault .unsupported
-    else
-      match bt.lookup frame.blockIdx with
-      | none => .fault .unsupported
-      | some bb =>
-        match compGetElem? bb.statements frame.stmtIdx with
-        | some stmt => evalStatementBy tyEq body frame s.mem s.callerMem stmt
-        | none =>
-          if Nat.beq frame.stmtIdx bb.statements.length then
-            evalTerminatorComp body bb frame s.mem s.callerMem
-          else
-            .fault .unsupported
-  | _ => .fault .unsupported
+    match frame.sysrootOp? with
+    | some _ => evalMirStepBy tyEq (Anneal.MirWp.bodyProg body) 0 s
+    | none =>
+      if !Nat.beq frame.defId 0 then .fault .unsupported
+      else
+        match bt.lookup frame.blockIdx with
+        | none => .fault .unsupported
+        | some bb =>
+          match compGetElem? bb.statements frame.stmtIdx with
+          | some stmt => evalStatementBy tyEq body frame s.mem s.callerMem stmt
+          | none =>
+            if Nat.beq frame.stmtIdx bb.statements.length then
+              match bb.terminator with
+              | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ =>
+                evalMirStepBy tyEq (Anneal.MirWp.bodyProg body) 0 s
+              | _ => evalTerminatorComp body bb frame s.mem s.callerMem
+            else
+              .fault .unsupported
+  | _ :: _ :: _ => evalMirStepBy tyEq (Anneal.MirWp.bodyProg body) 0 s
+  | [] => .fault .unsupported
 
 /-- Fuel-bounded `BlockTree`-accelerated single-body MIR evaluator. -/
 @[expose] def evalMirFuelBlockTreeBy (tyEq : MirTy → MirTy → Bool)
@@ -898,47 +1107,9 @@ theorem evalMirStepBlockTreeBy_eq_evalMirStepBy (tyEq : MirTy → MirTy → Bool
     {body : Body} {bt : BlockTree BasicBlock}
     (hValid : ValidBlockTree body.basicBlocks bt) (s : State) :
     evalMirStepBlockTreeBy tyEq bt body s =
-      evalMirStepBy tyEq (Anneal.MirWp.bodyProg body) 0 s := by
-  unfold evalMirStepBlockTreeBy evalMirStepBy Anneal.MirWp.bodyProg
-  cases s with
-  | mk frames callerMem mem =>
-    cases frames with
-    | nil => rfl
-    | cons frame tail =>
-      cases tail with
-      | cons _ _ => rfl
-      | nil =>
-        cases frame with
-        | mk defId blkIdx stmtIdx locs =>
-          cases defId with
-          | zero =>
-            dsimp only
-            change (match bt.lookup blkIdx with
-                | none => StepResult.fault FaultKind.unsupported
-                | some bb =>
-                  match compGetElem? bb.statements stmtIdx with
-                  | some stmt =>
-                    evalStatementBy tyEq body ⟨0, blkIdx, stmtIdx, locs⟩
-                      mem callerMem stmt
-                  | none =>
-                    if Nat.beq stmtIdx bb.statements.length then
-                      evalTerminatorComp body bb ⟨0, blkIdx, stmtIdx, locs⟩
-                        mem callerMem
-                    else StepResult.fault FaultKind.unsupported) =
-              (match compGetElem? body.basicBlocks blkIdx with
-                | none => StepResult.fault FaultKind.unsupported
-                | some bb =>
-                  match compGetElem? bb.statements stmtIdx with
-                  | some stmt =>
-                    evalStatementBy tyEq body ⟨0, blkIdx, stmtIdx, locs⟩
-                      mem callerMem stmt
-                  | none =>
-                    if Nat.beq stmtIdx bb.statements.length then
-                      evalTerminatorComp body bb ⟨0, blkIdx, stmtIdx, locs⟩
-                        mem callerMem
-                    else StepResult.fault FaultKind.unsupported)
-            rw [BlockTree.lookup_eq_compGetElem? hValid blkIdx]
-          | succ _ => rfl
+      evalMirStepBy tyEq (Anneal.MirWp.bodyProg body) 0 s :=
+  evalMirStepIndexed_eq_evalMirStepBy tyEq body bt.lookup
+    (BlockTree.lookup_eq_compGetElem? hValid) s
 
 /-- Agreement between `evalMirStepBlockTreeBy` and
 `Trusted.MirSemantics.evalStep (Anneal.MirWp.bodyProg body) 0` when `tyEq`
@@ -2460,19 +2631,26 @@ via `Chunk8BlockTree BasicBlock`. -/
     StepResult State TerminalOut :=
   match s.frames with
   | [frame] =>
-    if !Nat.beq frame.defId 0 then .fault .unsupported
-    else
-      match bt.lookup frame.blockIdx with
-      | none => .fault .unsupported
-      | some bb =>
-        match compGetElem? bb.statements frame.stmtIdx with
-        | some stmt => evalStatementBy tyEq body frame s.mem s.callerMem stmt
-        | none =>
-          if Nat.beq frame.stmtIdx bb.statements.length then
-            evalTerminatorComp body bb frame s.mem s.callerMem
-          else
-            .fault .unsupported
-  | _ => .fault .unsupported
+    match frame.sysrootOp? with
+    | some _ => evalMirStepBy tyEq (Anneal.MirWp.bodyProg body) 0 s
+    | none =>
+      if !Nat.beq frame.defId 0 then .fault .unsupported
+      else
+        match bt.lookup frame.blockIdx with
+        | none => .fault .unsupported
+        | some bb =>
+          match compGetElem? bb.statements frame.stmtIdx with
+          | some stmt => evalStatementBy tyEq body frame s.mem s.callerMem stmt
+          | none =>
+            if Nat.beq frame.stmtIdx bb.statements.length then
+              match bb.terminator with
+              | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ =>
+                evalMirStepBy tyEq (Anneal.MirWp.bodyProg body) 0 s
+              | _ => evalTerminatorComp body bb frame s.mem s.callerMem
+            else
+              .fault .unsupported
+  | _ :: _ :: _ => evalMirStepBy tyEq (Anneal.MirWp.bodyProg body) 0 s
+  | [] => .fault .unsupported
 
 /-- Agreement between `evalMirStepChunk8By` and
 `Trusted.MirSemantics.evalStep (Anneal.MirWp.bodyProg body) 0` for any valid
@@ -2484,47 +2662,9 @@ theorem evalMirStepChunk8By_eq_evalStep (tyEq : MirTy → MirTy → Bool)
     evalMirStepChunk8By tyEq bt body s =
       evalStep (Anneal.MirWp.bodyProg body) 0 s := by
   have hMir : evalMirStepChunk8By tyEq bt body s =
-      evalMirStepBy tyEq (Anneal.MirWp.bodyProg body) 0 s := by
-    unfold evalMirStepChunk8By evalMirStepBy Anneal.MirWp.bodyProg
-    cases s with
-    | mk frames callerMem mem =>
-      cases frames with
-      | nil => rfl
-      | cons frame tail =>
-        cases tail with
-        | cons _ _ => rfl
-        | nil =>
-          cases frame with
-          | mk defId blkIdx stmtIdx locs =>
-            cases defId with
-            | zero =>
-              dsimp only
-              change (match bt.lookup blkIdx with
-                  | none => StepResult.fault FaultKind.unsupported
-                  | some bb =>
-                    match compGetElem? bb.statements stmtIdx with
-                    | some stmt =>
-                      evalStatementBy tyEq body ⟨0, blkIdx, stmtIdx, locs⟩
-                        mem callerMem stmt
-                    | none =>
-                      if Nat.beq stmtIdx bb.statements.length then
-                        evalTerminatorComp body bb ⟨0, blkIdx, stmtIdx, locs⟩
-                          mem callerMem
-                      else StepResult.fault FaultKind.unsupported) =
-                (match compGetElem? body.basicBlocks blkIdx with
-                  | none => StepResult.fault FaultKind.unsupported
-                  | some bb =>
-                    match compGetElem? bb.statements stmtIdx with
-                    | some stmt =>
-                      evalStatementBy tyEq body ⟨0, blkIdx, stmtIdx, locs⟩
-                        mem callerMem stmt
-                    | none =>
-                      if Nat.beq stmtIdx bb.statements.length then
-                        evalTerminatorComp body bb ⟨0, blkIdx, stmtIdx, locs⟩
-                          mem callerMem
-                      else StepResult.fault FaultKind.unsupported)
-              rw [hValid.2 blkIdx, ← compGetElem?_eq]
-            | succ _ => rfl
+      evalMirStepBy tyEq (Anneal.MirWp.bodyProg body) 0 s :=
+    evalMirStepIndexed_eq_evalMirStepBy tyEq body bt.lookup
+      (fun idx => (hValid.2 idx).trans (compGetElem?_eq _ _).symm) s
   rw [hMir]
   exact evalMirStepBy_eq tyEq hTyEq (Anneal.MirWp.bodyProg body) 0 s
 

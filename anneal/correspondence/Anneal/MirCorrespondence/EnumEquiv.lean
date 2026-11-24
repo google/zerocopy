@@ -1678,6 +1678,33 @@ theorem liftLocals_inj (types : List MirTy) {tys : List MirTy}
       dsimp only [refLocalStateOfSlot] at h_val
       rw [slotToMiriLocalValue_inj hm₁ hm₂ h_val, ih h_tl₂ h_tl]
 
+theorem liftLocalsCached_inj (types : List MirTy) {tys : List MirTy}
+    {slots₁ slots₂ : List LocalSlot} {c₁ c₂ : List Bool}
+    (h₁ : SlotsMatchTys tys slots₁) (h₂ : SlotsMatchTys tys slots₂)
+    (hc₁ : c₁.length = tys.length) (hc₂ : c₂.length = tys.length)
+    (h_eq : liftLocalsCached types tys slots₁ c₁ =
+      liftLocalsCached types tys slots₂ c₂) :
+    slots₁ = slots₂ := by
+  induction h₁ generalizing slots₂ c₁ c₂ with
+  | nil =>
+    cases h₂
+    rfl
+  | cons hm₁ _ ih =>
+    cases h₂ with
+    | cons hm₂ h_tl₂ =>
+      cases c₁ with
+      | nil => cases hc₁
+      | cons _ bs₁ =>
+        cases c₂ with
+        | nil => cases hc₂
+        | cons _ bs₂ =>
+          simp only [List.length_cons, Nat.add_right_cancel_iff] at hc₁ hc₂
+          dsimp only [liftLocalsCached] at h_eq
+          injection h_eq with h_hd h_tl
+          have h_val := congrArg Miri.Interpreter.LocalState.value h_hd
+          dsimp only [refLocalStateOfSlotWithCache] at h_val
+          rw [slotToMiriLocalValue_inj hm₁ hm₂ h_val, ih h_tl₂ hc₁ hc₂ h_tl]
+
 private noncomputable def refDiscrStmtOk (localTys : List MirTy)
     (stmt : RefStatementKind) : Bool :=
   match stmt with
@@ -2086,39 +2113,372 @@ theorem refCastTypesValid_eq {ts : List MirTy} {rbody : RefBody}
   refBody_stmts_all_eq h_dec (refCastStmtOk ts body.locals)
     (castStmtOk body.locals) (fun _ _ h => refCastStmtOk_eq h)
 
+private theorem refLocalOperandMatchesTy_eq {ts localTys : List MirTy}
+    {ro : RefOperand} {op : Operand} (expected : MirTy)
+    (h_o : decodeOperand ts ro = some op) :
+    refLocalOperandMatchesTy localTys ro expected =
+      localOperandMatchesTy localTys op expected := by
+  cases ro with
+  | constant rc =>
+    dsimp only [decodeOperand, optMap] at h_o
+    cases h_t : MirSemantics.getElem? ts rc.ty with
+    | none => rw [h_t] at h_o; cases h_o
+    | some _ => rw [h_t] at h_o; injection h_o with h; subst h; rfl
+  | copy rp =>
+    dsimp only [decodeOperand, optMap] at h_o
+    cases h_p : decodePlace ts rp with
+    | none => rw [h_p] at h_o; cases h_o
+    | some p =>
+      rw [h_p] at h_o; injection h_o with h; subst h
+      let ⟨h_id, h_emp⟩ := decodePlace_inv h_p
+      dsimp only [refLocalOperandMatchesTy, localOperandMatchesTy]
+      rw [h_emp, h_id]; rfl
+  | move rp =>
+    dsimp only [decodeOperand, optMap] at h_o
+    cases h_p : decodePlace ts rp with
+    | none => rw [h_p] at h_o; cases h_o
+    | some p =>
+      rw [h_p] at h_o; injection h_o with h; subst h
+      let ⟨h_id, h_emp⟩ := decodePlace_inv h_p
+      dsimp only [refLocalOperandMatchesTy, localOperandMatchesTy]
+      rw [h_emp, h_id]; rfl
+
+private theorem refOperandTy?_eq {ts localTys : List MirTy}
+    {ro : RefOperand} {op : Operand}
+    (h_o : decodeOperand ts ro = some op) :
+    refOperandTy? ts localTys ro = operandTy? localTys op ∧
+      (∀ rc, ro = .constant rc → ∃ cTy, refOperandTy? ts localTys ro = some cTy) := by
+  cases ro with
+  | constant rc =>
+    dsimp only [decodeOperand, optMap] at h_o
+    cases h_t : MirSemantics.getElem? ts rc.ty with
+    | none => rw [h_t] at h_o; cases h_o
+    | some cTy =>
+      rw [h_t] at h_o; injection h_o with h; subst h
+      refine ⟨by dsimp only [refOperandTy?, operandTy?]; rw [h_t], ?_⟩
+      intro _ _; exact ⟨cTy, by dsimp only [refOperandTy?]; rw [h_t]⟩
+  | copy rp =>
+    dsimp only [decodeOperand, optMap] at h_o
+    cases h_p : decodePlace ts rp with
+    | none => rw [h_p] at h_o; cases h_o
+    | some p =>
+      rw [h_p] at h_o; injection h_o with h; subst h
+      let ⟨h_id, h_emp⟩ := decodePlace_inv h_p
+      refine ⟨by dsimp only [refOperandTy?, operandTy?]; rw [h_emp, h_id], ?_⟩
+      intro _ h_c; cases h_c
+  | move rp =>
+    dsimp only [decodeOperand, optMap] at h_o
+    cases h_p : decodePlace ts rp with
+    | none => rw [h_p] at h_o; cases h_o
+    | some p =>
+      rw [h_p] at h_o; injection h_o with h; subst h
+      let ⟨h_id, h_emp⟩ := decodePlace_inv h_p
+      refine ⟨by dsimp only [refOperandTy?, operandTy?]; rw [h_emp, h_id], ?_⟩
+      intro _ h_c; cases h_c
+
+private theorem refBinOpLeftHomogeneous_eq (op : BinOp) :
+    refBinOpLeftHomogeneous op = binOpLeftHomogeneous op := by
+  cases op <;> rfl
+
+private theorem refBinOpRightHomogeneous_eq (op : BinOp) :
+    refBinOpRightHomogeneous op = binOpRightHomogeneous op := by
+  cases op <;> rfl
+
+private theorem refUnOpHomogeneous_eq (op : UnOp) :
+    refUnOpHomogeneous op = unOpHomogeneous op := by
+  cases op <;> rfl
+
+private noncomputable def refAssignStmtOk (ts localTys : List MirTy) :
+    RefStatementKind → Bool
+  | .assign dst rv =>
+    if dst.projection.isEmpty then
+      match MirSemantics.getElem? localTys dst.localId with
+      | none => true
+      | some dstTy =>
+        match rv with
+        | .use ropnd => refLocalOperandMatchesTy localTys ropnd dstTy
+        | .binaryOp op lhs rhs =>
+          let lhsOk : Bool :=
+            if refBinOpLeftHomogeneous op then
+              refLocalOperandMatchesTy localTys lhs dstTy
+            else
+              true
+          let rhsOk : Bool :=
+            if refBinOpRightHomogeneous op then
+              match refOperandTy? ts localTys lhs with
+              | none =>
+                match lhs with
+                | .constant _ =>
+                  match rhs with
+                  | .copy q | .move q =>
+                    if q.projection.isEmpty then
+                      match MirSemantics.getElem? localTys q.localId with
+                      | some _ => false
+                      | none => true
+                    else true
+                  | .constant _ => true
+                | _ => true
+              | some lTy => refLocalOperandMatchesTy localTys rhs lTy
+            else
+              true
+          lhsOk && rhsOk
+        | .unaryOp op ropnd =>
+          if refUnOpHomogeneous op then
+            refLocalOperandMatchesTy localTys ropnd dstTy
+          else
+            true
+        | _ => true
+    else
+      true
+  | _ => true
+
+private noncomputable def assignStmtOk (localTys : List MirTy) :
+    StatementKind → Bool
+  | .assign dst rv =>
+    if dst.projection.isEmpty then
+      match MirSemantics.getElem? localTys dst.localId with
+      | none => true
+      | some dstTy =>
+        match rv with
+        | .use opnd => localOperandMatchesTy localTys opnd dstTy
+        | .binaryOp op lhs rhs =>
+          let lhsOk : Bool :=
+            if binOpLeftHomogeneous op then
+              localOperandMatchesTy localTys lhs dstTy
+            else
+              true
+          let rhsOk : Bool :=
+            if binOpRightHomogeneous op then
+              match operandTy? localTys lhs with
+              | none => true
+              | some lTy => localOperandMatchesTy localTys rhs lTy
+            else
+              true
+          lhsOk && rhsOk
+        | .unaryOp op opnd =>
+          if unOpHomogeneous op then
+            localOperandMatchesTy localTys opnd dstTy
+          else
+            true
+        | _ => true
+    else
+      true
+  | _ => true
+
+private theorem refAssignStmtOk_eq {ts localTys : List MirTy}
+    {rstmt : RefStatementKind} {stmt : StatementKind}
+    (h_dec : decodeStmt ts rstmt = some stmt) :
+    refAssignStmtOk ts localTys rstmt = assignStmtOk localTys stmt := by
+  cases rstmt with
+  | nop => injection h_dec with h; subst h; rfl
+  | storageLive _ => injection h_dec with h; subst h; rfl
+  | storageDead _ => injection h_dec with h; subst h; rfl
+  | unsupported => injection h_dec with h; subst h; rfl
+  | assign rdst rrv =>
+    dsimp only [decodeStmt] at h_dec
+    cases h_d : decodePlace ts rdst with
+    | none => rw [h_d] at h_dec; cases h_dec
+    | some dst =>
+      rw [h_d] at h_dec
+      cases h_rv : decodeRvalue ts rrv with
+      | none => rw [h_rv] at h_dec; cases h_dec
+      | some rv =>
+        rw [h_rv] at h_dec
+        injection h_dec with h_s
+        subst h_s
+        let ⟨h_did, h_demp⟩ := decodePlace_inv h_d
+        cases rrv with
+        | discriminant rsrc =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_sp : decodePlace ts rsrc with
+          | none => rw [h_sp] at h_rv; cases h_rv
+          | some _ =>
+            rw [h_sp] at h_rv; injection h_rv with h; subst h
+            dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
+        | cast k ro rty =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_o : decodeOperand ts ro with
+          | none => rw [h_o] at h_rv; cases h_rv
+          | some _ =>
+            rw [h_o] at h_rv
+            cases h_t : MirSemantics.getElem? ts rty with
+            | none => rw [h_t] at h_rv; cases h_rv
+            | some _ =>
+              rw [h_t] at h_rv; injection h_rv with h; subst h
+              dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
+        | ref _ rp =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_p : decodePlace ts rp with
+          | none => rw [h_p] at h_rv; cases h_rv
+          | some _ =>
+            rw [h_p] at h_rv; injection h_rv with h; subst h
+            dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
+        | addressOf _ rp =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_p : decodePlace ts rp with
+          | none => rw [h_p] at h_rv; cases h_rv
+          | some _ =>
+            rw [h_p] at h_rv; injection h_rv with h; subst h
+            dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
+        | aggregateTuple rops =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_os : mapOption (decodeOperand ts) rops with
+          | none => rw [h_os] at h_rv; cases h_rv
+          | some _ =>
+            rw [h_os] at h_rv; injection h_rv with h; subst h
+            dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
+        | useRetag ro =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_o : decodeOperand ts ro with
+          | none => rw [h_o] at h_rv; cases h_rv
+          | some _ =>
+            rw [h_o] at h_rv; injection h_rv with h; subst h
+            dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
+        | aggregateRangeTo rty ro | aggregateRangeFrom rty ro =>
+          dsimp only [decodeRvalue, optMap2] at h_rv
+          cases h_t : MirSemantics.getElem? ts rty with
+          | none => rw [h_t] at h_rv; cases h_rv
+          | some _ =>
+            rw [h_t] at h_rv
+            cases h_o : decodeOperand ts ro with
+            | none => rw [h_o] at h_rv; cases h_rv
+            | some _ =>
+              rw [h_o] at h_rv; injection h_rv with h; subst h
+              dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
+        | unsupported =>
+          injection h_rv with h; subst h
+          dsimp only [refAssignStmtOk, assignStmtOk]; rw [h_demp, h_did]
+        | use ro =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_o : decodeOperand ts ro with
+          | none => rw [h_o] at h_rv; cases h_rv
+          | some op =>
+            rw [h_o] at h_rv; injection h_rv with h; subst h
+            dsimp only [refAssignStmtOk, assignStmtOk]
+            rw [h_demp, h_did]
+            cases dst.projection.isEmpty with
+            | false => rfl
+            | true =>
+              cases MirSemantics.getElem? localTys dst.localId with
+              | none => rfl
+              | some dstTy => exact refLocalOperandMatchesTy_eq dstTy h_o
+        | unaryOp op ro =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_o : decodeOperand ts ro with
+          | none => rw [h_o] at h_rv; cases h_rv
+          | some opnd =>
+            rw [h_o] at h_rv; injection h_rv with h; subst h
+            dsimp only [refAssignStmtOk, assignStmtOk]
+            rw [h_demp, h_did]
+            cases dst.projection.isEmpty with
+            | false => rfl
+            | true =>
+              cases MirSemantics.getElem? localTys dst.localId with
+              | none => rfl
+              | some dstTy =>
+                dsimp only
+                cases h_uh : unOpHomogeneous op with
+                | false => rw [refUnOpHomogeneous_eq, h_uh]; rfl
+                | true =>
+                  rw [refUnOpHomogeneous_eq, h_uh]
+                  exact refLocalOperandMatchesTy_eq dstTy h_o
+        | binaryOp op rl rr =>
+          dsimp only [decodeRvalue] at h_rv
+          cases h_l : decodeOperand ts rl with
+          | none => rw [h_l] at h_rv; cases h_rv
+          | some lhs =>
+            rw [h_l] at h_rv
+            cases h_r : decodeOperand ts rr with
+            | none => rw [h_r] at h_rv; cases h_rv
+            | some rhs =>
+              rw [h_r] at h_rv; injection h_rv with h; subst h
+              dsimp only [refAssignStmtOk, assignStmtOk]
+              rw [h_demp, h_did]
+              cases dst.projection.isEmpty with
+              | false => rfl
+              | true =>
+                cases MirSemantics.getElem? localTys dst.localId with
+                | none => rfl
+                | some dstTy =>
+                  dsimp only
+                  have h_lh := refLocalOperandMatchesTy_eq (localTys := localTys) dstTy h_l
+                  let ⟨h_ot, h_const⟩ := refOperandTy?_eq (localTys := localTys) h_l
+                  rw [h_lh, h_ot, refBinOpLeftHomogeneous_eq, refBinOpRightHomogeneous_eq]
+                  refine congrArg (fun x =>
+                    (if binOpLeftHomogeneous op = true then
+                      localOperandMatchesTy localTys lhs dstTy else true) && x) ?_
+                  cases binOpRightHomogeneous op with
+                  | false => rfl
+                  | true =>
+                    rw [ite_eq_left rfl]
+                    cases h_o_eq : operandTy? localTys lhs with
+                    | some lTy => exact refLocalOperandMatchesTy_eq lTy h_r
+                    | none =>
+                      cases h_rl_eq : rl with
+                      | constant rc =>
+                        let ⟨_, h_some⟩ := h_const rc h_rl_eq
+                        rw [h_ot] at h_some
+                        rw [h_o_eq] at h_some
+                        cases h_some
+                      | copy _ | move _ => rfl
+
+theorem refAssignTypesValid_eq {ts : List MirTy} {rbody : RefBody}
+    {body : Body} (h_dec : decodeBody ts rbody = some body) :
+    refAssignTypesValid ts body.locals rbody = assignTypesValid body :=
+  refBody_stmts_all_eq h_dec (refAssignStmtOk ts body.locals)
+    (assignStmtOk body.locals) (fun _ _ h => refAssignStmtOk_eq h)
+
 end MiriEquiv
 
-/-- One-to-one uniqueness of `SimulationInv` (left-injective): any `RefState`
-`rs` corresponds to at most one $M_{\text{anneal}}$ `State`. -/
-theorem state_unique_of_simulationInv_base :
-    StateUniqueOfSimulationInvClaim := by
-  intro rp p s₁ s₂ rs h₁ h₂
-  let ⟨f₁, rf₁, retTy₁, mem₁, ctrl₁, _, hs₁, hm₁, _, _, _, _, _, hmiri₁,
-    hframe₁⟩ := h₁
-  let ⟨f₂, rf₂, retTy₂, mem₂, ctrl₂, _, hs₂, hm₂, _, _, _, _, _, hmiri₂,
-    hframe₂⟩ := h₂
-  rw [hmiri₁] at hmiri₂
-  dsimp only [mkRefMiriState] at hmiri₂
-  have h_stack := congrArg Miri.Interpreter.StepState.stack hmiri₂
-  have h_machine := congrArg Miri.Interpreter.StepState.machine hmiri₂
-  injection h_stack with h_frames
-  injection h_frames with h_list
-  injection h_list with h_rf_eq
-  subst h_rf_eq
-  have h_cm : s₁.callerMem = s₂.callerMem := by
-    have h_u := congrArg Miri.Interpreter.MachineHooks.MachineState.user h_machine
-    exact congrArg RefUser.callerMem h_u
-  let ⟨body₁, rbody₁, hb₁, _, _, _, _, _, _, _, hsl₁, _, hrf₁⟩ :=
-    hframe₁
-  let ⟨body₂, rbody₂, hb₂, _, _, _, _, _, _, _, hsl₂, _, hrf₂⟩ :=
-    hframe₂
-  have h_rf_eq' := hrf₁.symm.trans hrf₂
+private theorem sysrootNumOpOfCode_sysrootNumOpCode (op : SysrootNumOp) :
+    sysrootNumOpOfCode (sysrootNumOpCode op) = some op := by
+  cases op with
+  | mk k w s => cases k <;> cases w <;> cases s <;> rfl
+
+private theorem fnTag_crate_ne_sysroot (defId : DefId) (op : SysrootNumOp) :
+    fnTagForCrate defId ≠ fnTagForSysroot op := by
+  intro h
+  have hmod := congrArg (fun n => HMod.hMod n 2) h
+  unfold fnTagForCrate fnTagForSysroot at hmod
+  rw [Nat.mul_mod_right, Nat.mul_add_mod] at hmod
+  cases hmod
+
+private theorem fnTagForCrate_inj {a b : DefId}
+    (h : fnTagForCrate a = fnTagForCrate b) : a = b := by
+  unfold fnTagForCrate at h
+  exact Nat.eq_of_mul_eq_mul_left (by decide) h
+
+private theorem fnTagForSysroot_inj {op₁ op₂ : SysrootNumOp}
+    (h : fnTagForSysroot op₁ = fnTagForSysroot op₂) : op₁ = op₂ := by
+  unfold fnTagForSysroot at h
+  have h1 := Nat.succ.inj h
+  have h2 := Nat.eq_of_mul_eq_mul_left (by decide) h1
+  have h3 := congrArg sysrootNumOpOfCode h2
+  rw [sysrootNumOpOfCode_sysrootNumOpCode, sysrootNumOpOfCode_sysrootNumOpCode] at h3
+  exact Option.some.inj h3
+
+private theorem frameSimInv_left_inj {rp : RefProg} {p : Program}
+    {f₁ f₂ : FrameState}
+    {retPlace : Miri.Interpreter.MPlaceTy Miri.Memory.Provenance}
+    {rf : Miri.Interpreter.Frame Miri.Memory.Provenance
+      Miri.Interpreter.LocalLayout Miri.Interpreter.MachineHooks.FrameExtra}
+    (h₁ : FrameSimInv rp p f₁ retPlace rf)
+    (h₂ : FrameSimInv rp p f₂ retPlace rf)
+    (h_sys : f₁.sysrootOp? = f₂.sysrootOp?)
+    (h_dst : f₁.retDst? = f₂.retDst?)
+    (h_tgt : f₁.retTarget? = f₂.retTarget?) :
+    f₁ = f₂ := by
+  let ⟨body₁, _, c₁, hb₁, _, _, _, _, _, _, _, _, _, hsm₁, _, hc₁_rep, hrf₁⟩ := h₁
+  let ⟨body₂, _, c₂, hb₂, _, _, _, _, _, _, _, _, _, hsm₂, _, hc₂_rep, hrf₂⟩ := h₂
+  have hc₁ : c₁.length = body₁.locals.length := by rw [hc₁_rep, List.length_replicate]
+  have hc₂ : c₂.length = body₂.locals.length := by rw [hc₂_rep, List.length_replicate]
+  have h_rf_eq := hrf₁.symm.trans hrf₂
   have h_def : f₁.defId = f₂.defId := by
-    have h_bi := congrArg Miri.Interpreter.Frame.bodyIdentity h_rf_eq'
+    have h_bi := congrArg Miri.Interpreter.Frame.bodyIdentity h_rf_eq
     dsimp only [mkRefMiriFrame, Miri.Interpreter.BodyIdentity.ofCanonicalIndex]
       at h_bi
     injection h_bi
-  have h_loc := congrArg Miri.Interpreter.Frame.location h_rf_eq'
+  have h_loc := congrArg Miri.Interpreter.Frame.location h_rf_eq
   dsimp only [mkRefMiriFrame] at h_loc
   injection h_loc with h_mirloc
   injection h_mirloc with h_blk h_stmt
@@ -2126,19 +2486,149 @@ theorem state_unique_of_simulationInv_base :
   rw [hb₁] at hb₂
   injection hb₂ with h_body_eq
   subst h_body_eq
-  have h_locs_arr := congrArg Miri.Interpreter.Frame.locals h_rf_eq'
+  have h_locs_arr := congrArg Miri.Interpreter.Frame.locals h_rf_eq
   dsimp only [mkRefMiriFrame] at h_locs_arr
   injection h_locs_arr with h_lifted
   have h_slots : f₁.locals = f₂.locals :=
-    liftLocals_inj rp.types hsl₁ hsl₂ h_lifted
-  have h_f : f₁ = f₂ := by
-    cases f₁; cases f₂
-    dsimp only at h_def h_blk h_stmt h_slots
-    rw [h_def, h_blk, h_stmt, h_slots]
-  subst h_f
+    liftLocalsCached_inj rp.types hsm₁ hsm₂ hc₁ hc₂ h_lifted
+  cases f₁; cases f₂
+  dsimp only at h_def h_blk h_stmt h_slots h_sys h_dst h_tgt
+  rw [h_def, h_blk, h_stmt, h_slots, h_sys, h_dst, h_tgt]
+
+private theorem callFrameSimInv_left_inj {rp : RefProg} {p : Program}
+    {f₁ f₂ : FrameState} {ci : Nat} {d₁ d₂ : LocalId} {t₁ t₂ : MirTy}
+    {dst₁ dst₂ : Place}
+    {rf : Miri.Interpreter.Frame Miri.Memory.Provenance
+      Miri.Interpreter.LocalLayout Miri.Interpreter.MachineHooks.FrameExtra}
+    (hd₁ : f₁.retDst? = some dst₁) (he₁ : dst₁.projection.isEmpty = true)
+    (hi₁ : dst₁.localId = d₁)
+    (hd₂ : f₂.retDst? = some dst₂) (he₂ : dst₂.projection.isEmpty = true)
+    (hi₂ : dst₂.localId = d₂)
+    (h₁ : CallFrameSimInv rp p f₁ ci d₁ t₁ rf)
+    (h₂ : CallFrameSimInv rp p f₂ ci d₂ t₂ rf) :
+    f₁ = f₂ := by
+  let ⟨body₁, _, c₁, fnTag₁, hact₁, _, _, hft₁, _, hsys0₁, _, _, _, _, _, _, _, _, hsm₁, _,
+    hc₁, hrf₁⟩ := h₁
+  let ⟨body₂, _, c₂, fnTag₂, hact₂, _, _, hft₂, _, hsys0₂, _, _, _, _, _, _, _, _, hsm₂, _,
+    hc₂, hrf₂⟩ := h₂
+  have h_rf_eq := hrf₁.symm.trans hrf₂
+  have h_fn : fnTag₁ = fnTag₂ := by
+    have h_fi := congrArg Miri.Interpreter.Frame.functionInstance h_rf_eq
+    dsimp only [mkRefMiriCallFrame] at h_fi
+    injection h_fi with h_kind
+    injection h_kind
+  have h_rp := congrArg Miri.Interpreter.Frame.returnPlace h_rf_eq
+  dsimp only [mkRefMiriCallFrame] at h_rp
+  injection h_rp with _ h_d_eq
+  have h_rc := congrArg Miri.Interpreter.Frame.returnContinuation h_rf_eq
+  dsimp only [mkRefMiriCallFrame] at h_rc
+  injection h_rc with h_tgt
+  have h_loc := congrArg Miri.Interpreter.Frame.location h_rf_eq
+  dsimp only [mkRefMiriCallFrame] at h_loc
+  injection h_loc with h_mirloc
+  injection h_mirloc with h_blk h_stmt
+  have h_sys : f₁.sysrootOp? = f₂.sysrootOp? := by
+    cases hs₁ : f₁.sysrootOp? with
+    | none =>
+      cases hs₂ : f₂.sysrootOp? with
+      | none => rfl
+      | some op₂ =>
+        rw [hs₁] at hft₁; rw [hs₂] at hft₂
+        rw [hft₁, hft₂] at h_fn
+        exact False.elim (fnTag_crate_ne_sysroot f₁.defId op₂ h_fn)
+    | some op₁ =>
+      cases hs₂ : f₂.sysrootOp? with
+      | none =>
+        rw [hs₁] at hft₁; rw [hs₂] at hft₂
+        rw [hft₁, hft₂] at h_fn
+        exact False.elim (fnTag_crate_ne_sysroot f₂.defId op₁ h_fn.symm)
+      | some op₂ =>
+        rw [hs₁] at hft₁; rw [hs₂] at hft₂
+        rw [hft₁, hft₂] at h_fn
+        exact congrArg some (fnTagForSysroot_inj h_fn)
+  have h_def : f₁.defId = f₂.defId := by
+    cases hs₁ : f₁.sysrootOp? with
+    | none =>
+      have hs₂ : f₂.sysrootOp? = none := h_sys.symm.trans hs₁
+      rw [hs₁] at hft₁; rw [hs₂] at hft₂
+      rw [hft₁, hft₂] at h_fn
+      exact fnTagForCrate_inj h_fn
+    | some op₁ =>
+      have hs₂ : f₂.sysrootOp? = some op₁ := h_sys.symm.trans hs₁
+      exact (hsys0₁ op₁ hs₁).trans (hsys0₂ op₁ hs₂).symm
+  have h_body_eq : body₁ = body₂ := by
+    unfold activeFrameBody at hact₁ hact₂
+    rw [← h_sys, ← h_def] at hact₂
+    rw [hact₁] at hact₂
+    exact Option.some.inj hact₂
+  subst h_body_eq
+  have h_locs_arr := congrArg Miri.Interpreter.Frame.locals h_rf_eq
+  dsimp only [mkRefMiriCallFrame] at h_locs_arr
+  injection h_locs_arr with h_lifted
+  have h_slots : f₁.locals = f₂.locals :=
+    liftLocalsCached_inj rp.types hsm₁ hsm₂ hc₁ hc₂ h_lifted
+  have h_dst_eq : dst₁ = dst₂ := by
+    cases dst₁ with
+    | mk id₁ p₁ =>
+      cases dst₂ with
+      | mk id₂ p₂ =>
+        dsimp only at he₁ he₂ hi₁ hi₂
+        have hp₁ : p₁ = [] := by cases p₁ with | nil => rfl | cons => cases he₁
+        have hp₂ : p₂ = [] := by cases p₂ with | nil => rfl | cons => cases he₂
+        rw [hi₁, hi₂, h_d_eq, hp₁, hp₂]
+  have h_retDst : f₁.retDst? = f₂.retDst? := by
+    rw [hd₁, hd₂, h_dst_eq]
+  cases f₁; cases f₂
+  dsimp only at h_def h_blk h_stmt h_slots h_sys h_retDst h_tgt
+  rw [h_def, h_blk, h_stmt, h_slots, h_sys, h_retDst, h_tgt]
+
+private theorem framesSimInv_left_inj {rp : RefProg} {p : Program}
+    {retPlace : Miri.Interpreter.MPlaceTy Miri.Memory.Provenance}
+    {fs₁ fs₂ : List FrameState}
+    {rfs : List (Miri.Interpreter.Frame Miri.Memory.Provenance
+      Miri.Interpreter.LocalLayout Miri.Interpreter.MachineHooks.FrameExtra)}
+    (h₁ : FramesSimInv rp p retPlace fs₁ rfs)
+    (h₂ : FramesSimInv rp p retPlace fs₂ rfs) :
+    fs₁ = fs₂ := by
+  induction h₁ generalizing fs₂ with
+  | root _ hs₁ hd₁ ht₁ hf₁ =>
+    cases h₂ with
+    | root _ hs₂ hd₂ ht₂ hf₂ =>
+      exact congrArg (fun f => [f])
+        (frameSimInv_left_inj hf₁ hf₂ (hs₁.trans hs₂.symm) (hd₁.trans hd₂.symm)
+          (ht₁.trans ht₂.symm))
+  | push hp₁ _ _ hd₁ he₁ _ _ _ _ _ _ hcf₁ ih =>
+    cases h₂ with
+    | push hp₂ _ _ hd₂ he₂ _ _ _ _ _ _ hcf₂ =>
+      have h_tail := ih hp₂
+      injection h_tail with h_caller h_rest
+      have h_len := congrArg List.length h_rest
+      rw [← h_len] at hcf₂
+      have h_callee := callFrameSimInv_left_inj hd₁ he₁ rfl hd₂ he₂ rfl hcf₁ hcf₂
+      rw [h_callee, h_caller, h_rest]
+
+/-- One-to-one uniqueness of `SimulationInv` (left-injective): any `RefState`
+`rs` corresponds to at most one $M_{\text{anneal}}$ `State`. -/
+theorem state_unique_of_simulationInv_base :
+    StateUniqueOfSimulationInvClaim := by
+  intro rp p s₁ s₂ rs h₁ h₂
+  let ⟨rf₁, retTy₁, mem₁, ctrl₁, topRel₁?, _, _, hm₁, _, _, _, _, _, hmiri₁,
+    hframe₁⟩ := h₁
+  let ⟨rf₂, retTy₂, mem₂, ctrl₂, topRel₂?, _, _, hm₂, _, _, _, _, _, hmiri₂,
+    hframe₂⟩ := h₂
+  rw [hmiri₁] at hmiri₂
+  dsimp only [mkRefMiriStackState] at hmiri₂
+  have h_stack := congrArg Miri.Interpreter.StepState.stack hmiri₂
+  have h_machine := congrArg Miri.Interpreter.StepState.machine hmiri₂
+  injection h_stack with h_rf_eq
+  subst h_rf_eq
+  have h_cm : s₁.callerMem = s₂.callerMem := by
+    have h_u := congrArg Miri.Interpreter.MachineHooks.MachineState.user h_machine
+    exact congrArg RefUser.callerMem h_u
+  have h_frames := framesSimInv_left_inj hframe₁ hframe₂
   cases s₁; cases s₂
-  dsimp only at hs₁ hs₂ h_cm hm₁ hm₂
-  rw [hs₁, hs₂, h_cm, hm₁, hm₂]
+  dsimp only at h_frames h_cm hm₁ hm₂
+  rw [h_frames, h_cm, hm₁, hm₂]
 
 /-- `refLayoutDataForTy` on a tuple is the overflow-pair layout exactly for
 `.tuple [.int w s, .bool]` and the unit layout otherwise. -/

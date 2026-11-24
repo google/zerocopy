@@ -134,6 +134,11 @@ SEMANTICS_DOWNSTREAM: dict[str, tuple[str, ...]] = {
         "Trusted/MirSemantics/Step",
         "Trusted/MirSemantics/Boundary",
     ),
+    "Trusted/MirSemantics/State": (
+        "Trusted/MirSemantics/State",
+        "Trusted/MirSemantics/Step",
+        "Trusted/MirSemantics/Boundary",
+    ),
     "Trusted/MirSemantics/Step": (
         "Trusted/MirSemantics/Step",
         "Trusted/MirSemantics/Boundary",
@@ -894,7 +899,7 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         needs_wf_helper=False,
     ),
     # ------------------------------------------------------------------
-    # Trusted/MirSemantics/Step.lean (15 UB and move-deinit guards)
+    # Trusted/MirSemantics/Step.lean (18 UB, move-deinit, and frame guards)
     # ------------------------------------------------------------------
     MirSemanticsGuard(
         guard_id="step_copy_dead_local",
@@ -1156,6 +1161,107 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_force_alloc_dead_local",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_nonroot_return_uninit_or_dead",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalNonRootReturn rejects uninitialized or dead callee _0 as UB",
+        anchor=(
+            "      | some (.immediate (some retVal)) => .ok retVal\n"
+            "      | some (.immediate none) | some .dead => .error .undefined"
+        ),
+        replacement=(
+            "      | some (.immediate (some retVal)) => .ok retVal\n"
+            "      | some (.immediate none) | some .dead =>\n"
+            "        .ok (.scalar ⟨.i32, false, BitVec.ofNat 128 0⟩)"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_nonroot_return_uninit_or_dead",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_nonroot_return_none_target",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalNonRootReturn faults UB when callee returns to target = none",
+        anchor=(
+            "                match callee.retTarget? with\n"
+            "                | none => .fault .undefined\n"
+            "                | some tgt =>"
+        ),
+        replacement=(
+            "                match callee.retTarget? with\n"
+            "                | none => .done (.returned ⟨.unit, ⟨[]⟩⟩)\n"
+            "                | some tgt =>"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_nonroot_return_none_target",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_nonroot_return_indirect_local",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="evalNonRootReturn fails closed on .indirect callee locals",
+        anchor="  if bb.cleanup || localsHaveIndirect callee.locals then",
+        replacement="  if bb.cleanup then",
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_nonroot_return_indirect_local",
+    ),
+    # ------------------------------------------------------------------
+    # Trusted/MirSemantics/State.lean (3 sysroot UB + 1 call admission guard)
+    # ------------------------------------------------------------------
+    MirSemanticsGuard(
+        guard_id="state_sysroot_unchecked_add_ub",
+        target_file="trusted/lean/Trusted/MirSemantics/State.lean",
+        target_module="Trusted/MirSemantics/State",
+        description="sysrootNumBinOp maps .uncheckedAdd to .addUnchecked (not wrapping .add)",
+        anchor=(
+            "noncomputable def sysrootNumBinOp : SysrootNumKind → BinOp\n"
+            "  | .uncheckedAdd => .addUnchecked"
+        ),
+        replacement=(
+            "noncomputable def sysrootNumBinOp : SysrootNumKind → BinOp\n"
+            "  | .uncheckedAdd => .add"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_state_sysroot_unchecked_add_ub",
+    ),
+    MirSemanticsGuard(
+        guard_id="state_sysroot_unchecked_sub_ub",
+        target_file="trusted/lean/Trusted/MirSemantics/State.lean",
+        target_module="Trusted/MirSemantics/State",
+        description="sysrootNumBinOp maps .uncheckedSub to .subUnchecked (not wrapping .sub)",
+        anchor="  | .uncheckedSub => .subUnchecked",
+        replacement="  | .uncheckedSub => .sub",
+        fixture_module="StepRefutations",
+        theorem_name="refute_state_sysroot_unchecked_sub_ub",
+    ),
+    MirSemanticsGuard(
+        guard_id="state_sysroot_unchecked_mul_ub",
+        target_file="trusted/lean/Trusted/MirSemantics/State.lean",
+        target_module="Trusted/MirSemantics/State",
+        description="sysrootNumBinOp maps .uncheckedMul to .mulUnchecked (not wrapping .mul)",
+        anchor="  | .uncheckedMul => .mulUnchecked",
+        replacement="  | .uncheckedMul => .mul",
+        fixture_module="StepRefutations",
+        theorem_name="refute_state_sysroot_unchecked_mul_ub",
+    ),
+    MirSemanticsGuard(
+        guard_id="state_calls_admitted_unsafe_callee",
+        target_file="trusted/lean/Trusted/MirSemantics/State.lean",
+        target_module="Trusted/MirSemantics/State",
+        description="callsAdmitted rejects intra-crate .call targets that are unsafe fns",
+        anchor=(
+            "      | some calleeBody =>\n"
+            "        !calleeBody.isUnsafe &&\n"
+            "          callTargetAdmitted body bb calleeBody args dst target unwind"
+        ),
+        replacement=(
+            "      | some calleeBody =>\n"
+            "          callTargetAdmitted body bb calleeBody args dst target unwind"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_state_calls_admitted_unsafe_callee",
     ),
     # ------------------------------------------------------------------
     # Trusted/MirSemantics/Boundary.lean (3 judgment soundness guards)

@@ -147,7 +147,7 @@ this file across ten JSON IPC modes (`run` and `main`):
   `correspondence/`) directly on top of that replayed vendor kernel
   environment, checks that the 36-root `Miri.Interpreter.ExecutionMachine` cone
   and correspondence cone are free of `unsafe`, `partial`, `.vendorMiri`
-  `opaque`, and unapproved axioms, and verifies all 37 Pass 2 correspondence,
+  `opaque`, and unapproved axioms, and verifies all 38 Pass 2 correspondence,
   wiring, and canary claims plus reference-evaluator independence checks.
 - **`"target-export"` (isolated structural proof-artifact exporter):**
   Runs in a dedicated sandboxed child process with no write access to the
@@ -3857,16 +3857,17 @@ def requireCorrClaimProof (env : Environment)
   requireClaimProof env corrLocals `Trusted.Correspondence
     `Anneal.MirCorrespondenceProof claimName none proofName reqConsts
 
-/-- Verify that all 37 Pass 2 correspondence, choice-coupled, wiring,
-`AllowedStep` soundness, byte-codec, and canary (`D6`–`D16`) claims—covering
+/-- Verify that all 38 Pass 2 correspondence, choice-coupled, wiring,
+`AllowedStep` soundness, byte-codec, and canary (`D6`–`D17`) claims—covering
 aggregate and choice-coupled correspondence and fault equivalence,
 `ExecutionMachine.step` / `OperandMachine.evalOperand` /
 `LocalAccess.evalOperand` `deinitMovedPlace` wiring, `RefStep` soundness for
 `RefAllowedStep`, codec round-trip, constructor preservation, uniqueness,
 simulation, `Trusted.MirSemantics` byte encoding against `lean-miri`
 `Allocation` scalar accesses, and canaries (including `char` comparison,
-`BinOp.cmp`, and `char` `switchInt` in `D14`, `CastKind.intToInt` in `D15`, and
-`BinOp.*WithOverflow` pairs in `D16`)—are present in
+`BinOp.cmp`, and `char` `switchInt` in `D14`, `CastKind.intToInt` in `D15`,
+`BinOp.*WithOverflow` pairs in `D16`, and intra-crate `.call` + pinned
+`core::num` `.sysrootCall` in `D17`)—are present in
 `Trusted.Correspondence`, reference their required semantic definitions (so
 replacing any claim with `True` fails CI), and are proved with exact claim-type
 equality in `Anneal.MirCorrespondenceProof`. -/
@@ -4132,6 +4133,21 @@ def verifyCorrespondenceClaims (env : Environment)
          `Trusted.MirSemantics.Behavior,
          `Trusted.Correspondence.RefWellFormed,
          `Trusted.Correspondence.RefBehavior,
+         `Trusted.Correspondence.encodeProg]),
+      (`Trusted.Correspondence.CanaryD17CallAndSysrootCallClaim,
+       `Anneal.MirCorrespondenceProof.canary_D17_call_and_sysroot_call,
+       [`Trusted.Correspondence.progDirectCallD17,
+         `Trusted.Correspondence.progSysrootUncheckedAddOkD17,
+         `Trusted.Correspondence.progSysrootUncheckedAddUbD17,
+         `Trusted.Correspondence.queryU16_19,
+         `Trusted.MirSemantics.queryEmpty,
+         `Trusted.MirSemantics.scalarNatVal,
+         `Trusted.MirSemantics.WellFormed,
+         `Trusted.MirSemantics.Behavior,
+         `Trusted.MirSemantics.ReachesResult,
+         `Trusted.Correspondence.RefWellFormed,
+         `Trusted.Correspondence.RefBehavior,
+         `Trusted.Correspondence.RefReachesOutcome,
          `Trusted.Correspondence.encodeProg])] do
     requireCorrClaimProof env corrLocals claimName proofName reqConsts
 
@@ -4446,7 +4462,7 @@ def replayCorrAndVendor (sysrootStr : String)
   return (miriReplayed, corrReplayed)
 
 /-- Verify the 36-root `Miri.Interpreter.ExecutionMachine` cone and—when
-Pass 2 correspondence modules are present—all 37 correspondence, choice-coupled,
+Pass 2 correspondence modules are present—all 38 correspondence, choice-coupled,
 wiring, `AllowedStep` soundness, byte-codec, and canary claims,
 reference-evaluator independence, and the correspondence dependency cone in a
 dedicated scope. -/

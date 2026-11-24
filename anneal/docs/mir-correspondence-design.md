@@ -117,7 +117,7 @@ vendor/lean-miri/               Vendored lean-miri reference model
                                 `CopyNonOverlapping` move sequencing
 
 trusted/correspondence/Trusted/ Correspondence TCB specification (Pass 2)
-  Correspondence.lean           Hub + locked *Claim constants (37 claims:
+  Correspondence.lean           Hub + locked *Claim constants (38 claims:
   Correspondence/               Codec, State, Config, Eval, Simulation,
                                 CanaryFixtures;
                                 -- anneal-trust-tier: candidate:mir_semantics)
@@ -129,7 +129,7 @@ correspondence/Anneal/          Untrusted correspondence proof (Pass 2)
                                 CopyReturnScalar, CopyReturnPair, MemRoundTrip,
                                 RvalueStep, StmtTermStep, InitAndSim, Canaries,
                                 RefinementBundles)
-  MirCorrespondenceProof.lean   Public re-exports of all 37 locked witnesses
+  MirCorrespondenceProof.lean   Public re-exports of all 38 locked witnesses
 
 trusted/audit/                  anneal-audit CLI, auditor library, and inspector
   TrustedBoundary.lean          Syntactic preflight, namespace and
@@ -418,7 +418,7 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      all of `Miri/Input/`—is reachable), and that the only reachable axioms
      belong to `{propext, Classical.choice, Quot.sound}`. Within
      `verifyCorrConesAndClaims`, `verifyCorrespondenceClaims` enforces
-     Statement-Origin Separation by locking all 37 `(claim, proof)` pairs in
+     Statement-Origin Separation by locking all 38 `(claim, proof)` pairs in
      `Anneal.MirCorrespondenceProof` against the exact `Prop` constants defined
      in `Trusted.Correspondence` (whose referenced program, query, and
      expected-outcome fixture definitions likewise live on `Trusted.*`, with
@@ -433,8 +433,8 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      codec claims (`DecodeProgEncodeProgClaim` through
      `EncodeStmtAssignIffClaim`), the 11 uniqueness and simulation claims
      (`StateUniqueOfSimulationInvClaim` through `DivergesIffRefDivergesClaim`),
-     and the 11 `D6`–`D16` canary claims (`CanaryD6UseAfterMoveUbClaim` through
-     `CanaryD16WithOverflowOkClaim`), plus non-empty required
+     and the 12 `D6`–`D17` canary claims (`CanaryD6UseAfterMoveUbClaim` through
+     `CanaryD17CallAndSysrootCallClaim`), plus non-empty required
      constant cones on every claim.
    - **Pass 2 negative audit tests:** `tests/audit/tests/boundary_audit.rs`
      (and unit tests in `trusted/audit/src/lib.rs`) must exercise fail-closed
@@ -591,10 +591,10 @@ together with every later change to those definitions:
 | | Reference predicates (`RefWellFormed`, |
 | | `RefBehavior`, `RefDiverges`, `RefReachesOutcome`, |
 | | `*AtChoices`, `faultToRefOutcome`), `SimulationInv` |
-| | Locked `*Claim` constants (37 locked Pass 2 |
+| | Locked `*Claim` constants (38 locked Pass 2 |
 | | claims: aggregate & choice-coupled top-level, |
 | | wiring, `AllowedStep` soundness, codec, |
-| | byte codec, simulation, and `CanaryD6–D16`) |
+| | byte codec, simulation, and `CanaryD6–D17`) |
 | `vendor/lean-miri/` | Pinned 160-module `ExecutionMachine` slice and |
 | | 13-file consumer patch (`UPSTREAM_PIN.json`: |
 | | 10-file `deinitMovedPlace` + 3-file memory |
@@ -630,12 +630,12 @@ together with every later change to those definitions:
   `RefReachesAtChoices`, `RefValidPrefixAtChoices`,
   `RefReachesOutcomeAtChoices`, `RefBehaviorAtChoices`,
   `RefDivergesAtChoices`, `faultToRefOutcome`, and `SimulationInv`); and the
-  locked `*Claim` propositions (37 locked Pass 2 claims: `CorrespondenceClaim`,
+  locked `*Claim` propositions (38 locked Pass 2 claims: `CorrespondenceClaim`,
   `FaultEquivalenceClaim`, `CorrespondenceAtChoicesClaim`,
   `FaultEquivalenceAtChoicesClaim`, `MiriMoveDeinitWiringClaim`,
   `RefStepSoundForAllowedStepClaim`, `BytesCodecMatchesMiriClaim`, the 6 codec
   claims, the 11 uniqueness and simulation claims, and
-  `CanaryD6*Claim`–`CanaryD16*Claim`).
+  `CanaryD6*Claim`–`CanaryD17*Claim`).
 - **`vendor/lean-miri/`:** `Trusted.Correspondence` drives `evalRefStep`
   directly through `Miri.Interpreter.ExecutionMachine.step`, reaching all 39
   required live `ExecutionMachine` primitives (`ExecutionMachine.{step,
@@ -1714,8 +1714,10 @@ These definitions pin five properties directly in the trusted theorem surface:
    error per Section 3.1, while an explicitly mismatched scope fails the
    selected theorem). In Phase
    1, `BodyVerified` quantifies over value arguments with empty caller memory
-   (`callerMem := ⟨[]⟩`), reachable `TerminatorKind.call` steps fail closed as
-   `.fault .unsupported`, and `WellFormed` permits divergence unless
+   (`callerMem := ⟨[]⟩`), reachable direct `TerminatorKind.call` and closed
+   `TerminatorKind.sysrootCall` steps execute over multi-frame `State.frames`
+   (while indirect, closure, and unsupported external calls still fail closed as
+   `.fault .unsupported`), and `WellFormed` permits divergence unless
    `specs.property` rules it out. External obligations on the capture and driver
    TCB (`anneal-rustc-capture` and `cargo-anneal`) complete the boundary:
    - For `.crate` captures (`CrateTheorem`), `c.program.bodies` must include
@@ -2071,7 +2073,7 @@ fault equivalence (`FaultEquivalenceAtChoicesClaim`), and the vendored
 `OperandMachine.evalOperand` and `LocalAccess.evalOperand`, `MachineHooks`, and
 `Call.deinitInPlaceArg`). All five top-level claims (together with
 `RefStepSoundForAllowedStepClaim`, `BytesCodecMatchesMiriClaim`, the 6 codec
-claims, 11 uniqueness and simulation claims, and 11 `D6`–`D16` canary claims—37
+claims, 11 uniqueness and simulation claims, and 12 `D6`–`D17` canary claims—38
 locked Pass 2 claims in total) are proved with zero `sorry` in
 `Anneal.MirCorrespondenceProof` and enforced by `TrustedBoundary.lean`
 (`verifyCorrespondenceClaims`).
@@ -2250,7 +2252,8 @@ claims (`StateUniqueOfSimulationInvClaim`,
 `BehaviorOfRefBehaviorClaim`, `BehaviorIffRefBehaviorClaim`, and
 `DivergesIffRefDivergesClaim`, all checked by `verifyCorrespondenceClaims`) can
 name it—pins every semantic field of `s` and the real `ExecutionMachine` state
-`rs` (up to `stepsExecuted`, `maxSteps`, and `miri.machine.user.control`):
+`rs` (up to `stepsExecuted`, `maxSteps`, `miri.machine.user.control`,
+`miri.machine.threads`, and the per-frame local `layout` cache bits):
 
 ```lean
 def FrameSimInv (rp : RefProg) (p : Program) (f : FrameState)
@@ -2305,16 +2308,18 @@ before `Return`. The lockstep proof for indirect locals against `lean-miri`'s
 `readScalar` / `writeScalar` belongs to the profile that makes them reachable;
 `BytesCodecMatchesMiriClaim` already pins the byte codec it will rely on.
 
-`SimulationInv` constrains every semantic field of `s` and `rs` (the single
-active `Miri.Interpreter.Frame`, the fresh caller-owned return allocation
+`SimulationInv` constrains the full execution state across active and suspended
+caller frames (`FramesSimInv` pairing `s.frames` with `miri.stack.frames` via
+`FrameSimInv` and `CallFrameSimInv`), the fresh caller-owned return allocation
 `retPlace` in `miri.machine.memory`, disabled borrow/race trackers,
-`pendingMoveDeinit = false`, `callerMem`, and `RefControlValid`). Binding
-`f.defId = p.entryDefId` in the single-frame Phase 1 model (before multi-frame
-`TerminatorKind.call` support generalizes `SimulationInv` to a frame-stack
-invariant) guarantees that the executing frame's return place `_0` always has
-the entry body's return type `retTy`, matching `rs.retPlace` even on multi-body
-programs and keeping `SimulationInv` unique in both directions on related
-running states at fixed `(stepsExecuted, maxSteps, control)` (proved in
+`pendingMoveDeinit = false`, `callerMem`, and `RefControlValid`.
+`State` is unique given `rs` (`StateUniqueOfSimulationInvClaim`). `RefState`
+is unique given `s` only at fixed `(stepsExecuted, maxSteps, control)` *and*
+equal `miri.machine.threads` and per-frame local `layout.isSome` shapes
+(`RefStateUniqueOfSimulationInvClaim`): `refTopRelevanceValid` admits both
+`none` and `some 0` for the `topUserRelevantFrame` thread cache when one frame
+is live, and `SimulationInv` does not pin the local layout caches. Both are
+bookkeeping caches that do not affect behavior (proved in
 `Anneal.MirCorrespondence.SimHelpers` and exported in
 `Anneal.MirCorrespondenceProof` against `StateUniqueOfSimulationInvClaim` and
 `RefStateUniqueOfSimulationInvClaim`):
@@ -2327,7 +2332,13 @@ theorem state_unique_of_simulationInv
 theorem refState_unique_of_simulationInv
     (h₁ : SimulationInv p s rs₁) (h₂ : SimulationInv p s rs₂)
     (h_steps : rs₁.stepsExecuted = rs₂.stepsExecuted)
-    (h_max : rs₁.maxSteps = rs₂.maxSteps) : rs₁ = rs₂
+    (h_max : rs₁.maxSteps = rs₂.maxSteps)
+    (h_ctrl : rs₁.miri.machine.user.control = rs₂.miri.machine.user.control)
+    (h_threads : rs₁.miri.machine.threads = rs₂.miri.machine.threads)
+    (h_layouts : rs₁.miri.stack.frames.map
+        (fun fr => fr.locals.map (fun l => l.layout.isSome)) =
+      rs₂.miri.stack.frames.map
+        (fun fr => fr.locals.map (fun l => l.layout.isSome))) : rs₁ = rs₂
 ```
 
 ### 5.4 Fuel-Bounded Verification Layer (`Anneal.MirWp`) and Decoupled Canaries
@@ -2567,6 +2578,10 @@ The Pass 2 canaries in `Anneal.MirCorrespondenceProof` check both models:
   `(255u8, 1u8)` returns `(0, true)` and `BinOp.subWithOverflow` on
   `(-128i8, 1i8)` returns `(127, true)` through the return place in both
   models.
+- **`canary_D17_call_and_sysroot_call`:** Direct intra-crate
+  `TerminatorKind.call` returns across caller stack frames, and pinned
+  `core::num` `sysrootCall` (`uncheckedAdd`) agrees with `lean-miri` on both
+  in-bounds addition and overflow UB (`65500u16 + 100u16`).
 
 ---
 

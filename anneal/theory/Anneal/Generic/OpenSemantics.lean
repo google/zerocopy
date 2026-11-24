@@ -384,8 +384,9 @@ noncomputable def OpenStatementKind.toDay1List? :
       | _, _ => none
 
 /-- Convert an `OpenTerminatorKind` to a Day-1 `TerminatorKind`. `.traitCall`
-and generic `.call` with non-empty substitutions have no Day-1 equivalent and
-return `none`. -/
+and `.call` return `none`: Day-1 `.call` pushes a callee frame, which the
+single-frame Day-1 delegation in `openEvalDetStepAux` does not model, so bodies
+with calls take the open path, which refuses `.call`. -/
 noncomputable def OpenTerminatorKind.toDay1? :
     OpenTerminatorKind → Option TerminatorKind
   | .goto t => some (.goto t)
@@ -400,13 +401,7 @@ noncomputable def OpenTerminatorKind.toDay1? :
       match OpenOperand.toDay1? cond with
       | some dc => some (.assert dc exp msg tgt uw)
       | none => none
-  | .call callee substs args dst tgt uw =>
-      match substs with
-      | [] =>
-          match OpenOperand.toDay1List? args, OpenPlace.toDay1? dst with
-          | some dargs, some ddst => some (.call callee dargs ddst tgt uw)
-          | _, _ => none
-      | _ :: _ => none
+  | .call _ _ _ _ _ _ => none
   | .traitCall _ _ _ _ _ _ _ _ => none
   | .unsupported => some .unsupported
 
@@ -464,13 +459,19 @@ noncomputable def OpenProgram.toDay1? (prog : OpenProgram) : Option Program :=
   | none => none
 
 /-- Execution frame for open generic MIR evaluation, recording caller return
-destination and unwind target for nested monomorphic trait calls. -/
+destination and unwind target for nested monomorphic trait calls. The
+`day1SysrootOp?`, `day1RetDst?`, and `day1RetTarget?` fields carry the Day-1
+`FrameState` call bookkeeping unchanged, so `toFrameState` and
+`ofFrameState` round-trip every Day-1 frame. -/
 structure OpenFrameState where
   defId : DefId
   blockIdx : BasicBlockId
   stmtIdx : Nat
   locals : List LocalSlot
   retDst : Option (OpenPlace × Option BasicBlockId × UnwindAction) := none
+  day1SysrootOp? : Option SysrootNumOp := none
+  day1RetDst? : Option Place := none
+  day1RetTarget? : Option BasicBlockId := none
 
 /-- Execution state for open generic MIR evaluation (`frames`, `callerMem`,
 and stack `mem`). -/
@@ -485,7 +486,10 @@ noncomputable def OpenFrameState.toFrameState (f : OpenFrameState) :
   { defId := f.defId
   , blockIdx := f.blockIdx
   , stmtIdx := f.stmtIdx
-  , locals := f.locals }
+  , locals := f.locals
+  , sysrootOp? := f.day1SysrootOp?
+  , retDst? := f.day1RetDst?
+  , retTarget? := f.day1RetTarget? }
 
 /-- Lift a Day-1 `FrameState` to `OpenFrameState`. -/
 noncomputable def OpenFrameState.ofFrameState (f : FrameState) :
@@ -494,7 +498,10 @@ noncomputable def OpenFrameState.ofFrameState (f : FrameState) :
   , blockIdx := f.blockIdx
   , stmtIdx := f.stmtIdx
   , locals := f.locals
-  , retDst := none }
+  , retDst := none
+  , day1SysrootOp? := f.sysrootOp?
+  , day1RetDst? := f.retDst?
+  , day1RetTarget? := f.retTarget? }
 
 /-- Project an `OpenState` to Day-1 `State`. -/
 noncomputable def OpenState.toState (s : OpenState) : State :=
@@ -1165,16 +1172,22 @@ def AssumeGuaranteeTraitCall (prog : OpenProgram)
                       | _, _, _ => res = .fault .unsupported
 
 /-- Helper for `openEvalDetStep` parameterized by `OpenProgram.toDay1? prog`.
-When `toDay1? prog` is `some day1Prog`, delegates directly to Day-1 `evalStep`;
-when `none`, evaluates open statements and non-call terminators (`StorageDead 0`
-and `.ref`/`.addressOf` fault `.unsupported`, `Assign` enforces normalized type
-equality, `.switchInt` requires closed primitive discriminant types, and
+When `toDay1? prog` is `some day1Prog`, delegates a single-frame state to Day-1
+`evalStep` (Day-1 programs from `toDay1?` contain no `.call` or
+`.sysrootCall`, so they never push frames) and faults `.unsupported` on any
+other frame stack; when `none`, evaluates open statements and non-call
+terminators (`StorageDead 0` and `.ref`/`.addressOf` fault `.unsupported`,
+`Assign` enforces normalized type equality, `.switchInt` requires closed
+primitive discriminant types, and
 `.assert`, `.unwindResume`, and nested `retDst` frames step via
 `openUnwindWith` rather than faulting `.unsupported` as in Day-1 `Step.lean`).
 -/
 noncomputable def openEvalDetStepAux (prog : OpenProgram) (env : OpenExecEnv)
     (s : OpenState) : Option Program → StepResult OpenState TerminalOut
-  | some day1Prog => liftStepResult (evalStep day1Prog 0 (OpenState.toState s))
+  | some day1Prog =>
+      match s.frames with
+      | [_] => liftStepResult (evalStep day1Prog 0 (OpenState.toState s))
+      | _ => .fault .unsupported
   | none =>
       match s.frames with
       | frame :: restFrames =>
@@ -1483,8 +1496,9 @@ noncomputable def openEvalDetStepAux (prog : OpenProgram) (env : OpenExecEnv)
       | [] => .fault .unsupported
 
 /-- Deterministic step relation for open statements and non-trait terminators.
-When `OpenProgram.toDay1? prog = some day1Prog`, delegates directly to
-`Trusted.MirSemantics.evalStep day1Prog 0`. -/
+When `OpenProgram.toDay1? prog = some day1Prog`, delegates a single-frame state
+to `Trusted.MirSemantics.evalStep day1Prog 0` and faults `.unsupported` on any
+other frame stack. -/
 noncomputable def openEvalDetStep (prog : OpenProgram) (env : OpenExecEnv)
     (s : OpenState) : StepResult OpenState TerminalOut :=
   openEvalDetStepAux prog env s (OpenProgram.toDay1? prog)

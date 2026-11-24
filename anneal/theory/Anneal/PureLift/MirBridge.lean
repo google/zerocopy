@@ -16,6 +16,7 @@ public import Trusted.MirAst
 public import Trusted.MirSemantics
 public import Anneal.Framework.StepWp
 public import Anneal.MirWp
+public import Anneal.MirTotal
 public import Anneal.PureLift.Lens
 public import Anneal.PureLift.PermTree
 public import Anneal.PureLift.LoanGraph
@@ -1650,12 +1651,11 @@ theorem bodyVerified_of_pure_lift
         MirRunsTo (entryProgForBody p defId) { args := args } fuel out) :
     BodyVerified p defId body safetyPre := by
   have hBlt : Nat.blt body.argumentCount body.locals.length = true := by
-    unfold BodyStaticAdmitted at hAdm
+    unfold BodyStaticAdmitted singleBodyStaticAdmitted at hAdm
     cases hB : Nat.blt body.argumentCount body.locals.length with
     | true => rfl
     | false =>
-      rw [hB, Bool.and_false, Bool.false_and, Bool.false_and,
-        Bool.false_and] at hAdm
+      simp only [hB, Bool.and_false, Bool.false_and] at hAdm
       cases hAdm
   refine ⟨hBody, hAdm, fun args hValid hSafe => ?_⟩
   have hEntryBody :
@@ -2170,9 +2170,63 @@ supported; see `mirCastTypesValid_eq`). -/
         bb.statements)
     body.basicBlocks
 
-/-- Computable static body admission check matching the 2-argument
-`Trusted.MirSemantics.BodyStaticAdmitted`. -/
-@[expose] def mirBodyStaticAdmitted (p : Program) (body : Body) : Bool :=
+@[expose] def mirLocalOperandMatchesTy (locals : List MirTy)
+    (opnd : Operand) (expected : MirTy) : Bool :=
+  match opnd with
+  | .copy p | .move p =>
+    if p.projection.isEmpty then
+      match mirListGet? locals p.localId with
+      | some srcTy => mirTyBeq srcTy expected
+      | none => true
+    else
+      true
+  | .constant _ => true
+
+/-- Computable mirror of `Trusted.MirSemantics.assignTypesValid`
+(agreement holds whenever every local type is supported; see
+`mirAssignTypesValid_eq`). -/
+@[expose] def mirAssignTypesValid (body : Body) : Bool :=
+  mirListAll
+    (fun bb =>
+      mirListAll
+        (fun stmt =>
+          match stmt with
+          | .assign dst rv =>
+            if dst.projection.isEmpty then
+              match mirListGet? body.locals dst.localId with
+              | none => true
+              | some dstTy =>
+                match rv with
+                | .use opnd => mirLocalOperandMatchesTy body.locals opnd dstTy
+                | .binaryOp op lhs rhs =>
+                  let lhsOk : Bool :=
+                    if Anneal.MirTotal.binOpLeftHomogeneousComp op then
+                      mirLocalOperandMatchesTy body.locals lhs dstTy
+                    else
+                      true
+                  let rhsOk : Bool :=
+                    if Anneal.MirTotal.binOpRightHomogeneousComp op then
+                      match Anneal.MirTotal.operandTyComp? body.locals lhs with
+                      | none => true
+                      | some lTy => mirLocalOperandMatchesTy body.locals rhs lTy
+                    else
+                      true
+                  lhsOk && rhsOk
+                | .unaryOp op opnd =>
+                  if Anneal.MirTotal.unOpHomogeneousComp op then
+                    mirLocalOperandMatchesTy body.locals opnd dstTy
+                  else
+                    true
+                | _ => true
+            else
+              true
+          | _ => true)
+        bb.statements)
+    body.basicBlocks
+
+/-- Computable single-body static admission check matching
+`Trusted.MirSemantics.singleBodyStaticAdmitted`. -/
+@[expose] def mirSingleBodyStaticAdmitted (p : Program) (body : Body) : Bool :=
   Nat.beq p.pointerWidthBits 64 &&
     Nat.beq p.mirProfileVersion 1 &&
     !body.identity.toByteArray.data.toList.isEmpty &&
@@ -2181,7 +2235,22 @@ supported; see `mirCastTypesValid_eq`). -/
     mirStorageAnnotationsInBounds body &&
     mirDiscriminantTypesValid body &&
     mirCastTypesValid body &&
-    mirListAll mirIsSupportedScalarOrUnitTy body.locals
+    mirListAll mirIsSupportedScalarOrUnitTy body.locals &&
+    Anneal.MirTotal.callsAdmittedBy mirTyBeq p body
+
+/-- Computable call-body static admission check matching
+`Trusted.MirSemantics.callBodyStaticAdmitted`. -/
+@[expose] def mirCallBodyStaticAdmitted (p : Program) (body : Body) : Bool :=
+  mirSingleBodyStaticAdmitted p body && mirAssignTypesValid body
+
+/-- Computable static body admission check matching the 2-argument
+`Trusted.MirSemantics.BodyStaticAdmitted`. -/
+@[expose] def mirBodyStaticAdmitted (p : Program) (body : Body) : Bool :=
+  mirSingleBodyStaticAdmitted p body &&
+    if Anneal.MirTotal.bodyHasAnyCallComp body then
+      mirAssignTypesValid body && mirListAll (mirCallBodyStaticAdmitted p) p.bodies
+    else
+      true
 
 /-- Computable constant-literal evaluator matching
 `Trusted.MirSemantics.evalConstLit` (preserving the exact distinction between
@@ -3006,17 +3075,239 @@ theorem mirCastTypesValid_eq (body : Body)
     | unsupported => rfl
   | storageLive _ | storageDead _ | nop | unsupported => rfl
 
+private theorem mirLocalOperandMatchesTy_eq (locals : List MirTy)
+    (hSup : locals.all isSupportedScalarOrUnitTy = true)
+    (opnd : Operand) (expected : MirTy) :
+    mirLocalOperandMatchesTy locals opnd expected =
+      localOperandMatchesTy locals opnd expected := by
+  cases opnd with
+  | constant _ => rfl
+  | copy p | move p =>
+    dsimp only [mirLocalOperandMatchesTy, localOperandMatchesTy]
+    rw [mirListGet?_eq_getElem?]
+    cases p.projection.isEmpty with
+    | false => rfl
+    | true =>
+      cases hGet : Trusted.MirSemantics.getElem? locals p.localId with
+      | none => rfl
+      | some srcTy =>
+        exact mirTyBeq_eq_of_supported srcTy expected
+          (listAll_getElem? isSupportedScalarOrUnitTy locals p.localId srcTy
+            hSup hGet)
+
+/-- Exact kernel agreement between computable `mirAssignTypesValid` and
+`Trusted.MirSemantics.assignTypesValid` on bodies whose local types are all
+supported. -/
+theorem mirAssignTypesValid_eq (body : Body)
+    (hSup : body.locals.all isSupportedScalarOrUnitTy = true) :
+    mirAssignTypesValid body = assignTypesValid body := by
+  unfold mirAssignTypesValid assignTypesValid
+  refine mirListAll_eq _ _ (fun bb =>
+    mirListAll_eq _ _ (fun stmt => ?_) bb.statements) body.basicBlocks
+  cases stmt with
+  | storageLive _ | storageDead _ | nop | unsupported => rfl
+  | assign dst rv =>
+    dsimp only
+    cases dst.projection.isEmpty with
+    | false => rfl
+    | true =>
+      rw [mirListGet?_eq_getElem?]
+      cases Trusted.MirSemantics.getElem? body.locals dst.localId with
+      | none => rfl
+      | some dstTy =>
+        cases rv with
+        | discriminant _ | cast _ _ _ | ref _ _ | addressOf _ _
+        | aggregateTuple _ | unsupported | useRetag _ | aggregateRangeTo _ _
+        | aggregateRangeFrom _ _ => rfl
+        | use opnd => exact mirLocalOperandMatchesTy_eq body.locals hSup opnd dstTy
+        | binaryOp op lhs rhs =>
+          dsimp only
+          rw [Anneal.MirTotal.binOpLeftHomogeneousComp_eq,
+            Anneal.MirTotal.binOpRightHomogeneousComp_eq,
+            Anneal.MirTotal.operandTyComp?_eq,
+            mirLocalOperandMatchesTy_eq body.locals hSup lhs dstTy]
+          cases operandTy? body.locals lhs with
+          | none => rfl
+          | some lTy =>
+            dsimp only
+            rw [mirLocalOperandMatchesTy_eq body.locals hSup rhs lTy]
+        | unaryOp op opnd =>
+          dsimp only
+          rw [Anneal.MirTotal.unOpHomogeneousComp_eq,
+            mirLocalOperandMatchesTy_eq body.locals hSup opnd dstTy]
+
+private theorem isSupported_of_evalConstLit_ok {ty : MirTy} {lit : ConstLit}
+    {v : Val} (hOk : evalConstLit ty lit = .ok v) :
+    isSupportedScalarOrUnitTy ty = true := by
+  cases ty with
+  | int _ _ | bool | unit | char | ordering => rfl
+  | enum ety =>
+    cases lit with
+    | zeroSized =>
+      dsimp only [evalConstLit] at hOk
+      cases hZ : isZstEnumTy ety with
+      | false =>
+        rw [Anneal.MirWp.ite_bool_false hZ] at hOk
+        cases hOk
+      | true =>
+        unfold isZstEnumTy at hZ
+        cases hR : ety.tagRepr with
+        | scalar _ _ => rw [hR] at hZ; cases hZ
+        | zeroSized => rw [hR] at hZ; exact hZ
+    | scalar bits =>
+      unfold evalConstLit at hOk
+      dsimp only at hOk
+      cases hR : ety.tagRepr with
+      | zeroSized => rw [hR] at hOk; cases hOk
+      | scalar tagW tagS =>
+        rw [hR] at hOk
+        dsimp only at hOk
+        cases hAdm : enumAdmitted ety with
+        | true => exact hAdm
+        | false =>
+          rw [Anneal.MirWp.ite_bool_true (by rw [hAdm]; rfl)] at hOk
+          cases hOk
+  | never | tuple _ | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
+  | unsupported =>
+    cases lit <;> cases hOk
+
+private theorem mirCallArgsMatchBody_eq (bodyLocals : List MirTy)
+    (hSup : bodyLocals.all isSupportedScalarOrUnitTy = true)
+    (args : List Operand) (paramTys : List MirTy) :
+    Anneal.MirTotal.callArgsMatchBodyBy mirTyBeq bodyLocals args paramTys =
+      callArgsMatchBody bodyLocals args paramTys := by
+  induction args generalizing paramTys with
+  | nil => cases paramTys <;> rfl
+  | cons opnd rest ih =>
+    cases paramTys with
+    | nil => rfl
+    | cons paramTy restParams =>
+      change (_ && Anneal.MirTotal.callArgsMatchBodyBy mirTyBeq bodyLocals rest
+          restParams) =
+        (_ && callArgsMatchBody bodyLocals rest restParams)
+      rw [ih restParams]
+      cases opnd with
+      | copy place | move place =>
+        dsimp only
+        rw [Anneal.MirTotal.compGetElem?_eq]
+        cases place.projection.isEmpty with
+        | false => rfl
+        | true =>
+          cases hGet : Trusted.MirSemantics.getElem? bodyLocals place.localId with
+          | none => rfl
+          | some argTy =>
+            dsimp only
+            rw [mirTyBeq_eq_of_supported argTy paramTy
+              (listAll_getElem? isSupportedScalarOrUnitTy bodyLocals place.localId
+                argTy hSup hGet)]
+      | constant c =>
+        dsimp only
+        rw [Anneal.MirTotal.evalConstLitComp_eq]
+        cases hLit : evalConstLit c.ty c.lit with
+        | error _ => rw [Bool.and_false, Bool.and_false]
+        | ok v =>
+          rw [Bool.and_true, Bool.and_true,
+            mirTyBeq_eq_of_supported c.ty paramTy
+              (isSupported_of_evalConstLit_ok hLit)]
+
+private theorem mirCallsAdmitted_eq (p : Program) (body : Body)
+    (hSup : body.locals.all isSupportedScalarOrUnitTy = true) :
+    Anneal.MirTotal.callsAdmittedBy mirTyBeq p body = callsAdmitted p body := by
+  unfold Anneal.MirTotal.callsAdmittedBy callsAdmitted
+  refine Anneal.MirTotal.listAll_congr body.basicBlocks (fun bb => ?_)
+  cases bb.terminator with
+  | goto _ | switchInt _ _ | return_ | unreachable | unwindResume
+  | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported => rfl
+  | call callee args dst target unwind =>
+    dsimp only
+    rw [Anneal.MirTotal.compGetElem?_eq]
+    cases Trusted.MirSemantics.getElem? p.bodies callee with
+    | none => rfl
+    | some calleeBody =>
+      dsimp only
+      unfold Anneal.MirTotal.callTargetAdmittedBy callTargetAdmitted
+      rw [Anneal.MirTotal.moveDefinitelyDisjointComp_eq,
+        Anneal.MirTotal.compGetElem?_eq, Anneal.MirTotal.compGetElem?_eq,
+        mirCallArgsMatchBody_eq body.locals hSup]
+      cases hDst : Trusted.MirSemantics.getElem? body.locals dst.localId with
+      | none => rfl
+      | some dstTy =>
+        cases Trusted.MirSemantics.getElem? calleeBody.locals 0 with
+        | none => rfl
+        | some retTy =>
+          dsimp only
+          rw [Anneal.MirTotal.isSupportedScalarOrUnitTyComp_eq,
+            mirTyBeq_eq_of_supported dstTy retTy
+              (listAll_getElem? isSupportedScalarOrUnitTy body.locals dst.localId
+                dstTy hSup hDst)]
+          rfl
+  | sysrootCall op args dst target unwind =>
+    dsimp only
+    unfold Anneal.MirTotal.callTargetAdmittedBy callTargetAdmitted
+    rw [Anneal.MirTotal.sysrootNumBodyComp_eq,
+      Anneal.MirTotal.moveDefinitelyDisjointComp_eq,
+      Anneal.MirTotal.compGetElem?_eq, Anneal.MirTotal.compGetElem?_eq,
+      mirCallArgsMatchBody_eq body.locals hSup]
+    cases hDst : Trusted.MirSemantics.getElem? body.locals dst.localId with
+    | none => rfl
+    | some dstTy =>
+      cases Trusted.MirSemantics.getElem? (sysrootNumBody op).locals 0 with
+      | none => rfl
+      | some retTy =>
+        dsimp only
+        rw [Anneal.MirTotal.isSupportedScalarOrUnitTyComp_eq,
+          mirTyBeq_eq_of_supported dstTy retTy
+            (listAll_getElem? isSupportedScalarOrUnitTy body.locals dst.localId
+              dstTy hSup hDst)]
+        rfl
+
+private theorem mirSingleBodyStaticAdmitted_eq (p : Program) (body : Body) :
+    mirSingleBodyStaticAdmitted p body = singleBodyStaticAdmitted p body := by
+  unfold mirSingleBodyStaticAdmitted singleBodyStaticAdmitted
+  have hStr :
+      body.identity.toByteArray.data.toList.isEmpty =
+      stringIsEmpty body.identity := rfl
+  rw [hStr, mirStorageAnnotationsInBounds_eq body,
+      mirDiscriminantTypesValid_eq body,
+      mirListAll_eq _ _ mirIsSupportedScalarOrUnitTy_eq body.locals]
+  cases hSup : body.locals.all isSupportedScalarOrUnitTy with
+  | false => rw [Bool.and_false, Bool.false_and, Bool.and_false, Bool.false_and]
+  | true =>
+    rw [mirCastTypesValid_eq body hSup, mirCallsAdmitted_eq p body hSup]
+
+private theorem mirCallBodyStaticAdmitted_eq (p : Program) (body : Body) :
+    mirCallBodyStaticAdmitted p body = callBodyStaticAdmitted p body := by
+  unfold mirCallBodyStaticAdmitted callBodyStaticAdmitted
+  rw [mirSingleBodyStaticAdmitted_eq]
+  cases hSingle : singleBodyStaticAdmitted p body with
+  | false => rw [Bool.false_and, Bool.false_and]
+  | true =>
+    have hAnd : ∀ {a b : Bool}, (a && b) = true → a = true ∧ b = true := by
+      intro a b h; cases a <;> cases b <;> cases h <;> exact ⟨rfl, rfl⟩
+    unfold singleBodyStaticAdmitted at hSingle
+    let ⟨h1, _⟩ := hAnd hSingle
+    let ⟨_, hSup⟩ := hAnd h1
+    rw [Bool.true_and, Bool.true_and, mirAssignTypesValid_eq body hSup]
+
 /-- Exact kernel agreement between computable `mirBodyStaticAdmitted` and
 `Trusted.MirSemantics.BodyStaticAdmitted`. -/
 theorem mirBodyStaticAdmitted_eq (p : Program) (body : Body) :
     mirBodyStaticAdmitted p body = BodyStaticAdmitted p body := by
-  unfold mirBodyStaticAdmitted BodyStaticAdmitted stringIsEmpty
-  rw [mirStorageAnnotationsInBounds_eq body,
-      mirDiscriminantTypesValid_eq body,
-      mirListAll_eq _ _ mirIsSupportedScalarOrUnitTy_eq body.locals]
-  cases hSup : body.locals.all isSupportedScalarOrUnitTy with
-  | false => rw [Bool.and_false, Bool.and_false]
-  | true => rw [mirCastTypesValid_eq body hSup]
+  unfold mirBodyStaticAdmitted BodyStaticAdmitted allCallBodiesStaticAdmitted
+  rw [mirSingleBodyStaticAdmitted_eq, Anneal.MirTotal.bodyHasAnyCallComp_eq]
+  cases hCall : bodyHasAnyCall body with
+  | false => rfl
+  | true =>
+    cases hSingle : singleBodyStaticAdmitted p body with
+    | false => rw [Bool.false_and, Bool.false_and]
+    | true =>
+      have hAnd : ∀ {a b : Bool}, (a && b) = true → a = true ∧ b = true := by
+        intro a b h; cases a <;> cases b <;> cases h <;> exact ⟨rfl, rfl⟩
+      unfold singleBodyStaticAdmitted at hSingle
+      let ⟨h1, _⟩ := hAnd hSingle
+      let ⟨_, hSup⟩ := hAnd h1
+      rw [Bool.true_and, Bool.true_and, mirAssignTypesValid_eq body hSup,
+        mirListAll_eq _ _ (mirCallBodyStaticAdmitted_eq p) p.bodies]
 
 theorem mirFindDiscrVariantAux_eq (discrBits : BitVec 128) :
     ∀ (ds : List Nat) (idx : Nat),

@@ -84,9 +84,10 @@ pub enum InspectorRequest {
     /// authenticated sysroot base on every run (cold compile and cache hit
     /// alike), kernel-replays all correspondence declarations onto that
     /// replayed vendor kernel environment, and verifies 36-root constant-cone
-    /// purity, all 37 correspondence, choice-coupled, wiring, `AllowedStep`
-    /// soundness, byte-codec, and canary claims, and reference-evaluator independence
-    /// (reaching all 39 live `ExecutionMachine` `Miri.*` primitives from
+    /// purity, all 38 correspondence, choice-coupled, wiring, `AllowedStep`
+    /// soundness, byte-codec, and canary claims, and
+    /// reference-evaluator independence (reaching all 39 live
+    /// `ExecutionMachine` `Miri.*` primitives from
     /// `[evalRefStep, initRefState]` without relying on `RefAllowedStep`,
     /// checking `AllowedStep` separately on `RefAllowedStep`, requiring
     /// isolated submodule placement and zero direct/transitive disallowed

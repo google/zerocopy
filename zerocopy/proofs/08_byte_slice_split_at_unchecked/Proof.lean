@@ -881,7 +881,8 @@ theorem initStateV2_ok_of {p : Program} {q : Query} {body : Body}
       ((body.locals.drop 1).take body.argumentCount) q.args = true)
     (hDisj : spansPairwiseDisjoint (refAccessSpansList
       ((body.locals.drop 1).take body.argumentCount) q.args) = true) :
-    initStateV2 p q = .ok ⟨[⟨p.entryDefId, 0, 0, initLocalsLoop body q.args 0 body.locals⟩],
+    initStateV2 p q = .ok ⟨[⟨p.entryDefId, 0, 0,
+      initLocalsLoop body q.args 0 body.locals, none, none, none⟩],
       q.callerMem, entryMemoryWithCaller q.callerMem⟩ := by
   unfold initStateV2
   rw [hPW, hPV, hCM, hEntry]
@@ -1097,7 +1098,8 @@ theorem split_at_shared_correct (q : Query)
           [.immediate none,
            .immediate (some (.slicePtr ptr len)),
            .immediate (some (.scalar ⟨.isize, false, midBits⟩)),
-           .dead, .dead, .dead, .dead, .dead, .dead, .dead, .dead, .dead, .dead]]
+           .dead, .dead, .dead, .dead, .dead, .dead, .dead, .dead, .dead, .dead]
+          none none none]
           q.callerMem m) := by
       have hChkArgs :
           checkArgsMatchV2 [.slicePtr ptr len, .scalar ⟨.isize, false, midBits⟩]
@@ -1129,7 +1131,8 @@ theorem split_at_shared_correct (q : Query)
         rfl rfl hCM rfl (by decide) (by decide) (by decide) (by decide) (by decide) (by decide)
         hChkArgs hRefsList hDisjList
       rw [h0]
-      exact congrArg (fun ls => Except.ok (State.mk [FrameState.mk 0 0 0 ls] q.callerMem m))
+      exact congrArg (fun ls => Except.ok
+        (State.mk [FrameState.mk 0 0 0 ls none none none] q.callerMem m))
         (initLocalsLoop_body0 ptrAid ptrOff len midBits)
     have hExec :
         execProgV2 (entryProgForBody Captured.program 0) 32

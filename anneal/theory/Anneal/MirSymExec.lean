@@ -3473,6 +3473,7 @@ theorem symTerminator_step {body : Body} {bb : BasicBlock}
         | dead => rw [hs] at h; cases h
         | immediate o => cases o <;> (rw [hs] at h; cases h)
   | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
+  | sysrootCall _ _ _ _ _
   | coreCall _ _ _ _ _ | unsupported =>
     rw [hT] at h; cases h
   | switchInt d targets =>
@@ -3599,6 +3600,7 @@ theorem symTerminator_ret {body : Body} {bb : BasicBlock} {s : SymState}
             rw [hT, hCl, getElem?_symSlots, hs]
             rfl
   | goto _ | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
+  | sysrootCall _ _ _ _ _
   | coreCall _ _ _ _ _ | unsupported => rw [hT] at h; cases h
   | switchInt d targets =>
     rw [hT] at h
@@ -3667,7 +3669,7 @@ theorem symStep_step {body : Body} {s s' : SymState}
       | none => rw [hSim] at h; cases h
       | some next =>
         rw [hSim] at h; cases h
-        dsimp only [evalStep, bodyProg, SymState.toState,
+        dsimp only [evalStep, bodyProg, SymState.toState, activeFrameBody,
           Trusted.MirSemantics.getElem?]
         rw [← compGetElem?_eq, hb]
         dsimp only
@@ -3680,14 +3682,17 @@ theorem symStep_step {body : Body} {s s' : SymState}
       | false => rw [hLen] at h; cases h
       | true =>
         rw [hLen] at h
-        dsimp only [evalStep, bodyProg, SymState.toState,
+        dsimp only [evalStep, bodyProg, SymState.toState, activeFrameBody,
           Trusted.MirSemantics.getElem?]
         rw [← compGetElem?_eq, hb]
         dsimp only
         rw [← compGetElem?_eq, hSt]
         dsimp only
         rw [hLen, ite_prop_true (rfl : true = true)]
-        exact symTerminator_step h env
+        have hS := symTerminator_step h env
+        cases hT : bb.terminator <;> first
+          | exact hS
+          | (dsimp only [symTerminator] at h; rw [hT] at h; cases h)
 
 theorem symStep_ret {body : Body} {s : SymState} {v : SymVal}
     (h : symStep body s = .ret v) (env : SymEnv) :
@@ -3711,14 +3716,17 @@ theorem symStep_ret {body : Body} {s : SymState} {v : SymVal}
       | false => rw [hLen] at h; cases h
       | true =>
         rw [hLen] at h
-        dsimp only [evalStep, bodyProg, SymState.toState,
+        dsimp only [evalStep, bodyProg, SymState.toState, activeFrameBody,
           Trusted.MirSemantics.getElem?]
         rw [← compGetElem?_eq, hb]
         dsimp only
         rw [← compGetElem?_eq, hSt]
         dsimp only
         rw [hLen, ite_prop_true (rfl : true = true)]
-        exact symTerminator_ret h env
+        have hS := symTerminator_ret h env
+        cases hT : bb.terminator <;> first
+          | exact hS
+          | (dsimp only [symTerminator] at h; rw [hT] at h; cases h)
 
 /-- Fuel-bounded single-path symbolic runner (`@Nat.rec`, `0` `._unsafe_rec`).
 -/
@@ -3869,7 +3877,14 @@ theorem symRun_entry_behavior {p : Program} {defId : DefId} {body : Body}
     (hAdm : BodyStaticAdmitted p body = true)
     (env : SymEnv)
     (hArgs : ValidEntryArgs body (args.map (SymVal.eval env)))
-    (hRun : symRun body fuel (symEntry body args) = .ret out) :
+    (hRun : symRun body fuel (symEntry body args) = .ret out)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     SafeFrom body (mkState 0 0
         (initLocalsLoop body (args.map (SymVal.eval env)) 0 body.locals)) ∧
       ReturnsFrom body (mkState 0 0
@@ -3892,7 +3907,7 @@ theorem symRun_entry_behavior {p : Program} {defId : DefId} {body : Body}
     unfold execProg
     rw [initState_entryProgForBody hBody hAdm hArgs]
     exact (execOutcomeState_entryProg_iff hBody
-      (isSingleFrame0_mkState 0 0 _)).mpr hRuns
+      (isSingleFrame0_mkState 0 0 _) h_nocall).mpr hRuns
   have hAll := spec_and_behavior_of_wp_eq (wpProg_of_execProg hExecProg)
   exact ⟨hSucc.1, hSucc.2, hAll.2.1, hAll.2.2.1, hAll.2.2.2 _ rfl⟩
 
@@ -3921,9 +3936,16 @@ theorem symRun_bodyVerified_pre {p : Program} {defId : DefId} {body : Body}
     (hRun : symRun body fuel (symEntry body argsTemplate) = .ret out)
     (hCover : ∀ args : List Val, ValidEntryArgs body args →
       (body.isUnsafe = true → safetyPre args) →
-      ∃ env : SymEnv, argsTemplate.map (SymVal.eval env) = args) :
+      ∃ env : SymEnv, argsTemplate.map (SymVal.eval env) = args)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     BodyVerified p defId body safetyPre := by
-  refine bodyVerified_of_safe hBody hAdm (fun args valid pre => ?_)
+  refine bodyVerified_of_safe hBody hAdm (fun args valid pre => ?_) h_nocall
   let ⟨env, hMap⟩ := hCover args valid pre
   have hSucc := run_initial_success (symRun_entry hRun env)
   rw [hMap] at hSucc
@@ -3939,9 +3961,16 @@ theorem symRun_bodyVerified {p : Program} {defId : DefId} {body : Body}
     (hRun : symRun body fuel (symEntry body argsTemplate) = .ret out)
     (hCover : ∀ args : List Val, ValidEntryArgs body args →
       (body.isUnsafe = true → True) →
-      ∃ env : SymEnv, argsTemplate.map (SymVal.eval env) = args) :
+      ∃ env : SymEnv, argsTemplate.map (SymVal.eval env) = args)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     BodyVerified p defId body (fun _ => True) :=
-  symRun_bodyVerified_pre hBody hAdm hRun hCover
+  symRun_bodyVerified_pre hBody hAdm hRun hCover h_nocall
 
 /-! ## Part IV: Branched Symbolic Execution with `BvLin` Dead-Branch Pruning -/
 
@@ -4501,7 +4530,8 @@ theorem symStepBranched_wf {body : Body} {pc : SymBool} {s : SymState}
           rw [hLen, ite_prop_false (by decide)] at h
           cases hT : bb.terminator with
           | goto _ | return_ | unreachable | unwindResume
-          | assert _ _ _ _ _ | call _ _ _ _ _ | coreCall _ _ _ _ _
+          | assert _ _ _ _ _ | call _ _ _ _ _ | sysrootCall _ _ _ _ _
+          | coreCall _ _ _ _ _
           | unsupported =>
             rw [hT] at h
             cases hTerm : symTerminator body bb s with
@@ -4565,34 +4595,32 @@ theorem symStepBranched_wf {body : Body} {pc : SymBool} {s : SymState}
                       exact symScalarBranches_wf hWf ls targets.otherwise
                         targets.branches pc _ hPc hBr
 
+/-- Whether a Day-1 terminator is a `.call` or `.sysrootCall`, which
+`evalStep` dispatches to `evalCallTerminator` rather than `evalTerminator`. -/
+private noncomputable def symTermIsCall (t : TerminatorKind) : Bool :=
+  match t with
+  | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ => true
+  | _ => false
+
 private theorem symStep_sound_general {body : Body} {bb : BasicBlock}
     {s : SymState} {env : SymEnv}
     (hb : compGetElem? body.basicBlocks s.block = some bb)
     (hSt : compGetElem? bb.statements s.stmt = none)
     (hLen : Nat.beq s.stmt bb.statements.length = true)
+    (hNC : symTermIsCall bb.terminator = false)
     (res : StepResult State TerminalOut)
     (hTerm : evalTerminator body bb (s.toFrame env) entryMemory ⟨[]⟩ = res) :
     evalStep (bodyProg body) 0 (s.toState env) = res := by
-  dsimp only [evalStep, bodyProg, SymState.toState]
-  change (match some body with
-      | none => StepResult.fault FaultKind.unsupported
-      | some body =>
-        match Trusted.MirSemantics.getElem? body.basicBlocks s.block with
-        | none => StepResult.fault FaultKind.unsupported
-        | some bb =>
-          match Trusted.MirSemantics.getElem? bb.statements s.stmt with
-          | some stmt => evalStatement body (s.toFrame env) entryMemory ⟨[]⟩ stmt
-          | none =>
-            if Nat.beq s.stmt bb.statements.length then
-              evalTerminator body bb (s.toFrame env) entryMemory ⟨[]⟩
-            else StepResult.fault FaultKind.unsupported) = res
-  dsimp only
+  dsimp only [evalStep, bodyProg, SymState.toState, activeFrameBody,
+    Trusted.MirSemantics.getElem?]
   rw [← compGetElem?_eq, hb]
   dsimp only
   rw [← compGetElem?_eq, hSt]
   dsimp only
-  rw [hLen, ite_prop_true rfl]
-  exact hTerm
+  rw [hLen, ite_prop_true (rfl : true = true)]
+  cases hT : bb.terminator <;> first
+    | exact hTerm
+    | (rw [hT] at hNC; cases hNC)
 
 theorem symStepBranched_sound {body : Body} {pc : SymBool} {s : SymState}
     (hPc : pc.wf = true) (env : SymEnv) (hPcEv : pc.eval env = true) :
@@ -4623,7 +4651,7 @@ theorem symStepBranched_sound {body : Body} {pc : SymBool} {s : SymState}
           refine ⟨(fun _ _ h => by cases h), fun bs h => ?_⟩
           cases h
           refine ⟨(pc, s'), List.Mem.head _, hPcEv, ?_⟩
-          dsimp only [evalStep, bodyProg, SymState.toState,
+          dsimp only [evalStep, bodyProg, SymState.toState, activeFrameBody,
             Trusted.MirSemantics.getElem?]
           rw [← compGetElem?_eq, hb]
           dsimp only
@@ -4638,8 +4666,15 @@ theorem symStepBranched_sound {body : Body} {pc : SymBool} {s : SymState}
         | true =>
           rw [Bool.not_true, ite_prop_false (by decide)]
           cases hT : bb.terminator with
+          | call _ _ _ _ _ | sysrootCall _ _ _ _ _ =>
+            dsimp only
+            have hStuck : symTerminator body bb s = .stuck := by
+              dsimp only [symTerminator]
+              rw [hT]
+            rw [hStuck]
+            exact ⟨(fun _ _ h => by cases h), (fun _ h => by cases h)⟩
           | goto _ | return_ | unreachable | unwindResume
-          | assert _ _ _ _ _ | call _ _ _ _ _ | coreCall _ _ _ _ _
+          | assert _ _ _ _ _ | coreCall _ _ _ _ _
           | unsupported =>
             dsimp only
             cases hTerm : symTerminator body bb s with
@@ -4647,13 +4682,15 @@ theorem symStepBranched_sound {body : Body} {pc : SymBool} {s : SymState}
             | ret v =>
               refine ⟨fun pc' out h => ?_, (fun _ h => by cases h)⟩
               cases h
-              exact ⟨hPcEv, symStep_sound_general hb hSt hLen _
+              exact ⟨hPcEv, symStep_sound_general hb hSt hLen
+                (by first | (rw [hT]; rfl) | rw [hT]) _
                 (symTerminator_ret hTerm env)⟩
             | step s' =>
               refine ⟨(fun _ _ h => by cases h), fun bs h => ?_⟩
               cases h
               exact ⟨(pc, s'), List.Mem.head _, hPcEv,
-                symStep_sound_general hb hSt hLen _ (symTerminator_step hTerm env)⟩
+                symStep_sound_general hb hSt hLen
+                  (by first | (rw [hT]; rfl) | rw [hT]) _ (symTerminator_step hTerm env)⟩
           | switchInt discr targets =>
             dsimp only
             cases hPr : symPrim body.locals s.slots discr with
@@ -4664,13 +4701,15 @@ theorem symStepBranched_sound {body : Body} {pc : SymBool} {s : SymState}
               | ret v =>
                 refine ⟨fun pc' out h => ?_, (fun _ h => by cases h)⟩
                 cases h
-                exact ⟨hPcEv, symStep_sound_general hb hSt hLen _
+                exact ⟨hPcEv, symStep_sound_general hb hSt hLen
+                  (by first | (rw [hT]; rfl) | rw [hT]) _
                   (symTerminator_ret hTerm env)⟩
               | step s' =>
                 refine ⟨(fun _ _ h => by cases h), fun bs h => ?_⟩
                 cases h
                 exact ⟨(pc, s'), List.Mem.head _, hPcEv,
-                  symStep_sound_general hb hSt hLen _ (symTerminator_step hTerm env)⟩
+                  symStep_sound_general hb hSt hLen
+                    (by first | (rw [hT]; rfl) | rw [hT]) _ (symTerminator_step hTerm env)⟩
             | some pair =>
               cases pair with
               | mk dv ls =>
@@ -4682,13 +4721,15 @@ theorem symStepBranched_sound {body : Body} {pc : SymBool} {s : SymState}
                   | ret v =>
                     refine ⟨fun pc' out h => ?_, (fun _ h => by cases h)⟩
                     cases h
-                    exact ⟨hPcEv, symStep_sound_general hb hSt hLen _
+                    exact ⟨hPcEv, symStep_sound_general hb hSt hLen
+                      (by first | (rw [hT]; rfl) | rw [hT]) _
                       (symTerminator_ret hTerm env)⟩
                   | step s' =>
                     refine ⟨(fun _ _ h => by cases h), fun bs h => ?_⟩
                     cases h
                     exact ⟨(pc, s'), List.Mem.head _, hPcEv,
-                      symStep_sound_general hb hSt hLen _ (symTerminator_step hTerm env)⟩
+                      symStep_sound_general hb hSt hLen
+                        (by first | (rw [hT]; rfl) | rw [hT]) _ (symTerminator_step hTerm env)⟩
                 | bool b =>
                   dsimp only
                   cases hWf : b.wf with
@@ -4707,7 +4748,8 @@ theorem symStepBranched_sound {body : Body} {pc : SymBool} {s : SymState}
                           targets.branches pc out env hPc hPcEv hBr
                       refine ⟨p, hpMem, hpEv, ?_⟩
                       rw [hpSt]
-                      refine symStep_sound_general hb hSt hLen _ ?_
+                      refine symStep_sound_general hb hSt hLen
+                        (by first | (rw [hT]; rfl) | rw [hT]) _ ?_
                       dsimp only [evalTerminator, SymState.toFrame]
                       rw [hT]
                       dsimp only
@@ -4733,7 +4775,8 @@ theorem symStepBranched_sound {body : Body} {pc : SymBool} {s : SymState}
                           targets.branches pc out env hPc hPcEv hBr
                       refine ⟨p, hpMem, hpEv, ?_⟩
                       rw [hpSt]
-                      refine symStep_sound_general hb hSt hLen _ ?_
+                      refine symStep_sound_general hb hSt hLen
+                        (by first | (rw [hT]; rfl) | rw [hT]) _ ?_
                       dsimp only [evalTerminator, SymState.toFrame]
                       rw [hT]
                       dsimp only
@@ -5035,9 +5078,16 @@ theorem bodyVerified_of_symRunPaths {p : Program} {defId : DefId} {body : Body}
       some paths)
     (hCover : ∀ args : List Val, ValidEntryArgs body args →
       (body.isUnsafe = true → True) →
-      ∃ env : SymEnv, argsTemplate.map (SymVal.eval env) = args) :
+      ∃ env : SymEnv, argsTemplate.map (SymVal.eval env) = args)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     BodyVerified p defId body (fun _ => True) := by
-  refine bodyVerified_of_safe hBody hAdm (fun args valid _ => ?_)
+  refine bodyVerified_of_safe hBody hAdm (fun args valid _ => ?_) h_nocall
   let ⟨env, hMap⟩ := hCover args valid (fun _ => True.intro)
   let ⟨res, _, _, hExec⟩ := symRunPaths_sound rfl hRun env rfl
   rw [symEntry_toState, hMap] at hExec

@@ -246,4 +246,45 @@ theorem canary_D16_with_overflow_ok_base : CanaryD16WithOverflowOkClaim := by
   exact ⟨h_wf₁, h_beh₁, h_rwf₁, (h_rbeh₁ _).1 h_beh₁,
     h_wf₂, h_beh₂, h_rwf₂, (h_rbeh₂ _).1 h_beh₂⟩
 
+/-- `D17` (intra-crate `.call` and `.sysrootCall` `u16::unchecked_add` ok and
+overflow UB agree in both $M_{\text{anneal}}$ and $M_{\text{ref}}$). -/
+theorem canary_D17_call_and_sysroot_call_base :
+    CanaryD17CallAndSysrootCallClaim := by
+  have h_wp_call : wpProg progDirectCallD17 4 queryU16_19
+      (fun out => out = .returned ⟨scalarNatVal .i16 false 42, ⟨[]⟩⟩) := by
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩; subst hc
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩; subst hc
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩; subst hc
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩; subst hc
+    rfl
+  let ⟨h_sat₁, _, out₁, h_beh₁, h_eq₁⟩ :=
+    wellFormed_and_spec_of_wp progDirectCallD17 queryU16_19 4 _ h_wp_call
+  subst h_eq₁
+  let ⟨h_rwf₁, h_rbeh₁, _⟩ :=
+    anneal_corresponds_to_miri progDirectCallD17 queryU16_19 h_sat₁.1
+  have h_wp_sys_ok : wpProg progSysrootUncheckedAddOkD17 4 queryEmpty
+      (fun out => out = .returned ⟨scalarNatVal .i16 false 42, ⟨[]⟩⟩) := by
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩; subst hc
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩; subst hc
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩; subst hc
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩; subst hc
+    rfl
+  let ⟨h_sat₂, _, out₂, h_beh₂, h_eq₂⟩ :=
+    wellFormed_and_spec_of_wp progSysrootUncheckedAddOkD17 queryEmpty 4 _ h_wp_sys_ok
+  subst h_eq₂
+  let ⟨h_rwf₂, h_rbeh₂, _⟩ :=
+    anneal_corresponds_to_miri progSysrootUncheckedAddOkD17 queryEmpty h_sat₂.1
+  have h_wp_sys_ub :
+      wpFaultProg progSysrootUncheckedAddUbD17 2 queryEmpty .undefined := by
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩; subst hc
+    refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩; subst hc
+    rfl
+  let ⟨h_ub₃, _, _, _, h_nwf₃⟩ := reaches_fault_and_exclusive_of_wpFault
+    progSysrootUncheckedAddUbD17 queryEmpty 2 .undefined h_wp_sys_ub
+  have h_ref_ub₃ := (reachesResult_fault_iff_refReachesOutcome
+    progSysrootUncheckedAddUbD17 queryEmpty .undefined).1 h_ub₃
+  exact ⟨h_sat₁.1, h_beh₁, h_rwf₁, (h_rbeh₁ _).1 h_beh₁,
+    h_sat₂.1, h_beh₂, h_rwf₂, (h_rbeh₂ _).1 h_beh₂,
+    h_ub₃, h_nwf₃, h_ref_ub₃⟩
+
 end Anneal.MirCorrespondence

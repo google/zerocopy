@@ -618,16 +618,126 @@ theorem evalTerminator_frame_retag (body : Body) (bb : BasicBlock)
               injection hStep with hEq; subst hEq
               exact ⟨_, rfl, h_id⟩
             | cons _ _ => exact ⟨(fun _ h => by cases h), rfl⟩
-  | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+  | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _ | coreCall _ _ _ _ _
+  | sysrootCall _ _ _ _ _ | unsupported =>
     exact ⟨(fun _ h => by cases h), rfl⟩
+
+private theorem basicBlocks_getElem_hasCall_false
+    {bbs : List BasicBlock} {blk : BasicBlockId} {bb : BasicBlock}
+    (h_nocall : bbs.any (fun b =>
+      match b.terminator with
+      | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ => true
+      | _ => false) = false)
+    (h_bb : Trusted.MirSemantics.getElem? bbs blk = some bb) :
+    (match bb.terminator with
+     | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ => true
+     | _ => false) = false := by
+  induction bbs generalizing blk with
+  | nil => cases h_bb
+  | cons b rest ih =>
+    unfold List.any at h_nocall
+    dsimp only at h_nocall
+    cases hOr : (match b.terminator with
+      | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ => true
+      | _ => false)
+    · rw [hOr, Bool.false_or] at h_nocall
+      cases blk with
+      | zero =>
+        injection h_bb with hEq; subst hEq; exact hOr
+      | succ blk' =>
+        exact ih h_nocall h_bb
+    · rw [hOr, Bool.true_or] at h_nocall
+      cases h_nocall
+
+private theorem bodyHasAnyCall_false_of_getElem? {body : Body}
+    {blk : BasicBlockId} {bb : BasicBlock}
+    (h_nocall : bodyHasAnyCall body = false)
+    (h_bb : Trusted.MirSemantics.getElem? body.basicBlocks blk = some bb) :
+    (match bb.terminator with
+     | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ => true
+     | _ => false) = false :=
+  basicBlocks_getElem_hasCall_false h_nocall h_bb
+
+/-- Every body in a list whose entries are all call-free has
+`bodyHasAnyCall body = false`. -/
+theorem bodyHasAnyCall_false_of_all {bodies : List Body} {defId : DefId}
+    {body : Body}
+    (h_body : Trusted.MirSemantics.getElem? bodies defId = some body)
+    (h_all : bodies.all (fun b => !bodyHasAnyCall b) = true) :
+    bodyHasAnyCall body = false := by
+  induction bodies generalizing defId with
+  | nil => cases h_body
+  | cons b rest ih =>
+    unfold List.all at h_all
+    dsimp only at h_all
+    cases hNot : !bodyHasAnyCall b with
+    | false => rw [hNot, Bool.false_and] at h_all; cases h_all
+    | true =>
+      rw [hNot, Bool.true_and] at h_all
+      cases defId with
+      | zero =>
+        injection h_body with hEq; subst hEq
+        cases hCall : bodyHasAnyCall b with
+        | false => rfl
+        | true => rw [hCall] at hNot; cases hNot
+      | succ idx => exact ih h_body h_all
+
+/-- Any body whose `basicBlocks` equals a call-free list `bbs` has
+`bodyHasAnyCall body = false`. -/
+theorem bodyHasAnyCall_false_of_basicBlocks {body : Body}
+    {bbs : List BasicBlock} (h_bbs : body.basicBlocks = bbs)
+    (h_no : bbs.any (fun b =>
+      match b.terminator with
+      | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ => true
+      | _ => false) = false) :
+    bodyHasAnyCall body = false := by
+  unfold bodyHasAnyCall
+  rw [h_bbs]
+  exact h_no
+
+private def retagStepResult (defId : DefId) :
+    StepResult State TerminalOut → StepResult State TerminalOut
+  | .step next => .step (retagDefId defId next)
+  | .done out => .done out
+  | .fault k => .fault k
+
+private theorem evalStep_attachCallers_nil_pair
+    {defId : DefId} {r₁ r₂ : StepResult State TerminalOut}
+    (h_inv : ∀ s', r₁ = .step s' → IsSingleFrame0 s')
+    (h_eq : r₂ = retagStepResult defId r₁) :
+    (∀ s', attachCallers [] r₁ = .step s' → IsSingleFrame0 s') ∧
+    attachCallers [] r₂ = retagStepResult defId (attachCallers [] r₁) := by
+  rw [h_eq]
+  cases r₁ with
+  | fault k => exact ⟨(fun _ h => by cases h), rfl⟩
+  | done out => exact ⟨(fun _ h => by cases h), rfl⟩
+  | step next =>
+    let ⟨f', hf', h_id'⟩ := h_inv next rfl
+    cases next with
+    | mk frames cm mem =>
+      dsimp only at hf'
+      subst hf'
+      refine ⟨?_, rfl⟩
+      intro s' hs'
+      dsimp only [attachCallers] at hs'
+      injection hs' with hEq
+      subst hEq
+      exact ⟨f', rfl, h_id'⟩
 
 /-- Combined single-step `IsSingleFrame0` preservation and `retagDefId`
 simulation between `evalStep (bodyProg body) 0` and
-`evalStep (entryProgForBody p defId) 0`. -/
+`evalStep (entryProgForBody p defId) 0` for call-free bodies. -/
 theorem evalStep_entryProg_frame {p : Program} {defId : DefId} {body : Body}
     {s : State}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
-    (h_f0 : IsSingleFrame0 s) :
+    (h_f0 : IsSingleFrame0 s)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     (∀ s', evalStep (bodyProg body) 0 s = .step s' → IsSingleFrame0 s') ∧
     evalStep (entryProgForBody p defId) 0 (retagDefId defId s) =
       match evalStep (bodyProg body) 0 s with
@@ -639,61 +749,147 @@ theorem evalStep_entryProg_frame {p : Program} {defId : DefId} {body : Body}
   | mk frames cm mem =>
     dsimp only at hf
     subst hf
-    unfold bodyProg evalStep retagDefId entryProgForBody
-    dsimp only
-    rw [h_body, h_id]
-    dsimp only [Trusted.MirSemantics.getElem?]
-    cases Trusted.MirSemantics.getElem? body.basicBlocks f.blockIdx with
-    | none => exact ⟨(fun _ h => by cases h), rfl⟩
-    | some bb =>
-      dsimp only
-      cases Trusted.MirSemantics.getElem? bb.statements f.stmtIdx with
-      | some stmt =>
-        exact evalStatement_frame_retag body defId f mem cm stmt h_id
-      | none =>
+    cases h_sys : f.sysrootOp? with
+    | some op =>
+      unfold bodyProg evalStep retagDefId entryProgForBody
+      dsimp only [activeFrameBody]
+      rw [h_sys]
+      dsimp only [Trusted.MirSemantics.getElem?]
+      cases h_bb : Trusted.MirSemantics.getElem? (sysrootNumBody op).basicBlocks
+          f.blockIdx with
+      | none => exact ⟨(fun _ h => by cases h), rfl⟩
+      | some bb =>
         dsimp only
-        cases Nat.beq f.stmtIdx bb.statements.length with
-        | false => exact ⟨(fun _ h => by cases h), rfl⟩
-        | true =>
-          exact evalTerminator_frame_retag body bb defId f mem cm h_id
+        cases Trusted.MirSemantics.getElem? bb.statements f.stmtIdx with
+        | some stmt =>
+          have h_st := evalStatement_frame_retag (sysrootNumBody op) defId f mem cm
+            stmt h_id
+          rw [h_sys] at h_st
+          exact evalStep_attachCallers_nil_pair h_st.1 h_st.2
+        | none =>
+          dsimp only
+          cases Nat.beq f.stmtIdx bb.statements.length with
+          | false => exact ⟨(fun _ h => by cases h), rfl⟩
+          | true =>
+            rw [ite_bool_true rfl]
+            have hTerm := evalTerminator_frame_retag (sysrootNumBody op) bb defId
+              f mem cm h_id
+            rw [h_sys] at hTerm
+            cases hT : bb.terminator with
+            | call _ _ _ _ _ | sysrootCall _ _ _ _ _ =>
+              cases hBl : f.blockIdx with
+              | zero =>
+                rw [hBl] at h_bb
+                dsimp [sysrootNumBody, Trusted.MirSemantics.getElem?] at h_bb
+                injection h_bb with hEq
+                rw [← hEq] at hT
+                cases hT
+              | succ _ =>
+                rw [hBl] at h_bb
+                dsimp [sysrootNumBody, Trusted.MirSemantics.getElem?] at h_bb
+                cases h_bb
+            | return_ =>
+              exact hTerm
+            | goto _ | switchInt _ _ | unreachable | unwindResume
+            | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+              exact evalStep_attachCallers_nil_pair hTerm.1 hTerm.2
+    | none =>
+      unfold bodyProg evalStep retagDefId entryProgForBody
+      dsimp only [activeFrameBody]
+      rw [h_sys, h_body, h_id]
+      dsimp only [Trusted.MirSemantics.getElem?]
+      cases h_bb : Trusted.MirSemantics.getElem? body.basicBlocks f.blockIdx with
+      | none => exact ⟨(fun _ h => by cases h), rfl⟩
+      | some bb =>
+        dsimp only
+        cases Trusted.MirSemantics.getElem? bb.statements f.stmtIdx with
+        | some stmt =>
+          have h_st := evalStatement_frame_retag body defId f mem cm stmt h_id
+          rw [h_sys] at h_st
+          exact evalStep_attachCallers_nil_pair h_st.1 h_st.2
+        | none =>
+          dsimp only
+          cases Nat.beq f.stmtIdx bb.statements.length with
+          | false => exact ⟨(fun _ h => by cases h), rfl⟩
+          | true =>
+            rw [ite_bool_true rfl]
+            have hNoCallBB := bodyHasAnyCall_false_of_getElem? h_nocall h_bb
+            have hTerm := evalTerminator_frame_retag body bb defId f mem cm h_id
+            rw [h_sys] at hTerm
+            cases hT : bb.terminator with
+            | call _ _ _ _ _ => rw [hT] at hNoCallBB; cases hNoCallBB
+            | sysrootCall _ _ _ _ _ => rw [hT] at hNoCallBB; cases hNoCallBB
+            | return_ =>
+              exact hTerm
+            | goto _ | switchInt _ _ | unreachable | unwindResume
+            | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+              exact evalStep_attachCallers_nil_pair hTerm.1 hTerm.2
 
-/-- `IsSingleFrame0` is preserved by a single-body step. -/
+/-- `IsSingleFrame0` is preserved by a single-body step for call-free bodies. -/
 theorem isSingleFrame0_of_step {body : Body} {s s' : State}
     (h_f0 : IsSingleFrame0 s)
-    (h_step : evalStep (bodyProg body) 0 s = .step s') :
+    (h_step : evalStep (bodyProg body) 0 s = .step s')
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     IsSingleFrame0 s' :=
-  (evalStep_entryProg_frame (p := bodyProg body) (defId := 0) rfl h_f0).1
-    s' h_step
+  (evalStep_entryProg_frame (p := bodyProg body) (defId := 0) rfl h_f0
+    h_nocall).1 s' h_step
 
-/-- Every state reachable from a single-frame `defId = 0` state is again a
-single frame at `defId = 0`. -/
+/-- Every state reachable from a single-frame `defId = 0` state in a call-free
+body is again a single frame at `defId = 0`. -/
 theorem isSingleFrame0_of_reach {body : Body} {start s : State}
     (h_start : IsSingleFrame0 start)
-    (h_reach : Reach body start s) :
+    (h_reach : Reach body start s)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     IsSingleFrame0 s := by
   induction h_reach with
   | refl => exact h_start
-  | next _ h_step ih => exact isSingleFrame0_of_step ih h_step
+  | next _ h_step ih => exact isSingleFrame0_of_step ih h_step h_nocall
 
 /-- `evalStep (entryProgForBody p defId) 0` commutes with `retagDefId defId` on
-single-frame `defId = 0` states. -/
+single-frame `defId = 0` states for call-free bodies. -/
 theorem evalStep_retagDefId {p : Program} {defId : DefId} {body : Body}
     {s : State}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
-    (h_f0 : IsSingleFrame0 s) :
+    (h_f0 : IsSingleFrame0 s)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     evalStep (entryProgForBody p defId) 0 (retagDefId defId s) =
       match evalStep (bodyProg body) 0 s with
       | .step next => .step (retagDefId defId next)
       | .done out => .done out
       | .fault k => .fault k :=
-  (evalStep_entryProg_frame h_body h_f0).2
+  (evalStep_entryProg_frame h_body h_f0 h_nocall).2
 
 /-- Exact equivalence of `execOutcomeState` across `retagDefId` between
-`entryProgForBody p defId` and `bodyProg body`. -/
+`entryProgForBody p defId` and `bodyProg body` for call-free bodies. -/
 theorem execOutcomeState_entryProg_iff {p : Program} {defId : DefId}
     {body : Body} {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
-    {fuel : Nat} {s : State} (h_f0 : IsSingleFrame0 s) :
+    {fuel : Nat} {s : State} (h_f0 : IsSingleFrame0 s)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     execOutcomeState (entryProgForBody p defId) onDone onFault fuel
       (retagDefId defId s) ↔
     execOutcomeState (bodyProg body) onDone onFault fuel s :=
@@ -701,23 +897,30 @@ theorem execOutcomeState_entryProg_iff {p : Program} {defId : DefId}
     (step₁ := evalStep (bodyProg body) 0)
     (step₂ := evalStep (entryProgForBody p defId) 0)
     (Inv := IsSingleFrame0) (map := retagDefId defId)
-    (fun _ s' hF hS => (evalStep_entryProg_frame h_body hF).1 s' hS)
+    (fun _ s' hF hS => (evalStep_entryProg_frame h_body hF h_nocall).1 s' hS)
     (fun st hF => by
-      have he := (evalStep_entryProg_frame h_body hF).2
+      have he := (evalStep_entryProg_frame h_body hF h_nocall).2
       cases hEv : evalStep (bodyProg body) 0 st <;> rw [hEv] at he <;> exact he)
     h_f0
 
 /-- Exact equivalence of `wpOutcomeState` across `retagDefId` between
-`entryProgForBody p defId` and `bodyProg body`. -/
+`entryProgForBody p defId` and `bodyProg body` for call-free bodies. -/
 theorem wpOutcomeState_entryProg_iff {p : Program} {defId : DefId}
     {body : Body} {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
-    {fuel : Nat} {s : State} (h_f0 : IsSingleFrame0 s) :
+    {fuel : Nat} {s : State} (h_f0 : IsSingleFrame0 s)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     wpOutcomeState (entryProgForBody p defId) onDone onFault fuel
       (retagDefId defId s) ↔
     wpOutcomeState (bodyProg body) onDone onFault fuel s :=
   wpOutcomeState_iff_execOutcomeState.trans
-    ((execOutcomeState_entryProg_iff h_body h_f0).trans
+    ((execOutcomeState_entryProg_iff h_body h_f0 h_nocall).trans
       wpOutcomeState_iff_execOutcomeState.symm)
 
 /-- Entry initialization equation specialized to `entryProgForBody p defId`,
@@ -739,7 +942,14 @@ theorem reach_of_reaches_entryProg {p : Program} {defId : DefId} {body : Body}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
     (h_start : IsSingleFrame0 start)
     (h_reaches :
-      Reaches (entryProgForBody p defId) (retagDefId defId start) s_d) :
+      Reaches (entryProgForBody p defId) (retagDefId defId start) s_d)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     ∃ s : State, s_d = retagDefId defId s ∧ Reach body start s := by
   induction h_reaches with
   | refl => exact ⟨start, rfl, .refl⟩
@@ -748,8 +958,8 @@ theorem reach_of_reaches_entryProg {p : Program} {defId : DefId} {body : Body}
     let ⟨c, hc, h_eval⟩ := h_step
     subst hc
     subst hs
-    have h_f0 := isSingleFrame0_of_reach h_start h_reach_s
-    rw [evalStep_retagDefId h_body h_f0] at h_eval
+    have h_f0 := isSingleFrame0_of_reach h_start h_reach_s h_nocall
+    rw [evalStep_retagDefId h_body h_f0 h_nocall] at h_eval
     cases h_st : evalStep (bodyProg body) 0 s with
     | step next =>
       rw [h_st] at h_eval
@@ -764,15 +974,22 @@ theorem reaches_entryProg_of_reach {p : Program} {defId : DefId} {body : Body}
     {start s : State}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
     (h_start : IsSingleFrame0 start)
-    (h_reach : Reach body start s) :
+    (h_reach : Reach body start s)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     Reaches (entryProgForBody p defId) (retagDefId defId start)
       (retagDefId defId s) := by
   induction h_reach with
   | refl => exact .refl _
   | next h_prev h_st ih =>
-    have h_f0 := isSingleFrame0_of_reach h_start h_prev
+    have h_f0 := isSingleFrame0_of_reach h_start h_prev h_nocall
     refine .tail ih ⟨0, rfl, ?_⟩
-    rw [evalStep_retagDefId h_body h_f0, h_st]
+    rw [evalStep_retagDefId h_body h_f0 h_nocall, h_st]
 
 /-- Establish per-invocation `WellFormed (entryProgForBody p defId)` from
 single-body `Safe body args`. -/
@@ -781,7 +998,14 @@ theorem wellFormed_entryProg_of_safe {p : Program} {defId : DefId}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
     (h_adm : BodyStaticAdmitted p body = true)
     (h_args : ValidEntryArgs body args)
-    (h_safe : Safe body args) :
+    (h_safe : Safe body args)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     WellFormed (entryProgForBody p defId) { args := args } := by
   have h_init := initState_entryProgForBody h_body h_adm h_args
   refine ⟨⟨_, h_init, ?_⟩, ?_⟩
@@ -794,11 +1018,11 @@ theorem wellFormed_entryProg_of_safe {p : Program} {defId : DefId}
     subst hc
     let ⟨s, hs, h_reach_s⟩ :=
       reach_of_reaches_entryProg h_body (isSingleFrame0_mkState 0 0 _)
-        h_reaches
+        h_reaches h_nocall
     subst hs
     have h_f0 :=
-      isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) h_reach_s
-    rw [evalStep_retagDefId h_body h_f0] at h_eval
+      isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) h_reach_s h_nocall
+    rw [evalStep_retagDefId h_body h_f0 h_nocall] at h_eval
     cases h_st : evalStep (bodyProg body) 0 s with
     | step _ => rw [h_st] at h_eval; cases h_eval
     | done _ => rw [h_st] at h_eval; cases h_eval
@@ -816,10 +1040,18 @@ theorem bodyVerified_of_safe {p : Program} {defId : DefId} {body : Body}
     (h_safe : ∀ args : List Val,
       ValidEntryArgs body args →
       (body.isUnsafe = true → safetyPre args) →
-      Safe body args) :
+      Safe body args)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     BodyVerified p defId body safetyPre :=
   ⟨h_body, h_adm, fun args h_args h_req =>
-    wellFormed_entryProg_of_safe h_body h_adm h_args (h_safe args h_args h_req)⟩
+    wellFormed_entryProg_of_safe h_body h_adm h_args (h_safe args h_args h_req)
+      h_nocall⟩
 
 /-- Establish `Behavior (entryProgForBody p defId)` from single-body `Returns`.
 -/
@@ -828,17 +1060,26 @@ theorem behavior_of_returns {p : Program} {defId : DefId} {body : Body}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
     (h_adm : BodyStaticAdmitted p body = true)
     (h_args : ValidEntryArgs body args)
-    (h_ret : Returns body args ret) :
+    (h_ret : Returns body args ret)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     Behavior (entryProgForBody p defId) { args := args }
       (.returned ⟨ret, ⟨[]⟩⟩) := by
   let ⟨s, h_reach, h_done⟩ := h_ret
   unfold Behavior ReachesResult
   rw [initState_entryProgForBody h_body h_adm h_args]
   refine ⟨retagDefId defId s,
-    reaches_entryProg_of_reach h_body (isSingleFrame0_mkState 0 0 _) h_reach,
+    reaches_entryProg_of_reach h_body (isSingleFrame0_mkState 0 0 _) h_reach
+      h_nocall,
     0, rfl, ?_⟩
   have h_f0 := isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) h_reach
-  rw [evalStep_retagDefId h_body h_f0, h_done]
+    h_nocall
+  rw [evalStep_retagDefId h_body h_f0 h_nocall, h_done]
 
 /-- Invert `initState (entryProgForBody p defId) { args := args } = .ok s₀` into
 `ValidEntryArgs body args` and the retagged entry state of `body` on `args`. -/
@@ -849,33 +1090,66 @@ theorem initState_entryProgForBody_ok {p : Program} {defId : DefId}
     ValidEntryArgs body args ∧
       s₀ = retagDefId defId
         (mkState 0 0 (initLocalsLoop body args 0 body.locals)) := by
-  unfold initState entryProgForBody at h_init
+  unfold initState at h_init
   unfold ValidEntryArgs mkState retagDefId
   dsimp only at h_init
   dsimp only
+  rw [show (entryProgForBody p defId).pointerWidthBits = p.pointerWidthBits from rfl,
+    show (entryProgForBody p defId).mirProfileVersion = p.mirProfileVersion from rfl,
+    show (entryProgForBody p defId).bodies = p.bodies from rfl,
+    show (entryProgForBody p defId).entryDefId = defId from rfl] at h_init
+  cases h1 : Nat.beq p.pointerWidthBits 64
+  · rw [ite_bool_true (by rw [h1]; rfl)] at h_init; cases h_init
+  cases h2 : Nat.beq p.mirProfileVersion 1
+  · rw [ite_bool_true (by rw [h1, h2]; rfl)] at h_init; cases h_init
+  rw [ite_bool_false (by rw [h1, h2]; rfl)] at h_init
+  rw [ite_bool_false (rfl : (!([].isEmpty)) = false)] at h_init
   rw [h_body] at h_init
   dsimp only at h_init
-  cases h1 : Nat.beq p.pointerWidthBits 64 <;>
-    cases h2 : Nat.beq p.mirProfileVersion 1 <;>
-    cases h3 : body.basicBlocks.isEmpty <;>
-    cases h4 : Nat.blt body.argumentCount body.locals.length <;>
-    cases h5 : storageAnnotationsInBounds body <;>
-    cases h5d : discriminantTypesValid body <;>
-    cases h5c : castTypesValid body <;>
-    cases h6 : body.locals.all isSupportedScalarOrUnitTy <;>
-    cases h7 : checkArgsMatch args
-      ((body.locals.drop 1).take body.argumentCount) <;>
-    rw [h1, h2, h3, h4, h5, h5d, h5c, h6, h7] at h_init <;>
-    cases h_init
-  exact ⟨rfl, rfl⟩
+  cases h3 : body.basicBlocks.isEmpty
+  · rw [ite_bool_false h3] at h_init
+    cases h4 : Nat.blt body.argumentCount body.locals.length
+    · rw [ite_bool_true (by rw [h4]; rfl)] at h_init; cases h_init
+    rw [ite_bool_false (by rw [h4]; rfl)] at h_init
+    cases h5 : storageAnnotationsInBounds body
+    · rw [ite_bool_true (by rw [h5]; rfl)] at h_init; cases h_init
+    rw [ite_bool_false (by rw [h5]; rfl)] at h_init
+    cases h5d : discriminantTypesValid body
+    · rw [ite_bool_true (by rw [h5d]; rfl)] at h_init; cases h_init
+    rw [ite_bool_false (by rw [h5d]; rfl)] at h_init
+    cases h5c : castTypesValid body
+    · rw [ite_bool_true (by rw [h5c]; rfl)] at h_init; cases h_init
+    rw [ite_bool_false (by rw [h5c]; rfl)] at h_init
+    cases h6 : body.locals.all isSupportedScalarOrUnitTy
+    · rw [ite_bool_true (by rw [h6]; rfl)] at h_init; cases h_init
+    rw [ite_bool_false (by rw [h6]; rfl)] at h_init
+    cases h6c : callsAdmitted (entryProgForBody p defId) body
+    · rw [ite_bool_true (by rw [h6c]; rfl)] at h_init; cases h_init
+    rw [ite_bool_false (by rw [h6c]; rfl)] at h_init
+    cases h6a : allCallBodiesStaticAdmitted (entryProgForBody p defId) body
+    · rw [ite_bool_true (by rw [h6a]; rfl)] at h_init; cases h_init
+    rw [ite_bool_false (by rw [h6a]; rfl)] at h_init
+    cases h7 : checkArgsMatch args ((body.locals.drop 1).take body.argumentCount)
+    · rw [ite_bool_true (by rw [h7]; rfl)] at h_init; cases h_init
+    rw [ite_bool_false (by rw [h7]; rfl)] at h_init
+    injection h_init with hs
+    exact ⟨rfl, hs.symm⟩
+  · rw [ite_bool_true h3] at h_init; cases h_init
 
 /-- Invert `Behavior (entryProgForBody p defId)` into `ValidEntryArgs` and
-single-body `Returns`. -/
+single-body `Returns` for call-free bodies. -/
 theorem returns_of_behavior {p : Program} {defId : DefId} {body : Body}
     {args : List Val} {ret : Val}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
     (h_beh : Behavior (entryProgForBody p defId) { args := args }
-      (.returned ⟨ret, ⟨[]⟩⟩)) :
+      (.returned ⟨ret, ⟨[]⟩⟩))
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     ValidEntryArgs body args ∧ Returns body args ret := by
   unfold Behavior ReachesResult at h_beh
   cases h_init : initState (entryProgForBody p defId) { args := args } with
@@ -888,10 +1162,11 @@ theorem returns_of_behavior {p : Program} {defId : DefId} {body : Body}
     subst hc
     let ⟨s, hs, h_reach⟩ :=
       reach_of_reaches_entryProg h_body (isSingleFrame0_mkState 0 0 _)
-        h_reaches
+        h_reaches h_nocall
     subst hs
     have h_f0 := isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) h_reach
-    rw [evalStep_retagDefId h_body h_f0] at h_eval
+      h_nocall
+    rw [evalStep_retagDefId h_body h_f0 h_nocall] at h_eval
     cases h_st : evalStep (bodyProg body) 0 s with
     | step _ => rw [h_st] at h_eval; cases h_eval
     | fault _ => rw [h_st] at h_eval; cases h_eval
@@ -909,7 +1184,14 @@ theorem not_behavior_of_no_done {p : Program} {defId : DefId} {body : Body}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
     (h_no_done : ∀ s,
       Reach body (mkState 0 0 (initLocalsLoop body args 0 body.locals)) s →
-      evalStep (bodyProg body) 0 s ≠ .done out) :
+      evalStep (bodyProg body) 0 s ≠ .done out)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     ¬ Behavior (entryProgForBody p defId) { args := args } out := by
   intro h_beh
   unfold Behavior ReachesResult at h_beh
@@ -923,10 +1205,11 @@ theorem not_behavior_of_no_done {p : Program} {defId : DefId} {body : Body}
     subst hc
     let ⟨s, hs, h_reach⟩ :=
       reach_of_reaches_entryProg h_body (isSingleFrame0_mkState 0 0 _)
-        h_reaches
+        h_reaches h_nocall
     subst hs
     have h_f0 := isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) h_reach
-    rw [evalStep_retagDefId h_body h_f0] at h_eval
+      h_nocall
+    rw [evalStep_retagDefId h_body h_f0 h_nocall] at h_eval
     cases h_st : evalStep (bodyProg body) 0 s with
     | step _ => rw [h_st] at h_eval; cases h_eval
     | fault _ => rw [h_st] at h_eval; cases h_eval
@@ -946,7 +1229,14 @@ theorem diverges_of_productiveInvariant {p : Program} {defId : DefId}
     (h_adm : BodyStaticAdmitted p body = true)
     (h_args : ValidEntryArgs body args)
     (h_inv : ProductiveInvariant body
-      (mkState 0 0 (initLocalsLoop body args 0 body.locals)) invariant) :
+      (mkState 0 0 (initLocalsLoop body args 0 body.locals)) invariant)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     Diverges (entryProgForBody p defId) { args := args } ∧
     ∀ out, ¬ Behavior (entryProgForBody p defId) { args := args } out := by
   let next : State → State := fun s =>
@@ -980,15 +1270,16 @@ theorem diverges_of_productiveInvariant {p : Program} {defId : DefId}
       exact ⟨hNextInv, .next ih.2.1 ih.2.2, hNext _ s'' hs''⟩
   refine ⟨?_, fun out => not_behavior_of_no_done h_body
     (fun s hReach =>
-      (safeFrom_and_no_done_of_productiveInvariant h_inv).2 s out hReach)⟩
+      (safeFrom_and_no_done_of_productiveInvariant h_inv).2 s out hReach)
+    h_nocall⟩
   refine ⟨_, initState_entryProgForBody h_body h_adm h_args,
     fun n => retagDefId defId (iter n), rfl, ?_⟩
   intro n
   refine ⟨0, rfl, ?_⟩
   have hStepN := hIter n
   have hF0 :=
-    isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) hStepN.2.1
-  rw [evalStep_retagDefId h_body hF0, hStepN.2.2]
+    isSingleFrame0_of_reach (isSingleFrame0_mkState 0 0 _) hStepN.2.1 h_nocall
+  rw [evalStep_retagDefId h_body hF0 h_nocall, hStepN.2.2]
 
 /-! ## Part IV: 64-Bit Scalar / Bitwise Assignment Steps and Range Indexing -/
 
@@ -1025,9 +1316,12 @@ evaluates to `out`. -/
     (overrideVal : Val) (next : State) : Prop :=
   match s.frames with
   | [frame] =>
-    match Nat.beq frame.defId 0 with
-    | false => False
-    | true =>
+    match frame.sysrootOp? with
+    | some _ => False
+    | none =>
+      match Nat.beq frame.defId 0 with
+      | false => False
+      | true =>
       match Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx with
       | none => False
       | some bb =>
@@ -1100,100 +1394,110 @@ private theorem step_eq_evalAssignWith_of_truncate {body : Body}
       rw [h_fr] at h_val h_next
       dsimp only at h_val h_next
       dsimp only
-      cases h_def : Nat.beq frame.defId 0 with
-      | false => rw [h_def] at h_next; cases h_next
-      | true =>
-        rw [h_def] at h_next
+      cases h_sys : frame.sysrootOp? with
+      | some _ => rw [h_sys] at h_next; cases h_next
+      | none =>
+        rw [h_sys] at h_next
         dsimp only at h_next
-        have h_def0 : frame.defId = 0 := Nat.eq_of_beq_eq_true h_def
-        rw [h_def0]
-        rw [show Trusted.MirSemantics.getElem? [body] 0 = some body from rfl]
-        dsimp only
-        cases h_bb :
-            Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx with
-        | none => rw [h_bb] at h_next; cases h_next
-        | some bb =>
-          rw [h_bb] at h_val h_next
-          dsimp only at h_val h_next
+        cases h_def : Nat.beq frame.defId 0 with
+        | false => rw [h_def] at h_next; cases h_next
+        | true =>
+          rw [h_def] at h_next
+          dsimp only at h_next
+          have h_def0 : frame.defId = 0 := Nat.eq_of_beq_eq_true h_def
+          unfold activeFrameBody
+          rw [h_sys, h_def0]
+          rw [show Trusted.MirSemantics.getElem? [body] 0 = some body from rfl]
           dsimp only
-          cases h_st :
-              Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx with
-          | none => rw [h_st] at h_next; cases h_next
-          | some stmt =>
-            rw [h_st] at h_val h_next
+          cases h_bb :
+              Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx with
+          | none => rw [h_bb] at h_next; cases h_next
+          | some bb =>
+            rw [h_bb] at h_val h_next
+            dsimp only at h_val h_next
             dsimp only
-            cases stmt with
-            | nop | storageLive _ | storageDead _ | unsupported =>
-              cases h_next
-            | assign dst rvalue =>
-              dsimp only at h_val h_next
-              unfold evalStatement
+            cases h_st :
+                Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx with
+            | none => rw [h_st] at h_next; cases h_next
+            | some stmt =>
+              rw [h_st] at h_val h_next
               dsimp only
-              cases h_proj : dst.projection.isEmpty with
-              | false => rw [h_proj] at h_next; cases h_next
-              | true =>
-                rw [h_proj] at h_next
-                rw [ite_bool_false (rfl : (!true) = false)]
-                dsimp only at h_next
-                cases h_dst :
-                    Trusted.MirSemantics.getElem? body.locals dst.localId with
-                | none => rw [h_dst] at h_next; cases h_next
-                | some dstTy =>
-                  rw [h_dst] at h_val h_next
-                  dsimp only at h_val h_next
-                  dsimp only
-                  cases h_ty : MirTy.beq dstTy (.int .i64 false) with
-                  | false => rw [h_ty] at h_next; cases h_next
-                  | true =>
-                    rw [h_ty] at h_next
-                    dsimp only at h_next
-                    have h_ty_eq := MirTy.beq_iff.mp h_ty
-                    subst h_ty_eq
-                    cases h_rv : evalRvalue body.locals frame.locals s.mem
-                        (.int .i64 false) rvalue with
-                    | error k => rw [h_rv] at h_val; cases h_val
-                    | ok triple =>
-                      cases triple with
-                      | mk v_rv rest =>
-                        cases rest with
-                        | mk localsAfterRval memAfterRval =>
-                          rw [h_rv] at h_val h_next
-                          dsimp only at h_val h_next
-                          dsimp only
-                          have h_vw : v_rv = .scalar ⟨.i64, false, bits⟩ :=
-                            h_val.trans h_eq
-                          rw [h_vw]
-                          unfold writePlace
-                          rw [ite_bool_false (by
-                            rw [checkVal_int_iff.mpr ⟨bits, rfl, h_trunc⟩]
-                            rfl)]
-                          cases h_slot : Trusted.MirSemantics.getElem?
-                              localsAfterRval dst.localId with
-                          | none => rw [h_slot] at h_next; cases h_next
-                          | some slot =>
-                            rw [h_slot] at h_next
-                            cases slot with
-                            | dead => cases h_next
-                            | partialTuple _ => cases h_next
-                            | immediate _ =>
-                              dsimp only at h_next
-                              dsimp only
-                              cases h_set : setElem? localsAfterRval dst.localId
-                                  (.immediate (some (.scalar ⟨.i64, false, bits⟩))) with
-                              | none => rw [h_set] at h_next; cases h_next
-                              | some localsAfterWrite =>
-                                rw [h_set] at h_next
-                                exact h_next
-                            | indirect mplace =>
-                              dsimp only at h_next
-                              dsimp only
-                              cases h_store : storeIndirect memAfterRval
-                                  (.int .i64 false) mplace
-                                  (.scalar ⟨.i64, false, bits⟩) with
-                              | error k => rw [h_store] at h_next; cases h_next
-                              | ok memAfterWrite =>
-                                rw [h_store] at h_next
-                                exact h_next
+              cases stmt with
+              | nop | storageLive _ | storageDead _ | unsupported =>
+                cases h_next
+              | assign dst rvalue =>
+                dsimp only at h_val h_next
+                unfold evalStatement
+                dsimp only
+                cases h_proj : dst.projection.isEmpty with
+                | false => rw [h_proj] at h_next; cases h_next
+                | true =>
+                  rw [h_proj] at h_next
+                  rw [ite_bool_false (rfl : (!true) = false)]
+                  dsimp only at h_next
+                  cases h_dst :
+                      Trusted.MirSemantics.getElem? body.locals dst.localId with
+                  | none => rw [h_dst] at h_next; cases h_next
+                  | some dstTy =>
+                    rw [h_dst] at h_val h_next
+                    dsimp only at h_val h_next
+                    dsimp only
+                    cases h_ty : MirTy.beq dstTy (.int .i64 false) with
+                    | false => rw [h_ty] at h_next; cases h_next
+                    | true =>
+                      rw [h_ty] at h_next
+                      dsimp only at h_next
+                      have h_ty_eq := MirTy.beq_iff.mp h_ty
+                      subst h_ty_eq
+                      cases h_rv : evalRvalue body.locals frame.locals s.mem
+                          (.int .i64 false) rvalue with
+                      | error k => rw [h_rv] at h_val; cases h_val
+                      | ok triple =>
+                        cases triple with
+                        | mk v_rv rest =>
+                          cases rest with
+                          | mk localsAfterRval memAfterRval =>
+                            rw [h_rv] at h_val h_next
+                            dsimp only at h_val h_next
+                            dsimp only
+                            have h_vw : v_rv = .scalar ⟨.i64, false, bits⟩ :=
+                              h_val.trans h_eq
+                            rw [h_vw]
+                            unfold writePlace
+                            rw [ite_bool_false (by
+                              rw [checkVal_int_iff.mpr ⟨bits, rfl, h_trunc⟩]
+                              rfl)]
+                            cases h_slot : Trusted.MirSemantics.getElem?
+                                localsAfterRval dst.localId with
+                            | none => rw [h_slot] at h_next; cases h_next
+                            | some slot =>
+                              rw [h_slot] at h_next
+                              cases slot with
+                              | dead => cases h_next
+                              | partialTuple _ => cases h_next
+                              | immediate _ =>
+                                dsimp only at h_next
+                                dsimp only
+                                cases h_set : setElem? localsAfterRval dst.localId
+                                    (.immediate (some (.scalar ⟨.i64, false, bits⟩))) with
+                                | none => rw [h_set] at h_next; cases h_next
+                                | some localsAfterWrite =>
+                                  rw [h_set] at h_next
+                                  rw [h_sys]
+                                  dsimp only [attachCallers]
+                                  exact h_next
+                              | indirect mplace =>
+                                dsimp only at h_next
+                                dsimp only
+                                cases h_store : storeIndirect memAfterRval
+                                    (.int .i64 false) mplace
+                                    (.scalar ⟨.i64, false, bits⟩) with
+                                | error k => rw [h_store] at h_next; cases h_next
+                                | ok memAfterWrite =>
+                                  rw [h_store] at h_next
+                                  rw [h_sys]
+                                  dsimp only [attachCallers]
+                                  exact h_next
 
 /-- Rewrite a symbolic `evalStep` for a `u64` assignment using an equivalent
 normalized `BitVec 64` result. -/

@@ -500,16 +500,18 @@ private theorem evalStep_assign_ok (body : Body) (bb : BasicBlock)
     (hTy : Trusted.MirSemantics.getElem? body.locals dstId = some dstTy)
     (hRv : evalRvalue body.locals frame.locals mem dstTy rv =
       .ok (v, locs₁, mem₁))
-    (hWr : writePlace locs₁ mem₁ dstId dstTy v = .ok (locs₂, mem₂)) :
+    (hWr : writePlace locs₁ mem₁ dstId dstTy v = .ok (locs₂, mem₂))
+    (hSys : frame.sysrootOp? = none := by rfl) :
     evalStep (Anneal.MirWp.bodyProg body) 0 ⟨[frame], cm, mem⟩ =
       .step ⟨[{ frame with stmtIdx := frame.stmtIdx + 1, locals := locs₂ }],
         cm, mem₂⟩ := by
   unfold evalStep
   dsimp only
   have hBody :
-      Trusted.MirSemantics.getElem? (Anneal.MirWp.bodyProg body).bodies
-        frame.defId = some body := by
-    rw [hDef]; rfl
+      activeFrameBody (Anneal.MirWp.bodyProg body) frame = some body := by
+    unfold activeFrameBody
+    rw [hSys, hDef]
+    rfl
   rw [hBody]
   dsimp only
   rw [hBb]
@@ -534,15 +536,17 @@ private theorem evalStep_return_immediate (body : Body) (bb : BasicBlock)
     (hClean : bb.cleanup = false)
     (hTerm : bb.terminator = .return_)
     (hLoc0 : Trusted.MirSemantics.getElem? frame.locals 0 =
-      some (.immediate (some rv))) :
+      some (.immediate (some rv)))
+    (hSys : frame.sysrootOp? = none := by rfl) :
     evalStep (Anneal.MirWp.bodyProg body) 0 ⟨[frame], cm, mem⟩ =
       .done (.returned ⟨rv, cm⟩) := by
   unfold evalStep
   dsimp only
   have hBody :
-      Trusted.MirSemantics.getElem? (Anneal.MirWp.bodyProg body).bodies
-        frame.defId = some body := by
-    rw [hDef]; rfl
+      activeFrameBody (Anneal.MirWp.bodyProg body) frame = some body := by
+    unfold activeFrameBody
+    rw [hSys, hDef]
+    rfl
   rw [hBody]
   dsimp only
   rw [hBb]
@@ -1310,7 +1314,8 @@ theorem seal_f1Normal_callSpecCut :
                                    .indirect ⟨1, 0⟩, .indirect ⟨1, 4⟩,
                                    .immediate (some (.scalar ⟨.i32, false,
                                      BitVec.ofNat 128 0x32000042⟩)),
-                                   .immediate none]⟩], cm0, m3⟩ := by
+                                   .immediate none], none, none, none⟩],
+                                cm0, m3⟩ := by
                           refine evalStep_assign_ok bodyF1Normal _ _ cm0 m2 m2
                             m3 3 u32Ty
                             (.binaryOp .add (.copy ⟨3, []⟩) (mkU32Const 6))
@@ -1361,8 +1366,8 @@ theorem seal_f1Normal_callSpecCut :
                                    .immediate (some (.scalar ⟨.i32, false,
                                      BitVec.ofNat 128 0x32000042⟩)),
                                    .immediate (some (.scalar ⟨.i32, false,
-                                     BitVec.ofNat 128 0x64000084⟩))]⟩],
-                                cm0, m3⟩ := by
+                                     BitVec.ofNat 128 0x64000084⟩))],
+                                  none, none, none⟩], cm0, m3⟩ := by
                           refine evalStep_assign_ok bodyF1Normal _ _ cm0 m3 m3
                             m3 5 u32Ty
                             (.binaryOp .add (.copy ⟨2, []⟩) (.copy ⟨4, []⟩))
@@ -1418,8 +1423,8 @@ theorem seal_f1Normal_callSpecCut :
                                    .immediate (some (.scalar ⟨.i32, false,
                                      BitVec.ofNat 128 0x32000042⟩)),
                                    .immediate (some (.scalar ⟨.i32, false,
-                                     BitVec.ofNat 128 0x64000084⟩))]⟩],
-                                cm0, m3⟩ := by
+                                     BitVec.ofNat 128 0x64000084⟩))],
+                                  none, none, none⟩], cm0, m3⟩ := by
                           refine evalStep_assign_ok bodyF1Normal _ _ cm0 m3 m3
                             m3 0 u32Ty
                             (.binaryOp .add (.copy ⟨5, []⟩) (.copy ⟨3, []⟩))
@@ -1845,7 +1850,7 @@ theorem nested3Level_normal_call_framing_sound :
     ∃ (mOut : MemoryState),
       StackReaches implTableNormal
         (.running ⟨lensF0, [specF1Normal], bodyF0Normal,
-          ⟨0, 0, 0, mkLocalsF0 lensF0⟩⟩ [] mInit16 ⟨[]⟩)
+          ⟨0, 0, 0, mkLocalsF0 lensF0, none, none, none⟩⟩ [] mInit16 ⟨[]⟩)
         (.terminated (.returned
           (.scalar ⟨.i32, false, BitVec.ofNat 128 0xD60000F4⟩) mOut)) ∧
       UpdatesOnly lensF1 mInit16 mOut ∧
@@ -1866,8 +1871,9 @@ theorem nested3Level_normal_call_framing_sound :
       mkU32Bytes4 0xC4 0xC5 0xC6 0xC7, true⟩
     rfl rfl rfl rfl rfl
   cases wpFrameOutcome_implies_stackExecutes implTableNormal 2 [specF1Normal]
-      callCutTree_normal_2 lensF0 bodyF0Normal 6 ⟨0, 0, 0, mkLocalsF0 lensF0⟩
-      mInit16 ⟨[]⟩ _ hWp with
+      callCutTree_normal_2 lensF0 bodyF0Normal 6
+        ⟨0, 0, 0, mkLocalsF0 lensF0, none, none, none⟩
+        mInit16 ⟨[]⟩ _ hWp with
   | intro out hOut =>
     cases out with
     | unwound _ => exact False.elim hOut.2
@@ -1951,7 +1957,7 @@ theorem callCont4_exit_matrix_sound :
     (∃ mAbort out,
       StackReaches (implLookup [(201, implAbortCallee, [])])
         (.running ⟨lensF1, [specAbortCallee], bodyAbortCaller,
-          ⟨0, 0, 0, [.immediate none]⟩⟩ [] mInit16 ⟨[]⟩)
+          ⟨0, 0, 0, [.immediate none], none, none, none⟩⟩ [] mInit16 ⟨[]⟩)
         (.terminated out) ∧
       out = .abortTerminate mAbort ∧
       readBytes mAbort ⟨1, 0⟩ 4 2 = .ok (mkU32Bytes4 0xA0 0xA1 0xA2 0xA3)) := by
@@ -2359,8 +2365,8 @@ theorem seal_f1Unwind_callSpecCut :
                                    .immediate (some (.scalar ⟨.i32, false,
                                      BitVec.ofNat 128 0x10000010⟩)),
                                    .indirect ⟨1, 0⟩, .indirect ⟨1, 4⟩,
-                                   .immediate none, .immediate none]⟩],
-                                cm0, m3⟩ := by
+                                   .immediate none, .immediate none],
+                                  none, none, none⟩], cm0, m3⟩ := by
                           refine evalStep_assign_ok bodyF1Unwind _ _ cm0 m2 m2
                             m3 3 u32Ty (.use (mkU32Const 0xDEADF101))
                             (.scalar ⟨.i32, false, BitVec.ofNat 128 0xDEADF101⟩)
@@ -2628,7 +2634,7 @@ theorem nested2Level_unwind_cleanup_propagation_sound :
     ∃ (mOut : MemoryState),
       StackReaches implTableUnwind
         (.running ⟨lensF0, [specF1Unwind], bodyF0Unwind,
-          ⟨0, 0, 0, mkLocalsF0 lensF0⟩⟩ [] mInit16 ⟨[]⟩)
+          ⟨0, 0, 0, mkLocalsF0 lensF0, none, none, none⟩⟩ [] mInit16 ⟨[]⟩)
         (.terminated (.unwound mOut)) ∧
       UpdatesOnly lensF1 mInit16 mOut ∧
       readBytes mOut ⟨1, 0⟩ 4 2 = .ok (mkU32Bytes4 0x0B 0xAD 0xF2 0x99) ∧
@@ -2649,8 +2655,9 @@ theorem nested2Level_unwind_cleanup_propagation_sound :
       mkU32Bytes4 0xC4 0xC5 0xC6 0xC7, true⟩
     rfl rfl rfl rfl rfl
   cases wpFrameOutcome_implies_stackExecutes implTableUnwind 2 [specF1Unwind]
-      callCutTree_unwind_2 lensF0 bodyF0Unwind 7 ⟨0, 0, 0, mkLocalsF0 lensF0⟩
-      mInit16 ⟨[]⟩ _ hWp with
+      callCutTree_unwind_2 lensF0 bodyF0Unwind 7
+        ⟨0, 0, 0, mkLocalsF0 lensF0, none, none, none⟩
+        mInit16 ⟨[]⟩ _ hWp with
   | intro out hOut =>
     cases out with
     | returned _ _ => exact False.elim hOut.2
@@ -2877,7 +2884,7 @@ theorem canary_skip_f1_cleanup_violates_f0_precond :
     ∃ (mSkip : MemoryState) (postSkip : List AllocByte),
       StackReaches implTableSkip
         (.running ⟨lensF0, [specF1Skip], bodyF0Skip,
-          ⟨0, 0, 0, mkLocalsF0 lensF0⟩⟩ [] mInit16 ⟨[]⟩)
+          ⟨0, 0, 0, mkLocalsF0 lensF0, none, none, none⟩⟩ [] mInit16 ⟨[]⟩)
         (.terminated (.abortTerminate mSkip)) ∧
       byteSubLensGet lensF1 mSkip = some postSkip ∧
       specF1Unwind.ensuresUnwindBool [] postSkip [] = false ∧
@@ -3020,8 +3027,9 @@ theorem canary_skip_f1_cleanup_violates_f0_precond :
               rw [hPostBs1Eq]
               rfl
   cases wpFrameOutcome_implies_stackExecutes implTableSkip 2 [specF1Skip]
-      callCutTree_skip_2 lensF0 bodyF0Skip 5 ⟨0, 0, 0, mkLocalsF0 lensF0⟩
-      mInit16 ⟨[]⟩ _ hWpSkip with
+      callCutTree_skip_2 lensF0 bodyF0Skip 5
+        ⟨0, 0, 0, mkLocalsF0 lensF0, none, none, none⟩
+        mInit16 ⟨[]⟩ _ hWpSkip with
   | intro out hOut =>
     cases out with
     | returned _ _ => exact False.elim hOut.2

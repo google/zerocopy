@@ -4157,7 +4157,7 @@ cleanup `.return_`, uninitialized `_0`, and unsupported terminators. -/
       | none => none
     | _ => none
   | .unreachable | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _
-  | .coreCall _ _ _ _ _ | .unsupported => none
+  | .coreCall _ _ _ _ _ | .sysrootCall _ _ _ _ _ | .unsupported => none
 
 /-- 1-step soundness of `stepTermAbs` against `MirSemantics.evalTerminator`. -/
 theorem stepTermAbs_sound {body : Body} {bb : BasicBlock} {frame : FrameState}
@@ -4373,7 +4373,7 @@ theorem stepTermAbs_sound {body : Body} {bb : BasicBlock} {frame : FrameState}
             | enumVal _ _ | tuple _ | bytes _ =>
               exact False.elim hR.2.1.2.2
   | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
-  | coreCall _ _ _ _ _ | unsupported =>
+  | coreCall _ _ _ _ _ | sysrootCall _ _ _ _ _ | unsupported =>
     dsimp only [stepTermAbs] at hTerm
     rw [hT] at hTerm
     nomatch hTerm

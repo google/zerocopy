@@ -27,7 +27,7 @@ abbrev D : LocalSlot := .dead
 /-- Single-frame state at statement `i` of block `b` of body `0`. -/
 abbrev st (b i : Nat) (l : List LocalSlot) (cm : CallerMemory)
     (m : MemoryState) : State :=
-  ⟨[⟨0, b, i, l⟩], cm, m⟩
+  ⟨[⟨0, b, i, l, none, none, none⟩], cm, m⟩
 
 /-! ## Stepping -/
 
@@ -128,7 +128,7 @@ theorem initStateV2_ok {p : Program} {body : Body} {args : List Val}
     (hLocs : body.locals.all isSupportedV2LocalTy = true)
     (hValid : ValidEntryArgsV2 body ⟨args, cm⟩) :
     initStateV2 p ⟨args, cm⟩ = .ok ⟨[⟨p.entryDefId, 0, 0,
-      initLocalsLoop body args 0 body.locals⟩], cm,
+      initLocalsLoop body args 0 body.locals, none, none, none⟩], cm,
       entryMemoryWithCaller cm⟩ := by
   let ⟨hCM, hArgs, hRefs, hDisj⟩ := hValid
   unfold initStateV2

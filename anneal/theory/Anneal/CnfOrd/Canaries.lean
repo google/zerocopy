@@ -215,7 +215,7 @@ private theorem lexReset_step_inner_switch (acc outRem resetB : Nat) {k : Nat}
   have hSw : evalSwitchBranches .i32 (BitVec.ofNat 128 (k + 1)) 2
       [(BitVec.ofNat 128 0, 3)] = .ok 2 :=
     evalSwitchBranches_single_ne rfl (switch_beq_false_u32 hk)
-  exact evalTerminator_switchInt_scalar
+  exact congrArg (attachCallers []) (evalTerminator_switchInt_scalar
     (body := lexResetBody) (bb := lexResetInnerHeader)
     (frame := frameAt 1 0
       [u32Slot acc, u32Slot outRem, u32Slot (k + 1), u32Slot resetB])
@@ -224,7 +224,7 @@ private theorem lexReset_step_inner_switch (acc outRem resetB : Nat) {k : Nat}
     (sv := ⟨.i32, false, BitVec.ofNat 128 (k + 1)⟩)
     (ls := [u32Slot acc, u32Slot outRem, u32Slot (k + 1), u32Slot resetB])
     (m := entryMemory) (m₁ := entryMemory) (cm := ⟨[]⟩)
-    rfl rfl hSw
+    rfl rfl hSw)
 
 private theorem lexReset_step_inner_dec (acc outRem resetB : Nat) {k : Nat}
     (hk : k + 1 < Nat.pow 2 32) :
@@ -255,12 +255,12 @@ private theorem lexReset_step_inner_dec (acc outRem resetB : Nat) {k : Nat}
     cases hC : checkVal (u32Val k) u32Ty with
     | false => rw [hC] at hChk; cases hChk
     | true => rfl
-  exact evalStatement_assign_binaryOp
+  exact congrArg (attachCallers []) (evalStatement_assign_binaryOp
     (body := lexResetBody)
     (frame := frameAt 2 0
       [u32Slot acc, u32Slot outRem, u32Slot (k + 1), u32Slot resetB])
     (dst := ⟨2, []⟩) (dstTy := u32Ty) (cm := ⟨[]⟩)
-    rfl rfl hRv hW
+    rfl rfl hRv hW)
 
 private theorem lexReset_step_outer_switch (acc resetB : Nat) {m : Nat}
     (hm : m + 1 < Nat.pow 2 32) :
@@ -272,7 +272,7 @@ private theorem lexReset_step_outer_switch (acc resetB : Nat) {m : Nat}
   have hSw : evalSwitchBranches .i32 (BitVec.ofNat 128 (m + 1)) 4
       [(BitVec.ofNat 128 0, 5)] = .ok 4 :=
     evalSwitchBranches_single_ne rfl (switch_beq_false_u32 hm)
-  exact evalTerminator_switchInt_scalar
+  exact congrArg (attachCallers []) (evalTerminator_switchInt_scalar
     (body := lexResetBody) (bb := lexResetOuterHeader)
     (frame := frameAt 3 0
       [u32Slot acc, u32Slot (m + 1), u32Slot 0, u32Slot resetB])
@@ -281,7 +281,7 @@ private theorem lexReset_step_outer_switch (acc resetB : Nat) {m : Nat}
     (sv := ⟨.i32, false, BitVec.ofNat 128 (m + 1)⟩)
     (ls := [u32Slot acc, u32Slot (m + 1), u32Slot 0, u32Slot resetB])
     (m := entryMemory) (m₁ := entryMemory) (cm := ⟨[]⟩)
-    rfl rfl hSw
+    rfl rfl hSw)
 
 private theorem lexReset_step_outer_dec (acc resetB : Nat) {m : Nat}
     (hm : m + 1 < Nat.pow 2 32) :
@@ -312,12 +312,12 @@ private theorem lexReset_step_outer_dec (acc resetB : Nat) {m : Nat}
     cases hC : checkVal (u32Val m) u32Ty with
     | false => rw [hC] at hChk; cases hChk
     | true => rfl
-  exact evalStatement_assign_binaryOp
+  exact congrArg (attachCallers []) (evalStatement_assign_binaryOp
     (body := lexResetBody)
     (frame := frameAt 4 0
       [u32Slot acc, u32Slot (m + 1), u32Slot 0, u32Slot resetB])
     (dst := ⟨1, []⟩) (dstTy := u32Ty) (cm := ⟨[]⟩)
-    rfl rfl hRv hW
+    rfl rfl hRv hW)
 
 private theorem lexReset_step_reset_inner (acc m : Nat) {resetB : Nat}
     (hr : resetB < Nat.pow 2 32) :
@@ -336,12 +336,12 @@ private theorem lexReset_step_reset_inner (acc m : Nat) {resetB : Nat}
     cases hC : checkVal (u32Val resetB) u32Ty with
     | false => rw [hC] at hChk; cases hChk
     | true => rfl
-  exact evalStatement_assign_copy_u32
+  exact congrArg (attachCallers []) (evalStatement_assign_copy_u32
     (body := lexResetBody)
     (frame := frameAt 4 1
       [u32Slot acc, u32Slot m, u32Slot 0, u32Slot resetB])
     (dstIdx := 2) (srcOp := .copy ⟨3, []⟩) (cm := ⟨[]⟩)
-    rfl rfl hW
+    rfl rfl hW)
 
 private theorem lexReset_step_inc_acc (m resetB : Nat) {acc : Nat}
     (hAcc : acc + 1 < Nat.pow 2 32) :
@@ -371,12 +371,12 @@ private theorem lexReset_step_inc_acc (m resetB : Nat) {acc : Nat}
     cases hC : checkVal (u32Val (acc + 1)) u32Ty with
     | false => rw [hC] at hChk; cases hChk
     | true => rfl
-  exact evalStatement_assign_binaryOp
+  exact congrArg (attachCallers []) (evalStatement_assign_binaryOp
     (body := lexResetBody)
     (frame := frameAt 4 2
       [u32Slot acc, u32Slot m, u32Slot resetB, u32Slot resetB])
     (dst := ⟨0, []⟩) (dstTy := u32Ty) (cm := ⟨[]⟩)
-    rfl rfl hRv hW
+    rfl rfl hRv hW)
 
 private theorem lexResetRawRank_at (acc outRem inRem resetB : Nat)
     (ho : outRem < Nat.pow 2 32) (hi : inRem < Nat.pow 2 32) :

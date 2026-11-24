@@ -667,6 +667,82 @@ theorem refute_step_v2_assert_failure_faults :
       ⟨0, rfl, rfl⟩⟩
   exact ⟨hReach, fun hWf => hWf.2 .unsupported hReach⟩
 
+/-! The run below is split into one declaration per state so that no single
+proof has to evaluate all seven steps of `progOverflowAddV2`. -/
+
+/-- `progOverflowAddV2` called with `x = 254`. -/
+noncomputable def queryOverflowAdd254 : Query :=
+  { args := [.scalar ⟨.i8, false, BitVec.ofNat 128 254⟩] }
+
+/-- Entry state of `progOverflowAddV2` on `queryOverflowAdd254`. -/
+noncomputable def overflowAdd254S0 : State :=
+  match initStateV2 progOverflowAddV2 queryOverflowAdd254 with
+  | .ok s => s
+  | .error _ => { frames := [], mem := MemoryState.empty }
+
+/-- Successor of `s` under `progOverflowAddV2` (or `s` itself when the step
+does not continue). -/
+noncomputable def overflowAdd254Next (s : State) : State :=
+  match evalStepV2 progOverflowAddV2 s with
+  | .step s' => s'
+  | _ => s
+
+noncomputable def overflowAdd254S1 : State :=
+  overflowAdd254Next overflowAdd254S0
+noncomputable def overflowAdd254S2 : State :=
+  overflowAdd254Next overflowAdd254S1
+noncomputable def overflowAdd254S3 : State :=
+  overflowAdd254Next overflowAdd254S2
+noncomputable def overflowAdd254S4 : State :=
+  overflowAdd254Next overflowAdd254S3
+noncomputable def overflowAdd254S5 : State :=
+  overflowAdd254Next overflowAdd254S4
+noncomputable def overflowAdd254S6 : State :=
+  overflowAdd254Next overflowAdd254S5
+
+/-- Terminal output of the final step from `overflowAdd254S6`. -/
+noncomputable def overflowAdd254Out : Out :=
+  match evalStepV2 progOverflowAddV2 overflowAdd254S6 with
+  | .done (.returned out) => out
+  | _ => ⟨.unit, ⟨[]⟩⟩
+
+theorem overflowAdd254_init :
+    initStateV2 progOverflowAddV2 queryOverflowAdd254 = .ok overflowAdd254S0 :=
+  rfl
+
+theorem overflowAdd254_step1 :
+    StepV2 progOverflowAddV2 overflowAdd254S0 (.step overflowAdd254S1) :=
+  ⟨0, rfl, rfl⟩
+
+theorem overflowAdd254_step2 :
+    StepV2 progOverflowAddV2 overflowAdd254S1 (.step overflowAdd254S2) :=
+  ⟨0, rfl, rfl⟩
+
+theorem overflowAdd254_step3 :
+    StepV2 progOverflowAddV2 overflowAdd254S2 (.step overflowAdd254S3) :=
+  ⟨0, rfl, rfl⟩
+
+theorem overflowAdd254_step4 :
+    StepV2 progOverflowAddV2 overflowAdd254S3 (.step overflowAdd254S4) :=
+  ⟨0, rfl, rfl⟩
+
+theorem overflowAdd254_step5 :
+    StepV2 progOverflowAddV2 overflowAdd254S4 (.step overflowAdd254S5) :=
+  ⟨0, rfl, rfl⟩
+
+theorem overflowAdd254_step6 :
+    StepV2 progOverflowAddV2 overflowAdd254S5 (.step overflowAdd254S6) :=
+  ⟨0, rfl, rfl⟩
+
+theorem overflowAdd254_done :
+    StepV2 progOverflowAddV2 overflowAdd254S6
+      (.done (.returned overflowAdd254Out)) :=
+  ⟨0, rfl, rfl⟩
+
+theorem overflowAdd254_ret :
+    overflowAdd254Out.ret = .scalar ⟨.i8, false, BitVec.ofNat 128 255⟩ :=
+  rfl
+
 /-- Anti-overreach canary: `progOverflowAddV2` with `x = 254` passes its
 overflow assert and returns `255`. -/
 theorem positive_step_v2_overflow_assert_passes :
@@ -675,17 +751,262 @@ theorem positive_step_v2_overflow_assert_passes :
         { args := [.scalar ⟨.i8, false, BitVec.ofNat 128 254⟩] }
         (.done (.returned out)) ∧
       out.ret = .scalar ⟨.i8, false, BitVec.ofNat 128 255⟩ := by
-  apply Exists.intro
-  constructor
-  · unfold ReachesResultV2
-    change ∃ s : State, ReachesV2 progOverflowAddV2 _ s ∧
-      StepV2 progOverflowAddV2 s _
-    exact ⟨_,
-      ReachesV2.tail (ReachesV2.tail (ReachesV2.tail (ReachesV2.tail
-        (ReachesV2.tail (ReachesV2.tail (ReachesV2.refl _)
-          ⟨0, rfl, rfl⟩) ⟨0, rfl, rfl⟩) ⟨0, rfl, rfl⟩) ⟨0, rfl, rfl⟩)
-        ⟨0, rfl, rfl⟩) ⟨0, rfl, rfl⟩,
-      ⟨0, rfl, rfl⟩⟩
-  · rfl
+  refine ⟨overflowAdd254Out, ?_, overflowAdd254_ret⟩
+  change ReachesResultV2 progOverflowAddV2 queryOverflowAdd254 _
+  unfold ReachesResultV2
+  rw [overflowAdd254_init]
+  exact ⟨_,
+    ReachesV2.tail (ReachesV2.tail (ReachesV2.tail (ReachesV2.tail
+      (ReachesV2.tail (ReachesV2.tail (ReachesV2.refl _)
+        overflowAdd254_step1) overflowAdd254_step2) overflowAdd254_step3)
+      overflowAdd254_step4) overflowAdd254_step5) overflowAdd254_step6,
+    overflowAdd254_done⟩
+
+/-- Two-frame program calling a `u32`-returning helper whose `_0` remains
+uninitialized on `.return_`. -/
+noncomputable def progNonRootRetUninit : Program where
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [
+    {
+      identity := "entry"
+      argumentCount := 0
+      locals := [u32Ty]
+      basicBlocks := [
+        {
+          statements := []
+          terminator := .call 1 [] ⟨0, []⟩ (some 1) .continue_
+        },
+        {
+          statements := []
+          terminator := .return_
+        }
+      ]
+    },
+    {
+      identity := "callee"
+      argumentCount := 0
+      locals := [u32Ty]
+      basicBlocks := [{ statements := [], terminator := .return_ }]
+    }
+  ]
+
+/-- Guard `step_nonroot_return_uninit_or_dead`: `evalNonRootReturn` faults
+with `.undefined` when a callee executes `.return_` with an uninitialized or
+dead `_0`. -/
+theorem refute_step_nonroot_return_uninit_or_dead :
+    ReachesResult progNonRootRetUninit queryEmpty (.fault .undefined) ∧
+    ¬ WellFormed progNonRootRetUninit queryEmpty :=
+  refutes_wf_of_execFault (fuel := 3) rfl
+
+/-- Two-frame program executing a diverging `.call` (`target := none`) whose
+callee returns normally. -/
+noncomputable def progNonRootRetNoneTarget : Program where
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [
+    {
+      identity := "entry"
+      argumentCount := 0
+      locals := [u32Ty]
+      basicBlocks := [
+        {
+          statements := []
+          terminator := .call 1 [] ⟨0, []⟩ none .continue_
+        }
+      ]
+    },
+    {
+      identity := "callee"
+      argumentCount := 0
+      locals := [u32Ty]
+      basicBlocks := [
+        {
+          statements := [
+            .assign ⟨0, []⟩
+              (.use (.constant ⟨u32Ty, .scalar (BitVec.ofNat 128 42)⟩))
+          ]
+          terminator := .return_
+        }
+      ]
+    }
+  ]
+
+/-- Guard `step_nonroot_return_none_target`: `evalNonRootReturn` faults with
+`.undefined` when a callee returns from a call whose caller supplied
+`target := none`. -/
+theorem refute_step_nonroot_return_none_target :
+    ReachesResult progNonRootRetNoneTarget queryEmpty (.fault .undefined) ∧
+    ¬ WellFormed progNonRootRetNoneTarget queryEmpty :=
+  refutes_wf_of_execFault (fuel := 3) rfl
+
+/-- Single-frame program invoking `u16::unchecked_add(65535, 1)` via
+`TerminatorKind.sysrootCall`. -/
+noncomputable def progSysrootAddUbRefute : Program where
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [
+    {
+      identity := "entry"
+      argumentCount := 0
+      locals := [.int .i16 false]
+      basicBlocks := [
+        {
+          statements := []
+          terminator := .sysrootCall
+            { kind := .uncheckedAdd, width := .i16, signed := false }
+            [.constant ⟨.int .i16 false, .scalar (BitVec.ofNat 128 65535)⟩,
+             .constant ⟨.int .i16 false, .scalar (BitVec.ofNat 128 1)⟩]
+            ⟨0, []⟩ (some 1) .continue_
+        },
+        {
+          statements := []
+          terminator := .return_
+        }
+      ]
+    }
+  ]
+
+/-- Guard `state_sysroot_unchecked_add_ub`: `sysrootNumBinOp .uncheckedAdd` maps
+to `.addUnchecked`, so overflowing `u16::unchecked_add` faults `.undefined`. -/
+theorem refute_state_sysroot_unchecked_add_ub :
+    ReachesResult progSysrootAddUbRefute queryEmpty (.fault .undefined) ∧
+    ¬ WellFormed progSysrootAddUbRefute queryEmpty :=
+  refutes_wf_of_execFault (fuel := 4) rfl
+
+/-- Single-frame program invoking `u16::unchecked_sub(0, 1)` via
+`TerminatorKind.sysrootCall`. -/
+noncomputable def progSysrootSubUbRefute : Program where
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [
+    {
+      identity := "entry"
+      argumentCount := 0
+      locals := [.int .i16 false]
+      basicBlocks := [
+        {
+          statements := []
+          terminator := .sysrootCall
+            { kind := .uncheckedSub, width := .i16, signed := false }
+            [.constant ⟨.int .i16 false, .scalar (BitVec.ofNat 128 0)⟩,
+             .constant ⟨.int .i16 false, .scalar (BitVec.ofNat 128 1)⟩]
+            ⟨0, []⟩ (some 1) .continue_
+        },
+        {
+          statements := []
+          terminator := .return_
+        }
+      ]
+    }
+  ]
+
+/-- Guard `state_sysroot_unchecked_sub_ub`: `sysrootNumBinOp .uncheckedSub` maps
+to `.subUnchecked`, so underflowing `u16::unchecked_sub` faults `.undefined`. -/
+theorem refute_state_sysroot_unchecked_sub_ub :
+    ReachesResult progSysrootSubUbRefute queryEmpty (.fault .undefined) ∧
+    ¬ WellFormed progSysrootSubUbRefute queryEmpty :=
+  refutes_wf_of_execFault (fuel := 4) rfl
+
+/-- Single-frame program invoking `u16::unchecked_mul(256, 256)` via
+`TerminatorKind.sysrootCall`. -/
+noncomputable def progSysrootMulUbRefute : Program where
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [
+    {
+      identity := "entry"
+      argumentCount := 0
+      locals := [.int .i16 false]
+      basicBlocks := [
+        {
+          statements := []
+          terminator := .sysrootCall
+            { kind := .uncheckedMul, width := .i16, signed := false }
+            [.constant ⟨.int .i16 false, .scalar (BitVec.ofNat 128 256)⟩,
+             .constant ⟨.int .i16 false, .scalar (BitVec.ofNat 128 256)⟩]
+            ⟨0, []⟩ (some 1) .continue_
+        },
+        {
+          statements := []
+          terminator := .return_
+        }
+      ]
+    }
+  ]
+
+/-- Guard `state_sysroot_unchecked_mul_ub`: `sysrootNumBinOp .uncheckedMul` maps
+to `.mulUnchecked`, so overflowing `u16::unchecked_mul` faults `.undefined`. -/
+theorem refute_state_sysroot_unchecked_mul_ub :
+    ReachesResult progSysrootMulUbRefute queryEmpty (.fault .undefined) ∧
+    ¬ WellFormed progSysrootMulUbRefute queryEmpty :=
+  refutes_wf_of_execFault (fuel := 4) rfl
+
+/-- Two-frame program in which a safe entry body calls an intra-crate
+`unsafe fn` that returns normally. -/
+noncomputable def progUnsafeCalleeRefute : Program where
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [
+    {
+      identity := "entry"
+      argumentCount := 0
+      locals := [u32Ty]
+      basicBlocks := [
+        {
+          statements := []
+          terminator := .call 1 [] ⟨0, []⟩ (some 1) .continue_
+        },
+        {
+          statements := []
+          terminator := .return_
+        }
+      ]
+    },
+    {
+      identity := "callee"
+      isUnsafe := true
+      argumentCount := 0
+      locals := [u32Ty]
+      basicBlocks := [
+        {
+          statements := [
+            .assign ⟨0, []⟩
+              (.use (.constant ⟨u32Ty, .scalar (BitVec.ofNat 128 7)⟩))]
+          terminator := .return_
+        }
+      ]
+    }
+  ]
+
+/-- Guard `state_calls_admitted_unsafe_callee`: `callsAdmitted` rejects an
+intra-crate `.call` to an `unsafe fn`, so `initState` fails closed with
+`.unsupported` instead of running the callee without its safety contract. -/
+theorem refute_state_calls_admitted_unsafe_callee :
+    ReachesResult progUnsafeCalleeRefute queryEmpty (.fault .unsupported) ∧
+    ¬ WellFormed progUnsafeCalleeRefute queryEmpty :=
+  refutes_wf_of_execFault (fuel := 4) rfl
+
+/-- Guard `step_nonroot_return_indirect_local`: `evalNonRootReturn` fails
+closed with `.unsupported` when the popped callee frame still holds an
+`.indirect` stack allocation, rather than leaking it. -/
+theorem refute_step_nonroot_return_indirect_local :
+    evalNonRootReturn progNonRootRetUninit
+      { identity := "callee", argumentCount := 0, locals := [u32Ty],
+        basicBlocks := [{ statements := [], terminator := .return_ }] }
+      { statements := [], terminator := .return_ }
+      { defId := 1, blockIdx := 0, stmtIdx := 0,
+        locals := [.immediate (some (.scalar ⟨.i32, false, BitVec.ofNat 128 7⟩)),
+          .indirect ⟨1, 0⟩],
+        retDst? := some ⟨0, []⟩, retTarget? := some 1 }
+      { defId := 0, blockIdx := 0, stmtIdx := 0, locals := [.immediate none] }
+      [] entryMemory ⟨[]⟩ = .fault .unsupported :=
+  rfl
 
 end GuardMutation

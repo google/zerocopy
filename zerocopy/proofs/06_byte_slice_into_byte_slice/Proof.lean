@@ -445,7 +445,7 @@ theorem initStateV2_ok_of {p : Program} {q : Query} {body : Body}
     (hDisj : spansPairwiseDisjoint (refAccessSpansList
       ((body.locals.drop 1).take body.argumentCount) q.args) = true) :
     initStateV2 p q = .ok ⟨[⟨p.entryDefId, 0, 0,
-      initLocalsLoop body q.args 0 body.locals⟩],
+      initLocalsLoop body q.args 0 body.locals, none, none, none⟩],
       q.callerMem, entryMemoryWithCaller q.callerMem⟩ := by
   unfold initStateV2
   rw [hPW, hPV, hCM, hEntry]
@@ -552,7 +552,8 @@ theorem body0_correct (q : Query)
       initStateV2 (entryProgForBody Captured.program 0)
         ⟨[.slicePtr ptr len], q.callerMem⟩ =
       .ok (State.mk [FrameState.mk 0 0 0
-        [.immediate none, .immediate (some (.slicePtr ptr len))]]
+        [.immediate none, .immediate (some (.slicePtr ptr len))]
+        none none none]
         q.callerMem m) := by
     have hRefsList :
         refsValidInMemList m
@@ -623,7 +624,8 @@ theorem body1_correct (q : Query)
       initStateV2 (entryProgForBody Captured.program 1)
         ⟨[.slicePtr ptr len], q.callerMem⟩ =
       .ok (State.mk [FrameState.mk 1 0 0
-        [.immediate none, .immediate (some (.slicePtr ptr len))]]
+        [.immediate none, .immediate (some (.slicePtr ptr len))]
+        none none none]
         q.callerMem m) := by
     have hRefsList :
         refsValidInMemList m
@@ -694,7 +696,8 @@ theorem body2_correct (q : Query)
       initStateV2 (entryProgForBody Captured.program 2)
         ⟨[.slicePtr ptr len], q.callerMem⟩ =
       .ok (State.mk [FrameState.mk 2 0 0
-        [.immediate none, .immediate (some (.slicePtr ptr len)), .dead]]
+        [.immediate none, .immediate (some (.slicePtr ptr len)), .dead]
+        none none none]
         q.callerMem m) := by
     have hRefsList :
         refsValidInMemList m

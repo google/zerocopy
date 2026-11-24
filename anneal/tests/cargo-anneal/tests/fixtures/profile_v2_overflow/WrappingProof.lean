@@ -83,12 +83,14 @@ theorem zero_pair_wellFormed (q : Query)
     dsimp only at hArgs
     subst hArgs
     let P1 := entryProgForBody Captured.program 1
-    let s₀ : State := ⟨[⟨1, 0, 0, [N]⟩], cm, entryMemoryWithCaller cm⟩
+    let s₀ : State :=
+      ⟨[⟨1, 0, 0, [N], none, none, none⟩], cm, entryMemoryWithCaller cm⟩
     have hInit : initStateV2 P1 ⟨[], cm⟩ = .ok s₀ :=
       initStateV2_ok rfl rfl rfl rfl rfl rfl rfl rfl rfl hValid
     have hRuns : Runs P1 (fun o => o = .returned ⟨.tuple [u8 0#128, u8 0#128],
         extractCallerMemory cm (entryMemoryWithCaller cm)⟩) s₀ :=
-      runs_step (s' := ⟨[⟨1, 0, 1, [im (.tuple [u8 0#128, u8 0#128])]⟩], cm,
+      runs_step (s' := ⟨[⟨1, 0, 1, [im (.tuple [u8 0#128, u8 0#128])],
+          none, none, none⟩], cm,
         entryMemoryWithCaller cm⟩) rfl (runs_done rfl rfl)
     let ⟨_, hExec⟩ := execProgV2_of_runs hInit hRuns
     exact (spec_and_behaviorV2_of_exec_eq hExec).1

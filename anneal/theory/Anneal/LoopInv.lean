@@ -1093,7 +1093,12 @@ theorem countDown_step_switch (acc : Nat) {k : Nat}
       (sv := ⟨.i32, false, BitVec.ofNat 128 (k + 1)⟩)
       (ls := [u32Slot acc, u32Slot (k + 1)])
       (m₁ := entryMemory) rfl rfl hSw
-  exact hTerm
+  change attachCallers []
+      (evalTerminator countDownBody countDownHeader
+        (frameAt 1 0 [u32Slot acc, u32Slot (k + 1)]) entryMemory ⟨[]⟩) =
+    .step (mkState 2 0 [u32Slot acc, u32Slot (k + 1)])
+  rw [hTerm]
+  rfl
 
 /-- Body step: `_1 = Sub(copy _1, const 1_u32)` on a positive counter. -/
 theorem countDown_step_dec (acc : Nat) {k : Nat}
@@ -1125,7 +1130,13 @@ theorem countDown_step_dec (acc : Nat) {k : Nat}
       countDownDec =
       .step (mkState 2 1 [u32Slot acc, u32Slot k]) :=
     evalStatement_assign_binaryOp (dstTy := u32Ty) rfl rfl hRv hW
-  exact hStmt
+  change attachCallers []
+      (evalStatement countDownBody
+        (frameAt 2 0 [u32Slot acc, u32Slot (k + 1)]) entryMemory ⟨[]⟩
+        countDownDec) =
+    .step (mkState 2 1 [u32Slot acc, u32Slot k])
+  rw [hStmt]
+  rfl
 
 /-- Body step: `_0 = Add(copy _0, const 1_u32)` below `u32::MAX`. -/
 theorem countDown_step_inc (acc k : Nat) (hAcc : acc + 1 < Nat.pow 2 32) :
@@ -1155,7 +1166,12 @@ theorem countDown_step_inc (acc k : Nat) (hAcc : acc + 1 < Nat.pow 2 32) :
       (frameAt 2 1 [u32Slot acc, u32Slot k]) entryMemory ⟨[]⟩ countDownInc =
       .step (mkState 2 2 [u32Slot (acc + 1), u32Slot k]) :=
     evalStatement_assign_binaryOp (dstTy := u32Ty) rfl rfl hRv hW
-  exact hStmt
+  change attachCallers []
+      (evalStatement countDownBody
+        (frameAt 2 1 [u32Slot acc, u32Slot k]) entryMemory ⟨[]⟩ countDownInc) =
+    .step (mkState 2 2 [u32Slot (acc + 1), u32Slot k])
+  rw [hStmt]
+  rfl
 
 /-- Body step: `goto bb1` returns to the loop header. -/
 theorem countDown_step_goto (acc k : Nat) :

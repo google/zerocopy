@@ -104,7 +104,7 @@ private theorem executes_add (b₁ b₂ : BitVec 128)
       .step (mkState 0 5 [.immediate (some vSum), .immediate (some v₁), .immediate (some v₂), .immediate none, .immediate none]) := by
     have hW := write_i32 [.immediate none, .immediate (some v₁), .immediate (some v₂), .immediate none, .immediate none]
       0 bSum hTSum none [.immediate (some vSum), .immediate (some v₁), .immediate (some v₂), .immediate none, .immediate none] rfl rfl
-    unfold evalStep bodyProg evalStatement
+    unfold evalStep bodyProg evalStatement activeFrameBody attachCallers
     dsimp only [Captured.body_0, Trusted.MirSemantics.getElem?, mkState]
     rw [ite_bool_false (rfl : (!([].isEmpty)) = false)]
     rw [hRval]
