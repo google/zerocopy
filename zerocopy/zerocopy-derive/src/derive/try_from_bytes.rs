@@ -70,6 +70,7 @@ fn derive_variant_is_safe<'a>(
         return Ok(quote! { true #(&& #field_checks.is_ok())* });
     }
 
+    let lint_attrs = crate::util::generated_code_lint_attrs();
     let field_bindings = fields
         .iter()
         .enumerate()
@@ -99,6 +100,9 @@ fn derive_variant_is_safe<'a>(
         {
             #(
                 // Retain each shared pointer for subsequent field invariants.
+                // Apply our policy only to this generated-only statement, not
+                // to the caller-authored invariant below it.
+                #lint_attrs
                 #[allow(unused_variables)]
                 let #field_bindings = match #field_checks {
                     #core::result::Result::Ok(#field_bindings) => #field_bindings,
@@ -182,7 +186,7 @@ pub(crate) fn derive_is_safe(
             .read::<#zerocopy_crate::BecauseImmutable>();
     };
     let tag_init = if ctx.invariant_span.is_some() {
-        let allow = crate::util::allow_generated_code();
+        let lint_attrs = crate::util::generated_code_lint_attrs();
         let tag_arms = data.variants.iter().enumerate().map(|(idx, variant)| {
             let tag = tag_ident(&variant.ident);
             quote! { #tag => #core::option::Option::Some(#idx) }
@@ -190,7 +194,7 @@ pub(crate) fn derive_is_safe(
         quote! {
             // Keep implementation-only items and their lint allowances out
             // of the scopes containing caller-authored invariant expressions.
-            #allow
+            #lint_attrs
             let #tag = {
                 #projections
                 #read_tag

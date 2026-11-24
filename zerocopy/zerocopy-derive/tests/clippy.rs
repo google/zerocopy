@@ -6,11 +6,21 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-#![deny(clippy::derive_partial_eq_without_eq)]
+#![forbid(
+    clippy::all,
+    clippy::pedantic,
+    clippy::nursery,
+    clippy::missing_inline_in_public_items,
+    clippy::unwrap_used,
+)]
 
-// Regression test for https://github.com/google/zerocopy/issues/3721. The
-// `TryFromBytes` derive must not emit code that triggers
-// `clippy::derive_partial_eq_without_eq` in downstream crates.
+// Regression test for https://github.com/google/zerocopy/issues/3721 and for
+// generated-code lint hygiene generally. The dedicated downstream-mode Clippy
+// CI step compiles this test without zerocopy's internal generated-code lint
+// mode. These `forbid` settings ensure that production expansions are both
+// Clippy-clean and free of generated Clippy `allow` attributes which would
+// illegally try to lower the caller's lint level. The ordinary zerocopy-derive
+// Clippy step compiles every integration test in internal lint mode.
 use zerocopy_renamed::{Immutable, TryFromBytes};
 
 #[derive(TryFromBytes, Immutable)]

@@ -911,8 +911,20 @@ impl BoolExt for bool {
     }
 }
 
-pub(crate) fn allow_generated_code() -> TokenStream {
-    quote! {
+fn lint_generated_code() -> bool {
+    // This switch affects how the proc macro constructs its output; it is never
+    // emitted into downstream crates. Cargo tracks `option_env!` inputs, so
+    // toggling it rebuilds the proc macro rather than reusing output from the
+    // opposite lint mode.
+    option_env!("__ZEROCOPY_INTERNAL_USE_ONLY_LINT_GENERATED_CODE").is_some()
+}
+
+pub(crate) fn generated_code_lint_attrs() -> TokenStream {
+    // Rustc allowances are part of the existing generated-code compatibility
+    // policy. Do not emit Clippy allowances in ordinary downstream builds:
+    // they would conflict with a caller's `forbid(clippy::...)` even when the
+    // generated code does not trigger that lint.
+    let rustc_allow = quote! {
         #[allow(
             // FIXME(#553): Add a test that generates a warning when
             // `#[allow(deprecated)]` isn't present.
@@ -926,16 +938,30 @@ pub(crate) fn allow_generated_code() -> TokenStream {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::missing_inline_in_public_items,
         )]
+    };
+
+    if lint_generated_code() {
+        quote! {
+            #rustc_allow
+            #[deny(
+                clippy::all,
+                clippy::pedantic,
+                clippy::nursery,
+                // This restriction lint is useful for generated public APIs and
+                // has no contradictory counterpart. See #7.
+                clippy::missing_inline_in_public_items,
+            )]
+        }
+    } else {
+        rustc_allow
     }
 }
-
 pub(crate) fn const_block(items: impl IntoIterator<Item = Option<TokenStream>>) -> TokenStream {
     let items = items.into_iter().flatten();
-    let allow = allow_generated_code();
+    let lint_attrs = generated_code_lint_attrs();
     quote! {
-        #allow
+        #lint_attrs
         #[deny(ambiguous_associated_items)]
         // While there are not currently any warnings that this suppresses
         // (that we're aware of), it's good future-proofing hygiene.
@@ -966,8 +992,8 @@ pub(crate) fn generate_tag_enum(ctx: &Ctx, repr: &EnumRepr, data: &DataEnum) -> 
 
     quote! {
         #repr
-        #[allow(dead_code, clippy::derive_partial_eq_without_eq)]
-        #[derive(Copy, Clone, PartialEq)]
+        #[allow(dead_code)]
+        #[derive(Copy, Clone, PartialEq, Eq)]
         pub enum ___ZerocopyTag {
             #(#variants,)*
         }
