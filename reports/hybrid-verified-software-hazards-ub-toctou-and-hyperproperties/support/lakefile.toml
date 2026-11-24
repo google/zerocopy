@@ -1,0 +1,5 @@
+name = "HybridHyperproperties"
+defaultTargets = ["HybridHyperproperties"]
+
+[[lean_lib]]
+name = "HybridHyperproperties"
