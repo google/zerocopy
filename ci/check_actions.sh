@@ -13,13 +13,14 @@ cd "$(dirname "$0")/.."
 
 script_name="ci/check_actions.sh"
 
-# Ensure action-validator is installed
-if [ ! -x "$HOME/.cargo/bin/action-validator" ]; then
+# Ensure action-validator is installed (reusing a preinstalled binary on PATH in
+# offline sandboxes).
+export PATH="$HOME/.cargo/bin:$PATH"
+if ! command -v action-validator >/dev/null 2>&1; then
     echo "$script_name: action-validator not found, installing..." >&2
     # Install specific version to ensure reproducibility
     cargo install -q action-validator --version 0.8.0 --locked
 fi
-export PATH="$HOME/.cargo/bin:$PATH"
 
 # Files to exclude from validation (e.g., because they are not Actions/Workflows)
 # Use relative paths matching `find .github` output

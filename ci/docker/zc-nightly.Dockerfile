@@ -1,0 +1,125 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+FROM docker.io/library/ubuntu:24.04@sha256:9a04f13b3f80ef056361e30868593b1cfd2279fe19e4081cb93a90bf56819d6a AS tool-builder
+
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
+ARG PIN_RUST_TOOLCHAINS__STABLE
+ARG PIN_RUST_TOOLCHAINS__NIGHTLY
+
+ENV CARGO_NET_RETRY=10 \
+    RUSTUP_MAX_RETRIES=10 \
+    RUSTUP_HOME=/usr/local/rustup \
+    CARGO_HOME=/usr/local/cargo \
+    PATH="/usr/local/cargo/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    build-essential \
+    pkg-config \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL --retry 3 -o /tmp/rustup-init \
+      "https://static.rust-lang.org/rustup/archive/1.29.3/x86_64-unknown-linux-gnu/rustup-init" && \
+    echo "b1c8cb14e30889e7e2999e6b69e62d9e9b9ffc0f4df8180564d306d9680e6c55  /tmp/rustup-init" | sha256sum -c - && \
+    chmod 0755 /tmp/rustup-init && \
+    /tmp/rustup-init -y --default-toolchain "${PIN_RUST_TOOLCHAINS__STABLE}" --profile minimal --no-modify-path && \
+    rm -f /tmp/rustup-init && \
+    rustup toolchain install "${PIN_RUST_TOOLCHAINS__NIGHTLY}" --profile minimal -c rust-src
+
+COPY tools/cargo-zerocopy /tmp/tools/cargo-zerocopy
+COPY tools/ui-runner /tmp/tools/ui-runner
+COPY tools/install-cargo-show-asm.sh /tmp/tools/install-cargo-show-asm.sh
+
+RUN cargo "+${PIN_RUST_TOOLCHAINS__STABLE}" build --locked --release \
+      --manifest-path /tmp/tools/cargo-zerocopy/Cargo.toml && \
+    install -Dm0755 /tmp/tools/cargo-zerocopy/target/release/cargo-zerocopy /out-bin/cargo-zerocopy && \
+    cargo "+${PIN_RUST_TOOLCHAINS__STABLE}" build --locked --release \
+      --manifest-path /tmp/tools/ui-runner/Cargo.toml && \
+    install -Dm0755 /tmp/tools/ui-runner/target/release/ui-runner /out-bin/ui-runner && \
+    CARGO_SHOW_ASM_TOOLCHAIN="${PIN_RUST_TOOLCHAINS__NIGHTLY}" \
+      bash /tmp/tools/install-cargo-show-asm.sh && \
+    install -Dm0755 /usr/local/cargo/bin/cargo-asm /out-bin/cargo-asm && \
+    mkdir -p /tmp/dl && \
+    curl -fsSL --retry 3 -o /tmp/dl/nextest.tar.gz "https://get.nexte.st/0.9.152/linux" && \
+    echo "d039b43c3e0958441b6ad0a39c8884d018b3d2e8fb9928f209074b1100b5e17a  /tmp/dl/nextest.tar.gz" | sha256sum -c - && \
+    tar -xzf /tmp/dl/nextest.tar.gz -C /out-bin cargo-nextest && \
+    chmod 0755 /out-bin/cargo-nextest && \
+    curl -fsSL --retry 3 -o /tmp/dl/llvm-cov.tar.gz \
+      "https://github.com/taiki-e/cargo-llvm-cov/releases/download/v0.8.0/cargo-llvm-cov-x86_64-unknown-linux-gnu.tar.gz" && \
+    echo "4a323c3121f28a4d7ce7eae6eaed76aa17aafa21ae36d9a47f763380f45ab010  /tmp/dl/llvm-cov.tar.gz" | sha256sum -c - && \
+    tar -xzf /tmp/dl/llvm-cov.tar.gz -C /out-bin cargo-llvm-cov && \
+    chmod 0755 /out-bin/cargo-llvm-cov && \
+    curl -fsSL --retry 3 -o /out-bin/yq \
+      "https://github.com/mikefarah/yq/releases/download/v4.44.1/yq_linux_amd64" && \
+    echo "6dc2d0cd4e0caca5aeffd0d784a48263591080e4a0895abe69f3a76eb50d1ba3  /out-bin/yq" | sha256sum -c - && \
+    chmod 0755 /out-bin/yq
+
+RUN SYSROOT="$(rustc "+${PIN_RUST_TOOLCHAINS__NIGHTLY}" --print sysroot)" && \
+    mkdir -p /opt/rust-src-vendor && \
+    cargo "+${PIN_RUST_TOOLCHAINS__NIGHTLY}" vendor --locked --versioned-dirs \
+      --manifest-path "${SYSROOT}/lib/rustlib/src/rust/library/Cargo.toml" \
+      /opt/rust-src-vendor >/dev/null
+
+FROM docker.io/library/ubuntu:24.04@sha256:9a04f13b3f80ef056361e30868593b1cfd2279fe19e4081cb93a90bf56819d6a
+
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
+ARG PIN_RUST_TOOLCHAINS__NIGHTLY
+
+ENV CARGO_NET_RETRY=10 \
+    RUSTUP_MAX_RETRIES=10 \
+    RUSTUP_HOME=/usr/local/rustup \
+    CARGO_HOME=/usr/local/cargo \
+    CARGO_TERM_COLOR=always \
+    CARGO_ZEROCOPY_BIN=/usr/local/bin/cargo-zerocopy \
+    ZEROCOPY_UI_RUNNER_BIN=/usr/local/bin/ui-runner \
+    PATH="/usr/local/cargo/bin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    ca-certificates \
+    gcc-multilib \
+    curl \
+    jq \
+    build-essential \
+    bc \
+    git \
+    llvm \
+    python3 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=tool-builder /out-bin/ /usr/local/bin/
+COPY --from=tool-builder /opt/rust-src-vendor /opt/rust-src-vendor
+
+RUN curl -fsSL --retry 3 -o /tmp/rustup-init \
+      "https://static.rust-lang.org/rustup/archive/1.29.3/x86_64-unknown-linux-gnu/rustup-init" && \
+    echo "b1c8cb14e30889e7e2999e6b69e62d9e9b9ffc0f4df8180564d306d9680e6c55  /tmp/rustup-init" | sha256sum -c - && \
+    chmod 0755 /tmp/rustup-init && \
+    /tmp/rustup-init -y --default-toolchain none --profile minimal --no-modify-path && \
+    rm -f /tmp/rustup-init && \
+    rustup toolchain install "${PIN_RUST_TOOLCHAINS__NIGHTLY}" --profile minimal \
+      -c rust-src -c rustfmt -c clippy -c miri -c llvm-tools-preview && \
+    rustup default "${PIN_RUST_TOOLCHAINS__NIGHTLY}" && \
+    rustup target add --toolchain "${PIN_RUST_TOOLCHAINS__NIGHTLY}" \
+      i686-unknown-linux-gnu \
+      x86_64-pc-windows-msvc \
+      arm-unknown-linux-gnueabi \
+      aarch64-unknown-linux-gnu \
+      powerpc-unknown-linux-gnu \
+      powerpc64-unknown-linux-gnu \
+      riscv64gc-unknown-linux-gnu \
+      s390x-unknown-linux-gnu \
+      thumbv6m-none-eabi \
+      wasm32-unknown-unknown && \
+    rm -rf /usr/local/cargo/registry /usr/local/cargo/git \
+      /usr/local/rustup/downloads /usr/local/rustup/tmp \
+      /usr/local/rustup/toolchains/*/share/doc /usr/local/rustup/toolchains/*/share/man && \
+    chmod -R a+rX /usr/local/rustup /usr/local/cargo /opt/rust-src-vendor

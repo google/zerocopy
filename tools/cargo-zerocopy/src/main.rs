@@ -154,7 +154,11 @@ fn ensure_installed_or_exit(
             eprint!("[cargo-zerocopy] {prompt} (y/n)? ");
             io::stderr().flush().unwrap();
             let mut line = String::new();
-            io::stdin().lock().read_line(&mut line).unwrap();
+            let n = io::stdin().lock().read_line(&mut line).unwrap();
+            if n == 0 {
+                eprintln!("[cargo-zerocopy] stdin closed while waiting for confirmation; aborting");
+                process::exit(1);
+            }
             let input = line.trim().to_lowercase();
             if input.starts_with('y') {
                 break;

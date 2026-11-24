@@ -1,0 +1,21 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+# `version` is the published `zerocopy` release that `cargo-semver-checks`
+# compares against, and `crate-sha256` is its crates.io index `cksum`.
+# `zerocopy/ci/release_crate_version.sh` sets them to the superseded version
+# in each release PR; the `roll_semver_baseline` job in
+# `.github/workflows/roll-pinned-toolchain-versions.yml` advances them to the
+# newest published release in the same `major.minor` series, so after a
+# release they lag until that job's next weekly run or a manual dispatch.
+
+version = "0.8.65"
+crate-sha256 = "32bc8a75f879cd6fe53a6bedf3c28f0e1b914c77424fc2be9e2ec85d7d25aff5"
+skip = "false"
+tool-version = "0.51.0"
+tool-sha256 = "cacadafaa5cd27ae6d05a74a103266917ebab4c5e43c898360e177d4fbf06a65"

@@ -15,10 +15,10 @@ cd "$(dirname "$0")/.."
 # and SPDX headers in production sources and the rustdoc stylesheet.
 # Excluding the lockfile permits packaging before a new derive version is
 # available from the registry.
-./cargo.sh +stable package --allow-dirty --no-verify \
+./cargo.sh +stable package --allow-dirty --no-verify --offline \
   --exclude-lockfile --registry crates-io \
   --package zerocopy --package zerocopy-derive
-metadata=$(./cargo.sh +stable metadata --no-deps --format-version 1)
+metadata=$(./cargo.sh +stable metadata --offline --no-deps --format-version 1)
 
 target_dir=$(jq -r '.target_directory' <<< "$metadata")
 for crate in zerocopy zerocopy-derive; do
