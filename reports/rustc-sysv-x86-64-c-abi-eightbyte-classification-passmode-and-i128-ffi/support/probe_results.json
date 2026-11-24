@@ -1,0 +1,244 @@
+{
+  "experiments": {
+    "a_llvm_ir_extern_c_signatures": {
+      "compile_returncode": 0,
+      "compile_stderr": "",
+      "define_bodies": {
+        "abi_arr3_u8": "define i24 @abi_arr3_u8(i24 returned %0) unnamed_addr #0 {\nstart:\n  ret i24 %0\n}",
+        "abi_bare_u128": "define noundef i128 @abi_bare_u128(i128 noundef returned %x) unnamed_addr #0 {\nstart:\n  ret i128 %x\n}",
+        "abi_empty": "define void @abi_empty() unnamed_addr #0 {\nstart:\n  ret void\n}",
+        "abi_gp_exhaust_rollback": "define noundef i64 @abi_gp_exhaust_rollback(i64 noundef %r1, i64 noundef %r2, i64 noundef %r3, i64 noundef %r4, i64 noundef %r5, ptr noalias noundef readonly byval([16 x i8]) align 8 captures(none) dereferenceable(16) %pair_overflow, i64 noundef %backfill_r9) unnamed_addr #1 {\nstart:\n  %_13 = add i64 %r2, %r1\n  %_12 = add i64 %_13, %r3\n  %_11 = add i64 %_12, %r4\n  %_10 = add i64 %_11, %r5\n  %_14 = load i64, ptr %pair_overflow, align 8, !noundef !4\n  %0 = getelementptr inbounds nuw i8, ptr %pair_overflow, i64 8\n  %_15 = load i64, ptr %0, align 8, !noundef !4\n  %_9 = add i64 %_10, %backfill_r9\n  %_8 = add i64 %_9, %_14\n  %_0 = add i64 %_8, %_15\n  ret i64 %_0\n}",
+        "abi_i128_struct": "define { i64, i64 } @abi_i128_struct({ i64, i64 } returned %0) unnamed_addr #0 {\nstart:\n  ret { i64, i64 } %0\n}",
+        "abi_mixed": "define { i64, double } @abi_mixed({ i64, double } returned %0) unnamed_addr #0 {\nstart:\n  ret { i64, double } %0\n}",
+        "abi_mixed_gp_exhaust_rollback": "define noundef double @abi_mixed_gp_exhaust_rollback(i64 noundef %g1, i64 noundef %g2, i64 noundef %g3, i64 noundef %g4, i64 noundef %g5, i64 noundef %g6, ptr noalias noundef readonly byval([16 x i8]) align 8 captures(none) dereferenceable(16) %mixed_overflow, double noundef %backfill_xmm0) unnamed_addr #1 {\nstart:\n  %_15 = add i64 %g2, %g1\n  %_14 = add i64 %_15, %g3\n  %_13 = add i64 %_14, %g4\n  %_12 = add i64 %_13, %g5\n  %_11 = add i64 %_12, %g6\n  %_10 = uitofp i64 %_11 to double\n  %0 = getelementptr inbounds nuw i8, ptr %mixed_overflow, i64 8\n  %_16 = load double, ptr %0, align 8, !noundef !4\n  %_9 = fadd double %_16, %_10\n  %_0 = fadd double %backfill_xmm0, %_9\n  ret double %_0\n}",
+        "abi_pair_f32": "define double @abi_pair_f32(double %0) unnamed_addr #0 {\nstart:\n  %_0.sroa.0 = alloca double, align 8\n  %.sroa.0 = alloca double, align 8\n  call void @llvm.lifetime.start.p0(ptr nonnull %.sroa.0)\n  store double %0, ptr %.sroa.0, align 8\n  %.sroa.0.0..sroa.0.0..sroa.0.0..sroa.0.0..sroa.0.0.x.sroa.0.0.copyload = load float, ptr %.sroa.0, align 8\n  %.sroa.0.4..sroa_idx = getelementptr inbounds nuw i8, ptr %.sroa.0, i64 4\n  %.sroa.0.4..sroa.0.4..sroa.0.4..sroa.0.4..sroa.0.4.x.sroa.2.0.copyload = load float, ptr %.sroa.0.4..sroa_idx, align 4\n  call void @llvm.lifetime.end.p0(ptr nonnull %.sroa.0)\n  store float %.sroa.0.0..sroa.0.0..sroa.0.0..sroa.0.0..sroa.0.0.x.sroa.0.0.copyload, ptr %_0.sroa.0, align 8\n  %_0.sroa.0.4..sroa_idx = getelementptr inbounds nuw i8, ptr %_0.sroa.0, i64 4\n  store float %.sroa.0.4..sroa.0.4..sroa.0.4..sroa.0.4..sroa.0.4.x.sroa.2.0.copyload, ptr %_0.sroa.0.4..sroa_idx, align 4\n  %_0.sroa.0.0._0.sroa.0.0._0.sroa.0.0._0.sroa.0.0._0.sroa.0.0. = load double, ptr %_0.sroa.0, align 8\n  ret double %_0.sroa.0.0._0.sroa.0.0._0.sroa.0.0._0.sroa.0.0._0.sroa.0.0.\n}",
+        "abi_pair_i": "define { i64, i64 } @abi_pair_i({ i64, i64 } returned %0) unnamed_addr #0 {\nstart:\n  ret { i64, i64 } %0\n}",
+        "abi_pair_u8_f32": "define range(i64 0, -4294967040) i64 @abi_pair_u8_f32(i64 %0) unnamed_addr #0 {\nstart:\n  %_0.sroa.0.0.insert.insert = and i64 %0, -4294967041\n  ret i64 %_0.sroa.0.0.insert.insert\n}",
+        "abi_s1": "define i64 @abi_s1(i64 returned %0) unnamed_addr #0 {\nstart:\n  ret i64 %0\n}",
+        "abi_transparent_u128": "define noundef i128 @abi_transparent_u128(i128 noundef returned %x) unnamed_addr #0 {\nstart:\n  ret i128 %x\n}",
+        "abi_triple_i": "define void @abi_triple_i(ptr dead_on_unwind noalias noundef writable writeonly sret([24 x i8]) align 8 captures(none) dereferenceable(24) initializes((0, 24)) %_0, ptr noalias noundef readonly byval([24 x i8]) align 8 captures(none) dereferenceable(24) %x) unnamed_addr #2 {\nstart:\n  call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 8 dereferenceable(24) %_0, ptr noundef nonnull align 8 dereferenceable(24) %x, i64 24, i1 false)\n  ret void\n}",
+        "abi_unaligned_packed9": "define void @abi_unaligned_packed9(ptr dead_on_unwind noalias noundef writable writeonly sret([9 x i8]) align 1 captures(none) dereferenceable(9) initializes((0, 9)) %_0, ptr noalias noundef readonly byval([9 x i8]) align 1 captures(none) dereferenceable(9) %x) unnamed_addr #2 {\nstart:\n  call void @llvm.memcpy.p0.p0.i64(ptr noundef nonnull align 1 dereferenceable(9) %_0, ptr noundef nonnull align 1 dereferenceable(9) %x, i64 9, i1 false)\n  ret void\n}",
+        "abi_xmm_exhaust_rollback": "define noundef double @abi_xmm_exhaust_rollback(double noundef %x0, double noundef %x1, double noundef %x2, double noundef %x3, double noundef %x4, double noundef %x5, double noundef %x6, ptr noalias noundef readonly byval([16 x i8]) align 8 captures(none) dereferenceable(16) %fpair_overflow, double noundef %backfill_xmm7) unnamed_addr #1 {\nstart:\n  %_17 = fadd double %x0, %x1\n  %_16 = fadd double %_17, %x2\n  %_15 = fadd double %_16, %x3\n  %_14 = fadd double %_15, %x4\n  %_13 = fadd double %_14, %x5\n  %_12 = fadd double %_13, %x6\n  %_18 = load double, ptr %fpair_overflow, align 8, !noundef !4\n  %_11 = fadd double %_12, %_18\n  %0 = getelementptr inbounds nuw i8, ptr %fpair_overflow, i64 8\n  %_19 = load double, ptr %0, align 8, !noundef !4\n  %_10 = fadd double %_11, %_19\n  %_0 = fadd double %backfill_xmm7, %_10\n  ret double %_0\n}"
+      },
+      "define_signatures": {
+        "abi_arr3_u8": "define i24 @abi_arr3_u8(i24 returned %0) unnamed_addr #0 {",
+        "abi_bare_u128": "define noundef i128 @abi_bare_u128(i128 noundef returned %x) unnamed_addr #0 {",
+        "abi_empty": "define void @abi_empty() unnamed_addr #0 {",
+        "abi_gp_exhaust_rollback": "define noundef i64 @abi_gp_exhaust_rollback(i64 noundef %r1, i64 noundef %r2, i64 noundef %r3, i64 noundef %r4, i64 noundef %r5, ptr noalias noundef readonly byval([16 x i8]) align 8 captures(none) dereferenceable(16) %pair_overflow, i64 noundef %backfill_r9) unnamed_addr #1 {",
+        "abi_i128_struct": "define { i64, i64 } @abi_i128_struct({ i64, i64 } returned %0) unnamed_addr #0 {",
+        "abi_mixed": "define { i64, double } @abi_mixed({ i64, double } returned %0) unnamed_addr #0 {",
+        "abi_mixed_gp_exhaust_rollback": "define noundef double @abi_mixed_gp_exhaust_rollback(i64 noundef %g1, i64 noundef %g2, i64 noundef %g3, i64 noundef %g4, i64 noundef %g5, i64 noundef %g6, ptr noalias noundef readonly byval([16 x i8]) align 8 captures(none) dereferenceable(16) %mixed_overflow, double noundef %backfill_xmm0) unnamed_addr #1 {",
+        "abi_pair_f32": "define double @abi_pair_f32(double %0) unnamed_addr #0 {",
+        "abi_pair_i": "define { i64, i64 } @abi_pair_i({ i64, i64 } returned %0) unnamed_addr #0 {",
+        "abi_pair_u8_f32": "define range(i64 0, -4294967040) i64 @abi_pair_u8_f32(i64 %0) unnamed_addr #0 {",
+        "abi_s1": "define i64 @abi_s1(i64 returned %0) unnamed_addr #0 {",
+        "abi_transparent_u128": "define noundef i128 @abi_transparent_u128(i128 noundef returned %x) unnamed_addr #0 {",
+        "abi_triple_i": "define void @abi_triple_i(ptr dead_on_unwind noalias noundef writable writeonly sret([24 x i8]) align 8 captures(none) dereferenceable(24) initializes((0, 24)) %_0, ptr noalias noundef readonly byval([24 x i8]) align 8 captures(none) dereferenceable(24) %x) unnamed_addr #2 {",
+        "abi_unaligned_packed9": "define void @abi_unaligned_packed9(ptr dead_on_unwind noalias noundef writable writeonly sret([9 x i8]) align 1 captures(none) dereferenceable(9) initializes((0, 9)) %_0, ptr noalias noundef readonly byval([9 x i8]) align 1 captures(none) dereferenceable(9) %x) unnamed_addr #2 {",
+        "abi_xmm_exhaust_rollback": "define noundef double @abi_xmm_exhaust_rollback(double noundef %x0, double noundef %x1, double noundef %x2, double noundef %x3, double noundef %x4, double noundef %x5, double noundef %x6, ptr noalias noundef readonly byval([16 x i8]) align 8 captures(none) dereferenceable(16) %fpair_overflow, double noundef %backfill_xmm7) unnamed_addr #1 {"
+      },
+      "target_datalayout": "target datalayout = \"e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128\""
+    },
+    "b_x86_64_assembly_lowering": {
+      "gcc_asm_returncode": 0,
+      "gcc_main_call_lines_excerpt": [
+        "subq\t$168, %rsp",
+        "leaq\t64(%rsp), %rax",
+        "leaq\t32(%rsp), %rcx",
+        "movq\t$0, 8(%rsp)",
+        "leaq\t24(%rsp), %rdx",
+        "leaq\t16(%rsp), %rsi",
+        "movq\t$0, 16(%rsp)",
+        "movq\t$0, 24(%rsp)",
+        "leaq\t8(%rsp), %rdi",
+        "movq\t$0, 32(%rsp)",
+        "movq\t$0, 40(%rsp)",
+        "movq\t$0, 48(%rsp)",
+        "movq\t$0, 56(%rsp)",
+        "movq\t$0, 64(%rsp)",
+        "leaq\t64(%rsp), %rax",
+        "leaq\t64(%rsp), %r9",
+        "leaq\t56(%rsp), %r8",
+        "call\tabi_layout_metrics@PLT",
+        "movq\t24(%rsp), %rdx",
+        "movq\t32(%rsp), %rcx",
+        "movq\t40(%rsp), %r8",
+        "movq\t48(%rsp), %r9",
+        "cmpq\t$16, 40(%rsp)",
+        "cmpq\t$16, 48(%rsp)",
+        "cmpq\t$9, 56(%rsp)",
+        "cmpq\t$1, 64(%rsp)",
+        "addq\t$32, %rsp",
+        "addq\t$168, %rsp",
+        "call\tabi_empty@PLT",
+        "call\tabi_s1@PLT",
+        "call\tabi_pair_i@PLT",
+        "movdqa\t.LC1(%rip), %xmm0",
+        "leaq\t96(%rsp), %rdi",
+        "subq\t$32, %rsp",
+        "movq\t$30, 16(%rsp)",
+        "movups\t%xmm0, (%rsp)",
+        "call\tabi_triple_i@PLT",
+        "addq\t$32, %rsp",
+        "cmpq\t$22, 104(%rsp)",
+        "cmpq\t$11, 96(%rsp)",
+        "cmpq\t$33, 112(%rsp)",
+        "movq\t%rax, %xmm0",
+        "call\tabi_pair_f32@PLT",
+        "movq\t%xmm0, %rsi",
+        "movd\t%esi, %xmm6",
+        "ucomiss\t.LC2(%rip), %xmm6",
+        "ucomiss\t.LC3(%rip), %xmm0",
+        "movq\t%rax, %xmm0",
+        "call\tabi_pair_f32@PLT",
+        "movsd\t.LC4(%rip), %xmm0",
+        "call\tabi_mixed@PLT",
+        "ucomisd\t.LC5(%rip), %xmm0",
+        "call\tabi_arr3_u8@PLT",
+        "movb\t%cl, 7(%rsp)",
+        "call\tabi_i128_struct@PLT",
+        "call\tabi_bare_u128@PLT",
+        "call\tabi_transparent_u128@PLT",
+        "call\tabi_pair_u8_f32@PLT",
+        "movd\t%eax, %xmm7",
+        "ucomiss\t.LC7(%rip), %xmm7"
+      ],
+      "rustc_asm_returncode": 0,
+      "rustc_functions": {
+        "abi_arr3_u8": [
+          "abi_arr3_u8:",
+          "movl\t%edi, %eax",
+          "retq",
+          ".Lfunc_end0:"
+        ],
+        "abi_bare_u128": [
+          "abi_bare_u128:",
+          "movq\t%rsi, %rdx",
+          "movq\t%rdi, %rax",
+          "retq",
+          ".Lfunc_end1:"
+        ],
+        "abi_empty": [
+          "abi_empty:",
+          "retq",
+          ".Lfunc_end2:"
+        ],
+        "abi_gp_exhaust_rollback": [
+          "abi_gp_exhaust_rollback:",
+          "addq\t%rdi, %rsi",
+          "leaq\t(%rdx,%rcx), %rax",
+          "addq\t%rsi, %rax",
+          "addq\t%r8, %rax",
+          "addq\t%r9, %rax",
+          "addq\t8(%rsp), %rax",
+          "addq\t16(%rsp), %rax",
+          "retq",
+          ".Lfunc_end3:"
+        ],
+        "abi_i128_struct": [
+          "abi_i128_struct:",
+          "movq\t%rsi, %rdx",
+          "movq\t%rdi, %rax",
+          "retq",
+          ".Lfunc_end4:"
+        ],
+        "abi_mixed": [
+          "abi_mixed:",
+          "movq\t%rdi, %rax",
+          "retq",
+          ".Lfunc_end5:"
+        ],
+        "abi_mixed_gp_exhaust_rollback": [
+          "abi_mixed_gp_exhaust_rollback:",
+          "addq\t%rsi, %rdi",
+          "addq\t%rcx, %rdx",
+          "addq\t%rdi, %rdx",
+          "addq\t%r9, %r8",
+          "addq\t%rdx, %r8",
+          "movq\t%r8, %xmm1",
+          "punpckldq\t.LCPI6_0(%rip), %xmm1",
+          "subpd\t.LCPI6_1(%rip), %xmm1",
+          "movapd\t%xmm1, %xmm2",
+          "unpckhpd\t%xmm1, %xmm2",
+          "addsd\t%xmm1, %xmm2",
+          "addsd\t16(%rsp), %xmm2",
+          "addsd\t%xmm2, %xmm0",
+          "retq",
+          ".Lfunc_end6:"
+        ],
+        "abi_pair_f32": [
+          "abi_pair_f32:",
+          "retq",
+          ".Lfunc_end7:"
+        ],
+        "abi_pair_i": [
+          "abi_pair_i = abi_i128_struct"
+        ],
+        "abi_pair_u8_f32": [
+          "abi_pair_u8_f32:",
+          "movabsq\t$-4294967041, %rax",
+          "andq\t%rdi, %rax",
+          "retq",
+          ".Lfunc_end8:"
+        ],
+        "abi_s1": [
+          "abi_s1:",
+          "movq\t%rdi, %rax",
+          "retq",
+          ".Lfunc_end9:"
+        ],
+        "abi_transparent_u128": [
+          "abi_transparent_u128 = abi_bare_u128"
+        ],
+        "abi_triple_i": [
+          "abi_triple_i:",
+          "movq\t%rdi, %rax",
+          "movq\t24(%rsp), %rcx",
+          "movq\t%rcx, 16(%rdi)",
+          "movaps\t8(%rsp), %xmm0",
+          "movups\t%xmm0, (%rdi)",
+          "retq",
+          ".Lfunc_end10:"
+        ],
+        "abi_unaligned_packed9": [
+          "abi_unaligned_packed9:",
+          "movq\t%rdi, %rax",
+          "movzbl\t16(%rsp), %ecx",
+          "movb\t%cl, 8(%rdi)",
+          "movq\t8(%rsp), %rcx",
+          "movq\t%rcx, (%rdi)",
+          "retq",
+          ".Lfunc_end11:"
+        ],
+        "abi_xmm_exhaust_rollback": [
+          "abi_xmm_exhaust_rollback:",
+          "addsd\t%xmm1, %xmm0",
+          "addsd\t%xmm2, %xmm0",
+          "addsd\t%xmm3, %xmm0",
+          "addsd\t%xmm4, %xmm0",
+          "addsd\t%xmm5, %xmm0",
+          "addsd\t%xmm6, %xmm0",
+          "addsd\t8(%rsp), %xmm0",
+          "addsd\t16(%rsp), %xmm0",
+          "addsd\t%xmm7, %xmm0",
+          "retq",
+          ".Lfunc_end12:"
+        ]
+      }
+    },
+    "c_live_gcc_rustc_c_abi_roundtrip": {
+      "execution_returncode": 0,
+      "execution_stderr": "",
+      "execution_stdout": "C_RUST_FFI_OK PairI=(101,202) TripleI=(11,22,33) PairF32=(3.00,3.75) Mixed=(0xff12,7.50) Arr3=(30,21,10) I128S_hi=0x123456789abcdef I128S_lo=0xfedcba9876543211 BareU128_lo=0xfedcba9876543215 TransU128_lo=0xfedcba9876543217 PairU8F32=(7,2.75) Packed9=(0x56,0x102030405060718) GpRollback=139715 XmmRollback=4653.00 MixedRollback=2456.00 rs_size=16 rs_align=16 c_align=16 packed9_sz=9 packed9_al=1",
+      "gcc_link_returncode": 0,
+      "gcc_link_stderr": "",
+      "rustc_staticlib_returncode": 0,
+      "rustc_staticlib_stderr": ""
+    }
+  },
+  "gcc_version": "gcc (Debian 15.2.0-14) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.",
+  "llvm_version": "22.1.6",
+  "rust_commit_sha": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "target": "x86_64-unknown-linux-gnu"
+}

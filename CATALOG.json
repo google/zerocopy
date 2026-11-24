@@ -111591,6 +111591,83 @@
         "verification/compiler-verification"
       ]
     },
+    "rustc-sysv-x86-64-c-abi-eightbyte-classification-passmode-and-i128-ffi": {
+      "observed_at": "2026-11-24",
+      "subjects": [
+        {
+          "identity": {
+            "llvm_version": "22.1.6",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "Rust 1.98.0-nightly compiler and rustc_target SysV x86_64 ABI lowering"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+          },
+          "name": "Rust upstream source snapshot for x86_64 callconv and rustc_abi"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "058c701055c4b6f60f622d616afc0349911c38c3"
+          },
+          "name": "Rust main branch x86_64 callconv (X87/X87Up and bool return updates)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "aedd173a2c086e558c2b66d3743b344f977621a7",
+            "version": "1.77.0"
+          },
+          "name": "Rust 1.77.0 x86_64-unknown-linux-gnu i128 16-byte data layout baseline"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "9e1b2c3446261ab1a5063f442453510903ca80b8"
+          },
+          "name": "LLVM and Clang X86_64ABIInfo System V classification reference"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal TrustedBoundary and lean-miri RuntimeTargetDataLayout"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4.34.1 theorem prover and kernel typechecker"
+        },
+        {
+          "identity": {
+            "package": "Debian 15.2.0-14",
+            "tool": "gcc",
+            "version": "15.2.0"
+          },
+          "name": "GNU C compiler x86_64 SysV ABI host toolchain"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/abi",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "verification"
+      ]
+    },
     "rustc-tait-atpit-return-type-notation-defining-scope-and-next-solver": {
       "observed_at": "2026-11-22",
       "subjects": [
