@@ -113,6 +113,7 @@ else:
 CACHE_FORMAT_VERSION = 2
 OLEAN_PARTS = ("olean", "olean.server", "olean.private")
 IR_PARTS = ("ir.sig", "ir")
+SYSROOT_MANIFEST_PARTS = OLEAN_PARTS + IR_PARTS
 SYSROOT_PACKAGES = ("Init", "Std", "Lean")
 LIBRARY_LOCK_TREES = (
     ("lean/lib/lean/Init/**", "lib/lean/Init"),
@@ -312,7 +313,7 @@ def compute_sysroot_manifest(
 
     files_to_hash: list[tuple[str, Path]] = []
     for pkg in SYSROOT_PACKAGES:
-        for ext in OLEAN_PARTS:
+        for ext in SYSROOT_MANIFEST_PARTS:
             rel = f"{pkg}.{ext}"
             p = lib_dir / rel
             if p.is_symlink():
@@ -322,6 +323,10 @@ def compute_sysroot_manifest(
                     raise RuntimeError(f"unexpected file type in sysroot: {p}")
                 files_to_hash.append((rel, p))
         pkg_dir = lib_dir / pkg
+        if pkg_dir.is_symlink():
+            raise RuntimeError(f"symlink forbidden in sysroot: {pkg_dir}")
+        if pkg_dir.exists() and not pkg_dir.is_dir():
+            raise RuntimeError(f"unexpected file type in sysroot: {pkg_dir}")
         for dirpath, dirnames, filenames in os.walk(pkg_dir, followlinks=False):
             dp = Path(dirpath)
             for name in sorted(dirnames):
@@ -335,7 +340,7 @@ def compute_sysroot_manifest(
                 if not child.is_file():
                     raise RuntimeError(f"unexpected file type in sysroot: {child}")
                 rel_str = child.relative_to(lib_dir).as_posix()
-                if any(rel_str.endswith(f".{ext}") for ext in OLEAN_PARTS):
+                if any(rel_str.endswith(f".{ext}") for ext in SYSROOT_MANIFEST_PARTS):
                     files_to_hash.append((rel_str, child))
 
     # Hash sysroot files in parallel, matching `walk_and_hash_sysroot_dir`.

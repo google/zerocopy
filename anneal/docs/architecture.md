@@ -108,16 +108,17 @@ from both Pass 1 and packaged user toolchain archives. To preserve
 shipping the vendored `vendor/lean-miri/` tree or `correspondence/` proofs at
 runtime, every packaged user toolchain archive and `cargo-anneal` bundle
 carries a compact, CI-checked, digest-bound **correspondence provenance
-record** (pinned Anneal revision, `trusted/lean/` source and `.olean` digests,
-`vendor/lean-miri/` upstream commit, `UPSTREAM_PIN.json` SHA-256,
-`patched_files` allowlist/digests, `Trusted/Correspondence.lean` digest, and
-Pass 2 attestation metadata). Archive construction and `cargo anneal verify`
-hash the actual packaged `trusted/lean/` artifacts and fail closed unless those
-digests exactly match the attested provenance record (or if the provenance is
-missing or malformed), and `cargo anneal verify` surfaces the verified record
-in every verification result's TCB audit log—so an auditor inspecting only
-stated specifications and the TCB audit log can identify and audit every TCB
-artifact, including $M_{\text{ref}}$ and $\tau_{\text{prog}}$. For
+record** (pinned toolchain metadata, `trusted/lean/` and
+`trusted/correspondence/` source digests, `vendor/lean-miri/` upstream commit,
+`UPSTREAM_PIN.json` SHA-256, `patched_files` allowlist/digests, and
+`correspondence/` proof digests). Repository CI binds the record to the
+canonical sources it embeds, `cargo anneal verify` fails closed if the record
+is malformed, and it copies the record into every verification receipt—so an
+auditor inspecting only stated specifications and the receipt can identify and
+audit every TCB artifact, including $M_{\text{ref}}$ and
+$\tau_{\text{prog}}$. Re-hashing the packaged `trusted/lean/` artifacts
+against the record at archive construction and verification time remains
+planned ([`docs/trust-model.md`](trust-model.md)). For
 `vendor/lean-miri/`, Pass 2 verifies every vendored file against
 `vendor/lean-miri/UPSTREAM_PIN.json`—whose own SHA-256 digest and first-party
 patched-file allowlist are pinned inside `trusted/audit/`, rejecting extraneous

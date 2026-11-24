@@ -35,6 +35,7 @@ pub struct VerifySuccessReceipt {
     pub taint_reasons: Vec<String>,
     pub elaboration_sandbox: Option<String>,
     pub experimental: bool,
+    pub candidate_features: Vec<String>,
     pub request_sha256: String,
     pub capture_sha256: String,
     pub capture_binary_sha256: String,
@@ -215,6 +216,10 @@ pub struct AuditReport {
     pub replay: bool,
     pub toolchain: String,
     pub guarantee: String,
+    #[serde(rename = "vettedModules")]
+    pub vetted_modules: Vec<String>,
+    #[serde(rename = "candidateFeatures")]
+    pub candidate_features: BTreeMap<String, Vec<String>>,
     #[serde(default, rename = "miriReplay")]
     pub miri_replay: Option<bool>,
     #[serde(default, rename = "miriReplayedDeclarations")]
@@ -416,6 +421,7 @@ mod tests {
             "taint_reasons": [],
             "elaboration_sandbox": "linux_bwrap",
             "experimental": true,
+            "candidate_features": [],
             "request_sha256": "aaa",
             "capture_sha256": "bbb",
             "capture_binary_sha256": "ccc",
@@ -475,10 +481,29 @@ mod tests {
             "axioms": ["propext"],
             "replay": true,
             "toolchain": "4.34.1",
-            "guarantee": "ok"
+            "guarantee": "ok",
+            "vettedModules": [],
+            "candidateFeatures": {}
         }"#;
         let parsed_aud = AuditReport::from_json_slice(aud).unwrap();
         assert_audit_passed(&parsed_aud, 10, &["propext"]).unwrap();
+        assert!(parsed_aud.vetted_modules.is_empty());
+        assert!(parsed_aud.candidate_features.is_empty());
         assert!(assert_audit_passed(&parsed_aud, 10, &[]).is_err());
+
+        let aud_missing_tiers = br#"{
+            "graph": {},
+            "declarations": [],
+            "kernelDeclarations": 10,
+            "replayedDeclarations": 10,
+            "checkedAlternateProofs": 0,
+            "compilerOnlyNames": 0,
+            "reachableDeclarations": 10,
+            "axioms": ["propext"],
+            "replay": true,
+            "toolchain": "4.34.1",
+            "guarantee": "ok"
+        }"#;
+        assert!(AuditReport::from_json_slice(aud_missing_tiers).is_err());
     }
 }

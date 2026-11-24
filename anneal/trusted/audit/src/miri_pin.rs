@@ -7,7 +7,7 @@
 // those terms.
 
 //! Verifies `vendor/lean-miri/UPSTREAM_PIN.json`, authenticates sysroot
-//! `{Init,Std,Lean}*` `.olean` manifests, and manages symlink-safe Miri
+//! `{Init,Std,Lean}*` `.olean`/`.ir` manifests, and manages symlink-safe Miri
 //! `.olean` caches for repository Pass 2.
 
 use std::{
@@ -1210,6 +1210,20 @@ fn is_canonical_relative_path(rel: &str) -> bool {
         && is_clean_relative_path(rel)
 }
 
+fn is_trimmed_non_empty(s: &str) -> bool {
+    !s.is_empty() && s == s.trim()
+}
+
+const LOCKED_SOURCE_COMPONENTS: [&str; 4] = ["aes", "miri", "rustc", "rustc_apfloat"];
+
+fn is_valid_source_component(component: &str) -> bool {
+    LOCKED_SOURCE_COMPONENTS.contains(&component)
+        || component.strip_prefix("rustc_").is_some_and(|rest| {
+            !rest.is_empty()
+                && rest.bytes().all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'_')
+        })
+}
+
 fn validate_component_pin(
     name: &str,
     pin: &SourceLockComponentPin,
@@ -1217,11 +1231,20 @@ fn validate_component_pin(
 ) -> Result<(), Failure> {
     if !is_canonical_relative_path(&pin.archive_path)
         || !is_sha256_hex(&pin.archive_sha256)
-        || pin.archive_url.trim().is_empty()
-        || pin.repository.trim().is_empty()
+        || !is_trimmed_non_empty(&pin.archive_url)
+        || !is_trimmed_non_empty(&pin.repository)
         || !is_git_oid_hex(&pin.commit)
         || pin.tree.as_deref().is_some_and(|t| !is_git_oid_hex(t))
+        || pin.extracted_paths_manifest.is_some() != pin.extracted_paths_manifest_sha256.is_some()
+        || pin.extracted_paths_manifest.as_deref().is_some_and(|p| !is_canonical_relative_path(p))
         || pin.extracted_paths_manifest_sha256.as_deref().is_some_and(|s| !is_sha256_hex(s))
+        || pin.extracted_root.as_deref().is_some_and(|p| !is_canonical_relative_path(p))
+        || pin.checksum_source.as_deref().is_some_and(|s| !is_trimmed_non_empty(s))
+        || pin.commit_date_utc.as_deref().is_some_and(|s| !is_trimmed_non_empty(s))
+        || pin.commit_url.as_deref().is_some_and(|s| !is_trimmed_non_empty(s))
+        || pin.package_version.as_deref().is_some_and(|s| !is_trimmed_non_empty(s))
+        || pin.pinned_via.as_deref().is_some_and(|s| !is_trimmed_non_empty(s))
+        || pin.registry.as_deref().is_some_and(|s| !is_trimmed_non_empty(s))
     {
         return Err(Failure::policy(
             phase,
@@ -1258,7 +1281,7 @@ fn validate_file_records<'a>(
                 ));
             }
         }
-        if record.component.trim().is_empty() || record.component != record.component.trim() {
+        if !is_valid_source_component(&record.component) {
             return Err(Failure::policy(
                 phase,
                 format!(
@@ -1316,7 +1339,15 @@ pub fn verify_source_lock_bytes(lock_bytes: &[u8]) -> Result<SourceLock, Failure
             ),
         ));
     }
-    if !is_canonical_relative_path(&lock.acquisition.procedure)
+    if !is_trimmed_non_empty(&lock.acquisition.note)
+        || lock.acquisition.pin_markers.len() != LOCKED_SOURCE_COMPONENTS.len()
+        || !LOCKED_SOURCE_COMPONENTS.iter().all(|c| {
+            lock.acquisition
+                .pin_markers
+                .get(*c)
+                .is_some_and(|marker| is_canonical_relative_path(marker))
+        })
+        || !is_canonical_relative_path(&lock.acquisition.procedure)
         || !is_sha256_hex(&lock.acquisition.procedure_sha256)
         || !is_canonical_relative_path(&lock.acquisition.rustc_selected_archive_paths.path)
         || !is_sha256_hex(&lock.acquisition.rustc_selected_archive_paths.sha256)
@@ -1334,12 +1365,68 @@ pub fn verify_source_lock_bytes(lock_bytes: &[u8]) -> Result<SourceLock, Failure
             &lock.external_dependencies.rustc_upstream_resolution_file,
         ),
     ] {
-        if !is_canonical_relative_path(&res_file.path) || !is_sha256_hex(&res_file.sha256) {
+        if !is_trimmed_non_empty(&res_file.note)
+            || !is_canonical_relative_path(&res_file.path)
+            || !is_sha256_hex(&res_file.sha256)
+        {
             return Err(Failure::policy(
                 phase,
                 format!("invalid `{label}` record in upstream/source-lock.json"),
             ));
         }
+    }
+    if lock.external_dependencies.cargo_packages.is_empty()
+        || lock.external_dependencies.cargo_packages.iter().any(|pkg| {
+            !is_trimmed_non_empty(&pkg.name)
+                || !is_trimmed_non_empty(&pkg.scope)
+                || pkg.version.as_deref().is_some_and(|s| !is_trimmed_non_empty(s))
+                || pkg.requirement.as_deref().is_some_and(|s| !is_trimmed_non_empty(s))
+                || pkg.path.as_deref().is_some_and(|s| !is_trimmed_non_empty(s))
+                || pkg
+                    .features
+                    .as_ref()
+                    .is_some_and(|fs| fs.iter().any(|f| !is_trimmed_non_empty(f)))
+        })
+        || lock.external_dependencies.rustc_private_crates.is_empty()
+        || lock.external_dependencies.rustc_private_crates.iter().any(|krate| {
+            !is_trimmed_non_empty(&krate.name)
+                || !is_trimmed_non_empty(&krate.status)
+                || !is_trimmed_non_empty(&krate.evidence)
+                || krate.coverage_roots.iter().any(|r| !is_canonical_relative_path(r))
+                || krate.version.as_deref().is_some_and(|s| !is_trimmed_non_empty(s))
+                || krate.checksum.as_deref().is_some_and(|s| !is_sha256_hex(s))
+                || krate.git_commit.as_deref().is_some_and(|s| !is_git_oid_hex(s))
+        })
+        || lock.external_dependencies.toolchain_and_native.is_empty()
+        || lock
+            .external_dependencies
+            .toolchain_and_native
+            .iter()
+            .any(|s| !is_trimmed_non_empty(s))
+    {
+        return Err(Failure::policy(
+            phase,
+            "invalid `external_dependencies` metadata in upstream/source-lock.json",
+        ));
+    }
+    if lock.coverage_roots.is_empty()
+        || lock.coverage_roots.iter().any(|p| !is_canonical_relative_path(p))
+        || lock.coverage_expected_rust_modules.is_empty()
+        || lock
+            .coverage_expected_rust_modules
+            .iter()
+            .any(|(p, &count)| !is_canonical_relative_path(p) || count == 0)
+        || lock.features.is_empty()
+        || lock.features.iter().any(|(k, vals)| {
+            !is_trimmed_non_empty(k) || vals.iter().any(|v| !is_trimmed_non_empty(v))
+        })
+        || lock.scope_notes.is_empty()
+        || lock.scope_notes.iter().any(|n| !is_trimmed_non_empty(n))
+    {
+        return Err(Failure::policy(
+            phase,
+            "invalid coverage or feature metadata in upstream/source-lock.json",
+        ));
     }
     for (name, pin) in [
         ("aes", &lock.pins.aes),

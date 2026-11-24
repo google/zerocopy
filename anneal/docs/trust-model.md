@@ -287,25 +287,28 @@ staging, and `ExecSeal` OS-sandboxing code
 (`trusted/cargo-anneal/src/sandbox.rs`) in
 [`trusted/cargo-anneal/`](../trusted/cargo-anneal) together with `ClaimAudit`
 in [`TrustedBoundary.lean`](../trusted/audit/TrustedBoundary.lean). In pinned
-mode, tool admission authenticates the `Init`/`Std`/`Lean` sysroot `.olean`
-companion manifest (`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`) and, on
-`x86_64` Linux, the Lean runtime shared libraries under `lib/` and
-`lib/lean/` (`LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS`), while leaving
-sysroot `.ir`/`.ir.sig` companions outside `foundation-lock.json` (and shared
-libraries on uncatalogued triples) unhashed (`lean --version` only), and the
-target checker additionally verifies the 4-tree recursive `Init`/`Std` source
-and binary digests in `library-lock.json` before resolving `Init.*`/`Std.*`
-imports (or dynamically discovers and records the `Init`/`Std` sysroot import
-closure
-when opted in with `--allow-unpinned-lean`), enforces pre-elaboration
-declarative `"spec-preflight"` over `Specification` modules, promotes
+mode, tool admission authenticates the `Init`/`Std`/`Lean` sysroot `.olean`,
+`.olean.server`, `.olean.private`, `.ir`, and `.ir.sig` companion manifest
+(`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`) and, on `x86_64` Linux, the Lean
+runtime shared libraries under `lib/` and `lib/lean/`
+(`LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS`), while leaving shared libraries on
+uncatalogued triples unhashed (`lean --version` only), and the target checker
+additionally verifies the 4-tree recursive `Init`/`Std` source and binary
+digests in `library-lock.json` before resolving `Init.*`/`Std.*` imports (or
+dynamically discovers and records the `Init`/`Std` sysroot import closure when
+opted in with `--allow-unpinned-lean`), enforces pre-elaboration declarative
+`"spec-preflight"` over `Specification` modules, verifies bundled
+`trusted/lean/` module trust tiers (`vetted -/-> candidate:*`) and records
+reached `"candidate_features"` from `modelClosure` in Receipt v3, promotes
 single-file `.olean` outputs through Door 1 with pre-audit `ArtifactLedger`
 hashing, and runs two-phase standalone `"target-audit"` kernel replay against
 the bound obligation. On Linux, target Lean preflight, compilation, and audit
 run inside `ExecSeal` (`linux_bwrap` or `linux_landlock_seccomp`, failing closed
 unless `--allow-unsandboxed-elaboration` is explicitly passed with Receipt v3
-taint), while Repository Pass 2 requires `linux_bwrap`; Rust compilation
-(`rustc`) remains under the intact-host assumption in
+taint), while Repository Pass 2 requires `linux_bwrap` and CI release validation
+executes on `x86_64-unknown-linux-gnu` (non-Linux platforms such as Darwin are
+cross-evaluated in `flake.nix` and lack physical macOS runner execution); Rust
+compilation (`rustc`) remains under the intact-host assumption in
 [`THREAT_MODEL.md`](../THREAT_MODEL.md) Section 2.1 (see
 [`docs/elaborator-containment-design.md`](elaborator-containment-design.md)).
 
@@ -483,9 +486,9 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
    `UPSTREAM_PIN.json` pin digests (admitting only the upstream `c92d1d97`
    legacy `null` `"**HASH**"` key on `upstream/rustc-source/Cargo.lock`).
    Before any vendor module is compiled, `anneal-audit` also authenticates the
-   pinned Lean toolchain's `Init`/`Std`/`Lean` `.olean` companions against
-   `LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`. Note that upstream
-   `proofs-rs/lean-miri` targets `leanprover/lean4:v4.35.0`
+   pinned Lean toolchain's `Init`/`Std`/`Lean` `.olean` and `.ir`/`.ir.sig`
+   companions against `LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`. Note that
+   upstream `proofs-rs/lean-miri` targets `leanprover/lean4:v4.35.0`
    (`upstream_lean_toolchain`), whereas Anneal compiles and pins `.olean`
    digests under its locked `leanprover/lean4:v4.34.1` (`build_lean_toolchain`):
    upstream's `v4.35.0` test results therefore do not automatically carry over
@@ -648,8 +651,9 @@ without expanding the user-machine TCB or weakening Pass 1's pure `theory/`
 gate, Anneal's Pass 2 correspondence audit (detailed in
 [`docs/architecture.md`](architecture.md) and
 [`docs/mir-correspondence-design.md`](mir-correspondence-design.md)) governs
-five controls—four active in Pass 2 above and one remaining planned control
-tracked for a follow-up PR:
+five controls: four active in Pass 2 above, and a fifth whose record embedding
+is active (enforced by bundle CI and `cargo anneal verify`, not Pass 2) and
+whose re-hashing remains planned:
 
 1. **Content-addressed vendor pinning, semantic diff review, and OS-level
    sandboxing (active):** Pin authentication, sysroot locking, external
@@ -679,22 +683,37 @@ tracked for a follow-up PR:
    Universe-monomorphic claim/proof checking with non-empty required-constants
    lists (`verifyCorrespondenceClaims`) and `verifyRefEvaluatorIndependence`
    are active in Pass 2 above.
-5. **Archive-embedded correspondence provenance and fail-closed digest
-   verification *(planned)*:** To uphold [`THREAT_MODEL.md`](../THREAT_MODEL.md)'s
-   bounded human-review guarantee without shipping `vendor/lean-miri/` or
-   `correspondence/` in user toolchain archives, every packaged user toolchain
-   archive and `cargo-anneal` bundle will embed a compact, CI-checked,
-   digest-bound **correspondence provenance record** (pinned Anneal revision,
-   `trusted/lean/` source and `.olean` digests, `vendor/lean-miri/` upstream
-   commit, `UPSTREAM_PIN.json` SHA-256, `patched_files` allowlist and digests,
-   `Trusted/Correspondence.lean` digest, and Pass 2 attestation metadata).
-   Archive construction and `cargo anneal verify` will hash the actual packaged
-   `trusted/lean/` artifacts and fail closed unless those computed digests
-   exactly match the attested provenance record (as well as failing closed if
-   the embedded provenance is missing or malformed), and `cargo anneal verify`
-   will surface the verified provenance record in every verification result's
-   TCB audit log so an auditor inspecting only stated specifications and the
-   TCB audit log can identify and audit every certifying Pass 2 artifact.
+5. **Archive-embedded correspondence provenance (active); fail-closed
+   re-hashing of packaged artifacts *(planned)*:** To uphold
+   [`THREAT_MODEL.md`](../THREAT_MODEL.md)'s bounded human-review guarantee
+   without shipping `vendor/lean-miri/` or `correspondence/` in user toolchain
+   archives, every packaged user toolchain archive and `cargo-anneal` bundle
+   embeds a CI-checked, digest-bound **correspondence provenance record**
+   (`CORRESPONDENCE_PROVENANCE_JSON` and
+   `share/anneal/correspondence-provenance.json`, recording pinned toolchain
+   metadata, `trusted/lean/` and `trusted/correspondence/` source digests,
+   `vendor/lean-miri/` upstream commit and `UPSTREAM_PIN.json` SHA-256, the
+   13-file `patched_files` digests, and `correspondence/` proof digests).
+   - *Active:* `trusted/cargo-anneal/build.rs` renders the record into
+     `$OUT_DIR/bundled_resources.rs` from the same canonical `trusted/` bytes
+     that it embeds there, and the `anneal-audit` bundled-resources parity
+     check fails closed if the compiled-in record or bundle drifts from the
+     canonical sources. `omnibus-archive` renders the record from the same
+     canonical inputs with `ci/render_correspondence_provenance.py` (which CI
+     checks byte-for-byte against the compiled-in record) and checks only
+     that it parses as a `schema_version` 1 object. `cargo anneal verify`
+     fails closed if the embedded record does not parse, and copies it into
+     every verification receipt as `correspondence_provenance` (replaced by an
+     explicit non-applicability disclaimer when `--allow-unpinned-lean` is
+     used or the capture uses Profile v2, which Pass 2 does not certify)
+     alongside `model_manifest_sha256` over the bundled model bytes it
+     actually stages, so an auditor inspecting only stated specifications and
+     the receipt can identify every certifying Pass 2 artifact.
+   - *Planned:* Neither archive construction nor `cargo anneal verify` yet
+     recomputes the digests of the packaged or staged `trusted/lean/`
+     artifacts and fails closed unless they exactly match the record. Until
+     that comparison lands, the binding between the record and the shipped
+     model rests on the CI parity checks above.
 
 Introducing `vendor/lean-miri/` and (later) `correspondence/` into the
 repository—and later treating Pass 2 correspondence certification as a
@@ -737,9 +756,9 @@ To include these files in `trusted/`'s effective TCB without relocating them,
   `toolchain.rs`) **and `LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS`**
   (`trusted/cargo-anneal/src/toolchain.rs`): Pins one SHA-256 digest over the
   sorted `"{rel_path}:{sha256}"` lines of every `{Init,Std,Lean}*` `.olean`,
-  `.olean.server`, and `.olean.private` file in the pinned toolchain's
-  `lib/lean/`, and (on `x86_64` Linux) pins the 34 runtime shared libraries
-  and linker scripts under `lib/` and `lib/lean/`, verified by
+  `.olean.server`, `.olean.private`, `.ir.sig`, and `.ir` file in the pinned
+  toolchain's `lib/lean/`, and (on `x86_64` Linux) pins the 34 runtime shared
+  libraries and linker scripts under `lib/` and `lib/lean/`, verified by
   `Checker::tool_admission()` before invoking `TrustedBoundary.lean`
   (protecting both `anneal-audit` and pinned `cargo-anneal verify`) and reused
   by Pass 2 before compiling or loading `.vendorMiri` and `.sysrootFoundation`

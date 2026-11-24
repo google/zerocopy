@@ -22,18 +22,18 @@ use sha2::{Digest, Sha256};
 use walkdir::WalkDir;
 
 /// Names the pinned SHA-256 manifest digest of all
-/// `<prefix>/lib/lean/{Init,Std,Lean}*` `.olean`, `.olean.server`, and
-/// `.olean.private` artifacts in the pinned Lean 4.34.1 toolchain, computed
-/// over sorted `"{rel_path}:{sha256}\n"` lines.
+/// `<prefix>/lib/lean/{Init,Std,Lean}*` `.olean`, `.olean.server`,
+/// `.olean.private`, `.ir.sig`, and `.ir` artifacts in the pinned Lean
+/// 4.34.1 toolchain, computed over sorted `"{rel_path}:{sha256}\n"` lines.
 ///
 /// Pinned `Checker::tool_admission` verifies this manifest before running
 /// `TrustedBoundary.lean` (so both `anneal-audit` Pass 1/2 and
-/// `cargo-anneal verify` authenticate the sysroot `.olean` dependency cone of
-/// the standalone inspector), and `anneal-audit` Pass 2 additionally extracts
-/// the sorted `.sysrootFoundation` module list before compiling or loading
-/// `.vendorMiri` and `.sysrootFoundation` modules.
+/// `cargo-anneal verify` authenticate the sysroot `.olean` and `.ir`
+/// dependency cone of the standalone inspector), and `anneal-audit` Pass 2
+/// additionally extracts the sorted `.sysrootFoundation` module list before
+/// compiling or loading `.vendorMiri` and `.sysrootFoundation` modules.
 pub const LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256: &str =
-    "2fa0ec692ae74051072ed105a66054843dcb711eb702bb64dc7947b96ea4fcdf";
+    "9fdeeac45fb6b0b88a978729a67db26f2a71c108adf5366091cb533abea60e88";
 
 /// Lists the canonical repository-relative trusted source files embedded into
 /// `cargo-anneal` at build time into `$OUT_DIR/bundled_resources.rs`.

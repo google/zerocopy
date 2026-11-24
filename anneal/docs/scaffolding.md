@@ -156,7 +156,7 @@ cargo install --locked --debug --jobs 2 --path trusted/audit \
 ```
 
 `anneal-audit` embeds `TrustedBoundary.lean` internally and hashes the pinned
-Lean binary, `foundation-lock.json`, and sysroot `.olean` manifest before
+Lean binary, `foundation-lock.json`, and sysroot `.olean`/`.ir` manifest before
 replaying declarations. To cache cold `vendor/lean-miri/` `.olean` builds across
 runs, pass `--miri-cache-dir <dir>` pointing outside `--anneal-root`.
 
@@ -217,7 +217,7 @@ Available `CASES` values:
 | `bundled-cargo-check` | Runs installed `rust/bin/cargo check --offline` with an owned `CARGO_HOME` and checks nonempty `.rmeta` output. |
 | `cargo-arguments` | Runs `cargo-anneal unknown-scaffold-command` and expects exit `2`. |
 | `cargo-help` | Checks `--help`, `anneal --help`, and `setup --help` on `cargo-anneal`. |
-| `cargo-setup-invalid-archive` | On Linux, checks that v1 install followed by v2 reinstall replaces the toolchain in `XDG_CACHE_HOME` and corrupt/missing archives fail with exit `1` and empty stdout without harming the installed toolchain. |
+| `cargo-setup-invalid-archive` | On Unix, checks that v1 install followed by v2 reinstall replaces the toolchain in `XDG_CACHE_HOME` / `HOME` and corrupt/missing archives fail with exit `1` and empty stdout without harming the installed toolchain. |
 | `cargo-version` | Checks `--version` and `anneal --version` on `cargo-anneal`. |
 | `driver-callback` | Compiles a small crate with `bin/anneal-rustc-capture --sysroot ... --emit=metadata` and checks `.rmeta` output, empty stdout, and the callback stderr note. |
 | `lean-file` | Stages `share/anneal/trusted/lean` and `share/anneal/theory`, parses `share/anneal/theory/bundle-manifest.json` and walks `share/anneal/theory` recursively to verify 1-for-1 `Anneal.*` parity across the installed tree (allowing only `bundle-manifest.json` and `Anneal.*` modules with zero `*Canaries*` and no retired `Anneal.lean`), `bundle-manifest.json`, and its transitive `Anneal.*` import closure, compiles the `bundle-manifest.json` and `Trusted` module graph with `ANNEAL_TEST_JOBS` workers, checks `Trusted.olean`, `Anneal/Scalar.olean`, and `Anneal/Wp.olean` (and the absence of `Anneal.olean`), and elaborates separate `SmallScalar.lean` (`import Anneal.Scalar`) and `SmallWp.lean` (`import Anneal.Wp`) smoke modules. |

@@ -29,6 +29,7 @@ use cargo_anneal::{
     sandbox::{SandboxRuntime, create_dir_mode},
     sha256_file, stage_regular_file, topo_sort_modules,
 };
+pub use cargo_anneal::{CandidateFeature, TrustTier};
 use serde_json::json;
 use walkdir::WalkDir;
 
@@ -39,83 +40,6 @@ use crate::{
         remove_cache_file, verify_sysroot_foundation, verify_upstream_pin, write_cache_file,
     },
 };
-
-/// Enumerates the subsystem candidate-trusted feature identifiers recognized by
-/// Anneal.
-///
-/// Must stay in sync with `TrustedBoundary.validCandidateFeatures` in
-/// `trusted/audit/TrustedBoundary.lean`.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-pub enum CandidateFeature {
-    Refinement,
-    StepResult,
-    Memory,
-    MirAst,
-    MirSemantics,
-    RustcCapture,
-}
-
-impl CandidateFeature {
-    /// Parse a candidate feature identifier string.
-    pub fn parse(raw: &str) -> Option<Self> {
-        match raw {
-            "refinement" => Some(Self::Refinement),
-            "step_result" => Some(Self::StepResult),
-            "memory" => Some(Self::Memory),
-            "mir_ast" => Some(Self::MirAst),
-            "mir_semantics" => Some(Self::MirSemantics),
-            "rustc_capture" => Some(Self::RustcCapture),
-            _ => None,
-        }
-    }
-
-    /// Return the canonical identifier string for this candidate feature.
-    pub const fn as_str(self) -> &'static str {
-        match self {
-            Self::Refinement => "refinement",
-            Self::StepResult => "step_result",
-            Self::Memory => "memory",
-            Self::MirAst => "mir_ast",
-            Self::MirSemantics => "mir_semantics",
-            Self::RustcCapture => "rustc_capture",
-        }
-    }
-}
-
-/// Represents the module-level trust tier declared by a `Trusted` module via
-/// `-- anneal-trust-tier: <tier>`.
-///
-/// Making `TrustTier` a sum type over [`CandidateFeature`] ensures that an
-/// invalid or misspelled tier cannot be represented.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum TrustTier {
-    /// Marks a human-audited, permanently trusted TCB module (`vetted`).
-    Vetted,
-    /// Marks an alpha TCB module gated behind an explicit candidate feature
-    /// opt-in (`candidate:<feature>`).
-    Candidate(CandidateFeature),
-}
-
-impl TrustTier {
-    /// Parse `"vetted"` or `"candidate:<feature>"`.
-    pub fn parse(raw: &str) -> Option<Self> {
-        if raw == "vetted" {
-            Some(Self::Vetted)
-        } else {
-            let feat = raw.strip_prefix("candidate:")?;
-            Some(Self::Candidate(CandidateFeature::parse(feat)?))
-        }
-    }
-
-    /// Render the canonical wire string (`"vetted"` or
-    /// `"candidate:<feature>"`).
-    pub fn render(self) -> String {
-        match self {
-            Self::Vetted => "vetted".to_string(),
-            Self::Candidate(f) => format!("candidate:{}", f.as_str()),
-        }
-    }
-}
 
 /// Represents a typed request sent to `TrustedBoundary.lean`.
 ///
@@ -309,6 +233,7 @@ pub struct Checker {
     theory_modules: BTreeMap<String, PathBuf>,
     pass1_imports: BTreeMap<String, Vec<ImportEdge>>,
     sysroot_foundation: Option<(PathBuf, Vec<String>)>,
+    last_correspondence_tiers: Option<BTreeMap<String, TrustTier>>,
     require_correspondence: bool,
     miri_cache_dir: Option<PathBuf>,
     require_mir_wp: bool,
@@ -331,6 +256,7 @@ impl Checker {
             theory_modules: BTreeMap::new(),
             pass1_imports: BTreeMap::new(),
             sysroot_foundation: None,
+            last_correspondence_tiers: None,
             require_correspondence: false,
             miri_cache_dir,
             require_mir_wp: true,
@@ -351,6 +277,7 @@ impl Checker {
             theory_modules: BTreeMap::new(),
             pass1_imports: BTreeMap::new(),
             sysroot_foundation: None,
+            last_correspondence_tiers: None,
             require_correspondence: false,
             miri_cache_dir: None,
             require_mir_wp: true,
@@ -471,9 +398,9 @@ impl Checker {
         self.require_mir_wp = require;
     }
 
-    /// Authenticate the toolchain sysroot `{Init,Std,Lean}*` `.olean` manifest
-    /// against `LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256` and cache its module
-    /// list for Pass 2 inspection.
+    /// Authenticate the toolchain sysroot `{Init,Std,Lean}*` `.olean`/`.ir`
+    /// manifest against `LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256` and cache
+    /// its module list for Pass 2 inspection.
     pub fn ensure_sysroot_foundation(&mut self) -> Result<&[String], Failure> {
         let (prefix, foundation_graph) = {
             let adm = self.inner.admitted()?;
@@ -786,6 +713,7 @@ impl Checker {
         }
         check_checkout_cargo_hygiene(&root, self.require_mir_wp)?;
         self.inner.set_sandbox_mode(SandboxMode::Unsandboxed);
+        self.last_correspondence_tiers = None;
         self.reset_stage()?;
 
         // Scan and stage repository trees before `tool_admission` so missing
@@ -871,6 +799,7 @@ impl Checker {
             );
         }
 
+        let mut combined_tiers = preflight.module_tiers.clone();
         if let Some(corr_report) = self.run_correspondence(&preflight.module_tiers)?
             && let (Some(rep_obj), Some(corr_obj)) =
                 (report.as_object_mut(), corr_report.as_object())
@@ -878,6 +807,26 @@ impl Checker {
             for (k, v) in corr_obj {
                 rep_obj.insert(k.clone(), v.clone());
             }
+            if let Some(corr_tiers) = self.last_correspondence_tiers.take() {
+                combined_tiers.extend(corr_tiers);
+            }
+        }
+        if let Some(rep_obj) = report.as_object_mut() {
+            let mut vetted_modules = Vec::new();
+            let mut candidate_features: BTreeMap<String, Vec<String>> = BTreeMap::new();
+            for (module, tier) in &combined_tiers {
+                match tier {
+                    TrustTier::Vetted => vetted_modules.push(module.clone()),
+                    TrustTier::Candidate(feat) => {
+                        candidate_features
+                            .entry(feat.as_str().to_string())
+                            .or_default()
+                            .push(module.clone());
+                    }
+                }
+            }
+            rep_obj.insert("vettedModules".to_string(), json!(vetted_modules));
+            rep_obj.insert("candidateFeatures".to_string(), json!(candidate_features));
         }
 
         Ok(report)
@@ -1026,9 +975,11 @@ impl Checker {
             "Trusted correspondence import cycle",
             "Correspondence proof import cycle",
         )?;
+        self.last_correspondence_tiers = Some(preflight.module_tiers.clone());
 
-        // Authenticate the toolchain sysroot `.olean` manifest before compiling
-        // any vendored or correspondence module against `Init`/`Std`/`Lean`.
+        // Authenticate the toolchain sysroot `.olean`/`.ir` manifest before
+        // compiling any vendored or correspondence module against
+        // `Init`/`Std`/`Lean`.
         self.ensure_sysroot_foundation()?;
 
         // Enforce Tier 1 `linux_bwrap` (`SandboxMode::RequireBwrap`) across

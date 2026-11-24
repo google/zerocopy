@@ -33,8 +33,8 @@ use serde_json::{Value, json};
 use crate::setup::{ToolOverrides, installed_bundle, resolve_tools};
 use crate::{
     ActiveSandbox, Checker, SandboxMode, TOOLCHAIN, TargetAuditRequest, TargetBindings,
-    TargetModule, TargetRole, read_regular_file_deref, read_regular_file_strict, sha256_bytes,
-    source_starts_with_module_keyword,
+    TargetModule, TargetRole, TrustTier, parse_trusted_tier_directive, read_regular_file_deref,
+    read_regular_file_strict, sha256_bytes, source_starts_with_module_keyword,
 };
 
 // Generated deterministically by `build.rs` into `$OUT_DIR` from canonical
@@ -2025,17 +2025,24 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     // Installed theory remains proof code even though it ships with the
     // model. Only primitive trusted modules may determine the canonical
     // proposition; packaging must not promote proof helpers into its TCB.
+    let mut model_tiers: BTreeMap<String, TrustTier> = BTreeMap::new();
+    let mut model_modules: BTreeSet<String> = BTreeSet::new();
     for (relative, text) in BUNDLE {
         let path = bundle.join(relative);
         write(&path, text.as_bytes())?;
         let file_sha256 = sha256_bytes(text.as_bytes());
         model_identity.push(((*relative).to_owned(), file_sha256.clone()));
         if relative.ends_with(".lean") && relative.starts_with("trusted/lean/") {
+            let module = relative
+                .trim_start_matches("trusted/lean/")
+                .trim_end_matches(".lean")
+                .replace('/', ".");
+            let tier = parse_trusted_tier_directive(&module, text, "bundle")
+                .map_err(|e| error("tool_failed", "bundle", e.message))?;
+            model_tiers.insert(module.clone(), tier);
+            model_modules.insert(module.clone());
             modules.push(TargetModule {
-                module: relative
-                    .trim_start_matches("trusted/lean/")
-                    .trim_end_matches(".lean")
-                    .replace('/', "."),
+                module,
                 source: path,
                 expected_sha256: file_sha256,
                 role: TargetRole::Model,
@@ -2280,6 +2287,10 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         )
         .with_sandbox(Some(active_sandbox.as_str())));
     }
+    let candidate_features =
+        validate_and_extract_candidate_features(&audit, &model_tiers, &model_modules)
+            .map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?;
+    let experimental = !candidate_features.is_empty();
     let taints = active_taints(args);
     let taint_reasons = taint_reason_strings(&taints);
     let status = request.scope.verified_status(!taints.is_empty());
@@ -2338,12 +2349,11 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
                 "Lean executable in foundation-lock.json",
                 "Lean runtime shared libraries in LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS",
                 "foundation-lock.json modules",
-                "Lean sysroot Init/Std/Lean .olean artifacts in LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256",
+                "Lean sysroot Init/Std/Lean .olean/.ir artifacts in LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256",
                 "imported library-lock.json modules",
             ],
             "sha256_recorded": ["capture executable as capture_binary_sha256"],
             "unhashed": [
-                "Lean sysroot .ir/.ir.sig companions outside the locks",
                 "Rust compiler and sysroot, identified by their reported commit",
             ],
         })
@@ -2352,13 +2362,12 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
             "sha256_locked": [
                 "Lean executable in foundation-lock.json",
                 "foundation-lock.json modules",
-                "Lean sysroot Init/Std/Lean .olean artifacts in LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256",
+                "Lean sysroot Init/Std/Lean .olean/.ir artifacts in LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256",
                 "imported library-lock.json modules",
             ],
             "sha256_recorded": ["capture executable as capture_binary_sha256"],
             "unhashed": [
                 "Lean shared libraries, identified by lean --version",
-                "Lean sysroot .ir/.ir.sig companions outside the locks",
                 "Rust compiler and sysroot, identified by their reported commit",
             ],
         })
@@ -2405,12 +2414,15 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     } else {
         "experimental pointer-free MIR semantics"
     };
-    let mut assumptions: Vec<&str> = vec![
-        "faithful pinned compiler capture",
-        semantics_assumption,
-        lean_assumption,
-        "intact compiler and verification environment",
-    ];
+    let mut assumptions: Vec<&str> = vec!["faithful pinned compiler capture"];
+    // Without a candidate-tier module, the pointer-free semantics carries no
+    // `experimental` assumption. Profile v2's entry-validity narrowing bounds
+    // what results mean whatever the tier, so it is always recorded.
+    if profile_v2 || experimental {
+        assumptions.push(semantics_assumption);
+    }
+    assumptions.push(lean_assumption);
+    assumptions.push("intact compiler and verification environment");
     if active_sandbox == ActiveSandbox::LinuxLandlockSeccomp {
         assumptions.push(
             "Tier 2 Landlock + seccomp containment shares host mount and PID namespaces \
@@ -2428,7 +2440,8 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         "status": status,
         "taint_reasons": taint_reasons,
         "elaboration_sandbox": active_sandbox.as_str(),
-        "experimental": true,
+        "experimental": experimental,
+        "candidate_features": candidate_features,
         "request_sha256": request_sha256,
         "capture_sha256": capture_sha256,
         "capture_binary_sha256": capture_binary_sha256,
@@ -2542,6 +2555,90 @@ fn finalize_passing_artifacts(
         }
     }
     Ok(())
+}
+
+/// Validate that bundled `Model` modules respect `vetted -/-> candidate:*`
+/// in `audit.graph` and extract the sorted set of `candidate:<feature>` flags
+/// reached by declarations in `audit.modelClosure`.
+fn validate_and_extract_candidate_features(
+    audit: &Value,
+    model_tiers: &BTreeMap<String, TrustTier>,
+    model_modules: &BTreeSet<String>,
+) -> Result<Vec<&'static str>> {
+    let graph = audit.get("graph").and_then(Value::as_object).ok_or_else(|| {
+        error("tool_failed", "audit", "missing or malformed audit.graph metadata")
+    })?;
+    for mod_name in model_modules {
+        let Some(&tier) = model_tiers.get(mod_name) else {
+            return Err(error(
+                "tool_failed",
+                "bundle",
+                format!("missing trust tier for bundled model module {mod_name}"),
+            ));
+        };
+        if tier == TrustTier::Vetted {
+            let Some(edges) = graph.get(mod_name).and_then(Value::as_array) else {
+                return Err(error(
+                    "tool_failed",
+                    "audit",
+                    format!("missing audit.graph edges for model module {mod_name}"),
+                ));
+            };
+            for edge in edges {
+                let Some(dep) = edge.get("module").and_then(Value::as_str) else {
+                    return Err(error(
+                        "tool_failed",
+                        "audit",
+                        format!("malformed audit.graph edge for {mod_name}"),
+                    ));
+                };
+                if model_modules.contains(dep) {
+                    match model_tiers.get(dep) {
+                        Some(TrustTier::Vetted) => {}
+                        Some(TrustTier::Candidate(feat)) => {
+                            return Err(error(
+                                "tool_failed",
+                                "audit",
+                                format!(
+                                    "vetted model module {mod_name} cannot import candidate:{} module {dep}",
+                                    feat.as_str()
+                                ),
+                            ));
+                        }
+                        None => {
+                            return Err(error(
+                                "tool_failed",
+                                "bundle",
+                                format!("missing trust tier for imported model module {dep}"),
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+    }
+    let closure = audit.get("modelClosure").and_then(Value::as_array).ok_or_else(|| {
+        error("tool_failed", "audit", "missing audit.modelClosure metadata")
+    })?;
+    let mut reached: BTreeSet<&'static str> = BTreeSet::new();
+    for entry in closure {
+        let Some(module) = entry.get("module").and_then(Value::as_str) else {
+            return Err(error("tool_failed", "audit", "malformed entry in audit.modelClosure"));
+        };
+        if model_modules.contains(module) {
+            let Some(&tier) = model_tiers.get(module) else {
+                return Err(error(
+                    "tool_failed",
+                    "bundle",
+                    format!("missing trust tier for reached model module {module}"),
+                ));
+            };
+            if let TrustTier::Candidate(feat) = tier {
+                reached.insert(feat.as_str());
+            }
+        }
+    }
+    Ok(reached.into_iter().collect())
 }
 
 /// Validate `audit.sorryDeclarations`, closed `audit.axioms` allowlist,
@@ -4708,5 +4805,94 @@ mod tests {
         let err = resolve_cargo_package_cfg(&unsafe_feat_pkg, &[], false, true).unwrap_err();
         assert_eq!(err.status, "unsupported");
         assert_eq!(err.phase, "cargo");
+    }
+
+    #[test]
+    fn validate_and_extract_candidate_features_enforces_tier_policy_and_closure() {
+        use crate::CandidateFeature;
+
+        let model_modules = BTreeSet::from([
+            "Trusted".to_owned(),
+            "Trusted.MirAst".to_owned(),
+            "Trusted.MirSemantics".to_owned(),
+            "Trusted.Memory".to_owned(),
+            "Trusted.Refinement".to_owned(),
+            "Trusted.Unused".to_owned(),
+        ]);
+        let model_tiers = BTreeMap::from([
+            ("Trusted".to_owned(), TrustTier::Vetted),
+            ("Trusted.MirAst".to_owned(), TrustTier::Candidate(CandidateFeature::MirAst)),
+            (
+                "Trusted.MirSemantics".to_owned(),
+                TrustTier::Candidate(CandidateFeature::MirSemantics),
+            ),
+            ("Trusted.Memory".to_owned(), TrustTier::Candidate(CandidateFeature::Memory)),
+            ("Trusted.Refinement".to_owned(), TrustTier::Candidate(CandidateFeature::Refinement)),
+            ("Trusted.Unused".to_owned(), TrustTier::Candidate(CandidateFeature::StepResult)),
+        ]);
+
+        // Only candidate features reached by `modelClosure` appear, sorted
+        // lexicographically (`"memory"` before `"refinement"`, despite enum
+        // declaration order), ignoring unreached candidate modules (`Unused`).
+        let valid_audit = json!({
+            "graph": {
+                "Trusted": [{"module": "Init.Prelude", "isMeta": false, "isExported": true}],
+                "Trusted.MirAst": [{"module": "Trusted", "isMeta": false, "isExported": true}],
+                "Trusted.MirSemantics": [
+                    {"module": "Trusted.MirAst", "isMeta": false, "isExported": true}
+                ],
+                "Trusted.Memory": [],
+                "Trusted.Refinement": [],
+                "Trusted.Unused": []
+            },
+            "modelClosure": [
+                {"name": "Trusted.Refinement.step", "module": "Trusted.Refinement"},
+                {"name": "Trusted.MirSemantics.UnitTheorem", "module": "Trusted.MirSemantics"},
+                {"name": "Trusted.MirAst.Fn", "module": "Trusted.MirAst"},
+                {"name": "Trusted.Memory.read", "module": "Trusted.Memory"},
+                {"name": "Captured.program", "module": "Captured"},
+                {"name": "Trusted.ok", "module": "Trusted"}
+            ]
+        });
+        assert_eq!(
+            validate_and_extract_candidate_features(&valid_audit, &model_tiers, &model_modules)
+                .unwrap(),
+            vec!["memory", "mir_ast", "mir_semantics", "refinement"]
+        );
+
+        // Vetted-only closure yields an empty candidate feature list.
+        let vetted_only = json!({
+            "graph": {
+                "Trusted": [],
+                "Trusted.MirAst": [],
+                "Trusted.MirSemantics": [],
+                "Trusted.Memory": []
+            },
+            "modelClosure": [{"name": "Trusted.ok", "module": "Trusted"}]
+        });
+        assert!(
+            validate_and_extract_candidate_features(&vetted_only, &model_tiers, &model_modules)
+                .unwrap()
+                .is_empty()
+        );
+
+        // Vetted importing a candidate module must fail closed.
+        let vetted_imports_candidate = json!({
+            "graph": {
+                "Trusted": [{"module": "Trusted.MirAst", "isMeta": false, "isExported": true}],
+                "Trusted.MirAst": [],
+                "Trusted.MirSemantics": [],
+                "Trusted.Memory": []
+            },
+            "modelClosure": [{"name": "Trusted.ok", "module": "Trusted"}]
+        });
+        let err = validate_and_extract_candidate_features(
+            &vetted_imports_candidate,
+            &model_tiers,
+            &model_modules,
+        )
+        .unwrap_err();
+        assert_eq!(err.status, "tool_failed");
+        assert!(err.detail.contains("cannot import candidate:mir_ast"), "{}", err.detail);
     }
 }

@@ -326,6 +326,9 @@
               zstd
             ] ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
               patchelf
+            ] ++ pkgs.lib.optionals pkgs.stdenv.isDarwin [
+              darwin.cctools
+              darwin.sigtool
             ];
 
             rustToolchain = self.packages.${system}.rust-toolchain;
@@ -439,6 +442,119 @@
                   --set-interpreter "$(patchelf --print-interpreter "$rustToolchain/bin/rustc")" \
                   --set-rpath '$ORIGIN/../rust/lib' \
                   "$TMPDIR/dist_staging/bin/anneal-rustc-capture"
+
+                # Fail closed at build time if any Nix-store dynamic linker,
+                # RPATH, or DT_NEEDED reference remains or if bundled runtime
+                # libraries are missing from the staged toolchain/lib dirs.
+                interp="$(patchelf --print-interpreter "$TMPDIR/dist_staging/bin/anneal-rustc-capture")"
+                rpath="$(patchelf --print-rpath "$TMPDIR/dist_staging/bin/anneal-rustc-capture")"
+                # Use here-strings, not pipelines: under `pipefail`, an early
+                # `grep -q` exit could SIGPIPE a multi-write producer and flip
+                # the condition.
+                if [ -z "$interp" ] \
+                    || grep -Fq '/nix/store/' <<< "$interp" \
+                    || grep -Fq '/nix/store/' <<< "$rpath"; then
+                  echo "ERROR: Nix store reference leaked into ELF header ($interp / $rpath)" >&2
+                  exit 1
+                fi
+                if [ "$rpath" != '$ORIGIN/../rust/lib' ]; then
+                  echo "ERROR: unexpected ELF RPATH in anneal-rustc-capture: $rpath" >&2
+                  exit 1
+                fi
+                needed_libs="$(patchelf --print-needed "$TMPDIR/dist_staging/bin/anneal-rustc-capture")"
+                if [ -z "$needed_libs" ]; then
+                  echo "ERROR: empty DT_NEEDED list for anneal-rustc-capture" >&2
+                  exit 1
+                fi
+                while IFS= read -r needed; do
+                  [ -z "$needed" ] && continue
+                  if grep -Fq '/nix/store/' <<< "$needed"; then
+                    echo "ERROR: Nix store DT_NEEDED entry in anneal-rustc-capture: $needed" >&2
+                    exit 1
+                  fi
+                  case "$needed" in
+                    librustc_driver*|libLLVM*|libz.so.1|libgcc_s.so.1)
+                      if [ ! -e "$rustToolchain/lib/$needed" ] && [ ! -e "$TMPDIR/dist_staging/rust/lib/$needed" ]; then
+                        echo "ERROR: missing staged runtime dependency $needed for anneal-rustc-capture" >&2
+                        exit 1
+                      fi
+                      ;;
+                    ld-linux*.so.*|libc.so.6|libm.so.6|libdl.so.2|libpthread.so.0|librt.so.1)
+                      ;;
+                    *)
+                      echo "ERROR: unexpected DT_NEEDED dependency $needed in anneal-rustc-capture" >&2
+                      exit 1
+                      ;;
+                  esac
+                done <<< "$needed_libs"
+              ''}
+
+              ${pkgs.lib.optionalString pkgs.stdenv.isDarwin ''
+                # Strip Nix-store dylib and LC_RPATH references so the Darwin
+                # driver resolves system libraries and bundled `rust/lib/` via
+                # `@executable_path/../rust/lib` outside any Nix store.
+                capture_bin="$TMPDIR/dist_staging/bin/anneal-rustc-capture"
+                otool_libs="$(otool -L "$capture_bin")"
+                otool_cmds="$(otool -l "$capture_bin")"
+                if [ -z "$otool_libs" ] || [ -z "$otool_cmds" ]; then
+                  echo "ERROR: failed to inspect Mach-O headers for anneal-rustc-capture" >&2
+                  exit 1
+                fi
+                dylibs="$(printf '%s\n' "$otool_libs" | awk 'NR > 1 { print $1 }')"
+                while IFS= read -r dylib; do
+                  [ -z "$dylib" ] && continue
+                  case "$dylib" in
+                    /nix/store/*/lib/libiconv.dylib|/nix/store/*/lib/libiconv.*.dylib)
+                      install_name_tool -change "$dylib" /usr/lib/libiconv.2.dylib "$capture_bin"
+                      ;;
+                    /nix/store/*/lib/libz.dylib|/nix/store/*/lib/libz.*.dylib)
+                      install_name_tool -change "$dylib" /usr/lib/libz.1.dylib "$capture_bin"
+                      ;;
+                    /nix/store/*)
+                      echo "ERROR: unexpected Nix store dylib in anneal-rustc-capture: $dylib" >&2
+                      exit 1
+                      ;;
+                  esac
+                done <<< "$dylibs"
+                rpaths="$(printf '%s\n' "$otool_cmds" | awk '
+                  $1 == "cmd" && $2 == "LC_RPATH" { in_rpath = 1; next }
+                  in_rpath && $1 == "path" { print $2; in_rpath = 0 }
+                ')"
+                has_target_rpath=0
+                while IFS= read -r rp; do
+                  [ -z "$rp" ] && continue
+                  case "$rp" in
+                    /nix/store/*)
+                      install_name_tool -delete_rpath "$rp" "$capture_bin"
+                      ;;
+                    '@executable_path/../rust/lib')
+                      has_target_rpath=1
+                      ;;
+                  esac
+                done <<< "$rpaths"
+                if [ "$has_target_rpath" -ne 1 ]; then
+                  install_name_tool -add_rpath '@executable_path/../rust/lib' "$capture_bin"
+                fi
+                codesign -s - --force "$capture_bin"
+                post_otool_libs="$(otool -L "$capture_bin")"
+                post_otool_cmds="$(otool -l "$capture_bin")"
+                if [ -z "$post_otool_libs" ] || [ -z "$post_otool_cmds" ]; then
+                  echo "ERROR: failed to re-inspect Mach-O headers for anneal-rustc-capture" >&2
+                  exit 1
+                fi
+                if grep -Fq '/nix/store/' <<< "$post_otool_libs" \
+                    || grep -Fq '/nix/store/' <<< "$post_otool_cmds"; then
+                  echo "ERROR: Nix store reference leaked into Darwin Mach-O load commands" >&2
+                  exit 1
+                fi
+                post_rpaths="$(awk '
+                  $1 == "cmd" && $2 == "LC_RPATH" { in_rpath = 1; next }
+                  in_rpath && $1 == "path" { print $2; in_rpath = 0 }
+                ' <<< "$post_otool_cmds")"
+                if [ "$post_rpaths" != '@executable_path/../rust/lib' ]; then
+                  echo "ERROR: unexpected Darwin LC_RPATH in anneal-rustc-capture: $post_rpaths" >&2
+                  exit 1
+                fi
               ''}
 
               for full_path in \

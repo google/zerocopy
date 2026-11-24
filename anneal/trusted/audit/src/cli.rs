@@ -126,14 +126,30 @@ fn run(raw_args: Vec<OsString>) -> Result<u8, (u8, String)> {
                 .and_then(|v| serde_json::to_string(v).ok())
                 .unwrap_or_else(|| "[]".to_string());
             let tc = report.get("toolchain").and_then(Json::as_str).unwrap_or("");
+            let vetted_count =
+                report.get("vettedModules").and_then(Json::as_array).map_or(0, Vec::len);
+            let candidate_map = report.get("candidateFeatures").and_then(Json::as_object);
+            let candidate_count: usize = candidate_map
+                .map(|m| m.values().filter_map(Json::as_array).map(Vec::len).sum())
+                .unwrap_or(0);
+            let trusted_count = if report.get("vettedModules").is_some()
+                || candidate_map.is_some()
+            {
+                vetted_count + candidate_count
+            } else {
+                checker.modules().len()
+            };
+            let candidate_summary = candidate_map
+                .filter(|m| !m.is_empty())
+                .map(|m| m.keys().cloned().collect::<Vec<_>>().join(", "))
+                .unwrap_or_else(|| "none".to_string());
             println!(
                 "PASS: {guarantee}\n\
-                 {} Trusted modules; {} Theory modules; \
-                 {k_decls} Trusted kernel declarations; \
-                 {replayed} total replayed declarations; \
-                 axioms={axioms}\n\
+                 {trusted_count} Trusted modules ({vetted_count} vetted; \
+                 candidate features: {candidate_summary}); \
+                 {} Theory modules; {k_decls} Trusted kernel declarations; \
+                 {replayed} total replayed declarations; axioms={axioms}\n\
                  {tc}",
-                checker.modules().len(),
                 checker.theory_modules().len()
             );
             if let Some(miri_mods) = report.get("miriClosureModules").and_then(Json::as_u64) {
