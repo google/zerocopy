@@ -1,0 +1,13 @@
+[package]
+name = "hybrid_proto_suite"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+name = "hybrid_proto_suite"
+path = "src/lib.rs"
+
+[[bin]]
+name = "bench_and_emit"
+path = "src/bin/bench_and_emit.rs"

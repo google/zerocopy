@@ -1,0 +1,10 @@
+name = "anneal_hybrid_bridge"
+defaultTargets = ["Anneal", "HybridBridge"]
+
+[[lean_lib]]
+name = "Anneal"
+roots = ["Anneal.LinearArith", "Anneal.BitTrieLrat"]
+
+[[lean_lib]]
+name = "HybridBridge"
+roots = ["HybridBridge.GeneratedCerts"]

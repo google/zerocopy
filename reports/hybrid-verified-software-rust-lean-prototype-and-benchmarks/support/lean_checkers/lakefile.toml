@@ -1,0 +1,8 @@
+name = "hybrid_lean_checkers"
+defaultTargets = ["HybridSsspChecker", "HybridDeflateChecker"]
+
+[[lean_lib]]
+name = "HybridSsspChecker"
+
+[[lean_lib]]
+name = "HybridDeflateChecker"

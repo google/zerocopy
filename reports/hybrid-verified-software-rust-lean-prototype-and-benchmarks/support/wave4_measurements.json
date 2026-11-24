@@ -1,0 +1,199 @@
+{
+  "bench": {
+    "sssp": [
+      {
+        "topology": "random_low_diam",
+        "n": 64,
+        "edges": 511,
+        "dijkstra_us": 9.8,
+        "checker_us": 1.67,
+        "bellman_ford_fallback_us": 3.71,
+        "checker_over_dijkstra_pct": 17.04,
+        "bellman_over_dijkstra_x": 0.38
+      },
+      {
+        "topology": "random_low_diam",
+        "n": 256,
+        "edges": 2047,
+        "dijkstra_us": 36.73,
+        "checker_us": 5.76,
+        "bellman_ford_fallback_us": 21.06,
+        "checker_over_dijkstra_pct": 15.68,
+        "bellman_over_dijkstra_x": 0.57
+      },
+      {
+        "topology": "random_low_diam",
+        "n": 1024,
+        "edges": 8191,
+        "dijkstra_us": 225.79,
+        "checker_us": 22.75,
+        "bellman_ford_fallback_us": 147.81,
+        "checker_over_dijkstra_pct": 10.08,
+        "bellman_over_dijkstra_x": 0.65
+      },
+      {
+        "topology": "reverse_chain",
+        "n": 256,
+        "edges": 509,
+        "dijkstra_us": 21.23,
+        "checker_us": 2.28,
+        "bellman_ford_fallback_us": 274.42,
+        "checker_over_dijkstra_pct": 10.76,
+        "bellman_over_dijkstra_x": 12.93
+      },
+      {
+        "topology": "reverse_chain",
+        "n": 512,
+        "edges": 1021,
+        "dijkstra_us": 42.73,
+        "checker_us": 4.45,
+        "bellman_ford_fallback_us": 1778.95,
+        "checker_over_dijkstra_pct": 10.42,
+        "bellman_over_dijkstra_x": 41.63
+      },
+      {
+        "topology": "reverse_chain",
+        "n": 1024,
+        "edges": 2045,
+        "dijkstra_us": 88.03,
+        "checker_us": 9.28,
+        "bellman_ford_fallback_us": 6916.64,
+        "checker_over_dijkstra_pct": 10.54,
+        "bellman_over_dijkstra_x": 78.57
+      }
+    ],
+    "deflate": [
+      {
+        "bytes": 4096,
+        "tokens": 183,
+        "compression_ratio_tokens_per_byte": 0.0447,
+        "lz77_huffman_us": 37.86,
+        "checker_us": 4.81,
+        "stored_fallback_us": 4.31,
+        "checker_over_producer_pct": 12.72
+      },
+      {
+        "bytes": 32768,
+        "tokens": 461,
+        "compression_ratio_tokens_per_byte": 0.0141,
+        "lz77_huffman_us": 150.36,
+        "checker_us": 31.75,
+        "stored_fallback_us": 644.63,
+        "checker_over_producer_pct": 21.11
+      },
+      {
+        "bytes": 65536,
+        "tokens": 739,
+        "compression_ratio_tokens_per_byte": 0.0113,
+        "lz77_huffman_us": 315.5,
+        "checker_us": 50.93,
+        "stored_fallback_us": 1377.31,
+        "checker_over_producer_pct": 16.14
+      }
+    ],
+    "anneal_bridge": {
+      "php43": {
+        "vars": 12,
+        "clauses": 22,
+        "tree_nodes": 17,
+        "add_steps": 17,
+        "del_steps": 8,
+        "total_steps": 25,
+        "trie_depth": 7,
+        "dpll_solve_us": 28.79,
+        "rust_rup_check_us": 6.28
+      },
+      "k4_color3": {
+        "vars": 12,
+        "clauses": 22,
+        "tree_nodes": 17,
+        "add_steps": 17,
+        "del_steps": 8,
+        "total_steps": 25,
+        "trie_depth": 7,
+        "dpll_solve_us": 20.46,
+        "rust_rup_check_us": 6.17
+      },
+      "generated_lean_bytes": 5633
+    }
+  },
+  "sloc": {
+    "rust_combinator_core": {
+      "raw_lines": 159,
+      "non_blank_non_comment": 136
+    },
+    "rust_sssp": {
+      "raw_lines": 297,
+      "non_blank_non_comment": 263
+    },
+    "rust_deflate": {
+      "raw_lines": 248,
+      "non_blank_non_comment": 213
+    },
+    "rust_anneal_emit": {
+      "raw_lines": 642,
+      "non_blank_non_comment": 573
+    },
+    "rust_bench_and_emit": {
+      "raw_lines": 181,
+      "non_blank_non_comment": 164
+    },
+    "lean_sssp_checker": {
+      "raw_lines": 383,
+      "non_blank_non_comment": 335
+    },
+    "lean_deflate_checker": {
+      "raw_lines": 337,
+      "non_blank_non_comment": 288
+    },
+    "lean_generated_certs": {
+      "raw_lines": 201,
+      "non_blank_non_comment": 176
+    }
+  },
+  "lean_checks": {
+    "sssp": {
+      "wall_str": "01.08",
+      "peak_rss_kib": 178524,
+      "axioms": [
+        "'HybridSsspChecker.checkSsspWitness_sound' depends on axioms: [propext]",
+        "'HybridSsspChecker.sampleDiamond_verified' depends on axioms: [propext]"
+      ]
+    },
+    "deflate": {
+      "wall_str": "01.33",
+      "peak_rss_kib": 175100,
+      "axioms": [
+        "'HybridDeflateChecker.checkLzReplay_sound' depends on axioms: [propext]",
+        "'HybridDeflateChecker.checkKraftBounds_sound' does not depend on any axioms",
+        "'HybridDeflateChecker.sampleLz_verified' depends on axioms: [propext]"
+      ]
+    },
+    "anneal_bridge": {
+      "wall_str": "02.86",
+      "peak_rss_kib": 199968,
+      "axioms": [
+        "'HybridBridge.alignPair_verified' depends on axioms: [propext]",
+        "'HybridBridge.stripePartition_verified' depends on axioms: [propext]",
+        "'HybridBridge.php43_unsat_verified' depends on axioms: [propext]",
+        "'HybridBridge.k4Color3_unsat_verified' depends on axioms: [propext]"
+      ]
+    }
+  },
+  "support_sha256": {
+    "anneal_bridge/HybridBridge/GeneratedCerts.lean": "97837ff317b2df771bc5e0e447bf512e87a4ede433b0e53c00ab4c91c37ea133",
+    "anneal_bridge/lakefile.toml": "7f4d4123ca236ad68017f10729571118d1ffd5601c4fd99f97189db59b80b2e6",
+    "anneal_bridge/lean-toolchain": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+    "hybrid_proto_suite/Cargo.toml": "349dae45870df23e859895d1d05c0e9a4b48f42bbe1a0b328269b32735f549d2",
+    "hybrid_proto_suite/src/anneal_emit.rs": "eb192fe0f41f81cbeea6b55977c3f417058be579fc2ad911eab6a6597fa17fd1",
+    "hybrid_proto_suite/src/bin/bench_and_emit.rs": "8a45c43a95508a12a3e06b52e7ddcaab9f48aa6b25c7e3725d3de1b065b89594",
+    "hybrid_proto_suite/src/deflate.rs": "29edfbb4dc136c0564bd7c5dffe38072854236929a3d2d8e9164e5f98bc9ba11",
+    "hybrid_proto_suite/src/lib.rs": "300c6522a6b3a573a57c8bb5beb35f21860f5995f91525e5a8a8933780304165",
+    "hybrid_proto_suite/src/sssp.rs": "9a2d2984c7431de85ac4df389c54c2a4a2ef0fc9c06c08896ef89f2d14d96c50",
+    "hybrid_proto_suite/tests/suite.rs": "3505223bef719d8032e1247912906d920e8cd8d428c870a57565809645aad91b",
+    "lean_checkers/HybridDeflateChecker.lean": "55ec0d956e11c97b9ebdad9b081df72ddb2af3c6a5fc5dc5db004253cca07ff6",
+    "lean_checkers/HybridSsspChecker.lean": "6450acb745fbe3f1ffdfe2ba07f5cfb374d9e4b05762289e67944cf4c7773ddb",
+    "lean_checkers/lakefile.toml": "43a678977c8736058749085da74b800f3ee6d41407eeb62866802ea96489235e",
+    "lean_checkers/lean-toolchain": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b"
+  }
+}
