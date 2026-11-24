@@ -1,0 +1,104 @@
+{
+  "audit": {
+    "exit_code": 0,
+    "peak_rss_kb": 1611164,
+    "print_axioms": {
+      "VerifiedRustcHintInline.abortOnFalse_soundly_refines_ubOnFalse": [
+        "propext"
+      ],
+      "VerifiedRustcHintInline.assume_dead_branch_pruning_prog_sound": [
+        "propext",
+        "Quot.sound"
+      ],
+      "VerifiedRustcHintInline.assume_pruning_without_contradiction_unsound": [
+        "propext"
+      ],
+      "VerifiedRustcHintInline.blackBox_observational_identity": [
+        "propext",
+        "Quot.sound"
+      ],
+      "VerifiedRustcHintInline.blackBox_statement_blocks_fold_while_preserving_outcome": [
+        "propext"
+      ],
+      "VerifiedRustcHintInline.boxedAddTwoThree_blocked": [
+        "propext"
+      ],
+      "VerifiedRustcHintInline.constFoldExpr_sound": [
+        "propext"
+      ],
+      "VerifiedRustcHintInline.end_to_end_opt_and_refinement": [
+        "propext",
+        "Quot.sound"
+      ],
+      "VerifiedRustcHintInline.exported_always_then_never_emits_both_diags": [
+        "propext"
+      ],
+      "VerifiedRustcHintInline.exported_never_then_always_skips_export_warning": [
+        "propext"
+      ],
+      "VerifiedRustcHintInline.fnAttrs_observational_equivalence_invariance": [
+        "propext",
+        "Quot.sound"
+      ],
+      "VerifiedRustcHintInline.inlineCallOnce_sound": [
+        "propext",
+        "Quot.sound"
+      ],
+      "VerifiedRustcHintInline.norm32_ne_zero_implies_add_one_ne_one": [
+        "propext"
+      ],
+      "VerifiedRustcHintInline.plainAddTwoThree_folds": [
+        "propext"
+      ],
+      "VerifiedRustcHintInline.plain_and_boxed_same_runtime_value": [
+        "propext"
+      ],
+      "VerifiedRustcHintInline.precompiled_core_o0_vs_opt1_boundary": [
+        "propext"
+      ],
+      "VerifiedRustcHintInline.prune_unreachable_branch_range_excludes_one": [
+        "propext"
+      ]
+    },
+    "summary": {
+      "def_count": 485,
+      "theorem_count": 313,
+      "violations": 0
+    },
+    "violation_lines": [],
+    "wall_seconds": 3.404
+  },
+  "compile": {
+    "errors": 0,
+    "exit_code": 0,
+    "first_diagnostics": [],
+    "olean_bytes": 5175408,
+    "peak_rss_kb": 669192,
+    "wall_seconds": 9.497,
+    "warnings": 0
+  },
+  "file": "HintAssumeBlackBoxAndInlineAttrsSoundness.lean",
+  "forbidden_token_counts": {
+    "Classical.choice": 0,
+    "_unsafe_rec": 0,
+    "admit": 0,
+    "axiom": 0,
+    "bv_decide": 0,
+    "deriving": 0,
+    "extern": 0,
+    "implemented_by": 0,
+    "native_decide": 0,
+    "noncomputable section": 0,
+    "omega": 0,
+    "opaque": 0,
+    "partial": 0,
+    "sorry": 0,
+    "unsafe": 0
+  },
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "loc": 2466,
+  "passed": true,
+  "plain_non_noncomputable_defs": [],
+  "source_sha256": "6152e4e34aab0308189110253f85484e9d3ff7a84977bd72f11415ddd5bcfc58",
+  "wrapper_used": true
+}

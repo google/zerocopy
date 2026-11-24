@@ -1,0 +1,1012 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "experiments": {
+    "a_unreachable_unchecked_and_assert_unchecked": {
+      "unreachable_unchecked_opt0_debug_on": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=0",
+          "-Cdebug-assertions=on"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": -6,
+        "run_stdout": "",
+        "run_stderr": "thread 'main' (<tid>) panicked at <tmp>/probe.rs:4:18:\nunsafe precondition(s) violated: hint::unreachable_unchecked must never be reached\n\nThis indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety.\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting."
+      },
+      "unreachable_unchecked_opt0_debug_off": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=0",
+          "-Cdebug-assertions=off"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": -6,
+        "run_stdout": "",
+        "run_stderr": "thread 'main' (<tid>) panicked at <tmp>/probe.rs:4:18:\nunsafe precondition(s) violated: hint::unreachable_unchecked must never be reached\n\nThis indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety.\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting."
+      },
+      "unreachable_unchecked_opt0_debug_off_ub_no": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=0",
+          "-Cdebug-assertions=off",
+          "-Zub-checks=no"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": -6,
+        "run_stdout": "",
+        "run_stderr": "thread 'main' (<tid>) panicked at <tmp>/probe.rs:4:18:\nunsafe precondition(s) violated: hint::unreachable_unchecked must never be reached\n\nThis indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety.\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting."
+      },
+      "unreachable_unchecked_opt1_debug_off_ub_no": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=1",
+          "-Cdebug-assertions=off",
+          "-Zub-checks=no"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "REACHED",
+        "run_stderr": ""
+      },
+      "unreachable_unchecked_opt2_debug_off_ub_no": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=2",
+          "-Cdebug-assertions=off",
+          "-Zub-checks=no"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "REACHED",
+        "run_stderr": ""
+      },
+      "assert_unchecked_false_opt0_debug_on": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=0",
+          "-Cdebug-assertions=on"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": -6,
+        "run_stdout": "",
+        "run_stderr": "thread 'main' (<tid>) panicked at <tmp>/probe.rs:4:14:\nunsafe precondition(s) violated: hint::assert_unchecked must never be called when the condition is false\n\nThis indicates a bug in the program. This Undefined Behavior check is optional, and cannot be relied on for safety.\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting."
+      },
+      "assert_unchecked_false_opt0_debug_off": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=0",
+          "-Cdebug-assertions=off"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "ASSERT_OK",
+        "run_stderr": ""
+      },
+      "assert_unchecked_false_opt0_debug_off_ub_no": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=0",
+          "-Cdebug-assertions=off",
+          "-Zub-checks=no"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "ASSERT_OK",
+        "run_stderr": ""
+      },
+      "assert_unchecked_false_opt2_debug_off_ub_no": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=2",
+          "-Cdebug-assertions=off",
+          "-Zub-checks=no"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "ASSERT_OK",
+        "run_stderr": ""
+      },
+      "guarded_safe_release_ub_no": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=2",
+          "-Cdebug-assertions=off",
+          "-Zub-checks=no"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "GUARDED_OK=25,25",
+        "run_stderr": ""
+      },
+      "miri_unreachable_unchecked_ub": {
+        "edition": "2024",
+        "command": "cargo miri run --offline",
+        "miriflags": null,
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "Compiling miri_probe v0.1.0 (<tmp>)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.27s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/miri_probe`\nerror: Undefined Behavior: entering unreachable code\n --> src/main.rs:3:18\n  |\n3 |         unsafe { core::hint::unreachable_unchecked() };\n  |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+      },
+      "miri_assert_unchecked_false_ub": {
+        "edition": "2024",
+        "command": "cargo miri run --offline",
+        "miriflags": null,
+        "returncode": 1,
+        "stdout": "",
+        "stderr": "Compiling miri_probe v0.1.0 (<tmp>)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.21s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/miri_probe`\nerror: Undefined Behavior: `assume` called with `false`\n --> src/main.rs:3:14\n  |\n3 |     unsafe { core::hint::assert_unchecked(cond) };\n  |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+      },
+      "miri_assert_unchecked_true_ok": {
+        "edition": "2024",
+        "command": "cargo miri run --offline",
+        "miriflags": null,
+        "returncode": 0,
+        "stdout": "MIRI_TRUE_OK",
+        "stderr": "Compiling miri_probe v0.1.0 (<tmp>)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.21s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/miri_probe`"
+      }
+    },
+    "b_mir_dumps": {
+      "opt2_debug_off_ub_no": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=2",
+          "-Cdebug-assertions=off",
+          "-Zub-checks=no"
+        ],
+        "compile_returncode": 0,
+        "selected_mir_stages": {
+          "probe.black_box_const_op.3-1-001.LowerIntrinsics.after.mir": "// MIR for `black_box_const_op` after LowerIntrinsics\n\nfn black_box_const_op() -> i32 {\n    let mut _0: i32;\n    let mut _1: i32;\n    let mut _2: i32;\n\n    bb0: {\n        StorageLive(_1);\n        _1 = std::hint::black_box::<i32>(const 2_i32) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageLive(_2);\n        _2 = std::hint::black_box::<i32>(const 3_i32) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _0 = Add(move _1, move _2);\n        StorageDead(_2);\n        StorageDead(_1);\n        return;\n    }\n}",
+          "probe.black_box_const_op.3-2-004.Inline.after.mir": "// MIR for `black_box_const_op` after Inline\n\nfn black_box_const_op() -> i32 {\n    let mut _0: i32;\n    let mut _1: i32;\n    let mut _2: i32;\n    let mut _3: i32;\n    let mut _4: i32;\n    scope 1 (inlined std::hint::black_box::<i32>) {\n    }\n    scope 2 (inlined std::hint::black_box::<i32>) {\n    }\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_3);\n        _3 = const 2_i32;\n        _1 = std::intrinsics::black_box::<i32>(move _3) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        StorageLive(_2);\n        StorageLive(_4);\n        _4 = const 3_i32;\n        _2 = std::intrinsics::black_box::<i32>(move _4) -> [return: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        StorageDead(_4);\n        _0 = Add(move _1, move _2);\n        StorageDead(_2);\n        StorageDead(_1);\n        return;\n    }\n}",
+          "probe.black_box_const_op.3-2-008.UnreachablePropagation.after.mir": "// MIR for `black_box_const_op` after UnreachablePropagation\n\nfn black_box_const_op() -> i32 {\n    let mut _0: i32;\n    let mut _1: i32;\n    let mut _2: i32;\n    let mut _3: i32;\n    let mut _4: i32;\n    scope 1 (inlined std::hint::black_box::<i32>) {\n    }\n    scope 2 (inlined std::hint::black_box::<i32>) {\n    }\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_3);\n        _3 = const 2_i32;\n        _1 = std::intrinsics::black_box::<i32>(move _3) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        StorageLive(_2);\n        StorageLive(_4);\n        _4 = const 3_i32;\n        _2 = std::intrinsics::black_box::<i32>(move _4) -> [return: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        StorageDead(_4);\n        _0 = Add(move _1, move _2);\n        StorageDead(_2);\n        StorageDead(_1);\n        return;\n    }\n}",
+          "probe.black_box_const_op.3-2-010.InstSimplify-after-simplifycfg.after.mir": "// MIR for `black_box_const_op` after InstSimplify-after-simplifycfg\n\nfn black_box_const_op() -> i32 {\n    let mut _0: i32;\n    let mut _1: i32;\n    let mut _2: i32;\n    let mut _3: i32;\n    let mut _4: i32;\n    scope 1 (inlined std::hint::black_box::<i32>) {\n    }\n    scope 2 (inlined std::hint::black_box::<i32>) {\n    }\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_3);\n        _3 = const 2_i32;\n        _1 = std::intrinsics::black_box::<i32>(move _3) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        StorageLive(_2);\n        StorageLive(_4);\n        _4 = const 3_i32;\n        _2 = std::intrinsics::black_box::<i32>(move _4) -> [return: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        StorageDead(_4);\n        _0 = Add(move _1, move _2);\n        StorageDead(_2);\n        StorageDead(_1);\n        return;\n    }\n}",
+          "probe.black_box_const_op.3-2-011.SimplifyConstCondition-after-inst-simplify.after.mir": "// MIR for `black_box_const_op` after SimplifyConstCondition-after-inst-simplify\n\nfn black_box_const_op() -> i32 {\n    let mut _0: i32;\n    let mut _1: i32;\n    let mut _2: i32;\n    let mut _3: i32;\n    let mut _4: i32;\n    scope 1 (inlined std::hint::black_box::<i32>) {\n    }\n    scope 2 (inlined std::hint::black_box::<i32>) {\n    }\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_3);\n        _3 = const 2_i32;\n        _1 = std::intrinsics::black_box::<i32>(move _3) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        StorageLive(_2);\n        StorageLive(_4);\n        _4 = const 3_i32;\n        _2 = std::intrinsics::black_box::<i32>(move _4) -> [return: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        StorageDead(_4);\n        _0 = Add(move _1, move _2);\n        StorageDead(_2);\n        StorageDead(_1);\n        return;\n    }\n}",
+          "probe.black_box_const_op.3-3-000.runtime-optimized.after.mir": "// MIR for `black_box_const_op` after runtime-optimized\n\nfn black_box_const_op() -> i32 {\n    let mut _0: i32;\n    let mut _1: i32;\n    let mut _2: i32;\n    scope 1 (inlined std::hint::black_box::<i32>) {\n    }\n    scope 2 (inlined std::hint::black_box::<i32>) {\n    }\n\n    bb0: {\n        StorageLive(_1);\n        _1 = std::intrinsics::black_box::<i32>(const 2_i32) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageLive(_2);\n        _2 = std::intrinsics::black_box::<i32>(const 3_i32) -> [return: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        _0 = Add(move _1, move _2);\n        StorageDead(_2);\n        StorageDead(_1);\n        return;\n    }\n}",
+          "probe.lower_assume.3-1-001.LowerIntrinsics.after.mir": "// MIR for `lower_assume` after LowerIntrinsics\n\nfn lower_assume(_1: bool) -> () {\n    debug cond => _1;\n    let mut _0: ();\n    let _2: ();\n    let mut _3: bool;\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = copy _1;\n        _2 = assert_unchecked(move _3) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        StorageDead(_2);\n        _0 = const ();\n        return;\n    }\n}",
+          "probe.lower_assume.3-2-004.Inline.after.mir": "// MIR for `lower_assume` after Inline\n\nfn lower_assume(_1: bool) -> () {\n    debug cond => _1;\n    let mut _0: ();\n    let _2: ();\n    let mut _3: bool;\n    scope 1 (inlined #[track_caller] assert_unchecked) {\n        let _4: ();\n        scope 2 (inlined ub_checks::check_language_ub) {\n            scope 3 (inlined ub_checks::check_language_ub::runtime) {\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = copy _1;\n        StorageLive(_4);\n        switchInt(UbChecks) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _4 = assert_unchecked::precondition_check(copy _3) -> [return: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        assume(copy _3);\n        StorageDead(_4);\n        StorageDead(_3);\n        StorageDead(_2);\n        _0 = const ();\n        return;\n    }\n}",
+          "probe.lower_assume.3-2-008.UnreachablePropagation.after.mir": "// MIR for `lower_assume` after UnreachablePropagation\n\nfn lower_assume(_1: bool) -> () {\n    debug cond => _1;\n    let mut _0: ();\n    let _2: ();\n    let mut _3: bool;\n    scope 1 (inlined #[track_caller] assert_unchecked) {\n        let _4: ();\n        scope 2 (inlined ub_checks::check_language_ub) {\n            scope 3 (inlined ub_checks::check_language_ub::runtime) {\n            }\n        }\n    }\n\n    bb0: {\n        nop;\n        StorageLive(_3);\n        _3 = copy _1;\n        nop;\n        switchInt(UbChecks) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _4 = assert_unchecked::precondition_check(copy _3) -> [return: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        assume(copy _3);\n        nop;\n        StorageDead(_3);\n        nop;\n        nop;\n        return;\n    }\n}",
+          "probe.lower_assume.3-2-010.InstSimplify-after-simplifycfg.after.mir": "// MIR for `lower_assume` after InstSimplify-after-simplifycfg\n\nfn lower_assume(_1: bool) -> () {\n    debug cond => _1;\n    let mut _0: ();\n    let _2: ();\n    let mut _3: bool;\n    scope 1 (inlined #[track_caller] assert_unchecked) {\n        let _4: ();\n        scope 2 (inlined ub_checks::check_language_ub) {\n            scope 3 (inlined ub_checks::check_language_ub::runtime) {\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_3);\n        _3 = copy _1;\n        switchInt(const false) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _4 = assert_unchecked::precondition_check(copy _3) -> [return: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        assume(copy _3);\n        StorageDead(_3);\n        return;\n    }\n}",
+          "probe.lower_assume.3-2-011.SimplifyConstCondition-after-inst-simplify.after.mir": "// MIR for `lower_assume` after SimplifyConstCondition-after-inst-simplify\n\nfn lower_assume(_1: bool) -> () {\n    debug cond => _1;\n    let mut _0: ();\n    let _2: ();\n    let mut _3: bool;\n    scope 1 (inlined #[track_caller] assert_unchecked) {\n        let _4: ();\n        scope 2 (inlined ub_checks::check_language_ub) {\n            scope 3 (inlined ub_checks::check_language_ub::runtime) {\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_3);\n        _3 = copy _1;\n        goto -> bb2;\n    }\n\n    bb1: {\n        _4 = assert_unchecked::precondition_check(copy _3) -> [return: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        assume(copy _3);\n        StorageDead(_3);\n        return;\n    }\n}",
+          "probe.lower_assume.3-3-000.runtime-optimized.after.mir": "// MIR for `lower_assume` after runtime-optimized\n\nfn lower_assume(_1: bool) -> () {\n    debug cond => _1;\n    let mut _0: ();\n    scope 1 (inlined #[track_caller] assert_unchecked) {\n        scope 2 (inlined ub_checks::check_language_ub) {\n            scope 3 (inlined ub_checks::check_language_ub::runtime) {\n            }\n        }\n    }\n\n    bb0: {\n        assume(copy _1);\n        return;\n    }\n}",
+          "probe.lower_unreachable.3-1-001.LowerIntrinsics.after.mir": "// MIR for `lower_unreachable` after LowerIntrinsics\n\nfn lower_unreachable() -> ! {\n    let mut _0: !;\n\n    bb0: {\n        _0 = unreachable_unchecked() -> unwind continue;\n    }\n}",
+          "probe.lower_unreachable.3-2-004.Inline.after.mir": "// MIR for `lower_unreachable` after Inline\n\nfn lower_unreachable() -> ! {\n    let mut _0: !;\n    scope 1 (inlined #[track_caller] unreachable_unchecked) {\n        let _1: ();\n        scope 2 (inlined ub_checks::check_language_ub) {\n            scope 3 (inlined ub_checks::check_language_ub::runtime) {\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_1);\n        assume(UbChecks);\n        _1 = unreachable_unchecked::precondition_check() -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        unreachable;\n    }\n}",
+          "probe.lower_unreachable.3-2-008.UnreachablePropagation.after.mir": "// MIR for `lower_unreachable` after UnreachablePropagation\n\nfn lower_unreachable() -> ! {\n    let mut _0: !;\n    scope 1 (inlined #[track_caller] unreachable_unchecked) {\n        let _1: ();\n        scope 2 (inlined ub_checks::check_language_ub) {\n            scope 3 (inlined ub_checks::check_language_ub::runtime) {\n            }\n        }\n    }\n\n    bb0: {\n        nop;\n        assume(UbChecks);\n        _1 = unreachable_unchecked::precondition_check() -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        unreachable;\n    }\n}",
+          "probe.lower_unreachable.3-2-010.InstSimplify-after-simplifycfg.after.mir": "// MIR for `lower_unreachable` after InstSimplify-after-simplifycfg\n\nfn lower_unreachable() -> ! {\n    let mut _0: !;\n    scope 1 (inlined #[track_caller] unreachable_unchecked) {\n        let _1: ();\n        scope 2 (inlined ub_checks::check_language_ub) {\n            scope 3 (inlined ub_checks::check_language_ub::runtime) {\n            }\n        }\n    }\n\n    bb0: {\n        assume(const false);\n        _1 = unreachable_unchecked::precondition_check() -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        unreachable;\n    }\n}",
+          "probe.lower_unreachable.3-2-011.SimplifyConstCondition-after-inst-simplify.after.mir": "// MIR for `lower_unreachable` after SimplifyConstCondition-after-inst-simplify\n\nfn lower_unreachable() -> ! {\n    let mut _0: !;\n    scope 1 (inlined #[track_caller] unreachable_unchecked) {\n        let _1: ();\n        scope 2 (inlined ub_checks::check_language_ub) {\n            scope 3 (inlined ub_checks::check_language_ub::runtime) {\n            }\n        }\n    }\n\n    bb0: {\n        unreachable;\n    }\n\n    bb1: {\n        unreachable;\n    }\n}",
+          "probe.lower_unreachable.3-3-000.runtime-optimized.after.mir": "// MIR for `lower_unreachable` after runtime-optimized\n\nfn lower_unreachable() -> ! {\n    let mut _0: !;\n    scope 1 (inlined #[track_caller] unreachable_unchecked) {\n        scope 2 (inlined ub_checks::check_language_ub) {\n            scope 3 (inlined ub_checks::check_language_ub::runtime) {\n            }\n        }\n    }\n\n    bb0: {\n        unreachable;\n    }\n}",
+          "probe.prune_unreachable_branch.3-1-001.LowerIntrinsics.after.mir": "// MIR for `prune_unreachable_branch` after LowerIntrinsics\n\nfn prune_unreachable_branch(_1: i32) -> i32 {\n    debug x => _1;\n    let mut _0: i32;\n    let _2: ();\n    let mut _3: bool;\n    let mut _4: i32;\n    let mut _5: !;\n    let _6: !;\n    let mut _7: i32;\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        _3 = Eq(move _4, const 0_i32);\n        switchInt(move _3) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        StorageLive(_6);\n        _6 = unreachable_unchecked() -> unwind continue;\n    }\n\n    bb2: {\n        StorageDead(_4);\n        _2 = const ();\n        StorageDead(_3);\n        StorageDead(_2);\n        StorageLive(_7);\n        _7 = copy _1;\n        _0 = core::num::<impl i32>::wrapping_add(move _7, const 1_i32) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        StorageDead(_7);\n        return;\n    }\n}",
+          "probe.prune_unreachable_branch.3-2-004.Inline.after.mir": "// MIR for `prune_unreachable_branch` after Inline\n\nfn prune_unreachable_branch(_1: i32) -> i32 {\n    debug x => _1;\n    let mut _0: i32;\n    let _2: ();\n    let mut _3: bool;\n    let mut _4: i32;\n    let mut _5: !;\n    let _6: !;\n    let mut _7: i32;\n    let mut _9: i32;\n    scope 1 (inlined #[track_caller] unreachable_unchecked) {\n        let _8: ();\n        scope 2 (inlined ub_checks::check_language_ub) {\n            scope 3 (inlined ub_checks::check_language_ub::runtime) {\n            }\n        }\n    }\n    scope 4 (inlined core::num::<impl i32>::wrapping_add) {\n    }\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        _3 = Eq(move _4, const 0_i32);\n        switchInt(move _3) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        StorageLive(_6);\n        StorageLive(_8);\n        assume(UbChecks);\n        _8 = unreachable_unchecked::precondition_check() -> [return: bb3, unwind unreachable];\n    }\n\n    bb2: {\n        StorageDead(_4);\n        _2 = const ();\n        StorageDead(_3);\n        StorageDead(_2);\n        StorageLive(_7);\n        _7 = copy _1;\n        StorageLive(_9);\n        _9 = const 1_i32;\n        _0 = Add(copy _7, copy _9);\n        StorageDead(_9);\n        StorageDead(_7);\n        return;\n    }\n\n    bb3: {\n        unreachable;\n    }\n}",
+          "probe.prune_unreachable_branch.3-2-008.UnreachablePropagation.after.mir": "// MIR for `prune_unreachable_branch` after UnreachablePropagation\n\nfn prune_unreachable_branch(_1: i32) -> i32 {\n    debug x => _1;\n    let mut _0: i32;\n    let _2: ();\n    let mut _3: bool;\n    let mut _4: i32;\n    let mut _5: !;\n    let _6: !;\n    let mut _7: i32;\n    let mut _9: i32;\n    scope 1 (inlined #[track_caller] unreachable_unchecked) {\n        let _8: ();\n        scope 2 (inlined ub_checks::check_language_ub) {\n            scope 3 (inlined ub_checks::check_language_ub::runtime) {\n            }\n        }\n    }\n    scope 4 (inlined core::num::<impl i32>::wrapping_add) {\n    }\n\n    bb0: {\n        nop;\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        _3 = Eq(move _4, const 0_i32);\n        switchInt(move _3) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        nop;\n        nop;\n        assume(UbChecks);\n        _8 = unreachable_unchecked::precondition_check() -> [return: bb3, unwind unreachable];\n    }\n\n    bb2: {\n        StorageDead(_4);\n        nop;\n        StorageDead(_3);\n        nop;\n        StorageLive(_7);\n        _7 = copy _1;\n        StorageLive(_9);\n        _9 = const 1_i32;\n        _0 = Add(copy _7, copy _9);\n        StorageDead(_9);\n        StorageDead(_7);\n        return;\n    }\n\n    bb3: {\n        unreachable;\n    }\n}",
+          "probe.prune_unreachable_branch.3-2-010.InstSimplify-after-simplifycfg.after.mir": "// MIR for `prune_unreachable_branch` after InstSimplify-after-simplifycfg\n\nfn prune_unreachable_branch(_1: i32) -> i32 {\n    debug x => _1;\n    let mut _0: i32;\n    let _2: ();\n    let mut _3: bool;\n    let mut _4: i32;\n    let mut _5: !;\n    let _6: !;\n    let mut _7: i32;\n    let mut _9: i32;\n    scope 1 (inlined #[track_caller] unreachable_unchecked) {\n        let _8: ();\n        scope 2 (inlined ub_checks::check_language_ub) {\n            scope 3 (inlined ub_checks::check_language_ub::runtime) {\n            }\n        }\n    }\n    scope 4 (inlined core::num::<impl i32>::wrapping_add) {\n    }\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        _3 = Eq(move _4, const 0_i32);\n        switchInt(move _3) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        assume(const false);\n        _8 = unreachable_unchecked::precondition_check() -> [return: bb3, unwind unreachable];\n    }\n\n    bb2: {\n        StorageDead(_4);\n        StorageDead(_3);\n        StorageLive(_7);\n        _7 = copy _1;\n        StorageLive(_9);\n        _9 = const 1_i32;\n        _0 = Add(copy _7, copy _9);\n        StorageDead(_9);\n        StorageDead(_7);\n        return;\n    }\n\n    bb3: {\n        unreachable;\n    }\n}",
+          "probe.prune_unreachable_branch.3-2-011.SimplifyConstCondition-after-inst-simplify.after.mir": "// MIR for `prune_unreachable_branch` after SimplifyConstCondition-after-inst-simplify\n\nfn prune_unreachable_branch(_1: i32) -> i32 {\n    debug x => _1;\n    let mut _0: i32;\n    let _2: ();\n    let mut _3: bool;\n    let mut _4: i32;\n    let mut _5: !;\n    let _6: !;\n    let mut _7: i32;\n    let mut _9: i32;\n    scope 1 (inlined #[track_caller] unreachable_unchecked) {\n        let _8: ();\n        scope 2 (inlined ub_checks::check_language_ub) {\n            scope 3 (inlined ub_checks::check_language_ub::runtime) {\n            }\n        }\n    }\n    scope 4 (inlined core::num::<impl i32>::wrapping_add) {\n    }\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        _3 = Eq(move _4, const 0_i32);\n        switchInt(move _3) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        unreachable;\n    }\n\n    bb2: {\n        StorageDead(_4);\n        StorageDead(_3);\n        StorageLive(_7);\n        _7 = copy _1;\n        StorageLive(_9);\n        _9 = const 1_i32;\n        _0 = Add(copy _7, copy _9);\n        StorageDead(_9);\n        StorageDead(_7);\n        return;\n    }\n\n    bb3: {\n        unreachable;\n    }\n}",
+          "probe.prune_unreachable_branch.3-3-000.runtime-optimized.after.mir": "// MIR for `prune_unreachable_branch` after runtime-optimized\n\nfn prune_unreachable_branch(_1: i32) -> i32 {\n    debug x => _1;\n    let mut _0: i32;\n    let mut _2: bool;\n    let mut _3: bool;\n    scope 1 (inlined #[track_caller] unreachable_unchecked) {\n        scope 2 (inlined ub_checks::check_language_ub) {\n            scope 3 (inlined ub_checks::check_language_ub::runtime) {\n            }\n        }\n    }\n    scope 4 (inlined core::num::<impl i32>::wrapping_add) {\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = Eq(copy _1, const 0_i32);\n        _3 = Eq(copy _2, const false);\n        assume(move _3);\n        StorageDead(_2);\n        _0 = Add(copy _1, const 1_i32);\n        return;\n    }\n}"
+        }
+      },
+      "opt0_debug_off_ub_no": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=0",
+          "-Cdebug-assertions=off",
+          "-Zub-checks=no"
+        ],
+        "compile_returncode": 0,
+        "selected_mir_stages": {
+          "probe.black_box_const_op.3-1-001.LowerIntrinsics.after.mir": "// MIR for `black_box_const_op` after LowerIntrinsics\n\nfn black_box_const_op() -> i32 {\n    let mut _0: i32;\n    let mut _1: i32;\n    let mut _2: i32;\n\n    bb0: {\n        StorageLive(_1);\n        _1 = std::hint::black_box::<i32>(const 2_i32) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageLive(_2);\n        _2 = std::hint::black_box::<i32>(const 3_i32) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _0 = Add(move _1, move _2);\n        StorageDead(_2);\n        StorageDead(_1);\n        return;\n    }\n}",
+          "probe.black_box_const_op.3-2-009.InstSimplify-after-simplifycfg.after.mir": "// MIR for `black_box_const_op` after InstSimplify-after-simplifycfg\n\nfn black_box_const_op() -> i32 {\n    let mut _0: i32;\n    let mut _1: i32;\n    let mut _2: i32;\n\n    bb0: {\n        _1 = std::hint::black_box::<i32>(const 2_i32) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _2 = std::hint::black_box::<i32>(const 3_i32) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _0 = Add(move _1, move _2);\n        return;\n    }\n}",
+          "probe.black_box_const_op.3-2-010.SimplifyConstCondition-after-inst-simplify.after.mir": "// MIR for `black_box_const_op` after SimplifyConstCondition-after-inst-simplify\n\nfn black_box_const_op() -> i32 {\n    let mut _0: i32;\n    let mut _1: i32;\n    let mut _2: i32;\n\n    bb0: {\n        _1 = std::hint::black_box::<i32>(const 2_i32) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _2 = std::hint::black_box::<i32>(const 3_i32) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _0 = Add(move _1, move _2);\n        return;\n    }\n}",
+          "probe.black_box_const_op.3-3-000.runtime-optimized.after.mir": "// MIR for `black_box_const_op` after runtime-optimized\n\nfn black_box_const_op() -> i32 {\n    let mut _0: i32;\n    let mut _1: i32;\n    let mut _2: i32;\n\n    bb0: {\n        _1 = std::hint::black_box::<i32>(const 2_i32) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _2 = std::hint::black_box::<i32>(const 3_i32) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _0 = Add(move _1, move _2);\n        return;\n    }\n}",
+          "probe.lower_assume.3-1-001.LowerIntrinsics.after.mir": "// MIR for `lower_assume` after LowerIntrinsics\n\nfn lower_assume(_1: bool) -> () {\n    debug cond => _1;\n    let mut _0: ();\n    let _2: ();\n    let mut _3: bool;\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = copy _1;\n        _2 = assert_unchecked(move _3) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        StorageDead(_2);\n        _0 = const ();\n        return;\n    }\n}",
+          "probe.lower_assume.3-2-009.InstSimplify-after-simplifycfg.after.mir": "// MIR for `lower_assume` after InstSimplify-after-simplifycfg\n\nfn lower_assume(_1: bool) -> () {\n    debug cond => _1;\n    let mut _0: ();\n    let _2: ();\n    let mut _3: bool;\n\n    bb0: {\n        _3 = copy _1;\n        _2 = assert_unchecked(move _3) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        return;\n    }\n}",
+          "probe.lower_assume.3-2-010.SimplifyConstCondition-after-inst-simplify.after.mir": "// MIR for `lower_assume` after SimplifyConstCondition-after-inst-simplify\n\nfn lower_assume(_1: bool) -> () {\n    debug cond => _1;\n    let mut _0: ();\n    let _2: ();\n    let mut _3: bool;\n\n    bb0: {\n        _3 = copy _1;\n        _2 = assert_unchecked(move _3) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        return;\n    }\n}",
+          "probe.lower_assume.3-3-000.runtime-optimized.after.mir": "// MIR for `lower_assume` after runtime-optimized\n\nfn lower_assume(_1: bool) -> () {\n    debug cond => _1;\n    let mut _0: ();\n    let _2: ();\n\n    bb0: {\n        _2 = assert_unchecked(copy _1) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        return;\n    }\n}",
+          "probe.lower_unreachable.3-1-001.LowerIntrinsics.after.mir": "// MIR for `lower_unreachable` after LowerIntrinsics\n\nfn lower_unreachable() -> ! {\n    let mut _0: !;\n\n    bb0: {\n        _0 = unreachable_unchecked() -> unwind continue;\n    }\n}",
+          "probe.lower_unreachable.3-2-009.InstSimplify-after-simplifycfg.after.mir": "// MIR for `lower_unreachable` after InstSimplify-after-simplifycfg\n\nfn lower_unreachable() -> ! {\n    let mut _0: !;\n\n    bb0: {\n        _0 = unreachable_unchecked() -> unwind continue;\n    }\n}",
+          "probe.lower_unreachable.3-2-010.SimplifyConstCondition-after-inst-simplify.after.mir": "// MIR for `lower_unreachable` after SimplifyConstCondition-after-inst-simplify\n\nfn lower_unreachable() -> ! {\n    let mut _0: !;\n\n    bb0: {\n        _0 = unreachable_unchecked() -> unwind continue;\n    }\n}",
+          "probe.lower_unreachable.3-3-000.runtime-optimized.after.mir": "// MIR for `lower_unreachable` after runtime-optimized\n\nfn lower_unreachable() -> ! {\n    let mut _0: !;\n\n    bb0: {\n        _0 = unreachable_unchecked() -> unwind continue;\n    }\n}",
+          "probe.prune_unreachable_branch.3-1-001.LowerIntrinsics.after.mir": "// MIR for `prune_unreachable_branch` after LowerIntrinsics\n\nfn prune_unreachable_branch(_1: i32) -> i32 {\n    debug x => _1;\n    let mut _0: i32;\n    let _2: ();\n    let mut _3: bool;\n    let mut _4: i32;\n    let mut _5: !;\n    let _6: !;\n    let mut _7: i32;\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        _3 = Eq(move _4, const 0_i32);\n        switchInt(move _3) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        StorageLive(_6);\n        _6 = unreachable_unchecked() -> unwind continue;\n    }\n\n    bb2: {\n        StorageDead(_4);\n        _2 = const ();\n        StorageDead(_3);\n        StorageDead(_2);\n        StorageLive(_7);\n        _7 = copy _1;\n        _0 = core::num::<impl i32>::wrapping_add(move _7, const 1_i32) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        StorageDead(_7);\n        return;\n    }\n}",
+          "probe.prune_unreachable_branch.3-2-009.InstSimplify-after-simplifycfg.after.mir": "// MIR for `prune_unreachable_branch` after InstSimplify-after-simplifycfg\n\nfn prune_unreachable_branch(_1: i32) -> i32 {\n    debug x => _1;\n    let mut _0: i32;\n    let _2: ();\n    let mut _3: bool;\n    let mut _4: i32;\n    let mut _5: !;\n    let _6: !;\n    let mut _7: i32;\n\n    bb0: {\n        _4 = copy _1;\n        _3 = Eq(move _4, const 0_i32);\n        switchInt(move _3) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _6 = unreachable_unchecked() -> unwind continue;\n    }\n\n    bb2: {\n        _7 = copy _1;\n        _0 = core::num::<impl i32>::wrapping_add(move _7, const 1_i32) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        return;\n    }\n}",
+          "probe.prune_unreachable_branch.3-2-010.SimplifyConstCondition-after-inst-simplify.after.mir": "// MIR for `prune_unreachable_branch` after SimplifyConstCondition-after-inst-simplify\n\nfn prune_unreachable_branch(_1: i32) -> i32 {\n    debug x => _1;\n    let mut _0: i32;\n    let _2: ();\n    let mut _3: bool;\n    let mut _4: i32;\n    let mut _5: !;\n    let _6: !;\n    let mut _7: i32;\n\n    bb0: {\n        _4 = copy _1;\n        _3 = Eq(move _4, const 0_i32);\n        switchInt(move _3) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _6 = unreachable_unchecked() -> unwind continue;\n    }\n\n    bb2: {\n        _7 = copy _1;\n        _0 = core::num::<impl i32>::wrapping_add(move _7, const 1_i32) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        return;\n    }\n}",
+          "probe.prune_unreachable_branch.3-3-000.runtime-optimized.after.mir": "// MIR for `prune_unreachable_branch` after runtime-optimized\n\nfn prune_unreachable_branch(_1: i32) -> i32 {\n    debug x => _1;\n    let mut _0: i32;\n    let mut _2: bool;\n    let _3: !;\n\n    bb0: {\n        _2 = Eq(copy _1, const 0_i32);\n        switchInt(move _2) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _3 = unreachable_unchecked() -> unwind continue;\n    }\n\n    bb2: {\n        _0 = core::num::<impl i32>::wrapping_add(copy _1, const 1_i32) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        return;\n    }\n}"
+        }
+      }
+    },
+    "c_llvm_ir_opt_level_matrix": {
+      "opt0_debug_off_ub_no": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=0",
+          "-Cdebug-assertions=off",
+          "-Zub-checks=no"
+        ],
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "llvm_ir_by_fn": {
+          "black_box_const_op": [
+            "define i32 @black_box_const_op() unnamed_addr #3 {",
+            "start:",
+            "; call core::hint::black_box::<i32>",
+            "  %_1 = call i32 @_RINvNtCs8b4M6GsfcPr_4core4hint9black_boxlECsh8INqWOoJ6U_5probe(i32 2) #8",
+            "; call core::hint::black_box::<i32>",
+            "  %_2 = call i32 @_RINvNtCs8b4M6GsfcPr_4core4hint9black_boxlECsh8INqWOoJ6U_5probe(i32 3) #8",
+            "  %_0 = add i32 %_1, %_2",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "lower_assume": [
+            "define void @lower_assume(i1 zeroext %cond) unnamed_addr #3 {",
+            "start:",
+            "  ret void",
+            "}"
+          ],
+          "lower_unreachable": [
+            "define void @lower_unreachable() unnamed_addr #4 {",
+            "start:",
+            "; call core::hint::unreachable_unchecked",
+            "  call void @_RNvNtCs8b4M6GsfcPr_4core4hint21unreachable_uncheckedCsh8INqWOoJ6U_5probe(ptr align 8 @alloc_ffd293008ad77b807859cc28b56a0b87) #9",
+            "  unreachable",
+            "}"
+          ],
+          "prune_assert_unchecked_branch": [
+            "define zeroext i1 @prune_assert_unchecked_branch(i32 %x) unnamed_addr #3 {",
+            "start:",
+            "  %_3 = icmp ne i32 %x, 0",
+            "  %_0 = icmp eq i32 %x, 0",
+            "  ret i1 %_0",
+            "}"
+          ],
+          "prune_unreachable_branch": [
+            "define i32 @prune_unreachable_branch(i32 %x) unnamed_addr #3 {",
+            "start:",
+            "  %_2 = icmp eq i32 %x, 0",
+            "  br i1 %_2, label %bb1, label %bb2",
+            "",
+            "bb2:                                              ; preds = %start",
+            "  %_0.i = add i32 %x, 1",
+            "  ret i32 %_0.i",
+            "",
+            "bb1:                                              ; preds = %start",
+            "; call core::hint::unreachable_unchecked",
+            "  call void @_RNvNtCs8b4M6GsfcPr_4core4hint21unreachable_uncheckedCsh8INqWOoJ6U_5probe(ptr align 8 @alloc_3395001af47a910273ff68bfeedb5a5b) #9",
+            "  unreachable",
+            "}"
+          ]
+        },
+        "resolved_attributes": {
+          "black_box_const_op": "attributes #3 = { nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "lower_assume": "attributes #3 = { nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "lower_unreachable": "attributes #4 = { noreturn nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "prune_assert_unchecked_branch": "attributes #3 = { nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "prune_unreachable_branch": "attributes #3 = { nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+        },
+        "llvm_decls": []
+      },
+      "opt1_debug_off_ub_no": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=1",
+          "-Cdebug-assertions=off",
+          "-Zub-checks=no",
+          "-Zmerge-functions=disabled"
+        ],
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "llvm_ir_by_fn": {
+          "black_box_const_op": [
+            "define noundef i32 @black_box_const_op() unnamed_addr #0 {",
+            "start:",
+            "  %_0.i1 = alloca [4 x i8], align 4",
+            "  %_0.i = alloca [4 x i8], align 4",
+            "  call void @llvm.lifetime.start.p0(ptr nonnull %_0.i)",
+            "  store i32 2, ptr %_0.i, align 4",
+            "  call void asm sideeffect \"\", \"r,~{memory}\"(ptr nonnull %_0.i) #6, !srcloc !4",
+            "  %0 = load i32, ptr %_0.i, align 4, !noundef !5",
+            "  call void @llvm.lifetime.end.p0(ptr nonnull %_0.i)",
+            "  call void @llvm.lifetime.start.p0(ptr nonnull %_0.i1)",
+            "  store i32 3, ptr %_0.i1, align 4",
+            "  call void asm sideeffect \"\", \"r,~{memory}\"(ptr nonnull %_0.i1) #6, !srcloc !4",
+            "  %1 = load i32, ptr %_0.i1, align 4, !noundef !5",
+            "  call void @llvm.lifetime.end.p0(ptr nonnull %_0.i1)",
+            "  %_0 = add i32 %1, %0",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "lower_assume": [
+            "define void @lower_assume(i1 noundef zeroext %cond) unnamed_addr #1 {",
+            "start:",
+            "  ret void",
+            "}"
+          ],
+          "lower_unreachable": [
+            "define void @lower_unreachable() unnamed_addr #2 {",
+            "start:",
+            "  unreachable",
+            "}"
+          ],
+          "prune_assert_unchecked_branch": [
+            "define noundef zeroext i1 @prune_assert_unchecked_branch(i32 noundef %x) unnamed_addr #1 {",
+            "start:",
+            "  ret i1 false",
+            "}"
+          ],
+          "prune_unreachable_branch": [
+            "define noundef range(i32 2, 1) i32 @prune_unreachable_branch(i32 noundef %x) unnamed_addr #3 {",
+            "start:",
+            "  %0 = icmp ne i32 %x, 0",
+            "  tail call void @llvm.assume(i1 %0)",
+            "  %_0.i = add i32 %x, 1",
+            "  ret i32 %_0.i",
+            "}"
+          ]
+        },
+        "resolved_attributes": {
+          "black_box_const_op": "attributes #0 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "lower_assume": "attributes #1 = { mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(inaccessiblemem: write) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "lower_unreachable": "attributes #2 = { mustprogress nofree norecurse noreturn nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "prune_assert_unchecked_branch": "attributes #1 = { mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(inaccessiblemem: write) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "prune_unreachable_branch": "attributes #3 = { mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+        },
+        "llvm_decls": [
+          "declare void @llvm.assume(i1 noundef) #4"
+        ]
+      },
+      "opt2_debug_on": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=2",
+          "-Cdebug-assertions=on",
+          "-Zmerge-functions=disabled"
+        ],
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "llvm_ir_by_fn": {
+          "black_box_const_op": [
+            "define noundef i32 @black_box_const_op() unnamed_addr #1 {",
+            "start:",
+            "  %_2 = alloca [4 x i8], align 4",
+            "  %_1 = alloca [4 x i8], align 4",
+            "  call void @llvm.lifetime.start.p0(ptr nonnull %_1)",
+            "  store i32 2, ptr %_1, align 4",
+            "  call void asm sideeffect \"\", \"r,~{memory}\"(ptr nonnull %_1) #9, !srcloc !4",
+            "  call void @llvm.lifetime.start.p0(ptr nonnull %_2)",
+            "  store i32 3, ptr %_2, align 4",
+            "  call void asm sideeffect \"\", \"r,~{memory}\"(ptr nonnull %_2) #9, !srcloc !4",
+            "  %0 = load i32, ptr %_1, align 4, !noundef !5",
+            "  %1 = load i32, ptr %_2, align 4, !noundef !5",
+            "  %2 = call { i32, i1 } @llvm.sadd.with.overflow.i32(i32 %0, i32 %1)",
+            "  %_3.1 = extractvalue { i32, i1 } %2, 1",
+            "  br i1 %_3.1, label %panic, label %bb1",
+            "",
+            "bb1:                                              ; preds = %start",
+            "  %_3.0 = extractvalue { i32, i1 } %2, 0",
+            "  call void @llvm.lifetime.end.p0(ptr nonnull %_2)",
+            "  call void @llvm.lifetime.end.p0(ptr nonnull %_1)",
+            "  ret i32 %_3.0",
+            "",
+            "panic:                                            ; preds = %start",
+            "; call core::panicking::panic_const::panic_const_add_overflow",
+            "  call void @_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const24panic_const_add_overflow(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_4769c23a8d198f9a45a36dcaf0f222d0) #10",
+            "  unreachable",
+            "}"
+          ],
+          "lower_assume": [
+            "define void @lower_assume(i1 noundef zeroext %cond) unnamed_addr #2 {",
+            "start:",
+            "  br i1 %cond, label %_RNvNvNtCs8b4M6GsfcPr_4core4hint16assert_unchecked18precondition_check.exit, label %bb1.i, !prof !6",
+            "",
+            "bb1.i:                                            ; preds = %start",
+            "; call core::panicking::panic_nounwind_fmt",
+            "  tail call void @_RNvNtCs8b4M6GsfcPr_4core9panicking18panic_nounwind_fmt(ptr noundef nonnull @alloc_64e308ef4babfeb8b6220184de794a17, ptr noundef nonnull inttoptr (i64 443 to ptr), i1 noundef zeroext false, ptr noalias noundef nonnull readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_2c8f34e5ebb5b74efc0be64fc5b4aec1) #8",
+            "  unreachable",
+            "",
+            "_RNvNvNtCs8b4M6GsfcPr_4core4hint16assert_unchecked18precondition_check.exit: ; preds = %start",
+            "  ret void",
+            "}"
+          ],
+          "lower_unreachable": [
+            "define void @lower_unreachable() unnamed_addr #3 {",
+            "start:",
+            "; call core::hint::unreachable_unchecked::precondition_check",
+            "  tail call fastcc void @_RNvNvNtCs8b4M6GsfcPr_4core4hint21unreachable_unchecked18precondition_check(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_4f2ecc6a349dd8bf584fbc9488938501) #11",
+            "  unreachable",
+            "}"
+          ],
+          "prune_assert_unchecked_branch": [
+            "define noundef zeroext i1 @prune_assert_unchecked_branch(i32 noundef %x) unnamed_addr #2 {",
+            "start:",
+            "  %_2.not = icmp eq i32 %x, 0",
+            "  br i1 %_2.not, label %bb1.i, label %_RNvNvNtCs8b4M6GsfcPr_4core4hint16assert_unchecked18precondition_check.exit, !prof !7",
+            "",
+            "bb1.i:                                            ; preds = %start",
+            "; call core::panicking::panic_nounwind_fmt",
+            "  tail call void @_RNvNtCs8b4M6GsfcPr_4core9panicking18panic_nounwind_fmt(ptr noundef nonnull @alloc_64e308ef4babfeb8b6220184de794a17, ptr noundef nonnull inttoptr (i64 443 to ptr), i1 noundef zeroext false, ptr noalias noundef nonnull readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_c20ee91cf9da115afdd0a9f1132e5e7c) #8",
+            "  unreachable",
+            "",
+            "_RNvNvNtCs8b4M6GsfcPr_4core4hint16assert_unchecked18precondition_check.exit: ; preds = %start",
+            "  ret i1 false",
+            "}"
+          ],
+          "prune_unreachable_branch": [
+            "define noundef range(i32 2, 1) i32 @prune_unreachable_branch(i32 noundef %x) unnamed_addr #2 {",
+            "start:",
+            "  %0 = icmp eq i32 %x, 0",
+            "  br i1 %0, label %bb1, label %bb2, !prof !7",
+            "",
+            "bb1:                                              ; preds = %start",
+            "; call core::hint::unreachable_unchecked::precondition_check",
+            "  tail call fastcc void @_RNvNvNtCs8b4M6GsfcPr_4core4hint21unreachable_unchecked18precondition_check(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_f9c01df1b56fca9412eec99859221c28) #11",
+            "  unreachable",
+            "",
+            "bb2:                                              ; preds = %start",
+            "  %_0 = add i32 %x, 1",
+            "  ret i32 %_0",
+            "}"
+          ]
+        },
+        "resolved_attributes": {
+          "black_box_const_op": "attributes #1 = { nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "lower_assume": "attributes #2 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "lower_unreachable": "attributes #3 = { cold noreturn nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "prune_assert_unchecked_branch": "attributes #2 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "prune_unreachable_branch": "attributes #2 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+        },
+        "llvm_decls": []
+      },
+      "opt2_debug_off_ub_no": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=2",
+          "-Cdebug-assertions=off",
+          "-Zub-checks=no",
+          "-Zmerge-functions=disabled"
+        ],
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "llvm_ir_by_fn": {
+          "black_box_const_op": [
+            "define noundef i32 @black_box_const_op() unnamed_addr #0 {",
+            "start:",
+            "  %_2 = alloca [4 x i8], align 4",
+            "  %_1 = alloca [4 x i8], align 4",
+            "  call void @llvm.lifetime.start.p0(ptr nonnull %_1)",
+            "  store i32 2, ptr %_1, align 4",
+            "  call void asm sideeffect \"\", \"r,~{memory}\"(ptr nonnull %_1) #5, !srcloc !4",
+            "  call void @llvm.lifetime.start.p0(ptr nonnull %_2)",
+            "  store i32 3, ptr %_2, align 4",
+            "  call void asm sideeffect \"\", \"r,~{memory}\"(ptr nonnull %_2) #5, !srcloc !4",
+            "  %0 = load i32, ptr %_1, align 4, !noundef !5",
+            "  %1 = load i32, ptr %_2, align 4, !noundef !5",
+            "  %_0 = add i32 %1, %0",
+            "  call void @llvm.lifetime.end.p0(ptr nonnull %_2)",
+            "  call void @llvm.lifetime.end.p0(ptr nonnull %_1)",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "lower_assume": [
+            "define void @lower_assume(i1 noundef zeroext %cond) unnamed_addr #1 {",
+            "start:",
+            "  ret void",
+            "}"
+          ],
+          "lower_unreachable": [
+            "define void @lower_unreachable() unnamed_addr #2 {",
+            "start:",
+            "  unreachable",
+            "}"
+          ],
+          "prune_assert_unchecked_branch": [
+            "define noundef zeroext i1 @prune_assert_unchecked_branch(i32 noundef %x) unnamed_addr #1 {",
+            "start:",
+            "  ret i1 false",
+            "}"
+          ],
+          "prune_unreachable_branch": [
+            "define noundef range(i32 2, 1) i32 @prune_unreachable_branch(i32 noundef %x) unnamed_addr #1 {",
+            "start:",
+            "  %_2 = icmp ne i32 %x, 0",
+            "  tail call void @llvm.assume(i1 %_2)",
+            "  %_0 = add i32 %x, 1",
+            "  ret i32 %_0",
+            "}"
+          ]
+        },
+        "resolved_attributes": {
+          "black_box_const_op": "attributes #0 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "lower_assume": "attributes #1 = { mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(inaccessiblemem: write) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "lower_unreachable": "attributes #2 = { mustprogress nofree norecurse noreturn nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "prune_assert_unchecked_branch": "attributes #1 = { mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(inaccessiblemem: write) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "prune_unreachable_branch": "attributes #1 = { mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(inaccessiblemem: write) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+        },
+        "llvm_decls": [
+          "declare void @llvm.assume(i1 noundef) #4"
+        ]
+      },
+      "range_attr_pass_attribution": {
+        "pass_header": "; *** IR Dump After CorrelatedValuePropagationPass on prune_unreachable_branch ***",
+        "define_line": "define noundef range(i32 2, 1) i32 @prune_unreachable_branch(i32 noundef %x) unnamed_addr #3 {"
+      }
+    },
+    "d_black_box_and_llvm_attrs": {
+      "llvm_ir_black_box_and_attrs": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=2",
+          "-Zmerge-functions=disabled"
+        ],
+        "compile_returncode": 0,
+        "compile_stderr": "",
+        "llvm_ir_by_fn": {
+          "fn_attr_hint_avx2": [
+            "define internal noundef i32 @_RNvCsh8INqWOoJ6U_5probe17fn_attr_hint_avx2(i32 noundef %x) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = add i32 %x, 7",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "fn_attr_cold_internal": [
+            "define internal noundef i32 @_RNvCsh8INqWOoJ6U_5probe21fn_attr_cold_internal(i32 noundef %x) unnamed_addr #1 {",
+            "start:",
+            "  %_0 = add i32 %x, 10",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "fn_attr_hint_internal": [
+            "define internal noundef i32 @_RNvCsh8INqWOoJ6U_5probe21fn_attr_hint_internal(i32 noundef %x) unnamed_addr #2 {",
+            "start:",
+            "  %_0 = add i32 %x, 4",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "fn_attr_always_internal": [
+            "define internal noundef i32 @_RNvCsh8INqWOoJ6U_5probe23fn_attr_always_internal(i32 noundef %x) unnamed_addr #3 {",
+            "start:",
+            "  %_0 = add i32 %x, 3",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "black_box_no_fold": [
+            "define noundef i32 @black_box_no_fold() unnamed_addr #4 {",
+            "start:",
+            "  %_2 = alloca [4 x i8], align 4",
+            "  %_1 = alloca [4 x i8], align 4",
+            "  call void @llvm.lifetime.start.p0(ptr nonnull %_1)",
+            "  store i32 2, ptr %_1, align 4",
+            "  call void asm sideeffect \"\", \"r,~{memory}\"(ptr nonnull %_1) #11, !srcloc !4",
+            "  call void @llvm.lifetime.start.p0(ptr nonnull %_2)",
+            "  store i32 3, ptr %_2, align 4",
+            "  call void asm sideeffect \"\", \"r,~{memory}\"(ptr nonnull %_2) #11, !srcloc !4",
+            "  %0 = load i32, ptr %_1, align 4, !noundef !5",
+            "  %1 = load i32, ptr %_2, align 4, !noundef !5",
+            "  %_0 = add i32 %1, %0",
+            "  call void @llvm.lifetime.end.p0(ptr nonnull %_2)",
+            "  call void @llvm.lifetime.end.p0(ptr nonnull %_1)",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "black_box_zst": [
+            "define void @black_box_zst() unnamed_addr #4 {",
+            "start:",
+            "  tail call void asm sideeffect \"\", \"~{memory}\"() #11, !srcloc !4",
+            "  ret void",
+            "}"
+          ],
+          "fn_attr_cold_never": [
+            "define noundef i32 @fn_attr_cold_never(i32 noundef %x) unnamed_addr #6 {",
+            "start:",
+            "  %_0 = add i32 %x, 1",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "fn_attr_never": [
+            "define noundef i32 @fn_attr_never(i32 noundef %x) unnamed_addr #7 {",
+            "start:",
+            "  %_0 = add i32 %x, 2",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "fn_attr_opt_none": [
+            "define noundef i32 @fn_attr_opt_none(i32 noundef %x) unnamed_addr #8 {",
+            "start:",
+            "  %_0 = add i32 %x, 6",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "plain_fold": [
+            "define noundef i32 @plain_fold() unnamed_addr #9 {",
+            "start:",
+            "  ret i32 5",
+            "}"
+          ]
+        },
+        "resolved_attributes": {
+          "fn_attr_hint_avx2": "attributes #0 = { inlinehint mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" \"target-features\"=\"+avx,+avx2,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3\" }",
+          "fn_attr_cold_internal": "attributes #1 = { cold mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "fn_attr_hint_internal": "attributes #2 = { inlinehint mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "fn_attr_always_internal": "attributes #3 = { alwaysinline mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "black_box_no_fold": "attributes #4 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "black_box_zst": "attributes #4 = { nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "fn_attr_cold_never": "attributes #6 = { cold mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "fn_attr_never": "attributes #7 = { mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "fn_attr_opt_none": "attributes #8 = { noinline nonlazybind optnone uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "plain_fold": "attributes #9 = { mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+        },
+        "llvm_decls": []
+      },
+      "black_box_const_eval_and_exec": {
+        "edition": "2024",
+        "extra_args": [
+          "-Copt-level=2"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "CONST_BB=7 RT_BB=5",
+        "run_stderr": ""
+      },
+      "black_box_const_eval_and_miri": {
+        "edition": "2024",
+        "command": "cargo miri run --offline",
+        "miriflags": null,
+        "returncode": 0,
+        "stdout": "CONST_BB=7 RT_BB=5",
+        "stderr": "Compiling miri_probe v0.1.0 (<tmp>)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.22s\n     Running `<home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/miri_probe`"
+      }
+    },
+    "e_cross_crate_and_diagnostics": {
+      "cross_crate_opt2_no_lto": {
+        "edition": "2024",
+        "up_args": [
+          "-Copt-level=2"
+        ],
+        "down_args": [
+          "-Copt-level=2",
+          "-Zmerge-functions=disabled"
+        ],
+        "up_returncode": 0,
+        "up_stderr": "",
+        "down_returncode": 0,
+        "down_stderr": "",
+        "down_llvm_ir_by_fn": {
+          "call_up_cold_only": [
+            "define noundef i32 @call_up_cold_only(i32 noundef %x) unnamed_addr #0 {",
+            "start:",
+            "  %_0.i = add i32 %x, 44",
+            "  ret i32 %_0.i",
+            "}"
+          ],
+          "call_up_inline_always": [
+            "define noundef i32 @call_up_inline_always(i32 noundef %x) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = add i32 %x, 22",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "call_up_inline_hint": [
+            "define noundef i32 @call_up_inline_hint(i32 noundef %x) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = add i32 %x, 11",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "call_up_inline_never": [
+            "define noundef i32 @call_up_inline_never(i32 noundef %x) unnamed_addr #1 {",
+            "start:",
+            "; call up::up_inline_never",
+            "  %_0 = tail call noundef i32 @_RNvCs8UDIQm470yX_2up15up_inline_never(i32 noundef %x) #4",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "call_up_unannotated_large": [
+            "define noundef i32 @call_up_unannotated_large(i32 noundef %0) unnamed_addr #2 {",
+            "start:",
+            "  br label %bb2",
+            "",
+            "bb3:                                              ; preds = %bb2",
+            "  ret i32 %15",
+            "",
+            "bb2:                                              ; preds = %bb2, %start",
+            "  %x.sroa.0.05 = phi i32 [ %0, %start ], [ %15, %bb2 ]",
+            "  %_2.sroa.0.04 = phi i32 [ 0, %start ], [ %16, %bb2 ]",
+            "  %_5 = mul i32 %x.sroa.0.05, 3",
+            "  %1 = add i32 %_5, %_2.sroa.0.04",
+            "  %2 = or disjoint i32 %_2.sroa.0.04, 1",
+            "  %_5.1 = mul i32 %1, 3",
+            "  %3 = add i32 %_5.1, %2",
+            "  %4 = or disjoint i32 %_2.sroa.0.04, 2",
+            "  %_5.2 = mul i32 %3, 3",
+            "  %5 = add i32 %_5.2, %4",
+            "  %6 = or disjoint i32 %_2.sroa.0.04, 3",
+            "  %_5.3 = mul i32 %5, 3",
+            "  %7 = add i32 %_5.3, %6",
+            "  %8 = or disjoint i32 %_2.sroa.0.04, 4",
+            "  %_5.4 = mul i32 %7, 3",
+            "  %9 = add i32 %_5.4, %8",
+            "  %10 = or disjoint i32 %_2.sroa.0.04, 5",
+            "  %_5.5 = mul i32 %9, 3",
+            "  %11 = add i32 %_5.5, %10",
+            "  %12 = or disjoint i32 %_2.sroa.0.04, 6",
+            "  %_5.6 = mul i32 %11, 3",
+            "  %13 = add i32 %_5.6, %12",
+            "  %14 = or disjoint i32 %_2.sroa.0.04, 7",
+            "  %_5.7 = mul i32 %13, 3",
+            "  %15 = add i32 %_5.7, %14",
+            "  %16 = add nuw nsw i32 %_2.sroa.0.04, 8",
+            "  %exitcond.not.7 = icmp eq i32 %16, 64",
+            "  br i1 %exitcond.not.7, label %bb3, label %bb2",
+            "}"
+          ],
+          "call_up_unannotated_leaf": [
+            "define noundef i32 @call_up_unannotated_leaf(i32 noundef %x) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = add i32 %x, 55",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "call_up_unannotated_with_call": [
+            "define noundef i32 @call_up_unannotated_with_call(i32 noundef %x) unnamed_addr #1 {",
+            "start:",
+            "; call up::up_unannotated_with_call",
+            "  %_0 = tail call noundef i32 @_RNvCs8UDIQm470yX_2up24up_unannotated_with_call(i32 noundef %x)",
+            "  ret i32 %_0",
+            "}"
+          ]
+        },
+        "down_resolved_attributes": {
+          "call_up_cold_only": "attributes #0 = { mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "call_up_inline_always": "attributes #0 = { mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "call_up_inline_hint": "attributes #0 = { mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "call_up_inline_never": "attributes #1 = { nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "call_up_unannotated_large": "attributes #2 = { nofree norecurse nosync nounwind nonlazybind memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "call_up_unannotated_leaf": "attributes #0 = { mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "call_up_unannotated_with_call": "attributes #1 = { nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+        },
+        "down_llvm_decls": [
+          "declare noundef i32 @_RNvCs8UDIQm470yX_2up15up_inline_never(i32 noundef) unnamed_addr #3",
+          "declare noundef i32 @_RNvCs8UDIQm470yX_2up24up_unannotated_with_call(i32 noundef) unnamed_addr #1"
+        ]
+      },
+      "cross_crate_opt0_always_inline": {
+        "edition": "2024",
+        "up_args": [
+          "-Copt-level=0"
+        ],
+        "down_args": [
+          "-Copt-level=0"
+        ],
+        "up_returncode": 0,
+        "up_stderr": "",
+        "down_returncode": 0,
+        "down_stderr": "",
+        "down_llvm_ir_by_fn": {
+          "call_up_cold_only": [
+            "define i32 @call_up_cold_only(i32 %x) unnamed_addr #1 {",
+            "start:",
+            "; call up::up_cold_only",
+            "  %_0 = call i32 @_RNvCs8UDIQm470yX_2up12up_cold_only(i32 %x)",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "call_up_inline_always": [
+            "define i32 @call_up_inline_always(i32 %x) unnamed_addr #1 {",
+            "start:",
+            "  %0 = call { i32, i1 } @llvm.sadd.with.overflow.i32(i32 %x, i32 22)",
+            "  %_2.0.i = extractvalue { i32, i1 } %0, 0",
+            "  %_2.1.i = extractvalue { i32, i1 } %0, 1",
+            "  br i1 %_2.1.i, label %panic.i, label %_RNvCs8UDIQm470yX_2up16up_inline_always.exit",
+            "",
+            "panic.i:                                          ; preds = %start",
+            "; call core::panicking::panic_const::panic_const_add_overflow",
+            "  call void @_RNvNtNtCs8b4M6GsfcPr_4core9panicking11panic_const24panic_const_add_overflow(ptr align 8 @alloc_7768cedaeb9a719f06ed8e9241b304ed) #6",
+            "  unreachable",
+            "",
+            "_RNvCs8UDIQm470yX_2up16up_inline_always.exit:     ; preds = %start",
+            "  ret i32 %_2.0.i",
+            "}"
+          ],
+          "call_up_inline_hint": [
+            "define i32 @call_up_inline_hint(i32 %x) unnamed_addr #1 {",
+            "start:",
+            "; call up::up_inline_hint",
+            "  %_0 = call i32 @_RNvCs8UDIQm470yX_2up14up_inline_hintCs7mrpvnSt0t_4down(i32 %x) #7",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "call_up_inline_never": [
+            "define i32 @call_up_inline_never(i32 %x) unnamed_addr #1 {",
+            "start:",
+            "; call up::up_inline_never",
+            "  %_0 = call i32 @_RNvCs8UDIQm470yX_2up15up_inline_never(i32 %x) #8",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "call_up_unannotated_large": [
+            "define i32 @call_up_unannotated_large(i32 %x) unnamed_addr #1 {",
+            "start:",
+            "; call up::up_unannotated_large",
+            "  %_0 = call i32 @_RNvCs8UDIQm470yX_2up20up_unannotated_large(i32 %x)",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "call_up_unannotated_leaf": [
+            "define i32 @call_up_unannotated_leaf(i32 %x) unnamed_addr #1 {",
+            "start:",
+            "; call up::up_unannotated_leaf",
+            "  %_0 = call i32 @_RNvCs8UDIQm470yX_2up19up_unannotated_leaf(i32 %x)",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "call_up_unannotated_with_call": [
+            "define i32 @call_up_unannotated_with_call(i32 %x) unnamed_addr #1 {",
+            "start:",
+            "; call up::up_unannotated_with_call",
+            "  %_0 = call i32 @_RNvCs8UDIQm470yX_2up24up_unannotated_with_call(i32 %x)",
+            "  ret i32 %_0",
+            "}"
+          ]
+        },
+        "down_resolved_attributes": {
+          "call_up_cold_only": "attributes #1 = { nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "call_up_inline_always": "attributes #1 = { nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "call_up_inline_hint": "attributes #1 = { nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "call_up_inline_never": "attributes #1 = { nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "call_up_unannotated_large": "attributes #1 = { nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "call_up_unannotated_leaf": "attributes #1 = { nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "call_up_unannotated_with_call": "attributes #1 = { nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+        },
+        "down_llvm_decls": [
+          "declare i32 @_RNvCs8UDIQm470yX_2up12up_cold_only(i32) unnamed_addr #4",
+          "declare i32 @_RNvCs8UDIQm470yX_2up15up_inline_never(i32) unnamed_addr #5",
+          "declare i32 @_RNvCs8UDIQm470yX_2up19up_unannotated_leaf(i32) unnamed_addr #1",
+          "declare i32 @_RNvCs8UDIQm470yX_2up24up_unannotated_with_call(i32) unnamed_addr #1"
+        ]
+      },
+      "no_mangle_inline_always_warning": {
+        "edition": "2024",
+        "extra_args": [
+          "--crate-type=lib",
+          "-Copt-level=2"
+        ],
+        "compile_returncode": 0,
+        "compile_stderr": "warning: `#[inline]` is ignored on externally exported functions\n --> <tmp>/probe.rs:1:1\n  |\n1 | #[inline(always)]\n  | ^^^^^^^^^^^^^^^^^\n  |\n  = help: externally exported functions are functions with `#[no_mangle]`, `#[export_name]`, or `#[linkage]`\n  = note: `#[warn(unused_attributes)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+        "llvm_ir_by_fn": {
+          "exp_always": [
+            "define noundef i32 @exp_always(i32 noundef %x) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = add i32 %x, 1",
+            "  ret i32 %_0",
+            "}"
+          ]
+        },
+        "resolved_attributes": {
+          "exp_always": "attributes #0 = { alwaysinline mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+        },
+        "llvm_decls": []
+      },
+      "target_feature_inline_always_error": {
+        "edition": "2024",
+        "extra_args": [
+          "--crate-type=lib",
+          "-Copt-level=2"
+        ],
+        "compile_returncode": 1,
+        "compile_stderr": "error: cannot use `#[inline(always)]` with `#[target_feature]`\n --> <tmp>/probe.rs:1:1\n  |\n1 | #[inline(always)]\n  | ^^^^^^^^^^^^^^^^^\n  |\n  = note: See this issue for full discussion: https://github.com/rust-lang/rust/issues/145574\n\nerror: aborting due to 1 previous error"
+      },
+      "conflicting_always_then_never": {
+        "edition": "2024",
+        "extra_args": [
+          "--crate-type=lib",
+          "-Copt-level=2"
+        ],
+        "compile_returncode": 0,
+        "compile_stderr": "warning: unused attribute\n --> <tmp>/probe.rs:2:1\n  |\n2 | #[inline(never)]\n  | ^^^^^^^^^^^^^^^^ help: remove this attribute\n  |\nnote: attribute also specified here\n --> <tmp>/probe.rs:1:1\n  |\n1 | #[inline(always)]\n  | ^^^^^^^^^^^^^^^^^\n  = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!\n  = note: `#[warn(unused_attributes)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+        "llvm_ir_by_fn": {
+          "f": [
+            "define internal noundef i32 @_RNvCsh8INqWOoJ6U_5probe1f(i32 noundef %x) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = add i32 %x, 1",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "use_f": [
+            "define noundef i32 @use_f(i32 noundef %x) unnamed_addr #1 {",
+            "start:",
+            "  %_2 = alloca [8 x i8], align 8",
+            "  call void @llvm.lifetime.start.p0(ptr nonnull %_2)",
+            "  store ptr @_RNvCsh8INqWOoJ6U_5probe1f, ptr %_2, align 8",
+            "  call void asm sideeffect \"\", \"r,~{memory}\"(ptr nonnull %_2) #3, !srcloc !4",
+            "  %0 = load ptr, ptr %_2, align 8, !nonnull !5, !noundef !5",
+            "  %_0 = call noundef i32 %0(i32 noundef %x)",
+            "  call void @llvm.lifetime.end.p0(ptr nonnull %_2)",
+            "  ret i32 %_0",
+            "}"
+          ]
+        },
+        "resolved_attributes": {
+          "f": "attributes #0 = { alwaysinline mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "use_f": "attributes #1 = { nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+        },
+        "llvm_decls": []
+      },
+      "conflicting_never_then_always": {
+        "edition": "2024",
+        "extra_args": [
+          "--crate-type=lib",
+          "-Copt-level=2"
+        ],
+        "compile_returncode": 0,
+        "compile_stderr": "warning: unused attribute\n --> <tmp>/probe.rs:2:1\n  |\n2 | #[inline(always)]\n  | ^^^^^^^^^^^^^^^^^ help: remove this attribute\n  |\nnote: attribute also specified here\n --> <tmp>/probe.rs:1:1\n  |\n1 | #[inline(never)]\n  | ^^^^^^^^^^^^^^^^\n  = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!\n  = note: `#[warn(unused_attributes)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+        "llvm_ir_by_fn": {
+          "f": [
+            "define noundef i32 @_RNvCsh8INqWOoJ6U_5probe1f(i32 noundef %x) unnamed_addr #0 {",
+            "start:",
+            "  %_0 = add i32 %x, 1",
+            "  ret i32 %_0",
+            "}"
+          ],
+          "use_f": [
+            "define noundef i32 @use_f(i32 noundef %x) unnamed_addr #1 {",
+            "start:",
+            "  %_2 = alloca [8 x i8], align 8",
+            "  call void @llvm.lifetime.start.p0(ptr nonnull %_2)",
+            "  store ptr @_RNvCsh8INqWOoJ6U_5probe1f, ptr %_2, align 8",
+            "  call void asm sideeffect \"\", \"r,~{memory}\"(ptr nonnull %_2) #3, !srcloc !4",
+            "  %0 = load ptr, ptr %_2, align 8, !nonnull !5, !noundef !5",
+            "  %_0 = call noundef i32 %0(i32 noundef %x)",
+            "  call void @llvm.lifetime.end.p0(ptr nonnull %_2)",
+            "  ret i32 %_0",
+            "}"
+          ]
+        },
+        "resolved_attributes": {
+          "f": "attributes #0 = { mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "use_f": "attributes #1 = { nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }"
+        },
+        "llvm_decls": []
+      },
+      "conflicting_always_then_never_deny_warnings": {
+        "edition": "2024",
+        "extra_args": [
+          "--crate-type=lib",
+          "-Copt-level=2",
+          "-Dwarnings"
+        ],
+        "compile_returncode": 1,
+        "compile_stderr": "error: unused attribute\n --> <tmp>/probe.rs:2:1\n  |\n2 | #[inline(never)]\n  | ^^^^^^^^^^^^^^^^ help: remove this attribute\n  |\nnote: attribute also specified here\n --> <tmp>/probe.rs:1:1\n  |\n1 | #[inline(always)]\n  | ^^^^^^^^^^^^^^^^^\n  = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!\n  = note: `-D unused-attributes` implied by `-D warnings`\n  = help: to override `-D warnings` add `#[allow(unused_attributes)]`\n\nerror: aborting due to 1 previous error"
+      },
+      "mir_inline_incremental_vs_non_incremental": {
+        "non_incremental_opt2": {
+          "compile_returncode": 0,
+          "mir_stages": {
+            "incr.caller.3-2-004.Inline.after.mir": "// MIR for `caller` after Inline\n\nfn caller(_1: i32) -> i32 {\n    debug x => _1;\n    let mut _0: i32;\n    let mut _2: i32;\n    scope 1 (inlined helper) {\n        scope 2 (inlined core::num::<impl i32>::wrapping_add) {\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = Add(copy _2, const 7_i32);\n        StorageDead(_2);\n        return;\n    }\n}",
+            "incr.caller.3-2-004.Inline.before.mir": "// MIR for `caller` before Inline\n\nfn caller(_1: i32) -> i32 {\n    debug x => _1;\n    let mut _0: i32;\n    let mut _2: i32;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _0 = helper(move _2) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_2);\n        return;\n    }\n}",
+            "incr.caller.3-3-000.runtime-optimized.after.mir": "// MIR for `caller` after runtime-optimized\n\nfn caller(_1: i32) -> i32 {\n    debug x => _1;\n    let mut _0: i32;\n    scope 1 (inlined helper) {\n        scope 2 (inlined core::num::<impl i32>::wrapping_add) {\n        }\n    }\n\n    bb0: {\n        _0 = Add(copy _1, const 7_i32);\n        return;\n    }\n}"
+          }
+        },
+        "incremental_opt2": {
+          "compile_returncode": 0,
+          "mir_stages": {
+            "incr.caller.3-3-000.runtime-optimized.after.mir": "// MIR for `caller` after runtime-optimized\n\nfn caller(_1: i32) -> i32 {\n    debug x => _1;\n    let mut _0: i32;\n\n    bb0: {\n        _0 = helper(move _1) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        return;\n    }\n}"
+          }
+        }
+      }
+    }
+  }
+}

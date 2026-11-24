@@ -1,0 +1,70 @@
+{
+  "topics": [
+    "anneal",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/codegen",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust compiler, core library, and Miri toolchain (primary source audit and live execution)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly (14210df0e 2026-05-31)"
+      }
+    },
+    {
+      "name": "rust-lang/rust comparison revision (primary source audit of core::hint, MIR passes, and LLVM codegen)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly (3ef0c22cd 2026-11-11)"
+      }
+    },
+    {
+      "name": "rust-lang/llvm-project backend matching executed rustc toolchain (LLVM 22.1.6)",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+        "version": "22.1.6"
+      }
+    },
+    {
+      "name": "rust-lang/llvm-project submodule matching comparison rustc revision (LLVM 23.1.5)",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "0a5579eb649d3634a9c30ac873300cc2944fa070",
+        "version": "23.1.5"
+      }
+    },
+    {
+      "name": "llvm/llvm-project upstream LLVM passes (AlwaysInliner, InlineCost, PassBuilderPipelines, Intrinsics.td)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "2fcb2d3403190ac9353eddd23a92716e937e0739"
+      }
+    },
+    {
+      "name": "joshlf/anneal verification boundary (Trusted.MirAst, Trusted.MirSemantics, rustc-capture driver)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "leanprover/lean4 proof assistant (kernel-checked formalization)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-24"
+}
