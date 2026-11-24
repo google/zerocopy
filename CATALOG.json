@@ -104629,6 +104629,69 @@
         "verification"
       ]
     },
+    "rustc-integer-overflow-checks-unchecked-nuw-nsw-div-min-and-shift-masking": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "20fe935d50367c0ff8872c2ebfa050c5c99d9201"
+          },
+          "name": "Rust compiler and core library upstream source audited for MIR lowering, overflow checks, ub_checks, codegen, and CTFE/Miri"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (2026-05-31)"
+          },
+          "name": "Nightly rustc, Cargo, Miri, and embedded LLVM 22.1.6 toolchain used for empirical IR, assembly, MIR, and Miri execution"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "d62e4be8f7eb9c3fdc44751a9fd08084ec38d98f"
+          },
+          "name": "LLVM Language Reference specification for nuw/nsw poison, udiv/sdiv/urem/srem UB, and shift overshift poison"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover used for kernel-checked soundness mechanization and MetaM axiom verification"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal trusted MIR AST, operational semantics, and WP verification boundary"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/refinement",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "pl",
+        "pl/integer-overflow",
+        "pl/machine-integers",
+        "rust",
+        "rustc",
+        "rustc/codegen",
+        "rustc/mir",
+        "verification",
+        "verification/formalized-results",
+        "verification/overflow-obligations",
+        "verification/refinement"
+      ]
+    },
     "rustc-intrinsics-simd-and-arch-semantic-sources": {
       "observed_at": "2026-11-13",
       "subjects": [
