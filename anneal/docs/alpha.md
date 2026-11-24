@@ -167,8 +167,8 @@ switches passing status to `tainted_crate_verified` or
 ## Install a published alpha
 
 Replace `<version>` with the latest published prerelease tag on GitHub Releases
-(for example, `0.2.0-alpha.6`; `main` tracks unreleased development versions
-whose archive digest is intentionally zeroed until release preparation):
+(for example, `0.2.0-alpha.11`; `main` stays at `0.0.0-dev` with an all-zero
+archive digest rather than tracking published release metadata):
 
 ```sh
 cargo install --locked cargo-anneal@<version>
@@ -192,22 +192,52 @@ Verify that the `zerocopy` and `zerocopy-derive` registrations for
 environment bindings keep credentials scoped to each publication job.
 See [crates.io Trusted Publishing](https://crates.io/docs/trusted-publishing).
 
-1. Run **Release** on `main`. Select `anneal`, enter the
-   desired alpha version, and keep the target branch set to `main`. The
-   workflow prepares that version, builds and hosts its Linux toolchain
-   archive, and opens one PR with the version and archive digest.
-2. Review the source commit and digest on the toolchain release, then merge
-   the PR. A push to `main` that introduces a pinned release starts
-   qualification on Ubuntu 24.04. The job checks archive provenance and
-   environment protections, then installs the packaged crate and runs the
-   scalar checks with the downloaded archive.
-3. After qualification succeeds, approve the `anneal-release` deployment to
-   publish `cargo-anneal` to crates.io. The workflow then tags the published
-   source as `anneal-v<version>` and creates a GitHub prerelease with release
-   notes and a link to the toolchain archive.
+1. Run **Release** (`workflow_dispatch`) on `main`. Select `anneal`, enter the
+   desired `0.2.0-alpha.<N>` version (such as `0.2.0-alpha.13`), keep `branch`
+   set to `main`, and optionally pass a 40-character first-parent `main`
+   `commit` SHA (leave blank to release current `main` `HEAD`). On `main`,
+   `trusted/cargo-anneal/Cargo.toml` and `Cargo.lock` remain at `0.0.0-dev`
+   with an all-zero archive digest; cutting a release opens no pull request and
+   pushes no commits to `main`.
+2. Wait for `anneal-build-archive`, `anneal-host-archive`, and
+   `anneal-qualify-package` to finish on Ubuntu 24.04. Running release
+   scripts and composite actions from the dispatched `main` workflow revision,
+   the workflow resolves and pins the target commit SHA, builds the
+   `x86_64-unknown-linux-gnu` omnibus archive from an isolated detached
+   checkout of that commit, publishes it to a commit-and-digest-addressed
+   GitHub prerelease (`anneal-toolchain-<commit12>-<sha256_16>`) after
+   verifying GitHub's asset SHA-256, checks `anneal-release` environment
+   protections, stamps the isolated target checkout in place, installs the
+   packaged `.crate`, runs remote `cargo anneal setup` twice, and runs
+   `ci/probe_alpha.py`.
+3. Verify the resolved commit SHA, hosted toolchain digest, and qualification
+   log, then approve the `anneal-release` deployment. Because `main` remains
+   unpinned (`anneal-v<version>` tags commit `C`), `anneal-release` approvers
+   act as the human review gate for the stamped release metadata before
+   crates.io upload. `anneal-publish-crate` re-verifies SemVer ordering, live
+   hosted archive integrity, and exact packaged source parity, publishes
+   `cargo-anneal` from a freshly stamped clean checkout via OIDC, and verifies
+   the uploaded `.crate` and crates.io checksum; `anneal-publish-github` tags
+   `C` as `anneal-v<version>` and publishes path-scoped GitHub Release notes.
 
-Rerun preparation to recover the PR for a published archive whose build
-inputs still match. Recovery trusts the repository's release writers to
-preserve the tag and asset provenance. If qualification or GitHub release
-publication fails, rerun the failed jobs on the push that merged the release
-PR.
+Concurrent merges to `main` do not disturb an in-flight release, and failed
+qualification or rejected deployment approvals leave the SemVer version
+reusable on a subsequent commit. `resolve-and-validate` checks `anneal-v*` Git
+tags on `origin/main` first-parent history against un-yanked `crates.io`
+versions: it fails closed if the target `anneal-v<version>` tag already exists
+without a matching `crates.io` release or if any un-yanked `crates.io` release
+strictly above the highest existing `anneal-v*` tag (`0.2.0-alpha.11` and
+subsequent tagged releases) lacks a first-parent `anneal-v*` tag on `main`,
+while tolerating four older untagged historical releases below that
+high-water mark (`0.1.0-alpha.10`, `0.1.0-alpha.11`, `0.1.0-alpha.24`, and
+`0.2.0-alpha.1`).
+Post-crate recovery re-dispatch applies to commit-bound releases
+(`anneal-toolchain-<C12>-<D16>`): if a transient failure occurs during archive
+hosting, qualification, or GitHub Release creation, rerun the failed jobs within
+the 24-hour (`retention-days: 1`) `upload-file-artifact` window; once that
+artifact expires (or after `cargo publish` succeeds), dispatch **Release** again
+for the same commit and version to rebuild or complete `anneal-v<version>`
+against the published crate's commit and toolchain digest. If any un-yanked
+`crates.io` release strictly above the highest `anneal-v*` tag lacked its
+`anneal-v<version>` tag, push that tag onto its first-parent release commit
+manually before dispatching a newer version.

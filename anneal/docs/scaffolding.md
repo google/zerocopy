@@ -60,13 +60,14 @@ here. In CI, `cargo install --debug` also sets
 `digest`, `sha2`, and `zstd-sys` so SHA-256 hashing and `.tar.zst` extraction
 run at native speed.
 
-Pass `--local-archive` to test the archive built from this checkout instead of
-fetching the pinned remote archive from `[[package.metadata.exocrate]]` in
-[`trusted/cargo-anneal/Cargo.toml`](../trusted/cargo-anneal/Cargo.toml). Remote
-archive downloads support only `x86_64` Linux with glibc and are disabled
-whenever the metadata digest is all zeros. Using a fresh `XDG_CACHE_HOME`
-prevents an earlier installation from satisfying `setup`, and `env` scopes that
-cache override to this command alone.
+`--local-archive` is required when installing from a source checkout: on `main`,
+[`trusted/cargo-anneal/Cargo.toml`](../trusted/cargo-anneal/Cargo.toml) keeps
+version `0.0.0-dev` with an empty URL and an all-zero `sha256` in
+`[[package.metadata.exocrate]]`, so `setup` refuses remote downloads until a
+published `cargo-anneal` release stamps a pinned archive (`x86_64` Linux with
+glibc only). Using a fresh `XDG_CACHE_HOME` prevents an earlier installation
+from satisfying `setup`, and `env` scopes that cache override to this command
+alone.
 
 Locate and validate the single installation produced by `setup` instead of
 guessing its versioned directory name:

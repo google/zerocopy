@@ -10,7 +10,7 @@
 name = "cargo-anneal"
 # FIXME(#4012): We must address all blockers listed in #4012 before permitting
 # stable releases.
-version = "0.2.0-alpha.12"
+version = "0.0.0-dev"
 edition = "2024"
 description = "Formally verify Rust programs in Lean 4."
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
@@ -23,13 +23,14 @@ categories = [
 ]
 keywords = ["formal-verification", "lean", "proof", "unsafe", "verification"]
 
-# Release preparation pins the published x86-64 Linux archive before
-# crates.io publication. An all-zero digest keeps remote setup disabled.
+# Release packaging stamps the hosted x86-64 Linux archive URL and SHA-256 into
+# the packaged crate from a detached checkout of `main`. An all-zero digest
+# keeps remote setup disabled in repository checkouts (`use --local-archive`).
 [[package.metadata.exocrate]]
 os = "linux"
 arch = "x86_64"
-sha256 = "cbf5e6d8b3f12afc8116283566f5dccf06c9b27e38e7c6d3d2c6025a6b825307"
-url = "https://github.com/google/zerocopy/releases/download/anneal-toolchain-v0.2.0-alpha.12/anneal-toolchain-linux-x86_64.tar.zst"
+sha256 = "0000000000000000000000000000000000000000000000000000000000000000"
+url = ""
 
 [[bin]]
 name = "cargo-anneal"
