@@ -6,8 +6,9 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Expected
+public import Expected
 import Anneal.MirWp
 
 namespace Proof
@@ -25,7 +26,7 @@ theorem totalCorrectness : Spec.returnsZero Captured.program := by
       (wpProg_of_execProg execution)
   exact ⟨post, terminates, result ▸ returned⟩
 
-theorem verify : Expected.claim := by
+public theorem verify : Expected.claim := by
   refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, totalCorrectness⟩
   intro id body found
   cases id with

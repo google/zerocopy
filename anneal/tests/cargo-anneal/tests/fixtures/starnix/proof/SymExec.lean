@@ -6,8 +6,16 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import SourceInputs
+public import SourceInputs
+import Init.ByCases
+import Init.Classical
+import Init.Data.BitVec.Bootstrap
+import Init.Data.BitVec.Lemmas
+import Init.Data.Option.Lemmas
+
+@[expose] public section
 
 namespace SymExec
 
@@ -1012,3 +1020,5 @@ theorem Sym.bitsAre_sound {s : Sym} {expect : Nat → BitSrc}
   BitSrc.agrees_of_beq (allBelow_sound h i hi) (Sym.bit_sound x s i)
 
 end SymExec
+
+end

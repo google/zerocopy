@@ -6,8 +6,11 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import ProductionEndpoints
+public import ProductionEndpoints
+
+@[expose] public section
 
 namespace ProductionClaims
 
@@ -86,3 +89,5 @@ theorem bigEndian_involutive :
     reverse_involutive width (hrev value) (hrev (s.eval value))⟩
 
 end ProductionClaims
+
+end

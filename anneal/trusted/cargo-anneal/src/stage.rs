@@ -211,19 +211,33 @@ fn write_setup_json_to_path(
     mapper: Option<&PathMapper>,
 ) -> Result<(), Failure> {
     let closure = transitive_import_closure(&adm.graph, imports);
+    // Lean 4 `module`-system units read only `.olean`/`.olean.server` (and
+    // `.ir` where present) for standard/public imports unless `import all`
+    // explicitly opens an upstream private body. Omit `.olean.private` from
+    // `importArts` whenever `!import_all` holds across all direct imports so
+    // module targets compile with zero upstream `.olean.private` exposure.
+    let strip_privates = is_module && imports.iter().all(|imp| !imp.import_all);
     let mut import_arts: BTreeMap<&str, [Vec<String>; 2]> = BTreeMap::new();
     for dep in &closure {
         let (key, arts) = adm.artifacts.get_key_value(dep.as_str()).ok_or_else(|| {
             Failure::operational("setup", format!("missing artifact for import {dep}"))
         })?;
         let [oleans, irs] = arts.to_wire();
+        let filtered_oleans: Vec<String>;
+        let effective_oleans: &[String] = if strip_privates {
+            filtered_oleans =
+                oleans.iter().filter(|p| !p.ends_with(".olean.private")).cloned().collect();
+            &filtered_oleans
+        } else {
+            oleans
+        };
         let map_list = |list: &[String]| -> Result<Vec<String>, Failure> {
             match mapper {
                 Some(m) => list.iter().map(|p| m.map_str(Path::new(p))).collect(),
                 None => Ok(list.to_vec()),
             }
         };
-        import_arts.insert(key.as_str(), [map_list(oleans)?, map_list(irs)?]);
+        import_arts.insert(key.as_str(), [map_list(effective_oleans)?, map_list(irs)?]);
     }
     let setup_obj = json!({
         "name": module,
@@ -391,7 +405,8 @@ enum ExecutedModuleCompile<D> {
 
 /// Skip Lean whitespace and comments (`--` line comments and nested `/- ... -/`)
 /// to determine whether a source file begins with the Lean 4 `module` header.
-fn source_starts_with_module_keyword(bytes: &[u8]) -> bool {
+#[doc(hidden)]
+pub fn source_starts_with_module_keyword(bytes: &[u8]) -> bool {
     let mut i = 0;
     while i < bytes.len() {
         if bytes[i].is_ascii_whitespace() {
@@ -426,6 +441,8 @@ fn source_starts_with_module_keyword(bytes: &[u8]) -> bool {
         return false;
     };
     rest.first().is_none_or(|b| b.is_ascii_whitespace())
+        || rest.starts_with(b"--")
+        || rest.starts_with(b"/-")
 }
 
 fn olean_part_suffix(path: &str) -> Result<&'static str, Failure> {
@@ -5123,5 +5140,140 @@ exit 1
         )
         .unwrap();
         assert_eq!(fs::read_to_string(&log_file).unwrap(), "");
+    }
+
+    #[test]
+    fn write_setup_json_strips_private_oleans_for_module_without_import_all() {
+        use std::collections::{BTreeMap, BTreeSet};
+
+        use crate::toolchain::{AdmittedToolchain, ImportEdge, ModuleArtifacts};
+
+        let dir = tempfile::tempdir().unwrap();
+        let root = dir.path().to_path_buf();
+        let mut graph = BTreeMap::new();
+        graph.insert("Init.Core".to_owned(), Vec::new());
+        graph.insert(
+            "Model".to_owned(),
+            vec![ImportEdge {
+                module: "Init.Core".to_owned(),
+                is_exported: true,
+                import_all: false,
+                is_meta: false,
+            }],
+        );
+        let mut artifacts = BTreeMap::new();
+        artifacts.insert(
+            "Init.Core".to_owned(),
+            ModuleArtifacts {
+                olean_parts: vec![
+                    "/sys/Init/Core.olean".to_owned(),
+                    "/sys/Init/Core.olean.server".to_owned(),
+                    "/sys/Init/Core.olean.private".to_owned(),
+                ],
+                ir_parts: vec!["/sys/Init/Core.ir".to_owned()],
+            },
+        );
+        artifacts.insert(
+            "Model".to_owned(),
+            ModuleArtifacts {
+                olean_parts: vec![
+                    "/lib/Model.olean".to_owned(),
+                    "/lib/Model.olean.server".to_owned(),
+                    "/lib/Model.olean.private".to_owned(),
+                ],
+                ir_parts: Vec::new(),
+            },
+        );
+        let adm = AdmittedToolchain {
+            inspector: root.join("TrustedBoundary.lean"),
+            inspector_sha256: String::new(),
+            lean_sha256: String::new(),
+            version: "4.34.1".to_owned(),
+            prefix: root.clone(),
+            axioms: Vec::new(),
+            foundation_graph: BTreeMap::new(),
+            graph,
+            artifacts,
+            library_lock: None,
+            library_modules: BTreeSet::new(),
+            unpinned: true,
+            sysroot_package_roots: BTreeSet::new(),
+            unpinned_records: BTreeMap::new(),
+            lean_binary_sha256: None,
+            exec_lean: root.join("lean"),
+            expected_lean_sha: None,
+            sysroot_manifest_sha256: None,
+            inspector_olean: None,
+            runtime_libs_verified: false,
+        };
+
+        let std_import = vec![ImportEdge {
+            module: "Model".to_owned(),
+            is_exported: true,
+            import_all: false,
+            is_meta: false,
+        }];
+        let mod_setup = root.join("mod.setup.json");
+        write_setup_json_to_path(&mod_setup, &adm, "Spec", &std_import, true, None).unwrap();
+        let mod_json: Json = serde_json::from_slice(&fs::read(&mod_setup).unwrap()).unwrap();
+        assert_eq!(mod_json["isModule"], true);
+        let init_oleans = mod_json["importArts"]["Init.Core"][0].as_array().unwrap();
+        assert_eq!(
+            init_oleans,
+            &vec![Json::from("/sys/Init/Core.olean"), Json::from("/sys/Init/Core.olean.server"),]
+        );
+        assert_eq!(
+            mod_json["importArts"]["Init.Core"][1].as_array().unwrap(),
+            &vec![Json::from("/sys/Init/Core.ir")]
+        );
+        assert_eq!(
+            mod_json["importArts"]["Model"][0].as_array().unwrap(),
+            &vec![Json::from("/lib/Model.olean"), Json::from("/lib/Model.olean.server")]
+        );
+
+        let import_all_edge = vec![ImportEdge {
+            module: "Model".to_owned(),
+            is_exported: false,
+            import_all: true,
+            is_meta: false,
+        }];
+        let all_setup = root.join("import_all.setup.json");
+        write_setup_json_to_path(&all_setup, &adm, "Anneal.Bit", &import_all_edge, true, None)
+            .unwrap();
+        let all_json: Json = serde_json::from_slice(&fs::read(&all_setup).unwrap()).unwrap();
+        assert_eq!(
+            all_json["importArts"]["Model"][0].as_array().unwrap(),
+            &vec![
+                Json::from("/lib/Model.olean"),
+                Json::from("/lib/Model.olean.server"),
+                Json::from("/lib/Model.olean.private"),
+            ]
+        );
+
+        let nonmod_setup = root.join("nonmod.setup.json");
+        write_setup_json_to_path(&nonmod_setup, &adm, "Legacy", &std_import, false, None).unwrap();
+        let nonmod_json: Json = serde_json::from_slice(&fs::read(&nonmod_setup).unwrap()).unwrap();
+        assert_eq!(nonmod_json["isModule"], false);
+        assert_eq!(
+            nonmod_json["importArts"]["Model"][0].as_array().unwrap(),
+            &vec![
+                Json::from("/lib/Model.olean"),
+                Json::from("/lib/Model.olean.server"),
+                Json::from("/lib/Model.olean.private"),
+            ]
+        );
+    }
+
+    #[test]
+    fn source_starts_with_module_keyword_handles_adjacent_comments_and_identifiers() {
+        assert!(source_starts_with_module_keyword(b"module\nprelude\n"));
+        assert!(source_starts_with_module_keyword(b"module"));
+        assert!(source_starts_with_module_keyword(
+            b"-- line\n/- nested /- block -/ -/\nmodule--comment\nprelude\n"
+        ));
+        assert!(source_starts_with_module_keyword(b"module/-block-/\nprelude\n"));
+        assert!(!source_starts_with_module_keyword(b"modulefoo\nprelude\n"));
+        assert!(!source_starts_with_module_keyword(b"module_1\nprelude\n"));
+        assert!(!source_starts_with_module_keyword(b"prelude\nmodule\n"));
     }
 }

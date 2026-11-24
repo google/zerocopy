@@ -6,9 +6,12 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Data.BitVec.Basic
-import Trusted.MirSemantics
+public import Init.Data.BitVec.Basic
+public import Trusted.MirSemantics
+
+@[expose] public section
 
 namespace Endianness
 
@@ -41,3 +44,5 @@ def ByteReversal (bits : Nat) (input output : BitVec 64) : Prop :=
     if i < bits then input.getLsbD (reverseByteIndex bits i) else false
 
 end Endianness
+
+end

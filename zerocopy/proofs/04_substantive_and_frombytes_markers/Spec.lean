@@ -6,9 +6,12 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Data.BitVec.BasicAux
-import Trusted.MirSemantics
+public import Init.Data.BitVec.BasicAux
+public import Trusted.MirSemantics
+
+@[expose] public section
 
 namespace Spec
 
@@ -120,3 +123,5 @@ noncomputable def specs : Specs :=
   ⟨safetyPrecondition, combinedSliceSpec⟩
 
 end Spec
+
+end

@@ -50,7 +50,7 @@ pub const EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON: &str =
     verify::EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON;
 
 pub use sandbox::{ActiveSandbox, SandboxMode};
-pub use stage::Checker;
+pub use stage::{Checker, source_starts_with_module_keyword};
 pub use target::{TargetAuditRequest, TargetBindings, TargetModule, TargetRole};
 #[doc(hidden)]
 pub use toolchain::{

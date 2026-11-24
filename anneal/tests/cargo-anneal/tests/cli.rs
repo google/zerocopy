@@ -1886,9 +1886,11 @@ fn init_scaffolds_cargo_and_standalone_without_overwriting() {
         assert!(project.path().join("proof/Proof.lean").is_file());
         let spec_text = fs::read_to_string(project.path().join("proof/Spec.lean")).unwrap();
         let proof_text = fs::read_to_string(project.path().join("proof/Proof.lean")).unwrap();
-        assert!(spec_text.starts_with("prelude\nimport Trusted.MirSemantics"));
+        assert!(spec_text.starts_with("module\nprelude\npublic import Trusted.MirSemantics"));
+        assert!(spec_text.contains("@[expose] public section"));
         assert!(!spec_text.contains("sorry"));
-        assert!(proof_text.contains("Expected.claim"));
+        assert!(proof_text.starts_with("module\nprelude\npublic import Expected"));
+        assert!(proof_text.contains("public theorem verify : Expected.claim"));
 
         let second = command(route, project.path()).arg("init").output().unwrap();
         assert_result(&second, 1, "", "refusing to overwrite existing file");
@@ -1903,6 +1905,10 @@ fn init_scaffolds_cargo_and_standalone_without_overwriting() {
         for name in ["lib.rs", "request.json", "Spec.lean", "Proof.lean"] {
             assert!(standalone_dir.join(name).is_file(), "missing {name}");
         }
+        let sa_spec = fs::read_to_string(standalone_dir.join("Spec.lean")).unwrap();
+        let sa_proof = fs::read_to_string(standalone_dir.join("Proof.lean")).unwrap();
+        assert!(sa_spec.starts_with("module\nprelude\npublic import Trusted.MirSemantics"));
+        assert!(sa_proof.contains("public theorem verify : Expected.claim"));
     }
 }
 

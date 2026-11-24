@@ -79,7 +79,7 @@ def source_starts_with_module_keyword(raw: bytes) -> bool:
     i = 0
     n = len(raw)
     while i < n:
-        if raw[i : i + 1].isspace():
+        if raw[i : i + 1] in b" \t\n\r\x0c":
             i += 1
             continue
         if raw[i : i + 2] == b"--":
@@ -103,7 +103,7 @@ def source_starts_with_module_keyword(raw: bytes) -> bool:
     if not raw[i:].startswith(b"module"):
         return False
     after = raw[i + 6 : i + 7]
-    return not after or after.isspace()
+    return not after or after in b" \t\n\r\x0c" or raw[i + 6 :].startswith((b"--", b"/-"))
 
 
 def module_name_from_rel(rel_path: str, prefix: str) -> str:

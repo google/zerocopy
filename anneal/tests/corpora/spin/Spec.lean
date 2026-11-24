@@ -6,8 +6,11 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Trusted.MirSemantics
+public import Trusted.MirSemantics
+
+@[expose] public section
 
 namespace Spec
 
@@ -19,3 +22,5 @@ def specs : Trusted.MirSemantics.Specs :=
         { args := args } out⟩
 
 end Spec
+
+end

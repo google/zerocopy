@@ -6,9 +6,12 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Anneal.MirWp
-import Inputs
+public import Anneal.MirWp
+public import Inputs
+
+@[expose] public section
 
 namespace Endianness
 
@@ -108,3 +111,5 @@ theorem validEntryArgs_bodyEndianArgs (body : Body) (ety : EnumTy)
   simp [checkArgsMatch, h_bool, h_enum, h_u64]
 
 end Endianness
+
+end

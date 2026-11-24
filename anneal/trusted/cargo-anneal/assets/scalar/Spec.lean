@@ -6,8 +6,11 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Trusted.MirSemantics
+public import Trusted.MirSemantics
+
+@[expose] public section
 
 namespace Spec
 
@@ -25,3 +28,5 @@ noncomputable def returnsZero (program : Program) : Prop :=
 noncomputable def specs : Specs := ⟨fun _ _ => True, returnsZero⟩
 
 end Spec
+
+end

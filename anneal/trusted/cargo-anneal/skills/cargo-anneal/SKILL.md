@@ -63,11 +63,18 @@ and a zero return for a safe no-argument function in the captured MIR model.
    and `source_files` (including `crate_root`) inside clean relative paths
    under `source_root`.
 2. Write the contract in `specification` modules (defaults `Spec.specs`,
-   `Specs.safety`, `Specs.property`) and proofs in `proof` modules (`Proof.verify`).
+   `Specs.safety`, `Specs.property`) and proofs in `proof` modules
+   (`Proof.verify`).
    For `unsafe` functions, express real caller preconditions in `Specs.safety`;
    `False` vacuously admits zero callers. Keep `scope`, `cfg`, and specs fixed
    during proof debugging, and follow **`spec-authoring`** before any spec change.
-3. Import `Expected` in `Proof` and prove `Expected.claim`. Proof modules (never
+3. Author Lean targets in `module` mode (matching
+   `cargo anneal skill --example`, or omit `module` for legacy non-`module`
+   files): start `Spec` with `module`, `prelude`,
+   `public import Trusted.MirSemantics`, and `@[expose] public section ...
+   end`, and start `Proof` with `module`, `prelude`,
+   `public import Expected`, non-public `import Anneal.*`, and
+   `public theorem Proof.verify : Expected.claim`. Proof modules (never
    `specification` modules) may import bundled 3-axiom `Anneal.*` libraries
    listed in `theory/bundle-manifest.json` (`Anneal.MirWp`, `Anneal.LoopInv`,
    `Anneal.BitVec`, `Anneal.LinearArith`, `Anneal.BitTrieLrat`), compiled and

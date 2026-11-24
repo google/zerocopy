@@ -34,6 +34,7 @@ use crate::setup::{ToolOverrides, installed_bundle, resolve_tools};
 use crate::{
     ActiveSandbox, Checker, SandboxMode, TOOLCHAIN, TargetAuditRequest, TargetBindings,
     TargetModule, TargetRole, read_regular_file_deref, read_regular_file_strict, sha256_bytes,
+    source_starts_with_module_keyword,
 };
 
 // Generated deterministically by `build.rs` into `$OUT_DIR` from canonical
@@ -1999,9 +2000,10 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     }
     let model_manifest_sha256 = sha256_bytes(&encoded(&model_identity)?);
     let captured_lean = capture_dir.join("Captured.lean");
+    let captured_bytes = fs::read(&captured_lean).map_err(|e| io("capture", e))?;
     modules.push(TargetModule {
         module: "Captured".to_owned(),
-        expected_sha256: sha256_bytes(&fs::read(&captured_lean).map_err(|e| io("capture", e))?),
+        expected_sha256: sha256_bytes(&captured_bytes),
         source: captured_lean,
         role: TargetRole::Capture,
     });
@@ -2072,19 +2074,26 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
             });
         }
     }
-    if !modules
+    let spec_entry = modules
         .iter()
-        .any(|m| m.module == spec_module && matches!(m.role, TargetRole::Specification))
-        || !modules
-            .iter()
-            .any(|m| m.module == theorem_module && matches!(m.role, TargetRole::Proof))
-    {
+        .find(|m| m.module == spec_module && matches!(m.role, TargetRole::Specification))
+        .ok_or_else(|| {
+            error(
+                "unsupported",
+                "proof",
+                "specification and theorem must have their declared source roles",
+            )
+        })?;
+    if !modules.iter().any(|m| m.module == theorem_module && matches!(m.role, TargetRole::Proof)) {
         return Err(error(
             "unsupported",
             "proof",
             "specification and theorem must have their declared source roles",
         ));
     }
+    let spec_bytes = fs::read(&spec_entry.source).map_err(|e| io("spec", e))?;
+    let expected_is_module = source_starts_with_module_keyword(&captured_bytes)
+        && source_starts_with_module_keyword(&spec_bytes);
     // Keep the reviewed specification identity separate from ordinary
     // proof edits. The auditor also checks actual compiled dependencies,
     // so a helper that changes a specification's meaning needs its role.
@@ -2093,10 +2102,17 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     // Only validated declaration identifiers enter this fixed template. The
     // authored proof package never supplies an expected proposition or model.
     let header = "-- Copyright 2026 The Fuchsia Authors\n--\n-- Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0\n-- <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT\n-- license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.\n-- This file may not be copied, modified, or distributed except according to\n-- those terms.\n\n";
-    let expected = format!(
-        "{header}prelude\nimport Trusted.MirSemantics\nimport Captured\nimport {spec_module}\n\nnamespace Expected\ndef claim : Prop := _root_.Trusted.MirSemantics.{root_name} (_root_.Trusted.MirSemantics.Crate.mk _root_.Captured.program _root_.{})\nend Expected\n",
-        request.proof.specification
-    );
+    let expected = if expected_is_module {
+        format!(
+            "{header}module\nprelude\npublic import Trusted.MirSemantics\npublic import Captured\npublic import {spec_module}\n\n@[expose] public section\n\nnamespace Expected\ndef claim : Prop := _root_.Trusted.MirSemantics.{root_name} (_root_.Trusted.MirSemantics.Crate.mk _root_.Captured.program _root_.{})\nend Expected\n\nend\n",
+            request.proof.specification
+        )
+    } else {
+        format!(
+            "{header}prelude\nimport Trusted.MirSemantics\nimport Captured\nimport {spec_module}\n\nnamespace Expected\ndef claim : Prop := _root_.Trusted.MirSemantics.{root_name} (_root_.Trusted.MirSemantics.Crate.mk _root_.Captured.program _root_.{})\nend Expected\n",
+            request.proof.specification
+        )
+    };
     let expected_path = work.join("generated/Expected.lean");
     write(&expected_path, expected.as_bytes())?;
     modules.push(TargetModule {

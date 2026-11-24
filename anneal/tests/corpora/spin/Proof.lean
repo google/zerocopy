@@ -6,9 +6,11 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Captured
-import Spec
+public import Trusted.MirSemantics
+public import Captured
+public import Spec
 import Anneal.MirWp
 
 namespace Proof
@@ -91,7 +93,7 @@ theorem diverges_and_no_behavior :
   diverges_of_productiveInvariant (p := Captured.program) (defId := 0)
     (body := body) rfl rfl rfl productive
 
-theorem verify : CrateTheorem ⟨Captured.program, Spec.specs⟩ := by
+public theorem verify : CrateTheorem ⟨Captured.program, Spec.specs⟩ := by
   refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩
   · intro id selected found
     cases id with

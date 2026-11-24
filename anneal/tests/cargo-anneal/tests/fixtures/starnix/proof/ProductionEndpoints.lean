@@ -6,8 +6,18 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import ProductionPaths
+public import ProductionPaths
+import Init.ByCases
+import Init.Data.BitVec.Bootstrap
+import Init.Data.BitVec.Lemmas
+import Init.Data.Nat.Bitwise.Lemmas
+import Init.Data.Option.Lemmas
+import Init.Omega
+import Init.Tactics
+
+@[expose] public section
 
 namespace ProductionEndpoints
 
@@ -111,3 +121,5 @@ theorem reverse_involutive (width : Fin 4) {x y z : Word}
     simp only [hb, decide_false, Bool.and_false]
 
 end ProductionEndpoints
+
+end

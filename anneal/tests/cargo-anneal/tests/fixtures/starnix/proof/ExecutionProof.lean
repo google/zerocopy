@@ -6,9 +6,11 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Expected
+public import Expected
 import ProductionPaths
+import Init.Data.Option.Lemmas
 
 namespace ExecutionProof
 
@@ -36,7 +38,7 @@ theorem completed :
   let ⟨_, hp⟩ := Option.isSome_iff_exists.mp (paths_some flag width)
   exact ⟨(path_sound hp value).1, _, (path_sound hp value).2⟩
 
-theorem verify : Expected.claim := by
+public theorem verify : Expected.claim := by
   refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩
   · intro id body found
     cases id with
