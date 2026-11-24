@@ -3633,3 +3633,104 @@ fn target_audit_replays_alternate_proof_with_unreached_stored_dependencies() {
     assert_eq!(report["replay"], true, "{report}");
     assert_eq!(report["exactType"], true, "{report}");
 }
+
+/// Profile v2 canonical roots (`UnitTheoremV2` and `CrateTheoremV2`) bind to
+/// `CrateV2.mk`, reject mismatched v1/forged claims, and reject unapproved
+/// model-origin roots.
+#[test]
+fn accepts_profile_v2_unit_and_crate_theorems_and_rejects_forged_v2_claims() {
+    let model_v2 = "\
+prelude
+import Init.Data.BitVec.Basic
+namespace Trusted.MirSemantics
+structure Crate where
+  program : BitVec 8
+  specs : BitVec 8 → Prop
+structure CrateV2 where
+  program : BitVec 8
+  specs : BitVec 8 → Prop
+def UnitTheorem (c : Crate) : Prop := (1 : Nat) = 1 ∧ c.program.toNat = 7 ∧ c.specs c.program
+def UnitTheoremV2 (c : CrateV2) : Prop := c.program.toNat = 7 ∧ c.specs c.program
+def CrateTheoremV2 (c : CrateV2) : Prop := c.program.toNat = 7 ∧ c.specs c.program
+def BogusTheorem (_ : Crate) : Prop := True
+end Trusted.MirSemantics
+";
+    let proof_ok = "\
+prelude
+import Expected
+import Init.Data.BitVec.Lemmas
+theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self
+";
+
+    for root in [
+        "Trusted.MirSemantics.UnitTheoremV2",
+        "Trusted.MirSemantics.CrateTheoremV2",
+    ] {
+        let mut f = Fixture::new(proof_ok);
+        f.set("Model", TargetRole::Model, model_v2);
+        f.request.canonical_root = root.into();
+        f.set(
+            "Expected",
+            TargetRole::Expected,
+            &format!(
+                "prelude\nimport Captured\nimport Spec\n\
+                 def Expected.claim : Prop := {root} \
+                 (Trusted.MirSemantics.CrateV2.mk Captured.program Spec.specs)\n"
+            ),
+        );
+        let report = f.run().unwrap();
+        assert_eq!(report["replay"], true, "{root}: {report}");
+        assert_eq!(report["exactType"], true, "{root}: {report}");
+    }
+
+    // Reject forged v2 claim whose Expected.claim targets v1 UnitTheorem.
+    let mut f_mismatch = Fixture::new(
+        "prelude\nimport Expected\nimport Init.Data.BitVec.Lemmas\n\
+         theorem Proof.verify : Expected.claim := And.intro rfl (And.intro rfl BitVec.and_self)\n",
+    );
+    f_mismatch.set("Model", TargetRole::Model, model_v2);
+    f_mismatch.request.canonical_root = "Trusted.MirSemantics.UnitTheoremV2".into();
+    f_mismatch.set(
+        "Expected",
+        TargetRole::Expected,
+        "prelude\nimport Captured\nimport Spec\n\
+         def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+         (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+    );
+    f_mismatch.reject_audit("Expected");
+
+    // Reject forged Proof.verify weakening UnitTheoremV2's proposition.
+    let mut f_forged_proof = Fixture::new(
+        "prelude\nimport Expected\n\
+         def Spec.alt (_ : BitVec 8) : Prop := True\n\
+         theorem Proof.verify : Trusted.MirSemantics.UnitTheoremV2 \
+         (Trusted.MirSemantics.CrateV2.mk Captured.program Spec.alt) := \
+         And.intro rfl True.intro\n",
+    );
+    f_forged_proof.set("Model", TargetRole::Model, model_v2);
+    f_forged_proof.request.canonical_root = "Trusted.MirSemantics.UnitTheoremV2".into();
+    f_forged_proof.set(
+        "Expected",
+        TargetRole::Expected,
+        "prelude\nimport Captured\nimport Spec\n\
+         def Expected.claim : Prop := Trusted.MirSemantics.UnitTheoremV2 \
+         (Trusted.MirSemantics.CrateV2.mk Captured.program Spec.specs)\n",
+    );
+    f_forged_proof.reject_audit("target theorem type differs from Expected");
+
+    // Reject an unapproved model-origin canonical root.
+    let mut f_bogus = Fixture::new(
+        "prelude\nimport Expected\n\
+         theorem Proof.verify : Expected.claim := True.intro\n",
+    );
+    f_bogus.set("Model", TargetRole::Model, model_v2);
+    f_bogus.request.canonical_root = "Trusted.MirSemantics.BogusTheorem".into();
+    f_bogus.set(
+        "Expected",
+        TargetRole::Expected,
+        "prelude\nimport Captured\nimport Spec\n\
+         def Expected.claim : Prop := Trusted.MirSemantics.BogusTheorem \
+         (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+    );
+    f_bogus.reject_audit("unexpected canonical root Trusted.MirSemantics.BogusTheorem");
+}

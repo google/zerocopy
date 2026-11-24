@@ -58,7 +58,11 @@ files in a temporary directory to test your environment; it proves termination
 and a zero return for a safe no-argument function in the captured MIR model.
 
 1. For request schema `1`, set `scope` to `{"kind": "selected_unit", "roots": ["mod::fn"]}`
-   (`UnitTheorem`) or `{"kind": "crate"}` (`CrateTheorem`). Set `edition`,
+   (`UnitTheorem`) or `{"kind": "crate"}` (`CrateTheorem`). If capture emits
+   MIR Profile v2 (`capture.json` `program.mir_profile_version = 2`, e.g. for
+   references, raw pointers, or slices), the roots are `UnitTheoremV2` /
+   `CrateTheoremV2` over `Trusted.CrateV2`, so `specification` must name a
+   `Trusted.MirSemantics.SpecsV2`. Set `edition`,
    `target`, `cfg`, optional `env` (`KEY -> VALUE` map for `env!`/`option_env!`),
    and `source_files` (including `crate_root`) inside clean relative paths
    under `source_root`. Only when verifying `library/core` itself, set

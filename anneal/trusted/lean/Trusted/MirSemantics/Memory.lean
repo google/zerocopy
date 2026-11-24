@@ -190,62 +190,89 @@ noncomputable def isAligned (a : Allocation) (offset alignLog2 : Nat) : Bool :=
     Nat.beq (Nat.mod offset (Nat.pow 2 alignLog2)) 0
 
 /-- Read the `size` bytes at `place` for an access with alignment
-`alignLog2`. Matches `get_ptr_alloc` and `check_and_deref_ptr` in
-`compiler/rustc_const_eval/src/interpret/memory.rs` (`rust-lang/rust`
-`8144389c895da997dbdecaa635e41d6a50be6ffd`):
+`alignLog2`. Matches `check_and_deref_ptr`
+(`compiler/rustc_const_eval/src/interpret/memory.rs:519-566`) composed with
+`get_place_alloc` (`compiler/rustc_const_eval/src/interpret/place.rs:485-498`,
+both at `rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
 
 > "// Everything is okay with size 0.
 > if size == 0 {
 >     return interp_ok(None);
 > }"
+(`check_and_deref_ptr`, skipping liveness and bounds at `size == 0`)
 
-A non-empty read from a missing or deallocated allocation
-(`PointerUseAfterFree`), outside the allocation (`PointerOutOfBounds`), or at
-a misaligned place (`AlignmentCheckFailed`) faults with `.undefined`. -/
+> "let a = self.get_ptr_alloc(mplace.ptr(), size)?;
+> self.check_misalign(mplace.mplace.misaligned, CheckAlignMsg::BasedOn)?;"
+(`get_place_alloc`, checking alignment even at `size == 0`)
+
+The place's `misaligned` flag comes from `is_ptr_misaligned`, which reads
+allocation alignment metadata even for dead allocations. When `size == 0`,
+`readBytes` resolves the allocation record (faulting with `.undefined` if
+unknown) and checks `isAligned a place.offset alignLog2` without checking
+`a.live` or `isInBounds`. When `size > 0`, a missing or deallocated allocation
+(`PointerUseAfterFree`), out-of-bounds span (`PointerOutOfBounds`), or
+misaligned place (`AlignmentCheckFailed`) faults with `.undefined`. -/
 noncomputable def readBytes (m : MemoryState) (place : MemPlace)
     (size alignLog2 : Nat) : Except FaultKind (List AllocByte) :=
-  if Nat.beq size 0 then
-    .ok []
-  else
-    match findAllocation place.allocId m.allocations with
-    | none => .error .undefined
-    | some a =>
-      if !a.live || !isInBounds a place.offset size ||
-          !isAligned a place.offset alignLog2 then
+  match findAllocation place.allocId m.allocations with
+  | none => .error .undefined
+  | some a =>
+    if Nat.beq size 0 then
+      if !isAligned a place.offset alignLog2 then
         .error .undefined
       else
-        .ok ((a.bytes.drop place.offset).take size)
+        .ok []
+    else if !a.live || !isInBounds a place.offset size ||
+        !isAligned a place.offset alignLog2 then
+      .error .undefined
+    else
+      .ok ((a.bytes.drop place.offset).take size)
 
 /-- Overwrite the bytes at `place` with `bytes` for an access with alignment
-`alignLog2`. Performs the checks of `readBytes` and additionally requires a
-mutable allocation, matching `get_ptr_alloc_mut` in
-`compiler/rustc_const_eval/src/interpret/memory.rs` (`rust-lang/rust`
-`8144389c895da997dbdecaa635e41d6a50be6ffd`):
+`alignLog2`. Matches `get_place_alloc_mut`
+(`compiler/rustc_const_eval/src/interpret/place.rs:501-516`) calling
+`get_alloc_raw_mut`
+(`compiler/rustc_const_eval/src/interpret/memory.rs:813-840`,
+`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`) via
+`get_ptr_alloc_mut` (`memory.rs:852-893`), where `:836` checks mutability:
 
 > "if alloc.mutability.is_not() {
 >     throw_ub!(WriteToReadOnly(id))
-> }" -/
+> }"
+
+`get_place_alloc_mut` checks alignment whatever the size:
+
+> "let misalign_res = self.check_misalign(mplace.mplace.misaligned,
+> CheckAlignMsg::BasedOn);"
+
+When `bytes.length == 0`, `writeBytes` resolves the allocation record and checks
+`isAligned a place.offset alignLog2` (even when `a.live == false`) without
+checking `a.live`, `isInBounds`, or `a.mutability` (`WriteToReadOnly` runs only
+for non-empty writes). When `bytes.length > 0`, it performs all checks of
+`readBytes` and additionally requires `a.mutability == .mut`. -/
 noncomputable def writeBytes (m : MemoryState) (place : MemPlace)
     (alignLog2 : Nat) (bytes : List AllocByte) :
     Except FaultKind MemoryState :=
-  if Nat.beq bytes.length 0 then
-    .ok m
-  else
-    match findAllocation place.allocId m.allocations with
-    | none => .error .undefined
-    | some a =>
-      if !a.live || !isInBounds a place.offset bytes.length ||
-          !isAligned a place.offset alignLog2 then
+  match findAllocation place.allocId m.allocations with
+  | none => .error .undefined
+  | some a =>
+    if Nat.beq bytes.length 0 then
+      if !isAligned a place.offset alignLog2 then
         .error .undefined
       else
-        match a.mutability with
-        | .shared => .error .undefined
-        | .mut =>
-          let bytes' := a.bytes.take place.offset ++ bytes ++
-            a.bytes.drop (place.offset + bytes.length)
-          .ok { m with
-            allocations :=
-              replaceAllocation { a with bytes := bytes' } m.allocations }
+        .ok m
+    else if !a.live || !isInBounds a place.offset bytes.length ||
+        !isAligned a place.offset alignLog2 then
+      .error .undefined
+    else
+      match a.mutability with
+      | .shared => .error .undefined
+      | .mut =>
+        let bytes' := a.bytes.take place.offset ++ bytes ++
+          a.bytes.drop (place.offset + bytes.length)
+        .ok { m with
+          allocations :=
+            replaceAllocation { a with bytes := bytes' } m.allocations }
 
 /-- Mark the `size` bytes at `place` uninitialized, matching
 `Allocation::write_uninit` in
@@ -260,6 +287,233 @@ noncomputable def writeBytes (m : MemoryState) (place : MemPlace)
 noncomputable def writeUninit (m : MemoryState) (place : MemPlace)
     (size alignLog2 : Nat) : Except FaultKind MemoryState :=
   writeBytes m place alignLog2 (List.replicate size .uninit)
+
+/-! ## Profile v2 Caller Memory and Pointer/Slice Checks -/
+
+/-- Upper bound `isize::MAX + 1` on a 64-bit target (`2^63` bytes). -/
+noncomputable def isizeMaxBytes : Nat :=
+  Nat.pow 2 63
+
+/-- Validate that all allocations in `cm` carry non-zero, pairwise-distinct
+`allocId`s, fit within 64-bit `isize::MAX`, and stay within Rust's maximum
+alignment (`2^29`).
+
+The size bound is the Reference's allocation limit
+(`src/behavior-considered-undefined.md:149-152`, `rust-lang/reference`
+`ad35aca481751a06afeb23820a672b0f3b11a476`):
+
+> "In particular, the dynamic size of a Rust value (as determined by
+> `size_of_val`) must never exceed `isize::MAX`, since it is impossible for a
+> single allocation to be larger than `isize::MAX`."
+
+The alignment bound is `Align::MAX` (`compiler/rustc_abi/src/lib.rs:1057-1058`,
+`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`), which
+`Align::max_for_target` also yields on 64-bit targets:
+
+> "// LLVM has a maximal supported alignment of 2^29, we inherit that.
+> pub const MAX: Align = Align { pow2: 29 };" -/
+noncomputable def allocIdsValid (seen : List AllocId) : List Allocation → Bool
+  | [] => true
+  | a :: rest =>
+    !Nat.beq a.allocId 0 &&
+      natNotElem a.allocId seen &&
+      Nat.blt a.bytes.length isizeMaxBytes &&
+      Nat.ble a.alignLog2 29 &&
+      allocIdsValid (a.allocId :: seen) rest
+
+/-- Structural validity of caller-provided memory for Profile v2. -/
+noncomputable def validCallerMemory (cm : CallerMemory) : Bool :=
+  allocIdsValid [] cm.allocations
+
+/-- Compute the largest `allocId` appearing in `allocs` (or `0` when empty). -/
+noncomputable def maxAllocId : List Allocation → AllocId
+  | [] => 0
+  | a :: rest => Nat.max a.allocId (maxAllocId rest)
+
+/-- Build the Profile v2 entry `MemoryState` containing `cm.allocations`,
+advancing `nextAllocId` past every caller allocation id (and past
+`entryMemory`'s reserved id `1`) so callee stack allocations can never alias
+`cm`. -/
+noncomputable def entryMemoryWithCaller (cm : CallerMemory) : MemoryState :=
+  { nextAllocId := Nat.max entryMemory.nextAllocId (maxAllocId cm.allocations + 1)
+    allocations := cm.allocations }
+
+/-- Extract the post-execution caller-visible allocations from `m` in the
+original order of `orig.allocations` so caller-memory mutations are observable
+on return without exposing callee stack allocations. -/
+noncomputable def extractCallerAllocations (m : MemoryState) :
+    List Allocation → List Allocation
+  | [] => []
+  | a :: rest =>
+    let updated := (findAllocation a.allocId m.allocations).getD a
+    updated :: extractCallerAllocations m rest
+
+/-- Snapshot caller-visible allocations from `m` on return. -/
+noncomputable def extractCallerMemory (orig : CallerMemory) (m : MemoryState) :
+    CallerMemory :=
+  ⟨extractCallerAllocations m orig.allocations⟩
+
+/-- Check that every byte in `bs` is initialized (`.init _ _`). -/
+noncomputable def isSliceAllInit : List AllocByte → Bool
+  | [] => true
+  | .init _ _ :: rest => isSliceAllInit rest
+  | .uninit :: _ => false
+
+/-- Checked Rust `pointer::add` in `m`: requires byte delta `count * elemSize`
+strictly below `isize::MAX + 1`, and for provenance-bearing pointers requires a
+live allocation whose bounds cover `[offset, offset + count * elemSize]`.
+Without provenance, only a zero delta is valid (matching `pointer::add(0)`).
+
+This is the safety contract of `<*const T>::add` and `<*mut T>::add`
+(`library/core/src/ptr/docs/add.md:12-20`, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "If any of the following conditions are violated, the result is Undefined
+> Behavior:
+>
+> * The offset in bytes, `count * size_of::<T>()`, computed on mathematical
+>   integers (without "wrapping around"), must fit in an `isize`.
+>
+> * If the computed offset is non-zero, then `self` must be [derived
+>   from][crate::ptr#provenance] a pointer to some [allocation], and the
+>   entire memory range between `self` and the result must be in bounds of
+>   that allocation. In particular, this range must not "wrap around" the edge
+>   of the address space."
+
+Both methods are `unsafe { intrinsics::offset(self, count) }`
+(`library/core/src/ptr/const_ptr.rs:863`, `mut_ptr.rs:961`), the
+`BinOp::Offset` primitive. Its interpreter implementation (see
+`evalPtrOffsetV2`) also requires the allocation to be live. Conservative
+divergence: a zero offset from a provenance pointer into a dead or
+out-of-bounds allocation is `.undefined` here, although
+`check_and_deref_ptr` accepts every size-0 range. -/
+noncomputable def ptrAddInMem (m : MemoryState) (elemSize : Nat) (p : PtrVal)
+    (count : Nat) : Except FaultKind PtrVal :=
+  let delta := count * elemSize
+  if !Nat.blt delta isizeMaxBytes then
+    .error .undefined
+  else
+    match p.allocId with
+    | none =>
+      if Nat.beq delta 0 then
+        .ok p
+      else
+        .error .undefined
+    | some aid =>
+      match findAllocation aid m.allocations with
+      | none => .error .undefined
+      | some a =>
+        if !a.live || !Nat.ble (p.offsetBytes.toNat + delta) a.bytes.length then
+          .error .undefined
+        else
+          .ok { p with offsetBytes := UInt64.ofNat (p.offsetBytes.toNat + delta) }
+
+/-- Validate the slice-reference invariants for `&[uN]` / `&mut [uN]` in `m`.
+`refValidInMem` uses this as its slice case, and it is the only caller:
+- `len * elemSize < 2^63` (`isize::MAX` bound);
+- non-null and aligned even when `len == 0`. A pointer with no provenance is
+  accepted only when `len * elemSize == 0`;
+- for a provenance-bearing pointer: live allocation, in-bounds
+  `[offset, offset + totalBytes]`, `isAligned a offset elemAlignLog2`, a
+  mutable allocation when `isMut = true`, and initialized element bytes.
+
+These are the `core::slice::from_raw_parts` safety bullets that do not concern
+aliasing (`library/core/src/slice/raw.rs:14-26,31-32`, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`). Every initialized bit pattern is
+a valid integer, so for `[uN]` "properly initialized" reduces to
+`isSliceAllInit`:
+
+> "* `data` must be non-null, [valid] for reads for `len * size_of::<T>()`
+>   many bytes, and it must be properly aligned. This means in particular:
+>
+>     * The entire memory range of this slice must be contained within a
+>       single allocation! Slices can never span across multiple allocations.
+>       See [below](#incorrect-usage) for an example incorrectly not taking
+>       this into account.
+>     * `data` must be non-null and aligned even for zero-length slices or
+>       slices of ZSTs. One reason for this is that enum layout optimizations
+>       may rely on references (including slices of any length) being aligned
+>       and non-null to distinguish them from other data. You can obtain a
+>       pointer that is usable as `data` for zero-length slices using
+>       [`NonNull::dangling()`].
+>
+> * `data` must point to `len` consecutive properly initialized values of type
+>   `T`.
+> ...
+> * The total size `len * size_of::<T>()` of the slice must be no larger than
+>   `isize::MAX`, and adding that size to `data` must not "wrap around" the
+>   address space."
+
+The remaining bullets, "must not be mutated" for `&[T]` and "must not be
+accessed through any other pointer" for `&mut [T]`, belong to the aliasing
+model. This check does not enforce them; see `BodyVerifiedV2`. Conservative
+divergence: a provenance pointer with `totalBytes == 0` still requires a live,
+in-bounds allocation, although zero-size ranges never dangle. -/
+noncomputable def sliceFromRawPartsCheck (m : MemoryState) (isMut : Bool)
+    (elemSize elemAlignLog2 : Nat) (p : PtrVal) (len : UInt64) :
+    Except FaultKind Val :=
+  let totalBytes := len.toNat * elemSize
+  if !Nat.blt totalBytes isizeMaxBytes then
+    .error .undefined
+  else
+    match p.allocId with
+    | none =>
+      if Nat.beq p.offsetBytes.toNat 0 || Nat.blt 0 totalBytes then
+        .error .undefined
+      else if !Nat.beq (Nat.mod p.offsetBytes.toNat (Nat.pow 2 elemAlignLog2)) 0 then
+        .error .undefined
+      else
+        .ok (.slicePtr p len)
+    | some aid =>
+      match findAllocation aid m.allocations with
+      | none => .error .undefined
+      | some a =>
+        if !a.live || !isInBounds a p.offsetBytes.toNat totalBytes ||
+            !isAligned a p.offsetBytes.toNat elemAlignLog2 then
+          .error .undefined
+        else if isMut && !Mutability.beq a.mutability .mut then
+          .error .undefined
+        else if !isSliceAllInit ((a.bytes.drop p.offsetBytes.toNat).take totalBytes) then
+          .error .undefined
+        else
+          .ok (.slicePtr p len)
+
+/-- Checked `slice::get_unchecked` subslice on `[u8]` (`[startOff..endOff]` of
+slice `(p, len)`): requires `startOff <= endOff <= len`, advancing `p` by
+`startOff` via `ptrAddInMem`.
+
+`<[T]>::get_unchecked` with `RangeTo<usize>` or `RangeFrom<usize>` delegates
+to `(0..self.end)` or `(self.start..slice.len())`. The `Range<usize>` impl
+checks the library-UB precondition and then offsets the data pointer by
+`start` (`library/core/src/slice/index.rs:392-411`, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "unsafe fn get_unchecked(self, slice: *const [T]) -> *const [T] {
+>     assert_unsafe_precondition!(
+>         check_library_ub,
+>         "slice::get_unchecked requires that the range is within the slice",
+>         (
+>             start: usize = self.start,
+>             end: usize = self.end,
+>             len: usize = slice.len()
+>         ) => end >= start && end <= len
+>     );
+> ...
+>         let new_len = crate::intrinsics::unchecked_sub(self.end, self.start);
+>         get_offset_len_noubcheck(slice, self.start, new_len)"
+
+The documented contract (`library/core/src/slice/mod.rs:613-614`) is:
+
+> "Calling this method with an out-of-bounds index is *[undefined behavior]*
+> even if the resulting reference is not used." -/
+noncomputable def sliceGetUncheckedCheck (m : MemoryState) (p : PtrVal)
+    (len startOff endOff : Nat) : Except FaultKind Val :=
+  if !Nat.ble startOff endOff || !Nat.ble endOff len then
+    .error .undefined
+  else
+    match ptrAddInMem m 1 p startOff with
+    | .error k => .error k
+    | .ok p' => .ok (.slicePtr p' (UInt64.ofNat (endOff - startOff)))
 
 end Trusted.MirSemantics
 

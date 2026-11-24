@@ -93,6 +93,7 @@ structure CallCont4 where
   | .unreachable => none
   | .unwindResume => none
   | .assert _ _ _ _ _ => none
+  | .coreCall _ _ _ _ _ => none
   | .unsupported => none
 
 /-- Callee exit payload carrying either a normal return `(retVal, mutSlice)` or
@@ -176,8 +177,9 @@ private theorem writeBytes_ok_of_valid (m : MemoryState) (place : MemPlace)
             true)
           m.allocations)) := by
   dsimp only [writeBytes]
-  rw [natBeq_zero_false_of_blt_zero bs.length hPos, ite_bool_false rfl, hFind]
+  rw [hFind]
   dsimp only
+  rw [natBeq_zero_false_of_blt_zero bs.length hPos, ite_bool_false rfl]
   have hGuard :
       (!a.live || !isInBounds a place.offset bs.length ||
         !isAligned a place.offset alignLog2) = false := by

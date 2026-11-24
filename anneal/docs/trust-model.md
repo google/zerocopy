@@ -109,6 +109,15 @@ flowchart TD
      be `Trusted.CrateTheorem Mir.crate` (or `Trusted.UnitTheorem Mir.crate`
      for `.unit` captures) over the extracted artifact, and `Proof.lean` is
      guaranteed to contain no axioms or effectful code.
+   - When capture emits MIR Profile v2 (`mirProfileVersion = 2`, used for
+     bodies with references, raw pointers, slices, or other Profile v2
+     constructs), `cargo anneal verify` selects the Profile v2 roots instead:
+     `Trusted.CrateTheoremV2` or `Trusted.UnitTheoremV2` over
+     `Trusted.CrateV2` (captured program plus `Trusted.MirSemantics.SpecsV2`).
+     They check the same scope condition but quantify over caller memory and
+     use the Profile v2 rules (`initStateV2`, `evalStepV2`). The capture's
+     profile version, not the authored proof package, chooses the root, and
+     `targetAudit` accepts only these four canonical roots.
    - The Lean 4 kernel on the user's machine then typechecks `Proof.lean`,
      verifying that the proof term (`ConstantInfo.value?`) constructed by
      `theory/` is a valid proof of that trusted obligation.
@@ -152,7 +161,9 @@ Within the Lean 4 kernel environment, every compiled theorem
 Anneal's architecture enforces **Statement-Origin Separation** between the two:
 
 - Every constant referenced in the *statement* (`ConstantInfo.type`) of
-  `Trusted.CrateTheorem Mir.crate` (or `Trusted.UnitTheorem Mir.crate`)
+  `Trusted.CrateTheorem Mir.crate` (or `Trusted.UnitTheorem Mir.crate`, or
+  their Profile v2 counterparts `Trusted.CrateTheoremV2` and
+  `Trusted.UnitTheoremV2` over `Trusted.CrateV2`)
   originates in `Trusted.*` (or the allowlisted Lean `Init.*` foundation) and
   the generated `Mir.crate`. No definition from `theory/` ever appears in the
   theorem statement.
@@ -377,11 +388,16 @@ kernel-level audit:
    exercises `forceAllocation`, `.indirect` locals, and `MemoryState`, and the
    `char`, `BinOp.cmp`, `BinOp.*WithOverflow`, and `CastKind.intToInt`
    canaries) prove their exact `Trusted.MirSemantics` `*Claim` propositions,
-   and verifies via
-   `requireMirPublicAlias` that `Trusted.{Crate, CrateTheorem, UnitTheorem}` in
+   verifies that `Anneal.MirWp.wellFormed_and_spec_of_execV2` proves
+   `ExecSoundnessClaimV2 execProgV2` (whose body must name `SatisfiesPostV2`,
+   `DivergesV2`, and `BehaviorV2`, the Profile v2 result predicates that
+   `SpecsV2.property` statements use), and verifies via
+   `requireMirPublicAlias` that `Trusted.{Crate, CrateTheorem, UnitTheorem,
+   CrateV2, CrateTheoremV2, UnitTheoremV2}` in
    `Trusted.MirSemantics` are universe-monomorphic `abbrev` declarations
    (kernel `ReducibilityHints.abbrev`) directly aliasing
-   `Trusted.MirSemantics.{Crate, CrateTheorem, UnitTheorem}`.
+   `Trusted.MirSemantics.{Crate, CrateTheorem, UnitTheorem, CrateV2,
+   CrateTheoremV2, UnitTheoremV2}`.
 4. **Fresh kernel replay (`replayOntoBase`):** Constructs a clean kernel
    environment containing only the pinned `Init.*` foundation (`base`),
    replays every non-foundation constant (`Trusted.*` and `theory/`) through

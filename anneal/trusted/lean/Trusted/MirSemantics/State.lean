@@ -15,6 +15,7 @@ public import Trusted.MirAst
 public import Trusted.MirModel
 public import Trusted.MirSemantics.Enum
 public import Trusted.MirSemantics.Memory
+public import Trusted.MirSemantics.Bytes
 
 @[expose] public section
 
@@ -261,6 +262,62 @@ noncomputable def initState (p : Program) (q : Query) :
             callerMem := q.callerMem
             mem := entryMemory
           }
+
+/-- Profile v2 entry initialization (`initStateV2 p q`):
+Validates `p.pointerWidthBits = 64`, `p.mirProfileVersion = 2`, caller memory
+allocation invariants (`validCallerMemory q.callerMem`), Profile v2 local
+types (`isSupportedV2LocalTy`), well-typed arguments (`checkArgsMatchV2`), and
+reference validity + mutable-borrow disjointness (`refsValidInMemList`,
+`spansPairwiseDisjoint`).
+
+`initStateV2` does not re-check that the body keeps reference and raw-pointer
+locals apart (`bodyMixesRefsAndRawPtrsV2`, defined in `Boundary.lean`, which
+imports this module). `BodyVerifiedV2` requires `BodyStaticAdmittedV2`, which
+includes that check, before it says anything about executions. -/
+noncomputable def initStateV2 (p : Program) (q : Query) :
+    Except FaultKind State :=
+  if !Nat.beq p.pointerWidthBits 64 || !Nat.beq p.mirProfileVersion 2 then
+    .error .unsupported
+  else if !validCallerMemory q.callerMem then
+    .error .unsupported
+  else
+    match getElem? p.bodies p.entryDefId with
+    | none => .error .unsupported
+    | some body =>
+      if body.basicBlocks.isEmpty then
+        .error .unsupported
+      else if !Nat.blt body.argumentCount body.locals.length then
+        .error .unsupported
+      else if !storageAnnotationsInBounds body then
+        .error .unsupported
+      else if !discriminantTypesValid body then
+        .error .unsupported
+      else if !castTypesValid body then
+        .error .unsupported
+      else if !body.locals.all isSupportedV2LocalTy then
+        .error .unsupported
+      else
+        let paramTys := (body.locals.drop 1).take body.argumentCount
+        if !checkArgsMatchV2 q.args paramTys then
+          .error .unsupported
+        else
+          let entryMem := entryMemoryWithCaller q.callerMem
+          if !refsValidInMemList entryMem paramTys q.args ||
+              !spansPairwiseDisjoint (refAccessSpansList paramTys q.args) then
+            .error .undefined
+          else
+            let locals := initLocalsLoop body q.args 0 body.locals
+            let frame : FrameState := {
+              defId := p.entryDefId
+              blockIdx := 0
+              stmtIdx := 0
+              locals := locals
+            }
+            .ok {
+              frames := [frame]
+              callerMem := q.callerMem
+              mem := entryMem
+            }
 
 end Trusted.MirSemantics
 

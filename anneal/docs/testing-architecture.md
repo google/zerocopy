@@ -964,8 +964,10 @@ blast radii remain documented below for durable architectural rationale.
   its `120 s` ceiling. To keep repository non-backsliding and packaged smoke
   audits mutually consistent:
   1. `TrustedBoundary.lean` (`verifyMirWpCoreTheorems`) unconditionally requires
-     both `Anneal.MirWp` (`WpSoundnessClaim`, `WpFaultSoundnessClaim`, and
-     public `Trusted.{Crate,CrateTheorem,UnitTheorem}` aliases) and
+     both `Anneal.MirWp` (`WpSoundnessClaim`, `WpFaultSoundnessClaim`,
+     `ExecSoundnessClaimV2`, and public
+     `Trusted.{Crate,CrateTheorem,UnitTheorem}` and
+     `Trusted.{CrateV2,CrateTheoremV2,UnitTheoremV2}` aliases) and
      `Anneal.MirWp.Canaries` (all 25 `MirWp` canary `*Claim` proofs with
      `expectedProofMod = Anneal.MirWp.Canaries`) whenever `requireMirWp` is
      `true` or any MIR/`PureLift`/`MirWp` module is loaded (no conditional

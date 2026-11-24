@@ -1459,6 +1459,52 @@ fn checked_target_profile(
     }
 }
 
+/// The target ABI alignments, in bytes, that `Trusted.MirSemantics.Layout`
+/// hard-codes, as `(data-layout field, required alignment)`.
+///
+/// `intLayout` gives `i8`..`i128` their natural alignments and `isize` the
+/// `i64` alignment (the pointer-sized integer on the checked 64-bit target).
+/// `rustc` takes integer alignment from these fields ("I8 => dl.i8_align, ...
+/// I128 => dl.i128_align,"); `bool` and `char` are `I8` and `I32` scalars.
+/// `layoutOfTyV2` gives thin and wide pointers alignment 8, the
+/// `pointer_align()` of the default address space. `overflowPairLayout` and
+/// the `RangeTo<usize>`/`RangeFrom<usize>` layouts assume `aggregate_align`
+/// raises no alignment (univariant layouts start from "let mut align = if
+/// pack.is_some() { dl.i8_align } else { dl.aggregate_align };", and
+/// `scalar_pair` applies `.max(dl.aggregate_align)`).
+///
+/// Profile v2 observes these alignments: reads and writes check them, and
+/// entry arguments are assumed to satisfy them. So capture refuses any target
+/// whose data layout differs rather than modeling it with the wrong values.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L262-L271
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L714-L719
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L1240-L1250
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/layout.rs#L1108
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/layout/simple.rs#L94
+const MODELED_TARGET_ALIGNMENTS: [(&str, u64); 7] = [
+    ("i8_align", 1),
+    ("i16_align", 2),
+    ("i32_align", 4),
+    ("i64_align", 8),
+    ("i128_align", 16),
+    ("pointer_align", 8),
+    ("aggregate_align", 1),
+];
+
+/// Check the target's ABI alignments, in [`MODELED_TARGET_ALIGNMENTS`] order,
+/// against the alignments the semantics hard-codes.
+fn checked_target_alignments(actual: [u64; 7]) -> Result<(), Failure> {
+    for ((field, required), got) in MODELED_TARGET_ALIGNMENTS.iter().zip(actual) {
+        if got != *required {
+            return Err(Failure::unsupported(format!(
+                "target data layout {field} is {got} bytes; only {required}-byte \
+                 alignment is modeled"
+            )));
+        }
+    }
+    Ok(())
+}
+
 /// Validate and derive the captured target and compiler-flag profile from
 /// the active `TyCtxt` rather than hardcoding literals in `ir::Configuration`.
 ///
@@ -1480,6 +1526,16 @@ fn verified_profile_config(tcx: TyCtxt<'_>) -> Result<CheckedProfileConfig, Fail
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L752-L756
     let (pointer_bits, endian) =
         checked_target_profile(tcx.data_layout.pointer_size().bits(), tcx.data_layout.endian)?;
+    let dl = &tcx.data_layout;
+    checked_target_alignments([
+        dl.i8_align.bytes(),
+        dl.i16_align.bytes(),
+        dl.i32_align.bytes(),
+        dl.i64_align.bytes(),
+        dl.i128_align.bytes(),
+        dl.pointer_align().abi.bytes(),
+        dl.aggregate_align.bytes(),
+    ])?;
     let opt_level = validate_profile_options(&tcx.sess.opts).map_err(Failure::tool)?;
     let debug_assertions = tcx.sess.opts.debug_assertions;
     let overflow_checks = tcx.sess.overflow_checks();
@@ -1989,6 +2045,13 @@ fn collect(
     }
     check_current_inputs(&reads)?;
     let program = ir::Program::try_new(scope.clone(), bodies).map_err(Failure::unsupported)?;
+    // Profile v2 admits `Assert` and returning `CoreCall` terminators. Under
+    // `--stdlib-crate` the captured crate defines the language items (the
+    // `panic_*` family among them) that give those terminators their
+    // behavior, so `check_stdlib_capability` only covers Profile v1 bodies.
+    if stdlib_crate.is_some() && program.mir_profile_version() != 1 {
+        return Err(Failure::unsupported("--stdlib-crate admits only Profile v1 bodies"));
+    }
     Ok(ir::Manifest {
         schema_version: ir::SCHEMA_VERSION,
         compiler: ir::Compiler {
@@ -2335,6 +2398,26 @@ mod tests {
                 err.diagnostics[0].contains("64-bit little-endian"),
                 "{bits}, {endian:?}: {err:?}"
             );
+        }
+    }
+
+    #[test]
+    fn target_alignment_gate_requires_exactly_the_modeled_alignments() {
+        let modeled = MODELED_TARGET_ALIGNMENTS.map(|(_, align)| align);
+        assert_eq!(modeled, [1, 2, 4, 8, 16, 8, 1]);
+        checked_target_alignments(modeled).unwrap();
+        for i in 0..modeled.len() {
+            for wrong in [modeled[i] / 2, modeled[i] * 2] {
+                if wrong == 0 {
+                    continue;
+                }
+                let mut actual = modeled;
+                actual[i] = wrong;
+                let err = checked_target_alignments(actual).unwrap_err();
+                assert_eq!(err.status, "unsupported");
+                let field = MODELED_TARGET_ALIGNMENTS[i].0;
+                assert!(err.diagnostics[0].contains(field), "{field}: {err:?}");
+            }
         }
     }
 

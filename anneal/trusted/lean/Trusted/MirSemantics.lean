@@ -41,8 +41,12 @@ open Trusted.MirAst
 and `FaultEquivalenceClaim` in `Trusted.Correspondence`, the per-body,
 program, proof-unit, and crate verification judgments (`BodyStaticAdmitted`,
 `BodyVerified`, `Specs`, `Crate`, `ProgramVerified`, `CrateTheorem`, and
-`UnitTheorem`), and the Pass 1 audited claim propositions (`WpSoundnessClaim`,
-`WpFaultSoundnessClaim`, and the 25 `Canary*Claim` propositions).
+`UnitTheorem`), their Profile v2 counterparts (`initStateV2`, `evalStepV2`,
+`StepV2`, `ReachesV2`, `ReachesResultV2`, `WellFormedV2`, `BehaviorV2`,
+`DivergesV2`, `SatisfiesPostV2`, `BodyVerifiedV2`, `SpecsV2`, `CrateV2`,
+`ProgramVerifiedV2`, `CrateTheoremV2`, and `UnitTheoremV2`), and the Pass 1
+audited claim propositions (`WpSoundnessClaim`, `WpFaultSoundnessClaim`,
+`ExecSoundnessClaimV2`, and the 25 `Canary*Claim` propositions).
 
 Human comprehension is therefore the primary design requirement for every
 definition in this module:
@@ -222,11 +226,12 @@ Key semantic correspondence points:
 ## Audited Pass 1 Weakest-Precondition and Non-Vacuity Canary Claims
 
 The definitions below state the exact mathematical propositions that
-`Anneal.MirWp` (the 2 parameterized WP soundness claims) and decoupled
-`Anneal.MirWp.Canaries` (the 25 closed non-vacuity and parameter-boundary
-canary claims) must prove, enforced by `TrustedBoundary.lean` via exact `Expr`
-equality (`ci.type == .const claimName []` or the parameterized claim
-application) together with claim-body constant checks. Keeping these claim
+`Anneal.MirWp` (the 2 parameterized WP soundness claims and the Profile v2
+`ExecSoundnessClaimV2`) and decoupled `Anneal.MirWp.Canaries` (the 25 closed
+non-vacuity and parameter-boundary canary claims) must prove, enforced by
+`TrustedBoundary.lean` via exact `Expr` equality (`ci.type == .const claimName
+[]` or the parameterized claim application) together with claim-body constant
+checks. Keeping these claim
 propositions in `Trusted.MirSemantics` ensures that no change outside
 `trusted/` can silently drift a pinned soundness or canary claim statement.
 `anneal-audit` enforces only the exact theorem statements (not the internal
@@ -270,6 +275,25 @@ noncomputable def WpFaultSoundnessClaim
     (∀ out : TerminalOut, ¬ ReachesResult p q (.done out)) ∧
     ¬ Diverges p q ∧
     ¬ WellFormed p q
+
+/-- Trusted total-correctness and productivity claim for the Profile v2
+execution predicate `Anneal.MirWp.execProgV2`, the Profile v2 counterpart of
+`WpSoundnessClaim` over `initStateV2` and `StepV2`.
+
+Requires partial correctness (`SatisfiesPostV2`), all-path termination
+(`¬ DivergesV2`), and at least one terminating execution satisfying `post`.
+`SpecsV2.property` statements describe Profile v2 results with `BehaviorV2`
+(and may use `DivergesV2` or `SatisfiesPostV2`), so `TrustedBoundary.lean`
+requires this claim to name all three and requires `Anneal.MirWp` to prove it
+for `execProgV2`, the executor that Profile v2 proofs use to establish
+`BehaviorV2`. -/
+noncomputable def ExecSoundnessClaimV2
+    (execProgFn : Program → Nat → Query → (TerminalOut → Prop) → Prop) : Prop :=
+  ∀ (p : Program) (q : Query) (fuel : Nat) (post : TerminalOut → Prop),
+    execProgFn p fuel q post →
+    SatisfiesPostV2 p q post ∧
+    ¬ DivergesV2 p q ∧
+    (∃ out, BehaviorV2 p q out ∧ post out)
 
 /-- Trusted claim for `Anneal.MirWp.canary_positive_add_anneal`. -/
 noncomputable def CanaryPositiveAddAnnealClaim : Prop :=
@@ -833,6 +857,17 @@ noncomputable abbrev CrateTheorem := Trusted.MirSemantics.CrateTheorem
 /-- Top-level one-argument proof-unit verification obligation
 (`Trusted.UnitTheorem`). -/
 noncomputable abbrev UnitTheorem := Trusted.MirSemantics.UnitTheorem
+
+/-- Profile v2 captured crate + specification bundle alias
+(`Trusted.CrateV2`). -/
+abbrev CrateV2 := Trusted.MirSemantics.CrateV2
+
+/-- Profile v2 whole-crate verification obligation
+(`Trusted.CrateTheoremV2`). -/
+noncomputable abbrev CrateTheoremV2 := Trusted.MirSemantics.CrateTheoremV2
+
+/-- Profile v2 proof-unit verification obligation (`Trusted.UnitTheoremV2`). -/
+noncomputable abbrev UnitTheoremV2 := Trusted.MirSemantics.UnitTheoremV2
 
 end Trusted
 

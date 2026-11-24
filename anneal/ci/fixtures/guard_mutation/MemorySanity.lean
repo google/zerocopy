@@ -34,9 +34,15 @@ theorem positive_sanity_memory_roundtrip :
        match readBytes m2 p 4 2 with
        | .error _ => False
        | .ok got =>
-         match deallocateStack m2 p with
+         match writeBytes m2 p 2 [] with
          | .error _ => False
-         | .ok _ => got = bs) :=
-  rfl
+         | .ok m3 =>
+           match readBytes m3 p 0 2 with
+           | .error _ => False
+           | .ok emptyBs =>
+             match deallocateStack m3 p with
+             | .error _ => False
+             | .ok _ => got = bs ∧ emptyBs = [] ∧ m3 = m2) :=
+  ⟨rfl, rfl, rfl⟩
 
 end GuardMutation

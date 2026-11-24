@@ -188,4 +188,112 @@ theorem refute_mem_align_offset_mod_check :
       .error .undefined :=
   rfl
 
+/-- Live mutable 4-byte allocation whose bytes are all `.uninit`. -/
+noncomputable def uninitMut4Alloc : Allocation := {
+  allocId := 1
+  alignLog2 := 0
+  mutability := .mut
+  bytes := List.replicate 4 .uninit
+  live := true
+}
+
+/-- Guard `mem_v2_ptr_add_null_nonzero`: offsetting a provenance-free (null)
+pointer by a nonzero byte delta faults with `.undefined`. -/
+theorem refute_mem_v2_ptr_add_null_nonzero :
+    ptrAddInMem MemoryState.empty 1 ⟨none, 0, .isize⟩ 1 = .error .undefined :=
+  rfl
+
+/-- Guard `mem_v2_ptr_add_oob`: offsetting a live pointer past the end of its
+allocation faults with `.undefined`. -/
+theorem refute_mem_v2_ptr_add_oob :
+    ptrAddInMem (singleAllocMem liveMut4Alloc) 1 ⟨some 1, 2, .isize⟩ 3 =
+      .error .undefined :=
+  rfl
+
+/-- Guard `mem_v2_slice_null`: constructing even a zero-length slice from a
+null (`⟨none, 0, .isize⟩`) pointer faults with `.undefined`. -/
+theorem refute_mem_v2_slice_null :
+    sliceFromRawPartsCheck MemoryState.empty false 1 0 ⟨none, 0, .isize⟩ 0 =
+      .error .undefined :=
+  rfl
+
+/-- Guard `mem_v2_slice_readonly`: constructing a mutable slice (`&mut [u8]`)
+over a `.shared` allocation faults with `.undefined`. -/
+theorem refute_mem_v2_slice_readonly :
+    sliceFromRawPartsCheck (singleAllocMem shared4Alloc) true 1 0 ⟨some 1, 0, .isize⟩ 4 =
+      .error .undefined :=
+  rfl
+
+/-- Guard `mem_v2_slice_uninit`: constructing a byte slice over uninitialized
+bytes faults with `.undefined`. -/
+theorem refute_mem_v2_slice_uninit :
+    sliceFromRawPartsCheck (singleAllocMem uninitMut4Alloc) false 1 0
+      ⟨some 1, 0, .isize⟩ 4 = .error .undefined :=
+  rfl
+
+/-- Guard `mem_v2_slice_get_unchecked_oob`: subslicing with `endOff > len`
+faults with `.undefined` even when the underlying allocation has extra bytes. -/
+theorem refute_mem_v2_slice_get_unchecked_oob :
+    sliceGetUncheckedCheck (singleAllocMem liveMut8Alloc) ⟨some 1, 0, .isize⟩ 4 1 6 =
+      .error .undefined :=
+  rfl
+
+/-- Guard `mem_read_zst_misaligned`: zero-size `readBytes` at a misaligned
+offset (`alignLog2 = 2`, `offset = 1`) faults with `.undefined`. -/
+theorem refute_mem_read_zst_misaligned :
+    readBytes (singleAllocMem liveMut8Alloc) ⟨1, 1⟩ 0 2 =
+      .error .undefined :=
+  rfl
+
+/-- Guard `mem_write_zst_misaligned`: zero-size `writeBytes` at a misaligned
+offset (`alignLog2 = 2`, `offset = 1`) faults with `.undefined`. -/
+theorem refute_mem_write_zst_misaligned :
+    writeBytes (singleAllocMem liveMut8Alloc) ⟨1, 1⟩ 2 [] =
+      .error .undefined :=
+  rfl
+
+/-- Zero-size `readBytes` at offset `0` from an allocation whose own alignment
+(`alignLog2 = 0`) is below the requested `alignLog2 = 2` faults with
+`.undefined`. -/
+theorem refute_mem_read_zst_alloc_align :
+    readBytes (singleAllocMem liveMut4Align1Alloc) ⟨1, 0⟩ 0 2 =
+      .error .undefined :=
+  rfl
+
+/-- Zero-size `readBytes` on a deallocated (`live = false`) allocation still
+checks alignment and faults with `.undefined` when misaligned. -/
+theorem refute_mem_read_zst_dead_misaligned :
+    readBytes (singleAllocMem deadMut4Alloc) ⟨1, 1⟩ 0 2 =
+      .error .undefined :=
+  rfl
+
+/-- Zero-size `writeUninit` at a misaligned offset faults with `.undefined`. -/
+theorem refute_mem_uninit_zst_misaligned :
+    writeUninit (singleAllocMem liveMut8Alloc) ⟨1, 1⟩ 0 2 =
+      .error .undefined :=
+  rfl
+
+/-- Zero-size `readBytes` / `writeBytes` against a nonexistent allocation id
+faults with `.undefined`. -/
+theorem refute_mem_zst_missing_alloc :
+    readBytes (singleAllocMem liveMut4Alloc) ⟨99, 0⟩ 0 0 =
+      .error .undefined ∧
+    writeBytes (singleAllocMem liveMut4Alloc) ⟨99, 0⟩ 0 [] =
+      .error .undefined :=
+  ⟨rfl, rfl⟩
+
+/-- Anti-overreach positive canaries matching `rustc` `get_place_alloc` /
+`get_place_alloc_mut` and `lean-miri` (`checkAndDerefPtr` size-0 skip +
+alignment-only check): aligned `size == 0` accesses succeed even when the
+allocation is deallocated (`live = false`), read-only (`.shared`), or the
+offset is out of bounds. -/
+theorem positive_zst_alignment_only_canaries :
+    readBytes (singleAllocMem deadMut4Alloc) ⟨1, 0⟩ 0 2 = .ok [] ∧
+    writeBytes (singleAllocMem shared4Alloc) ⟨1, 0⟩ 2 [] =
+      .ok (singleAllocMem shared4Alloc) ∧
+    readBytes (singleAllocMem liveMut4Alloc) ⟨1, 8⟩ 0 2 = .ok [] ∧
+    writeBytes (singleAllocMem liveMut4Alloc) ⟨1, 8⟩ 2 [] =
+      .ok (singleAllocMem liveMut4Alloc) :=
+  ⟨rfl, rfl, rfl, rfl⟩
+
 end GuardMutation

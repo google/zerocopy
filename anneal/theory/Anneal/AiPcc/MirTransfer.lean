@@ -41,6 +41,9 @@ Computable Pass-1 abstract transfer functions for MIR operands, rvalues,
 statements (`stepStmtAbs`), and terminators (`stepTermAbs`) over `MirAbsEnv`,
 together with kernel-checked 1-step fault-freedom and soundness theorems
 directly against `Trusted.MirSemantics.{evalStatement, evalTerminator}`.
+Profile v2 constructors are treated conservatively: their rvalues, casts, and
+local types have no abstract value (`none`), and `.coreCall` has no abstract
+successor, so no certificate passes if a live block uses them.
 -/
 
 universe u
@@ -178,6 +181,7 @@ private theorem mirTy_beq_refl_supported {t : MirTy}
       rw [intWidth_beq_refl w]
       rfl
   | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
+  | slice _ | rangeTo _ | rangeFrom _
   | never | unsupported => nomatch h
 
 /-- Abstract constant literal evaluator matching `MirSemantics.evalConstLit`
@@ -269,6 +273,7 @@ theorem evalConstLitAbs_sound {locals : List LocalSlot} {c : ConstOperand}
         exact ⟨.unit, rfl, rfl, rfl⟩
       | scalar _ => nomatch h
     | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
+    | slice _ | rangeTo _ | rangeFrom _
     | never | unsupported => cases lit <;> nomatch h
 
 /-- Abstract operand evaluation for `.copy`, `.move`, and `.constant` operands
@@ -439,6 +444,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                         · exact ⟨rfl, hInit, hDen.2.1, hDen.2.2.1, hDen.2.2.2.1,
                             hDen.2.2.2.2, hLoc⟩
                       | ptr _ | bool _ | char _ | ordering _ | unit
+                      | slicePtr _ _ | rangeTo _ | rangeFrom _
                       | enumVal _ _ | tuple _ | bytes _ =>
                         exact False.elim hDen.2
           | bool =>
@@ -470,6 +476,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                       rw [ite_bool_false_t hNotProj]
                       rfl
                     | scalar _ | ptr _ | char _ | ordering _ | unit
+                    | slicePtr _ _ | rangeTo _ | rangeFrom _
                     | enumVal _ _ | tuple _ | bytes _ =>
                       exact False.elim hDen.2
           | unit =>
@@ -489,6 +496,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
               rw [ite_bool_false_t hNotProj]
               rfl
           | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
+          | slice _ | rangeTo _ | rangeFrom _
           | never | unsupported => nomatch hAbs
   | move place =>
     dsimp only [evalOperandAbs] at hAbs
@@ -565,6 +573,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                             · exact ⟨rfl, hInit, hDen.2.1, hDen.2.2.1, hDen.2.2.2.1,
                                 hDen.2.2.2.2, True.intro⟩
                         | ptr _ | bool _ | char _ | ordering _ | unit
+                        | slicePtr _ _ | rangeTo _ | rangeFrom _
                         | enumVal _ _ | tuple _ | bytes _ =>
                           exact False.elim hDen.2
           | bool =>
@@ -611,6 +620,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                             | top _ => exact ⟨rfl, True.intro⟩
                             | exact ev _ => exact ⟨rfl, hDen.2.1, True.intro⟩
                       | scalar _ | ptr _ | char _ | ordering _ | unit
+                      | slicePtr _ _ | rangeTo _ | rangeFrom _
                       | enumVal _ _ | tuple _ | bytes _ =>
                         exact False.elim hDen.2
           | unit =>
@@ -640,6 +650,7 @@ theorem evalOperandAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                   rw [ite_bool_false_t hNotProj, ← compSetElem?_eq, hSetConc]
                   rfl
           | char | rawPtr _ _ | ref _ _ | tuple _ | enum _ | ordering
+          | slice _ | rangeTo _ | rangeFrom _
           | never | unsupported => nomatch hAbs
 
 /-- Soundness of `evalOperandAbs` against `evalPrimitiveOperand` for unsigned
@@ -1429,11 +1440,12 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                     exact ⟨bool_not_eq_of_eq hR.2.1.2.1,
                       relGuard_negate_sound hR.2.1.2.2⟩
               | scalar _ | ptr _ | char _ | ordering _ | unit
+              | slicePtr _ _ | rangeTo _ | rangeFrom _
               | enumVal _ _ | tuple _ | bytes _ =>
                 exact False.elim hR.2.1.2
   | cast ck opnd castTy =>
     cases ck with
-    | unsupported => nomatch hAbs
+    | unsupported | ptrToPtr | intToPtr => nomatch hAbs
     | intToInt =>
       cases castTy with
       | int wDst sg =>
@@ -1496,9 +1508,11 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                       · rw [hToNat]; exact hResLt
                       · rw [hToNat]; exact castUintAbs_sound ha hLt
                   | ptr _ | bool _ | char _ | ordering _ | unit
+                  | slicePtr _ _ | rangeTo _ | rangeFrom _
                   | enumVal _ _ | tuple _ | bytes _ =>
                     exact False.elim hR.2.1.2.2
       | unit | bool | char | rawPtr _ _ | ref _ _ | tuple _ | enum _
+      | slice _ | rangeTo _ | rangeFrom _
       | ordering | never | unsupported => nomatch hAbs
   | binaryOp op lhs rhs =>
     dsimp only [evalRvalueAbs] at hAbs
@@ -1957,12 +1971,15 @@ theorem evalRvalueAbs_sound {bodyLocals : List MirTy} {env env' : MirAbsEnv}
                     | mul | mulUnchecked | addWithOverflow | subWithOverflow
                     | mulWithOverflow | cmp | offset => nomatch hAbs
                   | ptr _ | bool _ | char _ | ordering _ | unit
+                  | slicePtr _ _ | rangeTo _ | rangeFrom _
                   | enumVal _ _ | tuple _ | bytes _ =>
                     exact False.elim hR2.2.1.2.2
                 | ptr _ | bool _ | char _ | ordering _ | unit
+                | slicePtr _ _ | rangeTo _ | rangeFrom _
                 | enumVal _ _ | tuple _ | bytes _ =>
                   exact False.elim hR1.2.1.2.2
   | ref _ _ | addressOf _ _ | aggregateTuple _ | discriminant _
+  | useRetag _ | aggregateRangeTo _ _ | aggregateRangeFrom _ _
   | unsupported => nomatch hAbs
 
 /-! ## 3. Single-Step Statement & Terminator Abstract Transfer -/
@@ -2070,6 +2087,7 @@ theorem stepStmtAbs_sound {body : Body} {frame : FrameState}
                 injection hU with hEq; subst hEq
                 exact ⟨rfl, rfl⟩
               | char | rawPtr _ _ | ref _ _ | tuple _ | enum _
+              | slice _ | rangeTo _ | rangeFrom _
               | ordering | never | unsupported => nomatch hU
             have hEnv' := setMirAbsSlot_sound hEnv hTy hStep hSetConc hNewDen
             refine ⟨locals', ?_, hEnv'⟩
@@ -2198,6 +2216,7 @@ theorem stepStmtAbs_sound {body : Body} {frame : FrameState}
                                 | uint _ _ | unit => nomatch hDstDen.1
                                 | bool _ => exact False.elim hDstDen.2
                               | ptr _ | bool _ | char _ | ordering _ | unit
+                              | slicePtr _ _ | rangeTo _ | rangeFrom _
                               | enumVal _ _ | tuple _ | bytes _ => rfl
                         have hGuardPres :
                             ∀ (g : RelGuard), g.denote localsAfterRval bv →
@@ -2222,6 +2241,7 @@ theorem stepStmtAbs_sound {body : Body} {frame : FrameState}
                         | exact ev g =>
                           exact ⟨hR.2.2.1.2.1, hGuardPres g hR.2.2.1.2.2⟩
                       | scalar _ | ptr _ | char _ | ordering _ | unit
+                      | slicePtr _ _ | rangeTo _ | rangeFrom _
                       | enumVal _ _ | tuple _ | bytes _ =>
                         exact False.elim hR.2.2.1.2
                   have hEnv' := setMirAbsSlot_sound hR.2.2.2 hTy hStep hSetConc
@@ -2542,7 +2562,7 @@ cleanup `.return_`, uninitialized `_0`, and unsupported terminators. -/
       | none => none
     | _ => none
   | .unreachable | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _
-  | .unsupported => none
+  | .coreCall _ _ _ _ _ | .unsupported => none
 
 /-- 1-step soundness of `stepTermAbs` against `MirSemantics.evalTerminator`. -/
 theorem stepTermAbs_sound {body : Body} {bb : BasicBlock} {frame : FrameState}
@@ -2689,6 +2709,7 @@ theorem stepTermAbs_sound {body : Body} {bb : BasicBlock} {frame : FrameState}
                     dsimp only [evalTerminator]
                     rw [hT]; dsimp only; rw [hR.1]; dsimp only; rw [hSw]; rfl
           | scalar _ | ptr _ | char _ | ordering _ | unit
+          | slicePtr _ _ | rangeTo _ | rangeFrom _
           | enumVal _ _ | tuple _ | bytes _ =>
             exact False.elim hR.2.1.2
       | uint w a srcReg? =>
@@ -2719,10 +2740,11 @@ theorem stepTermAbs_sound {body : Body} {bb : BasicBlock} {frame : FrameState}
                 dsimp only [evalTerminator]
                 rw [hT]; dsimp only; rw [hR.1]; dsimp only; rw [hTgt.1]; rfl
             | ptr _ | bool _ | char _ | ordering _ | unit
+            | slicePtr _ _ | rangeTo _ | rangeFrom _
             | enumVal _ _ | tuple _ | bytes _ =>
               exact False.elim hR.2.1.2.2
   | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
-  | unsupported =>
+  | coreCall _ _ _ _ _ | unsupported =>
     dsimp only [stepTermAbs] at hTerm
     rw [hT] at hTerm
     nomatch hTerm

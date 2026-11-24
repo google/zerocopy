@@ -13,7 +13,8 @@
 use std::fmt::Write as _;
 
 use crate::ir::{
-    self, BinOp, CastKind, ConstLit, Operand, Rvalue, Statement, Terminator, Ty, UnOp,
+    self, AssertKind, BinOp, CastKind, ConstLit, CoreCallOp, Operand, Place, PlaceElem, Rvalue,
+    Statement, Terminator, Ty, UnOp,
 };
 
 const HEADER: &str = "-- Copyright 2026 The Fuchsia Authors\n--\n\
@@ -150,6 +151,31 @@ fn ty_at(t: &Ty, indent: usize) -> String {
             ity.width.lean_name(),
             ity.signed
         ),
+        Ty::Tuple { fields } => format!(
+            "(Trusted.MirAst.MirTy.tuple {})",
+            list_pretty(fields, indent, ty_at)
+        ),
+        Ty::Ref {
+            mutability,
+            pointee,
+        } => format!(
+            "(Trusted.MirAst.MirTy.ref Trusted.MirAst.Mutability.{} {})",
+            mutability.lean_name(),
+            ty_at(pointee, indent)
+        ),
+        Ty::RawPtr {
+            mutability,
+            pointee,
+        } => format!(
+            "(Trusted.MirAst.MirTy.rawPtr Trusted.MirAst.Mutability.{} {})",
+            mutability.lean_name(),
+            ty_at(pointee, indent)
+        ),
+        Ty::Slice { elem } => format!("(Trusted.MirAst.MirTy.slice {})", ty_at(elem, indent)),
+        Ty::RangeTo { elem } => format!("(Trusted.MirAst.MirTy.rangeTo {})", ty_at(elem, indent)),
+        Ty::RangeFrom { elem } => {
+            format!("(Trusted.MirAst.MirTy.rangeFrom {})", ty_at(elem, indent))
+        }
         Ty::Enum(ety) => {
             let tag_repr = match ety.tag_repr() {
                 ir::EnumTagRepr::ZeroSized => "Trusted.MirAst.EnumTagRepr.zeroSized".into(),
@@ -188,6 +214,21 @@ fn const_lit(lit: ConstLit) -> String {
     }
 }
 
+fn place_at(place: &Place, indent: usize) -> String {
+    if place.projection.is_empty() {
+        format!("(Trusted.MirAst.Place.mk {} [])", place.local)
+    } else {
+        let projs = list(&place.projection, |elem| match elem {
+            PlaceElem::Deref => "Trusted.MirAst.ProjectionElem.deref".into(),
+            PlaceElem::Field { index, ty } => format!(
+                "(Trusted.MirAst.ProjectionElem.field {index} {})",
+                ty_at(ty, indent)
+            ),
+        });
+        format!("(Trusted.MirAst.Place.mk {} {projs})", place.local)
+    }
+}
+
 fn operand_at(op: &Operand, indent: usize) -> String {
     match op {
         Operand::Copy { local } => {
@@ -195,6 +236,12 @@ fn operand_at(op: &Operand, indent: usize) -> String {
         }
         Operand::Move { local } => {
             format!("(Trusted.MirAst.Operand.move (Trusted.MirAst.Place.mk {local} []))")
+        }
+        Operand::CopyPlace { place } => {
+            format!("(Trusted.MirAst.Operand.copy {})", place_at(place, indent))
+        }
+        Operand::MovePlace { place } => {
+            format!("(Trusted.MirAst.Operand.move {})", place_at(place, indent))
         }
         Operand::Constant { ty: t, lit } => format!(
             "(Trusted.MirAst.Operand.constant (Trusted.MirAst.ConstOperand.mk {} {}))",
@@ -208,12 +255,15 @@ fn un_op(op: UnOp) -> &'static str {
     match op {
         UnOp::Not => "not",
         UnOp::Neg => "neg",
+        UnOp::PtrMetadata => "ptrMetadata",
     }
 }
 
 fn cast_kind(kind: CastKind) -> &'static str {
     match kind {
         CastKind::IntToInt => "intToInt",
+        CastKind::PtrToPtr => "ptrToPtr",
+        CastKind::IntToPtr => "intToPtr",
     }
 }
 
@@ -239,6 +289,7 @@ fn bin_op(op: BinOp) -> &'static str {
         BinOp::Gt => "gt",
         BinOp::Ge => "ge",
         BinOp::Cmp => "cmp",
+        BinOp::Offset => "offset",
     }
 }
 
@@ -248,6 +299,9 @@ fn rvalue_at(value: &Rvalue, indent: usize) -> String {
         // destination type satisfies `Ty::is_retag_noop()`.
         Rvalue::Use { operand: op, .. } => {
             format!("(Trusted.MirAst.Rvalue.use {})", operand_at(op, indent))
+        }
+        Rvalue::UseRetag { operand: op } => {
+            format!("(Trusted.MirAst.Rvalue.useRetag {})", operand_at(op, indent))
         }
         Rvalue::Binary { op, left, right } => format!(
             "(Trusted.MirAst.Rvalue.binaryOp Trusted.MirAst.BinOp.{} {} {})",
@@ -260,7 +314,11 @@ fn rvalue_at(value: &Rvalue, indent: usize) -> String {
             un_op(*op),
             operand_at(opnd, indent)
         ),
-        Rvalue::Cast { cast_kind: kind, operand: opnd, ty: target_ty } => format!(
+        Rvalue::Cast {
+            cast_kind: kind,
+            operand: opnd,
+            ty: target_ty,
+        } => format!(
             "(Trusted.MirAst.Rvalue.cast Trusted.MirAst.CastKind.{} {} {})",
             cast_kind(*kind),
             operand_at(opnd, indent),
@@ -269,6 +327,30 @@ fn rvalue_at(value: &Rvalue, indent: usize) -> String {
         Rvalue::Discriminant { local } => {
             format!("(Trusted.MirAst.Rvalue.discriminant (Trusted.MirAst.Place.mk {local} []))")
         }
+        Rvalue::Ref { mutability, place } => format!(
+            "(Trusted.MirAst.Rvalue.ref Trusted.MirAst.Mutability.{} {})",
+            mutability.lean_name(),
+            place_at(place, indent)
+        ),
+        Rvalue::AddressOf { mutability, place } => format!(
+            "(Trusted.MirAst.Rvalue.addressOf Trusted.MirAst.Mutability.{} {})",
+            mutability.lean_name(),
+            place_at(place, indent)
+        ),
+        Rvalue::AggregateTuple { fields } => format!(
+            "(Trusted.MirAst.Rvalue.aggregateTuple {})",
+            list_pretty(fields, indent, operand_at)
+        ),
+        Rvalue::AggregateRangeTo { elem_ty, end } => format!(
+            "(Trusted.MirAst.Rvalue.aggregateRangeTo {} {})",
+            ty_at(elem_ty, indent),
+            operand_at(end, indent)
+        ),
+        Rvalue::AggregateRangeFrom { elem_ty, start } => format!(
+            "(Trusted.MirAst.Rvalue.aggregateRangeFrom {} {})",
+            ty_at(elem_ty, indent),
+            operand_at(start, indent)
+        ),
     }
 }
 
@@ -276,6 +358,11 @@ fn statement_at(stmt: &Statement, indent: usize) -> String {
     match stmt {
         Statement::Assign { local, value } => format!(
             "(Trusted.MirAst.StatementKind.assign (Trusted.MirAst.Place.mk {local} []) {})",
+            rvalue_at(value, indent)
+        ),
+        Statement::AssignPlace { place, value } => format!(
+            "(Trusted.MirAst.StatementKind.assign {} {})",
+            place_at(place, indent),
             rvalue_at(value, indent)
         ),
         Statement::StorageLive { local } => {
@@ -293,12 +380,51 @@ fn statement_at(stmt: &Statement, indent: usize) -> String {
     }
 }
 
+fn assert_kind(kind: AssertKind) -> String {
+    match kind {
+        AssertKind::Overflow { op } => {
+            format!("(Trusted.MirAst.AssertKind.overflow Trusted.MirAst.BinOp.{})", bin_op(op))
+        }
+        AssertKind::OverflowNeg => "Trusted.MirAst.AssertKind.overflowNeg".into(),
+        AssertKind::DivByZero => "Trusted.MirAst.AssertKind.divByZero".into(),
+        AssertKind::RemByZero => "Trusted.MirAst.AssertKind.remByZero".into(),
+        AssertKind::BoundsCheck => "Trusted.MirAst.AssertKind.boundsCheck".into(),
+        AssertKind::MisalignedPtrDeref => "Trusted.MirAst.AssertKind.misalignedPtrDeref".into(),
+        AssertKind::NullPtrDeref => "Trusted.MirAst.AssertKind.nullPtrDeref".into(),
+    }
+}
+
+fn core_call_op(op: &CoreCallOp, indent: usize) -> String {
+    match op {
+        CoreCallOp::SliceLen => "Trusted.MirAst.CoreCallOp.sliceLen".into(),
+        CoreCallOp::SliceGetUncheckedRangeTo => {
+            "Trusted.MirAst.CoreCallOp.sliceGetUncheckedRangeTo".into()
+        }
+        CoreCallOp::SliceGetUncheckedRangeFrom => {
+            "Trusted.MirAst.CoreCallOp.sliceGetUncheckedRangeFrom".into()
+        }
+        CoreCallOp::PtrAdd {
+            mutability,
+            pointee,
+        } => format!(
+            "(Trusted.MirAst.CoreCallOp.ptrAdd Trusted.MirAst.Mutability.{} {})",
+            mutability.lean_name(),
+            ty_at(pointee, indent)
+        ),
+        CoreCallOp::UsizeUncheckedSub => "Trusted.MirAst.CoreCallOp.usizeUncheckedSub".into(),
+    }
+}
+
 fn terminator_at(term: &Terminator, indent: usize) -> String {
     match term {
         Terminator::Goto { block } => {
             format!("(Trusted.MirAst.TerminatorKind.goto {block})")
         }
-        Terminator::SwitchInt { operand: op, targets, otherwise } => {
+        Terminator::SwitchInt {
+            operand: op,
+            targets,
+            otherwise,
+        } => {
             let child_pad = " ".repeat(indent + 2);
             let target_pad = " ".repeat(indent + 4);
             format!(
@@ -313,6 +439,34 @@ fn terminator_at(term: &Terminator, indent: usize) -> String {
                 ))
             )
         }
+        // `Assert` and returning `Call` keep their captured `UnwindAction`
+        // (`ir::UnwindAction`, without the upstream terminate reason) rather
+        // than a fixed `continue_`.
+        Terminator::Assert {
+            cond,
+            expected,
+            msg,
+            target,
+            unwind,
+        } => format!(
+            "(Trusted.MirAst.TerminatorKind.assert {} {expected} {} {target} Trusted.MirAst.UnwindAction.{})",
+            operand_at(cond, indent + 2),
+            assert_kind(*msg),
+            unwind.lean_name(),
+        ),
+        Terminator::CoreCall {
+            op,
+            args,
+            dst,
+            target,
+            unwind,
+        } => format!(
+            "(Trusted.MirAst.TerminatorKind.coreCall {} {} {} (some {target}) Trusted.MirAst.UnwindAction.{})",
+            core_call_op(op, indent + 2),
+            list_pretty(args, indent + 2, operand_at),
+            place_at(dst, indent + 2),
+            unwind.lean_name(),
+        ),
         Terminator::Ret => "Trusted.MirAst.TerminatorKind.return_".into(),
         Terminator::Unreachable => "Trusted.MirAst.TerminatorKind.unreachable".into(),
         Terminator::Unsupported => "Trusted.MirAst.TerminatorKind.unsupported".into(),
@@ -383,18 +537,19 @@ fn body_record(body: &ir::Body, indent: usize) -> String {
     )
 }
 
-/// Target pointer width and MIR semantic profile version pinned by capture
-/// (`capture.rs` refuses any target that is not 64-bit little-endian, matching
-/// `Trusted.MirAst.Program`).
+/// Target pointer width pinned by capture (`capture.rs` refuses any target
+/// that is not 64-bit little-endian, matching `Trusted.MirAst.Program`). The
+/// MIR semantic profile version is not pinned: [`render`] emits
+/// `ir::Program::mir_profile_version`, computed from the captured bodies.
 const POINTER_WIDTH_BITS: u32 = 64;
-const MIR_PROFILE_VERSION: u32 = 1;
 
 /// Entry body index of every captured program. `Trusted.MirAst.Program` gives
-/// `entryDefId` a default only for hand-written canaries; its producer
-/// obligations say omitting it "silently selects body `0` as the entry
-/// point" and require producers to populate it explicitly. Body `0` always
-/// exists because `ir::Program::try_new` refuses empty programs, so the
-/// `entryDefId < bodies.length` check in `ProgramVerified` holds. That
+/// `entryDefId` a default only for hand-written canaries ("`Program.entryDefId
+/// := 0` selects body `0` as the entry point"), and its producer obligations
+/// say any MIR producer "MUST explicitly populate all of these fields",
+/// including `entryDefId`. Body `0` always exists because
+/// `ir::Program::try_new` refuses empty programs, so the
+/// `p.entryDefId < p.bodies.length` check in `ProgramVerified` holds. That
 /// judgment verifies each body through `entryProgForBody`, which replaces
 /// this field; a specification that reads the program's own entry sees the
 /// first captured body.
@@ -442,12 +597,13 @@ pub fn render(program: &ir::Program) -> String {
             join_balanced_slice(&chunk_names, Some(4), &|name, _| name.clone())
         }
     };
+    let profile_version = program.mir_profile_version();
     let _ = write!(
         out,
         "def program : Trusted.MirAst.Program :=\n\
          \x20 {{\n\
          \x20   pointerWidthBits := {POINTER_WIDTH_BITS},\n\
-         \x20   mirProfileVersion := {MIR_PROFILE_VERSION},\n\
+         \x20   mirProfileVersion := {profile_version},\n\
          \x20   scope := Trusted.MirAst.VerificationScope.{scope},\n\
          \x20   entryDefId := {ENTRY_DEF_ID},\n\
          \x20   bodies := {bodies_expr}\n\

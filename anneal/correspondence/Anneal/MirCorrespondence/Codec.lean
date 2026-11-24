@@ -145,6 +145,15 @@ mutual
       change (Mutability.beq m m && MirTy.beq p p) = true
       rw [Mutability.beq_refl, MirTy.beq_refl p]
       rfl
+    | slice e =>
+      change MirTy.beq e e = true
+      exact MirTy.beq_refl e
+    | rangeTo e =>
+      change MirTy.beq e e = true
+      exact MirTy.beq_refl e
+    | rangeFrom e =>
+      change MirTy.beq e e = true
+      exact MirTy.beq_refl e
     | unsupported => rfl
 
   theorem MirTy.beqList_refl
@@ -201,6 +210,24 @@ mutual
         cases h_m : Mutability.beq m₁ m₂ <;> rw [h_m] at h
         · cases h
         · rw [Mutability.eq_of_beq h_m, MirTy.eq_of_beq h]
+      | _ => cases h
+    | slice e₁ =>
+      cases b with
+      | slice e₂ =>
+        change MirTy.beq e₁ e₂ = true at h
+        rw [MirTy.eq_of_beq h]
+      | _ => cases h
+    | rangeTo e₁ =>
+      cases b with
+      | rangeTo e₂ =>
+        change MirTy.beq e₁ e₂ = true at h
+        rw [MirTy.eq_of_beq h]
+      | _ => cases h
+    | rangeFrom e₁ =>
+      cases b with
+      | rangeFrom e₂ =>
+        change MirTy.beq e₁ e₂ = true at h
+        rw [MirTy.eq_of_beq h]
       | _ => cases h
     | unsupported => cases b <;> first | rfl | cases h
 
@@ -333,8 +360,9 @@ theorem encodeRvalue_binaryOp_iff_base : EncodeRvalueBinaryOpIffClaim := by
       subst h_op; subst h_l₁; subst h_r₁
       dsimp only [encodeRvalue]
       rw [h_l, h_r]
-  | use _ | unaryOp _ _ | cast _ _ _ | discriminant _ | ref _ _
-  | addressOf _ _ | aggregateTuple _ | unsupported =>
+  | use _ | unaryOp _ _ | cast _ _ _ | discriminant _ | useRetag _
+  | ref _ _ | addressOf _ _ | aggregateTuple _ | aggregateRangeTo _ _
+  | aggregateRangeFrom _ _ | unsupported =>
     constructor
     · intro h; cases h
     · intro h
@@ -358,8 +386,9 @@ theorem encodeRvalue_unaryOp_iff_base : EncodeRvalueUnaryOpIffClaim := by
       subst h_op; subst h_o₁
       dsimp only [encodeRvalue]
       rw [h_o]
-  | use _ | binaryOp _ _ _ | cast _ _ _ | discriminant _ | ref _ _
-  | addressOf _ _ | aggregateTuple _ | unsupported =>
+  | use _ | binaryOp _ _ _ | cast _ _ _ | discriminant _ | useRetag _
+  | ref _ _ | addressOf _ _ | aggregateTuple _ | aggregateRangeTo _ _
+  | aggregateRangeFrom _ _ | unsupported =>
     constructor
     · intro h; cases h
     · intro h
@@ -571,6 +600,24 @@ mutual
       let ⟨h_sub_p, _⟩ := collectTy_spec acc p
       exact ⟨SubTable.trans h_sub_p
           (subTable_insertTy (.rawPtr m p) (collectTy acc p)),
+        fun _ h_sub => getElem?_lookupTyId_of_subTable h_sub⟩
+    | slice e =>
+      dsimp only [collectTy]
+      let ⟨h_sub_e, _⟩ := collectTy_spec acc e
+      exact ⟨SubTable.trans h_sub_e
+          (subTable_insertTy (.slice e) (collectTy acc e)),
+        fun _ h_sub => getElem?_lookupTyId_of_subTable h_sub⟩
+    | rangeTo e =>
+      dsimp only [collectTy]
+      let ⟨h_sub_e, _⟩ := collectTy_spec acc e
+      exact ⟨SubTable.trans h_sub_e
+          (subTable_insertTy (.rangeTo e) (collectTy acc e)),
+        fun _ h_sub => getElem?_lookupTyId_of_subTable h_sub⟩
+    | rangeFrom e =>
+      dsimp only [collectTy]
+      let ⟨h_sub_e, _⟩ := collectTy_spec acc e
+      exact ⟨SubTable.trans h_sub_e
+          (subTable_insertTy (.rangeFrom e) (collectTy acc e)),
         fun _ h_sub => getElem?_lookupTyId_of_subTable h_sub⟩
     | tuple fs =>
       dsimp only [collectTy]
@@ -824,6 +871,12 @@ theorem collectRvalue_spec (acc : List MirTy) (rv : Rvalue) :
     dsimp only [encodeRvalue, decodeRvalue]
     rw [h_dec ts h_s]
     rfl
+  | useRetag op =>
+    let ⟨h_sub, h_dec⟩ := collectOperand_spec acc op
+    refine ⟨h_sub, fun ts h_s => ?_⟩
+    dsimp only [encodeRvalue, decodeRvalue]
+    rw [h_dec ts h_s]
+    rfl
   | ref m p =>
     let ⟨h_sub, h_dec⟩ := collectPlace_spec acc p
     refine ⟨h_sub, fun ts h_s => ?_⟩
@@ -842,6 +895,20 @@ theorem collectRvalue_spec (acc : List MirTy) (rv : Rvalue) :
     refine ⟨h_sub, fun ts h_s => ?_⟩
     dsimp only [encodeRvalue, decodeRvalue]
     rw [h_dec ts h_s]
+    rfl
+  | aggregateRangeTo elemTy endOp =>
+    let ⟨h_sub₁, h_dec₁⟩ := collectOperand_spec acc endOp
+    let ⟨h_sub₂, h_dec₂⟩ := collectTy_spec (collectOperand acc endOp) elemTy
+    refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts h_s => ?_⟩
+    dsimp only [encodeRvalue, decodeRvalue]
+    rw [h_dec₂ ts h_s, h_dec₁ ts (SubTable.trans h_sub₂ h_s)]
+    rfl
+  | aggregateRangeFrom elemTy startOp =>
+    let ⟨h_sub₁, h_dec₁⟩ := collectOperand_spec acc startOp
+    let ⟨h_sub₂, h_dec₂⟩ := collectTy_spec (collectOperand acc startOp) elemTy
+    refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts h_s => ?_⟩
+    dsimp only [encodeRvalue, decodeRvalue]
+    rw [h_dec₂ ts h_s, h_dec₁ ts (SubTable.trans h_sub₂ h_s)]
     rfl
   | unsupported => exact ⟨SubTable.refl acc, fun _ _ => rfl⟩
 
@@ -880,6 +947,15 @@ theorem collectTerminator_spec (acc : List MirTy) (term : TerminatorKind) :
     rw [h_dec ts h_s]
     rfl
   | call callee args dst t u =>
+    let ⟨h_sub₁, h_dec₁⟩ := foldl_collect_mapOption_spec collectOperand
+      encodeOperand decodeOperand collectOperand_spec acc args
+    let ⟨h_sub₂, h_dec₂⟩ :=
+      collectPlace_spec (args.foldl collectOperand acc) dst
+    refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts h_s => ?_⟩
+    dsimp only [encodeTerminator, decodeTerminator]
+    rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
+    rfl
+  | coreCall op args dst t u =>
     let ⟨h_sub₁, h_dec₁⟩ := foldl_collect_mapOption_spec collectOperand
       encodeOperand decodeOperand collectOperand_spec acc args
     let ⟨h_sub₂, h_dec₂⟩ :=
@@ -970,6 +1046,18 @@ mutual
       dsimp only [collectTy]
       exact typesAreCanonical_insertTy (.rawPtr m p) (collectTy acc p)
         (collectTy_canonical acc p h)
+    | slice e =>
+      dsimp only [collectTy]
+      exact typesAreCanonical_insertTy (.slice e) (collectTy acc e)
+        (collectTy_canonical acc e h)
+    | rangeTo e =>
+      dsimp only [collectTy]
+      exact typesAreCanonical_insertTy (.rangeTo e) (collectTy acc e)
+        (collectTy_canonical acc e h)
+    | rangeFrom e =>
+      dsimp only [collectTy]
+      exact typesAreCanonical_insertTy (.rangeFrom e) (collectTy acc e)
+        (collectTy_canonical acc e h)
     | tuple fs =>
       dsimp only [collectTy]
       exact typesAreCanonical_insertTy (.tuple fs) (collectTyList acc fs)
@@ -1019,11 +1107,16 @@ theorem collectRvalue_canonical (acc : List MirTy) (rv : Rvalue)
   | cast _ op ty =>
     exact collectTy_canonical (collectOperand acc op) ty
       (collectOperand_canonical acc op h)
+  | useRetag op =>
+    exact collectOperand_canonical acc op h
   | discriminant p | ref _ p | addressOf _ p =>
     exact collectPlace_canonical acc p h
   | aggregateTuple ops =>
     exact foldl_preserve (fun ts => typesAreCanonical ts = true) collectOperand
       collectOperand_canonical ops h
+  | aggregateRangeTo ty op | aggregateRangeFrom ty op =>
+    exact collectTy_canonical (collectOperand acc op) ty
+      (collectOperand_canonical acc op h)
   | unsupported => exact h
 
 theorem collectStmt_canonical (acc : List MirTy) (s : StatementKind)
@@ -1041,7 +1134,7 @@ theorem collectTerminator_canonical (acc : List MirTy) (term : TerminatorKind)
   cases term with
   | goto _ | return_ | unreachable | unwindResume | unsupported => exact h
   | switchInt d _ | assert d _ _ _ _ => exact collectOperand_canonical acc d h
-  | call _ args dst _ _ =>
+  | call _ args dst _ _ | coreCall _ args dst _ _ =>
     exact collectPlace_canonical (args.foldl collectOperand acc) dst
       (foldl_preserve (fun ts => typesAreCanonical ts = true) collectOperand
         collectOperand_canonical args h)

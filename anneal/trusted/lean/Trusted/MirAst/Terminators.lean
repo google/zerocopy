@@ -46,15 +46,30 @@ structure SwitchTargets where
 
 /-- Unwind continuation action on panicking terminators
 (`rustc_middle::mir::UnwindAction` in
-`compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
-`8144389c895da997dbdecaa635e41d6a50be6ffd`):
+`compiler/rustc_middle/src/mir/syntax.rs:1030-1044`, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
 
 > "pub enum UnwindAction {
+>     /// No action is to be taken. Continue unwinding.
+>     ...
 >     Continue,
+>     /// Triggers undefined behavior if unwind happens.
 >     Unreachable,
+>     /// Terminates the execution if unwind happens.
+>     ...
 >     Terminate(UnwindTerminateReason),
+>     /// Cleanups to be done.
 >     Cleanup(BasicBlock),
-> }" -/
+> }"
+
+Constructor correspondence: `.continue_`, `.unreachable`, and `.terminate`
+correspond 1:1 to `Continue`, `Unreachable`, and `Terminate(_)`. Capture drops
+the `UnwindTerminateReason`, which only selects the panic message. Capture
+refuses `Cleanup(_)` on `Assert` and `Call` terminators, so `.cleanup` never
+reaches $M_{\text{anneal}}$ from capture. The unwind action has no operational
+effect in Profile v1 or v2: neither profile ever unwinds, because every panic
+path (a failed `Assert`, or a `coreCall` precondition violation) faults with
+`.unsupported` or `.undefined` instead of starting an unwind. -/
 inductive UnwindAction where
   | continue_
   | unreachable
@@ -104,6 +119,31 @@ inductive AssertKind where
   | nullPtrDeref
   | unsupported
 
+/-- Closed set of modeled `core` library calls in Profile v2
+(`TerminatorKind.coreCall`). Capture (`core_call_op` in
+`trusted/rustc-capture/src/extract.rs`) maps a direct `FnDef` call to one of
+these constructors only when the callee is the sysroot `core` function below.
+Every other external `Call` remains `.unsupported`.
+
+- `.sliceLen` is `core::slice::<impl [T]>::len` (`execCoreCallOp`).
+- `.sliceGetUncheckedRangeTo` and `.sliceGetUncheckedRangeFrom` are
+  `core::slice::<impl [T]>::get_unchecked` with index type
+  `core::ops::RangeTo<usize>` and `core::ops::RangeFrom<usize>`
+  (`sliceGetUncheckedCheck`). `get_unchecked_mut` is not captured.
+- `.ptrAdd mutability pointee` is `core::ptr::const_ptr::<impl *const T>::add`
+  (`.shared`) or `core::ptr::mut_ptr::<impl *mut T>::add` (`.mut`) with
+  `T = pointee` (`ptrAddInMem`).
+- `.usizeUncheckedSub` is `core::num::<impl usize>::unchecked_sub`.
+
+Each semantic definition cited above quotes the corresponding `core` safety
+contract at `rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`. -/
+inductive CoreCallOp where
+  | sliceLen
+  | sliceGetUncheckedRangeTo
+  | sliceGetUncheckedRangeFrom
+  | ptrAdd (mutability : Mutability) (pointee : MirTy)
+  | usizeUncheckedSub
+
 /-- A MIR basic-block terminator (`rustc_middle::mir::TerminatorKind` in
 `compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
 `8144389c895da997dbdecaa635e41d6a50be6ffd`):
@@ -144,6 +184,9 @@ Constructor correspondence:
   `TerminatorKind::Assert { cond, expected, msg, target, unwind }`.
 - `.call callee args dst target unwind` corresponds to direct `FnDef`
   `TerminatorKind::Call`.
+- `.coreCall op args dst target unwind` corresponds to a direct `FnDef`
+  `TerminatorKind::Call` whose callee is the sysroot `core` function that
+  `op` names (Profile v2).
 - `.unsupported` represents all other `TerminatorKind` variants
   (`UnwindTerminate`, `Drop`, indirect `Call`, `TailCall`, `Yield`,
   `CoroutineDrop`, `FalseEdge`, `FalseUnwind`, and `InlineAsm`). -/
@@ -156,6 +199,8 @@ inductive TerminatorKind where
   | assert (cond : Operand) (expected : Bool) (msg : AssertKind)
       (target : BasicBlockId) (unwind : UnwindAction)
   | call (callee : DefId) (args : List Operand) (dst : Place)
+      (target : Option BasicBlockId) (unwind : UnwindAction)
+  | coreCall (op : CoreCallOp) (args : List Operand) (dst : Place)
       (target : Option BasicBlockId) (unwind : UnwindAction)
   | unsupported
 

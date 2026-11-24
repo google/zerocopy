@@ -517,7 +517,7 @@ theorem checkMirCert_sound {body : Body} {entryEnv : MirAbsEnv}
     targets.branches.foldr (fun p acc => p.2 :: acc) [targets.otherwise]
   | .assert _ _ _ target unwind =>
     target :: (match unwind with | .cleanup b => [b] | _ => [])
-  | .call _ _ _ target unwind =>
+  | .call _ _ _ target unwind | .coreCall _ _ _ target unwind =>
     (match target with | some t => [t] | none => []) ++
       (match unwind with | .cleanup b => [b] | _ => [])
   | .return_ | .unreachable | .unwindResume | .unsupported => []

@@ -62,6 +62,9 @@ inductive RefRvalue where
   | ref (mutability : Mutability) (place : RefPlace)
   | addressOf (mutability : Mutability) (place : RefPlace)
   | aggregateTuple (fields : List RefOperand)
+  | useRetag (op : RefOperand)
+  | aggregateRangeTo (elemTy : TyId) (endOp : RefOperand)
+  | aggregateRangeFrom (elemTy : TyId) (startOp : RefOperand)
   | unsupported
 
 /-- Reference MIR statement (`Miri.MIR.StatementKind`). -/
@@ -82,6 +85,8 @@ inductive RefTerminatorKind where
   | assert (cond : RefOperand) (expected : Bool) (msg : AssertKind)
       (target : BasicBlockId) (unwind : UnwindAction)
   | call (callee : DefId) (args : List RefOperand) (dst : RefPlace)
+      (target : Option BasicBlockId) (unwind : UnwindAction)
+  | coreCall (op : CoreCallOp) (args : List RefOperand) (dst : RefPlace)
       (target : Option BasicBlockId) (unwind : UnwindAction)
   | unsupported
 
@@ -175,6 +180,9 @@ mutual
     | .unsupported => insertTy .unsupported acc
     | .ref m p => insertTy (.ref m p) (collectTy acc p)
     | .rawPtr m p => insertTy (.rawPtr m p) (collectTy acc p)
+    | .slice elem => insertTy (.slice elem) (collectTy acc elem)
+    | .rangeTo elem => insertTy (.rangeTo elem) (collectTy acc elem)
+    | .rangeFrom elem => insertTy (.rangeFrom elem) (collectTy acc elem)
     | .tuple fs => insertTy (.tuple fs) (collectTyList acc fs)
 
   /-- Intern a list of `MirTy` descriptors left-to-right. -/
@@ -226,7 +234,11 @@ noncomputable def collectRvalue (acc : List MirTy) : Rvalue → List MirTy
   | .unaryOp _ op => collectOperand acc op
   | .cast _ op ty => collectTy (collectOperand acc op) ty
   | .discriminant p | .ref _ p | .addressOf _ p => collectPlace acc p
+  | .useRetag op => collectOperand acc op
   | .aggregateTuple ops => ops.foldl collectOperand acc
+  | .aggregateRangeTo elemTy endOp => collectTy (collectOperand acc endOp) elemTy
+  | .aggregateRangeFrom elemTy startOp =>
+    collectTy (collectOperand acc startOp) elemTy
   | .unsupported => acc
 
 /-- Intern all `MirTy` descriptors carried in a `StatementKind`. -/
@@ -239,7 +251,7 @@ noncomputable def collectTerminator (acc : List MirTy) :
     TerminatorKind → List MirTy
   | .switchInt d _ => collectOperand acc d
   | .assert c _ _ _ _ => collectOperand acc c
-  | .call _ args dst _ _ =>
+  | .call _ args dst _ _ | .coreCall _ args dst _ _ =>
     collectPlace (args.foldl collectOperand acc) dst
   | .goto _ | .return_ | .unreachable | .unwindResume | .unsupported => acc
 
@@ -281,9 +293,14 @@ noncomputable def encodeRvalue (ts : List MirTy) : Rvalue → RefRvalue
   | .unaryOp op opnd => .unaryOp op (encodeOperand ts opnd)
   | .cast k opnd ty => .cast k (encodeOperand ts opnd) (lookupTyId ts ty)
   | .discriminant p => .discriminant (encodePlace ts p)
+  | .useRetag op => .useRetag (encodeOperand ts op)
   | .ref m p => .ref m (encodePlace ts p)
   | .addressOf m p => .addressOf m (encodePlace ts p)
   | .aggregateTuple ops => .aggregateTuple (ops.map (encodeOperand ts))
+  | .aggregateRangeTo elemTy endOp =>
+    .aggregateRangeTo (lookupTyId ts elemTy) (encodeOperand ts endOp)
+  | .aggregateRangeFrom elemTy startOp =>
+    .aggregateRangeFrom (lookupTyId ts elemTy) (encodeOperand ts startOp)
   | .unsupported => .unsupported
 
 /-- Encode a `StatementKind` against type table `ts`. -/
@@ -306,6 +323,8 @@ noncomputable def encodeTerminator (ts : List MirTy) :
   | .assert c exp msg t u => .assert (encodeOperand ts c) exp msg t u
   | .call callee args dst t u =>
     .call callee (args.map (encodeOperand ts)) (encodePlace ts dst) t u
+  | .coreCall op args dst t u =>
+    .coreCall op (args.map (encodeOperand ts)) (encodePlace ts dst) t u
   | .unsupported => .unsupported
 
 /-- Encode a `BasicBlock` against type table `ts`. -/
@@ -358,10 +377,17 @@ noncomputable def decodeRvalue (ts : List MirTy) : RefRvalue → Option Rvalue
     optMap2 (Rvalue.cast k) (decodeOperand ts opnd)
       (MirSemantics.getElem? ts tyId)
   | .discriminant p => optMap Rvalue.discriminant (decodePlace ts p)
+  | .useRetag op => optMap Rvalue.useRetag (decodeOperand ts op)
   | .ref m p => optMap (Rvalue.ref m) (decodePlace ts p)
   | .addressOf m p => optMap (Rvalue.addressOf m) (decodePlace ts p)
   | .aggregateTuple ops =>
     optMap Rvalue.aggregateTuple (mapOption (decodeOperand ts) ops)
+  | .aggregateRangeTo tyId endOp =>
+    optMap2 Rvalue.aggregateRangeTo
+      (MirSemantics.getElem? ts tyId) (decodeOperand ts endOp)
+  | .aggregateRangeFrom tyId startOp =>
+    optMap2 Rvalue.aggregateRangeFrom
+      (MirSemantics.getElem? ts tyId) (decodeOperand ts startOp)
   | .unsupported => some .unsupported
 
 /-- Decode a `RefStatementKind` against type table `ts`. -/
@@ -387,6 +413,9 @@ noncomputable def decodeTerminator (ts : List MirTy) :
     optMap (fun c' => .assert c' exp msg t u) (decodeOperand ts c)
   | .call callee args dst t u =>
     optMap2 (fun args' dst' => .call callee args' dst' t u)
+      (mapOption (decodeOperand ts) args) (decodePlace ts dst)
+  | .coreCall op args dst t u =>
+    optMap2 (fun args' dst' => .coreCall op args' dst' t u)
       (mapOption (decodeOperand ts) args) (decodePlace ts dst)
   | .unsupported => some .unsupported
 

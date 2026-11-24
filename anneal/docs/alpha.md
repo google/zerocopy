@@ -92,17 +92,59 @@ optional dependencies are ignored), `--manifest-path <Cargo.toml>
 The alpha runs on the x86-64 Linux scalar MIR profile (Profile v1) with
 `-Zmir-preserve-ub` enforced during capture (`#4114`). Any construct outside
 this profile returns an explicit fail-closed refusal rather than approximating
-semantics.
+semantics, unless it belongs to the experimental
+[Profile v2](#experimental-mir-profile-v2-borrowed-slices-and-raw-pointers).
 
 | Category | Supported today (Profile v1) | Refused today (fail-closed) |
 | :--- | :--- | :--- |
-| **Types** | `bool`, `char`, 8- through 128-bit and pointer-sized integers (`i8`..`i128`, `isize`, `u8`..`u128`, `usize` on 64-bit targets), `()`, `!`, `core::cmp::Ordering`, `(T, bool)` overflowing-arithmetic pairs (via `core::intrinsics::*_with_overflow`), and non-generic inhabited crate-local fieldless enums (including pure scalar explicit discriminants). | References and raw pointers (`&T`, `&mut T`, `*const T`, `*mut T`), slices, arrays, structs, unions, enums with payloads, uninhabited zero-variant enums, floats, general tuples, and generic types. |
+| **Types** | `bool`, `char`, 8- through 128-bit and pointer-sized integers (`i8`..`i128`, `isize`, `u8`..`u128`, `usize` on 64-bit targets), `()`, `!`, `core::cmp::Ordering`, `(T, bool)` overflowing-arithmetic pairs (via `core::intrinsics::*_with_overflow`), and non-generic inhabited crate-local fieldless enums (including pure scalar explicit discriminants). | References and raw pointers (`&T`, `&mut T`, `*const T`, `*mut T`), slices, arrays, structs, unions, enums with payloads, uninhabited zero-variant enums, enums whose size or alignment differs from their tag's (such as `#[repr(u8, align(4))]` or `#[repr(align(8))]`), floats, general tuples, and generic types. |
 | **Statements & rvalues** | `Assign` (`Use` on retag-noop scalar types, unary `Not`/`Neg`, binary bitwise/shift/wrapping-arithmetic/`*WithOverflow`/comparison/`Cmp`/unchecked `Div`/`Rem`, `CastKind::IntToInt`, `Discriminant`), `StorageLive`, `StorageDead`, bare unprojected `PlaceMention`, and `Nop`. | Place projections (fields, indexing, dereferencing, projected `PlaceMention`), `Aggregate` rvalues, `PtrMetadata`, pointer/float/`Transmute` casts, and inline assembly. |
 | **Terminators & operands** | `Goto`, `SwitchInt`, `Return`, `Unreachable`, and diverging calls (`TerminatorKind::Call` with `target: None` and non-`Use` `CallSource`, lowered to fail-closed `unsupported` when reachable); `Copy`/`Move` on unprojected locals; scalar constants (including `Const::Unevaluated`, `Const::Ty(Value)`, and read-only provenance-free `.rodata` `ConstValue::Indirect` / `GlobalAlloc::Memory` scalars evaluated via CTFE alongside `required_consts`) and `ZeroSized` unit/single-variant-enum constants. | Returning `Call` terminators (`target: Some(_)`, including `overflowing_*` methods under `-Copt-level=0`) and `CallSource::Use`, runtime `Assert` terminators (including ordinary Rust `/` and `%`), `Drop`, unwind/abort terminators, and constants whose CTFE evaluation fails or refers to `static`, mutable, or provenance-bearing memory. |
 | **Crate scope & items** | Single `lib` or `bin` crates with no required normal or build dependencies (dev-dependencies and inactive optional dependencies are ignored; `Scope::Crate` or `Scope::SelectedUnit`, Cargo `[features]` via `--features`/`--all-features`/`--no-default-features`, configurable `--panic unwind|abort`, and crate-local `#[panic_handler]` in `bin` selected-unit scope), plus opt-in `--stdlib-crate core` (requires `Scope::SelectedUnit`, a `lib` crate, `crate_name == "core"`, a compilation that loads no other crate, no `cfg(miri)`, and any crate-local `Ordering` language item to have the modeled shape; admits `core`'s own `#[lang]` items and skips object emission); non-generic free and associated functions (and, in `Scope::Crate`, safe `trait` declarations, safe `impl` blocks, bodyless safe Rust-ABI trait methods, non-generic pure-value `const`/`assoc const` items, and pure scalar `AnonConst` items), plus explicitly requested concrete monomorphizations (`instantiations` / `--instantiate`) in `Scope::SelectedUnit`. | Required normal or build external crate dependencies, multi-target crates, uninstantiated polymorphic generics, closures, crate-local `#[lang]` items without `--stdlib-crate` (except `#[panic_handler]` in `bin` selected-unit scope), `struct`/`union`/`static`/`InlineConst` owners, bodyless free functions, and `unsafe`/unmodeled `trait`/`impl`/`const`/`AnonConst` items in whole-crate scope, global assembly, and proc-macro crates. |
 
 For a realistic scalar example, `ci/verify_starnix_e2e.py` checks Starnix's
 `ebpf_core` endianness conversion using symbolic MIR helpers in `Anneal.MirWp`.
+
+## Experimental MIR Profile v2: borrowed slices and raw pointers
+
+Capture selects Profile v2 (`mirProfileVersion = 2`) for the whole captured
+program when any captured body uses one of its additions; a program without
+them stays on Profile v1. Every body of a Profile v2 program, including
+scalar-only ones, is checked against `UnitTheoremV2` or `CrateTheoremV2`. Its
+receipt lists an "experimental Profile v2 MIR semantics" assumption and marks
+`correspondence_provenance` inapplicable, because Pass 2 relates only Profile
+v1 rules to `vendor/lean-miri/`.
+
+| Category | Added by Profile v2 | Refused (fail-closed) |
+| :--- | :--- | :--- |
+| **Types** | General tuples; single-level `&T`, `&mut T`, `*const T`, and `*mut T` whose pointee is a Profile v1 scalar, `()`, an admitted enum, or an integer slice `[T]`; `RangeTo<usize>` and `RangeFrom<usize>`; lifetime-only generic signatures. | Nested references or pointers (`&&T`, `*const &T`, `&[&T]`), references and pointers to overflow pairs `(T, bool)` (whose unspecified tuple layout capture does not check, so overflow pairs are never addressable), `str`, structs, arrays, and the remaining Profile v1 refusals. |
+| **Bodies** | Bodies whose locals include references or raw pointers, but not both. | Bodies whose locals mix references and raw pointers, because Profile v2 does not model Rust's pointer aliasing rules (Stacked or Tree Borrows). For example, `<&mut [u8] as SplitByteSlice>::split_at_unchecked`, which uses `as_mut_ptr` and `from_raw_parts_mut`, is refused. |
+| **Statements & rvalues** | `Ref` of locals and of dereferenced references, `RawPtr` (address-of) of locals and of dereferenced raw pointers, assignment through dereferenced places, raw-to-raw `PtrToPtr` casts that do not add mutability, `IntToPtr` casts, `PtrMetadata`, `Offset`, `RangeTo`/`RangeFrom` aggregates, copy reads of tuple, overflow-pair, and range fields, and `Use` with retags. | Reference-to-raw-pointer and raw-pointer-to-reference conversions (refused with the mixed-locals rule), `*const T` to `*mut T` casts (Profile v2 cannot tell whether the pointee is an immutable binding, which the cast would let the body mutate), other pointer casts, index projections, field projections after a dereference, moves out of a projected place (`move (*p)`, `move (t.0)`), and other aggregates. |
+| **Terminators** | `Assert` and returning calls to a closed set of `core` functions: `<[T]>::len`, `<[T]>::get_unchecked` (with `..n` or `n..`), `<*const T>::add`, `<*mut T>::add`, and `usize::unchecked_sub`. The captured `UnwindAction` (`Continue`, `Unreachable`, or `Terminate`) is recorded as is. | Every other call (including `<[T]>::{as_ptr, as_mut_ptr}` and `core::slice::from_raw_parts{,_mut}`, which convert between references and raw pointers), calls in crates that shadow `core`, and cleanup unwinds. |
+
+Each query (`Query`) supplies caller memory (`callerMem`) alongside its
+arguments. `SpecsV2` pairs per-function safety preconditions (`safety`,
+required only of `unsafe` functions) with a whole-program `property`.
+`ValidEntryArgsV2` requires live, in-bounds, aligned, initialized reference
+arguments in caller allocations whose bytes decode to valid pointee values,
+and disjoint mutable references. This applies to `unsafe` functions too, so a
+receipt says nothing about callers that pass an `unsafe` function a reference
+to uninitialized or invalid memory; receipts state this assumption.
+Raw pointer arguments are unconstrained, so an `unsafe` function's `safety`
+precondition must state their liveness, bounds, alignment, initialization, and
+mutability. Mutability here means the allocation's mutability: Profile v2
+does not track pointer aliasing permissions, so callers must also pass raw
+pointers whose provenance permits the accesses the function makes (for
+example, not a pointer derived from a live `&T` that the function writes
+through). Profile v2 encodes memory little-endian and assumes natural ABI
+alignment (1, 2, 4, 8, and 16 bytes for `i8` through `i128`, 8 bytes for
+`isize` and pointers, and no added aggregate alignment). Capture admits only
+targets whose data layout matches.
+
+`tests/cargo-anneal/tests/profile_v2_e2e.rs` verifies the unmodified
+`zerocopy/src/byte_slice.rs` `<&[u8] as SplitByteSlice>::split_at_unchecked`
+under `UnitTheoremV2`, plus raw-pointer load and store fixtures under
+`CrateTheoremV2`.
 
 ### Bundled proof libraries and specification boundaries
 

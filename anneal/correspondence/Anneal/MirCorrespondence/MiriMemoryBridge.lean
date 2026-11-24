@@ -57,10 +57,11 @@ upstream-only correspondence lemmas between `Trusted.MirSemantics` and
    - Full 64-bit `Allocation.writePointer` -> `Allocation.readScalar` provenance
      round-trip.
 4. **Concrete End-to-End Non-Vacuity Witnesses** (Section 7):
-   - Four concrete witnesses covering Miri zero-size pointer alignment vs
-     `MirSemantics.readBytes_zero_size`, coexistence of tracked caller slices
-     with uninitialized/live/dead stack allocations in `MemoryState`, indirect
-     stack use-after-free, and 64-bit pointer offset + bounds + provenance.
+   - Four concrete witnesses covering Miri zero-size pointer alignment
+     agreeing with `MirSemantics.readBytes` at `size = 0`, coexistence of
+     tracked caller slices with uninitialized/live/dead stack allocations in
+     `MemoryState`, indirect stack use-after-free, and 64-bit pointer offset +
+     bounds + provenance.
 -/
 
 namespace Anneal.MirCorrespondence
@@ -960,14 +961,16 @@ theorem allocByteSliceRel_readBytes_agree
   rw [h_sub_eq] at h_gsp
   refine ⟨?_, ?_, ?_⟩
   · dsimp only [readBytes]
+    rw [h_fa]
+    dsimp only
     cases h_l0 : Nat.beq len 0 with
     | true =>
       have h_z : len = 0 := (nat_beq_true_iff _ _).1 h_l0
       subst h_z
+      rw [h_al]
       rfl
     | false =>
-      rw [ite_false_eq, h_fa]
-      dsimp only
+      rw [ite_false_eq]
       rw [h_live]
       have h_ib : isInBounds a off len = true := by
         dsimp only [isInBounds]
@@ -1074,7 +1077,9 @@ theorem allocByteSliceRel_writeBytes_step
         rw [h_bytes_eq]
     refine ⟨m, raw1.withExtra extra, ?_, rfl, ?_, ?_, h_rel', fun _ _ => rfl⟩
     · dsimp only [writeBytes, patchBytes]
-      rw [h_pn]
+      rw [h_fa]
+      dsimp only
+      rw [h_pn, h_al]
       rfl
     · rw [h_a'_eq]; exact h_fa
     · rw [h_miri_eq]; exact h_mw
@@ -1087,9 +1092,9 @@ theorem allocByteSliceRel_writeBytes_step
         dsimp only [patchBytes]
         rw [List.length_map]
         exact h_p0
-      rw [h_pl, ite_false_eq, h_fa]
+      rw [h_fa]
       dsimp only
-      rw [h_live]
+      rw [h_pl, ite_false_eq, h_live]
       have h_ib : isInBounds a off patchBytes.length = true := by
         dsimp only [isInBounds, patchBytes]
         rw [h_bytes_eq, List.length_map, List.length_map]
@@ -1554,7 +1559,9 @@ theorem trackedSliceMemRel_writeBytes_tracked_step
         List.eq_nil_of_length_eq_zero ((nat_beq_true_iff _ _).1 h_p0)
       have h_m'_eq : m' = m := by
         dsimp only [writeBytes, patchBytes] at h_w
-        rw [h_pn] at h_w
+        rw [h_fa] at h_w
+        dsimp only at h_w
+        rw [h_pn, h_al] at h_w
         dsimp only [List.map, List.length, Nat.beq, ite_true_eq] at h_w
         injection h_w with h_eq
         exact h_eq.symm
@@ -2285,12 +2292,14 @@ theorem miriAlloc_writePointer_readScalar_roundTrip
 
 /-! ## Section 7: Concrete End-to-End Non-Vacuity Witnesses -/
 
-/-- Witness 1 (Miri nonzero-aligned zero-sized pointer check vs
-`MirSemantics.readBytes_zero_size`): in Miri, a 4-byte-aligned zero-sized place
-(`alignLog2 = 2`, `size = 0`) skips dereference in `checkAndDerefPtr` (`0 = .ok
-none`), passes `checkPtrAlign` at aligned offset `0`, and fails `checkPtrAlign`
-at misaligned offset `1`—contrasting with `MirSemantics.readBytes_zero_size`
-(harmless on Profile-v1 types by `zst_day1_alignLog2_zero`). -/
+/-- Witness 1 (Miri nonzero-aligned zero-sized pointer check agreeing with
+`MirSemantics.readBytes` at `size = 0`): in Miri, a 4-byte-aligned zero-sized
+place (`alignLog2 = 2`, `size = 0`) skips dereference in `checkAndDerefPtr`
+(`0 = .ok none`), passes `checkPtrAlign` at aligned offset `0`, and fails
+`checkPtrAlign` at misaligned offset `1`. `MirSemantics.readBytes` on a
+4-byte-aligned allocation agrees: `.ok []` at offset `0`
+(`readBytes_zero_size`) and `.undefined` at offset `1`
+(`readBytes_zero_size_misaligned`). -/
 theorem witness_miri_zst_alignment_check :
     let prov : Miri.Memory.Provenance :=
       Miri.Memory.Provenance.concrete ⟨1, by decide⟩ BorTag.one
@@ -2309,7 +2318,16 @@ theorem witness_miri_zst_alignment_check :
     checkPtrAlign ptr1 ⟨2⟩ true resolve lookup (fun _ _ _ _ _ => none) =
       .error (.alignmentCheckFailed
         ⟨Align.maxAlignedFactor (Size.ofBytes 1), ⟨2⟩⟩) ∧
-    readBytes MirSemantics.MemoryState.empty ⟨1, 1⟩ 0 2 = .ok [] := by
+    readBytes
+      { nextAllocId := 2
+        allocations :=
+          [{ allocId := 1, alignLog2 := 2, mutability := .mut, bytes := [] }] }
+      ⟨1, 0⟩ 0 2 = .ok [] ∧
+    readBytes
+      { nextAllocId := 2
+        allocations :=
+          [{ allocId := 1, alignLog2 := 2, mutability := .mut, bytes := [] }] }
+      ⟨1, 1⟩ 0 2 = .error .undefined := by
   intro prov ptr0 ptr1 resolve lookup
   have h0 := checkPtrAlign_addrProv_of_resolved ptr0 2 (by decide) (by decide)
     resolve lookup ⟨⟨1, by decide⟩, Size.ZERO, ()⟩
@@ -2318,7 +2336,8 @@ theorem witness_miri_zst_alignment_check :
     resolve lookup ⟨⟨1, by decide⟩, Size.ofBytes 1, ()⟩
     ⟨Size.ZERO, ⟨2⟩, .liveData, .Mut⟩ rfl rfl (by decide)
   exact ⟨rfl, h0.1 (by decide), h1.2 (by decide),
-    readBytes_zero_size MirSemantics.MemoryState.empty ⟨1, 1⟩ 2⟩
+    readBytes_zero_size _ ⟨1, 0⟩ 2 _ rfl rfl,
+    readBytes_zero_size_misaligned _ ⟨1, 1⟩ 2 _ rfl rfl⟩
 
 /-- Witness 2 (Coexistence of tracked caller slices in `CallerMemory` and
 `Miri.Memory.MemoryState` alongside a deallocated dead stack slot, a live

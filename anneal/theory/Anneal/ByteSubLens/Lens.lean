@@ -853,9 +853,10 @@ private theorem byteSubLens_get_inversion (L : ByteSubLens) (m : MemoryState)
         rw [hMutB] at hGet
         have hMut := mutability_eq_mut_of_isMut a.mutability hMutB
         dsimp only [readBytesComp] at hGet
-        rw [natBeq_zero_false_of_blt_zero L.size hPos,
-            ite_bool_false rfl, hFind] at hGet
+        rw [hFind] at hGet
         dsimp only at hGet
+        rw [natBeq_zero_false_of_blt_zero L.size hPos,
+            ite_bool_false rfl] at hGet
         cases hGuard : (!a.live || !isInBoundsComp a L.offset L.size ||
             !isAlignedComp a L.offset L.alignLog2) with
         | true => rw [ite_bool_true hGuard] at hGet; nomatch hGet
@@ -896,12 +897,12 @@ private theorem byteSubLens_put_inversion (L : ByteSubLens)
     have hBsNz : Nat.beq bs.length 0 = false := by
       rw [hLenEq]
       exact natBeq_zero_false_of_blt_zero L.size hPos
-    rw [hBsNz, ite_bool_false rfl] at hPut
     cases hFind : findAllocationComp L.allocId m.allocations with
     | none => rw [hFind] at hPut; nomatch hPut
     | some a =>
       rw [hFind] at hPut
       dsimp only at hPut
+      rw [hBsNz, ite_bool_false rfl] at hPut
       cases hGuard : (!a.live || !isInBoundsComp a L.offset bs.length ||
           !isAlignedComp a L.offset L.alignLog2) with
       | true => rw [ite_bool_true hGuard] at hPut; nomatch hPut
@@ -969,9 +970,9 @@ theorem byteSubLens_get_put (L : ByteSubLens) (m : MemoryState)
     dsimp only [byteSubLensPut, writeBytesComp]
     rw [hPos, natBeq_of_eq bs.length L.size hLen, bandIntro rfl rfl]
     dsimp only
-    rw [hLen, natBeq_zero_false_of_blt_zero L.size hPos,
-        ite_bool_false rfl, hFind]
+    rw [hFind]
     dsimp only
+    rw [hLen, natBeq_zero_false_of_blt_zero L.size hPos, ite_bool_false rfl]
     have hGuardFalse :
         (!a.live || !isInBoundsComp a L.offset L.size ||
           !isAlignedComp a L.offset L.alignLog2) = false := by
@@ -1061,7 +1062,6 @@ theorem byteSubLens_put_put (L : ByteSubLens) (m m1 : MemoryState)
       have hLen2 := natEq_of_beq bs2.length L.size (bandRight hConj2)
       have hBs2Nz : Nat.beq bs2.length 0 = false := by
         rw [hLen2]; exact natBeq_zero_false_of_blt_zero L.size hPos
-      rw [hBs2Nz, ite_bool_false rfl]
       let bytes1 :=
         a.bytes.take L.offset ++ bs1 ++ a.bytes.drop (L.offset + bs1.length)
       let a1 : Allocation :=
@@ -1072,6 +1072,7 @@ theorem byteSubLens_put_put (L : ByteSubLens) (m m1 : MemoryState)
           (by rw [hAllocId]; exact hFind) rfl
       rw [hFind1, hFind]
       dsimp only
+      rw [hBs2Nz, ite_bool_false rfl, ite_bool_false rfl]
       have hBoundsBs1 :
           Nat.ble (L.offset + bs1.length) a.bytes.length = true := by
         rw [hLen1]; exact hBounds
@@ -1108,7 +1109,6 @@ theorem byteSubLens_put_put (L : ByteSubLens) (m m1 : MemoryState)
           (a.bytes.take L.offset ++ bs2 ++
             a.bytes.drop (L.offset + bs2.length)) a.live)
         rfl]
-      rfl
 
 /-- Disjoint-frame law: writing through `L1` preserves `byteSubLensGet L2` for
 every disjoint `L2` (`byteLensDisjoint L1 L2 = true`). -/
@@ -1148,9 +1148,7 @@ theorem byteSubLens_get_put_disjoint (L1 L2 : ByteSubLens)
           | false => rfl
           | true =>
             dsimp only [readBytesComp]
-            rw [natBeq_zero_false_of_blt_zero L2.size hPos2,
-                ite_bool_false rfl, hFind2Eq]
-            rfl
+            rw [hFind2Eq]
       | true =>
         have hDisjRange :
             rangesDisjoint L1.offset L1.size L2.offset L2.size = true := by
@@ -1173,9 +1171,10 @@ theorem byteSubLens_get_put_disjoint (L1 L2 : ByteSubLens)
         | false => rfl
         | true =>
           dsimp only [readBytesComp]
-          rw [natBeq_zero_false_of_blt_zero L2.size hPos2,
-              ite_bool_false rfl, hFind1', hFind1Orig]
+          rw [hFind1', hFind1Orig]
           dsimp only
+          rw [natBeq_zero_false_of_blt_zero L2.size hPos2,
+              ite_bool_false rfl, ite_bool_false rfl]
           have hBoundsBs :
               Nat.ble (L1.offset + bs.length) a.bytes.length = true := by
             rw [hLen1]; exact hBounds1
@@ -1231,9 +1230,9 @@ theorem byteSubLens_put_succeeds_of_get (L : ByteSubLens) (m : MemoryState)
     have hWB : writeBytesComp m ⟨L.allocId, L.offset⟩ L.alignLog2 newSlice =
         .ok mOut := by
       dsimp only [writeBytesComp]
-      rw [hLen, natBeq_zero_false_of_blt_zero L.size hPos,
-          ite_bool_false rfl, hFind]
+      rw [hFind]
       dsimp only
+      rw [hLen, natBeq_zero_false_of_blt_zero L.size hPos, ite_bool_false rfl]
       have hGuard : (!a.live || !isInBoundsComp a L.offset L.size ||
           !isAlignedComp a L.offset L.alignLog2) = false := by
         rw [hLive, hBounds, hAlign]; rfl
@@ -1285,9 +1284,9 @@ theorem readonlyAllocByteLensPutRejected (L : ByteSubLens) (m : MemoryState)
     have hPos := bandLeft hConj
     have hLen := natEq_of_beq _ _ (bandRight hConj)
     dsimp only [writeBytesComp]
-    rw [hLen, natBeq_zero_false_of_blt_zero L.size hPos,
-        ite_bool_false rfl, hFind]
+    rw [hFind]
     dsimp only
+    rw [hLen, natBeq_zero_false_of_blt_zero L.size hPos, ite_bool_false rfl]
     cases (!a.live || !isInBoundsComp a L.offset L.size ||
         !isAlignedComp a L.offset L.alignLog2) with
     | true => rfl
@@ -1312,9 +1311,9 @@ theorem deadAllocByteLensRejected (L : ByteSubLens) (m : MemoryState)
     | false => rfl
     | true =>
       dsimp only [readBytesComp]
-      rw [natBeq_zero_false_of_blt_zero L.size hPos,
-          ite_bool_false rfl, hFind]
+      rw [hFind]
       dsimp only
+      rw [natBeq_zero_false_of_blt_zero L.size hPos, ite_bool_false rfl]
       rw [hDead]
       rfl
 
@@ -1336,9 +1335,9 @@ theorem outOfBoundsByteLensRejected (L : ByteSubLens) (m : MemoryState)
     | false => rfl
     | true =>
       dsimp only [readBytesComp]
-      rw [natBeq_zero_false_of_blt_zero L.size hPos,
-          ite_bool_false rfl, hFind]
+      rw [hFind]
       dsimp only
+      rw [natBeq_zero_false_of_blt_zero L.size hPos, ite_bool_false rfl]
       rw [hOob]
       cases a.live <;> rfl
 
@@ -1360,9 +1359,9 @@ theorem unalignedByteLensRejected (L : ByteSubLens) (m : MemoryState)
     | false => rfl
     | true =>
       dsimp only [readBytesComp]
-      rw [natBeq_zero_false_of_blt_zero L.size hPos,
-          ite_bool_false rfl, hFind]
+      rw [hFind]
       dsimp only
+      rw [natBeq_zero_false_of_blt_zero L.size hPos, ite_bool_false rfl]
       rw [hUnalign]
       cases a.live <;> cases isInBoundsComp a L.offset L.size <;> rfl
 

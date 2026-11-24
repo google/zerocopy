@@ -51,21 +51,39 @@ const CARGO_RULES: &[DetailRule] = &[
 
 const UNSUPPORTED_CAPTURE_RULES: &[DetailRule] = &[
     DetailRule {
-        needle: "unsupported type: &",
-        hint: "Profile v1 covers pointer-free scalar, bool, char, unit, `Ordering`, and fieldless \
-               enum values; references are not supported yet. Refactor the selected function to \
-               take scalar values by value or narrow scope with `--select <fn>`.",
+        needle: "body mixes reference and raw-pointer locals",
+        hint: "Profile v2 does not model Rust's pointer aliasing rules, so a function may use \
+               references or raw pointers but not both, and cannot convert between them. Split \
+               the reference-based and raw-pointer-based logic into separate functions or narrow \
+               scope with `--select <fn>`.",
     },
     DetailRule {
-        needle: "unsupported type: *",
-        hint: "Profile v1 covers pointer-free scalar values only; raw pointers are not supported \
-               yet. Test a pointer-free helper or narrow scope with `--select <fn>`.",
+        needle: "outside the Profile v2 type fragment",
+        hint: "Profile v2 admits single-level references and raw pointers to scalars and integer \
+               slices (`&T`, `&mut T`, `&[T]`, `*const T`, `*mut T`); nested references, \
+               pointers to references, and references to other types are not supported yet. \
+               Refactor the selected function or narrow scope with `--select <fn>`.",
     },
     DetailRule {
-        needle: "unsupported terminator: Assert",
-        hint: "`rustc` emitted a runtime panic/overflow assertion (`Assert` terminator), which \
-               Profile v1 does not support yet. Prefer wrapping/checked/saturating operations or \
-               explicit branching instead of panicking arithmetic or `/` overflow checks.",
+        needle: "unsupported type: ",
+        hint: "Capture refuses this Rust type. Profile v2 admits scalars, fieldless local enums, \
+               tuples, `RangeTo<usize>`/`RangeFrom<usize>`, and single-level references and raw \
+               pointers to scalars and integer slices; references or pointers to other types \
+               (such as `&str` or structs) are not supported yet. Refactor the selected function \
+               or narrow scope with `--select <fn>`.",
+    },
+    DetailRule {
+        needle: "cleanup unwinds on",
+        hint: "A panicking `Assert` or call has a cleanup (drop) path on unwind, which Profile v2 \
+               does not support yet. Keep values with drop glue out of verified functions or \
+               narrow scope with `--select <fn>`.",
+    },
+    DetailRule {
+        needle: "unsupported core call",
+        hint: "Profile v2 captures returning calls only to `<[T]>::len`, `<[T]>::get_unchecked` \
+               with `..n` or `n..`, `<*const T>::add`, `<*mut T>::add`, and \
+               `usize::unchecked_sub` from the sysroot `core`. Inline other helpers or verify a \
+               leaf function via `--select <fn>`.",
     },
     DetailRule {
         needle: "CallSource::Use call terminators are unsupported",
@@ -73,9 +91,10 @@ const UNSUPPORTED_CAPTURE_RULES: &[DetailRule] = &[
                scope with `--select <fn>`.",
     },
     DetailRule {
-        needle: "unsupported terminator: Call",
-        hint: "Profile v1 does not yet capture function call terminators inside a verified body. \
-               Inline helper arithmetic or verify a leaf function via `--select <fn>`.",
+        needle: "external call to non-core def",
+        hint: "Profile v2 does not yet capture calls to functions outside the sysroot `core` \
+               call table (including other functions in this crate). Inline helper arithmetic or \
+               verify a leaf function via `--select <fn>`.",
     },
     DetailRule {
         needle: "unsupported terminator: Drop",
@@ -369,26 +388,56 @@ mod tests {
     use super::hint_for_failure;
 
     #[test]
-    fn maps_capture_reference_and_assert_diagnostics() {
+    fn maps_capture_reference_call_and_cleanup_diagnostics() {
         let ref_detail = serde_json::json!({
             "status": "unsupported",
             "diagnostics": ["1 required obligations are unsupported"],
-            "unsupported": [{"def_id": 3, "path": "take_ref", "reason": "unsupported type: &'{erased} u64"}],
+            "unsupported": [{"def_id": 3, "path": "take_ref", "reason": "local _1 of type Ref { mutability: Not, pointee: Ref { mutability: Not, pointee: Int(U64) } } is outside the Profile v2 type fragment"}],
         })
         .to_string();
         let hint = hint_for_failure("unsupported", "capture", &ref_detail).unwrap();
         assert!(hint.contains("`take_ref`"), "{hint}");
-        assert!(hint.contains("references are not supported"), "{hint}");
+        assert!(hint.contains("nested references"), "{hint}");
 
-        let assert_detail = serde_json::json!({
+        let mixed_detail = serde_json::json!({
             "status": "unsupported",
             "diagnostics": ["1 required obligations are unsupported"],
-            "unsupported": [{"def_id": 4, "path": "div", "reason": "unsupported terminator: Assert { cond: true }"}],
+            "unsupported": [{"def_id": 5, "path": "mixed", "reason": "body mixes reference and raw-pointer locals, which Profile v2 refuses because it does not model Rust's pointer aliasing rules"}],
         })
         .to_string();
-        let hint = hint_for_failure("unsupported", "capture", &assert_detail).unwrap();
-        assert!(hint.contains("Assert"), "{hint}");
-        assert!(hint.contains("wrapping/checked/saturating"), "{hint}");
+        let hint = hint_for_failure("unsupported", "capture", &mixed_detail).unwrap();
+        assert!(hint.contains("`mixed`"), "{hint}");
+        assert!(hint.contains("aliasing"), "{hint}");
+        assert!(!hint.contains("from_raw_parts") && !hint.contains("as_ptr"), "{hint}");
+
+        let pointee_detail = serde_json::json!({
+            "status": "unsupported",
+            "diagnostics": ["1 required obligations are unsupported"],
+            "unsupported": [{"def_id": 6, "path": "take_str", "reason": "unsupported type: str"}],
+        })
+        .to_string();
+        let hint = hint_for_failure("unsupported", "capture", &pointee_detail).unwrap();
+        assert!(hint.contains("`take_str`"), "{hint}");
+        assert!(hint.contains("references or pointers to other types"), "{hint}");
+
+        let call_detail = serde_json::json!({
+            "status": "unsupported",
+            "diagnostics": ["1 required obligations are unsupported"],
+            "unsupported": [{"def_id": 4, "path": "iter", "reason": "bb0: unsupported core call `core::slice::<impl [T]>::iter`"}],
+        })
+        .to_string();
+        let hint = hint_for_failure("unsupported", "capture", &call_detail).unwrap();
+        assert!(hint.contains("`<[T]>::len`"), "{hint}");
+        assert!(hint.contains("`usize::unchecked_sub`"), "{hint}");
+
+        let cleanup_detail = serde_json::json!({
+            "status": "unsupported",
+            "diagnostics": ["1 required obligations are unsupported"],
+            "unsupported": [{"def_id": 7, "path": "drops", "reason": "bb1: cleanup unwinds on call are unsupported"}],
+        })
+        .to_string();
+        let hint = hint_for_failure("unsupported", "capture", &cleanup_detail).unwrap();
+        assert!(hint.contains("drop glue"), "{hint}");
     }
 
     #[test]

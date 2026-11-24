@@ -7,7 +7,7 @@
 // those terms.
 
 // === case: wrapping_add_one_capture_unsupported ===
-//@ fail(capture): "add_one: bb0 terminator: unsupported terminator"
+//@ fail(capture): "add_one: bb0 terminator: unsupported core call"
 
 pub fn add_one(x: usize) -> usize {
     x.wrapping_add(1)
