@@ -454,10 +454,10 @@ class PerfWorkflowPublishExecutionTests(unittest.TestCase):
             for r in budgets["budgets"]
             if r.get("pattern") == "artifact_size.archive.omnibus_tar_zst_bytes"
         )
-        self.assertEqual(rule["max_value"], 1395864371)
+        self.assertEqual(rule["max_value"], 943_718_400)
 
         rec = _make_record(1, 1000)
-        rec["metrics"]["artifact_size.archive.omnibus_tar_zst_bytes"] = 1_245_655_225
+        rec["metrics"]["artifact_size.archive.omnibus_tar_zst_bytes"] = 802_309_416
         with tempfile.TemporaryDirectory(prefix="anneal-perf-ok-") as tmp:
             rec_path = Path(tmp) / "record.json"
             rec_path.write_text(json.dumps(rec), encoding="utf-8")
