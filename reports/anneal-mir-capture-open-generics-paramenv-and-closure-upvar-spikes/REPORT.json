@@ -1,0 +1,36 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/mir-capture",
+    "rust",
+    "rustc",
+    "verification",
+    "zerocopy"
+  ],
+  "subjects": [
+    {
+      "name": "zerocopy library crate",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "2b88472905"
+      }
+    },
+    {
+      "name": "rustc nightly compiler (pinned f8a08b688)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)"
+      }
+    },
+    {
+      "name": "rustc nightly compiler (rust-src core corpus)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e",
+        "version": "nightly-2026-06-01"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

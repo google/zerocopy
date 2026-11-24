@@ -1,0 +1,70 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/architecture",
+    "build",
+    "ffi",
+    "rust",
+    "systems",
+    "systems/linux",
+    "verification",
+    "zerocopy"
+  ],
+  "subjects": [
+    {
+      "name": "Linux kernel Rust tree (torvalds/linux)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "b6a9fa34ce4187cb69d3c588a4bbffc31ce5db8f",
+        "version": "Linux 7.4-rc4"
+      }
+    },
+    {
+      "name": "Anneal verification platform (google/zerocopy)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ccf9caacb6abc54b8b2cfd6db114f02cb87276e5"
+      }
+    },
+    {
+      "name": "Anneal RfL Kbuild probe baseline (google/zerocopy:reference)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "branch": "reference",
+        "revision": "a723bbfcfeba34509c2035e27bc0fded43681755"
+      }
+    },
+    {
+      "name": "rustc nightly compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "rustc 1.98.0-nightly"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "klint preemption checker",
+      "identity": {
+        "repository": "Rust-for-Linux/klint",
+        "revision": "2fb6a267bde4ce595e384cd9b9b34a5995c0419f"
+      }
+    },
+    {
+      "name": "Aeneas and Charon verification tools",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "fb44cb400eb6bfe7dce97422ebe8fa748b7e4f9b",
+        "charon_revision": "0490c09eb6218e905fec38ec8ebebc9f796d4b04"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

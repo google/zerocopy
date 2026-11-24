@@ -1,0 +1,43 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/semantics",
+    "anneal/tcb",
+    "lean",
+    "minirust",
+    "rust",
+    "verification",
+    "zerocopy"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal Profile v2 Waves 3-4 target baseline (google/zerocopy)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "d3362d9a657e"
+      }
+    },
+    {
+      "name": "anneal-rustc-capture pinned Rust compiler",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+      }
+    },
+    {
+      "name": "lean-miri reference semantics",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "rust_revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

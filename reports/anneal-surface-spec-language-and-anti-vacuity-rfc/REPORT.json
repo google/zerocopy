@@ -1,0 +1,36 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/specs",
+    "lean",
+    "rust",
+    "rustc",
+    "verification",
+    "zerocopy"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal and zerocopy baseline (google/zerocopy)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "d3362d9a657e2f943d25a0812f7b13b93e60af4d"
+      }
+    },
+    {
+      "name": "rustc compiler baselines (1.56.0, 1.100.0, 1.98.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "versions": "1.56.0, 1.100.0, 1.98.0-nightly"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

@@ -1,0 +1,42 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/egraphs",
+    "llvm",
+    "pl",
+    "smt",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "e-graph compiler reference reports (google/zerocopy:reference)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "branch": "reference",
+        "revision": "8fcbe48eb10bfac0016dec083c05f19caf265e90"
+      }
+    },
+    {
+      "name": "egg equality saturation library",
+      "identity": {
+        "repository": "egraphs-good/egg",
+        "version": "0.11.0"
+      }
+    },
+    {
+      "name": "Cranelift aegraph / Wasmtime",
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "subsystem": "cranelift-codegen"
+      }
+    },
+    {
+      "name": "eggcc effectful e-graph compiler",
+      "identity": {
+        "publication": "PACMPL OOPSLA2 2026 / arXiv:2609.31887v2",
+        "doi": "10.1145/3839530"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

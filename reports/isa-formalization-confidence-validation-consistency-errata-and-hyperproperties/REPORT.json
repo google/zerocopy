@@ -1,0 +1,58 @@
+{
+  "observed_at": "2026-11-24",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "7527dd2b9ae90b60d2ae8258ffd44bd0ee1e4d82"
+      },
+      "name": "google/zerocopy (anneal/ trusted verification kernel, rustc-capture, audit boundary, and src/impls.rs SIMD target gating)"
+    },
+    {
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      },
+      "name": "Lean 4 toolchain and foundation lock pinned in anneal/trusted/lean/foundation-lock.json"
+    },
+    {
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      },
+      "name": "Vendored lean-miri reference semantics pinned in anneal/vendor/lean-miri/UPSTREAM_PIN.json"
+    },
+    {
+      "identity": {
+        "cpu": "GenuineIntel-Family6-Model106-Stepping6",
+        "gcc": "15.2.0 (Debian 15.2.0-14)",
+        "llvm_mc": "21.1.8",
+        "objdump": "2.47",
+        "qemu_aarch64": "11.1.2 (Debian 1:11.1.2+ds-2)",
+        "qemu_x86_64": "11.1.2 (Debian 1:11.1.2+ds-2)"
+      },
+      "name": "Host Intel Xeon Ice Lake-SP hardware execution environment and QEMU / Binutils / LLVM verification probe toolchain"
+    }
+  ],
+  "topics": [
+    "anneal",
+    "compilers",
+    "compilers/constant-time",
+    "isa",
+    "isa/aarch64",
+    "isa/errata",
+    "isa/leakage-contracts",
+    "isa/riscv64",
+    "isa/validation",
+    "isa/x86-64",
+    "lean",
+    "security",
+    "security/side-channels",
+    "security/speculative-execution",
+    "verification",
+    "verification/hyperproperties",
+    "verification/isa-models",
+    "verification/self-consistency"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "topics": [
+    "lean",
+    "minirust",
+    "rust",
+    "tooling",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "lean-miri memory subsystem base",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "4c80e83f91826c785fb607de9b9f4efa4c3b87cf"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.35.0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}
