@@ -20,6 +20,9 @@ import Anneal.MirCorrespondence.RvalueStep
 import Anneal.MirCorrespondence.StmtTermStep
 import Anneal.MirCorrespondence.InitAndSim
 import Anneal.MirCorrespondence.Canaries
+import Anneal.MirCorrespondence.LayoutAndAlign
+import Anneal.MirCorrespondence.MiriMemoryBridge
+import Anneal.MirCorrespondence.RefinementBundles
 
 namespace Anneal.MirCorrespondenceProof
 

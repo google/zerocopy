@@ -172,9 +172,12 @@ fn check_provenance_and_toolchain(ok: &anneal_testkit::VerifySuccessReceipt) {
         64
     );
     assert_eq!(prov["patched_files"].as_array().unwrap().len(), 13);
-    assert_eq!(prov["correspondence_proofs"].as_object().unwrap().len(), 16);
+    assert_eq!(prov["correspondence_proofs"].as_object().unwrap().len(), 19);
     for proof_key in [
         "correspondence/Anneal/MirCorrespondence/InitAndSim.lean",
+        "correspondence/Anneal/MirCorrespondence/LayoutAndAlign.lean",
+        "correspondence/Anneal/MirCorrespondence/MiriMemoryBridge.lean",
+        "correspondence/Anneal/MirCorrespondence/RefinementBundles.lean",
         "correspondence/Anneal/MirCorrespondenceProof.lean",
     ] {
         assert_eq!(prov["correspondence_proofs"][proof_key].as_str().unwrap().len(), 64);
