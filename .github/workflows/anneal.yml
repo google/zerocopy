@@ -13,6 +13,18 @@ on:
     branches:
       - main
   pull_request:
+    # GitHub Actions does not support label-name filters on `pull_request`.
+    # Triggering on all `labeled`/`unlabeled` events keeps `run-ci` opt-in/out
+    # fail-closed under `cancel-in-progress: true`, at the trade-off of
+    # restarting an in-flight PR run on unrelated label edits.
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+      - converted_to_draft
+      - labeled
+      - unlabeled
   merge_group:
 
 permissions:
@@ -34,9 +46,13 @@ jobs:
       ACTIONS_RUNTIME_TOKEN: ""
     outputs:
       run_anneal: ${{ steps.filter.outputs.run_anneal }}
+      run_heavy: ${{ steps.filter.outputs.run_heavy }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        if: github.event_name == 'pull_request'
+        if: >-
+          github.event_name == 'pull_request' &&
+          !contains(github.event.pull_request.labels.*.name, 'run-ci') &&
+          !github.event.pull_request.draft
         with:
           fetch-depth: 0
           persist-credentials: false
@@ -45,6 +61,8 @@ jobs:
         id: filter
         env:
           EVENT_NAME: ${{ github.event_name }}
+          PR_DRAFT: ${{ github.event.pull_request.draft }}
+          PR_HAS_RUN_CI: ${{ contains(github.event.pull_request.labels.*.name, 'run-ci') }}
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
@@ -57,6 +75,24 @@ jobs:
 
           if os.environ["EVENT_NAME"] != "pull_request":
               print("run_anneal=true")
+              print("run_heavy=true")
+              sys.exit(0)
+
+          pr_draft = os.environ.get("PR_DRAFT", "")
+          pr_has_run_ci = os.environ.get("PR_HAS_RUN_CI", "")
+          if pr_draft not in ("true", "false") or pr_has_run_ci not in ("true", "false"):
+              print("run_anneal=true")
+              print("run_heavy=true")
+              sys.exit(0)
+
+          if pr_has_run_ci == "true":
+              print("run_anneal=true")
+              print("run_heavy=true")
+              sys.exit(0)
+
+          if pr_draft == "true":
+              print("run_anneal=false")
+              print("run_heavy=false")
               sys.exit(0)
 
           SHA_RE = re.compile(r"^[0-9a-fA-F]{40}$")
@@ -158,11 +194,20 @@ jobs:
               ok
               and bool(paths)
               and all(
-                  p.startswith(non_anneal_prefixes) or p in non_anneal_files
+                  (
+                      p.startswith(non_anneal_prefixes)
+                      and not p.startswith("zerocopy/proofs/")
+                  )
+                  or p in non_anneal_files
                   for p in paths
               )
           )
-          print(f"run_anneal={'false' if only_non_anneal else 'true'}")
+          if not ok or not paths:
+              print("run_anneal=true")
+              print("run_heavy=true")
+          else:
+              print(f"run_anneal={'false' if only_non_anneal else 'true'}")
+              print("run_heavy=false")
           PY
 
   current_anneal:
@@ -170,6 +215,8 @@ jobs:
     needs: detect_changes
     if: needs.detect_changes.outputs.run_anneal == 'true'
     uses: ./.github/workflows/anneal-current.yml
+    with:
+      run_heavy: ${{ needs.detect_changes.outputs.run_heavy != 'false' }}
 
   all-jobs-succeed:
     # This name is configured in Zerocopy's branch protection.
@@ -186,15 +233,21 @@ jobs:
         env:
           EVENT_NAME: ${{ github.event_name }}
           RUN_ANNEAL: ${{ needs.detect_changes.outputs.run_anneal }}
+          RUN_HEAVY: ${{ needs.detect_changes.outputs.run_heavy }}
           NEEDS_JSON: ${{ toJSON(needs) }}
         run: |
           set -euo pipefail
-          jq -e --arg event "$EVENT_NAME" --arg run_anneal "$RUN_ANNEAL" '
+          jq -e \
+            --arg event "$EVENT_NAME" \
+            --arg run_anneal "$RUN_ANNEAL" \
+            --arg run_heavy "$RUN_HEAVY" '
             type == "object" and length > 0 and
-            ($event == "pull_request" or $run_anneal == "true") and
+            ($event == "pull_request" or ($run_anneal == "true" and $run_heavy == "true")) and
             if $run_anneal == "true" then
+              ($run_heavy == "true" or ($event == "pull_request" and $run_heavy == "false")) and
               all(to_entries[]; .value.result == "success")
             elif $run_anneal == "false" then
+              $run_heavy == "false" and
               .detect_changes.result == "success" and
               all(
                 to_entries[];

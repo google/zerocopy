@@ -398,11 +398,12 @@ authorized**.
   `main..<head>` CI-executed-surface gate in
   [`change-review`](../change-review/SKILL.md#schedule-by-data-dependency)
   before pushing any branch. When authorized to push early for parallel CI and
-  Gate 2 review, push the frozen candidate to a **draft** PR, verify the remote
-  head matches it, and mark the PR ready for human review (`gh pr ready`) only
-  after Gate 1 (local review) converges and the Review Receipt PR comment
-  (including its complete `Human review surface` block) is posted (unless the
-  user explicitly requests a visibly incomplete handoff).
+  Gate 2 review, push the frozen candidate to a **draft** PR (drafts skip
+  `current_anneal`; add `run-ci` for full PR CI), verify the remote head
+  matches it, and mark the PR ready for human review (`gh pr ready`) only after
+  Gate 1 (local review) converges and the Review Receipt PR comment (including
+  its complete `Human review surface` block) is posted (unless the user
+  explicitly requests a visibly incomplete handoff).
 - **Stack merge guard:** Land stacked PRs bottom-up and never run
   `gh stack merge` unless every PR it would merge satisfies the merge gates in
   [`docs/codex-review.md`](../../docs/codex-review.md#merge-gates).

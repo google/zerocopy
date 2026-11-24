@@ -597,11 +597,12 @@ Continuous integration and test suites enforce these design invariants:
    `kill(ppid)`, `prlimit64(ppid)`/`setrlimit`, `shmat`, `*xattr*`, `inotify`,
    `fcntl(F_SETLEASE)`, `memfd_create`, `execveat`, and wall-clock timeout
    reaping.
-2. **Dual-architecture CI:** An `ubuntu-24.04-arm` PR CI job runs the Rust
-   `sandbox::` unit tests and `sandbox_escape` Tier 1/Tier 2 probes to verify
-   the `aarch64` Landlock and seccomp-BPF enforcement (`clone`, `prlimit64`,
-   `kill`/`tgkill`, `fcntl`, `execve`/`execveat`, `memfd_create`, network
-   sockets, and process-group reaping) alongside `x86_64`.
+2. **Dual-architecture CI:** An `ubuntu-24.04-arm` CI job (`sandbox-aarch64`,
+   run on `merge_group`, `push` to `main`, and `run-ci`-labeled PRs) runs the
+   Rust `sandbox::` unit tests and `sandbox_escape` Tier 1/Tier 2 probes to
+   verify `aarch64` Landlock and seccomp-BPF enforcement (`clone`,
+   `prlimit64`, `kill`/`tgkill`, `fcntl`, `execve`/`execveat`, `memfd_create`,
+   network sockets, and process-group reaping) alongside `x86_64`.
 3. **Target and boundary auditor negative tests
    (`tests/audit/tests/target_audit.rs` and
    `tests/audit/tests/boundary_audit.rs`):** `target_audit.rs` exercises every

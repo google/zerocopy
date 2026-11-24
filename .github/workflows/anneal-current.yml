@@ -10,6 +10,12 @@ name: Current Anneal Tests
 
 on:
   workflow_call:
+    inputs:
+      run_heavy:
+        description: Run heavy Anneal build, audit, smoke, and workspace jobs
+        required: false
+        type: boolean
+        default: true
 
 defaults:
   run:
@@ -93,6 +99,7 @@ jobs:
             --test cli -- -A clippy::type_complexity -D warnings
 
   build-exocrate:
+    if: ${{ github.event_name != 'pull_request' || inputs.run_heavy }}
     runs-on: ubuntu-latest
     name: Build exocrate toolchain archive
     steps:
@@ -145,13 +152,16 @@ jobs:
       # Keep the unsigned `?trusted=1` local Nix binary cache restricted
       # strictly to post-merge `main` pushes so neither pull requests nor
       # pre-merge `merge_group` gates restore an unsigned substituter.
+      # Key and copy strictly `.#rust-toolchain` and `.#lean-toolchain` (rather
+      # than `.#omnibus-archive` or `Cargo.lock` / `theory/**`), avoiding
+      # 1.2+ GiB cache churn on every non-toolchain commit.
       - name: Restore Nix binary cache
         id: restore_nix_cache
         if: github.event_name == 'push' && github.repository == 'google/zerocopy' && github.ref == 'refs/heads/main'
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ runner.temp }}/anneal-nix-cache
-          key: anneal-current-nix-cache-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/Cargo.lock', 'anneal/trusted/lean/**', 'anneal/trusted/rustc-capture/**', 'anneal/trusted/audit/TrustedBoundary.lean', 'anneal/trusted/audit/library-lock.json', 'anneal/trusted/cargo-anneal/src/bundled_resources.rs', 'anneal/theory/**') }}
+          key: anneal-current-nix-cache-v3-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/trusted/lean/lean-toolchain', 'anneal/trusted/lean/foundation-lock.json') }}
 
       - name: Install Nix
         id: nix
@@ -181,7 +191,7 @@ jobs:
           exec > >(tee "$ANNEAL_BUILD_DIAGNOSTICS/nix-copy.log") 2>&1
           rm -rf "$RUNNER_TEMP/anneal-nix-cache"
           mkdir -p "$RUNNER_TEMP/anneal-nix-cache"
-          nix copy .#omnibus-archive \
+          nix copy .#rust-toolchain .#lean-toolchain \
             --to "file://$RUNNER_TEMP/anneal-nix-cache/?compression=zstd&compression-level=1&trusted=1"
 
       - name: Save Nix binary cache
@@ -237,6 +247,7 @@ jobs:
           retention-days: 7
 
   test-and-verify:
+    if: ${{ github.event_name != 'pull_request' || inputs.run_heavy }}
     runs-on: ubuntu-latest
     name: Repository boundary audit
     needs: [build-exocrate]
@@ -294,16 +305,18 @@ jobs:
           printf 'ANNEAL_TEST_SOURCE_REVISION=%s\n' "$revision" >> "$GITHUB_ENV"
           printf 'source_revision=%s\n' "$revision"
 
-      # Store the Miri `.olean` cache outside `${{ github.workspace }}`, allow
-      # restoration only on `pull_request` (or `lookup-only: true` on trusted
-      # `main` pushes), and skip it completely on `merge_group`,
-      # `workflow_dispatch`, and all other events so `main`-branch,
-      # merge-queue, and manual runs always compile cold from source while
-      # trusted `main` pushes still seed the default-branch cache when missing
-      # for pull requests.
+      # Store the Miri `.olean` cache outside `${{ github.workspace }}`. Allow
+      # `pull_request` to consume and seed branch-scoped entries, perform
+      # strictly read-only restoration on `merge_group` (the audit step wipes
+      # the cache dir and omits `--miri-cache-dir` on a miss, while on a hit
+      # `anneal-audit` verifies every restored file's SHA-256 against
+      # `UPSTREAM_PIN.json` and replays all vendor constants in the Lean
+      # kernel), use `lookup-only: true` on trusted `main` pushes so `main`
+      # always compiles cold from source while seeding missing entries, and
+      # never save caches from `merge_group` or `workflow_dispatch`.
       - name: Restore lean-miri closure .olean cache
         id: miri_olean_cache
-        if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.repository == 'google/zerocopy' && github.ref == 'refs/heads/main') }}
+        if: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' || (github.event_name == 'push' && github.repository == 'google/zerocopy' && github.ref == 'refs/heads/main') }}
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ${{ runner.temp }}/anneal-miri-olean-cache
@@ -413,6 +426,12 @@ jobs:
             if [ "$CI_REPOSITORY" = "google/zerocopy" ] && [ "$CI_REF" = "refs/heads/main" ] && [ "$MIRI_CACHE_HIT" != "true" ]; then
               audit_args+=(--miri-cache-dir "$MIRI_OLEAN_CACHE_DIR")
             fi
+          elif [ "$CI_EVENT_NAME" = "merge_group" ]; then
+            if [ "$MIRI_CACHE_HIT" = "true" ]; then
+              audit_args+=(--miri-cache-dir "$MIRI_OLEAN_CACHE_DIR")
+            else
+              rm -rf "$MIRI_OLEAN_CACHE_DIR"
+            fi
           elif [ "$CI_EVENT_NAME" = "pull_request" ]; then
             audit_args+=(--miri-cache-dir "$MIRI_OLEAN_CACHE_DIR")
           fi
@@ -496,6 +515,7 @@ jobs:
           retention-days: 7
 
   installed-smoke:
+    if: ${{ github.event_name != 'pull_request' || inputs.run_heavy }}
     runs-on: ubuntu-latest
     name: Toolchain setup, packaging & smoke tests
     needs: [build-exocrate]
@@ -929,6 +949,7 @@ jobs:
           retention-days: 7
 
   workspace-tests:
+    if: ${{ github.event_name != 'pull_request' || inputs.run_heavy }}
     runs-on: ubuntu-latest
     name: Workspace tests
     needs: [build-exocrate]
@@ -1152,6 +1173,7 @@ jobs:
           retention-days: 7
 
   sandbox-aarch64:
+    if: ${{ github.event_name != 'pull_request' || inputs.run_heavy }}
     runs-on: ubuntu-24.04-arm
     name: ExecSeal aarch64 containment tests
     timeout-minutes: 30
@@ -1341,17 +1363,31 @@ jobs:
           working-directory: .
           env:
             EVENT_NAME: ${{ github.event_name }}
+            RUN_HEAVY: ${{ github.event_name != 'pull_request' || inputs.run_heavy }}
             ANNEAL_RELEASE_LOCK: ${{ vars.ANNEAL_RELEASE_LOCK }}
             NEEDS_JSON: ${{ toJSON(needs) }}
           run: |
             set -euo pipefail
-            jq -e --arg event "$EVENT_NAME" --arg release_lock "$ANNEAL_RELEASE_LOCK" '
+            jq -e --arg event "$EVENT_NAME" --arg release_lock "$ANNEAL_RELEASE_LOCK" --arg run_heavy "$RUN_HEAVY" '
               type == "object" and length > 0 and
-              all(
-                to_entries[];
-                if .key == "release-lock" and ($event != "merge_group" or $release_lock == "")
-                then (.value.result == "skipped" or ($event == "merge_group" and .value.result == "success"))
-                else .value.result == "success"
-                end
-              )
+              if ($event != "pull_request" or $run_heavy == "true") then
+                all(
+                  to_entries[];
+                  if .key == "release-lock" and ($event != "merge_group" or $release_lock == "")
+                  then (.value.result == "skipped" or ($event == "merge_group" and .value.result == "success"))
+                  else .value.result == "success"
+                  end
+                )
+              elif ($event == "pull_request" and $run_heavy == "false") then
+                .["static-checks"].result == "success" and
+                all(
+                  to_entries[];
+                  if .key == "static-checks"
+                  then .value.result == "success"
+                  else .value.result == "skipped"
+                  end
+                )
+              else
+                false
+              end
             ' <<< "$NEEDS_JSON"

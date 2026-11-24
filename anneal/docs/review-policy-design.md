@@ -316,9 +316,10 @@ against its canonical owner and required outcome:
    and
    [`source-control`](../skills/source-control/SKILL.md#lock-and-rebase-a-stack)
    — evaluates the CI-executed-surface gate across cumulative `main..<head>`
-   before push, overlaps non-CI draft-PR CI and Gate 2 review with local review,
-   coalesces repairs into focused commits, locks converged prefixes, and checks
-   `range-diff`.
+   before push, overlaps non-CI draft-PR CI (drafts skip `current_anneal` and
+   heavy `ci.yml` jobs unless `run-ci` is set) and Gate 2 review with local
+   review, coalesces repairs into focused commits, locks converged prefixes,
+   and checks `range-diff`.
 9. **Trivial edit zero-ceremony path and scoped evidence reuse:**
    [`change-review`](../skills/change-review/SKILL.md#key-every-result-to-its-inputs)
    and
