@@ -1,0 +1,159 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "experiments": {
+    "a_coerce_unsized_and_dispatch_from_dyn_constraints": {
+      "valid_myptr_coerce_unsized_and_dispatch_from_dyn": {
+        "name": "valid_myptr_coerce_unsized_and_dispatch_from_dyn",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "UNSIZE_SLICE=4 UNSIZE_DYN=42 DYN_DISPATCH=99",
+        "run_stderr": ""
+      },
+      "valid_dispatch_from_dyn_non_generic_1zst_sibling": {
+        "name": "valid_dispatch_from_dyn_non_generic_1zst_sibling",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "TAGGED_DYN_DISPATCH=77",
+        "run_stderr": ""
+      },
+      "zero_unsizable_fields_rejected_e0374": {
+        "name": "zero_unsizable_fields_rejected_e0374",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0374]: implementing `CoerceUnsized` requires a field to be coerced\n --> probe.rs:8:1\n  |\n8 | impl<T: ?Sized + Unsize<U>, U: ?Sized> CoerceUnsized<Zero<U>> for Zero<T> {}\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: expected a single field to be coerced, none found\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0374`."
+      },
+      "two_unsizable_fields_rejected_e0375": {
+        "name": "two_unsizable_fields_rejected_e0375",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0375]: implementing `CoerceUnsized` does not allow multiple fields to be coerced\n --> probe.rs:8:40\n  |\n8 | impl<T: ?Sized + Unsize<U>, U: ?Sized> CoerceUnsized<Two<U>> for Two<T> {}\n  |                                        ^^^^^^^^^^^^^^^^^^^^^\n  |\nnote: the trait `CoerceUnsized` may only be implemented when a single field is being coerced\n --> probe.rs:6:23\n  |\n6 | struct Two<T: ?Sized>(*const T, *const T);\n  |                       ^^^^^^^^  ^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0375`."
+      },
+      "distinct_structs_rejected_e0377": {
+        "name": "distinct_structs_rejected_e0377",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0377]: the trait `CoerceUnsized` may only be implemented for a coercion between structures\n --> probe.rs:9:1\n  |\n9 | impl<T: ?Sized + Unsize<U>, U: ?Sized> CoerceUnsized<PtrB<U>> for PtrA<T> {}\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: expected coercion between the same definition; expected `PtrA`, found `PtrB`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0377`."
+      },
+      "non_struct_enum_rejected_e0377_formerly_e0376": {
+        "name": "non_struct_enum_rejected_e0377_formerly_e0376",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0377]: the trait `CoerceUnsized` may only be implemented for a coercion between structures\n  --> probe.rs:10:1\n   |\n10 | impl<T: ?Sized + Unsize<U>, U: ?Sized> CoerceUnsized<EnumPtr<U>> for EnumPtr<T> {}\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0377`."
+      },
+      "dispatch_from_dyn_extra_field_rejected_e0378": {
+        "name": "dispatch_from_dyn_extra_field_rejected_e0378",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0378]: the trait `DispatchFromDyn` may only be implemented for structs containing the field being coerced, ZST fields with 1 byte alignment that don't mention type/const generics, and nothing else\n --> probe.rs:9:1\n  |\n9 | impl<T: ?Sized + Unsize<U>, U: ?Sized> DispatchFromDyn<BadDyn<U>> for BadDyn<T> {}\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: extra field `1` of type `u32` is not allowed\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0378`."
+      },
+      "dispatch_from_dyn_overaligned_zst_rejected_e0378": {
+        "name": "dispatch_from_dyn_overaligned_zst_rejected_e0378",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0378]: the trait `DispatchFromDyn` may only be implemented for structs containing the field being coerced, ZST fields with 1 byte alignment that don't mention type/const generics, and nothing else\n  --> probe.rs:12:1\n   |\n12 | impl<T: ?Sized + Unsize<U>, U: ?Sized> DispatchFromDyn<BadDynAlign<U>> for BadDynAlign<T> {}\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   |\n   = note: extra field `1` of type `Align8Zst` is not allowed\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0378`."
+      },
+      "dispatch_from_dyn_generic_1zst_rejected_e0378": {
+        "name": "dispatch_from_dyn_generic_1zst_rejected_e0378",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0378]: the trait `DispatchFromDyn` may only be implemented for structs containing the field being coerced, ZST fields with 1 byte alignment that don't mention type/const generics, and nothing else\n  --> probe.rs:13:1\n   |\n13 | / impl<T: ?Sized + Unsize<U>, U: ?Sized, M> DispatchFromDyn<BadDynGeneri...\n14 | |     for BadDynGenericZst<T, M>\n   | |______________________________^\n   |\n   = note: extra field `1` of type `Marker<M>` is not allowed\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0378`."
+      },
+      "dispatch_from_dyn_repr_c_rejected_e0378": {
+        "name": "dispatch_from_dyn_repr_c_rejected_e0378",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0378]: structs implementing `DispatchFromDyn` may not have `#[repr(packed)]` or `#[repr(C)]`\n  --> probe.rs:10:1\n   |\n10 | impl<T: ?Sized + Unsize<U>, U: ?Sized> DispatchFromDyn<BadRepr<U>> for BadRepr<T> {}\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0378`."
+      },
+      "dispatch_from_dyn_repr_packed_rejected_e0378": {
+        "name": "dispatch_from_dyn_repr_packed_rejected_e0378",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0378]: structs implementing `DispatchFromDyn` may not have `#[repr(packed)]` or `#[repr(C)]`\n  --> probe.rs:10:1\n   |\n10 | impl<T: ?Sized + Unsize<U>, U: ?Sized> DispatchFromDyn<BadPacked<U>> for BadPacked<T> {}\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0378`."
+      }
+    },
+    "b_custom_dst_tail_unsize_and_zerocopy": {
+      "custom_dst_tail_unsizing_ok": {
+        "name": "custom_dst_tail_unsizing_ok",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "PACKET_LEN=4 HDR=7 OFF_HDR=0 OFF_TAG=4 OFF_PAYLOAD=6",
+        "run_stderr": ""
+      },
+      "custom_dst_non_last_unsized_field_rejected_e0277": {
+        "name": "custom_dst_non_last_unsized_field_rejected_e0277",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: the size for values of type `T` cannot be known at compilation time\n --> probe.rs:3:11\n  |\n2 | struct BadFirst<T: ?Sized> {\n  |                 - this type parameter needs to be `Sized`\n3 |     head: T,\n  |           ^ doesn't have a size known at compile-time\n  |\n  = note: only the last field of a struct may have a dynamically sized type\n  = help: change the field's type to have a statically known size\nhelp: consider removing the `?Sized` bound to make the type parameter `Sized`\n  |\n2 - struct BadFirst<T: ?Sized> {\n2 + struct BadFirst<T> {\n  |\nhelp: borrowed types always have a statically known size\n  |\n3 |     head: &T,\n  |           +\nhelp: the `Box` type always has a statically known size and allocates its contents in the heap\n  |\n3 |     head: Box<T>,\n  |           ++++ +\n\nerror[E0308]: mismatched types\n --> probe.rs:8:5\n  |\n7 | fn coerce(p: &BadFirst<[u8; 4]>) -> &BadFirst<[u8]> {\n  |                                     --------------- expected `&BadFirst<[u8]>` because of return type\n8 |     p\n  |     ^ expected `&BadFirst<[u8]>`, found `&BadFirst<[u8; 4]>`\n  |\n  = note: expected reference `&BadFirst<[u8]>`\n             found reference `&BadFirst<[u8; 4]>`\n\nerror: aborting due to 2 previous errors\n\nSome errors have detailed explanations: E0277, E0308.\nFor more information about an error, try `rustc --explain E0277`."
+      },
+      "custom_dst_two_unsized_fields_rejected_e0277": {
+        "name": "custom_dst_two_unsized_fields_rejected_e0277",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: the size for values of type `T` cannot be known at compilation time\n --> probe.rs:3:8\n  |\n2 | struct BadTwo<T: ?Sized> {\n  |               - this type parameter needs to be `Sized`\n3 |     a: T,\n  |        ^ doesn't have a size known at compile-time\n  |\n  = note: only the last field of a struct may have a dynamically sized type\n  = help: change the field's type to have a statically known size\nhelp: consider removing the `?Sized` bound to make the type parameter `Sized`\n  |\n2 - struct BadTwo<T: ?Sized> {\n2 + struct BadTwo<T> {\n  |\nhelp: borrowed types always have a statically known size\n  |\n3 |     a: &T,\n  |        +\nhelp: the `Box` type always has a statically known size and allocates its contents in the heap\n  |\n3 |     a: Box<T>,\n  |        ++++ +\n\nerror[E0308]: mismatched types\n --> probe.rs:8:5\n  |\n7 | fn coerce(p: &BadTwo<[u8; 4]>) -> &BadTwo<[u8]> {\n  |                                   ------------- expected `&BadTwo<[u8]>` because of return type\n8 |     p\n  |     ^ expected `&BadTwo<[u8]>`, found `&BadTwo<[u8; 4]>`\n  |\n  = note: expected reference `&BadTwo<[u8]>`\n             found reference `&BadTwo<[u8; 4]>`\n\nerror: aborting due to 2 previous errors\n\nSome errors have detailed explanations: E0277, E0308.\nFor more information about an error, try `rustc --explain E0277`."
+      },
+      "custom_dst_prefix_mentions_param_rejected": {
+        "name": "custom_dst_prefix_mentions_param_rejected",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0308]: mismatched types\n --> probe.rs:8:5\n  |\n7 | fn coerce(p: &PrefixMentionsParam<[u8; 4]>) -> &PrefixMentionsParam<[u8]> {\n  |                                                -------------------------- expected `&PrefixMentionsParam<[u8]>` because of return type\n8 |     p\n  |     ^ expected `&PrefixMentionsParam<[u8]>`, found `&PrefixMentionsParam<[u8; 4]>`\n  |\n  = note: expected reference `&PrefixMentionsParam<[u8]>`\n             found reference `&PrefixMentionsParam<[u8; 4]>`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`."
+      },
+      "zerocopy_known_layout_ref_from_bytes_with_elems_dst": {
+        "name": "zerocopy_known_layout_ref_from_bytes_with_elems_dst",
+        "edition_zerocopy": "2021",
+        "edition_probe": "2024",
+        "zerocopy_lib_compile_returncode": 0,
+        "probe_compile_returncode": 0,
+        "probe_compile_stderr": "",
+        "probe_run_returncode": 0,
+        "probe_run_stdout": "ZC_DST_LEN=3 ZC_META=3 ZC_SUM=60 PREF_REST=8 SUFF_HEAD=8 SIZE_ERR=true ALIGN_ERR=true ZERO_SUFF_ERR=true",
+        "probe_run_stderr": ""
+      },
+      "zerocopy_derive_custom_dst_packet": {
+        "name": "zerocopy_derive_custom_dst_packet",
+        "skipped": false,
+        "edition": "2024",
+        "probe_run_returncode": 0,
+        "probe_run_stdout": "ZC_CUSTOM_DST_META5=5 META4=4 HDR=7 TAG=4660 SUM5=150 SUM4=100 BYTES_LEN=16 UCELL_META=3",
+        "probe_run_stderr": "",
+        "non_repr_c_derive_compile_returncode": 101,
+        "non_repr_c_derive_compile_stderr": "error[E0277]: the size for values of type `[u16]` cannot be known at compilation time\n --> src/main.rs:4:10\n  |\n4 | #[derive(KnownLayout)]\n  |          ^^^^^^^^^^^ doesn't have a size known at compile-time\n  |\n  = help: within `NonReprCPacket`, the trait `Sized` is not implemented for `[u16]`\nnote: required because it appears within the type `NonReprCPacket`\n --> src/main.rs:5:8\n  |\n5 | struct NonReprCPacket {\n  |        ^^^^^^^^^^^^^^\n  = note: this error originates in the derive macro `KnownLayout` (in Nightly builds, run with -Z macro-backtrace for more info)\nhelp: add `#![feature(trivial_bounds)]` to the crate attributes to enable\n  |\n2 + #![feature(trivial_bounds)]\n  |\n\nFor more information about this error, try `rustc --explain E0277`.\nerror: could not compile `zc_derive_probe` (bin \"zc_derive_probe\") due to 1 previous error"
+      }
+    }
+  }
+}

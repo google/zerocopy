@@ -101786,6 +101786,69 @@
         "verification"
       ]
     },
+    "rustc-coerce-unsized-dispatch-from-dyn-structural-constraints-and-zerocopy-dst": {
+      "observed_at": "2026-11-24",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f7da9a42368f31abb02b8064bb93a11bf9ba9f5e"
+          },
+          "name": "rust-lang/rust compiler source audit (coherence, WF, trait selection, ABI, SSA codegen)"
+        },
+        {
+          "identity": {
+            "host": "x86_64-unknown-linux-gnu",
+            "llvm": "22.1.6",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rust-lang/rust nightly toolchain executed for empirical compiler and binary probes"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+            "version": "0.8.64"
+          },
+          "name": "google/zerocopy crate and derive macros compiled and executed in DST probes"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "e05af9265ec8521e8c187dfde4e1bf5650b9d800"
+          },
+          "name": "google/zerocopy main branch HEAD verified source-identical under zerocopy/ and zerocopy-derive/"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "joshlf/anneal trusted MIR AST and operational semantics boundary"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4 theorem prover and kernel verifying the formal mechanization"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/traits",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "verification"
+      ]
+    },
     "rustc-coherence-orphan-rules-fundamental-types-marker-and-negative-impls": {
       "observed_at": "2026-11-23",
       "subjects": [
