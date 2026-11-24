@@ -46,6 +46,22 @@
       "sha256": "8ffa2c1877429b98ef9ffd0908a7b4a29fb8b5341d9d250872c7635b82f4ed40"
     },
     {
+      "path": "theory/Anneal/MirSymExec.lean",
+      "sha256": "5699a7a84c9d9cb6b38c53508695b77aedbb997df91b73344d761f21871ca9e5"
+    },
+    {
+      "path": "theory/Anneal/MirSymExec/Bits.lean",
+      "sha256": "4f96adbb876a058bdaba08209df7187c70df8ec0484a75a6048a14d6be2c686a"
+    },
+    {
+      "path": "theory/Anneal/MirTotal/Ops.lean",
+      "sha256": "b0924a0ef7c4efb58e4c2f6a310ad02e8d8487c19696d0c9ac56ec60b134cd02"
+    },
+    {
+      "path": "theory/Anneal/MirTotal/StepCore.lean",
+      "sha256": "823e379a16151a6edcfb351679e6b2c852fd86c05501327cfecf474b332ce8e4"
+    },
+    {
       "path": "theory/Anneal/MirWp.lean",
       "sha256": "78592bb8898e230072b2e5db69c65210d740e44a25c344d59e7eec32cc1a915a"
     },
@@ -72,6 +88,10 @@
     {
       "path": "theory/Anneal/PTree.lean",
       "sha256": "7b0704a918fe1ab8d4ead1af3b008a61eb94f5ca763fd5a38e54b4fec069fd40"
+    },
+    {
+      "path": "theory/Anneal/PureLift/BvLin.lean",
+      "sha256": "9fa01666dcb728c92f4c89ffaac7f723c9b24ab7129508c88682d90346461da7"
     },
     {
       "path": "theory/Anneal/Scalar.lean",
