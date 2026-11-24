@@ -103152,6 +103152,54 @@
         "rustc/mir"
       ]
     },
+    "rustc-dropck-outlives-may-dangle-eyepatch-and-phantomdata-ownership-soundness": {
+      "observed_at": "2026-11-24",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "20fe935d50367c0ff8872c2ebfa050c5c99d9201"
+          },
+          "name": "Rust compiler and standard library (upstream main source audit)"
+        },
+        {
+          "identity": {
+            "miri_version": "0.1.0",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "target": "x86_64-unknown-linux-gnu",
+            "version": "1.98.0-nightly"
+          },
+          "name": "Rust compiler and Miri nightly toolchain (live execution and cross-revision comparison)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal MIR trusted boundary and verification semantics"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/borrowck",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "verification"
+      ]
+    },
     "rustc-dwarf-codeview-debuginfo-emission-and-debugger-contracts": {
       "observed_at": "2026-11-13",
       "subjects": [
