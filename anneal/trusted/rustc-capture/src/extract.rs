@@ -796,7 +796,7 @@ const ADMITTED_CODEGEN_FLAGS: CodegenFnAttrFlags =
 /// function, so an unclassified case cannot pass silently.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/middle/codegen_fn_attrs.rs#L60-L112
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/codegen_attrs.rs#L551-L577
-fn codegen_attrs(tcx: TyCtxt<'_>, def: LocalDefId) -> Result<()> {
+pub(crate) fn codegen_attrs(tcx: TyCtxt<'_>, def: LocalDefId) -> Result<()> {
     let CodegenFnAttrs {
         flags,
         inline,

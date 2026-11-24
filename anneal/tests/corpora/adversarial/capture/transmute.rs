@@ -7,7 +7,7 @@
 // those terms.
 
 // === case: concrete_pme_transmute ===
-//@ fail(capture): "SizeEq: whole-crate obligation is unsupported: Trait"
+//@ fail(capture): "ASSERT: whole-crate obligation is unsupported: AssocConst { is_type_const: false } (generic constants require quantified instantiation obligations)"
 
 trait SizeEq<Src, Dst> {
     const ASSERT: ();
@@ -38,7 +38,7 @@ pub fn inline_const_transmute(x: usize) -> usize {
 }
 
 // === case: public_generic_assoc_const_transmute ===
-//@ fail(capture): "SizeEq: whole-crate obligation is unsupported: Trait"
+//@ fail(capture): "ASSERT: whole-crate obligation is unsupported: AssocConst { is_type_const: false } (generic constants require quantified instantiation obligations)"
 
 pub trait SizeEq<Src, Dst> {
     const ASSERT: ();
@@ -72,7 +72,7 @@ pub fn transmute_unchecked<Src: Copy, Dst: Copy>(x: Src) -> Dst {
 }
 
 // === case: concrete_transmute_with_spec ===
-//@ fail(capture): "SizeEq: whole-crate obligation is unsupported: Trait"
+//@ fail(capture): "ASSERT: whole-crate obligation is unsupported: AssocConst { is_type_const: false } (generic constants require quantified instantiation obligations)"
 
 trait SizeEq<Src, Dst> {
     const ASSERT: ();

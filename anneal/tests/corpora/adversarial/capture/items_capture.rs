@@ -28,10 +28,10 @@ pub fn id(x: usize) -> usize {
     x
 }
 
-// === case: const_item_rejected ===
+// === case: unsafe_const_item_rejected ===
 //@ fail(capture): "whole-crate obligation is unsupported: Const"
 
-pub const ANSWER: usize = 42;
+pub const BAD: usize = unsafe { 1 };
 
 pub fn id(x: usize) -> usize {
     x
