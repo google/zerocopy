@@ -36,6 +36,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "anneal-itree-diff"
+version = "0.1.0"
+dependencies = [
+ "anneal-testkit",
+ "clap",
+ "serde",
+ "serde_json",
+ "sha2",
+ "tempfile",
+ "toml",
+]
+
+[[package]]
 name = "anneal-rustc-capture"
 version = "0.1.0"
 dependencies = [

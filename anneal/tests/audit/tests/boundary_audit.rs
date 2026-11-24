@@ -784,6 +784,7 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
         "tests/testkit/Cargo.toml",
         "tests/audit/Cargo.toml",
         "tests/cargo-anneal/Cargo.toml",
+        "tests/itree_diff/Cargo.toml",
         "tests/rustc-capture/Cargo.toml",
     ] {
         let dest = fix.root.join(rel);

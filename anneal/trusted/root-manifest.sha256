@@ -6,7 +6,7 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
-090c421e82a98e22d92abeab7efb384796cf72667de046f4096bfeede749cd1c  Cargo.toml
-9587a8097d0914ad34ef495725a691339c517f07f45b90e3460d16a709619602  Cargo.lock
+9ff56ed488a04f9ffa6a6441eb5c84ba5ee0c2b878661ca6fdc4f5d806ee28ab  Cargo.toml
+e51a40d402c40a335c6817fb040296f3e2d3907e4a00fede0dda7d44087df209  Cargo.lock
 a1181f4651d0c8eb74de3d3f2751348fd925f277e1f6283ff71909f9391c2d9e  flake.nix
 dc1fa460ac7721757d30e5c4bdd62edab26e5f6fb6c6434a2edf51408807228c  flake.lock

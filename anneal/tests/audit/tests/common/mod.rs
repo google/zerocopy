@@ -56,6 +56,7 @@ pub fn copy_cargo_workspace(root: &Path) {
         "tests/testkit/Cargo.toml",
         "tests/audit/Cargo.toml",
         "tests/cargo-anneal/Cargo.toml",
+        "tests/itree_diff/Cargo.toml",
         "tests/rustc-capture/Cargo.toml",
     ] {
         let dest = root.join(rel);

@@ -21,5 +21,6 @@ members = [
     "tests/testkit",
     "tests/audit",
     "tests/cargo-anneal",
+    "tests/itree_diff",
     "tests/rustc-capture",
 ]

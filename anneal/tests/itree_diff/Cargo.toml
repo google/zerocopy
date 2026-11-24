@@ -1,0 +1,36 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+# Multi-step and multi-call observable-trace (ITree) differential testing and
+# fuzzing harness for Anneal's MIR semantics.
+#
+# Kept under `tests/` with `publish = false`, zero proc-macro targets, and zero
+# build scripts so `check_cargo_boundary` enforces the two-zone monotonic
+# dependency lattice (`tests/*` -> `trusted/*` or `tests/testkit`).
+
+[package]
+name = "anneal-itree-diff"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[lib]
+doctest = false
+
+[[bin]]
+name = "itree-diff"
+path = "src/bin/itree_diff.rs"
+
+[dependencies]
+anneal-testkit = { path = "../testkit" }
+clap = { version = "4.5", default-features = false, features = ["std", "help", "usage", "error-context", "suggestions", "derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha2 = "0.10"
+tempfile = "3.27"
+toml = "0.9"
