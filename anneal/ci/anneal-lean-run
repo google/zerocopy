@@ -1,0 +1,3930 @@
+#!/usr/bin/env python3
+#
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+"""Hardware-matched resource wrapper for `lake`, `lean`, and `cargo` commands.
+
+Note: Anneal is early-stage software (this is alpha software!). This wrapper
+probes the host's logical CPU count, physical RAM (`MemTotal` and
+`MemAvailable`), and cgroup v2 non-reclaimable working set (`anon + shmem` vs
+reclaimable `file` page cache in `memory.stat`) at invocation time, partitions
+threads and memory across the active worktree concurrency factor `W`, and
+executes the target command inside a fail-fast OS memory boundary (`MemoryMax`
+with `MemorySwapMax=0` when `systemd` user scopes are available) and a
+wall-clock timeout.
+
+Why this wrapper exists:
+- Lean 4's `-M <MB>` flag bounds only the internal small-object allocator and
+  does not cap total process RSS, `mmap` regions, or child processes spawned by
+  `lake build`.
+- On hosts with large swap partitions, an unbounded kernel `whnf` or `dsimp`
+  blowup pages tens of gigabytes per minute to disk (`iowait ~90%`) instead of
+  failing fast, wedging interactive SSH sessions and background daemons.
+- Setting `MemorySwapMax=0` alongside `MemoryMax` derived from physical RAM
+  forces the kernel cgroup controller to terminate only the runaway `lean`
+  scope immediately (`exit 137`) with zero swap thrashing.
+- On Linux cgroup v2 hosts, `memory.current` conflates reclaimable `.olean`
+  `file` page cache with true non-reclaimable heap (`anon + shmem`). Budgeting
+  cgroup headroom via `memory.max - (anon + shmem)` prevents `.olean` file cache
+  from falsely throttling concurrent builds while still throttling when genuine
+  anonymous working-set pressure rises.
+"""
+
+from __future__ import annotations
+
+import argparse
+from contextlib import contextmanager
+import errno
+import fcntl
+import json
+import os
+from pathlib import Path
+import re
+import resource
+import shutil
+import signal
+import stat
+import subprocess
+import sys
+import tempfile
+import time
+from typing import Any, Callable, Iterator, Mapping
+
+sys.dont_write_bytecode = True
+
+MIB = 1024 * 1024
+
+_LAKE_VALUE_OPTS: frozenset[str] = frozenset(
+    {"-d", "--dir", "-f", "--file", "-K", "--key", "-p", "--packages"}
+)
+_LAKE_VALUE_EQ_PREFIXES: tuple[str, ...] = (
+    "-d=",
+    "--dir=",
+    "-f=",
+    "--file=",
+    "-K=",
+    "--key=",
+    "-p=",
+    "--packages=",
+)
+_LAKE_FLAG_OPTS: frozenset[str] = frozenset(
+    {
+        "-q",
+        "--quiet",
+        "-v",
+        "--verbose",
+        "-R",
+        "--reconfigure",
+        "-U",
+        "--update",
+        "--keep-toolchain",
+        "--wfail",
+        "--old",
+        "--offline",
+        "--no-build",
+    }
+)
+
+
+MAX_CONCURRENCY = 4096
+MAX_MEMORY_MAX_MB = 1_073_741_824  # 1 PiB in MiB (< uint64_t bytes in systemd).
+MAX_TIMEOUT_SEC = 31_536_000       # 365 days in sec (< uint64_t usec).
+
+
+_ASCII_DIGITS_RE = re.compile(r"^[0-9]+$")
+_SIGNED_ASCII_DIGITS_RE = re.compile(r"^[+-]?[0-9]+$")
+_MAX_ASCII_INT_CHARS = 64
+_ACTIVE_PROBE_CACHE: dict[tuple[Any, ...], Any] | None = None
+
+
+def _token_preview(token: str) -> str:
+    if len(token) <= 32:
+        return repr(token)
+    return f"{token[:16]!r}...({len(token)} chars)"
+
+
+def _parse_bounded_ascii_int(
+    token: str, *, allow_sign: bool = False
+) -> int | None:
+    pattern = _SIGNED_ASCII_DIGITS_RE if allow_sign else _ASCII_DIGITS_RE
+    if pattern.fullmatch(token) is None or len(token) > _MAX_ASCII_INT_CHARS:
+        return None
+    return int(token)
+
+
+def _warn_once(cache_key: tuple[Any, ...], msg: str) -> None:
+    """Emits `msg` to stderr at most once per active invocation scope."""
+    if _ACTIVE_PROBE_CACHE is not None:
+        key = ("warned", cache_key)
+        if key in _ACTIVE_PROBE_CACHE:
+            return
+        _ACTIVE_PROBE_CACHE[key] = True
+    sys.stderr.write(msg)
+
+
+def _clamp(val: int, lo: int, hi: int) -> int:
+    return max(lo, min(hi, val))
+
+
+def _env_int(name: str, default: int) -> int:
+    raw = os.environ.get(name)
+    if raw is None or not raw.strip():
+        return default
+    val = _parse_bounded_ascii_int(raw.strip(), allow_sign=True)
+    return default if val is None else val
+
+
+def _env_optional_pos_int(
+    name: str, *, max_value: int | None = None
+) -> int | None:
+    raw = os.environ.get(name)
+    if raw is None or not raw.strip():
+        return None
+    token = raw.strip()
+    bound = f"1..{max_value}" if max_value is not None else ">= 1"
+    val = _parse_bounded_ascii_int(token)
+    if val is None:
+        _warn_once(
+            ("env_invalid", name, token),
+            f"[anneal-lean-run] WARNING: ignoring invalid {name}="
+            f"{_token_preview(token)} (expected ASCII digits {bound}, "
+            f"<= {_MAX_ASCII_INT_CHARS} chars).\n",
+        )
+        return None
+    if val < 1 or (max_value is not None and val > max_value):
+        _warn_once(
+            ("env_range", name, val),
+            f"[anneal-lean-run] WARNING: ignoring out-of-range "
+            f"{name}={val} (must be {bound}).\n",
+        )
+        return None
+    return val
+
+
+def _has_user_systemd_sock(p: Path) -> bool:
+    """True if systemd --user (systemd 255+/260 private/varlink or D-Bus) socket
+    exists.
+    """
+    try:
+        return any(
+            (p / rel).is_socket()
+            for rel in ("systemd/private", "systemd/io.systemd.Manager", "bus")
+        )
+    except OSError:
+        return False
+
+
+def resolve_runtime_base() -> tuple[Path, bool]:
+    """Returns (runtime_dir, user_systemd_sock_alive). Always prefers UID-owned
+    /run/user/<uid>.
+    """
+    uid = os.getuid()
+    run_user = Path(f"/run/user/{uid}")
+    if run_user.is_dir() and os.access(run_user, os.W_OK | os.X_OK):
+        try:
+            if run_user.stat().st_uid == uid:
+                return run_user, _has_user_systemd_sock(run_user)
+        except OSError:
+            pass
+    xdg = os.environ.get("XDG_RUNTIME_DIR", "").strip()
+    if xdg:
+        p = Path(xdg)
+        if p.is_dir() and os.access(p, os.W_OK | os.X_OK):
+            return p, _has_user_systemd_sock(p)
+    return Path("/tmp"), False
+
+
+def _systemd_env(
+    runtime_base: Path,
+    user_systemd_sock_alive: bool,
+    base_env: dict[str, str] | None = None,
+) -> dict[str, str]:
+    env = dict(base_env if base_env is not None else os.environ)
+    if user_systemd_sock_alive:
+        env["XDG_RUNTIME_DIR"] = str(runtime_base)
+    return env
+
+
+def _find_systemctl() -> str | None:
+    found = shutil.which("systemctl")
+    if found:
+        return found
+    return "/usr/bin/systemctl" if Path("/usr/bin/systemctl").is_file() else None
+
+
+def _find_systemd_run() -> str | None:
+    found = shutil.which("systemd-run")
+    if found:
+        return found
+    return "/usr/bin/systemd-run" if Path("/usr/bin/systemd-run").is_file() else None
+
+
+def _parse_systemd_major_version(raw: str) -> int | None:
+    """Extracts the leading numeric systemd major version from CLI output."""
+    text = raw.strip()
+    if not text:
+        return None
+    first_line = text.splitlines()[0].strip()
+    match = re.match(r"^(?:systemd\s+|v)?(\d+)", first_line)
+    if not match:
+        return None
+    try:
+        return int(match.group(1))
+    except ValueError:
+        return None
+
+
+def _run_systemd_probe_cmd(
+    argv: list[str],
+    *,
+    env: dict[str, str] | None = None,
+    timeout_sec: float = 2.0,
+    retries: int = 1,
+) -> tuple[subprocess.CompletedProcess[str] | None, str | None]:
+    """Runs a short read-only systemd CLI probe, retrying once on timeout."""
+    attempts = max(1, 1 + retries)
+    last_err: str | None = None
+    for idx in range(attempts):
+        try:
+            res = subprocess.run(
+                argv,
+                env=env,
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=timeout_sec,
+            )
+            return res, None
+        except subprocess.TimeoutExpired:
+            last_err = f"timed out after {timeout_sec:.1f}s"
+            if idx + 1 < attempts:
+                continue
+        except Exception as exc:  # noqa: BLE001 - diagnostic surface
+            return None, str(exc)
+    return None, last_err
+
+
+@contextmanager
+def _systemd_probe_cache_scope() -> Iterator[None]:
+    """Caches systemd CLI version/--help probes within a single invocation."""
+    global _ACTIVE_PROBE_CACHE
+    if _ACTIVE_PROBE_CACHE is not None:
+        yield
+        return
+    _ACTIVE_PROBE_CACHE = {}
+    try:
+        yield
+    finally:
+        _ACTIVE_PROBE_CACHE = None
+
+
+def _probe_user_systemd(
+    runtime_base: Path | None = None,
+    user_systemd_sock_alive: bool | None = None,
+    cgroup_root: Path = Path("/sys/fs/cgroup"),
+    uid: int | None = None,
+) -> tuple[bool, int | None]:
+    """Checks for live `systemd --user` with memory delegation and its version.
+    """
+    if runtime_base is None or user_systemd_sock_alive is None:
+        runtime_base, user_systemd_sock_alive = resolve_runtime_base()
+    if not user_systemd_sock_alive:
+        return False, None
+
+    eff_uid = os.getuid() if uid is None else uid
+    cache_key = ("user_systemd", str(runtime_base), str(cgroup_root), eff_uid)
+    if _ACTIVE_PROBE_CACHE is not None and cache_key in _ACTIVE_PROBE_CACHE:
+        return _ACTIVE_PROBE_CACHE[cache_key]
+
+    user_cg = (
+        cgroup_root / "user.slice" / f"user-{eff_uid}.slice" / f"user@{eff_uid}.service"
+    )
+    try:
+        if not (user_cg / "cgroup.controllers").is_file():
+            return False, None
+        subtree_path = user_cg / "cgroup.subtree_control"
+        if not subtree_path.is_file():
+            return False, None
+        controllers = subtree_path.read_text(encoding="utf-8", errors="replace").split()
+        if "memory" not in controllers:
+            return False, None
+    except OSError:
+        return False, None
+
+    systemctl_bin = _find_systemctl()
+    if not systemctl_bin:
+        sys.stderr.write(
+            "[anneal-lean-run] WARNING: User systemd socket and memory "
+            "delegation exist, but `systemctl` was not found; running "
+            "uncapped without systemd scope.\n"
+        )
+        res_pair: tuple[bool, int | None] = (False, None)
+        if _ACTIVE_PROBE_CACHE is not None:
+            _ACTIVE_PROBE_CACHE[cache_key] = res_pair
+        return res_pair
+
+    res, err = _run_systemd_probe_cmd(
+        [systemctl_bin, "--user", "show", "-p", "Version", "--value"],
+        env=_systemd_env(runtime_base, True),
+        timeout_sec=2.0,
+        retries=1,
+    )
+    if res is None:
+        sys.stderr.write(
+            f"[anneal-lean-run] WARNING: `systemctl --user show` failed "
+            f"({err}); user systemd scope enforcement disabled (running "
+            "uncapped).\n"
+        )
+        res_pair = (False, None)
+        if _ACTIVE_PROBE_CACHE is not None:
+            _ACTIVE_PROBE_CACHE[cache_key] = res_pair
+        return res_pair
+    ver_raw = res.stdout.strip()
+    if res.returncode != 0 or not ver_raw:
+        detail = (
+            res.stderr.strip()
+            or res.stdout.strip()
+            or f"exit {res.returncode} (empty Version)"
+        )
+        sys.stderr.write(
+            f"[anneal-lean-run] WARNING: `systemctl --user show` failed "
+            f"({detail}); user systemd scope enforcement disabled (running "
+            "uncapped).\n"
+        )
+        res_pair = (False, None)
+        if _ACTIVE_PROBE_CACHE is not None:
+            _ACTIVE_PROBE_CACHE[cache_key] = res_pair
+        return res_pair
+    major = _parse_systemd_major_version(ver_raw)
+    res_pair = (True, major)
+    if _ACTIVE_PROBE_CACHE is not None:
+        _ACTIVE_PROBE_CACHE[cache_key] = res_pair
+        _ACTIVE_PROBE_CACHE[("user_ver", str(runtime_base))] = major
+    return res_pair
+
+
+def detect_user_systemd_version(
+    runtime_base: Path | None = None,
+) -> int | None:
+    """Returns user systemd manager major version via `systemctl --user show`.
+    """
+    rb = runtime_base
+    sock_alive = True
+    if rb is None:
+        rb, sock_alive = resolve_runtime_base()
+    cache_key = ("user_ver", str(rb))
+    if _ACTIVE_PROBE_CACHE is not None and cache_key in _ACTIVE_PROBE_CACHE:
+        return _ACTIVE_PROBE_CACHE[cache_key]
+    systemctl_bin = _find_systemctl()
+    if systemctl_bin and sock_alive:
+        res, err = _run_systemd_probe_cmd(
+            [systemctl_bin, "--user", "show", "-p", "Version", "--value"],
+            env=_systemd_env(rb, True),
+            timeout_sec=2.0,
+            retries=1,
+        )
+        if res is None:
+            sys.stderr.write(
+                f"[anneal-lean-run] WARNING: `systemctl --user show` failed "
+                f"({err}) during version check.\n"
+            )
+            if _ACTIVE_PROBE_CACHE is not None:
+                _ACTIVE_PROBE_CACHE[cache_key] = None
+            return None
+        if res.returncode == 0:
+            ver = _parse_systemd_major_version(res.stdout)
+            if _ACTIVE_PROBE_CACHE is not None:
+                _ACTIVE_PROBE_CACHE[cache_key] = ver
+            return ver
+        detail = res.stderr.strip() or res.stdout.strip() or f"exit {res.returncode}"
+        sys.stderr.write(
+            f"[anneal-lean-run] WARNING: `systemctl --user show` failed "
+            f"({detail}) during version check.\n"
+        )
+        if _ACTIVE_PROBE_CACHE is not None:
+            _ACTIVE_PROBE_CACHE[cache_key] = None
+    return None
+
+
+def detect_systemd_run_client_version(
+    systemd_run_bin: str | None = None,
+) -> int | None:
+    """Returns `systemd-run` client major version via `systemd-run --version`.
+    """
+    bin_path = systemd_run_bin or _find_systemd_run()
+    if not bin_path:
+        return None
+    cache_key = ("srun_ver", bin_path)
+    if _ACTIVE_PROBE_CACHE is not None and cache_key in _ACTIVE_PROBE_CACHE:
+        return _ACTIVE_PROBE_CACHE[cache_key]
+    res, err = _run_systemd_probe_cmd(
+        [bin_path, "--version"],
+        timeout_sec=2.0,
+        retries=1,
+    )
+    if res is None:
+        sys.stderr.write(
+            f"[anneal-lean-run] WARNING: `{bin_path} --version` failed "
+            f"({err}).\n"
+        )
+        if _ACTIVE_PROBE_CACHE is not None:
+            _ACTIVE_PROBE_CACHE[cache_key] = None
+        return None
+    if res.returncode != 0:
+        detail = res.stderr.strip() or res.stdout.strip() or f"exit {res.returncode}"
+        sys.stderr.write(
+            f"[anneal-lean-run] WARNING: `{bin_path} --version` failed "
+            f"({detail}).\n"
+        )
+        if _ACTIVE_PROBE_CACHE is not None:
+            _ACTIVE_PROBE_CACHE[cache_key] = None
+        return None
+    ver = _parse_systemd_major_version(res.stdout)
+    if _ACTIVE_PROBE_CACHE is not None:
+        _ACTIVE_PROBE_CACHE[cache_key] = ver
+    return ver
+
+
+def _systemd_run_supports_expand_environment(
+    systemd_run_bin: str,
+) -> bool | None:
+    """Checks `systemd-run --help` for `--expand-environment` support."""
+    cache_key = ("srun_help_expand", systemd_run_bin)
+    if _ACTIVE_PROBE_CACHE is not None and cache_key in _ACTIVE_PROBE_CACHE:
+        return _ACTIVE_PROBE_CACHE[cache_key]
+    res, _ = _run_systemd_probe_cmd(
+        [systemd_run_bin, "--help"],
+        timeout_sec=2.0,
+        retries=1,
+    )
+    supported: bool | None
+    if res is None or res.returncode != 0:
+        supported = None
+    else:
+        supported = "--expand-environment" in res.stdout
+    if _ACTIVE_PROBE_CACHE is not None:
+        _ACTIVE_PROBE_CACHE[cache_key] = supported
+    return supported
+
+
+def check_user_systemd_active(
+    runtime_base: Path | None = None,
+    user_systemd_sock_alive: bool | None = None,
+    cgroup_root: Path = Path("/sys/fs/cgroup"),
+    uid: int | None = None,
+) -> bool:
+    """Zero-scope-spam read-only check that `systemd --user` is live with memory
+    delegation.
+    """
+    active, _ = _probe_user_systemd(
+        runtime_base=runtime_base,
+        user_systemd_sock_alive=user_systemd_sock_alive,
+        cgroup_root=cgroup_root,
+        uid=uid,
+    )
+    return active
+
+
+def _safe_home_dir() -> Path | None:
+    """Returns `Path.home()`, or `None` when HOME is unset and UID lacks a
+    passwd entry.
+    """
+    try:
+        return Path.home()
+    except RuntimeError:
+        return None
+
+
+def read_concurrency_config_file(config_path: Path | None = None) -> int | None:
+    """Reads optional positive integer concurrency from
+    `$XDG_CONFIG_HOME/anneal/concurrency`.
+    """
+    if config_path is None:
+        xdg_cfg = os.environ.get("XDG_CONFIG_HOME", "").strip()
+        if xdg_cfg:
+            base = Path(xdg_cfg)
+        else:
+            home = _safe_home_dir()
+            if home is None:
+                return None
+            base = home / ".config"
+        config_path = base / "anneal" / "concurrency"
+    try:
+        if not config_path.is_file():
+            return None
+        raw_text = config_path.read_text(encoding="utf-8", errors="replace").strip()
+        if not raw_text:
+            return None
+        val = _parse_bounded_ascii_int(raw_text)
+        if val is None:
+            _warn_once(
+                ("concurrency_invalid", str(config_path), raw_text),
+                f"[anneal-lean-run] WARNING: ignoring invalid {config_path} "
+                f"concurrency={_token_preview(raw_text)} (expected ASCII "
+                f"digits 1..{MAX_CONCURRENCY}, <= {_MAX_ASCII_INT_CHARS} "
+                "chars).\n",
+            )
+            return None
+        if val < 1:
+            _warn_once(
+                ("concurrency_range", str(config_path), val),
+                f"[anneal-lean-run] WARNING: ignoring out-of-range "
+                f"{config_path} concurrency={val} "
+                f"(must be 1..{MAX_CONCURRENCY}).\n",
+            )
+            return None
+        if val > MAX_CONCURRENCY:
+            _warn_once(
+                ("concurrency_clamp", str(config_path), val),
+                f"[anneal-lean-run] WARNING: {config_path} concurrency={val} "
+                f"exceeds max {MAX_CONCURRENCY}; clamping to {MAX_CONCURRENCY}.\n",
+            )
+            return MAX_CONCURRENCY
+        return val
+    except OSError:
+        return None
+
+
+def _m_safety_host(mem_total_mb: int) -> int:
+    return _clamp((8 * mem_total_mb) // 100, 1024, 8192)
+
+
+def _m_safety_cg(c_mb: int) -> int:
+    return _clamp(c_mb // 10, 256, 8192)
+
+
+def _r_cg(c_mb: int) -> int:
+    return c_mb - _m_safety_cg(c_mb)
+
+
+def _m_cp_floor(c_mb: int, is_shared_user_slice: bool) -> int:
+    if not is_shared_user_slice:
+        return 0
+    r = _r_cg(c_mb)
+    return min(10240, max(0, (9 * (r - 7168)) // 10))
+
+
+def compute_cgroup_working_set_bytes(cg: Path) -> int:
+    """Computes W(cg) = anon + shmem + kernel + min(file, active_file +
+    file_dirty + file_writeback).
+    """
+    try:
+        if not cg.is_dir():
+            return 0
+    except OSError:
+        return 0
+    stat = parse_memory_stat(cg / "memory.stat")
+    if stat and any(k in stat for k in ("anon", "shmem", "kernel", "file", "active_file")):
+        anon = stat.get("anon", 0)
+        shmem = stat.get("shmem", 0)
+        kernel = stat.get("kernel", 0)
+        file_bytes = stat.get(
+            "file", stat.get("active_file", 0) + stat.get("inactive_file", 0)
+        )
+        active_dirty_wb = (
+            stat.get("active_file", 0)
+            + stat.get("file_dirty", 0)
+            + stat.get("file_writeback", 0)
+        )
+        return max(0, anon + shmem + kernel + min(file_bytes, active_dirty_wb))
+    cur = _read_cgroup_int(cg / "memory.current")
+    if cur is not None:
+        if "inactive_file" in stat:
+            return max(0, cur - stat["inactive_file"])
+        return max(0, cur)
+    return 0
+
+
+def read_cgroup_working_set_mib(cg: Path) -> int:
+    return compute_cgroup_working_set_bytes(cg) // MIB
+
+
+def compute_cgroup_nonrecl_bytes(cg: Path) -> int:
+    """Computes W_nonrecl(cg) = anon + shmem + slab_unreclaimable (fallback:
+    anon+shmem+kernel).
+    """
+    try:
+        if not cg.is_dir():
+            return 0
+    except OSError:
+        return 0
+    stat = parse_memory_stat(cg / "memory.stat")
+    if not stat:
+        return 0
+    if "slab_unreclaimable" in stat:
+        return max(
+            0,
+            stat.get("anon", 0) + stat.get("shmem", 0) + stat["slab_unreclaimable"],
+        )
+    if any(k in stat for k in ("anon", "shmem", "kernel")):
+        return max(
+            0, stat.get("anon", 0) + stat.get("shmem", 0) + stat.get("kernel", 0)
+        )
+    return 0
+
+
+def read_cgroup_nonrecl_mib(cg: Path) -> int:
+    return compute_cgroup_nonrecl_bytes(cg) // MIB
+
+
+def read_cgroup_ceiling_mib(cg: Path) -> int | None:
+    """Returns min(finite(memory.high), finite(memory.max)) in MiB, or None if
+    unbounded.
+    """
+    hi = _read_cgroup_int(cg / "memory.high")
+    mx = _read_cgroup_int(cg / "memory.max")
+    vals = [v for v in (hi, mx) if v is not None]
+    if not vals:
+        return None
+    return min(vals) // MIB
+
+
+def read_events_local_high(cg: Path) -> int:
+    """Reads `high` counter from `cg/memory.events.local` (returns 0 on
+    missing/error).
+    """
+    p = cg / "memory.events.local"
+    try:
+        if not p.is_file():
+            return 0
+        for line in p.read_text(encoding="utf-8", errors="replace").splitlines():
+            parts = line.strip().split()
+            if len(parts) == 2 and parts[0] == "high":
+                return max(0, int(parts[1]))
+    except (OSError, ValueError):
+        pass
+    return 0
+
+
+def _read_memory_events_oom_kill(cg: Path) -> int:
+    """Best-effort read of `oom_kill` from `cg/memory.events`."""
+    p = cg / "memory.events"
+    try:
+        if not p.is_file():
+            return 0
+        for line in p.read_text(encoding="utf-8", errors="replace").splitlines():
+            parts = line.strip().split()
+            if len(parts) == 2 and parts[0] == "oom_kill":
+                return max(0, int(parts[1]))
+    except (OSError, ValueError):
+        pass
+    return 0
+
+
+def read_psi_full_avg10(cg: Path) -> float:
+    """Reads `full avg10=<val>` from `cg/memory.pressure` (returns 0.0 on
+    missing/error).
+    """
+    p = cg / "memory.pressure"
+    try:
+        if not p.is_file():
+            return 0.0
+        for line in p.read_text(encoding="utf-8", errors="replace").splitlines():
+            line = line.strip()
+            if not line.startswith("full "):
+                continue
+            for tok in line.split()[1:]:
+                if tok.startswith("avg10="):
+                    return float(tok.split("=", 1)[1])
+    except (OSError, ValueError):
+        pass
+    return 0.0
+
+
+def count_active_build_slots(
+    runtime_base: Path, uid: int | None = None
+) -> int:
+    """Counts currently held `slot-*.lock` files in
+    `runtime_base/anneal-build-slots-<uid>`.
+    """
+    eff_uid = os.getuid() if uid is None else uid
+    slot_dir = runtime_base / f"anneal-build-slots-{eff_uid}"
+    try:
+        dir_st = os.lstat(slot_dir)
+    except OSError:
+        return 0
+    if not stat.S_ISDIR(dir_st.st_mode) or dir_st.st_uid != eff_uid:
+        return 0
+    try:
+        lock_files = sorted(slot_dir.glob("slot-*.lock"))
+    except OSError:
+        return 0
+    active = 0
+    open_flags = os.O_RDONLY | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_NOFOLLOW", 0)
+    for lf in lock_files:
+        fd: int | None = None
+        try:
+            fd = os.open(str(lf), open_flags)
+            st = os.fstat(fd)
+            if (
+                not stat.S_ISREG(st.st_mode)
+                or st.st_uid != eff_uid
+                or st.st_nlink != 1
+                or (st.st_mode & 0o077) != 0
+            ):
+                continue
+            try:
+                fcntl.flock(fd, fcntl.LOCK_SH | fcntl.LOCK_NB)
+                try:
+                    fcntl.flock(fd, fcntl.LOCK_UN)
+                except OSError:
+                    pass
+            except BlockingIOError:
+                active += 1
+        except OSError:
+            continue
+        finally:
+            if fd is not None:
+                try:
+                    os.close(fd)
+                except OSError:
+                    pass
+    return active
+
+
+def parse_proc_cgroup_v2(
+    proc_cgroup_path: Path = Path("/proc/self/cgroup"),
+) -> str | None:
+    """Parses `/proc/self/cgroup` for the unified hierarchy `0::<rel_path>`
+    line.
+    """
+    try:
+        if not proc_cgroup_path.is_file():
+            return None
+        raw = proc_cgroup_path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return None
+
+    for line in raw.splitlines():
+        line = line.strip()
+        if not line.startswith("0::"):
+            continue
+        rel = line.split("::", 1)[1].strip()
+        if rel.endswith(" (deleted)"):
+            rel = rel[: -len(" (deleted)")].strip()
+        if not rel or rel == "/":
+            return "/"
+        return "/" + rel.lstrip("/")
+    return None
+
+
+def parse_memory_stat(source: str | Path) -> dict[str, int]:
+    """Parses cgroup v2 `memory.stat` key-value integer pairs (in bytes)."""
+    raw: str
+    if isinstance(source, Path):
+        try:
+            raw = source.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            return {}
+    elif isinstance(source, str):
+        if "\n" not in source and source.strip() and ("/" in source or " " not in source):
+            p = Path(source)
+            try:
+                if p.is_file():
+                    raw = p.read_text(encoding="utf-8", errors="replace")
+                else:
+                    raw = source
+            except OSError:
+                raw = source
+        else:
+            raw = source
+    else:
+        return {}
+
+    stats: dict[str, int] = {}
+    for line in raw.splitlines():
+        parts = line.strip().split()
+        if len(parts) != 2:
+            continue
+        key, val_str = parts
+        try:
+            val = int(val_str)
+        except ValueError:
+            continue
+        if val >= 0:
+            stats[key] = val
+    return stats
+
+
+def _read_cgroup_int(path: Path) -> int | None:
+    """Reads a finite non-negative integer from a cgroup file, or None for
+    'max'/missing.
+    """
+    try:
+        if not path.is_file():
+            return None
+        raw = path.read_text(encoding="utf-8", errors="replace").strip()
+    except OSError:
+        return None
+    if not raw or raw == "max":
+        return None
+    first = raw.split()[0]
+    try:
+        val = int(first)
+    except ValueError:
+        return None
+    return val if val >= 0 else None
+
+
+def _empty_cgroup_info() -> dict[str, Any]:
+    return {
+        "cgroup_v2": False,
+        "cgroup_path": None,
+        "cgroup_anon_mib": None,
+        "cgroup_shmem_mib": None,
+        "cgroup_anon_shmem_mib": None,
+        "cgroup_file_cache_mib": None,
+        "cgroup_current_mib": None,
+        "cgroup_memory_max_mib": None,
+        "cgroup_avail_mib": None,
+    }
+
+
+def _has_cgroup_memory_files(directory: Path) -> bool:
+    try:
+        if not directory.is_dir():
+            return False
+        return any(
+            (directory / name).is_file()
+            for name in ("memory.stat", "memory.current", "memory.max")
+        )
+    except OSError:
+        return False
+
+
+def probe_cgroup_v2_memory(
+    cgroup_root: Path = Path("/sys/fs/cgroup"),
+    proc_cgroup_path: Path = Path("/proc/self/cgroup"),
+) -> dict[str, Any]:
+    """Probes cgroup v2 `memory.stat` (`anon + shmem` vs `file`) and ancestor
+    `memory.max`.
+
+    Never raises: this runs on every `anneal-lean-run` invocation (and inside
+    the timeout/OOM diagnostic paths), so any unexpected error (e.g. an `EACCES`
+    from `Path.is_file()` on older Pythons) degrades to `cgroup_v2 = False`
+    instead of aborting the wrapped command.
+    """
+    try:
+        return _probe_cgroup_v2_memory_impl(cgroup_root, proc_cgroup_path)
+    except Exception:  # noqa: BLE001 - telemetry must never break execution
+        return _empty_cgroup_info()
+
+
+def _has_cgroup_resource_files(directory: Path) -> bool:
+    try:
+        if not directory.is_dir():
+            return False
+        return (
+            _has_cgroup_memory_files(directory)
+            or (directory / "cpu.max").is_file()
+            or (directory / "cgroup.controllers").is_file()
+            or (directory / "cgroup.procs").is_file()
+        )
+    except OSError:
+        return False
+
+
+def _resolve_self_cgroup_levels(
+    cgroup_root: Path,
+    proc_cgroup_path: Path,
+) -> tuple[list[Path], str] | None:
+    """Resolves leaf-to-root cgroup v2 ancestor directories inside
+    `cgroup_root`.
+    """
+    try:
+        if not cgroup_root.is_dir():
+            return None
+    except OSError:
+        return None
+
+    rel_path: str | None = None
+    try:
+        proc_exists = proc_cgroup_path.is_file()
+    except OSError:
+        proc_exists = False
+
+    if proc_exists:
+        rel_path = parse_proc_cgroup_v2(proc_cgroup_path)
+        if rel_path is None:
+            return None
+    else:
+        if (
+            proc_cgroup_path == Path("/proc/self/cgroup")
+            and cgroup_root != Path("/sys/fs/cgroup")
+            and (_has_cgroup_memory_files(cgroup_root) or (cgroup_root / "cpu.max").is_file())
+        ):
+            rel_path = "/"
+        else:
+            return None
+
+    rel_clean = rel_path.lstrip("/")
+    rel_parts = [p for p in Path(rel_clean).parts if p not in ("", ".")]
+    if ".." in rel_parts:
+        return None
+
+    candidate = cgroup_root.joinpath(*rel_parts) if rel_parts else cgroup_root
+    if _has_cgroup_resource_files(candidate):
+        leaf_dir = candidate
+        resolved_cgroup_path = "/" + "/".join(rel_parts) if rel_parts else "/"
+    elif rel_parts and _has_cgroup_resource_files(cgroup_root):
+        # Container namespace where `/proc/self/cgroup` reports a host-relative
+        # path while `/sys/fs/cgroup` is already mounted at the container leaf
+        # (or a unit test populating `cgroup_root` directly).
+        leaf_dir = cgroup_root
+        resolved_cgroup_path = "/"
+    else:
+        return None
+
+    try:
+        root_res = cgroup_root.resolve()
+        curr_res = leaf_dir.resolve()
+    except OSError:
+        return None
+
+    if curr_res != root_res and root_res not in curr_res.parents:
+        return None
+
+    levels: list[Path] = []
+    curr = curr_res
+    while True:
+        levels.append(curr)
+        if curr == root_res or curr.parent == curr:
+            break
+        curr = curr.parent
+    return levels, resolved_cgroup_path
+
+
+def _probe_cgroup_v2_levels(
+    levels: list[Path],
+    resolved_cgroup_path: str,
+) -> dict[str, Any]:
+    """Reads cgroup v2 `memory.*` stats across leaf-to-root `levels`."""
+    if not any(_has_cgroup_memory_files(lvl) for lvl in levels):
+        return _empty_cgroup_info()
+
+    leaf_stat: dict[str, int] = {}
+    for lvl in levels:
+        stat_file = lvl / "memory.stat"
+        if stat_file.is_file():
+            parsed = parse_memory_stat(stat_file)
+            if parsed:
+                leaf_stat = parsed
+                break
+
+    leaf_anon_shmem_bytes: int | None = None
+    cgroup_anon_mib: int | None = None
+    cgroup_shmem_mib: int | None = None
+    cgroup_anon_shmem_mib: int | None = None
+    cgroup_file_cache_mib: int | None = None
+
+    if leaf_stat:
+        anon_bytes = leaf_stat.get("anon", 0)
+        shmem_bytes = leaf_stat.get("shmem", 0)
+        file_bytes = leaf_stat.get(
+            "file",
+            leaf_stat.get("inactive_file", 0) + leaf_stat.get("active_file", 0),
+        )
+        leaf_anon_shmem_bytes = anon_bytes + shmem_bytes
+        cgroup_anon_mib = anon_bytes // MIB
+        cgroup_shmem_mib = shmem_bytes // MIB
+        cgroup_anon_shmem_mib = leaf_anon_shmem_bytes // MIB
+        cgroup_file_cache_mib = file_bytes // MIB
+
+    leaf_current_bytes: int | None = None
+    for lvl in levels:
+        cur_val = _read_cgroup_int(lvl / "memory.current")
+        if cur_val is not None:
+            leaf_current_bytes = cur_val
+            break
+    cgroup_current_mib = (
+        (leaf_current_bytes // MIB) if leaf_current_bytes is not None else None
+    )
+
+    min_max_mib: int | None = None
+    min_avail_mib: int | None = None
+
+    for lvl in levels:
+        lvl_max_bytes = _read_cgroup_int(lvl / "memory.max")
+        if lvl_max_bytes is None or lvl_max_bytes <= 0:
+            continue
+        lvl_cur_bytes = _read_cgroup_int(lvl / "memory.current")
+        lvl_stat_path = lvl / "memory.stat"
+        lvl_stat = parse_memory_stat(lvl_stat_path) if lvl_stat_path.is_file() else {}
+
+        if "anon" in lvl_stat or "shmem" in lvl_stat:
+            lvl_used_bytes = lvl_stat.get("anon", 0) + lvl_stat.get("shmem", 0)
+        elif "inactive_file" in lvl_stat and lvl_cur_bytes is not None:
+            lvl_used_bytes = max(0, lvl_cur_bytes - lvl_stat["inactive_file"])
+        elif lvl_cur_bytes is not None:
+            lvl_used_bytes = lvl_cur_bytes
+        elif leaf_anon_shmem_bytes is not None:
+            lvl_used_bytes = leaf_anon_shmem_bytes
+        else:
+            lvl_used_bytes = 0
+
+        lvl_avail_bytes = max(0, lvl_max_bytes - lvl_used_bytes)
+        lvl_max_mib = lvl_max_bytes // MIB
+        lvl_avail_mib = lvl_avail_bytes // MIB
+
+        if min_max_mib is None or lvl_max_mib < min_max_mib:
+            min_max_mib = lvl_max_mib
+        if min_avail_mib is None or lvl_avail_mib < min_avail_mib:
+            min_avail_mib = lvl_avail_mib
+
+    return {
+        "cgroup_v2": True,
+        "cgroup_path": resolved_cgroup_path,
+        "cgroup_anon_mib": cgroup_anon_mib,
+        "cgroup_shmem_mib": cgroup_shmem_mib,
+        "cgroup_anon_shmem_mib": cgroup_anon_shmem_mib,
+        "cgroup_file_cache_mib": cgroup_file_cache_mib,
+        "cgroup_current_mib": cgroup_current_mib,
+        "cgroup_memory_max_mib": min_max_mib,
+        "cgroup_avail_mib": min_avail_mib,
+    }
+
+
+def _probe_cgroup_v2_memory_impl(
+    cgroup_root: Path,
+    proc_cgroup_path: Path,
+) -> dict[str, Any]:
+    resolved = _resolve_self_cgroup_levels(cgroup_root, proc_cgroup_path)
+    if resolved is None:
+        return _empty_cgroup_info()
+    levels, resolved_cgroup_path = resolved
+    return _probe_cgroup_v2_levels(levels, resolved_cgroup_path)
+
+
+def _probe_cgroup_v2_dir(
+    cg_dir: Path,
+    cgroup_root: Path = Path("/sys/fs/cgroup"),
+) -> dict[str, Any]:
+    """Probes cgroup v2 memory stats directly for a target cgroup directory."""
+    try:
+        if not cg_dir.is_dir() or not _has_cgroup_memory_files(cg_dir):
+            return _empty_cgroup_info()
+        curr_res = cg_dir.resolve()
+        root_res = cgroup_root.resolve() if cgroup_root.is_dir() else None
+        if root_res is not None and (
+            curr_res == root_res or root_res in curr_res.parents
+        ):
+            rel = curr_res.relative_to(root_res).as_posix()
+            resolved_path = "/" if rel == "." else f"/{rel}"
+            levels: list[Path] = []
+            curr = curr_res
+            while True:
+                levels.append(curr)
+                if curr == root_res or curr.parent == curr:
+                    break
+                curr = curr.parent
+        else:
+            resolved_path = str(curr_res)
+            levels = [curr_res]
+        info = _probe_cgroup_v2_levels(levels, resolved_path)
+        if info.get("cgroup_v2"):
+            peak_bytes = _read_cgroup_int(curr_res / "memory.peak")
+            if peak_bytes is not None:
+                info["cgroup_peak_mib"] = peak_bytes // MIB
+        return info
+    except Exception:  # noqa: BLE001 - telemetry must never break execution
+        return _empty_cgroup_info()
+
+
+def _read_cgroup_cpu_quota_cores(
+    cgroup_root: Path = Path("/sys/fs/cgroup"),
+    proc_cgroup_path: Path = Path("/proc/self/cgroup"),
+) -> int | None:
+    """Returns floor(`quota / period`) from cgroup v2 `cpu.max` if finite, else
+    None.
+    """
+    resolved = _resolve_self_cgroup_levels(cgroup_root, proc_cgroup_path)
+    if resolved is None:
+        return None
+    levels, _ = resolved
+    min_quota_cores: int | None = None
+    for lvl in levels:
+        cpu_max_path = lvl / "cpu.max"
+        try:
+            if not cpu_max_path.is_file():
+                continue
+            parts = cpu_max_path.read_text(encoding="utf-8", errors="replace").strip().split()
+        except OSError:
+            continue
+        if len(parts) < 2 or parts[0] == "max":
+            continue
+        try:
+            quota = int(parts[0])
+            period = int(parts[1])
+        except ValueError:
+            continue
+        if quota > 0 and period > 0:
+            cores = max(1, quota // period)
+            if min_quota_cores is None or cores < min_quota_cores:
+                min_quota_cores = cores
+    return min_quota_cores
+
+
+def _detect_effective_cpu_cores(
+    cgroup_root: Path = Path("/sys/fs/cgroup"),
+    proc_cgroup_path: Path = Path("/proc/self/cgroup"),
+) -> int:
+    """Returns effective logical CPU count honoring `sched_getaffinity` and
+    cgroup `cpu.max`.
+    """
+    cores = max(1, os.cpu_count() or 4)
+    if hasattr(os, "sched_getaffinity"):
+        try:
+            aff = len(os.sched_getaffinity(0))
+            if aff >= 1:
+                cores = min(cores, aff)
+        except OSError:
+            pass
+    quota_cores = _read_cgroup_cpu_quota_cores(
+        cgroup_root=cgroup_root, proc_cgroup_path=proc_cgroup_path
+    )
+    if quota_cores is not None:
+        cores = min(cores, quota_cores)
+    return max(1, cores)
+
+
+def _read_raw_meminfo_and_cpus(
+    meminfo_path: Path = Path("/proc/meminfo"),
+    *,
+    cgroup_root: Path = Path("/sys/fs/cgroup"),
+    proc_cgroup_path: Path = Path("/proc/self/cgroup"),
+) -> tuple[int, int, int]:
+    """Returns `(cpu_cores, mem_total_mb, mem_avail_mb)` honoring CPU affinity
+    and `cpu.max`.
+    """
+    cpu_cores = _detect_effective_cpu_cores(
+        cgroup_root=cgroup_root, proc_cgroup_path=proc_cgroup_path
+    )
+    mem_total_mb = 16384
+    mem_avail_mb = 12288
+
+    if meminfo_path.is_file():
+        try:
+            raw = meminfo_path.read_text(encoding="utf-8", errors="replace")
+            kv: dict[str, int] = {}
+            for line in raw.splitlines():
+                parts = line.split(":")
+                if len(parts) != 2:
+                    continue
+                key = parts[0].strip()
+                val_parts = parts[1].strip().split()
+                if val_parts and val_parts[0].isdigit():
+                    kv[key] = int(val_parts[0]) // 1024
+            if "MemTotal" in kv and kv["MemTotal"] > 0:
+                mem_total_mb = kv["MemTotal"]
+            if "MemAvailable" in kv and kv["MemAvailable"] >= 0:
+                mem_avail_mb = kv["MemAvailable"]
+            elif "MemFree" in kv:
+                mem_avail_mb = kv["MemFree"] + kv.get("Cached", 0)
+        except OSError:
+            pass
+    elif sys.platform == "darwin" and meminfo_path == Path("/proc/meminfo"):
+        try:
+            res = subprocess.run(
+                ["sysctl", "-n", "hw.memsize"],
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=2.0,
+            )
+            if res.returncode == 0 and res.stdout.strip().isdigit():
+                mem_total_mb = max(1, int(res.stdout.strip()) // MIB)
+                mem_avail_mb = (75 * mem_total_mb) // 100
+        except Exception:
+            pass
+
+    mem_total_mb = max(1, mem_total_mb)
+    mem_avail_mb = max(0, min(mem_total_mb, mem_avail_mb))
+    return cpu_cores, mem_total_mb, mem_avail_mb
+
+
+def _resolve_target_cgroup_ancestors(
+    cgroup_root: Path = Path("/sys/fs/cgroup"),
+    proc_cgroup_path: Path = Path("/proc/self/cgroup"),
+    user_systemd_active: bool = False,
+    uid: int | None = None,
+) -> tuple[Path | None, list[dict[str, Any]], bool, bool, int, int, str | None]:
+    """Resolves `T_cg` and ancestor chain for `WorkloadMemoryEnvelope`.
+
+    Returns `(t_cg, ancestors, eff_user_systemd_active, t_cg_is_user_service,
+              w_cg_mb, w_cg_nonrecl_mb, w_cg_path_str)`.
+    """
+    eff_uid = os.getuid() if uid is None else uid
+    try:
+        if not cgroup_root.is_dir():
+            return None, [], False, False, 0, 0, None
+        root_res = cgroup_root.resolve()
+    except OSError:
+        return None, [], False, False, 0, 0, None
+
+    t_cg: Path | None = None
+    eff_systemd_active = False
+    t_cg_is_user_service = False
+
+    user_cg = (
+        cgroup_root / "user.slice" / f"user-{eff_uid}.slice" / f"user@{eff_uid}.service"
+    )
+    if user_systemd_active:
+        try:
+            if user_cg.is_dir():
+                t_cg = user_cg.resolve()
+                eff_systemd_active = True
+                t_cg_is_user_service = True
+        except OSError:
+            t_cg = None
+
+    if t_cg is None:
+        resolved = _resolve_self_cgroup_levels(cgroup_root, proc_cgroup_path)
+        if resolved is not None and resolved[0]:
+            t_cg = resolved[0][0]
+
+    if t_cg is None:
+        return None, [], False, False, 0, 0, None
+
+    levels: list[Path] = []
+    curr = t_cg
+    while True:
+        levels.append(curr)
+        if curr == root_res or curr.parent == curr:
+            break
+        curr = curr.parent
+
+    shared_names = ("user.slice", f"user-{eff_uid}.slice", f"user@{eff_uid}.service")
+    ancestors: list[dict[str, Any]] = []
+    for lvl in levels:
+        ancestors.append(
+            {
+                "path": str(lvl),
+                "name": lvl.name,
+                "c_high_mb": read_cgroup_ceiling_mib(lvl),
+                "w_mb": read_cgroup_working_set_mib(lvl),
+                "is_shared_user_slice": eff_systemd_active and (lvl.name in shared_names),
+            }
+        )
+
+    w_cg = t_cg / "anneal.slice" / "anneal-workloads.slice"
+    w_cg_path_str = str(w_cg)
+    w_cg_mb = 0
+    w_cg_nonrecl_mb = 0
+    try:
+        if w_cg.is_dir():
+            w_cg_mb = read_cgroup_working_set_mib(w_cg)
+            w_cg_nonrecl_mb = read_cgroup_nonrecl_mib(w_cg)
+    except OSError:
+        pass
+
+    return (
+        t_cg,
+        ancestors,
+        eff_systemd_active,
+        t_cg_is_user_service,
+        w_cg_mb,
+        w_cg_nonrecl_mb,
+        w_cg_path_str,
+    )
+
+
+def resolve_effective_concurrency(
+    *,
+    is_cg_capped: bool,
+    s_heavy_safe: int,
+    w_file: int | None,
+    cli_concurrency: int | None,
+    env_concurrency: int | None,
+    exclusive: bool = False,
+    is_probe: bool = False,
+) -> tuple[int, int]:
+    """Resolves `(w_eff, build_slots)` with heterogeneous-safe host-bounded
+    precedence.
+
+    `build_slots` is the number of host build locks and never depends on
+    `is_probe`. `w_eff` divides the memory pool. Execution raises it to at least
+    the host's concurrency file (`w_file`); `--probe` with an explicit
+    `--concurrency` instead answers "what if" for exactly that concurrency, so
+    it can report `w_eff < build_slots` and a larger `memory_max_mb` than
+    execution gets. A caller that wants the execution plan re-probes with
+    `--concurrency <build_slots>`. `--exclusive` holds every slot and resolves
+    `w_eff = 1` in both.
+    """
+    s_safe = max(1, int(s_heavy_safe))
+    if cli_concurrency is not None:
+        w_req = max(1, int(cli_concurrency))
+    elif env_concurrency is not None:
+        w_req = max(1, int(env_concurrency))
+    else:
+        w_req = max(1, int(w_file)) if w_file is not None else 1
+
+    if is_probe and cli_concurrency is not None:
+        w_eff = 1 if exclusive else (min(w_req, s_safe) if is_cg_capped else w_req)
+        if w_file is not None:
+            w_host = min(max(1, int(w_file)), s_safe) if is_cg_capped else max(1, int(w_file))
+            build_slots = w_host
+        else:
+            build_slots = min(w_req, s_safe) if is_cg_capped else w_req
+        return w_eff, build_slots
+
+    if w_file is not None:
+        w_host = min(max(1, int(w_file)), s_safe) if is_cg_capped else max(1, int(w_file))
+        build_slots = w_host
+        if exclusive:
+            w_eff = 1
+        else:
+            w_eff = min(max(w_req, w_host), s_safe) if is_cg_capped else max(w_req, w_host)
+        return w_eff, build_slots
+
+    w_unconf = min(w_req, s_safe) if is_cg_capped else w_req
+    build_slots = w_unconf
+    w_eff = 1 if exclusive else w_unconf
+    return w_eff, build_slots
+
+
+def compute_workload_memory_envelope(
+    *,
+    cpu_cores: int,
+    mem_total_mb: int,
+    mem_avail_mb: int,
+    ancestors: list[dict[str, Any]] | None = None,
+    w_cg_mb: int = 0,
+    w_cg_nonrecl_mb: int = 0,
+    user_systemd_active: bool = False,
+    systemd_version: int | None = None,
+    systemd_run_version: int | None = None,
+    w_file: int | None = None,
+    cli_concurrency: int | None = None,
+    env_concurrency: int | None = None,
+    exclusive: bool = False,
+    is_probe: bool = False,
+    mode: str = "build",
+    override_mem_mb: int | None = None,
+    override_timeout_sec: int | None = None,
+    unsafe_ignore_cgroup: bool = False,
+    runtime_base: str = "/tmp",
+    w_cg_path: str | None = None,
+    t_cg_path: str | None = None,
+    t_cg_is_user_service: bool = False,
+    active_build_slots: int = 0,
+) -> dict[str, Any]:
+    """Pure 1-MiB-monotonic two-regime `WorkloadMemoryEnvelope` computation."""
+    eff_cores = max(1, int(cpu_cores))
+    eff_total = max(1, int(mem_total_mb))
+    eff_avail = max(0, min(eff_total, int(mem_avail_mb)))
+    eff_w_cg = max(0, int(w_cg_mb))
+    eff_w_cg_nonrecl = max(0, int(w_cg_nonrecl_mb))
+    anc_list = list(ancestors or [])
+
+    capped_ancestors: list[dict[str, Any]] = []
+    a_lim: dict[str, Any] | None = None
+    min_c_high = eff_total
+    for anc in anc_list:
+        c_a = anc.get("c_high_mb")
+        if isinstance(c_a, int) and c_a < eff_total:
+            capped_ancestors.append(anc)
+            # On exact ties walking leaf->root, prefer the broader/outer
+            # ancestor.
+            if c_a <= min_c_high:
+                min_c_high = c_a
+                a_lim = anc
+
+    is_cg_capped = bool(capped_ancestors and a_lim is not None)
+    c_high_mb = min_c_high if is_cg_capped else eff_total
+    a_lim_path = str(a_lim["path"]) if (is_cg_capped and a_lim is not None) else None
+
+    m_safety_host = _m_safety_host(eff_total)
+    w_host_live = eff_avail + eff_w_cg_nonrecl - m_safety_host
+    uncapped_slice_max = (3 * eff_total) // 4
+
+    if is_cg_capped:
+        static_caps: list[int] = []
+        cg_live_vals: list[int] = []
+        for anc in capped_ancestors:
+            c_a = int(anc["c_high_mb"])
+            is_shared = bool(anc.get("is_shared_user_slice", False))
+            r_a = _r_cg(c_a)
+            m_cp_a = _m_cp_floor(c_a, is_shared)
+            static_caps.append(max(0, r_a - m_cp_a))
+            b_non_wl_a = max(0, int(anc.get("w_mb", 0)) - eff_w_cg)
+            cg_live_vals.append(r_a - max(m_cp_a, b_non_wl_a))
+        w_slice_max_mb = min(uncapped_slice_max, min(static_caps))
+        w_slice_high_mb = (94 * w_slice_max_mb) // 100
+        w_cg_live_mb: int | None = min(cg_live_vals)
+        w_live_mb = max(0, min(w_slice_max_mb, w_cg_live_mb, w_host_live))
+        m_safety_mb = _m_safety_cg(c_high_mb)
+    else:
+        w_slice_max_mb = uncapped_slice_max
+        w_slice_high_mb = (94 * w_slice_max_mb) // 100
+        w_cg_live_mb = None
+        w_live_mb = max(0, min(w_slice_max_mb, w_host_live))
+        m_safety_mb = m_safety_host
+
+    usable_mem_mb = max(0, w_live_mb - eff_w_cg)
+    usable_workload_mem_gb = usable_mem_mb // 1024
+
+    s_heavy_safe = min(
+        max(1, eff_cores // 8),
+        max(1, w_slice_max_mb // 12288),
+    )
+
+    w_eff, build_slots = resolve_effective_concurrency(
+        is_cg_capped=is_cg_capped,
+        s_heavy_safe=s_heavy_safe,
+        w_file=w_file,
+        cli_concurrency=cli_concurrency,
+        env_concurrency=env_concurrency,
+        exclusive=exclusive,
+        is_probe=is_probe,
+    )
+
+    term1 = ((90 * w_live_mb) // 100) // w_eff
+    term2 = (90 * usable_mem_mb) // 100
+    build_budget_mb = min(term1, term2)
+    single_build_budget_gb = round(build_budget_mb / 1024.0, 2)
+
+    if mode == "file":
+        file_ceiling = min((50 * w_slice_max_mb) // 100, 16384)
+        computed_b_max_mb = min(build_budget_mb, file_ceiling)
+        default_timeout = 180
+    else:
+        computed_b_max_mb = build_budget_mb
+        default_timeout = 900
+
+    if override_mem_mb is not None and override_mem_mb > 0:
+        if is_cg_capped and not unsafe_ignore_cgroup:
+            b_max_mb = min(int(override_mem_mb), w_slice_max_mb)
+        else:
+            b_max_mb = int(override_mem_mb)
+    else:
+        b_max_mb = computed_b_max_mb
+
+    lean_m_mb = (75 * b_max_mb) // 100
+    timeout_sec = (
+        int(override_timeout_sec)
+        if (override_timeout_sec is not None and override_timeout_sec > 0)
+        else default_timeout
+    )
+
+    if is_cg_capped and c_high_mb <= 32768:
+        threads = min(max(1, eff_cores // w_eff), max(2, b_max_mb // 1800))
+    else:
+        threads = max(1, eff_cores // w_eff)
+
+    return {
+        "mem_total_mb": eff_total,
+        "mem_avail_mb": eff_avail,
+        "user_systemd_active": bool(user_systemd_active),
+        "systemd_version": systemd_version,
+        "systemd_run_version": systemd_run_version,
+        "is_cg_capped": is_cg_capped,
+        "w_eff": w_eff,
+        "runtime_base": str(runtime_base),
+        "w_cg_path": w_cg_path,
+        "a_lim_path": a_lim_path,
+        "c_high_mb": c_high_mb,
+        "m_safety_mb": m_safety_mb,
+        "w_slice_max_mb": w_slice_max_mb,
+        "w_slice_high_mb": w_slice_high_mb,
+        "usable_workload_mem_gb": usable_workload_mem_gb,
+        "single_build_budget_gb": single_build_budget_gb,
+        "s_heavy_safe": s_heavy_safe,
+        "active_build_slots": max(0, int(active_build_slots)),
+        "mode": mode,
+        "concurrency": w_eff,
+        "cpu_cores": eff_cores,
+        "threads": threads,
+        "memory_max_mb": b_max_mb,
+        "lean_m_mb": lean_m_mb,
+        "timeout_sec": timeout_sec,
+        "build_slots": build_slots,
+        "systemd_user_scope": bool(user_systemd_active),
+        "w_live_mb": w_live_mb,
+        "w_cg_live_mb": w_cg_live_mb,
+        "w_host_live_mb": w_host_live,
+        "w_cg_mb": eff_w_cg,
+        "w_cg_nonrecl_mb": eff_w_cg_nonrecl,
+        "t_cg_path": t_cg_path,
+        "t_cg_is_user_service": bool(t_cg_is_user_service),
+        "capped_ancestors": [
+            {"path": str(a["path"]), "c_high_mb": int(a["c_high_mb"])}
+            for a in capped_ancestors
+        ],
+    }
+
+
+def probe_host_envelope(
+    *,
+    meminfo_path: Path = Path("/proc/meminfo"),
+    cgroup_root: Path = Path("/sys/fs/cgroup"),
+    proc_cgroup_path: Path = Path("/proc/self/cgroup"),
+    cpu_cores: int | None = None,
+    mem_total_mb: int | None = None,
+    mem_avail_mb: int | None = None,
+    user_systemd_active: bool | None = None,
+    systemd_version: int | None = None,
+    systemd_run_version: int | None = None,
+    runtime_base: Path | None = None,
+    user_systemd_sock_alive: bool | None = None,
+    uid: int | None = None,
+    concurrency_file_path: Path | None = None,
+    w_file: int | None = None,
+    cli_concurrency: int | None = None,
+    env_concurrency: int | None = None,
+    exclusive: bool = False,
+    is_probe: bool = False,
+    mode: str = "build",
+    override_mem_mb: int | None = None,
+    override_timeout_sec: int | None = None,
+    unsafe_ignore_cgroup: bool = False,
+) -> dict[str, Any]:
+    """Probes live host hardware, cgroup v2 ancestry, and
+    `WorkloadMemoryEnvelope`.
+    """
+    eff_uid = os.getuid() if uid is None else uid
+    if runtime_base is None or user_systemd_sock_alive is None:
+        rb, sock_alive = resolve_runtime_base()
+        if runtime_base is None:
+            runtime_base = rb
+        if user_systemd_sock_alive is None:
+            user_systemd_sock_alive = sock_alive
+
+    raw_cores, raw_total, raw_avail = _read_raw_meminfo_and_cpus(
+        meminfo_path, cgroup_root=cgroup_root, proc_cgroup_path=proc_cgroup_path
+    )
+    eff_cores = raw_cores if cpu_cores is None else max(1, int(cpu_cores))
+    eff_total = raw_total if mem_total_mb is None else max(1, int(mem_total_mb))
+    eff_avail = raw_avail if mem_avail_mb is None else max(0, min(eff_total, int(mem_avail_mb)))
+
+    has_cg_override = (
+        cgroup_root != Path("/sys/fs/cgroup")
+        or proc_cgroup_path != Path("/proc/self/cgroup")
+    )
+    eff_systemd_ver = systemd_version
+    if user_systemd_active is None:
+        if has_cg_override:
+            eff_systemd_req = False
+        else:
+            eff_systemd_req, probed_ver = _probe_user_systemd(
+                runtime_base=runtime_base,
+                user_systemd_sock_alive=user_systemd_sock_alive,
+                cgroup_root=cgroup_root,
+                uid=eff_uid,
+            )
+            if eff_systemd_ver is None:
+                eff_systemd_ver = probed_ver
+    else:
+        eff_systemd_req = bool(user_systemd_active)
+
+    (
+        t_cg,
+        ancestors,
+        eff_systemd_active,
+        t_cg_is_user_service,
+        w_cg_mb,
+        w_cg_nonrecl_mb,
+        w_cg_path_str,
+    ) = _resolve_target_cgroup_ancestors(
+        cgroup_root=cgroup_root,
+        proc_cgroup_path=proc_cgroup_path,
+        user_systemd_active=eff_systemd_req,
+        uid=eff_uid,
+    )
+
+    eff_w_file = (
+        w_file
+        if w_file is not None
+        else read_concurrency_config_file(concurrency_file_path)
+    )
+    eff_env_conc = (
+        env_concurrency
+        if env_concurrency is not None
+        else _env_optional_pos_int(
+            "ANNEAL_WORKTREE_CONCURRENCY", max_value=MAX_CONCURRENCY
+        )
+    )
+    active_slots = count_active_build_slots(runtime_base, uid=eff_uid)
+
+    eff_client_ver = (
+        systemd_run_version
+        if systemd_run_version is not None
+        else (detect_systemd_run_client_version() if eff_systemd_active else None)
+    )
+    env_dict = compute_workload_memory_envelope(
+        cpu_cores=eff_cores,
+        mem_total_mb=eff_total,
+        mem_avail_mb=eff_avail,
+        ancestors=ancestors,
+        w_cg_mb=w_cg_mb,
+        w_cg_nonrecl_mb=w_cg_nonrecl_mb,
+        user_systemd_active=eff_systemd_active,
+        systemd_version=eff_systemd_ver if eff_systemd_active else None,
+        systemd_run_version=eff_client_ver if eff_systemd_active else None,
+        w_file=eff_w_file,
+        cli_concurrency=cli_concurrency,
+        env_concurrency=eff_env_conc,
+        exclusive=exclusive,
+        is_probe=is_probe,
+        mode=mode,
+        override_mem_mb=override_mem_mb,
+        override_timeout_sec=override_timeout_sec,
+        unsafe_ignore_cgroup=unsafe_ignore_cgroup,
+        runtime_base=str(runtime_base),
+        w_cg_path=w_cg_path_str,
+        t_cg_path=str(t_cg) if t_cg is not None else None,
+        t_cg_is_user_service=t_cg_is_user_service,
+        active_build_slots=active_slots,
+    )
+    # Include detailed cgroup v2 memory snapshot fields.
+    cg = probe_cgroup_v2_memory(
+        cgroup_root=cgroup_root, proc_cgroup_path=proc_cgroup_path
+    )
+    for k, v in cg.items():
+        env_dict.setdefault(k, v)
+    return env_dict
+
+
+def _lake_subcommand_index(cmd: list[str]) -> int | None:
+    """Returns index of the Lake subcommand in `cmd`, scanning past global
+    options.
+    """
+    if not cmd or Path(cmd[0]).name != "lake":
+        return None
+    i = 1
+    n = len(cmd)
+    while i < n:
+        arg = cmd[i]
+        if arg == "--":
+            return None
+        if arg.startswith("+") and len(arg) > 1:
+            i += 1
+            continue
+        if arg in _LAKE_VALUE_OPTS:
+            i += 2
+            continue
+        if arg.startswith(_LAKE_VALUE_EQ_PREFIXES):
+            i += 1
+            continue
+        if len(arg) > 2 and arg[:2] in ("-d", "-f", "-K", "-p"):
+            i += 1
+            continue
+        if arg in _LAKE_FLAG_OPTS:
+            i += 1
+            continue
+        if arg.startswith("-"):
+            return None
+        return i
+    return None
+
+
+def _lake_env_lean_index(cmd: list[str]) -> int | None:
+    """Returns index of `lean` in `lake [global-opts] env [--] <*/lean> ...`, or
+    None.
+    """
+    sub_idx = _lake_subcommand_index(cmd)
+    if sub_idx is None or cmd[sub_idx] != "env":
+        return None
+    j = sub_idx + 1
+    if j < len(cmd) and cmd[j] == "--":
+        j += 1
+    if j < len(cmd) and Path(cmd[j]).name == "lean":
+        return j
+    return None
+
+
+def detect_mode(cmd: list[str], requested_mode: str) -> str:
+    """Determines whether `cmd` is a single-file check or a workspace build."""
+    if requested_mode in ("file", "build"):
+        return requested_mode
+    if not cmd:
+        return "build"
+
+    exe = Path(cmd[0]).name
+    if exe == "lean" and "--run" not in cmd[1:]:
+        return "file"
+    lean_idx = _lake_env_lean_index(cmd)
+    if lean_idx is not None and "--run" not in cmd[lean_idx + 1 :]:
+        return "file"
+    return "build"
+
+
+def format_cgroup_probe_line(limits: dict[str, Any]) -> str:
+    """Formats the human-readable `Cgroup v2 Memory` line for `--probe`."""
+    if not limits.get("cgroup_v2") and not limits.get("is_cg_capped"):
+        return "  Cgroup v2 Memory   : unavailable (using host physical RAM)"
+    regime = "capped" if limits.get("is_cg_capped") else "uncapped"
+    c_high = limits.get("c_high_mb")
+    w_smax = limits.get("w_slice_max_mb")
+    w_shigh = limits.get("w_slice_high_mb")
+    w_live = limits.get("w_live_mb")
+    a_lim = limits.get("a_lim_path") or "none"
+    return (
+        f"  Cgroup v2 Envelope : regime={regime}, C_high={c_high} MiB ({a_lim}), "
+        f"W_slice_max={w_smax} MiB, W_slice_high={w_shigh} MiB, W_live={w_live} MiB"
+    )
+
+
+def format_cgroup_diagnostic_snapshot(
+    cg: dict[str, Any] | None = None,
+    pid: int | None = None,
+    *,
+    fallback_label: str | None = None,
+) -> str:
+    """Formats a post-mortem cgroup v2 memory snapshot for stderr diagnostics.
+    """
+    try:
+        info = cg
+        if info is None and pid is not None and pid > 0:
+            pid_cg = Path(f"/proc/{pid}/cgroup")
+            if pid_cg.is_file():
+                cand = probe_cgroup_v2_memory(proc_cgroup_path=pid_cg)
+                if cand.get("cgroup_v2"):
+                    info = cand
+        if info is None:
+            info = probe_cgroup_v2_memory()
+        if not info.get("cgroup_v2"):
+            return ""
+        anon_shmem = info.get("cgroup_anon_shmem_mib")
+        file_cache = info.get("cgroup_file_cache_mib")
+        current = info.get("cgroup_current_mib")
+        cg_max = info.get("cgroup_memory_max_mib")
+        cg_avail = info.get("cgroup_avail_mib")
+        max_str = (
+            f"{cg_max}M (avail={cg_avail}M)" if cg_max is not None else "unbounded"
+        )
+        extras: list[str] = []
+        peak_mib = info.get("cgroup_peak_mib")
+        if peak_mib is not None:
+            extras.append(f"peak={peak_mib}M")
+        cg_path = info.get("cgroup_path")
+        src = info.get("cgroup_snapshot_source") or fallback_label
+        if src and cg_path:
+            extras.append(f"cgroup={cg_path} [{src}]")
+        elif src:
+            extras.append(f"source={src}")
+        elif cg_path:
+            extras.append(f"cgroup={cg_path}")
+        suffix = f", {', '.join(extras)}" if extras else ""
+        return (
+            f"  Cgroup v2 Snapshot : anon+shmem={anon_shmem}M, "
+            f"file={file_cache}M, current={current}M, memory.max={max_str}"
+            f"{suffix}\n"
+        )
+    except Exception:  # noqa: BLE001 - diagnostics must never mask exit codes
+        return ""
+
+
+def _parse_systemd_user_unit_dir(
+    unit_path_raw: str, runtime_base: Path | None = None
+) -> Path | None:
+    """Extracts the running `systemd --user` manager's user unit config dir
+    from `systemctl --user show -p UnitPath --value`.
+    """
+    text = " ".join(unit_path_raw.strip().split())
+    if not text:
+        return None
+    rt_prefix: str | None = None
+    if runtime_base is not None:
+        rt_str = str(runtime_base).rstrip("/")
+        if rt_str:
+            rt_prefix = rt_str + "/"
+
+    def _is_system_or_runtime(p_str: str, *, allow_runtime: bool) -> bool:
+        if p_str == "/etc/systemd/user" or p_str.startswith(
+            ("/etc/", "/usr/", "/lib/", "/run/systemd/")
+        ):
+            return True
+        if not allow_runtime:
+            if p_str.startswith("/run/"):
+                return True
+            if rt_prefix is not None and p_str.startswith(rt_prefix):
+                return True
+        return False
+
+    # systemd's `lookup_paths_init()` places `<user_config_dir>.control` first
+    # and `<user_config_dir>` later in `UnitPath`. Matching the pair preserves
+    # paths containing spaces in `$HOME` or `$XDG_CONFIG_HOME`.
+    padded = f" {text} "
+    for match in re.finditer(r"(?<= )(/[^ ].*?)\.control(?= )", padded):
+        cand = match.group(1)
+        if ".." in Path(cand).parts:
+            continue
+        if _is_system_or_runtime(cand, allow_runtime=False):
+            continue
+        if f" {cand} " in padded:
+            return Path(cand)
+
+    for allow_rt in (False, True):
+        for tok in text.split(" "):
+            if not tok.startswith("/") or ".." in Path(tok).parts:
+                continue
+            if tok.endswith((".control", ".attached", "/transient")) or (
+                "/generator" in tok
+            ):
+                continue
+            if "/.local/share/" in tok or tok.endswith("/share/systemd/user"):
+                continue
+            if _is_system_or_runtime(tok, allow_runtime=allow_rt):
+                continue
+            if tok.endswith("/systemd/user"):
+                return Path(tok)
+    return None
+
+
+def _query_user_systemd_unit_dir(
+    runtime_base: Path | None = None,
+    *,
+    allow_live_probe: bool = True,
+) -> Path | None:
+    """Queries the running `systemd --user` manager for its user unit dir."""
+    if not allow_live_probe:
+        return None
+    rb = runtime_base
+    if rb is None:
+        rb, sock_alive = resolve_runtime_base()
+    else:
+        sock_alive = _has_user_systemd_sock(rb)
+    if not sock_alive:
+        return None
+    cache_key = ("user_unit_dir", str(rb))
+    if _ACTIVE_PROBE_CACHE is not None and cache_key in _ACTIVE_PROBE_CACHE:
+        return _ACTIVE_PROBE_CACHE[cache_key]
+    systemctl_bin = _find_systemctl()
+    if not systemctl_bin:
+        return None
+    res, _ = _run_systemd_probe_cmd(
+        [systemctl_bin, "--user", "show", "-p", "UnitPath", "--value"],
+        env=_systemd_env(rb, True),
+        timeout_sec=2.0,
+        retries=1,
+    )
+    parsed: Path | None = None
+    if res is not None and res.returncode == 0:
+        parsed = _parse_systemd_user_unit_dir(res.stdout, runtime_base=rb)
+    if _ACTIVE_PROBE_CACHE is not None:
+        _ACTIVE_PROBE_CACHE[cache_key] = parsed
+    return parsed
+
+
+def _workloads_slice_unit_path(
+    runtime_base: Path | None = None,
+    *,
+    allow_live_probe: bool = True,
+) -> Path | None:
+    """Resolves `anneal-workloads.slice` in the running `systemd --user`
+    manager's unit search path (ignoring mismatched client `XDG_CONFIG_HOME`).
+    """
+    mgr_dir = _query_user_systemd_unit_dir(
+        runtime_base=runtime_base,
+        allow_live_probe=allow_live_probe,
+    )
+    if mgr_dir is not None:
+        return mgr_dir / "anneal-workloads.slice"
+    home = _safe_home_dir()
+    if home is not None:
+        return home / ".config" / "systemd" / "user" / "anneal-workloads.slice"
+    xdg_cfg = os.environ.get("XDG_CONFIG_HOME", "").strip()
+    if xdg_cfg:
+        return Path(xdg_cfg) / "systemd" / "user" / "anneal-workloads.slice"
+    return None
+
+
+def render_workloads_slice_unit(w_slice_high_mb: int, w_slice_max_mb: int) -> str:
+    """Renders the static `anneal-workloads.slice` systemd user unit."""
+    return (
+        "[Unit]\n"
+        "Description=Anneal Bounded Compute Workloads Slice\n"
+        "\n"
+        "[Slice]\n"
+        "MemoryAccounting=yes\n"
+        f"MemoryHigh={int(w_slice_high_mb)}M\n"
+        f"MemoryMax={int(w_slice_max_mb)}M\n"
+        "MemorySwapMax=0\n"
+        "ManagedOOMMemoryPressure=kill\n"
+        "ManagedOOMMemoryPressureLimit=40%\n"
+    )
+
+
+def ensure_workloads_slice(
+    env_info: dict[str, Any],
+    *,
+    unit_path: Path | None = None,
+    reload_systemd: bool = True,
+) -> tuple[bool, bool, str]:
+    """Single-writer `anneal-workloads.slice` reconciler.
+
+    Gated STRICTLY on `user_systemd_active is True` AND `T_cg ==
+    user@<uid>.service`. Content-diffs before writing and running `systemctl
+    --user daemon-reload`. Returns `(ok, changed, message)`.
+    """
+    if not env_info.get("user_systemd_active") or not env_info.get("t_cg_is_user_service"):
+        return (
+            False,
+            False,
+            "Refusing to write anneal-workloads.slice: user_systemd_active is False "
+            "or target execution cgroup is not user@<uid>.service.",
+        )
+
+    rt_raw = env_info.get("runtime_base")
+    rt_base = Path(str(rt_raw)) if rt_raw else None
+    target = (
+        unit_path
+        if unit_path is not None
+        else _workloads_slice_unit_path(
+            runtime_base=rt_base,
+            allow_live_probe=(rt_raw is not None),
+        )
+    )
+    if target is None:
+        return (
+            False,
+            False,
+            "Refusing to write anneal-workloads.slice: cannot resolve home/XDG config dir.",
+        )
+    rendered = render_workloads_slice_unit(
+        int(env_info["w_slice_high_mb"]), int(env_info["w_slice_max_mb"])
+    )
+    try:
+        if target.is_file():
+            existing = target.read_text(encoding="utf-8", errors="replace")
+            if existing == rendered:
+                return (True, False, f"{target} is already up to date.")
+    except OSError:
+        pass
+
+    tmp_path: str | None = None
+    try:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        fd, tmp_path = tempfile.mkstemp(
+            prefix=".anneal-workloads.slice.", dir=str(target.parent)
+        )
+        try:
+            os.write(fd, rendered.encode("utf-8"))
+        finally:
+            os.close(fd)
+        os.chmod(tmp_path, 0o644)
+        os.replace(tmp_path, str(target))
+        tmp_path = None
+    except OSError as exc:
+        return (False, False, f"Failed writing {target}: {exc}")
+    finally:
+        if tmp_path:
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass
+
+    if reload_systemd:
+        systemctl_bin = _find_systemctl()
+        if not systemctl_bin:
+            return (False, True, f"Wrote {target} but `systemctl` binary is missing.")
+        runtime_base = Path(str(env_info.get("runtime_base") or "/tmp"))
+        try:
+            res = subprocess.run(
+                [systemctl_bin, "--user", "daemon-reload"],
+                env=_systemd_env(runtime_base, True),
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=5.0,
+            )
+            if res.returncode != 0:
+                detail = res.stderr.strip() or res.stdout.strip() or f"exit {res.returncode}"
+                return (False, True, f"Wrote {target} but daemon-reload failed: {detail}")
+        except Exception as exc:
+            return (False, True, f"Wrote {target} but daemon-reload errored: {exc}")
+
+    return (True, True, f"Updated {target} and reloaded user systemd.")
+
+
+def _ensure_private_slot_dir(base: Path, uid: int) -> Path:
+    """Creates/verifies a UID-owned, private (`0700`), non-symlink slot
+    directory.
+    """
+    slot_dir = Path(base) / f"anneal-build-slots-{uid}"
+    try:
+        os.mkdir(slot_dir, 0o700)
+    except FileExistsError:
+        pass
+    except OSError as exc:
+        raise PermissionError(
+            f"Cannot create build-slot directory {slot_dir}: {exc}"
+        ) from exc
+    try:
+        st = os.lstat(slot_dir)
+    except OSError as exc:
+        raise PermissionError(
+            f"Cannot inspect build-slot directory {slot_dir}: {exc}"
+        ) from exc
+    if stat.S_ISLNK(st.st_mode) or not stat.S_ISDIR(st.st_mode):
+        raise PermissionError(
+            f"Unsafe build-slot directory {slot_dir}: expected owned directory, "
+            "found symlink or non-directory"
+        )
+    if st.st_uid != uid:
+        raise PermissionError(
+            f"Unsafe build-slot directory {slot_dir}: owned by uid {st.st_uid}, expected {uid}"
+        )
+    if (st.st_mode & 0o077) != 0:
+        raise PermissionError(
+            f"Unsafe permissions {oct(st.st_mode & 0o777)} on build-slot directory {slot_dir}; "
+            "expected 0700"
+        )
+    if not os.access(slot_dir, os.R_OK | os.W_OK | os.X_OK):
+        raise PermissionError(f"Build-slot directory {slot_dir} is not accessible")
+    return slot_dir
+
+
+def _open_private_lock_file(lock_path: Path, uid: int) -> int:
+    """Opens a regular, UID-owned, non-symlink, single-link slot lock file (`<=
+    0600`).
+    """
+    flags = (
+        os.O_CREAT
+        | os.O_RDWR
+        | getattr(os, "O_NOFOLLOW", 0)
+        | getattr(os, "O_NONBLOCK", 0)
+    )
+    try:
+        fd = os.open(str(lock_path), flags, 0o600)
+    except OSError as exc:
+        if exc.errno in (errno.EMFILE, errno.ENFILE):
+            raise
+        raise PermissionError(
+            f"Unsafe or inaccessible build-slot lock file {lock_path}: {exc}"
+        ) from exc
+    try:
+        st = os.fstat(fd)
+        if not stat.S_ISREG(st.st_mode):
+            raise PermissionError(f"Refusing non-regular build-slot lock file: {lock_path}")
+        if st.st_uid != uid:
+            raise PermissionError(
+                f"Unsafe build-slot lock file {lock_path}: owned by uid {st.st_uid}, expected {uid}"
+            )
+        if st.st_nlink != 1:
+            raise PermissionError(
+                f"Refusing hardlinked build-slot lock file (st_nlink={st.st_nlink}): {lock_path}"
+            )
+        if (st.st_mode & 0o077) != 0:
+            raise PermissionError(
+                f"Unsafe permissions {oct(st.st_mode & 0o777)} on lock file {lock_path}; "
+                "expected <= 0600"
+            )
+        return fd
+    except BaseException:
+        try:
+            os.close(fd)
+        except OSError:
+            pass
+        raise
+
+
+def _release_lock_fd(fd: int | None) -> None:
+    if fd is None:
+        return
+    try:
+        fcntl.flock(fd, fcntl.LOCK_UN)
+    except OSError:
+        pass
+    try:
+        os.close(fd)
+    except OSError:
+        pass
+
+
+def _exclusive_lock_fd_budget(max_slots: int) -> int:
+    """Caps open simultaneous slot-lock FDs cleanly below `RLIMIT_NOFILE`."""
+    try:
+        soft, _ = resource.getrlimit(resource.RLIMIT_NOFILE)
+    except (OSError, ValueError):
+        return max_slots
+    rlim_inf = getattr(resource, "RLIM_INFINITY", -1)
+    if soft == rlim_inf or soft <= 0:
+        return max_slots
+    budget = (soft - 64) if soft > 128 else max(1, soft // 2)
+    return max(1, min(max_slots, budget))
+
+
+@contextmanager
+def acquire_build_slot(
+    max_slots: int,
+    timeout_sec: float,
+    enabled: bool,
+    *,
+    exclusive: bool = False,
+    runtime_base: Path | None = None,
+    poll_interval: float = 0.5,
+) -> Iterator[int | list[int] | None]:
+    """Fail-closed host build lock acquisition (normal 1-of-N or ascending
+    `--exclusive` 1..N).
+    """
+    if not enabled or max_slots <= 0:
+        yield None
+        return
+
+    uid = os.getuid()
+    base = runtime_base if runtime_base is not None else resolve_runtime_base()[0]
+    slot_dir = _ensure_private_slot_dir(base, uid)
+
+    deadline = time.monotonic() + max(0.0, float(timeout_sec))
+    warned = False
+
+    # Writer-priority coordination: exclusive callers take `exclusive_intent`
+    # first to immediately block new shared arrivals while active shared callers
+    # drain via `exclusive.lock`, and shared callers drop `exclusive_intent`
+    # immediately once queued behind `exclusive.lock`.
+    intent_fd: int | None = _open_private_lock_file(
+        slot_dir / "exclusive_intent.lock", uid
+    )
+    ex_fd: int | None = None
+    acquired: list[tuple[int, int]] = []
+    acquired_slot: tuple[int, int] | None = None
+    try:
+        def _wait_step(timeout_detail: str, wait_msg: str) -> None:
+            nonlocal warned
+            rem = deadline - time.monotonic()
+            if rem <= 0:
+                raise TimeoutError(
+                    f"BUILD_SLOT_TIMEOUT: Timed out after {timeout_sec}s "
+                    f"waiting for {timeout_detail} in {slot_dir}"
+                )
+            if not warned:
+                sys.stderr.write(wait_msg)
+                warned = True
+            time.sleep(min(poll_interval, max(0.01, rem)))
+
+        def _flock_blocking_wait(
+            fd: int, mode: int, timeout_detail: str, wait_msg: str
+        ) -> None:
+            while True:
+                try:
+                    fcntl.flock(fd, mode | fcntl.LOCK_NB)
+                    return
+                except BlockingIOError:
+                    _wait_step(timeout_detail, wait_msg)
+
+        if exclusive:
+            ex_wait_msg = (
+                f"[anneal-lean-run] Waiting for exclusive access to all "
+                f"{max_slots} host build slot(s)...\n"
+            )
+            _flock_blocking_wait(
+                intent_fd, fcntl.LOCK_EX, "exclusive intent lock", ex_wait_msg
+            )
+            ex_fd = _open_private_lock_file(slot_dir / "exclusive.lock", uid)
+            _flock_blocking_wait(
+                ex_fd, fcntl.LOCK_EX, "exclusive lock coordination", ex_wait_msg
+            )
+
+            keep_limit = _exclusive_lock_fd_budget(max_slots)
+            for slot_idx in range(1, max_slots + 1):
+                lock_path = slot_dir / f"slot-{slot_idx}.lock"
+                while True:
+                    try:
+                        fd = _open_private_lock_file(lock_path, uid)
+                    except OSError as exc:
+                        err_no = (
+                            exc.errno
+                            if exc.errno is not None
+                            else getattr(exc.__cause__, "errno", None)
+                        )
+                        if (
+                            err_no in (errno.EMFILE, errno.ENFILE)
+                            and acquired
+                        ):
+                            drain_count = (
+                                min(len(acquired), 8)
+                                if len(acquired) > 8
+                                else 1
+                            )
+                            for _ in range(drain_count):
+                                _, popped_fd = acquired.pop()
+                                _release_lock_fd(popped_fd)
+                            keep_limit = min(keep_limit, len(acquired))
+                            continue
+                        raise
+                    try:
+                        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    except BlockingIOError:
+                        os.close(fd)
+                        _wait_step(
+                            f"exclusive slot {slot_idx}/{max_slots}",
+                            (
+                                f"[anneal-lean-run] Waiting for exclusive "
+                                f"access to all {max_slots} host build "
+                                f"slot(s) (blocked on slot {slot_idx})...\n"
+                            ),
+                        )
+                        continue
+                    except BaseException:
+                        os.close(fd)
+                        raise
+                    if len(acquired) < keep_limit:
+                        try:
+                            os.ftruncate(fd, 0)
+                            os.write(
+                                fd,
+                                (
+                                    f"pid={os.getpid()} "
+                                    f"ts={int(time.time())} exclusive=1\n"
+                                ).encode("utf-8"),
+                            )
+                        except OSError:
+                            pass
+                        acquired.append((slot_idx, fd))
+                    else:
+                        # `ex_fd` (LOCK_EX) blocks new callers, and this
+                        # slot just proved idle, so drop the extra FD
+                        # without exceeding `RLIMIT_NOFILE`.
+                        _release_lock_fd(fd)
+                    break
+            yield list(range(1, max_slots + 1))
+            return
+
+        ex_fd = _open_private_lock_file(slot_dir / "exclusive.lock", uid)
+        sh_wait_msg = (
+            "[anneal-lean-run] Exclusive build active; queuing to prevent "
+            "RAM/swap exhaustion...\n"
+        )
+        while True:
+            _flock_blocking_wait(
+                intent_fd, fcntl.LOCK_SH, "exclusive intent coordination", sh_wait_msg
+            )
+            try:
+                fcntl.flock(ex_fd, fcntl.LOCK_SH | fcntl.LOCK_NB)
+                break
+            except BlockingIOError:
+                try:
+                    fcntl.flock(intent_fd, fcntl.LOCK_UN)
+                except OSError:
+                    pass
+                _wait_step("exclusive lock coordination", sh_wait_msg)
+
+        # Drop intent lock before slot polling or yielding so queued shared
+        # callers cannot delay `--exclusive` writers arriving later.
+        _release_lock_fd(intent_fd)
+        intent_fd = None
+
+        while acquired_slot is None:
+            for slot_idx in range(1, max_slots + 1):
+                lock_path = slot_dir / f"slot-{slot_idx}.lock"
+                fd = _open_private_lock_file(lock_path, uid)
+                try:
+                    fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                except BlockingIOError:
+                    os.close(fd)
+                    continue
+                except BaseException:
+                    os.close(fd)
+                    raise
+                try:
+                    os.ftruncate(fd, 0)
+                    os.write(
+                        fd,
+                        f"pid={os.getpid()} ts={int(time.time())}\n".encode(
+                            "utf-8"
+                        ),
+                    )
+                except OSError:
+                    pass
+                acquired_slot = (slot_idx, fd)
+                break
+
+            if acquired_slot is not None:
+                break
+
+            _wait_step(
+                f"1 of {max_slots} host build slot(s)",
+                (
+                    f"[anneal-lean-run] All {max_slots} host build slot(s) "
+                    "busy; queuing to prevent RAM/swap exhaustion...\n"
+                ),
+            )
+
+        yield acquired_slot[0]
+    finally:
+        for _, fd in reversed(acquired):
+            _release_lock_fd(fd)
+        if acquired_slot is not None:
+            _release_lock_fd(acquired_slot[1])
+        _release_lock_fd(ex_fd)
+        _release_lock_fd(intent_fd)
+
+
+def _has_lean_m_arg(args: list[str]) -> bool:
+    for a in args:
+        if a == "--":
+            break
+        if a == "-M" or a.startswith("-M") or a == "--memory" or a.startswith("--memory="):
+            return True
+    return False
+
+
+def inject_lean_m_flag(cmd: list[str], lean_m_mb: int) -> list[str]:
+    """Injects `-M <lean_m_mb>` into direct `lean` or `lake [opts] env [--]
+    lean` calls.
+    """
+    if not cmd or lean_m_mb <= 0:
+        return list(cmd)
+    exe = Path(cmd[0]).name
+    if exe == "lean":
+        if "--run" in cmd[1:] or _has_lean_m_arg(cmd[1:]):
+            return list(cmd)
+        return [cmd[0], "-M", str(lean_m_mb), *cmd[1:]]
+    lean_idx = _lake_env_lean_index(cmd)
+    if lean_idx is not None:
+        lean_args = cmd[lean_idx + 1 :]
+        if "--run" in lean_args or _has_lean_m_arg(lean_args):
+            return list(cmd)
+        return [*cmd[: lean_idx + 1], "-M", str(lean_m_mb), *lean_args]
+    return list(cmd)
+
+
+class _ForwardSignal(BaseException):
+    """Raised when `anneal-lean-run` receives a termination signal."""
+
+    def __init__(self, signum: int) -> None:
+        super().__init__(signum)
+        self.signum = signum
+
+
+def _kill_systemd_scope(
+    unit_name: str | None,
+    proc: subprocess.Popen[Any],
+    runtime_base: Path,
+    user_systemd_sock_alive: bool,
+    grace_sec: float = 2.0,
+) -> None:
+    """Kills a transient systemd scope (including detached grandchildren) + pgid
+    fallback.
+    """
+    systemctl_bin = _find_systemctl() if (unit_name and user_systemd_sock_alive) else None
+    env = _systemd_env(runtime_base, user_systemd_sock_alive)
+
+    if systemctl_bin and unit_name:
+        try:
+            subprocess.run(
+                [systemctl_bin, "--user", "kill", "-s", "SIGTERM", unit_name],
+                env=env,
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                check=False,
+                timeout=2.0,
+            )
+        except Exception:
+            pass
+    try:
+        os.killpg(proc.pid, signal.SIGTERM)
+    except (ProcessLookupError, PermissionError):
+        pass
+
+    deadline = time.monotonic() + grace_sec
+    while time.monotonic() < deadline:
+        if proc.poll() is not None:
+            break
+        time.sleep(0.1)
+
+    if systemctl_bin and unit_name:
+        try:
+            subprocess.run(
+                [systemctl_bin, "--user", "kill", "-s", "SIGKILL", unit_name],
+                env=env,
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                check=False,
+                timeout=2.0,
+            )
+        except Exception:
+            pass
+    try:
+        os.killpg(proc.pid, signal.SIGKILL)
+    except (ProcessLookupError, PermissionError):
+        pass
+    try:
+        proc.wait(timeout=5.0)
+    except Exception:
+        pass
+    if systemctl_bin and unit_name:
+        # Stop/collect transient scope immediately so an early-killed scope
+        # (Tasks=0) does not linger active until RuntimeMaxSec expires.
+        try:
+            subprocess.run(
+                [systemctl_bin, "--user", "stop", unit_name],
+                env=env,
+                stdin=subprocess.DEVNULL,
+                capture_output=True,
+                check=False,
+                timeout=2.0,
+            )
+        except Exception:
+            pass
+
+
+WATCHDOG_INTERVAL_SEC = 2.0
+
+
+class BuildWatchdog:
+    """2.0s mid-build ancestor memory pressure watchdog (multi-ancestor abort).
+    """
+
+    def __init__(
+        self,
+        *,
+        is_cg_capped: bool,
+        capped_ancestors: list[tuple[Path, int]],
+        read_w_fn: Callable[[Path], int] = read_cgroup_working_set_mib,
+        read_local_high_fn: Callable[[Path], int] = read_events_local_high,
+        read_psi_fn: Callable[[Path], float] = read_psi_full_avg10,
+    ) -> None:
+        self.is_cg_capped = is_cg_capped
+        self.capped_ancestors = list(capped_ancestors)
+        self._read_w = read_w_fn
+        self._read_local_high = read_local_high_fn
+        self._read_psi = read_psi_fn
+        self.breach_ticks: int = 0
+        self.prev_local_high: dict[Path, int] = {
+            a_path: self._read_local_high(a_path)
+            for a_path, _ in self.capped_ancestors
+        }
+
+    def tick(self, now: float) -> dict[str, Any]:
+        """Executes one 2.0s watchdog evaluation tick."""
+        del now
+        if not self.is_cg_capped:
+            return {"action": "ok", "breach_ticks": 0}
+
+        any_breached = False
+        for a_path, c_high_a in self.capped_ancestors:
+            cur_local_high = self._read_local_high(a_path)
+            delta_local_high = cur_local_high - self.prev_local_high.get(a_path, 0)
+            # Immediately advance prev_local_high on EVERY tick.
+            self.prev_local_high[a_path] = cur_local_high
+
+            w_a = self._read_w(a_path)
+            psi_full = self._read_psi(a_path)
+            thresh_a = c_high_a - min(1024, _m_safety_cg(c_high_a))
+            if (w_a >= thresh_a) or (delta_local_high > 0 and psi_full >= 20.0):
+                any_breached = True
+
+        if any_breached:
+            self.breach_ticks += 1
+            if self.breach_ticks >= 3:
+                return {"action": "abort_pressure", "breach_ticks": self.breach_ticks}
+        else:
+            self.breach_ticks = 0
+
+        return {"action": "ok", "breach_ticks": self.breach_ticks}
+
+
+# Per-tool parallelism variables of the bounded command (`_resolve_thread_env`).
+_THREAD_ENV_VARS: tuple[str, ...] = (
+    "LEAN_NUM_THREADS",
+    "CARGO_BUILD_JOBS",
+    "RAYON_NUM_THREADS",
+)
+
+
+# Most significant digits of a thread count `_parse_positive_thread_count`
+# accepts: every accepted count is below 10**9, so it is representable as a
+# signed 32-bit integer (Cargo's `build.jobs` type).
+_MAX_THREAD_COUNT_DIGITS = 9
+
+
+def _parse_positive_thread_count(raw: object) -> int | None:
+    """Parse an ASCII base-10 positive integer thread count, or `None`.
+
+    Rejects blank strings, zero/negative values, floats, unary signs, Python
+    underscore literals (`1_2`), and any non-ASCII characters (including Unicode
+    digits and non-ASCII whitespace like NBSP) so Lean, Lake, Cargo, and Rayon
+    never see values their parsers reject. A count with more than
+    `_MAX_THREAD_COUNT_DIGITS` significant digits (leading zeros are not
+    significant) is rejected too: no host has that many threads, such a value
+    may not fit a tool's integer job count, and past
+    `sys.get_int_max_str_digits()` digits `int()` itself raises `ValueError`.
+    """
+    if not isinstance(raw, str) or not raw.isascii():
+        return None
+    stripped = raw.strip()
+    if not stripped or not stripped.isdigit():
+        return None
+    significant = stripped.lstrip("0")
+    if not significant or len(significant) > _MAX_THREAD_COUNT_DIGITS:
+        return None
+    return int(significant)
+
+
+def _resolve_thread_env(
+    threads: int,
+    is_cg_capped: bool,
+    base_env: Mapping[str, str] | None = None,
+) -> dict[str, int]:
+    """Thread count the bounded command runs with, for each `_THREAD_ENV_VARS`
+    variable.
+
+    `threads` is the envelope's thread budget (clamped to at least 1). A
+    positive value the caller already exported (in `base_env`, default
+    `os.environ`) is kept when it is at most that budget, so a caller can always
+    ask for fewer threads (`LEAN_NUM_THREADS=1`). A larger one is clamped to the
+    budget on a memory-capped slice and kept otherwise. Anything else (unset,
+    blank, non-numeric, zero or negative) resolves to the budget.
+    """
+    budget = max(1, int(threads))
+    env = os.environ if base_env is None else base_env
+    resolved: dict[str, int] = {}
+    for var in _THREAD_ENV_VARS:
+        existing = _parse_positive_thread_count(env.get(var))
+        if existing is not None:
+            resolved[var] = min(existing, budget) if is_cg_capped else existing
+        else:
+            resolved[var] = budget
+    return resolved
+
+
+def format_threads_diagnostic(
+    threads: int, child_env: Mapping[str, str] | None = None
+) -> str:
+    """`threads=<n>` field of the timeout / OOM / pressure-abort diagnostics.
+
+    `<n>` is the `LEAN_NUM_THREADS` the command actually ran with (`child_env`,
+    the environment `_build_child_env` handed it), not the envelope's thread
+    budget `threads`: a caller that exported `LEAN_NUM_THREADS=1` on a 3- or
+    64-thread budget ran single-threaded and is reported as `threads=1`. When
+    the two differ, the budget (which `CPUQuota` still reflects) follows as
+    `thread_budget=<threads>`.
+    """
+    budget = max(1, int(threads))
+    effective = budget
+    if child_env is not None:
+        parsed = _parse_positive_thread_count(child_env.get("LEAN_NUM_THREADS"))
+        if parsed is not None:
+            effective = parsed
+    if effective == budget:
+        return f"threads={effective}"
+    return f"threads={effective}, thread_budget={budget}"
+
+
+def _build_child_env(
+    threads: int,
+    lean_m_mb: int,
+    is_cg_capped: bool,
+    runtime_base: Path,
+    user_systemd_sock_alive: bool,
+    base_env: dict[str, str] | None = None,
+) -> dict[str, str]:
+    env = _systemd_env(runtime_base, user_systemd_sock_alive, base_env)
+    env["ANNEAL_LEAN_RUN_IN_SCOPE"] = "1"
+    env["ANNEAL_LEAN_RUN_LEAN_M_MB"] = str(lean_m_mb)
+    for var, count in _resolve_thread_env(threads, is_cg_capped, env).items():
+        env[var] = str(count)
+    return env
+
+
+def _should_bypass_workloads_slice(
+    *,
+    b_max_mb: int,
+    w_slice_max_mb: int,
+) -> bool:
+    """True when `b_max_mb` exceeds `w_slice_max_mb`, requiring `--slice=-.slice`
+    so `anneal-workloads.slice` does not clamp the transient scope's ceiling.
+    """
+    return bool(w_slice_max_mb > 0 and b_max_mb > w_slice_max_mb)
+
+
+def _build_scope_launch_cmd(
+    effective_cmd: list[str],
+    *,
+    b_max_mb: int,
+    threads: int,
+    timeout_sec: int,
+    user_systemd_active: bool,
+    unit_name: str,
+    systemd_version: int | None = None,
+    systemd_run_version: int | None = None,
+    bypass_workloads_slice: bool = False,
+) -> tuple[list[str], bool]:
+    """Builds the bounded command (systemd scope + oom_score_adj=700 wrapper).
+
+    `threads` is the envelope's thread budget. `CPUQuota` is a ceiling for the
+    whole scope (Lake, `lean`, `cargo`, `rustc`, linkers), so it stays at that
+    budget even when the caller exported a smaller `LEAN_NUM_THREADS`
+    (`_resolve_thread_env`), which bounds Lean/Lake workers only; the
+    diagnostics report the smaller count (`format_threads_diagnostic`).
+    """
+    wrapped_cmd = [
+        "/bin/sh",
+        "-c",
+        (
+            'if [ -n "${ANNEAL_LEAN_RUN_SCOPE_MARKER:-}" ]; then '
+            '( : > "$ANNEAL_LEAN_RUN_SCOPE_MARKER" ) 2>/dev/null || true; '
+            "unset ANNEAL_LEAN_RUN_SCOPE_MARKER; fi; "
+            "{ [ -w /proc/self/oom_score_adj ] && "
+            "printf 700 > /proc/self/oom_score_adj; } 2>/dev/null || true; "
+            'exec "$@"'
+        ),
+        "_",
+        *effective_cmd,
+    ]
+    systemd_run_bin = _find_systemd_run() if user_systemd_active else None
+    if user_systemd_active and systemd_run_bin:
+        eff_mgr_ver = (
+            systemd_version
+            if systemd_version is not None
+            else detect_user_systemd_version()
+        )
+        eff_client_ver = (
+            systemd_run_version
+            if systemd_run_version is not None
+            else detect_systemd_run_client_version(systemd_run_bin)
+        )
+        full_cmd = [
+            systemd_run_bin,
+            "--user",
+            "--scope",
+            "--collect",
+            "--quiet",
+        ]
+        # `--expand-environment=no` was introduced in systemd-run client 254.
+        # If client version is unknown, probe `--help` before falling back.
+        if eff_client_ver is not None:
+            use_no_expand = eff_client_ver >= 254
+        else:
+            supports_no_expand = _systemd_run_supports_expand_environment(
+                systemd_run_bin
+            )
+            if supports_no_expand is True:
+                use_no_expand = True
+            elif supports_no_expand is False:
+                use_no_expand = False
+                sys.stderr.write(
+                    "[anneal-lean-run] WARNING: systemd-run client version is "
+                    "unknown and --expand-environment is not listed by "
+                    "--help; omitting --expand-environment=no.\n"
+                )
+            elif eff_mgr_ver is not None and eff_mgr_ver >= 254:
+                use_no_expand = True
+                sys.stderr.write(
+                    "[anneal-lean-run] WARNING: systemd-run --version and "
+                    "--help probes failed; passing --expand-environment=no "
+                    f"because user manager is {eff_mgr_ver} (>= 254).\n"
+                )
+            else:
+                use_no_expand = False
+                sys.stderr.write(
+                    "[anneal-lean-run] WARNING: systemd-run --version and "
+                    "--help probes failed and manager version is <254 or "
+                    "unknown; omitting --expand-environment=no.\n"
+                )
+        if use_no_expand:
+            full_cmd.append("--expand-environment=no")
+        slice_flag = (
+            "--slice=-.slice"
+            if bypass_workloads_slice
+            else "--slice=anneal-workloads.slice"
+        )
+        full_cmd.extend(
+            [
+                slice_flag,
+                f"--unit={unit_name}",
+                "-p",
+                f"MemoryMax={b_max_mb}M",
+                "-p",
+                "MemorySwapMax=0",
+            ]
+        )
+        # OOMPolicy= on scopes requires both user manager and systemd-run >=
+        # 253.
+        if eff_mgr_ver is not None and eff_mgr_ver >= 253:
+            if eff_client_ver is not None and eff_client_ver >= 253:
+                full_cmd.extend(["-p", "OOMPolicy=kill"])
+            elif eff_client_ver is None:
+                sys.stderr.write(
+                    "[anneal-lean-run] WARNING: systemd-run client version is "
+                    "unknown; omitting `-p OOMPolicy=kill`.\n"
+                )
+        elif eff_mgr_ver is None:
+            sys.stderr.write(
+                "[anneal-lean-run] WARNING: User systemd version is unknown; "
+                "omitting `-p OOMPolicy=kill`.\n"
+            )
+        full_cmd.extend(
+            [
+                "-p",
+                f"CPUQuota={threads * 100}%",
+                "-p",
+                f"RuntimeMaxSec={timeout_sec + 5}s",
+                "--",
+                *wrapped_cmd,
+            ]
+        )
+        return full_cmd, True
+    return wrapped_cmd, False
+
+
+def _exec_passthrough(cmd: list[str]) -> int:
+    """Re-entrancy pass-through when already inside `anneal-lean-run` scope."""
+    lean_m_mb = _env_int("ANNEAL_LEAN_RUN_LEAN_M_MB", 0)
+    effective_cmd = inject_lean_m_flag(cmd, lean_m_mb) if lean_m_mb > 0 else list(cmd)
+    os.environ["ANNEAL_LEAN_RUN_IN_SCOPE"] = "1"
+    try:
+        os.execvp(effective_cmd[0], effective_cmd)
+    except FileNotFoundError:
+        sys.stderr.write(
+            f"[anneal-lean-run] ERROR: Command not found: {effective_cmd[0]}\n"
+        )
+        return 127
+    except OSError as exc:
+        sys.stderr.write(
+            f"[anneal-lean-run] ERROR: Failed to exec {effective_cmd[0]}: {exc}\n"
+        )
+        return 126
+
+
+def _normalize_returncode(rc: int) -> int:
+    if rc < 0:
+        return 128 + (-rc)
+    return rc
+
+
+def run_bounded_command(
+    cmd: list[str],
+    limits: dict[str, Any],
+    use_slot_lock: bool,
+    *,
+    exclusive: bool = False,
+    cli_concurrency: int | None = None,
+    override_mem_mb: int | None = None,
+    override_timeout_sec: int | None = None,
+    unsafe_ignore_cgroup: bool = False,
+    probe_fn: Callable[..., dict[str, Any]] | None = None,
+    slot_timeout_override: float | None = None,
+    _keep_signal_shield: bool = False,
+) -> int:
+    """Executes `cmd` inside `anneal-workloads.slice`, locks, and watchdog."""
+    mode = str(limits["mode"])
+    build_slots = int(limits["build_slots"])
+    is_cg_capped = bool(limits.get("is_cg_capped", False))
+    w_slice_max_mb = int(limits.get("w_slice_max_mb", 0))
+    runtime_base = Path(str(limits.get("runtime_base") or "/tmp"))
+
+    if exclusive:
+        need_slot = True
+        slot_timeout = 1200 if mode == "build" else 180
+    elif not use_slot_lock:
+        need_slot = False
+        slot_timeout = 1200 if mode == "build" else 180
+    elif mode == "build":
+        need_slot = True
+        slot_timeout = 1200
+    elif mode == "file" and is_cg_capped and w_slice_max_mb < 16384:
+        need_slot = True
+        slot_timeout = 180
+    else:
+        need_slot = False
+        slot_timeout = 180
+
+    def _reprobe() -> dict[str, Any]:
+        eff_probe = probe_fn if probe_fn is not None else probe_host_envelope
+        return eff_probe(
+            cli_concurrency=cli_concurrency,
+            exclusive=exclusive,
+            mode=mode,
+            override_mem_mb=override_mem_mb,
+            override_timeout_sec=override_timeout_sec,
+            unsafe_ignore_cgroup=unsafe_ignore_cgroup,
+        )
+
+    candidate_sigs = tuple(
+        sig
+        for sig in (
+            signal.SIGTERM,
+            signal.SIGHUP,
+            signal.SIGINT,
+            getattr(signal, "SIGQUIT", None),
+        )
+        if sig is not None
+    )
+    # Honor inherited SIG_IGN dispositions (e.g., `nohup` SIGHUP or background
+    # SIGINT/SIGQUIT) so neither wrapper nor child loses signal immunity.
+    handled_sigs = tuple(
+        sig
+        for sig in candidate_sigs
+        if signal.getsignal(sig) is not signal.SIG_IGN
+    )
+    has_sigmask = hasattr(signal, "pthread_sigmask")
+    prev_handlers: dict[int, Any] = {}
+    prev_sigmask: set[int] | None = None
+    first_sig: int | None = None
+    signals_blocked = False
+
+    def _block_handled() -> None:
+        nonlocal signals_blocked
+        if has_sigmask and handled_sigs and not signals_blocked:
+            signal.pthread_sigmask(signal.SIG_BLOCK, handled_sigs)
+            signals_blocked = True
+
+    def _unblock_handled() -> None:
+        nonlocal signals_blocked
+        if has_sigmask and signals_blocked:
+            to_unblock = (
+                set(handled_sigs) - set(prev_sigmask)
+                if prev_sigmask is not None
+                else set(handled_sigs)
+            )
+            signals_blocked = False
+            if to_unblock:
+                signal.pthread_sigmask(signal.SIG_UNBLOCK, to_unblock)
+
+    def _handle_signal(signum: int, _frame: object) -> None:
+        nonlocal first_sig
+        # Keep callable installed (never SIG_IGN) so CPython never emits
+        # `Signal N ignored due to race condition` on simultaneous signals.
+        if first_sig is None:
+            first_sig = signum
+            raise _ForwardSignal(signum)
+
+    def _check_pending_first_sig() -> int | None:
+        nonlocal first_sig
+        if first_sig is not None:
+            return first_sig
+        if handled_sigs and hasattr(signal, "sigpending"):
+            pending = signal.sigpending() & set(handled_sigs)
+            if pending:
+                first_sig = min(pending)
+                return first_sig
+        return None
+
+    def _return_with_pending_sig(code: int) -> int:
+        sig = _check_pending_first_sig()
+        return (128 + sig) if sig is not None else code
+
+    def _restore_child_sigmask() -> None:
+        # Reset wrapped dispositions to SIG_DFL (preserving SIG_IGN) before
+        # unmasking so a process-group signal hitting the pre-exec child never
+        # invokes `_handle_signal` or raises `SubprocessError` in `preexec_fn`.
+        for sig in handled_sigs:
+            signal.signal(
+                sig,
+                signal.SIG_IGN
+                if prev_handlers.get(sig) is signal.SIG_IGN
+                else signal.SIG_DFL,
+            )
+        if has_sigmask and prev_sigmask is not None:
+            signal.pthread_sigmask(signal.SIG_SETMASK, prev_sigmask)
+
+    def _run_single_attempt(
+        att_limits: dict[str, Any],
+        att_timeout: int,
+        *,
+        force_no_systemd: bool = False,
+    ) -> tuple[
+        int, bool, bool, bool, float | None, str, bool, dict[str, Any] | None
+    ]:
+        nonlocal first_sig
+        att_threads = int(att_limits["threads"])
+        att_b_max = int(att_limits["memory_max_mb"])
+        att_lean_m = int(att_limits["lean_m_mb"])
+        att_user_systemd = (
+            False
+            if force_no_systemd
+            else bool(att_limits.get("user_systemd_active", False))
+        )
+        att_systemd_ver = att_limits.get("systemd_version")
+        att_srun_ver = att_limits.get("systemd_run_version")
+        att_capped = bool(att_limits.get("is_cg_capped", False))
+        att_rt_base = Path(str(att_limits.get("runtime_base") or runtime_base))
+        att_sock_alive = att_user_systemd or _has_user_systemd_sock(att_rt_base)
+
+        att_w_slice_max = int(att_limits.get("w_slice_max_mb", 0))
+        att_bypass_slice = _should_bypass_workloads_slice(
+            b_max_mb=att_b_max,
+            w_slice_max_mb=att_w_slice_max,
+        )
+
+        effective_cmd = inject_lean_m_flag(cmd, att_lean_m)
+        unit_name = f"anneal-run-{os.getpid()}-{time.monotonic_ns()}.scope"
+        full_cmd, in_scope = _build_scope_launch_cmd(
+            effective_cmd,
+            b_max_mb=att_b_max,
+            threads=att_threads,
+            timeout_sec=att_timeout,
+            user_systemd_active=att_user_systemd,
+            unit_name=unit_name,
+            systemd_version=att_systemd_ver,
+            systemd_run_version=att_srun_ver,
+            bypass_workloads_slice=att_bypass_slice,
+        )
+        env = _build_child_env(
+            threads=att_threads,
+            lean_m_mb=att_lean_m,
+            is_cg_capped=att_capped,
+            runtime_base=att_rt_base,
+            user_systemd_sock_alive=att_sock_alive,
+        )
+        att_threads_diag = format_threads_diagnostic(att_threads, env)
+
+        w_cg_raw = att_limits.get("w_cg_path")
+        w_cg_p = Path(w_cg_raw) if w_cg_raw else None
+        t_cg_raw = att_limits.get("t_cg_path")
+        t_cg_p = Path(t_cg_raw) if t_cg_raw else None
+        scope_parent_cg = (
+            (t_cg_p if t_cg_p is not None else w_cg_p)
+            if att_bypass_slice
+            else w_cg_p
+        )
+        scope_cg = (
+            (scope_parent_cg / unit_name)
+            if (in_scope and scope_parent_cg is not None)
+            else None
+        )
+        cap_ancs = [
+            (Path(str(a["path"])), int(a["c_high_mb"]))
+            for a in (att_limits.get("capped_ancestors") or [])
+        ]
+        watchdog: BuildWatchdog | None = None
+        if (
+            att_user_systemd
+            and in_scope
+            and not (unsafe_ignore_cgroup and att_bypass_slice)
+        ):
+            watchdog = BuildWatchdog(
+                is_cg_capped=att_capped,
+                capped_ancestors=cap_ancs,
+            )
+
+        att_rc = 0
+        norm_rc = 0
+        att_timed_out = False
+        att_wd_aborted = False
+        att_oom_evt = False
+        att_pressure_budget: float | None = None
+        fallback_reason: str | None = None
+        scope_snap: dict[str, Any] | None = None
+        live_scope_snap: dict[str, Any] | None = None
+        live_scope_peak_mib: int | None = None
+        scope_oom_seen = 0
+        marker_seen = False
+        marker_dir_intact = True
+        deadline = time.monotonic() + att_timeout
+
+        slice_oom_before: int | None = None
+        user_cg_oom_before: int | None = None
+        if in_scope and scope_parent_cg is not None:
+            try:
+                if (scope_parent_cg / "memory.events").is_file():
+                    slice_oom_before = _read_memory_events_oom_kill(
+                        scope_parent_cg
+                    )
+                elif not scope_parent_cg.exists():
+                    # Cold slice not yet lazily instantiated by systemd-run;
+                    # its kernel `memory.events` `oom_kill` counter starts at 0.
+                    slice_oom_before = 0
+            except OSError:
+                slice_oom_before = None
+        if in_scope and t_cg_p is not None and t_cg_p != scope_parent_cg:
+            try:
+                if (t_cg_p / "memory.events").is_file():
+                    user_cg_oom_before = _read_memory_events_oom_kill(t_cg_p)
+                elif not t_cg_p.exists():
+                    user_cg_oom_before = 0
+            except OSError:
+                user_cg_oom_before = None
+
+        def _sample_scope_cg() -> dict[str, Any] | None:
+            if scope_cg is None:
+                return None
+            snap = _probe_cgroup_v2_dir(scope_cg)
+            if not snap.get("cgroup_v2"):
+                return None
+            snap["cgroup_snapshot_source"] = "target scope"
+            return snap
+
+        # Block signals around marker_dir creation, Popen launch, and cleanup
+        # so no signal can orphan the child or leak anneal-scope-marker-*.
+        _block_handled()
+        with tempfile.TemporaryDirectory(prefix="anneal-scope-marker-") as marker_dir:
+            marker_dir_path = Path(marker_dir)
+            entered_marker = marker_dir_path / "entered"
+            if in_scope:
+                env["ANNEAL_LEAN_RUN_SCOPE_MARKER"] = str(entered_marker)
+            else:
+                env.pop("ANNEAL_LEAN_RUN_SCOPE_MARKER", None)
+
+            proc: subprocess.Popen[Any] | None = None
+            try:
+                popen_kwargs: dict[str, Any] = {
+                    "env": env,
+                    "start_new_session": True,
+                }
+                if handled_sigs:
+                    popen_kwargs["preexec_fn"] = _restore_child_sigmask
+                try:
+                    proc = subprocess.Popen(full_cmd, **popen_kwargs)
+                except OSError as exc:
+                    if in_scope:
+                        fallback_reason = (
+                            "[anneal-lean-run] WARNING: systemd-run --user "
+                            f"--scope failed to launch ({exc}); falling back "
+                            "to uncapped process-group execution.\n"
+                        )
+                    else:
+                        raise
+
+                if fallback_reason is None:
+                    assert proc is not None
+                    next_watchdog_tick = (
+                        time.monotonic() + WATCHDOG_INTERVAL_SEC
+                    )
+                    _unblock_handled()
+                    while True:
+                        now = time.monotonic()
+                        rem = deadline - now
+                        if rem <= 0:
+                            _block_handled()
+                            att_timed_out = True
+                            cg_snap = format_cgroup_diagnostic_snapshot(pid=proc.pid)
+                            _kill_systemd_scope(
+                                unit_name if in_scope else None,
+                                proc,
+                                att_rt_base,
+                                att_sock_alive,
+                            )
+                            if in_scope:
+                                cap_desc = f"MemoryMax={att_b_max}M"
+                            elif att_lean_m > 0:
+                                cap_desc = (
+                                    f"lean -M {att_lean_m}, no cgroup MemoryMax"
+                                )
+                            else:
+                                cap_desc = (
+                                    "skipping lean -M injection (budget=0), "
+                                    "no cgroup MemoryMax"
+                                )
+                            sys.stderr.write(
+                                f"\n[anneal-lean-run] ERROR: Command timed out "
+                                f"after {att_timeout}s (mode={mode}, "
+                                f"{cap_desc}, {att_threads_diag}).\n"
+                                f"{cg_snap}"
+                                "  Remediation: Inspect slow goals interactively "
+                                "in Lean 4 LSP and apply the proof-scaling "
+                                "patterns in "
+                                "`anneal/skills/proof-scaling/SKILL.md` "
+                                "(`@[irreducible]` barriers, `Anneal.SpineForce`, "
+                                "`Anneal.PTree`).\n"
+                            )
+                            att_rc = 124
+                            break
+                        if in_scope and not marker_seen:
+                            step = min(0.05, rem)
+                            if watchdog is not None:
+                                step = min(
+                                    step, max(0.0, next_watchdog_tick - now)
+                                )
+                        elif watchdog is not None:
+                            step = min(max(0.0, next_watchdog_tick - now), rem)
+                        else:
+                            step = rem
+                        try:
+                            att_rc = proc.wait(timeout=step)
+                            _block_handled()
+                            if in_scope:
+                                marker_seen = marker_seen or entered_marker.exists()
+                                marker_dir_intact = (
+                                    marker_dir_intact and marker_dir_path.is_dir()
+                                )
+                            break
+                        except subprocess.TimeoutExpired:
+                            if in_scope:
+                                marker_seen = marker_seen or entered_marker.exists()
+                                marker_dir_intact = (
+                                    marker_dir_intact and marker_dir_path.is_dir()
+                                )
+                            if scope_cg is not None:
+                                scope_oom_seen = max(
+                                    scope_oom_seen,
+                                    _read_memory_events_oom_kill(scope_cg),
+                                )
+                                cur_scope_snap = _sample_scope_cg()
+                                if cur_scope_snap is not None:
+                                    live_scope_snap = cur_scope_snap
+                                    pk = cur_scope_snap.get("cgroup_peak_mib")
+                                    if pk is not None and (
+                                        live_scope_peak_mib is None
+                                        or pk > live_scope_peak_mib
+                                    ):
+                                        live_scope_peak_mib = pk
+                            if watchdog is not None:
+                                now_after = time.monotonic()
+                                if now_after >= next_watchdog_tick:
+                                    next_watchdog_tick = (
+                                        now_after + WATCHDOG_INTERVAL_SEC
+                                    )
+                                    wd_res = watchdog.tick(now_after)
+                                    if wd_res.get("action") == "abort_pressure":
+                                        _block_handled()
+                                        att_wd_aborted = True
+                                        try:
+                                            fresh = _reprobe()
+                                            w_self = (
+                                                read_cgroup_working_set_mib(
+                                                    scope_cg
+                                                )
+                                                if scope_cg is not None
+                                                else 0
+                                            )
+                                            w_sibs = max(
+                                                0,
+                                                int(fresh.get("w_cg_mb", 0))
+                                                - w_self,
+                                            )
+                                            live_avail = max(
+                                                0,
+                                                int(fresh.get("w_live_mb", 0))
+                                                - w_sibs,
+                                            )
+                                            att_pressure_budget = round(
+                                                min(att_b_max, live_avail)
+                                                / 1024.0,
+                                                2,
+                                            )
+                                        except Exception:
+                                            att_pressure_budget = round(
+                                                att_b_max / 1024.0, 2
+                                            )
+                                        _kill_systemd_scope(
+                                            unit_name if in_scope else None,
+                                            proc,
+                                            att_rt_base,
+                                            att_sock_alive,
+                                        )
+                                        sys.stderr.write(
+                                            "\n[anneal-lean-run] ERROR: "
+                                            "USER_SLICE_PRESSURE_ABORT: "
+                                            "Aborted build after 3 consecutive "
+                                            "ancestor pressure ticks "
+                                            f"(mode={mode}, "
+                                            f"{att_threads_diag}, "
+                                            "budget_gb="
+                                            f"{att_pressure_budget:.2f}).\n"
+                                        )
+                                        att_rc = 137
+                                        break
+            except _ForwardSignal as caught:
+                _block_handled()
+                if first_sig is None:
+                    first_sig = caught.signum
+                if proc is not None:
+                    _kill_systemd_scope(
+                        unit_name if in_scope else None,
+                        proc,
+                        att_rt_base,
+                        att_sock_alive,
+                    )
+                return (
+                    128 + first_sig,
+                    False,
+                    False,
+                    False,
+                    None,
+                    att_threads_diag,
+                    in_scope,
+                    None,
+                )
+            finally:
+                _block_handled()
+                if proc is not None and proc.poll() is None:
+                    _kill_systemd_scope(
+                        unit_name if in_scope else None,
+                        proc,
+                        att_rt_base,
+                        att_sock_alive,
+                    )
+
+            if fallback_reason is None:
+                norm_rc = _normalize_returncode(att_rc)
+                if (
+                    not att_wd_aborted
+                    and not att_timed_out
+                    and in_scope
+                    and scope_parent_cg is not None
+                ):
+                    assert scope_cg is not None
+                    scope_oom_post = _read_memory_events_oom_kill(scope_cg)
+                    post_snap: dict[str, Any] | None = None
+                    if (
+                        scope_oom_seen > 0
+                        or scope_oom_post > 0
+                        or norm_rc == 137
+                    ):
+                        post_snap = _sample_scope_cg()
+                    if (
+                        scope_oom_seen == 0
+                        and scope_oom_post == 0
+                        and norm_rc == 137
+                    ):
+                        try:
+                            if not scope_cg.is_dir():
+                                if (
+                                    slice_oom_before is not None
+                                    and (
+                                        scope_parent_cg / "memory.events"
+                                    ).is_file()
+                                ):
+                                    slice_oom_after = (
+                                        _read_memory_events_oom_kill(
+                                            scope_parent_cg
+                                        )
+                                    )
+                                    if slice_oom_after > slice_oom_before:
+                                        scope_oom_post = (
+                                            slice_oom_after - slice_oom_before
+                                        )
+                                elif (
+                                    not scope_parent_cg.is_dir()
+                                    and t_cg_p is not None
+                                    and user_cg_oom_before is not None
+                                    and (t_cg_p / "memory.events").is_file()
+                                ):
+                                    user_cg_oom_after = (
+                                        _read_memory_events_oom_kill(t_cg_p)
+                                    )
+                                    if user_cg_oom_after > user_cg_oom_before:
+                                        scope_oom_post = (
+                                            user_cg_oom_after
+                                            - user_cg_oom_before
+                                        )
+                        except OSError:
+                            pass
+                    att_oom_evt = (scope_oom_seen > 0) or (scope_oom_post > 0)
+                    if att_oom_evt or norm_rc == 137:
+                        if post_snap is not None and (
+                            live_scope_snap is None
+                            or (post_snap.get("cgroup_anon_shmem_mib") or 0) > 0
+                        ):
+                            scope_snap = post_snap
+                        elif live_scope_snap is not None:
+                            scope_snap = dict(live_scope_snap)
+                            if post_snap is not None:
+                                pk = post_snap.get("cgroup_peak_mib")
+                                if pk is not None and (
+                                    live_scope_peak_mib is None
+                                    or pk > live_scope_peak_mib
+                                ):
+                                    live_scope_peak_mib = pk
+                        if (
+                            scope_snap is not None
+                            and live_scope_peak_mib is not None
+                        ):
+                            prev_pk = scope_snap.get("cgroup_peak_mib")
+                            if (
+                                prev_pk is None
+                                or live_scope_peak_mib > prev_pk
+                            ):
+                                scope_snap["cgroup_peak_mib"] = (
+                                    live_scope_peak_mib
+                                )
+                        if scope_snap is None and scope_parent_cg.is_dir():
+                            slice_snap = _probe_cgroup_v2_dir(scope_parent_cg)
+                            if slice_snap.get("cgroup_v2"):
+                                slice_snap["cgroup_snapshot_source"] = (
+                                    "user service cgroup (scope collected)"
+                                    if (
+                                        att_bypass_slice
+                                        and scope_parent_cg == t_cg_p
+                                    )
+                                    else "target slice (scope collected)"
+                                )
+                                scope_snap = slice_snap
+                        elif (
+                            scope_snap is None
+                            and t_cg_p is not None
+                            and t_cg_p.is_dir()
+                        ):
+                            user_snap = _probe_cgroup_v2_dir(t_cg_p)
+                            if user_snap.get("cgroup_v2"):
+                                user_snap["cgroup_snapshot_source"] = (
+                                    "user service cgroup (scope collected)"
+                                )
+                                scope_snap = user_snap
+
+                if (
+                    in_scope
+                    and att_rc > 0
+                    and norm_rc < 128
+                    and not att_wd_aborted
+                    and not att_timed_out
+                    and not marker_seen
+                    and marker_dir_intact
+                    and marker_dir_path.is_dir()
+                ):
+                    fallback_reason = (
+                        f"[anneal-lean-run] WARNING: systemd-run --user --scope exited "
+                        f"{norm_rc} before launching command; falling back to uncapped "
+                        "process-group execution (no cgroup MemoryMax).\n"
+                    )
+
+        if fallback_reason is not None:
+            sys.stderr.write(fallback_reason)
+            _unblock_handled()
+            rem_timeout = max(1, int(deadline - time.monotonic()))
+            return _run_single_attempt(
+                att_limits, rem_timeout, force_no_systemd=True
+            )
+
+        return (
+            norm_rc,
+            att_timed_out,
+            att_wd_aborted,
+            att_oom_evt,
+            att_pressure_budget,
+            att_threads_diag,
+            in_scope,
+            scope_snap,
+        )
+
+    eff_slot_timeout = (
+        float(slot_timeout_override)
+        if slot_timeout_override is not None
+        else float(slot_timeout)
+    )
+
+    if has_sigmask and handled_sigs:
+        prev_sigmask = set(signal.pthread_sigmask(signal.SIG_BLOCK, handled_sigs))
+        signals_blocked = True
+    for sig in handled_sigs:
+        prev_handlers[sig] = signal.getsignal(sig)
+        signal.signal(sig, _handle_signal)
+
+    try:
+        try:
+            with _systemd_probe_cache_scope():
+                # Reconcile slice unit under active signal shield so early
+                # signals cannot interrupt atomic replacement or strand files.
+                init_bypass_slice = _should_bypass_workloads_slice(
+                    b_max_mb=int(limits.get("memory_max_mb", 0)),
+                    w_slice_max_mb=w_slice_max_mb,
+                )
+                if (
+                    not init_bypass_slice
+                    and limits.get("user_systemd_active")
+                    and limits.get("t_cg_is_user_service")
+                ):
+                    ok_slice, _, slice_msg = ensure_workloads_slice(limits)
+                    if not ok_slice:
+                        _warn_once(
+                            ("ensure_slice_failed", slice_msg),
+                            f"[anneal-lean-run] WARNING: {slice_msg}\n",
+                        )
+                _unblock_handled()
+                with acquire_build_slot(
+                    build_slots,
+                    eff_slot_timeout,
+                    enabled=need_slot,
+                    exclusive=exclusive,
+                    runtime_base=runtime_base,
+                ):
+                    cur_limits = _reprobe()
+                    b_max_1 = int(cur_limits["memory_max_mb"])
+                    timeout_1 = int(cur_limits["timeout_sec"])
+
+                    will_enforce_scope = bool(
+                        cur_limits.get("user_systemd_active")
+                        and _find_systemd_run() is not None
+                    )
+                    if not will_enforce_scope and override_mem_mb is not None:
+                        sys.stderr.write(
+                            f"[anneal-lean-run] WARNING: "
+                            f"--memory-max-mb={override_mem_mb} requested "
+                            "without an active systemd user scope; no hard OS "
+                            "memory cap is enforced (only `lean -M` applies "
+                            "to `lean`/`lake env lean`, not "
+                            "`lake build`/`cargo`).\n"
+                        )
+                    elif (
+                        will_enforce_scope
+                        and unsafe_ignore_cgroup
+                        and override_mem_mb is not None
+                        and cur_limits.get("is_cg_capped")
+                        and b_max_1 > int(cur_limits.get("c_high_mb", b_max_1))
+                    ):
+                        c_high_cur = int(cur_limits["c_high_mb"])
+                        a_lim_cur = cur_limits.get("a_lim_path") or "ancestor"
+                        _warn_once(
+                            ("unsafe_exceeds_ancestor_cg", b_max_1, c_high_cur),
+                            f"[anneal-lean-run] WARNING: "
+                            f"--unsafe-ignore-cgroup --memory-max-mb={b_max_1} "
+                            "bypassed `anneal-workloads.slice`, but ancestor "
+                            f"cgroup ceiling C_high={c_high_cur}M "
+                            f"({a_lim_cur}) is enforced above user systemd and "
+                            "still bounds total memory.\n",
+                        )
+
+                    # Fail-fast admission gate only when MemoryMax is enforced.
+                    will_enforce_cgroup = bool(
+                        will_enforce_scope
+                        and cur_limits.get("t_cg_is_user_service", True)
+                    )
+                    min_required = 2048 if mode == "build" else 1024
+                    if (
+                        will_enforce_cgroup
+                        and override_mem_mb is None
+                        and b_max_1 < min_required
+                    ):
+                        budget_gb = round(b_max_1 / 1024.0, 2)
+                        sys.stderr.write(
+                            "[anneal-lean-run] ERROR: "
+                            "INSUFFICIENT_CGROUP_HEADROOM: "
+                            f"Computed MemoryMax={b_max_1}M < "
+                            f"{min_required}M for mode={mode} "
+                            f"(budget_gb={budget_gb:.2f}). Refusing to launch "
+                            "under low cgroup headroom (pass "
+                            "--memory-max-mb <MiB> to override).\n"
+                        )
+                        _block_handled()
+                        return _return_with_pending_sig(137)
+                    if (
+                        not will_enforce_cgroup
+                        and override_mem_mb is None
+                        and b_max_1 < min_required
+                    ):
+                        lean_m_cur = int(cur_limits["lean_m_mb"])
+                        lean_m_note = (
+                            f"injecting lean -M {lean_m_cur}"
+                            if lean_m_cur > 0
+                            else "skipping lean -M injection (budget=0)"
+                        )
+                        sys.stderr.write(
+                            "[anneal-lean-run] WARNING: LOW_MEMORY_HEADROOM: "
+                            f"Computed budget={b_max_1}M < {min_required}M for "
+                            f"mode={mode} (no cgroup MemoryMax enforced; "
+                            f"{lean_m_note}, pass --memory-max-mb <MiB> to "
+                            "override).\n"
+                        )
+
+                    (
+                        rc,
+                        timed_out,
+                        watchdog_aborted,
+                        oom_evt,
+                        _,
+                        final_threads_diag,
+                        used_scope,
+                        scope_snap,
+                    ) = _run_single_attempt(cur_limits, timeout_1)
+                    final_b_max = b_max_1
+
+                    pending_sig = _check_pending_first_sig()
+                    if pending_sig is not None:
+                        return 128 + pending_sig
+                    if watchdog_aborted:
+                        return _return_with_pending_sig(137)
+                    if timed_out:
+                        return _return_with_pending_sig(124)
+                    if oom_evt:
+                        local_budget_gb = round(final_b_max / 1024.0, 2)
+                        cg_snap = format_cgroup_diagnostic_snapshot(
+                            cg=scope_snap, fallback_label="wrapper cgroup"
+                        )
+                        sys.stderr.write(
+                            "\n[anneal-lean-run] ERROR: Command was "
+                            "terminated by the OS memory guard (cgroup OOM "
+                            f"kill, exit 137, MemoryMax={final_b_max}M, "
+                            f"MemorySwapMax=0, mode={mode}, "
+                            f"{final_threads_diag}, "
+                            f"budget_gb={local_budget_gb:.2f}).\n"
+                            f"{cg_snap}"
+                            "  Why: The process exceeded its hardware-matched "
+                            "physical RAM ceiling and was killed before it "
+                            "could thrash host swap.\n"
+                            "  Remediation: Apply the algebraic "
+                            "representation shifts and kernel reduction "
+                            "controls in `anneal/skills/proof-scaling/SKILL.md` "
+                            "(`@[irreducible]` barriers, `Anneal.SpineForce`, "
+                            "`Anneal.PTree`).\n"
+                        )
+                        return _return_with_pending_sig(137)
+                    if used_scope and rc == 137:
+                        local_budget_gb = round(final_b_max / 1024.0, 2)
+                        cg_snap = format_cgroup_diagnostic_snapshot(
+                            cg=scope_snap,
+                            fallback_label=(
+                                "wrapper cgroup; target scope already collected"
+                            ),
+                        )
+                        sys.stderr.write(
+                            "\n[anneal-lean-run] ERROR: Command terminated by "
+                            "SIGKILL / exit 137 under cgroup "
+                            f"MemoryMax={final_b_max}M (MemorySwapMax=0, "
+                            f"mode={mode}, {final_threads_diag}, "
+                            f"budget_gb={local_budget_gb:.2f}); cgroup "
+                            "memory.events oom_kill was not observed (may "
+                            "indicate an external SIGKILL, explicit exit 137, "
+                            "or already-collected transient scope).\n"
+                            f"{cg_snap}"
+                            "  Remediation: If caused by memory exhaustion, "
+                            "apply the proof-scaling patterns in "
+                            "`anneal/skills/proof-scaling/SKILL.md` "
+                            "(`@[irreducible]` barriers, `Anneal.SpineForce`, "
+                            "`Anneal.PTree`).\n"
+                        )
+                        return _return_with_pending_sig(137)
+                    if rc == 137:
+                        cg_snap = format_cgroup_diagnostic_snapshot(
+                            fallback_label="shared cgroup"
+                        )
+                        lean_m = int(cur_limits["lean_m_mb"])
+                        lean_m_desc = (
+                            f"lean -M {lean_m}"
+                            if lean_m > 0
+                            else "skipping lean -M injection (budget=0)"
+                        )
+                        sys.stderr.write(
+                            "\n[anneal-lean-run] ERROR: Command exited with "
+                            "137 / SIGKILL (no cgroup MemoryMax was active; "
+                            f"mode={mode}, {lean_m_desc}, "
+                            f"{final_threads_diag}).\n"
+                            f"{cg_snap}"
+                            "  Remediation: Inspect proof memory usage and "
+                            "apply the proof-scaling patterns in "
+                            "`anneal/skills/proof-scaling/SKILL.md` "
+                            "(`@[irreducible]` barriers, `Anneal.SpineForce`, "
+                            "`Anneal.PTree`).\n"
+                        )
+                        return _return_with_pending_sig(137)
+
+                    return _return_with_pending_sig(rc)
+        except (TimeoutError, FileNotFoundError, PermissionError, OSError) as exc:
+            _block_handled()
+            pending_sig = _check_pending_first_sig()
+            if pending_sig is not None:
+                return 128 + pending_sig
+            sys.stderr.write(f"[anneal-lean-run] ERROR: {exc}\n")
+            if isinstance(exc, TimeoutError):
+                return _return_with_pending_sig(124)
+            if isinstance(exc, FileNotFoundError):
+                return _return_with_pending_sig(127)
+            if isinstance(exc, PermissionError):
+                return _return_with_pending_sig(126)
+            return _return_with_pending_sig(1)
+    except _ForwardSignal as caught:
+        _block_handled()
+        if first_sig is None:
+            first_sig = caught.signum
+        return 128 + first_sig
+    finally:
+        # Keep active signals blocked while restoring previous handlers so
+        # `_ForwardSignal` can never escape after leaving the try block. In CLI
+        # mode (`_keep_signal_shield=True`), leave handled signals blocked
+        # through `sys.exit()` so late teardown signals cannot hit `SIG_DFL`
+        # or raise `KeyboardInterrupt`.
+        _block_handled()
+        if not _keep_signal_shield:
+            for sig, handler in prev_handlers.items():
+                signal.signal(sig, handler)
+            if has_sigmask and prev_sigmask is not None:
+                signal.pthread_sigmask(signal.SIG_SETMASK, prev_sigmask)
+
+
+def _positive_int(raw: str, *, max_value: int | None = None) -> int:
+    val = _parse_bounded_ascii_int(raw)
+    if val is None:
+        raise argparse.ArgumentTypeError(
+            f"invalid positive integer: {_token_preview(raw)}"
+        )
+    if val < 1:
+        raise argparse.ArgumentTypeError(f"must be a positive integer (>= 1), got {val}")
+    if max_value is not None and val > max_value:
+        raise argparse.ArgumentTypeError(
+            f"must be <= {max_value}, got {val}"
+        )
+    return val
+
+
+def _bounded_positive_int(max_value: int) -> Callable[[str], int]:
+    return lambda raw: _positive_int(raw, max_value=max_value)
+
+
+def build_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(
+        description=(
+            "Run `lake`, `lean`, or `cargo` commands with hardware-matched "
+            "CPU thread, physical RAM (`MemoryMax`), zero-swap "
+            "(`MemorySwapMax=0`), and wall-clock timeout limits via user "
+            "systemd (`anneal-workloads.slice`, reconciled idempotently on change)."
+        )
+    )
+    p.add_argument(
+        "--probe",
+        "--print-limits",
+        dest="probe",
+        action="store_true",
+        help=(
+            "Print detected host hardware, cgroup v2 workload envelope, and "
+            "computed resource limits without running a command."
+        ),
+    )
+    p.add_argument(
+        "--ensure-slice",
+        action="store_true",
+        help=(
+            "Idempotently create/update `anneal-workloads.slice` (`MemoryHigh` "
+            "at 94%%, `MemoryMax`, `MemorySwapMax=0`, and "
+            "`ManagedOOMMemoryPressure=kill` at 40%% PSI) in the running "
+            "`systemd --user` manager's `UnitPath` user config directory "
+            "(reloading user systemd only on change) when `systemd --user` is "
+            "active under `user@<uid>.service`. Command execution also "
+            "reconciles this unit unless bypassing the slice."
+        ),
+    )
+    p.add_argument(
+        "--json",
+        action="store_true",
+        help=(
+            "Format `--probe` / `--print-limits` or `--ensure-slice` output as JSON."
+        ),
+    )
+    p.add_argument(
+        "--mode",
+        choices=("auto", "file", "build"),
+        default="auto",
+        help=(
+            "Resource profile: 'file' for single-file `lean` checks, 'build' "
+            "for `lake build`/`cargo` (default: auto)."
+        ),
+    )
+    p.add_argument(
+        "--concurrency",
+        "-W",
+        type=_bounded_positive_int(MAX_CONCURRENCY),
+        default=None,
+        help=(
+            "Number of concurrent active build worktrees sharing this host "
+            "(default: $ANNEAL_WORKTREE_CONCURRENCY, "
+            "`$XDG_CONFIG_HOME/anneal/concurrency`, or 1)."
+        ),
+    )
+    p.add_argument(
+        "--exclusive",
+        action="store_true",
+        help=(
+            "Acquire exclusive slotted-build lock across worktrees via "
+            "writer-priority intent gating (`exclusive_intent.lock` blocks "
+            "new slotted callers immediately while draining active slotted "
+            "builds through `exclusive.lock`), then lock all `1..build_slots` "
+            "slots and run with `w_eff = 1` (forces locking even in `file` "
+            "mode; unslotted `--no-slot-lock` or uncapped `--mode file` "
+            "invocations do not contend)."
+        ),
+    )
+    p.add_argument(
+        "--memory-max-mb",
+        type=_bounded_positive_int(MAX_MEMORY_MAX_MB),
+        default=_env_optional_pos_int(
+            "ANNEAL_LEAN_MEMORY_MAX_MB", max_value=MAX_MEMORY_MAX_MB
+        ),
+        help=(
+            "Override the computed hard physical RAM ceiling in MiB "
+            f"(1..{MAX_MEMORY_MAX_MB}; cgroup hard cap requires active user "
+            "systemd scope on Linux -- without it on non-systemd Linux or "
+            "macOS, only `lean -M` applies to `lean`/`lake env lean`)."
+        ),
+    )
+    p.add_argument(
+        "--unsafe-ignore-cgroup",
+        action="store_true",
+        help=(
+            "Allow explicit `--memory-max-mb` to exceed `W_slice_max` on "
+            "cgroup-capped hosts by launching the transient scope outside "
+            "`anneal-workloads.slice` (root-owned ancestor cgroup "
+            "`memory.max` limits still apply)."
+        ),
+    )
+    p.add_argument(
+        "--timeout",
+        type=_bounded_positive_int(MAX_TIMEOUT_SEC),
+        default=_env_optional_pos_int(
+            "ANNEAL_LEAN_TIMEOUT_SEC", max_value=MAX_TIMEOUT_SEC
+        ),
+        help=(
+            "Override the wall-clock timeout in seconds "
+            f"(1..{MAX_TIMEOUT_SEC}; default: 180s for file, 900s for build)."
+        ),
+    )
+    p.add_argument(
+        "--no-slot-lock",
+        action="store_true",
+        help="Disable the host-wide concurrent build slot lock (ignored with `--exclusive`).",
+    )
+    p.add_argument(
+        "--nested-ok",
+        action="store_true",
+        help="Disable `ANNEAL_LEAN_RUN_IN_SCOPE=1` re-entrancy pass-through.",
+    )
+    p.add_argument(
+        "cmd",
+        nargs=argparse.REMAINDER,
+        help=(
+            "Command and arguments to execute (e.g., `lake build` or "
+            "`lake env lean File.lean`)."
+        ),
+    )
+    return p
+
+
+def main(
+    argv: list[str] | None = None,
+    *,
+    _keep_signal_shield: bool = False,
+) -> int:
+    try:
+        with _systemd_probe_cache_scope():
+            parser = build_parser()
+            args = parser.parse_args(argv)
+
+            cmd = list(args.cmd)
+            if cmd and cmd[0] == "--":
+                cmd = cmd[1:]
+
+            if args.ensure_slice:
+                env_info = probe_host_envelope(
+                    cli_concurrency=args.concurrency,
+                    exclusive=args.exclusive,
+                    is_probe=True,
+                    mode="build",
+                )
+                ok, changed, msg = ensure_workloads_slice(env_info)
+                if not ok:
+                    sys.stderr.write(f"[anneal-lean-run] ERROR: {msg}\n")
+                if args.json:
+                    print(
+                        json.dumps(
+                            {
+                                "ok": ok,
+                                "changed": changed,
+                                "message": msg,
+                                "w_slice_max_mb": env_info["w_slice_max_mb"],
+                                "w_slice_high_mb": env_info["w_slice_high_mb"],
+                                "user_systemd_active": env_info[
+                                    "user_systemd_active"
+                                ],
+                            },
+                            indent=2,
+                        )
+                    )
+                elif ok:
+                    print(f"[anneal-lean-run] {msg}")
+                return 0 if ok else 1
+
+            if args.probe:
+                eff_mode = detect_mode(cmd, args.mode)
+                limits = probe_host_envelope(
+                    cli_concurrency=args.concurrency,
+                    exclusive=args.exclusive,
+                    is_probe=True,
+                    mode=eff_mode,
+                    override_mem_mb=args.memory_max_mb,
+                    override_timeout_sec=args.timeout,
+                    unsafe_ignore_cgroup=args.unsafe_ignore_cgroup,
+                )
+                if args.json:
+                    print(json.dumps(limits, indent=2))
+                else:
+                    probe_lean_threads = _resolve_thread_env(
+                        int(limits["threads"]),
+                        bool(limits.get("is_cg_capped", False)),
+                    )["LEAN_NUM_THREADS"]
+                    slots_str = (
+                        f"{limits['build_slots']} "
+                        f"(s_heavy_safe={limits['s_heavy_safe']}, "
+                        f"active={limits['active_build_slots']})"
+                    )
+                    scope_enforced = bool(
+                        limits.get("user_systemd_active")
+                    ) and (_find_systemd_run() is not None)
+                    scope_str = (
+                        f"{scope_enforced} "
+                        f"(runtime_base={limits['runtime_base']})"
+                    )
+                    min_required = 2048 if limits["mode"] == "build" else 1024
+                    will_enforce_cg = scope_enforced and bool(
+                        limits.get("t_cg_is_user_service", True)
+                    )
+                    insufficient_headroom = (
+                        scope_enforced
+                        and (
+                            int(limits["memory_max_mb"]) <= 0
+                            or (
+                                will_enforce_cg
+                                and args.memory_max_mb is None
+                                and int(limits["memory_max_mb"]) < min_required
+                            )
+                        )
+                    )
+                    probe_lean_m = int(limits["lean_m_mb"])
+                    scope_lean_m_str = (
+                        f"lean -M {probe_lean_m}"
+                        if probe_lean_m > 0
+                        else "skipping lean -M injection (budget=0)"
+                    )
+                    non_scope_lean_m_str = (
+                        f"lean -M {probe_lean_m} only"
+                        if probe_lean_m > 0
+                        else "skipping lean -M injection (budget=0)"
+                    )
+                    if insufficient_headroom:
+                        mem_cap_line = (
+                            "  Hard RAM Cap       : insufficient headroom "
+                            f"({limits['memory_max_mb']} MiB < {min_required} "
+                            "MiB; execution refused unless --memory-max-mb is "
+                            "passed)"
+                        )
+                    elif scope_enforced:
+                        mem_cap_line = (
+                            f"  Hard RAM Cap       : {limits['memory_max_mb']} "
+                            f"MiB (MemorySwapMax=0, {scope_lean_m_str})"
+                        )
+                    elif (
+                        args.memory_max_mb is None
+                        and int(limits["memory_max_mb"]) < min_required
+                    ):
+                        mem_cap_line = (
+                            "  OS Memory Cap      : none (no systemd scope; "
+                            f"{non_scope_lean_m_str}; low "
+                            f"headroom {limits['memory_max_mb']} MiB < "
+                            f"{min_required} MiB)"
+                        )
+                    else:
+                        mem_cap_line = (
+                            "  OS Memory Cap      : none (no systemd scope; "
+                            f"{non_scope_lean_m_str})"
+                        )
+                    print(
+                        f"=== Anneal Hardware-Matched Resource Limits "
+                        f"(mode={limits['mode']}, W={limits['w_eff']}) ===\n"
+                        f"  Host CPUs          : {limits['cpu_cores']} "
+                        "logical cores\n"
+                        f"  Host Physical RAM  : {limits['mem_total_mb']} MiB "
+                        f"total, {limits['mem_avail_mb']} MiB available\n"
+                        f"{format_cgroup_probe_line(limits)}\n"
+                        f"  Usable / Budget    : usable="
+                        f"{limits['usable_workload_mem_gb']} GiB, "
+                        f"single_build_budget="
+                        f"{limits['single_build_budget_gb']:.2f} GiB\n"
+                        f"  Thread Budget (-j) : {limits['threads']} threads "
+                        f"(LEAN_NUM_THREADS={probe_lean_threads})\n"
+                        f"{mem_cap_line}\n"
+                        f"  Wall-Clock Timeout : {limits['timeout_sec']}s\n"
+                        f"  Host Build Slots   : {slots_str}\n"
+                        f"  Systemd User Scope : {scope_str}"
+                    )
+                return 0
+
+            if not cmd:
+                parser.print_help(sys.stderr)
+                return 2
+
+            # Re-entrancy pass-through gated strictly on
+            # ANNEAL_LEAN_RUN_IN_SCOPE == "1".
+            if (
+                os.environ.get("ANNEAL_LEAN_RUN_IN_SCOPE") == "1"
+                and not args.nested_ok
+            ):
+                return _exec_passthrough(cmd)
+
+            eff_mode = detect_mode(cmd, args.mode)
+            limits = probe_host_envelope(
+                cli_concurrency=args.concurrency,
+                exclusive=args.exclusive,
+                is_probe=False,
+                mode=eff_mode,
+                override_mem_mb=args.memory_max_mb,
+                override_timeout_sec=args.timeout,
+                unsafe_ignore_cgroup=args.unsafe_ignore_cgroup,
+            )
+            return run_bounded_command(
+                cmd=cmd,
+                limits=limits,
+                use_slot_lock=not args.no_slot_lock,
+                exclusive=args.exclusive,
+                cli_concurrency=args.concurrency,
+                override_mem_mb=args.memory_max_mb,
+                override_timeout_sec=args.timeout,
+                unsafe_ignore_cgroup=args.unsafe_ignore_cgroup,
+                _keep_signal_shield=_keep_signal_shield,
+            )
+    except KeyboardInterrupt:
+        return 130
+
+
+if __name__ == "__main__":
+    try:
+        sys.exit(main(_keep_signal_shield=True))
+    except KeyboardInterrupt:
+        sys.exit(130)

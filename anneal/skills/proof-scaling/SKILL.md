@@ -24,8 +24,24 @@ Before decomposing a proof, verify the toolchain actually captures the target:
    unsupported Rust construct rather than refactoring blindly.
 2. Respect host memory budgets: prefer interactive Lean 4 LSP queries (your
    editor or host `lake serve` LSP client) over repeated cold `lake env lean`
-   runs, pass `--lean-memory-mb <MB>` (or wrap CLI `lake` / `lean` builds in
-   an OS cgroup memory cap), and do not launch parallel unbounded `lean` builds.
+   runs, and do not launch parallel unbounded `lean` builds. In a
+   `google/zerocopy` checkout, wrap CLI `lean` / `lake` / `cargo` invocations
+   in [`ci/anneal-lean-run`](../../ci/anneal-lean-run); outside a
+   `google/zerocopy` checkout, pass `--lean-memory-mb <MB>` to `cargo anneal`
+   or wrap CLI `lake` / `lean` builds in an OS cgroup memory cap. On delegated
+   `systemd --user` Linux hosts, `ci/anneal-lean-run` reconciles
+   `anneal-workloads.slice` in the user manager's `UnitPath` (`MemoryMax`,
+   `MemoryHigh` at 94%, `MemorySwapMax=0`, `ManagedOOMMemoryPressure=kill` at
+   40% PSI, reloading `systemd --user` on change) and enforces a scope
+   `MemoryMax` / `MemorySwapMax=0` cap (`--memory-max-mb <MB>` overrides that
+   `MemoryMax` and derived `lean -M`, clamped to the slice ceiling on
+   cgroup-capped hosts unless `--unsafe-ignore-cgroup` is passed). Without an
+   active Linux user `systemd` scope (including non-systemd Linux and macOS),
+   `ci/anneal-lean-run` enforces **no** OS memory cap (`--memory-max-mb <MB>`
+   only sets Lean's `-M` allocator flag for direct `lean` and `lake env lean`,
+   not `lake build` or `cargo`). Separately, `cargo anneal verify
+   --lean-memory-mb <MB>` sets `-M` on `cargo-anneal`'s internal Lean runs
+   (subject to its mode floors) regardless of `systemd`.
 3. Diagnose **Day-2 Rust bugs** first (`cargo-anneal` Step 0): if `Expected.lean`
    reveals a missing guard or bad branch in Rust, fix Rust or escalate the spec
    mismatch before tuning tactics.
