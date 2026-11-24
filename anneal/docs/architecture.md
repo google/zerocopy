@@ -546,10 +546,14 @@ anneal/
 │   │   └── TrustedBoundary.lean    # Syntactic preflight & kernel DAG inspector
 │   └── cargo-anneal/               # Toolchain setup & target verification CLI
 ├── vendor/
-│   └── lean-miri/                  # Pinned lean-miri snapshot (M_ref)
-│       └── UPSTREAM_PIN.json       # Upstream & patch digests (pinned in audit)
+│   ├── lean-miri/                  # Pinned lean-miri snapshot (M_ref)
+│   │   └── UPSTREAM_PIN.json       # Upstream & patch digests (pinned in audit)
+│   └── minirust/                   # Pinned MiniRust spec (minirust_v1)
+│       └── UPSTREAM_PIN.json       # 30 pinned upstream SHA-256s
 ├── correspondence/                 # Stage 3 (Pass 2) proofs
 │   └── Anneal/
+│       ├── MiniRust/               # MiniRust machine, 58 anchors & sim (9 files)
+│       ├── MiniRustProof.lean      # Constructive MiniRust correspondence hub
 │       ├── MirCorrespondence/      # Modular codec, step, simulation & canary proofs
 │       └── MirCorrespondenceProof.lean
 └── theory/                         # Stage 3 (Pass 1): Untrusted proofs

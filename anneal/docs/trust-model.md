@@ -66,8 +66,8 @@ The current workspace divides verification, test, and audit code into four zones
 | :--- | :--- | :--- | :--- |
 | **Trusted foundation** | [`trusted/`](../trusted) | Extracts MIR and emits pure proof scripts (`trusted/rustc-capture/`), defines captured MIR syntax and verification operational semantics (`trusted/lean/`), states MIR correspondence claims and reference-adapter specifications (`trusted/correspondence/`), orchestrates CLI invocation (`trusted/cargo-anneal/`), and audits the Anneal repository in CI (`trusted/audit/`). | **In the TCB.** Audited by humans (alongside external files pinned by hash manifests inside `trusted/`). |
 | **Integration test suites** | [`tests/`](../tests) | Hosts shared test scaffolding (`tests/testkit/`), workspace integration test suites and fixtures for `anneal-audit`, `cargo-anneal`, and `anneal-rustc-capture` (`tests/audit/`, `tests/cargo-anneal/`, `tests/rustc-capture/`), and the multi-call observable-trace differential fuzzer (`tests/itree_diff/`). | **Outside the production TCB.** Enforced as `publish = false` crates under a two-zone monotonic lattice (`trusted/` = zone 0 < `tests/` = zone 1: `tests/` may depend on `trusted/` or shared `tests/` helpers such as `tests/testkit/`, while `trusted/` may never depend on `tests/`) with no `build.rs` or proc-macros. |
-| **Proof theory & correspondence** | `theory/`, `correspondence/` | Defines the normalized `StableAst`, proves lowering passes (`Abstracts`), provides WP calculi (`theory/Anneal/MirWp.lean`), separation logic, and proof tactics (`theory/`), and proves the MIR correspondence theorems and canaries (`correspondence/`). | **Outside the TCB.** Treated as potentially adversarial; audited mechanically in Anneal's CI and checked by the Lean 4 kernel (`correspondence/` is checked in CI only and is not shipped in the user toolchain archive). |
-| **Vendored reference model** | `vendor/lean-miri/` | Pinned snapshot of `proofs-rs/lean-miri` with a human-audited 10-file opt-in `deinitMovedPlace` delta and 3-file theorem-only memory specification patch ([#4009](https://github.com/google/zerocopy/issues/4009); [`docs/mir-correspondence-design.md`](mir-correspondence-design.md)). Never shipped in the user toolchain archive. | **In the correspondence TCB.** Pinned byte-for-byte in `vendor/lean-miri/UPSTREAM_PIN.json` (locked by `LOCKED_UPSTREAM_PIN_SHA256` and `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/`). Only the 160-module `Miri.Interpreter.ExecutionMachine` slice (excluding `Miri.Input.NativeMathHost`) is compiled inside an OS-level `bwrap` sandbox (or restored from a digest-gated cache outside the checkout) and verified by `.olean` SHA-256; every non-`isPartial` vendored declaration (39,088 declarations) is replayed from scratch through the standalone Lean 4 kernel (`toKernelEnv.replay`) onto the authenticated sysroot base on every run, followed directly by replaying `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and `Anneal.MirCorrespondenceProof` on top of that replayed base and checking cone purity. |
+| **Proof theory & correspondence** | `theory/`, `correspondence/` | Defines the normalized `StableAst`, proves lowering passes (`Abstracts`), provides WP calculi (`theory/Anneal/MirWp.lean`), separation logic, and proof tactics (`theory/`), and proves the MIR correspondence theorems and canaries (`correspondence/Anneal/MirCorrespondence*`, discharging locked `Trusted.Correspondence` claims, and the `10` unlocked MiniRust witness modules `correspondence/Anneal/MiniRust/*` + `MiniRustProof.lean`). | **Outside the TCB.** Treated as potentially adversarial; audited mechanically in Anneal's CI and checked by the Lean 4 kernel (`correspondence/` is checked by the `anneal-audit` correspondence stage in CI only, hashed into correspondence provenance, and excluded from the user toolchain archive; unlocked MiniRust claim statements in `correspondence/` have theorem-name, hygiene, and `SpecAnchor` checks in `ci/check_minirust_pin.py` and rely on `CODEOWNERS`-gated per-PR human review of statement bodies). |
+| **Vendored reference models** | `vendor/lean-miri/`, `vendor/minirust/` | `vendor/lean-miri/` is a pinned snapshot of `proofs-rs/lean-miri` with a human-audited 10-file opt-in `deinitMovedPlace` delta and 3-file theorem-only memory specification patch ([#4009](https://github.com/google/zerocopy/issues/4009); [`docs/mir-correspondence-design.md`](mir-correspondence-design.md)); `vendor/minirust/` pins `30` upstream files (`27` `spec/**/*.md` specification files, `LICENSE-APACHE`, `LICENSE-MIT`, and `README.md`) at `minirust/minirust@d821c6e3a3d3`, linked by `58` `SpecAnchor` records in `correspondence/Anneal/MiniRust/Anchors.lean` (`ci/check_minirust_pin.py`). Never shipped in the user toolchain archive. | **In the correspondence TCB (`vendor/lean-miri/`) / pinned spec anchor (`vendor/minirust/`).** `vendor/lean-miri/UPSTREAM_PIN.json` is locked by `LOCKED_UPSTREAM_PIN_SHA256` and `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/`; its 160-module `Miri.Interpreter.ExecutionMachine` slice is compiled inside `bwrap`, verified by `.olean` SHA-256, and replayed from scratch through the standalone Lean 4 kernel (`toKernelEnv.replay`) onto the authenticated sysroot base, followed by replaying `Trusted.Correspondence*`, `Anneal.MirCorrespondence*`, and `Anneal.MiniRust*` (`Anneal.MiniRustProof`; `anneal-audit` permits `Classical.choice`, while local/manual `ci/check_minirust_pin.py --check-axioms` verifies `{propext, Quot.sound}` purity). |
 
 ### How CI auditing and user-machine verification fit together
 
@@ -704,7 +704,8 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
    build and warm cache hit alike—followed directly by replaying all Pass 2
    repository declarations (`Trusted.*`, the Pass 1 `theory/` transitive import
    closure of `correspondence/`, `Trusted.Correspondence*`,
-   `Anneal.MirCorrespondence.*`, and `Anneal.MirCorrespondenceProof`) onto
+   `Anneal.MirCorrespondence.*`, `Anneal.MirCorrespondenceProof`,
+   `Anneal.MiniRust.*`, and `Anneal.MiniRustProof`) onto
    that replayed vendor kernel environment. Before that repository replay, it
    rejects any repository constant whose name already exists in the replayed
    vendor or sysroot environment, so replay never skips a repository
@@ -776,14 +777,17 @@ whose re-hashing remains planned:
 5. **Archive-embedded correspondence provenance (active); fail-closed
    re-hashing of packaged artifacts *(planned)*:** To uphold
    [`THREAT_MODEL.md`](../THREAT_MODEL.md)'s bounded human-review guarantee
-   without shipping `vendor/lean-miri/` or `correspondence/` in user toolchain
+   without shipping `vendor/lean-miri/`, `vendor/minirust/`, or
+   `correspondence/` in user toolchain
    archives, every packaged user toolchain archive and `cargo-anneal` bundle
    embeds a CI-checked, digest-bound **correspondence provenance record**
    (`CORRESPONDENCE_PROVENANCE_JSON` and
    `share/anneal/correspondence-provenance.json`, recording pinned toolchain
    metadata, `trusted/lean/` and `trusted/correspondence/` source digests,
    `vendor/lean-miri/` upstream commit and `UPSTREAM_PIN.json` SHA-256, the
-   13-file `patched_files` digests, and `correspondence/` proof digests).
+   13-file `patched_files` digests, `vendor/minirust/UPSTREAM_PIN.json`
+   provenance and 30-file digests (`minirust_upstream`), and `correspondence/`
+   proof digests).
    - *Active:* `trusted/cargo-anneal/build.rs` renders the record into
      `$OUT_DIR/bundled_resources.rs` from the same canonical `trusted/` bytes
      that it embeds there, and the `anneal-audit` bundled-resources parity

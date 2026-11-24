@@ -299,6 +299,8 @@ case "$MODE" in
     if [[ -x /opt/anneal-nix/release-check-python/bin/python3 ]]; then
       PY_BIN="/opt/anneal-nix/release-check-python/bin/python3"
     fi
+    "$PY_BIN" -I -B ./ci/check_minirust_pin.py \
+      --repo-root . --check-lean --check-anchors
     "$PY_BIN" -I -B -m unittest discover -s ci -p 'test_*.py' -v
     ;;
 

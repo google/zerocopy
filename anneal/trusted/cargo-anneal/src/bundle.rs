@@ -19,11 +19,11 @@ pub use crate::theory_bundle::{
 pub use crate::trusted_bundle::{
     BUNDLE_HEADER, BundleError, CORRESPONDENCE_ADAPTER_DIR, CORRESPONDENCE_ADAPTER_PATHS,
     CORRESPONDENCE_PROOF_DIR, CORRESPONDENCE_PROOF_PATHS, CORRESPONDENCE_PROVENANCE_NOTE,
-    LEGACY_BUNDLE_DESTINATION, PACKAGED_BUNDLE_CRATE_REL, PACKAGED_BUNDLE_DESTINATION,
-    PROVENANCE_SOURCES, RenderedBundleParts, TRUSTED_BUNDLE_SOURCES, UPSTREAM_PIN_PATH,
-    prepare_packaged_bundle_destination, render_bundled_resources, render_bundled_resources_parts,
-    render_correspondence_provenance, validate_bundle_source, validate_destination_path,
-    validate_parent_directories,
+    LEGACY_BUNDLE_DESTINATION, MINIRUST_UPSTREAM_PIN_PATH, PACKAGED_BUNDLE_CRATE_REL,
+    PACKAGED_BUNDLE_DESTINATION, PROVENANCE_SOURCES, RenderedBundleParts, TRUSTED_BUNDLE_SOURCES,
+    UPSTREAM_PIN_PATH, prepare_packaged_bundle_destination, render_bundled_resources,
+    render_bundled_resources_parts, render_correspondence_provenance, validate_bundle_source,
+    validate_destination_path, validate_parent_directories,
 };
 
 // Generated deterministically by `build.rs` into `$OUT_DIR` from canonical
@@ -46,7 +46,8 @@ mod tests {
 
     #[test]
     fn provenance_sources_match_component_lists() {
-        let expected: Vec<&str> = std::iter::once(UPSTREAM_PIN_PATH)
+        let expected: Vec<&str> = [UPSTREAM_PIN_PATH, MINIRUST_UPSTREAM_PIN_PATH]
+            .into_iter()
             .chain(CORRESPONDENCE_ADAPTER_PATHS.iter().copied())
             .chain(CORRESPONDENCE_PROOF_PATHS.iter().copied())
             .collect();

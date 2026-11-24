@@ -420,6 +420,15 @@ receipt = {{
         "upstream_pin_sha256": "a" * 64,
         "sysroot_foundation_manifest_sha256": "b" * 64,
         "patched_files": [],
+        "minirust_upstream": {{
+            "upstream_repository": "https://github.com/minirust/minirust",
+            "upstream_commit": "d821c6e3",
+            "upstream_pin_sha256": "f" * 64,
+            "tarball_sha256": "0" * 64,
+            "manifest_sha256": "1" * 64,
+            "file_count": 1,
+            "files": {{"spec/lang/syntax.md": "2" * 64}},
+        }},
         "correspondence_adapters": {{
             "trusted/correspondence/Trusted/Correspondence.lean": "c" * 64,
         }},

@@ -40,6 +40,7 @@ def make_v1_provenance(**overrides):
         "upstream_pin_sha256": SHA_A,
         "sysroot_foundation_manifest_sha256": SHA_B,
         "patched_files": [],
+        "minirust_upstream": make_minirust_upstream(),
         "correspondence_adapters": {
             "trusted/correspondence/Trusted/Correspondence.lean": SHA_C,
         },
@@ -76,6 +77,20 @@ def make_v3_provenance(**overrides):
     )
     prov.update(overrides)
     return prov
+
+
+def make_minirust_upstream(**overrides):
+    mr = {
+        "upstream_repository": "https://github.com/minirust/minirust",
+        "upstream_commit": "d821c6e3",
+        "upstream_pin_sha256": SHA_A,
+        "tarball_sha256": SHA_B,
+        "manifest_sha256": SHA_C,
+        "file_count": 1,
+        "files": {"spec/lang/syntax.md": SHA_D},
+    }
+    mr.update(overrides)
+    return mr
 
 
 DEFAULT_CONFIG = {
@@ -1581,6 +1596,250 @@ class VerifyZerocopyTests(unittest.TestCase):
                 "patched_files\\[0\\]\\.upstream_sha256 invalid",
             ),
             (
+                "v1_minirust_explicit_null",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=None
+                    )
+                ),
+                "invalid correspondence_provenance\\.minirust_upstream=None",
+            ),
+            (
+                "v1_minirust_non_dict",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=["bad"]
+                    )
+                ),
+                "invalid correspondence_provenance\\.minirust_upstream=",
+            ),
+            (
+                "v1_minirust_extra_key",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(extra="nope")
+                    )
+                ),
+                "unexpected correspondence_provenance\\.minirust_upstream "
+                "keys=\\['extra'\\]",
+            ),
+            (
+                "v1_minirust_untrimmed_repo",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(
+                            upstream_repository=" https://github.com/minirust/minirust"
+                        )
+                    )
+                ),
+                "minirust_upstream\\.upstream_repository must be trimmed",
+            ),
+            (
+                "v1_minirust_blank_repo",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(
+                            upstream_repository="   "
+                        )
+                    )
+                ),
+                "minirust_upstream\\.upstream_repository must be trimmed",
+            ),
+            (
+                "v1_minirust_untrimmed_commit",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(
+                            upstream_commit=" d821c6e3 "
+                        )
+                    )
+                ),
+                "minirust_upstream\\.upstream_commit must be trimmed",
+            ),
+            (
+                "v1_minirust_bad_pin_sha",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(
+                            upstream_pin_sha256="A" * 64
+                        )
+                    )
+                ),
+                "minirust_upstream\\.upstream_pin_sha256 invalid",
+            ),
+            (
+                "v1_minirust_bad_tarball_sha",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(
+                            tarball_sha256="A" * 64
+                        )
+                    )
+                ),
+                "minirust_upstream\\.tarball_sha256 invalid",
+            ),
+            (
+                "v1_minirust_bad_manifest_sha",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(
+                            manifest_sha256="short"
+                        )
+                    )
+                ),
+                "minirust_upstream\\.manifest_sha256 invalid",
+            ),
+            (
+                "v1_minirust_zero_file_count",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(
+                            file_count=0, files={}
+                        )
+                    )
+                ),
+                "minirust_upstream\\.file_count must be a positive integer",
+            ),
+            (
+                "v1_minirust_negative_file_count",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(file_count=-1)
+                    )
+                ),
+                "minirust_upstream\\.file_count must be a positive integer",
+            ),
+            (
+                "v1_minirust_float_file_count",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(
+                            file_count=1.0
+                        )
+                    )
+                ),
+                "minirust_upstream\\.file_count must be a positive integer",
+            ),
+            (
+                "v1_minirust_bool_file_count",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(
+                            file_count=True
+                        )
+                    )
+                ),
+                "minirust_upstream\\.file_count must be a positive integer",
+            ),
+            (
+                "v1_minirust_count_gt_files",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(file_count=2)
+                    )
+                ),
+                "minirust_upstream\\.file_count \\(2\\) disagrees with "
+                "files length \\(1\\)",
+            ),
+            (
+                "v1_minirust_count_lt_files",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(
+                            file_count=1,
+                            files={
+                                "spec/lang/syntax.md": SHA_D,
+                                "spec/lang/values.md": SHA_E,
+                            },
+                        )
+                    )
+                ),
+                "minirust_upstream\\.file_count \\(1\\) disagrees with "
+                "files length \\(2\\)",
+            ),
+            (
+                "v1_minirust_non_dict_files",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(
+                            files=["spec/lang/syntax.md"]
+                        )
+                    )
+                ),
+                "missing or empty correspondence_provenance\\."
+                "minirust_upstream\\.files",
+            ),
+            (
+                "v1_minirust_empty_files",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(files={})
+                    )
+                ),
+                "missing or empty correspondence_provenance\\."
+                "minirust_upstream\\.files",
+            ),
+            (
+                "v1_minirust_empty_file_key",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(
+                            files={"": SHA_D}
+                        )
+                    )
+                ),
+                "invalid entry in correspondence_provenance\\."
+                "minirust_upstream\\.files",
+            ),
+            (
+                "v1_minirust_untrimmed_file_key",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(
+                            files={" spec/lang/syntax.md": SHA_D}
+                        )
+                    )
+                ),
+                "invalid entry in correspondence_provenance\\."
+                "minirust_upstream\\.files",
+            ),
+            (
+                "v1_minirust_bad_file_digest",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(
+                            files={"spec/lang/syntax.md": "xyz"}
+                        )
+                    )
+                ),
+                "invalid entry in correspondence_provenance\\."
+                "minirust_upstream\\.files",
+            ),
+            (
+                "v1_minirust_uppercase_file_digest",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(
+                            files={"spec/lang/syntax.md": "D" * 64}
+                        )
+                    )
+                ),
+                "invalid entry in correspondence_provenance\\."
+                "minirust_upstream\\.files",
+            ),
+            (
+                "v1_minirust_nonstr_file_digest",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=make_minirust_upstream(
+                            files={"spec/lang/syntax.md": 123}
+                        )
+                    )
+                ),
+                "invalid entry in correspondence_provenance\\."
+                "minirust_upstream\\.files",
+            ),
+            (
                 "v1_inapplicable_provenance",
                 make_receipt(
                     correspondence_provenance={
@@ -1626,6 +1885,7 @@ class VerifyZerocopyTests(unittest.TestCase):
             "upstream_pin_sha256",
             "sysroot_foundation_manifest_sha256",
             "patched_files",
+            "minirust_upstream",
             "correspondence_adapters",
             "correspondence_proofs",
             "trusted_lean",
@@ -1647,8 +1907,9 @@ class VerifyZerocopyTests(unittest.TestCase):
                         ["util::macros::__unsafe"],
                     )
 
-        # Schema 3 omitting any mandatory schema-3 field must fail closed.
+        # Schema 3 omitting any mandatory field must fail closed.
         for omitted_v3 in (
+            "minirust_upstream",
             "claim_kind",
             "permitted_axioms",
             "model_system_relation",
@@ -1662,6 +1923,37 @@ class VerifyZerocopyTests(unittest.TestCase):
                 payload = make_receipt(correspondence_provenance=prov)
                 with self.assertRaisesRegex(
                     RuntimeError, f"correspondence_provenance\\.{omitted_v3}"
+                ):
+                    verify_zerocopy.validate_receipt(
+                        "01_unit",
+                        0,
+                        json.dumps(payload),
+                        "",
+                        ["util::macros::__unsafe"],
+                    )
+
+        # `minirust_upstream` is mandatory on applicable provenance and must
+        # include all 7 fields.
+        for omitted_mr in (
+            "upstream_repository",
+            "upstream_commit",
+            "upstream_pin_sha256",
+            "tarball_sha256",
+            "manifest_sha256",
+            "file_count",
+            "files",
+        ):
+            with self.subTest(mr_omitted=omitted_mr):
+                mr = make_minirust_upstream()
+                del mr[omitted_mr]
+                payload = make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        minirust_upstream=mr
+                    )
+                )
+                with self.assertRaisesRegex(
+                    RuntimeError,
+                    f"correspondence_provenance\\.minirust_upstream\\.{omitted_mr}",
                 ):
                     verify_zerocopy.validate_receipt(
                         "01_unit",
@@ -1851,6 +2143,7 @@ class VerifyZerocopyTests(unittest.TestCase):
         self.assertEqual(len(parsed["assumptions"]), 3)
 
         v3_with_patch_and_seam = make_v3_provenance(
+            minirust_upstream=make_minirust_upstream(),
             patched_files=[
                 {
                     "path": "Miri/A.lean",
@@ -1905,6 +2198,9 @@ class VerifyZerocopyTests(unittest.TestCase):
                 anneal_root / "trusted/cargo-anneal/src/trusted_bundle.rs"
             ),
             upstream_pin=anneal_root / "vendor/lean-miri/UPSTREAM_PIN.json",
+            minirust_upstream_pin=(
+                anneal_root / "vendor/minirust/UPSTREAM_PIN.json"
+            ),
             correspondence_adapters_dir=anneal_root / "trusted/correspondence",
             correspondence_proofs_dir=anneal_root / "correspondence",
             trusted_lean_dir=anneal_root / "trusted/lean",

@@ -343,6 +343,7 @@
             targetLibraryLock = ./trusted/audit/library-lock.json;
             trustedBundleSource = ./trusted/cargo-anneal/src/trusted_bundle.rs;
             upstreamPin = ./vendor/lean-miri/UPSTREAM_PIN.json;
+            minirustUpstreamPin = ./vendor/minirust/UPSTREAM_PIN.json;
             correspondenceAdapters = ./trusted/correspondence;
             correspondenceProofs = ./correspondence;
             renderProvenanceScript = ./ci/render_correspondence_provenance.py;
@@ -365,6 +366,7 @@
                 --target-library-lock "$targetLibraryLock"
                 --trusted-bundle-source "$trustedBundleSource"
                 --upstream-pin "$upstreamPin"
+                --minirust-upstream-pin "$minirustUpstreamPin"
                 --correspondence-adapters "$correspondenceAdapters"
                 --correspondence-proofs "$correspondenceProofs"
                 --render-provenance-script "$renderProvenanceScript"

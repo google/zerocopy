@@ -138,6 +138,8 @@ class OmnibusPackWiringTests(unittest.TestCase):
         omnibus_section = self.flake_text[start:end]
 
         self.assertIn("packOmnibusScript = ./ci/pack_omnibus_archive.sh;", omnibus_section)
+        self.assertIn("minirustUpstreamPin = ./vendor/minirust/UPSTREAM_PIN.json;", omnibus_section)
+        self.assertIn('--minirust-upstream-pin "$minirustUpstreamPin"', omnibus_section)
         self.assertIn("targetSpecPreflight = ./trusted/audit/SpecPreflight.lean;", omnibus_section)
         self.assertIn('--target-spec-preflight "$targetSpecPreflight"', omnibus_section)
         self.assertIn('bash "$packOmnibusScript"', omnibus_section)
@@ -148,6 +150,7 @@ class OmnibusPackWiringTests(unittest.TestCase):
         self.assertNotIn("zstd -dc", omnibus_section)
 
         self.assertIn("./ci/pack_omnibus_archive.sh", self.script_text)
+        self.assertIn('--minirust-upstream-pin "$minirust_upstream_pin"', self.pack_text)
         self.assertNotIn("--exclude=", self.script_text)
         self.assertNotIn("excluded_patterns", self.script_text)
         self.assertNotIn("zstd -dc", self.script_text)
@@ -620,6 +623,7 @@ class PackOmnibusArchiveBehaviorTests(unittest.TestCase):
             "trusted/audit/library-lock.json": ("\n".join(lock_lines) + "\n").encode("utf-8"),
             "trusted/cargo-anneal/src/trusted_bundle.rs": b"// bundle\n",
             "vendor/lean-miri/UPSTREAM_PIN.json": b"{}\n",
+            "vendor/minirust/UPSTREAM_PIN.json": b"{}\n",
             "trusted/correspondence/adapter.lean": b"-- adapter\n",
             "correspondence/proof.lean": b"-- proof\n",
             "theory/Anneal/MirWp.lean": b"-- MirWp\n",

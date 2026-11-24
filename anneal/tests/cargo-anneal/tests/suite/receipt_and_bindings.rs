@@ -170,8 +170,19 @@ fn check_provenance_and_toolchain(ok: &anneal_testkit::VerifySuccessReceipt) {
         64
     );
     assert_eq!(prov["patched_files"].as_array().unwrap().len(), 13);
-    assert_eq!(prov["correspondence_proofs"].as_object().unwrap().len(), 19);
+    let minirust = &prov["minirust_upstream"];
+    assert_eq!(minirust["upstream_repository"], "https://github.com/minirust/minirust");
+    assert_eq!(minirust["upstream_commit"], "d821c6e3a3d358fa8a556774dc12b4aa5d0d65ed");
+    assert_eq!(minirust["file_count"], 30);
+    for sha_field in ["upstream_pin_sha256", "tarball_sha256", "manifest_sha256"] {
+        let digest = minirust[sha_field].as_str().unwrap();
+        assert_eq!(digest.len(), 64, "{sha_field}");
+        assert!(digest.bytes().all(|b| b.is_ascii_hexdigit()), "{sha_field}");
+    }
+    assert_eq!(minirust["files"].as_object().unwrap().len(), 30);
+    assert_eq!(prov["correspondence_proofs"].as_object().unwrap().len(), 29);
     for proof_key in [
+        "correspondence/Anneal/MiniRustProof.lean",
         "correspondence/Anneal/MirCorrespondence/InitAndSim.lean",
         "correspondence/Anneal/MirCorrespondence/LayoutAndAlign.lean",
         "correspondence/Anneal/MirCorrespondence/MiriMemoryBridge.lean",

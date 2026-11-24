@@ -146,9 +146,9 @@ fi
 for commit in $commits; do
   short_commit=$(git rev-parse --short=12 "$commit")
   if [ "${#resolved_paths[@]}" -gt 0 ]; then
-    tree_matches=$(run_search_allow_nomatch git grep -I -n -w -E "$PATTERN" "$short_commit" -- "${resolved_paths[@]}" ':!**/vendor/**')
+    tree_matches=$(run_search_allow_nomatch git grep -I -n -w -E "$PATTERN" "$short_commit" -- "${resolved_paths[@]}" ':(exclude,glob)**/vendor/**')
   else
-    tree_matches=$(run_search_allow_nomatch git grep -I -n -w -E "$PATTERN" "$short_commit" -- ':!**/vendor/**')
+    tree_matches=$(run_search_allow_nomatch git grep -I -n -w -E "$PATTERN" "$short_commit" -- ':(exclude,glob)**/vendor/**')
   fi
   if [ -n "$tree_matches" ]; then
     while IFS= read -r m; do

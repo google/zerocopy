@@ -40,7 +40,8 @@ preserve [`META_PRINCIPLES.md`](META_PRINCIPLES.md),
   [`ci/check_todo.sh`](ci/check_todo.sh). Use the file's comment syntax and
   creation year. Preserve the original header year on edits. Files that
   forbid leading comments (such as JSON and `SKILL.md` frontmatter) are exempt.
-  Pinned `vendor/lean-miri/` files retain upstream `LICENSE-*` headers.
+  Pinned `vendor/{lean-miri,minirust}/` files retain upstream headers and
+  `LICENSE-*` files.
 <!-- TODO-check-disable -->
 - **`TODO` markers:** Leave no `TODO` markers unless intending to block merge;
   [`./ci/check_todo.sh`](ci/check_todo.sh) rejects `TODO` across the tree and

@@ -166,14 +166,16 @@ class CheckTodoTests(unittest.TestCase):
 
     def test_source_disable_enable_and_vendor_exclusion(self):
         with tempfile.TemporaryDirectory(prefix="anneal-todo-src-") as tmp:
-            _, anneal, script = self.make_repo(tmp)
+            root, anneal, script = self.make_repo(tmp)
+            run_git(root, "checkout", "-qb", "feature")
             vendor_file = anneal / "vendor/dep/lib.rs"
             vendor_file.parent.mkdir(parents=True)
             vendor_file.write_text(
                 f"// {MARKER}: upstream vendor note\n", encoding="utf-8"
             )
 
-            # Wrapped marker with issue citation passes.
+            # Wrapped marker with issue citation passes (both dirty and
+            # committed under `anneal/vendor/`).
             exempt = anneal / "exempt.rs"
             exempt.write_text(
                 f"// {DISABLE}\n// {MARKER}(#123): tracked follow-up\n"
@@ -182,6 +184,37 @@ class CheckTodoTests(unittest.TestCase):
             )
             res = self.run_check(script, cwd=anneal)
             self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
+
+            run_git(root, "add", "anneal/vendor/dep/lib.rs", "anneal/exempt.rs")
+            run_git(root, "commit", "-qm", "Add committed vendor fixture")
+            res_committed = self.run_check(script, cwd=anneal)
+            self.assertEqual(
+                res_committed.returncode,
+                0,
+                res_committed.stdout + res_committed.stderr,
+            )
+
+            # A committed bare marker outside `vendor/` on a clean working tree
+            # must be caught (`rc = 1`), ensuring the committed-tree pathspec
+            # exclusion never fails open.
+            bad_committed = anneal / "src/bad.rs"
+            bad_committed.parent.mkdir(parents=True)
+            bad_committed.write_text(
+                f"// {MARKER}: bare committed non-vendor marker\n",
+                encoding="utf-8",
+            )
+            run_git(root, "add", "anneal/src/bad.rs")
+            run_git(root, "commit", "-qm", "Add committed non-vendor marker")
+            res_bad_clean = self.run_check(script, cwd=anneal)
+            self.assertEqual(
+                res_bad_clean.returncode,
+                1,
+                res_bad_clean.stdout + res_bad_clean.stderr,
+            )
+            self.assertIn(
+                "bare committed non-vendor marker", res_bad_clean.stderr
+            )
+            run_git(root, "reset", "-q", "--hard", "HEAD~1")
 
             # A bare marker after re-enabling (even with `(#123):`) fails.
             exempt.write_text(

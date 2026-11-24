@@ -117,6 +117,7 @@ anneal/
 │   └── nextest.toml                   # Process-per-test profiles, slow-timeouts, heavy-lean slots
 ├── ci/
 │   ├── check_guard_mutation.py        # Lean TCB + header single-guard mutation runner (84 guards)
+│   ├── check_minirust_pin.py          # MiniRust pin, Lean hygiene & SpecAnchor CI check (+ manual --check-axioms)
 │   ├── perf_tracking.py               # Telemetry collector, validator, & Tier A/B regression gate
 │   ├── perf_budgets.json              # Tier A time, RSS, 3-part .olean*, binary, & unit budgets
 │   ├── render_perf_dashboard.py       # Zero-CDN static HTML/JSON dashboard generator
@@ -142,7 +143,7 @@ anneal/
 │   ├── lean/                              # Trusted.lean + Trusted/ MIR AST, model, & semantics (19 files)
 │   └── correspondence/                    # Trusted/Correspondence* Pass-2 simulation adapter (7 files)
 ├── theory/                            # Pass-1 untrusted proof libraries (Anneal.*, bundle-manifest.json)
-├── correspondence/                    # Pass-2 untrusted simulation proofs (Anneal.MirCorrespondence.*)
+├── correspondence/                    # Pass-2 untrusted simulation proofs (MirCorrespondence.*, MiniRust.*)
 └── tests/                             # Zone::Tests ( rank = 1 ) — Fenced Non-TCB Verification Suites
     ├── testkit/                       # package = "anneal-testkit" (publish = false, lib-only)
     │   ├── Cargo.toml

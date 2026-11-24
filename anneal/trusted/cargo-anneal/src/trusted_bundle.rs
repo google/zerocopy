@@ -77,6 +77,8 @@ pub const TRUSTED_BUNDLE_SOURCES: &[&str] = &[
 
 /// Names the repository-relative path of the pinned upstream Miri manifest.
 pub const UPSTREAM_PIN_PATH: &str = "vendor/lean-miri/UPSTREAM_PIN.json";
+/// Names the repository-relative path of the pinned upstream MiniRust manifest.
+pub const MINIRUST_UPSTREAM_PIN_PATH: &str = "vendor/minirust/UPSTREAM_PIN.json";
 /// Names the repository-relative root directory of Pass 2 trusted adapters.
 pub const CORRESPONDENCE_ADAPTER_DIR: &str = "trusted/correspondence";
 /// Lists the repository-relative Pass 2 trusted correspondence adapter sources.
@@ -93,6 +95,16 @@ pub const CORRESPONDENCE_ADAPTER_PATHS: &[&str] = &[
 pub const CORRESPONDENCE_PROOF_DIR: &str = "correspondence";
 /// Lists the repository-relative Pass 2 correspondence proof modules.
 pub const CORRESPONDENCE_PROOF_PATHS: &[&str] = &[
+    "correspondence/Anneal/MiniRust/Anchors.lean",
+    "correspondence/Anneal/MiniRust/Machine.lean",
+    "correspondence/Anneal/MiniRust/Memory.lean",
+    "correspondence/Anneal/MiniRust/OpSim.lean",
+    "correspondence/Anneal/MiniRust/OracleCert.lean",
+    "correspondence/Anneal/MiniRust/Relation.lean",
+    "correspondence/Anneal/MiniRust/StepSim.lean",
+    "correspondence/Anneal/MiniRust/Syntax.lean",
+    "correspondence/Anneal/MiniRust/Translate.lean",
+    "correspondence/Anneal/MiniRustProof.lean",
     "correspondence/Anneal/MirCorrespondence/ByteCodec.lean",
     "correspondence/Anneal/MirCorrespondence/Canaries.lean",
     "correspondence/Anneal/MirCorrespondence/Codec.lean",
@@ -126,6 +138,7 @@ const TRUSTED_LEAN_PREFIX: &str = "trusted/lean/";
 /// `trusted/correspondence/` and `correspondence/` during rendering.
 pub const PROVENANCE_SOURCES: &[&str] = &[
     UPSTREAM_PIN_PATH,
+    MINIRUST_UPSTREAM_PIN_PATH,
     "trusted/correspondence/Trusted/Correspondence.lean",
     "trusted/correspondence/Trusted/Correspondence/CanaryFixtures.lean",
     "trusted/correspondence/Trusted/Correspondence/Codec.lean",
@@ -133,6 +146,16 @@ pub const PROVENANCE_SOURCES: &[&str] = &[
     "trusted/correspondence/Trusted/Correspondence/Eval.lean",
     "trusted/correspondence/Trusted/Correspondence/Simulation.lean",
     "trusted/correspondence/Trusted/Correspondence/State.lean",
+    "correspondence/Anneal/MiniRust/Anchors.lean",
+    "correspondence/Anneal/MiniRust/Machine.lean",
+    "correspondence/Anneal/MiniRust/Memory.lean",
+    "correspondence/Anneal/MiniRust/OpSim.lean",
+    "correspondence/Anneal/MiniRust/OracleCert.lean",
+    "correspondence/Anneal/MiniRust/Relation.lean",
+    "correspondence/Anneal/MiniRust/StepSim.lean",
+    "correspondence/Anneal/MiniRust/Syntax.lean",
+    "correspondence/Anneal/MiniRust/Translate.lean",
+    "correspondence/Anneal/MiniRustProof.lean",
     "correspondence/Anneal/MirCorrespondence/ByteCodec.lean",
     "correspondence/Anneal/MirCorrespondence/Canaries.lean",
     "correspondence/Anneal/MirCorrespondence/Codec.lean",
@@ -157,17 +180,55 @@ pub const PROVENANCE_SOURCES: &[&str] = &[
 /// Describes what the Pass 2 provenance does and does not certify, matching
 /// `docs/mir-correspondence-design.md`: the kernel checks only the operational
 /// execution rules of `Trusted/MirSemantics*`, while its theorem-stating
-/// surface, shared model types, and correspondence adapter remain
-/// human-audited.
+/// surface, shared model types, correspondence adapter, and unlocked MiniRust
+/// specification claims remain human-audited.
 pub const CORRESPONDENCE_PROVENANCE_NOTE: &str = "Pass 2 (anneal-audit --require-correspondence) \
     kernel-certifies the initState/evalStep execution rules of \
     Trusted/MirSemantics* against pinned vendor/lean-miri/ via \
-    Trusted/Correspondence* (CorrespondenceClaim, FaultEquivalenceClaim) \
-    in blocking repository CI. The theorem-stating surface of \
-    Trusted/MirSemantics* (Behavior, BodyVerified, ProgramVerified, \
-    CrateTheorem, UnitTheorem, and the helpers they reference), \
-    Trusted/MirModel.lean, vendor/lean-miri/, and Trusted/Correspondence* \
+    Trusted/Correspondence* (CorrespondenceClaim, FaultEquivalenceClaim) and \
+    kernel-replays correspondence/Anneal/MiniRust* (whose claim statements and \
+    transcribed machine reside in unlocked correspondence/, with \
+    vendor/minirust/UPSTREAM_PIN.json verified by Tier-0 CI and recorded here) \
+    in blocking repository CI. \
+    The theorem-stating surface of Trusted/MirSemantics* (Behavior, \
+    BodyVerified, ProgramVerified, CrateTheorem, UnitTheorem, and the helpers \
+    they reference), Trusted/MirModel.lean, vendor/lean-miri/, \
+    vendor/minirust/, Trusted/Correspondence*, and unlocked MiniRust claims \
     remain human-audited.";
+
+fn deserialize_unique_btreemap<'de, D>(
+    deserializer: D,
+) -> Result<BTreeMap<String, String>, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    struct UniqueMapVisitor;
+
+    impl<'de> serde::de::Visitor<'de> for UniqueMapVisitor {
+        type Value = BTreeMap<String, String>;
+
+        fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+            formatter.write_str("a JSON object mapping file paths to SHA-256 digests")
+        }
+
+        fn visit_map<M>(self, mut access: M) -> Result<Self::Value, M::Error>
+        where
+            M: serde::de::MapAccess<'de>,
+        {
+            let mut map = BTreeMap::new();
+            while let Some((key, value)) = access.next_entry::<String, String>()? {
+                if map.insert(key.clone(), value).is_some() {
+                    return Err(serde::de::Error::custom(format!(
+                        "duplicate files entry: {key:?}"
+                    )));
+                }
+            }
+            Ok(map)
+        }
+    }
+
+    deserializer.deserialize_map(UniqueMapVisitor)
+}
 
 #[derive(Deserialize)]
 struct UpstreamPinProvenance {
@@ -185,6 +246,28 @@ struct PatchedFileProvenance {
     patched_sha256: String,
 }
 
+#[derive(Deserialize)]
+struct MiniRustPinInput {
+    upstream_repo: String,
+    commit: String,
+    tarball_sha256: String,
+    file_count: usize,
+    manifest_sha256: String,
+    #[serde(deserialize_with = "deserialize_unique_btreemap")]
+    files: BTreeMap<String, String>,
+}
+
+#[derive(Serialize)]
+struct MiniRustProvenance {
+    upstream_repository: String,
+    upstream_commit: String,
+    upstream_pin_sha256: String,
+    tarball_sha256: String,
+    manifest_sha256: String,
+    file_count: usize,
+    files: BTreeMap<String, String>,
+}
+
 #[derive(Serialize)]
 struct CorrespondenceProvenance {
     schema_version: u32,
@@ -195,6 +278,7 @@ struct CorrespondenceProvenance {
     upstream_pin_sha256: String,
     sysroot_foundation_manifest_sha256: &'static str,
     patched_files: Vec<PatchedFileProvenance>,
+    minirust_upstream: MiniRustProvenance,
     correspondence_adapters: BTreeMap<&'static str, String>,
     correspondence_proofs: BTreeMap<&'static str, String>,
     trusted_lean: BTreeMap<&'static str, String>,
@@ -460,8 +544,9 @@ fn hash_bundle_sources(
     Ok(hashes)
 }
 
-/// Render `CORRESPONDENCE_PROVENANCE_JSON` from canonical `UPSTREAM_PIN.json`,
-/// `trusted/correspondence/`, `correspondence/`, and `trusted_lean` digests.
+/// Render `CORRESPONDENCE_PROVENANCE_JSON` from canonical Miri and MiniRust
+/// `UPSTREAM_PIN.json` manifests, `trusted/correspondence/`,
+/// `correspondence/`, and `trusted_lean` digests.
 pub fn render_correspondence_provenance(
     root: &Path,
     trusted_lean: BTreeMap<&'static str, String>,
@@ -496,6 +581,48 @@ pub fn render_correspondence_provenance(
         }
     }
 
+    let mr_pin_path = validate_bundle_source(root, MINIRUST_UPSTREAM_PIN_PATH)?;
+    let mr_pin_bytes = fs::read(mr_pin_path).map_err(BundleError::Io)?;
+    let mr_pin_sha256 = sha256_bytes(&mr_pin_bytes);
+    let mr_pin: MiniRustPinInput = serde_json::from_slice(&mr_pin_bytes).map_err(|err| {
+        BundleError::Policy(format!(
+            "malformed {MINIRUST_UPSTREAM_PIN_PATH} for provenance: {err}"
+        ))
+    })?;
+    if mr_pin.upstream_repo.is_empty() || mr_pin.commit.is_empty() {
+        return Err(BundleError::Policy(format!(
+            "empty provenance metadata field in {MINIRUST_UPSTREAM_PIN_PATH}"
+        )));
+    }
+    if !is_sha256_hex(&mr_pin.tarball_sha256) || !is_sha256_hex(&mr_pin.manifest_sha256) {
+        return Err(BundleError::Policy(format!(
+            "invalid SHA-256 metadata field in {MINIRUST_UPSTREAM_PIN_PATH}"
+        )));
+    }
+    if mr_pin.file_count == 0 || mr_pin.files.len() != mr_pin.file_count {
+        return Err(BundleError::Policy(format!(
+            "invalid file_count ({}) vs files length ({}) in {MINIRUST_UPSTREAM_PIN_PATH}",
+            mr_pin.file_count,
+            mr_pin.files.len()
+        )));
+    }
+    for (path, sha) in &mr_pin.files {
+        if path.is_empty() || !is_sha256_hex(sha) {
+            return Err(BundleError::Policy(format!(
+                "invalid files provenance record in {MINIRUST_UPSTREAM_PIN_PATH}: {path:?}"
+            )));
+        }
+    }
+    let minirust_upstream = MiniRustProvenance {
+        upstream_repository: mr_pin.upstream_repo,
+        upstream_commit: mr_pin.commit,
+        upstream_pin_sha256: mr_pin_sha256,
+        tarball_sha256: mr_pin.tarball_sha256,
+        manifest_sha256: mr_pin.manifest_sha256,
+        file_count: mr_pin.file_count,
+        files: mr_pin.files,
+    };
+
     let correspondence_adapters = hash_bundle_sources(root, CORRESPONDENCE_ADAPTER_PATHS)?;
     let correspondence_proofs = hash_bundle_sources(root, CORRESPONDENCE_PROOF_PATHS)?;
 
@@ -519,6 +646,7 @@ pub fn render_correspondence_provenance(
         upstream_pin_sha256,
         sysroot_foundation_manifest_sha256: LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256,
         patched_files: pin.patched_files,
+        minirust_upstream,
         correspondence_adapters,
         correspondence_proofs,
         trusted_lean,
@@ -738,6 +866,26 @@ mod tests {
                     "b".repeat(64)
                 );
                 fs::write(&dst, pin).unwrap();
+            } else if rel == MINIRUST_UPSTREAM_PIN_PATH {
+                let pin = format!(
+                    concat!(
+                        "{{\n",
+                        "  \"schema_version\": 1,\n",
+                        "  \"upstream_repo\": \"https://example.invalid/minirust\",\n",
+                        "  \"commit\": \"fedcba9876543210fedcba9876543210fedcba98\",\n",
+                        "  \"tarball_sha256\": \"{}\",\n",
+                        "  \"file_count\": 1,\n",
+                        "  \"manifest_sha256\": \"{}\",\n",
+                        "  \"files\": {{\n",
+                        "    \"spec/lang/machine.md\": \"{}\"\n",
+                        "  }}\n",
+                        "}}\n"
+                    ),
+                    "c".repeat(64),
+                    "d".repeat(64),
+                    "e".repeat(64)
+                );
+                fs::write(&dst, pin).unwrap();
             } else {
                 fs::write(&dst, format!("-- synthetic fixture for {rel}\n")).unwrap();
             }
@@ -845,5 +993,53 @@ mod tests {
             let err = resolve_build_script_bundle(&manifest_dir).unwrap_err();
             assert!(err.to_string().contains("regular file"), "{err}");
         }
+    }
+
+    #[test]
+    fn minirust_upstream_pin_validation_fails_closed() {
+        let tmp = tempfile::tempdir().unwrap();
+        let workspace_root = tmp.path().join("anneal");
+        seed_synthetic_workspace_fixture(&workspace_root);
+        let mr_pin_path = workspace_root.join(MINIRUST_UPSTREAM_PIN_PATH);
+        let valid = fs::read_to_string(&mr_pin_path).unwrap();
+
+        let h = "a".repeat(64);
+        let bad_cases = [
+            (
+                valid.replace("\"https://example.invalid/minirust\"", "\"\""),
+                "empty provenance metadata field",
+            ),
+            (
+                valid.replace("\"fedcba9876543210fedcba9876543210fedcba98\"", "\"\""),
+                "empty provenance metadata field",
+            ),
+            (valid.replace(&"c".repeat(64), "not-sha256"), "invalid SHA-256 metadata field"),
+            (valid.replace("\"file_count\": 1", "\"file_count\": 2"), "invalid file_count"),
+            (valid.replace("\"file_count\": 1", "\"file_count\": 0"), "invalid file_count"),
+            (valid.replace(&"e".repeat(64), "bad"), "invalid files provenance record"),
+            (
+                valid.replace("\"spec/lang/machine.md\"", "\"\""),
+                "invalid files provenance record",
+            ),
+            (
+                format!(
+                    "{{\"upstream_repo\":\"r\",\"commit\":\"c\",\"tarball_sha256\":\"{h}\",\
+                     \"file_count\":1,\"manifest_sha256\":\"{h}\",\
+                     \"files\":{{\"a.md\":\"{h}\",\"a.md\":\"{h}\"}}}}"
+                ),
+                "duplicate files entry",
+            ),
+        ];
+        for (payload, expected) in bad_cases {
+            fs::write(&mr_pin_path, payload).unwrap();
+            let err = match render_bundled_resources(&workspace_root) {
+                Ok(_) => panic!("expected rejection containing {expected:?}"),
+                Err(err) => err,
+            };
+            assert!(err.to_string().contains(expected), "expected {expected:?}, got: {err}");
+        }
+
+        fs::write(&mr_pin_path, valid).unwrap();
+        assert!(render_bundled_resources(&workspace_root).is_ok());
     }
 }
