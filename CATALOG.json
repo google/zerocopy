@@ -105826,6 +105826,60 @@
         "verification"
       ]
     },
+    "rustc-match-guard-fake-borrow-e0510-cleanup-erasure-and-or-pattern-bindings": {
+      "observed_at": "2026-11-24",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc compiler toolchain and MIR/borrowck sources (1.98.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f7da9a42368f31abb02b8064bb93a11bf9ba9f5e"
+          },
+          "name": "rustc MIR match lowering, CleanupPostBorrowck, and NLL borrowck sources (upstream HEAD)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal verified MIR semantics and trusted boundary (main)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "7133a9f5c779f624f513ee1e29fd9742214ce3e1"
+          },
+          "name": "Anneal repository (unstable)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover toolchain"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "rustc-match-lowering-fake-borrows-guards-or-patterns-and-uninhabited-soundness": {
       "observed_at": "2026-11-22",
       "subjects": [
