@@ -338,11 +338,20 @@ explicitly passed (producing a tainted Receipt v3).
     disk from `<prefix>/bin/lean` (with `<prefix>/lib/lean`) or
     `<elan_home>/bin/lean` (`settings.toml` `default_toolchain` →
     `<elan_home>/toolchains/<tc>/bin/lean`), failing closed before spawning any
-    child process on opaque launchers outside a Lean sysroot, probes
-    `SandboxRuntime` first, and executes `--version` and `--print-prefix`
-    strictly inside `ExecSeal`. Under explicit `--allow-unsandboxed-elaboration`
-    (`SandboxMode::Unsandboxed`, tainted with `"elaboration_sandbox": "none"`),
-    it queries `--version` and `--print-prefix` directly, resolves
+    child process on opaque launchers outside a Lean sysroot. When `<prefix>`
+    is a logical wrapper whose `bin/lean` resolves into a canonical
+    `<canon_prefix>/bin/lean` sysroot and whose `<prefix>/lib` is purely a
+    symlink forest (or direct symlink) staying strictly within
+    `<canon_prefix>/lib`, admission promotes `prefix` to `canon_prefix` before
+    hashing `exec_lean`, probing `SandboxRuntime`, and executing `--version` and
+    `--print-prefix` inside `ExecSeal`. Otherwise admission keeps `<prefix>`,
+    and `SandboxRuntime::probe` validates it directly: standalone layouts such
+    as zero-symlink directories remain admissible, while broken, looping, or
+    escaping per-file symlinks (including hybrid overlays that mix regular
+    files with symlinks into `<canon_prefix>/lib`) fail closed. Under explicit
+    `--allow-unsandboxed-elaboration` (`SandboxMode::Unsandboxed`, tainted
+    with `"elaboration_sandbox": "none"`), it queries `--version` and
+    `--print-prefix` directly, resolves
     `exec_lean = fs::canonicalize(canon_prefix.join("bin/lean"))` (falling back
     to `&self.lean` when `canon_prefix/bin/lean` is absent), and records
     `sha256_file_deref(&exec_lean, "toolchain")` in the receipt.
