@@ -10,11 +10,12 @@ those terms. -->
 
 > [!WARNING]
 > **This is alpha software!** Anneal (`0.2.0-alpha`, Stage 0) has not yet
-> completed an independent TCB audit. The units below verify only **9 currently
+> completed an independent TCB audit. The units below verify **9 currently
 > capturable scalar, unit, and empty sentinel functions** in `../src/` under
-> Profile v1 (`x86_64-unknown-linux-gnu`, `-C opt-level=0`,
+> Profile v1 and **4 byte-slice functions** under the experimental Profile v2
+> (`x86_64-unknown-linux-gnu`, `-C opt-level=0`,
 > `no_zerocopy_allocator_api_1_100_0` only). Passing CI here **does not** verify
-> pointer or slice operations (`Ref`, `Ptr`, `transmute!`), Cargo features
+> other pointer or slice operations (`Ref`, `Ptr`, `transmute!`), Cargo features
 > (`alloc`, `simd`, `derive`), or the `unsafe impl` safety contracts of marker
 > traits such as `FromBytes` (only the empty
 > `only_derive_is_allowed_to_implement_this_trait` sentinel methods are checked
@@ -30,7 +31,17 @@ those terms. -->
 
 This directory contains out-of-line Anneal formal specifications and
 kernel-checked Lean 4 proofs covering those 9 verbatim Profile v1 scalar/unit
-and marker-sentinel items in `../src/`.
+and marker-sentinel items and 4 verbatim Profile v2 byte-slice items in
+`../src/`.
+
+The Profile v2 units (`06_*` and `08_*`) rest on additional assumptions,
+described in [Profile v2][profile-v2-doc]. Profile v2 has no aliasing model:
+the theorems quantify only over entries whose reference arguments are valid,
+initialized, and, for `&mut`, disjoint, and receipts record these as
+assumptions. Receipts also mark `correspondence_provenance` inapplicable,
+because the `lean-miri` correspondence covers only Profile v1 rules.
+
+[profile-v2-doc]: ../../anneal/docs/alpha.md#experimental-mir-profile-v2-borrowed-slices-and-raw-pointers
 
 `../Cargo.toml` excludes `/proofs` from crates.io packages so downstream
 `zerocopy` users incur zero new dependencies, zero MSRV impact, and zero build
@@ -46,6 +57,8 @@ overhead. CI continuously enforces every proof unit in
 | `02_unit_pointer_metadata` | `<() as PointerMetadata>::{from,to}_elem_count` | Universal constant `()` and `0usize` return; round-trip invariants; safe signatures (`isUnsafe = false`) | `["propext"]` |
 | `03_macros_unsafe` | `util::macros::__unsafe` | Exact identity, `isUnsafe = true`, zero-argument signature, non-vacuous safety precondition, total `()` return | `["propext"]` |
 | `04_substantive_and_frombytes_markers` | All 5 substantive scalar/unit/macro items above plus 4 `u8` derive-only sentinel methods (`only_derive_is_allowed_to_implement_this_trait` for `Immutable`, `TryFromBytes`, `FromZeros`, `FromBytes`; does not verify `unsafe impl` soundness) | Compositional 9-body `BodiesVerified` dispatch and functional postconditions | `["propext"]` |
+| `06_byte_slice_into_byte_slice` | `<&[u8] as IntoByteSlice>::into_byte_slice`, `<&mut [u8] as IntoByteSlice>::into_byte_slice`, `<&mut [u8] as IntoByteSliceMut>::into_byte_slice_mut` | Profile v2 stability over all valid entries and caller memory: each body is well-formed and returns the same slice address and length with caller memory unchanged as its only terminal behavior | `["propext"]` |
+| `08_byte_slice_split_at_unchecked` | `<&[u8] as SplitByteSlice>::split_at_unchecked` | Profile v2 (`UnitTheoremV2`) over all valid entries satisfying `mid <= len`, execution reaches a return of `(s[..mid], s[mid..])` (second slice at `addr + mid`, lengths summing to `len`) with caller memory unchanged | `["propext"]` |
 
 ## Reproducing Locally
 
