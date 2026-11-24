@@ -1,0 +1,406 @@
+{
+  "probe_suite": "rustc_privacy_visibility_lattice_rfc2145_sealed_traits_zerocopy",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "host_machine": "x86_64",
+  "zerocopy_detected": true,
+  "experiments": {
+    "a_visibility_lattice_and_privacy_checks": {
+      "a01_descendant_and_crate_access_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "VIS_OK=149",
+        "run_stderr": ""
+      },
+      "a02_sibling_pub_in_crate_a_rejected_e0603": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0603]: function `in_a` is private\n --> <tmp>/a02.rs:7:19\n  |\n7 |         crate::a::in_a()\n  |                   ^^^^ private function\n  |\nnote: the function `in_a` is defined here\n --> <tmp>/a02.rs:2:5\n  |\n2 |     pub(in crate::a) fn in_a() -> u32 { 7 }\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0603`.",
+        "error_codes": [
+          "E0603"
+        ]
+      },
+      "a03_parent_access_pub_self_rejected_e0603": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0603]: function `secret` is private\n --> <tmp>/a03.rs:6:16\n  |\n6 |         inner::secret()\n  |                ^^^^^^ private function\n  |\nnote: the function `secret` is defined here\n --> <tmp>/a03.rs:3:9\n  |\n3 |         pub(self) fn secret() -> u32 { 1 }\n  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0603`.",
+        "error_codes": [
+          "E0603"
+        ]
+      },
+      "a04_pub_in_non_ancestor_path_rejected_e0742": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0742]: visibilities can only be restricted to ancestor modules\n --> <tmp>/a04.rs:3:16\n  |\n3 |         pub(in crate::other) fn bad_vis() {}\n  |                ^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0742`.",
+        "error_codes": [
+          "E0742"
+        ]
+      },
+      "a05_lib_compile": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "warning: function `f` is never used\n --> <tmp>/a05_lib.rs:2:12\n  |\n2 |     pub fn f() -> u32 { 11 }\n  |            ^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+        "error_codes": []
+      },
+      "a05a_reexport_short_circuit_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "REEXP_OK=22",
+        "run_stderr": ""
+      },
+      "a05b_ancestor_bottleneck_rejected_e0603": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0603]: module `priv_outer` is private\n --> <tmp>/a05_direct_err.rs:2:22\n  |\n2 |     let _ = a05_lib::priv_outer::f();\n  |                      ^^^^^^^^^^  - function `f` is not publicly re-exported\n  |                      |\n  |                      private module\n  |\nnote: the module `priv_outer` is defined here\n --> <tmp>/a05_lib.rs:1:1\n  |\n1 | mod priv_outer {\n  | ^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0603`.",
+        "error_codes": [
+          "E0603"
+        ]
+      },
+      "a06a_private_struct_field_e0616": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0616]: field `y` of struct `S` is private\n  --> <tmp>/a06a.rs:12:15\n   |\n12 |     let _ = s.y;\n   |               ^ private field\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0616`.",
+        "error_codes": [
+          "E0616"
+        ]
+      },
+      "a06b_private_struct_ctor_field_e0451": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "warning: fields `x` and `y` are never read\n --> <tmp>/a06b.rs:3:13\n  |\n2 |     pub struct S {\n  |                - fields in this struct\n3 |         pub x: u32,\n  |             ^\n4 |         y: u32,\n  |         ^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nerror[E0451]: field `y` of struct `S` is private\n --> <tmp>/a06b.rs:8:26\n  |\n8 |     let _ = m::S { x: 1, y: 2 };\n  |                          ^ private field\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0451`.",
+        "error_codes": [
+          "E0451"
+        ]
+      },
+      "a07_type_privacy_alias_and_inferred_ret_item_is_private": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "warning: field `0` is never read\n --> <tmp>/a07.rs:3:17\n  |\n3 |     struct Priv(u32);\n  |            ---- ^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: type `Priv` is private\n --> <tmp>/a07.rs:8:23\n  |\n8 |     let _: m::Alias = m::mk();\n  |                       ^^^^^^^ private type\n\nerror: aborting due to 1 previous error; 1 warning emitted",
+        "error_codes": []
+      }
+    },
+    "b_effective_visibilities_and_rfc2145": {
+      "b01_rustc_effective_visibility_inspection": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [
+          "--emit=metadata"
+        ],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <tmp>/b01.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: Direct: pub, Reexported: pub, Reachable: pub, ReachableThroughImplTrait: pub\n --> <tmp>/b01.rs:6:1\n  |\n6 | pub struct DirectPub;\n  | ^^^^^^^^^^^^^^^^^^^^\n\nerror: Direct: pub(crate), Reexported: pub, Reachable: pub, ReachableThroughImplTrait: pub\n  --> <tmp>/b01.rs:10:5\n   |\n10 |     pub struct ReexportedItem;\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: Direct: pub(crate), Reexported: pub(crate), Reachable: pub, ReachableThroughImplTrait: pub\n  --> <tmp>/b01.rs:13:5\n   |\n13 |     pub trait Sealed {}\n   |     ^^^^^^^^^^^^^^^^\n\nerror: Direct: pub(crate), Reexported: pub(crate), Reachable: pub(crate), ReachableThroughImplTrait: pub(crate)\n  --> <tmp>/b01.rs:16:5\n   |\n16 |     pub trait UnusedPub {}\n   |     ^^^^^^^^^^^^^^^^^^^\n\nerror: Direct: pub(crate), Reexported: pub(crate), Reachable: pub, ReachableThroughImplTrait: pub\n  --> <tmp>/b01.rs:19:5\n   |\n19 |     pub trait RpitTrait {}\n   |     ^^^^^^^^^^^^^^^^^^^\n\nerror: Direct: pub(crate), Reexported: pub(crate), Reachable: pub(crate), ReachableThroughImplTrait: pub\n  --> <tmp>/b01.rs:22:5\n   |\n22 |     pub struct RpitHidden;\n   |     ^^^^^^^^^^^^^^^^^^^^^\n\nerror: Direct: pub, Reexported: pub, Reachable: pub, ReachableThroughImplTrait: pub\n  --> <tmp>/b01.rs:28:9\n   |\n28 | pub use hidden::ReexportedItem;\n   |         ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: Direct: pub, Reexported: pub, Reachable: pub, ReachableThroughImplTrait: pub\n  --> <tmp>/b01.rs:31:1\n   |\n31 | pub trait PublicSealed: hidden::Sealed {}\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: Direct: pub, Reexported: pub, Reachable: pub, ReachableThroughImplTrait: pub\n  --> <tmp>/b01.rs:34:1\n   |\n34 | pub fn leak_rpit() -> impl hidden::RpitTrait {\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: not in the table\n  --> <tmp>/b01.rs:39:1\n   |\n39 | pub(crate) fn crate_fn_rpit() -> impl hidden::RpitTrait {\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 10 previous errors; 1 warning emitted",
+        "error_codes": [],
+        "parsed_effective_visibilities": [
+          {
+            "item": "pub struct DirectPub;",
+            "effective_visibility": "Direct: pub, Reexported: pub, Reachable: pub, ReachableThroughImplTrait: pub"
+          },
+          {
+            "item": "pub struct ReexportedItem;",
+            "effective_visibility": "Direct: pub(crate), Reexported: pub, Reachable: pub, ReachableThroughImplTrait: pub"
+          },
+          {
+            "item": "pub trait Sealed {}",
+            "effective_visibility": "Direct: pub(crate), Reexported: pub(crate), Reachable: pub, ReachableThroughImplTrait: pub"
+          },
+          {
+            "item": "pub trait UnusedPub {}",
+            "effective_visibility": "Direct: pub(crate), Reexported: pub(crate), Reachable: pub(crate), ReachableThroughImplTrait: pub(crate)"
+          },
+          {
+            "item": "pub trait RpitTrait {}",
+            "effective_visibility": "Direct: pub(crate), Reexported: pub(crate), Reachable: pub, ReachableThroughImplTrait: pub"
+          },
+          {
+            "item": "pub struct RpitHidden;",
+            "effective_visibility": "Direct: pub(crate), Reexported: pub(crate), Reachable: pub(crate), ReachableThroughImplTrait: pub"
+          },
+          {
+            "item": "pub use hidden::ReexportedItem;",
+            "effective_visibility": "Direct: pub, Reexported: pub, Reachable: pub, ReachableThroughImplTrait: pub"
+          },
+          {
+            "item": "pub trait PublicSealed: hidden::Sealed {}",
+            "effective_visibility": "Direct: pub, Reexported: pub, Reachable: pub, ReachableThroughImplTrait: pub"
+          },
+          {
+            "item": "pub fn leak_rpit() -> impl hidden::RpitTrait {",
+            "effective_visibility": "Direct: pub, Reexported: pub, Reachable: pub, ReachableThroughImplTrait: pub"
+          },
+          {
+            "item": "pub(crate) fn crate_fn_rpit() -> impl hidden::RpitTrait {",
+            "effective_visibility": "not in the table"
+          }
+        ]
+      },
+      "b02_sealed_trait_passes_deny_private_bounds_interfaces_unreachable_pub": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": []
+      },
+      "b03_sealed_trait_flagged_by_deny_unnameable_types": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: trait `Sealed` is reachable but cannot be named\n --> <tmp>/b03.rs:5:5\n  |\n5 |     pub trait Sealed {}\n  |     ^^^^^^^^^^^^^^^^ reachable at visibility `pub`, but can only be named at visibility `pub(crate)`\n  |\nnote: the lint level is defined here\n --> <tmp>/b03.rs:2:9\n  |\n2 | #![deny(unnameable_types)]\n  |         ^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error",
+        "error_codes": []
+      },
+      "b04_unused_pub_in_private_mod_triggers_unreachable_pub": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "warning: trait `UnusedSealed` is never used\n --> <tmp>/b04.rs:5:15\n  |\n5 |     pub trait UnusedSealed {}\n  |               ^^^^^^^^^^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: unreachable `pub` item\n --> <tmp>/b04.rs:5:5\n  |\n5 |     pub trait UnusedSealed {}\n  |     ---^^^^^^^^^^^^^^^^^^^\n  |     |\n  |     help: consider restricting its visibility: `pub(crate)`\n  |\n  = help: or consider exporting it for use by other crates\nnote: the lint level is defined here\n --> <tmp>/b04.rs:2:9\n  |\n2 | #![deny(unreachable_pub)]\n  |         ^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error; 1 warning emitted",
+        "error_codes": []
+      },
+      "b05_private_bounds_rejects_crate_trait_bound": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: trait `CrateTrait` is more private than the item `BadSuper`\n --> <tmp>/b05.rs:8:1\n  |\n8 | pub trait BadSuper: CrateTrait {}\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ trait `BadSuper` is reachable at visibility `pub`\n  |\nnote: but trait `CrateTrait` is only usable at visibility `pub(crate)`\n --> <tmp>/b05.rs:7:1\n  |\n7 | trait CrateTrait {}\n  | ^^^^^^^^^^^^^^^^\nnote: the lint level is defined here\n --> <tmp>/b05.rs:2:9\n  |\n2 | #![deny(private_bounds)]\n  |         ^^^^^^^^^^^^^^\n\nerror: trait `CrateTrait` is more private than the item `bad_generic`\n --> <tmp>/b05.rs:9:1\n  |\n9 | pub fn bad_generic<T: CrateTrait>(_x: T) {}\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function `bad_generic` is reachable at visibility `pub`\n  |\nnote: but trait `CrateTrait` is only usable at visibility `pub(crate)`\n --> <tmp>/b05.rs:7:1\n  |\n7 | trait CrateTrait {}\n  | ^^^^^^^^^^^^^^^^\n\nwarning: trait `HiddenTrait` is never used\n --> <tmp>/b05.rs:5:11\n  |\n5 |     trait HiddenTrait {}\n  |           ^^^^^^^^^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 2 previous errors; 1 warning emitted",
+        "error_codes": []
+      },
+      "b06_private_interfaces_rejects_pub_fn_private_type": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: type `PrivateType` is more private than the item `leak_iface`\n --> <tmp>/b06.rs:5:1\n  |\n5 | pub fn leak_iface() -> PrivateType { PrivateType(7) }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function `leak_iface` is reachable at visibility `pub`\n  |\nnote: but type `PrivateType` is only usable at visibility `pub(crate)`\n --> <tmp>/b06.rs:4:1\n  |\n4 | struct PrivateType(u32);\n  | ^^^^^^^^^^^^^^^^^^\nnote: the lint level is defined here\n --> <tmp>/b06.rs:2:9\n  |\n2 | #![deny(private_interfaces)]\n  |         ^^^^^^^^^^^^^^^^^^\n\nwarning: field `0` is never read\n --> <tmp>/b06.rs:4:20\n  |\n4 | struct PrivateType(u32);\n  |        ----------- ^^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted",
+        "error_codes": []
+      },
+      "b07_unnameable_types_silent_when_not_crate_public": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "warning: function `crate_internal_leak` is never used\n --> <tmp>/b07.rs:8:29\n  |\n8 |     pub(in crate::outer) fn crate_internal_leak() -> inner::InnerUnnameab...\n  |                             ^^^^^^^^^^^^^^^^^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: struct `InnerUnnameable` is never constructed\n --> <tmp>/b07.rs:6:20\n  |\n6 |         pub struct InnerUnnameable(pub u32);\n  |                    ^^^^^^^^^^^^^^^\n\nwarning: 2 warnings emitted",
+        "error_codes": []
+      },
+      "b08_assoc_type_hard_error_e0446_ignores_allow_lints": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0446]: private type `Priv` in public interface\n  --> <tmp>/b08.rs:10:5\n   |\n 8 | struct Priv;\n   | ----------- `Priv` declared as private\n 9 | impl Tr for Pub {\n10 |     type Assoc = Priv;\n   |     ^^^^^^^^^^ can't leak private type\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0446`.",
+        "error_codes": [
+          "E0446"
+        ]
+      }
+    },
+    "c_multicrate_sealed_traits_and_escape": {
+      "c00_upstream_lib_compile": {
+        "edition": "2024",
+        "crate_type": "lib",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "warning: function `crate_only` is never used\n  --> <tmp>/up.rs:32:15\n   |\n32 | pub(crate) fn crate_only() -> u32 {\n   |               ^^^^^^^^^^\n   |\n   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted",
+        "error_codes": []
+      },
+      "c01_downstream_bound_method_and_dyn_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "SEALED_CALL_OK=42,dyn=21",
+        "run_stderr": ""
+      },
+      "c02_downstream_impl_public_sealed_rejected_e0277": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: the trait bound `Local: up::private::Sealed` is not satisfied\n  --> <tmp>/c02.rs:2:27\n   |\n 2 | impl up::PublicSealed for Local {\n   |                           ^^^^^ unsatisfied trait bound\n   |\nhelp: the trait `up::private::Sealed` is not implemented for `Local`\n  --> <tmp>/c02.rs:1:1\n   |\n 1 | struct Local;\n   | ^^^^^^^^^^^^\nhelp: the trait `up::private::Sealed` is implemented for `Token`\n  --> <tmp>/up.rs:6:5\n   |\n 6 |     impl Sealed for super::Token {}\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nnote: required by a bound in `PublicSealed`\n  --> <tmp>/up.rs:16:25\n   |\n16 | pub trait PublicSealed: private::Sealed {\n   |                         ^^^^^^^^^^^^^^^ required by this bound in `PublicSealed`\n   = note: `PublicSealed` is a \"sealed trait\", because to implement it you also need to implement `up::private::Sealed`, which is not accessible; this is usually done to force you to use one of the provided types that already implement it\n   = help: the following type implements the trait:\n             up::Token\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.",
+        "error_codes": [
+          "E0277"
+        ]
+      },
+      "c03_downstream_impl_private_sealed_rejected_e0603": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0603]: module `private` is private\n --> <tmp>/c03.rs:2:10\n  |\n2 | impl up::private::Sealed for Local {}\n  |          ^^^^^^^  ------ trait `Sealed` is not publicly re-exported\n  |          |\n  |          private module\n  |\nnote: the module `private` is defined here\n --> <tmp>/up.rs:4:1\n  |\n4 | mod private {\n  | ^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0603`.",
+        "error_codes": [
+          "E0603"
+        ]
+      },
+      "c04_downstream_pub_crate_rejected_e0603": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0603]: function `crate_only` is private\n  --> <tmp>/c04.rs:2:17\n   |\n 2 |     let _ = up::crate_only();\n   |                 ^^^^^^^^^^ private function\n   |\nnote: the function `crate_only` is defined here\n  --> <tmp>/up.rs:32:1\n   |\n32 | pub(crate) fn crate_only() -> u32 {\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0603`.",
+        "error_codes": [
+          "E0603"
+        ]
+      },
+      "c05_reexport_escape_breaks_sealing_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "ESCAPE_OK",
+        "run_stderr": ""
+      },
+      "c06_doc_hidden_mod_does_not_seal_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "DOC_HIDDEN_NOT_SEALED",
+        "run_stderr": ""
+      },
+      "c07_method_sig_unnameable_witness_placeholder_rejected_e0121": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0121]: the placeholder `_` is not allowed within types on item signatures for methods\n --> <tmp>/c07.rs:3:26\n  |\n3 |     fn secret(&self, _w: _) -> u32 { 0 }\n  |                          ^ not allowed in type signatures\n  |\nhelp: try replacing `_` with the type in the corresponding trait method signature\n  |\n3 -     fn secret(&self, _w: _) -> u32 { 0 }\n3 +     fn secret(&self, _w: up::private::Witness) -> u32 { 0 }\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0121`.",
+        "error_codes": [
+          "E0121"
+        ]
+      }
+    },
+    "d_zerocopy_sealing_enforcement": {
+      "d01_zerocopy_lib_compile": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": "",
+        "error_codes": []
+      },
+      "d02_zerocopy_downstream_usage_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "ZC_SEALED_OK=true,be=BE,le=LE,shared_ex=false,excl_ex=true",
+        "run_stderr": ""
+      },
+      "d03_zerocopy_impl_byteorder_rejected_e0277": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: the trait bound `LocalOrder: byteorder::private::Sealed` is not satisfied\n  --> <tmp>/d03.rs:6:41\n   |\n 6 | impl zerocopy::byteorder::ByteOrder for LocalOrder {\n   |                                         ^^^^^^^^^^ unsatisfied trait bound\n   |\nhelp: the trait `byteorder::private::Sealed` is not implemented for `LocalOrder`\n  --> <tmp>/d03.rs:2:1\n   |\n 2 | struct LocalOrder;\n   | ^^^^^^^^^^^^^^^^^\nhelp: the following other types implement trait `byteorder::private::Sealed`\n  --> google/zerocopy:zerocopy/src/byteorder.rs:97:5\n   |\n97 |     impl Sealed for super::BigEndian {}\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `zerocopy::BigEndian`\n98 |     impl Sealed for super::LittleEndian {}\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `zerocopy::LittleEndian`\nnote: required by a bound in `ByteOrder`\n  --> google/zerocopy:zerocopy/src/byteorder.rs:88:81\n   |\n87 | ...it ByteOrder:\n   |       --------- required by a bound in this trait\n88 | ...y + Clone + Debug + Display + Eq + PartialEq + Ord + PartialOrd + Hash + private::Sealed\n   |                                                                             ^^^^^^^^^^^^^^^ required by this bound in `ByteOrder`\n   = note: `ByteOrder` is a \"sealed trait\", because to implement it you also need to implement `zerocopy::byteorder::private::Sealed`, which is not accessible; this is usually done to force you to use one of the provided types that already implement it\n   = help: the following types implement the trait:\n             zerocopy::BigEndian\n             zerocopy::LittleEndian\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.",
+        "error_codes": [
+          "E0277"
+        ]
+      },
+      "d04_zerocopy_impl_alignment_rejected_e0277": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0046]: not all trait items implemented, missing: `read`\n --> <tmp>/d04.rs:2:1\n  |\n2 | impl zerocopy::pointer::invariant::Alignment for LocalAlign {}\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ missing `read` in implementation\n  |\n  = help: implement the missing item: `fn read<T, I: Invariants<Alignment = Self, Validity = invariant::Safe>, R>(_: Ptr<'_, T, I>) -> T where T: Copy, T: zerocopy::pointer::Read, <I as Invariants>::Aliasing: invariant::Reference { todo!() }`\n\nerror[E0277]: the trait bound `LocalAlign: invariant::sealed::Sealed` is not satisfied\n  --> <tmp>/d04.rs:2:50\n   |\n 2 | impl zerocopy::pointer::invariant::Alignment for LocalAlign {}\n   |                                                  ^^^^^^^^^^ unsatisfied trait bound\n   |\nhelp: the trait `invariant::sealed::Sealed` is not implemented for `LocalAlign`\n  --> <tmp>/d04.rs:1:1\n   |\n 1 | struct LocalAlign;\n   | ^^^^^^^^^^^^^^^^^\n   = help: the following other types implement trait `invariant::sealed::Sealed`:\n             (A, AA, V)\n             Aligned\n             BecauseExclusive\n             BecauseImmutable\n             Exclusive\n             Shared\n             invariant::AsInitialized\n             invariant::Initialized\n           and 3 others\nnote: required by a bound in `invariant::Alignment`\n  --> google/zerocopy:zerocopy/src/pointer/invariant.rs:44:22\n   |\n44 | pub trait Alignment: Sealed {\n   |                      ^^^^^^ required by this bound in `Alignment`\n   = note: `Alignment` is a \"sealed trait\", because to implement it you also need to implement `zerocopy::invariant::sealed::Sealed`, which is not accessible; this is usually done to force you to use one of the provided types that already implement it\n   = help: the following types implement the trait:\n             zerocopy::invariant::Shared\n             zerocopy::invariant::Exclusive\n             zerocopy::invariant::Unaligned\n             zerocopy::invariant::Aligned\n             zerocopy::invariant::Uninit\n             zerocopy::invariant::AsInitialized\n             zerocopy::invariant::Initialized\n             zerocopy::invariant::Safe\n           and 3 others\n\nerror: aborting due to 2 previous errors\n\nSome errors have detailed explanations: E0046, E0277.\nFor more information about an error, try `rustc --explain E0046`.",
+        "error_codes": [
+          "E0046",
+          "E0277"
+        ]
+      },
+      "d05_zerocopy_unsafe_impl_validity_rejected_e0277": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: the trait bound `LocalValidity: invariant::sealed::Sealed` is not satisfied\n   --> <tmp>/d05.rs:3:26\n    |\n  3 | unsafe impl Validity for LocalValidity {\n    |                          ^^^^^^^^^^^^^ unsatisfied trait bound\n    |\nhelp: the trait `invariant::sealed::Sealed` is not implemented for `LocalValidity`\n   --> <tmp>/d05.rs:2:1\n    |\n  2 | struct LocalValidity;\n    | ^^^^^^^^^^^^^^^^^^^^\n    = help: the following other types implement trait `invariant::sealed::Sealed`:\n              (A, AA, V)\n              Aligned\n              BecauseExclusive\n              BecauseImmutable\n              Exclusive\n              Shared\n              invariant::AsInitialized\n              invariant::Initialized\n            and 3 others\nnote: required by a bound in `invariant::Validity`\n   --> google/zerocopy:zerocopy/src/pointer/invariant.rs:100:28\n    |\n100 | pub unsafe trait Validity: Sealed {\n    |                            ^^^^^^ required by this bound in `Validity`\n    = note: `Validity` is a \"sealed trait\", because to implement it you also need to implement `zerocopy::invariant::sealed::Sealed`, which is not accessible; this is usually done to force you to use one of the provided types that already implement it\n    = help: the following types implement the trait:\n              zerocopy::invariant::Shared\n              zerocopy::invariant::Exclusive\n              zerocopy::invariant::Unaligned\n              zerocopy::invariant::Aligned\n              zerocopy::invariant::Uninit\n              zerocopy::invariant::AsInitialized\n              zerocopy::invariant::Initialized\n              zerocopy::invariant::Safe\n            and 3 others\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.",
+        "error_codes": [
+          "E0277"
+        ]
+      },
+      "d06_zerocopy_impl_aliasing_reference_invariants_rejected_e0277": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: the trait bound `LocalAlias: invariant::sealed::Sealed` is not satisfied\n  --> <tmp>/d06.rs:3:19\n   |\n 3 | impl Aliasing for LocalAlias { const IS_EXCLUSIVE: bool = false; }\n   |                   ^^^^^^^^^^ unsatisfied trait bound\n   |\nhelp: the trait `invariant::sealed::Sealed` is not implemented for `LocalAlias`\n  --> <tmp>/d06.rs:2:1\n   |\n 2 | struct LocalAlias;\n   | ^^^^^^^^^^^^^^^^^\n   = help: the following other types implement trait `invariant::sealed::Sealed`:\n             (A, AA, V)\n             Aligned\n             BecauseExclusive\n             BecauseImmutable\n             Exclusive\n             Shared\n             invariant::AsInitialized\n             invariant::Initialized\n           and 3 others\nnote: required by a bound in `Aliasing`\n  --> google/zerocopy:zerocopy/src/pointer/invariant.rs:37:21\n   |\n37 | pub trait Aliasing: Sealed {\n   |                     ^^^^^^ required by this bound in `Aliasing`\n   = note: `Aliasing` is a \"sealed trait\", because to implement it you also need to implement `zerocopy::invariant::sealed::Sealed`, which is not accessible; this is usually done to force you to use one of the provided types that already implement it\n   = help: the following types implement the trait:\n             zerocopy::invariant::Shared\n             zerocopy::invariant::Exclusive\n             zerocopy::invariant::Unaligned\n             zerocopy::invariant::Aligned\n             zerocopy::invariant::Uninit\n             zerocopy::invariant::AsInitialized\n             zerocopy::invariant::Initialized\n             zerocopy::invariant::Safe\n           and 3 others\n\nerror[E0277]: the trait bound `LocalAlias: invariant::sealed::Sealed` is not satisfied\n   --> <tmp>/d06.rs:4:20\n    |\n  4 | impl Reference for LocalAlias {}\n    |                    ^^^^^^^^^^ unsatisfied trait bound\n    |\nhelp: the trait `invariant::sealed::Sealed` is not implemented for `LocalAlias`\n   --> <tmp>/d06.rs:2:1\n    |\n  2 | struct LocalAlias;\n    | ^^^^^^^^^^^^^^^^^\n    = help: the following other types implement trait `invariant::sealed::Sealed`:\n              (A, AA, V)\n              Aligned\n              BecauseExclusive\n              BecauseImmutable\n              Exclusive\n              Shared\n              invariant::AsInitialized\n              invariant::Initialized\n            and 3 others\nnote: required by a bound in `invariant::Reference`\n   --> google/zerocopy:zerocopy/src/pointer/invariant.rs:117:33\n    |\n117 | pub trait Reference: Aliasing + Sealed {}\n    |                                 ^^^^^^ required by this bound in `Reference`\n    = note: `Reference` is a \"sealed trait\", because to implement it you also need to implement `zerocopy::invariant::sealed::Sealed`, which is not accessible; this is usually done to force you to use one of the provided types that already implement it\n    = help: the following types implement the trait:\n              zerocopy::invariant::Shared\n              zerocopy::invariant::Exclusive\n              zerocopy::invariant::Unaligned\n              zerocopy::invariant::Aligned\n              zerocopy::invariant::Uninit\n              zerocopy::invariant::AsInitialized\n              zerocopy::invariant::Initialized\n              zerocopy::invariant::Safe\n            and 3 others\n\nerror[E0277]: the trait bound `LocalAlias: invariant::sealed::Sealed` is not satisfied\n  --> <tmp>/d06.rs:7:21\n   |\n 7 |     type Aliasing = LocalAlias;\n   |                     ^^^^^^^^^^ unsatisfied trait bound\n   |\nhelp: the trait `invariant::sealed::Sealed` is not implemented for `LocalAlias`\n  --> <tmp>/d06.rs:2:1\n   |\n 2 | struct LocalAlias;\n   | ^^^^^^^^^^^^^^^^^\n   = help: the following other types implement trait `invariant::sealed::Sealed`:\n             (A, AA, V)\n             Aligned\n             BecauseExclusive\n             BecauseImmutable\n             Exclusive\n             Shared\n             invariant::AsInitialized\n             invariant::Initialized\n           and 3 others\n   = note: required for `<LocalInv as Invariants>::Aliasing` to implement `Aliasing`\nnote: required by a bound in `Invariants::Aliasing`\n  --> google/zerocopy:zerocopy/src/pointer/invariant.rs:20:20\n   |\n20 |     type Aliasing: Aliasing;\n   |                    ^^^^^^^^ required by this bound in `Invariants::Aliasing`\n\nerror[E0277]: the trait bound `LocalInv: invariant::sealed::Sealed` is not satisfied\n  --> <tmp>/d06.rs:6:21\n   |\n 6 | impl Invariants for LocalInv {\n   |                     ^^^^^^^^ unsatisfied trait bound\n   |\nhelp: the trait `invariant::sealed::Sealed` is not implemented for `LocalInv`\n  --> <tmp>/d06.rs:5:1\n   |\n 5 | struct LocalInv;\n   | ^^^^^^^^^^^^^^^\n   = help: the following other types implement trait `invariant::sealed::Sealed`:\n             (A, AA, V)\n             Aligned\n             BecauseExclusive\n             BecauseImmutable\n             Exclusive\n             Shared\n             invariant::AsInitialized\n             invariant::Initialized\n           and 3 others\nnote: required by a bound in `Invariants`\n  --> google/zerocopy:zerocopy/src/pointer/invariant.rs:19:23\n   |\n19 | pub trait Invariants: Sealed {\n   |                       ^^^^^^ required by this bound in `Invariants`\n   = note: `Invariants` is a \"sealed trait\", because to implement it you also need to implement `zerocopy::invariant::sealed::Sealed`, which is not accessible; this is usually done to force you to use one of the provided types that already implement it\n   = help: the following types implement the trait:\n             zerocopy::invariant::Shared\n             zerocopy::invariant::Exclusive\n             zerocopy::invariant::Unaligned\n             zerocopy::invariant::Aligned\n             zerocopy::invariant::Uninit\n             zerocopy::invariant::AsInitialized\n             zerocopy::invariant::Initialized\n             zerocopy::invariant::Safe\n           and 3 others\n\nerror: aborting due to 4 previous errors\n\nFor more information about this error, try `rustc --explain E0277`.",
+        "error_codes": [
+          "E0277"
+        ]
+      },
+      "d07_zerocopy_read_trait_unsealed_contrast_ok": {
+        "edition": "2024",
+        "crate_type": "bin",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "warning: struct `LocalTy` is never constructed\n --> <tmp>/d07.rs:2:8\n  |\n2 | struct LocalTy;\n  |        ^^^^^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: struct `LocalReason` is never constructed\n --> <tmp>/d07.rs:3:8\n  |\n3 | struct LocalReason;\n  |        ^^^^^^^^^^^\n\nwarning: 2 warnings emitted",
+        "error_codes": [],
+        "run_returncode": 0,
+        "run_stdout": "READ_UNSEALED_OK=true",
+        "run_stderr": ""
+      }
+    }
+  }
+}

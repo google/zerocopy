@@ -108672,6 +108672,84 @@
         "verification"
       ]
     },
+    "rustc-privacy-visibility-lattice-rfc2145-sealed-traits-and-zerocopy-sealing": {
+      "observed_at": "2026-11-24",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2026-05-31",
+            "host": "x86_64-unknown-linux-gnu",
+            "llvm_version": "22.1.6",
+            "release": "1.98.0-nightly",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          },
+          "name": "rustc (executed nightly toolchain and primary source)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "20fe935d50367c0ff8872c2ebfa050c5c99d9201"
+          },
+          "name": "rustc (upstream main branch source audit)"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "eb65abdaca712af129ba4ebb67a09e78c635a6cf"
+          },
+          "name": "zerocopy (upstream main branch source audit)"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+            "version": "0.8.64"
+          },
+          "name": "zerocopy (executed library build and sealing probes)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal trusted MIR and capture boundary"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFCs (RFC 2145 type privacy and lints)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 kernel"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/hir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "verification"
+      ]
+    },
     "rustc-public-migration-and-multiversion-capture-architecture": {
       "observed_at": "2026-11-23",
       "subjects": [
