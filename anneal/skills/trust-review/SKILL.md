@@ -46,7 +46,7 @@ companions—to its required pass:
 | `trusted/rustc-capture/` | Pass 2 | §2 Capture and two-surface completeness |
 | `trusted/audit/`, `trusted/cargo-anneal/` | Pass 2 | §3 Auditor and orchestrator |
 | `trusted/root-manifest.sha256`, `trusted/lean/foundation-lock.json`, pinned root manifests (`Cargo.toml`, `Cargo.lock`, `flake.nix`, `flake.lock`), any `lakefile.*` or `lean-toolchain`, packaged toolchain archives or bundles | Pass 2 | §4 Provenance, locks, and bundles (plus Pass 1 rejection of `lakefile.*` outside TCB/CI or `lean-toolchain` outside `trusted/lean/`) |
-| `ci/`, `.github/` | Pass 2 | §5 CI workflows and scripts |
+| `ci/`, `.github/` (root `.github/workflows/anneal*.yml`, the Anneal jobs in `release.yml`, and the root `.github/` actions and scripts they run; other root workflows only if they execute or load Anneal-trusted surfaces) | Pass 2 | §5 CI workflows and scripts |
 | Any other path under `trusted/`, or any path executed, included, imported, or loaded as trusted code or config by `trusted/`, `ci/`, `.github/`, or pinned root manifests | Pass 2 | Full TCB surface until mapped |
 | Any `-- anneal-trust-tier:` directive edit in a `.lean` file (even comment-only) | Pass 2 | §1 Bidirectional trust-tier audit |
 

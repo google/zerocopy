@@ -146,7 +146,11 @@ never proves defect absence or substitutes for CI or merge gates.
   directive in a `.lean` file. Paths that CI or `anneal-audit` only scan, hash,
   or audit as untrusted inputs (`theory/`, `correspondence/`, `docs/`) do not
   trigger Pass 2; skip Pass 2 immediately as inapplicable when untriggered.
-  Finish Pass 1 and any triggered Pass 2 before the general pass.
+  Finish Pass 1 and any triggered Pass 2 before the general pass. Here
+  `.github/` means Zerocopy's root `.github/workflows/anneal*.yml`, the Anneal
+  jobs in `release.yml`, and the root `.github/` actions and scripts they run;
+  other root workflows trigger Pass 2 only if they execute or load
+  Anneal-trusted surfaces.
 - **Pass 1, filesystem hygiene, untrusted contents, and specifications:**
   - *Filesystem, Unicode, and config hygiene (every path):* Reject symlinks,
     hardlinks, gitlinks/submodules, checked-in build/cache outputs (`target/`,
