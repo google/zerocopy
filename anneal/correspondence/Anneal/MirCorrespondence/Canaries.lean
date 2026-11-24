@@ -16,6 +16,7 @@ import Init.Control.Except
 import Trusted
 import Trusted.Correspondence
 import Anneal.MirWp
+import Anneal.MirWp.Canaries
 import Anneal.MirCorrespondence.Codec
 import Anneal.MirCorrespondence.SimHelpers
 import Anneal.MirCorrespondence.ScalarEquiv

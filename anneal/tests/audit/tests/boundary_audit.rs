@@ -10,7 +10,7 @@
 //! `TrustedBoundary.lean` kernel-environment inspector.
 
 use std::{
-    collections::{BTreeMap, BTreeSet},
+    collections::{BTreeMap, BTreeSet, VecDeque},
     env, fs, io,
     os::unix::fs::symlink,
     path::{Path, PathBuf},
@@ -19,8 +19,9 @@ use std::{
 
 use anneal_audit::{
     CandidateFeature, Checker, Failure, ImportEdge, InspectorRequest, Json, MiriClosureEntry,
-    ModuleArtifacts, PARTS, TrustTier, check_cargo_boundary, default_lean_path,
-    ensure_miri_cache_outside_checkout, sha256_bytes, sha256_file, verify_sysroot_foundation_dir,
+    ModuleArtifacts, PARTS, TrustTier, bundle, check_cargo_boundary, default_lean_path,
+    ensure_miri_cache_outside_checkout, scan_lean_tree, sha256_bytes, sha256_file,
+    verify_sysroot_foundation_dir,
 };
 use serde_json::json;
 
@@ -3074,9 +3075,11 @@ const SYNTHETIC_CANARIES: &[(&str, &str, &str, &str)] = &[
 ];
 
 /// Configurable synthetic fixture containing minimal `Trusted.MirAst`,
-/// `Trusted.MirSemantics`, `Anneal`, and `Anneal.MirWp` modules that pass
-/// `verifyMirWpCoreTheorems` out of the box so individual negative tests can
-/// mutate a single admission check in isolation.
+/// `Trusted.MirSemantics`, `Anneal`, `Anneal.MirWp`, and decoupled
+/// `Anneal.MirWp.Canaries` modules that pass `verifyMirWpCoreTheorems` out of
+/// the box so individual negative tests can mutate a single admission check in
+/// isolation. Neither `Anneal` nor `Anneal.MirWp` imports
+/// `Anneal.MirWp.Canaries`.
 struct MirWpSyntheticSpec {
     mir_ast_extra: String,
     wp_soundness_claim: Option<String>,
@@ -3088,6 +3091,8 @@ struct MirWpSyntheticSpec {
     wp_fault_soundness_proof: Option<String>,
     canary_proof_overrides: BTreeMap<String, Option<String>>,
     mir_wp_extra: String,
+    include_canaries_module: bool,
+    canaries_extra: String,
 }
 
 impl MirWpSyntheticSpec {
@@ -3119,13 +3124,15 @@ impl MirWpSyntheticSpec {
             ),
             canary_proof_overrides: BTreeMap::new(),
             mir_wp_extra: String::new(),
+            include_canaries_module: true,
+            canaries_extra: String::new(),
         }
     }
 
     fn materialize(&self) -> TempFixture {
         let fix = TempFixture::new(Some(HEADER));
         fs::create_dir_all(fix.root.join("trusted/lean/Trusted")).unwrap();
-        fs::create_dir_all(fix.root.join("theory/Anneal")).unwrap();
+        fs::create_dir_all(fix.root.join("theory/Anneal/MirWp")).unwrap();
 
         let mir_ast = format!(
             "-- anneal-trust-tier: candidate:mir_ast\n\
@@ -3237,26 +3244,43 @@ impl MirWpSyntheticSpec {
             wp.push_str(decl);
             wp.push('\n');
         }
-        for &(claim, proof, _, proof_term) in SYNTHETIC_CANARIES {
-            match self.canary_proof_overrides.get(proof) {
-                Some(None) => {}
-                Some(Some(custom)) => {
-                    wp.push_str(custom);
-                    wp.push('\n');
-                }
-                None => {
-                    wp.push_str(&format!(
-                        "theorem {proof} : Trusted.MirSemantics.{claim} := {proof_term}\n"
-                    ));
-                }
-            }
-        }
         wp.push_str("end Anneal.MirWp\n");
         if !self.mir_wp_extra.is_empty() {
             wp.push_str(&self.mir_wp_extra);
             wp.push('\n');
         }
         fs::write(fix.root.join("theory/Anneal/MirWp.lean"), wp).unwrap();
+
+        if self.include_canaries_module {
+            let mut canaries = String::from(
+                "prelude\n\
+                 import Init.NotationExtra\n\
+                 import Trusted\n\
+                 import Trusted.MirAst\n\
+                 import Trusted.MirSemantics\n\
+                 namespace Anneal.MirWp\n",
+            );
+            for &(claim, proof, _, proof_term) in SYNTHETIC_CANARIES {
+                match self.canary_proof_overrides.get(proof) {
+                    Some(None) => {}
+                    Some(Some(custom)) => {
+                        canaries.push_str(custom);
+                        canaries.push('\n');
+                    }
+                    None => {
+                        canaries.push_str(&format!(
+                            "theorem {proof} : Trusted.MirSemantics.{claim} := {proof_term}\n"
+                        ));
+                    }
+                }
+            }
+            canaries.push_str("end Anneal.MirWp\n");
+            if !self.canaries_extra.is_empty() {
+                canaries.push_str(&self.canaries_extra);
+                canaries.push('\n');
+            }
+            fs::write(fix.root.join("theory/Anneal/MirWp/Canaries.lean"), canaries).unwrap();
+        }
 
         let anneal = format!(
             "prelude\n\
@@ -3418,6 +3442,34 @@ fn enforces_mir_wp_non_backsliding() {
     assert!(
         err_no_wp.message.contains("missing required theory module Anneal.MirWp"),
         "unexpected error: {err_no_wp}"
+    );
+
+    // 7. Missing decoupled `Anneal.MirWp.Canaries` is rejected fail-closed even
+    // when `Anneal` and `Anneal.MirWp` are present and neither imports it.
+    let mut missing_canaries = MirWpSyntheticSpec::valid();
+    missing_canaries.include_canaries_module = false;
+    missing_canaries
+        .expect_audit_policy_err("missing required theory module Anneal.MirWp.Canaries");
+
+    // 8. With `require_mir_wp == false`, presence of `Anneal.MirWp.Canaries`
+    // alone triggers `verifyMirWpCoreTheorems` and rejects fail-closed.
+    let mut fix_canaries_only = TempFixture::new(Some(HEADER));
+    fs::create_dir_all(fix_canaries_only.root.join("theory/Anneal/MirWp")).unwrap();
+    fs::write(
+        fix_canaries_only.root.join("theory/Anneal.lean"),
+        b"prelude\nimport Trusted\n",
+    )
+    .unwrap();
+    fs::write(
+        fix_canaries_only.root.join("theory/Anneal/MirWp/Canaries.lean"),
+        b"prelude\nimport Init.NotationExtra\nnamespace Anneal.MirWp\ndef marker : Nat := 0\nend Anneal.MirWp\n",
+    )
+    .unwrap();
+    let err_canaries_only =
+        fix_canaries_only.check_expected(Some(1), Some("audit"), Some(true)).unwrap_err();
+    assert!(
+        err_canaries_only.message.contains("missing required trusted module Trusted.MirAst"),
+        "unexpected error: {err_canaries_only}"
     );
 }
 
@@ -3631,12 +3683,13 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
          Trusted.MirSemantics, found Trusted.MirAst",
     );
 
-    // Canary claim declared inside `Anneal.MirWp` (rejected fail-closed by
-    // `Trusted` namespace isolation in `validateRepoConstant`).
+    // Canary claim declared inside decoupled `Anneal.MirWp.Canaries`
+    // (rejected fail-closed by `Trusted` namespace isolation in
+    // `validateRepoConstant`).
     let mut claim_in_theory = MirWpSyntheticSpec::valid();
     claim_in_theory.canary_claim_overrides.insert("CanaryPositiveAddAnnealClaim".to_string(), None);
     claim_in_theory.canary_proof_overrides.insert("canary_positive_add_anneal".to_string(), None);
-    claim_in_theory.mir_wp_extra = "\
+    claim_in_theory.canaries_extra = "\
         namespace Trusted.MirSemantics\n\
         def CanaryPositiveAddAnnealClaim : Prop := True\n\
         end Trusted.MirSemantics\n\
@@ -3646,7 +3699,7 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
         end Anneal.MirWp"
         .to_string();
     claim_in_theory.expect_audit_policy_err(
-        "non-Trusted module Anneal.MirWp cannot declare constant \
+        "non-Trusted module Anneal.MirWp.Canaries cannot declare constant \
          Trusted.MirSemantics.CanaryPositiveAddAnnealClaim in Trusted namespace",
     );
 
@@ -3700,7 +3753,7 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
         "expected Anneal.MirWp.canary_positive_add_anneal to be a theorem",
     );
 
-    // Canary theorem defined in `Anneal` instead of `Anneal.MirWp`.
+    // Canary theorem defined in `Anneal` instead of `Anneal.MirWp.Canaries`.
     let mut wrong_proof_mod = MirWpSyntheticSpec::valid();
     wrong_proof_mod.canary_proof_overrides.insert("canary_positive_add_anneal".to_string(), None);
     wrong_proof_mod.anneal_extra = "\
@@ -3711,7 +3764,7 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
         .to_string();
     wrong_proof_mod.expect_audit_policy_err(
         "expected Anneal.MirWp.canary_positive_add_anneal to be defined in \
-         Anneal.MirWp, found Anneal",
+         Anneal.MirWp.Canaries, found Anneal",
     );
 
     // Weakened / wrong-type canary theorem (`True` instead of the pinned
@@ -6772,6 +6825,7 @@ fn rejects_trusted_correspondence_import_of_theory_in_pass2_preflight() {
         .copied()
         .chain(std::iter::once(anneal_audit::bundle::THEORY_BUNDLE_MANIFEST))
         .chain(theory_manifest.modules.iter().map(|entry| entry.path.as_str()))
+        .chain(std::iter::once("theory/Anneal/MirWp/Canaries.lean"))
     {
         let dst = fix.root.join(rel);
         fs::create_dir_all(dst.parent().unwrap()).unwrap();
@@ -7967,6 +8021,14 @@ fn rejects_universe_polymorphic_claims_and_proofs() {
         "Trusted.MirAst",
         "prelude\nimport Init.Core\nnamespace Trusted.MirAst\ndef x : Nat := 0\nend Trusted.MirAst\n",
     );
+    compile_forged_module(
+        &mut checker,
+        &src,
+        &theory_lib,
+        &[],
+        "Anneal.MirWp.Canaries",
+        "prelude\nimport Init.Core\n",
+    );
     let run_pass1_audit = |chk: &mut Checker| {
         chk.inspect(InspectorRequest::Audit {
             trusted: vec![
@@ -7974,7 +8036,10 @@ fn rejects_universe_polymorphic_claims_and_proofs() {
                 "Trusted.MirAst".to_string(),
                 "Trusted.MirSemantics".to_string(),
             ],
-            theory: vec!["Anneal.MirWp".to_string()],
+            theory: vec![
+                "Anneal.MirWp".to_string(),
+                "Anneal.MirWp.Canaries".to_string(),
+            ],
             module_tiers: BTreeMap::from([
                 ("Trusted".to_string(), TrustTier::Vetted),
                 ("Trusted.MirAst".to_string(), TrustTier::Candidate(CandidateFeature::MirAst)),
@@ -10866,5 +10931,279 @@ fn audit_admits_diamond_realized_theorems_and_paired_unsafe_rec() {
     assert!(
         thm_err.message.contains("alternate pinned theorem proof check Anneal.Shared.dup"),
         "{thm_err}"
+    );
+}
+
+/// Ensures Pass 1 `anneal-audit` discovers, compiles, and fails closed on
+/// policy violations in decoupled `*Canaries.lean` modules even when neither
+/// `Anneal.lean` nor any runtime umbrella imports them.
+#[test]
+fn rejects_decoupled_unimported_canary_module_violations() {
+    // 0. Positive control: a clean standalone unimported canary module is
+    // discovered, compiled, audited, and recorded in the audit graph.
+    let fix_ok = MirWpSyntheticSpec::valid().materialize();
+    fs::create_dir_all(fix_ok.root.join("theory/Anneal/Subsys")).unwrap();
+    fs::write(
+        fix_ok.root.join("theory/Anneal/Subsys/Canaries.lean"),
+        b"prelude\nimport Init.NotationExtra\ntheorem unimported_ok : True := True.intro\n",
+    )
+    .unwrap();
+    let mut checker_ok = Checker::new(&fix_ok.root, None).unwrap();
+    let report = checker_ok.run().expect("clean decoupled canary must pass");
+    assert!(
+        report["graph"]
+            .as_object()
+            .expect("audit report graph object")
+            .contains_key("Anneal.Subsys.Canaries"),
+        "clean decoupled canary must appear in Pass-1 audit graph"
+    );
+
+    // 1. Standalone unimported canary with forbidden `sorry` syntax fails
+    // preflight before Lean compilation.
+    let fix_sorry = MirWpSyntheticSpec::valid().materialize();
+    fs::create_dir_all(fix_sorry.root.join("theory/Anneal/Subsys")).unwrap();
+    fs::write(
+        fix_sorry.root.join("theory/Anneal/Subsys/Canaries.lean"),
+        b"prelude\nimport Init.NotationExtra\ntheorem unimported_bad : False := by sorry\n",
+    )
+    .unwrap();
+    let mut checker_sorry = Checker::new(&fix_sorry.root, None).unwrap();
+    let err_sorry = checker_sorry.run().unwrap_err();
+    assert_eq!(err_sorry.code, 1, "expected policy exit 1: {err_sorry}");
+    assert_eq!(err_sorry.phase, "preflight", "expected preflight rejection: {err_sorry}");
+    assert!(
+        !checker_sorry.execution_began(),
+        "preflight must fail before compilation: {err_sorry}"
+    );
+    assert!(
+        err_sorry.message.contains("tacticSorry"),
+        "expected diagnostic to cite disallowed tacticSorry syntax: {err_sorry}"
+    );
+
+    // 2. Standalone unimported canary using `sorryAx` passes preflight and
+    // fails closed during compilation (`-DwarningAsError=true`).
+    let fix_sorry_ax = MirWpSyntheticSpec::valid().materialize();
+    fs::create_dir_all(fix_sorry_ax.root.join("theory/Anneal/Subsys")).unwrap();
+    fs::write(
+        fix_sorry_ax.root.join("theory/Anneal/Subsys/Canaries.lean"),
+        b"prelude\nimport Init.NotationExtra\n\
+          theorem unimported_sorry_ax : False := sorryAx False true\n",
+    )
+    .unwrap();
+    let mut checker_sorry_ax = Checker::new(&fix_sorry_ax.root, None).unwrap();
+    let err_sorry_ax = checker_sorry_ax.run().unwrap_err();
+    assert_eq!(err_sorry_ax.code, 2, "expected compile exit 2: {err_sorry_ax}");
+    assert_eq!(
+        err_sorry_ax.phase, "compile-Anneal.Subsys.Canaries",
+        "expected compilation of unimported canary: {err_sorry_ax}"
+    );
+    assert!(checker_sorry_ax.execution_began(), "expected compilation to run: {err_sorry_ax}");
+    assert!(
+        err_sorry_ax.message.contains("declaration uses `sorry`"),
+        "expected Lean sorry diagnostic: {err_sorry_ax}"
+    );
+
+    // 3. Even if a standalone unimported canary `.olean` is compiled without
+    // `-DwarningAsError=true`, Phase-2 `"audit"` independently rejects
+    // `sorryAx`.
+    let stage = checker_ok.stage().to_path_buf();
+    let src = stage.join("src/decoupled-canary-audit");
+    let theory_lib = stage.join("theory-lib");
+    compile_forged_module(
+        &mut checker_ok,
+        &src,
+        &theory_lib,
+        &[],
+        "Anneal.Subsys.Canaries",
+        "prelude\nimport Init.NotationExtra\n\
+         theorem unimported_sorry_ax : False := sorryAx False true\n",
+    );
+    let err_audit = checker_ok
+        .inspect(InspectorRequest::Audit {
+            trusted: vec![
+                "Trusted".to_string(),
+                "Trusted.MirAst".to_string(),
+                "Trusted.MirSemantics".to_string(),
+            ],
+            theory: vec![
+                "Anneal".to_string(),
+                "Anneal.MirWp".to_string(),
+                "Anneal.MirWp.Canaries".to_string(),
+                "Anneal.Subsys.Canaries".to_string(),
+            ],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                ("Trusted.MirAst".to_string(), TrustTier::Candidate(CandidateFeature::MirAst)),
+                (
+                    "Trusted.MirSemantics".to_string(),
+                    TrustTier::Candidate(CandidateFeature::MirSemantics),
+                ),
+            ]),
+        })
+        .unwrap_err();
+    assert_eq!(err_audit.code, 1, "expected policy exit 1: {err_audit}");
+    assert_eq!(err_audit.phase, "audit", "expected Phase-2 audit rejection: {err_audit}");
+    assert!(
+        err_audit.message.contains("sorryAx"),
+        "expected diagnostic to cite disallowed axiom sorryAx: {err_audit}"
+    );
+}
+
+fn parse_lean_header_imports_for_test(source: &str) -> Vec<String> {
+    let bytes = source.as_bytes();
+    let mut pos = 0usize;
+    let mut imports = Vec::new();
+    let mut expecting_import_target = false;
+    while pos < bytes.len() {
+        while pos < bytes.len() && bytes[pos].is_ascii_whitespace() {
+            pos += 1;
+        }
+        if pos >= bytes.len() {
+            break;
+        }
+        if bytes[pos..].starts_with(b"--") {
+            while pos < bytes.len() && bytes[pos] != b'\n' {
+                pos += 1;
+            }
+            continue;
+        }
+        if bytes[pos..].starts_with(b"/-") {
+            pos += 2;
+            let mut depth = 1usize;
+            while pos < bytes.len() && depth > 0 {
+                if bytes[pos..].starts_with(b"/-") {
+                    depth += 1;
+                    pos += 2;
+                } else if bytes[pos..].starts_with(b"-/") {
+                    depth -= 1;
+                    pos += 2;
+                } else {
+                    pos += 1;
+                }
+            }
+            continue;
+        }
+        let start = pos;
+        while pos < bytes.len()
+            && !bytes[pos].is_ascii_whitespace()
+            && !bytes[pos..].starts_with(b"--")
+            && !bytes[pos..].starts_with(b"/-")
+        {
+            pos += 1;
+        }
+        let token = &source[start..pos];
+        if expecting_import_target {
+            if token == "all" {
+                continue;
+            }
+            imports.push(token.to_string());
+            expecting_import_target = false;
+        } else if token == "import" {
+            expecting_import_target = true;
+        } else if !matches!(token, "module" | "prelude" | "public" | "meta") {
+            break;
+        }
+    }
+    imports
+}
+
+/// Ensures `theory/Anneal.lean`'s transitive `theory/` closure matches
+/// `theory/bundle-manifest.json` 1-for-1, zero `*Canaries*` modules appear in
+/// the bundle manifest or runtime umbrella closures, and `scan_lean_tree` still
+/// discovers all decoupled `*Canaries*.lean` files for Pass-1 repository
+/// `anneal-audit`.
+#[test]
+fn theory_umbrella_and_manifest_exclude_canaries_and_match() {
+    let checkout = repo_root();
+    let (_, manifest) = bundle::load_theory_bundle_manifest(&checkout)
+        .expect("load theory/bundle-manifest.json");
+    let manifest_paths: BTreeSet<String> =
+        manifest.modules.iter().map(|m| m.path.clone()).collect();
+    assert!(
+        !manifest_paths.iter().any(|p| p.contains("Canaries")),
+        "bundle-manifest.json must exclude *Canaries* modules: {manifest_paths:?}"
+    );
+
+    let theory_modules =
+        scan_lean_tree(&checkout.join("theory"), "Anneal").expect("scan_lean_tree on theory/");
+    let canary_modules: BTreeSet<String> =
+        theory_modules.keys().filter(|m| m.contains("Canaries")).cloned().collect();
+    assert!(
+        canary_modules.contains("Anneal.MirWp.Canaries"),
+        "scan_lean_tree must still discover decoupled Anneal.MirWp.Canaries for Pass-1 audit"
+    );
+    assert!(
+        canary_modules.contains("Anneal.F2Simd.Canaries"),
+        "scan_lean_tree must still discover decoupled Anneal.F2Simd.Canaries for Pass-1 audit"
+    );
+    assert!(
+        canary_modules.contains("Anneal.ByteRun.Canaries"),
+        "scan_lean_tree must still discover decoupled Anneal.ByteRun.Canaries for Pass-1 audit"
+    );
+    assert!(
+        canary_modules.contains("Anneal.OverflowCastJoin.Canaries"),
+        "scan_lean_tree must still discover decoupled Anneal.OverflowCastJoin.Canaries for Pass-1 audit"
+    );
+    assert!(
+        canary_modules.contains("Anneal.RefFrame.Canaries"),
+        "scan_lean_tree must still discover decoupled Anneal.RefFrame.Canaries for Pass-1 audit"
+    );
+    assert!(
+        canary_modules.contains("Anneal.CallStackUnwind.Canaries"),
+        "scan_lean_tree must still discover decoupled Anneal.CallStackUnwind.Canaries for Pass-1 audit"
+    );
+    assert!(
+        canary_modules.len() >= 16,
+        "expected scan_lean_tree to discover all decoupled *Canaries*.lean modules dynamically, got {canary_modules:?}"
+    );
+
+    // Every non-canary top-level/submodule umbrella under `theory/` (including
+    // unbundled umbrellas such as PureLift/Core/ByteSubLens/CnfOrd/MirTotal/
+    // F2Simd and any newly added subsystem umbrellas) must not import any
+    // `*Canaries*` module.
+    for (module, path) in &theory_modules {
+        if canary_modules.contains(module) {
+            continue;
+        }
+        let src = fs::read_to_string(path).unwrap();
+        let imps = parse_lean_header_imports_for_test(&src);
+        assert!(
+            !imps.iter().any(|dep| dep.contains("Canaries")),
+            "non-canary theory module {module} must not import any *Canaries* module: {imps:?}"
+        );
+    }
+
+    let mut visited = BTreeSet::new();
+    let mut queue = VecDeque::from([String::from("Anneal")]);
+    while let Some(module) = queue.pop_front() {
+        if !visited.insert(module.clone()) {
+            continue;
+        }
+        let path = theory_modules
+            .get(&module)
+            .unwrap_or_else(|| panic!("missing theory source for {module}"));
+        let src = fs::read_to_string(path).unwrap();
+        for dep in parse_lean_header_imports_for_test(&src) {
+            if (dep == "Anneal" || dep.starts_with("Anneal.")) && !visited.contains(&dep) {
+                queue.push_back(dep);
+            }
+        }
+    }
+
+    assert!(
+        !visited.iter().any(|m| m.contains("Canaries")),
+        "Anneal umbrella closure must contain zero *Canaries* modules: {visited:?}"
+    );
+    let closure_paths: BTreeSet<String> = visited
+        .iter()
+        .filter(|m| m.as_str() != "Anneal")
+        .map(|m| {
+            let p = &theory_modules[m];
+            p.strip_prefix(&checkout).unwrap().to_str().unwrap().to_string()
+        })
+        .collect();
+    assert_eq!(
+        closure_paths, manifest_paths,
+        "Anneal.lean transitive theory/ closure must match theory/bundle-manifest.json 1-for-1"
     );
 }

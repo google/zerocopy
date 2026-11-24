@@ -352,7 +352,32 @@
 
               cp "$rustcCapture/bin/anneal-rustc-capture" "$TMPDIR/dist_staging/bin/"
               cp -r "$leanFoundation" "$TMPDIR/dist_staging/share/anneal/trusted/lean"
-              cp -r "$leanTheory" "$TMPDIR/dist_staging/share/anneal/theory"
+              mkdir -p "$TMPDIR/dist_staging/share/anneal/theory"
+              cp "$leanTheory/Anneal.lean" \
+                "$TMPDIR/dist_staging/share/anneal/theory/Anneal.lean"
+              cp "$leanTheory/bundle-manifest.json" \
+                "$TMPDIR/dist_staging/share/anneal/theory/bundle-manifest.json"
+              jq -e -r '.modules[].path' "$leanTheory/bundle-manifest.json" \
+                > "$TMPDIR/theory_manifest_paths.txt"
+              test -s "$TMPDIR/theory_manifest_paths.txt"
+              while IFS= read -r rel_path; do
+                case "$rel_path" in
+                  *..*|*Canaries*)
+                    echo "ERROR: forbidden bundle-manifest path: $rel_path" >&2
+                    exit 1
+                    ;;
+                  theory/Anneal/*.lean)
+                    sub_path="''${rel_path#theory/}"
+                    install -D -m 0644 \
+                      "$leanTheory/$sub_path" \
+                      "$TMPDIR/dist_staging/share/anneal/theory/$sub_path"
+                    ;;
+                  *)
+                    echo "ERROR: unexpected bundle-manifest path: $rel_path" >&2
+                    exit 1
+                    ;;
+                esac
+              done < "$TMPDIR/theory_manifest_paths.txt"
               cp "$targetInspector" "$TMPDIR/dist_staging/share/anneal/trusted/audit/TrustedBoundary.lean"
               cp "$targetLibraryLock" "$TMPDIR/dist_staging/share/anneal/trusted/audit/library-lock.json"
 
@@ -435,6 +460,7 @@
                 "$TMPDIR/dist_staging/share/anneal/trusted/lean/Trusted/MirAst.lean" \
                 "$TMPDIR/dist_staging/share/anneal/trusted/lean/Trusted/MirSemantics.lean" \
                 "$TMPDIR/dist_staging/share/anneal/theory/Anneal.lean" \
+                "$TMPDIR/dist_staging/share/anneal/theory/bundle-manifest.json" \
                 "$TMPDIR/dist_staging/share/anneal/theory/Anneal/MirWp.lean"; do
                 if [ ! -f "$full_path" ]; then
                   echo "ERROR: expected archive entry missing: $full_path" >&2
@@ -646,6 +672,7 @@
                 share/anneal/trusted/lean/Trusted/MirAst.lean
                 share/anneal/trusted/lean/Trusted/MirSemantics.lean
                 share/anneal/theory/Anneal.lean
+                share/anneal/theory/bundle-manifest.json
                 share/anneal/theory/Anneal/MirWp.lean
               )
               ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
@@ -676,6 +703,27 @@
                   fi
                 done
               ''}
+              if grep -Eq '^share/anneal/(theory|prebuilt)/.*Canaries' "$TMPDIR/archive_entries.txt"; then
+                echo "ERROR: canary module leaked into share/anneal in $out" >&2
+                exit 1
+              fi
+              jq -e -r '"share/anneal/" + .modules[].path' \
+                "$leanTheory/bundle-manifest.json" \
+                > "$TMPDIR/expected_theory_subpaths.txt"
+              {
+                printf '%s\n' "share/anneal/theory/Anneal.lean"
+                cat "$TMPDIR/expected_theory_subpaths.txt"
+              } | LC_ALL=C sort -u > "$TMPDIR/expected_theory_entries.txt"
+              grep -E '^share/anneal/theory/.*\.lean$' "$TMPDIR/archive_entries.txt" \
+                | LC_ALL=C sort > "$TMPDIR/actual_theory_entries.txt"
+              theory_drift="$(comm -3 \
+                "$TMPDIR/expected_theory_entries.txt" \
+                "$TMPDIR/actual_theory_entries.txt")"
+              if [ -n "$theory_drift" ]; then
+                echo "ERROR: share/anneal/theory Lean files diverge from bundle-manifest.json:" >&2
+                printf '%s\n' "$theory_drift" >&2
+                exit 1
+              fi
 
               # Verify all four pinned sysroot trees in `library-lock.json`
               # inside the built archive byte-for-byte (rejecting symlinks and

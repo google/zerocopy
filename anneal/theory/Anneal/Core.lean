@@ -12,4 +12,3 @@ public import Anneal.Core.BlockTree
 public import Anneal.Core.SepPCM
 public import Anneal.Core.StageCut
 public import Anneal.Core.SpecRealizability
-public import Anneal.Core.Canaries

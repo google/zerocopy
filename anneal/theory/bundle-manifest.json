@@ -43,11 +43,7 @@
     },
     {
       "path": "theory/Anneal/MirWp.lean",
-      "sha256": "31118f816fd3025fe4aca764e2b02aa5c6463cc2503054d02905959950d4a3d3"
-    },
-    {
-      "path": "theory/Anneal/MirWp/Canaries.lean",
-      "sha256": "b45256c4c839e59de801714373e3e6e4d66a456bf76665da6d6f580508e2966e"
+      "sha256": "9d82679bbd9dc9b78a5100b9adaa83826cc92384f5ba88eb2a13cbe67775ca06"
     },
     {
       "path": "theory/Anneal/MirWp/Core.lean",

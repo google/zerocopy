@@ -10,4 +10,3 @@ module
 prelude
 public import Anneal.F2Simd.Basis
 public import Anneal.F2Simd.Simd
-public import Anneal.F2Simd.Canaries

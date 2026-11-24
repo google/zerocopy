@@ -222,16 +222,24 @@ Key semantic correspondence points:
 ## Audited Pass 1 Weakest-Precondition and Non-Vacuity Canary Claims
 
 The definitions below state the exact mathematical propositions that
-`Anneal.MirWp` must prove and that `TrustedBoundary.lean` enforces via exact
-`Expr` equality (`ci.type == .const claimName []` or the parameterized claim
+`Anneal.MirWp` (the 2 parameterized WP soundness claims) and decoupled
+`Anneal.MirWp.Canaries` (the 25 closed non-vacuity and parameter-boundary
+canary claims) must prove, enforced by `TrustedBoundary.lean` via exact `Expr`
+equality (`ci.type == .const claimName []` or the parameterized claim
 application) together with claim-body constant checks. Keeping these claim
-propositions in `Trusted.MirSemantics` ensures that no future change outside
+propositions in `Trusted.MirSemantics` ensures that no change outside
 `trusted/` can silently drift a pinned soundness or canary claim statement.
 `anneal-audit` enforces only the exact theorem statements (not the internal
 proof route); the closed canary claims witness non-vacuity of the operational
-semantics (`WellFormed`, `Behavior`, and `ReachesResult`), and `Anneal.MirWp`
-currently discharges them via `wpProg` / `wpFaultProg` and
-`wellFormed_and_spec_of_wp` / `reaches_fault_and_exclusive_of_wpFault`.
+semantics (`WellFormed`, `Behavior`, and `ReachesResult`), and
+`Anneal.MirWp.Canaries` discharges them (without importing `Anneal.MirWp`) via
+`Anneal.MirWp.positiveCanary_of_exec` and
+`Anneal.MirWp.negativeCanary_of_execFault` (built on
+`Anneal.MirWp.wellFormed_and_spec_of_wp_base` and
+`Anneal.MirWp.reaches_fault_and_exclusive_of_wpFault_base`, all in module
+`Anneal.MirWp.Core`), `Anneal.MirWp.checkVal_never_false` (module
+`Anneal.MirWp.Reflection`), structural case analysis, and kernel `rfl`
+reduction.
 -/
 
 /-- Trusted total-correctness and productivity claim for

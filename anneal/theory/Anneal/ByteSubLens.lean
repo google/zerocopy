@@ -10,4 +10,3 @@ module
 prelude
 public import Anneal.ByteSubLens.Lens
 public import Anneal.ByteSubLens.MutSummary
-public import Anneal.ByteSubLens.Canaries

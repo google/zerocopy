@@ -24,16 +24,6 @@ public import Anneal.BitTrieLrat
 public import Anneal.InitLemmas
 public import Anneal.ClassicalEm
 public import Anneal.Firewall
-public import Anneal.MirTotal
-public import Anneal.Core
-public import Anneal.ByteRun
-public import Anneal.ByteSubLens
-public import Anneal.CallStackUnwind
-public import Anneal.CnfOrd
-public import Anneal.F2Simd
-public import Anneal.OverflowCastJoin
-public import Anneal.PureLift
-public import Anneal.RefFrame
 
 public section
 
@@ -47,18 +37,8 @@ Umbrella module for Anneal's untrusted proof theory (`theory/`), re-exporting
 `Anneal.BitVec`, `Anneal.BitVecArith`, `Anneal.LeBytes`, `Anneal.ListChunks`,
 `Anneal.LoopInv`, `Anneal.LinearArith`, `Anneal.SpineForce`, `Anneal.PTree`,
 `Anneal.BitTrieLrat`, `Anneal.InitLemmas`, `Anneal.ClassicalEm`, and
-`Anneal.Firewall`), the fuel-bounded MIR weakest-precondition machinery
-(`Anneal.MirWp`), the computable MIR step mirrors and unbounded-depth bridges
-(`Anneal.MirTotal`), the block-tree, separation-logic, and stage-cut core
-(`Anneal.Core`), mixed-mask padded-aggregate and `[T; N]` byte-copy laws
-(`Anneal.ByteRun`), lawful sub-allocation byte lenses and `&mut` method call
-summaries (`Anneal.ByteSubLens`), modular `@[irreducible]` call-stack and unwind
-cleanup framing (`Anneal.CallStackUnwind`), constructive `< ω^ω` Cantor Normal
-Form ordinals and multi-rank termination (`Anneal.CnfOrd`),
-$\mathbb{F}_2$-linear and $\mathbb{F}_2$-bilinear SIMD certificate evaluators
-(`Anneal.F2Simd`), stage-cut interval joins for overflowing arithmetic and casts
-(`Anneal.OverflowCastJoin`), `Anneal.PureLift`, and 4-way call-continuation
-`&mut` writeback frames and ranged Tree Borrows protectors (`Anneal.RefFrame`).
+`Anneal.Firewall`), and the fuel-bounded MIR weakest-precondition machinery
+(`Anneal.MirWp`).
 -/
 
 end Anneal

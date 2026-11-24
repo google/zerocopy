@@ -3341,29 +3341,34 @@ def requireMirPublicAlias (env : Environment)
     fail s!"alias {aliasName} must directly alias {targetName}"
 
 /-- Verify that `Trusted.MirAst` and `Trusted.MirSemantics` are loaded as
-`.repo (.trusted _)` modules and `Anneal.MirWp` is loaded as a `.repo .theory`
-module (whenever `requireMirWp` is `true` or any MIR/`PureLift` module is
-loaded), that the core weakest-precondition adequacy and fault-characterization
-theorems and all 25 non-vacuity and parameter-boundary canaries in
-`Anneal.MirWp` prove the exact `*Claim` propositions defined in
-`Trusted.MirSemantics`, and that the public `Trusted.{Crate, CrateTheorem,
-UnitTheorem}` aliases in `Trusted.MirSemantics` directly reference their
-canonical `Trusted.MirSemantics.*` declarations. -/
+`.repo (.trusted _)` modules and `Anneal.MirWp` and `Anneal.MirWp.Canaries`
+are loaded as `.repo .theory` modules (whenever `requireMirWp` is `true` or any
+MIR/`PureLift` module is loaded), that the core weakest-precondition adequacy
+and fault-characterization theorems in `Anneal.MirWp` and all 25 non-vacuity and
+parameter-boundary canaries in `Anneal.MirWp.Canaries` prove the exact `*Claim`
+propositions defined in `Trusted.MirSemantics`, and that the public
+`Trusted.{Crate, CrateTheorem, UnitTheorem}` aliases in `Trusted.MirSemantics`
+directly reference their canonical `Trusted.MirSemantics.*` declarations. -/
 def verifyMirWpCoreTheorems (env : Environment)
     (roles : Std.HashMap Name RepoOrigin)
     (locals : Std.HashMap Name ConstantInfo)
     (requireMirWp : Bool) : IO Unit := do
   if requireMirWp || roles.contains `Anneal.PureLift ||
       roles.contains `Trusted.MirAst ||
-      roles.contains `Trusted.MirSemantics || roles.contains `Anneal.MirWp then
+      roles.contains `Trusted.MirSemantics ||
+      roles.contains `Anneal.MirWp ||
+      roles.contains `Anneal.MirWp.Canaries then
     unless roles.get? `Trusted.MirAst matches some (.repo (.trusted _)) do
       fail "missing required trusted module Trusted.MirAst"
     unless roles.get? `Trusted.MirSemantics matches some (.repo (.trusted _)) do
       fail "missing required trusted module Trusted.MirSemantics"
     unless roles.get? `Anneal.MirWp matches some (.repo .theory) do
       fail "missing required theory module Anneal.MirWp"
+    unless roles.get? `Anneal.MirWp.Canaries matches some (.repo .theory) do
+      fail "missing required theory module Anneal.MirWp.Canaries"
     let semMod := `Trusted.MirSemantics
     let wpMod := `Anneal.MirWp
+    let canaryMod := `Anneal.MirWp.Canaries
     requireClaimProof env locals semMod wpMod
       `Trusted.MirSemantics.WpSoundnessClaim
       (some `Anneal.MirWp.wpProg)
@@ -3467,7 +3472,7 @@ def verifyMirWpCoreTheorems (env : Environment)
           [negClaim, `Trusted.MirSemantics.mkIntToIntCastProg,
             `Trusted.MirAst.MirTy.char,
             `Trusted.MirSemantics.progCastUninitSourceUb])] do
-      requireClaimProof env locals semMod wpMod claimName none proofName
+      requireClaimProof env locals semMod canaryMod claimName none proofName
         reqConsts
     for (aliasName, targetName) in [
         (`Trusted.Crate, `Trusted.MirSemantics.Crate),

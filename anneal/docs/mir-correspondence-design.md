@@ -84,7 +84,9 @@ theory/                         Core untrusted theory (Pass 1; shipped in
   Anneal.lean                   Umbrella module
   Anneal/
     MirWp.lean                  Fuel-bounded weakest precondition (wpProg,
-                                wpFaultProg) and M_anneal non-vacuity canaries
+                                wpFaultProg)
+    MirWp/Canaries.lean         Decoupled M_anneal non-vacuity canaries
+                                (Pass-1 audited; excluded from bundles)
 
 vendor/lean-miri/               Vendored lean-miri reference model
                                 (correspondence TCB; Pass 2)
@@ -212,32 +214,33 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
 
 1. **Pass 1 (`Checker::run` on `trusted/lean/` and `theory/`):** Runs in a
    fresh, isolated staging directory, auditing `Trusted.MirAst`,
-   `Trusted.MirSemantics`, and `Anneal.MirWp` against the unmodified 51-module
-   `trusted/lean/foundation-lock.json` and unmodified
+   `Trusted.MirSemantics`, `Anneal.MirWp`, and `Anneal.MirWp.Canaries` against
+   the unmodified 51-module `trusted/lean/foundation-lock.json` and unmodified
    `allowedTrustedSyntaxKinds` / `allowedTheorySyntaxKinds` allowlists in
    `TrustedBoundary.lean`, and source-preflighting, compiling from source, and
    kernel-replaying all `trusted/lean/` and `theory/` modules onto
    `foundation-lock.json`. Once MIR scaffolding lands, whenever
-   `Anneal.PureLift`, `Trusted.MirAst`, `Trusted.MirSemantics`, or
-   `Anneal.MirWp` is present (or `require_mir_wp` is enabled),
+   `Anneal.PureLift`, `Trusted.MirAst`, `Trusted.MirSemantics`, `Anneal.MirWp`,
+   or `Anneal.MirWp.Canaries` is present (or `require_mir_wp` is enabled),
    `TrustedBoundary.lean` (`verifyMirWpCoreTheorems`) requires
    `Trusted.MirAst` and `Trusted.MirSemantics` in `trusted/` and `Anneal.MirWp`
-   in `theory/`, and enforces Statement-Origin Separation: every Pass 1
-   canary's exact `*Claim` theorem statement and every concrete program
-   (`prog*`), query, and expected-outcome fixture definition it references live
-   on the human-audited `Trusted.*` surface (`Trusted.MirSemantics`), while
-   only the proofs (`wellFormed_and_spec_of_wp`,
-   `reaches_fault_and_exclusive_of_wpFault`, and all 15 Day-1 scalar/bool/unit
-   or 25 full canary theorems once fieldless enums, `!`, crate/unit scope,
-   byte-level memory, `char`, `BinOp.cmp`, `BinOp.*WithOverflow`, and
-   `CastKind.intToInt` land, including
+   and `Anneal.MirWp.Canaries` in `theory/`, and enforces Statement-Origin
+   Separation: every Pass 1 canary's exact `*Claim` theorem statement and
+   every concrete program (`prog*`), query, and expected-outcome fixture
+   definition it references live on the human-audited `Trusted.*` surface
+   (`Trusted.MirSemantics`), while only the WP proofs
+   (`wellFormed_and_spec_of_wp`, `reaches_fault_and_exclusive_of_wpFault`) in
+   `Anneal.MirWp` and all 15 Day-1 scalar/bool/unit (or 25 full) canary
+   theorems in decoupled `Anneal.MirWp.Canaries` (once fieldless enums, `!`,
+   crate/unit scope, byte-level memory, `char`, `BinOp.cmp`,
+   `BinOp.*WithOverflow`, and `CastKind.intToInt` land, including
    `CanaryCrateAndBodyVerifiedAnnealClaim` and
-   `CanaryMemoryLifecycleAnnealClaim`) live in
-   untrusted `Anneal.MirWp` and are verified against those exact trusted
-   `*Claim` propositions. Packaged user archives (`omnibus-archive`) ship
-   `trusted/lean/` and, once MIR scaffolding and end-to-end packaging land,
-   will also ship `theory/` (with `Anneal/MirWp.lean`) and carry the compact
-   correspondence provenance record surfaced in `cargo anneal verify`'s TCB
+   `CanaryMemoryLifecycleAnnealClaim`) are verified against those exact
+   trusted `*Claim` propositions. Packaged user archives (`omnibus-archive`)
+   ship `trusted/lean/` and, once MIR scaffolding and end-to-end packaging
+   land, also ship the decoupled `theory/` closure (with `Anneal/MirWp.lean`
+   and zero `*Canaries*.lean` modules) plus the compact correspondence
+   provenance record surfaced in `cargo anneal verify`'s TCB
    audit log, while never packaging `vendor/lean-miri/`,
    `trusted/correspondence/`, or `correspondence/`, keeping downstream
    per-crate verification independent of `vendor/lean-miri/`. (In intermediate
@@ -602,8 +605,8 @@ together with every later change to those definitions:
   `ProgramVerified`, `CrateTheorem`, `UnitTheorem`, and helpers such as
   `entryProgForBody` and `bodiesHaveUniqueIdentities`; Section 4.5), and the
   concrete `prog*` fixtures and `*Claim` propositions enforced on
-  `Anneal.MirWp` (15 Day-1 baseline; 20 once fieldless enums, `!`, crate/unit
-  scope, and byte-level memory land, including
+  `Anneal.MirWp` and `Anneal.MirWp.Canaries` (15 Day-1 baseline; 20 once
+  fieldless enums, `!`, crate/unit scope, and byte-level memory land, including
   `CanaryCrateAndBodyVerifiedAnnealClaim` and
   `CanaryMemoryLifecycleAnnealClaim`; 25 with `char`, `BinOp.cmp`,
   `BinOp.*WithOverflow`, and `CastKind.intToInt`).
@@ -1726,7 +1729,8 @@ These definitions pin five properties directly in the trusted theorem surface:
    Once fieldless enums, `!`, and crate/unit scope land (bringing Pass 1 from
    the 15 Day-1 baseline canaries to 19, before byte-level memory adds
    `CanaryMemoryLifecycleAnnealClaim` as the 20th), `TrustedBoundary.lean` locks
-   `Anneal.MirWp.canary_crate_and_body_verified_anneal` against the exact
+   `Anneal.MirWp.canary_crate_and_body_verified_anneal` (in
+   `Anneal.MirWp.Canaries`) against the exact
    proposition below in `Trusted.MirSemantics`, pairing positive `CrateTheorem`
    and `UnitTheorem` witnesses with 12 constructive negative refutations:
 
@@ -2306,7 +2310,7 @@ theorem refState_unique_of_simulationInv
     (h_max : rs₁.maxSteps = rs₂.maxSteps) : rs₁ = rs₂
 ```
 
-### 5.4 Fuel-Bounded Verification Layer (`Anneal.MirWp`) and Canaries
+### 5.4 Fuel-Bounded Verification Layer (`Anneal.MirWp`) and Decoupled Canaries
 
 To let per-function proofs in `theory/` and generated crate obligations
 discharge `WellFormed`, `Behavior`, and `SatisfiesPost` by symbolic
@@ -2360,9 +2364,9 @@ def WpFaultSoundnessClaim
       ¬ WellFormed p q
 ```
 
-`Anneal.MirWp` (Pass 1) and `Anneal.MirCorrespondenceProof` (Pass 2) include
-kernel-checked non-vacuity and parameter-boundary canary theorems that exercise
-all three outcome poles, every supported Day 1 MIR statement, rvalue,
+`Anneal.MirWp.Canaries` (Pass 1) and `Anneal.MirCorrespondenceProof` (Pass 2)
+include kernel-checked non-vacuity and parameter-boundary canary theorems that
+exercise all three outcome poles, every supported Day 1 MIR statement, rvalue,
 terminator, unary and binary operator, all six integer widths (`i8`, `i16`,
 `i32`, `i64`, `i128`, `isize`) in signed and unsigned modes, and runtime move
 semantics across both $M_{\text{anneal}}$ and $M_{\text{ref}}$. Each CI
@@ -2373,29 +2377,31 @@ the human-audited `Trusted.*` surface (`Trusted.MirSemantics` in
 enforced by Statement-Origin Separation in `TrustedBoundary.lean`, which
 forbids locked `Trusted.*` theorem types and their transitive constant cones
 from referencing any untrusted `Anneal.*` declaration—while only the canary
-*proofs* live in untrusted `theory/` (`Anneal.MirWp`) or `correspondence/`
-(`Anneal.MirCorrespondenceProof`). `TrustedBoundary.lean`
+*proofs* live in untrusted `theory/` (`Anneal.MirWp.Canaries`) or
+`correspondence/` (`Anneal.MirCorrespondenceProof`). `TrustedBoundary.lean`
 (`verifyMirWpCoreTheorems` and `verifyCorrespondenceClaims`) verifies that each
-exported theorem in `Anneal.MirWp` and `Anneal.MirCorrespondenceProof` has a
-type matching the corresponding `Trusted.*Claim` constant—syntactically equal
-(`Expr.const claimName []`) for every nullary claim and canary, and direct
-application (`Expr.app (.const claimName []) (.const argName [])`) to
-`Anneal.MirWp.wpProg` or `Anneal.MirWp.wpFaultProg` for the two parameterized
-Pass 1 WP soundness claims. Thus an untrusted edit to `theory/` or
-`correspondence/` cannot delete or weaken any nullary correspondence claim,
-canary statement, referenced fixture, or expected outcome; for the two
-parameterized WP claims, `wpProg` and `wpFaultProg` themselves live in
-untrusted `theory/`, so making them vacuous (for instance
-`fun _ _ _ _ => False`) would break downstream proofs and canaries without
-breaking per-crate soundness, because per-crate verification checks `Trusted.*`
-target theorem statements (`CrateTheorem`/`UnitTheorem`) directly in the Lean
-kernel.
+exported theorem in `Anneal.MirWp` (the two WP soundness claims),
+`Anneal.MirWp.Canaries` (the Pass 1 canaries), and
+`Anneal.MirCorrespondenceProof` has a type matching the corresponding
+`Trusted.*Claim` constant—syntactically equal (`Expr.const claimName []`) for
+every nullary claim and canary, and direct application
+(`Expr.app (.const claimName []) (.const argName [])`) to `Anneal.MirWp.wpProg`
+or `Anneal.MirWp.wpFaultProg` for the two parameterized Pass 1 WP soundness
+claims. Thus an untrusted edit to `theory/` or `correspondence/` cannot delete
+or weaken any nullary correspondence claim, canary statement, referenced
+fixture, or expected outcome; for the two parameterized WP claims, `wpProg`
+and `wpFaultProg` themselves live in untrusted `theory/` (`Anneal.MirWp`), so
+making them vacuous (for instance `fun _ _ _ _ => False`) would break
+downstream proofs and canaries without breaking per-crate soundness, because
+per-crate verification checks `Trusted.*` target theorem statements
+(`CrateTheorem`/`UnitTheorem`) directly in the Lean kernel.
 
-The Pass 1 canaries in `Anneal.MirWp` (15 in the Day-1 scalar/bool/unit
-baseline, growing to 19 once fieldless enums, `!`, and crate/unit scope land,
-to 20 with byte-level memory's `canary_memory_lifecycle_anneal`, Section
-4.6, and to 25 with `char`, `BinOp.cmp`, `BinOp.*WithOverflow`, and
-`CastKind.intToInt`) check $M_{\text{anneal}}$ directly:
+The Pass 1 canaries in decoupled `Anneal.MirWp.Canaries` (15 in the Day-1
+scalar/bool/unit baseline, growing to 19 once fieldless enums, `!`, and
+crate/unit scope land, to 20 with byte-level memory's
+`canary_memory_lifecycle_anneal`, Section 4.6, and to 25 with `char`,
+`BinOp.cmp`, `BinOp.*WithOverflow`, and `CastKind.intToInt`) check
+$M_{\text{anneal}}$ directly:
 
 - **`canary_positive_add_anneal`:** `_0 = copy _1 + copy _2; return`
   (`30u32 + 12u32`) is `WellFormed` and returns `42u32`.
