@@ -44,7 +44,7 @@ setup = ["dep:exocrate"]
 
 [dependencies]
 clap = { version = "4.5", default-features = false, features = ["std", "help", "usage", "error-context", "suggestions", "derive"] }
-exocrate = { version = "0.3.0", optional = true }
+exocrate = { version = "0.3.1", optional = true }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 sha2 = "0.10"
