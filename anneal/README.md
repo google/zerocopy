@@ -194,9 +194,10 @@ impl std::ops::Div<PositiveUsize> for usize {
 
 ## Try the alpha
 
-The alpha verifies selected Rust functions or dependency-free scalar library
-crates on x86-64 Linux with glibc. Follow the [alpha guide][alpha-guide] to
-install it and check a runnable proof.
+The alpha verifies selected Rust functions or scalar library crates with no
+required normal or build dependencies (dev-dependencies and inactive optional
+dependencies are ignored) on x86-64 Linux with glibc. Follow the
+[alpha guide][alpha-guide] to install it and check a runnable proof.
 
 [alpha-guide]: https://github.com/google/zerocopy/blob/main/anneal/docs/alpha.md
 

@@ -380,6 +380,88 @@ fn rejects_symlinked_sources_and_disallowed_manifest_targets() {
         "Cargo shortcut requires a dependency-free crate",
     );
 
+    // 4b. Cargo `[features]`, `[dev-dependencies]`, inactive optional
+    // `[dependencies]`, and top-level `benches/` work out-of-the-box, whereas
+    // activating an optional dependency fails closed.
+    let feat_pkg = work.join("pkg-cargo-features");
+    fs::create_dir_all(feat_pkg.join("src")).unwrap();
+    fs::create_dir_all(feat_pkg.join("benches")).unwrap();
+    fs::write(feat_pkg.join("src/lib.rs"), SCALAR_SOURCE).unwrap();
+    fs::write(
+        feat_pkg.join("benches/bench.rs"),
+        "compile_error!(\"benches must not be staged in library shortcut\");\n",
+    )
+    .unwrap();
+    let opt_dep_dir = work.join("opt-dep");
+    fs::create_dir_all(opt_dep_dir.join("src")).unwrap();
+    fs::write(
+        opt_dep_dir.join("Cargo.toml"),
+        "[package]\nname = \"opt_dep\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+    )
+    .unwrap();
+    fs::write(opt_dep_dir.join("src/lib.rs"), "").unwrap();
+    let dev_dep_dir = work.join("dev-dep");
+    fs::create_dir_all(dev_dep_dir.join("src")).unwrap();
+    fs::write(
+        dev_dep_dir.join("Cargo.toml"),
+        "[package]\nname = \"dev_dep\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+    )
+    .unwrap();
+    fs::write(dev_dep_dir.join("src/lib.rs"), "").unwrap();
+    let feat_manifest = feat_pkg.join("Cargo.toml");
+    fs::write(
+        &feat_manifest,
+        format!(
+            "[package]\nname = \"sample\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n\
+             [dependencies]\nopt_dep = {{ path = {:?}, optional = true }}\n\n\
+             [dev-dependencies]\ndev_dep = {{ path = {:?} }}\n\n\
+             [features]\ndefault = [\"foo\"]\nfoo = []\nwith_opt = [\"dep:opt_dep\"]\n",
+            opt_dep_dir.display().to_string(),
+            dev_dep_dir.display().to_string(),
+        ),
+    )
+    .unwrap();
+    let feat_inv = with_host_cargo_env(verify_invocation(&[
+        OsStr::new("--manifest-path"),
+        feat_manifest.as_os_str(),
+        OsStr::new("--proof-dir"),
+        lean_dir.as_os_str(),
+    ]));
+    let feat_ok = run_verify_inv(&staged, &feat_inv);
+    let feat_ok_rec = expect_verified(&feat_ok, "crate_verified", true);
+    let feat_sources: Vec<&str> = feat_ok_rec
+        .sources
+        .as_array()
+        .expect("sources array")
+        .iter()
+        .map(|entry| entry["relative_path"].as_str().expect("source relative_path"))
+        .collect();
+    assert_eq!(feat_sources, vec!["src/lib.rs"], "{:?}", feat_ok_rec.sources);
+    assert!(
+        !feat_sources.iter().any(|path| path.contains("benches")),
+        "{:?}",
+        feat_ok_rec.sources
+    );
+
+    fs::write(
+        &feat_manifest,
+        format!(
+            "[package]\nname = \"sample\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n\
+             [dependencies]\nopt_dep = {{ path = {:?}, optional = true }}\n\n\
+             [features]\ndefault = [\"with_opt\"]\nwith_opt = [\"dep:opt_dep\"]\n",
+            opt_dep_dir.display().to_string(),
+        ),
+    )
+    .unwrap();
+    let active_opt_res = run_verify_inv(&staged, &feat_inv);
+    expect_failed(
+        &active_opt_res,
+        1,
+        "unsupported",
+        Some("cargo"),
+        "activates dependency `opt_dep`",
+    );
+
     // 5. Remaining disallowed Cargo shortcut targets/manifests.
     for (case, toml, extra_files, detail) in [
         (
@@ -387,13 +469,6 @@ fn rejects_symlinked_sources_and_disallowed_manifest_targets() {
             "[workspace]\nmembers = []\n",
             &[][..],
             "choose a package Cargo.toml, not a virtual workspace",
-        ),
-        (
-            "features",
-            "[package]\nname = \"f\"\nversion = \"0.0.0\"\nedition = \"2024\"\n\
-             [lib]\npath = \"lib.rs\"\n[features]\ndefault = [\"extra\"]\nextra = []\n",
-            &[][..],
-            "Cargo features require an explicit configured compilation request",
         ),
         (
             "build-script",

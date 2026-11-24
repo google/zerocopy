@@ -13,7 +13,7 @@
 //! staged independently and passed to the compiled-environment auditor.
 
 use std::{
-    collections::{BTreeMap, BTreeSet},
+    collections::{BTreeMap, BTreeSet, VecDeque},
     ffi::{OsStr, OsString},
     fs,
     path::{Component, Path, PathBuf},
@@ -21,10 +21,6 @@ use std::{
     time::Instant,
 };
 
-use crate::{
-    ActiveSandbox, Checker, SandboxMode, TOOLCHAIN, TargetAuditRequest, TargetBindings,
-    TargetModule, TargetRole, read_regular_file_deref, read_regular_file_strict, sha256_bytes,
-};
 use clap::{
     Args, Subcommand,
     builder::{OsStringValueParser, TypedValueParser as _},
@@ -35,6 +31,10 @@ use serde_json::{Value, json};
 
 #[cfg(feature = "setup")]
 use crate::setup::{ToolOverrides, installed_bundle, resolve_tools};
+use crate::{
+    ActiveSandbox, Checker, SandboxMode, TOOLCHAIN, TargetAuditRequest, TargetBindings,
+    TargetModule, TargetRole, read_regular_file_deref, read_regular_file_strict, sha256_bytes,
+};
 
 // Generated resources keep installed and packaged builds independent of the
 // source checkout. The explicit regeneration check binds these bytes to the
@@ -142,9 +142,23 @@ impl PanicStrategy {
 #[command(subcommand_negates_reqs = true)]
 pub struct VerifyArgs {
     /// JSON compilation/proof request, with paths relative to its directory.
-    #[arg(long, conflicts_with_all = ["manifest_path", "proof_dir", "panic", "select", "instantiate"])]
+    #[arg(
+        long,
+        conflicts_with_all = [
+            "manifest_path",
+            "proof_dir",
+            "panic",
+            "select",
+            "instantiate",
+            "features",
+            "all_features",
+            "no_default_features",
+        ]
+    )]
     request: Option<PathBuf>,
-    /// A feature-free library or binary crate for the x86_64-unknown-linux-gnu scalar profile.
+    /// A library or binary crate with no required normal or build dependencies
+    /// (dev-dependencies and inactive optional dependencies are ignored) for
+    /// the `x86_64-unknown-linux-gnu` scalar profile.
     #[arg(long, conflicts_with = "request", requires = "proof_dir")]
     manifest_path: Option<PathBuf>,
     /// Directory containing Spec.lean and Proof.lean, for the Cargo shortcut.
@@ -166,6 +180,21 @@ pub struct VerifyArgs {
         value_parser = parse_instantiation_arg
     )]
     instantiate: Vec<Instantiation>,
+    /// Space or comma separated list of Cargo features to activate.
+    #[arg(
+        long,
+        short = 'F',
+        value_name = "FEATURES",
+        requires = "manifest_path",
+        conflicts_with = "request"
+    )]
+    features: Vec<String>,
+    /// Activate all available Cargo features of the selected package.
+    #[arg(long, requires = "manifest_path", conflicts_with = "request")]
+    all_features: bool,
+    /// Do not activate the `default` Cargo feature.
+    #[arg(long, requires = "manifest_path", conflicts_with = "request")]
+    no_default_features: bool,
     /// Capture driver; defaults to the installed bundle, then a sibling. The
     /// receipt records its SHA-256, which no lock pins.
     #[cfg_attr(
@@ -428,11 +457,15 @@ impl VerifyArgs {
                 || self.panic.is_some()
                 || !self.select.is_empty()
                 || !self.instantiate.is_empty()
+                || !self.features.is_empty()
+                || self.all_features
+                || self.no_default_features
             {
                 return Err(cmd.error(
                     ErrorKind::ArgumentConflict,
-                    "--request, --manifest-path, --proof-dir, parent --panic, parent \
-                     --select, and parent --instantiate cannot be used with the `rustc` subcommand",
+                    "--request, --manifest-path, --proof-dir, parent --panic, parent --select, \
+                     parent --instantiate, --features, --all-features, and --no-default-features \
+                     cannot be used with the `rustc` subcommand",
                 ));
             }
             if rustc.crate_name.is_empty() {
@@ -919,6 +952,208 @@ fn reject_compiler_overrides(dir: &Path) -> Result<()> {
     Ok(())
 }
 
+/// Return whether `name` is a syntactically safe Cargo feature identifier for
+/// `rustc` `--cfg=feature="<name>"` emission.
+///
+/// Rejects empty strings, whitespace, control characters, quotes, backslashes,
+/// and Cargo dependency-feature separators (`/`, `:`, `?`) so
+/// `feature="{name}"` encodes a single literal string value with zero quoting
+/// or `@file` ambiguity.
+fn is_valid_cargo_feature_name(name: &str) -> bool {
+    !name.is_empty()
+        && !name.chars().any(|c| {
+            c.is_control() || c.is_whitespace() || matches!(c, '"' | '\\' | '/' | ':' | '?')
+        })
+}
+
+/// Resolve the active Cargo feature closure into `rustc` `feature="<name>"`
+/// `cfg` entries and verify that no normal or build dependency is active.
+///
+/// Dev-dependencies (`kind == "dev"`) apply only to tests, examples, and
+/// benchmarks, so they never enter library or binary compilation. Optional
+/// normal or build dependencies (`optional == true`) are permitted when left
+/// inactive and rejected fail-closed as soon as an active feature enables
+/// `dep:<name>` or `<name>/<subfeature>`. Weak dependency features
+/// (`<name>?/<subfeature>`) do not activate `<name>` on their own and remain
+/// no-ops while `<name>` stays inactive.
+fn resolve_cargo_package_cfg(
+    package: &Value,
+    features_arg: &[String],
+    all_features: bool,
+    no_default_features: bool,
+) -> Result<BTreeSet<String>> {
+    let pkg_name = package["name"].as_str().unwrap_or("<package>");
+    let features_map = package["features"]
+        .as_object()
+        .ok_or_else(|| error("tool_failed", "cargo", "missing Cargo features table"))?;
+    let deps_arr = package["dependencies"]
+        .as_array()
+        .ok_or_else(|| error("tool_failed", "cargo", "missing Cargo dependencies list"))?;
+
+    let mut optional_deps = BTreeSet::new();
+    for dep in deps_arr {
+        let dep_obj = dep
+            .as_object()
+            .ok_or_else(|| error("tool_failed", "cargo", "malformed Cargo dependency entry"))?;
+        let name = dep_obj
+            .get("name")
+            .and_then(Value::as_str)
+            .filter(|s| !s.is_empty())
+            .ok_or_else(|| error("tool_failed", "cargo", "missing Cargo dependency name"))?;
+        let dep_key = match dep_obj.get("rename") {
+            None | Some(Value::Null) => name,
+            Some(Value::String(rename)) if !rename.is_empty() => rename.as_str(),
+            _ => {
+                return Err(error("tool_failed", "cargo", "malformed Cargo dependency rename"));
+            }
+        };
+        let optional = dep_obj.get("optional").and_then(Value::as_bool).ok_or_else(|| {
+            error("tool_failed", "cargo", "missing Cargo dependency optional flag")
+        })?;
+        match dep_obj.get("kind") {
+            Some(Value::String(kind)) if kind == "dev" => {}
+            None | Some(Value::Null) => {
+                if !optional {
+                    return Err(error(
+                        "unsupported",
+                        "cargo",
+                        "Cargo shortcut requires a dependency-free crate; \
+                         use an explicit compilation request",
+                    ));
+                }
+                optional_deps.insert(dep_key.to_owned());
+            }
+            Some(Value::String(kind)) if kind == "build" => {
+                if !optional {
+                    return Err(error(
+                        "unsupported",
+                        "cargo",
+                        "Cargo shortcut requires a dependency-free crate; \
+                         use an explicit compilation request",
+                    ));
+                }
+                optional_deps.insert(dep_key.to_owned());
+            }
+            _ => {
+                return Err(error("tool_failed", "cargo", "unexpected Cargo dependency kind"));
+            }
+        }
+    }
+
+    for key in features_map.keys() {
+        if !is_valid_cargo_feature_name(key) {
+            return Err(error(
+                "unsupported",
+                "cargo",
+                format!("unsupported Cargo feature identifier: {key:?}"),
+            ));
+        }
+    }
+
+    let mut requested = Vec::new();
+    for raw in features_arg {
+        for tok in raw.split(|c: char| c == ',' || c.is_ascii_whitespace()) {
+            if tok.is_empty() {
+                continue;
+            }
+            if tok.starts_with("dep:") || tok.contains('/') {
+                return Err(error(
+                    "unsupported",
+                    "cargo",
+                    format!(
+                        "Cargo shortcut requires a dependency-free crate \
+                         (cannot activate dependency feature `{tok}`); \
+                         use an explicit compilation request"
+                    ),
+                ));
+            }
+            if !is_valid_cargo_feature_name(tok) || !features_map.contains_key(tok) {
+                return Err(error(
+                    "unsupported",
+                    "cargo",
+                    format!("package `{pkg_name}` does not have feature `{tok}`"),
+                ));
+            }
+            requested.push(tok.to_owned());
+        }
+    }
+
+    let mut active_features = BTreeSet::new();
+    let mut queue = VecDeque::new();
+    let activate = |feat: &str, active: &mut BTreeSet<String>, q: &mut VecDeque<String>| {
+        if active.insert(feat.to_owned()) {
+            q.push_back(feat.to_owned());
+        }
+    };
+
+    if all_features {
+        for key in features_map.keys() {
+            activate(key, &mut active_features, &mut queue);
+        }
+    } else {
+        if !no_default_features && features_map.contains_key("default") {
+            activate("default", &mut active_features, &mut queue);
+        }
+        for feat in &requested {
+            activate(feat, &mut active_features, &mut queue);
+        }
+    }
+
+    while let Some(feat) = queue.pop_front() {
+        let items = features_map
+            .get(&feat)
+            .and_then(Value::as_array)
+            .ok_or_else(|| error("tool_failed", "cargo", "malformed Cargo feature list"))?;
+        for raw_item in items {
+            let item = raw_item
+                .as_str()
+                .ok_or_else(|| error("tool_failed", "cargo", "malformed Cargo feature entry"))?;
+            if let Some(dep_key) = item.strip_prefix("dep:") {
+                return Err(error(
+                    "unsupported",
+                    "cargo",
+                    format!(
+                        "Cargo shortcut requires a dependency-free crate \
+                         (feature `{feat}` activates dependency `{dep_key}`); \
+                         use an explicit compilation request"
+                    ),
+                ));
+            } else if let Some((dep_key, sub_feat)) = item.split_once("?/") {
+                if dep_key.is_empty() || sub_feat.is_empty() || !optional_deps.contains(dep_key) {
+                    return Err(error(
+                        "unsupported",
+                        "cargo",
+                        format!(
+                            "feature `{feat}` references unknown optional dependency `{dep_key}`"
+                        ),
+                    ));
+                }
+            } else if let Some((dep_key, _)) = item.split_once('/') {
+                return Err(error(
+                    "unsupported",
+                    "cargo",
+                    format!(
+                        "Cargo shortcut requires a dependency-free crate \
+                         (feature `{feat}` activates dependency `{dep_key}`); \
+                         use an explicit compilation request"
+                    ),
+                ));
+            } else {
+                if !features_map.contains_key(item) {
+                    return Err(error(
+                        "unsupported",
+                        "cargo",
+                        format!("feature `{feat}` enables unknown feature `{item}`"),
+                    ));
+                }
+                activate(item, &mut active_features, &mut queue);
+            }
+        }
+    }
+
+    Ok(active_features.into_iter().map(|feat| format!("feature=\"{feat}\"")).collect())
+}
+
 // Cargo is an input-discovery shortcut, not a second verification profile.
 // Reject configurations this adapter cannot reproduce before building the
 // same explicit request consumed by the build-neutral path.
@@ -956,20 +1191,6 @@ fn cargo_request(args: &VerifyArgs, manifest_path: &Path) -> Result<(Request, Pa
         .ok_or_else(|| {
             error("unsupported", "cargo", "choose a package Cargo.toml, not a virtual workspace")
         })?;
-    if package["features"].as_object().is_none_or(|features| !features.is_empty()) {
-        return Err(error(
-            "unsupported",
-            "cargo",
-            "Cargo features require an explicit configured compilation request",
-        ));
-    }
-    if package["dependencies"].as_array().is_none_or(|deps| !deps.is_empty()) {
-        return Err(error(
-            "unsupported",
-            "cargo",
-            "Cargo shortcut requires a dependency-free crate; use an explicit compilation request",
-        ));
-    }
     let targets = package["targets"]
         .as_array()
         .ok_or_else(|| error("tool_failed", "cargo", "missing Cargo targets"))?;
@@ -984,11 +1205,17 @@ fn cargo_request(args: &VerifyArgs, manifest_path: &Path) -> Result<(Request, Pa
             "build scripts and procedural macros need an explicit configured compilation",
         ));
     }
+    let cfg = resolve_cargo_package_cfg(
+        package,
+        &args.features,
+        args.all_features,
+        args.no_default_features,
+    )?;
     let mut primary_targets = targets.iter().filter_map(|t| {
         let kinds = t["kind"].as_array()?;
         if kinds.iter().any(|k| k == "bin") {
             Some((CrateType::Bin, t))
-        } else if kinds.iter().any(|k| k == "lib") {
+        } else if kinds.iter().any(|k| k == "lib" || k == "rlib") {
             Some((CrateType::Lib, t))
         } else {
             None
@@ -1005,6 +1232,32 @@ fn cargo_request(args: &VerifyArgs, manifest_path: &Path) -> Result<(Request, Pa
              use an explicit compilation request",
         ));
     }
+    if crate_type == CrateType::Bin {
+        match target_meta.get("required-features") {
+            None | Some(Value::Null) => {}
+            Some(Value::Array(reqs)) => {
+                for raw_req in reqs {
+                    let req = raw_req.as_str().ok_or_else(|| {
+                        error("tool_failed", "cargo", "malformed Cargo required-features entry")
+                    })?;
+                    if !cfg.contains(&format!("feature=\"{req}\"")) {
+                        let target_name = target_meta["name"].as_str().unwrap_or("<target>");
+                        return Err(error(
+                            "unsupported",
+                            "cargo",
+                            format!(
+                                "target `{target_name}` requires Cargo feature `{req}`, \
+                                 which is not enabled"
+                            ),
+                        ));
+                    }
+                }
+            }
+            Some(_) => {
+                return Err(error("tool_failed", "cargo", "malformed Cargo required-features"));
+            }
+        }
+    }
     let workspace_root =
         metadata["workspace_root"].as_str().and_then(|root| fs::canonicalize(root).ok());
     for ancestor in source_root.ancestors() {
@@ -1017,19 +1270,50 @@ fn cargo_request(args: &VerifyArgs, manifest_path: &Path) -> Result<(Request, Pa
         .strip_prefix(&source_root)
         .map_err(|_| error("unsupported", "cargo", "target root escapes package"))?
         .to_path_buf();
-    // This shortcut declares a namespace of .rs files. Other compiler inputs
-    // require an explicit request: importing every package file would also
-    // stage unrelated data, proof packages and build outputs.
+    let mut non_primary_target_files = BTreeSet::new();
+    for other_target in targets {
+        if std::ptr::eq(other_target, target_meta) {
+            continue;
+        }
+        if let Some(src_path) = other_target["src_path"].as_str()
+            && let Ok(rel) = Path::new(src_path).strip_prefix(&source_root)
+            && rel != crate_root
+        {
+            non_primary_target_files.insert(rel.to_path_buf());
+        }
+    }
+    // This shortcut declares a namespace of .rs files for the selected primary
+    // target, excluding Cargo's top-level `tests/`, `benches/`, and `examples/`
+    // multi-target trees (and explicit non-primary target entrypoints) unless
+    // `crate_root` itself lives inside one. Other compiler inputs require an
+    // explicit request: importing every package file would stage unrelated
+    // data, proof packages, and build outputs.
     let mut source_files = Vec::new();
     for entry in
         walkdir::WalkDir::new(&source_root).follow_links(false).into_iter().filter_entry(|e| {
-            e.depth() == 0
-                || (!e.file_name().to_string_lossy().starts_with('.') && e.file_name() != "target")
+            if e.depth() == 0 {
+                return true;
+            }
+            let name = e.file_name();
+            if name.to_string_lossy().starts_with('.') || name == "target" {
+                return false;
+            }
+            if e.depth() == 1
+                && !e.file_type().is_file()
+                && matches!(name.to_str(), Some("tests" | "benches" | "examples"))
+                && !crate_root.starts_with(name)
+            {
+                return false;
+            }
+            true
         })
     {
         let entry = entry.map_err(|e| error("tool_failed", "cargo", e))?;
         if entry.file_type().is_file() && entry.path().extension().is_some_and(|e| e == "rs") {
-            source_files.push(entry.path().strip_prefix(&source_root).unwrap().to_path_buf());
+            let rel = entry.path().strip_prefix(&source_root).unwrap().to_path_buf();
+            if !non_primary_target_files.contains(&rel) {
+                source_files.push(rel);
+            }
         }
     }
     source_files.sort();
@@ -1080,7 +1364,7 @@ fn cargo_request(args: &VerifyArgs, manifest_path: &Path) -> Result<(Request, Pa
                 panic: args.panic.unwrap_or_default(),
                 edition: target_meta["edition"].as_str().unwrap_or("2024").to_owned(),
                 target: target(),
-                cfg: BTreeSet::new(),
+                cfg,
                 env: BTreeMap::new(),
                 source_files,
             },
@@ -1415,11 +1699,8 @@ fn select_tools(args: &VerifyArgs) -> Result<SelectedTools> {
 fn normalize_lexical_absolute(path: &Path) -> std::io::Result<PathBuf> {
     use std::path::Component;
 
-    let abs = if path.is_absolute() {
-        path.to_path_buf()
-    } else {
-        std::env::current_dir()?.join(path)
-    };
+    let abs =
+        if path.is_absolute() { path.to_path_buf() } else { std::env::current_dir()?.join(path) };
     let mut normalized = PathBuf::new();
     for component in abs.components() {
         match component {
@@ -2085,10 +2366,7 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     }
     let spec_warnings =
         extract_spec_warnings(&audit).map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?;
-    result
-        .as_object_mut()
-        .unwrap()
-        .insert("spec_warnings".into(), Value::Array(spec_warnings));
+    result.as_object_mut().unwrap().insert("spec_warnings".into(), Value::Array(spec_warnings));
     let result_bytes =
         encoded(&result).map_err(|e| e.with_sandbox(Some(active_sandbox.as_str())))?;
     finalize_passing_artifacts(work, &result_bytes, args.export_lean_lib, |dest| {
@@ -2278,10 +2556,7 @@ fn extract_spec_warnings(audit: &Value) -> Result<Vec<Value>> {
                     "malformed audit.specWarnings entry field `body`",
                 ));
             };
-            entry
-                .as_object_mut()
-                .unwrap()
-                .insert("body".into(), Value::String(body.to_owned()));
+            entry.as_object_mut().unwrap().insert("body".into(), Value::String(body.to_owned()));
         }
         warnings.push(entry);
     }
@@ -2463,7 +2738,9 @@ pub fn main(args: VerifyArgs) -> ExitCode {
                     let msg = warning.get("message").and_then(Value::as_str).unwrap_or("");
                     match warning.get("body").and_then(Value::as_str) {
                         Some(body) => {
-                            eprintln!("WARNING [anti-vacuity: {code}] {decl} (body `{body}`): {msg}");
+                            eprintln!(
+                                "WARNING [anti-vacuity: {code}] {decl} (body `{body}`): {msg}"
+                            );
                         }
                         None => eprintln!("WARNING [anti-vacuity: {code}] {decl}: {msg}"),
                     }
@@ -3167,6 +3444,9 @@ mod tests {
             panic: None,
             select: Vec::new(),
             instantiate: Vec::new(),
+            features: Vec::new(),
+            all_features: false,
+            no_default_features: false,
             capture: None,
             lean: None,
             sysroot: None,
@@ -3199,6 +3479,9 @@ mod tests {
                         panic: None,
                         select: Vec::new(),
                         instantiate: Vec::new(),
+                        features: Vec::new(),
+                        all_features: false,
+                        no_default_features: false,
                         capture: None,
                         lean: None,
                         sysroot: None,
@@ -3600,6 +3883,9 @@ mod tests {
             panic: None,
             select: Vec::new(),
             instantiate: Vec::new(),
+            features: Vec::new(),
+            all_features: false,
+            no_default_features: false,
             capture: None,
             lean: None,
             sysroot: None,
@@ -3642,6 +3928,9 @@ mod tests {
                 panic: None,
                 select: Vec::new(),
                 instantiate: Vec::new(),
+                features: Vec::new(),
+                all_features: false,
+                no_default_features: false,
                 artifacts: None,
                 export_lean_lib: false,
                 allow_unpinned_lean: false,
@@ -4059,10 +4348,7 @@ mod tests {
             parse_env_arg("CARGO_PKG_VERSION=0.8.64").unwrap(),
             ("CARGO_PKG_VERSION".to_owned(), "0.8.64".to_owned())
         );
-        assert_eq!(
-            parse_env_arg("NESTED=a=b").unwrap(),
-            ("NESTED".to_owned(), "a=b".to_owned())
-        );
+        assert_eq!(parse_env_arg("NESTED=a=b").unwrap(), ("NESTED".to_owned(), "a=b".to_owned()));
         assert_eq!(parse_env_arg("EMPTY=").unwrap(), ("EMPTY".to_owned(), String::new()));
 
         assert!(parse_env_arg("NO_EQUALS").is_err());
@@ -4158,5 +4444,144 @@ mod tests {
         assert_eq!(bin_abort.compilation.crate_type, CrateType::Bin);
         assert_eq!(bin_abort.compilation.panic, PanicStrategy::Abort);
         assert_ne!(encoded(&defaulted).unwrap(), encoded(&bin_abort).unwrap());
+    }
+
+    #[test]
+    fn resolve_cargo_package_cfg_handles_features_and_rejects_active_dependencies() {
+        let pkg = json!({
+            "name": "ext_crate",
+            "features": {
+                "default": ["std"],
+                "std": ["alloc"],
+                "alloc": [],
+                "i128": [],
+                "weak_log": ["log?/kv"],
+                "logging": ["dep:log"],
+                "strong_core": ["core/default"]
+            },
+            "dependencies": [
+                {
+                    "name": "quickcheck",
+                    "rename": null,
+                    "kind": "dev",
+                    "optional": false
+                },
+                {
+                    "name": "log",
+                    "rename": null,
+                    "kind": null,
+                    "optional": true
+                },
+                {
+                    "name": "rustc-std-workspace-core",
+                    "rename": "core",
+                    "kind": null,
+                    "optional": true
+                }
+            ]
+        });
+
+        // Default run activates `default` -> `std` -> `alloc`, ignoring dev
+        // and unactivated optional dependencies.
+        let default_cfg = resolve_cargo_package_cfg(&pkg, &[], false, false).unwrap();
+        assert_eq!(
+            default_cfg,
+            BTreeSet::from([
+                "feature=\"alloc\"".to_owned(),
+                "feature=\"default\"".to_owned(),
+                "feature=\"std\"".to_owned(),
+            ])
+        );
+
+        // `--no-default-features` leaves `cfg` empty.
+        let bare_cfg = resolve_cargo_package_cfg(&pkg, &[], false, true).unwrap();
+        assert!(bare_cfg.is_empty());
+
+        // Comma- and space-separated `--features` with weak `log?/kv` leave
+        // optional `log` unactivated, emitting sorted `feature="..."` cfgs.
+        let custom_cfg = resolve_cargo_package_cfg(
+            &pkg,
+            &["i128, alloc".to_owned(), "weak_log".to_owned()],
+            false,
+            true,
+        )
+        .unwrap();
+        assert_eq!(
+            custom_cfg,
+            BTreeSet::from([
+                "feature=\"alloc\"".to_owned(),
+                "feature=\"i128\"".to_owned(),
+                "feature=\"weak_log\"".to_owned(),
+            ])
+        );
+
+        // Activating `dep:log` or `core/default` (directly or via
+        // `--all-features`) fails closed as `unsupported` in phase `cargo`.
+        for (feats, all_feats, expected_substr) in [
+            (vec!["logging".to_owned()], false, "activates dependency `log`"),
+            (vec!["strong_core".to_owned()], false, "activates dependency `core`"),
+            (Vec::new(), true, "activates dependency"),
+            (vec!["dep:log".to_owned()], false, "cannot activate dependency feature"),
+            (vec!["log/kv".to_owned()], false, "cannot activate dependency feature"),
+            (vec!["unknown".to_owned()], false, "does not have feature `unknown`"),
+            (vec!["unknown".to_owned()], true, "does not have feature `unknown`"),
+        ] {
+            let err = resolve_cargo_package_cfg(&pkg, &feats, all_feats, true).unwrap_err();
+            assert_eq!(err.status, "unsupported");
+            assert_eq!(err.phase, "cargo");
+            assert!(
+                err.detail.contains(expected_substr),
+                "expected `{expected_substr}` in `{}`",
+                err.detail
+            );
+        }
+
+        // `--all-features` passes when no feature enables an optional dep.
+        let pure_pkg = json!({
+            "name": "pure_crate",
+            "features": {
+                "default": ["std"],
+                "std": [],
+                "i128": []
+            },
+            "dependencies": [
+                { "name": "rand", "rename": null, "kind": "dev", "optional": false }
+            ]
+        });
+        let all_cfg = resolve_cargo_package_cfg(&pure_pkg, &[], true, false).unwrap();
+        assert_eq!(
+            all_cfg,
+            BTreeSet::from([
+                "feature=\"default\"".to_owned(),
+                "feature=\"i128\"".to_owned(),
+                "feature=\"std\"".to_owned(),
+            ])
+        );
+
+        // Required normal or build dependencies fail closed even under
+        // `--no-default-features`.
+        for kind in [Value::Null, json!("build")] {
+            let dep_pkg = json!({
+                "name": "with_dep",
+                "features": {},
+                "dependencies": [
+                    { "name": "dep", "rename": null, "kind": kind, "optional": false }
+                ]
+            });
+            let err = resolve_cargo_package_cfg(&dep_pkg, &[], false, true).unwrap_err();
+            assert_eq!(err.status, "unsupported");
+            assert_eq!(err.phase, "cargo");
+            assert!(err.detail.contains("dependency-free crate"), "{}", err.detail);
+        }
+
+        // Unsafe characters in manifest feature keys fail closed.
+        let unsafe_feat_pkg = json!({
+            "name": "bad_feat",
+            "features": { "bad\"quote": [] },
+            "dependencies": []
+        });
+        let err = resolve_cargo_package_cfg(&unsafe_feat_pkg, &[], false, true).unwrap_err();
+        assert_eq!(err.status, "unsupported");
+        assert_eq!(err.phase, "cargo");
     }
 }

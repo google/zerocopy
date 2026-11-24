@@ -8,22 +8,16 @@
 
 //! Schema v3 receipts, boundary mutation rejection, `rustc` mode, and taint.
 
-use std::{
-    env,
-    ffi::OsStr,
-    fs,
-    os::unix::fs::symlink,
-    path::PathBuf,
-};
+use std::{env, ffi::OsStr, fs, os::unix::fs::symlink, path::PathBuf};
 
 use anneal_testkit::Invocation;
 use serde_json::{Value, json};
 
 use crate::helpers::{
-    SCALAR_DEPENDENCY, SCALAR_PROOF, SCALAR_SOURCE, SCALAR_SPEC, SCALAR_UNSUPPORTED,
-    anneal_root, corpus_path, expect_failed, expect_verified, lean_source, new_workspace,
-    run_verify_inv, run_verify_strs, sha256_hex, verify_invocation, with_host_cargo_env,
-    workspace_tools, write_json_file, write_scalar_baseline,
+    SCALAR_DEPENDENCY, SCALAR_PROOF, SCALAR_SOURCE, SCALAR_SPEC, SCALAR_UNSUPPORTED, anneal_root,
+    corpus_path, expect_failed, expect_verified, lean_source, new_workspace, run_verify_inv,
+    run_verify_strs, sha256_hex, verify_invocation, with_host_cargo_env, workspace_tools,
+    write_json_file, write_scalar_baseline,
 };
 
 fn selected_request(req: &Value) -> Value {
@@ -214,8 +208,10 @@ fn check_provenance_and_toolchain(ok: &anneal_testkit::VerifySuccessReceipt) {
     if let Ok(install_root) = env::var("ANNEAL_TEST_INSTALL_ROOT")
         && !install_root.is_empty()
     {
-        let archive_path = PathBuf::from(install_root).join("share/anneal/correspondence-provenance.json");
-        let archive_prov: Value = serde_json::from_slice(&fs::read(&archive_path).unwrap()).unwrap();
+        let archive_path =
+            PathBuf::from(install_root).join("share/anneal/correspondence-provenance.json");
+        let archive_prov: Value =
+            serde_json::from_slice(&fs::read(&archive_path).unwrap()).unwrap();
         assert_eq!(&archive_prov, prov);
     }
 }
@@ -230,12 +226,7 @@ fn verifies_real_source_and_rejects_boundary_mutations() {
 
     let run = run_verify_strs(
         &staged,
-        &[
-            "--request",
-            req_path.to_str().unwrap(),
-            "--artifacts",
-            whole_art.to_str().unwrap(),
-        ],
+        &["--request", req_path.to_str().unwrap(), "--artifacts", whole_art.to_str().unwrap()],
     );
     let ok = expect_verified(&run, "crate_verified", true);
     check_provenance_and_toolchain(ok);
@@ -260,10 +251,26 @@ fn verifies_real_source_and_rejects_boundary_mutations() {
 
     // Negative shortcuts around the canonical closed theorem hit exact guards.
     for (name, decls, rejection) in [
-        ("wrong-root", "theorem Proof.verify : True := True.intro", "policy:target theorem type differs from Expected"),
-        ("axiom", "axiom fabricated : Expected.claim\ntheorem Proof.verify : Expected.claim := fabricated", "policy:unapproved axiom fabricated from Proof"),
-        ("sorry", "theorem Proof.verify : Expected.claim := by sorry", "policy:unapproved axiom sorryAx from Init.Prelude"),
-        ("extra-hypothesis", "theorem Proof.verify (assumed : Expected.claim) : Expected.claim := assumed", "policy:target theorem type differs from Expected"),
+        (
+            "wrong-root",
+            "theorem Proof.verify : True := True.intro",
+            "policy:target theorem type differs from Expected",
+        ),
+        (
+            "axiom",
+            "axiom fabricated : Expected.claim\ntheorem Proof.verify : Expected.claim := fabricated",
+            "policy:unapproved axiom fabricated from Proof",
+        ),
+        (
+            "sorry",
+            "theorem Proof.verify : Expected.claim := by sorry",
+            "policy:unapproved axiom sorryAx from Init.Prelude",
+        ),
+        (
+            "extra-hypothesis",
+            "theorem Proof.verify (assumed : Expected.claim) : Expected.claim := assumed",
+            "policy:target theorem type differs from Expected",
+        ),
     ] {
         fs::write(work.join("lean/Proof.lean"), lean_source("import Expected", decls)).unwrap();
         let art = work.join(name);
@@ -296,7 +303,13 @@ fn verifies_real_source_and_rejects_boundary_mutations() {
         .replace(", totalCorrectness⟩", ", True.intro⟩");
     fs::write(work.join("lean/Proof.lean"), shadowed).unwrap();
     let r = run_verify_strs(&staged, &["--request", req_path.to_str().unwrap()]);
-    expect_failed(&r, 1, "proof_failed", Some("audit"), "policy:target theorem type differs from Expected");
+    expect_failed(
+        &r,
+        1,
+        "proof_failed",
+        Some("audit"),
+        "policy:target theorem type differs from Expected",
+    );
     fs::write(work.join("lean/Proof.lean"), SCALAR_PROOF).unwrap();
 
     // Hidden specification helper macro inside a proof-role module.
@@ -380,27 +393,91 @@ fn selected_unit_normalization_and_boundary_rejections() {
     expect_failed(&r, 1, "unsupported", Some("capture"), "unsupported");
     fs::write(work.join("rust/lib.rs"), SCALAR_SOURCE).unwrap();
 
-    // Cargo shortcut checks.
+    // Cargo shortcut checks (default features, `--no-default-features` +
+    // `--features`, and fail-closed optional-dependency activation).
     let manifest = work.join("rust/Cargo.toml");
     let manifest_base = "[package]\nname = \"scalar\"\nversion = \"0.0.0\"\nedition = \"2024\"\n\
                          [lib]\npath = \"lib.rs\"\n";
-    fs::write(&manifest, format!("{manifest_base}[features]\ndefault = [\"extra\"]\nextra = []\n"))
-        .unwrap();
+    let opt_dep = work.join("opt-dep");
+    fs::create_dir_all(opt_dep.join("src")).unwrap();
+    fs::write(
+        opt_dep.join("Cargo.toml"),
+        "[package]\nname = \"opt_dep\"\nversion = \"0.0.0\"\nedition = \"2024\"\n",
+    )
+    .unwrap();
+    fs::write(opt_dep.join("src/lib.rs"), "").unwrap();
+    fs::write(
+        &manifest,
+        format!(
+            "{manifest_base}[dependencies]\nopt_dep = {{ path = {:?}, optional = true }}\n\
+             [features]\ndefault = [\"extra\"]\nextra = []\nwith_dep = [\"dep:opt_dep\"]\n",
+            opt_dep.display().to_string()
+        ),
+    )
+    .unwrap();
+    fs::write(
+        work.join("rust/lib.rs"),
+        format!(
+            "#[cfg(not(all(feature = \"default\", feature = \"extra\")))]\n\
+             compile_error!(\"missing default Cargo features\");\n{SCALAR_SOURCE}"
+        ),
+    )
+    .unwrap();
     let lean_dir = work.join("lean");
-    let bad_cargo_inv = with_host_cargo_env(verify_invocation(&[
+    let default_feat_inv = with_host_cargo_env(verify_invocation(&[
         OsStr::new("--manifest-path"),
         manifest.as_os_str(),
         OsStr::new("--proof-dir"),
         lean_dir.as_os_str(),
     ]));
-    let r = run_verify_inv(&staged, &bad_cargo_inv);
-    expect_failed(
-        &r,
-        1,
-        "unsupported",
-        Some("cargo"),
-        "Cargo features require an explicit configured compilation request",
+    let default_feat_res = run_verify_inv(&staged, &default_feat_inv);
+    let default_feat_rec = expect_verified(&default_feat_res, "crate_verified", true);
+    assert_eq!(
+        default_feat_rec.configuration["cfg"],
+        json!(["feature=\"default\"", "feature=\"extra\""])
     );
+
+    fs::write(
+        work.join("rust/lib.rs"),
+        format!(
+            "#[cfg(feature = \"default\")]\ncompile_error!(\"default feature still enabled\");\n\
+             #[cfg(not(feature = \"extra\"))]\ncompile_error!(\"missing extra feature\");\n{SCALAR_SOURCE}"
+        ),
+    )
+    .unwrap();
+    let custom_feat_inv = with_host_cargo_env(verify_invocation(&[
+        OsStr::new("--manifest-path"),
+        manifest.as_os_str(),
+        OsStr::new("--proof-dir"),
+        lean_dir.as_os_str(),
+        OsStr::new("--no-default-features"),
+        OsStr::new("--features"),
+        OsStr::new("extra"),
+    ]));
+    let custom_feat_res = run_verify_inv(&staged, &custom_feat_inv);
+    let custom_feat_rec = expect_verified(&custom_feat_res, "crate_verified", true);
+    assert_eq!(custom_feat_rec.configuration["cfg"], json!(["feature=\"extra\""]));
+
+    for (extra_args, expected_detail) in [
+        (&[OsStr::new("--features"), OsStr::new("with_dep")][..], "activates dependency `opt_dep`"),
+        (&[OsStr::new("--all-features")], "activates dependency `opt_dep`"),
+        (
+            &[OsStr::new("--features"), OsStr::new("nonexistent")],
+            "does not have feature `nonexistent`",
+        ),
+    ] {
+        let mut args = vec![
+            OsStr::new("--manifest-path"),
+            manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            lean_dir.as_os_str(),
+        ];
+        args.extend_from_slice(extra_args);
+        let bad_inv = with_host_cargo_env(verify_invocation(&args));
+        let bad_res = run_verify_inv(&staged, &bad_inv);
+        expect_failed(&bad_res, 1, "unsupported", Some("cargo"), expected_detail);
+    }
+    fs::write(work.join("rust/lib.rs"), SCALAR_SOURCE).unwrap();
 
     fs::write(&manifest, manifest_base).unwrap();
     fs::create_dir(lean_dir.join(".cache")).unwrap();
@@ -419,10 +496,16 @@ fn selected_unit_normalization_and_boundary_rejections() {
     let ws_root = work.join("workspace-override");
     fs::create_dir_all(ws_root.join(".cargo")).unwrap();
     fs::create_dir_all(ws_root.join("member")).unwrap();
-    fs::write(ws_root.join("Cargo.toml"), "[workspace]\nmembers = [\"member\"]\nresolver = \"2\"\n")
-        .unwrap();
-    fs::write(ws_root.join(".cargo/config.toml"), "[build]\nrustflags = [\"--cfg=override_flag\"]\n")
-        .unwrap();
+    fs::write(
+        ws_root.join("Cargo.toml"),
+        "[workspace]\nmembers = [\"member\"]\nresolver = \"2\"\n",
+    )
+    .unwrap();
+    fs::write(
+        ws_root.join(".cargo/config.toml"),
+        "[build]\nrustflags = [\"--cfg=override_flag\"]\n",
+    )
+    .unwrap();
     fs::write(ws_root.join("member/Cargo.toml"), manifest_base).unwrap();
     fs::write(ws_root.join("member/lib.rs"), SCALAR_SOURCE).unwrap();
     let member_manifest = ws_root.join("member/Cargo.toml");
@@ -450,7 +533,13 @@ fn selected_unit_normalization_and_boundary_rejections() {
             .push(json!({"module": module, "path": "Proof.lean", "role": "proof"}));
         let p = write_json_file(&work.join(format!("res-{module}.json")), &reserved);
         let r = run_verify_strs(&staged, &["--request", p.to_str().unwrap()]);
-        expect_failed(&r, 1, "unsupported", Some("proof"), "invalid, duplicate or reserved proof module");
+        expect_failed(
+            &r,
+            1,
+            "unsupported",
+            Some("proof"),
+            "invalid, duplicate or reserved proof module",
+        );
     }
 
     // Retention preserves caller artifacts when invalid request fails early.
@@ -484,7 +573,8 @@ fn selected_unit_normalization_and_boundary_rejections() {
     let spin_dir = corpus_path("spin");
     fs::write(work.join("rust/lib.rs"), fs::read(spin_dir.join("lib.rs")).unwrap()).unwrap();
     fs::write(work.join("lean/Spec.lean"), fs::read(spin_dir.join("Spec.lean")).unwrap()).unwrap();
-    fs::write(work.join("lean/Proof.lean"), fs::read(spin_dir.join("Proof.lean")).unwrap()).unwrap();
+    fs::write(work.join("lean/Proof.lean"), fs::read(spin_dir.join("Proof.lean")).unwrap())
+        .unwrap();
     let spin_run = run_verify_strs(&staged, &["--request", req_path.to_str().unwrap()]);
     expect_verified(&spin_run, "crate_verified", true);
 }
@@ -549,7 +639,9 @@ fn rustc_mode_symlinks_replay_export_lean_lib_and_unpinned_taint() {
     fs::write(cas.join("helper_phys.rs"), "pub fn unused() -> u64 { 1 }\n").unwrap();
     fs::write(
         cas.join("scalar_spec.lean"),
-        SCALAR_SPEC.replace("namespace Spec", "namespace Contract").replace("end Spec", "end Contract"),
+        SCALAR_SPEC
+            .replace("namespace Spec", "namespace Contract")
+            .replace("end Spec", "end Contract"),
     )
     .unwrap();
     fs::write(
@@ -646,7 +738,10 @@ fn rustc_mode_symlinks_replay_export_lean_lib_and_unpinned_taint() {
     // 3. Proof failure exports non-proof .oleans only (never `Proof.olean`).
     fs::write(
         cas.join("bad_proof.lean"),
-        lean_source("import Expected", "namespace Proof\ntheorem verify : True := True.intro\nend Proof"),
+        lean_source(
+            "import Expected",
+            "namespace Proof\ntheorem verify : True := True.intro\nend Proof",
+        ),
     )
     .unwrap();
     let bad_link = runfiles.join("BadProof.lean");
@@ -659,14 +754,21 @@ fn rustc_mode_symlinks_replay_export_lean_lib_and_unpinned_taint() {
         &bad_proof_arg,
         None,
     );
-    expect_failed(&failed, 1, "proof_failed", Some("audit"), "policy:target theorem type differs from Expected");
+    expect_failed(
+        &failed,
+        1,
+        "proof_failed",
+        Some("audit"),
+        "policy:target theorem type differs from Expected",
+    );
     assert!(fail_art.join("lean-lib/Captured.olean").is_file());
     assert!(fail_art.join("lean-lib/Contract.olean").is_file());
     assert!(!fail_art.join("lean-lib/Proof.olean").exists());
 
     // 4. Early header error must not create empty/partial lean-lib.
     let bad_import = runfiles.join("BadImportProof.lean");
-    fs::write(cas.join("bad_import.lean"), lean_source("import MissingModule", "def x := 1")).unwrap();
+    fs::write(cas.join("bad_import.lean"), lean_source("import MissingModule", "def x := 1"))
+        .unwrap();
     symlink(cas.join("bad_import.lean"), &bad_import).unwrap();
     let early_art = work.join("rustc-early-fail");
     let bad_imp_arg = format!("Proof={}", bad_import.display());
@@ -693,7 +795,10 @@ fn rustc_mode_symlinks_replay_export_lean_lib_and_unpinned_taint() {
     assert_eq!(u["sysroot_modules_sha256"].as_str().unwrap().len(), 64);
     assert_eq!(u["foundation_modules"].as_array().unwrap().len(), 6);
     assert!(u["admitted_sysroot_module_count"].as_u64().unwrap() >= 6);
-    assert_eq!(u["sysroot_modules_sha256"], unpinned_ok.audit["unpinnedLean"]["sysrootModulesSha256"]);
+    assert_eq!(
+        u["sysroot_modules_sha256"],
+        unpinned_ok.audit["unpinnedLean"]["sysrootModulesSha256"]
+    );
 
     // 6. Unsandboxed elaboration taint.
     let unsandboxed =
@@ -729,7 +834,8 @@ fn rustc_mode_symlinks_replay_export_lean_lib_and_unpinned_taint() {
     .unwrap();
     let sorry_arg = format!("Spec.Helper={}", sorry_proof.display());
     let strict_sorry = run_rustc(&[], &contract_arg, &sorry_arg, custom_thm);
-    let ss_fail = expect_failed(&strict_sorry, 1, "proof_failed", Some("audit"), "unapproved axiom sorryAx");
+    let ss_fail =
+        expect_failed(&strict_sorry, 1, "proof_failed", Some("audit"), "unapproved axiom sorryAx");
     assert!(ss_fail.taint_reasons.is_empty());
     assert!(matches!(
         ss_fail.elaboration_sandbox.as_deref(),
@@ -754,7 +860,10 @@ fn rustc_mode_symlinks_replay_export_lean_lib_and_unpinned_taint() {
         custom_thm,
     );
     let all_ok = expect_verified(&all_three, "tainted_selected_unit_verified", true);
-    assert_eq!(all_ok.taint_reasons, vec!["sorry_in_proof", "unpinned_lean", "unsandboxed_elaboration"]);
+    assert_eq!(
+        all_ok.taint_reasons,
+        vec!["sorry_in_proof", "unpinned_lean", "unsandboxed_elaboration"]
+    );
     assert_eq!(all_ok.elaboration_sandbox.as_deref(), Some("none"));
     assert_eq!(all_ok.sorry_declarations, Some(vec![json!("Spec.Helper.lemma_hole")]));
     assert!(all_ok.unpinned_lean.is_some());
@@ -773,7 +882,8 @@ fn rustc_mode_symlinks_replay_export_lean_lib_and_unpinned_taint() {
     let sorry_spec_arg = format!("Contract={}", sorry_spec.display());
     let spec_sorry_fail =
         run_rustc(&["--allow-sorry-in-proof"], &sorry_spec_arg, &sorry_arg, custom_thm);
-    let sp_fail = expect_failed(&spec_sorry_fail, 1, "proof_failed", Some("audit"), "Lean.Parser.Term.sorry");
+    let sp_fail =
+        expect_failed(&spec_sorry_fail, 1, "proof_failed", Some("audit"), "Lean.Parser.Term.sorry");
     assert_eq!(sp_fail.taint_reasons, vec!["sorry_in_proof"]);
     assert!(matches!(
         sp_fail.elaboration_sandbox.as_deref(),
