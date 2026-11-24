@@ -102,15 +102,23 @@ re-confirm every affected gate whenever the identity changes:
      tree_sha)` and never transfer across heads. Gate 2 provides the cold
      cross-family review and falsification pass after Gate 1's pre-push
      convergence.
+
+     Optional `advisories[]` entries are `P3` notes in the finding shape. They
+     never block, and are not findings for the resolution rule below; a
+     reviewer that would report only `P3` issues may report `verdict: "clean"`
+     with those notes as advisories. A `P3` entry in `findings[]` keeps its
+     blocking meaning, so a reviewer that follows only the Code Review Rules
+     and reports `P3` issues as findings is still correct.
    - **Legacy Codex summary (`codex-review-state:v1`):** For backwards
      compatibility, a complete code review by an authentic
      `chatgpt-codex-connector[bot]` covering the current identity.
 
    An aborted run, a request answered with an error, a `verdict: "incomplete"`
    run, or a run that has not completed is never a passing Gate 2 review. Every
-   finding that a Gate 2 reviewer posts on this PR, for any identity and
-   including findings from incomplete or errored runs, is resolved in exactly
-   one of two ways:
+   finding that a Gate 2 reviewer posts on this PR (a `findings[]` entry or a
+   legacy Codex finding, never an advisory), for any identity and including
+   findings from incomplete or errored runs, is resolved in exactly one of two
+   ways:
    - **Fixed:** after the finding, the surface it concerns changes (the PR's
      tree; its commit message; or, for a finding about something outside the
      identity, such as the PR description or Review Receipt comment, that
@@ -253,7 +261,8 @@ derives `one:<parent_tree>:<tree_sha>:<commit_msg_sha256>` (single-commit PR on
 `base_sha`) or `multi:<base_sha>:<head_sha>` from GitHub's commits API and
 validates `tree_sha`, structured `identity_key`, `reviewer_family !=
 author_family`, `COMMENTED` state, and `findings[]` fail-closed (`merge_base`
-when set must equal `base_sha`). Clean verdicts with a `one:` key transfer
+when set must equal `base_sha`; `advisories[]` must be `P3`-only). Clean
+verdicts with a `one:` key transfer
 across `head_sha`/`base_sha` changes only when `merge_base` is absent or equals
 `payload.base_sha` and GitHub confirms that the historical
 `(payload.head_sha, payload.base_sha)` commit has the same `(tree_sha,

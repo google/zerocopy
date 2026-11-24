@@ -66,6 +66,7 @@ GATE2_OPTIONAL_KEYS = frozenset({
     "parent_tree", "commit_msg_sha256", "reviewed_at",
     "round", "risk_tier", "merge_base", "identity_key",
     "panel_seats", "prior_findings_status", "coverage",
+    "advisories",
 })
 GATE2_FINDING_KEYS = frozenset({
     "severity", "summary", "path", "line", "id",
@@ -215,7 +216,8 @@ def _validate_finding(entry):
         raise ValueError("Gate 2 finding must be an object")
     if not {"severity", "summary"} <= set(entry) or not set(entry) <= GATE2_FINDING_KEYS:
         raise ValueError("Invalid Gate 2 finding keys")
-    if entry["severity"] not in GATE2_SEVERITIES:
+    severity = entry["severity"]
+    if not isinstance(severity, str) or severity not in GATE2_SEVERITIES:
         raise ValueError("Invalid Gate 2 finding severity")
     if not _is_non_empty_str(entry["summary"]):
         raise ValueError("Gate 2 finding summary must be non-empty")
@@ -361,6 +363,14 @@ def parse_gate2_payload(body, *, strict_identity_key=True):
         raise ValueError("Clean Gate 2 verdict cannot include findings")
     if verdict == "findings" and not findings:
         raise ValueError("Findings Gate 2 verdict requires non-empty findings")
+    if "advisories" in payload:
+        advisories = payload["advisories"]
+        if not isinstance(advisories, list):
+            raise ValueError("Gate 2 advisories must be a list")
+        for entry in advisories:
+            _validate_finding(entry)
+            if entry["severity"] != "P3":
+                raise ValueError("Gate 2 advisories must have severity P3")
     if "prior_findings_status" in payload:
         _validate_prior_findings_status(payload["prior_findings_status"], verdict)
     if "coverage" in payload:

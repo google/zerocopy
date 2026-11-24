@@ -2697,6 +2697,57 @@ class Gate2CrossFamilyTests(unittest.TestCase):
                     expected,
                 )
 
+    def test_gate2_advisories(self):
+        advisory = {"severity": "P3", "summary": "Wording nit"}
+        blocking = {"severity": "P2", "summary": "Real defect"}
+        p3_finding = {"severity": "P3", "summary": "Blocking P3"}
+
+        # Advisories are P3-only and never block a clean review; a P3 in
+        # findings[] keeps blocking.
+        for label, rev, expected in (
+            ("clean_with_advisory",
+             gate2_review(advisories=[advisory]), "success"),
+            ("clean_with_empty_advisories", gate2_review(advisories=[]),
+             "success"),
+            ("p3_finding_blocks", gate2_review(
+                verdict="findings", findings=[p3_finding]), "failure"),
+            ("findings_with_advisory", gate2_review(
+                verdict="findings", findings=[blocking],
+                advisories=[advisory]), "failure"),
+        ):
+            with self.subTest(valid=label):
+                self.assertEqual(
+                    review_result(
+                        HEAD, [], reviews=[rev], base_sha=BASE, tree_sha=TREE,
+                    ).state,
+                    expected,
+                )
+        for label, extra in (
+            ("p2_advisory", {"advisories": [blocking]}),
+            ("malformed_advisory", {"advisories": [{"severity": "P3"}]}),
+            ("advisories_not_list", {"advisories": 5}),
+            ("advisories_null", {"advisories": None}),
+            ("unhashable_advisory_severity", {
+                "advisories": [{"severity": [], "summary": "note"}]}),
+            ("unhashable_finding_severity", {
+                "verdict": "findings",
+                "findings": [{"severity": {}, "summary": "note"}]}),
+            # Delta reviews are not part of the schema.
+            ("delta_mode", {"review_mode": "delta", "delta_from": OTHER_HEAD}),
+            ("full_mode_key", {"review_mode": "full"}),
+        ):
+            with self.subTest(malformed=label):
+                with self.assertRaises(ValueError):
+                    parse_gate2_payload(gate2_review(**extra)["body"])
+                # A malformed payload fails closed instead of crashing.
+                self.assertEqual(
+                    review_result(
+                        HEAD, [], reviews=[gate2_review(**extra)],
+                        base_sha=BASE, tree_sha=TREE,
+                    ).state,
+                    "failure",
+                )
+
 
 if __name__ == "__main__":
     unittest.main()
