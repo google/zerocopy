@@ -15,7 +15,6 @@ on:
     paths:
       - 'zerocopy/Cargo.toml'
       - 'zerocopy/zerocopy-derive/Cargo.toml'
-      - 'anneal/trusted/cargo-anneal/Cargo.toml'
   workflow_dispatch:
     inputs:
       project:
@@ -27,14 +26,21 @@ on:
           - zerocopy
           - anneal
       version:
-        description: Crate version to prepare
+        description: Crate version to prepare or release
         required: true
         type: string
       branch:
-        description: Branch to update
+        description: Branch to update or validate
         required: true
         type: string
         default: main
+      commit:
+        description: >-
+          Optional 40-character first-parent main commit SHA for Anneal releases
+          (defaults to current main HEAD)
+        required: false
+        type: string
+        default: ''
 
 # We set no permissions at the top level, and instead set them granularly for
 # each job.
@@ -240,25 +246,41 @@ jobs:
       GOOGLE_PR_CREATION_BOT_TOKEN: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
 
   anneal-build-archive:
-    name: Prepare Anneal release archive
+    name: Build Anneal Linux toolchain archive
     if: >-
       github.event_name == 'workflow_dispatch' && inputs.project == 'anneal'
-      && inputs.branch == 'main' && github.ref == 'refs/heads/main'
       && github.repository == 'google/zerocopy'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 90
     permissions:
       contents: read
     outputs:
-      source: ${{ steps.prepare.outputs.source }}
+      already_published: ${{ steps.emit.outputs.already_published }}
+      commit: ${{ steps.emit.outputs.commit }}
+      version: ${{ steps.emit.outputs.version }}
+      archive_sha256: ${{ steps.emit.outputs.archive_sha256 }}
+      toolchain_tag: ${{ steps.emit.outputs.toolchain_tag }}
+      published_crate_source_sha256: >-
+        ${{ steps.emit.outputs.published_crate_source_sha256 }}
+      artifact_id: ${{ steps.upload.outputs.artifact-id }}
     steps:
+      - name: Validate manual dispatch branch target
+        env:
+          INPUT_BRANCH: ${{ inputs.branch }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main
+          test "$INPUT_BRANCH" = main
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
           persist-credentials: false
-      - name: Stage the release source
-        id: prepare
-        working-directory: anneal
+
+      - name: Check whether GitHub Release already exists
         env:
+          GH_TOKEN: ${{ github.token }}
           VERSION: ${{ inputs.version }}
           ACTIONS_CACHE_URL: ''
           ACTIONS_RESULTS_URL: ''
@@ -266,176 +288,392 @@ jobs:
           ACTIONS_RUNTIME_URL: ''
         run: |
           set -euo pipefail
-          test "$GITHUB_REF" = refs/heads/main
-          source="$(python3 -B ci/alpha_release.py "$VERSION" --prepare)"
-          git checkout --detach "$source"
-          printf 'source=%s\n' "$source" >> "$GITHUB_OUTPUT"
-      - uses: DeterminateSystems/determinate-nix-action@92957199488000b908fdad19f63711000965d8f3 # v3.24.1
-      - name: Build the pinned x86-64 Linux toolchain
-        working-directory: anneal
+          encoded_tag="$(python3 -I -B -c 'import os, urllib.parse; print(urllib.parse.quote("anneal-v" + os.environ["VERSION"], safe=".-_"))')"
+          status="$(curl -sS --retry 3 -o "$RUNNER_TEMP/rel-check.json" -w '%{http_code}' \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            --config <(printf 'header = "Authorization: Bearer %s"\n' "$GH_TOKEN") \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/releases/tags/$encoded_tag")"
+          if [ "$status" = "200" ]; then
+            echo "GitHub Release anneal-v$VERSION already exists" >&2
+            exit 1
+          elif [ "$status" != "404" ]; then
+            echo "Unexpected HTTP $status checking anneal-v$VERSION release" >&2
+            exit 1
+          fi
+
+      - name: Fetch refs, guard TCB, and resolve target commit
+        id: resolve
         env:
+          VERSION: ${{ inputs.version }}
+          INPUT_COMMIT: ${{ inputs.commit }}
+          DEFAULT_SHA: ${{ github.sha }}
           ACTIONS_CACHE_URL: ''
           ACTIONS_RESULTS_URL: ''
           ACTIONS_RUNTIME_TOKEN: ''
           ACTIONS_RUNTIME_URL: ''
         run: |
           set -euo pipefail
-          archive="$(nix build .#omnibus-archive --no-link --print-out-paths --max-jobs 1 --cores 2)"
-          cp "$archive" "$RUNNER_TEMP/anneal-toolchain-linux-x86_64.tar.zst"
-      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+          git fetch --force origin \
+            +refs/heads/main:refs/remotes/origin/main \
+            '+refs/tags/anneal-*:refs/tags/anneal-*'
+          guard_tcb() {
+            local repo_dir="$1"
+            local linked_path
+            linked_path="$(find "$repo_dir/anneal/trusted" -type l -print -quit)"
+            if [ -n "$linked_path" ]; then
+              echo "symlink in Anneal trusted tree: $linked_path" >&2
+              exit 1
+            fi
+            for root in "$repo_dir" "$repo_dir/anneal"; do
+              for name in .cargo rust-toolchain .gitmodules; do
+                path="$root/$name"
+                if [ -e "$path" ] || [ -L "$path" ]; then
+                  echo "forbidden root config override: $path" >&2
+                  exit 1
+                fi
+              done
+            done
+            shopt -s nullglob
+            extra=("$repo_dir"/rust-toolchain.* "$repo_dir"/anneal/rust-toolchain.*)
+            shopt -u nullglob
+            if [ "${#extra[@]}" -ne 0 ]; then
+              echo "forbidden root config override: ${extra[0]}" >&2
+              exit 1
+            fi
+            (cd "$repo_dir/anneal" && sha256sum --check --strict trusted/root-manifest.sha256)
+          }
+          [[ "$DEFAULT_SHA" =~ ^[0-9a-f]{40}$ ]]
+          git rev-list --first-parent refs/remotes/origin/main \
+            > "$RUNNER_TEMP/first-parent.txt"
+          grep -Fxq -- "$DEFAULT_SHA" "$RUNNER_TEMP/first-parent.txt"
+          if [ -n "$INPUT_COMMIT" ]; then
+            [[ "$INPUT_COMMIT" =~ ^[0-9a-f]{40}$ ]]
+            grep -Fxq -- "$INPUT_COMMIT" "$RUNNER_TEMP/first-parent.txt"
+          fi
+          status="$(git status --porcelain --untracked-files=all)"
+          test -z "$status"
+          guard_tcb .
+          python3 -I -B anneal/ci/alpha_release.py resolve-and-validate \
+            --repo "$GITHUB_WORKSPACE" \
+            --version "$VERSION" \
+            --commit "$INPUT_COMMIT" \
+            --default-sha "$DEFAULT_SHA" \
+            --wait-for-prior-tags-seconds 300 \
+            > "$RUNNER_TEMP/resolved.env"
+          resolved_commit="$(sed -n 's/^commit=//p' "$RUNNER_TEMP/resolved.env")"
+          [[ "$resolved_commit" =~ ^[0-9a-f]{40}$ ]]
+          grep -Fxq -- "$resolved_commit" "$RUNNER_TEMP/first-parent.txt"
+          cat "$RUNNER_TEMP/resolved.env" >> "$GITHUB_OUTPUT"
+
+      - name: Verify existing toolchain release on post-crate recovery
+        if: steps.resolve.outputs.already_published == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TOOLCHAIN_TAG: ${{ steps.resolve.outputs.toolchain_tag }}
+          ARCHIVE_SHA256: ${{ steps.resolve.outputs.archive_sha256 }}
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          ACTIONS_RUNTIME_URL: ''
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TOOLCHAIN_TAG" |
+            jq -e --arg digest "sha256:$ARCHIVE_SHA256" '
+              .draft == false and .prerelease == true and
+              ([.assets[] | select(.name == "anneal-toolchain-linux-x86_64.tar.zst" and .state == "uploaded")] |
+               length == 1 and .[0].digest == $digest)
+            '
+
+      - uses: DeterminateSystems/determinate-nix-action@92957199488000b908fdad19f63711000965d8f3 # v3.24.1
+        if: steps.resolve.outputs.already_published == 'false'
+
+      - name: Build the pinned x86-64 Linux toolchain archive
+        id: build
+        if: steps.resolve.outputs.already_published == 'false'
+        env:
+          COMMIT: ${{ steps.resolve.outputs.commit }}
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          ACTIONS_RUNTIME_URL: ''
+        run: |
+          set -euo pipefail
+          target_src="$RUNNER_TEMP/target-src"
+          rm -rf "$target_src"
+          git -c core.hooksPath=/dev/null -c core.fsmonitor=false \
+            -c init.defaultRefFormat=files \
+            clone --quiet --local --no-checkout "$GITHUB_WORKSPACE" "$target_src"
+          git -c core.hooksPath=/dev/null -c core.fsmonitor=false \
+            -C "$target_src" checkout --quiet --detach "$COMMIT"
+          target_status="$(git -C "$target_src" status --porcelain --untracked-files=all)"
+          test -z "$target_status"
+          linked_path="$(find "$target_src/anneal/trusted" -type l -print -quit)"
+          if [ -n "$linked_path" ]; then
+            echo "symlink in Anneal trusted tree: $linked_path" >&2
+            exit 1
+          fi
+          for root in "$target_src" "$target_src/anneal"; do
+            for name in .cargo rust-toolchain .gitmodules; do
+              path="$root/$name"
+              if [ -e "$path" ] || [ -L "$path" ]; then
+                echo "forbidden root config override: $path" >&2
+                exit 1
+              fi
+            done
+          done
+          shopt -s nullglob
+          extra=("$target_src"/rust-toolchain.* "$target_src"/anneal/rust-toolchain.*)
+          shopt -u nullglob
+          if [ "${#extra[@]}" -ne 0 ]; then
+            echo "forbidden root config override: ${extra[0]}" >&2
+            exit 1
+          fi
+          (cd "$target_src/anneal" && sha256sum --check --strict trusted/root-manifest.sha256)
+          archive="$(cd "$target_src/anneal" && nix build .#omnibus-archive --no-link --print-out-paths --max-jobs 4 --cores 4)"
+          out="$RUNNER_TEMP/anneal-toolchain-linux-x86_64.tar.zst"
+          cp "$archive" "$out"
+          digest_line="$(sha256sum "$out")"
+          digest="${digest_line%% *}"
+          tag_out="$(python3 -I -B "$GITHUB_WORKSPACE/anneal/ci/alpha_release.py" toolchain-tag --commit "$COMMIT" --sha256 "$digest")"
+          toolchain_tag="$(printf '%s\n' "$tag_out" | sed -n 's/^tag=//p')"
+          test -n "$toolchain_tag"
+          printf 'archive_sha256=%s\ntoolchain_tag=%s\n' \
+            "$digest" "$toolchain_tag" >> "$GITHUB_OUTPUT"
+
+      - name: Upload built toolchain archive artifact
+        id: upload
+        if: steps.resolve.outputs.already_published == 'false'
+        uses: ./.github/actions/upload-file-artifact
         with:
-          name: anneal-alpha-archive
+          name: anneal-toolchain-linux-x86_64.tar.zst
           path: ${{ runner.temp }}/anneal-toolchain-linux-x86_64.tar.zst
-          compression-level: 0
-          if-no-files-found: error
+
+      - name: Emit unified job outputs
+        id: emit
+        env:
+          ALREADY_PUBLISHED: ${{ steps.resolve.outputs.already_published }}
+          COMMIT: ${{ steps.resolve.outputs.commit }}
+          VERSION: ${{ inputs.version }}
+          RESOLVED_SHA256: ${{ steps.resolve.outputs.archive_sha256 }}
+          BUILT_SHA256: ${{ steps.build.outputs.archive_sha256 }}
+          RESOLVED_TAG: ${{ steps.resolve.outputs.toolchain_tag }}
+          BUILT_TAG: ${{ steps.build.outputs.toolchain_tag }}
+          PUBLISHED_SOURCE_SHA256: >-
+            ${{ steps.resolve.outputs.published_crate_source_sha256 }}
+        run: |
+          set -euo pipefail
+          if [ "$ALREADY_PUBLISHED" = "true" ]; then
+            sha="$RESOLVED_SHA256"
+            tag="$RESOLVED_TAG"
+          else
+            sha="$BUILT_SHA256"
+            tag="$BUILT_TAG"
+          fi
+          [[ "$sha" =~ ^[0-9a-f]{64}$ ]]
+          test "$sha" != "0000000000000000000000000000000000000000000000000000000000000000"
+          test -n "$tag"
+          {
+            printf 'already_published=%s\n' "$ALREADY_PUBLISHED"
+            printf 'commit=%s\n' "$COMMIT"
+            printf 'version=%s\n' "$VERSION"
+            printf 'archive_sha256=%s\n' "$sha"
+            printf 'toolchain_tag=%s\n' "$tag"
+            printf 'published_crate_source_sha256=%s\n' "$PUBLISHED_SOURCE_SHA256"
+          } >> "$GITHUB_OUTPUT"
 
   anneal-host-archive:
-    name: Host the archive and open the Anneal release PR
+    name: Host Anneal Linux toolchain prerelease
     needs: anneal-build-archive
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     concurrency:
-      group: anneal-prepare-${{ inputs.version }}
+      group: anneal-host-${{ needs.anneal-build-archive.outputs.toolchain_tag }}
       cancel-in-progress: false
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          persist-credentials: false
-      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-        with:
-          name: anneal-alpha-archive
-          path: ${{ runner.temp }}/anneal-alpha
-      - name: Recreate the archive source
-        working-directory: anneal
-        env:
-          VERSION: ${{ inputs.version }}
-          SOURCE_SHA: ${{ needs.anneal-build-archive.outputs.source }}
-          ACTIONS_CACHE_URL: ''
-          ACTIONS_RESULTS_URL: ''
-          ACTIONS_RUNTIME_TOKEN: ''
-          ACTIONS_RUNTIME_URL: ''
-        run: |
-          set -euo pipefail
-          source="$(python3 -B ci/alpha_release.py "$VERSION" --prepare)"
-          test "$source" = "$SOURCE_SHA"
-      - name: Host the immutable archive
-        working-directory: anneal
-        env:
-          GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ inputs.version }}
-          SOURCE_SHA: ${{ needs.anneal-build-archive.outputs.source }}
-          ACTIONS_CACHE_URL: ''
-          ACTIONS_RESULTS_URL: ''
-          ACTIONS_RUNTIME_TOKEN: ''
-          ACTIONS_RUNTIME_URL: ''
-        run: |
-          set -euo pipefail
-          tag="$(env -u GH_TOKEN python3 -B ci/alpha_release.py "$VERSION")"
-          asset=anneal-toolchain-linux-x86_64.tar.zst
-          archive="$RUNNER_TEMP/anneal-alpha/$asset"
-          tag_api="repos/$GITHUB_REPOSITORY/git/ref/tags/$tag"
-          read_tag() {
-            gh api "$tag_api" --jq '.object | select(.type == "commit") | .sha'
-          }
-          expected=''
-          if ! gh release view "$tag" >/dev/null 2>&1; then
-            if ! target="$(read_tag 2>/dev/null)"; then
-              git -c credential.helper= -c 'credential.helper=!gh auth git-credential' \
-                push origin "$SOURCE_SHA:refs/tags/$tag"
-              target="$(read_tag)"
-            fi
-            test "$target" = "$SOURCE_SHA"
-            expected="$(sha256sum "$archive" | cut -d ' ' -f1)"
-            gh release create "$tag" "$archive" --verify-tag --prerelease \
-              --title "Anneal alpha toolchain $VERSION" \
-              --notes "Pinned x86-64 Linux omnibus archive built from $SOURCE_SHA."
-          fi
-          target="$(read_tag)"
-          [[ "$target" =~ ^[0-9a-f]{40}$ ]]
-          if [ -n "$expected" ]; then
-            test "$target" = "$SOURCE_SHA"
-          fi
-          digest="$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$tag" |
-            jq -er --arg asset "$asset" '
-              select(.prerelease and (.draft | not)) |
-              [.assets[] | select(.name == $asset and .state == "uploaded")] |
-              select(length == 1) | .[0].digest | select(test("^sha256:[0-9a-f]{64}$"))
-            ')"
-          digest="${digest#sha256:}"
-          test -z "$expected" || test "$digest" = "$expected"
-          env -u GH_TOKEN git fetch --no-tags origin "$target"
-          env -u GH_TOKEN python3 -B ci/alpha_release.py "$VERSION" \
-            --archive-base "$target" --archive-tree "$SOURCE_SHA" --pin "$digest"
-      - name: Open the Anneal release PR
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1 # zizmor: ignore[superfluous-actions]
-        with:
-          commit-message: |
-            Release Anneal ${{ inputs.version }}
-
-            Set the CLI version and pin the hosted toolchain digest. When the
-            version changes, update the workspace lockfile version and its
-            pinned SHA-256 together.
-          author: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
-          committer: Google PR Creation Bot <github-pull-request-creation-bot@google.com>
-          title: "Release Anneal ${{ inputs.version }}"
-          body: |
-            ## Human review surface
-
-            Set the CLI version and pin the published x86-64 Linux toolchain
-            in `anneal/trusted/cargo-anneal/Cargo.toml`. When the version
-            changes, update `anneal/Cargo.lock` and its SHA-256 in
-            `anneal/trusted/root-manifest.sha256`. Review the source commit
-            and digest on the toolchain release. Policy relaxations. None.
-          base: main
-          branch: anneal-release-${{ inputs.version }}
-          add-paths: |
-            anneal/trusted/cargo-anneal/Cargo.toml
-            anneal/Cargo.lock
-            anneal/trusted/root-manifest.sha256
-          push-to-fork: google-pr-creation-bot/zerocopy
-          token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }} # zizmor: ignore[secrets-outside-env]
-
-  check-anneal-release:
-    name: Check for a new Anneal release
-    if: >-
-      github.event_name == 'push'
-      && github.ref == 'refs/heads/main' && github.repository == 'google/zerocopy'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    outputs:
-      version: ${{ steps.check.outputs.version }}
-      commit: ${{ steps.check.outputs.commit }}
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
+          ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
-      - name: Find the commit that pins the release
-        id: check
-        working-directory: anneal
+
+      - name: Verify first-parent commit ancestry and TCB manifest
         env:
-          BEFORE: ${{ github.event.before }}
+          HARNESS_SHA: ${{ github.sha }}
+          COMMIT: ${{ needs.anneal-build-archive.outputs.commit }}
           ACTIONS_CACHE_URL: ''
           ACTIONS_RESULTS_URL: ''
           ACTIONS_RUNTIME_TOKEN: ''
           ACTIONS_RUNTIME_URL: ''
         run: |
           set -euo pipefail
-          python3 -B ci/alpha_release.py --changed-since "$BEFORE" >> "$GITHUB_OUTPUT"
+          git fetch --force origin \
+            +refs/heads/main:refs/remotes/origin/main \
+            '+refs/tags/anneal-*:refs/tags/anneal-*'
+          [[ "$HARNESS_SHA" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$COMMIT" =~ ^[0-9a-f]{40}$ ]]
+          git rev-list --first-parent refs/remotes/origin/main \
+            > "$RUNNER_TEMP/first-parent.txt"
+          grep -Fxq -- "$HARNESS_SHA" "$RUNNER_TEMP/first-parent.txt"
+          grep -Fxq -- "$COMMIT" "$RUNNER_TEMP/first-parent.txt"
+          linked_path="$(find anneal/trusted -type l -print -quit)"
+          if [ -n "$linked_path" ]; then
+            echo "symlink in Anneal trusted tree: $linked_path" >&2
+            exit 1
+          fi
+          for root in . anneal; do
+            for name in .cargo rust-toolchain .gitmodules; do
+              path="$root/$name"
+              if [ -e "$path" ] || [ -L "$path" ]; then
+                echo "forbidden root config override: $path" >&2
+                exit 1
+              fi
+            done
+          done
+          shopt -s nullglob
+          extra=(rust-toolchain.* anneal/rust-toolchain.*)
+          shopt -u nullglob
+          if [ "${#extra[@]}" -ne 0 ]; then
+            echo "forbidden root config override: ${extra[0]}" >&2
+            exit 1
+          fi
+          (cd anneal && sha256sum --check --strict trusted/root-manifest.sha256)
+
+      - name: Check whether toolchain prerelease is already published
+        id: check_hosted
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMMIT: ${{ needs.anneal-build-archive.outputs.commit }}
+          TOOLCHAIN_TAG: ${{ needs.anneal-build-archive.outputs.toolchain_tag }}
+          ARCHIVE_SHA256: ${{ needs.anneal-build-archive.outputs.archive_sha256 }}
+          ALREADY_PUBLISHED: >-
+            ${{ needs.anneal-build-archive.outputs.already_published }}
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          ACTIONS_RUNTIME_URL: ''
+        run: |
+          set -euo pipefail
+          status="$(curl -sS --retry 3 -o "$RUNNER_TEMP/host-check.json" -w '%{http_code}' \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            --config <(printf 'header = "Authorization: Bearer %s"\n' "$GH_TOKEN") \
+            "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/releases/tags/$TOOLCHAIN_TAG")"
+          if [ "$status" = "200" ]; then
+            jq -e --arg digest "sha256:$ARCHIVE_SHA256" '
+              .draft == false and .prerelease == true and
+              ([.assets[] | select(.name == "anneal-toolchain-linux-x86_64.tar.zst" and .state == "uploaded")] |
+               length == 1 and .[0].digest == $digest)
+            ' "$RUNNER_TEMP/host-check.json"
+            tag_commit="$(git rev-parse --verify "refs/tags/$TOOLCHAIN_TAG^{commit}")"
+            test "$tag_commit" = "$COMMIT"
+            printf 'hosted=true\n' >> "$GITHUB_OUTPUT"
+          elif [ "$status" = "404" ]; then
+            if [ "$ALREADY_PUBLISHED" = "true" ]; then
+              echo "Toolchain release $TOOLCHAIN_TAG missing during post-crate recovery" >&2
+              exit 1
+            fi
+            printf 'hosted=false\n' >> "$GITHUB_OUTPUT"
+          else
+            echo "Unexpected HTTP $status querying $TOOLCHAIN_TAG" >&2
+            exit 1
+          fi
+
+      - name: Download toolchain archive artifact
+        if: steps.check_hosted.outputs.hosted == 'false'
+        uses: ./.github/actions/download-artifact-with-retry
+        with:
+          artifact-id: ${{ needs.anneal-build-archive.outputs.artifact_id }}
+          path: ${{ runner.temp }}/anneal-alpha
+          expected-file: anneal-toolchain-linux-x86_64.tar.zst
+
+      - name: Stage draft prerelease, verify server SHA-256, and publish atomically
+        if: steps.check_hosted.outputs.hosted == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMMIT: ${{ needs.anneal-build-archive.outputs.commit }}
+          TOOLCHAIN_TAG: ${{ needs.anneal-build-archive.outputs.toolchain_tag }}
+          ARCHIVE_SHA256: ${{ needs.anneal-build-archive.outputs.archive_sha256 }}
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          ACTIONS_RUNTIME_URL: ''
+        run: |
+          set -euo pipefail
+          [[ "$TOOLCHAIN_TAG" =~ ^anneal-toolchain-[0-9a-f]{12}-[0-9a-f]{16}$ ]]
+          archive_file="$RUNNER_TEMP/anneal-alpha/anneal-toolchain-linux-x86_64.tar.zst"
+          digest_line="$(sha256sum "$archive_file")"
+          actual_sha="${digest_line%% *}"
+          test "$actual_sha" = "$ARCHIVE_SHA256"
+          draft_ids="$(gh api --paginate "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
+            --jq '.[] | select(.draft == true and .tag_name == env.TOOLCHAIN_TAG) | .id')"
+          for old_id in $draft_ids; do
+            [[ "$old_id" =~ ^[0-9]+$ ]]
+            gh api -X DELETE "repos/$GITHUB_REPOSITORY/releases/$old_id"
+          done
+          if git show-ref --verify --quiet "refs/tags/$TOOLCHAIN_TAG"; then
+            tag_commit="$(git rev-parse --verify "refs/tags/$TOOLCHAIN_TAG^{commit}")"
+            test "$tag_commit" = "$COMMIT"
+          else
+            git -c user.name="Google PR Creation Bot" \
+              -c user.email="github-pull-request-creation-bot@google.com" \
+              tag -a -m "Anneal Linux toolchain (${COMMIT:0:12})" \
+              -- "$TOOLCHAIN_TAG" "$COMMIT"
+            git -c credential.helper= -c 'credential.helper=!gh auth git-credential' \
+              push origin "refs/tags/$TOOLCHAIN_TAG"
+          fi
+          draft_id="$(gh api -X POST "repos/$GITHUB_REPOSITORY/releases" \
+            -f tag_name="$TOOLCHAIN_TAG" \
+            -f target_commitish="$COMMIT" \
+            -f name="Anneal Linux toolchain (${COMMIT:0:12})" \
+            -f body="Pinned x86_64-unknown-linux-gnu omnibus toolchain archive built from commit ${COMMIT} (SHA-256: ${ARCHIVE_SHA256})." \
+            -F draft=true \
+            -F prerelease=true \
+            -f make_latest=false \
+            --jq '.id')"
+          [[ "$draft_id" =~ ^[0-9]+$ ]]
+          curl --fail-with-body -sS --retry 3 -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/octet-stream" \
+            --config <(printf 'header = "Authorization: Bearer %s"\n' "$GH_TOKEN") \
+            --upload-file "$archive_file" \
+            "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$draft_id/assets?name=anneal-toolchain-linux-x86_64.tar.zst" \
+            > /dev/null
+          gh api "repos/$GITHUB_REPOSITORY/releases/$draft_id" |
+            jq -e --arg digest "sha256:$ARCHIVE_SHA256" '
+              .draft == true and .prerelease == true and
+              ([.assets[] | select(.name == "anneal-toolchain-linux-x86_64.tar.zst" and .state == "uploaded")] |
+               length == 1 and .[0].digest == $digest)
+            '
+          # Pass lowercase `-f make_latest=false` so `gh api` sends the JSON
+          # string `"false"` expected by GitHub's Releases REST schema.
+          gh api -X PATCH "repos/$GITHUB_REPOSITORY/releases/$draft_id" \
+            -F draft=false \
+            -F prerelease=true \
+            -f make_latest=false \
+            > /dev/null
+          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TOOLCHAIN_TAG" |
+            jq -e --arg digest "sha256:$ARCHIVE_SHA256" '
+              .draft == false and .prerelease == true and
+              ([.assets[] | select(.name == "anneal-toolchain-linux-x86_64.tar.zst" and .state == "uploaded")] |
+               length == 1 and .[0].digest == $digest)
+            '
 
   anneal-qualify-package:
-    name: Qualify the packaged Anneal alpha
-    needs: check-anneal-release
-    if: needs.check-anneal-release.outputs.commit != ''
+    name: Qualify the packaged Anneal release
+    needs: [anneal-build-archive, anneal-host-archive]
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       contents: read
     outputs:
-      version: ${{ needs.check-anneal-release.outputs.version }}
-      commit: ${{ needs.check-anneal-release.outputs.commit }}
+      commit: ${{ needs.anneal-build-archive.outputs.commit }}
+      version: ${{ needs.anneal-build-archive.outputs.version }}
+      archive_sha256: ${{ needs.anneal-build-archive.outputs.archive_sha256 }}
+      toolchain_tag: ${{ needs.anneal-build-archive.outputs.toolchain_tag }}
+      crate_source_sha256: ${{ steps.qualify.outputs.crate_source_sha256 }}
     env:
       CARGO_BUILD_JOBS: 2
       ACTIONS_CACHE_URL: ''
@@ -443,15 +681,12 @@ jobs:
       ACTIONS_RUNTIME_TOKEN: ''
       ACTIONS_RUNTIME_URL: ''
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          ref: ${{ needs.check-anneal-release.outputs.commit }}
-          persist-credentials: false
       - name: Check Anneal publishing environment protections
         run: |
           set -euo pipefail
           environment_api="$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/environments/anneal-release"
-          # GitHub can create a missing job environment without protections.
+          # GitHub can create a missing job environment without protections;
+          # verify required reviewers and the `main`-only branch policy first.
           curl -fsS --retry 3 "$environment_api" | jq -e '
             .deployment_branch_policy.custom_branch_policies == true and
             any(.protection_rules[];
@@ -461,41 +696,134 @@ jobs:
             .total_count == 1 and [.branch_policies[] | {name, type}] ==
             [{"name": "main", "type": "branch"}]
           '
-      - name: Package, install, and verify a scalar function
-        working-directory: anneal
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Prepare and verify harness and target TCB checkouts
         env:
-          VERSION: ${{ needs.check-anneal-release.outputs.version }}
+          HARNESS_SHA: ${{ github.sha }}
+          COMMIT: ${{ needs.anneal-build-archive.outputs.commit }}
+        run: |
+          set -euo pipefail
+          git fetch --force origin \
+            +refs/heads/main:refs/remotes/origin/main \
+            '+refs/tags/anneal-*:refs/tags/anneal-*'
+          [[ "$HARNESS_SHA" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$COMMIT" =~ ^[0-9a-f]{40}$ ]]
+          git rev-list --first-parent refs/remotes/origin/main \
+            > "$RUNNER_TEMP/first-parent.txt"
+          grep -Fxq -- "$HARNESS_SHA" "$RUNNER_TEMP/first-parent.txt"
+          grep -Fxq -- "$COMMIT" "$RUNNER_TEMP/first-parent.txt"
+          guard_tcb() {
+            local repo_dir="$1"
+            local linked_path
+            linked_path="$(find "$repo_dir/anneal/trusted" -type l -print -quit)"
+            if [ -n "$linked_path" ]; then
+              echo "symlink in Anneal trusted tree: $linked_path" >&2
+              exit 1
+            fi
+            for root in "$repo_dir" "$repo_dir/anneal"; do
+              for name in .cargo rust-toolchain .gitmodules; do
+                path="$root/$name"
+                if [ -e "$path" ] || [ -L "$path" ]; then
+                  echo "forbidden root config override: $path" >&2
+                  exit 1
+                fi
+              done
+            done
+            shopt -s nullglob
+            extra=("$repo_dir"/rust-toolchain.* "$repo_dir"/anneal/rust-toolchain.*)
+            shopt -u nullglob
+            if [ "${#extra[@]}" -ne 0 ]; then
+              echo "forbidden root config override: ${extra[0]}" >&2
+              exit 1
+            fi
+            (cd "$repo_dir/anneal" && sha256sum --check --strict trusted/root-manifest.sha256)
+          }
+          guard_tcb .
+          target_src="$RUNNER_TEMP/target-src"
+          rm -rf "$target_src"
+          git -c core.hooksPath=/dev/null -c core.fsmonitor=false \
+            -c init.defaultRefFormat=files \
+            clone --quiet --local --no-checkout "$GITHUB_WORKSPACE" "$target_src"
+          git -c core.hooksPath=/dev/null -c core.fsmonitor=false \
+            -C "$target_src" checkout --quiet --detach "$COMMIT"
+          target_status="$(git -C "$target_src" status --porcelain --untracked-files=all)"
+          test -z "$target_status"
+          guard_tcb "$target_src"
+
+      - name: Stamp, package, install, setup from remote archive, and probe
+        id: qualify
+        env:
+          ALREADY_PUBLISHED: ${{ needs.anneal-build-archive.outputs.already_published }}
+          COMMIT: ${{ needs.anneal-build-archive.outputs.commit }}
+          VERSION: ${{ needs.anneal-build-archive.outputs.version }}
+          ARCHIVE_SHA256: ${{ needs.anneal-build-archive.outputs.archive_sha256 }}
+          PUBLISHED_SOURCE_SHA256: >-
+            ${{ needs.anneal-build-archive.outputs.published_crate_source_sha256 }}
         run: |
           set -euo pipefail
           test "$GITHUB_REF" = refs/heads/main
-          tag="$(python3 -B ci/alpha_release.py "$VERSION" --require-pinned)"
-          target="$(git ls-remote --refs origin "refs/tags/$tag" | cut -f 1)"
-          [[ "$target" =~ ^[0-9a-f]{40}$ ]]
-          git fetch --no-tags origin "$target"
-          python3 -B ci/alpha_release.py "$VERSION" --require-pinned --archive-base "$target"
+          test "$ALREADY_PUBLISHED" = "true" -o "$ALREADY_PUBLISHED" = "false"
+          target_src="$RUNNER_TEMP/target-src"
+          python3 -I -B "$GITHUB_WORKSPACE/anneal/ci/alpha_release.py" stamp \
+            --repo "$target_src" \
+            --version "$VERSION" --commit "$COMMIT" --sha256 "$ARCHIVE_SHA256"
           export CARGO_TARGET_DIR="$RUNNER_TEMP/anneal-package"
-          clean_status="$(git status --porcelain --untracked-files=all)"
-          test -z "$clean_status"
-          trap 'rm -rf trusted/cargo-anneal/packaged' EXIT
-          cargo run --locked -p cargo-anneal --example regenerate_bundle -- --root . --stage-package
-          staged_status="$(git status --porcelain --untracked-files=all)"
-          test "$staged_status" = "?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs"
-          cargo package --locked --allow-dirty -p cargo-anneal
-          scratch="$(mktemp -d)"
-          tar -xf "$CARGO_TARGET_DIR/package/cargo-anneal-$VERSION.crate" -C "$scratch"
+          (
+            cd "$target_src/anneal"
+            trap 'rm -rf "$target_src/anneal/trusted/cargo-anneal/packaged"' EXIT
+            cargo run --locked -p cargo-anneal --example regenerate_bundle -- --root . --stage-package
+            staged_status="$(git status --porcelain --untracked-files=all | LC_ALL=C sort)"
+            expected_status="$(printf ' M anneal/Cargo.lock\n M anneal/trusted/cargo-anneal/Cargo.toml\n?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs')"
+            test "$staged_status" = "$expected_status"
+            cargo package --locked --allow-dirty -p cargo-anneal
+          )
+          crate_path="$CARGO_TARGET_DIR/package/cargo-anneal-$VERSION.crate"
+          verify_args=(
+            --crate "$crate_path"
+            --version "$VERSION"
+            --commit "$COMMIT"
+            --sha256 "$ARCHIVE_SHA256"
+          )
+          if [ "$ALREADY_PUBLISHED" = "true" ]; then
+            [[ "$PUBLISHED_SOURCE_SHA256" =~ ^[0-9a-f]{64}$ ]]
+            test "$PUBLISHED_SOURCE_SHA256" != "0000000000000000000000000000000000000000000000000000000000000000"
+            verify_args+=(--expected-source-sha256 "$PUBLISHED_SOURCE_SHA256")
+          else
+            test -z "$PUBLISHED_SOURCE_SHA256"
+          fi
+          source_sha256="$(python3 -I -B "$GITHUB_WORKSPACE/anneal/ci/alpha_release.py" verify-crate "${verify_args[@]}")"
+          [[ "$source_sha256" =~ ^[0-9a-f]{64}$ ]]
+          test "$source_sha256" != "0000000000000000000000000000000000000000000000000000000000000000"
+          scratch="$(mktemp -d "$RUNNER_TEMP/anneal-qualify.XXXXXX")"
+          trap 'rm -rf "$scratch"' EXIT
+          tar -xf "$crate_path" -C "$scratch"
           (cd "$scratch" && cargo install --locked --path "cargo-anneal-$VERSION" --root "$scratch")
+          if [ -e "$scratch/bin/anneal-rustc-capture" ] || [ -L "$scratch/bin/anneal-rustc-capture" ]; then
+            echo "unexpected capture binary installed by cargo-anneal" >&2
+            exit 1
+          fi
           export XDG_CACHE_HOME="$scratch/cache"
           cli="$scratch/bin/cargo-anneal"
+          # Run remote setup twice to exercise cold download + SHA-256 checking
+          # and warm cached toolchain reuse.
           (cd "$scratch" && "$cli" setup)
-          python3 -B ci/probe_alpha.py --cli "$cli"
+          (cd "$scratch" && "$cli" setup)
+          python3 -I -B "$target_src/anneal/ci/probe_alpha.py" --cli "$cli"
+          printf 'crate_source_sha256=%s\n' "$source_sha256" >> "$GITHUB_OUTPUT"
 
   anneal-publish-crate:
     name: Publish cargo-anneal on crates.io
     needs: anneal-qualify-package
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: anneal-release
     concurrency:
-      group: anneal-publish-${{ needs.anneal-qualify-package.outputs.version }}
+      group: anneal-publish
       cancel-in-progress: false
     permissions:
       contents: read
@@ -503,36 +831,236 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: ${{ needs.anneal-qualify-package.outputs.commit }}
+          ref: ${{ github.sha }}
+          fetch-depth: 0
           persist-credentials: false
+
+      - name: Fetch refs and verify first-parent ancestry and TCB manifest
+        env:
+          HARNESS_SHA: ${{ github.sha }}
+          COMMIT: ${{ needs.anneal-qualify-package.outputs.commit }}
+          TOOLCHAIN_TAG: ${{ needs.anneal-qualify-package.outputs.toolchain_tag }}
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          ACTIONS_RUNTIME_URL: ''
+          ACTIONS_ID_TOKEN_REQUEST_URL: ''
+          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ''
+        run: |
+          set -euo pipefail
+          git fetch --force origin \
+            +refs/heads/main:refs/remotes/origin/main \
+            '+refs/tags/anneal-*:refs/tags/anneal-*'
+          [[ "$HARNESS_SHA" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$COMMIT" =~ ^[0-9a-f]{40}$ ]]
+          git rev-list --first-parent refs/remotes/origin/main \
+            > "$RUNNER_TEMP/first-parent.txt"
+          grep -Fxq -- "$HARNESS_SHA" "$RUNNER_TEMP/first-parent.txt"
+          grep -Fxq -- "$COMMIT" "$RUNNER_TEMP/first-parent.txt"
+          tag_commit="$(git rev-parse --verify "refs/tags/$TOOLCHAIN_TAG^{commit}")"
+          test "$tag_commit" = "$COMMIT"
+          guard_tcb() {
+            local repo_dir="$1"
+            local linked_path
+            linked_path="$(find "$repo_dir/anneal/trusted" -type l -print -quit)"
+            if [ -n "$linked_path" ]; then
+              echo "symlink in Anneal trusted tree: $linked_path" >&2
+              exit 1
+            fi
+            for root in "$repo_dir" "$repo_dir/anneal"; do
+              for name in .cargo rust-toolchain .gitmodules; do
+                path="$root/$name"
+                if [ -e "$path" ] || [ -L "$path" ]; then
+                  echo "forbidden root config override: $path" >&2
+                  exit 1
+                fi
+              done
+            done
+            shopt -s nullglob
+            extra=("$repo_dir"/rust-toolchain.* "$repo_dir"/anneal/rust-toolchain.*)
+            shopt -u nullglob
+            if [ "${#extra[@]}" -ne 0 ]; then
+              echo "forbidden root config override: ${extra[0]}" >&2
+              exit 1
+            fi
+            (cd "$repo_dir/anneal" && sha256sum --check --strict trusted/root-manifest.sha256)
+          }
+          guard_tcb .
+          target_src="$RUNNER_TEMP/target-src"
+          rm -rf "$target_src"
+          git -c core.hooksPath=/dev/null -c core.fsmonitor=false \
+            -c init.defaultRefFormat=files \
+            clone --quiet --local --no-checkout "$GITHUB_WORKSPACE" "$target_src"
+          git -c core.hooksPath=/dev/null -c core.fsmonitor=false \
+            -C "$target_src" checkout --quiet --detach "$COMMIT"
+          target_status="$(git -C "$target_src" status --porcelain --untracked-files=all)"
+          test -z "$target_status"
+          guard_tcb "$target_src"
+
+      - name: Verify live hosted toolchain release digest
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TOOLCHAIN_TAG: ${{ needs.anneal-qualify-package.outputs.toolchain_tag }}
+          ARCHIVE_SHA256: ${{ needs.anneal-qualify-package.outputs.archive_sha256 }}
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          ACTIONS_RUNTIME_URL: ''
+          ACTIONS_ID_TOKEN_REQUEST_URL: ''
+          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ''
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TOOLCHAIN_TAG" |
+            jq -e --arg digest "sha256:$ARCHIVE_SHA256" '
+              .draft == false and .prerelease == true and
+              ([.assets[] | select(.name == "anneal-toolchain-linux-x86_64.tar.zst" and .state == "uploaded")] |
+               length == 1 and .[0].digest == $digest)
+            '
+
+      - name: Re-validate ordering, stamp, and verify qualified crate parity
+        id: precheck
+        env:
+          COMMIT: ${{ needs.anneal-qualify-package.outputs.commit }}
+          VERSION: ${{ needs.anneal-qualify-package.outputs.version }}
+          ARCHIVE_SHA256: ${{ needs.anneal-qualify-package.outputs.archive_sha256 }}
+          QUALIFIED_SOURCE_SHA256: >-
+            ${{ needs.anneal-qualify-package.outputs.crate_source_sha256 }}
+          CARGO_TARGET_DIR: ${{ runner.temp }}/anneal-package
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          ACTIONS_RUNTIME_URL: ''
+          ACTIONS_ID_TOKEN_REQUEST_URL: ''
+          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ''
+        run: |
+          set -euo pipefail
+          if [[ ! "$QUALIFIED_SOURCE_SHA256" =~ ^[0-9a-f]{64}$ ]] || \
+             [ "$QUALIFIED_SOURCE_SHA256" = "0000000000000000000000000000000000000000000000000000000000000000" ]; then
+            echo "invalid or unpinned QUALIFIED_SOURCE_SHA256: $QUALIFIED_SOURCE_SHA256" >&2
+            exit 1
+          fi
+          target_src="$RUNNER_TEMP/target-src"
+          resolved="$(python3 -I -B "$GITHUB_WORKSPACE/anneal/ci/alpha_release.py" resolve-and-validate \
+            --repo "$GITHUB_WORKSPACE" \
+            --version "$VERSION" \
+            --commit "$COMMIT" \
+            --default-sha "$COMMIT" \
+            --expected-sha256 "$ARCHIVE_SHA256" \
+            --expected-source-sha256 "$QUALIFIED_SOURCE_SHA256" \
+            --wait-for-prior-tags-seconds 300)"
+          already_published="$(printf '%s\n' "$resolved" | sed -n 's/^already_published=//p')"
+          test "$already_published" = "true" -o "$already_published" = "false"
+          python3 -I -B "$GITHUB_WORKSPACE/anneal/ci/alpha_release.py" stamp \
+            --repo "$target_src" \
+            --version "$VERSION" --commit "$COMMIT" --sha256 "$ARCHIVE_SHA256"
+          (
+            cd "$target_src/anneal"
+            trap 'rm -rf "$target_src/anneal/trusted/cargo-anneal/packaged"' EXIT
+            cargo run --locked -p cargo-anneal --example regenerate_bundle -- --root . --stage-package
+            staged_status="$(git status --porcelain --untracked-files=all | LC_ALL=C sort)"
+            expected_status="$(printf ' M anneal/Cargo.lock\n M anneal/trusted/cargo-anneal/Cargo.toml\n?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs')"
+            test "$staged_status" = "$expected_status"
+            cargo package --locked --allow-dirty -p cargo-anneal
+          )
+          python3 -I -B "$GITHUB_WORKSPACE/anneal/ci/alpha_release.py" verify-crate \
+            --crate "$CARGO_TARGET_DIR/package/cargo-anneal-$VERSION.crate" \
+            --version "$VERSION" \
+            --commit "$COMMIT" \
+            --sha256 "$ARCHIVE_SHA256" \
+            --expected-source-sha256 "$QUALIFIED_SOURCE_SHA256" \
+            > /dev/null
+          rm -rf "$CARGO_TARGET_DIR/package/cargo-anneal-$VERSION.crate" "$target_src"
+          if [ "$already_published" = "false" ]; then
+            publish_src="$RUNNER_TEMP/publish-src"
+            rm -rf "$publish_src"
+            git -c core.hooksPath=/dev/null -c core.fsmonitor=false \
+              -c init.defaultRefFormat=files \
+              clone --quiet --local --no-checkout "$GITHUB_WORKSPACE" "$publish_src"
+            git -c core.hooksPath=/dev/null -c core.fsmonitor=false \
+              -C "$publish_src" checkout --quiet --detach "$COMMIT"
+            publish_status="$(git -C "$publish_src" status --porcelain --untracked-files=all)"
+            test -z "$publish_status"
+            (cd "$publish_src/anneal" && sha256sum --check --strict trusted/root-manifest.sha256)
+            python3 -I -B "$GITHUB_WORKSPACE/anneal/ci/alpha_release.py" stamp \
+              --repo "$publish_src" \
+              --version "$VERSION" --commit "$COMMIT" --sha256 "$ARCHIVE_SHA256"
+            (
+              cd "$publish_src/anneal"
+              publish_target="$RUNNER_TEMP/publish-target"
+              rm -rf "$publish_target"
+              trap 'rm -rf "$publish_src/anneal/trusted/cargo-anneal/packaged" "$publish_target"' ERR
+              CARGO_TARGET_DIR="$publish_target" cargo run --locked -p cargo-anneal --example regenerate_bundle -- --root . --stage-package
+              staged_status="$(git status --porcelain --untracked-files=all | LC_ALL=C sort)"
+              expected_status="$(printf ' M anneal/Cargo.lock\n M anneal/trusted/cargo-anneal/Cargo.toml\n?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs')"
+              test "$staged_status" = "$expected_status"
+              CARGO_TARGET_DIR="$publish_target" cargo package --locked --no-verify --allow-dirty -p cargo-anneal
+              python3 -I -B "$GITHUB_WORKSPACE/anneal/ci/alpha_release.py" verify-crate \
+                --crate "$publish_target/package/cargo-anneal-$VERSION.crate" \
+                --version "$VERSION" \
+                --commit "$COMMIT" \
+                --sha256 "$ARCHIVE_SHA256" \
+                --expected-source-sha256 "$QUALIFIED_SOURCE_SHA256" \
+                > /dev/null
+              rm -rf "$publish_target"
+            )
+          fi
+          printf 'already_published=%s\n' "$already_published" >> "$GITHUB_OUTPUT"
+
       - name: Authenticate with crates.io
         id: anneal-auth
+        if: steps.precheck.outputs.already_published == 'false'
         uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9 # v1.0.6
-      - name: Stage package snapshot
-        working-directory: anneal
-        run: |
-          set -euo pipefail
-          clean_status="$(git status --porcelain --untracked-files=all)"
-          test -z "$clean_status"
-          trap 'rm -rf trusted/cargo-anneal/packaged' ERR
-          cargo run --locked -p cargo-anneal --example regenerate_bundle -- --root . --stage-package
-          staged_status="$(git status --porcelain --untracked-files=all)"
-          test "$staged_status" = "?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs"
-      - name: Publish the qualified workspace package
-        working-directory: anneal
+
+      - name: Publish the qualified package to crates.io
+        if: steps.precheck.outputs.already_published == 'false'
         env:
           CARGO_REGISTRY_TOKEN: ${{ steps.anneal-auth.outputs.token }}
+          CARGO_TARGET_DIR: ${{ runner.temp }}/anneal-package
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          ACTIONS_RUNTIME_URL: ''
+          ACTIONS_ID_TOKEN_REQUEST_URL: ''
+          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ''
         run: |
           set -euo pipefail
-          trap 'rm -rf trusted/cargo-anneal/packaged' EXIT
-          staged_status="$(git status --porcelain --untracked-files=all)"
-          test "$staged_status" = "?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs"
-          cargo publish --locked --allow-dirty -p cargo-anneal --registry crates-io
+          cd "$RUNNER_TEMP/publish-src/anneal"
+          trap 'rm -rf "$RUNNER_TEMP/publish-src/anneal/trusted/cargo-anneal/packaged"' EXIT
+          staged_status="$(git status --porcelain --untracked-files=all | LC_ALL=C sort)"
+          expected_status="$(printf ' M anneal/Cargo.lock\n M anneal/trusted/cargo-anneal/Cargo.toml\n?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs')"
+          test "$staged_status" = "$expected_status"
+          cargo publish --locked --no-verify --allow-dirty -p cargo-anneal --registry crates-io
+
+      - name: Verify published crate parity and crates.io checksum
+        if: steps.precheck.outputs.already_published == 'false'
+        env:
+          COMMIT: ${{ needs.anneal-qualify-package.outputs.commit }}
+          VERSION: ${{ needs.anneal-qualify-package.outputs.version }}
+          ARCHIVE_SHA256: ${{ needs.anneal-qualify-package.outputs.archive_sha256 }}
+          QUALIFIED_SOURCE_SHA256: >-
+            ${{ needs.anneal-qualify-package.outputs.crate_source_sha256 }}
+          CARGO_TARGET_DIR: ${{ runner.temp }}/anneal-package
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          ACTIONS_RUNTIME_URL: ''
+          ACTIONS_ID_TOKEN_REQUEST_URL: ''
+          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ''
+        run: |
+          set -euo pipefail
+          python3 -I -B "$GITHUB_WORKSPACE/anneal/ci/alpha_release.py" verify-published-crate \
+            --crate "$CARGO_TARGET_DIR/package/cargo-anneal-$VERSION.crate" \
+            --version "$VERSION" \
+            --commit "$COMMIT" \
+            --sha256 "$ARCHIVE_SHA256" \
+            --expected-source-sha256 "$QUALIFIED_SOURCE_SHA256" \
+            --wait-seconds 120 \
+            > /dev/null
 
   anneal-publish-github:
     name: Publish Anneal GitHub Release
     needs: [anneal-qualify-package, anneal-publish-crate]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     concurrency:
       group: anneal-github-release-${{ needs.anneal-qualify-package.outputs.version }}
       cancel-in-progress: false
@@ -545,26 +1073,72 @@ jobs:
       ACTIONS_RESULTS_URL: ''
       ACTIONS_RUNTIME_TOKEN: ''
       ACTIONS_RUNTIME_URL: ''
+      HARNESS_SHA: ${{ github.sha }}
       RELEASE_COMMIT: ${{ needs.anneal-qualify-package.outputs.commit }}
+      RELEASE_VERSION: ${{ needs.anneal-qualify-package.outputs.version }}
       RELEASE_TAG: anneal-v${{ needs.anneal-qualify-package.outputs.version }}
+      TOOLCHAIN_TAG: ${{ needs.anneal-qualify-package.outputs.toolchain_tag }}
     steps:
-      - name: Checkout release workflow revision and tags
+      - name: Checkout workflow revision and full history
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
+
+      - name: Fetch refs and verify first-parent ancestry and TCB manifest
+        run: |
+          set -euo pipefail
+          git fetch --force origin \
+            +refs/heads/main:refs/remotes/origin/main \
+            '+refs/tags/anneal-*:refs/tags/anneal-*'
+          [[ "$HARNESS_SHA" =~ ^[0-9a-f]{40}$ ]]
+          [[ "$RELEASE_COMMIT" =~ ^[0-9a-f]{40}$ ]]
+          git rev-list --first-parent refs/remotes/origin/main \
+            > "$RUNNER_TEMP/first-parent.txt"
+          grep -Fxq -- "$HARNESS_SHA" "$RUNNER_TEMP/first-parent.txt"
+          grep -Fxq -- "$RELEASE_COMMIT" "$RUNNER_TEMP/first-parent.txt"
+          toolchain_commit="$(git rev-parse --verify "refs/tags/$TOOLCHAIN_TAG^{commit}")"
+          test "$toolchain_commit" = "$RELEASE_COMMIT"
+          if git show-ref --verify --quiet "refs/tags/$RELEASE_TAG"; then
+            source_tag_commit="$(git rev-parse --verify "refs/tags/$RELEASE_TAG^{commit}")"
+            test "$source_tag_commit" = "$RELEASE_COMMIT"
+          fi
+          linked_path="$(find anneal/trusted -type l -print -quit)"
+          if [ -n "$linked_path" ]; then
+            echo "symlink in Anneal trusted tree: $linked_path" >&2
+            exit 1
+          fi
+          for root in . anneal; do
+            for name in .cargo rust-toolchain .gitmodules; do
+              path="$root/$name"
+              if [ -e "$path" ] || [ -L "$path" ]; then
+                echo "forbidden root config override: $path" >&2
+                exit 1
+              fi
+            done
+          done
+          shopt -s nullglob
+          extra=(rust-toolchain.* anneal/rust-toolchain.*)
+          shopt -u nullglob
+          if [ "${#extra[@]}" -ne 0 ]; then
+            echo "forbidden root config override: ${extra[0]}" >&2
+            exit 1
+          fi
+          (cd anneal && sha256sum --check --strict trusted/root-manifest.sha256)
+
       - name: Generate Anneal release notes
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          version="${RELEASE_TAG#anneal-v}"
-          printf '[cargo-anneal %s on crates.io](https://crates.io/crates/cargo-anneal/%s) · [Linux toolchain archive](https://github.com/%s/releases/tag/anneal-toolchain-v%s)\n\n' \
-            "$version" "$version" "$GITHUB_REPOSITORY" "$version" \
+          encoded_version="$(python3 -I -B -c 'import os, urllib.parse; print(urllib.parse.quote(os.environ["RELEASE_VERSION"], safe=".-_"))')"
+          printf '[cargo-anneal %s on crates.io](https://crates.io/crates/cargo-anneal/%s) · [Linux toolchain archive](https://github.com/%s/releases/tag/%s)\n\n' \
+            "$RELEASE_VERSION" "$encoded_version" "$GITHUB_REPOSITORY" "$TOOLCHAIN_TAG" \
             > "$RUNNER_TEMP/release-notes.md"
-          python3 .github/release_notes.py --tag "$RELEASE_TAG" \
+          python3 -I -B .github/release_notes.py --tag "$RELEASE_TAG" \
             --target "$RELEASE_COMMIT" --path anneal >> "$RUNNER_TEMP/release-notes.md"
+
       - name: Create GitHub Release
         uses: ./.github/actions/publish-github-release
         with:

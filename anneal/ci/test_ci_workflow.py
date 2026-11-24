@@ -8,7 +8,6 @@
 
 """Exercise Anneal and repository CI manifest, cache, and path-filter guards."""
 
-from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 import os
@@ -659,296 +658,9 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             upload_names.append(upload["with"]["name"])
         self.assertEqual(len(upload_names), len(set(upload_names)), upload_names)
 
-    def test_release_lock_wired_into_gate_with_least_privilege(self):
+    def test_all_jobs_succeed_run_heavy_gating(self):
         jobs = self.workflow["jobs"]
-        self.assertIn("release-lock", jobs)
-        lock_job = jobs["release-lock"]
-        self.assertEqual(
-            lock_job["if"],
-            "github.event_name == 'merge_group' && vars.ANNEAL_RELEASE_LOCK != ''",
-        )
-        self.assertEqual(lock_job["permissions"], {"contents": "read"})
-        self.assertEqual(lock_job["timeout-minutes"], "10")
-        for token in (
-            "ACTIONS_CACHE_URL",
-            "ACTIONS_RESULTS_URL",
-            "ACTIONS_RUNTIME_TOKEN",
-        ):
-            self.assertEqual(lock_job.get("env", {}).get(token), "")
-
-        steps = lock_job["steps"]
-        checkout = next(
-            s for s in steps if s.get("uses", "").startswith("actions/checkout@")
-        )
-        self.assertRegex(
-            checkout["uses"], r"^actions/checkout@[0-9a-f]{40}$"
-        )
-        self.assertEqual(checkout["with"]["persist-credentials"], "false")
-
-        lock_step = next(s for s in steps if s.get("id") == "lock")
-        self.assertEqual(lock_step.get("working-directory"), ".")
-        self.assertEqual(
-            lock_step["env"]["ANNEAL_RELEASE_LOCK"],
-            "${{ vars.ANNEAL_RELEASE_LOCK }}",
-        )
-        self.assertEqual(
-            lock_step["env"]["BASE_SHA"],
-            "${{ github.event.merge_group.base_sha }}",
-        )
-        self.assertNotIn("${{", lock_step["run"])
-        for allowed in (
-            "anneal/trusted/cargo-anneal/Cargo.toml",
-            "anneal/Cargo.lock",
-            "anneal/trusted/root-manifest.sha256",
-        ):
-            self.assertIn(allowed, lock_step["run"])
-
-        gate = jobs["all-jobs-succeed"]
-        self.assertIn("release-lock", gate["needs"])
-        gate_step = next(
-            s for s in gate["steps"]
-            if s.get("name") == "Require every dependency to succeed"
-        )
-        self.assertEqual(
-            gate_step["env"]["EVENT_NAME"], "${{ github.event_name }}"
-        )
-        self.assertEqual(
-            gate_step["env"]["RUN_HEAVY"],
-            "${{ github.event_name != 'pull_request' || inputs.run_heavy }}",
-        )
-        self.assertEqual(
-            gate_step["env"]["ANNEAL_RELEASE_LOCK"],
-            "${{ vars.ANNEAL_RELEASE_LOCK }}",
-        )
-        self.assertEqual(gate_step["env"]["NEEDS_JSON"], "${{ toJSON(needs) }}")
-        self.assertNotIn("${{", gate_step["run"])
-
-    def test_release_lock_script_enforces_three_file_allowlist_and_shallow_fetch(self):
-        lock_step = next(
-            s for s in self.workflow["jobs"]["release-lock"]["steps"]
-            if s.get("id") == "lock"
-        )
-        script = lock_step["run"]
-        allowlist = (
-            "anneal/trusted/cargo-anneal/Cargo.toml",
-            "anneal/Cargo.lock",
-            "anneal/trusted/root-manifest.sha256",
-        )
-        with tempfile.TemporaryDirectory(prefix="anneal-release-lock-") as tmp:
-            tmp_path = Path(tmp)
-            bare = tmp_path / "remote.git"
-            seed = tmp_path / "seed"
-            subprocess.run(
-                ["git", "init", "--bare", "-q", str(bare)], check=True
-            )
-            subprocess.run(
-                ["git", "--git-dir", str(bare), "config",
-                 "uploadpack.allowAnySHA1InWant", "true"],
-                check=True,
-            )
-            subprocess.run(
-                ["git", "-c", "core.hooksPath=/dev/null",
-                 "-c", "core.fsmonitor=false", "init", "-q", str(seed)],
-                check=True,
-            )
-            subprocess.run(
-                ["git", "-C", str(seed), "config", "user.name", "Test"],
-                check=True,
-            )
-            subprocess.run(
-                ["git", "-C", str(seed), "config", "user.email", "t@example.com"],
-                check=True,
-            )
-            for rel in allowlist + ("anneal/README.md", "zerocopy/src/lib.rs", "other.txt"):
-                target = seed / rel
-                target.parent.mkdir(parents=True, exist_ok=True)
-                target.write_text("base\n" * 20)
-            subprocess.run(
-                ["git", "-C", str(seed), "-c", "core.hooksPath=/dev/null",
-                 "-c", "core.fsmonitor=false", "add", "."],
-                check=True,
-            )
-            subprocess.run(
-                ["git", "-C", str(seed), "-c", "core.hooksPath=/dev/null",
-                 "-c", "core.fsmonitor=false", "commit", "-qm", "base"],
-                check=True,
-            )
-            base_sha = subprocess.check_output(
-                ["git", "-C", str(seed), "rev-parse", "HEAD"], text=True
-            ).strip()
-            # Advance main once more on origin so base_sha is a non-tip SHA.
-            (seed / "anneal/README.md").write_text("base\n" * 20 + "next\n")
-            subprocess.run(
-                ["git", "-C", str(seed), "-c", "core.hooksPath=/dev/null",
-                 "-c", "core.fsmonitor=false", "commit", "-qam", "main-tip"],
-                check=True,
-            )
-            subprocess.run(
-                ["git", "-C", str(seed), "remote", "add", "origin", bare.as_uri()],
-                check=True,
-            )
-            subprocess.run(
-                ["git", "-C", str(seed), "push", "-q", "origin", "HEAD:refs/heads/main"],
-                check=True,
-            )
-
-            def run_case(label, mutate, *, base=base_sha, lock_val="0.2.0-alpha.8"):
-                subprocess.run(
-                    ["git", "-C", str(seed), "checkout", "-qB", label, base_sha],
-                    check=True,
-                )
-                mutate(seed)
-                subprocess.run(
-                    ["git", "-C", str(seed), "-c", "core.hooksPath=/dev/null",
-                     "-c", "core.fsmonitor=false", "push", "-qf", "origin",
-                     f"HEAD:refs/heads/{label}"],
-                    check=True,
-                )
-                shallow = tmp_path / f"shallow-{label}"
-                subprocess.run(
-                    ["git", "clone", "--quiet", "--depth=1", "--branch", label,
-                     bare.as_uri(), str(shallow)],
-                    check=True,
-                )
-                env = os.environ.copy()
-                env["ANNEAL_RELEASE_LOCK"] = lock_val
-                env["BASE_SHA"] = base
-                return subprocess.run(
-                    ["bash", "--noprofile", "--norc", "-c", script],
-                    cwd=shallow,
-                    env=env,
-                    capture_output=True,
-                    text=True,
-                )
-
-            def commit_updates(repo, paths):
-                for rel in paths:
-                    (repo / rel).write_text("updated\n")
-                subprocess.run(
-                    ["git", "-C", str(repo), "-c", "core.hooksPath=/dev/null",
-                     "-c", "core.fsmonitor=false", "add", "--", *paths],
-                    check=True,
-                )
-                subprocess.run(
-                    ["git", "-C", str(repo), "-c", "core.hooksPath=/dev/null",
-                     "-c", "core.fsmonitor=false", "commit", "-qm", "update"],
-                    check=True,
-                )
-
-            # 1. Pure 3-file release PR passes.
-            res = run_case("release-three", lambda r: commit_updates(r, allowlist))
-            self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
-            self.assertIn(
-                "Release lock (0.2.0-alpha.8): allowing pure Anneal release PR.",
-                res.stdout,
-            )
-
-            # 2. Single-file release pin PR passes.
-            res = run_case("release-one", lambda r: commit_updates(r, (allowlist[0],)))
-            self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
-
-            # 3. Non-release PR fails with expected diagnostic.
-            res = run_case("non-release", lambda r: commit_updates(r, ("anneal/README.md",)))
-            self.assertNotEqual(res.returncode, 0)
-            self.assertIn(
-                "Merge queue is locked for Anneal release (0.2.0-alpha.8); "
-                "only the 3-file release PR may merge while ANNEAL_RELEASE_LOCK is set.",
-                res.stderr,
-            )
-
-            # 4. Batched merge group (3 release files + 1 unrelated file) fails.
-            res = run_case(
-                "batched",
-                lambda r: commit_updates(r, allowlist + ("zerocopy/src/lib.rs",)),
-            )
-            self.assertNotEqual(res.returncode, 0)
-
-            # 5. Rename into allowlist path fails closed (--no-renames).
-            def rename_into_allowlist(repo):
-                subprocess.run(
-                    ["git", "-C", str(repo), "mv", "-f", "other.txt", "anneal/Cargo.lock"],
-                    check=True,
-                )
-                subprocess.run(
-                    ["git", "-C", str(repo), "-c", "core.hooksPath=/dev/null",
-                     "-c", "core.fsmonitor=false", "commit", "-qm", "rename"],
-                    check=True,
-                )
-
-            res = run_case("rename-bypass", rename_into_allowlist)
-            self.assertNotEqual(res.returncode, 0)
-
-            # 6. Empty diff fails closed.
-            res = run_case("empty-diff", lambda _r: None)
-            self.assertNotEqual(res.returncode, 0)
-
-            # 7. Invalid BASE_SHA or empty ANNEAL_RELEASE_LOCK fails closed.
-            res = run_case("bad-sha", lambda _r: None, base="not-a-sha")
-            self.assertNotEqual(res.returncode, 0)
-            res = run_case("empty-lock", lambda _r: None, lock_val="")
-            self.assertNotEqual(res.returncode, 0)
-
-            # 8. TTL active enforces allowlist; TTL expired auto-unlocks;
-            #    malformed TTL values fail closed.
-            future_ts = (
-                datetime.now(timezone.utc) + timedelta(hours=2)
-            ).strftime("%Y-%m-%dT%H:%M:%SZ")
-            past_ts = (
-                datetime.now(timezone.utc) - timedelta(seconds=60)
-            ).strftime("%Y-%m-%dT%H:%M:%SZ")
-            active_lock = f"0.2.0-alpha.8;expires={future_ts}"
-            expired_lock = f"0.2.0-alpha.8;expires={past_ts}"
-
-            res = run_case(
-                "ttl-active-release",
-                lambda r: commit_updates(r, allowlist),
-                lock_val=active_lock,
-            )
-            self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
-            self.assertIn(
-                f"Release lock ({active_lock}): allowing pure Anneal release PR.",
-                res.stdout,
-            )
-
-            res = run_case(
-                "ttl-active-non-release",
-                lambda r: commit_updates(r, ("anneal/README.md",)),
-                lock_val=active_lock,
-            )
-            self.assertNotEqual(res.returncode, 0)
-            self.assertIn(
-                f"Merge queue is locked for Anneal release ({active_lock});",
-                res.stderr,
-            )
-
-            res = run_case(
-                "ttl-expired-non-release",
-                lambda r: commit_updates(r, ("anneal/README.md",)),
-                lock_val=expired_lock,
-            )
-            self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
-            self.assertIn(
-                f"Release lock ({expired_lock}) expired at {past_ts}; allowing merge_group.",
-                res.stdout,
-            )
-
-            for idx, bad_lock in enumerate((
-                "0.2.0-alpha.8;expires=not-a-timestamp",
-                "0.2.0-alpha.8;expires=2026-11-23T06:00:00",
-                "0.2.0-alpha.8;expires=2026-02-30T00:00:00Z",
-                "0.2.0-alpha.8;expire=2026-11-23T06:00:00Z",
-                f";expires={future_ts}",
-                f"0.2.0-alpha.8;extra;expires={future_ts}",
-            )):
-                with self.subTest(bad_lock=bad_lock):
-                    res = run_case(
-                        f"ttl-malformed-{idx}",
-                        lambda r: commit_updates(r, allowlist),
-                        lock_val=bad_lock,
-                    )
-                    self.assertNotEqual(res.returncode, 0)
-
-    def test_all_jobs_succeed_skip_handling_for_release_lock(self):
+        self.assertNotIn("release-lock", jobs)
         run_heavy_input = self.workflow["on"]["workflow_call"]["inputs"]["run_heavy"]
         self.assertEqual(run_heavy_input["type"], "boolean")
         self.assertEqual(run_heavy_input["default"], "true")
@@ -960,36 +672,44 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             "sandbox-aarch64",
         ):
             self.assertEqual(
-                self.workflow["jobs"][heavy_job]["if"],
+                jobs[heavy_job]["if"],
                 "${{ github.event_name != 'pull_request' || inputs.run_heavy }}",
                 heavy_job,
             )
 
-        gate = self.workflow["jobs"]["all-jobs-succeed"]
+        gate = jobs["all-jobs-succeed"]
+        self.assertNotIn("release-lock", gate["needs"])
         gate_step = next(
             s for s in gate["steps"]
             if s.get("name") == "Require every dependency to succeed"
         )
+        self.assertEqual(
+            gate_step["env"]["EVENT_NAME"], "${{ github.event_name }}"
+        )
+        self.assertEqual(
+            gate_step["env"]["RUN_HEAVY"],
+            "${{ github.event_name != 'pull_request' || inputs.run_heavy }}",
+        )
+        self.assertNotIn("ANNEAL_RELEASE_LOCK", gate_step["env"])
+        self.assertEqual(gate_step["env"]["NEEDS_JSON"], "${{ toJSON(needs) }}")
+        self.assertNotIn("${{", gate_step["run"])
+
         script = gate_step["run"]
-        other_jobs = [j for j in gate["needs"] if j != "release-lock"]
+        all_jobs = list(gate["needs"])
 
         def run_gate(
             event_name,
-            lock_val,
-            release_result,
-            other_overrides=None,
+            overrides=None,
             *,
             run_heavy="true",
         ):
-            needs = {j: {"result": "success"} for j in other_jobs}
-            if other_overrides:
-                for k, v in other_overrides.items():
+            needs = {j: {"result": "success"} for j in all_jobs}
+            if overrides:
+                for k, v in overrides.items():
                     needs[k] = {"result": v}
-            needs["release-lock"] = {"result": release_result}
             env = os.environ.copy()
             env["EVENT_NAME"] = event_name
             env["RUN_HEAVY"] = run_heavy
-            env["ANNEAL_RELEASE_LOCK"] = lock_val
             env["NEEDS_JSON"] = json.dumps(needs)
             return subprocess.run(
                 ["bash", "--noprofile", "--norc", "-c", script],
@@ -998,43 +718,25 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                 text=True,
             )
 
-        for event, lock_val, release_result, expected_ok in (
-            ("pull_request", "", "skipped", True),
-            ("pull_request", "0.2.0-alpha.8", "skipped", True),
-            ("pull_request", "", "success", False),
-            ("pull_request", "", "failure", False),
-            ("push", "", "skipped", True),
-            ("push", "0.2.0-alpha.8", "skipped", True),
-            ("push", "", "failure", False),
-            ("merge_group", "", "skipped", True),
-            ("merge_group", "", "success", True),
-            ("merge_group", "", "failure", False),
-            ("merge_group", "", "cancelled", False),
-            ("merge_group", "0.2.0-alpha.8", "success", True),
-            ("merge_group", "0.2.0-alpha.8", "skipped", False),
-            ("merge_group", "0.2.0-alpha.8", "failure", False),
-            ("merge_group", "0.2.0-alpha.8", "cancelled", False),
-        ):
-            with self.subTest(
-                event=event, lock=lock_val, release_result=release_result
-            ):
-                res = run_gate(event, lock_val, release_result)
-                self.assertEqual(
-                    res.returncode == 0,
-                    expected_ok,
-                    res.stdout + res.stderr,
-                )
+        for event in ("pull_request", "push", "merge_group", "workflow_dispatch"):
+            with self.subTest(event=event):
+                self.assertEqual(run_gate(event).returncode, 0)
+                for bad_result in ("skipped", "failure", "cancelled"):
+                    self.assertNotEqual(
+                        run_gate(
+                            event, {"workspace-tests": bad_result}
+                        ).returncode,
+                        0,
+                    )
 
         # pull_request with run_heavy == "false" passes only when
-        # static-checks succeeded and all heavy/lock jobs were skipped.
+        # static-checks succeeded and all heavy jobs were skipped.
         pr_light_overrides = {
-            j: "skipped" for j in other_jobs if j != "static-checks"
+            j: "skipped" for j in all_jobs if j != "static-checks"
         }
         self.assertEqual(
             run_gate(
                 "pull_request",
-                "",
-                "skipped",
                 pr_light_overrides,
                 run_heavy="false",
             ).returncode,
@@ -1045,8 +747,6 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             self.assertNotEqual(
                 run_gate(
                     non_pr,
-                    "",
-                    "skipped",
                     pr_light_overrides,
                     run_heavy="false",
                 ).returncode,
@@ -1058,8 +758,6 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         self.assertNotEqual(
             run_gate(
                 "pull_request",
-                "",
-                "skipped",
                 {**pr_light_overrides, "static-checks": "skipped"},
                 run_heavy="false",
             ).returncode,
@@ -1068,8 +766,6 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         self.assertNotEqual(
             run_gate(
                 "pull_request",
-                "",
-                "skipped",
                 {**pr_light_overrides, "workspace-tests": "failure"},
                 run_heavy="false",
             ).returncode,
@@ -1079,8 +775,6 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             self.assertNotEqual(
                 run_gate(
                     "pull_request",
-                    "",
-                    "skipped",
                     pr_light_overrides,
                     run_heavy=bad_heavy,
                 ).returncode,
@@ -1088,9 +782,7 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             )
 
         for bad_result in ("skipped", "failure", "cancelled"):
-            res = run_gate(
-                "pull_request", "", "skipped", {"static-checks": bad_result}
-            )
+            res = run_gate("pull_request", {"static-checks": bad_result})
             self.assertNotEqual(res.returncode, 0)
 
 

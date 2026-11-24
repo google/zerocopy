@@ -24,3 +24,6 @@ files=(
   .github/workflows/*.yaml
 )
 action-validator "${files[@]}"
+# Validate `release.yml` from the repository root so `action-validator`
+# resolves its `on.push.paths` globs (`zerocopy/Cargo.toml`) accurately.
+(cd .. && action-validator .github/workflows/release.yml)
