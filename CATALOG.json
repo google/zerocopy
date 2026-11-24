@@ -44421,6 +44421,62 @@
         "tooling/ehr-cohort-derivation-code"
       ]
     },
+    "epistemology-and-defense-in-depth-soundness-for-ai-accelerated-semantics": {
+      "observed_at": "2026-11-24",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "706acd8761d7d8da4be9fc72f280931f75f7d837",
+            "tag": "anneal-v0.2.0-alpha.11"
+          },
+          "name": "Anneal Rust MIR verifier and trust boundary"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri mechanized Rust MIR reference semantics"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+          },
+          "name": "Rust compiler and upstream Miri test suite"
+        },
+        {
+          "identity": {
+            "capture_revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "const_eval_revision": "8144389c895da997dbdecaa635e41d6a50be6ffd",
+            "repository": "rust-lang/rust"
+          },
+          "name": "Rust compiler MIR capture and const-eval interpreter baselines"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/semantics",
+        "anneal/correspondence",
+        "anneal/audit",
+        "anneal/tcb",
+        "verification/soundness",
+        "verification/vacuity",
+        "verification/mutation-testing",
+        "rust/miri",
+        "rustc/mir",
+        "lean/kernel-replay"
+      ]
+    },
     "equality-saturation-with-proofs-egraphs-aegraphs-and-refinement-rewriting": {
       "observed_at": "2026-11-13",
       "subjects": [
