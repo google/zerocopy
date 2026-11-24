@@ -8,13 +8,15 @@
 
 module
 prelude
+public import Anneal.Framework.StepWp
 public import Anneal.LoopInv
 public import Anneal.CnfOrd.Ord
 
 public section
 namespace Anneal.CnfOrd
 
-open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp Anneal.LoopInv
+open Trusted.MirAst Trusted.MirSemantics Anneal.Framework.StepWp Anneal.MirWp
+  Anneal.LoopInv
 
 /-!
 # `< ω^ω` MIR Loop Induction & Multi-Rank Worklists (`Anneal.CnfOrd.Worklist`)
@@ -40,36 +42,11 @@ to two multi-rank termination surfaces (`0` `noncomputable`, `0` `._unsafe_rec`,
 
 /-! ## 1. `< ω^ω` Cantor Normal Form MIR CFG Loop Induction -/
 
-private theorem wpLoop_cnfOrd_exists_aux {p : Program}
-    {Inv Exit : State → Prop} {onDone : TerminalOut → Prop}
-    {onFault : FaultKind → Prop} {rank : State → CnfOrd}
-    (hCanon : ∀ s, Inv s → isCanonicalCnf (rank s) = true)
-    (hStep : ∀ s, Inv s →
-      Exit s ∨ (∃ f,
-        wpUntil p
-          (fun s' => (Inv s' ∧ cnfLt (rank s') (rank s) = true) ∨ Exit s')
-          onDone onFault f s))
-    (ord : CnfOrd) (hCan : isCanonicalCnf ord = true) :
-    ∀ (s : State), Inv s → rank s = ord →
-      ∃ F, wpUntil p Exit onDone onFault F s := by
-  induction cnfAcc_all ord hCan with
+private theorem acc_of_cnfAcc {ord : CnfOrd} (h : CnfAcc ord) :
+    Acc (fun x y => isCanonicalCnf x = true ∧ cnfLt x y = true) ord := by
+  induction h with
   | intro x _ ih =>
-    intro s hInv hRank
-    cases hStep s hInv with
-    | inl hExit => exact ⟨0, wpUntil_stop hExit⟩
-    | inr hIter =>
-      refine wpUntil_bind_exists
-        (mid := fun s' =>
-          (Inv s' ∧ cnfLt (rank s') (rank s) = true) ∨ Exit s')
-        hIter ?_
-      intro s' hMid
-      cases hMid with
-      | inr hExit' => exact ⟨0, wpUntil_stop hExit'⟩
-      | inl hCont =>
-        have hCan' := hCanon s' hCont.1
-        have hLtX : cnfLt (rank s') x = true := by
-          rw [← hRank]; exact hCont.2
-        exact ih (rank s') hCan' hLtX hCan' s' hCont.1 rfl
+    exact Acc.intro x (fun y hy => ih y hy.1 hy.2)
 
 /-- `< ω^ω` Cantor Normal Form MIR loop-invariant induction over `wpUntil`:
 if `rank s` is canonical on `Inv` and each non-`Exit` iteration reaches either
@@ -85,8 +62,27 @@ theorem wpLoop_cnfOrd_exists {p : Program}
           (fun s' => (Inv s' ∧ cnfLt (rank s') (rank s) = true) ∨ Exit s')
           onDone onFault f s))
     (s : State) (hInv : Inv s) :
-    ∃ F, wpUntil p Exit onDone onFault F s :=
-  wpLoop_cnfOrd_exists_aux hCanon hStep (rank s) (hCanon s hInv) s hInv rfl
+    ∃ F, wpUntil p Exit onDone onFault F s := by
+  refine wpLoop_acc_exists (c₀ := 0) (fun _ _ => Iff.rfl)
+    (rel := fun x y => isCanonicalCnf x = true ∧ cnfLt x y = true)
+    (Inv := fun ord st => isCanonicalCnf ord = true ∧ Inv st ∧ rank st = ord)
+    ?_ (acc_of_cnfAcc (cnfAcc_all (rank s) (hCanon s hInv))) s
+    ⟨hCanon s hInv, hInv, rfl⟩
+  intro ord st hOrdInv
+  cases hStep st hOrdInv.2.1 with
+  | inl hExit => exact Or.inl hExit
+  | inr hIter =>
+    let ⟨f, hf⟩ := hIter
+    refine Or.inr ⟨f, wpUntilPred_mono ?_ (fun _ _ h => h) (fun _ _ h => h) hf⟩
+    intro st' hMid
+    cases hMid with
+    | inr hExit' => exact Or.inr hExit'
+    | inl hCont =>
+      have hLt : cnfLt (rank st') ord = true := by
+        rw [← hOrdInv.2.2]
+        exact hCont.2
+      exact Or.inl ⟨rank st', ⟨hCanon st' hCont.1, hLt⟩,
+        ⟨hCanon st' hCont.1, hCont.1, rfl⟩⟩
 
 /-- Normalization-wrapped `< ω^ω` MIR loop-invariant induction: automatically
 normalizes `rawRank : State → CnfOrd` via `cnfNorm` so callers need not prove

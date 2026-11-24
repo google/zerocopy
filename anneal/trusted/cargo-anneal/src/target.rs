@@ -3386,6 +3386,7 @@ mod tests {
             "Anneal.MirWp.Scalars",
             "Anneal.MirWp.Execution",
             "Anneal.MirWp.Reflection",
+            "Anneal.Framework.StepWp",
             "Anneal.LoopInv",
             "Anneal.ClassicalEm",
             "Anneal.BitTrieLrat",
@@ -3396,7 +3397,7 @@ mod tests {
             assert!(!scalar_retained.contains(pruned), "expected {pruned} to be pruned");
         }
 
-        // 2. `import Anneal.Wp` retains strictly the 8 MIR WP + loop-invariant
+        // 2. `import Anneal.Wp` retains strictly the 9 MIR WP + loop-invariant
         //    `Anneal.*` modules and prunes unused `Scalar`, `BitVec*`,
         //    `InitLemmas`, `LeBytes`, `ListChunks`, `LinearArith`,
         //    `BitTrieLrat`, `PTree`, `SpineForce`, `ClassicalEm`, and
@@ -3415,6 +3416,7 @@ mod tests {
         let wp_anneal: BTreeSet<&str> =
             wp_retained.iter().filter(|m| m.starts_with("Anneal.")).map(String::as_str).collect();
         let expected_wp_anneal = BTreeSet::from([
+            "Anneal.Framework.StepWp",
             "Anneal.LoopInv",
             "Anneal.MirWp",
             "Anneal.MirWp.Core",
@@ -3424,7 +3426,7 @@ mod tests {
             "Anneal.NatBitwise",
             "Anneal.Wp",
         ]);
-        assert_eq!(wp_anneal.len(), 8);
+        assert_eq!(wp_anneal.len(), 9);
         assert_eq!(wp_anneal, expected_wp_anneal);
         for pruned in [
             "Anneal.Scalar",
@@ -3619,6 +3621,7 @@ mod tests {
             &checker.stage.join("lib"),
             Some(&export_with_mir_wp),
             &[
+                "Anneal.Framework.StepWp",
                 "Anneal.MirWp",
                 "Anneal.MirWp.Core",
                 "Anneal.MirWp.Execution",
@@ -3932,6 +3935,7 @@ mod tests {
             &[
                 "Anneal.NatBitwise",
                 "Anneal.BitVec",
+                "Anneal.Framework.StepWp",
                 "Anneal.MirWp",
                 "Anneal.MirWp.Core",
                 "Anneal.MirWp.Execution",
@@ -4298,6 +4302,7 @@ mod tests {
             Some(&export_dir),
             &[
                 "Anneal.LoopInv",
+                "Anneal.Framework.StepWp",
                 "Anneal.MirWp",
                 "Anneal.MirWp.Core",
                 "Anneal.MirWp.Execution",

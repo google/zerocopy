@@ -17,6 +17,7 @@ public import Trusted
 public import Trusted.MirAst
 public import Trusted.MirModel
 public import Trusted.MirSemantics
+public import Anneal.Framework.StepWp
 public import Anneal.MirWp
 public import Anneal.MirTotal.Ops
 public import Anneal.MirTotal.StepCore
@@ -26,7 +27,8 @@ public section
 
 namespace Anneal.Core
 
-open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp Anneal.MirTotal
+open Trusted.MirAst Trusted.MirSemantics Anneal.Framework.StepWp Anneal.MirWp
+  Anneal.MirTotal
 
 /-!
 # Zero-`Prop`-Argument Stage Cuts and Compositional WP Rules (`Core.StageCut`)
@@ -62,274 +64,12 @@ every seal and unseal lemma linear-time and axiom-free.
 
 /-! ## Generic Zero-`Prop`-Argument `StepStageCut` and `wpUntilCutStep` -/
 
-/-- Underlying bounded `.step`-reachability relation for `StepStageCut`. -/
-@[expose] def reachStepIn {S Out : Type} (step : S → StepResult S Out)
-    (fuel : Nat) (s₀ s₁ : S) : Prop :=
-  @Nat.rec (fun _ => S → Prop)
-    (fun st => st = s₁)
-    (fun _ ih st =>
-      st = s₁ ∨
-      match step st with
-      | .step st' => ih st'
-      | .done _ => False
-      | .fault _ => False)
-    fuel s₀
-
-/-- Zero-`Prop`-argument stage-cut barrier asserting that `s₀` reaches `s₁`
-within `fuel` transitions of `step` without faulting or halting prematurely
-(sealed `@[irreducible]` below after its introduction and composition laws).
-
-Keeping `StepStageCut` free of `Prop` arguments ensures downstream `rw` and
-`simp` passes cannot traverse into the reachability body via
-`congrArg` / `congrArgs` without explicitly applying the elimination lemmas. -/
-@[expose] def StepStageCut {S Out : Type} (step : S → StepResult S Out)
-    (fuel : Nat) (s₀ s₁ : S) : Prop :=
-  reachStepIn step fuel s₀ s₁
-
-/-- Zero-step reflexivity at any fuel budget `fuel`. -/
-theorem StepStageCut.refl {S Out : Type} (step : S → StepResult S Out)
-    (fuel : Nat) (s : S) : StepStageCut step fuel s s := by
-  cases fuel with
-  | zero => rfl
-  | succ _ => exact .inl rfl
-
-/-- Prepend a single `.step` transition onto a `StepStageCut` derivation. -/
-theorem StepStageCut.step {S Out : Type} {step : S → StepResult S Out}
-    {fuel : Nat} {s₀ s₁ s₂ : S}
-    (hStep : step s₀ = .step s₁)
-    (hRest : StepStageCut step fuel s₁ s₂) :
-    StepStageCut step (fuel + 1) s₀ s₂ := by
-  refine .inr ?_
-  change (match step s₀ with
-    | .step st' => reachStepIn step fuel st' s₂
-    | .done _ => False
-    | .fault _ => False)
-  rw [hStep]
-  exact hRest
-
-/-- Fuel weakening `f₁ ≤ f₂` for `StepStageCut`. -/
-theorem StepStageCut.fuel_mono {S Out : Type} {step : S → StepResult S Out} :
-    ∀ {f₁ f₂ : Nat} {s₀ s₁ : S},
-      f₁ ≤ f₂ → StepStageCut step f₁ s₀ s₁ → StepStageCut step f₂ s₀ s₁
-  | 0, f₂, _, s₁, _, h => by
-    change _ = s₁ at h
-    subst h
-    exact StepStageCut.refl step f₂ _
-  | n + 1, 0, _, _, hLe, _ => False.elim (Nat.not_succ_le_zero n hLe)
-  | n + 1, m + 1, s₀, s₁, hLe, h => by
-    cases h with
-    | inl hEq => exact .inl hEq
-    | inr hSt =>
-      refine .inr ?_
-      change (match step s₀ with
-        | .step st' => reachStepIn step n st' s₁
-        | .done _ => False
-        | .fault _ => False) at hSt
-      change (match step s₀ with
-        | .step st' => reachStepIn step m st' s₁
-        | .done _ => False
-        | .fault _ => False)
-      cases hEv : step s₀ with
-      | step st' =>
-        rw [hEv] at hSt
-        exact StepStageCut.fuel_mono (Nat.le_of_succ_le_succ hLe) hSt
-      | done _ => rw [hEv] at hSt; exact False.elim hSt
-      | fault _ => rw [hEv] at hSt; exact False.elim hSt
-
-/-- Sequential composition of `StepStageCut` segments (`f₁ + f₂` steps). -/
-theorem StepStageCut.trans {S Out : Type} {step : S → StepResult S Out} :
-    ∀ {f₁ f₂ : Nat} {s₀ s₁ s₂ : S},
-      StepStageCut step f₁ s₀ s₁ →
-      StepStageCut step f₂ s₁ s₂ →
-      StepStageCut step (f₁ + f₂) s₀ s₂
-  | 0, f₂, _, s₁, _, h₀₁, h₁₂ => by
-    change _ = s₁ at h₀₁
-    subst h₀₁
-    rw [Nat.zero_add]
-    exact h₁₂
-  | n + 1, f₂, s₀, s₁, s₂, h₀₁, h₁₂ => by
-    cases h₀₁ with
-    | inl hEq =>
-      subst hEq
-      exact StepStageCut.fuel_mono (Nat.le_add_left f₂ (n + 1)) h₁₂
-    | inr hSt =>
-      rw [Nat.succ_add]
-      refine .inr ?_
-      change (match step s₀ with
-        | .step st' => reachStepIn step n st' s₁
-        | .done _ => False
-        | .fault _ => False) at hSt
-      change (match step s₀ with
-        | .step st' => reachStepIn step (n + f₂) st' s₂
-        | .done _ => False
-        | .fault _ => False)
-      cases hEv : step s₀ with
-      | step st' =>
-        rw [hEv] at hSt
-        exact StepStageCut.trans hSt h₁₂
-      | done _ => rw [hEv] at hSt; exact False.elim hSt
-      | fault _ => rw [hEv] at hSt; exact False.elim hSt
-
-private theorem stepStageCut_imp_of_step_eq {S Out : Type}
-    {step₁ step₂ : S → StepResult S Out}
-    (hEq : ∀ s : S, step₁ s = step₂ s) :
-    ∀ {fuel : Nat} {s₀ s₁ : S},
-      StepStageCut step₁ fuel s₀ s₁ → StepStageCut step₂ fuel s₀ s₁
-  | 0, _, _, h => h
-  | n + 1, s₀, s₁, h => by
-    cases h with
-    | inl hSame => exact .inl hSame
-    | inr hSt =>
-      refine .inr ?_
-      change (match step₁ s₀ with
-        | .step st' => reachStepIn step₁ n st' s₁
-        | .done _ => False
-        | .fault _ => False) at hSt
-      change (match step₂ s₀ with
-        | .step st' => reachStepIn step₂ n st' s₁
-        | .done _ => False
-        | .fault _ => False)
-      rw [← hEq s₀]
-      cases hEv : step₁ s₀ with
-      | step st' =>
-        rw [hEv] at hSt
-        exact stepStageCut_imp_of_step_eq hEq hSt
-      | done _ => rw [hEv] at hSt; exact False.elim hSt
-      | fault _ => rw [hEv] at hSt; exact False.elim hSt
-
-/-- Pointwise transition congruence for `StepStageCut`. -/
-theorem StepStageCut.congr_step {S Out : Type}
-    {step₁ step₂ : S → StepResult S Out}
-    (hEq : ∀ s : S, step₁ s = step₂ s) {fuel : Nat} {s₀ s₁ : S} :
-    StepStageCut step₁ fuel s₀ s₁ ↔ StepStageCut step₂ fuel s₀ s₁ :=
-  ⟨stepStageCut_imp_of_step_eq hEq,
-   stepStageCut_imp_of_step_eq (fun s => (hEq s).symm)⟩
-
-/-- Predicate-level cutpoint weakest precondition over `step` (`0`
-`noncomputable`). -/
-@[expose] def wpUntilCutStep {S Out : Type} (step : S → StepResult S Out)
-    (cut : S → Prop) (fuel : Nat) (s₀ : S) : Prop :=
-  @Nat.rec (fun _ => S → Prop)
-    (fun st => cut st)
-    (fun _ ih st =>
-      cut st ∨
-      match step st with
-      | .step st' => ih st'
-      | .done _ => False
-      | .fault _ => False)
-    fuel s₀
-
-/-- Base introduction rule for `wpUntilCutStep` when `cut s` already holds. -/
-theorem wpUntilCutStep_here {S Out : Type} {step : S → StepResult S Out}
-    {cut : S → Prop} (fuel : Nat) {s : S} (h : cut s) :
-    wpUntilCutStep step cut fuel s := by
-  cases fuel with
-  | zero => exact h
-  | succ _ => exact .inl h
-
-/-- Single-step introduction rule for `wpUntilCutStep`. -/
-theorem wpUntilCutStep_step {S Out : Type} {step : S → StepResult S Out}
-    {cut : S → Prop} {fuel : Nat} {s s' : S}
-    (hStep : step s = .step s')
-    (hNext : wpUntilCutStep step cut fuel s') :
-    wpUntilCutStep step cut (fuel + 1) s := by
-  refine .inr ?_
-  change (match step s with
-    | .step st' => wpUntilCutStep step cut fuel st'
-    | .done _ => False
-    | .fault _ => False)
-  rw [hStep]
-  exact hNext
-
-/-- Constructive equivalence between predicate-level `wpUntilCutStep` and
-existential witness reachability over `StepStageCut` (`0` axioms). -/
-theorem wpUntilCutStep_iff_exists_stepStageCut {S Out : Type}
-    {step : S → StepResult S Out} {cut : S → Prop} :
-    ∀ {fuel : Nat} {s₀ : S},
-      wpUntilCutStep step cut fuel s₀ ↔
-      ∃ s₁ : S, StepStageCut step fuel s₀ s₁ ∧ cut s₁
-  | 0, s₀ =>
-    ⟨fun h => ⟨s₀, rfl, h⟩,
-     fun h => by
-       let ⟨s₁, hs, hc⟩ := h
-       change s₀ = s₁ at hs
-       subst hs
-       exact hc⟩
-  | n + 1, s₀ => by
-    constructor
-    · intro h
-      cases h with
-      | inl hc => exact ⟨s₀, .inl rfl, hc⟩
-      | inr hSt =>
-        change (match step s₀ with
-          | .step st' => wpUntilCutStep step cut n st'
-          | .done _ => False
-          | .fault _ => False) at hSt
-        cases hEv : step s₀ with
-        | step st' =>
-          rw [hEv] at hSt
-          let ⟨s₁, hReach, hc⟩ :=
-            (wpUntilCutStep_iff_exists_stepStageCut (fuel := n)).mp hSt
-          refine ⟨s₁, .inr ?_, hc⟩
-          change (match step s₀ with
-            | .step st' => reachStepIn step n st' s₁
-            | .done _ => False
-            | .fault _ => False)
-          rw [hEv]
-          exact hReach
-        | done _ => rw [hEv] at hSt; exact False.elim hSt
-        | fault _ => rw [hEv] at hSt; exact False.elim hSt
-    · intro hEx
-      let ⟨s₁, hReach, hc⟩ := hEx
-      cases hReach with
-      | inl hs =>
-        subst hs
-        exact .inl hc
-      | inr hSt =>
-        change (match step s₀ with
-          | .step st' => reachStepIn step n st' s₁
-          | .done _ => False
-          | .fault _ => False) at hSt
-        refine .inr ?_
-        change (match step s₀ with
-          | .step st' => wpUntilCutStep step cut n st'
-          | .done _ => False
-          | .fault _ => False)
-        cases hEv : step s₀ with
-        | step st' =>
-          rw [hEv] at hSt
-          exact (wpUntilCutStep_iff_exists_stepStageCut (fuel := n)).mpr
-            ⟨s₁, hSt, hc⟩
-        | done _ => rw [hEv] at hSt; exact False.elim hSt
-        | fault _ => rw [hEv] at hSt; exact False.elim hSt
-
-/-- Postcondition monotonicity for `wpUntilCutStep`. -/
-theorem wpUntilCutStep_mono {S Out : Type} {step : S → StepResult S Out}
-    {c₁ c₂ : S → Prop} (hImp : ∀ s, c₁ s → c₂ s)
-    {fuel : Nat} {s₀ : S} (h : wpUntilCutStep step c₁ fuel s₀) :
-    wpUntilCutStep step c₂ fuel s₀ := by
-  let ⟨s₁, hCut, hc₁⟩ := wpUntilCutStep_iff_exists_stepStageCut.mp h
-  exact wpUntilCutStep_iff_exists_stepStageCut.mpr ⟨s₁, hCut, hImp s₁ hc₁⟩
-
-/-- Fuel monotonicity for `wpUntilCutStep`. -/
-theorem wpUntilCutStep_fuel_mono {S Out : Type} {step : S → StepResult S Out}
-    {cut : S → Prop} {f₁ f₂ : Nat} {s₀ : S} (hLe : f₁ ≤ f₂)
-    (h : wpUntilCutStep step cut f₁ s₀) :
-    wpUntilCutStep step cut f₂ s₀ := by
-  let ⟨s₁, hCut, hc⟩ := wpUntilCutStep_iff_exists_stepStageCut.mp h
-  exact wpUntilCutStep_iff_exists_stepStageCut.mpr
-    ⟨s₁, StepStageCut.fuel_mono hLe hCut, hc⟩
-
-/-- Transitive cutpoint chaining for `wpUntilCutStep`. -/
-theorem wpUntilCutStep_trans {S Out : Type} {step : S → StepResult S Out}
-    {c₁ c₂ : S → Prop} {f₁ f₂ : Nat} {s₀ : S}
-    (h₁ : wpUntilCutStep step c₁ f₁ s₀)
-    (h₂ : ∀ sc, c₁ sc → wpUntilCutStep step c₂ f₂ sc) :
-    wpUntilCutStep step c₂ (f₁ + f₂) s₀ := by
-  let ⟨s₁, hCut₁, hc₁⟩ := wpUntilCutStep_iff_exists_stepStageCut.mp h₁
-  let ⟨s₂, hCut₂, hc₂⟩ := wpUntilCutStep_iff_exists_stepStageCut.mp (h₂ s₁ hc₁)
-  exact wpUntilCutStep_iff_exists_stepStageCut.mpr
-    ⟨s₂, StepStageCut.trans hCut₁ hCut₂, hc₂⟩
+export Anneal.Framework.StepWp
+  (StepStageCut StepStageCut.refl StepStageCut.step StepStageCut.fuel_mono
+   StepStageCut.trans StepStageCut.congr_step wpUntilCutStep
+   wpUntilCutStep_here wpUntilCutStep_step
+   wpUntilCutStep_iff_exists_stepStageCut wpUntilCutStep_mono
+   wpUntilCutStep_fuel_mono wpUntilCutStep_trans)
 
 /-- Program-level `MirStageCut` specialization of `StepStageCut` to
 `Trusted.MirSemantics.evalStep p 0`. -/
@@ -361,35 +101,12 @@ theorem MirStageCut.ofBlockTreeOfList {tyEq : MirTy → MirTy → Bool}
 
 /-- Prepend a `MirStageCut` prefix onto `execOutcomeState`. -/
 theorem execOutcomeState_of_mirStageCut {p : Program}
-    {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop} :
-    ∀ {f₁ f₂ : Nat} {s₀ s₁ : State},
-      MirStageCut p f₁ s₀ s₁ →
-      execOutcomeState p onDone onFault f₂ s₁ →
-      execOutcomeState p onDone onFault (f₁ + f₂) s₀
-  | 0, f₂, _, s₁, hCut, hCont => by
-    change _ = s₁ at hCut
-    subst hCut
-    rw [Nat.zero_add]
-    exact hCont
-  | n + 1, f₂, s₀, s₁, hCut, hCont => by
-    cases hCut with
-    | inl hEq =>
-      subst hEq
-      exact wpOutcomeState_iff_execOutcomeState.mp
-        (wpOutcomeState_fuel_mono (Nat.le_add_left f₂ (n + 1))
-          (wpOutcomeState_iff_execOutcomeState.mpr hCont))
-    | inr hSt =>
-      rw [Nat.succ_add]
-      change (match evalStep p 0 s₀ with
-        | .step st' => execOutcomeState p onDone onFault (n + f₂) st'
-        | .done out => onDone out
-        | .fault k => onFault k)
-      cases hEv : evalStep p 0 s₀ with
-      | step st' =>
-        rw [hEv] at hSt
-        exact execOutcomeState_of_mirStageCut hSt hCont
-      | done _ => rw [hEv] at hSt; exact False.elim hSt
-      | fault _ => rw [hEv] at hSt; exact False.elim hSt
+    {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
+    {f₁ f₂ : Nat} {s₀ s₁ : State}
+    (hCut : MirStageCut p f₁ s₀ s₁)
+    (hCont : execOutcomeState p onDone onFault f₂ s₁) :
+    execOutcomeState p onDone onFault (f₁ + f₂) s₀ :=
+  execStepPred_of_stepStageCut hCut hCont
 
 /-- Prepend a `MirStageCut` prefix onto `wpOutcomeState`. -/
 theorem wpOutcomeState_of_mirStageCut {p : Program}
@@ -398,9 +115,7 @@ theorem wpOutcomeState_of_mirStageCut {p : Program}
     (hCut : MirStageCut p f₁ s₀ s₁)
     (hCont : wpOutcomeState p onDone onFault f₂ s₁) :
     wpOutcomeState p onDone onFault (f₁ + f₂) s₀ :=
-  wpOutcomeState_of_execOutcomeState
-    (execOutcomeState_of_mirStageCut hCut
-      (execOutcomeState_of_wpOutcomeState hCont))
+  wpStepPred_of_stepStageCut (c₀ := 0) (fun _ _ => Iff.rfl) hCut hCont
 
 /-- Composes a `BlockTree`-accelerated `wpUntilCutStep` prefix with a
 `wpOutcomeState` continuation on `bodyProg body`. -/
@@ -425,107 +140,15 @@ theorem wpOutcomeState_of_wpUntilCutMir {p : Program}
     {onFault : FaultKind → Prop} {f₁ f₂ : Nat} {s₀ : State}
     (hPre : wpUntilCutStep (evalStep p 0) cut f₁ s₀)
     (hCont : ∀ sc : State, cut sc → wpOutcomeState p onDone onFault f₂ sc) :
-    wpOutcomeState p onDone onFault (f₁ + f₂) s₀ := by
-  let ⟨s₁, hCut, hc⟩ := wpUntilCutStep_iff_exists_stepStageCut.mp hPre
-  exact wpOutcomeState_of_mirStageCut hCut (hCont s₁ hc)
-
-attribute [irreducible] StepStageCut
+    wpOutcomeState p onDone onFault (f₁ + f₂) s₀ :=
+  wpStepPred_of_wpUntilCutStep (c₀ := 0) (fun _ _ => Iff.rfl) hPre hCont
 
 /-! ## Generic Zero-`Prop`-Argument Reflective Barrier (`BoolCertCut`) -/
 
-/-- Zero-`Prop`-argument reflective certificate barrier asserting that
-computable checker `check : Code → Bool` accepts certificate `cert : Code`
-(`check cert = true`), sealed `@[irreducible]` below after its seal, unseal,
-and pairing laws.
-
-Why zero `Prop` arguments: wrapping a `Prop` inside an `@[irreducible]`
-constant (such as `Hold (P : Prop)` or `Firewall tag P`) does not block Lean
-4's `rw` (`kabstract` + `congrArg`) or `simp` (`simpApp` -> `congrArgs`), which
-still descend into explicit `Prop` arguments without unfolding the head
-constant. Parameterizing `BoolCertCut` strictly by computational data (`Code`,
-`check`, `cert`) keeps the sealed proposition opaque to downstream rewriting
-while supporting zero-axiom reflective proofs.
--/
-@[expose] def BoolCertCut {Code : Type} (check : Code → Bool) (cert : Code) : Prop :=
-  check cert = true
-
-/-- Seals a concrete or derived `check cert = true` witness behind
-`BoolCertCut`. -/
-theorem BoolCertCut.seal {Code : Type} (check : Code → Bool) (cert : Code)
-    (h : check cert = true) : BoolCertCut check cert :=
-  h
-
-/-- Unseals `BoolCertCut check cert` back to `check cert = true`. -/
-theorem BoolCertCut.unseal {Code : Type} {check : Code → Bool} {cert : Code}
-    (h : BoolCertCut check cert) : check cert = true :=
-  h
-
-/-- Applies a pointwise soundness implication directly to a sealed
-`BoolCertCut` witness without exposing the definition to downstream tactics. -/
-theorem BoolCertCut.elim {Code : Type} {check : Code → Bool} {cert : Code}
-    {P : Prop} (hSound : check cert = true → P)
-    (hCut : BoolCertCut check cert) : P :=
-  hSound hCut
-
-/-- Applies a universal checker soundness theorem
-`∀ c, check c = true → interp c` to a sealed `BoolCertCut check cert`. -/
-theorem BoolCertCut.sound {Code : Type} {check : Code → Bool}
-    {interp : Code → Prop}
-    (hSound : ∀ c : Code, check c = true → interp c)
-    {cert : Code} (hCut : BoolCertCut check cert) : interp cert :=
-  hSound cert hCut
-
-/-- Pointwise checker congruence for `BoolCertCut`. -/
-theorem BoolCertCut.congr_check {Code : Type}
-    {check₁ check₂ : Code → Bool}
-    (hEq : ∀ c : Code, check₁ c = check₂ c) {cert : Code} :
-    BoolCertCut check₁ cert ↔ BoolCertCut check₂ cert := by
-  unfold BoolCertCut
-  rw [hEq cert]
-
-/-- Conjoins two `BoolCertCut` witnesses into a single paired certificate
-checker without introducing any `Prop` arguments. -/
-theorem BoolCertCut.pair {C₁ C₂ : Type}
-    {check₁ : C₁ → Bool} {check₂ : C₂ → Bool} {c₁ : C₁} {c₂ : C₂}
-    (h₁ : BoolCertCut check₁ c₁) (h₂ : BoolCertCut check₂ c₂) :
-    BoolCertCut (fun p : C₁ × C₂ => check₁ p.1 && check₂ p.2) (c₁, c₂) := by
-  unfold BoolCertCut at h₁ h₂
-  unfold BoolCertCut
-  dsimp only
-  rw [h₁, h₂]
-  rfl
-
-/-- Extracts the left `BoolCertCut` component from a paired certificate. -/
-theorem BoolCertCut.fst {C₁ C₂ : Type}
-    {check₁ : C₁ → Bool} {check₂ : C₂ → Bool} {c₁ : C₁} {c₂ : C₂}
-    (h : BoolCertCut (fun p : C₁ × C₂ => check₁ p.1 && check₂ p.2) (c₁, c₂)) :
-    BoolCertCut check₁ c₁ := by
-  unfold BoolCertCut at h
-  unfold BoolCertCut
-  dsimp only at h
-  cases h1 : check₁ c₁ with
-  | true => rfl
-  | false =>
-    rw [h1] at h
-    cases h
-
-/-- Extracts the right `BoolCertCut` component from a paired certificate. -/
-theorem BoolCertCut.snd {C₁ C₂ : Type}
-    {check₁ : C₁ → Bool} {check₂ : C₂ → Bool} {c₁ : C₁} {c₂ : C₂}
-    (h : BoolCertCut (fun p : C₁ × C₂ => check₁ p.1 && check₂ p.2) (c₁, c₂)) :
-    BoolCertCut check₂ c₂ := by
-  unfold BoolCertCut at h
-  unfold BoolCertCut
-  dsimp only at h
-  cases h1 : check₁ c₁ with
-  | false =>
-    rw [h1] at h
-    cases h
-  | true =>
-    rw [h1, Bool.true_and] at h
-    exact h
-
-attribute [irreducible] BoolCertCut
+export Anneal.Framework.StepWp
+  (BoolCertCut BoolCertCut.seal BoolCertCut.unseal BoolCertCut.elim
+   BoolCertCut.sound BoolCertCut.congr_check BoolCertCut.pair BoolCertCut.fst
+   BoolCertCut.snd)
 
 /-- Canary: sealing, pairing, and discharging via `BoolCertCut.sound` require
 zero axioms and keep `BoolCertCut` opaque after sealing. -/
@@ -549,15 +172,7 @@ out-of-fuel defaults to `True` while every terminating or faulting path within
 `fuel` must satisfy `onDone` / `onFault`. -/
 @[expose] def wlpOutcomeState (p : Program) (onDone : TerminalOut → Prop)
     (onFault : FaultKind → Prop) (fuel : Nat) (s : State) : Prop :=
-  @Nat.rec (fun _ => State → Prop)
-    (fun _ => True)
-    (fun _ ih st =>
-      ∀ c : Choice, ValidChoice p st c →
-        match evalStep p c st with
-        | .step st' => ih st'
-        | .done out => onDone out
-        | .fault fk => onFault fk)
-    fuel s
+  wlpStepOutcome (ValidChoice p) (evalStep p) onDone onFault fuel s
 
 /-- Whole-program weakest liberal precondition (`0` `noncomputable`). -/
 @[expose] def wlpProg (p : Program) (fuel : Nat) (q : Query)
@@ -571,38 +186,13 @@ with partial functional correctness (`wlpOutcomeState`) yields conjunctive
 total correctness without re-proving termination or fault absence. -/
 theorem wpOutcomeState_conj_of_wlp_noDiv {p : Program}
     {onDone₁ onDone₂ : TerminalOut → Prop}
-    {onFault₁ onFault₂ : FaultKind → Prop} :
-    ∀ {fuel : Nat} {s : State},
-      wpOutcomeState p onDone₁ onFault₁ fuel s →
-      wlpOutcomeState p onDone₂ onFault₂ fuel s →
-      wpOutcomeState p (fun out => onDone₁ out ∧ onDone₂ out)
-        (fun fk => onFault₁ fk ∧ onFault₂ fk) fuel s
-  | 0, _, hSafe, _ => False.elim hSafe
-  | k + 1, s, hSafe, hWlp => by
-    change ((∃ c₀ : Choice, ValidChoice p s c₀) ∧
-      ∀ c : Choice, ValidChoice p s c →
-        match evalStep p c s with
-        | .step st' => wpOutcomeState p onDone₁ onFault₁ k st'
-        | .done out => onDone₁ out
-        | .fault fk => onFault₁ fk) at hSafe
-    change (∀ c : Choice, ValidChoice p s c →
-      match evalStep p c s with
-      | .step st' => wlpOutcomeState p onDone₂ onFault₂ k st'
-      | .done out => onDone₂ out
-      | .fault fk => onFault₂ fk) at hWlp
-    refine ⟨hSafe.1, fun c hc => ?_⟩
-    have h₁ := hSafe.2 c hc
-    have h₂ := hWlp c hc
-    cases hEv : evalStep p c s with
-    | step st' =>
-      rw [hEv] at h₁ h₂
-      exact wpOutcomeState_conj_of_wlp_noDiv h₁ h₂
-    | done out =>
-      rw [hEv] at h₁ h₂
-      exact ⟨h₁, h₂⟩
-    | fault fk =>
-      rw [hEv] at h₁ h₂
-      exact ⟨h₁, h₂⟩
+    {onFault₁ onFault₂ : FaultKind → Prop}
+    {fuel : Nat} {s : State}
+    (hSafe : wpOutcomeState p onDone₁ onFault₁ fuel s)
+    (hWlp : wlpOutcomeState p onDone₂ onFault₂ fuel s) :
+    wpOutcomeState p (fun out => onDone₁ out ∧ onDone₂ out)
+      (fun fk => onFault₁ fk ∧ onFault₂ fk) fuel s :=
+  wpStepPred_conj_of_wlp hSafe hWlp
 
 /-- Combines baseline `wpState p fuel s (fun _ => True)` with `wlpOutcomeState`
 to establish `wpState p fuel s post`. -/
@@ -896,13 +486,8 @@ theorem dropSpineCut_base_ret {body : Body} (bt : BlockTree BasicBlock)
       some { statements := [], terminator := .return_, cleanup := false } := by
     rw [← BlockTree.lookup_eq_getElem? hValid retBlk]
     exact hBlk
-  change (match evalStep (bodyProg body) 0
-        { frames := [{ defId := 0, blockIdx := retBlk, stmtIdx := 0, locals := ls }],
-          callerMem := cm, mem := mem } with
-      | .step st' => False
-      | .done out =>
-        twoTrackPost (fun o => o.ret = retVal) (fun _ => False) out
-      | .fault _ => False)
+  dsimp only [execOutcomeState, execStepOutcome]
+  rw [execStepPred_succ_iff]
   unfold bodyProg evalStep
   dsimp only [Trusted.MirSemantics.getElem?]
   rw [hGetBlk]
@@ -1012,53 +597,9 @@ attribute [irreducible] DropSpineCut
 
 /-! ## Bounded Early-Return (`?`) Loop Invariant Rule -/
 
-/-- Computable maximum of two natural numbers. -/
-@[expose] def compNatMax (a b : Nat) : Nat :=
-  if Nat.ble a b then b else a
-
-/-- Left upper-bound law `a ≤ compNatMax a b`. -/
-theorem le_compNatMax_left (a b : Nat) : a ≤ compNatMax a b := by
-  unfold compNatMax
-  cases h : Nat.ble a b with
-  | true => exact Nat.le_of_ble_eq_true h
-  | false => exact Nat.le_refl a
-
-/-- Right upper-bound law `b ≤ compNatMax a b`. -/
-theorem le_compNatMax_right (a b : Nat) : b ≤ compNatMax a b := by
-  unfold compNatMax
-  cases h : Nat.ble a b with
-  | true => exact Nat.le_refl b
-  | false =>
-    cases Nat.lt_or_ge a b with
-    | inl hlt =>
-      have hbt := Nat.ble_eq_true_of_le (Nat.le_of_lt hlt)
-      rw [h] at hbt
-      cases hbt
-    | inr hge => exact hge
-
-/-- Computable minimum of two natural numbers. -/
-@[expose] def compNatMin (a b : Nat) : Nat :=
-  if Nat.ble a b then a else b
-
-/-- Left lower-bound law `compNatMin a b ≤ a`. -/
-theorem compNatMin_le_left (a b : Nat) : compNatMin a b ≤ a := by
-  unfold compNatMin
-  cases h : Nat.ble a b with
-  | true => exact Nat.le_refl a
-  | false =>
-    cases Nat.lt_or_ge a b with
-    | inl hlt =>
-      have hbt := Nat.ble_eq_true_of_le (Nat.le_of_lt hlt)
-      rw [h] at hbt
-      cases hbt
-    | inr hge => exact hge
-
-/-- Right lower-bound law `compNatMin a b ≤ b`. -/
-theorem compNatMin_le_right (a b : Nat) : compNatMin a b ≤ b := by
-  unfold compNatMin
-  cases h : Nat.ble a b with
-  | true => exact Nat.le_of_ble_eq_true h
-  | false => exact Nat.le_refl b
+export Anneal.Framework.StepWp
+  (compNatMax le_compNatMax_left le_compNatMax_right compNatMin
+   compNatMin_le_left compNatMin_le_right)
 
 /-- Bounded loop invariant driver supporting both normal loop exit
 (`normalExit`) and mid-loop `?` / `break` early-return cleanup exit
@@ -1067,12 +608,7 @@ theorem compNatMin_le_right (a b : Nat) : compNatMin a b ≤ b := by
 @[expose] def wpIterWithRetGuard (p : Program)
     (inv earlyClean normalExit : State → Prop)
     (stepBudget iters : Nat) (s : State) : Prop :=
-  @Nat.rec (fun _ => State → Prop)
-    (fun st => normalExit st ∨ earlyClean st)
-    (fun _ ih st =>
-      normalExit st ∨ earlyClean st ∨
-        (inv st ∧ wpUntilCutStep (evalStep p 0) ih stepBudget st))
-    iters s
+  wpIterCut (evalStep p 0) inv earlyClean normalExit stepBudget iters s
 
 /-- Soundness of `wpIterWithRetGuard` into `wpTwoTrack` (`wpOutcomeState` with
 `onFault := fun _ => False`) in `iters * stepBudget + compNatMax fuelNormal
@@ -1087,45 +623,9 @@ theorem wpOutcomeState_loop_early_return_sound {p : Program}
     (hEarly : ∀ st : State, earlyClean st →
       wpTwoTrack p fuelEarly st onRet onUnwind) :
     wpTwoTrack p (iters * stepBudget + compNatMax fuelNormal fuelEarly) s
-      onRet onUnwind := by
-  induction iters generalizing s with
-  | zero =>
-    rw [Nat.zero_mul, Nat.zero_add]
-    cases hLoop with
-    | inl hn =>
-      exact wpOutcomeState_fuel_mono
-        (le_compNatMax_left fuelNormal fuelEarly) (hNorm s hn)
-    | inr he =>
-      exact wpOutcomeState_fuel_mono
-        (le_compNatMax_right fuelNormal fuelEarly) (hEarly s he)
-  | succ k ih =>
-    have hMul :
-        (k + 1) * stepBudget + compNatMax fuelNormal fuelEarly =
-          stepBudget + (k * stepBudget + compNatMax fuelNormal fuelEarly) := by
-      rw [Nat.add_mul, Nat.one_mul,
-        Nat.add_comm (k * stepBudget) stepBudget, Nat.add_assoc]
-    rw [hMul]
-    cases hLoop with
-    | inl hn =>
-      have hLe : fuelNormal ≤
-          stepBudget + (k * stepBudget + compNatMax fuelNormal fuelEarly) :=
-        Nat.le_trans (le_compNatMax_left fuelNormal fuelEarly)
-          (Nat.le_trans
-            (Nat.le_add_left (compNatMax fuelNormal fuelEarly) (k * stepBudget))
-            (Nat.le_add_left _ stepBudget))
-      exact wpOutcomeState_fuel_mono hLe (hNorm s hn)
-    | inr hRest =>
-      cases hRest with
-      | inl he =>
-        have hLe : fuelEarly ≤
-            stepBudget + (k * stepBudget + compNatMax fuelNormal fuelEarly) :=
-          Nat.le_trans (le_compNatMax_right fuelNormal fuelEarly)
-            (Nat.le_trans
-              (Nat.le_add_left (compNatMax fuelNormal fuelEarly) (k * stepBudget))
-              (Nat.le_add_left _ stepBudget))
-        exact wpOutcomeState_fuel_mono hLe (hEarly s he)
-      | inr hAnd =>
-        exact wpOutcomeState_of_wpUntilCutMir hAnd.2 (fun st hNext => ih hNext)
+      onRet onUnwind :=
+  wpStepPred_loop_early_return_sound (c₀ := 0) (fun _ _ => Iff.rfl)
+    hLoop hNorm hEarly
 
 /-- Inductive loop-invariant introduction rule for `wpIterWithRetGuard`: if
 `inv` (indexed by remaining iteration budget) implies `normalExit ∨ earlyClean`
@@ -1139,31 +639,11 @@ theorem wpIterWithRetGuard_of_step {p : Program}
       normalExit st ∨ earlyClean st ∨
         wpUntilCutStep (evalStep p 0)
           (fun st' => inv k st' ∨ normalExit st' ∨ earlyClean st')
-          stepBudget st) :
-    ∀ {iters : Nat} {s : State},
-      inv iters s →
-      wpIterWithRetGuard p (fun st => ∃ m : Nat, inv m st)
-        earlyClean normalExit stepBudget iters s
-  | 0, s, hInv => hZero s hInv
-  | k + 1, s, hInv => by
-    cases hStep k s hInv with
-    | inl hNorm => exact .inl hNorm
-    | inr hRest =>
-      cases hRest with
-      | inl hEarly => exact .inr (.inl hEarly)
-      | inr hCut =>
-        refine .inr (.inr ⟨⟨k + 1, hInv⟩, ?_⟩)
-        refine wpUntilCutStep_mono (fun st' hNext => ?_) hCut
-        cases hNext with
-        | inl hInvK =>
-          exact wpIterWithRetGuard_of_step hZero hStep hInvK
-        | inr hExit =>
-          cases k with
-          | zero => exact hExit
-          | succ _ =>
-            cases hExit with
-            | inl hn => exact .inl hn
-            | inr he => exact .inr (.inl he)
+          stepBudget st)
+    {iters : Nat} {s : State} (hInv : inv iters s) :
+    wpIterWithRetGuard p (fun st => ∃ m : Nat, inv m st)
+      earlyClean normalExit stepBudget iters s :=
+  wpIterCut_of_step hZero hStep hInv
 
 end Anneal.Core
 

@@ -17,31 +17,23 @@ public import Init.Control.Except
 public import Trusted
 public import Trusted.MirAst
 public import Trusted.MirSemantics
+public import Anneal.Framework.StepWp
 
 public section
 
 namespace Anneal.MirWp
 
-open Trusted.MirAst Trusted.MirSemantics
+open Trusted.MirAst Trusted.MirSemantics Anneal.Framework.StepWp
 
 /-! ## Part I: Unified Fuel-Bounded Weakest Precondition & Adequacy -/
 
 /-- Unified structural fuel-bounded weakest precondition over `evalStep`.
-Using `@Nat.rec` into `Prop` avoids both codegen exemptions and `_unsafe_rec`
+Delegates to `Anneal.Framework.StepWp.wpStepOutcome` (`@Nat.rec` into `Prop`)
 while preserving the `ValidChoice`-quantified shape expected by downstream
 correspondence proofs. -/
 @[expose] def wpOutcomeState (p : Program) (onDone : TerminalOut → Prop)
     (onFault : FaultKind → Prop) (fuel : Nat) (s : State) : Prop :=
-  @Nat.rec (fun _ => State → Prop)
-    (fun _ => False)
-    (fun _ ih st =>
-      (∃ c₀ : Choice, ValidChoice p st c₀) ∧
-      ∀ c : Choice, ValidChoice p st c →
-        match evalStep p c st with
-        | .step st' => ih st'
-        | .done out => onDone out
-        | .fault k => onFault k)
-    fuel s
+  wpStepOutcome (ValidChoice p) (evalStep p) onDone onFault fuel s
 
 /-- State-level weakest precondition requiring normal termination satisfying
 `post` and forbidding all faults (`onFault := fun _ => False`). -/
@@ -75,14 +67,7 @@ predicate over `evalStep p 0`. Concrete runs reduce directly by `rfl` and lift
 into `wpOutcomeState` via `wpOutcomeState_of_execOutcomeState`. -/
 @[expose] def execOutcomeState (p : Program) (onDone : TerminalOut → Prop)
     (onFault : FaultKind → Prop) (fuel : Nat) (s : State) : Prop :=
-  @Nat.rec (fun _ => State → Prop)
-    (fun _ => False)
-    (fun _ ih st =>
-      match evalStep p 0 st with
-      | .step st' => ih st'
-      | .done out => onDone out
-      | .fault k => onFault k)
-    fuel s
+  execStepOutcome (evalStep p 0) onDone onFault fuel s
 
 /-- State-level deterministic `c = 0` normal-termination predicate. -/
 abbrev execState (p : Program) (fuel : Nat) (s : State)
@@ -116,45 +101,8 @@ theorem wpOutcomeState_iff_execOutcomeState {p : Program}
     {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop} :
     ∀ {fuel : Nat} {s : State},
       wpOutcomeState p onDone onFault fuel s ↔
-      execOutcomeState p onDone onFault fuel s
-  | 0, _ => Iff.rfl
-  | fuel + 1, s => by
-    change ((∃ c₀ : Choice, ValidChoice p s c₀) ∧
-        ∀ c : Choice, ValidChoice p s c →
-          match evalStep p c s with
-          | .step st' => wpOutcomeState p onDone onFault fuel st'
-          | .done out => onDone out
-          | .fault k => onFault k) ↔
-      (match evalStep p 0 s with
-        | .step st' => execOutcomeState p onDone onFault fuel st'
-        | .done out => onDone out
-        | .fault k => onFault k)
-    constructor
-    · intro h
-      have h0 := h.2 0 rfl
-      cases hStep : evalStep p 0 s with
-      | step st' =>
-        rw [hStep] at h0
-        exact wpOutcomeState_iff_execOutcomeState.mp h0
-      | done out =>
-        rw [hStep] at h0
-        exact h0
-      | fault k =>
-        rw [hStep] at h0
-        exact h0
-    · intro h
-      refine ⟨⟨0, rfl⟩, fun c hc => ?_⟩
-      subst hc
-      cases hStep : evalStep p 0 s with
-      | step st' =>
-        rw [hStep] at h
-        exact wpOutcomeState_iff_execOutcomeState.mpr h
-      | done out =>
-        rw [hStep] at h
-        exact h
-      | fault k =>
-        rw [hStep] at h
-        exact h
+      execOutcomeState p onDone onFault fuel s :=
+  wpStepPred_iff_execStepPred (c₀ := 0) (fun _ _ => Iff.rfl)
 
 /-- Lift a deterministic `execOutcomeState` derivation into `wpOutcomeState`. -/
 theorem wpOutcomeState_of_execOutcomeState {p : Program}
@@ -208,73 +156,20 @@ theorem wpOutcomeState_mono {p : Program}
     {onDone₁ onDone₂ : TerminalOut → Prop}
     {onFault₁ onFault₂ : FaultKind → Prop}
     (hDone : ∀ out, onDone₁ out → onDone₂ out)
-    (hFault : ∀ k, onFault₁ k → onFault₂ k) :
-    ∀ {fuel : Nat} {s : State},
-      wpOutcomeState p onDone₁ onFault₁ fuel s →
-      wpOutcomeState p onDone₂ onFault₂ fuel s
-  | 0, _, h => False.elim h
-  | fuel + 1, s, h => by
-    change ((∃ c₀ : Choice, ValidChoice p s c₀) ∧
-      ∀ c : Choice, ValidChoice p s c →
-        match evalStep p c s with
-        | .step st' => wpOutcomeState p onDone₁ onFault₁ fuel st'
-        | .done out => onDone₁ out
-        | .fault k => onFault₁ k) at h
-    change ((∃ c₀ : Choice, ValidChoice p s c₀) ∧
-      ∀ c : Choice, ValidChoice p s c →
-        match evalStep p c s with
-        | .step st' => wpOutcomeState p onDone₂ onFault₂ fuel st'
-        | .done out => onDone₂ out
-        | .fault k => onFault₂ k)
-    refine ⟨h.1, fun c hc => ?_⟩
-    have hc' := h.2 c hc
-    cases hStep : evalStep p c s with
-    | step st' =>
-      rw [hStep] at hc'
-      exact wpOutcomeState_mono hDone hFault hc'
-    | done out =>
-      rw [hStep] at hc'
-      exact hDone out hc'
-    | fault k =>
-      rw [hStep] at hc'
-      exact hFault k hc'
+    (hFault : ∀ k, onFault₁ k → onFault₂ k)
+    {fuel : Nat} {s : State}
+    (h : wpOutcomeState p onDone₁ onFault₁ fuel s) :
+    wpOutcomeState p onDone₂ onFault₂ fuel s :=
+  wpStepPred_mono (fun _ => hDone) (fun _ => hFault) h
 
 /-- Fuel weakening: terminating within `fuel₁` steps implies terminating within
 any larger budget `fuel₂ ≥ fuel₁`. -/
 theorem wpOutcomeState_fuel_mono {p : Program}
-    {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop} :
-    ∀ {fuel₁ fuel₂ : Nat} {s : State},
-      fuel₁ ≤ fuel₂ →
-      wpOutcomeState p onDone onFault fuel₁ s →
-      wpOutcomeState p onDone onFault fuel₂ s
-  | 0, _, _, _, h => False.elim h
-  | fuel₁ + 1, 0, _, hLe, _ => False.elim (Nat.not_succ_le_zero fuel₁ hLe)
-  | fuel₁ + 1, fuel₂ + 1, s, hLe, h => by
-    have hLe' : fuel₁ ≤ fuel₂ := Nat.le_of_succ_le_succ hLe
-    change ((∃ c₀ : Choice, ValidChoice p s c₀) ∧
-      ∀ c : Choice, ValidChoice p s c →
-        match evalStep p c s with
-        | .step st' => wpOutcomeState p onDone onFault fuel₁ st'
-        | .done out => onDone out
-        | .fault k => onFault k) at h
-    change ((∃ c₀ : Choice, ValidChoice p s c₀) ∧
-      ∀ c : Choice, ValidChoice p s c →
-        match evalStep p c s with
-        | .step st' => wpOutcomeState p onDone onFault fuel₂ st'
-        | .done out => onDone out
-        | .fault k => onFault k)
-    refine ⟨h.1, fun c hc => ?_⟩
-    have hc' := h.2 c hc
-    cases hStep : evalStep p c s with
-    | step st' =>
-      rw [hStep] at hc'
-      exact wpOutcomeState_fuel_mono hLe' hc'
-    | done _ =>
-      rw [hStep] at hc'
-      exact hc'
-    | fault _ =>
-      rw [hStep] at hc'
-      exact hc'
+    {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
+    {fuel₁ fuel₂ : Nat} {s : State} (hLe : fuel₁ ≤ fuel₂)
+    (h : wpOutcomeState p onDone onFault fuel₁ s) :
+    wpOutcomeState p onDone onFault fuel₂ s :=
+  wpStepPred_fuel_mono hLe h
 
 /-- Whole-program rule of consequence for `wpProg`. -/
 theorem wpProg_mono {p : Program} {fuel : Nat} {q : Query}
@@ -292,15 +187,28 @@ theorem wpProg_mono {p : Program} {fuel : Nat} {q : Query}
     rw [hInit] at hWp
     exact wpOutcomeState_mono hImp (fun _ h => h) hWp
 
+private theorem reaches_to_stepReaches {p : Program} {s₁ s₂ : State}
+    (h : Reaches p s₁ s₂) :
+    StepReaches (ValidChoice p) (evalStep p) s₁ s₂ := by
+  induction h with
+  | refl => exact .refl _
+  | tail _ hStep ih => exact .tail ih hStep
+
+private theorem stepReaches_to_reaches {p : Program} {s₁ s₂ : State}
+    (h : StepReaches (ValidChoice p) (evalStep p) s₁ s₂) :
+    Reaches p s₁ s₂ := by
+  induction h with
+  | refl => exact .refl _
+  | tail _ hStep ih => exact .tail ih hStep
+
 /-- Prepend a single step `Step p s₁ (.step s₂)` to a reachability chain
 `Reaches p s₂ s₃`. -/
 theorem Reaches.head {p : Program} {s₁ s₂ s₃ : State}
     (h_first : Step p s₁ (.step s₂))
     (h_rest : Reaches p s₂ s₃) :
-    Reaches p s₁ s₃ := by
-  induction h_rest with
-  | refl => exact Reaches.tail (Reaches.refl s₁) h_first
-  | tail _ h_last ih => exact Reaches.tail ih h_last
+    Reaches p s₁ s₃ :=
+  stepReaches_to_reaches
+    (StepReaches.head h_first (reaches_to_stepReaches h_rest))
 
 /-- Any state `s₂` reachable from `s₁` preserves `wpOutcomeState` at some
 remaining fuel `fuel'`. -/
@@ -309,18 +217,8 @@ theorem wpOutcomeState_of_reaches
     {s₁ s₂ : State} {fuel : Nat}
     (h_wp : wpOutcomeState p onDone onFault fuel s₁)
     (h_reach : Reaches p s₁ s₂) :
-    ∃ fuel', wpOutcomeState p onDone onFault fuel' s₂ := by
-  induction h_reach with
-  | refl => exact ⟨fuel, h_wp⟩
-  | tail _ h_step ih =>
-    let ⟨fuel₁, h_wp₁⟩ := ih
-    cases fuel₁ with
-    | zero => exact False.elim h_wp₁
-    | succ fuel₂ =>
-      let ⟨c, hc, h_eval⟩ := h_step
-      have h_branch := h_wp₁.2 c hc
-      rw [h_eval] at h_branch
-      exact ⟨fuel₂, h_branch⟩
+    ∃ fuel', wpOutcomeState p onDone onFault fuel' s₂ :=
+  wpStepPred_of_reaches h_wp (reaches_to_stepReaches h_reach)
 
 /-- Every state satisfying `wpOutcomeState` reaches a terminal `.done` or
 `.fault` step within `fuel` steps along its witnessed choice path. -/
@@ -333,38 +231,22 @@ theorem exists_terminal_of_wpOutcomeState
       | .step _ => False
       | .done out => onDone out
       | .fault k => onFault k := by
-  induction fuel generalizing s with
-  | zero => exact False.elim h_wp
-  | succ f ih =>
-    let ⟨⟨c₀, hc₀⟩, h_all⟩ := h_wp
-    have h_step := h_all c₀ hc₀
-    cases h_eval : evalStep p c₀ s with
-    | step s' =>
-      rw [h_eval] at h_step
-      let ⟨s_end, res, h_reach, h_term, h_res⟩ := ih h_step
-      exact ⟨s_end, res, Reaches.head ⟨c₀, hc₀, h_eval⟩ h_reach, h_term, h_res⟩
-    | done out =>
-      rw [h_eval] at h_step
-      exact ⟨s, .done out, Reaches.refl s, ⟨c₀, hc₀, h_eval⟩, h_step⟩
-    | fault k =>
-      rw [h_eval] at h_step
-      exact ⟨s, .fault k, Reaches.refl s, ⟨c₀, hc₀, h_eval⟩, h_step⟩
+  let ⟨s_end, res, hReach, hTerm, hRes⟩ := exists_terminal_of_wpStepPred h_wp
+  refine ⟨s_end, res, stepReaches_to_reaches hReach, hTerm, ?_⟩
+  cases res with
+  | step _ => exact hRes
+  | done _ => exact hRes
+  | fault _ => exact hRes
 
 /-- No state satisfying `wpOutcomeState` admits an infinite non-terminating
 `Step` trace. -/
 theorem not_infinite_trace_of_wpOutcomeState
-    {p : Program} {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop} :
-    ∀ {fuel : Nat} (trace : Nat → State),
-      wpOutcomeState p onDone onFault fuel (trace 0) →
-      (∀ n : Nat, Step p (trace n) (.step (trace (n + 1)))) →
-      False
-  | 0, _, h_wp, _ => h_wp
-  | fuel + 1, trace, h_wp, h_steps => by
-    let ⟨c, hc, h_eval⟩ := h_steps 0
-    have h_branch := h_wp.2 c hc
-    rw [h_eval] at h_branch
-    exact not_infinite_trace_of_wpOutcomeState (fun n => trace (n + 1))
-      h_branch (fun n => h_steps (n + 1))
+    {p : Program} {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
+    {fuel : Nat} (trace : Nat → State)
+    (h_wp : wpOutcomeState p onDone onFault fuel (trace 0))
+    (h_steps : ∀ n : Nat, Step p (trace n) (.step (trace (n + 1)))) :
+    False :=
+  not_infinite_trace_of_wpStepPred trace h_wp h_steps
 
 /-- Any `(p, q)` satisfying `wpProg` terminates and therefore cannot diverge. -/
 theorem not_diverges_of_wpProg {p : Program} {fuel : Nat} {q : Query}

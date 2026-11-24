@@ -403,8 +403,8 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `theory/Anneal/{NatBitwise,BitTrieLrat,PTree,SpineForce,Generic}.lean`,
   `theory/Anneal/{Scalar,Simd,Wp}.lean`,
   `theory/Anneal/{ByteRun,ByteSubLens,CallStackUnwind,CnfOrd,F2Simd}/`,
-  `theory/Anneal/{AiPcc,OverflowCastJoin,PureLift,RefFrame}/`, and planned
-  `Theory/Rust/{Wp,Tactics}/`):**
+  `theory/Anneal/{AiPcc,Framework,OverflowCastJoin,PureLift,RefFrame}/`, and
+  planned `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
   Diaconescu classical excluded middle and existential choice, WHNF and
   rewrite firewall combinators, foundation-locked `Bool`/`BEq`/`Nat`/`Int`/
@@ -551,6 +551,7 @@ anneal/
     │   ├── Core.lean               # BlockTree, SepPCM & StepStageCut (+ Core/)
     │   ├── F2Simd.lean             # F2-linear/bilinear & SIMD certificate evaluators (+ F2Simd/)
     │   ├── Firewall.lean           # WHNF & rewrite firewall combinators
+    │   ├── Framework/StepWp.lean   # Generic step/checkpoint WP, cuts & loop rules
     │   ├── Generic.lean            # Unbundled open-generic MIR, traits & erasure (+ Generic/)
     │   ├── InitLemmas.lean         # Foundation Bool/BEq/Nat/Int/list helpers
     │   ├── LeBytes.lean            # Parametric LE/BE byte serialization lemmas

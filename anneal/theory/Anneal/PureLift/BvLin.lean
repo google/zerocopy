@@ -16,12 +16,12 @@ public import Init.Data.Nat.Div.Basic
 public import Init.Data.Int.Basic
 public import Init.Data.BitVec.BasicAux
 public import Init.Data.List.Basic
-public import Anneal.Core.StageCut
+public import Anneal.Framework.StepWp
 
 public section
 namespace Anneal.PureLift.BvLin
 
-open Anneal.Core
+open Anneal.Framework.StepWp
 
 /-!
 # Reflective Linear `BitVec w` / `Nat` Offset Normalizer (`PureLift.BvLin`)
@@ -29,7 +29,7 @@ open Anneal.Core
 Pass-1-portable (`prelude` + locked `Init.*` only, `0` `noncomputable`,
 `hasIR = true`, `0` `._unsafe_rec`, `0` axioms) sparse sorted linear polynomial
 normalizer for `BitVec w` and `Nat`-lifted pointer/offset arithmetic, sealed
-behind zero-`Prop`-argument `Anneal.Core.BoolCertCut`.
+behind zero-`Prop`-argument `Anneal.Framework.StepWp.BoolCertCut`.
 
 Design attribution: inspired by `Lin.Poly` and `Lin.diffConst?` in Apache-2.0
 `google-deepmind/code-verification` (`arm64-semantics/ProofLib/BV/Linear.lean`),

@@ -2335,24 +2335,31 @@ theorem refState_unique_of_simulationInv
 
 To let per-function proofs in `theory/` and generated crate obligations
 discharge `WellFormed`, `Behavior`, and `SatisfiesPost` by symbolic
-computation, `Anneal.MirWp` defines a single fuel-bounded weakest-precondition
-recursor (`wpOutcomeState`) over `evalStep`, written directly with `@Nat.rec`
-rather than pattern-matching recursion so Lean does not emit compiler-generated
+computation, `Anneal.MirWp` defines `wpOutcomeState` over `evalStep` by
+delegating to `Anneal.Framework.StepWp.wpStepOutcome` (`wpStepPred`), whose
+fuel-bounded recursor is written directly with `@Nat.rec` rather than
+pattern-matching recursion so Lean does not emit compiler-generated
 `_unsafe_rec` helpers that `TrustedBoundary.lean` rejects as `partial`:
 
 ```lean
-def wpOutcomeState (p : Program) (onDone : TerminalOut → Prop)
-    (onFault : FaultKind → Prop) (fuel : Nat) (s : State) : Prop :=
-  @Nat.rec (fun _ => State → Prop)
+@[expose] def wpStepPred {S Out C : Type}
+    (validChoice : S → C → Prop) (step : C → S → StepResult S Out)
+    (onDone : S → Out → Prop) (onFault : S → FaultKind → Prop)
+    (fuel : Nat) (s : S) : Prop :=
+  @Nat.rec (fun _ => S → Prop)
     (fun _ => False)
     (fun _ ih st =>
-      (∃ c₀ : Choice, ValidChoice p st c₀) ∧
-      ∀ c : Choice, ValidChoice p st c →
-        match evalStep p c st with
+      (∃ c₀ : C, validChoice st c₀) ∧
+      ∀ c : C, validChoice st c →
+        match step c st with
         | .step st' => ih st'
-        | .done out => onDone out
-        | .fault k => onFault k)
+        | .done out => onDone st out
+        | .fault k => onFault st k)
     fuel s
+
+@[expose] def wpOutcomeState (p : Program) (onDone : TerminalOut → Prop)
+    (onFault : FaultKind → Prop) (fuel : Nat) (s : State) : Prop :=
+  wpStepOutcome (ValidChoice p) (evalStep p) onDone onFault fuel s
 ```
 
 Instantiating `wpOutcomeState` with `onFault := fun _ => False` yields `wpProg`

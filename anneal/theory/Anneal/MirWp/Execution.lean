@@ -25,7 +25,7 @@ public section
 
 namespace Anneal.MirWp
 
-open Trusted.MirAst Trusted.MirSemantics
+open Trusted.MirAst Trusted.MirSemantics Anneal.Framework.StepWp
 
 /-! ## Part III: Single-Body Execution, WP Bridge, Productive Invariants, and
 Multi-Body Retagging
@@ -230,21 +230,13 @@ theorem executes_iff_wpState {body : Body} {start : State} {value : Val} :
     induction execution with
     | @ret s val hRet =>
       refine ⟨1, ?_⟩
-      change (match evalStep (bodyProg body) 0 s with
-        | .step st' => False
-        | .done out => out = .returned ⟨val, ⟨[]⟩⟩
-        | .fault _ => False)
-      rw [hRet]
+      dsimp only [RunsFrom, execState, execOutcomeState, execStepOutcome]
+      rw [execStepPred_succ_iff, hRet]
     | @next s next val hStep _ ih =>
       let ⟨fuel, hExec⟩ := ih
       refine ⟨fuel + 1, ?_⟩
-      change (match evalStep (bodyProg body) 0 s with
-        | .step st' =>
-          execState (bodyProg body) fuel st'
-            (fun out => out = .returned ⟨val, ⟨[]⟩⟩)
-        | .done out => out = .returned ⟨val, ⟨[]⟩⟩
-        | .fault _ => False)
-      rw [hStep]
+      dsimp only [RunsFrom, execState, execOutcomeState, execStepOutcome]
+      rw [execStepPred_succ_iff, hStep]
       exact hExec
   · intro hEx
     cases hEx with
@@ -252,12 +244,8 @@ theorem executes_iff_wpState {body : Body} {start : State} {value : Val} :
       induction fuel generalizing start with
       | zero => exact False.elim hExec
       | succ fuel ih =>
-        change (match evalStep (bodyProg body) 0 start with
-          | .step st' =>
-            execState (bodyProg body) fuel st'
-              (fun out => out = .returned ⟨value, ⟨[]⟩⟩)
-          | .done out => out = .returned ⟨value, ⟨[]⟩⟩
-          | .fault _ => False) at hExec
+        dsimp only [RunsFrom, execState, execOutcomeState, execStepOutcome] at hExec
+        rw [execStepPred_succ_iff] at hExec
         cases hStep : evalStep (bodyProg body) 0 start with
         | step next =>
           rw [hStep] at hExec
@@ -703,31 +691,20 @@ theorem evalStep_retagDefId {p : Program} {defId : DefId} {body : Body}
 `entryProgForBody p defId` and `bodyProg body`. -/
 theorem execOutcomeState_entryProg_iff {p : Program} {defId : DefId}
     {body : Body} {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
-    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body) :
-    ∀ {fuel : Nat} {s : State},
-      IsSingleFrame0 s →
-      (execOutcomeState (entryProgForBody p defId) onDone onFault fuel
-        (retagDefId defId s) ↔
-       execOutcomeState (bodyProg body) onDone onFault fuel s)
-  | 0, _, _ => Iff.rfl
-  | fuel + 1, s, h_f0 => by
-    have hFrame := evalStep_entryProg_frame h_body h_f0
-    change (match evalStep (entryProgForBody p defId) 0
-          (retagDefId defId s) with
-        | .step st' =>
-          execOutcomeState (entryProgForBody p defId) onDone onFault fuel st'
-        | .done out => onDone out
-        | .fault k => onFault k) ↔
-      (match evalStep (bodyProg body) 0 s with
-        | .step st' => execOutcomeState (bodyProg body) onDone onFault fuel st'
-        | .done out => onDone out
-        | .fault k => onFault k)
-    rw [hFrame.2]
-    cases hSt : evalStep (bodyProg body) 0 s with
-    | step next =>
-      exact execOutcomeState_entryProg_iff h_body (hFrame.1 next hSt)
-    | done out => exact Iff.rfl
-    | fault k => exact Iff.rfl
+    (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    {fuel : Nat} {s : State} (h_f0 : IsSingleFrame0 s) :
+    execOutcomeState (entryProgForBody p defId) onDone onFault fuel
+      (retagDefId defId s) ↔
+    execOutcomeState (bodyProg body) onDone onFault fuel s :=
+  execStepOutcome_bisim
+    (step₁ := evalStep (bodyProg body) 0)
+    (step₂ := evalStep (entryProgForBody p defId) 0)
+    (Inv := IsSingleFrame0) (map := retagDefId defId)
+    (fun _ s' hF hS => (evalStep_entryProg_frame h_body hF).1 s' hS)
+    (fun st hF => by
+      have he := (evalStep_entryProg_frame h_body hF).2
+      cases hEv : evalStep (bodyProg body) 0 st <;> rw [hEv] at he <;> exact he)
+    h_f0
 
 /-- Exact equivalence of `wpOutcomeState` across `retagDefId` between
 `entryProgForBody p defId` and `bodyProg body`. -/

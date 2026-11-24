@@ -20,6 +20,7 @@ public import Trusted
 public import Trusted.MirAst
 public import Trusted.MirModel
 public import Trusted.MirSemantics
+public import Anneal.Framework.StepWp
 public import Anneal.MirWp
 public import Anneal.MirTotal.Ops
 public import Anneal.MirTotal.StepCore
@@ -1506,18 +1507,10 @@ private theorem join8_exit_wpOutcomeState (seed : Nat) (fv : FlagVec8) :
       valid_btOverflowCastJoin8]
     exact hBtStep2
   apply wpOutcomeState_of_execOutcomeState
-  change (match evalStep (bodyProg bodyOverflowCastJoin8) 0
-        (mkStageState 25 0 seed fv acc v11 v12) with
-      | .step s1 =>
-        match evalStep (bodyProg bodyOverflowCastJoin8) 0 s1 with
-        | .step _ => False
-        | .done out => OverflowCastJoin8Post out
-        | .fault _ => False
-      | .done out => OverflowCastJoin8Post out
-      | .fault _ => False)
-  rw [hMirStep1]
+  dsimp only [execOutcomeState, Anneal.Framework.StepWp.execStepOutcome]
+  rw [Anneal.Framework.StepWp.execStepPred_succ_iff, hMirStep1]
   dsimp only
-  rw [hMirStep2]
+  rw [Anneal.Framework.StepWp.execStepPred_succ_iff, hMirStep2]
   exact ⟨acc, hLo37, hHi130561, rfl⟩
 
 /-- End-to-end `wpProg` proof across all `256` boolean paths and all `256`
