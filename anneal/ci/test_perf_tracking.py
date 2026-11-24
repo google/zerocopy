@@ -213,7 +213,7 @@ class MockCollectionTests(unittest.TestCase):
         (anneal / "trusted/lean/Trusted/MirAst.lean").write_text(
             "prelude\nimport Trusted\n"
         )
-        (anneal / "trusted/cargo-anneal/src/bundle.rs").write_text(
+        (anneal / "trusted/cargo-anneal/src/trusted_bundle.rs").write_text(
             'pub const TRUSTED_BUNDLE_SOURCES: &[&str] = &[\n'
             '    "trusted/lean/Trusted.lean",\n'
             '    "trusted/lean/Trusted/MirAst.lean",\n'

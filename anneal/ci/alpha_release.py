@@ -36,7 +36,12 @@ ARCHIVE_INPUTS = (
     "anneal/trusted/audit/TrustedBoundary.lean",
     "anneal/trusted/audit/library-lock.json",
     "anneal/theory",
-    "anneal/trusted/cargo-anneal/src/bundled_resources.rs",
+    "anneal/trusted/cargo-anneal/src/trusted_bundle.rs",
+    "anneal/ci/prebuild_bundled_oleans.py",
+    "anneal/vendor/lean-miri/UPSTREAM_PIN.json",
+    "anneal/trusted/correspondence",
+    "anneal/correspondence",
+    "anneal/ci/render_correspondence_provenance.py",
 )
 
 

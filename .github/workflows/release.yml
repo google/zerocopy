@@ -474,7 +474,13 @@ jobs:
           git fetch --no-tags origin "$target"
           python3 -B ci/alpha_release.py "$VERSION" --require-pinned --archive-base "$target"
           export CARGO_TARGET_DIR="$RUNNER_TEMP/anneal-package"
-          cargo package --locked -p cargo-anneal
+          clean_status="$(git status --porcelain --untracked-files=all)"
+          test -z "$clean_status"
+          trap 'rm -rf trusted/cargo-anneal/packaged' EXIT
+          cargo run --locked -p cargo-anneal --example regenerate_bundle -- --root . --stage-package
+          staged_status="$(git status --porcelain --untracked-files=all)"
+          test "$staged_status" = "?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs"
+          cargo package --locked --allow-dirty -p cargo-anneal
           scratch="$(mktemp -d)"
           tar -xf "$CARGO_TARGET_DIR/package/cargo-anneal-$VERSION.crate" -C "$scratch"
           (cd "$scratch" && cargo install --locked --path "cargo-anneal-$VERSION" --root "$scratch")
@@ -502,11 +508,26 @@ jobs:
       - name: Authenticate with crates.io
         id: anneal-auth
         uses: rust-lang/crates-io-auth-action@3268eb413133e2960fa4ae0e963ca76380c54cd9 # v1.0.6
+      - name: Stage package snapshot
+        working-directory: anneal
+        run: |
+          set -euo pipefail
+          clean_status="$(git status --porcelain --untracked-files=all)"
+          test -z "$clean_status"
+          trap 'rm -rf trusted/cargo-anneal/packaged' ERR
+          cargo run --locked -p cargo-anneal --example regenerate_bundle -- --root . --stage-package
+          staged_status="$(git status --porcelain --untracked-files=all)"
+          test "$staged_status" = "?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs"
       - name: Publish the qualified workspace package
         working-directory: anneal
         env:
           CARGO_REGISTRY_TOKEN: ${{ steps.anneal-auth.outputs.token }}
-        run: cargo publish --locked -p cargo-anneal --registry crates-io
+        run: |
+          set -euo pipefail
+          trap 'rm -rf trusted/cargo-anneal/packaged' EXIT
+          staged_status="$(git status --porcelain --untracked-files=all)"
+          test "$staged_status" = "?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs"
+          cargo publish --locked --allow-dirty -p cargo-anneal --registry crates-io
 
   anneal-publish-github:
     name: Publish Anneal GitHub Release

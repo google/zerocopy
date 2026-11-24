@@ -461,10 +461,10 @@ impl Checker {
 
     /// Configure whether the Pass 1 `"audit"` inspector unconditionally
     /// requires `Trusted.MirAst`, `Trusted.MirSemantics`, and `Anneal.MirWp`
-    /// to be present, and whether checkout hygiene verifies
-    /// `bundled_resources.rs` parity (defaults to `true`; only disabled in
-    /// minimal synthetic unit test fixtures; even when `false`, the `"audit"`
-    /// check still runs if any MIR or `PureLift` module is loaded).
+    /// to be present, and whether checkout hygiene verifies bundled resource
+    /// parity (`verify_bundled_resources`; defaults to `true`, disabled only in
+    /// synthetic test fixtures, and even then `"audit"` still runs if any MIR
+    /// or `PureLift` module is loaded).
     pub fn set_require_mir_wp(&mut self, require: bool) {
         self.require_mir_wp = require;
     }

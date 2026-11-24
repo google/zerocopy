@@ -245,8 +245,12 @@ Before inspecting Lean files, `anneal-audit` verifies the repository's root
 manifests against [`root-manifest.sha256`](../trusted/root-manifest.sha256)
 (`trusted/root-manifest.sha256`) and checks that every Cargo workspace member
 resides under `trusted/` (production TCB, zone 0) or `tests/` (fenced
-`publish = false` test/harness crates, zone 1), that no workspace crate declares
-`build.rs` or non-`crates.io` dependencies, and that every `path` dependency
+`publish = false` test/harness crates, zone 1), that no workspace crate
+declares `package.build` or non-`crates.io` dependencies, that no workspace
+crate other than `cargo-anneal` includes a `build.rs` script (only
+`trusted/cargo-anneal/build.rs`, which deterministically emits
+`$OUT_DIR/bundled_resources.rs` from canonical sources, is allowed and
+required), and that every `path` dependency
 targets a registered workspace member satisfying `zone(dst) <= zone(src)`. This
 enforces a two-zone monotonic lattice: `tests/` suites may exercise `trusted/`
 crates and share `tests/` helpers (`tests/testkit`) without inflating
@@ -641,8 +645,9 @@ To include these files in `trusted/`'s effective TCB without relocating them,
   (`trusted/lean/foundation-lock.json`): Pins the SHA-256 digests of the `lean`
   executable and all `Init.*` prelude source and `.olean` companion files,
   verified by both the Nix toolchain build (`flake.nix`) and `anneal-audit`.
-- **`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256` and
-  `LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS`**
+- **`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`**
+  (`trusted/cargo-anneal/src/trusted_bundle.rs`, re-exported by
+  `toolchain.rs`) **and `LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS`**
   (`trusted/cargo-anneal/src/toolchain.rs`): Pins one SHA-256 digest over the
   sorted `"{rel_path}:{sha256}"` lines of every `{Init,Std,Lean}*` `.olean`,
   `.olean.server`, and `.olean.private` file in the pinned toolchain's

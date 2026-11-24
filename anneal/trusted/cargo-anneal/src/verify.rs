@@ -36,10 +36,15 @@ use crate::{
     TargetModule, TargetRole, read_regular_file_deref, read_regular_file_strict, sha256_bytes,
 };
 
-// Generated resources keep installed and packaged builds independent of the
-// source checkout. The explicit regeneration check binds these bytes to the
-// canonical audited sources without running a build hook.
-include!("bundled_resources.rs");
+// Generated deterministically by `build.rs` into `$OUT_DIR` from canonical
+// workspace sources (or from `packaged/bundled_resources.rs` in standalone
+// `.crate` builds), keeping edits to `trusted/` and `correspondence/` free of
+// checked-in monolith conflicts while binding the compiled binary to audited
+// bytes.
+include!(concat!(env!("OUT_DIR"), "/bundled_resources.rs"));
+
+pub(crate) const EMBEDDED_BUNDLE_SOURCES: &[(&str, &str)] = BUNDLE;
+pub(crate) const EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON: &str = CORRESPONDENCE_PROVENANCE_JSON;
 
 const PINNED_CAPTURE_SCHEMA_VERSION: u32 = 4;
 const PINNED_RUSTC_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";

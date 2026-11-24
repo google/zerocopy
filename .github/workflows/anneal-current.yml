@@ -836,9 +836,20 @@ jobs:
         run: |
           set -euo pipefail
           exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/package.log") 2>&1
+          clean_status="$(git status --porcelain --untracked-files=all)"
+          test -z "$clean_status"
+          trap 'rm -rf trusted/cargo-anneal/packaged' EXIT
+          cargo run --locked -p cargo-anneal --example regenerate_bundle \
+            --config 'profile.dev.package.cpufeatures.opt-level=3' \
+            --config 'profile.dev.package.digest.opt-level=3' \
+            --config 'profile.dev.package.sha2.opt-level=3' \
+            --config 'profile.dev.package.zstd-sys.opt-level=3' \
+            -- --root . --stage-package
+          staged_status="$(git status --porcelain --untracked-files=all)"
+          test "$staged_status" = "?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs"
           cargo metadata --locked --format-version 1 --no-deps \
             > "$ANNEAL_TEST_DIAGNOSTICS/package-metadata.json"
-          cargo publish --dry-run -p cargo-anneal \
+          cargo publish --dry-run --allow-dirty -p cargo-anneal \
             --config 'profile.dev.package.cpufeatures.opt-level=3' \
             --config 'profile.dev.package.digest.opt-level=3' \
             --config 'profile.dev.package.sha2.opt-level=3' \
