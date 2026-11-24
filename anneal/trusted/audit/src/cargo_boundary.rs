@@ -838,13 +838,13 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
 /// `require_mir_wp` is enabled) [`verify_bundled_resources`] whenever any
 /// Cargo, root-manifest, or vendored Miri TCB path is present.
 ///
-/// Bundle parity follows `require_mir_wp` because the embedded bundle holds
-/// `Trusted.MirAst`, `Trusted.MirSemantics`, `Anneal.MirWp`, and correspondence
-/// sources: only synthetic unit-test fixtures disable it when substituting stub
-/// sources or bypassing embedded parity. `anneal-audit` always enables
-/// `require_mir_wp`, so missing `build.rs` or `trusted_bundle.rs`,
-/// reintroduced legacy `src/bundled_resources.rs`, or drifted canonical sources
-/// fail closed.
+/// Bundle parity follows `require_mir_wp` because the checked bundles hold
+/// `Trusted.MirAst`, `Trusted.MirSemantics`, and `Anneal.MirWp` sources plus
+/// SHA-256 digests of the correspondence files: only synthetic unit-test
+/// fixtures disable it when substituting stub sources or bypassing embedded
+/// parity. `anneal-audit` always enables `require_mir_wp`, so missing
+/// `build.rs` or `trusted_bundle.rs`, reintroduced legacy
+/// `src/bundled_resources.rs`, or drifted canonical sources fail closed.
 pub(crate) fn check_checkout_cargo_hygiene(
     checkout: &Path,
     require_mir_wp: bool,
