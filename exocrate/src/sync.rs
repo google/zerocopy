@@ -99,12 +99,35 @@ impl<'a> ManagedDirName<'a> {
         fs::create_dir_all(parent)?;
 
         let lock_file_path = self.lock_path();
-        let lock_file = OpenOptions::new()
-            .read(true)
-            .write(true)
-            .create(true)
-            .truncate(false)
-            .open(&lock_file_path)?;
+        if let Ok(pre_meta) = fs::symlink_metadata(&lock_file_path)
+            && (pre_meta.file_type().is_symlink() || !pre_meta.file_type().is_file())
+        {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidInput,
+                "Lock path exists and is not a regular file",
+            ));
+        }
+        let lock_file = open_lock_file(&lock_file_path)?;
+        let fd_meta = lock_file.metadata()?;
+        if !fd_meta.is_file() {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidInput,
+                "Opened lock path is not a regular file",
+            ));
+        }
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::MetadataExt as _;
+            let post_meta = fs::symlink_metadata(&lock_file_path)?;
+            if post_meta.file_type().is_symlink()
+                || (post_meta.dev(), post_meta.ino()) != (fd_meta.dev(), fd_meta.ino())
+            {
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidInput,
+                    "Lock path changed or became a symlink during open",
+                ));
+            }
+        }
 
         <_ as fs2::FileExt>::lock_exclusive(&lock_file)?;
 
@@ -203,6 +226,22 @@ impl<'a> ManagedDirName<'a> {
         file_name.push(".lock");
         self.path.with_file_name(file_name)
     }
+}
+
+/// Opens (creating if absent) the lock file at `path`.
+///
+/// On Unix, the open neither follows a symlink nor blocks, so a symlink or
+/// FIFO swapped in after the caller's `lstat` cannot redirect `O_CREAT` to
+/// another file or hang the open; the caller still checks what was opened.
+fn open_lock_file(path: &Path) -> std::io::Result<File> {
+    let mut options = OpenOptions::new();
+    options.read(true).write(true).create(true).truncate(false);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt as _;
+        options.custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK);
+    }
+    options.open(path)
 }
 
 #[cfg(test)]
@@ -656,5 +695,43 @@ pub(crate) mod tests {
             renamed.store(true, Ordering::Release);
             reader.join().unwrap();
         }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn test_rejects_symlink_lockfile() {
+        use std::os::unix::fs::symlink;
+
+        let temp = tempfile::tempdir().unwrap();
+        let locked_dst = temp.path().join("locked_target");
+        let victim_file = temp.path().join("victim.txt");
+        fs::write(&victim_file, "do not lock").unwrap();
+        symlink(&victim_file, temp.path().join("locked_target.lock")).unwrap();
+        let err = ManagedDirName::new(&locked_dst).check_exists_or_create(|_| Ok(())).unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::InvalidInput);
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn test_open_lock_file_refuses_swapped_symlink() {
+        let temp = tempfile::tempdir().unwrap();
+        let target = temp.path().join("target");
+        let lock = temp.path().join("dst.lock");
+        std::os::unix::fs::symlink(&target, &lock).unwrap();
+
+        // A dangling symlink at the lock path must not make `O_CREAT` create
+        // its target.
+        assert!(open_lock_file(&lock).is_err());
+        assert!(!target.exists());
+
+        // Nor may a symlink to an existing file be followed.
+        fs::write(&target, b"").unwrap();
+        assert!(open_lock_file(&lock).is_err());
+
+        // A regular lock file is created and reopened.
+        let plain = temp.path().join("plain.lock");
+        open_lock_file(&plain).unwrap();
+        assert!(fs::symlink_metadata(&plain).unwrap().is_file());
+        open_lock_file(&plain).unwrap();
     }
 }
