@@ -94,9 +94,9 @@
     },
     {
       "pattern": "artifact_size.archive.omnibus_tar_zst_bytes",
-      "max_value": 1395864371,
+      "max_value": 943718400,
       "unit": "B",
-      "description": "Omnibus toolchain archive byte ceiling (1.30 GiB)"
+      "description": "Omnibus toolchain archive byte ceiling (900 MiB)"
     },
     {
       "pattern": "zerocopy_proofs.suite.verified_units_count",

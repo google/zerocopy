@@ -330,6 +330,7 @@
 
             rustToolchain = self.packages.${system}.rust-toolchain;
             leanToolchain = self.packages.${system}.lean-toolchain;
+            inherit rustTarget;
             leanExec = leanCompilerForBuild;
             rustcCapture = self.packages.${system}.rustc-capture;
             leanFoundation = ./trusted/lean;
@@ -445,7 +446,20 @@
               # paths without copying 3.3 GiB into `$TMPDIR`. `flags=r`
               # rewrites member paths without altering internal `.so` symlink
               # targets, `--hard-dereference` breaks store hardlinks into
-              # standalone files, and `--mode='u+w'` makes entries writable.
+              # standalone files, `--mode='u+w'` makes entries writable, and
+              # `--sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner`
+              # keeps archive output deterministic. Unused build/IDE/debug
+              # payloads (Lean static `.a`s, `.ilean` LSP indices, `Lake`
+              # build tool, Lean's bundled LLVM/Clang C++ compiler toolchain,
+              # `Lake`/`Lean` Lean sources, `rust-src`, `rustc-src`,
+              # `miri`, `libexec`, docs/manpages, debugger scripts, sanitizer
+              # `.a`s, unused LLVM utilities, and duplicate regular-file
+              # `libLLVM`/`librustc_driver` copies) are omitted; runtime
+              # `Init`/`Std`/`Lean` `.olean*`/`.ir*`, the four sysroot trees
+              # pinned by `library-lock.json`
+              # (`lean/{lib,src}/lean/{Init,Std}/**`), pinned Lean shared
+              # libraries, `rust-std`, `rust-lld`, and `rustc-dev`
+              # (`rustc_private`) stay intact.
               lean_parent="$(dirname "$leanToolchain")"
               lean_base="$(basename "$leanToolchain")"
               lean_esc="$(printf '%s' "$lean_base" | sed 's/[.[\*^$:]/\\&/g')"
@@ -456,13 +470,95 @@
               tar_args=(
                 --mode='u+w'
                 --hard-dereference
+                --sort=name
+                --mtime=@0
+                --owner=0
+                --group=0
+                --numeric-owner
                 --anchored
-                --exclude="$rust_base/share/doc"
+                --exclude="$lean_base/include"
+                --exclude="$lean_base/bin/lake"
+                --exclude="$lean_base/bin/leanchecker"
+                --exclude="$lean_base/bin/clang*"
+                --exclude="$lean_base/bin/ld.lld"
+                --exclude="$lean_base/bin/lld*"
+                --exclude="$lean_base/bin/llvm-*"
+                --exclude="$lean_base/bin/leanc"
+                --exclude="$lean_base/bin/leanir"
+                --exclude="$lean_base/bin/leantar"
+                --exclude="$lean_base/bin/cadical"
+                --exclude="$lean_base/bin/leanmake"
+                --exclude="$lean_base/lib/clang"
+                --exclude="$lean_base/lib/libLLVM*"
+                --exclude="$lean_base/lib/libclang*"
+                --exclude="$lean_base/lib/*.a"
+                --exclude="$lean_base/lib/lean/*.a"
+                --exclude="$lean_base/lib/lean/Init.ilean"
+                --exclude="$lean_base/lib/lean/Std.ilean"
+                --exclude="$lean_base/lib/lean/Lean.ilean"
+                --exclude="$lean_base/lib/lean/Lean/*.ilean"
+                --exclude="$lean_base/lib/lean/Lake"
+                --exclude="$lean_base/lib/lean/Lake.*"
+                --exclude="$lean_base/lib/lean/LakeMain.*"
+                --exclude="$lean_base/lib/lean/LeanIR"
+                --exclude="$lean_base/lib/lean/LeanIR.*"
+                --exclude="$lean_base/lib/lean/LeanChecker*"
+                --exclude="$lean_base/lib/lean/Leanc*"
+                --exclude="$lean_base/src/lean/lake"
+                --exclude="$lean_base/src/lean/Lean"
+                --exclude="$lean_base/src/lean/Lean.lean"
+                --exclude="$lean_base/src/lean/Std.lean"
+                --exclude="$lean_base/src/lean/LeanChecker.lean"
+                --exclude="$lean_base/src/lean/LeanIR.lean"
+                --exclude="$lean_base/src/lean/Leanc.lean"
+                --exclude="$rust_base/share"
+                --exclude="$rust_base/etc"
+                --exclude="$rust_base/manifest.in"
+                --exclude="$rust_base/libexec"
+                --exclude="$rust_base/bin/miri"
+                --exclude="$rust_base/bin/cargo-miri"
+                --exclude="$rust_base/bin/rust-gdb*"
+                --exclude="$rust_base/bin/rust-lldb"
+                --exclude="$rust_base/lib/rustlib/src"
+                --exclude="$rust_base/lib/rustlib/rustc-src"
+                --exclude="$rust_base/lib/rustlib/etc"
+                --exclude="$rust_base/lib/rustlib/$rustTarget/lib/librustc-*_rt.*.a"
+                --exclude="$rust_base/lib/rustlib/$rustTarget/bin/llc"
+                --exclude="$rust_base/lib/rustlib/$rustTarget/bin/llvm-*"
+                --exclude="$rust_base/lib/rustlib/$rustTarget/bin/opt"
+                --exclude="$rust_base/lib/rustlib/$rustTarget/bin/wasm-component-ld"
               )
+
+              staged_rust_symlinks=()
+              rustlib_target_lib="$rustToolchain/lib/rustlib/$rustTarget/lib"
+              if [ -d "$rustlib_target_lib" ]; then
+                for prefix in libLLVM librustc_driver-; do
+                  for lib_path in "$rustToolchain"/lib/"$prefix"*; do
+                    [ -e "$lib_path" ] || continue
+                    lib_name="$(basename "$lib_path")"
+                    dup_path="$rustlib_target_lib/$lib_name"
+                    if [ -f "$lib_path" ] && [ ! -L "$lib_path" ] \
+                        && [ -f "$dup_path" ] && [ ! -L "$dup_path" ] \
+                        && cmp -s "$lib_path" "$dup_path"; then
+                      tar_args+=(
+                        --exclude="$rust_base/lib/rustlib/$rustTarget/lib/$lib_name"
+                      )
+                      mkdir -p \
+                        "$TMPDIR/dist_staging/rust/lib/rustlib/$rustTarget/lib"
+                      ln -s "../../../$lib_name" \
+                        "$TMPDIR/dist_staging/rust/lib/rustlib/$rustTarget/lib/$lib_name"
+                      staged_rust_symlinks+=(
+                        "rust/lib/rustlib/$rustTarget/lib/$lib_name"
+                      )
+                    fi
+                  done
+                done
+              fi
               ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
                 tar_args+=(
                   --exclude="$rust_base/lib/libz.so.1"
                   --exclude="$rust_base/lib/libgcc_s.so.1"
+                  --exclude="$rust_base/lib/rustlib/$rustTarget/bin/rust-objcopy"
                 )
               ''}
               tar_args+=(
@@ -473,6 +569,12 @@
                 -C "$lean_parent" "$lean_base"
                 -C "$rust_parent" "$rust_base"
               )
+              if [ "''${#staged_rust_symlinks[@]}" -gt 0 ]; then
+                tar_args+=(
+                  -C "$TMPDIR/dist_staging"
+                  "''${staged_rust_symlinks[@]}"
+                )
+              fi
               ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
                 tar_args+=(
                   -C "$TMPDIR/dist_staging"
@@ -481,25 +583,57 @@
                 )
               ''}
 
-              tar "''${tar_args[@]}" | zstd -T"$NIX_BUILD_CORES" -3 -o "$out"
+              # Compress with zstd -12 --long=27 (128 MiB window, matching the
+              # default libzstd ZSTD_WINDOWLOG_LIMIT_DEFAULT used by exocrate).
+              tar "''${tar_args[@]}" | zstd -T"$NIX_BUILD_CORES" -12 --long=27 -o "$out"
 
               # Verify the produced archive directly so any broken path
               # transform or unexpected top-level member fails closed at build
               # time before downstream jobs or release uploads consume `$out`.
               zstd -dc "$out" | tar -tf - > "$TMPDIR/archive_entries.txt"
+              zstd -dc "$out" | tar -tvf - > "$TMPDIR/archive_listing.txt"
               if grep -Eqv '^(bin|lean|rust|share)(/|$)' "$TMPDIR/archive_entries.txt"; then
                 echo "ERROR: unexpected top-level entry in omnibus archive" >&2
                 exit 1
               fi
-              if grep -Eq '^rust/share/doc(/|$)' "$TMPDIR/archive_entries.txt"; then
-                echo "ERROR: rust/share/doc was not excluded from omnibus archive" >&2
+              excluded_patterns=(
+                '^lean/include(/|$)'
+                '^lean/bin/(lake|leanchecker|clang|ld\.lld|lld|llvm-|leanc|leanir|leantar|cadical|leanmake)'
+                '^lean/lib/(clang|libLLVM|libclang)'
+                '^lean/lib/.*\.a$'
+                '^lean/lib/lean/(Lake(Main)?(/|\.|$)|LeanIR|LeanChecker|Leanc|(Init|Std|Lean)\.ilean$|Lean/.*\.ilean$)'
+                '^lean/src/lean/(lake|Lean|Std\.lean$|LeanChecker|LeanIR|Leanc)'
+                '^rust/(share|etc|manifest\.in|libexec)(/|$)'
+                '^rust/bin/(miri|cargo-miri|rust-gdb|rust-lldb)'
+                '^rust/lib/rustlib/(src|rustc-src|etc)(/|$)'
+                '^rust/lib/rustlib/.*/bin/(llc|llvm-|opt|wasm-component-ld)'
+                '^rust/lib/rustlib/.*/lib/librustc-.*_rt\..*\.a$'
+              )
+              ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
+                excluded_patterns+=(
+                  '^rust/lib/rustlib/.*/bin/rust-objcopy$'
+                )
+              ''}
+              for pat in "''${excluded_patterns[@]}"; do
+                if grep -Eq "$pat" "$TMPDIR/archive_entries.txt"; then
+                  echo "ERROR: excluded payload ($pat) leaked into archive" >&2
+                  exit 1
+                fi
+              done
+              if grep -Eq \
+                  "^-.* rust/lib/rustlib/$rustTarget/lib/(libLLVM|librustc_driver-)" \
+                  "$TMPDIR/archive_listing.txt"; then
+                echo "ERROR: duplicate regular-file libLLVM/librustc_driver in archive" >&2
                 exit 1
               fi
               expected_entries=(
                 bin/anneal-rustc-capture
                 lean/bin/lean
+                lean/lib/lean/Init.olean
+                lean/lib/lean/Init.ir
                 rust/bin/cargo
                 rust/bin/rustc
+                rust/bin/rustdoc
                 share/anneal/correspondence-provenance.json
                 share/anneal/prebuilt/manifest.json
                 share/anneal/prebuilt/TrustedBoundary.olean
@@ -518,6 +652,13 @@
                 expected_entries+=(
                   rust/lib/libz.so.1
                   rust/lib/libgcc_s.so.1
+                  "rust/lib/rustlib/$rustTarget/bin/rust-lld"
+                  "rust/lib/rustlib/$rustTarget/bin/gcc-ld/ld.lld"
+                  lean/lib/lean/libInit_shared.so
+                  lean/lib/lean/libLake_shared.so
+                  lean/lib/lean/libleanshared.so
+                  lean/lib/lean/libleanshared_1.so
+                  lean/lib/lean/libleanshared_2.so
                 )
               ''}
               for entry in "''${expected_entries[@]}"; do
@@ -526,6 +667,73 @@
                   exit 1
                 fi
               done
+              ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
+                for prefix in libLLVM librustc_driver-; do
+                  if ! grep -Eq "^rust/lib/rustlib/$rustTarget/lib/$prefix" \
+                      "$TMPDIR/archive_entries.txt"; then
+                    echo "ERROR: missing $prefix in target rustlib dir" >&2
+                    exit 1
+                  fi
+                done
+              ''}
+
+              # Verify all four pinned sysroot trees in `library-lock.json`
+              # inside the built archive byte-for-byte (rejecting symlinks and
+              # ensuring pinned `cargo-anneal` verification succeeds).
+              mkdir -p "$TMPDIR/lock_check"
+              zstd -dc "$out" | tar -C "$TMPDIR/lock_check" -xf - \
+                share/anneal/trusted/audit/library-lock.json \
+                lean/lib/lean/Init \
+                lean/lib/lean/Std \
+                lean/src/lean/Init \
+                lean/src/lean/Std
+              LOCK_CHECK_DIR="$TMPDIR/lock_check" python3 -B - << 'PYEOF'
+import hashlib, os, sys
+from pathlib import Path
+
+root = Path(os.environ["LOCK_CHECK_DIR"])
+lock = root / "share/anneal/trusted/audit/library-lock.json"
+lines = [ln.strip() for ln in lock.read_text(encoding="utf-8").splitlines() if ln.strip()]
+if len(lines) != 4:
+    sys.exit(f"ERROR: expected 4 library-lock.json entries, found {len(lines)}")
+for line in lines:
+    expected_sha, label = line.split("  ", 1)
+    if not label.endswith("/**"):
+        sys.exit(f"ERROR: unexpected library-lock label {label!r}")
+    tree_dir = root / label[:-3]
+    if tree_dir.is_symlink() or not tree_dir.is_dir():
+        sys.exit(f"ERROR: invalid sysroot lock dir {tree_dir}")
+    files = []
+    for cur, dirs, names in os.walk(tree_dir, followlinks=False):
+        cur_p = Path(cur)
+        for d in dirs:
+            if (cur_p / d).is_symlink():
+                sys.exit(f"ERROR: symlink forbidden in sysroot: {cur_p / d}")
+        for n in names:
+            fp = cur_p / n
+            if fp.is_symlink() or not fp.is_file():
+                sys.exit(f"ERROR: non-regular file in sysroot: {fp}")
+            rel = fp.relative_to(tree_dir).as_posix()
+            files.append((rel, fp))
+    files.sort(key=lambda item: item[0].encode("utf-8"))
+    h = hashlib.sha256()
+    for rel, fp in files:
+        fh = hashlib.sha256()
+        with fp.open("rb") as f:
+            while True:
+                chunk = f.read(65536)
+                if not chunk:
+                    break
+                fh.update(chunk)
+        h.update(rel.encode("utf-8"))
+        h.update(b"\0")
+        h.update(fh.digest())
+    actual_sha = h.hexdigest()
+    if actual_sha != expected_sha:
+        sys.exit(f"ERROR: library-lock mismatch for {label}: got {actual_sha}, expected {expected_sha}")
+print("Verified all 4 library-lock.json sysroot tree digests in archive.")
+PYEOF
+              rm -rf "$TMPDIR/lock_check"
             '';
           };
 
