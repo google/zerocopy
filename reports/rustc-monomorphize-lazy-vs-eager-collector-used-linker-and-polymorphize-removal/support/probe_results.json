@@ -1,0 +1,500 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "ld_version": "GNU ld (GNU Binutils for Debian) 2.47",
+  "experiments": {
+    "print_mono_items_lazy_rejected": {
+      "returncode": 1,
+      "stderr": "error: incorrect value `lazy` for unstable option `print-mono-items` - one of: `y`, `yes`, `on`, `true`, `n`, `no`, `off` or `false` was expected"
+    },
+    "mono_collector_lazy_vs_eager_and_used_statics": {
+      "bin_lazy_link_dead_code_no": {
+        "crate_type": "bin",
+        "link_dead_code": "no",
+        "compile_returncode": 0,
+        "mono_item_count": 17,
+        "mono_items": [
+          "MONO_ITEM fn <() as std::process::Termination>::report @@ mono.938ec325f05fc01-cgu.0[Internal]",
+          "MONO_ITEM fn <fn() as std::ops::FnOnce<()>>::call_once - shim(fn()) @@ mono.938ec325f05fc01-cgu.0[Internal]",
+          "MONO_ITEM fn <{closure@std::rt::lang_start<()>::{closure#0}} as std::ops::FnOnce<()>>::call_once - shim @@ mono.938ec325f05fc01-cgu.0[Internal]",
+          "MONO_ITEM fn <{closure@std::rt::lang_start<()>::{closure#0}} as std::ops::FnOnce<()>>::call_once - shim(vtable) @@ mono.938ec325f05fc01-cgu.0[Internal]",
+          "MONO_ITEM fn exported_fn @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn main @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn poly_const::<u16> @@ mono.938ec325f05fc01-cgu.0[Internal]",
+          "MONO_ITEM fn poly_const::<u64> @@ mono.938ec325f05fc01-cgu.0[Internal]",
+          "MONO_ITEM fn poly_const::<u8> @@ mono.938ec325f05fc01-cgu.0[Internal]",
+          "MONO_ITEM fn poly_size::<u16> @@ mono.938ec325f05fc01-cgu.0[Internal]",
+          "MONO_ITEM fn poly_size::<u64> @@ mono.938ec325f05fc01-cgu.0[Internal]",
+          "MONO_ITEM fn poly_size::<u8> @@ mono.938ec325f05fc01-cgu.0[Internal]",
+          "MONO_ITEM fn std::rt::lang_start::<()> @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn std::rt::lang_start::<()>::{closure#0} @@ mono.938ec325f05fc01-cgu.0[Internal]",
+          "MONO_ITEM fn std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()> @@ mono.938ec325f05fc01-cgu.0[Internal]",
+          "MONO_ITEM static USED_COMP @@ mono.938ec325f05fc01-cgu.0[Internal]",
+          "MONO_ITEM static USED_LINK @@ mono.938ec325f05fc01-cgu.0[Internal]"
+        ],
+        "contains_dead": false,
+        "contains_pub_dead_small": false,
+        "contains_pub_dead_exported": false,
+        "contains_gen_dead": false,
+        "contains_main": true,
+        "contains_used_comp": true,
+        "contains_used_link": true,
+        "llvm_ir_highlights": [
+          "@_RNvCsN5BoJIsGHJ_4mono9USED_COMP = internal constant [1 x i8] c\"\\07\", align 1",
+          "@_RNvCsN5BoJIsGHJ_4mono9USED_LINK = internal constant [1 x i8] c\"\\08\", align 1",
+          "@llvm.used = appending global [1 x ptr] [ptr @_RNvCsN5BoJIsGHJ_4mono9USED_LINK], section \"llvm.metadata\"",
+          "@llvm.compiler.used = appending global [1 x ptr] [ptr @_RNvCsN5BoJIsGHJ_4mono9USED_COMP], section \"llvm.metadata\"",
+          "define internal fastcc noundef i32 @_RINvCsN5BoJIsGHJ_4mono10poly_consthEB2_(i32 noundef %x) unnamed_addr #0 {",
+          "define internal fastcc noundef range(i64 1, 4294967297) i64 @_RINvCsN5BoJIsGHJ_4mono9poly_sizehEB2_(i32 noundef %x) unnamed_addr #0 {",
+          "define internal fastcc noundef range(i64 2, 4294967298) i64 @_RINvCsN5BoJIsGHJ_4mono9poly_sizetEB2_(i32 noundef %x) unnamed_addr #0 {",
+          "define internal fastcc noundef range(i64 8, 4294967304) i64 @_RINvCsN5BoJIsGHJ_4mono9poly_sizeyEB2_(i32 noundef %x) unnamed_addr #0 {",
+          "define dso_local noundef i32 @exported_fn(i32 noundef %x) unnamed_addr #4 personality ptr @rust_eh_personality {"
+        ],
+        "llvm_nm_obj_symbols": [
+          "0000000000000000 t _RINvCsN5BoJIsGHJ_4mono10poly_consthEB2_",
+          "0000000000000000 t _RINvCsN5BoJIsGHJ_4mono9poly_sizehEB2_",
+          "0000000000000000 t _RINvCsN5BoJIsGHJ_4mono9poly_sizetEB2_",
+          "0000000000000000 t _RINvCsN5BoJIsGHJ_4mono9poly_sizeyEB2_",
+          "0000000000000000 T _RNvCsN5BoJIsGHJ_4mono4main",
+          "0000000000000000 r _RNvCsN5BoJIsGHJ_4mono9USED_COMP",
+          "0000000000000000 r _RNvCsN5BoJIsGHJ_4mono9USED_LINK",
+          "0000000000000000 T exported_fn",
+          "0000000000000000 T main"
+        ],
+        "readelf_used_sections": [
+          "[19] .rodata._RNvCsN5BoJIsGHJ_4mono9USED_COMP PROGBITS        0000000000000000 000177 000001 00   A  0   0  1",
+          "[20] .rodata._RNvCsN5BoJIsGHJ_4mono9USED_LINK PROGBITS        0000000000000000 000178 000001 00  AR  0   0  1",
+          "Key to Flags:",
+          "R (retain), D (mbind), l (large), p (processor specific)"
+        ]
+      },
+      "bin_eager_link_dead_code_yes": {
+        "crate_type": "bin",
+        "link_dead_code": "yes",
+        "compile_returncode": 0,
+        "mono_item_count": 20,
+        "mono_items": [
+          "MONO_ITEM fn <() as std::process::Termination>::report @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn <fn() as std::ops::FnOnce<()>>::call_once - shim(fn()) @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn <{closure@std::rt::lang_start<()>::{closure#0}} as std::ops::FnOnce<()>>::call_once - shim @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn <{closure@std::rt::lang_start<()>::{closure#0}} as std::ops::FnOnce<()>>::call_once - shim(vtable) @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn dead @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn exported_fn @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn main @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn poly_const::<u16> @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn poly_const::<u64> @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn poly_const::<u8> @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn poly_size::<u16> @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn poly_size::<u64> @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn poly_size::<u8> @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn pub_dead_exported @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn pub_dead_small @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn std::rt::lang_start::<()> @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn std::rt::lang_start::<()>::{closure#0} @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM fn std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()> @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM static USED_COMP @@ mono.938ec325f05fc01-cgu.0[External]",
+          "MONO_ITEM static USED_LINK @@ mono.938ec325f05fc01-cgu.0[External]"
+        ],
+        "contains_dead": true,
+        "contains_pub_dead_small": true,
+        "contains_pub_dead_exported": true,
+        "contains_gen_dead": false,
+        "contains_main": true,
+        "contains_used_comp": true,
+        "contains_used_link": true,
+        "llvm_ir_highlights": [
+          "@_RNvCsN5BoJIsGHJ_4mono9USED_COMP = hidden constant [1 x i8] c\"\\07\", align 1",
+          "@_RNvCsN5BoJIsGHJ_4mono9USED_LINK = hidden constant [1 x i8] c\"\\08\", align 1",
+          "@llvm.used = appending global [1 x ptr] [ptr @_RNvCsN5BoJIsGHJ_4mono9USED_LINK], section \"llvm.metadata\"",
+          "@llvm.compiler.used = appending global [1 x ptr] [ptr @_RNvCsN5BoJIsGHJ_4mono9USED_COMP], section \"llvm.metadata\"",
+          "define hidden noundef i32 @_RINvCsN5BoJIsGHJ_4mono10poly_consthEB2_(i32 noundef %x) unnamed_addr #0 {",
+          "define hidden noundef range(i64 1, 4294967297) i64 @_RINvCsN5BoJIsGHJ_4mono9poly_sizehEB2_(i32 noundef %x) unnamed_addr #0 {",
+          "define hidden noundef range(i64 2, 4294967298) i64 @_RINvCsN5BoJIsGHJ_4mono9poly_sizetEB2_(i32 noundef %x) unnamed_addr #0 {",
+          "define hidden noundef range(i64 8, 4294967304) i64 @_RINvCsN5BoJIsGHJ_4mono9poly_sizeyEB2_(i32 noundef %x) unnamed_addr #0 {",
+          "define hidden noundef i32 @_RNvCsN5BoJIsGHJ_4mono14pub_dead_smallB1_() unnamed_addr #4 {",
+          "define hidden noundef i32 @_RNvCsN5BoJIsGHJ_4mono17pub_dead_exported() unnamed_addr #0 {",
+          "define hidden noundef i32 @_RNvCsN5BoJIsGHJ_4mono4dead() unnamed_addr #0 {",
+          "define dso_local noundef i32 @exported_fn(i32 noundef %x) unnamed_addr #4 personality ptr @rust_eh_personality {"
+        ],
+        "llvm_nm_obj_symbols": [
+          "0000000000000000 T _RINvCsN5BoJIsGHJ_4mono10poly_consthEB2_",
+          "0000000000000000 T _RINvCsN5BoJIsGHJ_4mono10poly_consttEB2_",
+          "0000000000000000 T _RINvCsN5BoJIsGHJ_4mono10poly_constyEB2_",
+          "0000000000000000 T _RINvCsN5BoJIsGHJ_4mono9poly_sizehEB2_",
+          "0000000000000000 T _RINvCsN5BoJIsGHJ_4mono9poly_sizetEB2_",
+          "0000000000000000 T _RINvCsN5BoJIsGHJ_4mono9poly_sizeyEB2_",
+          "0000000000000000 T _RNvCsN5BoJIsGHJ_4mono14pub_dead_smallB1_",
+          "0000000000000000 T _RNvCsN5BoJIsGHJ_4mono17pub_dead_exported",
+          "0000000000000000 T _RNvCsN5BoJIsGHJ_4mono4dead",
+          "0000000000000000 T _RNvCsN5BoJIsGHJ_4mono4main",
+          "0000000000000000 R _RNvCsN5BoJIsGHJ_4mono9USED_COMP",
+          "0000000000000000 R _RNvCsN5BoJIsGHJ_4mono9USED_LINK",
+          "0000000000000000 T exported_fn",
+          "0000000000000000 T main"
+        ],
+        "readelf_used_sections": [
+          "[26] .rodata._RNvCsN5BoJIsGHJ_4mono9USED_COMP PROGBITS        0000000000000000 0001d7 000001 00   A  0   0  1",
+          "[27] .rodata._RNvCsN5BoJIsGHJ_4mono9USED_LINK PROGBITS        0000000000000000 0001d8 000001 00  AR  0   0  1",
+          "Key to Flags:",
+          "R (retain), D (mbind), l (large), p (processor specific)"
+        ]
+      },
+      "rlib_lazy_link_dead_code_no": {
+        "crate_type": "rlib",
+        "link_dead_code": "no",
+        "compile_returncode": 0,
+        "mono_item_count": 10,
+        "mono_items": [
+          "MONO_ITEM fn exported_fn @@ mono.2faa49104e2f6500-cgu.0[External]",
+          "MONO_ITEM fn poly_const::<u16> @@ mono.2faa49104e2f6500-cgu.0[Internal]",
+          "MONO_ITEM fn poly_const::<u64> @@ mono.2faa49104e2f6500-cgu.0[Internal]",
+          "MONO_ITEM fn poly_const::<u8> @@ mono.2faa49104e2f6500-cgu.0[Internal]",
+          "MONO_ITEM fn poly_size::<u16> @@ mono.2faa49104e2f6500-cgu.0[Internal]",
+          "MONO_ITEM fn poly_size::<u64> @@ mono.2faa49104e2f6500-cgu.0[Internal]",
+          "MONO_ITEM fn poly_size::<u8> @@ mono.2faa49104e2f6500-cgu.0[Internal]",
+          "MONO_ITEM fn pub_dead_exported @@ mono.2faa49104e2f6500-cgu.0[External]",
+          "MONO_ITEM static USED_COMP @@ mono.2faa49104e2f6500-cgu.0[External]",
+          "MONO_ITEM static USED_LINK @@ mono.2faa49104e2f6500-cgu.0[External]"
+        ],
+        "contains_dead": false,
+        "contains_pub_dead_small": false,
+        "contains_pub_dead_exported": true,
+        "contains_gen_dead": false,
+        "contains_main": false,
+        "contains_used_comp": true,
+        "contains_used_link": true,
+        "llvm_ir_highlights": [
+          "@_RNvCs45IG44JCuCO_4mono9USED_COMP = constant [1 x i8] c\"\\07\", align 1",
+          "@_RNvCs45IG44JCuCO_4mono9USED_LINK = constant [1 x i8] c\"\\08\", align 1",
+          "@llvm.used = appending global [1 x ptr] [ptr @_RNvCs45IG44JCuCO_4mono9USED_LINK], section \"llvm.metadata\"",
+          "@llvm.compiler.used = appending global [1 x ptr] [ptr @_RNvCs45IG44JCuCO_4mono9USED_COMP], section \"llvm.metadata\"",
+          "define internal fastcc noundef i32 @_RINvCs45IG44JCuCO_4mono10poly_consthEB2_(i32 noundef %x) unnamed_addr #0 {",
+          "define internal fastcc noundef range(i64 1, 4294967297) i64 @_RINvCs45IG44JCuCO_4mono9poly_sizehEB2_(i32 noundef %x) unnamed_addr #0 {",
+          "define internal fastcc noundef range(i64 2, 4294967298) i64 @_RINvCs45IG44JCuCO_4mono9poly_sizetEB2_(i32 noundef %x) unnamed_addr #0 {",
+          "define internal fastcc noundef range(i64 8, 4294967304) i64 @_RINvCs45IG44JCuCO_4mono9poly_sizeyEB2_(i32 noundef %x) unnamed_addr #0 {",
+          "define noundef i32 @_RNvCs45IG44JCuCO_4mono17pub_dead_exported() unnamed_addr #0 {",
+          "define noundef i32 @exported_fn(i32 noundef %x) unnamed_addr #1 personality ptr @rust_eh_personality {"
+        ],
+        "llvm_nm_obj_symbols": [
+          "0000000000000000 t _RINvCs45IG44JCuCO_4mono10poly_consthEB2_",
+          "0000000000000000 t _RINvCs45IG44JCuCO_4mono9poly_sizehEB2_",
+          "0000000000000000 t _RINvCs45IG44JCuCO_4mono9poly_sizetEB2_",
+          "0000000000000000 t _RINvCs45IG44JCuCO_4mono9poly_sizeyEB2_",
+          "0000000000000000 T _RNvCs45IG44JCuCO_4mono17pub_dead_exported",
+          "0000000000000000 R _RNvCs45IG44JCuCO_4mono9USED_COMP",
+          "0000000000000000 R _RNvCs45IG44JCuCO_4mono9USED_LINK",
+          "0000000000000000 T exported_fn"
+        ],
+        "readelf_used_sections": [
+          "[10] .rodata._RNvCs45IG44JCuCO_4mono9USED_COMP PROGBITS        0000000000000000 0000f1 000001 00   A  0   0  1",
+          "[11] .rodata._RNvCs45IG44JCuCO_4mono9USED_LINK PROGBITS        0000000000000000 0000f2 000001 00  AR  0   0  1",
+          "Key to Flags:",
+          "R (retain), D (mbind), l (large), p (processor specific)"
+        ]
+      },
+      "rlib_eager_link_dead_code_yes": {
+        "crate_type": "rlib",
+        "link_dead_code": "yes",
+        "compile_returncode": 0,
+        "mono_item_count": 13,
+        "mono_items": [
+          "MONO_ITEM fn dead @@ mono.2faa49104e2f6500-cgu.0[External]",
+          "MONO_ITEM fn exported_fn @@ mono.2faa49104e2f6500-cgu.0[External]",
+          "MONO_ITEM fn main @@ mono.2faa49104e2f6500-cgu.0[External]",
+          "MONO_ITEM fn poly_const::<u16> @@ mono.2faa49104e2f6500-cgu.0[External]",
+          "MONO_ITEM fn poly_const::<u64> @@ mono.2faa49104e2f6500-cgu.0[External]",
+          "MONO_ITEM fn poly_const::<u8> @@ mono.2faa49104e2f6500-cgu.0[External]",
+          "MONO_ITEM fn poly_size::<u16> @@ mono.2faa49104e2f6500-cgu.0[External]",
+          "MONO_ITEM fn poly_size::<u64> @@ mono.2faa49104e2f6500-cgu.0[External]",
+          "MONO_ITEM fn poly_size::<u8> @@ mono.2faa49104e2f6500-cgu.0[External]",
+          "MONO_ITEM fn pub_dead_exported @@ mono.2faa49104e2f6500-cgu.0[External]",
+          "MONO_ITEM fn pub_dead_small @@ mono.2faa49104e2f6500-cgu.0[External]",
+          "MONO_ITEM static USED_COMP @@ mono.2faa49104e2f6500-cgu.0[External]",
+          "MONO_ITEM static USED_LINK @@ mono.2faa49104e2f6500-cgu.0[External]"
+        ],
+        "contains_dead": true,
+        "contains_pub_dead_small": true,
+        "contains_pub_dead_exported": true,
+        "contains_gen_dead": false,
+        "contains_main": true,
+        "contains_used_comp": true,
+        "contains_used_link": true,
+        "llvm_ir_highlights": [
+          "@_RNvCs45IG44JCuCO_4mono9USED_COMP = constant [1 x i8] c\"\\07\", align 1",
+          "@_RNvCs45IG44JCuCO_4mono9USED_LINK = constant [1 x i8] c\"\\08\", align 1",
+          "@llvm.used = appending global [1 x ptr] [ptr @_RNvCs45IG44JCuCO_4mono9USED_LINK], section \"llvm.metadata\"",
+          "@llvm.compiler.used = appending global [1 x ptr] [ptr @_RNvCs45IG44JCuCO_4mono9USED_COMP], section \"llvm.metadata\"",
+          "define hidden noundef i32 @_RINvCs45IG44JCuCO_4mono10poly_consthEB2_(i32 noundef %x) unnamed_addr #0 {",
+          "define hidden noundef range(i64 1, 4294967297) i64 @_RINvCs45IG44JCuCO_4mono9poly_sizehEB2_(i32 noundef %x) unnamed_addr #0 {",
+          "define hidden noundef range(i64 2, 4294967298) i64 @_RINvCs45IG44JCuCO_4mono9poly_sizetEB2_(i32 noundef %x) unnamed_addr #0 {",
+          "define hidden noundef range(i64 8, 4294967304) i64 @_RINvCs45IG44JCuCO_4mono9poly_sizeyEB2_(i32 noundef %x) unnamed_addr #0 {",
+          "define hidden noundef i32 @_RNvCs45IG44JCuCO_4mono14pub_dead_smallB1_() unnamed_addr #1 {",
+          "define noundef i32 @_RNvCs45IG44JCuCO_4mono17pub_dead_exported() unnamed_addr #0 {",
+          "define hidden noundef i32 @_RNvCs45IG44JCuCO_4mono4dead() unnamed_addr #0 {",
+          "define noundef i32 @exported_fn(i32 noundef %x) unnamed_addr #1 personality ptr @rust_eh_personality {"
+        ],
+        "llvm_nm_obj_symbols": [
+          "0000000000000000 T _RINvCs45IG44JCuCO_4mono10poly_consthEB2_",
+          "0000000000000000 T _RINvCs45IG44JCuCO_4mono10poly_consttEB2_",
+          "0000000000000000 T _RINvCs45IG44JCuCO_4mono10poly_constyEB2_",
+          "0000000000000000 T _RINvCs45IG44JCuCO_4mono9poly_sizehEB2_",
+          "0000000000000000 T _RINvCs45IG44JCuCO_4mono9poly_sizetEB2_",
+          "0000000000000000 T _RINvCs45IG44JCuCO_4mono9poly_sizeyEB2_",
+          "0000000000000000 T _RNvCs45IG44JCuCO_4mono14pub_dead_smallB1_",
+          "0000000000000000 T _RNvCs45IG44JCuCO_4mono17pub_dead_exported",
+          "0000000000000000 T _RNvCs45IG44JCuCO_4mono4dead",
+          "0000000000000000 T _RNvCs45IG44JCuCO_4mono4main",
+          "0000000000000000 R _RNvCs45IG44JCuCO_4mono9USED_COMP",
+          "0000000000000000 R _RNvCs45IG44JCuCO_4mono9USED_LINK",
+          "0000000000000000 T exported_fn"
+        ],
+        "readelf_used_sections": [
+          "[13] .rodata._RNvCs45IG44JCuCO_4mono9USED_COMP PROGBITS        0000000000000000 000121 000001 00   A  0   0  1",
+          "[14] .rodata._RNvCs45IG44JCuCO_4mono9USED_LINK PROGBITS        0000000000000000 000122 000001 00  AR  0   0  1",
+          "Key to Flags:",
+          "R (retain), D (mbind), l (large), p (processor specific)"
+        ]
+      }
+    },
+    "downstream_rlib_consumer": {
+      "compile_returncode": 0,
+      "mono_item_count": 9,
+      "mono_items": [
+        "MONO_ITEM fn <() as std::process::Termination>::report @@ app.a3a663ba56724a6c-cgu.0[Internal]",
+        "MONO_ITEM fn <fn() as std::ops::FnOnce<()>>::call_once - shim(fn()) @@ app.a3a663ba56724a6c-cgu.0[Internal]",
+        "MONO_ITEM fn <{closure@std::rt::lang_start<()>::{closure#0}} as std::ops::FnOnce<()>>::call_once - shim @@ app.a3a663ba56724a6c-cgu.0[Internal]",
+        "MONO_ITEM fn <{closure@std::rt::lang_start<()>::{closure#0}} as std::ops::FnOnce<()>>::call_once - shim(vtable) @@ app.a3a663ba56724a6c-cgu.0[Internal]",
+        "MONO_ITEM fn main @@ app.a3a663ba56724a6c-cgu.0[External]",
+        "MONO_ITEM fn mono::pub_dead_small @@ app.a3a663ba56724a6c-cgu.0[Internal]",
+        "MONO_ITEM fn std::rt::lang_start::<()> @@ app.a3a663ba56724a6c-cgu.0[External]",
+        "MONO_ITEM fn std::rt::lang_start::<()>::{closure#0} @@ app.a3a663ba56724a6c-cgu.0[Internal]",
+        "MONO_ITEM fn std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()> @@ app.a3a663ba56724a6c-cgu.0[Internal]"
+      ],
+      "local_codegen_pub_dead_small": true,
+      "local_codegen_pub_dead_exported": false,
+      "runtime_returncode": 0,
+      "runtime_stdout": "222"
+    },
+    "bare_used_default_linux_elf": {
+      "llvm_ir_lines": [
+        "@_RNvCswXrmwFnWVg_9bare_used12USED_DEFAULT = constant [1 x i8] c\"\\09\", align 1",
+        "@llvm.used = appending global [1 x ptr] [ptr @_RNvCswXrmwFnWVg_9bare_used12USED_DEFAULT], section \"llvm.metadata\""
+      ],
+      "readelf_sections": [
+        "[ 3] .rodata._RNvCswXrmwFnWVg_9bare_used12USED_DEFAULT PROGBITS        0000000000000000 000040 000001 00  AR  0   0  1"
+      ]
+    },
+    "linker_gc_survival": {
+      "gc_sections_symbols": [
+        "0000000000004840 r _RNvCsN5BoJIsGHJ_4mono9USED_LINK"
+      ],
+      "no_gc_sections_symbols": [
+        "000000000000e15c r _RNvCsN5BoJIsGHJ_4mono9USED_COMP",
+        "000000000000e15d r _RNvCsN5BoJIsGHJ_4mono9USED_LINK",
+        "0000000000042bd0 T exported_fn"
+      ],
+      "used_comp_survives_gc": false,
+      "used_link_survives_gc": true,
+      "used_comp_survives_no_gc": true,
+      "used_link_survives_no_gc": true
+    },
+    "polymorphize_removal_and_merge_functions": {
+      "z_polymorphize_on_rejected": {
+        "returncode": 1,
+        "stderr": "error: unknown unstable option: `polymorphize`"
+      },
+      "ir_modes": {
+        "o2_default_merge_functions_aliases_lazy": {
+          "opt_level": "2",
+          "link_dead_code": "no",
+          "extra_args": [],
+          "compile_returncode": 0,
+          "define_count_poly_const_or_size": 4,
+          "alias_count_poly_const_or_size": 0,
+          "defines": [
+            "define internal fastcc noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define internal fastcc noundef range(i64 1, 4294967297) i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizehEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define internal fastcc noundef range(i64 2, 4294967298) i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizetEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define internal fastcc noundef range(i64 8, 4294967304) i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizeyEB2_(i32 noundef %x) unnamed_addr #0 {"
+          ],
+          "aliases": [],
+          "caller_calls": [
+            "; call poly::poly_const::<u8>",
+            "%_6 = tail call fastcc noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef %x)",
+            "; call poly::poly_const::<u8>",
+            "%_7 = tail call fastcc noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef %x)",
+            "; call poly::poly_const::<u8>",
+            "%_8 = tail call fastcc noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef %x)",
+            "; call poly::poly_size::<u8>",
+            "%_10 = tail call fastcc noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizehEB2_(i32 noundef %x)",
+            "; call poly::poly_size::<u16>",
+            "%_12 = tail call fastcc noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizetEB2_(i32 noundef %x)",
+            "; call poly::poly_size::<u64>",
+            "%_14 = tail call fastcc noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizeyEB2_(i32 noundef %x)"
+          ]
+        },
+        "o2_merge_functions_disabled_lazy": {
+          "opt_level": "2",
+          "link_dead_code": "no",
+          "extra_args": [
+            "-Zmerge-functions=disabled"
+          ],
+          "compile_returncode": 0,
+          "define_count_poly_const_or_size": 6,
+          "alias_count_poly_const_or_size": 0,
+          "defines": [
+            "define internal fastcc noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define internal fastcc noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consttEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define internal fastcc noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_constyEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define internal fastcc noundef range(i64 1, 4294967297) i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizehEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define internal fastcc noundef range(i64 2, 4294967298) i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizetEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define internal fastcc noundef range(i64 8, 4294967304) i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizeyEB2_(i32 noundef %x) unnamed_addr #0 {"
+          ],
+          "aliases": [],
+          "caller_calls": [
+            "; call poly::poly_const::<u8>",
+            "%_6 = tail call fastcc noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef %x)",
+            "; call poly::poly_const::<u16>",
+            "%_7 = tail call fastcc noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consttEB2_(i32 noundef %x)",
+            "; call poly::poly_const::<u64>",
+            "%_8 = tail call fastcc noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_constyEB2_(i32 noundef %x)",
+            "; call poly::poly_size::<u8>",
+            "%_10 = tail call fastcc noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizehEB2_(i32 noundef %x)",
+            "; call poly::poly_size::<u16>",
+            "%_12 = tail call fastcc noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizetEB2_(i32 noundef %x)",
+            "; call poly::poly_size::<u64>",
+            "%_14 = tail call fastcc noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizeyEB2_(i32 noundef %x)"
+          ]
+        },
+        "o2_eager_external_linkage_aliases": {
+          "opt_level": "2",
+          "link_dead_code": "yes",
+          "extra_args": [],
+          "compile_returncode": 0,
+          "define_count_poly_const_or_size": 4,
+          "alias_count_poly_const_or_size": 2,
+          "defines": [
+            "define hidden noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define hidden noundef range(i64 1, 4294967297) i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizehEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define hidden noundef range(i64 2, 4294967298) i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizetEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define hidden noundef range(i64 8, 4294967304) i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizeyEB2_(i32 noundef %x) unnamed_addr #0 {"
+          ],
+          "aliases": [
+            "@_RINvCsgoWXtm4bGR3_4poly10poly_consttEB2_ = hidden unnamed_addr alias i32 (i32), ptr @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_",
+            "@_RINvCsgoWXtm4bGR3_4poly10poly_constyEB2_ = hidden unnamed_addr alias i32 (i32), ptr @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_"
+          ],
+          "caller_calls": [
+            "; call poly::poly_const::<u8>",
+            "%_6.i = tail call noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef 11)",
+            "; call poly::poly_const::<u8>",
+            "%_7.i = tail call noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef 11)",
+            "; call poly::poly_const::<u8>",
+            "%_8.i = tail call noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef 11)",
+            "; call poly::poly_size::<u8>",
+            "%_10.i = tail call noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizehEB2_(i32 noundef 11)",
+            "; call poly::poly_size::<u16>",
+            "%_12.i = tail call noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizetEB2_(i32 noundef 11)",
+            "; call poly::poly_size::<u64>",
+            "%_14.i = tail call noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizeyEB2_(i32 noundef 11)",
+            "; call poly::poly_const::<u8>",
+            "%_6 = tail call noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef %x)",
+            "; call poly::poly_const::<u8>",
+            "%_7 = tail call noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef %x)",
+            "; call poly::poly_const::<u8>",
+            "%_8 = tail call noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef %x)",
+            "; call poly::poly_size::<u8>",
+            "%_10 = tail call noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizehEB2_(i32 noundef %x)",
+            "; call poly::poly_size::<u16>",
+            "%_12 = tail call noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizetEB2_(i32 noundef %x)",
+            "; call poly::poly_size::<u64>",
+            "%_14 = tail call noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizeyEB2_(i32 noundef %x)"
+          ]
+        },
+        "o2_eager_external_linkage_trampolines": {
+          "opt_level": "2",
+          "link_dead_code": "yes",
+          "extra_args": [
+            "-Zmerge-functions=trampolines"
+          ],
+          "compile_returncode": 0,
+          "define_count_poly_const_or_size": 6,
+          "alias_count_poly_const_or_size": 0,
+          "defines": [
+            "define hidden noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define hidden noundef range(i64 1, 4294967297) i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizehEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define hidden noundef range(i64 2, 4294967298) i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizetEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define hidden noundef range(i64 8, 4294967304) i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizeyEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define hidden noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consttEB2_(i32 noundef %0) unnamed_addr #0 {",
+            "define hidden noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_constyEB2_(i32 noundef %0) unnamed_addr #0 {"
+          ],
+          "aliases": [],
+          "caller_calls": [
+            "; call poly::poly_const::<u8>",
+            "%_6.i = tail call noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef 11)",
+            "; call poly::poly_const::<u8>",
+            "%_7.i = tail call noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef 11)",
+            "; call poly::poly_const::<u8>",
+            "%_8.i = tail call noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef 11)",
+            "; call poly::poly_size::<u8>",
+            "%_10.i = tail call noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizehEB2_(i32 noundef 11)",
+            "; call poly::poly_size::<u16>",
+            "%_12.i = tail call noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizetEB2_(i32 noundef 11)",
+            "; call poly::poly_size::<u64>",
+            "%_14.i = tail call noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizeyEB2_(i32 noundef 11)",
+            "; call poly::poly_const::<u8>",
+            "%_6 = tail call noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef %x)",
+            "; call poly::poly_const::<u8>",
+            "%_7 = tail call noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef %x)",
+            "; call poly::poly_const::<u8>",
+            "%_8 = tail call noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef %x)",
+            "; call poly::poly_size::<u8>",
+            "%_10 = tail call noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizehEB2_(i32 noundef %x)",
+            "; call poly::poly_size::<u16>",
+            "%_12 = tail call noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizetEB2_(i32 noundef %x)",
+            "; call poly::poly_size::<u64>",
+            "%_14 = tail call noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizeyEB2_(i32 noundef %x)",
+            "; call poly::poly_const::<u8>",
+            "%2 = tail call noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef %0) #0",
+            "; call poly::poly_const::<u8>",
+            "%2 = tail call noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef %0) #0"
+          ]
+        },
+        "o1_merge_functions_inactive": {
+          "opt_level": "1",
+          "link_dead_code": "no",
+          "extra_args": [],
+          "compile_returncode": 0,
+          "define_count_poly_const_or_size": 6,
+          "alias_count_poly_const_or_size": 0,
+          "defines": [
+            "define internal fastcc noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define internal fastcc noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consttEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define internal fastcc noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_constyEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define internal fastcc noundef range(i64 1, 4294967297) i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizehEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define internal fastcc noundef range(i64 2, 4294967298) i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizetEB2_(i32 noundef %x) unnamed_addr #0 {",
+            "define internal fastcc noundef range(i64 8, 4294967304) i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizeyEB2_(i32 noundef %x) unnamed_addr #0 {"
+          ],
+          "aliases": [],
+          "caller_calls": [
+            "; call poly::poly_const::<u8>",
+            "%_6 = tail call fastcc noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consthEB2_(i32 noundef %x)",
+            "; call poly::poly_const::<u16>",
+            "%_7 = tail call fastcc noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_consttEB2_(i32 noundef %x)",
+            "; call poly::poly_const::<u64>",
+            "%_8 = tail call fastcc noundef i32 @_RINvCsgoWXtm4bGR3_4poly10poly_constyEB2_(i32 noundef %x)",
+            "; call poly::poly_size::<u8>",
+            "%_10 = tail call fastcc noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizehEB2_(i32 noundef %x)",
+            "; call poly::poly_size::<u16>",
+            "%_12 = tail call fastcc noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizetEB2_(i32 noundef %x)",
+            "; call poly::poly_size::<u64>",
+            "%_14 = tail call fastcc noundef i64 @_RINvCsgoWXtm4bGR3_4poly9poly_sizeyEB2_(i32 noundef %x)"
+          ]
+        }
+      },
+      "runtime_equivalence": {
+        "merge_functions_on_stdout": "146",
+        "merge_functions_disabled_stdout": "146",
+        "outputs_identical": true
+      }
+    }
+  }
+}

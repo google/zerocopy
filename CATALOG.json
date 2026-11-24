@@ -107937,6 +107937,75 @@
         "verification"
       ]
     },
+    "rustc-monomorphize-lazy-vs-eager-collector-used-linker-and-polymorphize-removal": {
+      "observed_at": "2026-11-24",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "rust-lang/rust (rustc 1.98.0-nightly 2026-05-31: monomorphization collector, CGU partitioning, cross-crate inlining, symbol export, used static lowering, and LLVM codegen options)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f7da9a42368f31abb02b8064bb93a11bf9ba9f5e"
+          },
+          "name": "rust-lang/rust (upstream main checked for drift in collector, partitioning, reachability, symbol export, cross-crate inlineability, codegen attributes, consts, and MergeFunctions wiring)"
+        },
+        {
+          "identity": {
+            "merge_revision": "ca13e9169fbbbb126190631b5a1e3e20053a52c1",
+            "repository": "rust-lang/rust",
+            "revision": "711c8cc690c70d9b4c0e17e90f21f03d4e9d3ebf"
+          },
+          "name": "rust-lang/rust (PR #133883 removing polymorphize.rs and -Zpolymorphize)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/llvm-project",
+            "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+            "version": "22.1.6"
+          },
+          "name": "rust-lang/llvm-project (LLVM 22.1.6 submodule pinned by rust-lang/rust 14210df0e)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "ba1d95e0af43ea608d82a16cc1a9694c6b072c02"
+          },
+          "name": "llvm/llvm-project (upstream MergeFunctions, TargetLoweringObjectFileImpl, AsmPrinter, and PassBuilderPipelines)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "joshlf/anneal (Trusted.MirAst whole-crate capture completeness producer obligation and noncomputable convention)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4 (v4.34.1 kernel)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/codegen",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "verification"
+      ]
+    },
     "rustc-multi-release-mir-abi-drift-and-version-isolated-adapter": {
       "observed_at": "2026-11-14",
       "subjects": [
