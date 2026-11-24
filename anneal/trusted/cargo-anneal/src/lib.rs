@@ -30,6 +30,8 @@ pub mod bundle;
 mod olean_cache;
 #[doc(hidden)]
 pub mod cli;
+#[doc(hidden)]
+pub mod core;
 mod diagnostics;
 mod init;
 #[doc(hidden)]
@@ -38,6 +40,8 @@ pub mod sandbox;
 #[doc(hidden)]
 pub mod setup;
 mod stage;
+#[doc(hidden)]
+pub mod sys_util;
 mod target;
 mod toolchain;
 mod trusted_bundle;
@@ -49,18 +53,25 @@ pub const EMBEDDED_BUNDLE_SOURCES: &[(&str, &str)] = verify::EMBEDDED_BUNDLE_SOU
 pub const EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON: &str =
     verify::EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON;
 
+pub use core::Failure;
+#[doc(hidden)]
+pub use core::{
+    IR_PARTS, ImportEdge, ModuleArtifacts, OLEAN_PARTS, PARTS, is_clean_relative_path,
+    is_lean_ident, is_sha256_hex, sha256_bytes, topo_sort_modules,
+};
+#[doc(hidden)]
+pub use sys_util::{SafeFs, SysSanitizer, TempFileGuard};
 pub use sandbox::{ActiveSandbox, SandboxMode};
 pub use stage::Checker;
 pub use target::{TargetAuditRequest, TargetBindings, TargetModule, TargetRole};
 #[doc(hidden)]
 pub use toolchain::{
-    AdmittedToolchain, FOUNDATION_AXIOMS, IR_PARTS, ImportEdge, LOCKED_LEAN_SHA256,
+    AdmittedToolchain, FOUNDATION_AXIOMS, LOCKED_LEAN_SHA256,
     LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS, LOCKED_LEAN_X86_64_LINUX_SHA256,
-    LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, ModuleArtifacts, OLEAN_PARTS, PARTS,
-    ParallelDagPlan, PreflightHeader, PreflightResult, TOOLCHAIN, UNPINNED_FOUNDATION_MODULES,
-    default_compile_workers, default_lean_search_bases_from_env, is_clean_relative_path,
-    is_lean_ident, is_sha256_hex, read_regular_file_deref, read_regular_file_strict, regular,
-    run_parallel_dag, sha256_bytes, sha256_file, sha256_file_deref, stage_regular_file,
-    topo_sort_modules, verify_sysroot_foundation_dir, verify_sysroot_runtime_libs_for_sha,
+    LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, ParallelDagPlan, PreflightHeader, PreflightResult,
+    TOOLCHAIN, UNPINNED_FOUNDATION_MODULES, default_compile_workers,
+    default_lean_search_bases_from_env, read_regular_file_deref, read_regular_file_strict,
+    regular, run_parallel_dag, sha256_file, sha256_file_deref, stage_regular_file,
+    verify_sysroot_foundation_dir, verify_sysroot_runtime_libs_for_sha,
 };
-pub use toolchain::{Failure, Json, default_lean_path};
+pub use toolchain::{Json, default_lean_path};

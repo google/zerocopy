@@ -110,10 +110,11 @@ flowchart LR
 ### 3.1 Crate placement and `SandboxMode`
 
 Because `anneal-audit` depends on `cargo-anneal` with default features disabled,
-all OS-sandboxing logic lives in one shared module
-`trusted/cargo-anneal/src/sandbox.rs` (re-exported via `#[doc(hidden)] pub mod
-sandbox;`), replacing duplicated `bwrap` argument builders in
-`trusted/audit/src/repo_audit.rs` and introducing zero external crates beyond
+OS-sandboxing orchestration lives in `trusted/cargo-anneal/src/sandbox.rs`
+(re-exported via `#[doc(hidden)] pub mod sandbox;`), delegating ELF `PT_INTERP`
+parsing to pure `core/elf.rs` and filesystem/process-env sanitization helpers to
+`sys_util.rs`. This replaces duplicated `bwrap` argument builders in
+`trusted/audit/src/repo_audit.rs` and introduces zero external crates beyond
 the already-pinned `libc` dependency (`0.2.191`).
 
 Callers select containment through a three-variant enum that makes illegal flag

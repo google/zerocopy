@@ -12,20 +12,21 @@
 //! bundle invariants (`build.rs` generation inputs, provenance inventory, and
 //! `bundled_theory.json` parity).
 
-use std::collections::{BTreeMap, BTreeSet};
-use std::fs;
-use std::path::{Component, Path};
-
-use serde::Deserialize;
-
-use cargo_anneal::bundle::{
-    BundleError, LEGACY_BUNDLE_DESTINATION, render_bundled_resources_parts,
-    render_bundled_theory, validate_bundle_source, validate_theory_bundle_destination,
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    fs, io,
+    path::{Component, Path},
 };
+
 use cargo_anneal::{
-    EMBEDDED_BUNDLE_SOURCES, EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON, Failure,
+    EMBEDDED_BUNDLE_SOURCES, EMBEDDED_CORRESPONDENCE_PROVENANCE_JSON, Failure, SafeFs,
+    bundle::{
+        BundleError, LEGACY_BUNDLE_DESTINATION, render_bundled_resources_parts,
+        render_bundled_theory, validate_bundle_source, validate_theory_bundle_destination,
+    },
     is_clean_relative_path, is_sha256_hex, regular, sha256_file,
 };
+use serde::Deserialize;
 
 use crate::miri_pin::verify_upstream_pin;
 
@@ -79,12 +80,8 @@ impl MemberCargoManifest {
     /// Yield every `(section_label, raw_table_value)` across top-level
     /// dependency tables and `[target.<cfg>.*]` dependency tables.
     fn all_dep_tables(&self) -> Vec<(String, Option<&toml::Value>)> {
-        let mut out: Vec<(String, Option<&toml::Value>)> = self
-            .deps
-            .sections()
-            .into_iter()
-            .map(|(s, v)| (s.to_string(), v))
-            .collect();
+        let mut out: Vec<(String, Option<&toml::Value>)> =
+            self.deps.sections().into_iter().map(|(s, v)| (s.to_string(), v)).collect();
         for (cfg_name, cfg_sec) in &self.target {
             for (sec, v) in cfg_sec.deps.sections() {
                 out.push((format!("target.{cfg_name}.{sec}"), v));
@@ -147,15 +144,9 @@ impl MemberDepTables {
         [
             ("dependencies", self.dependencies.as_ref()),
             ("dev-dependencies", self.dev_dependencies.as_ref()),
-            (
-                "dev_dependencies",
-                self.dev_dependencies_underscore.as_ref(),
-            ),
+            ("dev_dependencies", self.dev_dependencies_underscore.as_ref()),
             ("build-dependencies", self.build_dependencies.as_ref()),
-            (
-                "build_dependencies",
-                self.build_dependencies_underscore.as_ref(),
-            ),
+            ("build_dependencies", self.build_dependencies_underscore.as_ref()),
         ]
     }
 }
@@ -230,17 +221,30 @@ pub(crate) fn reject_cargo_toolchain_overrides(checkout: &Path) -> Result<(), Fa
 fn verify_root_manifest_sha256(checkout: &Path) -> Result<(), Failure> {
     let phase = "cargo-boundary";
     let manifest_path = checkout.join("trusted/root-manifest.sha256");
-    if fs::symlink_metadata(&manifest_path).is_err() {
-        return Ok(());
+    match fs::symlink_metadata(&manifest_path) {
+        Ok(meta) => {
+            if meta.file_type().is_symlink() || !meta.file_type().is_file() {
+                return Err(Failure::new(
+                    1,
+                    phase,
+                    format!("expected a regular file: {}", manifest_path.display()),
+                ));
+            }
+        }
+        Err(e) if e.kind() == io::ErrorKind::NotFound => return Ok(()),
+        Err(e) => {
+            return Err(Failure::new(
+                2,
+                phase,
+                format!("cannot inspect root-manifest.sha256: {e}"),
+            ));
+        }
     }
-    regular(&manifest_path, phase)?;
-    let manifest_text = fs::read_to_string(&manifest_path)
-        .map_err(|e| Failure::new(1, phase, format!("cannot read root-manifest.sha256: {e}")))?;
+    let manifest_text = SafeFs::read_regular_string_capped(&manifest_path, 4 * 1024 * 1024, phase)
+        .map_err(|e| Failure::new(1, phase, e.message))?;
     let mut seen_paths = BTreeSet::new();
-    for line in manifest_text
-        .lines()
-        .map(str::trim)
-        .filter(|l| !l.is_empty() && !l.starts_with('#'))
+    for line in
+        manifest_text.lines().map(str::trim).filter(|l| !l.is_empty() && !l.starts_with('#'))
     {
         let Some((expected_hex, rel_path)) = line.split_once("  ") else {
             return Err(Failure::new(
@@ -414,10 +418,9 @@ fn validate_member_target(
     target: &MemberTarget,
 ) -> Result<(), Failure> {
     let phase = "cargo-boundary";
-    for (key, value) in [
-        ("proc-macro", &target.proc_macro),
-        ("proc_macro", &target.proc_macro_underscore),
-    ] {
+    for (key, value) in
+        [("proc-macro", &target.proc_macro), ("proc_macro", &target.proc_macro_underscore)]
+    {
         if let Some(val) = value
             && val.as_bool() != Some(false)
         {
@@ -428,17 +431,12 @@ fn validate_member_target(
             ));
         }
     }
-    for (key, value) in [
-        ("crate-type", &target.crate_type),
-        ("crate_type", &target.crate_type_underscore),
-    ] {
+    for (key, value) in
+        [("crate-type", &target.crate_type), ("crate_type", &target.crate_type_underscore)]
+    {
         if let Some(val) = value {
             let arr = val.as_array().ok_or_else(|| {
-                Failure::new(
-                    1,
-                    phase,
-                    format!("invalid {section}.{key} in {member}/Cargo.toml"),
-                )
+                Failure::new(1, phase, format!("invalid {section}.{key} in {member}/Cargo.toml"))
             })?;
             for item in arr {
                 let kind = item.as_str().ok_or_else(|| {
@@ -498,15 +496,8 @@ enum WorkspaceZone {
 }
 
 fn classify_member_zone(rel_path: &str) -> Result<WorkspaceZone, Failure> {
-    if !is_clean_relative_path(rel_path)
-        || rel_path.ends_with('/')
-        || rel_path.contains('\\')
-    {
-        return Err(Failure::new(
-            1,
-            "cargo-boundary",
-            format!("unclean member path: {rel_path}"),
-        ));
+    if !is_clean_relative_path(rel_path) || rel_path.ends_with('/') || rel_path.contains('\\') {
+        return Err(Failure::new(1, "cargo-boundary", format!("unclean member path: {rel_path}")));
     }
     if rel_path.starts_with("trusted/") {
         Ok(WorkspaceZone::Trusted)
@@ -538,11 +529,7 @@ fn validate_dep_table(
         return Ok(());
     };
     let table = table_val.as_table().ok_or_else(|| {
-        Failure::new(
-            1,
-            phase,
-            format!("invalid {section} in {member}/Cargo.toml"),
-        )
+        Failure::new(1, phase, format!("invalid {section} in {member}/Cargo.toml"))
     })?;
     for (dep_name, spec) in table {
         let Some(spec_obj) = spec.as_table() else {
@@ -575,11 +562,7 @@ fn validate_dep_table(
             )
         })?;
         let rel = resolved.strip_prefix(checkout_canon).map_err(|_| {
-            Failure::new(
-                1,
-                phase,
-                format!("{member} path dependency escapes checkout: {dep_path}"),
-            )
+            Failure::new(1, phase, format!("{member} path dependency escapes checkout: {dep_path}"))
         })?;
         let rel_str = rel.to_string_lossy().replace('\\', "/");
         // Enforce the two-zone monotonic lattice (`zone(dst) <= zone(src)`):
@@ -590,9 +573,7 @@ fn validate_dep_table(
             Failure::new(
                 1,
                 phase,
-                format!(
-                    "{member} path dependency points outside trusted/ or tests/: {rel_str}"
-                ),
+                format!("{member} path dependency points outside trusted/ or tests/: {rel_str}"),
             )
         })?;
         if dst_zone > src_zone {
@@ -622,12 +603,23 @@ fn validate_dep_table(
 fn verify_cargo_lock(checkout: &Path, member_pkg_names: &BTreeSet<String>) -> Result<(), Failure> {
     let phase = "cargo-boundary";
     let lock_path = checkout.join("Cargo.lock");
-    if fs::symlink_metadata(&lock_path).is_err() {
-        return Ok(());
+    match fs::symlink_metadata(&lock_path) {
+        Ok(meta) => {
+            if meta.file_type().is_symlink() || !meta.file_type().is_file() {
+                return Err(Failure::new(
+                    1,
+                    phase,
+                    format!("expected a regular file: {}", lock_path.display()),
+                ));
+            }
+        }
+        Err(e) if e.kind() == io::ErrorKind::NotFound => return Ok(()),
+        Err(e) => {
+            return Err(Failure::new(2, phase, format!("cannot inspect Cargo.lock: {e}")));
+        }
     }
-    regular(&lock_path, phase)?;
-    let lock_text = fs::read_to_string(&lock_path)
-        .map_err(|e| Failure::new(1, phase, format!("cannot read Cargo.lock: {e}")))?;
+    let lock_text = SafeFs::read_regular_string_capped(&lock_path, 16 * 1024 * 1024, phase)
+        .map_err(|e| Failure::new(1, phase, e.message))?;
     let lock_file: CargoLockFile = toml::from_str(&lock_text)
         .map_err(|e| Failure::new(1, phase, format!("malformed Cargo.lock: {e}")))?;
     if lock_file.version != Some(4) {
@@ -693,18 +685,10 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
     let root_text = fs::read_to_string(&root_toml_path)
         .map_err(|e| Failure::new(1, phase, format!("malformed Cargo manifest: {e}")))?;
     let root_manifest: RootCargoManifest = toml::from_str(&root_text).map_err(|e| {
-        Failure::new(
-            1,
-            phase,
-            format!("root Cargo.toml may contain only [workspace]: {e}"),
-        )
+        Failure::new(1, phase, format!("root Cargo.toml may contain only [workspace]: {e}"))
     })?;
     if root_manifest.workspace.resolver.as_deref() != Some("2") {
-        return Err(Failure::new(
-            1,
-            phase,
-            "root [workspace] resolver must be \"2\"",
-        ));
+        return Err(Failure::new(1, phase, "root [workspace] resolver must be \"2\""));
     }
 
     let checkout_canon = fs::canonicalize(checkout)
@@ -718,20 +702,11 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
         .cloned()
         .collect();
     if !member_set.contains("trusted/rustc-capture") {
-        return Err(Failure::new(
-            1,
-            phase,
-            "trusted/rustc-capture missing from workspace.members",
-        ));
+        return Err(Failure::new(1, phase, "trusted/rustc-capture missing from workspace.members"));
     }
 
     let mut member_pkg_names = BTreeSet::new();
-    for member in root_manifest
-        .workspace
-        .members
-        .iter()
-        .chain(&root_manifest.workspace.exclude)
-    {
+    for member in root_manifest.workspace.members.iter().chain(&root_manifest.workspace.exclude) {
         // Only two workspace zones are permitted (`WorkspaceZone::Trusted = 0 <
         // WorkspaceZone::Tests = 1`). Both zones remain subject to manifest,
         // build-script, and lockfile checks; `validate_dep_table` enforces
@@ -740,25 +715,15 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
         let member_toml_path = checkout.join(member).join("Cargo.toml");
         regular(&member_toml_path, phase)?;
         let member_text = fs::read_to_string(&member_toml_path).map_err(|e| {
-            Failure::new(
-                1,
-                phase,
-                format!("malformed member Cargo.toml in {member}: {e}"),
-            )
+            Failure::new(1, phase, format!("malformed member Cargo.toml in {member}: {e}"))
         })?;
         let manifest: MemberCargoManifest = toml::from_str(&member_text).map_err(|e| {
-            Failure::new(
-                1,
-                phase,
-                format!("malformed member Cargo.toml in {member}: {e}"),
-            )
+            Failure::new(1, phase, format!("malformed member Cargo.toml in {member}: {e}"))
         })?;
-        let pkg_name = manifest
-            .package
-            .name
-            .as_deref()
-            .filter(|s| !s.is_empty())
-            .ok_or_else(|| Failure::new(1, phase, format!("missing package.name in {member}")))?;
+        let pkg_name =
+            manifest.package.name.as_deref().filter(|s| !s.is_empty()).ok_or_else(|| {
+                Failure::new(1, phase, format!("missing package.name in {member}"))
+            })?;
         member_pkg_names.insert(pkg_name.to_string());
 
         // Non-trusted test crates exist solely to verify the workspace and must
@@ -867,4 +832,33 @@ pub(crate) fn check_checkout_cargo_hygiene(
         }
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn non_notfound_metadata_errors_on_manifest_and_lock_are_operational() {
+        let dir = tempfile::tempdir().unwrap();
+        let blocked_dir = dir.path().join("blocked");
+        fs::create_dir_all(&blocked_dir).unwrap();
+        fs::write(blocked_dir.join("trusted"), b"not-a-directory").unwrap();
+
+        let err_manifest = verify_root_manifest_sha256(&blocked_dir).unwrap_err();
+        assert_eq!(err_manifest.code, 2, "unexpected manifest error: {err_manifest}");
+        assert!(
+            err_manifest.message.contains("cannot inspect root-manifest.sha256"),
+            "unexpected manifest message: {err_manifest}"
+        );
+
+        let not_a_checkout_dir = dir.path().join("checkout_file");
+        fs::write(&not_a_checkout_dir, b"not-a-directory").unwrap();
+        let err_lock = verify_cargo_lock(&not_a_checkout_dir, &BTreeSet::new()).unwrap_err();
+        assert_eq!(err_lock.code, 2, "unexpected lock error: {err_lock}");
+        assert!(
+            err_lock.message.contains("cannot inspect Cargo.lock"),
+            "unexpected lock message: {err_lock}"
+        );
+    }
 }
