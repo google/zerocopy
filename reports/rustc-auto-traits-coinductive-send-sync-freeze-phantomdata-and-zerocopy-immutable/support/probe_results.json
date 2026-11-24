@@ -1,0 +1,263 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "experiments": {
+    "a_coinductive_auto_traits_and_asymmetry": {
+      "coinductive_node_has_cell_and_phantom_cell_ok": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "AUTO_OK=1",
+        "run_stderr": ""
+      },
+      "next_solver_coinductive_and_phantom_freeze_ok": {
+        "edition": "2024",
+        "extra_args": [
+          "-Znext-solver"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "AUTO_OK=1",
+        "run_stderr": ""
+      },
+      "coinductive_node_with_raw_ptr_rejected_send_e0277": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: `*const u8` cannot be sent between threads safely\n --> <tmp>/bad_node_raw_send.rs:9:19\n  |\n9 |     assert_send::<BadNode>();\n  |                   ^^^^^^^ `*const u8` cannot be sent between threads safely\n  |\n  = help: within `BadNode`, the trait `Send` is not implemented for `*const u8`\nnote: required because it appears within the type `BadNode`\n --> <tmp>/bad_node_raw_send.rs:2:8\n  |\n2 | struct BadNode {\n  |        ^^^^^^^\nnote: required by a bound in `assert_send`\n --> <tmp>/bad_node_raw_send.rs:7:19\n  |\n7 | fn assert_send<T: Send>() {}\n  |                   ^^^^ required by this bound in `assert_send`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+      },
+      "coinductive_node_with_cell_rejected_sync_e0277": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: `UnsafeCell<u32>` cannot be shared between threads safely\n --> <tmp>/cell_node_sync.rs:9:19\n  |\n9 |     assert_sync::<CellNode>();\n  |                   ^^^^^^^^ `UnsafeCell<u32>` cannot be shared between threads safely\n  |\n  = help: within `CellNode`, the trait `Sync` is not implemented for `UnsafeCell<u32>`\nnote: required because it appears within the type `CellNode`\n --> <tmp>/cell_node_sync.rs:3:8\n  |\n3 | struct CellNode {\n  |        ^^^^^^^^\nnote: required by a bound in `assert_sync`\n --> <tmp>/cell_node_sync.rs:7:19\n  |\n7 | fn assert_sync<T: Sync>() {}\n  |                   ^^^^ required by this bound in `assert_sync`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+      },
+      "has_raw_ptr_not_send_rejected_e0277": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: `*const u8` cannot be sent between threads safely\n --> <tmp>/has_raw_not_send.rs:5:19\n  |\n5 |     assert_send::<HasRaw>();\n  |                   ^^^^^^ `*const u8` cannot be sent between threads safely\n  |\n  = help: within `HasRaw`, the trait `Send` is not implemented for `*const u8`\nnote: required because it appears within the type `HasRaw`\n --> <tmp>/has_raw_not_send.rs:2:8\n  |\n2 | struct HasRaw(*const u8);\n  |        ^^^^^^\nnote: required by a bound in `assert_send`\n --> <tmp>/has_raw_not_send.rs:3:19\n  |\n3 | fn assert_send<T: Send>() {}\n  |                   ^^^^ required by this bound in `assert_send`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+      },
+      "has_raw_ptr_not_sync_rejected_e0277": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: `*const u8` cannot be shared between threads safely\n --> <tmp>/has_raw_not_sync.rs:5:19\n  |\n5 |     assert_sync::<HasRaw>();\n  |                   ^^^^^^ `*const u8` cannot be shared between threads safely\n  |\n  = help: within `HasRaw`, the trait `Sync` is not implemented for `*const u8`\nnote: required because it appears within the type `HasRaw`\n --> <tmp>/has_raw_not_sync.rs:2:8\n  |\n2 | struct HasRaw(*const u8);\n  |        ^^^^^^\nnote: required by a bound in `assert_sync`\n --> <tmp>/has_raw_not_sync.rs:3:19\n  |\n3 | fn assert_sync<T: Sync>() {}\n  |                   ^^^^ required by this bound in `assert_sync`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+      },
+      "has_cell_not_sync_rejected_e0277": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: `UnsafeCell<u32>` cannot be shared between threads safely\n --> <tmp>/has_cell_not_sync.rs:6:19\n  |\n6 |     assert_sync::<HasCell>();\n  |                   ^^^^^^^ `UnsafeCell<u32>` cannot be shared between threads safely\n  |\n  = help: within `HasCell`, the trait `Sync` is not implemented for `UnsafeCell<u32>`\nnote: required because it appears within the type `HasCell`\n --> <tmp>/has_cell_not_sync.rs:3:8\n  |\n3 | struct HasCell(UnsafeCell<u32>);\n  |        ^^^^^^^\nnote: required by a bound in `assert_sync`\n --> <tmp>/has_cell_not_sync.rs:4:19\n  |\n4 | fn assert_sync<T: Sync>() {}\n  |                   ^^^^ required by this bound in `assert_sync`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+      },
+      "has_cell_not_freeze_rejected_e0277": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: the trait bound `UnsafeCell<u32>: Freeze` is not satisfied in `HasCell`\n --> <tmp>/has_cell_not_freeze.rs:8:21\n  |\n8 |     assert_freeze::<HasCell>();\n  |                     ^^^^^^^ unsatisfied trait bound\n  |\n  = help: within `HasCell`, the nightly-only, unstable trait `Freeze` is not implemented for `UnsafeCell<u32>`\nnote: required because it appears within the type `HasCell`\n --> <tmp>/has_cell_not_freeze.rs:5:8\n  |\n5 | struct HasCell(UnsafeCell<u32>);\n  |        ^^^^^^^\nnote: required by a bound in `assert_freeze`\n --> <tmp>/has_cell_not_freeze.rs:6:21\n  |\n6 | fn assert_freeze<T: Freeze>() {}\n  |                     ^^^^^^ required by this bound in `assert_freeze`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+      },
+      "has_phantom_cell_not_sync_rejected_e0277": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: `UnsafeCell<u32>` cannot be shared between threads safely\n   --> <tmp>/has_phantom_cell_not_sync.rs:7:19\n    |\n  7 |     assert_sync::<HasPhantomCell>();\n    |                   ^^^^^^^^^^^^^^ `UnsafeCell<u32>` cannot be shared between threads safely\n    |\n    = help: within `HasPhantomCell`, the trait `Sync` is not implemented for `UnsafeCell<u32>`\nnote: required because it appears within the type `PhantomData<UnsafeCell<u32>>`\n   --> <sysroot>/lib/rustlib/src/rust/library/core/src/marker.rs:811:12\n    |\n811 | pub struct PhantomData<T: PointeeSized>;\n    |            ^^^^^^^^^^^\nnote: required because it appears within the type `HasPhantomCell`\n   --> <tmp>/has_phantom_cell_not_sync.rs:4:8\n    |\n  4 | struct HasPhantomCell(PhantomData<UnsafeCell<u32>>);\n    |        ^^^^^^^^^^^^^^\nnote: required by a bound in `assert_sync`\n   --> <tmp>/has_phantom_cell_not_sync.rs:5:19\n    |\n  5 | fn assert_sync<T: Sync>() {}\n    |                   ^^^^ required by this bound in `assert_sync`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+      },
+      "has_phantom_raw_not_send_rejected_e0277": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: `*const u8` cannot be sent between threads safely\n   --> <tmp>/has_phantom_raw_not_send.rs:6:19\n    |\n  6 |     assert_send::<HasPhantomRaw>();\n    |                   ^^^^^^^^^^^^^ `*const u8` cannot be sent between threads safely\n    |\n    = help: within `HasPhantomRaw`, the trait `Send` is not implemented for `*const u8`\nnote: required because it appears within the type `PhantomData<*const u8>`\n   --> <sysroot>/lib/rustlib/src/rust/library/core/src/marker.rs:811:12\n    |\n811 | pub struct PhantomData<T: PointeeSized>;\n    |            ^^^^^^^^^^^\nnote: required because it appears within the type `HasPhantomRaw`\n   --> <tmp>/has_phantom_raw_not_send.rs:3:8\n    |\n  3 | struct HasPhantomRaw(PhantomData<*const u8>);\n    |        ^^^^^^^^^^^^^\nnote: required by a bound in `assert_send`\n   --> <tmp>/has_phantom_raw_not_send.rs:4:19\n    |\n  4 | fn assert_send<T: Send>() {}\n    |                   ^^^^ required by this bound in `assert_send`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+      },
+      "unsafe_field_blocks_send_allows_unpin": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "warning: the feature `unsafe_fields` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/unsafe_field_unpin_only.rs:1:12\n  |\n1 | #![feature(unsafe_fields)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: see issue #132922 <https://github.com/rust-lang/rust/issues/132922> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted",
+        "run_returncode": 0,
+        "run_stdout": "UNSAFE_FIELD_UNPIN_OK=1",
+        "run_stderr": ""
+      },
+      "unsafe_field_blocks_send_rejected_e0277": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "warning: the feature `unsafe_fields` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/unsafe_field_not_send.rs:1:12\n  |\n1 | #![feature(unsafe_fields)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: see issue #132922 <https://github.com/rust-lang/rust/issues/132922> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror[E0277]: `WithUnsafeField` cannot be sent between threads safely\n --> <tmp>/unsafe_field_not_send.rs:8:19\n  |\n8 |     assert_send::<WithUnsafeField>();\n  |                   ^^^^^^^^^^^^^^^ `WithUnsafeField` cannot be sent between threads safely\n  |\nhelp: the trait `Send` is not implemented for `WithUnsafeField`\n --> <tmp>/unsafe_field_not_send.rs:3:1\n  |\n3 | struct WithUnsafeField {\n  | ^^^^^^^^^^^^^^^^^^^^^^\nnote: required by a bound in `assert_send`\n --> <tmp>/unsafe_field_not_send.rs:6:19\n  |\n6 | fn assert_send<T: Send>() {}\n  |                   ^^^^ required by this bound in `assert_send`\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0277`."
+      }
+    },
+    "b_zerocopy_immutable_and_derive": {
+      "zerocopy_crate_version": "0.8.64",
+      "zerocopy_no_cfgs_applied": [
+        "no_zerocopy_allocator_api_1_100_0"
+      ],
+      "zerocopy_derive_built": true,
+      "zerocopy_lib_compile_returncode": 0,
+      "zerocopy_lib_compile_stderr": "",
+      "zerocopy_phantom_unsafecell_implements_immutable_ok": {
+        "edition": "2024",
+        "extra_args": [
+          "-L",
+          "dependency=<tmp>",
+          "--extern",
+          "zerocopy=<tmp>/libzerocopy.rlib"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "ZC_PHANTOM_CELL_IMMUTABLE_OK=1",
+        "run_stderr": ""
+      },
+      "zerocopy_unsafecell_rejected_immutable_e0277": {
+        "edition": "2024",
+        "extra_args": [
+          "-L",
+          "dependency=<tmp>",
+          "--extern",
+          "zerocopy=<tmp>/libzerocopy.rlib"
+        ],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: the trait bound `UnsafeCell<u32>: Immutable` is not satisfied\n --> <tmp>/zc_unsafecell_err.rs:5:24\n  |\n5 |     assert_immutable::<UnsafeCell<u32>>();\n  |                        ^^^^^^^^^^^^^^^ the trait `Immutable` is not implemented for `UnsafeCell<u32>`\n  |\n  = note: Consider adding `#[derive(Immutable)]` to `UnsafeCell<u32>`\n  = help: the following other types implement trait `Immutable`:\n            &T\n            &mut T\n            ()\n            (A, B)\n            (A, B, C)\n            (A, B, C, D)\n            (A, B, C, D, E)\n            (A, B, C, D, E, F)\n          and 127 others\nnote: required by a bound in `assert_immutable`\n --> <tmp>/zc_unsafecell_err.rs:3:24\n  |\n3 | fn assert_immutable<T: Immutable>() {}\n  |                        ^^^^^^^^^ required by this bound in `assert_immutable`\n  = note: the full name for the type has been written to '<tmp>/zc_unsafecell_err_bin.long-type-734481822069262063.txt'\n  = note: consider using `--verbose` to print the full type name to the console\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+      },
+      "zerocopy_cell_rejected_immutable_e0277": {
+        "edition": "2024",
+        "extra_args": [
+          "-L",
+          "dependency=<tmp>",
+          "--extern",
+          "zerocopy=<tmp>/libzerocopy.rlib"
+        ],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: the trait bound `Cell<u32>: Immutable` is not satisfied\n --> <tmp>/zc_cell_err.rs:5:24\n  |\n5 |     assert_immutable::<Cell<u32>>();\n  |                        ^^^^^^^^^ the trait `Immutable` is not implemented for `Cell<u32>`\n  |\n  = note: Consider adding `#[derive(Immutable)]` to `Cell<u32>`\n  = help: the following other types implement trait `Immutable`:\n            &T\n            &mut T\n            ()\n            (A, B)\n            (A, B, C)\n            (A, B, C, D)\n            (A, B, C, D, E)\n            (A, B, C, D, E, F)\n          and 127 others\nnote: required by a bound in `assert_immutable`\n --> <tmp>/zc_cell_err.rs:3:24\n  |\n3 | fn assert_immutable<T: Immutable>() {}\n  |                        ^^^^^^^^^ required by this bound in `assert_immutable`\n  = note: the full name for the type has been written to '<tmp>/zc_cell_err_bin.long-type-14772094734842581822.txt'\n  = note: consider using `--verbose` to print the full type name to the console\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+      },
+      "zerocopy_manually_drop_unsafecell_rejected_immutable_e0277": {
+        "edition": "2024",
+        "extra_args": [
+          "-L",
+          "dependency=<tmp>",
+          "--extern",
+          "zerocopy=<tmp>/libzerocopy.rlib"
+        ],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: the trait bound `UnsafeCell<u32>: Immutable` is not satisfied\n --> <tmp>/zc_md_unsafecell_err.rs:6:24\n  |\n6 |     assert_immutable::<ManuallyDrop<UnsafeCell<u32>>>();\n  |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `Immutable` is not implemented for `UnsafeCell<u32>`\n  |\n  = note: Consider adding `#[derive(Immutable)]` to `UnsafeCell<u32>`\n  = help: the following other types implement trait `Immutable`:\n            &T\n            &mut T\n            ()\n            (A, B)\n            (A, B, C)\n            (A, B, C, D)\n            (A, B, C, D, E)\n            (A, B, C, D, E, F)\n          and 127 others\n  = note: required for `ManuallyDrop<UnsafeCell<u32>>` to implement `Immutable`\nnote: required by a bound in `assert_immutable`\n --> <tmp>/zc_md_unsafecell_err.rs:4:24\n  |\n4 | fn assert_immutable<T: Immutable>() {}\n  |                        ^^^^^^^^^ required by this bound in `assert_immutable`\n  = note: the full name for the type has been written to '<tmp>/zc_md_unsafecell_err_bin.long-type-8053646038346572029.txt'\n  = note: consider using `--verbose` to print the full type name to the console\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+      },
+      "zerocopy_box_slice_unsafecell_rejected_immutable_e0277": {
+        "edition": "2024",
+        "extra_args": [
+          "-L",
+          "dependency=<tmp>",
+          "--extern",
+          "zerocopy=<tmp>/libzerocopy.rlib"
+        ],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: the size for values of type `[UnsafeCell<u32>]` cannot be known at compilation time\n   --> <tmp>/zc_box_slice_err.rs:5:24\n    |\n  5 |     assert_immutable::<Box<[UnsafeCell<u32>]>>();\n    |                        ^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time\n    |\n    = help: the trait `Sized` is not implemented for `[UnsafeCell<u32>]`\nhelp: the trait `Immutable` is implemented for `Box<T>`\n   --> <zerocopy_src>/src/util/macros.rs:128:9\n    |\n128 |   ...   unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?),* $(, const $constname: $constty,)*> $trait for $ty {\n    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    |\n   ::: <zerocopy_src>/src/impls.rs:304:5\n    |\n304 | /     unsafe_impl!(\n305 | |         #[cfg_attr(doc_cfg, doc(cfg(feature = \"alloc\")))]\n306 | |         T: Sized => Immutable for Box<T>\n307 | |     )\n    | |_____- in this macro invocation\n    = note: required for `Box<[UnsafeCell<u32>]>` to implement `Immutable`\nnote: required by a bound in `assert_immutable`\n   --> <tmp>/zc_box_slice_err.rs:3:33\n    |\n  3 | fn assert_immutable<T: ?Sized + Immutable>() {}\n    |                                 ^^^^^^^^^ required by this bound in `assert_immutable`\n    = note: this error originates in the macro `unsafe_impl` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+      },
+      "zerocopy_derive_phantom_and_recursive_node_ok": {
+        "edition": "2024",
+        "extra_args": [
+          "-L",
+          "dependency=<tmp>",
+          "--extern",
+          "zerocopy=<tmp>/libzerocopy.rlib"
+        ],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "ZC_DERIVE_IMMUTABLE_OK=1",
+        "run_stderr": ""
+      },
+      "zerocopy_derive_struct_with_unsafecell_rejected_e0277": {
+        "edition": "2024",
+        "extra_args": [
+          "-L",
+          "dependency=<tmp>",
+          "--extern",
+          "zerocopy=<tmp>/libzerocopy.rlib"
+        ],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: the trait bound `UnsafeCell<u8>: Immutable` is not satisfied\n --> <tmp>/zc_derive_err.rs:4:10\n  |\n4 | #[derive(Immutable)]\n  |          ^^^^^^^^^ the trait `Immutable` is not implemented for `UnsafeCell<u8>`\n  |\n  = note: Consider adding `#[derive(Immutable)]` to `UnsafeCell<u8>`\n  = help: the following other types implement trait `Immutable`:\n            &T\n            &mut T\n            ()\n            (A, B)\n            (A, B, C)\n            (A, B, C, D)\n            (A, B, C, D, E)\n            (A, B, C, D, E, F)\n          and 128 others\n  = note: the full name for the type has been written to '<tmp>/zc_derive_err_bin.long-type-11460112556642817149.txt'\n  = note: consider using `--verbose` to print the full type name to the console\n  = note: this error originates in the derive macro `Immutable` (in Nightly builds, run with -Z macro-backtrace for more info)\nhelp: add `#![feature(trivial_bounds)]` to the crate attributes to enable\n  |\n1 + #![feature(trivial_bounds)]\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+      },
+      "zerocopy_derive_phantom_cell_rejected_sync_e0277": {
+        "edition": "2024",
+        "extra_args": [
+          "-L",
+          "dependency=<tmp>",
+          "--extern",
+          "zerocopy=<tmp>/libzerocopy.rlib"
+        ],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: `UnsafeCell<u32>` cannot be shared between threads safely\n   --> <tmp>/zc_derive_phantom_sync_err.rs:14:19\n    |\n 14 |     assert_sync::<HasPhantomCell>();\n    |                   ^^^^^^^^^^^^^^ `UnsafeCell<u32>` cannot be shared between threads safely\n    |\n    = help: within `HasPhantomCell`, the trait `Sync` is not implemented for `UnsafeCell<u32>`\nnote: required because it appears within the type `PhantomData<UnsafeCell<u32>>`\n   --> <sysroot>/lib/rustlib/src/rust/library/core/src/marker.rs:811:12\n    |\n811 | pub struct PhantomData<T: PointeeSized>;\n    |            ^^^^^^^^^^^\nnote: required because it appears within the type `HasPhantomCell`\n   --> <tmp>/zc_derive_phantom_sync_err.rs:7:8\n    |\n  7 | struct HasPhantomCell {\n    |        ^^^^^^^^^^^^^^\nnote: required by a bound in `assert_sync`\n   --> <tmp>/zc_derive_phantom_sync_err.rs:12:19\n    |\n 12 | fn assert_sync<T: Sync>() {}\n    |                   ^^^^ required by this bound in `assert_sync`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+      }
+    },
+    "c_async_coroutine_cross_await_send": {
+      "rc_held_across_await_rejected_not_send": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: future cannot be sent between threads safely\n  --> <tmp>/async_rc_across_err.rs:26:18\n   |\n26 |     require_send(bad());\n   |                  ^^^^^ future returned by `bad` is not `Send`\n   |\n   = help: within `impl Future<Output = ()>`, the trait `Send` is not implemented for `Rc<u32>`\nnote: future is not `Send` as this value is used across an await\n  --> <tmp>/async_rc_across_err.rs:22:17\n   |\n21 |     let rc = Rc::new(1u32);\n   |         -- has type `Rc<u32>` which is not `Send`\n22 |     yield_now().await;\n   |                 ^^^^^ await occurs here, with `rc` maybe used later\nnote: required by a bound in `require_send`\n  --> <tmp>/async_rc_across_err.rs:18:29\n   |\n18 | fn require_send<F: Future + Send>(_fut: F) {}\n   |                             ^^^^ required by this bound in `require_send`\n\nerror: aborting due to 1 previous error"
+      },
+      "rc_dropped_before_await_send_ok": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "ASYNC_SEND_OK=1",
+        "run_stderr": ""
+      },
+      "unsafecell_by_value_and_phantom_across_await_send_ok": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "ASYNC_CELL_VAL_SEND_OK=1",
+        "run_stderr": ""
+      },
+      "ref_unsafecell_across_await_rejected_not_send": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: future cannot be sent between threads safely\n  --> <tmp>/async_ref_cell_err.rs:27:18\n   |\n27 |     require_send(ref_cell_across());\n   |                  ^^^^^^^^^^^^^^^^^ future returned by `ref_cell_across` is not `Send`\n   |\n   = help: the trait `Sync` is not implemented for `UnsafeCell<u32>`\nnote: future is not `Send` as this value is used across an await\n  --> <tmp>/async_ref_cell_err.rs:23:17\n   |\n22 |     let r = &c;\n   |         - has type `&UnsafeCell<u32>` which is not `Send`\n23 |     yield_now().await;\n   |                 ^^^^^ await occurs here, with `r` maybe used later\nnote: required by a bound in `require_send`\n  --> <tmp>/async_ref_cell_err.rs:18:29\n   |\n18 | fn require_send<F: Future + Send>(_fut: F) {}\n   |                             ^^^^ required by this bound in `require_send`\n\nerror: aborting due to 1 previous error"
+      },
+      "ref_phantom_unsafecell_across_await_rejected_not_send": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: future cannot be sent between threads safely\n  --> <tmp>/async_ref_phantom_err.rs:28:18\n   |\n28 |     require_send(ref_phantom_across());\n   |                  ^^^^^^^^^^^^^^^^^^^^ future returned by `ref_phantom_across` is not `Send`\n   |\n   = help: within `PhantomData<UnsafeCell<u32>>`, the trait `Sync` is not implemented for `UnsafeCell<u32>`\nnote: future is not `Send` as this value is used across an await\n  --> <tmp>/async_ref_phantom_err.rs:24:17\n   |\n23 |     let r = &p;\n   |         - has type `&PhantomData<UnsafeCell<u32>>` which is not `Send`\n24 |     yield_now().await;\n   |                 ^^^^^ await occurs here, with `r` maybe used later\nnote: required by a bound in `require_send`\n  --> <tmp>/async_ref_phantom_err.rs:18:29\n   |\n18 | fn require_send<F: Future + Send>(_fut: F) {}\n   |                             ^^^^ required by this bound in `require_send`\n\nerror: aborting due to 1 previous error"
+      },
+      "async_static_coroutine_not_unpin_e0277": {
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0277]: `{async fn body of triv()}` cannot be unpinned\n  --> <tmp>/async_not_unpin.rs:24:19\n   |\n19 | async fn triv() {\n   |                - within this `impl Future<Output = ()>`\n...\n24 |     require_unpin(triv());\n   |     ------------- ^^^^^^ unsatisfied trait bound\n   |     |\n   |     required by a bound introduced by this call\n   |\n   = help: within `impl Future<Output = ()>`, the trait `Unpin` is not implemented for `{async fn body of triv()}`\n   = note: consider using the `pin!` macro\n           consider using `Box::pin` if you need to access the pinned value outside of the current scope\nnote: required because it appears within the type `impl Future<Output = ()>`\n  --> <tmp>/async_not_unpin.rs:19:16\n   |\n19 | async fn triv() {\n   |                ^\nnote: required by a bound in `require_unpin`\n  --> <tmp>/async_not_unpin.rs:22:21\n   |\n22 | fn require_unpin<T: Unpin>(_x: T) {}\n   |                     ^^^^^ required by this bound in `require_unpin`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+      }
+    }
+  }
+}

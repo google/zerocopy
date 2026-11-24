@@ -100514,6 +100514,71 @@
         "verification"
       ]
     },
+    "rustc-auto-traits-coinductive-send-sync-freeze-phantomdata-and-zerocopy-immutable": {
+      "observed_at": "2026-11-24",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2026-05-31",
+            "host": "x86_64-unknown-linux-gnu",
+            "llvm_version": "22.1.6",
+            "release": "1.98.0-nightly",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          },
+          "name": "rustc (executed nightly toolchain and source audit)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f7da9a42368f31abb02b8064bb93a11bf9ba9f5e"
+          },
+          "name": "rustc (upstream master primary-source audit)"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "b4c1107fa213ab01d860d6cb24a12fd0834f0df7",
+            "version": "0.8.64"
+          },
+          "name": "zerocopy crate and zerocopy-derive (executed source audit)"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "fafea210778339d0e2b8bd14b3097c139e176e50"
+          },
+          "name": "google/zerocopy (upstream main comparison)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal trusted compiler capture and MIR AST"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 kernel"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/traits",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "verification",
+        "zerocopy"
+      ]
+    },
     "rustc-auto-traits-rpit-leakage-fundamental-orphan-specialization-and-freeze": {
       "observed_at": "2026-11-22",
       "subjects": [
