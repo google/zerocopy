@@ -1,0 +1,13 @@
+=== PROBE A: Deterministic AC E-Graph Saturation vs Bounded Fanout ===
+n=2: full_AC=(eclasses=3, enodes=4, max_ec=2, iters=2, 0.10ms) | cap5=(eclasses=3, enodes=4, max_ec=2, iters=2, 0.04ms)
+n=3: full_AC=(eclasses=7, enodes=15, max_ec=6, iters=4, 0.29ms) | cap5=(eclasses=7, enodes=14, max_ec=5, iters=4, 0.16ms)
+n=4: full_AC=(eclasses=15, enodes=54, max_ec=14, iters=5, 1.42ms) | cap5=(eclasses=13, enodes=31, max_ec=5, iters=5, 0.38ms)
+n=5: full_AC=(eclasses=31, enodes=185, max_ec=30, iters=6, 7.61ms) | cap5=(eclasses=22, enodes=60, max_ec=5, iters=6, 0.73ms)
+n=6: full_AC=(eclasses=63, enodes=608, max_ec=62, iters=6, 31.41ms) | cap5=(eclasses=34, enodes=101, max_ec=5, iters=6, 1.10ms)
+n=7: full_AC=(eclasses=127, enodes=1939, max_ec=126, iters=7, 181.87ms) | cap5=(eclasses=49, enodes=154, max_ec=5, iters=7, 1.81ms)
+
+=== PROBE B: Schedule- vs Cost-Driven Extraction & Live-Register Peak ===
+W=3: DAG_ops=17, DFS_DAG_peak=6, Interleaved_DAG_peak=6, ExactOpt_DAG_peak=5 | RematTree_ops=29 [100/100 equiv]
+W=4: DAG_ops=23, DFS_DAG_peak=8, Interleaved_DAG_peak=7, ExactOpt_DAG_peak=6 | RematTree_ops=39 [100/100 equiv]
+W=6: DAG_ops=35, DFS_DAG_peak=10, Interleaved_DAG_peak=7, ExactOpt_DAG_peak=None | RematTree_ops=59 [100/100 equiv]
+W=8: DAG_ops=47, DFS_DAG_peak=12, Interleaved_DAG_peak=7, ExactOpt_DAG_peak=None | RematTree_ops=79 [100/100 equiv]

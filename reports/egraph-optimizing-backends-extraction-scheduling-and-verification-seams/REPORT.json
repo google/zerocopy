@@ -1,0 +1,88 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/egraphs",
+    "compilers/instruction-selection",
+    "compilers/extraction",
+    "verification",
+    "verification/translation-validation",
+    "smt",
+    "lean",
+    "llvm",
+    "systems"
+  ],
+  "subjects": [
+    {
+      "name": "Wasmtime Cranelift aegraph, ISLE lowering, and VeriISLE",
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "cef75a9fea591317bb076ec04d1f1a99ccfedb63"
+      }
+    },
+    {
+      "name": "eggcc RVSDG optimizer and Statewalk DP extractor",
+      "identity": {
+        "repository": "egraphs-good/eggcc",
+        "revision": "8337bb0dd00b794b118997357fcd9fdd5aff528c",
+        "paper": "arXiv:2609.31887v2"
+      }
+    },
+    {
+      "name": "Slotted E-Graphs and evaluation artifact",
+      "identity": {
+        "repository": "memoryleak47/slotted-egraphs",
+        "revision": "48cefee5503822224257e4f2e81681fef212ae89",
+        "artifact_repository": "memoryleak47/slotted-egraphs-artifact"
+      }
+    },
+    {
+      "name": "Tamagoyaki in-IR MLIR equality saturation",
+      "identity": {
+        "paper": "arXiv:2602.16707v2"
+      }
+    },
+    {
+      "name": "DialEgg MLIR/egglog optimizer artifact",
+      "identity": {
+        "repository": "AzizZayed/dialegg-cgo-artifact",
+        "revision": "4d0d522e98c15becdc5e7d711348cb0891ff0d44"
+      }
+    },
+    {
+      "name": "SmoothE differentiable e-graph extractor",
+      "identity": {
+        "repository": "cornell-zhang/smoothe",
+        "revision": "8de74ef2b53aabbb35898400cb5eb890d9a07a54",
+        "paper": "ASPLOS 2025 (Cai et al.)"
+      }
+    },
+    {
+      "name": "e-boost hybrid heuristic and ILP e-graph extractor",
+      "identity": {
+        "paper": "arXiv:2508.13020v2"
+      }
+    },
+    {
+      "name": "Colored E-Graphs",
+      "identity": {
+        "paper": "arXiv:2305.19203"
+      }
+    },
+    {
+      "name": "Hydride SIMD synthesizer (negative control vs. e-graph ISel)",
+      "identity": {
+        "repository": "akothen/Hydride",
+        "revision": "0c97d0f9d3f8cd0494e421b9ece4b24488b614e5"
+      }
+    },
+    {
+      "name": "Lean-MLIR SSA verification framework",
+      "identity": {
+        "repository": "opencompl/lean-mlir",
+        "revision": "b8c4a771319a044854a4bbb49b8821381ef86ff8",
+        "paper": "arXiv:2407.03685"
+      }
+    }
+  ],
+  "observed_at": "2026-11-24"
+}
