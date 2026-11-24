@@ -125,6 +125,19 @@ theorem decodeProg_inv {rp : RefProg} {p : Program}
     rw [← h_eq]
     exact ⟨rfl, rfl, rfl, rfl, rfl⟩
 
+theorem decodeProg_panicStrategy {rp : RefProg} {p : Program}
+    (h : decodeProg rp = some p) :
+    rp.panicStrategy = p.panicStrategy ∧
+    rp.hasLocalPanicHandler = p.hasLocalPanicHandler := by
+  dsimp only [decodeProg, optMap] at h
+  cases h_b : mapOption (decodeBody rp.types) rp.bodies with
+  | none => rw [h_b] at h; cases h
+  | some b' =>
+    rw [h_b] at h
+    injection h with h_eq
+    rw [← h_eq]
+    exact ⟨rfl, rfl⟩
+
 private theorem discriminantTypesValid_stmt {body : Body} {bb : BasicBlock}
     {blockIdx : BasicBlockId} {stmtIdx : Nat} {dst : Place} {rv : Rvalue}
     (h_dv : discriminantTypesValid body = true)
@@ -342,9 +355,9 @@ theorem evalStatement_step_inv {body : Body} {bb : BasicBlock}
 
 theorem evalTerminator_step_inv {body : Body} {bb : BasicBlock}
     {f : FrameState} {amem : MemoryState} {callerMem : CallerMemory}
-    {s' : State}
+    {ps : PanicStrategy} {lh : Bool} {s' : State}
     (h_inv : SlotsMatchTys body.locals f.locals)
-    (h_step : evalTerminator body bb f amem callerMem = .step s') :
+    (h_step : evalTerminator body bb f amem callerMem ps lh = .step s') :
     ∃ f' : FrameState,
       s' = { frames := [f'], callerMem := callerMem, mem := amem } ∧
       f'.defId = f.defId ∧
@@ -378,9 +391,43 @@ theorem evalTerminator_step_inv {body : Body} {bb : BasicBlock}
             (SlotsMatchTys.length_eq h_inv) h_sl
           exact False.elim (SlotsMatchTys.not_partialTuple h_inv h_ty h_sl)
     · cases h_step
-  | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
+  | unreachable | unwindResume | call _ _ _ _ _
   | coreCall _ _ _ _ _ | sysrootCall _ _ _ _ _ | unsupported =>
     cases h_step
+  | assert cond expected msg target unwind =>
+    dsimp only [evalTerminator] at h_step
+    cases h_c : evalPrimitiveOperand body.locals f.locals amem cond with
+    | error _ => rw [h_c] at h_step; cases h_step
+    | ok res =>
+      rw [h_c] at h_step
+      cases res with | mk condVal rest =>
+      cases rest with | mk localsAfterCond amemAfterCond =>
+      let ⟨h_inv₁, h_m₁⟩ := evalPrimitiveOperand_slotsMatchTys h_inv h_c
+      rw [h_m₁] at h_step
+      dsimp only at h_step
+      cases condVal with
+      | bool b =>
+        dsimp only at h_step
+        cases h_b : (b == expected) with
+        | true =>
+          rw [h_b] at h_step
+          injection h_step with h_eq
+          refine ⟨_, h_eq.symm, rfl, h_inv₁, h_pc0 target localsAfterCond⟩
+        | false =>
+          rw [h_b] at h_step
+          dsimp only [evalAssertFailure] at h_step
+          cases msg with
+          | misalignedPtrDeref | nullPtrDeref | unsupported => cases h_step
+          | boundsCheck | overflowNeg | divByZero | remByZero =>
+            cases lh <;> cases ps <;> cases unwind <;> cases h_step
+          | overflow op =>
+            cases op <;>
+              (first
+                | (cases lh <;> cases ps <;> cases unwind <;> cases h_step)
+                | cases h_step)
+      | scalar _ | char _ | unit | enumVal _ _ | tuple _ | ptr _ | slicePtr _ _
+      | rangeTo _ | rangeFrom _ | bytes _ | array _ | ordering _ =>
+        cases h_step
   | switchInt discr targets =>
     dsimp only [evalTerminator] at h_step
     cases h_d : evalPrimitiveOperand body.locals f.locals amem discr with
@@ -488,7 +535,8 @@ theorem evalStep_step_inv {p : Program} {c : Choice} {s s' : State}
         | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
           rw [h_bt] at h_step
           dsimp only at h_step
-          cases h_ev : evalTerminator body bb f s.mem s.callerMem with
+          cases h_ev : evalTerminator body bb f s.mem s.callerMem
+              p.panicStrategy p.hasLocalPanicHandler with
           | fault _ => rw [h_ev] at h_step; cases h_step
           | done _ => rw [h_ev] at h_step; cases h_step
           | step s₁ =>
@@ -496,7 +544,8 @@ theorem evalStep_step_inv {p : Program} {c : Choice} {s s' : State}
             dsimp only [attachCallers] at h_step
             injection h_step with h_eq
             subst h_eq
-            have h_ev' : evalTerminator body bb f s.mem s.callerMem = .step s₁ := h_ev
+            have h_ev' : evalTerminator body bb f s.mem s.callerMem
+                p.panicStrategy p.hasLocalPanicHandler = .step s₁ := h_ev
             let ⟨f', hs₁, hdef, hinv', hpc'⟩ := evalTerminator_step_inv h_inv h_ev'
             rw [hs₁]
             exact ⟨f', rfl, hdef, hinv', hpc'⟩
@@ -800,10 +849,10 @@ private theorem storageLiveDyn_ref_eq (rp : RefProg)
     let res := Miri.Interpreter.MachineHooks.storageLiveDyn
       (refStorageHooks rp.types) localId .none st
     match MirSemantics.getElem? body.locals localId with
-    | none => ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = .unsupported
+    | none => ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some .unsupported
     | some localTy =>
       match MirSemantics.setElem? slots localId (liveUninitSlot localTy) with
-      | none => ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = .unsupported
+      | none => ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some .unsupported
       | some slots' =>
         res = .ok () (mkGenSimState rp ctx rbody blockIdx stmtIdx body.locals
           slots' cache mem ctrl cm) := by
@@ -888,10 +937,10 @@ private theorem storageDead_ref_eq (rp : RefProg)
     let res := Miri.Interpreter.MachineHooks.storageDead
       (refStorageHooks rp.types) localId st
     if Nat.beq localId 0 then
-      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = .unsupported
+      ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some .unsupported
     else
       match MirSemantics.setElem? slots localId .dead with
-      | none => ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = .unsupported
+      | none => ∃ err st', res = .error err st' ∧ stepErrorFaultKind err = some .unsupported
       | some slots' =>
         res = .ok () (mkGenSimState rp ctx rbody blockIdx stmtIdx body.locals
           slots' cache mem ctrl cm) := by
@@ -986,7 +1035,7 @@ private theorem step_evalStatement_ref_eq (rp : RefProg) (c : Choice)
       c (toMiriStatement rp.types rstmt) st
     match evalStatement body f amem cm stmt with
     | .fault k =>
-      ∃ err st', res = (st', .error err) ∧ stepErrorFaultKind err = k
+      ∃ err st', res = (st', .error err) ∧ stepErrorFaultKind err = some k
     | .done _ => False
     | .step s' =>
       ∃ slots',
@@ -1583,7 +1632,8 @@ private theorem returnFromCurrentFrame_ref_eq (rp : RefProg) (c : Choice)
     (h_init : refInitMemoryAndRetPlace rp.types retTy = .ok (mem, retPlace))
     (h_tr : refTopRelevanceValid 1 topRel?)
     (h_supp : body.locals.all isSupportedScalarOrUnitTy = true)
-    (h_inv : SlotsMatchTys body.locals f.locals) :
+    (h_inv : SlotsMatchTys body.locals f.locals)
+    (ps : PanicStrategy := .unwind) (lh : Bool := true) :
     let ctx : SimFrameCtx :=
       { below := Array.empty
         topRel? := topRel?
@@ -1595,14 +1645,18 @@ private theorem returnFromCurrentFrame_ref_eq (rp : RefProg) (c : Choice)
     let res := (Miri.Interpreter.ExecutionMachine.stepHooks
       (refExecutionConfig rp) refLimits).terminator c
       (toMiriTerminator rp.types .return_) st
-    match evalTerminator body bb f amem cm with
+    match evalTerminator body bb f amem cm ps lh with
     | .fault k =>
-      ∃ err st', res = (st', .error err) ∧ stepErrorFaultKind err = k
+      ∃ err st', res = (st', .error err) ∧ stepErrorFaultKind err = some k
     | .done (.returned ⟨v, cm'⟩) =>
       ∃ st',
         res = (st', .ok ()) ∧
         st'.stack.frames.isEmpty = true ∧
         refReadReturnVal st'.machine.memory retTy retPlace = .ok v ∧
+        st'.machine.user.callerMem = cm'
+    | .done (.aborted cm') =>
+      ∃ st',
+        res = (st', .error (.termination (.abort "panic abort"))) ∧
         st'.machine.user.callerMem = cm'
     | .done (.unwound _) => False
     | .step s' =>
@@ -1638,7 +1692,7 @@ private theorem returnFromCurrentFrame_ref_eq (rp : RefProg) (c : Choice)
   cases h_cl : bb.cleanup with
   | true =>
     have h_rcl : rbb.cleanup = true := h_cl_eq.trans h_cl
-    have h_ev_t : evalTerminator body bb f amem cm = .fault .unsupported := by
+    have h_ev_t : evalTerminator body bb f amem cm ps lh = .fault .unsupported := by
       dsimp only [evalTerminator]; rw [← h_bb_term, h_cl]; rfl
     rw [h_ev_t]
     have h_err :
@@ -1665,7 +1719,7 @@ private theorem returnFromCurrentFrame_ref_eq (rp : RefProg) (c : Choice)
     | partialTuple _ =>
       exact False.elim (SlotsMatchTys.not_partialTuple h_inv h_ret_ty h_sl₀)
     | dead =>
-      have h_ev_t : evalTerminator body bb f amem cm = .fault .undefined := by
+      have h_ev_t : evalTerminator body bb f amem cm ps lh = .fault .undefined := by
         dsimp only [evalTerminator]
         rw [← h_bb_term]
         dsimp only
@@ -1783,7 +1837,7 @@ private theorem returnFromCurrentFrame_ref_eq (rp : RefProg) (c : Choice)
       have h_sm := SlotsMatchTys.getElem? h_inv h_ret_ty h_sl₀
       cases optVal with
       | none =>
-        have h_ev_t : evalTerminator body bb f amem cm = .fault .undefined := by
+        have h_ev_t : evalTerminator body bb f amem cm ps lh = .fault .undefined := by
           dsimp only [evalTerminator]
           rw [← h_bb_term]
           dsimp only
@@ -1793,7 +1847,7 @@ private theorem returnFromCurrentFrame_ref_eq (rp : RefProg) (c : Choice)
           h_init h_pop_mem h_pop_dr h_pop_pmd h_sm h_ret_supp h_ret_res
         exact ⟨_, _, h_step_copy_err _ _ h_ub, rfl⟩
       | some v =>
-        have h_ev_t : evalTerminator body bb f amem cm = .done (.returned ⟨v, cm⟩) := by
+        have h_ev_t : evalTerminator body bb f amem cm ps lh = .done (.returned ⟨v, cm⟩) := by
           dsimp only [evalTerminator]
           rw [← h_bb_term]
           dsimp only
@@ -1845,7 +1899,7 @@ private theorem compareSwitchCase_scalar_ref_eq (rp : RefProg) (c : Choice)
                     | .ok v => EStateM.pure v | .error e => EStateM.throw e))))
         st
     if truncateBits w caseBits != caseBits then
-      ∃ err, res = (st, .error err) ∧ stepErrorFaultKind err = .unsupported
+      ∃ err, res = (st, .error err) ∧ stepErrorFaultKind err = some .unsupported
     else
       res = (st, .ok (truncateBits w bits == truncateBits w caseBits)) := by
   intro h val res
@@ -1966,7 +2020,7 @@ private theorem compareSwitchCase_bool_ref_eq (rp : RefProg) (c : Choice)
         st
     match evalConstLit .bool (.scalar caseBits) with
     | .error k =>
-      ∃ err, res = (st, .error err) ∧ stepErrorFaultKind err = k
+      ∃ err, res = (st, .error err) ∧ stepErrorFaultKind err = some k
     | .ok (.bool cb) =>
       res = (st, .ok (b == cb))
     | .ok _ => False := by
@@ -2285,7 +2339,7 @@ private theorem switchInt_forIn_scalar (rp : RefProg) (c : Choice)
     match evalSwitchBranches w bits otherwise branches with
     | .error k =>
       ∃ err, loopRes = (some (st, .error err), st, otherwise) ∧
-        stepErrorFaultKind err = k
+        stepErrorFaultKind err = some k
     | .ok target =>
       loopRes = (none, st, target) := by
   intro h val cmp
@@ -2373,7 +2427,7 @@ private theorem switchInt_forIn_bool (rp : RefProg) (c : Choice)
     match evalBoolSwitchBranches b otherwise branches with
     | .error k =>
       ∃ err, loopRes = (some (st, .error err), st, otherwise) ∧
-        stepErrorFaultKind err = k
+        stepErrorFaultKind err = some k
     | .ok target =>
       loopRes = (none, st, target) := by
   intro h val cmp
@@ -2476,7 +2530,7 @@ private theorem compareSwitchCase_char_ref_eq (rp : RefProg) (c : Choice)
         st
     match evalConstLit .char (.scalar caseBits) with
     | .error k =>
-      ∃ err, res = (st, .error err) ∧ stepErrorFaultKind err = k
+      ∃ err, res = (st, .error err) ∧ stepErrorFaultKind err = some k
     | .ok (.char cc) =>
       res = (st, .ok (Nat.beq ch.toNat cc.toNat))
     | .ok _ => False := by
@@ -2578,12 +2632,12 @@ private theorem scalar_fromUInt_pair_err_unsupported (rp : RefProg)
         (refLocalLayoutForTy rp.types (.tuple [.int w s, .bool])).layout.size =
       .error e) :
     stepErrorFaultKind (Miri.Interpreter.ScalarOps.scalarError e) =
-      .unsupported := by
+      some .unsupported := by
   have h_gen : ∀ w' : IntWidth,
       Miri.Memory.Scalar.fromUInt (Prov := Miri.Memory.Provenance) v
           (toMiriSize w') = .error e →
       stepErrorFaultKind (Miri.Interpreter.ScalarOps.scalarError e) =
-        .unsupported := by
+        some .unsupported := by
     intro w' h'
     rw [scalar_fromUInt_toMiriSize] at h'
     cases h_ne : (truncateBits w' v != v) with
@@ -2659,7 +2713,7 @@ private theorem compareSwitchCase_pair_ref_eq (rp : RefProg) (c : Choice)
                         Miri.Interpreter.ScalarOps.scalarError with
                     | .ok v => EStateM.pure v | .error e => EStateM.throw e))))
         st
-    ∃ err, res = (st, .error err) ∧ stepErrorFaultKind err = .unsupported := by
+    ∃ err, res = (st, .error err) ∧ stepErrorFaultKind err = some .unsupported := by
   intro h val res
   dsimp only [res, Miri.Interpreter.MachineHooks.run, Miri.Interpreter.Call.run]
   cases h_fu : Miri.Memory.Scalar.fromUInt (Prov := Miri.Memory.Provenance)
@@ -2743,7 +2797,7 @@ private theorem switchInt_forIn_char (rp : RefProg) (c : Choice)
     match evalCharSwitchBranches ch otherwise branches with
     | .error k =>
       ∃ err, loopRes = (some (st, .error err), st, otherwise) ∧
-        stepErrorFaultKind err = k
+        stepErrorFaultKind err = some k
     | .ok target =>
       loopRes = (none, st, target) := by
   intro h val cmp
@@ -2841,7 +2895,7 @@ private theorem switchInt_forIn_pair (rp : RefProg) (c : Choice)
     | [] => loopRes = (none, st, otherwise)
     | _ :: _ =>
       ∃ err, loopRes = (some (st, .error err), st, otherwise) ∧
-        stepErrorFaultKind err = .unsupported := by
+        stepErrorFaultKind err = some .unsupported := by
   intro h val cmp
   cases branches with
   | nil =>
@@ -2861,6 +2915,7 @@ private theorem switchInt_forIn_pair (rp : RefProg) (c : Choice)
 
 noncomputable def termCacheTouch : TerminatorKind → List Bool → List Bool
   | .switchInt discr _, cache => operandCacheTouch cache discr
+  | .assert cond _ _ _ _, cache => operandCacheTouch cache cond
   | _, cache => cache
 
 private theorem goToBlock_mkGenSimState (rp : RefProg) (ctx : SimFrameCtx)
@@ -2882,6 +2937,439 @@ private theorem goToBlock_mkGenSimState (rp : RefProg) (ctx : SimFrameCtx)
   dsimp only [mkGenSimFrame]
   rw [h_loc]
 
+private theorem assertConditionTypesValid_cond_bool {body : Body}
+    {bb : BasicBlock} {blockIdx : BasicBlockId} {slots slots1 : List LocalSlot}
+    {amem amem1 : MemoryState} {cond : Operand} {expected : Bool}
+    {msg : AssertKind} {target : BasicBlockId} {unwind : UnwindAction}
+    {condVal : Val}
+    (h_act : assertConditionTypesValid body = true)
+    (h_bb : MirSemantics.getElem? body.basicBlocks blockIdx = some bb)
+    (h_term : bb.terminator = .assert cond expected msg target unwind)
+    (h_inv : SlotsMatchTys body.locals slots)
+    (h_p : evalPrimitiveOperand body.locals slots amem cond =
+      .ok (condVal, slots1, amem1)) :
+    ∃ b : Bool, condVal = .bool b := by
+  have h_bb_ok := list_all_mirGetElem? h_act h_bb
+  rw [h_term] at h_bb_ok
+  dsimp only [evalPrimitiveOperand] at h_p
+  cases h_eos : evalOperandToSlot body.locals slots amem
+      isPrimitiveReadableTy cond with
+  | error _ => rw [h_eos] at h_p; cases h_p
+  | ok tup =>
+    cases tup with | mk ty rest =>
+    cases rest with | mk optVal rest₂ =>
+    cases rest₂ with | mk slots' mem' =>
+    rw [h_eos] at h_p
+    dsimp only at h_p
+    cases h_pr : isPrimitiveReadableTy ty with
+    | false => rw [h_pr] at h_p; cases h_p
+    | true =>
+      rw [h_pr] at h_p
+      dsimp only [Bool.not, ite_false_eq] at h_p
+      cases optVal with
+      | none => cases h_p
+      | some v =>
+        injection h_p with htup
+        injection htup with hv_eq _
+        subst hv_eq
+        let ⟨_, h_sm, _⟩ := evalOperandToSlot_slotsMatchTys h_inv h_eos
+        have h_cv : checkVal v ty = true := h_sm
+        have h_ty_bool : ty = .bool := by
+          cases cond with
+          | copy p =>
+            dsimp only [evalOperandToSlot] at h_eos
+            cases h_l : MirSemantics.getElem? body.locals p.localId with
+            | none => rw [h_l] at h_eos; cases h_eos
+            | some lt =>
+              rw [h_l] at h_eos
+              cases h_s : MirSemantics.getElem? slots p.localId with
+              | none => rw [h_s] at h_eos; cases h_eos
+              | some sl =>
+                rw [h_s] at h_eos
+                cases sl with
+                | dead => cases h_eos
+                | immediate _ =>
+                  cases h_pe : p.projection.isEmpty with
+                  | false => rw [h_pe] at h_eos; cases h_eos
+                  | true =>
+                    rw [h_pe] at h_eos
+                    injection h_eos with h_e
+                    injection h_e with h_teq _
+                    dsimp only at h_bb_ok
+                    rw [h_pe, h_l] at h_bb_ok
+                    dsimp only at h_bb_ok
+                    exact (MirTy.eq_of_beq h_bb_ok) ▸ h_teq.symm
+                | indirect _ =>
+                  cases h_pe : p.projection.isEmpty with
+                  | false => rw [h_pe] at h_eos; cases h_eos
+                  | true =>
+                    rw [h_pe] at h_eos
+                    dsimp only [Bool.not, ite_false_eq] at h_eos
+                    cases h_ok : isPrimitiveReadableTy lt with
+                    | false => rw [h_ok] at h_eos; cases h_eos
+                    | true =>
+                      rw [h_ok] at h_eos
+                      dsimp only [Bool.not, ite_false_eq] at h_eos
+                      cases h_ld : loadIndirect amem lt _ with
+                      | error _ => rw [h_ld] at h_eos; cases h_eos
+                      | ok _ =>
+                        rw [h_ld] at h_eos
+                        injection h_eos with h_e
+                        injection h_e with h_teq _
+                        dsimp only at h_bb_ok
+                        rw [h_pe, h_l] at h_bb_ok
+                        dsimp only at h_bb_ok
+                        exact (MirTy.eq_of_beq h_bb_ok) ▸ h_teq.symm
+                | partialTuple _ => cases h_eos
+          | move p =>
+            dsimp only [evalOperandToSlot] at h_eos
+            cases h_l : MirSemantics.getElem? body.locals p.localId with
+            | none => rw [h_l] at h_eos; cases h_eos
+            | some lt =>
+              rw [h_l] at h_eos
+              cases h_s : MirSemantics.getElem? slots p.localId with
+              | none => rw [h_s] at h_eos; cases h_eos
+              | some sl =>
+                rw [h_s] at h_eos
+                cases sl with
+                | dead => cases h_eos
+                | immediate _ =>
+                  cases h_pe : p.projection.isEmpty with
+                  | false => rw [h_pe] at h_eos; cases h_eos
+                  | true =>
+                    rw [h_pe] at h_eos
+                    dsimp only [Bool.not, ite_false_eq] at h_eos
+                    cases h_st : MirSemantics.setElem? slots p.localId
+                        (liveUninitSlot lt) with
+                    | none => rw [h_st] at h_eos; cases h_eos
+                    | some _ =>
+                      rw [h_st] at h_eos
+                      injection h_eos with h_e
+                      injection h_e with h_teq _
+                      dsimp only at h_bb_ok
+                      rw [h_pe, h_l] at h_bb_ok
+                      dsimp only at h_bb_ok
+                      exact (MirTy.eq_of_beq h_bb_ok) ▸ h_teq.symm
+                | indirect _ =>
+                  cases h_pe : p.projection.isEmpty with
+                  | false => rw [h_pe] at h_eos; cases h_eos
+                  | true =>
+                    rw [h_pe] at h_eos
+                    dsimp only [Bool.not, ite_false_eq] at h_eos
+                    cases h_ok : isPrimitiveReadableTy lt with
+                    | false => rw [h_ok] at h_eos; cases h_eos
+                    | true =>
+                      rw [h_ok] at h_eos
+                      dsimp only [Bool.not, ite_false_eq] at h_eos
+                      cases h_ld : loadIndirect amem lt _ with
+                      | error _ => rw [h_ld] at h_eos; cases h_eos
+                      | ok _ =>
+                        rw [h_ld] at h_eos
+                        dsimp only at h_eos
+                        cases h_di : deinitIndirect amem lt _ with
+                        | error _ => rw [h_di] at h_eos; cases h_eos
+                        | ok _ =>
+                          rw [h_di] at h_eos
+                          injection h_eos with h_e
+                          injection h_e with h_teq _
+                          dsimp only at h_bb_ok
+                          rw [h_pe, h_l] at h_bb_ok
+                          dsimp only at h_bb_ok
+                          exact (MirTy.eq_of_beq h_bb_ok) ▸ h_teq.symm
+                | partialTuple _ => cases h_eos
+          | constant c =>
+            dsimp only [evalOperandToSlot] at h_eos
+            cases h_ec : evalConstLit c.ty c.lit with
+            | error _ => rw [h_ec] at h_eos; cases h_eos
+            | ok _ =>
+              rw [h_ec] at h_eos
+              injection h_eos with h_e
+              injection h_e with h_teq _
+              dsimp only at h_bb_ok
+              exact (MirTy.eq_of_beq h_bb_ok) ▸ h_teq.symm
+        rw [h_ty_bool] at h_cv
+        exact checkVal_bool_inv h_cv
+
+private noncomputable def refAssertPanicHooks (rp : RefProg) :
+    Miri.Interpreter.Panic.Hooks Unit RefUser Choice Unit := {
+  driver := Miri.Interpreter.FunctionCalls.bindUnwind
+    (Miri.Interpreter.ExecutionMachine.withValidation (refExecutionConfig rp) refLimits).panic.driver
+    (Miri.Interpreter.ExecutionCalls.helpers
+      (Miri.Interpreter.ExecutionMachine.withValidation (refExecutionConfig rp) refLimits).helpers
+      (Miri.Interpreter.ExecutionMachine.callHooks (refExecutionConfig rp) refLimits))
+  allocateStringDedup :=
+    (Miri.Interpreter.ExecutionMachine.withValidation (refExecutionConfig rp) refLimits).panic.allocateStringDedup
+  toImmediatePointer :=
+    (Miri.Interpreter.ExecutionMachine.withValidation (refExecutionConfig rp) refLimits).panic.toImmediatePointer
+  langItem :=
+    (Miri.Interpreter.ExecutionMachine.withValidation (refExecutionConfig rp) refLimits).panic.langItem
+  genericParameters :=
+    (Miri.Interpreter.ExecutionMachine.withValidation (refExecutionConfig rp) refLimits).panic.genericParameters
+  evalOperand := fun c op => Miri.Interpreter.OperandMachine.evalOperand
+    (Miri.Interpreter.ExecutionMachine.operandHooks
+      (Miri.Interpreter.ExecutionMachine.withValidation (refExecutionConfig rp) refLimits)) c op none
+  evalOperandAt := fun c path op => Miri.Interpreter.OperandMachine.evalOperandAt
+    (Miri.Interpreter.ExecutionMachine.operandHooks
+      (Miri.Interpreter.ExecutionMachine.withValidation (refExecutionConfig rp) refLimits)) c path op none
+}
+
+private noncomputable def safePanicMono (rp : RefProg) (c : Choice)
+    (item : Miri.Interpreter.Panic.LangItem) :
+    Miri.Interpreter.MachineHooks.M Unit RefUser
+      Miri.Interpreter.CallInstance :=
+  Bind.bind ((refAssertPanicHooks rp).langItem c item) fun __x =>
+    match __x with
+    | some definition =>
+      have args : Array Miri.MIR.GenericArg := List.toArray List.nil
+      Bind.bind ((refAssertPanicHooks rp).genericParameters c definition)
+        fun (__do_lift : Array Miri.Interpreter.MainGenericParameter) =>
+          Bind.bind
+            (ForIn.forIn __do_lift args
+              fun (parameter : Miri.Interpreter.MainGenericParameter)
+                  (__s : Array Miri.MIR.GenericArg) =>
+                have args : Array Miri.MIR.GenericArg := __s
+                match parameter with
+                | .lifetime =>
+                  have args : Array Miri.MIR.GenericArg :=
+                    args.push (.Lifetime .Erased)
+                  Pure.pure (ForInStep.yield args)
+                | .typeParameter =>
+                  Bind.bind
+                    (MonadExcept.throw
+                      (.invalidProgram
+                        "Instance::mono called on type/const generic panic item") :
+                      Miri.Interpreter.MachineHooks.M Unit RefUser Unit)
+                    fun (_ : Unit) => Pure.pure (ForInStep.yield args)
+                | .constParameter =>
+                  Bind.bind
+                    (MonadExcept.throw
+                      (.invalidProgram
+                        "Instance::mono called on type/const generic panic item") :
+                      Miri.Interpreter.MachineHooks.M Unit RefUser Unit)
+                    fun (_ : Unit) => Pure.pure (ForInStep.yield args))
+            fun (__s : Array Miri.MIR.GenericArg) =>
+              have args : Array Miri.MIR.GenericArg := __s
+              Pure.pure ⟨.Item definition, args⟩
+    | _ => MonadExcept.throw (.invalidProgram "missing panic language item")
+
+private noncomputable def safePanicCall (rp : RefProg) (c : Choice)
+    (item : Miri.Interpreter.Panic.LangItem)
+    (args : Array (Miri.Interpreter.RvalueImmTy Miri.Memory.Provenance))
+    (unwind : Miri.MIR.UnwindAction)
+    (st₁ : Miri.Interpreter.MachineHooks.State Unit RefUser) :
+    Miri.Interpreter.MachineHooks.State Unit RefUser ×
+      Except Miri.Interpreter.StepError Unit :=
+  Miri.Interpreter.MachineHooks.run
+    (Bind.bind (safePanicMono rp c item) fun fnInstance =>
+      (refAssertPanicHooks rp).driver.callFunction c fnInstance args
+        (.goto none unwind))
+    st₁
+
+private theorem evalOperandAt_dummy_isize (rp : RefProg) (c : Choice)
+    (pathField : String)
+    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
+    (h_pmd : st.machine.pendingMoveDeinit = false) :
+    (refAssertPanicHooks rp).evalOperandAt c
+        (Miri.Interpreter.OperandPath.assertion pathField)
+        (refAssertDummyOperand rp.types) st =
+      .ok ⟨.immediate (.scalar (.fromScalarInt (miriScalar .isize 0))),
+            refLocalLayoutForTy rp.types (.int .isize false)⟩ st := by
+  cases st with
+  | mk stack machine =>
+    cases machine with
+    | mk memory borrowTracker dataRace threads raceAllocations allocationSpans
+        user pendingMoveDeinit =>
+      dsimp only at h_pmd; subst h_pmd; rfl
+
+private theorem readImmediate_dummy_isize (rp : RefProg) (c : Choice)
+    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
+    (h_pmd : st.machine.pendingMoveDeinit = false) :
+    (refAssertPanicHooks rp).driver.readImmediate c
+        ⟨.immediate (.scalar (.fromScalarInt (miriScalar .isize 0))),
+          refLocalLayoutForTy rp.types (.int .isize false)⟩ st =
+      .ok ⟨.scalar (.fromScalarInt (miriScalar .isize 0)),
+            refLocalLayoutForTy rp.types (.int .isize false)⟩ st := by
+  cases st with
+  | mk stack machine =>
+    cases machine with
+    | mk memory borrowTracker dataRace threads raceAllocations allocationSpans
+        user pendingMoveDeinit =>
+      dsimp only at h_pmd; subst h_pmd; rfl
+
+private theorem safePanicCall_eq (rp : RefProg) (c : Choice)
+    (ctx : SimFrameCtx) (rbody : RefBody) (rbb : RefBasicBlock)
+    (blockIdx : BasicBlockId) (stmtIdx : Nat) (bodyLocals : List MirTy)
+    (slots1 : List LocalSlot) (cache : List Bool)
+    (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
+      Miri.TreeBorrows.BorrowTree Unit)
+    (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
+    (cm : CallerMemory) (cond : RefOperand) (expected : Bool)
+    (msg : AssertKind) (target : BasicBlockId) (unwind : UnwindAction)
+    (item : Miri.Interpreter.Panic.LangItem)
+    (args : Array (Miri.Interpreter.RvalueImmTy Miri.Memory.Provenance))
+    (h_rbb : MirSemantics.getElem? rbody.basicBlocks blockIdx = some rbb)
+    (h_rt : rbb.terminator = .assert cond expected msg target unwind)
+    (h_loc_none : ctx.locOverride = none)
+    (h_item : match item with
+      | .PanicBoundsCheck | .PanicDivOverflow | .PanicRemOverflow
+      | .PanicDivZero | .PanicRemZero => True
+      | _ => False) :
+    let st₁ := mkGenSimState rp ctx rbody blockIdx stmtIdx bodyLocals slots1
+      cache mem ctrl cm
+    match evalAssertFailure .boundsCheck rp.panicStrategy unwind cm
+        rp.hasLocalPanicHandler with
+    | .fault k =>
+      ∃ err st',
+        safePanicCall rp c item args (toMiriUnwindAction unwind) st₁ =
+          (st', .error err) ∧
+        stepErrorFaultKind err = some k
+    | .done (.aborted cm') =>
+      ∃ st',
+        safePanicCall rp c item args (toMiriUnwindAction unwind) st₁ =
+          (st', .error (.termination (.abort "panic abort"))) ∧
+        st'.machine.user.callerMem = cm'
+    | .done (.returned _) | .done (.unwound _) | .step _ => False := by
+  intro st₁
+  have h_cf : st₁.stack.currentFrame? =
+      some (mkGenSimFrame rp ctx rbody blockIdx stmtIdx bodyLocals slots1
+        cache) := by
+    dsimp only [st₁, mkGenSimState, mkRefMiriStackState]
+    rw [stack_currentFrame?_push]
+  have h_loc : (mkGenSimFrame rp ctx rbody blockIdx stmtIdx bodyLocals slots1
+      cache).location = .mir ⟨blockIdx, stmtIdx⟩ := by
+    dsimp only [mkGenSimFrame]
+    rw [h_loc_none]
+  have h_bb : (mkGenSimFrame rp ctx rbody blockIdx stmtIdx bodyLocals slots1
+      cache).body.basicBlocks[blockIdx]? =
+      some (toMiriBasicBlock rp.types rbb) := by
+    dsimp only [mkGenSimFrame, toMiriBody]
+    rw [array_getElem?_eq_mirGetElem?, mirGetElem?_map, h_rbb]
+    rfl
+  have h_tkind : (toMiriBasicBlock rp.types rbb).terminator.kind =
+      .Assert (toMiriOperand rp.types cond) expected
+        (toMiriAssertKind rp.types msg) target (toMiriUnwindAction unwind) := by
+    dsimp only [toMiriBasicBlock]
+    rw [h_rt]
+    rfl
+  cases item <;>
+  first
+  | exact False.elim h_item
+  | (cases h_lh : rp.hasLocalPanicHandler <;>
+     cases h_ps : rp.panicStrategy <;> cases unwind <;>
+     dsimp only [safePanicCall, safePanicMono, refAssertPanicHooks,
+       Miri.Interpreter.MachineHooks.run, Miri.Interpreter.Call.run,
+       Miri.Interpreter.ExecutionMachine.withValidation, refExecutionConfig,
+       refPanicLangItem, evalAssertFailure, toMiriUnwindAction,
+       bind, Bind.bind, pure, Pure.pure, EStateM.bind, EStateM.pure] <;>
+     rw [h_lh, h_ps] <;>
+     first
+     | exact ⟨.unsupported "crate-local panic_handler unsupported", st₁, rfl, rfl⟩
+     | exact ⟨.unsupported "panic unwind unsupported", st₁, rfl, rfl⟩
+     | (dsimp only
+        rw [h_cf]; dsimp only
+        rw [h_loc]; dsimp only
+        rw [h_bb]; dsimp only
+        rw [h_tkind]
+        first
+        | exact ⟨st₁, rfl, rfl⟩
+        | exact ⟨.unsupported "panic assert cleanup unsupported", st₁, rfl, rfl⟩))
+
+private theorem assertPanic_ref_eq (rp : RefProg) (c : Choice)
+    (ctx : SimFrameCtx) (rbody : RefBody) (rbb : RefBasicBlock)
+    (blockIdx : BasicBlockId) (stmtIdx : Nat) (bodyLocals : List MirTy)
+    (slots1 : List LocalSlot) (cache : List Bool)
+    (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
+      Miri.TreeBorrows.BorrowTree Unit)
+    (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
+    (cm : CallerMemory) (cond : RefOperand) (expected : Bool)
+    (msg : AssertKind) (target : BasicBlockId) (unwind : UnwindAction)
+    (h_rbb : MirSemantics.getElem? rbody.basicBlocks blockIdx = some rbb)
+    (h_rt : rbb.terminator = .assert cond expected msg target unwind)
+    (h_loc_none : ctx.locOverride = none) :
+    let st₁ := mkGenSimState rp ctx rbody blockIdx stmtIdx bodyLocals slots1
+      cache mem ctrl cm
+    let res := Miri.Interpreter.MachineHooks.run
+      (Miri.Interpreter.Panic.assertPanic (refAssertPanicHooks rp) c
+        (toMiriAssertKind rp.types msg) (toMiriUnwindAction unwind)) st₁
+    match evalAssertFailure msg rp.panicStrategy unwind cm
+        rp.hasLocalPanicHandler with
+    | .fault k =>
+      ∃ err st', res = (st', .error err) ∧ stepErrorFaultKind err = some k
+    | .done (.aborted cm') =>
+      ∃ st',
+        res = (st', .error (.termination (.abort "panic abort"))) ∧
+        st'.machine.user.callerMem = cm'
+    | .done (.returned _) | .done (.unwound _) | .step _ => False := by
+  intro st₁ res
+  cases msg with
+  | misalignedPtrDeref | nullPtrDeref | unsupported =>
+    exact ⟨_, st₁, rfl, rfl⟩
+  | boundsCheck =>
+    have h_eq :
+        res =
+          safePanicCall rp c .PanicBoundsCheck
+            ([⟨.scalar (.fromScalarInt (miriScalar .isize 0)),
+                refLocalLayoutForTy rp.types (.int .isize false)⟩,
+              ⟨.scalar (.fromScalarInt (miriScalar .isize 0)),
+                refLocalLayoutForTy rp.types (.int .isize false)⟩].toArray)
+            (toMiriUnwindAction unwind) st₁ := by
+      dsimp only [res, Miri.Interpreter.MachineHooks.run,
+        Miri.Interpreter.Call.run, Miri.Interpreter.Panic.assertPanic,
+        toMiriAssertKind, bind, Bind.bind, EStateM.bind]
+      rw [evalOperandAt_dummy_isize rp c "index" st₁ rfl]
+      dsimp only
+      rw [readImmediate_dummy_isize rp c st₁ rfl]
+      dsimp only
+      rw [evalOperandAt_dummy_isize rp c "length" st₁ rfl]
+      dsimp only
+      rw [readImmediate_dummy_isize rp c st₁ rfl]
+      rfl
+    rw [h_eq]
+    exact safePanicCall_eq rp c ctx rbody rbb blockIdx stmtIdx bodyLocals
+      slots1 cache mem ctrl cm cond expected .boundsCheck target unwind
+      .PanicBoundsCheck _ h_rbb h_rt h_loc_none True.intro
+  | overflowNeg =>
+    exact ⟨_, st₁, rfl, rfl⟩
+  | divByZero =>
+    have h_eq :
+        res = safePanicCall rp c .PanicDivZero [].toArray
+          (toMiriUnwindAction unwind) st₁ := rfl
+    rw [h_eq]
+    exact safePanicCall_eq rp c ctx rbody rbb blockIdx stmtIdx bodyLocals
+      slots1 cache mem ctrl cm cond expected .divByZero target unwind
+      .PanicDivZero [].toArray h_rbb h_rt h_loc_none True.intro
+  | remByZero =>
+    have h_eq :
+        res = safePanicCall rp c .PanicRemZero [].toArray
+          (toMiriUnwindAction unwind) st₁ := rfl
+    rw [h_eq]
+    exact safePanicCall_eq rp c ctx rbody rbb blockIdx stmtIdx bodyLocals
+      slots1 cache mem ctrl cm cond expected .remByZero target unwind
+      .PanicRemZero [].toArray h_rbb h_rt h_loc_none True.intro
+  | overflow op =>
+    cases op with
+    | div =>
+      have h_eq :
+          res = safePanicCall rp c .PanicDivOverflow [].toArray
+            (toMiriUnwindAction unwind) st₁ := rfl
+      rw [h_eq]
+      exact safePanicCall_eq rp c ctx rbody rbb blockIdx stmtIdx bodyLocals
+        slots1 cache mem ctrl cm cond expected (.overflow .div) target unwind
+        .PanicDivOverflow [].toArray h_rbb h_rt h_loc_none True.intro
+    | rem =>
+      have h_eq :
+          res = safePanicCall rp c .PanicRemOverflow [].toArray
+            (toMiriUnwindAction unwind) st₁ := rfl
+      rw [h_eq]
+      exact safePanicCall_eq rp c ctx rbody rbb blockIdx stmtIdx bodyLocals
+        slots1 cache mem ctrl cm cond expected (.overflow .rem) target unwind
+        .PanicRemOverflow [].toArray h_rbb h_rt h_loc_none True.intro
+    | add | sub | mul | shr | shl
+    | addUnchecked | addWithOverflow | subUnchecked | subWithOverflow
+    | mulUnchecked | mulWithOverflow | bitXor | bitAnd | bitOr | eq | lt | le
+    | ne | ge | gt | cmp | offset | shlUnchecked | shrUnchecked =>
+      exact ⟨_, st₁, rfl, rfl⟩
+
 private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
     (ctx : SimFrameCtx) (rbody : RefBody) (body : Body) (rbb : RefBasicBlock)
     (bb : BasicBlock) (f : FrameState) (retTy : MirTy) (cache : List Bool)
@@ -2892,6 +3380,7 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
     (cm : CallerMemory) (amem : MemoryState)
     (h_bdec : decodeBody rp.types rbody = some body)
     (h_c_len : cache.length = body.locals.length)
+    (h_bb : MirSemantics.getElem? body.basicBlocks f.blockIdx = some bb)
     (h_rbb : MirSemantics.getElem? rbody.basicBlocks f.blockIdx = some rbb)
     (h_rbb_dec : decodeBasicBlock rp.types rbb = some bb)
     (h_loc : ctx.locOverride = none)
@@ -2908,6 +3397,7 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
     (h_noncall :
       (∀ callee args dst tgt uw, rbb.terminator ≠ .call callee args dst tgt uw) ∧
       (∀ op args dst tgt uw, rbb.terminator ≠ .sysrootCall op args dst tgt uw))
+    (h_act : assertConditionTypesValid body = true)
     (h_supp : body.locals.all isSupportedScalarOrUnitTy = true)
     (h_inv : SlotsMatchTys body.locals f.locals) :
     let st := mkGenSimState rp ctx rbody f.blockIdx f.stmtIdx body.locals
@@ -2915,14 +3405,19 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
     let res := (Miri.Interpreter.ExecutionMachine.stepHooks
       (refExecutionConfig rp) refLimits).terminator c
       (toMiriTerminator rp.types rbb.terminator) st
-    match evalTerminator body bb f amem cm with
+    match evalTerminator body bb f amem cm rp.panicStrategy
+        rp.hasLocalPanicHandler with
     | .fault k =>
-      ∃ err st', res = (st', .error err) ∧ stepErrorFaultKind err = k
+      ∃ err st', res = (st', .error err) ∧ stepErrorFaultKind err = some k
     | .done (.returned ⟨v, cm'⟩) =>
       ∃ st',
         res = (st', .ok ()) ∧
         st'.stack.frames.isEmpty = true ∧
         refReadReturnVal st'.machine.memory retTy retPlace = .ok v ∧
+        st'.machine.user.callerMem = cm'
+    | .done (.aborted cm') =>
+      ∃ st',
+        res = (st', .error (.termination (.abort "panic abort"))) ∧
         st'.machine.user.callerMem = cm'
     | .done (.unwound _) => False
     | .step s' =>
@@ -2954,7 +3449,8 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
     let ⟨defId, h_ctx_eq, h_tr, h_ret_ty, h_init⟩ := h_root h_rt
     have h_ret := returnFromCurrentFrame_ref_eq rp c defId rbody body rbb bb f
       retTy cache ctx.topRel? retPlace mem ctrl cm amem h_bdec h_c_len h_rbb
-      h_rbb_dec h_rt h_ret_ty h_init h_tr h_supp h_inv
+      h_rbb_dec h_rt h_ret_ty h_init h_tr h_supp h_inv rp.panicStrategy
+      rp.hasLocalPanicHandler
     rw [← h_eq]
     dsimp only [evalTerminator, termCacheTouch] at h_ret
     dsimp only [evalTerminator, termCacheTouch]
@@ -2975,18 +3471,137 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
     dsimp only [evalTerminator]
     rw [← h_eq]
     exact ⟨_, _, rfl, rfl⟩
-  | assert rcond _ _ _ _ =>
+  | assert rcond expected rmsg target runwind =>
     intro res
     rw [h_rt] at h_term_dec
     dsimp only [decodeTerminator, optMap] at h_term_dec
     cases h_c : decodeOperand rp.types rcond with
     | none => rw [h_c] at h_term_dec; cases h_term_dec
-    | some _ =>
+    | some cond =>
       rw [h_c] at h_term_dec
       injection h_term_dec with h_eq
       dsimp only [evalTerminator]
       rw [← h_eq]
-      exact ⟨_, _, rfl, rfl⟩
+      dsimp only [termCacheTouch]
+      have h_locs := (decodeBody_inv h_bdec).2.1
+      have h_evC := evalPrimitiveOperand_ref_eq rp c ctx rbody f.blockIdx
+        f.stmtIdx body.locals f.locals cache amem mem ctrl cm
+        (Miri.Interpreter.OperandPath.instruction "condition")
+        rcond cond none h_locs h_c_len
+        (refConstantAt_eq_of_ne_fn rp c _ (by decide) (fun _ _ _ => rfl))
+        h_inv h_c
+        (operandKnownOk_none _ _ _ _)
+        (fun _ _ h_ty =>
+          let ⟨_, _, h_ts⟩ := decodeBody_local_mem_types h_bdec h_ty
+          (resolveTy_tyIdFor_of_mem h_ts).2)
+      cases h_pC : evalPrimitiveOperand body.locals f.locals amem cond with
+      | error k =>
+        rw [h_pC] at h_evC
+        dsimp only
+        let ⟨err, st', h_err, h_fk⟩ := h_evC
+        refine ⟨err, st', ?_, h_fk⟩
+        have h_err' :
+            EStateM.bind
+              (Miri.Interpreter.OperandMachine.evalOperandAt
+                (Miri.Interpreter.ExecutionMachine.operandHooks
+                  (Miri.Interpreter.ExecutionMachine.withValidation (refExecutionConfig rp) refLimits))
+                c (Miri.Interpreter.OperandPath.instruction "condition")
+                (toMiriOperand rp.types rcond) none)
+              (fun __do_lift =>
+                Miri.Interpreter.PlaceMachine.readImmediate
+                  (Miri.Interpreter.ExecutionMachine.withValidation (refExecutionConfig rp) refLimits).access
+                  __do_lift)
+              st = .error err st' := h_err
+        dsimp only [EStateM.bind] at h_err'
+        dsimp only [res, Miri.Interpreter.ExecutionMachine.stepHooks,
+          Miri.Interpreter.ControlFlow.evalTerminator,
+          Miri.Interpreter.MachineHooks.run, Miri.Interpreter.Call.run,
+          toMiriTerminator, Id.run, bind, Bind.bind, pure, Pure.pure,
+          EStateM.bind]
+        rw [h_err']
+      | ok triple =>
+        cases triple with | mk condVal rest =>
+        cases rest with | mk slots1 amem1 =>
+        have h_amem : amem1 = amem :=
+          (evalPrimitiveOperand_slotsMatchTys h_inv h_pC).2
+        rw [h_pC] at h_evC
+        dsimp only
+        let ⟨condTy, h_ccv, _, _, _, h_okC⟩ := h_evC
+        let ⟨b, h_cv_b⟩ := assertConditionTypesValid_cond_bool
+          h_act h_bb h_eq.symm h_inv h_pC
+        subst h_cv_b
+        have h_cty : condTy = .bool := by
+          dsimp only [checkVal] at h_ccv
+          cases condTy <;> cases h_ccv
+          rfl
+        subst h_cty
+        dsimp only [valToMiriImmediate] at h_okC
+        have h_okC' :
+            EStateM.bind
+              (Miri.Interpreter.OperandMachine.evalOperandAt
+                (Miri.Interpreter.ExecutionMachine.operandHooks
+                  (Miri.Interpreter.ExecutionMachine.withValidation (refExecutionConfig rp) refLimits))
+                c (Miri.Interpreter.OperandPath.instruction "condition")
+                (toMiriOperand rp.types rcond) none)
+              (fun __do_lift =>
+                Miri.Interpreter.PlaceMachine.readImmediate
+                  (Miri.Interpreter.ExecutionMachine.withValidation (refExecutionConfig rp) refLimits).access
+                  __do_lift)
+              st =
+            .ok ⟨.scalar (.fromBool b),
+                  refLocalLayoutForTy rp.types .bool⟩
+              (mkGenSimState rp ctx rbody f.blockIdx f.stmtIdx body.locals
+                slots1 (operandCacheTouch cache cond) mem ctrl cm) := h_okC
+        dsimp only [EStateM.bind] at h_okC'
+        have h_res_bool :
+            res =
+              if (expected == b) = true then
+                Miri.Interpreter.ControlFlow.goToBlock target
+                  (mkGenSimState rp ctx rbody f.blockIdx f.stmtIdx body.locals
+                    slots1 (operandCacheTouch cache cond) mem ctrl cm)
+              else
+                Miri.Interpreter.MachineHooks.run
+                  (Miri.Interpreter.Panic.assertPanic (refAssertPanicHooks rp)
+                    c (toMiriAssertKind rp.types rmsg)
+                    (toMiriUnwindAction runwind))
+                  (mkGenSimState rp ctx rbody f.blockIdx f.stmtIdx body.locals
+                    slots1 (operandCacheTouch cache cond) mem ctrl cm) := by
+          dsimp only [res, Miri.Interpreter.ExecutionMachine.stepHooks,
+            Miri.Interpreter.ControlFlow.evalTerminator,
+            Miri.Interpreter.MachineHooks.run, Miri.Interpreter.Call.run,
+            toMiriTerminator, Id.run, bind, Bind.bind, pure, Pure.pure,
+            EStateM.bind]
+          rw [h_okC']
+          cases b <;> cases expected <;> rfl
+        have h_bcomm : (expected == b) = (b == expected) := by
+          cases b <;> cases expected <;> rfl
+        rw [h_res_bool, h_bcomm]
+        dsimp only
+        cases h_eqb : (b == expected) with
+        | true =>
+          dsimp only [ite_true_eq, jumpToBlock]
+          exact ⟨target, slots1, by rw [h_amem],
+            goToBlock_mkGenSimState rp ctx rbody f.blockIdx target f.stmtIdx
+              body.locals slots1 (operandCacheTouch cache cond) mem ctrl cm h_loc⟩
+        | false =>
+          dsimp only [ite_false_eq]
+          have h_ap := assertPanic_ref_eq rp c ctx rbody rbb f.blockIdx f.stmtIdx
+            body.locals slots1 (operandCacheTouch cache cond) mem ctrl cm rcond
+            expected rmsg target runwind h_rbb h_rt h_loc
+          cases h_af : evalAssertFailure rmsg rp.panicStrategy runwind cm
+              rp.hasLocalPanicHandler with
+          | fault k =>
+            rw [h_af] at h_ap
+            exact h_ap
+          | done out =>
+            rw [h_af] at h_ap
+            cases out with
+            | aborted cm' => exact h_ap
+            | returned _ => exact False.elim h_ap
+            | unwound _ => exact False.elim h_ap
+          | step _ =>
+            rw [h_af] at h_ap
+            exact False.elim h_ap
   | call callee rargs rdst tgt uw =>
     exact False.elim (h_noncall.1 callee rargs rdst tgt uw h_rt)
   | sysrootCall op rargs rdst tgt uw =>
@@ -3030,7 +3645,7 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
         f.stmtIdx body.locals f.locals cache amem mem ctrl cm
         (Miri.Interpreter.OperandPath.instruction "discriminant")
         rdiscr discr none h_locs h_c_len
-        (by decide)
+        (refConstantAt_eq_of_ne_fn rp c _ (by decide) (fun _ _ _ => rfl))
         h_inv h_d
         (operandKnownOk_none _ _ _ _)
         (fun _ _ h_ty =>
@@ -3415,17 +4030,19 @@ private theorem evalTerminator_ref_eq (rp : RefProg) (c : Choice)
 /-! ## Section 4: `ExecutionMachine.step` Simulation (`EvalRefStepEqClaim`) -/
 
 private theorem evalRefStep_of_err (rp : RefProg) (c : Choice) (rs : RefState)
-    (st' : MiriStepState) (err : Miri.Interpreter.StepError)
+    (st' : MiriStepState) (err : Miri.Interpreter.StepError) (k : FaultKind)
     (h_lt : Nat.blt rs.stepsExecuted rs.maxSteps = true)
+    (h_fk : stepErrorFaultKind err = some k)
     (h_step : Miri.Interpreter.ExecutionMachine.step
         (refExecutionConfig rp) refLimits c rs.miri = (st', .error err)) :
-    evalRefStep rp c rs = faultToRefOutcome (stepErrorFaultKind err) := by
+    evalRefStep rp c rs = faultToRefOutcome k := by
   dsimp only [evalRefStep]
   rw [h_lt, ite_not_true_eq, h_step]
   cases err with
-  | undefinedBehavior _ => rfl
-  | stack se => cases se <;> rfl
-  | _ => rfl
+  | undefinedBehavior _ => cases h_fk; rfl
+  | stack se => cases se <;> cases h_fk <;> rfl
+  | termination te => cases te <;> cases h_fk <;> rfl
+  | _ => cases h_fk; rfl
 
 private theorem forIn_list_yield_noop {ε σ α : Type}
     (f : α → Unit → EStateM ε σ (ForInStep Unit))
@@ -3607,7 +4224,7 @@ private theorem nonRootReturn_ref_eq (rp : RefProg) (p : Program) (c : Choice)
       (toMiriTerminator rp.types .return_) st
     match evalNonRootReturn p body bb f caller restCallers amem cm with
     | .fault k =>
-      ∃ err st', res = (st', .error err) ∧ stepErrorFaultKind err = k
+      ∃ err st', res = (st', .error err) ∧ stepErrorFaultKind err = some k
     | .done _ => False
     | .step s' =>
       ∃ tgt callerLocals',
@@ -4067,7 +4684,8 @@ private theorem allCallBodiesStaticAdmitted_callee (p : Program) (callerBody : B
   rw [Bool.and_eq_true] at h_cs
   let ⟨h_single, h_assign⟩ := h_cs
   simp only [Bool.and_eq_true] at h_single
-  let ⟨⟨⟨⟨⟨⟨⟨⟨⟨_, _⟩, _⟩, h_nb⟩, h_arg⟩, h_sa⟩, h_dv⟩, h_cv⟩, h_supp⟩, h_calls⟩ := h_single
+  let ⟨⟨⟨⟨⟨⟨⟨⟨⟨⟨_, _⟩, _⟩, h_nb⟩, h_arg⟩, h_sa⟩, h_dv⟩, h_cv⟩, _⟩, h_supp⟩, h_calls⟩ :=
+    h_single
   have h_ne : calleeBody.basicBlocks.isEmpty = false := by
     cases h_e : calleeBody.basicBlocks.isEmpty with
     | false => rfl
@@ -5985,7 +6603,7 @@ private theorem evalFnCallArgumentAt_ref_eq (rp : RefProg) (c : Choice)
       ∃ err st',
         Miri.Interpreter.Call.evalFnCallArgumentAt calls c (toMiriOperand rp.types rop) true
           (.argument argIdx) st = .error err st' ∧
-        stepErrorFaultKind err = .undefined
+        stepErrorFaultKind err = some .undefined
     | .ok (optVal, slots') =>
       Miri.Interpreter.Call.evalFnCallArgumentAt calls c (toMiriOperand rp.types rop) true
         (.argument argIdx) st =
@@ -6007,7 +6625,9 @@ private theorem evalFnCallArgumentAt_ref_eq (rp : RefProg) (c : Choice)
       cases h_eq_ty
       have h_ev := operandMachine_evalOperandAt_eq rp c ctx rbody blockIdx stmtIdx bodyLocals slots cache
         entryMemory mem ctrl cm (.argument argIdx) (.copy rplace) (.copy place) (fun _ => true) none
-        h_locs h_c_len (by simp [Miri.Interpreter.OperandPath.argument, Miri.Interpreter.OperandPath.instruction])
+        h_locs h_c_len (refConstantAt_eq_of_ne_fn rp c _
+          (by simp [Miri.Interpreter.OperandPath.argument, Miri.Interpreter.OperandPath.instruction])
+          (fun _ _ _ => rfl))
         h_inv (by dsimp only [decodeOperand, optMap]; rw [h_pdec]) (fun _ _ => True.intro)
       dsimp only [evalOperandToSlot] at h_ev
       rw [h_ty] at h_ev
@@ -6070,7 +6690,9 @@ private theorem evalFnCallArgumentAt_ref_eq (rp : RefProg) (c : Choice)
       have h_ev := operandMachine_evalOperandAt_eq rp c ctx rbody blockIdx stmtIdx bodyLocals slots cache
         entryMemory mem ctrl cm (.argument argIdx) (.constant rc) (.constant { ty := paramTy, lit := rc.lit })
         (fun _ => true) none h_locs h_c_len
-        (by simp [Miri.Interpreter.OperandPath.argument, Miri.Interpreter.OperandPath.instruction]) h_inv
+        (refConstantAt_eq_of_ne_fn rp c _
+          (by simp [Miri.Interpreter.OperandPath.argument, Miri.Interpreter.OperandPath.instruction])
+          (fun _ _ _ => rfl)) h_inv
         (by dsimp only [decodeOperand, optMap]; rw [h_t]) True.intro
       dsimp only [evalOperandToSlot] at h_ev
       rw [h_lit] at h_ev
@@ -6359,7 +6981,7 @@ private theorem evalCalleeAndArgs_loop_ref_eq (rp : RefProg) (c : Choice)
       let loop := evalCalleeAndArgsLoop calls c argsArr true hasMove (List.range' idx count 1) acc st
       match evalCallArgsOpt bodyLocals slots opnds paramTys with
       | .error k =>
-        k = .undefined ∧ ∃ err st', loop = .error err st' ∧ stepErrorFaultKind err = .undefined
+        k = .undefined ∧ ∃ err st', loop = .error err st' ∧ stepErrorFaultKind err = some .undefined
       | .ok (pairs, slots') =>
         ∃ cache',
           cache' = opnds.foldl operandCacheTouch cache ∧
@@ -6542,7 +7164,7 @@ private theorem evalCalleeAndArgs_ref_eq (rp : RefProg) (c : Choice)
       k = .undefined ∧
       ∃ err st',
         Miri.Interpreter.Call.evalCalleeAndArgs calls c funcOp miriArgs (toMiriPlace rdst) st = .error err st' ∧
-        stepErrorFaultKind err = .undefined
+        stepErrorFaultKind err = some .undefined
     | .ok (pairs, slots') =>
       ∃ cache' calleeAbi,
         refFnAbiOfBody rp.types calleeRbody calleeLocalTys = .ok calleeAbi ∧
@@ -7286,7 +7908,7 @@ private theorem passArgument_single_ref_eq (rp : RefProg) (c : Choice)
       ∃ err st',
         Miri.Interpreter.Call.passArgument calls c caller abi abi calleeIndex
           ⟨zeroIndex + 1, Array.empty⟩ (tyIdFor rp.types paramTy) false st = .error err st' ∧
-        stepErrorFaultKind err = .undefined
+        stepErrorFaultKind err = some .undefined
     | some v =>
       ∃ slots',
         MirSemantics.setElem? slots (zeroIndex + 1) (.immediate (some v)) = some slots' ∧
@@ -7477,7 +8099,7 @@ private theorem initFrameSimpleLoop_ref_eq (rp : RefProg) (c : Choice)
         calleeAbi.args calleeAbi.args (List.range' idx count 1) (idx, idx) st
       match allSomeVals remPairs with
       | none =>
-        ∃ err st', loop = .error err st' ∧ stepErrorFaultKind err = .undefined
+        ∃ err st', loop = .error err st' ∧ stepErrorFaultKind err = some .undefined
       | some remVals =>
         ∃ slots' cache',
           SlotsMatchTys calleeBody.locals slots' ∧
@@ -7899,9 +8521,9 @@ private theorem initStackFrame_ref_eq (rp : RefProg) (c : Choice)
       (.goto target (toMiriUnwindAction unwind)) st
     match bDead, allSomeVals allPairs with
     | true, _ =>
-      ∃ err st', act = .error err st' ∧ stepErrorFaultKind err = .undefined
+      ∃ err st', act = .error err st' ∧ stepErrorFaultKind err = some .undefined
     | false, none =>
-      ∃ err st', act = .error err st' ∧ stepErrorFaultKind err = .undefined
+      ∃ err st', act = .error err st' ∧ stepErrorFaultKind err = some .undefined
     | false, some argVals =>
       let callerCache' := cacheTouch callerCache dst.localId
       let oldFr := mkGenSimFrame rp ctx rbody blockIdx stmtIdx body.locals callerSlots callerCache'
@@ -8426,9 +9048,9 @@ private theorem initFnCall_ref_eq (rp : RefProg) (c : Choice)
     let act := Miri.Interpreter.Call.initFnCall calls c 8 req st
     match bDead, allSomeVals allPairs with
     | true, _ =>
-      ∃ err st', act = .error err st' ∧ stepErrorFaultKind err = .undefined
+      ∃ err st', act = .error err st' ∧ stepErrorFaultKind err = some .undefined
     | false, none =>
-      ∃ err st', act = .error err st' ∧ stepErrorFaultKind err = .undefined
+      ∃ err st', act = .error err st' ∧ stepErrorFaultKind err = some .undefined
     | false, some argVals =>
       let callerCache' := cacheTouch callerCache dst.localId
       let oldFr := mkGenSimFrame rp ctx rbody blockIdx stmtIdx body.locals callerSlots callerCache'
@@ -8743,7 +9365,7 @@ private theorem callTerminator_common_ref_eq (rp : RefProg) (c : Choice)
     let res := (Miri.Interpreter.ExecutionMachine.stepHooks (refExecutionConfig rp) refLimits).terminator c miriTerm st
     match evalCallTerminator body bb f callers amem cm calleeDefId sysrootOp? calleeBody args dst target unwind with
     | .fault k =>
-      ∃ err st', res = (st', .error err) ∧ stepErrorFaultKind err = k
+      ∃ err st', res = (st', .error err) ∧ stepErrorFaultKind err = some k
     | .done _ => False
     | .step s' =>
       ∃ callerLocals' callerCache',
@@ -9110,7 +9732,7 @@ private theorem callTerminator_sysroot_ref_eq (rp : RefProg) (c : Choice)
     let res := (Miri.Interpreter.ExecutionMachine.stepHooks (refExecutionConfig rp) refLimits).terminator c miriTerm st
     match evalCallTerminator body bb f callers amem cm 0 (some op) (sysrootNumBody op) args dst target unwind with
     | .fault k =>
-      ∃ err st', res = (st', .error err) ∧ stepErrorFaultKind err = k
+      ∃ err st', res = (st', .error err) ∧ stepErrorFaultKind err = some k
     | .done _ => False
     | .step s' =>
       ∃ callerLocals' callerCache',
@@ -9213,7 +9835,7 @@ private theorem callTerminator_crate_ref_eq (rp : RefProg) (p : Program) (c : Ch
     let res := (Miri.Interpreter.ExecutionMachine.stepHooks (refExecutionConfig rp) refLimits).terminator c miriTerm st
     match evalCallTerminator body bb f callers amem cm calleeDefId none calleeBody args dst target unwind with
     | .fault k =>
-      ∃ err st', res = (st', .error err) ∧ stepErrorFaultKind err = k
+      ∃ err st', res = (st', .error err) ∧ stepErrorFaultKind err = some k
     | .done _ => False
     | .step s' =>
       ∃ callerLocals' callerCache',
@@ -9270,7 +9892,8 @@ private theorem callTerminator_crate_ref_eq (rp : RefProg) (p : Program) (c : Ch
     rw [h_clocs]
   dsimp only [callBodyStaticAdmitted, singleBodyStaticAdmitted] at h_csat
   simp only [Bool.and_eq_true, Bool.not_eq_true'] at h_csat
-  let ⟨⟨⟨⟨⟨⟨⟨⟨⟨⟨_, _⟩, _⟩, h_nb⟩, _⟩, h_sa⟩, h_dv⟩, h_cv⟩, h_csupp⟩, _⟩, h_av⟩ := h_csat
+  let ⟨⟨⟨⟨⟨⟨⟨⟨⟨⟨⟨_, _⟩, _⟩, h_nb⟩, _⟩, h_sa⟩, h_dv⟩, h_cv⟩, _⟩, h_csupp⟩, _⟩, h_av⟩ :=
+    h_csat
   have h_comm := callTerminator_common_ref_eq rp c ctx rbody calleeRbody body calleeBody rbb bb f callers
     callerCache mem ctrl cm amem calleeDefId (fnTagForCrate calleeDefId) none
     rargs args rdst dst target unwind h_bdec h_rbb h_rbb_dec h_c_len h_tr h_loc h_inv
@@ -9404,6 +10027,7 @@ private theorem updateCacheLoop_stepTouchesLocal_term (body : Body) (f : FrameSt
       stepTouchesLocal body f =
         match bb.terminator with
         | .switchInt discr _ => operandTouchesLocal discr
+        | .assert cond _ _ _ _ => operandTouchesLocal cond
         | _ => fun _ => false := by
     funext idx
     dsimp only [stepTouchesLocal]
@@ -9412,8 +10036,9 @@ private theorem updateCacheLoop_stepTouchesLocal_term (body : Body) (f : FrameSt
   rw [h_fn_gen]
   cases h_t : bb.terminator with
   | switchInt discr _ => exact updateCacheLoop_operandCacheTouch cache discr
+  | assert cond _ _ _ _ => exact updateCacheLoop_operandCacheTouch cache cond
   | goto _ | return_ | unreachable | unwindResume
-  | assert _ _ _ _ _ | call _ _ _ _ _ | sysrootCall _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+  | call _ _ _ _ _ | sysrootCall _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
     exact updateCacheLoop_false _ 0 cache (fun _ _ => rfl)
 
 private theorem calleeTys_head_eq_of_beq {tys : List MirTy} {retTy dstTy : MirTy}
@@ -9626,17 +10251,63 @@ private theorem nat_beq_comm (a b : Nat) : Nat.beq a b = Nat.beq b a := by
       have h_eq : b = a := Nat.eq_of_beq_eq_true h2
       rw [h_eq, Nat.beq_refl] at h; cases h
 
-private theorem evalTerminator_ne_done_of_ne_return {body : Body} {bb : BasicBlock}
-    {f : FrameState} {mem : MemoryState} {cm : CallerMemory} {out : TerminalOut}
+private theorem evalAssertFailure_done_aborted {msg : AssertKind}
+    {ps : PanicStrategy} {uw : UnwindAction} {cm : CallerMemory} {lh : Bool}
+    {out : TerminalOut}
+    (h : evalAssertFailure msg ps uw cm lh = .done out) : out = .aborted cm := by
+  dsimp only [evalAssertFailure] at h
+  cases msg with
+  | misalignedPtrDeref | nullPtrDeref | unsupported | overflowNeg => cases h
+  | boundsCheck | divByZero | remByZero =>
+    cases lh <;> cases ps <;> cases uw <;>
+      first
+      | (injection h with h_eq; exact h_eq.symm)
+      | cases h
+  | overflow op =>
+    cases op <;>
+      first
+      | cases h
+      | (cases lh <;> cases ps <;> cases uw <;>
+          first
+          | (injection h with h_eq; exact h_eq.symm)
+          | cases h)
+
+/-- A non-`return` terminator finishes (`.done`) only by a `--panic abort`
+`.assert` failure, carrying the unchanged `CallerMemory`. -/
+private theorem evalTerminator_done_aborted_of_ne_return {body : Body}
+    {bb : BasicBlock} {f : FrameState} {mem : MemoryState} {cm : CallerMemory}
+    {ps : PanicStrategy} {lh : Bool} {out : TerminalOut}
     (h_nr : bb.terminator ≠ .return_)
-    (h_ev : evalTerminator body bb f mem cm = .done out) : False := by
+    (h_ev : evalTerminator body bb f mem cm ps lh = .done out) :
+    out = .aborted cm := by
   cases h_t : bb.terminator with
   | return_ => exact False.elim (h_nr h_t)
   | goto _ | unreachable | unwindResume
-  | assert _ _ _ _ _ | call _ _ _ _ _ | sysrootCall _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+  | call _ _ _ _ _ | sysrootCall _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
     dsimp only [evalTerminator] at h_ev
     rw [h_t] at h_ev
     cases h_ev
+  | assert cond expected msg target uw =>
+    dsimp only [evalTerminator] at h_ev
+    rw [h_t] at h_ev
+    dsimp only at h_ev
+    cases h_op : evalPrimitiveOperand body.locals f.locals mem cond with
+    | error k => rw [h_op] at h_ev; cases h_ev
+    | ok tr =>
+      rw [h_op] at h_ev
+      dsimp only at h_ev
+      cases h_v : tr.1 with
+      | bool b =>
+        rw [h_v] at h_ev
+        dsimp only at h_ev
+        cases h_b : (b == expected) with
+        | true => rw [h_b] at h_ev; cases h_ev
+        | false =>
+          rw [h_b] at h_ev
+          exact evalAssertFailure_done_aborted h_ev
+      | scalar _ | char _ | unit | enumVal _ _ | tuple _ | ptr _ | slicePtr _ _
+      | rangeTo _ | rangeFrom _ | bytes _ | array _ | ordering _ =>
+        rw [h_v] at h_ev; dsimp only at h_ev; cases h_ev
   | switchInt discr targets =>
     dsimp only [evalTerminator] at h_ev
     rw [h_t] at h_ev
@@ -9839,10 +10510,11 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
     (h_fsim : FramesSimInv rp p rs.retPlace (f :: callers) rfsRev) :
     evalRefStep rp c rs =
       stepResultToRefOutcome (mapStepRes rp body rbody f rs (evalStep p c s)) := by
+  have ⟨h_ps, h_lh⟩ := decodeProg_panicStrategy h_dec
   cases h_fsim with
   | @root _ rf h_defId h_sro h_rdst h_rtgt h_fs =>
     let ⟨body_sim, rbody_sim, cache, h_bs, h_rbs, h_bdec, h_arg, h_sa, h_dv, h_cv,
-      h_calls, h_all_static, h_supp, h_inv, h_pc, h_crep, h_rf⟩ := h_fs
+      h_act, h_calls, h_all_static, h_supp, h_inv, h_pc, h_crep, h_rf⟩ := h_fs
     have h_act_b : activeFrameBody p f = some body_sim := by
       dsimp only [activeFrameBody]; rw [h_sro]; exact h_bs
     have h_act_rb : activeRefFrameBody rp f = some rbody_sim := by
@@ -9903,7 +10575,8 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
         rw [h_st_cf]; dsimp only
         rw [h_mf_loc]; dsimp only
         rw [h_mframe_bb f.blockIdx, h_rbb_none]; rfl
-      rw [evalRefStep_of_err rp c rs st (.invalidBlock f.blockIdx) h_lt h_em_err]
+      rw [evalRefStep_of_err rp c rs st (.invalidBlock f.blockIdx) .unsupported h_lt
+        rfl h_em_err]
       dsimp only [evalStep]
       rw [hs]; dsimp only; rw [h_body]; dsimp only; rw [h_bb]; rfl
     | some bb =>
@@ -10006,7 +10679,7 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
               Miri.Interpreter.ExecutionMachine.step (refExecutionConfig rp) refLimits c rs.miri =
                 ({ st' with machine := { st'.machine with pendingMoveDeinit := false } }, .error err) := by
             rw [h_step_eq, h_step_stmt_err err st' h_err]
-          rw [evalRefStep_of_err rp c rs _ err h_lt h_em_err, h_fk]; rfl
+          rw [evalRefStep_of_err rp c rs _ err k h_lt h_fk h_em_err]; rfl
         | done _ => rw [h_es] at h_evS; exact False.elim h_evS
         | step s' =>
           rw [h_es] at h_evS
@@ -10123,10 +10796,12 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
                 evalCallTerminator body bb f [] s.mem s.callerMem
                   0 (some op) (sysrootNumBody op) args dst target unwind
               | .return_ => evalTerminator body bb f s.mem s.callerMem
-              | _ => attachCallers [] (evalTerminator body bb f s.mem s.callerMem) := by
+                  rp.panicStrategy rp.hasLocalPanicHandler
+              | _ => attachCallers [] (evalTerminator body bb f s.mem s.callerMem
+                  rp.panicStrategy rp.hasLocalPanicHandler) := by
           dsimp only [evalStep]
           rw [hs]; dsimp only; rw [h_body]; dsimp only; rw [h_bb]; dsimp only
-          rw [h_st]; dsimp only; rw [h_beq_len, ite_true_eq]
+          rw [h_st]; dsimp only; rw [h_beq_len, ite_true_eq, h_ps, h_lh]
           cases bb.terminator <;> rfl
         rw [h_evalStep_term]
         cases h_rterm : rbb.terminator with
@@ -10171,7 +10846,7 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
                   Miri.Interpreter.ExecutionMachine.step (refExecutionConfig rp) refLimits c rs.miri =
                     ({ st' with machine := { st'.machine with pendingMoveDeinit := false } }, .error err) := by
                 rw [h_step_eq, h_step_term]; rfl
-              rw [evalRefStep_of_err rp c rs _ err h_lt h_em_err, h_fk]; rfl
+              rw [evalRefStep_of_err rp c rs _ err k h_lt h_fk h_em_err]; rfl
             | done _ => rw [h_ec] at h_evC; exact False.elim h_evC
             | step s' =>
               rw [h_ec] at h_evC
@@ -10265,7 +10940,7 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
                 Miri.Interpreter.ExecutionMachine.step (refExecutionConfig rp) refLimits c rs.miri =
                   ({ st' with machine := { st'.machine with pendingMoveDeinit := false } }, .error err) := by
               rw [h_step_eq, h_step_term]; rfl
-            rw [evalRefStep_of_err rp c rs _ err h_lt h_em_err, h_fk]; rfl
+            rw [evalRefStep_of_err rp c rs _ err k h_lt h_fk h_em_err]; rfl
           | done _ => rw [h_ec] at h_evC; exact False.elim h_evC
           | step s' =>
             rw [h_ec] at h_evC
@@ -10343,8 +11018,9 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
             · intro callee args dst tgt uw h_eq; rw [h_rterm] at h_eq; cases h_eq
             · intro op args dst tgt uw h_eq; rw [h_rterm] at h_eq; cases h_eq
           have h_evT := evalTerminator_ref_eq rp c ctx rbody body rbb bb f retTy cache
-            rs.retPlace mem (advanceRefControl ctrl) s.callerMem s.mem h_bdec h_c_len h_rbb
-            h_rbb_dec rfl (fun _ => ⟨f.defId, rfl, h_tr_ctx, h_ret_ty, h_init⟩) h_noncall h_supp h_inv
+            rs.retPlace mem (advanceRefControl ctrl) s.callerMem s.mem h_bdec h_c_len h_bb h_rbb
+            h_rbb_dec rfl (fun _ => ⟨f.defId, rfl, h_tr_ctx, h_ret_ty, h_init⟩) h_noncall
+            h_act h_supp h_inv
           dsimp only at h_evT
           have h_bnoncall := decodeTerminator_ne_call h_noncall h_term_dec
           rw [h_rterm] at h_step_term
@@ -10358,8 +11034,11 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
                 | .sysrootCall op args dst target unwind =>
                   evalCallTerminator body bb f [] s.mem s.callerMem 0 (some op) (sysrootNumBody op) args dst target unwind
                 | .return_ => evalTerminator body bb f s.mem s.callerMem
-                | _ => attachCallers [] (evalTerminator body bb f s.mem s.callerMem)) =
-              evalTerminator body bb f s.mem s.callerMem := by
+                    rp.panicStrategy rp.hasLocalPanicHandler
+                | _ => attachCallers [] (evalTerminator body bb f s.mem s.callerMem
+                    rp.panicStrategy rp.hasLocalPanicHandler)) =
+              evalTerminator body bb f s.mem s.callerMem
+                rp.panicStrategy rp.hasLocalPanicHandler := by
             cases h_rt_eq : bb.terminator with
             | return_ => rfl
             | call c a d g u => exact False.elim (h_bnoncall.1 c a d g u h_rt_eq)
@@ -10368,7 +11047,8 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
             | switchInt _ _ | assert _ _ _ _ _
             | coreCall _ _ _ _ _ | unsupported => exact attachCallers_nil _
           rw [h_rhs_ev]
-          cases h_et : evalTerminator body bb f s.mem s.callerMem with
+          cases h_et : evalTerminator body bb f s.mem s.callerMem
+              rp.panicStrategy rp.hasLocalPanicHandler with
           | fault k =>
             rw [h_et] at h_evT
             let ⟨err, st', h_err, h_fk⟩ := h_evT
@@ -10378,11 +11058,24 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
                 Miri.Interpreter.ExecutionMachine.step (refExecutionConfig rp) refLimits c rs.miri =
                   ({ st' with machine := { st'.machine with pendingMoveDeinit := false } }, .error err) := by
               rw [h_step_eq, h_step_term]; rfl
-            rw [evalRefStep_of_err rp c rs _ err h_lt h_em_err, h_fk]; rfl
+            rw [evalRefStep_of_err rp c rs _ err k h_lt h_fk h_em_err]; rfl
           | done out =>
             rw [h_et] at h_evT
             cases out with
             | unwound uw => exact False.elim h_evT
+            | aborted cm' =>
+              let ⟨st', h_err_t, h_cm'⟩ := h_evT
+              rw [h_rterm] at h_err_t
+              rw [h_err_t] at h_step_term
+              have h_em_err :
+                  Miri.Interpreter.ExecutionMachine.step (refExecutionConfig rp) refLimits c rs.miri =
+                    ({ st' with machine := { st'.machine with pendingMoveDeinit := false } },
+                     .error (.termination (.abort "panic abort"))) := by
+                rw [h_step_eq, h_step_term]; rfl
+              dsimp only [evalRefStep, mapStepRes, stepResultToRefOutcome]
+              rw [h_lt, ite_not_true_eq, h_em_err]
+              dsimp only
+              rw [h_cm']
             | returned rv =>
               cases rv with
               | mk v cm' =>
@@ -10457,8 +11150,8 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
       h_caller_sim h_caller_b h_callee_b h_ret_dst h_dst_proj h_dst_ty h_dst_supp
       h_cret_ty h_beq h_ret_tgt h_rc_ls h_cf =>
     let ⟨body_sim, rbody_sim, cache, fnTag, h_bs, h_rbs, h_bdec, h_fnTag, h_crate_body,
-      h_sys_defId, h_arg, h_sa, h_dv, h_cv, h_av, h_calls, h_all_static, h_supp, h_inv,
-      h_pc, h_c_len, h_rf⟩ := h_cf
+      h_sys_defId, h_arg, h_sa, h_dv, h_cv, h_act, h_av, h_calls, h_all_static, h_supp,
+      h_inv, h_pc, h_c_len, h_rf⟩ := h_cf
     rw [h_body] at h_bs; injection h_bs with hb_eq; subst hb_eq
     rw [h_body] at h_callee_b; injection h_callee_b with hcb_eq; subst hcb_eq
     rw [h_rbody] at h_rbs; injection h_rbs with hrb_eq; subst hrb_eq
@@ -10543,7 +11236,8 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
         rw [h_st_cf]; dsimp only
         rw [h_mf_loc]; dsimp only
         rw [h_mframe_bb f.blockIdx, h_rbb_none]; rfl
-      rw [evalRefStep_of_err rp c rs st (.invalidBlock f.blockIdx) h_lt h_em_err]
+      rw [evalRefStep_of_err rp c rs st (.invalidBlock f.blockIdx) .unsupported h_lt
+        rfl h_em_err]
       dsimp only [evalStep]
       rw [hs]; dsimp only; rw [h_body]; dsimp only; rw [h_bb]; rfl
     | some bb =>
@@ -10646,7 +11340,7 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
               Miri.Interpreter.ExecutionMachine.step (refExecutionConfig rp) refLimits c rs.miri =
                 ({ st' with machine := { st'.machine with pendingMoveDeinit := false } }, .error err) := by
             rw [h_step_eq, h_step_stmt_err err st' h_err]
-          rw [evalRefStep_of_err rp c rs _ err h_lt h_em_err, h_fk]; rfl
+          rw [evalRefStep_of_err rp c rs _ err k h_lt h_fk h_em_err]; rfl
         | done _ => rw [h_es] at h_evS; exact False.elim h_evS
         | step s' =>
           rw [h_es] at h_evS
@@ -10773,10 +11467,11 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
                 evalCallTerminator body bb f (caller :: rest) s.mem s.callerMem
                   0 (some op) (sysrootNumBody op) args dst target unwind
               | .return_ => evalNonRootReturn p body bb f caller rest s.mem s.callerMem
-              | _ => attachCallers (caller :: rest) (evalTerminator body bb f s.mem s.callerMem) := by
+              | _ => attachCallers (caller :: rest) (evalTerminator body bb f s.mem s.callerMem
+                  rp.panicStrategy rp.hasLocalPanicHandler) := by
           dsimp only [evalStep]
           rw [hs]; dsimp only; rw [h_body]; dsimp only; rw [h_bb]; dsimp only
-          rw [h_st]; dsimp only; rw [h_beq_len, ite_true_eq]
+          rw [h_st]; dsimp only; rw [h_beq_len, ite_true_eq, h_ps, h_lh]
           cases bb.terminator <;> rfl
         rw [h_evalStep_term]
         cases h_rterm : rbb.terminator with
@@ -10822,7 +11517,7 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
                   Miri.Interpreter.ExecutionMachine.step (refExecutionConfig rp) refLimits c rs.miri =
                     ({ st' with machine := { st'.machine with pendingMoveDeinit := false } }, .error err) := by
                 rw [h_step_eq, h_step_term]; rfl
-              rw [evalRefStep_of_err rp c rs _ err h_lt h_em_err, h_fk]; rfl
+              rw [evalRefStep_of_err rp c rs _ err k h_lt h_fk h_em_err]; rfl
             | done _ => rw [h_ec] at h_evC; exact False.elim h_evC
             | step s' =>
               rw [h_ec] at h_evC
@@ -10931,7 +11626,7 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
                 Miri.Interpreter.ExecutionMachine.step (refExecutionConfig rp) refLimits c rs.miri =
                   ({ st' with machine := { st'.machine with pendingMoveDeinit := false } }, .error err) := by
               rw [h_step_eq, h_step_term]; rfl
-            rw [evalRefStep_of_err rp c rs _ err h_lt h_em_err, h_fk]; rfl
+            rw [evalRefStep_of_err rp c rs _ err k h_lt h_fk h_em_err]; rfl
           | done _ => rw [h_ec] at h_evC; exact False.elim h_evC
           | step s' =>
             rw [h_ec] at h_evC
@@ -11024,7 +11719,7 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
           cases h_caller_sim with
           | root h_c_defId h_c_sro h_c_rdst h_c_rtgt h_c_fs =>
             let ⟨cBodySim, callerRbody, callerCache, h_c_bs, h_c_rbs, h_c_bdec, _, _, _, _,
-              _, _, h_c_supp, h_c_inv, _, h_c_crep, h_c_rf⟩ := h_c_fs
+              _, _, _, h_c_supp, h_c_inv, _, h_c_crep, h_c_rf⟩ := h_c_fs
             have h_c_act : activeFrameBody p caller = some cBodySim := by
               dsimp only [activeFrameBody]; rw [h_c_sro]; exact h_c_bs
             rw [h_caller_b] at h_c_act; injection h_c_act with hc_eq; subst hc_eq
@@ -11059,7 +11754,7 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
                   Miri.Interpreter.ExecutionMachine.step (refExecutionConfig rp) refLimits c rs.miri =
                     ({ st' with machine := { st'.machine with pendingMoveDeinit := false } }, .error err) := by
                 rw [h_step_eq, h_step_term]; rfl
-              rw [evalRefStep_of_err rp c rs _ err h_lt h_em_err, h_fk]; rfl
+              rw [evalRefStep_of_err rp c rs _ err k h_lt h_fk h_em_err]; rfl
             | done _ => rw [h_enr] at h_evR; exact False.elim h_evR
             | step s' =>
               rw [h_enr] at h_evR
@@ -11114,8 +11809,8 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
               h_gc_sim h_gc_b h_c_b h_c_rdst h_c_dst_proj h_c_dst_ty h_c_dst_supp
               h_c_cret_ty h_c_beq h_c_ret_tgt h_c_rc_ls h_c_cf =>
             let ⟨cBodySim, callerRbody, callerCache, callerFnTag, h_c_bs, h_c_rbs, h_c_bdec,
-              h_c_fnTag, h_c_crate_body, h_c_sys_defId, _, _, _, _, _, _, _, h_c_supp, h_c_inv, _,
-              h_caller_c_len, h_c_rf⟩ := h_c_cf
+              h_c_fnTag, h_c_crate_body, h_c_sys_defId, _, _, _, _, _, _, _, _, h_c_supp,
+              h_c_inv, _, h_caller_c_len, h_c_rf⟩ := h_c_cf
             rw [h_caller_b] at h_c_bs; injection h_c_bs with hcb_eq; subst hcb_eq
             rw [h_caller_b] at h_c_b; injection h_c_b with hcb2_eq; subst hcb2_eq
             subst h_c_fnTag
@@ -11171,7 +11866,7 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
                   Miri.Interpreter.ExecutionMachine.step (refExecutionConfig rp) refLimits c rs.miri =
                     ({ st' with machine := { st'.machine with pendingMoveDeinit := false } }, .error err) := by
                 rw [h_step_eq, h_step_term]; rfl
-              rw [evalRefStep_of_err rp c rs _ err h_lt h_em_err, h_fk]; rfl
+              rw [evalRefStep_of_err rp c rs _ err k h_lt h_fk h_em_err]; rfl
             | done _ => rw [h_enr] at h_evR; exact False.elim h_evR
             | step s' =>
               rw [h_enr] at h_evR
@@ -11262,8 +11957,9 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
             · intro callee args dst tgt uw h_eq; rw [h_rterm] at h_eq; cases h_eq
             · intro op args dst tgt uw h_eq; rw [h_rterm] at h_eq; cases h_eq
           have h_evT := evalTerminator_ref_eq rp c ctx rbody body rbb bb f (MirTy.unit) cache
-            rs.retPlace mem (advanceRefControl ctrl) s.callerMem s.mem h_bdec h_c_len h_rbb
-            h_rbb_dec rfl (fun h_eq => by rw [h_rterm] at h_eq; cases h_eq) h_noncall h_supp h_inv
+            rs.retPlace mem (advanceRefControl ctrl) s.callerMem s.mem h_bdec h_c_len h_bb h_rbb
+            h_rbb_dec rfl (fun h_eq => by rw [h_rterm] at h_eq; cases h_eq) h_noncall
+            h_act h_supp h_inv
           dsimp only at h_evT
           have h_bnoncall := decodeTerminator_ne_call h_noncall h_term_dec
           have h_bne_ret : bb.terminator ≠ .return_ :=
@@ -11278,8 +11974,10 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
                 | .sysrootCall op args dst target unwind =>
                   evalCallTerminator body bb f (caller :: rest) s.mem s.callerMem 0 (some op) (sysrootNumBody op) args dst target unwind
                 | .return_ => evalNonRootReturn p body bb f caller rest s.mem s.callerMem
-                | _ => attachCallers (caller :: rest) (evalTerminator body bb f s.mem s.callerMem)) =
-              attachCallers (caller :: rest) (evalTerminator body bb f s.mem s.callerMem) := by
+                | _ => attachCallers (caller :: rest) (evalTerminator body bb f s.mem s.callerMem
+                    rp.panicStrategy rp.hasLocalPanicHandler)) =
+              attachCallers (caller :: rest) (evalTerminator body bb f s.mem s.callerMem
+                rp.panicStrategy rp.hasLocalPanicHandler) := by
             cases h_rt_eq : bb.terminator with
             | return_ => exact False.elim (h_bne_ret h_rt_eq)
             | call c a d g u => exact False.elim (h_bnoncall.1 c a d g u h_rt_eq)
@@ -11288,7 +11986,8 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
             | switchInt _ _ | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported => rfl
           rw [h_rhs_ev]
           rw [h_rterm] at h_step_term
-          cases h_et : evalTerminator body bb f s.mem s.callerMem with
+          cases h_et : evalTerminator body bb f s.mem s.callerMem
+              rp.panicStrategy rp.hasLocalPanicHandler with
           | fault k =>
             rw [h_et] at h_evT
             let ⟨err, st', h_err, h_fk⟩ := h_evT
@@ -11298,10 +11997,27 @@ private theorem evalRefStep_eq_base_aux (rp : RefProg) (p : Program) (s : State)
                 Miri.Interpreter.ExecutionMachine.step (refExecutionConfig rp) refLimits c rs.miri =
                   ({ st' with machine := { st'.machine with pendingMoveDeinit := false } }, .error err) := by
               rw [h_step_eq, h_step_term]; rfl
-            rw [attachCallers_fault_eq, evalRefStep_of_err rp c rs _ err h_lt h_em_err, h_fk]; rfl
+            rw [attachCallers_fault_eq, evalRefStep_of_err rp c rs _ err k h_lt h_fk h_em_err]; rfl
           | done out =>
             rw [h_et] at h_evT
-            exact False.elim (evalTerminator_ne_done_of_ne_return h_bne_ret h_et)
+            cases out with
+            | aborted cm' =>
+              let ⟨st', h_err_t, h_cm'⟩ := h_evT
+              rw [h_rterm] at h_err_t
+              rw [h_err_t] at h_step_term
+              have h_em_err :
+                  Miri.Interpreter.ExecutionMachine.step (refExecutionConfig rp) refLimits c rs.miri =
+                    ({ st' with machine := { st'.machine with pendingMoveDeinit := false } },
+                     .error (.termination (.abort "panic abort"))) := by
+                rw [h_step_eq, h_step_term]; rfl
+              dsimp only [evalRefStep, mapStepRes, stepResultToRefOutcome, attachCallers]
+              rw [h_lt, ite_not_true_eq, h_em_err]
+              dsimp only
+              rw [h_cm']
+            | returned _ =>
+              have h_ab := evalTerminator_done_aborted_of_ne_return h_bne_ret h_et
+              cases h_ab
+            | unwound _ => exact False.elim h_evT
           | step s' =>
             rw [h_et] at h_evT
             let ⟨tgt, slots', h_s'_eq, h_res_eq⟩ := h_evT

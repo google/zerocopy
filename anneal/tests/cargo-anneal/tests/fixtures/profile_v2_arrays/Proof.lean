@@ -371,14 +371,15 @@ theorem initStateV2_ok_of {p : Program} {q : Query} {body : Body}
     (hRefs : refsValidInMemList (entryMemoryWithCaller q.callerMem)
       ((body.locals.drop 1).take body.argumentCount) q.args = true)
     (hDisj : spansPairwiseDisjoint (refAccessSpansList
-      ((body.locals.drop 1).take body.argumentCount) q.args) = true) :
+      ((body.locals.drop 1).take body.argumentCount) q.args) = true)
+    (hAct : assertConditionTypesValid body = true := by decide) :
     initStateV2 p q = .ok ⟨[⟨p.entryDefId, 0, 0,
       initLocalsLoop body q.args 0 body.locals, none, none, none⟩],
       q.callerMem, entryMemoryWithCaller q.callerMem⟩ := by
   unfold initStateV2
   rw [hPW, hPV, hCM, hEntry]
   dsimp only
-  rw [hNonEmpty, hArgLt, hSto, hDiscr, hCast, hLocs]
+  rw [hNonEmpty, hArgLt, hSto, hDiscr, hCast, hAct, hLocs]
   rw [hArgs, hRefs, hDisj]
   rfl
 
@@ -440,6 +441,7 @@ theorem readPlaceV2_move_local {bodyLocals : List MirTy} {locals locals' : List 
 
 theorem evalTerminatorV2_return_ok {body : Body} {bb : BasicBlock} {frame : FrameState}
     {mem : MemoryState} {callerMem : CallerMemory} {retTy : MirTy} {retVal : Val}
+    {ps : PanicStrategy} {hLocal : Bool}
     (hTerm : bb.terminator = .return_)
     (hCleanup : bb.cleanup = false)
     (hRetTy : Trusted.MirSemantics.getElem? body.locals 0 = some retTy)
@@ -448,7 +450,7 @@ theorem evalTerminatorV2_return_ok {body : Body} {bb : BasicBlock} {frame : Fram
     (hStay : refsStayInCallerMem callerMem retTy retVal = true)
     (hValid : refsValidInMem mem retTy retVal = true)
     (hDisj : spansPairwiseDisjoint (refAccessSpans retTy retVal) = true) :
-    evalTerminatorV2 body bb frame mem callerMem =
+    evalTerminatorV2 body bb frame mem callerMem ps hLocal =
       .done (.returned ⟨retVal, extractCallerMemory callerMem mem⟩) := by
   unfold evalTerminatorV2
   rw [hTerm]

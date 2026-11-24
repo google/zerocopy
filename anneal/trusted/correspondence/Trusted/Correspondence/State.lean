@@ -323,6 +323,28 @@ noncomputable def refDiscriminantTypesValid (localTys : List MirTy)
         | _ => true
       | _ => true))
 
+/-- Independent $M_{\text{ref}}$ check that every `.assert cond ...`
+terminator in `rbody` whose condition is an unprojected in-bounds local or
+constant literal has type `.bool`. -/
+noncomputable def refAssertConditionTypesValid (types localTys : List MirTy)
+    (rbody : RefBody) : Bool :=
+  rbody.basicBlocks.all (fun bb =>
+    match bb.terminator with
+    | .assert cond _ _ _ _ =>
+      match cond with
+      | .copy p | .move p =>
+        if p.projection.isEmpty then
+          match MirSemantics.getElem? localTys p.localId with
+          | some condTy => MirTy.beq condTy .bool
+          | none => true
+        else
+          true
+      | .constant c =>
+        match MirSemantics.getElem? types c.ty with
+        | some condTy => MirTy.beq condTy .bool
+        | none => false
+    | _ => true)
+
 /-- Independent $M_{\text{ref}}$ check that every unprojected
 `Assign(dst, Cast(IntToInt, _, castTy))` in `rbody` whose `dst` is in bounds
 has destination type `castTy` (`RefRvalue.cast` carries `castTy` as a `TyId`
@@ -946,10 +968,40 @@ noncomputable def toMiriSpannedOperand (types : List MirTy)
     (op : RefOperand) : Miri.MIR.SpannedOperand :=
   ⟨⟨0⟩, toMiriOperand types op⟩
 
-/-- Map `RefTerminatorKind` to `Miri.MIR.Terminator`. Profile v1 unmodeled
-terminators (`.unwindResume`, `.assert`, `.coreCall`, and `.unsupported`) map
-to `.CoroutineDrop`, which `ControlFlow.evalTerminator` rejects fail-closed
-with `.invalidProgram` (`.blocked`). -/
+/-- Zero `usize` constant operand used as diagnostic payload for
+`Miri.MIR.AssertKind` variants whose inner operands are omitted from
+`Trusted.MirAst.AssertKind`. -/
+noncomputable def refAssertDummyOperand (types : List MirTy) :
+    Miri.MIR.Operand :=
+  .Constant ⟨⟨0⟩, none, .Val (.Scalar (.Int 0 8)) (tyIdFor types (.int .isize false))⟩
+
+/-- Map `Trusted.MirAst.AssertKind` to `Miri.MIR.AssertKind`. `.unsupported`
+maps to `.NullReferenceConstructed`, which `refPanicLangItem` rejects
+fail-closed as `.unsupported`. -/
+noncomputable def toMiriAssertKind (types : List MirTy) :
+    AssertKind → Miri.MIR.AssertKind
+  | .overflow op =>
+    let z := refAssertDummyOperand types
+    .Overflow (toMiriBinOp op) z z
+  | .overflowNeg => .OverflowNeg (refAssertDummyOperand types)
+  | .divByZero => .DivisionByZero (refAssertDummyOperand types)
+  | .remByZero => .RemainderByZero (refAssertDummyOperand types)
+  | .boundsCheck =>
+    let z := refAssertDummyOperand types
+    .BoundsCheck z z
+  | .misalignedPtrDeref =>
+    let z := refAssertDummyOperand types
+    .MisalignedPointerDereference z z
+  | .nullPtrDeref => .NullPointerDereference
+  | .unsupported => .NullReferenceConstructed
+
+/-- Map `RefTerminatorKind` to `Miri.MIR.Terminator`. `.assert` lowers to
+`Miri.MIR.TerminatorKind.Assert` with `toMiriAssertKind` and
+`toMiriUnwindAction`; `.call` and `.sysrootCall` lower to
+`Miri.MIR.TerminatorKind.Call`; remaining Profile v1 unmodeled terminators
+(`.unwindResume`, `.coreCall`, and `.unsupported`) map to `.CoroutineDrop`,
+which `ControlFlow.evalTerminator` rejects fail-closed with `.invalidProgram`
+(`.blocked`). -/
 noncomputable def toMiriTerminator (types : List MirTy) :
     RefTerminatorKind → Miri.MIR.Terminator
   | .goto target =>
@@ -978,8 +1030,11 @@ noncomputable def toMiriTerminator (types : List MirTy) :
     { sourceInfo := ⟨⟨0⟩, 0⟩
       kind := .Call funcOp (Array.mk (args.map (toMiriSpannedOperand types)))
         (toMiriPlace dst) target (toMiriUnwindAction unwind) .Normal ⟨0⟩ }
-  | .unwindResume | .assert _ _ _ _ _ | .coreCall _ _ _ _ _
-  | .unsupported =>
+  | .assert cond expected msg target unwind =>
+    { sourceInfo := ⟨⟨0⟩, 0⟩
+      kind := .Assert (toMiriOperand types cond) expected
+        (toMiriAssertKind types msg) target (toMiriUnwindAction unwind) }
+  | .unwindResume | .coreCall _ _ _ _ _ | .unsupported =>
     { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .CoroutineDrop }
 
 /-- Lower a `RefBasicBlock` to a `Miri.MIR.BasicBlock`. -/
@@ -1627,6 +1682,7 @@ noncomputable def refSingleBodyStaticAdmitted (rp : RefProg) (rbody : RefBody) :
       refStorageAnnotationsInBounds rbody &&
       refDiscriminantTypesValid localTys rbody &&
       refCastTypesValid rp.types localTys rbody &&
+      refAssertConditionTypesValid rp.types localTys rbody &&
       localTys.all refIsSupportedLocalTy &&
       refCallsAdmitted rp localTys rbody
 
@@ -1682,6 +1738,8 @@ noncomputable def initRefState (rp : RefProg) (q : Query)
         else if !refDiscriminantTypesValid localTys rbody then
           .error .unsupported
         else if !refCastTypesValid rp.types localTys rbody then
+          .error .unsupported
+        else if !refAssertConditionTypesValid rp.types localTys rbody then
           .error .unsupported
         else if !localTys.all refIsSupportedLocalTy then
           .error .unsupported

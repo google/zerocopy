@@ -46,7 +46,8 @@ program, proof-unit, and crate verification judgments (`BodyStaticAdmitted`,
 `DivergesV2`, `SatisfiesPostV2`, `BodyVerifiedV2`, `SpecsV2`, `CrateV2`,
 `ProgramVerifiedV2`, `CrateTheoremV2`, and `UnitTheoremV2`), and the Pass 1
 audited claim propositions (`WpSoundnessClaim`, `WpFaultSoundnessClaim`,
-`ExecSoundnessClaimV2`, and the 25 `Canary*Claim` propositions).
+`ExecSoundnessClaimV2`, `SafeContractSoundnessClaimV2`, and the 25
+`Canary*Claim` propositions).
 
 Human comprehension is therefore the primary design requirement for every
 definition in this module:
@@ -227,7 +228,8 @@ Key semantic correspondence points:
 
 The definitions below state the exact mathematical propositions that
 `Anneal.MirWp` (the 2 parameterized WP soundness claims and the Profile v2
-`ExecSoundnessClaimV2`) and decoupled `Anneal.MirWp.Canaries` (the 25 closed
+`ExecSoundnessClaimV2` and `SafeContractSoundnessClaimV2` claims) and decoupled
+`Anneal.MirWp.Canaries` (the 25 closed
 non-vacuity and parameter-boundary canary claims) must prove, enforced by
 `TrustedBoundary.lean` via exact `Expr` equality (`ci.type == .const claimName
 []` or the parameterized claim application) together with claim-body constant
@@ -294,6 +296,39 @@ noncomputable def ExecSoundnessClaimV2
     SatisfiesPostV2 p q post ∧
     ¬ DivergesV2 p q ∧
     (∃ out, BehaviorV2 p q out ∧ post out)
+
+/-- Trusted contract-soundness claim tying the `SafeContractV2` and
+`EffectMaskV2` specification vocabulary to `Anneal.MirWp.execProgV2`:
+1. `execProgV2` establishes `SatisfiesSafeContractV2` for any `contract` whose
+   `SafeContractV2.post` holds on the fuel-bounded execution result;
+2. `BodySatisfiesSafeContractV2` follows from per-query `execProgV2` witnesses;
+3. `EffectMaskV2.noAbort` forbids `.aborted` outcomes in `SafeContractV2.post`
+   for every `SafeContractV2` using `effects := EffectMaskV2.noAbort`.
+
+`TrustedBoundary.lean` requires this claim to name all six vocabulary
+declarations (`EffectMaskV2`, `EffectMaskV2.noAbort`, `SafeContractV2`,
+`SafeContractV2.post`, `SatisfiesSafeContractV2`, and
+`BodySatisfiesSafeContractV2`) and requires `Anneal.MirWp` to prove it for
+`execProgV2`. -/
+noncomputable def SafeContractSoundnessClaimV2
+    (execProgFn : Program → Nat → Query → (TerminalOut → Prop) → Prop) : Prop :=
+  (∀ (p : Program) (q : Query) (fuel : Nat) (contract : SafeContractV2),
+    (contract.behaviorPre q → execProgFn p fuel q (contract.post q)) →
+    SatisfiesSafeContractV2 p q contract) ∧
+  (∀ (p : Program) (defId : DefId) (body : Body) (contract : SafeContractV2),
+    getElem? p.bodies defId = some body →
+    BodyStaticAdmittedV2 p body = true →
+    (∀ q : Query, ValidEntryArgsV2 body q → contract.behaviorPre q →
+      ∃ fuel : Nat,
+        execProgFn (entryProgForBody p defId) fuel q (contract.post q)) →
+    BodySatisfiesSafeContractV2 p defId body contract) ∧
+  (∀ (mask : EffectMaskV2) (pre : Query → Prop) (postRet : Query → Out → Prop)
+      (postAb : Query → CallerMemory → Prop) (q : Query) (cm : CallerMemory),
+    mask = EffectMaskV2.noAbort →
+    ¬ SafeContractV2.post
+        { behaviorPre := pre, effects := mask,
+          postReturn := postRet, postAbort := postAb }
+        q (.aborted cm))
 
 /-- Trusted claim for `Anneal.MirWp.canary_positive_add_anneal`. -/
 noncomputable def CanaryPositiveAddAnnealClaim : Prop :=

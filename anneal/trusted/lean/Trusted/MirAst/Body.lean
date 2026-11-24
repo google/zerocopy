@@ -136,6 +136,24 @@ inductive VerificationScope where
   | unit
   | crate
 
+/-- Panic handling strategy configured at MIR capture time, matching
+`rustc_target::spec::PanicStrategy` in `compiler/rustc_target/src/spec/mod.rs`
+(`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "pub enum PanicStrategy {
+>     Unwind = \"unwind\",
+>     Abort = \"abort\",
+>     ImmediateAbort = \"immediate-abort\",
+> }"
+
+Capture admits `Unwind` and `Abort` (mapped to `.unwind` and `.abort`):
+passing `--panic abort` rejects `ImmediateAbort`, while `--panic unwind`
+on an `ImmediateAbort` target captures as `.unwind`, where failing safe
+`Assert` terminators fail closed as `.fault .unsupported`. -/
+inductive PanicStrategy where
+  | unwind
+  | abort
+
 /-- A complete MIR program unit: function bodies indexed by `DefId`, an entry
 function `entryDefId`, the captured target's pointer width `pointerWidthBits`,
 the MIR semantic profile version `mirProfileVersion`, the capture scope
@@ -186,14 +204,18 @@ concise hand-written canary literals. Two defaults equal unprojected/non-cleanup
 values (`BasicBlock.cleanup := false` and `Place.projection := []`),
 `Program.entryDefId := 0` selects body `0` as the entry point, and
 `Program.overflowChecks := false` matches the default capture configuration.
-The remaining two defaults (`Body.isUnsafe := false` and
-`Body.identity := ""`) fail closed (`isUnsafe := false` withholds caller safety
-preconditions, and `identity := ""` is rejected by `BodyStaticAdmitted`). Any
-serializer or MIR producer (such as `anneal-rustc-capture`) MUST explicitly
-populate all of these fields—`pointerWidthBits` (from the compiled target's
-data layout), `mirProfileVersion` (from the capture profile contract), `scope`,
-`entryDefId`, `overflowChecks` (from the compiler session), `Body.isUnsafe`,
-`Body.identity`, `BasicBlock.cleanup` (from `BasicBlockData::is_cleanup`), and
+The remaining four defaults fail closed: `Body.isUnsafe := false` withholds
+caller safety preconditions, `Body.identity := ""` is rejected by
+`BodyStaticAdmitted`, `Program.panicStrategy := .unwind` disables abort
+modeling on failing safe assertions, and `Program.hasLocalPanicHandler := true`
+likewise keeps failing safe assertions `.fault .unsupported` unless both
+`panicStrategy := .abort` and `hasLocalPanicHandler := false` are supplied
+explicitly. Any serializer or MIR producer (such as `anneal-rustc-capture`)
+MUST explicitly populate all of these fields—`pointerWidthBits` (from the
+compiled target's data layout), `mirProfileVersion` (from the capture profile
+contract), `scope`, `entryDefId`, `overflowChecks` (from the compiler session),
+`panicStrategy`, `hasLocalPanicHandler`, `Body.isUnsafe`, `Body.identity`,
+`BasicBlock.cleanup` (from `BasicBlockData::is_cleanup`), and
 `Place.projection` (from `Place::projection`). Likewise, when `scope = .crate`,
 completeness of `bodies` (ensuring every executable body and reachable callee
 in the crate is included) is an external producer obligation, not checked by
@@ -205,6 +227,8 @@ structure Program where
   mirProfileVersion : Nat
   scope : VerificationScope
   overflowChecks : Bool := false
+  panicStrategy : PanicStrategy := .unwind
+  hasLocalPanicHandler : Bool := true
 
 end Trusted.MirAst
 

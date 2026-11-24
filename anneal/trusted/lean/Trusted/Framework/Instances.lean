@@ -93,13 +93,12 @@ noncomputable def bodyMatchesMirSignature (body : Body)
     | [] => false
 
 /-- Project `Trusted.MirSemantics.TerminalOut` into
-`TerminalOutcome Val CallerMemory` (`TerminalOutcome.aborted` remains
-uninhabited in Profile v1 `TerminalOut` and becomes reachable once process-abort
-outcomes are modeled). -/
+`TerminalOutcome Val CallerMemory`. -/
 noncomputable def mapMirTerminalOut :
     TerminalOut → TerminalOutcome Val CallerMemory
   | .returned out => .returned out.ret out.callerMem
   | .unwound mem => .unwound mem
+  | .aborted mem => .aborted mem
 
 /-- Lift a `TerminalOut` behavior relation to
 `TerminalOutcome Val CallerMemory`. -/

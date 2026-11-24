@@ -629,7 +629,8 @@ theorem initState_eq_ok {p : Program} {body : Body} {args : List Val}
     intro a b h; cases a <;> cases b <;> cases h <;> exact ⟨rfl, rfl⟩
   let ⟨h1to7, h8⟩ := hAnd h_adm
   let ⟨h1to6c, h7⟩ := hAnd h1to7
-  let ⟨h1to5c, h6⟩ := hAnd h1to6c
+  let ⟨h1to6a, h6⟩ := hAnd h1to6c
+  let ⟨h1to5c, h5a⟩ := hAnd h1to6a
   let ⟨h1to5d, h5c⟩ := hAnd h1to5c
   let ⟨h1to5, h5d⟩ := hAnd h1to5d
   let ⟨h1to4, h5⟩ := hAnd h1to5
@@ -638,7 +639,7 @@ theorem initState_eq_ok {p : Program} {body : Body} {args : List Val}
   let ⟨h1to2, hid⟩ := hAnd h1toId
   let ⟨h1, h2⟩ := hAnd h1to2
   cases h3e : body.basicBlocks.isEmpty
-  · rw [h1, h2, h4, h5, h5d, h5c, h6, h7, h8]
+  · rw [h1, h2, h4, h5, h5d, h5c, h5a, h6, h7, h8]
     rfl
   · rw [h3e] at h3; cases h3
 

@@ -2490,6 +2490,165 @@ theorem refAssignTypesValid_eq {ts : List MirTy} {rbody : RefBody}
   refBody_stmts_all_eq h_dec (refAssignStmtOk ts body.locals)
     (assignStmtOk body.locals) (fun _ _ h => refAssignStmtOk_eq h)
 
+private noncomputable def refAssertBbOk (ts localTys : List MirTy)
+    (rbb : RefBasicBlock) : Bool :=
+  match rbb.terminator with
+  | .assert cond _ _ _ _ =>
+    match cond with
+    | .copy p | .move p =>
+      if p.projection.isEmpty then
+        match MirSemantics.getElem? localTys p.localId with
+        | some condTy => MirTy.beq condTy .bool
+        | none => true
+      else true
+    | .constant c =>
+      match MirSemantics.getElem? ts c.ty with
+      | some condTy => MirTy.beq condTy .bool
+      | none => false
+  | _ => true
+
+private noncomputable def assertBbOk (localTys : List MirTy)
+    (bb : BasicBlock) : Bool :=
+  match bb.terminator with
+  | .assert cond _ _ _ _ =>
+    match cond with
+    | .copy p | .move p =>
+      if p.projection.isEmpty then
+        match MirSemantics.getElem? localTys p.localId with
+        | some condTy => MirTy.beq condTy .bool
+        | none => true
+      else true
+    | .constant c => MirTy.beq c.ty .bool
+  | _ => true
+
+private theorem refAssertBbOk_eq {ts localTys : List MirTy}
+    {rbb : RefBasicBlock} {bb : BasicBlock}
+    (h_dec : decodeBasicBlock ts rbb = some bb) :
+    refAssertBbOk ts localTys rbb = assertBbOk localTys bb := by
+  have h_term_dec : decodeTerminator ts rbb.terminator = some bb.terminator := by
+    dsimp only [decodeBasicBlock, optMap2] at h_dec
+    cases h_st : mapOption (decodeStmt ts) rbb.statements with
+    | none => rw [h_st] at h_dec; cases h_dec
+    | some _ =>
+      rw [h_st] at h_dec
+      cases h_tm : decodeTerminator ts rbb.terminator with
+      | none => rw [h_tm] at h_dec; cases h_dec
+      | some tm =>
+        rw [h_tm] at h_dec
+        injection h_dec with h_bb_eq
+        rw [← h_bb_eq]
+  cases h_rt : rbb.terminator with
+  | goto _ =>
+    rw [h_rt] at h_term_dec; injection h_term_dec with h
+    dsimp only [refAssertBbOk, assertBbOk]; rw [h_rt, ← h]
+  | return_ =>
+    rw [h_rt] at h_term_dec; injection h_term_dec with h
+    dsimp only [refAssertBbOk, assertBbOk]; rw [h_rt, ← h]
+  | unreachable =>
+    rw [h_rt] at h_term_dec; injection h_term_dec with h
+    dsimp only [refAssertBbOk, assertBbOk]; rw [h_rt, ← h]
+  | unwindResume =>
+    rw [h_rt] at h_term_dec; injection h_term_dec with h
+    dsimp only [refAssertBbOk, assertBbOk]; rw [h_rt, ← h]
+  | unsupported =>
+    rw [h_rt] at h_term_dec; injection h_term_dec with h
+    dsimp only [refAssertBbOk, assertBbOk]; rw [h_rt, ← h]
+  | switchInt rdiscr _ =>
+    rw [h_rt] at h_term_dec
+    dsimp only [decodeTerminator, optMap] at h_term_dec
+    cases h_d : decodeOperand ts rdiscr with
+    | none => rw [h_d] at h_term_dec; cases h_term_dec
+    | some _ =>
+      rw [h_d] at h_term_dec; injection h_term_dec with h
+      dsimp only [refAssertBbOk, assertBbOk]; rw [h_rt, ← h]
+  | call _ rargs rdst _ _ | sysrootCall _ rargs rdst _ _
+  | coreCall _ rargs rdst _ _ =>
+    rw [h_rt] at h_term_dec
+    dsimp only [decodeTerminator, optMap2] at h_term_dec
+    cases h_a : mapOption (decodeOperand ts) rargs with
+    | none => rw [h_a] at h_term_dec; cases h_term_dec
+    | some _ =>
+      cases h_d : decodePlace ts rdst with
+      | none => rw [h_a, h_d] at h_term_dec; cases h_term_dec
+      | some _ =>
+        rw [h_a, h_d] at h_term_dec; injection h_term_dec with h
+        dsimp only [refAssertBbOk, assertBbOk]; rw [h_rt, ← h]
+  | assert rcond _ _ _ _ =>
+    rw [h_rt] at h_term_dec
+    dsimp only [decodeTerminator, optMap] at h_term_dec
+    cases h_o : decodeOperand ts rcond with
+    | none => rw [h_o] at h_term_dec; cases h_term_dec
+    | some cond =>
+      rw [h_o] at h_term_dec
+      injection h_term_dec with h_t
+      cases rcond with
+      | copy rp | move rp =>
+        dsimp only [decodeOperand, optMap] at h_o
+        cases h_p : decodePlace ts rp with
+        | none => rw [h_p] at h_o; cases h_o
+        | some p =>
+          rw [h_p] at h_o
+          injection h_o with h_op
+          let ⟨h_id, h_emp⟩ := decodePlace_inv h_p
+          dsimp only [refAssertBbOk, assertBbOk]
+          rw [h_rt, ← h_t, ← h_op]
+          dsimp only
+          rw [h_emp, h_id]
+      | constant rc =>
+        dsimp only [decodeOperand, optMap] at h_o
+        cases h_ty : MirSemantics.getElem? ts rc.ty with
+        | none => rw [h_ty] at h_o; cases h_o
+        | some condTy =>
+          rw [h_ty] at h_o
+          injection h_o with h_op
+          dsimp only [refAssertBbOk, assertBbOk]
+          rw [h_rt, ← h_t, ← h_op]
+          dsimp only
+          rw [h_ty]
+
+theorem refAssertConditionTypesValid_eq {ts : List MirTy} {rbody : RefBody}
+    {body : Body} (h_dec : decodeBody ts rbody = some body) :
+    refAssertConditionTypesValid ts body.locals rbody =
+      assertConditionTypesValid body := by
+  have h_bbs : mapOption (decodeBasicBlock ts) rbody.basicBlocks = some body.basicBlocks := by
+    dsimp only [decodeBody, optMap2] at h_dec
+    cases h_locs : decodeLocalTys ts rbody.locals with
+    | none => rw [h_locs] at h_dec; cases h_dec
+    | some _ =>
+      rw [h_locs] at h_dec
+      cases h_rb : mapOption (decodeBasicBlock ts) rbody.basicBlocks with
+      | none => rw [h_rb] at h_dec; cases h_dec
+      | some _ =>
+        rw [h_rb] at h_dec
+        injection h_dec with h_b_eq
+        rw [← h_b_eq]
+  change rbody.basicBlocks.all (refAssertBbOk ts body.locals) =
+    body.basicBlocks.all (assertBbOk body.locals)
+  have h_all : ∀ (rbbs : List RefBasicBlock) (bbs : List BasicBlock),
+      mapOption (decodeBasicBlock ts) rbbs = some bbs →
+      rbbs.all (refAssertBbOk ts body.locals) = bbs.all (assertBbOk body.locals) := by
+    intro rbbs
+    induction rbbs with
+    | nil =>
+      intro bbs hm
+      dsimp only [mapOption] at hm
+      injection hm with h_n; subst h_n; rfl
+    | cons rbb rest ih =>
+      intro bbs hm
+      dsimp only [mapOption] at hm
+      cases h_bb : decodeBasicBlock ts rbb with
+      | none => rw [h_bb] at hm; cases hm
+      | some bb =>
+        rw [h_bb] at hm
+        cases h_rr : mapOption (decodeBasicBlock ts) rest with
+        | none => rw [h_rr] at hm; cases hm
+        | some brest =>
+          rw [h_rr] at hm
+          injection hm with h_c; subst h_c
+          dsimp only [List.all]
+          rw [refAssertBbOk_eq h_bb, ih brest h_rr]
+  exact h_all rbody.basicBlocks body.basicBlocks h_bbs
+
 end MiriEquiv
 
 private theorem sysrootNumOpOfCode_sysrootNumOpCode (op : SysrootNumOp) :
@@ -2530,8 +2689,8 @@ private theorem frameSimInv_left_inj {rp : RefProg} {p : Program}
     (h_dst : f₁.retDst? = f₂.retDst?)
     (h_tgt : f₁.retTarget? = f₂.retTarget?) :
     f₁ = f₂ := by
-  let ⟨body₁, _, c₁, hb₁, _, _, _, _, _, _, _, _, _, hsm₁, _, hc₁_rep, hrf₁⟩ := h₁
-  let ⟨body₂, _, c₂, hb₂, _, _, _, _, _, _, _, _, _, hsm₂, _, hc₂_rep, hrf₂⟩ := h₂
+  let ⟨body₁, _, c₁, hb₁, _, _, _, _, _, _, _, _, _, _, hsm₁, _, hc₁_rep, hrf₁⟩ := h₁
+  let ⟨body₂, _, c₂, hb₂, _, _, _, _, _, _, _, _, _, _, hsm₂, _, hc₂_rep, hrf₂⟩ := h₂
   have hc₁ : c₁.length = body₁.locals.length := by rw [hc₁_rep, List.length_replicate]
   have hc₂ : c₂.length = body₂.locals.length := by rw [hc₂_rep, List.length_replicate]
   have h_rf_eq := hrf₁.symm.trans hrf₂
@@ -2569,9 +2728,9 @@ private theorem callFrameSimInv_left_inj {rp : RefProg} {p : Program}
     (h₁ : CallFrameSimInv rp p f₁ ci d₁ t₁ rf)
     (h₂ : CallFrameSimInv rp p f₂ ci d₂ t₂ rf) :
     f₁ = f₂ := by
-  let ⟨body₁, _, c₁, fnTag₁, hact₁, _, _, hft₁, _, hsys0₁, _, _, _, _, _, _, _, _, hsm₁, _,
+  let ⟨body₁, _, c₁, fnTag₁, hact₁, _, _, hft₁, _, hsys0₁, _, _, _, _, _, _, _, _, _, hsm₁, _,
     hc₁, hrf₁⟩ := h₁
-  let ⟨body₂, _, c₂, fnTag₂, hact₂, _, _, hft₂, _, hsys0₂, _, _, _, _, _, _, _, _, hsm₂, _,
+  let ⟨body₂, _, c₂, fnTag₂, hact₂, _, _, hft₂, _, hsys0₂, _, _, _, _, _, _, _, _, _, hsm₂, _,
     hc₂, hrf₂⟩ := h₂
   have h_rf_eq := hrf₁.symm.trans hrf₂
   have h_fn : fnTag₁ = fnTag₂ := by

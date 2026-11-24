@@ -2414,6 +2414,10 @@ fn collect(
             "crate-local language item {lang_item:?} is unsupported"
         )));
     }
+    let has_local_panic_handler = tcx
+        .lang_items()
+        .iter()
+        .any(|(lang_item, def)| def.is_local() && matches!(lang_item, LangItem::PanicImpl));
     // Enforce the closed positive `#![feature(...)]` allowlist over
     // `tcx.features()` (both language and library features, including
     // `ACCEPTED_LANG_FEATURES` that `-Zallow-features` skips). Normal crates
@@ -2780,9 +2784,11 @@ fn collect(
         }
     }
     check_current_inputs(&reads)?;
-    let program = ir::Program::try_new_with_overflow_checks(
+    let program = ir::Program::try_new_with_options(
         scope.clone(),
         profile.overflow_checks,
+        requested_panic,
+        has_local_panic_handler,
         bodies,
     )
     .map_err(Failure::unsupported)?;

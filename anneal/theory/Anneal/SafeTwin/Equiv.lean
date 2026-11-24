@@ -334,13 +334,19 @@ parity, permitting an infinite loop in `pCand` when `pSafe` terminates. -/
     ∀ out : TerminalOut, Behavior pCand q out → Behavior pSafe q out
 
 /-- Discriminant-only `TerminalOut` comparison (`Loophole L4`): equates any two
-`.unwound` outcomes regardless of pre-unwind `CallerMemory` mutations. -/
+`.unwound` or `.aborted` outcomes regardless of pre-termination `CallerMemory`
+mutations. -/
 @[expose] def DiscrimOnlyTermEq (o₁ o₂ : TerminalOut) : Prop :=
   match o₁, o₂ with
   | .returned r₁, .returned r₂ => r₁ = r₂
   | .unwound _, .unwound _ => True
+  | .aborted _, .aborted _ => True
   | .returned _, .unwound _ => False
+  | .returned _, .aborted _ => False
   | .unwound _, .returned _ => False
+  | .unwound _, .aborted _ => False
+  | .aborted _, .returned _ => False
+  | .aborted _, .unwound _ => False
 
 /-- `SafeTwinQueryEquiv` implies `PartialMirEquiv` (`[propext]` only). -/
 theorem partialMirEquiv_of_safeTwinQueryEquiv {pSafe pCand : Program}

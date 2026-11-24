@@ -2242,6 +2242,25 @@ supported; see `mirCastTypesValid_eq`). -/
         bb.statements)
     body.basicBlocks
 
+/-- Computable assertion condition type check matching
+`Trusted.MirSemantics.assertConditionTypesValid`. -/
+@[expose] def mirAssertConditionTypesValid (body : Body) : Bool :=
+  mirListAll
+    (fun bb =>
+      match bb.terminator with
+      | .assert cond _ _ _ _ =>
+        match cond with
+        | .copy p | .move p =>
+          if p.projection.isEmpty then
+            match mirListGet? body.locals p.localId with
+            | some condTy => mirTyBeq condTy .bool
+            | none => true
+          else
+            true
+        | .constant c => mirTyBeq c.ty .bool
+      | _ => true)
+    body.basicBlocks
+
 /-- Computable single-body static admission check matching
 `Trusted.MirSemantics.singleBodyStaticAdmitted`. -/
 @[expose] def mirSingleBodyStaticAdmitted (p : Program) (body : Body) : Bool :=
@@ -2253,6 +2272,7 @@ supported; see `mirCastTypesValid_eq`). -/
     mirStorageAnnotationsInBounds body &&
     mirDiscriminantTypesValid body &&
     mirCastTypesValid body &&
+    mirAssertConditionTypesValid body &&
     mirListAll mirIsSupportedScalarOrUnitTy body.locals &&
     Anneal.MirTotal.callsAdmittedBy mirTyBeq p body
 
@@ -3282,6 +3302,44 @@ private theorem mirCallsAdmitted_eq (p : Program) (body : Body)
               dstTy hSup hDst)]
         rfl
 
+/-- `mirTyBeq a .bool` agrees unconditionally with `MirTy.beq a .bool`. -/
+theorem mirTyBeq_bool_eq (a : MirTy) :
+    mirTyBeq a .bool = MirTy.beq a .bool := by
+  cases a <;> rfl
+
+/-- Agreement between computable `mirAssertConditionTypesValid` and
+`Trusted.MirSemantics.assertConditionTypesValid`. -/
+theorem mirAssertConditionTypesValid_eq (body : Body) :
+    mirAssertConditionTypesValid body = assertConditionTypesValid body := by
+  unfold mirAssertConditionTypesValid assertConditionTypesValid
+  refine mirListAll_eq _ _ (fun bb => ?_) body.basicBlocks
+  cases bb.terminator with
+  | assert cond _ _ _ _ =>
+    cases cond with
+    | copy p | move p =>
+      change
+        (if p.projection.isEmpty = true then
+          match mirListGet? body.locals p.localId with
+          | some condTy => mirTyBeq condTy .bool
+          | none => true
+        else true) =
+        (if p.projection.isEmpty = true then
+          match Trusted.MirSemantics.getElem? body.locals p.localId with
+          | some condTy => MirTy.beq condTy .bool
+          | none => true
+        else true)
+      rw [mirListGet?_eq_getElem?]
+      cases p.projection.isEmpty with
+      | false => rfl
+      | true =>
+        cases Trusted.MirSemantics.getElem? body.locals p.localId with
+        | none => rfl
+        | some condTy => exact mirTyBeq_bool_eq condTy
+    | constant c => exact mirTyBeq_bool_eq c.ty
+  | goto _ | switchInt _ _ | return_ | unreachable | unwindResume
+  | call _ _ _ _ _ | coreCall _ _ _ _ _ | sysrootCall _ _ _ _ _
+  | unsupported => rfl
+
 private theorem mirSingleBodyStaticAdmitted_eq (p : Program) (body : Body) :
     mirSingleBodyStaticAdmitted p body = singleBodyStaticAdmitted p body := by
   unfold mirSingleBodyStaticAdmitted singleBodyStaticAdmitted
@@ -3290,6 +3348,7 @@ private theorem mirSingleBodyStaticAdmitted_eq (p : Program) (body : Body) :
       stringIsEmpty body.identity := rfl
   rw [hStr, mirStorageAnnotationsInBounds_eq body,
       mirDiscriminantTypesValid_eq body,
+      mirAssertConditionTypesValid_eq body,
       mirListAll_eq _ _ mirIsSupportedScalarOrUnitTy_eq body.locals]
   cases hSup : body.locals.all isSupportedScalarOrUnitTy with
   | false => rw [Bool.and_false, Bool.false_and, Bool.and_false, Bool.false_and]

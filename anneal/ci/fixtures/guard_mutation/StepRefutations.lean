@@ -1322,4 +1322,85 @@ theorem refute_step_v2_resolve_local_proj_validates_first :
      | .ok (.rangeFrom 9) => True
      | _ => False) :=
   ⟨trivial, trivial, trivial⟩
+
+/-- Profile v2 program under `--panic abort` writing `7 : u8` through `&mut u8`
+before failing a non-optional `.divByZero` assert. -/
+noncomputable def progMutBeforeAbortV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  panicStrategy := .abort
+  hasLocalPanicHandler := false
+  bodies := [{
+    argumentCount := 1
+    locals := [.unit, .ref .mut u8Ty]
+    basicBlocks := [{
+      statements := [
+        .assign { localId := 1, projection := [.deref] }
+          (.use (.constant ⟨u8Ty, .scalar (BitVec.ofNat 128 7)⟩))
+      ]
+      terminator :=
+        .assert (.constant ⟨.bool, .scalar (BitVec.ofNat 128 0)⟩) true
+          .divByZero 0 .unreachable
+    }]
+    isUnsafe := false
+    identity := "guard_mutation::mut_before_abort_v2"
+  }]
+}
+
+private def cmBeforeAbort : CallerMemory := {
+  allocations := [{
+    allocId := 2
+    alignLog2 := 0
+    mutability := .mut
+    bytes := [.init 0 none]
+    live := true
+  }]
+}
+
+private def cmAfterAbort : CallerMemory := {
+  allocations := [{
+    allocId := 2
+    alignLog2 := 0
+    mutability := .mut
+    bytes := [.init 7 none]
+    live := true
+  }]
+}
+
+/-- Guard `step_v2_assert_abort_extract_caller_mem`: pre-abort `&mut` mutations
+must survive in `.aborted (extractCallerMemory callerMem mem1)`. -/
+theorem refute_step_v2_assert_abort_extract_caller_mem :
+    (match initStateV2 progMutBeforeAbortV2
+        { args := [.ptr ⟨some 2, 0, .isize⟩], callerMem := cmBeforeAbort } with
+     | .ok s₀ =>
+       match evalStepV2 progMutBeforeAbortV2 s₀ with
+       | .step s₁ =>
+         match evalStepV2 progMutBeforeAbortV2 s₁ with
+         | .done (.aborted cm') => cm' = cmAfterAbort
+         | _ => False
+       | _ => False
+     | .error _ => False) :=
+  rfl
+
+/-- Guard `step_assert_optional_overflow_unsupported`: under `--panic abort`,
+optional overflow checks (`.overflow .add` and `.overflowNeg`) stay
+`.fault .unsupported` rather than aborting cleanly. -/
+theorem refute_step_assert_optional_overflow_unsupported :
+    evalAssertFailure (.overflow .add) .abort .unreachable
+        queryEmpty.callerMem false = .fault .unsupported ∧
+      evalAssertFailure .overflowNeg .abort .unreachable
+        queryEmpty.callerMem false = .fault .unsupported :=
+  ⟨rfl, rfl⟩
+
+/-- Guard `step_assert_local_panic_handler_unsupported`: when a crate defines a
+crate-local `#[panic_handler]` (`hasLocalPanicHandler = true`), failing safe
+assertions stay `.fault .unsupported` even under `--panic abort`. -/
+theorem refute_step_assert_local_panic_handler_unsupported :
+    evalAssertFailure .divByZero .abort .unreachable
+        queryEmpty.callerMem true = .fault .unsupported ∧
+      evalAssertFailure .boundsCheck .abort .continue_
+        queryEmpty.callerMem true = .fault .unsupported :=
+  ⟨rfl, rfl⟩
+
 end GuardMutation

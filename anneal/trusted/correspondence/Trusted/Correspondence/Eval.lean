@@ -89,6 +89,8 @@ noncomputable def evalRefStep (rp : RefProg) (c : Choice)
           stepsExecuted := rs.stepsExecuted + 1
         }
     | (_, .ok false) => .blocked
+    | (miri', .error (.termination (.abort _))) =>
+      .returned (.aborted miri'.machine.user.callerMem)
     | (_, .error (.undefinedBehavior _)) => .ub
     | (_, .error (.stack (.localExpectedLive _))) => .ub
     | (_, .error _) => .blocked

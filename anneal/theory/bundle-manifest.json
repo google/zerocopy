@@ -83,7 +83,7 @@
     },
     {
       "path": "theory/Anneal/MirSymExec.lean",
-      "sha256": "eb926e659fb161c88764a9fba06660be1d97e36ab0267854e460b5e473531c51"
+      "sha256": "23b783768518173896821b74acdfa252b1128b50bc85ef9800cbb96585417d0c"
     },
     {
       "path": "theory/Anneal/MirSymExec/Bits.lean",
@@ -95,23 +95,23 @@
     },
     {
       "path": "theory/Anneal/MirTotal/StepCore.lean",
-      "sha256": "fb5d0b3ff1472a2ab2f0c2717e00a506daac0c97a0c87e1555588b709b4b09ca"
+      "sha256": "4d6a6d26c72e394df31f1a90b34d021c87d69864b70e6c773c837fc9ef271b4b"
     },
     {
       "path": "theory/Anneal/MirWp.lean",
-      "sha256": "78592bb8898e230072b2e5db69c65210d740e44a25c344d59e7eec32cc1a915a"
+      "sha256": "c7eaea16cfa633de3e74f1d41cffc03693267e3498019a3fb901ea2102ff7cd8"
     },
     {
       "path": "theory/Anneal/MirWp/Core.lean",
-      "sha256": "1eba4bc339f91651db821a803deababc78fb2c65595578eadaeeec54b35985f6"
+      "sha256": "faac9b3bc448f29923a3649e9ac8f65e7d83b8b50076c29ecd06e4b13c18c0c8"
     },
     {
       "path": "theory/Anneal/MirWp/Execution.lean",
-      "sha256": "24b0213ae766754cb675cff1648530d2f74bf407169997d5419bad7993335f9e"
+      "sha256": "5634ac9f76c3b0dcc9794dee8f789b7770a5c8eb9717699fe9b47ce010a66769"
     },
     {
       "path": "theory/Anneal/MirWp/Reflection.lean",
-      "sha256": "ee854d5c344bf66d0fc6d8d86fc46ec1e0a2e7b88bcc2212d213539486f446dd"
+      "sha256": "020cd202c2428129fca830cce0e726ac70165900027e05150e65cf602653d137"
     },
     {
       "path": "theory/Anneal/MirWp/Scalars.lean",
@@ -119,7 +119,7 @@
     },
     {
       "path": "theory/Anneal/MirWp/V2Memory.lean",
-      "sha256": "8a95268d993884880692b195adc77b9e39b748aa1ecba2176efa6aa10f82b832"
+      "sha256": "023422877157bf29755f83d31a431f8c4b20a6c320fd4cddcf2a892680024ba6"
     },
     {
       "path": "theory/Anneal/NatBitwise.lean",
@@ -143,7 +143,7 @@
     },
     {
       "path": "theory/Anneal/SccSharding/BinChunkTree.lean",
-      "sha256": "b3c7abe33fdd303ceeffe484a43ad0d66501fb58b2d95baf01197d04ca3ee0c0"
+      "sha256": "2d72c90345177313f8f53745b495caf60fbb353e9e15ab046f043fff5609ce2a"
     },
     {
       "path": "theory/Anneal/SccSharding/InterprocCallModel.lean",

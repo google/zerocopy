@@ -341,18 +341,31 @@ noncomputable def refOperandLeaves (types : List MirTy) :
   runtimeChecks := fun _ _ st =>
     .error (.unsupported "RuntimeChecks unsupported on Day 1") st
   boolLayout := fun _ st => .ok (refLocalLayoutForTy types .bool) st
+  -- `Miri.Interpreter.Panic.assertPanic` evaluates diagnostic operands inside
+  -- `BoundsCheck` / `MisalignedPointerDereference` via `OperandPath.assertion`
+  -- (`#[.field "kind", .field "message", .field field]`, plus `.constant`).
+  -- `toMiriAssertKind` populates them with `refAssertDummyOperand` (a zero
+  -- `usize` constant whose `TyId` may fall outside `RefProg.types`), so resolve
+  -- that path to a synthetic zero `usize` immediate without requiring `types`.
+  -- Function-item operands of `Call` terminators resolve to `fnTyBase`-tagged
+  -- zero-sized immediates.
   constantAt := fun _ path c _ st =>
-    match c with
-    | ⟨_, _, .Val .ZeroSized fnTyId⟩ =>
-      if path == (Miri.Interpreter.OperandPath.instruction "function").push
-          (.field "constant") then
-        if Nat.ble (fnTyBase types) fnTyId then
-          .ok ⟨.immediate .uninit, ⟨fnTyId, refUnitLayoutData⟩⟩ st
+    match path.toList with
+    | [.field "kind", .field "message", .field _, .field "constant"] =>
+      .ok ⟨.immediate (.scalar (.fromScalarInt (miriScalar .isize 0))),
+        refLocalLayoutForTy types (.int .isize false)⟩ st
+    | _ =>
+      match c with
+      | ⟨_, _, .Val .ZeroSized fnTyId⟩ =>
+        if path == (Miri.Interpreter.OperandPath.instruction "function").push
+            (.field "constant") then
+          if Nat.ble (fnTyBase types) fnTyId then
+            .ok ⟨.immediate .uninit, ⟨fnTyId, refUnitLayoutData⟩⟩ st
+          else
+            .error (.unsupported "invalid function TyId") st
         else
-          .error (.unsupported "invalid function TyId") st
-      else
-        refEvalConstOperand types c st
-    | _ => refEvalConstOperand types c st
+          refEvalConstOperand types c st
+      | _ => refEvalConstOperand types c st
 }
 
 /-- Padding decision of `copy_op_no_validate`, matching
@@ -1184,6 +1197,51 @@ noncomputable def refFnAbiOfBody (types : List MirTy) (rbody : RefBody)
         canUnwind := false
       }
 
+/-- Panic lang-item handler for `refExecutionConfig`:
+- `.PanicMisalignedPointerDereference` and `.PanicNullPointerDereference`
+  trigger `.undefinedBehavior` (`.ub`);
+- the 5 non-optional safe panic lang items (`.PanicBoundsCheck`,
+  `.PanicDivOverflow`, `.PanicRemOverflow`, `.PanicDivZero`, `.PanicRemZero`)
+  cleanly terminate execution via `.termination (.abort "panic abort")` iff
+  `rp.hasLocalPanicHandler = false`, `rp.panicStrategy = .abort`, and the
+  active `Assert` terminator has a non-cleanup unwind action (failing closed
+  with `.unsupported` otherwise);
+- all other lang items (including optional overflow checks
+  `Panic{Add,Sub,Mul,Neg,Shr,Shl}Overflow`) fail closed with `.unsupported`. -/
+noncomputable def refPanicLangItem (rp : RefProg) (_c : Choice)
+    (item : Miri.Interpreter.Panic.LangItem)
+    (st : Miri.Interpreter.MachineHooks.State Unit RefUser) :
+    EStateM.Result Miri.Interpreter.StepError
+      (Miri.Interpreter.MachineHooks.State Unit RefUser)
+      (Option Miri.MIR.DefId) :=
+  match item with
+  | .PanicMisalignedPointerDereference | .PanicNullPointerDereference =>
+    .error (.undefinedBehavior "panic on misaligned or null pointer dereference") st
+  | .PanicBoundsCheck | .PanicDivOverflow | .PanicRemOverflow
+  | .PanicDivZero | .PanicRemZero =>
+    if rp.hasLocalPanicHandler then
+      .error (.unsupported "crate-local panic_handler unsupported") st
+    else
+      match rp.panicStrategy with
+      | .unwind => .error (.unsupported "panic unwind unsupported") st
+      | .abort =>
+        match st.stack.currentFrame? with
+        | some frame =>
+          match frame.location with
+          | .mir loc =>
+            match frame.body.basicBlocks[loc.block]? with
+            | some bb =>
+              match bb.terminator.kind with
+              | .Assert _ _ _ _ (.Cleanup _) =>
+                .error (.unsupported "panic assert cleanup unsupported") st
+              | .Assert _ _ _ _ _ =>
+                .error (.termination (.abort "panic abort")) st
+              | _ => .error (.unsupported "unexpected non-assert terminator") st
+            | none => .error (.invalidBlock loc.block) st
+          | .unwinding _ => .error (.unsupported "panic during unwind unsupported") st
+        | none => .error (.stack .emptyStack) st
+  | _ => .error (.unsupported "unsupported panic language item") st
+
 /-- Canonical `Miri.Interpreter.ExecutionMachine.Config` for `rp : RefProg`,
 with `deinitMovedPlace := true` and real `ValidityMemory.bind` shallow
 validation. -/
@@ -1333,8 +1391,12 @@ noncomputable def refExecutionConfig (rp : RefProg) :
       driver := {
         payloads := fun _ => Miri.Interpreter.Unwind.PayloadStore.empty
         setPayloads := fun _ u => u
-        readImmediate := fun _ _ st =>
-          .error (.unsupported "panic unsupported on Day 1") st
+        -- `Miri.Interpreter.Panic.assertPanic` reads diagnostic immediate
+        -- operands on `BoundsCheck` / `MisalignedPointerDereference` before
+        -- calling the panic lang item; `callFunction` and `readPointer` stay
+        -- fail-closed as `.unsupported`.
+        readImmediate := fun _ op st =>
+          Miri.Interpreter.PlaceMachine.readImmediate refAccessConfig op st
         readPointer := fun _ _ st =>
           .error (.unsupported "panic unsupported on Day 1") st
         forceAllocation := fun _ _ st =>
@@ -1353,13 +1415,15 @@ noncomputable def refExecutionConfig (rp : RefProg) :
         .error (.unsupported "panic unsupported on Day 1") st
       toImmediatePointer := fun _ _ st =>
         .error (.unsupported "panic unsupported on Day 1") st
-      langItem := fun _ _ st => .ok none st
+      langItem := refPanicLangItem rp
       genericParameters := fun _ _ st => .ok Array.empty st
       evalOperand := fun _ _ st =>
         .error (.unsupported "panic unsupported on Day 1") st
     }
     unwindTerminateFunction := fun _ _ st =>
       .error (.unsupported "unwindTerminate unsupported on Day 1") st
+    -- `ignoreOptionalOverflowChecks = false` keeps optional overflow checks
+    -- at `.unsupported` in both models rather than skipping to `target`.
     ignoreOptionalOverflowChecks := false
     rvalues := {
       threadLocalPointer := fun _ _ st =>

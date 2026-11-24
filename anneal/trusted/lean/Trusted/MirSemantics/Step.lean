@@ -670,6 +670,92 @@ noncomputable def jumpToBlock (frame : FrameState) (mem : MemoryState)
     mem
   }
 
+/-- Outcome of a failing `TerminatorKind.assert` under `panicStrategy` and
+`unwind`, matching `rustc`'s `TerminatorKind::Assert` and `UnwindAction`
+(`compiler/rustc_middle/src/mir/syntax.rs`, lines 853-863, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`),
+`AssertKind::is_optional_overflow_check`
+(`compiler/rustc_middle/src/mir/terminator.rs`, lines 164-168), codegen
+elision (`compiler/rustc_codegen_ssa/src/mir/block.rs`, lines 714-716), and
+`assert_panic` (`compiler/rustc_const_eval/src/interpret/step.rs`, lines
+622-631):
+
+> "Evaluates the operand, which must have type `bool`. If it is not equal to
+> `expected`, initiates a panic. Initiating a panic corresponds to a `Call`
+> terminator with some unspecified constant as the function to call, all the
+> operands stored in the `AssertMessage` as parameters, and `None` for the
+> destination. Keep in mind that the `cleanup` path is not necessarily executed
+> even in the case of a panic, for example in `-C panic=abort`. If the
+> assertion does not fail, execution continues at the specified basic block.
+>
+> When overflow checking is disabled and this is run-time MIR (as opposed to
+> compile-time MIR that is used for CTFE), the following variants of this
+> terminator behave as `goto target`:
+> - `OverflowNeg(..)`,
+> - `Overflow(op, ..)` if op is add, sub, mul, shl, shr, but NOT div or rem."
+> (`compiler/rustc_middle/src/mir/syntax.rs`)
+>
+> "pub fn is_optional_overflow_check(&self) -> bool {
+>     use AssertKind::*;
+>     use BinOp::*;
+>     matches!(
+>         self,
+>         OverflowNeg(..) | Overflow(Add | Sub | Mul | Shl | Shr, ..)
+>     )
+> }"
+> (`compiler/rustc_middle/src/mir/terminator.rs`)
+>
+> "if !bx.sess().overflow_checks() && msg.is_optional_overflow_check() {
+>     const_cond = Some(expected);
+> }"
+> (`compiler/rustc_codegen_ssa/src/mir/block.rs`)
+>
+> "Assert { ref cond, expected, ref msg, target, unwind } => {
+>     let ignored =
+>         M::ignore_optional_overflow_checks(self)
+>             && msg.is_optional_overflow_check();
+>     let cond_val =
+>         self.read_scalar(&self.eval_operand(cond, None)?)?.to_bool()?;
+>     if ignored || expected == cond_val {
+>         self.go_to_block(target);
+>     } else {
+>         M::assert_panic(self, msg, unwind)?;
+>     }
+> }"
+> (`compiler/rustc_const_eval/src/interpret/step.rs`)
+
+Memory/alignment UB panics (`misalignedPtrDeref`, `nullPtrDeref`) always fault
+`.undefined`. Non-optional safe panics (`boundsCheck`, `overflow .div`,
+`overflow .rem`, `divByZero`, `remByZero`) terminate cleanly with
+`.aborted callerMem` iff `hasLocalPanicHandler = false`,
+`panicStrategy = .abort`, and `unwind ≠ .cleanup _`. When a crate defines a
+crate-local `#[panic_handler]` (`hasLocalPanicHandler = true`), failing safe
+asserts stay `.fault .unsupported` because the unverified handler can execute
+arbitrary code or diverge. Optional overflow checks
+(`overflow .add|.sub|.mul|.shl|.shr`, `overflowNeg`) remain
+`.fault .unsupported`: under default `-Coverflow-checks=no`, codegen elides
+inherited optional overflow asserts (`#[rustc_inherit_overflow_checks]`) as
+`goto target` rather than aborting, and under `--overflow-checks` they are
+runtime panics that this model does not yet treat as `.aborted`. Under
+`--panic unwind` or `.cleanup _`, all failed safe asserts fail closed as
+`.fault .unsupported`. -/
+noncomputable def evalAssertFailure (msg : AssertKind)
+    (panicStrategy : PanicStrategy) (unwind : UnwindAction)
+    (callerMem : CallerMemory) (hasLocalPanicHandler : Bool := true) :
+    StepResult State TerminalOut :=
+  match msg with
+  | .misalignedPtrDeref | .nullPtrDeref => .fault .undefined
+  | .boundsCheck | .overflow .div | .overflow .rem
+  | .divByZero | .remByZero =>
+    if hasLocalPanicHandler then
+      .fault .unsupported
+    else
+      match panicStrategy, unwind with
+      | .abort, .continue_ | .abort, .unreachable | .abort, .terminate =>
+        .done (.aborted callerMem)
+      | _, _ => .fault .unsupported
+  | .overflow _ | .overflowNeg | .unsupported => .fault .unsupported
+
 /-- Evaluate a basic block's `TerminatorKind` when
 `frame.stmtIdx == bb.statements.length`, matching `eval_terminator` in
 `compiler/rustc_const_eval/src/interpret/step.rs` (`rust-lang/rust`
@@ -686,16 +772,24 @@ noncomputable def jumpToBlock (frame : FrameState) (mem : MemoryState)
 >         SwitchInt { ref discr, ref targets } => { ... }
 >         ...
 >         Unreachable => throw_ub!(Unreachable),
+>         Assert { ref cond, expected, ref msg, target, unwind } => {
+>             ...
+>         }
 >         ...
 >     }
 > }"
 > (`compiler/rustc_const_eval/src/interpret/step.rs`, `rust-lang/rust`
-> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
+> `8144389c895da997dbdecaa635e41d6a50be6ffd`; `Assert` also matches
+> `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`)
 
 `Return` reads `_0`'s value (from memory with `loadIndirect` if `_0` is
-`.indirect`); an uninitialized or dead `_0` faults with `.undefined`. -/
+`.indirect`); an uninitialized or dead `_0` faults with `.undefined`.
+`Assert` evaluates `cond` to `.bool`; if equal to `expected` it jumps to
+`target`, otherwise it delegates to `evalAssertFailure`. -/
 noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
-    (frame : FrameState) (mem : MemoryState) (callerMem : CallerMemory) :
+    (frame : FrameState) (mem : MemoryState) (callerMem : CallerMemory)
+    (panicStrategy : PanicStrategy := .unwind)
+    (hasLocalPanicHandler : Bool := true) :
     StepResult State TerminalOut :=
   match bb.terminator with
   | .goto target => jumpToBlock frame mem callerMem target
@@ -744,7 +838,19 @@ noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
       | .ok target =>
         jumpToBlock { frame with locals := localsAfterDiscr } memAfterDiscr
           callerMem target
-  | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _ | .coreCall _ _ _ _ _
+  | .assert cond expected msg target unwind =>
+    match evalPrimitiveOperand body.locals frame.locals mem cond with
+    | .error k => .fault k
+    | .ok (condVal, locals1, mem1) =>
+      match condVal with
+      | .bool b =>
+        if b == expected then
+          jumpToBlock { frame with locals := locals1 } mem1 callerMem target
+        else
+          evalAssertFailure msg panicStrategy unwind callerMem
+            hasLocalPanicHandler
+      | _ => .fault .unsupported
+  | .unwindResume | .call _ _ _ _ _ | .coreCall _ _ _ _ _
   | .sysrootCall _ _ _ _ _ | .unsupported =>
     .fault .unsupported
 
@@ -2615,9 +2721,15 @@ raw-pointer accesses that would otherwise be UB under
 `src/behavior-considered-undefined.md:26-28`. A failure of either assert
 therefore faults with `.undefined`, which is conservative: with checks enabled,
 rustc's behavior is a defined, non-unwinding panic. Every other failed assert
-faults with `.unsupported` instead of unwinding. -/
+delegates to `evalAssertFailure`: under `--panic abort` without a crate-local
+`#[panic_handler]` and with a non-cleanup unwind action, non-optional safe
+panics return `.done (.aborted (extractCallerMemory callerMem mem1))`; optional
+overflow checks, crates with a crate-local `#[panic_handler]`, cleanup unwinds,
+and `--panic unwind` stay `.fault .unsupported`. -/
 noncomputable def evalTerminatorV2 (body : Body) (bb : BasicBlock)
-    (frame : FrameState) (mem : MemoryState) (callerMem : CallerMemory) :
+    (frame : FrameState) (mem : MemoryState) (callerMem : CallerMemory)
+    (panicStrategy : PanicStrategy := .unwind)
+    (hasLocalPanicHandler : Bool := true) :
     StepResult State TerminalOut :=
   match bb.terminator with
   | .goto target => jumpToBlock frame mem callerMem target
@@ -2671,7 +2783,7 @@ noncomputable def evalTerminatorV2 (body : Body) (bb : BasicBlock)
       | .ok target =>
         jumpToBlock { frame with locals := localsAfterDiscr } memAfterDiscr
           callerMem target
-  | .assert cond expected msg target _ =>
+  | .assert cond expected msg target unwind =>
     match evalPrimitiveOperandV2 body.locals frame.locals mem cond with
     | .error k => .fault k
     | .ok (condVal, locals1, mem1) =>
@@ -2680,9 +2792,8 @@ noncomputable def evalTerminatorV2 (body : Body) (bb : BasicBlock)
         if b == expected then
           jumpToBlock { frame with locals := locals1 } mem1 callerMem target
         else
-          match msg with
-          | .misalignedPtrDeref | .nullPtrDeref => .fault .undefined
-          | _ => .fault .unsupported
+          evalAssertFailure msg panicStrategy unwind
+            (extractCallerMemory callerMem mem1) hasLocalPanicHandler
       | _ => .fault .unsupported
   | .coreCall op args dst (some target) _ =>
     if !dst.projection.isEmpty then
@@ -2720,7 +2831,8 @@ noncomputable def evalStepV2 (p : Program) (s : State) :
         | some stmt => evalStatementV2 body frame s.mem s.callerMem stmt
         | none =>
           if Nat.beq frame.stmtIdx bb.statements.length then
-            evalTerminatorV2 body bb frame s.mem s.callerMem
+            evalTerminatorV2 body bb frame s.mem s.callerMem p.panicStrategy
+              p.hasLocalPanicHandler
           else
             .fault .unsupported
   | _ => .fault .unsupported
@@ -3020,12 +3132,15 @@ noncomputable def evalStep (p : Program) (_c : Choice) (s : State) :
                 0 (some op) (sysrootNumBody op) args dst target unwind
             | .return_ =>
               match callers with
-              | [] => evalTerminator body bb frame s.mem s.callerMem
+              | [] =>
+                evalTerminator body bb frame s.mem s.callerMem p.panicStrategy
+                  p.hasLocalPanicHandler
               | caller :: rest =>
                 evalNonRootReturn p body bb frame caller rest s.mem s.callerMem
             | _ =>
               attachCallers callers
-                (evalTerminator body bb frame s.mem s.callerMem)
+                (evalTerminator body bb frame s.mem s.callerMem p.panicStrategy
+                  p.hasLocalPanicHandler)
           else
             .fault .unsupported
   | [] => .fault .unsupported

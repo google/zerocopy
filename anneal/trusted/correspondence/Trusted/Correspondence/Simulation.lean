@@ -145,6 +145,7 @@ noncomputable def stepTouchesLocal (body : Body) (f : FrameState) (idx : Nat) :
       if Nat.beq f.stmtIdx bb.statements.length then
         match bb.terminator with
         | .switchInt discr _ => operandTouchesLocal discr idx
+        | .assert cond _ _ _ _ => operandTouchesLocal cond idx
         | _ => false
       else
         false
@@ -358,6 +359,7 @@ def FrameSimInv (rp : RefProg) (p : Program) (f : FrameState)
     storageAnnotationsInBounds body = true ∧
     discriminantTypesValid body = true ∧
     castTypesValid body = true ∧
+    assertConditionTypesValid body = true ∧
     callsAdmitted p body = true ∧
     allCallBodiesStaticAdmitted p body = true ∧
     body.locals.all isSupportedScalarOrUnitTy = true ∧
@@ -388,6 +390,7 @@ def CallFrameSimInv (rp : RefProg) (p : Program) (f : FrameState)
     storageAnnotationsInBounds body = true ∧
     discriminantTypesValid body = true ∧
     castTypesValid body = true ∧
+    assertConditionTypesValid body = true ∧
     assignTypesValid body = true ∧
     callsAdmitted p body = true ∧
     allCallBodiesStaticAdmitted p body = true ∧

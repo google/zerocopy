@@ -252,4 +252,33 @@ noncomputable def progSysrootUncheckedAddUbD17 : Program where
     ]
   }]
 
+/-- `D17` (`Assert` / `--panic abort` / `UnwindAction` fixture):
+`_0` is `u32`, `_1` is `bool`; block 0 asserts `copy _1 == true` with the
+given `msg` and `unwind` action, jumping to block 1 (`_0 = 42u32; return`). -/
+noncomputable def mkAssertProg (ps : PanicStrategy) (unwind : UnwindAction)
+    (msg : AssertKind) : Program where
+  entryDefId := 0
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  panicStrategy := ps
+  hasLocalPanicHandler := false
+  bodies := [{
+    argumentCount := 1
+    locals := [u32Ty, .bool]
+    basicBlocks := [
+      {
+        statements := []
+        terminator := .assert (.copy ⟨1, []⟩) true msg 1 unwind
+      },
+      {
+        statements := [
+          .assign ⟨0, []⟩
+            (.use (.constant ⟨u32Ty, .scalar (BitVec.ofNat 128 42)⟩))
+        ]
+        terminator := .return_
+      }
+    ]
+  }]
+
 end Trusted.Correspondence

@@ -338,6 +338,11 @@ pub unsafe fn guarded_exit(ok: bool) -> bool {
     assert_eq!(ok_rec.configuration["crate_type"], "bin");
     assert_eq!(ok_rec.configuration["panic"], "abort");
     assert!(ok_rec.taint_reasons.is_empty());
+    assert!(
+        !ok_rec.assumptions.iter().any(|a| a.contains("as .aborted")),
+        "local #[panic_handler] receipt must not claim .aborted modeling: {:?}",
+        ok_rec.assumptions
+    );
 
     // 2b. Default `--panic unwind` fails compilation on `#![no_std]` binary.
     let no_panic_inv = with_host_cargo_env(verify_invocation(&[

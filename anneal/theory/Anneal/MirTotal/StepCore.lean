@@ -1001,9 +1001,38 @@ theorem evalCharSwitchBranchesComp_eq (discr : Char) (otherwise : BasicBlockId)
     (callerMem : CallerMemory) (target : BasicBlockId) : StepResult State TerminalOut :=
   .step { frames := [{ frame with blockIdx := target, stmtIdx := 0 }], callerMem, mem }
 
+/-- Computable mirror of `Trusted.MirSemantics.evalAssertFailure`. -/
+@[expose] def evalAssertFailureComp (msg : AssertKind)
+    (panicStrategy : PanicStrategy) (unwind : UnwindAction)
+    (callerMem : CallerMemory) (hasLocalPanicHandler : Bool := true) :
+    StepResult State TerminalOut :=
+  match msg with
+  | .misalignedPtrDeref | .nullPtrDeref => .fault .undefined
+  | .boundsCheck | .overflow .div | .overflow .rem
+  | .divByZero | .remByZero =>
+    if hasLocalPanicHandler then
+      .fault .unsupported
+    else
+      match panicStrategy, unwind with
+      | .abort, .continue_ | .abort, .unreachable | .abort, .terminate =>
+        .done (.aborted callerMem)
+      | _, _ => .fault .unsupported
+  | .overflow _ | .overflowNeg | .unsupported => .fault .unsupported
+
+/-- Agreement between `evalAssertFailureComp` and `evalAssertFailure`. -/
+theorem evalAssertFailureComp_eq (msg : AssertKind)
+    (panicStrategy : PanicStrategy) (unwind : UnwindAction)
+    (callerMem : CallerMemory) (hasLocalPanicHandler : Bool := true) :
+    evalAssertFailureComp msg panicStrategy unwind callerMem
+        hasLocalPanicHandler =
+      evalAssertFailure msg panicStrategy unwind callerMem
+        hasLocalPanicHandler := rfl
+
 /-- Computable mirror of `Trusted.MirSemantics.evalTerminator`. -/
 @[expose] def evalTerminatorComp (body : Body) (bb : BasicBlock)
-    (frame : FrameState) (mem : MemoryState) (callerMem : CallerMemory) :
+    (frame : FrameState) (mem : MemoryState) (callerMem : CallerMemory)
+    (panicStrategy : PanicStrategy := .unwind)
+    (hasLocalPanicHandler : Bool := true) :
     StepResult State TerminalOut :=
   match bb.terminator with
   | .goto target => jumpToBlockComp frame mem callerMem target
@@ -1041,19 +1070,55 @@ theorem evalCharSwitchBranchesComp_eq (discr : Char) (otherwise : BasicBlockId)
       | .error k => .fault k
       | .ok target =>
         jumpToBlockComp { frame with locals := localsAfterDiscr } memAfterDiscr callerMem target
-  | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _ | .coreCall _ _ _ _ _
+  | .assert cond expected msg target unwind =>
+    match evalPrimitiveOperandComp body.locals frame.locals mem cond with
+    | .error k => .fault k
+    | .ok (condVal, locals1, mem1) =>
+      match condVal with
+      | .bool b =>
+        if b == expected then
+          jumpToBlockComp { frame with locals := locals1 } mem1 callerMem target
+        else
+          evalAssertFailureComp msg panicStrategy unwind callerMem
+            hasLocalPanicHandler
+      | _ => .fault .unsupported
+  | .unwindResume | .call _ _ _ _ _ | .coreCall _ _ _ _ _
   | .sysrootCall _ _ _ _ _ | .unsupported =>
     .fault .unsupported
 
 /-- Agreement between `evalTerminatorComp` and `evalTerminator`. -/
 theorem evalTerminatorComp_eq (body : Body) (bb : BasicBlock)
-    (frame : FrameState) (mem : MemoryState) (callerMem : CallerMemory) :
-    evalTerminatorComp body bb frame mem callerMem =
-      evalTerminator body bb frame mem callerMem := by
+    (frame : FrameState) (mem : MemoryState) (callerMem : CallerMemory)
+    (panicStrategy : PanicStrategy := .unwind)
+    (hasLocalPanicHandler : Bool := true) :
+    evalTerminatorComp body bb frame mem callerMem panicStrategy
+        hasLocalPanicHandler =
+      evalTerminator body bb frame mem callerMem panicStrategy
+        hasLocalPanicHandler := by
   unfold evalTerminatorComp evalTerminator
   cases bb.terminator with
-  | goto _ | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
+  | goto _ | unreachable | unwindResume | call _ _ _ _ _
   | coreCall _ _ _ _ _ | sysrootCall _ _ _ _ _ | unsupported => rfl
+  | assert cond expected msg target unwind =>
+    dsimp only
+    rw [evalPrimitiveOperandComp_eq]
+    cases evalPrimitiveOperand body.locals frame.locals mem cond with
+    | error _ => rfl
+    | ok triple =>
+      cases triple with
+      | mk condVal rest =>
+        cases rest with
+        | mk locals1 mem1 =>
+          cases condVal with
+          | bool b =>
+            dsimp only
+            cases b == expected with
+            | true => rfl
+            | false =>
+              exact evalAssertFailureComp_eq msg panicStrategy unwind callerMem
+                hasLocalPanicHandler
+          | scalar _ | char _ | ptr _ | slicePtr _ _ | rangeTo _ | rangeFrom _
+          | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ | array _ => rfl
   | return_ =>
     dsimp only
     cases bb.cleanup with
@@ -1927,6 +1992,47 @@ theorem assignTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
           rw [unOpHomogeneousComp_eq,
             localOperandMatchesTyBy_eq tyEq hTyEq body.locals opnd dstTy]
 
+/-- Computable mirror of `Trusted.MirSemantics.assertConditionTypesValid`
+parameterized by `tyEq`. -/
+@[expose] def assertConditionTypesValidBy (tyEq : MirTy → MirTy → Bool)
+    (body : Body) : Bool :=
+  body.basicBlocks.all (fun bb =>
+    match bb.terminator with
+    | .assert cond _ _ _ _ =>
+      match cond with
+      | .copy p | .move p =>
+        if p.projection.isEmpty then
+          match compGetElem? body.locals p.localId with
+          | some condTy => tyEq condTy .bool
+          | none => true
+        else true
+      | .constant c => tyEq c.ty .bool
+    | _ => true)
+
+/-- Agreement between `assertConditionTypesValidBy` and
+`assertConditionTypesValid` when `tyEq` agrees with `MirTy.beq`. -/
+theorem assertConditionTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) (body : Body) :
+    assertConditionTypesValidBy tyEq body = assertConditionTypesValid body := by
+  unfold assertConditionTypesValidBy assertConditionTypesValid
+  refine listAll_congr body.basicBlocks (fun bb => ?_)
+  cases bb.terminator with
+  | assert cond _ _ _ _ =>
+    cases cond with
+    | copy p | move p =>
+      dsimp only
+      cases p.projection.isEmpty with
+      | false => rfl
+      | true =>
+        rw [compGetElem?_eq]
+        cases Trusted.MirSemantics.getElem? body.locals p.localId with
+        | none => rfl
+        | some condTy => exact hTyEq condTy .bool
+    | constant c => exact hTyEq c.ty .bool
+  | goto _ | switchInt _ _ | return_ | unreachable | unwindResume
+  | call _ _ _ _ _ | coreCall _ _ _ _ _ | sysrootCall _ _ _ _ _
+  | unsupported => rfl
+
 /-- Computable mirror of `Trusted.MirSemantics.checkArgsMatch` parameterized by
 `tyEq`. -/
 @[expose] def checkArgsMatchBy (tyEq : MirTy → MirTy → Bool) (vs : List Val)
@@ -2310,13 +2416,16 @@ theorem evalNonRootReturnBy_eq (tyEq : MirTy → MirTy → Bool)
                 unwind
             | .return_ =>
               match callers with
-              | [] => evalTerminatorComp body bb frame s.mem s.callerMem
+              | [] =>
+                evalTerminatorComp body bb frame s.mem s.callerMem
+                  p.panicStrategy p.hasLocalPanicHandler
               | caller :: rest =>
                 evalNonRootReturnBy tyEq p body bb frame caller rest s.mem
                   s.callerMem
             | _ =>
               attachCallersComp callers
-                (evalTerminatorComp body bb frame s.mem s.callerMem)
+                (evalTerminatorComp body bb frame s.mem s.callerMem
+                  p.panicStrategy p.hasLocalPanicHandler)
           else
             .fault .unsupported
   | [] => .fault .unsupported
@@ -2374,13 +2483,16 @@ theorem evalMirStepBy_eq (tyEq : MirTy → MirTy → Bool)
               | nil =>
                 dsimp only
                 exact evalTerminatorComp_eq body bb frame s.mem s.callerMem
+                  p.panicStrategy p.hasLocalPanicHandler
               | cons caller rest =>
                 exact evalNonRootReturnBy_eq tyEq hTyEq p body bb frame caller
                   rest s.mem s.callerMem
             | goto _ | switchInt _ _ | unreachable | unwindResume
             | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
               dsimp only
-              rw [attachCallersComp_eq, evalTerminatorComp_eq]
+              rw [attachCallersComp_eq,
+                evalTerminatorComp_eq body bb frame s.mem s.callerMem
+                  p.panicStrategy p.hasLocalPanicHandler]
 
 /-- Depth-bounded LCNF-computable single-step MIR evaluator (`0`
 `noncomputable`). -/
@@ -2461,6 +2573,7 @@ parameterized by `tyEq`. -/
     storageAnnotationsInBoundsComp body &&
     discriminantTypesValidBy tyEq body &&
     castTypesValidBy tyEq body &&
+    assertConditionTypesValidBy tyEq body &&
     body.locals.all isSupportedScalarOrUnitTyComp &&
     callsAdmittedBy tyEq p body
 
@@ -2471,6 +2584,7 @@ theorem singleBodyStaticAdmittedBy_eq (tyEq : MirTy → MirTy → Bool)
   rw [stringIsEmptyComp_eq, storageAnnotationsInBoundsComp_eq,
       discriminantTypesValidBy_eq tyEq hTyEq,
       castTypesValidBy_eq tyEq hTyEq,
+      assertConditionTypesValidBy_eq tyEq hTyEq,
       listAll_congr body.locals isSupportedScalarOrUnitTyComp_eq,
       callsAdmittedBy_eq tyEq hTyEq]
 
@@ -2537,6 +2651,7 @@ theorem bodyStaticAdmittedBy_eq (tyEq : MirTy → MirTy → Bool)
       else if !storageAnnotationsInBoundsComp body then .error .unsupported
       else if !discriminantTypesValidBy tyEq body then .error .unsupported
       else if !castTypesValidBy tyEq body then .error .unsupported
+      else if !assertConditionTypesValidBy tyEq body then .error .unsupported
       else if !body.locals.all isSupportedScalarOrUnitTyComp then .error .unsupported
       else if !callsAdmittedBy tyEq p body then .error .unsupported
       else if !allCallBodiesStaticAdmittedBy tyEq p body then .error .unsupported
@@ -2569,6 +2684,7 @@ theorem initStateBy_eq (tyEq : MirTy → MirTy → Bool)
     rw [storageAnnotationsInBoundsComp_eq,
       discriminantTypesValidBy_eq tyEq hTyEq,
       castTypesValidBy_eq tyEq hTyEq,
+      assertConditionTypesValidBy_eq tyEq hTyEq,
       listAll_congr body.locals isSupportedScalarOrUnitTyComp_eq,
       callsAdmittedBy_eq tyEq hTyEq,
       allCallBodiesStaticAdmittedBy_eq tyEq hTyEq,

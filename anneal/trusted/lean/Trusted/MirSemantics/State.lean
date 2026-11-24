@@ -157,6 +157,39 @@ noncomputable def discriminantTypesValid (body : Body) : Bool :=
         | _ => true
       | _ => true))
 
+/-- Check that every `.assert cond ...` terminator in `body` whose condition
+is an unprojected in-bounds local or constant literal has type `.bool`,
+matching `rustc`'s MIR validator check for `TerminatorKind::Assert` in
+`compiler/rustc_mir_transform/src/validate.rs` (`rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> "TerminatorKind::Assert { cond, .. } => {
+>     let cond_ty = cond.ty(&self.body.local_decls, self.tcx);
+>     if cond_ty != self.tcx.types.bool {
+>         self.fail(
+>             location,
+>             format!(
+>                 \"encountered non-boolean condition of type {cond_ty} in
+>                 `Assert` terminator\"
+>             ),
+>         );
+>     }
+> }" -/
+noncomputable def assertConditionTypesValid (body : Body) : Bool :=
+  body.basicBlocks.all (fun bb =>
+    match bb.terminator with
+    | .assert cond _ _ _ _ =>
+      match cond with
+      | .copy p | .move p =>
+        if p.projection.isEmpty then
+          match getElem? body.locals p.localId with
+          | some condTy => MirTy.beq condTy .bool
+          | none => true
+        else
+          true
+      | .constant c => MirTy.beq c.ty .bool
+    | _ => true)
+
 /-- Check that every unprojected `Assign(dst, Cast(IntToInt, _, castTy))` in
 `body` whose `dst` is in bounds has destination type `castTy`, matching
 `rustc`'s MIR well-typedness invariant that an assignment's place and rvalue
@@ -502,6 +535,7 @@ noncomputable def singleBodyStaticAdmitted (p : Program) (body : Body) : Bool :=
     storageAnnotationsInBounds body &&
     discriminantTypesValid body &&
     castTypesValid body &&
+    assertConditionTypesValid body &&
     body.locals.all isSupportedScalarOrUnitTy &&
     callsAdmitted p body
 
@@ -587,6 +621,8 @@ noncomputable def initState (p : Program) (q : Query) :
         .error .unsupported
       else if !castTypesValid body then
         .error .unsupported
+      else if !assertConditionTypesValid body then
+        .error .unsupported
       else if !body.locals.all isSupportedScalarOrUnitTy then
         .error .unsupported
       else if !callsAdmitted p body then
@@ -641,6 +677,8 @@ noncomputable def initStateV2 (p : Program) (q : Query) :
       else if !discriminantTypesValid body then
         .error .unsupported
       else if !castTypesValid body then
+        .error .unsupported
+      else if !assertConditionTypesValid body then
         .error .unsupported
       else if !body.locals.all isSupportedV2LocalTy then
         .error .unsupported

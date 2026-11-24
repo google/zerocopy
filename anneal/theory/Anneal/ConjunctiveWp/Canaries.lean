@@ -79,7 +79,7 @@ open Anneal.MirWp Anneal.Core
     | .ptr _ | .slicePtr _ _ | .rangeTo _ | .rangeFrom _ | .bool _ | .char _
     | .ordering _ | .unit | .enumVal _ _ | .tuple _ | .array _
     | .bytes _ => false
-  | .unwound _ => false
+  | .unwound _ | .aborted _ => false
 
 /-- Four-block `u32` countdown-sum loop `fn sum_to(n: u32) -> u32`:
 - `bb0`: `_0 = 0; _2 = copy _1; goto bb1` (`3` steps)

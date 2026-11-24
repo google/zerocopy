@@ -3318,8 +3318,14 @@ pub fn spin_never() -> ! {
     let manifest: serde_json::Value = serde_json::from_str(&manifest_raw).unwrap();
     assert_eq!(manifest["configuration"]["crate_type"], "bin");
     assert_eq!(manifest["configuration"]["panic"], "abort");
+    assert_eq!(manifest["program"]["panic"], "abort");
+    assert_eq!(manifest["program"]["has_local_panic_handler"], true);
     let lean_path = fixture.output.join("Captured.lean");
     let lean_src = std::fs::read_to_string(&lean_path).unwrap();
+    assert!(
+        lean_src.contains("hasLocalPanicHandler := true"),
+        "expected crate-local #[panic_handler] to emit hasLocalPanicHandler := true:\n{lean_src}"
+    );
     assert!(
         lean_src.contains("Trusted.MirAst.TerminatorKind.unsupported"),
         "expected diverging `-> !` call to emit TerminatorKind.unsupported:\n{lean_src}"
@@ -4983,4 +4989,105 @@ fn profile_v2_refuses_unsupported_array_and_rodata_shapes() {
         );
         fixture.assert_no_capture_artifacts();
     }
+}
+
+#[test]
+fn captures_panic_strategy_and_assert_unwind_action() {
+    let source = b"pub fn selected(a: usize, b: usize) -> usize {\n\
+                       a / b\n\
+                   }\n";
+
+    let unwind_fix = Capture::new(source);
+    let unwind_out = unwind_fix.selected_command().output().unwrap();
+    assert!(unwind_out.status.success(), "{unwind_out:?}");
+    let unwind_manifest = unwind_fix.manifest();
+    assert_eq!(unwind_manifest["program"]["mir_profile_version"], 2);
+    assert_eq!(unwind_manifest["program"]["panic"], "unwind");
+    assert_eq!(unwind_manifest["program"]["has_local_panic_handler"], false);
+    let unwind_lean_path = unwind_fix.output.join("Captured.lean");
+    let unwind_lean = std::fs::read_to_string(&unwind_lean_path).unwrap();
+    assert!(
+        unwind_lean.contains("panicStrategy := Trusted.MirAst.PanicStrategy.unwind"),
+        "{unwind_lean}"
+    );
+    assert!(
+        unwind_lean.contains("hasLocalPanicHandler := false"),
+        "{unwind_lean}"
+    );
+    assert!(
+        unwind_lean.contains("Trusted.MirAst.UnwindAction.continue_"),
+        "{unwind_lean}"
+    );
+    assert!(
+        !unwind_lean.contains("Trusted.MirAst.UnwindAction.unreachable"),
+        "{unwind_lean}"
+    );
+    compile_captured_lean_if_trusted_sources_present(&unwind_lean_path);
+
+    let abort_fix = Capture::new(source);
+    let abort_out = abort_fix.selected_command().arg("--panic=abort").output().unwrap();
+    assert!(abort_out.status.success(), "{abort_out:?}");
+    let abort_manifest = abort_fix.manifest();
+    assert_eq!(abort_manifest["program"]["mir_profile_version"], 2);
+    assert_eq!(abort_manifest["program"]["panic"], "abort");
+    assert_eq!(abort_manifest["program"]["has_local_panic_handler"], false);
+    let abort_lean_path = abort_fix.output.join("Captured.lean");
+    let abort_lean = std::fs::read_to_string(&abort_lean_path).unwrap();
+    assert!(
+        abort_lean.contains("panicStrategy := Trusted.MirAst.PanicStrategy.abort"),
+        "{abort_lean}"
+    );
+    assert!(
+        abort_lean.contains("hasLocalPanicHandler := false"),
+        "{abort_lean}"
+    );
+    assert!(
+        abort_lean.contains("Trusted.MirAst.UnwindAction.unreachable"),
+        "{abort_lean}"
+    );
+    assert!(
+        !abort_lean.contains("Trusted.MirAst.UnwindAction.continue_"),
+        "{abort_lean}"
+    );
+    compile_captured_lean_if_trusted_sources_present(&abort_lean_path);
+
+    // A `#![no_std]` binary with a crate-local `#[panic_handler]` records
+    // `has_local_panic_handler = true` so Lean keeps failing `Assert`s
+    // fail-closed as `.fault .unsupported` even under `--panic=abort`.
+    let nostd_div = br#"#![no_std]
+#![no_main]
+
+use core::panic::PanicInfo;
+
+#[panic_handler]
+fn panic(_info: &PanicInfo<'_>) -> ! {
+    loop {}
+}
+
+pub fn div_u64(a: u64, b: u64) -> u64 {
+    a / b
+}
+"#;
+    let nostd_fix = Capture::new(nostd_div);
+    let nostd_out = nostd_fix
+        .command()
+        .args(["--crate-type=bin", "--panic=abort", "--select=div_u64"])
+        .output()
+        .unwrap();
+    assert!(nostd_out.status.success(), "{nostd_out:?}");
+    let nostd_manifest = nostd_fix.manifest();
+    assert_eq!(nostd_manifest["program"]["mir_profile_version"], 2);
+    assert_eq!(nostd_manifest["program"]["panic"], "abort");
+    assert_eq!(nostd_manifest["program"]["has_local_panic_handler"], true);
+    let nostd_lean_path = nostd_fix.output.join("Captured.lean");
+    let nostd_lean = std::fs::read_to_string(&nostd_lean_path).unwrap();
+    assert!(
+        nostd_lean.contains("panicStrategy := Trusted.MirAst.PanicStrategy.abort"),
+        "{nostd_lean}"
+    );
+    assert!(
+        nostd_lean.contains("hasLocalPanicHandler := true"),
+        "{nostd_lean}"
+    );
+    compile_captured_lean_if_trusted_sources_present(&nostd_lean_path);
 }

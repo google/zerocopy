@@ -1405,8 +1405,8 @@ private theorem frameSimInv_unique {rp : RefProg} {p : Program} {f : FrameState}
     (h_lay : rf₁.locals.map (fun l => l.layout.isSome) =
       rf₂.locals.map (fun l => l.layout.isSome)) :
     rf₁ = rf₂ := by
-  let ⟨body₁, rbody₁, c₁, hb₁, hrb₁, _, _, _, _, _, _, _, _, hsm₁, _, hc₁_rep, hrf₁⟩ := h₁
-  let ⟨body₂, rbody₂, c₂, hb₂, hrb₂, _, _, _, _, _, _, _, _, hsm₂, _, hc₂_rep, hrf₂⟩ := h₂
+  let ⟨body₁, rbody₁, c₁, hb₁, hrb₁, _, _, _, _, _, _, _, _, _, hsm₁, _, hc₁_rep, hrf₁⟩ := h₁
+  let ⟨body₂, rbody₂, c₂, hb₂, hrb₂, _, _, _, _, _, _, _, _, _, hsm₂, _, hc₂_rep, hrf₂⟩ := h₂
   have hc₁ : c₁.length = body₁.locals.length := by rw [hc₁_rep, List.length_replicate]
   have hc₂ : c₂.length = body₂.locals.length := by rw [hc₂_rep, List.length_replicate]
   rw [hb₁] at hb₂; injection hb₂ with hb_eq; subst hb_eq
@@ -1433,9 +1433,9 @@ private theorem callFrameSimInv_unique {rp : RefProg} {p : Program}
     (h_lay : rf₁.locals.map (fun l => l.layout.isSome) =
       rf₂.locals.map (fun l => l.layout.isSome)) :
     rf₁ = rf₂ := by
-  let ⟨body₁, rbody₁, c₁, fnTag₁, hb₁, hrb₁, _, hft₁, _, _, _, _, _, _, _, _, _, _,
+  let ⟨body₁, rbody₁, c₁, fnTag₁, hb₁, hrb₁, _, hft₁, _, _, _, _, _, _, _, _, _, _, _,
     hsm₁, _, hc₁, hrf₁⟩ := h₁
-  let ⟨body₂, rbody₂, c₂, fnTag₂, hb₂, hrb₂, _, hft₂, _, _, _, _, _, _, _, _, _, _,
+  let ⟨body₂, rbody₂, c₂, fnTag₂, hb₂, hrb₂, _, hft₂, _, _, _, _, _, _, _, _, _, _, _,
     hsm₂, _, hc₂, hrf₂⟩ := h₂
   rw [hb₁] at hb₂; injection hb₂ with hb_eq; subst hb_eq
   rw [hrb₁] at hrb₂; injection hrb₂ with hrb_eq; subst hrb_eq

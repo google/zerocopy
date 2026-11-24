@@ -41,7 +41,9 @@ machinery over `Trusted.MirAst` and `Trusted.MirSemantics`:
    (`wellFormed_and_spec_of_wp : WpSoundnessClaim wpProg`,
    `reaches_fault_and_exclusive_of_wpFault : WpFaultSoundnessClaim
    wpFaultProg`, and the Profile v2
-   `wellFormed_and_spec_of_execV2 : ExecSoundnessClaimV2 execProgV2`).
+   `wellFormed_and_spec_of_execV2 : ExecSoundnessClaimV2 execProgV2` and
+   `safeContract_soundness_of_execV2` (`SafeContractSoundnessClaimV2` for
+   `execProgV2`)).
 2. **Width-Parametric Bitvector, Scalar, and Operator Adequacy:** Exact modular
    characterization and idempotence of `truncateBits`, totality and
    well-formedness of `truncateScalar`, and width/signedness-parametric operator
@@ -81,6 +83,12 @@ theorem reaches_fault_and_exclusive_of_wpFault :
 `wellFormed_and_spec_of_execV2_base`. -/
 theorem wellFormed_and_spec_of_execV2 : ExecSoundnessClaimV2 execProgV2 :=
   wellFormed_and_spec_of_execV2_base
+
+/-- Audited Profile v2 `SafeContractV2` soundness theorem forwarding to
+`safeContract_soundness_of_execV2_base`. -/
+theorem safeContract_soundness_of_execV2 :
+    SafeContractSoundnessClaimV2 execProgV2 :=
+  safeContract_soundness_of_execV2_base
 
 end Anneal.MirWp
 
