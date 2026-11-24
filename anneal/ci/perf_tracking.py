@@ -65,14 +65,24 @@ SHA40_RE = re.compile(r"^[0-9a-f]{40}$")
 METRIC_ID_RE = re.compile(r"^[a-z0-9_]+(\.[a-z0-9_-]+){2,}$")
 TIME_RSS_RE = re.compile(r"__ANNEAL_TIME_MAXRSS_KIB__=(\d+)")
 
-CATEGORIES = (
+COLLECTABLE_CATEGORIES = (
     "verify",
     "theory_elab",
     "memory_rss",
     "artifact_size",
     "zerocopy_proofs",
 )
+RENDER_ONLY_CATEGORIES = (
+    # Schema- and dashboard-supported via `perf_tracking.validate_record`,
+    # `analyze`, and `render_perf_dashboard.py` when callers invoke
+    # `ci/check_mir_differential.py --perf-record-out` with Git or explicit
+    # commit metadata; neither collected by `collect_record` / `anneal-perf.yml`
+    # nor uploaded from `.git`-less `ci-core` `anneal-ws-test` runs yet.
+    "differential_oracle",
+)
+CATEGORIES = (*COLLECTABLE_CATEGORIES, *RENDER_ONLY_CATEGORIES)
 ALLOWED_CATEGORIES = frozenset(CATEGORIES)
+ALLOWED_COLLECTABLE_CATEGORIES = frozenset(COLLECTABLE_CATEGORIES)
 DEFAULT_TIME_BIN = Path("/usr/bin/time")
 
 DEFAULT_ROLLING_POLICY: dict[str, Any] = {
@@ -411,6 +421,38 @@ def describe_metric(metric_id: str) -> dict[str, Any]:
             "group": f"artifact_size.{scope}",
             "unit": "B",
             "direction": "lower_is_better",
+            "deterministic": True,
+        }
+
+    if category == "differential_oracle":
+        section = parts[1]
+        measure = parts[2]
+        if section == "mutants":
+            return {
+                "id": metric_id,
+                "label": f"differential oracle ({section} {measure.removesuffix('_pct').replace('_', ' ')})",
+                "category": "differential_oracle",
+                "group": "differential_oracle.mutants",
+                "unit": "%",
+                "direction": "higher_is_better",
+                "deterministic": True,
+            }
+        lower_measures = {
+            "unsound_missed_fault_count",
+            "value_mismatch_count",
+            "unexpected_conservative_count",
+            "leg_divergence_count",
+        }
+        direction = (
+            "lower_is_better" if measure in lower_measures else "higher_is_better"
+        )
+        return {
+            "id": metric_id,
+            "label": f"differential oracle ({section} {measure.replace('_', ' ')})",
+            "category": "differential_oracle",
+            "group": f"differential_oracle.{section}",
+            "unit": "count",
+            "direction": direction,
             "deterministic": True,
         }
 
@@ -1399,6 +1441,7 @@ def collect_record(
     time_bin: Path | None,
 ) -> dict[str, Any]:
     """Collect one complete validated `anneal-perf-record/v1` object."""
+    _validate_collect_categories(categories)
     metrics: dict[str, float | int] = {}
     rss_methods: set[str] = set()
 
@@ -1950,13 +1993,27 @@ def render_summary_markdown(
     return "\n".join(lines) + "\n"
 
 
-def _parse_categories(raw: str | None) -> set[str]:
-    if not raw:
-        return set(CATEGORIES)
-    chosen = {part.strip() for part in raw.split(",") if part.strip()}
-    unknown = chosen - ALLOWED_CATEGORIES
+def _validate_collect_categories(categories: set[str]) -> None:
+    if not categories:
+        raise ValidationError("empty category selection")
+    unknown = categories - ALLOWED_CATEGORIES
     if unknown:
         raise ValidationError(f"unknown categories: {sorted(unknown)}")
+    non_collectable = categories - ALLOWED_COLLECTABLE_CATEGORIES
+    if non_collectable:
+        raise ValidationError(
+            "non-collectable categories for `collect`: "
+            f"{sorted(non_collectable)} (`differential_oracle` metrics are "
+            "emitted by `ci/check_mir_differential.py`, not "
+            "`perf_tracking.py collect`)"
+        )
+
+
+def _parse_categories(raw: str | None) -> set[str]:
+    if not raw:
+        return set(COLLECTABLE_CATEGORIES)
+    chosen = {part.strip() for part in raw.split(",") if part.strip()}
+    _validate_collect_categories(chosen)
     return chosen
 
 
@@ -2025,9 +2082,9 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.command == "collect":
+        categories = _parse_categories(args.categories)
         anneal_root = args.anneal_root.resolve(strict=True)
         repo_root = (args.repo_root or anneal_root.parent).resolve(strict=True)
-        categories = _parse_categories(args.categories)
         modules = (
             [m.strip() for m in args.modules.split(",") if m.strip()]
             if args.modules

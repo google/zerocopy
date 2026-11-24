@@ -113,11 +113,27 @@ verification.
 ## Test the workspace and audit the boundary
 
 `trusted/rustc-capture` links compiler-private `rustc_private` libraries, and
-workspace tests execute both `lean` and `anneal-rustc-capture`. Export the
-installed toolchain paths and run the non-ignored workspace checks from
-`anneal/`:
+workspace tests execute `lean`, `anneal-rustc-capture`, and Miri against
+vendored `rust-src` sources. Because `.#omnibus-archive` omits `miri`,
+`cargo-miri`, and `rust-src` for end-user verification downloads, overlay those
+paths from `.#rust-toolchain` into `$install_root/rust` (and validate via
+`ci/check_bundle_tree.py` with `--cache-root "$scaffold_root/cache"`,
+`--discover-single`, and `--require-miri`) before running
+`cargo test --workspace` from `anneal/`:
 
 ```bash
+nix build .#rust-toolchain --max-jobs 1 --cores 4 \
+  --out-link "$scaffold_root/rust-tc-link"
+cp -R -L "$scaffold_root/rust-tc-link/bin/miri" \
+  "$scaffold_root/rust-tc-link/bin/cargo-miri" "$install_root/rust/bin/"
+mkdir -p "$install_root/rust/lib/rustlib"
+cp -R -L "$scaffold_root/rust-tc-link/lib/rustlib/src" \
+  "$install_root/rust/lib/rustlib/"
+chmod -R u+w "$install_root/rust/bin/miri" \
+  "$install_root/rust/bin/cargo-miri" \
+  "$install_root/rust/lib/rustlib/src"
+rm -f "$scaffold_root/rust-tc-link"
+
 export XDG_CACHE_HOME="$scaffold_root/cache"
 export ANNEAL_TEST_INSTALL_ROOT="$install_root"
 export ANNEAL_TEST_RUST_SYSROOT="$install_root/rust"

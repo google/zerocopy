@@ -118,6 +118,57 @@ apply_bundle_env() {
   done <<< "$output"
 }
 
+# Build CLI arguments for `ci/check_mir_differential.py`. Inside `ci-core`
+# `anneal-ws-test` (which strips `GITHUB_*`, omits `.git`, and uploads no
+# workflow artifacts), this enforces the Stage-1 differential oracle gate using
+# `--allow-unknown-git` without emitting synthetic 1970 perf records.
+# In a local Git checkout or with explicit `ANNEAL_DIFF_COMMIT_*` overrides,
+# it also writes `mir-differential-perf-record.json` under `$diff_diag`. When
+# either `ANNEAL_DIFF_COMMIT_SHA` or `ANNEAL_DIFF_COMMIT_UNIX_TS` is set, both
+# must be non-empty so partial overrides fail closed.
+build_differential_check_args() {
+  local diff_bin="$1" diff_diag="$2"
+  local sha_set=0 ts_set=0
+  if [[ -n "${ANNEAL_DIFF_COMMIT_SHA+x}" ]]; then
+    sha_set=1
+  fi
+  if [[ -n "${ANNEAL_DIFF_COMMIT_UNIX_TS+x}" ]]; then
+    ts_set=1
+  fi
+  if (( sha_set != ts_set )) || (
+    (( sha_set == 1 )) \
+      && [[ -z "${ANNEAL_DIFF_COMMIT_SHA:-}" || -z "${ANNEAL_DIFF_COMMIT_UNIX_TS:-}" ]]
+  ); then
+    echo "error: ANNEAL_DIFF_COMMIT_SHA and ANNEAL_DIFF_COMMIT_UNIX_TS must both be non-empty when either is set" >&2
+    return 1
+  fi
+  DIFF_CHECK_ARGS=(
+    --anneal-diff-bin "$diff_bin"
+    --output "$diff_diag/mir-differential.json"
+    --perf-metrics-out "$diff_diag/mir-differential-perf.json"
+  )
+  if (( sha_set == 1 )); then
+    DIFF_CHECK_ARGS+=(
+      --commit-sha "$ANNEAL_DIFF_COMMIT_SHA"
+      --commit-unix-ts "$ANNEAL_DIFF_COMMIT_UNIX_TS"
+      --branch="${ANNEAL_DIFF_BRANCH:-ci-ws-test}"
+      --perf-record-out "$diff_diag/mir-differential-perf-record.json"
+    )
+  elif git rev-parse --verify HEAD >/dev/null 2>&1; then
+    if [[ -n "${ANNEAL_DIFF_BRANCH:-}" ]]; then
+      DIFF_CHECK_ARGS+=(--branch="$ANNEAL_DIFF_BRANCH")
+    fi
+    DIFF_CHECK_ARGS+=(
+      --perf-record-out "$diff_diag/mir-differential-perf-record.json"
+    )
+  else
+    DIFF_CHECK_ARGS+=(
+      --allow-unknown-git
+      --branch="${ANNEAL_DIFF_BRANCH:-offline-ws-test}"
+    )
+  fi
+}
+
 # Refuse to use a mounted Cargo cache that could steer later cargo runs:
 # `config`/`config.toml` can set `build.rustc-wrapper`, target runners, or
 # source replacement, `credentials`/`credentials.toml` must never reach a
@@ -435,12 +486,51 @@ case "$MODE" in
   ws-test)
     : "${SHARD_SPEC:?}"
     verify_bwrap_sandbox
+    RUST_TC="$(readlink -f /opt/anneal-nix/rust-toolchain)"
+    MIRI_OVERLAY_PATH="${SCRATCH_ROOT}/anneal-miri-overlay.tar.gz"
+    rm -f "$MIRI_OVERLAY_PATH"
+    tar --mode='u+w' --hard-dereference --sort=name --mtime=@0 \
+      --owner=0 --group=0 --numeric-owner \
+      --transform='flags=r;s|^|rust/|' \
+      -C "$RUST_TC" \
+      -czf "$MIRI_OVERLAY_PATH" \
+      bin/miri bin/cargo-miri lib/rustlib/src
     INSTALL_CACHE="${SCRATCH_ROOT}/anneal-ws-toolchain"
     INSTALL_ROOT="$INSTALL_CACHE/anneal/toolchain/extracted"
     rm -rf "$INSTALL_CACHE"
     mkdir -p "$INSTALL_ROOT"
     stage_ws_toolchain_root "$INSTALL_ROOT"
-    apply_bundle_env --cache-root "$INSTALL_CACHE" --root "$INSTALL_ROOT"
+    bwrap --unshare-all --die-with-parent --new-session --clearenv \
+      --cap-drop ALL --tmpfs / --dev /dev --proc /proc \
+      --setenv PATH /usr/bin:/bin \
+      --ro-bind /usr /usr \
+      --ro-bind-try /bin /bin \
+      --ro-bind-try /lib /lib \
+      --ro-bind-try /lib64 /lib64 \
+      --ro-bind-try /etc/ld.so.cache /etc/ld.so.cache \
+      --ro-bind "$MIRI_OVERLAY_PATH" /miri-overlay.tar.gz \
+      --bind "$INSTALL_ROOT" /out \
+      -- tar --no-same-owner -xzf /miri-overlay.tar.gz -C /out
+    rm -f "$MIRI_OVERLAY_PATH"
+    apply_bundle_env \
+      --cache-root "$INSTALL_CACHE" \
+      --root "$INSTALL_ROOT" \
+      --require-miri
+    if [[ "$SHARD_SPEC" == 1/* ]]; then
+      cargo build --locked --offline -p anneal-differential-tests \
+        --bin anneal-diff \
+        "${FULL_OPT_ARGS[@]}"
+      DIFF_DIAG="${SCRATCH_ROOT}/mir-differential"
+      rm -rf "$DIFF_DIAG"
+      mkdir -p "$DIFF_DIAG"
+      DIFF_CHECK_ARGS=()
+      build_differential_check_args \
+        "$CARGO_TARGET_DIR/debug/anneal-diff" \
+        "$DIFF_DIAG"
+      /usr/bin/python3 -I -B ci/check_mir_differential.py \
+        --expect-capture-source env_anneal_capture \
+        "${DIFF_CHECK_ARGS[@]}"
+    fi
     cargo nextest run --workspace --locked --offline \
       "${FULL_OPT_ARGS[@]}" \
       --no-fail-fast --failure-output immediate \

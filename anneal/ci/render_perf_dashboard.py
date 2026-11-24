@@ -434,7 +434,8 @@ td.num, th.num { text-align: right; font-family: var(--mono); }
     theory_elab: "Theory Cold Elab",
     memory_rss: "Peak RSS",
     artifact_size: "Artifact Sizes",
-    zerocopy_proofs: "Zerocopy Proofs"
+    zerocopy_proofs: "Zerocopy Proofs",
+    differential_oracle: "Differential Oracle"
   };
 
   function isValidRepoUrl(url) {
@@ -508,6 +509,12 @@ td.num, th.num { text-align: right; font-family: var(--mono); }
       if (val >= 1048576) return (val / 1048576).toFixed(2) + " MiB";
       if (val >= 1024) return (val / 1024).toFixed(1) + " KiB";
       return Math.round(val) + " B";
+    }
+    if (unit === "%") {
+      return (Number.isInteger(val) ? String(val) : val.toFixed(1)) + "%";
+    }
+    if (unit && unit !== "count") {
+      return (Number.isInteger(val) ? String(val) : val.toFixed(2)) + " " + unit;
     }
     return String(Math.round(val));
   }

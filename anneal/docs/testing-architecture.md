@@ -169,13 +169,18 @@ anneal/
     │   ├── src/bin/anneal-rustc-capture-test-bin.rs
     │   └── tests/{typed_capture.rs, stdlib_capture.rs, compiler_session.rs, pass_order_sentinel.rs}
     │       # (Wave 2B target: decompose typed_capture.rs into suite/main.rs)
+    ├── differential/                  # package = "anneal-differential-tests" (publish = false)
+    │   ├── Cargo.toml
+    │   ├── src/bin/{anneal-diff.rs, anneal-diff-capture-test-bin.rs}
+    │   ├── src/{lib.rs, corpus.rs, miri_runner.rs, lean_runner.rs, mir_eval_runner.rs, mutants.rs, verdict.rs}
+    │   └── tests/differential_oracle.rs
     └── corpora/                       # Declarative data-driven corpora consumed by test crates
         ├── adversarial/               # Landed: capture/; Target Wave 3: + guards.toml, spec_and_preflight/, mir_ub_refutations/, audit_and_ndjson/
         ├── scalar/                    # Landed (#4187): dependency.rs, unsupported.rs
         ├── scalar_specs/              # Landed (#4187): 19 declarative (lib.rs, Spec.lean, Proof.lean) suites
         ├── spin/                      # Landed (#4187): loop verification corpus fixture
         ├── unsafe_identity/           # Landed (#4187): unsafe contract corpus fixture
-        ├── differential/              # Target Wave 3: rustc/Miri <-> MirSemantics & multi-kernel NDJSON cases
+        ├── differential/              # Landed Stage 1: profile_v1/manifest.toml (39 Miri <-> StepCore/MirWp cases); Target Wave 3: + multi-kernel NDJSON cases
         └── real_crates/               # Target Wave 3: declarative runner over zerocopy/proofs/ & external crates
 ```
 
@@ -577,6 +582,11 @@ slow-timeout = { period = "30s", terminate-after = 4 }
 fail-fast = false
 
 [[profile.default.overrides]]
+filter = 'binary(differential_oracle)'
+threads-required = 2
+slow-timeout = { period = "90s", terminate-after = 4 }
+
+[[profile.default.overrides]]
 filter = 'binary(boundary_audit) | binary(target_audit) | binary(profile_v2_e2e) | test(/verifies_scalar_spec_corpus|selected_unit_normalization_and_boundary_rejections/)'
 threads-required = 2
 slow-timeout = { period = "60s", terminate-after = 4 }
@@ -677,26 +687,30 @@ anneal/tests/corpora/adversarial/
 `anneal/tests/corpora/differential/` enforces agreement across two independent
 semantic seams:
 
-1. **Seam A — Rust / Miri $\leftrightarrow$ `Trusted.MirSemantics` Directional
-   Refinement (`mir_oracle/`):**
-   Each fixture defines boundary input vectors (including
-   `#![feature(custom_mir)]` invalid-state probes) and evaluates four runners
-   under the exact capture flags
-   (`-C opt-level=0 -C debug-assertions=no -C overflow-checks=no`, or
-   `-C overflow-checks=yes` for fixtures captured with `--overflow-checks`):
-   - **Native `rustc` binary** (defined-behavior inputs only),
-   - **`cargo miri`** (with explicit Tree Borrows configuration),
-   - **Lean `MirTotal` / `MirSemantics` executable evaluator** on
-     `Captured.lean`, and
-   - **`cargo-anneal verify`** end-to-end proof check.
+1. **Seam A — Miri $\leftrightarrow$ `Trusted.MirSemantics` Multi-Leg
+   Differential Oracle (`profile_v1/`):**
+   `anneal-differential-tests` (`tests/differential/`) loads
+   `tests/corpora/differential/profile_v1/manifest.toml` (`39` Profile v1 cases)
+   and compares legs under matching flags (`-C opt-level=0 -C
+   debug-assertions=no -C overflow-checks=no`, `--target
+   x86_64-unknown-linux-gnu`):
+   - **Miri (`-Zmiri-tree-borrows`)** against an offline vendored sysroot,
+   - **`anneal-rustc-capture` + Lean `Anneal.MirTotal.StepCore`** executable
+     evaluator on `Captured.lean`,
+   - **Lean kernel `Anneal.MirWp` adequacy theorems** (term-mode `rfl`
+     witnesses under `-Ddebug.skipKernelTC=false`) on budget-fitting
+     single-block `pass` cases and single-block or two-block `sysroot_call`
+     `ub` cases, and
+   - **Optional `anneal-mir-eval`** (`--body <body_id>`), plus native `rustc`
+     and generative fuzzing extensions in Stage 2.
 
-   | Miri Outcome | Lean `MirSemantics` Outcome | Differential Verdict | CI Gate Disposition |
+   | Miri Outcome | Lean `StepCore` Outcome | Differential Verdict | CI Gate Disposition |
    | :--- | :--- | :--- | :--- |
-   | `Ok(bits)` | `Ok(bits')` with `bits == bits'` | `ExactAgreement` | **PASS** (must also match native `rustc`) |
-   | `Ok(_)` | `Ok(bits')` with `bits != bits'` | **`UnsoundValueMismatch`** | **HARD FAIL** (semantic bug in capture or `MirSemantics`) |
-   | `UB(kind)` | `Ok(_)` | **`UnsoundMissedUb`** | **HARD FAIL** (missing UB guard in `MirSemantics` or capture) |
-   | `UB(_)` | `Fault(_)` or `CaptureUnsupported` | `SoundRejection` | **PASS** |
-   | `Ok(_)` | `Fault(_)` | `ConservativeFault` | **PASS only if declared** `//@ differential: conservative_fault("<reason>")` (e.g., post-`Operand.move` read of `Copy` local); undeclared completeness regressions **FAIL** |
+   | `Returned(v)` | `Returned(v')` with `v == v'` | `AgreeValue` | **PASS** (must also match `expected_return` and any active `mir_eval` leg) |
+   | `Returned(v)` | `Returned(v')` with `v != v'` | **`ValueMismatch`** | **HARD FAIL** (semantic bug in capture or `MirSemantics`) |
+   | `UndefinedBehavior` / `AbnormalAbort` / `Panic` | `Returned(_)` | **`UnsoundMissedFault`** | **HARD FAIL** (missing UB or fault guard in `MirSemantics` or capture) |
+   | `UndefinedBehavior` | `UndefinedBehavior` | `AgreeUndefinedBehavior` | **PASS** (must also match `miri_ub_contains`) |
+   | Any non-error outcome | Step-time `Unsupported` | `SoundConservativeAbstraction` / `ConservativeRejection` | **PASS only on `expected = "unsupported_control"`** with matching `expected_miri` pin (init-time `InitUnsupported` and undeclared `ConservativeRejection` **FAIL**) |
 
 2. **Seam B — Multi-Kernel NDJSON Proof Quorum (`kernel_quorum/`, Lean
    `v4.35.0+`):**

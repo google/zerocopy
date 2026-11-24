@@ -23,7 +23,7 @@ import check_bundle_tree
 SCRIPT = Path(__file__).resolve().parent / "check_bundle_tree.py"
 
 
-def populate_valid_bundle(root: Path) -> None:
+def populate_valid_bundle(root: Path, *, with_miri: bool = False) -> None:
     for rel_dir in (
         "rust/bin",
         "rust/lib",
@@ -35,7 +35,16 @@ def populate_valid_bundle(root: Path) -> None:
     ):
         (root / rel_dir).mkdir(parents=True, exist_ok=True)
     for rel_file in check_bundle_tree.FULL_BUNDLE_FILES:
-        (root / rel_file).write_text("placeholder\n")
+        dst = root / rel_file
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        dst.write_text("placeholder\n")
+    if with_miri:
+        for rel_dir in check_bundle_tree.MIRI_BUNDLE_DIRS:
+            (root / rel_dir).mkdir(parents=True, exist_ok=True)
+        for rel_file in check_bundle_tree.MIRI_BUNDLE_FILES:
+            dst = root / rel_file
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            dst.write_text("placeholder\n")
     # Legitimate internal chained `.so` symlinks inside `lean/lib`.
     (root / "lean/lib/libc++abi.so.1.0").write_text("elf\n")
     (root / "lean/lib/libc++abi.so.1").symlink_to("libc++abi.so.1.0")
@@ -115,7 +124,8 @@ class CheckBundleTreeTests(unittest.TestCase):
                 external.mkdir()
                 (external / target_subpath).write_text("poison\n")
                 if ancestor == "rust/bin":
-                    (external / "rustdoc").write_text("poison\n")
+                    for extra in ("rustdoc", "cargo", "miri", "cargo-miri"):
+                        (external / extra).write_text("poison\n")
                 if ancestor == "share/anneal":
                     (external / "trusted/audit").mkdir(parents=True)
                     (
@@ -267,6 +277,50 @@ class CheckBundleTreeTests(unittest.TestCase):
                         self.assertIn("cannot traverse", res7.stderr)
                     finally:
                         hidden.chmod(0o755)
+
+    def test_require_miri_validates_miri_and_vendored_rust_src(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            cache = Path(tmp) / "cache"
+            root = cache / "anneal/toolchain/extracted"
+            populate_valid_bundle(root, with_miri=True)
+            ok = self.run_cli(
+                "--cache-root",
+                str(cache),
+                "--root",
+                str(root),
+                "--require-miri",
+            )
+            self.assertEqual(ok.returncode, 0, ok.stderr)
+
+            conflict = self.run_cli(
+                "--root", str(root), "--lean-only", "--require-miri"
+            )
+            self.assertNotEqual(conflict.returncode, 0)
+
+        for rel_target, is_dir, need_flag in (
+            ("rust/bin/cargo", False, False),
+            ("rust/bin/miri", False, True),
+            ("rust/bin/cargo-miri", False, True),
+            ("rust/lib/rustlib/src/rust/library/Cargo.toml", False, True),
+            ("rust/lib/rustlib/src/rust/library/vendor", True, True),
+        ):
+            with (
+                self.subTest(missing=rel_target),
+                tempfile.TemporaryDirectory() as tmp,
+            ):
+                cache = Path(tmp) / "cache"
+                root = cache / "anneal/toolchain/extracted"
+                populate_valid_bundle(root, with_miri=True)
+                victim = root / rel_target
+                if is_dir:
+                    shutil.rmtree(victim)
+                else:
+                    victim.unlink()
+                args = ["--cache-root", str(cache), "--root", str(root)]
+                if need_flag:
+                    args.append("--require-miri")
+                res = self.run_cli(*args)
+                self.assertNotEqual(res.returncode, 0, rel_target)
 
 
 if __name__ == "__main__":
