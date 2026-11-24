@@ -476,6 +476,14 @@ print(json.dumps(receipt))
             )
             self.assertEqual(m["zerocopy_proofs.suite.verified_units_count"], 1)
             self.assertEqual(m["zerocopy_proofs.01_demo.total_ms"], 55.0)
+            self.assertIn("proof_burden.zerocopy_suite.hand_proof_loc", m)
+            self.assertIn("proof_burden.theory.gt_60_thm_count", m)
+            desc_pb = perf_tracking.describe_metric(
+                "proof_burden.zerocopy_suite.hand_proof_loc"
+            )
+            self.assertEqual(desc_pb["category"], "proof_burden")
+            self.assertEqual(desc_pb["direction"], "lower_is_better")
+            self.assertTrue(desc_pb["deterministic"])
 
             # Verify `-DwarningAsError=true` is enabled ONLY for Anneal.* theory
             # modules and omitted for TrustedBoundary and Trusted.* modules.
@@ -553,6 +561,117 @@ print(json.dumps(receipt))
             self.assertIn("theory_elab.trusted_mirast.cold_j1_ms", m)
             self.assertNotIn("theory_elab.anneal_mirwp.cold_j1_ms", m)
             self.assertNotIn("theory_elab.trustedboundary.cold_j1_ms", m)
+
+    def test_collect_zerocopy_proofs_profiles_all_proof_modules(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            paths = self._build_synthetic_repo(root)
+            unit_dir = paths["repo"] / "zerocopy/proofs/01_demo"
+            (unit_dir / "AutoScaffold.lean").write_text("prelude\n", encoding="utf-8")
+            (unit_dir / "Proof.lean").write_text("prelude\n", encoding="utf-8")
+            (unit_dir / "request.json").write_text(
+                json.dumps({
+                    "compilation": {"source_root": "../../src"},
+                    "scope": {"kind": "selected_unit", "roots": ["id"]},
+                    "proof": {
+                        "source_root": ".",
+                        "sources": [
+                            {"path": "Spec.lean", "module": "Spec", "role": "spec"},
+                            {
+                                "path": "AutoScaffold.lean",
+                                "module": "AutoScaffold",
+                                "role": "proof",
+                            },
+                            {"path": "Proof.lean", "module": "Proof", "role": "proof"},
+                        ],
+                    },
+                }),
+                encoding="utf-8",
+            )
+            prof_log = root / "prof_args.json"
+            wrapper_lean = root / "wrapper_lean"
+            wrapper_lean.write_text(
+                f"#!/usr/bin/env python3\n"
+                f"import json, pathlib, sys, time\n"
+                f"args = sys.argv[1:]\n"
+                f"if '--print-prefix' in args:\n"
+                f"    print({str(paths['lean'].parent.parent)!r})\n"
+                f"    sys.exit(0)\n"
+                f"if '--run' in args and 'ProfileMod.lean' in args[args.index('--run') + 1]:\n"
+                f"    pathlib.Path({str(prof_log)!r}).write_text(json.dumps(args))\n"
+                f"    time.sleep(3)\n"
+                f"    print(json.dumps({{\n"
+                f"        'compiled_decl_count': 4,\n"
+                f"        'module_union_dag': 20,\n"
+                f"        'sum_val_dag': 12,\n"
+                f"        'sum_val_tree': 24,\n"
+                f"        'kernel_replay_runs_ms': [3.0, 4.0, 5.0],\n"
+                f"    }}))\n"
+                f"    sys.exit(0)\n"
+                f"sys.exit(1)\n",
+                encoding="utf-8",
+            )
+            wrapper_lean.chmod(stat.S_IRWXU)
+            wrapper_cli = root / "wrapper_cli"
+            cli_log = root / "cli_args.log"
+            wrapper_cli.write_text(
+                f"#!/usr/bin/env python3\n"
+                f"import pathlib, subprocess, sys, time\n"
+                f"args = sys.argv[1:]\n"
+                f"with open({str(cli_log)!r}, 'a') as log:\n"
+                f"    log.write(' '.join(args) + '\\n')\n"
+                f"if '--artifacts' in args and '--export-lean-lib' in args:\n"
+                f"    time.sleep(3)\n"
+                f"    lib_dir = pathlib.Path(args[args.index('--artifacts') + 1]) / 'lean-lib'\n"
+                f"    lib_dir.mkdir(parents=True, exist_ok=True)\n"
+                f"    (lib_dir / 'AutoScaffold.olean').write_bytes(b'a' * 30)\n"
+                f"    (lib_dir / 'Proof.olean').write_bytes(b'p' * 70)\n"
+                f"res = subprocess.run([{str(paths['cli'])!r}, *args], check=False)\n"
+                f"sys.exit(res.returncode)\n",
+                encoding="utf-8",
+            )
+            wrapper_cli.chmod(stat.S_IRWXU)
+            tools = {
+                "cli": wrapper_cli,
+                "capture": paths["capture"],
+                "sysroot": paths["sysroot"],
+                "lean": wrapper_lean,
+                "auditor": paths["auditor"],
+            }
+            # Without `proof_burden`, nothing is exported or profiled.
+            metrics, _ = perf_tracking.collect_zerocopy_proofs(
+                repo_root=paths["repo"],
+                tools=tools,
+                timeout=30.0,
+                time_bin=paths["time_bin"],
+            )
+            self.assertFalse(any(k.startswith("proof_burden.") for k in metrics))
+            self.assertFalse(prof_log.exists())
+            self.assertNotIn("--export-lean-lib", cli_log.read_text(encoding="utf-8"))
+            self.assertEqual(metrics["zerocopy_proofs.suite.verified_units_count"], 1)
+
+            metrics, _ = perf_tracking.collect_zerocopy_proofs(
+                repo_root=paths["repo"],
+                tools=tools,
+                timeout=30.0,
+                time_bin=paths["time_bin"],
+                profile_proof_burden=True,
+            )
+            self.assertEqual(
+                metrics["proof_burden.zerocopy_suite.proof_olean_bytes"], 100
+            )
+            logged_args = json.loads(prof_log.read_text(encoding="utf-8"))
+            self.assertIn("AutoScaffold,Proof", logged_args)
+            runs = cli_log.read_text(encoding="utf-8").splitlines()
+            self.assertEqual(len(runs), 3)
+            # The second call re-verifies unmeasured with `--export-lean-lib`
+            # into a separate artifacts directory.
+            self.assertNotIn("--export-lean-lib", runs[1])
+            self.assertIn("--export-lean-lib", runs[2])
+            self.assertIn("/export/01_demo", runs[2])
+            # Export and profiling each sleep for 3 s; the suite timer must
+            # exclude both.
+            self.assertLess(metrics["zerocopy_proofs.suite.total_ms"], 3000.0)
 
 
 class AppendBudgetsAndAnalysisTests(unittest.TestCase):

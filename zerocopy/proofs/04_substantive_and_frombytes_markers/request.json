@@ -59,6 +59,11 @@
         "role": "specification"
       },
       {
+        "module": "AutoScaffold",
+        "path": "AutoScaffold.lean",
+        "role": "proof"
+      },
+      {
         "module": "Proof",
         "path": "Proof.lean",
         "role": "proof"

@@ -19,6 +19,13 @@ import sys
 import tempfile
 import time
 
+_CI_DIR = Path(__file__).resolve().parent
+if str(_CI_DIR) not in sys.path:
+    sys.path.insert(0, str(_CI_DIR))
+
+import anneal_scaffold
+import proof_health_scan
+
 
 VALID_SANDBOXES = ("linux_bwrap", "linux_landlock_seccomp")
 ALLOWED_AXIOMS = frozenset({"propext"})
@@ -112,6 +119,19 @@ def discover_units(proofs_dir, src_dir, selected_units=None):
             filename = source.get("path") if isinstance(source, dict) else None
             if not is_safe_relative_filename(filename) or not filename.endswith(".lean"):
                 raise RuntimeError(f"{entry.name}: invalid Lean source path {filename!r}")
+            if (
+                source.get("module") == "AutoScaffold"
+                or filename == "AutoScaffold.lean"
+            ):
+                if (
+                    source.get("module") != "AutoScaffold"
+                    or filename != "AutoScaffold.lean"
+                    or source.get("role") != "proof"
+                ):
+                    raise RuntimeError(
+                        f"{entry.name}: AutoScaffold source must declare "
+                        "module='AutoScaffold', path='AutoScaffold.lean', role='proof'"
+                    )
             if not (entry / filename).is_file():
                 raise RuntimeError(f"{entry.name}: missing declared source {filename}")
             declared_files.add(filename)
@@ -293,6 +313,8 @@ def verify_unit(arguments, unit_dir, request, artifacts_root):
         "--artifacts",
         str(artifacts_root / unit_dir.name),
     ]
+    if getattr(arguments, "export_lean_lib", False):
+        cmd.append("--export-lean-lib")
     started = time.monotonic()
     proc = subprocess.run(
         cmd,
@@ -312,6 +334,18 @@ def verify_unit(arguments, unit_dir, request, artifacts_root):
         proc.stderr,
         request["scope"]["roots"],
     )
+    if any(
+        isinstance(src, dict) and src.get("path") == "AutoScaffold.lean"
+        for src in request["proof"]["sources"]
+    ):
+        cap_json = artifacts_root / unit_dir.name / "capture/capture.json"
+        try:
+            cap_data = anneal_scaffold.load_strict_json(cap_json, "capture.json")
+            anneal_scaffold.check_or_write_scaffold(
+                cap_data, unit_dir / "AutoScaffold.lean", check_only=True
+            )
+        except anneal_scaffold.ScaffoldError as exc:
+            raise RuntimeError(f"{unit_dir.name}: {exc}") from exc
     return unit_dir.name, {
         "status": receipt["status"],
         "axioms": receipt["audit"]["axioms"],
@@ -381,6 +415,11 @@ def main(argv=None):
         help="New directory retaining complete verification artifacts and summary",
     )
     parser.add_argument(
+        "--export-lean-lib",
+        action="store_true",
+        help="Pass `--export-lean-lib` to `cargo-anneal verify`",
+    )
+    parser.add_argument(
         "--jobs",
         type=int,
         default=min(4, max(1, os.cpu_count() or 1)),
@@ -414,14 +453,34 @@ def main(argv=None):
         value = getattr(arguments, required)
         if value is None:
             parser.error(f"the following arguments are required: --{required}")
+        # Toolchain paths may legitimately be symlinks (elan, Nix); use the
+        # resolved target.
         setattr(arguments, required, value.resolve(strict=True))
 
+    proof_health_scan.ensure_nonsymlink(arguments.proofs_dir)
+    proof_health_scan.ensure_nonsymlink(arguments.src_dir)
     arguments.proofs_dir = arguments.proofs_dir.resolve(strict=True)
     arguments.src_dir = arguments.src_dir.resolve(strict=True)
 
+    for lean_file in sorted(arguments.proofs_dir.rglob("*.lean")):
+        proof_health_scan.ensure_nonsymlink(lean_file, arguments.proofs_dir)
+        rel_label = lean_file.relative_to(arguments.proofs_dir).as_posix()
+        violations = proof_health_scan.scan_file_hygiene(
+            lean_file.read_text(encoding="utf-8"),
+            rel_label,
+            check_semicolons=(lean_file.name != "Spec.lean"),
+        )
+        if violations:
+            first = violations[0]
+            raise RuntimeError(
+                f"{first['file']}:{first['line']}: proof hygiene violation "
+                f"({first['rule']}): {first['detail']}"
+            )
+
     if arguments.artifacts_dir is not None:
+        proof_health_scan.ensure_nonsymlink(arguments.artifacts_dir)
         arguments.artifacts_dir.mkdir(mode=0o700)
-        run_suite(arguments, arguments.artifacts_dir.resolve())
+        run_suite(arguments, arguments.artifacts_dir.resolve(strict=True))
     else:
         with tempfile.TemporaryDirectory(prefix="anneal-zerocopy-proofs-") as tmp:
             run_suite(arguments, Path(tmp))

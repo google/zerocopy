@@ -58,9 +58,9 @@ Reach first for bundled `Anneal.*` certificate and lemma libraries listed in
   `Anneal.BitTrieLrat`, `Anneal.BitVec`, `Anneal.BitVecArith`
 - Classical law-of-excluded-middle & core `Init` helpers (replaces `by_cases`
   in Pass 1): `Anneal.ClassicalEm`, `Anneal.InitLemmas`, `Anneal.NatBitwise`
-- MIR WP, loop invariants, byte/chunk layouts, forcing, and path trees:
+- MIR WP, loop invariants, byte/chunk layouts, forcing, firewalls, and trees:
   `Anneal.MirWp`, `Anneal.LoopInv`, `Anneal.LeBytes`, `Anneal.ListChunks`,
-  `Anneal.PTree`, `Anneal.SpineForce`
+  `Anneal.PTree`, `Anneal.SpineForce`, `Anneal.Firewall`
 <!-- pass1-bundled-modules:end -->
 
 Note: repo-local `anneal/theory/Anneal/PureLift.lean` (and `MirTotal`, `Core`)
@@ -88,6 +88,11 @@ target proofs.
 6. **Lift pure regions first:** Factor pure computation with `Anneal.MirWp`,
    `Anneal.LoopInv`, and `Anneal.BitVec` (and `PureLift` in `theory/`) before
    reasoned arithmetic/bitvector certs.
+
+## Step 3b: Proof modularity and kernel footprint
+
+For advisory modularity and kernel-footprint guidance, see §3 of
+[`docs/proof-and-code-modularity.md`](../../docs/proof-and-code-modularity.md).
 
 ## Step 4: Pass-1 `TrustedBoundary` rules (for `anneal/theory/` work)
 

@@ -17,6 +17,7 @@ import tempfile
 import unittest
 from unittest import mock
 
+import anneal_scaffold
 import verify_zerocopy
 
 
@@ -331,6 +332,189 @@ class VerifyZerocopyTests(unittest.TestCase):
                         self.assertEqual(defaults["lean"], good_lean)
             finally:
                 os.chdir(old_cwd)
+
+    def test_autoscaffold_drift_and_role_gates_in_verify_zerocopy(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            proofs_dir, src_dir, unit = make_proof_tree(root)
+            cap_data = {
+                "program": {
+                    "bodies": [{
+                        "identity": "rust-path-v1::util::macros::__unsafe",
+                        "arg_count": 0,
+                        "local_tys": [{"kind": "unit"}],
+                        "blocks": [{"statements": [], "terminator": {"kind": "ret"}}],
+                    }]
+                }
+            }
+            rendered = anneal_scaffold.render_scaffold(cap_data)
+            (unit / "AutoScaffold.lean").write_text(rendered, encoding="utf-8")
+
+            bad_req = json.loads((unit / "request.json").read_text(encoding="utf-8"))
+            bad_req["proof"]["sources"] = [
+                {"module": "Spec", "path": "Spec.lean", "role": "specification"},
+                {
+                    "module": "AutoScaffold",
+                    "path": "AutoScaffold.lean",
+                    "role": "specification",
+                },
+                {"module": "Proof", "path": "Proof.lean", "role": "proof"},
+            ]
+            (unit / "request.json").write_text(json.dumps(bad_req), encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "role='proof'"):
+                verify_zerocopy.discover_units(proofs_dir, src_dir)
+
+            good_req = dict(bad_req)
+            good_req["proof"] = dict(bad_req["proof"])
+            good_req["proof"]["sources"] = [
+                {"module": "Spec", "path": "Spec.lean", "role": "specification"},
+                {"module": "AutoScaffold", "path": "AutoScaffold.lean", "role": "proof"},
+                {"module": "Proof", "path": "Proof.lean", "role": "proof"},
+            ]
+            (unit / "request.json").write_text(json.dumps(good_req), encoding="utf-8")
+
+            fake_cli = root / "cargo-anneal"
+            fake_cap = root / "anneal-rustc-capture"
+            fake_lean = root / "lean"
+            fake_sys = root / "sysroot"
+            fake_sys.mkdir()
+            for bin_path in (fake_cap, fake_lean):
+                bin_path.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+                bin_path.chmod(0o755)
+            payload_json = json.dumps(make_receipt())
+            cap_json_txt = json.dumps(cap_data)
+            fake_cli.write_text(
+                "#!/usr/bin/env python3\n"
+                "import sys\n"
+                "from pathlib import Path\n"
+                "art = Path(sys.argv[sys.argv.index('--artifacts') + 1])\n"
+                "(art / 'capture').mkdir(parents=True, exist_ok=True)\n"
+                f"(art / 'capture/capture.json').write_text({cap_json_txt!r}, encoding='utf-8')\n"
+                f"print({payload_json!r})\n",
+                encoding="utf-8",
+            )
+            fake_cli.chmod(0o755)
+
+            with contextlib.redirect_stdout(io.StringIO()):
+                rc = verify_zerocopy.main([
+                    "--proofs-dir", str(proofs_dir),
+                    "--src-dir", str(src_dir),
+                    "--cli", str(fake_cli),
+                    "--capture", str(fake_cap),
+                    "--sysroot", str(fake_sys),
+                    "--lean", str(fake_lean),
+                ])
+            self.assertEqual(rc, 0)
+
+            (unit / "AutoScaffold.lean").write_text(
+                rendered + "-- stale\n", encoding="utf-8"
+            )
+            with (
+                contextlib.redirect_stdout(io.StringIO()),
+                self.assertRaisesRegex(RuntimeError, "AutoScaffold.lean drift"),
+            ):
+                verify_zerocopy.main([
+                    "--proofs-dir", str(proofs_dir),
+                    "--src-dir", str(src_dir),
+                    "--cli", str(fake_cli),
+                    "--capture", str(fake_cap),
+                    "--sysroot", str(fake_sys),
+                    "--lean", str(fake_lean),
+                ])
+
+            # Restore clean AutoScaffold.lean and verify anti-golf gate.
+            (unit / "AutoScaffold.lean").write_text(rendered, encoding="utf-8")
+            (unit / "Proof.lean").write_text(
+                "prelude\ntheorem verify : True := by simp [*]\n",
+                encoding="utf-8",
+            )
+            with (
+                contextlib.redirect_stdout(io.StringIO()),
+                self.assertRaisesRegex(RuntimeError, "proof hygiene violation"),
+            ):
+                verify_zerocopy.main([
+                    "--proofs-dir", str(proofs_dir),
+                    "--src-dir", str(src_dir),
+                    "--cli", str(fake_cli),
+                    "--capture", str(fake_cap),
+                    "--sysroot", str(fake_sys),
+                    "--lean", str(fake_lean),
+                ])
+
+    def test_main_symlink_policy_for_cli_paths(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            proofs_dir = root / "proofs"
+            proofs_dir.mkdir()
+            src_dir = root / "src"
+            src_dir.mkdir()
+            (src_dir / "lib.rs").write_text("", encoding="utf-8")
+            fake_bin = root / "bin"
+            fake_bin.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+            fake_bin.chmod(0o700)
+            fake_dir = root / "sysroot"
+            fake_dir.mkdir()
+
+            sym_bin = root / "sym_bin"
+            sym_bin.symlink_to(fake_bin)
+            sym_sys = root / "sym_sys"
+            sym_sys.symlink_to(fake_dir)
+            sym_proofs = root / "sym_proofs"
+            sym_proofs.symlink_to(proofs_dir)
+            sym_src = root / "sym_src"
+            sym_src.symlink_to(src_dir)
+            sym_art = root / "sym_art"
+            sym_art.symlink_to(fake_dir)
+            alias = root / "alias"
+            alias.symlink_to(root)
+
+            def tools(cli=fake_bin, capture=fake_bin, sysroot=fake_dir, lean=fake_bin):
+                return [
+                    "--cli", str(cli),
+                    "--capture", str(capture),
+                    "--sysroot", str(sysroot),
+                    "--lean", str(lean),
+                ]
+
+            dirs = ["--proofs-dir", str(proofs_dir), "--src-dir", str(src_dir)]
+            rejected = [
+                ["--proofs-dir", str(sym_proofs), "--src-dir", str(src_dir), *tools()],
+                ["--proofs-dir", str(proofs_dir), "--src-dir", str(sym_src), *tools()],
+                [*dirs, "--artifacts-dir", str(sym_art), *tools()],
+            ]
+            for argv in rejected:
+                with self.subTest(argv=argv), self.assertRaisesRegex(
+                    RuntimeError, "symlink"
+                ):
+                    verify_zerocopy.main(argv)
+
+            # Symlinked toolchain paths (elan, Nix) and symlinks above the
+            # proofs tree are accepted; these runs fail later, on the empty
+            # proofs tree.
+            accepted = [
+                [*dirs, *tools(cli=sym_bin)],
+                [*dirs, *tools(capture=sym_bin)],
+                [*dirs, *tools(sysroot=sym_sys)],
+                [*dirs, *tools(lean=sym_bin)],
+                [
+                    "--proofs-dir", str(alias / "proofs"),
+                    "--src-dir", str(alias / "src"),
+                    *tools(),
+                ],
+            ]
+            for argv in accepted:
+                with self.subTest(argv=argv), self.assertRaisesRegex(
+                    RuntimeError, "no proof units discovered"
+                ):
+                    verify_zerocopy.main(argv)
+
+            (proofs_dir / "01_u").mkdir()
+            (root / "elsewhere").mkdir()
+            (root / "elsewhere/Evil.lean").write_text("prelude\n", encoding="utf-8")
+            (proofs_dir / "01_u/sub").symlink_to(root / "elsewhere")
+            (proofs_dir / "01_u/Proof.lean").symlink_to(root / "elsewhere/Evil.lean")
+            with self.assertRaisesRegex(RuntimeError, "symlink"):
+                verify_zerocopy.main([*dirs, *tools()])
 
 
 if __name__ == "__main__":

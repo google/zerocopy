@@ -63,24 +63,33 @@ and a zero return for a safe no-argument function in the captured MIR model.
    and `source_files` (including `crate_root`) inside clean relative paths
    under `source_root`.
 2. Write the contract in `specification` modules (defaults `Spec.specs`,
-   `Specs.safety`, `Specs.property`) and proofs in `proof` modules (`Proof.verify`).
-   For `unsafe` functions, express real caller preconditions in `Specs.safety`;
-   `False` vacuously admits zero callers. Keep `scope`, `cfg`, and specs fixed
-   during proof debugging, and follow **`spec-authoring`** before any spec change.
+   `Specs.safety`, `Specs.property`) and proofs in `proof` modules
+   (`Proof.verify`, plus optional generated `AutoScaffold.lean` with
+   `"role": "proof"`). Express real caller preconditions in `Specs.safety`;
+   `False` vacuously admits zero callers. Treat `Spec.*`, `scope`, `cfg`, and
+   the Receipt v3 `audit.bindings.specificationManifestSha256` digest as
+   strictly immutable while authoring or optimizing proofs; follow
+   **`spec-authoring`** before any spec change.
 3. Import `Expected` in `Proof` and prove `Expected.claim`. Proof modules (never
-   `specification` modules) may import bundled 3-axiom `Anneal.*` libraries
-   listed in `theory/bundle-manifest.json` (`Anneal.MirWp`, `Anneal.LoopInv`,
-   `Anneal.BitVec`, `Anneal.LinearArith`, `Anneal.BitTrieLrat`), compiled and
-   audited on demand when imported.
-4. Keep Lean imports tight: import `prelude` plus only targeted `Init.*`
-   modules (`~4` imports, `~152 MiB` peak RSS). Monolithic `import Init`
-   (`~473 MiB`) fails closed in pinned `verify` unless `--allow-unpinned-lean`
-   is passed. Pass `--lean-memory-mb <MB>` (or run inside a host cgroup memory
-   cap such as `systemd-run --user --scope -p MemoryMax=...`).
+   `specification` modules) may import bundled 3-axiom `Anneal.*` libraries in
+   `theory/bundle-manifest.json` (`Anneal.MirWp`, `Anneal.LoopInv`,
+   `Anneal.BitVec`, `Anneal.BitVecArith`, `Anneal.LinearArith`,
+   `Anneal.BitTrieLrat`, `Anneal.NatBitwise`, `Anneal.InitLemmas`,
+   `Anneal.ClassicalEm`, `Anneal.LeBytes`, `Anneal.ListChunks`, `Anneal.PTree`,
+   `Anneal.SpineForce`, `Anneal.Firewall`), compiled and audited on demand
+   rather than re-proving arithmetic or bitvector facts from scratch.
+4. Keep standard-library imports tight: import `prelude` plus only needed
+   `Init.*` modules (`~4` imports, `~152 MiB` peak RSS); monolithic
+   `import Init` (`~473 MiB`) fails closed in pinned `verify` unless
+   `--allow-unpinned-lean` is passed. Pass `--lean-memory-mb <MB>` (or run in a
+   host cgroup cap).
+5. For advisory guidance on structuring starter proofs for upgrade survival
+   and small kernel footprint, see **`proof-scaling`** Step 3b.
 
 When adapting the example, pass `--artifacts <new-dir>`. Inspect `selected` and
-`program` in `capture/capture.json` plus the goal in `generated/Expected.lean`.
-Move to **`proof-scaling`** as soon as direct `execProg` / `simp` stalls.
+`program` in `capture/capture.json` plus `generated/Expected.lean`. Move to
+**`proof-scaling`** as soon as direct stepping stalls or exceeds `~20` lines
+per helper.
 
 ## Diagnose failures and read Receipt v3 honestly
 

@@ -55,6 +55,8 @@ preserve [`META_PRINCIPLES.md`](META_PRINCIPLES.md),
   scratch ledgers or trackers. Never publish internal hostnames, private paths,
   credentials, non-public model/environment IDs, private reasoning traces, or
   unnecessary raw transcripts in commits, PR text, Review Receipts, or comments.
+- For advisory `AutoScaffold` factoring and proof-size guidance, see
+  [`docs/proof-and-code-modularity.md`](docs/proof-and-code-modularity.md).
 - **Deterministic preflight checklist:**
   - *Before committing (staged tree):* verify scope, modes, static Pass 1
     Unicode/config hygiene, Fuchsia headers on new code and non-`SKILL.md`

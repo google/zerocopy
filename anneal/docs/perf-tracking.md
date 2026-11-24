@@ -146,7 +146,7 @@ Every scalar measurement is identified by a dot-separated ASCII key
 | :--- | :--- | :--- |
 | `id` | `str` | Canonical dot-separated identifier matching `^[a-z0-9_]+(\.[a-z0-9_-]+){2,}$`. |
 | `label` | `str` | Human-readable metric title displayed in charts and tables. |
-| `category` | `str` | One of `"verify"`, `"theory_elab"`, `"memory_rss"`, `"artifact_size"`, `"zerocopy_proofs"`. |
+| `category` | `str` | One of `"verify"`, `"theory_elab"`, `"memory_rss"`, `"artifact_size"`, `"zerocopy_proofs"`, `"proof_burden"`. |
 | `group` | `str` | Logical comparison group (for example, `"verify.scalar.total"` groups cold, prebuilt, and warm `scalar` verification times for single-click multi-series overlay). |
 | `unit` | `str` | One of `"ms"`, `"KiB"`, `"B"`, `"count"`. |
 | `direction` | `str` | `"lower_is_better"` (latencies, RSS, byte sizes), `"higher_is_better"` (verified item counts), or `"informational"`. |
@@ -255,7 +255,8 @@ compiles `anneal/records.jsonl` into a dense columnar structure:
       "theory_elab": 1.0,
       "memory_rss": 1.0,
       "artifact_size": 1.0,
-      "zerocopy_proofs": 1.0
+      "zerocopy_proofs": 1.0,
+      "proof_burden": 1.0
     }
   },
   "anomalies": []
@@ -270,7 +271,7 @@ compiles `anneal/records.jsonl` into a dense columnar structure:
 
 ## 4. Initial Metric Suite and Subprocess Measurement Protocol
 
-### 4.1 Five-Category Initial Metric Catalog
+### 4.1 Six-Category Metric Catalog
 
 | Category | Metric ID Pattern | Source & Collection Method | Variance Class |
 | :--- | :--- | :--- | :--- |
@@ -279,6 +280,7 @@ compiles `anneal/records.jsonl` into a dense columnar structure:
 | **`memory_rss` (Isolated Peak RSS)** | `memory_rss.<target>.maxrss_kib` | Captures per-child peak RSS (`KiB`) via fresh-`exec` `/usr/bin/time` wrapper across `cargo-anneal verify`, `TrustedBoundary.lean`, and every cold `lean -j1` module compile, plus `memory_rss.theory_elab.max_module_maxrss_kib`. | Low-noise (`CV < 2%`) |
 | **`artifact_size` (Deterministic Footprints)** | `artifact_size.bundled_olean.{public,private,server,total}_bytes`, `artifact_size.module.<mod_slug>.{olean,olean_server,olean_private}_bytes`, `artifact_size.bin.{cargo_anneal,anneal_rustc_capture,anneal_audit}_bytes`, `artifact_size.archive.omnibus_tar_zst_bytes` | Exact `st_size` byte counts of compiled `.olean` / `.olean.server` / `.olean.private` artifacts, release Rust binaries, and (when built) the packaged `.tar.zst` toolchain archive. | Deterministic (`CV = 0%`) |
 | **`zerocopy_proofs` (First-Customer Suite)** | `zerocopy_proofs.<unit>.{total,capture,proof_audit}_ms`, `zerocopy_proofs.suite.{total_ms,verified_units_count}` | Invokes `cargo-anneal verify` across `zerocopy/proofs/*` with warm/prebuilt `.olean` cache against unmodified `zerocopy/src/`. | Sampled (`ms`) + Deterministic (`count`) |
+| **`proof_burden` (Modularity & Kernel Footprint)** | `proof_burden.zerocopy_suite.{hand_proof_loc,scaffold_loc,spec_loc,max_thm_loc,proof_olean_bytes,module_union_dag,sum_val_tree,tree_to_dag_ratio,kernel_replay_ms}`, `proof_burden.{theory,correspondence}.gt_60_thm_count`, `proof_burden.correspondence.max_thm_loc` | Collected via `proof_health_scan.py` over `zerocopy/proofs/*`, `anneal/theory/`, `anneal/correspondence/`, and Door-1-verified proof-module `.olean` artifacts (`AutoScaffold`, `Proof`, and other proof-role modules; tracking hand vs. `AutoScaffold` LOC, `Expr` DAG/tree sharing, and kernel replay time). | Deterministic (`count`/`B`) + Sampled (`ms`) |
 
 ### 4.2 Linux `exec_mm_put_old` `ru_maxrss` Isolation Rule
 
@@ -380,10 +382,10 @@ zero npm build steps and zero external runtime URLs:
    through `JSON.parse`.
 2. **Interactive Navigation and Drill-Down Views:**
    - **Header & KPI Summary Bar:** Latest commit link (`short_sha`), timestamp,
-     runner hardware profile, active anomaly count badge, and 5 category
+     runner hardware profile, active anomaly count badge, and 6 category
      geometric-mean delta cards (`Verify`, `Theory Cold Elab`, `Peak RSS`,
-     `Artifact Sizes`, `Zerocopy Proofs`) against the rolling 25-commit
-     baseline.
+     `Artifact Sizes`, `Zerocopy Proofs`, `Proof Burden`) against the rolling
+     25-commit baseline.
    - **Controls Toolbar:** Instant substring search, category filter pills,
      commit-window selector (`Last 50`, `Last 200`, `All`), baseline comparator
      selector (`Rolling 25-commit median`, `Previous commit`, or any pinned

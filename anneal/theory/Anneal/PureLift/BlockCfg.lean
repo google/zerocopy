@@ -655,6 +655,61 @@ theorem runBlockCfg_succ {State Ret : Type}
          | _, .fault => .fault
          | _, _ => .diverged) := rfl
 
+private theorem wrapJump_partial_sound {Ret : Type}
+    (wrapRet : Ret → Option Ret) (PostRet : Ret → Prop)
+    (res : BlockCfgOutcome Ret)
+    (ih : BlockCfgPartialSpec res PostRet)
+    (hWrap : ∀ v, PostRet v →
+      match wrapRet v with | some v' => PostRet v' | none => False) :
+    BlockCfgPartialSpec
+      (match res with
+       | .ret v => match wrapRet v with | some v' => .ret v' | none => .fault
+       | .diverged => .diverged
+       | .fault => .fault) PostRet := by
+  cases res with
+  | ret v =>
+    have hw := hWrap v ih
+    dsimp
+    revert hw
+    cases wrapRet v with
+    | some _ => exact id
+    | none => exact fun h => nomatch h
+  | diverged => exact True.intro
+  | fault => nomatch ih
+
+private theorem branchJump_partial_sound {Ret : Type}
+    (mergeRet : Ret → Ret → Option Ret) (PostRet : Ret → Prop)
+    (resT resF : BlockCfgOutcome Ret)
+    (ihT : BlockCfgPartialSpec resT PostRet)
+    (ihF : BlockCfgPartialSpec resF PostRet)
+    (hMerge : ∀ vt vf, PostRet vt → PostRet vf →
+      match mergeRet vt vf with | some v => PostRet v | none => False) :
+    BlockCfgPartialSpec
+      (match resT, resF with
+       | .ret vt, .ret vf =>
+         match mergeRet vt vf with | some v => .ret v | none => .fault
+       | .fault, _ => .fault
+       | _, .fault => .fault
+       | _, _ => .diverged) PostRet := by
+  cases resT with
+  | fault => nomatch ihT
+  | diverged =>
+    cases resF with
+    | fault => nomatch ihF
+    | diverged => exact True.intro
+    | ret _ => exact True.intro
+  | ret vt =>
+    cases resF with
+    | fault => nomatch ihF
+    | diverged => exact True.intro
+    | ret vf =>
+      have hm := hMerge vt vf ihT ihF
+      dsimp
+      revert hm
+      cases mergeRet vt vf with
+      | some _ => exact id
+      | none => exact fun h => nomatch h
+
 theorem modular_block_cfg_loop_sound {State Ret : Type}
     (stepBb : Nat → State → BlockStepResult State Ret)
     (BlockInv : Nat → State → Prop)
@@ -663,8 +718,7 @@ theorem modular_block_cfg_loop_sound {State Ret : Type}
     ∀ (fuel wait : Nat) (bb : Nat) (st : State),
       BlockInv bb st →
       BlockCfgPartialSpec (runBlockCfgLoop stepBb fuel wait bb st) PostRet
-  | 0, _, _, _, _ => by
-    exact True.intro
+  | 0, _, _, _, _ => True.intro
   | fuel' + 1, wait' + 1, bb, st, hInv => by
     rw [runBlockCfgLoop_succ_wait]
     exact modular_block_cfg_loop_sound stepBb BlockInv PostRet hLocal
@@ -674,109 +728,29 @@ theorem modular_block_cfg_loop_sound {State Ret : Type}
     rw [runBlockCfg_succ]
     have hVC := hLocal bb st hInv
     cases hStep : stepBb bb st with
-    | fault =>
-      rw [hStep] at hVC
-      nomatch hVC
-    | ret v =>
-      rw [hStep] at hVC
-      dsimp [BlockCfgPartialSpec]
-      exact hVC
+    | fault => rw [hStep] at hVC; nomatch hVC
+    | ret v => rw [hStep] at hVC; exact hVC
     | jump nextBb st' =>
       rw [hStep] at hVC
-      dsimp at hVC
       exact modular_block_cfg_loop_sound stepBb BlockInv PostRet hLocal
         fuel' 0 nextBb st' hVC
     | jumpWrapped wrapRet nextBb st' =>
       rw [hStep] at hVC
-      dsimp at hVC
-      dsimp [BlockCfgPartialSpec]
-      have ih :=
-        modular_block_cfg_loop_sound stepBb BlockInv PostRet hLocal
-          fuel' 0 nextBb st' hVC.1
-      cases hRun : runBlockCfg stepBb nextBb st' fuel' with
-      | ret v =>
-        change runBlockCfgLoop stepBb fuel' 0 nextBb st' = .ret v at hRun
-        rw [hRun] at ih
-        dsimp [BlockCfgPartialSpec] at ih
-        have hWrap := hVC.2 v ih
-        dsimp
-        revert hWrap
-        cases wrapRet v with
-        | some v' => exact fun h => h
-        | none => exact fun h => nomatch h
-      | diverged =>
-        exact True.intro
-      | fault =>
-        change runBlockCfgLoop stepBb fuel' 0 nextBb st' = .fault at hRun
-        rw [hRun] at ih
-        nomatch ih
+      exact wrapJump_partial_sound wrapRet PostRet _
+        (modular_block_cfg_loop_sound stepBb BlockInv PostRet hLocal
+          fuel' 0 nextBb st' hVC.1) hVC.2
     | convergedJump armSteps wrapRet nextBb st' =>
       rw [hStep] at hVC
-      dsimp at hVC
-      dsimp [BlockCfgPartialSpec]
-      have ih :=
-        modular_block_cfg_loop_sound stepBb BlockInv PostRet hLocal
-          fuel' armSteps nextBb st' hVC.1
-      cases hRun : runBlockCfgLoop stepBb fuel' armSteps nextBb st' with
-      | ret v =>
-        rw [hRun] at ih
-        dsimp [BlockCfgPartialSpec] at ih
-        have hWrap := hVC.2 v ih
-        dsimp
-        revert hWrap
-        cases wrapRet v with
-        | some v' => exact fun h => h
-        | none => exact fun h => nomatch h
-      | diverged =>
-        exact True.intro
-      | fault =>
-        rw [hRun] at ih
-        nomatch ih
+      exact wrapJump_partial_sound wrapRet PostRet _
+        (modular_block_cfg_loop_sound stepBb BlockInv PostRet hLocal
+          fuel' armSteps nextBb st' hVC.1) hVC.2
     | branchJump mergeRet thenBb elseBb st' =>
       rw [hStep] at hVC
-      dsimp at hVC
-      dsimp [BlockCfgPartialSpec]
-      have ihT :=
-        modular_block_cfg_loop_sound stepBb BlockInv PostRet hLocal
-          fuel' 0 thenBb st' hVC.1
-      have ihF :=
-        modular_block_cfg_loop_sound stepBb BlockInv PostRet hLocal
-          fuel' 0 elseBb st' hVC.2.1
-      cases hRunT : runBlockCfg stepBb thenBb st' fuel' with
-      | fault =>
-        change runBlockCfgLoop stepBb fuel' 0 thenBb st' = .fault at hRunT
-        rw [hRunT] at ihT
-        nomatch ihT
-      | diverged =>
-        cases hRunF : runBlockCfg stepBb elseBb st' fuel' with
-        | fault =>
-          change runBlockCfgLoop stepBb fuel' 0 elseBb st' = .fault at hRunF
-          rw [hRunF] at ihF
-          nomatch ihF
-        | diverged =>
-          exact True.intro
-        | ret _ =>
-          exact True.intro
-      | ret vt =>
-        cases hRunF : runBlockCfg stepBb elseBb st' fuel' with
-        | fault =>
-          change runBlockCfgLoop stepBb fuel' 0 elseBb st' = .fault at hRunF
-          rw [hRunF] at ihF
-          nomatch ihF
-        | diverged =>
-          exact True.intro
-        | ret vf =>
-          change runBlockCfgLoop stepBb fuel' 0 thenBb st' = .ret vt at hRunT
-          change runBlockCfgLoop stepBb fuel' 0 elseBb st' = .ret vf at hRunF
-          rw [hRunT] at ihT
-          rw [hRunF] at ihF
-          dsimp [BlockCfgPartialSpec] at ihT ihF
-          have hMerge := hVC.2.2 vt vf ihT ihF
-          dsimp
-          revert hMerge
-          cases mergeRet vt vf with
-          | some v => exact fun h => h
-          | none => exact fun h => nomatch h
+      exact branchJump_partial_sound mergeRet PostRet _ _
+        (modular_block_cfg_loop_sound stepBb BlockInv PostRet hLocal
+          fuel' 0 thenBb st' hVC.1)
+        (modular_block_cfg_loop_sound stepBb BlockInv PostRet hLocal
+          fuel' 0 elseBb st' hVC.2.1) hVC.2.2
 
 /-- Compositional CFG soundness: if `LocalBlockVC` holds for every block, then
 any `fuel`-step execution from an invariant-satisfying block state never faults
@@ -1170,6 +1144,60 @@ structure CfgCertificate {Val : Type} (alg : ValAlgebra Val) where
       evalFnValue alg params plan retExpr = .ok out →
       runBlockCfg (stepBasicBlock alg blocks) entryBb st0 fuel = .ret out
 
+private theorem returned_step_sound {Val : Type} (alg : ValAlgebra Val)
+    (out' out : FuncOut Val)
+    (hEval :
+      (if !handleFreeOut alg out' then EvalOutcome.fail else .ok out') =
+        .ok out) :
+    (if !handleFreeOut alg out' then
+      (BlockStepResult.fault : BlockStepResult (SymState Val) (FuncOut Val))
+     else .ret out') = .ret out := by
+  revert hEval
+  cases handleFreeOut alg out' with
+  | false => exact fun h => nomatch h
+  | true =>
+    dsimp
+    intro hEq
+    injection hEq with hOut
+    rw [hOut]
+
+private theorem continuing_ret_step_sound {Val : Type} (alg : ValAlgebra Val)
+    (stF : SymState Val) (guards : FuncOut Val → FuncOut Val)
+    (retExpr : RvalOp Val) (out : FuncOut Val)
+    (hEval :
+      (if !stateCleanAtReturn stF then EvalOutcome.fail else
+        match evalRval alg retExpr stF with
+        | some rv =>
+          if !handleFreeOut alg (guards ⟨rv, collectRootMutVals stF.loans⟩)
+          then .fail
+          else .ok (guards ⟨rv, collectRootMutVals stF.loans⟩)
+        | none => .fail) = .ok out) :
+    (if !stateCleanAtReturn stF then
+      (BlockStepResult.fault : BlockStepResult (SymState Val) (FuncOut Val))
+     else
+      match evalRval alg retExpr stF with
+      | some rv =>
+        if !handleFreeOut alg (guards ⟨rv, collectRootMutVals stF.loans⟩)
+        then .fault
+        else .ret (guards ⟨rv, collectRootMutVals stF.loans⟩)
+      | none => .fault) = .ret out := by
+  revert hEval
+  cases stateCleanAtReturn stF with
+  | false => dsimp; exact fun h => nomatch h
+  | true =>
+    dsimp
+    cases evalRval alg retExpr stF with
+    | none => exact fun h => nomatch h
+    | some rv =>
+      dsimp
+      cases handleFreeOut alg (guards ⟨rv, collectRootMutVals stF.loans⟩) with
+      | false => dsimp; exact fun h => nomatch h
+      | true =>
+        dsimp
+        intro hEq
+        injection hEq with hOut
+        rw [← hOut]
+
 /-- Single-block CFG equivalence (`cfg_certificate_step_sound`): executing a
 1-block CFG `[⟨plan, .ret retExpr⟩]` for 1 step via `runBlockCfg` produces `.ret
 out` whenever `evalFnValue alg params plan retExpr = .ok out`. -/
@@ -1186,90 +1214,36 @@ theorem cfg_certificate_step_sound {Val : Type} (alg : ValAlgebra Val)
   rw [runBlockCfg_succ]
   dsimp [stepBasicBlock, listGetOpt]
   revert hEval
-  cases hPlan : evalPlan alg plan st0 with
-  | fail =>
-    intro hFalse
-    nomatch hFalse
+  cases evalPlan alg plan st0 with
+  | fail => intro hE; nomatch hE
   | ok flow =>
     cases flow with
     | returned out' valClean _ =>
-      dsimp
       cases valClean with
-      | false =>
-        dsimp
-        intro hFalse
-        nomatch hFalse
+      | false => intro hE; dsimp at hE; nomatch hE
       | true =>
-        cases handleFreeOut alg out' with
-        | false =>
-          dsimp
-          intro hFalse
-          nomatch hFalse
-        | true =>
-          dsimp
-          intro hEq
-          injection hEq with hOut
-          rw [hOut]
+        intro hE
+        dsimp at hE
+        dsimp
+        rw [Bool.not_true, Bool.false_or] at hE
+        rw [Bool.not_true, Bool.false_or]
+        rw [returned_step_sound alg out' out hE]
     | continuing stF =>
+      intro hE
+      dsimp at hE
       dsimp
-      cases hClean : stateCleanAtReturn stF with
-      | false =>
-        dsimp
-        intro hFalse
-        nomatch hFalse
-      | true =>
-        dsimp
-        cases hRet : evalRval alg retExpr stF with
-        | none =>
-          dsimp
-          intro hFalse
-          nomatch hFalse
-        | some retVal =>
-          dsimp
-          cases handleFreeOut alg ⟨retVal, collectRootMutVals stF.loans⟩ with
-          | false =>
-            dsimp
-            intro hFalse
-            nomatch hFalse
-          | true =>
-            dsimp
-            intro hEq
-            injection hEq with hOut
-            rw [← hOut]
+      have hRes := continuing_ret_step_sound alg stF id retExpr out hE
+      dsimp [id] at hRes
+      rw [hRes]
     | guardedContinuing guards stF valClean _ =>
-      dsimp
       cases valClean with
-      | false =>
-        dsimp
-        intro hFalse
-        nomatch hFalse
+      | false => intro hE; dsimp at hE; nomatch hE
       | true =>
+        intro hE
+        dsimp at hE
         dsimp
-        cases hClean : stateCleanAtReturn stF with
-        | false =>
-          dsimp
-          intro hFalse
-          nomatch hFalse
-        | true =>
-          dsimp
-          cases hRet : evalRval alg retExpr stF with
-          | none =>
-            dsimp
-            intro hFalse
-            nomatch hFalse
-          | some retVal =>
-            dsimp
-            cases handleFreeOut alg
-                (guards ⟨retVal, collectRootMutVals stF.loans⟩) with
-            | false =>
-              dsimp
-              intro hFalse
-              nomatch hFalse
-            | true =>
-              dsimp
-              intro hEq
-              injection hEq with hOut
-              rw [← hOut]
+        rw [Bool.not_true, Bool.false_or] at hE
+        rw [continuing_ret_step_sound alg stF guards retExpr out hE]
 
 /-- Single-block `CfgCertificate`: the 1-block CFG `[⟨plan, .ret retExpr⟩]`
 run for one step, certified by `cfg_certificate_step_sound`. -/

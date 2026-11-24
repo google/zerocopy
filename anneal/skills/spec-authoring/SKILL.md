@@ -97,9 +97,19 @@ explicitly as assumptions-only `[A4]` sanity (never as a replacement for proofs)
 Keep specification edits cleanly isolated from proof edits:
 - Put `Spec.lean` / `Spec.*` and `request.json` scope/precondition updates in
   their own reviewable commit ahead of `Proof.lean` / `Proof.*` changes.
-- Classify every spec diff explicitly using a `Spec-Change:` line in the commit
-  or PR note: `initial` | `tightening` | `weakening` | `refactor`.
+- Classify every spec diff explicitly with a `Spec-Change: <unit> <kind>`
+  commit trailer, where `<kind>` is `initial` | `tightening` | `weakening` |
+  `refactor`. CI requires this trailer for any change to an existing
+  `zerocopy/proofs/<unit>/request.json` or specification-role source, except
+  a `request.json` edit confined to proof-role sources.
 - Any `weakening` requires explicit user authorization and re-running Steps 3-4.
+- **Spec-immutability firewall during proof optimization:** Once `Spec.lean` /
+  `Spec.*` is frozen for proof authoring, refactoring, or size/performance
+  tuning, treat `Spec.*` and the Receipt v3
+  `audit.bindings.specificationManifestSha256` digest as strictly read-only.
+  Never tighten `Specs.safety`, weaken `Specs.property`, or drop
+  client-exercised clauses (`clauses: N, client-exercised: M`) to make a proof
+  smaller or faster.
 
 Once the spec passes Steps 1-4, hand off to **`proof-scaling`** to prove
 `Expected.claim`, or to **`cargo-anneal`** for single-command verification.

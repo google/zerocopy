@@ -34,6 +34,7 @@ if str(_CI_DIR) not in sys.path:
     sys.path.insert(0, str(_CI_DIR))
 
 import prebuild_bundled_oleans
+import proof_health_scan
 import verify_zerocopy
 
 RECORD_SCHEMA = "anneal-perf-record/v1"
@@ -70,6 +71,7 @@ CATEGORIES = (
     "memory_rss",
     "artifact_size",
     "zerocopy_proofs",
+    "proof_burden",
 )
 ALLOWED_CATEGORIES = frozenset(CATEGORIES)
 DEFAULT_TIME_BIN = Path("/usr/bin/time")
@@ -412,6 +414,31 @@ def describe_metric(metric_id: str) -> dict[str, Any]:
             "unit": "B",
             "direction": "lower_is_better",
             "deterministic": True,
+        }
+
+    if category == "proof_burden":
+        known = proof_health_scan.PROOF_BURDEN_DESCRIPTORS.get(metric_id)
+        if known is not None:
+            return {"id": metric_id, **known}
+        scope = parts[1]
+        measure = parts[2]
+        if measure.endswith("_bytes"):
+            unit = "B"
+            det = True
+        elif measure.endswith("_ms"):
+            unit = "ms"
+            det = False
+        else:
+            unit = "count"
+            det = True
+        return {
+            "id": metric_id,
+            "label": f"{scope} {measure.replace('_', ' ')}",
+            "category": "proof_burden",
+            "group": f"proof_burden.{scope}",
+            "unit": unit,
+            "direction": "lower_is_better",
+            "deterministic": det,
         }
 
     # `zerocopy_proofs`
@@ -1385,8 +1412,16 @@ def collect_zerocopy_proofs(
     tools: dict[str, Path | None],
     timeout: float,
     time_bin: Path | None,
+    profile_proof_burden: bool = False,
 ) -> tuple[dict[str, float | int], set[str]]:
-    """Verify `zerocopy/proofs/*` against unmodified `zerocopy/src/`."""
+    """Verify `zerocopy/proofs/*` against unmodified `zerocopy/src/`.
+
+    With `profile_proof_burden`, after the measured suite has recorded
+    `zerocopy_proofs.*` and `memory_rss.zerocopy_*`, re-verify each unit
+    unmeasured with `--export-lean-lib` and profile the exported proof
+    modules into `proof_burden.*` metrics, so neither export staging nor
+    profiling affects the timed or RSS series.
+    """
     for req in ("cli", "capture", "sysroot", "lean"):
         if tools.get(req) is None:
             raise RuntimeError(
@@ -1406,8 +1441,9 @@ def collect_zerocopy_proofs(
         xdg.mkdir(parents=True)
         env = os.environ.copy()
         env["XDG_CACHE_HOME"] = str(xdg)
-        for unit_dir, request in units:
-            cmd = [
+
+        def verify_cmd(unit_dir: Path, artifacts: Path) -> list[str]:
+            return [
                 str(tools["cli"]),
                 "verify",
                 "--request",
@@ -1419,8 +1455,11 @@ def collect_zerocopy_proofs(
                 "--lean",
                 str(tools["lean"]),
                 "--artifacts",
-                str(tmp / unit_dir.name),
+                str(artifacts),
             ]
+
+        for unit_dir, request in units:
+            cmd = verify_cmd(unit_dir, tmp / unit_dir.name)
             meas = run_measured_subprocess(
                 cmd, cwd=unit_dir, env=env, timeout=timeout, time_bin=time_bin
             )
@@ -1446,10 +1485,55 @@ def collect_zerocopy_proofs(
             )
             metrics[f"memory_rss.zerocopy_{unit_slug}.maxrss_kib"] = meas.maxrss_kib
 
-    metrics["zerocopy_proofs.suite.total_ms"] = round(
-        (time.monotonic() - suite_started) * 1000.0, 3
-    )
-    metrics["zerocopy_proofs.suite.verified_units_count"] = verified_count
+        metrics["zerocopy_proofs.suite.total_ms"] = round(
+            (time.monotonic() - suite_started) * 1000.0, 3
+        )
+        metrics["zerocopy_proofs.suite.verified_units_count"] = verified_count
+        if not profile_proof_burden:
+            return metrics, rss_methods
+
+        lean_lib_dirs: list[Path] = []
+        lib_proof_modules: dict[Path, list[str]] = {}
+        for u, request in units:
+            export_dir = tmp / "export" / u.name
+            export_dir.parent.mkdir(exist_ok=True)
+            proc = subprocess.run(
+                [*verify_cmd(u, export_dir), "--export-lean-lib"],
+                cwd=u,
+                env=env,
+                timeout=timeout,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            verify_zerocopy.validate_receipt(
+                u.name,
+                proc.returncode,
+                proc.stdout,
+                proc.stderr,
+                request["scope"]["roots"],
+            )
+            lib_dir = export_dir / "lean-lib"
+            if not lib_dir.is_dir():
+                continue
+            proof_mods = [
+                m
+                for m in proof_health_scan._discover_proof_modules_for_lib(
+                    lib_dir, repo_root
+                )
+                if (lib_dir / f"{m.replace('.', '/')}.olean").is_file()
+            ]
+            if proof_mods:
+                lean_lib_dirs.append(lib_dir)
+                lib_proof_modules[lib_dir] = proof_mods
+        if lean_lib_dirs:
+            pb = proof_health_scan.collect_proof_burden_telemetry(
+                repo_root,
+                lean_bin=tools.get("lean"),
+                lean_lib_dirs=lean_lib_dirs,
+                lib_proof_modules=lib_proof_modules,
+            )
+            metrics.update(pb["metrics"])
     return metrics, rss_methods
 
 
@@ -1516,12 +1600,19 @@ def collect_record(
             tools=tools,
             timeout=timeout,
             time_bin=time_bin,
+            profile_proof_burden="proof_burden" in categories,
         )
         for k, v in z_metrics.items():
             cat = k.split(".", 1)[0]
             if cat in categories:
                 metrics[k] = v
         rss_methods.update(z_rss)
+
+    if "proof_burden" in categories and not any(
+        k.startswith("proof_burden.") for k in metrics
+    ):
+        pb = proof_health_scan.collect_proof_burden_telemetry(repo_root)
+        metrics.update(pb["metrics"])
 
     if not metrics:
         raise RuntimeError("collected zero metrics")
@@ -1987,6 +2078,8 @@ def render_summary_markdown(
         "artifact_size.bin.cargo_anneal_bytes",
         "zerocopy_proofs.suite.total_ms",
         "zerocopy_proofs.suite.verified_units_count",
+        "proof_burden.zerocopy_suite.hand_proof_loc",
+        "proof_burden.zerocopy_suite.proof_olean_bytes",
     ]
     present_keys = [k for k in key_metrics if k in latest["metrics"]]
     if present_keys:
