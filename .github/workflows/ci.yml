@@ -1301,8 +1301,8 @@ jobs:
 
   test-tools:
     runs-on: ubuntu-latest
-    name: Test Python tools
-    # Strip Actions cache/artifact tokens when executing scripts in `tools/`.
+    name: Test tools and anneal-mir-eval
+    # Strip Actions cache/artifact tokens when executing tools tests.
     env:
       ACTIONS_CACHE_URL: ''
       ACTIONS_RESULTS_URL: ''
@@ -1313,6 +1313,14 @@ jobs:
           persist-credentials: false
       - name: Run tool unit tests
         run: python3 -B -m unittest discover -s tools -p 'test_*.py' -v
+      - name: Check and test anneal-mir-eval
+        run: |
+          set -euo pipefail
+          STABLE="$(./zerocopy/cargo.sh --version stable)"
+          rustup toolchain install "$STABLE" --profile minimal --component clippy --target wasm32-unknown-unknown
+          cargo +"$STABLE" clippy --locked --manifest-path tools/anneal-mir-eval/Cargo.toml --all-targets -- -D warnings
+          cargo +"$STABLE" check --locked --manifest-path tools/anneal-mir-eval/Cargo.toml --lib --target wasm32-unknown-unknown
+          cargo +"$STABLE" test --locked --manifest-path tools/anneal-mir-eval/Cargo.toml
 
   check-skills:
     runs-on: ubuntu-latest
