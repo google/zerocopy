@@ -23,7 +23,7 @@ use rustc_data_structures::steal::Steal;
 use rustc_driver::Compilation;
 use rustc_hir as hir;
 use rustc_hir::LangItem;
-use rustc_hir::attrs::AttributeKind;
+use rustc_hir::attrs::{AttributeKind, InlineAttr};
 use rustc_hir::def::{DefKind, Res};
 use rustc_hir::intravisit;
 use rustc_interface::interface;
@@ -36,7 +36,7 @@ use rustc_session::EarlyDiagCtxt;
 use rustc_session::config::{CrateType, OptLevel, Options};
 use rustc_span::def_id::{LOCAL_CRATE, LocalDefId};
 use rustc_span::source_map::{FileLoader, RealFileLoader};
-use rustc_span::{FileName, sym};
+use rustc_span::{FileName, kw, sym};
 use rustc_target::spec::PanicStrategy as RustcPanicStrategy;
 
 use crate::{Args, Failure, extract, identity, ir, mono};
@@ -405,6 +405,20 @@ fn required(tcx: TyCtxt<'_>, def: LocalDefId, kind: DefKind, has_body: bool) -> 
 //   declarations (plus their bodyless safe Rust-ABI `AssocFn` and
 //   `AssocConst` items), and safe `Impl` blocks whose child items are
 //   checked separately are admitted fail-closed below with no fabricated body.
+// - Required `Macro` items stay refused: no scan of an exported
+//   `macro_rules!` definition bounds its downstream expansions. Macro and
+//   item names in the definition (`inner!`, `crate::g!`) resolve at the
+//   call site, metavariables splice in caller tokens such as `unsafe` or a
+//   macro path, and a construct that ends in definition tokens takes the
+//   definition's span, for which the `unsafe_code` lint stays silent. When
+//   two spans' contexts differ, `Span::to` "consider[s] the combined span
+//   to be produced by the macro", and a lint whose span `in_external_macro`
+//   attributes to an imported bang macro is dropped unless the lint sets
+//   `report_in_external_macro`, which `UNSAFE_CODE` does not.
+//   https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_span/src/lib.rs#L1142-L1165
+//   https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_span/src/hygiene.rs#L920-L938
+//   https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/lint.rs#L440-L475
+//   https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_lint/src/builtin.rs#L192-L230
 // - `Struct` (pending struct capture/verification), `InlineConst`, `Static`,
 //   `Union`, `ForeignMod`, `ForeignTy`, `GlobalAsm`, and bodyless free `Fn`
 //   items remain explicit refusals in whole-crate scope.
@@ -412,20 +426,54 @@ fn required(tcx: TyCtxt<'_>, def: LocalDefId, kind: DefKind, has_body: bool) -> 
 //   only if `extract::body` translates it, refusing intrinsics, generics,
 //   unsupported entry conditions, and unmodeled codegen attributes.
 
+/// One attribute kind that a caller of [`check_non_callable_attrs`] has
+/// validated (or shown to be inert) for its item, beyond the benign set that
+/// every item admits.
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum ExtraAttr {
+    None,
+    /// `#[repr(..)]` on `Struct` constant types, whose `adt.repr()` options
+    /// the caller validates separately.
+    Repr,
+    /// `#[inline]` on a bodyless trait method declaration. rustc's inline
+    /// attribute parser lists that target as
+    /// `Warn(Target::Method(MethodKind::Trait { body: false }))`, accepting
+    /// the attribute there with a lint, while every body-bearing method
+    /// target is `Allow`. The declaration has no body to codegen, and an
+    /// implementing method inherits only `#[align]` and `#[track_caller]`
+    /// from it, not inlining. Only the modes [`extract::codegen_attrs`]
+    /// admits on bodies pass.
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_attr_parsing/src/attributes/inline.rs#L15-L29
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/codegen_attrs.rs#L316-L317
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/codegen_attrs.rs#L355-L358
+    Inline,
+}
+
+/// Mirror the inlining modes that [`extract::codegen_attrs`] admits on
+/// callables with bodies. The match is exhaustive so that a new mode fails to
+/// compile here instead of being admitted silently.
+fn inline_mode_admitted(inline: &InlineAttr) -> bool {
+    match inline {
+        InlineAttr::None | InlineAttr::Hint | InlineAttr::Always | InlineAttr::Never => true,
+        InlineAttr::Force { .. } => false,
+    }
+}
+
 /// Reject attributes on non-callable items whose semantic effect the scalar
 /// model does not capture (`#[linkage]`, `#[no_mangle]`, `#[export_name]`,
-/// `#[rustc_*]`, etc.). When `allow_repr` is true (for `Struct` constants
-/// whose `adt.repr()` options are validated separately), `AttributeKind::Repr`
-/// is permitted.
+/// `#[rustc_*]`, etc.). `extra` names one further attribute kind that the
+/// caller has validated for this item (see [`ExtraAttr`]).
 fn check_non_callable_attrs(
     tcx: TyCtxt<'_>,
     def: LocalDefId,
-    allow_repr: bool,
+    extra: ExtraAttr,
     context: &str,
 ) -> extract::Result<()> {
     for attr in tcx.hir_attrs(tcx.local_def_id_to_hir_id(def)) {
         match attr {
-            hir::Attribute::Parsed(AttributeKind::Repr { .. }) if allow_repr => {}
+            hir::Attribute::Parsed(AttributeKind::Repr { .. }) if extra == ExtraAttr::Repr => {}
+            hir::Attribute::Parsed(AttributeKind::Inline(inline, _))
+                if extra == ExtraAttr::Inline && inline_mode_admitted(inline) => {}
             hir::Attribute::Parsed(kind) => match kind {
                 AttributeKind::AutomaticallyDerived
                 | AttributeKind::CfgAttrTrace
@@ -512,7 +560,12 @@ fn admit_safe_trait(tcx: TyCtxt<'_>, def: LocalDefId) -> extract::Result<()> {
             "whole-crate obligation is unsupported: Trait (unmodeled trait modifier)".into()
         );
     }
-    check_non_callable_attrs(tcx, def, false, "whole-crate obligation is unsupported: Trait")
+    check_non_callable_attrs(
+        tcx,
+        def,
+        ExtraAttr::None,
+        "whole-crate obligation is unsupported: Trait",
+    )
 }
 
 /// Admit safe inherent or trait `Impl` blocks whose associated items are
@@ -576,7 +629,7 @@ fn admit_safe_impl(tcx: TyCtxt<'_>, def: LocalDefId, of_trait: bool) -> extract:
     check_non_callable_attrs(
         tcx,
         def,
-        false,
+        ExtraAttr::None,
         &format!("whole-crate obligation is unsupported: Impl {{ of_trait: {of_trait} }}"),
     )
 }
@@ -629,7 +682,7 @@ fn const_ty_is_pure_value<'tcx>(
             // Reject any `#[rustc_*]` or unmodeled attribute on the struct
             // (allowing benign attributes plus `#[repr(..)]`, whose fields are
             // checked above).
-            check_non_callable_attrs(tcx, local_def, true, context)?;
+            check_non_callable_attrs(tcx, local_def, ExtraAttr::Repr, context)?;
             let typing_env = TypingEnv::fully_monomorphized();
             for field in &adt.non_enum_variant().fields {
                 let field_ty = field.ty(tcx, args);
@@ -811,7 +864,7 @@ fn admit_const_item(
     if is_type_const {
         return Err(context);
     }
-    check_non_callable_attrs(tcx, def, false, &context)?;
+    check_non_callable_attrs(tcx, def, ExtraAttr::None, &context)?;
     if !has_body {
         if is_assoc && tcx.def_kind(tcx.local_parent(def)) == DefKind::Trait {
             return admit_safe_trait(tcx, tcx.local_parent(def));
@@ -859,7 +912,7 @@ fn admit_anon_const(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract
     ) {
         return Err(format!("{context} (generic const expr/arg)"));
     }
-    check_non_callable_attrs(tcx, def, false, context)?;
+    check_non_callable_attrs(tcx, def, ExtraAttr::None, context)?;
     check_const_hir_safety(tcx, def, true, context)?;
     let raw_ty = tcx.type_of(def).instantiate_identity();
     let ty = tcx
@@ -923,7 +976,7 @@ fn whole_crate_item(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract
             check_non_callable_attrs(
                 tcx,
                 def,
-                false,
+                ExtraAttr::Inline,
                 "whole-crate obligation is unsupported: AssocFn",
             )
         }
@@ -1006,10 +1059,12 @@ impl rustc_driver::Callbacks for Callbacks<'_> {
         _: &interface::Compiler,
         krate: &mut Crate,
     ) -> Compilation {
-        // Reject `#![crate_type]` and `#![feature(rustc_private)]` (including
-        // under `#![cfg_attr]`) before macro expansion so sysroot `rustc-dev`
-        // proc-macro dylibs can never load or execute.
-        if let Err(reason) = validate_crate_root_attrs(&krate.attrs) {
+        // Reject `#![crate_type]` (other than a top-level restatement of
+        // `--crate-type=lib`; see `crate_type_attr_matches`) and
+        // `#![feature(rustc_private)]` (including under `#![cfg_attr]`) before
+        // macro expansion so sysroot `rustc-dev` proc-macro dylibs can never
+        // load or execute.
+        if let Err(reason) = validate_crate_root_attrs(&krate.attrs, self.args.crate_type.into()) {
             if let Ok(mut reads) = self.reads.lock() {
                 reads.refusals.push(reason);
             }
@@ -1037,9 +1092,31 @@ impl rustc_driver::Callbacks for Callbacks<'_> {
     }
 }
 
-fn validate_crate_root_meta(meta: &MetaItem) -> Result<(), String> {
+/// Whether a top-level `#![crate_type = "..."]` restates the requested crate
+/// type. Only `lib` and `rlib` on a `--crate-type=lib` capture qualify: both
+/// parse to `CrateType::Rlib`, the default crate type, which capture already
+/// passes on the command line. rustc reads the attribute only when the
+/// command line names no crate type (`if base.is_empty()`), and
+/// `validate_compiler_options` requires exactly the requested one there, so a
+/// matching attribute selects nothing. Every other value, a non-literal
+/// form, and any `crate_type` under `#![cfg_attr]` (which rustc itself
+/// rejects when the predicate holds) stay refused before expansion.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_interface/src/passes.rs#L1429-L1449
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir/src/attrs/data_structures.rs#L640-L677
+fn crate_type_attr_matches(meta: &MetaItem, expected: ir::CrateType) -> bool {
+    expected == ir::CrateType::Lib
+        && meta.path == sym::crate_type
+        && matches!(meta.value_str(), Some(sym::lib | sym::rlib))
+}
+
+fn validate_crate_root_meta(
+    meta: &MetaItem,
+    expected: ir::CrateType,
+    top_level: bool,
+) -> Result<(), String> {
     let last_ident = meta.path.segments.last().map(|seg| seg.ident.name);
-    if last_ident == Some(sym::crate_type) {
+    let admitted = top_level && crate_type_attr_matches(meta, expected);
+    if last_ident == Some(sym::crate_type) && !admitted {
         return Err("crate-level #![crate_type] attributes are unsupported during capture".into());
     }
     if last_ident == Some(sym::feature)
@@ -1056,21 +1133,48 @@ fn validate_crate_root_meta(meta: &MetaItem) -> Result<(), String> {
     {
         for item in items.iter().skip(1) {
             if let MetaItemInner::MetaItem(nested) = item {
-                validate_crate_root_meta(nested)?;
+                validate_crate_root_meta(nested, expected, false)?;
+            }
+        }
+    }
+    // Inside a `cfg_attr`, `Attribute::meta` parses `unsafe(feature(..))` as
+    // a meta item named `unsafe`, while `cfg_attr` expansion parses it as an
+    // unsafe-wrapped `feature(..)` attribute, so check what it wraps.
+    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_parse/src/parser/attr.rs#L321-L334
+    if last_ident == Some(kw::Unsafe)
+        && let Some(items) = meta.meta_item_list()
+    {
+        for item in items {
+            if let MetaItemInner::MetaItem(nested) = item {
+                validate_crate_root_meta(nested, expected, false)?;
             }
         }
     }
     Ok(())
 }
 
-fn validate_crate_root_attrs(attrs: &[Attribute]) -> Result<(), String> {
+/// `Attribute::meta` parses only parenthesized lists of meta items with
+/// literal values, so it returns `None` for a whole `#![cfg_attr(..)]` if
+/// any item uses a non-literal value such as `doc = concat!(..)`, while
+/// rustc's own `cfg_attr` expansion accepts it. Refuse such `cfg_attr`,
+/// `feature`, and `crate_type` attributes instead of skipping them, or a
+/// `feature(rustc_private)` or `crate_type` item inside would go unchecked.
+/// This also refuses harmless forms such as
+/// `#![cfg_attr(not(doctest), doc = include_str!(..))]`.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_ast/src/attr/mod.rs#L288-L293
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_expand/src/config.rs#L248-L306
+fn validate_crate_root_attrs(attrs: &[Attribute], expected: ir::CrateType) -> Result<(), String> {
     for attr in attrs {
         if let Some(meta) = attr.meta() {
-            validate_crate_root_meta(&meta)?;
+            validate_crate_root_meta(&meta, expected, true)?;
         } else if attr.has_name(sym::crate_type) {
             return Err(
                 "crate-level #![crate_type] attributes are unsupported during capture".into(),
             );
+        } else if attr.has_name(sym::cfg_attr) || attr.has_name(sym::feature) {
+            return Err("crate-level #![cfg_attr] or #![feature] attributes with \
+                 unparsed (such as non-literal) arguments are unsupported during capture"
+                .into());
         }
     }
     Ok(())
@@ -1301,6 +1405,15 @@ where
     Ok(())
 }
 
+/// Whether a parsed `#![crate_type]` attribute that survived expansion is
+/// admitted: it must name `Rlib` alone, and `Rlib` must be the requested
+/// (and, checked by the caller, the session's only) crate type.
+fn parsed_crate_type_attr_admitted(types: &[CrateType], expected: CrateType) -> bool {
+    expected == CrateType::Rlib
+        && !types.is_empty()
+        && types.iter().all(|ty| *ty == CrateType::Rlib)
+}
+
 /// Defense-in-depth sysroot-only and no-proc-macro gate run in
 /// `after_analysis`.
 fn verify_sysroot_only_crates(
@@ -1316,11 +1429,12 @@ fn verify_sysroot_only_crates(
             "unsupported or mismatched crate types during capture: {crate_types:?}"
         )));
     }
-    if tcx.hir_krate_attrs().iter().any(|attr| {
-        matches!(
-            attr,
-            rustc_hir::Attribute::Parsed(rustc_hir::attrs::AttributeKind::CrateType(_))
-        ) || attr.has_name(rustc_span::sym::crate_type)
+    // Defense in depth for the pre-expansion `validate_crate_root_attrs`.
+    if tcx.hir_krate_attrs().iter().any(|attr| match attr {
+        rustc_hir::Attribute::Parsed(rustc_hir::attrs::AttributeKind::CrateType(types)) => {
+            !parsed_crate_type_attr_admitted(types, expected_rustc_ct)
+        }
+        other => other.has_name(rustc_span::sym::crate_type),
     }) {
         return Err(Failure::unsupported(
             "crate-level #![crate_type] attributes are unsupported during capture",
@@ -2840,5 +2954,40 @@ mod tests {
         ] {
             assert!(!ordering_shape_matches(0, true, &forged), "{forged:?}");
         }
+    }
+
+    #[test]
+    fn parsed_crate_type_attr_admits_only_rlib_on_rlib_captures() {
+        assert!(parsed_crate_type_attr_admitted(&[CrateType::Rlib], CrateType::Rlib));
+        assert!(parsed_crate_type_attr_admitted(
+            &[CrateType::Rlib, CrateType::Rlib],
+            CrateType::Rlib
+        ));
+        assert!(!parsed_crate_type_attr_admitted(&[], CrateType::Rlib));
+        assert!(!parsed_crate_type_attr_admitted(&[CrateType::Rlib], CrateType::Executable));
+        for other in [
+            CrateType::Executable,
+            CrateType::Dylib,
+            CrateType::Cdylib,
+            CrateType::StaticLib,
+            CrateType::ProcMacro,
+            CrateType::Sdylib,
+        ] {
+            assert!(!parsed_crate_type_attr_admitted(&[other], CrateType::Rlib), "{other:?}");
+            assert!(
+                !parsed_crate_type_attr_admitted(&[CrateType::Rlib, other], CrateType::Rlib),
+                "{other:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn inline_modes_on_trait_declarations_mirror_codegen_attrs() {
+        for admitted in [InlineAttr::None, InlineAttr::Hint, InlineAttr::Always, InlineAttr::Never]
+        {
+            assert!(inline_mode_admitted(&admitted), "{admitted:?}");
+        }
+        let forced = InlineAttr::Force { attr_span: rustc_span::DUMMY_SP, reason: None };
+        assert!(!inline_mode_admitted(&forced));
     }
 }

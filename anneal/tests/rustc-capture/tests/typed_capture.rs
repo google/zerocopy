@@ -2543,6 +2543,234 @@ fn whole_crate_refuses_exported_macros_but_allows_crate_private_macro_rules() {
 }
 
 #[test]
+fn whole_crate_refuses_exported_macro_rules_without_unsafe_tokens() {
+    // The first eight definitions spell neither `unsafe` nor `global_asm`,
+    // yet each lets a downstream `#![forbid(unsafe_code)]` crate emit global
+    // assembly, an unsafe block, or an unsafe function that the `unsafe_code`
+    // lint does not report, because the construct takes a span from the
+    // external definition. The last two can carry no unsafe code at all:
+    // exported macros stay refused regardless of their tokens.
+    let cases: [(&str, &[u8]); 10] = [
+        // `up::m!(core::arch::global_asm);`
+        (
+            "path metavariable",
+            b"#[macro_export] macro_rules! m { ($p:path) => { $p!(\"nop\"); }; }\n",
+        ),
+        // `up::m!(global_asm);` through a glob re-export.
+        (
+            "glob re-export",
+            b"pub use core::arch::*;\n\
+              #[macro_export]\n\
+              macro_rules! m { ($x:ident) => { $crate::$x!(\"nop\"); }; }\n",
+        ),
+        // `up::m!(global_asm);`
+        (
+            "ident metavariable",
+            b"#[macro_export] macro_rules! m { ($m:ident) => { core::arch::$m!(\"nop\"); }; }\n",
+        ),
+        // `use core::arch::global_asm as inner; up::m!();`
+        ("call-site name", b"#[macro_export] macro_rules! m { () => { inner!(\"nop\"); }; }\n"),
+        // `use core::arch::global_asm as g; up::m!();`
+        (
+            "call-site crate path",
+            b"#[macro_export] macro_rules! m { () => { crate::g!(\"nop\"); }; }\n",
+        ),
+        // `up::m!(core::arch::global_asm, !);`
+        (
+            "caller-supplied bang",
+            b"#[macro_export] macro_rules! m { ($p:path, $b:tt) => { $p $b (\"nop\"); }; }\n",
+        ),
+        // `up::m!(unsafe *p)`: the block ends in definition tokens.
+        (
+            "caller-supplied unsafe",
+            b"#[macro_export] macro_rules! m { ($u:tt $($b:tt)*) => { $u { $($b)* } }; }\n",
+        ),
+        // `up::m!(pub unsafe fn g());`
+        (
+            "caller-supplied unsafe fn",
+            b"#[macro_export] macro_rules! m { ($($t:tt)*) => { $($t)* {} }; }\n",
+        ),
+        // A recursive tt-muncher with no reachable unsafe construct.
+        (
+            "tt-muncher",
+            b"#[macro_export]\n\
+              macro_rules! count_tts {\n\
+                  () => { 0usize };\n\
+                  ($head:tt $($tail:tt)*) => { 1usize + $crate::count_tts!($($tail)*) };\n\
+              }\n",
+        ),
+        ("`macro` 2.0", b"#![feature(decl_macro)]\npub macro zero_v2() { 0u64 }\n"),
+    ];
+    for (name, source) in cases {
+        let mut full = source.to_vec();
+        full.extend_from_slice(b"pub fn zero() -> u64 { 0 }\n");
+        let fixture = Capture::new(&full);
+        let output = fixture.command().arg("--scope=crate").output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        assert!(
+            failure.to_string().contains("Macro("),
+            "{name}: expected exported macro refusal, got {failure}"
+        );
+        fixture.assert_no_capture_artifacts();
+    }
+}
+
+#[test]
+fn whole_crate_admits_inline_hints_on_trait_method_declarations_only() {
+    // rustc ignores (with a warning) `#[inline]` on a bodyless trait method;
+    // capture admits the same modes `codegen_attrs` admits on bodies.
+    let source = b"#![allow(unused_attributes)]\n\
+        pub trait ConstantTimeEq {\n\
+            #[inline]\n\
+            fn ct_eq(&self, other: &Self) -> u8;\n\
+            #[inline(always)]\n\
+            fn ct_ne(&self, other: &Self) -> u8;\n\
+            #[inline(never)]\n\
+            fn ct_id(&self) -> u8;\n\
+        }\n\
+        pub fn zero() -> u64 { 0 }\n";
+    let fixture = Capture::new(source);
+    let output = fixture.command().arg("--scope=crate").output().unwrap();
+    assert!(
+        output.status.success(),
+        "inline hints on trait method declarations should pass whole-crate capture:\n{}\n{}",
+        stdout(&output),
+        stderr(&output)
+    );
+
+    // Other attributes on declarations, and `#[inline]` on non-method items,
+    // stay refused.
+    for (expected, source) in [
+        (
+            "AssocFn: unmodeled attribute",
+            b"#![allow(unused_attributes)]\n\
+              pub trait T { #[cold] fn f(&self) -> u8; }\n"
+                .as_slice(),
+        ),
+        (
+            "AssocConst",
+            b"#![allow(unused_attributes)]\n\
+              pub trait T { #[inline] const C: u8; }\n"
+                .as_slice(),
+        ),
+    ] {
+        let fixture = Capture::new(source);
+        let output = fixture.command().arg("--scope=crate").output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{expected}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{expected}: {failure}");
+        assert!(
+            failure.to_string().contains(expected),
+            "expected {expected:?} refusal, got {failure}"
+        );
+        fixture.assert_no_capture_artifacts();
+    }
+}
+
+#[test]
+fn crate_type_attribute_is_admitted_only_when_it_restates_lib() {
+    for attr in ["#![crate_type = \"rlib\"]\n", "#![crate_type = \"lib\"]\n"] {
+        let source = format!("{attr}pub fn selected(x: u64) -> u64 {{ x }}\n");
+        for scope in ["--scope=crate", "--select=selected"] {
+            let fixture = Capture::new(source.as_bytes());
+            let output = fixture.command().arg(scope).output().unwrap();
+            assert!(
+                output.status.success(),
+                "{attr:?} {scope} should be admitted:\n{}\n{}",
+                stdout(&output),
+                stderr(&output)
+            );
+        }
+    }
+
+    let refused_lib_sources = [
+        "#![crate_type = \"dylib\"]\npub fn selected(x: u64) -> u64 { x }\n",
+        "#![crate_type = \"cdylib\"]\npub fn selected(x: u64) -> u64 { x }\n",
+        "#![crate_type = \"staticlib\"]\npub fn selected(x: u64) -> u64 { x }\n",
+        "#![crate_type = \"proc-macro\"]\npub fn selected(x: u64) -> u64 { x }\n",
+        "#![crate_type = \"bin\"]\npub fn selected(x: u64) -> u64 { x }\n",
+        "#![crate_type = \"rlib\"]\n#![crate_type = \"proc-macro\"]\n\
+         pub fn selected(x: u64) -> u64 { x }\n",
+        "#![cfg_attr(all(), crate_type = \"rlib\")]\npub fn selected(x: u64) -> u64 { x }\n",
+        "#![cfg_attr(any(), crate_type = \"rlib\")]\npub fn selected(x: u64) -> u64 { x }\n",
+        "#![crate_type]\npub fn selected(x: u64) -> u64 { x }\n",
+    ];
+    for source in refused_lib_sources {
+        let fixture = Capture::new(source.as_bytes());
+        let output = fixture.command().arg("--scope=crate").output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{source:?}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{source:?}: {failure}");
+        assert!(failure.to_string().contains("crate_type"), "{source:?}: {failure}");
+        fixture.assert_no_capture_artifacts();
+    }
+
+    // A `lib`/`rlib` attribute does not match a binary capture.
+    let bin = Capture::new(b"#![crate_type = \"rlib\"]\nfn main() {}\n");
+    let output = bin.command().args(["--crate-type=bin", "--scope=crate"]).output().unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    let failure = status(&output);
+    assert_eq!(failure["status"], "unsupported", "{failure}");
+    assert!(failure.to_string().contains("crate_type"), "{failure}");
+    bin.assert_no_capture_artifacts();
+}
+
+#[test]
+fn crate_root_cfg_attr_with_non_literal_arguments_is_refused() {
+    // `Attribute::meta` cannot parse a non-literal value such as
+    // `concat!(..)`, so the pre-expansion check must refuse the whole
+    // attribute rather than skip the `feature` or `crate_type` inside it.
+    // The same holds for brackets in place of parentheses.
+    for attr in [
+        "#![cfg_attr(all(), doc = concat!(\"a\"), feature(rustc_private))]\n",
+        "#![cfg_attr(any(), doc = concat!(\"a\"), crate_type = \"rlib\")]\n",
+        "#![cfg_attr(any(), crate_type = concat!(\"r\", \"lib\"))]\n",
+        "#![cfg_attr(any(), doc = concat!(\"a\"), crate_type = \"proc-macro\")]\n",
+        "#![cfg_attr[all(), feature(rustc_private)]]\n",
+    ] {
+        let source = format!("{attr}pub fn selected(x: u64) -> u64 {{ x }}\n");
+        let fixture = Capture::new(source.as_bytes());
+        let output = fixture.command().arg("--scope=crate").output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{attr:?}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{attr:?}: {failure}");
+        assert!(failure.to_string().contains("unparsed"), "{attr:?}: {failure}");
+        fixture.assert_no_capture_artifacts();
+    }
+
+    // `Attribute::meta` reads `unsafe(..)` inside a `cfg_attr` as a meta item
+    // named `unsafe`; what it wraps must be checked too.
+    for (attr, expected) in [
+        ("#![cfg_attr(all(), unsafe(feature(rustc_private)))]\n", "rustc_private"),
+        ("#![cfg_attr(all(), unsafe(r#feature(r#rustc_private)))]\n", "rustc_private"),
+        ("#![cfg_attr(all(), unsafe(cfg_attr(all(), feature(rustc_private))))]\n", "rustc_private"),
+        ("#![cfg_attr(any(), unsafe(crate_type = \"proc-macro\"))]\n", "crate_type"),
+        ("#![cfg_attr(any(), unsafe(crate_type = \"rlib\"))]\n", "crate_type"),
+    ] {
+        let source = format!("{attr}pub fn selected(x: u64) -> u64 {{ x }}\n");
+        let fixture = Capture::new(source.as_bytes());
+        let output = fixture.command().arg("--scope=crate").output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{attr:?}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{attr:?}: {failure}");
+        assert!(failure.to_string().contains(expected), "{attr:?}: {failure}");
+        fixture.assert_no_capture_artifacts();
+    }
+
+    // A non-literal crate-level `doc` stays admitted.
+    let fixture = Capture::new(b"#![doc = concat!(\"a\")]\npub fn selected(x: u64) -> u64 { x }\n");
+    let output = fixture.command().arg("--scope=crate").output().unwrap();
+    assert!(
+        output.status.success(),
+        "non-literal crate doc should pass:\n{}\n{}",
+        stdout(&output),
+        stderr(&output)
+    );
+}
+
+#[test]
 fn whole_crate_refuses_itemless_link_foreign_block_and_native_libraries() {
     let linked_foreign = b"#[link(name = \"nonexistent_native_lib\")]\n\
         unsafe extern \"C\" {}\n\
