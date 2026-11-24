@@ -1,0 +1,38 @@
+error: type `private::_::_::_::_::___ZcField___b` is private
+  --> $DIR/privacy_collision.rs:69:9
+   |
+69 |         _,
+   |         ^ private type
+
+error: type `private::_::_::_::___ZcField___b_` is private
+  --> $DIR/privacy_collision.rs:76:9
+   |
+76 |         _,
+   |         ^ private type
+
+error: type `private::_::_::_::_::___ZcField__1` is private
+  --> $DIR/privacy_collision.rs:83:9
+   |
+83 |         _,
+   |         ^ private type
+
+error: type `private::_::_::_::_::___ZcField__b` is private
+  --> $DIR/privacy_collision.rs:90:9
+   |
+90 |         _,
+   |         ^ private type
+
+error: type `private::_::_::_::_::___ZcField___b` is private
+   --> $DIR/privacy_collision.rs:105:13
+    |
+105 |     let _ = Ptr::from_mut(&mut s).project::<TFBD, _, { S }, { id!(b) }>();
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ private type
+
+error: type `private::_::_::_::___ZcField___b_` is private
+   --> $DIR/privacy_collision.rs:107:13
+    |
+107 |     let _ = Ptr::from_mut(&mut s).project::<PD, _, { S }, { id!(b_) }>();
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ private type
+
+error: aborting due to 6 previous errors
+

@@ -12,21 +12,27 @@
 
 include!("include.rs");
 
-// FIXME(#2880): Derive `FromBytes` in all types once we support non-ASCII
-// idents.
-
-#[derive(imp::KnownLayout, imp::IntoBytes, imp::Immutable)]
+#[derive(imp::KnownLayout, imp::FromBytes, imp::IntoBytes, imp::Immutable, imp::Project)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 struct TestStruct {
     a: u8,
 }
 
-#[derive(imp::KnownLayout, imp::IntoBytes, imp::Immutable)]
+#[derive(imp::KnownLayout, imp::FromBytes, imp::IntoBytes, imp::Immutable, imp::Project)]
 #[zerocopy(crate = "zerocopy_renamed")]
 #[repr(C)]
 union TestUnion {
     a: u8,
+}
+
+#[derive(imp::KnownLayout, imp::FromZeros, imp::Immutable, imp::Project)]
+#[zerocopy(crate = "zerocopy_renamed")]
+#[repr(C)]
+enum TestFieldfulEnum {
+    Unit,
+    Tuple(u8, u16),
+    Struct { a: u8, b: u16 },
 }
 
 #[derive(imp::KnownLayout, imp::FromBytes, imp::IntoBytes, imp::Immutable)]
