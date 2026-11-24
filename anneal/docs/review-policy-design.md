@@ -33,14 +33,14 @@ the single repository-wide ownership map:
 | File | Sole canonical ownership |
 |---|---|
 | [Root `AGENTS.md`](../../AGENTS.md#documentation) | Repository-wide PR documentation requirement |
-| [`anneal/AGENTS.md`](../AGENTS.md) | Anneal conventions, deterministic preflight checklist, privacy rule, author routing table, and shared [Code Review Rules](../AGENTS.md#code-review-rules) |
+| [`anneal/AGENTS.md`](../AGENTS.md) | Anneal standing rules, deterministic preflight checklist, privacy rule, trivial-edit path, and shared [Code Review Rules](../AGENTS.md#code-review-rules) |
 | [`.gemini/styleguide.md`](../.gemini/styleguide.md) | Role-pure single-turn reviewer mirror of the shared Code Review Rules (zero links, zero author workflow) |
 | [`skills/change-review/SKILL.md`](../skills/change-review/SKILL.md) | Reviewer coverage, isolated probes, and host-constrained reporting (Part I); evidence reuse, risk/structure sizing, delegation, holdouts, pipelining, adjudication, and receipts (Part II) |
 | [`skills/trust-review/SKILL.md`](../skills/trust-review/SKILL.md) | Path-to-surface map, repo-wide filesystem/Unicode hygiene, Pass 1 untrusted/seam/spec audit, Pass 2 TCB/CI checklists, and pre-existing hazard reporting |
 | [`skills/source-control/SKILL.md`](../skills/source-control/SKILL.md) | Commit sizing, bottom-up stack self-containment, commit messages, delegated-worker quarantine, PR/stack publication and readiness, and stack locking/rebasing |
 | [`docs/codex-review.md`](codex-review.md) | Merge gates (including Gate 2 cross-family review), live ruleset state, read-only `ci/codex_review.py` diagnostics, and re-enablement criteria |
 | [`docs/review-policy-design.md`](review-policy-design.md) | Maintainer architecture contract, drift checks, non-bootstrap self-modification rule, and empirical evaluation methodology |
-| [`skills/README.md`](../skills/README.md) | Index of Anneal policy skills and pointer to shared [`../../skills/README.md`](../../skills/README.md) |
+| [`skills/README.md`](../skills/README.md) | Index of Anneal policy skills, author routing table, architecture, `trusted/` commenting and dependency conventions, reference-corpus guidance, and pointer to shared [`../../skills/README.md`](../../skills/README.md) |
 
 ### Parity between Code Review Rules and skill hubs
 

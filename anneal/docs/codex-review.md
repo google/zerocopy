@@ -200,6 +200,14 @@ service limit. See
 [`docs/review-policy-design.md`](review-policy-design.md#policy-ownership) for
 file ownership across skills and docs.
 
+On a pull request that edits a file in that ownership table, if any Gate 2
+review after the second round raises a finding about policy wording rather
+than a trust, soundness, or correctness defect, stop requesting automated
+reviews. Send a human maintainer a short Gate 5 decision brief listing the
+open findings, a proposed disposition for each, and a recommendation, then
+follow the maintainer's decision. Gate 2 still requires a complete review of
+the identity that lands, with every finding resolved.
+
 ## Live GitHub ruleset state and diagnostic workflow
 
 The diagnostic [workflow](../.github/workflows/codex-review.yml) runs only on
