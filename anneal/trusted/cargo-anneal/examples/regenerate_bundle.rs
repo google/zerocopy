@@ -123,7 +123,15 @@ fn run(args: Args) -> Result<(), Box<dyn Error>> {
                 ))
                 .into());
             }
-            check_or_write(&pkg_dest, pkg_perms, &expected_trusted, true)?;
+            if fs::read(&pkg_dest)? != expected_trusted.as_bytes() {
+                return Err(io::Error::other(format!(
+                    "{} is stale relative to its canonical sources; remove \
+                     trusted/cargo-anneal/packaged first, then re-stage with \
+                     --stage-package if publishing",
+                    pkg_dest.display()
+                ))
+                .into());
+            }
         }
     }
     check_or_write(&theory_dest, theory_perms, &expected_theory, args.check)?;
@@ -386,6 +394,35 @@ mod tests {
         assert!(
             !root.join("trusted/cargo-anneal/packaged").exists(),
             "stale theory validation failure must not leave empty packaged/ dir behind"
+        );
+    }
+
+    #[test]
+    fn check_reports_stage_package_remediation_for_stale_packaged_snapshot() {
+        let fixture = tempfile::tempdir().unwrap();
+        let root = fixture.path().join("repository");
+        repository(&root);
+        fs::write(
+            root.join(THEORY_BUNDLE_DESTINATION),
+            render_bundled_theory(&root).unwrap().as_bytes(),
+        )
+        .unwrap();
+        let pkg_dest = root.join(PACKAGED_BUNDLE_DESTINATION);
+        fs::create_dir_all(pkg_dest.parent().unwrap()).unwrap();
+        fs::write(&pkg_dest, b"// stale packaged snapshot\n").unwrap();
+
+        let error = run(Args {
+            root: root.clone(),
+            check: true,
+            stage_package: false,
+        })
+        .unwrap_err();
+        let message = error.to_string();
+        assert!(
+            message.contains("remove trusted/cargo-anneal/packaged first")
+                && message.contains("--stage-package")
+                && !message.contains("without --check"),
+            "{message}"
         );
     }
 }
