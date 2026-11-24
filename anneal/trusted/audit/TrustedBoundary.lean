@@ -33,14 +33,15 @@ this file across ten JSON IPC modes (`run` and `main`):
 
 - **`"headers"` (target import discovery before elaboration):**
   Parses only module headers via `Parser.parseHeader`, reporting each module's
-  `isModule` flag and `imports` while rejecting Lean 4 module-system headers
-  (`module`) outside the bundled `Trusted.*` and `Anneal.*` runtime namespaces,
-  `import all` outside `Anneal.*` importing `Init.Data.Nat.Bitwise.Basic`,
-  non-exported imports on non-module sources, `meta import` (except Lean 4's
-  synthetic `!hasPrelude` `Init(isMeta = true)` paired with non-meta `Init`),
-  and `Lean.*`/`Lake.*` imports so `cargo-anneal verify` can validate target
-  module roles, admit the requested `library-lock.json` or unpinned `Init`/
-  `Std` closure, and reject import cycles before compiling any target source.
+  `isModule` flag and `imports` while admitting Lean 4 module-system headers
+  (`module`) across target roles (`Model`, `Capture`, `Specification`,
+  `Expected`, and `Proof`), rejecting `import all` outside `Anneal.*`
+  importing `Init.Data.Nat.Bitwise.Basic`, non-exported imports on non-module
+  sources, `meta import` (except Lean 4's synthetic `!hasPrelude`
+  `Init(isMeta = true)` paired with non-meta `Init`), and `Lean.*`/`Lake.*`
+  imports so `cargo-anneal verify` can validate target module roles, admit the
+  requested `library-lock.json` or unpinned `Init`/`Std` closure, and reject
+  import cycles before compiling any target source.
 - **`"vendor-headers"` (pinned `vendor/lean-miri` DAG discovery):**
   Parses only module `module`/`prelude`/`import` headers via
   `Parser.parseHeader` without loading `.olean` files or elaborating commands
@@ -881,13 +882,6 @@ def isAllowedNestedCommand (k : SyntaxNodeKind) : Bool :=
     ![``Parser.Command.namespace, ``Parser.Command.section,
       ``Parser.Command.end, ``Parser.Command.mutual].contains k
 
-/-- Return `true` iff `moduleName` belongs to a bundled Anneal runtime
-namespace (`Trusted`, `Trusted.*`, `Anneal`, or `Anneal.*`), which are the only
-namespaces permitted to use Lean 4 `module`-system headers in target
-verification. -/
-def isBundledRuntimeModuleName (moduleName : Name) : Bool :=
-  isTrustedModuleName moduleName || isAnnealModuleName moduleName
-
 /-- Validate a `Parser.Command.sectionHeader` arity-independently: permit only
 empty modifier slots, `public`, and `@[expose]`, rejecting `noncomputable`,
 `meta`, and any unknown modifier. -/
@@ -1396,10 +1390,10 @@ def inspectSource (scopedNamespaces scopedPrefixes : NameSet)
 
 - Non-module targets (`allowModule = false`) reject `import all` and
   non-exported imports unconditionally.
-- Bundled Lean 4 `module` targets (`allowModule = true`) allow private
-  (non-exported) imports and permit `import all` strictly when
-  `allowTheoryImportAll = true` and the target is in
-  `allowedTheoryImportAllModules`.
+- Lean 4 `module` targets (`allowModule = true`) allow private
+  (non-exported) imports across target roles, and permit `import all`
+  strictly when `allowTheoryImportAll = true` (bundled `Anneal.*` modules)
+  and the imported module is in `allowedTheoryImportAllModules`.
 - Every target rejects `Lean.*`/`Lake.*`, `Init.System.*`, and
   `Std.Internal.UV.*` imports, and any `isMeta` edge other than Lean 4's
   synthetic `!hasPrelude` `Init(isMeta = true)` paired with a non-meta
@@ -1424,9 +1418,8 @@ def validateTargetImports (context : String) (imports : Array Import)
       fail s!"disallowed sysroot import {imp.module} in {context}"
 
 /-- Read and validate a target source header (`"headers"`), admitting Lean 4
-`module`-system headers strictly for bundled `Trusted.*` and `Anneal.*` runtime
-modules while keeping `Capture`, `Specification`, `Expected`, and authored
-`Proof` sources strictly non-module. -/
+`module`-system headers across target modules while keeping `import all`
+confined strictly to bundled `Anneal.*` runtime modules. -/
 def inspectHeader (moduleName : Name) (path : System.FilePath) : IO Json := do
   let text ← IO.FS.readFile path
   let ctx := Parser.mkInputContext text path.toString
@@ -1434,14 +1427,12 @@ def inspectHeader (moduleName : Name) (path : System.FilePath) : IO Json := do
   if messages.hasErrors || state.recovering then
     fail s!"header parser error in {moduleName}"
   let isModule := Elab.HeaderSyntax.isModule header
-  if isModule && !isBundledRuntimeModuleName moduleName then
-    fail s!"module system header is unsupported in {moduleName}"
+  inspectSyntax (.ofList allowedHeaderKinds) header.raw
+    (requirePrelude := false) (checkPureRefs := false)
   let imports := Elab.HeaderSyntax.imports header
   validateTargetImports moduleName.toString imports
     (allowModule := isModule)
     (allowTheoryImportAll := isAnnealModuleName moduleName)
-  inspectSyntax (.ofList allowedHeaderKinds) header.raw
-    (requirePrelude := false) (checkPureRefs := false)
   return Json.mkObj [
     ("module", toJson moduleName),
     ("imports", toJson imports),
@@ -1508,12 +1499,20 @@ def allowedSpecDeclModifierKinds : List Name := [
   ``Parser.Command.private, ``Parser.Command.protected,
   ``Parser.Command.noncomputable]
 
+/-- Return `true` iff modifier kind `k` is allowed inside
+`Parser.Command.declModifiers` for a specification (`isModule` additionally
+permits `Parser.Command.public`). -/
+def isAllowedSpecDeclModifierKind (isModule : Bool) (k : Name) : Bool :=
+  allowedSpecDeclModifierKinds.contains k ||
+    (isModule && k == ``Parser.Command.public)
+
 /-- Modifier and fixpoint kinds unconditionally rejected anywhere in a
 specification AST (`Parser.Term.scoped` closes `scoped instance` as well as
-`@[scoped ...]`). -/
+`@[scoped ...]`; `Parser.Command.public` is rejected in non-`module`
+specifications by `inspectSpecSyntax` and declaration modifier checks). -/
 def forbiddenSpecModifierKinds : List Name := [
   ``Parser.Command.meta, ``Parser.Command.unsafe,
-  ``Parser.Command.partial, ``Parser.Command.public,
+  ``Parser.Command.partial,
   ``Parser.Term.unsafe, ``Parser.Term.scoped,
   `Lean.Parser.Termination.partialFixpoint,
   `Lean.Parser.Termination.coinductiveFixpoint,
@@ -1727,9 +1726,11 @@ def isSpecPrioOpt (s : Syntax) : Bool :=
   else false
 
 /-- Validate a `Parser.Term.attrInstance` node inside a target specification:
-permit only empty or `local` `attrKind` (never `scoped`), and dispatch strictly
-over the five allowed attribute kinds. -/
-def validateSpecAttrInstance (args : Array Syntax) : IO Unit := do
+permit only empty or `local` `attrKind` (never `scoped`), permit global
+`@[expose]` strictly in `module` mode, and dispatch strictly over the allowed
+attribute kinds. -/
+def validateSpecAttrInstance (args : Array Syntax) (isModule : Bool := false) :
+    IO Unit := do
   unless args.size == 2 do
     fail "unsupported attribute instance shape in specification"
   let attrKind := args[0]!
@@ -1746,7 +1747,9 @@ def validateSpecAttrInstance (args : Array Syntax) : IO Unit := do
   let ak := attr.getKind
   if ak == ``Parser.Attr.simple then
     let attrName := attr[0].getId
-    unless allowedSpecSimpleAttrs.contains attrName do
+    let ok := allowedSpecSimpleAttrs.contains attrName ||
+      (isModule && attrName == `expose && kindOpt.getArgs.isEmpty)
+    unless ok do
       fail s!"unsupported attribute {attrName} in specification"
     unless attr[1].isOfKind nullKind && attr[1].getArgs.isEmpty do
       fail s!"unsupported arguments on attribute {attrName} in specification"
@@ -1794,16 +1797,24 @@ def validateSpecAttrInstance (args : Array Syntax) : IO Unit := do
   else
     fail s!"unsupported attribute kind {ak} in specification"
 
-/-- Validate a `Parser.Command.sectionHeader` arity-independently: every child
-must be `null #[]` or `null #[atom "noncomputable"]`. -/
-def validateSpecSectionHeader (args : Array Syntax) : IO Unit := do
+/-- Validate a `Parser.Command.sectionHeader` arity-independently: in
+non-`module` specifications every child must be `null #[]` or
+`null #[atom "noncomputable"]`; `module`-mode specifications additionally admit
+`public` and `@[expose]`. -/
+def validateSpecSectionHeader (args : Array Syntax)
+    (isModule : Bool := false) : IO Unit := do
   for child in args do
     let ok := child.isOfKind nullKind &&
       (child.getArgs.isEmpty ||
         (child.getArgs.size == 1 &&
           match child.getArgs[0]! with
           | .atom _ "noncomputable" => true
-          | _ => false))
+          | .atom _ "public" => isModule
+          | _ => false) ||
+        (isModule && child.getArgs.size == 3 &&
+          match child.getArgs[0]!, child.getArgs[1]!, child.getArgs[2]! with
+          | .atom _ "@[", .atom _ "expose", .atom _ "]" => true
+          | _, _, _ => false))
     unless ok do
       fail "unsupported section/namespace modifier in specification"
 
@@ -2052,7 +2063,7 @@ def openActivatesScoped (openDecl : Syntax) : Bool :=
 `(currNs, openDecls)` and dynamic `(commandLikeKinds, tacticLikeKinds)`. -/
 partial def inspectSpecSyntax (commandLikeKinds tacticLikeKinds : NameSet)
     (parserEnv : Environment) (currNs : Name) (openDecls : List OpenDecl)
-    (s : Syntax) : IO Unit := do
+    (s : Syntax) (isModule : Bool := false) : IO Unit := do
   match s with
   | .missing => fail "unexpected missing syntax node in specification"
   | .atom _ _ => pure ()
@@ -2074,7 +2085,8 @@ partial def inspectSpecSyntax (commandLikeKinds tacticLikeKinds : NameSet)
       checkSpecIdent cand
   | .node _ k args =>
     if k != nullKind then
-      if forbiddenSpecModifierKinds.contains k then
+      if forbiddenSpecModifierKinds.contains k ||
+          (!isModule && k == ``Parser.Command.public) then
         fail s!"disallowed modifier {k} in specification"
       if forbiddenSpecTermKinds.contains k || isQuotationKind k then
         fail s!"disallowed syntax {k} in specification"
@@ -2086,23 +2098,23 @@ partial def inspectSpecSyntax (commandLikeKinds tacticLikeKinds : NameSet)
           fail s!"unsupported tactic {k} in specification"
     -- Structural checks and scope-aware subtrees.
     if k == ``Parser.Command.sectionHeader then
-      validateSpecSectionHeader args
+      validateSpecSectionHeader args isModule
     else if k == ``Parser.Command.declModifiers then
       for child in args do
         unless child.isOfKind nullKind && child.getArgs.isEmpty do
           let ck := child.getKind
           if ck == nullKind then
             for inner in child.getArgs do
-              unless allowedSpecDeclModifierKinds.contains inner.getKind do
+              unless isAllowedSpecDeclModifierKind isModule inner.getKind do
                 fail (s!"unsupported declaration modifier {inner.getKind} " ++
                   "in specification")
               inspectSpecSyntax commandLikeKinds tacticLikeKinds parserEnv
-                currNs openDecls inner
+                currNs openDecls inner isModule
           else
-            unless allowedSpecDeclModifierKinds.contains ck do
+            unless isAllowedSpecDeclModifierKind isModule ck do
               fail s!"unsupported declaration modifier {ck} in specification"
             inspectSpecSyntax commandLikeKinds tacticLikeKinds parserEnv
-              currNs openDecls child
+              currNs openDecls child isModule
     else if k == ``Parser.Command.declaration then
       unless args.size == 2 &&
           args[0]!.isOfKind ``Parser.Command.declModifiers do
@@ -2116,7 +2128,7 @@ partial def inspectSpecSyntax (commandLikeKinds tacticLikeKinds : NameSet)
         discard <| checkSpecDeclNamespace currNs id parserEnv
       for child in args do
         inspectSpecSyntax commandLikeKinds tacticLikeKinds parserEnv
-          currNs openDecls child
+          currNs openDecls child isModule
     else if k == ``Parser.Command.mutual then
       unless args.size == 3 &&
           args[1]!.getArgs.all (isAllowedSpecNestedCommand ·.getKind) do
@@ -2126,7 +2138,7 @@ partial def inspectSpecSyntax (commandLikeKinds tacticLikeKinds : NameSet)
       let mut mutCmds := commandLikeKinds
       let mut mutTacs := tacticLikeKinds
       for child in args[1]!.getArgs do
-        inspectSpecSyntax mutCmds mutTacs mutEnv currNs mutOpen child
+        inspectSpecSyntax mutCmds mutTacs mutEnv currNs mutOpen child isModule
         if child.isOfKind ``Parser.Command.open then
           let (nextEnv, nextOpen) ←
             validateSpecOpenDecl currNs mutOpen mutEnv child[1]
@@ -2144,7 +2156,7 @@ partial def inspectSpecSyntax (commandLikeKinds tacticLikeKinds : NameSet)
       unless isAllowedSpecNestedCommand args[2]!.getKind do
         fail s!"unsupported command inside `in`: {args[2]!.getKind}"
       inspectSpecSyntax commandLikeKinds tacticLikeKinds parserEnv
-        currNs openDecls args[0]!
+        currNs openDecls args[0]! isModule
       let (tmpEnv, tmpOpen) ←
         if args[0]!.isOfKind ``Parser.Command.open then
           validateSpecOpenDecl currNs openDecls parserEnv args[0]![1]
@@ -2156,7 +2168,7 @@ partial def inspectSpecSyntax (commandLikeKinds tacticLikeKinds : NameSet)
           collectSpecParserSets tmpEnv
         else
           pure (commandLikeKinds, tacticLikeKinds)
-      inspectSpecSyntax tmpCmds tmpTacs tmpEnv currNs tmpOpen args[2]!
+      inspectSpecSyntax tmpCmds tmpTacs tmpEnv currNs tmpOpen args[2]! isModule
     else if k == ``Parser.Command.open then
       unless args.size == 2 do
         fail "unsupported open command shape in specification"
@@ -2171,11 +2183,11 @@ partial def inspectSpecSyntax (commandLikeKinds tacticLikeKinds : NameSet)
           collectSpecParserSets tmpEnv
         else
           pure (commandLikeKinds, tacticLikeKinds)
-      inspectSpecSyntax tmpCmds tmpTacs tmpEnv currNs tmpOpen args[3]!
+      inspectSpecSyntax tmpCmds tmpTacs tmpEnv currNs tmpOpen args[3]! isModule
     else if k == ``Parser.Command.export then
       validateSpecExport currNs openDecls args
     else if k == ``Parser.Term.attrInstance then
-      validateSpecAttrInstance args
+      validateSpecAttrInstance args isModule
     else if k == ``Parser.Command.eraseAttr then
       let attrName := args[1]?.map Syntax.getId |>.getD .anonymous
       unless allowedSpecEraseAttrs.contains attrName do
@@ -2186,7 +2198,7 @@ partial def inspectSpecSyntax (commandLikeKinds tacticLikeKinds : NameSet)
         fail "unsupported deriving command modifier in specification"
       for child in args do
         inspectSpecSyntax commandLikeKinds tacticLikeKinds parserEnv
-          currNs openDecls child
+          currNs openDecls child isModule
     else if k == ``Parser.Command.derivingClass then
       unless args.size == 2 && args[0]!.isOfKind nullKind &&
           args[0]!.getArgs.isEmpty do
@@ -2199,13 +2211,13 @@ partial def inspectSpecSyntax (commandLikeKinds tacticLikeKinds : NameSet)
     else if k == ``Parser.Term.set_option then
       validateSpecSetOption args
       inspectSpecSyntax commandLikeKinds tacticLikeKinds parserEnv
-        currNs openDecls args[5]!
+        currNs openDecls args[5]! isModule
     else if k == `Lean.Parser.Tactic.decide then
       validateSpecDecideTactic args
     else
       for child in args do
         inspectSpecSyntax commandLikeKinds tacticLikeKinds parserEnv
-          currNs openDecls child
+          currNs openDecls child isModule
 
 /-- Update lexical scope state `(parserEnv, scopes)` after validating a
 specification command `stx`. -/
@@ -2276,7 +2288,8 @@ any command. -/
 partial def parseAndInspectSpecCommands (ctx : Parser.InputContext)
     (commandLikeKinds tacticLikeKinds : NameSet) (parserEnv : Environment)
     (scopes : List ParseScope) (moduleName : Name)
-    (state : Parser.ModuleParserState) (messages : MessageLog) : IO Unit := do
+    (state : Parser.ModuleParserState) (messages : MessageLog)
+    (isModule : Bool := false) : IO Unit := do
   let previous := state.pos
   let top := scopes.head!
   let pmctx : Parser.ParserModuleContext := {
@@ -2296,7 +2309,7 @@ partial def parseAndInspectSpecCommands (ctx : Parser.InputContext)
   unless allowedSpecCommandKinds.contains stx.getKind do
     fail s!"unsupported command {stx.getKind} in specification {moduleName}"
   inspectSpecSyntax commandLikeKinds tacticLikeKinds parserEnv
-    top.currNamespace top.openDecls stx
+    top.currNamespace top.openDecls stx isModule
   let (nextEnv, nextScopes) ← applySpecScope parserEnv scopes stx
   let (nextCmds, nextTacs) ←
     if stx.isOfKind ``Parser.Command.namespace ||
@@ -2307,7 +2320,7 @@ partial def parseAndInspectSpecCommands (ctx : Parser.InputContext)
     else
       pure (commandLikeKinds, tacticLikeKinds)
   parseAndInspectSpecCommands ctx nextCmds nextTacs nextEnv nextScopes
-    moduleName nextState nextMessages
+    moduleName nextState nextMessages isModule
 
 /-- Execute batched fail-closed `"spec-preflight"` across all
 `TargetRole::Specification` modules against the authenticated `Init` + `Std`
@@ -2326,16 +2339,15 @@ def preflightSpecs (j : Json) (foundation : Array Name) : IO Json := do
     let (header, initial, log) ← Parser.parseHeader ctx
     if log.hasErrors || initial.recovering then
       fail s!"header parser error in specification {moduleName}"
-    if Elab.HeaderSyntax.isModule header then
-      fail s!"module system header is unsupported in specification {moduleName}"
-    let imports := Elab.HeaderSyntax.imports header
-    validateTargetImports moduleName.toString imports
+    let isModule := Elab.HeaderSyntax.isModule header
     inspectSyntax (.ofList allowedHeaderKinds) header.raw
       (requirePrelude := false) (checkPureRefs := false)
+    let imports := Elab.HeaderSyntax.imports header
+    validateTargetImports moduleName.toString imports (allowModule := isModule)
     let rootScope : ParseScope :=
       { header := "", currNamespace := .anonymous, openDecls := [] }
     parseAndInspectSpecCommands ctx commandLikeKinds tacticLikeKinds env
-      [rootScope] moduleName initial log
+      [rootScope] moduleName initial log (isModule := isModule)
     checked := checked.push (toJson moduleName)
   return Json.mkObj [("checked", .arr checked)]
 
@@ -4942,11 +4954,15 @@ private def exportProofModules (_env : Environment)
     (_proofMods : NameSet) : IO Json :=
   throw <| IO.userError "proof exporter requires runtime implementation"
 
-/-- Return `true` iff `m` is a bundled runtime module permitted to carry Lean 4
-`module`-system artifacts in `role`. -/
-def isAllowedBundledTargetModule (role : TargetRole) (m : Name) : Bool :=
-  (role == .model && isTrustedModuleName m) ||
-    (role == .proof && isAnnealModuleName m)
+/-- Fail closed when module `m`'s compiled `isModule` header flag `actual`
+differs from the `"isModule"` expectation `expected` that `cargo-anneal`
+derived from the staged source header. -/
+private def validateTargetModuleIsModuleConsistency (m : Name)
+    (actual expected : Bool) : IO Unit := do
+  if !expected && actual then
+    fail s!"module-system artifact unsupported in {m}"
+  else if expected && !actual then
+    fail s!"non-module artifact mismatch in {m}"
 
 private def oleanHeaderSize : Nat := 88
 
@@ -4989,13 +5005,13 @@ private def parsePrimaryOleanIsModule (m : Name) (bytes : ByteArray)
     fail s!"invalid olean isModule flag in {m}"
 
 /-- Validate `.olean*` / `.ir` artifact part counts for a target module `m`:
-non-module targets accept a single monolithic `.olean`, while bundled
-`Trusted.*` (`Model`) and `Anneal.*` (`Proof`) modules accept `.olean` plus
-optional `.olean.server` / `.olean.private` sidecars (never `.ir`). -/
+non-module targets accept a single monolithic `.olean`, while Lean 4 `module`
+targets accept `.olean` plus optional `.olean.server` / `.olean.private`
+sidecars (never `.ir`). -/
 def validateTargetArtifactParts (m : Name) (oleanPartCount : Nat)
-    (irEmpty allowModuleArtifact : Bool) : IO Unit := do
+    (irEmpty isModuleArtifact : Bool) : IO Unit := do
   let partsOk :=
-    if allowModuleArtifact then
+    if isModuleArtifact then
       oleanPartCount >= 1 && oleanPartCount <= 3 && irEmpty
     else
       oleanPartCount == 1 && irEmpty
@@ -5006,10 +5022,9 @@ def validateTargetArtifactParts (m : Name) (oleanPartCount : Nat)
 primary-part `isModule` policy before `importEnv` mmaps `.olean.server` or
 `.olean.private` companion regions via `CompactedRegion.read`. -/
 def validateTargetArtifactPreImport (m : Name) (art : ImportArtifacts)
-    (allowModuleArtifact : Bool) : IO Unit := do
+    (expectedIsModule : Bool) : IO Unit := do
   let parts := art.oleanParts true
-  validateTargetArtifactParts m parts.size art.irParts.isEmpty
-    allowModuleArtifact
+  validateTargetArtifactParts m parts.size art.irParts.isEmpty expectedIsModule
   let mut prefix0 : Option ByteArray := none
   let mut prevEndAligned : Option Nat := none
   let mut primaryIsMod : Option Bool := none
@@ -5048,10 +5063,8 @@ def validateTargetArtifactPreImport (m : Name) (art : ImportArtifacts)
       fail s!"inconsistent olean companion sequence in {m}"
   let some isMod := primaryIsMod
     | fail s!"missing primary olean artifact for {m}"
-  if isMod && !allowModuleArtifact then
-    fail s!"module-system artifact unsupported in {m}"
-  validateTargetArtifactParts m parts.size art.irParts.isEmpty
-    (isMod && allowModuleArtifact)
+  validateTargetModuleIsModuleConsistency m isMod expectedIsModule
+  validateTargetArtifactParts m parts.size art.irParts.isEmpty isMod
 
 /-- Execute `"target-export"` in a dedicated sandboxed child process with zero
 write access to `"target-audit"`'s verdict output.
@@ -5070,15 +5083,18 @@ def targetExport (j : Json) (foundation : Array Name) : IO Json := do
     roles ← insertRole roles m .library "overlapping target module"
   let mut roots := foundation ++ libraries
   let mut proofMods : NameSet := {}
+  let mut expectedIsMod : Std.HashMap Name Bool := {}
   for item in modules do
     let m := (← field (α := String) item "module").toName
     let rawRole ← field (α := String) item "role"
     let some role := TargetRole.parse? rawRole
       | fail s!"unknown target role {rawRole}"
+    let expectedIsModule ← field (α := Bool) item "isModule"
     roles ← insertRole roles m (.source role) "overlapping target module"
+    expectedIsMod := expectedIsMod.insert m expectedIsModule
     let some art := arts.find? m
       | fail s!"missing target artifacts for {m}"
-    validateTargetArtifactPreImport m art (isAllowedBundledTargetModule role m)
+    validateTargetArtifactPreImport m art expectedIsModule
     if role == .proof then
       proofMods := proofMods.insert m
     roots := roots.push m
@@ -5092,13 +5108,13 @@ def targetExport (j : Json) (foundation : Array Name) : IO Json := do
   let expProvenance n := constProvenance env roles n "target module"
   for m in env.header.modules, data in env.header.moduleData do
     if let some (.source srcRole) := roles.get? m.module then
-      let allowModuleArtifact := isAllowedBundledTargetModule srcRole m.module
-      if data.isModule && !allowModuleArtifact then
-        fail s!"module-system artifact unsupported in {m.module}"
+      let some expected := expectedIsMod.get? m.module
+        | fail s!"missing expected isModule for {m.module}"
+      validateTargetModuleIsModuleConsistency m.module data.isModule expected
       let some art := arts.find? m.module
         | fail s!"missing target artifacts for {m.module}"
       validateTargetArtifactParts m.module (art.oleanParts true).size
-        art.irParts.isEmpty (data.isModule && allowModuleArtifact)
+        art.irParts.isEmpty data.isModule
       if srcRole != .proof then
         let importsProof := data.imports.any fun imp =>
           roles.get? imp.module == some (.source .proof)
@@ -6056,12 +6072,15 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
     roles ← insertRole roles m .library "overlapping target module"
   let mut nonProofRoots := foundation ++ libraries
   let mut expectedProofMods : NameSet := {}
+  let mut expectedIsMod : Std.HashMap Name Bool := {}
   for item in modules do
     let m := (← field (α := String) item "module").toName
     let rawRole ← field (α := String) item "role"
     let some role := TargetRole.parse? rawRole
       | fail s!"unknown target role {rawRole}"
+    let expectedIsModule ← field (α := Bool) item "isModule"
     roles ← insertRole roles m (.source role) "overlapping target module"
+    expectedIsMod := expectedIsMod.insert m expectedIsModule
     if role == .proof then
       -- Authored `Proof` `.olean`s must never be supplied to or mapped by the
       -- verdict-producing `"target-audit"` process.
@@ -6075,7 +6094,7 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
       -- `importEnv` mmaps `.olean.server` / `.olean.private`.
       let some art := arts.find? m
         | fail s!"missing target artifacts for {m}"
-      validateTargetArtifactPreImport m art (isAllowedBundledTargetModule role m)
+      validateTargetArtifactPreImport m art expectedIsModule
       nonProofRoots := nonProofRoots.push m
   -- Enforce role-graph separation against the admitted DAG before calling
   -- `importEnv` on `nonProofRoots` so a non-`Proof` module importing a
@@ -6163,17 +6182,16 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
     if let .source targetRole := role then
       if targetRole == .proof then
         fail s!"proof module {m.module} must not be imported in target-audit"
-      let allowModuleArtifact := isAllowedBundledTargetModule targetRole m.module
-      if data.isModule && !allowModuleArtifact then
-        fail s!"module-system artifact unsupported in {m.module}"
+      let some expected := expectedIsMod.get? m.module
+        | fail s!"missing expected isModule for {m.module}"
+      validateTargetModuleIsModuleConsistency m.module data.isModule expected
       let some art := arts.find? m.module
         | fail s!"missing target artifacts for {m.module}"
       validateTargetArtifactParts m.module (art.oleanParts true).size
-        art.irParts.isEmpty (data.isModule && allowModuleArtifact)
+        art.irParts.isEmpty data.isModule
       validateTargetImports m.module.toString data.imports
-        (allowModule := data.isModule && allowModuleArtifact)
-        (allowTheoryImportAll :=
-          targetRole == .proof && isAnnealModuleName m.module)
+        (allowModule := data.isModule)
+        (allowTheoryImportAll := false)
       unless data.constNames == data.constants.map ConstantInfo.name do
         fail s!"invalid target inventory {m.module}"
       let mut modSeen : NameSet := {}
@@ -6218,12 +6236,12 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
   let mut proofOrigins : Std.HashMap Name Name := {}
   let mut proofConsts : Std.HashMap Name ConstantInfo := {}
   for pm in proofExport.modules do
-    let allowModuleArtifact := isAllowedBundledTargetModule .proof pm.moduleName
-    if pm.isModule && !allowModuleArtifact then
-      fail s!"module-system artifact unsupported in {pm.moduleName}"
+    let some expected := expectedIsMod.get? pm.moduleName
+      | fail s!"missing expected isModule for {pm.moduleName}"
+    validateTargetModuleIsModuleConsistency pm.moduleName pm.isModule expected
     validateTargetImports pm.moduleName.toString pm.imports
-      (allowModule := pm.isModule && allowModuleArtifact)
-      (allowTheoryImportAll := allowModuleArtifact)
+      (allowModule := pm.isModule)
+      (allowTheoryImportAll := pm.isModule && isAnnealModuleName pm.moduleName)
     unless pm.constNames == pm.constants.map ConstantInfo.name do
       fail s!"invalid target inventory {pm.moduleName}"
     let mut modSeen : NameSet := {}

@@ -15,9 +15,9 @@ use serde_json::{Value, json};
 
 use crate::helpers::{
     SCALAR_DEPENDENCY, SCALAR_PROOF, SCALAR_SOURCE, SCALAR_SPEC, SCALAR_UNSUPPORTED, anneal_root,
-    corpus_path, expect_failed, expect_verified, lean_source, new_workspace, run_verify_inv,
-    run_verify_strs, sha256_hex, verify_invocation, with_host_cargo_env, workspace_tools,
-    write_json_file, write_scalar_baseline,
+    corpus_path, expect_failed, expect_verified, lean_module_source, lean_source, new_workspace,
+    run_verify_inv, run_verify_strs, sha256_hex, verify_invocation, with_host_cargo_env,
+    workspace_tools, write_json_file, write_scalar_baseline,
 };
 
 fn selected_request(req: &Value) -> Value {
@@ -259,26 +259,26 @@ fn verifies_real_source_and_rejects_boundary_mutations() {
     for (name, decls, rejection) in [
         (
             "wrong-root",
-            "theorem Proof.verify : True := True.intro",
+            "public theorem Proof.verify : True := True.intro",
             "policy:target theorem type differs from Expected",
         ),
         (
             "axiom",
-            "axiom fabricated : Expected.claim\ntheorem Proof.verify : Expected.claim := fabricated",
+            "public axiom fabricated : Expected.claim\npublic theorem Proof.verify : Expected.claim := fabricated",
             "policy:unapproved axiom fabricated from Proof",
         ),
         (
             "sorry",
-            "theorem Proof.verify : Expected.claim := by sorry",
+            "public theorem Proof.verify : Expected.claim := by sorry",
             "policy:unapproved axiom sorryAx from Init.Prelude",
         ),
         (
             "extra-hypothesis",
-            "theorem Proof.verify (assumed : Expected.claim) : Expected.claim := assumed",
+            "public theorem Proof.verify (assumed : Expected.claim) : Expected.claim := assumed",
             "policy:target theorem type differs from Expected",
         ),
     ] {
-        fs::write(work.join("lean/Proof.lean"), lean_source("import Expected", decls)).unwrap();
+        fs::write(work.join("lean/Proof.lean"), lean_module_source("public import Expected", decls)).unwrap();
         let art = work.join(name);
         let res = run_verify_strs(
             &staged,
@@ -302,9 +302,13 @@ fn verifies_real_source_and_rejects_boundary_mutations() {
 
     let shadowed = SCALAR_PROOF
         .replace(
-            "theorem verify : Expected.claim := by",
-            "def Spec.specs : Specs := ⟨fun _ _ => False, fun _ => True⟩\n\n\
-             theorem verify : CrateTheorem ⟨Captured.program, Spec.specs⟩ := by",
+            "public import Expected\n",
+            "public import Expected\npublic import Trusted.MirSemantics\npublic import Captured\n",
+        )
+        .replace(
+            "public theorem verify : Expected.claim := by",
+            "public def Spec.specs : Specs := ⟨fun _ _ => False, fun _ => True⟩\n\n\
+             public theorem verify : CrateTheorem ⟨Captured.program, Spec.specs⟩ := by",
         )
         .replace(", totalCorrectness⟩", ", True.intro⟩");
     fs::write(work.join("lean/Proof.lean"), shadowed).unwrap();

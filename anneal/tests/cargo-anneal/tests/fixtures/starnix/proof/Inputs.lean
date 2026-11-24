@@ -6,9 +6,12 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Init.Data.BitVec.Lemmas
-import Endianness
+public import Init.Data.BitVec.Lemmas
+public import Endianness
+
+@[expose] public section
 
 namespace Endianness
 
@@ -33,3 +36,5 @@ theorem constantZero16_rejected :
   simp [reverseByteIndex] at bit
 
 end Endianness
+
+end

@@ -65,8 +65,11 @@ const STANDALONE_REQUEST_JSON: &str = "\
 ";
 
 const STANDALONE_SPEC_LEAN: &str = "\
+module
 prelude
-import Trusted.MirSemantics
+public import Trusted.MirSemantics
+
+@[expose] public section
 
 namespace Spec
 
@@ -84,11 +87,14 @@ noncomputable def returnsZero (program : Program) : Prop :=
 noncomputable def specs : Specs := ⟨fun _ _ => True, returnsZero⟩
 
 end Spec
+
+end
 ";
 
 const STANDALONE_PROOF_LEAN: &str = "\
+module
 prelude
-import Expected
+public import Expected
 import Anneal.MirWp
 
 namespace Proof
@@ -106,7 +112,7 @@ theorem totalCorrectness : Spec.returnsZero Captured.program := by
       (wpProg_of_execProg execution)
   exact ⟨post, terminates, result ▸ returned⟩
 
-theorem verify : Expected.claim := by
+public theorem verify : Expected.claim := by
   refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, totalCorrectness⟩
   intro id body found
   cases id with
@@ -125,8 +131,11 @@ end Proof
 
 fn cargo_spec_lean() -> String {
     "\
+module
 prelude
-import Trusted.MirSemantics
+public import Trusted.MirSemantics
+
+@[expose] public section
 
 namespace Spec
 
@@ -140,14 +149,17 @@ def specs : Specs where
   property := fun _ => True
 
 end Spec
+
+end
 "
     .into()
 }
 
 fn cargo_proof_lean() -> String {
     "\
+module
 prelude
-import Expected
+public import Expected
 import Anneal.MirWp
 
 namespace Proof
@@ -158,7 +170,7 @@ open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
 -- proofs for each captured body in `Captured.program.bodies`.
 -- Run `cargo anneal skill --example` or `cargo anneal init --standalone`
 -- to inspect a complete worked proof.
-theorem verify : Expected.claim := by
+public theorem verify : Expected.claim := by
   refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, True.intro⟩
   exact ?_
 

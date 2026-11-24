@@ -6,9 +6,12 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Captured
-import SourceInputs
+public import Captured
+public import SourceInputs
+
+@[expose] public section
 
 namespace ProductionReduction
 
@@ -23,3 +26,5 @@ abbrev endianArgs (toBe : Bool) (width : Nat) (value : Word) : List Val :=
   bodyEndianArgs sourceBody toBe width value
 
 end ProductionReduction
+
+end

@@ -22,7 +22,7 @@ const HEADER: &str = "-- Copyright 2026 The Fuchsia Authors\n--\n\
 -- license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.\n\
 -- This file may not be copied, modified, or distributed except according to\n\
 -- those terms.\n\n\
-prelude\nimport Trusted.MirAst\n\nnamespace Captured\n\n";
+module\nprelude\npublic import Trusted.MirAst\n\n@[expose] public section\n\nnamespace Captured\n\n";
 
 const MAX_LIST_CHUNK_LEN: usize = 16;
 
@@ -451,7 +451,7 @@ pub fn render(program: &ir::Program) -> String {
          \x20   scope := Trusted.MirAst.VerificationScope.{scope},\n\
          \x20   entryDefId := {ENTRY_DEF_ID},\n\
          \x20   bodies := {bodies_expr}\n\
-         \x20 }}\n\nend Captured\n"
+         \x20 }}\n\nend Captured\n\nend\n"
     );
     out
 }

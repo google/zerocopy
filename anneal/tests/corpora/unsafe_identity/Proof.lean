@@ -6,8 +6,9 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Expected
+public import Expected
 import Anneal.MirWp
 
 namespace Proof
@@ -36,7 +37,7 @@ theorem faulting_not_safe : ¬Safe faulting [] := by
   intro safe
   exact safe _ .undefined (.next .refl faulting_step0) faulting_really_faults
 
-theorem verify : Expected.claim := by
+public theorem verify : Expected.claim := by
   refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, True.intro⟩
   intro id selected found
   cases id with

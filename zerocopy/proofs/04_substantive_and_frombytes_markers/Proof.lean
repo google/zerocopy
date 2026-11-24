@@ -6,8 +6,9 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Expected
+public import Expected
 import Anneal.MirWp
 
 namespace Proof
@@ -243,7 +244,7 @@ private theorem body7_total : Spec.ReturnsTotal Captured.program 7 [] .unit :=
 private theorem body8_total : Spec.ReturnsTotal Captured.program 8 [] .unit :=
   total_of_runs rfl body8_adm rfl body8_runs
 
-theorem verify : Expected.claim := by
+public theorem verify : Expected.claim := by
   refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩
   · have hAll : BodiesVerified Captured.program Spec.specs 0 Captured.program.bodies :=
       ⟨body0_safe_verified, body1_safe_verified, body2_safe_verified,

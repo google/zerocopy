@@ -6,8 +6,11 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Trusted.MirSemantics
+public import Trusted.MirSemantics
+
+@[expose] public section
 
 namespace ExecutionSpec
 
@@ -25,3 +28,5 @@ def specs : Specs :=
             (.returned ⟨output, ⟨[]⟩⟩) }
 
 end ExecutionSpec
+
+end

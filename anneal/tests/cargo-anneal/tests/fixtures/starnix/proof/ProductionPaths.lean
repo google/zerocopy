@@ -6,9 +6,13 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import InitialCache
-import SymExec
+public import InitialCache
+public import SymExec
+import Init.Data.Option.Lemmas
+
+@[expose] public section
 
 namespace ProductionPaths
 
@@ -45,3 +49,5 @@ theorem path_sound {flag : Bool} {width : Nat} {s : Sym}
   exact run
 
 end ProductionPaths
+
+end

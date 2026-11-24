@@ -6,8 +6,9 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Expected
+public import Expected
 import Anneal.MirWp
 
 namespace Proof
@@ -129,7 +130,7 @@ private theorem body1_total (m : Spec.UsizeWord) :
     checkArgsMatch_cons_iff.mpr ⟨_, [], rfl, hv, rfl⟩
   exact total_of_executes rfl body1_adm hArgs (body1_executes hv)
 
-theorem verify : Expected.claim := by
+public theorem verify : Expected.claim := by
   refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩
   · have hAll : BodiesVerified Captured.program Spec.specs 0 Captured.program.bodies :=
       ⟨body0_safe_verified, body1_safe_verified, True.intro⟩

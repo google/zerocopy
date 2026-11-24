@@ -367,11 +367,15 @@ explicitly passed (producing a tainted Receipt v3).
   `st_nlink == 1` and bounded size via `fstat`, and applies FD-pinned
   `fchmod(fd, 0o444)`:
   - Compilers: scheduled concurrently along the verified import DAG across
-    bounded workers; each worker emits strictly `{"<module>.olean"}` (≤ 256 MiB,
-    `"isModule": false`) into its own `runs/<n>/out/` (blocking companion
-    `.olean.private`, `.olean.server`, `.ir`, and `.ir.sig` smuggling), and
-    serialized Door 1 promotion atomically `fs::rename`s it to
-    `stage/lib/<mod_path>.olean` before unlocking downstream dependents.
+    bounded workers; each non-`module` worker emits strictly
+    `{"<module>.olean"}` (≤ 256 MiB, `"isModule": false`) into its own
+    `runs/<n>/out/`, while
+    Lean 4 `module` targets omit upstream `.olean.private` files from
+    `setup.json`'s `importArts` (whenever `!import_all`) and promote strictly
+    `{"<module>.olean", "<module>.olean.server", "<module>.olean.private"}`
+    (discarding `.ir`/`.ir.sig`), and serialized Door 1 promotion atomically
+    `fs::rename`s them into `stage/lib/` before unlocking downstream
+    dependents.
   - Inspectors: strictly `{"result.json"}` (≤ 64 MiB), or an empty `out/`
     directory when Lean aborts before writing `result.json`, checked on **both**
     exit `0` and exit `1`.
@@ -402,10 +406,13 @@ Runs once across all staged target modules (`Model`, `Capture`, `Specification`,
 - Parameterizes `inspectSyntax`/`inspectNodeKind` with
   `(requirePrelude : Bool := true)` so Repository Pass 1 keeps mandatory
   `prelude`, while target `"headers"` passes `requirePrelude := false` (still
-  enforcing `allowedHeaderKinds` = `Parser.Module.{header,prelude,import}` to
-  reject explicit `module`/`public`/`meta`/`all`).
-- Rejects `HeaderSyntax.isModule`, `imp.importAll || !imp.isExported`, and any
-  `Lean.*` or `Lake.*` import.
+  enforcing `allowedHeaderKinds` =
+  `Parser.Module.{header,moduleTk,prelude,import,public,all}`—keeping
+  `Parser.Module.meta` excluded at the syntax-kind level—and admitting optional
+  Lean 4 `module` headers across all target roles).
+- Rejects `imp.importAll` outside bundled `Anneal.*`
+  (`Init.Data.Nat.Bitwise.Basic`), non-exported imports on non-`module` sources
+  (`!imp.isExported && !allowModule`), and any `Lean.*` or `Lake.*` import.
 - Permits Lean 4's synthetic `!hasPrelude` `Init(isMeta = true)` prelude edge
   strictly when paired with a non-meta `Init` edge, rejecting all other `isMeta`
   edges across `"headers"`, `target.rs`, and `"target-audit"`.
@@ -432,12 +439,15 @@ command elaboration, zero tactic allowlist on `proof/`):
   `{definition, abbrev, theorem, structure, inductive, classInductive,
   instance}`. Rejects user-written `._unsafe_rec` declaration identifiers.
 - **Arity-independent fail-closed modifiers:** Rejects
-  `Command.{meta,unsafe,partial,public}`, `Term.unsafe`, and `Term.scoped`
-  (closing `scoped instance` as well as `@[scoped ...]`). For
+  `Command.{meta,unsafe,partial}`, `Term.unsafe`, and `Term.scoped`
+  (closing `scoped instance` as well as `@[scoped ...]`), and rejects
+  `Command.public` outside `module`-mode specifications. For
   `Command.sectionHeader`, inspects **all** children and accepts strictly
-  `null #[]` or `null #[atom "noncomputable"]`—avoiding brittle `args.size == 4`
-  slot-index assumptions while rejecting `public`, `meta`, `unsafe`, or any
-  modifier added in future Lean versions.
+  `null #[]` or `null #[atom "noncomputable"]` in non-`module` mode (plus
+  `null #[atom "public"]` and `null #[atom "@[", atom "expose", atom "]"]`
+  when `isModule := true`)—avoiding brittle `args.size == 4` slot-index
+  assumptions while rejecting `meta`, `unsafe`, or any unknown modifier added in
+  future Lean versions.
 - **Resolved lexical scope tracking (`applySpecScope` + subtree `Term.open`):**
   Tracks enclosing `namespace` scopes across `namespace`/`section`/`end`/`in`,
   updating `Parser.parserExtension` scopes across all five `open` forms on
@@ -450,7 +460,8 @@ command elaboration, zero tactic allowlist on `proof/`):
     `local` `Term.attrKind` (rejects `scoped`), dispatching strictly over five
     attribute kinds (`Lean.Parser.Attr.{simp, instance, ext, specialize,
     simple}` with argument validation; `Attr.simple` restricted to
-    `{reducible, semireducible, irreducible, inline, match_pattern}`).
+    `{reducible, semireducible, irreducible, inline, match_pattern}`, plus
+    global `@[expose]` strictly in `module`-mode specifications).
   - `Command.derivingClass` (globally):
     `{BEq, DecidableEq, Repr, Inhabited, Ord, Hashable, Nonempty}`.
   - `Command.set_option` and `Term.set_option`:
@@ -491,11 +502,14 @@ command elaboration, zero tactic allowlist on `proof/`):
 ### 4.3 Unified 2-phase `"target-audit"`
 
 `"target-audit"` runs inside `ExecSeal` with `trustLevel := 0`,
-`plugins := #[]`, and `loadExts := false`, verifying `!data.isModule`,
-`oleanParts.size == 1 && irParts.isEmpty`, and strictly public kernel-relevant
-compiler-override metadata (`getImplementedBy?`, `getExternAttrData?`,
-`csimpEntries` read directly from `finalizeImport`-populated `getModuleEntries`
-on `env`)—with **no** brittle blacklist over internal `ModuleData.entries`
+`plugins := #[]`, and `loadExts := false`, verifying `.olean` v2 headers,
+64 KiB companion base-address chaining, `isModule` consistency against the
+admitted source header, artifact part counts (`1` part and empty `.ir` for
+non-`module`; `1..3` parts and empty `.ir` for `module`), and strictly public
+kernel-relevant compiler-override metadata (`getImplementedBy?`,
+`getExternAttrData?`, `csimpEntries` read directly from
+`finalizeImport`-populated `getModuleEntries` on `env`)—with **no** brittle
+blacklist over internal `ModuleData.entries`
 extension names:
 
 1. **Phase 1 (Claim and whole-specification closure):** Seeds `expectedReached`

@@ -140,8 +140,14 @@ pub fn run_verify_inv(staged: &StagedWorkspace, inv: &Invocation) -> ExecutedRun
 
 /// Wraps [`SCALAR_SPEC`]'s copyright header around `imports` and `decls`.
 pub fn lean_source(imports: &str, declarations: &str) -> String {
-    let (header, _) = SCALAR_SPEC.split_once("prelude").expect("scalar Spec.lean prelude");
+    let (header, _) = SCALAR_SPEC.split_once("module\nprelude").expect("scalar Spec.lean header");
     format!("{header}prelude\n{imports}\n\n{declarations}\n")
+}
+
+/// Wraps [`SCALAR_SPEC`]'s copyright header in a `module`-mode Lean source.
+pub fn lean_module_source(imports: &str, declarations: &str) -> String {
+    let (header, _) = SCALAR_SPEC.split_once("module\nprelude").expect("scalar Spec.lean header");
+    format!("{header}module\nprelude\n{imports}\n\n{declarations}\n")
 }
 
 /// Asserts a verified receipt exit code, schema version, and `audit.replay`.

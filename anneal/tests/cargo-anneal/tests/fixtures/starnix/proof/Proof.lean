@@ -6,15 +6,16 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Expected
+public import Expected
 import ProductionClaims
 
 namespace Proof
 
 open Trusted.MirAst Trusted.MirSemantics Endianness ProductionReduction ProductionClaims
 
-theorem verify : Expected.claim := by
+public theorem verify : Expected.claim := by
   refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩
   · intro id body found
     cases id with

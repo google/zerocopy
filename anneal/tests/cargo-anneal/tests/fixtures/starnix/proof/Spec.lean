@@ -6,9 +6,12 @@
 -- This file may not be copied, modified, or distributed except according to
 -- those terms.
 
+module
 prelude
-import Trusted.MirSemantics
-import Endianness
+public import Trusted.MirSemantics
+public import Endianness
+
+@[expose] public section
 
 namespace Spec
 
@@ -51,3 +54,5 @@ def specs : Specs :=
       involution program body }
 
 end Spec
+
+end

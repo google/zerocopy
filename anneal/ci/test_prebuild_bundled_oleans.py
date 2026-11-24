@@ -26,8 +26,21 @@ class PrebuildBundledOleansTests(unittest.TestCase):
                 b"-- comment\n/- nested /- block -/ -/\nmodule\nprelude\n"
             )
         )
+        self.assertTrue(
+            prebuild_bundled_oleans.source_starts_with_module_keyword(
+                b"module--inline\nprelude\n"
+            )
+        )
+        self.assertTrue(
+            prebuild_bundled_oleans.source_starts_with_module_keyword(
+                b"module/-inline-/\nprelude\n"
+            )
+        )
         self.assertFalse(
             prebuild_bundled_oleans.source_starts_with_module_keyword(b"module_foo\n")
+        )
+        self.assertFalse(
+            prebuild_bundled_oleans.source_starts_with_module_keyword(b"modulefoo\n")
         )
 
     def test_prebuild_synthetic_pipeline_generates_valid_manifest(self):

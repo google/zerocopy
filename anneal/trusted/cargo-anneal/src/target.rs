@@ -180,23 +180,9 @@ pub(crate) fn is_bundled_theory_module(module: &str) -> bool {
     module == "Anneal" || module.starts_with("Anneal.")
 }
 
-/// Return whether `module` belongs to the bundled `Trusted` model namespace
-/// (`Trusted` or `Trusted.*`).
-fn is_trusted_model_module(module: &str) -> bool {
-    module == "Trusted" || module.starts_with("Trusted.")
-}
-
 /// Foundation modules that bundled `Anneal.*` `module`-system theory files may
 /// open via `import all` (mirroring `TrustedBoundary.allowedTheoryImportAllModules`).
 const ALLOWED_THEORY_IMPORT_ALL_MODULES: &[&str] = &["Init.Data.Nat.Bitwise.Basic"];
-
-/// Return whether `(module, role)` is permitted to use Lean 4's `module`
-/// system during target verification (strictly bundled `Trusted.*` `Model` and
-/// bundled `Anneal.*` `Proof` modules).
-fn is_allowed_module_target(module: &str, role: TargetRole) -> bool {
-    (role == TargetRole::Model && is_trusted_model_module(module))
-        || (role == TargetRole::Proof && is_bundled_theory_module(module))
-}
 
 /// Compute the deterministic BFS set of target modules to retain for
 /// compilation and auditing.
@@ -261,20 +247,31 @@ struct InspectorTargetModule<'a> {
     module: &'a str,
     expected_sha256: &'a str,
     role: TargetRole,
+    is_module: bool,
 }
 
-impl<'a> From<&'a TargetAuditRequest> for InspectorTargetAuditRequest<'a> {
-    fn from(request: &'a TargetAuditRequest) -> Self {
-        Self {
-            modules: request
-                .modules
-                .iter()
-                .map(|module| InspectorTargetModule {
-                    module: &module.module,
-                    expected_sha256: &module.expected_sha256,
-                    role: module.role,
-                })
-                .collect(),
+impl<'a> InspectorTargetAuditRequest<'a> {
+    fn from_request_and_modes(
+        request: &'a TargetAuditRequest,
+        is_modules: &BTreeMap<String, bool>,
+    ) -> Result<Self, Failure> {
+        let mut modules = Vec::with_capacity(request.modules.len());
+        for module in &request.modules {
+            let is_module = is_modules.get(&module.module).copied().ok_or_else(|| {
+                Failure::operational(
+                    "target-audit",
+                    format!("missing isModule expectation for {}", module.module),
+                )
+            })?;
+            modules.push(InspectorTargetModule {
+                module: &module.module,
+                expected_sha256: &module.expected_sha256,
+                role: module.role,
+                is_module,
+            });
+        }
+        Ok(Self {
+            modules,
             theorem_module: &request.theorem_module,
             theorem_name: &request.theorem_name,
             expected_module: &request.expected_module,
@@ -284,7 +281,7 @@ impl<'a> From<&'a TargetAuditRequest> for InspectorTargetAuditRequest<'a> {
             specification_declaration: &request.specification_declaration,
             allow_sorry_in_proof: request.allow_sorry_in_proof,
             bindings: &request.bindings,
-        }
+        })
     }
 }
 
@@ -582,15 +579,42 @@ fn validate_target_audit_report(
 /// `"target-audit"` (verdict-producing replay with zero `Proof` `.olean`s
 /// mounted or imported) and validate the strict [`TargetAuditReport`] schema.
 impl Checker {
-    /// Run `"target-audit"` mode over compiled target artifacts.
+    /// Run `"target-audit"` mode over compiled target artifacts, deriving
+    /// `isModule` expectations from the target source headers on disk.
     #[doc(hidden)]
     pub fn inspect_target(&mut self, request: &TargetAuditRequest) -> Result<Json, Failure> {
+        let mut is_modules = BTreeMap::new();
+        for module in &request.modules {
+            let source = fs::read(&module.source).map_err(|e| {
+                Failure::operational(
+                    "target-audit",
+                    format!("cannot read target source {}: {e}", module.source.display()),
+                )
+            })?;
+            is_modules.insert(
+                module.module.clone(),
+                crate::stage::source_starts_with_module_keyword(&source),
+            );
+        }
+        self.inspect_target_with_modes(request, &is_modules)
+    }
+
+    /// Run `"target-audit"` mode over compiled target artifacts with explicit
+    /// per-module `isModule` expectations.
+    #[doc(hidden)]
+    pub fn inspect_target_with_modes(
+        &mut self,
+        request: &TargetAuditRequest,
+        is_modules: &BTreeMap<String, bool>,
+    ) -> Result<Json, Failure> {
         let proof_modules: BTreeSet<&str> = request
             .modules
             .iter()
             .filter(|m| m.role == TargetRole::Proof)
             .map(|m| m.module.as_str())
             .collect();
+        let inspector_target =
+            InspectorTargetAuditRequest::from_request_and_modes(request, is_modules)?;
         let (export_req, expected_graph) = {
             let adm = self.admitted()?;
             let arts_arr: Vec<Json> =
@@ -605,7 +629,7 @@ impl Checker {
                     "libraries": libraries,
                     "graph": &adm.graph,
                     "axioms": &adm.axioms,
-                    "target": InspectorTargetAuditRequest::from(request),
+                    "target": &inspector_target,
                 }),
                 adm.graph.clone(),
             )
@@ -651,7 +675,7 @@ impl Checker {
                 "graph": &adm.graph,
                 "axioms": &adm.axioms,
                 "proofExportPath": proof_export_host.to_string_lossy(),
-                "target": InspectorTargetAuditRequest::from(request),
+                "target": &inspector_target,
             })
         };
         let typed_res: Result<TargetAuditReport, Failure> =
@@ -975,13 +999,6 @@ impl Checker {
             if !staged.contains_key(&header.module) || imports.contains_key(&header.module) {
                 return Err(Failure::policy("headers", "duplicate or foreign source header"));
             }
-            if header.is_module && !is_allowed_module_target(&header.module, roles[&header.module])
-            {
-                return Err(Failure::policy(
-                    "headers",
-                    format!("module system header is unsupported in {}", header.module),
-                ));
-            }
             is_module.insert(header.module.clone(), header.is_module);
             imports.insert(header.module, header.imports);
         }
@@ -1198,7 +1215,7 @@ impl Checker {
         // Compilation success alone does not establish the exact theorem
         // type, permitted assumptions, or compiled source roles. Acceptance
         // is a separate inspection of the produced kernel declarations.
-        let mut report = self.inspect_target(&filtered_request)?;
+        let mut report = self.inspect_target_with_modes(&filtered_request, &is_module)?;
         let mut provenance = Vec::new();
         for module in &filtered_request.modules {
             let artifacts = &self.admitted()?.artifacts[&module.module];

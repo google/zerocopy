@@ -1256,43 +1256,29 @@ fn kernel_result_channels_preserve_success_mismatch_and_operational_error() {
         .unwrap();
 }
 
-/// `"headers"` rejects Lean 4 module-system headers (`module`), import
-/// modifiers (`import all`, `public import`, `meta import`), and
-/// `Lean.*`/`Lake.*` imports with exit code 1, while accepting omitted
+/// `"headers"` admits Lean 4 module-system headers (`module`, `public import`)
+/// while rejecting `import all`, `meta import`, non-module import modifiers,
+/// and `Lean.*`/`Lake.*` imports with exit code 1, and accepts omitted
 /// `prelude` (synthetic non-meta + meta `Init` pair) in unpinned mode.
 #[test]
 fn headers_rejects_module_system_modifiers_and_lean_lake_and_allows_no_prelude() {
     for (label, header, expected) in [
+        ("module-import-all", "module\nprelude\nimport all Model\n", "import modifiers"),
         (
-            "module",
-            "module\nprelude\nimport Model\n",
-            "module system header",
+            "module-meta-import",
+            "module\nprelude\nmeta import Model\n",
+            "unsupported syntax kind Lean.Parser.Module.meta",
         ),
         (
-            "import-all",
-            "prelude\nimport all Model\n",
-            "header parser error",
-        ),
-        (
-            "public-import",
-            "prelude\npublic import Model\n",
-            "header parser error",
-        ),
-        (
-            "meta-import",
-            "prelude\nmeta import Model\n",
-            "header parser error",
-        ),
-        (
-            "lean-import",
-            "prelude\nimport Lean.Elab\nimport Model\n",
+            "module-lean-import",
+            "module\nprelude\npublic import Lean.Elab\nimport Model\n",
             "disallowed sysroot import",
         ),
-        (
-            "lake-import",
-            "prelude\nimport Lake.Build\nimport Model\n",
-            "disallowed sysroot import",
-        ),
+        ("import-all", "prelude\nimport all Model\n", "header parser error"),
+        ("public-import", "prelude\npublic import Model\n", "header parser error"),
+        ("meta-import", "prelude\nmeta import Model\n", "header parser error"),
+        ("lean-import", "prelude\nimport Lean.Elab\nimport Model\n", "disallowed sysroot import"),
+        ("lake-import", "prelude\nimport Lake.Build\nimport Model\n", "disallowed sysroot import"),
     ] {
         let mut f = Fixture::new(PROOF);
         f.set(
@@ -1306,11 +1292,192 @@ fn headers_rejects_module_system_modifiers_and_lean_lake_and_allows_no_prelude()
         assert!(err.message.contains(expected), "{label}: {err}");
     }
 
-    // Direct unit probe of `validateTargetImports` confirming importAll,
-    // !isExported, unpaired meta Init, meta non-Init, and Lean/Lake rejections
-    // as well as acceptance of the synthetic `!hasPrelude` Init pair.
+    // Direct unit probe of `validateTargetImports` confirming both legacy
+    // non-`module` and Lean 4 `module`-system import rules as well as
+    // acceptance of the synthetic `!hasPrelude` Init pair and the bundled
+    // `Anneal.*` `Init.Data.Nat.Bitwise.Basic` exception.
     let probe_fixture = Fixture::new(PROOF);
     let mut probe_checker = Checker::new(&probe_fixture.root, None).unwrap();
+    let empty_proof_export = probe_checker.stage().join("proof_export_empty.json");
+    fs::write(
+        &empty_proof_export,
+        r#"{"schemaVersion":1,"names":[],"levels":[],"exprs":[],"modules":[],"compilerOverrides":{"implementedBy":[],"extern":[],"csimp":[]}}"#,
+    )
+    .unwrap();
+    let empty_proof_export_lit = serde_json::to_string(
+        &serde_json::json!({
+            "mode": "target-export",
+            "sysroot": "",
+            "artifacts": [],
+            "foundation": [],
+            "libraries": [],
+            "proofExportPath": empty_proof_export.to_string_lossy(),
+            "target": {
+                "modules": [{"module": "Spec", "expectedSha256": "0", "role": "specification"}],
+                "theoremModule": "Proof",
+                "theoremName": "Proof.verify",
+                "expectedModule": "Expected",
+                "expectedDeclaration": "Expected.claim",
+                "canonicalRoot": "R",
+                "subjectDeclaration": "S",
+                "specificationDeclaration": "P",
+                "allowSorryInProof": false,
+                "bindings": {
+                    "requestSha256": "0",
+                    "captureSha256": "0",
+                    "modelManifestSha256": "0",
+                    "specificationManifestSha256": "0"
+                }
+            }
+        })
+        .to_string(),
+    )
+    .unwrap();
+    let forged_eq_export = probe_checker.stage().join("proof_export_forged_eq.json");
+    fs::write(
+        &forged_eq_export,
+        serde_json::to_string(&serde_json::json!({
+            "schemaVersion": 1,
+            "names": [
+                ["a"],
+                ["s", 0, "Option"],
+                ["s", 1, "map"],
+                ["s", 2, "eq_1"],
+                ["s", 0, "True"],
+                ["s", 4, "intro"]
+            ],
+            "levels": [],
+            "exprs": [
+                ["c", 4, []],
+                ["c", 5, []]
+            ],
+            "modules": [{
+                "module": "Proof",
+                "isModule": true,
+                "imports": [{"module": "Init.Core", "importAll": false, "isExported": true, "isMeta": false}],
+                "constNames": [3],
+                "constants": [["thm", 3, [], 0, 1, [3]]]
+            }],
+            "compilerOverrides": {"implementedBy": [], "extern": [], "csimp": []}
+        }))
+        .unwrap(),
+    )
+    .unwrap();
+    let forged_eq_req_lit = serde_json::to_string(
+        &serde_json::json!({
+            "mode": "target-audit",
+            "sysroot": "",
+            "artifacts": [],
+            "graph": {
+                "Proof": [{"module": "Init.Core", "importAll": false, "isExported": true, "isMeta": false}]
+            },
+            "foundation": ["Init.Control.Lawful.Instances", "Init.Core"],
+            "libraries": [],
+            "axioms": [
+                ["Classical.choice", "Init.Prelude"],
+                ["Quot.sound", "Init.Prelude"],
+                ["propext", "Init.Core"]
+            ],
+            "proofExportPath": forged_eq_export.to_string_lossy(),
+            "target": {
+                "modules": [{"module": "Proof", "expectedSha256": "0", "role": "proof", "isModule": true}],
+                "theoremModule": "Proof",
+                "theoremName": "Proof.verify",
+                "expectedModule": "Expected",
+                "expectedDeclaration": "Expected.claim",
+                "canonicalRoot": "R",
+                "subjectDeclaration": "S",
+                "specificationDeclaration": "P",
+                "allowSorryInProof": false,
+                "bindings": {
+                    "requestSha256": "0",
+                    "captureSha256": "0",
+                    "modelManifestSha256": "0",
+                    "specificationManifestSha256": "0"
+                }
+            }
+        })
+        .to_string(),
+    )
+    .unwrap();
+    let forged_dup_export = probe_checker.stage().join("proof_export_forged_dup.json");
+    fs::write(
+        &forged_dup_export,
+        serde_json::to_string(&serde_json::json!({
+            "schemaVersion": 1,
+            "names": [
+                ["a"],
+                ["s", 0, "Shared"],
+                ["s", 1, "dup"],
+                ["s", 0, "True"],
+                ["s", 3, "intro"],
+                ["s", 0, "False"]
+            ],
+            "levels": [],
+            "exprs": [
+                ["c", 3, []],
+                ["c", 4, []],
+                ["c", 5, []]
+            ],
+            "modules": [
+                {
+                    "module": "HelperA",
+                    "isModule": true,
+                    "imports": [{"module": "Init.Core", "importAll": false, "isExported": true, "isMeta": false}],
+                    "constNames": [2],
+                    "constants": [["thm", 2, [], 0, 1, [2]]]
+                },
+                {
+                    "module": "Proof",
+                    "isModule": true,
+                    "imports": [{"module": "Init.Core", "importAll": false, "isExported": true, "isMeta": false}],
+                    "constNames": [2],
+                    "constants": [["thm", 2, [], 2, 1, [2]]]
+                }
+            ],
+            "compilerOverrides": {"implementedBy": [], "extern": [], "csimp": []}
+        }))
+        .unwrap(),
+    )
+    .unwrap();
+    let forged_dup_req_lit = serde_json::to_string(
+        &serde_json::json!({
+            "mode": "target-audit",
+            "sysroot": "",
+            "artifacts": [],
+            "graph": {},
+            "foundation": ["Init.Control.Lawful.Instances", "Init.Core"],
+            "libraries": [],
+            "axioms": [
+                ["Classical.choice", "Init.Prelude"],
+                ["Quot.sound", "Init.Prelude"],
+                ["propext", "Init.Core"]
+            ],
+            "proofExportPath": forged_dup_export.to_string_lossy(),
+            "target": {
+                "modules": [
+                    {"module": "HelperA", "expectedSha256": "0", "role": "proof", "isModule": true},
+                    {"module": "Proof", "expectedSha256": "0", "role": "proof", "isModule": true}
+                ],
+                "theoremModule": "Proof",
+                "theoremName": "Proof.verify",
+                "expectedModule": "Expected",
+                "expectedDeclaration": "Expected.claim",
+                "canonicalRoot": "R",
+                "subjectDeclaration": "S",
+                "specificationDeclaration": "P",
+                "allowSorryInProof": false,
+                "bindings": {
+                    "requestSha256": "0",
+                    "captureSha256": "0",
+                    "modelManifestSha256": "0",
+                    "specificationManifestSha256": "0"
+                }
+            }
+        })
+        .to_string(),
+    )
+    .unwrap();
     let inspector = probe_checker.tool_admission().unwrap().inspector.clone();
     let mut probe_src = fs::read_to_string(inspector).unwrap();
     probe_src.push_str(
@@ -1322,17 +1489,33 @@ fn headers_rejects_module_system_modifiers_and_lean_lake_and_allows_no_prelude()
     { module := `Init, importAll := false, isExported := true, isMeta := true }
   ]
   TrustedBoundary.validateTargetImports "Spec" okPair
-  let badCases : Array (String × Array Lean.Import × String) := #[
-    ("importAll", #[{ module := `Init, importAll := true, isExported := true, isMeta := false }], "import modifiers"),
-    ("private", #[{ module := `Init, importAll := false, isExported := false, isMeta := false }], "import modifiers"),
-    ("unpairedMetaInit", #[{ module := `Init, importAll := false, isExported := true, isMeta := true }], "meta import Init"),
-    ("metaNonInit", #[{ module := `Init, importAll := false, isExported := true, isMeta := false }, { module := `Model, importAll := false, isExported := true, isMeta := true }], "meta import Model"),
-    ("lean", #[{ module := `Lean.Elab, importAll := false, isExported := true, isMeta := false }], "disallowed sysroot import"),
-    ("lake", #[{ module := `Lake, importAll := false, isExported := true, isMeta := false }], "disallowed sysroot import")
+  let okModuleImps : Array Lean.Import := #[
+    { module := `Init, importAll := false, isExported := false, isMeta := false },
+    { module := `Init, importAll := false, isExported := false, isMeta := true },
+    { module := `Model, importAll := false, isExported := true, isMeta := false },
+    { module := `Helper, importAll := false, isExported := false, isMeta := false }
   ]
-  for (label, imps, want) in badCases do
+  TrustedBoundary.validateTargetImports "Spec" okModuleImps (allowModule := true)
+  TrustedBoundary.validateTargetImports "Anneal.NatBitwise"
+    #[{ module := `Init.Data.Nat.Bitwise.Basic, importAll := true, isExported := false, isMeta := false }]
+    (allowModule := true) (allowTheoryImportAll := true)
+  let badCases : Array (String × Bool × Bool × Array Lean.Import × String) := #[
+    ("importAll", false, false, #[{ module := `Init, importAll := true, isExported := true, isMeta := false }], "import modifiers"),
+    ("private", false, false, #[{ module := `Init, importAll := false, isExported := false, isMeta := false }], "import modifiers"),
+    ("unpairedMetaInit", false, false, #[{ module := `Init, importAll := false, isExported := true, isMeta := true }], "meta import Init"),
+    ("metaNonInit", false, false, #[{ module := `Init, importAll := false, isExported := true, isMeta := false }, { module := `Model, importAll := false, isExported := true, isMeta := true }], "meta import Model"),
+    ("lean", false, false, #[{ module := `Lean.Elab, importAll := false, isExported := true, isMeta := false }], "disallowed sysroot import"),
+    ("lake", false, false, #[{ module := `Lake, importAll := false, isExported := true, isMeta := false }], "disallowed sysroot import"),
+    ("modImportAll", true, false, #[{ module := `Model, importAll := true, isExported := false, isMeta := false }], "import modifiers"),
+    ("modTheoryNonBitwiseImportAll", true, true, #[{ module := `Model, importAll := true, isExported := false, isMeta := false }], "import modifiers"),
+    ("modMetaNonInit", true, false, #[{ module := `Model, importAll := false, isExported := false, isMeta := true }], "meta import Model"),
+    ("modLean", true, false, #[{ module := `Lean.Elab, importAll := false, isExported := true, isMeta := false }], "disallowed sysroot import"),
+    ("modLake", true, false, #[{ module := `Lake, importAll := false, isExported := true, isMeta := false }], "disallowed sysroot import")
+  ]
+  for (label, allowMod, allowBitwiseAll, imps, want) in badCases do
     let ok ← try
       TrustedBoundary.validateTargetImports "Spec" imps
+        (allowModule := allowMod) (allowTheoryImportAll := allowBitwiseAll)
       pure false
     catch e =>
       let msg := e.toString
@@ -1343,6 +1526,93 @@ fn headers_rejects_module_system_modifiers_and_lean_lake_and_allows_no_prelude()
       throw <| IO.userError s!"{label}: unexpectedly accepted"
 "#,
     );
+    probe_src.push_str(&format!(
+        r#"
+  -- Realized theorem and generated-helper guards used by `"target-audit"`.
+  let forgedEqBase ← IO.ofExcept <| Lean.Json.parse {forged_eq_req_lit}
+  let initEnv : Lean.Environment ← TrustedBoundary.importEnv forgedEqBase #[`Init.Control.Lawful.Instances, `Init.Core]
+  let helperName := `Option.map.eq_1
+  let mkThm (lps : List Lean.Name) (ty val : Lean.Expr) : Lean.ConstantInfo :=
+    .thmInfo {{ name := helperName, levelParams := lps, type := ty, value := val, all := [helperName] }}
+  let base := mkThm [`u] (Lean.mkConst `True) (Lean.mkConst `True.intro)
+  let altProof := mkThm [`u] (Lean.mkConst `True) (Lean.mkConst `trivial)
+  unless TrustedBoundary.sameRealizedThmHeader base altProof do
+    throw <| IO.userError "realized-thm: differing proof body rejected"
+  let defnCopy : Lean.ConstantInfo :=
+    .defnInfo {{ name := helperName, levelParams := [`u], type := Lean.mkConst `True, value := Lean.mkConst `True.intro, hints := .opaque, safety := .safe, all := [helperName] }}
+  for (label, other) in #[
+      ("levelParams", mkThm [`v] (Lean.mkConst `True) (Lean.mkConst `True.intro)),
+      ("type", mkThm [`u] (Lean.mkConst `False) (Lean.mkConst `True.intro)),
+      ("kind", defnCopy)
+    ] do
+    if TrustedBoundary.sameRealizedThmHeader base other then
+      throw <| IO.userError s!"realized-thm: {{label}} difference accepted"
+  unless TrustedBoundary.isRealizedOrCompilerHelper initEnv {{}} (· == `Option.map) base
+      (allowUnimportedProofSparse := true) do
+    throw <| IO.userError "lazy-helper: helper of admitted parent rejected"
+  if TrustedBoundary.isRealizedOrCompilerHelper initEnv {{}} (fun _ => false) base
+      (allowUnimportedProofSparse := true) then
+    throw <| IO.userError "lazy-helper: helper of unknown parent accepted"
+  let unknownEq : Lean.ConstantInfo :=
+    .thmInfo {{ name := `X.f.eq_1, levelParams := [`u], type := Lean.mkConst `True, value := Lean.mkConst `True.intro, all := [`X.f.eq_1] }}
+  if TrustedBoundary.isRealizedOrCompilerHelper initEnv {{}} (· == `X.f) unknownEq
+      (allowUnimportedProofSparse := true) then
+    throw <| IO.userError "lazy-helper: unreserved parent accepted"
+  let nonHelper : Lean.ConstantInfo :=
+    .thmInfo {{ name := `Option.map.dup, levelParams := [`u], type := Lean.mkConst `True, value := Lean.mkConst `True.intro, all := [`Option.map.dup] }}
+  if TrustedBoundary.isRealizedOrCompilerHelper initEnv {{}} (· == `Option.map) nonHelper
+      (allowUnimportedProofSparse := true) then
+    throw <| IO.userError "lazy-helper: non-helper suffix accepted"
+  let mut gEntries : List (String × Lean.Json) :=
+    (initEnv.header.modules.zip initEnv.header.moduleData).toList.map fun ((m : Lean.EffectiveImport), (d : Lean.ModuleData)) =>
+      (m.module.toString, Lean.toJson d.imports)
+  gEntries := ("Proof", Lean.toJson #[({{ module := `Init.Core, importAll := false, isExported := true, isMeta := false }} : Lean.Import)]) :: gEntries
+  let found := initEnv.header.modules.map (fun (m : Lean.EffectiveImport) => m.module)
+  let forgedEqReq := forgedEqBase.setObjVal! "graph" (Lean.Json.mkObj gEntries)
+  let forgedRejected ← try
+    let _ ← TrustedBoundary.targetAudit forgedEqReq found
+    pure false
+  catch e =>
+    let msg := e.toString
+    unless (msg.splitOn "duplicate target declaration Option.map.eq_1").length > 1 do
+      throw <| IO.userError s!"forged-wrong-type-lazy-helper: unexpected error {{msg}}"
+    pure true
+  unless forgedRejected do
+    throw <| IO.userError "forged-wrong-type-lazy-helper: unexpectedly accepted"
+  let forgedDupBase ← IO.ofExcept <| Lean.Json.parse {forged_dup_req_lit}
+  let mut dupGEntries : List (String × Lean.Json) :=
+    (initEnv.header.modules.zip initEnv.header.moduleData).toList.map fun ((m : Lean.EffectiveImport), (d : Lean.ModuleData)) =>
+      (m.module.toString, Lean.toJson d.imports)
+  let coreImp := Lean.toJson #[({{ module := `Init.Core, importAll := false, isExported := true, isMeta := false }} : Lean.Import)]
+  dupGEntries := ("HelperA", coreImp) :: ("Proof", coreImp) :: dupGEntries
+  let forgedDupReq := forgedDupBase.setObjVal! "graph" (Lean.Json.mkObj dupGEntries)
+  let dupRejected ← try
+    let _ ← TrustedBoundary.targetAudit forgedDupReq found
+    pure false
+  catch e =>
+    let msg := e.toString
+    unless (msg.splitOn "duplicate target declaration Shared.dup").length > 1 do
+      throw <| IO.userError s!"forged-proof-dup: unexpected error {{msg}}"
+    pure true
+  unless dupRejected do
+    throw <| IO.userError "forged-proof-dup: unexpectedly accepted"
+  let missingIsModReq ← IO.ofExcept <| Lean.Json.parse {empty_proof_export_lit}
+  for (fnLabel, runner) in #[
+      ("targetExport-missing-isModule", TrustedBoundary.targetExport missingIsModReq #[]),
+      ("targetAudit-missing-isModule", TrustedBoundary.targetAudit missingIsModReq #[])
+    ] do
+    let rejected ← try
+      let _ ← runner
+      pure false
+    catch e =>
+      let msg := e.toString
+      unless msg == "Bool expected" do
+        throw <| IO.userError s!"{{fnLabel}}: unexpected error {{msg}}"
+      pure true
+    unless rejected do
+      throw <| IO.userError s!"{{fnLabel}}: unexpectedly accepted"
+"#,
+    ));
     let probe_path = probe_checker.stage().join("ValidateTargetImports.lean");
     fs::write(&probe_path, probe_src).unwrap();
     probe_checker
@@ -1930,6 +2200,55 @@ fn spec_preflight_parse_tree_round_trip_and_negative_guards() {
       pure true
     unless ok do
       throw <| IO.userError s!"{{label}}: unexpectedly accepted"
+  -- Non-`module` specs reject `@[expose]` attributes and section modifiers.
+  for (label, body, want) in #[
+      ("nonmod-expose-def", "@[expose] def Spec.e : Nat := 0\ndef Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n", "unsupported attribute"),
+      ("nonmod-expose-sec", "@[expose] section S\nend S\ndef Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n", "unsupported section/namespace modifier")
+    ] do
+    let ctx := Lean.Parser.mkInputContext body label
+    let rejected ← try
+      TrustedBoundary.parseAndInspectSpecCommands ctx cmdKinds tacKinds env
+        [rootScope] `Spec {{}} {{}} false
+      pure false
+    catch e =>
+      let msg := e.toString
+      unless msg.startsWith "policy:" && (msg.splitOn want).length > 1 do
+        throw <| IO.userError s!"{{label}}: expected {{want}} in {{msg}}"
+      pure true
+    unless rejected do
+      throw <| IO.userError s!"{{label}}: unexpectedly accepted"
+  -- `module`-mode (`isModule := true`) admits `public`, `@[expose]`,
+  -- `@[expose] public section`, and `public noncomputable section`, while
+  -- rejecting `meta`, `@[local expose]`, and `attribute [-expose]`.
+  let modOk := #[
+    "@[expose] public section\ndef Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\nend\n",
+    "public noncomputable section S\ndef Spec.ncHelper : Nat := 0\nend S\ndef Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+    "@[expose] public def Spec.helper (n : Nat) : Nat := n\npublic theorem Spec.thm : True := trivial\nprivate theorem Spec.privThm : True := trivial\npublic section\ndef Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\nend\n"
+  ]
+  for body in modOk do
+    let ctx := Lean.Parser.mkInputContext body "mod-ok"
+    TrustedBoundary.parseAndInspectSpecCommands ctx cmdKinds tacKinds env
+      [rootScope] `Spec {{}} {{}} true
+  for (label, body, want) in #[
+      ("mod-meta-sec", "meta section S\nend S\n", "unsupported section/namespace modifier"),
+      ("mod-public-meta-sec", "public meta section S\nend S\n", "unsupported section/namespace modifier"),
+      ("mod-meta-def", "meta def Spec.m : Nat := 0\n", "unsupported declaration modifier"),
+      ("mod-public-meta-def", "public meta def Spec.m : Nat := 0\n", "unsupported declaration modifier"),
+      ("mod-local-expose", "@[local expose] public def f : Nat := 0\n", "unsupported attribute"),
+      ("mod-erase-expose", "attribute [-expose] Nat.add\n", "unsupported attribute removal")
+    ] do
+    let ctx := Lean.Parser.mkInputContext body label
+    let rejected ← try
+      TrustedBoundary.parseAndInspectSpecCommands ctx cmdKinds tacKinds env
+        [rootScope] `Spec {{}} {{}} true
+      pure false
+    catch e =>
+      let msg := e.toString
+      unless msg.startsWith "policy:" && (msg.splitOn want).length > 1 do
+        throw <| IO.userError s!"{{label}}: expected {{want}} in {{msg}}"
+      pure true
+    unless rejected do
+      throw <| IO.userError s!"{{label}}: unexpectedly accepted"
 "#,
         adm.prefix.to_string_lossy(),
         vectors_json_path.to_string_lossy()
@@ -2400,11 +2719,10 @@ def main : IO Unit := do
         ModuleArtifacts::from_available(&avail_single, "fixture", || "missing".into()).unwrap(),
     );
     let err = checker.inspect_target(&f.request).unwrap_err();
-    assert_eq!(err.phase.as_str(), "target-audit", "{err}");
+    assert_eq!((err.code, err.phase.as_str()), (1, "target-audit"), "{err}");
     assert!(
-        (err.code == 1 && err.message.contains("module-system artifact unsupported"))
-            || (err.code == 2 && err.message.contains("missing data file for module Spec")),
-        "expected fail-closed rejection of forged isModule .olean: {err}"
+        err.message.contains("module-system artifact unsupported in Spec"),
+        "expected pre-import isModule mismatch rejection: {err}"
     );
 }
 
@@ -2524,6 +2842,39 @@ fn target_audit_reports_empty_and_unused_binding_spec_warnings() {
             "message": "unused argument binding(s) in `Spec.helper`: unusedParam"
         }])
     );
+}
+
+/// Craft header-chained 88-byte synthetic `.olean.server` and `.olean.private`
+/// companions for `primary_path` under `stage_dir/lib/{stem}.olean.*`. The
+/// companions satisfy the v2 header prefix and 64 KiB base-address chaining
+/// checks in `validateTargetArtifactPreImport`, but abort inside
+/// `CompactedRegion.read` (exit code 2) if `importEnv` mmaps them without a
+/// pre-import policy rejection.
+fn craft_chained_olean_companions(
+    stage_dir: &Path,
+    primary_path: &str,
+    stem: &str,
+) -> (String, String) {
+    let raw = fs::read(primary_path).unwrap();
+    assert!(raw.len() >= 88);
+    let base0 = u64::from_le_bytes(raw[80..88].try_into().unwrap());
+    let align64k = |n: u64| (n + 0xffff) & !0xffff;
+    let base1 = align64k(base0 + raw.len() as u64);
+    let mut srv = Vec::with_capacity(88);
+    srv.extend_from_slice(&raw[..80]);
+    srv.extend_from_slice(&base1.to_le_bytes());
+    let base2 = align64k(base1 + srv.len() as u64);
+    let mut prv = Vec::with_capacity(88);
+    prv.extend_from_slice(&raw[..80]);
+    prv.extend_from_slice(&base2.to_le_bytes());
+    let srv_path = stage_dir.join(format!("lib/{stem}.olean.server"));
+    let prv_path = stage_dir.join(format!("lib/{stem}.olean.private"));
+    fs::write(&srv_path, srv).unwrap();
+    fs::write(&prv_path, prv).unwrap();
+    (
+        srv_path.to_string_lossy().into_owned(),
+        prv_path.to_string_lossy().into_owned(),
+    )
 }
 
 /// `"target-export"` and `"target-audit"` must validate `.olean*` companion
@@ -2679,38 +3030,14 @@ fn target_export_and_audit_reject_swapped_companions_and_non_module_bundled_comp
         "{err}"
     );
 
-    // Helper: craft header-chained synthetic `.olean.server` & `.olean.private`
-    // for a non-`module` `.olean` so ONLY the primary-part `data.isModule`
-    // pre-import check (not the base-address check) can reject it before
-    // `CompactedRegion.read` would crash on the 88-byte synthetic bodies.
     let stage_dir = checker.stage().to_path_buf();
-    let craft_chained_companions = |primary_path: &str, stem: &str| -> (String, String) {
-        let raw = fs::read(primary_path).unwrap();
-        assert!(raw.len() >= 88);
-        let base0 = u64::from_le_bytes(raw[80..88].try_into().unwrap());
-        let align64k = |n: u64| (n + 0xffff) & !0xffff;
-        let base1 = align64k(base0 + raw.len() as u64);
-        let mut srv = Vec::with_capacity(88);
-        srv.extend_from_slice(&raw[..80]);
-        srv.extend_from_slice(&base1.to_le_bytes());
-        let base2 = align64k(base1 + srv.len() as u64);
-        let mut prv = Vec::with_capacity(88);
-        prv.extend_from_slice(&raw[..80]);
-        prv.extend_from_slice(&base2.to_le_bytes());
-        let srv_path = stage_dir.join(format!("lib/{stem}.olean.server"));
-        let prv_path = stage_dir.join(format!("lib/{stem}.olean.private"));
-        fs::write(&srv_path, srv).unwrap();
-        fs::write(&prv_path, prv).unwrap();
-        (
-            srv_path.to_string_lossy().into_owned(),
-            prv_path.to_string_lossy().into_owned(),
-        )
-    };
 
-    // 4. Non-`module` `Trusted.NonMod` (`Model`) paired with header-chained
-    //    3-part companions fails closed before `importEnv` via `data.isModule`.
+    // 4. Non-`module` `Trusted.NonMod` (`Model`, `expectedIsModule = false`)
+    //    paired with header-chained 3-part companions fails closed pre-import
+    //    on part count (`validateTargetArtifactParts`) before `importEnv`.
     let non_mod_model = get_parts("Trusted.NonMod");
-    let (nm_srv, nm_prv) = craft_chained_companions(&non_mod_model[0], "Trusted/NonMod");
+    let (nm_srv, nm_prv) =
+        craft_chained_olean_companions(&stage_dir, &non_mod_model[0], "Trusted/NonMod");
     checker.admitted_mut().unwrap().artifacts = orig_artifacts.clone();
     checker.admitted_mut().unwrap().artifacts.insert(
         "Trusted.NonMod".into(),
@@ -2724,10 +3051,12 @@ fn target_export_and_audit_reject_swapped_companions_and_non_module_bundled_comp
         "{err}"
     );
 
-    // 5. Non-`module` `Anneal.NonMod` (`Proof`) paired with header-chained
-    //    3-part companions fails closed in `"target-export"` before `importEnv`.
+    // 5. Non-`module` `Anneal.NonMod` (`Proof`, `expectedIsModule = false`)
+    //    paired with header-chained 3-part companions fails closed pre-import
+    //    in `"target-export"` on part count before `importEnv`.
     let non_mod_proof = get_parts("Anneal.NonMod");
-    let (ap_srv, ap_prv) = craft_chained_companions(&non_mod_proof[0], "Anneal/NonMod");
+    let (ap_srv, ap_prv) =
+        craft_chained_olean_companions(&stage_dir, &non_mod_proof[0], "Anneal/NonMod");
     checker.admitted_mut().unwrap().artifacts = orig_artifacts;
     checker.admitted_mut().unwrap().artifacts.insert(
         "Anneal.NonMod".into(),
@@ -2741,6 +3070,277 @@ fn target_export_and_audit_reject_swapped_companions_and_non_module_bundled_comp
             .contains("companion artifact parts unsupported in Anneal.NonMod"),
         "{err}"
     );
+}
+
+/// Lean 4 `module`-mode target units (`Model`, `Capture`, `Specification`,
+/// `Expected`, and authored `Proof`) pass end-to-end verification, enforce
+/// boundary invariants, and maintain legacy non-`module` interoperability:
+/// - full `module`-mode pipeline compiles and audits with 3-part `.olean*`;
+/// - legacy non-`module` `Spec` + `Expected` + `Proof` compose cleanly with
+///   `module`-mode `Model` + `Captured`;
+/// - `import all` in `Proof` (`module` mode) is rejected by `"headers"`;
+/// - private `import Proof` in `Spec` (`module` mode) fails closed;
+/// - omitting `public` on `Proof.verify` in `module` mode fails
+///   `"target-audit"`;
+/// - forged `isModule = false` `.olean` on a `module` target fails pre-import
+///   `"target-audit"` when `"isModule"` expectation is `true`; and
+/// - raw `"target-export"` / `"target-audit"` requests omitting `"isModule"`
+///   fail closed;
+/// - a `module` Proof regenerating an identical lazy equation helper
+///   (`Option.map.eq_1`) passes `"target-audit"`; and
+/// - duplicate non-helper declarations across Proof modules (`Shared.dup`)
+///   fail closed in `"target-audit"` (forged helper copies are covered in
+///   `headers_rejects_module_system_modifiers_and_lean_lake_and_allows_no_prelude`).
+#[test]
+fn module_mode_targets_verify_and_enforce_boundary_invariants() {
+    use std::collections::BTreeMap;
+
+    use anneal_audit::ModuleArtifacts;
+
+    let make_module_fixture = |spec_src: &str, proof_src: &str| -> Fixture {
+        let mut f = Fixture::new(proof_src);
+        f.set(
+            "Model",
+            TargetRole::Model,
+            "module\nprelude\npublic import Init.Data.BitVec.Basic\n\
+             @[expose] public section\n\
+             namespace Trusted.MirSemantics\n\
+             structure Crate where\n  program : BitVec 8\n  specs : BitVec 8 → Prop\n\
+             def UnitTheorem (c : Crate) : Prop := c.program.toNat = 7 ∧ c.specs c.program\n\
+             end Trusted.MirSemantics\nend\n",
+        );
+        f.set(
+            "Captured",
+            TargetRole::Capture,
+            "module\nprelude\npublic import Model\n\
+             @[expose] public section\n\
+             def Captured.program : BitVec 8 := BitVec.ofNat 8 7\nend\n",
+        );
+        f.set("Spec", TargetRole::Specification, spec_src);
+        f.set(
+            "Expected",
+            TargetRole::Expected,
+            "module\nprelude\npublic import Model\npublic import Captured\npublic import Spec\n\
+             @[expose] public section\n\
+             def Expected.claim : Prop :=\n\
+               Trusted.MirSemantics.UnitTheorem (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n\
+             end\n",
+        );
+        f
+    };
+
+    let clean_spec = "module\nprelude\npublic import Model\n\
+        @[expose] public section\n\
+        def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n\
+        end\n";
+    let clean_proof = "module\nprelude\npublic import Expected\n\
+        import Init.Data.BitVec.Lemmas\n\
+        private theorem helper_ok : BitVec.and (BitVec.ofNat 8 7) (BitVec.ofNat 8 7) = BitVec.ofNat 8 7 := by exact BitVec.and_self\n\
+        public theorem Proof.verify : Expected.claim := And.intro rfl helper_ok\n";
+
+    // 1. Full `module`-mode pipeline compiles and passes `"target-audit"`.
+    let mod_f = make_module_fixture(clean_spec, clean_proof);
+    let mut checker = cargo_anneal::Checker::new(&mod_f.root, None).unwrap();
+    let report = checker.run_target(&mod_f.request).unwrap();
+    assert_eq!(report["replay"], true);
+    assert_eq!(report["exactType"], true);
+    assert_eq!(report["sorryDeclarations"], serde_json::json!([]));
+    for name in ["Model", "Captured", "Spec", "Expected", "Proof"] {
+        let arts = &checker.admitted().unwrap().artifacts[name];
+        assert!(
+            arts.olean_parts.len() == 3
+                && arts.olean_parts[1].ends_with(".olean.server")
+                && arts.olean_parts[2].ends_with(".olean.private"),
+            "expected 3-part module artifacts for {name}, got {:?}",
+            arts.olean_parts
+        );
+    }
+
+    // 2. Mixed backward compatibility: `module` Model and Captured with
+    //    non-`module` Spec, Expected, and Proof pass cleanly.
+    let mut mixed_f = Fixture::new(
+        "prelude\nimport Expected\nimport Init.Data.BitVec.Lemmas\n\
+         theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    mixed_f.set(
+        "Model",
+        TargetRole::Model,
+        "module\nprelude\npublic import Init.Data.BitVec.Basic\n\
+         @[expose] public section\n\
+         namespace Trusted.MirSemantics\n\
+         structure Crate where\n  program : BitVec 8\n  specs : BitVec 8 → Prop\n\
+         def UnitTheorem (c : Crate) : Prop := c.program.toNat = 7 ∧ c.specs c.program\n\
+         end Trusted.MirSemantics\nend\n",
+    );
+    mixed_f.set(
+        "Captured",
+        TargetRole::Capture,
+        "module\nprelude\npublic import Model\n\
+         @[expose] public section\n\
+         def Captured.program : BitVec 8 := BitVec.ofNat 8 7\nend\n",
+    );
+    let mixed_report = mixed_f.run().unwrap();
+    assert_eq!(mixed_report["replay"], true);
+    assert_eq!(mixed_report["exactType"], true);
+
+    // 3. `Proof` (`module`) using `import all` is rejected in `"headers"`.
+    let bad_proof_all = make_module_fixture(
+        clean_spec,
+        "module\nprelude\nimport all Expected\n\
+         public theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    let err = bad_proof_all.run().unwrap_err();
+    assert_eq!((err.code, err.phase.as_str()), (1, "headers"), "{err}");
+    assert!(err.message.contains("import modifiers"), "{err}");
+
+    // 4. `Spec` (`module`) importing a `Proof` module (`Helper`) privately
+    //    is rejected fail-closed without relying on cycle detection.
+    let mut bad_spec_imp_proof = make_module_fixture(
+        "module\nprelude\npublic import Model\nimport Helper\n\
+         @[expose] public section\n\
+         def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\nend\n",
+        clean_proof,
+    );
+    bad_spec_imp_proof.set(
+        "Helper",
+        TargetRole::Proof,
+        "module\nprelude\npublic import Init.Core\npublic theorem Helper.ok : True := True.intro\n",
+    );
+    let err = bad_spec_imp_proof.run().unwrap_err();
+    assert_eq!((err.code, err.phase.as_str()), (1, "target-role"), "{err}");
+    assert!(err.message.contains("Spec cannot import Helper"), "{err}");
+
+    // 5. Omitting `public` on `Proof.verify` in `module` mode fails
+    //    `"target-audit"`.
+    let private_verify_proof = make_module_fixture(
+        clean_spec,
+        "module\nprelude\npublic import Expected\n\
+         import Init.Data.BitVec.Lemmas\n\
+         theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    let err = private_verify_proof.run().unwrap_err();
+    assert_eq!((err.code, err.phase.as_str()), (1, "target-audit"), "{err}");
+    assert!(err.message.contains("missing target dependency Proof.verify"), "{err}");
+
+    // 6. Forged `isModule = false` `.olean` when `"isModule": true` is expected
+    //    fails pre-import `"target-audit"` with
+    //    `"non-module artifact mismatch"`.
+    //    6a pairs the forged non-module `Spec.olean` with header-chained
+    //    88-byte synthetic `.olean.server` & `.olean.private` companions so
+    //    disabling the pre-import `expected && !actual` check in
+    //    `validateTargetArtifactPreImport` either falls through to part-count
+    //    rejection or aborts in `CompactedRegion.read` (exit code 2) rather
+    //    than matching the post-import message; 6b also checks the 1-part case.
+    let mut forged_checker = cargo_anneal::Checker::new(&mod_f.root, None).unwrap();
+    forged_checker.run_target(&mod_f.request).unwrap();
+    let nonmod_spec_src = "prelude\nimport Model\n\
+        def Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n";
+    let nonmod_spec_path = forged_checker.stage().join("NonModSpec.lean");
+    fs::write(&nonmod_spec_path, nonmod_spec_src).unwrap();
+    let hdr_json =
+        forged_checker.inspect_headers(&[("Spec".into(), nonmod_spec_path.clone())]).unwrap();
+    let hdrs: cargo_anneal::PreflightResult = serde_json::from_value(hdr_json).unwrap();
+    forged_checker
+        .compile_lean_module(
+            "Spec",
+            &nonmod_spec_path,
+            hdrs.headers[0].imports.clone(),
+            false,
+            "lib",
+            false,
+            true,
+        )
+        .unwrap();
+    let nonmod_olean = forged_checker
+        .stage()
+        .join("lib/Spec.olean")
+        .to_string_lossy()
+        .into_owned();
+    let (forged_srv, forged_prv) =
+        craft_chained_olean_companions(forged_checker.stage(), &nonmod_olean, "NonModSpec");
+    let mut nonmod_chained = BTreeMap::new();
+    nonmod_chained.insert("olean", nonmod_olean.clone());
+    nonmod_chained.insert("olean.server", forged_srv);
+    nonmod_chained.insert("olean.private", forged_prv);
+    forged_checker.admitted_mut().unwrap().artifacts.insert(
+        "Spec".into(),
+        ModuleArtifacts::from_available(&nonmod_chained, "fixture", || "missing".into()).unwrap(),
+    );
+    let err = forged_checker.inspect_target(&mod_f.request).unwrap_err();
+    assert_eq!((err.code, err.phase.as_str()), (1, "target-audit"), "{err}");
+    assert!(err.message.contains("non-module artifact mismatch in Spec"), "{err}");
+
+    let mut nonmod_avail = BTreeMap::new();
+    nonmod_avail.insert("olean", nonmod_olean);
+    forged_checker.admitted_mut().unwrap().artifacts.insert(
+        "Spec".into(),
+        ModuleArtifacts::from_available(&nonmod_avail, "fixture", || "missing".into()).unwrap(),
+    );
+    let err = forged_checker.inspect_target(&mod_f.request).unwrap_err();
+    assert_eq!((err.code, err.phase.as_str()), (1, "target-audit"), "{err}");
+    assert!(err.message.contains("non-module artifact mismatch in Spec"), "{err}");
+
+    // 7. Missing `"isModule"` expectation on raw `"target-export"` request
+    //    fails closed.
+    let mut raw_modes = BTreeMap::new();
+    for m in &mod_f.request.modules {
+        if m.module != "Spec" {
+            raw_modes.insert(m.module.clone(), true);
+        }
+    }
+    let err = checker.inspect_target_with_modes(&mod_f.request, &raw_modes).unwrap_err();
+    assert_eq!(err.phase, "target-audit", "{err}");
+    assert!(err.message.contains("missing isModule expectation for Spec"), "{err}");
+
+    // 8. A `module` Proof that regenerates an identical lazy equation helper
+    //    passes `"target-audit"`: `Model` privately imports
+    //    `Init.Control.Lawful.Instances`, so `Option.map.eq_1` is already
+    //    admitted, while `Proof` imports only `Init.Data.Option.Lemmas` and
+    //    regenerates `Option.map.eq_1`.
+    let opt_proof = "module\nprelude\npublic import Expected\n\
+        import Init.Data.BitVec.Lemmas\nimport Init.Data.Option.Lemmas\n\
+        private theorem opt_eq : Option.map Nat.succ (some 1) = some 2 := by simp [Option.map]\n\
+        private theorem bv_ok : BitVec.and (BitVec.ofNat 8 7) (BitVec.ofNat 8 7) = BitVec.ofNat 8 7 := by exact BitVec.and_self\n\
+        public theorem Proof.verify : Expected.claim := (fun _ => And.intro rfl bv_ok) opt_eq\n";
+    let mut opt_f = make_module_fixture(clean_spec, opt_proof);
+    opt_f.set(
+        "Model",
+        TargetRole::Model,
+        "module\nprelude\npublic import Init.Data.BitVec.Basic\nimport Init.Control.Lawful.Instances\n\
+         @[expose] public section\n\
+         namespace Trusted.MirSemantics\n\
+         structure Crate where\n  program : BitVec 8\n  specs : BitVec 8 → Prop\n\
+         def UnitTheorem (c : Crate) : Prop := c.program.toNat = 7 ∧ c.specs c.program\n\
+         end Trusted.MirSemantics\nend\n",
+    );
+    let opt_report = opt_f.run().unwrap();
+    assert_eq!(opt_report["replay"], true);
+    assert_eq!(opt_report["exactType"], true);
+
+    // 9. Non-helper duplicate public declarations (`HelperB` privately imported
+    //    by `HelperA` vs `Proof`) still fail closed before `"target-audit"`
+    //    returns a verdict (direct `"target-audit"` forged-export deduplication
+    //    is pinned by `forged_dup_export` in `headers_rejects_...`).
+    let mut dup_nonhelper = make_module_fixture(
+        clean_spec,
+        "module\nprelude\npublic import Expected\nimport HelperA\n\
+         import Init.Data.BitVec.Lemmas\n\
+         public def Shared.dup : Nat := 2\n\
+         public theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+    );
+    dup_nonhelper.set(
+        "HelperB",
+        TargetRole::Proof,
+        "module\nprelude\npublic import Init.Core\npublic def Shared.dup : Nat := 1\n",
+    );
+    dup_nonhelper.set(
+        "HelperA",
+        TargetRole::Proof,
+        "module\nprelude\npublic import Init.Core\nimport HelperB\n",
+    );
+    let err = dup_nonhelper.run().unwrap_err();
+    assert_eq!((err.code, err.phase.as_str()), (2, "target-audit"), "{err}");
+    assert!(err.message.contains("already contains 'Shared.dup'"), "{err}");
 }
 
 /// Compiling a `TargetRole::Specification` module passes `-DautoImplicit=false`
