@@ -14,4 +14,5 @@ mod host_and_stage_security;
 mod inspect_e2e;
 mod inspect_profile_v2_e2e;
 mod receipt_and_bindings;
+mod sharded_capture_and_cache;
 mod split_store_bwrap;

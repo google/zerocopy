@@ -2063,6 +2063,37 @@ fn compile_captured_lean_if_trusted_sources_present(captured_lean: &std::path::P
         );
     }
 
+    let captured_dir = captured_lean.parent().expect("Captured.lean parent");
+    let shard_dir = captured_dir.join("Captured");
+    if shard_dir.is_dir() {
+        let mut shards: Vec<_> = std::fs::read_dir(&shard_dir)
+            .unwrap()
+            .filter_map(|e| e.ok().map(|e| e.path()))
+            .filter(|p| p.extension().is_some_and(|ext| ext == "lean"))
+            .collect();
+        shards.sort();
+        std::fs::create_dir_all(lean_lib.join("Captured")).unwrap();
+        for shard_src in shards {
+            let stem = shard_src.file_stem().unwrap().to_str().unwrap();
+            let shard_olean = lean_lib.join(format!("Captured/{stem}.olean"));
+            let out = Command::new(&lean_bin)
+                .current_dir(captured_dir)
+                .env("LEAN_PATH", &lean_lib)
+                .arg("-DwarningAsError=true")
+                .arg("-o")
+                .arg(&shard_olean)
+                .arg(&shard_src)
+                .output()
+                .expect("invoke pinned lean on Captured shard");
+            let combined = format!("{}{}", stdout(&out), stderr(&out));
+            assert!(
+                out.status.success(),
+                "{} failed Lean compilation:\n{combined}",
+                shard_src.display()
+            );
+        }
+    }
+
     let captured_olean = lean_lib.join("Captured.olean");
     let out = Command::new(&lean_bin)
         .current_dir(captured_lean.parent().expect("Captured.lean parent"))
@@ -2589,7 +2620,12 @@ fn thousand_one_hundred_function_crate_compiles_in_lean_under_default_max_rec_de
         let _ = writeln!(source, "pub fn f_{idx}(x: u64) -> u64 {{ (x ^ {idx}u64) + 1u64 }}");
     }
     let fixture = Capture::new(source.as_bytes());
-    let output = fixture.command().arg("--scope=crate").output().unwrap();
+    let output = fixture
+        .command()
+        .arg("--scope=crate")
+        .arg("--shard-min-bodies=2000")
+        .output()
+        .unwrap();
     assert!(
         output.status.success(),
         "expected 1,100-function crate capture to succeed:\n{}\n{}",
@@ -4337,4 +4373,276 @@ fn overflow_checks_capture_every_optional_overflow_assert_under_both_panic_strat
     for absent in asserts.iter().chain(&["WithOverflow"]) {
         assert!(!lean.contains(absent), "unexpected {absent} in\n{lean}");
     }
+}
+
+#[test]
+fn tarjan_scc_sharding_partitions_cyclic_calls_and_verifies_plan() {
+    let mut source = String::from(
+        "pub fn leaf_00() -> ! { loop {} }\n\
+         pub fn cycle_a(x: u64) -> ! { if x == 0 { loop {} } else { cycle_b(x) } }\n\
+         pub fn cycle_b(x: u64) -> ! { cycle_a(x) }\n\
+         pub fn top_caller(sel: u64) -> u64 {\n\
+             match sel {\n\
+                 0 => leaf_00(),\n\
+                 1 => leaf_01(1),\n\
+                 2 => leaf_02(2),\n\
+                 3 => leaf_03(3),\n\
+                 4 => leaf_04(4),\n\
+                 5 => leaf_05(5),\n\
+                 _ => 0,\n\
+             }\n\
+         }\n",
+    );
+    for idx in 1..=20usize {
+        let _ = writeln!(source, "pub fn leaf_{idx:02}(_x: u64) -> ! {{ loop {{}} }}");
+    }
+    let fixture = Capture::new(source.as_bytes());
+    let output = fixture
+        .command()
+        .arg("--scope=crate")
+        .arg("--shard-min-bodies=4")
+        .arg("--shard-max-bodies=4")
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "expected cyclic sharded capture to succeed:\n{}\n{}",
+        stdout(&output),
+        stderr(&output)
+    );
+    let out_status = status(&output);
+    assert_eq!(out_status["status"], "captured");
+    assert!(out_status["shard_count"].as_u64().unwrap() >= 2, "{out_status}");
+
+    let shards_manifest: serde_json::Value = serde_json::from_slice(
+        &std::fs::read(fixture.output.join("capture_shards.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(shards_manifest["schema_version"], 1);
+    assert_eq!(shards_manifest["total_bodies"], 24);
+    assert!(shards_manifest["cyclic_sccs"].as_u64().unwrap() >= 1, "{shards_manifest}");
+    let shards = shards_manifest["shards"].as_array().unwrap();
+    let cycle_shard = shards
+        .iter()
+        .find(|s| {
+            let ids = s["identities"].as_array().unwrap();
+            ids.iter().any(|v| v.as_str().unwrap().ends_with("::cycle_a"))
+        })
+        .expect("cycle_a shard must exist");
+    let cycle_ids = cycle_shard["identities"].as_array().unwrap();
+    assert!(
+        cycle_ids.iter().any(|v| v.as_str().unwrap().ends_with("::cycle_b")),
+        "mutually recursive cycle_a/cycle_b must share one shard: {cycle_shard}"
+    );
+    assert_eq!(cycle_shard["has_cycle"], true, "{cycle_shard}");
+
+    let leaf_shard_idx = shards
+        .iter()
+        .find(|s| {
+            s["identities"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|v| v.as_str().unwrap().ends_with("::leaf_00"))
+        })
+        .unwrap()["shard_idx"]
+        .as_u64()
+        .unwrap();
+    let caller_shard = shards
+        .iter()
+        .find(|s| {
+            s["identities"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|v| v.as_str().unwrap().ends_with("::top_caller"))
+        })
+        .unwrap();
+    let caller_idx = caller_shard["shard_idx"].as_u64().unwrap();
+    assert!(
+        leaf_shard_idx <= caller_idx,
+        "callee shard {leaf_shard_idx} must precede or equal caller shard {caller_idx}"
+    );
+    let callees: Vec<u64> = caller_shard["callee_shards"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|v| v.as_u64().unwrap())
+        .collect();
+    assert!(
+        !callees.is_empty(),
+        "top_caller calls 6 leaves with shard_max_bodies=4, so at least one callee shard must be strictly earlier: {caller_shard}"
+    );
+    if leaf_shard_idx < caller_idx {
+        assert!(callees.contains(&leaf_shard_idx), "{caller_shard}");
+    }
+
+    let captured_lean = fixture.output.join("Captured.lean");
+    let captured_src = std::fs::read_to_string(&captured_lean).unwrap();
+    assert!(
+        captured_src.contains("def body_0 : Trusted.MirAst.Body :="),
+        "sharded Captured.lean must retain body_<global_idx> aliases for monolithic roots"
+    );
+    compile_captured_lean_if_trusted_sources_present(&captured_lean);
+
+    // Construct nominal ShardPlan matching `shards_manifest` and check both
+    // acceptance and mismatch rejection under `--verify-shard-plan`.
+    let plan_entries: Vec<serde_json::Value> = shards
+        .iter()
+        .map(|s| {
+            serde_json::json!({
+                "shard_idx": s["shard_idx"],
+                "capture_module": s["capture_module"],
+                "proof_module": s["proof_module"],
+                "num_bodies": s["num_bodies"],
+                "has_cycle": s["has_cycle"],
+                "oversized_scc": s["oversized_scc"],
+                "callee_shards": s["callee_shards"],
+                "global_def_id_range": s["global_def_id_range"],
+                "identities": s["identities"],
+            })
+        })
+        .collect();
+    let plan = serde_json::json!({
+        "schema_version": 1,
+        "sharded": true,
+        "scope": "crate",
+        "shard_min_bodies": 4,
+        "shard_max_bodies": 4,
+        "shard_max_ast_nodes": 2500,
+        "total_bodies": 24,
+        "total_shards": shards.len(),
+        "id_tree_sha256": shards_manifest["id_tree_sha256"],
+        "shards": plan_entries,
+    });
+    let plan_dir = tempfile::tempdir().unwrap();
+    let good_plan = plan_dir.path().join("good.json");
+    std::fs::write(&good_plan, serde_json::to_vec_pretty(&plan).unwrap()).unwrap();
+    let good_fixture = Capture::new(source.as_bytes());
+    let good_out = good_fixture
+        .command()
+        .arg("--scope=crate")
+        .arg("--shard-min-bodies=4")
+        .arg("--shard-max-bodies=4")
+        .arg("--verify-shard-plan")
+        .arg(&good_plan)
+        .output()
+        .unwrap();
+    assert!(
+        good_out.status.success(),
+        "matching --verify-shard-plan must pass:\n{}\n{}",
+        stdout(&good_out),
+        stderr(&good_out)
+    );
+
+    let mut bad_plan_val = plan;
+    bad_plan_val["total_bodies"] = serde_json::json!(25);
+    let bad_plan = plan_dir.path().join("bad.json");
+    std::fs::write(&bad_plan, serde_json::to_vec_pretty(&bad_plan_val).unwrap()).unwrap();
+    let bad_fixture = Capture::new(source.as_bytes());
+    let bad_out = bad_fixture
+        .command()
+        .arg("--scope=crate")
+        .arg("--shard-min-bodies=4")
+        .arg("--shard-max-bodies=4")
+        .arg("--verify-shard-plan")
+        .arg(&bad_plan)
+        .output()
+        .unwrap();
+    assert!(!bad_out.status.success(), "drifted --verify-shard-plan must fail");
+    let bad_combined = format!("{}{}", stdout(&bad_out), stderr(&bad_out));
+    assert!(
+        bad_combined.contains("drifted from captured crate topology"),
+        "{bad_combined}"
+    );
+    bad_fixture.assert_no_capture_artifacts();
+}
+
+#[test]
+fn tarjan_scc_sharding_preserves_lifetime_generic_method_and_trait_impl_edges() {
+    // Inherent and trait methods on a lifetime-generic type capture with named
+    // lifetime `item_identity` (`Wrap::<'a>::step_b`,
+    // `<Wrap<'a> as MyMarker>::mark`). Verify callee resolution matches those
+    // identities rather than erased `'_` instance strings, keeping mutual
+    // recursion in one cyclic shard and ordering the trait callee shard first.
+    let source = b"\
+        pub struct Wrap<'a>(core::marker::PhantomData<&'a ()>);\n\
+        pub trait MyMarker {\n\
+            fn mark(x: u64) -> !;\n\
+        }\n\
+        impl<'a> MyMarker for Wrap<'a> {\n\
+            fn mark(_x: u64) -> ! { loop {} }\n\
+        }\n\
+        impl<'a> Wrap<'a> {\n\
+            pub fn step_a(x: u64) -> ! {\n\
+                if x == 0 { <Self as MyMarker>::mark(x) } else { Self::step_b(x) }\n\
+            }\n\
+            pub fn step_b(x: u64) -> ! { Self::step_a(x) }\n\
+        }\n\
+        pub fn pad_0() -> ! { loop {} }\n\
+        pub fn pad_1() -> ! { loop {} }\n";
+    let fixture = Capture::new(source);
+    let output = fixture
+        .command()
+        .args([
+            "--select=Wrap::<'a>::step_a",
+            "--select=Wrap::<'a>::step_b",
+            "--select=<Wrap<'a> as MyMarker>::mark",
+            "--select=pad_0",
+            "--select=pad_1",
+            "--shard-min-bodies=2",
+            "--shard-max-bodies=2",
+        ])
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "expected lifetime-generic sharded capture to succeed:\n{}\n{}",
+        stdout(&output),
+        stderr(&output)
+    );
+    let shards_manifest: serde_json::Value = serde_json::from_slice(
+        &std::fs::read(fixture.output.join("capture_shards.json")).unwrap(),
+    )
+    .unwrap();
+    assert_eq!(shards_manifest["total_bodies"], 5, "{shards_manifest}");
+    assert_eq!(shards_manifest["cyclic_sccs"], 1, "{shards_manifest}");
+    let shards = shards_manifest["shards"].as_array().unwrap();
+    let find_shard = |suffix: &str| {
+        shards
+            .iter()
+            .find(|s| {
+                s["identities"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|v| v.as_str().unwrap().ends_with(suffix))
+            })
+            .unwrap_or_else(|| panic!("missing shard for {suffix}: {shards_manifest}"))
+    };
+    let step_a_shard = find_shard("::step_a");
+    let step_b_shard = find_shard("::step_b");
+    let mark_shard = find_shard("::mark");
+    assert_eq!(
+        step_a_shard["shard_idx"], step_b_shard["shard_idx"],
+        "lifetime-generic cycle step_a <-> step_b must share one shard: {shards_manifest}"
+    );
+    assert_eq!(step_a_shard["has_cycle"], true, "{step_a_shard}");
+    let mark_idx = mark_shard["shard_idx"].as_u64().unwrap();
+    let cycle_idx = step_a_shard["shard_idx"].as_u64().unwrap();
+    assert!(
+        mark_idx < cycle_idx,
+        "trait impl callee mark (shard {mark_idx}) must strictly precede full 2-body cycle shard \
+         {cycle_idx}: {shards_manifest}"
+    );
+    let cycle_callees: Vec<u64> = step_a_shard["callee_shards"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|v| v.as_u64().unwrap())
+        .collect();
+    assert!(
+        cycle_callees.contains(&mark_idx),
+        "cycle shard must record trait impl callee shard {mark_idx} in callee_shards: {step_a_shard}"
+    );
 }

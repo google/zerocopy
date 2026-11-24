@@ -126,6 +126,23 @@ fn balances_large_captured_lists_through_lean_and_target_audit() {
                  end Trusted.MirSemantics"
             ),
         ));
+        let capture_shards_path = capture_out.join("capture_shards.json");
+        if capture_shards_path.is_file() {
+            let shards_json: Value =
+                serde_json::from_slice(&fs::read(&capture_shards_path).unwrap()).unwrap();
+            for shard in shards_json["shards"].as_array().unwrap() {
+                let idx = shard["shard_idx"].as_u64().unwrap();
+                let mod_name = shard["capture_module"].as_str().unwrap().to_owned();
+                let expected_sha = shard["capture_sha256"].as_str().unwrap().to_owned();
+                let shard_path = capture_out.join(format!("Captured/Shard_{idx:03}.lean"));
+                modules.push(TargetModule {
+                    module: mod_name,
+                    expected_sha256: expected_sha,
+                    source: shard_path,
+                    role: TargetRole::Capture,
+                });
+            }
+        }
         modules.push(TargetModule {
             module: "Captured".to_owned(),
             expected_sha256: sha256_hex(captured_lean.as_bytes()),
@@ -796,10 +813,17 @@ end Proof"#,
         "{receipt:?}"
     );
 
-    let captured_lean = fs::read_to_string(artifacts.join("capture/Captured.lean")).unwrap();
+    let shard_0_lean = artifacts.join("capture/Captured/Shard_000.lean");
+    let string_append_source = if shard_0_lean.exists() {
+        shard_0_lean
+    } else {
+        artifacts.join("capture/Captured.lean")
+    };
+    let captured_lean = fs::read_to_string(&string_append_source).unwrap();
     assert!(
         captured_lean.contains("Trusted.MirAst.stringAppend"),
-        "expected long identities to use balanced Trusted.MirAst.stringAppend"
+        "expected long identities in {} to use balanced Trusted.MirAst.stringAppend",
+        string_append_source.display()
     );
 
     let captured_json: Value =

@@ -24,7 +24,8 @@ pub use render::{
 };
 pub use schema::{
     FailureReceipt, HorizonRecord, InspectParseError, ModelSystemRelation, ParsedReceipt,
-    PolicyRequirements, ProvenanceQualifiers, ReceiptEnvelope, SpecWarningEntry, SuccessReceipt,
-    TcbShimEntry, parse_and_validate_receipt,
+    PolicyRequirements, ProvenanceQualifiers, ReceiptEnvelope, ReceiptShardEntry,
+    ReceiptShardsManifest, SpecWarningEntry, SuccessReceipt, TcbShimEntry,
+    parse_and_validate_receipt,
 };
 pub use strict_json::{MAX_JSON_DEPTH, MAX_RECEIPT_JSON_BYTES, StrictJsonDom};

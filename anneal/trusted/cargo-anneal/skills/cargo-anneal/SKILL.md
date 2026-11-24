@@ -116,6 +116,47 @@ When adapting the example, pass `--artifacts <new-dir>`. Inspect `selected` and
 `program` in `capture/capture.json` plus the goal in `generated/Expected.lean`.
 Move to **`proof-scaling`** as soon as direct `execProg` / `simp` stalls.
 
+## Scale crate proofs with Tarjan SCC sharding
+
+When captured MIR exceeds `--shard-min-bodies` (default `20`), `cargo anneal`
+automatically shards `Captured` along strongly connected components in
+callee-first topological order (`Captured.Shard_000 .. Captured.Shard_<K-1>`)
+and emits `generated/Proof/IdTree.lean` (`Proof.IdTree.idDecisionTree`) plus
+`capture/capture_shards.json`. Sharding is transparent for `Proof` unless
+`Proof/Shard_<k>.lean` is authored for incremental per-shard `.olean` caching:
+
+- Tune thresholds with `--shard-min-bodies <N>` (default `20`),
+  `--shard-max-bodies <N>` (default `20`, `>= 1`), and
+  `--shard-max-ast-nodes <NODES>` (default `2500`, `>= 1`).
+- Reserved top-level namespaces (`Captured.*`, `Expected.*`, `Trusted.*`,
+  `Anneal.*`, `Init`, `Std`, `Lean`, `Lake`, `TrustedBoundary`) cannot be
+  shadowed by authored files (which covers generated `Captured.Shard_*`). When
+  sharding is active, `cargo anneal` generates `generated/Proof/IdTree.lean`
+  (`Proof.IdTree`), and authors may provide `Proof/Shard_<k>.lean` modules to
+  organize and cache per-shard proofs. Existing `>20`-body proofs referencing
+  `Captured.body_N` or positional indices must switch to `Body.identity` keys
+  or per-shard imports (or pass `--shard-min-bodies` to adjust the threshold).
+- Generate or verify a static-DAG topology plan (`anneal-shards.json`) with
+  `cargo anneal shard-plan` (`--request` or `--manifest-path`, plus `--write`
+  or `--check`), and gate `cargo anneal verify` on a checked-in plan using
+  `--verify-shard-plan <PATH>`:
+
+```sh
+cargo anneal shard-plan --manifest-path Cargo.toml --write anneal-shards.json
+cargo anneal verify --manifest-path Cargo.toml --proof-dir proof --verify-shard-plan anneal-shards.json
+```
+
+Edits that preserve shard `identities`, `callee_shards`, `has_cycle`,
+`oversized_scc`, and shard packing bounds keep `anneal-shards.json` unchanged,
+whereas structural SCC or cross-shard edge changes or AST/body shard
+re-packing fail closed with regeneration instructions. Sharded captures reorder
+`program.bodies` into canonical callee-first Tarjan SCC order with
+`entryDefId := 0` selecting canonical body `0`, so specs in sharded crates
+should identify target bodies by `Body.identity` rather than `entryDefId` or
+positional body indices. When sharding is active, Receipt v3 adds
+`capture_shards_sha256` and `shards` (`total_sccs`, `cyclic_sccs`,
+`total_shards`, `id_tree_sha256`, and per-shard metadata).
+
 ## Diagnose failures and read Receipt v3 honestly
 
 Inspect `status`, `phase`, `detail`, and any actionable `hint` together; check
@@ -126,8 +167,9 @@ stderr if stdout is empty.
 - `compiler_failed`: Fix the reported Rust diagnostics first.
 - `tool_failed`: Diagnose the named setup, capture, sandbox, or artifact phase.
 - `proof_failed`: **Step 0 — Day-2 Rust bug triage before proof hacking.**
-  Compare `generated/Expected.lean` and `capture/Captured.lean` against the
-  Rust implementation to check whether the Rust code actually violates its
+  Compare `generated/Expected.lean` and `capture/Captured.lean` (or
+  `capture/Captured/Shard_*.lean` when sharded) against the Rust
+  implementation to check whether the Rust code actually violates its
   specification (missing bounds/overflow guard, off-by-one, or unintended panic
   path). Never silently weaken `Specs.safety` or `Specs.property` to make a
   proof pass; escalate any implementation-vs-intent mismatch to the user.

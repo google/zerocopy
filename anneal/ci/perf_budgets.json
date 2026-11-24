@@ -100,7 +100,7 @@
     },
     {
       "pattern": "zerocopy_proofs.suite.verified_units_count",
-      "min_value": 4,
+      "min_value": 5,
       "unit": "count",
       "description": "Non-backsliding first-customer verified proof unit floor"
     }

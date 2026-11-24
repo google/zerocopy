@@ -33,6 +33,7 @@ mod ir;
 mod lean;
 mod mono;
 mod publication;
+mod shard;
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::env;
@@ -157,6 +158,39 @@ pub struct Args {
     /// modeled shape. The capability is recorded in `capture.json`.
     #[arg(long, value_enum)]
     stdlib_crate: Option<CliStdlibCrate>,
+    /// Minimum body count above which `.olean` sharding activates (`N > min`).
+    /// Captures with `<= shard_min_bodies` keep the single-file `Captured.lean`
+    /// layout.
+    #[arg(long, default_value_t = shard::DEFAULT_SHARD_MIN_BODIES)]
+    shard_min_bodies: usize,
+    /// Maximum bodies packed into a single coarsened shard (`>= 1`; any
+    /// oversized single SCC receives a dedicated isolated shard).
+    #[arg(
+        long,
+        default_value_t = shard::DEFAULT_SHARD_MAX_BODIES,
+        value_parser = parse_nonzero_usize
+    )]
+    shard_max_bodies: usize,
+    /// Maximum AST nodes packed into a single coarsened shard (`>= 1`).
+    #[arg(
+        long,
+        default_value_t = shard::DEFAULT_SHARD_MAX_AST_NODES,
+        value_parser = parse_nonzero_usize
+    )]
+    shard_max_ast_nodes: usize,
+    /// Verify that the captured shard topology matches a checked-in
+    /// `anneal-shards.json` plan before publishing any artifacts.
+    #[arg(long)]
+    verify_shard_plan: Option<PathBuf>,
+}
+
+fn parse_nonzero_usize(raw: &str) -> Result<usize, String> {
+    let n: usize =
+        raw.parse().map_err(|e| format!("expected positive integer, got {raw:?}: {e}"))?;
+    if n == 0 {
+        return Err("value must be at least 1".to_owned());
+    }
+    Ok(n)
 }
 
 fn parse_instantiation(raw: &str) -> Result<ir::Instantiation, String> {
@@ -285,21 +319,71 @@ fn run(mut args: Args) -> Result<serde_json::Value, Failure> {
     // completed directory rename permits a captured status below.
     let publication = publication::Publication::new(&args.out_dir).map_err(Failure::io)?;
     args.out_dir = publication.compiler_dir();
-    let manifest = capture::run(&args, &declared_env, &sysroot, &verified)?;
+    let shard_config = shard::ShardConfig {
+        shard_min_bodies: args.shard_min_bodies,
+        shard_max_bodies: args.shard_max_bodies,
+        shard_max_ast_nodes: args.shard_max_ast_nodes,
+    };
+    shard_config.validate().map_err(Failure::tool)?;
+    let verify_shard_plan = match args.verify_shard_plan.take() {
+        Some(path) => Some(path.canonicalize().map_err(|e| {
+            Failure::tool(format!("cannot resolve --verify-shard-plan {}: {e}", path.display()))
+        })?),
+        None => None,
+    };
+    let mut manifest = capture::run(&args, &declared_env, &sysroot, &verified)?;
+    let prepared_shards =
+        shard::maybe_shard_manifest(&mut manifest, shard_config).map_err(Failure::tool)?;
+    if let Some(ref plan_path) = verify_shard_plan {
+        let actual_plan = match &prepared_shards {
+            Some(prepared) => shard::ShardPlan::from_sharded(&prepared.manifest, shard_config),
+            None => shard::ShardPlan::from_unsharded(
+                manifest.program.scope(),
+                manifest.program.bodies().len(),
+                shard_config,
+            ),
+        };
+        shard::verify_shard_plan_file(plan_path, &actual_plan).map_err(Failure::tool)?;
+    }
     let json =
         serde_json::to_vec_pretty(&manifest).map_err(|error| Failure::tool(error.to_string()))?;
-    let lean = lean::render(&manifest.program);
-    let destination = publication
-        .publish(&json, lean.as_bytes())
-        .map_err(Failure::io)?;
+    let (destination, shard_count) = match prepared_shards {
+        None => {
+            let lean = lean::render(&manifest.program);
+            let destination = publication.publish(&json, lean.as_bytes()).map_err(Failure::io)?;
+            (destination, 0usize)
+        }
+        Some(prepared) => {
+            let destination = publication
+                .publish_with_shards(
+                    &json,
+                    prepared.root_lean.as_bytes(),
+                    Some(publication::ShardedPublication {
+                        shards_json: &prepared.manifest_json,
+                        shard_sources: &prepared.shard_sources,
+                    }),
+                )
+                .map_err(Failure::io)?;
+            (destination, prepared.manifest.total_shards)
+        }
+    };
     let json_path = destination.join("capture.json");
     let lean_path = destination.join("Captured.lean");
-    Ok(serde_json::json!({
+    let mut response = serde_json::json!({
         "status": "captured", "capture": json_path, "lean": lean_path,
         "selected_count": manifest.selected.len(),
         "census_count": manifest.census.len(),
         "source_count": manifest.source_files.len(),
-    }))
+    });
+    if shard_count > 0 {
+        let obj = response.as_object_mut().expect("object literal");
+        obj.insert(
+            "capture_shards".to_owned(),
+            serde_json::json!(destination.join("capture_shards.json")),
+        );
+        obj.insert("shard_count".to_owned(), serde_json::json!(shard_count));
+    }
+    Ok(response)
 }
 
 fn run_capture(args: Vec<OsString>) -> ExitCode {

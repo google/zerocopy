@@ -138,6 +138,18 @@
       "sha256": "b003849202da82fdb400e94d032bbd815d22ab7b465e7e3b269f4636d55fe1f5"
     },
     {
+      "path": "theory/Anneal/SccSharding.lean",
+      "sha256": "1338d5b66eea5926335b4fee630e9c769ff824462b2afe5ff355fd95ab970d19"
+    },
+    {
+      "path": "theory/Anneal/SccSharding/BinChunkTree.lean",
+      "sha256": "b3c7abe33fdd303ceeffe484a43ad0d66501fb58b2d95baf01197d04ca3ee0c0"
+    },
+    {
+      "path": "theory/Anneal/SccSharding/InterprocCallModel.lean",
+      "sha256": "e62ddc838c2af1d02e2e1845ecc28ae17ccedb78a73231e90548262f19f9bfbb"
+    },
+    {
       "path": "theory/Anneal/SpineForce.lean",
       "sha256": "77bb30c2c8873ac358c1751c721380d340114ad67c8d7fd5f76478192d54c535"
     },

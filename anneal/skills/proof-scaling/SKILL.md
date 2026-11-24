@@ -77,9 +77,11 @@ Reach first for bundled `Anneal.*` certificate and lemma libraries listed in
   `Anneal.BitTrieLrat`, `Anneal.BitVec`, `Anneal.BitVecArith`
 - Classical law-of-excluded-middle & core `Init` helpers (replaces `by_cases`
   in Pass 1): `Anneal.ClassicalEm`, `Anneal.InitLemmas`, `Anneal.NatBitwise`
-- MIR WP, loop invariants, byte/chunk layouts, forcing, and path trees:
-  `Anneal.MirWp`, `Anneal.LoopInv`, `Anneal.LeBytes`, `Anneal.ListChunks`,
-  `Anneal.PTree`, `Anneal.SpineForce`
+- MIR WP, loop invariants, byte/chunk layouts, forcing, path trees, and SCC
+  sharding: `Anneal.MirWp`, `Anneal.LoopInv`, `Anneal.LeBytes`,
+  `Anneal.ListChunks`, `Anneal.PTree`, `Anneal.SpineForce`,
+  `Anneal.SccSharding`, `Anneal.SccSharding.BinChunkTree`,
+  `Anneal.SccSharding.InterprocCallModel`
 <!-- pass1-bundled-modules:end -->
 
 Note: `Anneal.MirTotal.Ops` is bundled above, while repo-local

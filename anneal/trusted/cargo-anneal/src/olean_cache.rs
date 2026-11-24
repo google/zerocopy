@@ -9,13 +9,17 @@
 //! Content-addressed `.olean` reuse across prebuilt toolchain archives and a
 //! user-local disk cache.
 //!
-//! Only the static inspector (`TrustedBoundary.lean`) and static bundled
-//! `Trusted.*` / `Anneal.*` runtime modules are cached. Every cached `.olean`
-//! must match the exact `lean` executable digest, sysroot `.olean*` manifest
-//! digest, module source digest, compiler flags, and direct and transitive
-//! import artifact digests, and is still copied into the private stage, checked
-//! against `olean_ledger`, and replayed by `target-audit` (`0` new TCB
-//! assumptions).
+//! Covers the static inspector (`TrustedBoundary.lean`), static bundled
+//! `Trusted.*` / `Anneal.*` runtime libraries (prebuilt or disk), and
+//! sandboxed target capture/proof shard artifacts (`Proof.IdTree`,
+//! `Captured.Shard_*`, `Proof.Shard_*`; disabled whenever
+//! `SandboxMode::Unsandboxed` / `ActiveSandbox::None` is active so unsandboxed
+//! runs never share target-shard disk cache entries with sandboxed runs).
+//! Every cached `.olean` must match the exact `lean` executable digest, sysroot
+//! `.olean*` manifest digest, module source digest, compiler flags, and direct
+//! and transitive import artifact digests, and is still copied into the
+//! private stage, checked against `olean_ledger`, and replayed by
+//! `target-audit` for the reachable theorem dependency cone.
 
 #[cfg(unix)]
 use std::os::unix::fs::{MetadataExt as _, OpenOptionsExt as _};
@@ -65,7 +69,8 @@ pub(crate) struct CacheImportBinding {
     pub transitive_sha256: String,
 }
 
-/// Complete deterministic cache-key input for an inspector or bundled module.
+/// Complete deterministic cache-key input for an inspector, bundled library
+/// module, or sandboxed target shard module.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub(crate) struct OleanCacheKeyInput {
@@ -213,6 +218,15 @@ pub(crate) fn is_cacheable_bundled_module(module: &str) -> bool {
     matches!(module, "Trusted" | "Anneal")
         || module.starts_with("Trusted.")
         || module.starts_with("Anneal.")
+}
+
+/// Return `true` iff `module` is a target capture/proof shard or `Proof.IdTree`
+/// eligible for content-addressed disk `.olean` reuse across incremental
+/// single-body verification runs.
+pub(crate) fn is_cacheable_target_shard_module(module: &str) -> bool {
+    module == "Proof.IdTree"
+        || module.starts_with("Captured.Shard_")
+        || module.starts_with("Proof.Shard_")
 }
 
 /// Derive a per-user disk cache directory (`<cache>/anneal/olean-cache`)
@@ -386,7 +400,9 @@ impl OleanCache {
             return Ok(Some(parts));
         }
 
-        if self.no_rebuild_bundled {
+        if self.no_rebuild_bundled
+            && (input.kind == CacheKind::Inspector || is_cacheable_bundled_module(&input.module))
+        {
             let reason = if let Some(found_ver) = self.prebuilt_skipped_version {
                 format!(
                     "missing prebuilt or cached .olean for {} (--no-rebuild-bundled; skipped prebuilt manifest schema_version {found_ver} != {CACHE_FORMAT_VERSION})",
@@ -1736,5 +1752,73 @@ mod tests {
             key_input.cache_key(),
             "c3a4decebcd8ececefe5514fad6d3b409e7f8da2da1496de5310d612a7b89e09"
         );
+    }
+
+    #[test]
+    fn target_shard_cache_policy_allows_shards_while_no_rebuild_bundled_stays_strict() {
+        assert!(is_cacheable_bundled_module("Trusted"));
+        assert!(is_cacheable_bundled_module("Anneal.SccSharding"));
+        assert!(!is_cacheable_bundled_module("Proof.IdTree"));
+        assert!(!is_cacheable_bundled_module("Captured.Shard_000"));
+        assert!(!is_cacheable_bundled_module("Proof.Shard_000"));
+
+        assert!(is_cacheable_target_shard_module("Proof.IdTree"));
+        assert!(is_cacheable_target_shard_module("Captured.Shard_000"));
+        assert!(is_cacheable_target_shard_module("Proof.Shard_000"));
+        assert!(!is_cacheable_target_shard_module("Proof"));
+        assert!(!is_cacheable_target_shard_module("Captured"));
+        assert!(!is_cacheable_target_shard_module("Spec"));
+        assert!(!is_cacheable_target_shard_module("Trusted.MirAst"));
+
+        let tmp = tempfile::tempdir().unwrap();
+        let disk_dir = tmp.path().join("disk-cache");
+        let stage_dir = tmp.path().join("stage");
+        let src_dir = tmp.path().join("src");
+        fs::create_dir_all(&stage_dir).unwrap();
+        fs::create_dir_all(&src_dir).unwrap();
+
+        let mut cache = OleanCache::new_default();
+        cache.set_disk_dir(Some(disk_dir));
+        cache.set_no_rebuild_bundled(true);
+
+        // Target shards and `Proof.IdTree` miss cleanly under
+        // `--no-rebuild-bundled` so they can compile on demand, whereas
+        // uncached bundled modules continue to fail closed.
+        for module in ["Proof.IdTree", "Captured.Shard_000", "Proof.Shard_000"] {
+            let mut input = sample_input(&"a".repeat(64));
+            input.kind = CacheKind::Module;
+            input.module = module.to_owned();
+            assert!(cache.lookup_and_materialize(&input, &stage_dir, "Shard").unwrap().is_none());
+        }
+        let mut bundled = sample_input(&"b".repeat(64));
+        bundled.module = "Anneal.SccSharding".to_owned();
+        let err = cache.lookup_and_materialize(&bundled, &stage_dir, "Anneal/SccSharding").unwrap_err();
+        assert_eq!(err.code, 2);
+        assert_eq!(err.phase, "olean-cache");
+        assert!(err.message.contains("--no-rebuild-bundled"), "{err}");
+
+        // `--no-rebuild-bundled` must also fail closed on inspector misses.
+        let mut inspector = sample_input(&"d".repeat(64));
+        inspector.kind = CacheKind::Inspector;
+        inspector.module = "TrustedBoundary".to_owned();
+        let err = cache.lookup_bytes(&inspector).unwrap_err();
+        assert_eq!(err.code, 2);
+        assert_eq!(err.phase, "olean-cache");
+        assert!(err.message.contains("--no-rebuild-bundled"), "{err}");
+
+        // Round-tripping a target shard hits cleanly on repeat lookup.
+        let olean_bytes = fake_olean();
+        let olean_sha = sha256_bytes(&olean_bytes);
+        let src_olean = src_dir.join("Shard_000.olean");
+        fs::write(&src_olean, &olean_bytes).unwrap();
+        let mut shard_input = sample_input(&"c".repeat(64));
+        shard_input.kind = CacheKind::Module;
+        shard_input.module = "Proof.Shard_000".to_owned();
+        cache.store_compiled(&shard_input, &[("olean", &src_olean, &olean_sha)]).unwrap();
+        let hit = cache
+            .lookup_and_materialize(&shard_input, &stage_dir, "Proof/Shard_000")
+            .unwrap()
+            .expect("target shard cache hit expected");
+        assert_eq!(fs::read(&hit.materialized_parts[0].1).unwrap(), olean_bytes);
     }
 }

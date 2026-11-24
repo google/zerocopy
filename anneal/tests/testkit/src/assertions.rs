@@ -59,6 +59,10 @@ pub struct VerifySuccessReceipt {
     #[serde(default)]
     pub sorry_declarations: Option<Vec<Value>>,
     #[serde(default)]
+    pub capture_shards_sha256: Option<String>,
+    #[serde(default)]
+    pub shards: Option<Value>,
+    #[serde(default)]
     pub artifacts: Option<String>,
 }
 
@@ -145,6 +149,10 @@ pub struct CaptureSuccessStatus {
     pub selected_count: usize,
     pub census_count: usize,
     pub source_count: usize,
+    #[serde(default)]
+    pub capture_shards: Option<PathBuf>,
+    #[serde(default)]
+    pub shard_count: Option<usize>,
 }
 
 /// Failing `anneal-rustc-capture capture` status payload.

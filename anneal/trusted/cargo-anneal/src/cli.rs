@@ -87,12 +87,15 @@ enum Command {
     Verify(Box<verify::VerifyArgs>),
     /// Offline inspection and comparison of Receipt Schema v3 JSON envelopes.
     Inspect(Box<inspect::InspectArgs>),
+    /// Compute, write, or check a static-DAG `anneal-shards.json` plan.
+    ShardPlan(Box<verify::ShardPlanArgs>),
 }
 
 enum Action {
     Print { output: String, color: ColorChoice, quiet: bool, verbose: bool },
     Verify { args: Box<verify::VerifyArgs>, color: ColorChoice, quiet: bool, verbose: bool },
     Inspect { args: Box<inspect::InspectArgs>, color: ColorChoice, quiet: bool, verbose: bool },
+    ShardPlan(Box<verify::ShardPlanArgs>),
 }
 
 #[derive(Debug)]
@@ -111,6 +114,7 @@ fn parse(mut args: Vec<OsString>) -> Result<Cli, clap::Error> {
     match cli.command {
         Some(Command::Verify(ref verify_args)) => verify_args.validate(Cli::command())?,
         Some(Command::Inspect(ref inspect_args)) => inspect_args.validate(Cli::command())?,
+        Some(Command::ShardPlan(ref shard_args)) => shard_args.validate(Cli::command())?,
         _ => {}
     }
     Ok(cli)
@@ -169,6 +173,7 @@ fn dispatch(
         }),
         Some(Command::Verify(args)) => Ok(Action::Verify { args, color, quiet, verbose }),
         Some(Command::Inspect(args)) => Ok(Action::Inspect { args, color, quiet, verbose }),
+        Some(Command::ShardPlan(args)) => Ok(Action::ShardPlan(args)),
     }
 }
 
@@ -196,6 +201,7 @@ fn dispatch(cli: Cli) -> Result<Action, Failure> {
         }),
         Some(Command::Verify(args)) => Ok(Action::Verify { args, color, quiet, verbose }),
         Some(Command::Inspect(args)) => Ok(Action::Inspect { args, color, quiet, verbose }),
+        Some(Command::ShardPlan(args)) => Ok(Action::ShardPlan(args)),
     }
 }
 
@@ -252,6 +258,7 @@ pub fn main() -> ExitCode {
         Ok(Action::Inspect { args, color, quiet, verbose }) => {
             inspect::main(*args, color, quiet, verbose)
         }
+        Ok(Action::ShardPlan(args)) => verify::main_shard_plan(*args),
         Err(Failure::Arguments(error)) => {
             let (mut session, _) =
                 OutputSession::live(ColorChoice::Auto, false, false, VerifyFormat::Human);
@@ -293,7 +300,9 @@ mod tests {
     fn output(action: Action) -> String {
         match action {
             Action::Print { output, .. } => output,
-            Action::Verify { .. } | Action::Inspect { .. } => panic!("expected printable output"),
+            Action::Verify { .. } | Action::Inspect { .. } | Action::ShardPlan(_) => {
+                panic!("expected printable output")
+            }
         }
     }
 
@@ -314,6 +323,9 @@ mod tests {
                 &["verify", "-h"],
                 &["verify", "--help"],
                 &["help", "verify"],
+                &["shard-plan", "-h"],
+                &["shard-plan", "--help"],
+                &["help", "shard-plan"],
             ] {
                 let output = output(
                     run_without_install(args(&[prefix, suffix].concat()))
@@ -326,6 +338,7 @@ mod tests {
                     #[cfg(not(feature = "setup"))]
                     assert!(!output.contains("setup"), "{output}");
                     assert!(output.contains("verify"), "{output}");
+                    assert!(output.contains("shard-plan"), "{output}");
                 }
             }
             for suffix in ["-V", "--version"] {
@@ -676,7 +689,6 @@ mod tests {
                 if actual.as_os_str() == path
         ));
     }
-
     #[test]
     fn inspect_dispatch_and_validation_work() {
         for route in [vec!["cargo-anneal", "inspect"], vec!["cargo-anneal", "anneal", "inspect"]] {
@@ -729,5 +741,60 @@ mod tests {
             ])),
             Err(Failure::Arguments(_))
         ));
+    }
+
+    #[test]
+    fn shard_plan_dispatch_and_validation() {
+        for prefix in [&["cargo-anneal"][..], &["cargo-anneal", "anneal"]] {
+            #[cfg(feature = "setup")]
+            let ok_cases: &[&[&str]] = &[
+                &["shard-plan", "--request", "request.json", "--write", "anneal-shards.json"],
+                &["shard-plan", "--manifest-path", "Cargo.toml", "--check", "anneal-shards.json"],
+            ];
+            #[cfg(not(feature = "setup"))]
+            let ok_cases: &[&[&str]] = &[
+                &[
+                    "shard-plan",
+                    "--capture",
+                    "cap",
+                    "--sysroot",
+                    "sys",
+                    "--request",
+                    "request.json",
+                    "--write",
+                    "anneal-shards.json",
+                ],
+                &[
+                    "shard-plan",
+                    "--capture",
+                    "cap",
+                    "--sysroot",
+                    "sys",
+                    "--manifest-path",
+                    "Cargo.toml",
+                    "--check",
+                    "anneal-shards.json",
+                ],
+            ];
+            for suffix in ok_cases {
+                let action = run_without_install(args(&[prefix, suffix].concat()))
+                    .expect("shard-plan arguments must parse and dispatch");
+                assert!(matches!(action, Action::ShardPlan(_)));
+            }
+        }
+        assert!(run_without_install(args(&["cargo-anneal", "shard-plan"])).is_err());
+        assert!(
+            run_without_install(args(&[
+                "cargo-anneal",
+                "shard-plan",
+                "--request",
+                "request.json",
+                "--write",
+                "a.json",
+                "--check",
+                "b.json",
+            ]))
+            .is_err()
+        );
     }
 }

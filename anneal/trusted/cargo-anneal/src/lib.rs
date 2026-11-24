@@ -43,6 +43,7 @@ pub mod sandbox;
 #[cfg(feature = "setup")]
 #[doc(hidden)]
 pub mod setup;
+mod shard;
 mod stage;
 #[doc(hidden)]
 pub mod sys_util;

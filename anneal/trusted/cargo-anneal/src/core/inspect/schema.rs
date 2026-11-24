@@ -25,6 +25,7 @@ use crate::core::{
 };
 
 const EXPECTED_RECEIPT_SCHEMA_VERSION: u64 = 3;
+const EXPECTED_CAPTURE_SHARDS_SCHEMA_VERSION: u64 = 1;
 const ALLOWED_TAINT_ATOMS: &[&str] =
     &["sorry_in_proof", "unpinned_lean", "unsandboxed_elaboration"];
 const ALLOWED_SANDBOXES: &[&str] = &["linux_bwrap", "linux_landlock_seccomp", "none"];
@@ -261,6 +262,37 @@ pub struct AuditSourceEntry {
     pub source_sha256: String,
 }
 
+/// Typed per-shard metadata entry inside `shards.shards[]`.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct ReceiptShardEntry {
+    pub shard_idx: u64,
+    pub capture_module: String,
+    pub proof_module: String,
+    pub capture_sha256: String,
+    pub num_bodies: u64,
+    pub ast_nodes: u64,
+    pub has_cycle: bool,
+    pub oversized_scc: bool,
+    pub scc_ids: Vec<u64>,
+    pub callee_shards: Vec<u64>,
+    pub global_def_id_range: [u64; 2],
+    pub identities: Vec<String>,
+}
+
+/// Typed capture-sharding manifest embedded in `shards`.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct ReceiptShardsManifest {
+    pub schema_version: u64,
+    pub scope: String,
+    pub total_bodies: u64,
+    pub total_sccs: u64,
+    pub cyclic_sccs: u64,
+    pub total_shards: u64,
+    pub is_lean_module: bool,
+    pub id_tree_sha256: String,
+    pub shards: Vec<ReceiptShardEntry>,
+}
+
 /// Parsed verified Receipt Schema v3 envelope.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SuccessReceipt {
@@ -283,6 +315,8 @@ pub struct SuccessReceipt {
     pub model_system_relation: Option<ModelSystemRelation>,
     pub request_sha256: String,
     pub capture_sha256: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub capture_shards_sha256: Option<String>,
     pub capture_binary_sha256: String,
     pub model_manifest_sha256: String,
     pub specification_manifest_sha256: String,
@@ -357,6 +391,8 @@ pub struct SuccessReceipt {
     pub spec_warnings: Vec<SpecWarningEntry>,
     pub artifacts: Option<String>,
     pub unpinned_lean: Option<UnpinnedLeanRecord>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shards: Option<ReceiptShardsManifest>,
 }
 
 impl SuccessReceipt {
@@ -750,6 +786,18 @@ fn parse_success_receipt(
     };
     let request_sha256 = req_sha256(root, "request_sha256", violations)?;
     let capture_sha256 = req_sha256(root, "capture_sha256", violations)?;
+    let capture_shards_sha256 = match root.opt_str("capture_shards_sha256")? {
+        Some(hex) => {
+            if !is_sha256_hex(hex) {
+                violations.push(format!(
+                    "field `/capture_shards_sha256` must be a 64-character SHA-256 hex digest, \
+                     got `{hex}`"
+                ));
+            }
+            Some(hex.to_owned())
+        }
+        None => None,
+    };
     let capture_binary_sha256 = req_sha256(root, "capture_binary_sha256", violations)?;
     let model_manifest_sha256 = req_sha256(root, "model_manifest_sha256", violations)?;
     let specification_manifest_sha256 =
@@ -1114,6 +1162,93 @@ fn parse_success_receipt(
     }
     audit.collect_unrecognized(unknown);
 
+    let shards = match root.opt_obj("shards")? {
+        Some(obj) => Some(parse_shards(obj, unknown, violations)?),
+        None => None,
+    };
+    if capture_shards_sha256.is_some() != shards.is_some() {
+        violations.push(
+            "`capture_shards_sha256` and `shards` must either both be present or both be omitted"
+                .into(),
+        );
+    }
+    if let Some(ref sh) = shards {
+        let expected_shard_scope = match scope_kind.as_str() {
+            "crate" => "crate",
+            "selected_unit" => "unit",
+            _ => "",
+        };
+        if !expected_shard_scope.is_empty() && sh.scope != expected_shard_scope {
+            violations.push(format!(
+                "shards.scope `{}` disagrees with scope.kind `{scope_kind}` \
+                 (expected `{expected_shard_scope}`)",
+                sh.scope
+            ));
+        }
+        if sh.total_bodies < selected.len() as u64 {
+            violations.push(format!(
+                "shards.total_bodies ({}) is smaller than selected body count ({})",
+                sh.total_bodies,
+                selected.len()
+            ));
+        }
+        for sel in &selected {
+            if sel.body_index >= sh.total_bodies {
+                violations.push(format!(
+                    "selected body `{}` body_index {} is out of range for shards.total_bodies {}",
+                    sel.path, sel.body_index, sh.total_bodies
+                ));
+            }
+        }
+        if !audit_sources.is_empty() {
+            match audit_sources.iter().find(|e| e.module == "Proof.IdTree") {
+                None => {
+                    violations
+                        .push("sharded receipt `audit.sources` is missing `Proof.IdTree`".into());
+                }
+                Some(entry) => {
+                    if entry.role != "proof" {
+                        violations.push(format!(
+                            "`audit.sources` entry `Proof.IdTree` has role `{}` \
+                             (expected `proof`)",
+                            entry.role
+                        ));
+                    }
+                    if !entry.source_sha256.eq_ignore_ascii_case(&sh.id_tree_sha256) {
+                        violations.push(format!(
+                            "`audit.sources` `Proof.IdTree` sha256 ({}) differs from \
+                             `shards.id_tree_sha256` ({})",
+                            entry.source_sha256, sh.id_tree_sha256
+                        ));
+                    }
+                }
+            }
+            for shard_entry in &sh.shards {
+                match audit_sources.iter().find(|e| e.module == shard_entry.capture_module) {
+                    None => violations.push(format!(
+                        "sharded receipt `audit.sources` is missing `{}`",
+                        shard_entry.capture_module
+                    )),
+                    Some(entry) => {
+                        if entry.role != "capture" {
+                            violations.push(format!(
+                                "`audit.sources` entry `{}` has role `{}` (expected `capture`)",
+                                entry.module, entry.role
+                            ));
+                        }
+                        if !entry.source_sha256.eq_ignore_ascii_case(&shard_entry.capture_sha256) {
+                            violations.push(format!(
+                                "`audit.sources` `{}` sha256 ({}) differs from \
+                                 `shards` capture_sha256 ({})",
+                                entry.module, entry.source_sha256, shard_entry.capture_sha256
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     Ok(SuccessReceipt {
         schema_version,
         assurance_stage,
@@ -1128,6 +1263,7 @@ fn parse_success_receipt(
         model_system_relation,
         request_sha256,
         capture_sha256,
+        capture_shards_sha256,
         capture_binary_sha256,
         model_manifest_sha256,
         specification_manifest_sha256,
@@ -1190,6 +1326,7 @@ fn parse_success_receipt(
         spec_warnings,
         artifacts,
         unpinned_lean,
+        shards,
     })
 }
 
@@ -1696,6 +1833,222 @@ fn parse_str_list(arr: &[Value], ptr: &str) -> Result<Vec<String>, String> {
                 .ok_or_else(|| format!("element `{ptr}/{i}` must be a string"))
         })
         .collect()
+}
+
+fn parse_u64_list(arr: &[Value], ptr: &str) -> Result<Vec<u64>, String> {
+    arr.iter()
+        .enumerate()
+        .map(|(i, val)| {
+            val.as_u64().ok_or_else(|| format!("element `{ptr}/{i}` must be a non-negative integer"))
+        })
+        .collect()
+}
+
+fn parse_shards(
+    obj: &Map<String, Value>,
+    unknown: &mut Vec<String>,
+    violations: &mut Vec<String>,
+) -> Result<ReceiptShardsManifest, String> {
+    let mut c = ObjectCursor::nested("/shards", obj);
+    let schema_version = c.req_u64("schema_version")?;
+    if schema_version != EXPECTED_CAPTURE_SHARDS_SCHEMA_VERSION {
+        violations.push(format!(
+            "unsupported shards.schema_version {schema_version} \
+             (expected {EXPECTED_CAPTURE_SHARDS_SCHEMA_VERSION})"
+        ));
+    }
+    let scope = c.req_str("scope")?.to_owned();
+    if scope != "crate" && scope != "unit" {
+        violations.push(format!("unknown shards.scope `{scope}` (expected `crate` or `unit`)"));
+    }
+    let total_bodies = c.req_u64("total_bodies")?;
+    if total_bodies == 0 {
+        violations.push("shards.total_bodies must be >= 1".into());
+    }
+    let total_sccs = c.req_u64("total_sccs")?;
+    if total_sccs == 0 || total_sccs > total_bodies {
+        violations.push(format!(
+            "shards.total_sccs ({total_sccs}) is invalid for total_bodies ({total_bodies})"
+        ));
+    }
+    let cyclic_sccs = c.req_u64("cyclic_sccs")?;
+    if cyclic_sccs > total_sccs {
+        violations.push(format!(
+            "shards.cyclic_sccs ({cyclic_sccs}) exceeds shards.total_sccs ({total_sccs})"
+        ));
+    }
+    let total_shards = c.req_u64("total_shards")?;
+    let is_lean_module = c.req_bool("is_lean_module")?;
+    if !is_lean_module {
+        violations.push("shards.is_lean_module must be true".into());
+    }
+    let id_tree_sha256 = req_sha256(&mut c, "id_tree_sha256", violations)?;
+    let shards_arr = c.req_array("shards")?;
+    if total_shards == 0 || total_shards != shards_arr.len() as u64 {
+        violations.push(format!(
+            "shards.total_shards ({total_shards}) disagrees with shards array length ({})",
+            shards_arr.len()
+        ));
+    }
+
+    let mut parsed_shards = Vec::with_capacity(shards_arr.len());
+    let mut seen_sccs = BTreeSet::new();
+    let mut seen_identities = BTreeSet::new();
+    let mut cyclic_shards = 0u64;
+    let mut cyclic_shard_sccs = 0u64;
+    let mut cursor = 0u64;
+    for (i, val) in shards_arr.iter().enumerate() {
+        let entry_obj = val
+            .as_object()
+            .ok_or_else(|| format!("shards.shards[{i}] must be a JSON object"))?;
+        let ptr = format!("/shards/shards/{i}");
+        let mut sc = ObjectCursor::nested(&ptr, entry_obj);
+        let shard_idx = sc.req_u64("shard_idx")?;
+        if shard_idx != i as u64 {
+            violations.push(format!(
+                "shards.shards[{i}].shard_idx ({shard_idx}) is out of order (expected {i})"
+            ));
+        }
+        let capture_module = sc.req_str("capture_module")?.to_owned();
+        let expected_cap = format!("Captured.Shard_{i:03}");
+        if capture_module != expected_cap {
+            violations.push(format!(
+                "shards.shards[{i}].capture_module `{capture_module}` != `{expected_cap}`"
+            ));
+        }
+        let proof_module = sc.req_str("proof_module")?.to_owned();
+        let expected_proof = format!("Proof.Shard_{i:03}");
+        if proof_module != expected_proof {
+            violations.push(format!(
+                "shards.shards[{i}].proof_module `{proof_module}` != `{expected_proof}`"
+            ));
+        }
+        let capture_sha256 = req_sha256(&mut sc, "capture_sha256", violations)?;
+        let num_bodies = sc.req_u64("num_bodies")?;
+        let ast_nodes = sc.req_u64("ast_nodes")?;
+        let has_cycle = sc.req_bool("has_cycle")?;
+        let oversized_scc = sc.req_bool("oversized_scc")?;
+        let scc_ids = parse_u64_list(sc.req_array("scc_ids")?, &format!("{ptr}/scc_ids"))?;
+        let callee_shards =
+            parse_u64_list(sc.req_array("callee_shards")?, &format!("{ptr}/callee_shards"))?;
+        let range_vals = parse_u64_list(
+            sc.req_array("global_def_id_range")?,
+            &format!("{ptr}/global_def_id_range"),
+        )?;
+        if range_vals.len() != 2 {
+            return Err(format!("field `{ptr}/global_def_id_range` must have length 2"));
+        }
+        let global_def_id_range = [range_vals[0], range_vals[1]];
+        let identities = sc.req_str_array("identities")?;
+        sc.collect_unrecognized(unknown);
+
+        if num_bodies == 0 || num_bodies != identities.len() as u64 {
+            violations.push(format!(
+                "shards.shards[{i}].num_bodies ({num_bodies}) disagrees with identities length ({})",
+                identities.len()
+            ));
+        }
+        for ident in &identities {
+            if ident.is_empty() {
+                violations.push(format!("shards.shards[{i}].identities contains an empty entry"));
+            } else if !seen_identities.insert(ident.clone()) {
+                violations.push(format!("duplicate identity `{ident}` across shards"));
+            }
+        }
+        if scc_ids.is_empty() || scc_ids.len() as u64 > num_bodies {
+            violations.push(format!(
+                "shards.shards[{i}].scc_ids count ({}) is invalid for num_bodies ({num_bodies})",
+                scc_ids.len()
+            ));
+        }
+        if oversized_scc && scc_ids.len() != 1 {
+            violations.push(format!(
+                "shards.shards[{i}] marks oversized_scc with {} SCCs (expected 1)",
+                scc_ids.len()
+            ));
+        }
+        for &scc_id in &scc_ids {
+            if scc_id >= total_sccs {
+                violations.push(format!(
+                    "shards.shards[{i}] references out-of-range scc_id {scc_id} \
+                     (total_sccs={total_sccs})"
+                ));
+            } else if !seen_sccs.insert(scc_id) {
+                violations.push(format!("shards.shards[{i}] duplicates scc_id {scc_id}"));
+            }
+        }
+        if has_cycle {
+            cyclic_shards = cyclic_shards.saturating_add(1);
+            cyclic_shard_sccs = cyclic_shard_sccs.saturating_add(scc_ids.len() as u64);
+        }
+        if num_bodies > 0 {
+            let expected_end = cursor.checked_add(num_bodies - 1);
+            if global_def_id_range[0] != cursor || expected_end != Some(global_def_id_range[1]) {
+                violations.push(format!(
+                    "shards.shards[{i}].global_def_id_range {:?} disagrees with expected range \
+                     starting at {cursor} for {num_bodies} bodies",
+                    global_def_id_range
+                ));
+            }
+            cursor = cursor.saturating_add(num_bodies);
+        }
+        for (pos, &callee) in callee_shards.iter().enumerate() {
+            if callee >= i as u64 {
+                violations.push(format!(
+                    "shards.shards[{i}].callee_shards references non-earlier shard {callee}"
+                ));
+            }
+            if pos > 0 && callee_shards[pos - 1] >= callee {
+                violations.push(format!(
+                    "shards.shards[{i}].callee_shards must be strictly sorted and duplicate-free"
+                ));
+            }
+        }
+
+        parsed_shards.push(ReceiptShardEntry {
+            shard_idx,
+            capture_module,
+            proof_module,
+            capture_sha256,
+            num_bodies,
+            ast_nodes,
+            has_cycle,
+            oversized_scc,
+            scc_ids,
+            callee_shards,
+            global_def_id_range,
+            identities,
+        });
+    }
+    if seen_sccs.len() as u64 != total_sccs {
+        violations.push(format!(
+            "shards cover {} distinct scc_id(s) != shards.total_sccs ({total_sccs})",
+            seen_sccs.len()
+        ));
+    }
+    if cyclic_sccs < cyclic_shards || cyclic_sccs > cyclic_shard_sccs {
+        violations.push(format!(
+            "shards.cyclic_sccs ({cyclic_sccs}) is inconsistent with cyclic shard capacities \
+             [{cyclic_shards}..={cyclic_shard_sccs}]"
+        ));
+    }
+    if cursor != total_bodies {
+        violations.push(format!(
+            "shards cover {cursor} bodies != shards.total_bodies ({total_bodies})"
+        ));
+    }
+    c.collect_unrecognized(unknown);
+    Ok(ReceiptShardsManifest {
+        schema_version,
+        scope,
+        total_bodies,
+        total_sccs,
+        cyclic_sccs,
+        total_shards,
+        is_lean_module,
+        id_tree_sha256,
+        shards: parsed_shards,
+    })
 }
 
 fn validate_sorted_subset(
@@ -2755,6 +3108,155 @@ pub(crate) mod tests {
             cf_bad_env.invariant_violations.len() >= 2,
             "expected unsorted + unknown violations, got {:?}",
             cf_bad_env.invariant_violations
+        );
+    }
+
+    pub fn sample_sharded_success_json() -> Value {
+        let mut r = sample_success_json();
+        let h_shards = "1".repeat(64);
+        let h_id_tree = "2".repeat(64);
+        let h_shard0 = "3".repeat(64);
+        let h_shard1 = "4".repeat(64);
+        let h_spec = "5".repeat(64);
+        let spec_manifest_sha =
+            sha256_bytes(&serde_json::to_vec_pretty(&[("Spec", h_spec.as_str())]).unwrap());
+        r["specification_manifest_sha256"] = json!(spec_manifest_sha);
+        r["audit"]["bindings"]["specificationManifestSha256"] = json!(spec_manifest_sha);
+        r["selected"] = json!([
+            { "def_id": 0, "path": "scalar::callee", "body_index": 0 },
+            { "def_id": 1, "path": "scalar::caller", "body_index": 1 }
+        ]);
+        r["capture_shards_sha256"] = json!(h_shards);
+        r["shards"] = json!({
+            "schema_version": 1,
+            "scope": "crate",
+            "total_bodies": 2,
+            "total_sccs": 2,
+            "cyclic_sccs": 0,
+            "total_shards": 2,
+            "is_lean_module": true,
+            "id_tree_sha256": h_id_tree,
+            "shards": [
+                {
+                    "shard_idx": 0,
+                    "capture_module": "Captured.Shard_000",
+                    "proof_module": "Proof.Shard_000",
+                    "capture_sha256": h_shard0,
+                    "num_bodies": 1,
+                    "ast_nodes": 12,
+                    "has_cycle": false,
+                    "oversized_scc": false,
+                    "scc_ids": [0],
+                    "callee_shards": [],
+                    "global_def_id_range": [0, 0],
+                    "identities": ["rust-path-v1::callee"]
+                },
+                {
+                    "shard_idx": 1,
+                    "capture_module": "Captured.Shard_001",
+                    "proof_module": "Proof.Shard_001",
+                    "capture_sha256": h_shard1,
+                    "num_bodies": 1,
+                    "ast_nodes": 18,
+                    "has_cycle": false,
+                    "oversized_scc": false,
+                    "scc_ids": [1],
+                    "callee_shards": [0],
+                    "global_def_id_range": [1, 1],
+                    "identities": ["rust-path-v1::caller"]
+                }
+            ]
+        });
+        r["audit"]["sources"] = json!([
+            { "module": "Spec", "role": "specification", "sourceSha256": h_spec },
+            { "module": "Captured.Shard_000", "role": "capture", "sourceSha256": h_shard0 },
+            { "module": "Captured.Shard_001", "role": "capture", "sourceSha256": h_shard1 },
+            { "module": "Proof.IdTree", "role": "proof", "sourceSha256": h_id_tree }
+        ]);
+        r
+    }
+
+    #[test]
+    fn validates_sharded_receipt_and_rejects_shard_invariants_and_unknown_keys() {
+        let valid = sample_sharded_success_json();
+        let env = parse_and_validate_receipt(&serde_json::to_vec(&valid).unwrap()).unwrap();
+        assert!(env.unrecognized_fields.is_empty(), "{:?}", env.unrecognized_fields);
+        assert!(env.invariant_violations.is_empty(), "{:?}", env.invariant_violations);
+        assert!(env.evaluate_policy(&PolicyRequirements::default()).is_empty());
+        let deny = PolicyRequirements {
+            unknown_fields: UnknownFieldsPolicy::Deny,
+            ..PolicyRequirements::default()
+        };
+        assert!(env.evaluate_policy(&deny).is_empty());
+
+        // `selected_unit` scope maps to `shards.scope == "unit"` and may have
+        // transitive callees so `selected.len() <= shards.total_bodies`.
+        let mut unit = valid.clone();
+        unit["status"] = json!("selected_unit_verified");
+        unit["scope"] = json!({ "kind": "selected_unit", "roots": ["scalar::caller"] });
+        unit["audit"]["canonicalRoot"] = json!("Trusted.MirSemantics.UnitTheorem");
+        unit["selected"] = json!([{ "def_id": 1, "path": "scalar::caller", "body_index": 1 }]);
+        unit["shards"]["scope"] = json!("unit");
+        let unit_env = parse_and_validate_receipt(&serde_json::to_vec(&unit).unwrap()).unwrap();
+        assert!(unit_env.unrecognized_fields.is_empty(), "{:?}", unit_env.unrecognized_fields);
+        assert!(unit_env.invariant_violations.is_empty(), "{:?}", unit_env.invariant_violations);
+
+        // Unpaired `capture_shards_sha256` / `shards` fail closed.
+        let mut missing_shards = valid.clone();
+        missing_shards.as_object_mut().unwrap().remove("shards");
+        let env = parse_and_validate_receipt(&serde_json::to_vec(&missing_shards).unwrap()).unwrap();
+        assert!(env.invariant_violations.iter().any(|v| v.contains("capture_shards_sha256")));
+
+        let mut missing_hash = valid.clone();
+        missing_hash.as_object_mut().unwrap().remove("capture_shards_sha256");
+        let env = parse_and_validate_receipt(&serde_json::to_vec(&missing_hash).unwrap()).unwrap();
+        assert!(env.invariant_violations.iter().any(|v| v.contains("capture_shards_sha256")));
+
+        // Nested unrecognized keys inside `/shards` and `/shards/shards/0`.
+        let mut extra = valid.clone();
+        extra["shards"]["extra_top"] = json!(true);
+        extra["shards"]["shards"][0]["extra_entry"] = json!(1);
+        let env = parse_and_validate_receipt(&serde_json::to_vec(&extra).unwrap()).unwrap();
+        assert_eq!(
+            env.unrecognized_fields,
+            vec!["/shards/extra_top", "/shards/shards/0/extra_entry"]
+        );
+
+        // Scope mismatch, non-module shards, non-earlier callee, and
+        // `audit.sources` digest/presence mismatches all trigger violations.
+        let mut bad = valid.clone();
+        bad["shards"]["scope"] = json!("unit");
+        bad["shards"]["is_lean_module"] = json!(false);
+        bad["shards"]["shards"][1]["callee_shards"] = json!([1]);
+        bad["audit"]["sources"][3]["sourceSha256"] = json!("9".repeat(64));
+        bad["audit"]["sources"][1]["sourceSha256"] = json!("8".repeat(64));
+        let env = parse_and_validate_receipt(&serde_json::to_vec(&bad).unwrap()).unwrap();
+        for needle in [
+            "shards.scope",
+            "is_lean_module",
+            "non-earlier shard",
+            "Proof.IdTree",
+            "Captured.Shard_000",
+        ] {
+            assert!(
+                env.invariant_violations.iter().any(|v| v.contains(needle)),
+                "expected `{needle}` in {:?}",
+                env.invariant_violations
+            );
+        }
+
+        // Missing `Proof.IdTree` in non-empty `audit.sources` fails closed.
+        let mut missing_id_tree = valid.clone();
+        missing_id_tree["audit"]["sources"]
+            .as_array_mut()
+            .unwrap()
+            .retain(|e| e["module"] != "Proof.IdTree");
+        let env =
+            parse_and_validate_receipt(&serde_json::to_vec(&missing_id_tree).unwrap()).unwrap();
+        assert!(
+            env.invariant_violations.iter().any(|v| v.contains("missing `Proof.IdTree`")),
+            "{:?}",
+            env.invariant_violations
         );
     }
 }

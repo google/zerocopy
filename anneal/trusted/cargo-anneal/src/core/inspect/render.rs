@@ -698,6 +698,20 @@ fn render_human(
             out.push_str("Digests:\n");
             let _ = writeln!(out, "  request:       {}", opts.fmt_digest(&s.request_sha256));
             let _ = writeln!(out, "  capture:       {}", opts.fmt_digest(&s.capture_sha256));
+            if let Some(shards_sha) = &s.capture_shards_sha256 {
+                let _ = writeln!(out, "  capture_shards: {}", opts.fmt_digest(shards_sha));
+            }
+            if let Some(sh) = &s.shards {
+                let _ = writeln!(
+                    out,
+                    "  shards:        {} shard(s), {} body(s), {} SCC(s) ({} cyclic), id_tree={}",
+                    sh.total_shards,
+                    sh.total_bodies,
+                    sh.total_sccs,
+                    sh.cyclic_sccs,
+                    opts.fmt_digest(&sh.id_tree_sha256)
+                );
+            }
             let _ = writeln!(out, "  capture_bin:   {}", opts.fmt_digest(&s.capture_binary_sha256));
             let _ = writeln!(out, "  model:         {}", opts.fmt_digest(&s.model_manifest_sha256));
             let _ = writeln!(
@@ -922,6 +936,13 @@ fn render_ledger(
             let _ = writeln!(out, "audit.replayed_declarations={}", s.replayed_declarations);
             let _ = writeln!(out, "digest.request_sha256={}", SanitizedInline(&s.request_sha256));
             let _ = writeln!(out, "digest.capture_sha256={}", SanitizedInline(&s.capture_sha256));
+            if let Some(shards_sha) = &s.capture_shards_sha256 {
+                let _ = writeln!(
+                    out,
+                    "digest.capture_shards_sha256={}",
+                    SanitizedInline(shards_sha)
+                );
+            }
             let _ = writeln!(
                 out,
                 "digest.capture_binary_sha256={}",
@@ -940,6 +961,14 @@ fn render_ledger(
             let _ = writeln!(out, "counts.selected={}", s.selected.len());
             let _ = writeln!(out, "counts.census={}", s.census.len());
             let _ = writeln!(out, "counts.sources={}", s.sources.len());
+            if let Some(sh) = &s.shards {
+                let _ = writeln!(out, "counts.shards={}", sh.total_shards);
+                let _ = writeln!(
+                    out,
+                    "shards.id_tree_sha256={}",
+                    SanitizedInline(&sh.id_tree_sha256)
+                );
+            }
             let _ = writeln!(out, "counts.spec_warnings={}", s.spec_warnings.len());
         }
     }
@@ -1092,6 +1121,13 @@ fn render_markdown(
                 q.assumed_seams.join(", ")
             );
             let _ = writeln!(out, "| Provenance Qualifiers | {} |", format_gfm_code_cell(&q_desc));
+        }
+        if let Some(sh) = &s.shards {
+            let _ = writeln!(
+                out,
+                "| Capture Shards | `{}` shard(s), `{}` SCC(s) (`{}` cyclic) |",
+                sh.total_shards, sh.total_sccs, sh.cyclic_sccs
+            );
         }
         let _ = writeln!(
             out,
@@ -1358,5 +1394,47 @@ mod tests {
         let parsed: serde_json::Value = serde_json::from_str(&json_out).unwrap();
         assert_eq!(parsed["head_unrecognized_fields"], json!(["/future_extension"]));
         assert!(parsed.get("base_unrecognized_fields").is_none());
+    }
+
+    #[test]
+    fn renders_sharded_receipt_digests_and_summary_across_all_formats() {
+        use crate::core::inspect::schema::tests::sample_sharded_success_json;
+
+        let sharded = sample_sharded_success_json();
+        let env = parse_and_validate_receipt(&serde_json::to_vec(&sharded).unwrap()).unwrap();
+        assert!(env.unrecognized_fields.is_empty(), "{:?}", env.unrecognized_fields);
+        assert!(env.invariant_violations.is_empty(), "{:?}", env.invariant_violations);
+
+        let human = render_inspection(&env, None, &[], &RenderOptions::default());
+        assert!(human.contains("capture_shards: 111111111111"), "{human}");
+        assert!(human.contains("2 shard(s), 2 body(s), 2 SCC(s) (0 cyclic)"), "{human}");
+
+        let ledger = render_inspection(
+            &env,
+            None,
+            &[],
+            &RenderOptions { format: InspectFormat::Ledger, ..RenderOptions::default() },
+        );
+        assert!(ledger.contains(&format!("digest.capture_shards_sha256={}\n", "1".repeat(64))));
+        assert!(ledger.contains("counts.shards=2\n"), "{ledger}");
+        assert!(ledger.contains(&format!("shards.id_tree_sha256={}\n", "2".repeat(64))));
+
+        let md = render_inspection(
+            &env,
+            None,
+            &[],
+            &RenderOptions { format: InspectFormat::Markdown, ..RenderOptions::default() },
+        );
+        assert!(md.contains("| Capture Shards | `2` shard(s), `2` SCC(s) (`0` cyclic) |"), "{md}");
+
+        let json_out = render_inspection(
+            &env,
+            None,
+            &[],
+            &RenderOptions { format: InspectFormat::Json, ..RenderOptions::default() },
+        );
+        let parsed: serde_json::Value = serde_json::from_str(&json_out).unwrap();
+        assert_eq!(parsed["receipt"]["capture_shards_sha256"], json!("1".repeat(64)));
+        assert_eq!(parsed["receipt"]["shards"]["total_shards"], json!(2));
     }
 }

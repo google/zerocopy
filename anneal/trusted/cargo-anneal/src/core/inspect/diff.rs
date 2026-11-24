@@ -661,6 +661,39 @@ pub fn diff_receipts(
                 push(&mut changes, DiffTier::TierB, field, bv.clone(), hv.clone(), note);
             }
         }
+        if b.capture_shards_sha256 != h.capture_shards_sha256 {
+            push(
+                &mut changes,
+                DiffTier::TierB,
+                "capture_shards_sha256",
+                b.capture_shards_sha256.as_deref().unwrap_or("<none>").to_owned(),
+                h.capture_shards_sha256.as_deref().unwrap_or("<none>").to_owned(),
+                "captured shard manifest digest changed",
+            );
+        }
+        if b.shards != h.shards {
+            let fmt_shards = |sh: Option<&crate::core::inspect::schema::ReceiptShardsManifest>| {
+                match sh {
+                    None => "<none>".to_owned(),
+                    Some(m) => format!(
+                        "{} shard(s), {} body(s), {} SCC(s) ({} cyclic), id_tree={}",
+                        m.total_shards,
+                        m.total_bodies,
+                        m.total_sccs,
+                        m.cyclic_sccs,
+                        m.id_tree_sha256
+                    ),
+                }
+            };
+            push(
+                &mut changes,
+                DiffTier::TierC,
+                "shards",
+                fmt_shards(b.shards.as_ref()),
+                fmt_shards(h.shards.as_ref()),
+                "capture sharding layout changed",
+            );
+        }
         if b.specification != h.specification {
             push(
                 &mut changes,
@@ -2488,5 +2521,36 @@ mod tests {
             Some(&rel("simulation", Some("wf_stutter"))),
             Some(&rel("simulation", Some("wf_stutter")))
         ));
+    }
+
+    #[test]
+    fn diff_surfaces_capture_shards_sha256_and_layout_changes() {
+        use crate::core::inspect::schema::tests::sample_sharded_success_json;
+
+        let base_json = sample_sharded_success_json();
+        let mut head_json = sample_sharded_success_json();
+        head_json["capture_shards_sha256"] = json!("7".repeat(64));
+        head_json["shards"]["id_tree_sha256"] = json!("6".repeat(64));
+        head_json["audit"]["sources"][3]["sourceSha256"] = json!("6".repeat(64));
+
+        let base = parse_and_validate_receipt(&serde_json::to_vec(&base_json).unwrap()).unwrap();
+        let head = parse_and_validate_receipt(&serde_json::to_vec(&head_json).unwrap()).unwrap();
+        assert!(base.invariant_violations.is_empty(), "{:?}", base.invariant_violations);
+        assert!(head.invariant_violations.is_empty(), "{:?}", head.invariant_violations);
+
+        let diff = diff_receipts(&base, &head, false);
+        assert!(!diff.has_regressions, "{:?}", diff.changes);
+        assert!(
+            diff.changes
+                .iter()
+                .any(|c| c.field == "capture_shards_sha256" && c.tier == DiffTier::TierB),
+            "{:?}",
+            diff.changes
+        );
+        assert!(
+            diff.changes.iter().any(|c| c.field == "shards" && c.tier == DiffTier::TierC),
+            "{:?}",
+            diff.changes
+        );
     }
 }
