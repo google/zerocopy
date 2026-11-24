@@ -456,6 +456,7 @@ fn prepare_module_cache(
     disable_auto_implicit: bool,
     cache_ctx: Option<&(String, String)>,
     path_sha_cache: &mut BTreeMap<String, String>,
+    transitive_memo: &mut BTreeMap<String, String>,
 ) -> Result<ModuleCachePrep, Failure> {
     let Some((lean_sha, sysroot_sha)) = cache_ctx else {
         return Ok(ModuleCachePrep::CompileNeeded(None));
@@ -473,7 +474,13 @@ fn prepare_module_cache(
         source_sha256: sha256_bytes(&src_bytes),
         is_module: mod_is_module,
         flags: canonical_compile_flags(warn_as_err),
-        imports: build_import_bindings(edge_list, &adm.artifacts, path_sha_cache)?,
+        imports: build_import_bindings(
+            edge_list,
+            &adm.artifacts,
+            &adm.graph,
+            path_sha_cache,
+            transitive_memo,
+        )?,
     };
     if let Some(hit) =
         olean_cache.lookup_and_materialize(&key_input, lib_dir, &module.replace('.', "/"))?
@@ -2434,7 +2441,9 @@ impl Checker {
                 .expect("toolchain admission verified above");
             let exec_lean = adm.exec_lean.clone();
             let mut path_sha_cache = BTreeMap::new();
-            let mut shared = (adm, olean_cache, olean_ledger, &mut path_sha_cache);
+            let mut transitive_memo = BTreeMap::new();
+            let mut shared =
+                (adm, olean_cache, olean_ledger, &mut path_sha_cache, &mut transitive_memo);
 
             return run_parallel_dag(
                 &plan,
@@ -2442,7 +2451,7 @@ impl Checker {
                 "compile",
                 "worker panicked during Lean compilation",
                 &mut shared,
-                |(adm, olean_cache, _, path_sha_cache), idx| {
+                |(adm, olean_cache, _, path_sha_cache, transitive_memo), idx| {
                     let module = &order[idx];
                     let edge_list = &imports[module];
                     let mod_is_module = is_module.get(module).copied().unwrap_or(false);
@@ -2461,6 +2470,7 @@ impl Checker {
                         disable_auto_implicit,
                         cache_ctx.as_ref(),
                         path_sha_cache,
+                        transitive_memo,
                     )? {
                         ModuleCachePrep::Cached(parts) => Ok(PreparedModuleCompile::Cached(parts)),
                         ModuleCachePrep::CompileNeeded(cache_key) => {
@@ -2529,7 +2539,7 @@ impl Checker {
                         })
                     }
                 },
-                |(adm, olean_cache, olean_ledger, path_sha_cache), idx, exec_res| {
+                |(adm, olean_cache, olean_ledger, path_sha_cache, _), idx, exec_res| {
                     let module = &order[idx];
                     match exec_res {
                         ExecutedModuleCompile::Cached(parts_with_sha) => finish_module_artifacts(
@@ -2582,7 +2592,9 @@ impl Checker {
         let compiled_roles: &BTreeMap<String, TargetRole> = compiled_roles;
         let adm = admitted.as_mut().expect("toolchain admission verified above");
         let mut path_sha_cache = BTreeMap::new();
-        let mut shared = (adm, olean_cache, olean_ledger, &mut path_sha_cache);
+        let mut transitive_memo = BTreeMap::new();
+        let mut shared =
+            (adm, olean_cache, olean_ledger, &mut path_sha_cache, &mut transitive_memo);
 
         run_parallel_dag(
             &plan,
@@ -2590,7 +2602,7 @@ impl Checker {
             "compile",
             "worker panicked during Lean compilation",
             &mut shared,
-            |(adm, olean_cache, _, path_sha_cache), idx| {
+            |(adm, olean_cache, _, path_sha_cache, transitive_memo), idx| {
                 let module = &order[idx];
                 let edge_list = &imports[module];
                 let mod_is_module = is_module.get(module).copied().unwrap_or(false);
@@ -2609,6 +2621,7 @@ impl Checker {
                     disable_auto_implicit,
                     cache_ctx.as_ref(),
                     path_sha_cache,
+                    transitive_memo,
                 )? {
                     ModuleCachePrep::Cached(parts) => Ok(PreparedModuleCompile::Cached(parts)),
                     ModuleCachePrep::CompileNeeded(cache_key) => {
@@ -2699,7 +2712,7 @@ impl Checker {
                     })
                 }
             },
-            |(adm, olean_cache, olean_ledger, path_sha_cache), idx, exec_res| {
+            |(adm, olean_cache, olean_ledger, path_sha_cache, _), idx, exec_res| {
                 let module = &order[idx];
                 match exec_res {
                     ExecutedModuleCompile::Cached(parts_with_sha) => finish_module_artifacts(
@@ -4932,5 +4945,183 @@ exit 1
             .expect_err("zero exit with panic stderr must fail closed");
         assert_eq!(err.code, 2, "{err}");
         assert!(err.message.contains("Lean runtime panic marker"), "{err}");
+    }
+
+    #[test]
+    fn bundled_olean_cache_invalidates_downstream_through_unchanged_barrel() {
+        use std::os::unix::fs::PermissionsExt;
+
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let root = base.join("bundle");
+        let prefix = base.join("sysroot");
+        let disk_cache = base.join("disk-cache");
+        let log_file = base.join("lean-compile.log");
+        fs::create_dir_all(prefix.join("lib/lean/Init")).unwrap();
+
+        let inspector_src = root.join("trusted/audit/TrustedBoundary.lean");
+        fs::create_dir_all(inspector_src.parent().unwrap()).unwrap();
+        fs::write(&inspector_src, "-- synthetic inspector\n").unwrap();
+
+        let lean = base.join("lean");
+        fs::write(
+            &lean,
+            format!(
+                r#"#!/bin/sh
+case "$1" in
+    --version) printf 'Lean 4.34.1\n'; exit ;;
+    --print-prefix) printf '%s\n' '{}'; exit ;;
+esac
+out=""
+src=""
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        -o) out="$2"; shift 2 ;;
+        *) src="$1"; shift ;;
+    esac
+done
+if [ -n "$out" ]; then
+    printf '%s\n' "$out" >> '{}'
+    case "$out" in
+        */Leaf.olean)
+            printf 'olean\0024.34.1\000' > "$out"
+            cat "$src" >> "$out"
+            ;;
+        *)
+            printf 'olean\0024.34.1\000constant-payload' > "$out"
+            ;;
+    esac
+    exit 0
+fi
+exit 1
+"#,
+                prefix.display(),
+                log_file.display()
+            ),
+        )
+        .unwrap();
+        fs::set_permissions(&lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+        let leaf_src = base.join("Leaf.lean");
+        let barrel_src = base.join("Barrel.lean");
+        let downstream_src = base.join("Downstream.lean");
+        fs::write(&leaf_src, "prelude\n-- leaf v1\n").unwrap();
+        fs::write(&barrel_src, "prelude\nimport Trusted.Leaf\n").unwrap();
+        fs::write(&downstream_src, "prelude\nimport Trusted.Barrel\n").unwrap();
+
+        let edge = |m: &str| ImportEdge {
+            module: m.to_owned(),
+            import_all: false,
+            is_exported: true,
+            is_meta: false,
+        };
+        let order_prefix = vec!["Trusted.Leaf".to_owned(), "Trusted.Barrel".to_owned()];
+        let order_all = vec![
+            "Trusted.Leaf".to_owned(),
+            "Trusted.Barrel".to_owned(),
+            "Anneal.Downstream".to_owned(),
+        ];
+        let sources = BTreeMap::from([
+            ("Trusted.Leaf".to_owned(), leaf_src.clone()),
+            ("Trusted.Barrel".to_owned(), barrel_src),
+            ("Anneal.Downstream".to_owned(), downstream_src),
+        ]);
+        let imports = BTreeMap::from([
+            ("Trusted.Leaf".to_owned(), Vec::new()),
+            ("Trusted.Barrel".to_owned(), vec![edge("Trusted.Leaf")]),
+            ("Anneal.Downstream".to_owned(), vec![edge("Trusted.Barrel")]),
+        ]);
+        let is_module = BTreeMap::from([
+            ("Trusted.Leaf".to_owned(), false),
+            ("Trusted.Barrel".to_owned(), false),
+            ("Anneal.Downstream".to_owned(), false),
+        ]);
+
+        // 1. Cold run populates Leaf(v1), Barrel, and Downstream(v1).
+        let mut c1 = Checker::new_with_env(&root, Some(&lean), []).unwrap();
+        c1.set_allow_unpinned_lean(true);
+        c1.set_sandbox_mode(SandboxMode::Unsandboxed);
+        c1.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
+        c1.tool_admission().unwrap();
+        let _ = c1.ensure_inspector_compiled("headers", true).unwrap();
+        c1.compile_lean_modules_parallel(
+            &order_all, &sources, &imports, &is_module, "lib", false, false, 1,
+        )
+        .unwrap();
+        assert_eq!(fs::read_to_string(&log_file).unwrap().lines().count(), 4);
+        fs::write(&log_file, b"").unwrap();
+
+        // 2. Edit Leaf(v2); Barrel and Downstream sources and `Barrel.olean`
+        // bytes stay identical.
+        fs::write(&leaf_src, "prelude\n-- leaf v2\n").unwrap();
+        let mut c2 = Checker::new_with_env(&root, Some(&lean), []).unwrap();
+        c2.set_allow_unpinned_lean(true);
+        c2.set_sandbox_mode(SandboxMode::Unsandboxed);
+        c2.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
+        c2.tool_admission().unwrap();
+        let _ = c2.ensure_inspector_compiled("headers", true).unwrap();
+        c2.compile_lean_modules_parallel(
+            &order_prefix,
+            &sources,
+            &imports,
+            &is_module,
+            "lib",
+            false,
+            false,
+            1,
+        )
+        .unwrap();
+        assert_eq!(fs::read_to_string(&log_file).unwrap().lines().count(), 2);
+        fs::write(&log_file, b"").unwrap();
+
+        // 3. Downstream MUST miss cache under `--no-rebuild-bundled` even
+        // though both Downstream.lean and Barrel.olean bytes did not change.
+        let mut c3 = Checker::new_with_env(&root, Some(&lean), []).unwrap();
+        c3.set_allow_unpinned_lean(true);
+        c3.set_sandbox_mode(SandboxMode::Unsandboxed);
+        c3.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
+        c3.set_no_rebuild_bundled(true);
+        c3.tool_admission().unwrap();
+        let _ = c3.ensure_inspector_compiled("headers", true).unwrap();
+        let err = c3
+            .compile_lean_modules_parallel(
+                &order_all, &sources, &imports, &is_module, "lib", false, false, 1,
+            )
+            .unwrap_err();
+        assert_eq!(err.phase, "olean-cache");
+        assert!(err.message.contains("Anneal.Downstream"), "{err}");
+        assert!(err.message.contains("--no-rebuild-bundled"), "{err}");
+        assert_eq!(fs::read_to_string(&log_file).unwrap(), "");
+
+        // 4. Rebuilding populates only Downstream (Leaf and Barrel hit cache).
+        let mut c4 = Checker::new_with_env(&root, Some(&lean), []).unwrap();
+        c4.set_allow_unpinned_lean(true);
+        c4.set_sandbox_mode(SandboxMode::Unsandboxed);
+        c4.set_olean_disk_cache_dir_for_test(Some(disk_cache.clone()));
+        c4.tool_admission().unwrap();
+        let _ = c4.ensure_inspector_compiled("headers", true).unwrap();
+        c4.compile_lean_modules_parallel(
+            &order_all, &sources, &imports, &is_module, "lib", false, false, 1,
+        )
+        .unwrap();
+        let rebuilt: Vec<String> =
+            fs::read_to_string(&log_file).unwrap().lines().map(str::to_owned).collect();
+        assert_eq!(rebuilt.len(), 1, "expected only Downstream rebuild: {rebuilt:?}");
+        assert!(rebuilt[0].ends_with("Anneal/Downstream.olean"), "{rebuilt:?}");
+        fs::write(&log_file, b"").unwrap();
+
+        // 5. Subsequent `--no-rebuild-bundled` run hits all three cleanly.
+        let mut c5 = Checker::new_with_env(&root, Some(&lean), []).unwrap();
+        c5.set_allow_unpinned_lean(true);
+        c5.set_sandbox_mode(SandboxMode::Unsandboxed);
+        c5.set_olean_disk_cache_dir_for_test(Some(disk_cache));
+        c5.set_no_rebuild_bundled(true);
+        c5.tool_admission().unwrap();
+        let _ = c5.ensure_inspector_compiled("headers", true).unwrap();
+        c5.compile_lean_modules_parallel(
+            &order_all, &sources, &imports, &is_module, "lib", false, false, 1,
+        )
+        .unwrap();
+        assert_eq!(fs::read_to_string(&log_file).unwrap(), "");
     }
 }

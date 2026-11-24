@@ -11,7 +11,7 @@
 
 Compiles `TrustedBoundary.lean`, `trusted/lean/Trusted*.lean`, and all
 `theory/bundle-manifest.json` modules against the pinned Lean toolchain and
-emits `<output-dir>/manifest.json` matching `cargo_anneal::olean_cache`'s v1
+emits `<output-dir>/manifest.json` matching `cargo_anneal::olean_cache`'s v2
 key schema so cold `cargo-anneal verify` runs skip recompiling static bundled
 libraries with zero new trust assumptions.
 """
@@ -26,11 +26,12 @@ import os
 from pathlib import Path
 import re
 import shutil
+import struct
 import subprocess
 import sys
 import tempfile
 
-CACHE_FORMAT_VERSION = 1
+CACHE_FORMAT_VERSION = 2
 OLEAN_PARTS = ("olean", "olean.server", "olean.private")
 IR_PARTS = ("ir.sig", "ir")
 SYSROOT_PACKAGES = ("Init", "Std", "Lean")
@@ -405,6 +406,108 @@ def transitive_closure(graph: dict[str, list[dict]], direct_edges: list[dict]) -
     return sorted(seen)
 
 
+def _feed_len_str(h, value: str) -> None:
+    raw = value.encode("utf-8")
+    h.update(struct.pack("<Q", len(raw)))
+    h.update(raw)
+
+
+def compute_transitive_module_sha256(
+    module: str,
+    dep_part_shas: dict[str, list[str]],
+    full_graph: dict[str, list[dict]],
+    memo: dict[str, str],
+    visiting: set[str],
+) -> str:
+    """Compute canonical bottom-up Merkle digest matching `olean_cache.rs`."""
+    cached = memo.get(module)
+    if cached is not None:
+        return cached
+    if module in visiting:
+        raise RuntimeError(f"import cycle detected at {module}")
+    if module not in dep_part_shas:
+        raise RuntimeError(f"missing artifact digests for import {module}")
+    if module not in full_graph:
+        raise RuntimeError(f"missing import graph entry for {module}")
+    visiting.add(module)
+    try:
+        part_shas = dep_part_shas[module]
+        sorted_edges = sorted(
+            full_graph[module],
+            key=lambda e: (e["module"], bool(e["isExported"]), bool(e["importAll"]), bool(e["isMeta"])),
+        )
+        dep_hashes = [
+            compute_transitive_module_sha256(
+                e["module"], dep_part_shas, full_graph, memo, visiting
+            )
+            for e in sorted_edges
+        ]
+        h = hashlib.sha256()
+        h.update(b"anneal-olean-transitive-v1\0")
+        h.update(struct.pack("<Q", len(part_shas)))
+        for sha in part_shas:
+            _feed_len_str(h, sha.lower())
+        h.update(struct.pack("<Q", len(sorted_edges)))
+        for edge, dep_transitive in zip(sorted_edges, dep_hashes):
+            _feed_len_str(h, edge["module"])
+            h.update(
+                bytes(
+                    [
+                        int(bool(edge["isExported"])),
+                        int(bool(edge["importAll"])),
+                        int(bool(edge["isMeta"])),
+                    ]
+                )
+            )
+            _feed_len_str(h, dep_transitive.lower())
+        digest = h.hexdigest()
+        memo[module] = digest
+        return digest
+    finally:
+        visiting.remove(module)
+
+
+def compute_cache_key(entry: dict) -> str:
+    """Mirror `OleanCacheKeyInput::cache_key` (`v2`) for manifest entries."""
+    h = hashlib.sha256()
+    h.update(b"anneal-olean-cache-v2\0")
+    kind = entry["kind"]
+    if kind == "inspector":
+        h.update(b"inspector\0")
+    elif kind == "module":
+        h.update(b"module\0")
+    else:
+        raise ValueError(f"unexpected cache entry kind {kind!r}")
+    _feed_len_str(h, entry["module"])
+    _feed_len_str(h, entry["lean_sha256"].lower())
+    _feed_len_str(h, entry["sysroot_manifest_sha256"].lower())
+    _feed_len_str(h, entry["source_sha256"].lower())
+    h.update(bytes([int(bool(entry["is_module"]))]))
+    flags = entry["flags"]
+    h.update(struct.pack("<Q", len(flags)))
+    for flag in flags:
+        _feed_len_str(h, flag)
+    imports = entry["imports"]
+    h.update(struct.pack("<Q", len(imports)))
+    for imp in imports:
+        _feed_len_str(h, imp["module"])
+        h.update(
+            bytes(
+                [
+                    int(bool(imp["is_exported"])),
+                    int(bool(imp["import_all"])),
+                    int(bool(imp["is_meta"])),
+                ]
+            )
+        )
+        part_shas = imp["part_sha256s"]
+        h.update(struct.pack("<Q", len(part_shas)))
+        for sha in part_shas:
+            _feed_len_str(h, sha.lower())
+        _feed_len_str(h, imp["transitive_sha256"].lower())
+    return h.hexdigest()
+
+
 def prebuild(
     *,
     anneal_root: Path,
@@ -617,6 +720,7 @@ def prebuild(
         pending = set(bundled_sources.keys())
         in_flight: dict[object, tuple[str, Path, bytes, bool, list[dict]]] = {}
         compiled_entries: dict[str, dict] = {}
+        transitive_memo: dict[str, str] = {}
         setup_dir = tmp / "setups"
         setup_dir.mkdir(parents=True)
 
@@ -718,6 +822,13 @@ def prebuild(
                                 "import_all": e["importAll"],
                                 "is_meta": e["isMeta"],
                                 "part_sha256s": dep_part_shas[e["module"]],
+                                "transitive_sha256": compute_transitive_module_sha256(
+                                    e["module"],
+                                    dep_part_shas,
+                                    full_graph,
+                                    transitive_memo,
+                                    set(),
+                                ),
                             }
                             for e in edges
                         ],
