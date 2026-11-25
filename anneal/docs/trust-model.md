@@ -215,6 +215,63 @@ constants in a `vetted` module may reference only the locked `Init.*`
 foundation and other `vetted` modules, never a `candidate:<feature>`,
 `vendorMiri`, or `sysrootFoundation` module.
 
+### Capture profile and the binary seam
+
+A verification result covers the MIR that `trusted/rustc-capture/` extracts
+with the pinned toolchain under a fixed profile: `-Copt-level=0`,
+`-Cdebug-assertions=no`, and `-Coverflow-checks=no`. Capture refuses any
+compilation in which debug assertions or overflow checks are on. As a result:
+
+- `cfg(debug_assertions)` is false. Verified MIR contains no checks from
+  `debug_assert!`, `debug_assert_eq!`, or `debug_assert_ne!`, and wherever
+  code depends on `cfg(debug_assertions)`, capture sees the variant selected
+  with debug assertions off.
+- Verified MIR contains none of the overflow checks that `-Coverflow-checks`
+  controls (for `+`, `-`, `*`, unary negation, and shifts): those operations
+  wrap, and shift amounts are masked.
+
+The capture manifest's `configuration` records this profile.
+
+A production build of the same source can use different settings, such as
+`-Cdebug-assertions=yes` or `-Coverflow-checks=yes` (Cargo's
+`debug-assertions = true` and `overflow-checks = true`, both on in Cargo's
+default `dev` profile), a higher optimization level, or a different `rustc`.
+Such a build can compile a different program from the one Anneal verified:
+
+- With debug assertions on, `debug_assert!` and its variants become runtime
+  checks that panic, and `cfg(debug_assertions)` can select different code,
+  including entirely different function bodies.
+- With overflow checks on, the compiler inserts overflow checks that panic.
+
+The production binary can therefore contain panic sites, or other code, that
+the verified MIR does not, and the proof says nothing about whether that code
+is reachable or how it behaves.
+
+Anneal does not verify that the deployed binary corresponds to the captured
+MIR. The receipt lists "faithful pinned compiler capture" among its
+`assumptions` and "source-to-deployed-binary correspondence" under
+`deferred`. Code built for production with debug assertions or overflow
+checks on should not treat a verification result as evidence that those
+checks never fire, or as covering code that only such a build compiles.
+
+### Concurrency
+
+Anneal's MIR semantics model a single thread of execution, with no other
+threads, atomics, or weak-memory effects. Verification therefore assumes that
+the memory the verified function touches is isolated from every other thread
+while the function runs: no other thread writes memory that the function
+reads or writes, or reads memory that the function writes, including memory
+reachable from caller-provided arguments. This is stronger than data-race
+freedom. A data-race-free program can still access that memory from another
+thread through atomic operations or properly synchronized accesses while the
+function runs, and the model does not cover such executions. A verification
+result says nothing about behavior under concurrent access. Profile v1 admits
+no reference or raw-pointer types, so its functions cannot receive
+caller-provided memory. The experimental [Profile
+v2](alpha.md#experimental-mir-profile-v2-borrowed-slices-and-raw-pointers) can:
+its functions take reference and raw-pointer arguments into caller memory
+(`callerMem`), so the assumption applies to every Profile v2 result.
+
 ## 2. Repository CI boundary enforcement (`anneal-audit`)
 
 [`trusted/audit/`](../trusted/audit) implements the CI gatekeeper

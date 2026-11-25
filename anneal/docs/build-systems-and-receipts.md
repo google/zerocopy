@@ -47,13 +47,19 @@ targets.
 
 Five invariants govern build-system integration across all supported ecosystems:
 
-1. **Zero production-target duplication or semantic drift:** Verification binds
-   directly to unmodified production Rust targets (`rust_library`,
-   `rust_binary`, `rust_test`, Cargo `[lib]`/`[[bin]]`). Production `.rmeta`
-   and `.rlib` outputs remain untouched, and capture preserves production
-   semantic flags (`-Copt-level`, `-Cdebug-assertions`, `-Coverflow-checks`,
-   `-Cub-checks`, `-Cpanic`, `--cfg`, target triple, `OUT_DIR`, and procedural
-   macro dependencies).
+1. **Zero production-target duplication, with a fixed capture profile:**
+   Verification binds directly to unmodified production Rust targets
+   (`rust_library`, `rust_binary`, `rust_test`, Cargo `[lib]`/`[[bin]]`).
+   Production `.rmeta` and `.rlib` outputs remain untouched. Capture does not
+   reuse the production compilation profile: it always compiles with
+   `-Copt-level=0`, `-Cdebug-assertions=no`, and `-Coverflow-checks=no`, and it
+   refuses any compilation whose options or resolved session enable
+   optimization, debug assertions, or overflow checks. It carries over the
+   panic strategy (`unwind` or `abort`), `--cfg` values, edition, and target
+   triple. The verified MIR can therefore differ from the MIR of a production
+   build, for example one with debug assertions or overflow checks on; see
+   [Capture profile and the binary
+   seam](trust-model.md#capture-profile-and-the-binary-seam).
 2. **Build-action-native execution (no host-test platform inversion):** All
    verification phases run as build actions (`cfg = "exec"` tools operating on
    target-configured Rust inputs) that emit an immutable Receipt v3 artifact.
@@ -90,10 +96,11 @@ Five invariants govern build-system integration across all supported ecosystems:
           ▼                                                    │
 ┌────────────────────────────────────────────┐                 │
 │ Phase 1: anneal-rustc-capture              │                 │
-│   capture-rustc (@params & env-safe)       │                 │
-│   • Preserves opt/debug/overflow/panic/cfg │                 │
+│   capture-rustc (own argv, env-safe)       │                 │
+│   • Forces opt-level=0 and no debug        │                 │
+│     assertions or overflow checks          │                 │
+│   • Keeps -Cpanic=unwind|abort, --cfg      │                 │
 │   • Injects -Zmir-preserve-ub              │                 │
-│             -Zmir-opt-level=0              │                 │
 │             --emit=metadata                │                 │
 │   • Runs items_of_instance BFS for         │                 │
 │     required_consts CTFE (no LLVM codegen) │                 │
@@ -138,14 +145,22 @@ Five invariants govern build-system integration across all supported ecosystems:
 
 ### Key cross-phase details
 
-- **Semantic-preserving capture (`Phase 1`):** `capture-rustc` expands
-  `@response` files verbatim and strips only output, debug-split, and coverage
-  flags (`--emit=*`, `-o`, `--out-dir=*`, `-Zmir-opt-level=*`,
-  `-Csplit-debuginfo=*`, `-Cinstrument-coverage`) while preserving
-  `-Copt-level=*`, `-Cdebug-assertions`, `-Coverflow-checks`, `-Cub-checks`,
-  `-Cpanic`, and `--cfg`. Stripping `-Copt-level=2` silently flips
-  `debug_assertions` and `overflow_checks` from `false` to `true`, which would
-  verify different MIR than the deployed binary executes.
+- **Fixed capture profile (`Phase 1`):** `anneal-rustc-capture` builds its
+  own `rustc` argument list from its typed options instead of forwarding a
+  production command line. It always passes `-Copt-level=0`,
+  `-Cdebug-assertions=no`, `-Coverflow-checks=no`, and `-Zmir-preserve-ub`,
+  together with the requested `-Cpanic=unwind` or `-Cpanic=abort`, `--cfg`
+  values, edition, and target. It then validates the parsed options
+  (`-Copt-level=0`, `-Cdebug-assertions=no`, an explicit
+  `-Coverflow-checks=no`, and `-Zmir-preserve-ub`) and confirms that overflow
+  checks are off in the resolved session, failing the capture otherwise. The
+  capture manifest's `configuration` records the resulting `opt_level`,
+  `debug_assertions`, and `overflow_checks`. A production build with overflow
+  checks on can contain overflow `Assert` terminators that the captured MIR
+  lacks, and one with debug assertions on can contain `debug_assert!` checks
+  and `cfg(debug_assertions)` code that capture never saw; see [Capture
+  profile and the binary
+  seam](trust-model.md#capture-profile-and-the-binary-seam).
 - **Zero-LLVM `required_consts` enforcement (`Phase 1`):** Running with
   `--emit=metadata` avoids LLVM codegen overhead, but metadata-only compilation
   can otherwise skip const-evaluation errors in monomorphic items. Inside
