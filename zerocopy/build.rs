@@ -103,6 +103,7 @@ fn main() {
         println!("cargo:rustc-check-cfg=cfg(zerocopy_unstable_ptr)");
         println!("cargo:rustc-check-cfg=cfg(zerocopy_unstable_linux)");
         println!("cargo:rustc-check-cfg=cfg(no_fp_fmt_parse)");
+        println!("cargo:rustc-check-cfg=cfg(no_zerocopy_codegen_docs)");
     }
 
     for version_cfg in version_cfgs {

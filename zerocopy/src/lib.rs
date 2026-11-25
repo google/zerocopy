@@ -2418,9 +2418,11 @@ pub unsafe trait TryFromBytes {
     /// assert!(Packet::try_mut_from_bytes(bytes).is_err());
     /// ```
     ///
-    #[doc = codegen_header!("h5", "try_mut_from_bytes")]
-    ///
-    /// See [`TryFromBytes::try_ref_from_bytes`](#method.try_ref_from_bytes.codegen).
+    #[doc = codegen_section!(
+        header = "h5",
+        name = "try_mut_from_bytes",
+        /// See [`TryFromBytes::try_ref_from_bytes`](#method.try_ref_from_bytes.codegen).
+    )]
     #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
@@ -2527,9 +2529,11 @@ pub unsafe trait TryFromBytes {
     /// assert!(Packet::try_mut_from_prefix(bytes).is_err());
     /// ```
     ///
-    #[doc = codegen_header!("h5", "try_mut_from_prefix")]
-    ///
-    /// See [`TryFromBytes::try_ref_from_prefix`](#method.try_ref_from_prefix.codegen).
+    #[doc = codegen_section!(
+        header = "h5",
+        name = "try_mut_from_prefix",
+        /// See [`TryFromBytes::try_ref_from_prefix`](#method.try_ref_from_prefix.codegen).
+    )]
     #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
@@ -2627,9 +2631,11 @@ pub unsafe trait TryFromBytes {
     /// assert!(Packet::try_mut_from_suffix(bytes).is_err());
     /// ```
     ///
-    #[doc = codegen_header!("h5", "try_mut_from_suffix")]
-    ///
-    /// See [`TryFromBytes::try_ref_from_suffix`](#method.try_ref_from_suffix.codegen).
+    #[doc = codegen_section!(
+        header = "h5",
+        name = "try_mut_from_suffix",
+        /// See [`TryFromBytes::try_ref_from_suffix`](#method.try_ref_from_suffix.codegen).
+    )]
     #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
@@ -3057,9 +3063,11 @@ pub unsafe trait TryFromBytes {
     ///
     /// [`try_mut_from_bytes`]: TryFromBytes::try_mut_from_bytes
     ///
-    #[doc = codegen_header!("h5", "try_mut_from_bytes_with_elems")]
-    ///
-    /// See [`TryFromBytes::try_ref_from_bytes_with_elems`](#method.try_ref_from_bytes_with_elems.codegen).
+    #[doc = codegen_section!(
+        header = "h5",
+        name = "try_mut_from_bytes_with_elems",
+        /// See [`TryFromBytes::try_ref_from_bytes_with_elems`](#method.try_ref_from_bytes_with_elems.codegen).
+    )]
     #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
@@ -3168,9 +3176,11 @@ pub unsafe trait TryFromBytes {
     ///
     /// [`try_mut_from_prefix`]: TryFromBytes::try_mut_from_prefix
     ///
-    #[doc = codegen_header!("h5", "try_mut_from_prefix_with_elems")]
-    ///
-    /// See [`TryFromBytes::try_ref_from_prefix_with_elems`](#method.try_ref_from_prefix_with_elems.codegen).
+    #[doc = codegen_section!(
+        header = "h5",
+        name = "try_mut_from_prefix_with_elems",
+        /// See [`TryFromBytes::try_ref_from_prefix_with_elems`](#method.try_ref_from_prefix_with_elems.codegen).
+    )]
     #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
@@ -3268,9 +3278,11 @@ pub unsafe trait TryFromBytes {
     ///
     /// [`try_mut_from_prefix`]: TryFromBytes::try_mut_from_prefix
     ///
-    #[doc = codegen_header!("h5", "try_mut_from_suffix_with_elems")]
-    ///
-    /// See [`TryFromBytes::try_ref_from_suffix_with_elems`](#method.try_ref_from_suffix_with_elems.codegen).
+    #[doc = codegen_section!(
+        header = "h5",
+        name = "try_mut_from_suffix_with_elems",
+        /// See [`TryFromBytes::try_ref_from_suffix_with_elems`](#method.try_ref_from_suffix_with_elems.codegen).
+    )]
     #[must_use = "the conversion result must be checked"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
@@ -4765,9 +4777,11 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// ```
     ///
-    #[doc = codegen_header!("h5", "mut_from_bytes")]
-    ///
-    /// See [`FromBytes::ref_from_bytes`](#method.ref_from_bytes.codegen).
+    #[doc = codegen_section!(
+        header = "h5",
+        name = "mut_from_bytes",
+        /// See [`FromBytes::ref_from_bytes`](#method.ref_from_bytes.codegen).
+    )]
     #[must_use = "has no side effects"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
@@ -4856,9 +4870,11 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(bytes, [0, 1, 2, 3, 4, 5, 0, 0, 1, 1]);
     /// ```
     ///
-    #[doc = codegen_header!("h5", "mut_from_prefix")]
-    ///
-    /// See [`FromBytes::ref_from_prefix`](#method.ref_from_prefix.codegen).
+    #[doc = codegen_section!(
+        header = "h5",
+        name = "mut_from_prefix",
+        /// See [`FromBytes::ref_from_prefix`](#method.ref_from_prefix.codegen).
+    )]
     #[must_use = "has no side effects"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
@@ -4937,9 +4953,11 @@ pub unsafe trait FromBytes: FromZeros {
     /// assert_eq!(bytes, [0, 0, 0, 0, 0, 0, 1, 1, 1, 1]);
     /// ```
     ///
-    #[doc = codegen_header!("h5", "mut_from_suffix")]
-    ///
-    /// See [`FromBytes::ref_from_suffix`](#method.ref_from_suffix.codegen).
+    #[doc = codegen_section!(
+        header = "h5",
+        name = "mut_from_suffix",
+        /// See [`FromBytes::ref_from_suffix`](#method.ref_from_suffix.codegen).
+    )]
     #[must_use = "has no side effects"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
@@ -5303,9 +5321,11 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// [`mut_from_bytes`]: FromBytes::mut_from_bytes
     ///
-    #[doc = codegen_header!("h5", "mut_from_bytes_with_elems")]
-    ///
-    /// See [`TryFromBytes::ref_from_bytes_with_elems`](#method.ref_from_bytes_with_elems.codegen).
+    #[doc = codegen_section!(
+        header = "h5",
+        name = "mut_from_bytes_with_elems",
+        /// See [`TryFromBytes::ref_from_bytes_with_elems`](#method.ref_from_bytes_with_elems.codegen).
+    )]
     #[must_use = "has no side effects"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
@@ -5393,9 +5413,11 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// [`mut_from_prefix`]: FromBytes::mut_from_prefix
     ///
-    #[doc = codegen_header!("h5", "mut_from_prefix_with_elems")]
-    ///
-    /// See [`TryFromBytes::ref_from_prefix_with_elems`](#method.ref_from_prefix_with_elems.codegen).
+    #[doc = codegen_section!(
+        header = "h5",
+        name = "mut_from_prefix_with_elems",
+        /// See [`TryFromBytes::ref_from_prefix_with_elems`](#method.ref_from_prefix_with_elems.codegen).
+    )]
     #[must_use = "has no side effects"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
@@ -5478,9 +5500,11 @@ pub unsafe trait FromBytes: FromZeros {
     ///
     /// [`mut_from_suffix`]: FromBytes::mut_from_suffix
     ///
-    #[doc = codegen_header!("h5", "mut_from_suffix_with_elems")]
-    ///
-    /// See [`TryFromBytes::ref_from_suffix_with_elems`](#method.ref_from_suffix_with_elems.codegen).
+    #[doc = codegen_section!(
+        header = "h5",
+        name = "mut_from_suffix_with_elems",
+        /// See [`TryFromBytes::ref_from_suffix_with_elems`](#method.ref_from_suffix_with_elems.codegen).
+    )]
     #[must_use = "has no side effects"]
     #[cfg_attr(zerocopy_inline_always, inline(always))]
     #[cfg_attr(not(zerocopy_inline_always), inline)]
@@ -6157,9 +6181,11 @@ pub unsafe trait IntoBytes {
     /// });
     /// ```
     ///
-    #[doc = codegen_header!("h5", "as_mut_bytes")]
-    ///
-    /// See [`IntoBytes::as_bytes`](#method.as_bytes.codegen).
+    #[doc = codegen_section!(
+        header = "h5",
+        name = "as_mut_bytes",
+        /// See [`IntoBytes::as_bytes`](#method.as_bytes.codegen).
+    )]
     #[must_use = "has no side effects"]
     #[inline(always)]
     fn as_mut_bytes(&mut self) -> &mut [u8]

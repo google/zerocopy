@@ -666,6 +666,19 @@ jobs:
           export RUSTDOCFLAGS="-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS $RUSTDOCFLAGS"
         fi
         ./cargo.sh +$TOOLCHAIN doc --no-deps --document-private-items --package $CRATE $FEATURES
+        if [[ "$CRATE" == "zerocopy" ]]; then
+          DOC_DIR="${CARGO_TARGET_DIR:-target/by-toolchain/$TOOLCHAIN}/doc/zerocopy"
+          grep -q 'codegen-tabs' "$DOC_DIR/trait.TryFromBytes.html"
+          grep -q 'method\.try_mut_from_bytes\.codegen' "$DOC_DIR/trait.TryFromBytes.html"
+          grep -q 'Code Generation' "$DOC_DIR/split_at/struct.Split.html"
+          RUSTDOCFLAGS="--cfg=no_zerocopy_codegen_docs $RUSTDOCFLAGS" \
+            ./cargo.sh +$TOOLCHAIN doc --no-deps --document-private-items --package $CRATE $FEATURES
+          MATCHES="$(find "$DOC_DIR" -path "$DOC_DIR/util/macros*" -prune -o -name '*.html' -exec grep -E 'codegen-tabs|Code Generation|\.codegen["'\''#)]' {} + || true)"
+          if [[ -n "$MATCHES" ]]; then
+            echo "$MATCHES" >&2
+            exit 1
+          fi
+        fi
 
     # If the commit message contains the line `SKIP_CARGO_SEMVER_CHECKS=1`, then
     # skip the cargo-semver-checks step.

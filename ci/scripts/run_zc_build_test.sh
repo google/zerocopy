@@ -178,4 +178,22 @@ if [[ "$TARGET" == "x86_64-unknown-linux-gnu" ]] || \
     --document-private-items \
     --package "$CRATE" \
     "${FEATURE_ARGS[@]}"
+  if [[ "$CRATE" == "zerocopy" ]]; then
+    DOC_DIR="${CARGO_TARGET_DIR}/doc/zerocopy"
+    grep -q 'codegen-tabs' "$DOC_DIR/trait.TryFromBytes.html"
+    grep -q 'method\.try_mut_from_bytes\.codegen' "$DOC_DIR/trait.TryFromBytes.html"
+    grep -q 'Code Generation' "$DOC_DIR/split_at/struct.Split.html"
+    RUSTDOCFLAGS="--cfg=no_zerocopy_codegen_docs $RUSTDOCFLAGS" \
+      ./cargo.sh +"$TOOLCHAIN" doc \
+        --locked --offline \
+        --no-deps \
+        --document-private-items \
+        --package "$CRATE" \
+        "${FEATURE_ARGS[@]}"
+    MATCHES="$(find "$DOC_DIR" -path "$DOC_DIR/util/macros*" -prune -o -name '*.html' -exec grep -E 'codegen-tabs|Code Generation|\.codegen["'\''#)]' {} + || true)"
+    if [[ -n "$MATCHES" ]]; then
+      echo "$MATCHES" >&2
+      exit 1
+    fi
+  fi
 fi
