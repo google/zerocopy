@@ -6,7 +6,12 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-use std::{env, path::PathBuf, process::Command};
+use std::{
+    env,
+    io::{self, Write as _},
+    path::{Path, PathBuf},
+    process::{self, Command, Output},
+};
 
 use regex::{Captures, Regex};
 
@@ -30,26 +35,14 @@ const DISCLAIMER_FOOTER: &str = "\
 Disclaimer: Zerocopy is not an officially supported Google product.\
 ";
 
-fn main() {
-    let cwd = env::current_dir().unwrap();
-    let readme_dir = env::var_os("ZEROCOPY_README_DIR").map(PathBuf::from).unwrap_or_else(|| {
-        if cwd.join("zerocopy/Cargo.toml").exists() {
-            cwd.join("zerocopy")
-        } else {
-            cwd
-        }
-    });
+#[derive(Debug, PartialEq, Eq)]
+struct RenderError {
+    exit_code: i32,
+    stderr: Vec<u8>,
+    message: Option<String>,
+}
 
-    // This uses the `cargo readme` tool, which you can install via `cargo install
-    // cargo-readme --version 3.2.0`.
-    let output = Command::new("cargo")
-        .current_dir(readme_dir)
-        .args(["readme", "--no-license"])
-        .output()
-        .unwrap();
-
-    let readme = String::from_utf8(output.stdout).unwrap();
-
+fn format_readme(readme: &str) -> Result<String, String> {
     // This regex is used to strip code links like:
     //
     //   /// Here is a link to [`Vec`].
@@ -57,8 +50,186 @@ fn main() {
     // These links don't work in a Markdown file, and so we remove the `[` and `]`
     // characters to convert them to non-link code snippets.
     let body = Regex::new(r"\[(`[^`]*`)\]")
-        .unwrap()
-        .replace_all(&readme, |caps: &Captures| caps[1].to_string());
+        .expect("static regex must compile")
+        .replace_all(readme, |caps: &Captures| caps[1].to_string());
+    if body.trim().is_empty() {
+        return Err("generate-readme: `cargo readme --no-license` produced an empty README body"
+            .to_string());
+    }
+    Ok(format!("{}\n\n{}\n{}", COPYRIGHT_HEADER, body, DISCLAIMER_FOOTER))
+}
 
-    println!("{}\n\n{}\n{}", COPYRIGHT_HEADER, body, DISCLAIMER_FOOTER);
+fn render_readme(output: &Output) -> Result<String, RenderError> {
+    if !output.status.success() {
+        let message = output.stderr.is_empty().then(|| {
+            format!("generate-readme: `cargo readme --no-license` failed with {}", output.status)
+        });
+        return Err(RenderError {
+            exit_code: output.status.code().unwrap_or(1),
+            stderr: output.stderr.clone(),
+            message,
+        });
+    }
+
+    let readme = std::str::from_utf8(&output.stdout).map_err(|err| RenderError {
+        exit_code: 1,
+        stderr: Vec::new(),
+        message: Some(format!(
+            "generate-readme: `cargo readme --no-license` stdout was not valid UTF-8: {err}"
+        )),
+    })?;
+
+    format_readme(readme).map_err(|msg| RenderError {
+        exit_code: 1,
+        stderr: Vec::new(),
+        message: Some(msg),
+    })
+}
+
+fn resolve_readme_dir(cwd: &Path) -> PathBuf {
+    env::var_os("ZEROCOPY_README_DIR").map(PathBuf::from).unwrap_or_else(|| {
+        if cwd.join("zerocopy/Cargo.toml").exists() {
+            cwd.join("zerocopy")
+        } else {
+            cwd.to_path_buf()
+        }
+    })
+}
+
+fn run() -> Result<String, RenderError> {
+    let cwd = env::current_dir().map_err(|err| RenderError {
+        exit_code: 1,
+        stderr: Vec::new(),
+        message: Some(format!("generate-readme: failed to determine current directory: {err}")),
+    })?;
+    let readme_dir = resolve_readme_dir(&cwd);
+
+    // This uses the `cargo readme` tool, which you can install via `cargo install
+    // cargo-readme --version 3.2.0`.
+    let output = Command::new("cargo")
+        .current_dir(&readme_dir)
+        .args(["readme", "--no-license"])
+        .output()
+        .map_err(|err| RenderError {
+            exit_code: 1,
+            stderr: Vec::new(),
+            message: Some(format!(
+                "generate-readme: failed to run `cargo readme --no-license` in {}: {err}",
+                readme_dir.display()
+            )),
+        })?;
+
+    render_readme(&output)
+}
+
+fn main() {
+    match run() {
+        Ok(readme) => println!("{readme}"),
+        Err(err) => {
+            if !err.stderr.is_empty() {
+                let _ = io::stderr().write_all(&err.stderr);
+            }
+            if let Some(msg) = err.message {
+                eprintln!("{msg}");
+            }
+            process::exit(err.exit_code);
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::process::{ExitStatus, Output};
+
+    use super::{format_readme, render_readme, COPYRIGHT_HEADER, DISCLAIMER_FOOTER};
+
+    #[cfg(unix)]
+    fn exit_status_from_code(code: i32) -> ExitStatus {
+        use std::os::unix::process::ExitStatusExt as _;
+        ExitStatus::from_raw(code << 8)
+    }
+
+    #[cfg(windows)]
+    fn exit_status_from_code(code: i32) -> ExitStatus {
+        use std::os::windows::process::ExitStatusExt as _;
+        ExitStatus::from_raw(code as u32)
+    }
+
+    #[test]
+    fn format_readme_strips_code_links_and_preserves_regular_links() {
+        let input = "See [`Vec`] and [`Option::Some`], plus [docs](https://example.com).\n";
+        let rendered = format_readme(input).expect("valid body should render");
+        assert_eq!(
+            rendered,
+            format!(
+                "{}\n\nSee `Vec` and `Option::Some`, plus [docs](https://example.com).\n\n{}",
+                COPYRIGHT_HEADER, DISCLAIMER_FOOTER
+            )
+        );
+    }
+
+    #[test]
+    fn format_readme_rejects_empty_body() {
+        assert!(format_readme("").is_err());
+        assert!(format_readme("   \n\t \n").is_err());
+    }
+
+    #[test]
+    fn render_readme_fails_on_nonzero_status_and_forwards_stderr() {
+        let output = Output {
+            status: exit_status_from_code(2),
+            stdout: b"ignored partial stdout".to_vec(),
+            stderr: b"error: no such command: `readme`\n".to_vec(),
+        };
+        let err = render_readme(&output).expect_err("non-zero status must fail");
+        assert_eq!(err.exit_code, 2);
+        assert_eq!(err.stderr, b"error: no such command: `readme`\n");
+        assert_eq!(err.message, None);
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn render_readme_defaults_signal_exit_code_to_one() {
+        use std::os::unix::process::ExitStatusExt as _;
+
+        let output = Output {
+            status: ExitStatus::from_raw(9),
+            stdout: Vec::new(),
+            stderr: b"killed\n".to_vec(),
+        };
+        let err = render_readme(&output).expect_err("signal termination must fail");
+        assert_eq!(err.exit_code, 1);
+        assert_eq!(err.stderr, b"killed\n");
+    }
+
+    #[test]
+    fn render_readme_fails_on_empty_stdout_with_zero_status() {
+        let output =
+            Output { status: exit_status_from_code(0), stdout: b" \n\t".to_vec(), stderr: vec![] };
+        let err = render_readme(&output).expect_err("empty stdout must fail closed");
+        assert_eq!(err.exit_code, 1);
+        assert!(err.message.as_deref().is_some_and(|m| m.contains("empty README body")));
+    }
+
+    #[test]
+    fn render_readme_fails_on_invalid_utf8_stdout() {
+        let output =
+            Output { status: exit_status_from_code(0), stdout: vec![0xff, 0xfe], stderr: vec![] };
+        let err = render_readme(&output).expect_err("invalid UTF-8 stdout must fail");
+        assert_eq!(err.exit_code, 1);
+        assert!(err.message.as_deref().is_some_and(|m| m.contains("UTF-8")));
+    }
+
+    #[test]
+    fn render_readme_succeeds_on_valid_output() {
+        let output = Output {
+            status: exit_status_from_code(0),
+            stdout: b"Overview of [`FromBytes`].\n".to_vec(),
+            stderr: Vec::new(),
+        };
+        let rendered = render_readme(&output).expect("valid output should render");
+        assert!(rendered.contains("Overview of `FromBytes`."));
+        assert!(rendered.starts_with(COPYRIGHT_HEADER));
+        assert!(rendered.ends_with(DISCLAIMER_FOOTER));
+    }
 }

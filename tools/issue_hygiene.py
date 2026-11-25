@@ -27,12 +27,14 @@ that require human or agent judgment without mutating GitHub state.
 from __future__ import annotations
 
 import argparse
+from collections.abc import Callable
 from dataclasses import asdict, dataclass, field
 import json
 from pathlib import Path
 import re
 import subprocess
 import sys
+import time
 from typing import Iterable, Mapping, Sequence, Union
 
 PRIMARY_SCOPES = frozenset({"zerocopy", "anneal", "reference", "repo"})
@@ -61,6 +63,33 @@ COMPAT_LABELS = ("compatibility-breaking", "compatibility-nonbreaking")
 DEFAULT_ADVISORY_TRACKER = 3642
 DEFAULT_PTR_TRACKER = 859
 DEFAULT_UPSTREAM_TRACKERS = frozenset({208})
+DEFAULT_GRAPHQL_TIMEOUT_SECONDS = 60.0
+RETRY_BACKOFF_SECONDS = (2.0, 5.0)
+
+_TRANSIENT_ERR_PATTERNS = (
+    "http 500",
+    "http 502",
+    "http 503",
+    "http 504",
+    "http 429",
+    "bad gateway",
+    "service unavailable",
+    "gateway timeout",
+    "something went wrong",
+    "rate limit",
+    "secondary rate limit",
+    "abuse detection",
+    "timed out",
+    "timeout",
+    "connection reset",
+    "connection refused",
+    "temporary failure",
+    "unexpected eof",
+    "tls handshake",
+)
+_TRANSIENT_GQL_TYPES = frozenset(
+    {"RATE_LIMITED", "INTERNAL", "SERVICE_UNAVAILABLE"}
+)
 
 # Constructed dynamically so `./ci/check_todo.sh` does not flag this scanner.
 _TASK_MARKER_ALT = "TO" + "DO"
@@ -473,7 +502,8 @@ def _diagnose_issues(
         else None
     )
     tracker_links: frozenset[int] = (
-        tracker.relates_to
+        tracker.sub_issues
+        | tracker.relates_to
         | frozenset(
             b.local_number
             for b in tracker.blocked_by
@@ -586,6 +616,7 @@ def _diagnose_issues(
         ):
             linked_to_tracker = (
                 iss.number in tracker_links
+                or iss.parent_number == advisory_tracker
                 or advisory_tracker in iss.relates_to
                 or advisory_tracker in local_blockers
             )
@@ -594,7 +625,7 @@ def _diagnose_issues(
                     "unlinked-advisory",
                     target,
                     f"advisory is not linked to tracker #{advisory_tracker} "
-                    "via blockedBy/relatesTo",
+                    "via subIssues/blockedBy/relatesTo",
                 )
 
     return diagnostics
@@ -725,13 +756,48 @@ def extract_issue_external_refs(
     return tuple(refs)
 
 
+def _is_transient_graphql_failure(
+    stderr: str, errors: Sequence[Mapping[str, object]]
+) -> bool:
+    lower_err = stderr.lower()
+    if any(pat in lower_err for pat in _TRANSIENT_ERR_PATTERNS):
+        return True
+    for err in errors:
+        err_type = err.get("type")
+        if isinstance(err_type, str) and err_type in _TRANSIENT_GQL_TYPES:
+            return True
+        msg = err.get("message")
+        if isinstance(msg, str) and any(
+            pat in msg.lower() for pat in _TRANSIENT_ERR_PATTERNS
+        ):
+            return True
+    return False
+
+
 class GitHubCli:
     """Thin GraphQL adapter over `gh` for read and Tier 1 write operations."""
 
-    def __init__(self, owner: str, repo: str) -> None:
+    def __init__(
+        self,
+        owner: str,
+        repo: str,
+        *,
+        timeout: float = DEFAULT_GRAPHQL_TIMEOUT_SECONDS,
+        sleep_fn: Callable[[float], None] | None = None,
+    ) -> None:
+        if timeout <= 0:
+            raise ValueError(f"timeout must be positive: {timeout}")
         self.owner = owner
         self.repo = repo
+        self.timeout = timeout
+        self._sleep = sleep_fn
         self._slug_lower = f"{owner}/{repo}".lower()
+
+    def _do_sleep(self, delay: float) -> None:
+        if self._sleep is not None:
+            self._sleep(delay)
+        else:
+            time.sleep(delay)
 
     def graphql(
         self,
@@ -740,37 +806,148 @@ class GitHubCli:
         *,
         allow_not_found: bool = False,
     ) -> dict[str, object]:
+        """Execute a GraphQL operation with timeout and transient retries.
+
+        Retries assume idempotent operations (true for all current read
+        queries and label/type/milestone mutations). Any future
+        non-idempotent mutation (e.g. `addComment`) must explicitly opt out
+        of retries on unknown/timed-out outcomes.
+        """
         payload = json.dumps(
             {"query": query, "variables": dict(variables or {})}
         )
-        proc = subprocess.run(
-            ["gh", "api", "graphql", "--input", "-"],
-            input=payload,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        if not proc.stdout.strip():
-            msg = proc.stderr.strip() or "empty output"
-            raise RuntimeError(f"gh api graphql failed: {msg}")
-        parsed = json.loads(proc.stdout)
-        errors = parsed.get("errors") or []
-        if errors and not (
-            allow_not_found
-            and all(e.get("type") == "NOT_FOUND" for e in errors)
-        ):
-            raise RuntimeError(f"GraphQL errors: {errors}")
-        data = parsed.get("data")
-        if proc.returncode != 0 and not (allow_not_found and data is not None):
-            raise RuntimeError(
-                f"gh api graphql exited {proc.returncode}: "
-                f"{proc.stderr.strip()}"
+        attempts = len(RETRY_BACKOFF_SECONDS) + 1
+        last_error: RuntimeError | None = None
+        for attempt in range(attempts):
+            try:
+                proc = subprocess.run(
+                    ["gh", "api", "graphql", "--input", "-"],
+                    input=payload,
+                    text=True,
+                    capture_output=True,
+                    check=False,
+                    timeout=self.timeout,
+                )
+            except subprocess.TimeoutExpired as exc:
+                raw_err = exc.stderr
+                if isinstance(raw_err, bytes):
+                    stderr = raw_err.decode("utf-8", errors="replace").strip()
+                else:
+                    stderr = (raw_err or "").strip()
+                detail = f": {stderr}" if stderr else ""
+                last_error = RuntimeError(
+                    f"gh api graphql timed out after {self.timeout}s{detail}"
+                )
+                if attempt < len(RETRY_BACKOFF_SECONDS):
+                    self._do_sleep(RETRY_BACKOFF_SECONDS[attempt])
+                    continue
+                raise last_error from exc
+
+            data, retryable, err = self._parse_graphql_response(
+                proc, allow_not_found=allow_not_found
             )
+            if data is not None:
+                return data
+            last_error = err
+            if retryable and attempt < len(RETRY_BACKOFF_SECONDS):
+                self._do_sleep(RETRY_BACKOFF_SECONDS[attempt])
+                continue
+            raise last_error
+        raise last_error or RuntimeError("GraphQL request failed")
+
+    def _parse_graphql_response(
+        self,
+        proc: subprocess.CompletedProcess[str],
+        *,
+        allow_not_found: bool,
+    ) -> tuple[dict[str, object] | None, bool, RuntimeError]:
+        raw_out = proc.stdout.strip()
+        stderr = proc.stderr.strip()
+        if not raw_out:
+            err = RuntimeError(
+                f"gh api graphql returned empty output (exit {proc.returncode})"
+                f": {stderr or 'no stderr'}"
+            )
+            return None, _is_transient_graphql_failure(stderr, ()), err
+
+        try:
+            parsed = json.loads(raw_out)
+        except json.JSONDecodeError as exc:
+            snippet = raw_out[:200] + ("..." if len(raw_out) > 200 else "")
+            err = RuntimeError(
+                f"gh api graphql returned invalid JSON (exit {proc.returncode})"
+                f": {exc}; stderr={stderr or 'none'}; stdout={snippet!r}"
+            )
+            retryable = _is_transient_graphql_failure(
+                f"{stderr}\n{raw_out[:500]}", ()
+            )
+            return None, retryable, err
+
+        if not isinstance(parsed, dict):
+            return (
+                None,
+                False,
+                RuntimeError("gh api graphql returned non-object JSON"),
+            )
+
+        raw_errors = parsed.get("errors")
+        errors: list[Mapping[str, object]] = []
+        if raw_errors is not None:
+            if not isinstance(raw_errors, list) or not all(
+                isinstance(e, Mapping) for e in raw_errors
+            ):
+                return (
+                    None,
+                    False,
+                    RuntimeError(
+                        f"Malformed GraphQL `errors` field: {raw_errors!r}"
+                    ),
+                )
+            errors = list(raw_errors)
+
+        only_allowed_not_found = (
+            allow_not_found
+            and bool(errors)
+            and all(e.get("type") == "NOT_FOUND" for e in errors)
+        )
+        top_msg = parsed.get("message")
+        err_context = (
+            f"{stderr}\n{top_msg}" if isinstance(top_msg, str) else stderr
+        )
+
+        if errors and not only_allowed_not_found:
+            err = RuntimeError(f"GraphQL errors: {errors}")
+            return (
+                None,
+                _is_transient_graphql_failure(err_context, errors),
+                err,
+            )
+
+        data = parsed.get("data")
+        if proc.returncode != 0 and not (
+            allow_not_found and data is not None
+        ):
+            err = RuntimeError(
+                f"gh api graphql exited {proc.returncode}: "
+                f"{stderr or raw_out}"
+            )
+            return (
+                None,
+                _is_transient_graphql_failure(err_context, errors),
+                err,
+            )
+
         if not isinstance(data, dict):
             if allow_not_found:
-                return {}
-            raise RuntimeError("GraphQL response missing `data` object")
-        return data
+                return {}, False, RuntimeError("unreachable")
+            err = RuntimeError("GraphQL response missing `data` object")
+            return (
+                None,
+                _is_transient_graphql_failure(err_context, errors),
+                err,
+            )
+
+        return data, False, RuntimeError("unreachable")
 
     def _require_repo(self, data: Mapping[str, object]) -> dict[str, object]:
         repo_obj = data.get("repository")
