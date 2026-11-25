@@ -1431,6 +1431,7 @@ def collect_zerocopy_proofs(
                 meas.stdout,
                 meas.stderr,
                 request["scope"]["roots"],
+                expected_instantiations=request["scope"].get("instantiations"),
             )
             verified_count += 1
             t = receipt.get("timing_ms", {})

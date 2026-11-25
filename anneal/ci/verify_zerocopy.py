@@ -42,6 +42,79 @@ def is_safe_relative_filename(raw):
     )
 
 
+def _normalize_instantiations(raw_insts, context):
+    """Validate `scope.instantiations` and return unique `(path, args)` keys.
+
+    Empty `args` lists are permitted because `rustc-capture/src/mono.rs` allows
+    omitting region-only parameters, while each provided arg must be non-empty.
+    """
+    if not isinstance(raw_insts, list):
+        raise ValueError(f"{context}: scope.instantiations must be a list")
+    seen = set()
+    normalized = []
+    for entry in raw_insts:
+        if not isinstance(entry, dict) or set(entry) != {"path", "args"}:
+            raise ValueError(
+                f"{context}: scope.instantiations entries must have keys "
+                f"'path' and 'args': {entry!r}"
+            )
+        path = entry["path"]
+        args = entry["args"]
+        if not isinstance(path, str) or not path:
+            raise ValueError(
+                f"{context}: scope.instantiations path must be a non-empty string"
+            )
+        if not isinstance(args, list) or not all(
+            isinstance(a, str) and a for a in args
+        ):
+            raise ValueError(
+                f"{context}: scope.instantiations args must be a list of "
+                "non-empty strings"
+            )
+        key = (path, tuple(args))
+        if key in seen:
+            raise ValueError(
+                f"{context}: duplicate entry in scope.instantiations: {key!r}"
+            )
+        seen.add(key)
+        normalized.append(key)
+    return normalized
+
+
+def _normalize_selected_unit_scope(scope, context):
+    """Validate a `selected_unit` scope dict and return `(roots, inst_keys)`."""
+    if not isinstance(scope, dict) or scope.get("kind") != "selected_unit":
+        raise ValueError(f"{context}: expected scope.kind == 'selected_unit'")
+    extra_keys = set(scope) - {"kind", "roots", "instantiations"}
+    if extra_keys:
+        raise ValueError(
+            f"{context}: unexpected scope keys {sorted(extra_keys)!r}"
+        )
+    if "roots" not in scope or not isinstance(scope["roots"], list):
+        raise ValueError(
+            f"{context}: scope.roots must be a list of non-empty strings"
+        )
+    roots = scope["roots"]
+    if not all(isinstance(r, str) and r for r in roots):
+        raise ValueError(
+            f"{context}: scope.roots entries must be non-empty strings"
+        )
+    if len(roots) != len(set(roots)):
+        raise ValueError(f"{context}: duplicate entry in scope.roots")
+
+    if "instantiations" in scope:
+        raw_insts = scope["instantiations"]
+    else:
+        raw_insts = []
+    inst_keys = _normalize_instantiations(raw_insts, context)
+
+    if not roots and not inst_keys:
+        raise ValueError(
+            f"{context}: scope must contain at least one root or instantiation"
+        )
+    return list(roots), inst_keys
+
+
 def discover_units(proofs_dir, src_dir, selected_units=None):
     """Validate `proofs_dir` hygiene and return ordered `(unit_dir, request)` pairs."""
     if not proofs_dir.is_dir() or proofs_dir.is_symlink():
@@ -93,12 +166,10 @@ def discover_units(proofs_dir, src_dir, selected_units=None):
                 f"{entry.name}: source_root {source_root!r} does not resolve to {resolved_src}"
             )
 
-        scope = request.get("scope")
-        if not isinstance(scope, dict) or scope.get("kind") != "selected_unit":
-            raise RuntimeError(f"{entry.name}: expected scope.kind == 'selected_unit'")
-        roots = scope.get("roots")
-        if not isinstance(roots, list) or not roots or not all(isinstance(r, str) and r for r in roots):
-            raise RuntimeError(f"{entry.name}: scope.roots must be a non-empty string list")
+        try:
+            _normalize_selected_unit_scope(request.get("scope"), entry.name)
+        except ValueError as exc:
+            raise RuntimeError(str(exc)) from exc
 
         proof = request.get("proof")
         if not isinstance(proof, dict) or proof.get("source_root") != ".":
@@ -134,8 +205,56 @@ def discover_units(proofs_dir, src_dir, selected_units=None):
     return [discovered[name] for name in sorted(discovered)]
 
 
-def validate_receipt(unit_name, returncode, stdout_text, stderr_text, expected_roots):
+_SELECTED_BODY_KEYS = frozenset(("def_id", "path", "body_index"))
+
+
+def _is_nonneg_int(val):
+    return not isinstance(val, bool) and isinstance(val, int) and val >= 0
+
+
+def _is_valid_selected_bodies(selected):
+    """Return True iff `selected` is a non-empty list of SelectedBody dicts."""
+    if not isinstance(selected, list) or not selected:
+        return False
+    for entry in selected:
+        if not isinstance(entry, dict):
+            return False
+        if set(entry.keys()) != _SELECTED_BODY_KEYS:
+            return False
+        if not _is_nonneg_int(entry["def_id"]):
+            return False
+        if not isinstance(entry["path"], str) or not entry["path"]:
+            return False
+        if not _is_nonneg_int(entry["body_index"]):
+            return False
+    return True
+
+
+def validate_receipt(
+    unit_name,
+    returncode,
+    stdout_text,
+    stderr_text,
+    expected_roots,
+    expected_instantiations=None,
+):
     """Fail closed unless `cargo-anneal verify` emitted an untainted passing receipt."""
+    try:
+        exp_roots, exp_inst_keys = _normalize_selected_unit_scope(
+            {
+                "kind": "selected_unit",
+                "roots": expected_roots,
+                "instantiations": (
+                    expected_instantiations
+                    if expected_instantiations is not None
+                    else []
+                ),
+            },
+            f"{unit_name} expected",
+        )
+    except ValueError as exc:
+        raise RuntimeError(str(exc)) from exc
+
     try:
         receipt = json.loads(stdout_text)
     except json.JSONDecodeError as exc:
@@ -168,16 +287,21 @@ def validate_receipt(unit_name, returncode, stdout_text, stderr_text, expected_r
         failures.append("hostile Lean elaborator effects deferred")
 
     scope = receipt.get("scope")
-    roots = scope.get("roots") if isinstance(scope, dict) else None
-    if (
-        not isinstance(scope, dict)
-        or scope.get("kind") != "selected_unit"
-        or not isinstance(roots, list)
-        or not all(isinstance(r, str) and r for r in roots)
-        or set(roots) != set(expected_roots)
-        or len(roots) != len(set(expected_roots))
-    ):
-        failures.append(f"scope mismatch: {scope!r}")
+    try:
+        actual_roots, actual_inst_keys = _normalize_selected_unit_scope(
+            scope, f"{unit_name} receipt"
+        )
+    except ValueError as exc:
+        failures.append(f"scope mismatch ({exc}): {scope!r}")
+    else:
+        if set(actual_roots) != set(exp_roots) or set(actual_inst_keys) != set(
+            exp_inst_keys
+        ):
+            failures.append(f"scope mismatch: {scope!r}")
+
+    selected = receipt.get("selected")
+    if not _is_valid_selected_bodies(selected):
+        failures.append(f"selected={selected!r}")
 
     audit = receipt.get("audit")
     if not isinstance(audit, dict):
@@ -311,12 +435,14 @@ def verify_unit(arguments, unit_dir, request, artifacts_root):
         proc.stdout,
         proc.stderr,
         request["scope"]["roots"],
+        expected_instantiations=request["scope"].get("instantiations"),
     )
     return unit_dir.name, {
         "status": receipt["status"],
+        "scope": receipt["scope"],
         "axioms": receipt["audit"]["axioms"],
         "elaboration_sandbox": receipt["elaboration_sandbox"],
-        "selected": receipt.get("selected", []),
+        "selected": receipt["selected"],
         "request_sha256": receipt["request_sha256"],
         "capture_sha256": receipt["capture_sha256"],
         "specification_manifest_sha256": receipt["specification_manifest_sha256"],
