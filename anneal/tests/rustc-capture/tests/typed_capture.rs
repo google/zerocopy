@@ -12,17 +12,18 @@
 // capture profile requires the x86-64 Linux standard library.
 #![cfg(all(target_os = "linux", target_arch = "x86_64"))]
 
-mod common;
-
 use std::{
     fmt::Write as _,
     path::PathBuf,
     process::{Command, Output},
 };
 
-use common::sysroot;
 use serde_json::Value;
 use sha2::{Digest, Sha256};
+
+fn sysroot() -> PathBuf {
+    anneal_testkit::default_rust_sysroot().expect("resolve pinned compiler sysroot")
+}
 
 fn sha256_hex(bytes: &[u8]) -> String {
     let mut hex = String::with_capacity(64);
@@ -2024,7 +2025,7 @@ fn compile_captured_lean_if_trusted_sources_present(captured_lean: &std::path::P
     if !lean_src_root.join("Trusted/MirAst.lean").is_file() {
         return false;
     }
-    let lean_bin = common::lean();
+    let lean_bin = anneal_testkit::default_lean_path().expect("resolve pinned Lean executable");
     let stage = tempfile::tempdir().expect("create temporary Lean build directory");
     let lean_lib = stage.path().join("lib");
     std::fs::create_dir_all(lean_lib.join("Trusted/MirAst")).unwrap();

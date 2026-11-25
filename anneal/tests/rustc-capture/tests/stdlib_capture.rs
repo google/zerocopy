@@ -11,15 +11,16 @@
 
 #![cfg(all(target_os = "linux", target_arch = "x86_64"))]
 
-mod common;
-
 use std::{
     path::{Path, PathBuf},
     process::{Command, Output},
 };
 
-use common::sysroot;
 use serde_json::Value;
+
+fn sysroot() -> PathBuf {
+    anneal_testkit::default_rust_sysroot().expect("resolve pinned compiler sysroot")
+}
 
 /// A self-contained `#![no_core]` crate that defines its own language items.
 const NO_CORE: &str = r#"#![feature(no_core, lang_items)]
@@ -301,13 +302,15 @@ fn verbatim_sysroot_core_captures_selected_scalar_functions() {
     if !library.join("core/src/lib.rs").is_file() {
         // `rust-src` is optional: the packaged omnibus archive omits
         // `lib/rustlib/src`, and a rustup sysroot may lack the component.
-        // Set `ANNEAL_TEST_REQUIRE_RUST_SRC=1` to make its absence a
-        // failure instead of a skip.
-        let required = std::env::var_os("ANNEAL_TEST_REQUIRE_RUST_SRC")
-            .is_some_and(|v| !v.is_empty() && v != "0");
+        // Set `ANNEAL_TEST_REQUIRE_RUST_SRC=1` or `ANNEAL_CI_STRICT=1` to
+        // fail closed instead of silently skipping.
+        let env_truthy =
+            |name: &str| std::env::var_os(name).is_some_and(|v| !v.is_empty() && v != "0");
+        let required = env_truthy("ANNEAL_TEST_REQUIRE_RUST_SRC") || env_truthy("ANNEAL_CI_STRICT");
         assert!(
             !required,
-            "the selected sysroot {} lacks the `rust-src` tree",
+            "the selected sysroot {} lacks the `rust-src` tree \
+             (fail-closed under ANNEAL_TEST_REQUIRE_RUST_SRC / ANNEAL_CI_STRICT)",
             sysroot().display()
         );
         eprintln!("skipping: sysroot {} lacks the `rust-src` tree", sysroot().display());

@@ -26,8 +26,6 @@
 
 #![cfg(feature = "setup")]
 
-mod support;
-
 use std::{
     collections::{BTreeMap, BTreeSet, VecDeque},
     env, fs,
@@ -35,13 +33,13 @@ use std::{
     time::Duration,
 };
 
+use anneal_testkit::{
+    CaseDirectory, Invocation, ProcessOutcome, RunDirectory, TestResult, select_cases, write_json,
+};
 use cargo_anneal::{
     Failure, ImportEdge, ParallelDagPlan, is_lean_ident, run_parallel_dag, topo_sort_modules,
 };
 use serde_json::{Value, json};
-use support::{
-    CaseDirectory, Invocation, ProcessOutcome, RunDirectory, TestResult, select_cases, write_json,
-};
 
 const CASES: &[&str] = &[
     "audit-accepted",
@@ -184,10 +182,10 @@ fn installation(run: &RunDirectory) -> TestResult<PathBuf> {
             );
             command
                 .environment
-                .insert("ANNEAL_TEST_ARCHIVE".into(), text_path(&archive)?);
+                .insert("ANNEAL_TEST_ARCHIVE".into(), text_path(&archive)?.into());
             command.environment.insert(
                 "ANNEAL_TEST_INSTALL_DEST".into(),
-                text_path(&run.path().join("installation"))?,
+                text_path(&run.path().join("installation"))?.into(),
             );
             startup.run(&command)?.expect_code(0)?;
             let root = PathBuf::from(
@@ -293,8 +291,8 @@ fn run_local_setup(
     // Override both XDG_CACHE_HOME (Linux) and HOME (macOS ~/Library/Caches)
     // so exocrate installs strictly inside the case cache directory.
     let cache_text = text_path(cache)?;
-    command.environment.insert("XDG_CACHE_HOME".into(), cache_text.clone());
-    command.environment.insert("HOME".into(), cache_text);
+    command.environment.insert("XDG_CACHE_HOME".into(), cache_text.clone().into());
+    command.environment.insert("HOME".into(), cache_text.into());
     case.run(&command)
 }
 
@@ -709,7 +707,7 @@ fn lean_case(case: &mut CaseDirectory, root: &Path, jobs: usize) -> TestResult {
             );
             command
                 .environment
-                .insert("LEAN_PATH".into(), lean_path_env.clone());
+                .insert("LEAN_PATH".into(), lean_path_env.clone().into());
             let out = shared_case
                 .run_shared(&command)
                 .map_err(|e| Failure::operational("lean-file", e))?;
@@ -761,7 +759,9 @@ fn lean_case(case: &mut CaseDirectory, root: &Path, jobs: usize) -> TestResult {
                 smoke_file,
             ],
         );
-        small.environment.insert("LEAN_PATH".into(), lean_path_env.clone());
+        small
+            .environment
+            .insert("LEAN_PATH".into(), lean_path_env.clone().into());
         let out = case.run(&small)?;
         out.expect_code(0)?;
     }
@@ -802,7 +802,7 @@ fn bundled_cargo_case(case: &mut CaseDirectory, root: &Path) -> TestResult {
         ("RUSTDOC", root.join("rust/bin/rustdoc")),
         ("CARGO_HOME", cargo_home),
     ] {
-        command.environment.insert(name.into(), text_path(&path)?);
+        command.environment.insert(name.into(), text_path(&path)?.into());
     }
     let out = case.run(&command)?;
     out.expect_code(0)?;
@@ -922,278 +922,21 @@ fn write_installed_audit_accepted_fixture(case: &mut CaseDirectory) -> TestResul
     // self-contained synthetic `Trusted.*` + `Anneal.MirWp` +
     // `Anneal.MirWp.Canaries` fixture matching the `module` header style of
     // `fixtures/audit-positive.lean`.
+    let spec = anneal_testkit::mir_wp_fixture::MirWpFixtureSpec::valid_module_style();
+    let umbrella_rel = format!("fixture/{}", spec.theory_umbrella_rel_path()?.display());
     case.write(
         "fixture/trusted/lean/Trusted/MirAst.lean",
-        b"-- anneal-trust-tier: candidate:mir_ast\n\
-          module\n\
-          prelude\n\
-          public import Init.NotationExtra\n\
-          @[expose] public section\n\
-          namespace Trusted.MirAst\n\
-          def BinOp.cmp : Prop := True\n\
-          def BinOp.addWithOverflow : Prop := True\n\
-          def BinOp.subWithOverflow : Prop := True\n\
-          def BinOp.mulWithOverflow : Prop := True\n\
-          def MirTy.char : Prop := True\n\
-          end Trusted.MirAst\n\
-          end\n",
+        spec.render_mir_ast().as_bytes(),
     )?;
-    let mut sem = String::from(
-        "-- anneal-trust-tier: candidate:mir_semantics\n\
-         module\n\
-         prelude\n\
-         public import Init.NotationExtra\n\
-         public import Trusted.MirAst\n\
-         @[expose] public section\n\
-         namespace Trusted.MirSemantics\n\
-         def SatisfiesPost : Prop := True\n\
-         def Diverges : Prop := True\n\
-         def Behavior : Prop := True\n\
-         def ReachesResult : Prop := True\n\
-         def WellFormed : Prop := True\n\
-         def PositiveCanaryClaim : Prop := True\n\
-         def NegativeCanaryClaim : Prop := True\n\
-         def IntWidthBoundaryCanary : Prop := True\n\
-         def Crate : Prop := True\n\
-         def CrateTheorem : Prop := True\n\
-         def UnitTheorem : Prop := True\n\
-         def BodyVerified : Prop := True\n\
-         def initState : Prop := True\n\
-         def evalStep : Prop := True\n\
-         def forceAllocation : Prop := True\n\
-         def readBytes : Prop := True\n\
-         def mkBinOpProg : Prop := True\n\
-         def mkUnOpProg : Prop := True\n\
-         def charVal : Prop := True\n\
-         def mkCmpDiscriminantProg : Prop := True\n\
-         def progCharSwitch : Prop := True\n\
-         def progInvalidCharConstUb : Prop := True\n\
-         def progInvalidCharSwitchCaseUb : Prop := True\n\
-         def overflowPairTy : Prop := True\n\
-         def mkIntToIntCastProg : Prop := True\n\
-         def progCastUninitSourceUb : Prop := True\n\
-         def WpSoundnessClaim (_f : Nat) : Prop := And SatisfiesPost (And Diverges Behavior)\n\
-         def WpFaultSoundnessClaim (_f : Nat) : Prop := And ReachesResult (And Diverges WellFormed)\n\
-         def SatisfiesPostV2 : Prop := True\n\
-         def DivergesV2 : Prop := True\n\
-         def BehaviorV2 : Prop := True\n\
-         def CrateV2 : Prop := True\n\
-         def CrateTheoremV2 : Prop := True\n\
-         def UnitTheoremV2 : Prop := True\n\
-         def ExecSoundnessClaimV2 (_f : Nat) : Prop := And SatisfiesPostV2 (And DivergesV2 BehaviorV2)\n",
-    );
-    let canaries: &[(&str, &str, &str, &str)] = &[
-        (
-            "CanaryPositiveAddAnnealClaim",
-            "canary_positive_add_anneal",
-            "PositiveCanaryClaim",
-            "True.intro",
-        ),
-        (
-            "CanaryPositiveEmptyUnitFnClaim",
-            "canary_positive_empty_unit_fn",
-            "PositiveCanaryClaim",
-            "True.intro",
-        ),
-        (
-            "CanaryPositiveStmtsAndCfAnnealClaim",
-            "canary_positive_stmts_and_cf_anneal",
-            "PositiveCanaryClaim",
-            "True.intro",
-        ),
-        (
-            "CanaryPositiveUnopAnnealClaim",
-            "canary_positive_unop_anneal",
-            "PositiveCanaryClaim",
-            "True.intro",
-        ),
-        (
-            "CanaryPositiveAllBinopsAnnealClaim",
-            "canary_positive_all_binops_anneal",
-            "PositiveCanaryClaim",
-            "True.intro",
-        ),
-        (
-            "CanaryPositiveAllIntWidthsAnnealClaim",
-            "canary_positive_all_int_widths_anneal",
-            "IntWidthBoundaryCanary",
-            "True.intro",
-        ),
-        (
-            "CanaryNegativeUbDivZeroAnnealClaim",
-            "canary_negative_ub_div_zero_anneal",
-            "NegativeCanaryClaim",
-            "True.intro",
-        ),
-        (
-            "CanaryNegativeUbSignedRemOverflowI8Claim",
-            "canary_negative_ub_signed_rem_overflow_i8",
-            "NegativeCanaryClaim",
-            "True.intro",
-        ),
-        (
-            "CanaryNegativeUnsupportedAnnealClaim",
-            "canary_negative_unsupported_anneal",
-            "NegativeCanaryClaim",
-            "True.intro",
-        ),
-        (
-            "CanaryNegativeUbAddUncheckedOverflowU32Claim",
-            "canary_negative_ub_add_unchecked_overflow_u32",
-            "And NegativeCanaryClaim PositiveCanaryClaim",
-            "And.intro True.intro True.intro",
-        ),
-        (
-            "CanaryNegativeUbShiftUncheckedAtBitwidthAnnealClaim",
-            "canary_negative_ub_shift_unchecked_at_bitwidth_anneal",
-            "NegativeCanaryClaim",
-            "True.intro",
-        ),
-        (
-            "CanaryNegativeUbStorageDeadReadAnnealClaim",
-            "canary_negative_ub_storage_dead_read_anneal",
-            "NegativeCanaryClaim",
-            "True.intro",
-        ),
-        (
-            "CanaryNegativeUbStorageDeadReturnPlaceAnnealClaim",
-            "canary_negative_ub_storage_dead_return_place_anneal",
-            "NegativeCanaryClaim",
-            "True.intro",
-        ),
-        (
-            "CanaryNegativeUbUnreachableAnnealClaim",
-            "canary_negative_ub_unreachable_anneal",
-            "NegativeCanaryClaim",
-            "True.intro",
-        ),
-        (
-            "CanaryNegativeUnsupportedUnsignedNegAnnealClaim",
-            "canary_negative_unsupported_unsigned_neg_anneal",
-            "NegativeCanaryClaim",
-            "True.intro",
-        ),
-        (
-            "CanaryPositiveEnumExplicitReprAnnealClaim",
-            "canary_positive_enum_explicit_repr_anneal",
-            "PositiveCanaryClaim",
-            "True.intro",
-        ),
-        (
-            "CanaryPositiveZstSingleEnumAnnealClaim",
-            "canary_positive_zst_single_enum_anneal",
-            "PositiveCanaryClaim",
-            "True.intro",
-        ),
-        (
-            "CanaryNegativeUbEnumInvalidTagAndUninitAnnealClaim",
-            "canary_negative_ub_enum_invalid_tag_and_uninit_anneal",
-            "NegativeCanaryClaim",
-            "True.intro",
-        ),
-        (
-            "CanaryCrateAndBodyVerifiedAnnealClaim",
-            "canary_crate_and_body_verified_anneal",
-            "And CrateTheorem (And UnitTheorem BodyVerified)",
-            "And.intro True.intro (And.intro True.intro True.intro)",
-        ),
-        (
-            "CanaryMemoryLifecycleAnnealClaim",
-            "canary_memory_lifecycle_anneal",
-            "And PositiveCanaryClaim (And initState (And evalStep (And forceAllocation readBytes)))",
-            "And.intro True.intro (And.intro True.intro (And.intro True.intro (And.intro True.intro True.intro)))",
-        ),
-        (
-            "CanaryPositiveCharAndCmpAnnealClaim",
-            "canary_positive_char_and_cmp_anneal",
-            "And PositiveCanaryClaim (And mkBinOpProg (And Trusted.MirAst.BinOp.cmp (And Trusted.MirAst.MirTy.char (And charVal (And mkCmpDiscriminantProg progCharSwitch)))))",
-            "And.intro True.intro (And.intro True.intro (And.intro True.intro (And.intro True.intro (And.intro True.intro (And.intro True.intro True.intro)))))",
-        ),
-        (
-            "CanaryNegativeCharAndCmpAnnealClaim",
-            "canary_negative_char_and_cmp_anneal",
-            "And NegativeCanaryClaim (And progInvalidCharConstUb (And progInvalidCharSwitchCaseUb (And mkBinOpProg (And Trusted.MirAst.BinOp.cmp mkUnOpProg))))",
-            "And.intro True.intro (And.intro True.intro (And.intro True.intro (And.intro True.intro (And.intro True.intro True.intro))))",
-        ),
-        (
-            "CanaryPositiveOverflowOpsAnnealClaim",
-            "canary_positive_overflow_ops_anneal",
-            "And PositiveCanaryClaim (And mkBinOpProg (And overflowPairTy (And Trusted.MirAst.BinOp.addWithOverflow (And Trusted.MirAst.BinOp.subWithOverflow Trusted.MirAst.BinOp.mulWithOverflow))))",
-            "And.intro True.intro (And.intro True.intro (And.intro True.intro (And.intro True.intro (And.intro True.intro True.intro))))",
-        ),
-        (
-            "CanaryPositiveIntToIntCastAnnealClaim",
-            "canary_positive_int_to_int_cast_anneal",
-            "And PositiveCanaryClaim (And mkIntToIntCastProg (And Trusted.MirAst.MirTy.char charVal))",
-            "And.intro True.intro (And.intro True.intro (And.intro True.intro True.intro))",
-        ),
-        (
-            "CanaryNegativeIntToIntCastAnnealClaim",
-            "canary_negative_int_to_int_cast_anneal",
-            "And NegativeCanaryClaim (And mkIntToIntCastProg (And Trusted.MirAst.MirTy.char progCastUninitSourceUb))",
-            "And.intro True.intro (And.intro True.intro (And.intro True.intro True.intro))",
-        ),
-    ];
-    for &(claim, _, body, _) in canaries {
-        sem.push_str(&format!("def {claim} : Prop := {body}\n"));
-    }
-    sem.push_str(
-        "end Trusted.MirSemantics\n\
-         namespace Trusted\n\
-         abbrev Crate := Trusted.MirSemantics.Crate\n\
-         noncomputable abbrev CrateTheorem := Trusted.MirSemantics.CrateTheorem\n\
-         noncomputable abbrev UnitTheorem := Trusted.MirSemantics.UnitTheorem\n\
-         abbrev CrateV2 := Trusted.MirSemantics.CrateV2\n\
-         noncomputable abbrev CrateTheoremV2 := Trusted.MirSemantics.CrateTheoremV2\n\
-         noncomputable abbrev UnitTheoremV2 := Trusted.MirSemantics.UnitTheoremV2\n\
-         end Trusted\n\
-         end\n",
-    );
-    case.write("fixture/trusted/lean/Trusted/MirSemantics.lean", sem.as_bytes())?;
     case.write(
-        "fixture/theory/Anneal/MirWp.lean",
-        b"module\n\
-          prelude\n\
-          public import Init.NotationExtra\n\
-          public import Trusted\n\
-          public import Trusted.MirAst\n\
-          public import Trusted.MirSemantics\n\
-          public section\n\
-          namespace Anneal.MirWp\n\
-          @[expose] def wpProg : Nat := 0\n\
-          @[expose] def wpFaultProg : Nat := 0\n\
-          @[expose] def execProgV2 : Nat := 0\n\
-          theorem wellFormed_and_spec_of_wp : Trusted.MirSemantics.WpSoundnessClaim Anneal.MirWp.wpProg := And.intro True.intro (And.intro True.intro True.intro)\n\
-          theorem reaches_fault_and_exclusive_of_wpFault : Trusted.MirSemantics.WpFaultSoundnessClaim Anneal.MirWp.wpFaultProg := And.intro True.intro (And.intro True.intro True.intro)\n\
-          theorem wellFormed_and_spec_of_execV2 : Trusted.MirSemantics.ExecSoundnessClaimV2 Anneal.MirWp.execProgV2 := And.intro True.intro (And.intro True.intro True.intro)\n\
-          end Anneal.MirWp\n\
-          end\n",
+        "fixture/trusted/lean/Trusted/MirSemantics.lean",
+        spec.render_mir_semantics().as_bytes(),
     )?;
-    let mut canary_src = String::from(
-        "module\n\
-         prelude\n\
-         public import Init.NotationExtra\n\
-         public import Trusted\n\
-         public import Trusted.MirAst\n\
-         public import Trusted.MirSemantics\n\
-         public section\n\
-         namespace Anneal.MirWp\n",
-    );
-    for &(claim, proof, _, term) in canaries {
-        canary_src.push_str(&format!(
-            "theorem {proof} : Trusted.MirSemantics.{claim} := {term}\n"
-        ));
+    case.write("fixture/theory/Anneal/MirWp.lean", spec.render_mir_wp().as_bytes())?;
+    if let Some(canaries) = spec.render_canaries() {
+        case.write("fixture/theory/Anneal/MirWp/Canaries.lean", canaries.as_bytes())?;
     }
-    canary_src.push_str("end Anneal.MirWp\nend\n");
-    case.write("fixture/theory/Anneal/MirWp/Canaries.lean", canary_src.as_bytes())?;
-    case.write(
-        "fixture/theory/Anneal/Wp.lean",
-        b"module\n\
-          prelude\n\
-          public import Init.NotationExtra\n\
-          public import Trusted\n\
-          public import Anneal.MirWp\n",
-    )?;
+    case.write(&umbrella_rel, spec.render_anneal().as_bytes())?;
     Ok(())
 }
 

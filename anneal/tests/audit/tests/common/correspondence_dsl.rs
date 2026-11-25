@@ -676,7 +676,7 @@ pub struct CorrespondenceHarness {
 impl CorrespondenceHarness {
     pub fn new() -> Self {
         let fix = TempFixture::new(None);
-        let mut checker = Checker::new(&fix.root, None).unwrap();
+        let mut checker = fix.checker();
         checker.set_require_mir_wp(false);
         checker.run().unwrap();
         let trusted_lib = checker.stage().join("lib");
