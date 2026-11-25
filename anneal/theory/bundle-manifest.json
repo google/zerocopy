@@ -118,6 +118,10 @@
       "sha256": "566c519fe1cfa2d42487f98047d0b9f148292b3ebe27ba422996dc1fc3e15fb1"
     },
     {
+      "path": "theory/Anneal/MirWp/V2Memory.lean",
+      "sha256": "e233836f2998012ee782763914fd89861e5cc7b27fd29cd0faaea0e46514281b"
+    },
+    {
       "path": "theory/Anneal/NatBitwise.lean",
       "sha256": "810c3dd7c0ec2ce83381db5249d2f654856474b49cebdf8bd7afdff96d23bc12"
     },

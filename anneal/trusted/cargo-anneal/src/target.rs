@@ -5471,4 +5471,175 @@ mod tests {
             &["Anneal.Unused"],
         );
     }
+
+    #[test]
+    fn live_demand_driven_v2_memory_three_axiom_proof() {
+        let Some(lean) = explicit_verified_lean() else {
+            return;
+        };
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let bundle = EmbeddedBundle::materialize(&base.join("bundle"));
+
+        // Unused bundled theory module with a deliberate elaboration error in
+        // its body (valid header only): proving it is pruned means it is never
+        // compiled.
+        let unused_path = base.join("Anneal_Unused.lean");
+        fs::write(
+            &unused_path,
+            "prelude\nimport Init.Prelude\ndef Anneal.Unused.broken : Nat := \"not_a_nat\"\n",
+        )
+        .unwrap();
+        let unused_sha = sha256_file(&unused_path, "fixture").unwrap();
+
+        let mut req = write_target_request(
+            &base.join("with-v2-memory"),
+            vec![
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Captured.sliceTy : Trusted.MirAst.MirTy :=\n  \
+                     .ref .shared (.slice (.int .i8 false))\n\
+                     def Captured.body0 : Trusted.MirAst.Body :=\n  \
+                     { argumentCount := 1, isUnsafe := false,\n    \
+                       locals := [Captured.sliceTy, Captured.sliceTy],\n    \
+                       basicBlocks := [\n      \
+                         { statements := [.assign ⟨0, []⟩ (.useRetag (.copy ⟨1, []⟩))],\n        \
+                           terminator := .return_ }],\n    \
+                       identity := \"id_slice_u8\" }\n\
+                     def Captured.program : Trusted.MirAst.Program :=\n  \
+                     { pointerWidthBits := 64, mirProfileVersion := 2,\n    \
+                       bodies := [Captured.body0], scope := .unit }\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Spec.specs : Trusted.MirSemantics.SpecsV2 where\n  \
+                     safety := fun _ _ => True\n  \
+                     property := fun prog =>\n    \
+                     match Trusted.MirSemantics.getElem? prog.bodies 0 with\n    \
+                     | none => False\n    \
+                     | some body =>\n      \
+                       ∀ q : Trusted.MirSemantics.Query,\n        \
+                       Trusted.MirSemantics.ValidEntryArgsV2 body q →\n        \
+                       match q.args with\n        \
+                       | [.slicePtr ptr len] =>\n          \
+                         let out := Trusted.MirSemantics.TerminalOut.returned\n            \
+                           ⟨.slicePtr ptr len, q.callerMem⟩\n          \
+                         Trusted.MirSemantics.BehaviorV2\n            \
+                           (Trusted.MirSemantics.entryProgForBody prog 0) q out ∧\n          \
+                         Trusted.MirSemantics.SatisfiesPostV2\n            \
+                           (Trusted.MirSemantics.entryProgForBody prog 0) q (fun o => o = out)\n        \
+                       | _ => False\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheoremV2\n  \
+                     (Trusted.MirSemantics.CrateV2.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Anneal.MirWp.V2Memory\n\
+                     open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp\n\
+                     private theorem run_id_slice (q : Query)\n    \
+                       (hValid : ValidEntryArgsV2 Captured.body0 q) :\n    \
+                       ∃ ptr len, q.args = [.slicePtr ptr len] ∧\n      \
+                         execProgV2 (entryProgForBody Captured.program 0) 4 q\n        \
+                           (fun o => o = .returned ⟨.slicePtr ptr len, q.callerMem⟩) := by\n  \
+                       let ⟨ptrAid, ptrOff, len, hArgs, hCM, hRef⟩ :=\n    \
+                         validEntryArgsV2_slice_u8_inv (reqMut := .shared) rfl hValid\n  \
+                       let ptr : PtrVal := ⟨ptrAid, ptrOff, .isize⟩\n  \
+                       let m : MemoryState := entryMemoryWithCaller q.callerMem\n  \
+                       refine ⟨ptr, len, hArgs, ?_⟩\n  \
+                       have hQ : q = ⟨[.slicePtr ptr len], q.callerMem⟩ := by\n    \
+                         cases q; dsimp only at hArgs; rw [hArgs]\n  \
+                       have hRV := refsValidInMem_of_refValid hRef\n  \
+                       have hStay := refsStayInCallerMem_of_refValid hRef\n  \
+                       have hExt := extractCallerMemory_entry q.callerMem hCM\n  \
+                       let ctx : BodyCtx := ⟨Captured.program, 0, Captured.body0⟩\n  \
+                       have hInit : initStateV2 (entryProgForBody Captured.program 0)\n      \
+                           ⟨[.slicePtr ptr len], q.callerMem⟩ =\n      \
+                           .ok ⟨[⟨0, 0, 0, [.immediate none,\n        \
+                             .immediate (some (.slicePtr ptr len))], none, none, none⟩], q.callerMem, m⟩ :=\n    \
+                         ctx.initStateV2_ok_of rfl (by decide) (by rw [← hQ]; exact hValid)\n  \
+                       rw [hQ]\n  \
+                       unfold execProgV2\n  \
+                       rw [hInit]\n  \
+                       apply execOutcomeStateV2_step (by\n    \
+                         dsimp only [evalStepV2, entryProgForBody, Captured.program,\n      \
+                           Captured.body0, Captured.sliceTy, evalStatementV2,\n      \
+                           resolvePlaceDestV2, placeStaticTyV2, Trusted.MirSemantics.getElem?]\n    \
+                         rw [evalRvalueV2_useRetag_copy_ok (by rfl) (by rfl) (by rfl) hRV]\n    \
+                         dsimp only\n    \
+                         rw [writePlaceDestV2_immediate_ok (by rfl) (by rfl) (by rfl)])\n  \
+                       apply execOutcomeStateV2_done (by\n    \
+                         dsimp only [evalStepV2, entryProgForBody, Captured.program,\n      \
+                           Captured.body0, Captured.sliceTy, Trusted.MirSemantics.getElem?]\n    \
+                         rw [evalTerminatorV2_return_ok (by rfl) (by rfl) (by rfl) (by rfl)\n      \
+                           hStay hRV spansDisjoint_single, hExt]\n    \
+                         rfl)\n  \
+                       rfl\n\
+                     theorem Proof.verify : Expected.claim := by\n  \
+                       refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩\n  \
+                       · intro defId body hFound\n    \
+                         cases defId with\n    \
+                         | zero =>\n      \
+                           have hEq : Captured.body0 = body := Option.some.inj hFound\n      \
+                           subst hEq\n      \
+                           refine ⟨hFound, rfl, fun q hValid _ => ?_⟩\n      \
+                           let ⟨_, _, hArgs, hExec⟩ := run_id_slice q hValid\n      \
+                           exact (stable_slice_of_exec hArgs hExec).1\n    \
+                         | succ _ => cases hFound\n  \
+                       · intro q hValid\n    \
+                         let ⟨_, _, hArgs, hExec⟩ := run_id_slice q hValid\n    \
+                         exact (stable_slice_of_exec hArgs hExec).2\n",
+                ),
+            ],
+        );
+        req.canonical_root = "Trusted.MirSemantics.UnitTheoremV2".to_owned();
+        bundle.attach(&mut req, true);
+        req.modules.push(TargetModule {
+            module: "Anneal.Unused".to_owned(),
+            source: unused_path,
+            expected_sha256: unused_sha,
+            role: TargetRole::Proof,
+        });
+
+        let mut checker = Checker::new(&bundle.root, Some(&lean)).unwrap();
+        let report = checker.run_target(&req).unwrap();
+        assert_eq!(report["replay"], Json::Bool(true));
+        assert_eq!(report["exactType"], Json::Bool(true));
+        let sources: BTreeSet<&str> = report["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        let allowed_axioms: BTreeSet<&str> =
+            BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
+        let used_axioms: BTreeSet<&str> =
+            report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
+        assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
+        let export_dir = base.join("export-with-v2-memory");
+        assert!(checker.export_target_oleans(&export_dir).unwrap());
+        bundle.assert_exact_theory_retention(
+            &sources,
+            &checker.stage.join("lib"),
+            Some(&export_dir),
+            &[
+                "Anneal.Framework.StepWp",
+                "Anneal.MirWp.Core",
+                "Anneal.MirWp.Reflection",
+                "Anneal.MirWp.Scalars",
+                "Anneal.MirWp.V2Memory",
+                "Anneal.NatBitwise",
+            ],
+            &["Anneal.Unused", "Anneal.MirWp.Execution"],
+        );
+    }
 }
