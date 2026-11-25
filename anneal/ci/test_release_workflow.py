@@ -363,7 +363,12 @@ class ReleaseWorkflowTests(unittest.TestCase):
         )
         self.assertNotIn("CARGO_REGISTRY_TOKEN", verify_pub_step.get("env", {}))
         self.assertNotIn("GH_TOKEN", verify_pub_step.get("env", {}))
+        self.assertNotIn("CARGO_TARGET_DIR", verify_pub_step.get("env", {}))
         self.assertIn("verify-published-crate", verify_pub_step["run"])
+        self.assertNotIn("--crate", verify_pub_step["run"])
+        self.assertIn('--version "$VERSION"', verify_pub_step["run"])
+        self.assertIn('--commit "$COMMIT"', verify_pub_step["run"])
+        self.assertIn('--sha256 "$ARCHIVE_SHA256"', verify_pub_step["run"])
         self.assertIn(
             '--expected-source-sha256 "$QUALIFIED_SOURCE_SHA256"',
             verify_pub_step["run"],

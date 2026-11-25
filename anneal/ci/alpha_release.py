@@ -733,6 +733,45 @@ def _fetch_origin_refs(repo: Path) -> None:
     )
 
 
+def _published_crate_url(version: str) -> str:
+    encoded_v = urllib.parse.quote(version, safe=".-_")
+    return f"{STATIC_CRATES_PREFIX}/cargo-anneal-{encoded_v}.crate"
+
+
+def _verify_published_crate_bytes(
+    crate_bytes: bytes,
+    *,
+    version: str,
+    expected_checksum: str,
+    expected_commit: str | None,
+    expected_sha256: str | None,
+    expected_source_sha256: str | None,
+) -> CrateInspection:
+    """Verify a downloaded `.crate` against its crates.io checksum and parity."""
+    actual_checksum = hashlib.sha256(crate_bytes).hexdigest()
+    if actual_checksum != expected_checksum:
+        raise ValueError(
+            f"downloaded .crate sha256 {actual_checksum} != "
+            f"crates.io checksum {expected_checksum}"
+        )
+    inspected = inspect_crate_archive(
+        crate_bytes,
+        version=version,
+        expected_commit=expected_commit,
+        expected_sha256=expected_sha256,
+    )
+    if (
+        expected_source_sha256 is not None
+        and inspected.crate_source_sha256 != expected_source_sha256
+    ):
+        raise ValueError(
+            f"published crate_source_sha256 "
+            f"{inspected.crate_source_sha256} != expected "
+            f"{expected_source_sha256}"
+        )
+    return inspected
+
+
 def _fetch_crates_io_versions(
     get_bytes: Callable[[str], tuple[int, bytes]],
 ) -> list[dict[str, object]]:
@@ -959,40 +998,26 @@ def resolve_and_validate(
                 f"cargo-anneal {version} is yanked on crates.io; "
                 "bump to a new version instead of recovering it"
             )
-        checksum = matched.get("checksum")
-        validate_nonzero_sha256(
-            checksum if isinstance(checksum, str) else "",
+        checksum = validate_nonzero_sha256(
+            matched.get("checksum")
+            if isinstance(matched.get("checksum"), str)
+            else "",
             label="crates.io checksum",
         )
-        encoded_v = urllib.parse.quote(version, safe=".-_")
-        crate_url = f"{STATIC_CRATES_PREFIX}/cargo-anneal-{encoded_v}.crate"
+        crate_url = _published_crate_url(version)
         dl_status, crate_bytes = get_bytes(crate_url)
         if dl_status != 200:
             raise ValueError(
                 f"HTTP {dl_status} downloading published crate {crate_url}"
             )
-        actual_checksum = hashlib.sha256(crate_bytes).hexdigest()
-        if actual_checksum != checksum:
-            raise ValueError(
-                f"downloaded .crate sha256 {actual_checksum} != "
-                f"crates.io checksum {checksum}"
-            )
-
-        inspected = inspect_crate_archive(
+        inspected = _verify_published_crate_bytes(
             crate_bytes,
             version=version,
+            expected_checksum=checksum,
             expected_commit=explicit_commit,
             expected_sha256=exp_sha256,
+            expected_source_sha256=exp_source_sha256,
         )
-        if (
-            exp_source_sha256 is not None
-            and inspected.crate_source_sha256 != exp_source_sha256
-        ):
-            raise ValueError(
-                f"published crate_source_sha256 "
-                f"{inspected.crate_source_sha256} != expected "
-                f"{exp_source_sha256}"
-            )
 
         try:
             toolchain_tag_sha = _git_output(
@@ -1335,7 +1360,6 @@ def verify_crate_file(
 
 
 def verify_published_crate(
-    crate_path: Path,
     *,
     version: str,
     commit: str,
@@ -1346,20 +1370,20 @@ def verify_published_crate(
     sleep_fn: Callable[[float], None] = time.sleep,
     clock: Callable[[], float] = time.monotonic,
 ) -> str:
-    """Verify `.crate` parity after publish and confirm crates.io checksum."""
+    """Download the published `.crate` and verify checksum and source parity."""
+    parse_anneal_prerelease_version(version)
+    validate_commit_sha(commit, label="commit")
+    validate_nonzero_sha256(sha256, label="sha256")
+    exp_source = validate_nonzero_sha256(
+        expected_source_sha256, label="expected_source_sha256"
+    )
     if wait_seconds < 0:
         raise ValueError("wait_seconds must be non-negative")
-    source_sha256 = verify_crate_file(
-        crate_path,
-        version=version,
-        commit=commit,
-        sha256=sha256,
-        expected_source_sha256=expected_source_sha256,
-    )
-    local_crate_sha256 = hashlib.sha256(crate_path.read_bytes()).hexdigest()
+
     get_bytes = http_get or (
         lambda url: _http_get_bytes(url, sleep_fn=sleep_fn)
     )
+    crate_url = _published_crate_url(version)
     deadline = clock() + float(wait_seconds)
     while True:
         crate_versions = _fetch_crates_io_versions(get_bytes)
@@ -1376,23 +1400,40 @@ def verify_published_crate(
                 raise ValueError(
                     f"published cargo-anneal {version} is unexpectedly yanked"
                 )
-            checksum = matched.get("checksum")
-            validate_nonzero_sha256(
-                checksum if isinstance(checksum, str) else "",
+            checksum = validate_nonzero_sha256(
+                matched.get("checksum")
+                if isinstance(matched.get("checksum"), str)
+                else "",
                 label="crates.io checksum",
             )
-            if checksum != local_crate_sha256:
-                raise ValueError(
-                    f"crates.io checksum {checksum} != local published "
-                    f".crate sha256 {local_crate_sha256}"
+            dl_status, crate_bytes = get_bytes(crate_url)
+            if dl_status == 200:
+                inspected = _verify_published_crate_bytes(
+                    crate_bytes,
+                    version=version,
+                    expected_checksum=checksum,
+                    expected_commit=commit,
+                    expected_sha256=sha256,
+                    expected_source_sha256=exp_source,
                 )
-            return source_sha256
-        now = clock()
-        if now >= deadline:
-            raise ValueError(
-                f"cargo-anneal {version} not visible on crates.io within "
-                f"{wait_seconds}s"
-            )
+                return inspected.crate_source_sha256
+            if dl_status != 404:
+                raise ValueError(
+                    f"HTTP {dl_status} downloading published crate {crate_url}"
+                )
+            now = clock()
+            if now >= deadline:
+                raise ValueError(
+                    f"published crate {crate_url} not downloadable within "
+                    f"{wait_seconds}s"
+                )
+        else:
+            now = clock()
+            if now >= deadline:
+                raise ValueError(
+                    f"cargo-anneal {version} not visible on crates.io within "
+                    f"{wait_seconds}s"
+                )
         sleep_fn(min(TAG_POLL_INTERVAL_SECONDS, max(0.0, deadline - now)))
 
 
@@ -1442,9 +1483,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     verify_pub_cmd = sub.add_parser(
         "verify-published-crate",
-        help="Verify published .crate source parity and crates.io checksum.",
+        help="Download and verify published .crate parity and checksum.",
     )
-    verify_pub_cmd.add_argument("--crate", required=True, type=Path)
     verify_pub_cmd.add_argument("--version", required=True)
     verify_pub_cmd.add_argument("--commit", required=True)
     verify_pub_cmd.add_argument("--sha256", required=True)
@@ -1494,7 +1534,6 @@ def main(argv: list[str] | None = None) -> None:
             return
         if args.subcommand == "verify-published-crate":
             source_sha256 = verify_published_crate(
-                args.crate,
                 version=args.version,
                 commit=args.commit,
                 sha256=args.sha256,
