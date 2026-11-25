@@ -66,7 +66,7 @@ private theorem bvPow2_pos (w : Nat) : 0 < bvPow2 w := by
   rw [bvPow2_eq_two_pow]
   exact Nat.two_pow_pos w
 
-private theorem bv_eq_of_toNat_eq {w : Nat} {x y : BitVec w}
+theorem bv_eq_of_toNat_eq {w : Nat} {x y : BitVec w}
     (h : x.toNat = y.toNat) : x = y := by
   cases x with
   | ofFin fx =>
@@ -74,10 +74,10 @@ private theorem bv_eq_of_toNat_eq {w : Nat} {x y : BitVec w}
     | ofFin fy =>
       exact congrArg BitVec.ofFin (Fin.eq_of_val_eq h)
 
-private theorem bv_toNat_ofNat (w n : Nat) :
+theorem bv_toNat_ofNat (w n : Nat) :
     (BitVec.ofNat w n).toNat = Nat.mod n (Nat.pow 2 w) := rfl
 
-private theorem bv_ofNat_toNat {w : Nat} (x : BitVec w) :
+theorem bv_ofNat_toNat {w : Nat} (x : BitVec w) :
     BitVec.ofNat w x.toNat = x := by
   apply bv_eq_of_toNat_eq
   rw [bv_toNat_ofNat]
@@ -156,13 +156,13 @@ private theorem nat_mul_mod_right (a b m : Nat) :
     Nat.mul_add_mod_self_left m (a * Nat.div b m) (a * Nat.mod b m)
   rw [hEq, hMod]
 
-private theorem bv_ofNat_mod (w n : Nat) :
+theorem bv_ofNat_mod (w n : Nat) :
     BitVec.ofNat w (Nat.mod n (Nat.pow 2 w)) = BitVec.ofNat w n := by
   apply bv_eq_of_toNat_eq
   rw [bv_toNat_ofNat, bv_toNat_ofNat]
   exact nat_mod_mod_pos n (Nat.pow 2 w) (Nat.two_pow_pos w)
 
-private theorem bv_ofNat_add (w a b : Nat) :
+theorem bv_ofNat_add (w a b : Nat) :
     BitVec.ofNat w (a + b) = BitVec.ofNat w a + BitVec.ofNat w b := by
   apply bv_eq_of_toNat_eq
   rw [bv_toNat_ofNat, bv_toNat_add, bv_toNat_ofNat, bv_toNat_ofNat]
@@ -178,15 +178,15 @@ private theorem bv_add_assoc {w : Nat} (x y z : BitVec w) :
   rw [bv_toNat_add, bv_toNat_add, bv_toNat_add, bv_toNat_add,
     nat_add_mod_left, nat_add_mod_right, Nat.add_assoc]
 
-private theorem bv_add_zero {w : Nat} (x : BitVec w) : x + bvZero w = x := by
+theorem bv_add_zero {w : Nat} (x : BitVec w) : x + bvZero w = x := by
   apply bv_eq_of_toNat_eq
   rw [bv_toNat_add, bv_toNat_zero, Nat.add_zero]
   exact Nat.mod_eq_of_lt x.isLt
 
-private theorem bv_zero_add {w : Nat} (x : BitVec w) : bvZero w + x = x := by
+theorem bv_zero_add {w : Nat} (x : BitVec w) : bvZero w + x = x := by
   rw [bv_add_comm, bv_add_zero]
 
-private theorem bv_add_neg_self {w : Nat} (x : BitVec w) :
+theorem bv_add_neg_self {w : Nat} (x : BitVec w) :
     x + bvNeg x = bvZero w := by
   apply bv_eq_of_toNat_eq
   have hLe : x.toNat ≤ Nat.pow 2 w := Nat.le_of_lt x.isLt
@@ -197,23 +197,23 @@ private theorem bv_add_neg_self {w : Nat} (x : BitVec w) :
   rw [bv_toNat_add, bv_toNat_neg, bv_toNat_zero, nat_add_mod_right,
     Nat.add_comm, hSub, hSelf]
 
-private theorem bv_neg_add_self {w : Nat} (x : BitVec w) :
+theorem bv_neg_add_self {w : Nat} (x : BitVec w) :
     bvNeg x + x = bvZero w := by
   rw [bv_add_comm, bv_add_neg_self]
 
-private theorem bv_sub_eq_add_neg {w : Nat} (x y : BitVec w) :
+theorem bv_sub_eq_add_neg {w : Nat} (x y : BitVec w) :
     x - y = x + bvNeg y := by
   apply bv_eq_of_toNat_eq
   rw [bv_toNat_sub, bv_toNat_add, bv_toNat_neg, nat_add_mod_right, Nat.add_comm]
 
-private theorem bv_eq_of_add_eq {w : Nat} {a b c : BitVec w}
+theorem bv_eq_of_add_eq {w : Nat} {a b c : BitVec w}
     (h : a + b = a + c) : b = c := by
   have h1 : bvNeg a + (a + b) = bvNeg a + (a + c) := congrArg (bvNeg a + ·) h
   rw [← bv_add_assoc, ← bv_add_assoc, bv_neg_add_self, bv_zero_add,
     bv_zero_add] at h1
   exact h1
 
-private theorem bv_neg_unique {w : Nat} {x y : BitVec w}
+theorem bv_neg_unique {w : Nat} {x y : BitVec w}
     (h : x + y = bvZero w) : y = bvNeg x :=
   bv_eq_of_add_eq (h.trans (bv_add_neg_self x).symm)
 
@@ -426,22 +426,27 @@ private theorem bvOfInt_eq_scale_one (w : Nat) (c : Int) :
     change bvNeg (BitVec.ofNat w (n + 1)) = bvNeg (bvMulNat (n + 1) (BitVec.ofNat w 1))
     rw [bv_mulNat_ofNat, Nat.mul_one]
 
-private theorem bvOfInt_add (w : Nat) (a b : Int) :
+theorem bvOfInt_add (w : Nat) (a b : Int) :
     bvOfInt w (a + b) = bvOfInt w a + bvOfInt w b := by
   rw [bvOfInt_eq_scale_one, bvOfInt_eq_scale_one, bvOfInt_eq_scale_one]
   exact bv_scale_add a b (BitVec.ofNat w 1)
 
-private theorem bvOfInt_mul (w : Nat) (a b : Int) :
+theorem bvOfInt_mul (w : Nat) (a b : Int) :
     bvOfInt w (a * b) = bvScale a (bvOfInt w b) := by
   rw [bvOfInt_eq_scale_one w (a * b), bvOfInt_eq_scale_one w b]
   exact bv_scale_mul a b (BitVec.ofNat w 1)
 
-private theorem bvOfInt_zero (w : Nat) : bvOfInt w 0 = bvZero w := rfl
+theorem bvOfInt_zero (w : Nat) : bvOfInt w 0 = bvZero w := rfl
 
-private theorem bvOfInt_neg (w : Nat) (a : Int) :
+theorem bvOfInt_neg (w : Nat) (a : Int) :
     bvOfInt w (Int.neg a) = bvNeg (bvOfInt w a) := by
   rw [bvOfInt_eq_scale_one, bvOfInt_eq_scale_one]
   exact bv_scale_neg a (BitVec.ofNat w 1)
+
+theorem bvOfInt_sub (w : Nat) (a b : Int) :
+    bvOfInt w (a - b) = bvOfInt w a - bvOfInt w b := by
+  change bvOfInt w (a + Int.neg b) = _
+  rw [bvOfInt_add, bvOfInt_neg, bv_sub_eq_add_neg]
 
 /-- Canonical residue of `c : Int` modulo `2^w` in `[0, 2^w)` (`0`
 `noncomputable`, `hasIR = true`). -/
@@ -453,7 +458,7 @@ private theorem bvOfInt_neg (w : Nat) (a : Int) :
     let r := Nat.mod (n + 1) m
     cond (Nat.beq r 0) 0 (m - r)
 
-private theorem bvOfInt_toNat_eq_intModPow2 (w : Nat) (c : Int) :
+theorem bvOfInt_toNat_eq_intModPow2 (w : Nat) (c : Int) :
     (bvOfInt w c).toNat = intModPow2 c w := by
   cases c with
   | ofNat n =>

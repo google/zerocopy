@@ -75,11 +75,6 @@
         "module": "Spec",
         "path": "Spec.lean",
         "role": "specification"
-      },
-      {
-        "module": "SymExec",
-        "path": "SymExec.lean",
-        "role": "proof"
       }
     ]
   }

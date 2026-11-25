@@ -559,6 +559,7 @@ anneal/
     │   ├── LinearArith.lean        # Sparse Farkas & Chvatal-Gomory checker
     │   ├── ListChunks.lean         # Ceiling division & fixed-size chunking
     │   ├── LoopInv.lean            # CFG loop-invariant & simulation combinators
+    │   ├── MirSymExec.lean         # Reflective symbolic MIR executor (+ MirSymExec/)
     │   ├── MirTotal.lean           # Computable MIR step mirrors & bridges (+ MirTotal/)
     │   ├── MirWp.lean              # Fuel-bounded MIR WP (+ MirWp/, decoupled Canaries)
     │   ├── NatBitwise.lean         # Shared Nat.bitwise unfolding & bounds

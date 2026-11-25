@@ -22,7 +22,8 @@ import Init.Tactics
 namespace ProductionEndpoints
 
 open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp Endianness
-  ProductionReduction SymExec ProductionPaths
+  ProductionReduction ProductionPaths
+open Anneal.MirSymExec (BitSrc SymScalar wordEnv)
 
 /-!
 `ProductionPaths` turns any word that a control path returns into a safe
@@ -42,49 +43,52 @@ def maskSrc (bits i : Nat) : BitSrc :=
 
 theorem bigEndian_bits : ∀ width : Fin 4,
     (pathWord true width.val).any
-      (fun s => s.bitsAre (revSrc (8 * 2 ^ width.val))) = true := by
+      (fun s => s.wordBitsAre (revSrc (8 * 2 ^ width.val))) = true := by
   refine fin4_cases ?_ ?_ ?_ ?_ <;> decide +kernel
 
 theorem littleEndian_bits : ∀ width : Fin 4,
     (pathWord false width.val).any
-      (fun s => s.bitsAre (maskSrc (8 * 2 ^ width.val))) = true := by
+      (fun s => s.wordBitsAre (maskSrc (8 * 2 ^ width.val))) = true := by
   refine fin4_cases ?_ ?_ ?_ ?_ <;> decide +kernel
 
-theorem byteReversal_of_bitsAre {s : Sym} {bits : Nat}
-    (h : s.bitsAre (revSrc bits) = true) (x : Word) :
-    ByteReversal bits x (s.eval x) := by
+theorem byteReversal_of_bitsAre {s : SymScalar} {bits : Nat}
+    (h : s.wordBitsAre (revSrc bits) = true) (x : Word) :
+    ByteReversal bits x (s.wordEval x) := by
   intro i hi
-  have hb := Sym.bitsAre_sound h x i hi
+  have hb := SymScalar.wordBitsAre_sound h x i hi
   unfold revSrc at hb
   by_cases hbits : i < bits
-  · simp only [hbits, ↓reduceIte, BitSrc.Agrees] at hb ⊢
-    exact hb
+  · simp only [hbits, ↓reduceIte] at hb ⊢
+    exact (Anneal.MirSymExec.bitSrc_input_wordEnv x _ _).mp hb
   · simp only [hbits, ↓reduceIte, BitSrc.Agrees] at hb ⊢
     exact hb
 
-theorem eq_mask_of_bitsAre {s : Sym} {bits : Nat}
-    (h : s.bitsAre (maskSrc bits) = true) (x : Word) :
-    s.eval x = x &&& BitVec.ofNat 64 (2 ^ bits - 1) := by
+theorem eq_mask_of_bitsAre {s : SymScalar} {bits : Nat}
+    (h : s.wordBitsAre (maskSrc bits) = true) (x : Word) :
+    s.wordEval x = x &&& BitVec.ofNat 64 (2 ^ bits - 1) := by
   apply BitVec.eq_of_getLsbD_eq
   intro i hi
-  have hb := Sym.bitsAre_sound h x i hi
+  have hb := SymScalar.wordBitsAre_sound h x i hi
   unfold maskSrc at hb
   rw [BitVec.getLsbD_and, BitVec.getLsbD_ofNat, Nat.testBit_two_pow_sub_one]
   by_cases hbits : i < bits
+  · simp only [hbits, ↓reduceIte] at hb
+    have hb' : (s.wordEval x).getLsbD i = x.getLsbD i :=
+      (Anneal.MirSymExec.bitSrc_input_wordEnv x _ _).mp hb
+    simp only [hb', hi, hbits, decide_true, Bool.and_true]
   · simp only [hbits, ↓reduceIte, BitSrc.Agrees] at hb
-    simp only [hb, hi, hbits, decide_true, Bool.and_true]
-  · simp only [hbits, ↓reduceIte, BitSrc.Agrees] at hb
-    simp only [hb, hbits, decide_false, Bool.and_false]
+    have hb' : (s.wordEval x).getLsbD i = false := hb
+    simp only [hb', hbits, decide_false, Bool.and_false]
 
-theorem bigEndian (width : Fin 4) : ∃ s : Sym,
+theorem bigEndian (width : Fin 4) : ∃ s : SymScalar,
     pathWord true width.val = some s ∧
-      ∀ x, ByteReversal (8 * 2 ^ width.val) x (s.eval x) :=
+      ∀ x, ByteReversal (8 * 2 ^ width.val) x (s.wordEval x) :=
   let ⟨s, hp, hb⟩ := (Option.any_eq_true _ _).mp (bigEndian_bits width)
   ⟨s, hp, byteReversal_of_bitsAre hb⟩
 
-theorem littleEndian (width : Fin 4) : ∃ s : Sym,
+theorem littleEndian (width : Fin 4) : ∃ s : SymScalar,
     pathWord false width.val = some s ∧
-      ∀ x, s.eval x =
+      ∀ x, s.wordEval x =
         x &&& BitVec.ofNat 64 (2 ^ (8 * 2 ^ width.val) - 1) :=
   let ⟨s, hp, hb⟩ := (Option.any_eq_true _ _).mp (littleEndian_bits width)
   ⟨s, hp, eq_mask_of_bitsAre hb⟩

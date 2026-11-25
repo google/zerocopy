@@ -15,7 +15,7 @@ public import ProductionEndpoints
 namespace ProductionClaims
 
 open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp Endianness
-  ProductionReduction SymExec ProductionPaths ProductionEndpoints
+  ProductionReduction ProductionPaths ProductionEndpoints
 
 theorem wellFormed :
     BodyStaticAdmitted Captured.program sourceBody = true := rfl
@@ -58,7 +58,7 @@ theorem bigEndian_exact :
       ByteReversal (8 * 2 ^ width.val) value output := by
   intro width value
   let ⟨s, hp, hrev⟩ := bigEndian width
-  exact ⟨s.eval value, behavior_of_sourceReturns (path_sound hp value).2,
+  exact ⟨s.wordEval value, behavior_of_sourceReturns (path_sound hp value).2,
     hrev value⟩
 
 theorem littleEndian_exact :
@@ -69,7 +69,7 @@ theorem littleEndian_exact :
       output = value &&& BitVec.ofNat 64 (2 ^ (8 * 2 ^ width.val) - 1) := by
   intro width value
   let ⟨s, hp, hmask⟩ := littleEndian width
-  exact ⟨s.eval value, behavior_of_sourceReturns (path_sound hp value).2,
+  exact ⟨s.wordEval value, behavior_of_sourceReturns (path_sound hp value).2,
     hmask value⟩
 
 theorem bigEndian_involutive :
@@ -83,10 +83,10 @@ theorem bigEndian_involutive :
       second = value &&& BitVec.ofNat 64 (2 ^ (8 * 2 ^ width.val) - 1) := by
   intro width value
   let ⟨s, hp, hrev⟩ := bigEndian width
-  exact ⟨s.eval value, s.eval (s.eval value),
+  exact ⟨s.wordEval value, s.wordEval (s.wordEval value),
     behavior_of_sourceReturns (path_sound hp value).2,
-    behavior_of_sourceReturns (path_sound hp (s.eval value)).2,
-    reverse_involutive width (hrev value) (hrev (s.eval value))⟩
+    behavior_of_sourceReturns (path_sound hp (s.wordEval value)).2,
+    reverse_involutive width (hrev value) (hrev (s.wordEval value))⟩
 
 end ProductionClaims
 

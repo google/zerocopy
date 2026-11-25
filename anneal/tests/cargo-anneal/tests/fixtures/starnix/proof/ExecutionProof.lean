@@ -15,7 +15,7 @@ import Init.Data.Option.Lemmas
 namespace ExecutionProof
 
 open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp Endianness
-  ProductionReduction SymExec ProductionPaths
+  ProductionReduction ProductionPaths
 
 /-!
 Every control path must prove a real source execution before a negative test
