@@ -2578,10 +2578,29 @@ def _build_child_env(
     runtime_base: Path,
     user_systemd_sock_alive: bool,
     base_env: dict[str, str] | None = None,
+    *,
+    granted_slots: int | None = None,
+    memory_max_mb: int | None = None,
 ) -> dict[str, str]:
+    """Builds the child environment inherited by both `systemd-run --scope` and
+    direct process-group execution.
+
+    Exports `ANNEAL_LEAN_RUN_SLOTS` (build slots held by this invocation:
+    `build_slots` under `--exclusive`, `1` for normal shared-slot execution, or
+    `0` when no slot is held such as `--no-slot-lock` or unslotted `file` mode)
+    and `ANNEAL_LEAN_RUN_MEM_MB` (granted memory ceiling in MiB) as
+    non-negative integer strings, overwriting any stale inherited values.
+    Passing these through the inherited scope environment matches existing
+    `ANNEAL_LEAN_RUN_*` variables and avoids `--setenv` compatibility issues
+    across `systemd-run --scope` versions.
+    """
     env = _systemd_env(runtime_base, user_systemd_sock_alive, base_env)
     env["ANNEAL_LEAN_RUN_IN_SCOPE"] = "1"
-    env["ANNEAL_LEAN_RUN_LEAN_M_MB"] = str(lean_m_mb)
+    env["ANNEAL_LEAN_RUN_LEAN_M_MB"] = str(max(0, int(lean_m_mb)))
+    if granted_slots is not None:
+        env["ANNEAL_LEAN_RUN_SLOTS"] = str(max(0, int(granted_slots)))
+    if memory_max_mb is not None:
+        env["ANNEAL_LEAN_RUN_MEM_MB"] = str(max(0, int(memory_max_mb)))
     for var, count in _resolve_thread_env(threads, is_cg_capped, env).items():
         env[var] = str(count)
     return env
@@ -2790,6 +2809,13 @@ def run_bounded_command(
         need_slot = False
         slot_timeout = 180
 
+    if not need_slot or build_slots <= 0:
+        granted_slots = 0
+    elif exclusive:
+        granted_slots = build_slots
+    else:
+        granted_slots = 1
+
     def _reprobe() -> dict[str, Any]:
         eff_probe = probe_fn if probe_fn is not None else probe_host_envelope
         return eff_probe(
@@ -2927,6 +2953,8 @@ def run_bounded_command(
             is_cg_capped=att_capped,
             runtime_base=att_rt_base,
             user_systemd_sock_alive=att_sock_alive,
+            granted_slots=granted_slots,
+            memory_max_mb=att_b_max,
         )
         att_threads_diag = format_threads_diagnostic(att_threads, env)
 
