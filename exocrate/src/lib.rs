@@ -157,6 +157,7 @@ use std::{
 };
 #[cfg(feature = "host-fetch")]
 use std::{
+    ffi::OsString,
     io::Seek as _,
     path::{Path, PathBuf},
 };
@@ -411,14 +412,26 @@ impl DynamicConfig {
 
 #[cfg(feature = "host-fetch")]
 fn install_if_missing(dir_path: &Path, source: Source) -> IoResult<ResolvedOrInstalled> {
-    match ManagedDirName::new(dir_path).check_exists() {
-        Ok(_) => return Ok(ResolvedOrInstalled::ResolvedExisting),
-        Err(err) if err.kind() == std::io::ErrorKind::NotFound => {}
-        Err(err) => return Err(err),
+    if ManagedDirName::new(dir_path).check_ready_or_absent()?.is_some() {
+        return Ok(ResolvedOrInstalled::ResolvedExisting);
     }
     let (reader, expected_sha) = open_archive_source(source)?;
     install(reader, dir_path, expected_sha)?;
     Ok(ResolvedOrInstalled::NewlyInstalled)
+}
+
+#[cfg(feature = "host-fetch")]
+fn resolve_local_dev_root(
+    manifest_dir: Option<OsString>,
+    cwd: impl FnOnce() -> IoResult<PathBuf>,
+) -> IoResult<PathBuf> {
+    match manifest_dir {
+        Some(dir) if !dir.is_empty() => Ok(PathBuf::from(dir)),
+        // Fall back to the current directory if `CARGO_MANIFEST_DIR` is unset
+        // or empty, which can happen if the binary is executed directly rather
+        // than via Cargo.
+        Some(_) | None => cwd(),
+    }
 }
 
 #[cfg(feature = "host-fetch")]
@@ -431,13 +444,10 @@ fn resolve_base_dir<'a>(
         Location::UserGlobal => dirs::cache_dir().ok_or_else(|| {
             std::io::Error::new(std::io::ErrorKind::NotFound, "cache dir not found")
         })?,
-        Location::LocalDev => std::env::var("CARGO_MANIFEST_DIR")
-            .map(PathBuf::from)
-            // Fall back to current directory if `CARGO_MANIFEST_DIR` is not
-            // set, which can happen if the binary is executed directly rather
-            // than via `cargo run`.
-            .unwrap_or_else(|_| std::env::current_dir().unwrap())
-            .join("target"),
+        Location::LocalDev => {
+            resolve_local_dev_root(std::env::var_os("CARGO_MANIFEST_DIR"), std::env::current_dir)?
+                .join("target")
+        }
         Location::Custom(path) => path,
     };
     parts.extend(rel_dir_path);
@@ -671,15 +681,27 @@ fn path_collision_key(path: &str) -> String {
     path.to_ascii_lowercase()
 }
 
-/// Records the file at collision key `key` in `files` (and its ancestor
-/// directories in `dirs`), returning `false` if it would name the same file as,
-/// or a directory of, an earlier entry, or sit below an earlier file.
-fn record_archive_file(
+#[derive(Copy, Clone)]
+enum ArchiveEntryKind {
+    File,
+    Directory,
+}
+
+/// Records an archive entry at collision key `key` in `files` and `dirs`,
+/// returning `false` if it would collide with an earlier entry (duplicate file,
+/// file-vs-directory collision at the same path, or entry placed below an
+/// earlier file).
+fn record_archive_entry(
+    kind: ArchiveEntryKind,
     key: String,
     files: &mut HashSet<String>,
     dirs: &mut HashSet<String>,
 ) -> bool {
-    if files.contains(&key) || dirs.contains(&key) {
+    let collides_with_self = match kind {
+        ArchiveEntryKind::File => files.contains(&key) || dirs.contains(&key),
+        ArchiveEntryKind::Directory => files.contains(&key),
+    };
+    if collides_with_self {
         return false;
     }
     let ancestors: Vec<String> = key.match_indices('/').map(|(i, _)| key[..i].to_owned()).collect();
@@ -687,18 +709,25 @@ fn record_archive_file(
         return false;
     }
     dirs.extend(ancestors);
-    files.insert(key);
+    match kind {
+        ArchiveEntryKind::File => {
+            files.insert(key);
+        }
+        ArchiveEntryKind::Directory => {
+            dirs.insert(key);
+        }
+    }
     true
 }
 
 /// Verifies (when `expected_sha256` is `Some`) and decodes a `.tar.zst` archive
 /// purely in Rust, rejecting symlinks, hardlinks, special files, path
-/// traversal, duplicate file paths, and corrupt Zstd/tar streams.
+/// traversal, duplicate or colliding paths, and corrupt Zstd/tar streams.
 ///
-/// File paths must be ASCII. They count as duplicates if they are equal after
-/// ASCII case folding, so that no two entries can name the same file on a
-/// case-insensitive file system, and no file may share a (case-folded) path
-/// with an ancestor directory of another file. Path components that Windows
+/// Entry paths must be ASCII. Two entries collide if their normalized paths
+/// are equal after ASCII case folding (except repeated directory entries),
+/// or if a regular file shares a (case-folded) path with a directory entry
+/// or an ancestor directory of another entry. Path components that Windows
 /// would alias (trailing `.` or ` `, or reserved device names) are rejected.
 ///
 /// The archive must be exactly one Zstd frame: bytes after its end, including
@@ -748,20 +777,25 @@ pub fn verify_and_read_tar_zst_entries<R: Read>(
                 ));
             }
             let normalized = normalize_tar_entry_path(&raw_path)?;
-            if entry_type.is_dir() {
-                continue;
-            }
-            if !entry_type.is_file() {
+            let kind = if entry_type.is_dir() {
+                ArchiveEntryKind::Directory
+            } else if entry_type.is_file() {
+                ArchiveEntryKind::File
+            } else {
                 return Err(std::io::Error::new(
                     std::io::ErrorKind::InvalidData,
                     format!("non-regular archive entry {raw_path:?} ({entry_type:?}) rejected"),
                 ));
-            }
-            let Some(path) = normalized else {
-                return Err(std::io::Error::new(
-                    std::io::ErrorKind::InvalidData,
-                    format!("empty archive file path for {raw_path:?}"),
-                ));
+            };
+            let path = match (kind, normalized) {
+                (ArchiveEntryKind::Directory, None) => continue,
+                (ArchiveEntryKind::File, None) => {
+                    return Err(std::io::Error::new(
+                        std::io::ErrorKind::InvalidData,
+                        format!("empty archive file path for {raw_path:?}"),
+                    ));
+                }
+                (_, Some(path)) => path,
             };
             if !path.is_ascii() {
                 return Err(std::io::Error::new(
@@ -769,7 +803,12 @@ pub fn verify_and_read_tar_zst_entries<R: Read>(
                     format!("non-ASCII archive entry path rejected: {path:?}"),
                 ));
             }
-            if !record_archive_file(path_collision_key(&path), &mut seen_files, &mut seen_dirs) {
+            if !record_archive_entry(
+                kind,
+                path_collision_key(&path),
+                &mut seen_files,
+                &mut seen_dirs,
+            ) {
                 return Err(std::io::Error::new(
                     std::io::ErrorKind::InvalidData,
                     format!(
@@ -777,6 +816,9 @@ pub fn verify_and_read_tar_zst_entries<R: Read>(
                          directory): {path}"
                     ),
                 ));
+            }
+            if matches!(kind, ArchiveEntryKind::Directory) {
+                continue;
             }
             let mut bytes = Vec::new();
             entry.read_to_end(&mut bytes)?;
@@ -1359,6 +1401,55 @@ mod tests {
     }
 
     #[test]
+    fn test_archive_directory_validation_and_file_collisions() {
+        let read_mixed = |entries: &[(&str, tar::EntryType, &[u8])]| {
+            verify_and_read_tar_zst_entries(build_raw_tar_zst_bytes(entries).as_slice(), None)
+        };
+
+        // Valid real-world tar directories: root `./`, parent dir before file,
+        // repeated dir entries, and non-colliding sibling dirs.
+        let valid = read_mixed(&[
+            ("./", tar::EntryType::Directory, b""),
+            ("a/", tar::EntryType::Directory, b""),
+            ("a/", tar::EntryType::Directory, b""),
+            ("a/b.txt", tar::EntryType::Regular, b"hello"),
+            ("bin/", tar::EntryType::Directory, b""),
+            ("binary", tar::EntryType::Regular, b"world"),
+        ])
+        .unwrap();
+        assert_eq!(
+            valid,
+            vec![
+                VerifiedArchiveEntry { path: "a/b.txt".to_string(), bytes: b"hello".to_vec() },
+                VerifiedArchiveEntry { path: "binary".to_string(), bytes: b"world".to_vec() },
+            ]
+        );
+
+        // Non-ASCII directory entries must be rejected just like file entries.
+        for dir in ["specs/\u{e9}/", "bin/\u{212a}/", "dir/\u{1e9e}/"] {
+            let err = read_mixed(&[(dir, tar::EntryType::Directory, b"")]).unwrap_err();
+            assert_eq!(err.kind(), std::io::ErrorKind::InvalidData, "{dir:?}");
+            assert!(err.to_string().contains("non-ASCII"), "{dir:?}: {err}");
+        }
+
+        // Collisions between directory entries and regular files in either
+        // order (including case-folded and ancestor/descendant collisions).
+        for (first, second) in [
+            (("foo/", tar::EntryType::Directory), ("foo", tar::EntryType::Regular)),
+            (("FOO/", tar::EntryType::Directory), ("foo", tar::EntryType::Regular)),
+            (("a/b/", tar::EntryType::Directory), ("A", tar::EntryType::Regular)),
+            (("foo", tar::EntryType::Regular), ("foo/", tar::EntryType::Directory)),
+            (("foo", tar::EntryType::Regular), ("FOO/", tar::EntryType::Directory)),
+            (("a", tar::EntryType::Regular), ("A/b/", tar::EntryType::Directory)),
+        ] {
+            let err =
+                read_mixed(&[(first.0, first.1, b""), (second.0, second.1, b"")]).unwrap_err();
+            assert_eq!(err.kind(), std::io::ErrorKind::InvalidData, "{first:?} vs {second:?}");
+            assert!(err.to_string().contains("duplicate"), "{first:?} vs {second:?}: {err}");
+        }
+    }
+
+    #[test]
     fn test_archive_rejects_bytes_after_first_zstd_frame() {
         let first = build_raw_tar_zst_bytes(&[("a.txt", tar::EntryType::Regular, b"one")]);
         assert_eq!(verify_and_read_tar_zst_entries(first.as_slice(), None).unwrap().len(), 1);
@@ -1574,6 +1665,93 @@ mod tests {
             )
         );
         assert!(dev_path.ends_with(PathBuf::from_iter(["test_dir_path", "slug"])));
+    }
+
+    #[cfg(feature = "host-fetch")]
+    #[test]
+    fn test_resolve_local_dev_root() {
+        let mut cwd_called = false;
+        let resolved = resolve_local_dev_root(Some(OsString::from("/manifest/root")), || {
+            cwd_called = true;
+            Ok(PathBuf::from("/fallback/cwd"))
+        })
+        .unwrap();
+        assert!(!cwd_called);
+        assert_eq!(resolved, PathBuf::from("/manifest/root"));
+
+        // Unset `CARGO_MANIFEST_DIR` falls back to `cwd`.
+        let resolved = resolve_local_dev_root(None, || Ok(PathBuf::from("/fallback/cwd"))).unwrap();
+        assert_eq!(resolved, PathBuf::from("/fallback/cwd"));
+
+        // Empty `CARGO_MANIFEST_DIR` is treated as unset.
+        let resolved =
+            resolve_local_dev_root(Some(OsString::new()), || Ok(PathBuf::from("/empty/fallback")))
+                .unwrap();
+        assert_eq!(resolved, PathBuf::from("/empty/fallback"));
+
+        // `current_dir()` failures are propagated instead of panicking.
+        let err = resolve_local_dev_root(Some(OsString::new()), || {
+            Err(std::io::Error::new(std::io::ErrorKind::NotFound, "cwd missing"))
+        })
+        .unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::NotFound);
+
+        // Non-UTF-8 `CARGO_MANIFEST_DIR` values are preserved verbatim.
+        #[cfg(unix)]
+        {
+            use std::os::unix::ffi::OsStringExt as _;
+            let raw = OsString::from_vec(vec![b'/', b'm', 0xff, b'd']);
+            let expected = PathBuf::from(raw.clone());
+            let mut unix_cwd_called = false;
+            let resolved = resolve_local_dev_root(Some(raw), || {
+                unix_cwd_called = true;
+                Ok(PathBuf::from("/unused"))
+            })
+            .unwrap();
+            assert!(!unix_cwd_called);
+            assert_eq!(resolved, expected);
+        }
+    }
+
+    #[cfg(all(feature = "host-fetch", unix))]
+    #[test]
+    fn test_install_or_resolve_dangling_symlink_fails_before_opening_source() {
+        let temp = tempfile::tempdir().unwrap();
+        let config = Config::new(&["tool"], "v1");
+        let tool_dir = temp.path().join("tool");
+        fs::create_dir_all(&tool_dir).unwrap();
+        std::os::unix::fs::symlink(temp.path().join("missing"), tool_dir.join("v1")).unwrap();
+
+        // Unreachable port: preflight check must reject the dangling symlink
+        // before attempting any HTTP request.
+        let err = config
+            .resolve_installation_dir_or_install(
+                Location::Custom(temp.path().to_path_buf()),
+                Source::Remote(RemoteArchive {
+                    url: "http://127.0.0.1:1/archive.tar.zst",
+                    sha256: [0u8; 32],
+                }),
+            )
+            .unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::AlreadyExists);
+
+        // Same when an intermediate destination ancestor is a dangling symlink.
+        let anc_config = Config::new(&["dangling_tool"], "v1");
+        std::os::unix::fs::symlink(
+            temp.path().join("missing_anc"),
+            temp.path().join("dangling_tool"),
+        )
+        .unwrap();
+        let err = anc_config
+            .resolve_installation_dir_or_install(
+                Location::Custom(temp.path().to_path_buf()),
+                Source::Remote(RemoteArchive {
+                    url: "http://127.0.0.1:1/archive.tar.zst",
+                    sha256: [0u8; 32],
+                }),
+            )
+            .unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::AlreadyExists);
     }
 
     #[cfg(feature = "host-fetch")]

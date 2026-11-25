@@ -72,6 +72,81 @@ impl<'a> ManagedDirName<'a> {
         }
     }
 
+    /// Checks whether `self.path` already exists as a ready directory
+    /// (`Ok(Some)`), is genuinely absent (`Ok(None)`), or is blocked by a
+    /// non-directory, dangling symlink (at `self.path` or an ancestor), or
+    /// metadata error.
+    pub(crate) fn check_ready_or_absent(self) -> IoResult<Option<ManagedDir<'a>>> {
+        match self.check_exists() {
+            Ok(dir) => Ok(Some(dir)),
+            Err(err) if err.kind() == std::io::ErrorKind::NotFound => {
+                // `check_exists` uses `fs::metadata`, which follows symlinks
+                // and reports `NotFound` for a dangling symlink even though an
+                // entry already occupies `self.path`.
+                match fs::symlink_metadata(self.path) {
+                    Ok(meta) if meta.file_type().is_symlink() => Err(std::io::Error::new(
+                        std::io::ErrorKind::AlreadyExists,
+                        "Path exists as a dangling symlink",
+                    )),
+                    // Handle a concurrent atomic `fs::rename` (or conflicting
+                    // file creation) between `check_exists` and
+                    // `symlink_metadata`.
+                    Ok(meta) if meta.is_dir() => Ok(Some(ManagedDir { path: self.path })),
+                    Ok(_) => Err(std::io::Error::new(
+                        std::io::ErrorKind::AlreadyExists,
+                        "Path exists but is not a directory",
+                    )),
+                    Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
+                        Self::check_ancestors_not_blocked(self.path)?;
+                        Ok(None)
+                    }
+                    Err(e) => Err(e),
+                }
+            }
+            Err(err) => Err(err),
+        }
+    }
+
+    /// Rejects a dangling symlink or non-directory ancestor along `path` before
+    /// `install_if_missing` or `check_exists_or_create` opens an archive source
+    /// or populates a staging directory. Valid symlinks to directories (such as
+    /// `/tmp -> private/tmp`) remain allowed.
+    fn check_ancestors_not_blocked(path: &Path) -> IoResult<()> {
+        for ancestor in path.ancestors().skip(1) {
+            if ancestor.as_os_str().is_empty() {
+                break;
+            }
+            match fs::symlink_metadata(ancestor) {
+                Ok(meta) if meta.file_type().is_symlink() => match fs::metadata(ancestor) {
+                    Ok(target) if target.is_dir() => return Ok(()),
+                    Ok(_) => {
+                        return Err(std::io::Error::new(
+                            std::io::ErrorKind::AlreadyExists,
+                            "Ancestor path exists and is not a directory",
+                        ));
+                    }
+                    Err(e) if e.kind() == std::io::ErrorKind::NotFound => {
+                        return Err(std::io::Error::new(
+                            std::io::ErrorKind::AlreadyExists,
+                            "Ancestor path exists as a dangling symlink",
+                        ));
+                    }
+                    Err(e) => return Err(e),
+                },
+                Ok(meta) if meta.is_dir() => return Ok(()),
+                Ok(_) => {
+                    return Err(std::io::Error::new(
+                        std::io::ErrorKind::AlreadyExists,
+                        "Ancestor path exists and is not a directory",
+                    ));
+                }
+                Err(e) if e.kind() == std::io::ErrorKind::NotFound => continue,
+                Err(e) => return Err(e),
+            }
+        }
+        Ok(())
+    }
+
     /// Checks if the directory exists, creating it if not.
     ///
     /// # Concurrency
@@ -82,7 +157,7 @@ impl<'a> ManagedDirName<'a> {
         self,
         populate: impl FnOnce(&Path) -> IoResult<()>,
     ) -> IoResult<ManagedDir<'a>> {
-        if let Ok(dir) = self.check_exists() {
+        if let Some(dir) = self.check_ready_or_absent()? {
             return Ok(dir);
         }
 
@@ -150,8 +225,9 @@ impl<'a> ManagedDirName<'a> {
         let mut guard = StagingGuard { staging_dir: None, lock_file };
 
         // Handle the case where, while we were waiting to acquire the lock,
-        // another process populated the directory.
-        if let Ok(dir) = self.check_exists() {
+        // another process populated the directory or created a conflicting
+        // entry at `self.path`.
+        if let Some(dir) = self.check_ready_or_absent()? {
             return Ok(dir);
         }
 
@@ -733,5 +809,97 @@ pub(crate) mod tests {
         open_lock_file(&plain).unwrap();
         assert!(fs::symlink_metadata(&plain).unwrap().is_file());
         open_lock_file(&plain).unwrap();
+    }
+
+    #[test]
+    fn test_check_exists_or_create_regular_file_fails_fast() {
+        let temp = tempfile::tempdir().unwrap();
+        let dst = temp.path().join("install_target");
+        fs::write(&dst, b"existing regular file").unwrap();
+
+        let err = ManagedDirName::new(&dst)
+            .check_exists_or_create(|_| {
+                panic!("populate must not be called when destination is a regular file");
+            })
+            .unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::AlreadyExists);
+        assert_eq!(fs::read(&dst).unwrap(), b"existing regular file");
+        assert!(!temp.path().join("install_target.lock").exists());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn test_check_exists_or_create_dangling_symlink_fails_fast() {
+        use std::os::unix::fs::symlink;
+
+        let temp = tempfile::tempdir().unwrap();
+        let dst = temp.path().join("install_target");
+        symlink(temp.path().join("missing_target"), &dst).unwrap();
+
+        let err = ManagedDirName::new(&dst)
+            .check_exists_or_create(|_| {
+                panic!("populate must not be called when destination is a dangling symlink");
+            })
+            .unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::AlreadyExists);
+        assert!(fs::symlink_metadata(&dst).unwrap().file_type().is_symlink());
+        assert!(!temp.path().join("install_target.lock").exists());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn test_check_exists_or_create_symlink_to_dir_resolves_existing() {
+        use std::os::unix::fs::symlink;
+
+        let temp = tempfile::tempdir().unwrap();
+        let real_dir = temp.path().join("real_dir");
+        fs::create_dir(&real_dir).unwrap();
+        fs::write(real_dir.join("marker.txt"), b"ok").unwrap();
+        let dst = temp.path().join("install_target");
+        symlink(&real_dir, &dst).unwrap();
+
+        let dir = ManagedDirName::new(&dst)
+            .check_exists_or_create(|_| {
+                panic!("populate must not be called when destination symlinks to a directory");
+            })
+            .unwrap();
+        assert_eq!(dir.path, dst.as_path());
+        assert_eq!(fs::read(dst.join("marker.txt")).unwrap(), b"ok");
+        assert!(!temp.path().join("install_target.lock").exists());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn test_check_exists_or_create_dangling_symlink_ancestor_fails_fast() {
+        use std::os::unix::fs::symlink;
+
+        let temp = tempfile::tempdir().unwrap();
+        let dangling_parent = temp.path().join("tool");
+        symlink(temp.path().join("missing_target"), &dangling_parent).unwrap();
+
+        for dst in [dangling_parent.join("v1"), dangling_parent.join("nested").join("v1")] {
+            let err = ManagedDirName::new(&dst)
+                .check_exists_or_create(|_| {
+                    panic!(
+                        "populate must not be called when an ancestor is a dangling symlink: \
+                         {dst:?}"
+                    );
+                })
+                .unwrap_err();
+            assert_eq!(err.kind(), std::io::ErrorKind::AlreadyExists);
+        }
+
+        // A valid symlinked ancestor pointing to an existing directory still
+        // succeeds for nested installs.
+        let real_base = temp.path().join("real_base");
+        fs::create_dir(&real_base).unwrap();
+        let valid_link = temp.path().join("valid_base");
+        symlink(&real_base, &valid_link).unwrap();
+        let nested_dst = valid_link.join("tool").join("v1");
+        let dir = ManagedDirName::new(&nested_dst)
+            .check_exists_or_create(|staging| fs::write(staging.join("ok.txt"), b"ok"))
+            .unwrap();
+        assert_eq!(dir.path, nested_dst.as_path());
+        assert_eq!(fs::read(nested_dst.join("ok.txt")).unwrap(), b"ok");
     }
 }
