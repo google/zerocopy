@@ -21,7 +21,7 @@ NIGHTLY="$(zerocopy/cargo.sh --version nightly)"
 
 zerocopy/ci/check_fmt.sh "$@"
 
-for manifest in tools/cargo-zerocopy/Cargo.toml tools/generate-readme/Cargo.toml tools/ui-runner/Cargo.toml; do
+for manifest in tools/cargo-zerocopy/Cargo.toml tools/generate-readme/Cargo.toml tools/ui-runner/Cargo.toml tools/anneal-mir-eval/Cargo.toml; do
     cargo +"$NIGHTLY" fmt --manifest-path "$manifest" "${FMT_FLAGS[@]}" >&2
 done
 cargo +"$NIGHTLY" fmt --manifest-path exocrate/Cargo.toml "${FMT_FLAGS[@]}" >&2
