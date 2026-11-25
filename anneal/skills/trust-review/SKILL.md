@@ -46,7 +46,7 @@ companions—to its required pass:
 | `trusted/rustc-capture/` | Pass 2 | §2 Capture and two-surface completeness |
 | `trusted/audit/`, `trusted/cargo-anneal/` | Pass 2 | §3 Auditor and orchestrator |
 | `trusted/root-manifest.sha256`, `trusted/lean/foundation-lock.json`, pinned root manifests (`Cargo.toml`, `Cargo.lock`, `flake.nix`, `flake.lock`), any `lakefile.*` or `lean-toolchain`, packaged toolchain archives or bundles | Pass 2 | §4 Provenance, locks, and bundles (plus Pass 1 rejection of `lakefile.*` outside TCB/CI or `lean-toolchain` outside `trusted/lean/`) |
-| `ci/`, `.github/` | Pass 2 | §5 CI workflows and scripts |
+| `ci/`, `.github/` | Pass 2 | §5 CI workflows and scripts (plus [`references/ci-core.md`](references/ci-core.md) for root `ci-*.yml` callers, `../ci/checks.toml`, and `../.github/CODEOWNERS`) |
 | Any other path under `trusted/`, or any path executed, included, imported, or loaded as trusted code or config by `trusted/`, `ci/`, `.github/`, or pinned root manifests | Pass 2 | Full TCB surface until mapped |
 | Any `-- anneal-trust-tier:` directive edit in a `.lean` file (even comment-only) | Pass 2 | §1 Bidirectional trust-tier audit |
 
@@ -299,13 +299,13 @@ or audit them is permitted).
   or comment-triggered workflows and jobs (`pull_request`,
   `pull_request_target`, `pull_request_review`, `pull_request_review_comment`,
   `workflow_run`, `merge_group`, `issue_comment`), forbid checking out PR heads
-  while secrets are available, require `persist-credentials: false`, and
-  reserve write or OIDC scopes for release jobs in
-  `.github/workflows/release.yml`; strip `ACTIONS_CACHE_URL`,
-  `ACTIONS_RESULTS_URL`, and `ACTIONS_RUNTIME_TOKEN` in jobs running scripts
-  outside `trusted/`; allow no new in-checkout caches or PR-writable trusted
-  substituters, and verify caches cannot bypass `anneal-audit` or shadow source
-  changes.
+  while secrets are available, require `persist-credentials: false`, and reserve
+  write or OIDC scopes for release jobs in `.github/workflows/release.yml`
+  (`ci-*.yml`: [`references/ci-core.md`](references/ci-core.md)); strip
+  `ACTIONS_CACHE_URL`, `ACTIONS_RESULTS_URL`, and `ACTIONS_RUNTIME_TOKEN` in
+  jobs running scripts outside `trusted/`; allow no new in-checkout caches or
+  PR-writable trusted substituters, and verify caches cannot bypass
+  `anneal-audit` or shadow source changes.
 - **Shell `set -e` fail-open traps:** Audit every shell guard in `ci/` and
   `.github/workflows/` for `errexit` suppression—especially `&&`, `||`, `!`,
   `if`, `while`, or `local x=$(cmd)` (command-substitution exit masking) where

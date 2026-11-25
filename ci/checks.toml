@@ -1,0 +1,1136 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+schema_version = 1
+
+[repo]
+slug = "google/zerocopy"
+id = 534354967
+owner_id = 1342004
+default_branch = "main"
+sigstore = "public_good"
+trusted_engine_workflow = "joshlf/ci-core/.github/workflows/ci.yml"
+trusted_engine_shas = ["a22bebce337fc26765306fc6232632db1103ea48"]
+
+[tcb]
+owner_user_ids = [1046063, 3820879, 1775176]
+allow_owner_self_approval = false
+non_tcb_workflows = ["scorecard.yml", "dependency-review.yml"]
+non_tcb_subtrees = ["evals", "skills", "zerocopy/vendor"]
+extra_executable_paths = [
+  ".github/release_notes.py",
+  ".github/scripts/**",
+  "anneal/ci/**",
+  "ci/*.py",
+  "ci/*.sh",
+  "ci/scripts/**",
+  "githooks/**",
+  "tools/*.py",
+  "tools/*.sh",
+  "zerocopy/cargo.sh",
+  "zerocopy/ci/**",
+]
+
+[tcb.caller]
+kind = "repo_ruleset"
+caller_workflows = [
+  ".github/workflows/ci-core-pr.yml",
+  ".github/workflows/ci-core-trusted.yml",
+]
+gate_check_name = "ci-core / gate"
+codeowners = ["@joshlf", "@jswrenn", "@mdittmer"]
+
+[commit_policy]
+# Character class avoids triggering `ci/check_todo.sh` on this manifest itself.
+forbid_message_regex = '\b[T]ODO\b'
+
+# ---------------------------------------------------------------------------
+# Declarative Data Pins
+# ---------------------------------------------------------------------------
+
+[pins.rust-toolchains]
+path = "ci/pins/rust-toolchains.toml"
+[pins.rust-toolchains.keys]
+msrv = '[0-9]+\.[0-9]+\.[0-9]+'
+stable = '[0-9]+\.[0-9]+\.[0-9]+'
+nightly = 'nightly-[0-9]{4}-[0-9]{2}-[0-9]{2}'
+no-zerocopy-allocator-api-1-100-0 = '[0-9]+\.[0-9]+\.[0-9]+'
+no-zerocopy-simd-x86-avx12-1-89-0 = '[0-9]+\.[0-9]+\.[0-9]+'
+no-zerocopy-aarch64-simd-be-1-87-0 = '[0-9]+\.[0-9]+\.[0-9]+'
+no-zerocopy-core-error-1-81-0 = '[0-9]+\.[0-9]+\.[0-9]+'
+no-zerocopy-slice-ptr-len-1-79-0 = '[0-9]+\.[0-9]+\.[0-9]+'
+no-zerocopy-diagnostic-on-unimplemented-1-78-0 = '[0-9]+\.[0-9]+\.[0-9]+'
+no-zerocopy-generic-bounds-in-const-fn-1-61-0 = '[0-9]+\.[0-9]+\.[0-9]+'
+no-zerocopy-target-has-atomics-1-60-0 = '[0-9]+\.[0-9]+\.[0-9]+'
+no-zerocopy-aarch64-simd-1-59-0 = '[0-9]+\.[0-9]+\.[0-9]+'
+no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0 = '[0-9]+\.[0-9]+\.[0-9]+'
+
+[pins.kani-pin]
+path = "ci/pins/kani-pin.toml"
+[pins.kani-pin.keys]
+version = '[0-9]+\.[0-9]+\.[0-9]+'
+bundle-sha256 = '[0-9a-f]{64}'
+
+[pins.semver-baseline]
+path = "ci/pins/semver-baseline.toml"
+[pins.semver-baseline.keys]
+version = '[0-9]+\.[0-9]+\.[0-9]+'
+crate-sha256 = '[0-9a-f]{64}'
+skip = 'true|false'
+tool-version = '[0-9]+\.[0-9]+\.[0-9]+'
+tool-sha256 = '[0-9a-f]{64}'
+
+[pins.layout-seed]
+path = "ci/pins/layout-seed.toml"
+[pins.layout-seed.keys]
+seed = '[0-9]+'
+
+# ---------------------------------------------------------------------------
+# Content-Addressed OCI Toolchain Images
+# ---------------------------------------------------------------------------
+
+[images.zc-stable-msrv]
+dockerfile = "ci/docker/zc-stable-msrv.Dockerfile"
+context = [
+  { kind = "glob", include = ["tools/cargo-zerocopy/**", "tools/generate-readme/**", "tools/ui-runner/**"], exclude = ["**/target/**"] },
+]
+pins = ["rust-toolchains", "semver-baseline"]
+runner = "ubuntu-24.04"
+
+[images.zc-build-rs-modern]
+dockerfile = "ci/docker/zc-build-rs.Dockerfile"
+context = [
+  { kind = "glob", include = ["tools/cargo-zerocopy/**", "tools/ui-runner/**"], exclude = ["**/target/**"] },
+]
+pins = ["rust-toolchains"]
+build_args = { BUILD_RS_TIER = "modern" }
+runner = "ubuntu-24.04"
+
+[images.zc-build-rs-legacy]
+dockerfile = "ci/docker/zc-build-rs.Dockerfile"
+context = [
+  { kind = "glob", include = ["tools/cargo-zerocopy/**", "tools/ui-runner/**"], exclude = ["**/target/**"] },
+]
+pins = ["rust-toolchains"]
+build_args = { BUILD_RS_TIER = "legacy" }
+runner = "ubuntu-24.04"
+
+[images.zc-nightly]
+dockerfile = "ci/docker/zc-nightly.Dockerfile"
+context = [
+  { kind = "glob", include = ["tools/cargo-zerocopy/**", "tools/ui-runner/**", "tools/install-cargo-show-asm.sh"], exclude = ["**/target/**"] },
+]
+pins = ["rust-toolchains"]
+runner = "ubuntu-24.04"
+
+[images.zc-kani]
+dockerfile = "ci/docker/zc-kani.Dockerfile"
+context = []
+pins = ["rust-toolchains", "kani-pin"]
+runner = "ubuntu-24.04"
+
+[images.anneal-tc]
+dockerfile = "ci/docker/anneal-tc.Dockerfile"
+context = [
+  { kind = "glob", include = [
+    "anneal/flake.nix",
+    "anneal/flake.lock",
+    "anneal/Cargo.toml",
+    "anneal/Cargo.lock",
+    "anneal/trusted/audit/Cargo.toml",
+    "anneal/trusted/cargo-anneal/Cargo.toml",
+    "anneal/trusted/rustc-capture/Cargo.toml",
+    "anneal/tests/testkit/Cargo.toml",
+    "anneal/tests/audit/Cargo.toml",
+    "anneal/tests/cargo-anneal/Cargo.toml",
+    "anneal/tests/rustc-capture/Cargo.toml",
+    "anneal/trusted/lean/lean-toolchain",
+    "anneal/trusted/lean/foundation-lock.json",
+    "anneal/ci/verify_starnix_e2e.py",
+    "anneal/tests/cargo-anneal/tests/fixtures/starnix/source.json",
+  ] },
+]
+runner = "ubuntu-24.04"
+
+[images.anneal-arm64]
+dockerfile = "ci/docker/anneal-arm64.Dockerfile"
+platform = "linux/arm64"
+context = []
+pins = ["rust-toolchains"]
+runner = "ubuntu-24.04-arm"
+
+# ---------------------------------------------------------------------------
+# Content-Addressed Cache Slots
+# ---------------------------------------------------------------------------
+
+[caches.miri-v1]
+mount = "/ci-cache/miri"
+tier = "public_cas"
+inputs = [
+  { kind = "glob", include = [
+    "anneal/flake.nix",
+    "anneal/flake.lock",
+    "anneal/trusted/lean/lean-toolchain",
+    "anneal/trusted/lean/foundation-lock.json",
+    "anneal/vendor/lean-miri/UPSTREAM_PIN.json",
+  ] },
+]
+
+[caches.zc-miri-sysroot-v1]
+mount = "/ci-cache/zc-miri"
+env_keys = ["TARGET", "MIRI_MODEL"]
+inputs = [
+  { kind = "glob", include = ["ci/pins/layout-seed.toml"] },
+]
+
+[caches.exocrate-cargo-v1]
+mount = "/cargo-home"
+cargo_locked = { workspace = "exocrate/Cargo.toml" }
+
+[caches.anneal-cargo-v1]
+mount = "/cargo-home"
+cargo_locked = { workspace = "anneal/Cargo.toml" }
+
+# ---------------------------------------------------------------------------
+# Zerocopy Build & Test Checks
+# ---------------------------------------------------------------------------
+
+[[checks]]
+id = "zc-build-test-sm"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+workdir = "zerocopy"
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
+  { kind = "glob", include = [
+    "LICENSE-APACHE",
+    "LICENSE-BSD",
+    "LICENSE-MIT",
+    "zerocopy/.cargo/**",
+    "zerocopy/benches/**",
+    "zerocopy/cargo.sh",
+    "zerocopy/clippy.toml",
+    "zerocopy/vendor/**",
+    "zerocopy/testdata/**",
+    "zerocopy/tests/**",
+    "zerocopy/zerocopy-derive/tests/**",
+    "zerocopy/rustdoc/**",
+    "ci/scripts/run_zc_build_test.sh",
+  ] },
+]
+command = ["../ci/scripts/run_zc_build_test.sh"]
+env = { TOOLCHAIN = "${matrix.toolchain}", CRATE = "${matrix.crate}", FEATURE_PROFILE = "${matrix.feature_profile}", TARGET = "${matrix.target}" }
+matrix = { toolchain = ["msrv", "stable"], crate = ["zerocopy", "zerocopy-derive"], feature_profile = ["default", "stable"], target = ["i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"] }
+matrix_exclude = [
+  { crate = "zerocopy-derive", feature_profile = "stable" },
+]
+
+[[checks]]
+id = "zc-build-test-buildrs-modern"
+image = "zc-build-rs-modern"
+runner = "ubuntu-24.04"
+workdir = "zerocopy"
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
+  { kind = "glob", include = [
+    "LICENSE-APACHE",
+    "LICENSE-BSD",
+    "LICENSE-MIT",
+    "zerocopy/.cargo/**",
+    "zerocopy/benches/**",
+    "zerocopy/cargo.sh",
+    "zerocopy/clippy.toml",
+    "zerocopy/vendor/**",
+    "zerocopy/testdata/**",
+    "zerocopy/tests/**",
+    "zerocopy/zerocopy-derive/tests/**",
+    "zerocopy/rustdoc/**",
+    "ci/scripts/run_zc_build_test.sh",
+  ] },
+]
+command = ["../ci/scripts/run_zc_build_test.sh"]
+env = { TOOLCHAIN = "${matrix.toolchain}", CRATE = "zerocopy", FEATURE_PROFILE = "${matrix.feature_profile}", TARGET = "${matrix.target}" }
+matrix = { toolchain = [
+  "no-zerocopy-allocator-api-1-100-0",
+  "no-zerocopy-simd-x86-avx12-1-89-0",
+  "no-zerocopy-core-error-1-81-0",
+  "no-zerocopy-slice-ptr-len-1-79-0",
+  "no-zerocopy-diagnostic-on-unimplemented-1-78-0",
+], feature_profile = ["default", "stable"], target = ["i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"] }
+matrix_exclude = [
+  { toolchain = "no-zerocopy-allocator-api-1-100-0", target = "x86_64-pc-windows-msvc" },
+  { toolchain = "no-zerocopy-core-error-1-81-0", target = "x86_64-pc-windows-msvc" },
+  { toolchain = "no-zerocopy-diagnostic-on-unimplemented-1-78-0", target = "x86_64-pc-windows-msvc" },
+]
+
+[[checks]]
+id = "zc-build-test-buildrs-legacy"
+image = "zc-build-rs-legacy"
+runner = "ubuntu-24.04"
+workdir = "zerocopy"
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
+  { kind = "glob", include = [
+    "LICENSE-APACHE",
+    "LICENSE-BSD",
+    "LICENSE-MIT",
+    "zerocopy/.cargo/**",
+    "zerocopy/benches/**",
+    "zerocopy/cargo.sh",
+    "zerocopy/clippy.toml",
+    "zerocopy/vendor/**",
+    "zerocopy/testdata/**",
+    "zerocopy/tests/**",
+    "zerocopy/zerocopy-derive/tests/**",
+    "zerocopy/rustdoc/**",
+    "ci/scripts/run_zc_build_test.sh",
+  ] },
+]
+command = ["../ci/scripts/run_zc_build_test.sh"]
+env = { TOOLCHAIN = "${matrix.toolchain}", CRATE = "zerocopy", FEATURE_PROFILE = "${matrix.feature_profile}", TARGET = "${matrix.target}" }
+matrix = { toolchain = [
+  "no-zerocopy-generic-bounds-in-const-fn-1-61-0",
+  "no-zerocopy-target-has-atomics-1-60-0",
+  "no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0",
+], feature_profile = ["default", "stable"], target = ["i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"] }
+matrix_exclude = [
+  { toolchain = "no-zerocopy-generic-bounds-in-const-fn-1-61-0", target = "x86_64-pc-windows-msvc" },
+]
+
+[[checks]]
+id = "zc-build-test-sm-cross"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+workdir = "zerocopy"
+events = ["merge_group", "push"]
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
+  { kind = "glob", include = [
+    "LICENSE-APACHE",
+    "LICENSE-BSD",
+    "LICENSE-MIT",
+    "zerocopy/.cargo/**",
+    "zerocopy/benches/**",
+    "zerocopy/cargo.sh",
+    "zerocopy/clippy.toml",
+    "zerocopy/vendor/**",
+    "zerocopy/testdata/**",
+    "zerocopy/tests/**",
+    "zerocopy/zerocopy-derive/tests/**",
+    "zerocopy/rustdoc/**",
+    "ci/scripts/run_zc_build_test.sh",
+  ] },
+]
+command = ["../ci/scripts/run_zc_build_test.sh"]
+env = { TOOLCHAIN = "${matrix.toolchain}", CRATE = "${matrix.crate}", FEATURE_PROFILE = "${matrix.feature_profile}", TARGET = "cross-extra" }
+matrix = { toolchain = ["msrv", "stable"], crate = ["zerocopy", "zerocopy-derive"], feature_profile = ["default", "stable"] }
+matrix_exclude = [
+  { crate = "zerocopy-derive", feature_profile = "stable" },
+]
+
+[[checks]]
+id = "zc-build-test-buildrs-modern-cross"
+image = "zc-build-rs-modern"
+runner = "ubuntu-24.04"
+workdir = "zerocopy"
+events = ["merge_group", "push"]
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
+  { kind = "glob", include = [
+    "LICENSE-APACHE",
+    "LICENSE-BSD",
+    "LICENSE-MIT",
+    "zerocopy/.cargo/**",
+    "zerocopy/benches/**",
+    "zerocopy/cargo.sh",
+    "zerocopy/clippy.toml",
+    "zerocopy/vendor/**",
+    "zerocopy/testdata/**",
+    "zerocopy/tests/**",
+    "zerocopy/zerocopy-derive/tests/**",
+    "zerocopy/rustdoc/**",
+    "ci/scripts/run_zc_build_test.sh",
+  ] },
+]
+command = ["../ci/scripts/run_zc_build_test.sh"]
+env = { TOOLCHAIN = "${matrix.toolchain}", CRATE = "zerocopy", FEATURE_PROFILE = "${matrix.feature_profile}", TARGET = "cross-extra" }
+matrix = { toolchain = [
+  "no-zerocopy-simd-x86-avx12-1-89-0",
+  "no-zerocopy-aarch64-simd-be-1-87-0",
+  "no-zerocopy-slice-ptr-len-1-79-0",
+], feature_profile = ["default", "stable"] }
+
+[[checks]]
+id = "zc-build-test-buildrs-legacy-cross"
+image = "zc-build-rs-legacy"
+runner = "ubuntu-24.04"
+workdir = "zerocopy"
+events = ["merge_group", "push"]
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
+  { kind = "glob", include = [
+    "LICENSE-APACHE",
+    "LICENSE-BSD",
+    "LICENSE-MIT",
+    "zerocopy/.cargo/**",
+    "zerocopy/benches/**",
+    "zerocopy/cargo.sh",
+    "zerocopy/clippy.toml",
+    "zerocopy/vendor/**",
+    "zerocopy/testdata/**",
+    "zerocopy/tests/**",
+    "zerocopy/zerocopy-derive/tests/**",
+    "zerocopy/rustdoc/**",
+    "ci/scripts/run_zc_build_test.sh",
+  ] },
+]
+command = ["../ci/scripts/run_zc_build_test.sh"]
+env = { TOOLCHAIN = "${matrix.toolchain}", CRATE = "zerocopy", FEATURE_PROFILE = "${matrix.feature_profile}", TARGET = "cross-extra" }
+matrix = { toolchain = [
+  "no-zerocopy-target-has-atomics-1-60-0",
+  "no-zerocopy-aarch64-simd-1-59-0",
+  "no-zerocopy-panic-in-const-and-vec-try-reserve-1-57-0",
+], feature_profile = ["default", "stable"] }
+
+[[checks]]
+id = "zc-build-test-nightly"
+image = "zc-nightly"
+runner = "ubuntu-24.04"
+workdir = "zerocopy"
+pins = ["layout-seed"]
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
+  { kind = "glob", include = [
+    "LICENSE-APACHE",
+    "LICENSE-BSD",
+    "LICENSE-MIT",
+    "zerocopy/.cargo/**",
+    "zerocopy/benches/**",
+    "zerocopy/cargo.sh",
+    "zerocopy/clippy.toml",
+    "zerocopy/vendor/**",
+    "zerocopy/testdata/**",
+    "zerocopy/tests/**",
+    "zerocopy/zerocopy-derive/tests/**",
+    "zerocopy/rustdoc/**",
+    "ci/scripts/run_zc_build_test.sh",
+  ] },
+]
+command = ["../ci/scripts/run_zc_build_test.sh"]
+env = { TOOLCHAIN = "nightly", CRATE = "${matrix.crate}", FEATURE_PROFILE = "${matrix.feature_profile}", TARGET = "${matrix.target}" }
+matrix = { crate = ["zerocopy", "zerocopy-derive"], feature_profile = ["default", "stable", "all"], target = ["i686-unknown-linux-gnu", "x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc"] }
+matrix_exclude = [
+  { crate = "zerocopy-derive", feature_profile = "stable" },
+  { crate = "zerocopy-derive", feature_profile = "all" },
+]
+
+[[checks]]
+id = "zc-build-test-nightly-cross"
+image = "zc-nightly"
+runner = "ubuntu-24.04"
+workdir = "zerocopy"
+events = ["merge_group", "push"]
+pins = ["layout-seed"]
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
+  { kind = "glob", include = [
+    "LICENSE-APACHE",
+    "LICENSE-BSD",
+    "LICENSE-MIT",
+    "zerocopy/.cargo/**",
+    "zerocopy/benches/**",
+    "zerocopy/cargo.sh",
+    "zerocopy/clippy.toml",
+    "zerocopy/vendor/**",
+    "zerocopy/testdata/**",
+    "zerocopy/tests/**",
+    "zerocopy/zerocopy-derive/tests/**",
+    "zerocopy/rustdoc/**",
+    "ci/scripts/run_zc_build_test.sh",
+  ] },
+]
+command = ["../ci/scripts/run_zc_build_test.sh"]
+env = { TOOLCHAIN = "nightly", CRATE = "${matrix.crate}", FEATURE_PROFILE = "${matrix.feature_profile}", TARGET = "cross-extra" }
+matrix = { crate = ["zerocopy", "zerocopy-derive"], feature_profile = ["default", "stable", "all"] }
+matrix_exclude = [
+  { crate = "zerocopy-derive", feature_profile = "stable" },
+  { crate = "zerocopy-derive", feature_profile = "all" },
+]
+
+# ---------------------------------------------------------------------------
+# Zerocopy Semver, Miri, Kani, Codegen, Coverage, Cross-Special
+# ---------------------------------------------------------------------------
+
+[[checks]]
+id = "zc-semver-pr"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+shard_group = "zc-meta"
+workdir = "zerocopy"
+pins = ["rust-toolchains", "semver-baseline"]
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
+  { kind = "glob", include = ["LICENSE-APACHE", "LICENSE-BSD", "LICENSE-MIT", "zerocopy/.cargo/**", "zerocopy/benches/**", "zerocopy/vendor/**", "ci/scripts/run_zc_semver.sh"] },
+]
+command = ["../ci/scripts/run_zc_semver.sh"]
+env = { SEMVER_SCOPE = "pr" }
+
+[[checks]]
+id = "zc-semver-extra"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+workdir = "zerocopy"
+events = ["merge_group", "push"]
+pins = ["rust-toolchains", "semver-baseline"]
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
+  { kind = "glob", include = ["LICENSE-APACHE", "LICENSE-BSD", "LICENSE-MIT", "zerocopy/.cargo/**", "zerocopy/benches/**", "zerocopy/vendor/**", "ci/scripts/run_zc_semver.sh"] },
+]
+command = ["../ci/scripts/run_zc_semver.sh"]
+env = { SEMVER_SCOPE = "extra" }
+
+[[checks]]
+id = "zc-miri"
+image = "zc-nightly"
+runner = "ubuntu-24.04"
+workdir = "zerocopy"
+events = ["merge_group", "push"]
+pins = ["layout-seed"]
+caches = ["zc-miri-sysroot-v1"]
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
+  { kind = "glob", include = [
+    "LICENSE-APACHE",
+    "LICENSE-BSD",
+    "LICENSE-MIT",
+    "zerocopy/.cargo/**",
+    "zerocopy/benches/**",
+    "zerocopy/cargo.sh",
+    "zerocopy/vendor/**",
+    "zerocopy/testdata/**",
+    "zerocopy/tests/**",
+    "zerocopy/zerocopy-derive/tests/**",
+    ".github/scripts/run_miri_batched.sh",
+    "ci/scripts/run_zc_miri.sh",
+  ] },
+]
+command = ["../ci/scripts/run_zc_miri.sh"]
+env = { CRATE = "${matrix.crate}", FEATURE_PROFILE = "${matrix.feature_profile}", TARGET = "${matrix.target}", MIRI_MODEL = "${matrix.miri_model}", MIRI_SYSROOT_CACHE_DIR = "/ci-cache/zc-miri" }
+matrix = { crate = ["zerocopy", "zerocopy-derive"], feature_profile = ["default", "stable", "all"], target = [
+  "i686-unknown-linux-gnu",
+  "x86_64-unknown-linux-gnu",
+  "arm-unknown-linux-gnueabi",
+  "aarch64-unknown-linux-gnu",
+  "powerpc-unknown-linux-gnu",
+  "powerpc64-unknown-linux-gnu",
+  "s390x-unknown-linux-gnu",
+  "x86_64-pc-windows-msvc",
+], miri_model = ["stacked", "tree"] }
+matrix_exclude = [
+  { crate = "zerocopy-derive", feature_profile = "stable" },
+  { crate = "zerocopy-derive", feature_profile = "all" },
+]
+
+[[checks]]
+id = "zc-kani"
+image = "zc-kani"
+runner = "ubuntu-24.04"
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
+  { kind = "glob", include = [
+    "LICENSE-APACHE",
+    "LICENSE-BSD",
+    "LICENSE-MIT",
+    "zerocopy/.cargo/**",
+    "zerocopy/benches/**",
+    "zerocopy/vendor/**",
+    "zerocopy/testdata/**",
+    ".github/scripts/run_kani_sharded.sh",
+    "ci/scripts/run_zc_kani.sh",
+  ] },
+]
+command = ["./ci/scripts/run_zc_kani.sh"]
+env = { KANI_CONFIG = "${matrix.config}" }
+matrix = { config = ["no-features", "stable-shard-1", "stable-shard-2"] }
+
+[[checks]]
+id = "zc-codegen"
+image = "zc-nightly"
+runner = "ubuntu-24.04"
+workdir = "zerocopy"
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
+  { kind = "glob", include = [
+    "LICENSE-APACHE",
+    "LICENSE-BSD",
+    "LICENSE-MIT",
+    "zerocopy/.cargo/**",
+    "zerocopy/benches/**",
+    "zerocopy/cargo.sh",
+    "zerocopy/clippy.toml",
+    "zerocopy/vendor/**",
+    "zerocopy/testdata/**",
+    "zerocopy/tests/**",
+    "ci/scripts/run_zc_codegen.sh",
+  ] },
+]
+command = ["../ci/scripts/run_zc_codegen.sh"]
+
+[[checks]]
+id = "zc-coverage"
+image = "zc-nightly"
+runner = "ubuntu-24.04"
+workdir = "zerocopy"
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
+  { kind = "glob", include = [
+    "LICENSE-APACHE",
+    "LICENSE-BSD",
+    "LICENSE-MIT",
+    "zerocopy/.cargo/**",
+    "zerocopy/benches/**",
+    "zerocopy/cargo.sh",
+    "zerocopy/vendor/**",
+    "zerocopy/testdata/**",
+    "zerocopy/tests/**",
+    "zerocopy/zerocopy-derive/tests/**",
+    "ci/scripts/run_zc_coverage.sh",
+  ] },
+]
+command = ["../ci/scripts/run_zc_coverage.sh"]
+env = { ZC_COVERAGE_OUT = "/outputs/lcov.info" }
+outputs = [{ name = "lcov.info", max_bytes = 67108864 }]
+
+[[checks]]
+id = "zc-cross-special"
+image = "zc-nightly"
+runner = "ubuntu-24.04"
+workdir = "zerocopy"
+pins = ["layout-seed"]
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
+  { kind = "glob", include = [
+    "LICENSE-APACHE",
+    "LICENSE-BSD",
+    "LICENSE-MIT",
+    "zerocopy/.cargo/**",
+    "zerocopy/benches/**",
+    "zerocopy/cargo.sh",
+    "zerocopy/clippy.toml",
+    "zerocopy/vendor/**",
+    "zerocopy/testdata/**",
+    "ci/scripts/merge_vendor.py",
+    "ci/scripts/run_zc_cross_special.sh",
+  ] },
+]
+command = ["../ci/scripts/run_zc_cross_special.sh"]
+env = { SPECIAL_TARGET = "${matrix.target}" }
+matrix = { target = ["aarch64_be", "avr"] }
+
+# ---------------------------------------------------------------------------
+# Zerocopy Fast Meta Checks
+# ---------------------------------------------------------------------------
+
+[[checks]]
+id = "zc-check-readme"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+shard_group = "zc-meta"
+inputs = [
+  { kind = "glob", include = [
+    "zerocopy/Cargo.toml",
+    "zerocopy/README.md",
+    "zerocopy/src/lib.rs",
+    "zerocopy/ci/check_readme.sh",
+  ] },
+]
+command = ["./zerocopy/ci/check_readme.sh"]
+
+[[checks]]
+id = "zc-check-versions"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+shard_group = "zc-meta"
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
+  { kind = "glob", include = ["LICENSE-APACHE", "LICENSE-BSD", "LICENSE-MIT", "zerocopy/.cargo/**", "zerocopy/vendor/**", "zerocopy/ci/check_versions.sh"] },
+]
+command = ["./zerocopy/ci/check_versions.sh"]
+
+[[checks]]
+id = "zc-check-packaging"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+shard_group = "zc-meta"
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
+  { kind = "glob", include = [
+    "LICENSE-APACHE",
+    "LICENSE-BSD",
+    "LICENSE-MIT",
+    "zerocopy/LICENSE-*",
+    "zerocopy/zerocopy-derive/LICENSE-*",
+    "zerocopy/.cargo/**",
+    "zerocopy/cargo.sh",
+    "zerocopy/vendor/**",
+    "zerocopy/rustdoc/**",
+    "zerocopy/ci/check_packaging.sh",
+  ] },
+]
+env = { CARGO_TARGET_DIR = "/scratch/packaging-target" }
+command = ["./zerocopy/ci/check_packaging.sh"]
+
+[[checks]]
+id = "zc-check-msrv-minimal"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+shard_group = "zc-meta"
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "zerocopy/Cargo.toml" },
+  { kind = "glob", include = ["LICENSE-APACHE", "LICENSE-BSD", "LICENSE-MIT", "zerocopy/.cargo/**", "zerocopy/vendor/**", "zerocopy/ci/check_msrv_is_minimal.sh"] },
+]
+command = ["./zerocopy/ci/check_msrv_is_minimal.sh"]
+
+[[checks]]
+id = "zc-check-stale-stderr"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+shard_group = "zc-meta"
+inputs = [
+  { kind = "glob", include = [
+    "zerocopy/tests/**",
+    "zerocopy/zerocopy-derive/tests/**",
+    "zerocopy/ci/check_stale_stderr.sh",
+  ] },
+]
+command = ["./zerocopy/ci/check_stale_stderr.sh"]
+
+[[checks]]
+id = "zc-check-toolchains-sync"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+shard_group = "meta-fast"
+inputs = [
+  { kind = "glob", include = [
+    "zerocopy/Cargo.toml",
+    "ci/pins/**",
+    "ci/docker/*.Dockerfile",
+    "ci/checks.toml",
+    "ci/scripts/check_toolchains_sync.py",
+  ] },
+]
+command = ["python3", "-I", "-B", "ci/scripts/check_toolchains_sync.py"]
+
+# ---------------------------------------------------------------------------
+# Per-Domain Formatting, Exocrate, Tools, Skills, and Repo Meta Checks
+# ---------------------------------------------------------------------------
+
+[[checks]]
+id = "fmt-zerocopy"
+image = "zc-nightly"
+runner = "ubuntu-24.04"
+shard_group = "fmt"
+pins = ["rust-toolchains"]
+inputs = [
+  { kind = "glob", include = [
+    "rustfmt.toml",
+    "zerocopy/**/*.rs",
+    "zerocopy/Cargo.toml",
+    "zerocopy/zerocopy-derive/Cargo.toml",
+    "zerocopy/testutil/Cargo.toml",
+    "zerocopy/cargo.sh",
+    "zerocopy/ci/check_fmt.sh",
+    "ci/scripts/run_fmt_domain.sh",
+  ], exclude = ["zerocopy/vendor/**", "zerocopy/target/**"] },
+]
+command = ["./ci/scripts/run_fmt_domain.sh"]
+env = { FMT_DOMAIN = "zerocopy" }
+
+[[checks]]
+id = "fmt-tools"
+image = "zc-nightly"
+runner = "ubuntu-24.04"
+shard_group = "fmt"
+pins = ["rust-toolchains"]
+inputs = [
+  { kind = "glob", include = [
+    "rustfmt.toml",
+    "tools/**/*.rs",
+    "tools/**/Cargo.toml",
+    "ci/scripts/run_fmt_domain.sh",
+  ], exclude = ["tools/**/target/**"] },
+]
+command = ["./ci/scripts/run_fmt_domain.sh"]
+env = { FMT_DOMAIN = "tools" }
+
+[[checks]]
+id = "fmt-exocrate"
+image = "zc-nightly"
+runner = "ubuntu-24.04"
+shard_group = "fmt"
+pins = ["rust-toolchains"]
+inputs = [
+  { kind = "glob", include = [
+    "rustfmt.toml",
+    "exocrate/**",
+    "ci/scripts/run_fmt_domain.sh",
+  ], exclude = ["exocrate/target/**"] },
+]
+command = ["./ci/scripts/run_fmt_domain.sh"]
+env = { FMT_DOMAIN = "exocrate" }
+
+[[checks]]
+id = "exocrate-test"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+caches = ["exocrate-cargo-v1"]
+writable_dirs = ["exocrate/target"]
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "exocrate/Cargo.toml" },
+  { kind = "glob", include = ["ci/scripts/run_exocrate_test.sh"] },
+]
+env = { CARGO_HOME = "/cargo-home" }
+command = ["./ci/scripts/run_exocrate_test.sh"]
+
+[[checks]]
+id = "tools-test"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+shard_group = "meta-fast"
+inputs = [
+  { kind = "glob", include = ["tools/**/*.py", ".github/release_notes.py"], exclude = ["tools/**/target/**"] },
+]
+command = ["python3", "-I", "-B", "-m", "unittest", "discover", "-s", "tools", "-p", "test_*.py", "-v"]
+
+[[checks]]
+id = "skills-check"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+shard_group = "meta-fast"
+inputs = [
+  { kind = "glob", include = [
+    "AGENTS.md",
+    "AGENTS.override.md",
+    "**/AGENTS.override.md",
+    "skills/**",
+    "anneal/.agents/skills.json",
+    "anneal/AGENTS.md",
+    "anneal/**/AGENTS*.md",
+    "anneal/META_PRINCIPLES.md",
+    "anneal/PRINCIPLES.md",
+    "anneal/README.md",
+    "anneal/THREAT_MODEL.md",
+    "anneal/ci/anneal-lean-run",
+    "anneal/ci/check_todo.sh",
+    "anneal/docs/**",
+    "anneal/skills/**",
+    "anneal/theory/**",
+    "anneal/trusted/audit/TrustedBoundary.lean",
+    "anneal/trusted/cargo-anneal/skills/**",
+    "zerocopy/AGENTS.md",
+    "ci/*.py",
+    "ci/scripts/**",
+    "ci/pins/**",
+    "ci/docker/*.Dockerfile",
+    "ci/checks.toml",
+    "zerocopy/Cargo.toml",
+  ] },
+]
+command = ["bash", "-euo", "pipefail", "-c", "python3 -I -B ci/check_skills.py && python3 -I -B -m unittest discover -s ci -p 'test_*.py' -v"]
+
+[[checks]]
+id = "meta-actions"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+shard_group = "meta-fast"
+inputs = [
+  { kind = "glob", include = [
+    ".github/**",
+    "ci/check_actions.sh",
+    "ci/check_job_dependencies.sh",
+    "ci/scripts/run_meta_actions.sh",
+    "zerocopy/Cargo.toml",
+    "zerocopy/zerocopy-derive/Cargo.toml",
+    "anneal/trusted/cargo-anneal/Cargo.toml",
+  ] },
+]
+command = ["./ci/scripts/run_meta_actions.sh"]
+
+[[checks]]
+id = "meta-githooks"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+shard_group = "meta-fast"
+inputs = [
+  { kind = "glob", include = [
+    ".github/scripts/*.sh",
+    "anneal/ci/*.sh",
+    "ci/*.py",
+    "ci/*.sh",
+    "ci/scripts/*.sh",
+    "githooks/**",
+    "tools/*.sh",
+    "zerocopy/cargo.sh",
+    "zerocopy/ci/*",
+  ] },
+]
+command = ["./ci/scripts/check_shell_and_hooks.sh", "--require-shellcheck"]
+
+[[checks]]
+id = "meta-todo"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+shard_group = "meta-fast"
+inputs = [
+  { kind = "glob", include = [
+    ".rgignore",
+    "LICENSE-APACHE",
+    "LICENSE-BSD",
+    "LICENSE-MIT",
+    "ci/**",
+    "githooks/**",
+    "tools/**",
+    "zerocopy/**",
+  ], exclude = ["**/vendor/**", "**/target/**"] },
+]
+command = ["./ci/check_todo.sh"]
+
+# ---------------------------------------------------------------------------
+# Anneal Checks (NestedBwrap + Stable Clippy)
+# ---------------------------------------------------------------------------
+
+[[checks]]
+id = "anneal-flake-eval"
+image = "anneal-tc"
+sandbox = "nested_bwrap"
+runner = "ubuntu-24.04"
+workdir = "anneal"
+shard_group = "anneal-fast"
+inputs = [
+  { kind = "glob", include = [
+    "anneal/flake.nix",
+    "anneal/flake.lock",
+    "anneal/Cargo.toml",
+    "anneal/Cargo.lock",
+    "anneal/trusted/**",
+    "anneal/theory/**",
+    "anneal/correspondence/**",
+    "anneal/vendor/lean-miri/UPSTREAM_PIN.json",
+    "anneal/ci/prebuild_bundled_oleans.py",
+    "anneal/ci/render_correspondence_provenance.py",
+    "anneal/ci/run_anneal_check.sh",
+  ] },
+  # Root config overrides that `run_anneal_check.sh` rejects.
+  { kind = "glob", include = [
+    ".cargo", ".cargo/**", ".gitmodules", "rust-toolchain", "rust-toolchain.toml",
+    "anneal/.cargo", "anneal/.cargo/**", "anneal/.gitmodules",
+    "anneal/rust-toolchain", "anneal/rust-toolchain.toml",
+  ] },
+]
+command = ["./ci/run_anneal_check.sh", "flake-eval"]
+
+[[checks]]
+id = "anneal-ci-tests"
+image = "anneal-tc"
+sandbox = "nested_bwrap"
+runner = "ubuntu-24.04"
+workdir = "anneal"
+shard_group = "anneal-fast"
+inputs = [
+  { kind = "glob", include = [
+    "anneal/**",
+    ".github/CODEOWNERS",
+    ".github/workflows/*.yml",
+    ".github/actions/publish-github-release/action.yml",
+    ".github/release_notes.py",
+    "ci/checks.toml",
+    "zerocopy/Cargo.toml",
+    "zerocopy/zerocopy-derive/Cargo.toml",
+  ], exclude = ["anneal/vendor/**", "anneal/target/**"] },
+  { kind = "glob", include = ["anneal/vendor/lean-miri/UPSTREAM_PIN.json"] },
+  # Root config overrides that `run_anneal_check.sh` rejects.
+  { kind = "glob", include = [
+    ".cargo", ".cargo/**", ".gitmodules", "rust-toolchain", "rust-toolchain.toml",
+    "anneal/.cargo", "anneal/.cargo/**", "anneal/.gitmodules",
+    "anneal/rust-toolchain", "anneal/rust-toolchain.toml",
+  ] },
+]
+command = ["./ci/run_anneal_check.sh", "ci-tests"]
+
+[[checks]]
+id = "anneal-clippy"
+image = "zc-stable-msrv"
+runner = "ubuntu-24.04"
+workdir = "anneal"
+caches = ["anneal-cargo-v1"]
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "anneal/Cargo.toml" },
+  { kind = "glob", include = [
+    "anneal/flake.nix",
+    "anneal/flake.lock",
+    "anneal/trusted/root-manifest.sha256",
+    "anneal/trusted/cargo-anneal/assets/**",
+    "anneal/trusted/cargo-anneal/skills/**",
+    "anneal/trusted/**",
+    "anneal/correspondence/**",
+    "anneal/vendor/lean-miri/UPSTREAM_PIN.json",
+    "anneal/ci/run_anneal_check.sh",
+  ] },
+  # Root config overrides that `run_anneal_check.sh` rejects.
+  { kind = "glob", include = [
+    ".cargo", ".cargo/**", ".gitmodules", "rust-toolchain", "rust-toolchain.toml",
+    "anneal/.cargo", "anneal/.cargo/**", "anneal/.gitmodules",
+    "anneal/rust-toolchain", "anneal/rust-toolchain.toml",
+  ] },
+]
+command = ["./ci/run_anneal_check.sh", "clippy"]
+env = { CARGO_HOME = "/cargo-home" }
+
+[[checks]]
+id = "anneal-sandbox-aarch64"
+image = "anneal-arm64"
+sandbox = "nested_bwrap"
+runner = "ubuntu-24.04-arm"
+workdir = "anneal"
+caches = ["anneal-cargo-v1"]
+inputs = [
+  { kind = "cargo_workspace", manifest_path = "anneal/Cargo.toml" },
+  { kind = "glob", include = [
+    "anneal/flake.nix",
+    "anneal/flake.lock",
+    "anneal/trusted/root-manifest.sha256",
+    "anneal/trusted/cargo-anneal/assets/**",
+    "anneal/trusted/cargo-anneal/skills/**",
+    "anneal/trusted/**",
+    "anneal/correspondence/**",
+    "anneal/vendor/lean-miri/UPSTREAM_PIN.json",
+    "anneal/ci/run_anneal_check.sh",
+  ] },
+  # Root config overrides that `run_anneal_check.sh` rejects.
+  { kind = "glob", include = [
+    ".cargo", ".cargo/**", ".gitmodules", "rust-toolchain", "rust-toolchain.toml",
+    "anneal/.cargo", "anneal/.cargo/**", "anneal/.gitmodules",
+    "anneal/rust-toolchain", "anneal/rust-toolchain.toml",
+  ] },
+]
+command = ["./ci/run_anneal_check.sh", "sandbox"]
+env = { CARGO_HOME = "/cargo-home" }
+
+[[checks]]
+id = "anneal-audit"
+image = "anneal-tc"
+sandbox = "nested_bwrap"
+runner = "ubuntu-24.04"
+workdir = "anneal"
+caches = ["miri-v1"]
+inputs = [
+  { kind = "glob", include = ["anneal/**"], exclude = [
+    "anneal/target/**",
+    "anneal/docs/**",
+    "anneal/skills/**",
+    "anneal/.agents/**",
+    "anneal/.gemini/**",
+    "anneal/*.md",
+  ] },
+  # Root config overrides that `run_anneal_check.sh` rejects.
+  { kind = "glob", include = [
+    ".cargo", ".cargo/**", ".gitmodules", "rust-toolchain", "rust-toolchain.toml",
+    "anneal/.cargo", "anneal/.cargo/**", "anneal/.gitmodules",
+    "anneal/rust-toolchain", "anneal/rust-toolchain.toml",
+  ] },
+]
+command = ["./ci/run_anneal_check.sh", "audit"]
+env = { ANNEAL_CI_MIRI_CACHE_DIR = "/ci-cache/miri" }
+
+[[checks]]
+id = "anneal-guard-mutation"
+image = "anneal-tc"
+sandbox = "nested_bwrap"
+runner = "ubuntu-24.04"
+workdir = "anneal"
+inputs = [
+  { kind = "glob", include = [
+    "anneal/Cargo.toml",
+    "anneal/Cargo.lock",
+    "anneal/flake.nix",
+    "anneal/flake.lock",
+    "anneal/trusted/root-manifest.sha256",
+    "anneal/ci/run_anneal_check.sh",
+    "anneal/ci/check_guard_mutation.py",
+    "anneal/ci/fixtures/guard_mutation/**",
+    "anneal/trusted/lean/**",
+    "anneal/trusted/audit/TrustedBoundary.lean",
+  ] },
+  # Root config overrides that `run_anneal_check.sh` rejects.
+  { kind = "glob", include = [
+    ".cargo", ".cargo/**", ".gitmodules", "rust-toolchain", "rust-toolchain.toml",
+    "anneal/.cargo", "anneal/.cargo/**", "anneal/.gitmodules",
+    "anneal/rust-toolchain", "anneal/rust-toolchain.toml",
+  ] },
+]
+command = ["./ci/run_anneal_check.sh", "guard-mutation"]
+
+[[checks]]
+id = "anneal-ws-test"
+image = "anneal-tc"
+sandbox = "nested_bwrap"
+runner = "ubuntu-24.04"
+workdir = "anneal"
+inputs = [
+  { kind = "glob", include = ["anneal/**"], exclude = [
+    "anneal/target/**",
+    "anneal/docs/**",
+    "anneal/skills/**",
+    "anneal/.agents/**",
+    "anneal/.gemini/**",
+    "anneal/*.md",
+  ] },
+  # Root config overrides that `run_anneal_check.sh` rejects.
+  { kind = "glob", include = [
+    ".cargo", ".cargo/**", ".gitmodules", "rust-toolchain", "rust-toolchain.toml",
+    "anneal/.cargo", "anneal/.cargo/**", "anneal/.gitmodules",
+    "anneal/rust-toolchain", "anneal/rust-toolchain.toml",
+  ] },
+]
+command = ["./ci/run_anneal_check.sh", "ws-test"]
+env = { SHARD_SPEC = "${matrix.shard}" }
+matrix = { shard = ["1/3", "2/3", "3/3"] }
+
+[[checks]]
+id = "anneal-installed-smoke"
+image = "anneal-tc"
+sandbox = "nested_bwrap"
+runner = "ubuntu-24.04"
+workdir = "anneal"
+inputs = [
+  { kind = "glob", include = ["anneal/**"], exclude = [
+    "anneal/vendor/**",
+    "anneal/target/**",
+    "anneal/docs/**",
+    "anneal/skills/**",
+    "anneal/.agents/**",
+    "anneal/.gemini/**",
+    "anneal/AGENTS.md",
+    "anneal/META_PRINCIPLES.md",
+    "anneal/PRINCIPLES.md",
+    "anneal/THREAT_MODEL.md",
+  ] },
+  { kind = "glob", include = [
+    "anneal/vendor/lean-miri/UPSTREAM_PIN.json",
+    "zerocopy/Cargo.toml",
+    "zerocopy/src/**",
+    "zerocopy/proofs/**",
+  ] },
+  # Root config overrides that `run_anneal_check.sh` rejects.
+  { kind = "glob", include = [
+    ".cargo", ".cargo/**", ".gitmodules", "rust-toolchain", "rust-toolchain.toml",
+    "anneal/.cargo", "anneal/.cargo/**", "anneal/.gitmodules",
+    "anneal/rust-toolchain", "anneal/rust-toolchain.toml",
+  ] },
+]
+command = ["./ci/run_anneal_check.sh", "installed-smoke"]

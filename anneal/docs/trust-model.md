@@ -58,6 +58,8 @@ evidence belongs in `trusted/`. The build manifests and external toolchain
 inputs are pinned. The repository audit also relies on reviewed enforcement
 code in `ci/` and the
 [Zerocopy Anneal workflow](../../.github/workflows/anneal-current.yml).
+Pre-cutover `ci-core` (repository-root `ci/checks.toml`) runs alongside that
+workflow and does not replace it.
 The vendored reference model and its replay support the correspondence audit.
 
 The current workspace divides verification, test, and audit code into four zones.
@@ -461,6 +463,16 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
    landed revision performs a cold, OS-sandboxed from-source build as well as
    standalone kernel replay while canonical `main` still seeds a missing
    default-branch cache entry for pull requests and merge-group runs.
+   On `merge_group` and `main`-branch `push`, pre-cutover `ci-core` also runs
+   `anneal-audit` with its own `miri-v1` cache slot outside the checkout, keyed
+   on the `anneal-tc` image manifest digest, `flake.nix`, `flake.lock`,
+   `trusted/lean/lean-toolchain`, `trusted/lean/foundation-lock.json`, and
+   `UPSTREAM_PIN.json`. Only the checkout-free `publish` job of those runs can
+   push and keyless-sign (Sigstore) `miri-v1` entries; pull-request runs cannot
+   write them. These runs may restore an entry instead of compiling cold, but
+   `anneal-audit` still verifies every restored file against
+   `UPSTREAM_PIN.json` and runs full standalone kernel replay, and
+   `anneal-current.yml` still performs the cold `main`-branch build.
 3. **Dual Pass 2 preflight, OS-sandboxed Pass 2 elaboration, and `LEAN_PATH`
    isolation:** Pass 2 first runs foundation `"preflight"` to validate imports,
    cycles, trust tiers, and syntax—admitting imports in
