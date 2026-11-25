@@ -1509,8 +1509,13 @@ exit 4
             for dir_rel in ["lib/lean/Init", "lib/lean/Std", "lib/lean/Lean", "src/lean/Init", "src/lean/Std"] {
                 fs::create_dir_all(prefix.join(dir_rel)).unwrap();
             }
-            fs::write(prefix.join("lib/lean/Lean/Replay.olean"), b"synthetic lean replay\n")
+            for ext in ["olean", "ir", "ir.sig"] {
+                fs::write(
+                    prefix.join(format!("lib/lean/Lean/Replay.{ext}")),
+                    b"synthetic lean replay\n",
+                )
                 .unwrap();
+            }
             let sysroot_manifest_sha256 =
                 compute_sysroot_manifest_sha256_for_test(&prefix.join("lib/lean"));
             let foundation_lock = json!({
@@ -1752,13 +1757,13 @@ exit 4
 
         let olean = toolchain.prefix.join("lib/lean/Init/Data/BitVec/Basic.olean");
         fs::write(&olean, b"changed library artifact").unwrap();
-        // A fresh checker rejects the altered sysroot `.olean` manifest in
-        // `tool_admission` before library resolution begins.
+        // A fresh checker rejects the altered sysroot `.olean`/`.ir` manifest
+        // in `tool_admission` before library resolution begins.
         for root in [LIBRARY, LIBRARY_USER] {
             let err = admit(&toolchain, root).unwrap_err();
             assert_eq!((err.code, err.phase.as_str()), (1, "toolchain"), "{err}");
             assert!(
-                err.message.contains("sysroot Init/Std/Lean .olean manifest SHA-256 mismatch"),
+                err.message.contains("sysroot Init/Std/Lean .olean/.ir manifest SHA-256 mismatch"),
                 "{root}: {err}"
             );
         }
@@ -1774,31 +1779,40 @@ exit 4
         }
     }
 
-    /// Tampering with, removing, or symlinking sysroot `{Std,Lean}` `.olean`
-    /// files outside `foundation-lock.json` and `library-lock.json` must reject
-    /// during pinned `tool_admission` before any inspector invocation runs.
+    /// Tampering with, removing, or symlinking sysroot `{Std,Lean}` `.olean`,
+    /// `.ir`, or `.ir.sig` files outside `foundation-lock.json` and
+    /// `library-lock.json` must reject during pinned `tool_admission` before
+    /// any inspector invocation runs.
     #[test]
     fn tool_admission_rejects_tampered_lean_sysroot_before_inspector_runs() {
         let toolchain = Toolchain::new();
         let request = toolchain.request();
         let replay_olean = toolchain.prefix.join("lib/lean/Lean/Replay.olean");
+        let replay_ir = toolchain.prefix.join("lib/lean/Lean/Replay.ir");
+        let replay_ir_sig = toolchain.prefix.join("lib/lean/Lean/Replay.ir.sig");
 
-        fs::write(&replay_olean, b"tampered lean replay\n").unwrap();
-        let mut checker = toolchain.checker();
-        let err = checker.run_target(&request).unwrap_err();
-        assert_eq!((err.code, err.phase.as_str()), (1, "toolchain"), "{err}");
-        assert!(
-            err.message.contains("sysroot Init/Std/Lean .olean manifest SHA-256 mismatch"),
-            "{err}"
-        );
-        assert!(!checker.execution_began());
+        for artifact in [&replay_olean, &replay_ir, &replay_ir_sig] {
+            let saved = fs::read(artifact).unwrap();
+            fs::write(artifact, b"tampered lean replay\n").unwrap();
+            let mut checker = toolchain.checker();
+            let err = checker.run_target(&request).unwrap_err();
+            assert_eq!((err.code, err.phase.as_str()), (1, "toolchain"), "{err}");
+            assert!(
+                err.message
+                    .contains("sysroot Init/Std/Lean .olean/.ir manifest SHA-256 mismatch"),
+                "{}: {err}",
+                artifact.display()
+            );
+            assert!(!checker.execution_began());
+            fs::write(artifact, saved).unwrap();
+        }
 
         fs::remove_file(&replay_olean).unwrap();
         let mut checker = toolchain.checker();
         let err = checker.run_target(&request).unwrap_err();
         assert_eq!((err.code, err.phase.as_str()), (1, "toolchain"), "{err}");
         assert!(
-            err.message.contains("sysroot Init/Std/Lean .olean manifest SHA-256 mismatch"),
+            err.message.contains("sysroot Init/Std/Lean .olean/.ir manifest SHA-256 mismatch"),
             "{err}"
         );
         assert!(!checker.execution_began());
@@ -1829,10 +1843,22 @@ exit 4
             "{err}"
         );
 
-        let toolchain = Toolchain::new();
+        let mut toolchain = Toolchain::new();
         toolchain.write_library_lock(&toolchain.library_lock());
         let ir = toolchain.prefix.join("lib/lean/Init/Data/BitVec/Basic.ir");
         fs::write(&ir, b"unlocked companion part").unwrap();
+        // With the original sysroot manifest digest, `tool_admission` rejects
+        // the unexpected `.ir` file before library admission runs.
+        let early = admit(&toolchain, LIBRARY).unwrap_err();
+        assert_eq!((early.code, early.phase.as_str()), (1, "toolchain"), "{early}");
+        assert!(
+            early.message.contains("sysroot Init/Std/Lean .olean/.ir manifest SHA-256 mismatch"),
+            "{early}"
+        );
+        // Even if the manifest digest includes the file, `admit_libraries`
+        // independently rejects the mismatched 4-tree `library-lock` digest.
+        toolchain.sysroot_manifest_sha256 =
+            compute_sysroot_manifest_sha256_for_test(&toolchain.prefix.join("lib/lean"));
         let err = admit(&toolchain, LIBRARY).unwrap_err();
         assert_eq!((err.code, err.phase.as_str()), (2, "library-lock"), "{err}");
         assert!(
@@ -2494,7 +2520,7 @@ exit 4
         assert_eq!(pinned_report["exactType"], Json::Bool(true));
     }
 
-    fn copy_dir_filtered(src: &Path, dst: &Path, olean_only: bool) {
+    fn copy_dir_filtered(src: &Path, dst: &Path, parts_only: bool) {
         for entry in walkdir::WalkDir::new(src).follow_links(false) {
             let entry = entry.unwrap();
             let rel = entry.path().strip_prefix(src).unwrap();
@@ -2503,8 +2529,8 @@ exit 4
             if ft.is_dir() {
                 fs::create_dir_all(&out).unwrap();
             } else if ft.is_file() {
-                let keep = !olean_only
-                    || crate::toolchain::OLEAN_PARTS
+                let keep = !parts_only
+                    || crate::toolchain::PARTS
                         .iter()
                         .any(|ext| out.to_string_lossy().ends_with(&format!(".{ext}")));
                 if keep {
@@ -2519,9 +2545,10 @@ exit 4
     /// Real-sysroot negative test: keep the pinned `bin/lean` executable and
     /// all `foundation-lock.json` (`Init.*`) artifacts intact, confirm
     /// untampered admission passes `LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`,
-    /// then corrupt `Lean/Replay.olean` and assert pinned `tool_admission`
-    /// rejects with policy exit code `1` and phase `"toolchain"` before
-    /// `TrustedBoundary.lean` runs (`execution_began == false`).
+    /// then corrupt `Lean/Replay.{olean,ir,ir.sig}` and assert pinned
+    /// `tool_admission` rejects with policy exit code `1` and phase
+    /// `"toolchain"` before `TrustedBoundary.lean` runs
+    /// (`execution_began == false`).
     #[test]
     fn tool_admission_rejects_tampered_real_lean_sysroot_before_inspector_runs() {
         let real_lean = fs::canonicalize(installed_lean()).unwrap();
@@ -2583,32 +2610,41 @@ exit 4
         control.tool_admission().unwrap();
         assert!(!control.execution_began());
 
-        // Attack: corrupt `Lean/Replay.olean` while keeping `bin/lean` and
-        // all `Init.*` artifacts untouched (unlink first so hardlinks never
-        // mutate the real sysroot).
-        let replay_olean = dst_lib_lean.join("Lean/Replay.olean");
-        assert!(replay_olean.is_file(), "missing {}", replay_olean.display());
-        fs::remove_file(&replay_olean).unwrap();
-        fs::write(&replay_olean, b"tampered lean replay\n").unwrap();
+        // Attack: corrupt `Lean/Replay.{olean,ir,ir.sig}` while keeping
+        // `bin/lean` and all `Init.*` artifacts untouched (unlink first so
+        // hardlinks never mutate the real sysroot).
+        for rel in ["Lean/Replay.olean", "Lean/Replay.ir", "Lean/Replay.ir.sig"] {
+            let artifact = dst_lib_lean.join(rel);
+            assert!(artifact.is_file(), "missing {}", artifact.display());
+            let saved = fs::read(&artifact).unwrap();
+            fs::remove_file(&artifact).unwrap();
+            fs::write(&artifact, b"tampered lean replay\n").unwrap();
 
-        let req = minimal_request(&base.join("req"), None);
-        let mut tampered_target = Checker::new(&repo_root(), Some(&copied_lean)).unwrap();
-        let err = tampered_target.run_target(&req).unwrap_err();
-        assert_eq!((err.code, err.phase.as_str()), (1, "toolchain"), "{err}");
-        assert!(
-            err.message.contains("sysroot Init/Std/Lean .olean manifest SHA-256 mismatch"),
-            "{err}"
-        );
-        assert!(!tampered_target.execution_began());
+            let req = minimal_request(&base.join("req"), None);
+            let mut tampered_target = Checker::new(&repo_root(), Some(&copied_lean)).unwrap();
+            let err = tampered_target.run_target(&req).unwrap_err();
+            assert_eq!((err.code, err.phase.as_str()), (1, "toolchain"), "{err}");
+            assert!(
+                err.message
+                    .contains("sysroot Init/Std/Lean .olean/.ir manifest SHA-256 mismatch"),
+                "{rel}: {err}"
+            );
+            assert!(!tampered_target.execution_began());
 
-        let mut tampered_adm = Checker::new(&repo_root(), Some(&copied_lean)).unwrap();
-        let err_adm = tampered_adm.tool_admission().unwrap_err();
-        assert_eq!((err_adm.code, err_adm.phase.as_str()), (1, "toolchain"), "{err_adm}");
-        assert!(
-            err_adm.message.contains("sysroot Init/Std/Lean .olean manifest SHA-256 mismatch"),
-            "{err_adm}"
-        );
-        assert!(!tampered_adm.execution_began());
+            let mut tampered_adm = Checker::new(&repo_root(), Some(&copied_lean)).unwrap();
+            let err_adm = tampered_adm.tool_admission().unwrap_err();
+            assert_eq!((err_adm.code, err_adm.phase.as_str()), (1, "toolchain"), "{err_adm}");
+            assert!(
+                err_adm
+                    .message
+                    .contains("sysroot Init/Std/Lean .olean/.ir manifest SHA-256 mismatch"),
+                "{rel}: {err_adm}"
+            );
+            assert!(!tampered_adm.execution_began());
+
+            fs::remove_file(&artifact).unwrap();
+            fs::write(&artifact, saved).unwrap();
+        }
     }
 
     /// Regression test for unauthenticated Lean runtime shared libraries:

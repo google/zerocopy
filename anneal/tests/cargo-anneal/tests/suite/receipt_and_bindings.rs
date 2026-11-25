@@ -126,12 +126,11 @@ fn check_provenance_and_toolchain(ok: &anneal_testkit::VerifySuccessReceipt) {
                 "Lean executable in foundation-lock.json",
                 "Lean runtime shared libraries in LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS",
                 "foundation-lock.json modules",
-                "Lean sysroot Init/Std/Lean .olean artifacts in LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256",
+                "Lean sysroot Init/Std/Lean .olean/.ir artifacts in LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256",
                 "imported library-lock.json modules"
             ],
             "sha256_recorded": ["capture executable as capture_binary_sha256"],
             "unhashed": [
-                "Lean sysroot .ir/.ir.sig companions outside the locks",
                 "Rust compiler and sysroot, identified by their reported commit"
             ]
         })
@@ -140,13 +139,12 @@ fn check_provenance_and_toolchain(ok: &anneal_testkit::VerifySuccessReceipt) {
             "sha256_locked": [
                 "Lean executable in foundation-lock.json",
                 "foundation-lock.json modules",
-                "Lean sysroot Init/Std/Lean .olean artifacts in LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256",
+                "Lean sysroot Init/Std/Lean .olean/.ir artifacts in LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256",
                 "imported library-lock.json modules"
             ],
             "sha256_recorded": ["capture executable as capture_binary_sha256"],
             "unhashed": [
                 "Lean shared libraries, identified by lean --version",
-                "Lean sysroot .ir/.ir.sig companions outside the locks",
                 "Rust compiler and sysroot, identified by their reported commit"
             ]
         })
@@ -238,6 +236,8 @@ fn verifies_real_source_and_rejects_boundary_mutations() {
         &["--request", req_path.to_str().unwrap(), "--artifacts", whole_art.to_str().unwrap()],
     );
     let ok = expect_verified(&run, "crate_verified", true);
+    assert!(ok.experimental, "{ok:?}");
+    assert_eq!(ok.candidate_features, vec!["mir_ast", "mir_semantics"]);
     check_provenance_and_toolchain(ok);
     assert!(whole_art.join("capture/Captured.lean").is_file());
     assert!(whole_art.join("generated/Expected.lean").is_file());

@@ -45,6 +45,8 @@ fn audits_empty_inventory_and_foundation_replay() {
     assert_eq!(rep.get("kernelDeclarations").and_then(Json::as_i64), Some(0));
     assert_eq!(rep.get("axioms"), Some(&json!([])));
     assert_eq!(rep.get("replay"), Some(&json!(true)));
+    assert_eq!(rep.get("vettedModules"), Some(&json!(["Trusted"])));
+    assert_eq!(rep.get("candidateFeatures"), Some(&json!({})));
 }
 
 /// Verifies that `tests/fixtures/positive.lean` passes under hostile
@@ -599,9 +601,10 @@ fn copy_sysroot_dir(src: &Path, dst: &Path) {
 }
 
 /// Verifies through both `anneal_audit::Checker::run()` and the external
-/// `anneal-audit` binary that tampering with a sysroot `.olean` outside
-/// `foundation-lock.json` (`Lean/Replay.olean`) fails closed in phase
-/// `"toolchain"` with policy exit code `1` before `TrustedBoundary.lean` runs.
+/// `anneal-audit` binary that tampering with a sysroot artifact outside
+/// `foundation-lock.json` (`Lean/Replay.{olean,ir,ir.sig}`) fails closed in
+/// phase `"toolchain"` with policy exit code `1` before `TrustedBoundary.lean`
+/// runs.
 #[cfg(unix)]
 #[test]
 fn rejects_tampered_lean_sysroot_outside_foundation_lock() {
@@ -625,9 +628,9 @@ fn rejects_tampered_lean_sysroot_outside_foundation_lock() {
     // `verify_sysroot_foundation_dir` forbids symlinks under
     // `lib/lean/{Init,Std,Lean}`, and compiling `TrustedBoundary.lean` in the
     // control run requires `Std`/`Lean` `.ir` companions alongside `.olean*`,
-    // so those subtrees use `hard_link` with `copy` fallback. Only
-    // `Lean/Replay.olean` is replaced after `remove_file`, never mutating the
-    // real toolchain.
+    // so those subtrees use `hard_link` with `copy` fallback. Each of
+    // `Lean/Replay.{olean,ir,ir.sig}` is replaced after `remove_file`, never
+    // mutating the real toolchain.
     copy_sysroot_dir(&real_prefix.join("src/lean/Init"), &syn_prefix.join("src/lean/Init"));
     let dst_lib_lean = syn_prefix.join("lib/lean");
     fs::create_dir_all(&dst_lib_lean).unwrap();
@@ -653,46 +656,53 @@ fn rejects_tampered_lean_sysroot_outside_foundation_lock() {
     control.set_require_mir_wp(false);
     control.run().unwrap();
 
-    // Attack: corrupt `Lean/Replay.olean` while keeping `bin/lean` and all
-    // `foundation-lock.json` (`Init.*`) files untouched.
-    let replay_olean = dst_lib_lean.join("Lean/Replay.olean");
-    assert!(replay_olean.is_file(), "missing {}", replay_olean.display());
-    fs::remove_file(&replay_olean).unwrap();
-    fs::write(&replay_olean, b"tampered lean replay\n").unwrap();
+    // Attack: corrupt `Lean/Replay.{olean,ir,ir.sig}` while keeping `bin/lean`
+    // and all `foundation-lock.json` (`Init.*`) files untouched.
+    for rel in ["Lean/Replay.olean", "Lean/Replay.ir", "Lean/Replay.ir.sig"] {
+        let artifact = dst_lib_lean.join(rel);
+        assert!(artifact.is_file(), "missing {}", artifact.display());
+        let saved = fs::read(&artifact).unwrap();
+        fs::remove_file(&artifact).unwrap();
+        fs::write(&artifact, b"tampered lean replay\n").unwrap();
 
-    let mut tampered = Checker::new(&fix.root, Some(&copied_lean)).unwrap();
-    tampered.set_require_mir_wp(false);
-    let err = tampered.run().unwrap_err();
-    assert_eq!((err.code, err.phase.as_str()), (1, "toolchain"), "{err}");
-    assert!(!tampered.execution_began(), "inspector ran before sysroot check: {err}");
-    assert!(
-        err.message.contains("sysroot Init/Std/Lean .olean manifest SHA-256 mismatch"),
-        "unexpected error: {err}"
-    );
+        let mut tampered = Checker::new(&fix.root, Some(&copied_lean)).unwrap();
+        tampered.set_require_mir_wp(false);
+        let err = tampered.run().unwrap_err();
+        assert_eq!((err.code, err.phase.as_str()), (1, "toolchain"), "{err}");
+        assert!(!tampered.execution_began(), "inspector ran before sysroot check: {err}");
+        assert!(
+            err.message.contains("sysroot Init/Std/Lean .olean/.ir manifest SHA-256 mismatch"),
+            "{rel}: {err}"
+        );
 
-    // Binary CLI entrypoint also fails closed with policy exit code `1` and the
-    // toolchain mismatch diagnostic.
-    let bin = env!("CARGO_BIN_EXE_anneal-audit-test-bin");
-    let out = Command::new(bin)
-        .arg("--anneal-root")
-        .arg(repo_root())
-        .arg("--lean")
-        .arg(&copied_lean)
-        .output()
-        .unwrap();
-    assert_eq!(
-        out.status.code(),
-        Some(1),
-        "status: {:?}, stderr: {}",
-        out.status,
-        String::from_utf8_lossy(&out.stderr)
-    );
-    let stderr = String::from_utf8_lossy(&out.stderr);
-    assert!(
-        stderr.contains("(toolchain): sysroot Init/Std/Lean .olean manifest SHA-256 mismatch")
-            && stderr.contains("Target execution began: false"),
-        "unexpected binary stderr: {stderr}"
-    );
+        // Binary CLI entrypoint also fails closed with policy exit code `1`
+        // and the toolchain mismatch diagnostic.
+        let bin = env!("CARGO_BIN_EXE_anneal-audit-test-bin");
+        let out = Command::new(bin)
+            .arg("--anneal-root")
+            .arg(repo_root())
+            .arg("--lean")
+            .arg(&copied_lean)
+            .output()
+            .unwrap();
+        assert_eq!(
+            out.status.code(),
+            Some(1),
+            "status: {:?}, stderr: {}",
+            out.status,
+            String::from_utf8_lossy(&out.stderr)
+        );
+        let stderr = String::from_utf8_lossy(&out.stderr);
+        assert!(
+            stderr
+                .contains("(toolchain): sysroot Init/Std/Lean .olean/.ir manifest SHA-256 mismatch")
+                && stderr.contains("Target execution began: false"),
+            "{rel} unexpected binary stderr: {stderr}"
+        );
+
+        fs::remove_file(&artifact).unwrap();
+        fs::write(&artifact, saved).unwrap();
+    }
 }
 
 /// Verifies defense-in-depth in Phase 2 (`"audit"`): even if a `.lean` file
@@ -2312,6 +2322,169 @@ fn verifies_source_lock_schema_and_rejects_malformed_records() {
     let file_entry = cross_dup["files"][0].clone();
     cross_dup["supporting_files"].as_array_mut().unwrap().push(file_entry);
     expect_policy(&cross_dup, "duplicate `supporting_files` path");
+
+    // Unknown component, unpaired manifest fields, non-canonical
+    // `extracted_root`, malformed `pin_markers`, and blank metadata.
+    let mut bad_component: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    bad_component["files"][0]["component"] = serde_json::json!("unknown_dep");
+    expect_policy(&bad_component, "invalid `files` component name");
+
+    let mut unpaired_manifest: serde_json::Value =
+        serde_json::from_slice(&source_lock_bytes).unwrap();
+    unpaired_manifest["pins"]["rustc"]
+        .as_object_mut()
+        .unwrap()
+        .remove("extracted_paths_manifest_sha256");
+    expect_policy(&unpaired_manifest, "invalid `rustc` pin record");
+
+    let mut bad_extracted_root: serde_json::Value =
+        serde_json::from_slice(&source_lock_bytes).unwrap();
+    bad_extracted_root["pins"]["aes"]["extracted_root"] = serde_json::json!("../aes");
+    expect_policy(&bad_extracted_root, "invalid `aes` pin record");
+
+    let mut bad_marker: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    bad_marker["acquisition"]["pin_markers"]["miri"] = serde_json::json!("/abs/miri.commit");
+    expect_policy(&bad_marker, "invalid `acquisition` metadata");
+
+    let mut empty_notes: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    empty_notes["scope_notes"] = serde_json::json!([]);
+    expect_policy(&empty_notes, "invalid coverage or feature metadata");
+
+    let mut empty_cargo_pkgs: serde_json::Value =
+        serde_json::from_slice(&source_lock_bytes).unwrap();
+    empty_cargo_pkgs["external_dependencies"]["cargo_packages"] = serde_json::json!([]);
+    expect_policy(&empty_cargo_pkgs, "invalid `external_dependencies` metadata");
+
+    let mut blank_cargo_name: serde_json::Value =
+        serde_json::from_slice(&source_lock_bytes).unwrap();
+    blank_cargo_name["external_dependencies"]["cargo_packages"][0]["name"] =
+        serde_json::json!(" ");
+    expect_policy(&blank_cargo_name, "invalid `external_dependencies` metadata");
+
+    let mut bad_rustc_sha: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    bad_rustc_sha["external_dependencies"]["rustc_private_crates"][0]["checksum"] =
+        serde_json::json!("not-a-sha256");
+    expect_policy(&bad_rustc_sha, "invalid `external_dependencies` metadata");
+
+    let mut bad_cov_root: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    bad_cov_root["external_dependencies"]["rustc_private_crates"][0]["coverage_roots"] =
+        serde_json::json!(["../escape"]);
+    expect_policy(&bad_cov_root, "invalid `external_dependencies` metadata");
+
+    let mut blank_native: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    blank_native["external_dependencies"]["toolchain_and_native"] = serde_json::json!([""]);
+    expect_policy(&blank_native, "invalid `external_dependencies` metadata");
+
+    // Each case violates exactly one admission predicate of an otherwise valid
+    // lock, so deleting that predicate lets the case pass validation or fail
+    // with a different message.
+    const ACQ: &str = "invalid `acquisition` metadata";
+    const EXT: &str = "invalid `external_dependencies` metadata";
+    const COV: &str = "invalid coverage or feature metadata";
+    const FILE_COMPONENT: &str = "invalid `files` component name";
+    type Mutation = fn(&mut serde_json::Value);
+    let cases: &[(&str, Mutation)] = &[
+        (ACQ, |v| v["acquisition"]["note"] = serde_json::json!(" ")),
+        (ACQ, |v| v["acquisition"]["note"] = serde_json::json!("note ")),
+        (ACQ, |v| {
+            v["acquisition"]["pin_markers"]["extra"] =
+                serde_json::json!("upstream/.pins/extra.commit");
+        }),
+        (ACQ, |v| {
+            let markers = v["acquisition"]["pin_markers"].as_object_mut().unwrap();
+            let aes = markers.remove("aes").unwrap();
+            markers.insert("aes2".to_owned(), aes);
+        }),
+        ("invalid `resolution_file` record", |v| {
+            v["external_dependencies"]["resolution_file"]["note"] = serde_json::json!("");
+        }),
+        ("invalid `rustc_upstream_resolution_file` record", |v| {
+            v["external_dependencies"]["rustc_upstream_resolution_file"]["note"] =
+                serde_json::json!(" padded");
+        }),
+        (EXT, |v| v["external_dependencies"]["cargo_packages"][0]["scope"] = serde_json::json!("")),
+        (EXT, |v| {
+            v["external_dependencies"]["cargo_packages"][0]["version"] = serde_json::json!(" ");
+        }),
+        (EXT, |v| {
+            v["external_dependencies"]["cargo_packages"][1]["requirement"] = serde_json::json!("");
+        }),
+        (EXT, |v| {
+            let pkg = &mut v["external_dependencies"]["cargo_packages"][20];
+            assert!(pkg.get("path").is_some(), "fixture package 20 must set `path`");
+            pkg["path"] = serde_json::json!(" ");
+        }),
+        (EXT, |v| {
+            v["external_dependencies"]["cargo_packages"][0]["features"] =
+                serde_json::json!(["hazmat", " "]);
+        }),
+        (EXT, |v| v["external_dependencies"]["rustc_private_crates"] = serde_json::json!([])),
+        (EXT, |v| {
+            v["external_dependencies"]["rustc_private_crates"][0]["name"] = serde_json::json!("");
+        }),
+        (EXT, |v| {
+            v["external_dependencies"]["rustc_private_crates"][0]["status"] =
+                serde_json::json!(" ");
+        }),
+        (EXT, |v| {
+            v["external_dependencies"]["rustc_private_crates"][0]["evidence"] =
+                serde_json::json!("");
+        }),
+        (EXT, |v| {
+            v["external_dependencies"]["rustc_private_crates"][1]["version"] =
+                serde_json::json!(" ");
+        }),
+        (EXT, |v| {
+            v["external_dependencies"]["rustc_private_crates"][1]["git_commit"] =
+                serde_json::json!("short");
+        }),
+        (EXT, |v| v["external_dependencies"]["toolchain_and_native"] = serde_json::json!([])),
+        (COV, |v| v["coverage_roots"] = serde_json::json!([])),
+        (COV, |v| v["coverage_roots"][0] = serde_json::json!("upstream//escape")),
+        (COV, |v| v["coverage_expected_rust_modules"] = serde_json::json!({})),
+        (COV, |v| v["coverage_expected_rust_modules"]["upstream/./src"] = serde_json::json!(1)),
+        (COV, |v| {
+            let modules = v["coverage_expected_rust_modules"].as_object_mut().unwrap();
+            *modules.values_mut().next().unwrap() = serde_json::json!(0);
+        }),
+        (COV, |v| v["features"] = serde_json::json!({})),
+        (COV, |v| v["features"][" "] = serde_json::json!(["stack-cache"])),
+        (COV, |v| v["features"]["default"] = serde_json::json!(["stack-cache", ""])),
+        (COV, |v| v["scope_notes"] = serde_json::json!([" "])),
+        ("invalid `rustc` pin record", |v| {
+            v["pins"]["rustc"]["extracted_paths_manifest"] = serde_json::json!("../paths.txt");
+        }),
+        ("invalid `rustc` pin record", |v| {
+            v["pins"]["rustc"].as_object_mut().unwrap().remove("extracted_paths_manifest");
+        }),
+        ("invalid `aes` pin record", |v| {
+            v["pins"]["aes"]["checksum_source"] = serde_json::json!(" ");
+        }),
+        ("invalid `aes` pin record", |v| {
+            v["pins"]["aes"]["package_version"] = serde_json::json!("");
+        }),
+        ("invalid `miri` pin record", |v| {
+            v["pins"]["miri"]["commit_date_utc"] = serde_json::json!("");
+        }),
+        ("invalid `miri` pin record", |v| v["pins"]["miri"]["commit_url"] = serde_json::json!(" ")),
+        ("invalid `miri` pin record", |v| v["pins"]["miri"]["pinned_via"] = serde_json::json!("")),
+        ("invalid `miri` pin record", |v| {
+            v["pins"]["miri"]["archive_url"] = serde_json::json!(" padded");
+        }),
+        ("invalid `miri` pin record", |v| {
+            v["pins"]["miri"]["repository"] = serde_json::json!("padded ");
+        }),
+        ("invalid `rustc_apfloat` pin record", |v| {
+            v["pins"]["rustc_apfloat"]["registry"] = serde_json::json!(" ");
+        }),
+        (FILE_COMPONENT, |v| v["files"][0]["component"] = serde_json::json!("rustc_")),
+        (FILE_COMPONENT, |v| v["files"][0]["component"] = serde_json::json!("rustc_Abi")),
+    ];
+    for (needle, mutate) in cases {
+        let mut lock: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+        mutate(&mut lock);
+        expect_policy(&lock, needle);
+    }
 }
 
 /// Verifies that `"correspondence-audit"` rejects a `.vendorMiri` module that
@@ -4845,7 +5018,7 @@ fn rejects_correspondence_audit_violations_and_sysroot_mismatch() {
         verify_sysroot_foundation_dir(&fake_lib, &BTreeSet::new(), &"0".repeat(64)).unwrap_err();
     assert_eq!(err_sysroot.phase, "sysroot-foundation");
     assert!(
-        err_sysroot.message.contains("sysroot Init/Std/Lean .olean manifest SHA-256 mismatch"),
+        err_sysroot.message.contains("sysroot Init/Std/Lean .olean/.ir manifest SHA-256 mismatch"),
         "unexpected sysroot mismatch error: {err_sysroot}"
     );
     symlink(fake_lib.join("Init/Dummy.olean"), fake_lib.join("Std/Link.olean")).unwrap();

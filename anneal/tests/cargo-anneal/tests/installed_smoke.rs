@@ -50,7 +50,7 @@ const CASES: &[&str] = &[
     "bundled-cargo-check",
     "cargo-arguments",
     "cargo-help",
-    #[cfg(target_os = "linux")]
+    #[cfg(unix)]
     "cargo-setup-invalid-archive",
     "cargo-version",
     "driver-callback",
@@ -254,13 +254,13 @@ fn cargo_case(name: &str, case: &mut CaseDirectory) -> TestResult {
             out.expect_code(2)?;
             require_text(&out.stderr, "unknown-scaffold-command", &out)
         }
-        #[cfg(target_os = "linux")]
+        #[cfg(unix)]
         "cargo-setup-invalid-archive" => cargo_setup_failure(case, &cargo),
         _ => Err(format!("unknown cargo case {name}")),
     }
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(unix)]
 fn write_test_archive(path: &Path, marker: &[u8]) -> TestResult {
     let file = fs::File::create(path)
         .map_err(|error| format!("create test archive {}: {error}", path.display()))?;
@@ -282,7 +282,7 @@ fn write_test_archive(path: &Path, marker: &[u8]) -> TestResult {
     Ok(())
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(unix)]
 fn run_local_setup(
     case: &mut CaseDirectory,
     cargo: &Path,
@@ -290,14 +290,15 @@ fn run_local_setup(
     archive_arg: &str,
 ) -> TestResult<ProcessOutcome> {
     let mut command = Invocation::new(cargo, &["setup", "--local-archive", archive_arg]);
-    // Exocrate's user-global location honors XDG_CACHE_HOME on Linux.
-    command
-        .environment
-        .insert("XDG_CACHE_HOME".into(), text_path(cache)?);
+    // Override both XDG_CACHE_HOME (Linux) and HOME (macOS ~/Library/Caches)
+    // so exocrate installs strictly inside the case cache directory.
+    let cache_text = text_path(cache)?;
+    command.environment.insert("XDG_CACHE_HOME".into(), cache_text.clone());
+    command.environment.insert("HOME".into(), cache_text);
     case.run(&command)
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(unix)]
 fn cargo_setup_failure(case: &mut CaseDirectory, cargo: &Path) -> TestResult {
     case.write("invalid.tar.zst", b"invalid local toolchain archive")?;
     let v1_archive = case.path().join("valid-v1.tar.zst");
@@ -335,7 +336,7 @@ fn cargo_setup_failure(case: &mut CaseDirectory, cargo: &Path) -> TestResult {
     );
     if !installed_root.starts_with(&cache) {
         return Err(format!(
-            "setup installed outside XDG_CACHE_HOME: {}",
+            "setup installed outside cache root: {}",
             installed_root.display()
         ));
     }

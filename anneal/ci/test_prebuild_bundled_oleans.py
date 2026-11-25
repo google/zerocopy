@@ -707,6 +707,43 @@ sys.exit(1)
             self.assertEqual(digest_proc.returncode, 0, msg=digest_proc.stderr)
             self.assertEqual(len(digest_proc.stdout.strip()), 64)
 
+    def test_sysroot_manifest_includes_ir_and_ir_sig(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            lib_dir = Path(tmp) / "lib/lean"
+            (lib_dir / "Init").mkdir(parents=True)
+            (lib_dir / "Init/Core.olean").write_bytes(b"olean\x02core")
+            ir_path = lib_dir / "Init/Core.ir"
+            ir_sig_path = lib_dir / "Init/Core.ir.sig"
+            ir_path.write_bytes(b"ir-v1")
+            ir_sig_path.write_bytes(b"ir-sig-v1")
+
+            sha1, _ = prebuild_bundled_oleans.compute_sysroot_manifest(
+                lib_dir, jobs=1
+            )
+            ir_path.write_bytes(b"ir-v2")
+            sha2, _ = prebuild_bundled_oleans.compute_sysroot_manifest(
+                lib_dir, jobs=1
+            )
+            self.assertNotEqual(sha1, sha2)
+
+            ir_sig_path.write_bytes(b"ir-sig-v2")
+            sha3, _ = prebuild_bundled_oleans.compute_sysroot_manifest(
+                lib_dir, jobs=1
+            )
+            self.assertNotEqual(sha2, sha3)
+
+    def test_sysroot_manifest_rejects_symlinked_top_level_pkg_dir(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            outside = tmp_path / "outside_init"
+            outside.mkdir()
+            (outside / "Core.olean").write_bytes(b"olean\x02core")
+            lib_dir = tmp_path / "lib/lean"
+            lib_dir.mkdir(parents=True)
+            (lib_dir / "Init").symlink_to(outside, target_is_directory=True)
+            with self.assertRaisesRegex(RuntimeError, "symlink forbidden in sysroot"):
+                prebuild_bundled_oleans.compute_sysroot_manifest(lib_dir, jobs=1)
+
 
 if __name__ == "__main__":
     unittest.main()

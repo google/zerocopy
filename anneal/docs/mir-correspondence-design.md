@@ -12,9 +12,8 @@ those terms. -->
 > `lean-miri` snapshot, `Trusted/MirAst.lean`, `Trusted/MirSemantics.lean`,
 > `Trusted/Correspondence.lean`, `correspondence/`, `theory/Anneal/MirWp.lean`,
 > `anneal-audit` Pass 2 enforcement, and the packaged correspondence provenance
-> record (planned alongside end-to-end packaging and `cargo anneal verify`
-> integration) described below are target architecture landing incrementally
-> across the MIR correspondence stack.
+> record (active on `main` for Profile v1) described below continue evolving
+> alongside Profile v2 coverage and downstream verification integration.
 
 [`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md) defines
 how Anneal validates its Rust Mid-level Intermediate Representation (MIR)
@@ -154,17 +153,16 @@ packages `theory/` into `share/anneal/theory` (requiring
 To preserve bounded human-review auditability without shipping
 `vendor/lean-miri/` or `correspondence/` at runtime
 ([`docs/architecture.md`](architecture.md),
-[`docs/trust-model.md`](trust-model.md)), once end-to-end packaging lands,
-packaged user archives and `cargo-anneal` bundles will instead carry a compact,
-CI-checked, digest-bound **correspondence provenance record** (pinned Anneal
-revision, `trusted/lean/` source and `.olean` digests, `vendor/lean-miri/`
-upstream commit, `UPSTREAM_PIN.json` SHA-256, `patched_files`
-allowlist/digests, `Trusted/Correspondence.lean` digest, and Pass 2 attestation
-metadata). Archive construction and `cargo anneal verify` will hash the actual
-packaged `trusted/lean/` artifacts and fail closed unless those computed digests
-exactly match the attested provenance record (as well as failing closed if
-missing or malformed), and `cargo anneal verify` will surface the verified
-record in every verification result's TCB audit log. Per
+[`docs/trust-model.md`](trust-model.md)), packaged user archives and
+`cargo-anneal` bundles instead carry a compact, CI-checked, digest-bound
+**correspondence provenance record**; [`docs/trust-model.md`](trust-model.md)
+(control 5) is authoritative for its fields and enforcement. Active today: CI
+binds the record to the canonical `trusted/` sources, `omnibus-archive` renders
+it from those same sources, and `cargo anneal verify` fails closed if it is
+malformed and copies it into every verification receipt. Planned: archive
+construction and `cargo anneal verify` will also hash the actual packaged
+`trusted/lean/` artifacts and fail closed unless those computed digests exactly
+match the record. Per
 [`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md), the
 Phase 1 correspondence domain covers concrete, monomorphic captured MIR carrying
 concrete instance/layout metadata (with polymorphic generic library verification
@@ -180,8 +178,8 @@ role-permitted intra-repository `Trusted.*` / `Anneal.*` modules. By contrast,
 `Miri.Interpreter.ExecutionMachine`) uses standard Lean 4 module headers
 without `prelude`, transitively importing `Init.*`, `Std.*`, and `Lean.*`
 modules from the Lean 4.34.1 toolchain sysroot (whose `.olean`,
-`.olean.server`, and `.olean.private` artifacts are authenticated in memory
-once the vendored snapshot lands—via
+`.olean.server`, `.olean.private`, `.ir`, and `.ir.sig` artifacts are
+authenticated in memory once the vendored snapshot lands—via
 `AdmittedToolchain::ensure_sysroot_foundation` in `src/lib.rs` against
 `LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256` in `trusted/audit/`, later
 refactored to `Checker::ensure_sysroot_foundation` calling
@@ -279,8 +277,9 @@ Placing `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and
      resolved old-to-new reference-model diff (in addition to compile-time
      metaprograms and local patches), per [`docs/trust-model.md`](trust-model.md).
      Before any vendor module is compiled or replayed, `anneal-audit` also
-     authenticates the pinned Lean toolchain's `Init`/`Std`/`Lean` `.olean`
-     companions against `LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`.
+     authenticates the pinned Lean toolchain's `Init`/`Std`/`Lean`
+     `.olean`/`.ir` companions against
+     `LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`.
    - **160-module `ExecutionMachine` slice build, `.olean` cache, and
      standalone vendor kernel replay:** Every closure source file is staged and
      re-hashed against its pinned SHA-256 digest before use. On a cache

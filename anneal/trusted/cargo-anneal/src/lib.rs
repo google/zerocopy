@@ -17,13 +17,13 @@
 //! and verifies exact definitional equality against the canonical obligation.
 //!
 //! Admission hashes the `lean` executable, the `foundation-lock.json` modules,
-//! the sysroot `{Init,Std,Lean}*` `.olean` manifest
+//! the sysroot `{Init,Std,Lean}*` `.olean`/`.ir` manifest
 //! (`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`), the `x86_64` Linux Lean
 //! runtime shared libraries (`LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS`), and the
-//! 4-tree `Init`/`Std` sysroot digests in `library-lock.json`. Sysroot
-//! `.ir`/`.ir.sig` companions outside the locks (and Lean shared libraries on
-//! uncatalogued triples) are identified only by `lean --version`, under the
-//! uncompromised execution environment that `THREAT_MODEL.md` assumes.
+//! 4-tree `Init`/`Std` sysroot digests in `library-lock.json`. Lean shared
+//! libraries on uncatalogued triples are identified only by `lean --version`,
+//! under the uncompromised execution environment that `THREAT_MODEL.md`
+//! assumes.
 
 #[doc(hidden)]
 pub mod bundle;
@@ -66,12 +66,12 @@ pub use stage::{Checker, source_starts_with_module_keyword};
 pub use target::{TargetAuditRequest, TargetBindings, TargetModule, TargetRole};
 #[doc(hidden)]
 pub use toolchain::{
-    AdmittedToolchain, FOUNDATION_AXIOMS, LOCKED_LEAN_SHA256,
+    AdmittedToolchain, CandidateFeature, FOUNDATION_AXIOMS, LOCKED_LEAN_SHA256,
     LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS, LOCKED_LEAN_X86_64_LINUX_SHA256,
     LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, ParallelDagPlan, PreflightHeader, PreflightResult,
-    TOOLCHAIN, UNPINNED_FOUNDATION_MODULES, default_compile_workers,
-    default_lean_search_bases_from_env, read_regular_file_deref, read_regular_file_strict,
-    regular, run_parallel_dag, sha256_file, sha256_file_deref, stage_regular_file,
-    verify_sysroot_foundation_dir, verify_sysroot_runtime_libs_for_sha,
+    TOOLCHAIN, TrustTier, UNPINNED_FOUNDATION_MODULES, default_compile_workers,
+    default_lean_search_bases_from_env, parse_trusted_tier_directive, read_regular_file_deref,
+    read_regular_file_strict, regular, run_parallel_dag, sha256_file, sha256_file_deref,
+    stage_regular_file, verify_sysroot_foundation_dir, verify_sysroot_runtime_libs_for_sha,
 };
 pub use toolchain::{Json, default_lean_path};

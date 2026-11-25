@@ -72,6 +72,128 @@ pub const LOCKED_LEAN_SHA256: [&str; 4] = [
 // `LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256` lives in `crate::trusted_bundle`;
 // all are re-exported at the top of this module.
 
+/// Enumerates the subsystem candidate-trusted feature identifiers recognized by
+/// Anneal.
+///
+/// Must stay in sync with `TrustedBoundary.validCandidateFeatures` in
+/// `trusted/audit/TrustedBoundary.lean`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum CandidateFeature {
+    Refinement,
+    StepResult,
+    Memory,
+    MirAst,
+    MirSemantics,
+    RustcCapture,
+}
+
+impl CandidateFeature {
+    /// Parse a candidate feature identifier string.
+    pub fn parse(raw: &str) -> Option<Self> {
+        match raw {
+            "refinement" => Some(Self::Refinement),
+            "step_result" => Some(Self::StepResult),
+            "memory" => Some(Self::Memory),
+            "mir_ast" => Some(Self::MirAst),
+            "mir_semantics" => Some(Self::MirSemantics),
+            "rustc_capture" => Some(Self::RustcCapture),
+            _ => None,
+        }
+    }
+
+    /// Return the canonical identifier string for this candidate feature.
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Refinement => "refinement",
+            Self::StepResult => "step_result",
+            Self::Memory => "memory",
+            Self::MirAst => "mir_ast",
+            Self::MirSemantics => "mir_semantics",
+            Self::RustcCapture => "rustc_capture",
+        }
+    }
+}
+
+/// Represents the module-level trust tier declared by a `Trusted` module via
+/// `-- anneal-trust-tier: <tier>`.
+///
+/// Making `TrustTier` a sum type over [`CandidateFeature`] ensures that an
+/// invalid or misspelled tier cannot be represented.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TrustTier {
+    /// Marks a human-audited, permanently trusted TCB module (`vetted`).
+    Vetted,
+    /// Marks an alpha TCB module gated behind an explicit candidate feature
+    /// opt-in (`candidate:<feature>`).
+    Candidate(CandidateFeature),
+}
+
+impl TrustTier {
+    /// Parse `"vetted"` or `"candidate:<feature>"`.
+    pub fn parse(raw: &str) -> Option<Self> {
+        if raw == "vetted" {
+            Some(Self::Vetted)
+        } else {
+            let feat = raw.strip_prefix("candidate:")?;
+            Some(Self::Candidate(CandidateFeature::parse(feat)?))
+        }
+    }
+
+    /// Render the canonical wire string (`"vetted"` or
+    /// `"candidate:<feature>"`).
+    pub fn render(self) -> String {
+        match self {
+            Self::Vetted => "vetted".to_string(),
+            Self::Candidate(f) => format!("candidate:{}", f.as_str()),
+        }
+    }
+}
+
+/// Trim the characters that Lean's `Char.isWhitespace` accepts (space, tab,
+/// CR, and LF) from both ends of `s`, matching Lean's `String.trimAscii`.
+/// Rust's `str::trim_ascii` also trims form feed, so it cannot be used here.
+fn trim_lean_ascii_whitespace(s: &str) -> &str {
+    s.trim_matches([' ', '\t', '\r', '\n'])
+}
+
+/// Extract and validate the single `-- anneal-trust-tier: <tier>` directive in
+/// a `Trusted` module source file. Finds directives as the `Trusted` module
+/// branch of `TrustedBoundary.extractSourceRole` in
+/// `trusted/audit/TrustedBoundary.lean` does: lines are split on LF, trimmed
+/// as by `trimAscii`, and collected before any tier is parsed, so several
+/// directives report `multiple` even when one of them is invalid. Tier parsing
+/// is stricter than Lean's `TrustTier.parse?`, whose `String.toName` also
+/// accepts `«...»`-escaped feature names; those fail closed here.
+pub fn parse_trusted_tier_directive(
+    module_name: &str,
+    source: &str,
+    phase: &str,
+) -> Result<TrustTier, Failure> {
+    let directives: Vec<&str> = source
+        .split('\n')
+        .filter_map(|raw_line| {
+            trim_lean_ascii_whitespace(raw_line)
+                .strip_prefix("-- anneal-trust-tier:")
+                .map(trim_lean_ascii_whitespace)
+        })
+        .collect();
+    match directives.as_slice() {
+        [] => Err(Failure::policy(
+            phase,
+            format!(
+                "missing `-- anneal-trust-tier: vetted` or \
+                 `-- anneal-trust-tier: candidate:<feature>` in {module_name}"
+            ),
+        )),
+        [raw_tier] => TrustTier::parse(raw_tier).ok_or_else(|| {
+            Failure::policy(phase, format!("invalid trust tier {raw_tier} in {module_name}"))
+        }),
+        [_, _, ..] => {
+            Err(Failure::policy(phase, format!("multiple trust tier directives in {module_name}")))
+        }
+    }
+}
+
 /// Represents a header response entry returned by `TrustedBoundary.lean`
 /// `"headers"` and `"preflight"` modes.
 #[derive(Debug, Clone, Deserialize)]
@@ -311,8 +433,8 @@ pub struct AdmittedToolchain {
     /// Expected locked SHA-256 digest of `exec_lean` in pinned mode.
     pub(crate) expected_lean_sha: Option<String>,
     /// Verified SHA-256 manifest digest of `<prefix>/lib/lean/{Init,Std,Lean}*`
-    /// `.olean*` artifacts (populated eagerly in pinned mode and lazily on cache
-    /// access in unpinned mode).
+    /// `.olean`/`.ir` artifacts (populated eagerly in pinned mode and lazily on
+    /// cache access in unpinned mode).
     pub(crate) sysroot_manifest_sha256: Option<String>,
     /// Staged precompiled `control/TrustedBoundary.olean` built once per
     /// `Checker` from `control/TrustedBoundary.lean`, plus its SHA-256 digest.
@@ -791,7 +913,7 @@ fn walk_and_hash_sysroot_dir_with_mode(
     let mut files_to_hash: Vec<(String, PathBuf)> = Vec::new();
     let mut modules: BTreeSet<String> = BTreeSet::new();
     for pkg in ["Init", "Std", "Lean"] {
-        for ext in OLEAN_PARTS {
+        for ext in PARTS {
             let rel = format!("{pkg}.{ext}");
             let path = lib_dir.join(&rel);
             let meta_res =
@@ -884,8 +1006,8 @@ fn walk_and_hash_sysroot_dir_with_mode(
                 segs.push(s);
             }
             let rel_str = segs.join("/");
-            let is_olean_part = OLEAN_PARTS.iter().any(|ext| rel_str.ends_with(&format!(".{ext}")));
-            if is_olean_part {
+            let is_part = PARTS.iter().any(|ext| rel_str.ends_with(&format!(".{ext}")));
+            if is_part {
                 if let Some(stem) = rel_str.strip_suffix(".olean") {
                     let mod_name = stem.replace('/', ".");
                     if !mod_name.split('.').all(is_lean_ident) {
@@ -964,9 +1086,9 @@ fn walk_and_hash_sysroot_dir_with_mode(
 }
 
 /// Authenticate every `Init`, `Std`, and `Lean` `.olean`/`.olean.server`/
-/// `.olean.private` artifact under `lib_dir` against `expected_manifest_sha`
-/// and return the sorted `.sysrootFoundation` module names (excluding
-/// `foundation_modules`).
+/// `.olean.private`/`.ir`/`.ir.sig` artifact under `lib_dir` against
+/// `expected_manifest_sha` and return the sorted `.sysrootFoundation` module
+/// names (excluding `foundation_modules`).
 pub fn verify_sysroot_foundation_dir(
     lib_dir: &Path,
     foundation_modules: &BTreeSet<String>,
@@ -979,7 +1101,7 @@ pub fn verify_sysroot_foundation_dir(
         return Err(Failure::policy(
             phase,
             format!(
-                "sysroot Init/Std/Lean .olean manifest SHA-256 mismatch: expected {expected_manifest_sha}, got {actual_manifest_sha}"
+                "sysroot Init/Std/Lean .olean/.ir manifest SHA-256 mismatch: expected {expected_manifest_sha}, got {actual_manifest_sha}"
             ),
         ));
     }
@@ -987,7 +1109,7 @@ pub fn verify_sysroot_foundation_dir(
 }
 
 /// Compute the canonical SHA-256 manifest digest of `<prefix>/lib/lean/{Init,Std,Lean}*`
-/// `.olean*` artifacts without filtering any module names.
+/// `.olean`/`.ir` artifacts without filtering any module names.
 pub(crate) fn compute_sysroot_manifest_sha256(
     lib_dir: &Path,
     phase: &str,
@@ -2602,5 +2724,59 @@ mod unpinned_sysroot_tests {
             assert_eq!(err_unreadable.code, 2);
         }
         SafeFs::set_mode(&unreadable, 0o600, "test").unwrap();
+    }
+
+    #[test]
+    fn parses_trusted_tier_directives_and_rejects_malformed() {
+        assert_eq!(
+            parse_trusted_tier_directive("Trusted", "-- anneal-trust-tier: vetted\n", "test")
+                .unwrap(),
+            TrustTier::Vetted
+        );
+        assert_eq!(
+            parse_trusted_tier_directive(
+                "Trusted.MirAst",
+                "-- anneal-trust-tier: candidate:mir_ast\n",
+                "test",
+            )
+            .unwrap(),
+            TrustTier::Candidate(CandidateFeature::MirAst)
+        );
+        // Space, tab, CR (including CRLF line endings), and LF are trimmed.
+        assert_eq!(
+            parse_trusted_tier_directive(
+                "Trusted",
+                "prelude\r\n \t-- anneal-trust-tier:\t vetted \r\n",
+                "test",
+            )
+            .unwrap(),
+            TrustTier::Vetted
+        );
+        for (bad, needle) in [
+            ("prelude\n", "missing `-- anneal-trust-tier:"),
+            ("\u{2003}-- anneal-trust-tier: vetted\n", "missing `-- anneal-trust-tier:"),
+            ("-- anneal-trust-tier: candidate:nope\n", "invalid trust tier candidate:nope"),
+            ("-- anneal-trust-tier: bogus\n", "invalid trust tier bogus"),
+            (
+                "-- anneal-trust-tier: vetted\n-- anneal-trust-tier: candidate:mir_ast\n",
+                "multiple trust tier directives",
+            ),
+            // Lean's `Char.isWhitespace` excludes form feed and vertical tab,
+            // so `trimAscii` keeps them and these lines are not directives.
+            ("\u{c}-- anneal-trust-tier: vetted\n", "missing `-- anneal-trust-tier:"),
+            ("\u{b}-- anneal-trust-tier: vetted\n", "missing `-- anneal-trust-tier:"),
+            // A form feed after the prefix stays in the tier.
+            ("-- anneal-trust-tier: vetted\u{c}\n", "invalid trust tier vetted\u{c}"),
+            // Like Lean, all directives are collected before any is parsed, so
+            // an invalid first directive still reports `multiple`.
+            (
+                "-- anneal-trust-tier: bogus\n-- anneal-trust-tier: vetted\n",
+                "multiple trust tier directives",
+            ),
+        ] {
+            let err = parse_trusted_tier_directive("Trusted.Test", bad, "test").unwrap_err();
+            assert_eq!(err.code, 1);
+            assert!(err.message.contains(needle), "unexpected error: {err}");
+        }
     }
 }

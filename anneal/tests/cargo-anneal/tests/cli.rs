@@ -211,12 +211,12 @@ fn malformed_arguments_fail_through_direct_and_cargo_invocation() {
     }
 }
 
-#[cfg(all(target_os = "linux", feature = "setup"))]
+#[cfg(all(unix, feature = "setup"))]
 fn local_archive(path: &Path) {
     archive_entries(path, &[("marker.txt", b"current-run CLI archive", 0o644)]);
 }
 
-#[cfg(all(target_os = "linux", feature = "setup"))]
+#[cfg(all(unix, feature = "setup"))]
 fn archive_entries(path: &Path, entries: &[(&str, &[u8], u32)]) {
     let file = std::fs::File::create(path).expect("create archive");
     let encoder = zstd::Encoder::new(file, 1).expect("create compressor");
@@ -231,7 +231,7 @@ fn archive_entries(path: &Path, entries: &[(&str, &[u8], u32)]) {
     archive.into_inner().expect("finish tar archive").finish().expect("finish compressed archive");
 }
 
-#[cfg(all(target_os = "linux", feature = "setup"))]
+#[cfg(all(unix, feature = "setup"))]
 #[test]
 fn setup_uses_fresh_child_cache_for_each_invocation() {
     let project = tempfile::tempdir().expect("create external working directory");
@@ -239,10 +239,11 @@ fn setup_uses_fresh_child_cache_for_each_invocation() {
     local_archive(&archive);
     for route in [Route::Direct, Route::Cargo] {
         let cache = tempfile::tempdir().expect("create owned cache");
-        // On Linux, exocrate's user-global location honors XDG_CACHE_HOME.
-        // Override it only in the child so this test process keeps its cache.
+        // Override both XDG_CACHE_HOME (Linux) and HOME (macOS
+        // `~/Library/Caches`) in the child so this test stays hermetic.
         let output = command(route, project.path())
             .env("XDG_CACHE_HOME", cache.path())
+            .env("HOME", cache.path())
             .args(["setup", "--local-archive"])
             .arg(&archive)
             .output()
@@ -259,7 +260,7 @@ fn setup_uses_fresh_child_cache_for_each_invocation() {
         assert!(installed.starts_with(cache.path()), "{}", installed.display());
         let [expected_cache_base, _home_base] = cargo_anneal::default_lean_search_bases_from_env(
             Some(cache.path().as_os_str()),
-            std::env::var_os("HOME").as_deref(),
+            Some(cache.path().as_os_str()),
         );
         assert_eq!(
             installed.parent(),
@@ -277,6 +278,7 @@ fn setup_uses_fresh_child_cache_for_each_invocation() {
         archive_entries(&updated_archive, &[("marker.txt", b"replaced CLI archive", 0o644)]);
         let reinstall = command(route, project.path())
             .env("XDG_CACHE_HOME", cache.path())
+            .env("HOME", cache.path())
             .args(["setup", "--local-archive"])
             .arg(&updated_archive)
             .output()
@@ -297,6 +299,7 @@ fn setup_uses_fresh_child_cache_for_each_invocation() {
             for cache_dir in [fresh_cache.path(), cache.path()] {
                 let output = command(route, project.path())
                     .env("XDG_CACHE_HOME", cache_dir)
+                    .env("HOME", cache_dir)
                     .args(["setup", "--local-archive"])
                     .arg(&bad_archive)
                     .output()
@@ -313,7 +316,7 @@ fn setup_uses_fresh_child_cache_for_each_invocation() {
     }
 }
 
-#[cfg(all(target_os = "linux", feature = "setup"))]
+#[cfg(all(unix, feature = "setup"))]
 #[test]
 fn setup_help_and_verify_fail_closed_on_symlinked_cache_bundle() {
     use std::{fs, os::unix::fs::symlink};
@@ -328,6 +331,7 @@ fn setup_help_and_verify_fail_closed_on_symlinked_cache_bundle() {
     local_archive(&archive);
     let setup_out = command(Route::Direct, project.path())
         .env("XDG_CACHE_HOME", cache.path())
+        .env("HOME", cache.path())
         .args(["setup", "--local-archive"])
         .arg(&archive)
         .output()
@@ -349,6 +353,7 @@ fn setup_help_and_verify_fail_closed_on_symlinked_cache_bundle() {
 
     let verify_out = command(Route::Direct, project.path())
         .env("XDG_CACHE_HOME", cache.path())
+        .env("HOME", cache.path())
         .args([
             "verify",
             "rustc",
@@ -369,7 +374,7 @@ fn setup_help_and_verify_fail_closed_on_symlinked_cache_bundle() {
     assert!(receipt["detail"].as_str().unwrap_or("").contains("symlink"), "{receipt}");
 }
 
-#[cfg(all(target_os = "linux", feature = "setup"))]
+#[cfg(all(unix, feature = "setup"))]
 #[test]
 fn setup_clear_old_flag_and_non_tty_note() {
     use std::{fs, os::unix::fs::symlink};
@@ -382,6 +387,7 @@ fn setup_clear_old_flag_and_non_tty_note() {
         let cache = tempfile::tempdir().expect("create cache");
         let initial = command(route, project.path())
             .env("XDG_CACHE_HOME", cache.path())
+            .env("HOME", cache.path())
             .args(["setup", "--local-archive"])
             .arg(&archive)
             .output()
@@ -418,6 +424,7 @@ fn setup_clear_old_flag_and_non_tty_note() {
         // Without `--clear-old` on non-TTY: keep old dir and note on stderr.
         let non_tty = command(route, project.path())
             .env("XDG_CACHE_HOME", cache.path())
+            .env("HOME", cache.path())
             .args(["setup", "--local-archive"])
             .arg(&archive)
             .output()
@@ -433,6 +440,7 @@ fn setup_clear_old_flag_and_non_tty_note() {
         // files, current, staging/backup dirs, unmanaged dirs, and symlinks.
         let cleared = command(route, project.path())
             .env("XDG_CACHE_HOME", cache.path())
+            .env("HOME", cache.path())
             .args(["setup", "--local-archive"])
             .arg(&archive)
             .arg("--clear-old")
@@ -728,7 +736,7 @@ fn unclaimable_artifact_destinations_fail_before_staging_or_request_reading() {
     }
 }
 
-#[cfg(all(target_os = "linux", feature = "setup"))]
+#[cfg(all(unix, feature = "setup"))]
 #[test]
 fn capture_discovery_prefers_explicit_then_installed_then_sibling() {
     use std::fs;
@@ -774,6 +782,7 @@ fn capture_discovery_prefers_explicit_then_installed_then_sibling() {
     let setup = Command::new(&cli)
         .current_dir(project.path())
         .env("XDG_CACHE_HOME", &cache)
+        .env("HOME", &cache)
         .args(["setup", "--local-archive"])
         .arg(&archive)
         .output()
@@ -799,10 +808,9 @@ fn capture_discovery_prefers_explicit_then_installed_then_sibling() {
     for expected in ["installed", "explicit", "sibling"] {
         let mut child = Command::new(&cli);
         child.current_dir(project.path()).arg("verify").arg("--request").arg(&request);
-        child.env(
-            "XDG_CACHE_HOME",
-            if expected == "sibling" { project.path().join("empty-cache") } else { cache.clone() },
-        );
+        let cache_dir =
+            if expected == "sibling" { project.path().join("empty-cache") } else { cache.clone() };
+        child.env("XDG_CACHE_HOME", &cache_dir).env("HOME", &cache_dir);
         if expected == "explicit" {
             child.arg("--capture").arg(bin.join("explicit")).arg("--sysroot").arg(project.path());
         }

@@ -1668,19 +1668,18 @@ impl Checker {
     /// `foundation-lock.json`, and the `library-lock.json` catalog when
     /// present, and compare the `lean` executable, every
     /// `foundation-lock.json` source and `.olean`/`.ir` artifact, and the
-    /// sysroot `{Init,Std,Lean}*` `.olean` manifest against their locked
+    /// sysroot `{Init,Std,Lean}*` `.olean`/`.ir` manifest against their locked
     /// SHA-256 digests.
     ///
     /// Authenticating the sysroot `{Init,Std,Lean}*` `.olean`, `.olean.server`,
-    /// and `.olean.private` manifest here covers the compiled `.olean*` modules
-    /// loaded by the standalone inspector (`TrustedBoundary.lean`) before any
-    /// inspector mode executes. For `x86_64-unknown-linux-gnu`, pinned
-    /// admission also authenticates Lean's runtime shared libraries and
-    /// linker scripts under `<prefix>/lib` and `<prefix>/lib/lean` against
-    /// `LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS` (both before probing and after
-    /// `--print-prefix`). Sysroot `.ir`/`.ir.sig` companions outside
-    /// `foundation-lock.json` and `library-lock.json`, as well as Lean shared
-    /// libraries on uncatalogued triples, remain unhashed and identified only
+    /// `.olean.private`, `.ir`, and `.ir.sig` manifest here covers the compiled
+    /// `.olean*` and IR artifacts loaded by the standalone inspector
+    /// (`TrustedBoundary.lean`) before any inspector mode executes. For
+    /// `x86_64-unknown-linux-gnu`, pinned admission also authenticates Lean's
+    /// runtime shared libraries and linker scripts under `<prefix>/lib` and
+    /// `<prefix>/lib/lean` against `LOCKED_LEAN_X86_64_LINUX_RUNTIME_LIBS`
+    /// (both before probing and after `--print-prefix`). Lean shared
+    /// libraries on uncatalogued triples remain unhashed and identified only
     /// by `lean --version`, so their integrity rests on the uncompromised
     /// execution environment that `THREAT_MODEL.md` assumes. Library
     /// source/`.ir` digests are checked later, when target imports reach them.
