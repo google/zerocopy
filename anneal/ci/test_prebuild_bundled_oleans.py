@@ -12,6 +12,8 @@ import json
 import os
 from pathlib import Path
 import stat
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -649,6 +651,61 @@ sys.exit(1)
         self.assertIn("Trusted", trusted)
         self.assertIn("Trusted.MirSemantics", trusted)
         self.assertIn("Anneal.MirWp", theory)
+
+    def test_standalone_single_file_execution_without_anneal_ci_lib(self) -> None:
+        source_script = Path(__file__).resolve().parent / "prebuild_bundled_oleans.py"
+        with tempfile.TemporaryDirectory() as tmp:
+            standalone = Path(tmp) / "prebuild_bundled_oleans.py"
+            standalone.write_text(
+                source_script.read_text(encoding="utf-8"), encoding="utf-8"
+            )
+            sample = Path(tmp) / "sample.bin"
+            sample.write_bytes(b"nix-standalone-payload\n")
+            sample_link = Path(tmp) / "sample.link"
+            sample_link.symlink_to(sample)
+            manifest_out = Path(tmp) / "out/manifest.json"
+
+            help_proc = subprocess.run(
+                [sys.executable, "-I", "-B", str(standalone), "--help"],
+                cwd=tmp,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(help_proc.returncode, 0, msg=help_proc.stderr)
+
+            digest_proc = subprocess.run(
+                [
+                    sys.executable,
+                    "-I",
+                    "-B",
+                    "-c",
+                    (
+                        "import importlib.util, pathlib\n"
+                        f"spec = importlib.util.spec_from_file_location('pbo', {str(standalone)!r})\n"
+                        "mod = importlib.util.module_from_spec(spec)\n"
+                        "spec.loader.exec_module(mod)\n"
+                        f"d1 = mod.sha256_file(pathlib.Path({str(sample)!r}))\n"
+                        f"d2 = mod.sha256_file(pathlib.Path({str(sample_link)!r}))\n"
+                        "assert d1 == d2\n"
+                        "try:\n"
+                        f"    mod.sha256_raw_file(pathlib.Path({str(sample_link)!r}))\n"
+                        "    raise AssertionError('expected symlink error')\n"
+                        "except RuntimeError:\n"
+                        "    pass\n"
+                        f"out = pathlib.Path({str(manifest_out)!r})\n"
+                        "mod.atomic_write_text(out, '{}', mode=0o644)\n"
+                        "assert (out.stat().st_mode & 0o777) == 0o644\n"
+                        "print(d1)\n"
+                    ),
+                ],
+                cwd=tmp,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(digest_proc.returncode, 0, msg=digest_proc.stderr)
+            self.assertEqual(len(digest_proc.stdout.strip()), 64)
 
 
 if __name__ == "__main__":

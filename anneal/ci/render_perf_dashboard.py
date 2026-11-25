@@ -22,6 +22,7 @@ _CI_DIR = Path(__file__).resolve().parent
 if str(_CI_DIR) not in sys.path:
     sys.path.insert(0, str(_CI_DIR))
 
+import anneal_ci_lib
 import perf_tracking
 
 DASHBOARD_SCHEMA = "anneal-perf-dashboard/v1"
@@ -1097,7 +1098,9 @@ def write_dashboard(
     generated_at: str | None = None,
 ) -> dict[str, Any]:
     """Generate `data.json` and `index.html` inside `output_dir` atomically."""
-    perf_tracking.ensure_not_symlink(output_dir, "output directory")
+    anneal_ci_lib.ensure_not_symlink(
+        output_dir, "output directory", exc_type=perf_tracking.ValidationError
+    )
     records = perf_tracking.load_records_jsonl(records_jsonl)
     budgets_cfg = (
         perf_tracking.load_budgets(budgets_path)
@@ -1116,8 +1119,12 @@ def write_dashboard(
     html_text = render_html(bundle)
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    perf_tracking._atomic_write_text(output_dir / "data.json", data_json)
-    perf_tracking._atomic_write_text(output_dir / "index.html", html_text)
+    anneal_ci_lib.atomic_write_text(
+        output_dir / "data.json", data_json, exc_type=perf_tracking.ValidationError
+    )
+    anneal_ci_lib.atomic_write_text(
+        output_dir / "index.html", html_text, exc_type=perf_tracking.ValidationError
+    )
     return bundle
 
 

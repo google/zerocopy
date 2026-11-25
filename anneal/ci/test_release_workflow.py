@@ -10,7 +10,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import os
 from pathlib import Path
 import re
@@ -18,7 +17,7 @@ import subprocess
 import tempfile
 import unittest
 
-from workflow_yaml import load_workflow_yaml
+from anneal_ci_lib import WorkflowRepoFixture, load_workflow, sha256_bytes
 
 
 WORKFLOWS = Path(__file__).resolve().parents[2] / ".github/workflows"
@@ -51,12 +50,8 @@ STRIPPED_OIDC_VARS = (
 class ReleaseWorkflowTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.workflow = load_workflow_yaml(
-            (WORKFLOWS / "release.yml").read_text(encoding="utf-8")
-        )
-        cls.preparation = load_workflow_yaml(
-            (WORKFLOWS / "release-crate-version.yml").read_text(encoding="utf-8")
-        )
+        cls.workflow = load_workflow(WORKFLOWS / "release.yml")
+        cls.preparation = load_workflow(WORKFLOWS / "release-crate-version.yml")
         cls.jobs = cls.workflow["jobs"]
 
     def test_zerocopy_coexistence_and_shared_manual_entry_point(self) -> None:
@@ -634,9 +629,9 @@ class ReleaseWorkflowTests(unittest.TestCase):
                 (repo / "anneal" / name).write_text(f"# {name}\n", encoding="utf-8")
             manifest_lines = []
             for name in ("Cargo.toml", "Cargo.lock", "flake.nix", "flake.lock"):
-                digest = hashlib.sha256(
+                digest = sha256_bytes(
                     (repo / "anneal" / name).read_bytes()
-                ).hexdigest()
+                )
                 manifest_lines.append(f"{digest}  {name}\n")
             (repo / "anneal/trusted/root-manifest.sha256").write_text(
                 "".join(manifest_lines), encoding="utf-8"
@@ -747,7 +742,7 @@ class ReleaseWorkflowTests(unittest.TestCase):
             == "Stage draft prerelease, verify server SHA-256, and publish atomically"
         ]
         payload = b"simulated omnibus archive bytes"
-        digest = hashlib.sha256(payload).hexdigest()
+        digest = sha256_bytes(payload)
         commit = "a" * 40
         toolchain_tag = f"anneal-toolchain-{commit[:12]}-{digest[:16]}"
 
@@ -891,7 +886,7 @@ class ReleaseWorkflowTests(unittest.TestCase):
 
     def test_shared_github_release_action_selects_status_and_retries(self) -> None:
         action_path = WORKFLOWS.parents[1] / PUBLISH_ACTION / "action.yml"
-        action = load_workflow_yaml(action_path.read_text(encoding="utf-8"))
+        action = load_workflow(action_path)
         [step] = action["runs"]["steps"]
         simulate_commands = """
 git() {
@@ -924,11 +919,10 @@ gh() {
         ):
             with self.subTest(
                 tag=tag, remote=remote, existing=existing
-            ), tempfile.TemporaryDirectory() as directory:
-                notes = Path(directory) / "release-notes.md"
-                notes.write_text("Release notes\n", encoding="utf-8")
-                result = subprocess.run(
-                    [step["shell"], "-c", simulate_commands + step["run"]],
+            ), WorkflowRepoFixture() as fx:
+                notes = fx.write_file("release-notes.md", "Release notes\n")
+                result = fx.run_bash(
+                    simulate_commands + step["run"],
                     env={
                         **os.environ,
                         "RELEASE_TAG": tag,
@@ -939,8 +933,8 @@ gh() {
                         "REMOTE_COMMIT": remote,
                         "OBJECT_ID": "2" * 40,
                     },
-                    capture_output=True,
-                    text=True,
+                    shell=step["shell"],
+                    strict=False,
                 )
                 self.assertEqual(result.returncode, expected_exit, result.stderr)
                 git_writes = [

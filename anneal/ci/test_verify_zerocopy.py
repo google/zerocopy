@@ -76,7 +76,9 @@ def make_proof_tree(root: Path):
 
     unit = proofs_dir / "01_unit"
     unit.mkdir()
-    (unit / "Spec.lean").write_text("prelude\n", encoding="utf-8")
+    (unit / "Spec.lean").write_text(
+        "prelude\ndef specs : Specs := ⟨(), ()⟩\n", encoding="utf-8"
+    )
     (unit / "Proof.lean").write_text("prelude\n", encoding="utf-8")
     (unit / "request.json").write_text(
         json.dumps({
@@ -212,9 +214,22 @@ class VerifyZerocopyTests(unittest.TestCase):
 
     def test_validate_receipt_profile_v2_root_requires_inapplicable_provenance(self):
         inapplicable = {"applicable": False, "reason": "Profile v1 only"}
+        v2_assumptions = [
+            "faithful pinned compiler capture",
+            (
+                "experimental Profile v2 MIR semantics: caller memory, "
+                "single-level references and raw pointers, little-endian byte "
+                "order, and no aliasing model (Stacked or Tree Borrows); "
+                "raw-pointer arguments are assumed to carry provenance; every "
+                "reference argument, including those of unsafe functions, is "
+                "assumed to point to initialized bytes that decode to a valid "
+                "value of the pointee type"
+            ),
+        ]
         good = make_receipt(
             audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
             correspondence_provenance=inapplicable,
+            assumptions=v2_assumptions,
         )
         parsed = verify_zerocopy.validate_receipt(
             "05_unit", 0, json.dumps(good), "", ["util::macros::__unsafe"]
@@ -224,7 +239,10 @@ class VerifyZerocopyTests(unittest.TestCase):
         bad_cases = [
             (
                 "v2_missing_provenance",
-                make_receipt(audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"}),
+                make_receipt(
+                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+                    assumptions=v2_assumptions,
+                ),
                 "Profile v2 receipt without inapplicable",
             ),
             (
@@ -232,6 +250,7 @@ class VerifyZerocopyTests(unittest.TestCase):
                 make_receipt(
                     audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
                     correspondence_provenance={"applicable": True},
+                    assumptions=v2_assumptions,
                 ),
                 "Profile v2 receipt without inapplicable",
             ),
@@ -240,6 +259,7 @@ class VerifyZerocopyTests(unittest.TestCase):
                 make_receipt(
                     audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
                     correspondence_provenance={"applicable": 0},
+                    assumptions=v2_assumptions,
                 ),
                 "Profile v2 receipt without inapplicable",
             ),
@@ -248,6 +268,7 @@ class VerifyZerocopyTests(unittest.TestCase):
                 make_receipt(
                     audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
                     correspondence_provenance={"applicable": None},
+                    assumptions=v2_assumptions,
                 ),
                 "Profile v2 receipt without inapplicable",
             ),
@@ -256,6 +277,7 @@ class VerifyZerocopyTests(unittest.TestCase):
                 make_receipt(
                     audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
                     correspondence_provenance={"applicable": "false"},
+                    assumptions=v2_assumptions,
                 ),
                 "Profile v2 receipt without inapplicable",
             ),
@@ -264,6 +286,7 @@ class VerifyZerocopyTests(unittest.TestCase):
                 make_receipt(
                     audit={"canonicalRoot": "Trusted.MirSemantics.CrateTheoremV2"},
                     correspondence_provenance=inapplicable,
+                    assumptions=v2_assumptions,
                 ),
                 "canonicalRoot=",
             ),
@@ -282,6 +305,350 @@ class VerifyZerocopyTests(unittest.TestCase):
             "01_unit", 0, json.dumps(receipt), "", ["util::macros::__unsafe"]
         )
         self.assertEqual(parsed["status"], "selected_unit_verified")
+
+    def test_validate_receipt_profile_v1_v2_match_and_disclosures(self):
+        v2_semantics = (
+            "experimental Profile v2 MIR semantics: caller memory, single-level "
+            "references and raw pointers, little-endian byte order, and no "
+            "aliasing model (Stacked or Tree Borrows); raw-pointer arguments are "
+            "assumed to carry provenance; every reference argument, including "
+            "those of unsafe functions, is assumed to point to initialized bytes "
+            "that decode to a valid value of the pointee type"
+        )
+        v2_assumptions = [
+            "faithful pinned compiler capture",
+            v2_semantics,
+            "Lean kernel and admitted foundation",
+            "intact compiler and verification environment",
+        ]
+        v1_assumptions = [
+            "faithful pinned compiler capture",
+            "experimental pointer-free MIR semantics",
+            "Lean kernel and admitted foundation",
+            "intact compiler and verification environment",
+        ]
+        inapplicable = {
+            "applicable": False,
+            "reason": "bundled Pass 2 correspondence covers Profile v1 semantics only",
+        }
+
+        v1_good = make_receipt(assumptions=v1_assumptions)
+        for expected_profile in (None, 1):
+            with self.subTest(case="v1_pass", expected_profile=expected_profile):
+                parsed = verify_zerocopy.validate_receipt(
+                    "01_unit",
+                    0,
+                    json.dumps(v1_good),
+                    "",
+                    ["util::macros::__unsafe"],
+                    expected_profile=expected_profile,
+                )
+                self.assertEqual(
+                    parsed["audit"]["canonicalRoot"],
+                    "Trusted.MirSemantics.UnitTheorem",
+                )
+
+        v2_good = make_receipt(
+            audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+            correspondence_provenance=inapplicable,
+            assumptions=v2_assumptions,
+        )
+        for expected_profile in (None, 2):
+            with self.subTest(case="v2_pass", expected_profile=expected_profile):
+                parsed = verify_zerocopy.validate_receipt(
+                    "06_unit",
+                    0,
+                    json.dumps(v2_good),
+                    "",
+                    ["util::macros::__unsafe"],
+                    expected_profile=expected_profile,
+                )
+                self.assertEqual(
+                    parsed["audit"]["canonicalRoot"],
+                    "Trusted.MirSemantics.UnitTheoremV2",
+                )
+
+        mismatch_cases = [
+            ("v1_expected_got_v2", v2_good, 1, "does not match Profile v1"),
+            ("v2_expected_got_v1", v1_good, 2, "does not match Profile v2"),
+            ("invalid_expected_bool", v1_good, True, "invalid expected_profile"),
+            ("invalid_expected_v3", v1_good, 3, "invalid expected_profile"),
+            (
+                "unknown_root",
+                make_receipt(
+                    audit={"canonicalRoot": "Trusted.MirSemantics.CrateTheoremV2"},
+                    correspondence_provenance=inapplicable,
+                    assumptions=v2_assumptions,
+                ),
+                None,
+                "canonicalRoot=",
+            ),
+            (
+                "v1_with_v2_assumption",
+                make_receipt(assumptions=v2_assumptions),
+                1,
+                "Profile v1 receipt carries Profile v2",
+            ),
+            (
+                "v2_missing_provenance",
+                make_receipt(
+                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+                    assumptions=v2_assumptions,
+                ),
+                2,
+                "Profile v2 receipt without inapplicable",
+            ),
+            (
+                "v2_applicable_provenance",
+                make_receipt(
+                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+                    correspondence_provenance={"applicable": True},
+                    assumptions=v2_assumptions,
+                ),
+                2,
+                "Profile v2 receipt without inapplicable",
+            ),
+            (
+                "v2_zero_applicable_provenance",
+                make_receipt(
+                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+                    correspondence_provenance={"applicable": 0},
+                    assumptions=v2_assumptions,
+                ),
+                2,
+                "Profile v2 receipt without inapplicable",
+            ),
+            (
+                "v2_none_applicable_provenance",
+                make_receipt(
+                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+                    correspondence_provenance={"applicable": None},
+                    assumptions=v2_assumptions,
+                ),
+                2,
+                "Profile v2 receipt without inapplicable",
+            ),
+            (
+                "v2_string_applicable_provenance",
+                make_receipt(
+                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+                    correspondence_provenance={"applicable": "false"},
+                    assumptions=v2_assumptions,
+                ),
+                2,
+                "Profile v2 receipt without inapplicable",
+            ),
+            (
+                "v2_missing_assumptions",
+                make_receipt(
+                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+                    correspondence_provenance=inapplicable,
+                ),
+                2,
+                "missing assumptions list",
+            ),
+            (
+                "v2_v1_assumptions_only",
+                make_receipt(
+                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+                    correspondence_provenance=inapplicable,
+                    assumptions=v1_assumptions,
+                ),
+                2,
+                "must not carry Profile v1 pointer-free assumption",
+            ),
+            (
+                "v2_incomplete_disclosure",
+                make_receipt(
+                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+                    correspondence_provenance=inapplicable,
+                    assumptions=["experimental Profile v2 MIR semantics: partial"],
+                ),
+                2,
+                "missing disclosures",
+            ),
+        ]
+        for label, payload, expected_profile, needle in mismatch_cases:
+            with self.subTest(case=label):
+                with self.assertRaisesRegex(RuntimeError, needle):
+                    verify_zerocopy.validate_receipt(
+                        "06_unit",
+                        0,
+                        json.dumps(payload),
+                        "",
+                        ["util::macros::__unsafe"],
+                        expected_profile=expected_profile,
+                    )
+
+    def test_expected_unit_profile_from_spec_and_end_to_end_mismatch(self):
+        # All real repository `zerocopy/proofs/*` units must resolve cleanly
+        # when present (`ci-core` `anneal-ci-tests` mounts `anneal/**` without
+        # `zerocopy/proofs/**` or `zerocopy/src/**`).
+        repo_root = Path(__file__).resolve().parents[2]
+        if (repo_root / "zerocopy/proofs").is_dir() and (
+            repo_root / "zerocopy/src"
+        ).is_dir():
+            real_units = verify_zerocopy.discover_units(
+                repo_root / "zerocopy/proofs",
+                repo_root / "zerocopy/src",
+                repo_root=repo_root,
+            )
+            real_profiles = {
+                unit_dir.name: verify_zerocopy.expected_unit_profile(
+                    unit_dir, request
+                )
+                for unit_dir, request in real_units
+            }
+            for profile in real_profiles.values():
+                self.assertIn(profile, (1, 2))
+            self.assertTrue(
+                {1, 2}.issubset(real_profiles.values()), real_profiles
+            )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = real_tmp_root(tmp)
+            proofs_dir, src_dir, unit = make_proof_tree(root)
+            request = json.loads((unit / "request.json").read_text(encoding="utf-8"))
+
+            # Comments and strings mentioning `SpecsV2` must not fool v1 units.
+            (unit / "Spec.lean").write_text(
+                "prelude\n"
+                "-- def specs : SpecsV2 := fake\n"
+                "/- /- def specs : SpecsV2 := nested -/ -/\n"
+                'def msg : String := "def specs : SpecsV2 :="\n'
+                "noncomputable def specs : Trusted.MirSemantics.Specs := ⟨(), ()⟩\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                verify_zerocopy.expected_unit_profile(unit, request), 1
+            )
+
+            # Switch `Spec.lean` to Profile v2 (`SpecsV2`), including Char
+            # literals containing `"` and identifier primes like `x'`.
+            v2_spec_src = (
+                "prelude\n"
+                "-- def specs : Specs := comment\n"
+                "def q1 : Char := '\"'\n"
+                "def q2 : Char := '\\\"'\n"
+                "def x' : Nat := 0\n"
+                "def a'b' : Nat := 0\n"
+                "def specs : SpecsV2 := ⟨(), ()⟩\n"
+            )
+            stripped_v2 = verify_zerocopy._strip_lean_comments_and_strings(
+                v2_spec_src
+            )
+            self.assertIn("def x' : Nat := 0", stripped_v2)
+            self.assertIn("def a'b' : Nat := 0", stripped_v2)
+            self.assertNotIn('"', stripped_v2)
+            (unit / "Spec.lean").write_text(v2_spec_src, encoding="utf-8")
+            self.assertEqual(
+                verify_zerocopy.expected_unit_profile(unit, request), 2
+            )
+
+            fake_cli = root / "cargo-anneal"
+            fake_cap = root / "anneal-rustc-capture"
+            fake_lean = root / "lean"
+            fake_sys = root / "sysroot"
+            fake_sys.mkdir()
+            for bin_path in (fake_cap, fake_lean):
+                bin_path.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+                bin_path.chmod(0o755)
+
+            # `Spec.lean` is Profile v2, but CLI emits a v1 receipt -> reject.
+            v1_payload = json.dumps(make_receipt())
+            fake_cli.write_text(
+                f"#!/usr/bin/env python3\nprint({v1_payload!r})\n",
+                encoding="utf-8",
+            )
+            fake_cli.chmod(0o755)
+            with self.assertRaisesRegex(RuntimeError, "does not match Profile v2"):
+                verify_zerocopy.main([
+                    "--proofs-dir", str(proofs_dir),
+                    "--src-dir", str(src_dir),
+                    "--cli", str(fake_cli),
+                    "--capture", str(fake_cap),
+                    "--sysroot", str(fake_sys),
+                    "--lean", str(fake_lean),
+                ])
+
+            # `Spec.lean` is Profile v2 and CLI emits a valid v2 receipt -> ok.
+            v2_payload = json.dumps(
+                make_receipt(
+                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+                    correspondence_provenance={
+                        "applicable": False,
+                        "reason": "Profile v1 only",
+                    },
+                    assumptions=[
+                        "faithful pinned compiler capture",
+                        (
+                            "experimental Profile v2 MIR semantics: no aliasing "
+                            "model; raw-pointer arguments are assumed to carry "
+                            "provenance; including those of unsafe functions; "
+                            "decode to a valid value of the pointee type"
+                        ),
+                    ],
+                )
+            )
+            fake_cli.write_text(
+                f"#!/usr/bin/env python3\nprint({v2_payload!r})\n",
+                encoding="utf-8",
+            )
+            fake_cli.chmod(0o755)
+            with contextlib.redirect_stdout(io.StringIO()):
+                rc = verify_zerocopy.main([
+                    "--proofs-dir", str(proofs_dir),
+                    "--src-dir", str(src_dir),
+                    "--cli", str(fake_cli),
+                    "--capture", str(fake_cap),
+                    "--sysroot", str(fake_sys),
+                    "--lean", str(fake_lean),
+                ])
+            self.assertEqual(rc, 0)
+
+            # `Spec.lean` is Profile v1, but CLI emits a v2 receipt -> reject.
+            (unit / "Spec.lean").write_text(
+                "prelude\ndef specs : Specs := ⟨(), ()⟩\n", encoding="utf-8"
+            )
+            with self.assertRaisesRegex(RuntimeError, "does not match Profile v1"):
+                verify_zerocopy.main([
+                    "--proofs-dir", str(proofs_dir),
+                    "--src-dir", str(src_dir),
+                    "--cli", str(fake_cli),
+                    "--capture", str(fake_cap),
+                    "--sysroot", str(fake_sys),
+                    "--lean", str(fake_lean),
+                ])
+
+            # Missing or ambiguous `Specs`/`SpecsV2` fails closed at discovery.
+            for label, bad_spec in (
+                ("missing", "prelude\n"),
+                ("ambiguous", "prelude\ndef specs : Specs := a\ndef specs : SpecsV2 := b\n"),
+            ):
+                with self.subTest(case=label):
+                    (unit / "Spec.lean").write_text(bad_spec, encoding="utf-8")
+                    with self.assertRaisesRegex(
+                        RuntimeError, "cannot uniquely determine MIR profile"
+                    ):
+                        verify_zerocopy.discover_units(proofs_dir, src_dir)
+
+            # Non-`.` `proof.source_root` resolves relative to `unit_dir`, and
+            # missing spec files raise a prefixed `RuntimeError`.
+            sub_dir = unit / "lean"
+            sub_dir.mkdir()
+            (sub_dir / "Spec.lean").write_text(
+                "prelude\ndef specs : SpecsV2 := ⟨(), ()⟩\n", encoding="utf-8"
+            )
+            sub_req = json.loads((unit / "request.json").read_text(encoding="utf-8"))
+            sub_req["proof"]["source_root"] = "lean"
+            self.assertEqual(
+                verify_zerocopy.expected_unit_profile(unit, sub_req), 2
+            )
+            sub_req["proof"]["source_root"] = "missing_dir"
+            with self.assertRaisesRegex(
+                RuntimeError, r"^01_unit: cannot read specification source "
+            ):
+                verify_zerocopy.expected_unit_profile(unit, sub_req)
 
     def test_discover_units_deduplicates_selected_units_preserving_order(self):
         with tempfile.TemporaryDirectory() as tmp:

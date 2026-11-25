@@ -8,16 +8,18 @@
 
 """Exercise Anneal and repository CI manifest, cache, and path-filter guards."""
 
-import hashlib
 import json
 import os
 from pathlib import Path
 import re
-import subprocess
-import tempfile
 import unittest
 
-from workflow_yaml import load_workflow_yaml
+from anneal_ci_lib import (
+    WorkflowRepoFixture,
+    find_workflow_step,
+    load_workflow,
+    sha256_bytes,
+)
 
 
 SOURCE = Path(__file__).resolve().parent
@@ -25,8 +27,8 @@ SOURCE = Path(__file__).resolve().parent
 
 class CiWorkflowManifestGuardTests(unittest.TestCase):
     def setUp(self):
-        self.workflow = load_workflow_yaml(
-            (SOURCE.parent.parent / ".github/workflows/anneal-current.yml").read_text()
+        self.workflow = load_workflow(
+            SOURCE.parent.parent / ".github/workflows/anneal-current.yml"
         )
         workflow = self.workflow
         self.manifest_steps = {}
@@ -38,61 +40,27 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             "workspace-tests",
             "sandbox-aarch64",
         ):
-            steps = workflow["jobs"][job_name]["steps"]
-            matches = [
-                step["run"]
-                for step in steps
-                if step.get("name") == "Verify root TCB manifest"
-            ]
-            self.assertEqual(len(matches), 1, job_name)
-            self.manifest_steps[job_name] = matches[0]
+            self.manifest_steps[job_name] = find_workflow_step(
+                workflow, job_name, step_name="Verify root TCB manifest"
+            )["run"]
 
     def run_manifest_step(self, job_name, mutate=None, *, parent_override=False):
-        with tempfile.TemporaryDirectory(prefix="anneal-ci-guard-") as tmp:
-            root = Path(tmp) / "repo"
-            project = root / "anneal"
-            project.mkdir(parents=True)
-            diag = Path(tmp) / "diag"
-            diag.mkdir()
-            github_env = Path(tmp) / "github_env"
-            github_env.write_text("")
+        with WorkflowRepoFixture(prefix="anneal-ci-guard-") as fx:
+            root = fx.init_repo("repo")
+            project = fx.mkdir("repo/anneal")
+            diag = fx.mkdir("diag")
+            github_env = fx.write_file("github_env", "")
 
-            (project / "trusted").mkdir()
-            cargo_toml = project / "Cargo.toml"
-            cargo_toml.write_bytes(b"[workspace]\n")
-            digest = hashlib.sha256(cargo_toml.read_bytes()).hexdigest()
-            (project / "trusted/root-manifest.sha256").write_text(
-                f"{digest}  Cargo.toml\n"
+            cargo_toml = fx.write_bytes("repo/anneal/Cargo.toml", b"[workspace]\n")
+            digest = sha256_bytes(cargo_toml.read_bytes())
+            fx.write_file(
+                "repo/anneal/trusted/root-manifest.sha256",
+                f"{digest}  Cargo.toml\n",
             )
-
-            subprocess.run(
-                ["git", "-c", "core.hooksPath=/dev/null",
-                 "-c", "core.fsmonitor=false", "init", "-q"],
-                cwd=root,
-                check=True,
-            )
-            subprocess.run(
-                ["git", "config", "user.email", "test@example.com"],
-                cwd=root,
-                check=True,
-            )
-            subprocess.run(
-                ["git", "config", "user.name", "Test"],
-                cwd=root,
-                check=True,
-            )
-            subprocess.run(
-                ["git", "-c", "core.hooksPath=/dev/null",
-                 "-c", "core.fsmonitor=false",
-                 "add", "anneal/Cargo.toml", "anneal/trusted/root-manifest.sha256"],
-                cwd=root,
-                check=True,
-            )
-            subprocess.run(
-                ["git", "-c", "core.hooksPath=/dev/null",
-                 "-c", "core.fsmonitor=false", "commit", "-qm", "init"],
-                cwd=root,
-                check=True,
+            fx.commit_all(
+                root,
+                "init",
+                paths=("anneal/Cargo.toml", "anneal/trusted/root-manifest.sha256"),
             )
 
             if mutate is not None:
@@ -103,14 +71,7 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             env["ANNEAL_TEST_DIAGNOSTICS"] = str(diag)
             env["GITHUB_WORKSPACE"] = str(root)
             env["GITHUB_ENV"] = str(github_env)
-            return subprocess.run(
-                ["bash", "--noprofile", "--norc", "-eo", "pipefail", "-c",
-                 self.manifest_steps[job_name]],
-                cwd=project,
-                env=env,
-                capture_output=True,
-                text=True,
-            )
+            return fx.run_bash(self.manifest_steps[job_name], cwd=project, env=env)
 
     def test_clean_tree_passes_manifest_guard(self):
         for job_name in self.manifest_steps:
@@ -142,9 +103,9 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                         )
 
     def test_pr_hygiene_step_lints_pull_requests_and_tree_elsewhere(self):
-        steps = self.workflow["jobs"]["static-checks"]["steps"]
-        names = [s.get("name") for s in steps]
-        step = steps[names.index("Run PR hygiene check")]
+        step = find_workflow_step(
+            self.workflow, "static-checks", step_name="Run PR hygiene check"
+        )
         # Event data reaches the script only through `env`, never by
         # template expansion inside `run`.
         self.assertNotIn("${{", step["run"])
@@ -156,47 +117,32 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         })
         self.assertIn("set -euo pipefail", step["run"])
 
-        def git(root, *args):
-            return subprocess.run(
-                ["git", "-c", "core.hooksPath=/dev/null",
-                 "-c", "core.fsmonitor=false",
-                 "-c", "user.name=Test", "-c", "user.email=test@example.com",
-                 *args],
-                cwd=root, check=True, capture_output=True, text=True,
-            ).stdout.strip()
-
-        with tempfile.TemporaryDirectory(prefix="anneal-pr-hygiene-step-") as tmp:
-            root = Path(tmp) / "repo"
-            project = root / "anneal"
-            (project / "ci").mkdir(parents=True)
-            (project / ".gemini").mkdir()
-            (project / "ci/check_pr_hygiene.py").write_bytes(
-                (SOURCE / "check_pr_hygiene.py").read_bytes()
+        with WorkflowRepoFixture(prefix="anneal-pr-hygiene-step-") as fx:
+            root = fx.init_repo("repo")
+            project = fx.mkdir("repo/anneal")
+            fx.write_bytes(
+                "repo/anneal/ci/check_pr_hygiene.py",
+                (SOURCE / "check_pr_hygiene.py").read_bytes(),
             )
             rules = (
                 "<!-- code-review-rules:begin -->\nR\n"
                 "<!-- code-review-rules:end -->\n"
             )
-            (project / "AGENTS.md").write_text(rules)
-            (project / ".gemini/styleguide.md").write_text(rules)
-            git(root, "init", "-q")
-            git(root, "add", "-A")
-            git(root, "commit", "-qm", "init")
-            base = git(root, "rev-parse", "HEAD")
-            (project / "ci/new.py").write_text("X = 1\n")
-            git(root, "add", "-A")
-            git(root, "commit", "-qm", "[ci] Add a file without a header")
-            head = git(root, "rev-parse", "HEAD")
+            fx.write_file("repo/anneal/AGENTS.md", rules)
+            fx.write_file("repo/anneal/.gemini/styleguide.md", rules)
+            base = fx.commit_all(root, "init")
+            fx.write_file("repo/anneal/ci/new.py", "X = 1\n")
+            head = fx.commit_all(root, "[ci] Add a file without a header")
 
             def run(event, author_type="User"):
                 env = os.environ.copy()
-                env.update(EVENT_NAME=event, PR_BASE_SHA=base,
-                           PR_HEAD_SHA=head, PR_AUTHOR_TYPE=author_type)
-                return subprocess.run(
-                    ["bash", "--noprofile", "--norc", "-eo", "pipefail", "-c",
-                     step["run"]],
-                    cwd=project, env=env, capture_output=True, text=True,
+                env.update(
+                    EVENT_NAME=event,
+                    PR_BASE_SHA=base,
+                    PR_HEAD_SHA=head,
+                    PR_AUTHOR_TYPE=author_type,
                 )
+                return fx.run_bash(step["run"], cwd=project, env=env)
 
             res = run("pull_request")
             self.assertEqual(res.returncode, 1, res.stdout + res.stderr)
@@ -211,9 +157,8 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                 res = run(event)
                 self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
 
-            (project / ".gemini/styleguide.md").write_text("drifted\n")
-            git(root, "add", "-A")
-            git(root, "commit", "-qm", "[ci] Drift")
+            fx.write_file("repo/anneal/.gemini/styleguide.md", "drifted\n")
+            fx.commit_all(root, "[ci] Drift")
             res = run("merge_group")
             self.assertEqual(res.returncode, 1, res.stdout + res.stderr)
             self.assertIn("code-review-rules-parity", res.stderr)
@@ -341,15 +286,13 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         # read-only cache hits on `merge_group`, and seeding only on a missing
         # `main` cache entry.
         audit_script = test_steps["audit"]["run"]
-        with tempfile.TemporaryDirectory(prefix="anneal-ci-miri-cache-") as tmp:
-            tmp_path = Path(tmp)
-            bin_dir = tmp_path / "bin"
-            bin_dir.mkdir()
-            recorded = tmp_path / "cargo_args.txt"
-            seen_cache = tmp_path / "cache_seen_by_cargo.txt"
-            seen_env = tmp_path / "ambient_env_seen.txt"
-            stub_cargo = bin_dir / "cargo"
-            stub_cargo.write_text(
+        with WorkflowRepoFixture(prefix="anneal-ci-miri-cache-") as fx:
+            bin_dir = fx.mkdir("bin")
+            recorded = fx.path("cargo_args.txt")
+            seen_cache = fx.path("cache_seen_by_cargo.txt")
+            seen_env = fx.path("ambient_env_seen.txt")
+            fx.write_executable(
+                "bin/cargo",
                 "#!/usr/bin/env bash\n"
                 f"printf '%s\\n' \"$@\" > '{recorded}'\n"
                 "if [ -e \"$MIRI_OLEAN_CACHE_DIR\" ]; then\n"
@@ -357,14 +300,12 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                 "else\n"
                 f"  echo absent > '{seen_cache}'\n"
                 "fi\n"
-                f"printf '%s' \"${{ANNEAL_MIRI_CACHE_DIR-UNSET}}\" > '{seen_env}'\n"
+                f"printf '%s' \"${{ANNEAL_MIRI_CACHE_DIR-UNSET}}\" > '{seen_env}'\n",
             )
-            stub_cargo.chmod(0o755)
-            diag = tmp_path / "diag"
-            diag.mkdir()
+            diag = fx.mkdir("diag")
 
             def run_audit_case(event_name, repo, ref, cache_hit, preseed=False):
-                cache_dir = tmp_path / "miri-cache"
+                cache_dir = fx.path("miri-cache")
                 if cache_dir.exists():
                     for p in sorted(cache_dir.rglob("*"), reverse=True):
                         p.unlink() if p.is_file() else p.rmdir()
@@ -387,21 +328,7 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                     "MIRI_CACHE_HIT": cache_hit,
                     "MIRI_OLEAN_CACHE_DIR": str(cache_dir),
                 })
-                res = subprocess.run(
-                    [
-                        "bash",
-                        "--noprofile",
-                        "--norc",
-                        "-eo",
-                        "pipefail",
-                        "-c",
-                        audit_script,
-                    ],
-                    cwd=tmp_path,
-                    env=env,
-                    capture_output=True,
-                    text=True,
-                )
+                res = fx.run_bash(audit_script, env=env)
                 self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
                 self.assertEqual(seen_env.read_text(), "UNSET")
                 return (
@@ -702,19 +629,13 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         # Verify clean_tree in test-and-verify, installed-smoke, and
         # workspace-tests fails closed when git status errors (e.g., outside a
         # git repository).
-        with tempfile.TemporaryDirectory() as non_git_dir:
+        with WorkflowRepoFixture() as fx:
             for job_name in ("test-and-verify", "installed-smoke", "workspace-tests"):
-                clean_step = next(
-                    s for s in jobs[job_name]["steps"]
-                    if s.get("id") == "clean_tree"
+                clean_step = find_workflow_step(
+                    self.workflow, job_name, step_id="clean_tree"
                 )
                 self.assertIn("set -euo pipefail", clean_step["run"])
-                res = subprocess.run(
-                    ["bash", "--noprofile", "--norc", "-c", clean_step["run"]],
-                    cwd=non_git_dir,
-                    capture_output=True,
-                    text=True,
-                )
+                res = fx.run_bash(clean_step["run"], strict=False)
                 self.assertNotEqual(
                     res.returncode,
                     0,
@@ -774,104 +695,96 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         script = gate_step["run"]
         all_jobs = list(gate["needs"])
 
-        def run_gate(
-            event_name,
-            overrides=None,
-            *,
-            run_heavy="true",
-        ):
-            needs = {j: {"result": "success"} for j in all_jobs}
-            if overrides:
-                for k, v in overrides.items():
-                    needs[k] = {"result": v}
-            env = os.environ.copy()
-            env["EVENT_NAME"] = event_name
-            env["RUN_HEAVY"] = run_heavy
-            env["NEEDS_JSON"] = json.dumps(needs)
-            return subprocess.run(
-                ["bash", "--noprofile", "--norc", "-c", script],
-                env=env,
-                capture_output=True,
-                text=True,
-            )
+        with WorkflowRepoFixture(prefix="anneal-gate-") as fx:
+            def run_gate(
+                event_name,
+                overrides=None,
+                *,
+                run_heavy="true",
+            ):
+                needs = {j: {"result": "success"} for j in all_jobs}
+                if overrides:
+                    for k, v in overrides.items():
+                        needs[k] = {"result": v}
+                env = os.environ.copy()
+                env["EVENT_NAME"] = event_name
+                env["RUN_HEAVY"] = run_heavy
+                env["NEEDS_JSON"] = json.dumps(needs)
+                return fx.run_bash(script, env=env, strict=False)
 
-        for event in ("pull_request", "push", "merge_group", "workflow_dispatch"):
-            with self.subTest(event=event):
-                self.assertEqual(run_gate(event).returncode, 0)
-                for bad_result in ("skipped", "failure", "cancelled"):
-                    self.assertNotEqual(
-                        run_gate(
-                            event, {"workspace-tests": bad_result}
-                        ).returncode,
-                        0,
-                    )
+            for event in ("pull_request", "push", "merge_group", "workflow_dispatch"):
+                with self.subTest(event=event):
+                    self.assertEqual(run_gate(event).returncode, 0)
+                    for bad_result in ("skipped", "failure", "cancelled"):
+                        self.assertNotEqual(
+                            run_gate(
+                                event, {"workspace-tests": bad_result}
+                            ).returncode,
+                            0,
+                        )
 
-        # pull_request with run_heavy == "false" passes only when
-        # static-checks succeeded and all heavy jobs were skipped.
-        pr_light_overrides = {
-            j: "skipped" for j in all_jobs if j != "static-checks"
-        }
-        self.assertEqual(
-            run_gate(
-                "pull_request",
-                pr_light_overrides,
-                run_heavy="false",
-            ).returncode,
-            0,
-        )
-        # Non-PR events ignore run_heavy == "false" and require heavy jobs.
-        for non_pr in ("merge_group", "push", "workflow_dispatch"):
-            self.assertNotEqual(
+            # pull_request with run_heavy == "false" passes only when
+            # static-checks succeeded and all heavy jobs were skipped.
+            pr_light_overrides = {
+                j: "skipped" for j in all_jobs if j != "static-checks"
+            }
+            self.assertEqual(
                 run_gate(
-                    non_pr,
+                    "pull_request",
                     pr_light_overrides,
                     run_heavy="false",
                 ).returncode,
                 0,
-                non_pr,
             )
-        # Skipping static-checks or failing a heavy job on light PR fails
-        # closed.
-        self.assertNotEqual(
-            run_gate(
-                "pull_request",
-                {**pr_light_overrides, "static-checks": "skipped"},
-                run_heavy="false",
-            ).returncode,
-            0,
-        )
-        self.assertNotEqual(
-            run_gate(
-                "pull_request",
-                {**pr_light_overrides, "workspace-tests": "failure"},
-                run_heavy="false",
-            ).returncode,
-            0,
-        )
-        for bad_heavy in ("", "unexpected"):
+            # Non-PR events ignore run_heavy == "false" and require heavy jobs.
+            for non_pr in ("merge_group", "push", "workflow_dispatch"):
+                self.assertNotEqual(
+                    run_gate(
+                        non_pr,
+                        pr_light_overrides,
+                        run_heavy="false",
+                    ).returncode,
+                    0,
+                    non_pr,
+                )
+            # Skipping static-checks or failing a heavy job on light PR fails
+            # closed.
             self.assertNotEqual(
                 run_gate(
                     "pull_request",
-                    pr_light_overrides,
-                    run_heavy=bad_heavy,
+                    {**pr_light_overrides, "static-checks": "skipped"},
+                    run_heavy="false",
                 ).returncode,
                 0,
             )
+            self.assertNotEqual(
+                run_gate(
+                    "pull_request",
+                    {**pr_light_overrides, "workspace-tests": "failure"},
+                    run_heavy="false",
+                ).returncode,
+                0,
+            )
+            for bad_heavy in ("", "unexpected"):
+                self.assertNotEqual(
+                    run_gate(
+                        "pull_request",
+                        pr_light_overrides,
+                        run_heavy=bad_heavy,
+                    ).returncode,
+                    0,
+                )
 
-        for bad_result in ("skipped", "failure", "cancelled"):
-            res = run_gate("pull_request", {"static-checks": bad_result})
-            self.assertNotEqual(res.returncode, 0)
+            for bad_result in ("skipped", "failure", "cancelled"):
+                res = run_gate("pull_request", {"static-checks": bad_result})
+                self.assertNotEqual(res.returncode, 0)
 
 
 class PathFilterWorkflowTests(unittest.TestCase):
     def setUp(self):
         root = SOURCE.parent.parent
-        self.ci_wf = load_workflow_yaml(
-            (root / ".github/workflows/ci.yml").read_text()
-        )
-        self.anneal_wf = load_workflow_yaml(
-            (root / ".github/workflows/anneal.yml").read_text()
-        )
+        self.ci_wf = load_workflow(root / ".github/workflows/ci.yml")
+        self.anneal_wf = load_workflow(root / ".github/workflows/anneal.yml")
 
     def _run_detect_changes(
         self,
@@ -892,32 +805,14 @@ class PathFilterWorkflowTests(unittest.TestCase):
             for step in workflow["jobs"]["detect_changes"]["steps"]
             if step.get("id") == "filter"
         )
-        with tempfile.TemporaryDirectory(prefix="anneal-ci-filter-") as tmp:
-            repo = Path(tmp) / "repo"
-            repo.mkdir()
-            gh_out = Path(tmp) / "gh_out.txt"
-            gh_out.write_text("")
+        with WorkflowRepoFixture(prefix="anneal-ci-filter-") as fx:
+            repo = fx.init_repo("repo", initial_branch="main")
+            gh_out = fx.write_file("gh_out.txt", "")
 
             def git(*args):
-                return subprocess.run(
-                    [
-                        "git",
-                        "-c",
-                        "core.hooksPath=/dev/null",
-                        "-c",
-                        "core.fsmonitor=false",
-                        *args,
-                    ],
-                    cwd=repo,
-                    check=True,
-                    capture_output=True,
-                    text=True,
-                )
+                return fx.git(repo, *args)
 
-            git("init", "-q", "-b", "main")
-            git("config", "user.email", "test@example.com")
-            git("config", "user.name", "Test")
-            (repo / "README.md").write_text("base\n")
+            fx.write_file("repo/README.md", "base\n")
             git("add", "README.md")
             git("commit", "-qm", "base")
             if setup_extra is not None:
@@ -979,27 +874,9 @@ class PathFilterWorkflowTests(unittest.TestCase):
                     else (pr_tip if event_name == "pull_request" else "")
                 ),
             })
-            res = subprocess.run(
-                [
-                    "bash",
-                    "--noprofile",
-                    "--norc",
-                    "-eo",
-                    "pipefail",
-                    "-c",
-                    script,
-                ],
-                cwd=repo,
-                env=env,
-                capture_output=True,
-                text=True,
-            )
+            res = fx.run_bash(script, cwd=repo, env=env)
             self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
-            out = {}
-            for line in gh_out.read_text().splitlines():
-                k, v = line.split("=", 1)
-                out[k] = v
-            return out
+            return fx.parse_kv_file(gh_out)
 
     @staticmethod
     def _apply_ops(repo, git, ops):
@@ -1445,111 +1322,99 @@ class PathFilterWorkflowTests(unittest.TestCase):
             )
             deps = wf["jobs"]["all-jobs-succeed"]["needs"]
 
-            def eval_gate(event, run_flag, overrides=None, run_heavy=None):
-                needs = {}
-                for d in deps:
-                    if run_flag == "true":
-                        res = (
-                            "skipped"
-                            if (wf_name == "ci.yml" and d == "miri" and event == "pull_request")
-                            else "success"
+            with WorkflowRepoFixture(prefix="anneal-ci-gate-") as fx:
+                def eval_gate(event, run_flag, overrides=None, run_heavy=None):
+                    needs = {}
+                    for d in deps:
+                        if run_flag == "true":
+                            res = (
+                                "skipped"
+                                if (wf_name == "ci.yml" and d == "miri" and event == "pull_request")
+                                else "success"
+                            )
+                        else:
+                            res = "success" if d in always_on else "skipped"
+                        needs[d] = {"result": res}
+                    if overrides:
+                        for k, v in overrides.items():
+                            needs[k] = {"result": v}
+                    env = os.environ.copy()
+                    env.update({
+                        "EVENT_NAME": event,
+                        env_flag: run_flag,
+                        "NEEDS_JSON": json.dumps(needs),
+                    })
+                    if wf_name == "anneal.yml":
+                        env["RUN_HEAVY"] = (
+                            run_flag if run_heavy is None else run_heavy
                         )
-                    else:
-                        res = "success" if d in always_on else "skipped"
-                    needs[d] = {"result": res}
-                if overrides:
-                    for k, v in overrides.items():
-                        needs[k] = {"result": v}
-                env = os.environ.copy()
-                env.update({
-                    "EVENT_NAME": event,
-                    env_flag: run_flag,
-                    "NEEDS_JSON": json.dumps(needs),
-                })
-                if wf_name == "anneal.yml":
-                    env["RUN_HEAVY"] = (
-                        run_flag if run_heavy is None else run_heavy
-                    )
-                return subprocess.run(
-                    [
-                        "bash",
-                        "--noprofile",
-                        "--norc",
-                        "-eo",
-                        "pipefail",
-                        "-c",
-                        gate_script,
-                    ],
-                    env=env,
-                    capture_output=True,
-                    text=True,
-                ).returncode
+                    return fx.run_bash(gate_script, env=env).returncode
 
-            self.assertEqual(eval_gate("pull_request", "true"), 0, wf_name)
-            self.assertEqual(eval_gate("pull_request", "false"), 0, wf_name)
-            self.assertEqual(eval_gate("merge_group", "true"), 0, wf_name)
-            # Non-PR skip must fail closed.
-            self.assertNotEqual(eval_gate("merge_group", "false"), 0, wf_name)
-            self.assertNotEqual(eval_gate("push", "false"), 0, wf_name)
-            self.assertNotEqual(eval_gate("workflow_dispatch", "false"), 0, wf_name)
-            # Empty or malformed run_flag must fail closed even when
-            # detect_changes reports success.
-            self.assertNotEqual(eval_gate("pull_request", ""), 0, wf_name)
-            self.assertNotEqual(eval_gate("pull_request", "unexpected"), 0, wf_name)
-            # Failed detect_changes must fail closed even if run_flag is empty.
-            self.assertNotEqual(
-                eval_gate("pull_request", "", {"detect_changes": "failure"}),
-                0,
-                wf_name,
-            )
-            # Failed or cancelled gated job must fail closed for both flags.
-            for run_flag in ("true", "false"):
-                for bad in ("failure", "cancelled"):
-                    self.assertNotEqual(
-                        eval_gate("pull_request", run_flag, {gated_sample: bad}),
-                        0,
-                        f"{wf_name}:{run_flag}:{bad}",
-                    )
-            if wf_name == "ci.yml":
-                # Miri skipped on push or merge_group must fail closed.
-                for ev in ("push", "merge_group"):
-                    self.assertNotEqual(
-                        eval_gate(ev, "true", {"miri": "skipped"}),
-                        0,
-                        f"ci.yml:miri:{ev}",
-                    )
-            if wf_name == "anneal.yml":
-                self.assertEqual(
-                    eval_gate("pull_request", "true", run_heavy="false"),
-                    0,
-                )
-                for bad_event, bad_anneal, bad_heavy in [
-                    ("pull_request", "true", ""),
-                    ("pull_request", "true", "unexpected"),
-                    ("pull_request", "true", "True"),
-                    ("pull_request", "false", ""),
-                    ("pull_request", "false", "true"),
-                    ("merge_group", "true", "false"),
-                    ("push", "true", "false"),
-                    ("workflow_dispatch", "true", "false"),
-                    ("merge_group", "true", ""),
-                    ("merge_group", "false", "false"),
-                    ("push", "false", "false"),
-                    ("workflow_dispatch", "false", "false"),
-                ]:
-                    self.assertNotEqual(
-                        eval_gate(bad_event, bad_anneal, run_heavy=bad_heavy),
-                        0,
-                        f"anneal.yml:{bad_event}:{bad_anneal}:{bad_heavy}",
-                    )
-            # Skipped always-on job must fail closed.
-            for job in always_on:
+                self.assertEqual(eval_gate("pull_request", "true"), 0, wf_name)
+                self.assertEqual(eval_gate("pull_request", "false"), 0, wf_name)
+                self.assertEqual(eval_gate("merge_group", "true"), 0, wf_name)
+                # Non-PR skip must fail closed.
+                self.assertNotEqual(eval_gate("merge_group", "false"), 0, wf_name)
+                self.assertNotEqual(eval_gate("push", "false"), 0, wf_name)
+                self.assertNotEqual(eval_gate("workflow_dispatch", "false"), 0, wf_name)
+                # Empty or malformed run_flag must fail closed even when
+                # detect_changes reports success.
+                self.assertNotEqual(eval_gate("pull_request", ""), 0, wf_name)
+                self.assertNotEqual(eval_gate("pull_request", "unexpected"), 0, wf_name)
+                # Failed detect_changes must fail closed even when run_flag
+                # is empty.
                 self.assertNotEqual(
-                    eval_gate("pull_request", "false", {job: "skipped"}),
+                    eval_gate("pull_request", "", {"detect_changes": "failure"}),
                     0,
-                    f"{wf_name}:{job}",
+                    wf_name,
                 )
-
+                # Failed or cancelled gated job must fail closed for both flags.
+                for run_flag in ("true", "false"):
+                    for bad in ("failure", "cancelled"):
+                        self.assertNotEqual(
+                            eval_gate("pull_request", run_flag, {gated_sample: bad}),
+                            0,
+                            f"{wf_name}:{run_flag}:{bad}",
+                        )
+                if wf_name == "ci.yml":
+                    # Miri skipped on push or merge_group must fail closed.
+                    for ev in ("push", "merge_group"):
+                        self.assertNotEqual(
+                            eval_gate(ev, "true", {"miri": "skipped"}),
+                            0,
+                            f"ci.yml:miri:{ev}",
+                        )
+                if wf_name == "anneal.yml":
+                    self.assertEqual(
+                        eval_gate("pull_request", "true", run_heavy="false"),
+                        0,
+                    )
+                    for bad_event, bad_anneal, bad_heavy in [
+                        ("pull_request", "true", ""),
+                        ("pull_request", "true", "unexpected"),
+                        ("pull_request", "true", "True"),
+                        ("pull_request", "false", ""),
+                        ("pull_request", "false", "true"),
+                        ("merge_group", "true", "false"),
+                        ("push", "true", "false"),
+                        ("workflow_dispatch", "true", "false"),
+                        ("merge_group", "true", ""),
+                        ("merge_group", "false", "false"),
+                        ("push", "false", "false"),
+                        ("workflow_dispatch", "false", "false"),
+                    ]:
+                        self.assertNotEqual(
+                            eval_gate(bad_event, bad_anneal, run_heavy=bad_heavy),
+                            0,
+                            f"anneal.yml:{bad_event}:{bad_anneal}:{bad_heavy}",
+                        )
+                # Skipped always-on job must fail closed.
+                for job in always_on:
+                    self.assertNotEqual(
+                        eval_gate("pull_request", "false", {job: "skipped"}),
+                        0,
+                        f"{wf_name}:{job}",
+                    )
 
 if __name__ == "__main__":
     unittest.main()

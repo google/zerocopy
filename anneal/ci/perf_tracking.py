@@ -33,8 +33,9 @@ _CI_DIR = Path(__file__).resolve().parent
 if str(_CI_DIR) not in sys.path:
     sys.path.insert(0, str(_CI_DIR))
 
-import prebuild_bundled_oleans
-import verify_zerocopy
+import anneal_ci_lib  # noqa: E402
+import prebuild_bundled_oleans  # noqa: E402
+import verify_zerocopy  # noqa: E402
 
 RECORD_SCHEMA = "anneal-perf-record/v1"
 BUDGETS_SCHEMA = "anneal-perf-budgets/v1"
@@ -122,8 +123,7 @@ class SubprocessMeasurement:
 
 def ensure_not_symlink(path: Path, label: str = "path") -> None:
     """Reject symlink inputs/outputs fail-closed."""
-    if path.is_symlink():
-        raise ValidationError(f"{label} must not be a symlink: {path}")
+    anneal_ci_lib.ensure_not_symlink(path, label, exc_type=ValidationError)
 
 
 def _is_non_bool_int(value: Any) -> bool:
@@ -567,21 +567,7 @@ def run_measured_subprocess(
 
 
 def _atomic_write_text(path: Path, text: str) -> None:
-    ensure_not_symlink(path, "output file")
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp_name = tempfile.mkstemp(
-        prefix=f".{path.name}.", suffix=".tmp", dir=str(path.parent)
-    )
-    tmp_path = Path(tmp_name)
-    try:
-        with os.fdopen(fd, "w", encoding="utf-8") as f:
-            f.write(text)
-            f.flush()
-            os.fsync(f.fileno())
-        os.replace(tmp_path, path)
-    except BaseException:
-        tmp_path.unlink(missing_ok=True)
-        raise
+    anneal_ci_lib.atomic_write_text(path, text, exc_type=ValidationError)
 
 
 def _read_linux_cpu_model() -> str:
@@ -655,73 +641,16 @@ def _discover_tools(
     install_root: Path | None,
     target_dir: Path | None,
 ) -> dict[str, Path | None]:
-    resolved_target = target_dir or Path(
-        os.environ.get("CARGO_TARGET_DIR", anneal_root / "target")
+    return anneal_ci_lib.discover_tools(
+        anneal_root,
+        cli=cli,
+        capture=capture,
+        sysroot=sysroot,
+        lean=lean,
+        auditor=auditor,
+        install_root=install_root,
+        target_dir=target_dir,
     )
-    defaults = verify_zerocopy.discover_local_defaults(anneal_root)
-
-    def _pick(explicit: Path | None, candidates: list[Path | None]) -> Path | None:
-        if explicit is not None:
-            return explicit.resolve(strict=True)
-        for cand in candidates:
-            if cand is not None and cand.is_file():
-                return cand.resolve(strict=True)
-        return None
-
-    def _pick_dir(explicit: Path | None, candidates: list[Path | None]) -> Path | None:
-        if explicit is not None:
-            return explicit.resolve(strict=True)
-        for cand in candidates:
-            if cand is not None and cand.is_dir():
-                return cand.resolve(strict=True)
-        return None
-
-    inst = install_root.resolve(strict=True) if install_root else None
-    cli_path = _pick(
-        cli,
-        [
-            resolved_target / "release/cargo-anneal",
-            resolved_target / "debug/cargo-anneal",
-            defaults.get("cli"),
-        ],
-    )
-    capture_path = _pick(
-        capture,
-        [
-            (inst / "bin/anneal-rustc-capture") if inst else None,
-            resolved_target / "release/anneal-rustc-capture",
-            resolved_target / "debug/anneal-rustc-capture",
-            defaults.get("capture"),
-        ],
-    )
-    sysroot_path = _pick_dir(
-        sysroot,
-        [
-            (inst / "rust") if inst else None,
-            defaults.get("sysroot"),
-        ],
-    )
-    lean_path = _pick(
-        lean,
-        [
-            (inst / "lean/bin/lean") if inst else None,
-            defaults.get("lean"),
-        ],
-    )
-    auditor_path = _pick(
-        auditor,
-        [
-            resolved_target / "release/anneal-audit",
-            resolved_target / "debug/anneal-audit",
-        ],
-    )
-    return {
-        "cli": cli_path,
-        "capture": capture_path,
-        "sysroot": sysroot_path,
-        "lean": lean_path,
-        "auditor": auditor_path,
-    }
 
 
 def _find_scalar_fixture(anneal_root: Path) -> Path:
@@ -757,17 +686,16 @@ def _run_cargo_anneal_verify(
     timeout: float,
     time_bin: Path | None,
 ) -> tuple[dict[str, Any], SubprocessMeasurement]:
-    cmd = [str(cli), "verify", "--request", str(request_path), *extra_flags]
-    if capture is not None:
-        cmd.extend(["--capture", str(capture)])
-    if sysroot is not None:
-        cmd.extend(["--sysroot", str(sysroot)])
-    if lean is not None:
-        cmd.extend(["--lean", str(lean)])
-    if artifacts_dir is not None:
-        cmd.extend(["--artifacts", str(artifacts_dir)])
-
-    env = os.environ.copy()
+    cmd = anneal_ci_lib.build_cargo_anneal_verify_cmd(
+        cli=cli,
+        request_path=request_path,
+        capture=capture,
+        sysroot=sysroot,
+        lean=lean,
+        artifacts_dir=artifacts_dir,
+        extra_flags=extra_flags,
+    )
+    env = anneal_ci_lib.strip_actions_env(os.environ, include_oidc=True)
     env["XDG_CACHE_HOME"] = str(xdg_cache_home)
     meas = run_measured_subprocess(
         cmd, cwd=cwd, env=env, timeout=timeout, time_bin=time_bin
@@ -1409,31 +1337,31 @@ def collect_zerocopy_proofs(
         env = os.environ.copy()
         env["XDG_CACHE_HOME"] = str(xdg)
         for unit_dir, request in units:
-            cmd = [
-                str(tools["cli"]),
-                "verify",
-                "--request",
-                str(unit_dir / "request.json"),
-                "--capture",
-                str(tools["capture"]),
-                "--sysroot",
-                str(tools["sysroot"]),
-                "--lean",
-                str(tools["lean"]),
-                "--artifacts",
-                str(tmp / unit_dir.name),
-            ]
-            meas = run_measured_subprocess(
-                cmd, cwd=unit_dir, env=env, timeout=timeout, time_bin=time_bin
+            meas, receipt = anneal_ci_lib.run_cargo_anneal_verify(
+                cli=tools["cli"],
+                request_path=unit_dir / "request.json",
+                cwd=unit_dir,
+                capture=tools["capture"],
+                sysroot=tools["sysroot"],
+                lean=tools["lean"],
+                artifacts_dir=tmp / unit_dir.name,
+                env=env,
+                timeout=timeout,
+                runner=lambda cmd, cwd, env, timeout: run_measured_subprocess(
+                    cmd, cwd=cwd, env=env, timeout=timeout, time_bin=time_bin
+                ),
+                label=unit_dir.name,
             )
             rss_methods.add(meas.rss_method)
-            receipt = verify_zerocopy.validate_receipt(
+            receipt = verify_zerocopy.validate_parsed_receipt(
                 unit_dir.name,
                 meas.returncode,
-                meas.stdout,
-                meas.stderr,
+                receipt,
                 request["scope"]["roots"],
                 expected_instantiations=request["scope"].get("instantiations"),
+                expected_profile=verify_zerocopy.expected_unit_profile(
+                    unit_dir, request
+                ),
             )
             verified_count += 1
             t = receipt.get("timing_ms", {})
@@ -2041,7 +1969,7 @@ def main(argv: list[str] | None = None) -> int:
     p_collect.add_argument(
         "--anneal-root",
         type=Path,
-        default=_CI_DIR.parent,
+        default=anneal_ci_lib.default_anneal_root(__file__),
     )
     p_collect.add_argument("--repo-root", type=Path)
     p_collect.add_argument("--output", type=Path)
