@@ -39,7 +39,7 @@
     },
     {
       "path": "theory/Anneal/BitVec.lean",
-      "sha256": "3c1893341ebf0d169b2d4cb5bb61593a2963ab08cc8ae479943cc1dfd06d6925"
+      "sha256": "de645a815d777027058d732b8bdfdea0acabcb75c408f633bfa158f83fc9d2c0"
     },
     {
       "path": "theory/Anneal/BitVecArith.lean",
