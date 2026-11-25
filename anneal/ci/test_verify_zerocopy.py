@@ -18,7 +18,64 @@ import tempfile
 import unittest
 from unittest import mock
 
+import render_correspondence_provenance
 import verify_zerocopy
+
+
+SHA_A = "a" * 64
+SHA_B = "b" * 64
+SHA_C = "c" * 64
+SHA_D = "d" * 64
+SHA_E = "e" * 64
+SHA_F = "f" * 64
+
+
+def make_v1_provenance(**overrides):
+    prov = {
+        "schema_version": 1,
+        "upstream_repository": "https://github.com/proofs-rs/lean-miri",
+        "upstream_commit": "c92d1d97",
+        "upstream_lean_toolchain": "leanprover/lean4:v4.35.0",
+        "build_lean_toolchain": "leanprover/lean4:v4.34.1",
+        "upstream_pin_sha256": SHA_A,
+        "sysroot_foundation_manifest_sha256": SHA_B,
+        "patched_files": [],
+        "correspondence_adapters": {
+            "trusted/correspondence/Trusted/Correspondence.lean": SHA_C,
+        },
+        "correspondence_proofs": {
+            "correspondence/Anneal/MirCorrespondenceProof.lean": SHA_D,
+        },
+        "trusted_lean": {
+            "trusted/lean/Trusted/MirSemantics.lean": SHA_E,
+        },
+        "note": "pass2",
+    }
+    prov.update(overrides)
+    return prov
+
+
+def make_v3_provenance(**overrides):
+    prov = make_v1_provenance(
+        schema_version=3,
+        claim_kind="exact_refines",
+        permitted_axioms=["Classical.choice", "Quot.sound", "propext"],
+        model_system_relation={
+            "kind": "simulation",
+            "qualifier": "wf_stutter",
+            "direction": "bidirectional",
+            "licensed_claim_shapes": ["forall_safety"],
+        },
+        tcb_shims=[],
+        taint_reasons=[],
+        qualifiers={
+            "choice_total": True,
+            "assumed_seams": [],
+            "scope_kind": "full_gate",
+        },
+    )
+    prov.update(overrides)
+    return prov
 
 
 DEFAULT_CONFIG = {
@@ -41,8 +98,18 @@ def make_receipt(**overrides):
         "status": "selected_unit_verified",
         "taint_reasons": [],
         "elaboration_sandbox": "linux_bwrap",
-        "deferred": [],
+        "assumptions": [
+            "faithful pinned compiler capture",
+            "experimental pointer-free MIR semantics",
+            "Lean kernel and admitted foundation",
+            "intact compiler and verification environment",
+        ],
+        "deferred": [
+            "complete review-surface reporting",
+            "source-to-deployed-binary correspondence",
+        ],
         "spec_warnings": [],
+        "correspondence_provenance": make_v1_provenance(),
         "scope": {
             "kind": "selected_unit",
             "roots": ["util::macros::__unsafe"],
@@ -1069,7 +1136,27 @@ class VerifyZerocopyTests(unittest.TestCase):
             )
             self.assertEqual(summary["unit_count"], 1)
             self.assertIn("01_unit", summary["units"])
-            self.assertEqual(summary["units"]["01_unit"]["profile"], 1)
+            unit_rec = summary["units"]["01_unit"]
+            expected_receipt = make_receipt()
+            self.assertEqual(unit_rec["profile"], 1)
+            self.assertEqual(
+                unit_rec["canonical_root"],
+                expected_receipt["audit"]["canonicalRoot"],
+            )
+            self.assertEqual(
+                unit_rec["taint_reasons"], expected_receipt["taint_reasons"]
+            )
+            self.assertEqual(
+                unit_rec["assumptions"], expected_receipt["assumptions"]
+            )
+            self.assertEqual(unit_rec["deferred"], expected_receipt["deferred"])
+            self.assertEqual(
+                unit_rec["spec_warnings"], expected_receipt["spec_warnings"]
+            )
+            self.assertEqual(
+                unit_rec["correspondence_provenance"],
+                expected_receipt["correspondence_provenance"],
+            )
             self.assertFalse(summary["crate_version_drift"])
 
             # Release version bump in `Cargo.toml` + omitted optional
@@ -1125,20 +1212,79 @@ class VerifyZerocopyTests(unittest.TestCase):
         )
         self.assertEqual(parsed["audit"]["canonicalRoot"], "Trusted.MirSemantics.UnitTheoremV2")
 
+        v2_missing_prov = make_receipt(
+            audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+            assumptions=v2_assumptions,
+        )
+        del v2_missing_prov["correspondence_provenance"]
+
         bad_cases = [
             (
                 "v2_missing_provenance",
+                v2_missing_prov,
+                "Profile v2 receipt without inapplicable",
+            ),
+            (
+                "v2_missing_reason_provenance",
                 make_receipt(
-                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+                    audit={
+                        "canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"
+                    },
+                    correspondence_provenance={"applicable": False},
                     assumptions=v2_assumptions,
                 ),
                 "Profile v2 receipt without inapplicable",
             ),
             (
+                "v2_blank_reason_provenance",
+                make_receipt(
+                    audit={
+                        "canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"
+                    },
+                    correspondence_provenance={
+                        "applicable": False,
+                        "reason": "   ",
+                    },
+                    assumptions=v2_assumptions,
+                ),
+                "Profile v2 receipt without inapplicable",
+            ),
+            (
+                "v2_extra_key_provenance",
+                make_receipt(
+                    audit={
+                        "canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"
+                    },
+                    correspondence_provenance={
+                        "applicable": False,
+                        "reason": "Profile v1 only",
+                        "schema_version": 1,
+                    },
+                    assumptions=v2_assumptions,
+                ),
+                "Profile v2 receipt without inapplicable",
+            ),
+            (
+                "v2_blank_extra_assumption",
+                make_receipt(
+                    audit={
+                        "canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"
+                    },
+                    correspondence_provenance=inapplicable,
+                    assumptions=[*v2_assumptions, "   "],
+                ),
+                "Profile v2 receipt missing assumptions list",
+            ),
+            (
                 "v2_applicable_provenance",
                 make_receipt(
-                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
-                    correspondence_provenance={"applicable": True},
+                    audit={
+                        "canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"
+                    },
+                    correspondence_provenance={
+                        "applicable": True,
+                        "reason": "Profile v1 only",
+                    },
                     assumptions=v2_assumptions,
                 ),
                 "Profile v2 receipt without inapplicable",
@@ -1146,8 +1292,13 @@ class VerifyZerocopyTests(unittest.TestCase):
             (
                 "v2_zero_applicable_provenance",
                 make_receipt(
-                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
-                    correspondence_provenance={"applicable": 0},
+                    audit={
+                        "canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"
+                    },
+                    correspondence_provenance={
+                        "applicable": 0,
+                        "reason": "Profile v1 only",
+                    },
                     assumptions=v2_assumptions,
                 ),
                 "Profile v2 receipt without inapplicable",
@@ -1155,8 +1306,13 @@ class VerifyZerocopyTests(unittest.TestCase):
             (
                 "v2_none_applicable_provenance",
                 make_receipt(
-                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
-                    correspondence_provenance={"applicable": None},
+                    audit={
+                        "canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"
+                    },
+                    correspondence_provenance={
+                        "applicable": None,
+                        "reason": "Profile v1 only",
+                    },
                     assumptions=v2_assumptions,
                 ),
                 "Profile v2 receipt without inapplicable",
@@ -1164,8 +1320,13 @@ class VerifyZerocopyTests(unittest.TestCase):
             (
                 "v2_string_applicable_provenance",
                 make_receipt(
-                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
-                    correspondence_provenance={"applicable": "false"},
+                    audit={
+                        "canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"
+                    },
+                    correspondence_provenance={
+                        "applicable": "false",
+                        "reason": "Profile v1 only",
+                    },
                     assumptions=v2_assumptions,
                 ),
                 "Profile v2 receipt without inapplicable",
@@ -1187,13 +1348,778 @@ class VerifyZerocopyTests(unittest.TestCase):
                         "05_unit", 0, json.dumps(payload), "", ["util::macros::__unsafe"]
                     )
 
-    def test_validate_receipt_allows_absent_deferred(self):
-        receipt = make_receipt()
-        del receipt["deferred"]
-        parsed = verify_zerocopy.validate_receipt(
-            "01_unit", 0, json.dumps(receipt), "", ["util::macros::__unsafe"]
+    def test_validate_receipt_rejects_missing_or_corrupted_caveat_fields(self):
+        missing_deferred = make_receipt()
+        del missing_deferred["deferred"]
+        missing_assumptions = make_receipt()
+        del missing_assumptions["assumptions"]
+        missing_provenance = make_receipt()
+        del missing_provenance["correspondence_provenance"]
+        missing_taint = make_receipt()
+        del missing_taint["taint_reasons"]
+        missing_warnings = make_receipt()
+        del missing_warnings["spec_warnings"]
+        missing_root = make_receipt()
+        del missing_root["audit"]["canonicalRoot"]
+
+        bad_cases = [
+            ("missing_deferred", missing_deferred, "missing deferred list"),
+            (
+                "blank_deferred_entries",
+                make_receipt(deferred=["", "   "]),
+                "blank entry in deferred",
+            ),
+            (
+                "missing_assumptions",
+                missing_assumptions,
+                "Profile v1 receipt missing or invalid assumptions",
+            ),
+            (
+                "empty_assumptions",
+                make_receipt(assumptions=[]),
+                "Profile v1 receipt missing or invalid assumptions",
+            ),
+            (
+                "blank_only_assumptions",
+                make_receipt(assumptions=["   "]),
+                "Profile v1 receipt missing or invalid assumptions",
+            ),
+            (
+                "blank_trailing_assumption",
+                make_receipt(
+                    assumptions=["faithful pinned compiler capture", ""]
+                ),
+                "Profile v1 receipt missing or invalid assumptions",
+            ),
+            (
+                "non_list_assumptions",
+                make_receipt(assumptions="faithful pinned compiler capture"),
+                "Profile v1 receipt missing or invalid assumptions",
+            ),
+            (
+                "non_str_assumptions_elem",
+                make_receipt(assumptions=["ok", 42]),
+                "Profile v1 receipt missing or invalid assumptions",
+            ),
+            (
+                "missing_provenance",
+                missing_provenance,
+                "Profile v1 receipt missing correspondence_provenance",
+            ),
+            (
+                "empty_provenance",
+                make_receipt(correspondence_provenance={}),
+                "Profile v1 receipt missing correspondence_provenance",
+            ),
+            (
+                "non_dict_provenance",
+                make_receipt(correspondence_provenance=["pass2"]),
+                "Profile v1 receipt missing correspondence_provenance",
+            ),
+            (
+                "arbitrary_key_provenance",
+                make_receipt(correspondence_provenance={"foo": "bar"}),
+                "correspondence_provenance\\.schema_version=None",
+            ),
+            (
+                "reason_only_provenance",
+                make_receipt(
+                    correspondence_provenance={"reason": "Pass 2 skipped"}
+                ),
+                "Profile v1 receipt correspondence_provenance must omit "
+                "applicable and reason",
+            ),
+            (
+                "bool_schema_version_provenance",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        schema_version=True
+                    )
+                ),
+                "correspondence_provenance\\.schema_version=True",
+            ),
+            (
+                "unsupported_schema_version_provenance",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        schema_version=2
+                    )
+                ),
+                "correspondence_provenance\\.schema_version=2",
+            ),
+            (
+                "blank_upstream_commit_provenance",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        upstream_commit="   "
+                    )
+                ),
+                "correspondence_provenance\\.upstream_commit=",
+            ),
+            (
+                "v1_extra_unknown_key_provenance",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(extra="x")
+                ),
+                "unexpected correspondence_provenance keys=\\['extra'\\]",
+            ),
+            (
+                "v1_with_v3_claim_kind_key",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        claim_kind="exact_refines"
+                    )
+                ),
+                "unexpected correspondence_provenance keys=\\['claim_kind'\\]",
+            ),
+            (
+                "v1_bad_pin_hex_uppercase",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        upstream_pin_sha256="A" * 64
+                    )
+                ),
+                "correspondence_provenance\\.upstream_pin_sha256=",
+            ),
+            (
+                "v1_bad_pin_hex_trailing_newline",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        upstream_pin_sha256=SHA_A + "\n"
+                    )
+                ),
+                "correspondence_provenance\\.upstream_pin_sha256=",
+            ),
+            (
+                "v1_bad_sysroot_hex_short",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        sysroot_foundation_manifest_sha256="deadbeef"
+                    )
+                ),
+                "correspondence_provenance\\."
+                "sysroot_foundation_manifest_sha256",
+            ),
+            (
+                "v1_empty_adapters_map",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        correspondence_adapters={}
+                    )
+                ),
+                "missing or empty correspondence_provenance\\."
+                "correspondence_adapters",
+            ),
+            (
+                "v1_bad_proofs_digest",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        correspondence_proofs={"p.lean": "not-a-sha256"}
+                    )
+                ),
+                "invalid entry in correspondence_provenance\\."
+                "correspondence_proofs",
+            ),
+            (
+                "v1_empty_trusted_lean_map",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        trusted_lean={}
+                    )
+                ),
+                "missing or empty correspondence_provenance\\.trusted_lean",
+            ),
+            (
+                "v1_patched_file_duplicate_path",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        patched_files=[
+                            {
+                                "path": "Miri/A.lean",
+                                "upstream_sha256": SHA_A,
+                                "patched_sha256": SHA_B,
+                            },
+                            {
+                                "path": "Miri/A.lean",
+                                "upstream_sha256": SHA_A,
+                                "patched_sha256": SHA_C,
+                            },
+                        ]
+                    )
+                ),
+                "duplicate correspondence_provenance\\.patched_files",
+            ),
+            (
+                "v1_patched_file_extra_key",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        patched_files=[
+                            {
+                                "path": "Miri/A.lean",
+                                "upstream_sha256": SHA_A,
+                                "patched_sha256": SHA_B,
+                                "extra": 1,
+                            }
+                        ]
+                    )
+                ),
+                "patched_files\\[0\\] keys mismatch",
+            ),
+            (
+                "v1_patched_file_bad_sha",
+                make_receipt(
+                    correspondence_provenance=make_v1_provenance(
+                        patched_files=[
+                            {
+                                "path": "Miri/A.lean",
+                                "upstream_sha256": "xyz",
+                                "patched_sha256": SHA_B,
+                            }
+                        ]
+                    )
+                ),
+                "patched_files\\[0\\]\\.upstream_sha256 invalid",
+            ),
+            (
+                "v1_inapplicable_provenance",
+                make_receipt(
+                    correspondence_provenance={
+                        "applicable": False,
+                        "reason": "unpinned",
+                    }
+                ),
+                "Profile v1 receipt correspondence_provenance must omit "
+                "applicable and reason",
+            ),
+            (
+                "v1_applicable_true_provenance",
+                make_receipt(
+                    correspondence_provenance={
+                        "applicable": True,
+                        "schema_version": 1,
+                    }
+                ),
+                "Profile v1 receipt correspondence_provenance must omit "
+                "applicable and reason",
+            ),
+            ("missing_taint_reasons", missing_taint, "taint_reasons=None"),
+            ("missing_spec_warnings", missing_warnings, "spec_warnings=None"),
+            ("missing_canonical_root", missing_root, "canonicalRoot=None"),
+        ]
+        for label, payload, needle in bad_cases:
+            with self.subTest(case=label):
+                with self.assertRaisesRegex(RuntimeError, needle):
+                    verify_zerocopy.validate_receipt(
+                        "01_unit",
+                        0,
+                        json.dumps(payload),
+                        "",
+                        ["util::macros::__unsafe"],
+                    )
+
+        # Schema 1 omitting any mandatory field must fail closed.
+        for omitted_field in (
+            "upstream_repository",
+            "upstream_commit",
+            "upstream_lean_toolchain",
+            "build_lean_toolchain",
+            "upstream_pin_sha256",
+            "sysroot_foundation_manifest_sha256",
+            "patched_files",
+            "correspondence_adapters",
+            "correspondence_proofs",
+            "trusted_lean",
+            "note",
+        ):
+            with self.subTest(v1_omitted=omitted_field):
+                prov = make_v1_provenance()
+                del prov[omitted_field]
+                payload = make_receipt(correspondence_provenance=prov)
+                with self.assertRaisesRegex(
+                    RuntimeError,
+                    f"correspondence_provenance\\.{omitted_field}",
+                ):
+                    verify_zerocopy.validate_receipt(
+                        "01_unit",
+                        0,
+                        json.dumps(payload),
+                        "",
+                        ["util::macros::__unsafe"],
+                    )
+
+        # Schema 3 omitting any mandatory schema-3 field must fail closed.
+        for omitted_v3 in (
+            "claim_kind",
+            "permitted_axioms",
+            "model_system_relation",
+            "tcb_shims",
+            "taint_reasons",
+            "qualifiers",
+        ):
+            with self.subTest(v3_omitted=omitted_v3):
+                prov = make_v3_provenance()
+                del prov[omitted_v3]
+                payload = make_receipt(correspondence_provenance=prov)
+                with self.assertRaisesRegex(
+                    RuntimeError, f"correspondence_provenance\\.{omitted_v3}"
+                ):
+                    verify_zerocopy.validate_receipt(
+                        "01_unit",
+                        0,
+                        json.dumps(payload),
+                        "",
+                        ["util::macros::__unsafe"],
+                    )
+
+        # Schema 3 invalid enums, cross-field mismatches, and extra keys fail.
+        v3_bad_cases = [
+            (
+                "v3_extra_key",
+                make_v3_provenance(extra="nope"),
+                "unexpected correspondence_provenance keys=\\['extra'\\]",
+            ),
+            (
+                "v3_unknown_claim_kind",
+                make_v3_provenance(claim_kind="weak_refines"),
+                "correspondence_provenance\\.claim_kind='weak_refines'",
+            ),
+            (
+                "v3_unhashable_claim_kind",
+                make_v3_provenance(claim_kind=["exact_refines"]),
+                "correspondence_provenance\\.claim_kind=\\['exact_refines'\\]",
+            ),
+            (
+                "v3_empty_permitted_axioms",
+                make_v3_provenance(permitted_axioms=[]),
+                "permitted_axioms must not be empty",
+            ),
+            (
+                "v3_unsorted_permitted_axioms",
+                make_v3_provenance(
+                    permitted_axioms=["propext", "Classical.choice"]
+                ),
+                "strictly sorted and duplicate-free",
+            ),
+            (
+                "v3_incompatible_claim_kind_relation",
+                make_v3_provenance(
+                    claim_kind="sound_refines",
+                    model_system_relation={
+                        "kind": "simulation",
+                        "qualifier": "wf_stutter",
+                        "direction": "bidirectional",
+                        "licensed_claim_shapes": ["forall_safety"],
+                    },
+                ),
+                "incompatible with model_system_relation",
+            ),
+            (
+                "v3_missing_patched_shim",
+                make_v3_provenance(
+                    patched_files=[
+                        {
+                            "path": "Miri/A.lean",
+                            "upstream_sha256": SHA_A,
+                            "patched_sha256": SHA_F,
+                        }
+                    ],
+                    tcb_shims=[],
+                    taint_reasons=[],
+                ),
+                "is missing from tcb_shims",
+            ),
+            (
+                "v3_patched_shim_digest_mismatch",
+                make_v3_provenance(
+                    patched_files=[
+                        {
+                            "path": "Miri/A.lean",
+                            "upstream_sha256": SHA_A,
+                            "patched_sha256": SHA_F,
+                        }
+                    ],
+                    tcb_shims=[
+                        {
+                            "id": "lean-miri:Miri/A.lean",
+                            "kind": "upstream_bugfix_patch",
+                            "sha256": SHA_E,
+                            "status": "assumed",
+                        }
+                    ],
+                    taint_reasons=["vendor_upstream_patches_present"],
+                ),
+                "disagrees with patched_files\\.patched_sha256",
+            ),
+            (
+                "v3_orphan_patch_shim",
+                make_v3_provenance(
+                    patched_files=[],
+                    tcb_shims=[
+                        {
+                            "id": "lean-miri:Miri/Ghost.lean",
+                            "kind": "upstream_bugfix_patch",
+                            "sha256": SHA_F,
+                            "status": "assumed",
+                        }
+                    ],
+                    taint_reasons=["vendor_upstream_patches_present"],
+                ),
+                "has no matching patched_files entry",
+            ),
+            (
+                "v3_assumed_seam_missing_from_shims",
+                make_v3_provenance(
+                    qualifiers={
+                        "choice_total": True,
+                        "assumed_seams": ["seam_a"],
+                        "scope_kind": "full_gate",
+                    },
+                    taint_reasons=["assumed_seams_present"],
+                ),
+                "qualifiers\\.assumed_seams entry 'seam_a' is missing",
+            ),
+            (
+                "v3_taint_reasons_mismatch",
+                make_v3_provenance(
+                    qualifiers={
+                        "choice_total": False,
+                        "assumed_seams": [],
+                        "scope_kind": "full_gate",
+                    },
+                    taint_reasons=[],
+                ),
+                "taint_reasons \\[\\] disagrees with expected "
+                "\\['choice_total_false'\\]",
+            ),
+            (
+                "v3_bad_qualifiers_scope",
+                make_v3_provenance(
+                    qualifiers={
+                        "choice_total": True,
+                        "assumed_seams": [],
+                        "scope_kind": "unknown_gate",
+                    }
+                ),
+                "qualifiers\\.scope_kind='unknown_gate'",
+            ),
+            (
+                "v3_shim_missing_commit_and_sha256",
+                make_v3_provenance(
+                    tcb_shims=[
+                        {
+                            "id": "seam_x",
+                            "kind": "append_only_spec_lemma",
+                            "status": "proved",
+                        }
+                    ]
+                ),
+                "must specify at least one of commit or sha256",
+            ),
+        ]
+        for label, bad_prov, needle in v3_bad_cases:
+            with self.subTest(case=label):
+                with self.assertRaisesRegex(RuntimeError, needle):
+                    verify_zerocopy.validate_receipt(
+                        "01_unit",
+                        0,
+                        json.dumps(
+                            make_receipt(correspondence_provenance=bad_prov)
+                        ),
+                        "",
+                        ["util::macros::__unsafe"],
+                    )
+
+        # Positive checks:
+        # 1. Non-experimental Profile v1 receipt (3 assumptions) + complete
+        #    schema-3 provenance (both clean and patched/seam-consistent).
+        non_experimental_v1 = make_receipt(
+            assumptions=[
+                "faithful pinned compiler capture",
+                "Lean kernel and admitted foundation",
+                "intact compiler and verification environment",
+            ],
+            correspondence_provenance=make_v3_provenance(),
         )
-        self.assertEqual(parsed["status"], "selected_unit_verified")
+        parsed = verify_zerocopy.validate_receipt(
+            "01_unit",
+            0,
+            json.dumps(non_experimental_v1),
+            "",
+            ["util::macros::__unsafe"],
+            expected_profile=1,
+        )
+        self.assertEqual(len(parsed["assumptions"]), 3)
+
+        v3_with_patch_and_seam = make_v3_provenance(
+            patched_files=[
+                {
+                    "path": "Miri/A.lean",
+                    "upstream_sha256": SHA_A,
+                    "patched_sha256": SHA_F,
+                }
+            ],
+            tcb_shims=[
+                {
+                    "id": "lean-miri:Miri/A.lean",
+                    "kind": "upstream_bugfix_patch",
+                    "sha256": SHA_F,
+                    "status": "assumed",
+                },
+                {
+                    "id": "seam_a",
+                    "kind": "assumed_seam",
+                    "commit": "abc123",
+                    "status": "assumed",
+                },
+            ],
+            qualifiers={
+                "choice_total": False,
+                "assumed_seams": ["seam_a"],
+                "scope_kind": "partial_gate",
+            },
+            taint_reasons=[
+                "assumed_seams_present",
+                "choice_total_false",
+                "vendor_upstream_patches_present",
+            ],
+        )
+        parsed_v3 = verify_zerocopy.validate_receipt(
+            "01_unit",
+            0,
+            json.dumps(
+                make_receipt(correspondence_provenance=v3_with_patch_and_seam)
+            ),
+            "",
+            ["util::macros::__unsafe"],
+            expected_profile=1,
+        )
+        self.assertEqual(
+            parsed_v3["correspondence_provenance"], v3_with_patch_and_seam
+        )
+
+        # 2. Live rendered repository provenance from
+        #    `render_correspondence_provenance.py` must be accepted verbatim.
+        anneal_root = Path(__file__).resolve().parents[1]
+        rendered_raw = render_correspondence_provenance.render_provenance_json(
+            trusted_bundle_rs=(
+                anneal_root / "trusted/cargo-anneal/src/trusted_bundle.rs"
+            ),
+            upstream_pin=anneal_root / "vendor/lean-miri/UPSTREAM_PIN.json",
+            correspondence_adapters_dir=anneal_root / "trusted/correspondence",
+            correspondence_proofs_dir=anneal_root / "correspondence",
+            trusted_lean_dir=anneal_root / "trusted/lean",
+            anneal_root=anneal_root,
+        )
+        live_provenance = json.loads(rendered_raw)
+        parsed_live = verify_zerocopy.validate_receipt(
+            "01_unit",
+            0,
+            json.dumps(make_receipt(correspondence_provenance=live_provenance)),
+            "",
+            ["util::macros::__unsafe"],
+            expected_profile=1,
+        )
+        self.assertEqual(
+            parsed_live["correspondence_provenance"], live_provenance
+        )
+
+    def test_summary_json_propagates_v1_and_v2_receipt_caveats_verbatim(self):
+        v1_assumptions = [
+            "faithful pinned compiler capture",
+            "experimental pointer-free MIR semantics",
+            "Lean kernel and admitted foundation",
+            "intact compiler and verification environment",
+        ]
+        v1_deferred = [
+            "complete review-surface reporting",
+            "source-to-deployed-binary correspondence",
+        ]
+        v1_provenance = make_v1_provenance()
+        v2_assumptions = [
+            "faithful pinned compiler capture",
+            (
+                "experimental Profile v2 MIR semantics: caller memory, "
+                "single-level references and raw pointers, little-endian byte "
+                "order, and no aliasing model (Stacked or Tree Borrows); "
+                "raw-pointer arguments are assumed to carry provenance; every "
+                "reference argument, including those of unsafe functions, is "
+                "assumed to point to initialized bytes that decode to a valid "
+                "value of the pointee type"
+            ),
+            "Lean kernel and admitted foundation",
+            "intact compiler and verification environment",
+        ]
+        v2_deferred = [
+            "complete review-surface reporting",
+            "source-to-deployed-binary correspondence",
+        ]
+        v2_provenance = {
+            "applicable": False,
+            "reason": (
+                "bundled Pass 2 correspondence covers Profile v1 semantics "
+                "only; Profile v2 execution rules are not certified against "
+                "lean-miri"
+            ),
+        }
+        v2_root_fn = (
+            "<&[u8] as byte_slice::SplitByteSlice>::split_at_unchecked"
+        )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = real_tmp_root(tmp)
+            proofs_dir, src_dir, _ = make_proof_tree(
+                root,
+                unit_names=(
+                    "01_usize_pointer_metadata",
+                    "08_byte_slice_split_at_unchecked",
+                ),
+            )
+            v2_unit = proofs_dir / "08_byte_slice_split_at_unchecked"
+            (v2_unit / "Spec.lean").write_text(
+                "prelude\ndef specs : SpecsV2 := ⟨(), ()⟩\n",
+                encoding="utf-8",
+            )
+            (v2_unit / "request.json").write_text(
+                json.dumps(make_unit_request(roots=[v2_root_fn])),
+                encoding="utf-8",
+            )
+
+            v1_receipt = make_receipt(
+                assumptions=v1_assumptions,
+                deferred=v1_deferred,
+                correspondence_provenance=v1_provenance,
+            )
+            v2_receipt = make_receipt(
+                scope={"kind": "selected_unit", "roots": [v2_root_fn]},
+                selected=[{"def_id": 0, "path": v2_root_fn, "body_index": 0}],
+                audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+                assumptions=v2_assumptions,
+                deferred=v2_deferred,
+                correspondence_provenance=v2_provenance,
+            )
+
+            receipt_map = {
+                "01_usize_pointer_metadata": v1_receipt,
+                "08_byte_slice_split_at_unchecked": v2_receipt,
+            }
+            fake_cli = root / "cargo-anneal"
+            fake_cap = root / "anneal-rustc-capture"
+            fake_lean = root / "lean"
+            fake_sys = root / "sysroot"
+            fake_sys.mkdir()
+            fake_lean.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+            fake_lean.chmod(0o755)
+            fake_cap.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+            fake_cap.chmod(0o755)
+            fake_cli.write_text(
+                "#!/usr/bin/env python3\n"
+                "import json\n"
+                "from pathlib import Path\n"
+                f"receipts = {json.dumps(receipt_map)!r}\n"
+                "print(json.dumps(json.loads(receipts)[Path.cwd().name]))\n",
+                encoding="utf-8",
+            )
+            fake_cli.chmod(0o755)
+
+            artifacts = root / "out"
+            with contextlib.redirect_stdout(io.StringIO()):
+                rc = verify_zerocopy.main([
+                    "--proofs-dir", str(proofs_dir),
+                    "--src-dir", str(src_dir),
+                    "--cli", str(fake_cli),
+                    "--capture", str(fake_cap),
+                    "--sysroot", str(fake_sys),
+                    "--lean", str(fake_lean),
+                    "--artifacts-dir", str(artifacts),
+                ])
+            self.assertEqual(rc, 0)
+            summary = json.loads(
+                (artifacts / "summary.json").read_text(encoding="utf-8")
+            )
+            self.assertEqual(summary["unit_count"], 2)
+
+            v1_rec = summary["units"]["01_usize_pointer_metadata"]
+            self.assertEqual(v1_rec["profile"], 1)
+            self.assertEqual(
+                v1_rec["canonical_root"], "Trusted.MirSemantics.UnitTheorem"
+            )
+            self.assertEqual(v1_rec["taint_reasons"], [])
+            self.assertEqual(v1_rec["assumptions"], v1_assumptions)
+            self.assertEqual(v1_rec["deferred"], v1_deferred)
+            self.assertEqual(v1_rec["spec_warnings"], [])
+            self.assertEqual(
+                v1_rec["correspondence_provenance"], v1_provenance
+            )
+
+            v2_rec = summary["units"]["08_byte_slice_split_at_unchecked"]
+            self.assertEqual(v2_rec["profile"], 2)
+            self.assertEqual(
+                v2_rec["canonical_root"], "Trusted.MirSemantics.UnitTheoremV2"
+            )
+            self.assertEqual(v2_rec["taint_reasons"], [])
+            self.assertEqual(v2_rec["assumptions"], v2_assumptions)
+            self.assertEqual(v2_rec["deferred"], v2_deferred)
+            self.assertEqual(v2_rec["spec_warnings"], [])
+            self.assertEqual(
+                v2_rec["correspondence_provenance"], v2_provenance
+            )
+            self.assertIs(
+                v2_rec["correspondence_provenance"]["applicable"], False
+            )
+
+            # Dropping any required caveat field from a CLI-emitted receipt
+            # must fail closed without writing `summary.json`.
+            missing_field_checks = (
+                ("canonicalRoot", "canonicalRoot=None"),
+                (
+                    "assumptions",
+                    "Profile v1 receipt missing or invalid assumptions",
+                ),
+                ("deferred", "missing deferred list"),
+                (
+                    "correspondence_provenance",
+                    "Profile v1 receipt missing correspondence_provenance",
+                ),
+                ("spec_warnings", "spec_warnings=None"),
+                ("taint_reasons", "taint_reasons=None"),
+            )
+            for missing_key, needle in missing_field_checks:
+                with self.subTest(missing_key=missing_key):
+                    broken = make_receipt(
+                        assumptions=v1_assumptions,
+                        deferred=v1_deferred,
+                        correspondence_provenance=v1_provenance,
+                    )
+                    if missing_key == "canonicalRoot":
+                        del broken["audit"]["canonicalRoot"]
+                    else:
+                        del broken[missing_key]
+                    broken_map = {
+                        "01_usize_pointer_metadata": broken,
+                        "08_byte_slice_split_at_unchecked": v2_receipt,
+                    }
+                    fake_cli.write_text(
+                        "#!/usr/bin/env python3\n"
+                        "import json\n"
+                        "from pathlib import Path\n"
+                        f"receipts = {json.dumps(broken_map)!r}\n"
+                        "print(json.dumps("
+                        "json.loads(receipts)[Path.cwd().name]))\n",
+                        encoding="utf-8",
+                    )
+                    fake_cli.chmod(0o755)
+                    fail_artifacts = root / f"fail_{missing_key}"
+                    with self.assertRaisesRegex(RuntimeError, needle):
+                        verify_zerocopy.main([
+                            "--proofs-dir", str(proofs_dir),
+                            "--src-dir", str(src_dir),
+                            "--cli", str(fake_cli),
+                            "--capture", str(fake_cap),
+                            "--sysroot", str(fake_sys),
+                            "--lean", str(fake_lean),
+                            "--artifacts-dir", str(fail_artifacts),
+                        ])
+                    self.assertFalse((fail_artifacts / "summary.json").exists())
 
     def test_validate_receipt_profile_v1_v2_match_and_disclosures(self):
         v2_semantics = (
@@ -1257,6 +2183,17 @@ class VerifyZerocopyTests(unittest.TestCase):
                     "Trusted.MirSemantics.UnitTheoremV2",
                 )
 
+        v2_missing_prov = make_receipt(
+            audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+            assumptions=v2_assumptions,
+        )
+        del v2_missing_prov["correspondence_provenance"]
+        v2_missing_assumptions = make_receipt(
+            audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+            correspondence_provenance=inapplicable,
+        )
+        del v2_missing_assumptions["assumptions"]
+
         mismatch_cases = [
             ("v1_expected_got_v2", v2_good, 1, "does not match Profile v1"),
             ("v2_expected_got_v1", v1_good, 2, "does not match Profile v2"),
@@ -1280,18 +2217,20 @@ class VerifyZerocopyTests(unittest.TestCase):
             ),
             (
                 "v2_missing_provenance",
-                make_receipt(
-                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
-                    assumptions=v2_assumptions,
-                ),
+                v2_missing_prov,
                 2,
                 "Profile v2 receipt without inapplicable",
             ),
             (
                 "v2_applicable_provenance",
                 make_receipt(
-                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
-                    correspondence_provenance={"applicable": True},
+                    audit={
+                        "canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"
+                    },
+                    correspondence_provenance={
+                        "applicable": True,
+                        "reason": "Profile v1 only",
+                    },
                     assumptions=v2_assumptions,
                 ),
                 2,
@@ -1300,8 +2239,13 @@ class VerifyZerocopyTests(unittest.TestCase):
             (
                 "v2_zero_applicable_provenance",
                 make_receipt(
-                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
-                    correspondence_provenance={"applicable": 0},
+                    audit={
+                        "canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"
+                    },
+                    correspondence_provenance={
+                        "applicable": 0,
+                        "reason": "Profile v1 only",
+                    },
                     assumptions=v2_assumptions,
                 ),
                 2,
@@ -1310,8 +2254,13 @@ class VerifyZerocopyTests(unittest.TestCase):
             (
                 "v2_none_applicable_provenance",
                 make_receipt(
-                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
-                    correspondence_provenance={"applicable": None},
+                    audit={
+                        "canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"
+                    },
+                    correspondence_provenance={
+                        "applicable": None,
+                        "reason": "Profile v1 only",
+                    },
                     assumptions=v2_assumptions,
                 ),
                 2,
@@ -1320,8 +2269,13 @@ class VerifyZerocopyTests(unittest.TestCase):
             (
                 "v2_string_applicable_provenance",
                 make_receipt(
-                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
-                    correspondence_provenance={"applicable": "false"},
+                    audit={
+                        "canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"
+                    },
+                    correspondence_provenance={
+                        "applicable": "false",
+                        "reason": "Profile v1 only",
+                    },
                     assumptions=v2_assumptions,
                 ),
                 2,
@@ -1329,10 +2283,7 @@ class VerifyZerocopyTests(unittest.TestCase):
             ),
             (
                 "v2_missing_assumptions",
-                make_receipt(
-                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
-                    correspondence_provenance=inapplicable,
-                ),
+                v2_missing_assumptions,
                 2,
                 "missing assumptions list",
             ),

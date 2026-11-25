@@ -392,8 +392,37 @@ receipt = {{
     "status": "selected_unit_verified",
     "taint_reasons": [],
     "elaboration_sandbox": "linux_bwrap",
-    "deferred": [],
+    "assumptions": [
+        "faithful pinned compiler capture",
+        "experimental pointer-free MIR semantics",
+        "Lean kernel and admitted foundation",
+        "intact compiler and verification environment",
+    ],
+    "deferred": [
+        "complete review-surface reporting",
+        "source-to-deployed-binary correspondence",
+    ],
     "spec_warnings": [],
+    "correspondence_provenance": {{
+        "schema_version": 1,
+        "upstream_repository": "https://github.com/proofs-rs/lean-miri",
+        "upstream_commit": "c92d1d97",
+        "upstream_lean_toolchain": "leanprover/lean4:v4.35.0",
+        "build_lean_toolchain": "leanprover/lean4:v4.34.1",
+        "upstream_pin_sha256": "a" * 64,
+        "sysroot_foundation_manifest_sha256": "b" * 64,
+        "patched_files": [],
+        "correspondence_adapters": {{
+            "trusted/correspondence/Trusted/Correspondence.lean": "c" * 64,
+        }},
+        "correspondence_proofs": {{
+            "correspondence/Anneal/MirCorrespondenceProof.lean": "d" * 64,
+        }},
+        "trusted_lean": {{
+            "trusted/lean/Trusted/MirSemantics.lean": "e" * 64,
+        }},
+        "note": "pass2",
+    }},
     "scope": {{
         "kind": "selected_unit",
         "roots": roots,
