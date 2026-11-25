@@ -37,7 +37,10 @@ What this check guarantees — and what it does NOT guarantee
 
 - **Guarantees:** Every guard explicitly listed in `MIR_SEMANTICS_GUARDS` and
   `AUDIT_HEADER_GUARDS` is active, non-redundant, and genuinely exercised by a
-  negative refutation or negative auditor fixture.
+  negative refutation or negative auditor fixture. When `--changed-file` is
+  supplied, every path is validated upfront and selection partitions into
+  full-sweep (`109`), audit-only (`17`), MIR-semantics (`92`), union (`109`), or
+  `0`-guard skip after `validate_catalog_invariants`.
 - **Does NOT guarantee:** Coverage of unmodeled Rust semantics, UB guards added
   to `Trusted/MirSemantics/` or `TrustedBoundary.lean` without a catalog entry,
   or Rust compiler-capture (`anneal-rustc-capture`) checks outside the Lean TCB
@@ -62,6 +65,7 @@ header/import policy guard lands in `trusted/audit/TrustedBoundary.lean`):
 from __future__ import annotations
 
 import argparse
+from collections.abc import Sequence
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict, dataclass
 import json
@@ -3079,10 +3083,126 @@ def validate_catalog_invariants(anneal_root: Path) -> list[str]:
     return errors
 
 
+_FULL_SWEEP_EXACT_PATHS: frozenset[str] = frozenset(
+    {
+        "ci/check_guard_mutation.py",
+        "ci/fixtures/guard_mutation",
+        "trusted/lean/lean-toolchain",
+    }
+)
+
+_FULL_SWEEP_PREFIXES: tuple[str, ...] = ("ci/fixtures/guard_mutation/",)
+
+_AUDIT_TRIGGER_PATHS: frozenset[str] = frozenset(
+    {
+        "trusted/audit/TrustedBoundary.lean",
+        "trusted/lean/foundation-lock.json",
+    }
+)
+
+_MIR_EXCLUDED_PATHS: frozenset[str] = frozenset(
+    {
+        "trusted/lean/foundation-lock.json",
+        "trusted/lean/Trusted/MirSemantics/CanaryFixtures.lean",
+    }
+)
+
+
+def _normalize_changed_file(raw: str) -> str:
+    """Normalize a `--changed-file` path relative to `anneal/`.
+
+    Fails closed on empty, control-byte, backslash, absolute, or traversal
+    segments.
+    """
+    if not raw or not raw.strip():
+        raise ValueError("changed file path must be non-empty")
+    if "\x00" in raw or "\n" in raw or "\r" in raw:
+        raise ValueError(
+            f"changed file path contains invalid control byte: {raw!r}"
+        )
+    if "\\" in raw:
+        raise ValueError(
+            f"changed file path must use POSIX '/' separators: {raw!r}"
+        )
+    if raw.startswith("/"):
+        raise ValueError(
+            f"changed file path must be relative, got: {raw!r}"
+        )
+    parts = raw.split("/")
+    if any(p in ("", ".", "..") for p in parts):
+        raise ValueError(
+            "changed file path must not contain empty, '.', or '..' "
+            f"segments: {raw!r}"
+        )
+    if parts[0] == "anneal":
+        if len(parts) < 2:
+            raise ValueError(
+                f"changed file path must name a file under 'anneal/': {raw!r}"
+            )
+        parts = parts[1:]
+    return "/".join(parts)
+
+
+def select_guards_for_changed_files(
+    changed_files: Sequence[str],
+    *,
+    suite: str = "all",
+    name_filter: str | None = None,
+) -> tuple[list[MirSemanticsGuard], list[AuditHeaderGuard]]:
+    """Select the minimal TCB guard closure covering `changed_files`."""
+    # Validate and normalize every path upfront before any early trigger check.
+    normalized = [_normalize_changed_file(raw) for raw in changed_files]
+
+    full_sweep = False
+    include_all_mir = False
+    include_audit = False
+
+    for norm in normalized:
+        if norm in _FULL_SWEEP_EXACT_PATHS or any(
+            norm.startswith(prefix) for prefix in _FULL_SWEEP_PREFIXES
+        ):
+            full_sweep = True
+            break
+        if norm in _AUDIT_TRIGGER_PATHS:
+            include_audit = True
+        elif (
+            norm.startswith("trusted/lean/")
+            and norm not in _MIR_EXCLUDED_PATHS
+        ):
+            include_all_mir = True
+
+    if full_sweep:
+        include_all_mir = True
+        include_audit = True
+
+    mir_guards = (
+        list(MIR_SEMANTICS_GUARDS)
+        if suite in ("all", "mir_semantics") and include_all_mir
+        else []
+    )
+    audit_guards = (
+        list(AUDIT_HEADER_GUARDS)
+        if suite in ("all", "audit_headers") and include_audit
+        else []
+    )
+
+    if name_filter:
+        mir_guards = [g for g in mir_guards if name_filter in g.guard_id]
+        audit_guards = [g for g in audit_guards if name_filter in g.guard_id]
+    return mir_guards, audit_guards
+
+
 def _select_guards(
     suite: str,
     name_filter: str | None,
+    changed_files: Sequence[str] | None = None,
 ) -> tuple[list[MirSemanticsGuard], list[AuditHeaderGuard]]:
+    if changed_files is not None:
+        return select_guards_for_changed_files(
+            changed_files,
+            suite=suite,
+            name_filter=name_filter,
+        )
     mir_guards = (
         list(MIR_SEMANTICS_GUARDS)
         if suite in ("all", "mir_semantics")
@@ -3102,9 +3222,10 @@ def _select_guards(
 def run_guard_mutation_suite(
     *,
     anneal_root: Path,
-    lean_bin: Path,
+    lean_bin: Path | None = None,
     suite: str = "all",
     name_filter: str | None = None,
+    changed_files: Sequence[str] | None = None,
     jobs: int = 4,
     timeout_sec: int = 60,
 ) -> dict[str, object]:
@@ -3117,11 +3238,29 @@ def run_guard_mutation_suite(
             + "\n  - ".join(catalog_errors)
         )
 
-    mir_guards, audit_guards = _select_guards(suite, name_filter)
+    mir_guards, audit_guards = _select_guards(
+        suite,
+        name_filter,
+        changed_files=changed_files,
+    )
     if not mir_guards and not audit_guards:
+        if changed_files is not None:
+            return {
+                "total": 0,
+                "killed": 0,
+                "survived": 0,
+                "errors": 0,
+                "kill_rate_pct": 100.0,
+                "baseline_sec": 0.0,
+                "total_sec": round(time.monotonic() - t_start, 3),
+                "results": [],
+            }
         raise RuntimeError(
             f"no guards matched suite={suite!r} filter={name_filter!r}"
         )
+
+    if lean_bin is None:
+        lean_bin = _resolve_lean_binary(None)
 
     trusted_lean_dir = anneal_root / "trusted/lean"
     fixtures_dir = anneal_root / "ci/fixtures/guard_mutation"
@@ -3357,6 +3496,13 @@ def _resolve_lean_binary(explicit: Path | None) -> Path:
 
 
 def _format_summary(report: dict[str, object]) -> str:
+    if report["total"] == 0:
+        return (
+            "0 guards selected (skipping Lean baseline)\n"
+            f"Guard-mutation summary: 0/0 killed (100.0%), 0 survived, "
+            f"0 errors (baseline {report['baseline_sec']:.2f}s, "
+            f"total {report['total_sec']:.2f}s)"
+        )
     lines: list[str] = []
     for entry in report["results"]:  # type: ignore[index]
         lines.append(
@@ -3405,6 +3551,16 @@ def main(argv: list[str] | None = None) -> int:
         help="Optional substring filter on guard_id.",
     )
     parser.add_argument(
+        "--changed-file",
+        dest="changed_files",
+        action="append",
+        default=None,
+        help=(
+            "Repeatable changed file path (relative to repo root or `anneal/`) "
+            "to restrict execution to the affected TCB guard closure."
+        ),
+    )
+    parser.add_argument(
         "--jobs",
         type=int,
         default=min(4, os.cpu_count() or 1),
@@ -3435,7 +3591,15 @@ def main(argv: list[str] | None = None) -> int:
             for err in errors:
                 print(f"ERROR: {err}", file=sys.stderr)
             return 1
-        mir_guards, audit_guards = _select_guards(args.suite, args.name_filter)
+        try:
+            mir_guards, audit_guards = _select_guards(
+                args.suite,
+                args.name_filter,
+                changed_files=args.changed_files,
+            )
+        except ValueError as exc:
+            print(f"ERROR: {exc}", file=sys.stderr)
+            return 1
         for g in mir_guards:
             print(f"mir_semantics  {g.guard_id:36s} {g.target_file}")
         for g in audit_guards:
@@ -3443,17 +3607,26 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Total cataloged guards: {len(mir_guards) + len(audit_guards)}")
         return 0
 
-    lean_bin = _resolve_lean_binary(args.lean)
     try:
+        need_lean = True
+        if args.changed_files is not None:
+            mir_sel, audit_sel = _select_guards(
+                args.suite,
+                args.name_filter,
+                changed_files=args.changed_files,
+            )
+            need_lean = bool(mir_sel or audit_sel)
+        lean_bin = _resolve_lean_binary(args.lean) if need_lean else None
         report = run_guard_mutation_suite(
             anneal_root=args.anneal_root,
             lean_bin=lean_bin,
             suite=args.suite,
             name_filter=args.name_filter,
+            changed_files=args.changed_files,
             jobs=args.jobs,
             timeout_sec=args.timeout_sec,
         )
-    except RuntimeError as exc:
+    except (RuntimeError, ValueError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
 

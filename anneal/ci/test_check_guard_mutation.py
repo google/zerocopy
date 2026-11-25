@@ -17,7 +17,9 @@ verify the GitHub Actions workflow wiring in `anneal-current.yml`.
 
 import hashlib
 import json
+import os
 from pathlib import Path
+import shutil
 import stat
 import subprocess
 import sys
@@ -493,6 +495,280 @@ class GuardMutationUnitTests(unittest.TestCase):
         self.assertEqual(report["killed"], 1)
         self.assertEqual(report["survived"], 0)
         self.assertEqual(report["errors"], 0)
+
+    def test_changed_file_zero_guard_skip_needs_no_lean_and_checks_anchors(self):
+        with tempfile.TemporaryDirectory(prefix="anneal-gmut-skip-") as tmp:
+            json_out = Path(tmp) / "skip_report.json"
+            clean_env = {k: v for k, v in os.environ.items() if k != "ANNEAL_LEAN"}
+            clean_env["PATH"] = ""
+            res = subprocess.run(
+                [
+                    sys.executable,
+                    "-I",
+                    "-B",
+                    str(SCRIPT),
+                    "--anneal-root",
+                    str(ANNEAL_ROOT),
+                    "--changed-file",
+                    "anneal/theory/Anneal.lean",
+                    "--changed-file",
+                    "docs/trust-model.md",
+                    "--json-out",
+                    str(json_out),
+                ],
+                capture_output=True,
+                text=True,
+                env=clean_env,
+            )
+            self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
+            self.assertIn("0 guards selected (skipping Lean baseline)", res.stdout)
+            report = json.loads(json_out.read_text(encoding="utf-8"))
+            self.assertEqual(report["total"], 0)
+            self.assertEqual(report["killed"], 0)
+            self.assertEqual(report["survived"], 0)
+            self.assertEqual(report["errors"], 0)
+
+            # Even when `--changed-file` selects 0 live guards, static catalog
+            # and anchor validation must still run and fail closed on drift.
+            fake_root = Path(tmp) / "fake_anneal"
+            for rel in (
+                "trusted/lean/Trusted/MirSemantics",
+                "ci/fixtures/guard_mutation",
+            ):
+                shutil.copytree(ANNEAL_ROOT / rel, fake_root / rel)
+            tb_dst = fake_root / "trusted/audit/TrustedBoundary.lean"
+            tb_dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ANNEAL_ROOT / "trusted/audit/TrustedBoundary.lean", tb_dst)
+
+            ops_path = fake_root / "trusted/lean/Trusted/MirSemantics/Ops.lean"
+            ops_path.write_text(
+                ops_path.read_text(encoding="utf-8").replace(
+                    check_guard_mutation.MIR_SEMANTICS_GUARDS[0].anchor,
+                    "-- broken anchor",
+                    1,
+                ),
+                encoding="utf-8",
+            )
+            drift_res = subprocess.run(
+                [
+                    sys.executable,
+                    "-I",
+                    "-B",
+                    str(SCRIPT),
+                    "--anneal-root",
+                    str(fake_root),
+                    "--changed-file",
+                    "anneal/theory/Anneal.lean",
+                ],
+                capture_output=True,
+                text=True,
+                env=clean_env,
+            )
+            self.assertEqual(drift_res.returncode, 1)
+            self.assertIn("guard catalog validation failed", drift_res.stderr)
+
+    def test_changed_file_selection_closure_and_full_sweep_triggers(self):
+        # TrustedBoundary.lean and foundation-lock.json select all 17
+        # audit_headers guards and 0 MIR guards.
+        for audit_trigger in (
+            "anneal/trusted/audit/TrustedBoundary.lean",
+            "trusted/lean/foundation-lock.json",
+        ):
+            mir_g, audit_g = check_guard_mutation.select_guards_for_changed_files(
+                [audit_trigger]
+            )
+            self.assertEqual(len(mir_g), 0, msg=audit_trigger)
+            self.assertEqual(
+                len(audit_g),
+                len(check_guard_mutation.AUDIT_HEADER_GUARDS),
+                msg=audit_trigger,
+            )
+            self.assertEqual(len(audit_g), 17, msg=audit_trigger)
+
+        # MirModel.lean, Step.lean, and other trusted/lean/** files (excluding
+        # foundation-lock.json and MirSemantics/CanaryFixtures.lean) select all
+        # 92 MIR guards and 0 audit guards.
+        for mir_trigger in (
+            "anneal/trusted/lean/Trusted/MirModel.lean",
+            "trusted/lean/Trusted/MirSemantics/Step.lean",
+            "anneal/trusted/lean/Trusted/MirSemantics.lean",
+            "anneal/trusted/lean/Trusted.lean",
+            "trusted/lean/Trusted/MirAst.lean",
+        ):
+            mir_sel, audit_sel = (
+                check_guard_mutation.select_guards_for_changed_files(
+                    [mir_trigger]
+                )
+            )
+            self.assertEqual(
+                len(mir_sel),
+                len(check_guard_mutation.MIR_SEMANTICS_GUARDS),
+                msg=mir_trigger,
+            )
+            self.assertEqual(len(mir_sel), 92, msg=mir_trigger)
+            self.assertEqual(audit_sel, [], msg=mir_trigger)
+
+        # CanaryFixtures.lean and theory/Anneal.lean select 0 guards.
+        for zero_trigger in (
+            "anneal/trusted/lean/Trusted/MirSemantics/CanaryFixtures.lean",
+            "trusted/lean/Trusted/MirSemantics/CanaryFixtures.lean",
+            "anneal/theory/Anneal.lean",
+        ):
+            mir_z, audit_z = check_guard_mutation.select_guards_for_changed_files(
+                [zero_trigger]
+            )
+            self.assertEqual(mir_z, [], msg=zero_trigger)
+            self.assertEqual(audit_z, [], msg=zero_trigger)
+
+        # Union of audit + MIR triggers selects all 109 guards.
+        mir_union, audit_union = (
+            check_guard_mutation.select_guards_for_changed_files(
+                [
+                    "anneal/trusted/audit/TrustedBoundary.lean",
+                    "anneal/trusted/lean/Trusted/MirModel.lean",
+                ]
+            )
+        )
+        self.assertEqual(len(mir_union) + len(audit_union), 109)
+
+        # Full-sweep escalation triggers select all 109 guards.
+        for trigger in (
+            "ci/check_guard_mutation.py",
+            "anneal/ci/fixtures/guard_mutation/OpsRefutations.lean",
+            "trusted/lean/lean-toolchain",
+        ):
+            mir_full, audit_full = check_guard_mutation.select_guards_for_changed_files(
+                [trigger]
+            )
+            self.assertEqual(
+                len(mir_full),
+                len(check_guard_mutation.MIR_SEMANTICS_GUARDS),
+                f"expected full MIR sweep for {trigger}",
+            )
+            self.assertEqual(
+                len(audit_full),
+                len(check_guard_mutation.AUDIT_HEADER_GUARDS),
+                f"expected full audit sweep for {trigger}",
+            )
+
+    def test_changed_file_trusted_boundary_skips_mir_baseline(self):
+        with tempfile.TemporaryDirectory(prefix="anneal-gmut-aud-") as tmp:
+            tmp_path = Path(tmp)
+            fake_lean = tmp_path / "fake_lean"
+            log_file = tmp_path / "invocations.log"
+            json_out = tmp_path / "report.json"
+            fake_body = textwrap.dedent(
+                f"""\
+                args = sys.argv[1:]
+                with open({str(log_file)!r}, "a", encoding="utf-8") as fh:
+                    fh.write(" ".join(args) + "\\n")
+                if args == ["--print-prefix"]:
+                    print("/fake/sysroot")
+                    sys.exit(0)
+                if "-o" in args:
+                    src = args[-1]
+                    if "MirSemantics" in src or "MirAst" in src:
+                        print(f"unexpected MIR baseline compile: {{src}}", file=sys.stderr)
+                        sys.exit(9)
+                    Path(args[args.index("-o") + 1]).write_bytes(b"fake-olean")
+                    sys.exit(0)
+                if args[0] == "--run":
+                    req_path = Path(args[2])
+                    res_path = Path(args[3])
+                    lean_path = os.environ.get("LEAN_PATH", "")
+                    is_pos = req_path.name.startswith("pos_")
+                    if "tb_olean" in lean_path:
+                        if is_pos:
+                            res_path.write_text(json.dumps({{"ok": True, "result": {{}}}}))
+                            sys.exit(0)
+                        res_path.write_text(json.dumps({{
+                            "ok": False,
+                            "category": "policy",
+                            "message": "policy: rejected",
+                        }}))
+                        sys.exit(1)
+                    if is_pos:
+                        res_path.write_text(json.dumps({{"ok": True, "result": {{}}}}))
+                        sys.exit(0)
+                    res_path.write_text(json.dumps({{"ok": True, "result": {{}}}}))
+                    sys.exit(0)
+                sys.exit(2)
+                """
+            )
+            _write_fake_lean(fake_lean, fake_body)
+            res = subprocess.run(
+                [
+                    sys.executable,
+                    "-I",
+                    "-B",
+                    str(SCRIPT),
+                    "--anneal-root",
+                    str(ANNEAL_ROOT),
+                    "--lean",
+                    str(fake_lean),
+                    "--changed-file",
+                    "anneal/trusted/audit/TrustedBoundary.lean",
+                    "--jobs",
+                    "1",
+                    "--json-out",
+                    str(json_out),
+                ],
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
+            report = json.loads(json_out.read_text(encoding="utf-8"))
+            self.assertEqual(
+                report["total"], len(check_guard_mutation.AUDIT_HEADER_GUARDS)
+            )
+            self.assertEqual(report["killed"], report["total"])
+            self.assertEqual(report["errors"], 0)
+            log_text = log_file.read_text(encoding="utf-8")
+            self.assertNotIn("MirSemantics", log_text)
+            self.assertNotIn("MirAst", log_text)
+
+    def test_changed_file_rejects_invalid_and_traversal_paths(self):
+        for bad_path in (
+            "",
+            "   ",
+            "a\x00b",
+            "trusted\\audit\\TrustedBoundary.lean",
+            "/etc/passwd",
+            "../secret.lean",
+            "anneal/../trusted/audit/TrustedBoundary.lean",
+            ".",
+            "..",
+            "./trusted/audit/TrustedBoundary.lean",
+            "trusted//audit/TrustedBoundary.lean",
+            "anneal",
+            "anneal/",
+        ):
+            with self.assertRaises(ValueError, msg=f"expected reject for {bad_path!r}"):
+                check_guard_mutation.select_guards_for_changed_files([bad_path])
+
+        # Trailing invalid path must still fail closed even after a full-sweep
+        # trigger appears earlier in `--changed-file`.
+        with self.assertRaises(ValueError):
+            check_guard_mutation.select_guards_for_changed_files(
+                ["ci/check_guard_mutation.py", "../bad"]
+            )
+
+        cli_res = subprocess.run(
+            [
+                sys.executable,
+                "-I",
+                "-B",
+                str(SCRIPT),
+                "--anneal-root",
+                str(ANNEAL_ROOT),
+                "--changed-file",
+                "../escape.lean",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(cli_res.returncode, 1)
+        self.assertIn("..", cli_res.stderr)
 
 
 if __name__ == "__main__":
