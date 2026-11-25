@@ -2254,6 +2254,18 @@ theorem miriAlloc_writePointer_readScalar_roundTrip
         rw [h_ext_self]
       rw [h_cs]
       dsimp only
+      -- Rewrite the slice first: converting the private `readTargetUInt` to
+      -- its mirror is then cheap, while leaving the `extract` in place makes
+      -- the conversion check evaluate the read on `beBytes`.
+      have h_ext_rng :
+          (beBytes ptr.offset.bytes.toNat 8 8).extract
+              (allocRange Size.ZERO (Size.ofBytes 8)).start.bytes.toNat
+              (UInt64.toNat (Size.bytes (Size.ofBytes
+                ((allocRange Size.ZERO (Size.ofBytes 8)).start.bytes +
+                  (allocRange Size.ZERO (Size.ofBytes 8)).size.bytes)))) =
+            beBytes ptr.offset.bytes.toNat 8 8 :=
+        h_ext_self
+      rw [h_ext_rng]
       change
         (Except.bind (readTargetUIntMirror RuntimeTargetDataLayout.default.base
           (beBytes ptr.offset.bytes.toNat 8 8)) _) = _
