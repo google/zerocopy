@@ -8,12 +8,10 @@
 
 #![allow(dead_code)]
 
-mod support;
-
 use std::fs;
 use std::time::Duration;
 
-use support::{Invocation, RunDirectory};
+use anneal_testkit::{Invocation, RunDirectory, write_json};
 
 fn run_directory() -> RunDirectory {
     RunDirectory::new("fixture-path-regression", Duration::from_secs(2)).unwrap()
@@ -152,7 +150,7 @@ fn copied_replacements_keep_source_permissions_without_chmoding_aliases() {
 #[test]
 fn json_writes_to_an_empty_destination_return_an_error() {
     assert!(
-        support::write_json(
+        write_json(
             std::path::Path::new(""),
             &serde_json::json!({"result": "unused"}),
         )
@@ -164,7 +162,7 @@ fn json_writes_to_an_empty_destination_return_an_error() {
 #[test]
 fn json_writes_to_a_root_destination_return_an_error() {
     assert!(
-        support::write_json(
+        write_json(
             std::path::Path::new("/"),
             &serde_json::json!({"result": "unused"}),
         )
@@ -181,7 +179,7 @@ fn json_replacements_preserve_external_hard_link_targets() {
     fs::write(&sentinel, b"keep").unwrap();
     fs::hard_link(&sentinel, root.join("summary.json")).unwrap();
 
-    support::write_json(
+    write_json(
         &root.join("summary.json"),
         &serde_json::json!({"result": "replacement"}),
     )
@@ -497,7 +495,7 @@ fn run_evidence_links_do_not_overwrite_targets_or_hide_the_failure() {
     let root = run.path().to_path_buf();
     symlink(&sentinel, root.join("summary.json")).unwrap();
     symlink(&sentinel, root.join("failure.txt")).unwrap();
-    let json_error = support::write_json(
+    let json_error = write_json(
         &root.join("summary.json"),
         &serde_json::json!({"result": "changed"}),
     )

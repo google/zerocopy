@@ -8,15 +8,13 @@
 
 //! Exercises runner failures without requiring installed Rust or Lean tools.
 
-mod support;
-
 use std::fs;
 use std::io::Write;
 use std::process::Command;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::{Duration, Instant};
 
-use support::{Invocation, RunDirectory, Termination, select_cases};
+use anneal_testkit::{Invocation, RunDirectory, Termination, select_cases};
 
 fn run_directory() -> RunDirectory {
     RunDirectory::new("runner-test-revision", Duration::from_secs(10)).unwrap()

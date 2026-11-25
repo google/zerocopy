@@ -26,8 +26,10 @@ use serde_json::{Value, json};
 
 use crate::TestResult;
 
-/// Caller-supplied command description with complete explicit environment
-/// (`env_clear()` before applying `environment`).
+/// Caller-supplied command description with complete explicit environment.
+///
+/// The caller chooses the complete environment (`env_clear()` before applying
+/// `environment`); the runner never searches `PATH`.
 #[derive(Clone, Debug)]
 pub struct Invocation {
     pub executable: PathBuf,
@@ -195,6 +197,17 @@ impl ProcessSupervisor {
         log_dir: &Path,
         run_root: &Path,
     ) -> TestResult<ProcessOutcome> {
+        self.run_at_depth(invocation, work_dir, log_dir, run_root, 2)
+    }
+
+    pub(crate) fn run_at_depth(
+        &self,
+        invocation: &Invocation,
+        work_dir: &Path,
+        log_dir: &Path,
+        run_root: &Path,
+        parents_depth: usize,
+    ) -> TestResult<ProcessOutcome> {
         ensure_child_subreaper()?;
         if !invocation.executable.is_absolute() {
             return Err(format!(
@@ -244,7 +257,10 @@ impl ProcessSupervisor {
                 "original_run_root": root_str,
             }),
         )?;
-        write_regular_file(&log_dir.join("reproduce.py"), REPRODUCE.as_bytes())?;
+        write_regular_file(
+            &log_dir.join("reproduce.py"),
+            reproduce_script(parents_depth).as_bytes(),
+        )?;
 
         let stdout_path = log_dir.join("stdout");
         let stderr_path = log_dir.join("stderr");
@@ -458,7 +474,8 @@ fn path_utf8<'a>(path: &'a Path, label: &str) -> TestResult<&'a str> {
         .ok_or_else(|| format!("{label} path is not valid UTF-8: {}", path.display()))
 }
 
-pub(crate) fn reject_symlink_components(path: &Path) -> TestResult {
+/// Reject any symlink component along `path` (including dangling final links).
+pub fn reject_symlink_components(path: &Path) -> TestResult {
     for ancestor in path.ancestors().collect::<Vec<_>>().into_iter().rev() {
         match fs::symlink_metadata(ancestor) {
             Ok(metadata) if metadata.file_type().is_symlink() => {
@@ -492,14 +509,17 @@ pub(crate) fn validate_single_component(name: &str, label: &str) -> TestResult {
     Ok(())
 }
 
-pub(crate) fn write_json(path: &Path, value: &Value) -> TestResult {
+/// Symlink-safe atomic JSON write replacing any existing hard-linked inode.
+pub fn write_json(path: &Path, value: &Value) -> TestResult {
     reject_symlink_components(path)?;
     let bytes = serde_json::to_vec_pretty(value)
         .map_err(|error| format!("serialize {}: {error}", path.display()))?;
     write_regular_file(path, &bytes)
 }
 
-pub(crate) fn write_regular_file(path: &Path, bytes: &[u8]) -> TestResult {
+/// Symlink-safe atomic regular-file write preserving existing Unix permissions
+/// and replacing any hard-linked destination inode.
+pub fn write_regular_file(path: &Path, bytes: &[u8]) -> TestResult {
     use std::io::Write;
     reject_symlink_components(path)?;
     let parent = path
@@ -527,7 +547,11 @@ pub(crate) fn write_regular_file(path: &Path, bytes: &[u8]) -> TestResult {
     Ok(())
 }
 
-const REPRODUCE: &str = r#"#!/usr/bin/env python3
+fn reproduce_script(parents_depth: usize) -> String {
+    REPRODUCE_TEMPLATE.replace("__PARENTS_DEPTH__", &parents_depth.to_string())
+}
+
+const REPRODUCE_TEMPLATE: &str = r#"#!/usr/bin/env python3
 # Copyright 2026 The Fuchsia Authors
 #
 # Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
@@ -545,13 +569,17 @@ import sys
 
 here = pathlib.Path(__file__).resolve().parent
 request = json.loads((here / 'invocation.json').read_text())
-# Command bundles live at <root>/logs/commands/<NNNN>/reproduce.py.
-root = here.parents[2]
+# Command bundles live at a fixed depth below the run root. A case may itself
+# have a fixture named run.json, so metadata filenames cannot identify the root.
+root = here.parents[__PARENTS_DEPTH__]
 run_text = (root / 'run.json').read_text()
 run = json.loads(run_text)
 old = pathlib.Path(request['original_run_root'])
 
 def relocate(value):
+    # Owned paths occupy a whole value. pathlib supplies the host's component
+    # and case rules; a bare string prefix would also match sibling names.
+    # Embedded path text and sibling names remain literal values.
     path = pathlib.Path(value)
     try:
         relative = path.relative_to(old)
@@ -559,9 +587,13 @@ def relocate(value):
         return value
     if '..' in relative.parts:
         return value
+    # Keep the original suffix: source/ can select directory contents while
+    # source selects the directory itself. Rebuilding a Path drops that final
+    # separator and can change the recorded operation.
     prefix = str(old)
     if value.startswith(prefix):
         return str(root) + value[len(prefix):]
+    # Native alternative spellings still use pathlib's ownership check.
     separators = os.sep + (os.altsep or '')
     trailing = value[len(value.rstrip(separators)):]
     return str(root / relative) + trailing
@@ -605,12 +637,16 @@ except subprocess.TimeoutExpired:
     else:
         proc.kill()
     proc.wait()
+    # The exception may report a remaining wait interval, not this deadline.
     print(f'process timed out after {timeout} seconds', file=sys.stderr)
     sys.exit(124)
 
 if os.name == 'posix' and returncode < 0:
     signum = -returncode
     print(f'process terminated by signal {signum}', file=sys.stderr, flush=True)
+    # Python ignores SIGPIPE and can inherit other handlers or a signal mask.
+    # Restore the default action so replay retains signal termination instead
+    # of converting a negative return code into a normal exit modulo 256.
     if signum not in (signal.SIGKILL, signal.SIGSTOP):
         signal.signal(signum, signal.SIG_DFL)
     if hasattr(signal, 'pthread_sigmask'):

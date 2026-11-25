@@ -10,16 +10,14 @@
 
 #![cfg(unix)]
 
-mod support;
-
 use std::fs;
 use std::os::unix::process::ExitStatusExt;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Output, Stdio};
 use std::time::Duration;
 
+use anneal_testkit::{Invocation, RunDirectory, Termination};
 use serde_json::Value;
-use support::{Invocation, RunDirectory, Termination};
 use wait_timeout::ChildExt;
 
 fn python() -> PathBuf {

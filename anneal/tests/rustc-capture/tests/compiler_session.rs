@@ -8,12 +8,14 @@
 
 //! Exercise compiler work through the private driver boundary.
 
-mod common;
-
 use std::path::PathBuf;
 use std::process::{Command, Output};
 
-use common::sysroot;
+use anneal_testkit::default_rust_sysroot;
+
+fn sysroot() -> PathBuf {
+    default_rust_sysroot().expect("resolve pinned compiler sysroot")
+}
 
 const CALLBACK: &str =
     "anneal-rustc-capture: compiler analysis callback reached; verification not performed";
