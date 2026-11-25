@@ -210,6 +210,71 @@ class VerifyZerocopyTests(unittest.TestCase):
             self.assertEqual(summary["unit_count"], 1)
             self.assertIn("01_unit", summary["units"])
 
+    def test_validate_receipt_profile_v2_root_requires_inapplicable_provenance(self):
+        inapplicable = {"applicable": False, "reason": "Profile v1 only"}
+        good = make_receipt(
+            audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+            correspondence_provenance=inapplicable,
+        )
+        parsed = verify_zerocopy.validate_receipt(
+            "05_unit", 0, json.dumps(good), "", ["util::macros::__unsafe"]
+        )
+        self.assertEqual(parsed["audit"]["canonicalRoot"], "Trusted.MirSemantics.UnitTheoremV2")
+
+        bad_cases = [
+            (
+                "v2_missing_provenance",
+                make_receipt(audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"}),
+                "Profile v2 receipt without inapplicable",
+            ),
+            (
+                "v2_applicable_provenance",
+                make_receipt(
+                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+                    correspondence_provenance={"applicable": True},
+                ),
+                "Profile v2 receipt without inapplicable",
+            ),
+            (
+                "v2_zero_applicable_provenance",
+                make_receipt(
+                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+                    correspondence_provenance={"applicable": 0},
+                ),
+                "Profile v2 receipt without inapplicable",
+            ),
+            (
+                "v2_none_applicable_provenance",
+                make_receipt(
+                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+                    correspondence_provenance={"applicable": None},
+                ),
+                "Profile v2 receipt without inapplicable",
+            ),
+            (
+                "v2_string_applicable_provenance",
+                make_receipt(
+                    audit={"canonicalRoot": "Trusted.MirSemantics.UnitTheoremV2"},
+                    correspondence_provenance={"applicable": "false"},
+                ),
+                "Profile v2 receipt without inapplicable",
+            ),
+            (
+                "unknown_root",
+                make_receipt(
+                    audit={"canonicalRoot": "Trusted.MirSemantics.CrateTheoremV2"},
+                    correspondence_provenance=inapplicable,
+                ),
+                "canonicalRoot=",
+            ),
+        ]
+        for label, payload, needle in bad_cases:
+            with self.subTest(case=label):
+                with self.assertRaisesRegex(RuntimeError, needle):
+                    verify_zerocopy.validate_receipt(
+                        "05_unit", 0, json.dumps(payload), "", ["util::macros::__unsafe"]
+                    )
+
     def test_validate_receipt_allows_absent_deferred(self):
         receipt = make_receipt()
         del receipt["deferred"]

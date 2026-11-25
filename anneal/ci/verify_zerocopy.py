@@ -23,6 +23,11 @@ import time
 
 VALID_SANDBOXES = ("linux_bwrap", "linux_landlock_seccomp")
 ALLOWED_AXIOMS = frozenset({"propext"})
+UNIT_THEOREM_V1 = "Trusted.MirSemantics.UnitTheorem"
+# Profile v2 units are checked against `UnitTheoremV2`, whose semantics Pass 2
+# does not relate to `lean-miri`. Their receipts must say so, so a Profile v2
+# root is accepted only together with inapplicable correspondence provenance.
+UNIT_THEOREM_V2 = "Trusted.MirSemantics.UnitTheoremV2"
 BINDING_DIGEST_FIELDS = (
     ("requestSha256", "request_sha256"),
     ("captureSha256", "capture_sha256"),
@@ -397,8 +402,19 @@ def validate_receipt(
         axioms = audit.get("axioms")
         if not isinstance(axioms, list) or not set(axioms).issubset(ALLOWED_AXIOMS):
             failures.append(f"disallowed audit.axioms={axioms!r}")
-        if audit.get("canonicalRoot") != "Trusted.MirSemantics.UnitTheorem":
-            failures.append(f"canonicalRoot={audit.get('canonicalRoot')!r}")
+        root = audit.get("canonicalRoot")
+        if root == UNIT_THEOREM_V2:
+            provenance = receipt.get("correspondence_provenance")
+            if (
+                not isinstance(provenance, dict)
+                or provenance.get("applicable") is not False
+            ):
+                failures.append(
+                    "Profile v2 receipt without inapplicable "
+                    f"correspondence_provenance: {provenance!r}"
+                )
+        elif root != UNIT_THEOREM_V1:
+            failures.append(f"canonicalRoot={root!r}")
         bindings = audit.get("bindings")
         if not isinstance(bindings, dict):
             failures.append("missing audit.bindings")
