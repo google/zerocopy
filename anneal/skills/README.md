@@ -31,6 +31,13 @@ digests for vendored `joshlf/skills` packages are recorded in
 [`../../skills/README.md`](../../skills/README.md) and
 [`../../skills/vendor-lock.json`](../../skills/vendor-lock.json).
 
+`cargo anneal skill spec-authoring` and `cargo anneal skill proof-scaling`
+print copies of these two skills bundled in
+[`../trusted/cargo-anneal/assets/skills/`](../trusted/cargo-anneal/assets/skills/)
+so the published crate stays self-contained. When editing either skill, copy
+its `SKILL.md` over the bundled file; `cargo test -p cargo-anneal` fails while
+they differ.
+
 ## Task routing
 
 Use this table with the

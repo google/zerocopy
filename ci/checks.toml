@@ -830,6 +830,8 @@ inputs = [
     "anneal/skills/**",
     "anneal/theory/**",
     "anneal/trusted/audit/TrustedBoundary.lean",
+    "anneal/trusted/cargo-anneal/Cargo.toml",
+    "anneal/trusted/cargo-anneal/assets/**",
     "anneal/trusted/cargo-anneal/skills/**",
     "zerocopy/AGENTS.md",
     ".github/**",

@@ -21,12 +21,15 @@ scripts, on non-Linux hosts, or when passing `--allow-unsandboxed-elaboration`.
 
 ## Companion skills
 
+`cargo-anneal` bundles both companion skills; run `cargo anneal skill list` to
+list every bundled topic.
+
 - Authoring, translating, or auditing specifications (`Spec.lean` / `Spec.*`,
   vacuity, anti-echo, Intent Decisions): use **`spec-authoring`**
-  (`anneal/skills/spec-authoring/SKILL.md` in `google/zerocopy`).
+  (`cargo anneal skill spec-authoring`).
 - Scaling proofs past bounded `execProg`, reducing Lean RSS/timeouts, or
   escaping verification cliffs: use **`proof-scaling`**
-  (`anneal/skills/proof-scaling/SKILL.md` in `google/zerocopy`).
+  (`cargo anneal skill proof-scaling`).
 
 ## Run the project's verification
 
@@ -72,7 +75,9 @@ Other entrypoints:
 
 Run `cargo anneal init` inside a Cargo package to scaffold `proof/Spec.lean`
 and `proof/Proof.lean` (or `cargo anneal init --standalone` for a runnable
-4-file example, or `cargo anneal skill --example` to print it). Save standalone
+4-file example, or `cargo anneal skill --example` to print it). Pass
+`--profile v2` (default `v1`; not with `--standalone`) for a `SpecsV2`
+starter when capture emits MIR Profile v2. Save standalone
 files in a temporary directory to test your environment; it proves termination
 and a zero return for a safe no-argument function in the captured MIR model.
 
@@ -114,6 +119,12 @@ and a zero return for a safe no-argument function in the captured MIR model.
 
 When adapting the example, pass `--artifacts <new-dir>`. Inspect `selected` and
 `program` in `capture/capture.json` plus the goal in `generated/Expected.lean`.
+Retention never writes into an existing path; to rerun into the same path, add
+`--overwrite-artifacts`, which replaces only an empty directory or one carrying
+the `.cargo-anneal-artifacts` marker that `verify` writes (never a symlink, a
+directory containing the working directory or a verification input, or one
+with unexpected entries) and first drops any earlier `result.json` and
+`lean-lib/`.
 Move to **`proof-scaling`** as soon as direct `execProg` / `simp` stalls.
 
 ## Scale crate proofs with Tarjan SCC sharding

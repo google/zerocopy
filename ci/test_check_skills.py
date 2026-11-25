@@ -924,5 +924,81 @@ class CheckSkillsTests(unittest.TestCase):
             self.assert_fails_with(repo, "symlink forbidden: anneal/theory/Anneal")
 
 
+    def test_cargo_anneal_companion_assets_match_anneal_skills(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp, patch.object(
+            check_skills, "CARGO_ANNEAL_COMPANION_SKILLS", ("policy-review",)
+        ):
+            repo = self.build_fixture(Path(tmp))
+            crate = repo / "anneal" / "trusted" / "cargo-anneal"
+            assets = crate / "assets" / "skills"
+            canonical = repo / "anneal" / "skills" / "policy-review" / "SKILL.md"
+            asset = assets / "policy-review" / "SKILL.md"
+
+            # The packaged copies are required only alongside the crate.
+            check_skills.check_repository(repo)
+            (crate / "Cargo.toml").write_text("[package]\n", encoding="utf-8")
+            self.assert_fails_with(
+                repo,
+                "anneal/trusted/cargo-anneal/assets/skills: target does not exist",
+            )
+
+            asset.parent.mkdir(parents=True)
+            asset.write_bytes(canonical.read_bytes())
+            check_skills.check_repository(repo)
+
+            # Drift in either direction fails closed.
+            asset.write_bytes(canonical.read_bytes() + b"\nExtra.\n")
+            self.assert_fails_with(repo, "stale packaged copy")
+            asset.write_bytes(canonical.read_bytes())
+
+            # Unlisted files and directories are rejected.
+            stray = assets / "policy-review" / "NOTES.md"
+            stray.write_text("# Notes\n", encoding="utf-8")
+            self.assert_fails_with(repo, "unexpected entries")
+            stray.unlink()
+            (assets / "other").mkdir()
+            self.assert_fails_with(repo, "unexpected entries")
+            (assets / "other").rmdir()
+
+            # A symlinked copy or a missing copy fails closed.
+            asset.unlink()
+            asset.symlink_to(canonical)
+            self.assert_fails_with(repo, "symlink is forbidden")
+            asset.unlink()
+            asset.parent.rmdir()
+            self.assert_fails_with(repo, "missing packaged copy")
+            asset.parent.mkdir()
+            asset.write_bytes(canonical.read_bytes())
+            check_skills.check_repository(repo)
+
+        # A packaged copy whose canonical source is gone fails closed.
+        with tempfile.TemporaryDirectory() as tmp, patch.object(
+            check_skills, "CARGO_ANNEAL_COMPANION_SKILLS", ("absent",)
+        ):
+            repo = self.build_fixture(Path(tmp))
+            crate = repo / "anneal" / "trusted" / "cargo-anneal"
+            (crate / "Cargo.toml").write_text("[package]\n", encoding="utf-8")
+            write_skill_md(crate / "assets" / "skills" / "absent", "absent")
+            self.assert_fails_with(
+                repo, "anneal/skills/absent/SKILL.md: target does not exist"
+            )
+
+    def test_checks_toml_skills_check_inputs_cover_companion_assets(self) -> None:
+        import tomllib
+
+        checks_toml = REPO_ROOT / "ci" / "checks.toml"
+        data = tomllib.loads(checks_toml.read_text(encoding="utf-8"))
+        checks = {c["id"]: c for c in data.get("checks", [])}
+        includes = {
+            pat
+            for inp in checks["skills-check"].get("inputs", [])
+            if inp.get("kind") == "glob"
+            for pat in inp.get("include", [])
+        }
+        crate = check_skills.CARGO_ANNEAL_CRATE_REL
+        for required in (f"{crate}/Cargo.toml", f"{crate}/assets/**"):
+            self.assertIn(required, includes)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -144,6 +144,41 @@ fn bundled_skill_is_discoverable_and_matches_the_source_file() {
             output.stdout,
             include_bytes!("../../../trusted/cargo-anneal/skills/cargo-anneal/SKILL.md")
         );
+
+        // Companion skills print byte-for-byte from their packaged copies,
+        // which `ci/check_skills.py` keeps identical to `anneal/skills/`.
+        const SPEC_AUTHORING: &[u8] =
+            include_bytes!("../../../trusted/cargo-anneal/assets/skills/spec-authoring/SKILL.md");
+        const PROOF_SCALING: &[u8] =
+            include_bytes!("../../../trusted/cargo-anneal/assets/skills/proof-scaling/SKILL.md");
+        for (topic, canonical) in [
+            (
+                "cargo-anneal",
+                &include_bytes!("../../../trusted/cargo-anneal/skills/cargo-anneal/SKILL.md")[..],
+            ),
+            ("spec-authoring", SPEC_AUTHORING),
+            ("proof-scaling", PROOF_SCALING),
+        ] {
+            let output = command(route, project.path())
+                .args(["skill", topic])
+                .output()
+                .unwrap_or_else(|error| panic!("launch {route:?}: {error}"));
+            assert_result(&output, 0, "", "");
+            assert!(output.stderr.is_empty(), "{output:?}");
+            assert_eq!(output.stdout, canonical, "skill {topic}");
+        }
+        let output = command(route, project.path())
+            .args(["skill", "list"])
+            .output()
+            .unwrap_or_else(|error| panic!("launch {route:?}: {error}"));
+        for topic in ["cargo-anneal", "spec-authoring", "proof-scaling"] {
+            assert_result(&output, 0, topic, "");
+        }
+        let output = command(route, project.path())
+            .args(["skill", "no-such-topic"])
+            .output()
+            .unwrap_or_else(|error| panic!("launch {route:?}: {error}"));
+        assert_result(&output, 2, "", "no-such-topic");
     }
 }
 
@@ -603,6 +638,242 @@ fn early_verification_failures_have_versioned_receipts() {
 }
 
 #[test]
+fn overwrite_artifacts_replaces_only_earlier_artifacts() {
+    use std::fs;
+    let project = tempfile::tempdir().unwrap();
+    let request = project.path().join("request.json");
+    fs::write(&request, b"not JSON\n").unwrap();
+    let destination = project.path().join("evidence");
+    let run = |route: Route, overwrite: bool| {
+        let mut child = command(route, project.path());
+        child
+            .args(["verify", "--format", "json"])
+            .arg("--request")
+            .arg(&request)
+            .arg("--artifacts")
+            .arg(&destination);
+        if overwrite {
+            child.arg("--overwrite-artifacts");
+        }
+        #[cfg(not(feature = "setup"))]
+        child.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+        let output = child.output().unwrap();
+        let receipt: serde_json::Value =
+            serde_json::from_slice(&output.stdout).unwrap_or_else(|e| panic!("{e}: {output:?}"));
+        (output, receipt)
+    };
+    // The rejected request needs no compiler or Lean process, yet retains
+    // its (empty) evidence directory each time.
+    for route in [Route::Direct, Route::Cargo] {
+        let (output, receipt) = run(route, true);
+        assert_result(&output, 1, "", "");
+        assert_eq!(receipt["phase"], "request", "{receipt}");
+        assert_eq!(receipt["artifacts"].as_str(), destination.to_str());
+        assert!(destination.is_dir());
+        // Without the flag, the existing destination is still refused.
+        let (output, receipt) = run(route, false);
+        assert_result(&output, 2, "", "");
+        assert_eq!(receipt["phase"], "retention", "{receipt}");
+        assert!(receipt["detail"].as_str().unwrap().contains("--overwrite-artifacts"), "{receipt}");
+    }
+    // An earlier artifact entry is replaced; no staging siblings remain.
+    fs::write(destination.join("request.json"), b"earlier").unwrap();
+    let (output, _) = run(Route::Direct, true);
+    assert_result(&output, 1, "", "");
+    assert!(!destination.join("request.json").exists());
+    let names: Vec<_> = fs::read_dir(project.path())
+        .unwrap()
+        .map(|e| e.unwrap().file_name().into_string().unwrap())
+        .filter(|n| n.contains("anneal-"))
+        .collect();
+    assert!(names.is_empty(), "{names:?}");
+    // A foreign entry blocks replacement before staging.
+    fs::write(destination.join("notes.txt"), b"caller notes").unwrap();
+    let (output, receipt) = run(Route::Direct, true);
+    assert_result(&output, 2, "", "");
+    assert_eq!(receipt["phase"], "retention", "{receipt}");
+    assert!(receipt["detail"].as_str().unwrap().contains("notes.txt"), "{receipt}");
+    assert_eq!(fs::read(destination.join("notes.txt")).unwrap(), b"caller notes");
+    #[cfg(unix)]
+    {
+        let link = project.path().join("evidence-link");
+        let target = project.path().join("link-target");
+        fs::create_dir(&target).unwrap();
+        std::os::unix::fs::symlink(&target, &link).unwrap();
+        let mut child = command(Route::Direct, project.path());
+        child
+            .args(["verify", "--format", "json"])
+            .arg("--request")
+            .arg(&request)
+            .arg("--artifacts")
+            .arg(&link)
+            .arg("--overwrite-artifacts");
+        #[cfg(not(feature = "setup"))]
+        child.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+        let output = child.output().unwrap();
+        assert_result(&output, 2, "symlink", "");
+        assert!(fs::symlink_metadata(&link).unwrap().is_symlink());
+        assert_eq!(fs::read_dir(&target).unwrap().count(), 0);
+    }
+}
+
+/// `--overwrite-artifacts` never deletes the caller's inputs: a destination
+/// holding the `--request` file, or a source root that a readable request
+/// declares, is refused before staging and left untouched.
+#[test]
+fn overwrite_artifacts_refuses_destinations_holding_inputs() {
+    use std::fs;
+    let project = tempfile::tempdir().unwrap();
+    let destination = project.path().join("ev");
+    fs::create_dir_all(destination.join("rust")).unwrap();
+    fs::write(destination.join(".cargo-anneal-artifacts"), "cargo-anneal verification artifacts\n")
+        .unwrap();
+    let lib = include_str!("../../../trusted/cargo-anneal/assets/scalar/lib.rs");
+    fs::write(destination.join("rust/lib.rs"), lib).unwrap();
+    let inner_request = destination.join("request.json");
+    fs::write(&inner_request, b"not JSON\n").unwrap();
+    let outer_request = project.path().join("outer.json");
+    fs::write(
+        &outer_request,
+        serde_json::json!({
+            "schema_version": 1,
+            "compilation": {
+                "source_root": "ev/rust",
+                "crate_root": "lib.rs",
+                "crate_name": "scalar",
+                "source_files": ["lib.rs"],
+            },
+            "scope": {"kind": "selected_unit", "roots": ["zero"]},
+            "proof": {"source_root": ".", "sources": []},
+        })
+        .to_string(),
+    )
+    .unwrap();
+    for request in [&inner_request, &outer_request] {
+        let mut child = command(Route::Direct, project.path());
+        child
+            .args(["verify", "--format", "json", "--request"])
+            .arg(request)
+            .arg("--artifacts")
+            .arg(&destination)
+            .arg("--overwrite-artifacts")
+            .args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+        let output = child.output().unwrap();
+        assert_result(&output, 2, "", "");
+        let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+        assert_eq!(receipt["phase"], "retention", "{receipt}");
+        assert!(receipt["detail"].as_str().unwrap().contains("verification input"), "{receipt}");
+        assert_eq!(fs::read(&inner_request).unwrap(), b"not JSON\n");
+        assert_eq!(fs::read_to_string(destination.join("rust/lib.rs")).unwrap(), lib);
+    }
+}
+
+/// An earlier run's success evidence (`result.json`, `lean-lib/`) never
+/// survives a later failing `--overwrite-artifacts` run.
+#[test]
+fn overwrite_artifacts_drops_earlier_success_evidence_on_failure() {
+    use std::fs;
+    let project = tempfile::tempdir().unwrap();
+    let request = project.path().join("request.json");
+    fs::write(&request, b"not JSON\n").unwrap();
+    let destination = project.path().join("evidence");
+    fs::create_dir_all(destination.join("lean-lib/Proof")).unwrap();
+    fs::write(destination.join(".cargo-anneal-artifacts"), "cargo-anneal verification artifacts\n")
+        .unwrap();
+    fs::write(destination.join("result.json"), b"{\"status\":\"crate_verified\"}").unwrap();
+    fs::write(destination.join("lean-lib/Proof/Proof.olean"), b"olean").unwrap();
+    let mut child = command(Route::Direct, project.path());
+    child
+        .args(["verify", "--format", "json", "--request"])
+        .arg(&request)
+        .arg("--artifacts")
+        .arg(&destination)
+        .arg("--overwrite-artifacts");
+    #[cfg(not(feature = "setup"))]
+    child.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+    let output = child.output().unwrap();
+    assert_result(&output, 1, "", "");
+    let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(receipt["phase"], "request", "{receipt}");
+    assert_eq!(receipt["artifacts"].as_str(), destination.to_str(), "{receipt}");
+    assert!(!destination.join("result.json").exists());
+    assert!(!destination.join("lean-lib").exists());
+    assert!(destination.join(".cargo-anneal-artifacts").is_file());
+}
+
+/// A run that stages every early entry, including a `--verify-shard-plan`
+/// snapshot (`expected-shard-plan.json`), leaves a retained directory that a
+/// rerun with `--overwrite-artifacts` must still recognize and replace.
+#[test]
+fn overwrite_artifacts_replaces_retained_shard_plan_snapshot() {
+    use std::fs;
+    let project = tempfile::tempdir().unwrap();
+    for (name, contents) in [
+        ("lib.rs", include_str!("../../../trusted/cargo-anneal/assets/scalar/lib.rs")),
+        ("request.json", include_str!("../../../trusted/cargo-anneal/assets/scalar/request.json")),
+        ("Spec.lean", include_str!("../../../trusted/cargo-anneal/assets/scalar/Spec.lean")),
+        ("Proof.lean", include_str!("../../../trusted/cargo-anneal/assets/scalar/Proof.lean")),
+    ] {
+        fs::write(project.path().join(name), contents).unwrap();
+    }
+    let plan = project.path().join("anneal-shards.json");
+    fs::write(
+        &plan,
+        serde_json::json!({
+            "schema_version": 1,
+            "sharded": false,
+            "scope": "crate",
+            "shard_min_bodies": 0,
+            "shard_max_bodies": 0,
+            "shard_max_ast_nodes": 0,
+            "total_bodies": 0,
+            "total_shards": 0,
+            "id_tree_sha256": null,
+            "shards": [],
+        })
+        .to_string(),
+    )
+    .unwrap();
+    let destination = project.path().join("evidence");
+    // Nonexistent tool paths stop the run at `capture-tool`, after the
+    // request and shard plan are staged, without any compiler or Lean.
+    let run = |overwrite: bool| {
+        let mut child = command(Route::Direct, project.path());
+        child
+            .args(["verify", "--format", "json", "--request"])
+            .arg(project.path().join("request.json"))
+            .arg("--verify-shard-plan")
+            .arg(&plan)
+            .arg("--artifacts")
+            .arg(&destination)
+            .args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+        if overwrite {
+            child.arg("--overwrite-artifacts");
+        }
+        let output = child.output().unwrap();
+        let receipt: serde_json::Value =
+            serde_json::from_slice(&output.stdout).unwrap_or_else(|e| panic!("{e}: {output:?}"));
+        (output, receipt)
+    };
+    let (output, receipt) = run(false);
+    assert_result(&output, 2, "", "");
+    assert_eq!(receipt["phase"], "capture-tool", "{receipt}");
+    assert_eq!(receipt["artifacts"].as_str(), destination.to_str(), "{receipt}");
+    assert!(destination.join("expected-shard-plan.json").is_file());
+    assert!(destination.join("request.json").is_file());
+    fs::write(destination.join("expected-shard-plan.json"), b"earlier").unwrap();
+
+    let (output, receipt) = run(true);
+    assert_result(&output, 2, "", "");
+    assert_eq!(receipt["phase"], "capture-tool", "{receipt}");
+    assert_eq!(receipt["artifacts"].as_str(), destination.to_str(), "{receipt}");
+    assert_eq!(
+        fs::read(destination.join("expected-shard-plan.json")).unwrap(),
+        fs::read(&plan).unwrap()
+    );
+}
+
+#[test]
 fn unclaimable_artifact_destinations_fail_before_staging_or_request_reading() {
     use std::{fs, path::PathBuf};
     let project = tempfile::tempdir().unwrap();
@@ -1001,6 +1272,154 @@ fn run_cargo_shortcut_probe(
     let output = child.output().unwrap();
     let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
     (output, receipt)
+}
+
+/// A Cargo-shortcut rerun with `--overwrite-artifacts` leaves an artifact
+/// directory inside the package or proof directory out of source discovery,
+/// instead of refusing to replace its own staged copies, yet still refuses
+/// a Cargo target root inside that directory.
+#[test]
+fn cargo_shortcut_overwrite_skips_its_own_artifacts() {
+    use std::fs;
+    let project = tempfile::tempdir().unwrap();
+    let package = project.path().join("package");
+    fs::create_dir_all(package.join("src")).unwrap();
+    fs::create_dir(package.join("proof")).unwrap();
+    let manifest = "[package]\nname = \"rerun\"\nversion = \"0.1.0\"\nedition = \"2024\"\n";
+    fs::write(package.join("Cargo.toml"), manifest).unwrap();
+    fs::write(package.join("src/lib.rs"), b"pub fn zero() -> u64 { 0 }\n").unwrap();
+    fs::write(package.join("proof/Spec.lean"), b"-- not compiled by this check\n").unwrap();
+    for evidence in [package.join("proof/out"), package.join("out")] {
+        for run in 0..2 {
+            let (output, receipt) = run_cargo_shortcut_probe(
+                project.path(),
+                &package,
+                &evidence,
+                &["--overwrite-artifacts"],
+            );
+            assert_result(&output, 2, "", "");
+            assert_eq!(receipt["phase"], "capture-tool", "run {run}: {receipt}");
+            let request: serde_json::Value =
+                serde_json::from_slice(&fs::read(evidence.join("request.json")).unwrap()).unwrap();
+            assert_eq!(request["compilation"]["source_files"], serde_json::json!(["src/lib.rs"]));
+            let modules: Vec<_> = request["proof"]["sources"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|source| source["module"].as_str().unwrap().to_owned())
+                .collect();
+            assert_eq!(modules, ["Spec"], "{request}");
+            assert!(evidence.join("rust/src/lib.rs").is_file());
+            // A Lean file left in an earlier run's evidence is no proof input.
+            fs::create_dir_all(evidence.join("authored")).unwrap();
+            fs::write(evidence.join("authored/Stale.lean"), b"-- earlier copy\n").unwrap();
+        }
+        // Any other directory in the package is ordinary source discovery.
+        if evidence.starts_with(package.join("proof")) {
+            fs::remove_dir_all(&evidence).unwrap();
+        }
+    }
+
+    // A target root inside the destination is a verification input.
+    let out = package.join("out");
+    fs::write(
+        package.join("Cargo.toml"),
+        format!("{manifest}\n[lib]\npath = \"out/rust/src/lib.rs\"\n"),
+    )
+    .unwrap();
+    let (output, receipt) =
+        run_cargo_shortcut_probe(project.path(), &package, &out, &["--overwrite-artifacts"]);
+    assert_result(&output, 2, "", "");
+    assert_eq!(receipt["phase"], "retention", "{receipt}");
+    assert!(receipt["detail"].as_str().unwrap().contains("verification input"), "{receipt}");
+    assert_eq!(fs::read(out.join("rust/src/lib.rs")).unwrap(), b"pub fn zero() -> u64 { 0 }\n");
+}
+
+/// Before it modifies an existing `--overwrite-artifacts` destination, a
+/// Cargo-mode run refuses one that holds the root of any package target,
+/// and one whose package targets it cannot list, even when the run would
+/// fail early anyway (here: a missing `--proof-dir`).
+#[test]
+fn cargo_overwrite_refuses_destinations_holding_any_target_root() {
+    use std::fs;
+    let project = tempfile::tempdir().unwrap();
+    let package = project.path().join("package");
+    let out = package.join("out");
+    let header = "[package]\nname = \"targets\"\nversion = \"0.1.0\"\nedition = \"2024\"\n";
+    let lib = b"pub fn zero() -> u64 { 0 }\n";
+    for (manifest, config, expected) in [
+        ("[lib]\npath = \"out/rust/src/lib.rs\"\n", None, "verification input"),
+        ("[lib]\npath = \"out/lean-lib/lib.rs\"\n", None, "verification input"),
+        (
+            "[[bin]]\nname = \"extra\"\npath = \"out/rust/src/main.rs\"\n",
+            None,
+            "verification input",
+        ),
+        ("", Some("[build]\nrustflags = []\n"), "cannot list the Cargo targets"),
+    ] {
+        let _ = fs::remove_dir_all(&package);
+        fs::create_dir_all(package.join("src")).unwrap();
+        fs::create_dir_all(out.join("rust/src")).unwrap();
+        fs::create_dir_all(out.join("lean-lib")).unwrap();
+        fs::write(package.join("Cargo.toml"), format!("{header}\n{manifest}")).unwrap();
+        fs::write(package.join("src/lib.rs"), lib).unwrap();
+        fs::write(out.join(".cargo-anneal-artifacts"), "cargo-anneal verification artifacts\n")
+            .unwrap();
+        fs::write(out.join("result.json"), b"{\"status\":\"crate_verified\"}").unwrap();
+        for file in ["rust/src/lib.rs", "rust/src/main.rs", "lean-lib/lib.rs"] {
+            fs::write(out.join(file), lib).unwrap();
+        }
+        if let Some(config) = config {
+            fs::create_dir(package.join(".cargo")).unwrap();
+            fs::write(package.join(".cargo/config.toml"), config).unwrap();
+        }
+        let (output, receipt) =
+            run_cargo_shortcut_probe(project.path(), &package, &out, &["--overwrite-artifacts"]);
+        assert_result(&output, 2, "", "");
+        assert_eq!(receipt["phase"], "retention", "{receipt}");
+        assert!(receipt["detail"].as_str().unwrap().contains(expected), "{receipt}");
+        assert_eq!(fs::read(out.join("result.json")).unwrap(), b"{\"status\":\"crate_verified\"}");
+        for file in ["rust/src/lib.rs", "rust/src/main.rs", "lean-lib/lib.rs"] {
+            assert_eq!(fs::read(out.join(file)).unwrap(), lib, "{file}");
+        }
+    }
+}
+
+/// A capture driver that `verify` would discover beside the running
+/// `cargo-anneal` is protected before an existing destination is modified.
+#[cfg(feature = "setup")]
+#[test]
+fn overwrite_artifacts_refuses_destinations_holding_discovered_tools() {
+    use std::fs;
+    let project = tempfile::tempdir().unwrap();
+    let request = project.path().join("request.json");
+    fs::write(&request, b"not JSON\n").unwrap();
+    let destination = project.path().join("evidence");
+    fs::create_dir_all(destination.join("lean-lib")).unwrap();
+    fs::write(destination.join(".cargo-anneal-artifacts"), "cargo-anneal verification artifacts\n")
+        .unwrap();
+    fs::write(destination.join("result.json"), b"{}").unwrap();
+    let binary = Path::new(env!("CARGO_BIN_EXE_cargo-anneal-test-bin"));
+    let relocated = destination.join("lean-lib").join(binary.file_name().unwrap());
+    if fs::hard_link(binary, &relocated).is_err() {
+        fs::copy(binary, &relocated).unwrap();
+    }
+    let output = Command::new(&relocated)
+        .current_dir(project.path())
+        .env("XDG_CACHE_HOME", project.path().join("empty-cache"))
+        .args(["verify", "--format", "json", "--request"])
+        .arg(&request)
+        .arg("--artifacts")
+        .arg(&destination)
+        .arg("--overwrite-artifacts")
+        .args(["--lean", "lean"])
+        .output()
+        .unwrap();
+    assert_result(&output, 2, "", "");
+    let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(receipt["phase"], "retention", "{receipt}");
+    assert!(receipt["detail"].as_str().unwrap().contains("anneal-rustc-capture"), "{receipt}");
+    assert_eq!(fs::read(destination.join("result.json")).unwrap(), b"{}");
 }
 
 #[test]
@@ -2198,6 +2617,34 @@ fn init_scaffolds_cargo_and_standalone_without_overwriting() {
         let sa_proof = fs::read_to_string(standalone_dir.join("Proof.lean")).unwrap();
         assert!(sa_spec.starts_with("module\nprelude\npublic import Trusted.MirSemantics"));
         assert!(sa_proof.contains("public theorem verify : Expected.claim"));
+    }
+}
+
+#[test]
+fn init_profile_v2_scaffolds_specs_v2_and_conflicts_with_standalone() {
+    use std::fs;
+
+    for route in [Route::Direct, Route::Cargo] {
+        let project = tempfile::tempdir().unwrap();
+        fs::write(
+            project.path().join("Cargo.toml"),
+            "[package]\nname = \"demo\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+        )
+        .unwrap();
+        let ok = command(route, project.path()).args(["init", "--profile", "v2"]).output().unwrap();
+        assert_result(&ok, 0, "mir_profile_version = 2", "");
+        let spec_text = fs::read_to_string(project.path().join("proof/Spec.lean")).unwrap();
+        let proof_text = fs::read_to_string(project.path().join("proof/Proof.lean")).unwrap();
+        assert!(spec_text.contains("def specs : SpecsV2 where"), "{spec_text}");
+        assert!(proof_text.contains("public theorem verify : Expected.claim"), "{proof_text}");
+
+        let conflict = command(route, project.path())
+            .args(["init", "--standalone", "--profile", "v2", "--proof-dir"])
+            .arg(project.path().join("standalone"))
+            .output()
+            .unwrap();
+        assert_result(&conflict, 2, "", "cannot be used with");
+        assert!(!project.path().join("standalone").exists());
     }
 }
 

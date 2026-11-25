@@ -66,16 +66,36 @@ The example proves that `zero()` returns zero (`cargo anneal init
 --standalone --proof-dir <new-directory>` scaffolds the same four starter
 files outside the repository) and prints a human verification card
 (`[SCOPED]` for a selected function, `[OK]` only for untainted whole-crate
-verification). Pass `--receipt-out <path>` to write the canonical Receipt
-Schema v3 JSON atomically to disk alongside human output, or `--format json` to
-emit JSON directly on stdout (`--color auto|always|never`, `-q`/`--quiet`, and
-`-v`/`--verbose` control terminal styling and detail truncation). To
-experiment, make a copy of the fixture directory and change its Rust function
-to return one. The same proof then fails (`[FAIL]`, exit code `1`).
-`--artifacts <new-directory>` retains the captured Lean program, bound claim,
-and diagnostic evidence for proof development; `verify` rejects a path that
-already exists, or whose parent is not an existing directory, before it starts
-any verification work.
+verification). Inside a Cargo package, `cargo anneal init` scaffolds a
+Profile v1 `Specs` starter, and `cargo anneal init --profile v2` scaffolds a
+`SpecsV2` starter for crates whose capture emits MIR Profile v2; `--profile`
+cannot be combined with `--standalone`. Pass `--receipt-out <path>` to write
+the canonical Receipt Schema v3 JSON atomically to disk alongside human
+output, or `--format json` to emit JSON directly on stdout
+(`--color auto|always|never`, `-q`/`--quiet`, and `-v`/`--verbose` control
+terminal styling and detail truncation). To experiment, make a copy of the
+fixture directory and change its Rust function to return one. The same proof
+then fails (`[FAIL]`, exit code `1`). `--artifacts <new-directory>` retains
+the captured Lean program, bound claim, and diagnostic evidence for proof
+development; `verify` rejects a path that already exists, or whose parent is
+not an existing directory, before it starts any verification work.
+
+To rerun into the same path, add `--overwrite-artifacts`. Every artifact
+directory that `verify` writes carries a `.cargo-anneal-artifacts` marker
+file. The flag replaces an existing destination only if it is a real directory
+(not a symlink) that contains neither the working directory nor any
+verification input (request, sources, proofs, shard plan, the selected tools,
+or the running `cargo-anneal`), holds only entries that `verify` produces
+(each with the expected file or directory type), and, unless empty, carries
+that marker; anything else is refused before verification starts. Before
+running, `verify` removes an earlier `result.json` and `lean-lib/` from the
+destination, so a failing rerun never leaves earlier success evidence behind.
+The new artifacts are written to a sibling directory first, and the old
+directory is removed only after they are complete. With `--manifest-path`, a
+destination inside the package or `--proof-dir` is left out of source
+discovery, so a rerun does not pick up its own artifacts, but one holding the
+root file of any package target is refused, as is any existing destination
+when the package targets cannot be listed.
 
 In `request.json`, each `source_root` resolves relative to the directory
 containing the request file or to an existing out-of-tree directory, and

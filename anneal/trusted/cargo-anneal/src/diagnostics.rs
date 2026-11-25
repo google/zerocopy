@@ -47,9 +47,11 @@ const CARGO_RULES: &[DetailRule] = &[
     },
     DetailRule {
         needle: "explicit configured compilation",
-        hint: "The `--manifest-path` Cargo shortcut rejects build scripts, proc-macros, and \
-               `.cargo`/toolchain overrides. Use `cargo anneal verify --request <file>` (see \
-               `cargo anneal skill --example`) or `verify rustc`.",
+        hint: "The `--manifest-path` Cargo shortcut rejects build scripts, proc-macros, \
+               `rust-toolchain` files, and `.cargo/config` files that set anything beyond the \
+               `[alias]`, `[term]`, `[doc]`, `[cargo-new]`, and `[future-incompat-report]` \
+               tables. Use `cargo anneal verify --request <file>` (see `cargo anneal skill \
+               --example`) or `verify rustc`.",
     },
 ];
 
@@ -91,7 +93,8 @@ const UNSUPPORTED_CAPTURE_RULES: &[DetailRule] = &[
     },
     DetailRule {
         needle: "CallSource::Use call terminators are unsupported",
-        hint: "Profile v1 rejects `CallSource::Use` clones; avoid implicit use-clones or narrow \
+        hint: "Capture rejects `CallSource::Use` clones under every MIR profile, because later \
+               codegen may rewrite them to bitwise copies; avoid implicit use-clones or narrow \
                scope with `--select <fn>`.",
     },
     DetailRule {
@@ -102,19 +105,20 @@ const UNSUPPORTED_CAPTURE_RULES: &[DetailRule] = &[
     },
     DetailRule {
         needle: "unsupported terminator: Drop",
-        hint: "Profile v1 does not support `Drop` terminators yet. Keep verified functions limited \
-               to `Copy` scalar types or narrow scope with `--select <fn>`.",
+        hint: "Neither MIR Profile v1 nor v2 supports `Drop` terminators yet. Keep values with \
+               drop glue out of verified functions or narrow scope with `--select <fn>`.",
     },
     DetailRule {
         needle: "place projections are unsupported",
-        hint: "Profile v1 only admits unprojected scalar locals and `(T, bool)` overflow pairs. \
-               Avoid struct/tuple field projections in selected items or narrow scope with \
-               `--select <fn>`.",
+        hint: "A call's return value must be written to an unprojected local; storing it \
+               directly into a field, through a dereference, or into a tuple element is not \
+               supported yet. Bind the result to a temporary local before assigning it, or narrow \
+               scope with `--select <fn>`.",
     },
     DetailRule {
         needle: "enum payloads are unsupported",
-        hint: "Profile v1 supports non-generic fieldless local enums only; avoid payloads or \
-               narrow scope with `--select <fn>`.",
+        hint: "MIR Profiles v1 and v2 support only non-generic fieldless local enums; avoid \
+               payloads or narrow scope with `--select <fn>`.",
     },
 ];
 
@@ -164,8 +168,9 @@ pub fn hint_for_failure(status: &str, phase: &str, detail: &str) -> Option<Strin
         "capture" => hint_for_capture(status, detail),
         "audit" => hint_for_audit(detail),
         "retention" if detail.contains("already exists") || detail.contains("File exists") => Some(
-            "Pass a new non-existent directory path to `--artifacts <dir>`; existing paths \
-                 are never overwritten."
+            "Pass a new non-existent directory path to `--artifacts <dir>`, or add \
+                 `--overwrite-artifacts` to replace an artifact directory that `verify` wrote \
+                 earlier; other existing paths are never overwritten."
                 .into(),
         ),
         _ => None,
@@ -173,30 +178,49 @@ pub fn hint_for_failure(status: &str, phase: &str, detail: &str) -> Option<Strin
 }
 
 fn hint_for_capture_tool(phase: &str, detail: &str) -> String {
+    let same_toolchain = same_toolchain_requirement();
     if detail.contains("explicit --capture, --sysroot, and --lean") {
-        return "Rebuild with the default `setup` feature for bundled discovery, or pass all \
-                three tool paths: `--capture`, `--sysroot`, and `--lean`."
-            .into();
+        return format!(
+            "Rebuild with the default `setup` feature for bundled discovery, or pass all three \
+             tool paths: `--capture`, `--sysroot`, and `--lean`. {same_toolchain}"
+        );
     }
     #[cfg(feature = "setup")]
     {
         if phase == "toolchain" {
-            return "Run `cargo anneal setup` to install the matching Anneal toolchain bundle, or \
-                    pass explicit `--capture`, `--sysroot`, and `--lean` paths."
-                .into();
+            return format!(
+                "Run `cargo anneal setup` to install the matching Anneal toolchain bundle, or \
+                 pass explicit `--capture`, `--sysroot`, and `--lean` paths. {same_toolchain}"
+            );
         }
-        "No usable `anneal-rustc-capture` binary or installed Anneal toolchain bundle was found. \
-         Check `--capture` if passed explicitly, or run `cargo anneal setup --local-archive \
-         <archive>` (or pass `--capture`, `--sysroot`, and `--lean`)."
-            .into()
+        format!(
+            "No usable `anneal-rustc-capture` binary or installed Anneal toolchain bundle was \
+             found. Check `--capture` if passed explicitly, or run `cargo anneal setup \
+             --local-archive <archive>` (or pass `--capture`, `--sysroot`, and `--lean`). \
+             {same_toolchain}"
+        )
     }
     #[cfg(not(feature = "setup"))]
     {
         let _ = phase;
-        "Pass matching explicit `--capture`, `--sysroot`, and `--lean` paths for the pinned \
-         Anneal toolchain (or rebuild with the default `setup` feature)."
-            .into()
+        format!(
+            "Pass matching explicit `--capture`, `--sysroot`, and `--lean` paths for the pinned \
+             Anneal toolchain (or rebuild with the default `setup` feature). {same_toolchain}"
+        )
     }
+}
+
+// Mirrors the private `verify.rs` pins that `parse_capture_receipt`
+// enforces; `hint_pins_match_verify_pins` fails if they drift.
+const EXPECTED_CAPTURE_SCHEMA_VERSION: u32 = 5;
+const EXPECTED_RUSTC_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";
+
+fn same_toolchain_requirement() -> String {
+    format!(
+        "An explicit `--capture` and `--sysroot` must come from the same Anneal toolchain: \
+         capture schema {EXPECTED_CAPTURE_SCHEMA_VERSION} built from `rust-lang/rust` commit \
+         `{EXPECTED_RUSTC_COMMIT}`."
+    )
 }
 
 fn hint_for_proof_phase(detail: &str) -> Option<String> {
@@ -220,11 +244,11 @@ fn hint_for_proof_phase(detail: &str) -> Option<String> {
 
 fn hint_for_capture(status: &str, detail: &str) -> Option<String> {
     if detail == "unexpected capture schema or compiler" {
-        return Some(
-            "Ensure `anneal-rustc-capture` and `--sysroot` belong to the same pinned Anneal \
-             toolchain release (`cargo anneal setup`)."
-                .into(),
-        );
+        return Some(format!(
+            "The capture receipt's schema or compiler commit does not match this `cargo anneal`. \
+             {} Reinstall a matching bundle with `cargo anneal setup`.",
+            same_toolchain_requirement()
+        ));
     }
     if status == "compiler_failed" {
         return Some(
@@ -251,8 +275,9 @@ fn hint_for_capture(status: &str, detail: &str) -> Option<String> {
         }
         let extra =
             if items.len() > 2 { format!(" (+{} more)", items.len() - 2) } else { String::new() };
-        let fallback = "Narrow verification scope to a supported scalar function with `--select \
-                        <fn>`, or see `cargo anneal skill` for Profile v1 bounds.";
+        let fallback = "Narrow verification scope to a supported function with `--select <fn>`, \
+                        or see `cargo anneal skill` for the MIR Profile v1 (scalar) and Profile \
+                        v2 (references, raw pointers, and integer slices) bounds.";
         let advice = guidance.unwrap_or(fallback);
         return Some(format!("Unsupported MIR in {}{extra}. {advice}", summaries.join("; ")));
     }
@@ -260,8 +285,9 @@ fn hint_for_capture(status: &str, detail: &str) -> Option<String> {
         let msgs: Vec<&str> = diags.iter().filter_map(Value::as_str).collect();
         if !msgs.is_empty() {
             return Some(format!(
-                "Capture rejected compilation: {}. See `cargo anneal skill --example` for \
-                 Profile v1 requirements.",
+                "Capture rejected compilation: {}. See `cargo anneal skill` for the MIR Profile \
+                 v1 (scalar) and Profile v2 (references, raw pointers, and integer slices) \
+                 requirements.",
                 msgs.join("; ")
             ));
         }
@@ -486,6 +512,7 @@ mod tests {
         .unwrap();
         assert!(compiled_hint.contains("build scripts"), "{compiled_hint}");
         assert!(compiled_hint.contains("--request"), "{compiled_hint}");
+        assert!(compiled_hint.contains("`[alias]`"), "{compiled_hint}");
     }
 
     #[test]
@@ -582,5 +609,66 @@ mod tests {
                 && missing_bundle.contains("--capture"),
             "{missing_bundle}"
         );
+        for hint in [&missing_setup, &missing_bundle] {
+            assert!(hint.contains(super::EXPECTED_RUSTC_COMMIT), "{hint}");
+            assert!(hint.contains("same Anneal toolchain"), "{hint}");
+        }
+    }
+
+    #[test]
+    fn maps_capture_schema_mismatch_to_pinned_toolchain() {
+        let hint =
+            hint_for_failure("tool_failed", "capture", "unexpected capture schema or compiler")
+                .unwrap();
+        assert!(hint.contains("`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`"), "{hint}");
+        assert!(hint.contains("capture schema 5"), "{hint}");
+        assert!(hint.contains("`--capture` and `--sysroot`"), "{hint}");
+        assert!(hint.contains("cargo anneal setup"), "{hint}");
+    }
+
+    #[test]
+    fn hint_pins_match_verify_pins() {
+        let verify = include_str!("verify.rs");
+        let commit =
+            format!("const PINNED_RUSTC_COMMIT: &str = \"{}\";", super::EXPECTED_RUSTC_COMMIT);
+        let schema = format!(
+            "const PINNED_CAPTURE_SCHEMA_VERSION: u32 = {};",
+            super::EXPECTED_CAPTURE_SCHEMA_VERSION
+        );
+        assert!(verify.contains(&commit), "verify.rs no longer pins {commit}");
+        assert!(verify.contains(&schema), "verify.rs no longer pins {schema}");
+    }
+
+    #[test]
+    fn capture_fallbacks_describe_both_mir_profiles() {
+        let unknown = serde_json::json!({
+            "status": "unsupported",
+            "diagnostics": ["1 required obligations are unsupported"],
+            "unsupported": [{"def_id": 1, "path": "f", "reason": "something new"}],
+        })
+        .to_string();
+        let hint = hint_for_failure("unsupported", "capture", &unknown).unwrap();
+        assert!(hint.contains("Profile v1 (scalar)"), "{hint}");
+        assert!(hint.contains("Profile v2 (references, raw pointers"), "{hint}");
+
+        let rejected = serde_json::json!({"diagnostics": ["no crate root"]}).to_string();
+        let hint = hint_for_failure("unsupported", "capture", &rejected).unwrap();
+        assert!(hint.starts_with("Capture rejected compilation: no crate root."), "{hint}");
+        assert!(hint.contains("Profile v1 (scalar)"), "{hint}");
+        assert!(hint.contains("Profile v2 (references, raw pointers"), "{hint}");
+
+        for (reason, needle) in [
+            ("unsupported terminator: Drop { .. }", "Neither MIR Profile v1 nor v2"),
+            ("place projections are unsupported: (*_1)", "temporary local"),
+            ("enum payloads are unsupported: E", "Profiles v1 and v2"),
+            ("CallSource::Use call terminators are unsupported: x", "every MIR profile"),
+        ] {
+            let detail = serde_json::json!({
+                "unsupported": [{"def_id": 1, "path": "f", "reason": reason}],
+            })
+            .to_string();
+            let hint = hint_for_failure("unsupported", "capture", &detail).unwrap();
+            assert!(hint.contains(needle), "{reason}: {hint}");
+        }
     }
 }

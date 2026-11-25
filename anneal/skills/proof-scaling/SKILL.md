@@ -26,7 +26,7 @@ Before decomposing a proof, verify the toolchain actually captures the target:
    editor or host `lake serve` LSP client) over repeated cold `lake env lean`
    runs, and do not launch parallel unbounded `lean` builds. In a
    `google/zerocopy` checkout, wrap CLI `lean` / `lake` / `cargo` invocations
-   in [`ci/anneal-lean-run`](../../ci/anneal-lean-run); outside a
+   in `anneal/ci/anneal-lean-run`; outside a
    `google/zerocopy` checkout, pass `--lean-memory-mb <MB>` to `cargo anneal`
    or wrap CLI `lake` / `lean` builds in an OS cgroup memory cap. On delegated
    `systemd --user` Linux hosts, `ci/anneal-lean-run` reconciles
@@ -39,12 +39,12 @@ Before decomposing a proof, verify the toolchain actually captures the target:
    active Linux user `systemd` scope (including non-systemd Linux and macOS),
    `ci/anneal-lean-run` enforces **no** OS memory cap (`--memory-max-mb <MB>`
    only sets Lean's `-M` allocator flag for direct `lean` and `lake env lean`,
-   not `lake build` or `cargo`). Separately, `cargo anneal verify
-   --lean-memory-mb <MB>` sets `-M` on `cargo-anneal`'s internal Lean runs
-   (subject to its mode floors) regardless of `systemd`.
-3. Diagnose **Day-2 Rust bugs** first (`cargo-anneal` Step 0): if `Expected.lean`
-   reveals a missing guard or bad branch in Rust, fix Rust or escalate the spec
-   mismatch before tuning tactics.
+   not `lake build` or `cargo`). Separately,
+   `cargo anneal verify --lean-memory-mb <MB>` sets `-M` on `cargo-anneal`'s
+   internal Lean runs (subject to its mode floors) regardless of `systemd`.
+3. Diagnose **Day-2 Rust bugs** first (`cargo-anneal` Step 0): if
+   `Expected.lean` reveals a missing guard or bad branch in Rust, fix Rust or
+   escalate the spec mismatch before tuning tactics.
 
 ## Step 2: Choose the right proof architecture
 
@@ -70,24 +70,35 @@ Reach first for bundled `Anneal.*` certificate and lemma libraries listed in
 <!-- pass1-bundled-modules:begin -->
 - Zero-manual-WP MIR abstract-interpretation PCC (`AutoProve`, unsigned &
   signed `i8`..`i128`/`isize`, `bool`, `unit`, Bourdoncle cutpoints):
-  `Anneal.AiPcc`, `Anneal.AiPcc.MirPcc`, `Anneal.MirTotal.Ops`
+  `Anneal.AiPcc`, `Anneal.AiPcc.MirPcc`, `Anneal.AiPcc.MirBridge`,
+  `Anneal.AiPcc.MirTransfer`, `Anneal.AiPcc.ReducedProduct`,
+  `Anneal.AiPcc.Tnum`, `Anneal.AiPcc.WrappedInterval`, `Anneal.AiPcc.BitArith`
 - Linear arithmetic Farkas certificates (replaces `omega` in Pass 1):
   `Anneal.LinearArith`
-- Bitvector/SAT LRAT certificates (replaces `bv_decide` in Pass 1):
-  `Anneal.BitTrieLrat`, `Anneal.BitVec`, `Anneal.BitVecArith`
+- Bitvector/SAT LRAT certificates and linear `BitVec` offset normalization
+  (replaces `bv_decide` in Pass 1): `Anneal.BitTrieLrat`, `Anneal.BitVec`,
+  `Anneal.BitVecArith`, `Anneal.PureLift.BvLin`
 - Classical law-of-excluded-middle & core `Init` helpers (replaces `by_cases`
   in Pass 1): `Anneal.ClassicalEm`, `Anneal.InitLemmas`, `Anneal.NatBitwise`
-- MIR WP, loop invariants, byte/chunk layouts, forcing, path trees, and SCC
-  sharding: `Anneal.MirWp`, `Anneal.LoopInv`, `Anneal.LeBytes`,
-  `Anneal.ListChunks`, `Anneal.PTree`, `Anneal.SpineForce`,
+- MIR WP, step cores, symbolic execution, and envelope soundness:
+  `Anneal.MirWp`, `Anneal.MirWp.Core`, `Anneal.MirWp.Execution`,
+  `Anneal.MirWp.Reflection`, `Anneal.MirWp.Scalars`, `Anneal.MirWp.V2Memory`,
+  `Anneal.Wp`, `Anneal.Scalar`, `Anneal.MirTotal.Ops`,
+  `Anneal.MirTotal.StepCore`, `Anneal.MirSymExec`, `Anneal.MirSymExec.Bits`,
+  `Anneal.Framework`, `Anneal.Framework.StepWp`
+- Loop invariants, byte/chunk layouts, forcing, `whnf`/rewrite firewalls, path
+  trees, and SCC sharding: `Anneal.LoopInv`, `Anneal.LeBytes`,
+  `Anneal.ListChunks`, `Anneal.SpineForce`, `Anneal.Firewall`, `Anneal.PTree`,
   `Anneal.SccSharding`, `Anneal.SccSharding.BinChunkTree`,
   `Anneal.SccSharding.InterprocCallModel`
 <!-- pass1-bundled-modules:end -->
 
-Note: `Anneal.MirTotal.Ops` is bundled above, while repo-local
+Note: `Anneal.MirTotal.Ops`, `Anneal.MirTotal.StepCore`, and
+`Anneal.PureLift.BvLin` are bundled above, while repo-local
 `anneal/theory/Anneal/PureLift.lean`, `Simd.lean`, `Core.lean`, and the rest of
-`MirTotal` remain in-tree only; `theory/bundle-manifest.json` governs which
-`Anneal.*` modules `cargo anneal verify` bundles into standalone target proofs.
+`MirTotal` and `PureLift` remain in-tree only; `theory/bundle-manifest.json`
+governs which `Anneal.*` modules `cargo anneal verify` bundles into standalone
+target proofs.
 
 **Kernel-recursion & `whnf` guardrails (avoid `#4292` / `#4295` traps):**
 - **Use `Anneal.AiPcc.MirPcc` (`AutoProve`) first for acyclic scalar/signed
@@ -138,13 +149,15 @@ Note: `Anneal.MirTotal.Ops` is bundled above, while repo-local
    `library-lock.json` in pinned `cargo anneal verify`).
 2. **Defunctionalize closures and higher-order combinators:** Replace captured
    `fun` closures inside proof-carrying states with small inductive tags + an
-   explicit `eval` function so kernel unification never reduces huge lambda terms.
+   explicit `eval` function so kernel unification never reduces huge lambda
+   terms.
 3. **Zero-`Prop`-arg `@[irreducible]` barriers + flat-tuple `casesOn`:** Wrap
    large sub-expressions behind `@[irreducible]` definitions taking data args
    only (no `Prop` fields hiding proofs inside data terms), and destructure flat
    product tuples with `casesOn` rather than chained `.1`/`.2` projections.
 4. **Logarithmic lookup & chunked lists:** Replace linear `List` indexing /
-   deeply nested updates with `Anneal.PTree` (path trees) or `Anneal.ListChunks`.
+   deeply nested updates with `Anneal.PTree` (path trees) or
+   `Anneal.ListChunks`.
 5. **Control reduction eagerly:** Use `Anneal.SpineForce` to force spine shapes
    before `rw`/`simp` instead of letting `whnf` unfold deep bitvectors/states.
 6. **Lift pure regions first:** Factor pure computation with `Anneal.MirWp`,
@@ -157,10 +170,11 @@ Target `proof` modules (`TargetRole::Proof`) import bundled `Anneal.*` modules
 to prove `Expected.claim`. When authoring Pass-1 libraries under
 `anneal/theory/` or `anneal/correspondence/` (`SourceRole.theory`),
 `TrustedBoundary.lean` enforces:
-- Imports: `prelude` + foundation-pinned `Init.*` (`trusted/lean/foundation-lock.json`)
-  + `Trusted.*` + `theory/` modules in `anneal/theory/` (`anneal/correspondence/`
-  also admits sysroot foundation `Init.*`/`Std.*`/`Lean.*`, vendored `lean-miri`,
-  and sibling `correspondence/` modules); axioms strictly in
+- Imports: `prelude` + foundation-pinned `Init.*`
+  (`trusted/lean/foundation-lock.json`) + `Trusted.*` + `theory/` modules in
+  `anneal/theory/` (`anneal/correspondence/` also admits sysroot foundation
+  `Init.*`/`Std.*`/`Lean.*`, vendored `lean-miri`, and sibling
+  `correspondence/` modules); axioms strictly in
   `[propext, Quot.sound, Classical.choice]`; zero `._unsafe_rec`.
 - Forbidden tactics/items: `omega`, `bv_decide`, `by_cases`, `native_decide`,
   `decide!`, `rfl'`, `sorry`, `run_tac`, `sleep`, `dbg_trace`, `unhygienic`,
@@ -184,6 +198,8 @@ the same goal across **2 focused turns** without shrinking the remaining goal:
    MIR WP cleanly separable (propose Rust helper refactors to the caller; do
    not silently alter `Spec.*` or out-of-scope Rust files).
 3. **Rollback failed exploratory proof edits** (`git checkout -- ...` on your
-   own scratch proof branch) before trying a new representation shift from Step 3.
+   own scratch proof branch) before trying a new representation shift from
+   Step 3.
 4. Once `Expected.claim` elaborates cleanly without `--allow-sorry-in-proof`,
-   return to **`cargo-anneal`** to capture and report the final untainted Receipt v3.
+   return to **`cargo-anneal`** to capture and report the final untainted
+   Receipt v3.

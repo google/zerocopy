@@ -21,7 +21,7 @@ pub const PKG_VERSION: &str = env!("CARGO_PKG_VERSION");
 use std::path::PathBuf;
 use std::{env, ffi::OsString, process::ExitCode};
 
-use clap::{CommandFactory, Parser, Subcommand, error::ErrorKind};
+use clap::{CommandFactory, Parser, Subcommand, ValueEnum, error::ErrorKind};
 
 use crate::output::{ColorChoice, OutputSession, VerifyFormat, finish_with_writers};
 
@@ -76,10 +76,13 @@ enum Command {
     },
     /// Scaffold starter Spec.lean and Proof.lean proof files.
     Init(init::InitArgs),
-    /// Print the bundled agent skill.
+    /// Print the bundled agent skill or a named companion skill.
     Skill {
+        /// Skill to print, or `list` to list the bundled skills.
+        #[arg(value_enum)]
+        topic: Option<SkillTopic>,
         /// Print a complete Rust, request, and Lean example.
-        #[arg(long)]
+        #[arg(long, conflicts_with = "topic")]
         example: bool,
     },
     /// Capture a configured compilation and check its authored source proof.
@@ -89,6 +92,65 @@ enum Command {
     Inspect(Box<inspect::InspectArgs>),
     /// Compute, write, or check a static-DAG `anneal-shards.json` plan.
     ShardPlan(Box<verify::ShardPlanArgs>),
+}
+
+/// Names a `cargo anneal skill` topic.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, ValueEnum)]
+enum SkillTopic {
+    /// List the bundled skills.
+    List,
+    /// Run Anneal verification with `cargo anneal`.
+    CargoAnneal,
+    /// Author and audit Anneal specifications.
+    SpecAuthoring,
+    /// Scale Anneal Lean proofs.
+    ProofScaling,
+}
+
+/// Lists each bundled skill topic with its contents.
+///
+/// The companion skills are checked-in copies of `anneal/skills/*/SKILL.md`
+/// so that a packaged `.crate` builds without files outside the package; a
+/// unit test keeps the copies byte-identical in repository checkouts.
+const SKILLS: &[(SkillTopic, &str, &str)] = &[
+    (SkillTopic::CargoAnneal, "cargo-anneal", include_str!("../skills/cargo-anneal/SKILL.md")),
+    (
+        SkillTopic::SpecAuthoring,
+        "spec-authoring",
+        include_str!("../assets/skills/spec-authoring/SKILL.md"),
+    ),
+    (
+        SkillTopic::ProofScaling,
+        "proof-scaling",
+        include_str!("../assets/skills/proof-scaling/SKILL.md"),
+    ),
+];
+
+fn skill_output(topic: Option<SkillTopic>, example: bool) -> String {
+    if example {
+        return scalar_example();
+    }
+    match topic.unwrap_or(SkillTopic::CargoAnneal) {
+        SkillTopic::List => {
+            let mut out =
+                String::from("Bundled skills (print one with `cargo anneal skill <TOPIC>`):\n");
+            for (_, name, contents) in SKILLS {
+                let about = skill_summary(contents);
+                out.push_str(&format!("  {name:<16}{about}\n"));
+            }
+            out
+        }
+        topic => SKILLS
+            .iter()
+            .find(|(t, _, _)| *t == topic)
+            .map(|(_, _, contents)| (*contents).to_owned())
+            .expect("every printable topic is bundled"),
+    }
+}
+
+/// Return the skill's title (its first `# ` heading), or an empty string.
+fn skill_summary(contents: &str) -> &str {
+    contents.lines().find_map(|line| line.strip_prefix("# ")).unwrap_or("").trim()
 }
 
 enum Action {
@@ -162,15 +224,9 @@ fn dispatch(
         Some(Command::Init(args)) => init::run(args)
             .map(|output| Action::Print { output, color, quiet, verbose })
             .map_err(|error| Failure::Operation { error, color }),
-        Some(Command::Skill { example: true }) => {
-            Ok(Action::Print { output: scalar_example(), color, quiet, verbose })
+        Some(Command::Skill { topic, example }) => {
+            Ok(Action::Print { output: skill_output(topic, example), color, quiet, verbose })
         }
-        Some(Command::Skill { example: false }) => Ok(Action::Print {
-            output: include_str!("../skills/cargo-anneal/SKILL.md").to_owned(),
-            color,
-            quiet,
-            verbose,
-        }),
         Some(Command::Verify(args)) => Ok(Action::Verify { args, color, quiet, verbose }),
         Some(Command::Inspect(args)) => Ok(Action::Inspect { args, color, quiet, verbose }),
         Some(Command::ShardPlan(args)) => Ok(Action::ShardPlan(args)),
@@ -190,15 +246,9 @@ fn dispatch(cli: Cli) -> Result<Action, Failure> {
         Some(Command::Init(args)) => init::run(args)
             .map(|output| Action::Print { output, color, quiet, verbose })
             .map_err(|error| Failure::Operation { error, color }),
-        Some(Command::Skill { example: true }) => {
-            Ok(Action::Print { output: scalar_example(), color, quiet, verbose })
+        Some(Command::Skill { topic, example }) => {
+            Ok(Action::Print { output: skill_output(topic, example), color, quiet, verbose })
         }
-        Some(Command::Skill { example: false }) => Ok(Action::Print {
-            output: include_str!("../skills/cargo-anneal/SKILL.md").to_owned(),
-            color,
-            quiet,
-            verbose,
-        }),
         Some(Command::Verify(args)) => Ok(Action::Verify { args, color, quiet, verbose }),
         Some(Command::Inspect(args)) => Ok(Action::Inspect { args, color, quiet, verbose }),
         Some(Command::ShardPlan(args)) => Ok(Action::ShardPlan(args)),
@@ -275,6 +325,8 @@ pub fn main() -> ExitCode {
 
 #[cfg(test)]
 mod tests {
+    use std::path::Path;
+
     use super::*;
 
     fn args(values: &[&str]) -> Vec<OsString> {
@@ -427,6 +479,7 @@ mod tests {
                 "Proof=Proof.lean",
             ],
             &["verify", "--request", "request.json", "--export-lean-lib"],
+            &["verify", "--request", "request.json", "--overwrite-artifacts"],
             &["verify", "--request", "request.json", "--capture", "cap"],
             &["verify", "--request", "request.json", "--sysroot", "sys"],
             &["verify", "--request", "request.json", "--allow-unpinned-lean"],
@@ -558,6 +611,7 @@ mod tests {
                     "--artifacts",
                     "out",
                     "--export-lean-lib",
+                    "--overwrite-artifacts",
                     "--lean-memory-mb",
                     "4096",
                 ],
@@ -666,6 +720,64 @@ mod tests {
             assert!(
                 matches!(run_without_install(args(bad)), Err(Failure::Arguments(_))),
                 "{bad:?} must fail argument parsing"
+            );
+        }
+    }
+
+    #[test]
+    fn skill_topics_print_bundled_skills_and_preserve_defaults() {
+        let print = |suffix: &[&str]| {
+            output(
+                run_without_install(args(&[&["cargo-anneal", "skill"], suffix].concat()))
+                    .expect("skill must print"),
+            )
+        };
+        let cargo_anneal = include_str!("../skills/cargo-anneal/SKILL.md");
+        assert_eq!(print(&[]), cargo_anneal);
+        assert_eq!(print(&["cargo-anneal"]), cargo_anneal);
+        assert_eq!(print(&["--example"]), scalar_example());
+        assert_eq!(
+            print(&["spec-authoring"]),
+            include_str!("../assets/skills/spec-authoring/SKILL.md")
+        );
+        assert_eq!(
+            print(&["proof-scaling"]),
+            include_str!("../assets/skills/proof-scaling/SKILL.md")
+        );
+        assert!(cargo_anneal.contains("cargo anneal skill spec-authoring"));
+        assert!(cargo_anneal.contains("cargo anneal skill proof-scaling"));
+
+        let list = print(&["list"]);
+        for name in ["cargo-anneal", "spec-authoring", "proof-scaling"] {
+            assert!(list.lines().any(|l| l.trim_start().starts_with(name)), "{list}");
+        }
+        assert!(list.contains("Author and audit Anneal specifications"), "{list}");
+
+        for bad in [&["unknown"][..], &["list", "--example"], &["spec-authoring", "--example"]] {
+            let Err(Failure::Arguments(error)) =
+                run_without_install(args(&[&["cargo-anneal", "skill"], bad].concat()))
+            else {
+                panic!("`skill {bad:?}` must be an argument failure");
+            };
+            assert_eq!(error.exit_code(), 2);
+        }
+    }
+
+    /// Keeps the packaged companion skill copies identical to their canonical
+    /// sources whenever the repository checkout is available.
+    #[test]
+    fn bundled_companion_skills_match_repository_sources() {
+        let skills = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../skills");
+        if !skills.join("README.md").is_file() {
+            // A standalone unpacked `.crate` has no repository checkout.
+            return;
+        }
+        for (_, name, contents) in &SKILLS[1..] {
+            let canonical = std::fs::read_to_string(skills.join(name).join("SKILL.md")).unwrap();
+            assert!(
+                canonical == *contents,
+                "trusted/cargo-anneal/assets/skills/{name}/SKILL.md is stale; copy \
+                 anneal/skills/{name}/SKILL.md over it"
             );
         }
     }
