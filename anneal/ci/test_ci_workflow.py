@@ -194,6 +194,10 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             restore["with"]["key"],
         )
         self.assertNotIn(
+            "anneal/trusted/cargo-anneal/src/theory_bundle.rs",
+            restore["with"]["key"],
+        )
+        self.assertNotIn(
             "anneal/trusted/rustc-capture/**", restore["with"]["key"]
         )
         self.assertNotIn("anneal/Cargo.lock", restore["with"]["key"])
@@ -446,7 +450,7 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         # Verify `regenerate_bundle --stage-package`, `cargo publish --dry-run`,
         # and `cargo test --no-run` in `installed-smoke.package` each receive
         # all four optimization `--config` flags so Cargo does not recompile
-        # deps at opt-level=0, and pin the clean-tree/single-file/cleanup guards
+        # deps at opt-level=0, and pin the clean-tree/two-file/cleanup guards
         # required for `--allow-dirty`.
         pkg_run = next(
             s["run"]
@@ -463,10 +467,17 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         self.assertIn("trap 'rm -rf trusted/cargo-anneal/packaged' EXIT", stage_block)
         self.assertIn("--stage-package", stage_block)
         self.assertIn(
-            'test "$staged_status" = '
-            '"?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs"',
+            'staged_status="$(git status --porcelain --untracked-files=all | '
+            'LC_ALL=C sort)"',
             stage_block,
         )
+        self.assertIn(
+            "expected_status=\"$(printf '?? anneal/trusted/cargo-anneal/"
+            "packaged/bundled_resources.rs\\n"
+            "?? anneal/trusted/cargo-anneal/packaged/bundled_theory.json')\"",
+            stage_block,
+        )
+        self.assertIn('test "$staged_status" = "$expected_status"', stage_block)
         for flag in full_opt_flags:
             self.assertIn(flag, stage_block, f"regenerate_bundle missing {flag}")
             self.assertIn(flag, publish_block, f"cargo publish missing {flag}")

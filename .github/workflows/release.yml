@@ -779,7 +779,7 @@ jobs:
             trap 'rm -rf "$target_src/anneal/trusted/cargo-anneal/packaged"' EXIT
             cargo run --locked -p cargo-anneal --example regenerate_bundle -- --root . --stage-package
             staged_status="$(git status --porcelain --untracked-files=all | LC_ALL=C sort)"
-            expected_status="$(printf ' M anneal/Cargo.lock\n M anneal/trusted/cargo-anneal/Cargo.toml\n?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs')"
+            expected_status="$(printf ' M anneal/Cargo.lock\n M anneal/trusted/cargo-anneal/Cargo.toml\n?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs\n?? anneal/trusted/cargo-anneal/packaged/bundled_theory.json')"
             test "$staged_status" = "$expected_status"
             cargo package --locked --allow-dirty -p cargo-anneal
           )
@@ -958,7 +958,7 @@ jobs:
             trap 'rm -rf "$target_src/anneal/trusted/cargo-anneal/packaged"' EXIT
             cargo run --locked -p cargo-anneal --example regenerate_bundle -- --root . --stage-package
             staged_status="$(git status --porcelain --untracked-files=all | LC_ALL=C sort)"
-            expected_status="$(printf ' M anneal/Cargo.lock\n M anneal/trusted/cargo-anneal/Cargo.toml\n?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs')"
+            expected_status="$(printf ' M anneal/Cargo.lock\n M anneal/trusted/cargo-anneal/Cargo.toml\n?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs\n?? anneal/trusted/cargo-anneal/packaged/bundled_theory.json')"
             test "$staged_status" = "$expected_status"
             cargo package --locked --allow-dirty -p cargo-anneal
           )
@@ -991,7 +991,7 @@ jobs:
               trap 'rm -rf "$publish_src/anneal/trusted/cargo-anneal/packaged" "$publish_target"' ERR
               CARGO_TARGET_DIR="$publish_target" cargo run --locked -p cargo-anneal --example regenerate_bundle -- --root . --stage-package
               staged_status="$(git status --porcelain --untracked-files=all | LC_ALL=C sort)"
-              expected_status="$(printf ' M anneal/Cargo.lock\n M anneal/trusted/cargo-anneal/Cargo.toml\n?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs')"
+              expected_status="$(printf ' M anneal/Cargo.lock\n M anneal/trusted/cargo-anneal/Cargo.toml\n?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs\n?? anneal/trusted/cargo-anneal/packaged/bundled_theory.json')"
               test "$staged_status" = "$expected_status"
               CARGO_TARGET_DIR="$publish_target" cargo package --locked --no-verify --allow-dirty -p cargo-anneal
               python3 -I -B "$GITHUB_WORKSPACE/anneal/ci/alpha_release.py" verify-crate \
@@ -1027,7 +1027,7 @@ jobs:
           cd "$RUNNER_TEMP/publish-src/anneal"
           trap 'rm -rf "$RUNNER_TEMP/publish-src/anneal/trusted/cargo-anneal/packaged"' EXIT
           staged_status="$(git status --porcelain --untracked-files=all | LC_ALL=C sort)"
-          expected_status="$(printf ' M anneal/Cargo.lock\n M anneal/trusted/cargo-anneal/Cargo.toml\n?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs')"
+          expected_status="$(printf ' M anneal/Cargo.lock\n M anneal/trusted/cargo-anneal/Cargo.toml\n?? anneal/trusted/cargo-anneal/packaged/bundled_resources.rs\n?? anneal/trusted/cargo-anneal/packaged/bundled_theory.json')"
           test "$staged_status" = "$expected_status"
           cargo publish --locked --no-verify --allow-dirty -p cargo-anneal --registry crates-io
 

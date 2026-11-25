@@ -28,7 +28,7 @@ use walkdir::WalkDir;
 
 pub use crate::core::{
     Failure, IR_PARTS, ImportEdge, ModuleArtifacts, OLEAN_PARTS, PARTS, digest_to_hex,
-    is_clean_relative_path, is_lean_ident, is_sha256_hex, sha256_bytes, topo_sort_modules,
+    is_lean_ident, is_sha256_hex, sha256_bytes, topo_sort_modules,
 };
 use crate::sys_util::SafeFs;
 pub use crate::trusted_bundle::LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256;
@@ -1295,7 +1295,7 @@ pub(crate) fn compute_sysroot_manifest_sha256_for_test(lib_dir: &Path) -> String
         .0
 }
 
-// `is_clean_relative_path` & `topo_sort_modules` are re-exported from `core`.
+// `topo_sort_modules` is re-exported from `core`.
 
 /// Return a bounded worker count based on available host parallelism, capped
 /// at `cap` and never below `1`.

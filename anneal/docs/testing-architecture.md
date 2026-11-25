@@ -131,11 +131,11 @@ anneal/
 │   │   └── src/{lib,main,cli,cargo_boundary,miri_pin,repo_audit}.rs
 │   ├── cargo-anneal/                  # package = "cargo-anneal" (published CLI/lib)
 │   │   ├── Cargo.toml                 # Zero tests/ exclusion list; zero wait-timeout dev-dep
-│   │   ├── build.rs                   # Generates $OUT_DIR/bundled_resources.rs from canonical sources
+│   │   ├── build.rs                   # Generates $OUT_DIR/{bundled_resources.rs,bundled_theory.json}
 │   │   ├── assets/scalar/             # Runtime assets for `cargo-anneal skill --example` (97L)
 │   │   ├── skills/cargo-anneal/
-│   │   └── src/{lib,main,bundle,cli,diagnostics,init,olean_cache,sandbox,setup,stage,target,toolchain,trusted_bundle,verify}.rs
-│   │       # (+ bundled_theory.json; target #4016 adds ndjson_comparator.rs)
+│   │   └── src/{lib,main,bundle,cli,diagnostics,init,olean_cache,sandbox,setup,stage,target,theory_bundle,toolchain,trusted_bundle,verify}.rs
+│   │       # (target #4016 adds ndjson_comparator.rs)
 │   ├── rustc-capture/                 # package = "anneal-rustc-capture" (#![feature(rustc_private)])
 │   │   ├── Cargo.toml
 │   │   └── src/{lib,main,capture,driver,extract,identity,ir,lean,mono,publication}.rs
@@ -246,9 +246,10 @@ under five invariants (with optional target hardening to require all three
    true`, and omitted `publish` all fail closed.
 3. **Build-Script, Proc-Macro, and Override Prohibition:**
    `trusted/cargo-anneal/build.rs` is required as a regular file to emit
-   `$OUT_DIR/bundled_resources.rs` deterministically; neither zone may set
-   `package.build` or `package.workspace`, and no other crate in either zone may
-   contain `build.rs`. Across `[lib]`,
+   `$OUT_DIR/bundled_resources.rs` and `$OUT_DIR/bundled_theory.json`
+   deterministically; neither zone may set `package.build` or
+   `package.workspace`, and no other crate in either zone may contain
+   `build.rs`. Across `[lib]`,
    `[[bin]]`, `[[example]]`, `[[test]]`, and `[[bench]]`,
    `validate_member_target` mechanically rejects `proc-macro = true` /
    `proc_macro = true` and `crate-type = ["proc-macro"]` / `crate_type =
@@ -1022,8 +1023,8 @@ blast radii remain documented below for durable architectural rationale.
   `anneal/theory/Anneal/MirWp/Canaries.lean`,
   `anneal/correspondence/Anneal/MirCorrespondence/Canaries.lean`,
   `anneal/theory/Anneal.lean`, `anneal/theory/bundle-manifest.json` (removing
-  `theory/Anneal/MirWp/Canaries.lean` and regenerating
-  `trusted/cargo-anneal/src/bundled_theory.json` via `regenerate_bundle`),
+  `theory/Anneal/MirWp/Canaries.lean`; `bundled_theory.json` is now generated
+  into `$OUT_DIR/bundled_theory.json` at build time rather than checked in),
   `anneal/flake.nix` (`share/anneal/theory` + `trusted/root-manifest.sha256`),
   `anneal/trusted/lean/Trusted/MirSemantics.lean`,
   `anneal/trusted/cargo-anneal/src/target.rs`,

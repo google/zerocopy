@@ -305,6 +305,10 @@ class ReleaseWorkflowTests(unittest.TestCase):
             "trap 'rm -rf \"$target_src/anneal/trusted/cargo-anneal/packaged\"' EXIT",
             qual_run,
         )
+        self.assertIn(
+            "?? anneal/trusted/cargo-anneal/packaged/bundled_theory.json",
+            qual_run,
+        )
         self.assertIn("cargo package --locked --allow-dirty -p cargo-anneal", qual_run)
         self.assertIn(
             '"$GITHUB_WORKSPACE/anneal/ci/alpha_release.py" verify-crate',
@@ -338,6 +342,10 @@ class ReleaseWorkflowTests(unittest.TestCase):
             precheck_run,
         )
         self.assertIn("--stage-package", precheck_run)
+        self.assertIn(
+            "?? anneal/trusted/cargo-anneal/packaged/bundled_theory.json",
+            precheck_run,
+        )
         self.assertIn('publish_src="$RUNNER_TEMP/publish-src"', precheck_run)
         self.assertIn('publish_target="$RUNNER_TEMP/publish-target"', precheck_run)
         self.assertEqual(precheck_run.count("verify-crate"), 2)
@@ -350,6 +358,10 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertIn('cd "$RUNNER_TEMP/publish-src/anneal"', pub_run)
         self.assertIn("trap 'rm -rf \"$RUNNER_TEMP/publish-src/anneal/trusted/cargo-anneal/packaged\"' EXIT", pub_run)
         self.assertIn('test "$staged_status" = "$expected_status"', pub_run)
+        self.assertIn(
+            "?? anneal/trusted/cargo-anneal/packaged/bundled_theory.json",
+            pub_run,
+        )
         self.assertIn(
             "cargo publish --locked --no-verify --allow-dirty -p cargo-anneal --registry crates-io",
             pub_run,

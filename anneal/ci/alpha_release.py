@@ -461,6 +461,13 @@ def inspect_crate_archive(
                     raise ValueError(
                         f"forbidden implicit bin in .crate: {rel!r}"
                     )
+                if rel in (
+                    "src/bundled_resources.rs",
+                    "src/bundled_theory.json",
+                ):
+                    raise ValueError(
+                        f"forbidden legacy checked-in bundle in .crate: {rel!r}"
+                    )
                 if rel in seen:
                     raise ValueError(
                         f"duplicate .crate member path: {rel!r}"
@@ -499,6 +506,7 @@ def inspect_crate_archive(
         ".cargo_vcs_info.json",
         "build.rs",
         "packaged/bundled_resources.rs",
+        "packaged/bundled_theory.json",
     )
     for req in required_members:
         if req not in files:

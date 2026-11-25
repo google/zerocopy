@@ -155,6 +155,12 @@ def _make_crate_bytes(
             0o644,
             tarfile.REGTYPE,
         ),
+        (
+            f"{prefix}packaged/bundled_theory.json",
+            b'{"schema_version":1}\n',
+            0o644,
+            tarfile.REGTYPE,
+        ),
         (f"{prefix}src/lib.rs", lib_rs, lib_mode, tarfile.REGTYPE),
         (f"{prefix}src/main.rs", b"fn main() {}\n", 0o644, tarfile.REGTYPE),
         *extra_members,
@@ -611,6 +617,50 @@ class AlphaReleaseTests(unittest.TestCase):
                     omit_member="packaged/bundled_resources.rs",
                 ),
                 "missing required .crate member: packaged/bundled_resources.rs",
+            ),
+            (
+                "missing_packaged_theory_bundle",
+                _make_crate_bytes(
+                    version=version,
+                    commit=commit,
+                    sha256=digest,
+                    omit_member="packaged/bundled_theory.json",
+                ),
+                "missing required .crate member: packaged/bundled_theory.json",
+            ),
+            (
+                "legacy_checked_in_trusted_bundle",
+                _make_crate_bytes(
+                    version=version,
+                    commit=commit,
+                    sha256=digest,
+                    extra_members=(
+                        (
+                            f"{prefix}src/bundled_resources.rs",
+                            b"// legacy\n",
+                            0o644,
+                            tarfile.REGTYPE,
+                        ),
+                    ),
+                ),
+                "forbidden legacy checked-in bundle",
+            ),
+            (
+                "legacy_checked_in_theory_bundle",
+                _make_crate_bytes(
+                    version=version,
+                    commit=commit,
+                    sha256=digest,
+                    extra_members=(
+                        (
+                            f"{prefix}src/bundled_theory.json",
+                            b"{}\n",
+                            0o644,
+                            tarfile.REGTYPE,
+                        ),
+                    ),
+                ),
+                "forbidden legacy checked-in bundle",
             ),
             (
                 "implicit_extra_bin",

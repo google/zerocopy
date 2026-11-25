@@ -5436,12 +5436,6 @@ fn rejects_trusted_correspondence_import_of_theory_in_pass2_preflight() {
             fs::write(dst, contents.as_bytes()).unwrap();
         }
     }
-    let canonical_theory = anneal_audit::bundle::render_bundled_theory(&fix.root).unwrap();
-    fs::write(
-        fix.root.join(anneal_audit::bundle::THEORY_BUNDLE_DESTINATION),
-        canonical_theory.as_bytes(),
-    )
-    .unwrap();
 
     let mut checker = fix.checker();
     // Synthetic fixture overrides `trusted/correspondence/` and
@@ -8054,25 +8048,24 @@ fn default_checker_rejects_complete_mir_wp_deletion() {
 }
 
 /// `verify_bundled_resources` accepts the real repository checkout and rejects
-/// reintroduced legacy `bundled_resources.rs`, any checked-in `packaged/`
-/// staging directory, missing/symlinked `build.rs` or `trusted_bundle.rs`,
-/// tampered, deleted, or symlinked `bundled_theory.json` and
-/// `theory/bundle-manifest.json` files, missing or symlinked
-/// `TRUSTED_BUNDLE_SOURCES`, `THEORY_BUNDLE_MANIFEST`, and
-/// `PROVENANCE_SOURCES` files and parent directories,
-/// invalid/tampered/duplicate/unsorted/out-of-tree theory manifest entries,
-/// and untracked `.lean` files under `correspondence/` or
-/// `trusted/correspondence/` with policy exit code `1`. Each symlink fixture
-/// points at byte-identical content, so only the regular-file checks can
-/// reject it.
+/// reintroduced legacy `bundled_resources.rs` or `bundled_theory.json`, any
+/// checked-in `packaged/` staging directory, missing/symlinked `build.rs`,
+/// `trusted_bundle.rs`, or `theory_bundle.rs`, drifted or symlinked
+/// `theory/bundle-manifest.json` / `theory/` files, missing or symlinked
+/// `TRUSTED_BUNDLE_SOURCES`, `THEORY_BUNDLE_MANIFEST`, and `PROVENANCE_SOURCES`
+/// files and parent directories, invalid, tampered, duplicate, unsorted, or
+/// out-of-tree theory manifest entries, and untracked `.lean` files under
+/// `correspondence/` or `trusted/correspondence/` with policy exit code `1`.
+/// Each symlink fixture points at byte-identical content, so only the
+/// regular-file checks can reject it.
 #[test]
 fn enforces_bundled_resources_parity_and_regular_files() {
     use anneal_audit::{
         bundle::{
-            LEGACY_BUNDLE_DESTINATION, PACKAGED_BUNDLE_DESTINATION, PROVENANCE_SOURCES,
-            THEORY_BUNDLE_DESTINATION, THEORY_BUNDLE_MANIFEST, TRUSTED_BUNDLE_SOURCES,
-            TheoryBundleManifest, load_theory_bundle_manifest, render_bundled_resources,
-            render_bundled_theory,
+            LEGACY_BUNDLE_DESTINATION, LEGACY_THEORY_BUNDLE_DESTINATION,
+            PACKAGED_BUNDLE_DESTINATION, PROVENANCE_SOURCES, THEORY_BUNDLE_MANIFEST,
+            TRUSTED_BUNDLE_SOURCES, TheoryBundleManifest, load_theory_bundle_manifest,
+            render_bundled_resources, render_bundled_theory,
         },
         verify_bundled_resources,
     };
@@ -8089,16 +8082,18 @@ fn enforces_bundled_resources_parity_and_regular_files() {
         .chain(PROVENANCE_SOURCES.iter().copied())
         .chain(std::iter::once(THEORY_BUNDLE_MANIFEST))
         .chain(manifest.modules.iter().map(|entry| entry.path.as_str()))
-        .chain(["trusted/cargo-anneal/build.rs", "trusted/cargo-anneal/src/trusted_bundle.rs"])
+        .chain([
+            "trusted/cargo-anneal/build.rs",
+            "trusted/cargo-anneal/src/trusted_bundle.rs",
+            "trusted/cargo-anneal/src/theory_bundle.rs",
+        ])
     {
         let dst = root.join(rel);
         fs::create_dir_all(dst.parent().unwrap()).unwrap();
         fs::copy(checkout.join(rel), dst).unwrap();
     }
     let canonical = render_bundled_resources(&root).unwrap();
-    let theory_dest = root.join(THEORY_BUNDLE_DESTINATION);
     let canonical_theory = render_bundled_theory(&root).unwrap();
-    fs::write(&theory_dest, canonical_theory.as_bytes()).unwrap();
     verify_bundled_resources(&root).unwrap();
 
     let expect_policy = |needle: &str| {
@@ -8108,11 +8103,16 @@ fn enforces_bundled_resources_parity_and_regular_files() {
         assert!(err.message.contains(needle), "expected {needle:?}: {err}");
     };
 
-    // 1. Reintroduced legacy `src/bundled_resources.rs` -> policy error.
+    // 1. Reintroduced legacy `src/bundled_resources.rs` or
+    // `src/bundled_theory.json` -> policy error.
     let legacy_dest = root.join(LEGACY_BUNDLE_DESTINATION);
     fs::write(&legacy_dest, canonical.as_bytes()).unwrap();
     expect_policy("legacy checked-in bundled_resources.rs must be absent");
     fs::remove_file(&legacy_dest).unwrap();
+    let legacy_theory_dest = root.join(LEGACY_THEORY_BUNDLE_DESTINATION);
+    fs::write(&legacy_theory_dest, canonical_theory.as_bytes()).unwrap();
+    expect_policy("legacy checked-in bundled_theory.json must be absent");
+    fs::remove_file(&legacy_theory_dest).unwrap();
     verify_bundled_resources(&root).unwrap();
 
     // 2. Missing or symlinked `trusted/cargo-anneal/build.rs` -> policy error.
@@ -8126,7 +8126,8 @@ fn enforces_bundled_resources_parity_and_regular_files() {
     fs::rename(&outside_build_rs, &build_rs).unwrap();
     verify_bundled_resources(&root).unwrap();
 
-    // 3. Missing or symlinked `src/trusted_bundle.rs` -> policy error.
+    // 3. Missing or symlinked `src/trusted_bundle.rs` or `src/theory_bundle.rs`
+    // -> policy error.
     let trusted_bundle_rs = root.join("trusted/cargo-anneal/src/trusted_bundle.rs");
     let outside_tb_rs = tmp.path().join("outside-trusted_bundle.rs");
     fs::rename(&trusted_bundle_rs, &outside_tb_rs).unwrap();
@@ -8135,6 +8136,14 @@ fn enforces_bundled_resources_parity_and_regular_files() {
     expect_policy("bundle source must be a regular file");
     fs::remove_file(&trusted_bundle_rs).unwrap();
     fs::rename(&outside_tb_rs, &trusted_bundle_rs).unwrap();
+    let theory_bundle_rs = root.join("trusted/cargo-anneal/src/theory_bundle.rs");
+    let outside_thb_rs = tmp.path().join("outside-theory_bundle.rs");
+    fs::rename(&theory_bundle_rs, &outside_thb_rs).unwrap();
+    expect_policy("missing canonical bundle source: trusted/cargo-anneal/src/theory_bundle.rs");
+    symlink(&outside_thb_rs, &theory_bundle_rs).unwrap();
+    expect_policy("bundle source must be a regular file");
+    fs::remove_file(&theory_bundle_rs).unwrap();
+    fs::rename(&outside_thb_rs, &theory_bundle_rs).unwrap();
     verify_bundled_resources(&root).unwrap();
 
     // 4. Checked-in transient `packaged/` staging dir -> policy error.
@@ -8206,26 +8215,34 @@ fn enforces_bundled_resources_parity_and_regular_files() {
     fs::remove_file(&extra_trusted_corr).unwrap();
     verify_bundled_resources(&root).unwrap();
 
-    // 11. Tampered, missing, or symlinked `bundled_theory.json` -> policy
-    // rejection (code 1).
-    fs::write(&theory_dest, format!("{canonical_theory} ")).unwrap();
-    expect_policy("differs from canonical bundled theory sources");
-    fs::remove_file(&theory_dest).unwrap();
-    expect_policy("missing bundled_theory.json");
-    let outside_theory_dest = tmp.path().join("outside-theory.json");
-    fs::write(&outside_theory_dest, canonical_theory.as_bytes()).unwrap();
-    symlink(&outside_theory_dest, &theory_dest).unwrap();
-    expect_policy("bundle destination must be a regular file");
-    fs::remove_file(&theory_dest).unwrap();
-    fs::write(&theory_dest, canonical_theory.as_bytes()).unwrap();
+    // 11. Drifted theory source + manifest vs compiled-in
+    // `EMBEDDED_THEORY_BUNDLE_JSON` -> policy rejection (code 1).
+    let manifest_path = root.join(THEORY_BUNDLE_MANIFEST);
+    let original_manifest_bytes = fs::read(&manifest_path).unwrap();
+    let orig_mir_wp = fs::read(&source).unwrap();
+    let drifted_mir_wp = format!("{}\n-- drifted\n", String::from_utf8_lossy(&orig_mir_wp));
+    fs::write(&source, drifted_mir_wp.as_bytes()).unwrap();
+    let mut drifted_manifest = manifest.clone();
+    drifted_manifest
+        .modules
+        .iter_mut()
+        .find(|m| m.path == "theory/Anneal/MirWp.lean")
+        .unwrap()
+        .sha256 = sha256_bytes(drifted_mir_wp.as_bytes());
+    fs::write(
+        &manifest_path,
+        format!("{}\n", serde_json::to_string_pretty(&drifted_manifest).unwrap()),
+    )
+    .unwrap();
+    expect_policy("embedded cargo-anneal EMBEDDED_THEORY_BUNDLE_JSON differs");
+    fs::write(&source, &orig_mir_wp).unwrap();
+    fs::write(&manifest_path, &original_manifest_bytes).unwrap();
     verify_bundled_resources(&root).unwrap();
 
     // 12. Theory manifest fail-closed rejections: tampered hash, duplicate
     // entry, unsorted entry, out-of-tree / path-traversal / umbrella paths,
     // missing required `MirWp.lean`, unknown JSON field, wrong schema, symlink,
     // and missing manifest.
-    let manifest_path = root.join(THEORY_BUNDLE_MANIFEST);
-    let original_manifest_bytes = fs::read(&manifest_path).unwrap();
     let write_manifest = |m: &TheoryBundleManifest| {
         fs::write(&manifest_path, format!("{}\n", serde_json::to_string_pretty(m).unwrap()))
             .unwrap();
@@ -8390,7 +8407,8 @@ fn rejects_deleted_build_generator_and_disallowed_build_scripts() {
 /// `theory/Anneal.lean` fixtures, rejecting any other non-Lean file in
 /// `theory/` or `bundle-manifest.json` in `trusted/lean/`, and requiring
 /// `Trusted.lean` in `trusted/lean/`), while `Checker::run` fails closed if
-/// `bundled_theory.json` is deleted.
+/// `theory/bundle-manifest.json` is deleted or legacy `src/bundled_theory.json`
+/// is reintroduced.
 #[test]
 fn admits_only_theory_bundle_manifest_and_rejects_deleted_theory_bundle() {
     use anneal_audit::scan_lean_tree;
@@ -8452,14 +8470,32 @@ fn admits_only_theory_bundle_manifest_and_rejects_deleted_theory_bundle() {
         fs::create_dir_all(dst.parent().unwrap()).unwrap();
         fs::copy(checkout.join(rel), dst).unwrap();
     }
-    fs::remove_file(fix.root.join(anneal_audit::bundle::THEORY_BUNDLE_DESTINATION)).unwrap();
+    fs::create_dir_all(fix.root.join("theory")).unwrap();
 
     let mut checker = fix.checker();
     let err = checker.run().unwrap_err();
     assert_eq!(err.code, 1, "unexpected code: {err}");
     assert_eq!(err.phase, "bundle-manifest", "unexpected phase: {err}");
-    assert!(err.message.contains("missing bundled_theory.json"), "unexpected error: {err}");
+    assert!(
+        err.message.contains("missing canonical bundle source: theory/bundle-manifest.json"),
+        "unexpected error: {err}"
+    );
     assert!(!checker.execution_began());
+
+    fs::write(
+        fix.root.join(anneal_audit::bundle::LEGACY_THEORY_BUNDLE_DESTINATION),
+        b"{}\n",
+    )
+    .unwrap();
+    let mut checker_legacy = Checker::new(&fix.root, None).unwrap();
+    let err_legacy = checker_legacy.run().unwrap_err();
+    assert_eq!(err_legacy.code, 1, "unexpected code: {err_legacy}");
+    assert_eq!(err_legacy.phase, "bundle-manifest", "unexpected phase: {err_legacy}");
+    assert!(
+        err_legacy.message.contains("legacy checked-in bundled_theory.json must be absent"),
+        "unexpected error: {err_legacy}"
+    );
+    assert!(!checker_legacy.execution_began());
 }
 
 /// Verifies multi-module parallel DAG compilation in

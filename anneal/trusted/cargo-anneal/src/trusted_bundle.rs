@@ -41,9 +41,9 @@ pub const LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256: &str =
 /// Resource ownership remains explicit so runtime target verification never
 /// discovers model, lock, or inspector files from an untrusted checkout.
 /// Bundled Pass 1 `theory/` libraries are registered separately in
-/// `theory/bundle-manifest.json` and embedded as pure UTF-8 JSON data in
-/// `trusted/cargo-anneal/src/bundled_theory.json`, keeping `trusted/`
-/// registrations decoupled from untrusted proof-library additions.
+/// `theory/bundle-manifest.json` and generated at build time into
+/// `$OUT_DIR/bundled_theory.json`, keeping `trusted/` registrations decoupled
+/// from untrusted proof-library additions.
 pub const TRUSTED_BUNDLE_SOURCES: &[&str] = &[
     "trusted/audit/TrustedBoundary.lean",
     "trusted/audit/library-lock.json",
