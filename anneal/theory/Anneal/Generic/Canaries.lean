@@ -3004,6 +3004,19 @@ private theorem byValCopy_wf_and_behavior (prog : OpenProgram)
             rw [byValCopy_det1 prog env did ob v1 mem hDay1 hBody hBb] at hEq
             exact StepResult.done.inj hEq
 
+/-- `normalizeOpenTy` at any fuel leaves a `normalizeOpenTyStep` fixed point
+unchanged. Rewriting with this avoids elaborator `whnf` of the 16-deep
+`normalizeOpenTyStep` chain at `normFuel`, which re-evaluates the
+call-by-name argument at every level and costs `O(2^normFuel)`. -/
+private theorem canary_normalizeOpenTy_of_step_fixed (reg : TraitRegistry)
+    (ty : OpenMirTy) (h : normalizeOpenTyStep reg ty = ty) :
+    ∀ n, normalizeOpenTy reg n ty = ty
+  | 0 => rfl
+  | n + 1 => by
+      unfold normalizeOpenTy
+      rw [h]
+      exact canary_normalizeOpenTy_of_step_fixed reg ty h n
+
 private theorem openInitState_byValImpl (envC : OpenExecEnv) (v1 : Val)
     (hCheck :
       checkOpenArgsMatch byValTraitProgram envC [v1] [.int .i64 false] =
@@ -3036,9 +3049,14 @@ private theorem openInitState_byValImpl (envC : OpenExecEnv) (v1 : Val)
     hCheck
   rw [hCheck']
   rw [canary_ite_false]
+  have hSlot : openLiveUninitSlot p1 (.int .i64 false) = .immediate none := by
+    unfold openLiveUninitSlot
+    rw [canary_normalizeOpenTy_of_step_fixed _ _ rfl]
+    rfl
   rw [show initOpenLocalsBuild p1 u64ByValIdImplBody 0
       u64ByValIdImplBody.locals [v1] =
-      some [.immediate none, .immediate (some v1)] from rfl]
+      some [openLiveUninitSlot p1 (.int .i64 false), .immediate (some v1)]
+      from rfl, hSlot]
   rfl
   · rfl
   · rfl
@@ -3143,9 +3161,14 @@ private theorem openInitState_traitBoundedId (env' : OpenExecEnv) (v1 : Val)
   have hCheck' : checkOpenArgsMatch p0 env' [v1] [.param 0] = true := hCheck
   rw [hCheck']
   rw [canary_ite_false]
+  have hSlot : openLiveUninitSlot p0 (.param 0) = .immediate none := by
+    unfold openLiveUninitSlot
+    rw [canary_normalizeOpenTy_of_step_fixed _ _ rfl]
+    rfl
   rw [show initOpenLocalsBuild p0 traitBoundedIdBody 0
       traitBoundedIdBody.locals [v1] =
-      some [.immediate none, .immediate (some v1)] from rfl]
+      some [openLiveUninitSlot p0 (.param 0), .immediate (some v1)]
+      from rfl, hSlot]
   rfl
   · rfl
   · rfl
