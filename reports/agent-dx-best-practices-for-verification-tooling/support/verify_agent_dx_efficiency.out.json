@@ -1,0 +1,176 @@
+{
+  "probe_1_diagnostics": {
+    "bloated_goal_chars": 12348,
+    "dedup_loss_if_post_truncation": {
+      "post_truncation": 1,
+      "untruncated": 2
+    },
+    "harness_head_target_survived": false,
+    "middle_elision_chars": 6036,
+    "middle_elision_target_survived": true,
+    "recovery_regimes": {
+      "coded_span_only": {
+        "expected_turns": 1.8682,
+        "fixable_resolve_rate": 0.9983,
+        "unfixable_abort_rate": 0.9961,
+        "wasted_turns_on_unfixable": 0.5977
+      },
+      "opaque_exit_1": {
+        "expected_turns": 4.2283,
+        "fixable_resolve_rate": 0.8999,
+        "unfixable_abort_rate": 0.5695,
+        "wasted_turns_on_unfixable": 1.7086
+      },
+      "structured_next_action_retryable": {
+        "expected_turns": 1.175,
+        "fixable_resolve_rate": 1.0,
+        "unfixable_abort_rate": 1.0,
+        "wasted_turns_on_unfixable": 0.3
+      }
+    }
+  },
+  "probe_2_lsp_vs_cli": {
+    "deep_cold_to_multi_wall_speedup": 20.62,
+    "deep_d16_p045_lcold45": {
+      "cold_cli_per_step": {
+        "input_tok": 1044000,
+        "turns": 35.56,
+        "wall_s": 1742.2
+      },
+      "warm_lsp_multi_attempt": {
+        "input_tok": 327600,
+        "turns": 17.61,
+        "wall_s": 84.5
+      },
+      "warm_lsp_step": {
+        "input_tok": 1044000,
+        "turns": 35.56,
+        "wall_s": 160.0
+      },
+      "whole_proof_cold_cli": {
+        "input_tok": 420000,
+        "turns": 20.56,
+        "wall_s": 1007.2
+      }
+    },
+    "shallow_d4_p085_lcold8": {
+      "cold_cli_per_step": {
+        "input_tok": 52000,
+        "turns": 4.71,
+        "wall_s": 56.5
+      },
+      "warm_lsp_multi_attempt": {
+        "input_tok": 39200,
+        "turns": 4.0,
+        "wall_s": 18.6
+      },
+      "warm_lsp_step": {
+        "input_tok": 52000,
+        "turns": 4.71,
+        "wall_s": 20.7
+      },
+      "whole_proof_cold_cli": {
+        "input_tok": 8000,
+        "turns": 1.48,
+        "wall_s": 17.7
+      }
+    }
+  },
+  "probe_3_disclosure_and_ambient_cargo": {
+    "ambient_cargo_config": {
+      "alias_term_doc_only": {
+        "detail": [
+          "alias",
+          "doc",
+          "term"
+        ],
+        "verdict": "allow_benign"
+      },
+      "build_rustflags": {
+        "detail": [
+          "compilation_or_resolution_table:build"
+        ],
+        "verdict": "reject"
+      },
+      "env_override": {
+        "detail": [
+          "compilation_or_resolution_table:env"
+        ],
+        "verdict": "reject"
+      },
+      "inline_dotted_build": {
+        "detail": [
+          "compilation_or_resolution_table:build"
+        ],
+        "verdict": "reject"
+      },
+      "net_override": {
+        "detail": [
+          "compilation_or_resolution_table:net"
+        ],
+        "verdict": "reject"
+      },
+      "patch_crates_io": {
+        "detail": [
+          "compilation_or_resolution_table:patch"
+        ],
+        "verdict": "reject"
+      },
+      "symlink_config": {
+        "detail": [
+          "symlink_forbidden"
+        ],
+        "verdict": "reject"
+      },
+      "target_cfg_rustflags": {
+        "detail": [
+          "compilation_or_resolution_table:target"
+        ],
+        "verdict": "reject"
+      },
+      "target_linker": {
+        "detail": [
+          "compilation_or_resolution_table:target"
+        ],
+        "verdict": "reject"
+      }
+    },
+    "context_tokens": {
+      "deferred_58_tools_4_active": 4293,
+      "flat_200_tools": 189655,
+      "flat_58_tools": 55000,
+      "savings_pct_58": 92.2,
+      "skills_20_catalog_2_active": 7000
+    }
+  },
+  "probe_4_incentive_gradient": {
+    "naive_hard_task": {
+      "cheat_beats_best_legit": true,
+      "cheat_beats_honest": true,
+      "u_cheat": 0.7,
+      "u_escalate": -0.05,
+      "u_honest": -0.2
+    },
+    "naive_impossible_task": {
+      "cheat_beats_best_legit": true,
+      "cheat_beats_honest": true,
+      "u_cheat": 0.7,
+      "u_escalate": -0.05,
+      "u_honest": -0.6
+    },
+    "trust_dx_hard_task": {
+      "cheat_beats_best_legit": false,
+      "cheat_beats_honest": false,
+      "u_cheat": -1.15,
+      "u_escalate": 0.05,
+      "u_honest": 0.6
+    },
+    "trust_dx_impossible_task": {
+      "cheat_beats_best_legit": false,
+      "cheat_beats_honest": false,
+      "u_cheat": -1.15,
+      "u_escalate": 0.05,
+      "u_honest": -0.1
+    }
+  }
+}

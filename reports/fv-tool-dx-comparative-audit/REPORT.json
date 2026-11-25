@@ -1,0 +1,190 @@
+{
+  "topics": [
+    "verification/ux",
+    "verification/rust",
+    "agents/proof-engineering",
+    "tooling/diagnostics",
+    "tooling/lsp",
+    "anneal/architecture"
+  ],
+  "subjects": [
+    {
+      "name": "google/zerocopy (Anneal main branch)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "0fd98bf034e14dfcba33b171c43ea1c1517ccdf0",
+        "branch": "main"
+      }
+    },
+    {
+      "name": "google/zerocopy (reference corpus)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ae8a1682c23fa64a7971cf94f2dd6b548f5e7885",
+        "branch": "reference"
+      }
+    },
+    {
+      "name": "Verus",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "48ed2e8a36716eecc22057111681d8d29993b701"
+      }
+    },
+    {
+      "name": "verus-analyzer",
+      "identity": {
+        "repository": "verus-lang/verus-analyzer",
+        "revision": "2ac834c8158e0e0969b0e03afe2f27127d6ea9f8"
+      }
+    },
+    {
+      "name": "Kani",
+      "identity": {
+        "repository": "model-checking/kani",
+        "revision": "2425d3b2df8cb9d1326b112d1fe79b8"
+      }
+    },
+    {
+      "name": "Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "fb44cb400eb6bfe7dce97422ebe8fa748b7e4f9b"
+      }
+    },
+    {
+      "name": "Charon",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "1477e69fb27e4e483075088ba97d47b6e5997403"
+      }
+    },
+    {
+      "name": "Creusot",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "a81df78169365cd8829e8dda16cf479df58bfdc9"
+      }
+    },
+    {
+      "name": "Prusti",
+      "identity": {
+        "repository": "viperproject/prusti-dev",
+        "revision": "60417dcf4ab792bf91a98f5a7086d3d96787653a"
+      }
+    },
+    {
+      "name": "Place Capability Graphs (PCG)",
+      "identity": {
+        "repository": "prusti/pcg",
+        "revision": "071783bf25820bf04e7c8fa69c10c05362250d1e"
+      }
+    },
+    {
+      "name": "Flux",
+      "identity": {
+        "repository": "flux-rs/flux",
+        "revision": "587a7bef58812817086e8b0a5cdbe2576ed45cda"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "b8d19876fd6ac4219123dced4eaa29f43b87e2b9"
+      }
+    },
+    {
+      "name": "lean-lsp-mcp",
+      "identity": {
+        "repository": "oOo0oOo/lean-lsp-mcp",
+        "revision": "7932203d79db213852db215835bd79c943bb99b0"
+      }
+    },
+    {
+      "name": "Pantograph",
+      "identity": {
+        "repository": "lenianiva/Pantograph",
+        "revision": "6479c9bb8ce67e94b24ffba57f59633b3da9b344"
+      }
+    },
+    {
+      "name": "LeanDojo",
+      "identity": {
+        "repository": "lean-dojo/LeanDojo",
+        "revision": "7a9f600b250a89a62e991c05ffe81ba033018e6e"
+      }
+    },
+    {
+      "name": "Dafny",
+      "identity": {
+        "repository": "dafny-lang/dafny",
+        "revision": "ba32d393fffe648e56361695ff46f06f571aaab3"
+      }
+    },
+    {
+      "name": "F* / Pulse",
+      "identity": {
+        "repository": "FStarLang/FStar",
+        "revision": "2881dfb173c7bf347303ab190e10bc2584fe2440"
+      }
+    },
+    {
+      "name": "Rocq Prover",
+      "identity": {
+        "repository": "rocq-prover/rocq",
+        "revision": "9245ce6769b24335ee033c9ae2c5942fbe9ca3a7"
+      }
+    },
+    {
+      "name": "rocq-lsp / coq-lsp / Petanque",
+      "identity": {
+        "repository": "ejgallego/coq-lsp",
+        "revision": "b1ba8511d966a877b30693f86a9e412b8daaca1e"
+      }
+    },
+    {
+      "name": "VsRocq",
+      "identity": {
+        "repository": "rocq-prover/vsrocq",
+        "revision": "817eb917d141c158732756a453767b22078951e8"
+      }
+    },
+    {
+      "name": "TLA+ / TLC",
+      "identity": {
+        "repository": "tlaplus/tlaplus",
+        "revision": "bc1b506bdcad80bb518bf3776a9161c34ff0fc4c"
+      }
+    },
+    {
+      "name": "Apalache",
+      "identity": {
+        "repository": "apalache-mc/apalache",
+        "revision": "78b8e72c982bca06507d7c1d9fc404cffc7cbb8e"
+      }
+    },
+    {
+      "name": "CBMC",
+      "identity": {
+        "repository": "diffblue/cbmc",
+        "revision": "6c5f75f0128d24c8e09b030b6dde3785bbf54863"
+      }
+    },
+    {
+      "name": "CBMC Viewer",
+      "identity": {
+        "repository": "model-checking/cbmc-viewer",
+        "revision": "bf452b2c9337bfc40c83507a735c938ff0cafe7a"
+      }
+    },
+    {
+      "name": "SPARK / GNATprove",
+      "identity": {
+        "repository": "AdaCore/spark2014",
+        "revision": "e060dca755a22b129ed0ee99b1596b1869874e99"
+      }
+    }
+  ],
+  "observed_at": "2026-11-25"
+}

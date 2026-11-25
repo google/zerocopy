@@ -1,0 +1,199 @@
+{
+  "observed_at": "2026-11-25",
+  "pinned_subjects": {
+    "google/zerocopy (main)": {
+      "revision": "0fd98bf034e14dfcba33b171c43ea1c1517ccdf0",
+      "files": [
+        "anneal/docs/README.md",
+        "anneal/docs/alpha.md",
+        "anneal/docs/design.md",
+        "anneal/docs/elaborator-containment-design.md",
+        "anneal/docs/spec-core-and-golden-closure.md",
+        "anneal/docs/auditing-and-comparator.md",
+        "anneal/docs/build-systems-and-receipts.md",
+        "anneal/trusted/cargo-anneal/src/cli.rs",
+        "anneal/trusted/cargo-anneal/src/verify.rs",
+        "anneal/trusted/cargo-anneal/src/diagnostics.rs",
+        "anneal/trusted/cargo-anneal/skills/cargo-anneal/SKILL.md",
+        "anneal/skills/spec-authoring/SKILL.md",
+        "anneal/skills/proof-scaling/SKILL.md",
+        "anneal/theory/bundle-manifest.json",
+        "anneal/theory/Anneal/AiPcc.lean",
+        "anneal/theory/Anneal/AiPcc/MirPcc.lean",
+        "tools/anneal-mir-eval/README.md"
+      ]
+    },
+    "google/zerocopy (reference)": {
+      "revision": "ae8a1682c23fa64a7971cf94f2dd6b548f5e7885",
+      "files": [
+        "CATALOG.json",
+        "CORPUS.json",
+        "FORMAT.md",
+        "tools/reference.py"
+      ]
+    },
+    "verus-lang/verus": {
+      "revision": "48ed2e8a36716eecc22057111681d8d29993b701",
+      "files": [
+        "source/rust_verify/src/config.rs",
+        "source/docs/guide/src/verus-guarantees.md"
+      ],
+      "markers": ["--no-cheating", "--output-json", "pub expand_errors", "pub multiple_errors", "--profile-all", "-V check-api-safety"]
+    },
+    "verus-lang/verus-analyzer": {
+      "revision": "2ac834c8158e0e0969b0e03afe2f27127d6ea9f8",
+      "files": ["README.md"],
+      "markers": ["Proof Actions", "weakest_pre_step", "intro_assume_false", "proc-macro server"]
+    },
+    "model-checking/kani": {
+      "revision": "2425d3b2df8cb9d1326b112d1fe79b8",
+      "files": [
+        "kani-driver/src/args/mod.rs",
+        "kani-driver/src/args/playback_args.rs",
+        "kani-driver/src/autoharness/mod.rs"
+      ],
+      "markers": ["ConcretePlaybackMode", "LOOP_UNWIND_DEFAULT", "export_json", "no_unwinding_checks"]
+    },
+    "AeneasVerif/aeneas": {
+      "revision": "fb44cb400eb6bfe7dce97422ebe8fa748b7e4f9b",
+      "files": [
+        "src/Main.ml",
+        "documentation/tips-and-tricks.md",
+        "documentation/skills/launching-proof-agents.instructions.md"
+      ],
+      "markers": ["-checks", "-lean-default-lakefile", "Arg.Clear lean_gen_lakefile", "step*?", "agrind", "private axiom"]
+    },
+    "AeneasVerif/charon": {
+      "revision": "1477e69fb27e4e483075088ba97d47b6e5997403",
+      "files": ["charon/src/options.rs"],
+      "markers": ["--start-from", "--opaque", "--include", "pub exclude", "--monomorphize"]
+    },
+    "creusot-rs/creusot": {
+      "revision": "a81df78169365cd8829e8dda16cf479df58bfdc9",
+      "files": [
+        "README.md",
+        "cargo-creusot/src/main.rs",
+        "creusot-args/src/options.rs"
+      ],
+      "markers": ["CARGO_INCREMENTAL", "why3session.xml", "ErasureCheck", "SpanMode_"]
+    },
+    "viperproject/prusti-dev": {
+      "revision": "60417dcf4ab792bf91a98f5a7086d3d96787653a",
+      "files": [
+        "README.md",
+        "prusti-utils/src/config.rs"
+      ],
+      "markers": ["check_overflows", "json_communication", "smt_qi_profile", "print_counterexample_if_model_is_present"]
+    },
+    "prusti/pcg": {
+      "revision": "071783bf25820bf04e7c8fa69c10c05362250d1e",
+      "files": ["README.md"],
+      "markers": ["nightly version of the Rust", "PCG_VISUALIZATION"]
+    },
+    "flux-rs/flux": {
+      "revision": "587a7bef58812817086e8b0a5cdbe2576ed45cda",
+      "files": [
+        "README.md",
+        "crates/flux-config/src/lib.rs"
+      ],
+      "markers": ["IncludePattern", "LeanMode", "OverflowMode", "trusted_default"]
+    },
+    "leanprover/lean4": {
+      "revision": "b8d19876fd6ac4219123dced4eaa29f43b87e2b9",
+      "files": ["src/Lean/Server/README.md"],
+      "markers": ["watchdog", "InfoTree", "Snapshots", "interactive diagnostics"]
+    },
+    "oOo0oOo/lean-lsp-mcp": {
+      "revision": "7932203d79db213852db215835bd79c943bb99b0",
+      "files": ["README.md"],
+      "markers": ["LEAN_MCP_MAX_OUTPUT_CHARS", "lean_multi_attempt", "LEAN_REPL_MEM_MB", "LEAN_LOOGLE_LOCAL"]
+    },
+    "lenianiva/Pantograph": {
+      "revision": "6479c9bb8ce67e94b24ffba57f59633b3da9b344",
+      "files": ["README.md"],
+      "markers": ["Machine-to-Machine", "tomograph", "Pantograph/Library.lean"]
+    },
+    "lean-dojo/LeanDojo": {
+      "revision": "7a9f600b250a89a62e991c05ffe81ba033018e6e",
+      "files": ["README.md"],
+      "markers": ["LeanDojo-v2", "deprecated"]
+    },
+    "dafny-lang/dafny": {
+      "revision": "ba32d393fffe648e56361695ff46f06f571aaab3",
+      "files": [
+        "Source/DafnyDriver/Commands/VerifyCommand.cs",
+        "Source/DafnyDriver/Commands/AuditCommand.cs",
+        "Source/DafnyDriver/Commands/MeasureComplexityCommand.cs",
+        "Source/DafnyCore/Auditor/Auditor.cs",
+        "Source/DafnyCore/Auditor/AuditReport.cs",
+        "Source/DafnyCore/Options/CommonOptionBag.cs"
+      ],
+      "markers": ["--filter-position", "--isolate-assertions", "--compare-report", "--mutations", "--verification-coverage-report"]
+    },
+    "FStarLang/FStar": {
+      "revision": "2881dfb173c7bf347303ab190e10bc2584fe2440",
+      "files": [
+        "src/basic/FStarC.Options.fsti",
+        "doc/book/PoP-in-FStar/book/agentic/agentic_rubrics_templates_audits.rst",
+        "pulse/README.md"
+      ],
+      "markers": ["message_format_t = | Json | Human | Github", "quake_lo", "report_assumes", "--report_assumes error", "#lang-pulse"]
+    },
+    "rocq-prover/rocq": {
+      "revision": "9245ce6769b24335ee033c9ae2c5942fbe9ca3a7",
+      "files": [],
+      "markers": []
+    },
+    "ejgallego/coq-lsp": {
+      "revision": "b1ba8511d966a877b30693f86a9e412b8daaca1e",
+      "files": [
+        "README.md",
+        "petanque/README.md"
+      ],
+      "markers": ["Flèche", "petanque/start", "petanque/run", "petanque/goals"]
+    },
+    "rocq-prover/vsrocq": {
+      "revision": "817eb917d141c158732756a453767b22078951e8",
+      "files": ["README.md"],
+      "markers": ["vsrocq.proof.mode", "vsrocq.goals.maxDepth", "vsrocq.memory.limit", "Block on first error"]
+    },
+    "tlaplus/tlaplus": {
+      "revision": "bc1b506bdcad80bb518bf3776a9161c34ff0fc4c",
+      "files": ["tlatools/org.lamport.tlatools/src/tlc2/TLC.java"],
+      "markers": ["-dumpTrace", "-loadTrace", "-tool", "-difftrace", "-generateSpecTE"]
+    },
+    "apalache-mc/apalache": {
+      "revision": "78b8e72c982bca06507d7c1d9fc404cffc7cbb8e",
+      "files": [
+        "README.md",
+        "docs/src/adr/015adr-trace.md"
+      ],
+      "markers": ["Informal Trace Format", "#bigint", "#map", "varTypes"]
+    },
+    "diffblue/cbmc": {
+      "revision": "6c5f75f0128d24c8e09b030b6dde3785bbf54863",
+      "files": ["src/cbmc/cbmc_parse_options.cpp"],
+      "markers": ["Checks enabled by default in v6.0+", "unwinding-assertions", "--json-ui", "--localize-faults"]
+    },
+    "model-checking/cbmc-viewer": {
+      "revision": "bf452b2c9337bfc40c83507a735c938ff0cafe7a",
+      "files": ["README.md"],
+      "markers": ["--xml-ui", "coverage report", "bug report"]
+    },
+    "AdaCore/spark2014": {
+      "revision": "e060dca755a22b129ed0ee99b1596b1869874e99",
+      "files": [
+        "docs/ug/en/source/stone_level.rst",
+        "docs/ug/en/source/bronze_level.rst",
+        "docs/ug/en/source/silver_level.rst",
+        "docs/ug/en/source/gold_level.rst",
+        "docs/ug/en/source/how_to_run_gnatprove.rst",
+        "docs/ug/en/source/how_to_view_gnatprove_output.rst",
+        "docs/ug/en/source/how_to_investigate_unproved_checks.rst",
+        "docs/ug/en/source/how_to_use_gnatprove_in_a_team.rst",
+        "docs/ug/en/source/manual_proof.rst"
+      ],
+      "markers": ["SPARK_Mode", "--level=4", "gnatprove.sarif", "--check-counterexamples=off", "--proof-warnings=on", "pragma Annotate"]
+    }
+  }
+}

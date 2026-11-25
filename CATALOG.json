@@ -4874,6 +4874,209 @@
         "verification/reproducible-builds"
       ]
     },
+    "agent-dx-best-practices-for-verification-tooling": {
+      "observed_at": "2026-11-25",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "0fd98bf034e14dfcba33b171c43ea1c1517ccdf0"
+          },
+          "name": "Anneal (`cargo-anneal` and `anneal/docs`)"
+        },
+        {
+          "identity": {
+            "repository": "oOo0oOo/lean-lsp-mcp",
+            "revision": "7932203d79db213852db215835bd79c943bb99b0"
+          },
+          "name": "Lean LSP MCP Server (`lean-lsp-mcp`)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+          },
+          "name": "rustc (`rustc_errors` JSON diagnostic emitter)"
+        },
+        {
+          "identity": {
+            "repository": "astral-sh/ruff",
+            "revision": "96c09ab6e37ce7608ae420cb8de243c1ee9b7d98"
+          },
+          "name": "Ruff (`ruff_linter` / `ruff_db` diagnostic renderers)"
+        },
+        {
+          "identity": {
+            "repository": "nextest-rs/nextest",
+            "revision": "694af6a3d04287abcca260c245972c73dd39dcca"
+          },
+          "name": "cargo-nextest (`nextest-metadata` exit codes)"
+        },
+        {
+          "identity": {
+            "repository": "cli/cli",
+            "revision": "b546819fd547ef8c97da470bb00f2aaad4165c84"
+          },
+          "name": "GitHub CLI (`gh` `cmdutil` error taxonomy)"
+        },
+        {
+          "identity": {
+            "repository": "model-checking/kani",
+            "revision": "2425d3b2df8cb9d1326b41c5abd62112d1fe79b8"
+          },
+          "name": "Kani Rust Verifier (`kani-driver` Cargo integration)"
+        },
+        {
+          "identity": {
+            "repository": "modelcontextprotocol/modelcontextprotocol",
+            "revision": "2bbace557bbf2cb5d03d6f9b48905415cd7607b0"
+          },
+          "name": "Model Context Protocol (MCP `2025-11-25` Tools specification)"
+        },
+        {
+          "identity": {
+            "repository": "agentskills/agentskills",
+            "revision": "83021e2be457a9b6679148719c1f6074f0ad975e"
+          },
+          "name": "Agent Skills specification (`agentskills.io`)"
+        },
+        {
+          "identity": {
+            "repository": "anomalyco/opencode",
+            "revision": "fb5ba10f4fc2e299e08bd4b1c36563f4256560d5"
+          },
+          "name": "OpenCode LSP integration documentation"
+        },
+        {
+          "identity": {
+            "repository": "Aider-AI/aider",
+            "revision": "5dc9490bb35f9729ef2c95d00a19ccd30c26339c"
+          },
+          "name": "Aider edit-format and laziness benchmarks"
+        },
+        {
+          "identity": {
+            "repository": "ShishirPatil/gorilla",
+            "revision": "6ea57973c7a6097fd7c5915698c54c17c5b1b6c8"
+          },
+          "name": "Berkeley Function Calling Leaderboard (BFCL)"
+        },
+        {
+          "identity": {
+            "arxiv": "2405.15793v2",
+            "doi_or_venue": "NeurIPS 2024",
+            "url": "https://arxiv.org/abs/2405.15793"
+          },
+          "name": "SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering"
+        },
+        {
+          "identity": {
+            "arxiv": "2601.14027v1",
+            "url": "https://arxiv.org/abs/2601.14027"
+          },
+          "name": "Numina-Lean-Agent: An Open and General Agentic Reasoning System for Formal Mathematics"
+        },
+        {
+          "identity": {
+            "arxiv": "2510.20270v1",
+            "url": "https://arxiv.org/abs/2510.20270"
+          },
+          "name": "ImpossibleBench: Measuring LLMs' Propensity of Exploiting Test Cases"
+        },
+        {
+          "identity": {
+            "arxiv": "2610.26464v1",
+            "url": "https://arxiv.org/abs/2610.26464"
+          },
+          "name": "VerusEval: Evaluating LLM-Generated Verus Specifications Beyond Verifier Acceptance"
+        },
+        {
+          "identity": {
+            "arxiv": "2408.04682v1",
+            "url": "https://arxiv.org/abs/2408.04682"
+          },
+          "name": "ToolSandbox: A Stateful, Conversational, Interactive Evaluation Benchmark for LLM Tool Use Capabilities"
+        },
+        {
+          "identity": {
+            "arxiv": "2406.12045v1",
+            "url": "https://arxiv.org/abs/2406.12045"
+          },
+          "name": "tau-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains"
+        },
+        {
+          "identity": {
+            "arxiv": "2506.07982v1",
+            "url": "https://arxiv.org/abs/2506.07982"
+          },
+          "name": "tau2-bench: Evaluating Conversational Agents in a Dual-Control Environment"
+        },
+        {
+          "identity": {
+            "arxiv": "2511.18397v1",
+            "url": "https://arxiv.org/abs/2511.18397"
+          },
+          "name": "Natural Emergent Misalignment from Reward Hacking in Production RL"
+        },
+        {
+          "identity": {
+            "fetched_at": "2026-11-25",
+            "published_at": "2025-09-11",
+            "url": "https://www.anthropic.com/research/writing-tools-for-agents"
+          },
+          "name": "Anthropic Engineering: Writing effective tools for agents \u2014 with agents"
+        },
+        {
+          "identity": {
+            "fetched_at": "2026-11-25",
+            "published_at": "2025-11-04",
+            "url": "https://www.anthropic.com/research/code-execution-with-mcp"
+          },
+          "name": "Anthropic Engineering: Code execution with MCP"
+        },
+        {
+          "identity": {
+            "fetched_at": "2026-11-25",
+            "published_at": "2025-11-24",
+            "url": "https://www.anthropic.com/research/advanced-tool-use"
+          },
+          "name": "Anthropic Engineering: Introducing advanced tool use"
+        },
+        {
+          "identity": {
+            "fetched_at": "2026-11-25",
+            "url": "https://code.claude.com/docs/en/hooks.md"
+          },
+          "name": "Claude Code Hooks reference (`PostToolUse` and output caps)"
+        },
+        {
+          "identity": {
+            "fetched_at": "2026-11-25",
+            "published_at": "2026-03-04",
+            "url": "https://justin.poehnelt.com/posts/rewrite-your-cli-for-ai-agents/"
+          },
+          "name": "Justin Poehnelt: You Need to Rewrite Your CLI for AI Agents"
+        },
+        {
+          "identity": {
+            "fetched_at": "2026-11-25",
+            "url": "https://clig.dev/"
+          },
+          "name": "Command Line Interface Guidelines (`clig.dev`)"
+        }
+      ],
+      "topics": [
+        "agents",
+        "agents/developer-experience",
+        "agents/progressive-disclosure",
+        "agents/reward-hacking",
+        "agents/tool-use",
+        "anneal/ux",
+        "tooling/cli-diagnostics",
+        "tooling/lsp-mcp",
+        "verification/ux"
+      ]
+    },
     "agent-early-overlap-detection-speculative-merge-and-shared-findings-ledgers": {
       "observed_at": "2026-11-22",
       "subjects": [
@@ -49849,6 +50052,196 @@
         "systems/networking-storage",
         "systems/process-control",
         "build/hermeticity",
+        "anneal/architecture"
+      ]
+    },
+    "fv-tool-dx-comparative-audit": {
+      "observed_at": "2026-11-25",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "google/zerocopy",
+            "revision": "0fd98bf034e14dfcba33b171c43ea1c1517ccdf0"
+          },
+          "name": "google/zerocopy (Anneal main branch)"
+        },
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "ae8a1682c23fa64a7971cf94f2dd6b548f5e7885"
+          },
+          "name": "google/zerocopy (reference corpus)"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "48ed2e8a36716eecc22057111681d8d29993b701"
+          },
+          "name": "Verus"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus-analyzer",
+            "revision": "2ac834c8158e0e0969b0e03afe2f27127d6ea9f8"
+          },
+          "name": "verus-analyzer"
+        },
+        {
+          "identity": {
+            "repository": "model-checking/kani",
+            "revision": "2425d3b2df8cb9d1326b112d1fe79b8"
+          },
+          "name": "Kani"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "fb44cb400eb6bfe7dce97422ebe8fa748b7e4f9b"
+          },
+          "name": "Aeneas"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "1477e69fb27e4e483075088ba97d47b6e5997403"
+          },
+          "name": "Charon"
+        },
+        {
+          "identity": {
+            "repository": "creusot-rs/creusot",
+            "revision": "a81df78169365cd8829e8dda16cf479df58bfdc9"
+          },
+          "name": "Creusot"
+        },
+        {
+          "identity": {
+            "repository": "viperproject/prusti-dev",
+            "revision": "60417dcf4ab792bf91a98f5a7086d3d96787653a"
+          },
+          "name": "Prusti"
+        },
+        {
+          "identity": {
+            "repository": "prusti/pcg",
+            "revision": "071783bf25820bf04e7c8fa69c10c05362250d1e"
+          },
+          "name": "Place Capability Graphs (PCG)"
+        },
+        {
+          "identity": {
+            "repository": "flux-rs/flux",
+            "revision": "587a7bef58812817086e8b0a5cdbe2576ed45cda"
+          },
+          "name": "Flux"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "b8d19876fd6ac4219123dced4eaa29f43b87e2b9"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "oOo0oOo/lean-lsp-mcp",
+            "revision": "7932203d79db213852db215835bd79c943bb99b0"
+          },
+          "name": "lean-lsp-mcp"
+        },
+        {
+          "identity": {
+            "repository": "lenianiva/Pantograph",
+            "revision": "6479c9bb8ce67e94b24ffba57f59633b3da9b344"
+          },
+          "name": "Pantograph"
+        },
+        {
+          "identity": {
+            "repository": "lean-dojo/LeanDojo",
+            "revision": "7a9f600b250a89a62e991c05ffe81ba033018e6e"
+          },
+          "name": "LeanDojo"
+        },
+        {
+          "identity": {
+            "repository": "dafny-lang/dafny",
+            "revision": "ba32d393fffe648e56361695ff46f06f571aaab3"
+          },
+          "name": "Dafny"
+        },
+        {
+          "identity": {
+            "repository": "FStarLang/FStar",
+            "revision": "2881dfb173c7bf347303ab190e10bc2584fe2440"
+          },
+          "name": "F* / Pulse"
+        },
+        {
+          "identity": {
+            "repository": "rocq-prover/rocq",
+            "revision": "9245ce6769b24335ee033c9ae2c5942fbe9ca3a7"
+          },
+          "name": "Rocq Prover"
+        },
+        {
+          "identity": {
+            "repository": "ejgallego/coq-lsp",
+            "revision": "b1ba8511d966a877b30693f86a9e412b8daaca1e"
+          },
+          "name": "rocq-lsp / coq-lsp / Petanque"
+        },
+        {
+          "identity": {
+            "repository": "rocq-prover/vsrocq",
+            "revision": "817eb917d141c158732756a453767b22078951e8"
+          },
+          "name": "VsRocq"
+        },
+        {
+          "identity": {
+            "repository": "tlaplus/tlaplus",
+            "revision": "bc1b506bdcad80bb518bf3776a9161c34ff0fc4c"
+          },
+          "name": "TLA+ / TLC"
+        },
+        {
+          "identity": {
+            "repository": "apalache-mc/apalache",
+            "revision": "78b8e72c982bca06507d7c1d9fc404cffc7cbb8e"
+          },
+          "name": "Apalache"
+        },
+        {
+          "identity": {
+            "repository": "diffblue/cbmc",
+            "revision": "6c5f75f0128d24c8e09b030b6dde3785bbf54863"
+          },
+          "name": "CBMC"
+        },
+        {
+          "identity": {
+            "repository": "model-checking/cbmc-viewer",
+            "revision": "bf452b2c9337bfc40c83507a735c938ff0cafe7a"
+          },
+          "name": "CBMC Viewer"
+        },
+        {
+          "identity": {
+            "repository": "AdaCore/spark2014",
+            "revision": "e060dca755a22b129ed0ee99b1596b1869874e99"
+          },
+          "name": "SPARK / GNATprove"
+        }
+      ],
+      "topics": [
+        "verification/ux",
+        "verification/rust",
+        "agents/proof-engineering",
+        "tooling/diagnostics",
+        "tooling/lsp",
         "anneal/architecture"
       ]
     },
