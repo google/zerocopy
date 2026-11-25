@@ -10,6 +10,7 @@
 """Verify every Anneal proof unit under `zerocopy/proofs/` against `zerocopy/src/`."""
 
 import argparse
+import collections
 from concurrent.futures import ThreadPoolExecutor
 import json
 import os
@@ -115,13 +116,93 @@ def _normalize_selected_unit_scope(scope, context):
     return list(roots), inst_keys
 
 
-def discover_units(proofs_dir, src_dir, selected_units=None):
-    """Validate `proofs_dir` hygiene and return ordered `(unit_dir, request)` pairs."""
-    if not proofs_dir.is_dir() or proofs_dir.is_symlink():
-        raise RuntimeError(f"invalid proofs directory: {proofs_dir}")
-    resolved_src = src_dir.resolve(strict=True)
-    if not (resolved_src / "lib.rs").is_file():
-        raise RuntimeError(f"zerocopy crate root missing: {resolved_src / 'lib.rs'}")
+_MAX_SYMLINK_HOPS = 40
+
+
+def _reject_symlink_ancestors_in_repo(
+    path, label, repo_root=None, *, check_outside_repo=False
+):
+    """Reject symlinks at `path` or along traversed in-scope prefixes."""
+    if path.is_symlink():
+        raise RuntimeError(f"symlink disallowed in {label} path: {path}")
+
+    resolved_repo = (
+        repo_root.resolve(strict=True) if repo_root is not None else None
+    )
+
+    if path.is_absolute():
+        resolved_cur = Path(path.anchor).resolve()
+        queue = collections.deque(path.parts[1:])
+    else:
+        resolved_cur = Path.cwd().resolve(strict=True)
+        queue = collections.deque(path.parts)
+
+    def parent_in_scope(cur_dir):
+        if resolved_repo is None:
+            return check_outside_repo
+        return cur_dir == resolved_repo or cur_dir.is_relative_to(
+            resolved_repo
+        )
+
+    # Step component-by-component over a symlink-free `resolved_cur`:
+    # reject symlinks at the final target or inside `resolved_repo`, and
+    # expand permitted outside-repository symlinks one `readlink` hop at a
+    # time so paths entering `resolved_repo` via an external symlink still
+    # check every in-repository component while relative and absolute
+    # external `--artifacts-dir` paths behave identically.
+    hops = 0
+    while queue:
+        part = queue.popleft()
+        if part in ("", "."):
+            continue
+        if part == "..":
+            resolved_cur = resolved_cur.parent
+            continue
+        candidate = resolved_cur / part
+        is_final = not any(p not in ("", ".") for p in queue)
+        if candidate.is_symlink():
+            if is_final or parent_in_scope(resolved_cur):
+                raise RuntimeError(
+                    f"symlink disallowed in {label} path: {candidate}"
+                )
+            hops += 1
+            if hops > _MAX_SYMLINK_HOPS:
+                raise RuntimeError(
+                    f"too many symlink levels in {label} path: {path}"
+                )
+            target = Path(os.readlink(candidate))
+            if target.is_absolute():
+                resolved_cur = Path(target.anchor).resolve()
+                for p in reversed(target.parts[1:]):
+                    queue.appendleft(p)
+            else:
+                for p in reversed(target.parts):
+                    queue.appendleft(p)
+            continue
+        resolved_cur = candidate
+
+
+def _validate_real_directory(path, label, repo_root=None):
+    """Verify `path` is a real directory without symlink traversal."""
+    _reject_symlink_ancestors_in_repo(
+        path, label, repo_root=repo_root, check_outside_repo=(repo_root is None)
+    )
+    if not path.is_dir():
+        raise RuntimeError(f"invalid {label} directory: {path}")
+    return path.resolve(strict=True)
+
+
+def discover_units(proofs_dir, src_dir, selected_units=None, *, repo_root=None):
+    """Validate `proofs_dir` hygiene and return ordered unit pairs."""
+    proofs_dir = _validate_real_directory(
+        proofs_dir, "proofs", repo_root=repo_root
+    )
+    resolved_src = _validate_real_directory(
+        src_dir, "src", repo_root=repo_root
+    )
+    lib_rs = resolved_src / "lib.rs"
+    if lib_rs.is_symlink() or not lib_rs.is_file():
+        raise RuntimeError(f"zerocopy crate root missing: {lib_rs}")
 
     discovered = {}
     for entry in sorted(proofs_dir.iterdir(), key=lambda p: p.name):
@@ -451,9 +532,12 @@ def verify_unit(arguments, unit_dir, request, artifacts_root):
     }
 
 
-def run_suite(arguments, work_dir):
+def run_suite(arguments, work_dir, *, repo_root=None):
     units = discover_units(
-        arguments.proofs_dir, arguments.src_dir, selected_units=arguments.unit or None
+        arguments.proofs_dir,
+        arguments.src_dir,
+        selected_units=arguments.unit or None,
+        repo_root=repo_root,
     )
     workers = max(1, min(arguments.jobs, len(units)))
     started = time.monotonic()
@@ -542,15 +626,28 @@ def main(argv=None):
             parser.error(f"the following arguments are required: --{required}")
         setattr(arguments, required, value.resolve(strict=True))
 
-    arguments.proofs_dir = arguments.proofs_dir.resolve(strict=True)
-    arguments.src_dir = arguments.src_dir.resolve(strict=True)
+    arguments.proofs_dir = _validate_real_directory(
+        arguments.proofs_dir, "proofs", repo_root=repo_root
+    )
+    arguments.src_dir = _validate_real_directory(
+        arguments.src_dir, "src", repo_root=repo_root
+    )
 
     if arguments.artifacts_dir is not None:
+        _reject_symlink_ancestors_in_repo(
+            arguments.artifacts_dir, "artifacts", repo_root=repo_root
+        )
         arguments.artifacts_dir.mkdir(mode=0o700)
-        run_suite(arguments, arguments.artifacts_dir.resolve())
+        run_suite(
+            arguments,
+            arguments.artifacts_dir.resolve(),
+            repo_root=repo_root,
+        )
     else:
-        with tempfile.TemporaryDirectory(prefix="anneal-zerocopy-proofs-") as tmp:
-            run_suite(arguments, Path(tmp))
+        with tempfile.TemporaryDirectory(
+            prefix="anneal-zerocopy-proofs-"
+        ) as tmp:
+            run_suite(arguments, Path(tmp), repo_root=repo_root)
     return 0
 
 

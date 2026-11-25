@@ -60,7 +60,12 @@ def make_receipt(**overrides):
     return receipt
 
 
+def real_tmp_root(tmp: str) -> Path:
+    return Path(tmp).resolve(strict=True)
+
+
 def make_proof_tree(root: Path):
+    root = root.resolve(strict=True)
     src_dir = root / "zerocopy/src"
     src_dir.mkdir(parents=True)
     (src_dir / "lib.rs").write_text("", encoding="utf-8")
@@ -117,7 +122,7 @@ class VerifyZerocopyTests(unittest.TestCase):
 
     def test_discover_units_rejects_bad_source_root(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
+            root = real_tmp_root(tmp)
             other_src = root / "zerocopy/other_src"
             other_src.mkdir(parents=True)
             (other_src / "lib.rs").write_text("", encoding="utf-8")
@@ -172,7 +177,7 @@ class VerifyZerocopyTests(unittest.TestCase):
 
     def test_main_runs_with_mocked_cli_and_writes_summary(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
+            root = real_tmp_root(tmp)
             proofs_dir, src_dir, _ = make_proof_tree(root)
             fake_cli = root / "cargo-anneal"
             fake_cap = root / "anneal-rustc-capture"
@@ -215,7 +220,7 @@ class VerifyZerocopyTests(unittest.TestCase):
 
     def test_discover_units_deduplicates_selected_units_preserving_order(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
+            root = real_tmp_root(tmp)
             proofs_dir, src_dir, unit_01 = make_proof_tree(root)
             unit_02 = proofs_dir / "02_unit"
             unit_02.mkdir()
@@ -231,7 +236,7 @@ class VerifyZerocopyTests(unittest.TestCase):
 
     def test_main_deduplicates_unit_flags_and_skips_local_discovery(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
+            root = real_tmp_root(tmp)
             proofs_dir, src_dir, _ = make_proof_tree(root)
             fake_cli = root / "cargo-anneal"
             fake_cap = root / "anneal-rustc-capture"
@@ -296,7 +301,7 @@ class VerifyZerocopyTests(unittest.TestCase):
 
     def test_discover_local_defaults_empty_xdg_and_dangling_symlink(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
+            root = real_tmp_root(tmp)
             home = root / "home"
             cwd = root / "cwd"
             anneal_root = root / "anneal"
@@ -449,7 +454,7 @@ class VerifyZerocopyTests(unittest.TestCase):
                 req = json.loads((unit / "request.json").read_text(encoding="utf-8"))
                 req["scope"] = scope
                 (unit / "request.json").write_text(json.dumps(req), encoding="utf-8")
-                with self.assertRaises(RuntimeError):
+                with self.assertRaisesRegex(RuntimeError, r"^01_unit: .*scope"):
                     verify_zerocopy.discover_units(proofs_dir, src_dir)
 
     def test_validate_receipt_binds_roots_and_instantiations_and_selected(self):
@@ -749,7 +754,7 @@ class VerifyZerocopyTests(unittest.TestCase):
 
     def test_main_runs_instantiation_only_unit_and_records_scope(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
+            root = real_tmp_root(tmp)
             proofs_dir, src_dir, unit = make_proof_tree(root)
             scope = {
                 "kind": "selected_unit",
@@ -790,6 +795,370 @@ class VerifyZerocopyTests(unittest.TestCase):
             summary = json.loads((artifacts / "summary.json").read_text(encoding="utf-8"))
             self.assertEqual(summary["unit_count"], 1)
             self.assertEqual(summary["units"]["01_unit"]["scope"], scope)
+
+    def test_discover_units_and_main_reject_root_and_artifacts_symlinks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = real_tmp_root(tmp)
+            proofs_dir, src_dir, _ = make_proof_tree(root)
+
+            # Both existing-target and dangling symlinks for `proofs_dir`
+            # and `src_dir` must fail closed in `discover_units` and `main()`.
+            proofs_link = root / "proofs_link"
+            proofs_link.symlink_to(proofs_dir)
+            src_link = root / "src_link"
+            src_link.symlink_to(src_dir)
+            proofs_dangling = root / "proofs_dangling"
+            proofs_dangling.symlink_to(root / "missing_proofs")
+            src_dangling = root / "src_dangling"
+            src_dangling.symlink_to(root / "missing_src")
+
+            for p_arg, s_arg, needle in [
+                (proofs_link, src_dir, "symlink disallowed in proofs"),
+                (proofs_dangling, src_dir, "symlink disallowed in proofs"),
+                (proofs_dir, src_link, "symlink disallowed in src"),
+                (proofs_dir, src_dangling, "symlink disallowed in src"),
+            ]:
+                with self.assertRaisesRegex(RuntimeError, needle):
+                    verify_zerocopy.discover_units(p_arg, s_arg)
+
+            # Direct `discover_units` calls without `repo_root` reject both
+            # immediate (`zc_link/{proofs,src}`) and deeper (`alias/nested/...`)
+            # symlinked ancestors.
+            zc_link = root / "zc_link"
+            zc_link.symlink_to(root / "zerocopy")
+            for p_arg, s_arg, needle in [
+                (zc_link / "proofs", src_dir, "symlink disallowed in proofs path"),
+                (proofs_dir, zc_link / "src", "symlink disallowed in src path"),
+            ]:
+                with self.assertRaisesRegex(RuntimeError, needle):
+                    verify_zerocopy.discover_units(p_arg, s_arg)
+
+            nested_target = root / "nested_real/inner"
+            nested_target.mkdir(parents=True)
+            (nested_target / "src").mkdir()
+            (nested_target / "src/lib.rs").write_text("", encoding="utf-8")
+            nested_alias = root / "nested_alias"
+            nested_alias.symlink_to(root / "nested_real")
+            for p_arg, s_arg, needle in [
+                (
+                    nested_alias / "inner/proofs",
+                    src_dir,
+                    "symlink disallowed in proofs path",
+                ),
+                (
+                    proofs_dir,
+                    nested_alias / "inner/src",
+                    "symlink disallowed in src path",
+                ),
+            ]:
+                with self.assertRaisesRegex(RuntimeError, needle):
+                    verify_zerocopy.discover_units(p_arg, s_arg)
+
+            # Fixture creation under a symlinked TMPDIR (such as macOS
+            # `/var` -> `private/var`) still resolves canonical roots.
+            sym_tmp_backing = root / "sym_tmp_real"
+            sym_tmp_backing.mkdir()
+            sym_tmp = root / "sym_tmp_link"
+            sym_tmp.symlink_to(sym_tmp_backing)
+            with (
+                mock.patch.dict(os.environ, {"TMPDIR": str(sym_tmp)}),
+                mock.patch.object(tempfile, "tempdir", None),
+                tempfile.TemporaryDirectory() as raw_sub_tmp,
+            ):
+                p_sub, s_sub, _ = make_proof_tree(Path(raw_sub_tmp))
+                self.assertEqual(
+                    [u.name for u, _ in verify_zerocopy.discover_units(p_sub, s_sub)],
+                    ["01_unit"],
+                )
+
+            link_hop = root / "zerocopy/link"
+            link_hop.symlink_to(root / "zerocopy/src")
+            with self.assertRaisesRegex(
+                RuntimeError, "symlink disallowed in proofs path"
+            ):
+                verify_zerocopy.discover_units(
+                    root / "zerocopy/link/../proofs",
+                    src_dir,
+                    repo_root=root,
+                )
+
+            # Absolute path starting outside `repo_root` and entering via `..`
+            # still enforces `repo_root` symlink hygiene.
+            outside_sibling = root.parent / f"{root.name}_reentry_probe"
+            outside_reentry = (
+                outside_sibling
+                / ".."
+                / root.name
+                / "zc_link"
+                / "proofs"
+            )
+            with self.assertRaisesRegex(
+                RuntimeError, "symlink disallowed in proofs path"
+            ):
+                verify_zerocopy.discover_units(
+                    outside_reentry,
+                    src_dir,
+                    repo_root=root,
+                )
+
+            lib_rs = src_dir / "lib.rs"
+            other_lib = root / "other_lib.rs"
+            other_lib.write_text("", encoding="utf-8")
+            lib_rs.unlink()
+            lib_rs.symlink_to(other_lib)
+            with self.assertRaisesRegex(RuntimeError, "crate root missing"):
+                verify_zerocopy.discover_units(proofs_dir, src_dir)
+            lib_rs.unlink()
+            lib_rs.write_text("", encoding="utf-8")
+
+            fake_cli = root / "cargo-anneal"
+            fake_cap = root / "anneal-rustc-capture"
+            fake_lean = root / "lean"
+            fake_sys = root / "sysroot"
+            fake_sys.mkdir()
+            for bin_path in (fake_cli, fake_cap, fake_lean):
+                bin_path.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+                bin_path.chmod(0o755)
+            common_args = [
+                "--cli", str(fake_cli),
+                "--capture", str(fake_cap),
+                "--sysroot", str(fake_sys),
+                "--lean", str(fake_lean),
+            ]
+
+            fake_script = root / "anneal/ci/verify_zerocopy.py"
+            fake_script.parent.mkdir(parents=True)
+            fake_script.write_text("# stub\n", encoding="utf-8")
+
+            with mock.patch.object(verify_zerocopy, "__file__", str(fake_script)):
+                for label, p_arg, s_arg, needle in [
+                    (
+                        "main_proofs_symlink",
+                        str(proofs_link),
+                        src_dir,
+                        "symlink disallowed in proofs",
+                    ),
+                    (
+                        "main_proofs_dangling",
+                        str(proofs_dangling),
+                        src_dir,
+                        "symlink disallowed in proofs",
+                    ),
+                    (
+                        "main_src_symlink",
+                        str(proofs_dir),
+                        src_link,
+                        "symlink disallowed in src",
+                    ),
+                    (
+                        "main_src_dangling",
+                        str(proofs_dir),
+                        src_dangling,
+                        "symlink disallowed in src",
+                    ),
+                    (
+                        "main_lexical_parent_hop_rel",
+                        "zerocopy/link/../proofs",
+                        src_dir,
+                        "symlink disallowed in proofs",
+                    ),
+                    (
+                        "main_lexical_parent_hop_abs",
+                        str(root / "zerocopy/link/../proofs"),
+                        src_dir,
+                        "symlink disallowed in proofs",
+                    ),
+                ]:
+                    with self.subTest(case=label):
+                        orig_cwd = Path.cwd()
+                        try:
+                            os.chdir(root)
+                            with self.assertRaisesRegex(RuntimeError, needle):
+                                verify_zerocopy.main([
+                                    "--proofs-dir", p_arg,
+                                    "--src-dir", str(s_arg),
+                                    *common_args,
+                                ])
+                        finally:
+                            os.chdir(orig_cwd)
+
+            # `main()` rejects a symlinked `zerocopy/` parent via relative path.
+            rel_repo = root / "rel_repo"
+            rel_script = rel_repo / "anneal/ci/verify_zerocopy.py"
+            rel_script.parent.mkdir(parents=True)
+            rel_script.write_text("# stub\n", encoding="utf-8")
+            rel_zc_real = rel_repo / "real_zc"
+            rel_zc_real.mkdir(parents=True)
+            (root / "zerocopy/proofs").rename(rel_zc_real / "proofs")
+            (root / "zerocopy/src").rename(rel_zc_real / "src")
+            (rel_repo / "zerocopy").symlink_to(rel_zc_real)
+            orig_cwd = Path.cwd()
+            try:
+                os.chdir(rel_repo)
+                with mock.patch.object(verify_zerocopy, "__file__", str(rel_script)):
+                    with self.assertRaisesRegex(
+                        RuntimeError, "symlink disallowed in proofs path"
+                    ):
+                        verify_zerocopy.main([
+                            "--proofs-dir", "zerocopy/proofs",
+                            "--src-dir", "zerocopy/src",
+                            *common_args,
+                        ])
+            finally:
+                os.chdir(orig_cwd)
+            (rel_zc_real / "proofs").rename(root / "zerocopy/proofs")
+            (rel_zc_real / "src").rename(root / "zerocopy/src")
+
+            # Existing and dangling symlink `--artifacts-dir` fail closed,
+            # while genuinely external symlinked ancestors succeed identically
+            # under both absolute and relative `--artifacts-dir` spellings
+            # and outside symlinks entering `repo_root` still check in-repo
+            # symlinks fail-closed.
+            art_target = root / "real_out"
+            art_target.mkdir()
+            art_link = root / "art_link"
+            art_link.symlink_to(art_target)
+            art_dangling = root / "art_dangling"
+            art_dangling.symlink_to(root / "missing_out")
+            with tempfile.TemporaryDirectory(dir=root) as sub_repo_str:
+                sub_repo = Path(sub_repo_str)
+                (sub_repo / "link_dir").symlink_to(art_target)
+                reentry_art = (
+                    root.parent
+                    / f"{root.name}_art_probe"
+                    / ".."
+                    / root.name
+                    / sub_repo.name
+                    / "link_dir"
+                    / "ev_out"
+                )
+                with self.assertRaisesRegex(
+                    RuntimeError, "symlink disallowed in artifacts"
+                ):
+                    verify_zerocopy._reject_symlink_ancestors_in_repo(
+                        reentry_art, "artifacts", repo_root=sub_repo
+                    )
+
+            with (
+                tempfile.TemporaryDirectory() as ext_tmp_str,
+                mock.patch.object(verify_zerocopy, "__file__", str(fake_script)),
+            ):
+                ext_tmp = real_tmp_root(ext_tmp_str)
+                for a_arg in (art_link, art_dangling):
+                    with self.assertRaisesRegex(
+                        RuntimeError, "symlink disallowed in artifacts"
+                    ):
+                        verify_zerocopy.main([
+                            "--proofs-dir", str(proofs_dir),
+                            "--src-dir", str(src_dir),
+                            "--artifacts-dir", str(a_arg),
+                            *common_args,
+                        ])
+
+                # Outside symlink pointing to `repo_root` (or directly into an
+                # in-repo symlink) must still reject in-repo symlink components.
+                checkout_alias = ext_tmp / "checkout_alias"
+                checkout_alias.symlink_to(root)
+                rel_checkout_alias = ext_tmp / "rel_checkout_alias"
+                rel_checkout_alias.symlink_to(
+                    os.path.relpath(root, ext_tmp)
+                )
+                sneaky_alias = ext_tmp / "sneaky_alias"
+                sneaky_alias.symlink_to(root / "zerocopy/link")
+                dbl_slash_alias = ext_tmp / "dbl_slash_alias"
+                dbl_slash_alias.symlink_to(f"/{root}")
+                dbl_slash_in_repo = Path(
+                    f"/{root}/zerocopy/link/proofs"
+                )
+                self.assertEqual(dbl_slash_in_repo.anchor, "//")
+                for alias_proofs in (
+                    checkout_alias / "zerocopy/link/proofs",
+                    rel_checkout_alias / "zerocopy/link/proofs",
+                    dbl_slash_alias / "zerocopy/link/proofs",
+                    dbl_slash_in_repo,
+                    sneaky_alias,
+                    sneaky_alias / "sub",
+                ):
+                    with self.assertRaisesRegex(
+                        RuntimeError, "symlink disallowed in proofs"
+                    ):
+                        verify_zerocopy.main([
+                            "--proofs-dir", str(alias_proofs),
+                            "--src-dir", str(src_dir),
+                            *common_args,
+                        ])
+                with self.assertRaisesRegex(
+                    RuntimeError, "symlink disallowed in artifacts"
+                ):
+                    verify_zerocopy.main([
+                        "--proofs-dir", str(proofs_dir),
+                        "--src-dir", str(src_dir),
+                        "--artifacts-dir",
+                        str(checkout_alias / "art_link/ev"),
+                        *common_args,
+                    ])
+
+                # Symlink loop along an outside prefix fails closed cleanly.
+                loop_a = ext_tmp / "loop_a"
+                loop_b = ext_tmp / "loop_b"
+                loop_a.symlink_to("loop_b")
+                loop_b.symlink_to("loop_a")
+                with self.assertRaisesRegex(
+                    RuntimeError, "too many symlink levels in artifacts"
+                ):
+                    verify_zerocopy.main([
+                        "--proofs-dir", str(proofs_dir),
+                        "--src-dir", str(src_dir),
+                        "--artifacts-dir", str(loop_a / "out"),
+                        *common_args,
+                    ])
+
+                # External symlinked ancestor for `--artifacts-dir` (named
+                # `zerocopy`) succeeds identically for both absolute and
+                # relative CLI paths, while a relative external leaf symlink
+                # still fails closed.
+                ext_real = ext_tmp / "ext_real"
+                ext_real.mkdir()
+                ext_zc = ext_tmp / "external/zerocopy"
+                ext_zc.parent.mkdir()
+                ext_zc.symlink_to(ext_real)
+                with self.assertRaisesRegex(RuntimeError, "invalid JSON receipt"):
+                    verify_zerocopy.main([
+                        "--proofs-dir", str(proofs_dir),
+                        "--src-dir", str(src_dir),
+                        "--artifacts-dir", str(ext_zc / "ev_abs"),
+                        *common_args,
+                    ])
+                self.assertTrue((ext_real / "ev_abs").is_dir())
+
+                orig_cwd = Path.cwd()
+                try:
+                    os.chdir(root)
+                    rel_ext_ev = os.path.relpath(ext_zc / "ev_rel", root)
+                    self.assertTrue(rel_ext_ev.startswith(".."))
+                    with self.assertRaisesRegex(
+                        RuntimeError, "invalid JSON receipt"
+                    ):
+                        verify_zerocopy.main([
+                            "--proofs-dir", "zerocopy/proofs",
+                            "--src-dir", "zerocopy/src",
+                            "--artifacts-dir", rel_ext_ev,
+                            *common_args,
+                        ])
+                    self.assertTrue((ext_real / "ev_rel").is_dir())
+
+                    rel_ext_leaf = os.path.relpath(ext_zc, root)
+                    with self.assertRaisesRegex(
+                        RuntimeError, "symlink disallowed in artifacts"
+                    ):
+                        verify_zerocopy.main([
+                            "--proofs-dir", "zerocopy/proofs",
+                            "--src-dir", "zerocopy/src",
+                            "--artifacts-dir", rel_ext_leaf,
+                            *common_args,
+                        ])
+                finally:
+                    os.chdir(orig_cwd)
 
 
 if __name__ == "__main__":

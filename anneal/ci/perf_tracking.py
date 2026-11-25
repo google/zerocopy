@@ -1392,9 +1392,11 @@ def collect_zerocopy_proofs(
             raise RuntimeError(
                 f"missing `{req}` tool for `zerocopy_proofs` collection"
             )
-    proofs_dir = (repo_root / "zerocopy/proofs").resolve(strict=True)
-    src_dir = (repo_root / "zerocopy/src").resolve(strict=True)
-    units = verify_zerocopy.discover_units(proofs_dir, src_dir)
+    units = verify_zerocopy.discover_units(
+        repo_root / "zerocopy/proofs",
+        repo_root / "zerocopy/src",
+        repo_root=repo_root,
+    )
     metrics: dict[str, float | int] = {}
     rss_methods: set[str] = set()
     suite_started = time.monotonic()
