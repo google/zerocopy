@@ -238,6 +238,23 @@ switches passing status to `tainted_crate_verified` or
   pure declarative syntax on `specification` modules), and records
   `sorry`-using proof declarations in `sorry_declarations`.
 
+## Inspect receipts offline
+
+Run `cargo anneal inspect <receipt.json>` (including under
+`--no-default-features`) to validate Receipt Schema v3 cross-checks, compute the
+6-axis assurance profile, compare two receipts with `--diff <BASE> <HEAD>`
+(`--no-regressions`), or verify local retained artifact hashes with
+`--verify-artifacts <DIR>`. Bare single-receipt `inspect` fails closed on
+failed, tainted, or warn-mode extension receipts (`exit 1`, or `exit 2` with
+`--unknown-fields deny`). Under `--diff <BASE> <HEAD>`, invariant violations
+and default warn-mode extension fields also fail closed (`exit 1`, or `exit 2`
+with `--unknown-fields deny`), while `--no-regressions` gates on Tier A
+assurance downgrades. Pass `--passive` to inspect receipts without status,
+taint, or warn-mode extension gating (invariant, artifact, and
+`--compare-ledger` failures still exit `1`). Note that `inspect` checks
+internal consistency and local digests offline and does not cryptographically
+authenticate external receipts.
+
 ## Install a published alpha
 
 Replace `<version>` with the semver version from a published `anneal-v<version>`

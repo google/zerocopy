@@ -19,6 +19,7 @@ pub mod digest;
 pub mod elf;
 pub mod error;
 pub mod identifiers;
+pub mod inspect;
 pub mod sanitize;
 
 pub use digest::{digest_to_hex, is_sha256_hex, sha256_bytes};

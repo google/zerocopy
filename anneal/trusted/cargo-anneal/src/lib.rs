@@ -35,6 +35,8 @@ pub mod core;
 mod diagnostics;
 mod init;
 #[doc(hidden)]
+pub mod inspect;
+#[doc(hidden)]
 pub mod sandbox;
 #[cfg(feature = "setup")]
 #[doc(hidden)]
