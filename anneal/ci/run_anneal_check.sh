@@ -11,7 +11,7 @@
 set -euo pipefail
 
 if [[ $# -lt 1 ]]; then
-  echo "usage: $0 <flake-eval|ci-tests|clippy|sandbox|audit|guard-mutation|ws-test|installed-smoke>" >&2
+  echo "usage: $0 <flake-eval|ci-tests|clippy|sandbox|audit|guard-mutation|ws-meta|ws-test|installed-smoke>" >&2
   exit 2
 fi
 
@@ -22,7 +22,7 @@ fi
 check_timeout_secs() {
   case "$1" in
     ws-test|audit|installed-smoke|guard-mutation) echo 5400 ;;
-    clippy|flake-eval|ci-tests|sandbox) echo 1800 ;;
+    clippy|flake-eval|ci-tests|sandbox|ws-meta) echo 1800 ;;
     *) echo 1800 ;;
   esac
 }
@@ -166,19 +166,18 @@ verify_bwrap_sandbox() {
     -- /true
 }
 
-build_omnibus_archive() {
-  local out_archive="$1"
+# Build `anneal-rustc-capture` and delegate staging/packing to the canonical
+# `ci/pack_omnibus_archive.sh` shared with `flake.nix`.
+prepare_omnibus_payload() {
+  local mode_flag="$1"
+  local target_path="$2"
   local stage_root="${SCRATCH_ROOT}/omnibus-stage"
   local capture_target="${SCRATCH_ROOT}/rustc-capture-target"
   rm -rf "$stage_root" "$capture_target"
-  mkdir -p \
-    "$stage_root/dist_staging/bin" \
-    "$stage_root/dist_staging/rust/lib" \
-    "$stage_root/dist_staging/share/anneal/trusted/audit"
+  mkdir -p "$stage_root"
 
-  local rust_tc
+  local rust_tc lean_tc
   rust_tc="$(readlink -f /opt/anneal-nix/rust-toolchain)"
-  local lean_tc
   lean_tc="$(readlink -f /opt/anneal-nix/lean-toolchain)"
 
   CARGO_TARGET_DIR="$capture_target" \
@@ -187,56 +186,6 @@ build_omnibus_archive() {
   cargo build --locked --offline --release \
     --manifest-path trusted/rustc-capture/Cargo.toml
 
-  install -m 0755 "$capture_target/release/anneal-rustc-capture" \
-    "$stage_root/dist_staging/bin/anneal-rustc-capture"
-  rm -rf "$capture_target"
-
-  cp -r trusted/lean "$stage_root/dist_staging/share/anneal/trusted/lean"
-  # Stage only the bundled theory modules that `theory/bundle-manifest.json`
-  # lists, as `flake.nix` does, so canary suites never enter the archive.
-  mkdir -p "$stage_root/dist_staging/share/anneal/theory"
-  cp theory/bundle-manifest.json \
-    "$stage_root/dist_staging/share/anneal/theory/bundle-manifest.json"
-  jq -e -r '.modules[].path' theory/bundle-manifest.json \
-    > "$stage_root/theory_manifest_paths.txt"
-  test -s "$stage_root/theory_manifest_paths.txt"
-  local rel_path
-  while IFS= read -r rel_path; do
-    case "$rel_path" in
-      *..*|*Canaries*)
-        echo "ERROR: forbidden bundle-manifest path: $rel_path" >&2
-        exit 1
-        ;;
-      theory/Anneal/*.lean)
-        install -D -m 0644 "$rel_path" \
-          "$stage_root/dist_staging/share/anneal/$rel_path"
-        ;;
-      *)
-        echo "ERROR: unexpected bundle-manifest path: $rel_path" >&2
-        exit 1
-        ;;
-    esac
-  done < "$stage_root/theory_manifest_paths.txt"
-  cp trusted/audit/SpecPreflight.lean \
-    "$stage_root/dist_staging/share/anneal/trusted/audit/SpecPreflight.lean"
-  cp trusted/audit/TrustedBoundary.lean \
-    "$stage_root/dist_staging/share/anneal/trusted/audit/TrustedBoundary.lean"
-  cp trusted/audit/library-lock.json \
-    "$stage_root/dist_staging/share/anneal/trusted/audit/library-lock.json"
-
-  /usr/bin/python3 -I -B ci/render_correspondence_provenance.py \
-    --trusted-bundle-rs trusted/cargo-anneal/src/trusted_bundle.rs \
-    --upstream-pin vendor/lean-miri/UPSTREAM_PIN.json \
-    --correspondence-adapters-dir trusted/correspondence \
-    --correspondence-proofs-dir correspondence \
-    --trusted-lean-dir trusted/lean \
-    --output "$stage_root/dist_staging/share/anneal/correspondence-provenance.json"
-  jq -e 'type == "object" and .schema_version == 1' \
-    "$stage_root/dist_staging/share/anneal/correspondence-provenance.json" \
-    > /dev/null
-
-  chmod -R u+w "$stage_root/dist_staging"
-
   printf '%s\n' \
     '#!/usr/bin/env bash' \
     "export LEAN_SYSROOT=\"$lean_tc\"" \
@@ -244,398 +193,37 @@ build_omnibus_archive() {
     "exec \"$lean_tc/bin/lean\" \"\$@\"" \
     > "$stage_root/build-lean"
   chmod 0755 "$stage_root/build-lean"
-  mkdir -p "$stage_root/prebuild_src/trusted/cargo-anneal/src"
-  cp trusted/cargo-anneal/src/trusted_bundle.rs \
-    "$stage_root/prebuild_src/trusted/cargo-anneal/src/trusted_bundle.rs"
-  cp -r "$stage_root/dist_staging/share/anneal/trusted/audit" \
-    "$stage_root/prebuild_src/trusted/audit"
-  cp -r "$stage_root/dist_staging/share/anneal/trusted/lean" \
-    "$stage_root/prebuild_src/trusted/lean"
-  cp -r "$stage_root/dist_staging/share/anneal/theory" \
-    "$stage_root/prebuild_src/theory"
-  /usr/bin/python3 -I -B ci/prebuild_bundled_oleans.py \
-    --anneal-root "$stage_root/prebuild_src" \
-    --lean-bin "$lean_tc/bin/lean" \
+
+  ./ci/pack_omnibus_archive.sh \
+    --platform linux \
+    --anneal-root "$PWD" \
+    --rust-toolchain "$rust_tc" \
+    --lean-toolchain "$lean_tc" \
     --lean-exec "$stage_root/build-lean" \
-    --lean-prefix "$lean_tc" \
-    --output-dir "$stage_root/dist_staging/share/anneal/prebuilt" \
-    --jobs "${CARGO_BUILD_JOBS:-4}"
-  chmod -R u+w "$stage_root/dist_staging/share/anneal/prebuilt"
+    --rustc-capture-bin "$capture_target/release/anneal-rustc-capture" \
+    --libz /opt/anneal-nix/runtime-libs/libz.so.1 \
+    --libgcc-s /opt/anneal-nix/runtime-libs/libgcc_s.so.1 \
+    --python /usr/bin/python3 \
+    --work-dir "$stage_root/work" \
+    --prebuild-jobs "${CARGO_BUILD_JOBS:-4}" \
+    --zstd-jobs "${CARGO_BUILD_JOBS:-4}" \
+    "$mode_flag" "$target_path"
 
-  cp -L /opt/anneal-nix/runtime-libs/libz.so.1 \
-    "$stage_root/dist_staging/rust/lib/libz.so.1"
-  cp -L /opt/anneal-nix/runtime-libs/libgcc_s.so.1 \
-    "$stage_root/dist_staging/rust/lib/libgcc_s.so.1"
-  chmod u+w \
-    "$stage_root/dist_staging/rust/lib/libz.so.1" \
-    "$stage_root/dist_staging/rust/lib/libgcc_s.so.1"
-
-  patchelf \
-    --add-needed libz.so.1 \
-    --set-interpreter "$(patchelf --print-interpreter "$rust_tc/bin/rustc")" \
-    --set-rpath '$ORIGIN/../rust/lib' \
-    "$stage_root/dist_staging/bin/anneal-rustc-capture"
-
-  for full_path in \
-    "$stage_root/dist_staging/bin/anneal-rustc-capture" \
-    "$lean_tc/bin/lean" \
-    "$rust_tc/bin/cargo" \
-    "$rust_tc/bin/rustc" \
-    "$stage_root/dist_staging/share/anneal/correspondence-provenance.json" \
-    "$stage_root/dist_staging/share/anneal/prebuilt/manifest.json" \
-    "$stage_root/dist_staging/share/anneal/prebuilt/SpecPreflight.olean" \
-    "$stage_root/dist_staging/share/anneal/prebuilt/TrustedBoundary.olean" \
-    "$stage_root/dist_staging/share/anneal/prebuilt/lib/Trusted/MirAst.olean" \
-    "$stage_root/dist_staging/share/anneal/prebuilt/lib/Anneal/MirWp.olean" \
-    "$stage_root/dist_staging/share/anneal/prebuilt/lib/Anneal/Scalar.olean" \
-    "$stage_root/dist_staging/share/anneal/prebuilt/lib/Anneal/Wp.olean" \
-    "$stage_root/dist_staging/share/anneal/trusted/audit/SpecPreflight.lean" \
-    "$stage_root/dist_staging/share/anneal/trusted/audit/TrustedBoundary.lean" \
-    "$stage_root/dist_staging/share/anneal/trusted/audit/library-lock.json" \
-    "$stage_root/dist_staging/share/anneal/trusted/lean/foundation-lock.json" \
-    "$stage_root/dist_staging/share/anneal/trusted/lean/lean-toolchain" \
-    "$stage_root/dist_staging/share/anneal/trusted/lean/Trusted/MirAst.lean" \
-    "$stage_root/dist_staging/share/anneal/trusted/lean/Trusted/MirSemantics.lean" \
-    "$stage_root/dist_staging/share/anneal/theory/bundle-manifest.json" \
-    "$stage_root/dist_staging/share/anneal/theory/Anneal/MirWp.lean" \
-    "$stage_root/dist_staging/share/anneal/theory/Anneal/Scalar.lean" \
-    "$stage_root/dist_staging/share/anneal/theory/Anneal/Wp.lean"; do
-    if [[ ! -f "$full_path" ]]; then
-      echo "ERROR: expected archive entry missing: $full_path" >&2
-      exit 1
-    fi
-  done
-
-  pack_omnibus_archive \
-    "$stage_root" "$lean_tc" "$rust_tc" theory/bundle-manifest.json "$out_archive"
-  rm -rf "$stage_root"
+  rm -rf "$stage_root" "$capture_target"
 }
 
-# Pack `<stage_root>/dist_staging` plus the Lean and Rust toolchains into
-# `<out_archive>` and verify the result. This mirrors the `tar_args`,
-# duplicate-library symlinks, leak bans, required entries, and
-# `library-lock.json` digest checks of `flake.nix`'s `omnibus-archive`
-# (Linux branch) so `ws-test` and `installed-smoke` exercise the payload that
-# `release.yml` ships. `ci/test_run_anneal_check.py` fails when the two drift.
-pack_omnibus_archive() {
-  local stage_root="$1"
-  local lean_tc="$2"
-  local rust_tc="$3"
-  local bundle_manifest="$4"
-  local out_archive="$5"
+build_omnibus_archive() {
+  local out_archive="$1"
+  prepare_omnibus_payload --output-archive "$out_archive"
+}
 
-  # `flake.nix` uses `stdenv.hostPlatform.rust.rustcTarget`; the pinned
-  # toolchain's own host triple names the same `lib/rustlib/<target>` tree.
-  local rust_target_lines rust_target
-  rust_target_lines="$(
-    LD_LIBRARY_PATH="$rust_tc/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
-      "$rust_tc/bin/rustc" -vV | sed -n 's/^host: //p'
-  )"
-  if [[ ! "$rust_target_lines" =~ ^[A-Za-z0-9_.-]+$ ]]; then
-    echo "ERROR: cannot derive one rustc host triple: $rust_target_lines" >&2
-    exit 1
-  fi
-  rust_target="$rust_target_lines"
-  if [[ ! -d "$rust_tc/lib/rustlib/$rust_target" ]]; then
-    echo "ERROR: missing rustlib tree for $rust_target in $rust_tc" >&2
-    exit 1
-  fi
-
-  local lean_parent lean_base lean_esc rust_parent rust_base rust_esc
-  lean_parent="$(dirname "$lean_tc")"
-  lean_base="$(basename "$lean_tc")"
-  lean_esc="$(printf '%s' "$lean_base" | sed 's/[.[\*^$:]/\\&/g')"
-  rust_parent="$(dirname "$rust_tc")"
-  rust_base="$(basename "$rust_tc")"
-  rust_esc="$(printf '%s' "$rust_base" | sed 's/[.[\*^$:]/\\&/g')"
-
-  local tar_args=(
-    --mode='u+w'
-    --hard-dereference
-    --sort=name
-    --mtime=@0
-    --owner=0
-    --group=0
-    --numeric-owner
-    --anchored
-    --exclude="$lean_base/include"
-    --exclude="$lean_base/bin/lake"
-    --exclude="$lean_base/bin/leanchecker"
-    --exclude="$lean_base/bin/clang*"
-    --exclude="$lean_base/bin/ld.lld"
-    --exclude="$lean_base/bin/lld*"
-    --exclude="$lean_base/bin/llvm-*"
-    --exclude="$lean_base/bin/leanc"
-    --exclude="$lean_base/bin/leanir"
-    --exclude="$lean_base/bin/leantar"
-    --exclude="$lean_base/bin/cadical"
-    --exclude="$lean_base/bin/leanmake"
-    --exclude="$lean_base/lib/clang"
-    --exclude="$lean_base/lib/libLLVM*"
-    --exclude="$lean_base/lib/libclang*"
-    --exclude="$lean_base/lib/*.a"
-    --exclude="$lean_base/lib/lean/*.a"
-    --exclude="$lean_base/lib/lean/Init.ilean"
-    --exclude="$lean_base/lib/lean/Std.ilean"
-    --exclude="$lean_base/lib/lean/Lean.ilean"
-    --exclude="$lean_base/lib/lean/Lean/*.ilean"
-    --exclude="$lean_base/lib/lean/Lake"
-    --exclude="$lean_base/lib/lean/Lake.*"
-    --exclude="$lean_base/lib/lean/LakeMain.*"
-    --exclude="$lean_base/lib/lean/LeanIR"
-    --exclude="$lean_base/lib/lean/LeanIR.*"
-    --exclude="$lean_base/lib/lean/LeanChecker*"
-    --exclude="$lean_base/lib/lean/Leanc*"
-    --exclude="$lean_base/src/lean/lake"
-    --exclude="$lean_base/src/lean/Lean"
-    --exclude="$lean_base/src/lean/Lean.lean"
-    --exclude="$lean_base/src/lean/Std.lean"
-    --exclude="$lean_base/src/lean/LeanChecker.lean"
-    --exclude="$lean_base/src/lean/LeanIR.lean"
-    --exclude="$lean_base/src/lean/Leanc.lean"
-    --exclude="$rust_base/share"
-    --exclude="$rust_base/etc"
-    --exclude="$rust_base/manifest.in"
-    --exclude="$rust_base/libexec"
-    --exclude="$rust_base/bin/miri"
-    --exclude="$rust_base/bin/cargo-miri"
-    --exclude="$rust_base/bin/rust-gdb*"
-    --exclude="$rust_base/bin/rust-lldb"
-    --exclude="$rust_base/lib/rustlib/src"
-    --exclude="$rust_base/lib/rustlib/rustc-src"
-    --exclude="$rust_base/lib/rustlib/etc"
-    --exclude="$rust_base/lib/rustlib/$rust_target/lib/librustc-*_rt.*.a"
-    --exclude="$rust_base/lib/rustlib/$rust_target/bin/llc"
-    --exclude="$rust_base/lib/rustlib/$rust_target/bin/llvm-*"
-    --exclude="$rust_base/lib/rustlib/$rust_target/bin/opt"
-    --exclude="$rust_base/lib/rustlib/$rust_target/bin/wasm-component-ld"
-  )
-
-  # Replace byte-identical regular-file `libLLVM`/`librustc_driver` copies in
-  # the target rustlib dir with relative symlinks to `rust/lib`.
-  local staged_rust_symlinks=()
-  local rustlib_target_lib="$rust_tc/lib/rustlib/$rust_target/lib"
-  local prefix lib_path lib_name dup_path
-  if [[ -d "$rustlib_target_lib" ]]; then
-    for prefix in libLLVM librustc_driver-; do
-      for lib_path in "$rust_tc"/lib/"$prefix"*; do
-        [[ -e "$lib_path" ]] || continue
-        lib_name="$(basename "$lib_path")"
-        dup_path="$rustlib_target_lib/$lib_name"
-        if [[ -f "$lib_path" && ! -L "$lib_path" \
-            && -f "$dup_path" && ! -L "$dup_path" ]] \
-            && cmp -s "$lib_path" "$dup_path"; then
-          tar_args+=(
-            --exclude="$rust_base/lib/rustlib/$rust_target/lib/$lib_name"
-          )
-          mkdir -p \
-            "$stage_root/dist_staging/rust/lib/rustlib/$rust_target/lib"
-          ln -s "../../../$lib_name" \
-            "$stage_root/dist_staging/rust/lib/rustlib/$rust_target/lib/$lib_name"
-          staged_rust_symlinks+=(
-            "rust/lib/rustlib/$rust_target/lib/$lib_name"
-          )
-        fi
-      done
-    done
-  fi
-  tar_args+=(
-    --exclude="$rust_base/lib/libz.so.1"
-    --exclude="$rust_base/lib/libgcc_s.so.1"
-    --exclude="$rust_base/lib/rustlib/$rust_target/bin/rust-objcopy"
-  )
-  tar_args+=(
-    --transform="flags=r;s:^${lean_esc}\$:lean:;s:^${lean_esc}/:lean/:"
-    --transform="flags=r;s:^${rust_esc}\$:rust:;s:^${rust_esc}/:rust/:"
-    -cf -
-    -C "$stage_root/dist_staging" bin share
-    -C "$lean_parent" "$lean_base"
-    -C "$rust_parent" "$rust_base"
-  )
-  if [[ "${#staged_rust_symlinks[@]}" -gt 0 ]]; then
-    tar_args+=(
-      -C "$stage_root/dist_staging"
-      "${staged_rust_symlinks[@]}"
-    )
-  fi
-  tar_args+=(
-    -C "$stage_root/dist_staging"
-    rust/lib/libz.so.1
-    rust/lib/libgcc_s.so.1
-  )
-
-  tar "${tar_args[@]}" \
-    | zstd -T"${CARGO_BUILD_JOBS:-4}" -12 --long=27 -f -o "$out_archive"
-
-  zstd -dc "$out_archive" | tar -tf - > "$stage_root/archive_entries.txt"
-  zstd -dc "$out_archive" | tar -tvf - > "$stage_root/archive_listing.txt"
-  if grep -Eqv '^(bin|lean|rust|share)(/|$)' "$stage_root/archive_entries.txt"; then
-    echo "ERROR: unexpected top-level entry in omnibus archive" >&2
-    exit 1
-  fi
-  local excluded_patterns=(
-    '^lean/include(/|$)'
-    '^lean/bin/(lake|leanchecker|clang|ld\.lld|lld|llvm-|leanc|leanir|leantar|cadical|leanmake)'
-    '^lean/lib/(clang|libLLVM|libclang)'
-    '^lean/lib/.*\.a$'
-    '^lean/lib/lean/(Lake(Main)?(/|\.|$)|LeanIR|LeanChecker|Leanc|(Init|Std|Lean)\.ilean$|Lean/.*\.ilean$)'
-    '^lean/src/lean/(lake|Lean|Std\.lean$|LeanChecker|LeanIR|Leanc)'
-    '^rust/(share|etc|manifest\.in|libexec)(/|$)'
-    '^rust/bin/(miri|cargo-miri|rust-gdb|rust-lldb)'
-    '^rust/lib/rustlib/(src|rustc-src|etc)(/|$)'
-    '^rust/lib/rustlib/.*/bin/(llc|llvm-|opt|wasm-component-ld)'
-    '^rust/lib/rustlib/.*/lib/librustc-.*_rt\..*\.a$'
-  )
-  excluded_patterns+=(
-    '^rust/lib/rustlib/.*/bin/rust-objcopy$'
-  )
-  local pat
-  for pat in "${excluded_patterns[@]}"; do
-    if grep -Eq "$pat" "$stage_root/archive_entries.txt"; then
-      echo "ERROR: excluded payload ($pat) leaked into archive" >&2
-      exit 1
-    fi
-  done
-  if grep -Eq \
-      "^-.* rust/lib/rustlib/$rust_target/lib/(libLLVM|librustc_driver-)" \
-      "$stage_root/archive_listing.txt"; then
-    echo "ERROR: duplicate regular-file libLLVM/librustc_driver in archive" >&2
-    exit 1
-  fi
-  local expected_entries=(
-    bin/anneal-rustc-capture
-    lean/bin/lean
-    lean/lib/lean/Init.olean
-    lean/lib/lean/Init.ir
-    rust/bin/cargo
-    rust/bin/rustc
-    rust/bin/rustdoc
-    share/anneal/correspondence-provenance.json
-    share/anneal/prebuilt/manifest.json
-    share/anneal/prebuilt/SpecPreflight.olean
-    share/anneal/prebuilt/TrustedBoundary.olean
-    share/anneal/prebuilt/lib/Trusted/MirAst.olean
-    share/anneal/prebuilt/lib/Anneal/MirWp.olean
-    share/anneal/prebuilt/lib/Anneal/Scalar.olean
-    share/anneal/prebuilt/lib/Anneal/Wp.olean
-    share/anneal/trusted/audit/SpecPreflight.lean
-    share/anneal/trusted/audit/TrustedBoundary.lean
-    share/anneal/trusted/audit/library-lock.json
-    share/anneal/trusted/lean/foundation-lock.json
-    share/anneal/trusted/lean/lean-toolchain
-    share/anneal/trusted/lean/Trusted/MirAst.lean
-    share/anneal/trusted/lean/Trusted/MirSemantics.lean
-    share/anneal/theory/bundle-manifest.json
-    share/anneal/theory/Anneal/MirWp.lean
-    share/anneal/theory/Anneal/Scalar.lean
-    share/anneal/theory/Anneal/Wp.lean
-  )
-  expected_entries+=(
-    rust/lib/libz.so.1
-    rust/lib/libgcc_s.so.1
-    "rust/lib/rustlib/$rust_target/bin/rust-lld"
-    "rust/lib/rustlib/$rust_target/bin/gcc-ld/ld.lld"
-    lean/lib/lean/libInit_shared.so
-    lean/lib/lean/libLake_shared.so
-    lean/lib/lean/libleanshared.so
-    lean/lib/lean/libleanshared_1.so
-    lean/lib/lean/libleanshared_2.so
-  )
-  local entry
-  for entry in "${expected_entries[@]}"; do
-    if ! grep -Fxq -- "$entry" "$stage_root/archive_entries.txt"; then
-      echo "ERROR: expected archive entry missing from $out_archive: $entry" >&2
-      exit 1
-    fi
-  done
-  for prefix in libLLVM librustc_driver-; do
-    if ! grep -Eq "^rust/lib/rustlib/$rust_target/lib/$prefix" \
-        "$stage_root/archive_entries.txt"; then
-      echo "ERROR: missing $prefix in target rustlib dir" >&2
-      exit 1
-    fi
-  done
-  if grep -Eq '^share/anneal/(theory|prebuilt)/.*Canaries' \
-    "$stage_root/archive_entries.txt"; then
-    echo "ERROR: canary module leaked into share/anneal in $out_archive" >&2
-    exit 1
-  fi
-  if grep -Eq '^share/anneal/(theory/Anneal\.lean|prebuilt/lib/Anneal\.olean)$' \
-    "$stage_root/archive_entries.txt"; then
-    echo "ERROR: retired monolithic Anneal umbrella leaked into share/anneal in $out_archive" >&2
-    exit 1
-  fi
-  jq -e -r '"share/anneal/" + .modules[].path' "$bundle_manifest" \
-    | LC_ALL=C sort -u > "$stage_root/expected_theory_entries.txt"
-  grep -E '^share/anneal/theory/.*\.lean$' "$stage_root/archive_entries.txt" \
-    | LC_ALL=C sort > "$stage_root/actual_theory_entries.txt"
-  local theory_drift
-  theory_drift="$(comm -3 \
-    "$stage_root/expected_theory_entries.txt" \
-    "$stage_root/actual_theory_entries.txt")"
-  if [[ -n "$theory_drift" ]]; then
-    echo "ERROR: share/anneal/theory Lean files diverge from bundle-manifest.json:" >&2
-    printf '%s\n' "$theory_drift" >&2
-    exit 1
-  fi
-
-  # Verify the four sysroot trees pinned by `library-lock.json` inside the
-  # built archive byte for byte, rejecting symlinks.
-  rm -rf "$stage_root/lock_check"
-  mkdir -p "$stage_root/lock_check"
-  zstd -dc "$out_archive" | tar -C "$stage_root/lock_check" -xf - \
-    share/anneal/trusted/audit/library-lock.json \
-    lean/lib/lean/Init \
-    lean/lib/lean/Std \
-    lean/src/lean/Init \
-    lean/src/lean/Std
-  LOCK_CHECK_DIR="$stage_root/lock_check" /usr/bin/python3 -I -B - << 'PYEOF'
-import hashlib, os, sys
-from pathlib import Path
-
-root = Path(os.environ["LOCK_CHECK_DIR"])
-lock = root / "share/anneal/trusted/audit/library-lock.json"
-lines = [ln.strip() for ln in lock.read_text(encoding="utf-8").splitlines() if ln.strip()]
-if len(lines) != 4:
-    sys.exit(f"ERROR: expected 4 library-lock.json entries, found {len(lines)}")
-for line in lines:
-    expected_sha, label = line.split("  ", 1)
-    if not label.endswith("/**"):
-        sys.exit(f"ERROR: unexpected library-lock label {label!r}")
-    tree_dir = root / label[:-3]
-    if tree_dir.is_symlink() or not tree_dir.is_dir():
-        sys.exit(f"ERROR: invalid sysroot lock dir {tree_dir}")
-    files = []
-    for cur, dirs, names in os.walk(tree_dir, followlinks=False):
-        cur_p = Path(cur)
-        for d in dirs:
-            if (cur_p / d).is_symlink():
-                sys.exit(f"ERROR: symlink forbidden in sysroot: {cur_p / d}")
-        for n in names:
-            fp = cur_p / n
-            if fp.is_symlink() or not fp.is_file():
-                sys.exit(f"ERROR: non-regular file in sysroot: {fp}")
-            rel = fp.relative_to(tree_dir).as_posix()
-            files.append((rel, fp))
-    files.sort(key=lambda item: item[0].encode("utf-8"))
-    h = hashlib.sha256()
-    for rel, fp in files:
-        fh = hashlib.sha256()
-        with fp.open("rb") as f:
-            while True:
-                chunk = f.read(65536)
-                if not chunk:
-                    break
-                fh.update(chunk)
-        h.update(rel.encode("utf-8"))
-        h.update(b"\0")
-        h.update(fh.digest())
-    actual_sha = h.hexdigest()
-    if actual_sha != expected_sha:
-        sys.exit(f"ERROR: library-lock mismatch for {label}: got {actual_sha}, expected {expected_sha}")
-print("Verified all 4 library-lock.json sysroot tree digests in archive.")
-PYEOF
-  rm -rf "$stage_root/lock_check"
+# Stage the trimmed omnibus toolchain layout directly into `<install_root>`
+# for `ws-test` shards without `zstd -12` compression, archive verification
+# decompressions, or `bwrap` archive unpacking (`installed-smoke` exercises
+# the full archive pack + `cargo-anneal setup --local-archive` path).
+stage_ws_toolchain_root() {
+  local install_root="$1"
+  prepare_omnibus_payload --stage-dir "$install_root"
 }
 
 verify_root_tcb_manifest
@@ -701,6 +289,7 @@ case "$MODE" in
     ;;
 
   ci-tests)
+    export ANNEAL_CI_STRICT=1
     rg --version >/dev/null
     ./ci/check_todo.sh
     ./ci/check_non_stable_version.sh
@@ -801,42 +390,55 @@ case "$MODE" in
       --json-out "$GUARD_DIAG/guard-mutation.json"
     ;;
 
+  ws-meta)
+    # `ws-meta` runs only `regenerate_bundle --check`, `--no-default-features`
+    # lib/bin/cli/inspect tests, and `--workspace --doc`, none of which read
+    # `ANNEAL_CAPTURE` or prebuilt `.olean`s. Stage only the Lean toolchain
+    # (for `default_lean_path()` / `ANNEAL_LEAN` unit tests) and point Cargo /
+    # rustdoc at `/opt/anneal-nix/rust-toolchain` directly rather than building
+    # `anneal-rustc-capture` and `prebuild_bundled_oleans.py` a fourth time;
+    # all three `ws-test` shards and `installed-smoke` exercise the trimmed
+    # omnibus layout.
+    verify_bwrap_sandbox
+    INSTALL_CACHE="${SCRATCH_ROOT}/anneal-ws-meta-toolchain"
+    INSTALL_ROOT="$INSTALL_CACHE/anneal/toolchain/extracted"
+    rm -rf "$INSTALL_CACHE"
+    mkdir -p "$INSTALL_ROOT"
+    LEAN_TC="$(readlink -f /opt/anneal-nix/lean-toolchain)"
+    cp -r "$LEAN_TC" "$INSTALL_ROOT/lean"
+    chmod -R u+w "$INSTALL_ROOT/lean"
+    apply_bundle_env --cache-root "$INSTALL_CACHE" --root "$INSTALL_ROOT" --lean-only
+    RUST_TC="$(readlink -f /opt/anneal-nix/rust-toolchain)"
+    export XDG_CACHE_HOME="$INSTALL_CACHE"
+    export ANNEAL_LEAN="$ANNEAL_TEST_INSTALL_ROOT/lean/bin/lean"
+    export ANNEAL_SYSROOT="$RUST_TC"
+    export ANNEAL_TEST_RUST_SYSROOT="$RUST_TC"
+    export RUSTDOC="$RUST_TC/bin/rustdoc"
+    export LD_LIBRARY_PATH="$RUST_TC/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+    export RUSTFLAGS="-Lnative=$RUST_TC/lib -Clink-arg=-Wl,-rpath,$RUST_TC/lib"
+    cargo run --locked --offline -p cargo-anneal --example regenerate_bundle \
+      "${FULL_OPT_ARGS[@]}" \
+      -- --root . --check
+    cargo test --locked --offline -p cargo-anneal --no-default-features \
+      "${FULL_OPT_ARGS[@]}" \
+      --lib --bin cargo-anneal
+    cargo test --locked --offline -p cargo-anneal-tests --no-default-features \
+      "${FULL_OPT_ARGS[@]}" \
+      --test cli --test inspect
+    cargo test --workspace --locked --offline \
+      "${FULL_OPT_ARGS[@]}" \
+      --doc
+    ;;
+
   ws-test)
     : "${SHARD_SPEC:?}"
     verify_bwrap_sandbox
-    ARCHIVE_PATH="${SCRATCH_ROOT}/anneal-exocrate.tar.zst"
-    build_omnibus_archive "$ARCHIVE_PATH"
     INSTALL_CACHE="${SCRATCH_ROOT}/anneal-ws-toolchain"
     INSTALL_ROOT="$INSTALL_CACHE/anneal/toolchain/extracted"
     rm -rf "$INSTALL_CACHE"
     mkdir -p "$INSTALL_ROOT"
-    bwrap --unshare-all --die-with-parent --new-session --clearenv \
-      --cap-drop ALL --tmpfs / --dev /dev --proc /proc \
-      --setenv PATH /usr/bin:/bin \
-      --ro-bind /usr /usr \
-      --ro-bind-try /bin /bin \
-      --ro-bind-try /lib /lib \
-      --ro-bind-try /lib64 /lib64 \
-      --ro-bind-try /etc/ld.so.cache /etc/ld.so.cache \
-      --ro-bind "$ARCHIVE_PATH" /archive.tar.zst \
-      --bind "$INSTALL_ROOT" /out \
-      -- tar --no-same-owner --zstd -xf /archive.tar.zst -C /out
-    rm -f "$ARCHIVE_PATH"
+    stage_ws_toolchain_root "$INSTALL_ROOT"
     apply_bundle_env --cache-root "$INSTALL_CACHE" --root "$INSTALL_ROOT"
-    if [[ "$SHARD_SPEC" == 1/* ]]; then
-      cargo run --locked --offline -p cargo-anneal --example regenerate_bundle \
-        "${FULL_OPT_ARGS[@]}" \
-        -- --root . --check
-      cargo test --locked --offline -p cargo-anneal --no-default-features \
-        "${FULL_OPT_ARGS[@]}" \
-        --lib --bin cargo-anneal
-      cargo test --locked --offline -p cargo-anneal-tests --no-default-features \
-        "${FULL_OPT_ARGS[@]}" \
-        --test cli --test inspect
-      cargo test --workspace --locked --offline \
-        "${FULL_OPT_ARGS[@]}" \
-        --doc
-    fi
     cargo nextest run --workspace --locked --offline \
       "${FULL_OPT_ARGS[@]}" \
       --no-fail-fast --failure-output immediate \

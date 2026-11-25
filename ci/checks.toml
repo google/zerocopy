@@ -924,6 +924,7 @@ inputs = [
     "anneal/theory/**",
     "anneal/correspondence/**",
     "anneal/vendor/lean-miri/UPSTREAM_PIN.json",
+    "anneal/ci/pack_omnibus_archive.sh",
     "anneal/ci/prebuild_bundled_oleans.py",
     "anneal/ci/render_correspondence_provenance.py",
     "anneal/ci/run_anneal_check.sh",
@@ -953,6 +954,7 @@ inputs = [
     ".github/actions/**",
     ".github/release_notes.py",
     "ci/checks.toml",
+    "ci/docker/anneal-tc.Dockerfile",
     "zerocopy/Cargo.toml",
     "zerocopy/proofs/**",
     "zerocopy/zerocopy-derive/Cargo.toml",
@@ -1082,6 +1084,30 @@ inputs = [
   ] },
 ]
 command = ["./ci/run_anneal_check.sh", "guard-mutation"]
+
+[[checks]]
+id = "anneal-ws-meta"
+image = "anneal-tc"
+sandbox = "nested_bwrap"
+runner = "ubuntu-24.04"
+workdir = "anneal"
+inputs = [
+  { kind = "glob", include = ["anneal/**"], exclude = [
+    "anneal/target/**",
+    "anneal/docs/**",
+    "anneal/skills/**",
+    "anneal/.agents/**",
+    "anneal/.gemini/**",
+    "anneal/*.md",
+  ] },
+  # Root config overrides that `run_anneal_check.sh` rejects.
+  { kind = "glob", include = [
+    ".cargo", ".cargo/**", ".gitmodules", "rust-toolchain", "rust-toolchain.toml",
+    "anneal/.cargo", "anneal/.cargo/**", "anneal/.gitmodules",
+    "anneal/rust-toolchain", "anneal/rust-toolchain.toml",
+  ] },
+]
+command = ["./ci/run_anneal_check.sh", "ws-meta"]
 
 [[checks]]
 id = "anneal-ws-test"
