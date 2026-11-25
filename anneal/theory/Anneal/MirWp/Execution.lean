@@ -1296,6 +1296,254 @@ theorem checkRange_sound (n : Nat) (p : Nat → Prop)
     | zero => exact checked.1
     | succ i => exact ih _ checked.2 i (Nat.lt_of_succ_lt_succ hi)
 
+/-! ### Flat `entryLocals` Helper (Avoiding Quadratic `initLocalsLoop` Re-Evaluation) -/
+
+/-- Argument-independent local-slot tail for locals beyond `argumentCount`
+(`argumentCount + 1 .. body.locals.length - 1`). Compute once for a fixed
+`body` (e.g.
+`theorem myTail_eq : entryLocalsTail Captured.body_0 = [...] := rfl`) so
+symbolic stepping never re-runs `initLocalsLoop` / `hasStorageAnnotation`. -/
+@[expose] noncomputable def entryLocalsTail (body : Body) : List LocalSlot :=
+  initLocalsLoop body [] (body.argumentCount + 1)
+    (body.locals.drop (body.argumentCount + 1))
+
+/-- Flat entry-locals frame built directly from `body.locals[0]`, `args`, and a
+pre-evaluated argument-independent `tail` (`entryLocalsTail body`). -/
+@[expose] noncomputable def entryLocals (body : Body) (args : List Val)
+    (tail : List LocalSlot) : List LocalSlot :=
+  match body.locals with
+  | [] => []
+  | retTy :: _ =>
+    liveUninitSlot retTy ::
+      (args.map (fun v => LocalSlot.immediate (some v)) ++ tail)
+
+private theorem initLocalsLoop_tail_indep (body : Body) (args : List Val) :
+    ∀ (idx : Nat) (tys : List MirTy),
+      body.argumentCount < idx →
+      initLocalsLoop body args idx tys = initLocalsLoop body [] idx tys
+  | _, [], _ => rfl
+  | idx, ty :: rest, hGt => by
+    unfold initLocalsLoop
+    have hNe0 : Nat.beq idx 0 = false := by
+      cases idx with
+      | zero => exact False.elim (Nat.not_lt_zero _ hGt)
+      | succ _ => rfl
+    have hBle : Nat.ble idx body.argumentCount = false := by
+      cases hb : Nat.ble idx body.argumentCount with
+      | false => rfl
+      | true =>
+        exact False.elim (Nat.not_le_of_gt hGt (Nat.le_of_ble_eq_true hb))
+    rw [hNe0, hBle]
+    exact congrArg (List.cons _)
+      (initLocalsLoop_tail_indep body args (idx + 1) rest
+        (Nat.lt_succ_of_lt hGt))
+
+private theorem getElem?_drop_eq {α : Type} :
+    ∀ (xs : List α) (k : Nat),
+      match xs.drop k with
+      | [] => Trusted.MirSemantics.getElem? xs k = none
+      | x :: _ => Trusted.MirSemantics.getElem? xs k = some x
+  | [], 0 => rfl
+  | [], _ + 1 => rfl
+  | _ :: _, 0 => rfl
+  | _ :: xs, k + 1 => getElem?_drop_eq xs k
+
+private theorem list_drop_add {α : Type} :
+    ∀ (n m : Nat) (xs : List α), (xs.drop n).drop m = xs.drop (n + m)
+  | 0, m, xs => by rw [Nat.zero_add]; rfl
+  | n + 1, m, [] => by
+    rw [Nat.succ_add]
+    cases m <;> rfl
+  | n + 1, m, _ :: xs => by
+    rw [Nat.succ_add]
+    exact list_drop_add n m xs
+
+private theorem list_length_drop {α : Type} :
+    ∀ (n : Nat) (xs : List α), (xs.drop n).length = xs.length - n
+  | 0, xs => by rw [Nat.sub_zero]; rfl
+  | n + 1, [] => by
+    change ([] : List α).length = 0 - (n + 1)
+    rw [Nat.zero_sub]; rfl
+  | n + 1, _ :: xs => by
+    change (xs.drop n).length = (xs.length + 1) - (n + 1)
+    rw [Nat.succ_sub_succ]
+    exact list_length_drop n xs
+
+private theorem list_length_take_of_le {α : Type} :
+    ∀ (n : Nat) (xs : List α), n ≤ xs.length → (xs.take n).length = n
+  | 0, _, _ => rfl
+  | _ + 1, [], h => nomatch h
+  | n + 1, _ :: xs, h =>
+    congrArg Nat.succ (list_length_take_of_le n xs (Nat.le_of_succ_le_succ h))
+
+private theorem initLocalsLoop_cons (body : Body) (args : List Val)
+    (idx : Nat) (ty : MirTy) (rest : List MirTy) :
+    initLocalsLoop body args idx (ty :: rest) =
+      (if Nat.beq idx 0 then
+         liveUninitSlot ty
+       else if Nat.ble idx body.argumentCount then
+         match Trusted.MirSemantics.getElem? args (idx - 1) with
+         | some v => .immediate (some v)
+         | none => .dead
+       else if hasStorageAnnotation body idx then
+         .dead
+       else
+         liveUninitSlot ty) :: initLocalsLoop body args (idx + 1) rest := rfl
+
+private theorem initLocalsLoop_append_args (body : Body) (args : List Val) :
+    ∀ (k : Nat) (tys : List MirTy),
+      k ≤ body.argumentCount →
+      body.argumentCount - k ≤ tys.length →
+      args.length = body.argumentCount →
+      initLocalsLoop body args (k + 1) tys =
+        (args.drop k).map (fun v => LocalSlot.immediate (some v)) ++
+          initLocalsLoop body [] (body.argumentCount + 1)
+            (tys.drop (body.argumentCount - k))
+  | k, tys, hKLe, hRemLe, hLen => by
+    induction tys generalizing k with
+    | nil =>
+      have hEq : body.argumentCount - k = 0 := Nat.eq_zero_of_le_zero hRemLe
+      have hKGe : body.argumentCount ≤ k := Nat.le_of_sub_eq_zero hEq
+      have hKEq : k = body.argumentCount := Nat.le_antisymm hKLe hKGe
+      subst hKEq
+      have hDropNil : args.drop body.argumentCount = [] := by
+        have hL : (args.drop body.argumentCount).length = 0 := by
+          rw [list_length_drop, hLen, Nat.sub_self]
+        cases hD : args.drop body.argumentCount with
+        | nil => rfl
+        | cons _ _ => rw [hD] at hL; nomatch hL
+      rw [hDropNil, Nat.sub_self]
+      rfl
+    | cons ty rest ih =>
+      cases Nat.eq_or_lt_of_le hKLe with
+      | inl hKEq =>
+        subst hKEq
+        rw [Nat.sub_self]
+        have hDropNil : args.drop body.argumentCount = [] := by
+          have hL : (args.drop body.argumentCount).length = 0 := by
+            rw [list_length_drop, hLen, Nat.sub_self]
+          cases hD : args.drop body.argumentCount with
+          | nil => rfl
+          | cons _ _ => rw [hD] at hL; nomatch hL
+        rw [hDropNil]
+        dsimp only [List.map, List.nil_append, List.drop]
+        exact initLocalsLoop_tail_indep body args (body.argumentCount + 1)
+          (ty :: rest) (Nat.lt_succ_self body.argumentCount)
+      | inr hKLt =>
+        have hBle : Nat.ble (k + 1) body.argumentCount = true :=
+          Nat.ble_eq_true_of_le hKLt
+        have hSub : (k + 1) - 1 = k := Nat.add_sub_cancel k 1
+        have hKLtArgs : k < args.length := by rw [hLen]; exact hKLt
+        have hDrop := getElem?_drop_eq args k
+        cases hDr : args.drop k with
+        | nil =>
+          have hDropLen : (args.drop k).length = args.length - k :=
+            list_length_drop k args
+          rw [hDr] at hDropLen
+          have hPos : 0 < args.length - k := Nat.sub_pos_of_lt hKLtArgs
+          rw [← hDropLen] at hPos
+          nomatch hPos
+        | cons v vs =>
+          rw [hDr] at hDrop
+          have hStepLhs :
+              initLocalsLoop body args (k + 1) (ty :: rest) =
+                LocalSlot.immediate (some v) ::
+                  initLocalsLoop body args (k + 1 + 1) rest := by
+            rw [initLocalsLoop_cons, hBle, hSub, hDrop]
+            rfl
+          rw [hStepLhs]
+          dsimp only [List.map, List.cons_append]
+          apply congrArg (List.cons (LocalSlot.immediate (some v)))
+          have hRemPos : 0 < body.argumentCount - k := Nat.sub_pos_of_lt hKLt
+          have hRemEq : body.argumentCount - k = (body.argumentCount - (k + 1)) + 1 := by
+            rw [Nat.sub_succ]
+            exact (Nat.sub_add_cancel hRemPos).symm
+          have hRemLeRest : body.argumentCount - (k + 1) ≤ rest.length := by
+            rw [hRemEq] at hRemLe
+            exact Nat.le_of_succ_le_succ hRemLe
+          have hDropStep : (ty :: rest).drop (body.argumentCount - k) =
+              rest.drop (body.argumentCount - (k + 1)) := by
+            rw [hRemEq]; rfl
+          have hArgsDropSucc : args.drop (k + 1) = vs := by
+            have h1 := list_drop_add k 1 args
+            rw [hDr] at h1
+            exact h1.symm
+          rw [hDropStep, ← hArgsDropSucc]
+          exact ih (k + 1) hKLt hRemLeRest
+
+/-- Rewrites `initLocalsLoop body args 0 body.locals` into the flat
+`entryLocals body args tail` list using a one-time proof
+`hTail : entryLocalsTail body = tail`, avoiding repeated O(|locals|·|stmts|)
+`hasStorageAnnotation` scanning during symbolic proofs (`#4292`). -/
+theorem initLocalsLoop_eq_entryLocals {body : Body} {args : List Val}
+    {tail : List LocalSlot}
+    (hValid : ValidEntryArgs body args)
+    (hArgLt : body.argumentCount < body.locals.length)
+    (hTail : entryLocalsTail body = tail) :
+    initLocalsLoop body args 0 body.locals = entryLocals body args tail := by
+  have hArgsLen : args.length = body.argumentCount := by
+    have hL := checkArgsMatch_length hValid
+    have hLe : body.argumentCount ≤ (body.locals.drop 1).length := by
+      rw [list_length_drop 1 body.locals]
+      exact Nat.le_pred_of_lt hArgLt
+    rw [list_length_take_of_le _ _ hLe] at hL
+    exact hL
+  cases hLocs : body.locals with
+  | nil =>
+    rw [hLocs] at hArgLt
+    nomatch hArgLt
+  | cons retTy rest =>
+    dsimp only [entryLocals]
+    rw [hLocs]
+    unfold initLocalsLoop
+    dsimp only
+    apply congrArg (List.cons (liveUninitSlot retTy))
+    have hRemLe : body.argumentCount - 0 ≤ rest.length := by
+      rw [hLocs] at hArgLt
+      rw [Nat.sub_zero]
+      exact Nat.le_of_lt_succ hArgLt
+    have hApp := initLocalsLoop_append_args body args 0 rest
+      (Nat.zero_le _) hRemLe hArgsLen
+    have hDropRest : rest.drop (body.argumentCount - 0) =
+        body.locals.drop (body.argumentCount + 1) := by
+      rw [hLocs, Nat.sub_zero]; rfl
+    rw [hDropRest] at hApp
+    dsimp only [List.drop] at hApp
+    rw [hApp, ← hTail]
+    rfl
+
+/-- Establish `Safe body args` from `SafeFrom` on a pre-flattened entry-locals
+frame `locals0` (`hLoc : initLocalsLoop body args 0 body.locals = locals0`). -/
+theorem safe_of_entryLocals {body : Body} {args : List Val}
+    {locals0 : List LocalSlot}
+    (hLoc : initLocalsLoop body args 0 body.locals = locals0)
+    (hSafe : SafeFrom body (mkState 0 0 locals0)) :
+    Safe body args := by
+  unfold Safe
+  rw [hLoc]
+  exact hSafe
+
+/-- Establish `Returns body args out` from `ReturnsFrom` on a pre-flattened
+entry-locals frame `locals0`. -/
+theorem returns_of_entryLocals {body : Body} {args : List Val}
+    {locals0 : List LocalSlot} {out : Val}
+    (hLoc : initLocalsLoop body args 0 body.locals = locals0)
+    (hRet : ReturnsFrom body (mkState 0 0 locals0) out) :
+    Returns body args out := by
+  unfold Returns
+  rw [hLoc]
+  exact hRet
+
+/-- Establish `Safe body args ∧ Returns body args out` from `Executes` on a
+pre-flattened entry-locals frame `locals0`. -/
+theorem executes_of_entryLocals {body : Body} {args : List Val}
+    {locals0 : List LocalSlot} {out : Val}
+    (hLoc : initLocalsLoop body args 0 body.locals = locals0)
+    (hExec : Executes body (mkState 0 0 locals0) out) :
+    Safe body args ∧ Returns body args out :=
+  ⟨safe_of_entryLocals hLoc (executes_safe hExec),
+   returns_of_entryLocals hLoc (executes_returns hExec)⟩
+
 end Anneal.MirWp
 
 end

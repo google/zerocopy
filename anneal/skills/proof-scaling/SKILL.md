@@ -68,6 +68,9 @@ Reach first for bundled `Anneal.*` certificate and lemma libraries listed in
 
 **Bundled cert & lemma modules (`theory/bundle-manifest.json`):**
 <!-- pass1-bundled-modules:begin -->
+- Zero-manual-WP MIR abstract-interpretation PCC (`AutoProve`, unsigned &
+  signed `i8`..`i128`/`isize`, `bool`, `unit`, Bourdoncle cutpoints):
+  `Anneal.AiPcc`, `Anneal.AiPcc.MirPcc`, `Anneal.MirTotal.Ops`
 - Linear arithmetic Farkas certificates (replaces `omega` in Pass 1):
   `Anneal.LinearArith`
 - Bitvector/SAT LRAT certificates (replaces `bv_decide` in Pass 1):
@@ -79,10 +82,51 @@ Reach first for bundled `Anneal.*` certificate and lemma libraries listed in
   `Anneal.PTree`, `Anneal.SpineForce`
 <!-- pass1-bundled-modules:end -->
 
-Note: repo-local `anneal/theory/Anneal/PureLift.lean` (and `MirTotal`, `Core`)
-exist in-tree for WP/PureLift development, while `theory/bundle-manifest.json`
-governs which `Anneal.*` modules `cargo anneal verify` bundles into standalone
-target proofs.
+Note: `Anneal.MirTotal.Ops` is bundled above, while repo-local
+`anneal/theory/Anneal/PureLift.lean`, `Simd.lean`, `Core.lean`, and the rest of
+`MirTotal` remain in-tree only; `theory/bundle-manifest.json` governs which
+`Anneal.*` modules `cargo anneal verify` bundles into standalone target proofs.
+
+**Kernel-recursion & `whnf` guardrails (avoid `#4292` / `#4295` traps):**
+- **Use `Anneal.AiPcc.MirPcc` (`AutoProve`) first for acyclic scalar/signed
+  safety:** `AutoProve.bodyVerified_of_autoVerifyAcyclic rfl rfl rfl` discharges
+  `BodyVerified` for unsigned/signed integer, `bool`, and `unit` bodies with
+  zero manual WP stepping. For loops,
+  `AutoProve.bodyVerified_of_autoVerifyCutpoints` verifies caller-supplied
+  Bourdoncle cutpoint `MirAbsEnv` invariants in one pass.
+- **Abstract-modulus `N` for signed casts & `BitVec 128` arithmetic:** Never
+  unfold `Int.subNatNat (2^128) k` or concrete `2^64`/`2^128` numerals inside
+  kernel `whnf` (Lean's C++ kernel hits `(kernel) deep recursion detected`).
+  Rewrite via `Anneal.MirWp.Scalars`: `evalIntToIntCast_signed_of_nonneg`,
+  `evalIntToIntCast_signed_of_neg`, `evalIntToIntCast_signed_same_width`,
+  `decodeScalar_signed_of_lt_half`, `decodeScalar_signed_of_ge_half`,
+  `truncateScalar_unsigned_eq`, `truncateScalar_signed_eq`, and
+  `evalBinOp_{bitAnd,bitOr,bitXor,shl_unsigned,shr_unsigned}_eq`,
+  `evalBinOp_{add_unsigned,cmp}_eq`.
+- **Flat entry locals:** On bodies with many locals or storage annotations,
+  precompute `entryLocalsTail body` once into a concrete
+  `tail : List LocalSlot` with `hTail : entryLocalsTail body = tail := rfl`,
+  rewrite `initLocalsLoop body args 0 body.locals` to
+  `entryLocals body args tail` via
+  `initLocalsLoop_eq_entryLocals hValid (by decide) hTail`, and pass that
+  equality to `Anneal.MirWp.safe_of_entryLocals` / `returns_of_entryLocals` /
+  `executes_of_entryLocals` instead of repeatedly unfolding `initLocalsLoop` /
+  `hasStorageAnnotation`:
+
+  ```lean
+  -- Replace placeholders (`[...]`, `hSafeFromEntryLocals`) for your `body`:
+  private def myTail : List LocalSlot := [...] -- concrete `entryLocalsTail`
+  private theorem myTail_eq : entryLocalsTail body = myTail := rfl
+  -- In the proof (`hValid : ValidEntryArgs body args`):
+  have hLoc := initLocalsLoop_eq_entryLocals hValid (by decide) myTail_eq
+  exact safe_of_entryLocals hLoc hSafeFromEntryLocals -- placeholder proof
+  ```
+- **Beware `zetaHave` & dead-branch `Decidable` traps:** Do not leave unused
+  `have` bindings carrying large concrete expressions in scope across `rfl` /
+  `decide` / `dsimp`, and do not reduce `if h : P then ... else ...` on
+  symbolic `2^64`/`2^128` inequalities without first discharging the branch via
+  `ite_prop_true` / `ite_prop_false` or `Anneal.InitLemmas` (`nat_mod_*`,
+  `nat_div_*`, `int_ofNat_*`, `int_subNatNat_*`, `bool_*`).
 
 **6 algebraic representation shifts (when elaboration or `whnf` explodes):**
 1. **Import `prelude` + targeted `Init.*` (`~152 MiB` vs `~473 MiB`):** Pinned

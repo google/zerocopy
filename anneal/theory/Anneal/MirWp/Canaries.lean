@@ -20,6 +20,7 @@ public import Trusted.MirSemantics
 public import Anneal.MirWp.Core
 public import Anneal.MirWp.Scalars
 public import Anneal.MirWp.Reflection
+public import Anneal.MirWp.Execution
 
 public section
 
@@ -399,6 +400,81 @@ theorem canary_negative_int_to_int_cast_anneal :
      (fun h => FaultKind.noConfusion h) rfl,
    negativeCanary_of_execFault (fuel := 2)
      (fun h => FaultKind.noConfusion h) rfl⟩
+
+/-! ## Abstract-Modulus Cast, Scalar-Op, and Flat `entryLocals` Canaries -/
+
+/-- Symbolic negative `isize as usize` cast canary exercising
+`evalIntToIntCast_signed_of_neg` on an arbitrary negative 64-bit `isize` bit
+pattern without triggering kernel recursion on `Int.subNatNat (2^128) k`. -/
+theorem canary_symbolic_neg_isize_to_usize_cast (b : BitVec 128)
+    (hGe : intWidthHalfModulus .isize ≤ b.toNat)
+    (hLt : b.toNat < intWidthModulus .isize) :
+    evalIntToIntCast (.scalar ⟨.isize, true, b⟩) (.int .isize false) =
+      .ok (.scalar ⟨.isize, false,
+        BitVec.ofNat 128
+          (intWidthModulus .isize -
+            (Nat.mod (intWidthModulus .isize - b.toNat - 1) (intWidthModulus .isize) + 1))⟩) :=
+  evalIntToIntCast_signed_of_neg .isize .isize false hGe hLt
+
+/-- Concrete negative `-1isize as usize` (`b = 2^64 - 1`) cast canary showing
+that `evalIntToIntCast_signed_same_width` avoids the `#4295` kernel deep
+recursion trap on concrete 64-bit negative bit patterns. -/
+theorem canary_concrete_neg1_isize_to_usize_cast :
+    evalIntToIntCast
+      (.scalar ⟨.isize, true, BitVec.ofNat 128 (Nat.pow 2 64 - 1)⟩)
+      (.int .isize false) =
+    .ok (.scalar ⟨.isize, false, BitVec.ofNat 128 (Nat.pow 2 64 - 1)⟩) :=
+  evalIntToIntCast_signed_same_width (wSrc := .isize) (wDst := .isize)
+    false rfl (by decide)
+
+/-- Symbolic widening signed `i8 as i64` negative cast canary exercising
+`evalIntToIntCast_signed_of_neg` across distinct widths (`2^8 ∣ 2^64`). -/
+theorem canary_symbolic_neg_i8_to_i64_cast (b : BitVec 128)
+    (hGe : intWidthHalfModulus .i8 ≤ b.toNat)
+    (hLt : b.toNat < intWidthModulus .i8) :
+    evalIntToIntCast (.scalar ⟨.i8, true, b⟩) (.int .i64 true) =
+      .ok (.scalar ⟨.i64, true,
+        BitVec.ofNat 128
+          (intWidthModulus .i64 -
+            (Nat.mod (intWidthModulus .i8 - b.toNat - 1) (intWidthModulus .i64) + 1))⟩) :=
+  evalIntToIntCast_signed_of_neg .i8 .i64 true hGe hLt
+
+/-- Symbolic `decodeScalar` + `evalBinOp` unsigned width-parametric canary
+exercising `evalBinOp_bitAnd_eq`, `evalBinOp_add_unsigned_eq`, and
+`evalBinOp_cmp_eq` without concrete width unfolding. -/
+theorem canary_symbolic_scalar_ops (w : IntWidth) (b1 b2 : BitVec 128)
+    (h1 : b1.toNat < intWidthModulus w)
+    (h2 : b2.toNat < intWidthModulus w) :
+    evalBinOp .bitAnd (.scalar ⟨w, false, b1⟩) (.scalar ⟨w, false, b2⟩) =
+      .ok (.scalar ⟨w, false, truncateBits w (BitVec.ofNat 128 (Nat.land b1.toNat b2.toNat))⟩) ∧
+    evalBinOp .add (.scalar ⟨w, false, b1⟩) (.scalar ⟨w, false, b2⟩) =
+      .ok (.scalar ⟨w, false,
+        BitVec.ofNat 128 (Nat.mod (b1.toNat + b2.toNat) (intWidthModulus w))⟩) ∧
+    evalBinOp .lt (.scalar ⟨w, false, b1⟩) (.scalar ⟨w, false, b2⟩) =
+      .ok (.bool (decide (decodeScalar ⟨w, false, b1⟩ < decodeScalar ⟨w, false, b2⟩))) :=
+  ⟨evalBinOp_bitAnd_eq w false b1 b2 h1 h2,
+   evalBinOp_add_unsigned_eq w h1 h2,
+   (evalBinOp_cmp_eq w false b1 b2).2.2.1⟩
+
+/-- Fixture body shared by `canary_flat_entryLocals_eq`. -/
+@[expose] def canaryFlatEntryLocalsBody : Body :=
+  { identity := "canary_flat_entry_locals"
+    argumentCount := 1
+    locals := [.int .isize false, .int .isize false, .int .isize false, .bool]
+    basicBlocks := [
+      { statements := [.storageLive 2, .storageDead 2]
+        terminator := .return_
+        cleanup := false }
+    ] }
+
+/-- Flat `entryLocals` equivalence canary verifying that `entryLocals` matches
+`initLocalsLoop` identically on a multi-local body with storage annotations. -/
+theorem canary_flat_entryLocals_eq (args : List Val)
+    (hValid : ValidEntryArgs canaryFlatEntryLocalsBody args) :
+    initLocalsLoop canaryFlatEntryLocalsBody args 0
+        canaryFlatEntryLocalsBody.locals =
+      entryLocals canaryFlatEntryLocalsBody args [.dead, .immediate none] :=
+  initLocalsLoop_eq_entryLocals hValid (by decide) rfl
 
 end Anneal.MirWp
 

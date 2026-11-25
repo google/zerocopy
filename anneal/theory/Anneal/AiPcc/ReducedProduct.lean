@@ -2003,6 +2003,562 @@ theorem absVal_decideLt?_sound {w x y : Nat} {a b : AbsVal} {r : Bool}
                     exact False.elim
                       (Nat.not_le_of_gt (lt_of_blt_true hBlt) hGe)
 
+/-! ### Signed Biased-Coordinate Helpers, Bounds, Comparisons, and Refinements -/
+
+/-- Half-modulus `2^(w - 1)` for signed `w`-bit two's-complement coordinates. -/
+@[expose] def halfModPow2 (w : Nat) : Nat :=
+  modPow2 (w - 1)
+
+/-- Signed-order bijection `x ↦ (x + 2^(w-1)) mod 2^w`, mapping signed two's
+complement `[-2^(w-1), 2^(w-1) - 1]` monotonically onto `[0, 2^w - 1]`. -/
+@[expose] def signedBias (w x : Nat) : Nat :=
+  wrapVal w (x + halfModPow2 w)
+
+/-- For `1 ≤ w ≤ 128`, `modPow2 w = halfModPow2 w + halfModPow2 w`. -/
+theorem modPow2_eq_half_add_half {w : Nat} (hw : validWidth w = true) :
+    modPow2 w = halfModPow2 w + halfModPow2 w := by
+  have h1 : 1 ≤ w := Nat.le_of_ble_eq_true (bool_and_true_left hw)
+  have hwEq : (w - 1) + 1 = w := Nat.sub_add_cancel h1
+  have hSucc := modPow2_succ (w - 1)
+  rw [hwEq, Nat.two_mul] at hSucc
+  exact hSucc
+
+/-- `0 < halfModPow2 w`. -/
+theorem halfModPow2_pos (w : Nat) : 0 < halfModPow2 w :=
+  modPow2_pos (w - 1)
+
+/-- `halfModPow2 w < modPow2 w` for every valid width. -/
+theorem halfModPow2_lt_modPow2 {w : Nat} (hw : validWidth w = true) :
+    halfModPow2 w < modPow2 w := by
+  rw [modPow2_eq_half_add_half hw]
+  exact Nat.lt_add_of_pos_right (halfModPow2_pos w)
+
+/-- `signedBias w x < modPow2 w`. -/
+theorem signedBias_lt {w : Nat} (x : Nat) : signedBias w x < modPow2 w :=
+  nat_mod_lt _ (modPow2_pos w)
+
+/-- `signedBias w x = x + halfModPow2 w` when `x < halfModPow2 w`. -/
+theorem signedBias_of_lt_half {w x : Nat} (hw : validWidth w = true)
+    (hLt : x < halfModPow2 w) :
+    signedBias w x = x + halfModPow2 w := by
+  dsimp only [signedBias, wrapVal]
+  have hSumLt : x + halfModPow2 w < modPow2 w := by
+    rw [modPow2_eq_half_add_half hw]
+    exact Nat.add_lt_add_right hLt (halfModPow2 w)
+  exact nat_mod_eq_of_lt hSumLt
+
+/-- `signedBias w x = x - halfModPow2 w` for `halfModPow2 w ≤ x < modPow2 w`. -/
+theorem signedBias_of_ge_half {w x : Nat} (hw : validWidth w = true)
+    (hGe : halfModPow2 w ≤ x) (hLt : x < modPow2 w) :
+    signedBias w x = x - halfModPow2 w := by
+  dsimp only [signedBias, wrapVal]
+  have hM := modPow2_eq_half_add_half hw
+  have hEq : x + halfModPow2 w = modPow2 w + (x - halfModPow2 w) := by
+    rw [hM, Nat.add_assoc (halfModPow2 w) (halfModPow2 w) (x - halfModPow2 w),
+        Nat.add_comm (halfModPow2 w) (x - halfModPow2 w),
+        Nat.sub_add_cancel hGe, Nat.add_comm]
+  have hSubLt : x - halfModPow2 w < modPow2 w :=
+    Nat.lt_of_le_of_lt (Nat.sub_le x (halfModPow2 w)) hLt
+  rw [hEq, nat_add_mod_self_left, nat_mod_eq_of_lt hSubLt]
+
+/-- Adding `halfModPow2 w` twice mod `modPow2 w` is identity on `[0, 2^w)`. -/
+theorem signedBias_inv {w x : Nat} (hw : validWidth w = true)
+    (hx : x < modPow2 w) :
+    Nat.mod (halfModPow2 w + signedBias w x) (modPow2 w) = x := by
+  dsimp only [signedBias, wrapVal]
+  have hM : 0 < modPow2 w := modPow2_pos w
+  rw [mod_add_mod_right (halfModPow2 w) (x + halfModPow2 w) (modPow2 w) hM]
+  have hRe : halfModPow2 w + (x + halfModPow2 w) = modPow2 w + x := by
+    rw [modPow2_eq_half_add_half hw, Nat.add_comm x (halfModPow2 w),
+        ← Nat.add_assoc (halfModPow2 w) (halfModPow2 w) x]
+  rw [hRe, nat_add_mod_self_left, nat_mod_eq_of_lt hx]
+
+/-- Shifting both endpoints of a modular arc by `+k mod M` keeps `wrapSpan`. -/
+theorem wrapSpan_shift {M lo hi k : Nat} (hM : 0 < M)
+    (hLo : lo < M) (hHi : hi < M) :
+    wrapSpan M (Nat.mod (lo + k) M) (Nat.mod (hi + k) M) = wrapSpan M lo hi := by
+  let s := wrapSpan M lo hi
+  have hsLt : s < M := wrapSpan_lt hLo hHi
+  have hLo'Lt : Nat.mod (lo + k) M < M := nat_mod_lt _ hM
+  have hSpan := wrapped_span_of_add_lt hM hLo'Lt hsLt
+  have hHiEq : Nat.mod (Nat.mod (lo + k) M + s) M = Nat.mod (hi + k) M := by
+    rw [mod_add_mod_left (lo + k) s M hM,
+        Nat.add_assoc lo k s, Nat.add_comm k s, ← Nat.add_assoc lo s k,
+        ← mod_add_mod_left (lo + s) k M hM,
+        wrapped_hi_eq_mod_lo_span hLo hHi]
+  have hEq := hSpan.2
+  rw [hHiEq] at hEq
+  exact hEq
+
+/-- Extracts biased signed bounds `(sLo, sHi)` with `sLo ≤ sHi < 2^w`
+from an initialized `AbsVal` whose wrapped interval does not straddle the signed
+overflow boundary `2^(w-1) - 1 -> 2^(w-1)`. -/
+@[expose] def AbsVal.signedBounds? (w : Nat) (a : AbsVal) : Option (Nat × Nat) :=
+  match validWidth w, a.init, a.wi with
+  | true, .init, .iv lo hi =>
+    let M := modPow2 w
+    if Nat.blt lo M && Nat.blt hi M then
+      let sLo := signedBias w lo
+      let sHi := signedBias w hi
+      if Nat.ble sLo sHi then some (sLo, sHi) else none
+    else none
+  | _, _, _ => none
+
+/-- Soundness of `AbsVal.signedBounds?`. -/
+theorem absVal_signedBounds?_sound {w x sLo sHi : Nat} {a : AbsVal}
+    (hB : a.signedBounds? w = some (sLo, sHi))
+    (ha : a.denote w (some x)) :
+    validWidth w = true ∧ sLo ≤ signedBias w x ∧ signedBias w x ≤ sHi ∧
+      sHi < modPow2 w := by
+  dsimp only [AbsVal.signedBounds?] at hB
+  cases hw : validWidth w with
+  | false => rw [hw] at hB; nomatch hB
+  | true =>
+    cases hai : a.init with
+    | bot | uninit => rw [hw, hai] at hB; nomatch hB
+    | init =>
+      cases hWi : a.wi with
+      | bot | top => rw [hw, hai, hWi] at hB; nomatch hB
+      | iv lo hi =>
+        rw [hw, hai, hWi] at hB
+        dsimp only at hB
+        cases hIn : Nat.blt lo (modPow2 w) && Nat.blt hi (modPow2 w) with
+        | false => rw [hIn] at hB; nomatch hB
+        | true =>
+          rw [hIn] at hB
+          cases hBle : Nat.ble (signedBias w lo) (signedBias w hi) with
+          | false => rw [hBle] at hB; nomatch hB
+          | true =>
+            rw [hBle] at hB
+            injection hB with hPair
+            have hsLoEq : sLo = signedBias w lo := (congrArg Prod.fst hPair).symm
+            have hsHiEq : sHi = signedBias w hi := (congrArg Prod.snd hPair).symm
+            subst hsLoEq; subst hsHiEq
+            have hM : 0 < modPow2 w := modPow2_pos w
+            have hLoLt : lo < modPow2 w := lt_of_blt_true (bool_and_true_left hIn)
+            have hHiLt : hi < modPow2 w := lt_of_blt_true (bool_and_true_right hIn)
+            have hLe : signedBias w lo ≤ signedBias w hi := Nat.le_of_ble_eq_true hBle
+            have haE := absVal_some_elim ha
+            have hWix := haE.2.2.1; rw [hWi] at hWix
+            cases (wrapped_denote_iff_offset hLoLt hHiLt haE.1).1 hWix with
+            | intro d hd =>
+              have hSpanEq : wrapSpan (modPow2 w) lo hi = signedBias w hi - signedBias w lo := by
+                have hSh := wrapSpan_shift (k := halfModPow2 w) hM hLoLt hHiLt
+                dsimp only [signedBias, wrapVal] at hBle
+                dsimp only [signedBias, wrapVal]
+                dsimp only [wrapSpan] at hSh
+                rw [hBle] at hSh
+                exact hSh.symm
+              have hdLe : d ≤ signedBias w hi - signedBias w lo := by
+                rw [← hSpanEq]; exact hd.1
+              have hSumLe : signedBias w lo + d ≤ signedBias w hi := by
+                have h1 := Nat.add_le_add_left hdLe (signedBias w lo)
+                rw [Nat.add_comm (signedBias w lo) (signedBias w hi - signedBias w lo),
+                    Nat.sub_add_cancel hLe] at h1
+                exact h1
+              have hSumLt : signedBias w lo + d < modPow2 w :=
+                Nat.lt_of_le_of_lt hSumLe (signedBias_lt hi)
+              have hBiasX : signedBias w x = signedBias w lo + d := by
+                dsimp only [signedBias, wrapVal]
+                rw [hd.2, mod_add_mod_left (lo + d) (halfModPow2 w) (modPow2 w) hM,
+                    Nat.add_assoc lo d (halfModPow2 w), Nat.add_comm d (halfModPow2 w),
+                    ← Nat.add_assoc lo (halfModPow2 w) d,
+                    ← mod_add_mod_left (lo + halfModPow2 w) d (modPow2 w) hM]
+                exact nat_mod_eq_of_lt hSumLt
+              rw [hBiasX]
+              exact ⟨rfl, Nat.le_add_right _ d, hSumLe, signedBias_lt hi⟩
+
+/-- Sufficient check certifying that signed `w`-bit addition never overflows
+`[-2^(w-1), 2^(w-1))` (`H ≤ bias(x) + bias(y) < 3 * H`). -/
+@[expose] def AbsVal.noSignedOverflowAdd (w : Nat) (a b : AbsVal) : Bool :=
+  match a.signedBounds? w, b.signedBounds? w with
+  | some (sLo1, sHi1), some (sLo2, sHi2) =>
+    let H := halfModPow2 w
+    Nat.ble H (sLo1 + sLo2) && Nat.blt (sHi1 + sHi2) (3 * H)
+  | _, _ => false
+
+/-- Soundness of `AbsVal.noSignedOverflowAdd`. -/
+theorem absVal_noSignedOverflowAdd_sound {w x y : Nat} {a b : AbsVal}
+    (hOk : AbsVal.noSignedOverflowAdd w a b = true)
+    (ha : a.denote w (some x)) (hb : b.denote w (some y)) :
+    halfModPow2 w ≤ signedBias w x + signedBias w y ∧
+      signedBias w x + signedBias w y < 3 * halfModPow2 w := by
+  dsimp only [AbsVal.noSignedOverflowAdd] at hOk
+  cases hA : a.signedBounds? w with
+  | none => rw [hA] at hOk; nomatch hOk
+  | some p1 =>
+    cases p1 with | mk sLo1 sHi1 =>
+    cases hB : b.signedBounds? w with
+    | none => rw [hA, hB] at hOk; nomatch hOk
+    | some p2 =>
+      cases p2 with | mk sLo2 sHi2 =>
+      rw [hA, hB] at hOk
+      dsimp only at hOk
+      have h1 := absVal_signedBounds?_sound hA ha
+      have h2 := absVal_signedBounds?_sound hB hb
+      have hLo := Nat.le_of_ble_eq_true (bool_and_true_left hOk)
+      have hHi := lt_of_blt_true (bool_and_true_right hOk)
+      exact ⟨Nat.le_trans hLo (Nat.add_le_add h1.2.1 h2.2.1),
+        Nat.lt_of_le_of_lt (Nat.add_le_add h1.2.2.1 h2.2.2.1) hHi⟩
+
+/-- Sufficient check certifying that signed `w`-bit subtraction never overflows
+`[-2^(w-1), 2^(w-1))` (`bias(y) ≤ bias(x) + H ∧ bias(x) < bias(y) + H`). -/
+@[expose] def AbsVal.noSignedOverflowSub (w : Nat) (a b : AbsVal) : Bool :=
+  match a.signedBounds? w, b.signedBounds? w with
+  | some (sLo1, sHi1), some (sLo2, sHi2) =>
+    let H := halfModPow2 w
+    Nat.ble sHi2 (sLo1 + H) && Nat.blt sHi1 (sLo2 + H)
+  | _, _ => false
+
+/-- Soundness of `AbsVal.noSignedOverflowSub`. -/
+theorem absVal_noSignedOverflowSub_sound {w x y : Nat} {a b : AbsVal}
+    (hOk : AbsVal.noSignedOverflowSub w a b = true)
+    (ha : a.denote w (some x)) (hb : b.denote w (some y)) :
+    signedBias w y ≤ signedBias w x + halfModPow2 w ∧
+      signedBias w x < signedBias w y + halfModPow2 w := by
+  dsimp only [AbsVal.noSignedOverflowSub] at hOk
+  cases hA : a.signedBounds? w with
+  | none => rw [hA] at hOk; nomatch hOk
+  | some p1 =>
+    cases p1 with | mk sLo1 sHi1 =>
+    cases hB : b.signedBounds? w with
+    | none => rw [hA, hB] at hOk; nomatch hOk
+    | some p2 =>
+      cases p2 with | mk sLo2 sHi2 =>
+      rw [hA, hB] at hOk
+      dsimp only at hOk
+      have h1 := absVal_signedBounds?_sound hA ha
+      have h2 := absVal_signedBounds?_sound hB hb
+      have hC1 := Nat.le_of_ble_eq_true (bool_and_true_left hOk)
+      have hC2 := lt_of_blt_true (bool_and_true_right hOk)
+      exact ⟨Nat.le_trans h2.2.2.1 (Nat.le_trans hC1 (Nat.add_le_add_right h1.2.1 _)),
+        Nat.lt_of_le_of_lt h1.2.2.1 (Nat.lt_of_lt_of_le hC2 (Nat.add_le_add_right h2.2.1 _))⟩
+
+/-- Sufficient check certifying that signed `w`-bit division/remainder neither
+divides by zero (`bias(y) ≠ H`) nor computes `INT_MIN / -1`
+(`¬(bias(x) = 0 ∧ bias(y) = H - 1)`). -/
+@[expose] def AbsVal.safeSignedDiv (w : Nat) (a b : AbsVal) : Bool :=
+  match b.signedBounds? w with
+  | some (sLo2, sHi2) =>
+    let H := halfModPow2 w
+    if Nat.blt H sLo2 then true
+    else if Nat.blt sHi2 H then
+      Nat.blt sHi2 (H - 1) ||
+        match a.signedBounds? w with
+        | some (sLo1, _) => Nat.blt 0 sLo1
+        | none => false
+    else false
+  | none => false
+
+/-- Soundness of `AbsVal.safeSignedDiv`. -/
+theorem absVal_safeSignedDiv_sound {w x y : Nat} {a b : AbsVal}
+    (hOk : AbsVal.safeSignedDiv w a b = true)
+    (ha : a.denote w (some x)) (hb : b.denote w (some y)) :
+    signedBias w y ≠ halfModPow2 w ∧
+      ¬ (signedBias w x = 0 ∧ signedBias w y = halfModPow2 w - 1) := by
+  dsimp only [AbsVal.safeSignedDiv] at hOk
+  cases hB : b.signedBounds? w with
+  | none => rw [hB] at hOk; nomatch hOk
+  | some p2 =>
+    cases p2 with | mk sLo2 sHi2 =>
+    rw [hB] at hOk
+    dsimp only at hOk
+    have h2 := absVal_signedBounds?_sound hB hb
+    cases hPos : Nat.blt (halfModPow2 w) sLo2 with
+    | true =>
+      have hGtH : halfModPow2 w < signedBias w y :=
+        Nat.lt_of_lt_of_le (lt_of_blt_true hPos) h2.2.1
+      refine ⟨fun hEq => Nat.not_lt_of_ge (Nat.le_of_eq hEq) hGtH, ?_⟩
+      intro hPair
+      have hLeH : signedBias w y ≤ halfModPow2 w := by
+        rw [hPair.2]; exact Nat.sub_le _ 1
+      exact Nat.not_lt_of_ge hLeH hGtH
+    | false =>
+      rw [hPos] at hOk
+      cases hNeg : Nat.blt sHi2 (halfModPow2 w) with
+      | false => rw [hNeg] at hOk; nomatch hOk
+      | true =>
+        rw [hNeg] at hOk
+        have hLtH : signedBias w y < halfModPow2 w :=
+          Nat.lt_of_le_of_lt h2.2.2.1 (lt_of_blt_true hNeg)
+        refine ⟨fun hEq => Nat.not_lt_of_ge (Nat.le_of_eq hEq.symm) hLtH, ?_⟩
+        intro hPair
+        cases hLtM1 : Nat.blt sHi2 (halfModPow2 w - 1) with
+        | true =>
+          have hLt := Nat.lt_of_le_of_lt h2.2.2.1 (lt_of_blt_true hLtM1)
+          rw [hPair.2] at hLt
+          exact Nat.lt_irrefl _ hLt
+        | false =>
+          rw [hLtM1] at hOk
+          cases hA : a.signedBounds? w with
+          | none => rw [hA] at hOk; nomatch hOk
+          | some p1 =>
+            cases p1 with | mk sLo1 sHi1 =>
+            rw [hA] at hOk
+            have h1 := absVal_signedBounds?_sound hA ha
+            have hPosX : 0 < signedBias w x :=
+              Nat.lt_of_lt_of_le (lt_of_blt_true hOk) h1.2.1
+            rw [hPair.1] at hPosX
+            nomatch hPosX
+
+/-- Decides signed `decode(x) ≤ decode(y)` via `signedBias`. -/
+@[expose] def AbsVal.decideSle? (w : Nat) (a b : AbsVal) : Option Bool :=
+  match a.signedBounds? w, b.signedBounds? w with
+  | some (sLo1, sHi1), some (sLo2, sHi2) =>
+    if Nat.ble sHi1 sLo2 then some true
+    else if Nat.blt sHi2 sLo1 then some false
+    else none
+  | _, _ => none
+
+/-- Soundness of `AbsVal.decideSle?`. -/
+theorem absVal_decideSle?_sound {w x y : Nat} {a b : AbsVal} {r : Bool}
+    (hDec : AbsVal.decideSle? w a b = some r)
+    (ha : a.denote w (some x)) (hb : b.denote w (some y)) :
+    Nat.ble (signedBias w x) (signedBias w y) = r := by
+  dsimp only [AbsVal.decideSle?] at hDec
+  cases hA : a.signedBounds? w with
+  | none => rw [hA] at hDec; nomatch hDec
+  | some p1 =>
+    cases p1 with | mk sLo1 sHi1 =>
+    cases hB : b.signedBounds? w with
+    | none => rw [hA, hB] at hDec; nomatch hDec
+    | some p2 =>
+      cases p2 with | mk sLo2 sHi2 =>
+      rw [hA, hB] at hDec
+      dsimp only at hDec
+      have h1 := absVal_signedBounds?_sound hA ha
+      have h2 := absVal_signedBounds?_sound hB hb
+      cases hT : Nat.ble sHi1 sLo2 with
+      | true =>
+        rw [hT] at hDec
+        injection hDec with hR; subst hR
+        exact Nat.ble_eq_true_of_le
+          (Nat.le_trans h1.2.2.1 (Nat.le_trans (Nat.le_of_ble_eq_true hT) h2.2.1))
+      | false =>
+        rw [hT] at hDec
+        cases hF : Nat.blt sHi2 sLo1 with
+        | false => rw [hF] at hDec; nomatch hDec
+        | true =>
+          rw [hF] at hDec
+          injection hDec with hR; subst hR
+          have hGt : signedBias w y < signedBias w x :=
+            Nat.lt_of_le_of_lt h2.2.2.1
+              (Nat.lt_of_lt_of_le (lt_of_blt_true hF) h1.2.1)
+          cases hBle : Nat.ble (signedBias w x) (signedBias w y) with
+          | false => rfl
+          | true =>
+            exact False.elim (Nat.not_le_of_gt hGt (Nat.le_of_ble_eq_true hBle))
+
+/-- Decides signed `decode(x) < decode(y)` via `signedBias`. -/
+@[expose] def AbsVal.decideSlt? (w : Nat) (a b : AbsVal) : Option Bool :=
+  match a.signedBounds? w, b.signedBounds? w with
+  | some (sLo1, sHi1), some (sLo2, sHi2) =>
+    if Nat.blt sHi1 sLo2 then some true
+    else if Nat.ble sHi2 sLo1 then some false
+    else none
+  | _, _ => none
+
+/-- Soundness of `AbsVal.decideSlt?`. -/
+theorem absVal_decideSlt?_sound {w x y : Nat} {a b : AbsVal} {r : Bool}
+    (hDec : AbsVal.decideSlt? w a b = some r)
+    (ha : a.denote w (some x)) (hb : b.denote w (some y)) :
+    Nat.blt (signedBias w x) (signedBias w y) = r := by
+  dsimp only [AbsVal.decideSlt?] at hDec
+  cases hA : a.signedBounds? w with
+  | none => rw [hA] at hDec; nomatch hDec
+  | some p1 =>
+    cases p1 with | mk sLo1 sHi1 =>
+    cases hB : b.signedBounds? w with
+    | none => rw [hA, hB] at hDec; nomatch hDec
+    | some p2 =>
+      cases p2 with | mk sLo2 sHi2 =>
+      rw [hA, hB] at hDec
+      dsimp only at hDec
+      have h1 := absVal_signedBounds?_sound hA ha
+      have h2 := absVal_signedBounds?_sound hB hb
+      cases hT : Nat.blt sHi1 sLo2 with
+      | true =>
+        rw [hT] at hDec
+        injection hDec with hR; subst hR
+        exact blt_true_of_lt
+          (Nat.lt_of_le_of_lt h1.2.2.1
+            (Nat.lt_of_lt_of_le (lt_of_blt_true hT) h2.2.1))
+      | false =>
+        rw [hT] at hDec
+        cases hF : Nat.ble sHi2 sLo1 with
+        | false => rw [hF] at hDec; nomatch hDec
+        | true =>
+          rw [hF] at hDec
+          injection hDec with hR; subst hR
+          have hGe : signedBias w y ≤ signedBias w x :=
+            Nat.le_trans h2.2.2.1
+              (Nat.le_trans (Nat.le_of_ble_eq_true hF) h1.2.1)
+          cases hBlt : Nat.blt (signedBias w x) (signedBias w y) with
+          | false => rfl
+          | true =>
+            exact False.elim (Nat.not_le_of_gt (lt_of_blt_true hBlt) hGe)
+
+/-- Refines `a` under signed branch condition `decode(x) ≤ decode(boundBits)`
+by intersecting `a.wi` with `.iv (halfModPow2 w) boundBits`. -/
+@[expose] def AbsVal.refineSleConst (w : Nat) (a : AbsVal) (boundBits : Nat) :
+    AbsVal :=
+  match validWidth w && a.isInit && Nat.blt boundBits (modPow2 w) with
+  | false => a
+  | true =>
+    let M := modPow2 w
+    let H := halfModPow2 w
+    reduceAbsVal w ⟨.init, a.tnum, WrappedInterval.meet M a.wi (.iv H boundBits), a.sc⟩
+
+/-- Soundness of `AbsVal.refineSleConst`. -/
+theorem absVal_refineSleConst_sound {w x boundBits : Nat} {a : AbsVal}
+    (hw : validWidth w = true) (ha : a.denote w (some x)) (hai : a.isInit = true)
+    (hBLt : boundBits < modPow2 w)
+    (hSle : signedBias w x ≤ signedBias w boundBits) :
+    (AbsVal.refineSleConst w a boundBits).denote w (some x) := by
+  dsimp only [AbsVal.refineSleConst]
+  rw [hw, hai, blt_true_of_lt hBLt]
+  apply reduceAbsVal_sound hw
+  have haE := absVal_some_elim ha
+  have hM : 0 < modPow2 w := modPow2_pos w
+  have hHLt : halfModPow2 w < modPow2 w := halfModPow2_lt_modPow2 hw
+  have hIv : WrappedInterval.denote (modPow2 w) (.iv (halfModPow2 w) boundBits) x := by
+    rw [wrapped_denote_iff_offset hHLt hBLt haE.1]
+    refine ⟨signedBias w x, ?_, (signedBias_inv hw haE.1).symm⟩
+    have hSh := wrapSpan_shift (k := halfModPow2 w) hM hHLt hBLt
+    have hHShift : Nat.mod (halfModPow2 w + halfModPow2 w) (modPow2 w) = 0 := by
+      rw [← modPow2_eq_half_add_half hw, nat_mod_self]
+    rw [hHShift] at hSh
+    dsimp only [wrapSpan] at hSh
+    rw [Nat.ble_eq_true_of_le (Nat.zero_le _), Nat.sub_zero] at hSh
+    dsimp only at hSh
+    dsimp only [wrapSpan]
+    rw [← hSh]
+    exact hSle
+  exact ⟨⟨x, rfl, haE.1⟩, haE.2.1,
+    wrappedInterval_meet_sound hM haE.2.2.1 hIv, haE.2.2.2⟩
+
+/-- Refines `a` under signed branch condition `decode(boundBits) < decode(x)`
+by intersecting `a.wi` with `.iv (wrapVal w (boundBits + 1)) (H - 1)`
+(or `.bot` when `boundBits == halfModPow2 w - 1`, i.e., `INT_MAX`). -/
+@[expose] def AbsVal.refineSgtConst (w : Nat) (a : AbsVal) (boundBits : Nat) :
+    AbsVal :=
+  match validWidth w && a.isInit && Nat.blt boundBits (modPow2 w) with
+  | false => a
+  | true =>
+    let M := modPow2 w
+    let H := halfModPow2 w
+    if Nat.beq boundBits (H - 1) then
+      AbsVal.bot
+    else
+      let lo := wrapVal w (boundBits + 1)
+      reduceAbsVal w ⟨.init, a.tnum, WrappedInterval.meet M a.wi (.iv lo (H - 1)), a.sc⟩
+
+/-- Soundness of `AbsVal.refineSgtConst`. -/
+theorem absVal_refineSgtConst_sound {w x boundBits : Nat} {a : AbsVal}
+    (hw : validWidth w = true) (ha : a.denote w (some x)) (hai : a.isInit = true)
+    (hBLt : boundBits < modPow2 w)
+    (hSgt : signedBias w boundBits < signedBias w x) :
+    (AbsVal.refineSgtConst w a boundBits).denote w (some x) := by
+  dsimp only [AbsVal.refineSgtConst]
+  rw [hw, hai, blt_true_of_lt hBLt]
+  have haE := absVal_some_elim ha
+  have hM : 0 < modPow2 w := modPow2_pos w
+  have hHPos : 0 < halfModPow2 w := halfModPow2_pos w
+  have hHLt : halfModPow2 w < modPow2 w := halfModPow2_lt_modPow2 hw
+  have hHiLt : halfModPow2 w - 1 < modPow2 w :=
+    Nat.lt_trans (Nat.sub_lt hHPos (Nat.zero_lt_succ 0)) hHLt
+  have hHiBias : signedBias w (halfModPow2 w - 1) = modPow2 w - 1 := by
+    rw [signedBias_of_lt_half hw (Nat.sub_lt hHPos (Nat.zero_lt_succ 0)),
+        modPow2_eq_half_add_half hw,
+        Nat.add_comm (halfModPow2 w - 1) (halfModPow2 w),
+        Nat.add_sub_assoc hHPos (halfModPow2 w)]
+  have hBNotMax : Nat.beq boundBits (halfModPow2 w - 1) = false := by
+    cases hEq : Nat.beq boundBits (halfModPow2 w - 1) with
+    | false => rfl
+    | true =>
+      have hBEq := Nat.eq_of_beq_eq_true hEq
+      rw [hBEq, hHiBias] at hSgt
+      have hLe : signedBias w x ≤ modPow2 w - 1 := Nat.le_pred_of_lt (signedBias_lt x)
+      exact False.elim (Nat.not_le_of_gt hSgt hLe)
+  rw [hBNotMax]
+  change AbsVal.denote w
+    (reduceAbsVal w
+      ⟨.init, a.tnum, WrappedInterval.meet (modPow2 w) a.wi
+        (.iv (wrapVal w (boundBits + 1)) (halfModPow2 w - 1)), a.sc⟩)
+    (some x)
+  apply reduceAbsVal_sound hw
+  let lo := wrapVal w (boundBits + 1)
+  have hLoLt : lo < modPow2 w := nat_mod_lt _ hM
+  have hBiasBLt : signedBias w boundBits + 1 < modPow2 w :=
+    Nat.lt_of_le_of_lt hSgt (signedBias_lt x)
+  have hLoBias : signedBias w lo = signedBias w boundBits + 1 := by
+    dsimp only [lo, signedBias, wrapVal]
+    rw [mod_add_mod_left (boundBits + 1) (halfModPow2 w) (modPow2 w) hM,
+        Nat.add_assoc boundBits 1 (halfModPow2 w), Nat.add_comm 1 (halfModPow2 w),
+        ← Nat.add_assoc boundBits (halfModPow2 w) 1,
+        ← mod_add_mod_left (boundBits + halfModPow2 w) 1 (modPow2 w) hM]
+    exact nat_mod_eq_of_lt hBiasBLt
+  have hIv : WrappedInterval.denote (modPow2 w) (.iv lo (halfModPow2 w - 1)) x := by
+    rw [wrapped_denote_iff_offset hLoLt hHiLt haE.1]
+    refine ⟨signedBias w x - (signedBias w boundBits + 1), ?_, ?_⟩
+    · have hSh := wrapSpan_shift (k := halfModPow2 w) hM hLoLt hHiLt
+      have hLoBiasEq : Nat.mod (lo + halfModPow2 w) (modPow2 w) = signedBias w boundBits + 1 :=
+        hLoBias
+      have hHiBiasEq : Nat.mod ((halfModPow2 w - 1) + halfModPow2 w) (modPow2 w) = modPow2 w - 1 :=
+        hHiBias
+      rw [hLoBiasEq, hHiBiasEq] at hSh
+      dsimp only [wrapSpan] at hSh
+      have hLeMax : signedBias w boundBits + 1 ≤ modPow2 w - 1 := Nat.le_pred_of_lt hBiasBLt
+      rw [Nat.ble_eq_true_of_le hLeMax] at hSh
+      dsimp only at hSh
+      dsimp only [wrapSpan]
+      rw [← hSh]
+      exact Nat.sub_le_sub_right (Nat.le_pred_of_lt (signedBias_lt x)) _
+    · have hBiasEq :
+          Nat.mod (lo + (signedBias w x - (signedBias w boundBits + 1)) + halfModPow2 w) (modPow2 w) =
+            signedBias w x := by
+        rw [Nat.add_assoc lo _ (halfModPow2 w),
+            Nat.add_comm (signedBias w x - (signedBias w boundBits + 1)) (halfModPow2 w),
+            ← Nat.add_assoc lo (halfModPow2 w) _,
+            ← mod_add_mod_left (lo + halfModPow2 w) _ (modPow2 w) hM]
+        have hLoB : Nat.mod (lo + halfModPow2 w) (modPow2 w) = signedBias w boundBits + 1 :=
+          hLoBias
+        rw [hLoB, Nat.add_comm (signedBias w boundBits + 1) _,
+            Nat.sub_add_cancel hSgt, nat_mod_eq_of_lt (signedBias_lt x)]
+      have hBack := congrArg (fun z => Nat.mod (halfModPow2 w + z) (modPow2 w)) hBiasEq
+      rw [signedBias_inv hw haE.1] at hBack
+      have hLhs :
+          Nat.mod (halfModPow2 w +
+            Nat.mod (lo + (signedBias w x - (signedBias w boundBits + 1)) + halfModPow2 w)
+              (modPow2 w)) (modPow2 w) =
+          Nat.mod (lo + (signedBias w x - (signedBias w boundBits + 1))) (modPow2 w) := by
+        rw [mod_add_mod_right _ _ (modPow2 w) hM,
+            Nat.add_comm (lo + (signedBias w x - (signedBias w boundBits + 1))) (halfModPow2 w),
+            ← Nat.add_assoc (halfModPow2 w) (halfModPow2 w) _,
+            ← modPow2_eq_half_add_half hw, nat_add_mod_self_left]
+      rw [hLhs] at hBack
+      exact hBack.symm
+  exact ⟨⟨x, rfl, haE.1⟩, haE.2.1,
+    wrappedInterval_meet_sound hM haE.2.2.1 hIv, haE.2.2.2⟩
+
+/-- Bitwise complement transfer on `AbsVal` (`x ↦ x ^^^ (2^w - 1)`). -/
+@[expose] def AbsVal.bitNot (w : Nat) (a : AbsVal) : AbsVal :=
+  AbsVal.bitXor w a (AbsVal.const w (modPow2 w - 1))
+
+/-- Soundness of `AbsVal.bitNot`. -/
+theorem absVal_bitNot_sound {w x : Nat} {a : AbsVal}
+    (hw : validWidth w = true) (ha : a.denote w (some x)) (hai : a.isInit = true) :
+    (AbsVal.bitNot w a).denote w (some (Nat.xor x (modPow2 w - 1))) := by
+  have hMaxLt : modPow2 w - 1 < modPow2 w := Nat.sub_lt (modPow2_pos w) (Nat.zero_lt_succ 0)
+  have hc : (AbsVal.const w (modPow2 w - 1)).denote w (some (modPow2 w - 1)) := by
+    have h := absVal_const_sound (w := w) (c := modPow2 w - 1) hw
+    dsimp only [wrapVal] at h
+    rw [nat_mod_eq_of_lt hMaxLt] at h
+    exact h
+  have hci : (AbsVal.const w (modPow2 w - 1)).isInit = true := by
+    dsimp only [AbsVal.const, AbsVal.isInit]; rw [hw]
+  exact absVal_bitXor_sound hw ha hc hai hci
+
 end Anneal.AiPcc
 
 end
