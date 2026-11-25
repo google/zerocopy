@@ -141,6 +141,83 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                             "forbidden root config override:", res.stdout + res.stderr
                         )
 
+    def test_pr_hygiene_step_lints_pull_requests_and_tree_elsewhere(self):
+        steps = self.workflow["jobs"]["static-checks"]["steps"]
+        names = [s.get("name") for s in steps]
+        step = steps[names.index("Run PR hygiene check")]
+        # Event data reaches the script only through `env`, never by
+        # template expansion inside `run`.
+        self.assertNotIn("${{", step["run"])
+        self.assertEqual(step["env"], {
+            "EVENT_NAME": "${{ github.event_name }}",
+            "PR_BASE_SHA": "${{ github.event.pull_request.base.sha }}",
+            "PR_HEAD_SHA": "${{ github.event.pull_request.head.sha }}",
+            "PR_AUTHOR_TYPE": "${{ github.event.pull_request.user.type }}",
+        })
+        self.assertIn("set -euo pipefail", step["run"])
+
+        def git(root, *args):
+            return subprocess.run(
+                ["git", "-c", "core.hooksPath=/dev/null",
+                 "-c", "core.fsmonitor=false",
+                 "-c", "user.name=Test", "-c", "user.email=test@example.com",
+                 *args],
+                cwd=root, check=True, capture_output=True, text=True,
+            ).stdout.strip()
+
+        with tempfile.TemporaryDirectory(prefix="anneal-pr-hygiene-step-") as tmp:
+            root = Path(tmp) / "repo"
+            project = root / "anneal"
+            (project / "ci").mkdir(parents=True)
+            (project / ".gemini").mkdir()
+            (project / "ci/check_pr_hygiene.py").write_bytes(
+                (SOURCE / "check_pr_hygiene.py").read_bytes()
+            )
+            rules = (
+                "<!-- code-review-rules:begin -->\nR\n"
+                "<!-- code-review-rules:end -->\n"
+            )
+            (project / "AGENTS.md").write_text(rules)
+            (project / ".gemini/styleguide.md").write_text(rules)
+            git(root, "init", "-q")
+            git(root, "add", "-A")
+            git(root, "commit", "-qm", "init")
+            base = git(root, "rev-parse", "HEAD")
+            (project / "ci/new.py").write_text("X = 1\n")
+            git(root, "add", "-A")
+            git(root, "commit", "-qm", "[ci] Add a file without a header")
+            head = git(root, "rev-parse", "HEAD")
+
+            def run(event, author_type="User"):
+                env = os.environ.copy()
+                env.update(EVENT_NAME=event, PR_BASE_SHA=base,
+                           PR_HEAD_SHA=head, PR_AUTHOR_TYPE=author_type)
+                return subprocess.run(
+                    ["bash", "--noprofile", "--norc", "-eo", "pipefail", "-c",
+                     step["run"]],
+                    cwd=project, env=env, capture_output=True, text=True,
+                )
+
+            res = run("pull_request")
+            self.assertEqual(res.returncode, 1, res.stdout + res.stderr)
+            self.assertIn("[header] anneal/ci/new.py", res.stderr)
+            # The commit subject is fine, so only bot PRs differ in the
+            # skipped-commit warning.
+            self.assertNotIn("--skip-commit-messages", res.stderr)
+            res = run("pull_request", author_type="Bot")
+            self.assertEqual(res.returncode, 1, res.stdout + res.stderr)
+            self.assertIn("skipped: --skip-commit-messages", res.stderr)
+            for event in ("merge_group", "push"):
+                res = run(event)
+                self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
+
+            (project / ".gemini/styleguide.md").write_text("drifted\n")
+            git(root, "add", "-A")
+            git(root, "commit", "-qm", "[ci] Drift")
+            res = run("merge_group")
+            self.assertEqual(res.returncode, 1, res.stdout + res.stderr)
+            self.assertIn("code-review-rules-parity", res.stderr)
+
     def test_nix_cache_restricts_trusted_substituter_to_main_push(self):
         build_steps = {
             step["id"]: step
