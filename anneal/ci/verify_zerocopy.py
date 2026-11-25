@@ -16,9 +16,11 @@ import json
 import os
 from pathlib import Path
 import re
+import subprocess
 import sys
 import tempfile
 import time
+import tomllib
 
 _CI_DIR = Path(__file__).resolve().parent
 if str(_CI_DIR) not in sys.path:
@@ -52,6 +54,55 @@ BINDING_DIGEST_FIELDS = (
     ("specificationManifestSha256", "specification_manifest_sha256"),
     ("modelManifestSha256", "model_manifest_sha256"),
 )
+DEFAULT_SPEC_DECL = "Spec.specs"
+DEFAULT_PROOF_THM = "Proof.verify"
+EXCLUDED_SRC_FILES = frozenset({"doctests.rs"})
+VALID_COMPILATION_KEYS = frozenset({
+    "source_root",
+    "crate_root",
+    "crate_name",
+    "crate_type",
+    "panic",
+    "overflow_checks",
+    "edition",
+    "target",
+    "cfg",
+    "env",
+    "source_files",
+})
+VALID_RECEIPT_CONFIGURATION_KEYS = frozenset({
+    "crate_root",
+    "crate_name",
+    "crate_type",
+    "panic",
+    "edition",
+    "target",
+    "cfg",
+    "env",
+    "opt_level",
+    "debug_assertions",
+    "overflow_checks",
+    "mir_preserve_ub",
+    "pointer_bits",
+    "endian",
+    "declared_source_files",
+})
+VALID_REQUEST_KEYS = frozenset({
+    "schema_version",
+    "compilation",
+    "scope",
+    "proof",
+})
+VALID_PROOF_KEYS = frozenset({
+    "source_root",
+    "specification",
+    "theorem",
+    "sources",
+})
+VALID_PROOF_SOURCE_KEYS = frozenset({"module", "path", "role"})
+VALID_CRATE_TYPES = frozenset({"lib", "bin"})
+VALID_PANIC_STRATEGIES = frozenset({"unwind", "abort"})
+SPEC_FILE_PATTERN = re.compile(r"^Spec[A-Za-z0-9_]*\.lean$")
 
 
 def _strip_lean_comments_and_strings(text):
@@ -394,8 +445,950 @@ def _validate_real_directory(path, label, repo_root=None):
     return path.resolve(strict=True)
 
 
-def discover_units(proofs_dir, src_dir, selected_units=None, *, repo_root=None):
-    """Validate `proofs_dir` hygiene and return ordered unit pairs."""
+_is_nonneg_int = anneal_ci_lib.is_nonneg_int
+_is_exact_int = anneal_ci_lib.is_exact_int
+
+
+def _require_allowed_keys(obj, allowed, label):
+    if not isinstance(obj, dict):
+        raise RuntimeError(f"{label} must be a JSON object")
+    unknown = sorted(set(obj) - allowed)
+    if unknown:
+        raise RuntimeError(f"{label}: unexpected field(s): {unknown}")
+
+
+def _is_clean_rel_posix_path(raw):
+    if not isinstance(raw, str) or not raw or "\\" in raw:
+        return False
+    p = Path(raw)
+    return (
+        not p.is_absolute()
+        and p.as_posix() == raw
+        and bool(p.parts)
+        and all(seg not in ("", ".", "..") for seg in p.parts)
+    )
+
+
+def _validate_compilation_fields(raw, label):
+    _require_allowed_keys(raw, VALID_COMPILATION_KEYS, label)
+    for str_key in (
+        "source_root",
+        "crate_root",
+        "crate_name",
+        "edition",
+        "target",
+    ):
+        if str_key in raw:
+            val = raw[str_key]
+            if not isinstance(val, str) or not val:
+                raise RuntimeError(f"{label}.{str_key} must be a non-empty string")
+    if "crate_root" in raw and not _is_clean_rel_posix_path(raw["crate_root"]):
+        raise RuntimeError(f"{label}.crate_root must be a clean relative path")
+    if "crate_type" in raw:
+        crate_type = raw["crate_type"]
+        if not isinstance(crate_type, str) or crate_type not in VALID_CRATE_TYPES:
+            raise RuntimeError(
+                f"{label}.crate_type must be one of {sorted(VALID_CRATE_TYPES)}"
+            )
+    if "panic" in raw:
+        panic = raw["panic"]
+        if not isinstance(panic, str) or panic not in VALID_PANIC_STRATEGIES:
+            raise RuntimeError(
+                f"{label}.panic must be one of {sorted(VALID_PANIC_STRATEGIES)}"
+            )
+    if "overflow_checks" in raw and not isinstance(
+        raw["overflow_checks"], bool
+    ):
+        raise RuntimeError(f"{label}.overflow_checks must be a boolean")
+    if "cfg" in raw:
+        cfg = raw["cfg"]
+        if not isinstance(cfg, list) or not all(
+            isinstance(x, str) and x for x in cfg
+        ):
+            raise RuntimeError(f"{label}.cfg must be a list of non-empty strings")
+        if len(cfg) != len(set(cfg)):
+            raise RuntimeError(f"{label}.cfg must not contain duplicate entries")
+    if "env" in raw:
+        env = raw["env"]
+        if not isinstance(env, dict) or not all(
+            isinstance(k, str) and k and isinstance(v, str)
+            for k, v in env.items()
+        ):
+            raise RuntimeError(
+                f"{label}.env must map non-empty strings to strings"
+            )
+    if "source_files" in raw:
+        srcs = raw["source_files"]
+        if (
+            not isinstance(srcs, list)
+            or not srcs
+            or not all(_is_clean_rel_posix_path(x) for x in srcs)
+        ):
+            raise RuntimeError(
+                f"{label}.source_files must be a non-empty relative path list"
+            )
+        if len(srcs) != len(set(srcs)):
+            raise RuntimeError(
+                f"{label}.source_files must not contain duplicate entries"
+            )
+
+
+def _normalize_compilation(raw, *, request_defaults=False):
+    merged = dict(raw)
+    return {
+        "source_root": merged.get("source_root"),
+        "crate_root": merged.get("crate_root", "lib.rs"),
+        "crate_name": merged.get("crate_name"),
+        "crate_type": merged.get("crate_type", "lib"),
+        "panic": merged.get("panic", "unwind"),
+        "overflow_checks": merged.get("overflow_checks", False),
+        "edition": merged.get(
+            "edition", "2024" if request_defaults else None
+        ),
+        "target": merged.get(
+            "target", "x86_64-unknown-linux-gnu" if request_defaults else None
+        ),
+        "cfg": list(merged["cfg"]) if "cfg" in merged else [],
+        "env": dict(merged["env"]) if "env" in merged else {},
+        "source_files": (
+            list(merged["source_files"]) if "source_files" in merged else []
+        ),
+    }
+
+
+_SENSITIVE_ENV_IDENTS = frozenset({
+    "env",
+    "option_env",
+    "r#env",
+    "r#option_env",
+})
+_MACRO_DELIM_CLOSE = {"(": ")", "[": "]", "{": "}"}
+
+
+def _is_rust_ident_start(ch):
+    return ch == "_" or ch.isalpha()
+
+
+def _is_rust_ident_continue(ch):
+    return ch == "_" or ch.isalnum()
+
+
+def _tokenize_rust_source(text, path_label):
+    """Lex Rust source into `(kind, val, line)` skipping comments."""
+    tokens = []
+    i = 0
+    n = len(text)
+    line = 1
+    while i < n:
+        ch = text[i]
+        if ch in (" ", "\t", "\r"):
+            i += 1
+            continue
+        if ch == "\n":
+            line += 1
+            i += 1
+            continue
+        if ch == "/" and i + 1 < n and text[i + 1] == "/":
+            nl = text.find("\n", i)
+            if nl < 0:
+                break
+            i = nl
+            continue
+        if ch == "/" and i + 1 < n and text[i + 1] == "*":
+            start_line = line
+            depth = 1
+            i += 2
+            while i < n and depth > 0:
+                if text[i] == "/" and i + 1 < n and text[i + 1] == "*":
+                    depth += 1
+                    i += 2
+                elif text[i] == "*" and i + 1 < n and text[i + 1] == "/":
+                    depth -= 1
+                    i += 2
+                else:
+                    if text[i] == "\n":
+                        line += 1
+                    i += 1
+            if depth != 0:
+                raise RuntimeError(
+                    f"{path_label}:{start_line}: unterminated block comment"
+                )
+            continue
+
+        # Raw strings: `r#"..."#`, `br#"..."#`, `cr#"..."#`.
+        raw_hashes = None
+        raw_prefix_len = 0
+        if ch == "r":
+            raw_prefix_len = 1
+        elif ch in ("b", "c") and i + 1 < n and text[i + 1] == "r":
+            raw_prefix_len = 2
+        if raw_prefix_len:
+            j = i + raw_prefix_len
+            while j < n and text[j] == "#":
+                j += 1
+            if j < n and text[j] == '"':
+                raw_hashes = j - (i + raw_prefix_len)
+                tok_line = line
+                start = j + 1
+                end_marker = '"' + ("#" * raw_hashes)
+                end_idx = text.find(end_marker, start)
+                if end_idx < 0:
+                    raise RuntimeError(
+                        f"{path_label}:{tok_line}: unterminated raw string"
+                    )
+                inner = text[start:end_idx]
+                line += inner.count("\n")
+                tokens.append(("STR", inner, tok_line))
+                i = end_idx + len(end_marker)
+                continue
+
+        # Normal, byte, and C string literals.
+        str_start = None
+        if ch == '"':
+            str_start = i + 1
+        elif ch in ("b", "c") and i + 1 < n and text[i + 1] == '"':
+            str_start = i + 2
+        if str_start is not None:
+            tok_line = line
+            j = str_start
+            while j < n:
+                cur = text[j]
+                if cur == "\\":
+                    if j + 1 >= n:
+                        raise RuntimeError(
+                            f"{path_label}:{tok_line}: unterminated string"
+                        )
+                    if text[j + 1] == "\n":
+                        line += 1
+                    j += 2
+                    continue
+                if cur == '"':
+                    break
+                if cur == "\n":
+                    line += 1
+                j += 1
+            if j >= n or text[j] != '"':
+                raise RuntimeError(
+                    f"{path_label}:{tok_line}: unterminated string literal"
+                )
+            tokens.append(("STR", text[str_start:j], tok_line))
+            i = j + 1
+            continue
+
+        # Byte char literals (`b'x'`, `b'\x7f'`).
+        if ch == "b" and i + 1 < n and text[i + 1] == "'":
+            tok_line = line
+            j = i + 2
+            if j < n and text[j] == "\\":
+                j += 2
+                while j < n and text[j] not in ("'", "\n"):
+                    j += 1
+            elif j < n and text[j] != "\n":
+                j += 1
+            if j >= n or text[j] != "'":
+                raise RuntimeError(
+                    f"{path_label}:{tok_line}: unterminated byte literal"
+                )
+            tokens.append(("CHAR", text[i : j + 1], tok_line))
+            i = j + 1
+            continue
+
+        # Char literals vs lifetimes (`'a`, `'static`, `'r#type`).
+        if ch == "'":
+            tok_line = line
+            if i + 1 < n and text[i + 1] == "\\":
+                j = i + 3
+                while j < n and text[j] not in ("'", "\n"):
+                    j += 1
+                if j >= n or text[j] != "'":
+                    raise RuntimeError(
+                        f"{path_label}:{tok_line}: unterminated char literal"
+                    )
+                tokens.append(("CHAR", text[i : j + 1], tok_line))
+                i = j + 1
+                continue
+            if (
+                i + 2 < n
+                and text[i + 1] not in ("'", "\n")
+                and text[i + 2] == "'"
+            ):
+                tokens.append(("CHAR", text[i : i + 3], tok_line))
+                i += 3
+                continue
+            if (
+                text.startswith("r#", i + 1)
+                and i + 3 < n
+                and _is_rust_ident_start(text[i + 3])
+            ):
+                j = i + 4
+                while j < n and _is_rust_ident_continue(text[j]):
+                    j += 1
+                tokens.append(("LIFETIME", text[i:j], tok_line))
+                i = j
+                continue
+            if i + 1 < n and _is_rust_ident_start(text[i + 1]):
+                j = i + 2
+                while j < n and _is_rust_ident_continue(text[j]):
+                    j += 1
+                tokens.append(("LIFETIME", text[i:j], tok_line))
+                i = j
+                continue
+            tokens.append(("PUNCT", "'", tok_line))
+            i += 1
+            continue
+
+        # Raw identifier `r#ident`.
+        if text.startswith("r#", i) and i + 2 < n and _is_rust_ident_start(
+            text[i + 2]
+        ):
+            j = i + 3
+            while j < n and _is_rust_ident_continue(text[j]):
+                j += 1
+            tokens.append(("IDENT", text[i:j], line))
+            i = j
+            continue
+
+        if _is_rust_ident_start(ch):
+            j = i + 1
+            while j < n and _is_rust_ident_continue(text[j]):
+                j += 1
+            tokens.append(("IDENT", text[i:j], line))
+            i = j
+            continue
+
+        if ch.isdigit():
+            j = i + 1
+            while j < n and _is_rust_ident_continue(text[j]):
+                j += 1
+            tokens.append(("NUM", text[i:j], line))
+            i = j
+            continue
+
+        tokens.append(("PUNCT", ch, line))
+        i += 1
+    return tokens
+
+
+def _strip_raw_ident(val):
+    return val[2:] if val.startswith("r#") else val
+
+
+def _is_sensitive_env_token(tok):
+    kind, val, _ = tok
+    if kind == "IDENT" and (
+        val in _SENSITIVE_ENV_IDENTS
+        or _strip_raw_ident(val) in ("env", "option_env")
+        or "CARGO_PKG" in val
+    ):
+        return True
+    if kind == "STR" and "CARGO_PKG" in val:
+        return True
+    return False
+
+
+def _is_disallowed_non_doc_env_token(
+    tokens, idx, end_idx, *, in_use=False, in_macro=False
+):
+    """Allow ordinary `env` identifiers outside macro/import/path contexts."""
+    kind, val, _ = tokens[idx]
+    if kind == "STR":
+        return "CARGO_PKG" in val
+    if kind != "IDENT":
+        return False
+    if "CARGO_PKG" in val:
+        return True
+    if (
+        val not in _SENSITIVE_ENV_IDENTS
+        and _strip_raw_ident(val) not in ("env", "option_env")
+    ):
+        return False
+    if in_macro or in_use:
+        return True
+    if idx + 1 < end_idx and tokens[idx + 1][:2] == ("PUNCT", "!"):
+        return True
+    if (
+        idx >= 2
+        and tokens[idx - 1][:2] == ("PUNCT", ":")
+        and tokens[idx - 2][:2] == ("PUNCT", ":")
+    ):
+        return True
+    if (
+        idx + 2 < end_idx
+        and tokens[idx + 1][:2] == ("PUNCT", ":")
+        and tokens[idx + 2][:2] == ("PUNCT", ":")
+    ):
+        return True
+    return False
+
+
+def _find_matching_delim(tokens, open_idx, end_idx, path_label):
+    _, open_ch, open_line = tokens[open_idx]
+    close_ch = _MACRO_DELIM_CLOSE[open_ch]
+    stack = [open_ch]
+    idx = open_idx + 1
+    while idx < end_idx:
+        kind, val, _ = tokens[idx]
+        if kind == "PUNCT":
+            if val in _MACRO_DELIM_CLOSE:
+                stack.append(val)
+            elif val in (")", "]", "}"):
+                top = stack[-1]
+                if _MACRO_DELIM_CLOSE[top] != val:
+                    raise RuntimeError(
+                        f"{path_label}:{open_line}: mismatched delimiters"
+                    )
+                stack.pop()
+                if not stack:
+                    return idx
+        idx += 1
+    raise RuntimeError(
+        f"{path_label}:{open_line}: unclosed '{open_ch}' (expected "
+        f"'{close_ch}')"
+    )
+
+
+def _split_top_level_commas(tokens, path_label, start_line):
+    segments = []
+    cur = []
+    depth = 0
+    for tok in tokens:
+        kind, val, tok_line = tok
+        if kind == "PUNCT":
+            if val in _MACRO_DELIM_CLOSE:
+                depth += 1
+            elif val in (")", "]", "}"):
+                if depth == 0:
+                    raise RuntimeError(
+                        f"{path_label}:{tok_line}: unexpected '{val}'"
+                    )
+                depth -= 1
+            elif val == "," and depth == 0:
+                segments.append(cur)
+                cur = []
+                continue
+        cur.append(tok)
+    if depth != 0:
+        raise RuntimeError(f"{path_label}:{start_line}: unclosed delimiter")
+    segments.append(cur)
+    if segments and not segments[-1]:
+        segments.pop()
+    if any(not seg for seg in segments):
+        raise RuntimeError(
+            f"{path_label}:{start_line}: empty argument in doc attribute"
+        )
+    return segments
+
+
+def _is_safe_doc_expr(expr_tokens, path_label, start_line):
+    if not expr_tokens:
+        return False
+    if len(expr_tokens) == 1:
+        kind, val, _ = expr_tokens[0]
+        return kind == "STR" and "CARGO_PKG" not in val
+    if (
+        len(expr_tokens) == 5
+        and expr_tokens[0][:2] == ("IDENT", "env")
+        and expr_tokens[1][:2] == ("PUNCT", "!")
+        and expr_tokens[2][:2] == ("PUNCT", "(")
+        and expr_tokens[3][:2] == ("STR", "CARGO_PKG_VERSION")
+        and expr_tokens[4][:2] == ("PUNCT", ")")
+    ):
+        return True
+    if (
+        len(expr_tokens) >= 5
+        and expr_tokens[0][:2] == ("IDENT", "concat")
+        and expr_tokens[1][:2] == ("PUNCT", "!")
+        and expr_tokens[2][:2] == ("PUNCT", "(")
+        and expr_tokens[-1][:2] == ("PUNCT", ")")
+    ):
+        close_idx = _find_matching_delim(
+            expr_tokens, 2, len(expr_tokens), path_label
+        )
+        if close_idx != len(expr_tokens) - 1:
+            return False
+        args = _split_top_level_commas(
+            expr_tokens[3:-1], path_label, start_line
+        )
+        return bool(args) and all(
+            _is_safe_doc_expr(arg, path_label, start_line) for arg in args
+        )
+    return False
+
+
+def _validate_doc_only_attr(attr_tokens, path_label, start_line):
+    if (
+        len(attr_tokens) >= 3
+        and attr_tokens[0][:2] == ("IDENT", "doc")
+        and attr_tokens[1][:2] == ("PUNCT", "=")
+        and _is_safe_doc_expr(attr_tokens[2:], path_label, start_line)
+    ):
+        return
+    if (
+        len(attr_tokens) >= 4
+        and attr_tokens[0][:2] == ("IDENT", "cfg_attr")
+        and attr_tokens[1][:2] == ("PUNCT", "(")
+        and attr_tokens[-1][:2] == ("PUNCT", ")")
+    ):
+        close_idx = _find_matching_delim(
+            attr_tokens, 1, len(attr_tokens), path_label
+        )
+        if close_idx == len(attr_tokens) - 1:
+            segs = _split_top_level_commas(
+                attr_tokens[2:-1], path_label, start_line
+            )
+            if len(segs) >= 2 and not any(
+                _is_sensitive_env_token(tok) for tok in segs[0]
+            ):
+                for clause in segs[1:]:
+                    if any(_is_sensitive_env_token(tok) for tok in clause):
+                        _validate_doc_only_attr(clause, path_label, start_line)
+                return
+    raise RuntimeError(
+        f"{path_label}:{start_line}: env!/option_env!/CARGO_PKG_* may only "
+        "appear inside doc = concat!(..., env!(\"CARGO_PKG_VERSION\"), ...) "
+        "attributes outside macros"
+    )
+
+
+def _scan_rust_tokens_doc_only_env(
+    tokens,
+    start_idx,
+    end_idx,
+    path_label,
+    *,
+    in_macro=False,
+    expr_depth=0,
+    in_use=False,
+):
+    idx = start_idx
+    in_use_stmt = in_use
+    while idx < end_idx:
+        kind, val, tok_line = tokens[idx]
+
+        # Real item/module attributes (`#[...]` or `#![...]`) outside macros
+        # and expression groups.
+        if (
+            not in_macro
+            and expr_depth == 0
+            and kind == "PUNCT"
+            and val == "#"
+        ):
+            open_idx = None
+            if (
+                idx + 1 < end_idx
+                and tokens[idx + 1][:2] == ("PUNCT", "[")
+            ):
+                open_idx = idx + 1
+            elif (
+                idx + 2 < end_idx
+                and tokens[idx + 1][:2] == ("PUNCT", "!")
+                and tokens[idx + 2][:2] == ("PUNCT", "[")
+            ):
+                open_idx = idx + 2
+            if open_idx is not None:
+                close_idx = _find_matching_delim(
+                    tokens, open_idx, end_idx, path_label
+                )
+                attr_tokens = tokens[open_idx + 1 : close_idx]
+                if any(_is_sensitive_env_token(t) for t in attr_tokens):
+                    _validate_doc_only_attr(attr_tokens, path_label, tok_line)
+                idx = close_idx + 1
+                continue
+
+        # Track `use ...;` items so `use core::env` / `use ... as env` fail
+        # even across brace groups (`use core::{env, ...};`), without rejecting
+        # ordinary parameters or locals like `fn f(env: u8)`.
+        prev_is_sep = idx >= 1 and (
+            tokens[idx - 1][:2] == ("PUNCT", ".")
+            or (
+                idx >= 2
+                and tokens[idx - 1][:2] == ("PUNCT", ":")
+                and tokens[idx - 2][:2] == ("PUNCT", ":")
+            )
+        )
+        if kind == "IDENT" and val == "use" and not prev_is_sep:
+            in_use_stmt = True
+        elif in_use_stmt and kind == "PUNCT" and val == ";":
+            in_use_stmt = False
+
+        # Disallow macro calls, macro forwarding/defs, imports/aliases,
+        # path-qualified `env`, or `CARGO_PKG*` tokens outside doc attrs.
+        if _is_disallowed_non_doc_env_token(
+            tokens, idx, end_idx, in_use=in_use_stmt, in_macro=in_macro
+        ):
+            raise RuntimeError(
+                f"{path_label}:{tok_line}: disallowed `{val}` outside "
+                "non-macro doc attribute"
+            )
+
+        # Enter macro invocation / `macro_rules!` bodies (`in_macro=True`) so
+        # `smuggle!(#[doc = env!(...)])` cannot inject code from doc syntax.
+        if (
+            kind == "IDENT"
+            and val not in ("for", "impl", "type", "as", "return", "break")
+            and idx + 1 < end_idx
+            and tokens[idx + 1][:2] == ("PUNCT", "!")
+        ):
+            delim_idx = idx + 2
+            if (
+                val == "macro_rules"
+                and delim_idx < end_idx
+                and tokens[delim_idx][0] == "IDENT"
+            ):
+                delim_idx += 1
+            if (
+                delim_idx < end_idx
+                and tokens[delim_idx][0] == "PUNCT"
+                and tokens[delim_idx][1] in _MACRO_DELIM_CLOSE
+            ):
+                close_idx = _find_matching_delim(
+                    tokens, delim_idx, end_idx, path_label
+                )
+                _scan_rust_tokens_doc_only_env(
+                    tokens,
+                    delim_idx + 1,
+                    close_idx,
+                    path_label,
+                    in_macro=True,
+                    expr_depth=expr_depth,
+                    in_use=False,
+                )
+                idx = close_idx + 1
+                continue
+
+        if kind == "PUNCT" and val in ("(", "[", "{"):
+            close_idx = _find_matching_delim(tokens, idx, end_idx, path_label)
+            next_expr_depth = expr_depth + (1 if val in ("(", "[") else 0)
+            _scan_rust_tokens_doc_only_env(
+                tokens,
+                idx + 1,
+                close_idx,
+                path_label,
+                in_macro=in_macro,
+                expr_depth=next_expr_depth,
+                in_use=in_use_stmt,
+            )
+            idx = close_idx + 1
+            continue
+
+        idx += 1
+
+
+def _verify_env_macros_doc_only(resolved_src, rel_paths):
+    """Enforce that `env!`/`option_env!`/`CARGO_PKG_*` cannot affect MIR."""
+    for rel in rel_paths:
+        src_path = resolved_src / rel
+        if src_path.is_symlink() or not src_path.is_file():
+            raise RuntimeError(
+                f"invalid zerocopy compilation source: {src_path}"
+            )
+        text = src_path.read_text(encoding="utf-8")
+        tokens = _tokenize_rust_source(text, rel)
+        _scan_rust_tokens_doc_only_env(tokens, 0, len(tokens), rel)
+
+
+def _read_cargo_toml_data(cargo_toml_path):
+    if cargo_toml_path.is_symlink():
+        raise RuntimeError(
+            f"symlink disallowed for Cargo.toml: {cargo_toml_path}"
+        )
+    text = cargo_toml_path.read_text(encoding="utf-8")
+    try:
+        return tomllib.loads(text)
+    except tomllib.TOMLDecodeError as exc:
+        raise RuntimeError(f"invalid TOML in {cargo_toml_path}: {exc}") from exc
+
+
+def _workspace_package_version(ws_data):
+    ws = ws_data.get("workspace")
+    if not isinstance(ws, dict):
+        return None
+    ws_pkg = ws.get("package")
+    if isinstance(ws_pkg, dict) and isinstance(ws_pkg.get("version"), str):
+        return ws_pkg["version"]
+    return None
+
+
+def _extract_zerocopy_crate_version(cargo_toml_path):
+    """Parse `[package].version` from `Cargo.toml` using TOML semantics."""
+    data = _read_cargo_toml_data(cargo_toml_path)
+    pkg = data.get("package")
+    if not isinstance(pkg, dict):
+        return None
+    version = pkg.get("version")
+    if isinstance(version, str):
+        return version
+    if isinstance(version, dict) and version.get("workspace") is True:
+        own_ver = _workspace_package_version(data)
+        if own_ver is not None:
+            return own_ver
+        resolved_dir = cargo_toml_path.resolve(strict=True).parent
+        pkg_ws = pkg.get("workspace")
+        if isinstance(pkg_ws, str) and pkg_ws:
+            ws_dir_raw = Path(pkg_ws)
+            ws_dir = (
+                ws_dir_raw
+                if ws_dir_raw.is_absolute()
+                else resolved_dir / ws_dir_raw
+            )
+            if ws_dir.is_symlink():
+                raise RuntimeError(
+                    f"symlink disallowed for workspace Cargo.toml: {ws_dir}"
+                )
+            cand = ws_dir / "Cargo.toml"
+            if cand.is_symlink() or cand.is_file():
+                return _workspace_package_version(_read_cargo_toml_data(cand))
+            return None
+        for parent in resolved_dir.parents:
+            cand = parent / "Cargo.toml"
+            if cand.is_symlink() or cand.is_file():
+                ws_data = _read_cargo_toml_data(cand)
+                if isinstance(ws_data.get("workspace"), dict):
+                    return _workspace_package_version(ws_data)
+    return None
+
+
+def _list_actual_src_files(resolved_src):
+    actual = []
+    for path in sorted(resolved_src.rglob("*")):
+        if path.is_symlink():
+            raise RuntimeError(f"symlink disallowed in zerocopy/src: {path}")
+        if path.is_file() and path.suffix == ".rs":
+            actual.append(path.relative_to(resolved_src).as_posix())
+    return sorted(actual)
+
+
+def _is_qualified_lean_decl(raw):
+    if not isinstance(raw, str) or "." not in raw:
+        return False
+    mod_part, decl_part = raw.rsplit(".", 1)
+    return bool(mod_part) and bool(decl_part)
+
+
+def _validate_request_unit(
+    entry_name,
+    entry,
+    unit_files,
+    resolved_src,
+    expected_compilation_sources,
+):
+    """Validate one `zerocopy/proofs/<unit>/` directory and `request.json`."""
+    req_path = entry / "request.json"
+    if not req_path.is_file():
+        raise RuntimeError(f"missing request.json in proof unit: {entry}")
+    request = anneal_ci_lib.load_strict_json_object(
+        req_path, f"{entry_name}/request.json"
+    )
+    _require_allowed_keys(
+        request, VALID_REQUEST_KEYS, f"{entry_name}/request.json"
+    )
+    if not _is_exact_int(request.get("schema_version"), 1):
+        raise RuntimeError(
+            f"{entry_name}: unsupported request schema_version "
+            f"{request.get('schema_version')!r}"
+        )
+
+    compilation = request.get("compilation")
+    _validate_compilation_fields(compilation, f"{entry_name}: compilation")
+    actual_comp = _normalize_compilation(compilation, request_defaults=True)
+    for req_key in (
+        "source_root",
+        "crate_root",
+        "crate_name",
+        "edition",
+        "target",
+    ):
+        val = compilation.get(req_key)
+        if not isinstance(val, str) or not val:
+            raise RuntimeError(
+                f"{entry_name}: compilation.{req_key} must be non-empty"
+            )
+    if Path(actual_comp["source_root"]).is_absolute():
+        raise RuntimeError(
+            f"{entry_name}: compilation.source_root must be a relative path: "
+            f"{actual_comp['source_root']!r}"
+        )
+    try:
+        unit_src = (entry / actual_comp["source_root"]).resolve(strict=True)
+    except OSError as exc:
+        raise RuntimeError(
+            f"{entry_name}: source_root {actual_comp['source_root']!r} "
+            f"cannot resolve: {exc}"
+        ) from exc
+    if unit_src != resolved_src:
+        raise RuntimeError(
+            f"{entry_name}: source_root {actual_comp['source_root']!r} does "
+            f"not resolve to {resolved_src}"
+        )
+    if not compilation.get("source_files"):
+        raise RuntimeError(
+            f"{entry_name}: compilation.source_files must be declared"
+        )
+    if sorted(actual_comp["source_files"]) != expected_compilation_sources:
+        missing = sorted(
+            set(expected_compilation_sources) - set(actual_comp["source_files"])
+        )
+        extra = sorted(
+            set(actual_comp["source_files"]) - set(expected_compilation_sources)
+        )
+        raise RuntimeError(
+            f"{entry_name}: compilation.source_files mismatch vs "
+            f"{resolved_src} (missing={missing}, extra={extra})"
+        )
+    if actual_comp["crate_root"] not in expected_compilation_sources:
+        raise RuntimeError(
+            f"{entry_name}: compilation.crate_root must belong to "
+            "compilation sources"
+        )
+    pkg_version = actual_comp["env"].get("CARGO_PKG_VERSION")
+    if not isinstance(pkg_version, str) or not pkg_version:
+        raise RuntimeError(
+            f"{entry_name}: compilation.env.CARGO_PKG_VERSION must be "
+            "non-empty"
+        )
+
+    try:
+        _normalize_selected_unit_scope(request.get("scope"), entry_name)
+    except ValueError as exc:
+        raise RuntimeError(str(exc)) from exc
+
+    proof = request.get("proof")
+    if not isinstance(proof, dict):
+        raise RuntimeError(f"{entry_name}: proof must be a JSON object")
+    if "specification_module" in proof or "theorem_module" in proof:
+        raise RuntimeError(
+            f"{entry_name}: unexpected explicit "
+            "specification_module/theorem_module override"
+        )
+    _require_allowed_keys(proof, VALID_PROOF_KEYS, f"{entry_name}: proof")
+    if proof.get("source_root") != ".":
+        raise RuntimeError(f"{entry_name}: proof.source_root must be '.'")
+    sources = proof.get("sources")
+    if not isinstance(sources, list) or not sources:
+        raise RuntimeError(f"{entry_name}: proof.sources must be non-empty")
+
+    declared_files = {"request.json"}
+    spec_modules = set()
+    proof_modules = set()
+    declared_modules = set()
+    for source in sources:
+        _require_allowed_keys(
+            source,
+            VALID_PROOF_SOURCE_KEYS,
+            f"{entry_name}: proof.sources entry",
+        )
+        mod_name = source.get("module")
+        if not isinstance(mod_name, str) or not mod_name:
+            raise RuntimeError(
+                f"{entry_name}: invalid Lean module name {mod_name!r}"
+            )
+        if mod_name in declared_modules:
+            raise RuntimeError(
+                f"{entry_name}: duplicate proof module {mod_name!r}"
+            )
+        declared_modules.add(mod_name)
+        filename = source.get("path")
+        if not is_safe_relative_filename(filename) or not filename.endswith(
+            ".lean"
+        ):
+            raise RuntimeError(
+                f"{entry_name}: invalid Lean source path {filename!r}"
+            )
+        if filename in declared_files:
+            raise RuntimeError(
+                f"{entry_name}: duplicate proof source path {filename!r}"
+            )
+        role = source.get("role")
+        if role not in ("specification", "proof"):
+            raise RuntimeError(
+                f"{entry_name}: invalid proof source role {role!r}"
+            )
+        if role == "specification":
+            if (
+                not SPEC_FILE_PATTERN.fullmatch(filename)
+                or mod_name != filename[:-5]
+            ):
+                raise RuntimeError(
+                    f"{entry_name}: specification source must use a "
+                    "Spec*.lean file matching its module name "
+                    f"(got path={filename!r}, module={mod_name!r})"
+                )
+            spec_modules.add(mod_name)
+        else:
+            proof_modules.add(mod_name)
+        if not (entry / filename).is_file():
+            raise RuntimeError(
+                f"{entry_name}: missing declared source {filename}"
+            )
+        declared_files.add(filename)
+
+    unexpected = set(unit_files) - declared_files
+    if unexpected:
+        raise RuntimeError(
+            f"{entry_name}: undeclared files in proof unit: "
+            f"{sorted(unexpected)}"
+        )
+
+    actual_spec_decl = proof.get("specification", DEFAULT_SPEC_DECL)
+    actual_thm_decl = proof.get("theorem", DEFAULT_PROOF_THM)
+    for k, decl in (
+        ("specification", actual_spec_decl),
+        ("theorem", actual_thm_decl),
+    ):
+        if not _is_qualified_lean_decl(decl):
+            raise RuntimeError(
+                f"{entry_name}: invalid proof.{k}: {decl!r}"
+            )
+    spec_mod = actual_spec_decl.rsplit(".", 1)[0]
+    if spec_mod not in spec_modules:
+        raise RuntimeError(
+            f"{entry_name}: proof.specification module {spec_mod!r} must be "
+            "declared with role 'specification' in proof.sources"
+        )
+    thm_mod = actual_thm_decl.rsplit(".", 1)[0]
+    if thm_mod not in proof_modules:
+        raise RuntimeError(
+            f"{entry_name}: proof.theorem module {thm_mod!r} must be declared "
+            "with role 'proof' in proof.sources"
+        )
+
+    actual_profile = expected_unit_profile(entry, request)
+    comp_sig = (
+        actual_comp["source_root"],
+        actual_comp["crate_root"],
+        actual_comp["crate_name"],
+        actual_comp["crate_type"],
+        actual_comp["panic"],
+        actual_comp["overflow_checks"],
+        actual_comp["edition"],
+        actual_comp["target"],
+        tuple(sorted(actual_comp["cfg"])),
+        tuple(sorted(actual_comp["env"].items())),
+        tuple(sorted(actual_comp["source_files"])),
+    )
+    unit_expected = {
+        "profile": actual_profile,
+        "allowed_axioms": sorted(ALLOWED_AXIOMS),
+        "compilation": actual_comp,
+        "scope": request["scope"],
+        "proof": {
+            "specification": actual_spec_decl,
+            "theorem": actual_thm_decl,
+        },
+    }
+    request_with_expected = dict(request)
+    request_with_expected["_unit_expected"] = unit_expected
+    return request_with_expected, comp_sig
+
+
+def discover_units(
+    proofs_dir,
+    src_dir,
+    selected_units=None,
+    *,
+    repo_root=None,
+):
+    """Validate `proofs_dir` and `request.json` files, returning units."""
     proofs_dir = _validate_real_directory(
         proofs_dir, "proofs", repo_root=repo_root
     )
@@ -406,7 +1399,16 @@ def discover_units(proofs_dir, src_dir, selected_units=None, *, repo_root=None):
     if lib_rs.is_symlink() or not lib_rs.is_file():
         raise RuntimeError(f"zerocopy crate root missing: {lib_rs}")
 
+    actual_rs_files = _list_actual_src_files(resolved_src)
+    expected_compilation_sources = sorted(
+        f for f in actual_rs_files if f not in EXCLUDED_SRC_FILES
+    )
+    if not expected_compilation_sources:
+        raise RuntimeError(f"no compilable .rs files under {resolved_src}")
+
     discovered = {}
+    baseline_unit = None
+    baseline_sig = None
     for entry in sorted(proofs_dir.iterdir(), key=lambda p: p.name):
         if entry.is_symlink():
             raise RuntimeError(f"symlink disallowed in proofs tree: {entry}")
@@ -422,64 +1424,43 @@ def discover_units(proofs_dir, src_dir, selected_units=None, *, repo_root=None):
             if child.is_symlink():
                 raise RuntimeError(f"symlink disallowed in proof unit: {child}")
             if not child.is_file():
-                raise RuntimeError(f"unexpected non-file entry in proof unit: {child}")
+                raise RuntimeError(
+                    f"unexpected non-file entry in proof unit: {child}"
+                )
             unit_files.append(child.name)
 
-        req_path = entry / "request.json"
-        if not req_path.is_file():
-            raise RuntimeError(f"missing request.json in proof unit: {entry}")
-        request = json.loads(req_path.read_text(encoding="utf-8"))
-
-        compilation = request.get("compilation")
-        if not isinstance(compilation, dict):
-            raise RuntimeError(f"{entry.name}: missing compilation table")
-        source_root = compilation.get("source_root")
-        if not isinstance(source_root, str) or not source_root or Path(source_root).is_absolute():
+        req_with_expected, comp_sig = _validate_request_unit(
+            entry.name,
+            entry,
+            unit_files,
+            resolved_src,
+            expected_compilation_sources,
+        )
+        if baseline_sig is None:
+            baseline_unit = entry.name
+            baseline_sig = comp_sig
+        elif comp_sig != baseline_sig:
             raise RuntimeError(
-                f"{entry.name}: compilation.source_root must be a relative path: {source_root!r}"
+                f"{entry.name}: compilation config inconsistent with "
+                f"{baseline_unit}"
             )
-        try:
-            unit_src = (entry / source_root).resolve(strict=True)
-        except OSError as exc:
-            raise RuntimeError(
-                f"{entry.name}: source_root {source_root!r} cannot resolve: {exc}"
-            ) from exc
-        if unit_src != resolved_src:
-            raise RuntimeError(
-                f"{entry.name}: source_root {source_root!r} does not resolve to {resolved_src}"
-            )
-
-        try:
-            _normalize_selected_unit_scope(request.get("scope"), entry.name)
-        except ValueError as exc:
-            raise RuntimeError(str(exc)) from exc
-
-        proof = request.get("proof")
-        if not isinstance(proof, dict) or proof.get("source_root") != ".":
-            raise RuntimeError(f"{entry.name}: proof.source_root must be '.'")
-        sources = proof.get("sources")
-        if not isinstance(sources, list) or not sources:
-            raise RuntimeError(f"{entry.name}: proof.sources must be non-empty")
-
-        declared_files = {"request.json"}
-        for source in sources:
-            filename = source.get("path") if isinstance(source, dict) else None
-            if not is_safe_relative_filename(filename) or not filename.endswith(".lean"):
-                raise RuntimeError(f"{entry.name}: invalid Lean source path {filename!r}")
-            if not (entry / filename).is_file():
-                raise RuntimeError(f"{entry.name}: missing declared source {filename}")
-            declared_files.add(filename)
-
-        unexpected = set(unit_files) - declared_files
-        if unexpected:
-            raise RuntimeError(
-                f"{entry.name}: undeclared files in proof unit: {sorted(unexpected)}"
-            )
-        expected_unit_profile(entry, request)
-        discovered[entry.name] = (entry, request)
+        discovered[entry.name] = (entry, req_with_expected)
 
     if not discovered:
-        raise RuntimeError(f"no proof units discovered under {proofs_dir}")
+        raise RuntimeError(f"no proof units found under {proofs_dir}")
+
+    _verify_env_macros_doc_only(resolved_src, expected_compilation_sources)
+    source_hashes = {
+        rel: anneal_ci_lib.sha256_raw_file(
+            resolved_src / rel,
+            reject_symlink=True,
+            missing_label="zerocopy/src",
+        ).hex()
+        for rel in expected_compilation_sources
+    }
+    for _, req_with_expected in discovered.values():
+        req_with_expected["_unit_expected"]["source_hashes"] = source_hashes
+
     if selected_units:
         unique_units = list(dict.fromkeys(selected_units))
         missing = [name for name in unique_units if name not in discovered]
@@ -490,16 +1471,118 @@ def discover_units(proofs_dir, src_dir, selected_units=None, *, repo_root=None):
 
 
 _SELECTED_BODY_KEYS = frozenset(("def_id", "path", "body_index"))
+_MONO_INT_ARG_RE = re.compile(
+    r"^([+-]?)(?:0x([0-9a-fA-F_]+)|0o([0-7_]+)|0b([01_]+)|([0-9][0-9_]*))"
+    r"(?:[ui](?:8|16|32|64|128|size))?$"
+)
+_MONO_INLINE_INT_RE = re.compile(
+    r"(?<![A-Za-z0-9_])([+-]?)(?:0x([0-9a-fA-F_]+)|0o([0-7_]+)|0b([01_]+)|"
+    r"([0-9][0-9_]*))(?:[ui](?:8|16|32|64|128|size))(?![A-Za-z0-9_])"
+)
+_MONO_REGION_ARGS = frozenset({"'static", "'_"})
 
 
-def _is_nonneg_int(val):
-    return not isinstance(val, bool) and isinstance(val, int) and val >= 0
+def _replace_mono_int_match(match):
+    sign, hex_d, oct_d, bin_d, dec_d = match.groups()
+    if hex_d is not None:
+        val = int(hex_d.replace("_", ""), 16)
+    elif oct_d is not None:
+        val = int(oct_d.replace("_", ""), 8)
+    elif bin_d is not None:
+        val = int(bin_d.replace("_", ""), 2)
+    else:
+        val = int(dec_d.replace("_", ""), 10)
+    return f"{sign}{val}" if sign == "-" and val != 0 else str(val)
 
 
-def _is_valid_selected_bodies(selected):
-    """Return True iff `selected` is a non-empty list of SelectedBody dicts."""
+def _canonical_mono_arg(arg):
+    """Normalize concrete monomorphization argument text toward rustc output."""
+    cleaned = re.sub(r"\s+", " ", arg.strip())
+    exact_int = _MONO_INT_ARG_RE.fullmatch(cleaned)
+    if exact_int:
+        return _replace_mono_int_match(exact_int)
+    cleaned = _MONO_INLINE_INT_RE.sub(_replace_mono_int_match, cleaned)
+    cleaned = re.sub(r"&\s*(?:'static|'_)\s+", "&", cleaned)
+    return re.sub(r"(^|[\s<(&*,;\[])(?:::)", r"\1", cleaned)
+
+
+def _canonical_instantiation_candidates(inst_path, inst_args):
+    """Return candidate `rustc` `SelectedBody.path` spellings for an inst."""
+    base_path = inst_path[2:] if inst_path.startswith("::") else inst_path
+    if not inst_args:
+        return frozenset({base_path})
+
+    raw_args = [a.strip() for a in inst_args]
+    norm_args = [_canonical_mono_arg(a) for a in inst_args]
+    erased_args = [
+        "'_" if a in _MONO_REGION_ARGS else a for a in norm_args
+    ]
+    nr_raw = [a for a in raw_args if a not in _MONO_REGION_ARGS]
+    nr_norm = [a for a in norm_args if a not in _MONO_REGION_ARGS]
+
+    candidates = set()
+    for seq in (raw_args, norm_args, erased_args, nr_raw, nr_norm):
+        if seq:
+            candidates.add(f"{base_path}::<{', '.join(seq)}>")
+        else:
+            candidates.add(base_path)
+
+    if "::" in base_path and not base_path.startswith("<"):
+        owner_path, method = base_path.rsplit("::", 1)
+        for seq in (raw_args, norm_args, erased_args, nr_raw, nr_norm):
+            for split in range(1, len(seq) + 1):
+                owner_args = seq[:split]
+                method_args = seq[split:]
+                owner_part = f"<{owner_path}<{', '.join(owner_args)}>>"
+                if method_args:
+                    candidates.add(
+                        f"{owner_part}::{method}::<{', '.join(method_args)}>"
+                    )
+                else:
+                    candidates.add(f"{owner_part}::{method}")
+        if raw_args[0] not in _MONO_REGION_ARGS:
+            self_variants = (raw_args[0], norm_args[0])
+            rest_raw = raw_args[1:]
+            rest_norm = norm_args[1:]
+            rest_erased = erased_args[1:]
+            rest_nr_raw = [a for a in rest_raw if a not in _MONO_REGION_ARGS]
+            rest_nr_norm = [a for a in rest_norm if a not in _MONO_REGION_ARGS]
+            for self_ty in self_variants:
+                for rest_seq in (
+                    rest_raw,
+                    rest_norm,
+                    rest_erased,
+                    rest_nr_raw,
+                    rest_nr_norm,
+                ):
+                    for split in range(len(rest_seq) + 1):
+                        trait_args = rest_seq[:split]
+                        method_args = rest_seq[split:]
+                        trait_part = (
+                            f"{owner_path}<{', '.join(trait_args)}>"
+                            if trait_args
+                            else owner_path
+                        )
+                        if method_args:
+                            candidates.add(
+                                f"<{self_ty} as {trait_part}>::{method}::"
+                                f"<{', '.join(method_args)}>"
+                            )
+                        else:
+                            candidates.add(
+                                f"<{self_ty} as {trait_part}>::{method}"
+                            )
+    return frozenset(candidates)
+
+
+def _validate_selected_entries(
+    selected, exp_roots, exp_inst_keys, *, extra_inst_candidates=None
+):
+    """Return True iff `selected` matches `SelectedBody` shape and scope."""
     if not isinstance(selected, list) or not selected:
         return False
+    paths = []
+    indices = []
     for entry in selected:
         if not isinstance(entry, dict):
             return False
@@ -511,7 +1594,145 @@ def _is_valid_selected_bodies(selected):
             return False
         if not _is_nonneg_int(entry["body_index"]):
             return False
-    return True
+        paths.append(entry["path"])
+        indices.append(entry["body_index"])
+    if len(indices) != len(set(indices)) or len(paths) != len(set(paths)):
+        return False
+    path_set = set(paths)
+    root_set = set(exp_roots)
+    if exp_inst_keys:
+        if not root_set.issubset(path_set):
+            return False
+        if not (1 <= len(paths) <= len(exp_roots) + len(exp_inst_keys)):
+            return False
+        inst_cands = []
+        for p, a in exp_inst_keys:
+            cands = _canonical_instantiation_candidates(p, a)
+            if extra_inst_candidates and (p, a) in extra_inst_candidates:
+                cands = cands | extra_inst_candidates[(p, a)]
+            inst_cands.append(cands)
+        if any(not (path_set & cands) for cands in inst_cands):
+            return False
+        allowed_paths = set(root_set).union(*inst_cands)
+        return path_set.issubset(allowed_paths)
+    return path_set == root_set
+
+
+def resolve_instantiation_candidates_via_capture(
+    unit_dir,
+    expected_compilation,
+    inst_keys,
+    *,
+    capture,
+    sysroot=None,
+    timeout=120.0,
+):
+    """Ask `anneal-rustc-capture` for `rustc`-lowered `SelectedBody.path`s."""
+    resolved = {}
+    if not inst_keys or capture is None or expected_compilation is None:
+        return resolved
+    resolved_src = (
+        unit_dir / expected_compilation["source_root"]
+    ).resolve(strict=True)
+    base_cmd = [
+        str(capture),
+        "capture",
+        "--crate-root",
+        str(resolved_src / expected_compilation["crate_root"]),
+        "--crate-name",
+        expected_compilation["crate_name"],
+        "--crate-type",
+        expected_compilation["crate_type"],
+        "--panic",
+        expected_compilation["panic"],
+        "--edition",
+        expected_compilation["edition"],
+        "--target",
+        expected_compilation["target"],
+    ]
+    if expected_compilation.get("overflow_checks"):
+        base_cmd.append("--overflow-checks")
+    # Match `anneal/trusted/cargo-anneal/src/verify.rs`: clear ambient env
+    # so target/host RUSTC wrappers or search paths cannot taint capture, and
+    # inject `<sysroot>/lib` only from the explicit `--sysroot`.
+    child_env = {"PATH": "/usr/bin:/bin"}
+    if sysroot is not None:
+        try:
+            resolved_sysroot = Path(sysroot).resolve(strict=True)
+        except OSError as exc:
+            raise RuntimeError(
+                f"{unit_dir.name}: sysroot {sysroot!r} cannot resolve: {exc}"
+            ) from exc
+        if not resolved_sysroot.is_dir():
+            raise RuntimeError(
+                f"{unit_dir.name}: sysroot is not a directory: "
+                f"{resolved_sysroot}"
+            )
+        lib_key = (
+            "DYLD_LIBRARY_PATH"
+            if sys.platform == "darwin"
+            else "LD_LIBRARY_PATH"
+        )
+        child_env[lib_key] = str(resolved_sysroot / "lib")
+        base_cmd.extend(["--sysroot", str(resolved_sysroot)])
+    for cfg_item in expected_compilation["cfg"]:
+        base_cmd.append(f"--cfg={cfg_item}")
+    for k, v in sorted(expected_compilation["env"].items()):
+        base_cmd.append(f"--env={k}={v}")
+    for rel in expected_compilation["source_files"]:
+        base_cmd.extend(["--source-file", str(resolved_src / rel)])
+    with tempfile.TemporaryDirectory(prefix="anneal-zc-alias-") as tmp_str:
+        tmp_dir = Path(tmp_str)
+        for idx, (inst_path, inst_args) in enumerate(inst_keys):
+            out_dir = tmp_dir / f"cap_{idx}" / "out"
+            out_dir.parent.mkdir(parents=True, exist_ok=True)
+            cmd = [
+                *base_cmd,
+                "--out-dir",
+                str(out_dir),
+                "--instantiate",
+                json.dumps({"path": inst_path, "args": list(inst_args)}),
+            ]
+            try:
+                proc = subprocess.run(
+                    cmd,
+                    cwd=unit_dir,
+                    env=child_env,
+                    capture_output=True,
+                    text=True,
+                    timeout=timeout,
+                    check=False,
+                )
+            except subprocess.TimeoutExpired as exc:
+                raise RuntimeError(
+                    f"{unit_dir.name}: rustc-capture timed out resolving "
+                    f"instantiation {inst_path!r}"
+                ) from exc
+            capture_path = out_dir / "capture.json"
+            if proc.returncode != 0 or not capture_path.is_file():
+                raise RuntimeError(
+                    f"{unit_dir.name}: rustc-capture failed resolving "
+                    f"instantiation {inst_path!r} (exit {proc.returncode}): "
+                    f"stderr={proc.stderr[:400]!r} stdout={proc.stdout[:400]!r}"
+                )
+            cap_data = anneal_ci_lib.load_strict_json_object(
+                capture_path, f"{unit_dir.name} instantiation capture"
+            )
+            cap_sel = cap_data.get("selected")
+            if not isinstance(cap_sel, list) or not all(
+                isinstance(e, dict)
+                and isinstance(e.get("path"), str)
+                and e["path"]
+                for e in cap_sel
+            ):
+                raise RuntimeError(
+                    f"{unit_dir.name}: invalid capture.json selected entries "
+                    f"resolving instantiation {inst_path!r}: {cap_sel!r}"
+                )
+            resolved[(inst_path, inst_args)] = frozenset(
+                e["path"] for e in cap_sel
+            )
+    return resolved
 
 
 def _validate_profile_v2_disclosures(receipt, failures):
@@ -529,18 +1750,24 @@ def _validate_profile_v2_disclosures(receipt, failures):
     if not isinstance(assumptions, list) or not all(
         isinstance(item, str) for item in assumptions
     ):
-        failures.append(f"Profile v2 receipt missing assumptions list: {assumptions!r}")
+        failures.append(
+            f"Profile v2 receipt missing assumptions list: {assumptions!r}"
+        )
         return
     if PROFILE_V1_ASSUMPTION in assumptions:
         failures.append(
-            "Profile v2 receipt must not carry Profile v1 pointer-free assumption"
+            "Profile v2 receipt must not carry Profile v1 pointer-free "
+            "assumption"
         )
     v2_entries = [
-        item for item in assumptions if item.startswith(PROFILE_V2_ASSUMPTION_PREFIX)
+        item
+        for item in assumptions
+        if item.startswith(PROFILE_V2_ASSUMPTION_PREFIX)
     ]
     if not v2_entries:
         failures.append(
-            "Profile v2 receipt missing Profile v2 semantics assumption disclosure"
+            "Profile v2 receipt missing Profile v2 semantics assumption "
+            "disclosure"
         )
         return
     semantics = v2_entries[0]
@@ -551,7 +1778,8 @@ def _validate_profile_v2_disclosures(receipt, failures):
     ]
     if missing_phrases:
         failures.append(
-            f"Profile v2 semantics assumption missing disclosures: {missing_phrases!r}"
+            "Profile v2 semantics assumption missing disclosures: "
+            f"{missing_phrases!r}"
         )
 
 
@@ -563,8 +1791,14 @@ def validate_parsed_receipt(
     expected_instantiations=None,
     *,
     expected_profile=None,
+    expected_compilation=None,
+    expected_spec_decl=None,
+    expected_proof_thm=None,
+    expected_axioms=None,
+    expected_source_hashes=None,
+    extra_inst_candidates=None,
 ):
-    """Fail closed unless a parsed `cargo-anneal verify` receipt is an untainted pass."""
+    """Fail closed unless a parsed `cargo-anneal verify` receipt is clean."""
     try:
         exp_roots, exp_inst_keys = _normalize_selected_unit_scope(
             {
@@ -589,6 +1823,10 @@ def validate_parsed_receipt(
         check_deferred=True,
     )
 
+    spec_warnings = receipt.get("spec_warnings")
+    if spec_warnings != []:
+        failures.append(f"spec_warnings={spec_warnings!r}")
+
     if expected_profile is not None and (
         isinstance(expected_profile, bool)
         or expected_profile not in PROFILE_CANONICAL_ROOTS
@@ -609,21 +1847,165 @@ def validate_parsed_receipt(
             failures.append(f"scope mismatch: {scope!r}")
 
     selected = receipt.get("selected")
-    if not _is_valid_selected_bodies(selected):
-        failures.append(f"selected={selected!r}")
+    if not _validate_selected_entries(
+        selected,
+        exp_roots,
+        exp_inst_keys,
+        extra_inst_candidates=extra_inst_candidates,
+    ):
+        failures.append(f"selected mismatch: selected={selected!r}")
+
+    cfg = receipt.get("configuration")
+    if isinstance(cfg, dict):
+        unexpected_cfg = sorted(
+            set(cfg) - VALID_RECEIPT_CONFIGURATION_KEYS
+        )
+        if unexpected_cfg:
+            failures.append(
+                f"unexpected configuration keys={unexpected_cfg!r}"
+            )
+
+    if expected_compilation is not None:
+        if not isinstance(cfg, dict):
+            failures.append(f"missing configuration object: {cfg!r}")
+        else:
+            for field in (
+                "crate_name",
+                "crate_type",
+                "panic",
+                "edition",
+                "target",
+            ):
+                if cfg.get(field) != expected_compilation[field]:
+                    failures.append(
+                        f"configuration.{field}={cfg.get(field)!r} "
+                        f"!= {expected_compilation[field]!r}"
+                    )
+            expected_crate_root = expected_compilation["crate_root"]
+            actual_crate_root = cfg.get("crate_root")
+            stage_prefix = None
+            if isinstance(actual_crate_root, str):
+                if actual_crate_root == expected_crate_root:
+                    stage_prefix = ""
+                elif actual_crate_root.endswith(f"/{expected_crate_root}"):
+                    stage_prefix = actual_crate_root[
+                        : -len(expected_crate_root)
+                    ]
+            if stage_prefix is None:
+                failures.append(
+                    f"configuration.crate_root={actual_crate_root!r}"
+                )
+            decl_files = cfg.get("declared_source_files")
+            if stage_prefix is not None:
+                expected_decl = sorted(
+                    f"{stage_prefix}{rel}"
+                    for rel in expected_compilation["source_files"]
+                )
+                if (
+                    not isinstance(decl_files, list)
+                    or not all(isinstance(d, str) for d in decl_files)
+                    or len(decl_files) != len(set(decl_files))
+                    or sorted(decl_files) != expected_decl
+                ):
+                    failures.append(
+                        f"configuration.declared_source_files={decl_files!r}"
+                    )
+            cfg_list = cfg.get("cfg")
+            if (
+                not isinstance(cfg_list, list)
+                or not all(isinstance(c, str) for c in cfg_list)
+                or len(cfg_list) != len(set(cfg_list))
+                or sorted(cfg_list) != sorted(expected_compilation["cfg"])
+            ):
+                failures.append(f"configuration.cfg={cfg_list!r}")
+            if cfg.get("env") != expected_compilation["env"]:
+                failures.append(f"configuration.env={cfg.get('env')!r}")
+            if not _is_exact_int(cfg.get("opt_level"), 0):
+                failures.append(
+                    f"configuration.opt_level={cfg.get('opt_level')!r}"
+                )
+            if cfg.get("debug_assertions") is not False:
+                failures.append(
+                    "configuration.debug_assertions="
+                    f"{cfg.get('debug_assertions')!r}"
+                )
+            expected_overflow = expected_compilation.get(
+                "overflow_checks", False
+            )
+            if cfg.get("overflow_checks") is not expected_overflow:
+                failures.append(
+                    "configuration.overflow_checks="
+                    f"{cfg.get('overflow_checks')!r}"
+                )
+            if cfg.get("mir_preserve_ub") is not True:
+                failures.append(
+                    "configuration.mir_preserve_ub="
+                    f"{cfg.get('mir_preserve_ub')!r}"
+                )
+            if not _is_exact_int(cfg.get("pointer_bits"), 64):
+                failures.append(
+                    f"configuration.pointer_bits={cfg.get('pointer_bits')!r}"
+                )
+            if cfg.get("endian") != "little":
+                failures.append(f"configuration.endian={cfg.get('endian')!r}")
+
+        sources = receipt.get("sources")
+        if (
+            not isinstance(sources, list)
+            or not all(
+                isinstance(s, dict)
+                and isinstance(s.get("relative_path"), str)
+                and s.get("relative_path")
+                and isinstance(s.get("sha256"), str)
+                and s.get("sha256")
+                for s in sources
+            )
+            or sorted(s["relative_path"] for s in sources)
+            != sorted(expected_compilation["source_files"])
+            or len(sources) != len(expected_compilation["source_files"])
+        ):
+            failures.append(f"sources mismatch: {sources!r}")
+        elif expected_source_hashes is not None:
+            actual_hashes = {s["relative_path"]: s["sha256"] for s in sources}
+            if actual_hashes != expected_source_hashes:
+                failures.append(f"sources sha256 mismatch: {sources!r}")
+
+    allowed_ax = (
+        ALLOWED_AXIOMS
+        if expected_axioms is None
+        else frozenset(expected_axioms)
+    )
+    if not allowed_ax.issubset(ALLOWED_AXIOMS):
+        failures.append(f"invalid expected_axioms={expected_axioms!r}")
 
     audit = receipt.get("audit")
     if not isinstance(audit, dict):
         failures.append("missing audit object")
     else:
+        if audit.get("replay") is not True:
+            failures.append(f"audit.replay={audit.get('replay')!r}")
         if audit.get("exactType") is not True:
             failures.append(f"audit.exactType={audit.get('exactType')!r}")
-        if audit.get("checkedAlternateProofs") != 0:
+        if not _is_exact_int(audit.get("checkedAlternateProofs"), 0):
             failures.append(
-                f"audit.checkedAlternateProofs={audit.get('checkedAlternateProofs')!r}"
+                "audit.checkedAlternateProofs="
+                f"{audit.get('checkedAlternateProofs')!r}"
+            )
+        replayed = audit.get("replayedDeclarations")
+        if not _is_nonneg_int(replayed) or replayed == 0:
+            failures.append(f"audit.replayedDeclarations={replayed!r}")
+        if audit.get("sorryDeclarations") != []:
+            failures.append(
+                f"audit.sorryDeclarations={audit.get('sorryDeclarations')!r}"
             )
         axioms = audit.get("axioms")
-        if not isinstance(axioms, list) or not set(axioms).issubset(ALLOWED_AXIOMS):
+        if (
+            not isinstance(axioms, list)
+            or not all(isinstance(a, str) for a in axioms)
+            or len(axioms) != len(set(axioms))
+            or not set(axioms).issubset(allowed_ax)
+            or not set(axioms).issubset(ALLOWED_AXIOMS)
+        ):
             failures.append(f"disallowed audit.axioms={axioms!r}")
         root = audit.get("canonicalRoot")
         if (
@@ -634,8 +2016,8 @@ def validate_parsed_receipt(
             expected_root = PROFILE_CANONICAL_ROOTS[expected_profile]
             if root != expected_root:
                 failures.append(
-                    f"canonicalRoot={root!r} does not match Profile v{expected_profile} "
-                    f"({expected_root!r})"
+                    f"canonicalRoot={root!r} does not match Profile "
+                    f"v{expected_profile} ({expected_root!r})"
                 )
         elif root not in (UNIT_THEOREM_V1, UNIT_THEOREM_V2):
             failures.append(f"canonicalRoot={root!r}")
@@ -655,6 +2037,25 @@ def validate_parsed_receipt(
                 failures.append(
                     "Profile v1 receipt carries Profile v2 semantics assumption"
                 )
+        if audit.get("subject") != "Captured.program":
+            failures.append(f"audit.subject={audit.get('subject')!r}")
+        if audit.get("expected") != "Expected.claim":
+            failures.append(f"audit.expected={audit.get('expected')!r}")
+        if expected_spec_decl is not None and (
+            audit.get("specification") != expected_spec_decl
+        ):
+            failures.append(
+                f"audit.specification={audit.get('specification')!r} "
+                f"!= {expected_spec_decl!r}"
+            )
+        if (
+            expected_proof_thm is not None
+            and audit.get("theorem") != expected_proof_thm
+        ):
+            failures.append(
+                f"audit.theorem={audit.get('theorem')!r} "
+                f"!= {expected_proof_thm!r}"
+            )
         bindings = audit.get("bindings")
         if not isinstance(bindings, dict):
             failures.append("missing audit.bindings")
@@ -671,7 +2072,8 @@ def validate_parsed_receipt(
     if failures:
         detail = "; ".join(failures)
         raise RuntimeError(
-            f"{unit_name}: verification failed ({detail}): {json.dumps(receipt)[:2500]}"
+            f"{unit_name}: verification failed ({detail}): "
+            f"{json.dumps(receipt)[:2500]}"
         )
     return receipt
 
@@ -685,11 +2087,20 @@ def validate_receipt(
     expected_instantiations=None,
     *,
     expected_profile=None,
+    expected_compilation=None,
+    expected_spec_decl=None,
+    expected_proof_thm=None,
+    expected_axioms=None,
+    expected_source_hashes=None,
+    extra_inst_candidates=None,
 ):
-    """Fail closed unless `cargo-anneal verify` emitted an untainted passing receipt."""
+    """Fail closed unless `cargo-anneal verify` emitted a clean receipt."""
     try:
-        receipt = json.loads(stdout_text)
-    except json.JSONDecodeError as exc:
+        receipt = json.loads(
+            stdout_text,
+            object_pairs_hook=anneal_ci_lib.reject_duplicate_json_keys,
+        )
+    except (ValueError, json.JSONDecodeError) as exc:
         raise RuntimeError(
             f"{unit_name}: invalid JSON receipt (exit {returncode}): {exc}\n"
             f"stdout={stdout_text[:800]}\nstderr={stderr_text[:800]}"
@@ -703,6 +2114,88 @@ def validate_receipt(
         expected_roots,
         expected_instantiations,
         expected_profile=expected_profile,
+        expected_compilation=expected_compilation,
+        expected_spec_decl=expected_spec_decl,
+        expected_proof_thm=expected_proof_thm,
+        expected_axioms=expected_axioms,
+        expected_source_hashes=expected_source_hashes,
+        extra_inst_candidates=extra_inst_candidates,
+    )
+
+
+def validate_unit_receipt(
+    unit_dir,
+    returncode,
+    receipt,
+    request,
+    *,
+    capture=None,
+    sysroot=None,
+    timeout=120.0,
+):
+    """Validate one unit's Receipt v3, resolving aliased instantiations."""
+    unit_expected = request["_unit_expected"]
+    expected_scope = unit_expected["scope"]
+    expected_proof = unit_expected["proof"]
+    raw_insts = expected_scope.get("instantiations", [])
+    extra_inst = None
+    if (
+        returncode == 0
+        and receipt.get("status") == "selected_unit_verified"
+        and raw_insts
+        and capture is not None
+    ):
+        exp_roots, exp_inst_keys = _normalize_selected_unit_scope(
+            {
+                "kind": "selected_unit",
+                "roots": expected_scope["roots"],
+                "instantiations": raw_insts,
+            },
+            f"{unit_dir.name} expected",
+        )
+        selected = receipt.get("selected")
+        if (
+            isinstance(selected, list)
+            and 1 <= len(selected) <= len(exp_roots) + len(exp_inst_keys)
+            and all(
+                isinstance(e, dict)
+                and set(e.keys()) == _SELECTED_BODY_KEYS
+                and isinstance(e.get("path"), str)
+                and e["path"]
+                for e in selected
+            )
+            and not _validate_selected_entries(
+                selected, exp_roots, exp_inst_keys
+            )
+        ):
+            sel_paths = {e["path"] for e in selected}
+            unmatched = [
+                (p, a)
+                for p, a in exp_inst_keys
+                if not (sel_paths & _canonical_instantiation_candidates(p, a))
+            ]
+            if unmatched:
+                extra_inst = resolve_instantiation_candidates_via_capture(
+                    unit_dir,
+                    unit_expected["compilation"],
+                    unmatched,
+                    capture=capture,
+                    sysroot=sysroot,
+                    timeout=timeout,
+                )
+    return validate_parsed_receipt(
+        unit_dir.name,
+        returncode,
+        receipt,
+        expected_scope["roots"],
+        expected_instantiations=raw_insts,
+        expected_profile=unit_expected["profile"],
+        expected_compilation=unit_expected["compilation"],
+        expected_spec_decl=expected_proof["specification"],
+        expected_proof_thm=expected_proof["theorem"],
+        expected_axioms=unit_expected["allowed_axioms"],
+        expected_source_hashes=unit_expected.get("source_hashes"),
+        extra_inst_candidates=extra_inst,
     )
 
 
@@ -725,23 +2218,28 @@ def verify_unit(arguments, unit_dir, request, artifacts_root):
         label=unit_dir.name,
     )
     elapsed = round(time.monotonic() - started, 3)
-    receipt = validate_parsed_receipt(
-        unit_dir.name,
+    unit_expected = request["_unit_expected"]
+    receipt = validate_unit_receipt(
+        unit_dir,
         proc.returncode,
         receipt,
-        request["scope"]["roots"],
-        expected_instantiations=request["scope"].get("instantiations"),
-        expected_profile=expected_unit_profile(unit_dir, request),
+        request,
+        capture=arguments.capture,
+        sysroot=arguments.sysroot,
+        timeout=arguments.timeout,
     )
     return unit_dir.name, {
         "status": receipt["status"],
+        "profile": unit_expected["profile"],
         "scope": receipt["scope"],
         "axioms": receipt["audit"]["axioms"],
         "elaboration_sandbox": receipt["elaboration_sandbox"],
         "selected": receipt["selected"],
         "request_sha256": receipt["request_sha256"],
         "capture_sha256": receipt["capture_sha256"],
-        "specification_manifest_sha256": receipt["specification_manifest_sha256"],
+        "specification_manifest_sha256": receipt[
+            "specification_manifest_sha256"
+        ],
         "timing_ms": receipt.get("timing_ms", {}),
         "wall_seconds": elapsed,
     }
@@ -754,6 +2252,26 @@ def run_suite(arguments, work_dir, *, repo_root=None):
         selected_units=arguments.unit or None,
         repo_root=repo_root,
     )
+    cargo_toml = arguments.src_dir.resolve(strict=True).parent / "Cargo.toml"
+    cargo_toml_version = (
+        _extract_zerocopy_crate_version(cargo_toml)
+        if cargo_toml.is_symlink() or cargo_toml.is_file()
+        else None
+    )
+    request_crate_version = units[0][1]["_unit_expected"]["compilation"][
+        "env"
+    ]["CARGO_PKG_VERSION"]
+    crate_version_drift = (
+        cargo_toml_version is not None
+        and cargo_toml_version != request_crate_version
+    )
+    if crate_version_drift:
+        print(
+            f"note: Cargo.toml version {cargo_toml_version!r} differs from "
+            f"request.json CARGO_PKG_VERSION {request_crate_version!r} "
+            "(verified doc-only usage)",
+            file=sys.stderr,
+        )
     workers = max(1, min(arguments.jobs, len(units)))
     started = time.monotonic()
     results = {}
@@ -768,6 +2286,9 @@ def run_suite(arguments, work_dir, *, repo_root=None):
     summary = {
         "units": results,
         "unit_count": len(results),
+        "request_crate_version": request_crate_version,
+        "cargo_toml_version": cargo_toml_version,
+        "crate_version_drift": crate_version_drift,
         "elapsed_seconds": round(time.monotonic() - started, 3),
     }
     (work_dir / "summary.json").write_text(
@@ -803,7 +2324,7 @@ def main(argv=None):
     parser.add_argument(
         "--artifacts-dir",
         type=Path,
-        help="New directory retaining complete verification artifacts and summary",
+        help="New directory retaining verification artifacts and summary",
     )
     parser.add_argument(
         "--jobs",

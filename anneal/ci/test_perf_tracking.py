@@ -269,17 +269,40 @@ class MockCollectionTests(unittest.TestCase):
         (unit_dir / "Spec.lean").write_text(
             "-- spec\ndef specs : Specs := ⟨(), ()⟩\n", encoding="utf-8"
         )
+        (unit_dir / "Proof.lean").write_text("prelude\n", encoding="utf-8")
         (unit_dir / "request.json").write_text(
             json.dumps(
                 {
-                    "compilation": {"source_root": "../../src"},
+                    "schema_version": 1,
+                    "compilation": {
+                        "source_root": "../../src",
+                        "crate_root": "lib.rs",
+                        "crate_name": "zerocopy",
+                        "edition": "2021",
+                        "target": "x86_64-unknown-linux-gnu",
+                        "cfg": [],
+                        "env": {"CARGO_PKG_VERSION": "0.1.0"},
+                        "source_files": ["lib.rs"],
+                    },
                     "scope": {"kind": "selected_unit", "roots": ["id"]},
                     "proof": {
                         "source_root": ".",
-                        "sources": [{"path": "Spec.lean"}],
+                        "sources": [
+                            {
+                                "module": "Spec",
+                                "path": "Spec.lean",
+                                "role": "specification",
+                            },
+                            {
+                                "module": "Proof",
+                                "path": "Proof.lean",
+                                "role": "proof",
+                            },
+                        ],
                     },
                 }
-            )
+            ),
+            encoding="utf-8",
         )
 
         # Initialize git repo so commit metadata collection succeeds.
@@ -341,9 +364,10 @@ sys.exit(1)
         fake_cli = bin_dir / "cargo-anneal"
         fake_cli.write_text(
             f"""#!/usr/bin/env python3
-import json, os, pathlib, sys
+import hashlib, json, os, pathlib, sys
 args = sys.argv[1:]
-req = json.loads(pathlib.Path(args[args.index("--request") + 1]).read_text())
+req_path = pathlib.Path(args[args.index("--request") + 1])
+req = json.loads(req_path.read_text())
 roots = req["scope"]["roots"]
 instantiations = req["scope"].get("instantiations", [])
 lean_arg = pathlib.Path(args[args.index("--lean") + 1]) if "--lean" in args else None
@@ -369,6 +393,7 @@ receipt = {{
     "taint_reasons": [],
     "elaboration_sandbox": "linux_bwrap",
     "deferred": [],
+    "spec_warnings": [],
     "scope": {{
         "kind": "selected_unit",
         "roots": roots,
@@ -377,19 +402,64 @@ receipt = {{
     "selected": [
         {{"def_id": i, "path": p, "body_index": i}}
         for i, p in enumerate(
-            list(roots) + [e["path"] for e in (instantiations or [])]
+            list(roots)
+            + [
+                f"{{e['path']}}::<{{', '.join(e['args'])}}>"
+                if e.get("args")
+                else e["path"]
+                for e in (instantiations or [])
+            ]
         )
     ] or [{{"def_id": 0, "path": "stub", "body_index": 0}}],
+    "sources": [
+        {{
+            "relative_path": src,
+            "sha256": hashlib.sha256(
+                (
+                    req_path.parent
+                    / req.get("compilation", {{}}).get("source_root", ".")
+                    / src
+                ).read_bytes()
+            ).hexdigest()
+            if "compilation" in req
+            else "srcsha",
+        }}
+        for src in req.get("compilation", {{}}).get("source_files", [])
+    ],
+    "configuration": {{
+        k: v
+        for k, v in req.get("compilation", {{}}).items()
+        if k not in ("source_root", "source_files")
+    }} | {{
+        "crate_type": "lib",
+        "panic": "unwind",
+        "opt_level": 0,
+        "debug_assertions": False,
+        "overflow_checks": False,
+        "mir_preserve_ub": True,
+        "pointer_bits": 64,
+        "endian": "little",
+        "declared_source_files": req.get("compilation", {{}}).get(
+            "source_files", []
+        ),
+    }},
     "request_sha256": "reqsha",
     "capture_sha256": "capsha",
     "specification_manifest_sha256": "specsha",
     "model_manifest_sha256": "modsha",
     "timing_ms": timing,
     "audit": {{
+        "replay": True,
         "exactType": True,
         "checkedAlternateProofs": 0,
+        "replayedDeclarations": 10,
+        "sorryDeclarations": [],
         "axioms": ["propext"],
         "canonicalRoot": "Trusted.MirSemantics.UnitTheorem",
+        "subject": "Captured.program",
+        "expected": "Expected.claim",
+        "specification": "Spec.specs",
+        "theorem": "Proof.verify",
         "bindings": {{
             "requestSha256": "reqsha",
             "captureSha256": "capsha",
@@ -518,28 +588,25 @@ print(json.dumps(receipt))
     def test_collect_zerocopy_proofs_forwards_instantiations(self):
         with tempfile.TemporaryDirectory() as tmp:
             paths = self._build_synthetic_repo(Path(tmp))
+            base_req = json.loads(
+                (
+                    paths["repo"] / "zerocopy/proofs/01_demo/request.json"
+                ).read_text(encoding="utf-8")
+            )
             mono_dir = paths["repo"] / "zerocopy/proofs/02_mono"
             mono_dir.mkdir(parents=True)
             (mono_dir / "Spec.lean").write_text(
                 "prelude\ndef specs : Specs := ⟨(), ()⟩\n", encoding="utf-8"
             )
+            (mono_dir / "Proof.lean").write_text("prelude\n", encoding="utf-8")
+            mono_scope = {
+                "kind": "selected_unit",
+                "roots": [],
+                "instantiations": [{"path": "core::id", "args": ["u32"]}],
+            }
             (mono_dir / "request.json").write_text(
-                json.dumps(
-                    {
-                        "compilation": {"source_root": "../../src"},
-                        "scope": {
-                            "kind": "selected_unit",
-                            "roots": [],
-                            "instantiations": [
-                                {"path": "core::id", "args": ["u32"]}
-                            ],
-                        },
-                        "proof": {
-                            "source_root": ".",
-                            "sources": [{"path": "Spec.lean"}],
-                        },
-                    }
-                )
+                json.dumps(dict(base_req, scope=mono_scope)),
+                encoding="utf-8",
             )
             tools = {
                 "cli": paths["cli"],
@@ -577,25 +644,15 @@ print(json.dumps(receipt))
                 )
 
             # 2. Fail closed on mixed unit (`roots` + `instantiations`)
-            # when receipt omits `instantiations` (sensitive to deleting
-            # `expected_instantiations` forwarding in `perf_tracking.py`).
+            # when receipt omits `instantiations`.
+            mixed_scope = {
+                "kind": "selected_unit",
+                "roots": ["id"],
+                "instantiations": [{"path": "core::id", "args": ["u32"]}],
+            }
             (mono_dir / "request.json").write_text(
-                json.dumps(
-                    {
-                        "compilation": {"source_root": "../../src"},
-                        "scope": {
-                            "kind": "selected_unit",
-                            "roots": ["id"],
-                            "instantiations": [
-                                {"path": "core::id", "args": ["u32"]}
-                            ],
-                        },
-                        "proof": {
-                            "source_root": ".",
-                            "sources": [{"path": "Spec.lean"}],
-                        },
-                    }
-                )
+                json.dumps(dict(base_req, scope=mixed_scope)),
+                encoding="utf-8",
             )
             paths["cli"].write_text(
                 cli_text.replace(
@@ -612,28 +669,61 @@ print(json.dumps(receipt))
                     time_bin=paths["time_bin"],
                 )
 
-    def test_collect_zerocopy_proofs_rejects_profile_mismatch(self):
+            # 3. Fail closed when receipt `audit.specification` drifts from
+            # `request.json`.
+            paths["cli"].write_text(
+                cli_text.replace('"Spec.specs"', '"WeakSpec.specs"'),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(RuntimeError, "audit\\.specification"):
+                perf_tracking.collect_zerocopy_proofs(
+                    repo_root=paths["repo"],
+                    tools=tools,
+                    timeout=30,
+                    time_bin=paths["time_bin"],
+                )
+
+            # 4. Fail closed when receipt embeds `configuration.stdlib_crate`.
+            paths["cli"].write_text(
+                cli_text.replace(
+                    '"endian": "little",',
+                    '"endian": "little", "stdlib_crate": {"crate_type": "core"},',
+                ),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(
+                RuntimeError, "unexpected configuration keys=\\['stdlib_crate'\\]"
+            ):
+                perf_tracking.collect_zerocopy_proofs(
+                    repo_root=paths["repo"],
+                    tools=tools,
+                    timeout=30,
+                    time_bin=paths["time_bin"],
+                )
+
+    def test_collect_zerocopy_proofs_rejects_profile_and_config_mismatch(self):
         with tempfile.TemporaryDirectory() as tmp:
             paths = self._build_synthetic_repo(Path(tmp))
+            base_req = json.loads(
+                (
+                    paths["repo"] / "zerocopy/proofs/01_demo/request.json"
+                ).read_text(encoding="utf-8")
+            )
             v2_dir = paths["repo"] / "zerocopy/proofs/02_v2"
             v2_dir.mkdir(parents=True)
             (v2_dir / "Spec.lean").write_text(
                 "prelude\ndef specs : SpecsV2 := ⟨(), ()⟩\n", encoding="utf-8"
             )
+            (v2_dir / "Proof.lean").write_text("prelude\n", encoding="utf-8")
+            v2_req = dict(
+                base_req,
+                scope={
+                    "kind": "selected_unit",
+                    "roots": ["byte_slice::split"],
+                },
+            )
             (v2_dir / "request.json").write_text(
-                json.dumps(
-                    {
-                        "compilation": {"source_root": "../../src"},
-                        "scope": {
-                            "kind": "selected_unit",
-                            "roots": ["byte_slice::split"],
-                        },
-                        "proof": {
-                            "source_root": ".",
-                            "sources": [{"path": "Spec.lean"}],
-                        },
-                    }
-                ),
+                json.dumps(v2_req),
                 encoding="utf-8",
             )
             tools = {
@@ -642,9 +732,26 @@ print(json.dumps(receipt))
                 "sysroot": paths["sysroot"],
                 "lean": paths["lean"],
             }
-            # Mock CLI emits Profile v1 (`UnitTheorem`), while `02_v2/Spec.lean`
-            # declares `SpecsV2` -> must fail closed on Profile v2 mismatch.
+            # `Spec.lean` is Profile v2, while mock CLI emits Profile v1
+            # (`UnitTheorem`) -> fails closed on Profile v2 mismatch.
             with self.assertRaisesRegex(RuntimeError, "does not match Profile v2"):
+                perf_tracking.collect_zerocopy_proofs(
+                    repo_root=paths["repo"],
+                    tools=tools,
+                    timeout=30,
+                    time_bin=paths["time_bin"],
+                )
+
+            # Divergent `compilation` config across units fails closed at
+            # discovery.
+            bad_comp = dict(base_req["compilation"], cfg=["kani"])
+            (v2_dir / "request.json").write_text(
+                json.dumps(dict(v2_req, compilation=bad_comp)),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(
+                RuntimeError, "compilation config inconsistent with 01_demo"
+            ):
                 perf_tracking.collect_zerocopy_proofs(
                     repo_root=paths["repo"],
                     tools=tools,

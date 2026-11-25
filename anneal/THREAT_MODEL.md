@@ -88,8 +88,11 @@ conflated:
      preconditions or invariants under which code is verified, including caller
      safety preconditions on `unsafe` functions), the stated
      specifications—together with any helper functions, trait implementations,
-     constants, types, or mathematical models that define their meaning—express
-     *what the user is asking Anneal to verify*.
+     constants, types, or mathematical models that define their meaning, and the
+     request bindings (`request.json`, including `compilation` flags,
+     environment, and source lists, `scope`, and `proof` specification and
+     theorem bindings) that select which Rust code and theorem obligations are
+     verified—express *what the user is asking Anneal to verify*.
    - Calling specifications "trusted" does **not** mean Anneal assumes they hold
      without proof: Anneal proves that the Rust code satisfies its stated
      specifications, while relying on human review to confirm that those
@@ -251,11 +254,14 @@ proved or assumed without appearing on the two surfaces a human reviewer audits:
   while modifying or shadowing a helper function, trait implementation,
   constant, type definition, or mathematical model that the specification's
   meaning transitively depends on—for example, modifying a helper predicate
-  `is_sorted(result)` so it always returns `true`. Anneal aims to ensure that
-  every definition capable of affecting the meaning of a stated specification is
-  explicitly demarcated on (or surfaced in) the human-reviewed specification
-  surface, and that no code outside that surface can shadow, redefine, or
-  silently alter what a specification means.
+  `is_sorted(result)` so it always returns `true`—or silently altering a build
+  or request binding (`compilation.cfg`, `compilation.env`, `crate_root`,
+  `source_files`, `scope`, or `proof.specification`) outside the reviewed
+  request and specification diff. Anneal aims to ensure that every definition
+  and compilation or scope binding capable of affecting the meaning or target
+  of a stated specification is explicitly demarcated on (or surfaced in) the
+  human-reviewed specification surface, and that no code outside that surface
+  can shadow, redefine, or silently alter what a specification means.
 - **Unlogged assumptions across crate items and compositional boundaries:**
   Bypassing verification of an obligation without recording an entry in the TCB
   audit log. Every obligation or assumption required for the crate's soundness

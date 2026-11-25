@@ -1353,15 +1353,14 @@ def collect_zerocopy_proofs(
                 label=unit_dir.name,
             )
             rss_methods.add(meas.rss_method)
-            receipt = verify_zerocopy.validate_parsed_receipt(
-                unit_dir.name,
+            receipt = verify_zerocopy.validate_unit_receipt(
+                unit_dir,
                 meas.returncode,
                 receipt,
-                request["scope"]["roots"],
-                expected_instantiations=request["scope"].get("instantiations"),
-                expected_profile=verify_zerocopy.expected_unit_profile(
-                    unit_dir, request
-                ),
+                request,
+                capture=tools["capture"],
+                sysroot=tools["sysroot"],
+                timeout=timeout,
             )
             verified_count += 1
             t = receipt.get("timing_ms", {})

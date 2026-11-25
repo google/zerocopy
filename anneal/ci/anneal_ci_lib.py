@@ -75,6 +75,47 @@ def ensure_not_symlink(
         raise exc_type(f"{label} must not be a symlink: {path}")
 
 
+def is_nonneg_int(val: Any) -> bool:
+    """Return True iff `val` is a non-boolean integer `>= 0`."""
+    return type(val) is int and val >= 0
+
+
+def is_exact_int(val: Any, expected: int) -> bool:
+    """Return True iff `val` is a non-boolean integer equal to `expected`."""
+    return type(val) is int and val == expected
+
+
+def reject_duplicate_json_keys(
+    pairs: list[tuple[str, Any]],
+) -> dict[str, Any]:
+    """JSON `object_pairs_hook` that rejects duplicate object keys."""
+    seen: dict[str, Any] = {}
+    for key, val in pairs:
+        if key in seen:
+            raise ValueError(f"duplicate JSON key {key!r}")
+        seen[key] = val
+    return seen
+
+
+def load_strict_json_object(
+    path: Path,
+    label: str = "JSON file",
+) -> dict[str, Any]:
+    """Read regular non-symlink `path` as a duplicate-key-free JSON object."""
+    if path.is_symlink() or not path.is_file():
+        raise RuntimeError(
+            f"{label} must be a regular non-symlink file: {path}"
+        )
+    try:
+        text = path.read_text(encoding="utf-8")
+        data = json.loads(text, object_pairs_hook=reject_duplicate_json_keys)
+    except (OSError, UnicodeDecodeError, ValueError) as exc:
+        raise RuntimeError(f"invalid JSON in {label} ({path}): {exc}") from exc
+    if not isinstance(data, dict):
+        raise RuntimeError(f"{label} must be a JSON object: {path}")
+    return data
+
+
 def sha256_bytes(data: bytes) -> str:
     """Return the lowercase SHA-256 hex digest of `data`."""
     return hashlib.sha256(data).hexdigest()
@@ -465,8 +506,10 @@ def run_cargo_anneal_verify(
             stderr=stderr_text,
         )
     try:
-        receipt = json.loads(proc.stdout)
-    except json.JSONDecodeError as exc:
+        receipt = json.loads(
+            proc.stdout, object_pairs_hook=reject_duplicate_json_keys
+        )
+    except (ValueError, json.JSONDecodeError) as exc:
         raise RuntimeError(
             f"{label}: invalid JSON receipt (exit {proc.returncode}): {exc}\n"
             f"stdout={proc.stdout[:800]}\nstderr={proc.stderr[:800]}"
@@ -484,11 +527,11 @@ def validate_receipt_v3_envelope(
     expected_returncode: int = 0,
     check_deferred: bool = True,
 ) -> list[str]:
-    """Validate common Receipt v3 envelope invariants and return failure reasons."""
+    """Validate common Receipt v3 envelope invariants and return failures."""
     failures: list[str] = []
     if returncode != expected_returncode:
         failures.append(f"exit={returncode}")
-    if receipt.get("schema_version") != 3:
+    if not is_exact_int(receipt.get("schema_version"), 3):
         failures.append(f"schema_version={receipt.get('schema_version')!r}")
     if receipt.get("status") != expected_status:
         failures.append(f"status={receipt.get('status')!r}")
@@ -502,7 +545,9 @@ def validate_receipt_v3_envelope(
         failures.append(f"elaboration_sandbox={receipt.get('elaboration_sandbox')!r}")
     if check_deferred:
         deferred = receipt.get("deferred", [])
-        if not isinstance(deferred, list):
+        if not isinstance(deferred, list) or not all(
+            isinstance(d, str) for d in deferred
+        ):
             failures.append(f"deferred={deferred!r}")
         elif "hostile Lean elaborator effects" in deferred:
             failures.append("hostile Lean elaborator effects deferred")
