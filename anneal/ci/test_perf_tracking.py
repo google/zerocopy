@@ -384,6 +384,14 @@ if "--no-rebuild-bundled" in args and not has_prebuilt and not marker.is_file():
     sys.exit(1)
 with open({str(cli_log)!r}, "a", encoding="utf-8") as logf:
     logf.write(json.dumps({{"args": args, "has_prebuilt": has_prebuilt, "has_marker": marker.is_file()}}) + "\\n")
+fmt = "human"
+if "--format" in args:
+    fmt_idx = args.index("--format")
+    if fmt_idx + 1 < len(args):
+        fmt = args[fmt_idx + 1]
+if fmt != "json":
+    print("[SCOPED] VERIFIED (human default; --format json omitted)")
+    sys.exit(0)
 timing = {{"capture": 12.5, "proof_and_audit": 40.0, "total": 55.0}}
 if "--no-cache" in args:
     timing = {{"capture": 15.0, "proof_and_audit": 120.0, "total": 140.0}}
@@ -572,11 +580,17 @@ print(json.dumps(receipt))
             self.assertNotIn("-DwarningAsError=true", by_name["MirAst.lean"])
             self.assertIn("-DwarningAsError=true", by_name["MirWp.lean"])
 
-            # Verify warm_disk ran without prebuilt manifest and used warm cache.
+            # Verify every CLI invocation (including zerocopy_proofs) passes
+            # `--format json` explicitly under the human-default CLI contract.
             cli_runs = [
                 json.loads(line)
                 for line in paths["cli_log"].read_text(encoding="utf-8").splitlines()
             ]
+            self.assertGreaterEqual(len(cli_runs), 4)
+            for run in cli_runs:
+                self.assertIn("--format", run["args"])
+                fmt_idx = run["args"].index("--format")
+                self.assertEqual(run["args"][fmt_idx + 1], "json")
             warm_runs = [
                 c
                 for c in cli_runs

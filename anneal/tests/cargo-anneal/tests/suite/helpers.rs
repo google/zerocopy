@@ -106,7 +106,7 @@ pub fn verify_invocation(args: &[&OsStr]) -> Invocation {
     let tools = workspace_tools();
     let cli = tools.cli.as_deref().expect("workspace cli binary");
     let capture = tools.capture.as_deref().expect("workspace capture binary");
-    let mut inv = Invocation::new(cli, &["verify"])
+    let mut inv = Invocation::new(cli, &["verify", "--format", "json"])
         .arg("--capture")
         .arg(capture)
         .arg("--lean")

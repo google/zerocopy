@@ -22,12 +22,14 @@ use std::fmt::{self, Display};
 /// Rejects C0 control characters (`U+0000..=U+001F`), `DEL` (`U+007F`), C1
 /// control characters (`U+0080..=U+009F`), Unicode bidirectional controls
 /// (`U+061C`, `U+070F`, `U+200E..=U+200F`, `U+202A..=U+202E`,
-/// `U+2066..=U+206F`), zero-width and invisible formatting characters
-/// (`U+00AD`, `U+034F`, `U+115F..=U+1160`, `U+180E`, `U+200B..=U+200D`,
-/// `U+2060..=U+2064`, `U+3164`, `U+FEFF`, `U+FFA0`, `U+FFF9..=U+FFFB`),
-/// line/paragraph separators (`U+2028..=U+2029`), Unicode Tag characters
-/// (`U+E0000..=U+E007F`), and variation selectors (`U+FE00..=U+FE0F`,
-/// `U+E0100..=U+E01EF`).
+/// `U+2066..=U+206F`), Unicode `Cf` format controls and invisible fillers
+/// (`U+00AD`, `U+034F`, `U+0600..=U+0605`, `U+06DD`, `U+0890..=U+0891`,
+/// `U+08E2`, `U+115F..=U+1160`, `U+180E`, `U+200B..=U+200D`,
+/// `U+2060..=U+2065`, `U+3164`, `U+FEFF`, `U+FFA0`, `U+FFF9..=U+FFFB`,
+/// `U+110BD`, `U+110CD`, `U+13430..=U+1343F`, `U+1BCA0..=U+1BCA3`,
+/// `U+1D173..=U+1D17A`), line/paragraph separators (`U+2028..=U+2029`),
+/// Unicode Tag characters (`U+E0000..=U+E007F`), and variation selectors
+/// (`U+FE00..=U+FE0F`, `U+E0100..=U+E01EF`).
 pub const fn is_dangerous_unicode(ch: char) -> bool {
     matches!(
         ch as u32,
@@ -35,19 +37,27 @@ pub const fn is_dangerous_unicode(ch: char) -> bool {
             | 0x007F..=0x009F
             | 0x00AD
             | 0x034F
+            | 0x0600..=0x0605
             | 0x061C
+            | 0x06DD
             | 0x070F
+            | 0x0890..=0x0891
+            | 0x08E2
             | 0x115F..=0x1160
             | 0x180E
             | 0x200B..=0x200F
             | 0x2028..=0x202E
-            | 0x2060..=0x2064
-            | 0x2066..=0x206F
+            | 0x2060..=0x206F
             | 0x3164
             | 0xFE00..=0xFE0F
             | 0xFEFF
             | 0xFFA0
             | 0xFFF9..=0xFFFB
+            | 0x110BD
+            | 0x110CD
+            | 0x13430..=0x1343F
+            | 0x1BCA0..=0x1BCA3
+            | 0x1D173..=0x1D17A
             | 0xE0000..=0xE007F
             | 0xE0100..=0xE01EF
     )
@@ -184,6 +194,29 @@ fn format_html_code_span(inline: &str) -> String {
     out
 }
 
+fn wrap_commonmark_code_span(body: &str) -> String {
+    let fence_len = longest_backtick_run(body) + 1;
+    let fence = "`".repeat(fence_len);
+    let has_outer_space =
+        body.starts_with(' ') && body.ends_with(' ') && body.bytes().any(|b| b != b' ');
+    let needs_pad = body.starts_with('`') || body.ends_with('`') || has_outer_space;
+    if needs_pad { format!("{fence} {body} {fence}") } else { format!("{fence}{body}{fence}") }
+}
+
+/// Format an untrusted value as a GitHub-Flavored Markdown inline code span
+/// outside of a table cell.
+///
+/// Escapes dangerous Unicode/control code points, pads outer spaces or
+/// backticks per CommonMark §6.1, and emits `<code></code>` for empty inputs
+/// (which cannot be represented as a backtick span in CommonMark).
+pub fn format_gfm_code_span(input: &str) -> String {
+    let inline = sanitize_inline_string(input);
+    if inline.is_empty() {
+        return format_html_code_span(&inline);
+    }
+    wrap_commonmark_code_span(&inline)
+}
+
 /// Format an untrusted value as a GitHub-Flavored Markdown inline code span
 /// safe for inclusion inside a Markdown table cell.
 ///
@@ -214,17 +247,7 @@ pub fn format_gfm_code_cell(input: &str) -> String {
             escaped_pipe.push(ch);
         }
     }
-    let fence_len = longest_backtick_run(&escaped_pipe) + 1;
-    let fence = "`".repeat(fence_len);
-    let has_outer_space = escaped_pipe.starts_with(' ')
-        && escaped_pipe.ends_with(' ')
-        && escaped_pipe.bytes().any(|b| b != b' ');
-    let needs_pad = escaped_pipe.starts_with('`') || escaped_pipe.ends_with('`') || has_outer_space;
-    if needs_pad {
-        format!("{fence} {escaped_pipe} {fence}")
-    } else {
-        format!("{fence}{escaped_pipe}{fence}")
-    }
+    wrap_commonmark_code_span(&escaped_pipe)
 }
 
 /// Wrap `body` in a CommonMark/GFM fenced code block whose backtick delimiter
@@ -327,6 +350,32 @@ mod tests {
         assert_eq!(format_gfm_code_cell("   "), "`   `");
         assert_eq!(format_gfm_code_cell(r"a\|b"), "<code>a&#92;&#124;b</code>");
         assert_eq!(format_gfm_code_cell(r"a\\|b"), r"`a\\\|b`");
+        assert_eq!(format_gfm_code_span(""), "<code></code>");
+        assert_eq!(format_gfm_code_span("   "), "`   `");
+        assert_eq!(format_gfm_code_span(" foo "), "`  foo  `");
+        assert_eq!(format_gfm_code_span("a|b"), "`a|b`");
+        for ch in [
+            '\u{0600}',
+            '\u{0605}',
+            '\u{06DD}',
+            '\u{0890}',
+            '\u{0891}',
+            '\u{08E2}',
+            '\u{115F}',
+            '\u{1160}',
+            '\u{3164}',
+            '\u{FFA0}',
+            '\u{110BD}',
+            '\u{110CD}',
+            '\u{13430}',
+            '\u{1343F}',
+            '\u{1BCA0}',
+            '\u{1BCA3}',
+            '\u{1D173}',
+            '\u{1D17A}',
+        ] {
+            assert!(is_dangerous_unicode(ch), "U+{:04X} must be escaped", ch as u32);
+        }
         let fenced_cr = format_fenced_code_block("txt", "a\r\nb\r");
         assert_eq!(fenced_cr, "```txt\na\nb\\u{000D}\n```");
         let fenced = format_fenced_code_block("json", "```\n````\n\"ok\"");

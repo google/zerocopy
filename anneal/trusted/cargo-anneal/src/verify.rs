@@ -16,6 +16,7 @@ use std::{
     collections::{BTreeMap, BTreeSet, VecDeque},
     ffi::{OsStr, OsString},
     fs,
+    io::Write as _,
     path::{Component, Path, PathBuf},
     process::{Command, ExitCode},
     time::Instant,
@@ -33,8 +34,14 @@ use serde_json::{Value, json};
 use crate::setup::{ToolOverrides, installed_bundle, resolve_tools};
 use crate::{
     ActiveSandbox, Checker, SandboxMode, TOOLCHAIN, TargetAuditRequest, TargetBindings,
-    TargetModule, TargetRole, TrustTier, parse_trusted_tier_directive, read_regular_file_deref,
-    read_regular_file_strict, sha256_bytes, source_starts_with_module_keyword,
+    TargetModule, TargetProgress, TargetRole, TrustTier, diagnostics,
+    output::{
+        CardRenderOptions, ColorChoice, FailureCardInput, OutputSession, ResolvedVerifyFormat,
+        SanitizedInline, VerifyFormat, VerifyPhase, finish_with_writers, render_failure_card,
+        render_success_card,
+    },
+    parse_trusted_tier_directive, read_regular_file_deref, read_regular_file_strict, sha256_bytes,
+    source_starts_with_module_keyword,
 };
 
 // Generated deterministically by `build.rs` into `$OUT_DIR` from canonical
@@ -271,6 +278,22 @@ pub struct VerifyArgs {
     /// evidence.
     #[arg(long, global = true)]
     artifacts: Option<PathBuf>,
+    /// Primary stdout output format (`human`, `json`, or `auto`).
+    #[arg(
+        long,
+        global = true,
+        value_enum,
+        default_value_t = VerifyFormat::Human,
+        value_name = "FORMAT"
+    )]
+    format: VerifyFormat,
+    /// Atomically write the canonical Receipt Schema v3 JSON to PATH.
+    ///
+    /// Clears any pre-existing non-input regular file at PATH once inputs are
+    /// validated so an interrupted or failed run cannot leave a stale passing
+    /// receipt behind. Always check the process exit code alongside PATH.
+    #[arg(long, global = true, value_name = "PATH")]
+    receipt_out: Option<PathBuf>,
     /// Export compiled `.olean*` files to `<artifacts>/lean-lib/`.
     #[arg(long, global = true)]
     export_lean_lib: bool,
@@ -824,6 +847,7 @@ struct Error {
     detail: String,
     elaboration_sandbox: Option<&'static str>,
     suppress_retention: bool,
+    suppress_receipt_out: bool,
 }
 
 impl Error {
@@ -834,6 +858,11 @@ impl Error {
 
     const fn without_retention(mut self) -> Self {
         self.suppress_retention = true;
+        self
+    }
+
+    const fn without_receipt_out(mut self) -> Self {
+        self.suppress_receipt_out = true;
         self
     }
 }
@@ -847,6 +876,7 @@ fn error(status: &'static str, phase: &'static str, detail: impl ToString) -> Er
         detail: detail.to_string(),
         elaboration_sandbox: None,
         suppress_retention: false,
+        suppress_receipt_out: false,
     }
 }
 
@@ -1785,12 +1815,540 @@ fn normalize_lexical_absolute(path: &Path) -> std::io::Result<PathBuf> {
     Ok(normalized)
 }
 
-fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
+#[derive(Clone, Debug)]
+struct ValidatedReceiptOut {
+    raw_path: PathBuf,
+    display_str: String,
+    canon_parent: PathBuf,
+    canon_target: PathBuf,
+    #[cfg(unix)]
+    canon_parent_inode: (u64, u64),
+    #[cfg(unix)]
+    existing_inode: Option<(u64, u64)>,
+}
+
+fn receipt_parent(path: &Path) -> &Path {
+    match path.parent() {
+        Some(p) if !p.as_os_str().is_empty() => p,
+        _ => Path::new("."),
+    }
+}
+
+#[cfg(unix)]
+fn inode_key(meta: &fs::Metadata) -> (u64, u64) {
+    use std::os::unix::fs::MetadataExt as _;
+    (meta.dev(), meta.ino())
+}
+
+/// Resolve `path` left-to-right, canonicalizing each existing prefix before
+/// applying subsequent `..` components so `<symlink>/..` resolves identically
+/// to OS path lookup even when trailing components do not yet exist.
+fn resolve_path_preserving_symlinks(path: &Path) -> std::io::Result<PathBuf> {
+    if let Ok(canon) = fs::canonicalize(path) {
+        return Ok(canon);
+    }
+    let mut current = if path.is_absolute() {
+        PathBuf::new()
+    } else {
+        fs::canonicalize(std::env::current_dir()?)?
+    };
+    let mut existing = true;
+    for comp in path.components() {
+        match comp {
+            Component::Prefix(p) => current.push(p.as_os_str()),
+            Component::RootDir => current.push(comp.as_os_str()),
+            Component::CurDir => {}
+            Component::ParentDir => {
+                if existing && let Ok(canon) = fs::canonicalize(&current) {
+                    current = canon;
+                }
+                current.pop();
+                if existing {
+                    if let Ok(canon) = fs::canonicalize(&current) {
+                        current = canon;
+                    } else {
+                        existing = false;
+                    }
+                }
+            }
+            Component::Normal(part) => {
+                current.push(part);
+                if existing {
+                    if let Ok(canon) = fs::canonicalize(&current) {
+                        current = canon;
+                    } else {
+                        existing = false;
+                    }
+                }
+            }
+        }
+    }
+    Ok(current)
+}
+
+fn candidate_aliases_receipt_out(target: &ValidatedReceiptOut, candidate: &Path) -> bool {
+    if let Ok(canon) = fs::canonicalize(candidate)
+        && canon == target.canon_target
+    {
+        return true;
+    }
+    if let Ok(resolved) = resolve_path_preserving_symlinks(candidate)
+        && resolved == target.canon_target
+    {
+        return true;
+    }
+    if let Some(name) = candidate.file_name()
+        && let Ok(canon_parent) = fs::canonicalize(receipt_parent(candidate))
+        && canon_parent.join(name) == target.canon_target
+    {
+        return true;
+    }
+    if let Ok(lex) = normalize_lexical_absolute(candidate)
+        && lex == target.canon_target
+    {
+        return true;
+    }
+    #[cfg(unix)]
+    if let Some(target_ino) = target.existing_inode
+        && let Ok(meta) = fs::metadata(candidate)
+        && inode_key(&meta) == target_ino
+    {
+        return true;
+    }
+    false
+}
+
+fn validate_receipt_out_pre_stage(
+    args: &VerifyArgs,
+    artifacts: Option<&str>,
+) -> std::result::Result<Option<ValidatedReceiptOut>, String> {
+    let Some(raw_path) = args.receipt_out.as_ref() else {
+        return Ok(None);
+    };
+    let Some(display_str) = raw_path.to_str() else {
+        return Err("receipt destination path must be UTF-8".to_owned());
+    };
+    let raw_bytes = raw_path.as_os_str().as_encoded_bytes();
+    let invalid_leaf = display_str.is_empty()
+        || raw_bytes.last().is_some_and(|&b| std::path::is_separator(b as char))
+        || raw_bytes == b"."
+        || raw_bytes == b".."
+        || raw_bytes.ends_with(b"/.")
+        || raw_bytes.ends_with(b"/..")
+        || raw_bytes.ends_with(b"\\.")
+        || raw_bytes.ends_with(b"\\..")
+        || !matches!(raw_path.components().next_back(), Some(Component::Normal(_)));
+    let Some(file_name) = raw_path.file_name().filter(|_| !invalid_leaf) else {
+        return Err(format!("invalid receipt destination path: {}", raw_path.display()));
+    };
+    let parent = receipt_parent(raw_path);
+    // Canonicalize the parent directory (matching `--artifacts` so paths under
+    // symlinked ancestors like `TMPDIR` or macOS `/var -> private/var` work),
+    // while keeping all leaf-symlink, swap, and input-aliasing checks on the
+    // canonical path.
+    let canon_parent = fs::canonicalize(parent).map_err(|e| {
+        format!("cannot canonicalize receipt parent directory {}: {e}", parent.display())
+    })?;
+    let parent_meta = fs::metadata(&canon_parent).map_err(|e| {
+        format!("cannot inspect receipt parent directory {}: {e}", canon_parent.display())
+    })?;
+    if !parent_meta.is_dir() {
+        return Err(format!("receipt parent path is not a directory: {}", parent.display()));
+    }
+    #[cfg(unix)]
+    let canon_parent_inode = inode_key(&parent_meta);
+    let canon_target = canon_parent.join(file_name);
+
+    #[cfg(unix)]
+    let mut existing_inode = None;
+    match fs::symlink_metadata(&canon_target) {
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
+        Err(e) => {
+            return Err(format!("cannot inspect receipt destination {}: {e}", raw_path.display()));
+        }
+        Ok(meta) => {
+            if meta.file_type().is_symlink() {
+                return Err(format!(
+                    "receipt destination must not be a symlink: {}",
+                    raw_path.display()
+                ));
+            }
+            if !meta.file_type().is_file() {
+                return Err(format!(
+                    "receipt destination must be a regular file: {}",
+                    raw_path.display()
+                ));
+            }
+            #[cfg(unix)]
+            {
+                existing_inode = Some(inode_key(&meta));
+            }
+        }
+    }
+
+    if let Some(art_str) = artifacts {
+        let art_path = Path::new(art_str);
+        if let Ok(art_resolved) = resolve_path_preserving_symlinks(art_path)
+            && (canon_target == art_resolved
+                || canon_target.starts_with(&art_resolved)
+                || art_resolved.starts_with(&canon_target))
+        {
+            return Err(format!(
+                "receipt destination {} must not alias or reside inside --artifacts {}",
+                raw_path.display(),
+                art_path.display()
+            ));
+        }
+    }
+
+    let validated = ValidatedReceiptOut {
+        raw_path: raw_path.clone(),
+        display_str: display_str.to_owned(),
+        canon_parent,
+        canon_target,
+        #[cfg(unix)]
+        canon_parent_inode,
+        #[cfg(unix)]
+        existing_inode,
+    };
+
+    // Refuse overwriting Rust/Lean sources or Cargo/Lean toolchain manifests
+    // anywhere on disk (including out-of-tree `source_root` targets or
+    // workspace-root `Cargo.lock` when `request.json` is malformed or preflight
+    // fails before `load_request`).
+    let protected_file_name = matches!(
+        file_name.to_str(),
+        Some(
+            "Cargo.toml"
+                | "Cargo.lock"
+                | "lakefile.toml"
+                | "lean-toolchain"
+                | "rust-toolchain"
+                | "rust-toolchain.toml"
+        )
+    );
+    if validated.canon_target.extension().is_some_and(|e| e == "rs" || e == "lean")
+        || protected_file_name
+    {
+        return Err(format!(
+            "receipt destination {} must not target a Rust/Lean source or toolchain manifest",
+            raw_path.display()
+        ));
+    }
+
+    let mut direct_inputs: Vec<PathBuf> = Vec::new();
+    let mut protected_dirs: Vec<PathBuf> = Vec::new();
+    if let Some(req) = args.request.as_deref() {
+        direct_inputs.push(req.to_path_buf());
+        // Best-effort pre-stage parse of valid `--request` files so declared
+        // out-of-tree `source_root` / `source_files` / `proof.sources` cannot
+        // be overwritten by an early preflight or staging failure receipt.
+        // Match `load_request` by resolving relative paths against the
+        // canonicalized request target's parent when `--request` is a symlink.
+        if fs::metadata(req).is_ok_and(|m| m.is_file() && m.len() <= 16 * 1024 * 1024)
+            && let Ok(canon_req) = fs::canonicalize(req)
+            && let Ok(bytes) = fs::read(&canon_req)
+            && let Ok(parsed_req) = serde_json::from_slice::<Request>(&bytes)
+        {
+            let req_dir = receipt_parent(&canon_req);
+            check_request_inputs_receipt_out_aliasing(Some(&validated), req_dir, &parsed_req)
+                .map_err(|e| e.detail)?;
+        }
+    }
+    let effective_manifest = if let Some(mp) = args.manifest_path.as_deref() {
+        Some(mp)
+    } else if args.request.is_none() && !matches!(args.command, Some(VerifySubcommand::Rustc(_))) {
+        Some(Path::new("Cargo.toml"))
+    } else {
+        None
+    };
+    if let Some(mp) = effective_manifest {
+        direct_inputs.push(mp.to_path_buf());
+    }
+    if let Some(cap) = args.capture.as_deref() {
+        direct_inputs.push(cap.to_path_buf());
+    }
+    if let Some(lean) = args.lean.as_deref() {
+        direct_inputs.push(lean.to_path_buf());
+    }
+    if let Some(sysroot) = args.sysroot.as_deref() {
+        direct_inputs.push(sysroot.to_path_buf());
+        protected_dirs.push(sysroot.to_path_buf());
+    }
+    // Also guard auto-discovered toolchain paths and the running executable
+    // before preflight/staging can emit an early failure receipt.
+    if let Ok(exe) = std::env::current_exe() {
+        direct_inputs.push(exe);
+    }
+    if let Ok(tools) = select_tools(args) {
+        direct_inputs.push(tools.capture);
+        if let Some(sysroot) = tools.sysroot {
+            direct_inputs.push(sysroot.clone());
+            protected_dirs.push(sysroot);
+        }
+        if let Some(lean) = tools.lean {
+            direct_inputs.push(lean);
+        }
+        if let Some(prebuilt) = tools.prebuilt_dir {
+            direct_inputs.push(prebuilt.clone());
+            protected_dirs.push(prebuilt);
+        }
+    }
+    for dir in &protected_dirs {
+        if let Ok(canon_dir) = fs::canonicalize(dir)
+            && canon_dir.is_dir()
+            && validated.canon_target.starts_with(&canon_dir)
+        {
+            return Err(format!(
+                "receipt destination {} must not reside inside toolchain directory {}",
+                raw_path.display(),
+                dir.display()
+            ));
+        }
+    }
+    if let Some(pd) = args.proof_dir.as_deref() {
+        direct_inputs.push(pd.to_path_buf());
+    }
+    if let Some(VerifySubcommand::Rustc(rustc)) = &args.command {
+        direct_inputs.push(rustc.crate_root.clone());
+        for src in &rustc.source_file {
+            direct_inputs.push(src.clone());
+        }
+        for spec in &rustc.spec_file {
+            direct_inputs.push(spec.path.clone());
+        }
+        for proof in &rustc.proof_file {
+            direct_inputs.push(proof.path.clone());
+        }
+    }
+    for input in &direct_inputs {
+        if candidate_aliases_receipt_out(&validated, input) {
+            return Err(format!(
+                "receipt destination {} aliases verification input {}",
+                raw_path.display(),
+                input.display()
+            ));
+        }
+    }
+    Ok(Some(validated))
+}
+
+fn check_receipt_out_candidate(target: &ValidatedReceiptOut, candidate: &Path) -> Result<()> {
+    if candidate_aliases_receipt_out(target, candidate) {
+        return Err(error(
+            "tool_failed",
+            "receipt-out",
+            format!(
+                "receipt destination {} aliases verification input {}",
+                target.raw_path.display(),
+                candidate.display()
+            ),
+        )
+        .without_receipt_out()
+        .without_retention());
+    }
+    Ok(())
+}
+
+fn check_request_inputs_receipt_out_aliasing(
+    receipt_out: Option<&ValidatedReceiptOut>,
+    base: &Path,
+    request: &Request,
+) -> Result<()> {
+    let Some(target) = receipt_out else {
+        return Ok(());
+    };
+    let resolve_dir = |raw_dir: &Path| -> PathBuf {
+        root(base, raw_dir).unwrap_or_else(|_| {
+            if raw_dir.is_absolute() { raw_dir.to_path_buf() } else { base.join(raw_dir) }
+        })
+    };
+    let source_root = resolve_dir(&request.compilation.source_root);
+    check_receipt_out_candidate(target, &source_root)?;
+    for relative in &request.compilation.source_files {
+        let candidate =
+            declared_file(&source_root, relative).unwrap_or_else(|_| source_root.join(relative));
+        check_receipt_out_candidate(target, &candidate)?;
+    }
+    let proof_root = resolve_dir(&request.proof.source_root);
+    check_receipt_out_candidate(target, &proof_root)?;
+    for input in &request.proof.sources {
+        let candidate = declared_file(&proof_root, &input.path)
+            .unwrap_or_else(|_| proof_root.join(&input.path));
+        check_receipt_out_candidate(target, &candidate)?;
+    }
+    Ok(())
+}
+
+fn reject_receipt_out_originals_aliasing(
+    receipt_out: Option<&ValidatedReceiptOut>,
+    originals: &[(PathBuf, String)],
+) -> Result<()> {
+    let Some(target) = receipt_out else {
+        return Ok(());
+    };
+    for (orig_path, _) in originals {
+        check_receipt_out_candidate(target, orig_path)?;
+    }
+    Ok(())
+}
+
+fn verify_receipt_target_unchanged(
+    target: &ValidatedReceiptOut,
+) -> std::result::Result<(), String> {
+    let parent = receipt_parent(&target.raw_path);
+    let current_canon_parent = fs::canonicalize(parent).map_err(|e| {
+        format!("cannot canonicalize receipt parent directory {}: {e}", parent.display())
+    })?;
+    if current_canon_parent != target.canon_parent {
+        return Err(format!("receipt parent directory changed before write: {}", parent.display()));
+    }
+    #[cfg(unix)]
+    {
+        let current_meta = fs::metadata(&current_canon_parent).map_err(|e| {
+            format!(
+                "cannot inspect receipt parent directory {}: {e}",
+                current_canon_parent.display()
+            )
+        })?;
+        if inode_key(&current_meta) != target.canon_parent_inode {
+            return Err(format!(
+                "receipt parent directory changed before write: {}",
+                parent.display()
+            ));
+        }
+    }
+    match fs::symlink_metadata(&target.canon_target) {
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(()),
+        Err(e) => {
+            Err(format!("cannot inspect receipt destination {}: {e}", target.raw_path.display()))
+        }
+        Ok(meta) => {
+            if meta.file_type().is_symlink() || !meta.file_type().is_file() {
+                return Err(format!(
+                    "refusing to overwrite non-regular receipt destination {}",
+                    target.raw_path.display()
+                ));
+            }
+            Ok(())
+        }
+    }
+}
+
+/// Remove any pre-existing validated regular file at `--receipt-out` before
+/// verification work starts (or when a receipt write fails) so an interrupted
+/// or failed run cannot leave an earlier passing receipt behind at the same
+/// path.
+///
+/// Re-verifies parent directory identity and (on Unix) the pre-stage regular
+/// file inode so we never unlink a symlink or a file created or swapped into
+/// place concurrently.
+fn invalidate_stale_receipt_out(target: &ValidatedReceiptOut) -> std::result::Result<(), String> {
+    verify_receipt_target_unchanged(target)?;
+    match fs::symlink_metadata(&target.canon_target) {
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(()),
+        Err(e) => Err(format!(
+            "cannot inspect stale receipt destination {}: {e}",
+            target.raw_path.display()
+        )),
+        Ok(meta) => {
+            if meta.file_type().is_symlink() || !meta.file_type().is_file() {
+                return Err(format!(
+                    "refusing to remove non-regular receipt destination {}",
+                    target.raw_path.display()
+                ));
+            }
+            #[cfg(unix)]
+            match target.existing_inode {
+                Some(expected_ino) if inode_key(&meta) == expected_ino => {}
+                Some(_) => {
+                    return Err(format!(
+                        "receipt destination changed before stale-receipt cleanup: {}",
+                        target.raw_path.display()
+                    ));
+                }
+                None => {
+                    return Err(format!(
+                        "receipt destination appeared before stale-receipt cleanup: {}",
+                        target.raw_path.display()
+                    ));
+                }
+            }
+            match fs::remove_file(&target.canon_target) {
+                Ok(()) => Ok(()),
+                Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(()),
+                Err(e) => Err(format!(
+                    "cannot clear stale receipt destination {}: {e}",
+                    target.raw_path.display()
+                )),
+            }
+        }
+    }
+}
+
+fn stage_receipt_out_temp(
+    target: &ValidatedReceiptOut,
+    json_payload: &str,
+) -> std::result::Result<tempfile::NamedTempFile, String> {
+    verify_receipt_target_unchanged(target)?;
+    let mut builder = tempfile::Builder::new();
+    builder.prefix(".anneal-receipt-");
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt as _;
+        builder.permissions(fs::Permissions::from_mode(0o600));
+    }
+    let mut tmp = builder.tempfile_in(&target.canon_parent).map_err(|e| {
+        format!("cannot create temporary receipt in {}: {e}", target.canon_parent.display())
+    })?;
+    tmp.write_all(json_payload.as_bytes())
+        .and_then(|()| tmp.write_all(b"\n"))
+        .and_then(|()| tmp.flush())
+        .map_err(|e| format!("cannot write temporary receipt: {e}"))?;
+    Ok(tmp)
+}
+
+fn commit_receipt_out_temp(
+    tmp: tempfile::NamedTempFile,
+    target: &ValidatedReceiptOut,
+) -> std::result::Result<(), String> {
+    verify_receipt_target_unchanged(target)?;
+    tmp.persist(&target.canon_target).map_err(|e| {
+        format!("cannot atomically persist receipt to {}: {}", target.raw_path.display(), e.error)
+    })?;
+    Ok(())
+}
+
+fn write_receipt_out_atomic(
+    target: &ValidatedReceiptOut,
+    json_payload: &str,
+) -> std::result::Result<(), String> {
+    let tmp = stage_receipt_out_temp(target, json_payload)?;
+    commit_receipt_out_temp(tmp, target)
+}
+
+fn rollback_retained_artifacts(retained: Option<&str>, mut detail: String) -> String {
+    if let Some(dest) = retained
+        && let Err(remove_err) = fs::remove_dir_all(dest)
+    {
+        detail = format!("{detail}; failed to roll back retained artifacts {dest}: {remove_err}");
+    }
+    detail
+}
+
+fn run<Out: std::io::Write + Send, ErrOut: std::io::Write + Send>(
+    args: &VerifyArgs,
+    work: &Path,
+    receipt_out: Option<&ValidatedReceiptOut>,
+    session: &mut OutputSession<Out, ErrOut>,
+) -> Result<Value> {
     let start = Instant::now();
+    session.report_phase(VerifyPhase::Stage);
     let mut originals = Vec::new();
     let (request, base, pre_staged_rust, pre_staged_lean, symlink_policy) =
         if let Some(VerifySubcommand::Rustc(rustc)) = &args.command {
             let prepared = prepare_rustc_request(rustc, work, &mut originals)?;
+            reject_receipt_out_originals_aliasing(receipt_out, &originals)?;
             (
                 prepared.request,
                 work.to_path_buf(),
@@ -1800,8 +2358,18 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
             )
         } else {
             let (request, base) = load_request(args)?;
+            check_request_inputs_receipt_out_aliasing(receipt_out, &base, &request)?;
             (request, base, None, None, SymlinkPolicy::Reject)
         };
+    // All Rust and Lean verification inputs have passed aliasing checks above.
+    // Clear any pre-existing regular file at `--receipt-out` before capture or
+    // proof checking begins so a timeout, signal, panic, or later receipt-write
+    // error cannot leave an older passing receipt behind on disk.
+    if let Some(ro) = receipt_out {
+        invalidate_stale_receipt_out(ro).map_err(|detail| {
+            error("tool_failed", "receipt-out", detail).without_receipt_out().without_retention()
+        })?;
+    }
     if request.schema_version != 1 || request.compilation.source_files.is_empty() {
         return Err(error("unsupported", "request", "unsupported or empty compilation request"));
     }
@@ -1880,6 +2448,15 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     // `default_lean_path` when unavailable. When built without `setup`, all
     // three tool paths must be passed explicitly.
     let tools = select_tools(args)?;
+    if let Some(target) = receipt_out {
+        check_receipt_out_candidate(target, &tools.capture)?;
+        if let Some(sysroot) = tools.sysroot.as_deref() {
+            check_receipt_out_candidate(target, sysroot)?;
+        }
+        if let Some(lean) = tools.lean.as_deref() {
+            check_receipt_out_candidate(target, lean)?;
+        }
+    }
     let capture_tool_path = tools.capture.clone();
     let capture = fs::canonicalize(&capture_tool_path).map_err(|e| {
         error(
@@ -1973,6 +2550,10 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     if let Some(stdlib_crate) = request.compilation.stdlib_crate {
         command.args(["--stdlib-crate", stdlib_crate.as_str()]);
     }
+    reject_receipt_out_originals_aliasing(receipt_out, &originals)?;
+    session.report_phase(VerifyPhase::Capture {
+        crate_name: SanitizedInline::new(&request.compilation.crate_name),
+    });
     let capture_start = Instant::now();
     let output = command.output().map_err(|e| io("capture", e))?;
     write(&work.join("capture.stdout"), &output.stdout)?;
@@ -1986,7 +2567,7 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         };
         let detail = if envelope.is_object() {
             if !output.stderr.is_empty() {
-                eprint!("{}", String::from_utf8_lossy(&output.stderr));
+                session.write_compiler_stderr(&output.stderr);
             }
             envelope.to_string()
         } else {
@@ -2170,6 +2751,7 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
             });
         }
     }
+    reject_receipt_out_originals_aliasing(receipt_out, &originals)?;
     let spec_entry = modules
         .iter()
         .find(|m| m.module == spec_module && matches!(m.role, TargetRole::Specification))
@@ -2252,7 +2834,19 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     checker.set_use_olean_cache(!args.no_cache);
     checker.set_no_rebuild_bundled(args.no_rebuild_bundled);
     checker.set_prebuilt_olean_dir(tools.prebuilt_dir);
-    let audit_result = checker.run_target(&audit_request);
+    let audit_result = checker.run_target_with_progress(&audit_request, |ev| {
+        let phase = match ev {
+            TargetProgress::Toolchain => VerifyPhase::Toolchain,
+            TargetProgress::SpecPreflight { module_count } => {
+                VerifyPhase::SpecPreflight { module_count }
+            }
+            TargetProgress::Elaborate { done, total, cached } => {
+                VerifyPhase::Elaborate { done, total, cached }
+            }
+            TargetProgress::Audit => VerifyPhase::Audit,
+        };
+        session.report_phase(phase);
+    });
     let active_sandbox_opt = checker.active_sandbox();
     let sandbox_label = active_sandbox_opt.map(ActiveSandbox::as_str);
     let audit = match audit_result {
@@ -2644,9 +3238,10 @@ fn validate_and_extract_candidate_features(
             }
         }
     }
-    let closure = audit.get("modelClosure").and_then(Value::as_array).ok_or_else(|| {
-        error("tool_failed", "audit", "missing audit.modelClosure metadata")
-    })?;
+    let closure = audit
+        .get("modelClosure")
+        .and_then(Value::as_array)
+        .ok_or_else(|| error("tool_failed", "audit", "missing audit.modelClosure metadata"))?;
     let mut reached: BTreeSet<&'static str> = BTreeSet::new();
     for entry in closure {
         let Some(module) = entry.get("module").and_then(Value::as_str) else {
@@ -2850,7 +3445,11 @@ fn failure_exit_code(status: &str) -> u8 {
     if matches!(status, "unsupported" | "proof_failed") { 1 } else { 2 }
 }
 
-fn emit_failure(
+#[allow(clippy::too_many_arguments)]
+fn emit_failure<Out: std::io::Write, ErrOut: std::io::Write>(
+    session: &mut OutputSession<Out, ErrOut>,
+    resolved_format: ResolvedVerifyFormat,
+    receipt_out: Option<&ValidatedReceiptOut>,
     taint_reasons: &[&str],
     elaboration_sandbox: Option<&str>,
     status: &str,
@@ -2859,25 +3458,81 @@ fn emit_failure(
     artifacts: Option<Option<&str>>,
     code: u8,
 ) -> ExitCode {
-    let hint = crate::diagnostics::hint_for_failure(status, phase, detail);
-    let receipt = FailureReceipt {
+    let mut final_status = status;
+    let mut final_phase = phase;
+    let mut final_detail = detail.to_owned();
+    let mut final_code = code;
+    let mut receipt_display: Option<&str> = None;
+    let mut hint = diagnostics::hint_for_failure(final_status, final_phase, &final_detail);
+
+    let mut serialized = serde_json::to_string(&FailureReceipt {
         schema_version: RECEIPT_SCHEMA_VERSION,
         taint_reasons,
         elaboration_sandbox,
-        status,
-        phase,
-        detail,
+        status: final_status,
+        phase: final_phase,
+        detail: &final_detail,
         hint: hint.as_deref(),
         artifacts,
+    })
+    .expect("serializable failure receipt");
+
+    if let Some(ro) = receipt_out {
+        match write_receipt_out_atomic(ro, &serialized) {
+            Ok(()) => {
+                receipt_display = Some(ro.display_str.as_str());
+            }
+            Err(ro_err) => {
+                let _ = invalidate_stale_receipt_out(ro);
+                final_status = "tool_failed";
+                final_phase = "receipt-out";
+                final_detail = format!("{final_detail}; {ro_err}");
+                final_code = 2;
+                hint = diagnostics::hint_for_failure(final_status, final_phase, &final_detail);
+                serialized = serde_json::to_string(&FailureReceipt {
+                    schema_version: RECEIPT_SCHEMA_VERSION,
+                    taint_reasons,
+                    elaboration_sandbox,
+                    status: final_status,
+                    phase: final_phase,
+                    detail: &final_detail,
+                    hint: hint.as_deref(),
+                    artifacts,
+                })
+                .expect("serializable failure receipt");
+            }
+        }
+    }
+
+    let primary = match resolved_format {
+        ResolvedVerifyFormat::Json => format!("{serialized}\n"),
+        ResolvedVerifyFormat::Human => render_failure_card(
+            &FailureCardInput {
+                taint_reasons,
+                elaboration_sandbox,
+                status: final_status,
+                phase: final_phase,
+                detail: &final_detail,
+                hint: hint.as_deref(),
+                artifacts: artifacts.flatten(),
+                exit_code: final_code,
+            },
+            CardRenderOptions {
+                ansi_color: session.stdout_style.ansi_color,
+                quiet: session.quiet,
+                verbose: session.verbose,
+                receipt_out_path: receipt_display,
+            },
+        ),
     };
-    println!("{}", serde_json::to_string(&receipt).expect("serializable failure receipt"));
-    ExitCode::from(code)
+    finish_with_writers(session, primary.as_bytes(), final_code)
 }
 
-pub fn main(args: VerifyArgs) -> ExitCode {
+pub fn main(args: VerifyArgs, color: ColorChoice, quiet: bool, verbose: bool) -> ExitCode {
+    let (mut session, resolved_format) = OutputSession::live(color, quiet, verbose, args.format);
     let taints = active_taints(&args);
     for taint in &taints {
-        eprintln!("{}", taint.warning_banner());
+        session.write_taint_banner(taint.warning_banner());
     }
     let taint_vec = taint_reason_strings(&taints);
     let taint_reasons: &[&str] = &taint_vec;
@@ -2890,6 +3545,9 @@ pub fn main(args: VerifyArgs) -> ExitCode {
             Some(path) => Some(path),
             None => {
                 return emit_failure(
+                    &mut session,
+                    resolved_format,
+                    None,
                     taint_reasons,
                     None,
                     "tool_failed",
@@ -2902,10 +3560,30 @@ pub fn main(args: VerifyArgs) -> ExitCode {
         },
         None => None,
     };
+    let receipt_out = match validate_receipt_out_pre_stage(&args, artifacts) {
+        Ok(ro) => ro,
+        Err(detail) => {
+            return emit_failure(
+                &mut session,
+                resolved_format,
+                None,
+                taint_reasons,
+                None,
+                "tool_failed",
+                "receipt-out",
+                &detail,
+                None,
+                2,
+            );
+        }
+    };
     if let Some(destination) = artifacts
         && let Err(failure) = preflight_artifact_destination(destination)
     {
         return emit_failure(
+            &mut session,
+            resolved_format,
+            receipt_out.as_ref(),
             taint_reasons,
             None,
             failure.status,
@@ -2919,6 +3597,9 @@ pub fn main(args: VerifyArgs) -> ExitCode {
         Ok(stage) => stage,
         Err(failure) => {
             return emit_failure(
+                &mut session,
+                resolved_format,
+                receipt_out.as_ref(),
                 taint_reasons,
                 None,
                 "tool_failed",
@@ -2932,12 +3613,17 @@ pub fn main(args: VerifyArgs) -> ExitCode {
     // Preserve diagnostic evidence for rejected requests as well as proved
     // ones. Export failure takes precedence over the verification result:
     // the requested evidence operation has not completed successfully.
-    let outcome = run(&args, stage.path());
+    let outcome = run(&args, stage.path(), receipt_out.as_ref(), &mut session);
+    session.finish_phases(outcome.is_ok());
     if let Err(failure) = &outcome
         && failure.suppress_retention
     {
         let code = failure_exit_code(failure.status);
+        let ro_ref = if failure.suppress_receipt_out { None } else { receipt_out.as_ref() };
         return emit_failure(
+            &mut session,
+            resolved_format,
+            ro_ref,
             taint_reasons,
             failure.elaboration_sandbox,
             failure.status,
@@ -2947,65 +3633,219 @@ pub fn main(args: VerifyArgs) -> ExitCode {
             code,
         );
     }
-    // Retention is create-only. A caller cannot accidentally overwrite a proof
-    // package or an earlier verification receipt by choosing an existing path.
-    let retained = if let Some(destination) = artifacts {
-        match retain_stage(stage.path(), Path::new(destination), outcome.is_ok()) {
-            Ok(()) => Some(destination),
-            Err(failure) => {
-                let sandbox = match &outcome {
-                    Err(err) => err.elaboration_sandbox,
-                    Ok(res) => res.get("elaboration_sandbox").and_then(Value::as_str),
-                };
+    // Stage `--receipt-out` (`0o600` temp file in the canonical parent) before
+    // retaining `--artifacts` so an unwritable receipt parent fails closed
+    // without publishing passing evidence or `lean-lib/` to `--artifacts`, and
+    // only rename the staged receipt into place once retention succeeds. A hard
+    // crash during `retain_stage` can leave at most that private `0o600` temp
+    // file behind.
+    let unretained_artifacts = if artifacts.is_some() { None } else { Some(None) };
+    match outcome {
+        Ok(mut result) => {
+            if let Some(destination) = artifacts {
+                result["artifacts"] = json!(destination);
+            }
+            let pretty_json = serde_json::to_string_pretty(&result).unwrap();
+            let staged_receipt = if let Some(ro) = receipt_out.as_ref() {
+                match stage_receipt_out_temp(ro, &pretty_json) {
+                    Ok(tmp) => Some(tmp),
+                    Err(ro_err) => {
+                        let _ = invalidate_stale_receipt_out(ro);
+                        let sandbox = result.get("elaboration_sandbox").and_then(Value::as_str);
+                        return emit_failure(
+                            &mut session,
+                            resolved_format,
+                            None,
+                            taint_reasons,
+                            sandbox,
+                            "tool_failed",
+                            "receipt-out",
+                            &ro_err,
+                            unretained_artifacts,
+                            2,
+                        );
+                    }
+                }
+            } else {
+                None
+            };
+            // Retention is create-only. A caller cannot accidentally overwrite
+            // a proof package or an earlier verification receipt by choosing an
+            // existing path.
+            let retained = if let Some(destination) = artifacts {
+                match retain_stage(stage.path(), Path::new(destination), true) {
+                    Ok(()) => Some(destination),
+                    Err(failure) => {
+                        drop(staged_receipt);
+                        let sandbox = result.get("elaboration_sandbox").and_then(Value::as_str);
+                        return emit_failure(
+                            &mut session,
+                            resolved_format,
+                            receipt_out.as_ref(),
+                            taint_reasons,
+                            sandbox,
+                            "tool_failed",
+                            failure.phase,
+                            &failure.detail,
+                            None,
+                            2,
+                        );
+                    }
+                }
+            } else {
+                None
+            };
+            if let (Some(tmp), Some(ro)) = (staged_receipt, receipt_out.as_ref())
+                && let Err(ro_err) = commit_receipt_out_temp(tmp, ro)
+            {
+                let _ = invalidate_stale_receipt_out(ro);
+                let sandbox = result.get("elaboration_sandbox").and_then(Value::as_str);
+                let detail = rollback_retained_artifacts(retained, ro_err);
                 return emit_failure(
+                    &mut session,
+                    resolved_format,
+                    None,
                     taint_reasons,
                     sandbox,
                     "tool_failed",
-                    failure.phase,
-                    &failure.detail,
-                    None,
+                    "receipt-out",
+                    &detail,
+                    unretained_artifacts,
                     2,
                 );
             }
-        }
-    } else {
-        None
-    };
-    match outcome {
-        Ok(mut result) => {
-            if let Some(path) = retained {
-                result["artifacts"] = json!(path);
-            }
             if let Some(warnings) = result.get("spec_warnings").and_then(Value::as_array) {
                 for warning in warnings {
-                    let code = warning.get("code").and_then(Value::as_str).unwrap_or("unknown");
-                    let decl =
-                        warning.get("declaration").and_then(Value::as_str).unwrap_or("<unknown>");
-                    let msg = warning.get("message").and_then(Value::as_str).unwrap_or("");
-                    match warning.get("body").and_then(Value::as_str) {
-                        Some(body) => {
-                            eprintln!(
-                                "WARNING [anti-vacuity: {code}] {decl} (body `{body}`): {msg}"
-                            );
-                        }
-                        None => eprintln!("WARNING [anti-vacuity: {code}] {decl}: {msg}"),
-                    }
+                    let code = SanitizedInline::new(
+                        warning.get("code").and_then(Value::as_str).unwrap_or("unknown"),
+                    );
+                    let decl = SanitizedInline::new(
+                        warning.get("declaration").and_then(Value::as_str).unwrap_or("<unknown>"),
+                    );
+                    let body =
+                        warning.get("body").and_then(Value::as_str).map(SanitizedInline::new);
+                    let msg = SanitizedInline::new(
+                        warning.get("message").and_then(Value::as_str).unwrap_or(""),
+                    );
+                    session.write_spec_warning(&code, &decl, body.as_ref(), &msg);
                 }
             }
-            println!("{}", serde_json::to_string_pretty(&result).unwrap());
-            ExitCode::SUCCESS
+            let primary = match resolved_format {
+                ResolvedVerifyFormat::Json => format!("{pretty_json}\n"),
+                ResolvedVerifyFormat::Human => render_success_card(
+                    &result,
+                    CardRenderOptions {
+                        ansi_color: session.stdout_style.ansi_color,
+                        quiet: session.quiet,
+                        verbose: session.verbose,
+                        receipt_out_path: receipt_out.as_ref().map(|r| r.display_str.as_str()),
+                    },
+                ),
+            };
+            finish_with_writers(&mut session, primary.as_bytes(), 0)
         }
         Err(failure) => {
             let code = failure_exit_code(failure.status);
-            emit_failure(
+            let ro_ref = if failure.suppress_receipt_out { None } else { receipt_out.as_ref() };
+            let hint =
+                diagnostics::hint_for_failure(failure.status, failure.phase, &failure.detail);
+            let serialized = serde_json::to_string(&FailureReceipt {
+                schema_version: RECEIPT_SCHEMA_VERSION,
                 taint_reasons,
-                failure.elaboration_sandbox,
-                failure.status,
-                failure.phase,
-                &failure.detail,
-                Some(retained),
-                code,
-            )
+                elaboration_sandbox: failure.elaboration_sandbox,
+                status: failure.status,
+                phase: failure.phase,
+                detail: &failure.detail,
+                hint: hint.as_deref(),
+                artifacts: Some(artifacts),
+            })
+            .expect("serializable failure receipt");
+            let staged_receipt = if let Some(ro) = ro_ref {
+                match stage_receipt_out_temp(ro, &serialized) {
+                    Ok(tmp) => Some(tmp),
+                    Err(ro_err) => {
+                        let _ = invalidate_stale_receipt_out(ro);
+                        let detail = format!("{}; {ro_err}", failure.detail);
+                        return emit_failure(
+                            &mut session,
+                            resolved_format,
+                            None,
+                            taint_reasons,
+                            failure.elaboration_sandbox,
+                            "tool_failed",
+                            "receipt-out",
+                            &detail,
+                            unretained_artifacts,
+                            2,
+                        );
+                    }
+                }
+            } else {
+                None
+            };
+            let retained = if let Some(destination) = artifacts {
+                match retain_stage(stage.path(), Path::new(destination), false) {
+                    Ok(()) => Some(destination),
+                    Err(ret_failure) => {
+                        drop(staged_receipt);
+                        return emit_failure(
+                            &mut session,
+                            resolved_format,
+                            ro_ref,
+                            taint_reasons,
+                            failure.elaboration_sandbox,
+                            "tool_failed",
+                            ret_failure.phase,
+                            &ret_failure.detail,
+                            None,
+                            2,
+                        );
+                    }
+                }
+            } else {
+                None
+            };
+            if let (Some(tmp), Some(ro)) = (staged_receipt, ro_ref)
+                && let Err(ro_err) = commit_receipt_out_temp(tmp, ro)
+            {
+                let _ = invalidate_stale_receipt_out(ro);
+                let detail =
+                    rollback_retained_artifacts(retained, format!("{}; {ro_err}", failure.detail));
+                return emit_failure(
+                    &mut session,
+                    resolved_format,
+                    None,
+                    taint_reasons,
+                    failure.elaboration_sandbox,
+                    "tool_failed",
+                    "receipt-out",
+                    &detail,
+                    unretained_artifacts,
+                    2,
+                );
+            }
+            let primary = match resolved_format {
+                ResolvedVerifyFormat::Json => format!("{serialized}\n"),
+                ResolvedVerifyFormat::Human => render_failure_card(
+                    &FailureCardInput {
+                        taint_reasons,
+                        elaboration_sandbox: failure.elaboration_sandbox,
+                        status: failure.status,
+                        phase: failure.phase,
+                        detail: &failure.detail,
+                        hint: hint.as_deref(),
+                        artifacts: retained,
+                        exit_code: code,
+                    },
+                    CardRenderOptions {
+                        ansi_color: session.stdout_style.ansi_color,
+                        quiet: session.quiet,
+                        verbose: session.verbose,
+                        receipt_out_path: ro_ref.map(|r| r.display_str.as_str()),
+                    },
+                ),
+            };
+            finish_with_writers(&mut session, primary.as_bytes(), code)
         }
     }
 }
@@ -3685,6 +4525,8 @@ mod tests {
             assert!(pair[0].as_str() < pair[1].as_str(), "{pair:?}");
         }
         let base = VerifyArgs {
+            format: VerifyFormat::Human,
+            receipt_out: None,
             request: Some(PathBuf::from("request.json")),
             manifest_path: None,
             proof_dir: None,
@@ -3718,6 +4560,8 @@ mod tests {
             for unpinned in [false, true] {
                 for unsandboxed in [false, true] {
                     let args = VerifyArgs {
+                        format: VerifyFormat::Human,
+                        receipt_out: None,
                         allow_sorry_in_proof: sorry,
                         allow_unpinned_lean: unpinned,
                         allow_unsandboxed_elaboration: unsandboxed,
@@ -4130,6 +4974,8 @@ mod tests {
     #[test]
     fn select_tools_requires_explicit_paths_without_setup_feature() {
         let base = VerifyArgs {
+            format: VerifyFormat::Human,
+            receipt_out: None,
             request: Some(PathBuf::from("request.json")),
             manifest_path: None,
             proof_dir: None,
@@ -4173,6 +5019,8 @@ mod tests {
 
         for (capture, sysroot, lean, expected_missing) in cases {
             let args = VerifyArgs {
+                format: VerifyFormat::Human,
+                receipt_out: None,
                 capture,
                 sysroot,
                 lean,
@@ -4941,5 +5789,87 @@ mod tests {
         .unwrap_err();
         assert_eq!(err.status, "tool_failed");
         assert!(err.detail.contains("cannot import candidate:mir_ast"), "{}", err.detail);
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn write_receipt_out_atomic_rejects_swapped_parent_directory() {
+        let root = tempfile::tempdir().unwrap();
+        let dir_a = root.path().join("dir-a");
+        let dir_b = root.path().join("dir-b");
+        let dir_old = root.path().join("dir-a-old");
+        fs::create_dir(&dir_a).unwrap();
+        fs::create_dir(&dir_b).unwrap();
+
+        let receipt_path = dir_a.join("receipt.json");
+        let args = VerifyArgs {
+            command: None,
+            request: None,
+            manifest_path: None,
+            proof_dir: None,
+            panic: None,
+            overflow_checks: false,
+            select: Vec::new(),
+            instantiate: Vec::new(),
+            features: Vec::new(),
+            all_features: false,
+            no_default_features: false,
+            artifacts: None,
+            receipt_out: Some(receipt_path.clone()),
+            format: crate::output::VerifyFormat::Json,
+            capture: None,
+            sysroot: None,
+            lean: None,
+            no_cache: false,
+            no_rebuild_bundled: false,
+            export_lean_lib: false,
+            lean_memory_mb: None,
+            allow_unsandboxed_elaboration: false,
+            allow_sorry_in_proof: false,
+            allow_unpinned_lean: false,
+        };
+        let validated = validate_receipt_out_pre_stage(&args, None).unwrap().unwrap();
+
+        // Swap `dir-a` with another real directory (`dir-b`) before persisting.
+        fs::rename(&dir_a, &dir_old).unwrap();
+        fs::rename(&dir_b, &dir_a).unwrap();
+
+        let err = write_receipt_out_atomic(&validated, "{}").unwrap_err();
+        assert!(err.contains("changed before write"), "unexpected error: {err}");
+        assert!(!dir_a.join("receipt.json").exists());
+        assert!(!dir_old.join("receipt.json").exists());
+
+        // `rollback_retained_artifacts` deletes a newly created retained
+        // directory so a post-retention receipt commit failure leaves no
+        // orphaned passing evidence on disk.
+        let retained_dir = root.path().join("retained-ev");
+        fs::create_dir(&retained_dir).unwrap();
+        fs::write(retained_dir.join("result.json"), b"{}").unwrap();
+        let detail =
+            rollback_retained_artifacts(retained_dir.to_str(), "receipt persist failed".to_owned());
+        assert_eq!(detail, "receipt persist failed");
+        assert!(!retained_dir.exists());
+
+        // Late `check_receipt_out_candidate` aliasing rejections must suppress
+        // both receipt-out writes and `--artifacts` retention for both
+        // non-existent and existing candidate paths.
+        let alias_err =
+            check_receipt_out_candidate(&validated, &validated.canon_target).unwrap_err();
+        assert_eq!(alias_err.status, "tool_failed");
+        assert_eq!(alias_err.phase, "receipt-out");
+        assert!(alias_err.suppress_receipt_out);
+        assert!(alias_err.suppress_retention);
+
+        let existing_file = root.path().join("existing-input.json");
+        fs::write(&existing_file, b"{}").unwrap();
+        let existing_args = VerifyArgs { receipt_out: Some(existing_file.clone()), ..args };
+        let existing_validated =
+            validate_receipt_out_pre_stage(&existing_args, None).unwrap().unwrap();
+        let existing_err =
+            check_receipt_out_candidate(&existing_validated, &existing_file).unwrap_err();
+        assert_eq!(existing_err.status, "tool_failed");
+        assert_eq!(existing_err.phase, "receipt-out");
+        assert!(existing_err.suppress_receipt_out);
+        assert!(existing_err.suppress_retention);
     }
 }

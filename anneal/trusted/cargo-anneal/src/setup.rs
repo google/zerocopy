@@ -109,10 +109,22 @@ impl Bundle {
 /// Busy locks or cleanup errors on obsolete directories emit warnings on
 /// stderr without failing the returned current installation path.
 pub fn install(local_archive: Option<PathBuf>, clear_old: bool) -> Result<PathBuf, String> {
+    install_with_quiet(local_archive, clear_old, false)
+}
+
+/// Like [`install`], suppressing the non-interactive old-toolchain `note:` on
+/// `stderr` when `quiet` is `true` (while still emitting operational warnings).
+pub fn install_with_quiet(
+    local_archive: Option<PathBuf>,
+    clear_old: bool,
+    quiet: bool,
+) -> Result<PathBuf, String> {
     let mode = if clear_old {
         PruneMode::ClearOld
     } else if io::stdin().is_terminal() && io::stdout().is_terminal() {
         PruneMode::Interactive
+    } else if quiet {
+        PruneMode::NonInteractiveQuiet
     } else {
         PruneMode::NonInteractive
     };
@@ -779,6 +791,8 @@ pub(crate) enum PruneMode {
     Interactive,
     /// Leave old toolchain directories untouched and emit a note.
     NonInteractive,
+    /// Leave old toolchain directories untouched without emitting the note.
+    NonInteractiveQuiet,
 }
 
 /// Summary of an old-toolchain pruning pass for diagnostics and tests.
@@ -1117,6 +1131,7 @@ fn prune_old_toolchains_with(
             );
             false
         }
+        PruneMode::NonInteractiveQuiet => false,
     };
     if !should_remove {
         return report;

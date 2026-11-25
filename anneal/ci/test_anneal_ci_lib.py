@@ -251,6 +251,10 @@ class AnnealCiLibTests(unittest.TestCase):
             )
             self.assertEqual(proc.returncode, 0)
             self.assertEqual(parsed, receipt_payload)
+            self.assertEqual(
+                captured["cmd"][:4],
+                [str(root / "cargo-anneal"), "verify", "--format", "json"],
+            )
             self.assertEqual(captured["env"], {"KEEP": "1"})
             self.assertEqual(
                 (logs_dir / "01.unit.stdout").read_text(encoding="utf-8"),

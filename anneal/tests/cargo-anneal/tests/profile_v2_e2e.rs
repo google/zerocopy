@@ -217,7 +217,7 @@ fn run_request(dir: &Path, name: &str, request: &Value) -> VerifyOutcome {
         .current_dir(dir)
         .env("HOME", cache.home_dir())
         .env("XDG_CACHE_HOME", cache.xdg_cache_home())
-        .arg("verify")
+        .args(["verify", "--format", "json"])
         .arg("--capture")
         .arg(capture)
         .arg("--lean")
@@ -371,6 +371,43 @@ fn verifies_raw_pointer_load_and_store() {
     )
     .unwrap();
     assert_eq!(capture_json["program"]["mir_profile_version"], 2, "{capture_json}");
+
+    // Default `--format human` (without `-v`) must disclose Profile v2's
+    // entry-validity narrowing verbatim rather than collapsing it into a
+    // baseline assumption count.
+    let tools = tools();
+    let cache = shared_cache();
+    let human_out = Command::new(tools.cli.as_deref().expect("resolved cargo-anneal binary"))
+        .current_dir(dir.path())
+        .env("HOME", cache.home_dir())
+        .env("XDG_CACHE_HOME", cache.xdg_cache_home())
+        .args(["verify", "--request"])
+        .arg(dir.path().join("raw-ptr-ok.json"))
+        .arg("--capture")
+        .arg(tools.capture.as_deref().expect("resolved anneal-rustc-capture binary"))
+        .arg("--lean")
+        .arg(&tools.lean)
+        .arg("--sysroot")
+        .arg(&tools.sysroot)
+        .output()
+        .expect("run default human-format Profile v2 verify");
+    assert_eq!(
+        human_out.status.code(),
+        Some(0),
+        "default human verify failed:\nstdout:\n{}\nstderr:\n{}",
+        String::from_utf8_lossy(&human_out.stdout),
+        String::from_utf8_lossy(&human_out.stderr),
+    );
+    let human_card = String::from_utf8_lossy(&human_out.stdout);
+    assert!(human_card.contains("[STAGE 0 ALPHA -- EXPERIMENTAL]"), "{human_card}");
+    assert!(
+        human_card.contains("! CAVEAT   : experimental Profile v2 MIR semantics:")
+            && human_card.contains(
+                "results say nothing about calls that pass references to \
+                 uninitialized, invalid, or dangling memory"
+            ),
+        "default human card must disclose Profile v2 narrowing:\n{human_card}"
+    );
 }
 
 /// Missing alignment precondition on `*const u32` must fail closed.

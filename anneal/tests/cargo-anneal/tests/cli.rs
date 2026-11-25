@@ -356,6 +356,8 @@ fn setup_help_and_verify_fail_closed_on_symlinked_cache_bundle() {
         .env("HOME", cache.path())
         .args([
             "verify",
+            "--format",
+            "json",
             "rustc",
             "lib.rs",
             "--crate-name",
@@ -490,7 +492,11 @@ fn rejects_non_utf8_artifact_paths_before_staging_or_retention() {
         fs::write(existing.join("keep"), b"caller evidence").unwrap();
         for destination in [&absent, &existing] {
             let mut cmd = command(route, project.path());
-            cmd.arg("verify").arg("--request").arg(&request).arg("--artifacts").arg(destination);
+            cmd.args(["verify", "--format", "json"])
+                .arg("--request")
+                .arg(&request)
+                .arg("--artifacts")
+                .arg(destination);
             #[cfg(not(feature = "setup"))]
             cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
             let output = cmd.output().unwrap();
@@ -515,7 +521,7 @@ fn rejects_non_utf8_artifact_paths_before_staging_or_retention() {
         let missing_tmp = project.path().join(format!("{route:?}-missing-temp"));
         let mut cmd = command(route, project.path());
         cmd.env("TMPDIR", &missing_tmp)
-            .arg("verify")
+            .args(["verify", "--format", "json"])
             .arg("--request")
             .arg(project.path().join("missing-request"))
             .arg("--artifacts")
@@ -536,7 +542,11 @@ fn rejects_non_utf8_artifact_paths_before_staging_or_retention() {
         // This control needs no compiler or Lean process.
         let ordinary = project.path().join(format!("{route:?}-ordinary-evidence"));
         let mut cmd = command(route, project.path());
-        cmd.arg("verify").arg("--request").arg(&request).arg("--artifacts").arg(&ordinary);
+        cmd.args(["verify", "--format", "json"])
+            .arg("--request")
+            .arg(&request)
+            .arg("--artifacts")
+            .arg(&ordinary);
         #[cfg(not(feature = "setup"))]
         cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
         let output = cmd.output().unwrap();
@@ -565,7 +575,7 @@ fn early_verification_failures_have_versioned_receipts() {
     for route in [Route::Direct, Route::Cargo] {
         for phase in ["staging", "retention"] {
             let mut child = command(route, project.path());
-            child.arg("verify").arg("--request").arg(&request);
+            child.args(["verify", "--format", "json"]).arg("--request").arg(&request);
             #[cfg(not(feature = "setup"))]
             child.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
             if phase == "staging" {
@@ -628,6 +638,7 @@ fn unclaimable_artifact_destinations_fail_before_staging_or_request_reading() {
             child
                 .env("TMPDIR", &missing_tmp)
                 .arg("verify")
+                .args(["--format", "json"])
                 .arg("--request")
                 .arg(project.path().join("missing-request"))
                 .arg("--artifacts")
@@ -646,6 +657,38 @@ fn unclaimable_artifact_destinations_fail_before_staging_or_request_reading() {
             assert!(!missing_tmp.exists());
         }
     }
+    // Default human verdict card + `--receipt-out` also honor `--artifacts`
+    // preflight rejection before staging.
+    let receipt_file = project.path().join("preflight-receipt.json");
+    let mut human_child = command(Route::Direct, project.path());
+    human_child
+        .env_remove("CARGO_TERM_COLOR")
+        .env_remove("CLICOLOR_FORCE")
+        .env_remove("FORCE_COLOR")
+        .env("TMPDIR", &missing_tmp)
+        .arg("verify")
+        .arg("--request")
+        .arg(project.path().join("missing-request"))
+        .arg("--artifacts")
+        .arg(&directory)
+        .arg("--receipt-out")
+        .arg(&receipt_file);
+    #[cfg(not(feature = "setup"))]
+    human_child.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+    let human_out = human_child.output().unwrap();
+    assert_result(
+        &human_out,
+        2,
+        "[FAIL] VERIFICATION FAILED (tool_failed in phase `retention`, exit 2)",
+        "",
+    );
+    let written_receipt: serde_json::Value =
+        serde_json::from_slice(&fs::read(&receipt_file).unwrap()).unwrap();
+    assert_eq!(written_receipt["status"], "tool_failed", "{written_receipt}");
+    assert_eq!(written_receipt["phase"], "retention", "{written_receipt}");
+    assert!(written_receipt.get("artifacts").is_none(), "{written_receipt}");
+    assert!(!missing_tmp.exists());
+
     assert_eq!(fs::read(directory.join("keep")).unwrap(), b"caller evidence");
     assert_eq!(fs::read_dir(&directory).unwrap().count(), 1);
     assert_eq!(fs::read(&file).unwrap(), b"caller file");
@@ -662,7 +705,13 @@ fn unclaimable_artifact_destinations_fail_before_staging_or_request_reading() {
         (PathBuf::from("relative-evidence"), project.path().join("relative-evidence")),
     ] {
         let mut child = command(Route::Direct, project.path());
-        child.arg("verify").arg("--request").arg(&request).arg("--artifacts").arg(&spelling);
+        child
+            .arg("verify")
+            .args(["--format", "json"])
+            .arg("--request")
+            .arg(&request)
+            .arg("--artifacts")
+            .arg(&spelling);
         #[cfg(not(feature = "setup"))]
         child.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
         let output = child.output().unwrap();
@@ -698,6 +747,7 @@ fn unclaimable_artifact_destinations_fail_before_staging_or_request_reading() {
                 preflight_ok_cmd
                     .env("TMPDIR", &missing_late_tmp)
                     .arg("verify")
+                    .args(["--format", "json"])
                     .arg("--request")
                     .arg(&request)
                     .arg("--artifacts")
@@ -713,6 +763,7 @@ fn unclaimable_artifact_destinations_fail_before_staging_or_request_reading() {
                 let mut late_cmd = command(Route::Direct, project.path());
                 late_cmd
                     .arg("verify")
+                    .args(["--format", "json"])
                     .arg("--request")
                     .arg(&request)
                     .arg("--artifacts")
@@ -807,7 +858,11 @@ fn capture_discovery_prefers_explicit_then_installed_then_sibling() {
     // they cannot produce a fake verification result and never start Lean.
     for expected in ["installed", "explicit", "sibling"] {
         let mut child = Command::new(&cli);
-        child.current_dir(project.path()).arg("verify").arg("--request").arg(&request);
+        child
+            .current_dir(project.path())
+            .args(["verify", "--format", "json"])
+            .arg("--request")
+            .arg(&request);
         let cache_dir =
             if expected == "sibling" { project.path().join("empty-cache") } else { cache.clone() };
         child.env("XDG_CACHE_HOME", &cache_dir).env("HOME", &cache_dir);
@@ -874,7 +929,7 @@ fn cargo_shortcut_declares_only_its_documented_source_namespace() {
     }
     child
         .env("PATH", env::join_paths(paths).unwrap())
-        .arg("verify")
+        .args(["verify", "--format", "json"])
         .arg("--manifest-path")
         .arg(package.join("Cargo.toml"))
         .arg("--proof-dir")
@@ -925,7 +980,7 @@ fn run_cargo_shortcut_probe(
     }
     child
         .env("PATH", env::join_paths(paths).unwrap())
-        .arg("verify")
+        .args(["verify", "--format", "json"])
         .arg("--manifest-path")
         .arg(package.join("Cargo.toml"))
         .arg("--proof-dir")
@@ -1233,15 +1288,18 @@ fn unpinned_policy_taint_emits_stderr_banner_and_v3_failure_receipt() {
     let missing_tmp = project.path().join("missing-tmp");
 
     let mut cmd = command(Route::Direct, project.path());
-    cmd.env("TMPDIR", &missing_tmp).args(["verify", "--request"]).arg(&request).args([
-        "--allow-unpinned-lean",
-        "--lean",
-        "custom-lean",
-        "--capture",
-        "cap",
-        "--sysroot",
-        "sys",
-    ]);
+    cmd.env("TMPDIR", &missing_tmp)
+        .args(["verify", "--format", "json", "--request"])
+        .arg(&request)
+        .args([
+            "--allow-unpinned-lean",
+            "--lean",
+            "custom-lean",
+            "--capture",
+            "cap",
+            "--sysroot",
+            "sys",
+        ]);
     let output = cmd.output().unwrap();
     assert_result(&output, 2, "", "TAINTED");
     let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
@@ -1263,7 +1321,7 @@ fn setup_allows_independent_lean_override_without_capture_pair() {
     // `--lean` alone without `--capture`/`--sysroot` must pass CLI host-policy
     // validation when `setup` is enabled and reach `verify::main`.
     let output = command(Route::Direct, project.path())
-        .args(["verify", "--request"])
+        .args(["verify", "--format", "json", "--request"])
         .arg(&request)
         .args(["--lean", "custom-lean"])
         .output()
@@ -1299,7 +1357,7 @@ fn rustc_mode_stages_symlinks_strict_roles_and_rejects_fifos() {
     let evidence = project.path().join("evidence");
     // Host flags passed both BEFORE and AFTER `rustc` must work.
     let output = command(Route::Direct, project.path())
-        .arg("verify")
+        .args(["verify", "--format", "json"])
         .arg("--capture")
         .arg(project.path().join("missing-capture"))
         .arg("--sysroot")
@@ -1352,7 +1410,7 @@ fn rustc_mode_stages_symlinks_strict_roles_and_rejects_fifos() {
     let fifo_link = runfiles.join("fifo.rs");
     symlink(&fifo, &fifo_link).unwrap();
     let fifo_out = command(Route::Direct, project.path())
-        .arg("verify")
+        .args(["verify", "--format", "json"])
         .arg("--capture")
         .arg(project.path().join("missing-capture"))
         .arg("--sysroot")
@@ -1387,7 +1445,7 @@ fn rustc_mode_rejects_reserved_or_mismatched_proof_modules_before_capture() {
 
     // Reserved module name (`Trusted`) must be rejected before capture.
     let reserved_out = command(Route::Direct, project.path())
-        .args(["verify", "rustc"])
+        .args(["verify", "--format", "json", "rustc"])
         .arg(&lib)
         .args(["--crate-name", "sample", "--spec-file"])
         .arg(format!("Trusted={}", spec.display()))
@@ -1419,7 +1477,7 @@ fn rustc_mode_rejects_reserved_or_mismatched_proof_modules_before_capture() {
         &["--theorem", "Spec:Spec.verify"][..],
     ] {
         let out = command(Route::Direct, project.path())
-            .args(["verify", "rustc"])
+            .args(["verify", "--format", "json", "rustc"])
             .arg(&lib)
             .args(["--crate-name", "sample", "--spec-file"])
             .arg(format!("Spec={}", spec.display()))
@@ -1451,7 +1509,8 @@ fn unsandboxed_elaboration_flag_marks_early_failure_receipt_tainted() {
     let request = project.path().join("request.json");
     fs::write(&request, b"not JSON\n").unwrap();
     let mut cmd = command(Route::Direct, project.path());
-    cmd.args(["verify", "--allow-unsandboxed-elaboration", "--request"]).arg(&request);
+    cmd.args(["verify", "--format", "json", "--allow-unsandboxed-elaboration", "--request"])
+        .arg(&request);
     #[cfg(not(feature = "setup"))]
     cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
     let output = cmd.output().unwrap();
@@ -1483,6 +1542,8 @@ fn taint_monoid_combines_all_three_allow_flags_in_canonical_order() {
     // receipt projects a canonical sorted `BTreeSet<VerificationTaint>`.
     cmd.args([
         "verify",
+        "--format",
+        "json",
         "--allow-unsandboxed-elaboration",
         "--allow-unpinned-lean",
         "--allow-sorry-in-proof",
@@ -1541,7 +1602,7 @@ fn verify_rejects_smuggled_env_key_in_request_json() {
     )
     .unwrap();
     let mut cmd = command(Route::Direct, project.path());
-    cmd.args(["verify", "--request"]).arg(&request);
+    cmd.args(["verify", "--format", "json", "--request"]).arg(&request);
     #[cfg(not(feature = "setup"))]
     cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
     let output = cmd.output().unwrap();
@@ -1614,6 +1675,8 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
     let output = command(Route::Direct, project.path())
         .args([
             "verify",
+            "--format",
+            "json",
             "--capture",
             fake_capture.to_str().unwrap(),
             "--sysroot",
@@ -1704,6 +1767,8 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
         fs::set_permissions(&fake_capture, fs::Permissions::from_mode(0o755)).unwrap();
         let mut mismatch_args = vec![
             "verify",
+            "--format",
+            "json",
             "--capture",
             fake_capture.to_str().unwrap(),
             "--sysroot",
@@ -1805,6 +1870,8 @@ fn verify_passes_stdlib_crate_flag_and_rejects_mismatched_capture_capability() {
         fs::set_permissions(&fake_capture, fs::Permissions::from_mode(0o755)).unwrap();
         let mut args = vec![
             "verify",
+            "--format",
+            "json",
             "--capture",
             fake_capture.to_str().unwrap(),
             "--sysroot",
@@ -1896,6 +1963,8 @@ fn verify_rejects_whole_crate_stdlib_crate_as_unsupported() {
 
     let request_args = [
         "verify",
+        "--format",
+        "json",
         "--capture",
         fake_capture.to_str().unwrap(),
         "--sysroot",
@@ -1907,6 +1976,8 @@ fn verify_rejects_whole_crate_stdlib_crate_as_unsupported() {
     ];
     let rustc_args = [
         "verify",
+        "--format",
+        "json",
         "--capture",
         fake_capture.to_str().unwrap(),
         "--sysroot",
@@ -2022,6 +2093,8 @@ fn verify_passes_instantiate_flags_and_rejects_mismatched_capture_scope() {
     let output = command(Route::Direct, project.path())
         .args([
             "verify",
+            "--format",
+            "json",
             "--capture",
             fake_capture.to_str().unwrap(),
             "--sysroot",
@@ -2065,7 +2138,7 @@ fn testkit_parses_cli_failure_receipt_cleanly() {
     let request = project.path().join("request.json");
     std::fs::write(&request, b"not JSON\n").unwrap();
     let mut cmd = command(Route::Direct, project.path());
-    cmd.arg("verify").arg("--request").arg(&request);
+    cmd.args(["verify", "--format", "json"]).arg("--request").arg(&request);
     #[cfg(not(feature = "setup"))]
     cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
     let output = cmd.output().unwrap();
@@ -2143,6 +2216,8 @@ fn failure_receipts_emit_actionable_hints_while_preserving_detail() {
     let missing_manifest = command(Route::Direct, project.path())
         .args([
             "verify",
+            "--format",
+            "json",
             "--manifest-path",
             "absent/Cargo.toml",
             "--proof-dir",
@@ -2161,6 +2236,8 @@ fn failure_receipts_emit_actionable_hints_while_preserving_detail() {
     let feat_out = command(Route::Direct, project.path())
         .args([
             "verify",
+            "--format",
+            "json",
             "--manifest-path",
             "crate_proc_macro/Cargo.toml",
             "--proof-dir",
@@ -2201,6 +2278,8 @@ fn failure_receipts_emit_actionable_hints_while_preserving_detail() {
     let missing_proof_dir = command(Route::Direct, project.path())
         .args([
             "verify",
+            "--format",
+            "json",
             "--manifest-path",
             "crate_ok/Cargo.toml",
             "--proof-dir",
@@ -2231,6 +2310,8 @@ fn failure_receipts_emit_actionable_hints_while_preserving_detail() {
     let missing_explicit = command(Route::Direct, project.path())
         .args([
             "verify",
+            "--format",
+            "json",
             "--manifest-path",
             "crate_ok/Cargo.toml",
             "--proof-dir",
@@ -2287,6 +2368,8 @@ fn failure_receipts_emit_actionable_hints_while_preserving_detail() {
             .env_remove("ANNEAL_LEAN")
             .args([
                 "verify",
+                "--format",
+                "json",
                 "--manifest-path",
                 "crate_ok/Cargo.toml",
                 "--proof-dir",
@@ -2328,6 +2411,8 @@ fn failure_receipts_emit_actionable_hints_while_preserving_detail() {
         let cap_out = command(Route::Direct, project.path())
             .args([
                 "verify",
+                "--format",
+                "json",
                 "--manifest-path",
                 "crate_ok/Cargo.toml",
                 "--proof-dir",
@@ -2350,4 +2435,750 @@ fn failure_receipts_emit_actionable_hints_while_preserving_detail() {
         let hint = cap_receipt["hint"].as_str().unwrap();
         assert!(hint.contains("`take_ref`") && hint.contains("references"), "{cap_receipt}");
     }
+}
+
+#[test]
+fn default_verify_format_is_human_and_format_json_never_emits_ansi() {
+    use std::fs;
+
+    let project = tempfile::tempdir().unwrap();
+    let request = project.path().join("request.json");
+    fs::write(&request, b"not JSON\n").unwrap();
+
+    // 1. Default invocation (`--format` omitted) emits human `[FAIL]` card with
+    //    zero ANSI on non-TTY pipes even when `CI=true`.
+    let mut default_cmd = command(Route::Direct, project.path());
+    default_cmd
+        .env_remove("CARGO_TERM_COLOR")
+        .env_remove("CLICOLOR_FORCE")
+        .env_remove("FORCE_COLOR")
+        .env("CI", "true")
+        .args(["verify", "--request"])
+        .arg(&request);
+    #[cfg(not(feature = "setup"))]
+    default_cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+    let default_out = default_cmd.output().unwrap();
+    assert_result(
+        &default_out,
+        1,
+        "[FAIL] VERIFICATION FAILED (unsupported in phase `request`, exit 1)",
+        "",
+    );
+    let default_stdout = String::from_utf8(default_out.stdout).unwrap();
+    assert!(
+        !default_stdout.contains('\x1b'),
+        "non-TTY pipe must omit ANSI even when CI=true:\n{default_stdout}"
+    );
+    assert!(!default_stdout.contains("[OK]"), "{default_stdout}");
+
+    // 2. `--color always` styles human cards with SGR, while
+    //    `--format json --color always` remains pure RFC 8259 JSON with zero
+    //    ANSI escapes.
+    let mut colored_human = command(Route::Direct, project.path());
+    colored_human.args(["--color", "always", "verify", "--request"]).arg(&request);
+    #[cfg(not(feature = "setup"))]
+    colored_human.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+    let colored_out = colored_human.output().unwrap();
+    let colored_stdout = String::from_utf8(colored_out.stdout).unwrap();
+    assert!(colored_stdout.contains("\x1b[1;31m[FAIL]\x1b[0m"), "{colored_stdout}");
+
+    let mut colored_json = command(Route::Direct, project.path());
+    colored_json
+        .args(["--color", "always", "verify", "--format", "json", "--request"])
+        .arg(&request);
+    #[cfg(not(feature = "setup"))]
+    colored_json.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+    let json_out = colored_json.output().unwrap();
+    assert_eq!(json_out.status.code(), Some(1));
+    assert!(!json_out.stdout.contains(&0x1b), "JSON stdout must never contain ESC");
+    let parsed: serde_json::Value = serde_json::from_slice(&json_out.stdout).unwrap();
+    assert_eq!(parsed["schema_version"], 3);
+    assert_eq!(parsed["status"], "unsupported");
+
+    // 3. `--format auto` resolves to JSON when stdout is piped.
+    let mut auto_cmd = command(Route::Direct, project.path());
+    auto_cmd.args(["verify", "--format", "auto", "--request"]).arg(&request);
+    #[cfg(not(feature = "setup"))]
+    auto_cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+    let auto_out = auto_cmd.output().unwrap();
+    assert_eq!(auto_out.status.code(), Some(1));
+    let auto_parsed: serde_json::Value = serde_json::from_slice(&auto_out.stdout).unwrap();
+    assert_eq!(auto_parsed["schema_version"], 3);
+}
+
+#[cfg(unix)]
+#[test]
+fn receipt_out_persists_valid_v3_json_and_rejects_symlinks_dirs_and_input_aliases() {
+    use std::{
+        fs,
+        os::unix::fs::{PermissionsExt as _, symlink},
+    };
+
+    let project = tempfile::tempdir().unwrap();
+    let request = project.path().join("request.json");
+    let precious_bytes = b"precious caller source bytes\n";
+    fs::write(&request, precious_bytes).unwrap();
+
+    // 1. Valid `--receipt-out` alongside default `--format human` writes atomic
+    //    `0o600` Receipt v3 JSON while rendering the human card on stdout.
+    let receipt_file = project.path().join("out-receipt.json");
+    let mut ok_cmd = command(Route::Direct, project.path());
+    ok_cmd.args(["verify", "--request"]).arg(&request).arg("--receipt-out").arg(&receipt_file);
+    #[cfg(not(feature = "setup"))]
+    ok_cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+    let out = ok_cmd.output().unwrap();
+    assert_result(&out, 1, "[FAIL]", "");
+    assert_result(&out, 1, &format!("Receipt    : {}", receipt_file.display()), "");
+    let meta = fs::symlink_metadata(&receipt_file).unwrap();
+    assert!(meta.file_type().is_file() && !meta.file_type().is_symlink());
+    assert_eq!(meta.permissions().mode() & 0o777, 0o600);
+    let saved: serde_json::Value =
+        serde_json::from_slice(&fs::read(&receipt_file).unwrap()).unwrap();
+    assert_eq!(saved["schema_version"], 3);
+    assert_eq!(saved["status"], "unsupported");
+    assert_eq!(saved["phase"], "request");
+
+    // 2. Accepts destinations beneath a symlinked ancestor directory (matching
+    //    `--artifacts` and symlinked `TMPDIR` / macOS `/var` setups) while
+    //    rejecting input aliasing (including through the symlinked ancestor),
+    //    symlinked leaf destinations, directory destinations, and `--artifacts`
+    //    collisions with exit 2 (`phase == "receipt-out"`), never clobbering
+    //    caller files.
+    let target_file = project.path().join("target.json");
+    fs::write(&target_file, b"untouched\n").unwrap();
+    let sym_dest = project.path().join("sym-receipt.json");
+    symlink(&target_file, &sym_dest).unwrap();
+
+    let real_dir = project.path().join("real-dir");
+    fs::create_dir(&real_dir).unwrap();
+    let real_sub = real_dir.join("sub");
+    fs::create_dir(&real_sub).unwrap();
+    let sym_dir = project.path().join("sym-dir");
+    symlink(&real_dir, &sym_dir).unwrap();
+
+    // Symlinked ancestor destination is accepted and writes `0o600` JSON into
+    // the canonical target directory.
+    let sym_ancestor_dest = sym_dir.join("sub").join("nested.json");
+    let mut sym_ok_cmd = command(Route::Direct, project.path());
+    sym_ok_cmd
+        .args(["verify", "--format", "json", "--request"])
+        .arg(&request)
+        .arg("--receipt-out")
+        .arg(&sym_ancestor_dest);
+    #[cfg(not(feature = "setup"))]
+    sym_ok_cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+    let sym_ok_out = sym_ok_cmd.output().unwrap();
+    assert_eq!(sym_ok_out.status.code(), Some(1), "{sym_ok_out:?}");
+    let sym_ok_meta = fs::symlink_metadata(real_sub.join("nested.json")).unwrap();
+    assert!(sym_ok_meta.file_type().is_file() && !sym_ok_meta.file_type().is_symlink());
+    assert_eq!(sym_ok_meta.permissions().mode() & 0o777, 0o600);
+    let sym_ok_saved: serde_json::Value =
+        serde_json::from_slice(&fs::read(real_sub.join("nested.json")).unwrap()).unwrap();
+    assert_eq!(sym_ok_saved["schema_version"], 3);
+    assert_eq!(sym_ok_saved["phase"], "request");
+
+    // A symlinked-ancestor path that aliases `--request` is still rejected.
+    let real_req_in_dir = real_dir.join("aliased-req.json");
+    fs::write(&real_req_in_dir, precious_bytes).unwrap();
+    let mut sym_alias_cmd = command(Route::Direct, project.path());
+    sym_alias_cmd
+        .args(["verify", "--format", "json", "--request"])
+        .arg(&real_req_in_dir)
+        .arg("--receipt-out")
+        .arg(sym_dir.join("aliased-req.json"));
+    #[cfg(not(feature = "setup"))]
+    sym_alias_cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+    let sym_alias_out = sym_alias_cmd.output().unwrap();
+    assert_eq!(sym_alias_out.status.code(), Some(2), "{sym_alias_out:?}");
+    let sym_alias_rec: serde_json::Value = serde_json::from_slice(&sym_alias_out.stdout).unwrap();
+    assert_eq!(sym_alias_rec["phase"], "receipt-out", "{sym_alias_rec}");
+    assert_eq!(fs::read(&real_req_in_dir).unwrap(), precious_bytes);
+
+    let artifacts_dir = project.path().join("ev");
+    for bad_dest in [request.clone(), sym_dest.clone(), real_dir.clone(), artifacts_dir.clone()] {
+        let mut bad_cmd = command(Route::Direct, project.path());
+        bad_cmd
+            .args(["verify", "--format", "json", "--request"])
+            .arg(&request)
+            .arg("--artifacts")
+            .arg(&artifacts_dir)
+            .arg("--receipt-out")
+            .arg(&bad_dest);
+        #[cfg(not(feature = "setup"))]
+        bad_cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+        let bad_out = bad_cmd.output().unwrap();
+        assert_eq!(bad_out.status.code(), Some(2), "{bad_dest:?}: {bad_out:?}");
+        let fail_rec: serde_json::Value = serde_json::from_slice(&bad_out.stdout).unwrap();
+        assert_eq!(fail_rec["status"], "tool_failed", "{fail_rec}");
+        assert_eq!(fail_rec["phase"], "receipt-out", "{fail_rec}");
+    }
+    assert_eq!(fs::read(&request).unwrap(), precious_bytes);
+    assert_eq!(fs::read(&target_file).unwrap(), b"untouched\n");
+    assert!(!artifacts_dir.exists());
+
+    // 3. Request-declared proof/source files and explicit tool paths cannot be
+    //    clobbered by `--receipt-out` even when capture fails early.
+    let valid_dir = project.path().join("valid-req");
+    fs::create_dir_all(valid_dir.join("src")).unwrap();
+    fs::create_dir_all(valid_dir.join("proof")).unwrap();
+    let src_bytes = b"pub fn bad_ref(x: &u64) -> u64 { *x }\n";
+    let spec_bytes = b"prelude\n-- keep spec\n";
+    let proof_bytes = b"prelude\n-- keep proof\n";
+    fs::write(valid_dir.join("src/lib.rs"), src_bytes).unwrap();
+    fs::write(valid_dir.join("proof/Spec.lean"), spec_bytes).unwrap();
+    fs::write(valid_dir.join("proof/Proof.lean"), proof_bytes).unwrap();
+    let valid_req = valid_dir.join("request.json");
+    fs::write(
+        &valid_req,
+        r#"{
+  "schema_version": 1,
+  "compilation": {
+    "source_root": "src",
+    "crate_root": "lib.rs",
+    "crate_name": "fixture",
+    "edition": "2024",
+    "target": "x86_64-unknown-linux-gnu",
+    "source_files": ["lib.rs"]
+  },
+  "scope": { "kind": "crate" },
+  "proof": {
+    "source_root": "proof",
+    "sources": [
+      { "module": "Spec", "path": "Spec.lean", "role": "specification" },
+      { "module": "Proof", "path": "Proof.lean", "role": "proof" }
+    ]
+  }
+}"#,
+    )
+    .unwrap();
+    let fake_sysroot = project.path().join("fake-sysroot");
+    fs::create_dir(&fake_sysroot).unwrap();
+    let fake_lean = project.path().join("fake-lean");
+    fs::write(&fake_lean, b"#!/bin/sh\nexit 0\n").unwrap();
+    fs::set_permissions(&fake_lean, fs::Permissions::from_mode(0o755)).unwrap();
+    let fake_cap = project.path().join("fake-cap");
+    fs::write(
+        &fake_cap,
+        "#!/bin/sh\nprintf '{\"status\":\"unsupported\",\"diagnostics\":[\"ref\"]}\\n'\nexit 1\n",
+    )
+    .unwrap();
+    fs::set_permissions(&fake_cap, fs::Permissions::from_mode(0o755)).unwrap();
+
+    for alias_dest in [
+        valid_dir.join("proof/Proof.lean"),
+        valid_dir.join("src/lib.rs"),
+        fake_cap.clone(),
+        fake_lean.clone(),
+    ] {
+        let mut alias_cmd = command(Route::Direct, project.path());
+        alias_cmd
+            .args(["verify", "--format", "json", "--capture"])
+            .arg(&fake_cap)
+            .arg("--sysroot")
+            .arg(&fake_sysroot)
+            .arg("--lean")
+            .arg(&fake_lean)
+            .arg("--request")
+            .arg(&valid_req)
+            .arg("--receipt-out")
+            .arg(&alias_dest);
+        let alias_out = alias_cmd.output().unwrap();
+        assert_eq!(alias_out.status.code(), Some(2), "{alias_dest:?}: {alias_out:?}");
+        let alias_rec: serde_json::Value = serde_json::from_slice(&alias_out.stdout).unwrap();
+        assert_eq!(alias_rec["status"], "tool_failed", "{alias_rec}");
+        assert_eq!(alias_rec["phase"], "receipt-out", "{alias_rec}");
+    }
+
+    // Also test manifest mode failing in `cargo` phase with `--receipt-out`
+    // targeting both `proof/Spec.lean` and `src/lib.rs` / `Cargo.lock`.
+    fs::write(
+        valid_dir.join("Cargo.toml"),
+        "[package]\nname = \"pm\"\nversion = \"0.1.0\"\nedition = \"2024\"\n\n[lib]\nproc-macro = true\n",
+    )
+    .unwrap();
+    for manifest_alias in [
+        valid_dir.join("proof/Spec.lean"),
+        valid_dir.join("src/lib.rs"),
+        valid_dir.join("Cargo.lock"),
+    ] {
+        let manifest_out = command(Route::Direct, project.path())
+            .args(["verify", "--format", "json", "--capture"])
+            .arg(&fake_cap)
+            .arg("--sysroot")
+            .arg(&fake_sysroot)
+            .arg("--lean")
+            .arg(&fake_lean)
+            .arg("--manifest-path")
+            .arg(valid_dir.join("Cargo.toml"))
+            .arg("--proof-dir")
+            .arg(valid_dir.join("proof"))
+            .arg("--receipt-out")
+            .arg(&manifest_alias)
+            .output()
+            .unwrap();
+        assert_eq!(manifest_out.status.code(), Some(2), "{manifest_alias:?}: {manifest_out:?}");
+        let manifest_rec: serde_json::Value = serde_json::from_slice(&manifest_out.stdout).unwrap();
+        assert_eq!(manifest_rec["status"], "tool_failed", "{manifest_rec}");
+        assert_eq!(manifest_rec["phase"], "receipt-out", "{manifest_rec}");
+    }
+
+    assert_eq!(fs::read(valid_dir.join("src/lib.rs")).unwrap(), src_bytes);
+    assert_eq!(fs::read(valid_dir.join("proof/Spec.lean")).unwrap(), spec_bytes);
+    assert_eq!(fs::read(valid_dir.join("proof/Proof.lean")).unwrap(), proof_bytes);
+    assert!(fs::read_to_string(&fake_cap).unwrap().contains("unsupported"));
+    assert_eq!(fs::read(&fake_lean).unwrap(), b"#!/bin/sh\nexit 0\n");
+
+    // 4. Bare relative `--request request.json` still guards `.rs` and `.lean`
+    //    files under the working directory before `load_request` runs.
+    let bare_spec = project.path().join("Spec.lean");
+    let bare_spec_bytes = b"prelude\n-- keep bare spec\n";
+    fs::write(&bare_spec, bare_spec_bytes).unwrap();
+    let mut bare_cmd = command(Route::Direct, project.path());
+    bare_cmd.args([
+        "verify",
+        "--format",
+        "json",
+        "--request",
+        "request.json",
+        "--receipt-out",
+        "Spec.lean",
+    ]);
+    #[cfg(not(feature = "setup"))]
+    bare_cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+    let bare_out = bare_cmd.output().unwrap();
+    assert_eq!(bare_out.status.code(), Some(2), "{bare_out:?}");
+    let bare_rec: serde_json::Value = serde_json::from_slice(&bare_out.stdout).unwrap();
+    assert_eq!(bare_rec["status"], "tool_failed", "{bare_rec}");
+    assert_eq!(bare_rec["phase"], "receipt-out", "{bare_rec}");
+    assert_eq!(fs::read(&bare_spec).unwrap(), bare_spec_bytes);
+
+    // 5. Unwritable `--receipt-out` parent fails before retaining `--artifacts`
+    //    so `--artifacts` is never published on a `tool_failed`/`receipt-out`
+    //    exit 2.
+    let ro_dir = project.path().join("readonly-receipt-dir");
+    fs::create_dir(&ro_dir).unwrap();
+    fs::set_permissions(&ro_dir, fs::Permissions::from_mode(0o555)).unwrap();
+    let probe_file = ro_dir.join("probe-write");
+    match fs::write(&probe_file, b"") {
+        Ok(()) => {
+            let _ = fs::remove_file(&probe_file);
+        }
+        Err(_) => {
+            let skipped_artifacts = project.path().join("unretained-artifacts");
+            let mut ro_cmd = command(Route::Direct, project.path());
+            ro_cmd
+                .args(["verify", "--format", "json", "--request"])
+                .arg(&request)
+                .arg("--artifacts")
+                .arg(&skipped_artifacts)
+                .arg("--receipt-out")
+                .arg(ro_dir.join("receipt.json"));
+            #[cfg(not(feature = "setup"))]
+            ro_cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+            let ro_out = ro_cmd.output().unwrap();
+            assert_eq!(ro_out.status.code(), Some(2), "{ro_out:?}");
+            let ro_rec: serde_json::Value = serde_json::from_slice(&ro_out.stdout).unwrap();
+            assert_eq!(ro_rec["status"], "tool_failed", "{ro_rec}");
+            assert_eq!(ro_rec["phase"], "receipt-out", "{ro_rec}");
+            assert!(ro_rec.get("artifacts").is_none(), "{ro_rec}");
+            assert!(!skipped_artifacts.exists());
+        }
+    }
+    let _ = fs::set_permissions(&ro_dir, fs::Permissions::from_mode(0o700));
+
+    // 6. Out-of-tree `--request` input and workspace-root `Cargo.lock` cannot
+    //    be overwritten even when `--artifacts` preflight fails before
+    //    `load_request`, and a late aliasing failure suppresses `--artifacts`
+    //    retention.
+    let out_of_tree = project.path().join("oot-src");
+    fs::create_dir_all(&out_of_tree).unwrap();
+    let oot_data = out_of_tree.join("data.txt");
+    fs::write(&oot_data, b"keep out-of-tree input\n").unwrap();
+    let oot_lib = out_of_tree.join("lib.rs");
+    fs::write(&oot_lib, b"pub fn keep() {}\n").unwrap();
+    let oot_req_dir = project.path().join("proofs/unit");
+    fs::create_dir_all(&oot_req_dir).unwrap();
+    let oot_req = oot_req_dir.join("request.json");
+    fs::write(
+        &oot_req,
+        r#"{
+  "schema_version": 1,
+  "compilation": {
+    "source_root": "../../oot-src",
+    "crate_root": "lib.rs",
+    "crate_name": "oot",
+    "edition": "2024",
+    "target": "x86_64-unknown-linux-gnu",
+    "source_files": ["lib.rs", "data.txt"]
+  },
+  "scope": { "kind": "crate" },
+  "proof": { "source_root": ".", "sources": [] }
+}"#,
+    )
+    .unwrap();
+    let oot_fresh_art = project.path().join("oot-never-created");
+    for target in [&oot_data, &oot_lib] {
+        let mut oot_cmd = command(Route::Direct, project.path());
+        oot_cmd
+            .args(["verify", "--format", "json", "--request"])
+            .arg(&oot_req)
+            .arg("--artifacts")
+            .arg(&oot_fresh_art)
+            .arg("--receipt-out")
+            .arg(target);
+        #[cfg(not(feature = "setup"))]
+        oot_cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+        let oot_out = oot_cmd.output().unwrap();
+        assert_eq!(oot_out.status.code(), Some(2), "{target:?}: {oot_out:?}");
+        let oot_rec: serde_json::Value = serde_json::from_slice(&oot_out.stdout).unwrap();
+        assert_eq!(oot_rec["phase"], "receipt-out", "{oot_rec}");
+        assert!(oot_rec.get("artifacts").is_none(), "{oot_rec}");
+    }
+    assert_eq!(fs::read(&oot_data).unwrap(), b"keep out-of-tree input\n");
+    assert_eq!(fs::read(&oot_lib).unwrap(), b"pub fn keep() {}\n");
+    assert!(!oot_fresh_art.exists());
+
+    // 7. Cross-directory symlinked `--request` resolves relative inputs
+    //    against the canonical request target's parent (matching
+    //    `load_request`), so an early `--artifacts` preflight failure cannot
+    //    overwrite a declared non-`.rs`/`.lean` input.
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::symlink;
+
+        let link_dir = project.path().join("req-link-dir");
+        fs::create_dir(&link_dir).unwrap();
+        let linked_req = link_dir.join("request.json");
+        symlink(&oot_req, &linked_req).unwrap();
+        let existing_art = project.path().join("existing-artifacts-dir");
+        fs::create_dir(&existing_art).unwrap();
+
+        let mut sym_req_cmd = command(Route::Direct, project.path());
+        sym_req_cmd
+            .args(["verify", "--format", "json", "--request"])
+            .arg(&linked_req)
+            .arg("--artifacts")
+            .arg(&existing_art)
+            .arg("--receipt-out")
+            .arg(&oot_data);
+        #[cfg(not(feature = "setup"))]
+        sym_req_cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+        let sym_req_out = sym_req_cmd.output().unwrap();
+        assert_eq!(sym_req_out.status.code(), Some(2), "{sym_req_out:?}");
+        let sym_req_rec: serde_json::Value = serde_json::from_slice(&sym_req_out.stdout).unwrap();
+        assert_eq!(sym_req_rec["phase"], "receipt-out", "{sym_req_rec}");
+        assert_eq!(fs::read(&oot_data).unwrap(), b"keep out-of-tree input\n");
+
+        // 8. `--artifacts` containing `<symlink>/..` resolves symlinks before
+        //    applying `..`, blocking `--receipt-out` inside existing or
+        //    aliasing non-existent `--artifacts` destinations pre-stage.
+        let dir_a = project.path().join("art-dir-a");
+        let dir_b_sub = project.path().join("art-dir-b/sub");
+        let dir_b_ev = project.path().join("art-dir-b/ev");
+        fs::create_dir_all(&dir_a).unwrap();
+        fs::create_dir_all(&dir_b_sub).unwrap();
+        fs::create_dir_all(&dir_b_ev).unwrap();
+        symlink(&dir_b_sub, dir_a.join("link_b")).unwrap();
+
+        let existing_sentinel = dir_b_ev.join("receipt.json");
+        fs::write(&existing_sentinel, b"preserve inside artifacts\n").unwrap();
+        let sym_existing_art = dir_a.join("link_b/../ev");
+        let mut sym_art_cmd = command(Route::Direct, project.path());
+        sym_art_cmd
+            .args(["verify", "--format", "json", "--request"])
+            .arg(&request)
+            .arg("--artifacts")
+            .arg(&sym_existing_art)
+            .arg("--receipt-out")
+            .arg(&existing_sentinel);
+        #[cfg(not(feature = "setup"))]
+        sym_art_cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+        let sym_art_out = sym_art_cmd.output().unwrap();
+        assert_eq!(sym_art_out.status.code(), Some(2), "{sym_art_out:?}");
+        let sym_art_rec: serde_json::Value = serde_json::from_slice(&sym_art_out.stdout).unwrap();
+        assert_eq!(sym_art_rec["phase"], "receipt-out", "{sym_art_rec}");
+        assert_eq!(fs::read(&existing_sentinel).unwrap(), b"preserve inside artifacts\n");
+
+        let new_ev_alias = project.path().join("art-dir-b/new-ev");
+        let sym_new_art = dir_a.join("link_b/../new-ev");
+        let mut sym_new_cmd = command(Route::Direct, project.path());
+        sym_new_cmd
+            .args(["verify", "--format", "json", "--request"])
+            .arg(&request)
+            .arg("--artifacts")
+            .arg(&sym_new_art)
+            .arg("--receipt-out")
+            .arg(&new_ev_alias);
+        #[cfg(not(feature = "setup"))]
+        sym_new_cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+        let sym_new_out = sym_new_cmd.output().unwrap();
+        assert_eq!(sym_new_out.status.code(), Some(2), "{sym_new_out:?}");
+        let sym_new_rec: serde_json::Value = serde_json::from_slice(&sym_new_out.stdout).unwrap();
+        assert_eq!(sym_new_rec["phase"], "receipt-out", "{sym_new_rec}");
+        assert!(!new_ev_alias.exists());
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn receipt_out_invalidates_stale_passing_receipt_before_capture_and_on_write_failure() {
+    use std::{fs, os::unix::fs::PermissionsExt as _};
+
+    let project = tempfile::tempdir().unwrap();
+    let src_dir = project.path().join("src");
+    let proof_dir = project.path().join("proof");
+    let out_dir = project.path().join("out");
+    fs::create_dir_all(&src_dir).unwrap();
+    fs::create_dir_all(&proof_dir).unwrap();
+    fs::create_dir_all(&out_dir).unwrap();
+    fs::write(src_dir.join("lib.rs"), b"pub fn zero() -> u64 { 0 }\n").unwrap();
+    fs::write(proof_dir.join("Spec.lean"), b"prelude\n").unwrap();
+    fs::write(proof_dir.join("Proof.lean"), b"prelude\n").unwrap();
+    let req_path = project.path().join("request.json");
+    fs::write(
+        &req_path,
+        r#"{
+  "schema_version": 1,
+  "compilation": {
+    "source_root": "src",
+    "crate_root": "lib.rs",
+    "crate_name": "stale_demo",
+    "edition": "2024",
+    "target": "x86_64-unknown-linux-gnu",
+    "source_files": ["lib.rs"]
+  },
+  "scope": { "kind": "crate" },
+  "proof": {
+    "source_root": "proof",
+    "sources": [
+      { "module": "Spec", "path": "Spec.lean", "role": "specification" },
+      { "module": "Proof", "path": "Proof.lean", "role": "proof" }
+    ]
+  }
+}"#,
+    )
+    .unwrap();
+    let fake_sysroot = project.path().join("sysroot");
+    fs::create_dir(&fake_sysroot).unwrap();
+    let fake_lean = project.path().join("fake-lean");
+    fs::write(&fake_lean, b"#!/bin/sh\nexit 0\n").unwrap();
+    fs::set_permissions(&fake_lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+    // 1. Pre-existing passing receipt is unlinked BEFORE capture runs; even if
+    //    capture subsequently fails and the destination parent becomes
+    //    unwritable (simulating ENOSPC/EACCES on failure-receipt write), no
+    //    stale `crate_verified` receipt remains on disk.
+    let stale_receipt = out_dir.join("receipt.json");
+    let stale_pass = br#"{"schema_version":3,"status":"crate_verified"}"#;
+    fs::write(&stale_receipt, stale_pass).unwrap();
+    let seen_absent_marker = project.path().join("capture-saw-absent");
+    let fake_cap = project.path().join("fake-cap");
+    fs::write(
+        &fake_cap,
+        format!(
+            "#!/bin/sh\n\
+             if [ ! -e '{}' ]; then printf 'absent' > '{}'; fi\n\
+             chmod 0555 '{}'\n\
+             printf '{{\"status\":\"unsupported\",\"diagnostics\":[\"ref\"]}}\\n'\n\
+             exit 1\n",
+            stale_receipt.display(),
+            seen_absent_marker.display(),
+            out_dir.display(),
+        ),
+    )
+    .unwrap();
+    fs::set_permissions(&fake_cap, fs::Permissions::from_mode(0o755)).unwrap();
+
+    let out = command(Route::Direct, project.path())
+        .args(["verify", "--format", "json", "--capture"])
+        .arg(&fake_cap)
+        .arg("--sysroot")
+        .arg(&fake_sysroot)
+        .arg("--lean")
+        .arg(&fake_lean)
+        .arg("--request")
+        .arg(&req_path)
+        .arg("--receipt-out")
+        .arg(&stale_receipt)
+        .output()
+        .unwrap();
+    let _ = fs::set_permissions(&out_dir, fs::Permissions::from_mode(0o700));
+    assert_eq!(
+        fs::read_to_string(&seen_absent_marker).unwrap_or_default(),
+        "absent",
+        "stale receipt must be unlinked before capture begins"
+    );
+    // Non-root users get exit 2 (`receipt-out`) with `stale_receipt` absent;
+    // root ignores `0555` and writes the new `unsupported` failure receipt.
+    // Either way, the stale `crate_verified` payload is NEVER preserved.
+    assert_ne!(out.status.code(), Some(0), "{out:?}");
+    if stale_receipt.exists() {
+        let written: serde_json::Value =
+            serde_json::from_slice(&fs::read(&stale_receipt).unwrap()).unwrap();
+        assert_ne!(written["status"], "crate_verified", "{written}");
+        assert_eq!(written["status"], "unsupported", "{written}");
+    } else {
+        assert_eq!(out.status.code(), Some(2), "{out:?}");
+        let rec: serde_json::Value = serde_json::from_slice(&out.stdout).unwrap();
+        assert_eq!(rec["status"], "tool_failed", "{rec}");
+        assert_eq!(rec["phase"], "receipt-out", "{rec}");
+    }
+
+    // 2. If `--receipt-out` starts as a stale file inside an already-unwritable
+    //    directory, invalidation fails closed BEFORE capture is invoked.
+    let ro_dir = project.path().join("ro-stale-dir");
+    fs::create_dir(&ro_dir).unwrap();
+    let ro_stale = ro_dir.join("receipt.json");
+    fs::write(&ro_stale, stale_pass).unwrap();
+    fs::set_permissions(&ro_dir, fs::Permissions::from_mode(0o555)).unwrap();
+    let probe = ro_dir.join("probe");
+    match fs::write(&probe, b"") {
+        Ok(()) => {
+            let _ = fs::remove_file(&probe);
+        }
+        Err(_) => {
+            let cap_ran_marker = project.path().join("ro-cap-ran");
+            let fake_cap2 = project.path().join("fake-cap-2");
+            fs::write(
+                &fake_cap2,
+                format!("#!/bin/sh\nprintf 'ran' > '{}'\nexit 1\n", cap_ran_marker.display()),
+            )
+            .unwrap();
+            fs::set_permissions(&fake_cap2, fs::Permissions::from_mode(0o755)).unwrap();
+            let ro_out = command(Route::Direct, project.path())
+                .args(["verify", "--format", "json", "--capture"])
+                .arg(&fake_cap2)
+                .arg("--sysroot")
+                .arg(&fake_sysroot)
+                .arg("--lean")
+                .arg(&fake_lean)
+                .arg("--request")
+                .arg(&req_path)
+                .arg("--receipt-out")
+                .arg(&ro_stale)
+                .output()
+                .unwrap();
+            assert_eq!(ro_out.status.code(), Some(2), "{ro_out:?}");
+            let ro_rec: serde_json::Value = serde_json::from_slice(&ro_out.stdout).unwrap();
+            assert_eq!(ro_rec["status"], "tool_failed", "{ro_rec}");
+            assert_eq!(ro_rec["phase"], "receipt-out", "{ro_rec}");
+            assert!(!cap_ran_marker.exists(), "capture must not run when stale unlink fails");
+        }
+    }
+    let _ = fs::set_permissions(&ro_dir, fs::Permissions::from_mode(0o700));
+}
+
+#[cfg(unix)]
+#[test]
+fn broken_pipe_exits_cleanly_and_preserves_nonzero_verify_exit_codes() {
+    use std::fs;
+
+    let project = tempfile::tempdir().unwrap();
+    let binary = Path::new(env!("CARGO_BIN_EXE_cargo-anneal-test-bin"));
+    let request = project.path().join("bad-request.json");
+    fs::write(&request, b"not JSON\n").unwrap();
+    let missing_tmp = project.path().join("missing-tmp");
+
+    // 1. `cargo-anneal skill | true`: closed read end triggers `EPIPE`;
+    //    `computed_exit == 0` -> exits `0` with zero panic diagnostics on
+    //    stderr.
+    let skill_rc = project.path().join("skill.rc");
+    let skill_pipe = Command::new("/bin/sh")
+        .arg("-c")
+        .arg("(\"$1\" skill 2>\"$2\"; printf '%d' \"$?\" > \"$3\") | true")
+        .arg("sh")
+        .arg(binary)
+        .arg(project.path().join("skill.stderr"))
+        .arg(&skill_rc)
+        .output()
+        .unwrap();
+    assert!(skill_pipe.status.success(), "{skill_pipe:?}");
+    assert_eq!(fs::read_to_string(&skill_rc).unwrap(), "0");
+    assert!(fs::read(project.path().join("skill.stderr")).unwrap().is_empty());
+
+    // 2. Failing `verify` (`exit 1` and `exit 2`) with an immediately closed
+    //    stdout pipe preserves its exact non-zero exit code (`1` or `2`, never
+    //    `0` or `101`) and still writes `--receipt-out` atomically before exit.
+    let receipt_one = project.path().join("pipe-exit1.json");
+    #[cfg(feature = "setup")]
+    let extra = "";
+    #[cfg(not(feature = "setup"))]
+    let extra = "--capture cap --sysroot sys --lean lean";
+
+    let verify_exit1 = Command::new("/bin/sh")
+        .arg("-c")
+        .arg(format!(
+            "(\"$1\" verify --request \"$2\" --receipt-out \"$3\" {extra}; printf '%d' \"$?\" > \"$4\") | true"
+        ))
+        .arg("sh")
+        .arg(binary)
+        .arg(&request)
+        .arg(&receipt_one)
+        .arg(project.path().join("rc1.txt"))
+        .output()
+        .unwrap();
+    assert!(verify_exit1.status.success());
+    assert_eq!(fs::read_to_string(project.path().join("rc1.txt")).unwrap(), "1");
+    let rec1: serde_json::Value = serde_json::from_slice(&fs::read(&receipt_one).unwrap()).unwrap();
+    assert_eq!(rec1["status"], "unsupported");
+
+    let verify_exit2 = Command::new("/bin/sh")
+        .arg("-c")
+        .arg(format!(
+            "(TMPDIR=\"$3\" \"$1\" verify --request \"$2\" {extra}; printf '%d' \"$?\" > \"$4\") | true"
+        ))
+        .arg("sh")
+        .arg(binary)
+        .arg(&request)
+        .arg(&missing_tmp)
+        .arg(project.path().join("rc2.txt"))
+        .output()
+        .unwrap();
+    assert!(verify_exit2.status.success());
+    assert_eq!(fs::read_to_string(project.path().join("rc2.txt")).unwrap(), "2");
+}
+
+#[cfg(all(target_os = "linux", feature = "setup"))]
+#[test]
+fn quiet_suppresses_non_tty_setup_note_while_keeping_taint_caveats() {
+    use std::fs;
+
+    let project = tempfile::tempdir().unwrap();
+    let archive = project.path().join("v1.tar.zst");
+    local_archive(&archive);
+    let cache = tempfile::tempdir().unwrap();
+
+    let first = command(Route::Direct, project.path())
+        .env("XDG_CACHE_HOME", cache.path())
+        .args(["setup", "--local-archive"])
+        .arg(&archive)
+        .output()
+        .unwrap();
+    assert_result(&first, 0, "Installed Anneal toolchain at ", "");
+    let stdout = String::from_utf8_lossy(&first.stdout);
+    let installed = std::path::PathBuf::from(
+        stdout.trim_end().strip_prefix("Installed Anneal toolchain at ").unwrap(),
+    );
+    let old_dir = installed.parent().unwrap().join("0.1.0-old-toolchain");
+    fs::create_dir_all(&old_dir).unwrap();
+
+    // `-q` suppresses the non-interactive old-toolchain `note:` on stderr.
+    let quiet_setup = command(Route::Direct, project.path())
+        .env("XDG_CACHE_HOME", cache.path())
+        .args(["-q", "setup", "--local-archive"])
+        .arg(&archive)
+        .output()
+        .unwrap();
+    assert_result(&quiet_setup, 0, "Installed Anneal toolchain at ", "");
+    assert!(quiet_setup.stderr.is_empty(), "{quiet_setup:?}");
+
+    // `-q` on `verify` NEVER suppresses mandatory security taint banners/rows.
+    let request = project.path().join("bad.json");
+    fs::write(&request, b"not JSON\n").unwrap();
+    let quiet_taint = command(Route::Direct, project.path())
+        .args(["-q", "verify", "--allow-unsandboxed-elaboration", "--request"])
+        .arg(&request)
+        .output()
+        .unwrap();
+    assert_result(&quiet_taint, 1, "! TAINT    : unsandboxed_elaboration", "TAINTED");
 }

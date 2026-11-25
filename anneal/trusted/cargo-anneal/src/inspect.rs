@@ -15,7 +15,7 @@ use std::os::fd::{AsRawFd as _, FromRawFd as _, OwnedFd};
 use std::os::unix::ffi::OsStrExt as _;
 use std::{
     collections::BTreeSet,
-    env, fs,
+    fs,
     io::{self, IsTerminal as _, Read as _, Write as _},
     path::{Component, Path, PathBuf},
     process::ExitCode,
@@ -30,8 +30,8 @@ use crate::{
             diff::{ReceiptDiff, diff_receipts},
             profile::ArtifactAxis,
             render::{
-                ArtifactVerificationSummary, ColorChoice, InspectFormat, InspectSection,
-                RenderOptions, render_diff, render_inspection,
+                ArtifactVerificationSummary, InspectFormat, InspectSection, RenderOptions,
+                render_diff, render_inspection,
             },
             schema::{
                 InspectParseError, ParsedReceipt, PolicyRequirements, UnknownFieldsPolicy,
@@ -41,6 +41,7 @@ use crate::{
         },
         sanitize::SanitizedInline,
     },
+    output::{ColorChoice, EnvSnapshot, resolve_stream_style},
     sys_util::SafeFs,
 };
 
@@ -64,25 +65,6 @@ impl From<CliInspectFormat> for InspectFormat {
             CliInspectFormat::Ledger => Self::Ledger,
             CliInspectFormat::Markdown => Self::Markdown,
             CliInspectFormat::Json => Self::Json,
-        }
-    }
-}
-
-/// CLI-facing terminal color selector converted into pure [`ColorChoice`].
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, ValueEnum)]
-pub enum CliColorChoice {
-    #[default]
-    Auto,
-    Always,
-    Never,
-}
-
-impl From<CliColorChoice> for ColorChoice {
-    fn from(value: CliColorChoice) -> Self {
-        match value {
-            CliColorChoice::Auto => Self::Auto,
-            CliColorChoice::Always => Self::Always,
-            CliColorChoice::Never => Self::Never,
         }
     }
 }
@@ -146,9 +128,6 @@ pub struct InspectArgs {
     /// Output format (`human`, `ledger`, `markdown`, or `json`).
     #[arg(long, value_enum, default_value_t = CliInspectFormat::Human)]
     pub format: CliInspectFormat,
-    /// Control ANSI colors (`auto`, `always`, or `never`).
-    #[arg(long, value_enum, default_value_t = CliColorChoice::Auto)]
-    pub color: CliColorChoice,
     /// Verify retained artifacts directory against recorded receipt digests.
     #[arg(long, value_name = "DIR", conflicts_with = "diff")]
     pub verify_artifacts: Option<PathBuf>,
@@ -168,12 +147,6 @@ pub struct InspectArgs {
     /// Print full 64-character SHA-256 digests instead of 12-char prefixes.
     #[arg(long)]
     pub full_digests: bool,
-    /// Show detailed selected bodies, closures, assumptions, and warnings.
-    #[arg(short = 'v', long, conflicts_with = "quiet")]
-    pub verbose: bool,
-    /// Restrict human output to the primary summary status line and errors.
-    #[arg(short = 'q', long, conflicts_with = "verbose")]
-    pub quiet: bool,
     /// Restrict human output to specific sections.
     #[arg(long = "section", value_enum, conflicts_with = "diff")]
     pub section: Vec<CliInspectSection>,
@@ -243,8 +216,13 @@ impl InspectArgs {
 }
 
 /// Execute `cargo anneal inspect`.
-pub fn main(args: InspectArgs) -> ExitCode {
-    match run(&args) {
+pub fn main(
+    args: InspectArgs,
+    color: crate::output::ColorChoice,
+    quiet: bool,
+    verbose: bool,
+) -> ExitCode {
+    match run(&args, color, quiet, verbose) {
         Ok(code) => code,
         Err(err) => {
             eprintln!("error: {}", SanitizedInline(err.message()));
@@ -253,8 +231,13 @@ pub fn main(args: InspectArgs) -> ExitCode {
     }
 }
 
-fn run(args: &InspectArgs) -> Result<ExitCode, InspectParseError> {
-    let render_opts = build_render_options(args);
+fn run(
+    args: &InspectArgs,
+    color: crate::output::ColorChoice,
+    quiet: bool,
+    verbose: bool,
+) -> Result<ExitCode, InspectParseError> {
+    let render_opts = build_render_options(args, color, quiet, verbose);
 
     if let Some(diff_paths) = &args.diff {
         if diff_paths.len() != 2 {
@@ -386,33 +369,51 @@ fn run(args: &InspectArgs) -> Result<ExitCode, InspectParseError> {
     if policy_violations.is_empty() { Ok(ExitCode::SUCCESS) } else { Ok(ExitCode::from(1)) }
 }
 
-fn build_render_options(args: &InspectArgs) -> RenderOptions {
-    let format = InspectFormat::from(args.format);
-    let color = ColorChoice::from(args.color);
-    let use_color = match color {
+fn resolve_inspect_use_color(
+    passive: bool,
+    has_output_file: bool,
+    format: InspectFormat,
+    color: ColorChoice,
+    is_tty: impl FnOnce() -> bool,
+    env: &EnvSnapshot,
+) -> bool {
+    if format != InspectFormat::Human {
+        return false;
+    }
+    match color {
         ColorChoice::Always => true,
         ColorChoice::Never => false,
         ColorChoice::Auto => {
-            !args.passive
-                && args.output.is_none()
-                && format == InspectFormat::Human
-                && env::var_os("NO_COLOR").is_none_or(|v| v.is_empty())
-                && io::stdout().is_terminal()
+            if passive || has_output_file {
+                return false;
+            }
+            resolve_stream_style(color, is_tty(), None, env).ansi_color
         }
-    };
+    }
+}
+
+fn build_render_options(
+    args: &InspectArgs,
+    color: ColorChoice,
+    quiet: bool,
+    verbose: bool,
+) -> RenderOptions {
+    let format = InspectFormat::from(args.format);
+    let env = EnvSnapshot::capture();
+    let use_color = resolve_inspect_use_color(
+        args.passive,
+        args.output.is_some(),
+        format,
+        color,
+        || io::stdout().is_terminal(),
+        &env,
+    );
     let sections = if args.section.is_empty() {
         None
     } else {
         Some(args.section.iter().copied().map(InspectSection::from).collect::<BTreeSet<_>>())
     };
-    RenderOptions {
-        format,
-        use_color,
-        full_digests: args.full_digests,
-        quiet: args.quiet,
-        verbose: args.verbose,
-        sections,
-    }
+    RenderOptions { format, use_color, full_digests: args.full_digests, quiet, verbose, sections }
 }
 
 fn warn_unknown_fields(label: &str, fields: &[String]) {
@@ -974,5 +975,137 @@ mod tests {
         // Symlinked leaf file.
         symlink(outside.join("Spec.lean"), real_root.join("authored/Link.lean")).unwrap();
         assert!(validate_artifact_dir_chain(&real_root, "authored/Link.lean").is_err());
+    }
+}
+
+#[cfg(test)]
+mod color_tests {
+    use super::{ColorChoice, EnvSnapshot, InspectFormat, resolve_inspect_use_color};
+
+    #[test]
+    fn resolve_inspect_use_color_honors_unified_env_precedence_and_passive_guards() {
+        let dumb = EnvSnapshot { term: Some("dumb".into()), ..EnvSnapshot::default() };
+        assert!(!resolve_inspect_use_color(
+            false,
+            false,
+            InspectFormat::Human,
+            ColorChoice::Auto,
+            || true,
+            &dumb,
+        ));
+
+        let cargo_never = EnvSnapshot {
+            cargo_term_color: Some("never".into()),
+            clicolor_force: Some("1".into()),
+            ..EnvSnapshot::default()
+        };
+        assert!(!resolve_inspect_use_color(
+            false,
+            false,
+            InspectFormat::Human,
+            ColorChoice::Auto,
+            || true,
+            &cargo_never,
+        ));
+
+        let cargo_always = EnvSnapshot {
+            cargo_term_color: Some("ALWAYS".into()),
+            no_color: Some("1".into()),
+            ..EnvSnapshot::default()
+        };
+        assert!(resolve_inspect_use_color(
+            false,
+            false,
+            InspectFormat::Human,
+            ColorChoice::Auto,
+            || false,
+            &cargo_always,
+        ));
+
+        let forced = EnvSnapshot { clicolor_force: Some("1".into()), ..EnvSnapshot::default() };
+        assert!(resolve_inspect_use_color(
+            false,
+            false,
+            InspectFormat::Human,
+            ColorChoice::Auto,
+            || false,
+            &forced,
+        ));
+
+        // Non-empty `NO_COLOR` overrides `CLICOLOR_FORCE`, while empty
+        // `NO_COLOR=""` is treated as unset.
+        let no_color = EnvSnapshot {
+            no_color: Some("1".into()),
+            clicolor_force: Some("1".into()),
+            ..EnvSnapshot::default()
+        };
+        assert!(!resolve_inspect_use_color(
+            false,
+            false,
+            InspectFormat::Human,
+            ColorChoice::Auto,
+            || true,
+            &no_color,
+        ));
+        let empty_no_color =
+            EnvSnapshot { no_color: Some(String::new()), ..EnvSnapshot::default() };
+        assert!(resolve_inspect_use_color(
+            false,
+            false,
+            InspectFormat::Human,
+            ColorChoice::Auto,
+            || true,
+            &empty_no_color,
+        ));
+
+        // Passive mode and `--output FILE` suppress `Auto` color and never
+        // probe the terminal, even when env force variables are set.
+        assert!(!resolve_inspect_use_color(
+            true,
+            false,
+            InspectFormat::Human,
+            ColorChoice::Auto,
+            || panic!("passive mode must not probe stdout tty"),
+            &forced,
+        ));
+        assert!(!resolve_inspect_use_color(
+            false,
+            true,
+            InspectFormat::Human,
+            ColorChoice::Auto,
+            || panic!("--output FILE must not probe stdout tty"),
+            &cargo_always,
+        ));
+
+        // Non-human formats never emit ANSI SGR, even under `--color always`.
+        for fmt in [InspectFormat::Json, InspectFormat::Ledger, InspectFormat::Markdown] {
+            assert!(!resolve_inspect_use_color(
+                false,
+                false,
+                fmt,
+                ColorChoice::Always,
+                || panic!("non-human format must not probe stdout tty"),
+                &forced,
+            ));
+        }
+
+        // Explicit `--color always` and `--color never` override env on human
+        // output without probing the terminal.
+        assert!(resolve_inspect_use_color(
+            false,
+            false,
+            InspectFormat::Human,
+            ColorChoice::Always,
+            || panic!("--color always must not probe stdout tty"),
+            &no_color,
+        ));
+        assert!(!resolve_inspect_use_color(
+            false,
+            false,
+            InspectFormat::Human,
+            ColorChoice::Never,
+            || panic!("--color never must not probe stdout tty"),
+            &cargo_always,
+        ));
     }
 }

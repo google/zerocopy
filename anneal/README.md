@@ -176,12 +176,15 @@ pub fn zero() -> u64 {
 }
 ```
 
-On success (`exit 0`), `cargo anneal verify --request request.json` writes a
-Receipt Schema v3 JSON object to stdout (condensed below from a Linux
-`ExecSeal` run: `audit`, `census`, `configuration`, `correspondence_provenance`,
-`selected`, `sources`, `toolchain_identity`, digests, and `timing_ms` fields
-are omitted for brevity; on Linux, `elaboration_sandbox` is
-`linux_bwrap` or `linux_landlock_seccomp` by default):
+On success (`exit 0`), `cargo anneal verify --request request.json` prints a
+human verification card to stdout (`[SCOPED]` for a selected function, `[OK]`
+only for untainted whole-crate verification). Pass `--format json` to emit the
+Receipt Schema v3 JSON object directly on stdout, or `--receipt-out <path>` to
+write it atomically to disk alongside the human card (condensed below from a
+Linux `ExecSeal` run: `audit`, `census`, `configuration`,
+`correspondence_provenance`, `selected`, `sources`, `toolchain_identity`,
+digests, and `timing_ms` fields are omitted for brevity; on Linux,
+`elaboration_sandbox` is `linux_bwrap` or `linux_landlock_seccomp` by default):
 
 ```json
 {
@@ -207,11 +210,12 @@ are omitted for brevity; on Linux, `elaboration_sandbox` is
 
 To verify that the check is live, edit `lib.rs` to return `1` and rerun
 `cargo anneal verify --request request.json`: verification fails with exit code
-`1`, `"status": "proof_failed"`, and the failing Lean diagnostic and file/line
-location in `Proof.lean`. To inspect captured MIR (`Captured.lean`) and the
-proof obligation (`Expected.lean`) directly, pass `--artifacts <new-directory>`
-(`verify` rejects a path that already exists, or whose parent is not an existing
-directory, before starting verification work).
+`1`, a `[FAIL]` card (`"status": "proof_failed"` with `--format json`), and the
+failing Lean diagnostic and file/line location in `Proof.lean`. To inspect
+captured MIR (`Captured.lean`) and the proof obligation (`Expected.lean`)
+directly, pass `--artifacts <new-directory>` (`verify` rejects a path that
+already exists, or whose parent is not an existing directory, before starting
+verification work).
 
 [alpha-guide]: https://github.com/google/zerocopy/blob/main/anneal/docs/alpha.md
 [releases]: https://github.com/google/zerocopy/releases

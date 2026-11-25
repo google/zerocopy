@@ -155,7 +155,7 @@ fn simulated_nix_store_cross_package_symlink_join_verifies_and_escape_fails_clos
         capture: &'a OsStr,
         sysroot: &'a OsStr,
     ) -> Vec<&'a OsStr> {
-        let mut args = vec![OsStr::new("verify")];
+        let mut args = vec![OsStr::new("verify"), OsStr::new("--format"), OsStr::new("json")];
         if allow_unpinned {
             args.push(OsStr::new("--allow-unpinned-lean"));
         }

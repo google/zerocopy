@@ -339,7 +339,7 @@ impl StagedWorkspace {
         let capture = tools.capture.as_ref().ok_or_else(|| {
             "ToolchainEnv has no `capture` (`anneal-rustc-capture`) binary".to_string()
         })?;
-        let mut inv = Invocation::new(cli, &["verify"])
+        let mut inv = Invocation::new(cli, &["verify", "--format", "json"])
             .arg("--capture")
             .arg(capture)
             .arg("--lean")

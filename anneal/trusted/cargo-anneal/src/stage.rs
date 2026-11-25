@@ -2504,6 +2504,33 @@ impl Checker {
         target_rejection: bool,
         max_workers: usize,
     ) -> Result<(), Failure> {
+        self.compile_lean_modules_parallel_with_progress(
+            order,
+            sources,
+            imports,
+            is_module,
+            lib_subdir,
+            warn_as_err,
+            target_rejection,
+            max_workers,
+            |_, _, _| {},
+        )
+    }
+
+    #[doc(hidden)]
+    #[allow(clippy::too_many_arguments)]
+    pub(crate) fn compile_lean_modules_parallel_with_progress(
+        &mut self,
+        order: &[String],
+        sources: &BTreeMap<String, PathBuf>,
+        imports: &BTreeMap<String, Vec<ImportEdge>>,
+        is_module: &BTreeMap<String, bool>,
+        lib_subdir: &str,
+        warn_as_err: bool,
+        target_rejection: bool,
+        max_workers: usize,
+        mut on_module_done: impl FnMut(usize, usize, usize) + Send,
+    ) -> Result<(), Failure> {
         if order.is_empty() {
             return Ok(());
         }
@@ -2557,10 +2584,19 @@ impl Checker {
                 .as_mut()
                 .expect("toolchain admission verified above");
             let exec_lean = adm.exec_lean.clone();
+            let total = order.len();
             let mut path_sha_cache = BTreeMap::new();
             let mut transitive_memo = BTreeMap::new();
-            let mut shared =
-                (adm, olean_cache, olean_ledger, &mut path_sha_cache, &mut transitive_memo);
+            let mut shared = (
+                adm,
+                olean_cache,
+                olean_ledger,
+                &mut path_sha_cache,
+                &mut transitive_memo,
+                0usize,
+                0usize,
+                &mut on_module_done,
+            );
 
             return run_parallel_dag(
                 &plan,
@@ -2568,7 +2604,7 @@ impl Checker {
                 "compile",
                 "worker panicked during Lean compilation",
                 &mut shared,
-                |(adm, olean_cache, _, path_sha_cache, transitive_memo), idx| {
+                |(adm, olean_cache, _, path_sha_cache, transitive_memo, ..), idx| {
                     let module = &order[idx];
                     let edge_list = &imports[module];
                     let mod_is_module = is_module.get(module).copied().unwrap_or(false);
@@ -2656,20 +2692,25 @@ impl Checker {
                         })
                     }
                 },
-                |(adm, olean_cache, olean_ledger, path_sha_cache, _), idx, exec_res| {
+                |(adm, olean_cache, olean_ledger, path_sha_cache, _, completed, cached_count, cb),
+                 idx,
+                 exec_res| {
                     let module = &order[idx];
-                    match exec_res {
-                        ExecutedModuleCompile::Cached(parts_with_sha) => finish_module_artifacts(
-                            adm,
-                            olean_cache,
-                            olean_ledger,
-                            path_sha_cache,
-                            module,
-                            &imports[module],
-                            &parts_with_sha,
-                            false,
-                            None,
-                        ),
+                    let is_cached = matches!(exec_res, ExecutedModuleCompile::Cached(_));
+                    let res = match exec_res {
+                        ExecutedModuleCompile::Cached(parts_with_sha) => {
+                            finish_module_artifacts(
+                                adm,
+                                olean_cache,
+                                olean_ledger,
+                                path_sha_cache,
+                                module,
+                                &imports[module],
+                                &parts_with_sha,
+                                false,
+                                None,
+                            )
+                        }
                         ExecutedModuleCompile::Compiled { done: parts_with_sha, cache_key } => {
                             finish_module_artifacts(
                                 adm,
@@ -2683,7 +2724,15 @@ impl Checker {
                                 cache_key,
                             )
                         }
+                    };
+                    if res.is_ok() {
+                        if is_cached {
+                            *cached_count += 1;
+                        }
+                        *completed += 1;
+                        cb(*completed, total, *cached_count);
                     }
+                    res
                 },
             );
         }
@@ -2708,10 +2757,19 @@ impl Checker {
         let child_timeout = *child_timeout;
         let compiled_roles: &BTreeMap<String, TargetRole> = compiled_roles;
         let adm = admitted.as_mut().expect("toolchain admission verified above");
+        let total = order.len();
         let mut path_sha_cache = BTreeMap::new();
         let mut transitive_memo = BTreeMap::new();
-        let mut shared =
-            (adm, olean_cache, olean_ledger, &mut path_sha_cache, &mut transitive_memo);
+        let mut shared = (
+            adm,
+            olean_cache,
+            olean_ledger,
+            &mut path_sha_cache,
+            &mut transitive_memo,
+            0usize,
+            0usize,
+            &mut on_module_done,
+        );
 
         run_parallel_dag(
             &plan,
@@ -2719,7 +2777,7 @@ impl Checker {
             "compile",
             "worker panicked during Lean compilation",
             &mut shared,
-            |(adm, olean_cache, _, path_sha_cache, transitive_memo), idx| {
+            |(adm, olean_cache, _, path_sha_cache, transitive_memo, ..), idx| {
                 let module = &order[idx];
                 let edge_list = &imports[module];
                 let mod_is_module = is_module.get(module).copied().unwrap_or(false);
@@ -2829,20 +2887,25 @@ impl Checker {
                     })
                 }
             },
-            |(adm, olean_cache, olean_ledger, path_sha_cache, _), idx, exec_res| {
+            |(adm, olean_cache, olean_ledger, path_sha_cache, _, completed, cached_count, cb),
+             idx,
+             exec_res| {
                 let module = &order[idx];
-                match exec_res {
-                    ExecutedModuleCompile::Cached(parts_with_sha) => finish_module_artifacts(
-                        adm,
-                        olean_cache,
-                        olean_ledger,
-                        path_sha_cache,
-                        module,
-                        &imports[module],
-                        &parts_with_sha,
-                        true,
-                        None,
-                    ),
+                let is_cached = matches!(exec_res, ExecutedModuleCompile::Cached(_));
+                let res = match exec_res {
+                    ExecutedModuleCompile::Cached(parts_with_sha) => {
+                        finish_module_artifacts(
+                            adm,
+                            olean_cache,
+                            olean_ledger,
+                            path_sha_cache,
+                            module,
+                            &imports[module],
+                            &parts_with_sha,
+                            true,
+                            None,
+                        )
+                    }
                     ExecutedModuleCompile::Compiled {
                         done: (out_dir, leaf, mod_is_module),
                         cache_key,
@@ -2867,7 +2930,15 @@ impl Checker {
                             cache_key,
                         )
                     }
+                };
+                if res.is_ok() {
+                    if is_cached {
+                        *cached_count += 1;
+                    }
+                    *completed += 1;
+                    cb(*completed, total, *cached_count);
                 }
+                res
             },
         )
     }
