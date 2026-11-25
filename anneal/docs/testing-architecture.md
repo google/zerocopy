@@ -570,7 +570,7 @@ slow-timeout = { period = "30s", terminate-after = 4 }
 fail-fast = false
 
 [[profile.default.overrides]]
-filter = 'binary(boundary_audit) | binary(target_audit) | binary(profile_v2_e2e) | test(/verifies_scalar_spec_corpus/)'
+filter = 'binary(boundary_audit) | binary(target_audit) | binary(profile_v2_e2e) | test(/verifies_scalar_spec_corpus|selected_unit_normalization_and_boundary_rejections/)'
 threads-required = 2
 slow-timeout = { period = "60s", terminate-after = 4 }
 
