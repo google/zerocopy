@@ -31,6 +31,85 @@ import subprocess
 import sys
 import tempfile
 
+_CI_DIR = Path(__file__).resolve().parent
+if str(_CI_DIR) not in sys.path:
+    sys.path.insert(0, str(_CI_DIR))
+
+try:
+    from anneal_ci_lib import (  # noqa: E402
+        atomic_write_text,
+        default_anneal_root,
+        sha256_bytes,
+        sha256_file,
+        sha256_raw_file as _lib_sha256_raw_file,
+    )
+except ImportError as exc:
+    if not (
+        isinstance(exc, ModuleNotFoundError)
+        and exc.name == "anneal_ci_lib"
+        and not (_CI_DIR / "anneal_ci_lib.py").is_file()
+    ):
+        raise
+    # `anneal/flake.nix` copies `./ci/prebuild_bundled_oleans.py` into the Nix
+    # store as a standalone single file without sibling `ci/` modules.
+    def default_anneal_root(script_file: str | Path | None = None) -> Path:
+        anchor = Path(script_file) if script_file is not None else Path(__file__)
+        return anchor.resolve().parent.parent
+
+    def sha256_bytes(data: bytes) -> str:
+        return hashlib.sha256(data).hexdigest()
+
+    def sha256_raw_file(path: Path) -> bytes:
+        if path.is_symlink() or not path.is_file():
+            raise RuntimeError(f"expected regular file in sysroot: {path}")
+        h = hashlib.sha256()
+        with path.open("rb") as f:
+            while chunk := f.read(1024 * 1024):
+                h.update(chunk)
+        return h.digest()
+
+    def sha256_file(path: Path) -> str:
+        h = hashlib.sha256()
+        with path.open("rb") as f:
+            while chunk := f.read(1024 * 1024):
+                h.update(chunk)
+        return h.hexdigest()
+
+    def atomic_write_text(
+        path: Path,
+        text: str,
+        *,
+        mode: int | None = None,
+    ) -> None:
+        if path.is_symlink():
+            raise ValueError(f"output file must not be a symlink: {path}")
+        path.parent.mkdir(parents=True, exist_ok=True)
+        fd, tmp_name = tempfile.mkstemp(
+            prefix=f".{path.name}.",
+            suffix=".tmp",
+            dir=str(path.parent),
+        )
+        tmp_path = Path(tmp_name)
+        try:
+            with os.fdopen(fd, "wb") as f:
+                f.write(text.encode("utf-8"))
+                f.flush()
+                if mode is not None:
+                    os.fchmod(f.fileno(), mode)
+                os.fsync(f.fileno())
+            os.replace(tmp_path, path)
+        except BaseException:
+            tmp_path.unlink(missing_ok=True)
+            raise
+else:
+    def sha256_raw_file(path: Path) -> bytes:
+        return _lib_sha256_raw_file(
+            path,
+            reject_symlink=True,
+            missing_label="sysroot",
+            exc_type=RuntimeError,
+        )
+
 CACHE_FORMAT_VERSION = 2
 OLEAN_PARTS = ("olean", "olean.server", "olean.private")
 IR_PARTS = ("ir.sig", "ir")
@@ -50,28 +129,6 @@ CANONICAL_COMPILE_FLAGS = [
 TRUSTED_SOURCE_RE = re.compile(r'"(trusted/lean/(?:Trusted\.lean|Trusted/[^"]+\.lean))"')
 IDENT_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
 SHA256_HEX_RE = re.compile(r"^[0-9a-fA-F]{64}$")
-
-
-def sha256_bytes(data: bytes) -> str:
-    return hashlib.sha256(data).hexdigest()
-
-
-def sha256_raw_file(path: Path) -> bytes:
-    if path.is_symlink() or not path.is_file():
-        raise RuntimeError(f"expected regular file in sysroot: {path}")
-    h = hashlib.sha256()
-    with path.open("rb") as f:
-        while chunk := f.read(1024 * 1024):
-            h.update(chunk)
-    return h.digest()
-
-
-def sha256_file(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as f:
-        while chunk := f.read(1024 * 1024):
-            h.update(chunk)
-    return h.hexdigest()
 
 
 def source_starts_with_module_keyword(raw: bytes) -> bool:
@@ -839,8 +896,10 @@ def prebuild(
             manifest_entries.append(compiled_entries[mod])
 
     manifest = {"schema_version": CACHE_FORMAT_VERSION, "entries": manifest_entries}
-    (output_dir / "manifest.json").write_text(
-        json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
+    atomic_write_text(
+        output_dir / "manifest.json",
+        json.dumps(manifest, indent=2) + "\n",
+        mode=0o644,
     )
     return manifest
 
@@ -850,7 +909,7 @@ def main() -> int:
     parser.add_argument(
         "--anneal-root",
         type=Path,
-        default=Path(__file__).resolve().parent.parent,
+        default=default_anneal_root(__file__),
     )
     parser.add_argument("--lean-bin", type=Path, required=True)
     parser.add_argument("--lean-exec", type=Path)

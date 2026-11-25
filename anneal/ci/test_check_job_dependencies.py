@@ -11,10 +11,10 @@
 import os
 from pathlib import Path
 import shutil
-import stat
 import subprocess
-import tempfile
 import unittest
+
+from anneal_ci_lib import WorkflowRepoFixture
 
 
 CI_DIR = Path(__file__).resolve().parent
@@ -53,26 +53,17 @@ class CheckJobDependenciesTests(unittest.TestCase):
         extra_workflows: dict[str, str] | None = None,
         extra_env: dict[str, str] | None = None,
     ) -> subprocess.CompletedProcess[str]:
-        with tempfile.TemporaryDirectory(prefix="anneal-job-deps-") as tmp:
-            root = Path(tmp) / "repo"
-            root_wf = root / ".github/workflows"
+        with WorkflowRepoFixture(prefix="anneal-job-deps-") as fx:
+            root = fx.path("repo")
             anneal_dir = root / "anneal"
-            anneal_wf = anneal_dir / ".github/workflows"
-            anneal_ci = anneal_dir / "ci"
-            root_wf.mkdir(parents=True)
-            anneal_wf.mkdir(parents=True)
-            anneal_ci.mkdir(parents=True)
-
-            script_copy = anneal_ci / "check_job_dependencies.sh"
-            shutil.copyfile(SCRIPT, script_copy)
-            script_copy.chmod(script_copy.stat().st_mode | stat.S_IXUSR)
-
-            (root_wf / "anneal.yml").write_text(anneal_yml, encoding="utf-8")
-            (root_wf / "anneal-current.yml").write_text(
-                anneal_current_yml, encoding="utf-8"
+            script_copy = fx.write_executable(
+                "repo/anneal/ci/check_job_dependencies.sh",
+                SCRIPT.read_text(encoding="utf-8"),
             )
+            fx.write_file("repo/.github/workflows/anneal.yml", anneal_yml)
+            fx.write_file("repo/.github/workflows/anneal-current.yml", anneal_current_yml)
             for name, content in (extra_workflows or {}).items():
-                (anneal_wf / name).write_text(content, encoding="utf-8")
+                fx.write_file(f"repo/anneal/.github/workflows/{name}", content)
 
             env = os.environ.copy()
             env.pop("GITHUB_STEP_SUMMARY", None)
@@ -221,11 +212,9 @@ class CheckJobDependenciesTests(unittest.TestCase):
     def test_mikefarah_yq_v4_type_tags_supported(self):
         real_yq = shutil.which("yq")
         self.assertIsNotNone(real_yq)
-        with tempfile.TemporaryDirectory(prefix="anneal-yq-shim-") as shim_tmp:
-            shim_bin = Path(shim_tmp) / "yq"
-            # Wrap the host `yq` and rewrite `type` outputs from jq names to
-            # mikefarah/yq v4 YAML tags (`!!str`/`!!seq`/`!!map`/`!!null`).
-            shim_bin.write_text(
+        with WorkflowRepoFixture(prefix="anneal-yq-shim-") as fx:
+            fx.write_executable(
+                "yq",
                 "#!/usr/bin/env python3\n"
                 "import subprocess, sys\n"
                 f"proc = subprocess.run([{real_yq!r}, *sys.argv[1:]], "
@@ -238,10 +227,8 @@ class CheckJobDependenciesTests(unittest.TestCase):
                 "sys.stdout.write(out)\n"
                 "sys.stderr.write(proc.stderr)\n"
                 "sys.exit(proc.returncode)\n",
-                encoding="utf-8",
             )
-            shim_bin.chmod(stat.S_IRWXU)
-            env_override = {"PATH": f"{shim_tmp}:{os.environ.get('PATH', '')}"}
+            env_override = {"PATH": f"{fx.root}:{os.environ.get('PATH', '')}"}
 
             ok = self.run_synthetic(
                 extra_workflows={

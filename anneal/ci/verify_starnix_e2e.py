@@ -22,39 +22,77 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import time
 import urllib.request
 
+_CI_DIR = Path(__file__).resolve().parent
+if str(_CI_DIR) not in sys.path:
+    sys.path.insert(0, str(_CI_DIR))
 
-# Retain raw streams before interpreting a receipt. A compiler crash or
-# timeout must not count as proof rejection.
-def checked_command(command, directory, log_prefix):
-    with log_prefix.with_suffix(".stdout").open("wb") as stdout:
-        with log_prefix.with_suffix(".stderr").open("wb") as stderr:
-            result = subprocess.run(command, cwd=directory, stdout=stdout,
-                                    stderr=stderr, timeout=600, check=False)
-    return result.returncode
+try:
+    import anneal_ci_lib  # noqa: E402
+    _default_anneal_root = anneal_ci_lib.default_anneal_root
+    _sha256_bytes = anneal_ci_lib.sha256_bytes
+except ImportError as exc:
+    if not (
+        isinstance(exc, ModuleNotFoundError)
+        and exc.name == "anneal_ci_lib"
+        and not (_CI_DIR / "anneal_ci_lib.py").is_file()
+    ):
+        raise
+    # `ci/docker/anneal-tc.Dockerfile` copies only `verify_starnix_e2e.py` into
+    # the seed image and runs `--fetch-only` standalone without sibling `ci/`
+    # modules.
+    anneal_ci_lib = None
+
+    def _default_anneal_root(script_file=None):
+        anchor = Path(script_file) if script_file is not None else Path(__file__)
+        return anchor.resolve().parent.parent
+
+    def _sha256_bytes(data):
+        return hashlib.sha256(data).hexdigest()
 
 
+def _require_ci_lib():
+    if anneal_ci_lib is None:
+        raise RuntimeError(
+            "verify_starnix_e2e.py requires sibling anneal_ci_lib.py outside "
+            "--fetch-only mode"
+        )
+    return anneal_ci_lib
+
+
+# Stream raw stdout/stderr straight to files before interpreting a receipt.
+# A compiler crash or timeout must retain logs and never count as rejection.
 def verification(arguments, request, artifacts, log_prefix, expected):
-    command = [str(arguments.cli), "verify", "--request", str(request),
-               "--capture", str(arguments.capture), "--sysroot", str(arguments.sysroot),
-               "--lean", str(arguments.lean), "--artifacts", str(artifacts)]
-    code = checked_command(command, request.parent, log_prefix)
-    output = json.loads(log_prefix.with_suffix(".stdout").read_text())
-    valid_sandboxes = ("linux_bwrap", "linux_landlock_seccomp")
+    ci_lib = _require_ci_lib()
+    proc, output = ci_lib.run_cargo_anneal_verify(
+        cli=arguments.cli,
+        request_path=request,
+        cwd=request.parent,
+        capture=arguments.capture,
+        sysroot=arguments.sysroot,
+        lean=arguments.lean,
+        artifacts_dir=artifacts,
+        timeout=600.0,
+        log_prefix=log_prefix,
+        label=log_prefix.name,
+    )
     is_pass = expected.endswith("verified")
-    if (output.get("schema_version") != 3
-            or output.get("taint_reasons") != []
-            or "tainted" in output
-            or output.get("elaboration_sandbox") not in valid_sandboxes
-            or "sorry_declarations" in output
-            or (is_pass and "hostile Lean elaborator effects" in output.get("deferred", []))
-            or output.get("status") != expected
-            or code != (0 if is_pass else 1)):
-        raise RuntimeError(f"unexpected {log_prefix.name}: exit {code}, "
-                           f"{json.dumps(output)[:2500]}")
+    failures = ci_lib.validate_receipt_v3_envelope(
+        output,
+        returncode=proc.returncode,
+        expected_status=expected,
+        expected_returncode=0 if is_pass else 1,
+        check_deferred=is_pass,
+    )
+    if failures:
+        raise RuntimeError(
+            f"unexpected {log_prefix.name}: exit {proc.returncode} ({'; '.join(failures)}), "
+            f"{json.dumps(output)[:2500]}"
+        )
     return output
 
 
@@ -80,7 +118,7 @@ def sources(arguments, fixture, destination):
                     if attempt == 2:
                         raise
                     time.sleep(1 << attempt)
-        actual = hashlib.sha256(data).hexdigest()
+        actual = _sha256_bytes(data)
         if actual != expected:
             raise RuntimeError(f"pinned source mismatch: {name}: {actual}")
         (destination / name).write_bytes(data)
@@ -132,7 +170,7 @@ def execution_request(request_path):
 
 
 def run(arguments, work):
-    repository = Path(__file__).resolve().parents[1]
+    repository = _default_anneal_root(__file__)
     fixture = repository / "tests/cargo-anneal/tests/fixtures/starnix"
     project = work / "production"
     project.mkdir()
@@ -143,9 +181,9 @@ def run(arguments, work):
     # reuses the exact bytes that the baseline verifies.
     fixed_sources = {path.name: path.read_bytes()
                      for path in (project / "proof").glob("*.lean")}
-    proof_sha256 = hashlib.sha256(b"".join(
+    proof_sha256 = _sha256_bytes(b"".join(
         name.encode() + b"\0" + contents
-        for name, contents in sorted(fixed_sources.items()))).hexdigest()
+        for name, contents in sorted(fixed_sources.items())))
     start = time.monotonic()
     baseline = verification(arguments, project / "request.json", work / "baseline-artifacts",
                             work / "baseline", "selected_unit_verified")
@@ -190,58 +228,8 @@ def run(arguments, work):
     print(json.dumps(summary, indent=2))
 
 
-def env_tool(names, bundle_suffix=None):
-    for name in names:
-        raw = os.environ.get(name, "")
-        if raw:
-            return Path(raw)
-    bundle = os.environ.get("ANNEAL_TEST_INSTALL_ROOT", "")
-    if bundle and bundle_suffix:
-        return Path(bundle) / bundle_suffix
-    return None
-
-
-def discover_local_defaults():
-    repository = Path(__file__).resolve().parents[1]
-    target_dir = Path(os.environ.get("CARGO_TARGET_DIR", repository / "target"))
-    cli = target_dir / "debug/cargo-anneal"
-    capture_candidates = [
-        target_dir / "debug/anneal-rustc-capture",
-        repository / "trusted/rustc-capture/target/debug/anneal-rustc-capture",
-    ]
-    capture = next((p for p in capture_candidates if p.is_file()), None)
-    home = Path.home()
-    lean_candidates = [
-        home / ".elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
-    ]
-    tc_root = Path(os.environ.get("XDG_CACHE_HOME", home / ".cache")) / "anneal/toolchain"
-    if tc_root.is_dir():
-        for entry in sorted(tc_root.iterdir(), key=lambda p: p.stat().st_mtime, reverse=True):
-            cand = entry / "lean/bin/lean"
-            if cand.is_file():
-                lean_candidates.insert(0, cand)
-    lean = next((p for p in lean_candidates if p.is_file()), None)
-    sysroot = None
-    try:
-        out = subprocess.check_output(
-            ["rustup", "run", "nightly-2026-05-31", "rustc", "--print", "sysroot"],
-            text=True,
-            stderr=subprocess.DEVNULL,
-        ).strip()
-        if out and Path(out).is_dir():
-            sysroot = Path(out)
-    except Exception:
-        pass
-    return {
-        "cli": cli if cli.is_file() else None,
-        "capture": capture,
-        "sysroot": sysroot,
-        "lean": lean,
-    }
-
-
 def ensure_local_binaries(arguments):
-    repository = Path(__file__).resolve().parents[1]
+    repository = _default_anneal_root(__file__)
     target_dir = Path(os.environ.get("CARGO_TARGET_DIR", repository / "target"))
     if arguments.cli is None:
         subprocess.run(
@@ -280,7 +268,7 @@ def ensure_local_binaries(arguments):
 
 
 def main():
-    repository = Path(__file__).resolve().parents[1]
+    repository = _default_anneal_root(__file__)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--fetch-only",
@@ -306,19 +294,7 @@ def main():
         fixture = repository / "tests/cargo-anneal/tests/fixtures/starnix"
         sources(arguments, fixture, arguments.fetch_only.resolve())
         return
-    local = discover_local_defaults()
-    defaults = {
-        "cli": env_tool(["ANNEAL_CLI", "ANNEAL_TEST_CARGO_ANNEAL"]) or local["cli"],
-        "capture": env_tool(["ANNEAL_CAPTURE"], "bin/anneal-rustc-capture") or local["capture"],
-        "sysroot": env_tool(
-            ["ANNEAL_SYSROOT", "ANNEAL_TEST_RUST_SYSROOT"],
-            "rust",
-        ) or local["sysroot"],
-        "lean": env_tool(["ANNEAL_LEAN"], "lean/bin/lean") or local["lean"],
-    }
-    for name, fallback in defaults.items():
-        if getattr(arguments, name) is None:
-            setattr(arguments, name, fallback)
+    _require_ci_lib().resolve_cli_tools(repository, arguments)
     for req in ("sysroot", "lean"):
         if getattr(arguments, req) is None:
             parser.error(f"the following arguments are required: --{req}")

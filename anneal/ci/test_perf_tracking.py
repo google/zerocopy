@@ -266,7 +266,9 @@ class MockCollectionTests(unittest.TestCase):
 
         # Zerocopy proof unit
         unit_dir = repo / "zerocopy/proofs/01_demo"
-        (unit_dir / "Spec.lean").write_text("-- spec\n")
+        (unit_dir / "Spec.lean").write_text(
+            "-- spec\ndef specs : Specs := ⟨(), ()⟩\n", encoding="utf-8"
+        )
         (unit_dir / "request.json").write_text(
             json.dumps(
                 {
@@ -518,7 +520,9 @@ print(json.dumps(receipt))
             paths = self._build_synthetic_repo(Path(tmp))
             mono_dir = paths["repo"] / "zerocopy/proofs/02_mono"
             mono_dir.mkdir(parents=True)
-            (mono_dir / "Spec.lean").write_text("-- spec\n")
+            (mono_dir / "Spec.lean").write_text(
+                "prelude\ndef specs : Specs := ⟨(), ()⟩\n", encoding="utf-8"
+            )
             (mono_dir / "request.json").write_text(
                 json.dumps(
                     {
@@ -601,6 +605,46 @@ print(json.dumps(receipt))
                 encoding="utf-8",
             )
             with self.assertRaisesRegex(RuntimeError, "scope mismatch"):
+                perf_tracking.collect_zerocopy_proofs(
+                    repo_root=paths["repo"],
+                    tools=tools,
+                    timeout=30,
+                    time_bin=paths["time_bin"],
+                )
+
+    def test_collect_zerocopy_proofs_rejects_profile_mismatch(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = self._build_synthetic_repo(Path(tmp))
+            v2_dir = paths["repo"] / "zerocopy/proofs/02_v2"
+            v2_dir.mkdir(parents=True)
+            (v2_dir / "Spec.lean").write_text(
+                "prelude\ndef specs : SpecsV2 := ⟨(), ()⟩\n", encoding="utf-8"
+            )
+            (v2_dir / "request.json").write_text(
+                json.dumps(
+                    {
+                        "compilation": {"source_root": "../../src"},
+                        "scope": {
+                            "kind": "selected_unit",
+                            "roots": ["byte_slice::split"],
+                        },
+                        "proof": {
+                            "source_root": ".",
+                            "sources": [{"path": "Spec.lean"}],
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            tools = {
+                "cli": paths["cli"],
+                "capture": paths["capture"],
+                "sysroot": paths["sysroot"],
+                "lean": paths["lean"],
+            }
+            # Mock CLI emits Profile v1 (`UnitTheorem`), while `02_v2/Spec.lean`
+            # declares `SpecsV2` -> must fail closed on Profile v2 mismatch.
+            with self.assertRaisesRegex(RuntimeError, "does not match Profile v2"):
                 perf_tracking.collect_zerocopy_proofs(
                     repo_root=paths["repo"],
                     tools=tools,

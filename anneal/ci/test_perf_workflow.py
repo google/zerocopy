@@ -13,15 +13,11 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
-import re
 import shutil
-import stat
-import subprocess
-import tempfile
 import unittest
 
+from anneal_ci_lib import WorkflowRepoFixture, find_workflow_step, load_workflow
 import perf_tracking
-from workflow_yaml import load_workflow_yaml
 
 
 CI_DIR = Path(__file__).resolve().parent
@@ -69,7 +65,7 @@ def _make_record(sha_idx: int, unix_ts: int, subject: str = "Test") -> dict:
 
 class PerfWorkflowStaticTests(unittest.TestCase):
     def setUp(self):
-        self.workflow = load_workflow_yaml(WORKFLOW_PATH.read_text(encoding="utf-8"))
+        self.workflow = load_workflow(WORKFLOW_PATH)
 
     def test_triggers_permissions_and_concurrency_are_fork_safe(self):
         on_cfg = self.workflow["on"]
@@ -165,23 +161,23 @@ class PerfWorkflowStaticTests(unittest.TestCase):
 
 class PerfWorkflowPublishExecutionTests(unittest.TestCase):
     def setUp(self):
-        self.workflow = load_workflow_yaml(WORKFLOW_PATH.read_text(encoding="utf-8"))
-        steps = self.workflow["jobs"]["collect-and-publish"]["steps"]
-        self.publish_script = next(
-            s["run"] for s in steps if s.get("id") == "publish"
-        )
-        self.check_budgets_script = next(
-            s["run"] for s in steps if s.get("id") == "check-budgets"
-        )
+        self.workflow = load_workflow(WORKFLOW_PATH)
+        self.publish_script = find_workflow_step(
+            self.workflow, "collect-and-publish", step_id="publish"
+        )["run"]
+        self.check_budgets_script = find_workflow_step(
+            self.workflow, "collect-and-publish", step_id="check-budgets"
+        )["run"]
 
     def _run_publish(
         self,
         *,
+        fx: WorkflowRepoFixture,
         bare_repo: Path,
         record: dict,
         tmp_root: Path,
         summary_path: Path,
-    ) -> subprocess.CompletedProcess[str]:
+    ):
         rec_path = tmp_root / "record.json"
         rec_path.write_text(json.dumps(record), encoding="utf-8")
         runner_temp = tmp_root / "runner_temp"
@@ -198,42 +194,23 @@ class PerfWorkflowPublishExecutionTests(unittest.TestCase):
                 "GITHUB_STEP_SUMMARY": str(summary_path),
             }
         )
-        return subprocess.run(
-            ["bash", "--noprofile", "--norc", "-c", self.publish_script],
-            cwd=ANNEAL_DIR,
-            env=env,
-            capture_output=True,
-            text=True,
-        )
+        return fx.run_bash(self.publish_script, cwd=ANNEAL_DIR, env=env, strict=False)
 
     def test_orphan_creation_cotenancy_idempotency_and_cas_retry(self):
-        with tempfile.TemporaryDirectory(prefix="anneal-perf-pub-") as tmp:
-            root = Path(tmp)
-            bare = root / "remote.git"
-            subprocess.run(["git", "init", "--bare", "-q", str(bare)], check=True)
+        with WorkflowRepoFixture(prefix="anneal-perf-pub-") as fx:
+            root = fx.root
+            bare = fx.init_repo("remote.git", bare=True)
             summary = root / "step_summary.md"
 
             # 1. Initial creation on empty remote creates orphan benchmark-data.
             rec1 = _make_record(1, 1000, subject="First commit")
             res1 = self._run_publish(
-                bare_repo=bare, record=rec1, tmp_root=root, summary_path=summary
+                fx=fx, bare_repo=bare, record=rec1, tmp_root=root, summary_path=summary
             )
             self.assertEqual(res1.returncode, 0, res1.stdout + res1.stderr)
             self.assertIn("First commit", summary.read_text(encoding="utf-8"))
 
-            inspect = root / "inspect"
-            subprocess.run(
-                [
-                    "git",
-                    "clone",
-                    "--quiet",
-                    "--branch",
-                    "benchmark-data",
-                    bare.as_uri(),
-                    str(inspect),
-                ],
-                check=True,
-            )
+            inspect = fx.clone_repo(bare, "inspect", branch="benchmark-data")
             self.assertTrue((inspect / "anneal/records.jsonl").is_file())
             self.assertTrue((inspect / "dashboard/anneal/index.html").is_file())
             self.assertTrue((inspect / "dashboard/anneal/data.json").is_file())
@@ -246,31 +223,19 @@ class PerfWorkflowPublishExecutionTests(unittest.TestCase):
             (inspect / "dashboard/data.js").write_text(
                 "window.BENCHMARK_DATA = {};\n", encoding="utf-8"
             )
-            subprocess.run(
-                ["git", "-C", str(inspect), "config", "user.name", "Test"],
-                check=True,
+            fx.git(inspect, "config", "user.name", "Test")
+            fx.git(inspect, "config", "user.email", "t@example.com")
+            fx.commit_all(
+                inspect,
+                "Add root dashboard",
+                paths=("dashboard/index.html", "dashboard/data.js"),
             )
-            subprocess.run(
-                ["git", "-C", str(inspect), "config", "user.email", "t@example.com"],
-                check=True,
-            )
-            subprocess.run(
-                ["git", "-C", str(inspect), "add", "dashboard/index.html", "dashboard/data.js"],
-                check=True,
-            )
-            subprocess.run(
-                ["git", "-C", str(inspect), "commit", "-qm", "Add root dashboard"],
-                check=True,
-            )
-            subprocess.run(
-                ["git", "-C", str(inspect), "push", "-q", "origin", "benchmark-data"],
-                check=True,
-            )
+            fx.git(inspect, "push", "-q", "origin", "benchmark-data")
 
             # 3. Idempotent same-SHA rerun keeps exactly 1 record and preserves
             # sibling Criterion files.
             res_dup = self._run_publish(
-                bare_repo=bare, record=rec1, tmp_root=root, summary_path=summary
+                fx=fx, bare_repo=bare, record=rec1, tmp_root=root, summary_path=summary
             )
             self.assertEqual(res_dup.returncode, 0, res_dup.stdout + res_dup.stderr)
 
@@ -279,58 +244,30 @@ class PerfWorkflowPublishExecutionTests(unittest.TestCase):
             # attempt 1, forcing the publish script's CAS loop to re-fetch,
             # merge both records, and succeed on attempt 2.
             rec_concurrent = _make_record(2, 2000, subject="Concurrent commit")
-            concurrent_work = root / "concurrent_work"
-            subprocess.run(
-                [
-                    "git",
-                    "clone",
-                    "--quiet",
-                    "--branch",
-                    "benchmark-data",
-                    bare.as_uri(),
-                    str(concurrent_work),
-                ],
-                check=True,
+            concurrent_work = fx.clone_repo(
+                bare, "concurrent_work", branch="benchmark-data"
             )
-            subprocess.run(
-                ["git", "-C", str(concurrent_work), "config", "user.name", "Other"],
-                check=True,
-            )
-            subprocess.run(
-                ["git", "-C", str(concurrent_work), "config", "user.email", "o@example.com"],
-                check=True,
-            )
+            fx.git(concurrent_work, "config", "user.name", "Other")
+            fx.git(concurrent_work, "config", "user.email", "o@example.com")
             perf_tracking.append_record(
                 concurrent_work / "anneal/records.jsonl", rec_concurrent
             )
-            subprocess.run(
-                ["git", "-C", str(concurrent_work), "add", "anneal/records.jsonl"],
-                check=True,
+            concurrent_sha = fx.commit_all(
+                concurrent_work, "Concurrent push", paths=("anneal/records.jsonl",)
             )
-            subprocess.run(
-                ["git", "-C", str(concurrent_work), "commit", "-qm", "Concurrent push"],
-                check=True,
-            )
-            concurrent_sha = subprocess.check_output(
-                ["git", "-C", str(concurrent_work), "rev-parse", "HEAD"],
-                text=True,
-            ).strip()
-            subprocess.run(
-                [
-                    "git",
-                    "--git-dir",
-                    str(bare),
-                    "fetch",
-                    "--quiet",
-                    str(concurrent_work),
-                    f"{concurrent_sha}:refs/tmp/concurrent",
-                ],
-                check=True,
+            fx.git(
+                bare,
+                "--git-dir",
+                str(bare),
+                "fetch",
+                "--quiet",
+                str(concurrent_work),
+                f"{concurrent_sha}:refs/tmp/concurrent",
             )
 
             marker = root / "cas_hook_fired"
-            hook = bare / "hooks/pre-receive"
-            hook.write_text(
+            fx.write_executable(
+                bare / "hooks/pre-receive",
                 "#!/usr/bin/env bash\n"
                 "set -euo pipefail\n"
                 "unset GIT_QUARANTINE_PATH\n"
@@ -340,25 +277,17 @@ class PerfWorkflowPublishExecutionTests(unittest.TestCase):
                 "  echo 'simulated concurrent push race' >&2\n"
                 "  exit 1\n"
                 "fi\n",
-                encoding="utf-8",
             )
-            hook.chmod(stat.S_IRWXU)
 
             rec3 = _make_record(3, 3000, subject="Third commit")
             res_cas = self._run_publish(
-                bare_repo=bare, record=rec3, tmp_root=root, summary_path=summary
+                fx=fx, bare_repo=bare, record=rec3, tmp_root=root, summary_path=summary
             )
             self.assertEqual(res_cas.returncode, 0, res_cas.stdout + res_cas.stderr)
             self.assertIn("conflicted; retrying", res_cas.stderr)
 
-            subprocess.run(
-                ["git", "-C", str(inspect), "fetch", "--quiet", "origin", "benchmark-data"],
-                check=True,
-            )
-            subprocess.run(
-                ["git", "-C", str(inspect), "checkout", "--quiet", "FETCH_HEAD"],
-                check=True,
-            )
+            fx.git(inspect, "fetch", "--quiet", "origin", "benchmark-data")
+            fx.git(inspect, "checkout", "--quiet", "FETCH_HEAD")
             self.assertEqual(
                 (inspect / "dashboard/index.html").read_text(encoding="utf-8"),
                 "<html>Criterion</html>\n",
@@ -376,11 +305,12 @@ class PerfWorkflowPublishExecutionTests(unittest.TestCase):
             )
 
     def test_ls_remote_error_surfaces_stderr_and_fails_closed(self):
-        with tempfile.TemporaryDirectory(prefix="anneal-perf-lsremote-") as tmp:
-            root = Path(tmp)
+        with WorkflowRepoFixture(prefix="anneal-perf-lsremote-") as fx:
+            root = fx.root
             missing_remote = root / "nonexistent-remote.git"
             summary = root / "summary.md"
             res = self._run_publish(
+                fx=fx,
                 bare_repo=missing_remote,
                 record=_make_record(1, 1000),
                 tmp_root=root,
@@ -391,10 +321,9 @@ class PerfWorkflowPublishExecutionTests(unittest.TestCase):
             self.assertIn("does not appear to be a git repository", res.stderr)
 
     def test_publish_persists_budget_breach_before_check_budgets_fails(self):
-        with tempfile.TemporaryDirectory(prefix="anneal-perf-breach-") as tmp:
-            root = Path(tmp)
-            bare = root / "remote.git"
-            subprocess.run(["git", "init", "--bare", "-q", str(bare)], check=True)
+        with WorkflowRepoFixture(prefix="anneal-perf-breach-") as fx:
+            root = fx.root
+            bare = fx.init_repo("remote.git", bare=True)
             summary = root / "step_summary.md"
 
             breach_rec = _make_record(1, 1000, subject="Breach archive budget")
@@ -402,24 +331,12 @@ class PerfWorkflowPublishExecutionTests(unittest.TestCase):
                 2_000_000_000
             )
             pub_res = self._run_publish(
-                bare_repo=bare, record=breach_rec, tmp_root=root, summary_path=summary
+                fx=fx, bare_repo=bare, record=breach_rec, tmp_root=root, summary_path=summary
             )
             self.assertEqual(pub_res.returncode, 0, pub_res.stdout + pub_res.stderr)
             self.assertIn("budget_breach", summary.read_text(encoding="utf-8"))
 
-            inspect = root / "inspect"
-            subprocess.run(
-                [
-                    "git",
-                    "clone",
-                    "--quiet",
-                    "--branch",
-                    "benchmark-data",
-                    bare.as_uri(),
-                    str(inspect),
-                ],
-                check=True,
-            )
+            inspect = fx.clone_repo(bare, "inspect", branch="benchmark-data")
             dash_data = json.loads(
                 (inspect / "dashboard/anneal/data.json").read_text(encoding="utf-8")
             )
@@ -432,16 +349,11 @@ class PerfWorkflowPublishExecutionTests(unittest.TestCase):
                 )
             )
 
-            rec_path = root / "breach_record.json"
-            rec_path.write_text(json.dumps(breach_rec), encoding="utf-8")
+            rec_path = fx.write_file("breach_record.json", json.dumps(breach_rec))
             env = os.environ.copy()
             env["RECORD_PATH"] = str(rec_path)
-            chk_res = subprocess.run(
-                ["bash", "--noprofile", "--norc", "-c", self.check_budgets_script],
-                cwd=ANNEAL_DIR,
-                env=env,
-                capture_output=True,
-                text=True,
+            chk_res = fx.run_bash(
+                self.check_budgets_script, cwd=ANNEAL_DIR, env=env, strict=False
             )
             self.assertNotEqual(chk_res.returncode, 0)
             self.assertIn("BUDGET VIOLATION", chk_res.stderr)
@@ -458,26 +370,19 @@ class PerfWorkflowPublishExecutionTests(unittest.TestCase):
 
         rec = _make_record(1, 1000)
         rec["metrics"]["artifact_size.archive.omnibus_tar_zst_bytes"] = 802_309_416
-        with tempfile.TemporaryDirectory(prefix="anneal-perf-ok-") as tmp:
-            rec_path = Path(tmp) / "record.json"
-            rec_path.write_text(json.dumps(rec), encoding="utf-8")
+        with WorkflowRepoFixture(prefix="anneal-perf-ok-") as fx:
+            rec_path = fx.write_file("record.json", json.dumps(rec))
             env = os.environ.copy()
             env["RECORD_PATH"] = str(rec_path)
-            chk_res = subprocess.run(
-                ["bash", "--noprofile", "--norc", "-c", self.check_budgets_script],
-                cwd=ANNEAL_DIR,
-                env=env,
-                capture_output=True,
-                text=True,
+            chk_res = fx.run_bash(
+                self.check_budgets_script, cwd=ANNEAL_DIR, env=env, strict=False
             )
             self.assertEqual(chk_res.returncode, 0, chk_res.stdout + chk_res.stderr)
 
 
 class DocsWorkflowStaticTests(unittest.TestCase):
     def setUp(self):
-        self.workflow = load_workflow_yaml(
-            DOCS_WORKFLOW_PATH.read_text(encoding="utf-8")
-        )
+        self.workflow = load_workflow(DOCS_WORKFLOW_PATH)
 
     def test_triggers_permissions_and_perf_coordination(self):
         wr = self.workflow["on"]["workflow_run"]
@@ -534,9 +439,7 @@ class DocsWorkflowExecutionTests(unittest.TestCase):
     def setUp(self):
         if shutil.which("jq") is None:
             self.skipTest("jq is required to execute docs.yml coordinate script")
-        self.workflow = load_workflow_yaml(
-            DOCS_WORKFLOW_PATH.read_text(encoding="utf-8")
-        )
+        self.workflow = load_workflow(DOCS_WORKFLOW_PATH)
         self.coord_script = self.workflow["jobs"]["coordinate"]["steps"][0]["run"]
 
     def _run_coordinate(
@@ -548,22 +451,18 @@ class DocsWorkflowExecutionTests(unittest.TestCase):
         runs_by_id: dict[int, dict],
         workflow_runs: dict[str, list[dict]],
         jobs_by_run_id: dict[int, list[dict]],
-    ) -> tuple[subprocess.CompletedProcess[str], dict[str, str], str]:
-        with tempfile.TemporaryDirectory(prefix="anneal-docs-coord-") as tmp:
-            root = Path(tmp)
+    ):
+        with WorkflowRepoFixture(prefix="anneal-docs-coord-") as fx:
             fixtures = {
                 "main_sha": main_sha,
                 "runs_by_id": {str(k): v for k, v in runs_by_id.items()},
                 "workflow_runs": workflow_runs,
                 "jobs_by_run_id": {str(k): v for k, v in jobs_by_run_id.items()},
             }
-            fixtures_path = root / "fixtures.json"
-            fixtures_path.write_text(json.dumps(fixtures), encoding="utf-8")
-
-            fake_bin = root / "bin"
-            fake_bin.mkdir()
-            fake_gh = fake_bin / "gh"
-            fake_gh.write_text(
+            fixtures_path = fx.write_file("fixtures.json", json.dumps(fixtures))
+            fake_bin = fx.mkdir("bin")
+            fx.write_executable(
+                "bin/gh",
                 f"""#!/usr/bin/env python3
 import json, pathlib, sys
 data = json.loads(pathlib.Path({str(fixtures_path)!r}).read_text())
@@ -595,14 +494,10 @@ if jq_expr is not None:
 else:
     sys.stdout.write(raw)
 """,
-                encoding="utf-8",
             )
-            fake_gh.chmod(stat.S_IRWXU)
 
-            gh_output = root / "github_output.txt"
-            gh_output.write_text("", encoding="utf-8")
-            gh_summary = root / "github_summary.md"
-            gh_summary.write_text("", encoding="utf-8")
+            gh_output = fx.write_file("github_output.txt", "")
+            gh_summary = fx.write_file("github_summary.md", "")
 
             env = os.environ.copy()
             env["PATH"] = f"{fake_bin}:{env['PATH']}"
@@ -613,19 +508,14 @@ else:
             env["GITHUB_OUTPUT"] = str(gh_output)
             env["GITHUB_STEP_SUMMARY"] = str(gh_summary)
 
-            res = subprocess.run(
-                ["bash", "--noprofile", "--norc", "-c", self.coord_script],
-                cwd=ANNEAL_DIR,
-                env=env,
-                capture_output=True,
-                text=True,
+            res = fx.run_bash(
+                self.coord_script, cwd=ANNEAL_DIR, env=env, strict=False
             )
-            outputs: dict[str, str] = {}
-            for line in gh_output.read_text(encoding="utf-8").splitlines():
-                if "=" in line:
-                    k, v = line.split("=", 1)
-                    outputs[k] = v
-            return res, outputs, gh_summary.read_text(encoding="utf-8")
+            return (
+                res,
+                fx.parse_kv_file(gh_output, strict=False),
+                gh_summary.read_text(encoding="utf-8"),
+            )
 
     def _ci_fixtures(self, sha: str, *, anneal_status: str = "completed", anneal_conclusion: str = "success"):
         ci_run = {
