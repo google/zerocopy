@@ -61,14 +61,16 @@ class RustGuardMutationUnitTests(unittest.TestCase):
         audit_guards = [g for g in guards if g.suite == "anneal_audit"]
         ca_guards = [g for g in guards if g.suite == "cargo_anneal"]
         rc_guards = [g for g in guards if g.suite == "rustc_capture"]
-        self.assertGreaterEqual(len(audit_guards), 8)
+        self.assertGreaterEqual(len(audit_guards), 30)
         self.assertGreaterEqual(len(ca_guards), 25)
         self.assertGreaterEqual(len(rc_guards), 15)
 
-        # Verify distinct target files across all three crates.
+        # Verify distinct target files across all 12 covered cargo-anneal
+        # modules and all covered audit / rustc-capture modules.
         touched_files = {g.target_file for g in guards}
         for required_file in (
             "trusted/audit/src/cargo_boundary.rs",
+            "trusted/audit/src/cli.rs",
             "trusted/audit/src/miri_pin.rs",
             "trusted/audit/src/repo_audit.rs",
             "trusted/cargo-anneal/src/bundle.rs",
@@ -238,9 +240,11 @@ class RustGuardMutationUnitTests(unittest.TestCase):
         cls.mini_anneal = Path(cls._mini_tmp.name) / "anneal"
         for rel in (
             "trusted/audit/src/cargo_boundary.rs",
+            "trusted/audit/src/cli.rs",
             "trusted/audit/src/miri_pin.rs",
             "trusted/audit/src/repo_audit.rs",
             "tests/audit/tests/boundary_audit.rs",
+            "tests/audit/tests/cli_environment.rs",
             "trusted/cargo-anneal/src/bundle.rs",
             "trusted/cargo-anneal/src/init.rs",
             "trusted/cargo-anneal/src/olean_cache.rs",
@@ -279,7 +283,8 @@ class RustGuardMutationUnitTests(unittest.TestCase):
         fake_cargo_body: str,
         *,
         suite: str = "all",
-        name_filter: str = "cargo_boundary_member_outside_trusted",
+        name_filter: str | None = "cargo_boundary_member_outside_trusted",
+        changed_files: list[str] | tuple[str, ...] | None = None,
         jobs: int = 1,
     ) -> tuple[
         int,
@@ -307,28 +312,30 @@ class RustGuardMutationUnitTests(unittest.TestCase):
                 for p in tracked_files
             }
 
+            argv = [
+                "--anneal-root",
+                str(self.mini_anneal),
+                "--cargo",
+                str(fake_cargo),
+                "--suite",
+                suite,
+                "--jobs",
+                str(jobs),
+                "--json-out",
+                str(json_out),
+            ]
+            if name_filter is not None:
+                argv.extend(["--filter", name_filter])
+            for cf in changed_files or ():
+                argv.extend(["--changed-file", cf])
+
             stdout_buf = io.StringIO()
             stderr_buf = io.StringIO()
             with (
                 contextlib.redirect_stdout(stdout_buf),
                 contextlib.redirect_stderr(stderr_buf),
             ):
-                rc = check_rust_guard_mutation.main(
-                    [
-                        "--anneal-root",
-                        str(self.mini_anneal),
-                        "--cargo",
-                        str(fake_cargo),
-                        "--suite",
-                        suite,
-                        "--filter",
-                        name_filter,
-                        "--jobs",
-                        str(jobs),
-                        "--json-out",
-                        str(json_out),
-                    ]
-                )
+                rc = check_rust_guard_mutation.main(argv)
             after_hashes = {
                 str(p): hashlib.sha256(p.read_bytes()).hexdigest()
                 for p in tracked_files
@@ -677,6 +684,334 @@ class RustGuardMutationUnitTests(unittest.TestCase):
         self.assertEqual(rep2["killed"], 1)
         self.assertEqual(rep1["results"][0]["suite"], "rustc_capture")
         self.assertEqual(rep2["results"][0]["suite"], "rustc_capture")
+
+    def test_changed_file_skips_non_tcb_paths_without_invoking_cargo(self):
+        import contextlib
+        import io
+
+        # Fake cargo fails loudly if invoked, proving Cargo is never touched.
+        fake_cargo_body = "raise AssertionError('cargo should not be invoked')"
+        rc, out, err, rep, before, after = self._run_synthetic_suite(
+            fake_cargo_body,
+            suite="all",
+            name_filter=None,
+            changed_files=[
+                "theory/Anneal/MirWp.lean",
+                "anneal/docs/architecture.md",
+                "zerocopy/src/lib.rs",
+            ],
+            jobs=1,
+        )
+        self.assertEqual(rc, 0, out + err)
+        self.assertEqual(before, after)
+        self.assertIn("0 guards selected (skipping Cargo baseline)", out)
+        assert rep is not None
+        self.assertEqual(rep["total"], 0)
+        self.assertEqual(rep["killed"], 0)
+        self.assertEqual(rep["results"], [])
+
+        # Even without `cargo` on PATH, non-TCB `--changed-file` exits 0 fast.
+        stdout_buf = io.StringIO()
+        stderr_buf = io.StringIO()
+        with (
+            mock.patch.dict("os.environ", {"PATH": ""}, clear=False),
+            contextlib.redirect_stdout(stdout_buf),
+            contextlib.redirect_stderr(stderr_buf),
+        ):
+            rc_nocargo = check_rust_guard_mutation.main(
+                [
+                    "--anneal-root",
+                    str(self.mini_anneal),
+                    "--changed-file",
+                    "theory/Anneal/MirWp.lean",
+                ]
+            )
+        self.assertEqual(rc_nocargo, 0, stderr_buf.getvalue())
+        self.assertIn(
+            "0 guards selected (skipping Cargo baseline)", stdout_buf.getvalue()
+        )
+
+    def test_changed_file_selects_crate_and_integration_closures(self):
+        audit_guards = [
+            g
+            for g in check_rust_guard_mutation.RUST_GUARDS
+            if g.suite == "anneal_audit"
+        ]
+        rc_guards = [
+            g
+            for g in check_rust_guard_mutation.RUST_GUARDS
+            if g.suite == "rustc_capture"
+        ]
+        integ_guards = [
+            g
+            for g in check_rust_guard_mutation.RUST_GUARDS
+            if len(g.test_args) >= 2 and g.test_args[0] == "--test"
+        ]
+        ca_and_audit_guards = [
+            g
+            for g in check_rust_guard_mutation.RUST_GUARDS
+            if g.suite in ("anneal_audit", "cargo_anneal")
+        ]
+        self.assertEqual(len(audit_guards), 30)
+        self.assertGreater(len(integ_guards), 0)
+
+        # Crate-source closure: any file under `trusted/<crate>/` (including
+        # `lib.rs` or `main.rs`) selects the full dependent crate suite(s).
+        for changed, expected in (
+            (["anneal/trusted/audit/src/cli.rs"], audit_guards),
+            (["trusted/audit/src/lib.rs"], audit_guards),
+            (
+                ["anneal/trusted/audit/src/lib.rs", "theory/Anneal/MirWp.lean"],
+                audit_guards,
+            ),
+            (["trusted/cargo-anneal/src/lib.rs"], ca_and_audit_guards),
+            (["anneal/trusted/cargo-anneal/build.rs"], ca_and_audit_guards),
+            (
+                ["trusted/cargo-anneal/src/trusted_bundle.rs"],
+                ca_and_audit_guards,
+            ),
+            (["anneal/trusted/rustc-capture/src/main.rs"], rc_guards),
+        ):
+            selected = check_rust_guard_mutation._select_guards(
+                "all", None, changed_files=changed
+            )
+            self.assertEqual(
+                [g.guard_id for g in selected],
+                [g.guard_id for g in expected],
+                msg=changed,
+            )
+
+        # Integration-input closure: live inputs read by Zone-1 fixtures select
+        # every `--test` guard (plus crate closure if under `trusted/audit/`).
+        for inp in (
+            "anneal/trusted/root-manifest.sha256",
+            "trusted/root-manifest.sha256",
+            "anneal/vendor/lean-miri/UPSTREAM_PIN.json",
+            "trusted/lean/Trusted/MirModel.lean",
+            "theory/bundle-manifest.json",
+            "correspondence/Anneal/MirCorrespondenceProof.lean",
+        ):
+            selected = check_rust_guard_mutation._select_guards(
+                "all", None, changed_files=[inp]
+            )
+            self.assertEqual(
+                [g.guard_id for g in selected],
+                [g.guard_id for g in integ_guards],
+                msg=inp,
+            )
+
+        tb_expected = [
+            g
+            for g in check_rust_guard_mutation.RUST_GUARDS
+            if g.suite == "anneal_audit"
+            or (len(g.test_args) >= 2 and g.test_args[0] == "--test")
+        ]
+        self.assertEqual(
+            [
+                g.guard_id
+                for g in check_rust_guard_mutation._select_guards(
+                    "all",
+                    None,
+                    changed_files=["anneal/trusted/audit/TrustedBoundary.lean"],
+                )
+            ],
+            [g.guard_id for g in tb_expected],
+        )
+
+        cli_guards = [
+            g
+            for g in check_rust_guard_mutation.RUST_GUARDS
+            if g.target_file == "trusted/audit/src/cli.rs"
+        ]
+        anchors = [g.anchor for g in cli_guards]
+        fake_cargo = textwrap.dedent(
+            f"""\
+            args = sys.argv[1:]
+            src = Path("trusted/audit/src/cli.rs").read_text(encoding="utf-8")
+            is_mutant = any(a not in src for a in {anchors!r})
+            if "--no-run" in args:
+                sys.exit(0)
+            test_name = args[args.index("--exact") + 1]
+            print("running 1 test")
+            if is_mutant:
+                print(f"test {{test_name}} ... FAILED")
+                print("test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured;")
+                sys.exit(101)
+            print(f"test {{test_name}} ... ok")
+            print("test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured;")
+            sys.exit(0)
+            """
+        )
+        rc, out, err, rep, before, after = self._run_synthetic_suite(
+            fake_cargo,
+            suite="all",
+            name_filter="cli_",
+            changed_files=["anneal/trusted/audit/src/lib.rs"],
+            jobs=2,
+        )
+        self.assertEqual(rc, 0, out + err)
+        self.assertEqual(before, after)
+        assert rep is not None
+        self.assertEqual(rep["total"], 3)
+        self.assertEqual(rep["killed"], 3)
+        self.assertEqual(
+            [r["guard_id"] for r in rep["results"]],
+            [g.guard_id for g in cli_guards],
+        )
+
+    def test_changed_file_full_sweep_triggers(self):
+        audit_guards = [
+            g
+            for g in check_rust_guard_mutation.RUST_GUARDS
+            if g.suite == "anneal_audit"
+        ]
+        triggers = (
+            "anneal/ci/check_rust_guard_mutation.py",
+            "ci/check_rust_guard_mutation.py",
+            "anneal/Cargo.toml",
+            "Cargo.toml",
+            "anneal/Cargo.lock",
+            "Cargo.lock",
+            "anneal/trusted/audit/Cargo.toml",
+            "trusted/cargo-anneal/Cargo.toml",
+            "anneal/tests/audit/tests/cli_environment.rs",
+            "tests/cargo-anneal/tests/sandbox_escape.rs",
+        )
+        for trig in triggers:
+            selected = check_rust_guard_mutation._select_guards(
+                "anneal_audit",
+                None,
+                changed_files=["theory/Anneal/MirWp.lean", trig],
+            )
+            self.assertEqual(len(selected), len(audit_guards), msg=trig)
+
+        # Confirm full sweep runs through `main` when `anneal/Cargo.toml`
+        # changes.
+        fake_cargo = textwrap.dedent(
+            """\
+            args = sys.argv[1:]
+            if "--no-run" in args:
+                sys.exit(0)
+            test_name = args[args.index("--exact") + 1]
+            # Fail every test on mutant? Verify at least baseline passes and count matches.
+            # Detect whether any file under trusted/audit/src differs from mini_anneal?
+            # Simpler: always print ok on baseline isn't distinguishable here without
+            # inspecting source; check all 30 guards are attempted via SURVIVED return rc=1.
+            print("running 1 test")
+            print(f"test {test_name} ... ok")
+            print("test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured;")
+            sys.exit(0)
+            """
+        )
+        rc, out, err, rep, before, after = self._run_synthetic_suite(
+            fake_cargo,
+            suite="anneal_audit",
+            name_filter=None,
+            changed_files=["anneal/Cargo.toml"],
+            jobs=2,
+        )
+        self.assertEqual(rc, 1, out + err)
+        self.assertEqual(before, after)
+        assert rep is not None
+        self.assertEqual(rep["total"], len(audit_guards))
+
+    def test_changed_file_rejects_invalid_and_traversal_paths(self):
+        import contextlib
+        import io
+
+        bad_paths = (
+            "",
+            "   ",
+            "\x00",
+            "trusted/audit/\x00cli.rs",
+            "../outside.rs",
+            "anneal/../outside.rs",
+            "/abs/path.rs",
+            "trusted\\audit\\src\\cli.rs",
+            "anneal",
+            "anneal/",
+            "./trusted/audit/src/cli.rs",
+            "trusted//audit/src/cli.rs",
+        )
+        for bad in bad_paths:
+            stdout_buf = io.StringIO()
+            stderr_buf = io.StringIO()
+            with (
+                contextlib.redirect_stdout(stdout_buf),
+                contextlib.redirect_stderr(stderr_buf),
+            ):
+                rc = check_rust_guard_mutation.main(
+                    [
+                        "--anneal-root",
+                        str(self.mini_anneal),
+                        "--changed-file",
+                        bad,
+                    ]
+                )
+            self.assertEqual(rc, 1, msg=f"path={bad!r}")
+            self.assertIn("FAIL:", stderr_buf.getvalue(), msg=f"path={bad!r}")
+
+        # Trailing invalid path after a full-sweep trigger must still fail.
+        stderr_trail = io.StringIO()
+        with contextlib.redirect_stderr(stderr_trail):
+            rc_trail = check_rust_guard_mutation.main(
+                [
+                    "--anneal-root",
+                    str(self.mini_anneal),
+                    "--changed-file",
+                    "anneal/Cargo.toml",
+                    "--changed-file",
+                    "../bad",
+                ]
+            )
+        self.assertEqual(rc_trail, 1)
+        self.assertIn("FAIL:", stderr_trail.getvalue())
+
+    def test_changed_file_still_validates_catalog_invariants_when_zero_match(self):
+        import contextlib
+        import io
+
+        broken_guards = check_rust_guard_mutation.RUST_GUARDS + (
+            check_rust_guard_mutation.RustGuard(
+                guard_id="broken_zero_match_guard",
+                suite="anneal_audit",
+                target_file="trusted/audit/src/cli.rs",
+                description="broken anchor hidden behind zero-match filter",
+                anchor="NONEXISTENT_BROKEN_ANCHOR_XYZ",
+                replacement="MUTATED_XYZ",
+                package="anneal-audit",
+                test_args=("--test", "cli_environment"),
+                test_name="handles_non_utf8_path_arguments_before_help_and_version",
+            ),
+        )
+        with mock.patch.object(
+            check_rust_guard_mutation, "RUST_GUARDS", broken_guards
+        ):
+            with self.assertRaisesRegex(
+                RuntimeError, "Rust guard catalog validation failed"
+            ):
+                check_rust_guard_mutation.run_rust_guard_mutation_suite(
+                    anneal_root=self.mini_anneal,
+                    changed_files=["theory/Anneal/MirWp.lean"],
+                )
+            stdout_buf = io.StringIO()
+            stderr_buf = io.StringIO()
+            with (
+                contextlib.redirect_stdout(stdout_buf),
+                contextlib.redirect_stderr(stderr_buf),
+            ):
+                rc = check_rust_guard_mutation.main(
+                    [
+                        "--anneal-root",
+                        str(self.mini_anneal),
+                        "--changed-file",
+                        "theory/Anneal/MirWp.lean",
+                    ]
+                )
+            self.assertEqual(rc, 1)
+            self.assertIn(
+                "Rust guard catalog validation failed", stderr_buf.getvalue()
+            )
 
 
 if __name__ == "__main__":

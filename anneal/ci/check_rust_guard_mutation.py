@@ -38,8 +38,21 @@ What this check guarantees — and what it does NOT guarantee
 - **Guarantees:** Every security guard listed in `RUST_GUARDS` is active under
   its configured mutation, compiles when weakened, and is exercised by its
   targeted `anneal-audit`, `cargo-anneal`, or `anneal-rustc-capture` test.
-- **Does NOT guarantee:** Coverage of uncataloged branches or Lean-side checks
-  (covered by `ci/check_guard_mutation.py`).
+  When `--changed-file` is passed, every path is validated fail-closed upfront
+  and selection uses conservative dependency closure: full requested `--suite`
+  for `ci/check_rust_guard_mutation.py`, `Cargo.toml`, `Cargo.lock`,
+  `trusted/**/Cargo.toml`, or `tests/**`; the full dependent crate suites for
+  `trusted/{audit,cargo-anneal,rustc-capture}/**` (selecting both `cargo_anneal`
+  and downstream `anneal_audit` when `trusted/cargo-anneal/**` changes); all
+  `--test` integration guards for `TrustedBoundary.lean`, `trusted/lean/**`,
+  `trusted/correspondence/**`, `trusted/root-manifest.sha256`, `vendor/**`,
+  `theory/bundle-manifest.json`, and `correspondence/**`; and `0`-guard skip
+  after `validate_catalog_invariants` otherwise.
+- **Does NOT guarantee:** Coverage of uncataloged branches, uncovered Rust
+  source files (such as `cargo-anneal/src/{cli,diagnostics}.rs`), implicit
+  dependencies from unlisted files outside `trusted/`/`tests/`/listed
+  integration inputs, or Lean-side checks (covered by
+  `ci/check_guard_mutation.py`).
 
 How to add a new guard
 ----------------------
@@ -127,7 +140,7 @@ class GuardResult:
 
 RUST_GUARDS: tuple[RustGuard, ...] = (
     # ------------------------------------------------------------------
-    # anneal-audit: cargo_boundary.rs (7 guards)
+    # anneal-audit: cargo_boundary.rs (11 guards)
     # ------------------------------------------------------------------
     RustGuard(
         guard_id="cargo_boundary_member_outside_trusted",
@@ -261,8 +274,89 @@ RUST_GUARDS: tuple[RustGuard, ...] = (
         test_args=("--test", "boundary_audit"),
         test_name="enforces_bundled_resources_parity_and_regular_files",
     ),
+    RustGuard(
+        guard_id="cargo_boundary_bundled_theory_parity",
+        suite="anneal_audit",
+        target_file="trusted/audit/src/cargo_boundary.rs",
+        description="Reject tampered or stale bundled_theory.json bytes",
+        anchor=(
+            "    if actual_theory != expected_theory.as_bytes() {\n"
+            "        return Err(Failure::policy("
+        ),
+        replacement=(
+            "    if false && actual_theory != expected_theory.as_bytes() {\n"
+            "        return Err(Failure::policy("
+        ),
+        package="anneal-audit",
+        test_args=("--test", "boundary_audit"),
+        test_name="enforces_bundled_resources_parity_and_regular_files",
+    ),
+    RustGuard(
+        guard_id="cargo_boundary_monotonic_zone_lattice",
+        suite="anneal_audit",
+        target_file="trusted/audit/src/cargo_boundary.rs",
+        description="Enforce two-zone monotonic boundary (zone(dst) <= zone(src)) on path deps",
+        anchor=(
+            "        if dst_zone > src_zone {\n"
+            "            return Err(Failure::new("
+        ),
+        replacement=(
+            "        if false && dst_zone > src_zone {\n"
+            "            return Err(Failure::new("
+        ),
+        package="anneal-audit",
+        test_args=("--test", "boundary_audit"),
+        test_name="enforces_two_zone_monotonic_cargo_boundary_lattice",
+    ),
+    RustGuard(
+        guard_id="cargo_boundary_test_crate_publish_false",
+        suite="anneal_audit",
+        target_file="trusted/audit/src/cargo_boundary.rs",
+        description="Require publish = false on all Zone-1 tests/ Cargo manifests",
+        anchor=(
+            "        if src_zone == WorkspaceZone::Tests\n"
+            "            && manifest.package.publish != Some(toml::Value::Boolean(false))\n"
+            "        {"
+        ),
+        replacement=(
+            "        if false\n"
+            "            && src_zone == WorkspaceZone::Tests\n"
+            "            && manifest.package.publish != Some(toml::Value::Boolean(false))\n"
+            "        {"
+        ),
+        package="anneal-audit",
+        test_args=("--test", "boundary_audit"),
+        test_name="enforces_two_zone_monotonic_cargo_boundary_lattice",
+    ),
+    RustGuard(
+        guard_id="cargo_boundary_disallow_proc_macro_target",
+        suite="anneal_audit",
+        target_file="trusted/audit/src/cargo_boundary.rs",
+        description="Reject proc-macro crate targets in workspace member Cargo.toml files",
+        anchor=(
+            "        if let Some(val) = value\n"
+            "            && val.as_bool() != Some(false)\n"
+            "        {\n"
+            "            return Err(Failure::new(\n"
+            "                1,\n"
+            "                phase,\n"
+            '                format!("disallowed proc-macro target ({section}.{key}) in {member}/Cargo.toml"),\n'
+            "            ));\n"
+            "        }"
+        ),
+        replacement=(
+            "        if let Some(val) = value\n"
+            "            && val.as_bool() != Some(false)\n"
+            "        {\n"
+            "            let _ = (val, section, key, member, phase);\n"
+            "        }"
+        ),
+        package="anneal-audit",
+        test_args=("--test", "boundary_audit"),
+        test_name="enforces_two_zone_monotonic_cargo_boundary_lattice",
+    ),
     # ------------------------------------------------------------------
-    # anneal-audit: miri_pin.rs (5 guards)
+    # anneal-audit: miri_pin.rs (9 guards)
     # ------------------------------------------------------------------
     RustGuard(
         guard_id="miri_pin_unauthorized_patched_file",
@@ -377,8 +471,97 @@ RUST_GUARDS: tuple[RustGuard, ...] = (
         test_args=("--test", "boundary_audit"),
         test_name="verifies_source_lock_schema_and_rejects_malformed_records",
     ),
+    RustGuard(
+        guard_id="miri_pin_execution_machine_closure_len",
+        suite="anneal_audit",
+        target_file="trusted/audit/src/miri_pin.rs",
+        description="Require exact 160-module execution_machine_closure count in UPSTREAM_PIN.json",
+        anchor=(
+            "    if pin.execution_machine_closure.len() != 160 {\n"
+            "        return Err(Failure::policy("
+        ),
+        replacement=(
+            "    if false && pin.execution_machine_closure.len() != 160 {\n"
+            "        return Err(Failure::policy("
+        ),
+        package="anneal-audit",
+        test_args=("--lib",),
+        test_name="miri_pin::tests::rejects_unauthorized_patched_files_and_bad_closure_in_pin_bytes",
+    ),
+    RustGuard(
+        guard_id="miri_pin_source_lock_pin_digest",
+        suite="anneal_audit",
+        target_file="trusted/audit/src/miri_pin.rs",
+        description="Require upstream_pins.source_lock_sha256 parity with vendor_aux_files",
+        anchor=(
+            "    if !is_sha256_hex(&pin.upstream_pins.source_lock_sha256)\n"
+            "        || !expected_aux_files\n"
+            '            .get("upstream/source-lock.json")\n'
+            "            .is_some_and(|sha| sha.eq_ignore_ascii_case(&pin.upstream_pins.source_lock_sha256))\n"
+            "    {"
+        ),
+        replacement=(
+            "    if false\n"
+            "        && (!is_sha256_hex(&pin.upstream_pins.source_lock_sha256)\n"
+            "            || !expected_aux_files\n"
+            '                .get("upstream/source-lock.json")\n'
+            "                .is_some_and(|sha| {\n"
+            "                    sha.eq_ignore_ascii_case(&pin.upstream_pins.source_lock_sha256)\n"
+            "                }))\n"
+            "    {"
+        ),
+        package="anneal-audit",
+        test_args=("--lib",),
+        test_name="miri_pin::tests::verifies_source_lock_wiring_and_rejects_mismatched_pins_and_digests",
+    ),
+    RustGuard(
+        guard_id="miri_pin_vendor_file_sha256",
+        suite="anneal_audit",
+        target_file="trusted/audit/src/miri_pin.rs",
+        description="Reject modified vendored .lean files whose SHA-256 differs from UPSTREAM_PIN.json",
+        anchor=(
+            "            if !actual_sha.eq_ignore_ascii_case(exp_sha) {\n"
+            "                return Err(Failure::policy(\n"
+            "                    phase,\n"
+            "                    format!(\n"
+            '                        "vendor file SHA-256 mismatch for {rel_str}: expected {exp_sha}, got {actual_sha}"\n'
+            "                    ),\n"
+            "                ));\n"
+            "            }"
+        ),
+        replacement=(
+            "            if false && !actual_sha.eq_ignore_ascii_case(exp_sha) {\n"
+            "                return Err(Failure::policy(\n"
+            "                    phase,\n"
+            "                    format!(\n"
+            '                        "vendor file SHA-256 mismatch for {rel_str}: expected {exp_sha}, got {actual_sha}"\n'
+            "                    ),\n"
+            "                ));\n"
+            "            }"
+        ),
+        package="anneal-audit",
+        test_args=("--test", "boundary_audit"),
+        test_name="verifies_upstream_pin_and_rejects_tampering",
+    ),
+    RustGuard(
+        guard_id="miri_pin_source_lock_schema_version",
+        suite="anneal_audit",
+        target_file="trusted/audit/src/miri_pin.rs",
+        description="Require schema_version == 1 in vendor/lean-miri/upstream/source-lock.json",
+        anchor=(
+            "    if lock.schema_version != 1 {\n"
+            "        return Err(Failure::policy("
+        ),
+        replacement=(
+            "    if false && lock.schema_version != 1 {\n"
+            "        return Err(Failure::policy("
+        ),
+        package="anneal-audit",
+        test_args=("--test", "boundary_audit"),
+        test_name="verifies_source_lock_schema_and_rejects_malformed_records",
+    ),
     # ------------------------------------------------------------------
-    # anneal-audit: repo_audit.rs (3 guards)
+    # anneal-audit: repo_audit.rs (7 guards)
     # ------------------------------------------------------------------
     RustGuard(
         guard_id="repo_audit_correspondence_miri_replay",
@@ -428,6 +611,160 @@ RUST_GUARDS: tuple[RustGuard, ...] = (
         package="anneal-audit",
         test_args=("--lib",),
         test_name="repo_audit::tests::preflight_tier_imports_isolate_vetted_modules",
+    ),
+    RustGuard(
+        guard_id="repo_audit_scan_tree_unexpected_non_lean",
+        suite="anneal_audit",
+        target_file="trusted/audit/src/repo_audit.rs",
+        description="Reject unallowlisted non-Lean files in trusted/ and theory/ source trees",
+        anchor=(
+            "        } else if !allowed_non_lean.contains(&relative.as_str()) {\n"
+            "            return Err(Failure::new(\n"
+            "                1,\n"
+            '                "snapshot",\n'
+            '                format!("unexpected non-Lean file in source tree: {relative}"),\n'
+            "            ));\n"
+            "        }"
+        ),
+        replacement=(
+            "        } else if false && !allowed_non_lean.contains(&relative.as_str()) {\n"
+            "            return Err(Failure::new(\n"
+            "                1,\n"
+            '                "snapshot",\n'
+            '                format!("unexpected non-Lean file in source tree: {relative}"),\n'
+            "            ));\n"
+            "        }"
+        ),
+        package="anneal-audit",
+        test_args=("--test", "boundary_audit"),
+        test_name="rejects_symlinks_stale_oleans_and_unexpected_foundation_companions",
+    ),
+    RustGuard(
+        guard_id="repo_audit_scan_tree_missing_umbrella",
+        suite="anneal_audit",
+        target_file="trusted/audit/src/repo_audit.rs",
+        description="Require root umbrella module (Trusted.lean / Anneal.lean) in scanned Lean trees",
+        anchor=(
+            "    if require_umbrella\n"
+            '        && (umbrella_prefix == "Trusted" || !modules.is_empty())\n'
+            "        && !modules.contains_key(umbrella_prefix)\n"
+            "    {"
+        ),
+        replacement=(
+            "    if false\n"
+            "        && require_umbrella\n"
+            '        && (umbrella_prefix == "Trusted" || !modules.is_empty())\n'
+            "        && !modules.contains_key(umbrella_prefix)\n"
+            "    {"
+        ),
+        package="anneal-audit",
+        test_args=("--test", "boundary_audit"),
+        test_name="rejects_symlinks_stale_oleans_and_unexpected_foundation_companions",
+    ),
+    RustGuard(
+        guard_id="repo_audit_correspondence_miri_zero_decls",
+        suite="anneal_audit",
+        target_file="trusted/audit/src/repo_audit.rs",
+        description="Reject correspondence audits reporting zero replayed vendor Miri declarations",
+        anchor=(
+            "    if has_vendor_miri && replayed == 0 {\n"
+            "        return Err(Failure::policy(\n"
+            "            phase,\n"
+            '            "correspondence audit replayed zero vendor Miri declarations",\n'
+            "        ));\n"
+            "    }"
+        ),
+        replacement=(
+            "    if false && has_vendor_miri && replayed == 0 {\n"
+            "        return Err(Failure::policy(\n"
+            "            phase,\n"
+            '            "correspondence audit replayed zero vendor Miri declarations",\n'
+            "        ));\n"
+            "    }"
+        ),
+        package="anneal-audit",
+        test_args=("--lib",),
+        test_name="repo_audit::tests::validates_correspondence_replay_fields_fail_closed",
+    ),
+    RustGuard(
+        guard_id="repo_audit_preflight_non_foundation_import",
+        suite="anneal_audit",
+        target_file="trusted/audit/src/repo_audit.rs",
+        description="Reject vetted module imports of non-foundation / theory / vendor Miri modules",
+        anchor=(
+            "                        None => {\n"
+            "                            return Err(Failure::policy(\n"
+            '                                "preflight",\n'
+            "                                format!(\n"
+            '                                    "vetted module {mod_name} cannot import non-foundation module {imp_mod}"\n'
+            "                                ),\n"
+            "                            ));\n"
+            "                        }"
+        ),
+        replacement=(
+            "                        None => {\n"
+            "                            let _ = (mod_name, imp_mod);\n"
+            "                        }"
+        ),
+        package="anneal-audit",
+        test_args=("--lib",),
+        test_name="repo_audit::tests::preflight_tier_imports_isolate_vetted_modules",
+    ),
+    # ------------------------------------------------------------------
+    # anneal-audit: cli.rs (3 guards)
+    # ------------------------------------------------------------------
+    RustGuard(
+        guard_id="cli_help_version_preserved",
+        suite="anneal_audit",
+        target_file="trusted/audit/src/cli.rs",
+        description="Serve --help and --version cleanly even alongside non-UTF8 path arguments",
+        anchor=(
+            "            if matches!(e.kind(), ErrorKind::DisplayHelp | ErrorKind::DisplayVersion) {\n"
+            '                print!("{e}");\n'
+            "                return Ok(0);\n"
+            "            }"
+        ),
+        replacement=(
+            "            if false && matches!(e.kind(), ErrorKind::DisplayHelp | ErrorKind::DisplayVersion) {\n"
+            '                print!("{e}");\n'
+            "                return Ok(0);\n"
+            "            }"
+        ),
+        package="anneal-audit",
+        test_args=("--test", "cli_environment"),
+        test_name="handles_non_utf8_path_arguments_before_help_and_version",
+    ),
+    RustGuard(
+        guard_id="cli_forward_anneal_root_arg",
+        suite="anneal_audit",
+        target_file="trusted/audit/src/cli.rs",
+        description="Forward --anneal-root CLI override instead of defaulting to manifest parent",
+        anchor=(
+            "    let checkout = cli\n"
+            "        .anneal_root\n"
+            '        .unwrap_or_else(|| Path::new(env!("CARGO_MANIFEST_DIR")).join("../.."));'
+        ),
+        replacement=(
+            "    let _ = cli.anneal_root;\n"
+            '    let checkout = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");'
+        ),
+        package="anneal-audit",
+        test_args=("--test", "cli_environment"),
+        test_name="ignores_non_utf8_environment_entries_outside_the_allowlist",
+    ),
+    RustGuard(
+        guard_id="cli_forward_lean_binary_arg",
+        suite="anneal_audit",
+        target_file="trusted/audit/src/cli.rs",
+        description="Forward explicit --lean binary path into Checker::new rather than falling back",
+        anchor="    let mut checker = Checker::new(&checkout, cli.lean.as_deref()).map_err(|e| {",
+        replacement=(
+            "    let _ = cli.lean;\n"
+            "    let mut checker = Checker::new(&checkout, None).map_err(|e| {"
+        ),
+        package="anneal-audit",
+        test_args=("--test", "cli_environment"),
+        test_name="preserves_non_utf8_repository_and_lean_path_arguments",
     ),
     # ------------------------------------------------------------------
     # cargo-anneal: sandbox.rs (6 guards)
@@ -1024,7 +1361,7 @@ RUST_GUARDS: tuple[RustGuard, ...] = (
         test_name="target::admission_tests::run_target_rejects_modules_named_like_locked_modules",
     ),
     # ------------------------------------------------------------------
-    # cargo-anneal: olean_cache.rs (5 guards)
+    # cargo-anneal: olean_cache.rs (6 guards)
     # ------------------------------------------------------------------
     RustGuard(
         guard_id="olean_cache_key_sensitive_to_source_digest",
@@ -1108,7 +1445,7 @@ RUST_GUARDS: tuple[RustGuard, ...] = (
         guard_id="olean_cache_prebuilt_reject_symlink_parts",
         suite="cargo_anneal",
         target_file="trusted/cargo-anneal/src/olean_cache.rs",
-        description="Reject symlinks while resolving cached .olean parts via join_checked_non_symlink",
+        description="Defense-in-depth precheck: reject symlinks while resolving cached .olean parts via join_checked_non_symlink",
         anchor=(
             "        if meta.file_type().is_symlink() {\n"
             "            return Err(Failure::operational(\n"
@@ -1203,7 +1540,7 @@ RUST_GUARDS: tuple[RustGuard, ...] = (
         guard_id="init_write_create_new_refuses_overwrite",
         suite="cargo_anneal",
         target_file="trusted/cargo-anneal/src/init.rs",
-        description="Refuse overwriting pre-existing starter Spec.lean or Proof.lean files",
+        description="Defense-in-depth precheck: refuse overwriting pre-existing starter Spec.lean or Proof.lean files",
         anchor=(
             "            Ok(_) => {\n"
             '                return Err(format!("refusing to overwrite existing file {}", dest.display()));\n'
@@ -2034,9 +2371,85 @@ def classify_rust_test_outcome(
     )
 
 
+def _normalize_changed_file(raw: str) -> str:
+    """Validate and normalize a `--changed-file` path relative to `anneal/`.
+
+    Accepts paths relative to the repository root (`anneal/...`) or relative to
+    `anneal/` (`trusted/...`), failing closed on empty values, NUL/newline
+    characters, backslashes, leading `/`, or `.`/`..` traversal segments.
+    """
+    if not raw or not raw.strip():
+        raise ValueError("changed-file path must be non-empty")
+    if "\x00" in raw or "\\" in raw or "\n" in raw or "\r" in raw:
+        raise ValueError(f"invalid characters in changed-file path: {raw!r}")
+    if raw.startswith("/"):
+        raise ValueError(f"changed-file path must be relative, got: {raw!r}")
+    parts = raw.split("/")
+    if any(part in ("", ".", "..") for part in parts):
+        raise ValueError(f"invalid path segment in changed-file path: {raw!r}")
+    if parts[0] == "anneal":
+        if len(parts) < 2:
+            raise ValueError(
+                f"changed-file path must name a file under anneal/: {raw!r}"
+            )
+        return "/".join(parts[1:])
+    return raw
+
+
+def _is_full_sweep_trigger(rel_path: str) -> bool:
+    """Return True if `rel_path` requires running the full `--suite`."""
+    if rel_path == "ci/check_rust_guard_mutation.py":
+        return True
+    if rel_path in ("Cargo.toml", "Cargo.lock"):
+        return True
+    parts = rel_path.split("/")
+    if len(parts) >= 2 and parts[0] == "trusted" and parts[-1] == "Cargo.toml":
+        return True
+    if parts[0] == "tests":
+        return True
+    return False
+
+
+_CRATE_PREFIX_TO_SUITE: tuple[tuple[str, str], ...] = (
+    ("trusted/audit/", "anneal_audit"),
+    ("trusted/cargo-anneal/", "cargo_anneal"),
+    # `anneal-audit` depends directly on `cargo-anneal`
+    # (`trusted/audit/Cargo.toml`).
+    ("trusted/cargo-anneal/", "anneal_audit"),
+    ("trusted/rustc-capture/", "rustc_capture"),
+)
+
+_INTEGRATION_INPUT_EXACT: frozenset[str] = frozenset(
+    {
+        "trusted/audit/TrustedBoundary.lean",
+        "trusted/root-manifest.sha256",
+        "theory/bundle-manifest.json",
+    }
+)
+
+_INTEGRATION_INPUT_ROOTS: tuple[str, ...] = (
+    "trusted/lean",
+    "trusted/correspondence",
+    "vendor",
+    "correspondence",
+)
+
+
+def _is_integration_input(rel_path: str) -> bool:
+    """Return True if changing `rel_path` affects Zone-1 integration tests."""
+    if rel_path in _INTEGRATION_INPUT_EXACT:
+        return True
+    return any(
+        rel_path == root or rel_path.startswith(f"{root}/")
+        for root in _INTEGRATION_INPUT_ROOTS
+    )
+
+
 def _select_guards(
     suite: str,
     name_filter: str | None,
+    *,
+    changed_files: list[str] | tuple[str, ...] | None = None,
 ) -> list[RustGuard]:
     if suite == "all":
         guards = list(RUST_GUARDS)
@@ -2044,6 +2457,30 @@ def _select_guards(
         guards = [g for g in RUST_GUARDS if g.suite in WORKSPACE_SUITES]
     else:
         guards = [g for g in RUST_GUARDS if g.suite == suite]
+    if changed_files:
+        # Validate every `--changed-file` entry upfront before trigger
+        # short-circuits.
+        normalized = [_normalize_changed_file(p) for p in changed_files]
+        full_sweep = any(_is_full_sweep_trigger(p) for p in normalized)
+        if not full_sweep:
+            selected_suites: set[str] = set()
+            include_integration = False
+            for p in normalized:
+                for prefix, crate_suite in _CRATE_PREFIX_TO_SUITE:
+                    if p.startswith(prefix):
+                        selected_suites.add(crate_suite)
+                if _is_integration_input(p):
+                    include_integration = True
+            guards = [
+                g
+                for g in guards
+                if g.suite in selected_suites
+                or (
+                    include_integration
+                    and len(g.test_args) >= 2
+                    and g.test_args[0] == "--test"
+                )
+            ]
     if name_filter:
         guards = [g for g in guards if name_filter in g.guard_id]
     return guards
@@ -2305,9 +2742,10 @@ def _check_one_guard(
 def run_rust_guard_mutation_suite(
     *,
     anneal_root: Path,
-    cargo_bin: Path,
+    cargo_bin: Path | None = None,
     suite: str = "all",
     name_filter: str | None = None,
+    changed_files: list[str] | tuple[str, ...] | None = None,
     jobs: int = 4,
     timeout_sec: int = 120,
     nightly_toolchain: str = DEFAULT_NIGHTLY_TOOLCHAIN,
@@ -2316,6 +2754,10 @@ def run_rust_guard_mutation_suite(
 ) -> dict[str, object]:
     """Validate baseline builds/tests and execute all selected Rust guard checks."""
     t_start = time.monotonic()
+    normalized_changed: list[str] | None = None
+    if changed_files:
+        normalized_changed = [_normalize_changed_file(p) for p in changed_files]
+
     catalog_errors = validate_catalog_invariants(anneal_root)
     if catalog_errors:
         raise RuntimeError(
@@ -2323,11 +2765,33 @@ def run_rust_guard_mutation_suite(
             + "\n  - ".join(catalog_errors)
         )
 
-    guards = _select_guards(suite, name_filter)
+    if normalized_changed is not None:
+        suite_guards = _select_guards(suite, None, changed_files=normalized_changed)
+        if not suite_guards:
+            return {
+                "total": 0,
+                "killed": 0,
+                "survived": 0,
+                "errors": 0,
+                "kill_rate_pct": 0.0,
+                "baseline_sec": 0.0,
+                "total_sec": round(time.monotonic() - t_start, 3),
+                "results": [],
+                "changed_files": normalized_changed,
+            }
+        guards = _select_guards(
+            suite, name_filter, changed_files=normalized_changed
+        )
+    else:
+        guards = _select_guards(suite, name_filter)
+
     if not guards:
         raise RuntimeError(
             f"no Rust guards matched suite={suite!r} filter={name_filter!r}"
         )
+
+    if cargo_bin is None:
+        raise RuntimeError("cargo_bin is required when >= 1 guard is selected")
 
     rustc_capture_cargo: Path | None = None
     rustc_capture_env: dict[str, str] | None = None
@@ -2583,6 +3047,16 @@ def main(argv: list[str] | None = None) -> int:
         help="Optional substring filter on guard_id.",
     )
     parser.add_argument(
+        "--changed-file",
+        dest="changed_files",
+        action="append",
+        default=[],
+        help=(
+            "Repeatable changed file path (relative to repo root or anneal/) "
+            "for incremental PR-tier selection."
+        ),
+    )
+    parser.add_argument(
         "--jobs",
         type=int,
         default=min(4, os.cpu_count() or 1),
@@ -2612,35 +3086,57 @@ def main(argv: list[str] | None = None) -> int:
     if args.timeout_sec < 1:
         parser.error("--timeout-sec must be >= 1")
 
+    try:
+        normalized_changed = [
+            _normalize_changed_file(p) for p in args.changed_files
+        ]
+    except ValueError as exc:
+        print(f"FAIL: {exc}", file=sys.stderr)
+        return 1
+
     if args.list:
         errors = validate_catalog_invariants(args.anneal_root)
         if errors:
             for err in errors:
                 print(f"ERROR: {err}", file=sys.stderr)
             return 1
-        selected = _select_guards(args.suite, args.name_filter)
+        selected = _select_guards(
+            args.suite,
+            args.name_filter,
+            changed_files=normalized_changed or None,
+        )
         for g in selected:
             print(f"{g.suite:14s} {g.guard_id:48s} {g.target_file}")
         print(f"Total cataloged Rust guards: {len(selected)}")
         return 0
 
-    cargo_bin = _resolve_cargo_binary(args.cargo)
+    skip_cargo = bool(
+        normalized_changed
+        and not _select_guards(
+            args.suite, None, changed_files=normalized_changed
+        )
+    )
+    cargo_bin = None if skip_cargo else _resolve_cargo_binary(args.cargo)
     try:
         report = run_rust_guard_mutation_suite(
             anneal_root=args.anneal_root,
             cargo_bin=cargo_bin,
             suite=args.suite,
             name_filter=args.name_filter,
+            changed_files=normalized_changed or None,
             jobs=args.jobs,
             timeout_sec=args.timeout_sec,
             nightly_toolchain=args.nightly_toolchain,
             use_explicit_cargo=args.cargo is not None,
         )
-    except RuntimeError as exc:
+    except (RuntimeError, ValueError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
 
-    print(_format_summary(report))
+    if report["total"] == 0 and normalized_changed:
+        print("0 guards selected (skipping Cargo baseline)")
+    else:
+        print(_format_summary(report))
     if args.json_out is not None:
         args.json_out.parent.mkdir(parents=True, exist_ok=True)
         args.json_out.write_text(
