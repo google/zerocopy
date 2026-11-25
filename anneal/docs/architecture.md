@@ -403,9 +403,9 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `theory/Anneal/{InitLemmas,ClassicalEm,Firewall,LeBytes,ListChunks}.lean`,
   `theory/Anneal/{NatBitwise,BitTrieLrat,PTree,SpineForce,Generic}.lean`,
   `theory/Anneal/{Scalar,Simd,Wp}.lean`,
-  `theory/Anneal/{AiPcc,ByteRun,ByteSubLens,CallStackUnwind,CnfOrd,F2Simd}/`,
-  `theory/Anneal/{Framework,MirMemComp,MiriTreeBorrows,OverflowCastJoin}/`,
-  `theory/Anneal/{PureLift,RefFrame,WavefrontReclaim}/`, and
+  `theory/Anneal/{AiPcc,ByteRun,ByteSubLens,CallStackUnwind,CnfOrd}/`,
+  `theory/Anneal/{ConjunctiveWp,F2Simd,Framework,MirMemComp,MiriTreeBorrows}/`,
+  `theory/Anneal/{OverflowCastJoin,PureLift,RefFrame,WavefrontReclaim}/`, and
   planned `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
   Diaconescu classical excluded middle and existential choice, WHNF and
@@ -420,22 +420,24 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `@[irreducible]` `&mut` method call summaries (`ByteSubLens`), modular
   `@[irreducible]` call-stack framing and multi-level unwind cleanup propagation
   (`CallStackUnwind`), constructive `< ω^ω` Cantor Normal Form ordinals and
-  multi-rank worklist termination (`CnfOrd`), $\mathbb{F}_2$-linear,
-  $\mathbb{F}_2$-bilinear, and cone-sliced SIMD certificate evaluators
-  (`F2Simd`), standalone, unbundled open-generic MIR syntax, parametric type
-  layouts, assume-guarantee trait contracts, and closed-instantiation erasure to
-  Day-1 `BodyVerified` (`Generic`, audited standalone in Pass 1), computable MIR
-  memory, layout, and indirect byte-codec re-exports and stack framing laws
-  (`MirMemComp`), Miri-aligned Tree Borrows transitions, retags, and protectors
-  (`MiriTreeBorrows`), `@[irreducible]` stage-cut interval joins for overflowing
-  tuple arithmetic and `intToInt` casts (`OverflowCastJoin`), 4-way
-  call-continuation `&mut` writeback frames and ranged Tree Borrows protectors
-  (`RefFrame`), view-indexed spatial PCM `< ω^ω` wavefront drain and universal
-  `.activeMut` loan reclamation (`WavefrontReclaim`), functional borrow lifting,
-  separation-logic frame rules, and proof automation built against
-  $M_{\text{anneal}}$ and `StableAst` / `StableSemantics` (`cargo-anneal`
-  bundles the scalar and MIR proof libraries under `theory/Anneal/`, compiling
-  and auditing only the transitive `Anneal.*`
+  multi-rank worklist termination (`CnfOrd`), anti-monotonic weakest liberal
+  preconditions, minimum-budget conjunctive WP, constructive divergence
+  certificates, and binary-doubling fuel (`ConjunctiveWp`),
+  $\mathbb{F}_2$-linear, $\mathbb{F}_2$-bilinear, and cone-sliced SIMD
+  certificate evaluators (`F2Simd`), standalone, unbundled open-generic MIR
+  syntax, parametric type layouts, assume-guarantee trait contracts, and
+  closed-instantiation erasure to Day-1 `BodyVerified` (`Generic`, audited
+  standalone in Pass 1), computable MIR memory, layout, and indirect byte-codec
+  re-exports and stack framing laws (`MirMemComp`), Miri-aligned Tree Borrows
+  transitions, retags, and protectors (`MiriTreeBorrows`), `@[irreducible]`
+  stage-cut interval joins for overflowing tuple arithmetic and `intToInt` casts
+  (`OverflowCastJoin`), 4-way call-continuation `&mut` writeback frames and
+  ranged Tree Borrows protectors (`RefFrame`), view-indexed spatial PCM `< ω^ω`
+  wavefront drain and universal `.activeMut` loan reclamation
+  (`WavefrontReclaim`), functional borrow lifting, separation-logic frame rules,
+  and proof automation built against $M_{\text{anneal}}$ and `StableAst` /
+  `StableSemantics` (`cargo-anneal` bundles the scalar and MIR proof libraries
+  under `theory/Anneal/`, compiling and auditing only the transitive `Anneal.*`
   closure imported by target proof modules).
 
 #### Why $M_{\text{anneal}}$'s step rules and `theory/` do not expand the TCB
@@ -554,6 +556,7 @@ anneal/
     │   ├── CallStackUnwind.lean    # Modular CallSpecCut & unwind cleanup (+ CallStackUnwind/)
     │   ├── ClassicalEm.lean        # Diaconescu excluded middle and choice
     │   ├── CnfOrd.lean             # Constructive < ω^ω CNF ordinals & worklists (+ CnfOrd/)
+    │   ├── ConjunctiveWp.lean      # Anti-monotonic WLP, conjunctive WP & pow2 fuel (+ ConjunctiveWp/)
     │   ├── Core.lean               # BlockTree, SepPCM & StepStageCut (+ Core/)
     │   ├── F2Simd.lean             # F2-linear/bilinear & SIMD certificate evaluators (+ F2Simd/)
     │   ├── Firewall.lean           # WHNF & rewrite firewall combinators
