@@ -18,7 +18,7 @@ permissions: {}
 jobs:
   rerun:
     name: rerun
-    uses: joshlf/ci-core/.github/workflows/review-rerun.yml@440084618d8d2688a4c89512355a0c35be22f47e
+    uses: joshlf/ci-core/.github/workflows/review-rerun.yml@5fedc784df34ea7f349897d699be757f10354063
     with:
       config_path: ci/checks.toml
     permissions:

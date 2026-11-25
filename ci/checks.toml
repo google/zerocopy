@@ -15,7 +15,7 @@ owner_id = 1342004
 default_branch = "main"
 sigstore = "public_good"
 trusted_engine_workflow = "joshlf/ci-core/.github/workflows/ci.yml"
-trusted_engine_shas = ["440084618d8d2688a4c89512355a0c35be22f47e"]
+trusted_engine_shas = ["5fedc784df34ea7f349897d699be757f10354063"]
 
 [tcb]
 owner_user_ids = [1046063, 3820879, 1775176]
