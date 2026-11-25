@@ -3313,7 +3313,10 @@ class TestWorkloadMemoryEnvelope(unittest.TestCase):
                 "w_slice_max_mb": 8264,
                 "runtime_base": td,
             }
-            with mock.patch.object(alr.subprocess, "run") as mock_run:
+            # Stub the `systemctl` lookup too, so the test does not depend
+            # on the host (e.g. a sandboxed CI image without systemd).
+            with mock.patch.object(alr.subprocess, "run") as mock_run, \
+                 mock.patch.object(alr, "_find_systemctl", return_value="/usr/bin/systemctl"):
                 mock_run.return_value = subprocess.CompletedProcess([], 0, "", "")
                 ok1, ch1, _ = alr.ensure_workloads_slice(good_env, unit_path=unit_p, reload_systemd=True)
                 self.assertTrue(ok1)
