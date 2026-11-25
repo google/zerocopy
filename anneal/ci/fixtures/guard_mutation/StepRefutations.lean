@@ -540,4 +540,152 @@ theorem positive_step_v2_raw_borrow_const_through_const :
      | .error _ => False) :=
   trivial
 
+/-! ## Partially moved overflow pairs (`LocalSlot.partialTuple`)
+
+Under `-Coverflow-checks=yes`, rustc lowers `x + 1` to
+`_t = AddWithOverflow(x, 1)`, `assert(!move (_t.1))`, and
+`_r = move (_t.0)`. Moving one field leaves the other readable; the
+moved field, and the tuple as a whole, must not be read again. -/
+
+/-- Overflow pair type `(u8, bool)`. -/
+noncomputable def overflowPairU8 : MirTy := .tuple [.int .i8 false, .bool]
+
+/-- Local slots after `move (_1.1)`: field 0 still holds `7_u8`. -/
+noncomputable def partialPairLocals : List LocalSlot :=
+  [.immediate (some .unit),
+    .partialTuple [some (.scalar ⟨.i8, false, BitVec.ofNat 128 7⟩), none]]
+
+/-- Guard `step_v2_partial_tuple_move_moved_field`: moving an already moved
+tuple field faults with `.undefined`. -/
+theorem refute_step_v2_partial_tuple_move_moved_field :
+    (match readPlaceV2 [.unit, overflowPairU8] partialPairLocals
+        MemoryState.empty true
+        { localId := 1, projection := [.field 1 .bool] } with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_partial_tuple_copy_moved_field`: copying an already moved
+tuple field faults with `.undefined`. -/
+theorem refute_step_v2_partial_tuple_copy_moved_field :
+    (match readPlaceV2 [.unit, overflowPairU8] partialPairLocals
+        MemoryState.empty false
+        { localId := 1, projection := [.field 1 .bool] } with
+     | .error .undefined => True
+     | _ => False) :=
+  trivial
+
+/-- Guard `step_v2_partial_tuple_whole_read`: reading a partially moved tuple
+as a whole faults with `.undefined`, for both copies and moves. -/
+theorem refute_step_v2_partial_tuple_whole_read :
+    (match readPlaceV2 [.unit, overflowPairU8] partialPairLocals
+        MemoryState.empty false { localId := 1, projection := [] } with
+     | .error .undefined => True
+     | _ => False) ∧
+    (match readPlaceV2 [.unit, overflowPairU8] partialPairLocals
+        MemoryState.empty true { localId := 1, projection := [] } with
+     | .error .undefined => True
+     | _ => False) :=
+  ⟨trivial, trivial⟩
+
+/-- Anti-overreach canary: moving field 1 and then field 0 out of an
+initialized overflow pair returns both values, leaves field 0 readable in
+between, and restores the uninitialized `.immediate none` slot once both
+fields are moved. -/
+theorem positive_step_v2_partial_tuple_moves :
+    readPlaceV2 [.unit, overflowPairU8]
+        [.immediate (some .unit),
+          .immediate (some (.tuple
+            [.scalar ⟨.i8, false, BitVec.ofNat 128 7⟩, .bool false]))]
+        MemoryState.empty true
+        { localId := 1, projection := [.field 1 .bool] } =
+      .ok (.bool, some (.bool false), partialPairLocals, MemoryState.empty) ∧
+    readPlaceV2 [.unit, overflowPairU8] partialPairLocals
+        MemoryState.empty false
+        { localId := 1, projection := [.field 0 (.int .i8 false)] } =
+      .ok (.int .i8 false, some (.scalar ⟨.i8, false, BitVec.ofNat 128 7⟩),
+        partialPairLocals, MemoryState.empty) ∧
+    readPlaceV2 [.unit, overflowPairU8] partialPairLocals
+        MemoryState.empty true
+        { localId := 1, projection := [.field 0 (.int .i8 false)] } =
+      .ok (.int .i8 false, some (.scalar ⟨.i8, false, BitVec.ofNat 128 7⟩),
+        [.immediate (some .unit), .immediate none], MemoryState.empty) :=
+  ⟨rfl, rfl, rfl⟩
+
+/-- `buggy_add_u8(x: u8) -> u8 { x + 1 }` as captured under
+`-Coverflow-checks=yes --panic abort`. -/
+noncomputable def bodyOverflowAddV2 : Body := {
+  argumentCount := 1
+  locals := [.int .i8 false, .int .i8 false, .int .i8 false, overflowPairU8]
+  basicBlocks := [
+    { statements := [
+        .storageLive 2,
+        .assign ⟨2, []⟩ (.use (.copy ⟨1, []⟩)),
+        .assign ⟨3, []⟩ (.binaryOp .addWithOverflow (.copy ⟨2, []⟩)
+          (.constant ⟨.int .i8 false, .scalar (BitVec.ofNat 128 1)⟩))
+      ]
+      terminator := .assert (.move ⟨3, [.field 1 .bool]⟩) false
+        (.overflow .add) 1 .unreachable },
+    { statements := [
+        .assign ⟨0, []⟩ (.use (.move ⟨3, [.field 0 (.int .i8 false)]⟩)),
+        .storageDead 2
+      ]
+      terminator := .return_ }
+  ]
+  isUnsafe := false
+  identity := "guard_mutation::overflow_add_v2"
+}
+
+/-- Profile v2 program wrapping `bodyOverflowAddV2`. -/
+noncomputable def progOverflowAddV2 : Program := {
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 2
+  bodies := [bodyOverflowAddV2]
+  overflowChecks := true
+}
+
+/-- `progOverflowAddV2` called with `x = 255`. -/
+noncomputable def queryOverflowAdd255 : Query :=
+  { args := [.scalar ⟨.i8, false, BitVec.ofNat 128 255⟩] }
+
+/-- Guard `step_v2_assert_failure_faults`: the failed overflow assert of
+`255 + 1` faults instead of continuing with the wrapped sum, so
+`WellFormedV2` (and hence any Profile v2 verification theorem) is refuted. -/
+theorem refute_step_v2_assert_failure_faults :
+    ReachesResultV2 progOverflowAddV2 queryOverflowAdd255
+      (.fault .unsupported) ∧
+    ¬ WellFormedV2 progOverflowAddV2 queryOverflowAdd255 := by
+  have hReach : ReachesResultV2 progOverflowAddV2 queryOverflowAdd255
+      (.fault .unsupported) := by
+    unfold ReachesResultV2
+    change ∃ s : State, ReachesV2 progOverflowAddV2 _ s ∧
+      StepV2 progOverflowAddV2 s (.fault .unsupported)
+    exact ⟨_,
+      ReachesV2.tail (ReachesV2.tail (ReachesV2.tail (ReachesV2.refl _)
+        ⟨0, rfl, rfl⟩) ⟨0, rfl, rfl⟩) ⟨0, rfl, rfl⟩,
+      ⟨0, rfl, rfl⟩⟩
+  exact ⟨hReach, fun hWf => hWf.2 .unsupported hReach⟩
+
+/-- Anti-overreach canary: `progOverflowAddV2` with `x = 254` passes its
+overflow assert and returns `255`. -/
+theorem positive_step_v2_overflow_assert_passes :
+    ∃ out : Out,
+      ReachesResultV2 progOverflowAddV2
+        { args := [.scalar ⟨.i8, false, BitVec.ofNat 128 254⟩] }
+        (.done (.returned out)) ∧
+      out.ret = .scalar ⟨.i8, false, BitVec.ofNat 128 255⟩ := by
+  apply Exists.intro
+  constructor
+  · unfold ReachesResultV2
+    change ∃ s : State, ReachesV2 progOverflowAddV2 _ s ∧
+      StepV2 progOverflowAddV2 s _
+    exact ⟨_,
+      ReachesV2.tail (ReachesV2.tail (ReachesV2.tail (ReachesV2.tail
+        (ReachesV2.tail (ReachesV2.tail (ReachesV2.refl _)
+          ⟨0, rfl, rfl⟩) ⟨0, rfl, rfl⟩) ⟨0, rfl, rfl⟩) ⟨0, rfl, rfl⟩)
+        ⟨0, rfl, rfl⟩) ⟨0, rfl, rfl⟩,
+      ⟨0, rfl, rfl⟩⟩
+  · rfl
+
 end GuardMutation

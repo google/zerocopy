@@ -280,7 +280,7 @@ memory no-op). -/
 @[expose] def slotNonIndirect (slot : LocalSlot) : Bool :=
   match slot with
   | .indirect _ => false
-  | .dead | .immediate _ => true
+  | .dead | .immediate _ | .partialTuple _ => true
 
 /-- True iff every slot in `ls` is non-indirect. -/
 @[expose] def allSlotsNonIndirect (ls : List LocalSlot) : Bool :=
@@ -522,7 +522,7 @@ theorem dropSpineCut_prepend_storageDead {body : Body}
     getElem?_nonIndirect_of_all hNonInd hOldGet
   have hDealloc : deallocateLocal mem oldSlot = .ok mem := by
     cases oldSlot with
-    | dead | immediate _ => rfl
+    | dead | immediate _ | partialTuple _ => rfl
     | indirect _ => cases hOldNonInd
   have hDropBeqF : Nat.beq dropIdx 0 = false := by
     cases dropIdx with

@@ -52,13 +52,16 @@ Five invariants govern build-system integration across all supported ecosystems:
    (`rust_library`, `rust_binary`, `rust_test`, Cargo `[lib]`/`[[bin]]`).
    Production `.rmeta` and `.rlib` outputs remain untouched. Capture does not
    reuse the production compilation profile: it always compiles with
-   `-Copt-level=0`, `-Cdebug-assertions=no`, and `-Coverflow-checks=no`, and it
-   refuses any compilation whose options or resolved session enable
-   optimization, debug assertions, or overflow checks. It carries over the
+   `-Copt-level=0` and `-Cdebug-assertions=no`, and with
+   `-Coverflow-checks=no` unless `--overflow-checks` selects
+   `-Coverflow-checks=yes`. It refuses any compilation whose options or
+   resolved session enable optimization or debug assertions, or whose
+   overflow-check setting differs from the requested one. It carries over the
    panic strategy (`unwind` or `abort`), `--cfg` values, edition, and target
    triple. The verified MIR can therefore differ from the MIR of a production
-   build, for example one with debug assertions or overflow checks on; see
-   [Capture profile and the binary
+   build, for example one with debug assertions on, or one with overflow
+   checks on when capture ran without `--overflow-checks`; see [Capture
+   profile and the binary
    seam](trust-model.md#capture-profile-and-the-binary-seam).
 2. **Build-action-native execution (no host-test platform inversion):** All
    verification phases run as build actions (`cfg = "exec"` tools operating on
@@ -97,8 +100,9 @@ Five invariants govern build-system integration across all supported ecosystems:
 ┌────────────────────────────────────────────┐                 │
 │ Phase 1: anneal-rustc-capture              │                 │
 │   capture-rustc (own argv, env-safe)       │                 │
-│   • Forces opt-level=0 and no debug        │                 │
-│     assertions or overflow checks          │                 │
+│   • Forces opt-level=0, no debug           │                 │
+│     assertions; overflow checks only       │                 │
+│     under --overflow-checks                │                 │
 │   • Keeps -Cpanic=unwind|abort, --cfg      │                 │
 │   • Injects -Zmir-preserve-ub              │                 │
 │             --emit=metadata                │                 │
@@ -148,18 +152,21 @@ Five invariants govern build-system integration across all supported ecosystems:
 - **Fixed capture profile (`Phase 1`):** `anneal-rustc-capture` builds its
   own `rustc` argument list from its typed options instead of forwarding a
   production command line. It always passes `-Copt-level=0`,
-  `-Cdebug-assertions=no`, `-Coverflow-checks=no`, and `-Zmir-preserve-ub`,
-  together with the requested `-Cpanic=unwind` or `-Cpanic=abort`, `--cfg`
-  values, edition, and target. It then validates the parsed options
-  (`-Copt-level=0`, `-Cdebug-assertions=no`, an explicit
-  `-Coverflow-checks=no`, and `-Zmir-preserve-ub`) and confirms that overflow
-  checks are off in the resolved session, failing the capture otherwise. The
-  capture manifest's `configuration` records the resulting `opt_level`,
-  `debug_assertions`, and `overflow_checks`. A production build with overflow
-  checks on can contain overflow `Assert` terminators that the captured MIR
-  lacks, and one with debug assertions on can contain `debug_assert!` checks
-  and `cfg(debug_assertions)` code that capture never saw; see [Capture
-  profile and the binary
+  `-Cdebug-assertions=no`, and `-Zmir-preserve-ub`, plus
+  `-Coverflow-checks=yes` under `--overflow-checks` and `-Coverflow-checks=no`
+  otherwise, together with the requested `-Cpanic=unwind` or `-Cpanic=abort`,
+  `--cfg` values, edition, and target. It then validates the parsed options
+  (`-Copt-level=0`, `-Cdebug-assertions=no`, an explicit `-Coverflow-checks`
+  matching the request, and `-Zmir-preserve-ub`) and confirms that the
+  resolved session enables overflow checks exactly when requested, failing the
+  capture otherwise. The capture manifest's `configuration` records the
+  resulting `opt_level`, `debug_assertions`, and `overflow_checks`, and
+  `Captured.lean` records the overflow-check setting as
+  `Program.overflowChecks`. A production build with overflow checks on can
+  contain overflow `Assert` terminators that MIR captured without
+  `--overflow-checks` lacks, and one with debug assertions on can contain
+  `debug_assert!` checks and `cfg(debug_assertions)` code that capture never
+  saw; see [Capture profile and the binary
   seam](trust-model.md#capture-profile-and-the-binary-seam).
 - **Zero-LLVM `required_consts` enforcement (`Phase 1`):** Running with
   `--emit=metadata` avoids LLVM codegen overhead, but metadata-only compilation

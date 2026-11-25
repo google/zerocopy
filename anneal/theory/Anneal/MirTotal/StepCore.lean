@@ -367,7 +367,7 @@ theorem evalOperandToSlotComp_eq (bodyLocals : List MirTy) (locals : List LocalS
       | some slot =>
         cases slot with
         | dead => rfl
-        | immediate _ => rfl
+        | immediate _ | partialTuple _ => rfl
         | indirect mplace =>
           dsimp only
           rw [hTyOk ty, loadIndirectComp_eq]
@@ -382,7 +382,7 @@ theorem evalOperandToSlotComp_eq (bodyLocals : List MirTy) (locals : List LocalS
       | none => rfl
       | some slot =>
         cases slot with
-        | dead => rfl
+        | dead | partialTuple _ => rfl
         | immediate _ =>
           dsimp only
           rw [liveUninitSlotComp_eq, compSetElem?_eq]
@@ -680,7 +680,7 @@ theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
       | none => rfl
       | some slot =>
         cases slot with
-        | dead => rfl
+        | dead | partialTuple _ => rfl
         | immediate optVal =>
           dsimp only
           cases (!place.projection.isEmpty) with
@@ -724,6 +724,7 @@ theorem evalRvalueBy_eq (tyEq : MirTy → MirTy → Bool)
     match compGetElem? locals dstLocalId with
     | none => .error .unsupported
     | some .dead => .error .undefined
+    | some (.partialTuple _) => .error .unsupported
     | some (.immediate _) =>
       match compSetElem? locals dstLocalId (.immediate (some val)) with
       | some locals' => .ok (locals', mem)
@@ -747,7 +748,7 @@ theorem writePlaceBy_eq (tyEq : MirTy → MirTy → Bool)
   | none => rfl
   | some slot =>
     cases slot with
-    | dead => rfl
+    | dead | partialTuple _ => rfl
     | immediate _ =>
       dsimp only
       rw [compSetElem?_eq]
@@ -1007,6 +1008,7 @@ theorem evalCharSwitchBranchesComp_eq (discr : Char) (otherwise : BasicBlockId)
       match compGetElem? frame.locals 0 with
       | some (.immediate (some retVal)) => .done (.returned ⟨retVal, callerMem⟩)
       | some (.immediate none) | some .dead => .fault .undefined
+      | some (.partialTuple _) => .fault .unsupported
       | some (.indirect mplace) =>
         match compGetElem? body.locals 0 with
         | none => .fault .unsupported
@@ -1056,7 +1058,7 @@ theorem evalTerminatorComp_eq (body : Body) (bb : BasicBlock)
       | none => rfl
       | some slot =>
         cases slot with
-        | dead => rfl
+        | dead | partialTuple _ => rfl
         | immediate optV => cases optV <;> rfl
         | indirect mplace =>
           dsimp only

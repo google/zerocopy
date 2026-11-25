@@ -102,6 +102,10 @@ pub struct Args {
     crate_type: CliCrateType,
     #[arg(long, value_enum, default_value_t = CliPanicStrategy::Unwind)]
     panic: CliPanicStrategy,
+    /// Enable runtime integer overflow checks (`-Coverflow-checks=yes`) during
+    /// capture instead of `-Coverflow-checks=no`.
+    #[arg(long)]
+    overflow_checks: bool,
     #[arg(long, default_value = "2024", value_parser = ["2015", "2018", "2021", "2024"])]
     edition: String,
     #[arg(long)]

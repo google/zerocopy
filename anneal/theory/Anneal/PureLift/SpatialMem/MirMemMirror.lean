@@ -1319,7 +1319,7 @@ private theorem execEvalPrimitiveOperandToSlot_eq (bodyLocals : List MirTy)
       | some slot =>
         cases slot with
         | dead => rfl
-        | immediate _ => rfl
+        | immediate _ | partialTuple _ => rfl
         | indirect mplace =>
           dsimp only
           rw [mirIsPrimitiveReadableTy_eq ty, execLoadIndirect_eq mem ty mplace]
@@ -1335,7 +1335,7 @@ private theorem execEvalPrimitiveOperandToSlot_eq (bodyLocals : List MirTy)
       | none => rfl
       | some slot =>
         cases slot with
-        | dead => rfl
+        | dead | partialTuple _ => rfl
         | immediate _ =>
           dsimp only
           rw [mirLiveUninitSlot_eq ty,

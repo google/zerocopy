@@ -3571,7 +3571,7 @@ theorem openEvalDetStep_noParam_congr (prog : OpenProgram)
                                   | none => rfl
                                   | some sl =>
                                       cases sl with
-                                      | dead | indirect _ => rfl
+                                      | dead | partialTuple _ | indirect _ => rfl
                                       | immediate opt =>
                                           cases opt with
                                           | none => rfl
@@ -3815,6 +3815,7 @@ theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
                       rw [h1] at h
                       cases sl with
                       | dead => cases h
+                      | partialTuple _ => cases h
                       | immediate opt =>
                           cases opt with
                           | none => cases h
@@ -3853,6 +3854,7 @@ theorem evalOpenOperand_preserves_defId (prog : OpenProgram) (env : OpenExecEnv)
               rw [h2] at h
               cases sl with
               | dead => cases h
+              | partialTuple _ => cases h
               | indirect _ => cases h
               | immediate opt =>
                   cases hEmp : (!p.projection.isEmpty) with
@@ -3874,6 +3876,7 @@ theorem evalOpenOperand_preserves_defId (prog : OpenProgram) (env : OpenExecEnv)
               rw [h2] at h
               cases sl with
               | dead => cases h
+              | partialTuple _ => cases h
               | indirect _ => cases h
               | immediate opt =>
                   dsimp only at h
@@ -3971,7 +3974,7 @@ theorem writeOpenPlace_preserves_defId (prog : OpenProgram) (env : OpenExecEnv)
               | some sl =>
                   rw [hLoc] at h
                   cases sl with
-                  | dead | indirect _ => cases h
+                  | dead | partialTuple _ | indirect _ => cases h
                   | immediate _ =>
                       cases hSet : setElem? frame.locals dst.localId
                           (.immediate (some v)) with
@@ -4391,7 +4394,7 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
                           | some sl =>
                               rw [h3] at hStep
                               cases sl with
-                              | dead | indirect _ => cases hStep
+                              | dead | partialTuple _ | indirect _ => cases hStep
                               | immediate opt =>
                                   cases opt with
                                   | none => cases hStep
@@ -6977,6 +6980,7 @@ private theorem evalStep_singleFrame (p : Program) (s s' : State)
                               rw [hL0] at hEv
                               cases slot0 with
                               | dead => cases hEv
+                              | partialTuple _ => cases hEv
                               | immediate ov =>
                                   cases ov <;> cases hEv
                               | indirect mp =>
@@ -9228,7 +9232,7 @@ private theorem evalOpenOperand_sim (prog : OpenProgram) (env : OpenExecEnv)
           | some so =>
               rw [hF] at hEval
               cases so with
-              | dead | indirect _ => cases hEval
+              | dead | partialTuple _ | indirect _ => cases hEval
               | immediate optVal =>
                   cases hEmp : p.projection.isEmpty with
                   | false => simp only [hEmp] at hEval; cases hEval
@@ -9287,7 +9291,7 @@ private theorem evalOpenOperand_sim (prog : OpenProgram) (env : OpenExecEnv)
           | some so =>
               rw [hF] at hEval
               cases so with
-              | dead | indirect _ => cases hEval
+              | dead | partialTuple _ | indirect _ => cases hEval
               | immediate optVal =>
                   cases hEmp : p.projection.isEmpty with
                   | false => simp only [hEmp] at hEval; cases hEval
@@ -9513,7 +9517,7 @@ private theorem writePlace_sim (prog : OpenProgram) (env : OpenExecEnv)
           | some so =>
               rw [hF] at hW
               cases so with
-              | dead | indirect _ => cases hW
+              | dead | partialTuple _ | indirect _ => cases hW
               | immediate _ =>
                   cases hSetO : setElem? of_.locals dst.localId
                       (.immediate (some vo)) with
@@ -9621,7 +9625,7 @@ private theorem deallocateLocal_empty {mem : MemoryState} {slot : LocalSlot}
     (hNotInd : ∀ mp, slot ≠ .indirect mp) :
     deallocateLocal mem slot = .ok mem := by
   cases slot with
-  | dead | immediate _ => rfl
+  | dead | partialTuple _ | immediate _ => rfl
   | indirect mp => exact False.elim (hNotInd mp rfl)
 
 private theorem slotRel_not_indirect {mty : MirTy} {sd so : LocalSlot}
@@ -9841,6 +9845,17 @@ private theorem openStep_term_sim (prog : OpenProgram)
               rw [hSO0] at hNoFault
               cases so0 with
               | dead => exact False.elim (hNoFault .undefined rfl)
+              | partialTuple _ =>
+                  cases hSlot0 with
+                  | inl hC => cases hC.2
+                  | inr hS1 =>
+                      cases hS1 with
+                      | inl hC => cases hC.2
+                      | inr hS2 =>
+                          cases hS2 with
+                          | inl hImm =>
+                              let ⟨_, _, _, hSo, _⟩ := hImm; cases hSo
+                          | inr hZst => cases hZst.2.2
               | indirect mp =>
                   exact False.elim ((slotRel_not_indirect hSlot0).2 mp rfl)
               | immediate optVo =>

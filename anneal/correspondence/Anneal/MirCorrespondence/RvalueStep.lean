@@ -608,6 +608,8 @@ theorem operandMachine_evalPlaceToOp_eq (rp : RefProg) (c : Choice)
           ty h_ty h_sl)]
         exact ⟨_, _, rfl, rfl⟩
       | indirect _ => exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
+      | partialTuple _ =>
+        exact False.elim (SlotsMatchTys.not_partialTuple h_inv h_ty h_sl)
       | immediate optVal =>
         rw [eStateM_bind_ok (operandMachine_localToOp_ok rp c defId rbody
           blockIdx stmtIdx bodyLocals slots retPlace mem ctrl cm pl.localId _
@@ -688,6 +690,8 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
           cases slot with
           | dead => exact h_ev
           | indirect _ => exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
+          | partialTuple _ =>
+            exact False.elim (SlotsMatchTys.not_partialTuple h_inv h_ty h_sl)
           | immediate optVal =>
             cases h_pe : pl.projection.isEmpty with
             | false => rw [h_pe] at h_ev; exact h_ev
@@ -736,6 +740,8 @@ theorem operandMachine_evalOperandAt_eq (rp : RefProg) (c : Choice)
             dsimp only [Bool.not, ite_false_eq, bind, Bind.bind, EStateM.bind]
             rw [h_err]
           | indirect _ => exact False.elim (SlotsMatchTys.not_indirect h_inv h_ty h_sl)
+          | partialTuple _ =>
+            exact False.elim (SlotsMatchTys.not_partialTuple h_inv h_ty h_sl)
           | immediate optVal =>
             cases h_pe : pl.projection.isEmpty with
             | false =>
@@ -1076,6 +1082,7 @@ theorem evalOperandToSlot_res (rp : RefProg) {bodyLocals : List MirTy}
         rw [h_s] at h_es
         cases sl with
         | dead => cases h_es
+        | partialTuple _ => cases h_es
         | immediate _ =>
           cases h_pe : pl.projection.isEmpty with
           | false => rw [h_pe] at h_es; cases h_es
@@ -1112,6 +1119,7 @@ theorem evalOperandToSlot_res (rp : RefProg) {bodyLocals : List MirTy}
         rw [h_s] at h_es
         cases sl with
         | dead => cases h_es
+        | partialTuple _ => cases h_es
         | immediate _ =>
           cases h_pe : pl.projection.isEmpty with
           | false => rw [h_pe] at h_es; cases h_es
@@ -3516,6 +3524,8 @@ private theorem copyRuntimePlace_imm_to_local (rp : RefProg) (c : Choice)
         exact ⟨_, _, h_res_dead, rfl⟩
     | indirect _ =>
       exact False.elim (SlotsMatchTys.not_indirect h_inv h_dst_ty h_dst_sl)
+    | partialTuple _ =>
+      exact False.elim (SlotsMatchTys.not_partialTuple h_inv h_dst_ty h_dst_sl)
     | immediate dstOpt =>
       let ⟨slots', h_set⟩ := mirSetElem?_some_of_lt slots dstId (.immediate optVal)
         (mirGetElem?_lt_of_some h_dst_sl)
@@ -3683,6 +3693,8 @@ private theorem assertAndWrite_local_eq (rp : RefProg) (c : Choice)
       exact ⟨_, _, h_err, rfl⟩
     | indirect _ =>
       exact False.elim (SlotsMatchTys.not_indirect h_inv h_dst_ty h_dst_sl)
+    | partialTuple _ =>
+      exact False.elim (SlotsMatchTys.not_partialTuple h_inv h_dst_ty h_dst_sl)
     | immediate optVal =>
       let ⟨slots', h_set⟩ := mirSetElem?_some_of_lt slots dstId (.immediate (some v))
         (mirGetElem?_lt_of_some h_dst_sl)
@@ -5151,6 +5163,8 @@ theorem evalRvalueIntoPlace_ref_eq (rp : RefProg) (c : Choice)
                 exact ⟨err, st', rfl, h_fk⟩
               | indirect _ =>
                 exact False.elim (SlotsMatchTys.not_indirect h_inv h_sty h_ssl)
+              | partialTuple _ =>
+                exact False.elim (SlotsMatchTys.not_partialTuple h_inv h_sty h_ssl)
               | immediate srcOpt =>
                 cases h_spe : src.projection.isEmpty with
                 | false =>

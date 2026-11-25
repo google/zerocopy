@@ -52,6 +52,7 @@ def SlotMatchesTy (ty : MirTy) : LocalSlot → Prop
     (∀ ety : EnumTy, ty = .enum ety → isZstEnumTy ety = false)
   | .immediate (some v) => checkVal v ty = true
   | .indirect _ => False
+  | .partialTuple _ => False
 
 /-- Pointwise well-typedness of a frame's local slots against `body.locals`. -/
 inductive SlotsMatchTys : List MirTy → List LocalSlot → Prop where

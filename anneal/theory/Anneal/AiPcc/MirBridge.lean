@@ -1462,7 +1462,7 @@ theorem mirAbsSlot_le_sound {ty : MirTy} {locals : List LocalSlot}
     | bool b2 =>
       refine ⟨ha.1, ?_⟩
       cases cs with
-      | dead | indirect _ => exact False.elim ha.2
+      | dead | indirect _ | partialTuple _ => exact False.elim ha.2
       | immediate opt => exact boolAbs_le_sound hLe ha.2
     | dead | uint _ _ | unit => nomatch hLe
   | uint w1 a1 =>
@@ -1474,7 +1474,7 @@ theorem mirAbsSlot_le_sound {ty : MirTy} {locals : List LocalSlot}
       subst hwEq
       refine ⟨ha.1, ?_⟩
       cases cs with
-      | dead | indirect _ => exact False.elim ha.2
+      | dead | indirect _ | partialTuple _ => exact False.elim ha.2
       | immediate opt =>
         cases opt with
         | none => exact absVal_le_sound hAle ha.2
@@ -1664,7 +1664,7 @@ theorem mirAbsSlot_join_sound_left {ty : MirTy} {locals : List LocalSlot}
       injection hJ with hc; subst hc
       refine ⟨ha.1, ?_⟩
       cases cs with
-      | dead | indirect _ => exact False.elim ha.2
+      | dead | indirect _ | partialTuple _ => exact False.elim ha.2
       | immediate opt => exact boolAbs_join_sound_left ha.2
     | dead | uint _ _ | unit => nomatch hJ
   | uint w1 a1 =>
@@ -1678,7 +1678,7 @@ theorem mirAbsSlot_join_sound_left {ty : MirTy} {locals : List LocalSlot}
         injection hJ with hc; subst hc
         refine ⟨ha.1, ?_⟩
         cases cs with
-        | dead | indirect _ => exact False.elim ha.2
+        | dead | indirect _ | partialTuple _ => exact False.elim ha.2
         | immediate opt =>
           cases opt with
           | none => exact absVal_join_sound_left (bitWidthComp_valid w1) a1 a2 ha.2
@@ -1712,7 +1712,7 @@ theorem mirAbsSlot_join_sound_right {ty : MirTy} {locals : List LocalSlot}
       injection hJ with hc; subst hc
       refine ⟨hb.1, ?_⟩
       cases cs with
-      | dead | indirect _ => exact False.elim hb.2
+      | dead | indirect _ | partialTuple _ => exact False.elim hb.2
       | immediate opt => exact boolAbs_join_sound_right hb.2
     | dead | uint _ _ | unit => nomatch hJ
   | uint w1 a1 =>
@@ -1727,7 +1727,7 @@ theorem mirAbsSlot_join_sound_right {ty : MirTy} {locals : List LocalSlot}
         injection hJ with hc; subst hc; subst hwEq
         refine ⟨hb.1, ?_⟩
         cases cs with
-        | dead | indirect _ => exact False.elim hb.2
+        | dead | indirect _ | partialTuple _ => exact False.elim hb.2
         | immediate opt =>
           cases opt with
           | none => exact absVal_join_sound_right (bitWidthComp_valid w1) a1 a2 hb.2
@@ -2013,7 +2013,7 @@ theorem setMirAbsSlot_sound {tys : List MirTy} {env env' : MirAbsEnv}
         | bool ba =>
           refine ⟨hOldDen.1, ?_⟩
           cases cs with
-          | dead | indirect _ => exact False.elim hOldDen.2
+          | dead | indirect _ | partialTuple _ => exact False.elim hOldDen.2
           | immediate opt =>
             cases opt with
             | none =>
@@ -2164,7 +2164,7 @@ theorem refineEnvByGuard_sound {tys : List MirTy} {env : MirAbsEnv}
             have hDen := hEnv.2.2 r ty (.uint w a) cs hTy hGet hCs
             refine ⟨hDen.1, ?_⟩
             cases cs with
-            | dead | indirect _ => exact False.elim hDen.2
+            | dead | indirect _ | partialTuple _ => exact False.elim hDen.2
             | immediate opt =>
               cases opt with
               | none =>
@@ -2212,7 +2212,7 @@ theorem refineEnvByGuard_sound {tys : List MirTy} {env : MirAbsEnv}
             have hDen := hEnv.2.2 r ty (.uint w a) cs hTy hGet hCs
             refine ⟨hDen.1, ?_⟩
             cases cs with
-            | dead | indirect _ => exact False.elim hDen.2
+            | dead | indirect _ | partialTuple _ => exact False.elim hDen.2
             | immediate opt =>
               cases opt with
               | none =>
@@ -2277,7 +2277,7 @@ theorem refineEnvByGuard_sound {tys : List MirTy} {env : MirAbsEnv}
                 have hDenR := hEnv.2.2 r tyR (.uint w ar) csR hTyR hGetR hCsR
                 refine ⟨hDenL.1, ?_⟩
                 cases csL with
-                | dead | indirect _ => exact False.elim hDenL.2
+                | dead | indirect _ | partialTuple _ => exact False.elim hDenL.2
                 | immediate optL =>
                   cases optL with
                   | none =>
@@ -2287,7 +2287,7 @@ theorem refineEnvByGuard_sound {tys : List MirTy} {env : MirAbsEnv}
                     cases vL with
                     | scalar svL =>
                       cases csR with
-                      | dead | indirect _ => exact False.elim hDenR.2
+                      | dead | indirect _ | partialTuple _ => exact False.elim hDenR.2
                       | immediate optR =>
                         cases optR with
                         | none =>
@@ -2357,7 +2357,7 @@ theorem refineEnvByGuard_sound {tys : List MirTy} {env : MirAbsEnv}
                 have hDenR := hEnv.2.2 r tyR (.uint w ar) csR hTyR hGetR hCsR
                 refine ⟨hDenL.1, ?_⟩
                 cases csL with
-                | dead | indirect _ => exact False.elim hDenL.2
+                | dead | indirect _ | partialTuple _ => exact False.elim hDenL.2
                 | immediate optL =>
                   cases optL with
                   | none =>
@@ -2367,7 +2367,7 @@ theorem refineEnvByGuard_sound {tys : List MirTy} {env : MirAbsEnv}
                     cases vL with
                     | scalar svL =>
                       cases csR with
-                      | dead | indirect _ => exact False.elim hDenR.2
+                      | dead | indirect _ | partialTuple _ => exact False.elim hDenR.2
                       | immediate optR =>
                         cases optR with
                         | none =>
@@ -2420,7 +2420,7 @@ theorem refineEnvByGuard_sound {tys : List MirTy} {env : MirAbsEnv}
             have hDen := hEnv.2.2 r ty (.uint w a) cs hTy hGet hCs
             refine ⟨hDen.1, ?_⟩
             cases cs with
-            | dead | indirect _ => exact False.elim hDen.2
+            | dead | indirect _ | partialTuple _ => exact False.elim hDen.2
             | immediate opt =>
               cases opt with
               | none =>

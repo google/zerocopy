@@ -598,6 +598,7 @@ pub fn render(program: &ir::Program) -> String {
         }
     };
     let profile_version = program.mir_profile_version();
+    let overflow_checks = program.overflow_checks();
     let _ = write!(
         out,
         "def program : Trusted.MirAst.Program :=\n\
@@ -606,7 +607,8 @@ pub fn render(program: &ir::Program) -> String {
          \x20   mirProfileVersion := {profile_version},\n\
          \x20   scope := Trusted.MirAst.VerificationScope.{scope},\n\
          \x20   entryDefId := {ENTRY_DEF_ID},\n\
-         \x20   bodies := {bodies_expr}\n\
+         \x20   bodies := {bodies_expr},\n\
+         \x20   overflowChecks := {overflow_checks}\n\
          \x20 }}\n\nend Captured\n\nend\n"
     );
     out
@@ -1006,7 +1008,7 @@ mod tests {
             "              ((BitVec.ofNat 128 0), 1),\n",
             "              ((BitVec.ofNat 128 1), 1)\n",
             "            ]\n            1)),\n",
-            "    bodies := [\n      body_0,\n      body_1\n    ]\n",
+            "    bodies := [\n      body_0,\n      body_1\n    ],\n    overflowChecks := false\n",
         ] {
             assert!(
                 rendered.contains(expected),

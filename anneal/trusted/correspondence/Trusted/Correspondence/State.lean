@@ -946,6 +946,7 @@ noncomputable def slotToMiriLocalValue (ty : MirTy) :
   | .immediate none => .live (.immediate .uninit)
   | .immediate (some v) => .live (.immediate (valToMiriImmediate ty v))
   | .indirect place => .live (.indirect (memPlaceToMiri place))
+  | .partialTuple _ => .live (.immediate .uninit)
 
 /-- Construct a pre-cached `Miri.Interpreter.LocalState Provenance LocalLayout`
 for a `(ty, slot)` pair. -/

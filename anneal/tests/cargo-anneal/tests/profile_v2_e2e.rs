@@ -22,6 +22,11 @@
 //!    model (verbatim `<&mut [u8] as SplitByteSlice>::split_at_unchecked`,
 //!    `from_raw_parts`, and a returned reference to a stack local), or cast
 //!    `*const T` to `*mut T`.
+//! 4. `-Coverflow-checks=yes` capture (`compilation.overflow_checks`): a
+//!    guarded `u8` increment verifies under both panic strategies, proving its
+//!    overflow `Assert` never fires, while one proof of the wrapping result of
+//!    an unguarded increment verifies without overflow checks and is rejected
+//!    with them.
 
 use std::{
     fs,
@@ -42,6 +47,12 @@ const ZEROCOPY_PROOF: &str = include_str!("fixtures/profile_v2_zerocopy/Proof.le
 const RAW_PTR_LIB: &str = include_str!("fixtures/profile_v2_raw_ptr/lib.rs");
 const RAW_PTR_SPEC: &str = include_str!("fixtures/profile_v2_raw_ptr/Spec.lean");
 const RAW_PTR_PROOF: &str = include_str!("fixtures/profile_v2_raw_ptr/Proof.lean");
+const OVERFLOW_LIB: &str = include_str!("fixtures/profile_v2_overflow/lib.rs");
+const OVERFLOW_STEPS: &str = include_str!("fixtures/profile_v2_overflow/StepLemmas.lean");
+const GUARDED_SPEC: &str = include_str!("fixtures/profile_v2_overflow/GuardedSpec.lean");
+const GUARDED_PROOF: &str = include_str!("fixtures/profile_v2_overflow/GuardedProof.lean");
+const WRAPPING_SPEC: &str = include_str!("fixtures/profile_v2_overflow/WrappingSpec.lean");
+const WRAPPING_PROOF: &str = include_str!("fixtures/profile_v2_overflow/WrappingProof.lean");
 
 const ZEROCOPY_SOURCE_FILES: &[&str] = &[
     "byte_slice.rs",
@@ -434,4 +445,123 @@ fn refuses_const_to_mut_raw_ptr_cast() {
     );
     run_request(dir.path(), "write-via-const-refused", &request)
         .expect_capture_refused("`*const T` to `*mut T`");
+}
+
+/// Stages `fixtures/profile_v2_overflow` with the given specification and
+/// proof, returning the request for `roots` captured under `panic`, with or
+/// without `-Coverflow-checks=yes`. Both `buggy_add_u8` requests also capture
+/// `zero_pair`, whose tuple keeps the program on Profile v2 when
+/// `buggy_add_u8` has no `Assert`.
+fn stage_overflow_case(
+    spec: &str,
+    proof: &str,
+    roots: &[&str],
+    panic: &str,
+    overflow_checks: bool,
+) -> (TempDir, Value) {
+    let dir = TempDir::new().unwrap();
+    let rust_dir = dir.path().join("rust");
+    let lean_dir = dir.path().join("lean");
+    fs::create_dir_all(&rust_dir).unwrap();
+    fs::create_dir_all(&lean_dir).unwrap();
+    fs::write(rust_dir.join("lib.rs"), OVERFLOW_LIB).unwrap();
+    fs::write(lean_dir.join("Spec.lean"), spec).unwrap();
+    fs::write(lean_dir.join("Proof.lean"), proof).unwrap();
+    fs::write(lean_dir.join("StepLemmas.lean"), OVERFLOW_STEPS).unwrap();
+    let request = json!({
+        "schema_version": 1,
+        "compilation": {
+            "source_root": rust_dir.to_str().unwrap(),
+            "crate_root": "lib.rs",
+            "crate_name": "overflow_demo",
+            "edition": "2021",
+            "target": "x86_64-unknown-linux-gnu",
+            "cfg": [],
+            "source_files": ["lib.rs"],
+            "panic": panic,
+            "overflow_checks": overflow_checks
+        },
+        "scope": {"kind": "selected_unit", "roots": roots},
+        "proof": {
+            "source_root": lean_dir.to_str().unwrap(),
+            "specification": "Spec.specs",
+            "theorem": "Proof.verify",
+            "sources": [
+                {"module": "Spec", "path": "Spec.lean", "role": "specification"},
+                {"module": "StepLemmas", "path": "StepLemmas.lean", "role": "proof"},
+                {"module": "Proof", "path": "Proof.lean", "role": "proof"}
+            ]
+        }
+    });
+    (dir, request)
+}
+
+/// Reads the `capture.json` and `Captured.lean` that request `name` wrote.
+fn captured_overflow_case(dir: &Path, name: &str) -> (Value, String) {
+    let capture = dir.join(format!("artifacts-{name}/capture"));
+    let capture_json: Value =
+        serde_json::from_slice(&fs::read(capture.join("capture.json")).unwrap()).unwrap();
+    let lean = fs::read_to_string(capture.join("Captured.lean")).unwrap();
+    (capture_json, lean)
+}
+
+const OVERFLOW_ADD_ASSERT: &str = "AssertKind.overflow Trusted.MirAst.BinOp.add";
+const WRAPPING_ROOTS: &[&str] = &["buggy_add_u8", "zero_pair"];
+
+/// Verifies `guarded_add_u8` captured with `-Coverflow-checks=yes` under
+/// `panic`: the saturating result and normal return with no divergence or
+/// fault, so its `AddWithOverflow` `Assert` never fails.
+fn verify_overflow_checked_guarded_add(panic: &str) {
+    let name = format!("guarded-add-overflow-checks-{panic}");
+    let (dir, request) =
+        stage_overflow_case(GUARDED_SPEC, GUARDED_PROOF, &["guarded_add_u8"], panic, true);
+    let ok = run_request(dir.path(), &name, &request);
+    ok.expect_ok("selected_unit_verified");
+    ok.expect_profile_v2_assumptions();
+    let (capture_json, lean) = captured_overflow_case(dir.path(), &name);
+    assert_eq!(capture_json["configuration"]["overflow_checks"], true, "{capture_json}");
+    assert_eq!(capture_json["configuration"]["panic"], panic, "{capture_json}");
+    assert_eq!(capture_json["program"]["mir_profile_version"], 2, "{capture_json}");
+    assert!(lean.contains("overflowChecks := true"), "{name}:\n{lean}");
+    assert!(lean.contains(OVERFLOW_ADD_ASSERT), "{name}:\n{lean}");
+}
+
+#[test]
+fn verifies_overflow_checked_guarded_add_under_panic_abort() {
+    verify_overflow_checked_guarded_add("abort");
+}
+
+#[test]
+fn verifies_overflow_checked_guarded_add_under_panic_unwind() {
+    verify_overflow_checked_guarded_add("unwind");
+}
+
+/// Without overflow checks, `buggy_add_u8`'s `x + 1` is a wrapping `Add`, and
+/// a proof that it returns `(x + 1) % 256` verifies.
+#[test]
+fn verifies_wrapping_add_without_overflow_checks() {
+    let name = "wrapping-add-no-overflow-checks";
+    let (dir, request) =
+        stage_overflow_case(WRAPPING_SPEC, WRAPPING_PROOF, WRAPPING_ROOTS, "abort", false);
+    let ok = run_request(dir.path(), name, &request);
+    ok.expect_ok("selected_unit_verified");
+    ok.expect_profile_v2_assumptions();
+    let (capture_json, lean) = captured_overflow_case(dir.path(), name);
+    assert_eq!(capture_json["configuration"]["overflow_checks"], false, "{capture_json}");
+    assert_eq!(capture_json["program"]["mir_profile_version"], 2, "{capture_json}");
+    assert!(lean.contains("overflowChecks := false"), "{lean}");
+    assert!(!lean.contains("AssertKind.overflow"), "{lean}");
+}
+
+/// With overflow checks, the same specification and proof are rejected,
+/// because `x = 255` fails the overflow `Assert`.
+#[test]
+fn rejects_wrapping_add_proof_with_overflow_checks() {
+    let name = "wrapping-add-overflow-checks";
+    let (dir, request) =
+        stage_overflow_case(WRAPPING_SPEC, WRAPPING_PROOF, WRAPPING_ROOTS, "abort", true);
+    run_request(dir.path(), name, &request).expect_proof_failed();
+    let (capture_json, lean) = captured_overflow_case(dir.path(), name);
+    assert_eq!(capture_json["configuration"]["overflow_checks"], true, "{capture_json}");
+    assert!(lean.contains(OVERFLOW_ADD_ASSERT), "{lean}");
 }

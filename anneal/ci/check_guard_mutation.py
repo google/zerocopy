@@ -1194,7 +1194,7 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         needs_wf_helper=False,
     ),
     # ------------------------------------------------------------------
-    # Profile v2 memory, step, type-admission, and boundary guards (19 guards)
+    # Profile v2 memory, step, type-admission, and boundary guards (23 guards)
     # ------------------------------------------------------------------
     MirSemanticsGuard(
         guard_id="mem_v2_ptr_add_null_nonzero",
@@ -1488,6 +1488,75 @@ MIR_SEMANTICS_GUARDS: tuple[MirSemanticsGuard, ...] = (
         ),
         fixture_module="StepRefutations",
         theorem_name="refute_step_v2_raw_borrow_mut_through_const",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_partial_tuple_move_moved_field",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="readPlaceV2 rejects moving an already moved tuple field as UB",
+        anchor=(
+            "                  | none => .error .unsupported\n"
+            "              | some _, some none => .error .undefined"
+        ),
+        replacement=(
+            "                  | none => .error .unsupported\n"
+            "              | some elemTy, some none => .ok (elemTy, some .unit, locals, mem)"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_partial_tuple_move_moved_field",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_partial_tuple_copy_moved_field",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="readPlaceV2 rejects copying an already moved tuple field as UB",
+        anchor=(
+            "                else .ok (elemTy, some elemVal, locals, mem)\n"
+            "              | some _, some none => .error .undefined"
+        ),
+        replacement=(
+            "                else .ok (elemTy, some elemVal, locals, mem)\n"
+            "              | some elemTy, some none => .ok (elemTy, some .unit, locals, mem)"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_partial_tuple_copy_moved_field",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_partial_tuple_whole_read",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description="readPlaceV2 rejects reading a partially moved tuple as a whole as UB",
+        anchor=(
+            "        | .dead => .error .undefined\n"
+            "        | .partialTuple _ => .error .undefined\n"
+            "        | .immediate optVal =>"
+        ),
+        replacement=(
+            "        | .dead => .error .undefined\n"
+            "        | .partialTuple _ => .ok (baseTy, some .unit, locals, mem)\n"
+            "        | .immediate optVal =>"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_partial_tuple_whole_read",
+    ),
+    MirSemanticsGuard(
+        guard_id="step_v2_assert_failure_faults",
+        target_file="trusted/lean/Trusted/MirSemantics/Step.lean",
+        target_module="Trusted/MirSemantics/Step",
+        description=(
+            "evalTerminatorV2 .assert faults instead of continuing when an "
+            "overflow check fails"
+        ),
+        anchor=(
+            "        if b == expected then\n"
+            "          jumpToBlock { frame with locals := locals1 } mem1 callerMem target"
+        ),
+        replacement=(
+            "        if true then\n"
+            "          jumpToBlock { frame with locals := locals1 } mem1 callerMem target"
+        ),
+        fixture_module="StepRefutations",
+        theorem_name="refute_step_v2_assert_failure_faults",
     ),
     MirSemanticsGuard(
         guard_id="boundary_v2_wellformed_forbids_faults",

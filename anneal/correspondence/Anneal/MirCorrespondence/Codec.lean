@@ -1002,7 +1002,8 @@ and `scope`. -/
 theorem decodeProg_encodeProg_base : DecodeProgEncodeProgClaim := by
   intro p
   cases p with
-  | mk bodies entryDefId pointerWidthBits mirProfileVersion scope =>
+  | mk bodies entryDefId pointerWidthBits mirProfileVersion scope
+      overflowChecks =>
     dsimp only [encodeProg, decodeProg, collectProgTypes]
     let ⟨_, h_dec⟩ := foldl_collect_mapOption_spec collectBody
       encodeBody decodeBody collectBody_spec [] bodies

@@ -1023,6 +1023,7 @@ impl rustc_driver::Callbacks for Callbacks<'_> {
             &config.opts,
             self.args.crate_type.into(),
             self.args.panic.into(),
+            self.args.overflow_checks,
         ) {
             if let Ok(mut reads) = self.reads.lock() {
                 reads.tool_errors.push(reason.clone());
@@ -1242,7 +1243,7 @@ fn rustc_crate_type(crate_type: ir::CrateType) -> CrateType {
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/config.rs#L91-L105
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/config.rs#L2629-L2634
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/session.rs#L724-L726
-fn validate_profile_options(opts: &Options) -> Result<u8, String> {
+fn validate_profile_options(opts: &Options, expected_overflow_checks: bool) -> Result<u8, String> {
     let opt_level = match opts.optimize {
         OptLevel::No => 0,
         other @ (OptLevel::Less
@@ -1256,9 +1257,14 @@ fn validate_profile_options(opts: &Options) -> Result<u8, String> {
     if opts.debug_assertions {
         return Err("-Cdebug-assertions=no is required during capture".into());
     }
-    if opts.cg.overflow_checks != Some(false) {
+    if opts.cg.overflow_checks != Some(expected_overflow_checks) {
+        let expected_flag = if expected_overflow_checks {
+            "-Coverflow-checks=yes"
+        } else {
+            "-Coverflow-checks=no"
+        };
         return Err(format!(
-            "-Coverflow-checks=no is required during capture (got {:?})",
+            "{expected_flag} is required during capture (got {:?})",
             opts.cg.overflow_checks
         ));
     }
@@ -1272,6 +1278,7 @@ fn validate_compiler_options(
     opts: &Options,
     expected_crate_type: ir::CrateType,
     expected_panic: ir::PanicStrategy,
+    expected_overflow_checks: bool,
 ) -> Result<(), String> {
     if opts.sysroot.explicit.is_none() {
         return Err("explicit --sysroot is required during capture".into());
@@ -1302,7 +1309,7 @@ fn validate_compiler_options(
             expected_panic.as_str()
         ));
     }
-    let _ = validate_profile_options(opts)?;
+    let _ = validate_profile_options(opts, expected_overflow_checks)?;
     if !opts.logical_env.is_empty() {
         return Err("raw compiler --env-set flags are forbidden during capture".into());
     }
@@ -1627,7 +1634,10 @@ fn checked_target_alignments(actual: [u64; 7]) -> Result<(), Failure> {
 /// and `cfg(overflow_checks)` read that resolved session predicate.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_build/src/builder/mod.rs#L759-L760
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/config/cfg.rs#L194-L214
-fn verified_profile_config(tcx: TyCtxt<'_>) -> Result<CheckedProfileConfig, Failure> {
+fn verified_profile_config(
+    tcx: TyCtxt<'_>,
+    expected_overflow_checks: bool,
+) -> Result<CheckedProfileConfig, Failure> {
     // `pointer_size` is the compiler's "pointer size in the default data
     // address space". `endian` is the "Endianness of the target, which must
     // match cfg(target-endian)", set to `Endian::Little` by the data-layout
@@ -1650,11 +1660,19 @@ fn verified_profile_config(tcx: TyCtxt<'_>) -> Result<CheckedProfileConfig, Fail
         dl.pointer_align().abi.bytes(),
         dl.aggregate_align.bytes(),
     ])?;
-    let opt_level = validate_profile_options(&tcx.sess.opts).map_err(Failure::tool)?;
+    let opt_level =
+        validate_profile_options(&tcx.sess.opts, expected_overflow_checks).map_err(Failure::tool)?;
     let debug_assertions = tcx.sess.opts.debug_assertions;
     let overflow_checks = tcx.sess.overflow_checks();
-    if overflow_checks {
-        return Err(Failure::tool("-Coverflow-checks=no is required during capture"));
+    if overflow_checks != expected_overflow_checks {
+        let expected_flag = if expected_overflow_checks {
+            "-Coverflow-checks=yes"
+        } else {
+            "-Coverflow-checks=no"
+        };
+        return Err(Failure::tool(format!(
+            "{expected_flag} is required during capture"
+        )));
     }
     let mir_preserve_ub = tcx.sess.opts.unstable_opts.mir_preserve_ub;
     Ok(CheckedProfileConfig {
@@ -1819,7 +1837,7 @@ fn collect(
     if tcx.dcx().has_errors().is_some() {
         return Err(Failure::compiler("compiler diagnostics prohibit capture"));
     }
-    let profile = verified_profile_config(tcx)?;
+    let profile = verified_profile_config(tcx, args.overflow_checks)?;
     let sysroot = verify_session_sysroot(
         tcx.sess.opts.sysroot.path(),
         verified_sysroot,
@@ -2158,13 +2176,21 @@ fn collect(
         }
     }
     check_current_inputs(&reads)?;
-    let program = ir::Program::try_new(scope.clone(), bodies).map_err(Failure::unsupported)?;
+    let program = ir::Program::try_new_with_overflow_checks(
+        scope.clone(),
+        profile.overflow_checks,
+        bodies,
+    )
+    .map_err(Failure::unsupported)?;
     // Profile v2 admits `Assert` and returning `CoreCall` terminators. Under
     // `--stdlib-crate` the captured crate defines the language items (the
     // `panic_*` family among them) that give those terminators their
-    // behavior, so `check_stdlib_capability` only covers Profile v1 bodies.
-    if stdlib_crate.is_some() && program.mir_profile_version() != 1 {
-        return Err(Failure::unsupported("--stdlib-crate admits only Profile v1 bodies"));
+    // behavior, so `check_stdlib_capability` only covers Profile v1 bodies
+    // without runtime overflow checks.
+    if stdlib_crate.is_some() && (program.mir_profile_version() != 1 || profile.overflow_checks) {
+        return Err(Failure::unsupported(
+            "--stdlib-crate admits only Profile v1 bodies without overflow checks",
+        ));
     }
     Ok(ir::Manifest {
         schema_version: ir::SCHEMA_VERSION,
@@ -2266,13 +2292,17 @@ pub(crate) fn run(
         // This explicit profile belongs to the captured configuration, rather
         // than inheriting Cargo or host defaults. rustc says debug-assertions
         // controls "cfg(debug_assertions)" and overflow-checks controls
-        // "runtime integer overflow". This subject uses both disabled; explicit
+        // "runtime integer overflow". This subject disables debug assertions
+        // and enables overflow checks only under `--overflow-checks`; explicit
         // MIR checks are still translated or refused, never silently removed.
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/src/doc/rustc/src/codegen-options/index.md#L65-L76
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/src/doc/rustc/src/codegen-options/index.md#L463-L474
         "-Copt-level=0".into(),
         "-Cdebug-assertions=no".into(),
-        "-Coverflow-checks=no".into(),
+        format!(
+            "-Coverflow-checks={}",
+            if args.overflow_checks { "yes" } else { "no" }
+        ),
         // Preserve `StatementKind::PlaceMention` (`RemovePlaceMention` checks
         // `!sess.opts.unstable_opts.mir_preserve_ub`) and `SwitchInt` reads
         // (`SimplifyCfg` checks
@@ -2424,28 +2454,29 @@ mod tests {
             &opts,
             ir::CrateType::Lib,
             ir::PanicStrategy::Unwind,
+            false,
         )
         .unwrap_err();
         assert!(err.contains("-Zmir-preserve-ub"), "{err}");
 
         opts.unstable_opts.mir_preserve_ub = true;
         assert!(
-            validate_compiler_options(&opts, ir::CrateType::Lib, ir::PanicStrategy::Unwind)
+            validate_compiler_options(&opts, ir::CrateType::Lib, ir::PanicStrategy::Unwind, false)
                 .is_ok()
         );
         assert!(
-            validate_compiler_options(&opts, ir::CrateType::Bin, ir::PanicStrategy::Unwind)
+            validate_compiler_options(&opts, ir::CrateType::Bin, ir::PanicStrategy::Unwind, false)
                 .is_err()
         );
 
         let mut bin_opts = valid_capture_options(CrateType::Executable);
         bin_opts.cg.panic = Some(RustcPanicStrategy::Abort);
         assert!(
-            validate_compiler_options(&bin_opts, ir::CrateType::Bin, ir::PanicStrategy::Abort)
+            validate_compiler_options(&bin_opts, ir::CrateType::Bin, ir::PanicStrategy::Abort, false)
                 .is_ok()
         );
         assert!(
-            validate_compiler_options(&bin_opts, ir::CrateType::Bin, ir::PanicStrategy::Unwind)
+            validate_compiler_options(&bin_opts, ir::CrateType::Bin, ir::PanicStrategy::Unwind, false)
                 .is_err()
         );
 
@@ -2454,6 +2485,7 @@ mod tests {
             &opts,
             ir::CrateType::Lib,
             ir::PanicStrategy::Unwind,
+            false,
         )
         .unwrap_err();
         assert!(err.contains("--env-set"), "{err}");
@@ -2462,9 +2494,10 @@ mod tests {
     #[test]
     fn compiler_options_gate_enforces_opt_level_debug_assertions_and_overflow_checks() {
         let base = valid_capture_options(CrateType::Rlib);
-        assert_eq!(validate_profile_options(&base).unwrap(), 0);
+        assert_eq!(validate_profile_options(&base, false).unwrap(), 0);
         assert!(
-            validate_compiler_options(&base, ir::CrateType::Lib, ir::PanicStrategy::Unwind).is_ok()
+            validate_compiler_options(&base, ir::CrateType::Lib, ir::PanicStrategy::Unwind, false)
+                .is_ok()
         );
 
         for level in [
@@ -2476,17 +2509,25 @@ mod tests {
         ] {
             let mut opts = valid_capture_options(CrateType::Rlib);
             opts.optimize = level;
-            let err =
-                validate_compiler_options(&opts, ir::CrateType::Lib, ir::PanicStrategy::Unwind)
-                    .unwrap_err();
+            let err = validate_compiler_options(
+                &opts,
+                ir::CrateType::Lib,
+                ir::PanicStrategy::Unwind,
+                false,
+            )
+            .unwrap_err();
             assert!(err.contains("-Copt-level=0"), "{level:?}: {err}");
         }
 
         let mut debug_opts = valid_capture_options(CrateType::Rlib);
         debug_opts.debug_assertions = true;
-        let err =
-            validate_compiler_options(&debug_opts, ir::CrateType::Lib, ir::PanicStrategy::Unwind)
-                .unwrap_err();
+        let err = validate_compiler_options(
+            &debug_opts,
+            ir::CrateType::Lib,
+            ir::PanicStrategy::Unwind,
+            false,
+        )
+        .unwrap_err();
         assert!(err.contains("-Cdebug-assertions=no"), "{err}");
 
         for overflow in [None, Some(true)] {
@@ -2496,9 +2537,34 @@ mod tests {
                 &overflow_opts,
                 ir::CrateType::Lib,
                 ir::PanicStrategy::Unwind,
+                false,
             )
             .unwrap_err();
             assert!(err.contains("-Coverflow-checks=no"), "{overflow:?}: {err}");
+        }
+
+        let mut overflow_on_opts = valid_capture_options(CrateType::Rlib);
+        overflow_on_opts.cg.overflow_checks = Some(true);
+        assert!(
+            validate_compiler_options(
+                &overflow_on_opts,
+                ir::CrateType::Lib,
+                ir::PanicStrategy::Unwind,
+                true,
+            )
+            .is_ok()
+        );
+        for overflow in [None, Some(false)] {
+            let mut mismatch_opts = valid_capture_options(CrateType::Rlib);
+            mismatch_opts.cg.overflow_checks = overflow;
+            let err = validate_compiler_options(
+                &mismatch_opts,
+                ir::CrateType::Lib,
+                ir::PanicStrategy::Unwind,
+                true,
+            )
+            .unwrap_err();
+            assert!(err.contains("-Coverflow-checks=yes"), "{overflow:?}: {err}");
         }
     }
 

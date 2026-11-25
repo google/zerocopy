@@ -219,18 +219,24 @@ foundation and other `vetted` modules, never a `candidate:<feature>`,
 
 A verification result covers the MIR that `trusted/rustc-capture/` extracts
 with the pinned toolchain under a fixed profile: `-Copt-level=0`,
-`-Cdebug-assertions=no`, and `-Coverflow-checks=no`. Capture refuses any
-compilation in which debug assertions or overflow checks are on. As a result:
+`-Cdebug-assertions=no`, and `-Coverflow-checks=no`, or `-Coverflow-checks=yes`
+when the capture requests `--overflow-checks`. Capture refuses any compilation
+in which debug assertions are on, or in which overflow checks are on without
+`--overflow-checks` (or off with it). As a result:
 
 - `cfg(debug_assertions)` is false. Verified MIR contains no checks from
   `debug_assert!`, `debug_assert_eq!`, or `debug_assert_ne!`, and wherever
   code depends on `cfg(debug_assertions)`, capture sees the variant selected
   with debug assertions off.
-- Verified MIR contains none of the overflow checks that `-Coverflow-checks`
-  controls (for `+`, `-`, `*`, unary negation, and shifts): those operations
-  wrap, and shift amounts are masked.
+- Without `--overflow-checks`, verified MIR contains none of the overflow
+  checks that `-Coverflow-checks` controls (for `+`, `-`, `*`, unary negation,
+  and shifts): those operations wrap, and shift amounts are masked. With
+  `--overflow-checks`, each such operation is guarded by an overflow `Assert`,
+  and a failed check faults, so a verified function never reaches one.
 
-The capture manifest's `configuration` records this profile.
+The capture manifest's `configuration` records this profile, and
+`Program.overflowChecks` in `Captured.lean` records the overflow-check
+setting.
 
 A production build of the same source can use different settings, such as
 `-Cdebug-assertions=yes` or `-Coverflow-checks=yes` (Cargo's
@@ -241,7 +247,8 @@ Such a build can compile a different program from the one Anneal verified:
 - With debug assertions on, `debug_assert!` and its variants become runtime
   checks that panic, and `cfg(debug_assertions)` can select different code,
   including entirely different function bodies.
-- With overflow checks on, the compiler inserts overflow checks that panic.
+- With overflow checks on, the compiler inserts overflow checks that panic,
+  unless the capture also used `--overflow-checks`.
 
 The production binary can therefore contain panic sites, or other code, that
 the verified MIR does not, and the proof says nothing about whether that code
@@ -250,9 +257,10 @@ is reachable or how it behaves.
 Anneal does not verify that the deployed binary corresponds to the captured
 MIR. The receipt lists "faithful pinned compiler capture" among its
 `assumptions` and "source-to-deployed-binary correspondence" under
-`deferred`. Code built for production with debug assertions or overflow
-checks on should not treat a verification result as evidence that those
-checks never fire, or as covering code that only such a build compiles.
+`deferred`. Code built for production with debug assertions on, or with
+overflow checks on when capture ran without `--overflow-checks`, should not
+treat a verification result as evidence that those checks never fire, or as
+covering code that only such a build compiles.
 
 ### Concurrency
 

@@ -173,6 +173,7 @@ pub struct VerifyArgs {
             "manifest_path",
             "proof_dir",
             "panic",
+            "overflow_checks",
             "select",
             "instantiate",
             "features",
@@ -192,6 +193,10 @@ pub struct VerifyArgs {
     /// Panic strategy (`unwind` or `abort`) for the Cargo shortcut.
     #[arg(long, value_enum, requires = "manifest_path", conflicts_with = "request")]
     panic: Option<PanicStrategy>,
+    /// Enable runtime integer overflow checks (`-Coverflow-checks=yes`) during
+    /// capture.
+    #[arg(long, requires = "manifest_path", conflicts_with = "request")]
+    overflow_checks: bool,
     /// Select a function by its compiler path; omit to require the whole crate.
     #[arg(long, requires = "manifest_path", conflicts_with = "request")]
     select: Vec<String>,
@@ -321,6 +326,10 @@ struct RustcArgs {
     /// Panic strategy (`unwind` or `abort`) passed to rustc capture.
     #[arg(long, value_enum, default_value_t = PanicStrategy::Unwind)]
     panic: PanicStrategy,
+    /// Enable runtime integer overflow checks (`-Coverflow-checks=yes`) during
+    /// capture.
+    #[arg(long)]
+    overflow_checks: bool,
     /// Rust edition (`2015`, `2018`, `2021`, or `2024`).
     #[arg(
         long,
@@ -484,6 +493,7 @@ impl VerifyArgs {
                 || self.manifest_path.is_some()
                 || self.proof_dir.is_some()
                 || self.panic.is_some()
+                || self.overflow_checks
                 || !self.select.is_empty()
                 || !self.instantiate.is_empty()
                 || !self.features.is_empty()
@@ -492,9 +502,10 @@ impl VerifyArgs {
             {
                 return Err(cmd.error(
                     ErrorKind::ArgumentConflict,
-                    "--request, --manifest-path, --proof-dir, parent --panic, parent --select, \
-                     parent --instantiate, --features, --all-features, and --no-default-features \
-                     cannot be used with the `rustc` subcommand",
+                    "--request, --manifest-path, --proof-dir, parent --panic, parent \
+                     --overflow-checks, parent --select, parent --instantiate, --features, \
+                     --all-features, and --no-default-features cannot be used with the `rustc` \
+                     subcommand",
                 ));
             }
             if rustc.crate_name.is_empty() {
@@ -605,6 +616,10 @@ struct Compilation {
     crate_type: CrateType,
     #[serde(default)]
     panic: PanicStrategy,
+    /// Omitted when `false` so that requests without overflow checks keep
+    /// their encoding and digest.
+    #[serde(default, skip_serializing_if = "is_false")]
+    overflow_checks: bool,
     #[serde(default = "edition")]
     edition: String,
     #[serde(default = "target")]
@@ -959,6 +974,10 @@ fn write(path: &Path, bytes: &[u8]) -> Result<()> {
         fs::create_dir_all(parent).map_err(|e| io("staging", e))?;
     }
     fs::write(path, bytes).map_err(|e| io("staging", e))
+}
+
+fn is_false(value: &bool) -> bool {
+    !*value
 }
 
 fn encoded<T: Serialize>(value: &T) -> Result<Vec<u8>> {
@@ -1401,6 +1420,7 @@ fn cargo_request(args: &VerifyArgs, manifest_path: &Path) -> Result<(Request, Pa
                 crate_name: target_meta["name"].as_str().unwrap_or_default().replace('-', "_"),
                 crate_type,
                 panic: args.panic.unwrap_or_default(),
+                overflow_checks: args.overflow_checks,
                 edition: target_meta["edition"].as_str().unwrap_or("2024").to_owned(),
                 target: target(),
                 cfg,
@@ -1636,6 +1656,7 @@ fn prepare_rustc_request(
             crate_name: rustc.crate_name.clone(),
             crate_type: rustc.crate_type,
             panic: rustc.panic,
+            overflow_checks: rustc.overflow_checks,
             edition: rustc.edition.clone(),
             target: rustc.target.clone(),
             cfg: rustc.cfg.iter().cloned().collect(),
@@ -1944,6 +1965,9 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
     for source in &sources {
         command.arg("--source-file").arg(rust_stage.join(&source.relative_path));
     }
+    if request.compilation.overflow_checks {
+        command.arg("--overflow-checks");
+    }
     if let Some(stdlib_crate) = request.compilation.stdlib_crate {
         command.args(["--stdlib-crate", stdlib_crate.as_str()]);
     }
@@ -1988,6 +2012,7 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         || manifest.configuration["crate_name"] != request.compilation.crate_name
         || manifest.configuration["crate_type"] != request.compilation.crate_type.as_str()
         || manifest.configuration["panic"] != request.compilation.panic.as_str()
+        || manifest.configuration["overflow_checks"] != json!(request.compilation.overflow_checks)
         || manifest.configuration["target"] != request.compilation.target
         || manifest.configuration["edition"] != request.compilation.edition
         || manifest.configuration["cfg"] != json!(request.compilation.cfg)
@@ -3661,6 +3686,7 @@ mod tests {
             manifest_path: None,
             proof_dir: None,
             panic: None,
+            overflow_checks: false,
             select: Vec::new(),
             instantiate: Vec::new(),
             features: Vec::new(),
@@ -3696,6 +3722,7 @@ mod tests {
                         manifest_path: None,
                         proof_dir: None,
                         panic: None,
+                        overflow_checks: false,
                         select: Vec::new(),
                         instantiate: Vec::new(),
                         features: Vec::new(),
@@ -3936,6 +3963,7 @@ mod tests {
             crate_name: "sample".to_owned(),
             crate_type: CrateType::Lib,
             panic: PanicStrategy::Unwind,
+            overflow_checks: false,
             edition: "2024".to_owned(),
             target: target(),
             cfg: vec!["foo".to_owned()],
@@ -3996,6 +4024,7 @@ mod tests {
                 crate_name: "sample".to_owned(),
                 crate_type: CrateType::Lib,
                 panic: PanicStrategy::Unwind,
+                overflow_checks: false,
                 edition: "2024".to_owned(),
                 target: target(),
                 cfg: Vec::new(),
@@ -4102,6 +4131,7 @@ mod tests {
             manifest_path: None,
             proof_dir: None,
             panic: None,
+            overflow_checks: false,
             select: Vec::new(),
             instantiate: Vec::new(),
             features: Vec::new(),
@@ -4147,6 +4177,7 @@ mod tests {
                 manifest_path: None,
                 proof_dir: None,
                 panic: None,
+                overflow_checks: false,
                 select: Vec::new(),
                 instantiate: Vec::new(),
                 features: Vec::new(),
@@ -4205,6 +4236,7 @@ mod tests {
             crate_name: "sample".to_owned(),
             crate_type: CrateType::Lib,
             panic: PanicStrategy::Unwind,
+            overflow_checks: false,
             edition: "2024".to_owned(),
             target: "x86_64-unknown-linux-gnu".to_owned(),
             cfg: Vec::new(),
@@ -4666,6 +4698,18 @@ mod tests {
         assert_eq!(bin_abort.compilation.crate_type, CrateType::Bin);
         assert_eq!(bin_abort.compilation.panic, PanicStrategy::Abort);
         assert_ne!(encoded(&defaulted).unwrap(), encoded(&bin_abort).unwrap());
+
+        // `overflow_checks` defaults to `false`, which is left out of the
+        // encoding so existing request digests are unchanged.
+        assert!(!defaulted.compilation.overflow_checks);
+        let defaulted_json = String::from_utf8(encoded(&defaulted).unwrap()).unwrap();
+        assert!(!defaulted_json.contains("overflow_checks"), "{defaulted_json}");
+        let mut checked = defaulted.clone();
+        checked.compilation.overflow_checks = true;
+        let checked_json = String::from_utf8(encoded(&checked).unwrap()).unwrap();
+        assert!(checked_json.contains("\"overflow_checks\": true"), "{checked_json}");
+        let decoded: Request = serde_json::from_str(&checked_json).unwrap();
+        assert!(decoded.compilation.overflow_checks);
     }
 
     #[test]

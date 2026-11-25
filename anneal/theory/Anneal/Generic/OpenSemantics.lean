@@ -895,6 +895,7 @@ noncomputable def writeOpenPlace (prog : OpenProgram) (env : OpenExecEnv)
               | some ls' => .ok { frame with locals := ls' }
               | none => .error .unsupported
           | some (.indirect _) => .error .unsupported
+          | some (.partialTuple _) => .error .unsupported
 
 /-- Resolve the `count` associated-type layout specifications for
 `(selfTy as Trait<args>)::0..(count - 1)` in `env.typeSpecs`. -/

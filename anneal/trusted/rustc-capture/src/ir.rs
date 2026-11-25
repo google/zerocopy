@@ -1368,15 +1368,30 @@ impl Body {
                     Ok(check_local(local_tys, *local, "operand")?.clone())
                 }
                 Operand::CopyPlace { place } => check_place(local_tys, place, "operand", false, false),
-                // `Trusted.MirSemantics.readPlaceV2` refuses every projected
-                // move (`.unsupported`): moving out of `*p` or `t.0` may
-                // deinitialize just that part of the place, which MIR leaves
-                // unspecified and caller memory could observe. Refuse it
-                // here so capture fails instead of emitting an obligation no
-                // execution can discharge.
+                // `Trusted.MirSemantics.readPlaceV2` models a move out of one
+                // field of a tuple local (`move (_t.1)`, which rustc emits for
+                // overflow checks) by deinitializing just that field. The
+                // local is not caller memory, so a verified body, which never
+                // reads the moved field again, behaves the same whether or
+                // not MIR deinitializes it. Every other projected move
+                // (`move (*p)`, nested fields, ranges) stays `.unsupported`:
+                // moving out of `*p` may deinitialize caller memory, which
+                // MIR leaves unspecified. Refuse those here so capture fails
+                // instead of emitting an obligation no execution can
+                // discharge.
+                Operand::MovePlace { place }
+                    if matches!(place.projection.as_slice(), [PlaceElem::Field { .. }])
+                        && matches!(
+                            local_tys.get(place.local as usize),
+                            Some(Ty::Tuple { .. } | Ty::OverflowPair(_))
+                        ) =>
+                {
+                    check_place(local_tys, place, "operand", false, false)
+                }
                 Operand::MovePlace { .. } => Err(
-                    "projected move operands (`move (*p)`, `move (t.0)`) are unsupported: \
-                     Profile v2 does not model partial deinitialization by a move"
+                    "projected move operands other than a field of a tuple local \
+                     (`move (*p)`, nested fields) are unsupported: Profile v2 models \
+                     partial deinitialization by a move only for tuple locals"
                         .into(),
                 ),
                 Operand::Constant { ty, lit } => {
@@ -1969,12 +1984,22 @@ pub enum Scope {
 #[derive(Debug, Serialize)]
 pub struct Program {
     scope: Scope,
+    overflow_checks: bool,
     mir_profile_version: u32,
     bodies: Vec<Body>,
 }
 
 impl Program {
+    #[cfg(test)]
     pub fn try_new(scope: Scope, bodies: Vec<Body>) -> Result<Self, String> {
+        Self::try_new_with_overflow_checks(scope, false, bodies)
+    }
+
+    pub fn try_new_with_overflow_checks(
+        scope: Scope,
+        overflow_checks: bool,
+        bodies: Vec<Body>,
+    ) -> Result<Self, String> {
         if let Scope::SelectedUnit { roots, instantiations } = &scope
             && roots.is_empty()
             && instantiations.is_empty()
@@ -2000,6 +2025,7 @@ impl Program {
         };
         Ok(Self {
             scope,
+            overflow_checks,
             mir_profile_version,
             bodies,
         })
@@ -2007,6 +2033,10 @@ impl Program {
 
     pub fn scope(&self) -> &Scope {
         &self.scope
+    }
+
+    pub fn overflow_checks(&self) -> bool {
+        self.overflow_checks
     }
 
     pub fn mir_profile_version(&self) -> u32 {
@@ -2378,7 +2408,7 @@ mod tests {
     }
 
     #[test]
-    fn body_try_new_refuses_projected_move_operands() {
+    fn body_try_new_admits_only_tuple_local_field_moves() {
         let u8_ty = Ty::Int(IntTy {
             width: IntWidth::I8,
             signed: false,
@@ -2408,8 +2438,8 @@ mod tests {
                 "rust-path-v1::projected_move".into(),
             )
         };
-        // `move (_1.0)` out of a `(RangeFrom<usize>, usize)` tuple, and
-        // `move (*_1)` through a `*const u8`.
+        // `move (_1.0)` out of a `(RangeFrom<usize>, usize)` tuple local is
+        // admitted: Profile v2 deinitializes just that field.
         let tuple_locals = vec![
             range_from.clone(),
             Ty::Tuple {
@@ -2423,6 +2453,10 @@ mod tests {
                 ty: range_from.clone(),
             }],
         };
+        body(tuple_locals.clone(), Operand::MovePlace { place: field.clone() }).unwrap();
+        // Refused: `move (*_1)` through a `*const u8`, a nested field move
+        // `move ((_1.0).0)`, and a field move out of a non-tuple
+        // `RangeFrom<usize>` local.
         let ptr_locals = vec![
             u8_ty.clone(),
             Ty::RawPtr {
@@ -2434,9 +2468,40 @@ mod tests {
             local: 1,
             projection: vec![PlaceElem::Deref],
         };
+        let inner = Ty::Tuple {
+            fields: vec![usize_ty.clone(), usize_ty.clone()],
+        };
+        let nested_locals = vec![
+            usize_ty.clone(),
+            Ty::Tuple {
+                fields: vec![inner.clone(), usize_ty.clone()],
+            },
+        ];
+        let nested = Place {
+            local: 1,
+            projection: vec![
+                PlaceElem::Field {
+                    index: 0,
+                    ty: inner,
+                },
+                PlaceElem::Field {
+                    index: 0,
+                    ty: usize_ty.clone(),
+                },
+            ],
+        };
+        let range_locals = vec![usize_ty.clone(), range_from.clone()];
+        let range_field = Place {
+            local: 1,
+            projection: vec![PlaceElem::Field {
+                index: 0,
+                ty: usize_ty.clone(),
+            }],
+        };
         let cases = [
-            (tuple_locals.clone(), field.clone()),
             (ptr_locals.clone(), deref.clone()),
+            (nested_locals.clone(), nested.clone()),
+            (range_locals.clone(), range_field.clone()),
         ];
         for (locals, place) in cases {
             let err = body(locals, Operand::MovePlace { place }).unwrap_err();
@@ -2445,6 +2510,8 @@ mod tests {
         // Copying the same places stays admitted.
         body(tuple_locals, Operand::CopyPlace { place: field }).unwrap();
         body(ptr_locals, Operand::CopyPlace { place: deref }).unwrap();
+        body(nested_locals, Operand::CopyPlace { place: nested }).unwrap();
+        body(range_locals, Operand::CopyPlace { place: range_field }).unwrap();
     }
 
     #[test]

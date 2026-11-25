@@ -250,11 +250,17 @@ and `Operand` (`compiler/rustc_const_eval/src/interpret/stack.rs` and
 - `indirect place`: storage is live and the value's bytes are in memory at
   `place` (`Live(Operand::Indirect(..))`), after
   `Trusted.MirSemantics.forceAllocation` moved the local into a stack
-  allocation. -/
+  allocation.
+- `partialTuple fields`: storage is live and holds a tuple from which some
+  fields were moved (Profile v2 only). `fields[i] = some v` is an initialized
+  field and `none` an uninitialized one. The tuple cannot be read as a whole.
+  Moves never leave every field `none`; they produce `immediate none`
+  instead. -/
 inductive LocalSlot where
   | dead
   | immediate (val : Option Val)
   | indirect (place : MemPlace)
+  | partialTuple (fields : List (Option Val))
 
 /-- Demonic nondeterministic choice input for a single step. -/
 abbrev Choice := Nat
