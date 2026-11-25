@@ -45,7 +45,11 @@ because the `lean-miri` correspondence covers only Profile v1 rules.
 
 `../Cargo.toml` excludes `/proofs` from crates.io packages so downstream
 `zerocopy` users incur zero new dependencies, zero MSRV impact, and zero build
-overhead. CI continuously enforces every proof unit in
+overhead. CI continuously enforces `request.json` schema and source
+completeness (matching non-excluded `../src/**/*.rs` files, cross-unit
+`compilation` parity, Receipt v3 bindings and source SHA-256 digests, and
+verifying `env!`/`option_env!`/`CARGO_PKG*` tokens stay in module/item doc
+attributes across compiled sources) and every proof unit in
 `../../.github/workflows/anneal-current.yml` via
 `../../anneal/ci/verify_zerocopy.py`.
 

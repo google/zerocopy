@@ -539,7 +539,7 @@ class AnnealCiLibTests(unittest.TestCase):
         self.assertEqual(
             anneal_ci_lib.validate_receipt_v3_envelope(base, returncode=0), []
         )
-        for bad_version in (2, 4, "3", None):
+        for bad_version in (2, 4, "3", None, True, 3.0):
             with self.subTest(schema_version=bad_version):
                 bad = dict(base, schema_version=bad_version)
                 reasons = anneal_ci_lib.validate_receipt_v3_envelope(
@@ -548,6 +548,28 @@ class AnnealCiLibTests(unittest.TestCase):
                 self.assertTrue(
                     any("schema_version=" in r for r in reasons), reasons
                 )
+        bad_def = dict(base, deferred=[{}])
+        def_reasons = anneal_ci_lib.validate_receipt_v3_envelope(
+            bad_def, returncode=0
+        )
+        self.assertTrue(any("deferred=" in r for r in def_reasons), def_reasons)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            dup_file = root / "dup.json"
+            dup_file.write_text('{"a": 1, "a": 2}\n', encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "duplicate JSON key"):
+                anneal_ci_lib.load_strict_json_object(dup_file, "dup test")
+            sym_file = root / "sym.json"
+            good_file = root / "good.json"
+            good_file.write_text('{"ok": 1}\n', encoding="utf-8")
+            sym_file.symlink_to(good_file)
+            with self.assertRaisesRegex(RuntimeError, "regular non-symlink"):
+                anneal_ci_lib.load_strict_json_object(sym_file, "sym test")
+            self.assertEqual(
+                anneal_ci_lib.load_strict_json_object(good_file, "good test"),
+                {"ok": 1},
+            )
 
     def test_find_workflow_step_unique_missing_and_duplicate(self) -> None:
         wf = {
