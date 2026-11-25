@@ -36615,6 +36615,72 @@
         "verification/refinement"
       ]
     },
+    "cross-language-object-geometry-and-call-transport-boundaries": {
+      "observed_at": "2026-11-25",
+      "subjects": [
+        {
+          "identity": {
+            "path": "abi.html",
+            "repository": "itanium-cxx-abi/cxx-abi",
+            "revision": "2837827a025f43d1fcfc37ec053d1314cfd1bba3"
+          },
+          "name": "Itanium C++ ABI Specification"
+        },
+        {
+          "identity": {
+            "path": "aapcs64/aapcs64.rst",
+            "repository": "ARM-software/abi-aa",
+            "revision": "353c2f249a16e6d42e9dae15e78ea148dc6e5349"
+          },
+          "name": "Procedure Call Standard for the Arm 64-bit Architecture (AAPCS64)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "Rust compiler (rustc 1.102.0-nightly, LLVM 23.1.5)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "956d1bd03d2a8934fc5041ecb04b33e55159c655"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "url": "https://llvm.org/docs/LangRef.html",
+            "version": "LLVM 23 documentation (observed 2026-11-25)"
+          },
+          "name": "LLVM Language Reference Manual"
+        },
+        {
+          "identity": {
+            "artifact": "gcc / g++",
+            "package": "Debian 15.2.0-14",
+            "version": "15.2.0"
+          },
+          "name": "Debian GNU GCC and g++"
+        },
+        {
+          "identity": {
+            "artifact": "clang-19 / clang++-19",
+            "version": "Debian clang version 19.1.7 (10.1+build1)"
+          },
+          "name": "Debian Clang 19 C/C++ compiler"
+        }
+      ],
+      "topics": [
+        "rust/layout",
+        "rust/ffi",
+        "pl/semantics",
+        "ffi/c-abi",
+        "isa/aarch64",
+        "llvm/ir"
+      ]
+    },
     "cross-modifying-code-live-binary-patching-and-icache-coherence-models": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -69058,6 +69124,66 @@
         "build/caching"
       ]
     },
+    "maybeuninit-by-value-abi-boundaries-and-llvm-byte-model": {
+      "observed_at": "2026-11-25",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "Rust compiler (rustc 1.102.0-nightly, LLVM 23.1.5)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+            "version": "1.102.0-nightly (2026-11-19)"
+          },
+          "name": "Rust compiler (rustc 1.102.0-nightly, LLVM 23.1.6)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "2da92876c4dec47182369f7702c4ebb70ab1a914",
+            "version": "merged 2026-11-23"
+          },
+          "name": "Rust compiler Primitive::Bool ABI separation (PR #165481)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ad0c9dce27a22416b65946bc0010edaf22ac6c83",
+            "version": "merged 2026-07-27"
+          },
+          "name": "Rust compiler AArch64 bool FFI return fix (PR #159317)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "miri 0.1.0 (3ef0c22cdb 2026-11-11)"
+          },
+          "name": "Miri interpreter (rustc 1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "956d1bd03d2a8934fc5041ecb04b33e55159c655"
+          },
+          "name": "The Rust Reference"
+        }
+      ],
+      "topics": [
+        "rust/abi",
+        "rust/layout",
+        "rustc/abi",
+        "ffi/calling-conventions",
+        "llvm/ir",
+        "llvm/sanitizers"
+      ]
+    },
     "mckeever-quantity-library-survey-ore-annotation-accuracy-camfort-fortran-units-pep238-true-division-and-fluctuat-airbus": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -91360,6 +91486,88 @@
         "pl/data-representation",
         "compilers/abi-layout",
         "verification/type-layout"
+      ]
+    },
+    "repr-c-target-abi-divergences-and-profile-separation": {
+      "observed_at": "2026-11-25",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "Rust compiler (rustc 1.102.0-nightly, LLVM 23.1.5)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "9025bde4556c4c91f7730a9691cb25adbe61a4c8",
+            "version": "merged 2026-10-08"
+          },
+          "name": "Rust compiler Win64 repr(C) ZST ABI fix (PR #156112)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3bcfbadbc0011903cab2731a9087a5536f6c3aaf",
+            "version": "merged 2026-10-03"
+          },
+          "name": "Rust compiler trivial ABI specification fix (PR #157973)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ad0c9dce27a22416b65946bc0010edaf22ac6c83",
+            "version": "merged 2026-07-27"
+          },
+          "name": "Rust compiler AArch64 bool FFI return fix (PR #159317)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "e82904d34bad7e1c26d8001a343cc71c07b989e6",
+            "version": "merged 2026-09-05"
+          },
+          "name": "Rust compiler HVA unit-size fix (PR #161394)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b40a20f16df44bb6016dc6b18d0c2e6e96200483",
+            "version": "rustc_abi / collect.rs"
+          },
+          "name": "Rust compiler repr(C) enum discriminant bounds fix (PR #147017)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "956d1bd03d2a8934fc5041ecb04b33e55159c655"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "artifact": "clang-19",
+            "version": "Debian clang version 19.1.7 (10.1+build1)"
+          },
+          "name": "Debian Clang 19 C/C++ compiler"
+        },
+        {
+          "identity": {
+            "artifact": "gcc / g++",
+            "package": "Debian 15.2.0-14",
+            "version": "15.2.0"
+          },
+          "name": "Debian GNU GCC and g++"
+        }
+      ],
+      "topics": [
+        "rust/ffi",
+        "rustc/abi",
+        "ffi/c-abi",
+        "rust/layout",
+        "pl/language-design"
       ]
     },
     "repr-packed-unaligned-references-slice-dst-alignment-and-cell-projections": {
@@ -134526,6 +134734,82 @@
         "domains/vvc-h266",
         "isa/simd-media",
         "verification/concurrency"
+      ]
+    },
+    "wasm-c-abi-cross-lang-lto-and-target-modifier-abi-coupling": {
+      "observed_at": "2026-11-25",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "Rust compiler (rustc 1.102.0-nightly, LLVM 23.1.5)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "af5ab5897b69940263043c8b98f3bed4cc476fec",
+            "version": "merged 2026-09-15"
+          },
+          "name": "Rust compiler Wasm singleton-aggregate union fix (PR #162806)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f6b5137514497e12c9f275d3fe3f9d4ee9933b0d",
+            "version": "merged 2026-09-16"
+          },
+          "name": "Rust compiler Wasm integer-enum ZST-field ABI fix (PR #162826)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "88120e6e4768ff17776e1bc9448c60c2b1125f74",
+            "version": "committed 2026-08-05"
+          },
+          "name": "Rust compiler ABI-controlling target-modifier option"
+        },
+        {
+          "identity": {
+            "path": "BasicCABI.md",
+            "repository": "WebAssembly/tool-conventions",
+            "revision": "eab11670ee6bbf5d1e9c26feee87493f76e4edbf"
+          },
+          "name": "WebAssembly Tool Conventions Basic C ABI"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "b0e56dbdca4e1a2d90889cefa6fdfa0179e2dbb2",
+            "version": "merged"
+          },
+          "name": "Rust RFC 3716 (Target Modifiers)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "8912d815c39b40c361bc53498e51fea1125b9137",
+            "version": "merged"
+          },
+          "name": "Rust RFC 3980 (extern custom)"
+        },
+        {
+          "identity": {
+            "artifact": "clang-19",
+            "version": "Debian clang version 19.1.7 (10.1+build1)"
+          },
+          "name": "Debian Clang 19 C/C++ compiler"
+        }
+      ],
+      "topics": [
+        "rust/ffi",
+        "rustc/abi",
+        "ffi/c-abi",
+        "llvm/ir",
+        "llvm/lto",
+        "systems/wasm"
       ]
     },
     "wasm-component-model-truffle-graal-and-polyglot-interop-platforms": {

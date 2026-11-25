@@ -1,0 +1,66 @@
+{
+  "topics": [
+    "rust/layout",
+    "rust/ffi",
+    "pl/semantics",
+    "ffi/c-abi",
+    "isa/aarch64",
+    "llvm/ir"
+  ],
+  "subjects": [
+    {
+      "name": "Itanium C++ ABI Specification",
+      "identity": {
+        "repository": "itanium-cxx-abi/cxx-abi",
+        "revision": "2837827a025f43d1fcfc37ec053d1314cfd1bba3",
+        "path": "abi.html"
+      }
+    },
+    {
+      "name": "Procedure Call Standard for the Arm 64-bit Architecture (AAPCS64)",
+      "identity": {
+        "repository": "ARM-software/abi-aa",
+        "revision": "353c2f249a16e6d42e9dae15e78ea148dc6e5349",
+        "path": "aapcs64/aapcs64.rst"
+      }
+    },
+    {
+      "name": "Rust compiler (rustc 1.102.0-nightly, LLVM 23.1.5)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly (2026-11-11)"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "956d1bd03d2a8934fc5041ecb04b33e55159c655"
+      }
+    },
+    {
+      "name": "LLVM Language Reference Manual",
+      "identity": {
+        "url": "https://llvm.org/docs/LangRef.html",
+        "version": "LLVM 23 documentation (observed 2026-11-25)"
+      }
+    },
+    {
+      "name": "Debian GNU GCC and g++",
+      "identity": {
+        "artifact": "gcc / g++",
+        "package": "Debian 15.2.0-14",
+        "version": "15.2.0"
+      }
+    },
+    {
+      "name": "Debian Clang 19 C/C++ compiler",
+      "identity": {
+        "artifact": "clang-19 / clang++-19",
+        "version": "Debian clang version 19.1.7 (10.1+build1)"
+      }
+    }
+  ],
+  "observed_at": "2026-11-25"
+}

@@ -1,0 +1,82 @@
+{
+  "topics": [
+    "rust/ffi",
+    "rustc/abi",
+    "ffi/c-abi",
+    "rust/layout",
+    "pl/language-design"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler (rustc 1.102.0-nightly, LLVM 23.1.5)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly (2026-11-11)"
+      }
+    },
+    {
+      "name": "Rust compiler Win64 repr(C) ZST ABI fix (PR #156112)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "9025bde4556c4c91f7730a9691cb25adbe61a4c8",
+        "version": "merged 2026-10-08"
+      }
+    },
+    {
+      "name": "Rust compiler trivial ABI specification fix (PR #157973)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3bcfbadbc0011903cab2731a9087a5536f6c3aaf",
+        "version": "merged 2026-10-03"
+      }
+    },
+    {
+      "name": "Rust compiler AArch64 bool FFI return fix (PR #159317)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ad0c9dce27a22416b65946bc0010edaf22ac6c83",
+        "version": "merged 2026-07-27"
+      }
+    },
+    {
+      "name": "Rust compiler HVA unit-size fix (PR #161394)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "e82904d34bad7e1c26d8001a343cc71c07b989e6",
+        "version": "merged 2026-09-05"
+      }
+    },
+    {
+      "name": "Rust compiler repr(C) enum discriminant bounds fix (PR #147017)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b40a20f16df44bb6016dc6b18d0c2e6e96200483",
+        "version": "rustc_abi / collect.rs"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "956d1bd03d2a8934fc5041ecb04b33e55159c655"
+      }
+    },
+    {
+      "name": "Debian Clang 19 C/C++ compiler",
+      "identity": {
+        "artifact": "clang-19",
+        "version": "Debian clang version 19.1.7 (10.1+build1)"
+      }
+    },
+    {
+      "name": "Debian GNU GCC and g++",
+      "identity": {
+        "artifact": "gcc / g++",
+        "package": "Debian 15.2.0-14",
+        "version": "15.2.0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-25"
+}
