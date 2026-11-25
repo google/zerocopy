@@ -608,6 +608,46 @@ print(json.dumps(receipt))
                     time_bin=paths["time_bin"],
                 )
 
+    def test_collect_zerocopy_proofs_rejects_symlinks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            paths = self._build_synthetic_repo(Path(tmp))
+            tools = {
+                "cli": paths["cli"],
+                "capture": paths["capture"],
+                "sysroot": paths["sysroot"],
+                "lean": paths["lean"],
+                "time_bin": paths["time_bin"],
+            }
+            proofs_dir = paths["repo"] / "zerocopy/proofs"
+            real_proofs = paths["repo"] / "real_proofs"
+            proofs_dir.rename(real_proofs)
+            proofs_dir.symlink_to(real_proofs)
+            with self.assertRaisesRegex(
+                RuntimeError, "symlink disallowed in proofs"
+            ):
+                perf_tracking.collect_zerocopy_proofs(
+                    repo_root=paths["repo"],
+                    tools=tools,
+                    timeout=30,
+                    time_bin=paths["time_bin"],
+                )
+            proofs_dir.unlink()
+            real_proofs.rename(proofs_dir)
+
+            zc_dir = paths["repo"] / "zerocopy"
+            real_zc = paths["repo"] / "real_zc"
+            zc_dir.rename(real_zc)
+            zc_dir.symlink_to(real_zc)
+            with self.assertRaisesRegex(
+                RuntimeError, "symlink disallowed in proofs"
+            ):
+                perf_tracking.collect_zerocopy_proofs(
+                    repo_root=paths["repo"],
+                    tools=tools,
+                    timeout=30,
+                    time_bin=paths["time_bin"],
+                )
+
     def test_verify_scalar_skips_cold_prebuilt_when_manifest_absent(self):
         with tempfile.TemporaryDirectory() as tmp:
             paths = self._build_synthetic_repo(Path(tmp))
