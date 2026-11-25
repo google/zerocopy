@@ -20,6 +20,7 @@ use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 
+use anneal_testkit::{ToolchainEnv, lean_prefix};
 use cargo_anneal::sandbox::{
     ActiveSandbox, MountSpec, PathMapper, SandboxPolicy, SandboxRuntime, create_dir_mode,
     force_tier1_runtime, force_tier2_runtime, make_tree_writable, set_mode,
@@ -30,12 +31,8 @@ use cargo_anneal::{Checker, SandboxMode, default_lean_path};
 const PROBE_ENV: &str = "ANNEAL_SANDBOX_ESCAPE_PROBE";
 
 fn repo_root() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR"))
-        .parent()
-        .unwrap()
-        .parent()
-        .unwrap()
-        .to_path_buf()
+    ToolchainEnv::repo_root_from_manifest(Path::new(env!("CARGO_MANIFEST_DIR")))
+        .expect("resolve anneal repo root")
 }
 
 fn installed_lean() -> PathBuf {
@@ -45,16 +42,9 @@ fn installed_lean() -> PathBuf {
             return path;
         }
     }
+    // Keep `cargo_anneal::default_lean_path()` so fallback selection stays
+    // pinned to `LOCKED_LEAN_SHA256`.
     default_lean_path()
-}
-
-fn lean_prefix(lean: &Path) -> PathBuf {
-    let out = std::process::Command::new(lean)
-        .arg("--print-prefix")
-        .output()
-        .expect("lean --print-prefix");
-    assert!(out.status.success(), "lean --print-prefix failed");
-    fs::canonicalize(String::from_utf8(out.stdout).unwrap().trim()).unwrap()
 }
 
 /// Child probe invoked when `ANNEAL_SANDBOX_ESCAPE_PROBE` is set in the test
@@ -494,7 +484,7 @@ fn wall_clock_timeout_kills_process_group_in_tier1_and_tier2() {
 #[test]
 fn live_lean_compiles_and_blocks_hostile_eval_in_tier1_and_tier2() {
     let lean = fs::canonicalize(installed_lean()).unwrap();
-    let prefix = lean_prefix(&lean);
+    let prefix = lean_prefix(&lean).unwrap();
     let base_dir = tempfile::tempdir().unwrap();
     let base = fs::canonicalize(base_dir.path()).unwrap();
     let canary = base.join("secret.txt");
@@ -717,7 +707,7 @@ fn live_lean_compiles_and_blocks_hostile_eval_in_tier1_and_tier2() {
 #[test]
 fn live_lean_tier2_getrusage_enforces_memory_limit() {
     let lean = fs::canonicalize(installed_lean()).unwrap();
-    let prefix = lean_prefix(&lean);
+    let prefix = lean_prefix(&lean).unwrap();
     let runtime = force_tier2_runtime(&lean, &prefix).unwrap();
     let base_dir = tempfile::tempdir().unwrap();
     let base = fs::canonicalize(base_dir.path()).unwrap();
@@ -860,7 +850,7 @@ fn sandbox_rejects_broad_prefixes_and_hides_prefix_sibling_files() {
     use std::os::unix::fs::symlink;
 
     let lean = fs::canonicalize(installed_lean()).unwrap();
-    let real_prefix = lean_prefix(&lean);
+    let real_prefix = lean_prefix(&lean).unwrap();
     let stage_dir = tempfile::tempdir().unwrap();
     let stage = fs::canonicalize(stage_dir.path()).unwrap();
 

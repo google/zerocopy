@@ -8,8 +8,6 @@
 
 //! Regressions for case ownership, evidence export, and command replay.
 
-mod support;
-
 use std::fs;
 use std::io::{ErrorKind, Write};
 use std::path::{Path, PathBuf};
@@ -17,8 +15,8 @@ use std::process::{Command, Output, Stdio};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Duration;
 
+use anneal_testkit::{Invocation, RunDirectory, Termination, select_cases};
 use serde_json::Value;
-use support::{Invocation, RunDirectory, Termination, select_cases};
 use wait_timeout::ChildExt;
 
 fn run_directory() -> RunDirectory {
@@ -356,16 +354,16 @@ print(json.dumps({
     );
     invocation
         .environment
-        .insert("OWNED".into(), input.display().to_string());
+        .insert("OWNED".into(), input.display().to_string().into());
     invocation
         .environment
-        .insert("SIBLING".into(), sibling.clone());
+        .insert("SIBLING".into(), sibling.clone().into());
     invocation
         .environment
-        .insert("LITERAL".into(), literal.clone());
+        .insert("LITERAL".into(), literal.clone().into());
     invocation
         .environment
-        .insert("OWNED_DIRECTORY".into(), trailing.clone());
+        .insert("OWNED_DIRECTORY".into(), trailing.clone().into());
     let outcome = case.run(&invocation).unwrap();
     outcome.expect_code(0).unwrap();
     let original: Value = serde_json::from_slice(&outcome.stdout).unwrap();
@@ -483,12 +481,23 @@ fn replay_reapplies_the_recorded_process_deadline() {
     // Force a different interval to keep the diagnostic version-independent.
     case.write(
         "remaining-timeout.py",
-        br#"import pathlib, runpy, subprocess
+        br#"import os, pathlib, runpy, subprocess
 
-def remaining_timeout(*args, **kwargs):
-    raise subprocess.TimeoutExpired(args[0], kwargs['timeout'] / 2)
+class FakePopen:
+    def __init__(self, cmd, **kwargs):
+        self.cmd = cmd
+        self.pid = 12345
+    def wait(self, timeout=None):
+        if timeout is not None:
+            raise subprocess.TimeoutExpired(self.cmd, timeout / 2)
+        return 0
+    def kill(self):
+        pass
+    def terminate(self):
+        pass
 
-subprocess.run = remaining_timeout
+os.killpg = lambda pid, sig: None
+subprocess.Popen = FakePopen
 script = pathlib.Path(__file__).parent / 'commands/0000/reproduce.py'
 runpy.run_path(str(script), run_name='__main__')
 "#,

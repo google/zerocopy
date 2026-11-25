@@ -204,6 +204,124 @@ pub fn default_rust_sysroot() -> TestResult<PathBuf> {
     resolve_sysroot_with_env(&get_env, None)
 }
 
+/// Query `lean --print-prefix` and return its canonicalized prefix directory.
+pub fn lean_prefix(lean: &Path) -> TestResult<PathBuf> {
+    let out = Command::new(lean)
+        .arg("--print-prefix")
+        .output()
+        .map_err(|error| {
+            format!("invoke {} --print-prefix: {error}", lean.display())
+        })?;
+    if !out.status.success() {
+        return Err(format!(
+            "{} --print-prefix failed ({}): {}",
+            lean.display(),
+            out.status,
+            String::from_utf8_lossy(&out.stderr)
+        ));
+    }
+    let text = String::from_utf8(out.stdout).map_err(|error| {
+        format!("lean --print-prefix output is not UTF-8: {error}")
+    })?;
+    canonical_dir(Path::new(text.trim()), "Lean prefix")
+}
+
+/// Construct a `Command` invoking `cargo <subcommand>` with `binary` staged as
+/// `cargo-<subcommand>` inside `<workdir>/cargo-home/bin` on `PATH` and
+/// `current_dir` set to `workdir`.
+pub fn cargo_subcommand_invocation(
+    cargo_exe: &Path,
+    subcommand: &str,
+    binary: &Path,
+    workdir: &Path,
+) -> TestResult<Command> {
+    // Canonicalize both `binary` and `workdir` upfront so relative `binary`
+    // symlinks resolve from `<workdir>/cargo-home/bin` and relative `workdir`
+    // values in `CARGO_HOME`/`PATH` are never resolved a second time against
+    // `.current_dir(workdir)`.
+    let canon_binary = canonical_file(binary, "subcommand binary")?;
+    let canon_workdir = canonical_dir(workdir, "subcommand workdir")?;
+    let cargo_home = canon_workdir.join("cargo-home");
+    let cargo_bin = cargo_home.join("bin");
+    fs::create_dir_all(&cargo_bin).map_err(|error| {
+        format!(
+            "create cargo subcommand bin dir {}: {error}",
+            cargo_bin.display()
+        )
+    })?;
+    let subcmd = cargo_bin.join(format!(
+        "cargo-{subcommand}{}",
+        std::env::consts::EXE_SUFFIX
+    ));
+    #[cfg(unix)]
+    {
+        let up_to_date = fs::symlink_metadata(&subcmd)
+            .ok()
+            .filter(|m| m.file_type().is_symlink())
+            .and_then(|_| fs::read_link(&subcmd).ok())
+            .is_some_and(|target| target == canon_binary);
+        if !up_to_date {
+            // Stage a sibling symlink and atomically replace `subcmd` so a
+            // reused workdir never executes a stale binary target.
+            static LINK_SEQ: std::sync::atomic::AtomicUsize =
+                std::sync::atomic::AtomicUsize::new(0);
+            let seq = LINK_SEQ.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+            let tmp_link = cargo_bin.join(format!(
+                ".cargo-{subcommand}-{}-{seq}.tmp",
+                std::process::id()
+            ));
+            let _ = fs::remove_file(&tmp_link);
+            std::os::unix::fs::symlink(&canon_binary, &tmp_link).map_err(
+                |error| {
+                    format!(
+                        "symlink {} -> {}: {error}",
+                        tmp_link.display(),
+                        canon_binary.display()
+                    )
+                },
+            )?;
+            if let Err(error) = fs::rename(&tmp_link, &subcmd) {
+                let _ = fs::remove_file(&tmp_link);
+                return Err(format!(
+                    "replace {} -> {}: {error}",
+                    subcmd.display(),
+                    canon_binary.display()
+                ));
+            }
+        }
+    }
+    #[cfg(not(unix))]
+    {
+        let temporary = tempfile::NamedTempFile::new_in(&cargo_bin).map_err(
+            |error| format!("stage {}: {error}", subcmd.display()),
+        )?;
+        fs::copy(&canon_binary, temporary.path()).map_err(|error| {
+            format!(
+                "copy {} -> {}: {error}",
+                canon_binary.display(),
+                subcmd.display()
+            )
+        })?;
+        temporary.persist(&subcmd).map_err(|error| {
+            format!("replace {}: {error}", subcmd.display())
+        })?;
+    }
+    let mut paths = vec![cargo_bin];
+    if let Some(path) = std::env::var_os("PATH") {
+        paths.extend(std::env::split_paths(&path));
+    }
+    let joined_path = std::env::join_paths(paths).map_err(|error| {
+        format!("construct subcommand search path: {error}")
+    })?;
+    let mut command = Command::new(cargo_exe);
+    command
+        .arg(subcommand)
+        .env("CARGO_HOME", &cargo_home)
+        .env("PATH", joined_path)
+        .current_dir(&canon_workdir);
+    Ok(command)
+}
+
 fn resolve_lean_with_env(
     get_env: &impl Fn(&str) -> Option<OsString>,
     explicit_install_root: Option<&Path>,
@@ -448,5 +566,146 @@ mod tests {
             Some(fs::canonicalize(&installed_cap).unwrap())
         );
         assert!(resolved.has_ndjson_quorum_tools);
+    }
+
+    #[test]
+    fn cargo_subcommand_invocation_stages_and_updates_subcommand_on_path() {
+        let dir = tempfile::tempdir().unwrap();
+        let bin_a = dir.path().join("my-tool-test-bin-a");
+        let bin_b = dir.path().join("my-tool-test-bin-b");
+        fs::write(&bin_a, b"#!/bin/sh\n").unwrap();
+        fs::write(&bin_b, b"#!/bin/sh\n").unwrap();
+        let cmd = cargo_subcommand_invocation(
+            Path::new("cargo"),
+            "anneal",
+            &bin_a,
+            dir.path(),
+        )
+        .unwrap();
+        let staged = dir
+            .path()
+            .join("cargo-home/bin")
+            .join(format!("cargo-anneal{}", std::env::consts::EXE_SUFFIX));
+        let canon_dir = fs::canonicalize(dir.path()).unwrap();
+        let canon_a = fs::canonicalize(&bin_a).unwrap();
+        let canon_b = fs::canonicalize(&bin_b).unwrap();
+        assert!(fs::symlink_metadata(&staged).is_ok());
+        assert_eq!(cmd.get_current_dir(), Some(canon_dir.as_path()));
+        #[cfg(unix)]
+        assert_eq!(fs::read_link(&staged).unwrap(), canon_a);
+
+        // Reusing `workdir` with a different binary must update the link
+        // rather than silently executing the stale `bin_a`.
+        cargo_subcommand_invocation(
+            Path::new("cargo"),
+            "anneal",
+            &bin_b,
+            dir.path(),
+        )
+        .unwrap();
+        #[cfg(unix)]
+        assert_eq!(fs::read_link(&staged).unwrap(), canon_b);
+    }
+
+    fn relative_from_cwd(canon_target: &Path) -> PathBuf {
+        let cwd = std::env::current_dir().unwrap();
+        let cwd_comps: Vec<_> = cwd.components().collect();
+        let tgt_comps: Vec<_> = canon_target.components().collect();
+        let common = cwd_comps
+            .iter()
+            .zip(&tgt_comps)
+            .take_while(|(a, b)| a == b)
+            .count();
+        let mut rel = PathBuf::new();
+        for _ in common..cwd_comps.len() {
+            rel.push("..");
+        }
+        for comp in &tgt_comps[common..] {
+            rel.push(comp);
+        }
+        assert!(
+            !rel.is_absolute(),
+            "expected relative path, got {}",
+            rel.display()
+        );
+        rel
+    }
+
+    #[test]
+    fn cargo_subcommand_invocation_canonicalizes_relative_binary_and_workdir() {
+        let dir = tempfile::tempdir().unwrap();
+        let bin = dir.path().join("rel-tool-bin");
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            fs::write(&bin, b"#!/bin/sh\nprintf 'ran-from:%s' \"$CARGO_HOME\"\n")
+                .unwrap();
+            fs::set_permissions(&bin, fs::Permissions::from_mode(0o755))
+                .unwrap();
+        }
+        #[cfg(not(unix))]
+        fs::write(&bin, b"stub").unwrap();
+
+        let workdir = dir.path().join("nested/work");
+        fs::create_dir_all(&workdir).unwrap();
+        let canon_bin = fs::canonicalize(&bin).unwrap();
+        let canon_workdir = fs::canonicalize(&workdir).unwrap();
+
+        // Build relative paths for BOTH `binary` and `workdir` without
+        // mutating process-wide `cwd`.
+        let rel_bin = relative_from_cwd(&canon_bin);
+        let rel_workdir = relative_from_cwd(&canon_workdir);
+
+        #[cfg(unix)]
+        let cargo_stub = {
+            use std::os::unix::fs::PermissionsExt;
+            let stub = dir.path().join("fake-cargo");
+            fs::write(&stub, b"#!/bin/sh\nexec \"cargo-$1\"\n").unwrap();
+            fs::set_permissions(&stub, fs::Permissions::from_mode(0o755))
+                .unwrap();
+            fs::canonicalize(&stub).unwrap()
+        };
+        #[cfg(not(unix))]
+        let cargo_stub = PathBuf::from("cargo");
+
+        let mut cmd = cargo_subcommand_invocation(
+            &cargo_stub,
+            "anneal",
+            &rel_bin,
+            &rel_workdir,
+        )
+        .unwrap();
+
+        let expected_cargo_home = canon_workdir.join("cargo-home");
+        let expected_cargo_bin = expected_cargo_home.join("bin");
+        assert_eq!(cmd.get_current_dir(), Some(canon_workdir.as_path()));
+        let env_map: BTreeMap<_, _> = cmd.get_envs().collect();
+        assert_eq!(
+            env_map.get(OsStr::new("CARGO_HOME")).copied().flatten(),
+            Some(expected_cargo_home.as_os_str())
+        );
+        let path_val = env_map
+            .get(OsStr::new("PATH"))
+            .copied()
+            .flatten()
+            .expect("PATH must be set");
+        let first_path = std::env::split_paths(path_val).next().unwrap();
+        assert_eq!(first_path, expected_cargo_bin);
+
+        let staged = expected_cargo_bin
+            .join(format!("cargo-anneal{}", std::env::consts::EXE_SUFFIX));
+        assert!(staged.is_file(), "staged symlink must resolve to target");
+        #[cfg(unix)]
+        {
+            assert_eq!(fs::read_link(&staged).unwrap(), canon_bin);
+            // Execute `cmd` inside `.current_dir(canon_workdir)` to prove
+            // `PATH` and `CARGO_HOME` do not double-resolve `rel_workdir`.
+            let out = cmd.output().unwrap();
+            assert!(out.status.success(), "{out:?}");
+            assert_eq!(
+                String::from_utf8_lossy(&out.stdout),
+                format!("ran-from:{}", expected_cargo_home.display())
+            );
+        }
     }
 }
