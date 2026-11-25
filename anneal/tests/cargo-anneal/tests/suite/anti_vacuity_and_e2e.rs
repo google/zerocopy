@@ -549,12 +549,15 @@ fn onboarding_init_and_diagnostic_hints_e2e() {
     fs::write(krate.join("src/lib.rs"), "pub fn zero() -> u64 { 0 }\n").unwrap();
 
     let manifest = krate.join("Cargo.toml");
-    let empty_proof_inv = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        manifest.as_os_str(),
-        OsStr::new("--proof-dir"),
-        krate.join("empty_proof").as_os_str(),
-    ]));
+    let empty_proof_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            krate.join("empty_proof").as_os_str(),
+        ]),
+    );
     let empty_proof_out = staged.exec(&empty_proof_inv).unwrap().process;
     assert_outcome_exit(&empty_proof_out, 1).unwrap();
     let empty_proof_receipt: Value = serde_json::from_slice(&empty_proof_out.stdout).unwrap();
@@ -572,16 +575,20 @@ fn onboarding_init_and_diagnostic_hints_e2e() {
     assert!(cargo_init.status.success());
 
     let proof_dir = krate.join("proof");
-    let hole_inv = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        manifest.as_os_str(),
-        OsStr::new("--proof-dir"),
-        proof_dir.as_os_str(),
-    ]));
+    let hole_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            proof_dir.as_os_str(),
+        ]),
+    );
     let hole_out = staged.exec(&hole_inv).unwrap().process;
     assert_outcome_exit(&hole_out, 1).unwrap();
     let hole_receipt: Value = serde_json::from_slice(&hole_out.stdout).unwrap();
     assert_eq!(hole_receipt["status"], "proof_failed", "{hole_receipt}");
+    assert!(hole_receipt.get("reason").is_none(), "{hole_receipt}");
     assert!(
         hole_receipt["hint"]
             .as_str()

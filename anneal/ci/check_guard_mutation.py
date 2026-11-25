@@ -170,6 +170,8 @@ NON_KILL_ERROR_MARKERS: tuple[str, ...] = (
     "unexpected token",
     "maximum recursion depth",
     "deterministic timeout",
+    "heartbeat_limit_exceeded",
+    "recursion_depth_exceeded",
     "PANIC",
     "internal exception",
     "invalid import",

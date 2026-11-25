@@ -40,6 +40,7 @@ pub const UNSTABLE_FEATURES_ASSUMPTION: &str = "unmodeled unstable rustc feature
     operator (see unstable_features); non-interference with captured MIR semantics is \
     unverified";
 const ALLOWED_SANDBOXES: &[&str] = &["linux_bwrap", "linux_landlock_seccomp", "none"];
+const ALLOWED_FAILURE_REASONS: &[&str] = &["heartbeat_limit_exceeded", "recursion_depth_exceeded"];
 const ALLOWED_FOUNDATION_AXIOMS: &[&str] = &["Classical.choice", "Quot.sound", "propext"];
 const ALLOWED_ASSURANCE_STAGES: &[&str] = &["stage0_alpha", "stage1_audited", "stage2_hardened"];
 const ALLOWED_CANDIDATE_FEATURES: &[&str] =
@@ -460,6 +461,8 @@ pub struct FailureReceipt {
     pub elaboration_sandbox: Option<String>,
     pub status: String,
     pub phase: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reason: Option<String>,
     pub detail: String,
     pub hint: Option<String>,
     pub artifacts: Option<String>,
@@ -779,6 +782,18 @@ fn parse_failure_receipt(
         }
     }
     let phase = root.req_str("phase")?.to_owned();
+    let reason = root.opt_str("reason")?.map(str::to_owned);
+    if let Some(ref r) = reason {
+        if !ALLOWED_FAILURE_REASONS.contains(&r.as_str()) {
+            violations.push(format!("unknown failure receipt `reason` `{r}`"));
+        }
+        if status != "proof_failed" || phase != "audit" {
+            violations.push(format!(
+                "failure receipt `reason` `{r}` is only valid for `proof_failed` in phase \
+                 `audit`, got status `{status}` in phase `{phase}`"
+            ));
+        }
+    }
     let detail = root.req_str("detail")?.to_owned();
     if phase.is_empty() {
         violations.push("failure receipt `phase` must be non-empty".into());
@@ -796,6 +811,7 @@ fn parse_failure_receipt(
         elaboration_sandbox,
         status,
         phase,
+        reason,
         detail,
         hint,
         artifacts,
@@ -3298,6 +3314,77 @@ pub(crate) mod tests {
         };
         let fails = env.evaluate_policy(&req);
         assert_eq!(fails.len(), 2, "{fails:?}");
+
+        // Structured `reason` on `proof_failed` / `audit` is additive and
+        // strictly validated against `ALLOWED_FAILURE_REASONS`.
+        for reason in ["heartbeat_limit_exceeded", "recursion_depth_exceeded"] {
+            let rec = json!({
+                "schema_version": 3,
+                "taint_reasons": [],
+                "elaboration_sandbox": "linux_bwrap",
+                "status": "proof_failed",
+                "phase": "audit",
+                "reason": reason,
+                "detail": "limit exceeded",
+                "artifacts": null
+            });
+            let parsed = parse_and_validate_receipt(&serde_json::to_vec(&rec).unwrap()).unwrap();
+            assert!(parsed.unrecognized_fields.is_empty(), "{:?}", parsed.unrecognized_fields);
+            assert!(parsed.invariant_violations.is_empty(), "{:?}", parsed.invariant_violations);
+            let ParsedReceipt::Failure(f) = &parsed.receipt else {
+                panic!("expected Failure receipt");
+            };
+            assert_eq!(f.reason.as_deref(), Some(reason));
+        }
+
+        let ordinary = json!({
+            "schema_version": 3,
+            "taint_reasons": [],
+            "elaboration_sandbox": "linux_bwrap",
+            "status": "proof_failed",
+            "phase": "audit",
+            "detail": "type mismatch",
+            "artifacts": null
+        });
+        let parsed_ord =
+            parse_and_validate_receipt(&serde_json::to_vec(&ordinary).unwrap()).unwrap();
+        assert!(
+            parsed_ord.invariant_violations.is_empty(),
+            "{:?}",
+            parsed_ord.invariant_violations
+        );
+        let ParsedReceipt::Failure(f_ord) = &parsed_ord.receipt else {
+            panic!("expected Failure receipt");
+        };
+        assert!(f_ord.reason.is_none());
+
+        for (bad_status, bad_phase, bad_reason, needle) in [
+            ("proof_failed", "audit", "bogus_limit", "unknown failure receipt `reason`"),
+            ("tool_failed", "audit", "heartbeat_limit_exceeded", "only valid for `proof_failed`"),
+            (
+                "proof_failed",
+                "capture",
+                "recursion_depth_exceeded",
+                "only valid for `proof_failed`",
+            ),
+        ] {
+            let bad = json!({
+                "schema_version": 3,
+                "taint_reasons": [],
+                "status": bad_status,
+                "phase": bad_phase,
+                "reason": bad_reason,
+                "detail": "bad",
+                "artifacts": null
+            });
+            let parsed_bad =
+                parse_and_validate_receipt(&serde_json::to_vec(&bad).unwrap()).unwrap();
+            assert!(
+                parsed_bad.invariant_violations.iter().any(|v| v.contains(needle)),
+                "expected {needle:?} in {:?}",
+                parsed_bad.invariant_violations
+            );
+        }
     }
 
     #[test]

@@ -365,9 +365,15 @@ $P_{\text{mut}}$ and checking whether the existing proof script fails
 1. **Proof-to-code coupling:** Even a vacuous specification (`Spec := True`)
    can cause a brittle proof script to fail when a mutant shifts basic-block
    numbering, step counts, or intermediate lemmas.
-2. **Crash masquerading:** Treating any non-zero exit code as a killed mutant
-   counts `maxRecDepth` timeouts, out-of-memory kills, and kernel errors as
-   apparent specification strength.
+2. **Crash masquerading:** Treating any non-zero exit code—or any
+   `proof_failed` receipt—as a killed mutant counts `maxHeartbeats` /
+   `maxRecDepth` blowups, out-of-memory kills, and kernel errors as apparent
+   specification strength. Authored `Proof`-module deterministic heartbeat and
+   recursion-depth limits exit `1` (`status == "proof_failed"`,
+   `phase == "audit"`) with a structured `"reason"` field
+   (`"heartbeat_limit_exceeded"` or `"recursion_depth_exceeded"`) so negative
+   and mutation checks must refuse to credit any `proof_failed` receipt carrying
+   `"reason"` as a mutant kill.
 
 Dual-Polar `MutationRefute` eliminates both failure modes by pinning the exact
 SHA-256 digest of `Spec.lean` across the positive and negative checks and
@@ -375,8 +381,9 @@ requiring **both poles**:
 
 - **Pole A (Clean pipeline rejection):** Running the verifier on
   $(P_{\text{mut}}, \mathsf{Spec}, \pi_{\text{shipped}})$ must exit cleanly
-  with a structured proof failure and zero runtime, resource-limit, or kernel
-  errors.
+  with `"status": "proof_failed"`, `"phase": "audit"`, absent `"reason"` (never
+  `"heartbeat_limit_exceeded"` or `"recursion_depth_exceeded"`), and zero
+  runtime, resource-limit, or kernel errors.
 - **Pole B (Kernel-checked refutation theorem):** A separate kernel-checked
   theorem (audited strictly within `{propext, Classical.choice, Quot.sound}`)
   proves **`⊢ ¬ CrateTheorem ⟨P_mut, Spec⟩`**—for example, by exhibiting a

@@ -272,12 +272,15 @@ fn rejects_symlinked_sources_and_disallowed_manifest_targets() {
     .unwrap();
     symlink(outside.join("lib.rs"), sym_pkg.join("src/lib.rs")).unwrap();
     let sym_manifest = sym_pkg.join("Cargo.toml");
-    let inv = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        sym_manifest.as_os_str(),
-        OsStr::new("--proof-dir"),
-        lean_dir.as_os_str(),
-    ]));
+    let inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            sym_manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            lean_dir.as_os_str(),
+        ]),
+    );
     let r = run_verify_inv(&staged, &inv);
     expect_failed(&r, 1, "unsupported", Some("request"), "unsupported or empty compilation request");
 
@@ -312,12 +315,15 @@ fn rejects_symlinked_sources_and_disallowed_manifest_targets() {
     .unwrap();
     fs::write(ok_pkg.join("src/lib.rs"), SCALAR_SOURCE).unwrap();
     let ok_manifest = ok_pkg.join("Cargo.toml");
-    let inv = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        ok_manifest.as_os_str(),
-        OsStr::new("--proof-dir"),
-        sym_proof_dir.as_os_str(),
-    ]));
+    let inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            ok_manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            sym_proof_dir.as_os_str(),
+        ]),
+    );
     let r = run_verify_inv(&staged, &inv);
     expect_failed(
         &r,
@@ -344,12 +350,15 @@ fn rejects_symlinked_sources_and_disallowed_manifest_targets() {
     .unwrap();
     fs::write(dep_case_pkg.join("lib.rs"), SCALAR_SOURCE).unwrap();
     let dep_manifest = dep_case_pkg.join("Cargo.toml");
-    let empty_dep_inv = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        dep_manifest.as_os_str(),
-        OsStr::new("--proof-dir"),
-        lean_dir.as_os_str(),
-    ]));
+    let empty_dep_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            dep_manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            lean_dir.as_os_str(),
+        ]),
+    );
     let empty_dep_res = run_verify_inv(&staged, &empty_dep_inv);
     expect_verified(&empty_dep_res, "crate_verified", true);
 
@@ -421,12 +430,15 @@ fn rejects_symlinked_sources_and_disallowed_manifest_targets() {
         ),
     )
     .unwrap();
-    let feat_inv = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        feat_manifest.as_os_str(),
-        OsStr::new("--proof-dir"),
-        lean_dir.as_os_str(),
-    ]));
+    let feat_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            feat_manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            lean_dir.as_os_str(),
+        ]),
+    );
     let feat_ok = run_verify_inv(&staged, &feat_inv);
     let feat_ok_rec = expect_verified(&feat_ok, "crate_verified", true);
     let feat_sources: Vec<&str> = feat_ok_rec
@@ -523,12 +535,15 @@ fn rejects_symlinked_sources_and_disallowed_manifest_targets() {
             }
         }
         let manifest = pkg.join("Cargo.toml");
-        let inv = with_host_cargo_env(verify_invocation(&[
-            OsStr::new("--manifest-path"),
-            manifest.as_os_str(),
-            OsStr::new("--proof-dir"),
-            lean_dir.as_os_str(),
-        ]));
+        let inv = with_host_cargo_env(
+            &staged,
+            verify_invocation(&[
+                OsStr::new("--manifest-path"),
+                manifest.as_os_str(),
+                OsStr::new("--proof-dir"),
+                lean_dir.as_os_str(),
+            ]),
+        );
         let res = run_verify_inv(&staged, &inv);
         expect_failed(&res, 1, "unsupported", Some("cargo"), detail);
     }
@@ -604,12 +619,15 @@ fn rejects_compiler_overrides_in_source_root() {
         fs::write(pkg.join("lib.rs"), SCALAR_SOURCE).unwrap();
         create(&pkg);
         let manifest = pkg.join("Cargo.toml");
-        let inv = with_host_cargo_env(verify_invocation(&[
-            OsStr::new("--manifest-path"),
-            manifest.as_os_str(),
-            OsStr::new("--proof-dir"),
-            lean_dir.as_os_str(),
-        ]));
+        let inv = with_host_cargo_env(
+            &staged,
+            verify_invocation(&[
+                OsStr::new("--manifest-path"),
+                manifest.as_os_str(),
+                OsStr::new("--proof-dir"),
+                lean_dir.as_os_str(),
+            ]),
+        );
         let res = run_verify_inv(&staged, &inv);
         expect_failed(&res, 1, "unsupported", Some("cargo"), "compiler overrides");
     }
@@ -696,12 +714,15 @@ fn admits_benign_cargo_config_in_source_root() {
          [term]\ncolor = \"auto\"\n\n[doc]\nbrowser = \"firefox\"\n",
     );
     let manifest = pkg.join("Cargo.toml");
-    let inv = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        manifest.as_os_str(),
-        OsStr::new("--proof-dir"),
-        lean_dir.as_os_str(),
-    ]));
+    let inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            lean_dir.as_os_str(),
+        ]),
+    );
     let res = run_verify_inv(&staged, &inv);
     expect_verified(&res, "crate_verified", true);
 }
@@ -711,7 +732,11 @@ fn verifies_under_hostile_environment_and_cargo_configs() {
     let staged = new_workspace("anneal-hostile-env-").stage().unwrap();
     let work = staged.work_dir();
     write_scalar_baseline(work);
-    let subject = work.join("subject");
+    // Keep the subject package outside `work` (`cargo-anneal` cwd) so `work`
+    // acts strictly as a hostile working directory rather than an ancestor of
+    // the package's `workspace_root` (ancestor compiler overrides are tested
+    // in `enforces_ancestor_and_cargo_home_compiler_override_policy`).
+    let subject = staged.root_dir().join("subject");
     fs::create_dir_all(subject.join(".cargo")).unwrap();
     fs::write(
         subject.join("Cargo.toml"),
@@ -737,12 +762,15 @@ fn verifies_under_hostile_environment_and_cargo_configs() {
 
     let manifest = subject.join("Cargo.toml");
     let lean_dir = work.join("lean");
-    let inv = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        manifest.as_os_str(),
-        OsStr::new("--proof-dir"),
-        lean_dir.as_os_str(),
-    ]))
+    let inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            lean_dir.as_os_str(),
+        ]),
+    )
     .env("XDG_CACHE_HOME", work)
     .env("RUSTC", "/nonexistent/rustc")
     .env("RUSTC_WRAPPER", "/nonexistent/wrapper")
@@ -758,4 +786,172 @@ fn verifies_under_hostile_environment_and_cargo_configs() {
     let ok = expect_verified(&res, "crate_verified", true);
     assert_eq!(ok.audit["exactType"], true);
     assert!(ok.taint_reasons.is_empty(), "{ok:?}");
+}
+
+#[test]
+fn enforces_ancestor_and_cargo_home_compiler_override_policy() {
+    let staged = new_workspace("anneal-ce3-").stage().unwrap();
+    let work = staged.work_dir();
+    write_scalar_baseline(work);
+    let lean_dir = work.join("lean");
+    let base_manifest = "[package]\nname = \"scalar\"\nversion = \"0.0.0\"\nedition = \"2024\"\n\
+                         [lib]\npath = \"lib.rs\"\n";
+
+    // (a) Ancestor above `workspace_root` with `[build]`, `[env]`,
+    //     `rust-toolchain.toml`, or symlinked `.cargo` is rejected.
+    for (case, setup, expected_reason) in [
+        (
+            "build-table",
+            Box::new(|anc: &Path| {
+                write_cargo_config(
+                    anc,
+                    "[build]\nrustflags = [\"--cfg\", \"ancestor_override\"]\n",
+                );
+            }) as Box<dyn Fn(&Path)>,
+            "table [build]",
+        ),
+        (
+            "env-table",
+            Box::new(|anc: &Path| {
+                write_cargo_config(anc, "[env]\nRUSTFLAGS = \"--cfg=evil\"\n");
+            }),
+            "table [env]",
+        ),
+        (
+            "rust-toolchain-toml",
+            Box::new(|anc: &Path| {
+                fs::write(anc.join("rust-toolchain.toml"), "[toolchain]\nchannel = \"nightly\"\n")
+                    .unwrap();
+            }),
+            "toolchain override",
+        ),
+        (
+            "symlink-dot-cargo",
+            Box::new(|anc: &Path| {
+                let target = anc.join("real-cargo-dir");
+                fs::create_dir_all(&target).unwrap();
+                symlink(&target, anc.join(".cargo")).unwrap();
+            }),
+            "not a regular directory",
+        ),
+    ] {
+        let ancestor_root = work.join(format!("ancestor-bad-{case}"));
+        let ws = ancestor_root.join("ws");
+        fs::create_dir_all(&ws).unwrap();
+        setup(&ancestor_root);
+        fs::write(ws.join("Cargo.toml"), base_manifest).unwrap();
+        fs::write(ws.join("lib.rs"), SCALAR_SOURCE).unwrap();
+        let ws_manifest = ws.join("Cargo.toml");
+        let inv = with_host_cargo_env(
+            &staged,
+            verify_invocation(&[
+                OsStr::new("--manifest-path"),
+                ws_manifest.as_os_str(),
+                OsStr::new("--proof-dir"),
+                lean_dir.as_os_str(),
+            ]),
+        );
+        let res = run_verify_inv(&staged, &inv);
+        expect_failed(&res, 1, "unsupported", Some("cargo"), expected_reason);
+    }
+
+    // (b) `$CARGO_HOME/config.toml` with `[build]` or a symlink is rejected.
+    let clean_pkg = work.join("clean-pkg");
+    fs::create_dir_all(&clean_pkg).unwrap();
+    fs::write(clean_pkg.join("Cargo.toml"), base_manifest).unwrap();
+    fs::write(clean_pkg.join("lib.rs"), SCALAR_SOURCE).unwrap();
+    let clean_manifest = clean_pkg.join("Cargo.toml");
+
+    let bad_cargo_home = work.join("cargo-home-bad");
+    fs::create_dir_all(&bad_cargo_home).unwrap();
+    fs::write(bad_cargo_home.join("config.toml"), "[build]\nrustc-wrapper = \"/bin/false\"\n")
+        .unwrap();
+    let bad_home_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            clean_manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            lean_dir.as_os_str(),
+        ]),
+    )
+    .env("CARGO_HOME", &bad_cargo_home);
+    let bad_home_res = run_verify_inv(&staged, &bad_home_inv);
+    expect_failed(&bad_home_res, 1, "unsupported", Some("cargo"), "table [build]");
+
+    let sym_cargo_home = work.join("cargo-home-symlink");
+    fs::create_dir_all(&sym_cargo_home).unwrap();
+    fs::write(sym_cargo_home.join("real.toml"), "[net]\noffline = true\n").unwrap();
+    symlink(sym_cargo_home.join("real.toml"), sym_cargo_home.join("config.toml")).unwrap();
+    let sym_home_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            clean_manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            lean_dir.as_os_str(),
+        ]),
+    )
+    .env("CARGO_HOME", &sym_cargo_home);
+    let sym_home_res = run_verify_inv(&staged, &sym_home_inv);
+    expect_failed(&sym_home_res, 1, "unsupported", Some("cargo"), "symlink");
+
+    // (c) `CargoConfigPolicy::InWorkspace` vs `CargoConfigPolicy::AmbientHost`:
+    //     `[net]`/`[registries]`/`[source]` inside `workspace_root` on a
+    //     workspace member crate is REJECTED (`InWorkspace`), while the exact
+    //     same config in an ancestor strictly above `workspace_root` and in
+    //     `$CARGO_HOME/config.toml` is ALLOWED (`AmbientHost`).
+    let benign_toml = "[net]\ngit-fetch-with-cli = true\nretry = 3\n\n\
+                       [registries.example]\nindex = \"sparse+https://example.invalid/index/\"\n\n\
+                       [source.crates-io]\nreplace-with = \"vendored-sources\"\n\n\
+                       [source.vendored-sources]\ndirectory = \"/nonexistent/vendor\"\n";
+
+    let ws_in_workspace = work.join("ws-net-rejected");
+    fs::create_dir_all(ws_in_workspace.join("member")).unwrap();
+    fs::write(
+        ws_in_workspace.join("Cargo.toml"),
+        "[workspace]\nmembers = [\"member\"]\nresolver = \"2\"\n",
+    )
+    .unwrap();
+    write_cargo_config(&ws_in_workspace, benign_toml);
+    fs::write(ws_in_workspace.join("member/Cargo.toml"), base_manifest).unwrap();
+    fs::write(ws_in_workspace.join("member/lib.rs"), SCALAR_SOURCE).unwrap();
+    let ws_member_manifest = ws_in_workspace.join("member/Cargo.toml");
+    let in_ws_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            ws_member_manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            lean_dir.as_os_str(),
+        ]),
+    );
+    let in_ws_res = run_verify_inv(&staged, &in_ws_inv);
+    expect_failed(&in_ws_res, 1, "unsupported", Some("cargo"), "table [net]");
+
+    let benign_cargo_home = work.join("cargo-home-benign");
+    fs::create_dir_all(&benign_cargo_home).unwrap();
+    fs::write(benign_cargo_home.join("config.toml"), benign_toml).unwrap();
+
+    let benign_ancestor = work.join("ancestor-benign");
+    let benign_pkg = benign_ancestor.join("pkg");
+    fs::create_dir_all(benign_ancestor.join(".cargo")).unwrap();
+    fs::create_dir_all(&benign_pkg).unwrap();
+    fs::write(benign_ancestor.join(".cargo/config.toml"), benign_toml).unwrap();
+    fs::write(benign_pkg.join("Cargo.toml"), base_manifest).unwrap();
+    fs::write(benign_pkg.join("lib.rs"), SCALAR_SOURCE).unwrap();
+    let benign_manifest = benign_pkg.join("Cargo.toml");
+
+    let benign_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            benign_manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            lean_dir.as_os_str(),
+        ]),
+    )
+    .env("CARGO_HOME", &benign_cargo_home);
+    let benign_res = run_verify_inv(&staged, &benign_inv);
+    expect_verified(&benign_res, "crate_verified", true);
 }

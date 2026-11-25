@@ -76,6 +76,8 @@ pub struct VerifyFailureReceipt {
     pub elaboration_sandbox: Option<String>,
     pub status: String,
     pub phase: String,
+    #[serde(default)]
+    pub reason: Option<String>,
     pub detail: String,
     #[serde(default)]
     pub hint: Option<String>,
@@ -329,6 +331,13 @@ pub fn assert_rejected<'a>(
             f.status, f.detail
         ));
     }
+    if expected_status == "proof_failed" && f.reason.is_some() {
+        return Err(format!(
+            "refusing to credit resource-limit `proof_failed` (reason={:?}) as a proof \
+             rejection: {}",
+            f.reason, f.detail
+        ));
+    }
     if let Some(phase) = expected_phase
         && f.phase != phase
     {
@@ -470,6 +479,40 @@ mod tests {
         }"#;
         let parsed_cf = VerifyReceipt::from_json_slice(compiler_failed).unwrap();
         assert_rejected(&parsed_cf, "compiler_failed", Some("capture"), "rustc").unwrap();
+
+        // Ordinary `proof_failed` (absent `reason`) is credited as a rejection.
+        let ordinary_pf = br#"{
+            "schema_version": 3,
+            "taint_reasons": [],
+            "elaboration_sandbox": "linux_bwrap",
+            "status": "proof_failed",
+            "phase": "audit",
+            "detail": "type mismatch",
+            "artifacts": null
+        }"#;
+        let parsed_pf = VerifyReceipt::from_json_slice(ordinary_pf).unwrap();
+        let pf = assert_rejected(&parsed_pf, "proof_failed", Some("audit"), "").unwrap();
+        assert!(pf.reason.is_none());
+
+        // Resource-limit `proof_failed` receipts parse strictly but are NEVER
+        // credited as a proof rejection by `assert_rejected`.
+        for reason in ["heartbeat_limit_exceeded", "recursion_depth_exceeded"] {
+            let limited = format!(
+                r#"{{
+                    "schema_version": 3,
+                    "taint_reasons": [],
+                    "elaboration_sandbox": "linux_bwrap",
+                    "status": "proof_failed",
+                    "phase": "audit",
+                    "reason": "{reason}",
+                    "detail": "Lean exited Some(1) ({reason}): ...",
+                    "artifacts": null
+                }}"#
+            );
+            let parsed_lim = VerifyReceipt::from_json_slice(limited.as_bytes()).unwrap();
+            let err = assert_rejected(&parsed_lim, "proof_failed", Some("audit"), "").unwrap_err();
+            assert!(err.contains("refusing to credit resource-limit"), "{reason}: {err}");
+        }
     }
 
     #[test]

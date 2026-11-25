@@ -596,6 +596,12 @@ first clean run instead of sitting dormant until a `sorry` lands:
   "linux_landlock_seccomp" | "none"` on every passing receipt (and on
   `FailureReceipt` once sandbox selection completed; omitted on pre-sandbox
   failures via `Option<&str>`).
+- **Additive `"reason"` on `FailureReceipt`:** Optional top-level string
+  (`"heartbeat_limit_exceeded"` or `"recursion_depth_exceeded"`) emitted only
+  when an authored `Proof` module fails with a deterministic Lean resource limit
+  (`"status": "proof_failed"`, `"phase": "audit"`), and omitted on ordinary
+  elaboration failures and all other statuses. Negative and mutation tests must
+  require `"reason"` to be absent before crediting a `proof_failed` rejection.
 - **Honest `"deferred"` projection:** Omits `"hostile Lean elaborator effects"`
   **iff** `"elaboration_sandbox" != "none"`.
 

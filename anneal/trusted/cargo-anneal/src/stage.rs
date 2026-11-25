@@ -150,6 +150,36 @@ enum LeanDiagnosticSeverity {
     Error,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum FrontendRejectionKind {
+    /// Ordinary Lean elaboration or type-checking error.
+    Elaboration,
+    /// Deterministic proof heartbeat ceiling (`runtime.maxHeartbeats`).
+    HeartbeatLimitExceeded,
+    /// Deterministic proof recursion-depth ceiling (`runtime.maxRecDepth`).
+    RecursionDepthExceeded,
+}
+
+impl FrontendRejectionKind {
+    fn sub_reason(self) -> Option<&'static str> {
+        match self {
+            Self::Elaboration => None,
+            Self::HeartbeatLimitExceeded => Some("heartbeat_limit_exceeded"),
+            Self::RecursionDepthExceeded => Some("recursion_depth_exceeded"),
+        }
+    }
+}
+
+fn is_authored_proof_module(
+    module: &str,
+    compiled_roles: &BTreeMap<String, TargetRole>,
+    generated_modules: &BTreeSet<String>,
+) -> bool {
+    compiled_roles.get(module) == Some(&TargetRole::Proof)
+        && !is_bundled_theory_module(module)
+        && !generated_modules.contains(module)
+}
+
 // Exit 1 alone is ambiguous: the pinned runtime prints "INTERNAL PANIC" to
 // stderr and then calls std::exit(1), including on native allocation failure.
 // https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/runtime/object.cpp
@@ -164,29 +194,63 @@ enum LeanDiagnosticSeverity {
 // limits as runtime.*, but kernel exceptions become anonymous messages with
 // a "(kernel)" prefix; conservatively classify every kernel diagnostic as
 // operational, including kernel type errors, rather than infer its cause.
+// For authored proof compilation (`allow_proof_resource_limit == true`),
+// deterministic `runtime.maxHeartbeats` and `runtime.maxRecDepth` (including
+// `nested.runtime.*` wrappers) classify as exit-1 `proof_failed` with an
+// explicit sub-reason, while all other `runtime.*` diagnostics, kernel
+// errors, non-empty stderr, and non-proof resource limits stay exit-2
+// operational failures.
 // https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/CoreM.lean#L479-L485
+// https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/CoreM.lean#L669-L673
+// https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Exception.lean#L225-L238
+// https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Message.lean#L561-L577
 // https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Message.lean#L867-L893
-fn reports_frontend_rejection(output: &Output) -> bool {
+fn classify_frontend_rejection(
+    output: &Output,
+    allow_proof_resource_limit: bool,
+) -> Option<FrontendRejectionKind> {
     if output.status.code() != Some(1) || !output.stderr.is_empty() {
-        return false;
+        return None;
     }
     let Ok(stdout) = std::str::from_utf8(&output.stdout) else {
-        return false;
+        return None;
     };
     let mut has_error = false;
+    let mut saw_heartbeat = false;
+    let mut saw_rec_depth = false;
     for line in stdout.lines() {
         let Ok(diagnostic) = serde_json::from_str::<LeanCompileDiagnostic>(line) else {
-            return false;
+            return None;
         };
-        if diagnostic.kind.is_empty()
-            || diagnostic.kind.trim_start_matches("nested.").starts_with("runtime.")
-            || diagnostic.data.starts_with("(kernel)")
-        {
-            return false;
+        if diagnostic.kind.is_empty() || diagnostic.data.starts_with("(kernel)") {
+            return None;
+        }
+        let mut base_kind = diagnostic.kind.as_str();
+        while let Some(rest) = base_kind.strip_prefix("nested.") {
+            base_kind = rest;
+        }
+        if base_kind.starts_with("runtime.") {
+            if !allow_proof_resource_limit {
+                return None;
+            }
+            match base_kind {
+                "runtime.maxHeartbeats" => saw_heartbeat = true,
+                "runtime.maxRecDepth" => saw_rec_depth = true,
+                _ => return None,
+            }
         }
         has_error |= matches!(diagnostic.severity, LeanDiagnosticSeverity::Error);
     }
-    has_error
+    if !has_error {
+        return None;
+    }
+    if saw_heartbeat {
+        Some(FrontendRejectionKind::HeartbeatLimitExceeded)
+    } else if saw_rec_depth {
+        Some(FrontendRejectionKind::RecursionDepthExceeded)
+    } else {
+        Some(FrontendRejectionKind::Elaboration)
+    }
 }
 
 #[derive(Deserialize)]
@@ -270,6 +334,15 @@ fn check_lean_output(
     output: Output,
     ordinary_rejection: bool,
 ) -> Result<String, Failure> {
+    check_lean_output_with_policy(label, output, ordinary_rejection, false)
+}
+
+fn check_lean_output_with_policy(
+    label: &str,
+    output: Output,
+    ordinary_rejection: bool,
+    allow_proof_resource_limit: bool,
+) -> Result<String, Failure> {
     check_lean_stderr_panic(label, &output)?;
     if !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr);
@@ -277,13 +350,27 @@ fn check_lean_output(
         // Keep both streams: a frontend error can precede a runtime failure,
         // and dropping either stream hides that distinction.
         let detail = format!("stdout:\n{}\nstderr:\n{}", stdout.trim(), stderr.trim());
-        let code =
-            if ordinary_rejection && reports_frontend_rejection(&output) { 1 } else { 2 };
-        return Err(Failure::new(
-            code,
-            label,
-            format!("Lean exited {:?}: {detail}", output.status.code()),
-        ));
+        let rejection = if ordinary_rejection {
+            classify_frontend_rejection(&output, allow_proof_resource_limit)
+        } else {
+            None
+        };
+        let (code, reason, message) = match rejection {
+            Some(kind) => match kind.sub_reason() {
+                Some(reason) => (
+                    1,
+                    Some(reason),
+                    format!("Lean exited {:?} ({reason}): {detail}", output.status.code()),
+                ),
+                None => (1, None, format!("Lean exited {:?}: {detail}", output.status.code())),
+            },
+            None => (2, None, format!("Lean exited {:?}: {detail}", output.status.code())),
+        };
+        let mut failure = Failure::new(code, label, message);
+        if let Some(reason) = reason {
+            failure = failure.with_reason(reason);
+        }
+        return Err(failure);
     }
     String::from_utf8(output.stdout)
         .map_err(|e| Failure::new(2, label, format!("invalid UTF-8 from Lean: {e}")))
@@ -1120,6 +1207,7 @@ pub struct Checker {
     prebuilt_olean_dir: Option<PathBuf>,
     pub(crate) olean_ledger: BTreeMap<PathBuf, String>,
     pub(crate) compiled_roles: BTreeMap<String, TargetRole>,
+    pub(crate) generated_modules: BTreeSet<String>,
 }
 
 impl Drop for Checker {
@@ -1217,6 +1305,7 @@ impl Checker {
             prebuilt_olean_dir: None,
             olean_ledger: BTreeMap::new(),
             compiled_roles: BTreeMap::new(),
+            generated_modules: BTreeSet::new(),
         })
     }
 
@@ -1235,6 +1324,14 @@ impl Checker {
     /// Return whether `--paranoid-quorum` is enabled.
     pub fn paranoid_quorum(&self) -> bool {
         self.paranoid_quorum
+    }
+
+    /// Record runner-generated module names (such as sharded `Proof.IdTree`)
+    /// that carry `TargetRole::Proof` for auditing but are not authored proof
+    /// code, so resource limits during their compilation remain operational
+    /// (`tool_failed`, exit `2`) instead of `proof_failed` (exit `1`).
+    pub fn set_generated_modules(&mut self, modules: BTreeSet<String>) {
+        self.generated_modules = modules;
     }
 
     /// Test hook: serve `"spec-preflight"` from `SpecPreflight.lean` even
@@ -1465,8 +1562,11 @@ impl Checker {
         let Some(mod_name) = olean_rel_path_to_module_name(rel) else {
             return true;
         };
-        self.compiled_roles.get(&mod_name) == Some(&TargetRole::Proof)
-            && !is_bundled_theory_module(&mod_name)
+        // Gate every non-bundled `Proof`-role module, including runner-
+        // generated ones such as a sharded `Proof.IdTree`: export gating is
+        // about proof artifacts, not about who authored them, so
+        // `generated_modules` deliberately does not apply here.
+        is_authored_proof_module(&mod_name, &self.compiled_roles, &BTreeSet::new())
     }
 
     /// Copy compiled target `.olean` artifacts from `self.stage/lib` into
@@ -2600,22 +2700,14 @@ impl Checker {
         let output = output?;
 
         let label = format!("compile-{module}");
-        check_lean_stderr_panic(&label, &output)?;
-        if !output.status.success() {
-            let stderr = String::from_utf8_lossy(&output.stderr);
-            let stdout = String::from_utf8_lossy(&output.stdout);
-            let detail = format!("stdout:\n{}\nstderr:\n{}", stdout.trim(), stderr.trim());
-            let code = if target_rejection && reports_frontend_rejection(&output) {
-                1
-            } else {
-                2
-            };
-            return Err(Failure::new(
-                code,
-                label,
-                format!("Lean exited {:?}: {detail}", output.status.code()),
-            ));
-        }
+        let allow_proof_resource_limit = target_rejection
+            && is_authored_proof_module(module, &self.compiled_roles, &self.generated_modules);
+        check_lean_output_with_policy(
+            &label,
+            output,
+            target_rejection,
+            allow_proof_resource_limit,
+        )?;
 
         let dest_olean = lib_dir.join(format!("{}.olean", module.replace('.', "/")));
         let mod_arts = promote_compiled_module_outputs(
@@ -2943,6 +3035,7 @@ impl Checker {
             counter,
             admitted,
             compiled_roles,
+            generated_modules,
             child_timeout,
             olean_cache,
             olean_ledger,
@@ -2950,6 +3043,7 @@ impl Checker {
         } = self;
         let child_timeout = *child_timeout;
         let compiled_roles: &BTreeMap<String, TargetRole> = compiled_roles;
+        let generated_modules: &BTreeSet<String> = generated_modules;
         let adm = admitted.as_mut().expect("toolchain admission verified above");
         let total = order.len();
         let mut path_sha_cache = BTreeMap::new();
@@ -3075,7 +3169,14 @@ impl Checker {
                     let output = runtime.execute(&policy);
                     let _ = fs::remove_dir_all(&tmp_dir);
                     let output = output?;
-                    check_lean_output(&label, output, target_rejection)?;
+                    let allow_proof_resource_limit = target_rejection
+                        && is_authored_proof_module(module, compiled_roles, generated_modules);
+                    check_lean_output_with_policy(
+                        &label,
+                        output,
+                        target_rejection,
+                        allow_proof_resource_limit,
+                    )?;
                     Ok(ExecutedModuleCompile::Compiled {
                         done: (out_dir, leaf, mod_is_module),
                         cache_key,
@@ -4663,7 +4764,7 @@ impl StandaloneNdjsonKernel {
     fn args(self) -> Vec<String> {
         match self {
             Self::ConRon | Self::ConLeche => {
-                let jobs = crate::toolchain::default_compile_workers(2);
+                let jobs = crate::toolchain::bounded_compile_workers(2, 2);
                 vec!["--verified".to_owned(), format!("--jobs={jobs}")]
             }
             Self::Lean4lean => vec!["--import".to_owned()],
@@ -5059,6 +5160,106 @@ mod process_tests {
                 .process_with_exit_policy("fixture", &["-c".into(), script.into()], true)
                 .unwrap_err();
             assert_eq!(error.code, 2, "{script}: {error}");
+        }
+    }
+
+    #[test]
+    fn proof_resource_limits_classify_as_proof_failure_only_for_proof_modules() {
+        let checkout = tempfile::tempdir().unwrap();
+        let checker = shell_checker(checkout.path());
+        let ordinary = serde_json::json!({
+            "severity": "error", "kind": "[anonymous]", "data": "Type mismatch"
+        });
+        let heartbeats = serde_json::json!({
+            "severity": "error", "kind": "runtime.maxHeartbeats", "data": "(deterministic) timeout"
+        });
+        let nested_heartbeats = serde_json::json!({
+            "severity": "error", "kind": "nested.runtime.maxHeartbeats", "data": "(deterministic) timeout"
+        });
+        let rec_depth = serde_json::json!({
+            "severity": "error", "kind": "runtime.maxRecDepth", "data": "maximum recursion depth"
+        });
+        let nested_rec_depth = serde_json::json!({
+            "severity": "error", "kind": "nested.runtime.maxRecDepth", "data": "maximum recursion depth"
+        });
+        let other_runtime = serde_json::json!({
+            "severity": "error", "kind": "runtime.other", "data": "unexpected runtime limit"
+        });
+        let kernel_mem = serde_json::json!({
+            "severity": "error", "kind": "[anonymous]", "data": "(kernel) excessive memory consumption detected"
+        });
+
+        // Role gate: strictly authored non-bundled, non-generated
+        // `TargetRole::Proof` modules qualify. A `Specification`-role module
+        // named `Proof` or `Proof.Spec`, bundled `Anneal.*` theory modules, and
+        // runner-generated `Proof.IdTree` never qualify.
+        let roles = BTreeMap::from([
+            ("Proof".to_owned(), TargetRole::Specification),
+            ("Proof.Spec".to_owned(), TargetRole::Specification),
+            ("Proof.Authored".to_owned(), TargetRole::Proof),
+            ("Proof.IdTree".to_owned(), TargetRole::Proof),
+            ("CustomProof".to_owned(), TargetRole::Proof),
+            ("Anneal.MirWp".to_owned(), TargetRole::Proof),
+            ("Captured".to_owned(), TargetRole::Capture),
+        ]);
+        let generated = BTreeSet::from(["Proof.IdTree".to_owned()]);
+        assert!(!is_authored_proof_module("Proof", &roles, &generated));
+        assert!(!is_authored_proof_module("Proof.Spec", &roles, &generated));
+        assert!(is_authored_proof_module("Proof.Authored", &roles, &generated));
+        assert!(!is_authored_proof_module("Proof.IdTree", &roles, &generated));
+        assert!(is_authored_proof_module("CustomProof", &roles, &generated));
+        assert!(!is_authored_proof_module("Anneal.MirWp", &roles, &generated));
+        assert!(!is_authored_proof_module("Captured", &roles, &generated));
+
+        let run_policy = |label: &str, stream: &str, script: &str, allow_proof_limit: bool| {
+            fs::write(checker.stage.join("diagnostic"), stream).unwrap();
+            let output = checker.launch_lean(&["-c".into(), script.into()]).unwrap();
+            check_lean_output_with_policy(label, output, true, allow_proof_limit).unwrap_err()
+        };
+
+        // Authored Proof modules classify deterministic maxHeartbeats and
+        // maxRecDepth as exit-1 `proof_failed` with explicit sub-reasons.
+        for (label, stream, expected_reason) in [
+            ("compile-Proof", heartbeats.to_string(), "heartbeat_limit_exceeded"),
+            ("compile-Proof", nested_heartbeats.to_string(), "heartbeat_limit_exceeded"),
+            ("compile-Proof", format!("{ordinary}\n{heartbeats}"), "heartbeat_limit_exceeded"),
+            ("compile-CustomProof", rec_depth.to_string(), "recursion_depth_exceeded"),
+            ("compile-CustomProof", nested_rec_depth.to_string(), "recursion_depth_exceeded"),
+        ] {
+            let err = run_policy(label, &stream, "cat diagnostic; exit 1", true);
+            assert_eq!(err.code, 1, "{label} {stream}: {err}");
+            assert_eq!(err.reason.as_deref(), Some(expected_reason), "{label}: {err}");
+            assert!(err.message.contains(expected_reason), "{label}: {err}");
+        }
+        let ordinary_err =
+            run_policy("compile-Proof", &ordinary.to_string(), "cat diagnostic; exit 1", true);
+        assert_eq!(ordinary_err.code, 1, "{ordinary_err}");
+        assert!(ordinary_err.reason.is_none(), "{ordinary_err:?}");
+
+        // Mixed unknown `runtime.*` error, kernel error, or stderr output
+        // remain operational (exit 2) even for authored Proof modules.
+        for (stream, script) in [
+            (other_runtime.to_string(), "cat diagnostic; exit 1"),
+            (format!("{heartbeats}\n{other_runtime}"), "cat diagnostic; exit 1"),
+            (format!("{heartbeats}\n{kernel_mem}"), "cat diagnostic; exit 1"),
+            (heartbeats.to_string(), "cat diagnostic; echo 'INTERNAL PANIC: oom' >&2; exit 1"),
+        ] {
+            let err = run_policy("compile-Proof", &stream, script, true);
+            assert_eq!(err.code, 2, "{stream} / {script}: {err}");
+            assert!(err.reason.is_none(), "{stream} / {script}: {err:?}");
+        }
+
+        // Non-Proof roles (including a spec-role module named `Proof`) keep
+        // `runtime.maxHeartbeats` / `runtime.maxRecDepth` operational (exit 2).
+        for (label, diag) in [
+            ("compile-Proof", &heartbeats),
+            ("compile-Spec", &heartbeats),
+            ("compile-Expected", &rec_depth),
+            ("compile-Captured", &nested_heartbeats),
+            ("compile-Anneal.MirWp", &heartbeats),
+        ] {
+            let err = run_policy(label, &diag.to_string(), "cat diagnostic; exit 1", false);
+            assert_eq!(err.code, 2, "{label}: {err}");
         }
     }
 
@@ -5794,8 +5995,12 @@ mod process_tests {
         checker.compiled_roles.insert("My.Nested.Proof".to_owned(), TargetRole::Proof);
         checker.compiled_roles.insert("My.Nested.Spec".to_owned(), TargetRole::Specification);
         checker.compiled_roles.insert("Anneal.MirWp.Scalars".to_owned(), TargetRole::Proof);
+        checker.compiled_roles.insert("Proof.IdTree".to_owned(), TargetRole::Proof);
+        checker.set_generated_modules(BTreeSet::from(["Proof.IdTree".to_owned()]));
 
         for rel in [
+            "Proof/IdTree.olean",
+            r"Proof\IdTree.olean",
             "My/Nested/Proof.olean",
             "My/Nested/Proof.olean.server",
             "My/Nested/Proof.olean.private",
@@ -6981,12 +7186,96 @@ exit 1
 
     #[test]
     fn arena_ndjson_kernels_run_verified_with_capped_jobs() {
-        let jobs = crate::toolchain::default_compile_workers(2);
+        let jobs = crate::toolchain::bounded_compile_workers(2, 2);
         assert!((1..=2).contains(&jobs), "{jobs}");
         for kernel in [StandaloneNdjsonKernel::ConRon, StandaloneNdjsonKernel::ConLeche] {
             assert_eq!(kernel.args(), ["--verified".to_owned(), format!("--jobs={jobs}")]);
         }
         assert_eq!(StandaloneNdjsonKernel::Lean4lean.args(), ["--import"]);
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn generated_proof_id_tree_resource_limit_stays_tool_failed() {
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let root = base.join("bundle");
+        let prefix = base.join("sysroot");
+        fs::create_dir_all(prefix.join("lib/lean/Init")).unwrap();
+        let inspector_src = root.join("trusted/audit/TrustedBoundary.lean");
+        fs::create_dir_all(inspector_src.parent().unwrap()).unwrap();
+        fs::write(&inspector_src, "-- synthetic inspector\n").unwrap();
+
+        let lean = base.join("lean");
+        write_executable_script(
+            &lean,
+            format!(
+                r#"#!/bin/sh
+case "$1" in
+    --version) printf 'Lean 4.34.1\n'; exit 0 ;;
+    --print-prefix) printf '%s\n' '{}'; exit 0 ;;
+esac
+printf '{{"severity":"error","kind":"runtime.maxHeartbeats","data":"(deterministic) timeout"}}\n'
+exit 1
+"#,
+                prefix.display()
+            ),
+        );
+
+        let id_src = base.join("IdTree.lean");
+        let proof_src = base.join("Proof.lean");
+        fs::write(&id_src, "prelude\n").unwrap();
+        fs::write(&proof_src, "prelude\n").unwrap();
+
+        // 1. Runner-generated `Proof.IdTree` carries `TargetRole::Proof` for
+        //    auditing, but a resource limit during its compilation stays
+        //    exit-2 operational (`tool_failed`).
+        let mut gen_checker = Checker::new_with_env(&root, Some(&lean), []).unwrap();
+        gen_checker.set_allow_unpinned_lean(true);
+        gen_checker.set_sandbox_mode(SandboxMode::Unsandboxed);
+        gen_checker.set_use_olean_cache(false);
+        gen_checker.tool_admission().unwrap();
+        gen_checker.compiled_roles.insert("Proof.IdTree".to_owned(), TargetRole::Proof);
+        gen_checker.set_generated_modules(BTreeSet::from(["Proof.IdTree".to_owned()]));
+        let gen_err = gen_checker
+            .compile_lean_modules_parallel(
+                &["Proof.IdTree".to_owned()],
+                &BTreeMap::from([("Proof.IdTree".to_owned(), id_src)]),
+                &BTreeMap::from([("Proof.IdTree".to_owned(), Vec::new())]),
+                &BTreeMap::from([("Proof.IdTree".to_owned(), false)]),
+                "lib",
+                false,
+                true,
+                1,
+            )
+            .unwrap_err();
+        assert_eq!(gen_err.code, 2, "generated Proof.IdTree limit must stay exit 2: {gen_err}");
+        assert!(gen_err.reason.is_none(), "{gen_err:?}");
+
+        // 2. An authored `Proof` module hitting the same heartbeat limit
+        //    classifies as exit-1 `proof_failed` with explicit sub-reason.
+        let mut auth_checker = Checker::new_with_env(&root, Some(&lean), []).unwrap();
+        auth_checker.set_allow_unpinned_lean(true);
+        auth_checker.set_sandbox_mode(SandboxMode::Unsandboxed);
+        auth_checker.set_use_olean_cache(false);
+        auth_checker.tool_admission().unwrap();
+        auth_checker.compiled_roles.insert("Proof".to_owned(), TargetRole::Proof);
+        auth_checker.set_generated_modules(BTreeSet::from(["Proof.IdTree".to_owned()]));
+        let auth_err = auth_checker
+            .compile_lean_modules_parallel(
+                &["Proof".to_owned()],
+                &BTreeMap::from([("Proof".to_owned(), proof_src)]),
+                &BTreeMap::from([("Proof".to_owned(), Vec::new())]),
+                &BTreeMap::from([("Proof".to_owned(), false)]),
+                "lib",
+                false,
+                true,
+                1,
+            )
+            .unwrap_err();
+        assert_eq!(auth_err.code, 1, "authored Proof limit must be exit 1: {auth_err}");
+        assert_eq!(auth_err.reason.as_deref(), Some("heartbeat_limit_exceeded"), "{auth_err:?}");
+        assert!(auth_err.message.contains("heartbeat_limit_exceeded"), "{auth_err}");
     }
 
     #[test]

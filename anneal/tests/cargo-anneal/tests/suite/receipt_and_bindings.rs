@@ -87,8 +87,10 @@ fn canonicalizes_symlinked_temporary_directory_source_bindings() {
     assert_eq!(captured["source_files"].as_array().unwrap().len(), 1);
     let input = &captured["source_files"][0];
     let input_path = PathBuf::from(input["path"].as_str().unwrap());
-    assert!(input_path.starts_with(fs::canonicalize(&temporary).unwrap()));
+    assert_eq!(input_path, PathBuf::from("lib.rs"));
+    assert!(!input_path.is_absolute());
     assert_eq!(input["path"], captured["configuration"]["crate_root"]);
+    assert_eq!(captured["configuration"]["declared_source_files"], json!(["lib.rs"]));
     assert_eq!(input["sha256"], sha256_hex(SCALAR_SOURCE.as_bytes()));
     assert_eq!(input["sha256"], ok.sources[0]["sha256"]);
     assert_eq!(ok.capture_sha256, sha256_hex(&bytes));
@@ -448,12 +450,15 @@ fn selected_unit_normalization_and_boundary_rejections() {
     )
     .unwrap();
     let lean_dir = work.join("lean");
-    let default_feat_inv = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        manifest.as_os_str(),
-        OsStr::new("--proof-dir"),
-        lean_dir.as_os_str(),
-    ]));
+    let default_feat_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            lean_dir.as_os_str(),
+        ]),
+    );
     let default_feat_res = run_verify_inv(&staged, &default_feat_inv);
     let default_feat_rec = expect_verified(&default_feat_res, "crate_verified", true);
     assert_eq!(
@@ -469,15 +474,18 @@ fn selected_unit_normalization_and_boundary_rejections() {
         ),
     )
     .unwrap();
-    let custom_feat_inv = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        manifest.as_os_str(),
-        OsStr::new("--proof-dir"),
-        lean_dir.as_os_str(),
-        OsStr::new("--no-default-features"),
-        OsStr::new("--features"),
-        OsStr::new("extra"),
-    ]));
+    let custom_feat_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            lean_dir.as_os_str(),
+            OsStr::new("--no-default-features"),
+            OsStr::new("--features"),
+            OsStr::new("extra"),
+        ]),
+    );
     let custom_feat_res = run_verify_inv(&staged, &custom_feat_inv);
     let custom_feat_rec = expect_verified(&custom_feat_res, "crate_verified", true);
     assert_eq!(custom_feat_rec.configuration["cfg"], json!(["feature=\"extra\""]));
@@ -497,7 +505,7 @@ fn selected_unit_normalization_and_boundary_rejections() {
             lean_dir.as_os_str(),
         ];
         args.extend_from_slice(extra_args);
-        let bad_inv = with_host_cargo_env(verify_invocation(&args));
+        let bad_inv = with_host_cargo_env(&staged, verify_invocation(&args));
         let bad_res = run_verify_inv(&staged, &bad_inv);
         expect_failed(&bad_res, 1, "unsupported", Some("cargo"), expected_detail);
     }
@@ -506,12 +514,15 @@ fn selected_unit_normalization_and_boundary_rejections() {
     fs::write(&manifest, manifest_base).unwrap();
     fs::create_dir(lean_dir.join(".cache")).unwrap();
     fs::write(lean_dir.join(".cache/Ignored.lean"), b"not valid Lean syntax").unwrap();
-    let good_cargo_inv = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        manifest.as_os_str(),
-        OsStr::new("--proof-dir"),
-        lean_dir.as_os_str(),
-    ]))
+    let good_cargo_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            lean_dir.as_os_str(),
+        ]),
+    )
     .env("RUSTC", work.join("nonexistent-rustc"));
     let r = run_verify_inv(&staged, &good_cargo_inv);
     expect_verified(&r, "crate_verified", true);
@@ -533,12 +544,15 @@ fn selected_unit_normalization_and_boundary_rejections() {
     fs::write(ws_root.join("member/Cargo.toml"), manifest_base).unwrap();
     fs::write(ws_root.join("member/lib.rs"), SCALAR_SOURCE).unwrap();
     let member_manifest = ws_root.join("member/Cargo.toml");
-    let ws_inv = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        member_manifest.as_os_str(),
-        OsStr::new("--proof-dir"),
-        lean_dir.as_os_str(),
-    ]));
+    let ws_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            member_manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            lean_dir.as_os_str(),
+        ]),
+    );
     let r = run_verify_inv(&staged, &ws_inv);
     expect_failed(
         &r,
@@ -1000,4 +1014,80 @@ fn human_verdict_cards_and_receipt_out_cover_ok_scoped_and_tainted_tiers() {
     assert!(tainted_stdout.contains("! TAINT    : sorry_in_proof"), "{tainted_stdout}");
     assert!(!tainted_stdout.contains("[OK]"), "{tainted_stdout}");
     assert!(tainted_stderr.contains("TAINTED"), "{tainted_stderr}");
+}
+
+#[test]
+fn capture_sha256_is_invariant_across_distinct_staging_directories() {
+    let staged_a = new_workspace("anneal-cap-det-a-").stage().unwrap();
+    let staged_b = new_workspace("anneal-cap-det-b-").stage().unwrap();
+
+    let run_in = |staged: &anneal_testkit::StagedWorkspace, tag: &str| {
+        let work = staged.work_dir();
+        let rust = work.join(format!("rust-{tag}"));
+        let lean = work.join(format!("lean-{tag}"));
+        let tmp = work.join(format!("tmp-{tag}"));
+        fs::create_dir_all(rust.join("sub")).unwrap();
+        fs::create_dir_all(&lean).unwrap();
+        fs::create_dir_all(&tmp).unwrap();
+
+        fs::write(rust.join("lib.rs"), format!("mod sub;\n{SCALAR_SOURCE}")).unwrap();
+        fs::write(rust.join("sub/mod.rs"), "pub fn helper() -> u64 { 0 }\n").unwrap();
+        fs::write(lean.join("Spec.lean"), SCALAR_SPEC).unwrap();
+        fs::write(lean.join("Proof.lean"), SCALAR_PROOF).unwrap();
+
+        let req = json!({
+            "schema_version": 1,
+            "compilation": {
+                "source_root": rust,
+                "crate_root": "lib.rs",
+                "crate_name": "scalar",
+                "edition": "2024",
+                "target": "x86_64-unknown-linux-gnu",
+                "cfg": [],
+                "source_files": ["lib.rs", "sub/mod.rs"]
+            },
+            "scope": { "kind": "selected_unit", "roots": ["zero"] },
+            "proof": {
+                "source_root": lean,
+                "sources": [
+                    { "module": "Spec", "path": "Spec.lean", "role": "specification" },
+                    { "module": "Proof", "path": "Proof.lean", "role": "proof" }
+                ]
+            }
+        });
+        let req_path = write_json_file(&work.join("req.json"), &req);
+        let art = work.join(format!("art-{tag}"));
+        let inv = verify_invocation(&[
+            OsStr::new("--request"),
+            req_path.as_os_str(),
+            OsStr::new("--artifacts"),
+            art.as_os_str(),
+        ])
+        .env("TMPDIR", &tmp);
+        let run = run_verify_inv(staged, &inv);
+        let ok = expect_verified(&run, "selected_unit_verified", true);
+        let capture_bytes = fs::read(art.join("capture/capture.json")).unwrap();
+        (ok.capture_sha256.clone(), capture_bytes, tmp)
+    };
+
+    let (sha_a, bytes_a, tmp_a) = run_in(&staged_a, "alpha");
+    let (sha_b, bytes_b, tmp_b) = run_in(&staged_b, "beta");
+
+    assert_eq!(sha_a, sha_b, "captureSha256 must be invariant across distinct staging dirs");
+    assert_eq!(bytes_a, bytes_b, "capture.json must be byte-identical across staging dirs");
+
+    let captured: Value = serde_json::from_slice(&bytes_a).unwrap();
+    assert_eq!(captured["configuration"]["crate_root"], "lib.rs");
+    assert_eq!(captured["configuration"]["declared_source_files"], json!(["lib.rs", "sub/mod.rs"]));
+    let recorded_paths: Vec<&str> = captured["source_files"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|entry| entry["path"].as_str().unwrap())
+        .collect();
+    assert_eq!(recorded_paths, vec!["lib.rs", "sub/mod.rs"]);
+
+    let raw_json = String::from_utf8(bytes_a).unwrap();
+    assert!(!raw_json.contains(tmp_a.to_str().unwrap()), "staging TMPDIR leaked into capture.json");
+    assert!(!raw_json.contains(tmp_b.to_str().unwrap()), "staging TMPDIR leaked into capture.json");
 }

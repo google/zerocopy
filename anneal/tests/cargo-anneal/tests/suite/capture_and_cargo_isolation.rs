@@ -233,12 +233,15 @@ fn cargo_shortcut_verifies_std_and_nostd_nomain_binaries() {
     .unwrap();
     fs::write(std_pkg.join("src/main.rs"), "fn main() {}\n").unwrap();
     let std_manifest = std_pkg.join("Cargo.toml");
-    let std_inv = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        std_manifest.as_os_str(),
-        OsStr::new("--proof-dir"),
-        unit_lean.as_os_str(),
-    ]));
+    let std_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            std_manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            unit_lean.as_os_str(),
+        ]),
+    );
     let std_res = run_verify_inv(&staged, &std_inv);
     let std_ok = expect_verified(&std_res, "crate_verified", true);
     assert_eq!(std_ok.configuration["crate_type"], "bin");
@@ -322,16 +325,19 @@ pub unsafe fn guarded_exit(ok: bool) -> bool {
     let nostd_manifest = nostd_pkg.join("Cargo.toml");
 
     // 2a. Passing run (`--panic abort --select guarded_exit`).
-    let ok_inv = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        nostd_manifest.as_os_str(),
-        OsStr::new("--proof-dir"),
-        nostd_lean.as_os_str(),
-        OsStr::new("--panic"),
-        OsStr::new("abort"),
-        OsStr::new("--select"),
-        OsStr::new("guarded_exit"),
-    ]));
+    let ok_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            nostd_manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            nostd_lean.as_os_str(),
+            OsStr::new("--panic"),
+            OsStr::new("abort"),
+            OsStr::new("--select"),
+            OsStr::new("guarded_exit"),
+        ]),
+    );
     let ok_res = run_verify_inv(&staged, &ok_inv);
     let ok_rec = expect_verified(&ok_res, "selected_unit_verified", true);
     assert_eq!(ok_rec.configuration["crate_name"], "nostd_bin");
@@ -345,14 +351,17 @@ pub unsafe fn guarded_exit(ok: bool) -> bool {
     );
 
     // 2b. Default `--panic unwind` fails compilation on `#![no_std]` binary.
-    let no_panic_inv = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        nostd_manifest.as_os_str(),
-        OsStr::new("--proof-dir"),
-        nostd_lean.as_os_str(),
-        OsStr::new("--select"),
-        OsStr::new("guarded_exit"),
-    ]));
+    let no_panic_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            nostd_manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            nostd_lean.as_os_str(),
+            OsStr::new("--select"),
+            OsStr::new("guarded_exit"),
+        ]),
+    );
     let no_panic_res = run_verify_inv(&staged, &no_panic_inv);
     expect_failed(&no_panic_res, 2, "compiler_failed", Some("capture"), "rustc rejected");
     let no_panic_stderr = String::from_utf8_lossy(&no_panic_res.process.stderr);
@@ -362,14 +371,17 @@ pub unsafe fn guarded_exit(ok: bool) -> bool {
     );
 
     // 2c. Whole-crate scope without `--select` fails closed at capture.
-    let whole_inv = with_host_cargo_env(verify_invocation(&[
-        OsStr::new("--manifest-path"),
-        nostd_manifest.as_os_str(),
-        OsStr::new("--proof-dir"),
-        nostd_lean.as_os_str(),
-        OsStr::new("--panic"),
-        OsStr::new("abort"),
-    ]));
+    let whole_inv = with_host_cargo_env(
+        &staged,
+        verify_invocation(&[
+            OsStr::new("--manifest-path"),
+            nostd_manifest.as_os_str(),
+            OsStr::new("--proof-dir"),
+            nostd_lean.as_os_str(),
+            OsStr::new("--panic"),
+            OsStr::new("abort"),
+        ]),
+    );
     let whole_res = run_verify_inv(&staged, &whole_inv);
     expect_failed(&whole_res, 1, "unsupported", Some("capture"), "unsupported");
 

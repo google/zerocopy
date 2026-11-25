@@ -150,6 +150,8 @@ class GuardMutationUnitTests(unittest.TestCase):
             "expected token",
             "maximum recursion depth has been reached",
             "deterministic timeout",
+            "heartbeat_limit_exceeded",
+            "recursion_depth_exceeded",
             "PANIC at Lean.Kernel",
         ):
             bad_out = (

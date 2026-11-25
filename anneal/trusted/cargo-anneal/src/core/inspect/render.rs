@@ -525,6 +525,9 @@ fn render_human(
                     let _ = writeln!(out, "  horizon: {}", fmt_horizon(h));
                 }
                 let _ = writeln!(out, "  phase: {}", SanitizedInline(&f.phase));
+                if let Some(reason) = &f.reason {
+                    let _ = writeln!(out, "  reason: {}", SanitizedInline(reason));
+                }
                 let _ = writeln!(out, "  detail:\n{}", SanitizedBlock(&f.detail));
                 if let Some(hint) = &f.hint {
                     let _ = writeln!(out, "  hint:\n{}", SanitizedBlock(hint));
@@ -856,6 +859,9 @@ fn render_ledger(
                 let _ = writeln!(out, "horizon={}", fmt_horizon(h));
             }
             let _ = writeln!(out, "failure.phase={}", SanitizedInline(&f.phase));
+            if let Some(reason) = &f.reason {
+                let _ = writeln!(out, "failure.reason={}", SanitizedInline(reason));
+            }
             let _ = writeln!(out, "failure.detail={}", SanitizedInline(&f.detail));
         }
         ParsedReceipt::Success(s) => {
@@ -1490,5 +1496,32 @@ mod tests {
         let parsed: serde_json::Value = serde_json::from_str(&json_out).unwrap();
         assert_eq!(parsed["receipt"]["capture_shards_sha256"], json!("1".repeat(64)));
         assert_eq!(parsed["receipt"]["shards"]["total_shards"], json!(2));
+    }
+
+    #[test]
+    fn renders_failure_receipt_reason_in_human_and_ledger_formats() {
+        let rec = json!({
+            "schema_version": 3,
+            "taint_reasons": [],
+            "elaboration_sandbox": "linux_bwrap",
+            "status": "proof_failed",
+            "phase": "audit",
+            "reason": "heartbeat_limit_exceeded",
+            "detail": "Lean exited Some(1) (heartbeat_limit_exceeded): ...",
+            "artifacts": null
+        });
+        let env = parse_and_validate_receipt(&serde_json::to_vec(&rec).unwrap()).unwrap();
+        assert!(env.invariant_violations.is_empty(), "{:?}", env.invariant_violations);
+
+        let human = render_inspection(&env, None, &[], &RenderOptions::default());
+        assert!(human.contains("  reason: heartbeat_limit_exceeded\n"), "{human}");
+
+        let ledger = render_inspection(
+            &env,
+            None,
+            &[],
+            &RenderOptions { format: InspectFormat::Ledger, ..RenderOptions::default() },
+        );
+        assert!(ledger.contains("failure.reason=heartbeat_limit_exceeded\n"), "{ledger}");
     }
 }

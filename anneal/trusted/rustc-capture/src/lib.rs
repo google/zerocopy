@@ -42,7 +42,7 @@ mod shard;
 use std::collections::{BTreeMap, BTreeSet};
 use std::env;
 use std::ffi::OsString;
-use std::path::PathBuf;
+use std::path::{Component, Path, PathBuf};
 use std::process::ExitCode;
 
 use clap::{ArgGroup, Parser, ValueEnum};
@@ -154,6 +154,15 @@ pub struct Args {
     /// ambient module or include-file reads.
     #[arg(long, required = true, action = clap::ArgAction::Append)]
     source_file: Vec<PathBuf>,
+    /// Optional logical source root directory. When supplied, `--crate-root`
+    /// and every `--source-file` must canonically reside inside this directory,
+    /// and path metadata in `capture.json` (`configuration.crate_root`,
+    /// `configuration.declared_source_files`, and `source_files[].path`) is
+    /// normalized to source-root-relative POSIX paths. Only those path fields
+    /// are normalized; crates that embed path-dependent values (for example via
+    /// `file!()`) may still vary across staging directories.
+    #[arg(long)]
+    source_root: Option<PathBuf>,
     /// Capture the named standard-library crate from its unmodified sources.
     /// This capability admits the crate's own language items and version-pinned
     /// `#![feature(...)]` gates and skips object emission. It requires a
@@ -312,6 +321,51 @@ impl Failure {
     }
 }
 
+/// Format a canonical input path for `capture.json` emission.
+///
+/// When `source_root` is `Some`, returns a clean source-root-relative POSIX
+/// path (`/`-separated `Normal` UTF-8 components) and fails closed if
+/// `canonical_path` escapes or equals `source_root`. When `source_root` is
+/// `None`, preserves `canonical_path` verbatim for standalone callers.
+pub(crate) fn manifest_path(
+    canonical_path: &Path,
+    source_root: Option<&Path>,
+) -> Result<PathBuf, Failure> {
+    let Some(root) = source_root else {
+        return Ok(canonical_path.to_path_buf());
+    };
+    let rel = canonical_path.strip_prefix(root).map_err(|_| {
+        Failure::unsupported(format!(
+            "source input escapes --source-root: {}",
+            canonical_path.display()
+        ))
+    })?;
+    let mut parts = Vec::new();
+    for component in rel.components() {
+        match component {
+            Component::Normal(part) => {
+                let s = part.to_str().ok_or_else(|| {
+                    Failure::unsupported("non-UTF-8 source path cannot be normalized for manifest")
+                })?;
+                parts.push(s);
+            }
+            _ => {
+                return Err(Failure::unsupported(format!(
+                    "source input does not normalize cleanly under --source-root: {}",
+                    canonical_path.display()
+                )));
+            }
+        }
+    }
+    if parts.is_empty() {
+        return Err(Failure::unsupported(format!(
+            "source input must be a file inside --source-root: {}",
+            canonical_path.display()
+        )));
+    }
+    Ok(PathBuf::from(parts.join("/")))
+}
+
 fn run(mut args: Args) -> Result<serde_json::Value, Failure> {
     if args.target != "x86_64-unknown-linux-gnu" {
         return Err(Failure::unsupported(
@@ -326,6 +380,19 @@ fn run(mut args: Args) -> Result<serde_json::Value, Failure> {
     args.crate_root = args.crate_root.canonicalize().map_err(Failure::io)?;
     for path in &mut args.source_file {
         *path = path.canonicalize().map_err(Failure::io)?;
+    }
+    if let Some(source_root) = args.source_root.as_mut() {
+        *source_root = source_root.canonicalize().map_err(Failure::io)?;
+        if !source_root.is_dir() {
+            return Err(Failure::unsupported(format!(
+                "--source-root is not a directory: {}",
+                source_root.display()
+            )));
+        }
+        manifest_path(&args.crate_root, Some(source_root))?;
+        for path in &args.source_file {
+            manifest_path(path, Some(source_root))?;
+        }
     }
     args.source_file.sort();
     args.source_file.dedup();
@@ -562,5 +629,31 @@ mod tests {
                 "{err:?}"
             );
         }
+    }
+
+    #[test]
+    fn manifest_path_normalizes_under_source_root_and_rejects_escapes() {
+        let root = Path::new("/tmp/stage-a/rust");
+        assert_eq!(
+            manifest_path(Path::new("/tmp/stage-a/rust/lib.rs"), Some(root)).unwrap(),
+            PathBuf::from("lib.rs")
+        );
+        assert_eq!(
+            manifest_path(Path::new("/tmp/stage-a/rust/src/sub/mod.rs"), Some(root)).unwrap(),
+            PathBuf::from("src/sub/mod.rs")
+        );
+        assert_eq!(
+            manifest_path(Path::new("/tmp/stage-a/rust/lib.rs"), None).unwrap(),
+            PathBuf::from("/tmp/stage-a/rust/lib.rs")
+        );
+
+        // Paths equal to or outside `--source-root` fail closed.
+        let escape = manifest_path(Path::new("/tmp/stage-b/rust/lib.rs"), Some(root)).unwrap_err();
+        assert_eq!(escape.status, "unsupported");
+        assert!(escape.diagnostics[0].contains("escapes --source-root"), "{escape:?}");
+
+        let same = manifest_path(root, Some(root)).unwrap_err();
+        assert_eq!(same.status, "unsupported");
+        assert!(same.diagnostics[0].contains("must be a file inside --source-root"), "{same:?}");
     }
 }

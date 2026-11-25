@@ -61,6 +61,17 @@ def run_accepted(cli):
         return line
 
 
+def validate_proof_failed_receipt(receipt):
+    """Refuse to credit a resource-limit `proof_failed` as a proof rejection."""
+    if receipt.get("phase") != "audit":
+        raise RuntimeError(f"unexpected proof_failed phase: {receipt}")
+    if receipt.get("reason") is not None:
+        raise RuntimeError(
+            f"refusing to credit resource-limit proof_failed "
+            f"({receipt['reason']}): {receipt}"
+        )
+
+
 def run_proof_failed(cli):
     with tempfile.TemporaryDirectory(prefix="anneal-alpha-proof-failed-") as tmp:
         directory = Path(tmp)
@@ -71,7 +82,8 @@ def run_proof_failed(cli):
         if changed == original:
             raise RuntimeError("scalar fixture no longer returns zero")
         source.write_text(changed)
-        _, line = check(cli, directory, 1, "proof_failed")
+        receipt, line = check(cli, directory, 1, "proof_failed")
+        validate_proof_failed_receipt(receipt)
         return line
 
 

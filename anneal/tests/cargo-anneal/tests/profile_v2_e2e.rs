@@ -1450,3 +1450,47 @@ end Proof
         "local #[panic_handler] receipt must not claim .aborted modeling: {lh_assumptions:?}"
     );
 }
+
+#[cfg(unix)]
+#[test]
+fn expect_proof_failed_rejects_resource_limit_reasons() {
+    use std::os::unix::process::ExitStatusExt;
+
+    let make_outcome = |reason: Option<&str>| {
+        let mut raw = json!({
+            "schema_version": 3,
+            "taint_reasons": [],
+            "elaboration_sandbox": "linux_bwrap",
+            "status": "proof_failed",
+            "phase": "audit",
+            "detail": "limit exceeded",
+            "artifacts": null
+        });
+        if let Some(r) = reason {
+            raw["reason"] = json!(r);
+        }
+        let stdout = serde_json::to_vec(&raw).unwrap();
+        let receipt = VerifyReceipt::from_json_slice(&stdout).unwrap();
+        VerifyOutcome {
+            name: format!("synthetic-{reason:?}"),
+            receipt,
+            output: Output {
+                status: std::process::ExitStatus::from_raw(1 << 8),
+                stdout,
+                stderr: Vec::new(),
+            },
+        }
+    };
+
+    // Ordinary `proof_failed` (absent `reason`) is credited.
+    make_outcome(None).expect_proof_failed();
+
+    // Resource-limit `proof_failed` must panic instead of crediting a kill.
+    for reason in ["heartbeat_limit_exceeded", "recursion_depth_exceeded"] {
+        let outcome = make_outcome(Some(reason));
+        let res = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            outcome.expect_proof_failed();
+        }));
+        assert!(res.is_err(), "expect_proof_failed must refuse reason={reason}");
+    }
+}
