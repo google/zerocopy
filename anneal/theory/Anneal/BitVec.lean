@@ -1196,7 +1196,7 @@ theorem getLsbD_lowMask {w k i : Nat} (hi : i < w) :
 /-- Any `w`-bit value strictly below `2^k` has no bits set outside
 `lowMask w k`. -/
 theorem lt_two_pow_and_not_lowMask {w k : Nat} {b : BitVec w}
-    (_hk : k ≤ w) (hb : b.toNat < Nat.pow 2 k) :
+    (hb : b.toNat < Nat.pow 2 k) :
     and b (not (lowMask w k)) = BitVec.ofNat w 0 := by
   apply eq_of_getLsbD_eq
   intro i hi
@@ -1215,7 +1215,7 @@ theorem lt_two_pow_and_not_lowMask {w k : Nat} {b : BitVec w}
 /-- Any `w`-bit value aligned to `2^k` (`a.toNat % 2^k = 0`) has no bits set
 inside `lowMask w k`. -/
 theorem mod_two_pow_eq_zero_and_lowMask {w k : Nat} {a : BitVec w}
-    (_hk : k ≤ w) (ha : Nat.mod a.toNat (Nat.pow 2 k) = 0) :
+    (ha : Nat.mod a.toNat (Nat.pow 2 k) = 0) :
     and a (lowMask w k) = BitVec.ofNat w 0 := by
   apply eq_of_getLsbD_eq
   intro i hi
@@ -1232,7 +1232,6 @@ theorem mod_two_pow_eq_zero_and_lowMask {w k : Nat} {a : BitVec w}
 /-- Packing a `2^k`-aligned high field and a `< 2^k` low field with bitwise OR
 is injective. -/
 theorem aligned_or_bounded_injective {w k : Nat} {a₁ b₁ a₂ b₂ : BitVec w}
-    (hk : k ≤ w)
     (ha₁ : Nat.mod a₁.toNat (Nat.pow 2 k) = 0)
     (ha₂ : Nat.mod a₂.toNat (Nat.pow 2 k) = 0)
     (hb₁ : b₁.toNat < Nat.pow 2 k)
@@ -1240,10 +1239,10 @@ theorem aligned_or_bounded_injective {w k : Nat} {a₁ b₁ a₂ b₂ : BitVec w
     (hor : or a₁ b₁ = or a₂ b₂) :
     a₁ = a₂ ∧ b₁ = b₂ :=
   disjoint_or_injective
-    (mod_two_pow_eq_zero_and_lowMask hk ha₁)
-    (mod_two_pow_eq_zero_and_lowMask hk ha₂)
-    (lt_two_pow_and_not_lowMask hk hb₁)
-    (lt_two_pow_and_not_lowMask hk hb₂)
+    (mod_two_pow_eq_zero_and_lowMask ha₁)
+    (mod_two_pow_eq_zero_and_lowMask ha₂)
+    (lt_two_pow_and_not_lowMask hb₁)
+    (lt_two_pow_and_not_lowMask hb₂)
     hor
 
 /-! ## Part 3: Masked-Bit / Tnum Relational Algebra -/
@@ -1937,7 +1936,7 @@ theorem xor_lt_two_pow_sub_clz {w : Nat} (umin umax : BitVec w) :
 theorem xor_and_not_lowMask_sub_clz {w : Nat} (umin umax : BitVec w) :
     and (xor umin umax) (not (lowMask w (w - clz (xor umin umax)))) =
       BitVec.ofNat w 0 :=
-  lt_two_pow_and_not_lowMask (Nat.sub_le w _) (xor_lt_two_pow_sub_clz umin umax)
+  lt_two_pow_and_not_lowMask (xor_lt_two_pow_sub_clz umin umax)
 
 /-- Common-prefix tightening directly parameterized by `clz (umin ^^^ umax)`. -/
 theorem common_prefix_of_bounds_clz {w : Nat} {umin x umax : BitVec w}
