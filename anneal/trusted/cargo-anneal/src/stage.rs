@@ -846,6 +846,95 @@ fn resolve_static_toolchain(lean: &Path) -> Result<(PathBuf, PathBuf), Failure> 
     ))
 }
 
+/// Resolve `(prefix, canon_exec_lean)` statically on disk for unpinned
+/// `ExecSeal` admission, canonicalizing a Bazel-style runfiles wrapper
+/// sysroot to its target sysroot when safe.
+///
+/// When `lean` resolves through a logical `<prefix>/bin/lean` symlink
+/// into a distinct canonical `<canon_prefix>/bin/lean` sysroot whose
+/// `<prefix>/lib` is purely a symlink forest (or direct symlink) staying
+/// strictly within `<canon_prefix>/lib`, return `(canon_prefix, exec_lean)`.
+///
+/// Security invariant: promoting `prefix` to `canon_prefix` preserves
+/// `ExecSeal` containment and sysroot hashing (`pre_probe_sha` still
+/// hashes the identical `exec_lean` binary, every leaf under
+/// `<prefix>/lib` is verified to point inside `<canon_prefix>/lib` with
+/// zero regular or special files, and `SandboxRuntime::probe` plus
+/// `tool_admission_unpinned` then validate, probe, and hash
+/// `canon_prefix` end-to-end). Zero-symlink directories and internal-only
+/// overlays fall back to `(prefix, exec_lean)` so `SandboxRuntime::probe`
+/// preserves standalone layouts while failing closed on broken, looping,
+/// escaping, or mixed invalid trees.
+fn resolve_unpinned_static_toolchain(lean: &Path) -> Result<(PathBuf, PathBuf), Failure> {
+    let (prefix, exec_lean) = resolve_static_toolchain(lean)?;
+    let Some(exec_prefix) = exec_lean.parent().and_then(Path::parent) else {
+        return Ok((prefix, exec_lean));
+    };
+    if prefix == exec_prefix {
+        return Ok((prefix, exec_lean));
+    }
+    let Some((canon_prefix, _)) = try_resolve_sysroot_candidate(&exec_lean)? else {
+        return Ok((prefix, exec_lean));
+    };
+    let logical_lib = prefix.join("lib");
+    let canon_lib = canon_prefix.join("lib");
+    if logical_lib_symlinks_stay_within(&logical_lib, &canon_lib) {
+        Ok((canon_prefix, exec_lean))
+    } else {
+        Ok((prefix, exec_lean))
+    }
+}
+
+/// Return `true` only when `logical_lib` resolves to `canon_lib` itself
+/// or is a non-empty symlink forest whose every leaf entry is a valid
+/// symlink resolving strictly inside `canon_lib`'s canonical path.
+fn logical_lib_symlinks_stay_within(logical_lib: &Path, canon_lib: &Path) -> bool {
+    let Ok(canon_lib_resolved) = fs::canonicalize(canon_lib) else {
+        return false;
+    };
+    let Ok(root_meta) = fs::symlink_metadata(logical_lib) else {
+        return false;
+    };
+    if root_meta.file_type().is_symlink() {
+        return fs::canonicalize(logical_lib).is_ok_and(|target| target == canon_lib_resolved);
+    }
+    if !root_meta.file_type().is_dir() {
+        return false;
+    }
+    let mut stack = vec![logical_lib.to_path_buf()];
+    let mut saw_symlink = false;
+    while let Some(dir) = stack.pop() {
+        let Ok(entries) = fs::read_dir(&dir) else {
+            return false;
+        };
+        for entry in entries {
+            let Ok(entry) = entry else {
+                return false;
+            };
+            let path = entry.path();
+            let Ok(ft) = entry.file_type() else {
+                return false;
+            };
+            if ft.is_symlink() {
+                saw_symlink = true;
+                let Ok(target) = fs::canonicalize(&path) else {
+                    return false;
+                };
+                if target == canon_lib_resolved || !target.starts_with(&canon_lib_resolved) {
+                    return false;
+                }
+            } else if ft.is_dir() {
+                stack.push(path);
+            } else {
+                // Mixed regular or special files mean `logical_lib` is
+                // not a pure symlink forest mirroring `canon_lib`.
+                return false;
+            }
+        }
+    }
+    saw_symlink
+}
+
 /// Require a canonical pinned `x86_64` Linux Lean executable to reside under
 /// `<prefix>/bin/<name>` so its ELF `$ORIGIN/..` `DT_RUNPATH` resolves to a
 /// known sysroot prefix rather than an arbitrary sibling directory.
@@ -1956,7 +2045,13 @@ impl Checker {
             };
             (version, prefix, exec_lean)
         } else {
-            let (prefix, exec_lean) = resolve_static_toolchain(&self.lean)?;
+            // Resolve logical runfiles symlink forests into `canon_prefix`
+            // before `pre_probe_sha` and `SandboxRuntime::probe` so
+            // `exec_lean` hashing, sysroot root/module hashing, and
+            // `ExecSeal` mounts share one consistent `canon_prefix`.
+            // Pinned `tool_admission` keeps `resolve_static_toolchain` so
+            // locked sysroot paths reject symlinks directly.
+            let (prefix, exec_lean) = resolve_unpinned_static_toolchain(&self.lean)?;
             let pre_probe_sha = sha256_file_deref(&exec_lean, "toolchain")
                 .map_err(|e| Failure::operational("toolchain", e.message))?;
             let runtime =
@@ -5275,5 +5370,445 @@ exit 1
         assert!(!source_starts_with_module_keyword(b"modulefoo\nprelude\n"));
         assert!(!source_starts_with_module_keyword(b"module_1\nprelude\n"));
         assert!(!source_starts_with_module_keyword(b"prelude\nmodule\n"));
+    }
+
+    fn create_synthetic_sysroot(prefix: &Path) {
+        use std::os::unix::fs::PermissionsExt;
+
+        fs::create_dir_all(prefix.join("bin")).unwrap();
+        let lean = prefix.join("bin/lean");
+        fs::write(&lean, b"#!/bin/sh\nexit 0\n").unwrap();
+        fs::set_permissions(&lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+        fs::create_dir_all(prefix.join("lib/lean/Init")).unwrap();
+        fs::write(prefix.join("lib/libInit_shared.so"), b"so").unwrap();
+        fs::write(prefix.join("lib/lean/Init.olean"), b"init").unwrap();
+        fs::write(prefix.join("lib/lean/Init/Prelude.olean"), b"prelude").unwrap();
+        fs::write(prefix.join("lib/lean/Std.ir"), b"ir").unwrap();
+    }
+
+    fn symlink_tree_files(src_dir: &Path, dst_dir: &Path) {
+        use std::os::unix::fs::symlink;
+
+        for entry in walkdir::WalkDir::new(src_dir).follow_links(false) {
+            let entry = entry.unwrap();
+            let rel = entry.path().strip_prefix(src_dir).unwrap();
+            let dst = dst_dir.join(rel);
+            if entry.file_type().is_dir() {
+                fs::create_dir_all(&dst).unwrap();
+            } else {
+                let target = fs::canonicalize(entry.path()).unwrap();
+                symlink(target, dst).unwrap();
+            }
+        }
+    }
+
+    fn copy_tree_deref_no_symlinks(src_dir: &Path, dst_dir: &Path) {
+        for entry in walkdir::WalkDir::new(src_dir).follow_links(false) {
+            let entry = entry.unwrap();
+            let rel = entry.path().strip_prefix(src_dir).unwrap();
+            let dst = dst_dir.join(rel);
+            if entry.file_type().is_dir() {
+                fs::create_dir_all(&dst).unwrap();
+            } else {
+                let target = fs::canonicalize(entry.path()).unwrap();
+                fs::hard_link(&target, &dst)
+                    .or_else(|_| fs::copy(&target, &dst).map(|_| ()))
+                    .unwrap();
+            }
+        }
+    }
+
+    #[test]
+    fn unpinned_static_toolchain_handles_runfiles_symlinks_escapes_loops_and_zero_symlink_dirs() {
+        use std::os::unix::fs::{PermissionsExt, symlink};
+
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let canon_prefix = base.join("canon-sysroot");
+        create_synthetic_sysroot(&canon_prefix);
+        let canon_exec_lean = fs::canonicalize(canon_prefix.join("bin/lean")).unwrap();
+
+        // 1. Bazel-runfiles per-file symlink forest under `lib/` resolves to
+        //    `canon_prefix`.
+        let runfiles = base.join("bazel-runfiles");
+        fs::create_dir_all(runfiles.join("bin")).unwrap();
+        symlink(&canon_exec_lean, runfiles.join("bin/lean")).unwrap();
+        symlink_tree_files(&canon_prefix.join("lib"), &runfiles.join("lib"));
+        let (resolved_prefix, resolved_exec) =
+            resolve_unpinned_static_toolchain(&runfiles.join("bin/lean")).unwrap();
+        assert_eq!(resolved_prefix, canon_prefix);
+        assert_eq!(resolved_exec, canon_exec_lean);
+
+        // 2. Direct `lib/lean` directory symlink (and top-level `lib` symlink)
+        //    pointing inside `canon_prefix/lib` both resolve to `canon_prefix`.
+        let lib_lean_sym = base.join("lib-lean-sym");
+        fs::create_dir_all(lib_lean_sym.join("bin")).unwrap();
+        fs::create_dir_all(lib_lean_sym.join("lib")).unwrap();
+        symlink(&canon_exec_lean, lib_lean_sym.join("bin/lean")).unwrap();
+        symlink(canon_prefix.join("lib/lean"), lib_lean_sym.join("lib/lean")).unwrap();
+        symlink(
+            canon_prefix.join("lib/libInit_shared.so"),
+            lib_lean_sym.join("lib/libInit_shared.so"),
+        )
+        .unwrap();
+        assert_eq!(
+            resolve_unpinned_static_toolchain(&lib_lean_sym.join("bin/lean")).unwrap(),
+            (canon_prefix.clone(), canon_exec_lean.clone())
+        );
+
+        let top_lib_sym = base.join("top-lib-sym");
+        fs::create_dir_all(top_lib_sym.join("bin")).unwrap();
+        symlink(&canon_exec_lean, top_lib_sym.join("bin/lean")).unwrap();
+        symlink(canon_prefix.join("lib"), top_lib_sym.join("lib")).unwrap();
+        assert_eq!(
+            resolve_unpinned_static_toolchain(&top_lib_sym.join("bin/lean")).unwrap(),
+            (canon_prefix.clone(), canon_exec_lean.clone())
+        );
+
+        // 3. Zero-symlink logical `lib/` directory behaves identically to
+        //    `resolve_static_toolchain` (preserves `zero_sym` prefix).
+        let zero_sym = base.join("zero-symlink");
+        fs::create_dir_all(zero_sym.join("bin")).unwrap();
+        symlink(&canon_exec_lean, zero_sym.join("bin/lean")).unwrap();
+        copy_tree_deref_no_symlinks(&canon_prefix.join("lib"), &zero_sym.join("lib"));
+        assert_eq!(
+            resolve_unpinned_static_toolchain(&zero_sym.join("bin/lean")).unwrap(),
+            resolve_static_toolchain(&zero_sym.join("bin/lean")).unwrap()
+        );
+        assert_eq!(
+            resolve_unpinned_static_toolchain(&zero_sym.join("bin/lean")).unwrap().0,
+            zero_sym
+        );
+
+        // 4. Copied `lib/` preserving an internal relative symlink inside
+        //    `logical_lib` keeps the logical prefix.
+        let internal_sym = base.join("internal-sym");
+        fs::create_dir_all(internal_sym.join("bin")).unwrap();
+        symlink(&canon_exec_lean, internal_sym.join("bin/lean")).unwrap();
+        copy_tree_deref_no_symlinks(&canon_prefix.join("lib"), &internal_sym.join("lib"));
+        fs::write(internal_sym.join("lib/libLLVM.so.22.1"), b"llvm").unwrap();
+        symlink("libLLVM.so.22.1", internal_sym.join("lib/libLLVM.so")).unwrap();
+        assert_eq!(
+            resolve_unpinned_static_toolchain(&internal_sym.join("bin/lean")).unwrap().0,
+            internal_sym
+        );
+
+        // 5. Escaping symlink, broken symlink, symlink loop, mixed regular
+        //    file, and symlinked `lib -> other_dir` must never promote to
+        //    `canon_prefix` (preserving `logical_prefix` so `SandboxRuntime`
+        //    rejects invalid/escaping trees fail-closed).
+        let outside_file = base.join("outside.olean");
+        fs::write(&outside_file, b"outside").unwrap();
+
+        let escape = base.join("escape");
+        fs::create_dir_all(escape.join("bin")).unwrap();
+        symlink(&canon_exec_lean, escape.join("bin/lean")).unwrap();
+        symlink_tree_files(&canon_prefix.join("lib"), &escape.join("lib"));
+        symlink(&outside_file, escape.join("lib/lean/Escape.olean")).unwrap();
+        assert_eq!(resolve_unpinned_static_toolchain(&escape.join("bin/lean")).unwrap().0, escape);
+        let escape_err = SandboxRuntime::probe(
+            SandboxMode::PreferBwrapOrLandlock,
+            &canon_exec_lean,
+            &escape,
+            &base.join("stage-escape"),
+        )
+        .unwrap_err();
+        #[cfg(target_os = "linux")]
+        {
+            assert_eq!(
+                (escape_err.code, escape_err.phase.as_str()),
+                (2, "sandbox"),
+                "{escape_err}"
+            );
+            assert!(escape_err.message.contains("refusing escaping symlink"), "{escape_err}");
+        }
+        let _ = escape_err;
+
+        let broken = base.join("broken");
+        fs::create_dir_all(broken.join("bin")).unwrap();
+        symlink(&canon_exec_lean, broken.join("bin/lean")).unwrap();
+        symlink_tree_files(&canon_prefix.join("lib"), &broken.join("lib"));
+        symlink(base.join("does-not-exist"), broken.join("lib/lean/Broken.olean")).unwrap();
+        assert_eq!(resolve_unpinned_static_toolchain(&broken.join("bin/lean")).unwrap().0, broken);
+        let broken_err = SandboxRuntime::probe(
+            SandboxMode::PreferBwrapOrLandlock,
+            &canon_exec_lean,
+            &broken,
+            &base.join("stage-broken"),
+        )
+        .unwrap_err();
+        #[cfg(target_os = "linux")]
+        {
+            assert_eq!(
+                (broken_err.code, broken_err.phase.as_str()),
+                (2, "sandbox"),
+                "{broken_err}"
+            );
+            assert!(
+                broken_err.message.contains("cannot canonicalize toolchain symlink")
+                    || broken_err.message.contains("refusing escaping symlink"),
+                "{broken_err}"
+            );
+        }
+        let _ = broken_err;
+
+        let looped = base.join("looped");
+        fs::create_dir_all(looped.join("bin")).unwrap();
+        symlink(&canon_exec_lean, looped.join("bin/lean")).unwrap();
+        symlink_tree_files(&canon_prefix.join("lib"), &looped.join("lib"));
+        symlink("LoopA.olean", looped.join("lib/lean/LoopB.olean")).unwrap();
+        symlink("LoopB.olean", looped.join("lib/lean/LoopA.olean")).unwrap();
+        symlink("..", looped.join("lib/lean/DirLoop")).unwrap();
+        assert_eq!(resolve_unpinned_static_toolchain(&looped.join("bin/lean")).unwrap().0, looped);
+        let looped_err = SandboxRuntime::probe(
+            SandboxMode::PreferBwrapOrLandlock,
+            &canon_exec_lean,
+            &looped,
+            &base.join("stage-looped"),
+        )
+        .unwrap_err();
+        #[cfg(target_os = "linux")]
+        {
+            assert_eq!(
+                (looped_err.code, looped_err.phase.as_str()),
+                (2, "sandbox"),
+                "{looped_err}"
+            );
+            assert!(
+                looped_err.message.contains("cannot canonicalize toolchain symlink")
+                    || looped_err.message.contains("refusing escaping symlink"),
+                "{looped_err}"
+            );
+        }
+        let _ = looped_err;
+
+        let mixed = base.join("mixed");
+        fs::create_dir_all(mixed.join("bin")).unwrap();
+        symlink(&canon_exec_lean, mixed.join("bin/lean")).unwrap();
+        symlink_tree_files(&canon_prefix.join("lib"), &mixed.join("lib"));
+        fs::write(mixed.join("lib/lean/Tampered.olean"), b"regular").unwrap();
+        assert_eq!(resolve_unpinned_static_toolchain(&mixed.join("bin/lean")).unwrap().0, mixed);
+        let mixed_err = SandboxRuntime::probe(
+            SandboxMode::PreferBwrapOrLandlock,
+            &canon_exec_lean,
+            &mixed,
+            &base.join("stage-mixed"),
+        )
+        .unwrap_err();
+        #[cfg(target_os = "linux")]
+        {
+            assert_eq!((mixed_err.code, mixed_err.phase.as_str()), (2, "sandbox"), "{mixed_err}");
+            assert!(mixed_err.message.contains("refusing escaping symlink"), "{mixed_err}");
+        }
+        let _ = mixed_err;
+
+        let self_dir = base.join("self-dir");
+        fs::create_dir_all(self_dir.join("bin")).unwrap();
+        symlink(&canon_exec_lean, self_dir.join("bin/lean")).unwrap();
+        symlink_tree_files(&canon_prefix.join("lib"), &self_dir.join("lib"));
+        symlink(canon_prefix.join("lib"), self_dir.join("lib/self")).unwrap();
+        assert_eq!(
+            resolve_unpinned_static_toolchain(&self_dir.join("bin/lean")).unwrap().0,
+            self_dir
+        );
+
+        let alt_lib_target = base.join("alt-lib-target");
+        symlink_tree_files(&canon_prefix.join("lib"), &alt_lib_target);
+        let alt_lib = base.join("alt-lib");
+        fs::create_dir_all(alt_lib.join("bin")).unwrap();
+        symlink(&canon_exec_lean, alt_lib.join("bin/lean")).unwrap();
+        symlink(&alt_lib_target, alt_lib.join("lib")).unwrap();
+        assert_eq!(
+            resolve_unpinned_static_toolchain(&alt_lib.join("bin/lean")).unwrap().0,
+            alt_lib
+        );
+        // Also ensure non-executable logical lean still fails closed.
+        let nonexec = base.join("nonexec");
+        fs::create_dir_all(nonexec.join("bin")).unwrap();
+        fs::write(nonexec.join("bin/lean"), b"not-exec").unwrap();
+        fs::set_permissions(nonexec.join("bin/lean"), fs::Permissions::from_mode(0o644)).unwrap();
+        assert!(resolve_unpinned_static_toolchain(&nonexec.join("bin/lean")).is_err());
+    }
+
+    #[cfg(target_os = "linux")]
+    #[test]
+    fn unpinned_bazel_runfiles_admission_and_fail_closed_symlink_guards_end_to_end() {
+        use std::os::unix::fs::symlink;
+
+        let real_lean_raw = crate::default_lean_path();
+        if !real_lean_raw.is_file() {
+            return;
+        }
+        let real_lean = fs::canonicalize(&real_lean_raw).unwrap();
+        let real_prefix = real_lean.parent().unwrap().parent().unwrap().to_path_buf();
+        let real_lean_sha = sha256_file_deref(&real_lean, "test").unwrap();
+        let anneal_root = Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap();
+
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+
+        // 1. Bazel-runfiles `bin/lean` + `lib/**` symlinks inside `real_prefix`
+        //    pass unpinned `ExecSeal` admission (pre-probe SHA, sandbox probe,
+        //    and sysroot root/manifest hashing bind `real_prefix`).
+        let runfiles = base.join("runfiles-ok");
+        fs::create_dir_all(runfiles.join("bin")).unwrap();
+        symlink(&real_lean, runfiles.join("bin/lean")).unwrap();
+        symlink_tree_files(&real_prefix.join("lib"), &runfiles.join("lib"));
+
+        let mut ok_checker = Checker::new(anneal_root, Some(&runfiles.join("bin/lean"))).unwrap();
+        ok_checker.set_allow_unpinned_lean(true);
+        let adm = ok_checker.tool_admission().unwrap().clone();
+        assert!(adm.unpinned);
+        assert_eq!(adm.prefix, real_prefix);
+        assert_eq!(adm.exec_lean, real_lean);
+        assert_eq!(adm.lean_binary_sha256.as_deref(), Some(real_lean_sha.as_str()));
+        assert!(adm.sysroot_package_roots.contains("Init"));
+        assert!(
+            matches!(
+                ok_checker.active_sandbox(),
+                Some(ActiveSandbox::LinuxBwrap | ActiveSandbox::LinuxLandlockSeccomp)
+            ),
+            "expected ExecSeal backend, got {:?}",
+            ok_checker.active_sandbox()
+        );
+        let manifest_sha = ok_checker.ensure_sysroot_manifest_sha256().unwrap();
+        assert_eq!(manifest_sha.len(), 64);
+        ok_checker.admit_unpinned_sysroot(["Init.Prelude".to_string()]).unwrap();
+        assert!(ok_checker.admitted().unwrap().unpinned_records.contains_key("Init.Prelude"));
+
+        // Pinned mode on the same Bazel-runfiles symlink tree must still reject
+        // symlinks rather than dereferencing them.
+        let mut pinned_checker =
+            Checker::new(anneal_root, Some(&runfiles.join("bin/lean"))).unwrap();
+        let pinned_err = pinned_checker.tool_admission().unwrap_err();
+        assert!(!pinned_checker.execution_began(), "{pinned_err}");
+
+        // 2. Direct `lib/lean -> real_prefix/lib/lean` symlink with symlinked
+        //    sibling runtime libs also succeeds under unpinned `ExecSeal`.
+        let lib_lean_sym = base.join("runfiles-lib-lean-sym");
+        fs::create_dir_all(lib_lean_sym.join("bin")).unwrap();
+        fs::create_dir_all(lib_lean_sym.join("lib")).unwrap();
+        symlink(&real_lean, lib_lean_sym.join("bin/lean")).unwrap();
+        for entry in fs::read_dir(real_prefix.join("lib")).unwrap() {
+            let entry = entry.unwrap();
+            let dst = lib_lean_sym.join("lib").join(entry.file_name());
+            if entry.file_name() == OsStr::new("lean") {
+                symlink(real_prefix.join("lib/lean"), dst).unwrap();
+            } else if entry.file_type().unwrap().is_dir() {
+                symlink_tree_files(&entry.path(), &dst);
+            } else {
+                symlink(fs::canonicalize(entry.path()).unwrap(), dst).unwrap();
+            }
+        }
+        let mut dir_sym_checker =
+            Checker::new(anneal_root, Some(&lib_lean_sym.join("bin/lean"))).unwrap();
+        dir_sym_checker.set_allow_unpinned_lean(true);
+        let dir_sym_adm = dir_sym_checker.tool_admission().unwrap();
+        assert_eq!(dir_sym_adm.prefix, real_prefix);
+        assert_eq!(dir_sym_adm.exec_lean, real_lean);
+
+        // 3. Escaping symlink outside `canon_lib` stays fail-closed before any
+        //    probe executes.
+        let outside_olean = base.join("outside.olean");
+        fs::write(&outside_olean, b"outside").unwrap();
+        let escape_rf = base.join("runfiles-escape");
+        fs::create_dir_all(escape_rf.join("bin")).unwrap();
+        symlink(&real_lean, escape_rf.join("bin/lean")).unwrap();
+        symlink_tree_files(&real_prefix.join("lib"), &escape_rf.join("lib"));
+        symlink(&outside_olean, escape_rf.join("lib/lean/Escape.olean")).unwrap();
+        let mut escape_checker =
+            Checker::new(anneal_root, Some(&escape_rf.join("bin/lean"))).unwrap();
+        escape_checker.set_allow_unpinned_lean(true);
+        let escape_err = escape_checker.tool_admission().unwrap_err();
+        assert_eq!((escape_err.code, escape_err.phase.as_str()), (2, "sandbox"), "{escape_err}");
+        assert!(escape_err.message.contains("refusing escaping symlink"), "{escape_err}");
+        assert!(!escape_checker.execution_began());
+
+        // 4. Broken symlink inside `logical_lib` stays fail-closed.
+        let broken_rf = base.join("runfiles-broken");
+        fs::create_dir_all(broken_rf.join("bin")).unwrap();
+        symlink(&real_lean, broken_rf.join("bin/lean")).unwrap();
+        symlink_tree_files(&real_prefix.join("lib"), &broken_rf.join("lib"));
+        symlink(base.join("missing.olean"), broken_rf.join("lib/lean/Broken.olean")).unwrap();
+        let mut broken_checker =
+            Checker::new(anneal_root, Some(&broken_rf.join("bin/lean"))).unwrap();
+        broken_checker.set_allow_unpinned_lean(true);
+        let broken_err = broken_checker.tool_admission().unwrap_err();
+        assert_eq!((broken_err.code, broken_err.phase.as_str()), (2, "sandbox"), "{broken_err}");
+        assert!(
+            broken_err.message.contains("cannot canonicalize toolchain symlink")
+                || broken_err.message.contains("refusing escaping symlink"),
+            "{broken_err}"
+        );
+        assert!(!broken_checker.execution_began());
+
+        // 4b. Symlink loop inside `logical_lib` stays fail-closed.
+        let loop_rf = base.join("runfiles-loop");
+        fs::create_dir_all(loop_rf.join("bin")).unwrap();
+        symlink(&real_lean, loop_rf.join("bin/lean")).unwrap();
+        symlink_tree_files(&real_prefix.join("lib"), &loop_rf.join("lib"));
+        symlink("LoopA.olean", loop_rf.join("lib/lean/LoopB.olean")).unwrap();
+        symlink("LoopB.olean", loop_rf.join("lib/lean/LoopA.olean")).unwrap();
+        let mut loop_checker = Checker::new(anneal_root, Some(&loop_rf.join("bin/lean"))).unwrap();
+        loop_checker.set_allow_unpinned_lean(true);
+        let loop_err = loop_checker.tool_admission().unwrap_err();
+        assert_eq!((loop_err.code, loop_err.phase.as_str()), (2, "sandbox"), "{loop_err}");
+        assert!(
+            loop_err.message.contains("cannot canonicalize toolchain symlink")
+                || loop_err.message.contains("refusing escaping symlink"),
+            "{loop_err}"
+        );
+        assert!(!loop_checker.execution_began());
+
+        // 5. Zero-symlink logical `lib/` keeps `zero_sym` prefix (copied
+        //    `bin/lean` lets Tier-2 Landlock resolve `$ORIGIN/../lib`;
+        //    Tier-1 `bwrap` also exercises symlinked `bin/lean`), and
+        //    broken or looping symlinks trigger `cannot canonicalize`.
+        let zero_sym = base.join("zero-sym-live");
+        fs::create_dir_all(zero_sym.join("bin")).unwrap();
+        fs::copy(&real_lean, zero_sym.join("bin/lean")).unwrap();
+        copy_tree_deref_no_symlinks(&real_prefix.join("lib"), &zero_sym.join("lib"));
+        let mut zero_checker = Checker::new(anneal_root, Some(&zero_sym.join("bin/lean"))).unwrap();
+        zero_checker.set_allow_unpinned_lean(true);
+        let zero_adm = zero_checker.tool_admission().unwrap().clone();
+        assert_eq!(zero_adm.prefix, zero_sym);
+        assert_eq!(zero_adm.exec_lean, zero_sym.join("bin/lean"));
+
+        if matches!(ok_checker.active_sandbox(), Some(ActiveSandbox::LinuxBwrap)) {
+            let zero_bin = zero_sym.join("bin/lean");
+            fs::remove_file(&zero_bin).unwrap();
+            symlink(&real_lean, &zero_bin).unwrap();
+            let mut zero_sym_bin_checker = Checker::new(anneal_root, Some(&zero_bin)).unwrap();
+            zero_sym_bin_checker.set_allow_unpinned_lean(true);
+            let zero_sym_bin_adm = zero_sym_bin_checker.tool_admission().unwrap();
+            assert_eq!(zero_sym_bin_adm.prefix, zero_sym);
+            assert_eq!(zero_sym_bin_adm.exec_lean, real_lean);
+        }
+
+        let zero_broken = zero_sym.join("lib/lean/Broken.olean");
+        symlink(base.join("missing.olean"), &zero_broken).unwrap();
+        let mut zero_broken_checker =
+            Checker::new(anneal_root, Some(&zero_sym.join("bin/lean"))).unwrap();
+        zero_broken_checker.set_allow_unpinned_lean(true);
+        let zero_broken_err = zero_broken_checker.tool_admission().unwrap_err();
+        assert!(
+            zero_broken_err.message.contains("cannot canonicalize toolchain symlink"),
+            "{zero_broken_err}"
+        );
+        assert!(!zero_broken_checker.execution_began());
+        fs::remove_file(&zero_broken).unwrap();
+
+        symlink("LoopA.olean", zero_sym.join("lib/lean/LoopB.olean")).unwrap();
+        symlink("LoopB.olean", zero_sym.join("lib/lean/LoopA.olean")).unwrap();
+        let mut zero_loop_checker =
+            Checker::new(anneal_root, Some(&zero_sym.join("bin/lean"))).unwrap();
+        zero_loop_checker.set_allow_unpinned_lean(true);
+        let zero_loop_err = zero_loop_checker.tool_admission().unwrap_err();
+        assert!(
+            zero_loop_err.message.contains("cannot canonicalize toolchain symlink"),
+            "{zero_loop_err}"
+        );
+        assert!(!zero_loop_checker.execution_began());
     }
 }
