@@ -35,20 +35,21 @@ the head of its target base, which is `main` for a lone PR or the bottom PR of
 a stack, and the head of the PR directly below it otherwise.
 
 Review evidence recorded on this PR for one identity (review receipts, Gate 2
-reviews, and human approvals) remains valid for every later head of the same
-PR with that identity, however that head was produced, and for no other,
-subject to the Gate 5 rules for the Review Receipt comment's `Human review
-surface` block. Evidence never transfers
-between pull requests. In particular, when a lower stack PR is squash-merged
-and the PR above it is rebased onto that squash commit (whose tree equals the
-lower PR's reviewed head tree), the upper PR's identity—and its review
-evidence—is unchanged. The identity omits author and committer metadata, and
-GitHub reports CI per commit SHA, so every new head still needs its own
-SHA-bound deterministic preflight (including the authorship and trailer checks
-in [`AGENTS.md`](../AGENTS.md#standing-rules)) and its own Gate 3 CI. Any
-change to either tree or to the commit message changes a one-commit PR's
-identity, and any change of SHA changes a multi-commit PR's identity;
-re-confirm every affected gate whenever the identity changes:
+reviews, and human approvals) remains valid for every later head of the same PR
+with that identity, however that head was produced, and for no other, subject to
+the Gate 5 rules for the Review Receipt comment's `Human review surface` block.
+The one exception is the evaluator-verified rebase-only carry-forward of a clean
+Gate 2 review described under Gate 2. Evidence never transfers between pull
+requests. In particular, when a lower stack PR is squash-merged and the PR above
+it is rebased onto that squash commit (whose tree equals the lower PR's reviewed
+head tree), the upper PR's identity—and its review evidence—is unchanged. The
+identity omits author and committer metadata, and GitHub reports CI per commit
+SHA, so every new head still needs its own SHA-bound deterministic preflight
+(including the authorship and trailer checks in
+[`AGENTS.md`](../AGENTS.md#standing-rules)) and its own Gate 3 CI. Any change to
+either tree or to the commit message changes a one-commit PR's identity, and any
+change of SHA changes a multi-commit PR's identity; re-confirm every affected
+gate whenever the identity changes:
 
 1. **Gate 1 — Local review and receipt:** Local
    [`change-review`](../skills/change-review/SKILL.md) and
@@ -109,6 +110,43 @@ re-confirm every affected gate whenever the identity changes:
      with those notes as advisories. A `P3` entry in `findings[]` keeps its
      blocking meaning, so a reviewer that follows only the Code Review Rules
      and reports `P3` issues as findings is still correct.
+
+     **Rebase-only carry-forward.** A clean `anneal-gate2-review:v1` review
+     also covers a later identity of a one-commit PR when the evaluator itself
+     confirms from GitHub data that the PR was only rebased onto a later base
+     since that review:
+     - the review is the latest Gate 2 item on the PR (deleted comments
+       included, and never itself a deleted comment), names a different head
+       and base than the current ones, and passes with the PR's whole review
+       history judged as of the reviewed head's GitHub-verified tree and
+       one-commit identity (clean, cross-family, `COMMENTED`, current
+       `merge_base`, no active failure);
+     - no Gate 2 item recorded on the reviewed head or tree has findings or,
+       unless it is a deleted comment, fails on its own recorded identity; every
+       other head with Gate 2 findings or failures makes different changes than
+       the reviewed head; and every legacy Codex summary on the PR is a
+       completed clean review;
+     - both heads are single commits on their bases with the same commit
+       message;
+     - every file's added and removed lines, status, rename source, resulting
+       blob, and mode (from the raw diff) are identical between the two
+       commits; only context lines and hunk positions may differ, and a file
+       without a comparable patch or blob fails closed; and
+     - the base moved strictly forward (`compare` status `ahead`) without
+       touching the review rules (any `AGENTS.md`, `AGENTS.override.md`,
+       `CLAUDE.md`, or `GEMINI.md`, `.gemini/styleguide.md` files, `skills/`
+       and `.github/` trees, this document, `review-policy-design.md`,
+       `trust-model.md`, the principles and threat model docs, or
+       `ci/codex_review.py`) or any file the PR touches, except
+       `anneal/trusted/root-manifest.sha256`, whose lines each name their
+       file and digest: if the base changed it, only its blob may differ.
+
+     Anything else, including GitHub's 300-file truncation or an API error,
+     needs a new review. No reviewer posts anything for a carry-forward; the
+     evaluator's status names the reviewed commit it carried forward. This is
+     an intentional relaxation of the one-identity rule: interactions between
+     the PR and base changes to other files (outside the review rules above)
+     are left to Gate 3 CI and the merge queue.
    - **Legacy Codex summary (`codex-review-state:v1`):** For backwards
      compatibility, a complete code review by an authentic
      `chatgpt-codex-connector[bot]` covering the current identity.
@@ -266,7 +304,10 @@ verdicts with a `one:` key transfer
 across `head_sha`/`base_sha` changes only when `merge_base` is absent or equals
 `payload.base_sha` and GitHub confirms that the historical
 `(payload.head_sha, payload.base_sha)` commit has the same `(tree_sha,
-identity_key)`; a clean review whose `base_sha` equals the current `base_sha`
+identity_key)`, or when the rebase-only carry-forward above holds, which it
+checks with the `commits/{sha}` file patches and raw diff modes and
+`compare/{base}...{base}`;
+a clean review whose `base_sha` equals the current `base_sha`
 (exact head or not) must still postdate the last `base_changed_at` event,
 with or without a matching key, so only transfers from a different,
 GitHub-verified `base_sha` skip that freshness check, and a base change never
