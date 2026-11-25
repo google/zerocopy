@@ -290,6 +290,18 @@ in which debug assertions are on, or in which overflow checks are on without
   and shifts): those operations wrap, and shift amounts are masked. With
   `--overflow-checks`, each such operation is guarded by an overflow `Assert`,
   and a failed check faults, so a verified function never reaches one.
+- `cfg(miri)` is refused on every capture (both normal crates and
+  `--stdlib-crate core`) so `#[cfg(miri)]` branches cannot substitute Miri-only
+  implementations for compiled target code.
+- Crate-level `#![feature(...)]` gates are enforced through a closed positive
+  allowlist across three layers: pre-expansion active-attribute validation
+  (preserving inactive `#![cfg_attr(..., feature(...))]` lines other than
+  `rustc_private` while failing closed on active disallowed features),
+  `-Zallow-features=...` at compiler invocation/validation, and post-analysis
+  `tcx.features()` inspection covering unstable language features, unstable
+  library features, and already-stabilized `ACCEPTED_LANG_FEATURES`. Normal
+  crates admit the empty allowlist (`[]`, zero active features);
+  `--stdlib-crate core` admits only `core`'s version-pinned feature set.
 
 The capture manifest's `configuration` records this profile, and
 `Program.overflowChecks` in `Captured.lean` records the overflow-check

@@ -13,15 +13,13 @@
 //! regardless of which implementation occupies each compiler inventory slot.
 
 #![no_std]
-#![feature(core_intrinsics)]
-#![allow(internal_features)]
 
 /// # Safety
 ///
 /// The caller must satisfy the requirement for this exported name in
 /// `Spec.lean`. The harness never calls this capture-only test input.
 pub unsafe fn locked() -> u64 {
-    unsafe { core::intrinsics::unreachable() }
+    unsafe { u64::MAX.unchecked_add(1) }
 }
 
 /// # Safety

@@ -1164,9 +1164,8 @@ fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_
 
 #[test]
 fn intrinsic_fallback_bodies_are_refused_in_selected_and_crate_scope() {
-    // rustc lowers every call to this intrinsic to an `Unreachable`
-    // terminator. Capturing the benign fallback body would verify code that
-    // no caller executes, so both scopes must refuse the definition itself.
+    // On normal crates, `#![feature(intrinsics)]` is refused before macro
+    // expansion by the closed positive feature allowlist.
     let source = b"#![feature(intrinsics)]\n\
         #![allow(internal_features)]\n\
         #[rustc_intrinsic]\n\
@@ -1178,17 +1177,43 @@ fn intrinsic_fallback_bodies_are_refused_in_selected_and_crate_scope() {
         let failure = status(&output);
         assert_eq!(failure["status"], "unsupported", "{scope}: {failure}");
         assert!(
-            failure.to_string().contains("intrinsic `unreachable` is unsupported"),
+            failure.to_string().contains("#![feature(intrinsics)] is unsupported"),
             "{scope}: {failure}"
         );
         fixture.assert_no_capture_artifacts();
     }
+
+    // Under `--stdlib-crate=core` (where `intrinsics` is in the pinned
+    // allowlist), `extract::body` still refuses `#[rustc_intrinsic]` fallback
+    // bodies directly: rustc lowers calls to `Unreachable`, so capturing the
+    // benign loop fallback body would verify code no caller executes.
+    let core_intrinsic = b"#![feature(no_core, lang_items, intrinsics)]\n\
+        #![allow(internal_features)]\n\
+        #![no_core]\n\
+        #[lang = \"pointee_sized\"] pub trait PointeeSized {}\n\
+        #[lang = \"meta_sized\"] pub trait MetaSized: PointeeSized {}\n\
+        #[lang = \"sized\"] pub trait Sized: MetaSized {}\n\
+        #[rustc_intrinsic]\n\
+        pub unsafe fn unreachable() -> ! { loop {} }\n";
+    let fixture = Capture::new(core_intrinsic);
+    let output = fixture
+        .command_with("core", true)
+        .args(["--stdlib-crate=core", "--select=unreachable"])
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    let failure = status(&output);
+    assert_eq!(failure["status"], "unsupported", "{failure}");
+    assert!(failure.to_string().contains("intrinsic `unreachable` is unsupported"), "{failure}");
+    fixture.assert_no_capture_artifacts();
 }
 
 #[test]
 fn entry_conditions_outside_the_scalar_model_are_refused() {
     // Each selected body is otherwise admissible scalar MIR, so the refusal
-    // must come from its entry condition rather than from body translation.
+    // must come from its entry condition (or the closed feature allowlist for
+    // `c_variadic`, with `signature.c_variadic()` retained as defense in
+    // depth).
     let refused_cases: &[(&str, &[u8], &str)] = &[
         (
             "generic",
@@ -1204,7 +1229,7 @@ fn entry_conditions_outside_the_scalar_model_are_refused() {
             "c_variadic",
             b"#![feature(c_variadic)]\n\
               pub unsafe extern \"C\" fn selected(value: i32, mut args: ...) -> i32 { value }\n",
-            "only non-variadic Rust ABI functions are admitted",
+            "#![feature(c_variadic)] is unsupported during capture",
         ),
         (
             "target_feature",
@@ -1231,20 +1256,21 @@ fn entry_conditions_outside_the_scalar_model_are_refused() {
 fn unmodeled_codegen_attributes_are_refused_in_selected_and_crate_scope() {
     // Linked calls need not execute a weak or available_externally body, and
     // symbol or section attributes carry link-time obligations that the
-    // captured safety bit does not record. Each body is the admissible scalar
-    // identity below, and each source compiles through object emission, so
-    // the refusal must come from the attribute itself.
+    // captured safety bit does not record. `#[linkage]` additionally requires
+    // `#![feature(linkage)]`, which the closed positive feature allowlist now
+    // refuses first (while `extract::codegen_attrs` retains the `Linkage`
+    // guard as defense in depth).
     const BODY: &str = "pub fn selected(value: u64) -> u64 { value }\n";
     let refused_cases: &[(&str, &str, &str)] = &[
         (
             "linkage_weak",
             "#![feature(linkage)]\n#[linkage = \"weak\"]\n",
-            "linkage attribute WeakAny is unsupported",
+            "#![feature(linkage)] is unsupported during capture",
         ),
         (
             "linkage_available_externally",
             "#![feature(linkage)]\n#[linkage = \"available_externally\"]\n",
-            "linkage attribute AvailableExternally is unsupported",
+            "#![feature(linkage)] is unsupported during capture",
         ),
         (
             "no_mangle",
@@ -2085,9 +2111,10 @@ fn compile_captured_lean_if_trusted_sources_present(captured_lean: &std::path::P
 
 #[test]
 fn scalar_cast_cmp_div_unary_and_overflow_pair_constructs_capture_and_typecheck_in_lean() {
-    let source = br#"#![feature(core_intrinsics)]
-#![allow(internal_features)]
-
+    // Part 1: Normal-crate capture with zero `#![feature(...)]` covers 128-bit
+    // scalars, unary `Not`/`Neg`, `char`, `IntToInt` casts, `Ordering` matches,
+    // and `(u64, bool)` overflow-pair types.
+    let normal_source = br#"
 #[repr(u128)]
 pub enum WideImplicit {
     Zero,
@@ -2125,44 +2152,20 @@ pub fn char_and_casts(c: char, byte: u8, flag: bool, signed: i16) -> u32 {
     }
 }
 
-pub fn ordering_and_cmp(x: i64, y: i64, c1: char, c2: char) -> i8 {
-    let ord_i: core::cmp::Ordering = core::intrinsics::three_way_compare(x, y);
-    let ord_c: core::cmp::Ordering = core::intrinsics::three_way_compare(c1, c2);
-    let first = match ord_i {
+pub fn match_ordering(ord: core::cmp::Ordering) -> i8 {
+    match ord {
         core::cmp::Ordering::Less => -1i8,
         core::cmp::Ordering::Equal => 0i8,
         core::cmp::Ordering::Greater => 1i8,
-    };
-    let second = match ord_c {
-        core::cmp::Ordering::Less => -1i8,
-        core::cmp::Ordering::Equal => 0i8,
-        core::cmp::Ordering::Greater => 1i8,
-    };
-    !first ^ second
-}
-
-pub unsafe fn unchecked_div_rem(a: i64, b: i64, u: u128, v: u128) -> u128 {
-    let q: i64 = unsafe { core::intrinsics::unchecked_div(a, b) };
-    let r: i64 = unsafe { core::intrinsics::unchecked_rem(a, b) };
-    let uq: u128 = unsafe { core::intrinsics::unchecked_div(u, v) };
-    let ur: u128 = unsafe { core::intrinsics::unchecked_rem(u, v) };
-    ((q ^ r) as u128) ^ uq ^ ur
-}
-
-pub fn overflow_pairs(a: u64, b: u64) -> (u64, bool) {
-    let p_add: (u64, bool) = core::intrinsics::add_with_overflow(a, b);
-    let _p_sub: (u64, bool) = core::intrinsics::sub_with_overflow(a, b);
-    let p_mul: (u64, bool) = core::intrinsics::mul_with_overflow(a, b);
-    let copied: (u64, bool) = p_add;
-    if !false {
-        copied
-    } else {
-        p_mul
     }
+}
+
+pub fn pass_overflow_pair(p: (u64, bool)) -> (u64, bool) {
+    p
 }
 "#;
 
-    let fixture = Capture::new(source);
+    let fixture = Capture::new(normal_source);
     let output = fixture.command().arg("--scope=crate").output().unwrap();
     assert!(
         output.status.success(),
@@ -2172,7 +2175,7 @@ pub fn overflow_pairs(a: u64, b: u64) -> (u64, bool) {
     );
     let manifest = fixture.manifest();
     assert_eq!(manifest["schema_version"], 5);
-    assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 5);
+    assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 4);
 
     let manifest_text = std::fs::read_to_string(fixture.output.join("capture.json")).unwrap();
     assert!(
@@ -2193,12 +2196,6 @@ pub fn overflow_pairs(a: u64, b: u64) -> (u64, bool) {
         "(Trusted.MirAst.MirTy.tuple [(Trusted.MirAst.MirTy.int Trusted.MirAst.IntWidth.i64 false), Trusted.MirAst.MirTy.bool])",
         "Trusted.MirAst.UnOp.not",
         "Trusted.MirAst.UnOp.neg",
-        "Trusted.MirAst.BinOp.div",
-        "Trusted.MirAst.BinOp.rem",
-        "Trusted.MirAst.BinOp.addWithOverflow",
-        "Trusted.MirAst.BinOp.subWithOverflow",
-        "Trusted.MirAst.BinOp.mulWithOverflow",
-        "Trusted.MirAst.BinOp.cmp",
         "Trusted.MirAst.CastKind.intToInt",
         "BitVec.ofNat 128 340282366920938463463374607431768211455",
     ] {
@@ -2208,6 +2205,132 @@ pub fn overflow_pairs(a: u64, b: u64) -> (u64, bool) {
         );
     }
     compile_captured_lean_if_trusted_sources_present(&lean_path);
+
+    // Part 2: Direct intrinsic-lowered Profile v1 `BinOp.cmp`, unchecked
+    // `BinOp.div`/`rem`, and `BinOp.*WithOverflow` are exercised under
+    // `--stdlib-crate=core`, where `#![feature(intrinsics)]` is in the pinned
+    // allowlist.
+    let core_intrinsics_src = br#"#![feature(no_core, lang_items, intrinsics)]
+#![allow(internal_features)]
+#![no_core]
+
+#[lang = "pointee_sized"]
+pub trait PointeeSized {}
+#[lang = "meta_sized"]
+pub trait MetaSized: PointeeSized {}
+#[lang = "sized"]
+pub trait Sized: MetaSized {}
+#[lang = "copy"]
+pub trait Copy {}
+impl Copy for bool {}
+impl Copy for char {}
+impl Copy for i8 {}
+impl Copy for i64 {}
+impl Copy for u64 {}
+impl Copy for u128 {}
+impl Copy for Ordering {}
+
+#[lang = "Ordering"]
+#[repr(i8)]
+pub enum Ordering {
+    Less = 0xff_u8 as i8,
+    Equal = 0,
+    Greater = 1,
+}
+
+#[rustc_intrinsic]
+pub fn three_way_compare<T: Copy>(lhs: T, rhs: T) -> Ordering;
+#[rustc_intrinsic]
+pub unsafe fn unchecked_div<T: Copy>(x: T, y: T) -> T;
+#[rustc_intrinsic]
+pub unsafe fn unchecked_rem<T: Copy>(x: T, y: T) -> T;
+#[rustc_intrinsic]
+pub fn add_with_overflow<T: Copy>(x: T, y: T) -> (T, bool);
+#[rustc_intrinsic]
+pub fn sub_with_overflow<T: Copy>(x: T, y: T) -> (T, bool);
+#[rustc_intrinsic]
+pub fn mul_with_overflow<T: Copy>(x: T, y: T) -> (T, bool);
+
+pub fn ordering_and_cmp(x: i64, y: i64, c1: char, c2: char) -> i8 {
+    let ord_i: Ordering = three_way_compare(x, y);
+    let ord_c: Ordering = three_way_compare(c1, c2);
+    let first = match ord_i {
+        Ordering::Less => 0xff_u8 as i8,
+        Ordering::Equal => 0i8,
+        Ordering::Greater => 1i8,
+    };
+    let second = match ord_c {
+        Ordering::Less => 0xff_u8 as i8,
+        Ordering::Equal => 0i8,
+        Ordering::Greater => 1i8,
+    };
+    match first {
+        0 => second,
+        _ => first,
+    }
+}
+
+pub unsafe fn unchecked_div_rem(a: i64, b: i64, u: u128, v: u128) -> u128 {
+    let q: i64 = unsafe { unchecked_div(a, b) };
+    let r: i64 = unsafe { unchecked_rem(a, b) };
+    let uq: u128 = unsafe { unchecked_div(u, v) };
+    let ur: u128 = unsafe { unchecked_rem(u, v) };
+    match q {
+        0 => match r {
+            0 => uq,
+            _ => ur,
+        },
+        _ => ur,
+    }
+}
+
+pub fn overflow_pairs(a: u64, b: u64, take_add: bool) -> (u64, bool) {
+    let p_add: (u64, bool) = add_with_overflow(a, b);
+    let _p_sub: (u64, bool) = sub_with_overflow(a, b);
+    let p_mul: (u64, bool) = mul_with_overflow(a, b);
+    let copied: (u64, bool) = p_add;
+    if take_add {
+        copied
+    } else {
+        p_mul
+    }
+}
+"#;
+    let core_fixture = Capture::new(core_intrinsics_src);
+    let core_out = core_fixture
+        .command_with("core", true)
+        .args([
+            "--stdlib-crate=core",
+            "--select=ordering_and_cmp",
+            "--select=unchecked_div_rem",
+            "--select=overflow_pairs",
+        ])
+        .output()
+        .unwrap();
+    assert!(
+        core_out.status.success(),
+        "expected --stdlib-crate=core intrinsics capture to succeed:\n{}\n{}",
+        stdout(&core_out),
+        stderr(&core_out)
+    );
+    let core_lean_path = core_fixture.output.join("Captured.lean");
+    let core_lean_src = std::fs::read_to_string(&core_lean_path).unwrap();
+    for expected_token in [
+        "Trusted.MirAst.MirTy.ordering",
+        "(Trusted.MirAst.MirTy.tuple [(Trusted.MirAst.MirTy.int Trusted.MirAst.IntWidth.i64 false), Trusted.MirAst.MirTy.bool])",
+        "Trusted.MirAst.BinOp.div",
+        "Trusted.MirAst.BinOp.rem",
+        "Trusted.MirAst.BinOp.addWithOverflow",
+        "Trusted.MirAst.BinOp.subWithOverflow",
+        "Trusted.MirAst.BinOp.mulWithOverflow",
+        "Trusted.MirAst.BinOp.cmp",
+    ] {
+        assert!(
+            core_lean_src.contains(expected_token),
+            "core Captured.lean missing {expected_token:?}:\n{core_lean_src}"
+        );
+    }
+    compile_captured_lean_if_trusted_sources_present(&core_lean_path);
 
     // Explicit 128-bit signed enum discriminants (`-1i128 == u128::MAX`) also
     // capture cleanly in `selected_unit` scope.
@@ -2247,19 +2370,11 @@ fn unmodeled_projections_tuples_casts_and_operators_fail_closed() {
     let v2_admitted_cases: &[(&str, &[u8])] = &[
         (
             "overflow_pair_field_0_projection",
-            b"#![feature(core_intrinsics)]\n\
-              #![allow(internal_features)]\n\
-              pub fn selected(a: u32, b: u32) -> u32 {\n\
-                  core::intrinsics::add_with_overflow(a, b).0\n\
-              }\n",
+            b"pub fn selected(p: (u32, bool)) -> u32 { p.0 }\n",
         ),
         (
             "overflow_pair_field_1_projection",
-            b"#![feature(core_intrinsics)]\n\
-              #![allow(internal_features)]\n\
-              pub fn selected(a: u32, b: u32) -> bool {\n\
-                  core::intrinsics::add_with_overflow(a, b).1\n\
-              }\n",
+            b"pub fn selected(p: (u32, bool)) -> bool { p.1 }\n",
         ),
         (
             "overflow_pair_tuple_aggregate",
@@ -2308,18 +2423,8 @@ fn unmodeled_projections_tuples_casts_and_operators_fail_closed() {
             "unsupported cast kind: Transmute",
         ),
         (
-            "shl_unchecked_bin_op",
-            b"#![feature(core_intrinsics)]\n\
-              #![allow(internal_features)]\n\
-              pub unsafe fn selected(a: u32, b: u32) -> u32 {\n\
-                  unsafe { core::intrinsics::unchecked_shl(a, b) }\n\
-              }\n",
-            "unsupported binary operator: ShlUnchecked",
-        ),
-        (
-            "ptr_metadata_un_op_or_ptr_type",
-            b"#![feature(ptr_metadata)]\n\
-              pub fn selected(p: *const [u8]) -> usize { p.len() }\n",
+            "raw_slice_len_core_call_unsupported",
+            b"pub fn selected(p: *const [u8]) -> usize { p.len() }\n",
             "unsupported",
         ),
     ];
@@ -2336,20 +2441,68 @@ fn unmodeled_projections_tuples_casts_and_operators_fail_closed() {
         );
         fixture.assert_no_capture_artifacts();
     }
+
+    // `BinOp::ShlUnchecked` stays explicitly refused in `extract::bin_op`
+    // even under `--stdlib-crate=core` where `#![feature(intrinsics)]` is
+    // allowlisted.
+    let shl_unchecked_core = b"#![feature(no_core, lang_items, intrinsics)]\n\
+        #![allow(internal_features)]\n\
+        #![no_core]\n\
+        #[lang = \"pointee_sized\"] pub trait PointeeSized {}\n\
+        #[lang = \"meta_sized\"] pub trait MetaSized: PointeeSized {}\n\
+        #[lang = \"sized\"] pub trait Sized: MetaSized {}\n\
+        #[lang = \"copy\"] pub trait Copy {}\n\
+        impl Copy for u32 {}\n\
+        #[rustc_intrinsic]\n\
+        pub unsafe fn unchecked_shl<T: Copy, U: Copy>(x: T, y: U) -> T;\n\
+        pub unsafe fn selected(a: u32, b: u32) -> u32 {\n\
+            unsafe { unchecked_shl(a, b) }\n\
+        }\n";
+    let shl_fixture = Capture::new(shl_unchecked_core);
+    let shl_output = shl_fixture
+        .command_with("core", true)
+        .args(["--stdlib-crate=core", "--select=selected"])
+        .output()
+        .unwrap();
+    assert_eq!(shl_output.status.code(), Some(1), "{shl_output:?}");
+    let shl_failure = status(&shl_output);
+    assert_eq!(shl_failure["status"], "unsupported", "{shl_failure}");
+    assert!(
+        shl_failure.to_string().contains("unsupported binary operator: ShlUnchecked"),
+        "expected ShlUnchecked refusal, got {shl_failure}"
+    );
+    shl_fixture.assert_no_capture_artifacts();
 }
 
 #[test]
 fn unchecked_arith_intrinsics_and_intra_crate_and_sysroot_num_calls_capture() {
-    // Direct unchecked_add/sub/mul intrinsics capture as `BinOp.*Unchecked`.
-    let intrinsics_source = b"#![feature(core_intrinsics)]\n\
+    // Direct unchecked_add/sub/mul intrinsics capture as `BinOp.*Unchecked`
+    // under `--stdlib-crate=core` (where `#![feature(intrinsics)]` is pinned).
+    let intrinsics_source = b"#![feature(no_core, lang_items, intrinsics)]\n\
         #![allow(internal_features)]\n\
+        #![no_core]\n\
+        #[lang = \"pointee_sized\"] pub trait PointeeSized {}\n\
+        #[lang = \"meta_sized\"] pub trait MetaSized: PointeeSized {}\n\
+        #[lang = \"sized\"] pub trait Sized: MetaSized {}\n\
+        #[lang = \"copy\"] pub trait Copy {}\n\
+        impl Copy for u32 {}\n\
+        #[rustc_intrinsic]\n\
+        pub unsafe fn unchecked_add<T: Copy>(x: T, y: T) -> T;\n\
+        #[rustc_intrinsic]\n\
+        pub unsafe fn unchecked_sub<T: Copy>(x: T, y: T) -> T;\n\
+        #[rustc_intrinsic]\n\
+        pub unsafe fn unchecked_mul<T: Copy>(x: T, y: T) -> T;\n\
         pub unsafe fn selected(a: u32, b: u32) -> u32 {\n\
-            let s = unsafe { core::intrinsics::unchecked_add(a, b) };\n\
-            let d = unsafe { core::intrinsics::unchecked_sub(s, 1) };\n\
-            unsafe { core::intrinsics::unchecked_mul(d, 2) }\n\
+            let s = unsafe { unchecked_add(a, b) };\n\
+            let d = unsafe { unchecked_sub(s, 1) };\n\
+            unsafe { unchecked_mul(d, 2) }\n\
         }\n";
     let intrinsics_fixture = Capture::new(intrinsics_source);
-    let out = intrinsics_fixture.selected_command().output().unwrap();
+    let out = intrinsics_fixture
+        .command_with("core", true)
+        .args(["--stdlib-crate=core", "--select=selected"])
+        .output()
+        .unwrap();
     assert!(out.status.success(), "{out:?}");
     let subject = intrinsics_fixture.lean_source();
     for tok in ["BinOp.addUnchecked", "BinOp.subUnchecked", "BinOp.mulUnchecked"] {
@@ -2652,16 +2805,13 @@ fn mir_preserve_ub_retains_bare_place_mention_and_rejects_projected_place_mentio
 
     // All locals here have admitted types (`u64` and `(u64, bool)`), and the
     // body contains no `Call` terminators; only `let _ = p.0;` emits a
-    // projected `PlaceMention((_3.0: u64))`. Without `-Zmir-preserve-ub`,
+    // projected `PlaceMention((_1.0: u64))`. Without `-Zmir-preserve-ub`,
     // `RemovePlaceMention` would erase this statement and capture would succeed
     // silently; with `-Zmir-preserve-ub`, capture must fail closed explicitly.
     let projected = Capture::new(
-        b"#![feature(core_intrinsics)]\n\
-          #![allow(internal_features)]\n\
-          pub fn selected(a: u64, b: u64) -> u64 {\n\
-              let p: (u64, bool) = core::intrinsics::add_with_overflow(a, b);\n\
+        b"pub fn selected(p: (u64, bool)) -> u64 {\n\
               let _ = p.0;\n\
-              a\n\
+              p.0\n\
           }\n",
     );
     let output = projected.selected_command().output().unwrap();
@@ -2797,9 +2947,9 @@ fn whole_crate_refuses_exported_macro_rules_without_unsafe_tokens() {
     // yet each lets a downstream `#![forbid(unsafe_code)]` crate emit global
     // assembly, an unsafe block, or an unsafe function that the `unsafe_code`
     // lint does not report, because the construct takes a span from the
-    // external definition. The last two can carry no unsafe code at all:
+    // external definition. The last one can carry no unsafe code at all:
     // exported macros stay refused regardless of their tokens.
-    let cases: [(&str, &[u8]); 10] = [
+    let cases: [(&str, &[u8]); 9] = [
         // `up::m!(core::arch::global_asm);`
         (
             "path metavariable",
@@ -2848,7 +2998,6 @@ fn whole_crate_refuses_exported_macro_rules_without_unsafe_tokens() {
                   ($head:tt $($tail:tt)*) => { 1usize + $crate::count_tts!($($tail)*) };\n\
               }\n",
         ),
-        ("`macro` 2.0", b"#![feature(decl_macro)]\npub macro zero_v2() { 0u64 }\n"),
     ];
     for (name, source) in cases {
         let mut full = source.to_vec();
@@ -2864,6 +3013,22 @@ fn whole_crate_refuses_exported_macro_rules_without_unsafe_tokens() {
         );
         fixture.assert_no_capture_artifacts();
     }
+
+    // `macro` 2.0 (`#![feature(decl_macro)]`) is now blocked even earlier by
+    // the closed positive feature allowlist (while `DefKind::Macro` remains
+    // required as defense in depth).
+    let decl_macro_fixture = Capture::new(
+        b"#![feature(decl_macro)]\npub macro zero_v2() { 0u64 }\npub fn zero() -> u64 { 0 }\n",
+    );
+    let decl_out = decl_macro_fixture.command().arg("--scope=crate").output().unwrap();
+    assert_eq!(decl_out.status.code(), Some(1), "{decl_out:?}");
+    let decl_failure = status(&decl_out);
+    assert_eq!(decl_failure["status"], "unsupported", "{decl_failure}");
+    assert!(
+        decl_failure.to_string().contains("#![feature(decl_macro)] is unsupported"),
+        "expected decl_macro refusal, got {decl_failure}"
+    );
+    decl_macro_fixture.assert_no_capture_artifacts();
 }
 
 #[test]
@@ -3819,7 +3984,7 @@ fn whole_crate_admits_safe_traits_impls_consts_and_refuses_unsafe_or_extern_obli
             b"#![feature(auto_traits)]\n\
               pub auto trait MyAuto {}\n\
               pub fn ok() -> u8 { 0 }\n",
-            "whole-crate obligation is unsupported: Trait (auto trait)",
+            "#![feature(auto_traits)] is unsupported during capture",
         ),
         (
             "unsafe_impl",
@@ -3839,7 +4004,7 @@ fn whole_crate_admits_safe_traits_impls_consts_and_refuses_unsafe_or_extern_obli
               #[automatically_derived]\n\
               unsafe impl core::clone::TrivialClone for M {}\n\
               pub fn ok() -> u8 { 0 }\n",
-            "whole-crate obligation is unsupported: Impl { of_trait: true } (unsafe impl)",
+            "#![feature(trivial_clone)] is unsupported during capture",
         ),
         (
             "negative_impl",
@@ -3848,7 +4013,7 @@ fn whole_crate_admits_safe_traits_impls_consts_and_refuses_unsafe_or_extern_obli
               pub trait Tr {}\n\
               impl !Tr for E {}\n\
               pub fn ok() -> u8 { 0 }\n",
-            "negative polarity",
+            "#![feature(negative_impls)] is unsupported during capture",
         ),
         (
             "extern_bodyless_fn",
@@ -3865,7 +4030,7 @@ fn whole_crate_admits_safe_traits_impls_consts_and_refuses_unsafe_or_extern_obli
             b"#![feature(linkage)]\n\
               pub trait WeakMethod { #[linkage = \"weak\"] fn f(); }\n\
               pub fn ok() -> u8 { 0 }\n",
-            "linkage attribute WeakAny is unsupported",
+            "#![feature(linkage)] is unsupported during capture",
         ),
         (
             "unsafe_const",
@@ -4044,18 +4209,16 @@ fn overflow_pairs_are_not_addressable_under_profile_v2() {
     for (name, source) in [
         (
             "raw-borrow-of-overflow-pair-local",
-            "#![feature(core_intrinsics)]\n#![allow(internal_features)]\n\
-             pub unsafe fn selected(a: u8, b: u8) -> u8 {\n\
-                 let pair = core::intrinsics::add_with_overflow(a, b);\n\
+            "pub unsafe fn selected(a: u8, b: u8) -> u8 {\n\
+                 let pair: (u8, bool) = (a, b == 0);\n\
                  let p = &raw const pair;\n\
                  unsafe { *(p as *const u8) }\n\
              }\n",
         ),
         (
             "borrow-of-overflow-pair-local",
-            "#![feature(core_intrinsics)]\n#![allow(internal_features)]\n\
-             pub fn selected(a: u8, b: u8) -> bool {\n\
-                 let pair = core::intrinsics::add_with_overflow(a, b);\n\
+            "pub fn selected(a: u8, b: u8) -> bool {\n\
+                 let pair: (u8, bool) = (a, b == 0);\n\
                  let r = &pair;\n\
                  r.1\n\
              }\n",
@@ -4190,8 +4353,9 @@ fn crate_named_core_cannot_spoof_trusted_core_items() {
 
     // Look-alike `core::slice::<impl [T]>::len` and
     // `core::ptr::const_ptr::<impl *const T>::add` cannot reach the call
-    // table. While the sysroot `core` is linked, its inherent methods make
-    // every call to a local look-alike ambiguous (E0034), so `rustc` fails.
+    // table. Defining inherent impls on primitive types requires
+    // `#![feature(rustc_attrs)]` + `#![rustc_coherence_is_core]`, which the
+    // closed positive feature allowlist now rejects before macro expansion.
     let method_spoof = b"\
         #![feature(rustc_attrs)]\n\
         #![rustc_coherence_is_core]\n\
@@ -4211,12 +4375,13 @@ fn crate_named_core_cannot_spoof_trusted_core_items() {
         pub unsafe fn add(p: *const u8) -> *const u8 { unsafe { p.add(1) } }\n";
     let fixture = Capture::new(method_spoof);
     let output = fixture.command_with("core", true).arg("--select=selected").output().unwrap();
-    assert_ne!(output.status.code(), Some(0), "method spoof: {output:?}");
-    assert!(stderr(&output).contains("E0034"), "method spoof: {}", stderr(&output));
-    fixture.assert_no_capture_artifacts();
+    assert_refused("method spoof", &fixture, &output, "#![feature(rustc_attrs)] is unsupported");
 
-    // Without the sysroot `core` (`#![no_core]`), the crate must define the
-    // `Sized` lang item itself, which capture refuses before extraction.
+    // Without the sysroot `core` (`#![no_core]`), the closed positive feature
+    // allowlist refuses `#![feature(no_core, lang_items, rustc_attrs)]` on
+    // normal crates, and even under `--stdlib-crate=core` (where those
+    // features are pinned), `s.len()` cannot spoof `CoreCallOp::SliceLen` and
+    // falls through to the local generic call refusal.
     let no_core_spoof = b"\
         #![feature(no_core, lang_items, rustc_attrs)]\n\
         #![no_core]\n\
@@ -4236,7 +4401,20 @@ fn crate_named_core_cannot_spoof_trusted_core_items() {
         pub fn selected(s: &[u8]) -> usize { s.len() }\n";
     let fixture = Capture::new(no_core_spoof);
     let output = fixture.command_with("core", true).arg("--select=selected").output().unwrap();
-    assert_refused("no_core spoof", &fixture, &output, "crate-local language item");
+    assert_refused("no_core spoof", &fixture, &output, "lang_items, no_core, rustc_attrs");
+
+    let stdlib_fixture = Capture::new(no_core_spoof);
+    let stdlib_output = stdlib_fixture
+        .command_with("core", true)
+        .args(["--stdlib-crate=core", "--select=selected"])
+        .output()
+        .unwrap();
+    assert_refused(
+        "no_core stdlib spoof",
+        &stdlib_fixture,
+        &stdlib_output,
+        "calls to generic or monomorphized functions (`core::slice::<impl [T]>::len`) are unsupported",
+    );
 }
 
 #[test]

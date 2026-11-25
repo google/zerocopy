@@ -1957,14 +1957,16 @@ pub(crate) fn extract_body<'tcx>(
     tcx: TyCtxt<'tcx>,
     def: LocalDefId,
     body: &mir::Body<'tcx>,
+    stdlib_crate: Option<ir::StdlibCrate>,
 ) -> Result<ExtractedBody> {
-    body_inner(tcx, def, None, body, TypingEnv::fully_monomorphized())
+    body_inner(tcx, def, None, body, TypingEnv::fully_monomorphized(), stdlib_crate)
 }
 
 /// Translate an explicitly monomorphized body validated by [`crate::mono`].
 pub(crate) fn extract_instantiated_body<'tcx>(
     tcx: TyCtxt<'tcx>,
     resolved: &crate::mono::ResolvedMonoBody<'tcx>,
+    stdlib_crate: Option<ir::StdlibCrate>,
 ) -> Result<ExtractedBody> {
     body_inner(
         tcx,
@@ -1972,6 +1974,7 @@ pub(crate) fn extract_instantiated_body<'tcx>(
         Some(resolved.instance),
         &resolved.body,
         resolved.typing_env,
+        stdlib_crate,
     )
 }
 
@@ -1981,6 +1984,7 @@ fn body_inner<'tcx>(
     instance: Option<ty::Instance<'tcx>>,
     body: &mir::Body<'tcx>,
     typing_env: TypingEnv<'tcx>,
+    stdlib_crate: Option<ir::StdlibCrate>,
 ) -> Result<ExtractedBody> {
     // Refuse intrinsics before reading the body: calls to an intrinsic need
     // not execute its fallback body. Once `#![feature(intrinsics)]` is
@@ -2012,13 +2016,16 @@ fn body_inner<'tcx>(
                 .into(),
         );
     }
-    // Refuse crates enabling `#![feature(ergonomic_clones)]`: post-capture
-    // `optimize_use_clone` in `rustc_codegen_ssa` ("Replace `clone` calls that
-    // come from `use` statements with direct copies if possible", guarded by
+    // Defense in depth: re-enforce the closed positive `#![feature(...)]`
+    // allowlist and explicitly refuse `#![feature(ergonomic_clones)]` before
+    // per-body translation. Post-capture `optimize_use_clone` in
+    // `rustc_codegen_ssa` ("Replace `clone` calls that come from `use`
+    // statements with direct copies if possible", guarded by
     // `if tcx.features().ergonomic_clones()`) rewrites `CallSource::Use` calls
     // on `&T` (`T: Copy`) to bitwise copies after `Runtime(PostCleanup)`.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/mir/mod.rs#L217-L224
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/mir/mod.rs#L350-L407
+    crate::capture::check_allowed_features(tcx, stdlib_crate)?;
     if tcx.features().ergonomic_clones() {
         return Err(
             "#![feature(ergonomic_clones)] is unsupported during capture: \

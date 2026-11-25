@@ -11,12 +11,10 @@
 //@ mir-contains: "isUnsafe := false"
 
 #![no_std]
-#![feature(core_intrinsics)]
-#![allow(internal_features)]
 
 pub fn bad_ub(x: usize) -> usize {
     if x == 0 {
-        unsafe { core::intrinsics::unreachable() }
+        unsafe { usize::MAX.unchecked_add(1) }
     } else {
         x
     }

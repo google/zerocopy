@@ -16,6 +16,7 @@ extern crate rustc_abi;
 extern crate rustc_ast;
 extern crate rustc_data_structures;
 extern crate rustc_driver;
+extern crate rustc_expand;
 extern crate rustc_hir;
 extern crate rustc_infer;
 extern crate rustc_interface;
@@ -150,10 +151,11 @@ pub struct Args {
     #[arg(long, required = true, action = clap::ArgAction::Append)]
     source_file: Vec<PathBuf>,
     /// Capture the named standard-library crate from its unmodified sources.
-    /// This capability admits the crate's own language items and skips
-    /// object emission. It requires a library crate whose `--crate-name`
-    /// matches, selected roots, a compilation that loads no other crate, no
-    /// `miri` cfg, and any crate-local `Ordering` language item to have the
+    /// This capability admits the crate's own language items and version-pinned
+    /// `#![feature(...)]` gates and skips object emission. It requires a
+    /// library crate whose `--crate-name` matches, selected roots, a
+    /// compilation that loads no other crate, no `miri` cfg (forbidden for all
+    /// captures), and any crate-local `Ordering` language item to have the
     /// modeled shape. The capability is recorded in `capture.json`.
     #[arg(long, value_enum)]
     stdlib_crate: Option<CliStdlibCrate>,
