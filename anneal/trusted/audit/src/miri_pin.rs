@@ -2176,4 +2176,338 @@ mod tests {
             "unexpected error: {err_wired}"
         );
     }
+
+    #[test]
+    fn git_oid_hex_requires_both_length_40_and_ascii_hex() {
+        assert!(is_git_oid_hex("0123456789abcdef0123456789abcdef01234567"));
+        assert!(is_git_oid_hex("0123456789ABCDEF0123456789ABCDEF01234567"));
+
+        // Exactly 40 bytes containing a non-hex character must be rejected.
+        let len_40_non_hex = format!("{}g", "0".repeat(39));
+        assert_eq!(len_40_non_hex.len(), 40);
+        assert!(!is_git_oid_hex(&len_40_non_hex));
+
+        // Pure ASCII hex strings of any length other than 40 must be rejected.
+        for bad_len_hex in ["", "deadbeef", &"a".repeat(39), &"a".repeat(41)] {
+            assert!(!is_git_oid_hex(bad_len_hex), "expected rejection for {bad_len_hex:?}");
+        }
+    }
+
+    #[test]
+    fn rejects_single_clause_violations_in_upstream_pin_schema() {
+        let vendor_root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../vendor/lean-miri");
+        let orig_pin_bytes = fs::read(vendor_root.join("UPSTREAM_PIN.json")).unwrap();
+        let base_pin: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
+        let valid_sha = "1111111111111111111111111111111111111111111111111111111111111111";
+
+        let assert_policy_err = |mutated: &Json, expected_substr: &str| {
+            let err =
+                verify_upstream_pin_bytes(&vendor_root, &serde_json::to_vec(mutated).unwrap())
+                    .unwrap_err();
+            assert_eq!(err.code, 1, "expected policy code 1 for {expected_substr:?}, got {err}");
+            assert!(
+                err.message.contains(expected_substr),
+                "expected {expected_substr:?} in error: {err}"
+            );
+        };
+
+        // `patched_files`: bad `upstream_sha256` alone and bad `patched_sha256`
+        // alone must each fail closed.
+        let first_patched_path = base_pin["patched_files"][0]["path"].as_str().unwrap().to_owned();
+        let mut bad_pf_upstream = base_pin.clone();
+        bad_pf_upstream["patched_files"][0]["upstream_sha256"] = json!("not-a-sha256");
+        assert_policy_err(
+            &bad_pf_upstream,
+            &format!("invalid patched_files record for {first_patched_path}"),
+        );
+
+        let mut bad_pf_patched = base_pin.clone();
+        bad_pf_patched["patched_files"][0]["patched_sha256"] = json!("not-a-sha256");
+        assert_policy_err(
+            &bad_pf_patched,
+            &format!("invalid patched_files record for {first_patched_path}"),
+        );
+
+        // `vendor_tree` header: empty file list, `file_count` mismatch, and
+        // non-hex `manifest_sha256` must each fail closed independently.
+        let mut empty_vt = base_pin.clone();
+        empty_vt["vendor_tree"]["files"] = json!([]);
+        empty_vt["vendor_tree"]["file_count"] = json!(0);
+        assert_policy_err(&empty_vt, "invalid vendor_tree count or manifest_sha256");
+
+        let mut bad_vt_count = base_pin.clone();
+        let actual_count = bad_vt_count["vendor_tree"]["files"].as_array().unwrap().len();
+        bad_vt_count["vendor_tree"]["file_count"] = json!(actual_count + 1);
+        assert_policy_err(&bad_vt_count, "invalid vendor_tree count or manifest_sha256");
+
+        let mut bad_vt_manifest = base_pin.clone();
+        bad_vt_manifest["vendor_tree"]["manifest_sha256"] = json!("not-a-sha256");
+        assert_policy_err(&bad_vt_manifest, "invalid vendor_tree count or manifest_sha256");
+
+        // `vendor_tree.files[]`: non-clean path, non-`.lean` path, and non-hex
+        // `sha256` must each fail closed independently.
+        let mut vt_bad_path = base_pin.clone();
+        vt_bad_path["vendor_tree"]["files"][0]["path"] = json!("../escape.lean");
+        assert_policy_err(&vt_bad_path, "invalid vendor_tree entry: ../escape.lean");
+
+        let mut vt_non_lean = base_pin.clone();
+        vt_non_lean["vendor_tree"]["files"][0]["path"] = json!("Miri/Notes.txt");
+        assert_policy_err(&vt_non_lean, "invalid vendor_tree entry: Miri/Notes.txt");
+
+        let mut vt_bad_sha = base_pin.clone();
+        let vt0_path = vt_bad_sha["vendor_tree"]["files"][0]["path"].as_str().unwrap().to_owned();
+        vt_bad_sha["vendor_tree"]["files"][0]["sha256"] = json!("not-a-sha256");
+        assert_policy_err(&vt_bad_sha, &format!("invalid vendor_tree entry: {vt0_path}"));
+
+        // `vendor_aux_files[]`: non-clean path, `.lean` path,
+        // `UPSTREAM_PIN.json`, and non-hex `sha256` must each fail closed.
+        let mut aux_bad_path = base_pin.clone();
+        aux_bad_path["vendor_aux_files"].as_array_mut().unwrap().push(json!({
+            "path": "../aux.txt",
+            "sha256": valid_sha
+        }));
+        assert_policy_err(&aux_bad_path, "invalid vendor_aux_files entry: ../aux.txt");
+
+        let mut aux_lean = base_pin.clone();
+        aux_lean["vendor_aux_files"].as_array_mut().unwrap().push(json!({
+            "path": "Miri/Smuggled.lean",
+            "sha256": valid_sha
+        }));
+        assert_policy_err(&aux_lean, "invalid vendor_aux_files entry: Miri/Smuggled.lean");
+
+        let mut aux_pin_self = base_pin.clone();
+        aux_pin_self["vendor_aux_files"].as_array_mut().unwrap().push(json!({
+            "path": "UPSTREAM_PIN.json",
+            "sha256": valid_sha
+        }));
+        assert_policy_err(&aux_pin_self, "invalid vendor_aux_files entry: UPSTREAM_PIN.json");
+
+        let mut aux_bad_sha = base_pin.clone();
+        aux_bad_sha["vendor_aux_files"].as_array_mut().unwrap().push(json!({
+            "path": "upstream/notes.txt",
+            "sha256": "not-a-sha256"
+        }));
+        assert_policy_err(&aux_bad_sha, "invalid vendor_aux_files entry: upstream/notes.txt");
+
+        // `execution_machine_closure[]`: each single-clause violation must fail
+        // closed independently.
+        let closure0_mod =
+            base_pin["execution_machine_closure"][0]["module"].as_str().unwrap().to_owned();
+        let closure1_path =
+            base_pin["execution_machine_closure"][1]["path"].as_str().unwrap().to_owned();
+        assert_ne!(
+            base_pin["execution_machine_closure"][0]["path"].as_str().unwrap(),
+            closure1_path.as_str()
+        );
+
+        let mut cl_wrong_path = base_pin.clone();
+        cl_wrong_path["execution_machine_closure"][0]["path"] = json!(closure1_path);
+        assert_policy_err(
+            &cl_wrong_path,
+            &format!("invalid execution_machine_closure entry for {closure0_mod}"),
+        );
+
+        let mut cl_unlisted_path = base_pin.clone();
+        cl_unlisted_path["execution_machine_closure"][0]["module"] = json!("Miri.Ghost.Missing");
+        cl_unlisted_path["execution_machine_closure"][0]["path"] = json!("Miri/Ghost/Missing.lean");
+        assert_policy_err(
+            &cl_unlisted_path,
+            "invalid execution_machine_closure entry for Miri.Ghost.Missing",
+        );
+
+        let mut cl_bad_olean = base_pin.clone();
+        cl_bad_olean["execution_machine_closure"][0]["olean_sha256"] = json!("not-a-sha256");
+        assert_policy_err(
+            &cl_bad_olean,
+            &format!("invalid execution_machine_closure entry for {closure0_mod}"),
+        );
+
+        let mut cl_bad_server = base_pin.clone();
+        cl_bad_server["execution_machine_closure"][0]["olean_server_sha256"] =
+            json!("not-a-sha256");
+        assert_policy_err(
+            &cl_bad_server,
+            &format!("invalid execution_machine_closure entry for {closure0_mod}"),
+        );
+
+        let mut cl_bad_private = base_pin.clone();
+        cl_bad_private["execution_machine_closure"][0]["olean_private_sha256"] =
+            json!("not-a-sha256");
+        assert_policy_err(
+            &cl_bad_private,
+            &format!("invalid execution_machine_closure entry for {closure0_mod}"),
+        );
+    }
+
+    #[test]
+    fn rejects_single_clause_violations_in_source_lock_and_component_pins() {
+        let vendor_root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../vendor/lean-miri");
+        let lock_bytes = fs::read(vendor_root.join("upstream/source-lock.json")).unwrap();
+        let base_lock: Json = serde_json::from_slice(&lock_bytes).unwrap();
+
+        let assert_lock_err = |mutated: &Json, expected_substr: &str| {
+            let err = verify_source_lock_bytes(&serde_json::to_vec(mutated).unwrap()).unwrap_err();
+            assert_eq!(err.code, 1, "expected policy code 1 for {expected_substr:?}, got {err}");
+            assert!(
+                err.message.contains(expected_substr),
+                "expected {expected_substr:?} in error: {err}"
+            );
+        };
+
+        // Invalid `archive_sha256` alone in a component pin must fail closed.
+        let mut bad_archive_sha = base_lock.clone();
+        bad_archive_sha["pins"]["miri"]["archive_sha256"] = json!("not-a-sha256");
+        assert_lock_err(&bad_archive_sha, "invalid `miri` pin record in upstream/source-lock.json");
+
+        // Invalid `acquisition.procedure_sha256` alone must fail closed.
+        let mut bad_proc_sha = base_lock.clone();
+        bad_proc_sha["acquisition"]["procedure_sha256"] = json!("not-a-sha256");
+        assert_lock_err(
+            &bad_proc_sha,
+            "invalid `acquisition` metadata in upstream/source-lock.json",
+        );
+
+        // Non-canonical `rustc_selected_archive_paths.path` alone must fail.
+        let mut bad_sel_path = base_lock.clone();
+        bad_sel_path["acquisition"]["rustc_selected_archive_paths"]["path"] =
+            json!("../selected-paths.txt");
+        assert_lock_err(
+            &bad_sel_path,
+            "invalid `acquisition` metadata in upstream/source-lock.json",
+        );
+
+        // Invalid `rustc_selected_archive_paths.sha256` alone must fail closed.
+        let mut bad_sel_sha = base_lock.clone();
+        bad_sel_sha["acquisition"]["rustc_selected_archive_paths"]["sha256"] =
+            json!("not-a-sha256");
+        assert_lock_err(
+            &bad_sel_sha,
+            "invalid `acquisition` metadata in upstream/source-lock.json",
+        );
+    }
+
+    #[test]
+    fn verify_upstream_pin_rejects_non_symlink_wrong_file_types_as_policy() {
+        let tmp = tempfile::tempdir().unwrap();
+
+        // 1. Regular file at `vendor` parent path fails with policy code `1`.
+        let file_vendor = tmp.path().join("vendor");
+        fs::write(&file_vendor, b"not-a-dir").unwrap();
+        let err_vendor = verify_upstream_pin(&file_vendor.join("lean-miri")).unwrap_err();
+        assert_eq!(err_vendor.code, 1);
+        assert!(
+            err_vendor.message.contains("expected regular vendor directory"),
+            "unexpected error: {err_vendor}"
+        );
+
+        // 2. Regular file at `vendor/lean-miri` fails with policy code `1`.
+        let root2 = tmp.path().join("case2/vendor");
+        fs::create_dir_all(&root2).unwrap();
+        let file_miri = root2.join("lean-miri");
+        fs::write(&file_miri, b"not-a-dir").unwrap();
+        let err_root = verify_upstream_pin(&file_miri).unwrap_err();
+        assert_eq!(err_root.code, 1);
+        assert!(
+            err_root.message.contains("expected regular vendor/lean-miri directory"),
+            "unexpected error: {err_root}"
+        );
+
+        // 3. Directory at `UPSTREAM_PIN.json` fails with policy code `1` rather
+        // than falling through to `fs::read` (operational code `2`).
+        let root3 = tmp.path().join("case3/vendor/lean-miri");
+        fs::create_dir_all(root3.join("UPSTREAM_PIN.json")).unwrap();
+        let err_pin = verify_upstream_pin(&root3).unwrap_err();
+        assert_eq!(err_pin.code, 1);
+        assert!(
+            err_pin.message.contains("expected regular file for UPSTREAM_PIN.json"),
+            "unexpected error: {err_pin}"
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn resolve_path_for_containment_allows_valid_outside_symlinks_and_bounds_hops() {
+        use std::os::unix::fs::symlink;
+
+        let tmp = tempfile::tempdir().unwrap();
+        let base = tmp.path().canonicalize().unwrap();
+        let checkout = base.join("checkout");
+        let outside = base.join("outside");
+        let target = outside.join("real-cache");
+        fs::create_dir_all(&checkout).unwrap();
+        fs::create_dir_all(&target).unwrap();
+
+        // A valid symlink chain of length 40 outside `checkout` resolves to
+        // `target`, while a 41-hop chain exceeds the hop budget and fails
+        // closed with policy code `1`.
+        let mut prev = target.clone();
+        for idx in (0..=40).rev() {
+            let link = outside.join(format!("hop-{idx}"));
+            symlink(&prev, &link).unwrap();
+            prev = link;
+        }
+        let hop_40 = outside.join("hop-1");
+        let resolved = resolve_path_for_containment(&hop_40, &checkout, "miri-pin").unwrap();
+        assert_eq!(resolved, target);
+        ensure_miri_cache_outside_checkout(&checkout, &hop_40).unwrap();
+
+        let hop_41 = outside.join("hop-0");
+        let err_41 = resolve_path_for_containment(&hop_41, &checkout, "miri-pin").unwrap_err();
+        assert_eq!(err_41.code, 1);
+        assert!(
+            err_41.message.contains("symlink loop while resolving Miri .olean cache directory"),
+            "unexpected error: {err_41}"
+        );
+
+        // An actual symlink cycle (`a -> b -> a`) outside `checkout` also
+        // terminates and fails closed with policy code `1`.
+        let cycle_a = outside.join("cycle-a");
+        let cycle_b = outside.join("cycle-b");
+        symlink(&cycle_b, &cycle_a).unwrap();
+        symlink(&cycle_a, &cycle_b).unwrap();
+        let err_cycle = resolve_path_for_containment(&cycle_a, &checkout, "miri-pin").unwrap_err();
+        assert_eq!(err_cycle.code, 1);
+        assert!(
+            err_cycle.message.contains("symlink loop while resolving Miri .olean cache directory"),
+            "unexpected error: {err_cycle}"
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn prepare_nosymlink_cache_path_fails_operationally_on_unsearchable_intermediate_dir() {
+        use std::os::unix::fs::PermissionsExt as _;
+
+        struct ModeGuard<'a> {
+            path: &'a Path,
+        }
+        impl Drop for ModeGuard<'_> {
+            fn drop(&mut self) {
+                let _ = fs::set_permissions(self.path, fs::Permissions::from_mode(0o755));
+            }
+        }
+
+        let tmp = tempfile::tempdir().unwrap();
+        let cache = tmp.path().join("cache");
+        let locked = cache.join("Locked");
+        fs::create_dir_all(&locked).unwrap();
+        fs::set_permissions(&locked, fs::Permissions::from_mode(0o000)).unwrap();
+        let _guard = ModeGuard { path: &locked };
+
+        // Skip gracefully when running with privileges that bypass mode `0o000`
+        // (for example, `geteuid() == 0` or a rootless user namespace).
+        if !matches!(
+            fs::symlink_metadata(locked.join("Sub")),
+            Err(ref e) if e.kind() == io::ErrorKind::PermissionDenied
+        ) {
+            return;
+        }
+        let Err(err) =
+            prepare_nosymlink_cache_path_state(&cache, "Locked/Sub/Hex.olean", false, "miri-pin")
+        else {
+            panic!("expected operational failure on unsearchable intermediate directory");
+        };
+        assert_eq!(err.code, 2);
+        assert!(err.message.contains("cannot stat cache directory"), "unexpected error: {err}");
+    }
 }
