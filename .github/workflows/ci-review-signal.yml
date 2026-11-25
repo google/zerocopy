@@ -17,5 +17,5 @@ permissions: {}
 jobs:
   signal:
     name: signal
-    uses: joshlf/ci-core/.github/workflows/review-signal.yml@a22bebce337fc26765306fc6232632db1103ea48
+    uses: joshlf/ci-core/.github/workflows/review-signal.yml@f0e8b4cd316b0e4b6b87f6d72d47e3ab3539ebc5
     permissions: {}
