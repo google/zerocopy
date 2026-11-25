@@ -186,17 +186,18 @@ pub enum InspectorRequest {
 /// with `"Anneal"`), rejecting symlinks, non-`.lean` files (except the
 /// explicit manifest files allowed for that tree), and compiled artifacts in
 /// the source tree and returning the map from dot-separated module name to
-/// `.lean` path.
+/// `.lean` path. `"Trusted"` requires a root `Trusted.lean` umbrella, whereas
+/// `"Anneal"` uses domain-scoped umbrellas under `theory/Anneal/`.
 pub fn scan_lean_tree(
     root: &Path,
     umbrella_prefix: &str,
 ) -> Result<BTreeMap<String, PathBuf>, Failure> {
-    let allowed_non_lean: &[&str] = match umbrella_prefix {
-        "Trusted" => &["lean-toolchain", "foundation-lock.json"],
-        "Anneal" => &["bundle-manifest.json"],
-        _ => &[],
+    let (require_umbrella, allowed_non_lean): (bool, &[&str]) = match umbrella_prefix {
+        "Trusted" => (true, &["lean-toolchain", "foundation-lock.json"]),
+        "Anneal" => (false, &["bundle-manifest.json"]),
+        _ => (true, &[]),
     };
-    scan_lean_tree_opts(root, umbrella_prefix, true, allowed_non_lean)
+    scan_lean_tree_opts(root, umbrella_prefix, require_umbrella, allowed_non_lean)
 }
 
 /// Scan a Lean directory tree (`root`) under `umbrella_prefix`, optionally
@@ -788,7 +789,7 @@ impl Checker {
         self.reset_stage()?;
 
         // Scan and stage repository trees before `tool_admission` so missing
-        // source directories or umbrellas fail in phase `"snapshot"`
+        // source directories or `Trusted.lean` fail in phase `"snapshot"`
         // (`code == 1`) before probing the external `--lean` binary
         // (`cli_environment.rs`).
         let source = root.join("trusted/lean");
@@ -811,9 +812,6 @@ impl Checker {
         } else {
             BTreeMap::new()
         };
-        if !self.theory_modules.is_empty() && !self.theory_modules.contains_key("Anneal") {
-            return Err(Failure::new(1, "snapshot", "missing Anneal.lean umbrella"));
-        }
 
         self.tool_admission()?;
 

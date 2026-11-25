@@ -401,6 +401,7 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   (`theory/Anneal/{MirWp,LoopInv,LinearArith,BitVec,BitVecArith}.lean`,
   `theory/Anneal/{InitLemmas,ClassicalEm,Firewall,LeBytes,ListChunks}.lean`,
   `theory/Anneal/{NatBitwise,BitTrieLrat,PTree,SpineForce,Generic}.lean`,
+  `theory/Anneal/{Scalar,Simd,Wp}.lean`,
   `theory/Anneal/{ByteRun,ByteSubLens,CallStackUnwind,CnfOrd,F2Simd}/`,
   `theory/Anneal/{AiPcc,OverflowCastJoin,PureLift,RefFrame}/`, and planned
   `Theory/Rust/{Wp,Tactics}/`):**
@@ -536,7 +537,7 @@ anneal/
 │       ├── MirCorrespondence/      # Modular codec, step, simulation & canary proofs
 │       └── MirCorrespondenceProof.lean
 └── theory/                         # Stage 3 (Pass 1): Untrusted proofs
-    ├── Anneal.lean
+    ├── bundle-manifest.json        # SHA-256 manifest of bundled theory modules
     ├── Anneal/
     │   ├── AiPcc.lean              # Reduced-product MIR AI-PCC verifier (+ AiPcc/)
     │   ├── BitTrieLrat.lean        # Radix-2 trie RUP-only LRAT checker
@@ -564,7 +565,10 @@ anneal/
     │   ├── PureLift.lean           # Functional borrow-lifting calculus
     │   ├── PureLift/
     │   ├── RefFrame.lean           # 4-way call-continuation &mut frames & ranged TB (+ RefFrame/)
-    │   └── SpineForce.lean         # CPS spine-forcing & @Nat.rec combinators
+    │   ├── Scalar.lean             # Constructive scalar/bitvector umbrella
+    │   ├── Simd.lean               # F2-linear & SIMD verification umbrella
+    │   ├── SpineForce.lean         # CPS spine-forcing & @Nat.rec combinators
+    │   └── Wp.lean                 # MIR WP & loop-invariant umbrella
     ├── Framework/                  # [planned] Generic simulation lemmas
     └── Rust/                       # [planned] StableAst/, Passes/, Wp/
 ```

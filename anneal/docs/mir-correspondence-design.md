@@ -81,8 +81,10 @@ trusted/lean/                   Core TCB (Pass 1; shipped in omnibus-archive)
 
 theory/                         Core untrusted theory (Pass 1; shipped in
                                 omnibus-archive once MIR scaffolding lands)
-  Anneal.lean                   Umbrella module
+  bundle-manifest.json          Bundled theory module manifest
   Anneal/
+    Scalar.lean                 Constructive scalar/bitvector/arith umbrella
+    Wp.lean                     MIR weakest-precondition & loop-inv umbrella
     MirWp.lean                  Fuel-bounded weakest precondition (wpProg,
                                 wpFaultProg)
     MirWp/Canaries.lean         Decoupled M_anneal non-vacuity canaries

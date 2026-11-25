@@ -138,7 +138,6 @@ build_omnibus_archive() {
   # Stage only the bundled theory modules that `theory/bundle-manifest.json`
   # lists, as `flake.nix` does, so canary suites never enter the archive.
   mkdir -p "$stage_root/dist_staging/share/anneal/theory"
-  cp theory/Anneal.lean "$stage_root/dist_staging/share/anneal/theory/Anneal.lean"
   cp theory/bundle-manifest.json \
     "$stage_root/dist_staging/share/anneal/theory/bundle-manifest.json"
   jq -e -r '.modules[].path' theory/bundle-manifest.json \
@@ -228,15 +227,18 @@ build_omnibus_archive() {
     "$stage_root/dist_staging/share/anneal/prebuilt/TrustedBoundary.olean" \
     "$stage_root/dist_staging/share/anneal/prebuilt/lib/Trusted/MirAst.olean" \
     "$stage_root/dist_staging/share/anneal/prebuilt/lib/Anneal/MirWp.olean" \
+    "$stage_root/dist_staging/share/anneal/prebuilt/lib/Anneal/Scalar.olean" \
+    "$stage_root/dist_staging/share/anneal/prebuilt/lib/Anneal/Wp.olean" \
     "$stage_root/dist_staging/share/anneal/trusted/audit/TrustedBoundary.lean" \
     "$stage_root/dist_staging/share/anneal/trusted/audit/library-lock.json" \
     "$stage_root/dist_staging/share/anneal/trusted/lean/foundation-lock.json" \
     "$stage_root/dist_staging/share/anneal/trusted/lean/lean-toolchain" \
     "$stage_root/dist_staging/share/anneal/trusted/lean/Trusted/MirAst.lean" \
     "$stage_root/dist_staging/share/anneal/trusted/lean/Trusted/MirSemantics.lean" \
-    "$stage_root/dist_staging/share/anneal/theory/Anneal.lean" \
     "$stage_root/dist_staging/share/anneal/theory/bundle-manifest.json" \
-    "$stage_root/dist_staging/share/anneal/theory/Anneal/MirWp.lean"; do
+    "$stage_root/dist_staging/share/anneal/theory/Anneal/MirWp.lean" \
+    "$stage_root/dist_staging/share/anneal/theory/Anneal/Scalar.lean" \
+    "$stage_root/dist_staging/share/anneal/theory/Anneal/Wp.lean"; do
     if [[ ! -f "$full_path" ]]; then
       echo "ERROR: expected archive entry missing: $full_path" >&2
       exit 1
@@ -452,15 +454,18 @@ pack_omnibus_archive() {
     share/anneal/prebuilt/TrustedBoundary.olean
     share/anneal/prebuilt/lib/Trusted/MirAst.olean
     share/anneal/prebuilt/lib/Anneal/MirWp.olean
+    share/anneal/prebuilt/lib/Anneal/Scalar.olean
+    share/anneal/prebuilt/lib/Anneal/Wp.olean
     share/anneal/trusted/audit/TrustedBoundary.lean
     share/anneal/trusted/audit/library-lock.json
     share/anneal/trusted/lean/foundation-lock.json
     share/anneal/trusted/lean/lean-toolchain
     share/anneal/trusted/lean/Trusted/MirAst.lean
     share/anneal/trusted/lean/Trusted/MirSemantics.lean
-    share/anneal/theory/Anneal.lean
     share/anneal/theory/bundle-manifest.json
     share/anneal/theory/Anneal/MirWp.lean
+    share/anneal/theory/Anneal/Scalar.lean
+    share/anneal/theory/Anneal/Wp.lean
   )
   expected_entries+=(
     rust/lib/libz.so.1
@@ -492,10 +497,13 @@ pack_omnibus_archive() {
     echo "ERROR: canary module leaked into share/anneal in $out_archive" >&2
     exit 1
   fi
-  {
-    printf '%s\n' share/anneal/theory/Anneal.lean
-    jq -e -r '"share/anneal/" + .modules[].path' "$bundle_manifest"
-  } | LC_ALL=C sort -u > "$stage_root/expected_theory_entries.txt"
+  if grep -Eq '^share/anneal/(theory/Anneal\.lean|prebuilt/lib/Anneal\.olean)$' \
+    "$stage_root/archive_entries.txt"; then
+    echo "ERROR: retired monolithic Anneal umbrella leaked into share/anneal in $out_archive" >&2
+    exit 1
+  fi
+  jq -e -r '"share/anneal/" + .modules[].path' "$bundle_manifest" \
+    | LC_ALL=C sort -u > "$stage_root/expected_theory_entries.txt"
   grep -E '^share/anneal/theory/.*\.lean$' "$stage_root/archive_entries.txt" \
     | LC_ALL=C sort > "$stage_root/actual_theory_entries.txt"
   local theory_drift

@@ -70,8 +70,16 @@
       "sha256": "7b0704a918fe1ab8d4ead1af3b008a61eb94f5ca763fd5a38e54b4fec069fd40"
     },
     {
+      "path": "theory/Anneal/Scalar.lean",
+      "sha256": "b003849202da82fdb400e94d032bbd815d22ab7b465e7e3b269f4636d55fe1f5"
+    },
+    {
       "path": "theory/Anneal/SpineForce.lean",
       "sha256": "77bb30c2c8873ac358c1751c721380d340114ad67c8d7fd5f76478192d54c535"
+    },
+    {
+      "path": "theory/Anneal/Wp.lean",
+      "sha256": "a89e2b76559cae64b1156c4e0b5eab92203a89ffd85cff0d996a4578156d14e1"
     }
   ]
 }
