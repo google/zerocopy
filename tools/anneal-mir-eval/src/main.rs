@@ -7,29 +7,38 @@
 // those terms.
 
 //! Standalone CLI over `anneal-mir-eval` for inspecting captured MIR JSON
-//! manifests, stepping concrete inputs, and probing for pre-proof UB
-//! counterexamples.
+//! manifests (schema v5), stepping concrete inputs under Profile v1 or v2, and
+//! probing for pre-proof UB counterexamples with replay classification.
 
 #![forbid(unsafe_code)]
 
 use std::{env, fs, process::ExitCode};
 
 use anneal_mir_eval::{
-    CaptureInput, EnumTy, EvalConfig, FaultKind, IntTy, IntWidth, OrderingVal, Outcome,
-    ProbeConfig, ProbeReport, Program, ScalarVal, TargetEndian, TerminalOut, Ty, Val,
-    eval_body_with_config, probe_body_with_policy, validate_program_config,
+    AllocByte, Allocation, CallerMemory, CaptureInput, EnumTy, EvalConfig, FaultKind, IntTy,
+    IntWidth, Mutability, OrderingVal, Outcome, ProbeConfig, ProbeReport, Program, PtrVal, Query,
+    ScalarVal, TargetEndian, TerminalOut, Ty, Val, eval_body_with_caller_mem, int_layout,
+    probe_body_with_policy, validate_program_config,
 };
 
 fn usage() -> &'static str {
     "Usage:
   anneal-mir-eval list <capture.json> [--json]
-  anneal-mir-eval eval <capture.json> [--body <idx|identity>] [--arg <val>]...
-                       [--fuel <n>] [--endian big|little] [--profile-v2]
-                       [--trace] [--json]
+  anneal-mir-eval eval <capture.json> [--body <idx|identity>]
+                       [--arg <val>... | --query <query.json>]
+                       [--fuel <n>] [--endian big|little]
+                       [--strict-v1 | --profile-v2] [--trace] [--json]
   anneal-mir-eval probe <capture.json> [--body <idx|identity> | --all]
                         [--cases <n>] [--fuel <n>] [--seed <n>]
-                        [--endian big|little] [--profile-v2]
+                        [--endian big|little] [--strict-v1 | --profile-v2]
                         [--include-unsafe] [--json]"
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum ProfileOverride {
+    Auto,
+    StrictV1,
+    ProfileV2,
 }
 
 fn format_ty(ty: &Ty) -> String {
@@ -48,18 +57,21 @@ fn format_ty(ty: &Ty) -> String {
         }
         Ty::Ref { mutability, pointee } => {
             let prefix = match mutability {
-                anneal_mir_eval::Mutability::Shared => "&",
-                anneal_mir_eval::Mutability::Mut => "&mut ",
+                Mutability::Shared => "&",
+                Mutability::Mut => "&mut ",
             };
             format!("{prefix}{}", format_ty(pointee))
         }
         Ty::RawPtr { mutability, pointee } => {
             let prefix = match mutability {
-                anneal_mir_eval::Mutability::Shared => "*const ",
-                anneal_mir_eval::Mutability::Mut => "*mut ",
+                Mutability::Shared => "*const ",
+                Mutability::Mut => "*mut ",
             };
             format!("{prefix}{}", format_ty(pointee))
         }
+        Ty::Slice { elem } => format!("[{}]", format_ty(elem)),
+        Ty::RangeTo { elem } => format!("RangeTo<{}>", format_ty(elem)),
+        Ty::RangeFrom { elem } => format!("RangeFrom<{}>", format_ty(elem)),
         Ty::Array { elem, len } => format!("[{}; {len}]", format_ty(elem)),
         Ty::Unsupported => "<unsupported>".into(),
     }
@@ -74,7 +86,14 @@ fn format_val(val: &Val) -> String {
                 format!("{}{}", sv.truncated_bits(), sv.width.rust_name(false))
             }
         }
-        Val::Ptr(p) => format!("{p:?}"),
+        Val::Ptr(p) => match p.alloc_id {
+            Some(aid) => format!("ptr(alloc#{aid}+{})", p.offset_bytes),
+            None => format!("ptr(addr={:#x})", p.offset_bytes),
+        },
+        Val::SlicePtr { ptr, len } => match ptr.alloc_id {
+            Some(aid) => format!("slice(alloc#{aid}+{}, len={len})", ptr.offset_bytes),
+            None => format!("slice(addr={:#x}, len={len})", ptr.offset_bytes),
+        },
         Val::Bool(b) => b.to_string(),
         Val::Char(c) => format!("{c:?}"),
         Val::Ordering(OrderingVal::Less) => "Ordering::Less".into(),
@@ -89,6 +108,8 @@ fn format_val(val: &Val) -> String {
             let parts: Vec<String> = fields.iter().map(format_val).collect();
             format!("({})", parts.join(", "))
         }
+        Val::RangeTo(end) => format!("..{end}"),
+        Val::RangeFrom(start) => format!("{start}.."),
         Val::Bytes(bs) => format!("[{} bytes]", bs.len()),
     }
 }
@@ -221,7 +242,48 @@ fn parse_enum_arg(raw: &str, ety: &EnumTy) -> Result<Val, String> {
     Ok(Val::EnumVal { ty: ety.clone(), variant })
 }
 
-fn parse_arg_spec(raw: &str, expected_ty: Option<&Ty>) -> Result<Val, String> {
+fn parse_byte_slice_arg(
+    raw: &str,
+    mutability: Mutability,
+    allocations: &mut Vec<Allocation>,
+    next_alloc_id: &mut u64,
+) -> Result<Val, String> {
+    let trimmed = raw.trim();
+    let inner = trimmed
+        .strip_prefix("bytes:")
+        .or_else(|| trimmed.strip_prefix('[').and_then(|s| s.strip_suffix(']')))
+        .ok_or_else(|| format!("expected byte slice as '[1,2,3]' or 'bytes:1,2,3', got '{raw}'"))?
+        .trim();
+    let mut bytes = Vec::new();
+    if !inner.is_empty() {
+        for elem in inner.split(',') {
+            let sv = parse_int_bits(elem, IntTy { width: IntWidth::I8, signed: false })?;
+            bytes.push(AllocByte::Init { byte: sv.bits as u8, prov: None });
+        }
+    }
+    let aid = *next_alloc_id;
+    *next_alloc_id += 1;
+    let len = bytes.len() as u64;
+    let lay = int_layout(IntWidth::I8);
+    allocations.push(Allocation {
+        alloc_id: aid,
+        align_log2: lay.align_log2,
+        mutability,
+        bytes,
+        live: true,
+    });
+    Ok(Val::SlicePtr {
+        ptr: PtrVal { alloc_id: Some(aid), offset_bytes: 0, width: IntWidth::Isize },
+        len,
+    })
+}
+
+fn parse_arg_spec(
+    raw: &str,
+    expected_ty: Option<&Ty>,
+    allocations: &mut Vec<Allocation>,
+    next_alloc_id: &mut u64,
+) -> Result<Val, String> {
     if let Some((prefix, rest)) = raw.split_once(':') {
         let typed = match prefix {
             "u8" => Some(Ty::Int(IntTy { width: IntWidth::I8, signed: false })),
@@ -243,7 +305,7 @@ fn parse_arg_spec(raw: &str, expected_ty: Option<&Ty>) -> Result<Val, String> {
             _ => None,
         };
         if let Some(ty) = typed {
-            return parse_arg_for_ty(rest, &ty);
+            return parse_arg_for_ty(rest, &ty, allocations, next_alloc_id);
         }
     }
     let Some(ty) = expected_ty else {
@@ -252,10 +314,15 @@ fn parse_arg_spec(raw: &str, expected_ty: Option<&Ty>) -> Result<Val, String> {
         }
         return Err(format!("cannot infer type for argument '{raw}'; add a prefix like u32:{raw}"));
     };
-    parse_arg_for_ty(raw, ty)
+    parse_arg_for_ty(raw, ty, allocations, next_alloc_id)
 }
 
-fn parse_arg_for_ty(raw: &str, ty: &Ty) -> Result<Val, String> {
+fn parse_arg_for_ty(
+    raw: &str,
+    ty: &Ty,
+    allocations: &mut Vec<Allocation>,
+    next_alloc_id: &mut u64,
+) -> Result<Val, String> {
     match ty {
         Ty::Unit => {
             if raw.is_empty() || raw == "()" || raw == "unit" {
@@ -291,24 +358,68 @@ fn parse_arg_for_ty(raw: &str, ty: &Ty) -> Result<Val, String> {
         },
         Ty::Int(ity) => Ok(Val::Scalar(parse_int_bits(raw, *ity)?)),
         Ty::Enum(ety) => parse_enum_arg(raw, ety),
-        other => Err(format!("CLI parsing unsupported for parameter type {}", format_ty(other))),
+        Ty::RangeTo { elem } if elem.is_usize() => {
+            let num = raw.trim().strip_prefix("..").unwrap_or(raw.trim());
+            let sv = parse_int_bits(num, IntTy { width: IntWidth::Isize, signed: false })?;
+            Ok(Val::RangeTo(sv.bits as u64))
+        }
+        Ty::RangeFrom { elem } if elem.is_usize() => {
+            let num = raw.trim().strip_suffix("..").unwrap_or(raw.trim());
+            let sv = parse_int_bits(num, IntTy { width: IntWidth::Isize, signed: false })?;
+            Ok(Val::RangeFrom(sv.bits as u64))
+        }
+        Ty::Ref { mutability, pointee }
+            if matches!(
+                pointee.as_ref(),
+                Ty::Slice { elem }
+                    if matches!(
+                        elem.as_ref(),
+                        Ty::Int(IntTy { width: IntWidth::I8, signed: false })
+                    )
+            ) =>
+        {
+            parse_byte_slice_arg(raw, *mutability, allocations, next_alloc_id)
+        }
+        other => Err(format!(
+            "CLI --arg parsing unsupported for parameter type {} (pass --query <query.json>)",
+            format_ty(other)
+        )),
     }
 }
 
 fn build_config(
+    program: &Program,
     endian_override: Option<TargetEndian>,
     manifest_endian: Option<TargetEndian>,
-    profile_v2: bool,
-) -> EvalConfig {
-    let mut cfg = if profile_v2 {
-        EvalConfig::profile_v2(endian_override.or(manifest_endian).unwrap_or(TargetEndian::Little))
-    } else {
-        EvalConfig::profile_v1()
+    profile_override: ProfileOverride,
+) -> Result<EvalConfig, anneal_mir_eval::FaultDetail> {
+    let mut cfg = match profile_override {
+        ProfileOverride::Auto => {
+            let effective_v2_endian = endian_override.or(manifest_endian);
+            EvalConfig::for_program(program, effective_v2_endian)?
+        }
+        ProfileOverride::StrictV1 => EvalConfig::profile_v1(),
+        ProfileOverride::ProfileV2 => {
+            let endian = endian_override.or(manifest_endian).unwrap_or(TargetEndian::Little);
+            if endian != TargetEndian::Little {
+                return Err(anneal_mir_eval::FaultDetail::unsupported(
+                    "Profile v2 only supports little-endian targets \
+                     (Trusted.MirSemantics.profileV2TargetEndian)",
+                ));
+            }
+            EvalConfig::profile_v2(TargetEndian::Little)
+        }
     };
     if let Some(endian) = endian_override {
+        if cfg.enable_profile_v2() && endian != TargetEndian::Little {
+            return Err(anneal_mir_eval::FaultDetail::unsupported(
+                "Profile v2 only supports little-endian targets \
+                 (Trusted.MirSemantics.profileV2TargetEndian)",
+            ));
+        }
         cfg.endian = endian;
     }
-    cfg
+    Ok(cfg)
 }
 
 fn cmd_list(args: &[String]) -> Result<ExitCode, String> {
@@ -334,10 +445,11 @@ fn cmd_list(args: &[String]) -> Result<ExitCode, String> {
         return Ok(ExitCode::SUCCESS);
     }
     println!(
-        "bodies: {} (pointer_width_bits={}, mir_profile_version={})",
+        "bodies: {} (pointer_width_bits={}, mir_profile_version={}, overflow_checks={})",
         program.bodies.len(),
         program.pointer_width_bits,
-        program.mir_profile_version
+        program.mir_profile_version,
+        program.overflow_checks
     );
     for (idx, body) in program.bodies.iter().enumerate() {
         let params: Vec<String> = body.param_tys().unwrap_or(&[]).iter().map(format_ty).collect();
@@ -368,9 +480,10 @@ fn cmd_eval(args: &[String]) -> Result<ExitCode, String> {
     let mut path: Option<String> = None;
     let mut body_sel: Option<String> = None;
     let mut raw_args: Vec<String> = Vec::new();
+    let mut query_path: Option<String> = None;
     let mut fuel = 100_000usize;
     let mut endian_override: Option<TargetEndian> = None;
-    let mut profile_v2 = false;
+    let mut profile_override = ProfileOverride::Auto;
     let mut show_trace = false;
     let mut json_out = false;
 
@@ -379,6 +492,7 @@ fn cmd_eval(args: &[String]) -> Result<ExitCode, String> {
         match args[i].as_str() {
             "--body" => body_sel = Some(next_flag_val(args, &mut i, "--body")?.into()),
             "--arg" => raw_args.push(next_flag_val(args, &mut i, "--arg")?.into()),
+            "--query" => query_path = Some(next_flag_val(args, &mut i, "--query")?.into()),
             "--fuel" => {
                 let raw = next_flag_val(args, &mut i, "--fuel")?;
                 fuel = raw.parse::<usize>().map_err(|e| format!("invalid --fuel '{raw}': {e}"))?;
@@ -386,7 +500,18 @@ fn cmd_eval(args: &[String]) -> Result<ExitCode, String> {
             "--endian" => {
                 endian_override = Some(parse_endian(next_flag_val(args, &mut i, "--endian")?)?)
             }
-            "--profile-v2" => profile_v2 = true,
+            "--strict-v1" => {
+                if profile_override == ProfileOverride::ProfileV2 {
+                    return Err("cannot combine --strict-v1 with --profile-v2".into());
+                }
+                profile_override = ProfileOverride::StrictV1;
+            }
+            "--profile-v2" => {
+                if profile_override == ProfileOverride::StrictV1 {
+                    return Err("cannot combine --strict-v1 with --profile-v2".into());
+                }
+                profile_override = ProfileOverride::ProfileV2;
+            }
             "--trace" => show_trace = true,
             "--json" => json_out = true,
             flag if flag.starts_with('-') => return Err(format!("unknown flag '{flag}'")),
@@ -396,19 +521,45 @@ fn cmd_eval(args: &[String]) -> Result<ExitCode, String> {
         i += 1;
     }
 
+    if query_path.is_some() && !raw_args.is_empty() {
+        return Err("cannot combine --query with --arg".into());
+    }
     let path = path.ok_or_else(|| "missing <capture.json> argument".to_string())?;
     let LoadedCapture { program, manifest_endian, from_manifest } = load_capture(&path)?;
     let body_id = resolve_body_id(&program, from_manifest, body_sel.as_deref())?;
     let body = &program.bodies[body_id];
     let param_tys = body.param_tys().unwrap_or(&[]);
 
-    let mut parsed_args = Vec::with_capacity(raw_args.len());
-    for (idx, spec) in raw_args.iter().enumerate() {
-        parsed_args.push(parse_arg_spec(spec, param_tys.get(idx))?);
-    }
+    let (parsed_args, caller_mem) = if let Some(qpath) = query_path {
+        let raw_q = fs::read_to_string(&qpath)
+            .map_err(|e| format!("failed to read query '{qpath}': {e}"))?;
+        let query: Query = serde_json::from_str(&raw_q)
+            .map_err(|e| format!("invalid query JSON '{qpath}': {e}"))?;
+        (query.args, query.caller_mem)
+    } else {
+        let mut parsed_args = Vec::with_capacity(raw_args.len());
+        let mut allocations = Vec::new();
+        let mut next_alloc_id = 2u64;
+        for (idx, spec) in raw_args.iter().enumerate() {
+            parsed_args.push(parse_arg_spec(
+                spec,
+                param_tys.get(idx),
+                &mut allocations,
+                &mut next_alloc_id,
+            )?);
+        }
+        (parsed_args, CallerMemory { allocations })
+    };
 
-    let config = build_config(endian_override, manifest_endian, profile_v2);
-    let trace = eval_body_with_config(&program, body_id, &parsed_args, fuel, &config);
+    let config = match build_config(&program, endian_override, manifest_endian, profile_override) {
+        Ok(cfg) => cfg,
+        Err(fault) => {
+            eprintln!("unsupported program: {}", fault.reason);
+            return Ok(ExitCode::from(3));
+        }
+    };
+    let trace =
+        eval_body_with_caller_mem(&program, body_id, &parsed_args, caller_mem, fuel, &config);
 
     if json_out {
         println!(
@@ -432,7 +583,11 @@ fn cmd_eval(args: &[String]) -> Result<ExitCode, String> {
                 println!("  ABORTED (UnwindAction::Terminate)");
             }
             Outcome::Fault(err) => {
-                println!("  FAULT {err}");
+                if let Some(class) = err.witness_class() {
+                    println!("  FAULT {err} [witness_class={class}]");
+                } else {
+                    println!("  FAULT {err}");
+                }
             }
             Outcome::OutOfFuel => {
                 println!("  OUT OF FUEL");
@@ -469,7 +624,7 @@ fn cmd_probe(args: &[String]) -> Result<ExitCode, String> {
     let mut all_bodies = false;
     let mut probe = ProbeConfig::default();
     let mut endian_override: Option<TargetEndian> = None;
-    let mut profile_v2 = false;
+    let mut profile_override = ProfileOverride::Auto;
     let mut include_unsafe = false;
     let mut json_out = false;
 
@@ -496,7 +651,18 @@ fn cmd_probe(args: &[String]) -> Result<ExitCode, String> {
             "--endian" => {
                 endian_override = Some(parse_endian(next_flag_val(args, &mut i, "--endian")?)?)
             }
-            "--profile-v2" => profile_v2 = true,
+            "--strict-v1" => {
+                if profile_override == ProfileOverride::ProfileV2 {
+                    return Err("cannot combine --strict-v1 with --profile-v2".into());
+                }
+                profile_override = ProfileOverride::StrictV1;
+            }
+            "--profile-v2" => {
+                if profile_override == ProfileOverride::StrictV1 {
+                    return Err("cannot combine --strict-v1 with --profile-v2".into());
+                }
+                profile_override = ProfileOverride::ProfileV2;
+            }
             "--include-unsafe" => include_unsafe = true,
             "--json" => json_out = true,
             flag if flag.starts_with('-') => return Err(format!("unknown flag '{flag}'")),
@@ -511,7 +677,13 @@ fn cmd_probe(args: &[String]) -> Result<ExitCode, String> {
     }
     let path = path.ok_or_else(|| "missing <capture.json> argument".to_string())?;
     let LoadedCapture { program, manifest_endian, from_manifest } = load_capture(&path)?;
-    let config = build_config(endian_override, manifest_endian, profile_v2);
+    let config = match build_config(&program, endian_override, manifest_endian, profile_override) {
+        Ok(cfg) => cfg,
+        Err(fault) => {
+            eprintln!("unsupported program: {}", fault.reason);
+            return Ok(ExitCode::from(3));
+        }
+    };
     if let Err(fault) = validate_program_config(&program, &config) {
         eprintln!("unsupported program: {}", fault.reason);
         return Ok(ExitCode::from(3));
@@ -548,7 +720,7 @@ fn cmd_probe(args: &[String]) -> Result<ExitCode, String> {
                 continue;
             }
             println!(
-                "[{}] {}: cases={} ok={} unwound={} aborted={} ub={} unsupported={} oom_fuel={} uninhabited={} unsupported_param_shape={}",
+                "[{}] {}: cases={} ok={} unwound={} aborted={} ub={} (replayable={}, model_only_unreplayed={}) unsupported={} oom_fuel={} uninhabited={} unsupported_param_shape={}",
                 r.body_id,
                 r.identity,
                 r.cases_run,
@@ -556,6 +728,8 @@ fn cmd_probe(args: &[String]) -> Result<ExitCode, String> {
                 r.unwound_count,
                 r.aborted_count,
                 r.undefined_count,
+                r.replayable_ub_count,
+                r.model_only_unreplayed_ub_count,
                 r.unsupported_count,
                 r.out_of_fuel_count,
                 r.uninhabited_params,
@@ -567,7 +741,18 @@ fn cmd_probe(args: &[String]) -> Result<ExitCode, String> {
                     Outcome::Fault(f) => f.reason.as_str(),
                     _ => "",
                 };
-                println!("  COUNTEREXAMPLE args=({}) -> {}", formatted_args.join(", "), reason);
+                let class = cex
+                    .witness_class
+                    .map(|c| c.to_string())
+                    .unwrap_or_else(|| "model_only_unreplayed".into());
+                println!(
+                    "  COUNTEREXAMPLE [class={class}] args=({}) -> {}",
+                    formatted_args.join(", "),
+                    reason
+                );
+                if let Some(note) = &cex.witness_note {
+                    println!("    note: {note}");
+                }
             }
         }
     }
@@ -608,17 +793,70 @@ mod tests {
 
     #[test]
     fn manifest_endian_and_body_selection_contracts() {
-        let cfg_big = build_config(None, Some(TargetEndian::Big), true);
-        assert_eq!(cfg_big.endian, TargetEndian::Big);
-        let cfg_override = build_config(Some(TargetEndian::Little), Some(TargetEndian::Big), true);
-        assert_eq!(cfg_override.endian, TargetEndian::Little);
-        let cfg_v1 = build_config(None, Some(TargetEndian::Little), false);
-        assert_eq!(cfg_v1.endian, TargetEndian::Big);
+        let v1_prog = Program {
+            scope: anneal_mir_eval::Scope::Crate,
+            bodies: Vec::new(),
+            entry_def_id: 0,
+            pointer_width_bits: 64,
+            overflow_checks: false,
+            mir_profile_version: 1,
+        };
+        let v2_prog = Program { mir_profile_version: 2, ..v1_prog.clone() };
 
-        let dir =
-            std::env::temp_dir().join(format!("anneal-mir-eval-main-unit-{}", std::process::id()));
-        fs::create_dir_all(&dir).unwrap();
-        let manifest_path = dir.join("manifest.json");
+        // Profile v2 fails closed on big-endian manifests or overrides.
+        assert!(
+            build_config(&v2_prog, None, Some(TargetEndian::Big), ProfileOverride::Auto).is_err()
+        );
+        assert!(
+            build_config(
+                &v2_prog,
+                Some(TargetEndian::Big),
+                Some(TargetEndian::Little),
+                ProfileOverride::ProfileV2,
+            )
+            .is_err()
+        );
+
+        let cfg_little =
+            build_config(&v2_prog, None, Some(TargetEndian::Little), ProfileOverride::Auto)
+                .unwrap();
+        assert_eq!(cfg_little.endian, TargetEndian::Little);
+        assert!(cfg_little.enable_profile_v2());
+
+        let cfg_override = build_config(
+            &v2_prog,
+            Some(TargetEndian::Little),
+            Some(TargetEndian::Big),
+            ProfileOverride::ProfileV2,
+        )
+        .unwrap();
+        assert_eq!(cfg_override.endian, TargetEndian::Little);
+
+        let cfg_v1 =
+            build_config(&v1_prog, None, Some(TargetEndian::Little), ProfileOverride::Auto)
+                .unwrap();
+        assert_eq!(cfg_v1.endian, TargetEndian::Big);
+        assert!(cfg_v1.is_strict_profile_v1());
+
+        struct TempDir(std::path::PathBuf);
+        impl Drop for TempDir {
+            fn drop(&mut self) {
+                let _ = fs::remove_dir_all(&self.0);
+            }
+        }
+        let dir = {
+            let mut attempt = 0u64;
+            loop {
+                let candidate = std::env::temp_dir()
+                    .join(format!("anneal-mir-eval-main-unit-{}-{attempt}", std::process::id()));
+                match fs::create_dir(&candidate) {
+                    Ok(()) => break TempDir(candidate),
+                    Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => attempt += 1,
+                    Err(e) => panic!("create temp dir {candidate:?}: {e}"),
+                }
+            }
+        };
+        let manifest_path = dir.0.join("manifest.json");
         let body_json = |id: &str| {
             format!(
                 r#"{{
@@ -638,7 +876,7 @@ mod tests {
             };
             format!(
                 r#"{{
-                    "schema_version": 4,
+                    "schema_version": 5,
                     "compiler": {{
                         "commit": "deadbeef",
                         "version": "1.100.0",
@@ -673,6 +911,8 @@ mod tests {
                     "unsupported": [],
                     "program": {{
                         "scope": {{ "kind": "crate" }},
+                        "overflow_checks": true,
+                        "mir_profile_version": 1,
                         "bodies": [{bodies}]
                     }}
                 }}"#,
@@ -684,6 +924,7 @@ mod tests {
         let loaded = load_capture(manifest_path.to_str().unwrap()).unwrap();
         assert_eq!(loaded.manifest_endian, Some(TargetEndian::Big));
         assert!(loaded.from_manifest);
+        assert!(loaded.program.overflow_checks);
         assert!(resolve_body_id(&loaded.program, loaded.from_manifest, None).is_err());
         assert_eq!(
             resolve_body_id(&loaded.program, loaded.from_manifest, Some("demo::two")).unwrap(),
@@ -692,7 +933,5 @@ mod tests {
 
         fs::write(&manifest_path, manifest_json("pdp", false)).unwrap();
         assert!(load_capture(manifest_path.to_str().unwrap()).is_err());
-
-        let _ = fs::remove_dir_all(&dir);
     }
 }

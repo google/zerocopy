@@ -7,43 +7,66 @@
 // those terms.
 
 //! Deterministic small-step MIR evaluator (`eval_body` / `MachineState`)
-//! matching `Trusted.MirSemantics.{State,Step}` in Profile v1 and extensible
-//! to Profile v2 constructs.
+//! aligned 1:1 with `Trusted.MirSemantics.{State,Step,Boundary}` across both
+//! Profile v1 (with intra-crate `Call` and pinned `SysrootCall`) and Profile v2
+//! (with caller memory, references, raw pointers, slices, `CoreCall`, `Assert`,
+//! and single-level `PartialTuple` moves).
 
-use alloc::{collections::BTreeSet, format, string::String, vec, vec::Vec};
+use alloc::{
+    borrow::Cow, boxed::Box, collections::BTreeSet, format, string::String, vec, vec::Vec,
+};
 
 use serde::{Deserialize, Serialize};
 
 use crate::{
     ir::{
-        AggregateKind, Block, Body, CastKind, IntTy, IntWidth, Operand, Program, ProjectionElem,
-        Rvalue, Statement, Terminator, Ty, UnwindAction,
+        AggregateKind, AssertKind, BinOp, Block, Body, CastKind, CoreCallOp, IntTy, IntWidth,
+        Mutability, Operand, Place, Program, ProjectionElem, Rvalue, Statement, SysrootNumKind,
+        SysrootNumOp, Terminator, Ty, UnOp, UnwindAction,
     },
     memory::{
-        CallerMemory, MemPlace, MemoryState, TargetEndian, deinit_indirect, encode_val,
-        eval_const_lit, layout_of_ty, load_indirect, store_indirect,
+        CallerMemory, ISIZE_MAX_BYTES, LayoutData, MemPlace, MemoryState, TargetEndian,
+        deinit_indirect, encode_val, eval_const_lit, layout_of_ty, load_indirect,
+        offset_is_aligned, ptr_add_in_mem, ref_access_spans, ref_access_spans_list,
+        ref_valid_in_mem, refs_stay_in_caller_mem, refs_valid_in_mem, refs_valid_in_mem_list,
+        slice_get_unchecked_check, spans_pairwise_disjoint, store_indirect, valid_caller_memory,
     },
     ops::{eval_bin_op, eval_int_to_int_cast, eval_un_op},
     value::{
-        AllocByte, FaultDetail, ScalarVal, Val, check_args_match, check_val, enum_admitted,
-        is_int_like_ty, is_primitive_readable_ty, is_supported_local_ty, is_unicode_scalar,
-        is_zst_enum_ty,
+        AllocByte, FaultDetail, FaultKind, PtrVal, ScalarVal, UbClass, Val, check_args_match,
+        check_val, enum_admitted, is_int_like_ty, is_primitive_readable_ty, is_supported_local_ty,
+        is_supported_v1_local_ty, is_supported_v2_local_ty, is_unicode_scalar, is_zst_enum_ty,
     },
 };
 
-const MAX_CALL_DEPTH_V2: usize = 256;
+/// Evaluation query matching `Trusted.MirModel.Query`.
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Query {
+    pub args: Vec<Val>,
+    #[serde(default)]
+    pub caller_mem: CallerMemory,
+}
 
-/// Storage state of a single MIR local slot (`LocalSlot`).
+/// Storage state of a single MIR local slot (`Trusted.MirModel.LocalSlot`).
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum LocalSlot {
     Dead,
     Immediate { val: Option<Val> },
-    PartialTuple { fields: Vec<LocalSlot> },
+    PartialTuple { fields: Vec<Option<Val>> },
     Indirect { place: MemPlace },
 }
 
-/// Active call stack frame (`FrameState`).
+/// Return continuation for Profile v1 nested function calls.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CallReturnTarget {
+    pub block_idx: Option<usize>,
+    pub dst_local: u32,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub dst_projection: Vec<ProjectionElem>,
+}
+
+/// Active call stack frame (`Trusted.MirSemantics.FrameState`).
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct FrameState {
     pub def_id: usize,
@@ -51,21 +74,9 @@ pub struct FrameState {
     pub stmt_idx: usize,
     pub locals: Vec<LocalSlot>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sysroot_op: Option<SysrootNumOp>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub return_to: Option<CallReturnTarget>,
-}
-
-fn default_unwind_action() -> UnwindAction {
-    UnwindAction::Continue
-}
-
-/// Return continuation for Profile v2 nested function calls.
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
-pub struct CallReturnTarget {
-    pub block_idx: usize,
-    pub dst_local: u32,
-    pub dst_projection: Vec<ProjectionElem>,
-    #[serde(default = "default_unwind_action")]
-    pub unwind: UnwindAction,
 }
 
 /// Observable terminal value matching `Trusted.MirModel.TerminalOut`.
@@ -76,13 +87,14 @@ pub enum TerminalOut {
     Unwound { caller_mem: CallerMemory },
 }
 
-/// Result of running an evaluation trace to completion, abort, fault, or fuel limit.
+/// Result of running an evaluation trace to completion, abort, fault, or fuel
+/// limit.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "kind", content = "value", rename_all = "snake_case")]
 pub enum Outcome {
     Returned(TerminalOut),
-    /// Process termination via `UnwindAction::Terminate` (stops execution
-    /// rather than unwinding to the caller).
+    /// Process termination via `UnwindAction::Terminate` (unused by current
+    /// `Trusted.MirSemantics`, retained for trace schema compatibility).
     Aborted {
         caller_mem: CallerMemory,
     },
@@ -90,16 +102,16 @@ pub enum Outcome {
     OutOfFuel,
 }
 
-/// Execution profile enforcing either strict Profile v1 parity or Profile v2
-/// extensions.
+/// Execution profile enforcing either Profile v1 or Profile v2 semantics
+/// matching `Trusted.MirSemantics`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum EvalProfile {
-    /// Strict Profile v1 parity with `Trusted.MirSemantics` (requires
-    /// `mir_profile_version == 1`, single stack frame, and rejects Profile v2
-    /// constructs).
+    /// Profile v1 (`mir_profile_version == 1`): scalars/enums/overflow pairs
+    /// with multi-frame intra-crate `Call` and pinned `SysrootCall`.
     StrictV1,
-    /// Opt-in Profile v2 extensions enabling tuple aggregates, field
-    /// projections, `Assert`, and direct `Call` terminators.
+    /// Profile v2 (`mir_profile_version == 2`): single-frame execution with
+    /// caller memory, references, raw pointers, slices, `CoreCall`, `Assert`,
+    /// and single-level `PartialTuple` moves.
     ProfileV2,
 }
 
@@ -108,8 +120,8 @@ pub enum EvalProfile {
 pub struct EvalConfig {
     /// Selected semantic profile (`StrictV1` vs `ProfileV2`).
     pub profile: EvalProfile,
-    /// Target memory byte order (`TargetEndian::Big` matches Profile v1
-    /// `Trusted.MirSemantics.profileTargetEndian`).
+    /// Target memory byte order (`TargetEndian::Big` for Profile v1,
+    /// `TargetEndian::Little` for Profile v2).
     pub endian: TargetEndian,
     /// Record per-step execution events inside [`StepTrace`].
     pub record_events: bool,
@@ -122,31 +134,36 @@ impl Default for EvalConfig {
 }
 
 impl EvalConfig {
-    /// Strict Profile v1 configuration matching `Trusted.MirSemantics`.
+    /// Profile v1 configuration matching
+    /// `Trusted.MirSemantics.profileTargetEndian`.
     pub const fn profile_v1() -> Self {
         Self { profile: EvalProfile::StrictV1, endian: TargetEndian::Big, record_events: true }
     }
 
-    /// Preview Profile v2 configuration enabling opt-in extensions (tuple
-    /// aggregates, field projections, assertions, direct calls, and
-    /// `UnwindAction::Terminate`, not yet stabilized in `Trusted.MirSemantics`).
+    /// Profile v2 configuration matching
+    /// `Trusted.MirSemantics.profileV2TargetEndian`.
     pub const fn profile_v2(endian: TargetEndian) -> Self {
         Self { profile: EvalProfile::ProfileV2, endian, record_events: true }
     }
 
-    /// Select the default configuration strictly for stabilized Profile v1
-    /// (`program.mir_profile_version == 1`), failing closed on any other
-    /// version (including `2`, which requires explicit opt-in via
-    /// [`Self::profile_v2`]).
+    /// Select the configuration matching `program.mir_profile_version` (`1` ->
+    /// Profile v1, `2` -> Profile v2 little-endian), failing closed on any
+    /// other version or big-endian Profile v2 manifest.
     pub fn for_program(
         program: &Program,
-        _manifest_endian: Option<TargetEndian>,
+        manifest_endian: Option<TargetEndian>,
     ) -> Result<Self, FaultDetail> {
         match program.mir_profile_version {
             1 => Ok(Self::profile_v1()),
+            2 => match manifest_endian {
+                Some(TargetEndian::Big) => Err(FaultDetail::unsupported(
+                    "Profile v2 only supports little-endian targets \
+                     (Trusted.MirSemantics.profileV2TargetEndian)",
+                )),
+                Some(TargetEndian::Little) | None => Ok(Self::profile_v2(TargetEndian::Little)),
+            },
             other => Err(FaultDetail::unsupported(format!(
-                "unsupported mir_profile_version {other} for strict Profile v1 defaults \
-                 (opt in explicitly via EvalConfig::profile_v2 / --profile-v2)"
+                "unsupported mir_profile_version {other} (expected 1 or 2)"
             ))),
         }
     }
@@ -172,7 +189,8 @@ pub struct StepEvent {
     pub fault: Option<FaultDetail>,
 }
 
-/// Complete trace returned by [`eval_body`] and [`eval_body_with_config`].
+/// Complete trace returned by [`eval_body`], [`eval_body_with_config`], and
+/// [`eval_body_with_query`].
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct StepTrace {
     pub body_id: usize,
@@ -194,17 +212,78 @@ pub enum StepOutcome {
     Fault(FaultDetail),
 }
 
-/// Running machine state of the concrete MIR stepper (`Trusted.MirSemantics.State`).
+/// Running machine state of the concrete MIR stepper
+/// (`Trusted.MirSemantics.State`).
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct MachineState {
     pub frames: Vec<FrameState>,
     pub caller_mem: CallerMemory,
     pub mem: MemoryState,
     pub step_count: usize,
+    #[serde(skip)]
+    moved_locals_per_frame: Vec<BTreeSet<u32>>,
+    #[serde(skip)]
+    move_deinit_bytes: BTreeSet<(u64, u64)>,
+}
+
+/// Underlying MIR binary operator implemented by each [`SysrootNumKind`],
+/// matching `Trusted.MirSemantics.sysrootNumBinOp`.
+pub const fn sysroot_num_bin_op(kind: SysrootNumKind) -> BinOp {
+    match kind {
+        SysrootNumKind::UncheckedAdd => BinOp::AddUnchecked,
+        SysrootNumKind::UncheckedSub => BinOp::SubUnchecked,
+        SysrootNumKind::UncheckedMul => BinOp::MulUnchecked,
+        SysrootNumKind::WrappingAdd => BinOp::Add,
+        SysrootNumKind::WrappingSub => BinOp::Sub,
+        SysrootNumKind::WrappingMul => BinOp::Mul,
+    }
+}
+
+/// Pinned synthetic MIR [`Body`] for a verified `core::num` sysroot call,
+/// matching `Trusted.MirSemantics.sysrootNumBody`.
+pub fn sysroot_num_body(op: SysrootNumOp) -> Body {
+    let ty = Ty::Int(op.ty);
+    let is_unsafe = matches!(
+        op.kind,
+        SysrootNumKind::UncheckedAdd | SysrootNumKind::UncheckedSub | SysrootNumKind::UncheckedMul
+    );
+    Body {
+        arg_count: 2,
+        is_unsafe,
+        local_tys: vec![ty.clone(), ty.clone(), ty],
+        blocks: vec![Block {
+            statements: vec![Statement::Assign {
+                local: 0,
+                projection: Vec::new(),
+                value: Rvalue::Binary {
+                    op: sysroot_num_bin_op(op.kind),
+                    left: Operand::Copy { local: 1, projection: Vec::new() },
+                    right: Operand::Copy { local: 2, projection: Vec::new() },
+                },
+            }],
+            terminator: Terminator::Ret,
+            cleanup: false,
+        }],
+        identity: String::from("core::num::sysroot"),
+    }
+}
+
+fn active_frame_body<'a>(program: &'a Program, frame: &FrameState) -> Option<Cow<'a, Body>> {
+    match frame.sysroot_op {
+        Some(op) => Some(Cow::Owned(sysroot_num_body(op))),
+        None => program.bodies.get(frame.def_id).map(Cow::Borrowed),
+    }
+}
+
+/// Return `true` when `body` contains both reference-typed and
+/// raw-pointer-typed locals, matching
+/// `Trusted.MirSemantics.bodyMixesRefsAndRawPtrsV2`.
+pub fn body_mixes_refs_and_raw_ptrs_v2(body: &Body) -> bool {
+    body.local_tys.iter().any(Ty::has_ref_v2) && body.local_tys.iter().any(Ty::has_raw_ptr_v2)
 }
 
 /// Validate program-level target, MIR profile, and body-table invariants
-/// (`ProgramVerified` structural preconditions) before entry.
+/// (`ProgramVerified` / `ProgramVerifiedV2` structural preconditions).
 pub fn validate_program_config(program: &Program, config: &EvalConfig) -> Result<(), FaultDetail> {
     if program.pointer_width_bits != 64 {
         return Err(FaultDetail::unsupported("only 64-bit targets are supported"));
@@ -214,11 +293,19 @@ pub fn validate_program_config(program: &Program, config: &EvalConfig) -> Result
             "strict Profile v1 requires mir_profile_version == 1",
         ));
     }
-    if config.enable_profile_v2() && !matches!(program.mir_profile_version, 1 | 2) {
-        return Err(FaultDetail::unsupported(format!(
-            "Profile v2 requires mir_profile_version 1 or 2 (got {})",
-            program.mir_profile_version
-        )));
+    if config.enable_profile_v2() {
+        if program.mir_profile_version != 2 {
+            return Err(FaultDetail::unsupported(format!(
+                "Profile v2 requires mir_profile_version == 2 (got {})",
+                program.mir_profile_version
+            )));
+        }
+        if config.endian != TargetEndian::Little {
+            return Err(FaultDetail::unsupported(
+                "Profile v2 only supports little-endian targets \
+                 (Trusted.MirSemantics.profileV2TargetEndian)",
+            ));
+        }
     }
     if program.bodies.is_empty() {
         return Err(FaultDetail::unsupported("MIR program has no bodies"));
@@ -242,7 +329,7 @@ pub fn validate_program_config(program: &Program, config: &EvalConfig) -> Result
 }
 
 impl MachineState {
-    /// Initialize execution state for `body_id` (`eval_body` entry point).
+    /// Initialize execution state for `body_id` with empty caller memory.
     pub fn init(
         program: &Program,
         body_id: usize,
@@ -252,7 +339,9 @@ impl MachineState {
         Self::init_with_caller_mem(program, body_id, args, CallerMemory::default(), config)
     }
 
-    /// Initialize execution state with explicit initial `caller_mem`.
+    /// Initialize execution state with explicit initial `caller_mem`,
+    /// matching `Trusted.MirSemantics.initState` (Profile v1) and
+    /// `Trusted.MirSemantics.initStateV2` (Profile v2).
     pub fn init_with_caller_mem(
         program: &Program,
         body_id: usize,
@@ -261,35 +350,98 @@ impl MachineState {
         config: &EvalConfig,
     ) -> Result<Self, FaultDetail> {
         validate_program_config(program, config)?;
-        if !caller_mem.allocations.is_empty() {
-            return Err(FaultDetail::unsupported("non-empty callerMem at entry is unsupported"));
-        }
         let body = program
             .bodies
             .get(body_id)
             .ok_or_else(|| FaultDetail::unsupported("entry body id out of bounds"))?;
-        validate_body_entry(body, config)?;
-        let param_tys = body
-            .param_tys()
-            .ok_or_else(|| FaultDetail::unsupported("argument count exceeds local count"))?;
-        if !check_args_match(args, param_tys, config.enable_profile_v2()) {
-            return Err(FaultDetail::unsupported(
-                "entry arguments do not match body parameter types",
-            ));
+        if config.enable_profile_v2() {
+            if !valid_caller_memory(&caller_mem) {
+                return Err(FaultDetail::unsupported(
+                    "invalid Profile v2 caller memory allocations",
+                ));
+            }
+            validate_body_entry(body, config)?;
+            let param_tys = body
+                .param_tys()
+                .ok_or_else(|| FaultDetail::unsupported("argument count exceeds local count"))?;
+            if !check_args_match(args, param_tys, true) {
+                return Err(FaultDetail::unsupported(
+                    "entry arguments do not match Profile v2 body parameter types",
+                ));
+            }
+            let entry_mem = MemoryState::entry_memory_with_caller(&caller_mem)?;
+            if let Err(err) = refs_valid_in_mem_list(&entry_mem, config.endian, param_tys, args) {
+                return Err(FaultDetail::undefined_classified(
+                    UbClass::EntryInvalidRefArg,
+                    format!("invalid Profile v2 entry reference argument: {}", err.reason),
+                ));
+            }
+            if !spans_pairwise_disjoint(&ref_access_spans_list(param_tys, args)) {
+                return Err(FaultDetail::undefined_classified(
+                    UbClass::EntryInvalidRefArg,
+                    "overlapping mutable reference arguments at Profile v2 entry",
+                ));
+            }
+            let locals = init_locals(body, args);
+            let frame = FrameState {
+                def_id: body_id,
+                block_idx: 0,
+                stmt_idx: 0,
+                locals,
+                sysroot_op: None,
+                return_to: None,
+            };
+            Ok(Self {
+                frames: vec![frame],
+                caller_mem,
+                mem: entry_mem,
+                step_count: 0,
+                moved_locals_per_frame: vec![BTreeSet::new()],
+                move_deinit_bytes: BTreeSet::new(),
+            })
+        } else {
+            if !caller_mem.is_empty() {
+                return Err(FaultDetail::unsupported(
+                    "non-empty callerMem at entry is unsupported in Profile v1",
+                ));
+            }
+            validate_body_in_program(program, body, config)?;
+            let param_tys = body
+                .param_tys()
+                .ok_or_else(|| FaultDetail::unsupported("argument count exceeds local count"))?;
+            if !check_args_match(args, param_tys, false) {
+                return Err(FaultDetail::unsupported(
+                    "entry arguments do not match body parameter types",
+                ));
+            }
+            let locals = init_locals(body, args);
+            let frame = FrameState {
+                def_id: body_id,
+                block_idx: 0,
+                stmt_idx: 0,
+                locals,
+                sysroot_op: None,
+                return_to: None,
+            };
+            Ok(Self {
+                frames: vec![frame],
+                caller_mem,
+                mem: MemoryState::entry_memory(),
+                step_count: 0,
+                moved_locals_per_frame: vec![BTreeSet::new()],
+                move_deinit_bytes: BTreeSet::new(),
+            })
         }
-        let locals = init_locals(body, args);
-        let frame =
-            FrameState { def_id: body_id, block_idx: 0, stmt_idx: 0, locals, return_to: None };
-        Ok(Self {
-            frames: vec![frame],
-            caller_mem,
-            mem: MemoryState::entry_memory(),
-            step_count: 0,
-        })
     }
 
-    /// Move immediate local `local_id` of the top frame into a fresh stack
-    /// allocation, returning its `MemPlace` (`Trusted.MirSemantics.forceAllocation`).
+    fn ensure_moved_tracking(&mut self) {
+        if self.moved_locals_per_frame.len() != self.frames.len() {
+            self.moved_locals_per_frame.resize_with(self.frames.len(), BTreeSet::new);
+        }
+    }
+
+    /// Move immediate local `local_id` of the single active frame into a fresh
+    /// stack allocation, matching `Trusted.MirSemantics.forceAllocation`.
     pub fn force_allocation(
         &mut self,
         program: &Program,
@@ -299,10 +451,7 @@ impl MachineState {
         if self.frames.len() != 1 {
             return Err(FaultDetail::unsupported("force_allocation requires single active frame"));
         }
-        let def_id = self.frames[0].def_id;
-        let body = program
-            .bodies
-            .get(def_id)
+        let body = active_frame_body(program, &self.frames[0])
             .ok_or_else(|| FaultDetail::unsupported("active frame body id out of bounds"))?;
         let idx = local_id as usize;
         let ty = body
@@ -315,14 +464,18 @@ impl MachineState {
             .ok_or_else(|| FaultDetail::unsupported("local slot out of bounds"))?
             .clone();
         match slot {
-            LocalSlot::Dead => Err(FaultDetail::undefined("force_allocation on dead local")),
+            LocalSlot::Dead => Err(FaultDetail::undefined_classified(
+                UbClass::DeadLocalAccess,
+                "force_allocation on dead local",
+            )),
             LocalSlot::Indirect { place } => Ok(place),
-            LocalSlot::Immediate { .. } => {
-                let val = read_immediate_slot(&slot)?;
+            LocalSlot::Immediate { val } => {
+                self.ensure_moved_tracking();
                 let layout = layout_of_ty(ty, config.enable_profile_v2())
                     .ok_or_else(|| FaultDetail::unsupported("local type has no layout"))?;
                 let mut next_mem = self.mem.clone();
-                let place = next_mem.allocate_stack(layout);
+                let place = next_mem.try_allocate_stack(layout)?;
+                let mut next_move_bytes = self.move_deinit_bytes.clone();
                 if let Some(v) = val {
                     store_indirect(
                         &mut next_mem,
@@ -332,71 +485,63 @@ impl MachineState {
                         &v,
                         config.enable_profile_v2(),
                     )?;
+                } else if self.moved_locals_per_frame[0].contains(&local_id) {
+                    mark_move_deinit_span(&mut next_move_bytes, place, layout.size);
                 }
                 self.mem = next_mem;
+                self.move_deinit_bytes = next_move_bytes;
                 self.frames[0].locals[idx] = LocalSlot::Indirect { place };
                 Ok(place)
             }
-            LocalSlot::PartialTuple { fields } => {
-                let layout = layout_of_ty(ty, config.enable_profile_v2())
-                    .ok_or_else(|| FaultDetail::unsupported("local type has no layout"))?;
-                let Some(ity) = ty.as_overflow_pair() else {
-                    return Err(FaultDetail::unsupported(
-                        "partial tuple force_allocation requires overflow pair type",
-                    ));
-                };
-                if fields.len() != 2 {
-                    return Err(FaultDetail::unsupported(
-                        "partial tuple force_allocation field count mismatch",
-                    ));
-                }
-                let width_bytes = ity.width.byte_size();
-                let mut bytes = vec![
-                    AllocByte::Uninit;
-                    usize::try_from(layout.size)
-                        .expect("overflow pair layout fits usize")
-                ];
-                if let Some(int_val) = read_immediate_slot(&fields[0])? {
-                    let encoded = encode_val(
-                        config.endian,
-                        &Ty::Int(ity),
-                        &int_val,
-                        config.enable_profile_v2(),
-                    )?;
-                    bytes[..width_bytes].copy_from_slice(&encoded);
-                }
-                if let Some(bool_val) = read_immediate_slot(&fields[1])? {
-                    let encoded = encode_val(
-                        config.endian,
-                        &Ty::Bool,
-                        &bool_val,
-                        config.enable_profile_v2(),
-                    )?;
-                    bytes[width_bytes..width_bytes + 1].copy_from_slice(&encoded);
-                }
-                let mut next_mem = self.mem.clone();
-                let place = next_mem.allocate_stack(layout);
-                next_mem.write_bytes(place, layout.align_log2, &bytes)?;
-                self.mem = next_mem;
-                self.frames[0].locals[idx] = LocalSlot::Indirect { place };
-                Ok(place)
+            LocalSlot::PartialTuple { .. } => {
+                Err(FaultDetail::unsupported("force_allocation on partially moved tuple"))
             }
         }
     }
 
-    /// Execute one small-step transition matching `Trusted.MirSemantics.evalStep`.
+    /// Execute one small-step transition matching `Trusted.MirSemantics`'s
+    /// `evalStep` (Profile v1) or `evalStepV2` (Profile v2).
     pub fn step(&mut self, program: &Program, config: &EvalConfig) -> StepOutcome {
-        if config.is_strict_profile_v1() && self.frames.len() != 1 {
-            return StepOutcome::Fault(FaultDetail::unsupported(
-                "strict Profile v1 requires single stack frame",
-            ));
+        if config.enable_profile_v2() {
+            self.step_v2(program, config)
+        } else {
+            self.step_v1(program, config)
         }
+    }
+
+    fn step_v1(&mut self, program: &Program, config: &EvalConfig) -> StepOutcome {
+        self.ensure_moved_tracking();
         let Some(frame_idx) = self.frames.len().checked_sub(1) else {
             return StepOutcome::Fault(FaultDetail::unsupported("empty call stack"));
         };
-        let def_id = self.frames[frame_idx].def_id;
+        let Some(body) = active_frame_body(program, &self.frames[frame_idx]) else {
+            return StepOutcome::Fault(FaultDetail::unsupported("frame def_id out of bounds"));
+        };
         let block_idx = self.frames[frame_idx].block_idx;
         let stmt_idx = self.frames[frame_idx].stmt_idx;
+        let Some(bb) = body.blocks.get(block_idx) else {
+            return StepOutcome::Fault(FaultDetail::unsupported("basic block index out of bounds"));
+        };
+        self.step_count += 1;
+        if let Some(stmt) = bb.statements.get(stmt_idx) {
+            self.eval_statement_v1(&body, frame_idx, stmt, config)
+        } else if stmt_idx == bb.statements.len() {
+            self.eval_terminator_v1(program, &body, bb, frame_idx, config)
+        } else {
+            StepOutcome::Fault(FaultDetail::unsupported("statement index out of bounds"))
+        }
+    }
+
+    fn step_v2(&mut self, program: &Program, config: &EvalConfig) -> StepOutcome {
+        self.ensure_moved_tracking();
+        if self.frames.len() != 1 {
+            return StepOutcome::Fault(FaultDetail::unsupported(
+                "Profile v2 requires single active frame",
+            ));
+        }
+        let def_id = self.frames[0].def_id;
+        let block_idx = self.frames[0].block_idx;
+        let stmt_idx = self.frames[0].stmt_idx;
         let Some(body) = program.bodies.get(def_id) else {
             return StepOutcome::Fault(FaultDetail::unsupported("frame def_id out of bounds"));
         };
@@ -405,15 +550,15 @@ impl MachineState {
         };
         self.step_count += 1;
         if let Some(stmt) = bb.statements.get(stmt_idx) {
-            self.eval_statement(body, frame_idx, stmt, config)
+            self.eval_statement_v2(body, stmt, config)
         } else if stmt_idx == bb.statements.len() {
-            self.eval_terminator(program, body, bb, frame_idx, config)
+            self.eval_terminator_v2(body, bb, config)
         } else {
             StepOutcome::Fault(FaultDetail::unsupported("statement index out of bounds"))
         }
     }
 
-    fn eval_statement(
+    fn eval_statement_v1(
         &mut self,
         body: &Body,
         frame_idx: usize,
@@ -457,7 +602,9 @@ impl MachineState {
                     ));
                 };
                 self.frames[frame_idx].locals[idx] = live_uninit_slot(local_ty);
-                if let Err(err) = deallocate_local(&mut self.mem, &old) {
+                self.moved_locals_per_frame[frame_idx].remove(local);
+                if let Err(err) = deallocate_local(&mut self.mem, &mut self.move_deinit_bytes, &old)
+                {
                     return StepOutcome::Fault(err);
                 }
                 self.frames[frame_idx].stmt_idx += 1;
@@ -476,64 +623,70 @@ impl MachineState {
                     ));
                 };
                 self.frames[frame_idx].locals[idx] = LocalSlot::Dead;
-                if let Err(err) = deallocate_local(&mut self.mem, &old) {
+                self.moved_locals_per_frame[frame_idx].remove(local);
+                if let Err(err) = deallocate_local(&mut self.mem, &mut self.move_deinit_bytes, &old)
+                {
                     return StepOutcome::Fault(err);
                 }
                 self.frames[frame_idx].stmt_idx += 1;
                 format!("storage_dead(_{local})")
             }
-            Statement::Assign { local, projection, value } => {
-                if !projection.is_empty() && !config.enable_profile_v2() {
+            stmt if stmt.as_assign().is_some() => {
+                let (local, projection, value) = stmt.as_assign().expect("checked is_some");
+                if !projection.is_empty() {
                     return StepOutcome::Fault(FaultDetail::unsupported(
                         "projected assignment is unsupported in Profile v1",
                     ));
                 }
-                let Some(local_ty) = body.local_tys.get(*local as usize) else {
+                let Some(dst_ty) = body.local_tys.get(local as usize) else {
                     return StepOutcome::Fault(FaultDetail::unsupported(
                         "assignment destination local out of bounds",
                     ));
                 };
-                let dst_ty = match resolve_projected_ty(local_ty, projection, config) {
-                    Ok(ty) => ty,
-                    Err(err) => return StepOutcome::Fault(err),
-                };
                 let mut next_locals = self.frames[frame_idx].locals.clone();
+                let mut next_moved = self.moved_locals_per_frame[frame_idx].clone();
+                let mut next_move_bytes = self.move_deinit_bytes.clone();
                 let mut next_mem = self.mem.clone();
-                let val = match eval_rvalue(
+                let mut moved =
+                    MoveTracker { locals: &mut next_moved, bytes: &mut next_move_bytes };
+                let val = match eval_rvalue_v1(
                     &body.local_tys,
                     &mut next_locals,
+                    &mut moved,
                     &mut next_mem,
-                    &dst_ty,
+                    dst_ty,
                     value,
-                    config,
+                    config.endian,
                 ) {
                     Ok(v) => v,
                     Err(err) => return StepOutcome::Fault(err),
                 };
-                if let Err(err) = write_place(
+                if let Err(err) = write_place_v1(
                     &mut next_locals,
+                    &mut moved,
                     &mut next_mem,
-                    *local,
-                    projection,
-                    local_ty,
+                    local,
+                    dst_ty,
                     val,
-                    config,
+                    config.endian,
                 ) {
                     return StepOutcome::Fault(err);
                 }
                 self.frames[frame_idx].locals = next_locals;
+                self.moved_locals_per_frame[frame_idx] = next_moved;
+                self.move_deinit_bytes = next_move_bytes;
                 self.mem = next_mem;
                 self.frames[frame_idx].stmt_idx += 1;
                 format!("assign(_{local})")
             }
-            Statement::Unsupported => {
+            _ => {
                 return StepOutcome::Fault(FaultDetail::unsupported("unmodeled MIR statement"));
             }
         };
         StepOutcome::Stepped { summary }
     }
 
-    fn eval_terminator(
+    fn eval_terminator_v1(
         &mut self,
         program: &Program,
         body: &Body,
@@ -553,21 +706,34 @@ impl MachineState {
                         "Return from cleanup block is unsupported",
                     ));
                 }
+                if frame_idx > 0
+                    && self.frames[frame_idx]
+                        .locals
+                        .iter()
+                        .any(|s| matches!(s, LocalSlot::Indirect { .. }))
+                {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "non-root callee return with indirect locals is unsupported in Profile v1",
+                    ));
+                }
                 let ret_val = match self.frames[frame_idx].locals.first() {
-                    Some(slot @ (LocalSlot::Immediate { .. } | LocalSlot::PartialTuple { .. })) => {
-                        match read_immediate_slot(slot) {
-                            Ok(Some(v)) => v,
-                            Ok(None) => {
-                                return StepOutcome::Fault(FaultDetail::undefined(
-                                    "returning with uninitialized _0",
-                                ));
-                            }
-                            Err(err) => return StepOutcome::Fault(err),
-                        }
+                    Some(LocalSlot::Immediate { val: Some(v) }) => v.clone(),
+                    Some(LocalSlot::Immediate { val: None }) => {
+                        let class = uninit_class(&self.moved_locals_per_frame[frame_idx], 0);
+                        return StepOutcome::Fault(FaultDetail::undefined_classified(
+                            class,
+                            "returning with uninitialized _0",
+                        ));
                     }
                     Some(LocalSlot::Dead) => {
-                        return StepOutcome::Fault(FaultDetail::undefined(
-                            "returning with uninitialized or dead _0",
+                        return StepOutcome::Fault(FaultDetail::undefined_classified(
+                            UbClass::DeadLocalAccess,
+                            "returning with dead _0",
+                        ));
+                    }
+                    Some(LocalSlot::PartialTuple { .. }) => {
+                        return StepOutcome::Fault(FaultDetail::unsupported(
+                            "partially moved tuple in Profile v1 return",
                         ));
                     }
                     Some(LocalSlot::Indirect { place }) => {
@@ -576,16 +742,16 @@ impl MachineState {
                                 "body missing return local _0 type",
                             ));
                         };
-                        match load_indirect(
-                            &self.mem,
-                            config.endian,
-                            ret_ty,
-                            *place,
-                            config.enable_profile_v2(),
-                        ) {
+                        match load_indirect(&self.mem, config.endian, ret_ty, *place, false) {
                             Ok(Some(v)) => v,
                             Ok(None) => {
-                                return StepOutcome::Fault(FaultDetail::undefined(
+                                let moved = MoveView {
+                                    locals: &self.moved_locals_per_frame[frame_idx],
+                                    bytes: &self.move_deinit_bytes,
+                                };
+                                let class = moved.uninit_indirect_local(0, *place, ret_ty, false);
+                                return StepOutcome::Fault(FaultDetail::undefined_classified(
+                                    class,
                                     "returning with uninitialized indirect _0",
                                 ));
                             }
@@ -598,96 +764,98 @@ impl MachineState {
                         ));
                     }
                 };
-                if let Some(return_to) = self.frames[frame_idx].return_to.clone() {
-                    if !config.enable_profile_v2() {
+                if frame_idx == 0 {
+                    if self.frames[0].return_to.is_some() {
                         return StepOutcome::Fault(FaultDetail::unsupported(
-                            "multi-frame return unsupported in Profile v1",
+                            "root frame cannot carry a return_to continuation",
                         ));
                     }
-                    let Some(caller_idx) = frame_idx.checked_sub(1) else {
-                        return StepOutcome::Fault(FaultDetail::unsupported(
-                            "call return target with empty caller stack",
-                        ));
-                    };
-                    let caller_def_id = self.frames[caller_idx].def_id;
-                    let Some(caller_body) = program.bodies.get(caller_def_id) else {
-                        return StepOutcome::Fault(FaultDetail::unsupported(
-                            "caller body id out of bounds",
-                        ));
-                    };
-                    let Some(dst_local_ty) =
-                        caller_body.local_tys.get(return_to.dst_local as usize)
-                    else {
-                        return StepOutcome::Fault(FaultDetail::unsupported(
-                            "call return destination local out of bounds",
-                        ));
-                    };
-                    let mut next_locals = self.frames[caller_idx].locals.clone();
-                    let mut next_mem = self.mem.clone();
-                    for slot in &self.frames[frame_idx].locals {
-                        if let Err(err) = deallocate_local(&mut next_mem, slot) {
-                            return StepOutcome::Fault(err);
-                        }
-                    }
-                    if let Err(err) = write_place(
-                        &mut next_locals,
-                        &mut next_mem,
-                        return_to.dst_local,
-                        &return_to.dst_projection,
-                        dst_local_ty,
-                        ret_val,
-                        config,
-                    ) {
-                        return StepOutcome::Fault(err);
-                    }
-                    self.frames.pop();
-                    self.frames[caller_idx].locals = next_locals;
-                    self.mem = next_mem;
-                    self.frames[caller_idx].block_idx = return_to.block_idx;
-                    self.frames[caller_idx].stmt_idx = 0;
-                    StepOutcome::Stepped {
-                        summary: format!("return_to_caller(bb{})", return_to.block_idx),
-                    }
-                } else {
-                    StepOutcome::Done(TerminalOut::Returned {
+                    return StepOutcome::Done(TerminalOut::Returned {
                         ret: ret_val,
                         caller_mem: self.caller_mem.clone(),
-                    })
+                    });
                 }
+                let Some(return_to) = self.frames[frame_idx].return_to.clone() else {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "non-root frame missing return destination",
+                    ));
+                };
+                if !return_to.dst_projection.is_empty() {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "projected call return destination is unsupported in Profile v1",
+                    ));
+                }
+                let caller_idx = frame_idx - 1;
+                let Some(caller_body) = active_frame_body(program, &self.frames[caller_idx]) else {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "caller body id out of bounds",
+                    ));
+                };
+                let Some(dst_ty) = caller_body.local_tys.get(return_to.dst_local as usize) else {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "call return destination local out of bounds",
+                    ));
+                };
+                let mut next_locals = self.frames[caller_idx].locals.clone();
+                let mut next_moved = self.moved_locals_per_frame[caller_idx].clone();
+                let mut next_move_bytes = self.move_deinit_bytes.clone();
+                let mut next_mem = self.mem.clone();
+                let mut moved =
+                    MoveTracker { locals: &mut next_moved, bytes: &mut next_move_bytes };
+                if let Err(err) = write_place_v1(
+                    &mut next_locals,
+                    &mut moved,
+                    &mut next_mem,
+                    return_to.dst_local,
+                    dst_ty,
+                    ret_val,
+                    config.endian,
+                ) {
+                    return StepOutcome::Fault(err);
+                }
+                let Some(tgt_block) = return_to.block_idx else {
+                    return StepOutcome::Fault(FaultDetail::undefined_classified(
+                        UbClass::DivergingCallReturned,
+                        "diverging call returned to caller with no continuation block",
+                    ));
+                };
+                self.frames.pop();
+                self.moved_locals_per_frame.pop();
+                self.frames[caller_idx].locals = next_locals;
+                self.moved_locals_per_frame[caller_idx] = next_moved;
+                self.move_deinit_bytes = next_move_bytes;
+                self.mem = next_mem;
+                self.frames[caller_idx].block_idx = tgt_block;
+                self.frames[caller_idx].stmt_idx = 0;
+                StepOutcome::Stepped { summary: format!("return_to_caller(bb{tgt_block})") }
             }
-            Terminator::Unreachable => {
-                StepOutcome::Fault(FaultDetail::undefined("executed Unreachable terminator"))
-            }
+            Terminator::Unreachable => StepOutcome::Fault(FaultDetail::undefined_classified(
+                UbClass::UnreachableExecuted,
+                "executed Unreachable terminator",
+            )),
             Terminator::SwitchInt { operand, targets, otherwise } => {
                 let mut next_locals = self.frames[frame_idx].locals.clone();
+                let mut next_moved = self.moved_locals_per_frame[frame_idx].clone();
+                let mut next_move_bytes = self.move_deinit_bytes.clone();
                 let mut next_mem = self.mem.clone();
-                let discr_val = match eval_primitive_operand(
+                let mut moved =
+                    MoveTracker { locals: &mut next_moved, bytes: &mut next_move_bytes };
+                let discr_val = match eval_primitive_operand_v1(
                     &body.local_tys,
                     &mut next_locals,
+                    &mut moved,
                     &mut next_mem,
                     operand,
-                    config,
+                    config.endian,
                 ) {
                     Ok(v) => v,
                     Err(err) => return StepOutcome::Fault(err),
                 };
-                let target_res = match &discr_val {
-                    Val::Scalar(sv) => eval_scalar_switch(sv.width, sv.bits, *otherwise, targets),
-                    Val::Bool(b) => eval_bool_switch(*b, *otherwise, targets),
-                    Val::Char(c) => eval_char_switch(*c, *otherwise, targets),
-                    _ => {
-                        if targets.is_empty() {
-                            Ok(*otherwise)
-                        } else {
-                            Err(FaultDetail::unsupported(
-                                "non-empty SwitchInt targets on non-scalar primitive",
-                            ))
-                        }
-                    }
-                };
-                match target_res {
+                match eval_switch_target(&discr_val, *otherwise, targets) {
                     Ok(target) => {
                         self.frames[frame_idx].locals = next_locals;
+                        self.moved_locals_per_frame[frame_idx] = next_moved;
+                        self.move_deinit_bytes = next_move_bytes;
                         self.mem = next_mem;
                         self.frames[frame_idx].block_idx = target as usize;
                         self.frames[frame_idx].stmt_idx = 0;
@@ -696,17 +864,483 @@ impl MachineState {
                     Err(err) => StepOutcome::Fault(err),
                 }
             }
-            Terminator::Assert { cond, expected, msg: _, target, unwind }
-                if config.enable_profile_v2() =>
-            {
-                let mut next_locals = self.frames[frame_idx].locals.clone();
+            Terminator::Call { callee, args, dst_local, dst_projection, target, unwind } => {
+                let Some(callee_body) = program.bodies.get(*callee as usize) else {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "callee body index out of bounds",
+                    ));
+                };
+                if callee_body.is_unsafe {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "Profile v1 refuses intra-crate calls to unsafe fn callees",
+                    ));
+                }
+                self.eval_call_terminator_v1(
+                    body,
+                    bb,
+                    frame_idx,
+                    *callee as usize,
+                    None,
+                    callee_body,
+                    args,
+                    *dst_local,
+                    dst_projection,
+                    *target,
+                    *unwind,
+                    config.endian,
+                )
+            }
+            Terminator::SysrootCall { op, args, dst_local, dst_projection, target, unwind } => {
+                let callee_body = sysroot_num_body(*op);
+                self.eval_call_terminator_v1(
+                    body,
+                    bb,
+                    frame_idx,
+                    0,
+                    Some(*op),
+                    &callee_body,
+                    args,
+                    *dst_local,
+                    dst_projection,
+                    *target,
+                    *unwind,
+                    config.endian,
+                )
+            }
+            Terminator::CoreCall { .. }
+            | Terminator::Assert { .. }
+            | Terminator::UnwindResume
+            | Terminator::Unsupported => {
+                StepOutcome::Fault(FaultDetail::unsupported("unmodeled Profile v1 MIR terminator"))
+            }
+        }
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn eval_call_terminator_v1(
+        &mut self,
+        caller_body: &Body,
+        bb: &Block,
+        frame_idx: usize,
+        callee_def_id: usize,
+        sysroot_op: Option<SysrootNumOp>,
+        callee_body: &Body,
+        args: &[Operand],
+        dst_local: u32,
+        dst_projection: &[ProjectionElem],
+        target: Option<u32>,
+        unwind: UnwindAction,
+        endian: TargetEndian,
+    ) -> StepOutcome {
+        if !call_target_admitted(
+            caller_body,
+            bb,
+            callee_body,
+            args,
+            dst_local,
+            dst_projection,
+            target,
+            unwind,
+        ) || callee_body.blocks.is_empty()
+            || !storage_annotations_in_bounds(callee_body)
+            || !discriminant_types_valid(callee_body)
+            || !cast_types_valid(callee_body)
+            || !assign_types_valid(callee_body)
+            || !callee_body.local_tys.iter().all(is_supported_v1_local_ty)
+        {
+            return StepOutcome::Fault(FaultDetail::unsupported(
+                "call site or callee body rejected by Profile v1 static admission",
+            ));
+        }
+        let has_move = args.iter().any(|a| a.as_place().is_some_and(|(_, _, is_move)| is_move));
+        let Some(param_tys) = callee_body.param_tys() else {
+            return StepOutcome::Fault(FaultDetail::unsupported(
+                "callee argument count exceeds locals",
+            ));
+        };
+        let mut next_locals = self.frames[frame_idx].locals.clone();
+        let mut next_moved = self.moved_locals_per_frame[frame_idx].clone();
+        let mut next_move_bytes = self.move_deinit_bytes.clone();
+        let mut next_mem = self.mem.clone();
+        let mut moved = MoveTracker { locals: &mut next_moved, bytes: &mut next_move_bytes };
+        let mut arg_vals = Vec::with_capacity(args.len());
+        for (opnd, param_ty) in args.iter().zip(param_tys.iter()) {
+            let indirect_blocked = match opnd.as_place() {
+                Some((local, _, false)) => {
+                    has_move
+                        && matches!(
+                            next_locals.get(local as usize),
+                            Some(LocalSlot::Indirect { .. })
+                        )
+                }
+                Some((local, _, true)) => {
+                    matches!(next_locals.get(local as usize), Some(LocalSlot::Indirect { .. }))
+                }
+                None => false,
+            };
+            if indirect_blocked {
+                return StepOutcome::Fault(FaultDetail::unsupported(
+                    "indirect call argument with move is unsupported in Profile v1",
+                ));
+            }
+            let (src_ty, slot_val) = match eval_operand_to_slot_v1(
+                &caller_body.local_tys,
+                &mut next_locals,
+                &mut moved,
+                &mut next_mem,
+                |src_ty| src_ty.structural_eq(param_ty),
+                opnd,
+                endian,
+            ) {
+                Ok(res) => res,
+                Err(err) => return StepOutcome::Fault(err),
+            };
+            if !src_ty.structural_eq(param_ty) {
+                return StepOutcome::Fault(FaultDetail::unsupported(
+                    "call argument type disagrees with callee parameter type",
+                ));
+            }
+            match slot_val {
+                ReadSlotVal::Init(v) => arg_vals.push(v),
+                ReadSlotVal::Uninit(class) => {
+                    return StepOutcome::Fault(FaultDetail::undefined_classified(
+                        class,
+                        "passing uninitialized argument to call",
+                    ));
+                }
+            }
+        }
+        match next_locals.get(dst_local as usize) {
+            None => {
+                return StepOutcome::Fault(FaultDetail::unsupported(
+                    "call destination local out of bounds",
+                ));
+            }
+            Some(LocalSlot::Dead) => {
+                return StepOutcome::Fault(FaultDetail::undefined_classified(
+                    UbClass::DeadLocalAccess,
+                    "call destination local is storage-dead",
+                ));
+            }
+            Some(LocalSlot::Indirect { .. }) => {
+                return StepOutcome::Fault(FaultDetail::unsupported(
+                    "indirect call destination is unsupported in Profile v1",
+                ));
+            }
+            Some(LocalSlot::PartialTuple { .. }) => {
+                return StepOutcome::Fault(FaultDetail::unsupported(
+                    "partially moved tuple call destination in Profile v1",
+                ));
+            }
+            Some(LocalSlot::Immediate { .. }) => {}
+        }
+        self.frames[frame_idx].locals = next_locals;
+        self.moved_locals_per_frame[frame_idx] = next_moved;
+        self.move_deinit_bytes = next_move_bytes;
+        self.mem = next_mem;
+        let callee_locals = init_locals(callee_body, &arg_vals);
+        self.frames.push(FrameState {
+            def_id: callee_def_id,
+            block_idx: 0,
+            stmt_idx: 0,
+            locals: callee_locals,
+            sysroot_op,
+            return_to: Some(CallReturnTarget {
+                block_idx: target.map(|b| b as usize),
+                dst_local,
+                dst_projection: Vec::new(),
+            }),
+        });
+        self.moved_locals_per_frame.push(BTreeSet::new());
+        let summary = match sysroot_op {
+            Some(op) => format!("sysroot_call({:?})", op.kind),
+            None => format!("call(body_{callee_def_id})"),
+        };
+        StepOutcome::Stepped { summary }
+    }
+
+    fn eval_statement_v2(
+        &mut self,
+        body: &Body,
+        stmt: &Statement,
+        config: &EvalConfig,
+    ) -> StepOutcome {
+        let summary = match stmt {
+            Statement::Nop => {
+                self.frames[0].stmt_idx += 1;
+                "nop".into()
+            }
+            Statement::PlaceMention { local, projection } => {
+                if !projection.is_empty() {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "PlaceMention with non-empty projection is unsupported",
+                    ));
+                }
+                let Some(ty) = body.local_tys.get(*local as usize) else {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "PlaceMention local out of bounds",
+                    ));
+                };
+                if !ty.is_sized() {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "PlaceMention on unsized local is unsupported",
+                    ));
+                }
+                self.frames[0].stmt_idx += 1;
+                format!("place_mention(_{local})")
+            }
+            Statement::StorageLive { local } => {
+                let idx = *local as usize;
+                let Some(local_ty) = body.local_tys.get(idx) else {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "StorageLive local out of bounds in body",
+                    ));
+                };
+                let Some(old) = self.frames[0].locals.get(idx).cloned() else {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "StorageLive local out of bounds in frame",
+                    ));
+                };
+                self.frames[0].locals[idx] = live_uninit_slot(local_ty);
+                self.moved_locals_per_frame[0].remove(local);
+                if let Err(err) = deallocate_local(&mut self.mem, &mut self.move_deinit_bytes, &old)
+                {
+                    return StepOutcome::Fault(err);
+                }
+                self.frames[0].stmt_idx += 1;
+                format!("storage_live(_{local})")
+            }
+            Statement::StorageDead { local } => {
+                if *local == 0 {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "StorageDead on return place _0 is unsupported",
+                    ));
+                }
+                let idx = *local as usize;
+                let Some(old) = self.frames[0].locals.get(idx).cloned() else {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "StorageDead local out of bounds",
+                    ));
+                };
+                self.frames[0].locals[idx] = LocalSlot::Dead;
+                self.moved_locals_per_frame[0].remove(local);
+                if let Err(err) = deallocate_local(&mut self.mem, &mut self.move_deinit_bytes, &old)
+                {
+                    return StepOutcome::Fault(err);
+                }
+                self.frames[0].stmt_idx += 1;
+                format!("storage_dead(_{local})")
+            }
+            stmt if stmt.as_assign().is_some() => {
+                let (local, projection, value) = stmt.as_assign().expect("checked is_some");
+                let Some(dst_ty) = place_static_ty_v2(&body.local_tys, local, projection) else {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "assignment destination place has no Profile v2 static type",
+                    ));
+                };
+                // Resolve destination BEFORE evaluating rvalue, matching
+                // `Trusted.MirSemantics.evalStatementV2`
+                // (`resolvePlaceDestV2`).
+                let moved_view = MoveView {
+                    locals: &self.moved_locals_per_frame[0],
+                    bytes: &self.move_deinit_bytes,
+                };
+                let dest = match resolve_place_dest_v2(
+                    &body.local_tys,
+                    &self.frames[0].locals,
+                    moved_view,
+                    &self.mem,
+                    local,
+                    projection,
+                    &dst_ty,
+                    config.endian,
+                ) {
+                    Ok(d) => d,
+                    Err(err) => return StepOutcome::Fault(err),
+                };
+                let mut next_locals = self.frames[0].locals.clone();
+                let mut next_moved = self.moved_locals_per_frame[0].clone();
+                let mut next_move_bytes = self.move_deinit_bytes.clone();
                 let mut next_mem = self.mem.clone();
-                let cond_val = match eval_primitive_operand(
+                let mut moved =
+                    MoveTracker { locals: &mut next_moved, bytes: &mut next_move_bytes };
+                let val = match eval_rvalue_v2(
                     &body.local_tys,
                     &mut next_locals,
+                    &mut moved,
+                    &mut next_mem,
+                    &dst_ty,
+                    value,
+                    config.endian,
+                ) {
+                    Ok(v) => v,
+                    Err(err) => return StepOutcome::Fault(err),
+                };
+                if let Err(err) = write_place_dest_v2(
+                    &mut next_locals,
+                    &mut moved,
+                    &mut next_mem,
+                    &dest,
+                    &dst_ty,
+                    val,
+                    config.endian,
+                ) {
+                    return StepOutcome::Fault(err);
+                }
+                self.frames[0].locals = next_locals;
+                self.moved_locals_per_frame[0] = next_moved;
+                self.move_deinit_bytes = next_move_bytes;
+                self.mem = next_mem;
+                self.frames[0].stmt_idx += 1;
+                if projection.is_empty() {
+                    format!("assign(_{local})")
+                } else {
+                    format!("assign_place(*_{local})")
+                }
+            }
+            _ => {
+                return StepOutcome::Fault(FaultDetail::unsupported("unmodeled MIR statement"));
+            }
+        };
+        StepOutcome::Stepped { summary }
+    }
+
+    fn eval_terminator_v2(&mut self, body: &Body, bb: &Block, config: &EvalConfig) -> StepOutcome {
+        match &bb.terminator {
+            Terminator::Goto { block } => {
+                self.frames[0].block_idx = *block as usize;
+                self.frames[0].stmt_idx = 0;
+                StepOutcome::Stepped { summary: format!("goto(bb{block})") }
+            }
+            Terminator::Ret => {
+                if bb.cleanup {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "Return from cleanup block is unsupported",
+                    ));
+                }
+                if self.frames[0].return_to.is_some() {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "root frame cannot carry a return_to continuation",
+                    ));
+                }
+                let Some(ret_ty) = body.local_tys.first() else {
+                    return StepOutcome::Fault(FaultDetail::unsupported(
+                        "body missing return local _0 type",
+                    ));
+                };
+                let ret_val = match self.frames[0].locals.first() {
+                    Some(LocalSlot::Immediate { val: Some(v) }) => v.clone(),
+                    Some(LocalSlot::Immediate { val: None }) => {
+                        let class = uninit_class(&self.moved_locals_per_frame[0], 0);
+                        return StepOutcome::Fault(FaultDetail::undefined_classified(
+                            class,
+                            "returning with uninitialized _0",
+                        ));
+                    }
+                    Some(LocalSlot::PartialTuple { .. }) => {
+                        return StepOutcome::Fault(FaultDetail::undefined_classified(
+                            UbClass::MoveDeinitLocalRead,
+                            "returning with partially moved tuple in _0",
+                        ));
+                    }
+                    Some(LocalSlot::Dead) => {
+                        return StepOutcome::Fault(FaultDetail::undefined_classified(
+                            UbClass::DeadLocalAccess,
+                            "returning with dead _0",
+                        ));
+                    }
+                    Some(LocalSlot::Indirect { place }) => {
+                        match load_indirect(&self.mem, config.endian, ret_ty, *place, true) {
+                            Ok(Some(v)) => v,
+                            Ok(None) => {
+                                let moved = MoveView {
+                                    locals: &self.moved_locals_per_frame[0],
+                                    bytes: &self.move_deinit_bytes,
+                                };
+                                let class = moved.uninit_indirect_local(0, *place, ret_ty, true);
+                                return StepOutcome::Fault(FaultDetail::undefined_classified(
+                                    class,
+                                    "returning with uninitialized indirect _0",
+                                ));
+                            }
+                            Err(err) => return StepOutcome::Fault(err),
+                        }
+                    }
+                    None => {
+                        return StepOutcome::Fault(FaultDetail::unsupported(
+                            "frame missing return local _0",
+                        ));
+                    }
+                };
+                if let Err(class) = refs_stay_in_caller_mem(&self.caller_mem, ret_ty, &ret_val) {
+                    return StepOutcome::Fault(FaultDetail::undefined_classified(
+                        class,
+                        "returned reference escapes callee stack frame",
+                    ));
+                }
+                if let Err(err) = refs_valid_in_mem(&self.mem, config.endian, ret_ty, &ret_val) {
+                    return StepOutcome::Fault(err);
+                }
+                if !spans_pairwise_disjoint(&ref_access_spans(ret_ty, &ret_val)) {
+                    return StepOutcome::Fault(FaultDetail::undefined_classified(
+                        UbClass::OverlappingMutRefsReturned,
+                        "returned references violate mutable-borrow disjointness",
+                    ));
+                }
+                StepOutcome::Done(TerminalOut::Returned {
+                    ret: ret_val,
+                    caller_mem: self.mem.extract_caller_memory(&self.caller_mem),
+                })
+            }
+            Terminator::Unreachable => StepOutcome::Fault(FaultDetail::undefined_classified(
+                UbClass::UnreachableExecuted,
+                "executed Unreachable terminator",
+            )),
+            Terminator::SwitchInt { operand, targets, otherwise } => {
+                let mut next_locals = self.frames[0].locals.clone();
+                let mut next_moved = self.moved_locals_per_frame[0].clone();
+                let mut next_move_bytes = self.move_deinit_bytes.clone();
+                let mut next_mem = self.mem.clone();
+                let mut moved =
+                    MoveTracker { locals: &mut next_moved, bytes: &mut next_move_bytes };
+                let discr_val = match eval_primitive_operand_v2(
+                    &body.local_tys,
+                    &mut next_locals,
+                    &mut moved,
+                    &mut next_mem,
+                    operand,
+                    config.endian,
+                ) {
+                    Ok(v) => v,
+                    Err(err) => return StepOutcome::Fault(err),
+                };
+                match eval_switch_target(&discr_val, *otherwise, targets) {
+                    Ok(target) => {
+                        self.frames[0].locals = next_locals;
+                        self.moved_locals_per_frame[0] = next_moved;
+                        self.move_deinit_bytes = next_move_bytes;
+                        self.mem = next_mem;
+                        self.frames[0].block_idx = target as usize;
+                        self.frames[0].stmt_idx = 0;
+                        StepOutcome::Stepped { summary: format!("switch_int(->bb{target})") }
+                    }
+                    Err(err) => StepOutcome::Fault(err),
+                }
+            }
+            Terminator::Assert { cond, expected, msg, target, unwind: _ } => {
+                let mut next_locals = self.frames[0].locals.clone();
+                let mut next_moved = self.moved_locals_per_frame[0].clone();
+                let mut next_move_bytes = self.move_deinit_bytes.clone();
+                let mut next_mem = self.mem.clone();
+                let mut moved =
+                    MoveTracker { locals: &mut next_moved, bytes: &mut next_move_bytes };
+                let cond_val = match eval_primitive_operand_v2(
+                    &body.local_tys,
+                    &mut next_locals,
+                    &mut moved,
                     &mut next_mem,
                     cond,
-                    config,
+                    config.endian,
                 ) {
                     Ok(v) => v,
                     Err(err) => return StepOutcome::Fault(err),
@@ -716,179 +1350,112 @@ impl MachineState {
                         "Assert condition must be bool",
                     ));
                 };
-                self.frames[frame_idx].locals = next_locals;
-                self.mem = next_mem;
                 if actual == *expected {
-                    self.frames[frame_idx].block_idx = *target as usize;
-                    self.frames[frame_idx].stmt_idx = 0;
+                    self.frames[0].locals = next_locals;
+                    self.moved_locals_per_frame[0] = next_moved;
+                    self.move_deinit_bytes = next_move_bytes;
+                    self.mem = next_mem;
+                    self.frames[0].block_idx = *target as usize;
+                    self.frames[0].stmt_idx = 0;
                     StepOutcome::Stepped { summary: format!("assert_ok(->bb{target})") }
                 } else {
-                    self.unwind_frames(*unwind)
+                    match msg {
+                        AssertKind::MisalignedPtrDeref | AssertKind::NullPtrDeref => {
+                            StepOutcome::Fault(FaultDetail::undefined_classified(
+                                UbClass::CheckPtrAssertOnly,
+                                format!("pointer UB-check assert failed ({msg:?})"),
+                            ))
+                        }
+                        other => StepOutcome::Fault(FaultDetail::unsupported(format!(
+                            "panicking Assert ({other:?}) is unsupported in Profile v2"
+                        ))),
+                    }
                 }
             }
-            Terminator::UnwindResume if config.enable_profile_v2() => {
-                self.unwind_frames(UnwindAction::Continue)
-            }
-            Terminator::Call { callee, args, dst_local, dst_projection, target, unwind }
-                if config.enable_profile_v2() =>
-            {
-                if self.frames.len() >= MAX_CALL_DEPTH_V2 {
+            Terminator::CoreCall { op, args, dst, target: Some(target), unwind: _ } => {
+                if !dst.projection.is_empty() {
                     return StepOutcome::Fault(FaultDetail::unsupported(
-                        "call stack depth limit exceeded",
+                        "CoreCall destination must be an unprojected local",
                     ));
                 }
-                let Some(callee_body) = program.bodies.get(*callee as usize) else {
+                let Some(dst_ty) = body.local_tys.get(dst.local as usize) else {
                     return StepOutcome::Fault(FaultDetail::unsupported(
-                        "callee body out of bounds",
+                        "CoreCall destination local out of bounds",
                     ));
                 };
-                if let Err(err) = validate_body_entry(callee_body, config) {
-                    return StepOutcome::Fault(err);
-                }
-                let Some(param_tys) = callee_body.param_tys() else {
-                    return StepOutcome::Fault(FaultDetail::unsupported(
-                        "callee arg_count out of bounds",
-                    ));
-                };
-                if args.len() != param_tys.len() {
-                    return StepOutcome::Fault(FaultDetail::unsupported(
-                        "call argument count does not match callee arity",
-                    ));
-                }
-                let Some(dst_base_ty) = body.local_tys.get(*dst_local as usize) else {
-                    return StepOutcome::Fault(FaultDetail::unsupported(
-                        "call destination local out of bounds",
-                    ));
-                };
-                let dst_ty = match resolve_projected_ty(dst_base_ty, dst_projection, config) {
-                    Ok(ty) => ty,
+                let mut next_locals = self.frames[0].locals.clone();
+                let mut next_moved = self.moved_locals_per_frame[0].clone();
+                let mut next_move_bytes = self.move_deinit_bytes.clone();
+                let mut next_mem = self.mem.clone();
+                let mut moved =
+                    MoveTracker { locals: &mut next_moved, bytes: &mut next_move_bytes };
+                let typed_args = match eval_arg_operands_v2(
+                    &body.local_tys,
+                    &mut next_locals,
+                    &mut moved,
+                    &mut next_mem,
+                    args,
+                    config.endian,
+                ) {
+                    Ok(v) => v,
                     Err(err) => return StepOutcome::Fault(err),
                 };
-                if !dst_ty.structural_eq(&callee_body.local_tys[0]) {
-                    return StepOutcome::Fault(FaultDetail::unsupported(
-                        "call destination type does not match callee return type",
-                    ));
-                }
-                let Some(return_block) = *target else {
-                    return StepOutcome::Fault(FaultDetail::unsupported(
-                        "diverging Call terminator without return block is unsupported",
-                    ));
+                let res_val =
+                    match exec_core_call_op(&next_mem, op, &typed_args, dst_ty, config.endian) {
+                        Ok(v) => v,
+                        Err(err) => return StepOutcome::Fault(err),
+                    };
+                let dest = match resolve_place_dest_v2(
+                    &body.local_tys,
+                    &next_locals,
+                    moved.as_view(),
+                    &next_mem,
+                    dst.local,
+                    &dst.projection,
+                    dst_ty,
+                    config.endian,
+                ) {
+                    Ok(d) => d,
+                    Err(err) => return StepOutcome::Fault(err),
                 };
-                for (arg_op, expected_ty) in args.iter().zip(param_tys.iter()) {
-                    let arg_ty = match operand_static_ty(&body.local_tys, arg_op, config) {
-                        Ok(ty) => ty,
-                        Err(err) => return StepOutcome::Fault(err),
-                    };
-                    if !arg_ty.structural_eq(expected_ty) {
-                        return StepOutcome::Fault(FaultDetail::unsupported(
-                            "call argument operand type does not match callee parameter type",
-                        ));
-                    }
+                if let Err(err) = write_place_dest_v2(
+                    &mut next_locals,
+                    &mut moved,
+                    &mut next_mem,
+                    &dest,
+                    dst_ty,
+                    res_val,
+                    config.endian,
+                ) {
+                    return StepOutcome::Fault(err);
                 }
-                let mut next_locals = self.frames[frame_idx].locals.clone();
-                let mut next_mem = self.mem.clone();
-                let mut arg_vals = Vec::with_capacity(args.len());
-                for (arg_op, expected_ty) in args.iter().zip(param_tys.iter()) {
-                    match eval_operand_to_slot(
-                        &body.local_tys,
-                        &mut next_locals,
-                        &mut next_mem,
-                        |ty| ty.structural_eq(expected_ty),
-                        arg_op,
-                        config,
-                    ) {
-                        Ok((_, Some(v))) => arg_vals.push(v),
-                        Ok((_, None)) => {
-                            return StepOutcome::Fault(FaultDetail::undefined(
-                                "passing uninitialized argument to Call",
-                            ));
-                        }
-                        Err(err) => return StepOutcome::Fault(err),
-                    }
-                }
-                if !check_args_match(&arg_vals, param_tys, config.enable_profile_v2()) {
-                    return StepOutcome::Fault(FaultDetail::unsupported(
-                        "call arguments do not match callee parameter types",
-                    ));
-                }
-                self.frames[frame_idx].locals = next_locals;
+                self.frames[0].locals = next_locals;
+                self.moved_locals_per_frame[0] = next_moved;
+                self.move_deinit_bytes = next_move_bytes;
                 self.mem = next_mem;
-                let callee_locals = init_locals(callee_body, &arg_vals);
-                self.frames.push(FrameState {
-                    def_id: *callee as usize,
-                    block_idx: 0,
-                    stmt_idx: 0,
-                    locals: callee_locals,
-                    return_to: Some(CallReturnTarget {
-                        block_idx: return_block as usize,
-                        dst_local: *dst_local,
-                        dst_projection: dst_projection.clone(),
-                        unwind: *unwind,
-                    }),
-                });
-                StepOutcome::Stepped { summary: format!("call(body_{callee})") }
+                self.frames[0].block_idx = *target as usize;
+                self.frames[0].stmt_idx = 0;
+                StepOutcome::Stepped { summary: format!("core_call({op:?}->bb{target})") }
             }
-            Terminator::UnwindResume
-            | Terminator::Assert { .. }
+            Terminator::CoreCall { target: None, .. }
+            | Terminator::UnwindResume
             | Terminator::Call { .. }
+            | Terminator::SysrootCall { .. }
             | Terminator::Unsupported => {
-                StepOutcome::Fault(FaultDetail::unsupported("unmodeled MIR terminator"))
-            }
-        }
-    }
-
-    fn unwind_frames(&mut self, mut action: UnwindAction) -> StepOutcome {
-        loop {
-            match action {
-                UnwindAction::Cleanup { block } => {
-                    let Some(idx) = self.frames.len().checked_sub(1) else {
-                        return StepOutcome::Fault(FaultDetail::unsupported("empty call stack"));
-                    };
-                    self.frames[idx].block_idx = block as usize;
-                    self.frames[idx].stmt_idx = 0;
-                    return StepOutcome::Stepped {
-                        summary: format!("unwind_cleanup(->bb{block})"),
-                    };
-                }
-                UnwindAction::Unreachable => {
-                    return StepOutcome::Fault(FaultDetail::undefined(
-                        "unwound into UnwindAction::Unreachable",
-                    ));
-                }
-                UnwindAction::Terminate => {
-                    return StepOutcome::Aborted { caller_mem: self.caller_mem.clone() };
-                }
-                UnwindAction::Continue => {
-                    let Some(top) = self.frames.last() else {
-                        return StepOutcome::Fault(FaultDetail::unsupported("empty call stack"));
-                    };
-                    let Some(return_to) = top.return_to.clone() else {
-                        return StepOutcome::Done(TerminalOut::Unwound {
-                            caller_mem: self.caller_mem.clone(),
-                        });
-                    };
-                    for slot in &top.locals {
-                        if let Err(err) = deallocate_local(&mut self.mem, slot) {
-                            return StepOutcome::Fault(err);
-                        }
-                    }
-                    self.frames.pop();
-                    action = return_to.unwind;
-                }
+                StepOutcome::Fault(FaultDetail::unsupported("unmodeled Profile v2 MIR terminator"))
             }
         }
     }
 }
 
-/// Evaluate body `body_id` with strict Profile v1 defaults up to `fuel` steps.
+/// Evaluate body `body_id` with Profile v1 defaults up to `fuel` steps.
 pub fn eval_body(program: &Program, body_id: usize, args: &[Val], fuel: usize) -> StepTrace {
     let config = EvalConfig::profile_v1();
     eval_body_with_config(program, body_id, args, fuel, &config)
 }
 
-/// Evaluate body `body_id` under strict Profile v1 auto-selection (rejecting
-/// `mir_profile_version != 1`; use [`eval_body_with_config`] with
-/// [`EvalConfig::profile_v2`] to opt into preview Profile v2 extensions).
+/// Evaluate body `body_id` selecting the profile automatically from
+/// `program.mir_profile_version` (`1` -> Profile v1, `2` -> Profile v2).
 pub fn eval_body_auto(program: &Program, body_id: usize, args: &[Val], fuel: usize) -> StepTrace {
     match EvalConfig::for_program(program, None) {
         Ok(config) => eval_body_with_config(program, body_id, args, fuel, &config),
@@ -904,7 +1471,7 @@ pub fn eval_body_auto(program: &Program, body_id: usize, args: &[Val], fuel: usi
     }
 }
 
-/// Evaluate body matching `identity` with strict Profile v1 defaults (via [`eval_body`]).
+/// Evaluate body matching `identity` with automatic profile selection.
 pub fn eval_body_by_identity(
     program: &Program,
     identity: &str,
@@ -914,10 +1481,10 @@ pub fn eval_body_by_identity(
     let Some(body_id) = program.bodies.iter().position(|b| b.identity == identity) else {
         return Err(FaultDetail::unsupported(format!("no body with identity '{identity}' found")));
     };
-    Ok(eval_body(program, body_id, args, fuel))
+    Ok(eval_body_auto(program, body_id, args, fuel))
 }
 
-/// Evaluate `body_id` with explicit [`EvalConfig`] up to `fuel` small steps.
+/// Evaluate `body_id` with explicit [`EvalConfig`] and empty caller memory.
 pub fn eval_body_with_config(
     program: &Program,
     body_id: usize,
@@ -925,21 +1492,46 @@ pub fn eval_body_with_config(
     fuel: usize,
     config: &EvalConfig,
 ) -> StepTrace {
+    eval_body_with_caller_mem(program, body_id, args, CallerMemory::default(), fuel, config)
+}
+
+/// Evaluate `body_id` with an explicit [`Query`] (`args` + `caller_mem`) and
+/// [`EvalConfig`].
+pub fn eval_body_with_query(
+    program: &Program,
+    body_id: usize,
+    query: &Query,
+    fuel: usize,
+    config: &EvalConfig,
+) -> StepTrace {
+    eval_body_with_caller_mem(program, body_id, &query.args, query.caller_mem.clone(), fuel, config)
+}
+
+/// Evaluate `body_id` with explicit initial `caller_mem` and [`EvalConfig`].
+pub fn eval_body_with_caller_mem(
+    program: &Program,
+    body_id: usize,
+    args: &[Val],
+    caller_mem: CallerMemory,
+    fuel: usize,
+    config: &EvalConfig,
+) -> StepTrace {
     let identity = program.bodies.get(body_id).map(|b| b.identity.clone()).unwrap_or_default();
-    let mut state = match MachineState::init(program, body_id, args, config) {
-        Ok(s) => s,
-        Err(err) => {
-            return StepTrace {
-                body_id,
-                identity,
-                steps_executed: 0,
-                fuel_limit: fuel,
-                outcome: Outcome::Fault(err),
-                events: Vec::new(),
-                final_state: None,
-            };
-        }
-    };
+    let mut state =
+        match MachineState::init_with_caller_mem(program, body_id, args, caller_mem, config) {
+            Ok(s) => s,
+            Err(err) => {
+                return StepTrace {
+                    body_id,
+                    identity,
+                    steps_executed: 0,
+                    fuel_limit: fuel,
+                    outcome: Outcome::Fault(err),
+                    events: Vec::new(),
+                    final_state: None,
+                };
+            }
+        };
     let mut events = Vec::new();
     for step_idx in 0..fuel {
         let active = &state.frames[state.frames.len() - 1];
@@ -1035,20 +1627,187 @@ pub fn eval_body_with_config(
     }
 }
 
-fn zst_default_val(ty: &Ty) -> Option<Val> {
-    match ty {
-        Ty::Unit => Some(Val::Unit),
-        Ty::Enum(ety) if is_zst_enum_ty(ety) => Some(Val::EnumVal { ty: ety.clone(), variant: 0 }),
-        Ty::Tuple { fields } => {
-            let vals = fields.iter().map(zst_default_val).collect::<Option<Vec<_>>>()?;
-            Some(Val::Tuple(vals))
+#[derive(Clone, Copy)]
+struct MoveView<'a> {
+    locals: &'a BTreeSet<u32>,
+    bytes: &'a BTreeSet<(u64, u64)>,
+}
+
+struct MoveTracker<'a> {
+    locals: &'a mut BTreeSet<u32>,
+    bytes: &'a mut BTreeSet<(u64, u64)>,
+}
+
+enum ReadSlotVal {
+    Init(Val),
+    Uninit(UbClass),
+}
+
+fn mark_move_deinit_span(move_deinit_bytes: &mut BTreeSet<(u64, u64)>, place: MemPlace, size: u64) {
+    for off in 0..size {
+        if let Some(addr) = place.offset.checked_add(off) {
+            move_deinit_bytes.insert((place.alloc_id, addr));
         }
-        _ => None,
     }
 }
 
+fn clear_move_deinit_span(
+    move_deinit_bytes: &mut BTreeSet<(u64, u64)>,
+    place: MemPlace,
+    size: u64,
+) {
+    if size == 0 {
+        return;
+    }
+    let end_incl = place.offset.saturating_add(size - 1);
+    let to_remove: Vec<(u64, u64)> = move_deinit_bytes
+        .range((place.alloc_id, place.offset)..=(place.alloc_id, end_incl))
+        .copied()
+        .collect();
+    for key in to_remove {
+        move_deinit_bytes.remove(&key);
+    }
+}
+
+fn clear_move_deinit_alloc(move_deinit_bytes: &mut BTreeSet<(u64, u64)>, alloc_id: u64) {
+    move_deinit_bytes.retain(|&(aid, _)| aid != alloc_id);
+}
+
+impl MoveView<'_> {
+    fn uninit_local(self, local: u32) -> UbClass {
+        uninit_class(self.locals, local)
+    }
+
+    fn has_deinit_in_span(self, place: MemPlace, size: u64) -> bool {
+        if size == 0 {
+            return false;
+        }
+        let end_incl = place.offset.saturating_add(size - 1);
+        self.bytes
+            .range((place.alloc_id, place.offset)..=(place.alloc_id, end_incl))
+            .next()
+            .is_some()
+    }
+
+    fn uninit_deref(self, place: MemPlace, size: u64) -> UbClass {
+        if self.has_deinit_in_span(place, size) {
+            UbClass::MoveDeinitLocalRead
+        } else {
+            UbClass::UninitMemoryRead
+        }
+    }
+
+    fn uninit_indirect_local(
+        self,
+        local: u32,
+        place: MemPlace,
+        ty: &Ty,
+        enable_profile_v2: bool,
+    ) -> UbClass {
+        let byte_moved = layout_of_ty(ty, enable_profile_v2)
+            .is_some_and(|lay| self.has_deinit_in_span(place, lay.size));
+        if byte_moved || self.locals.contains(&local) {
+            UbClass::MoveDeinitLocalRead
+        } else {
+            UbClass::UninitMemoryRead
+        }
+    }
+}
+
+impl MoveTracker<'_> {
+    fn as_view(&self) -> MoveView<'_> {
+        MoveView { locals: self.locals, bytes: self.bytes }
+    }
+
+    fn mark_local(&mut self, local: u32) {
+        self.locals.insert(local);
+    }
+
+    fn clear_local(&mut self, local: u32) {
+        self.locals.remove(&local);
+    }
+
+    fn mark_bytes_span(&mut self, place: MemPlace, size: u64) {
+        mark_move_deinit_span(self.bytes, place, size);
+    }
+
+    fn clear_bytes_span(&mut self, place: MemPlace, size: u64) {
+        clear_move_deinit_span(self.bytes, place, size);
+    }
+}
+
+fn store_indirect_tracked(
+    mem: &mut MemoryState,
+    moved: &mut MoveTracker<'_>,
+    endian: TargetEndian,
+    ty: &Ty,
+    place: MemPlace,
+    val: &Val,
+    enable_profile_v2: bool,
+) -> Result<(), FaultDetail> {
+    store_indirect(mem, endian, ty, place, val, enable_profile_v2)?;
+    if let Some(layout) = layout_of_ty(ty, enable_profile_v2) {
+        moved.clear_bytes_span(place, layout.size);
+    }
+    Ok(())
+}
+
+fn deinit_indirect_tracked(
+    mem: &mut MemoryState,
+    moved: &mut MoveTracker<'_>,
+    ty: &Ty,
+    place: MemPlace,
+    enable_profile_v2: bool,
+) -> Result<(), FaultDetail> {
+    let Some(layout) = layout_of_ty(ty, enable_profile_v2) else {
+        return Err(FaultDetail::unsupported("indirect local has no memory layout"));
+    };
+    let init_offsets: Vec<u64> = mem
+        .find(place.alloc_id)
+        .and_then(|alloc| {
+            let start = usize::try_from(place.offset).ok()?;
+            let size = usize::try_from(layout.size).ok()?;
+            let slice = alloc.bytes.get(start..start.checked_add(size)?)?;
+            Some(
+                slice
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(i, b)| {
+                        matches!(b, AllocByte::Init { .. })
+                            .then(|| place.offset.checked_add(i as u64))
+                            .flatten()
+                    })
+                    .collect(),
+            )
+        })
+        .unwrap_or_default();
+    deinit_indirect(mem, ty, place, enable_profile_v2)?;
+    for addr in init_offsets {
+        moved.bytes.insert((place.alloc_id, addr));
+    }
+    Ok(())
+}
+
+fn uninit_class(moved_locals: &BTreeSet<u32>, local: u32) -> UbClass {
+    if moved_locals.contains(&local) {
+        UbClass::MoveDeinitLocalRead
+    } else {
+        UbClass::UninitLocalRead
+    }
+}
+
+fn downgrade_conservative_ref_check(err: FaultDetail) -> FaultDetail {
+    if err.kind == FaultKind::Undefined { FaultDetail::undefined(err.reason) } else { err }
+}
+
 fn live_uninit_slot(ty: &Ty) -> LocalSlot {
-    LocalSlot::Immediate { val: zst_default_val(ty) }
+    match ty {
+        Ty::Unit => LocalSlot::Immediate { val: Some(Val::Unit) },
+        Ty::Enum(ety) if is_zst_enum_ty(ety) => {
+            LocalSlot::Immediate { val: Some(Val::EnumVal { ty: ety.clone(), variant: 0 }) }
+        }
+        _ => LocalSlot::Immediate { val: None },
+    }
 }
 
 fn has_storage_annotation(body: &Body, local_id: usize) -> bool {
@@ -1077,53 +1836,299 @@ fn storage_annotations_in_bounds(body: &Body) -> bool {
 
 fn discriminant_types_valid(body: &Body) -> bool {
     body.blocks.iter().all(|bb| {
-        bb.statements.iter().all(|stmt| match stmt {
-            Statement::Assign {
-                local: dst_local,
-                projection: dst_proj,
-                value: Rvalue::Discriminant { local: src_local, projection: src_proj },
-            } if dst_proj.is_empty() && src_proj.is_empty() => {
-                let (Some(src_ty), Some(dst_ty)) = (
-                    body.local_tys.get(*src_local as usize),
-                    body.local_tys.get(*dst_local as usize),
-                ) else {
-                    return true;
-                };
-                match src_ty {
-                    Ty::Enum(ety) if enum_admitted(ety) => {
-                        dst_ty.structural_eq(&Ty::Int(ety.discr()))
-                    }
-                    Ty::Ordering => {
-                        dst_ty.structural_eq(&Ty::Int(IntTy { width: IntWidth::I8, signed: true }))
-                    }
-                    _ => true,
-                }
+        bb.statements.iter().all(|stmt| {
+            let Some((
+                dst_local,
+                dst_proj,
+                Rvalue::Discriminant { local: src_local, projection: src_proj },
+            )) = stmt.as_assign()
+            else {
+                return true;
+            };
+            if !dst_proj.is_empty() || !src_proj.is_empty() {
+                return true;
             }
-            _ => true,
+            let (Some(src_ty), Some(dst_ty)) =
+                (body.local_tys.get(*src_local as usize), body.local_tys.get(dst_local as usize))
+            else {
+                return true;
+            };
+            match src_ty {
+                Ty::Enum(ety) if enum_admitted(ety) => dst_ty.structural_eq(&Ty::Int(ety.discr())),
+                Ty::Ordering => {
+                    dst_ty.structural_eq(&Ty::Int(IntTy { width: IntWidth::I8, signed: true }))
+                }
+                _ => true,
+            }
         })
     })
 }
 
 fn cast_types_valid(body: &Body) -> bool {
     body.blocks.iter().all(|bb| {
-        bb.statements.iter().all(|stmt| match stmt {
-            Statement::Assign {
-                local: dst_local,
-                projection: dst_proj,
-                value: Rvalue::Cast { cast_kind: CastKind::IntToInt, ty: cast_ty, .. },
-            } if dst_proj.is_empty() => {
-                let Some(dst_ty) = body.local_tys.get(*dst_local as usize) else {
-                    return true;
-                };
-                dst_ty.structural_eq(cast_ty)
+        bb.statements.iter().all(|stmt| {
+            let Some((
+                dst_local,
+                dst_proj,
+                Rvalue::Cast { cast_kind: CastKind::IntToInt, ty: cast_ty, .. },
+            )) = stmt.as_assign()
+            else {
+                return true;
+            };
+            if !dst_proj.is_empty() {
+                return true;
             }
-            _ => true,
+            let Some(dst_ty) = body.local_tys.get(dst_local as usize) else {
+                return true;
+            };
+            dst_ty.structural_eq(cast_ty)
         })
     })
 }
 
-/// Validate static body-admission invariants (`BodyStaticAdmitted`) prior to
-/// executing or probing `body`.
+const fn bin_op_left_homogeneous(op: BinOp) -> bool {
+    matches!(
+        op,
+        BinOp::Add
+            | BinOp::AddUnchecked
+            | BinOp::Sub
+            | BinOp::SubUnchecked
+            | BinOp::Mul
+            | BinOp::MulUnchecked
+            | BinOp::Div
+            | BinOp::Rem
+            | BinOp::BitXor
+            | BinOp::BitAnd
+            | BinOp::BitOr
+            | BinOp::Offset
+            | BinOp::Shl
+            | BinOp::ShlUnchecked
+            | BinOp::Shr
+            | BinOp::ShrUnchecked
+    )
+}
+
+const fn bin_op_right_homogeneous(op: BinOp) -> bool {
+    matches!(
+        op,
+        BinOp::Add
+            | BinOp::AddUnchecked
+            | BinOp::AddWithOverflow
+            | BinOp::Sub
+            | BinOp::SubUnchecked
+            | BinOp::SubWithOverflow
+            | BinOp::Mul
+            | BinOp::MulUnchecked
+            | BinOp::MulWithOverflow
+            | BinOp::Div
+            | BinOp::Rem
+            | BinOp::BitXor
+            | BinOp::BitAnd
+            | BinOp::BitOr
+            | BinOp::Eq
+            | BinOp::Ne
+            | BinOp::Lt
+            | BinOp::Le
+            | BinOp::Gt
+            | BinOp::Ge
+            | BinOp::Cmp
+    )
+}
+
+const fn un_op_homogeneous(op: UnOp) -> bool {
+    matches!(op, UnOp::Not | UnOp::Neg)
+}
+
+fn local_operand_matches_ty(locals: &[Ty], opnd: &Operand, expected: &Ty) -> bool {
+    match opnd.as_place() {
+        Some((local, [], _)) => {
+            locals.get(local as usize).is_none_or(|src_ty| src_ty.structural_eq(expected))
+        }
+        _ => true,
+    }
+}
+
+fn operand_ty_opt<'a>(locals: &'a [Ty], opnd: &'a Operand) -> Option<&'a Ty> {
+    match opnd {
+        Operand::Constant { ty, .. } => Some(ty),
+        _ => match opnd.as_place() {
+            Some((local, [], _)) => locals.get(local as usize),
+            _ => None,
+        },
+    }
+}
+
+fn assign_types_valid(body: &Body) -> bool {
+    body.blocks.iter().all(|bb| {
+        bb.statements.iter().all(|stmt| {
+            let Some((dst_local, dst_proj, rv)) = stmt.as_assign() else {
+                return true;
+            };
+            if !dst_proj.is_empty() {
+                return true;
+            }
+            let Some(dst_ty) = body.local_tys.get(dst_local as usize) else {
+                return true;
+            };
+            match rv {
+                Rvalue::Use { operand, .. } => {
+                    local_operand_matches_ty(&body.local_tys, operand, dst_ty)
+                }
+                Rvalue::Binary { op, left, right } => {
+                    let lhs_ok = !bin_op_left_homogeneous(*op)
+                        || local_operand_matches_ty(&body.local_tys, left, dst_ty);
+                    let rhs_ok = !bin_op_right_homogeneous(*op)
+                        || operand_ty_opt(&body.local_tys, left).is_none_or(|l_ty| {
+                            local_operand_matches_ty(&body.local_tys, right, l_ty)
+                        });
+                    lhs_ok && rhs_ok
+                }
+                Rvalue::Unary { op, operand } => {
+                    !un_op_homogeneous(*op)
+                        || local_operand_matches_ty(&body.local_tys, operand, dst_ty)
+                }
+                _ => true,
+            }
+        })
+    })
+}
+
+fn move_definitely_disjoint(
+    args: &[Operand],
+    dst_local: u32,
+    dst_projection: &[ProjectionElem],
+) -> bool {
+    if !dst_projection.is_empty() {
+        return false;
+    }
+    let mut seen = BTreeSet::new();
+    for arg in args {
+        if let Some((local, proj, true)) = arg.as_place()
+            && (!proj.is_empty() || !seen.insert(local))
+        {
+            return false;
+        }
+    }
+    seen.insert(dst_local)
+}
+
+fn call_args_match_body(body_locals: &[Ty], args: &[Operand], param_tys: &[Ty]) -> bool {
+    if args.len() != param_tys.len() {
+        return false;
+    }
+    for (opnd, param_ty) in args.iter().zip(param_tys.iter()) {
+        let ok = match opnd {
+            Operand::Constant { ty, lit } => {
+                ty.structural_eq(param_ty) && eval_const_lit(ty, lit).is_ok()
+            }
+            _ => match opnd.as_place() {
+                Some((local, [], _)) => body_locals
+                    .get(local as usize)
+                    .is_some_and(|arg_ty| arg_ty.structural_eq(param_ty)),
+                _ => false,
+            },
+        };
+        if !ok {
+            return false;
+        }
+    }
+    true
+}
+
+#[allow(clippy::too_many_arguments)]
+fn call_target_admitted(
+    body: &Body,
+    bb: &Block,
+    callee_body: &Body,
+    args: &[Operand],
+    dst_local: u32,
+    dst_projection: &[ProjectionElem],
+    target: Option<u32>,
+    unwind: UnwindAction,
+) -> bool {
+    if bb.cleanup || matches!(unwind, UnwindAction::Cleanup { .. }) {
+        return false;
+    }
+    if let Some(tgt) = target
+        && (tgt as usize) >= body.blocks.len()
+    {
+        return false;
+    }
+    if !dst_projection.is_empty() || !move_definitely_disjoint(args, dst_local, dst_projection) {
+        return false;
+    }
+    if args.len() != callee_body.arg_count || callee_body.arg_count >= callee_body.local_tys.len() {
+        return false;
+    }
+    let (Some(dst_ty), Some(ret_ty)) =
+        (body.local_tys.get(dst_local as usize), callee_body.local_tys.first())
+    else {
+        return false;
+    };
+    if !is_supported_v1_local_ty(dst_ty) || !dst_ty.structural_eq(ret_ty) {
+        return false;
+    }
+    let Some(param_tys) = callee_body.param_tys() else {
+        return false;
+    };
+    call_args_match_body(&body.local_tys, args, param_tys)
+}
+
+fn calls_admitted(program: &Program, body: &Body) -> bool {
+    body.blocks.iter().all(|bb| match &bb.terminator {
+        Terminator::Call { callee, args, dst_local, dst_projection, target, unwind } => {
+            let Some(callee_body) = program.bodies.get(*callee as usize) else {
+                return false;
+            };
+            !callee_body.is_unsafe
+                && call_target_admitted(
+                    body,
+                    bb,
+                    callee_body,
+                    args,
+                    *dst_local,
+                    dst_projection,
+                    *target,
+                    *unwind,
+                )
+        }
+        Terminator::SysrootCall { op, args, dst_local, dst_projection, target, unwind } => {
+            call_target_admitted(
+                body,
+                bb,
+                &sysroot_num_body(*op),
+                args,
+                *dst_local,
+                dst_projection,
+                *target,
+                *unwind,
+            )
+        }
+        _ => true,
+    })
+}
+
+fn body_has_any_call(body: &Body) -> bool {
+    body.blocks
+        .iter()
+        .any(|bb| matches!(bb.terminator, Terminator::Call { .. } | Terminator::SysrootCall { .. }))
+}
+
+fn single_body_static_admitted_v1(program: &Program, body: &Body) -> bool {
+    program.pointer_width_bits == 64
+        && program.mir_profile_version == 1
+        && !body.identity.is_empty()
+        && !body.blocks.is_empty()
+        && body.arg_count < body.local_tys.len()
+        && storage_annotations_in_bounds(body)
+        && discriminant_types_valid(body)
+        && cast_types_valid(body)
+        && body.local_tys.iter().all(is_supported_v1_local_ty)
+        && calls_admitted(program, body)
+}
+
+/// Validate single-body static admission invariants (`BodyStaticAdmitted` /
+/// `BodyStaticAdmittedV2` without cross-body call-graph checks).
 pub fn validate_body_entry(body: &Body, config: &EvalConfig) -> Result<(), FaultDetail> {
     if body.identity.is_empty() {
         return Err(FaultDetail::unsupported("MIR body identity is empty"));
@@ -1143,8 +2148,43 @@ pub fn validate_body_entry(body: &Body, config: &EvalConfig) -> Result<(), Fault
     if !cast_types_valid(body) {
         return Err(FaultDetail::unsupported("cast assignment destination type invalid"));
     }
+    if config.enable_profile_v2() && body_mixes_refs_and_raw_ptrs_v2(body) {
+        return Err(FaultDetail::unsupported(
+            "Profile v2 refuses bodies mixing reference and raw-pointer locals",
+        ));
+    }
     if !body.local_tys.iter().all(|ty| is_supported_local_ty(ty, config.enable_profile_v2())) {
         return Err(FaultDetail::unsupported("body contains unsupported local variable type"));
+    }
+    Ok(())
+}
+
+/// Validate full program-aware static admission for `body` inside `program`,
+/// including Profile v1 `callsAdmitted` and `allCallBodiesStaticAdmitted`.
+pub fn validate_body_in_program(
+    program: &Program,
+    body: &Body,
+    config: &EvalConfig,
+) -> Result<(), FaultDetail> {
+    validate_body_entry(body, config)?;
+    if config.is_strict_profile_v1() {
+        if !calls_admitted(program, body) {
+            return Err(FaultDetail::unsupported(
+                "Profile v1 call terminator fails static admission (missing/unsafe callee, \
+                 mismatched signature, aliasing move, or cleanup unwind)",
+            ));
+        }
+        if body_has_any_call(body)
+            && (!assign_types_valid(body)
+                || !program
+                    .bodies
+                    .iter()
+                    .all(|b| single_body_static_admitted_v1(program, b) && assign_types_valid(b)))
+        {
+            return Err(FaultDetail::unsupported(
+                "calling program fails transitive Profile v1 body static admission",
+            ));
+        }
     }
     Ok(())
 }
@@ -1169,16 +2209,18 @@ fn init_locals(body: &Body, args: &[Val]) -> Vec<LocalSlot> {
     locals
 }
 
-fn deallocate_local(mem: &mut MemoryState, old: &LocalSlot) -> Result<(), FaultDetail> {
+fn deallocate_local(
+    mem: &mut MemoryState,
+    move_deinit_bytes: &mut BTreeSet<(u64, u64)>,
+    old: &LocalSlot,
+) -> Result<(), FaultDetail> {
     match old {
-        LocalSlot::Indirect { place } => mem.deallocate_stack(*place),
-        LocalSlot::PartialTuple { fields } => {
-            for field in fields {
-                deallocate_local(mem, field)?;
-            }
+        LocalSlot::Indirect { place } => {
+            mem.deallocate_stack(*place)?;
+            clear_move_deinit_alloc(move_deinit_bytes, place.alloc_id);
             Ok(())
         }
-        LocalSlot::Dead | LocalSlot::Immediate { .. } => Ok(()),
+        LocalSlot::Dead | LocalSlot::Immediate { .. } | LocalSlot::PartialTuple { .. } => Ok(()),
     }
 }
 
@@ -1192,220 +2234,75 @@ fn tuple_field_tys(ty: &Ty) -> Option<Vec<Ty>> {
     }
 }
 
-fn read_immediate_slot(slot: &LocalSlot) -> Result<Option<Val>, FaultDetail> {
-    match slot {
-        LocalSlot::Dead => Err(FaultDetail::undefined("reading dead local")),
-        LocalSlot::Immediate { val } => Ok(val.clone()),
-        LocalSlot::PartialTuple { fields } => {
-            let mut vals = Vec::with_capacity(fields.len());
-            for field in fields {
-                match read_immediate_slot(field)? {
-                    Some(v) => vals.push(v),
-                    None => return Ok(None),
-                }
-            }
-            Ok(Some(Val::Tuple(vals)))
-        }
-        LocalSlot::Indirect { .. } => {
-            Err(FaultDetail::unsupported("unexpected indirect slot in immediate read"))
-        }
-    }
-}
+// =============================================================================
+// Profile v1 Expression & Place Helpers (`Step.lean:100-406`)
+// =============================================================================
 
-fn read_projected_slot(
-    slot: &LocalSlot,
-    base_ty: &Ty,
-    projection: &[ProjectionElem],
-    config: &EvalConfig,
-) -> Result<Option<Val>, FaultDetail> {
-    if projection.is_empty() {
-        return read_immediate_slot(slot);
-    }
-    match (slot, &projection[0]) {
-        (LocalSlot::Dead, _) => Err(FaultDetail::undefined("Copy from dead local")),
-        (LocalSlot::Immediate { val: None }, _) => {
-            let projected_ty = resolve_projected_ty(base_ty, projection, config)?;
-            Ok(zst_default_val(&projected_ty))
-        }
-        (LocalSlot::Immediate { val: Some(v) }, _) => project_val(v, projection).map(Some),
-        (LocalSlot::PartialTuple { fields }, ProjectionElem::Field { field_idx, .. }) => {
-            let field_tys = tuple_field_tys(base_ty).ok_or_else(|| {
-                FaultDetail::unsupported("field projection on non-tuple local type")
-            })?;
-            let child_ty = field_tys
-                .get(*field_idx as usize)
-                .ok_or_else(|| FaultDetail::unsupported("tuple field index out of bounds"))?;
-            let child = fields
-                .get(*field_idx as usize)
-                .ok_or_else(|| FaultDetail::unsupported("tuple field index out of bounds"))?;
-            read_projected_slot(child, child_ty, &projection[1..], config)
-        }
-        (_, ProjectionElem::Deref | ProjectionElem::Unsupported)
-        | (LocalSlot::Indirect { .. }, _) => {
-            Err(FaultDetail::unsupported("unsupported place projection"))
-        }
-    }
-}
-
-fn move_projected_slot(
-    slot: &mut LocalSlot,
-    base_ty: &Ty,
-    projection: &[ProjectionElem],
-    config: &EvalConfig,
-) -> Result<(Ty, Option<Val>), FaultDetail> {
-    if projection.is_empty() {
-        if matches!(slot, LocalSlot::Dead) {
-            return Err(FaultDetail::undefined("Move from dead local"));
-        }
-        let val = read_immediate_slot(slot)?;
-        *slot = live_uninit_slot(base_ty);
-        return Ok((base_ty.clone(), val));
-    }
-    if !config.enable_profile_v2() {
-        return Err(FaultDetail::unsupported("projected Move operand unsupported"));
-    }
-    let projected_ty = resolve_projected_ty(base_ty, projection, config)?;
-    match slot {
-        LocalSlot::Dead => return Err(FaultDetail::undefined("Move from dead local")),
-        LocalSlot::Immediate { val: None } => {
-            let zst = zst_default_val(&projected_ty);
-            return Ok((projected_ty, zst));
-        }
-        LocalSlot::Immediate { val: Some(Val::Tuple(vals)) } => {
-            let field_slots =
-                vals.iter().map(|v| LocalSlot::Immediate { val: Some(v.clone()) }).collect();
-            *slot = LocalSlot::PartialTuple { fields: field_slots };
-        }
-        LocalSlot::Immediate { val: Some(_) } => {
-            return Err(FaultDetail::unsupported(
-                "field projection move on non-tuple runtime value",
-            ));
-        }
-        LocalSlot::PartialTuple { .. } => {}
-        LocalSlot::Indirect { .. } => {
-            return Err(FaultDetail::unsupported("projected Move on indirect local unsupported"));
-        }
-    }
-    let ProjectionElem::Field { field_idx, .. } = &projection[0] else {
-        return Err(FaultDetail::unsupported("unsupported place projection element"));
-    };
-    let field_tys = tuple_field_tys(base_ty)
-        .ok_or_else(|| FaultDetail::unsupported("field projection on non-tuple local type"))?;
-    let child_ty = field_tys
-        .get(*field_idx as usize)
-        .ok_or_else(|| FaultDetail::unsupported("tuple field index out of bounds"))?;
-    let LocalSlot::PartialTuple { fields } = slot else {
-        unreachable!("promoted to PartialTuple above");
-    };
-    let child_slot = fields
-        .get_mut(*field_idx as usize)
-        .ok_or_else(|| FaultDetail::unsupported("tuple value field index out of bounds"))?;
-    let (_, val) = move_projected_slot(child_slot, child_ty, &projection[1..], config)?;
-    Ok((projected_ty, val))
-}
-
-fn resolve_projected_ty(
-    base_ty: &Ty,
-    projection: &[ProjectionElem],
-    config: &EvalConfig,
-) -> Result<Ty, FaultDetail> {
-    let mut current = base_ty.clone();
-    for elem in projection {
-        if !config.enable_profile_v2() {
-            return Err(FaultDetail::unsupported("place projection unsupported in Profile v1"));
-        }
-        match elem {
-            ProjectionElem::Field { field_idx, ty } => {
-                let expected = if let Some(ity) = current.as_overflow_pair() {
-                    match field_idx {
-                        0 => Ty::Int(ity),
-                        1 => Ty::Bool,
-                        _ => {
-                            return Err(FaultDetail::unsupported(
-                                "overflow pair field index out of bounds",
-                            ));
-                        }
-                    }
-                } else if let Ty::Tuple { fields } = &current {
-                    fields.get(*field_idx as usize).cloned().ok_or_else(|| {
-                        FaultDetail::unsupported("tuple field index out of bounds")
-                    })?
-                } else {
-                    return Err(FaultDetail::unsupported(
-                        "field projection on non-tuple local type",
-                    ));
-                };
-                if !expected.structural_eq(ty) {
-                    return Err(FaultDetail::unsupported("field projection type mismatch"));
-                }
-                current = expected;
-            }
-            ProjectionElem::Deref | ProjectionElem::Unsupported => {
-                return Err(FaultDetail::unsupported("unsupported place projection element"));
-            }
-        }
-    }
-    Ok(current)
-}
-
-fn project_val(val: &Val, projection: &[ProjectionElem]) -> Result<Val, FaultDetail> {
-    let mut cur = val;
-    for elem in projection {
-        match elem {
-            ProjectionElem::Field { field_idx, .. } => match cur {
-                Val::Tuple(fields) => {
-                    cur = fields.get(*field_idx as usize).ok_or_else(|| {
-                        FaultDetail::unsupported("tuple value field index out of bounds")
-                    })?;
-                }
-                _ => {
-                    return Err(FaultDetail::unsupported(
-                        "field projection read on non-tuple runtime value",
-                    ));
-                }
-            },
-            ProjectionElem::Deref | ProjectionElem::Unsupported => {
-                return Err(FaultDetail::unsupported("unsupported value projection"));
-            }
-        }
-    }
-    Ok(cur.clone())
-}
-
-fn eval_operand_to_slot<F>(
+fn eval_operand_to_slot_v1<F>(
     body_locals: &[Ty],
     locals: &mut [LocalSlot],
+    moved: &mut MoveTracker<'_>,
     mem: &mut MemoryState,
     ty_ok: F,
     opnd: &Operand,
-    config: &EvalConfig,
-) -> Result<(Ty, Option<Val>), FaultDetail>
+    endian: TargetEndian,
+) -> Result<(Ty, ReadSlotVal), FaultDetail>
 where
     F: Fn(&Ty) -> bool,
 {
     match opnd {
-        Operand::Copy { local, projection } => {
-            let idx = *local as usize;
-            let (Some(base_ty), Some(slot)) = (body_locals.get(idx), locals.get(idx)) else {
-                return Err(FaultDetail::unsupported("operand Copy local out of bounds"));
+        Operand::Constant { ty, lit } => {
+            let val = eval_const_lit(ty, lit)?;
+            Ok((ty.clone(), ReadSlotVal::Init(val)))
+        }
+        _ => {
+            let Some((local, projection, is_move)) = opnd.as_place() else {
+                return Err(FaultDetail::unsupported("unexpected operand variant"));
+            };
+            let idx = local as usize;
+            let (Some(base_ty), Some(slot)) = (body_locals.get(idx), locals.get(idx).cloned())
+            else {
+                return Err(FaultDetail::unsupported("operand local out of bounds"));
             };
             match slot {
-                LocalSlot::Dead => Err(FaultDetail::undefined("Copy from dead local")),
-                LocalSlot::Immediate { .. } | LocalSlot::PartialTuple { .. } => {
-                    if projection.is_empty() {
-                        Ok((base_ty.clone(), read_immediate_slot(slot)?))
-                    } else if config.enable_profile_v2() {
-                        let projected_ty = resolve_projected_ty(base_ty, projection, config)?;
-                        let projected_val = read_projected_slot(slot, base_ty, projection, config)?;
-                        Ok((projected_ty, projected_val))
-                    } else {
-                        Err(FaultDetail::unsupported("projected Copy operand unsupported"))
+                LocalSlot::Dead => Err(FaultDetail::undefined_classified(
+                    UbClass::DeadLocalAccess,
+                    if is_move { "Move from dead local" } else { "Copy from dead local" },
+                )),
+                LocalSlot::PartialTuple { .. } => {
+                    Err(FaultDetail::unsupported("partially moved tuple unsupported in Profile v1"))
+                }
+                LocalSlot::Immediate { val } => {
+                    if !projection.is_empty() {
+                        return Err(FaultDetail::unsupported(
+                            "projected operand unsupported in Profile v1",
+                        ));
                     }
+                    let slot_val = match val {
+                        Some(v) => {
+                            if is_move {
+                                let next_slot = live_uninit_slot(base_ty);
+                                if matches!(next_slot, LocalSlot::Immediate { val: None }) {
+                                    moved.mark_local(local);
+                                }
+                                locals[idx] = next_slot;
+                            }
+                            ReadSlotVal::Init(v)
+                        }
+                        None => {
+                            let class = moved.as_view().uninit_local(local);
+                            if is_move {
+                                locals[idx] = live_uninit_slot(base_ty);
+                            }
+                            ReadSlotVal::Uninit(class)
+                        }
+                    };
+                    Ok((base_ty.clone(), slot_val))
                 }
                 LocalSlot::Indirect { place } => {
                     if !projection.is_empty() {
                         return Err(FaultDetail::unsupported(
-                            "projected Copy on indirect local unsupported",
+                            "projected operand unsupported in Profile v1",
                         ));
                     }
                     if !ty_ok(base_ty) {
@@ -1413,80 +2310,69 @@ where
                             "operand type rejected before indirect load",
                         ));
                     }
-                    let val = load_indirect(
-                        mem,
-                        config.endian,
-                        base_ty,
-                        *place,
-                        config.enable_profile_v2(),
-                    )?;
-                    Ok((base_ty.clone(), val))
+                    let val = load_indirect(mem, endian, base_ty, place, false)?;
+                    let slot_val = match val {
+                        Some(v) => {
+                            if is_move {
+                                deinit_indirect_tracked(mem, moved, base_ty, place, false)?;
+                                if layout_of_ty(base_ty, false).is_some_and(|l| l.size > 0) {
+                                    moved.mark_local(local);
+                                }
+                            }
+                            ReadSlotVal::Init(v)
+                        }
+                        None => {
+                            let class =
+                                moved.as_view().uninit_indirect_local(local, place, base_ty, false);
+                            if is_move {
+                                deinit_indirect(mem, base_ty, place, false)?;
+                            }
+                            ReadSlotVal::Uninit(class)
+                        }
+                    };
+                    Ok((base_ty.clone(), slot_val))
                 }
             }
-        }
-        Operand::Move { local, projection } => {
-            let idx = *local as usize;
-            let (Some(base_ty), Some(slot)) = (body_locals.get(idx), locals.get(idx).cloned())
-            else {
-                return Err(FaultDetail::unsupported("operand Move local out of bounds"));
-            };
-            match slot {
-                LocalSlot::Dead => Err(FaultDetail::undefined("Move from dead local")),
-                LocalSlot::Immediate { .. } | LocalSlot::PartialTuple { .. } => {
-                    move_projected_slot(&mut locals[idx], base_ty, projection, config)
-                }
-                LocalSlot::Indirect { place } => {
-                    if !projection.is_empty() {
-                        return Err(FaultDetail::unsupported(
-                            "projected Move on indirect local unsupported",
-                        ));
-                    }
-                    if !ty_ok(base_ty) {
-                        return Err(FaultDetail::unsupported(
-                            "operand type rejected before indirect Move",
-                        ));
-                    }
-                    let val = load_indirect(
-                        mem,
-                        config.endian,
-                        base_ty,
-                        place,
-                        config.enable_profile_v2(),
-                    )?;
-                    deinit_indirect(mem, base_ty, place, config.enable_profile_v2())?;
-                    Ok((base_ty.clone(), val))
-                }
-            }
-        }
-        Operand::Constant { ty, lit } => {
-            let val = eval_const_lit(ty, lit)?;
-            Ok((ty.clone(), Some(val)))
         }
     }
 }
 
-fn eval_primitive_operand(
+fn eval_primitive_operand_v1(
     body_locals: &[Ty],
     locals: &mut [LocalSlot],
+    moved: &mut MoveTracker<'_>,
     mem: &mut MemoryState,
     opnd: &Operand,
-    config: &EvalConfig,
+    endian: TargetEndian,
 ) -> Result<Val, FaultDetail> {
-    let (ty, opt_val) =
-        eval_operand_to_slot(body_locals, locals, mem, is_primitive_readable_ty, opnd, config)?;
+    let (ty, slot_val) = eval_operand_to_slot_v1(
+        body_locals,
+        locals,
+        moved,
+        mem,
+        is_primitive_readable_ty,
+        opnd,
+        endian,
+    )?;
     if !is_primitive_readable_ty(&ty) {
         return Err(FaultDetail::unsupported("non-primitive operand type"));
     }
-    opt_val.ok_or_else(|| FaultDetail::undefined("reading uninitialized primitive operand"))
+    match slot_val {
+        ReadSlotVal::Init(v) => Ok(v),
+        ReadSlotVal::Uninit(class) => {
+            Err(FaultDetail::undefined_classified(class, "reading uninitialized primitive operand"))
+        }
+    }
 }
 
-fn eval_rvalue(
+fn eval_rvalue_v1(
     body_locals: &[Ty],
     locals: &mut [LocalSlot],
+    moved: &mut MoveTracker<'_>,
     mem: &mut MemoryState,
     dst_ty: &Ty,
     rvalue: &Rvalue,
-    config: &EvalConfig,
+    endian: TargetEndian,
 ) -> Result<Val, FaultDetail> {
     match rvalue {
         Rvalue::Use { operand, with_retag } => {
@@ -1495,188 +2381,1540 @@ fn eval_rvalue(
                     "retagging Use rvalue on reference-bearing type is unsupported",
                 ));
             }
-            let (src_ty, opt_val) = eval_operand_to_slot(
+            let (src_ty, slot_val) = eval_operand_to_slot_v1(
                 body_locals,
                 locals,
+                moved,
                 mem,
                 |src_ty| src_ty.structural_eq(dst_ty),
                 operand,
-                config,
+                endian,
             )?;
             if !src_ty.structural_eq(dst_ty) {
                 return Err(FaultDetail::unsupported(
                     "Use operand type disagrees with destination type",
                 ));
             }
-            opt_val.ok_or_else(|| FaultDetail::undefined("Use reading uninitialized value"))
+            match slot_val {
+                ReadSlotVal::Init(v) => Ok(v),
+                ReadSlotVal::Uninit(class) => {
+                    Err(FaultDetail::undefined_classified(class, "Use reading uninitialized value"))
+                }
+            }
         }
         Rvalue::Binary { op, left, right } => {
-            let l_val = eval_primitive_operand(body_locals, locals, mem, left, config)?;
-            let r_val = eval_primitive_operand(body_locals, locals, mem, right, config)?;
+            let l_val = eval_primitive_operand_v1(body_locals, locals, moved, mem, left, endian)?;
+            let r_val = eval_primitive_operand_v1(body_locals, locals, moved, mem, right, endian)?;
             eval_bin_op(*op, &l_val, &r_val)
         }
         Rvalue::Unary { op, operand } => {
-            let val = eval_primitive_operand(body_locals, locals, mem, operand, config)?;
+            let val = eval_primitive_operand_v1(body_locals, locals, moved, mem, operand, endian)?;
             eval_un_op(*op, &val)
         }
-        Rvalue::Cast { cast_kind, operand, ty } => {
-            if *cast_kind != CastKind::IntToInt {
-                return Err(FaultDetail::unsupported("unsupported cast kind"));
-            }
+        Rvalue::Cast { cast_kind: CastKind::IntToInt, operand, ty } => {
             if !dst_ty.structural_eq(ty) {
                 return Err(FaultDetail::unsupported("cast assignment destination type invalid"));
             }
-            let (src_ty, opt_val) =
-                eval_operand_to_slot(body_locals, locals, mem, is_int_like_ty, operand, config)?;
+            let (src_ty, slot_val) = eval_operand_to_slot_v1(
+                body_locals,
+                locals,
+                moved,
+                mem,
+                is_int_like_ty,
+                operand,
+                endian,
+            )?;
             if !is_int_like_ty(&src_ty) {
                 return Err(FaultDetail::unsupported("cast source is not integer-like"));
             }
-            let v = opt_val
-                .ok_or_else(|| FaultDetail::undefined("Cast reading uninitialized operand"))?;
-            eval_int_to_int_cast(*cast_kind, &v, ty)
-        }
-        Rvalue::Discriminant { local, projection } => {
-            let idx = *local as usize;
-            let (Some(src_ty), Some(slot)) = (body_locals.get(idx), locals.get(idx)) else {
-                return Err(FaultDetail::unsupported("Discriminant local out of bounds"));
+            let ReadSlotVal::Init(v) = slot_val else {
+                let ReadSlotVal::Uninit(class) = slot_val else { unreachable!() };
+                return Err(FaultDetail::undefined_classified(
+                    class,
+                    "Cast reading uninitialized operand",
+                ));
             };
-            if projection.is_empty() {
-                let expected_dst_ty = match src_ty {
-                    Ty::Enum(ety) if enum_admitted(ety) => Some(Ty::Int(ety.discr())),
-                    Ty::Ordering => Some(Ty::Int(IntTy { width: IntWidth::I8, signed: true })),
-                    _ => None,
-                };
-                if let Some(expected) = expected_dst_ty
-                    && !dst_ty.structural_eq(&expected)
-                {
+            eval_int_to_int_cast(CastKind::IntToInt, &v, ty)
+        }
+        Rvalue::Discriminant { local, projection } => eval_discriminant_rvalue(
+            body_locals,
+            locals,
+            moved.as_view(),
+            mem,
+            *local,
+            projection,
+            dst_ty,
+            endian,
+            false,
+        ),
+        _ => Err(FaultDetail::unsupported("unmodeled Profile v1 MIR rvalue")),
+    }
+}
+
+fn write_place_v1(
+    locals: &mut [LocalSlot],
+    moved: &mut MoveTracker<'_>,
+    mem: &mut MemoryState,
+    dst_local_id: u32,
+    dst_ty: &Ty,
+    val: Val,
+    endian: TargetEndian,
+) -> Result<(), FaultDetail> {
+    if !check_val(&val, dst_ty, false) {
+        return Err(FaultDetail::unsupported("assigned value disagrees with destination type"));
+    }
+    let Some(slot) = locals.get_mut(dst_local_id as usize) else {
+        return Err(FaultDetail::unsupported("destination local id out of bounds"));
+    };
+    match slot {
+        LocalSlot::Dead => Err(FaultDetail::undefined_classified(
+            UbClass::DeadLocalAccess,
+            "write to dead destination local",
+        )),
+        LocalSlot::Immediate { .. } => {
+            *slot = LocalSlot::Immediate { val: Some(val) };
+            moved.clear_local(dst_local_id);
+            Ok(())
+        }
+        LocalSlot::Indirect { place } => {
+            store_indirect_tracked(mem, moved, endian, dst_ty, *place, &val, false)?;
+            moved.clear_local(dst_local_id);
+            Ok(())
+        }
+        LocalSlot::PartialTuple { .. } => {
+            Err(FaultDetail::unsupported("partially moved tuple destination in Profile v1"))
+        }
+    }
+}
+
+// =============================================================================
+// Profile v2 Expression, Place, & CoreCall Helpers (`Step.lean:755-1936`)
+// =============================================================================
+
+#[derive(Clone, Debug)]
+enum PlaceDestV2 {
+    Local(u32),
+    Deref { pointee: Ty, lay: LayoutData, pv: PtrVal },
+}
+
+fn place_static_ty_v2(body_locals: &[Ty], local: u32, projection: &[ProjectionElem]) -> Option<Ty> {
+    let base = body_locals.get(local as usize)?;
+    match projection {
+        [] => Some(base.clone()),
+        [ProjectionElem::Deref] => match base {
+            Ty::Ref { pointee, .. } | Ty::RawPtr { pointee, .. } if !pointee.is_unsized() => {
+                Some((**pointee).clone())
+            }
+            _ => None,
+        },
+        _ => None,
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+fn resolve_place_dest_v2(
+    body_locals: &[Ty],
+    locals: &[LocalSlot],
+    moved: MoveView<'_>,
+    mem: &MemoryState,
+    local: u32,
+    projection: &[ProjectionElem],
+    dst_ty: &Ty,
+    endian: TargetEndian,
+) -> Result<PlaceDestV2, FaultDetail> {
+    match projection {
+        [] => Ok(PlaceDestV2::Local(local)),
+        [ProjectionElem::Deref] => {
+            let (Some(ptr_ty), Some(slot)) =
+                (body_locals.get(local as usize), locals.get(local as usize))
+            else {
+                return Err(FaultDetail::unsupported("deref destination local out of bounds"));
+            };
+            if matches!(slot, LocalSlot::Dead) {
+                return Err(FaultDetail::undefined_classified(
+                    UbClass::DeadLocalAccess,
+                    "deref destination pointer local is storage-dead",
+                ));
+            }
+            let (ptr_mut, pointee) = match ptr_ty {
+                Ty::Ref { mutability, pointee } | Ty::RawPtr { mutability, pointee } => {
+                    (*mutability, pointee.as_ref())
+                }
+                _ => {
                     return Err(FaultDetail::unsupported(
-                        "discriminant assignment destination type invalid",
+                        "deref destination requires pointer or reference local",
                     ));
                 }
+            };
+            if pointee.is_unsized() || !pointee.structural_eq(dst_ty) {
+                return Err(FaultDetail::unsupported(
+                    "deref destination pointee type mismatch or unsized",
+                ));
             }
-            let opt_val = match slot {
-                LocalSlot::Dead => {
-                    return Err(FaultDetail::undefined("Discriminant read on dead local"));
+            if ptr_mut != Mutability::Mut {
+                return Err(FaultDetail::undefined(
+                    "store through shared reference or *const pointer",
+                ));
+            }
+            let Some(lay) = layout_of_ty(pointee, true) else {
+                return Err(FaultDetail::unsupported("deref destination pointee has no layout"));
+            };
+            let ptr_val = match slot {
+                LocalSlot::Dead => unreachable!("checked above"),
+                LocalSlot::PartialTuple { .. } => {
+                    return Err(FaultDetail::undefined_classified(
+                        UbClass::MoveDeinitLocalRead,
+                        "deref destination pointer local is partially moved",
+                    ));
                 }
+                LocalSlot::Immediate { val } => val.clone().ok_or_else(|| {
+                    FaultDetail::undefined_classified(
+                        moved.uninit_local(local),
+                        "deref destination pointer local is uninitialized",
+                    )
+                })?,
+                LocalSlot::Indirect { place } => load_indirect(mem, endian, ptr_ty, *place, true)?
+                    .ok_or_else(|| {
+                        FaultDetail::undefined_classified(
+                            moved.uninit_indirect_local(local, *place, ptr_ty, true),
+                            "deref destination pointer local is uninitialized",
+                        )
+                    })?,
+            };
+            match ptr_val {
+                Val::Ptr(pv) => Ok(PlaceDestV2::Deref { pointee: pointee.clone(), lay, pv }),
+                _ => Err(FaultDetail::unsupported("deref destination slot does not hold thin ptr")),
+            }
+        }
+        _ => {
+            Err(FaultDetail::unsupported("unsupported destination place projection in Profile v2"))
+        }
+    }
+}
+
+fn write_place_dest_v2(
+    locals: &mut [LocalSlot],
+    moved: &mut MoveTracker<'_>,
+    mem: &mut MemoryState,
+    dest: &PlaceDestV2,
+    dst_ty: &Ty,
+    val: Val,
+    endian: TargetEndian,
+) -> Result<(), FaultDetail> {
+    if !check_val(&val, dst_ty, true) {
+        return Err(FaultDetail::unsupported(
+            "assigned value disagrees with Profile v2 destination type",
+        ));
+    }
+    match dest {
+        PlaceDestV2::Local(local_id) => {
+            let Some(slot) = locals.get_mut(*local_id as usize) else {
+                return Err(FaultDetail::unsupported("destination local id out of bounds"));
+            };
+            match slot {
+                LocalSlot::Dead => Err(FaultDetail::undefined_classified(
+                    UbClass::DeadLocalAccess,
+                    "write to dead destination local",
+                )),
                 LocalSlot::Immediate { .. } | LocalSlot::PartialTuple { .. } => {
-                    if !projection.is_empty() {
-                        return Err(FaultDetail::unsupported(
-                            "projected Discriminant rvalue is unsupported",
-                        ));
-                    }
-                    read_immediate_slot(slot)?
+                    *slot = LocalSlot::Immediate { val: Some(val) };
+                    moved.clear_local(*local_id);
+                    Ok(())
                 }
                 LocalSlot::Indirect { place } => {
-                    if !projection.is_empty() {
-                        return Err(FaultDetail::unsupported(
-                            "projected Discriminant rvalue is unsupported",
+                    store_indirect_tracked(mem, moved, endian, dst_ty, *place, &val, true)?;
+                    moved.clear_local(*local_id);
+                    Ok(())
+                }
+            }
+        }
+        PlaceDestV2::Deref { pointee, lay, pv } => match pv.alloc_id {
+            None => {
+                if pv.offset_bytes == 0 {
+                    let class = if lay.size == 0 {
+                        UbClass::ZstNullRawPtrDeref
+                    } else {
+                        UbClass::NullOrNoProvPtrAccess
+                    };
+                    return Err(FaultDetail::undefined_classified(
+                        class,
+                        "write through null pointer",
+                    ));
+                }
+                if lay.size > 0 {
+                    return Err(FaultDetail::undefined_classified(
+                        UbClass::NullOrNoProvPtrAccess,
+                        "non-zero-sized write through provenance-free pointer",
+                    ));
+                }
+                if !offset_is_aligned(pv.offset_bytes, lay.align_log2) {
+                    return Err(FaultDetail::undefined_classified(
+                        UbClass::MisalignedMemoryAccess,
+                        "misaligned zero-sized write through provenance-free pointer",
+                    ));
+                }
+                let encoded = encode_val(endian, pointee, &val, true)?;
+                if encoded.is_empty() {
+                    Ok(())
+                } else {
+                    Err(FaultDetail::unsupported("zero-sized pointee encoded non-empty bytes"))
+                }
+            }
+            Some(aid) => {
+                let Some(alloc) = mem.find(aid) else {
+                    let class = if lay.size == 0 {
+                        UbClass::ZstProvenanceDeadOrOob
+                    } else {
+                        UbClass::DanglingOrUnknownAllocAccess
+                    };
+                    return Err(FaultDetail::undefined_classified(
+                        class,
+                        "write through pointer to unknown allocation",
+                    ));
+                };
+                if lay.size > 0 {
+                    if !alloc.live {
+                        return Err(FaultDetail::undefined_classified(
+                            UbClass::DanglingOrUnknownAllocAccess,
+                            "write through dangling pointer",
                         ));
                     }
-                    if !matches!(src_ty, Ty::Enum(_) | Ty::Ordering) {
-                        return Err(FaultDetail::unsupported(
-                            "Discriminant rvalue requires fieldless enum or Ordering local",
+                    if alloc.mutability != Mutability::Mut {
+                        return Err(FaultDetail::undefined_classified(
+                            UbClass::WriteToReadOnlyMemory,
+                            "write through pointer to immutable allocation",
                         ));
                     }
-                    load_indirect(mem, config.endian, src_ty, *place, config.enable_profile_v2())?
+                }
+                store_indirect_tracked(
+                    mem,
+                    moved,
+                    endian,
+                    pointee,
+                    MemPlace { alloc_id: aid, offset: pv.offset_bytes },
+                    &val,
+                    true,
+                )
+            }
+        },
+    }
+}
+
+fn eval_ptr_offset_v2(
+    mem: &MemoryState,
+    elem_size: u64,
+    ptr: PtrVal,
+    count_val: &Val,
+) -> Result<Val, FaultDetail> {
+    let Val::Scalar(sv) = *count_val else {
+        return Err(FaultDetail::unsupported("pointer offset count must be scalar"));
+    };
+    if sv.width != IntWidth::Isize {
+        return Err(FaultDetail::unsupported("pointer offset count must be isize or usize"));
+    }
+    if !sv.signed {
+        let count = sv.truncated_bits() as u64;
+        return ptr_add_in_mem(mem, elem_size, ptr, count).map(Val::Ptr);
+    }
+    let signed_count = sv.to_signed_i128();
+    if signed_count >= 0 {
+        return ptr_add_in_mem(mem, elem_size, ptr, signed_count as u64).map(Val::Ptr);
+    }
+    let abs_count = signed_count.unsigned_abs();
+    let delta = abs_count * u128::from(elem_size);
+    if delta >= u128::from(ISIZE_MAX_BYTES) {
+        return Err(FaultDetail::undefined_classified(
+            UbClass::PtrOffsetOverflowOrOob,
+            "negative pointer offset delta exceeds isize::MAX",
+        ));
+    }
+    match ptr.alloc_id {
+        None => Err(FaultDetail::undefined_classified(
+            if delta == 0 {
+                UbClass::ZeroOffsetDeadOrOobPtr
+            } else {
+                UbClass::PtrOffsetOverflowOrOob
+            },
+            "negative pointer offset on provenance-free pointer",
+        )),
+        Some(aid) => {
+            let Some(alloc) = mem.find(aid) else {
+                return Err(FaultDetail::undefined_classified(
+                    if delta == 0 {
+                        UbClass::ZeroOffsetDeadOrOobPtr
+                    } else {
+                        UbClass::PtrOffsetOverflowOrOob
+                    },
+                    "negative pointer offset into unknown allocation",
+                ));
+            };
+            let off = u128::from(ptr.offset_bytes);
+            if !alloc.live || off > alloc.bytes.len() as u128 || delta > off {
+                return Err(FaultDetail::undefined_classified(
+                    if delta == 0 {
+                        UbClass::ZeroOffsetDeadOrOobPtr
+                    } else {
+                        UbClass::PtrOffsetOverflowOrOob
+                    },
+                    "negative pointer offset out of bounds or on dead allocation",
+                ));
+            }
+            Ok(Val::Ptr(PtrVal { offset_bytes: ptr.offset_bytes - (delta as u64), ..ptr }))
+        }
+    }
+}
+
+fn promote_local_to_memory(
+    body_locals: &[Ty],
+    locals: &mut [LocalSlot],
+    moved: &mut MoveTracker<'_>,
+    mem: &mut MemoryState,
+    local_id: u32,
+    endian: TargetEndian,
+) -> Result<(Ty, MemPlace), FaultDetail> {
+    let idx = local_id as usize;
+    let (Some(local_ty), Some(slot)) = (body_locals.get(idx), locals.get(idx).cloned()) else {
+        return Err(FaultDetail::unsupported("address-taken local out of bounds"));
+    };
+    match slot {
+        LocalSlot::Dead => Err(FaultDetail::undefined_classified(
+            UbClass::DeadLocalAccess,
+            "taking address of storage-dead local",
+        )),
+        LocalSlot::Indirect { place } => {
+            if local_ty.is_unsized() {
+                Err(FaultDetail::unsupported("cannot promote unsized local"))
+            } else {
+                Ok((local_ty.clone(), place))
+            }
+        }
+        LocalSlot::Immediate { val } => {
+            let Some(lay) = layout_of_ty(local_ty, true) else {
+                return Err(FaultDetail::unsupported(
+                    "address-taken local has no Profile v2 layout",
+                ));
+            };
+            let place = mem.try_allocate_stack(lay)?;
+            if let Some(v) = val {
+                store_indirect_tracked(mem, moved, endian, local_ty, place, &v, true)?;
+            } else if moved.locals.contains(&local_id) {
+                moved.mark_bytes_span(place, lay.size);
+            }
+            locals[idx] = LocalSlot::Indirect { place };
+            Ok((local_ty.clone(), place))
+        }
+        LocalSlot::PartialTuple { .. } => {
+            Err(FaultDetail::unsupported("cannot take address of partially moved tuple"))
+        }
+    }
+}
+
+fn project_val_field_v2(
+    base_ty: &Ty,
+    val: &Val,
+    projection: &[ProjectionElem],
+) -> Result<(Ty, Val), FaultDetail> {
+    let mut cur_ty = base_ty.clone();
+    let mut cur_val = val.clone();
+    for elem in projection {
+        let ProjectionElem::Field { field_idx, ty: f_ty } = elem else {
+            return Err(FaultDetail::unsupported("unsupported nested projection element"));
+        };
+        let idx = *field_idx as usize;
+        match (&cur_ty, &cur_val) {
+            (Ty::Tuple { .. } | Ty::OverflowPair(_), Val::Tuple(vs)) => {
+                let Some(ts) = tuple_field_tys(&cur_ty) else {
+                    return Err(FaultDetail::unsupported("expected tuple field types"));
+                };
+                let (Some(elem_ty), Some(elem_val)) = (ts.get(idx), vs.get(idx)) else {
+                    return Err(FaultDetail::unsupported("tuple field index out of bounds"));
+                };
+                if !elem_ty.structural_eq(f_ty) {
+                    return Err(FaultDetail::unsupported("tuple field projection type mismatch"));
+                }
+                cur_ty = elem_ty.clone();
+                cur_val = elem_val.clone();
+            }
+            (Ty::RangeTo { elem }, Val::RangeTo(end)) if elem.is_usize() && idx == 0 => {
+                if !f_ty.is_usize() {
+                    return Err(FaultDetail::unsupported("RangeTo field 0 must be usize"));
+                }
+                cur_ty = Ty::Int(IntTy { width: IntWidth::Isize, signed: false });
+                cur_val = Val::usize_val(*end);
+            }
+            (Ty::RangeFrom { elem }, Val::RangeFrom(start)) if elem.is_usize() && idx == 0 => {
+                if !f_ty.is_usize() {
+                    return Err(FaultDetail::unsupported("RangeFrom field 0 must be usize"));
+                }
+                cur_ty = Ty::Int(IntTy { width: IntWidth::Isize, signed: false });
+                cur_val = Val::usize_val(*start);
+            }
+            _ => {
+                return Err(FaultDetail::unsupported("field projection on non-tuple/range value"));
+            }
+        }
+    }
+    Ok((cur_ty, cur_val))
+}
+
+fn tuple_slot_fields(slot: &LocalSlot) -> Option<Vec<Option<Val>>> {
+    match slot {
+        LocalSlot::Immediate { val: Some(Val::Tuple(vs)) } => {
+            Some(vs.iter().cloned().map(Some).collect())
+        }
+        LocalSlot::PartialTuple { fields } => Some(fields.clone()),
+        _ => None,
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+fn read_place_v2(
+    body_locals: &[Ty],
+    locals: &mut [LocalSlot],
+    moved: &mut MoveTracker<'_>,
+    mem: &mut MemoryState,
+    is_move: bool,
+    local: u32,
+    projection: &[ProjectionElem],
+    endian: TargetEndian,
+) -> Result<(Ty, ReadSlotVal), FaultDetail> {
+    let idx = local as usize;
+    let (Some(base_ty), Some(slot)) = (body_locals.get(idx), locals.get(idx).cloned()) else {
+        return Err(FaultDetail::unsupported("operand local out of bounds"));
+    };
+    if matches!(slot, LocalSlot::Dead) {
+        return Err(FaultDetail::undefined_classified(
+            UbClass::DeadLocalAccess,
+            if is_move { "Move from dead local" } else { "Copy from dead local" },
+        ));
+    }
+    match projection {
+        [] => {
+            if !is_supported_v2_local_ty(base_ty) {
+                return Err(FaultDetail::unsupported("local type outside Profile v2 fragment"));
+            }
+            match slot {
+                LocalSlot::Dead => unreachable!("checked above"),
+                LocalSlot::PartialTuple { .. } => Err(FaultDetail::undefined_classified(
+                    UbClass::MoveDeinitLocalRead,
+                    "reading partially moved tuple as a whole",
+                )),
+                LocalSlot::Immediate { val } => {
+                    let slot_val = match val {
+                        Some(v) => {
+                            if is_move {
+                                let next_slot = live_uninit_slot(base_ty);
+                                if matches!(next_slot, LocalSlot::Immediate { val: None }) {
+                                    moved.mark_local(local);
+                                }
+                                locals[idx] = next_slot;
+                            }
+                            ReadSlotVal::Init(v)
+                        }
+                        None => {
+                            let class = moved.as_view().uninit_local(local);
+                            if is_move {
+                                locals[idx] = live_uninit_slot(base_ty);
+                            }
+                            ReadSlotVal::Uninit(class)
+                        }
+                    };
+                    Ok((base_ty.clone(), slot_val))
+                }
+                LocalSlot::Indirect { place } => {
+                    let val = load_indirect(mem, endian, base_ty, place, true)?;
+                    let slot_val = match val {
+                        Some(v) => {
+                            if is_move {
+                                deinit_indirect_tracked(mem, moved, base_ty, place, true)?;
+                                if layout_of_ty(base_ty, true).is_some_and(|l| l.size > 0) {
+                                    moved.mark_local(local);
+                                }
+                            }
+                            ReadSlotVal::Init(v)
+                        }
+                        None => {
+                            let class =
+                                moved.as_view().uninit_indirect_local(local, place, base_ty, true);
+                            if is_move {
+                                deinit_indirect(mem, base_ty, place, true)?;
+                            }
+                            ReadSlotVal::Uninit(class)
+                        }
+                    };
+                    Ok((base_ty.clone(), slot_val))
+                }
+            }
+        }
+        [ProjectionElem::Deref] => {
+            if is_move {
+                return Err(FaultDetail::unsupported(
+                    "Move through dereference projection is unsupported in Profile v2",
+                ));
+            }
+            let pointee = match base_ty {
+                Ty::Ref { pointee, .. } | Ty::RawPtr { pointee, .. } => pointee.as_ref(),
+                _ => {
+                    return Err(FaultDetail::unsupported(
+                        "deref projection requires reference or raw pointer local",
+                    ));
                 }
             };
-            match src_ty {
-                Ty::Enum(ety) => eval_discriminant_of_val(ety, opt_val.as_ref()),
-                Ty::Ordering => eval_ordering_discriminant_of_val(opt_val.as_ref()),
+            if pointee.is_unsized() {
+                return Err(FaultDetail::unsupported(
+                    "deref load of unsized pointee is unsupported in Profile v2",
+                ));
+            }
+            let Some(lay) = layout_of_ty(pointee, true) else {
+                return Err(FaultDetail::unsupported("deref pointee has no Profile v2 layout"));
+            };
+            let ptr_val = match slot {
+                LocalSlot::Dead => unreachable!("checked above"),
+                LocalSlot::PartialTuple { .. } => {
+                    return Err(FaultDetail::undefined_classified(
+                        UbClass::MoveDeinitLocalRead,
+                        "dereferencing partially moved slot",
+                    ));
+                }
+                LocalSlot::Immediate { val } => val.ok_or_else(|| {
+                    FaultDetail::undefined_classified(
+                        moved.as_view().uninit_local(local),
+                        "dereferencing uninitialized pointer local",
+                    )
+                })?,
+                LocalSlot::Indirect { place } => load_indirect(mem, endian, base_ty, place, true)?
+                    .ok_or_else(|| {
+                        FaultDetail::undefined_classified(
+                            moved.as_view().uninit_indirect_local(local, place, base_ty, true),
+                            "dereferencing uninitialized pointer local",
+                        )
+                    })?,
+            };
+            let Val::Ptr(pv) = ptr_val else {
+                return Err(FaultDetail::unsupported(
+                    "deref operand local does not hold thin pointer",
+                ));
+            };
+            match pv.alloc_id {
+                None => {
+                    if pv.offset_bytes == 0 {
+                        let class = if lay.size == 0 {
+                            UbClass::ZstNullRawPtrDeref
+                        } else {
+                            UbClass::NullOrNoProvPtrAccess
+                        };
+                        return Err(FaultDetail::undefined_classified(
+                            class,
+                            "dereferencing null pointer",
+                        ));
+                    }
+                    if lay.size > 0 {
+                        return Err(FaultDetail::undefined_classified(
+                            UbClass::NullOrNoProvPtrAccess,
+                            "non-zero-sized deref of provenance-free pointer",
+                        ));
+                    }
+                    if !offset_is_aligned(pv.offset_bytes, lay.align_log2) {
+                        return Err(FaultDetail::undefined_classified(
+                            UbClass::MisalignedMemoryAccess,
+                            "misaligned zero-sized deref of provenance-free pointer",
+                        ));
+                    }
+                    let slot_val = match crate::memory::decode_val(endian, pointee, &[], true)? {
+                        Some(v) => ReadSlotVal::Init(v),
+                        None => ReadSlotVal::Uninit(UbClass::UninitMemoryRead),
+                    };
+                    Ok((pointee.clone(), slot_val))
+                }
+                Some(aid) => {
+                    let mp = MemPlace { alloc_id: aid, offset: pv.offset_bytes };
+                    let slot_val = match load_indirect(mem, endian, pointee, mp, true)? {
+                        Some(v) => ReadSlotVal::Init(v),
+                        None => ReadSlotVal::Uninit(moved.as_view().uninit_deref(mp, lay.size)),
+                    };
+                    Ok((pointee.clone(), slot_val))
+                }
+            }
+        }
+        [ProjectionElem::Deref, ..] => Err(FaultDetail::unsupported(
+            "chained projection after Deref unsupported in Profile v2",
+        )),
+        [ProjectionElem::Field { field_idx, ty: f_ty }, rest @ ..] => {
+            if is_move {
+                if !rest.is_empty() {
+                    return Err(FaultDetail::unsupported(
+                        "nested field move is unsupported in Profile v2",
+                    ));
+                }
+                if matches!(slot, LocalSlot::Immediate { val: None }) {
+                    return Err(FaultDetail::undefined_classified(
+                        moved.as_view().uninit_local(local),
+                        "field move from uninitialized tuple local",
+                    ));
+                }
+                let (Some(ts), Some(mut fs)) = (tuple_field_tys(base_ty), tuple_slot_fields(&slot))
+                else {
+                    return Err(FaultDetail::unsupported(
+                        "field move requires immediate or partially moved tuple local",
+                    ));
+                };
+                let fidx = *field_idx as usize;
+                let (Some(elem_ty), Some(field_opt)) = (ts.get(fidx), fs.get(fidx)) else {
+                    return Err(FaultDetail::unsupported("tuple field index out of bounds"));
+                };
+                let Some(elem_val) = field_opt.clone() else {
+                    return Err(FaultDetail::undefined_classified(
+                        UbClass::MoveDeinitLocalRead,
+                        "moving already-moved tuple field",
+                    ));
+                };
+                if !elem_ty.structural_eq(f_ty) {
+                    return Err(FaultDetail::unsupported("tuple field move type mismatch"));
+                }
+                let moved_val = match live_uninit_slot(elem_ty) {
+                    LocalSlot::Immediate { val } => val,
+                    _ => None,
+                };
+                fs[fidx] = moved_val;
+                if fs.iter().all(Option::is_none) {
+                    locals[idx] = LocalSlot::Immediate { val: None };
+                    moved.mark_local(local);
+                } else {
+                    locals[idx] = LocalSlot::PartialTuple { fields: fs };
+                }
+                Ok((elem_ty.clone(), ReadSlotVal::Init(elem_val)))
+            } else {
+                match slot {
+                    LocalSlot::Dead => unreachable!("checked above"),
+                    LocalSlot::Immediate { val: None } => Err(FaultDetail::undefined_classified(
+                        moved.as_view().uninit_local(local),
+                        "field copy from uninitialized local",
+                    )),
+                    LocalSlot::Immediate { val: Some(v) } => {
+                        let (fty, fv) = project_val_field_v2(base_ty, &v, projection)?;
+                        Ok((fty, ReadSlotVal::Init(fv)))
+                    }
+                    LocalSlot::Indirect { place } => {
+                        let Some(v) = load_indirect(mem, endian, base_ty, place, true)? else {
+                            return Err(FaultDetail::undefined_classified(
+                                moved.as_view().uninit_indirect_local(local, place, base_ty, true),
+                                "field copy from uninitialized indirect local",
+                            ));
+                        };
+                        let (fty, fv) = project_val_field_v2(base_ty, &v, projection)?;
+                        Ok((fty, ReadSlotVal::Init(fv)))
+                    }
+                    LocalSlot::PartialTuple { fields } => {
+                        if !rest.is_empty() {
+                            return Err(FaultDetail::unsupported(
+                                "nested field copy from partially moved tuple is unsupported",
+                            ));
+                        }
+                        let Some(ts) = tuple_field_tys(base_ty) else {
+                            return Err(FaultDetail::unsupported(
+                                "partial tuple slot requires tuple local type",
+                            ));
+                        };
+                        let fidx = *field_idx as usize;
+                        let (Some(elem_ty), Some(field_opt)) = (ts.get(fidx), fields.get(fidx))
+                        else {
+                            return Err(FaultDetail::unsupported(
+                                "tuple field index out of bounds",
+                            ));
+                        };
+                        let Some(elem_val) = field_opt.clone() else {
+                            return Err(FaultDetail::undefined_classified(
+                                UbClass::MoveDeinitLocalRead,
+                                "copying already-moved tuple field",
+                            ));
+                        };
+                        if !elem_ty.structural_eq(f_ty) {
+                            return Err(FaultDetail::unsupported("tuple field copy type mismatch"));
+                        }
+                        Ok((elem_ty.clone(), ReadSlotVal::Init(elem_val)))
+                    }
+                }
+            }
+        }
+        [ProjectionElem::Unsupported, ..] => {
+            Err(FaultDetail::unsupported("unsupported place projection element"))
+        }
+    }
+}
+
+fn eval_operand_to_slot_v2(
+    body_locals: &[Ty],
+    locals: &mut [LocalSlot],
+    moved: &mut MoveTracker<'_>,
+    mem: &mut MemoryState,
+    opnd: &Operand,
+    endian: TargetEndian,
+) -> Result<(Ty, ReadSlotVal), FaultDetail> {
+    match opnd {
+        Operand::Constant { ty, lit } => {
+            let val = eval_const_lit(ty, lit)?;
+            Ok((ty.clone(), ReadSlotVal::Init(val)))
+        }
+        _ => {
+            let Some((local, projection, is_move)) = opnd.as_place() else {
+                return Err(FaultDetail::unsupported("unexpected operand variant"));
+            };
+            read_place_v2(body_locals, locals, moved, mem, is_move, local, projection, endian)
+        }
+    }
+}
+
+fn eval_primitive_operand_v2(
+    body_locals: &[Ty],
+    locals: &mut [LocalSlot],
+    moved: &mut MoveTracker<'_>,
+    mem: &mut MemoryState,
+    opnd: &Operand,
+    endian: TargetEndian,
+) -> Result<Val, FaultDetail> {
+    let (ty, slot_val) = eval_operand_to_slot_v2(body_locals, locals, moved, mem, opnd, endian)?;
+    if !is_primitive_readable_ty(&ty) {
+        return Err(FaultDetail::unsupported("non-primitive operand type"));
+    }
+    match slot_val {
+        ReadSlotVal::Init(v) => Ok(v),
+        ReadSlotVal::Uninit(class) => {
+            Err(FaultDetail::undefined_classified(class, "reading uninitialized primitive operand"))
+        }
+    }
+}
+
+fn eval_arg_operands_v2(
+    body_locals: &[Ty],
+    locals: &mut [LocalSlot],
+    moved: &mut MoveTracker<'_>,
+    mem: &mut MemoryState,
+    args: &[Operand],
+    endian: TargetEndian,
+) -> Result<Vec<(Ty, Val)>, FaultDetail> {
+    let mut out = Vec::with_capacity(args.len());
+    for opnd in args {
+        let (ty, slot_val) =
+            eval_operand_to_slot_v2(body_locals, locals, moved, mem, opnd, endian)?;
+        let ReadSlotVal::Init(v) = slot_val else {
+            let ReadSlotVal::Uninit(class) = slot_val else { unreachable!() };
+            return Err(FaultDetail::undefined_classified(
+                class,
+                "reading uninitialized argument operand",
+            ));
+        };
+        out.push((ty, v));
+    }
+    Ok(out)
+}
+
+fn eval_ptr_to_ptr_cast_v2(src_ty: &Ty, src_val: Val, cast_ty: &Ty) -> Result<Val, FaultDetail> {
+    let Ty::RawPtr { mutability: cast_mut, pointee: cast_pt } = cast_ty else {
+        return Err(FaultDetail::unsupported("PtrToPtr target must be raw pointer"));
+    };
+    if src_ty.is_const_raw_ptr() && *cast_mut == Mutability::Mut {
+        return Err(FaultDetail::unsupported(
+            "Profile v2 refuses *const T -> *mut T pointer casts",
+        ));
+    }
+    match (src_ty, src_val) {
+        (Ty::RawPtr { pointee: src_pt, .. }, Val::Ptr(p)) => {
+            if src_pt.is_unsized() || cast_pt.is_unsized() {
+                Err(FaultDetail::unsupported("thin PtrToPtr cast requires sized pointees"))
+            } else {
+                Ok(Val::Ptr(p))
+            }
+        }
+        (Ty::RawPtr { pointee: src_pt, .. }, Val::SlicePtr { ptr, len }) => {
+            match (src_pt.as_ref(), cast_pt.as_ref()) {
+                (Ty::Slice { elem: src_elem }, Ty::Slice { elem: cast_elem })
+                    if src_elem.structural_eq(cast_elem) =>
+                {
+                    Ok(Val::SlicePtr { ptr, len })
+                }
                 _ => Err(FaultDetail::unsupported(
-                    "Discriminant rvalue requires fieldless enum or Ordering local",
+                    "wide PtrToPtr cast requires matching slice element types",
                 )),
             }
         }
-        Rvalue::AggregateTuple { fields } if config.enable_profile_v2() => {
-            eval_tuple_aggregate(body_locals, locals, mem, dst_ty, fields, config)
-        }
-        Rvalue::Aggregate { aggregate_kind: AggregateKind::Tuple, fields }
-            if config.enable_profile_v2() =>
-        {
-            eval_tuple_aggregate(body_locals, locals, mem, dst_ty, fields, config)
-        }
-        Rvalue::AggregateTuple { .. }
-        | Rvalue::Aggregate { .. }
-        | Rvalue::Ref { .. }
-        | Rvalue::AddressOf { .. }
-        | Rvalue::Unsupported => Err(FaultDetail::unsupported("unmodeled MIR rvalue")),
+        _ => Err(FaultDetail::unsupported("PtrToPtr requires raw pointer source")),
     }
 }
 
-fn operand_static_ty(
-    body_locals: &[Ty],
-    opnd: &Operand,
-    config: &EvalConfig,
-) -> Result<Ty, FaultDetail> {
-    match opnd {
-        Operand::Copy { local, projection } | Operand::Move { local, projection } => {
-            let Some(base_ty) = body_locals.get(*local as usize) else {
-                return Err(FaultDetail::unsupported("operand local out of bounds"));
-            };
-            if projection.is_empty() {
-                Ok(base_ty.clone())
-            } else {
-                resolve_projected_ty(base_ty, projection, config)
-            }
-        }
-        Operand::Constant { ty, .. } => Ok(ty.clone()),
-    }
-}
-
-fn eval_tuple_aggregate(
+#[allow(clippy::too_many_arguments)]
+fn eval_ref_rvalue_v2(
     body_locals: &[Ty],
     locals: &mut [LocalSlot],
+    moved: &mut MoveTracker<'_>,
     mem: &mut MemoryState,
     dst_ty: &Ty,
-    fields: &[Operand],
-    config: &EvalConfig,
+    req_mut: Mutability,
+    place: &Place,
+    endian: TargetEndian,
 ) -> Result<Val, FaultDetail> {
-    if fields.is_empty() {
-        return match dst_ty {
-            Ty::Unit => Ok(Val::Unit),
-            Ty::Tuple { fields: ty_fields } if ty_fields.is_empty() => Ok(Val::Tuple(Vec::new())),
-            _ => Err(FaultDetail::unsupported(
-                "empty tuple aggregate requires unit or empty tuple destination type",
-            )),
-        };
-    }
-    let Some(expected_tys) = tuple_field_tys(dst_ty) else {
-        return Err(FaultDetail::unsupported("tuple aggregate requires tuple destination type"));
-    };
-    if expected_tys.len() != fields.len() {
-        return Err(FaultDetail::unsupported(
-            "tuple aggregate field count does not match destination tuple type",
-        ));
-    }
-    for (field_op, expected_ty) in fields.iter().zip(expected_tys.iter()) {
-        let field_ty = operand_static_ty(body_locals, field_op, config)?;
-        if !field_ty.structural_eq(expected_ty) {
-            return Err(FaultDetail::unsupported(
-                "tuple aggregate field operand type does not match destination tuple field",
-            ));
+    match place.projection.as_slice() {
+        [] => {
+            let (local_ty, mplace) =
+                promote_local_to_memory(body_locals, locals, moved, mem, place.local, endian)?;
+            let expected = Ty::Ref { mutability: req_mut, pointee: Box::new(local_ty.clone()) };
+            if !dst_ty.structural_eq(&expected) {
+                return Err(FaultDetail::unsupported(
+                    "Ref destination type disagrees with borrowed local type",
+                ));
+            }
+            let rv = Val::Ptr(PtrVal {
+                alloc_id: Some(mplace.alloc_id),
+                offset_bytes: mplace.offset,
+                width: IntWidth::Isize,
+            });
+            ref_valid_in_mem(mem, endian, req_mut, &local_ty, &rv)?;
+            Ok(rv)
         }
+        [ProjectionElem::Deref] => {
+            let idx = place.local as usize;
+            let (Some(base_ty), Some(slot)) = (body_locals.get(idx), locals.get(idx)) else {
+                return Err(FaultDetail::unsupported("reborrow local out of bounds"));
+            };
+            if matches!(slot, LocalSlot::Dead) {
+                return Err(FaultDetail::undefined_classified(
+                    UbClass::DeadLocalAccess,
+                    "reborrowing dead reference local",
+                ));
+            }
+            let Ty::Ref { mutability: src_mut, pointee } = base_ty else {
+                return Err(FaultDetail::unsupported(
+                    "Profile v2 Ref(&*x) only supports reborrowing reference locals",
+                ));
+            };
+            if *src_mut == Mutability::Shared && req_mut == Mutability::Mut {
+                return Err(FaultDetail::undefined("mutable reborrow through shared reference"));
+            }
+            let expected = Ty::Ref { mutability: req_mut, pointee: pointee.clone() };
+            if !dst_ty.structural_eq(&expected) {
+                return Err(FaultDetail::unsupported(
+                    "reborrow destination type disagrees with reference pointee",
+                ));
+            }
+            let v = match slot {
+                LocalSlot::Dead => unreachable!("checked above"),
+                LocalSlot::PartialTuple { .. } => {
+                    return Err(FaultDetail::undefined_classified(
+                        UbClass::MoveDeinitLocalRead,
+                        "reborrowing partially moved slot",
+                    ));
+                }
+                LocalSlot::Immediate { val } => val.clone().ok_or_else(|| {
+                    FaultDetail::undefined_classified(
+                        moved.as_view().uninit_local(place.local),
+                        "reborrowing uninitialized reference local",
+                    )
+                })?,
+                LocalSlot::Indirect { place: mp } => {
+                    load_indirect(mem, endian, base_ty, *mp, true)?.ok_or_else(|| {
+                        FaultDetail::undefined_classified(
+                            moved.as_view().uninit_indirect_local(place.local, *mp, base_ty, true),
+                            "reborrowing uninitialized reference local",
+                        )
+                    })?
+                }
+            };
+            ref_valid_in_mem(mem, endian, req_mut, pointee, &v)?;
+            Ok(v)
+        }
+        _ => Err(FaultDetail::unsupported("unsupported Ref place projection in Profile v2")),
     }
-    let mut vals = Vec::with_capacity(fields.len());
-    for (field_op, expected_ty) in fields.iter().zip(expected_tys.iter()) {
-        let (_, opt_val) = eval_operand_to_slot(
+}
+
+#[allow(clippy::too_many_arguments)]
+fn eval_address_of_rvalue_v2(
+    body_locals: &[Ty],
+    locals: &mut [LocalSlot],
+    moved: &mut MoveTracker<'_>,
+    mem: &mut MemoryState,
+    dst_ty: &Ty,
+    req_mut: Mutability,
+    place: &Place,
+    endian: TargetEndian,
+) -> Result<Val, FaultDetail> {
+    match place.projection.as_slice() {
+        [] => {
+            let (local_ty, mplace) =
+                promote_local_to_memory(body_locals, locals, moved, mem, place.local, endian)?;
+            let expected = Ty::RawPtr { mutability: req_mut, pointee: Box::new(local_ty) };
+            if !dst_ty.structural_eq(&expected) {
+                return Err(FaultDetail::unsupported(
+                    "AddressOf destination type disagrees with borrowed local type",
+                ));
+            }
+            Ok(Val::Ptr(PtrVal {
+                alloc_id: Some(mplace.alloc_id),
+                offset_bytes: mplace.offset,
+                width: IntWidth::Isize,
+            }))
+        }
+        [ProjectionElem::Deref] => {
+            let idx = place.local as usize;
+            let (Some(base_ty), Some(slot)) = (body_locals.get(idx), locals.get(idx)) else {
+                return Err(FaultDetail::unsupported("AddressOf local out of bounds"));
+            };
+            if matches!(slot, LocalSlot::Dead) {
+                return Err(FaultDetail::undefined_classified(
+                    UbClass::DeadLocalAccess,
+                    "AddressOf on dead raw pointer local",
+                ));
+            }
+            let Ty::RawPtr { mutability: src_mut, pointee } = base_ty else {
+                return Err(FaultDetail::unsupported(
+                    "Profile v2 AddressOf(&raw *p) only supports raw pointer locals",
+                ));
+            };
+            if *src_mut == Mutability::Shared && req_mut == Mutability::Mut {
+                return Err(FaultDetail::undefined("mutable raw reborrow through *const pointer"));
+            }
+            let expected = Ty::RawPtr { mutability: req_mut, pointee: pointee.clone() };
+            if !dst_ty.structural_eq(&expected) {
+                return Err(FaultDetail::unsupported(
+                    "AddressOf destination type disagrees with raw pointer pointee",
+                ));
+            }
+            match slot {
+                LocalSlot::Dead => unreachable!("checked above"),
+                LocalSlot::PartialTuple { .. } => Err(FaultDetail::undefined_classified(
+                    UbClass::MoveDeinitLocalRead,
+                    "AddressOf on partially moved slot",
+                )),
+                LocalSlot::Immediate { val } => val.clone().ok_or_else(|| {
+                    FaultDetail::undefined_classified(
+                        moved.as_view().uninit_local(place.local),
+                        "AddressOf on uninitialized raw pointer local",
+                    )
+                }),
+                LocalSlot::Indirect { place: mp } => {
+                    load_indirect(mem, endian, base_ty, *mp, true)?.ok_or_else(|| {
+                        FaultDetail::undefined_classified(
+                            moved.as_view().uninit_indirect_local(place.local, *mp, base_ty, true),
+                            "AddressOf on uninitialized raw pointer local",
+                        )
+                    })
+                }
+            }
+        }
+        _ => Err(FaultDetail::unsupported("unsupported AddressOf place projection in Profile v2")),
+    }
+}
+
+fn eval_rvalue_v2(
+    body_locals: &[Ty],
+    locals: &mut [LocalSlot],
+    moved: &mut MoveTracker<'_>,
+    mem: &mut MemoryState,
+    dst_ty: &Ty,
+    rvalue: &Rvalue,
+    endian: TargetEndian,
+) -> Result<Val, FaultDetail> {
+    match rvalue {
+        Rvalue::Use { operand, with_retag } => {
+            if *with_retag && !dst_ty.is_retag_noop() {
+                return Err(FaultDetail::unsupported(
+                    "retagging Use rvalue on reference-bearing type requires UseRetag",
+                ));
+            }
+            let (src_ty, slot_val) =
+                eval_operand_to_slot_v2(body_locals, locals, moved, mem, operand, endian)?;
+            if !src_ty.structural_eq(dst_ty) {
+                return Err(FaultDetail::unsupported(
+                    "Use operand type disagrees with destination type",
+                ));
+            }
+            match slot_val {
+                ReadSlotVal::Init(v) => Ok(v),
+                ReadSlotVal::Uninit(class) => {
+                    Err(FaultDetail::undefined_classified(class, "Use reading uninitialized value"))
+                }
+            }
+        }
+        Rvalue::UseRetag { operand } => {
+            let (src_ty, slot_val) =
+                eval_operand_to_slot_v2(body_locals, locals, moved, mem, operand, endian)?;
+            if !src_ty.structural_eq(dst_ty) {
+                return Err(FaultDetail::unsupported(
+                    "UseRetag operand type disagrees with destination type",
+                ));
+            }
+            let ReadSlotVal::Init(v) = slot_val else {
+                let ReadSlotVal::Uninit(class) = slot_val else { unreachable!() };
+                return Err(FaultDetail::undefined_classified(
+                    class,
+                    "UseRetag reading uninitialized value",
+                ));
+            };
+            refs_valid_in_mem(mem, endian, &src_ty, &v)?;
+            Ok(v)
+        }
+        Rvalue::Binary { op: BinOp::Offset, left, right } => {
+            let (lhs_ty, lhs_slot) =
+                eval_operand_to_slot_v2(body_locals, locals, moved, mem, left, endian)?;
+            let ReadSlotVal::Init(lhs_val) = lhs_slot else {
+                let ReadSlotVal::Uninit(class) = lhs_slot else { unreachable!() };
+                return Err(FaultDetail::undefined_classified(
+                    class,
+                    "Offset reading uninitialized pointer",
+                ));
+            };
+            let Val::Ptr(p) = lhs_val else {
+                return Err(FaultDetail::unsupported("Offset requires thin raw pointer operand"));
+            };
+            let Ty::RawPtr { pointee, .. } = &lhs_ty else {
+                return Err(FaultDetail::unsupported("Offset requires raw pointer operand type"));
+            };
+            if pointee.is_unsized() || !dst_ty.structural_eq(&lhs_ty) {
+                return Err(FaultDetail::unsupported(
+                    "Offset requires sized pointee and matching destination type",
+                ));
+            }
+            let Some(lay) = layout_of_ty(pointee, true) else {
+                return Err(FaultDetail::unsupported("Offset pointee has no Profile v2 layout"));
+            };
+            let (_, rhs_slot) =
+                eval_operand_to_slot_v2(body_locals, locals, moved, mem, right, endian)?;
+            let ReadSlotVal::Init(rhs_val) = rhs_slot else {
+                let ReadSlotVal::Uninit(class) = rhs_slot else { unreachable!() };
+                return Err(FaultDetail::undefined_classified(
+                    class,
+                    "Offset reading uninitialized count",
+                ));
+            };
+            eval_ptr_offset_v2(mem, lay.size, p, &rhs_val)
+        }
+        Rvalue::Binary { op, left, right } => {
+            let l_val = eval_primitive_operand_v2(body_locals, locals, moved, mem, left, endian)?;
+            let r_val = eval_primitive_operand_v2(body_locals, locals, moved, mem, right, endian)?;
+            eval_bin_op(*op, &l_val, &r_val)
+        }
+        Rvalue::Unary { op: UnOp::PtrMetadata, operand } => {
+            let (src_ty, slot_val) =
+                eval_operand_to_slot_v2(body_locals, locals, moved, mem, operand, endian)?;
+            let ReadSlotVal::Init(val) = slot_val else {
+                let ReadSlotVal::Uninit(class) = slot_val else { unreachable!() };
+                return Err(FaultDetail::undefined_classified(
+                    class,
+                    "PtrMetadata reading uninitialized pointer",
+                ));
+            };
+            match (&src_ty, &val) {
+                (Ty::Ref { mutability, pointee }, Val::SlicePtr { len, .. })
+                    if matches!(pointee.as_ref(), Ty::Slice { .. }) =>
+                {
+                    if !dst_ty.is_usize() {
+                        return Err(FaultDetail::unsupported(
+                            "slice PtrMetadata destination must be usize",
+                        ));
+                    }
+                    ref_valid_in_mem(mem, endian, *mutability, pointee, &val)
+                        .map_err(downgrade_conservative_ref_check)?;
+                    Ok(Val::usize_val(*len))
+                }
+                (Ty::RawPtr { pointee, .. }, Val::SlicePtr { len, .. })
+                    if matches!(pointee.as_ref(), Ty::Slice { .. }) =>
+                {
+                    if !dst_ty.is_usize() {
+                        return Err(FaultDetail::unsupported(
+                            "slice PtrMetadata destination must be usize",
+                        ));
+                    }
+                    Ok(Val::usize_val(*len))
+                }
+                (Ty::Ref { mutability, pointee }, Val::Ptr(_)) => {
+                    if pointee.is_unsized() || *dst_ty != Ty::Unit {
+                        return Err(FaultDetail::unsupported(
+                            "thin PtrMetadata requires sized pointee and unit destination",
+                        ));
+                    }
+                    ref_valid_in_mem(mem, endian, *mutability, pointee, &val)
+                        .map_err(downgrade_conservative_ref_check)?;
+                    Ok(Val::Unit)
+                }
+                (Ty::RawPtr { pointee, .. }, Val::Ptr(_)) => {
+                    if pointee.is_unsized() || *dst_ty != Ty::Unit {
+                        return Err(FaultDetail::unsupported(
+                            "thin PtrMetadata requires sized pointee and unit destination",
+                        ));
+                    }
+                    Ok(Val::Unit)
+                }
+                _ => Err(FaultDetail::unsupported("unsupported PtrMetadata operand")),
+            }
+        }
+        Rvalue::Unary { op, operand } => {
+            let val = eval_primitive_operand_v2(body_locals, locals, moved, mem, operand, endian)?;
+            eval_un_op(*op, &val)
+        }
+        Rvalue::Cast { cast_kind: CastKind::IntToInt, operand, ty } => {
+            let (src_ty, slot_val) =
+                eval_operand_to_slot_v2(body_locals, locals, moved, mem, operand, endian)?;
+            if !is_int_like_ty(&src_ty) || !dst_ty.structural_eq(ty) {
+                return Err(FaultDetail::unsupported("invalid IntToInt cast types"));
+            }
+            let ReadSlotVal::Init(v) = slot_val else {
+                let ReadSlotVal::Uninit(class) = slot_val else { unreachable!() };
+                return Err(FaultDetail::undefined_classified(
+                    class,
+                    "IntToInt reading uninitialized operand",
+                ));
+            };
+            eval_int_to_int_cast(CastKind::IntToInt, &v, ty)
+        }
+        Rvalue::Cast { cast_kind: CastKind::PtrToPtr, operand, ty } => {
+            if !dst_ty.structural_eq(ty) {
+                return Err(FaultDetail::unsupported("PtrToPtr destination type mismatch"));
+            }
+            let (src_ty, slot_val) =
+                eval_operand_to_slot_v2(body_locals, locals, moved, mem, operand, endian)?;
+            let ReadSlotVal::Init(v) = slot_val else {
+                let ReadSlotVal::Uninit(class) = slot_val else { unreachable!() };
+                return Err(FaultDetail::undefined_classified(
+                    class,
+                    "PtrToPtr reading uninitialized pointer",
+                ));
+            };
+            eval_ptr_to_ptr_cast_v2(&src_ty, v, ty)
+        }
+        Rvalue::Cast { cast_kind: CastKind::IntToPtr, operand, ty } => {
+            if !dst_ty.structural_eq(ty) {
+                return Err(FaultDetail::unsupported("IntToPtr destination type mismatch"));
+            }
+            let Ty::RawPtr { pointee, .. } = ty else {
+                return Err(FaultDetail::unsupported("IntToPtr target must be raw pointer"));
+            };
+            if pointee.is_unsized() {
+                return Err(FaultDetail::unsupported("IntToPtr target must be sized"));
+            }
+            let (src_ty, slot_val) =
+                eval_operand_to_slot_v2(body_locals, locals, moved, mem, operand, endian)?;
+            match (src_ty, slot_val) {
+                (ty_src, ReadSlotVal::Init(Val::Scalar(sv))) if ty_src.is_usize() => {
+                    Ok(Val::Ptr(PtrVal {
+                        alloc_id: None,
+                        offset_bytes: sv.truncated_bits() as u64,
+                        width: IntWidth::Isize,
+                    }))
+                }
+                (_, ReadSlotVal::Uninit(class)) => Err(FaultDetail::undefined_classified(
+                    class,
+                    "IntToPtr reading uninitialized address",
+                )),
+                _ => Err(FaultDetail::unsupported("IntToPtr requires usize operand")),
+            }
+        }
+        Rvalue::Discriminant { local, projection } => eval_discriminant_rvalue(
             body_locals,
             locals,
+            moved.as_view(),
             mem,
-            |ty| ty.structural_eq(expected_ty),
-            field_op,
-            config,
-        )?;
-        let val = opt_val
-            .ok_or_else(|| FaultDetail::undefined("tuple aggregate reading uninitialized field"))?;
-        vals.push(val);
+            *local,
+            projection,
+            dst_ty,
+            endian,
+            true,
+        ),
+        Rvalue::Ref { mutability, place } => {
+            eval_ref_rvalue_v2(body_locals, locals, moved, mem, dst_ty, *mutability, place, endian)
+        }
+        Rvalue::AddressOf { mutability, place } => eval_address_of_rvalue_v2(
+            body_locals,
+            locals,
+            moved,
+            mem,
+            dst_ty,
+            *mutability,
+            place,
+            endian,
+        ),
+        Rvalue::AggregateTuple { fields } => {
+            let Some(field_tys) = tuple_field_tys(dst_ty) else {
+                return Err(FaultDetail::unsupported(
+                    "AggregateTuple requires tuple destination type",
+                ));
+            };
+            let typed_vals = eval_arg_operands_v2(body_locals, locals, moved, mem, fields, endian)?;
+            let vs: Vec<Val> = typed_vals.into_iter().map(|(_, v)| v).collect();
+            if !check_args_match(&vs, &field_tys, true) {
+                return Err(FaultDetail::unsupported(
+                    "AggregateTuple field values disagree with destination tuple types",
+                ));
+            }
+            Ok(Val::Tuple(vs))
+        }
+        Rvalue::Aggregate { aggregate_kind: AggregateKind::Tuple, fields } => {
+            if fields.is_empty() && *dst_ty == Ty::Unit {
+                return Ok(Val::Unit);
+            }
+            let Some(field_tys) = tuple_field_tys(dst_ty) else {
+                return Err(FaultDetail::unsupported(
+                    "Aggregate(Tuple) requires tuple destination type",
+                ));
+            };
+            let typed_vals = eval_arg_operands_v2(body_locals, locals, moved, mem, fields, endian)?;
+            let vs: Vec<Val> = typed_vals.into_iter().map(|(_, v)| v).collect();
+            if !check_args_match(&vs, &field_tys, true) {
+                return Err(FaultDetail::unsupported(
+                    "Aggregate(Tuple) field values disagree with destination tuple types",
+                ));
+            }
+            Ok(Val::Tuple(vs))
+        }
+        Rvalue::AggregateRangeTo { elem_ty, end } => {
+            let expected = Ty::RangeTo {
+                elem: Box::new(Ty::Int(IntTy { width: IntWidth::Isize, signed: false })),
+            };
+            if !elem_ty.is_usize() || !dst_ty.structural_eq(&expected) {
+                return Err(FaultDetail::unsupported(
+                    "AggregateRangeTo requires usize element and RangeTo<usize> destination",
+                ));
+            }
+            let (src_ty, slot_val) =
+                eval_operand_to_slot_v2(body_locals, locals, moved, mem, end, endian)?;
+            match (src_ty, slot_val) {
+                (ty_src, ReadSlotVal::Init(Val::Scalar(sv))) if ty_src.is_usize() => {
+                    Ok(Val::RangeTo(sv.truncated_bits() as u64))
+                }
+                (_, ReadSlotVal::Uninit(class)) => Err(FaultDetail::undefined_classified(
+                    class,
+                    "AggregateRangeTo reading uninitialized end",
+                )),
+                _ => Err(FaultDetail::unsupported("AggregateRangeTo end must be usize")),
+            }
+        }
+        Rvalue::AggregateRangeFrom { elem_ty, start } => {
+            let expected = Ty::RangeFrom {
+                elem: Box::new(Ty::Int(IntTy { width: IntWidth::Isize, signed: false })),
+            };
+            if !elem_ty.is_usize() || !dst_ty.structural_eq(&expected) {
+                return Err(FaultDetail::unsupported(
+                    "AggregateRangeFrom requires usize element and RangeFrom<usize> destination",
+                ));
+            }
+            let (src_ty, slot_val) =
+                eval_operand_to_slot_v2(body_locals, locals, moved, mem, start, endian)?;
+            match (src_ty, slot_val) {
+                (ty_src, ReadSlotVal::Init(Val::Scalar(sv))) if ty_src.is_usize() => {
+                    Ok(Val::RangeFrom(sv.truncated_bits() as u64))
+                }
+                (_, ReadSlotVal::Uninit(class)) => Err(FaultDetail::undefined_classified(
+                    class,
+                    "AggregateRangeFrom reading uninitialized start",
+                )),
+                _ => Err(FaultDetail::unsupported("AggregateRangeFrom start must be usize")),
+            }
+        }
+        Rvalue::Cast { cast_kind: CastKind::Unsupported, .. }
+        | Rvalue::Aggregate { .. }
+        | Rvalue::Unsupported => Err(FaultDetail::unsupported("unmodeled Profile v2 MIR rvalue")),
     }
-    Ok(Val::Tuple(vals))
+}
+
+fn exec_core_call_op(
+    mem: &MemoryState,
+    op: &CoreCallOp,
+    args: &[(Ty, Val)],
+    dst_ty: &Ty,
+    endian: TargetEndian,
+) -> Result<Val, FaultDetail> {
+    match (op, args) {
+        (
+            CoreCallOp::SliceLen,
+            [(Ty::Ref { mutability, pointee }, val @ Val::SlicePtr { len, .. })],
+        ) if matches!(pointee.as_ref(), Ty::Slice { elem } if matches!(elem.as_ref(), Ty::Int(_))) =>
+        {
+            if !dst_ty.is_usize() {
+                return Err(FaultDetail::unsupported("SliceLen destination must be usize"));
+            }
+            ref_valid_in_mem(mem, endian, *mutability, pointee, val)
+                .map_err(downgrade_conservative_ref_check)?;
+            Ok(Val::usize_val(*len))
+        }
+        (
+            CoreCallOp::SliceGetUncheckedRangeTo,
+            [
+                (Ty::Ref { mutability: in_mut, pointee }, val @ Val::SlicePtr { ptr, len }),
+                (Ty::RangeTo { elem: idx_ty }, Val::RangeTo(end_off)),
+            ],
+        ) if idx_ty.is_usize()
+            && matches!(
+                pointee.as_ref(),
+                Ty::Slice { elem }
+                    if matches!(elem.as_ref(), Ty::Int(IntTy { width: IntWidth::I8, signed: false }))
+            ) =>
+        {
+            let Ty::Ref { mutability: out_mut, pointee: dst_pt } = dst_ty else {
+                return Err(FaultDetail::unsupported(
+                    "SliceGetUncheckedRangeTo destination must be &[u8] or &mut [u8]",
+                ));
+            };
+            if !dst_pt.structural_eq(pointee) {
+                return Err(FaultDetail::unsupported(
+                    "SliceGetUncheckedRangeTo destination pointee mismatch",
+                ));
+            }
+            if *in_mut == Mutability::Shared && *out_mut == Mutability::Mut {
+                return Err(FaultDetail::undefined(
+                    "cannot produce &mut [u8] from &[u8] in get_unchecked",
+                ));
+            }
+            ref_valid_in_mem(mem, endian, *in_mut, pointee, val)?;
+            slice_get_unchecked_check(mem, *ptr, *len, 0, *end_off)
+        }
+        (
+            CoreCallOp::SliceGetUncheckedRangeFrom,
+            [
+                (Ty::Ref { mutability: in_mut, pointee }, val @ Val::SlicePtr { ptr, len }),
+                (Ty::RangeFrom { elem: idx_ty }, Val::RangeFrom(start_off)),
+            ],
+        ) if idx_ty.is_usize()
+            && matches!(
+                pointee.as_ref(),
+                Ty::Slice { elem }
+                    if matches!(elem.as_ref(), Ty::Int(IntTy { width: IntWidth::I8, signed: false }))
+            ) =>
+        {
+            let Ty::Ref { mutability: out_mut, pointee: dst_pt } = dst_ty else {
+                return Err(FaultDetail::unsupported(
+                    "SliceGetUncheckedRangeFrom destination must be &[u8] or &mut [u8]",
+                ));
+            };
+            if !dst_pt.structural_eq(pointee) {
+                return Err(FaultDetail::unsupported(
+                    "SliceGetUncheckedRangeFrom destination pointee mismatch",
+                ));
+            }
+            if *in_mut == Mutability::Shared && *out_mut == Mutability::Mut {
+                return Err(FaultDetail::undefined(
+                    "cannot produce &mut [u8] from &[u8] in get_unchecked",
+                ));
+            }
+            ref_valid_in_mem(mem, endian, *in_mut, pointee, val)?;
+            slice_get_unchecked_check(mem, *ptr, *len, *start_off, *len)
+        }
+        (
+            CoreCallOp::PtrAdd { mutability, pointee },
+            [
+                (Ty::RawPtr { mutability: arg_mut, pointee: arg_pt }, Val::Ptr(p)),
+                (count_ty, Val::Scalar(count_sv)),
+            ],
+        ) if count_ty.is_usize() => {
+            let expected_dst =
+                Ty::RawPtr { mutability: *mutability, pointee: Box::new(pointee.clone()) };
+            if arg_mut != mutability
+                || !arg_pt.structural_eq(pointee)
+                || !dst_ty.structural_eq(&expected_dst)
+                || pointee.is_unsized()
+            {
+                return Err(FaultDetail::unsupported(
+                    "PtrAdd argument or destination type mismatch",
+                ));
+            }
+            let Some(lay) = layout_of_ty(pointee, true) else {
+                return Err(FaultDetail::unsupported("PtrAdd pointee has no Profile v2 layout"));
+            };
+            let count = count_sv.truncated_bits() as u64;
+            ptr_add_in_mem(mem, lay.size, *p, count).map(Val::Ptr)
+        }
+        (CoreCallOp::UsizeUncheckedSub, [(l_ty, Val::Scalar(l_sv)), (r_ty, Val::Scalar(r_sv))])
+            if l_ty.is_usize() && r_ty.is_usize() =>
+        {
+            if !dst_ty.is_usize() {
+                return Err(FaultDetail::unsupported(
+                    "UsizeUncheckedSub destination must be usize",
+                ));
+            }
+            let l = l_sv.truncated_bits() as u64;
+            let r = r_sv.truncated_bits() as u64;
+            if r > l {
+                Err(FaultDetail::undefined_classified(
+                    UbClass::UncheckedArithOverflow,
+                    "usize::unchecked_sub underflow",
+                ))
+            } else {
+                Ok(Val::usize_val(l - r))
+            }
+        }
+        _ => Err(FaultDetail::unsupported("invalid CoreCallOp arguments or signature")),
+    }
+}
+
+// =============================================================================
+// Shared Discriminant & SwitchInt Helpers
+// =============================================================================
+
+#[allow(clippy::too_many_arguments)]
+fn eval_discriminant_rvalue(
+    body_locals: &[Ty],
+    locals: &[LocalSlot],
+    moved: MoveView<'_>,
+    mem: &MemoryState,
+    local: u32,
+    projection: &[ProjectionElem],
+    _dst_ty: &Ty,
+    endian: TargetEndian,
+    enable_profile_v2: bool,
+) -> Result<Val, FaultDetail> {
+    if enable_profile_v2 && !projection.is_empty() {
+        return Err(FaultDetail::unsupported("projected Discriminant rvalue is unsupported"));
+    }
+    let idx = local as usize;
+    let (Some(src_ty), Some(slot)) = (body_locals.get(idx), locals.get(idx)) else {
+        return Err(FaultDetail::unsupported("Discriminant local out of bounds"));
+    };
+    let (opt_val, class) = match slot {
+        LocalSlot::Dead => {
+            return Err(FaultDetail::undefined_classified(
+                UbClass::DeadLocalAccess,
+                "Discriminant read on dead local",
+            ));
+        }
+        LocalSlot::Immediate { val } => {
+            if !projection.is_empty() {
+                return Err(FaultDetail::unsupported(
+                    "projected Discriminant rvalue is unsupported",
+                ));
+            }
+            (val.clone(), moved.uninit_local(local))
+        }
+        LocalSlot::PartialTuple { .. } => {
+            return Err(FaultDetail::unsupported(
+                "Discriminant read on partially moved tuple is unsupported",
+            ));
+        }
+        LocalSlot::Indirect { place } => {
+            if !projection.is_empty() {
+                return Err(FaultDetail::unsupported(
+                    "projected Discriminant rvalue is unsupported",
+                ));
+            }
+            if !matches!(src_ty, Ty::Enum(_) | Ty::Ordering) {
+                return Err(FaultDetail::unsupported(
+                    "Discriminant rvalue requires fieldless enum or Ordering local",
+                ));
+            }
+            (
+                load_indirect(mem, endian, src_ty, *place, enable_profile_v2)?,
+                moved.uninit_indirect_local(local, *place, src_ty, enable_profile_v2),
+            )
+        }
+    };
+    match src_ty {
+        Ty::Enum(ety) => eval_discriminant_of_val(ety, opt_val.as_ref(), class),
+        Ty::Ordering => eval_ordering_discriminant_of_val(opt_val.as_ref(), class),
+        _ => Err(FaultDetail::unsupported(
+            "Discriminant rvalue requires fieldless enum or Ordering local",
+        )),
+    }
 }
 
 fn eval_discriminant_of_val(
     ety: &crate::ir::EnumTy,
     opt_val: Option<&Val>,
+    uninit_cls: UbClass,
 ) -> Result<Val, FaultDetail> {
     if !enum_admitted(ety) {
         return Err(FaultDetail::unsupported("unadmitted enum type in Discriminant"));
@@ -1696,9 +3934,10 @@ fn eval_discriminant_of_val(
             };
             Ok(Val::Scalar(ScalarVal::new(ety.discr_width, ety.discr_signed, disc)))
         }
-        (crate::ir::EnumTagRepr::Scalar(_), None) => {
-            Err(FaultDetail::undefined("Discriminant read on uninitialized scalar-tagged enum"))
-        }
+        (crate::ir::EnumTagRepr::Scalar(_), None) => Err(FaultDetail::undefined_classified(
+            uninit_cls,
+            "Discriminant read on uninitialized scalar-tagged enum",
+        )),
         (crate::ir::EnumTagRepr::Scalar(_), Some(Val::EnumVal { ty: ety2, variant }))
             if ety == ety2 =>
         {
@@ -1711,9 +3950,15 @@ fn eval_discriminant_of_val(
     }
 }
 
-fn eval_ordering_discriminant_of_val(opt_val: Option<&Val>) -> Result<Val, FaultDetail> {
+fn eval_ordering_discriminant_of_val(
+    opt_val: Option<&Val>,
+    uninit_cls: UbClass,
+) -> Result<Val, FaultDetail> {
     match opt_val {
-        None => Err(FaultDetail::undefined("Discriminant read on uninitialized Ordering")),
+        None => Err(FaultDetail::undefined_classified(
+            uninit_cls,
+            "Discriminant read on uninitialized Ordering",
+        )),
         Some(Val::Ordering(ord)) => {
             Ok(Val::Scalar(ScalarVal::new(IntWidth::I8, true, ord.tag_bits())))
         }
@@ -1721,87 +3966,21 @@ fn eval_ordering_discriminant_of_val(opt_val: Option<&Val>) -> Result<Val, Fault
     }
 }
 
-fn write_projected_slot(
-    slot: &mut LocalSlot,
-    base_ty: &Ty,
-    projection: &[ProjectionElem],
-    val: Val,
-) -> Result<(), FaultDetail> {
-    if projection.is_empty() {
-        *slot = LocalSlot::Immediate { val: Some(val) };
-        return Ok(());
-    }
-    match slot {
-        LocalSlot::Dead => return Err(FaultDetail::undefined("write to dead local")),
-        LocalSlot::Immediate { val: Some(Val::Tuple(vals)) } => {
-            let field_slots =
-                vals.iter().map(|v| LocalSlot::Immediate { val: Some(v.clone()) }).collect();
-            *slot = LocalSlot::PartialTuple { fields: field_slots };
-        }
-        LocalSlot::Immediate { val: None } => {
-            let field_tys = tuple_field_tys(base_ty).ok_or_else(|| {
-                FaultDetail::unsupported("projected write to non-tuple local type")
-            })?;
-            *slot = LocalSlot::PartialTuple {
-                fields: field_tys.iter().map(live_uninit_slot).collect(),
-            };
-        }
-        LocalSlot::Immediate { val: Some(_) } => {
-            return Err(FaultDetail::unsupported("projected write to non-tuple runtime value"));
-        }
-        LocalSlot::PartialTuple { .. } => {}
-        LocalSlot::Indirect { .. } => {
-            return Err(FaultDetail::unsupported("projected write to indirect local unsupported"));
-        }
-    }
-    let ProjectionElem::Field { field_idx, .. } = &projection[0] else {
-        return Err(FaultDetail::unsupported("unsupported place projection element"));
-    };
-    let field_tys = tuple_field_tys(base_ty)
-        .ok_or_else(|| FaultDetail::unsupported("projected write to non-tuple local type"))?;
-    let child_ty = field_tys
-        .get(*field_idx as usize)
-        .ok_or_else(|| FaultDetail::unsupported("tuple field index out of bounds"))?;
-    let LocalSlot::PartialTuple { fields } = slot else {
-        unreachable!("promoted to PartialTuple above");
-    };
-    let child_slot = fields
-        .get_mut(*field_idx as usize)
-        .ok_or_else(|| FaultDetail::unsupported("tuple field index out of bounds"))?;
-    write_projected_slot(child_slot, child_ty, &projection[1..], val)
-}
-
-fn write_place(
-    locals: &mut [LocalSlot],
-    mem: &mut MemoryState,
-    dst_local_id: u32,
-    projection: &[ProjectionElem],
-    dst_local_ty: &Ty,
-    val: Val,
-    config: &EvalConfig,
-) -> Result<(), FaultDetail> {
-    let dst_ty = resolve_projected_ty(dst_local_ty, projection, config)?;
-    if !check_val(&val, &dst_ty, config.enable_profile_v2()) {
-        return Err(FaultDetail::unsupported("assigned value disagrees with destination type"));
-    }
-    let idx = dst_local_id as usize;
-    let Some(slot) = locals.get_mut(idx) else {
-        return Err(FaultDetail::unsupported("destination local id out of bounds"));
-    };
-    if !projection.is_empty() {
-        if !config.enable_profile_v2() {
-            return Err(FaultDetail::unsupported("projected write unsupported in Profile v1"));
-        }
-        return write_projected_slot(slot, dst_local_ty, projection, val);
-    }
-    match slot {
-        LocalSlot::Dead => Err(FaultDetail::undefined("write to dead destination local")),
-        LocalSlot::Immediate { .. } | LocalSlot::PartialTuple { .. } => {
-            *slot = LocalSlot::Immediate { val: Some(val) };
-            Ok(())
-        }
-        LocalSlot::Indirect { place } => {
-            store_indirect(mem, config.endian, &dst_ty, *place, &val, config.enable_profile_v2())
+fn eval_switch_target(
+    discr_val: &Val,
+    otherwise: u32,
+    targets: &[(u128, u32)],
+) -> Result<u32, FaultDetail> {
+    match discr_val {
+        Val::Scalar(sv) => eval_scalar_switch(sv.width, sv.bits, otherwise, targets),
+        Val::Bool(b) => eval_bool_switch(*b, otherwise, targets),
+        Val::Char(c) => eval_char_switch(*c, otherwise, targets),
+        _ => {
+            if targets.is_empty() {
+                Ok(otherwise)
+            } else {
+                Err(FaultDetail::unsupported("non-empty SwitchInt targets on non-scalar primitive"))
+            }
         }
     }
 }
@@ -1843,7 +4022,10 @@ fn eval_bool_switch(
                 return Ok(target);
             }
         } else {
-            return Err(FaultDetail::undefined("invalid boolean bit pattern in SwitchInt case"));
+            return Err(FaultDetail::undefined_classified(
+                UbClass::SyntheticInvalidConstOrSwitch,
+                "invalid boolean bit pattern in SwitchInt case",
+            ));
         }
     }
     Ok(otherwise)
@@ -1860,11 +4042,20 @@ fn eval_char_switch(
             return Err(FaultDetail::unsupported("char SwitchInt case value exceeds 32 bits"));
         }
         if !is_unicode_scalar(case_bits) {
-            return Err(FaultDetail::undefined("invalid char scalar in SwitchInt case"));
+            return Err(FaultDetail::undefined_classified(
+                UbClass::SyntheticInvalidConstOrSwitch,
+                "invalid char scalar in SwitchInt case",
+            ));
         }
         if case_bits as u32 == discr_u32 {
             return Ok(target);
         }
     }
     Ok(otherwise)
+}
+
+/// Helper checking whether `outcome` is an [`Outcome::Fault`] with
+/// [`FaultKind::Undefined`].
+pub const fn is_undefined_fault(outcome: &Outcome) -> bool {
+    matches!(outcome, Outcome::Fault(FaultDetail { kind: FaultKind::Undefined, .. }))
 }

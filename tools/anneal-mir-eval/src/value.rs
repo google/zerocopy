@@ -22,7 +22,7 @@ use crate::ir::{EnumTagRepr, EnumTy, IntTy, IntWidth, Ty};
 pub enum FaultKind {
     /// Modeled Rust Undefined Behavior.
     Undefined,
-    /// Unmodeled MIR construct, type, invariant violation, or Profile v1 boundary.
+    /// Unmodeled MIR construct, type, invariant violation, or profile boundary.
     Unsupported,
 }
 
@@ -35,21 +35,263 @@ impl fmt::Display for FaultKind {
     }
 }
 
-/// Fault outcome enriched with diagnostic explanation while keeping
-/// [`FaultKind`] primary for semantic comparisons.
+/// Classification of an Undefined Behavior witness for replay gating.
+///
+/// Distinguishes concrete Rust/Miri Undefined Behavior from conservative
+/// over-approximations documented in `Trusted.MirSemantics` so replay gates
+/// never silently skip or misclassify model-only failures as confirmed Miri UB.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum WitnessClass {
+    /// Concrete Rust/Miri Undefined Behavior expected to reproduce under Miri.
+    ReplayableMiriUb,
+    /// Conservative model-only or synthetic check that Miri does not
+    /// necessarily reject as UB; must be reported as `model_only_unreplayed`.
+    ModelOnlyUnreplayed,
+}
+
+impl fmt::Display for WitnessClass {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::ReplayableMiriUb => f.write_str("replayable_miri_ub"),
+            Self::ModelOnlyUnreplayed => f.write_str("model_only_unreplayed"),
+        }
+    }
+}
+
+/// Specific Undefined Behavior cause recorded on [`FaultDetail`] for replay
+/// classification and diagnostics.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum UbClass {
+    /// Integer division or remainder by zero.
+    DivByZero,
+    /// Signed integer `MIN / -1` or `MIN % -1` overflow.
+    SignedDivOverflow,
+    /// Unchecked arithmetic (`AddUnchecked`/`SubUnchecked`/`MulUnchecked`,
+    /// `unchecked_*`) overflow or underflow.
+    UncheckedArithOverflow,
+    /// Unchecked shift amount outside `0..bit_width`.
+    UncheckedShiftOverflow,
+    /// Reached `Terminator::Unreachable`.
+    UnreachableExecuted,
+    /// Diverging call (`target = None`) returned to caller.
+    DivergingCallReturned,
+    /// Read or write of a storage-dead local.
+    DeadLocalAccess,
+    /// Read of an uninitialized local immediate slot.
+    UninitLocalRead,
+    /// Read of uninitialized memory bytes into a value requiring init bytes.
+    UninitMemoryRead,
+    /// Invalid scalar bit pattern decoded from memory (bool/char/enum).
+    InvalidMemoryValue,
+    /// Non-zero-sized access through a null or provenance-free pointer.
+    NullOrNoProvPtrAccess,
+    /// Non-zero-sized access or deallocation on an unknown or dead allocation.
+    DanglingOrUnknownAllocAccess,
+    /// Non-zero-sized memory access out of allocation bounds.
+    OutOfBoundsMemoryAccess,
+    /// Memory access violating ABI alignment.
+    MisalignedMemoryAccess,
+    /// Non-zero-sized write to an immutable allocation or via shared pointer.
+    WriteToReadOnlyMemory,
+    /// `BinOp::Offset` or `CoreCallOp::PtrAdd` overflow or out-of-bounds.
+    PtrOffsetOverflowOrOob,
+    /// `slice::get_unchecked` range out of bounds (`start > end || end > len`).
+    SliceGetUncheckedOutOfBounds,
+    /// Invalid reference produced (null, unaligned, dangling, OOB, read-only).
+    InvalidReferenceProduced,
+    /// Returned references violate pairwise `&mut` span disjointness.
+    OverlappingMutRefsReturned,
+    /// Non-ZST reference to callee stack storage escaped across return.
+    StackRefEscaped,
+    /// Conservative model-only: zero-byte offset on a dead or OOB provenance
+    /// pointer (accepted by `rustc`/`Miri` `check_and_deref_ptr`).
+    ZeroOffsetDeadOrOobPtr,
+    /// Conservative model-only: zero-sized access via a null raw pointer
+    /// (follows `core::ptr` docs; stricter than the Reference's ZST exception).
+    ZstNullRawPtrDeref,
+    /// Conservative model-only: zero-sized reference with provenance into a
+    /// dead or OOB allocation (zero-size ranges never dangle in Rust/Miri).
+    ZstProvenanceDeadOrOob,
+    /// Conservative model-only: zero-sized `&mut` into a shared allocation
+    /// (skipped by `rustc` CTFE validity checks).
+    ZstMutRefImmutableAlloc,
+    /// Conservative model-only: reference pointing to uninitialized or invalid
+    /// pointee bytes (debated upstream; not recursively checked by Miri).
+    RefPointeeUninitOrInvalid,
+    /// Conservative model-only: second read after `Operand::Move`
+    /// deinitialization (currently a no-op for locals in `rustc`/Miri).
+    MoveDeinitLocalRead,
+    /// Conservative model-only: `-Zub-checks` `NullPtrDeref` or
+    /// `MisalignedPtrDeref` assert (panics at runtime with ub-checks enabled
+    /// rather than direct UB).
+    CheckPtrAssertOnly,
+    /// Conservative model-only: returning a reference to a zero-sized callee
+    /// stack local (never dangles in Rust/Miri).
+    ZstStackRefEscape,
+    /// Conservative model-only: allocation-relative alignment failure
+    /// (`alloc.align < access_align`), which requires Miri
+    /// `-Zmiri-symbolic-alignment-check` and may succeed under concrete base
+    /// addresses in default Miri.
+    SymbolicAllocAlignment,
+    /// Entry boundary violation: caller passed an invalid or aliasing reference
+    /// outside `ValidEntryArgsV2` before entering the body.
+    EntryInvalidRefArg,
+    /// Synthetic MIR invalid constant literal or `SwitchInt` branch tag.
+    SyntheticInvalidConstOrSwitch,
+}
+
+impl UbClass {
+    /// Whether this UB class is directly replayable under Miri or is a
+    /// documented conservative model-only over-approximation.
+    pub const fn witness_class(self) -> WitnessClass {
+        match self {
+            Self::DivByZero
+            | Self::SignedDivOverflow
+            | Self::UncheckedArithOverflow
+            | Self::UncheckedShiftOverflow
+            | Self::UnreachableExecuted
+            | Self::DeadLocalAccess
+            | Self::UninitLocalRead
+            | Self::UninitMemoryRead
+            | Self::InvalidMemoryValue
+            | Self::NullOrNoProvPtrAccess
+            | Self::DanglingOrUnknownAllocAccess
+            | Self::OutOfBoundsMemoryAccess
+            | Self::MisalignedMemoryAccess
+            | Self::WriteToReadOnlyMemory
+            | Self::PtrOffsetOverflowOrOob
+            | Self::SliceGetUncheckedOutOfBounds
+            | Self::InvalidReferenceProduced
+            | Self::OverlappingMutRefsReturned
+            | Self::StackRefEscaped => WitnessClass::ReplayableMiriUb,
+
+            Self::ZeroOffsetDeadOrOobPtr
+            | Self::ZstNullRawPtrDeref
+            | Self::ZstProvenanceDeadOrOob
+            | Self::ZstMutRefImmutableAlloc
+            | Self::RefPointeeUninitOrInvalid
+            | Self::MoveDeinitLocalRead
+            | Self::CheckPtrAssertOnly
+            | Self::ZstStackRefEscape
+            | Self::SymbolicAllocAlignment
+            | Self::DivergingCallReturned
+            | Self::EntryInvalidRefArg
+            | Self::SyntheticInvalidConstOrSwitch => WitnessClass::ModelOnlyUnreplayed,
+        }
+    }
+
+    /// Diagnostic explanation for `ModelOnlyUnreplayed` classes (`None` for
+    /// directly replayable Rust/Miri UB).
+    pub const fn model_only_note(self) -> Option<&'static str> {
+        match self {
+            Self::ZeroOffsetDeadOrOobPtr => Some(
+                "conservative Trusted.MirSemantics check: zero-byte offset on a dead or \
+                 out-of-bounds provenance pointer is accepted by rustc/Miri check_and_deref_ptr",
+            ),
+            Self::ZstNullRawPtrDeref => Some(
+                "conservative Trusted.MirSemantics check: zero-sized access on a null raw pointer \
+                 follows core::ptr non-null docs rather than the Reference's ZST exception",
+            ),
+            Self::ZstProvenanceDeadOrOob => Some(
+                "conservative Trusted.MirSemantics check: zero-sized reference with provenance \
+                 into a dead or out-of-bounds allocation never dangles in Rust/Miri",
+            ),
+            Self::ZstMutRefImmutableAlloc => Some(
+                "conservative Trusted.MirSemantics check: zero-sized &mut into a shared \
+                 allocation is skipped by rustc's CTFE validity check",
+            ),
+            Self::RefPointeeUninitOrInvalid => Some(
+                "conservative Trusted.MirSemantics check: recursive reference pointee validity is \
+                 debated upstream and not enforced recursively by default in Miri",
+            ),
+            Self::MoveDeinitLocalRead => Some(
+                "conservative Trusted.MirSemantics check: Move deinitializes locals in Anneal \
+                 whereas rustc/Miri currently leaves moved locals readable",
+            ),
+            Self::CheckPtrAssertOnly => Some(
+                "conservative Trusted.MirSemantics check: -Zub-checks pointer asserts panic at \
+                 runtime with ub-checks enabled instead of directly invoking language UB",
+            ),
+            Self::ZstStackRefEscape => Some(
+                "conservative Trusted.MirSemantics check: returning a reference to a zero-sized \
+                 callee stack local never dangles in Rust/Miri",
+            ),
+            Self::SymbolicAllocAlignment => Some(
+                "conservative Trusted.MirSemantics check: allocation-relative alignment \
+                 (alloc.align < access_align) requires Miri -Zmiri-symbolic-alignment-check and \
+                 may succeed under concrete base addresses in default Miri",
+            ),
+            Self::DivergingCallReturned => Some(
+                "synthetic MIR artifact: a diverging call terminator (target = None) returning \
+                 to its caller cannot arise from standalone safe/unsafe Rust source replay",
+            ),
+            Self::EntryInvalidRefArg => Some(
+                "entry boundary violation: caller passed an invalid or aliasing reference outside \
+                 ValidEntryArgsV2 before executing the body",
+            ),
+            Self::SyntheticInvalidConstOrSwitch => Some(
+                "synthetic MIR artifact: invalid constant literal or SwitchInt branch tag cannot \
+                 be emitted by normal Rust source replay",
+            ),
+            _ => None,
+        }
+    }
+}
+
+/// Fault outcome enriched with diagnostic explanation and replay classification
+/// while keeping [`FaultKind`] primary for semantic comparisons.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct FaultDetail {
     pub kind: FaultKind,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ub_class: Option<UbClass>,
     pub reason: String,
 }
 
 impl FaultDetail {
+    /// Construct an unclassified `Undefined` fault (fail-closed classified as
+    /// [`WitnessClass::ModelOnlyUnreplayed`] for replay gating).
     pub fn undefined(reason: impl Into<String>) -> Self {
-        Self { kind: FaultKind::Undefined, reason: reason.into() }
+        Self { kind: FaultKind::Undefined, ub_class: None, reason: reason.into() }
     }
 
+    /// Construct a classified `Undefined` fault with an explicit [`UbClass`].
+    pub fn undefined_classified(ub_class: UbClass, reason: impl Into<String>) -> Self {
+        Self { kind: FaultKind::Undefined, ub_class: Some(ub_class), reason: reason.into() }
+    }
+
+    /// Construct an `Unsupported` fault.
     pub fn unsupported(reason: impl Into<String>) -> Self {
-        Self { kind: FaultKind::Unsupported, reason: reason.into() }
+        Self { kind: FaultKind::Unsupported, ub_class: None, reason: reason.into() }
+    }
+
+    /// Replay witness class when `self.kind == FaultKind::Undefined`.
+    ///
+    /// Unclassified `Undefined` faults fail closed to
+    /// [`WitnessClass::ModelOnlyUnreplayed`] so replay gates never assume a
+    /// witness is replayable without an explicit classification.
+    pub const fn witness_class(&self) -> Option<WitnessClass> {
+        match self.kind {
+            FaultKind::Undefined => match self.ub_class {
+                Some(class) => Some(class.witness_class()),
+                None => Some(WitnessClass::ModelOnlyUnreplayed),
+            },
+            FaultKind::Unsupported => None,
+        }
+    }
+
+    /// Explanatory note for model-only witnesses (`None` for replayable UB or
+    /// `Unsupported` faults).
+    pub const fn model_only_note(&self) -> Option<&'static str> {
+        match (self.kind, self.ub_class) {
+            (FaultKind::Undefined, Some(class)) => class.model_only_note(),
+            (FaultKind::Undefined, None) => {
+                Some("unclassified model UB witness defaults fail-closed to model_only_unreplayed")
+            }
+            (FaultKind::Unsupported, _) => None,
+        }
     }
 }
 
@@ -154,12 +396,15 @@ impl OrderingVal {
 pub enum Val {
     Scalar(ScalarVal),
     Ptr(PtrVal),
+    SlicePtr { ptr: PtrVal, len: u64 },
     Bool(bool),
     Char(char),
     Ordering(OrderingVal),
     Unit,
     EnumVal { ty: EnumTy, variant: usize },
     Tuple(Vec<Val>),
+    RangeTo(u64),
+    RangeFrom(u64),
     Bytes(Vec<AllocByte>),
 }
 
@@ -210,6 +455,21 @@ impl Val {
 
     pub const fn isize_val(v: i64) -> Self {
         Self::Scalar(ScalarVal::new(IntWidth::Isize, true, (v as i128) as u128))
+    }
+
+    /// Construct a wide slice pointer `(ptr, len)` value.
+    pub const fn slice_ptr(ptr: PtrVal, len: u64) -> Self {
+        Self::SlicePtr { ptr, len }
+    }
+
+    /// Construct a `core::ops::RangeTo<usize>` value (`..end`).
+    pub const fn range_to(end: u64) -> Self {
+        Self::RangeTo(end)
+    }
+
+    /// Construct a `core::ops::RangeFrom<usize>` value (`start..`).
+    pub const fn range_from(start: u64) -> Self {
+        Self::RangeFrom(start)
     }
 
     /// Construct an `(T, bool)` overflow pair runtime tuple.
@@ -293,22 +553,40 @@ pub fn val_ty(val: &Val) -> Option<Ty> {
     }
 }
 
-/// Check that runtime value `val` is a well-formed instance of `ty`.
+/// Check that runtime value `val` is a well-formed instance of `ty`,
+/// matching `Trusted.MirSemantics.checkVal` (Profile v1) and `checkValV2`
+/// (Profile v2).
 pub fn check_val(val: &Val, ty: &Ty, enable_profile_v2: bool) -> bool {
-    if let Some(inferred) = val_ty(val) {
-        return inferred.structural_eq(ty);
+    if !enable_profile_v2 {
+        return val_ty(val).is_some_and(|inferred| inferred.structural_eq(ty));
     }
-    if enable_profile_v2 {
-        match (val, ty) {
-            (Val::Tuple(vals), Ty::Tuple { fields }) if vals.len() == fields.len() => {
-                vals.iter().zip(fields.iter()).all(|(v, elem_ty)| check_val(v, elem_ty, true))
-            }
-            (Val::Ptr(p), Ty::Ref { .. }) => p.width == IntWidth::Isize && p.alloc_id.is_some(),
-            (Val::Ptr(p), Ty::RawPtr { .. }) => p.width == IntWidth::Isize,
-            _ => false,
+    match (val, ty) {
+        (Val::Scalar(sv), Ty::Int(ity)) => {
+            sv.wf() && sv.width == ity.width && sv.signed == ity.signed
         }
-    } else {
-        false
+        (Val::Bool(_), Ty::Bool)
+        | (Val::Char(_), Ty::Char)
+        | (Val::Ordering(_), Ty::Ordering)
+        | (Val::Unit, Ty::Unit) => true,
+        (Val::EnumVal { ty: v_ety, variant }, Ty::Enum(t_ety)) => {
+            v_ety == t_ety && enum_admitted(v_ety) && *variant < v_ety.discriminants.len()
+        }
+        (Val::Ptr(p), Ty::RawPtr { pointee, .. } | Ty::Ref { pointee, .. }) => {
+            !pointee.is_unsized() && p.width == IntWidth::Isize
+        }
+        (Val::SlicePtr { ptr, .. }, Ty::RawPtr { pointee, .. } | Ty::Ref { pointee, .. }) => {
+            matches!(pointee.as_ref(), Ty::Slice { .. }) && ptr.width == IntWidth::Isize
+        }
+        (Val::RangeTo(_), Ty::RangeTo { elem }) | (Val::RangeFrom(_), Ty::RangeFrom { elem }) => {
+            elem.is_usize()
+        }
+        (Val::Tuple(vals), Ty::Tuple { fields }) if vals.len() == fields.len() => {
+            vals.iter().zip(fields.iter()).all(|(v, elem_ty)| check_val(v, elem_ty, true))
+        }
+        (Val::Tuple(vals), Ty::OverflowPair(ity)) if vals.len() == 2 => {
+            check_val(&vals[0], &Ty::Int(*ity), true) && check_val(&vals[1], &Ty::Bool, true)
+        }
+        _ => false,
     }
 }
 
@@ -318,21 +596,38 @@ pub fn check_args_match(args: &[Val], param_tys: &[Ty], enable_profile_v2: bool)
         && args.iter().zip(param_tys.iter()).all(|(v, ty)| check_val(v, ty, enable_profile_v2))
 }
 
-/// Whether `ty` is executable in locals under the selected profile.
-pub fn is_supported_local_ty(ty: &Ty, enable_profile_v2: bool) -> bool {
+/// Whether `ty` belongs to the Profile v1 local type fragment, matching
+/// `Trusted.MirSemantics.isSupportedScalarOrUnitTy`.
+pub fn is_supported_v1_local_ty(ty: &Ty) -> bool {
     match ty {
         Ty::Bool | Ty::Int(_) | Ty::Char | Ty::Ordering | Ty::Unit | Ty::Never => true,
         Ty::Enum(ety) => enum_admitted(ety),
         Ty::OverflowPair(_) => true,
-        Ty::Tuple { fields } if ty.as_overflow_pair().is_some() => fields.len() == 2,
-        Ty::Tuple { fields } if enable_profile_v2 => {
-            fields.iter().all(|f| is_supported_local_ty(f, true))
-        }
-        Ty::Ref { pointee, .. } | Ty::RawPtr { pointee, .. } if enable_profile_v2 => {
-            is_supported_local_ty(pointee, true)
-        }
+        Ty::Tuple { .. } => ty.as_overflow_pair().is_some(),
         _ => false,
     }
+}
+
+/// Whether `ty` belongs to the Profile v2 local type fragment, matching
+/// `Trusted.MirSemantics.isSupportedV2LocalTy`.
+pub fn is_supported_v2_local_ty(ty: &Ty) -> bool {
+    match ty {
+        Ty::Bool | Ty::Int(_) | Ty::Char | Ty::Ordering | Ty::Unit | Ty::Never => true,
+        Ty::Enum(ety) => enum_admitted(ety),
+        Ty::OverflowPair(_) => true,
+        Ty::Tuple { fields } => fields.iter().all(is_supported_v2_local_ty),
+        Ty::Ref { pointee, .. } | Ty::RawPtr { pointee, .. } => match pointee.as_ref() {
+            Ty::Slice { elem } => matches!(elem.as_ref(), Ty::Int(_)),
+            other => other.as_overflow_pair().is_none() && is_supported_v1_local_ty(other),
+        },
+        Ty::RangeTo { elem } | Ty::RangeFrom { elem } => elem.is_usize(),
+        _ => false,
+    }
+}
+
+/// Whether `ty` is executable in locals under the selected profile.
+pub fn is_supported_local_ty(ty: &Ty, enable_profile_v2: bool) -> bool {
+    if enable_profile_v2 { is_supported_v2_local_ty(ty) } else { is_supported_v1_local_ty(ty) }
 }
 
 /// Whether `ty` is primitive-readable (`bool`, `int`, `char`, overflow pair).

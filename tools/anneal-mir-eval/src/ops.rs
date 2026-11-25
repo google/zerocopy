@@ -11,7 +11,7 @@
 
 use crate::{
     ir::{BinOp, CastKind, IntWidth, Ty, UnOp},
-    value::{FaultDetail, OrderingVal, ScalarVal, Val},
+    value::{FaultDetail, OrderingVal, ScalarVal, UbClass, Val},
 };
 
 /// Exact mathematical integer decoded from a `ScalarVal`.
@@ -129,7 +129,10 @@ fn eval_shift_op(
     };
 
     if overflow && op.is_unchecked() {
-        Err(FaultDetail::undefined("unchecked shift amount out of range"))
+        Err(FaultDetail::undefined_classified(
+            UbClass::UncheckedShiftOverflow,
+            "unchecked shift amount out of range",
+        ))
     } else {
         Ok(Val::Scalar(sv))
     }
@@ -149,10 +152,16 @@ fn eval_arith_op(
         let l = lhs.to_signed_i128();
         let r = rhs.to_signed_i128();
         if is_div_or_rem && r == 0 {
-            return Err(FaultDetail::undefined("signed integer division or remainder by zero"));
+            return Err(FaultDetail::undefined_classified(
+                UbClass::DivByZero,
+                "signed integer division or remainder by zero",
+            ));
         }
         if is_div_or_rem && l == signed_min_i128(w) && r == -1 {
-            return Err(FaultDetail::undefined("signed integer MIN / -1 or MIN % -1 overflow"));
+            return Err(FaultDetail::undefined_classified(
+                UbClass::SignedDivOverflow,
+                "signed integer MIN / -1 or MIN % -1 overflow",
+            ));
         }
         let (raw_128, host_overflow) = match op {
             BinOp::Add | BinOp::AddUnchecked | BinOp::AddWithOverflow => l.overflowing_add(r),
@@ -165,7 +174,10 @@ fn eval_arith_op(
         let (sv, lossy) = truncate_signed(w, raw_128);
         let overflowed = host_overflow || lossy;
         if overflowed && op.is_unchecked() {
-            Err(FaultDetail::undefined("unchecked signed arithmetic overflow"))
+            Err(FaultDetail::undefined_classified(
+                UbClass::UncheckedArithOverflow,
+                "unchecked signed arithmetic overflow",
+            ))
         } else if op.is_overflowing() {
             Ok(Val::overflow_pair(sv, overflowed))
         } else {
@@ -175,7 +187,10 @@ fn eval_arith_op(
         let l = lhs.truncated_bits();
         let r = rhs.truncated_bits();
         if is_div_or_rem && r == 0 {
-            return Err(FaultDetail::undefined("unsigned integer division or remainder by zero"));
+            return Err(FaultDetail::undefined_classified(
+                UbClass::DivByZero,
+                "unsigned integer division or remainder by zero",
+            ));
         }
         let (raw_128, host_overflow) = match op {
             BinOp::Add | BinOp::AddUnchecked | BinOp::AddWithOverflow => l.overflowing_add(r),
@@ -188,7 +203,10 @@ fn eval_arith_op(
         let (sv, lossy) = truncate_unsigned(w, raw_128);
         let overflowed = host_overflow || lossy;
         if overflowed && op.is_unchecked() {
-            Err(FaultDetail::undefined("unchecked unsigned arithmetic overflow"))
+            Err(FaultDetail::undefined_classified(
+                UbClass::UncheckedArithOverflow,
+                "unchecked unsigned arithmetic overflow",
+            ))
         } else if op.is_overflowing() {
             Ok(Val::overflow_pair(sv, overflowed))
         } else {

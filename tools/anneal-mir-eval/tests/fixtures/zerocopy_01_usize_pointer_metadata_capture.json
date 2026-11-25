@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "compiler": {
     "commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
     "version": "1.98.0-nightly (f8a08b688 2026-05-30)",
@@ -88,7 +88,7 @@
     },
     {
       "path": "zerocopy/src/lib.rs",
-      "sha256": "c08454d0dc8f576cdadab1d85afe8c0411ab62d665322585f3af01b41a526d9c",
+      "sha256": "99e8958e888a4af9230eab9e6c0db4ed3d1c21ed7e43ce76b3a6e08befdb277b",
       "read_kind": "text"
     },
     {
@@ -128,7 +128,7 @@
     },
     {
       "path": "zerocopy/src/split_at.rs",
-      "sha256": "9b76ed5025c84b57fcd5530b53abd6551a5eb19d017555fe2eb6cbd431048c61",
+      "sha256": "7aff74c3acbba9795baa4ca7d70ea689c192bff95a387bf7cd08799bd8f9ec69",
       "read_kind": "text"
     },
     {
@@ -138,7 +138,7 @@
     },
     {
       "path": "zerocopy/src/util/macros.rs",
-      "sha256": "dba84ecde997919a7703c0cdc76c9b8bd9775f0dbb2a3139a0b5e7e67d5940ed",
+      "sha256": "b45569f15b75ad5db6c297d3b46769df9789d8c7375dda00ddbef592f1b967b2",
       "read_kind": "text"
     },
     {
@@ -191,6 +191,8 @@
         "<usize as PointerMetadata>::to_elem_count"
       ]
     },
+    "overflow_checks": false,
+    "mir_profile_version": 1,
     "bodies": [
       {
         "arg_count": 1,
