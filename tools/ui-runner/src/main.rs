@@ -20,6 +20,17 @@ use ui_test::{
     Config,
 };
 
+fn is_truthy_env_value(value: Option<&str>) -> bool {
+    value.is_some_and(|raw| {
+        let trimmed = raw.trim();
+        !trimmed.is_empty() && trimmed != "0" && !trimmed.eq_ignore_ascii_case("false")
+    })
+}
+
+fn env_is_truthy(name: &str) -> bool {
+    is_truthy_env_value(env::var(name).ok().as_deref())
+}
+
 fn normalize_implementation_samples(config: &mut Config) {
     // rustc prints an arbitrary sample of eight implementations for long
     // candidate lists. The sample can change with the target, feature profile,
@@ -97,7 +108,7 @@ fn main() {
         config.stderr_filter(&canonical.display().to_string(), "$$DIR");
     }
 
-    if env::args().any(|arg| arg == "--bless") || env::var("BLESS").is_ok() {
+    if env::args().any(|arg| arg == "--bless") || env_is_truthy("BLESS") {
         config.output_conflict_handling = ui_test::bless_output_files;
     }
 
@@ -326,9 +337,41 @@ impl TestStatus for RevisionOverrideStatus {
 
 #[cfg(test)]
 mod tests {
+    use std::env;
+
     use ui_test::{Config, Match};
 
-    use super::normalize_implementation_samples;
+    use super::{env_is_truthy, is_truthy_env_value, normalize_implementation_samples};
+
+    #[test]
+    fn env_truthiness_rejects_unset_empty_zero_and_false() {
+        for falsy in
+            [None, Some(""), Some("   "), Some("0"), Some("false"), Some("FALSE"), Some("False")]
+        {
+            assert!(!is_truthy_env_value(falsy), "expected falsy for {falsy:?}");
+        }
+        for truthy in [Some("1"), Some("true"), Some("TRUE"), Some("yes")] {
+            assert!(is_truthy_env_value(truthy), "expected truthy for {truthy:?}");
+        }
+
+        const TEST_KEY: &str = "UI_RUNNER_TEST_BLESS_VAR";
+        env::remove_var(TEST_KEY);
+        assert!(!env_is_truthy(TEST_KEY));
+
+        env::set_var(TEST_KEY, "");
+        assert!(!env_is_truthy(TEST_KEY));
+
+        env::set_var(TEST_KEY, "0");
+        assert!(!env_is_truthy(TEST_KEY));
+
+        env::set_var(TEST_KEY, "False");
+        assert!(!env_is_truthy(TEST_KEY));
+
+        env::set_var(TEST_KEY, "1");
+        assert!(env_is_truthy(TEST_KEY));
+
+        env::remove_var(TEST_KEY);
+    }
 
     fn normalize(text: &str) -> String {
         let mut config = Config::rustc(std::path::PathBuf::new());

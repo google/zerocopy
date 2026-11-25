@@ -363,6 +363,59 @@ class IssueHygieneTier2Tests(unittest.TestCase):
             },
         )
 
+    def test_advisory_linked_via_native_sub_issues_not_flagged(self) -> None:
+        snap = ih.RepoSnapshot(
+            issues=(
+                _make_issue(
+                    3642,
+                    title="Yank vulnerable versions",
+                    labels=("zerocopy",),
+                    sub_issues=(3615,),
+                ),
+                _make_issue(
+                    3614,
+                    title="Security Advisory: Linked by parent only",
+                    labels=("zerocopy",),
+                    issue_type="Bug",
+                    parent_number=3642,
+                ),
+                _make_issue(
+                    3615,
+                    title="Soundness Advisory: Linked by tracker sub_issues",
+                    labels=("zerocopy",),
+                    issue_type="Bug",
+                ),
+                _make_issue(
+                    3619,
+                    title="Security Advisory: Truly unlinked",
+                    labels=("zerocopy",),
+                    issue_type="Bug",
+                ),
+            ),
+            advisory_tracker=3642,
+        )
+        rep = ih.analyze_repo(snap)
+        unlinked = [d for d in rep.diagnostics if d.code == "unlinked-advisory"]
+        self.assertEqual([(d.target, d.code) for d in unlinked], [("#3619", "unlinked-advisory")])
+        self.assertIn("subIssues/blockedBy/relatesTo", unlinked[0].message)
+
+        # Also verify parent_number works when the tracker issue is absent from
+        # the open-issue snapshot (e.g. closed tracker).
+        snap_missing_tracker = ih.RepoSnapshot(
+            issues=(
+                _make_issue(
+                    3614,
+                    title="Security Advisory: Child of closed tracker",
+                    labels=("zerocopy",),
+                    issue_type="Bug",
+                    parent_number=3642,
+                ),
+            ),
+            advisory_tracker=3642,
+        )
+        rep_missing = ih.analyze_repo(snap_missing_tracker)
+        self.assertEqual(rep_missing.diagnostics, ())
+
     def test_json_formatting_and_cli_tracker_disable(self) -> None:
         rep = ih.analyze_repo(
             ih.RepoSnapshot(
@@ -747,6 +800,229 @@ class IssueHygieneIoAndCliTests(unittest.TestCase):
         self.assertEqual(
             vars_ext, {"ow0": "rust-lang", "rp0": "rust", "num0": 57349}
         )
+
+    def test_graphql_invalid_json_raises_runtime_error_without_retrying(
+        self,
+    ) -> None:
+        gh = ih.GitHubCli("google", "zerocopy")
+        bad_json = subprocess.CompletedProcess(
+            args=["gh"],
+            returncode=0,
+            stdout="not valid json",
+            stderr="unexpected token",
+        )
+        with (
+            mock.patch("subprocess.run", return_value=bad_json) as run_mock,
+            mock.patch("time.sleep") as sleep_mock,
+        ):
+            with self.assertRaisesRegex(
+                RuntimeError,
+                r"invalid JSON.*unexpected token.*not valid json",
+            ):
+                gh.graphql("query { ok }")
+        self.assertEqual(run_mock.call_count, 1)
+        self.assertEqual(
+            run_mock.call_args.kwargs["timeout"],
+            ih.DEFAULT_GRAPHQL_TIMEOUT_SECONDS,
+        )
+        sleep_mock.assert_not_called()
+
+        non_obj = subprocess.CompletedProcess(
+            args=["gh"], returncode=0, stdout="[]", stderr=""
+        )
+        with (
+            mock.patch("subprocess.run", return_value=non_obj) as run_mock,
+            mock.patch("time.sleep") as sleep_mock,
+        ):
+            with self.assertRaisesRegex(RuntimeError, "non-object JSON"):
+                gh.graphql("query { ok }")
+        self.assertEqual(run_mock.call_count, 1)
+        sleep_mock.assert_not_called()
+
+    def test_graphql_transient_and_timeout_retries_vs_permanent_errors(
+        self,
+    ) -> None:
+        gh = ih.GitHubCli("google", "zerocopy", timeout=15.0)
+
+        # Transient timeout + HTTP 502 recover on retry.
+        side_effects = [
+            subprocess.TimeoutExpired(
+                cmd=["gh", "api", "graphql"], timeout=15.0, stderr="timed out"
+            ),
+            subprocess.CompletedProcess(
+                args=["gh"],
+                returncode=1,
+                stdout="",
+                stderr="HTTP 502 Bad Gateway",
+            ),
+            subprocess.CompletedProcess(
+                args=["gh"],
+                returncode=0,
+                stdout=json.dumps({"data": {"ok": True}}),
+                stderr="",
+            ),
+        ]
+        with (
+            mock.patch(
+                "subprocess.run", side_effect=side_effects
+            ) as run_mock,
+            mock.patch("time.sleep") as sleep_mock,
+        ):
+            data = gh.graphql("query { ok }")
+        self.assertEqual(data, {"ok": True})
+        self.assertEqual(run_mock.call_count, 3)
+        self.assertTrue(
+            all(
+                call.kwargs["timeout"] == 15.0
+                for call in run_mock.call_args_list
+            )
+        )
+        self.assertEqual(
+            [c.args[0] for c in sleep_mock.call_args_list],
+            list(ih.RETRY_BACKOFF_SECONDS),
+        )
+
+        # Transient HTML 503 page (non-JSON) retries and recovers on valid JSON.
+        html_503_seq = [
+            subprocess.CompletedProcess(
+                args=["gh"],
+                returncode=1,
+                stdout="<html>503 Service Unavailable</html>",
+                stderr="",
+            ),
+            subprocess.CompletedProcess(
+                args=["gh"],
+                returncode=0,
+                stdout=json.dumps({"data": {"ok": True}}),
+                stderr="",
+            ),
+        ]
+        with (
+            mock.patch(
+                "subprocess.run", side_effect=html_503_seq
+            ) as run_mock,
+            mock.patch("time.sleep") as sleep_mock,
+        ):
+            self.assertEqual(gh.graphql("query { ok }"), {"ok": True})
+        self.assertEqual(run_mock.call_count, 2)
+        self.assertEqual(
+            [c.args[0] for c in sleep_mock.call_args_list],
+            [ih.RETRY_BACKOFF_SECONDS[0]],
+        )
+
+        # Exhausted timeouts raise RuntimeError after bounded retries.
+        timeout_exc = subprocess.TimeoutExpired(
+            cmd=["gh", "api", "graphql"], timeout=15.0, stderr=b"still hung"
+        )
+        with (
+            mock.patch("subprocess.run", side_effect=timeout_exc) as run_mock,
+            mock.patch("time.sleep") as sleep_mock,
+        ):
+            with self.assertRaisesRegex(
+                RuntimeError, r"timed out after 15\.0s: still hung"
+            ):
+                gh.graphql("query { ok }")
+        self.assertEqual(
+            run_mock.call_count, len(ih.RETRY_BACKOFF_SECONDS) + 1
+        )
+        self.assertEqual(
+            sleep_mock.call_count, len(ih.RETRY_BACKOFF_SECONDS)
+        )
+
+        # NOT_FOUND without allow_not_found fails immediately without sleeping.
+        not_found = subprocess.CompletedProcess(
+            args=["gh"],
+            returncode=1,
+            stdout=json.dumps(
+                {
+                    "data": {"repository": None},
+                    "errors": [{"type": "NOT_FOUND", "message": "not found"}],
+                }
+            ),
+            stderr="",
+        )
+        with (
+            mock.patch("subprocess.run", return_value=not_found) as run_mock,
+            mock.patch("time.sleep") as sleep_mock,
+        ):
+            with self.assertRaisesRegex(RuntimeError, "NOT_FOUND"):
+                gh.graphql("query { ok }", allow_not_found=False)
+        self.assertEqual(run_mock.call_count, 1)
+        sleep_mock.assert_not_called()
+
+        # Permanent GraphQL schema error fails immediately with zero sleeps.
+        perm = subprocess.CompletedProcess(
+            args=["gh"],
+            returncode=1,
+            stdout=json.dumps(
+                {
+                    "errors": [
+                        {
+                            "type": "FIELD_ERROR",
+                            "message": "Field 'bad' doesn't exist",
+                        }
+                    ]
+                }
+            ),
+            stderr="",
+        )
+        with (
+            mock.patch("subprocess.run", return_value=perm) as run_mock,
+            mock.patch("time.sleep") as sleep_mock,
+        ):
+            with self.assertRaisesRegex(RuntimeError, "GraphQL errors"):
+                gh.graphql("query { bad }")
+        self.assertEqual(run_mock.call_count, 1)
+        sleep_mock.assert_not_called()
+
+        # Transient GraphQL RATE_LIMITED retries, whereas NOT_FOUND does not.
+        rate_limited = subprocess.CompletedProcess(
+            args=["gh"],
+            returncode=1,
+            stdout=json.dumps(
+                {
+                    "errors": [
+                        {"type": "RATE_LIMITED", "message": "API rate limit"}
+                    ]
+                }
+            ),
+            stderr="",
+        )
+        with (
+            mock.patch(
+                "subprocess.run", return_value=rate_limited
+            ) as run_mock,
+            mock.patch("time.sleep") as sleep_mock,
+        ):
+            with self.assertRaisesRegex(RuntimeError, "RATE_LIMITED"):
+                gh.graphql("query { ok }")
+        self.assertEqual(
+            run_mock.call_count, len(ih.RETRY_BACKOFF_SECONDS) + 1
+        )
+        self.assertEqual(
+            sleep_mock.call_count, len(ih.RETRY_BACKOFF_SECONDS)
+        )
+
+        # NOT_FOUND without allow_not_found fails immediately without sleeping.
+        not_found = subprocess.CompletedProcess(
+            args=["gh"],
+            returncode=1,
+            stdout=json.dumps(
+                {
+                    "data": {"repository": None},
+                    "errors": [{"type": "NOT_FOUND", "message": "not found"}],
+                }
+            ),
+            stderr="",
+        )
+        with (
+            mock.patch("subprocess.run", return_value=not_found) as run_mock,
+            mock.patch("time.sleep") as sleep_mock,
+        ):
+            with self.assertRaisesRegex(RuntimeError, "NOT_FOUND"):
+                gh.graphql("query { ok }", allow_not_found=False)
+        self.assertEqual(run_mock.call_count, 1)
+        sleep_mock.assert_not_called()
 
 
 if __name__ == "__main__":

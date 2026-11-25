@@ -20,13 +20,14 @@
 // Cargo.toml section.
 
 use std::{
-    collections::HashSet,
+    collections::{BTreeMap, HashSet},
     env, fmt, fs,
     io::{self, BufRead as _, Write as _},
+    path::{Path, PathBuf},
     process::{self, Command, Output, Stdio},
 };
 
-use toml::{map::Map, Value};
+use toml::Value;
 
 // Cargo test executables inherit these variables from the delegated process.
 // `testutil::UiTestRunner` reuses the exact outer feature selection when it
@@ -39,7 +40,8 @@ enum Error {
     NoArguments,
     UnrecognizedArgument(String),
     MissingToolchainVersion,
-    UnrecognizedToolchain(String),
+    UnrecognizedToolchain { name: String, available_build_rs: Vec<String> },
+    Manifest(String),
 }
 
 impl fmt::Display for Error {
@@ -47,8 +49,26 @@ impl fmt::Display for Error {
         match self {
             Self::NoArguments => write!(f, "No arguments provided"),
             Self::UnrecognizedArgument(arg) => write!(f, "Unrecognized argument: '{arg}'"),
-            Self::MissingToolchainVersion => write!(f, "No toolchain version specified after '--version'"),
-            Self::UnrecognizedToolchain(name) => write!(f, "Unrecognized toolchain name: `{name}` (options are 'msrv', 'stable', and 'nightly')")
+            Self::MissingToolchainVersion => {
+                write!(f, "No toolchain version specified after '--version'")
+            }
+            Self::UnrecognizedToolchain { name, available_build_rs } => {
+                write!(
+                    f,
+                    "Unrecognized toolchain name: `{name}` (options are 'msrv', 'stable', 'nightly'"
+                )?;
+                if !available_build_rs.is_empty() {
+                    write!(f, ", or a `[package.metadata.build-rs]` key: ")?;
+                    for (idx, key) in available_build_rs.iter().enumerate() {
+                        if idx > 0 {
+                            write!(f, ", ")?;
+                        }
+                        write!(f, "'{key}'")?;
+                    }
+                }
+                write!(f, ")")
+            }
+            Self::Manifest(msg) => write!(f, "{msg}"),
         }
     }
 }
@@ -94,43 +114,162 @@ impl CommandExt for Command {
     }
 }
 
+#[derive(Debug, PartialEq, Eq)]
 struct Versions {
     msrv: String,
     stable: String,
     nightly: String,
-    build_rs: Map<String, Value>,
+    build_rs: BTreeMap<String, String>,
 }
 
 impl Versions {
     fn get(&self, name: &str) -> Result<&str, Error> {
-        Ok(match name {
-            "msrv" => &self.msrv,
-            "stable" => &self.stable,
-            "nightly" => &self.nightly,
-            _ => self
-                .build_rs
-                .get(name)
-                .ok_or(Error::UnrecognizedToolchain(name.to_string()))
-                .map(|value| value.as_str().unwrap())?,
-        })
+        match name {
+            "msrv" => Ok(&self.msrv),
+            "stable" => Ok(&self.stable),
+            "nightly" => Ok(&self.nightly),
+            _ => self.build_rs.get(name).map(String::as_str).ok_or_else(|| {
+                Error::UnrecognizedToolchain {
+                    name: name.to_string(),
+                    available_build_rs: self.build_rs.keys().cloned().collect(),
+                }
+            }),
+        }
+    }
+
+    fn parse(manifest_text: &str, path: &Path) -> Result<Self, Error> {
+        let manifest = toml::from_str::<Value>(manifest_text)
+            .map_err(|err| Error::Manifest(format!("Failed to parse {}: {err}", path.display())))?;
+        let package = manifest
+            .as_table()
+            .and_then(|t| t.get("package"))
+            .and_then(Value::as_table)
+            .ok_or_else(|| {
+                Error::Manifest(format!("Missing [package] table in {}", path.display()))
+            })?;
+        let metadata = package.get("metadata").and_then(Value::as_table).ok_or_else(|| {
+            Error::Manifest(format!("Missing [package.metadata] table in {}", path.display()))
+        })?;
+        let build_rs_table =
+            metadata.get("build-rs").and_then(Value::as_table).ok_or_else(|| {
+                Error::Manifest(format!(
+                    "Missing [package.metadata.build-rs] table in {}",
+                    path.display()
+                ))
+            })?;
+        let ci = metadata.get("ci").and_then(Value::as_table).ok_or_else(|| {
+            Error::Manifest(format!("Missing [package.metadata.ci] table in {}", path.display()))
+        })?;
+
+        let require_non_empty_str =
+            |table: &toml::map::Map<String, Value>, section: &str, key: &str| {
+                table
+                    .get(key)
+                    .and_then(Value::as_str)
+                    .filter(|s| !s.trim().is_empty())
+                    .map(str::to_string)
+                    .ok_or_else(|| {
+                        Error::Manifest(format!(
+                            "Expected non-empty string for `{section}.{key}` in {}",
+                            path.display()
+                        ))
+                    })
+            };
+
+        let msrv = require_non_empty_str(package, "package", "rust-version")?;
+        let stable = require_non_empty_str(ci, "package.metadata.ci", "pinned-stable")?;
+        let nightly = require_non_empty_str(ci, "package.metadata.ci", "pinned-nightly")?;
+
+        let mut build_rs = BTreeMap::new();
+        for (key, value) in build_rs_table {
+            let version = value.as_str().filter(|s| !s.trim().is_empty()).ok_or_else(|| {
+                Error::Manifest(format!(
+                    "Expected non-empty string for `package.metadata.build-rs.{key}` in {}",
+                    path.display()
+                ))
+            })?;
+            build_rs.insert(key.clone(), version.to_string());
+        }
+
+        Ok(Self { msrv, stable, nightly, build_rs })
     }
 }
 
-fn get_toolchain_versions() -> Versions {
-    let manifest_text = fs::read_to_string("Cargo.toml").unwrap();
-    let manifest = toml::from_str::<Value>(&manifest_text).unwrap();
+fn is_zerocopy_manifest(manifest_text: &str) -> Result<bool, toml::de::Error> {
+    let manifest = toml::from_str::<Value>(manifest_text)?;
+    Ok(manifest
+        .as_table()
+        .and_then(|t| t.get("package"))
+        .and_then(Value::as_table)
+        .and_then(|p| p.get("name"))
+        .and_then(Value::as_str)
+        == Some("zerocopy"))
+}
 
-    let package = manifest.as_table().unwrap()["package"].as_table().unwrap();
-    let metadata = package["metadata"].as_table().unwrap();
-    let build_rs = metadata["build-rs"].as_table().unwrap();
-    let ci = metadata["ci"].as_table().unwrap();
-
-    Versions {
-        msrv: package["rust-version"].as_str().unwrap().to_string(),
-        stable: ci["pinned-stable"].as_str().unwrap().to_string(),
-        nightly: ci["pinned-nightly"].as_str().unwrap().to_string(),
-        build_rs: build_rs.clone(),
+fn find_zerocopy_manifest_in(base_dir: &Path) -> Result<(PathBuf, String), Error> {
+    let local = base_dir.join("Cargo.toml");
+    match fs::read_to_string(&local) {
+        Ok(text) => {
+            let is_zc = is_zerocopy_manifest(&text).map_err(|err| {
+                Error::Manifest(format!("Failed to parse {}: {err}", local.display()))
+            })?;
+            if is_zc {
+                return Ok((local, text));
+            }
+        }
+        Err(err) if err.kind() == io::ErrorKind::NotFound => {}
+        Err(err) => {
+            return Err(Error::Manifest(format!("Failed to read {}: {err}", local.display())));
+        }
     }
+
+    let nested = base_dir.join("zerocopy/Cargo.toml");
+    match fs::read_to_string(&nested) {
+        Ok(text) => {
+            let is_zc = is_zerocopy_manifest(&text).map_err(|err| {
+                Error::Manifest(format!("Failed to parse {}: {err}", nested.display()))
+            })?;
+            if is_zc {
+                return Ok((nested, text));
+            }
+            Err(Error::Manifest(format!(
+                "Found {} but `[package].name` is not \"zerocopy\"",
+                nested.display()
+            )))
+        }
+        Err(err) if err.kind() == io::ErrorKind::NotFound => Err(Error::Manifest(format!(
+            "Could not locate zerocopy's Cargo.toml from {} (checked Cargo.toml and zerocopy/Cargo.toml)",
+            base_dir.display()
+        ))),
+        Err(err) => Err(Error::Manifest(format!("Failed to read {}: {err}", nested.display()))),
+    }
+}
+
+fn get_toolchain_versions_in(base_dir: &Path) -> Result<Versions, Error> {
+    let (path, text) = find_zerocopy_manifest_in(base_dir)?;
+    Versions::parse(&text, &path)
+}
+
+fn get_toolchain_versions() -> Result<Versions, Error> {
+    let cwd = env::current_dir().map_err(|err| {
+        Error::Manifest(format!("Failed to determine current working directory: {err}"))
+    })?;
+    get_toolchain_versions_in(&cwd)
+}
+
+fn is_truthy_env_value(value: Option<&str>) -> bool {
+    value.is_some_and(|raw| {
+        let trimmed = raw.trim();
+        !trimmed.is_empty() && trimmed != "0" && !trimmed.eq_ignore_ascii_case("false")
+    })
+}
+
+fn env_is_truthy(name: &str) -> bool {
+    is_truthy_env_value(env::var(name).ok().as_deref())
+}
+
+fn env_is_non_empty(name: &str) -> bool {
+    env::var_os(name).is_some_and(|v| !v.is_empty())
 }
 
 fn ensure_installed_or_exit(
@@ -144,9 +283,9 @@ fn ensure_installed_or_exit(
     }
 
     eprintln!("[cargo-zerocopy] {missing_item_desc}");
-    if env::var("GITHUB_RUN_ID").is_ok() {
+    if env_is_non_empty("GITHUB_RUN_ID") {
         eprintln!("[cargo-zerocopy] detected GitHub Actions environment; auto-installing without waiting for confirmation");
-    } else if env::var("CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN").is_ok() {
+    } else if env_is_truthy("CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN") {
         eprintln!("[cargo-zerocopy] detected CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN environment variable; auto-installing without waiting for confirmation");
     } else {
         eprintln!("[cargo-zerocopy] set CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN=1 to always install toolchains and targets without prompting");
@@ -347,17 +486,18 @@ fn rustup<'a>(args: impl IntoIterator<Item = &'a str>, env: Option<(&str, &str)>
 
 fn delegate_cargo() -> Result<(), Error> {
     let mut args = env::args();
-    let this = args.next().unwrap();
-    let versions = get_toolchain_versions();
+    let this = args.next().ok_or(Error::NoArguments)?;
 
     match args.next().as_deref() {
         None => Err(Error::NoArguments),
         Some("--version") => {
             let name = args.next().ok_or(Error::MissingToolchainVersion)?;
+            let versions = get_toolchain_versions()?;
             println!("{}", versions.get(&name)?);
             Ok(())
         }
         Some("+all") => {
+            let _versions = get_toolchain_versions()?;
             eprintln!("[cargo-zerocopy] warning: running the same command for each toolchain (msrv, stable, nightly)");
             let args = args.collect::<Vec<_>>();
 
@@ -372,6 +512,7 @@ fn delegate_cargo() -> Result<(), Error> {
         }
         Some(arg) => {
             if let Some(name) = arg.strip_prefix('+') {
+                let versions = get_toolchain_versions()?;
                 let version = versions.get(name)?;
 
                 install_toolchain_or_exit(&versions, name)?;
@@ -452,36 +593,31 @@ fn delegate_cargo() -> Result<(), Error> {
                 // this because unqualified package names are sometimes ambiguous
                 // if a dev-dependency has taken a dependency on an earlier
                 // version of zerocopy or zerocopy-derive.
-                loop {
-                    let Some(arg) = args.next() else {
-                        break;
-                    };
+                while let Some(arg) = args.next() {
                     if arg == "-p" || arg == "--package" {
                         cmd.arg(&arg);
                         let Some(arg) = args.next() else {
                             break;
                         };
                         cmd.arg(fqpn(arg));
-                    } else if arg.starts_with("-p") {
+                    } else if let Some(pkg) = arg.strip_prefix("-p") {
                         cmd.arg("-p");
-                        cmd.arg(fqpn(arg[2..].to_string()));
+                        cmd.arg(fqpn(pkg.to_string()));
                     } else if arg == "--" {
                         cmd.arg("--");
                         cmd.args(args);
                         break;
-                    } else {
-                        if arg == "--target" {
-                            cmd.arg(&arg);
-                            if let Some(target) = args.next() {
-                                cmd.arg(&target);
-                                cmd.env("ZEROCOPY_UI_TEST_TARGET", target);
-                            }
-                        } else if let Some(target) = arg.strip_prefix("--target=") {
-                            cmd.arg(&arg);
+                    } else if arg == "--target" {
+                        cmd.arg(&arg);
+                        if let Some(target) = args.next() {
+                            cmd.arg(&target);
                             cmd.env("ZEROCOPY_UI_TEST_TARGET", target);
-                        } else {
-                            cmd.arg(arg);
                         }
+                    } else if let Some(target) = arg.strip_prefix("--target=") {
+                        cmd.arg(&arg);
+                        cmd.env("ZEROCOPY_UI_TEST_TARGET", target);
+                    } else {
+                        cmd.arg(arg);
                     }
                 }
 
@@ -495,14 +631,161 @@ fn delegate_cargo() -> Result<(), Error> {
     }
 }
 
+fn print_usage() {
+    let name = env::args().next().unwrap_or_else(|| "cargo-zerocopy".to_string());
+
+    eprintln!("Usage:");
+    eprintln!("  {} --version <toolchain-name>", name);
+    eprintln!("  {} +<toolchain-name> [...]", name);
+    eprintln!("  {} +all [...]", name);
+}
+
+fn main() {
+    if let Err(e) = delegate_cargo() {
+        eprintln!("Error: {e}");
+        print_usage();
+        process::exit(1);
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use std::{ffi::OsStr, process::Command};
+    use std::{collections::BTreeMap, env, ffi::OsStr, fs, path::PathBuf, process::Command};
 
-    use super::{capture_feature_selection_args, set_ui_test_feature_args};
+    use super::{
+        capture_feature_selection_args, env_is_non_empty, env_is_truthy, get_toolchain_versions_in,
+        is_truthy_env_value, set_ui_test_feature_args, Error, Versions,
+    };
+
+    struct TempDir(PathBuf);
+
+    impl TempDir {
+        fn new(suffix: &str) -> Self {
+            let dir = env::temp_dir().join(format!(
+                "cargo-zerocopy-test-{}-{}-{}",
+                std::process::id(),
+                env::var("CARGO_PKG_NAME").unwrap_or_default(),
+                suffix
+            ));
+            let _ = fs::remove_dir_all(&dir);
+            fs::create_dir_all(&dir).unwrap();
+            Self(dir)
+        }
+    }
+
+    impl Drop for TempDir {
+        fn drop(&mut self) {
+            let _ = fs::remove_dir_all(&self.0);
+        }
+    }
+
+    fn sample_manifest(extra_build_rs: &str) -> String {
+        format!(
+            "\
+[package]
+name = \"zerocopy\"
+rust-version = \"1.56.0\"
+
+[package.metadata.build-rs]
+no-zerocopy-core-error-1-81-0 = \"1.81.0\"
+{extra_build_rs}
+
+[package.metadata.ci]
+pinned-stable = \"1.100.0\"
+pinned-nightly = \"nightly-2026-09-30\"
+"
+        )
+    }
 
     fn strings(args: &[&str]) -> Vec<String> {
         args.iter().map(|arg| (*arg).to_string()).collect()
+    }
+
+    #[test]
+    fn env_truthiness_rejects_unset_empty_zero_and_false() {
+        for falsy in
+            [None, Some(""), Some("   "), Some("0"), Some("false"), Some("FALSE"), Some("False")]
+        {
+            assert!(!is_truthy_env_value(falsy), "expected falsy for {falsy:?}");
+        }
+        for truthy in [Some("1"), Some("true"), Some("TRUE"), Some("yes")] {
+            assert!(is_truthy_env_value(truthy), "expected truthy for {truthy:?}");
+        }
+
+        const TEST_KEY: &str = "CARGO_ZEROCOPY_TEST_TRUTHY_VAR";
+        env::remove_var(TEST_KEY);
+        assert!(!env_is_truthy(TEST_KEY));
+        assert!(!env_is_non_empty(TEST_KEY));
+
+        env::set_var(TEST_KEY, "");
+        assert!(!env_is_truthy(TEST_KEY));
+        assert!(!env_is_non_empty(TEST_KEY));
+
+        env::set_var(TEST_KEY, "0");
+        assert!(!env_is_truthy(TEST_KEY));
+        assert!(env_is_non_empty(TEST_KEY));
+
+        env::set_var(TEST_KEY, "FaLsE");
+        assert!(!env_is_truthy(TEST_KEY));
+
+        env::set_var(TEST_KEY, "1");
+        assert!(env_is_truthy(TEST_KEY));
+        assert!(env_is_non_empty(TEST_KEY));
+
+        env::remove_var(TEST_KEY);
+    }
+
+    #[test]
+    fn versions_get_supports_build_rs_and_formats_unrecognized_error() {
+        let mut build_rs = BTreeMap::new();
+        build_rs.insert("no-zerocopy-core-error-1-81-0".to_string(), "1.81.0".to_string());
+        let versions = Versions {
+            msrv: "1.56.0".to_string(),
+            stable: "1.100.0".to_string(),
+            nightly: "nightly-2026-09-30".to_string(),
+            build_rs,
+        };
+
+        assert_eq!(versions.get("msrv").unwrap(), "1.56.0");
+        assert_eq!(versions.get("stable").unwrap(), "1.100.0");
+        assert_eq!(versions.get("nightly").unwrap(), "nightly-2026-09-30");
+        assert_eq!(versions.get("no-zerocopy-core-error-1-81-0").unwrap(), "1.81.0");
+
+        let err = versions.get("unknown").unwrap_err();
+        let msg = err.to_string();
+        assert!(msg.contains("msrv"));
+        assert!(msg.contains("stable"));
+        assert!(msg.contains("nightly"));
+        assert!(msg.contains("build-rs"));
+        assert!(msg.contains("no-zerocopy-core-error-1-81-0"));
+    }
+
+    #[test]
+    fn manifest_discovery_handles_zerocopy_root_repo_root_and_errors() {
+        let zc_dir = TempDir::new("zc-dir");
+        fs::write(zc_dir.0.join("Cargo.toml"), sample_manifest("")).unwrap();
+        let direct = get_toolchain_versions_in(&zc_dir.0).expect("direct Cargo.toml should parse");
+        assert_eq!(direct.msrv, "1.56.0");
+        assert_eq!(direct.get("no-zerocopy-core-error-1-81-0").unwrap(), "1.81.0");
+
+        let repo_root = TempDir::new("repo-root");
+        fs::create_dir_all(repo_root.0.join("zerocopy")).unwrap();
+        fs::write(repo_root.0.join("zerocopy/Cargo.toml"), sample_manifest("")).unwrap();
+        let from_root =
+            get_toolchain_versions_in(&repo_root.0).expect("zerocopy/Cargo.toml should parse");
+        assert_eq!(from_root, direct);
+
+        // An unrelated local Cargo.toml does not satisfy `[package].name == "zerocopy"`.
+        let other_crate = TempDir::new("other-crate");
+        fs::write(other_crate.0.join("Cargo.toml"), "[package]\nname = \"other\"\n").unwrap();
+        let err = get_toolchain_versions_in(&other_crate.0).unwrap_err();
+        assert!(matches!(err, Error::Manifest(_)), "unexpected error: {err:?}");
+
+        // Non-string `build-rs` values return a clean manifest error instead of panicking.
+        let bad_build_rs = TempDir::new("bad-build-rs");
+        fs::write(bad_build_rs.0.join("Cargo.toml"), sample_manifest("bad-entry = 181")).unwrap();
+        let err = get_toolchain_versions_in(&bad_build_rs.0).unwrap_err();
+        assert!(err.to_string().contains("bad-entry"), "unexpected error: {err}");
     }
 
     #[test]
@@ -561,22 +844,5 @@ mod tests {
         set_ui_test_feature_args(&mut command, &[]);
         assert_eq!(command.get_envs().count(), 1);
         assert_env(&command, "ZEROCOPY_UI_TEST_FEATURE_ARG_COUNT", "0");
-    }
-}
-
-fn print_usage() {
-    let name = env::args().next().unwrap();
-
-    eprintln!("Usage:");
-    eprintln!("  {} --version <toolchain-name>", name);
-    eprintln!("  {} +<toolchain-name> [...]", name);
-    eprintln!("  {} +all [...]", name);
-}
-
-fn main() {
-    if let Err(e) = delegate_cargo() {
-        eprintln!("Error: {e}");
-        print_usage();
-        process::exit(1);
     }
 }
