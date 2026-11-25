@@ -406,7 +406,8 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `theory/Anneal/{AiPcc,ByteRun,ByteSubLens,CallStackUnwind,CnfOrd}/`,
   `theory/Anneal/{ConjunctiveWp,F2Simd,Framework,GaloisCodec,MirMemComp}/`,
   `theory/Anneal/{MiriTreeBorrows,OverflowCastJoin,PureLift,RefFrame}/`,
-  `theory/Anneal/WavefrontReclaim/`, and planned `Theory/Rust/{Wp,Tactics}/`):**
+  `theory/Anneal/{SafeTwin,WavefrontReclaim}/`, and
+  planned `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
   Diaconescu classical excluded middle and existential choice, WHNF and
   rewrite firewall combinators, foundation-locked `Bool`/`BEq`/`Nat`/`Int`/
@@ -434,13 +435,14 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   (`MiriTreeBorrows`), `@[irreducible]` stage-cut interval joins for overflowing
   tuple arithmetic and `intToInt` casts (`OverflowCastJoin`), 4-way
   call-continuation `&mut` writeback frames and ranged Tree Borrows protectors
-  (`RefFrame`), view-indexed spatial PCM `< ω^ω` wavefront drain and universal
-  `.activeMut` loan reclamation (`WavefrontReclaim`), functional borrow lifting,
-  separation-logic frame rules, and proof automation built against
-  $M_{\text{anneal}}$ and `StableAst` / `StableSemantics` (`cargo-anneal`
-  bundles the scalar and MIR proof libraries under `theory/Anneal/`, compiling
-  and auditing only the transitive `Anneal.*`
-  closure imported by target proof modules).
+  (`RefFrame`), relational `SafeTwin` equivalence, `BiAlign` stride-tiled
+  simulation, and constant-time leak-trace 2-safety (`SafeTwin`), view-indexed
+  spatial PCM `< ω^ω` wavefront drain and universal `.activeMut` loan
+  reclamation (`WavefrontReclaim`), functional borrow lifting, separation-logic
+  frame rules, and proof automation built against $M_{\text{anneal}}$ and
+  `StableAst` / `StableSemantics` (`cargo-anneal` bundles the scalar and MIR
+  proof libraries under `theory/Anneal/`, compiling and auditing only the
+  transitive `Anneal.*` closure imported by target proof modules).
 
 #### Why $M_{\text{anneal}}$'s step rules and `theory/` do not expand the TCB
 
@@ -581,6 +583,7 @@ anneal/
     │   ├── PureLift.lean           # Functional borrow-lifting calculus
     │   ├── PureLift/
     │   ├── RefFrame.lean           # 4-way call-continuation &mut frames & ranged TB (+ RefFrame/)
+    │   ├── SafeTwin.lean           # Relational SafeTwin equivalence & BiAlign simulation (+ SafeTwin/)
     │   ├── Scalar.lean             # Constructive scalar/bitvector umbrella
     │   ├── Simd.lean               # F2-linear & SIMD verification umbrella
     │   ├── SpineForce.lean         # CPS spine-forcing & @Nat.rec combinators
