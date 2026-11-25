@@ -1,0 +1,9 @@
+error[E0200]: the trait `zerocopy::pointer::Read<Shared, LocalReason>` requires an `unsafe impl` declaration
+  --> $DIR/invariant-read-safe-impl.rs:22:1
+   |
+22 | impl Read<Shared, LocalReason> for Cell<u8> {}
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0200`.

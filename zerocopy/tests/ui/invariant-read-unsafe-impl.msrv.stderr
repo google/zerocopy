@@ -1,0 +1,15 @@
+error[E0277]: the trait bound `Cell<u8>: invariant::sealed::ReadSealed<Shared, LocalReason>` is not satisfied
+   --> $DIR/invariant-read-unsafe-impl.rs:21:13
+    |
+21  | unsafe impl Read<Shared, LocalReason> for Cell<u8> {}
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `invariant::sealed::ReadSealed<Shared, LocalReason>` is not implemented for `Cell<u8>`
+    |
+note: required by a bound in `zerocopy::pointer::Read`
+   --> $WORKSPACE/src/pointer/invariant.rs:276:40
+    |
+276 | pub unsafe trait Read<A: Aliasing, R>: sealed::ReadSealed<A, R> {}
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `zerocopy::pointer::Read`
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0277`.

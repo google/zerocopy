@@ -1,0 +1,15 @@
+error[E0200]: the trait `zerocopy::invariant::Read<Shared, LocalReason>` requires an `unsafe impl` declaration
+  --> $DIR/invariant-read-safe-impl.rs:22:1
+   |
+22 | impl Read<Shared, LocalReason> for Cell<u8> {}
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: the trait `zerocopy::invariant::Read<Shared, LocalReason>` enforces invariants that the compiler can't check. Review the trait documentation and make sure this implementation upholds those invariants before adding the `unsafe` keyword
+help: add `unsafe` to this trait implementation
+   |
+22 | unsafe impl Read<Shared, LocalReason> for Cell<u8> {}
+   | ++++++
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0200`.
