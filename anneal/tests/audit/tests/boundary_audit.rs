@@ -9786,6 +9786,10 @@ fn theory_umbrella_and_manifest_exclude_canaries_and_match() {
         manifest_paths.contains("theory/Anneal/Wp.lean"),
         "bundle-manifest.json must bundle theory/Anneal/Wp.lean"
     );
+    assert!(
+        manifest_paths.contains("theory/Anneal/Framework.lean"),
+        "bundle-manifest.json must bundle theory/Anneal/Framework.lean"
+    );
 
     let theory_modules =
         scan_lean_tree(&checkout.join("theory"), "Anneal").expect("scan_lean_tree on theory/");
@@ -9824,7 +9828,11 @@ fn theory_umbrella_and_manifest_exclude_canaries_and_match() {
         "scan_lean_tree must still discover decoupled Anneal.CallStackUnwind.Canaries for Pass-1 audit"
     );
     assert!(
-        canary_modules.len() >= 16,
+        canary_modules.contains("Anneal.Framework.Canaries"),
+        "scan_lean_tree must still discover decoupled Anneal.Framework.Canaries for Pass-1 audit"
+    );
+    assert!(
+        canary_modules.len() >= 17,
         "expected scan_lean_tree to discover all decoupled *Canaries*.lean modules dynamically, got {canary_modules:?}"
     );
 
@@ -9897,4 +9905,169 @@ fn theory_umbrella_and_manifest_exclude_canaries_and_match() {
             "Anneal.Scalar transitive closure must exclude {imp} (closure={scalar_all_imports:?})"
         );
     }
+}
+
+/// Verifies that `Trusted.Framework` (`candidate:refinement`) compiles,
+/// passes `"preflight"` and Pass-1 kernel replay onto `foundation-lock.json`,
+/// discharges a structured `EnvelopeTheorem` proof in `Anneal.*`, and remains
+/// isolated from `vetted` modules.
+#[test]
+fn trusted_framework_pass1_replay_and_vetted_tier_isolation() {
+    let checkout = repo_root();
+    let framework_src =
+        fs::read_to_string(checkout.join("trusted/lean/Trusted/Framework.lean")).unwrap();
+    let mut fix = TempFixture::new(Some(HEADER));
+    fs::create_dir_all(fix.root.join("trusted/lean/Trusted")).unwrap();
+    fs::write(fix.root.join("trusted/lean/Trusted/Framework.lean"), &framework_src).unwrap();
+    fs::create_dir_all(fix.root.join("theory/Anneal")).unwrap();
+    fs::write(
+        fix.root.join("theory/Anneal/TrustedFrameworkTest.lean"),
+        concat!(
+            "module\n",
+            "prelude\n",
+            "public import Init.NotationExtra\n",
+            "public import Init.Data.List.Basic\n",
+            "public import Trusted.Framework\n",
+            "public section\n",
+            "namespace Anneal\n",
+            "open Trusted.Framework\n",
+            "def unitModel : ExecutionModel Unit Unit Unit Unit Unit Unit :=\n",
+            "  { profileId := \"unit_v1\"\n",
+            "    oracleGrade := .biFaultEquiv \"unit_ref\"\n",
+            "    programAdmitted := fun _ => true\n",
+            "    bodyAdmitted := fun _ _ => true\n",
+            "    isPartialScope := fun _ => false\n",
+            "    bodyAt := fun _ n => match n with | 0 => some () | _ => none\n",
+            "    uniqueIdentities := fun _ => true\n",
+            "    bodyIdentity := fun _ => \"fn_u\"\n",
+            "    bodyIsUnsafe := fun _ => false\n",
+            "    bodyIsExternal := fun _ => false\n",
+            "    bodyMatchesSig := fun _ _ => true\n",
+            "    modelGaps := []\n",
+            "    requiredGaps := fun _ => []\n",
+            "    claimShapeGaps := fun _ => []\n",
+            "    entryDom := fun _ _ => True\n",
+            "    returnValid := fun _ _ _ => True\n",
+            "    memValid := fun _ => True\n",
+            "    execForBody := fun p _ => p\n",
+            "    wellFormed := fun _ _ => True\n",
+            "    produces := fun _ _ out => out = .returned () ()\n",
+            "    diverges := fun _ _ => False\n",
+            "    faultsUB := fun _ _ => False }\n",
+            "theorem nonEmptyUnitId : (\"unit_v1\" : String) ≠ \"\" := by\n",
+            "  intro h\n",
+            "  exact Nat.noConfusion\n",
+            "    (congrArg (fun s => s.toByteArray.data.toList.length) h)\n",
+            "theorem nonEmptyRefId : (\"unit_ref\" : String) ≠ \"\" := by\n",
+            "  intro h\n",
+            "  exact Nat.noConfusion\n",
+            "    (congrArg (fun s => s.toByteArray.data.toList.length) h)\n",
+            "theorem nonEmptyFnId : (\"fn_u\" : String) ≠ \"\" := by\n",
+            "  intro h\n",
+            "  exact Nat.noConfusion\n",
+            "    (congrArg (fun s => s.toByteArray.data.toList.length) h)\n",
+            "theorem unitEnvelopeOk :\n",
+            "    EnvelopeTheorem (mkEnvelope unitModel ()\n",
+            "      [{ identity := \"fn_u\"\n",
+            "         sig := ()\n",
+            "         contract := {\n",
+            "           effects := {\n",
+            "             terminates := true,\n",
+            "             noUnwind := true,\n",
+            "             noAbort := true } } }]\n",
+            "      [] [] [.forallSafety, .termination] []) := by\n",
+            "  refine ⟨⟨nonEmptyUnitId, rfl, (fun _ _ _ => rfl), rfl,\n",
+            "           (fun h => Bool.noConfusion h), nonEmptyRefId, ?_,\n",
+            "           (fun _ h => by cases h)⟩,\n",
+            "          ?_, ⟨nonEmptyFnId, (fun _ h => by cases h), True.intro⟩,\n",
+            "          ?_, (fun _ h => by cases h), (fun _ h => by cases h), ?_⟩\n",
+            "  · intro cs hMem\n",
+            "    cases hMem with\n",
+            "    | head => exact ⟨rfl, fun _ h => by cases h⟩\n",
+            "    | tail _ h2 =>\n",
+            "      cases h2 with\n",
+            "      | head => exact ⟨rfl, fun _ h => by cases h⟩\n",
+            "      | tail _ hNil => cases hNil\n",
+            "  · intro _ _\n",
+            "    exact ⟨List.Mem.head _,\n",
+            "           fun _ => List.Mem.tail _ (List.Mem.head _)⟩\n",
+            "  · intro e hMem\n",
+            "    cases hMem with\n",
+            "    | head =>\n",
+            "      refine ⟨0, (), rfl, rfl, rfl, rfl, (fun _ h => by cases h),\n",
+            "              (fun _ _ _ => True.intro), ?_, ?_⟩\n",
+            "      · intro _ _ _\n",
+            "        refine ⟨(fun _ hDiv => hDiv),\n",
+            "                (fun _ _ _ => ⟨True.intro, True.intro⟩),\n",
+            "                (fun _ h => by cases h),\n",
+            "                (fun _ h => by cases h)⟩\n",
+            "      · exact Or.inl ⟨rfl, Or.inl ⟨(), True.intro,\n",
+            "          ⟨(fun h => Bool.noConfusion h), True.intro⟩⟩⟩\n",
+            "    | tail _ hNil => cases hNil\n",
+            "  · intro defId _ hGet\n",
+            "    cases defId with\n",
+            "    | zero => exact List.Mem.head _\n",
+            "    | succ _ => cases hGet\n",
+            "end Anneal\n",
+            "end\n",
+        ),
+    )
+    .unwrap();
+    let mut checker = Checker::new(&fix.root, None).unwrap();
+    checker.set_require_mir_wp(false);
+    let report = checker.run().unwrap();
+    assert_eq!(report["replay"], json!(true), "{report}");
+    let decls = report["declarations"].as_array().unwrap();
+    let fw_decls: Vec<&Json> =
+        decls.iter().filter(|d| d["module"] == json!("Trusted.Framework")).collect();
+    assert!(!fw_decls.is_empty(), "expected Trusted.Framework declarations in report");
+    for d in &fw_decls {
+        assert_eq!(d["trustStatus"], json!("candidate:refinement"), "{d}");
+    }
+    // Non-vacuously inspect the compiled `Trusted/Framework.olean` via
+    // `Lean.readModuleData` (since `report["declarations"]` excludes partial
+    // paired `._unsafe_rec` helpers) to confirm zero `partial` / `._unsafe_rec`
+    // constants are emitted for `NoDupStrings` or any other declaration.
+    let fw_olean = checker.stage().join("lib/Trusted/Framework.olean");
+    let check_script = checker.stage().join("CheckNoUnsafeRec.lean");
+    run_lean_script(
+        &mut checker,
+        "check-no-unsafe-rec",
+        &check_script,
+        &format!(
+            r#"import Lean
+open Lean in
+def main : IO Unit := do
+  let (data, _) ← readModuleData (System.FilePath.mk {:?})
+  unless data.constants.any (fun ci => ci.name == `Trusted.Framework.NoDupStrings) do
+    throw (IO.userError "missing Trusted.Framework.NoDupStrings in compiled olean")
+  for ci in data.constants do
+    if ci.isPartial || ci.name.toString.endsWith "._unsafe_rec" then
+      throw (IO.userError s!"unexpected partial/_unsafe_rec constant: {{ci.name}}")
+  for n in data.extraConstNames do
+    if n.toString.endsWith "._unsafe_rec" then
+      throw (IO.userError s!"unexpected extra _unsafe_rec constant: {{n}}")
+"#,
+            fw_olean.to_string_lossy()
+        ),
+    );
+
+    // Negative: a `vetted` module attempting to import `Trusted.Framework`
+    // (`candidate:refinement`) fails closed in `"preflight"`.
+    fs::write(
+        fix.root.join("trusted/lean/Trusted/VettedImportsFramework.lean"),
+        "-- anneal-trust-tier: vetted\n\
+         module\n\
+         prelude\n\
+         public import Init.NotationExtra\n\
+         public import Trusted.Framework\n",
+    )
+    .unwrap();
+    let err = fix.check_expected(Some(1), Some("preflight"), Some(false)).unwrap_err();
+    assert!(
+        err.message.contains(
+            "vetted module Trusted.VettedImportsFramework cannot import candidate:refinement module Trusted.Framework"
+        ),
+        "{err}"
+    );
 }

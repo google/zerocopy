@@ -532,7 +532,8 @@ anneal/
 │   │       ├── MirAst.lean         # Captured MIR AST umbrella (+ MirAst/)
 │   │       ├── MirModel.lean       # Shared pure boundary value/query types
 │   │       ├── MirSemantics.lean   # M_anneal & CrateTheorem (+ MirSemantics/)
-│   │       ├── Framework/          # [planned] Language-agnostic refinement
+│   │       ├── Framework.lean      # Language-agnostic verification envelope
+│   │       ├── Framework/          # MIR ExecutionModel instances & bridges
 │   │       └── Rust/               # [planned] Factored Ast/ & Semantics/ dirs
 │   ├── correspondence/             # Stage 2 (Pass 2): Reference adapter TCB
 │   │   └── Trusted/
@@ -564,6 +565,7 @@ anneal/
     │   ├── Core.lean               # BlockTree, SepPCM & StepStageCut (+ Core/)
     │   ├── F2Simd.lean             # F2-linear/bilinear & SIMD certificate evaluators (+ F2Simd/)
     │   ├── Firewall.lean           # WHNF & rewrite firewall combinators
+    │   ├── Framework.lean          # Envelope laws & legacy bridges (+ Framework/)
     │   ├── Framework/StepWp.lean   # Generic step/checkpoint WP, cuts & loop rules
     │   ├── GaloisCodec.lean        # Galois byte-layout, zerocopy & transmute laws (+ GaloisCodec/)
     │   ├── Generic.lean            # Unbundled open-generic MIR, traits & erasure (+ Generic/)
@@ -597,21 +599,26 @@ Pass 1 audits `trusted/lean/` and `theory/`. Pass 2 adds the pinned vendor
 model, the trusted correspondence adapter, and the correspondence proofs.
 See [Developing Anneal](README.md) for build commands and CI entry points.
 
-### Separating `Framework/` from `Rust/`
+### Separating `Framework` from MIR-specific modules
 
-In the planned layout, both `trusted/lean/Trusted/` and `theory/` separate
-`Framework/` from `Rust/`:
+Anneal keeps the language-independent envelope algebra separate from
+MIR-specific semantics:
 
-- **`Trusted/Framework/`** defines language-independent verification concepts:
-  labeled transition systems with explicit fault (`UB`) states, the refinement
-  relations (`Abstracts` for verification lowering and `Compiles` for
-  compilation lowering), and the top-level `VerificationResult` record that
-  tracks trusted definitions and assumptions.
-- **`Trusted/Rust/`** instantiates `Trusted/Framework/` for Rust MIR. Keeping
-  `Trusted/Framework/` free of Rust-specific syntax makes the core refinement
-  algebra small enough to audit on a single page and reusable across multiple
-  languages or lower-level intermediate representations (such as assembly or
-  LLVM IR).
+- **`Trusted/Framework.lean`** (`candidate:refinement`) defines the
+  language-independent verification envelope (`TerminalOutcome`, `ClaimShape`,
+  `OracleGrade`, `DisclosedGap`, `ExecutionModel`, `FnContract`,
+  `VerificationEnvelope`, and `EnvelopeTheorem`) with zero Rust or MIR syntax,
+  making the core claim boundary small enough to audit independently and
+  reusable across multiple profiles or IRs.
+- **`Trusted/Framework/Instances.lean`** and **`Trusted/Framework/Bridge.lean`**
+  (`candidate:mir_semantics`) instantiate `ExecutionModel` for Rust MIR
+  (`MirProfileV1`, `MirProfileV2`, `OracleCertificate`, and legacy
+  `CrateEnvelopeTheorem` / `UnitEnvelopeTheorem` compatibility bridges) without
+  contaminating `Trusted/Framework.lean` with MIR AST or semantics imports.
+- **`theory/Anneal/Framework.lean`** and
+  **`theory/Anneal/Framework/StepWp.lean`** supply untrusted (`0`-TCB) envelope
+  laws, compatibility equivalences, and generic step/loop weakest-precondition
+  combinators.
 
 ## Compiler integration and extraction lifecycle
 

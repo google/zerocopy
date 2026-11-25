@@ -54,6 +54,10 @@
       "sha256": "2a3c80c5c56109d99edd372778664281958f4e358b88be259f84146a64a49435"
     },
     {
+      "path": "theory/Anneal/Framework.lean",
+      "sha256": "cac48749c4c10e555b4c113281f7484dc5c662053f5ce8487893558375feda8a"
+    },
+    {
       "path": "theory/Anneal/Framework/StepWp.lean",
       "sha256": "ddd07897cd8fb07d6447741271db0dfd514f37103ac500ef63503f58f630e524"
     },

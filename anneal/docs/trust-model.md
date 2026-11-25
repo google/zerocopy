@@ -174,6 +174,63 @@ Anneal's architecture enforces **Statement-Origin Separation** between the two:
   arbitrarily rich lowering passes and tactics without being able to weaken the
   theorem statement.
 
+### Profile-parametric verification envelopes (`Trusted.Framework`)
+
+`Trusted.Framework` (`candidate:refinement`), `Trusted.Framework.Instances`,
+and `Trusted.Framework.Bridge` (`candidate:mir_semantics`) wrap Anneal's outer
+verification claim boundary without wrapping inner small-step execution rules:
+
+- **`VerificationEnvelope` and `EnvelopeTheorem` (`Trusted.Framework`):**
+  Provides a closed two-constructor envelope (`structured` via `mkEnvelope` and
+  `legacy` via `mkLegacyEnvelope`) parameterized by `ExecutionModel`, binding
+  `FnContract`, `AssumedStub` (`StubRealizable`, gated by
+  `ExecutionModel.bodyIsExternal body = true` so captured local bodies can
+  never be waived as assumed external callees), `RefutationEntry`,
+  constructive parameter-domain non-vacuity (`NonVacuousEntry`), explicit
+  3-bit `EffectMask` guarantees (no field defaults), `OracleGrade.licenses`
+  claim-shape licensing, and explicit `DisclosedGap` accounting
+  (`unbridgedSemantics`, `callerRawPtrAliasing`,
+  `callerMemoryThreadIsolation`, `configuredReferenceScope`,
+  `assumedExternalCallee`, `waivedInhabitation`, `selectedUnitScope`,
+  `rawLegacySpec`, and `unverifiedDownstream`). `MirProfileV1` and
+  `MirProfileV2` enforce `defaultMirDownstreamGaps` (`rustc_mir_opt`,
+  `llvm_codegen`, `linker`, and `microarch_timing`) mechanically via
+  `ExecutionModel.modelGaps` in `EnvelopeTheorem`. Receipt-level `assumptions`
+  / `deferred` entries outside `DisclosedGap` carry the pinned capture
+  environment and build-reproducibility provenance (toolchain, target, profile
+  pinning, `rustc` frontend/MIR extraction fidelity, and audit-time-to-deploy
+  drift; see [Capture profile and the binary
+  seam](#capture-profile-and-the-binary-seam) below).
+- **MIR instances & compatibility bridges (`Trusted.Framework.Instances` and
+  `Trusted.Framework.Bridge`):** Instantiates `MirProfileV1`
+  (`.biFaultEquiv "lean_miri_v1_deinit_moved_place"`, requiring
+  `defaultMirDownstreamGaps` unconditionally and
+  `.configuredReferenceScope "lean_miri_v1_deinit_moved_place"` whenever
+  `existsWitness` is claimed because `Operand.move` deinitialization is a
+  conservative over-approximation of upstream `rustc_const_eval` certified
+  against the patched `deinitMovedPlace := true` reference) and `MirProfileV2`
+  (`.unbridged "mir_profile_v2"`, requiring `defaultMirDownstreamGaps` and
+  `.callerMemoryThreadIsolation` on every Profile v2 result plus
+  `.callerRawPtrAliasing` on bodies with raw-pointer locals) over existing
+  `WellFormed` / `WellFormedV2`, `Behavior` / `BehaviorV2`, and `Diverges` /
+  `DivergesV2` (with `bodyIsExternal := fun _ => false` so every captured local
+  MIR body in Profile v1 and Profile v2 must be verified or refuted rather than
+  stubbed), exposes MIR entry aliases (`MirVerifiedEntry`, `MirAssumedStub`,
+  `MirRefutationEntry`) used by `MirEnvelopeTheoremV1` and
+  `MirEnvelopeTheoremV2`, defines `OracleCertificate` for offline Pass-2
+  correspondence, and exposes model-pinned Pass-1 roots
+  (`Trusted.MirEnvelopeTheoremV1`, `Trusted.MirEnvelopeTheoremV2`, and
+  `@[reducible]` `CrateEnvelopeTheorem`, `UnitEnvelopeTheorem`,
+  `CrateEnvelopeTheoremV2`, and `UnitEnvelopeTheoremV2` compatibility roots
+  proved equivalent to `CrateTheorem`, `UnitTheorem`, `CrateTheoremV2`, and
+  `UnitTheoremV2` in `Anneal.Framework`, with Pass-1 canaries audited in
+  `Anneal.Framework.Canaries`). Every Pass-1 target verification root pins
+  `ExecutionModel` inside `Trusted.*` (to `Trusted.Framework.MirProfileV1` or
+  `Trusted.Framework.MirProfileV2`), and `Expected.lean` emission and
+  `TrustedBoundary.lean` auditing must accept only those model-pinned roots so
+  neither `Specification` nor `Proof` modules can supply a synthetic
+  `ExecutionModel` or `VerificationEnvelope`.
+
 ### Staging TCB changes (`vetted` vs. `candidate:<feature>` modules)
 
 Auditing a new semantic rule in `trusted/lean/` to full TCB standards—including
