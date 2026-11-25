@@ -1981,4 +1981,1246 @@ theorem deinitIndirect_loadIndirect_int (m m' : MirSemantics.MemoryState)
   rw [h_sz_ne0]
   cases w <;> rfl
 
+/-! ## Section 8: Profile v2 Memory, Pointer/Slice, Non-Escalation, and Return
+Invariants -/
+
+private theorem nat_blt_zero_false_eq_zero {n : Nat}
+    (h : Nat.blt 0 n = false) : n = 0 := by
+  cases n with
+  | zero => rfl
+  | succ k =>
+    have h_true : Nat.blt 0 (Nat.succ k) = true :=
+      (nat_ble_true_iff 1 (Nat.succ k)).2 (Nat.succ_le_succ (Nat.zero_le k))
+    rw [h_true] at h
+    cases h
+
+private theorem nat_blt_true_lt {a b : Nat} (h : Nat.blt a b = true) :
+    a < b :=
+  (nat_ble_true_iff (a + 1) b).1 h
+
+private theorem nat_beq_false_ne {a b : Nat} (h : Nat.beq a b = false) :
+    a ≠ b := by
+  intro h_eq
+  rw [h_eq] at h
+  have h_true : Nat.beq b b = true := (nat_beq_true_iff b b).2 rfl
+  rw [h_true] at h
+  cases h
+
+/-- Any successful `readBytes` call resolves `place.allocId` and passes
+`isAligned`—even at `size = 0`—while `0 < size` additionally requires `a.live`
+and `isInBounds`. -/
+theorem readBytes_requires_alloc_and_alignment (m : MirSemantics.MemoryState)
+    (place : MemPlace) (size alignLog2 : Nat) (bs : List AllocByte)
+    (h_r : readBytes m place size alignLog2 = .ok bs) :
+    ∃ a : MirSemantics.Allocation,
+      findAllocation place.allocId m.allocations = some a ∧
+      isAligned a place.offset alignLog2 = true ∧
+      (size = 0 → bs = []) ∧
+      (0 < size →
+        a.live = true ∧
+        isInBounds a place.offset size = true ∧
+        bs = (a.bytes.drop place.offset).take size) := by
+  dsimp only [readBytes] at h_r
+  cases h_fa : findAllocation place.allocId m.allocations with
+  | none => rw [h_fa] at h_r; dsimp only at h_r; cases h_r
+  | some a =>
+    rw [h_fa] at h_r
+    dsimp only at h_r
+    cases h_sz0 : Nat.beq size 0 with
+    | true =>
+      rw [h_sz0] at h_r
+      cases h_al : isAligned a place.offset alignLog2 with
+      | false => rw [h_al] at h_r; cases h_r
+      | true =>
+        rw [h_al] at h_r
+        injection h_r with h_bs
+        have h_sz_eq : size = 0 := (nat_beq_true_iff size 0).1 h_sz0
+        refine ⟨a, rfl, h_al, fun _ => h_bs.symm, fun h_pos => ?_⟩
+        rw [h_sz_eq] at h_pos
+        exact False.elim (Nat.not_lt_zero 0 h_pos)
+    | false =>
+      rw [h_sz0] at h_r
+      have h_ne0 : size ≠ 0 := nat_beq_false_ne h_sz0
+      cases h_live : a.live with
+      | false => rw [h_live] at h_r; cases h_r
+      | true =>
+        cases h_ib : isInBounds a place.offset size with
+        | false => rw [h_live, h_ib] at h_r; cases h_r
+        | true =>
+          cases h_al : isAligned a place.offset alignLog2 with
+          | false => rw [h_live, h_ib, h_al] at h_r; cases h_r
+          | true =>
+            rw [h_live, h_ib, h_al] at h_r
+            injection h_r with h_bs
+            refine ⟨a, rfl, h_al, fun hz => False.elim (h_ne0 hz),
+              fun _ => ⟨h_live, h_ib, h_bs.symm⟩⟩
+
+/-- Any successful `writeBytes` call resolves `place.allocId` and passes
+`isAligned`—even when `bs = []`—while non-empty `bs` additionally requires
+`a.live`, `isInBounds`, and `a.mutability = .mut`. -/
+theorem writeBytes_requires_alloc_and_alignment
+    (m m' : MirSemantics.MemoryState)
+    (place : MemPlace) (alignLog2 : Nat) (bs : List AllocByte)
+    (h_w : writeBytes m place alignLog2 bs = .ok m') :
+    ∃ a : MirSemantics.Allocation,
+      findAllocation place.allocId m.allocations = some a ∧
+      isAligned a place.offset alignLog2 = true ∧
+      (bs = [] → m' = m) ∧
+      (bs ≠ [] →
+        a.live = true ∧
+        isInBounds a place.offset bs.length = true ∧
+        a.mutability = .mut) := by
+  cases writeBytes_ok_elim h_w with
+  | inl h =>
+    let ⟨h_nil, h_meq, a, h_fa, h_al⟩ := h
+    exact ⟨a, h_fa, h_al, fun _ => h_meq, fun h_ne => False.elim (h_ne h_nil)⟩
+  | inr h =>
+    let ⟨a, h_ne, h_fa, h_live, h_ib, h_al, h_mut, _⟩ := h
+    exact ⟨a, h_fa, h_al, fun h_nil => False.elim (h_ne h_nil),
+      fun _ => ⟨h_live, h_ib, h_mut⟩⟩
+
+/-- `writeUninit` inherits `writeBytes`'s allocation and alignment preconditions
+for all sizes, leaves memory unchanged at `size = 0`, and requires liveness,
+bounds, and `.mut` mutability when `0 < size`. -/
+theorem writeUninit_requires_alloc_and_alignment
+    (m m' : MirSemantics.MemoryState)
+    (place : MemPlace) (size alignLog2 : Nat)
+    (h_w : writeUninit m place size alignLog2 = .ok m') :
+    ∃ a : MirSemantics.Allocation,
+      findAllocation place.allocId m.allocations = some a ∧
+      isAligned a place.offset alignLog2 = true ∧
+      (size = 0 → m' = m) ∧
+      (0 < size →
+        a.live = true ∧
+        isInBounds a place.offset size = true ∧
+        a.mutability = .mut) := by
+  dsimp only [writeUninit] at h_w
+  let ⟨a, h_fa, h_al, h_nil, h_pos⟩ :=
+    writeBytes_requires_alloc_and_alignment m m' place alignLog2
+      (List.replicate size AllocByte.uninit) h_w
+  refine ⟨a, h_fa, h_al, ?_, ?_⟩
+  · intro h_sz
+    apply h_nil
+    rw [h_sz]
+    rfl
+  · intro h_gt
+    have h_ne : List.replicate size AllocByte.uninit ≠ [] := by
+      intro h_eq
+      have h_len := congrArg List.length h_eq
+      rw [List.length_replicate] at h_len
+      rw [h_len] at h_gt
+      exact Nat.not_lt_zero 0 h_gt
+    let ⟨h_live, h_ib, h_mut⟩ := h_pos h_ne
+    rw [List.length_replicate] at h_ib
+    exact ⟨h_live, h_ib, h_mut⟩
+
+/-- Any successful `loadIndirectV2` resolves a Profile v2 layout and an aligned
+allocation record in `m`, even for zero-sized types. -/
+theorem loadIndirectV2_requires_alloc_and_alignment
+    (m : MirSemantics.MemoryState) (ty : MirTy) (place : MemPlace)
+    (optVal : Option Val)
+    (h_ld : loadIndirectV2 m ty place = .ok optVal) :
+    ∃ lay bs,
+      layoutOfTyV2 ty = some lay ∧
+      readBytes m place lay.size lay.alignLog2 = .ok bs ∧
+      decodeValV2 profileV2TargetEndian ty bs = .ok optVal ∧
+      ∃ a : MirSemantics.Allocation,
+        findAllocation place.allocId m.allocations = some a ∧
+        isAligned a place.offset lay.alignLog2 = true := by
+  dsimp only [loadIndirectV2] at h_ld
+  cases h_lay : layoutOfTyV2 ty with
+  | none => rw [h_lay] at h_ld; dsimp only at h_ld; cases h_ld
+  | some lay =>
+    rw [h_lay] at h_ld
+    dsimp only at h_ld
+    cases h_rb : readBytes m place lay.size lay.alignLog2 with
+    | error k => rw [h_rb] at h_ld; dsimp only at h_ld; cases h_ld
+    | ok bs =>
+      rw [h_rb] at h_ld
+      dsimp only at h_ld
+      let ⟨a, h_fa, h_al, _, _⟩ :=
+        readBytes_requires_alloc_and_alignment m place lay.size lay.alignLog2 bs
+          h_rb
+      exact ⟨lay, bs, rfl, h_rb, h_ld, a, h_fa, h_al⟩
+
+/-- Any successful `storeIndirectV2` resolves a Profile v2 layout and an aligned
+allocation record in `m`, even for zero-sized types. -/
+theorem storeIndirectV2_requires_alloc_and_alignment
+    (m m' : MirSemantics.MemoryState) (ty : MirTy) (place : MemPlace) (v : Val)
+    (h_st : storeIndirectV2 m ty place v = .ok m') :
+    ∃ lay bs,
+      layoutOfTyV2 ty = some lay ∧
+      encodeValV2 profileV2TargetEndian ty v = .ok bs ∧
+      writeBytes m place lay.alignLog2 bs = .ok m' ∧
+      ∃ a : MirSemantics.Allocation,
+        findAllocation place.allocId m.allocations = some a ∧
+        isAligned a place.offset lay.alignLog2 = true := by
+  dsimp only [storeIndirectV2] at h_st
+  cases h_lay : layoutOfTyV2 ty with
+  | none => rw [h_lay] at h_st; dsimp only at h_st; cases h_st
+  | some lay =>
+    rw [h_lay] at h_st
+    dsimp only at h_st
+    cases h_enc : encodeValV2 profileV2TargetEndian ty v with
+    | error k => rw [h_enc] at h_st; dsimp only at h_st; cases h_st
+    | ok bs =>
+      rw [h_enc] at h_st
+      dsimp only at h_st
+      let ⟨a, h_fa, h_al, _, _⟩ :=
+        writeBytes_requires_alloc_and_alignment m m' place lay.alignLog2 bs h_st
+      exact ⟨lay, bs, rfl, rfl, h_st, a, h_fa, h_al⟩
+
+/-- Any successful `sliceFromRawPartsCheck` enforces the `isize::MAX` byte-size
+bound, non-nullness and alignment on provenance-free pointers (only when
+`len * es = 0`), and live, in-bounds, aligned, initialized (plus mutable when
+`isMut = true`) allocation invariants on provenance-bearing pointers. -/
+theorem sliceFromRawPartsCheck_requires_nonnull_bounds_and_alignment
+    (m : MirSemantics.MemoryState) (isMut : Bool) (es eal : Nat)
+    (p : PtrVal) (len : UInt64) (v : Val)
+    (h_s : sliceFromRawPartsCheck m isMut es eal p len = .ok v) :
+    v = .slicePtr p len ∧
+    len.toNat * es < isizeMaxBytes ∧
+    (p.allocId = none →
+      p.offsetBytes.toNat ≠ 0 ∧
+      len.toNat * es = 0 ∧
+      Nat.mod p.offsetBytes.toNat (Nat.pow 2 eal) = 0) ∧
+    (∀ aid, p.allocId = some aid →
+      ∃ a : MirSemantics.Allocation,
+        findAllocation aid m.allocations = some a ∧
+        a.live = true ∧
+        isInBounds a p.offsetBytes.toNat (len.toNat * es) = true ∧
+        isAligned a p.offsetBytes.toNat eal = true ∧
+        (isMut = true → a.mutability = .mut) ∧
+        isSliceAllInit
+          ((a.bytes.drop p.offsetBytes.toNat).take
+            (len.toNat * es)) = true) := by
+  dsimp only [sliceFromRawPartsCheck] at h_s
+  cases h_tb : Nat.blt (len.toNat * es) isizeMaxBytes with
+  | false => rw [h_tb] at h_s; cases h_s
+  | true =>
+    rw [h_tb] at h_s
+    have h_lt : len.toNat * es < isizeMaxBytes := nat_blt_true_lt h_tb
+    cases h_aid : p.allocId with
+    | none =>
+      rw [h_aid] at h_s
+      dsimp only at h_s
+      cases h_off0 : Nat.beq p.offsetBytes.toNat 0 with
+      | true => rw [h_off0] at h_s; cases h_s
+      | false =>
+        cases h_pos : Nat.blt 0 (len.toNat * es) with
+        | true => rw [h_off0, h_pos] at h_s; cases h_s
+        | false =>
+          rw [h_off0, h_pos] at h_s
+          cases h_mod :
+              Nat.beq (Nat.mod p.offsetBytes.toNat (Nat.pow 2 eal)) 0 with
+          | false => rw [h_mod] at h_s; cases h_s
+          | true =>
+            rw [h_mod] at h_s
+            injection h_s with h_v
+            refine ⟨h_v.symm, h_lt, ?_, fun aid h_eq => by cases h_eq⟩
+            intro _
+            exact ⟨nat_beq_false_ne h_off0,
+              nat_blt_zero_false_eq_zero h_pos,
+              (nat_beq_true_iff _ 0).1 h_mod⟩
+    | some aid =>
+      rw [h_aid] at h_s
+      dsimp only at h_s
+      cases h_fa : findAllocation aid m.allocations with
+      | none => rw [h_fa] at h_s; dsimp only at h_s; cases h_s
+      | some a =>
+        rw [h_fa] at h_s
+        dsimp only at h_s
+        cases h_live : a.live with
+        | false => rw [h_live] at h_s; cases h_s
+        | true =>
+          cases h_ib :
+              isInBounds a p.offsetBytes.toNat (len.toNat * es) with
+          | false => rw [h_live, h_ib] at h_s; cases h_s
+          | true =>
+            cases h_al : isAligned a p.offsetBytes.toNat eal with
+            | false => rw [h_live, h_ib, h_al] at h_s; cases h_s
+            | true =>
+              rw [h_live, h_ib, h_al] at h_s
+              cases h_mut_ok : (isMut && !Mutability.beq a.mutability .mut) with
+              | true => rw [h_mut_ok] at h_s; cases h_s
+              | false =>
+                rw [h_mut_ok] at h_s
+                cases h_init :
+                    isSliceAllInit
+                      ((a.bytes.drop p.offsetBytes.toNat).take
+                        (len.toNat * es)) with
+                | false => rw [h_init] at h_s; cases h_s
+                | true =>
+                  rw [h_init] at h_s
+                  injection h_s with h_v
+                  refine ⟨h_v.symm, h_lt,
+                    (fun h_none => by cases h_none), ?_⟩
+                  intro aid' h_eq
+                  injection h_eq with h_aid_eq
+                  subst h_aid_eq
+                  refine ⟨a, h_fa, h_live, h_ib, h_al, ?_, h_init⟩
+                  intro h_ismut
+                  rw [h_ismut, Bool.true_and] at h_mut_ok
+                  cases h_mb : Mutability.beq a.mutability .mut with
+                  | false => rw [h_mb] at h_mut_ok; cases h_mut_ok
+                  | true => exact Mutability.eq_of_beq h_mb
+
+/-- Any successful `ptrAddInMem` enforces `count * elemSize < isizeMaxBytes`,
+zero-delta invariance for provenance-free pointers, and live in-bounds
+offsets for provenance-bearing pointers. -/
+theorem ptrAddInMem_requires_bounds_and_no_wrap
+    (m : MirSemantics.MemoryState) (elemSize : Nat) (p : PtrVal) (count : Nat)
+    (p' : PtrVal)
+    (h_pa : ptrAddInMem m elemSize p count = .ok p') :
+    count * elemSize < isizeMaxBytes ∧
+    (p.allocId = none → count * elemSize = 0 ∧ p' = p) ∧
+    (∀ aid, p.allocId = some aid →
+      ∃ a : MirSemantics.Allocation,
+        findAllocation aid m.allocations = some a ∧
+        a.live = true ∧
+        p.offsetBytes.toNat + count * elemSize ≤ a.bytes.length ∧
+        p' = { p with
+          offsetBytes :=
+            UInt64.ofNat (p.offsetBytes.toNat + count * elemSize) }) := by
+  dsimp only [ptrAddInMem] at h_pa
+  cases h_ltb : Nat.blt (count * elemSize) isizeMaxBytes with
+  | false => rw [h_ltb] at h_pa; cases h_pa
+  | true =>
+    rw [h_ltb] at h_pa
+    have h_lt : count * elemSize < isizeMaxBytes := nat_blt_true_lt h_ltb
+    cases h_aid : p.allocId with
+    | none =>
+      rw [h_aid] at h_pa
+      dsimp only at h_pa
+      cases h_z : Nat.beq (count * elemSize) 0 with
+      | false => rw [h_z] at h_pa; cases h_pa
+      | true =>
+        rw [h_z] at h_pa
+        injection h_pa with h_p'
+        exact ⟨h_lt, fun _ => ⟨(nat_beq_true_iff _ 0).1 h_z, h_p'.symm⟩,
+          fun aid h_eq => by cases h_eq⟩
+    | some aid =>
+      rw [h_aid] at h_pa
+      dsimp only at h_pa
+      cases h_fa : findAllocation aid m.allocations with
+      | none => rw [h_fa] at h_pa; dsimp only at h_pa; cases h_pa
+      | some a =>
+        rw [h_fa] at h_pa
+        dsimp only at h_pa
+        cases h_live : a.live with
+        | false => rw [h_live] at h_pa; cases h_pa
+        | true =>
+          cases h_le :
+              Nat.ble (p.offsetBytes.toNat + count * elemSize)
+                a.bytes.length with
+          | false => rw [h_live, h_le] at h_pa; cases h_pa
+          | true =>
+            rw [h_live, h_le] at h_pa
+            injection h_pa with h_p'
+            refine ⟨h_lt, (fun h_none => by cases h_none), ?_⟩
+            intro aid' h_eq
+            injection h_eq with h_aid_eq
+            subst h_aid_eq
+            exact ⟨a, h_fa, h_live, (nat_ble_true_iff _ _).1 h_le, h_p'.symm⟩
+
+/-- `refValidInMem` on any integer slice reference reduces to
+`sliceFromRawPartsCheck` with the element integer layout. -/
+theorem refValidInMem_slice_requires_sliceFromRawParts
+    (m : MirSemantics.MemoryState) (reqMut : MirAst.Mutability) (w : IntWidth)
+    (s : Bool) (p : PtrVal) (len : UInt64)
+    (h_rv :
+      refValidInMem m reqMut (.slice (.int w s)) (.slicePtr p len) = .ok ()) :
+    ∃ v, sliceFromRawPartsCheck m (Mutability.beq reqMut .mut)
+      (intLayout w).size (intLayout w).alignLog2 p len = .ok v := by
+  dsimp only [refValidInMem] at h_rv
+  cases h_sc : sliceFromRawPartsCheck m (Mutability.beq reqMut .mut)
+      (intLayout w).size (intLayout w).alignLog2 p len with
+  | error k => rw [h_sc] at h_rv; dsimp only at h_rv; cases h_rv
+  | ok v => exact ⟨v, rfl⟩
+
+/-- `sliceGetUncheckedCheck` always checks `startOff ≤ endOff ≤ len` and
+advances `p` via `ptrAddInMem` with the new length `endOff - startOff`. -/
+theorem sliceGetUncheckedCheck_bounds_and_offset
+    (m : MirSemantics.MemoryState) (p : PtrVal) (len startOff endOff : Nat)
+    (v : Val)
+    (h_sg : sliceGetUncheckedCheck m p len startOff endOff = .ok v) :
+    startOff ≤ endOff ∧
+    endOff ≤ len ∧
+    ∃ p',
+      ptrAddInMem m 1 p startOff = .ok p' ∧
+      v = .slicePtr p' (UInt64.ofNat (endOff - startOff)) := by
+  dsimp only [sliceGetUncheckedCheck] at h_sg
+  cases h_se : Nat.ble startOff endOff with
+  | false => rw [h_se] at h_sg; cases h_sg
+  | true =>
+    cases h_el : Nat.ble endOff len with
+    | false => rw [h_se, h_el] at h_sg; cases h_sg
+    | true =>
+      rw [h_se, h_el] at h_sg
+      cases h_pa : ptrAddInMem m 1 p startOff with
+      | error k => rw [h_pa] at h_sg; dsimp only at h_sg; cases h_sg
+      | ok p' =>
+        rw [h_pa] at h_sg
+        dsimp only at h_sg
+        injection h_sg with h_v
+        exact ⟨(nat_ble_true_iff _ _).1 h_se, (nat_ble_true_iff _ _).1 h_el,
+          p', rfl, h_v.symm⟩
+
+/-- `evalRefRvalueV2` on `.deref` never escalates a `.shared` reference to
+`.mut`. -/
+theorem evalRefRvalueV2_deref_no_shared_to_mut
+    (bodyLocals : List MirTy) (locals : List LocalSlot)
+    (m : MirSemantics.MemoryState) (dstTy : MirTy) (place : Place) (pt : MirTy)
+    (h_proj : place.projection = [.deref])
+    (h_ty : MirSemantics.getElem? bodyLocals place.localId =
+      some (.ref .shared pt))
+    (res : Val × List LocalSlot × MirSemantics.MemoryState) :
+    evalRefRvalueV2 bodyLocals locals m dstTy .mut place ≠ .ok res := by
+  intro h_ok
+  dsimp only [evalRefRvalueV2] at h_ok
+  rw [h_proj, h_ty] at h_ok
+  dsimp only at h_ok
+  cases h_slot : MirSemantics.getElem? locals place.localId with
+  | none => rw [h_slot] at h_ok; dsimp only at h_ok; cases h_ok
+  | some slot =>
+    rw [h_slot] at h_ok
+    cases slot <;> cases h_ok
+
+/-- Every successful `evalRefRvalueV2` produces a reference valid against the
+resulting memory (`refValidInMem`) at `reqMut`. -/
+theorem evalRefRvalueV2_requires_refValidInMem
+    (bodyLocals : List MirTy) (locals : List LocalSlot)
+    (m : MirSemantics.MemoryState) (dstTy : MirTy) (reqMut : MirAst.Mutability)
+    (place : Place) (rv : Val) (locals' : List LocalSlot)
+    (m' : MirSemantics.MemoryState)
+    (h_ref : evalRefRvalueV2 bodyLocals locals m dstTy reqMut place =
+      .ok (rv, locals', m')) :
+    ∃ pt,
+      dstTy = .ref reqMut pt ∧
+      refValidInMem m' reqMut pt rv = .ok () := by
+  dsimp only [evalRefRvalueV2] at h_ref
+  cases h_proj : place.projection with
+  | nil =>
+    rw [h_proj] at h_ref
+    dsimp only at h_ref
+    cases h_prom : promoteLocalToMemory bodyLocals locals m place.localId with
+    | error k => rw [h_prom] at h_ref; dsimp only at h_ref; cases h_ref
+    | ok res =>
+      cases res with | mk localTy res =>
+      cases res with | mk mplace res =>
+      cases res with | mk locals1 m1 =>
+      rw [h_prom] at h_ref
+      dsimp only at h_ref
+      cases h_ty : MirTy.beq dstTy (.ref reqMut localTy) with
+      | false => rw [h_ty] at h_ref; cases h_ref
+      | true =>
+        rw [h_ty] at h_ref
+        let cand : Val :=
+          .ptr ⟨some mplace.allocId, UInt64.ofNat mplace.offset, .isize⟩
+        cases h_rv : refValidInMem m1 reqMut localTy cand with
+        | error k => rw [h_rv] at h_ref; dsimp only at h_ref; cases h_ref
+        | ok u =>
+          cases u
+          rw [h_rv] at h_ref
+          dsimp only at h_ref
+          injection h_ref with h_eq
+          have h_rv_eq : rv = cand := (congrArg Prod.fst h_eq).symm
+          have h_m_eq : m' = m1 :=
+            (congrArg (fun p => p.2.2) h_eq).symm
+          rw [h_rv_eq, h_m_eq]
+          exact ⟨localTy, MirTy.eq_of_beq h_ty, h_rv⟩
+  | cons hd tl =>
+    cases hd with
+    | deref =>
+      cases tl with
+      | cons _ _ => rw [h_proj] at h_ref; cases h_ref
+      | nil =>
+        rw [h_proj] at h_ref
+        dsimp only at h_ref
+        cases h_ty : MirSemantics.getElem? bodyLocals place.localId with
+        | none =>
+          rw [h_ty] at h_ref
+          cases h_sl : MirSemantics.getElem? locals place.localId <;>
+            (rw [h_sl] at h_ref; dsimp only at h_ref; cases h_ref)
+        | some baseTy =>
+          rw [h_ty] at h_ref
+          cases h_sl : MirSemantics.getElem? locals place.localId with
+          | none => rw [h_sl] at h_ref; dsimp only at h_ref; cases h_ref
+          | some slot =>
+            cases slot with
+            | dead => rw [h_sl] at h_ref; dsimp only at h_ref; cases h_ref
+            | immediate optVal =>
+              rw [h_sl] at h_ref
+              dsimp only at h_ref
+              cases baseTy with
+              | ref srcMut pt =>
+                dsimp only at h_ref
+                cases h_esc :
+                    (Mutability.beq srcMut .shared &&
+                      Mutability.beq reqMut .mut) with
+                | true => rw [h_esc] at h_ref; cases h_ref
+                | false =>
+                  cases h_beq : MirTy.beq dstTy (.ref reqMut pt) with
+                  | false => rw [h_esc, h_beq] at h_ref; cases h_ref
+                  | true =>
+                    rw [h_esc, h_beq] at h_ref
+                    cases optVal with
+                    | none => cases h_ref
+                    | some v =>
+                      dsimp only at h_ref
+                      cases h_rv : refValidInMem m reqMut pt v with
+                      | error k =>
+                        rw [h_rv] at h_ref; dsimp only at h_ref; cases h_ref
+                      | ok u =>
+                        cases u
+                        rw [h_rv] at h_ref
+                        dsimp only at h_ref
+                        injection h_ref with h_eq
+                        have h_rv_eq : rv = v :=
+                          (congrArg Prod.fst h_eq).symm
+                        have h_m_eq : m' = m :=
+                          (congrArg (fun p => p.2.2) h_eq).symm
+                        rw [h_rv_eq, h_m_eq]
+                        exact ⟨pt, MirTy.eq_of_beq h_beq, h_rv⟩
+              | bool | int _ _ | unit | never | char | ordering | enum _
+              | tuple _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
+              | unsupported =>
+                dsimp only at h_ref; cases h_ref
+            | indirect mplace =>
+              rw [h_sl] at h_ref
+              dsimp only at h_ref
+              cases baseTy with
+              | ref srcMut pt =>
+                dsimp only at h_ref
+                cases h_esc :
+                    (Mutability.beq srcMut .shared &&
+                      Mutability.beq reqMut .mut) with
+                | true => rw [h_esc] at h_ref; cases h_ref
+                | false =>
+                  cases h_beq : MirTy.beq dstTy (.ref reqMut pt) with
+                  | false => rw [h_esc, h_beq] at h_ref; cases h_ref
+                  | true =>
+                    rw [h_esc, h_beq] at h_ref
+                    cases h_ld : loadIndirectV2 m (.ref srcMut pt) mplace with
+                    | error k =>
+                      rw [h_ld] at h_ref; dsimp only at h_ref; cases h_ref
+                    | ok optVal =>
+                      rw [h_ld] at h_ref
+                      cases optVal with
+                      | none => cases h_ref
+                      | some v =>
+                        dsimp only at h_ref
+                        cases h_rv : refValidInMem m reqMut pt v with
+                        | error k =>
+                          rw [h_rv] at h_ref; dsimp only at h_ref; cases h_ref
+                        | ok u =>
+                          cases u
+                          rw [h_rv] at h_ref
+                          dsimp only at h_ref
+                          injection h_ref with h_eq
+                          have h_rv_eq : rv = v :=
+                            (congrArg Prod.fst h_eq).symm
+                          have h_m_eq : m' = m :=
+                            (congrArg (fun p => p.2.2) h_eq).symm
+                          rw [h_rv_eq, h_m_eq]
+                          exact ⟨pt, MirTy.eq_of_beq h_beq, h_rv⟩
+              | bool | int _ _ | unit | never | char | ordering | enum _
+              | tuple _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _
+              | unsupported =>
+                dsimp only at h_ref; cases h_ref
+    | field _ _ | unsupported => rw [h_proj] at h_ref; cases h_ref
+
+/-- `execCoreCallOp .sliceGetUncheckedRangeTo` rejects `.shared -> .mut`
+escalation, validates the input slice against `inMut`, and checks `[0..endOff]`
+bounds via `sliceGetUncheckedCheck`. -/
+theorem execCoreCallOp_sliceGetUncheckedRangeTo_spec
+    (m : MirSemantics.MemoryState) (inMut : MirAst.Mutability) (p : PtrVal)
+    (len endOff : UInt64) (dstTy : MirTy) (v : Val)
+    (h_op : execCoreCallOp m .sliceGetUncheckedRangeTo
+      [(.ref inMut (.slice (.int .i8 false)), .slicePtr p len),
+       (.rangeTo (.int .isize false), .rangeTo endOff)] dstTy = .ok v) :
+    ∃ outMut,
+      dstTy = .ref outMut (.slice (.int .i8 false)) ∧
+      (inMut = .shared → outMut = .shared) ∧
+      refValidInMem m inMut (.slice (.int .i8 false)) (.slicePtr p len) =
+        .ok () ∧
+      sliceGetUncheckedCheck m p len.toNat 0 endOff.toNat = .ok v := by
+  dsimp only [execCoreCallOp] at h_op
+  cases dstTy with
+  | ref outMut pt =>
+    cases pt with
+    | slice elem =>
+      cases elem with
+      | int w s =>
+        cases w with
+        | i8 =>
+          cases s with
+          | false =>
+            dsimp only at h_op
+            cases h_esc : (Mutability.beq inMut .shared &&
+                Mutability.beq outMut .mut) with
+            | true => rw [h_esc] at h_op; cases h_op
+            | false =>
+              rw [h_esc] at h_op
+              cases h_rv : refValidInMem m inMut (.slice (.int .i8 false))
+                  (.slicePtr p len) with
+              | error k => rw [h_rv] at h_op; dsimp only at h_op; cases h_op
+              | ok u =>
+                cases u
+                rw [h_rv] at h_op
+                dsimp only at h_op
+                refine ⟨outMut, rfl, ?_, rfl, h_op⟩
+                intro h_in
+                rw [h_in] at h_esc
+                cases outMut with
+                | shared => rfl
+                | «mut» => cases h_esc
+          | true => dsimp only at h_op; cases h_op
+        | i16 | i32 | i64 | i128 | isize => dsimp only at h_op; cases h_op
+      | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
+      | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+        dsimp only at h_op; cases h_op
+    | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
+    | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | unsupported =>
+      dsimp only at h_op; cases h_op
+  | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
+  | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+    dsimp only at h_op; cases h_op
+
+/-- `execCoreCallOp .sliceGetUncheckedRangeFrom` rejects `.shared -> .mut`
+escalation, validates the input slice against `inMut`, and checks
+`[startOff..len]` bounds via `sliceGetUncheckedCheck`. -/
+theorem execCoreCallOp_sliceGetUncheckedRangeFrom_spec
+    (m : MirSemantics.MemoryState) (inMut : MirAst.Mutability) (p : PtrVal)
+    (len startOff : UInt64) (dstTy : MirTy) (v : Val)
+    (h_op : execCoreCallOp m .sliceGetUncheckedRangeFrom
+      [(.ref inMut (.slice (.int .i8 false)), .slicePtr p len),
+       (.rangeFrom (.int .isize false), .rangeFrom startOff)] dstTy = .ok v) :
+    ∃ outMut,
+      dstTy = .ref outMut (.slice (.int .i8 false)) ∧
+      (inMut = .shared → outMut = .shared) ∧
+      refValidInMem m inMut (.slice (.int .i8 false)) (.slicePtr p len) =
+        .ok () ∧
+      sliceGetUncheckedCheck m p len.toNat startOff.toNat len.toNat =
+        .ok v := by
+  dsimp only [execCoreCallOp] at h_op
+  cases dstTy with
+  | ref outMut pt =>
+    cases pt with
+    | slice elem =>
+      cases elem with
+      | int w s =>
+        cases w with
+        | i8 =>
+          cases s with
+          | false =>
+            dsimp only at h_op
+            cases h_esc : (Mutability.beq inMut .shared &&
+                Mutability.beq outMut .mut) with
+            | true => rw [h_esc] at h_op; cases h_op
+            | false =>
+              rw [h_esc] at h_op
+              cases h_rv : refValidInMem m inMut (.slice (.int .i8 false))
+                  (.slicePtr p len) with
+              | error k => rw [h_rv] at h_op; dsimp only at h_op; cases h_op
+              | ok u =>
+                cases u
+                rw [h_rv] at h_op
+                dsimp only at h_op
+                refine ⟨outMut, rfl, ?_, rfl, h_op⟩
+                intro h_in
+                rw [h_in] at h_esc
+                cases outMut with
+                | shared => rfl
+                | «mut» => cases h_esc
+          | true => dsimp only at h_op; cases h_op
+        | i16 | i32 | i64 | i128 | isize => dsimp only at h_op; cases h_op
+      | bool | unit | never | char | ordering | enum _ | tuple _ | ref _ _
+      | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+        dsimp only at h_op; cases h_op
+    | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
+    | ref _ _ | rawPtr _ _ | rangeTo _ | rangeFrom _ | unsupported =>
+      dsimp only at h_op; cases h_op
+  | bool | int _ _ | unit | never | char | ordering | enum _ | tuple _
+  | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+    dsimp only at h_op; cases h_op
+
+/-- `execCoreCallOp .sliceLen` validates the slice reference via
+`refValidInMem` and constrains the destination type to `usize`. -/
+theorem execCoreCallOp_sliceLen_spec (m : MirSemantics.MemoryState)
+    (reqMut : MirAst.Mutability) (w : IntWidth) (s : Bool) (p : PtrVal)
+    (len : UInt64) (dstTy : MirTy) (v : Val)
+    (h_op : execCoreCallOp m .sliceLen
+      [(.ref reqMut (.slice (.int w s)), .slicePtr p len)] dstTy = .ok v) :
+    dstTy = .int .isize false ∧
+    refValidInMem m reqMut (.slice (.int w s)) (.slicePtr p len) = .ok () := by
+  dsimp only [execCoreCallOp] at h_op
+  cases h_ty : MirTy.beq dstTy (.int .isize false) with
+  | false => rw [h_ty] at h_op; cases h_op
+  | true =>
+    rw [h_ty] at h_op
+    cases h_rv :
+        refValidInMem m reqMut (.slice (.int w s)) (.slicePtr p len) with
+    | error k => rw [h_rv] at h_op; dsimp only at h_op; cases h_op
+    | ok u =>
+      cases u
+      exact ⟨MirTy.eq_of_beq h_ty, rfl⟩
+
+/-- `execCoreCallOp (.ptrAdd reqMut pointee)` requires matching mutability and
+pointee type, sized `pointee`, and checked `ptrAddInMem`. -/
+theorem execCoreCallOp_ptrAdd_spec (m : MirSemantics.MemoryState)
+    (reqMut argMut : MirAst.Mutability) (pointee argPt : MirTy) (p : PtrVal)
+    (countSv : ScalarVal) (dstTy : MirTy) (v : Val)
+    (h_op : execCoreCallOp m (.ptrAdd reqMut pointee)
+      [(.rawPtr argMut argPt, .ptr p), (.int .isize false, .scalar countSv)]
+      dstTy = .ok v) :
+    reqMut = argMut ∧
+    pointee = argPt ∧
+    dstTy = .rawPtr reqMut pointee ∧
+    isUnsizedTy pointee = false ∧
+    ∃ lay p',
+      layoutOfTyV2 pointee = some lay ∧
+      ptrAddInMem m lay.size p countSv.bits.toNat = .ok p' ∧
+      v = .ptr p' := by
+  dsimp only [execCoreCallOp] at h_op
+  cases h_m : Mutability.beq reqMut argMut with
+  | false => rw [h_m] at h_op; cases h_op
+  | true =>
+    cases h_p : MirTy.beq pointee argPt with
+    | false => rw [h_m, h_p] at h_op; cases h_op
+    | true =>
+      cases h_d : MirTy.beq dstTy (.rawPtr reqMut pointee) with
+      | false => rw [h_m, h_p, h_d] at h_op; cases h_op
+      | true =>
+        cases h_u : isUnsizedTy pointee with
+        | true => rw [h_m, h_p, h_d, h_u] at h_op; cases h_op
+        | false =>
+          rw [h_m, h_p, h_d, h_u] at h_op
+          cases h_lay : layoutOfTyV2 pointee with
+          | none => rw [h_lay] at h_op; dsimp only at h_op; cases h_op
+          | some lay =>
+            rw [h_lay] at h_op
+            dsimp only at h_op
+            cases h_pa : ptrAddInMem m lay.size p countSv.bits.toNat with
+            | error k => rw [h_pa] at h_op; dsimp only at h_op; cases h_op
+            | ok p' =>
+              rw [h_pa] at h_op
+              dsimp only at h_op
+              injection h_op with h_v
+              exact ⟨Mutability.eq_of_beq h_m, MirTy.eq_of_beq h_p,
+                MirTy.eq_of_beq h_d, rfl, lay, p', rfl, h_pa, h_v.symm⟩
+
+/-- `evalPtrToPtrCastV2` accepts only raw-pointer inputs, forbids const-to-mut
+and wide-to-thin pointer casts, rejects unsized thin pointees, and requires
+identical slice element types on wide casts. -/
+theorem evalPtrToPtrCastV2_rejects_unsized_thin_and_preserves_shape
+    (srcTy : MirTy) (srcVal : Val) (castMut : MirAst.Mutability)
+    (castPt : MirTy) (res : Val)
+    (h_c : evalPtrToPtrCastV2 srcTy srcVal (.rawPtr castMut castPt) = .ok res) :
+    (∃ srcMut srcPt p,
+      srcTy = .rawPtr srcMut srcPt ∧
+      srcVal = .ptr p ∧
+      res = .ptr p ∧
+      (srcMut = .shared → castMut = .shared) ∧
+      isUnsizedTy srcPt = false ∧
+      isUnsizedTy castPt = false) ∨
+    (∃ srcMut elem p len,
+      srcTy = .rawPtr srcMut (.slice elem) ∧
+      castPt = .slice elem ∧
+      srcVal = .slicePtr p len ∧
+      (srcMut = .shared → castMut = .shared) ∧
+      res = .slicePtr p len) := by
+  dsimp only [evalPtrToPtrCastV2] at h_c
+  cases srcTy with
+  | rawPtr srcMut srcPt =>
+    cases h_cm :
+        isConstRawPtrTy (.rawPtr srcMut srcPt) &&
+          MirAst.Mutability.beq castMut .mut with
+    | true => rw [h_cm] at h_c; cases h_c
+    | false =>
+      rw [h_cm] at h_c
+      have h_mut : srcMut = .shared → castMut = .shared := by
+        intro h_sh
+        subst h_sh
+        cases castMut with
+        | shared => rfl
+        | «mut» =>
+          dsimp only [isConstRawPtrTy, MirAst.Mutability.beq] at h_cm
+          cases h_cm
+      cases srcVal with
+      | ptr p =>
+        dsimp only at h_c
+        cases h_us : isUnsizedTy srcPt with
+        | true => rw [h_us] at h_c; cases h_c
+        | false =>
+          cases h_uc : isUnsizedTy castPt with
+          | true => rw [h_us, h_uc] at h_c; cases h_c
+          | false =>
+            rw [h_us, h_uc] at h_c
+            injection h_c with h_r
+            exact Or.inl
+              ⟨srcMut, srcPt, p, rfl, rfl, h_r.symm, h_mut, h_us, rfl⟩
+      | slicePtr p len =>
+        cases srcPt with
+        | slice srcElem =>
+          cases castPt with
+          | slice castElem =>
+            dsimp only at h_c
+            cases h_el : MirTy.beq srcElem castElem with
+            | false => rw [h_el] at h_c; cases h_c
+            | true =>
+              rw [h_el] at h_c
+              injection h_c with h_r
+              exact Or.inr ⟨srcMut, srcElem, p, len, rfl,
+                congrArg MirTy.slice (MirTy.eq_of_beq h_el).symm,
+                rfl, h_mut, h_r.symm⟩
+          | _ => dsimp only at h_c; cases h_c
+        | _ => dsimp only at h_c; cases h_c
+      | _ => dsimp only at h_c; cases h_c
+  | _ => dsimp only [isConstRawPtrTy] at h_c; cases h_c
+
+/-- Tuple aggregation in `evalRvalueV2` enforces `checkValV2` on its result at
+`dstTy`. -/
+theorem aggregateTuple_evalRvalueV2_preserves_checkValV2
+    (bodyLocals : List MirTy) (locals : List LocalSlot)
+    (m : MirSemantics.MemoryState) (dstTy : MirTy) (fields : List Operand)
+    (v : Val) (locals' : List LocalSlot) (m' : MirSemantics.MemoryState)
+    (h_ev : evalRvalueV2 bodyLocals locals m dstTy (.aggregateTuple fields) =
+      .ok (v, locals', m')) :
+    ∃ fieldTys vs,
+      dstTy = .tuple fieldTys ∧
+      v = .tuple vs ∧
+      checkValV2 v dstTy = true := by
+  dsimp only [evalRvalueV2] at h_ev
+  cases dstTy with
+  | tuple fieldTys =>
+    dsimp only at h_ev
+    cases h_args : evalArgOperandsV2 bodyLocals locals m fields with
+    | error k => rw [h_args] at h_ev; dsimp only at h_ev; cases h_ev
+    | ok res =>
+      cases res with | mk typedVals res =>
+      cases res with | mk locals1 mem1 =>
+      rw [h_args] at h_ev
+      dsimp only at h_ev
+      cases h_cv : checkValV2List (argValues typedVals) fieldTys with
+      | false => rw [h_cv] at h_ev; cases h_ev
+      | true =>
+        rw [h_cv] at h_ev
+        injection h_ev with h_eq
+        have h_veq : v = .tuple (argValues typedVals) :=
+          (congrArg Prod.fst h_eq).symm
+        rw [h_veq]
+        exact ⟨fieldTys, argValues typedVals, rfl, rfl, h_cv⟩
+  | bool | int _ _ | unit | never | char | ordering | enum _ | ref _ _
+  | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+    dsimp only at h_ev; cases h_ev
+
+/-- Every successful `writePlaceDestV2` (used by both `evalStatementV2 .assign`
+and `writePlaceV2`) guarantees `checkValV2 val dstTy = true`. -/
+theorem writePlaceDestV2_requires_checkValV2 (locals : List LocalSlot)
+    (m : MirSemantics.MemoryState) (dest : PlaceDestV2) (dstTy : MirTy)
+    (val : Val) (locals' : List LocalSlot) (m' : MirSemantics.MemoryState)
+    (h_wp : writePlaceDestV2 locals m dest dstTy val = .ok (locals', m')) :
+    checkValV2 val dstTy = true := by
+  dsimp only [writePlaceDestV2] at h_wp
+  cases h_cv : checkValV2 val dstTy with
+  | false => rw [h_cv] at h_wp; cases h_wp
+  | true => rfl
+
+/-- Every successful `writePlaceV2` guarantees `checkValV2 val dstTy = true`. -/
+theorem writePlaceV2_requires_checkValV2 (bodyLocals : List MirTy)
+    (locals : List LocalSlot) (m : MirSemantics.MemoryState) (dst : Place)
+    (dstTy : MirTy) (val : Val) (locals' : List LocalSlot)
+    (m' : MirSemantics.MemoryState)
+    (h_wp : writePlaceV2 bodyLocals locals m dst dstTy val =
+      .ok (locals', m')) :
+    checkValV2 val dstTy = true := by
+  dsimp only [writePlaceV2] at h_wp
+  cases h_res : resolvePlaceDestV2 bodyLocals locals m dst dstTy with
+  | error k => rw [h_res] at h_wp; cases h_wp
+  | ok dest =>
+    rw [h_res] at h_wp
+    exact writePlaceDestV2_requires_checkValV2 locals m dest dstTy val locals'
+      m' h_wp
+
+private theorem resolvePlaceDestV2_deref_branch (pt dstTy : MirTy)
+    (ptrMut : MirAst.Mutability) (ptrRes : Except FaultKind (Option Val))
+    (dest : PlaceDestV2)
+    (h_match :
+      (if isUnsizedTy pt || !MirTy.beq pt dstTy then .error .unsupported
+       else if !MirAst.Mutability.beq ptrMut .mut then .error .undefined
+       else
+         match layoutOfTyV2 pt with
+         | none => .error .unsupported
+         | some lay =>
+           match ptrRes with
+           | .error k => .error k
+           | .ok none => .error .undefined
+           | .ok (some (.ptr pv)) => .ok (.deref pt lay pv)
+           | .ok (some _) => .error .unsupported :
+          Except FaultKind PlaceDestV2) = .ok dest) :
+    ptrMut = .mut ∧
+    isUnsizedTy pt = false ∧
+    pt = dstTy ∧
+    ∃ lay pv, layoutOfTyV2 pt = some lay ∧ dest = .deref pt lay pv := by
+  cases h_us : isUnsizedTy pt with
+  | true => rw [h_us] at h_match; cases h_match
+  | false =>
+    cases h_beq : MirTy.beq pt dstTy with
+    | false => rw [h_us, h_beq] at h_match; cases h_match
+    | true =>
+      rw [h_us, h_beq] at h_match
+      cases ptrMut with
+      | shared => cases h_match
+      | «mut» =>
+        dsimp only [MirAst.Mutability.beq] at h_match
+        cases h_lay : layoutOfTyV2 pt with
+        | none => rw [h_lay] at h_match; cases h_match
+        | some lay =>
+          rw [h_lay] at h_match
+          cases ptrRes with
+          | error _ => cases h_match
+          | ok optVal =>
+            cases optVal with
+            | none => cases h_match
+            | some v =>
+              cases v with
+              | ptr pv =>
+                injection h_match with h_d
+                exact ⟨rfl, rfl, MirTy.eq_of_beq h_beq,
+                  ⟨lay, pv, rfl, h_d.symm⟩⟩
+              | scalar _ | slicePtr _ _ | rangeTo _ | rangeFrom _ | bool _
+              | char _ | ordering _ | unit | enumVal _ _ | tuple _ | bytes _ =>
+                cases h_match
+
+/-- Any `.deref` destination resolved by `resolvePlaceDestV2` (used by both
+`evalStatementV2 .assign` and `writePlaceV2`) must originate from a `.mut`
+reference or `.mut` raw pointer local whose pointee is sized and matches
+`dstTy`, producing `.deref pt lay pv` with `layoutOfTyV2 pt = some lay`. -/
+theorem resolvePlaceDestV2_deref_requires_mut_ptr
+    (bodyLocals : List MirTy) (locals : List LocalSlot)
+    (m : MirSemantics.MemoryState) (dst : Place) (dstTy : MirTy)
+    (dest : PlaceDestV2) (h_proj : dst.projection = [.deref])
+    (h_res : resolvePlaceDestV2 bodyLocals locals m dst dstTy = .ok dest) :
+    ∃ ptrTy pt lay pv,
+      MirSemantics.getElem? bodyLocals dst.localId = some ptrTy ∧
+      (ptrTy = .ref .mut pt ∨ ptrTy = .rawPtr .mut pt) ∧
+      isUnsizedTy pt = false ∧
+      pt = dstTy ∧
+      layoutOfTyV2 pt = some lay ∧
+      dest = .deref pt lay pv := by
+  dsimp only [resolvePlaceDestV2] at h_res
+  rw [h_proj] at h_res
+  dsimp only at h_res
+  cases h_ty : MirSemantics.getElem? bodyLocals dst.localId with
+  | none =>
+    rw [h_ty] at h_res
+    cases h_sl : MirSemantics.getElem? locals dst.localId <;>
+      (rw [h_sl] at h_res; dsimp only at h_res; cases h_res)
+  | some ptrTy =>
+    rw [h_ty] at h_res
+    cases h_sl : MirSemantics.getElem? locals dst.localId with
+    | none => rw [h_sl] at h_res; dsimp only at h_res; cases h_res
+    | some slot =>
+      cases slot with
+      | dead => rw [h_sl] at h_res; dsimp only at h_res; cases h_res
+      | immediate _ | indirect _ =>
+        rw [h_sl] at h_res
+        cases ptrTy with
+        | ref ptrMut pt =>
+          dsimp only at h_res
+          let ⟨h_m, h_us, h_eq, lay, pv, h_lay, h_d⟩ :=
+            resolvePlaceDestV2_deref_branch pt dstTy ptrMut _ dest h_res
+          subst h_m
+          exact ⟨.ref .mut pt, pt, lay, pv, rfl, Or.inl rfl, h_us, h_eq,
+            h_lay, h_d⟩
+        | rawPtr ptrMut pt =>
+          dsimp only at h_res
+          let ⟨h_m, h_us, h_eq, lay, pv, h_lay, h_d⟩ :=
+            resolvePlaceDestV2_deref_branch pt dstTy ptrMut _ dest h_res
+          subst h_m
+          exact ⟨.rawPtr .mut pt, pt, lay, pv, rfl, Or.inr rfl, h_us, h_eq,
+            h_lay, h_d⟩
+        | bool | int _ _ | unit | never | char | ordering | enum _
+        | tuple _ | slice _ | rangeTo _ | rangeFrom _ | unsupported =>
+          cases h_res
+
+/-- Any `.deref` store accepted by `writePlaceV2` must originate from a
+`.mut` reference or `.mut` raw pointer local whose pointee is sized and matches
+`dstTy`. -/
+theorem writePlaceV2_deref_requires_mut_ptr (bodyLocals : List MirTy)
+    (locals : List LocalSlot) (m : MirSemantics.MemoryState) (dst : Place)
+    (dstTy : MirTy) (val : Val) (locals' : List LocalSlot)
+    (m' : MirSemantics.MemoryState)
+    (h_proj : dst.projection = [.deref])
+    (h_wp : writePlaceV2 bodyLocals locals m dst dstTy val =
+      .ok (locals', m')) :
+    ∃ ptrTy pt,
+      MirSemantics.getElem? bodyLocals dst.localId = some ptrTy ∧
+      (ptrTy = .ref .mut pt ∨ ptrTy = .rawPtr .mut pt) ∧
+      isUnsizedTy pt = false ∧
+      pt = dstTy := by
+  dsimp only [writePlaceV2] at h_wp
+  cases h_res : resolvePlaceDestV2 bodyLocals locals m dst dstTy with
+  | error k => rw [h_res] at h_wp; cases h_wp
+  | ok dest =>
+    let ⟨ptrTy, pt, _, _, h_l, h_m, h_us, h_eq, _, _⟩ :=
+      resolvePlaceDestV2_deref_requires_mut_ptr bodyLocals locals m dst dstTy
+        dest h_proj h_res
+    exact ⟨ptrTy, pt, h_l, h_m, h_us, h_eq⟩
+
+/-- Every successful `evalStatementV2 .assign` targeting a `.deref` place
+resolves a `.mut` reference or `.mut` raw pointer local matching sized `dstTy`,
+evaluates `rv` to `val` satisfying `checkValV2 val dstTy = true`, stores into
+`.deref pt lay pv`, and updates `st.mem` to the resulting memory `mem2`. -/
+theorem evalStatementV2_assign_deref_requires_mut_ptr_and_checkVal
+    (body : Body) (frame : FrameState) (m : MirSemantics.MemoryState)
+    (callerMem : CallerMemory) (dst : Place) (rv : Rvalue)
+    (st : MirSemantics.State)
+    (h_proj : dst.projection = [.deref])
+    (h_st : evalStatementV2 body frame m callerMem (.assign dst rv) =
+      .step st) :
+    ∃ dstTy ptrTy pt lay pv val locals1 mem1 locals2 mem2,
+      placeStaticTyV2 body.locals dst = some dstTy ∧
+      MirSemantics.getElem? body.locals dst.localId = some ptrTy ∧
+      (ptrTy = .ref .mut pt ∨ ptrTy = .rawPtr .mut pt) ∧
+      isUnsizedTy pt = false ∧
+      pt = dstTy ∧
+      layoutOfTyV2 pt = some lay ∧
+      resolvePlaceDestV2 body.locals frame.locals m dst dstTy =
+        .ok (.deref pt lay pv) ∧
+      evalRvalueV2 body.locals frame.locals m dstTy rv =
+        .ok (val, locals1, mem1) ∧
+      writePlaceDestV2 locals1 mem1 (.deref pt lay pv) dstTy val =
+        .ok (locals2, mem2) ∧
+      checkValV2 val dstTy = true ∧
+      st.mem = mem2 := by
+  dsimp only [evalStatementV2] at h_st
+  cases h_ty : placeStaticTyV2 body.locals dst with
+  | none => rw [h_ty] at h_st; cases h_st
+  | some dstTy =>
+    rw [h_ty] at h_st
+    dsimp only at h_st
+    cases h_res : resolvePlaceDestV2 body.locals frame.locals m dst dstTy with
+    | error k => rw [h_res] at h_st; cases h_st
+    | ok dest =>
+      rw [h_res] at h_st
+      dsimp only at h_st
+      cases h_ev : evalRvalueV2 body.locals frame.locals m dstTy rv with
+      | error k => rw [h_ev] at h_st; cases h_st
+      | ok res =>
+        cases res with | mk val res =>
+        cases res with | mk locals1 mem1 =>
+        rw [h_ev] at h_st
+        dsimp only at h_st
+        cases h_wp : writePlaceDestV2 locals1 mem1 dest dstTy val with
+        | error k => rw [h_wp] at h_st; cases h_st
+        | ok res2 =>
+          cases res2 with | mk locals2 mem2 =>
+          rw [h_wp] at h_st
+          dsimp only at h_st
+          injection h_st with h_st_eq
+          subst h_st_eq
+          let ⟨ptrTy, pt, lay, pv, h_l, h_m, h_us, h_eq, h_lay, h_d⟩ :=
+            resolvePlaceDestV2_deref_requires_mut_ptr body.locals frame.locals
+              m dst dstTy dest h_proj h_res
+          subst h_d
+          exact ⟨dstTy, ptrTy, pt, lay, pv, val, locals1, mem1, locals2, mem2,
+            rfl, h_l, h_m, h_us, h_eq, h_lay, h_res, h_ev, h_wp,
+            writePlaceDestV2_requires_checkValV2 locals1 mem1 (.deref pt lay pv)
+              dstTy val locals2 mem2 h_wp, rfl⟩
+
+/-- Overflow pairs `(T, bool)` are rejected as Profile v2 pointees behind both
+raw pointers and references (`isSupportedV2LocalTy`). -/
+theorem overflowPair_not_addressable_v2 (mu : MirAst.Mutability)
+    (w : IntWidth) (s : Bool) :
+    isSupportedV2LocalTy (.rawPtr mu (.tuple [.int w s, .bool])) = false ∧
+    isSupportedV2LocalTy (.ref mu (.tuple [.int w s, .bool])) = false :=
+  ⟨rfl, rfl⟩
+
+/-- Every normal Profile v2 return from `evalTerminatorV2` comes from a
+non-cleanup `.return_` block, enforces caller-memory provenance containment,
+pointee validity (`refsValidInMem`), mutable borrow disjointness, and snapshots
+caller-visible memory. -/
+theorem evalTerminatorV2_return_enforces_callerMem_validity_and_disjoint_spans
+    (body : Body) (bb : BasicBlock) (frame : FrameState)
+    (m : MirSemantics.MemoryState) (callerMem : CallerMemory) (rv : Out)
+    (h_t : evalTerminatorV2 body bb frame m callerMem = .done (.returned rv)) :
+    bb.terminator = .return_ ∧
+    bb.cleanup = false ∧
+    ∃ retTy,
+      MirSemantics.getElem? body.locals 0 = some retTy ∧
+      refsStayInCallerMem callerMem retTy rv.ret = true ∧
+      refsValidInMem m retTy rv.ret = true ∧
+      spansPairwiseDisjoint (refAccessSpans retTy rv.ret) = true ∧
+      rv.callerMem = extractCallerMemory callerMem m := by
+  dsimp only [evalTerminatorV2] at h_t
+  cases h_term : bb.terminator with
+  | goto _ => rw [h_term] at h_t; cases h_t
+  | unreachable => rw [h_term] at h_t; cases h_t
+  | switchInt discr targets =>
+    rw [h_term] at h_t
+    dsimp only at h_t
+    cases h_op : evalPrimitiveOperandV2 body.locals frame.locals m discr with
+    | error k => rw [h_op] at h_t; dsimp only at h_t; cases h_t
+    | ok res =>
+      cases res with | mk discrVal res =>
+      cases res with | mk localsAfterDiscr memAfterDiscr =>
+      rw [h_op] at h_t
+      dsimp only at h_t
+      have h_tr_ne :
+          ∀ tr : Except FaultKind BasicBlockId,
+            (match tr with
+             | .error k => StepResult.fault k
+             | .ok target =>
+               jumpToBlock { frame with locals := localsAfterDiscr }
+                 memAfterDiscr callerMem target) =
+              .done (.returned rv) → False := by
+        intro tr h_eq
+        cases tr with
+        | error _ => cases h_eq
+        | ok _ => cases h_eq
+      exact False.elim (h_tr_ne _ h_t)
+  | assert cond expected msg target _ =>
+    rw [h_term] at h_t
+    dsimp only at h_t
+    cases h_op : evalPrimitiveOperandV2 body.locals frame.locals m cond with
+    | error k => rw [h_op] at h_t; dsimp only at h_t; cases h_t
+    | ok res =>
+      cases res with | mk condVal res =>
+      cases res with | mk locals1 mem1 =>
+      rw [h_op] at h_t
+      dsimp only at h_t
+      cases condVal with
+      | bool b =>
+        dsimp only at h_t
+        cases h_eq : (b == expected) with
+        | true => rw [h_eq] at h_t; cases h_t
+        | false =>
+          rw [h_eq] at h_t
+          cases msg <;> cases h_t
+      | scalar _ | char _ | ordering _ | unit | enumVal _ _ | ptr _
+      | slicePtr _ _ | rangeTo _ | rangeFrom _ | tuple _ | bytes _ =>
+        dsimp only at h_t; cases h_t
+  | coreCall op args dst cont _ =>
+    rw [h_term] at h_t
+    cases cont with
+    | none => cases h_t
+    | some target =>
+      dsimp only at h_t
+      cases h_emp : dst.projection.isEmpty with
+      | false => rw [h_emp] at h_t; cases h_t
+      | true =>
+        rw [h_emp] at h_t
+        cases h_dt : MirSemantics.getElem? body.locals dst.localId with
+        | none => rw [h_dt] at h_t; dsimp only at h_t; cases h_t
+        | some dstTy =>
+          rw [h_dt] at h_t
+          dsimp only at h_t
+          cases h_args : evalArgOperandsV2 body.locals frame.locals m args with
+          | error k => rw [h_args] at h_t; dsimp only at h_t; cases h_t
+          | ok res =>
+            cases res with | mk typedArgs res =>
+            cases res with | mk locals1 mem1 =>
+            rw [h_args] at h_t
+            dsimp only at h_t
+            cases h_op : execCoreCallOp mem1 op typedArgs dstTy with
+            | error k => rw [h_op] at h_t; dsimp only at h_t; cases h_t
+            | ok resVal =>
+              rw [h_op] at h_t
+              dsimp only at h_t
+              cases h_wp :
+                  writePlaceV2 body.locals locals1 mem1 dst dstTy resVal with
+              | error k => rw [h_wp] at h_t; dsimp only at h_t; cases h_t
+              | ok res2 =>
+                cases res2 with | mk locals2 mem2 =>
+                rw [h_wp] at h_t
+                cases h_t
+  | unwindResume | call _ _ _ _ _ | unsupported =>
+    rw [h_term] at h_t; cases h_t
+  | return_ =>
+    rw [h_term] at h_t
+    dsimp only at h_t
+    cases h_cl : bb.cleanup with
+    | true => rw [h_cl] at h_t; cases h_t
+    | false =>
+      rw [h_cl] at h_t
+      cases h_rt : MirSemantics.getElem? body.locals 0 with
+      | none => rw [h_rt] at h_t; dsimp only at h_t; cases h_t
+      | some retTy =>
+        rw [h_rt] at h_t
+        dsimp only at h_t
+        have h_ret_ok :
+            ∀ retRes : Except FaultKind Val,
+              (match retRes with
+               | .error k => MirSemantics.StepResult.fault k
+               | .ok retVal =>
+                 if !refsStayInCallerMem callerMem retTy retVal ||
+                     !refsValidInMem m retTy retVal ||
+                     !spansPairwiseDisjoint
+                       (refAccessSpans retTy retVal) then
+                   .fault .undefined
+                 else
+                   .done (TerminalOut.returned
+                     ⟨retVal, extractCallerMemory callerMem m⟩) :
+                 MirSemantics.StepResult MirSemantics.State TerminalOut) =
+                (@MirSemantics.StepResult.done MirSemantics.State TerminalOut
+                  (TerminalOut.returned rv)) →
+              refsStayInCallerMem callerMem retTy rv.ret = true ∧
+              refsValidInMem m retTy rv.ret = true ∧
+              spansPairwiseDisjoint (refAccessSpans retTy rv.ret) = true ∧
+              rv.callerMem = extractCallerMemory callerMem m := by
+          intro retRes h_match
+          cases retRes with
+          | error k => cases h_match
+          | ok retVal =>
+            dsimp only at h_match
+            cases h1 : refsStayInCallerMem callerMem retTy retVal with
+            | false => rw [h1] at h_match; cases h_match
+            | true =>
+              cases h2 : refsValidInMem m retTy retVal with
+              | false => rw [h1, h2] at h_match; cases h_match
+              | true =>
+                cases h3 :
+                    spansPairwiseDisjoint (refAccessSpans retTy retVal) with
+                | false => rw [h1, h2, h3] at h_match; cases h_match
+                | true =>
+                  rw [h1, h2, h3] at h_match
+                  injection h_match with h_out
+                  injection h_out with h_rv
+                  subst h_rv
+                  exact ⟨h1, h2, h3, rfl⟩
+        let ⟨h1, h2, h3, h4⟩ := h_ret_ok _ h_t
+        exact ⟨rfl, rfl, retTy, rfl, h1, h2, h3, h4⟩
+
+/-- Non-vacuity witness: `evalPtrToPtrCastV2` succeeds on `.mut -> .shared`. -/
+theorem evalPtrToPtrCastV2_mut_to_shared_witness (pv : PtrVal) :
+    evalPtrToPtrCastV2 (.rawPtr .mut .bool) (.ptr pv) (.rawPtr .shared .bool) =
+      .ok (.ptr pv) := by
+  dsimp only [evalPtrToPtrCastV2, isConstRawPtrTy, MirAst.Mutability.beq,
+    isUnsizedTy]
+  rfl
+
+/-- Non-vacuity witness: `resolvePlaceDestV2` succeeds on `.deref` for a `.mut`
+pointer. -/
+theorem resolvePlaceDestV2_deref_bool_witness
+    (m : MirSemantics.MemoryState) (pv : PtrVal) :
+    ∃ lay,
+      resolvePlaceDestV2 [.rawPtr .mut .bool] [.immediate (some (.ptr pv))] m
+        { localId := 0, projection := [.deref] } .bool =
+          .ok (.deref .bool lay pv) := by
+  refine ⟨⟨1, 0⟩, ?_⟩
+  dsimp only [resolvePlaceDestV2, MirSemantics.getElem?, isUnsizedTy,
+    MirTy.beq, MirAst.Mutability.beq, layoutOfTyV2, layoutOfTy]
+  rfl
+
+/-- Non-vacuity witness: `writePlaceDestV2` succeeds on `.local`. -/
+theorem writePlaceDestV2_local_bool_witness (m : MirSemantics.MemoryState) :
+    writePlaceDestV2 [.immediate (some (.bool false))] m (.local 0) .bool
+        (.bool true) =
+      .ok ([.immediate (some (.bool true))], m) := by
+  dsimp only [writePlaceDestV2, checkValV2, MirSemantics.getElem?,
+    MirSemantics.setElem?]
+  rfl
+
 end Anneal.MirCorrespondence
