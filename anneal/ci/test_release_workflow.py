@@ -972,6 +972,142 @@ gh() {
                     expected_flags,
                 )
 
+    def test_version_history_guard_handles_tags_and_monorepo_moves(
+        self,
+    ) -> None:
+        prep_job = self.preparation["jobs"]["release"]
+        [guard_step] = [
+            s
+            for s in prep_job["steps"]
+            if s.get("name") == "Reject versions already in Git history"
+        ]
+        script = guard_step["run"]
+
+        with tempfile.TemporaryDirectory(prefix="anneal-ver-history-") as tmp:
+            repo = Path(tmp) / "repo"
+            subprocess.run(
+                ["git", "init", "-q", "--initial-branch=main", str(repo)],
+                check=True,
+            )
+
+            def git_commit(msg: str) -> None:
+                subprocess.run(["git", "add", "-A"], cwd=repo, check=True)
+                subprocess.run(
+                    [
+                        "git",
+                        "-c",
+                        "user.name=T",
+                        "-c",
+                        "user.email=t@e",
+                        "commit",
+                        "-qm",
+                        msg,
+                    ],
+                    cwd=repo,
+                    check=True,
+                )
+
+            # Commit 1: pre-monorepo layout at repository root (`0.7.35`).
+            (repo / "Cargo.toml").write_text(
+                '[package]\nname = "zerocopy"\nversion = "0.7.35"\n',
+                encoding="utf-8",
+            )
+            (repo / "zerocopy-derive").mkdir()
+            (repo / "zerocopy-derive" / "Cargo.toml").write_text(
+                '[package]\nname = "zerocopy-derive"\nversion = "0.7.35"\n',
+                encoding="utf-8",
+            )
+            git_commit("Pre-monorepo 0.7.35")
+
+            # Commit 2: move crate under `zerocopy/`, deleting root Cargo.tomls.
+            (repo / "Cargo.toml").unlink()
+            (repo / "zerocopy-derive" / "Cargo.toml").unlink()
+            (repo / "zerocopy-derive").rmdir()
+            (repo / "zerocopy" / "zerocopy-derive").mkdir(parents=True)
+            (repo / "zerocopy" / "Cargo.toml").write_text(
+                '[package]\nname = "zerocopy"\nversion = "0.8.64"\n',
+                encoding="utf-8",
+            )
+            (repo / "zerocopy" / "zerocopy-derive" / "Cargo.toml").write_text(
+                '[package]\nname = "zerocopy-derive"\nversion = "0.8.64"\n',
+                encoding="utf-8",
+            )
+            git_commit("Monorepo 0.8.64")
+
+            # Commit 3: current version `0.8.65` with release tag `v0.8.65`.
+            (repo / "zerocopy" / "Cargo.toml").write_text(
+                '[package]\nname = "zerocopy"\nversion = "0.8.65"\n',
+                encoding="utf-8",
+            )
+            (repo / "zerocopy" / "zerocopy-derive" / "Cargo.toml").write_text(
+                '[package]\nname = "zerocopy-derive"\nversion = "0.8.65"\n',
+                encoding="utf-8",
+            )
+            git_commit("Release 0.8.65")
+            subprocess.run(
+                [
+                    "git",
+                    "-c",
+                    "user.name=T",
+                    "-c",
+                    "user.email=t@e",
+                    "tag",
+                    "-a",
+                    "v0.8.65",
+                    "-m",
+                    "v0.8.65",
+                ],
+                cwd=repo,
+                check=True,
+            )
+            # Tag-only release without a matching Cargo.toml history entry.
+            subprocess.run(
+                [
+                    "git",
+                    "-c",
+                    "user.name=T",
+                    "-c",
+                    "user.email=t@e",
+                    "tag",
+                    "-a",
+                    "v0.8.66",
+                    "-m",
+                    "v0.8.66",
+                ],
+                cwd=repo,
+                check=True,
+            )
+
+            for version, expect_rc, expected_err in (
+                ("0.8.66", 1, "already has release tag v0.8.66"),
+                ("0.8.65", 1, "already has release tag v0.8.65"),
+                ("0.8.64", 1, "already appears in Git history"),
+                ("0.7.35", 1, "already appears in Git history"),
+                ("0.9.0", 0, ""),
+            ):
+                with self.subTest(version=version):
+                    res = subprocess.run(
+                        [
+                            "bash",
+                            "--noprofile",
+                            "--norc",
+                            "-euo",
+                            "pipefail",
+                            "-c",
+                            script,
+                        ],
+                        cwd=repo,
+                        env={**os.environ, "VERSION": version},
+                        capture_output=True,
+                        text=True,
+                        check=False,
+                    )
+                    self.assertEqual(
+                        res.returncode, expect_rc, res.stdout + res.stderr
+                    )
+                    if expected_err:
+                        self.assertIn(expected_err, res.stderr)
+
 
 if __name__ == "__main__":
     unittest.main()
