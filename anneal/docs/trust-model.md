@@ -632,10 +632,10 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
    `Miri.Interpreter.ExecutionMachine` cone (`verifyMiriExecutionMachineCone`)
    and correspondence dependency cone (`closureCorr`) for purity (rejecting any
    reachable `unsafe`, `isPartial`, `.vendorMiri` `opaque`, or unapproved
-   axiom), verifies all 37 correspondence, choice-coupled, wiring,
+   axiom), verifies all 38 correspondence, choice-coupled, wiring,
    `AllowedStep` soundness, byte-codec (`BytesCodecMatchesMiriClaim`, pinning
    `Trusted.MirSemantics.{encodeVal,decodeVal}` against `lean-miri`'s
-   `Allocation` scalar accesses), and canary (`D6`–`D16`) claims
+   `Allocation` scalar accesses), and canary (`D6`–`D17`) claims
    (`verifyCorrespondenceClaims`, enforcing universe monomorphism on every
    claim and proof and a mechanically checked non-empty required-constants list
    on every claim), and runs `verifyRefEvaluatorIndependence` (39 required live

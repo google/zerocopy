@@ -964,6 +964,20 @@ theorem collectTerminator_spec (acc : List MirTy) (term : TerminatorKind) :
     dsimp only [encodeTerminator, decodeTerminator]
     rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
     rfl
+  | sysrootCall op args dst t u =>
+    let ⟨h_sub₀, _⟩ := collectTy_spec acc (.int op.width op.signed)
+    let ⟨h_sub₁, h_dec₁⟩ := foldl_collect_mapOption_spec collectOperand
+      encodeOperand decodeOperand collectOperand_spec
+      (collectTy acc (.int op.width op.signed)) args
+    let ⟨h_sub₂, h_dec₂⟩ :=
+      collectPlace_spec
+        (args.foldl collectOperand (collectTy acc (.int op.width op.signed)))
+        dst
+    refine ⟨SubTable.trans (SubTable.trans h_sub₀ h_sub₁) h_sub₂,
+      fun ts h_s => ?_⟩
+    dsimp only [encodeTerminator, decodeTerminator]
+    rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
+    rfl
 
 theorem collectBasicBlock_spec (acc : List MirTy) (bb : BasicBlock) :
     SubTable acc (collectBasicBlock acc bb) ∧
@@ -1139,6 +1153,12 @@ theorem collectTerminator_canonical (acc : List MirTy) (term : TerminatorKind)
     exact collectPlace_canonical (args.foldl collectOperand acc) dst
       (foldl_preserve (fun ts => typesAreCanonical ts = true) collectOperand
         collectOperand_canonical args h)
+  | sysrootCall op args dst _ _ =>
+    exact collectPlace_canonical
+      (args.foldl collectOperand (collectTy acc (.int op.width op.signed))) dst
+      (foldl_preserve (fun ts => typesAreCanonical ts = true) collectOperand
+        collectOperand_canonical args
+        (collectTy_canonical acc (.int op.width op.signed) h))
 
 theorem collectBasicBlock_canonical (acc : List MirTy) (bb : BasicBlock)
     (h : typesAreCanonical acc = true) :

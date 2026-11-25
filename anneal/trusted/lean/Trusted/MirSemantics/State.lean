@@ -13,6 +13,7 @@ public import Init.NotationExtra
 public import Init.Control.Except
 public import Trusted.MirAst
 public import Trusted.MirModel
+public import Trusted.MirSemantics.Ops
 public import Trusted.MirSemantics.Enum
 public import Trusted.MirSemantics.Memory
 public import Trusted.MirSemantics.Bytes
@@ -34,12 +35,21 @@ initialization (`initState`) for $M_{\text{anneal}}$.
 /-- Active execution frame of $M_{\text{anneal}}$, corresponding to
 `rustc_const_eval::interpret::Frame`
 (`compiler/rustc_const_eval/src/interpret/stack.rs`, `rust-lang/rust`
-`8144389c895da997dbdecaa635e41d6a50be6ffd`). -/
+`8144389c895da997dbdecaa635e41d6a50be6ffd`).
+
+- `defId`: index into `Program.bodies` when `sysrootOp? = none`.
+- `sysrootOp?`: when `some op`, this frame executes the pinned `core::num`
+  sysroot primitive `sysrootNumBody op` rather than a body in `Program.bodies`.
+- `retDst?` / `retTarget?`: caller return destination and continuation block for
+  non-root callee frames (`none` on the root entry frame). -/
 structure FrameState where
   defId : DefId
   blockIdx : BasicBlockId
   stmtIdx : Nat
   locals : List LocalSlot
+  sysrootOp? : Option SysrootNumOp := none
+  retDst? : Option Place := none
+  retTarget? : Option BasicBlockId := none
 
 /-- Running machine state of $M_{\text{anneal}}$: the active execution
 frames, caller-visible memory, and the byte-level memory holding the stack
@@ -177,6 +187,340 @@ noncomputable def castTypesValid (body : Body) : Bool :=
         | _ => true
       | _ => true))
 
+/-- Pinned left-homogeneity of `Trusted.MirAst.BinOp`, matching
+`Miri.MIR.BinOp.leftHomogeneous` and `binop_left_homogeneous` in
+`compiler/rustc_const_eval/src/util/mod.rs` (`rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> /// Classify whether an operator is "left-homogeneous", i.e., the LHS has the
+> /// same type as the result.
+
+The arms below list the same `true`/`false` partition of operators as that
+function's `match`. -/
+noncomputable def binOpLeftHomogeneous : BinOp → Bool
+  | .add | .addUnchecked | .sub | .subUnchecked | .mul | .mulUnchecked
+  | .div | .rem | .bitXor | .bitAnd | .bitOr | .offset
+  | .shl | .shlUnchecked | .shr | .shrUnchecked => true
+  | .addWithOverflow | .subWithOverflow | .mulWithOverflow
+  | .eq | .ne | .lt | .le | .gt | .ge | .cmp => false
+
+/-- Pinned right-homogeneity of `Trusted.MirAst.BinOp`, matching
+`Miri.MIR.BinOp.rightHomogeneous` and `binop_right_homogeneous` in
+`compiler/rustc_const_eval/src/util/mod.rs` (`rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> /// Classify whether an operator is "right-homogeneous", i.e., the RHS has the
+> /// same type as the LHS.
+
+The arms below list the same `true`/`false` partition of operators as that
+function's `match`. -/
+noncomputable def binOpRightHomogeneous : BinOp → Bool
+  | .add | .addUnchecked | .addWithOverflow | .sub | .subUnchecked
+  | .subWithOverflow | .mul | .mulUnchecked | .mulWithOverflow | .div | .rem
+  | .bitXor | .bitAnd | .bitOr | .eq | .ne | .lt | .le | .gt | .ge
+  | .cmp => true
+  | .offset | .shl | .shlUnchecked | .shr | .shrUnchecked => false
+
+/-- Pinned homogeneity of `Trusted.MirAst.UnOp` (operand and result share a
+type), matching `Miri.MIR.UnOp.homogeneous`. `rustc` has no `util` helper
+for unary operators; the rule is `UnOp::ty` in
+`compiler/rustc_middle/src/mir/statement.rs` (`rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> UnOp::Not | UnOp::Neg => arg_ty,
+> UnOp::PtrMetadata => arg_ty.pointee_metadata_ty_or_projection(tcx), -/
+noncomputable def unOpHomogeneous : UnOp → Bool
+  | .not | .neg => true
+  | .ptrMetadata => false
+
+/-- Check whether an unprojected, in-bounds local operand agrees structurally
+with `expected` (leaving constants and projected/out-of-bounds operands
+unconstrained). -/
+noncomputable def localOperandMatchesTy (locals : List MirTy)
+    (opnd : Operand) (expected : MirTy) : Bool :=
+  match opnd with
+  | .copy p | .move p =>
+    if p.projection.isEmpty then
+      match getElem? locals p.localId with
+      | some srcTy => MirTy.beq srcTy expected
+      | none => true
+    else
+      true
+  | .constant _ => true
+
+/-- Resolve the declared `MirTy` of `opnd` when it is an unprojected in-bounds
+local or a constant operand. -/
+noncomputable def operandTy? (locals : List MirTy) : Operand → Option MirTy
+  | .copy p | .move p =>
+    if p.projection.isEmpty then getElem? locals p.localId else none
+  | .constant c => some c.ty
+
+/-- Check that every unprojected, in-bounds `Assign(dst, rv)` operand whose
+layout hint `Miri` caches directly via `known` (`Use`, `BinaryOp`, `UnaryOp` in
+`Miri.Interpreter.Rvalue.evalRvalueIntoPlace`) agrees with the declared local
+type, matching `rustc`'s MIR well-typedness invariant
+(`StatementKind::Assign` in `compiler/rustc_middle/src/mir/syntax.rs`). -/
+noncomputable def assignTypesValid (body : Body) : Bool :=
+  body.basicBlocks.all (fun bb =>
+    bb.statements.all (fun stmt =>
+      match stmt with
+      | .assign dst rv =>
+        if dst.projection.isEmpty then
+          match getElem? body.locals dst.localId with
+          | none => true
+          | some dstTy =>
+            match rv with
+            | .use opnd => localOperandMatchesTy body.locals opnd dstTy
+            | .binaryOp op lhs rhs =>
+              let lhsOk : Bool :=
+                if binOpLeftHomogeneous op then
+                  localOperandMatchesTy body.locals lhs dstTy
+                else
+                  true
+              let rhsOk : Bool :=
+                if binOpRightHomogeneous op then
+                  match operandTy? body.locals lhs with
+                  | none => true
+                  | some lTy => localOperandMatchesTy body.locals rhs lTy
+                else
+                  true
+              lhsOk && rhsOk
+            | .unaryOp op opnd =>
+              if unOpHomogeneous op then
+                localOperandMatchesTy body.locals opnd dstTy
+              else
+                true
+            | _ => true
+        else
+          true
+      | _ => true))
+
+/-- Underlying MIR binary operator implemented by each `SysrootNumKind`. -/
+noncomputable def sysrootNumBinOp : SysrootNumKind → BinOp
+  | .uncheckedAdd => .addUnchecked
+  | .uncheckedSub => .subUnchecked
+  | .uncheckedMul => .mulUnchecked
+  | .wrappingAdd => .add
+  | .wrappingSub => .sub
+  | .wrappingMul => .mul
+
+/-- Pinned synthetic MIR `Body` for a verified `core::num` sysroot call
+(`_0 = binOp(copy _1, copy _2); return`). Matched 1:1 against `core`'s
+`tcx.instance_mir` by `anneal-rustc-capture` and loaded into both
+$M_{\text{anneal}}$ and $M_{\text{ref}}$ (`dispatch.loadMir`). The source is
+`library/core/src/num/uint_macros.rs` (`int_macros.rs` for signed types) in
+`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`, e.g.:
+
+> pub const unsafe fn unchecked_add(self, rhs: Self) -> Self {
+>     assert_unsafe_precondition!(
+>         check_language_ub,
+>         concat!(stringify!($SelfT), "::unchecked_add cannot overflow"),
+> ...
+>     // SAFETY: this is guaranteed to be safe by the caller.
+>     unsafe {
+>         intrinsics::unchecked_add(self, rhs)
+>     }
+> }
+
+> pub const fn wrapping_add(self, rhs: Self) -> Self {
+>     intrinsics::wrapping_add(self, rhs)
+> }
+
+The `assert_unsafe_precondition!` branch is dead under capture's flags (UB
+checks off; see `verify_sysroot_num_call` in `anneal-rustc-capture`), so the
+body reduces to the intrinsic. `unchecked_*` keeps its UB contract through
+`.addUnchecked`/`.subUnchecked`/`.mulUnchecked`, which fault `.undefined` on
+overflow, and is marked `isUnsafe`. -/
+noncomputable def sysrootNumBody (op : SysrootNumOp) : Body :=
+  let ty : MirTy := .int op.width op.signed
+  let isUnsafe : Bool :=
+    match op.kind with
+    | .uncheckedAdd | .uncheckedSub | .uncheckedMul => true
+    | .wrappingAdd | .wrappingSub | .wrappingMul => false
+  {
+    identity := "core::num::sysroot"
+    isUnsafe := isUnsafe
+    argumentCount := 2
+    locals := [ty, ty, ty]
+    basicBlocks := [{
+      statements := [
+        .assign ⟨0, []⟩ (.binaryOp (sysrootNumBinOp op.kind)
+          (.copy ⟨1, []⟩) (.copy ⟨2, []⟩))
+      ]
+      terminator := .return_
+      cleanup := false
+    }]
+  }
+
+/-- Resolve the `Body` currently executing in `frame` (`sysrootNumBody op` when
+`frame.sysrootOp? = some op`, otherwise `p.bodies[frame.defId]`). -/
+noncomputable def activeFrameBody (p : Program) (frame : FrameState) :
+    Option Body :=
+  match frame.sysrootOp? with
+  | some op => some (sysrootNumBody op)
+  | none => getElem? p.bodies frame.defId
+
+/-- Membership test on a `List Nat` without emitting `._unsafe_rec`. -/
+noncomputable def natListContains (x : Nat) : List Nat → Bool
+  | [] => false
+  | y :: rest => Nat.beq x y || natListContains x rest
+
+/-- Collect the caller places moved by a call's argument list. -/
+noncomputable def movePlaceList : List Operand → List Place
+  | [] => []
+  | .move p :: rest => p :: movePlaceList rest
+  | _ :: rest => movePlaceList rest
+
+/-- Pairwise disjointness and empty-projection check across moved argument
+places and the call destination place, matching `moveDefinitelyDisjoint` in
+`Miri.Interpreter.Call`. -/
+noncomputable def placesDisjointAux (seen : List LocalId) : List Place → Bool
+  | [] => true
+  | p :: rest =>
+    if !p.projection.isEmpty || natListContains p.localId seen then
+      false
+    else
+      placesDisjointAux (p.localId :: seen) rest
+
+/-- Pairwise local-disjointness of `.move` call arguments and `dst`, matching
+`move_definitely_disjoint` in `eval_callee_and_args`
+(`compiler/rustc_const_eval/src/interpret/step.rs`, `rust-lang/rust`
+`f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> // We only have to care about `Move` arguments.
+> ...
+> if place.is_indirect_first_projection() {
+>     // An indirect in-place argument could alias with anything else...
+>     break 'move_definitely_disjoint false;
+> }
+> if !previous_locals.insert(place.local) {
+>     // This local is the base for two arguments! They might overlap.
+>     break 'move_definitely_disjoint false;
+> }
+
+`rustc` then forces possibly-aliasing moved arguments into memory. Profile
+version 1 has no in-memory argument passing, so `callTargetAdmitted` requires
+this check to succeed and also rejects every projected moved place or
+destination. -/
+noncomputable def moveDefinitelyDisjoint (args : List Operand) (dst : Place) :
+    Bool :=
+  placesDisjointAux [] (movePlaceList args ++ [dst])
+
+/-- Static type and constant admissibility of call arguments `args` against
+callee parameter types `paramTys`. -/
+noncomputable def callArgsMatchBody (bodyLocals : List MirTy) :
+    List Operand → List MirTy → Bool
+  | [], [] => true
+  | opnd :: restArgs, paramTy :: restParams =>
+    let argOk : Bool :=
+      match opnd with
+      | .copy place | .move place =>
+        if !place.projection.isEmpty then
+          false
+        else
+          match getElem? bodyLocals place.localId with
+          | some argTy => MirTy.beq argTy paramTy
+          | none => false
+      | .constant c =>
+        MirTy.beq c.ty paramTy &&
+          match evalConstLit c.ty c.lit with
+          | .ok _ => true
+          | .error _ => false
+    argOk && callArgsMatchBody bodyLocals restArgs restParams
+  | _, _ => false
+
+/-- Static admissibility of a single call site inside `body` against resolved
+`calleeBody`. It statically over-approximates the dynamic checks that `rustc`
+performs when it builds the callee frame (`init_stack_frame` and
+`pass_argument` in `compiler/rustc_const_eval/src/interpret/call.rs`,
+`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> /// Initialize a single callee argument, checking the types for compatibility.
+
+Here argument, parameter, destination and return types must be identical
+supported scalar or unit types, not merely ABI-compatible, and the argument
+count must equal the callee's `argumentCount`. -/
+noncomputable def callTargetAdmitted (body : Body) (bb : BasicBlock)
+    (calleeBody : Body) (args : List Operand) (dst : Place)
+    (target : Option BasicBlockId) (unwind : UnwindAction) : Bool :=
+  !bb.cleanup &&
+    (match unwind with | .cleanup _ => false | _ => true) &&
+    (match target with
+     | none => true
+     | some tgt => Nat.blt tgt body.basicBlocks.length) &&
+    dst.projection.isEmpty &&
+    moveDefinitelyDisjoint args dst &&
+    Nat.beq args.length calleeBody.argumentCount &&
+    Nat.blt calleeBody.argumentCount calleeBody.locals.length &&
+    (match getElem? body.locals dst.localId, getElem? calleeBody.locals 0 with
+     | some dstTy, some retTy =>
+       isSupportedScalarOrUnitTy dstTy && MirTy.beq dstTy retTy
+     | _, _ => false) &&
+    callArgsMatchBody body.locals args
+      ((calleeBody.locals.drop 1).take calleeBody.argumentCount)
+
+/-- Check that every `.call` and `.sysrootCall` terminator in `body` resolves
+to a valid target body with matching signature, disjoint moved places and
+destination, valid return block, and non-cleanup unwind action.
+
+A `.call` target must also be a safe function (`isUnsafe = false`). Calling an
+`unsafe fn` is sound only if the caller establishes the callee's safety
+contract, and $M_{\text{anneal}}$ executes the callee's MIR without checking
+the callee's `Specs.safety` at the call site, so a caller could otherwise be
+verified while violating a contract that the callee's MIR does not enforce.
+Such programs fail closed at `initState`. The pinned `core::num` bodies behind
+`.sysrootCall` are exempt: their only safety contract (no overflow for
+`unchecked_*`) is enforced by `.addUnchecked`/`.subUnchecked`/`.mulUnchecked`
+faulting `.undefined`. -/
+noncomputable def callsAdmitted (p : Program) (body : Body) : Bool :=
+  body.basicBlocks.all (fun bb =>
+    match bb.terminator with
+    | .call callee args dst target unwind =>
+      match getElem? p.bodies callee with
+      | none => false
+      | some calleeBody =>
+        !calleeBody.isUnsafe &&
+          callTargetAdmitted body bb calleeBody args dst target unwind
+    | .sysrootCall op args dst target unwind =>
+      callTargetAdmitted body bb (sysrootNumBody op) args dst target unwind
+    | _ => true)
+
+/-- Whether `body` contains any `.call` or `.sysrootCall` terminator. -/
+noncomputable def bodyHasAnyCall (body : Body) : Bool :=
+  body.basicBlocks.any (fun bb =>
+    match bb.terminator with
+    | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ => true
+    | _ => false)
+
+/-- Single-body static admission predicate for `(p, body)`. -/
+noncomputable def singleBodyStaticAdmitted (p : Program) (body : Body) : Bool :=
+  Nat.beq p.pointerWidthBits 64 &&
+    Nat.beq p.mirProfileVersion 1 &&
+    !stringIsEmpty body.identity &&
+    !body.basicBlocks.isEmpty &&
+    Nat.blt body.argumentCount body.locals.length &&
+    storageAnnotationsInBounds body &&
+    discriminantTypesValid body &&
+    castTypesValid body &&
+    body.locals.all isSupportedScalarOrUnitTy &&
+    callsAdmitted p body
+
+/-- Static admission predicate for bodies participating in a calling program
+(`singleBodyStaticAdmitted` plus `assignTypesValid`). -/
+noncomputable def callBodyStaticAdmitted (p : Program) (body : Body) : Bool :=
+  singleBodyStaticAdmitted p body && assignTypesValid body
+
+/-- Whenever `body` contains any call terminator, require `assignTypesValid` on
+`body` and require every body in `p.bodies` to satisfy
+`callBodyStaticAdmitted p` so caller and transitive callees are all admitted at
+entry. -/
+noncomputable def allCallBodiesStaticAdmitted (p : Program) (body : Body) :
+    Bool :=
+  if bodyHasAnyCall body then
+    assignTypesValid body && p.bodies.all (callBodyStaticAdmitted p)
+  else
+    true
+
 /-- Initialize the local slots of `body` at function entry (`idx = 0 ..
 body.locals.length - 1`), matching `Miri.Interpreter.CallMachine` (`pushRaw`,
 `alwaysLiveVarsAndTemps`, `pushDone`) and
@@ -244,6 +588,10 @@ noncomputable def initState (p : Program) (q : Query) :
       else if !castTypesValid body then
         .error .unsupported
       else if !body.locals.all isSupportedScalarOrUnitTy then
+        .error .unsupported
+      else if !callsAdmitted p body then
+        .error .unsupported
+      else if !allCallBodiesStaticAdmitted p body then
         .error .unsupported
       else
         let paramTys := (body.locals.drop 1).take body.argumentCount

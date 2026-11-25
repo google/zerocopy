@@ -1036,7 +1036,8 @@ theorem evalCharSwitchBranchesComp_eq (discr : Char) (otherwise : BasicBlockId)
       | .error k => .fault k
       | .ok target =>
         jumpToBlockComp { frame with locals := localsAfterDiscr } memAfterDiscr callerMem target
-  | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _ | .coreCall _ _ _ _ _ | .unsupported =>
+  | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _ | .coreCall _ _ _ _ _
+  | .sysrootCall _ _ _ _ _ | .unsupported =>
     .fault .unsupported
 
 /-- Agreement between `evalTerminatorComp` and `evalTerminator`. -/
@@ -1047,7 +1048,7 @@ theorem evalTerminatorComp_eq (body : Body) (bb : BasicBlock)
   unfold evalTerminatorComp evalTerminator
   cases bb.terminator with
   | goto _ | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
-  | coreCall _ _ _ _ _ | unsupported => rfl
+  | coreCall _ _ _ _ _ | sysrootCall _ _ _ _ _ | unsupported => rfl
   | return_ =>
     dsimp only
     cases bb.cleanup with
@@ -1099,125 +1100,524 @@ theorem evalTerminatorComp_eq (body : Body) (bb : BasicBlock)
             dsimp only
             cases targets.branches <;> rfl
 
-/-- Single-step MIR evaluator (`0` `noncomputable`) parameterized by `tyEq`. -/
-@[expose] def evalMirStepBy (tyEq : MirTy → MirTy → Bool) (p : Program) (_c : Choice)
-    (s : State) : StepResult State TerminalOut :=
-  match s.frames with
-  | [frame] =>
-    match compGetElem? p.bodies frame.defId with
-    | none => .fault .unsupported
-    | some body =>
-      match compGetElem? body.basicBlocks frame.blockIdx with
-      | none => .fault .unsupported
-      | some bb =>
-        match compGetElem? bb.statements frame.stmtIdx with
-        | some stmt => evalStatementBy tyEq body frame s.mem s.callerMem stmt
-        | none =>
-          if Nat.beq frame.stmtIdx bb.statements.length then
-            evalTerminatorComp body bb frame s.mem s.callerMem
-          else
-            .fault .unsupported
-  | _ => .fault .unsupported
+/-- Computable mirror of `Trusted.MirSemantics.natListContains`. -/
+@[expose] def natListContainsComp (x : Nat) (xs : List Nat) : Bool :=
+  List.foldr (fun y ih => Nat.beq x y || ih) false xs
 
-/-- Agreement between `evalMirStepBy` and `Trusted.MirSemantics.evalStep` when
-`tyEq` agrees with `MirTy.beq`. -/
-theorem evalMirStepBy_eq (tyEq : MirTy → MirTy → Bool)
-    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b)
-    (p : Program) (c : Choice) (s : State) :
-    evalMirStepBy tyEq p c s = evalStep p c s := by
-  unfold evalMirStepBy evalStep
-  cases s.frames with
+theorem natListContainsComp_eq (x : Nat) (xs : List Nat) :
+    natListContainsComp x xs = natListContains x xs := by
+  induction xs with
   | nil => rfl
-  | cons frame tail =>
-    cases tail with
-    | cons _ _ => rfl
-    | nil =>
-      dsimp only
-      rw [compGetElem?_eq]
-      cases Trusted.MirSemantics.getElem? p.bodies frame.defId with
-      | none => rfl
-      | some body =>
+  | cons y rest ih =>
+    change (Nat.beq x y || natListContainsComp x rest) =
+      (Nat.beq x y || natListContains x rest)
+    rw [ih]
+
+/-- Computable mirror of `Trusted.MirSemantics.movePlaceList`. -/
+@[expose] def movePlaceListComp (args : List Operand) : List Place :=
+  List.foldr
+    (fun op acc => match op with | .move p => p :: acc | _ => acc)
+    [] args
+
+theorem movePlaceListComp_eq (args : List Operand) :
+    movePlaceListComp args = movePlaceList args := by
+  induction args with
+  | nil => rfl
+  | cons op rest ih =>
+    cases op with
+    | copy _ | constant _ => exact ih
+    | move _ => exact congrArg (_ :: ·) ih
+
+/-- Computable mirror of `Trusted.MirSemantics.placesDisjointAux`. -/
+@[expose] def placesDisjointAuxComp (seen : List LocalId) (ps : List Place) : Bool :=
+  List.foldr
+    (fun (p : Place) (ih : List LocalId → Bool) (s : List LocalId) =>
+      if !p.projection.isEmpty || natListContainsComp p.localId s then
+        false
+      else
+        ih (p.localId :: s))
+    (fun _ => true)
+    ps seen
+
+theorem placesDisjointAuxComp_eq (seen : List LocalId) (ps : List Place) :
+    placesDisjointAuxComp seen ps = placesDisjointAux seen ps := by
+  induction ps generalizing seen with
+  | nil => rfl
+  | cons p rest ih =>
+    change (if !p.projection.isEmpty || natListContainsComp p.localId seen then
+        false else placesDisjointAuxComp (p.localId :: seen) rest) =
+      (if !p.projection.isEmpty || natListContains p.localId seen then
+        false else placesDisjointAux (p.localId :: seen) rest)
+    rw [natListContainsComp_eq, ih (p.localId :: seen)]
+
+/-- Computable mirror of `Trusted.MirSemantics.moveDefinitelyDisjoint`. -/
+@[expose] def moveDefinitelyDisjointComp (args : List Operand) (dst : Place) : Bool :=
+  placesDisjointAuxComp [] (movePlaceListComp args ++ [dst])
+
+theorem moveDefinitelyDisjointComp_eq (args : List Operand) (dst : Place) :
+    moveDefinitelyDisjointComp args dst = moveDefinitelyDisjoint args dst := by
+  unfold moveDefinitelyDisjointComp moveDefinitelyDisjoint
+  rw [movePlaceListComp_eq, placesDisjointAuxComp_eq]
+
+/-- Computable mirror of `Trusted.MirSemantics.callArgsMatchBody` parameterized
+by `tyEq`. -/
+@[expose] def callArgsMatchBodyBy (tyEq : MirTy → MirTy → Bool)
+    (bodyLocals : List MirTy) (args : List Operand) (paramTys : List MirTy) :
+    Bool :=
+  List.foldr
+    (fun (opnd : Operand) (ih : List MirTy → Bool) (ps : List MirTy) =>
+      match ps with
+      | [] => false
+      | paramTy :: restParams =>
+        let argOk : Bool :=
+          match opnd with
+          | .copy place | .move place =>
+            if !place.projection.isEmpty then false
+            else
+              match compGetElem? bodyLocals place.localId with
+              | some argTy => tyEq argTy paramTy
+              | none => false
+          | .constant c =>
+            tyEq c.ty paramTy &&
+              match evalConstLitComp c.ty c.lit with
+              | .ok _ => true
+              | .error _ => false
+        argOk && ih restParams)
+    (fun ps => match ps with | [] => true | _ :: _ => false)
+    args paramTys
+
+private theorem if_true_eq_true {α : Type} (t e : α) :
+    (if true = true then t else e) = t := by
+  simp
+
+private theorem if_false_eq_true {α : Type} (t e : α) :
+    (if false = true then t else e) = e := by
+  simp
+
+theorem callArgsMatchBodyBy_eq (tyEq : MirTy → MirTy → Bool)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b)
+    (bodyLocals : List MirTy) (args : List Operand) (paramTys : List MirTy) :
+    callArgsMatchBodyBy tyEq bodyLocals args paramTys =
+      callArgsMatchBody bodyLocals args paramTys := by
+  induction args generalizing paramTys with
+  | nil => cases paramTys <;> rfl
+  | cons opnd rest ih =>
+    cases paramTys with
+    | nil => rfl
+    | cons paramTy restParams =>
+      change (_ && callArgsMatchBodyBy tyEq bodyLocals rest restParams) =
+        (_ && callArgsMatchBody bodyLocals rest restParams)
+      rw [ih restParams]
+      cases opnd with
+      | copy place | move place =>
         dsimp only
-        rw [compGetElem?_eq]
-        cases Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx with
-        | none => rfl
-        | some bb =>
-          dsimp only
-          rw [compGetElem?_eq]
-          cases Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx with
-          | some stmt => exact evalStatementBy_eq tyEq hTyEq body frame s.mem s.callerMem stmt
-          | none =>
+        cases (!place.projection.isEmpty) with
+        | true => rfl
+        | false =>
+          rw [if_false_eq_true, if_false_eq_true, compGetElem?_eq]
+          cases Trusted.MirSemantics.getElem? bodyLocals place.localId with
+          | none => rfl
+          | some argTy => dsimp only; rw [hTyEq argTy paramTy]
+      | constant c =>
+        dsimp only
+        rw [hTyEq c.ty paramTy, evalConstLitComp_eq]
+        rfl
+
+/-- Computable mirror of `Trusted.MirSemantics.sysrootNumBinOp`. -/
+@[expose] def sysrootNumBinOpComp : SysrootNumKind → BinOp
+  | .uncheckedAdd => .addUnchecked
+  | .uncheckedSub => .subUnchecked
+  | .uncheckedMul => .mulUnchecked
+  | .wrappingAdd => .add
+  | .wrappingSub => .sub
+  | .wrappingMul => .mul
+
+theorem sysrootNumBinOpComp_eq (k : SysrootNumKind) :
+    sysrootNumBinOpComp k = sysrootNumBinOp k := by
+  cases k <;> rfl
+
+/-- Computable mirror of `Trusted.MirSemantics.sysrootNumBody`. -/
+@[expose] def sysrootNumBodyComp (op : SysrootNumOp) : Body :=
+  let ty : MirTy := .int op.width op.signed
+  let isUnsafe : Bool :=
+    match op.kind with
+    | .uncheckedAdd | .uncheckedSub | .uncheckedMul => true
+    | .wrappingAdd | .wrappingSub | .wrappingMul => false
+  {
+    identity := "core::num::sysroot"
+    isUnsafe := isUnsafe
+    argumentCount := 2
+    locals := [ty, ty, ty]
+    basicBlocks := [{
+      statements := [
+        .assign ⟨0, []⟩ (.binaryOp (sysrootNumBinOpComp op.kind)
+          (.copy ⟨1, []⟩) (.copy ⟨2, []⟩))
+      ]
+      terminator := .return_
+      cleanup := false
+    }]
+  }
+
+theorem sysrootNumBodyComp_eq (op : SysrootNumOp) :
+    sysrootNumBodyComp op = sysrootNumBody op := by
+  unfold sysrootNumBodyComp sysrootNumBody
+  rw [sysrootNumBinOpComp_eq]
+  rfl
+
+/-- Computable mirror of `Trusted.MirSemantics.activeFrameBody`. -/
+@[expose] def activeFrameBodyComp (p : Program) (frame : FrameState) : Option Body :=
+  match frame.sysrootOp? with
+  | some op => some (sysrootNumBodyComp op)
+  | none => compGetElem? p.bodies frame.defId
+
+theorem activeFrameBodyComp_eq (p : Program) (frame : FrameState) :
+    activeFrameBodyComp p frame = activeFrameBody p frame := by
+  unfold activeFrameBodyComp activeFrameBody
+  cases frame.sysrootOp? with
+  | some op => dsimp only; rw [sysrootNumBodyComp_eq]
+  | none => dsimp only; rw [compGetElem?_eq]
+
+/-- Computable mirror of `Trusted.MirSemantics.callTargetAdmitted` parameterized
+by `tyEq`. -/
+@[expose] def callTargetAdmittedBy (tyEq : MirTy → MirTy → Bool) (body : Body)
+    (bb : BasicBlock) (calleeBody : Body) (args : List Operand) (dst : Place)
+    (target : Option BasicBlockId) (unwind : UnwindAction) : Bool :=
+  !bb.cleanup &&
+    (match unwind with | .cleanup _ => false | _ => true) &&
+    (match target with
+     | none => true
+     | some tgt => Nat.blt tgt body.basicBlocks.length) &&
+    dst.projection.isEmpty &&
+    moveDefinitelyDisjointComp args dst &&
+    Nat.beq args.length calleeBody.argumentCount &&
+    Nat.blt calleeBody.argumentCount calleeBody.locals.length &&
+    (match compGetElem? body.locals dst.localId,
+        compGetElem? calleeBody.locals 0 with
+     | some dstTy, some retTy =>
+       isSupportedScalarOrUnitTyComp dstTy && tyEq dstTy retTy
+     | _, _ => false) &&
+    callArgsMatchBodyBy tyEq body.locals args
+      ((calleeBody.locals.drop 1).take calleeBody.argumentCount)
+
+theorem callTargetAdmittedBy_eq (tyEq : MirTy → MirTy → Bool)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) (body : Body) (bb : BasicBlock)
+    (calleeBody : Body) (args : List Operand) (dst : Place)
+    (target : Option BasicBlockId) (unwind : UnwindAction) :
+    callTargetAdmittedBy tyEq body bb calleeBody args dst target unwind =
+      callTargetAdmitted body bb calleeBody args dst target unwind := by
+  unfold callTargetAdmittedBy callTargetAdmitted
+  rw [moveDefinitelyDisjointComp_eq, compGetElem?_eq, compGetElem?_eq,
+    callArgsMatchBodyBy_eq tyEq hTyEq]
+  cases Trusted.MirSemantics.getElem? body.locals dst.localId with
+  | none => rfl
+  | some dstTy =>
+    cases Trusted.MirSemantics.getElem? calleeBody.locals 0 with
+    | none => rfl
+    | some retTy =>
+      dsimp only
+      rw [isSupportedScalarOrUnitTyComp_eq, hTyEq]
+      rfl
+
+/-- Computable mirror of `Trusted.MirSemantics.callsAdmitted` parameterized by
+`tyEq`. -/
+@[expose] def callsAdmittedBy (tyEq : MirTy → MirTy → Bool) (p : Program) (body : Body) :
+    Bool :=
+  body.basicBlocks.all (fun bb =>
+    match bb.terminator with
+    | .call callee args dst target unwind =>
+      match compGetElem? p.bodies callee with
+      | none => false
+      | some calleeBody =>
+        !calleeBody.isUnsafe &&
+          callTargetAdmittedBy tyEq body bb calleeBody args dst target unwind
+    | .sysrootCall op args dst target unwind =>
+      callTargetAdmittedBy tyEq body bb (sysrootNumBodyComp op) args dst
+        target unwind
+    | _ => true)
+
+theorem callsAdmittedBy_eq (tyEq : MirTy → MirTy → Bool)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) (p : Program) (body : Body) :
+    callsAdmittedBy tyEq p body = callsAdmitted p body := by
+  unfold callsAdmittedBy callsAdmitted
+  refine listAll_congr body.basicBlocks (fun bb => ?_)
+  cases bb.terminator with
+  | goto _ | switchInt _ _ | return_ | unreachable | unwindResume
+  | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported => rfl
+  | call callee args dst target unwind =>
+    dsimp only
+    rw [compGetElem?_eq]
+    cases Trusted.MirSemantics.getElem? p.bodies callee with
+    | none => rfl
+    | some calleeBody =>
+      exact congrArg (fun b => !calleeBody.isUnsafe && b)
+        (callTargetAdmittedBy_eq tyEq hTyEq body bb calleeBody args dst target
+          unwind)
+  | sysrootCall op args dst target unwind =>
+    dsimp only
+    rw [sysrootNumBodyComp_eq]
+    exact callTargetAdmittedBy_eq tyEq hTyEq body bb (sysrootNumBody op) args dst target unwind
+
+/-- Computable mirror of `Trusted.MirSemantics.bodyHasAnyCall`. -/
+@[expose] def bodyHasAnyCallComp (body : Body) : Bool :=
+  body.basicBlocks.any (fun bb =>
+    match bb.terminator with
+    | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ => true
+    | _ => false)
+
+theorem bodyHasAnyCallComp_eq (body : Body) :
+    bodyHasAnyCallComp body = bodyHasAnyCall body := rfl
+
+/-- Computable mirror of `Trusted.MirSemantics.attachCallers`. -/
+@[expose] def attachCallersComp (callers : List FrameState)
+    (res : StepResult State TerminalOut) : StepResult State TerminalOut :=
+  match callers with
+  | [] => res
+  | _ :: _ =>
+    match res with
+    | .step s' => .step { s' with frames := s'.frames ++ callers }
+    | .done out => .done out
+    | .fault k => .fault k
+
+theorem attachCallersComp_eq (callers : List FrameState)
+    (res : StepResult State TerminalOut) :
+    attachCallersComp callers res = attachCallers callers res := by
+  cases callers <;> cases res <;> rfl
+
+/-- Computable mirror of `Trusted.MirSemantics.evalCallArg` parameterized by
+`tyEq`. -/
+@[expose] def evalCallArgBy (tyEq : MirTy → MirTy → Bool) (callerLocalsTys : List MirTy)
+    (locals : List LocalSlot) (mem : MemoryState) (hasMove : Bool)
+    (opnd : Operand) (paramTy : MirTy) :
+    Except FaultKind (Val × List LocalSlot × MemoryState) :=
+  let indirectBlocked : Bool :=
+    match opnd with
+    | .copy place =>
+      hasMove &&
+        match compGetElem? locals place.localId with
+        | some (.indirect _) => true
+        | _ => false
+    | .move place =>
+      match compGetElem? locals place.localId with
+      | some (.indirect _) => true
+      | _ => false
+    | _ => false
+  if indirectBlocked then
+    .error .unsupported
+  else
+    match evalOperandToSlotComp callerLocalsTys locals mem
+        (fun srcTy => tyEq srcTy paramTy) opnd with
+    | .error k => .error k
+    | .ok (srcTy, optVal, locals', mem') =>
+      if !tyEq srcTy paramTy then
+        .error .unsupported
+      else
+        match optVal with
+        | some v => .ok (v, locals', mem')
+        | none => .error .undefined
+
+theorem evalCallArgBy_eq (tyEq : MirTy → MirTy → Bool)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) (callerLocalsTys : List MirTy)
+    (locals : List LocalSlot) (mem : MemoryState) (hasMove : Bool)
+    (opnd : Operand) (paramTy : MirTy) :
+    evalCallArgBy tyEq callerLocalsTys locals mem hasMove opnd paramTy =
+      evalCallArg callerLocalsTys locals mem hasMove opnd paramTy := by
+  unfold evalCallArgBy evalCallArg
+  cases opnd with
+  | constant c =>
+    dsimp only
+    rw [if_false_eq_true, if_false_eq_true, evalOperandToSlotComp_eq callerLocalsTys locals mem
+      (fun srcTy => tyEq srcTy paramTy) (fun srcTy => MirTy.beq srcTy paramTy) (.constant c)
+      (fun srcTy => hTyEq srcTy paramTy)]
+    cases evalOperandToSlot callerLocalsTys locals mem
+        (fun srcTy => MirTy.beq srcTy paramTy) (.constant c) with
+    | error _ => rfl
+    | ok quad =>
+      cases quad with
+      | mk srcTy rest =>
+        cases rest with
+        | mk optVal rest2 =>
+          cases rest2 with
+          | mk locals' mem' =>
             dsimp only
-            cases Nat.beq frame.stmtIdx bb.statements.length with
-            | false => rfl
-            | true => exact evalTerminatorComp_eq body bb frame s.mem s.callerMem
+            rw [hTyEq srcTy paramTy]
+            rfl
+  | copy place =>
+    dsimp only
+    rw [compGetElem?_eq]
+    cases hasMove with
+    | false =>
+      rw [Bool.false_and, Bool.false_and, if_false_eq_true, if_false_eq_true,
+        evalOperandToSlotComp_eq callerLocalsTys locals mem
+        (fun srcTy => tyEq srcTy paramTy) (fun srcTy => MirTy.beq srcTy paramTy) (.copy place)
+        (fun srcTy => hTyEq srcTy paramTy)]
+      cases evalOperandToSlot callerLocalsTys locals mem
+          (fun srcTy => MirTy.beq srcTy paramTy) (.copy place) with
+      | error _ => rfl
+      | ok quad =>
+        cases quad with
+        | mk srcTy rest =>
+          cases rest with
+          | mk optVal rest2 =>
+            cases rest2 with
+            | mk locals' mem' =>
+              dsimp only
+              rw [hTyEq srcTy paramTy]
+              rfl
+    | true =>
+      cases Trusted.MirSemantics.getElem? locals place.localId with
+      | none =>
+        dsimp only
+        rw [Bool.true_and, if_false_eq_true, if_false_eq_true,
+          evalOperandToSlotComp_eq callerLocalsTys locals mem
+          (fun srcTy => tyEq srcTy paramTy) (fun srcTy => MirTy.beq srcTy paramTy) (.copy place)
+          (fun srcTy => hTyEq srcTy paramTy)]
+        cases evalOperandToSlot callerLocalsTys locals mem
+            (fun srcTy => MirTy.beq srcTy paramTy) (.copy place) with
+        | error _ => rfl
+        | ok quad =>
+          cases quad with
+          | mk srcTy rest =>
+            cases rest with
+            | mk optVal rest2 =>
+              cases rest2 with
+              | mk locals' mem' =>
+                dsimp only
+                rw [hTyEq srcTy paramTy]
+                rfl
+      | some sl =>
+        cases sl with
+        | dead | immediate _ | partialTuple _ =>
+          dsimp only
+          rw [Bool.true_and, if_false_eq_true, if_false_eq_true,
+            evalOperandToSlotComp_eq callerLocalsTys locals mem
+            (fun srcTy => tyEq srcTy paramTy) (fun srcTy => MirTy.beq srcTy paramTy) (.copy place)
+            (fun srcTy => hTyEq srcTy paramTy)]
+          cases evalOperandToSlot callerLocalsTys locals mem
+              (fun srcTy => MirTy.beq srcTy paramTy) (.copy place) with
+          | error _ => rfl
+          | ok quad =>
+            cases quad with
+            | mk srcTy rest =>
+              cases rest with
+              | mk optVal rest2 =>
+                cases rest2 with
+                | mk locals' mem' =>
+                  dsimp only
+                  rw [hTyEq srcTy paramTy]
+                  rfl
+        | indirect _ =>
+          dsimp only
+          rw [Bool.true_and, if_true_eq_true, if_true_eq_true]
+  | move place =>
+    dsimp only
+    rw [compGetElem?_eq]
+    cases Trusted.MirSemantics.getElem? locals place.localId with
+    | none =>
+      dsimp only
+      rw [if_false_eq_true, if_false_eq_true, evalOperandToSlotComp_eq callerLocalsTys locals mem
+        (fun srcTy => tyEq srcTy paramTy) (fun srcTy => MirTy.beq srcTy paramTy) (.move place)
+        (fun srcTy => hTyEq srcTy paramTy)]
+      cases evalOperandToSlot callerLocalsTys locals mem
+          (fun srcTy => MirTy.beq srcTy paramTy) (.move place) with
+      | error _ => rfl
+      | ok quad =>
+        cases quad with
+        | mk srcTy rest =>
+          cases rest with
+          | mk optVal rest2 =>
+            cases rest2 with
+            | mk locals' mem' =>
+              dsimp only
+              rw [hTyEq srcTy paramTy]
+              rfl
+    | some sl =>
+      cases sl with
+      | dead | immediate _ | partialTuple _ =>
+        dsimp only
+        rw [if_false_eq_true, if_false_eq_true, evalOperandToSlotComp_eq callerLocalsTys locals mem
+          (fun srcTy => tyEq srcTy paramTy) (fun srcTy => MirTy.beq srcTy paramTy) (.move place)
+          (fun srcTy => hTyEq srcTy paramTy)]
+        cases evalOperandToSlot callerLocalsTys locals mem
+            (fun srcTy => MirTy.beq srcTy paramTy) (.move place) with
+        | error _ => rfl
+        | ok quad =>
+          cases quad with
+          | mk srcTy rest =>
+            cases rest with
+            | mk optVal rest2 =>
+              cases rest2 with
+              | mk locals' mem' =>
+                dsimp only
+                rw [hTyEq srcTy paramTy]
+                rfl
+      | indirect _ =>
+        dsimp only
+        rw [if_true_eq_true, if_true_eq_true]
 
-/-- Depth-bounded LCNF-computable single-step MIR evaluator (`0`
-`noncomputable`). -/
-@[expose] def evalMirStepAt (fuel : Nat) (p : Program) (c : Choice) (s : State) :
-    StepResult State TerminalOut :=
-  evalMirStepBy (mirTyBeqAt fuel) p c s
+/-- Computable mirror of `Trusted.MirSemantics.evalCallArgs` parameterized by
+`tyEq`. -/
+@[expose] def evalCallArgsBy (tyEq : MirTy → MirTy → Bool) (callerLocalsTys : List MirTy)
+    (hasMove : Bool) (args : List Operand) (paramTys : List MirTy)
+    (locals : List LocalSlot) (mem : MemoryState) :
+    Except FaultKind (List Val × List LocalSlot × MemoryState) :=
+  List.foldr
+    (fun (opnd : Operand)
+         (ih : List MirTy → List LocalSlot → MemoryState →
+           Except FaultKind (List Val × List LocalSlot × MemoryState))
+         (ps : List MirTy) (ls : List LocalSlot) (m : MemoryState) =>
+      match ps with
+      | [] => .error .unsupported
+      | paramTy :: restParams =>
+        match evalCallArgBy tyEq callerLocalsTys ls m hasMove opnd paramTy with
+        | .error k => .error k
+        | .ok (v, ls₁, m₁) =>
+          match ih restParams ls₁ m₁ with
+          | .error k => .error k
+          | .ok (vs, ls₂, m₂) => .ok (v :: vs, ls₂, m₂))
+    (fun ps ls m =>
+      match ps with
+      | [] => .ok ([], ls, m)
+      | _ :: _ => .error .unsupported)
+    args paramTys locals mem
 
-/-- Fuel-bounded MIR evaluator (`0` `noncomputable`) parameterized by `tyEq`. -/
-@[expose] def evalMirFuelBy (tyEq : MirTy → MirTy → Bool) (p : Program) (fuel : Nat)
-    (s : State) : StepResult State TerminalOut :=
-  @Nat.rec (fun _ => State → StepResult State TerminalOut)
-    (fun st => .step st)
-    (fun _ ih st =>
-      match evalMirStepBy tyEq p 0 st with
-      | .step st' => ih st'
-      | .done out => .done out
-      | .fault k => .fault k)
-    fuel s
-
-/-- Lifts fuel-bounded `evalMirFuelBy` outcomes into
-`Anneal.MirWp.execOutcomeState` when `tyEq` agrees with `MirTy.beq`. -/
-theorem execOutcomeState_of_evalMirFuelBy {tyEq : MirTy → MirTy → Bool}
-    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) {p : Program}
-    {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop} :
-    ∀ {fuel : Nat} {s : State},
-      (match evalMirFuelBy tyEq p fuel s with
-       | .done out => onDone out
-       | .fault k => onFault k
-       | .step _ => False) →
-      Anneal.MirWp.execOutcomeState p onDone onFault fuel s
-  | 0, _, h => False.elim h
-  | fuel + 1, s, h => by
-    change (match (match evalMirStepBy tyEq p 0 s with
-        | .step st' => evalMirFuelBy tyEq p fuel st'
-        | .done out => StepResult.done out
-        | .fault k => StepResult.fault k) with
-      | .done out => onDone out
-      | .fault k => onFault k
-      | .step _ => False) at h
-    refine Anneal.Framework.StepWp.execStepPred_succ_iff.mpr ?_
-    rw [evalMirStepBy_eq tyEq hTyEq p 0 s] at h
-    cases hStep : evalStep p 0 s with
-    | step st' =>
-      rw [hStep] at h
-      exact execOutcomeState_of_evalMirFuelBy hTyEq h
-    | done out =>
-      rw [hStep] at h
-      exact h
-    | fault k =>
-      rw [hStep] at h
-      exact h
-
-/-- Lifts fuel-bounded `evalMirFuelBy` outcomes to `Anneal.MirWp.wpOutcomeState`
-when `tyEq` agrees with `MirTy.beq`. -/
-theorem wpOutcomeState_of_evalMirFuelBy {tyEq : MirTy → MirTy → Bool}
-    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) {p : Program}
-    {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
-    {fuel : Nat} {s : State}
-    (h : match evalMirFuelBy tyEq p fuel s with
-         | .done out => onDone out
-         | .fault k => onFault k
-         | .step _ => False) :
-    Anneal.MirWp.wpOutcomeState p onDone onFault fuel s :=
-  Anneal.MirWp.wpOutcomeState_of_execOutcomeState
-    (execOutcomeState_of_evalMirFuelBy hTyEq h)
-
-/-! ## Static Entry-Admission and `initState` Core -/
+theorem evalCallArgsBy_eq (tyEq : MirTy → MirTy → Bool)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) (callerLocalsTys : List MirTy)
+    (locals : List LocalSlot) (mem : MemoryState) (hasMove : Bool)
+    (args : List Operand) (paramTys : List MirTy) :
+    evalCallArgsBy tyEq callerLocalsTys hasMove args paramTys locals mem =
+      evalCallArgs callerLocalsTys locals mem hasMove args paramTys := by
+  induction args generalizing paramTys locals mem with
+  | nil => cases paramTys <;> rfl
+  | cons opnd restArgs ih =>
+    cases paramTys with
+    | nil => rfl
+    | cons paramTy restParams =>
+      change ((match evalCallArgBy tyEq callerLocalsTys locals mem hasMove opnd
+            paramTy with
+          | Except.error k => Except.error k
+          | Except.ok (v, ls₁, m₁) =>
+            match evalCallArgsBy tyEq callerLocalsTys hasMove restArgs restParams
+                ls₁ m₁ with
+            | Except.error k => Except.error k
+            | Except.ok (vs, ls₂, m₂) => Except.ok (v :: vs, ls₂, m₂)) :
+            Except FaultKind (List Val × List LocalSlot × MemoryState)) =
+        (match evalCallArg callerLocalsTys locals mem hasMove opnd paramTy with
+          | Except.error k => Except.error k
+          | Except.ok (v, ls₁, m₁) =>
+            match evalCallArgs callerLocalsTys ls₁ m₁ hasMove restArgs
+                restParams with
+            | Except.error k => Except.error k
+            | Except.ok (vs, ls₂, m₂) => Except.ok (v :: vs, ls₂, m₂))
+      rw [evalCallArgBy_eq tyEq hTyEq]
+      cases evalCallArg callerLocalsTys locals mem hasMove opnd paramTy with
+      | error _ => rfl
+      | ok triple =>
+        cases triple with
+        | mk v rest =>
+          cases rest with
+          | mk ls₁ m₁ =>
+            dsimp only
+            rw [ih ls₁ m₁ restParams]
 
 /-- Computable mirror of `Trusted.MirSemantics.stmtHasStorageMarker`. -/
 @[expose] def stmtHasStorageMarkerComp (localId : LocalId) (stmt : StatementKind) : Bool :=
@@ -1370,6 +1770,158 @@ theorem castTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
           | none => rfl
           | some dstTy => exact hTyEq dstTy castTy
 
+/-- Computable mirror of `Trusted.MirSemantics.localOperandMatchesTy`
+parameterized by `tyEq`. -/
+@[expose] def localOperandMatchesTyBy (tyEq : MirTy → MirTy → Bool)
+    (locals : List MirTy) (opnd : Operand) (expected : MirTy) : Bool :=
+  match opnd with
+  | .copy p | .move p =>
+    if p.projection.isEmpty then
+      match compGetElem? locals p.localId with
+      | some srcTy => tyEq srcTy expected
+      | none => true
+    else
+      true
+  | .constant _ => true
+
+theorem localOperandMatchesTyBy_eq (tyEq : MirTy → MirTy → Bool)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b)
+    (locals : List MirTy) (opnd : Operand) (expected : MirTy) :
+    localOperandMatchesTyBy tyEq locals opnd expected =
+      localOperandMatchesTy locals opnd expected := by
+  cases opnd with
+  | constant _ => rfl
+  | copy p | move p =>
+    dsimp only [localOperandMatchesTyBy, localOperandMatchesTy]
+    cases p.projection.isEmpty with
+    | false => rfl
+    | true =>
+      rw [compGetElem?_eq]
+      cases Trusted.MirSemantics.getElem? locals p.localId with
+      | none => rfl
+      | some srcTy => exact hTyEq srcTy expected
+
+/-- Computable mirror of `Trusted.MirSemantics.operandTy?`. -/
+@[expose] def operandTyComp? (locals : List MirTy) : Operand → Option MirTy
+  | .copy p | .move p =>
+    if p.projection.isEmpty then compGetElem? locals p.localId else none
+  | .constant c => some c.ty
+
+theorem operandTyComp?_eq (locals : List MirTy) (opnd : Operand) :
+    operandTyComp? locals opnd = operandTy? locals opnd := by
+  cases opnd with
+  | constant _ => rfl
+  | copy p | move p =>
+    dsimp only [operandTyComp?, operandTy?]
+    cases p.projection.isEmpty with
+    | false => rfl
+    | true => rw [compGetElem?_eq]
+
+@[expose] def binOpLeftHomogeneousComp : BinOp → Bool
+  | .add | .addUnchecked | .sub | .subUnchecked | .mul | .mulUnchecked
+  | .div | .rem | .bitXor | .bitAnd | .bitOr | .offset
+  | .shl | .shlUnchecked | .shr | .shrUnchecked => true
+  | .addWithOverflow | .subWithOverflow | .mulWithOverflow
+  | .eq | .ne | .lt | .le | .gt | .ge | .cmp => false
+
+@[expose] def binOpRightHomogeneousComp : BinOp → Bool
+  | .add | .addUnchecked | .addWithOverflow | .sub | .subUnchecked
+  | .subWithOverflow | .mul | .mulUnchecked | .mulWithOverflow | .div | .rem
+  | .bitXor | .bitAnd | .bitOr | .eq | .ne | .lt | .le | .gt | .ge
+  | .cmp => true
+  | .offset | .shl | .shlUnchecked | .shr | .shrUnchecked => false
+
+@[expose] def unOpHomogeneousComp : UnOp → Bool
+  | .not | .neg => true
+  | .ptrMetadata => false
+
+theorem binOpLeftHomogeneousComp_eq (op : BinOp) :
+    binOpLeftHomogeneousComp op = binOpLeftHomogeneous op := by
+  cases op <;> rfl
+
+theorem binOpRightHomogeneousComp_eq (op : BinOp) :
+    binOpRightHomogeneousComp op = binOpRightHomogeneous op := by
+  cases op <;> rfl
+
+theorem unOpHomogeneousComp_eq (op : UnOp) :
+    unOpHomogeneousComp op = unOpHomogeneous op := by
+  cases op <;> rfl
+
+/-- Computable mirror of `Trusted.MirSemantics.assignTypesValid`
+parameterized by `tyEq`. -/
+@[expose] def assignTypesValidBy (tyEq : MirTy → MirTy → Bool) (body : Body) : Bool :=
+  body.basicBlocks.all (fun bb =>
+    bb.statements.all (fun stmt =>
+      match stmt with
+      | .assign dst rv =>
+        if dst.projection.isEmpty then
+          match compGetElem? body.locals dst.localId with
+          | none => true
+          | some dstTy =>
+            match rv with
+            | .use opnd => localOperandMatchesTyBy tyEq body.locals opnd dstTy
+            | .binaryOp op lhs rhs =>
+              let lhsOk : Bool :=
+                if binOpLeftHomogeneousComp op then
+                  localOperandMatchesTyBy tyEq body.locals lhs dstTy
+                else
+                  true
+              let rhsOk : Bool :=
+                if binOpRightHomogeneousComp op then
+                  match operandTyComp? body.locals lhs with
+                  | none => true
+                  | some lTy => localOperandMatchesTyBy tyEq body.locals rhs lTy
+                else
+                  true
+              lhsOk && rhsOk
+            | .unaryOp op opnd =>
+              if unOpHomogeneousComp op then
+                localOperandMatchesTyBy tyEq body.locals opnd dstTy
+              else
+                true
+            | _ => true
+        else
+          true
+      | _ => true))
+
+/-- Agreement between `assignTypesValidBy` and `assignTypesValid` when `tyEq`
+agrees with `MirTy.beq`. -/
+theorem assignTypesValidBy_eq (tyEq : MirTy → MirTy → Bool)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) (body : Body) :
+    assignTypesValidBy tyEq body = assignTypesValid body := by
+  unfold assignTypesValidBy assignTypesValid
+  refine listAll_congr body.basicBlocks (fun bb => listAll_congr bb.statements (fun stmt => ?_))
+  cases stmt with
+  | nop | storageLive _ | storageDead _ | unsupported => rfl
+  | assign dst rv =>
+    dsimp only
+    cases dst.projection.isEmpty with
+    | false => rfl
+    | true =>
+      rw [compGetElem?_eq]
+      cases Trusted.MirSemantics.getElem? body.locals dst.localId with
+      | none => rfl
+      | some dstTy =>
+        cases rv with
+        | discriminant _ | cast _ _ _ | ref _ _ | addressOf _ _
+        | aggregateTuple _ | unsupported | useRetag _ | aggregateRangeTo _ _
+        | aggregateRangeFrom _ _ => rfl
+        | use opnd => exact localOperandMatchesTyBy_eq tyEq hTyEq body.locals opnd dstTy
+        | binaryOp op lhs rhs =>
+          dsimp only
+          rw [binOpLeftHomogeneousComp_eq, binOpRightHomogeneousComp_eq,
+            operandTyComp?_eq,
+            localOperandMatchesTyBy_eq tyEq hTyEq body.locals lhs dstTy]
+          cases operandTy? body.locals lhs with
+          | none => rfl
+          | some lTy =>
+            dsimp only
+            rw [localOperandMatchesTyBy_eq tyEq hTyEq body.locals rhs lTy]
+        | unaryOp op opnd =>
+          dsimp only
+          rw [unOpHomogeneousComp_eq,
+            localOperandMatchesTyBy_eq tyEq hTyEq body.locals opnd dstTy]
+
 /-- Computable mirror of `Trusted.MirSemantics.checkArgsMatch` parameterized by
 `tyEq`. -/
 @[expose] def checkArgsMatchBy (tyEq : MirTy → MirTy → Bool) (vs : List Val)
@@ -1439,9 +1991,462 @@ theorem initLocalsLoopComp_eq (body : Body) (args : List Val) (idx : Nat)
     rw [liveUninitSlotComp_eq, compGetElem?_eq, hasStorageAnnotationComp_eq]
     exact congrArg _ (ih (idx + 1))
 
-/-- Computable mirror of `Trusted.MirSemantics.BodyStaticAdmitted` parameterized
+/-- Computable mirror of `Trusted.MirSemantics.evalCallTerminator` parameterized
 by `tyEq`. -/
-@[expose] def bodyStaticAdmittedBy (tyEq : MirTy → MirTy → Bool) (p : Program)
+@[expose] def evalCallTerminatorBy (tyEq : MirTy → MirTy → Bool) (callerBody : Body)
+    (bb : BasicBlock) (caller : FrameState) (callers : List FrameState)
+    (mem : MemoryState) (callerMem : CallerMemory) (calleeDefId : DefId)
+    (sysrootOp? : Option SysrootNumOp) (calleeBody : Body)
+    (args : List Operand) (dst : Place) (target : Option BasicBlockId)
+    (unwind : UnwindAction) : StepResult State TerminalOut :=
+  if !callTargetAdmittedBy tyEq callerBody bb calleeBody args dst target
+        unwind ||
+      calleeBody.basicBlocks.isEmpty ||
+      !storageAnnotationsInBoundsComp calleeBody ||
+      !discriminantTypesValidBy tyEq calleeBody ||
+      !castTypesValidBy tyEq calleeBody ||
+      !assignTypesValidBy tyEq calleeBody ||
+      !calleeBody.locals.all isSupportedScalarOrUnitTyComp then
+    .fault .unsupported
+  else
+    let hasMove : Bool :=
+      args.any (fun a => match a with | .move _ => true | _ => false)
+    let paramTys := (calleeBody.locals.drop 1).take calleeBody.argumentCount
+    match evalCallArgsBy tyEq callerBody.locals hasMove args paramTys
+        caller.locals mem with
+    | .error k => .fault k
+    | .ok (argVals, callerLocals', mem') =>
+      match compGetElem? callerLocals' dst.localId with
+      | none => .fault .unsupported
+      | some .dead => .fault .undefined
+      | some (.indirect _) => .fault .unsupported
+      | some (.partialTuple _) => .fault .unsupported
+      | some (.immediate _) =>
+        let calleeLocals :=
+          initLocalsLoopComp calleeBody argVals 0 calleeBody.locals
+        let calleeFrame : FrameState := {
+          defId := calleeDefId
+          blockIdx := 0
+          stmtIdx := 0
+          locals := calleeLocals
+          sysrootOp? := sysrootOp?
+          retDst? := some dst
+          retTarget? := target
+        }
+        let caller' : FrameState := { caller with locals := callerLocals' }
+        .step {
+          frames := calleeFrame :: caller' :: callers
+          callerMem := callerMem
+          mem := mem'
+        }
+
+theorem evalCallTerminatorBy_eq (tyEq : MirTy → MirTy → Bool)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) (callerBody : Body)
+    (bb : BasicBlock) (caller : FrameState) (callers : List FrameState)
+    (mem : MemoryState) (callerMem : CallerMemory) (calleeDefId : DefId)
+    (sysrootOp? : Option SysrootNumOp) (calleeBody : Body)
+    (args : List Operand) (dst : Place) (target : Option BasicBlockId)
+    (unwind : UnwindAction) :
+    evalCallTerminatorBy tyEq callerBody bb caller callers mem callerMem
+        calleeDefId sysrootOp? calleeBody args dst target unwind =
+      evalCallTerminator callerBody bb caller callers mem callerMem
+        calleeDefId sysrootOp? calleeBody args dst target unwind := by
+  unfold evalCallTerminatorBy evalCallTerminator
+  rw [callTargetAdmittedBy_eq tyEq hTyEq, storageAnnotationsInBoundsComp_eq,
+    discriminantTypesValidBy_eq tyEq hTyEq, castTypesValidBy_eq tyEq hTyEq,
+    assignTypesValidBy_eq tyEq hTyEq,
+    listAll_congr calleeBody.locals isSupportedScalarOrUnitTyComp_eq]
+  cases (!callTargetAdmitted callerBody bb calleeBody args dst target unwind ||
+      calleeBody.basicBlocks.isEmpty ||
+      !storageAnnotationsInBounds calleeBody ||
+      !discriminantTypesValid calleeBody ||
+      !castTypesValid calleeBody ||
+      !assignTypesValid calleeBody ||
+      !calleeBody.locals.all isSupportedScalarOrUnitTy) with
+  | true => rfl
+  | false =>
+    dsimp only
+    rw [evalCallArgsBy_eq tyEq hTyEq]
+    cases evalCallArgs callerBody.locals caller.locals mem _ args _ with
+    | error _ => rfl
+    | ok triple =>
+      cases triple with
+      | mk argVals rest =>
+        cases rest with
+        | mk callerLocals' mem' =>
+          dsimp only
+          rw [compGetElem?_eq]
+          cases Trusted.MirSemantics.getElem? callerLocals' dst.localId with
+          | none => rfl
+          | some slot =>
+            cases slot with
+            | dead | indirect _ | partialTuple _ => rfl
+            | immediate _ =>
+              dsimp only
+              rw [initLocalsLoopComp_eq]
+
+/-- Computable mirror of `Trusted.MirSemantics.localsHaveIndirect`. -/
+@[expose] def localsHaveIndirectComp (locals : List LocalSlot) : Bool :=
+  locals.any (fun slot => match slot with | .indirect _ => true | _ => false)
+
+theorem localsHaveIndirectComp_eq (locals : List LocalSlot) :
+    localsHaveIndirectComp locals = localsHaveIndirect locals := rfl
+
+/-- Computable mirror of `Trusted.MirSemantics.evalNonRootReturn`
+parameterized by `tyEq`. -/
+@[expose] def evalNonRootReturnBy (tyEq : MirTy → MirTy → Bool) (p : Program)
+    (calleeBody : Body) (bb : BasicBlock) (callee : FrameState)
+    (caller : FrameState) (restCallers : List FrameState) (mem : MemoryState)
+    (callerMem : CallerMemory) : StepResult State TerminalOut :=
+  if bb.cleanup || localsHaveIndirectComp callee.locals then
+    .fault .unsupported
+  else
+    let retRead : Except FaultKind Val :=
+      match compGetElem? callee.locals 0 with
+      | some (.immediate (some retVal)) => .ok retVal
+      | some (.immediate none) | some .dead => .error .undefined
+      | some (.partialTuple _) => .error .unsupported
+      | some (.indirect mplace) =>
+        match compGetElem? calleeBody.locals 0 with
+        | none => .error .unsupported
+        | some retTy =>
+          match loadIndirectComp mem retTy mplace with
+          | .ok (some retVal) => .ok retVal
+          | .ok none => .error .undefined
+          | .error k => .error k
+      | none => .error .unsupported
+    match retRead with
+    | .error k => .fault k
+    | .ok retVal =>
+      match callee.retDst? with
+      | none => .fault .unsupported
+      | some dst =>
+        if !dst.projection.isEmpty then
+          .fault .unsupported
+        else
+          match activeFrameBodyComp p caller with
+          | none => .fault .unsupported
+          | some callerBody =>
+            match compGetElem? callerBody.locals dst.localId with
+            | none => .fault .unsupported
+            | some dstTy =>
+              match writePlaceBy tyEq caller.locals mem dst.localId dstTy
+                  retVal with
+              | .error k => .fault k
+              | .ok (callerLocals', mem') =>
+                match callee.retTarget? with
+                | none => .fault .undefined
+                | some tgt =>
+                  .step {
+                    frames := {
+                      caller with
+                      blockIdx := tgt
+                      stmtIdx := 0
+                      locals := callerLocals'
+                    } :: restCallers
+                    callerMem := callerMem
+                    mem := mem'
+                  }
+
+private theorem evalNonRootReturnWrite_eq (tyEq : MirTy → MirTy → Bool)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) (p : Program)
+    (callee caller : FrameState) (restCallers : List FrameState)
+    (mem : MemoryState) (callerMem : CallerMemory) (retVal : Val) :
+    (match callee.retDst? with
+     | none => StepResult.fault FaultKind.unsupported
+     | some dst =>
+       if (!dst.projection.isEmpty) = true then
+         StepResult.fault FaultKind.unsupported
+       else
+         match activeFrameBodyComp p caller with
+         | none => StepResult.fault FaultKind.unsupported
+         | some callerBody =>
+           match compGetElem? callerBody.locals dst.localId with
+           | none => StepResult.fault FaultKind.unsupported
+           | some dstTy =>
+             match writePlaceBy tyEq caller.locals mem dst.localId dstTy
+                 retVal with
+             | Except.error k => StepResult.fault k
+             | Except.ok (callerLocals', mem') =>
+               match callee.retTarget? with
+               | none => StepResult.fault FaultKind.undefined
+               | some tgt =>
+                 (StepResult.step ({
+                   frames := ({
+                     caller with
+                     blockIdx := tgt
+                     stmtIdx := 0
+                     locals := callerLocals'
+                   } : FrameState) :: restCallers
+                   callerMem := callerMem
+                   mem := mem'
+                 } : State) : StepResult State TerminalOut)) =
+    (match callee.retDst? with
+     | none => StepResult.fault FaultKind.unsupported
+     | some dst =>
+       if (!dst.projection.isEmpty) = true then
+         StepResult.fault FaultKind.unsupported
+       else
+         match activeFrameBody p caller with
+         | none => StepResult.fault FaultKind.unsupported
+         | some callerBody =>
+           match Trusted.MirSemantics.getElem? callerBody.locals dst.localId with
+           | none => StepResult.fault FaultKind.unsupported
+           | some dstTy =>
+             match writePlace caller.locals mem dst.localId dstTy retVal with
+             | Except.error k => StepResult.fault k
+             | Except.ok (callerLocals', mem') =>
+               match callee.retTarget? with
+               | none => StepResult.fault FaultKind.undefined
+               | some tgt =>
+                 (StepResult.step ({
+                   frames := ({
+                     caller with
+                     blockIdx := tgt
+                     stmtIdx := 0
+                     locals := callerLocals'
+                   } : FrameState) :: restCallers
+                   callerMem := callerMem
+                   mem := mem'
+                 } : State) : StepResult State TerminalOut)) := by
+  cases callee.retDst? with
+  | none => rfl
+  | some dst =>
+    dsimp only
+    cases hProj : dst.projection.isEmpty with
+    | false =>
+      rw [show (!false) = true from rfl, if_true_eq_true, if_true_eq_true]
+    | true =>
+      rw [show (!true) = false from rfl, if_false_eq_true, if_false_eq_true,
+        activeFrameBodyComp_eq]
+      cases activeFrameBody p caller with
+      | none => rfl
+      | some callerBody =>
+        dsimp only
+        rw [compGetElem?_eq]
+        cases Trusted.MirSemantics.getElem? callerBody.locals dst.localId with
+        | none => rfl
+        | some dstTy =>
+          dsimp only
+          rw [writePlaceBy_eq tyEq hTyEq]
+
+theorem evalNonRootReturnBy_eq (tyEq : MirTy → MirTy → Bool)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) (p : Program)
+    (calleeBody : Body) (bb : BasicBlock) (callee : FrameState)
+    (caller : FrameState) (restCallers : List FrameState) (mem : MemoryState)
+    (callerMem : CallerMemory) :
+    evalNonRootReturnBy tyEq p calleeBody bb callee caller restCallers mem
+        callerMem =
+      evalNonRootReturn p calleeBody bb callee caller restCallers mem
+        callerMem := by
+  unfold evalNonRootReturnBy evalNonRootReturn
+  rw [localsHaveIndirectComp_eq]
+  cases (bb.cleanup || localsHaveIndirect callee.locals) with
+  | true => rfl
+  | false =>
+    dsimp only
+    rw [if_false_eq_true, if_false_eq_true, compGetElem?_eq]
+    cases Trusted.MirSemantics.getElem? callee.locals 0 with
+    | none => rfl
+    | some slot =>
+      cases slot with
+      | dead => rfl
+      | partialTuple _ => rfl
+      | immediate optV =>
+        cases optV with
+        | none => rfl
+        | some retVal =>
+          dsimp only
+          exact evalNonRootReturnWrite_eq tyEq hTyEq p callee caller restCallers mem callerMem retVal
+      | indirect mplace =>
+        dsimp only
+        rw [compGetElem?_eq]
+        cases Trusted.MirSemantics.getElem? calleeBody.locals 0 with
+        | none => rfl
+        | some retTy =>
+          dsimp only
+          rw [loadIndirectComp_eq]
+          cases loadIndirect mem retTy mplace with
+          | error _ => rfl
+          | ok opt =>
+            cases opt with
+            | none => rfl
+            | some retVal =>
+              dsimp only
+              exact evalNonRootReturnWrite_eq tyEq hTyEq p callee caller restCallers mem callerMem retVal
+
+/-- Single-step MIR evaluator (`0` `noncomputable`) parameterized by `tyEq`. -/
+@[expose] def evalMirStepBy (tyEq : MirTy → MirTy → Bool) (p : Program) (_c : Choice)
+    (s : State) : StepResult State TerminalOut :=
+  match s.frames with
+  | frame :: callers =>
+    match activeFrameBodyComp p frame with
+    | none => .fault .unsupported
+    | some body =>
+      match compGetElem? body.basicBlocks frame.blockIdx with
+      | none => .fault .unsupported
+      | some bb =>
+        match compGetElem? bb.statements frame.stmtIdx with
+        | some stmt =>
+          attachCallersComp callers
+            (evalStatementBy tyEq body frame s.mem s.callerMem stmt)
+        | none =>
+          if Nat.beq frame.stmtIdx bb.statements.length then
+            match bb.terminator with
+            | .call callee args dst target unwind =>
+              match compGetElem? p.bodies callee with
+              | none => .fault .unsupported
+              | some calleeBody =>
+                evalCallTerminatorBy tyEq body bb frame callers s.mem
+                  s.callerMem callee none calleeBody args dst target unwind
+            | .sysrootCall op args dst target unwind =>
+              evalCallTerminatorBy tyEq body bb frame callers s.mem
+                s.callerMem 0 (some op) (sysrootNumBodyComp op) args dst target
+                unwind
+            | .return_ =>
+              match callers with
+              | [] => evalTerminatorComp body bb frame s.mem s.callerMem
+              | caller :: rest =>
+                evalNonRootReturnBy tyEq p body bb frame caller rest s.mem
+                  s.callerMem
+            | _ =>
+              attachCallersComp callers
+                (evalTerminatorComp body bb frame s.mem s.callerMem)
+          else
+            .fault .unsupported
+  | [] => .fault .unsupported
+
+/-- Agreement between `evalMirStepBy` and `Trusted.MirSemantics.evalStep` when
+`tyEq` agrees with `MirTy.beq`. -/
+theorem evalMirStepBy_eq (tyEq : MirTy → MirTy → Bool)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b)
+    (p : Program) (c : Choice) (s : State) :
+    evalMirStepBy tyEq p c s = evalStep p c s := by
+  unfold evalMirStepBy evalStep
+  cases s.frames with
+  | nil => rfl
+  | cons frame callers =>
+    dsimp only
+    rw [activeFrameBodyComp_eq]
+    cases activeFrameBody p frame with
+    | none => rfl
+    | some body =>
+      dsimp only
+      rw [compGetElem?_eq]
+      cases Trusted.MirSemantics.getElem? body.basicBlocks frame.blockIdx with
+      | none => rfl
+      | some bb =>
+        dsimp only
+        rw [compGetElem?_eq]
+        cases Trusted.MirSemantics.getElem? bb.statements frame.stmtIdx with
+        | some stmt =>
+          dsimp only
+          rw [attachCallersComp_eq,
+            evalStatementBy_eq tyEq hTyEq body frame s.mem s.callerMem stmt]
+        | none =>
+          dsimp only
+          cases Nat.beq frame.stmtIdx bb.statements.length with
+          | false => rfl
+          | true =>
+            rw [if_true_eq_true, if_true_eq_true]
+            cases hTerm : bb.terminator with
+            | call callee args dst target unwind =>
+              dsimp only
+              rw [compGetElem?_eq]
+              cases Trusted.MirSemantics.getElem? p.bodies callee with
+              | none => rfl
+              | some calleeBody =>
+                exact evalCallTerminatorBy_eq tyEq hTyEq body bb frame callers
+                  s.mem s.callerMem callee none calleeBody args dst target unwind
+            | sysrootCall op args dst target unwind =>
+              dsimp only
+              rw [sysrootNumBodyComp_eq]
+              exact evalCallTerminatorBy_eq tyEq hTyEq body bb frame callers
+                s.mem s.callerMem 0 (some op)
+                (sysrootNumBody op) args dst target unwind
+            | return_ =>
+              cases callers with
+              | nil =>
+                dsimp only
+                exact evalTerminatorComp_eq body bb frame s.mem s.callerMem
+              | cons caller rest =>
+                exact evalNonRootReturnBy_eq tyEq hTyEq p body bb frame caller
+                  rest s.mem s.callerMem
+            | goto _ | switchInt _ _ | unreachable | unwindResume
+            | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
+              dsimp only
+              rw [attachCallersComp_eq, evalTerminatorComp_eq]
+
+/-- Depth-bounded LCNF-computable single-step MIR evaluator (`0`
+`noncomputable`). -/
+@[expose] def evalMirStepAt (fuel : Nat) (p : Program) (c : Choice) (s : State) :
+    StepResult State TerminalOut :=
+  evalMirStepBy (mirTyBeqAt fuel) p c s
+
+/-- Fuel-bounded MIR evaluator (`0` `noncomputable`) parameterized by `tyEq`. -/
+@[expose] def evalMirFuelBy (tyEq : MirTy → MirTy → Bool) (p : Program) (fuel : Nat)
+    (s : State) : StepResult State TerminalOut :=
+  @Nat.rec (fun _ => State → StepResult State TerminalOut)
+    (fun st => .step st)
+    (fun _ ih st =>
+      match evalMirStepBy tyEq p 0 st with
+      | .step st' => ih st'
+      | .done out => .done out
+      | .fault k => .fault k)
+    fuel s
+
+/-- Lifts fuel-bounded `evalMirFuelBy` outcomes into
+`Anneal.MirWp.execOutcomeState` when `tyEq` agrees with `MirTy.beq`. -/
+theorem execOutcomeState_of_evalMirFuelBy {tyEq : MirTy → MirTy → Bool}
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) {p : Program}
+    {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop} :
+    ∀ {fuel : Nat} {s : State},
+      (match evalMirFuelBy tyEq p fuel s with
+       | .done out => onDone out
+       | .fault k => onFault k
+       | .step _ => False) →
+      Anneal.MirWp.execOutcomeState p onDone onFault fuel s
+  | 0, _, h => False.elim h
+  | fuel + 1, s, h => by
+    change (match (match evalMirStepBy tyEq p 0 s with
+        | .step st' => evalMirFuelBy tyEq p fuel st'
+        | .done out => StepResult.done out
+        | .fault k => StepResult.fault k) with
+      | .done out => onDone out
+      | .fault k => onFault k
+      | .step _ => False) at h
+    refine Anneal.Framework.StepWp.execStepPred_succ_iff.mpr ?_
+    rw [evalMirStepBy_eq tyEq hTyEq p 0 s] at h
+    cases hStep : evalStep p 0 s with
+    | step st' =>
+      rw [hStep] at h
+      exact execOutcomeState_of_evalMirFuelBy hTyEq h
+    | done out =>
+      rw [hStep] at h
+      exact h
+    | fault k =>
+      rw [hStep] at h
+      exact h
+
+/-- Lifts fuel-bounded `evalMirFuelBy` outcomes to `Anneal.MirWp.wpOutcomeState`
+when `tyEq` agrees with `MirTy.beq`. -/
+theorem wpOutcomeState_of_evalMirFuelBy {tyEq : MirTy → MirTy → Bool}
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) {p : Program}
+    {onDone : TerminalOut → Prop} {onFault : FaultKind → Prop}
+    {fuel : Nat} {s : State}
+    (h : match evalMirFuelBy tyEq p fuel s with
+         | .done out => onDone out
+         | .fault k => onFault k
+         | .step _ => False) :
+    Anneal.MirWp.wpOutcomeState p onDone onFault fuel s :=
+  Anneal.MirWp.wpOutcomeState_of_execOutcomeState
+    (execOutcomeState_of_evalMirFuelBy hTyEq h)
+
+/-! ## Static Entry-Admission and `initState` Core -/
+
+/-- Computable mirror of `Trusted.MirSemantics.singleBodyStaticAdmitted`
+parameterized by `tyEq`. -/
+@[expose] def singleBodyStaticAdmittedBy (tyEq : MirTy → MirTy → Bool) (p : Program)
     (body : Body) : Bool :=
   Nat.beq p.pointerWidthBits 64 &&
     Nat.beq p.mirProfileVersion 1 &&
@@ -1451,7 +2456,55 @@ by `tyEq`. -/
     storageAnnotationsInBoundsComp body &&
     discriminantTypesValidBy tyEq body &&
     castTypesValidBy tyEq body &&
-    body.locals.all isSupportedScalarOrUnitTyComp
+    body.locals.all isSupportedScalarOrUnitTyComp &&
+    callsAdmittedBy tyEq p body
+
+theorem singleBodyStaticAdmittedBy_eq (tyEq : MirTy → MirTy → Bool)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) (p : Program) (body : Body) :
+    singleBodyStaticAdmittedBy tyEq p body = singleBodyStaticAdmitted p body := by
+  unfold singleBodyStaticAdmittedBy singleBodyStaticAdmitted
+  rw [stringIsEmptyComp_eq, storageAnnotationsInBoundsComp_eq,
+      discriminantTypesValidBy_eq tyEq hTyEq,
+      castTypesValidBy_eq tyEq hTyEq,
+      listAll_congr body.locals isSupportedScalarOrUnitTyComp_eq,
+      callsAdmittedBy_eq tyEq hTyEq]
+
+/-- Computable mirror of `Trusted.MirSemantics.callBodyStaticAdmitted`
+parameterized by `tyEq`. -/
+@[expose] def callBodyStaticAdmittedBy (tyEq : MirTy → MirTy → Bool) (p : Program)
+    (body : Body) : Bool :=
+  singleBodyStaticAdmittedBy tyEq p body && assignTypesValidBy tyEq body
+
+theorem callBodyStaticAdmittedBy_eq (tyEq : MirTy → MirTy → Bool)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) (p : Program) (body : Body) :
+    callBodyStaticAdmittedBy tyEq p body = callBodyStaticAdmitted p body := by
+  unfold callBodyStaticAdmittedBy callBodyStaticAdmitted
+  rw [singleBodyStaticAdmittedBy_eq tyEq hTyEq, assignTypesValidBy_eq tyEq hTyEq]
+
+/-- Computable mirror of `Trusted.MirSemantics.allCallBodiesStaticAdmitted`
+parameterized by `tyEq`. -/
+@[expose] def allCallBodiesStaticAdmittedBy (tyEq : MirTy → MirTy → Bool) (p : Program)
+    (body : Body) : Bool :=
+  if bodyHasAnyCallComp body then
+    assignTypesValidBy tyEq body &&
+      p.bodies.all (callBodyStaticAdmittedBy tyEq p)
+  else
+    true
+
+theorem allCallBodiesStaticAdmittedBy_eq (tyEq : MirTy → MirTy → Bool)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) (p : Program) (body : Body) :
+    allCallBodiesStaticAdmittedBy tyEq p body =
+      allCallBodiesStaticAdmitted p body := by
+  unfold allCallBodiesStaticAdmittedBy allCallBodiesStaticAdmitted
+  rw [bodyHasAnyCallComp_eq, assignTypesValidBy_eq tyEq hTyEq,
+    listAll_congr p.bodies (callBodyStaticAdmittedBy_eq tyEq hTyEq p)]
+
+/-- Computable mirror of `Trusted.MirSemantics.BodyStaticAdmitted` parameterized
+by `tyEq`. -/
+@[expose] def bodyStaticAdmittedBy (tyEq : MirTy → MirTy → Bool) (p : Program)
+    (body : Body) : Bool :=
+  singleBodyStaticAdmittedBy tyEq p body &&
+    allCallBodiesStaticAdmittedBy tyEq p body
 
 /-- Agreement between `bodyStaticAdmittedBy` and `BodyStaticAdmitted` when
 `tyEq` agrees with `MirTy.beq`. -/
@@ -1459,10 +2512,8 @@ theorem bodyStaticAdmittedBy_eq (tyEq : MirTy → MirTy → Bool)
     (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b) (p : Program) (body : Body) :
     bodyStaticAdmittedBy tyEq p body = BodyStaticAdmitted p body := by
   unfold bodyStaticAdmittedBy BodyStaticAdmitted
-  rw [stringIsEmptyComp_eq, storageAnnotationsInBoundsComp_eq,
-      discriminantTypesValidBy_eq tyEq hTyEq,
-      castTypesValidBy_eq tyEq hTyEq,
-      listAll_congr body.locals isSupportedScalarOrUnitTyComp_eq]
+  rw [singleBodyStaticAdmittedBy_eq tyEq hTyEq,
+      allCallBodiesStaticAdmittedBy_eq tyEq hTyEq]
 
 /-- Computable mirror of `Trusted.MirSemantics.initState` parameterized by
 `tyEq`. -/
@@ -1482,6 +2533,8 @@ theorem bodyStaticAdmittedBy_eq (tyEq : MirTy → MirTy → Bool)
       else if !discriminantTypesValidBy tyEq body then .error .unsupported
       else if !castTypesValidBy tyEq body then .error .unsupported
       else if !body.locals.all isSupportedScalarOrUnitTyComp then .error .unsupported
+      else if !callsAdmittedBy tyEq p body then .error .unsupported
+      else if !allCallBodiesStaticAdmittedBy tyEq p body then .error .unsupported
       else
         let paramTys := (body.locals.drop 1).take body.argumentCount
         if !checkArgsMatchBy tyEq q.args paramTys then .error .unsupported
@@ -1512,6 +2565,8 @@ theorem initStateBy_eq (tyEq : MirTy → MirTy → Bool)
       discriminantTypesValidBy_eq tyEq hTyEq,
       castTypesValidBy_eq tyEq hTyEq,
       listAll_congr body.locals isSupportedScalarOrUnitTyComp_eq,
+      callsAdmittedBy_eq tyEq hTyEq,
+      allCallBodiesStaticAdmittedBy_eq tyEq hTyEq,
       checkArgsMatchBy_eq tyEq hTyEq, initLocalsLoopComp_eq, entryMemoryComp_eq]
 
 end Anneal.MirTotal

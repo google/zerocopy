@@ -349,6 +349,105 @@ noncomputable def refCastTypesValid (types localTys : List MirTy)
         | _ => true
       | _ => true))
 
+/-- Independent $M_{\text{ref}}$ operand-type check for an unprojected in-bounds
+local against `expected`. -/
+noncomputable def refLocalOperandMatchesTy (localTys : List MirTy)
+    (ropnd : RefOperand) (expected : MirTy) : Bool :=
+  match ropnd with
+  | .copy p | .move p =>
+    if p.projection.isEmpty then
+      match MirSemantics.getElem? localTys p.localId with
+      | some srcTy => MirTy.beq srcTy expected
+      | none => true
+    else
+      true
+  | .constant _ => true
+
+/-- Resolve the declared `MirTy` of a `RefOperand` when it is an unprojected
+in-bounds local or a `RefProg.types`-indexed constant operand. -/
+noncomputable def refOperandTy? (types localTys : List MirTy) :
+    RefOperand → Option MirTy
+  | .copy p | .move p =>
+    if p.projection.isEmpty then MirSemantics.getElem? localTys p.localId
+    else none
+  | .constant rc => MirSemantics.getElem? types rc.ty
+
+/-- Independent $M_{\text{ref}}$ left-homogeneity check for binary operators,
+matching `Miri.MIR.BinOp.leftHomogeneous`. -/
+noncomputable def refBinOpLeftHomogeneous : BinOp → Bool
+  | .add | .addUnchecked | .sub | .subUnchecked | .mul | .mulUnchecked
+  | .div | .rem | .bitXor | .bitAnd | .bitOr | .offset
+  | .shl | .shlUnchecked | .shr | .shrUnchecked => true
+  | .addWithOverflow | .subWithOverflow | .mulWithOverflow
+  | .eq | .ne | .lt | .le | .gt | .ge | .cmp => false
+
+/-- Independent $M_{\text{ref}}$ right-homogeneity check for binary operators,
+matching `Miri.MIR.BinOp.rightHomogeneous`. -/
+noncomputable def refBinOpRightHomogeneous : BinOp → Bool
+  | .add | .addUnchecked | .addWithOverflow | .sub | .subUnchecked
+  | .subWithOverflow | .mul | .mulUnchecked | .mulWithOverflow | .div | .rem
+  | .bitXor | .bitAnd | .bitOr | .eq | .ne | .lt | .le | .gt | .ge
+  | .cmp => true
+  | .offset | .shl | .shlUnchecked | .shr | .shrUnchecked => false
+
+/-- Independent $M_{\text{ref}}$ homogeneity check for unary operators,
+matching `Miri.MIR.UnOp.homogeneous`. -/
+noncomputable def refUnOpHomogeneous : UnOp → Bool
+  | .not | .neg => true
+  | .ptrMetadata => false
+
+/-- Independent $M_{\text{ref}}$ check mirroring
+`Trusted.MirSemantics.assignTypesValid`: every unprojected, in-bounds
+`Assign(dst, rv)` operand whose layout hint `Miri` caches directly via
+`known` (`Use`, `BinaryOp`, `UnaryOp`) agrees with the
+declared local type. -/
+noncomputable def refAssignTypesValid (types localTys : List MirTy)
+    (rbody : RefBody) : Bool :=
+  rbody.basicBlocks.all (fun bb =>
+    bb.statements.all (fun stmt =>
+      match stmt with
+      | .assign dst rv =>
+        if dst.projection.isEmpty then
+          match MirSemantics.getElem? localTys dst.localId with
+          | none => true
+          | some dstTy =>
+            match rv with
+            | .use ropnd => refLocalOperandMatchesTy localTys ropnd dstTy
+            | .binaryOp op lhs rhs =>
+              let lhsOk : Bool :=
+                if refBinOpLeftHomogeneous op then
+                  refLocalOperandMatchesTy localTys lhs dstTy
+                else
+                  true
+              let rhsOk : Bool :=
+                if refBinOpRightHomogeneous op then
+                  match refOperandTy? types localTys lhs with
+                  | none =>
+                    match lhs with
+                    | .constant _ =>
+                      match rhs with
+                      | .copy q | .move q =>
+                        if q.projection.isEmpty then
+                          match MirSemantics.getElem? localTys q.localId with
+                          | some _ => false
+                          | none => true
+                        else true
+                      | .constant _ => true
+                    | _ => true
+                  | some lTy => refLocalOperandMatchesTy localTys rhs lTy
+                else
+                  true
+              lhsOk && rhsOk
+            | .unaryOp op ropnd =>
+              if refUnOpHomogeneous op then
+                refLocalOperandMatchesTy localTys ropnd dstTy
+              else
+                true
+            | _ => true
+        else
+          true
+      | _ => true))
+
 /-- Independent $M_{\text{ref}}$ 0-byte ZST enum check (`Variants.Single 0`). -/
 noncomputable def refIsZstEnumTy (ety : EnumTy) : Bool :=
   match ety.tagRepr with
@@ -730,10 +829,124 @@ noncomputable def toMiriStatement (types : List MirTy) :
     { sourceInfo := ⟨⟨0⟩, 0⟩
       kind := .Assign ⟨0, Array.empty⟩ (.CopyForDeref ⟨0, Array.empty⟩) }
 
+/-- Map `SysrootNumKind` to its closed opcode `0..5`. -/
+noncomputable def sysrootKindCode : SysrootNumKind → Nat
+  | .uncheckedAdd => 0
+  | .uncheckedSub => 1
+  | .uncheckedMul => 2
+  | .wrappingAdd => 3
+  | .wrappingSub => 4
+  | .wrappingMul => 5
+
+/-- Decode opcode `0..5` back to `SysrootNumKind`. -/
+noncomputable def sysrootKindOfCode : Nat → Option SysrootNumKind
+  | 0 => some .uncheckedAdd
+  | 1 => some .uncheckedSub
+  | 2 => some .uncheckedMul
+  | 3 => some .wrappingAdd
+  | 4 => some .wrappingSub
+  | 5 => some .wrappingMul
+  | _ => none
+
+/-- Map `IntWidth` to its closed code `0..5`. -/
+noncomputable def intWidthCode : IntWidth → Nat
+  | .i8 => 0
+  | .i16 => 1
+  | .i32 => 2
+  | .i64 => 3
+  | .i128 => 4
+  | .isize => 5
+
+/-- Decode code `0..5` back to `IntWidth`. -/
+noncomputable def intWidthOfCode : Nat → Option IntWidth
+  | 0 => some .i8
+  | 1 => some .i16
+  | 2 => some .i32
+  | 3 => some .i64
+  | 4 => some .i128
+  | 5 => some .isize
+  | _ => none
+
+/-- Collision-free natural code `0..71` for a `SysrootNumOp`. -/
+noncomputable def sysrootNumOpCode (op : SysrootNumOp) : Nat :=
+  sysrootKindCode op.kind * 12 + intWidthCode op.width * 2 +
+    (if op.signed then 1 else 0)
+
+/-- Decode a natural code `0..71` back to `SysrootNumOp`. -/
+noncomputable def sysrootNumOpOfCode (code : Nat) : Option SysrootNumOp :=
+  if Nat.blt code 72 then
+    match sysrootKindOfCode (Nat.div code 12),
+        intWidthOfCode (Nat.div (Nat.mod code 12) 2) with
+    | some k, some w =>
+      some { kind := k, width := w, signed := Nat.mod code 2 == 1 }
+    | _, _ => none
+  else
+    none
+
+/-- Underlying `BinOp` for a `SysrootNumKind`. -/
+noncomputable def refSysrootNumBinOp : SysrootNumKind → BinOp
+  | .uncheckedAdd => .addUnchecked
+  | .uncheckedSub => .subUnchecked
+  | .uncheckedMul => .mulUnchecked
+  | .wrappingAdd => .add
+  | .wrappingSub => .sub
+  | .wrappingMul => .mul
+
+/-- Canonical `RefBody` for a pinned `core::num` sysroot call against type
+table `types`. -/
+noncomputable def sysrootNumRefBody (types : List MirTy) (op : SysrootNumOp) :
+    RefBody :=
+  let tyId := tyIdFor types (.int op.width op.signed)
+  let isUnsafe : Bool :=
+    match op.kind with
+    | .uncheckedAdd | .uncheckedSub | .uncheckedMul => true
+    | .wrappingAdd | .wrappingSub | .wrappingMul => false
+  {
+    identity := "core::num::sysroot"
+    isUnsafe := isUnsafe
+    argumentCount := 2
+    locals := [tyId, tyId, tyId]
+    basicBlocks := [{
+      statements := [
+        .assign ⟨0, []⟩ (.binaryOp (refSysrootNumBinOp op.kind)
+          (.copy ⟨1, []⟩) (.copy ⟨2, []⟩))
+      ]
+      terminator := .return_
+      cleanup := false
+    }]
+  }
+
+/-- Base `TyId` above ordinary `types` and `auxTyCode` (`types.length + 0..14`)
+reserved for `FnDef` callee operands. -/
+noncomputable def fnTyBase (types : List MirTy) : TyId :=
+  types.length + 16
+
+/-- Parity-tagged function-item identifier for an intra-crate body `defId`
+(`even`). -/
+noncomputable def fnTagForCrate (defId : DefId) : Nat :=
+  2 * defId
+
+/-- Parity-tagged function-item identifier for a pinned sysroot `core::num` op
+(`odd`). -/
+noncomputable def fnTagForSysroot (op : SysrootNumOp) : Nat :=
+  2 * sysrootNumOpCode op + 1
+
+/-- Map `Trusted.MirAst.UnwindAction` to `Miri.MIR.UnwindAction`. -/
+noncomputable def toMiriUnwindAction : UnwindAction → Miri.MIR.UnwindAction
+  | .continue_ => .Continue
+  | .unreachable => .Unreachable
+  | .terminate => .Terminate .InCleanup
+  | .cleanup block => .Cleanup block
+
+/-- Wrap a `RefOperand` as a `Miri.MIR.SpannedOperand` for call arguments. -/
+noncomputable def toMiriSpannedOperand (types : List MirTy)
+    (op : RefOperand) : Miri.MIR.SpannedOperand :=
+  ⟨⟨0⟩, toMiriOperand types op⟩
+
 /-- Map `RefTerminatorKind` to `Miri.MIR.Terminator`. Profile v1 unmodeled
-terminators (`.unwindResume`, `.assert`, `.call`, `.coreCall`, and
-`.unsupported`) map to `.CoroutineDrop`, which `ControlFlow.evalTerminator`
-rejects fail-closed with `.invalidProgram` (`.blocked`). -/
+terminators (`.unwindResume`, `.assert`, `.coreCall`, and `.unsupported`) map
+to `.CoroutineDrop`, which `ControlFlow.evalTerminator` rejects fail-closed
+with `.invalidProgram` (`.blocked`). -/
 noncomputable def toMiriTerminator (types : List MirTy) :
     RefTerminatorKind → Miri.MIR.Terminator
   | .goto target =>
@@ -748,8 +961,22 @@ noncomputable def toMiriTerminator (types : List MirTy) :
         { cases := Array.mk
             (targets.branches.map (fun b => .Case b.1.toNat b.2))
           otherwise := targets.otherwise } }
-  | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _
-  | .coreCall _ _ _ _ _ | .unsupported =>
+  | .call callee args dst target unwind =>
+    let funcOp : Miri.MIR.Operand :=
+      .Constant ⟨⟨0⟩, none,
+        .Val .ZeroSized (fnTyBase types + fnTagForCrate callee)⟩
+    { sourceInfo := ⟨⟨0⟩, 0⟩
+      kind := .Call funcOp (Array.mk (args.map (toMiriSpannedOperand types)))
+        (toMiriPlace dst) target (toMiriUnwindAction unwind) .Normal ⟨0⟩ }
+  | .sysrootCall op args dst target unwind =>
+    let funcOp : Miri.MIR.Operand :=
+      .Constant ⟨⟨0⟩, none,
+        .Val .ZeroSized (fnTyBase types + fnTagForSysroot op)⟩
+    { sourceInfo := ⟨⟨0⟩, 0⟩
+      kind := .Call funcOp (Array.mk (args.map (toMiriSpannedOperand types)))
+        (toMiriPlace dst) target (toMiriUnwindAction unwind) .Normal ⟨0⟩ }
+  | .unwindResume | .assert _ _ _ _ _ | .coreCall _ _ _ _ _
+  | .unsupported =>
     { sourceInfo := ⟨⟨0⟩, 0⟩, kind := .CoroutineDrop }
 
 /-- Lower a `RefBasicBlock` to a `Miri.MIR.BasicBlock`. -/
@@ -1158,6 +1385,16 @@ noncomputable def initRefLocalsLoop (types : List MirTy) (rbody : RefBody)
       refLocalStateOfSlot types ty slot ::
         initRefLocalsLoop types rbody args (idx + 1) rest
 
+/-- Construct a real `Miri.Interpreter.LocalState` with explicit layout cache
+presence (`cached`). -/
+noncomputable def refLocalStateOfSlotWithCache (types : List MirTy) (ty : MirTy)
+    (slot : LocalSlot) (cached : Bool) :
+    Miri.Interpreter.LocalState Miri.Memory.Provenance
+      Miri.Interpreter.LocalLayout := {
+  value := slotToMiriLocalValue ty slot
+  layout := if cached then some (refLocalLayoutForTy types ty) else none
+}
+
 /-- Construct a real `Miri.Interpreter.Frame` executing `defId`/`rbody` at
 `(blockIdx, stmtIdx)` with `locals` and caller-owned return destination
 `retPlace` (`returnContinuation := .stop false`). -/
@@ -1186,6 +1423,71 @@ noncomputable def mkRefMiriFrame (types : List MirTy) (defId : DefId)
   location := .mir ⟨blockIdx, stmtIdx⟩
 }
 
+/-- Construct a non-root callee `Miri.Interpreter.Frame` with caller return
+destination `callerIdx`/`dstLocalId` and continuation
+`.goto retTarget? .Unreachable`. -/
+noncomputable def mkRefMiriCallFrame (types : List MirTy) (fnTag : DefId)
+    (rbody : RefBody) (blockIdx : BasicBlockId) (stmtIdx : Nat)
+    (locals : List (Miri.Interpreter.LocalState Miri.Memory.Provenance
+      Miri.Interpreter.LocalLayout))
+    (callerIdx : Nat) (dstLocalId : LocalId) (dstTy : MirTy)
+    (retTarget? : Option BasicBlockId) :
+    Miri.Interpreter.Frame Miri.Memory.Provenance
+      Miri.Interpreter.LocalLayout Miri.Interpreter.MachineHooks.FrameExtra := {
+  body := toMiriBody types rbody
+  bodyIdentity := Miri.Interpreter.BodyIdentity.ofCanonicalIndex fnTag
+  functionInstance := { kind := .Item fnTag, args := Array.empty }
+  extra := {
+    borrowTracker := none
+    catchUnwind := none
+    userRelevance := 255
+    dataRace := none
+  }
+  returnContinuation := .goto retTarget? .Unreachable
+  returnPlace := .frameLocal callerIdx dstLocalId none
+    (refLocalLayoutForTy types dstTy)
+    (Miri.Interpreter.LocalsIdentity.ofAllocationToken 0)
+  localsIdentity := Miri.Interpreter.LocalsIdentity.ofAllocationToken 0
+  locals := Array.mk locals
+  vaList := Array.empty
+  trackCallerArg := none
+  location := .mir ⟨blockIdx, stmtIdx⟩
+}
+
+/-- Construct a `Miri.Interpreter.MachineHooks.State Unit RefUser` holding an
+arbitrary bottom-to-top frame stack `frames` and cached
+`topUserRelevantFrame`. -/
+noncomputable def mkRefMiriStackState
+    (frames : Array (Miri.Interpreter.Frame Miri.Memory.Provenance
+      Miri.Interpreter.LocalLayout Miri.Interpreter.MachineHooks.FrameExtra))
+    (topRel? : Option Nat)
+    (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
+      Miri.TreeBorrows.BorrowTree Unit)
+    (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
+    (callerMem : CallerMemory) :
+    Miri.Interpreter.MachineHooks.State Unit RefUser :=
+  let initThreads := Miri.Concurrency.ThreadManager.initial true
+  {
+    stack := ⟨frames⟩
+    machine := {
+      memory := mem
+      borrowTracker := none
+      dataRace := none
+      threads := {
+        initThreads with
+        threads := initThreads.threads.mapIdx fun index thread =>
+          if index == initThreads.activeThread.toNat then
+            { thread with topUserRelevantFrame := topRel? }
+          else
+            thread
+      }
+      raceAllocations := Array.empty
+      allocationSpans := Array.empty
+      user := { control := ctrl, callerMem := callerMem }
+      pendingMoveDeinit := false
+    }
+  }
+
 /-- Construct a real `Miri.Interpreter.MachineHooks.State Unit RefUser` holding
 a single active frame, return-place memory `mem`, terminator control `ctrl`,
 and `callerMem`. -/
@@ -1196,27 +1498,163 @@ noncomputable def mkRefMiriState
       Miri.TreeBorrows.BorrowTree Unit)
     (ctrl : Miri.Interpreter.TerminatorMachine.Control Unit)
     (callerMem : CallerMemory) :
-    Miri.Interpreter.MachineHooks.State Unit RefUser := {
-  stack := ⟨Array.mk [frame]⟩
-  machine := {
-    memory := mem
-    borrowTracker := none
-    dataRace := none
-    threads := Miri.Concurrency.ThreadManager.initial true
-    raceAllocations := Array.empty
-    allocationSpans := Array.empty
-    user := { control := ctrl, callerMem := callerMem }
-    pendingMoveDeinit := false
-  }
-}
+    Miri.Interpreter.MachineHooks.State Unit RefUser :=
+  mkRefMiriStackState (Array.mk [frame]) none mem ctrl callerMem
+
+/-- Independent $M_{\text{ref}}$ membership check on `List Nat`. -/
+noncomputable def refNatListContains (x : Nat) : List Nat → Bool
+  | [] => false
+  | y :: rest => Nat.beq x y || refNatListContains x rest
+
+/-- Collect moved places from a `List RefOperand`. -/
+noncomputable def refMovePlaceList : List RefOperand → List RefPlace
+  | [] => []
+  | .move p :: rest => p :: refMovePlaceList rest
+  | _ :: rest => refMovePlaceList rest
+
+/-- Independent $M_{\text{ref}}$ check that moved places and `dst` have empty
+projections and distinct local IDs. -/
+noncomputable def refPlacesDisjointAux (seen : List LocalId) :
+    List RefPlace → Bool
+  | [] => true
+  | p :: rest =>
+    if !p.projection.isEmpty || refNatListContains p.localId seen then
+      false
+    else
+      refPlacesDisjointAux (p.localId :: seen) rest
+
+/-- Independent $M_{\text{ref}}$ local-disjointness check for call move
+arguments and return destination. -/
+noncomputable def refMoveDefinitelyDisjoint (args : List RefOperand)
+    (dst : RefPlace) : Bool :=
+  refPlacesDisjointAux [] (refMovePlaceList args ++ [dst])
+
+/-- Independent $M_{\text{ref}}$ type and constant-literal check for call
+arguments against decoded callee parameter types. -/
+noncomputable def refCallArgsMatchBody (types localTys : List MirTy) :
+    List RefOperand → List MirTy → Bool
+  | [], [] => true
+  | opnd :: restArgs, paramTy :: restParams =>
+    let argOk : Bool :=
+      match opnd with
+      | .copy place | .move place =>
+        if !place.projection.isEmpty then
+          false
+        else
+          match MirSemantics.getElem? localTys place.localId with
+          | some argTy => MirTy.beq argTy paramTy
+          | none => false
+      | .constant c =>
+        match MirSemantics.getElem? types c.ty with
+        | none => false
+        | some cTy =>
+          MirTy.beq cTy paramTy &&
+            match evalRefConstLit cTy c.lit with
+            | .ok _ => true
+            | .error _ => false
+    argOk && refCallArgsMatchBody types localTys restArgs restParams
+  | _, _ => false
+
+/-- Independent $M_{\text{ref}}$ call-site admission check for one call site. -/
+noncomputable def refCallTargetAdmitted (types localTys : List MirTy)
+    (rbody : RefBody) (bb : RefBasicBlock) (calleeArgCount : Nat)
+    (calleeLocalTys : List MirTy) (args : List RefOperand) (dst : RefPlace)
+    (target : Option BasicBlockId) (unwind : UnwindAction) : Bool :=
+  !bb.cleanup &&
+    (match unwind with | .cleanup _ => false | _ => true) &&
+    (match target with
+     | none => true
+     | some tgt => Nat.blt tgt rbody.basicBlocks.length) &&
+    dst.projection.isEmpty &&
+    refMoveDefinitelyDisjoint args dst &&
+    Nat.beq args.length calleeArgCount &&
+    Nat.blt calleeArgCount calleeLocalTys.length &&
+    (match MirSemantics.getElem? localTys dst.localId,
+        MirSemantics.getElem? calleeLocalTys 0 with
+     | some dstTy, some retTy =>
+       refIsSupportedLocalTy dstTy && MirTy.beq dstTy retTy
+     | _, _ => false) &&
+    refCallArgsMatchBody types localTys args
+      ((calleeLocalTys.drop 1).take calleeArgCount)
+
+/-- Independent $M_{\text{ref}}$ admission check for all call terminators in
+`rbody`. Like `Trusted.MirSemantics.callsAdmitted`, it rejects `.call` targets
+whose `isUnsafe` flag is set (`isUnsafe` is otherwise inert in
+$M_{\text{ref}}$), so both models refuse the same programs at entry. -/
+noncomputable def refCallsAdmitted (rp : RefProg) (localTys : List MirTy)
+    (rbody : RefBody) : Bool :=
+  rbody.basicBlocks.all (fun bb =>
+    match bb.terminator with
+    | .call callee args dst target unwind =>
+      match MirSemantics.getElem? rp.bodies callee with
+      | none => false
+      | some calleeRbody =>
+        match decodeLocalTys rp.types calleeRbody.locals with
+        | none => false
+        | some calleeLocalTys =>
+          !calleeRbody.isUnsafe &&
+            refCallTargetAdmitted rp.types localTys rbody bb
+              calleeRbody.argumentCount calleeLocalTys args dst target unwind
+    | .sysrootCall op args dst target unwind =>
+      let sysTy := .int op.width op.signed
+      refCallTargetAdmitted rp.types localTys rbody bb 2 [sysTy, sysTy, sysTy]
+        args dst target unwind
+    | _ => true)
+
+/-- Independent $M_{\text{ref}}$ check for whether `rbody` contains any call
+terminator. -/
+noncomputable def refBodyHasAnyCall (rbody : RefBody) : Bool :=
+  rbody.basicBlocks.any (fun bb =>
+    match bb.terminator with
+    | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ => true
+    | _ => false)
+
+/-- Independent $M_{\text{ref}}$ single-body static admission predicate. -/
+noncomputable def refSingleBodyStaticAdmitted (rp : RefProg) (rbody : RefBody) :
+    Bool :=
+  match decodeLocalTys rp.types rbody.locals with
+  | none => false
+  | some localTys =>
+    Nat.beq rp.pointerWidthBits 64 &&
+      Nat.beq rp.mirProfileVersion 1 &&
+      !rbody.identity.toByteArray.data.toList.isEmpty &&
+      !rbody.basicBlocks.isEmpty &&
+      Nat.blt rbody.argumentCount localTys.length &&
+      refStorageAnnotationsInBounds rbody &&
+      refDiscriminantTypesValid localTys rbody &&
+      refCastTypesValid rp.types localTys rbody &&
+      localTys.all refIsSupportedLocalTy &&
+      refCallsAdmitted rp localTys rbody
+
+/-- Independent $M_{\text{ref}}$ call-body static admission predicate. -/
+noncomputable def refCallBodyStaticAdmitted (rp : RefProg) (rbody : RefBody) :
+    Bool :=
+  refSingleBodyStaticAdmitted rp rbody &&
+    match decodeLocalTys rp.types rbody.locals with
+    | none => false
+    | some localTys => refAssignTypesValid rp.types localTys rbody
+
+/-- Whenever `rbody` contains any call terminator, require `refAssignTypesValid`
+on `rbody` and require every body in `rp.bodies` to satisfy
+`refCallBodyStaticAdmitted rp`. -/
+noncomputable def refAllCallBodiesStaticAdmitted (rp : RefProg)
+    (rbody : RefBody) : Bool :=
+  if refBodyHasAnyCall rbody then
+    match decodeLocalTys rp.types rbody.locals with
+    | none => false
+    | some localTys =>
+      refAssignTypesValid rp.types localTys rbody &&
+        rp.bodies.all (refCallBodyStaticAdmitted rp)
+  else
+    true
 
 /-- Entry initialization of $M_{\text{ref}}$ (`initRefState rp q maxSteps`):
 validates 64-bit target layout, MIR profile version 1, empty `callerMem`,
 entry body existence, non-empty basic blocks, `argumentCount < locals.length`,
 in-bounds storage annotations, well-typed `Discriminant` and `Cast`
-destinations, supported local types, and matching arguments; allocates the
-caller-owned return buffer in `MemoryState.empty`; and initializes a
-single-frame `Miri.Interpreter.MachineHooks.State` ready for
+destinations, supported local types, admitted calls, and matching arguments;
+allocates the caller-owned return buffer in `MemoryState.empty`; and initializes
+a single-frame `Miri.Interpreter.MachineHooks.State` ready for
 `ExecutionMachine.step`. -/
 noncomputable def initRefState (rp : RefProg) (q : Query)
     (maxSteps : Nat) : Except FaultKind RefState :=
@@ -1242,6 +1680,10 @@ noncomputable def initRefState (rp : RefProg) (q : Query)
         else if !refCastTypesValid rp.types localTys rbody then
           .error .unsupported
         else if !localTys.all refIsSupportedLocalTy then
+          .error .unsupported
+        else if !refCallsAdmitted rp localTys rbody then
+          .error .unsupported
+        else if !refAllCallBodiesStaticAdmitted rp rbody then
           .error .unsupported
         else
           let paramTys := (localTys.drop 1).take rbody.argumentCount

@@ -114,7 +114,7 @@ theorem depth17_nested_ref_uninit_matches_evalStep :
   have hStep : evalStep (mkProgNestedRefUninit d) 0 stateDepth17Uninit = .fault .undefined := by
     have hRefl : MirTy.beq (tyNestedRef d) (tyNestedRef d) = true :=
       Anneal.MirWp.mirTy_beq_refl (tyNestedRef d)
-    change (match (if !(MirTy.beq (tyNestedRef d) (tyNestedRef d)) then
+    change attachCallers [] (match (if !(MirTy.beq (tyNestedRef d) (tyNestedRef d)) then
         Except.error FaultKind.unsupported
       else
         (Except.error FaultKind.undefined :
@@ -125,7 +125,8 @@ theorem depth17_nested_ref_uninit_matches_evalStep :
         | .error k => StepResult.fault k
         | .ok (localsAfterWrite, memAfterWrite) =>
           StepResult.step
-            (State.mk [FrameState.mk 0 0 1 localsAfterWrite] (CallerMemory.mk []) memAfterWrite)) =
+            (State.mk [FrameState.mk 0 0 1 localsAfterWrite none none none]
+              (CallerMemory.mk []) memAfterWrite)) =
       StepResult.fault FaultKind.undefined
     rw [hRefl]
     rfl
@@ -241,6 +242,133 @@ theorem mirTotal_negative_guards_tests :
       entryMemoryComp ⟨[]⟩ = .fault .unsupported ∧
     castTypesValidBy (mirTyBeqAt 8) badCastBody = false :=
   ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Direct intra-crate `.call` multi-frame canary (`caller(0)` calls
+`callee(1)`). -/
+def canaryDirectCallProg : Program :=
+  { bodies :=
+      [{ identity := "mir_total::canary_caller"
+         argumentCount := 0
+         locals := [.int .i16 false]
+         basicBlocks :=
+           [{ statements := []
+              terminator := .call 1
+                [.constant ⟨.int .i16 false, .scalar (BitVec.ofNat 128 19)⟩]
+                ⟨0, []⟩ (some 1) .continue_
+              cleanup := false },
+            { statements := []
+              terminator := .return_
+              cleanup := false }] },
+       { identity := "mir_total::canary_callee"
+         argumentCount := 1
+         locals := [.int .i16 false, .int .i16 false]
+         basicBlocks :=
+           [{ statements :=
+                [.assign ⟨0, []⟩
+                  (.binaryOp .add (.copy ⟨1, []⟩)
+                    (.constant ⟨.int .i16 false, .scalar (BitVec.ofNat 128 23)⟩))]
+              terminator := .return_
+              cleanup := false }] }]
+    entryDefId := 0
+    scope := .unit
+    pointerWidthBits := 64
+    mirProfileVersion := 1 }
+
+/-- `SysrootCall` `u16::unchecked_mul` positive canary (`6 * 7 = 42`). -/
+def canarySysrootUncheckedMulOkProg : Program :=
+  { bodies :=
+      [{ identity := "mir_total::canary_sysroot_unchecked_mul_ok"
+         argumentCount := 0
+         locals := [.int .i16 false]
+         basicBlocks :=
+           [{ statements := []
+              terminator := .sysrootCall
+                { kind := .uncheckedMul, width := .i16, signed := false }
+                [.constant ⟨.int .i16 false, .scalar (BitVec.ofNat 128 6)⟩,
+                 .constant ⟨.int .i16 false, .scalar (BitVec.ofNat 128 7)⟩]
+                ⟨0, []⟩ (some 1) .continue_
+              cleanup := false },
+            { statements := []
+              terminator := .return_
+              cleanup := false }] }]
+    entryDefId := 0
+    scope := .unit
+    pointerWidthBits := 64
+    mirProfileVersion := 1 }
+
+/-- `SysrootCall` `u16::unchecked_mul` overflow UB canary (`400 * 300`). -/
+def canarySysrootUncheckedMulUbProg : Program :=
+  { bodies :=
+      [{ identity := "mir_total::canary_sysroot_unchecked_mul_ub"
+         argumentCount := 0
+         locals := [.int .i16 false]
+         basicBlocks :=
+           [{ statements := []
+              terminator := .sysrootCall
+                { kind := .uncheckedMul, width := .i16, signed := false }
+                [.constant ⟨.int .i16 false, .scalar (BitVec.ofNat 128 400)⟩,
+                 .constant ⟨.int .i16 false, .scalar (BitVec.ofNat 128 300)⟩]
+                ⟨0, []⟩ (some 1) .continue_
+              cleanup := false },
+            { statements := []
+              terminator := .return_
+              cleanup := false }] }]
+    entryDefId := 0
+    scope := .unit
+    pointerWidthBits := 64
+    mirProfileVersion := 1 }
+
+/-- Discharges direct `.call` and `.sysrootCall` positive and negative entry
+canaries via `MirTotal.ExecTotal`. -/
+theorem canary_calls_verified :
+    (∀ b : Body, compGetElem? canaryDirectCallProg.bodies 0 = some b →
+      BodyVerified canaryDirectCallProg 0 b (fun _ => True)) ∧
+    Anneal.MirWp.wpProg canaryDirectCallProg 4 { args := [] } (fun out =>
+      out = .returned ⟨.scalar ⟨.i16, false, BitVec.ofNat 128 42⟩, ⟨[]⟩⟩) ∧
+    (∀ b : Body, compGetElem? canarySysrootUncheckedMulOkProg.bodies 0 = some b →
+      BodyVerified canarySysrootUncheckedMulOkProg 0 b (fun _ => True)) ∧
+    Anneal.MirWp.wpProg canarySysrootUncheckedMulOkProg 4 { args := [] } (fun out =>
+      out = .returned ⟨.scalar ⟨.i16, false, BitVec.ofNat 128 42⟩, ⟨[]⟩⟩) ∧
+    Anneal.MirWp.wpFaultProg canarySysrootUncheckedMulUbProg 2 { args := [] }
+      .undefined := by
+  refine ⟨?_, wpProg_of_evalMirFuelTotal (s0 := {
+      frames := [{ defId := 0, blockIdx := 0, stmtIdx := 0, locals := [.immediate none] }]
+      callerMem := ⟨[]⟩
+      mem := entryMemoryComp }) rfl rfl rfl,
+    ?_, wpProg_of_evalMirFuelTotal (s0 := {
+      frames := [{ defId := 0, blockIdx := 0, stmtIdx := 0, locals := [.immediate none] }]
+      callerMem := ⟨[]⟩
+      mem := entryMemoryComp }) rfl rfl rfl,
+    wpFaultProg_of_evalMirFuelTotal (s0 := {
+      frames := [{ defId := 0, blockIdx := 0, stmtIdx := 0, locals := [.immediate none] }]
+      callerMem := ⟨[]⟩
+      mem := entryMemoryComp }) rfl rfl⟩
+  · intro b hb
+    injection hb with hbEq; subst hbEq
+    refine bodyVerified_of_evalMirFuelTotal rfl rfl ?_
+    intro args hArgs _
+    cases args with
+    | cons _ _ => cases hArgs
+    | nil =>
+      exact ⟨4,
+        { frames := [{ defId := 0, blockIdx := 0, stmtIdx := 0, locals := [.immediate none] }]
+          callerMem := ⟨[]⟩
+          mem := entryMemoryComp },
+        .returned ⟨.scalar ⟨.i16, false, BitVec.ofNat 128 42⟩, ⟨[]⟩⟩,
+        rfl, rfl⟩
+  · intro b hb
+    injection hb with hbEq; subst hbEq
+    refine bodyVerified_of_evalMirFuelTotal rfl rfl ?_
+    intro args hArgs _
+    cases args with
+    | cons _ _ => cases hArgs
+    | nil =>
+      exact ⟨4,
+        { frames := [{ defId := 0, blockIdx := 0, stmtIdx := 0, locals := [.immediate none] }]
+          callerMem := ⟨[]⟩
+          mem := entryMemoryComp },
+        .returned ⟨.scalar ⟨.i16, false, BitVec.ofNat 128 42⟩, ⟨[]⟩⟩,
+        rfl, rfl⟩
 
 end Anneal.MirTotal
 

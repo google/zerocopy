@@ -116,7 +116,7 @@ anneal/
 ├── .config/
 │   └── nextest.toml                   # Process-per-test profiles, slow-timeouts, heavy-lean slots
 ├── ci/
-│   ├── check_guard_mutation.py        # Lean TCB + header single-guard mutation runner (48 guards)
+│   ├── check_guard_mutation.py        # Lean TCB + header single-guard mutation runner (84 guards)
 │   ├── perf_tracking.py               # Telemetry collector, validator, & Tier A/B regression gate
 │   ├── perf_budgets.json              # Tier A time, RSS, 3-part .olean*, binary, & unit budgets
 │   ├── render_perf_dashboard.py       # Zero-CDN static HTML/JSON dashboard generator
@@ -633,7 +633,7 @@ anneal/tests/corpora/adversarial/
    newly passing `known_bug(#N, ...)` to `//@ pass`, **never** flipping
    `//@ pass` $\to$ `fail` or `//@ fail(...)` $\to$ `pass`.
 2. **Unified Guard-Ablation Schema (`guards.toml`, Target Wave 3):**
-   Extends Anneal's `48` cataloged Lean guards (`44` `Trusted/MirSemantics/*` +
+   Extends Anneal's `84` cataloged Lean guards (`80` `Trusted/MirSemantics/*` +
    `4` header guards in `ci/check_guard_mutation.py`, up from `46` at
    `c351dd381a`) to cover **Rust TCB guards** across `trusted/rustc-capture`,
    `trusted/audit`, and `trusted/cargo-anneal`:
@@ -884,7 +884,7 @@ under `NestedBwrap` with `--network=none` and read-only `/nix` `overlayfs`):
 | CI Tier | Trigger & Isolation | Executed Suites & Gates | Wall-Clock Target | Caching Policy |
 | :--- | :--- | :--- | ---: | :--- |
 | **Tier 0: Static & Boundary Preflight** | Ready Anneal-relevant or `run-ci` PRs, `merge_group`, & `push` (draft or non-Anneal PRs without `run-ci` skip `current_anneal` including `static-checks`; target `ci-core`: every PR; `Container --network=none`) | `root-manifest.sha256`, zero-symlink `trusted/`/`tests/` scan, `check_cargo_boundary` (2-zone lattice), `regenerate_bundle --check`, `check_todo.sh`, `check_pr_hygiene.py`, `check_skills.py`, Python `ci/test_*.py`, `--no-default-features` `cargo clippy` + `cli` offline tests | `< 90 s` | Content-addressed `cargo_locked` + `anneal-tc` image |
-| **Tier 1: PR Verification & Regression Gate** | PRs touching `anneal/**`, CI TCB, or `zerocopy/proofs/**` (`anneal.yml` runs `static-checks` on ready PRs and full suites on `run-ci` PRs or `merge_group`/`push`; target `ci-core`: `NestedBwrap` + `ubuntu-24.04-arm` `sandbox-aarch64`) | Workspace unit + single-binary integration suites (`anneal-testkit`, `anneal-audit-tests`, `cargo-anneal-tests`, `anneal-rustc-capture-tests`) run via `cargo nextest run --profile ci --workspace --locked` (`D3-A`, keeping `cargo test --workspace --locked` supported), `adversarial/` `must-reject` corpus, Lean TCB `check_guard_mutation.py` (`48` guards, `~35 s`), path-filtered Rust TCB guard ablation on PR-modified `trusted/**/*.rs` files (`D4-A`), `anneal-audit --require-correspondence` (with verified `lean-miri` `.olean` cache), `perf_tracking.py check-budgets` against `anneal/ci/perf_budgets.json` (plus target Wave-3 `theory/axiom-footprint.json`), `installed_smoke` + `verify_zerocopy.py` (`zerocopy/proofs/` + target `ratchet.json`) + `starnix` | `< 12 min` critical path | `ci-core` attested `Claim::Cache` (`lean-miri` `.olean` + Cargo target) |
+| **Tier 1: PR Verification & Regression Gate** | PRs touching `anneal/**`, CI TCB, or `zerocopy/proofs/**` (`anneal.yml` runs `static-checks` on ready PRs and full suites on `run-ci` PRs or `merge_group`/`push`; target `ci-core`: `NestedBwrap` + `ubuntu-24.04-arm` `sandbox-aarch64`) | Workspace unit + single-binary integration suites (`anneal-testkit`, `anneal-audit-tests`, `cargo-anneal-tests`, `anneal-rustc-capture-tests`) run via `cargo nextest run --profile ci --workspace --locked` (`D3-A`, keeping `cargo test --workspace --locked` supported), `adversarial/` `must-reject` corpus, Lean TCB `check_guard_mutation.py` (`84` guards, `~35 s`), path-filtered Rust TCB guard ablation on PR-modified `trusted/**/*.rs` files (`D4-A`), `anneal-audit --require-correspondence` (with verified `lean-miri` `.olean` cache), `perf_tracking.py check-budgets` against `anneal/ci/perf_budgets.json` (plus target Wave-3 `theory/axiom-footprint.json`), `installed_smoke` + `verify_zerocopy.py` (`zerocopy/proofs/` + target `ratchet.json`) + `starnix` | `< 12 min` critical path | `ci-core` attested `Claim::Cache` (`lean-miri` `.olean` + Cargo target) |
 | **Tier 2: Merge-Queue Assurance Gate** | `merge_group` (`NestedBwrap`) | **Pass-1 & Pass-2 `anneal-audit --require-correspondence`** (target `ci-core`: cold build; in `anneal-current.yml`, `merge_group` restores SHA-256-verified `lean-miri` `.olean` read-only with workflow miss fallback to cold, while `push` to `main` compiles cold), full Rust + Lean TCB guard-ablation matrix (`D4-A`), **4-kernel `--paranoid-quorum`** (`nanoda_bin` + `con-ron` + `con-leche` + `lean4lean --import` once `v4.35.0` lands), full `zerocopy/proofs/` (`real_crates/zerocopy`) verification | `< 18 min` | Cold on `main` `push` & pin edits; read-only SHA-256-verified `lean-miri` `.olean` on `merge_group` (zero unverified `.olean` cache hits) |
 | **Tier 3: Continuous `main` Telemetry & Scheduled Deep Sweep** | `push` to `main` (`.github/workflows/anneal-perf.yml`), nightly cron, & pre-release qualification (`0.2.0-alpha.11+`) | Continuous `perf_tracking.py collect`/`analyze`/`check-budgets` + static dashboard publication on `benchmark-data` (`anneal-perf.yml`), full **all-guards Rust + Lean TCB ablation matrix** (recompiling all `rustc-capture`/`audit`/`cargo-anneal` single-guard mutants per `D4-A`), full 4-way **`differential/` Miri $\leftrightarrow$ `MirSemantics` boundary/fuzz sweep**, multi-version Lean (`v4.33.1`/`v4.34.1`/`v4.35.0`) matrix, and extended external crate smoke suite | `< 45 min` | Isolated ephemeral runners |
 
@@ -1097,8 +1097,8 @@ blast radii remain documented below for durable architectural rationale.
 
 #### Decision D4: CI Tiering for Rust TCB Guard Ablation (`D4-A`)
 
-- **Context:** Lean TCB guard mutation (`48` guards in
-  `check_guard_mutation.py`: `44` `MirSemantics` + `4` header guards) reuses
+- **Context:** Lean TCB guard mutation (`84` guards in
+  `check_guard_mutation.py`: `80` `MirSemantics` + `4` header guards) reuses
   precompiled `BASE_TRUSTED_MODULES` `.olean`s and finishes in `~35 s` inside
   `NestedBwrap` (already running in Tier 1 PR CI). By contrast, mutating `N`
   Rust TCB guards in `trusted/{rustc-capture,audit,cargo-anneal}` requires

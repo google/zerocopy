@@ -98,7 +98,7 @@ private theorem step_to_switch (bits : BitVec 128)
   have hS3 : evalStep (bodyProg Captured.body_0) 0
       (mkState 0 3 [.immediate none, .immediate (some v), .immediate none, .immediate (some v)]) =
       .step (mkState 0 4 [.immediate none, .immediate (some v), .immediate (some (.bool eqb)), .immediate none]) := by
-    unfold evalStep bodyProg evalStatement
+    unfold evalStep bodyProg evalStatement activeFrameBody attachCallers
     dsimp only [Captured.body_0, Trusted.MirSemantics.getElem?, mkState]
     rw [ite_bool_false (rfl : (!([].isEmpty)) = false)]
     rw [hRval]

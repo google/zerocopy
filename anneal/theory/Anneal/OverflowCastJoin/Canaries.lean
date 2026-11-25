@@ -618,6 +618,21 @@ private theorem fuelRun_chain {f1 f2 : Nat} {s s' : State}
   rw [← evalMirFuelBlockTreeBy_add, h1]
   exact h2
 
+private def stageMidState (base : List LocalSlot)
+    (armBlk acc mulRes : Nat) (oAdd : Option Val) : State :=
+  mkStageState armBlk 3 base stageIds8 acc
+    (some (ocjU16Val mulRes))
+    (some (.tuple [ocjU16Val mulRes, .bool false]))
+    oAdd ⟨[]⟩ entryMemoryComp
+
+private theorem fuelRun8_split {s mid next : State}
+    (h1 : evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
+      bodyOverflowCast8Stage 4 s = .step mid)
+    (h2 : evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
+      bodyOverflowCast8Stage 4 mid = .step next) :
+    FuelRun 8 s (.step next) :=
+  fuelRun_chain (fuelRun_of_eq h1) (fuelRun_of_eq h2)
+
 private def baseT : List LocalSlot :=
   baseLocals8 true true true true true true true true
 private def stT0 : State :=
@@ -641,30 +656,43 @@ private def stT9 : State := stageDoneState baseT 25 1022 1041
 private theorem stT_step0 :
     evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
       bodyOverflowCast8Stage 2 stT0 = .step stT1 := rfl
-private theorem stT_step1 :
-    evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
-      bodyOverflowCast8Stage 8 stT1 = .step stT2 := rfl
-private theorem stT_step2 :
-    evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
-      bodyOverflowCast8Stage 8 stT2 = .step stT3 := rfl
-private theorem stT_step3 :
-    evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
-      bodyOverflowCast8Stage 8 stT3 = .step stT4 := rfl
-private theorem stT_step4 :
-    evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
-      bodyOverflowCast8Stage 8 stT4 = .step stT5 := rfl
-private theorem stT_step5 :
-    evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
-      bodyOverflowCast8Stage 8 stT5 = .step stT6 := rfl
-private theorem stT_step6 :
-    evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
-      bodyOverflowCast8Stage 8 stT6 = .step stT7 := rfl
-private theorem stT_step7 :
-    evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
-      bodyOverflowCast8Stage 8 stT7 = .step stT8 := rfl
-private theorem stT_step8 :
-    evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
-      bodyOverflowCast8Stage 8 stT8 = .step stT9 := rfl
+private theorem stT_step1 : FuelRun 8 stT1 (.step stT2) :=
+  fuelRun8_split (mid := stageMidState baseT 2 1 2 none) rfl rfl
+private theorem stT_step2 : FuelRun 8 stT2 (.step stT3) :=
+  fuelRun8_split
+    (mid := stageMidState baseT 5 3 6
+      (some (.tuple [ocjU16Val 3, .bool false])))
+    rfl rfl
+private theorem stT_step3 : FuelRun 8 stT3 (.step stT4) :=
+  fuelRun8_split
+    (mid := stageMidState baseT 8 9 18
+      (some (.tuple [ocjU16Val 9, .bool false])))
+    rfl rfl
+private theorem stT_step4 : FuelRun 8 stT4 (.step stT5) :=
+  fuelRun8_split
+    (mid := stageMidState baseT 11 23 46
+      (some (.tuple [ocjU16Val 23, .bool false])))
+    rfl rfl
+private theorem stT_step5 : FuelRun 8 stT5 (.step stT6) :=
+  fuelRun8_split
+    (mid := stageMidState baseT 14 53 106
+      (some (.tuple [ocjU16Val 53, .bool false])))
+    rfl rfl
+private theorem stT_step6 : FuelRun 8 stT6 (.step stT7) :=
+  fuelRun8_split
+    (mid := stageMidState baseT 17 117 234
+      (some (.tuple [ocjU16Val 117, .bool false])))
+    rfl rfl
+private theorem stT_step7 : FuelRun 8 stT7 (.step stT8) :=
+  fuelRun8_split
+    (mid := stageMidState baseT 20 247 494
+      (some (.tuple [ocjU16Val 247, .bool false])))
+    rfl rfl
+private theorem stT_step8 : FuelRun 8 stT8 (.step stT9) :=
+  fuelRun8_split
+    (mid := stageMidState baseT 23 511 1022
+      (some (.tuple [ocjU16Val 511, .bool false])))
+    rfl rfl
 private theorem stT_step9 :
     evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
       bodyOverflowCast8Stage 2 stT9 =
@@ -683,14 +711,14 @@ theorem overflowCast8Stage_allTrue_1041_rfl :
       .done (.returned ⟨ocjU32Val 1041, ⟨[]⟩⟩) :=
   fuelRun_to_eq rfl rfl
     (fuelRun_chain (fuelRun_of_eq stT_step0)
-      (fuelRun_chain (fuelRun_of_eq stT_step1)
-        (fuelRun_chain (fuelRun_of_eq stT_step2)
-          (fuelRun_chain (fuelRun_of_eq stT_step3)
-            (fuelRun_chain (fuelRun_of_eq stT_step4)
-              (fuelRun_chain (fuelRun_of_eq stT_step5)
-                (fuelRun_chain (fuelRun_of_eq stT_step6)
-                  (fuelRun_chain (fuelRun_of_eq stT_step7)
-                    (fuelRun_chain (fuelRun_of_eq stT_step8)
+      (fuelRun_chain stT_step1
+        (fuelRun_chain stT_step2
+          (fuelRun_chain stT_step3
+            (fuelRun_chain stT_step4
+              (fuelRun_chain stT_step5
+                (fuelRun_chain stT_step6
+                  (fuelRun_chain stT_step7
+                    (fuelRun_chain stT_step8
                       (fuelRun_of_eq stT_step9))))))))))
 
 private def baseF : List LocalSlot :=
@@ -716,30 +744,43 @@ private def stF9 : State := stageDoneState baseF 25 44 58
 private theorem stF_step0 :
     evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
       bodyOverflowCast8Stage 2 stF0 = .step stF1 := rfl
-private theorem stF_step1 :
-    evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
-      bodyOverflowCast8Stage 8 stF1 = .step stF2 := rfl
-private theorem stF_step2 :
-    evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
-      bodyOverflowCast8Stage 8 stF2 = .step stF3 := rfl
-private theorem stF_step3 :
-    evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
-      bodyOverflowCast8Stage 8 stF3 = .step stF4 := rfl
-private theorem stF_step4 :
-    evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
-      bodyOverflowCast8Stage 8 stF4 = .step stF5 := rfl
-private theorem stF_step5 :
-    evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
-      bodyOverflowCast8Stage 8 stF5 = .step stF6 := rfl
-private theorem stF_step6 :
-    evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
-      bodyOverflowCast8Stage 8 stF6 = .step stF7 := rfl
-private theorem stF_step7 :
-    evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
-      bodyOverflowCast8Stage 8 stF7 = .step stF8 := rfl
-private theorem stF_step8 :
-    evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
-      bodyOverflowCast8Stage 8 stF8 = .step stF9 := rfl
+private theorem stF_step1 : FuelRun 8 stF1 (.step stF2) :=
+  fuelRun8_split (mid := stageMidState baseF 3 1 1 none) rfl rfl
+private theorem stF_step2 : FuelRun 8 stF2 (.step stF3) :=
+  fuelRun8_split
+    (mid := stageMidState baseF 6 2 2
+      (some (.tuple [ocjU16Val 2, .bool false])))
+    rfl rfl
+private theorem stF_step3 : FuelRun 8 stF3 (.step stF4) :=
+  fuelRun8_split
+    (mid := stageMidState baseF 9 4 4
+      (some (.tuple [ocjU16Val 4, .bool false])))
+    rfl rfl
+private theorem stF_step4 : FuelRun 8 stF4 (.step stF5) :=
+  fuelRun8_split
+    (mid := stageMidState baseF 12 8 8
+      (some (.tuple [ocjU16Val 8, .bool false])))
+    rfl rfl
+private theorem stF_step5 : FuelRun 8 stF5 (.step stF6) :=
+  fuelRun8_split
+    (mid := stageMidState baseF 15 14 14
+      (some (.tuple [ocjU16Val 14, .bool false])))
+    rfl rfl
+private theorem stF_step6 : FuelRun 8 stF6 (.step stF7) :=
+  fuelRun8_split
+    (mid := stageMidState baseF 18 22 22
+      (some (.tuple [ocjU16Val 22, .bool false])))
+    rfl rfl
+private theorem stF_step7 : FuelRun 8 stF7 (.step stF8) :=
+  fuelRun8_split
+    (mid := stageMidState baseF 21 32 32
+      (some (.tuple [ocjU16Val 32, .bool false])))
+    rfl rfl
+private theorem stF_step8 : FuelRun 8 stF8 (.step stF9) :=
+  fuelRun8_split
+    (mid := stageMidState baseF 24 44 44
+      (some (.tuple [ocjU16Val 44, .bool false])))
+    rfl rfl
 private theorem stF_step9 :
     evalMirFuelBlockTreeBy (mirTyBeqAt 4) btOverflowCast8Stage
       bodyOverflowCast8Stage 2 stF9 =
@@ -758,14 +799,14 @@ theorem overflowCast8Stage_allFalse_58_rfl :
       .done (.returned ⟨ocjU32Val 58, ⟨[]⟩⟩) :=
   fuelRun_to_eq rfl rfl
     (fuelRun_chain (fuelRun_of_eq stF_step0)
-      (fuelRun_chain (fuelRun_of_eq stF_step1)
-        (fuelRun_chain (fuelRun_of_eq stF_step2)
-          (fuelRun_chain (fuelRun_of_eq stF_step3)
-            (fuelRun_chain (fuelRun_of_eq stF_step4)
-              (fuelRun_chain (fuelRun_of_eq stF_step5)
-                (fuelRun_chain (fuelRun_of_eq stF_step6)
-                  (fuelRun_chain (fuelRun_of_eq stF_step7)
-                    (fuelRun_chain (fuelRun_of_eq stF_step8)
+      (fuelRun_chain stF_step1
+        (fuelRun_chain stF_step2
+          (fuelRun_chain stF_step3
+            (fuelRun_chain stF_step4
+              (fuelRun_chain stF_step5
+                (fuelRun_chain stF_step6
+                  (fuelRun_chain stF_step7
+                    (fuelRun_chain stF_step8
                       (fuelRun_of_eq stF_step9))))))))))
 
 /-! ## Non-Adjacent `StageLocalIds` Frame-Preservation Canary -/

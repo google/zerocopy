@@ -94,6 +94,7 @@ structure CallCont4 where
   | .unwindResume => none
   | .assert _ _ _ _ _ => none
   | .coreCall _ _ _ _ _ => none
+  | .sysrootCall _ _ _ _ _ => none
   | .unsupported => none
 
 /-- Callee exit payload carrying either a normal return `(retVal, mutSlice)` or

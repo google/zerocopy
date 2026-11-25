@@ -341,7 +341,18 @@ noncomputable def refOperandLeaves (types : List MirTy) :
   runtimeChecks := fun _ _ st =>
     .error (.unsupported "RuntimeChecks unsupported on Day 1") st
   boolLayout := fun _ st => .ok (refLocalLayoutForTy types .bool) st
-  constantAt := fun _ _ c _ st => refEvalConstOperand types c st
+  constantAt := fun _ path c _ st =>
+    match c with
+    | ⟨_, _, .Val .ZeroSized fnTyId⟩ =>
+      if path == (Miri.Interpreter.OperandPath.instruction "function").push
+          (.field "constant") then
+        if Nat.ble (fnTyBase types) fnTyId then
+          .ok ⟨.immediate .uninit, ⟨fnTyId, refUnitLayoutData⟩⟩ st
+        else
+          .error (.unsupported "invalid function TyId") st
+      else
+        refEvalConstOperand types c st
+    | _ => refEvalConstOperand types c st
 }
 
 /-- Padding decision of `copy_op_no_validate`, matching
@@ -1124,6 +1135,55 @@ noncomputable def refIntrinsicHooks (types : List MirTy) :
     mathHooks := none
   }
 
+/-- Resolve a parity-tagged function item (`fnTag = 2 * defId` for crate bodies,
+`2 * opCode + 1` for pinned `core::num` sysroot ops) to its
+`(RefBody, localTys)`. -/
+noncomputable def refResolveCalleeBody (rp : RefProg) (fnTag : Nat) :
+    Option (RefBody × List MirTy) :=
+  if Nat.mod fnTag 2 == 0 then
+    match MirSemantics.getElem? rp.bodies (Nat.div fnTag 2) with
+    | none => none
+    | some rbody =>
+      match decodeLocalTys rp.types rbody.locals with
+      | none => none
+      | some localTys => some (rbody, localTys)
+  else
+    match sysrootNumOpOfCode (Nat.div fnTag 2) with
+    | none => none
+    | some op =>
+      let rbody := sysrootNumRefBody rp.types op
+      let ty := .int op.width op.signed
+      some (rbody, [ty, ty, ty])
+
+/-- Construct the canonical `Miri.ABI.FnAbi TyId` for `(rbody, localTys)`. -/
+noncomputable def refFnAbiOfBody (types : List MirTy) (rbody : RefBody)
+    (localTys : List MirTy) :
+    Except Miri.Interpreter.StepError (Miri.ABI.FnAbi Miri.MIR.TyId) :=
+  let paramTys := (localTys.drop 1).take rbody.argumentCount
+  if paramTys.length != rbody.argumentCount then
+    .error (.unsupported "callee missing parameter types")
+  else
+    match MirSemantics.getElem? localTys 0 with
+    | none => .error (.unsupported "callee missing return type")
+    | some retTy =>
+      let argAbis :=
+        (paramTys.map (fun ty =>
+          ({ layout := refLocalLayoutForTy types ty
+             mode := .Direct Miri.ABI.ArgAttributes.new } :
+            Miri.ABI.ArgAbi Miri.MIR.TyId))).toArray
+      let retAbi : Miri.ABI.ArgAbi Miri.MIR.TyId := {
+        layout := refLocalLayoutForTy types retTy
+        mode := .Direct Miri.ABI.ArgAttributes.new
+      }
+      .ok {
+        args := argAbis
+        ret := retAbi
+        cVariadic := false
+        fixedCount := 0
+        conv := .Rust
+        canUnwind := false
+      }
+
 /-- Canonical `Miri.Interpreter.ExecutionMachine.Config` for `rp : RefProg`,
 with `deinitMovedPlace := true` and real `ValidityMemory.bind` shallow
 validation. -/
@@ -1155,19 +1215,40 @@ noncomputable def refExecutionConfig (rp : RefProg) :
     }
     calls := {
       compiler := {
-        functionSignature := fun _ _ st =>
-          .error (.unsupported "calls unsupported on Day 1") st
-        functionKind := fun _ st =>
-          .error (.unsupported "calls unsupported on Day 1") st
-        resolve := fun _ _ _ st =>
-          .error (.unsupported "calls unsupported on Day 1") st
+        functionSignature := fun _ layout st =>
+          if Nat.blt layout.ty (fnTyBase types) then
+            .error (.unsupported "invalid callee TyId") st
+          else
+            let fnTag := layout.ty - fnTyBase types
+            match refResolveCalleeBody rp fnTag with
+            | none => .error (.unsupported "missing callee signature") st
+            | some (rbody, _) => .ok (rbody.argumentCount, ()) st
+        functionKind := fun tyId st =>
+          if Nat.blt tyId (fnTyBase types) then
+            .error (.unsupported "invalid callee TyId") st
+          else
+            .ok (.FnDef (tyId - fnTyBase types) Array.empty) st
+        resolve := fun _ defId _ st =>
+          .ok { kind := .Item defId, args := Array.empty } st
         fnAbiOfFnPtr := fun _ _ _ st =>
-          .error (.unsupported "calls unsupported on Day 1") st
-        fnAbiOfInstance := fun _ _ _ st =>
-          .error (.unsupported "calls unsupported on Day 1") st
+          .error (.unsupported "fnPtr calls unsupported on Day 1") st
+        fnAbiOfInstance := fun _ fnInstance extra st =>
+          if !extra.isEmpty then
+            .error (.unsupported "variadic calls unsupported") st
+          else
+            match fnInstance.kind with
+            | .Item fnTag =>
+              match refResolveCalleeBody rp fnTag with
+              | none => .error (.unsupported "missing callee ABI") st
+              | some (rbody, localTys) =>
+                match refFnAbiOfBody types rbody localTys with
+                | .ok abi => .ok abi st
+                | .error e => .error e st
+            | _ => .error (.unsupported "non-Item call unsupported") st
         isRustCall := fun _ => false
         rustAbi := ()
-        checkArgumentCompat := fun _ _ _ st => .ok false st
+        checkArgumentCompat := fun _ callerAbi calleeAbi st =>
+          .ok (decide (callerAbi == calleeAbi)) st
         targetFeatures := {
           required := fun _ st => .ok Array.empty st
           available := fun _ st => .ok true st
@@ -1181,11 +1262,20 @@ noncomputable def refExecutionConfig (rp : RefProg) :
       dispatch := {
         foreign := none
         returnToBlock := fun _ st =>
-          .error (.unsupported "calls unsupported on Day 1") st
+          .error (.unsupported "foreign/intrinsic returnToBlock unsupported") st
         isForeignItem := fun _ st => .ok false st
         symbolName := fun _ st => .ok "" st
-        loadMir := fun _ _ st =>
-          .error (.unsupported "calls unsupported on Day 1") st
+        loadMir := fun _ fnInstance st =>
+          match fnInstance.kind with
+          | .Item fnTag =>
+            match refResolveCalleeBody rp fnTag with
+            | none => .error (.unsupported "missing callee MIR") st
+            | some (rbody, _) =>
+              .ok {
+                identity := Miri.Interpreter.BodyIdentity.ofCanonicalIndex fnTag
+                body := toMiriBody types rbody
+              } st
+          | _ => .error (.unsupported "non-Item loadMir unsupported") st
         backend := { selection := fun _ => .ok .none }
         dynSymName := fun _ => ""
         foreignScope := fun act => act

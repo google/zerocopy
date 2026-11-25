@@ -744,7 +744,8 @@ noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
       | .ok target =>
         jumpToBlock { frame with locals := localsAfterDiscr } memAfterDiscr
           callerMem target
-  | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _ | .coreCall _ _ _ _ _ | .unsupported =>
+  | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _ | .coreCall _ _ _ _ _
+  | .sysrootCall _ _ _ _ _ | .unsupported =>
     .fault .unsupported
 
 /-!
@@ -2048,7 +2049,8 @@ noncomputable def evalTerminatorV2 (body : Body) (bb : BasicBlock)
             | .error k => .fault k
             | .ok (locals2, mem2) =>
               jumpToBlock { frame with locals := locals2 } mem2 callerMem target
-  | .coreCall _ _ _ none _ | .unwindResume | .call _ _ _ _ _ | .unsupported =>
+  | .coreCall _ _ _ none _ | .unwindResume | .call _ _ _ _ _
+  | .sysrootCall _ _ _ _ _ | .unsupported =>
     .fault .unsupported
 
 /-- Single small-step transition in Profile v2. -/
@@ -2076,6 +2078,241 @@ evaluation. -/
 noncomputable def evalStepV2Choice (p : Program) (_c : Choice) (s : State) :
     StepResult State TerminalOut :=
   evalStepV2 p s
+/-- Lift a single-frame `StepResult` onto an ambient `callers` tail stack.
+When `callers = []`, return `res` directly so single-frame steps reduce
+definitionally to the underlying statement or terminator transition. -/
+noncomputable def attachCallers (callers : List FrameState)
+    (res : StepResult State TerminalOut) : StepResult State TerminalOut :=
+  match callers with
+  | [] => res
+  | _ :: _ =>
+    match res with
+    | .step s' => .step { s' with frames := s'.frames ++ callers }
+    | .done out => .done out
+    | .fault k => .fault k
+
+/-- Evaluate a single call argument against its declared callee parameter type
+`paramTy`, returning the passed value and updated `(locals, mem)`. Matches
+`evalFnCallArgumentAt` (`deinitMovedPlace = true`) and `passArgument`
+(`copyRuntimePlace`'s validity check) in `Miri.Interpreter.Call`, which model
+`eval_fn_call_argument` in `compiler/rustc_const_eval/src/interpret/step.rs`
+and `pass_argument` in `compiler/rustc_const_eval/src/interpret/call.rs`
+(`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> /// Evaluate the arguments of a function call
+> ...
+> mir::Operand::Move(place) => {
+>     let place = self.eval_place(*place)?;
+>     if move_definitely_disjoint {
+
+> /// Initialize a single callee argument, checking the types for compatibility.
+
+`rustc` passes a moved argument in place (`FnArg::InPlace`) when it already
+lives in memory. Profile version 1 has no in-memory argument passing, so an
+`.indirect` moved slot (or an `.indirect` copied slot when the call also moves
+an argument) fails closed with `.unsupported`. -/
+noncomputable def evalCallArg (callerLocalsTys : List MirTy)
+    (locals : List LocalSlot) (mem : MemoryState) (hasMove : Bool)
+    (opnd : Operand) (paramTy : MirTy) :
+    Except FaultKind (Val × List LocalSlot × MemoryState) :=
+  let indirectBlocked : Bool :=
+    match opnd with
+    | .copy place =>
+      hasMove &&
+        match getElem? locals place.localId with
+        | some (.indirect _) => true
+        | _ => false
+    | .move place =>
+      match getElem? locals place.localId with
+      | some (.indirect _) => true
+      | _ => false
+    | _ => false
+  if indirectBlocked then
+    .error .unsupported
+  else
+    match evalOperandToSlot callerLocalsTys locals mem
+        (fun srcTy => MirTy.beq srcTy paramTy) opnd with
+    | .error k => .error k
+    | .ok (srcTy, optVal, locals', mem') =>
+      if !MirTy.beq srcTy paramTy then
+        .error .unsupported
+      else
+        match optVal with
+        | some v => .ok (v, locals', mem')
+        | none => .error .undefined
+
+/-- Evaluate a call's argument operands left-to-right against `paramTys`,
+accumulating argument values and threading moved-place deinitialization through
+the caller's `locals` and `mem`. -/
+noncomputable def evalCallArgs (callerLocalsTys : List MirTy)
+    (locals : List LocalSlot) (mem : MemoryState) (hasMove : Bool) :
+    List Operand → List MirTy →
+      Except FaultKind (List Val × List LocalSlot × MemoryState)
+  | [], [] => .ok ([], locals, mem)
+  | opnd :: restArgs, paramTy :: restParams =>
+    match evalCallArg callerLocalsTys locals mem hasMove opnd paramTy with
+    | .error k => .error k
+    | .ok (v, locals₁, mem₁) =>
+      match evalCallArgs callerLocalsTys locals₁ mem₁ hasMove restArgs
+          restParams with
+      | .error k => .error k
+      | .ok (vs, locals₂, mem₂) => .ok (v :: vs, locals₂, mem₂)
+  | _, _ => .error .unsupported
+
+/-- Execute a direct `.call` or `.sysrootCall` terminator: validate call-site
+preconditions (`callTargetAdmitted` and static callee validity), evaluate
+arguments left-to-right (deinitializing moved non-ZST caller slots), check that
+the caller's destination slot is live (`.dead` -> `.undefined`), initialize the
+callee's frame (`initLocalsLoop`), and push it onto `callers`. This follows
+`eval_callee_and_args` (`compiler/rustc_const_eval/src/interpret/step.rs`)
+and `init_stack_frame` (`compiler/rustc_const_eval/src/interpret/call.rs`) in
+`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`:
+
+> // The first order of business is to figure out the callee signature.
+
+The callee frame records the return place `dst` and continuation `target`
+(`retDst?`/`retTarget?`), which `evalNonRootReturn` consumes. -/
+noncomputable def evalCallTerminator (callerBody : Body) (bb : BasicBlock)
+    (caller : FrameState) (callers : List FrameState) (mem : MemoryState)
+    (callerMem : CallerMemory) (calleeDefId : DefId)
+    (sysrootOp? : Option SysrootNumOp) (calleeBody : Body)
+    (args : List Operand) (dst : Place) (target : Option BasicBlockId)
+    (unwind : UnwindAction) : StepResult State TerminalOut :=
+  if !callTargetAdmitted callerBody bb calleeBody args dst target unwind ||
+      calleeBody.basicBlocks.isEmpty ||
+      !storageAnnotationsInBounds calleeBody ||
+      !discriminantTypesValid calleeBody ||
+      !castTypesValid calleeBody ||
+      !assignTypesValid calleeBody ||
+      !calleeBody.locals.all isSupportedScalarOrUnitTy then
+    .fault .unsupported
+  else
+    let hasMove : Bool :=
+      args.any (fun a => match a with | .move _ => true | _ => false)
+    let paramTys := (calleeBody.locals.drop 1).take calleeBody.argumentCount
+    match evalCallArgs callerBody.locals caller.locals mem hasMove args
+        paramTys with
+    | .error k => .fault k
+    | .ok (argVals, callerLocals', mem') =>
+      match getElem? callerLocals' dst.localId with
+      | none => .fault .unsupported
+      | some .dead => .fault .undefined
+      | some (.indirect _) => .fault .unsupported
+      -- Profile v1 never creates partially moved tuples.
+      | some (.partialTuple _) => .fault .unsupported
+      | some (.immediate _) =>
+        let calleeLocals :=
+          initLocalsLoop calleeBody argVals 0 calleeBody.locals
+        let calleeFrame : FrameState := {
+          defId := calleeDefId
+          blockIdx := 0
+          stmtIdx := 0
+          locals := calleeLocals
+          sysrootOp? := sysrootOp?
+          retDst? := some dst
+          retTarget? := target
+        }
+        let caller' : FrameState := { caller with locals := callerLocals' }
+        .step {
+          frames := calleeFrame :: caller' :: callers
+          callerMem := callerMem
+          mem := mem'
+        }
+
+/-- Whether any slot in `locals` is an `.indirect` stack allocation. -/
+noncomputable def localsHaveIndirect (locals : List LocalSlot) : Bool :=
+  locals.any (fun slot => match slot with | .indirect _ => true | _ => false)
+
+/-- Execute a non-root `TerminatorKind.return_`: read callee `_0` (`.dead` or
+uninitialized -> `.undefined`), write it into `caller`'s return destination
+`dst`, pop the callee frame, and transfer control in `caller` to
+`blockIdx := tgt, stmtIdx := 0` (or fault with `.undefined` when
+`retTarget? = none`, matching
+`Miri.Interpreter.ControlFlow.returnToBlock none`). This follows
+`return_from_current_stack_frame` and `return_to_block` in
+`compiler/rustc_const_eval/src/interpret/{call,eval_context}.rs`
+(`rust-lang/rust` `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`):
+
+> // Remove the frame from the stack.
+> let frame = self.pop_stack_frame_raw()?;
+> // Copy the return value and remember the return continuation.
+> if !unwinding {
+>     self.copy_op_allow_transmute(&return_op, frame.return_place())?;
+
+> if let Some(target) = target {
+>     self.go_to_block(target);
+>     interp_ok(())
+> } else {
+>     throw_ub!(Unreachable)
+> }
+
+Popping a frame also deallocates its in-memory locals (`cleanup_stack_frame`
+in `compiler/rustc_const_eval/src/interpret/stack.rs`):
+
+> // Cleanup: deallocate locals.
+> ...
+> if cleanup {
+>     for local in &frame.locals {
+>         self.deallocate_local(local.value)?;
+>     }
+
+$M_{\text{anneal}}$ does not model that deallocation, so a callee frame with
+any `.indirect` local (`localsHaveIndirect`) fails closed with `.unsupported`
+instead of leaking a live stack allocation. Profile version 1 never creates
+such a callee local. -/
+noncomputable def evalNonRootReturn (p : Program) (calleeBody : Body)
+    (bb : BasicBlock) (callee : FrameState) (caller : FrameState)
+    (restCallers : List FrameState) (mem : MemoryState)
+    (callerMem : CallerMemory) : StepResult State TerminalOut :=
+  if bb.cleanup || localsHaveIndirect callee.locals then
+    .fault .unsupported
+  else
+    let retRead : Except FaultKind Val :=
+      match getElem? callee.locals 0 with
+      | some (.immediate (some retVal)) => .ok retVal
+      | some (.immediate none) | some .dead => .error .undefined
+      -- Profile v1 never creates partially moved tuples.
+      | some (.partialTuple _) => .error .unsupported
+      | some (.indirect mplace) =>
+        match getElem? calleeBody.locals 0 with
+        | none => .error .unsupported
+        | some retTy =>
+          match loadIndirect mem retTy mplace with
+          | .ok (some retVal) => .ok retVal
+          | .ok none => .error .undefined
+          | .error k => .error k
+      | none => .error .unsupported
+    match retRead with
+    | .error k => .fault k
+    | .ok retVal =>
+      match callee.retDst? with
+      | none => .fault .unsupported
+      | some dst =>
+        if !dst.projection.isEmpty then
+          .fault .unsupported
+        else
+          match activeFrameBody p caller with
+          | none => .fault .unsupported
+          | some callerBody =>
+            match getElem? callerBody.locals dst.localId with
+            | none => .fault .unsupported
+            | some dstTy =>
+              match writePlace caller.locals mem dst.localId dstTy retVal with
+              | .error k => .fault k
+              | .ok (callerLocals', mem') =>
+                match callee.retTarget? with
+                | none => .fault .undefined
+                | some tgt =>
+                  .step {
+                    frames := {
+                      caller with
+                      blockIdx := tgt
+                      stmtIdx := 0
+                      locals := callerLocals'
+                    } :: restCallers
+                    callerMem := callerMem
+                    mem := mem'
+                  }
 
 /-- Total single-step evaluator of $M_{\text{anneal}}$ over running `State`s,
 matching `InterpCx::step` in `compiler/rustc_const_eval/src/interpret/step.rs`
@@ -2106,21 +2343,40 @@ Out-of-bounds `frame.blockIdx` faults with `.fault .unsupported` (matching
 noncomputable def evalStep (p : Program) (_c : Choice) (s : State) :
     StepResult State TerminalOut :=
   match s.frames with
-  | [frame] =>
-    match getElem? p.bodies frame.defId with
+  | frame :: callers =>
+    match activeFrameBody p frame with
     | none => .fault .unsupported
     | some body =>
       match getElem? body.basicBlocks frame.blockIdx with
       | none => .fault .unsupported
       | some bb =>
         match getElem? bb.statements frame.stmtIdx with
-        | some stmt => evalStatement body frame s.mem s.callerMem stmt
+        | some stmt =>
+          attachCallers callers
+            (evalStatement body frame s.mem s.callerMem stmt)
         | none =>
           if Nat.beq frame.stmtIdx bb.statements.length then
-            evalTerminator body bb frame s.mem s.callerMem
+            match bb.terminator with
+            | .call callee args dst target unwind =>
+              match getElem? p.bodies callee with
+              | none => .fault .unsupported
+              | some calleeBody =>
+                evalCallTerminator body bb frame callers s.mem s.callerMem
+                  callee none calleeBody args dst target unwind
+            | .sysrootCall op args dst target unwind =>
+              evalCallTerminator body bb frame callers s.mem s.callerMem
+                0 (some op) (sysrootNumBody op) args dst target unwind
+            | .return_ =>
+              match callers with
+              | [] => evalTerminator body bb frame s.mem s.callerMem
+              | caller :: rest =>
+                evalNonRootReturn p body bb frame caller rest s.mem s.callerMem
+            | _ =>
+              attachCallers callers
+                (evalTerminator body bb frame s.mem s.callerMem)
           else
             .fault .unsupported
-  | _ => .fault .unsupported
+  | [] => .fault .unsupported
 
 /-- Move the immediate local `localId` of the single active frame into a fresh
 stack allocation, returning the new state and the local's memory place.

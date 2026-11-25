@@ -13,6 +13,8 @@
 //! variants remain errors; this adapter performs no control-flow or expression
 //! simplification.
 
+use std::collections::{BTreeMap, BTreeSet};
+
 use rustc_abi::{
     BackendRepr, Endian, ExternAbi, HasDataLayout, Integer, Primitive, Scalar, Size, TagEncoding,
     Variants,
@@ -658,10 +660,12 @@ fn cast_kind(kind: mir::CastKind) -> Result<ir::CastKind> {
 }
 
 /// Preserve the ordinary MIR operators. In particular, ordinary shifts use
-/// "RHS.rem_euclid(LHS::BITS)"; the unchecked variants have a different UB
-/// contract and are rejected. The model interprets these operators, including
-/// signed comparisons, division/remainder UB, three-way comparison (`Cmp`), and
-/// wrapping or `(T, bool)` overflowing arithmetic, rather than the adapter.
+/// "RHS.rem_euclid(LHS::BITS)"; the unchecked shift variants have a different
+/// UB contract and remain rejected, while `AddUnchecked`/`SubUnchecked`/
+/// `MulUnchecked` match Lean's `BinOp` UB guards directly. The model interprets
+/// these operators, including signed comparisons, division/remainder UB,
+/// three-way comparison (`Cmp`), unchecked arithmetic, and wrapping or
+/// `(T, bool)` overflowing arithmetic, rather than the adapter.
 /// `Offset` ("The `ptr.offset` operator") "has the same semantics as
 /// [`offset`](pointer::offset), except that the second parameter may be a
 /// `usize` as well"; `ir::Body::try_new` admits only a sized raw-pointer
@@ -678,6 +682,9 @@ fn bin_op(op: mir::BinOp) -> Result<ir::BinOp> {
         mir::BinOp::Add => ir::BinOp::Add,
         mir::BinOp::Sub => ir::BinOp::Sub,
         mir::BinOp::Mul => ir::BinOp::Mul,
+        mir::BinOp::AddUnchecked => ir::BinOp::AddUnchecked,
+        mir::BinOp::SubUnchecked => ir::BinOp::SubUnchecked,
+        mir::BinOp::MulUnchecked => ir::BinOp::MulUnchecked,
         mir::BinOp::Div => ir::BinOp::Div,
         mir::BinOp::Rem => ir::BinOp::Rem,
         mir::BinOp::AddWithOverflow => ir::BinOp::AddWithOverflow,
@@ -1109,6 +1116,371 @@ fn unwind_action(unwind: mir::UnwindAction, what: &str) -> Result<ir::UnwindActi
     }
 }
 
+#[derive(Clone, Debug)]
+pub(crate) enum RawTerminator {
+    Resolved(ir::Terminator),
+    LocalCall {
+        callee: LocalDefId,
+        args: Vec<ir::Operand>,
+        dst: u32,
+        target: Option<u32>,
+        unwind: ir::UnwindAction,
+    },
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct ExtractedBody {
+    arg_count: usize,
+    is_unsafe: bool,
+    local_tys: Vec<ir::Ty>,
+    blocks: Vec<(Vec<ir::Statement>, RawTerminator)>,
+    identity: String,
+    local_callees: Vec<LocalDefId>,
+}
+
+impl ExtractedBody {
+    pub(crate) fn local_callees(&self) -> &[LocalDefId] {
+        &self.local_callees
+    }
+
+    pub(crate) fn resolve(self, body_indices: &BTreeMap<u32, usize>) -> Result<ir::Body> {
+        let blocks = self
+            .blocks
+            .into_iter()
+            .map(|(statements, terminator)| {
+                let terminator = match terminator {
+                    RawTerminator::Resolved(term) => term,
+                    RawTerminator::LocalCall {
+                        callee,
+                        args,
+                        dst,
+                        target,
+                        unwind,
+                    } => {
+                        let key = callee.local_def_index.as_u32();
+                        let body_index = *body_indices.get(&key).ok_or_else(|| {
+                            format!("resolved body index missing for local callee {callee:?}")
+                        })?;
+                        ir::Terminator::Call {
+                            callee: body_index,
+                            args,
+                            dst,
+                            target,
+                            unwind,
+                        }
+                    }
+                };
+                Ok(ir::Block {
+                    statements,
+                    terminator,
+                })
+            })
+            .collect::<Result<Vec<_>>>()?;
+        ir::Body::try_new(
+            self.arg_count,
+            self.is_unsafe,
+            self.local_tys,
+            blocks,
+            self.identity,
+        )
+    }
+}
+
+/// Map a printed `core::num` method path to its operand type and
+/// [`ir::SysrootNumKind`]. The kind alone selects the Lean semantics, so
+/// [`verify_sysroot_num_call`] checks the callee's MIR against the operator
+/// that [`sysroot_kind_mir_op`] derives from this kind, not against a second
+/// entry in this table.
+fn parse_sysroot_num_path(path: &str) -> Option<(IntTy, ir::SysrootNumKind)> {
+    let rest = path.strip_prefix("core::num::<impl ")?;
+    let (ty_name, method) = rest.split_once(">::")?;
+    let ity = match ty_name {
+        "i8" => IntTy { width: IntWidth::I8, signed: true },
+        "i16" => IntTy { width: IntWidth::I16, signed: true },
+        "i32" => IntTy { width: IntWidth::I32, signed: true },
+        "i64" => IntTy { width: IntWidth::I64, signed: true },
+        "i128" => IntTy { width: IntWidth::I128, signed: true },
+        "isize" => IntTy { width: IntWidth::Isize, signed: true },
+        "u8" => IntTy { width: IntWidth::I8, signed: false },
+        "u16" => IntTy { width: IntWidth::I16, signed: false },
+        "u32" => IntTy { width: IntWidth::I32, signed: false },
+        "u64" => IntTy { width: IntWidth::I64, signed: false },
+        "u128" => IntTy { width: IntWidth::I128, signed: false },
+        "usize" => IntTy { width: IntWidth::Isize, signed: false },
+        _ => return None,
+    };
+    let kind = match method {
+        "unchecked_add" => ir::SysrootNumKind::UncheckedAdd,
+        "unchecked_sub" => ir::SysrootNumKind::UncheckedSub,
+        "unchecked_mul" => ir::SysrootNumKind::UncheckedMul,
+        "wrapping_add" => ir::SysrootNumKind::WrappingAdd,
+        "wrapping_sub" => ir::SysrootNumKind::WrappingSub,
+        "wrapping_mul" => ir::SysrootNumKind::WrappingMul,
+        _ => return None,
+    };
+    Some((ity, kind))
+}
+
+/// The MIR operator that the pinned `core` body of `kind` applies to its two
+/// arguments, mirroring `Trusted.MirSemantics.sysrootNumBinOp`. Deriving the
+/// expected operator from the emitted kind means a wrong method-to-kind entry
+/// in [`parse_sysroot_num_path`] fails the callee shape check instead of
+/// silently selecting another operation's semantics.
+fn sysroot_kind_mir_op(kind: ir::SysrootNumKind) -> mir::BinOp {
+    match kind {
+        ir::SysrootNumKind::UncheckedAdd => mir::BinOp::AddUnchecked,
+        ir::SysrootNumKind::UncheckedSub => mir::BinOp::SubUnchecked,
+        ir::SysrootNumKind::UncheckedMul => mir::BinOp::MulUnchecked,
+        ir::SysrootNumKind::WrappingAdd => mir::BinOp::Add,
+        ir::SysrootNumKind::WrappingSub => mir::BinOp::Sub,
+        ir::SysrootNumKind::WrappingMul => mir::BinOp::Mul,
+    }
+}
+
+fn is_sysroot_pure_noop_stmt(stmt: &mir::StatementKind<'_>) -> bool {
+    match stmt {
+        mir::StatementKind::Nop => true,
+        mir::StatementKind::StorageLive(local) | mir::StatementKind::StorageDead(local) => {
+            local.as_u32() > 2
+        }
+        _ => false,
+    }
+}
+
+fn is_arg_local_operand(op: &mir::Operand<'_>, expected_local: u32) -> bool {
+    match op {
+        mir::Operand::Copy(place) | mir::Operand::Move(place) => {
+            place.projection.is_empty() && place.local.as_u32() == expected_local
+        }
+        mir::Operand::Constant(_) | mir::Operand::RuntimeChecks(_) => false,
+    }
+}
+
+fn is_binop_assign_on_args(stmt: &mir::StatementKind<'_>, expected_op: mir::BinOp) -> bool {
+    let mir::StatementKind::Assign(assign) = stmt else {
+        return false;
+    };
+    let (place, rvalue) = &**assign;
+    if !place.projection.is_empty() || place.local.as_u32() != 0 {
+        return false;
+    }
+    let mir::Rvalue::BinaryOp(op, operands) = rvalue else {
+        return false;
+    };
+    *op == expected_op
+        && is_arg_local_operand(&operands.0, 1)
+        && is_arg_local_operand(&operands.1, 2)
+}
+
+fn verify_sysroot_arith_block<'tcx>(
+    block: &mir::BasicBlockData<'tcx>,
+    expected_op: mir::BinOp,
+    context: &str,
+) -> Result<()> {
+    if block.is_cleanup {
+        return Err(format!("{context}: unexpected cleanup block in sysroot MIR"));
+    }
+    let mut saw_assign = false;
+    for stmt in &block.statements {
+        if is_binop_assign_on_args(&stmt.kind, expected_op) {
+            if saw_assign {
+                return Err(format!("{context}: multiple binary assignments in sysroot MIR"));
+            }
+            saw_assign = true;
+        } else if !is_sysroot_pure_noop_stmt(&stmt.kind) {
+            return Err(format!(
+                "{context}: unexpected statement {:?} in sysroot MIR",
+                stmt.kind
+            ));
+        }
+    }
+    if !saw_assign {
+        return Err(format!(
+            "{context}: missing expected binary assignment {expected_op:?} in sysroot MIR"
+        ));
+    }
+    let Some(term) = block.terminator.as_ref() else {
+        return Err(format!("{context}: missing terminator in sysroot MIR"));
+    };
+    if !matches!(term.kind, mir::TerminatorKind::Return) {
+        return Err(format!(
+            "{context}: expected Return terminator in sysroot MIR, got {:?}",
+            term.kind
+        ));
+    }
+    Ok(())
+}
+
+/// Admits a call to one of the six pinned `core::num` methods
+/// (`unchecked_{add,sub,mul}`, `wrapping_{add,sub,mul}`) only if the callee's
+/// `instance_mir` has exactly the shape that `Trusted.MirSemantics`
+/// `sysrootNumBody` models: `_0 = op(copy _1, copy _2); return`.
+///
+/// `wrapping_*` must be a single block. Its source, in
+/// `library/core/src/num/uint_macros.rs` (`rust-lang/rust`
+/// `f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1`), is:
+///
+/// > pub const fn wrapping_add(self, rhs: Self) -> Self {
+/// >     intrinsics::wrapping_add(self, rhs)
+/// > }
+///
+/// `unchecked_*` opens with `assert_unsafe_precondition!(check_language_ub,
+/// ...)`. In `library/core/src/ub_checks.rs`, that macro expands to:
+///
+/// > if ::core::ub_checks::$kind() {
+/// >     precondition_check($($arg,)*);
+/// > }
+///
+/// and `check_language_ub` ends in `&& intrinsics::ub_checks()`, which lowers
+/// to `Operand::RuntimeChecks(RuntimeChecks::UbChecks)`. Per
+/// `compiler/rustc_middle/src/mir/syntax.rs`:
+///
+/// > /// Returns whether we should perform some UB-checking at runtime.
+/// > /// See the `ub_checks` intrinsic docs for details.
+/// > UbChecks,
+///
+/// and `RuntimeChecks::value` evaluates it as `sess.ub_checks()`. So the
+/// entry block must be `SwitchInt(UbChecks)` with a `0` edge to the
+/// arithmetic block and an `otherwise` edge to the `precondition_check` call,
+/// and capture requires `ub_checks`, `overflow_checks` and `debug_assertions`
+/// to be off. The checked block is then dead in the compiled program, and the
+/// model reduces the body to the unchecked binary operation.
+fn verify_sysroot_num_call<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    callee_did: DefId,
+    path: &str,
+) -> Result<ir::SysrootNumOp> {
+    let Some((ity, kind)) = parse_sysroot_num_path(path) else {
+        return Err(format!("calls to external function `{path}` are unsupported"));
+    };
+    let mir_op = sysroot_kind_mir_op(kind);
+    if tcx.intrinsic(callee_did).is_some() {
+        return Err(format!(
+            "sysroot numeric function `{path}` unexpectedly marked intrinsic"
+        ));
+    }
+    if tcx.generics_of(callee_did).count() != 0 {
+        return Err(format!(
+            "sysroot numeric function `{path}` unexpectedly generic"
+        ));
+    }
+    let is_unchecked = matches!(
+        kind,
+        ir::SysrootNumKind::UncheckedAdd
+            | ir::SysrootNumKind::UncheckedSub
+            | ir::SysrootNumKind::UncheckedMul
+    );
+    if is_unchecked
+        && (tcx.sess.ub_checks()
+            || tcx.sess.overflow_checks()
+            || tcx.sess.opts.debug_assertions)
+    {
+        return Err(format!(
+            "unchecked sysroot call `{path}` requires -Cdebug-assertions=no -Coverflow-checks=no"
+        ));
+    }
+    codegen_attrs_for_def(tcx, callee_did, is_unchecked)?;
+    let sig = tcx.fn_sig(callee_did).instantiate_identity().skip_binder();
+    if sig.abi() != ExternAbi::Rust
+        || sig.c_variadic()
+        || sig.inputs().len() != 2
+        || int_ty(sig.inputs()[0]) != Ok(ity)
+        || int_ty(sig.inputs()[1]) != Ok(ity)
+        || int_ty(sig.output()) != Ok(ity)
+    {
+        return Err(format!(
+            "sysroot numeric function `{path}` signature disagrees with ({ity:?}, {ity:?}) -> {ity:?}"
+        ));
+    }
+    let body = tcx.instance_mir(ty::InstanceKind::Item(callee_did));
+    if body.arg_count != 2
+        || body.tainted_by_errors.is_some()
+        || body.coroutine.is_some()
+        || body.spread_arg.is_some()
+        || body.local_decls.len() < 3
+    {
+        return Err(format!(
+            "sysroot numeric function `{path}` MIR shape does not match binary scalar operation"
+        ));
+    }
+    for local_idx in 0..=2 {
+        let local_ty = body.local_decls[mir::Local::from_usize(local_idx)].ty;
+        if int_ty(local_ty) != Ok(ity) {
+            return Err(format!(
+                "sysroot numeric function `{path}` local _{local_idx} type disagrees with {ity:?}"
+            ));
+        }
+    }
+    let entry_bb = &body.basic_blocks[mir::START_BLOCK];
+    if entry_bb.is_cleanup {
+        return Err(format!(
+            "sysroot numeric function `{path}` entry block is unexpectedly cleanup"
+        ));
+    }
+    if is_unchecked {
+        if !entry_bb
+            .statements
+            .iter()
+            .all(|stmt| is_sysroot_pure_noop_stmt(&stmt.kind))
+        {
+            return Err(format!(
+                "sysroot numeric function `{path}` entry block contains unexpected statements: {:?}",
+                entry_bb.statements
+            ));
+        }
+        let Some(entry_term) = entry_bb.terminator.as_ref() else {
+            return Err(format!("sysroot numeric function `{path}` missing entry terminator"));
+        };
+        let mir::TerminatorKind::SwitchInt {
+            discr: mir::Operand::RuntimeChecks(mir::RuntimeChecks::UbChecks),
+            targets,
+        } = &entry_term.kind
+        else {
+            return Err(format!(
+                "sysroot numeric function `{path}` expected SwitchInt(UbChecks), got {:?}",
+                entry_term.kind
+            ));
+        };
+        let target_pairs: Vec<(u128, mir::BasicBlock)> = targets.iter().collect();
+        let arith_bb = match target_pairs.as_slice() {
+            [(0, arith_bb)] => *arith_bb,
+            _ => {
+                return Err(format!(
+                    "sysroot numeric function `{path}` unexpected UbChecks switch targets: {target_pairs:?}"
+                ));
+            }
+        };
+        let check_bb = targets.otherwise();
+        if arith_bb == mir::START_BLOCK || check_bb == mir::START_BLOCK || arith_bb == check_bb {
+            return Err(format!(
+                "sysroot numeric function `{path}` unexpected UbChecks block topology"
+            ));
+        }
+        verify_sysroot_arith_block(
+            &body.basic_blocks[arith_bb],
+            mir_op,
+            path,
+        )?;
+        // Also ensure the untaken precondition_check block cannot corrupt state
+        // if inspected.
+        if body.basic_blocks.len() > 3 {
+            return Err(format!(
+                "sysroot numeric function `{path}` has unexpected extra blocks ({})",
+                body.basic_blocks.len()
+            ));
+        }
+    } else {
+        if body.basic_blocks.len() != 1 {
+            return Err(format!(
+                "sysroot wrapping function `{path}` expected single-block MIR, got {} blocks",
+                body.basic_blocks.len()
+            ));
+        }
+        verify_sysroot_arith_block(entry_bb, mir_op, path)?;
+    }
+    Ok(ir::SysrootNumOp { kind, ty: ity })
+}
+
 /// `SwitchInt` evaluates its operand and selects an explicit or otherwise edge.
 /// `Assert` "Evaluates the operand, which must have type `bool`. If it is not
 /// equal to `expected`, initiates a panic." Its condition, expected value,
@@ -1125,11 +1497,15 @@ fn unwind_action(unwind: mir::UnwindAction, what: &str) -> Result<ir::UnwindActi
 /// `.fault .unsupported` in `Trusted.MirSemantics` if reachable while
 /// permitting verified functions whose diverging guard branches are proved
 /// unreachable.
-/// Returning calls (`target: Some(_)`) admit only the closed [`ir::CoreCallOp`]
-/// Profile v2 intrinsic table without cleanup unwinds; all other returning
-/// calls, indirect calls, `Drop`, unwinds, assembly, and other terminators stay
-/// refused at capture time. `TerminatorKind::Call` runs [`check_call_source`]
-/// first so `CallSource::Use` fails closed even for diverging calls.
+/// Returning calls (`target: Some(_)`) without cleanup unwinds admit three
+/// callee classes: intra-crate direct calls ([`RawTerminator::LocalCall`],
+/// Profile v1), the closed [`ir::CoreCallOp`] table (Profile v2), and audited
+/// `core::num` sysroot calls ([`verify_sysroot_num_call`], Profile v1). A
+/// sysroot `core` callee in the `CoreCallOp` table always lowers to
+/// `CoreCall`. Indirect calls, other generic or external callees, `Drop`,
+/// unwinds, assembly, and other terminators stay refused at capture time.
+/// `TerminatorKind::Call` runs [`check_call_source`] first so
+/// `CallSource::Use` fails closed even for diverging calls.
 ///
 /// `Assert` and returning `CoreCall`s make a body Profile v2, which
 /// `capture::collect` refuses under `--stdlib-crate`: language items such as
@@ -1144,19 +1520,21 @@ fn terminator<'tcx>(
     tcx: TyCtxt<'tcx>,
     typing_env: TypingEnv<'tcx>,
     term: &mir::TerminatorKind<'tcx>,
-) -> Result<ir::Terminator> {
+) -> Result<RawTerminator> {
     Ok(match term {
-        mir::TerminatorKind::Goto { target } => ir::Terminator::Goto {
+        mir::TerminatorKind::Goto { target } => RawTerminator::Resolved(ir::Terminator::Goto {
             block: target.as_u32(),
-        },
-        mir::TerminatorKind::SwitchInt { discr, targets } => ir::Terminator::SwitchInt {
-            operand: operand(tcx, typing_env, discr)?,
-            targets: targets
-                .iter()
-                .map(|(value, block)| (value, block.as_u32()))
-                .collect(),
-            otherwise: targets.otherwise().as_u32(),
-        },
+        }),
+        mir::TerminatorKind::SwitchInt { discr, targets } => {
+            RawTerminator::Resolved(ir::Terminator::SwitchInt {
+                operand: operand(tcx, typing_env, discr)?,
+                targets: targets
+                    .iter()
+                    .map(|(value, block)| (value, block.as_u32()))
+                    .collect(),
+                otherwise: targets.otherwise().as_u32(),
+            })
+        }
         mir::TerminatorKind::Assert {
             cond,
             expected,
@@ -1179,16 +1557,16 @@ fn terminator<'tcx>(
                 mir::AssertMessage::NullPointerDereference => ir::AssertKind::NullPtrDeref,
                 other => return Err(format!("unsupported assert message: {other:?}")),
             };
-            ir::Terminator::Assert {
+            RawTerminator::Resolved(ir::Terminator::Assert {
                 cond: operand(tcx, typing_env, cond)?,
                 expected: *expected,
                 msg: msg_ir,
                 target: target.as_u32(),
                 unwind,
-            }
+            })
         }
-        mir::TerminatorKind::Return => ir::Terminator::Ret,
-        mir::TerminatorKind::Unreachable => ir::Terminator::Unreachable,
+        mir::TerminatorKind::Return => RawTerminator::Resolved(ir::Terminator::Ret),
+        mir::TerminatorKind::Unreachable => RawTerminator::Resolved(ir::Terminator::Unreachable),
         mir::TerminatorKind::Call {
             func,
             args,
@@ -1196,31 +1574,97 @@ fn terminator<'tcx>(
             target,
             unwind,
             call_source,
-            ..
+            fn_span: _,
         } => {
             check_call_source(*call_source)?;
             let Some(target_bb) = target else {
-                return Ok(ir::Terminator::Unsupported);
+                return Ok(RawTerminator::Resolved(ir::Terminator::Unsupported));
             };
-            let unwind = unwind_action(*unwind, "call")?;
-            let mir::Operand::Constant(func_const) = func else {
-                return Err(format!("indirect call is unsupported: {term:?}"));
+            let mir::Operand::Constant(const_op) = func else {
+                return Err(format!("indirect calls are unsupported: {func:?}"));
             };
-            let ty::FnDef(def_id, fn_args) = *func_const.const_.ty().kind() else {
-                return Err(format!("non-FnDef call is unsupported: {term:?}"));
-            };
-            let op = core_call_op(tcx, def_id, fn_args)?;
-            let mut arg_ops = Vec::with_capacity(args.len());
-            for a in args {
-                arg_ops.push(operand(tcx, typing_env, &a.node)?);
+            if !matches!(
+                const_op.const_,
+                mir::Const::Val(mir::ConstValue::ZeroSized, _)
+            ) {
+                return Err(format!("non-zero-sized call callee is unsupported: {func:?}"));
             }
-            let dst = place(tcx, destination)?;
-            ir::Terminator::CoreCall {
-                op,
-                args: arg_ops,
-                dst,
-                target: target_bb.as_u32(),
-                unwind,
+            let ty::FnDef(callee_did, generic_args) = *const_op.const_.ty().kind() else {
+                return Err(format!(
+                    "calls through non-FnDef values are unsupported: {:?}",
+                    const_op.const_.ty()
+                ));
+            };
+            let args = args
+                .iter()
+                .map(|spanned| operand(tcx, typing_env, &spanned.node))
+                .collect::<Result<Vec<_>>>()?;
+            if let Some(path) = core_def_path(tcx, callee_did) {
+                // `core_def_path` pins the callee to the authenticated sysroot
+                // `core`, so neither a crate-local `mod core` nor a local crate
+                // built with `--crate-name core` reaches this branch. The
+                // closed Profile v2 `CoreCallOp` table takes precedence;
+                // remaining `core::num` arithmetic goes through the Profile v1
+                // sysroot path, where `verify_sysroot_num_call` re-checks the
+                // callee's `instance_mir` shape.
+                match core_call_op(tcx, callee_did, generic_args) {
+                    Ok(op) => {
+                        let unwind = unwind_action(*unwind, "call")?;
+                        RawTerminator::Resolved(ir::Terminator::CoreCall {
+                            op,
+                            args,
+                            dst: place(tcx, destination)?,
+                            target: target_bb.as_u32(),
+                            unwind,
+                        })
+                    }
+                    Err(core_err) => {
+                        if parse_sysroot_num_path(&path).is_none() {
+                            return Err(core_err);
+                        }
+                        if !generic_args.is_empty() {
+                            return Err(format!(
+                                "sysroot numeric function `{path}` unexpectedly instantiated"
+                            ));
+                        }
+                        let op = verify_sysroot_num_call(tcx, callee_did, &path)?;
+                        RawTerminator::Resolved(ir::Terminator::SysrootCall {
+                            op,
+                            args,
+                            dst: local(destination)?,
+                            target: Some(target_bb.as_u32()),
+                            unwind: unwind_action(*unwind, "call")?,
+                        })
+                    }
+                }
+            } else {
+                let path = rustc_middle::ty::print::with_no_trimmed_paths!(
+                    rustc_middle::ty::print::with_no_visible_paths!(tcx.def_path_str(callee_did))
+                );
+                let Some(local_callee) = callee_did.as_local() else {
+                    return Err(format!("calls to external function `{path}` are unsupported"));
+                };
+                if !generic_args.is_empty() || tcx.generics_of(callee_did).count() != 0 {
+                    return Err(format!(
+                        "calls to generic or monomorphized functions (`{path}`) are unsupported"
+                    ));
+                }
+                if tcx
+                    .codegen_fn_attrs(callee_did)
+                    .flags
+                    .contains(CodegenFnAttrFlags::TRACK_CALLER)
+                {
+                    return Err(format!(
+                        "intra-crate calls to #[track_caller] function `{path}` are unsupported"
+                    ));
+                }
+                RawTerminator::LocalCall {
+                    callee: local_callee,
+                    args,
+                    dst: local(destination)?,
+                    target: Some(target_bb.as_u32()),
+                    unwind: unwind_action(*unwind, "call")?,
+                }
             }
         }
         other => return Err(format!("unsupported terminator: {other:?}")),
@@ -1314,19 +1758,22 @@ pub fn enum_id(tcx: TyCtxt<'_>, def: DefId) -> u32 {
 /// location "by appending an implicit parameter to the function ABI", outside
 /// the MIR locals. Reading it takes a returning call to `caller_location`
 /// (returning `&'static Location<'_>`), which is outside the closed
-/// [`ir::CoreCallOp`] table, so no captured body can observe it. Otherwise
-/// the location only reaches panic payloads (of a failed `Assert` or of the
-/// `#[track_caller]` `core` functions in that table), never a captured local.
+/// [`ir::CoreCallOp`] table and the audited `core::num` sysroot table, so no
+/// captured body can observe it. Passing it on to a `#[track_caller]` callee
+/// is refused for intra-crate callees and skipped on `UbChecks == 0` sysroot
+/// paths. Otherwise the location only reaches panic payloads (of a failed
+/// `Assert` or of the `#[track_caller]` `core` functions in the `CoreCallOp`
+/// table), never a captured local.
 /// The compiler also sets this flag when a trait method inherits the
 /// attribute from its declaration.
 /// https://github.com/rust-lang/reference/blob/a286e1ecb8ce193d50056e4bb042eea9b23876ef/src/attributes/codegen.md?plain=1#L763-L779
 /// https://github.com/rust-lang/reference/blob/a286e1ecb8ce193d50056e4bb042eea9b23876ef/src/attributes/codegen.md?plain=1#L855-L856
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/codegen_attrs.rs#L355-L358
 ///
-/// Every other flag at the pinned revision is refused; see [`codegen_attrs`].
+/// Every other flag at the pinned revision is refused; see
+/// [`codegen_attrs_for_def`].
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/middle/codegen_fn_attrs.rs#L156-L214
-const ADMITTED_CODEGEN_FLAGS: CodegenFnAttrFlags =
-    CodegenFnAttrFlags::COLD.union(CodegenFnAttrFlags::TRACK_CALLER);
+const ADMITTED_CODEGEN_FLAGS: CodegenFnAttrFlags = CodegenFnAttrFlags::COLD;
 
 /// Refuse code-generation attributes whose effect the model does not state.
 ///
@@ -1335,12 +1782,17 @@ const ADMITTED_CODEGEN_FLAGS: CodegenFnAttrFlags =
 /// `CodegenFnAttrs` makes a compiler upgrade that adds a field fail to compile
 /// here until the field is classified. Only settings that cannot change what
 /// a call executes or what the body may assume are admitted: inlining hints,
-/// `#[optimize]` goals, and [`ADMITTED_CODEGEN_FLAGS`]. Everything else is a
-/// refusal, including attributes that are rare or impossible on an admitted
-/// function, so an unclassified case cannot pass silently.
+/// `#[optimize]` goals, and [`ADMITTED_CODEGEN_FLAGS`] (plus `TRACK_CALLER`
+/// when `allow_track_caller` holds). Everything else is a refusal, including
+/// attributes that are rare or impossible on an admitted function, so an
+/// unclassified case cannot pass silently.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/middle/codegen_fn_attrs.rs#L60-L112
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/codegen_attrs.rs#L551-L577
 pub(crate) fn codegen_attrs(tcx: TyCtxt<'_>, def: LocalDefId) -> Result<()> {
+    codegen_attrs_for_def(tcx, def.to_def_id(), true)
+}
+
+fn codegen_attrs_for_def(tcx: TyCtxt<'_>, def: DefId, allow_track_caller: bool) -> Result<()> {
     let CodegenFnAttrs {
         flags,
         inline,
@@ -1439,7 +1891,12 @@ pub(crate) fn codegen_attrs(tcx: TyCtxt<'_>, def: LocalDefId) -> Result<()> {
     // is unreviewed. The rest apply to statics or foreign items.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/middle/codegen_fn_attrs.rs#L156-L214
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/codegen_attrs.rs#L348-L353
-    let unmodeled = flags.difference(ADMITTED_CODEGEN_FLAGS);
+    let allowed_flags = if allow_track_caller {
+        ADMITTED_CODEGEN_FLAGS.union(CodegenFnAttrFlags::TRACK_CALLER)
+    } else {
+        ADMITTED_CODEGEN_FLAGS
+    };
+    let unmodeled = flags.difference(allowed_flags);
     if !unmodeled.is_empty() {
         return Err(format!(
             "codegen attribute flags {unmodeled:?} are unsupported"
@@ -1496,15 +1953,19 @@ pub(crate) fn codegen_attrs(tcx: TyCtxt<'_>, def: LocalDefId) -> Result<()> {
 /// Translate the provider's exact body, evaluating all `required_consts`
 /// compile-time obligations before admitting the body.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L265-L271
-pub fn body<'tcx>(tcx: TyCtxt<'tcx>, def: LocalDefId, body: &mir::Body<'tcx>) -> Result<ir::Body> {
+pub(crate) fn extract_body<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    def: LocalDefId,
+    body: &mir::Body<'tcx>,
+) -> Result<ExtractedBody> {
     body_inner(tcx, def, None, body, TypingEnv::fully_monomorphized())
 }
 
 /// Translate an explicitly monomorphized body validated by [`crate::mono`].
-pub(crate) fn instantiated_body<'tcx>(
+pub(crate) fn extract_instantiated_body<'tcx>(
     tcx: TyCtxt<'tcx>,
     resolved: &crate::mono::ResolvedMonoBody<'tcx>,
-) -> Result<ir::Body> {
+) -> Result<ExtractedBody> {
     body_inner(
         tcx,
         resolved.resolved_local,
@@ -1520,7 +1981,7 @@ fn body_inner<'tcx>(
     instance: Option<ty::Instance<'tcx>>,
     body: &mir::Body<'tcx>,
     typing_env: TypingEnv<'tcx>,
-) -> Result<ir::Body> {
+) -> Result<ExtractedBody> {
     // Refuse intrinsics before reading the body: calls to an intrinsic need
     // not execute its fallback body. Once `#![feature(intrinsics)]` is
     // enabled, `intrinsic_raw` "Determines whether an item is an intrinsic"
@@ -1670,7 +2131,7 @@ fn body_inner<'tcx>(
     }
     // Codegen attributes can make calls execute another definition or add
     // entry and link-time obligations that the signature does not record.
-    codegen_attrs(tcx, def)?;
+    codegen_attrs_for_def(tcx, def.to_def_id(), true)?;
     // A cleanup block "lies on an unwind path", and "Unwind blocks must only
     // branch to other unwind blocks." Such blocks need an unwinding
     // interpretation even when their ordinary edges are unreachable, and the
@@ -1701,6 +2162,8 @@ fn body_inner<'tcx>(
     // disallowed local types (e.g. `&&T` or `*const &T`) report the type
     // boundary error rather than secondary statement errors inside the body.
     ir::validate_local_tys(&local_tys)?;
+    let mut local_callees = Vec::new();
+    let mut seen_callees = BTreeSet::new();
     let blocks = body
         .basic_blocks
         .iter_enumerated()
@@ -1720,10 +2183,12 @@ fn body_inner<'tcx>(
             let term = block.terminator.as_ref().ok_or("missing terminator")?;
             let terminator = terminator(tcx, typing_env, &term.kind)
                 .map_err(|error| format!("{id:?} terminator: {error}"))?;
-            Ok(ir::Block {
-                statements,
-                terminator,
-            })
+            if let RawTerminator::LocalCall { callee, .. } = &terminator
+                && seen_callees.insert(callee.local_def_index.as_u32())
+            {
+                local_callees.push(*callee);
+            }
+            Ok((statements, terminator))
         })
         .collect::<Result<Vec<_>>>()?;
     // fn_sig lowers ordinary declarations with "sig.header.safety()";
@@ -1739,17 +2204,27 @@ fn body_inner<'tcx>(
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir/src/hir.rs#L4610-L4621
     //
     // The model uses this bit to decide whether reviewed caller requirements
-    // apply. `codegen_attrs` above excludes target-feature entry points and
-    // unsafe symbol and section attributes, whose obligations this bit does
+    // apply. `codegen_attrs_for_def` above excludes target-feature entry points
+    // and unsafe symbol and section attributes, whose obligations this bit does
     // not record; pointer-free syntax alone does not authorize treating an
     // unsafe declaration as an unrestricted safe entry point.
-    ir::Body::try_new(
-        body.arg_count,
-        signature.safety().is_unsafe(),
+    let extracted = ExtractedBody {
+        arg_count: body.arg_count,
+        is_unsafe: signature.safety().is_unsafe(),
         local_tys,
         blocks,
         identity,
-    )
+        local_callees,
+    };
+    // Run single-body structural and type validation immediately so an
+    // unsupported body reports its diagnostic even before cross-body
+    // resolution.
+    let mut dummy_indices = BTreeMap::new();
+    for callee in &extracted.local_callees {
+        dummy_indices.insert(callee.local_def_index.as_u32(), 0);
+    }
+    let _ = extracted.clone().resolve(&dummy_indices)?;
+    Ok(extracted)
 }
 
 #[cfg(test)]
@@ -2146,6 +2621,9 @@ mod tests {
         assert!(err.contains("cleanup unwinds on assert are unsupported"), "{err}");
 
         for (mir_op, expected) in [
+            (mir::BinOp::AddUnchecked, ir::BinOp::AddUnchecked),
+            (mir::BinOp::SubUnchecked, ir::BinOp::SubUnchecked),
+            (mir::BinOp::MulUnchecked, ir::BinOp::MulUnchecked),
             (mir::BinOp::Div, ir::BinOp::Div),
             (mir::BinOp::Rem, ir::BinOp::Rem),
             (mir::BinOp::AddWithOverflow, ir::BinOp::AddWithOverflow),
@@ -2156,10 +2634,25 @@ mod tests {
         ] {
             assert_eq!(bin_op(mir_op).unwrap(), expected);
         }
+        // Pin every method-to-kind entry and the operator each kind's pinned
+        // body must apply (`Trusted.MirSemantics.sysrootNumBinOp`).
+        for (method, kind, op) in [
+            ("unchecked_add", ir::SysrootNumKind::UncheckedAdd, mir::BinOp::AddUnchecked),
+            ("unchecked_sub", ir::SysrootNumKind::UncheckedSub, mir::BinOp::SubUnchecked),
+            ("unchecked_mul", ir::SysrootNumKind::UncheckedMul, mir::BinOp::MulUnchecked),
+            ("wrapping_add", ir::SysrootNumKind::WrappingAdd, mir::BinOp::Add),
+            ("wrapping_sub", ir::SysrootNumKind::WrappingSub, mir::BinOp::Sub),
+            ("wrapping_mul", ir::SysrootNumKind::WrappingMul, mir::BinOp::Mul),
+        ] {
+            let path = format!("core::num::<impl u16>::{method}");
+            let (ity, parsed) = parse_sysroot_num_path(&path).unwrap();
+            assert_eq!(parsed, kind, "{method}");
+            assert_eq!(ity, IntTy { width: IntWidth::I16, signed: false });
+            assert_eq!(sysroot_kind_mir_op(kind), op, "{method}");
+        }
+        assert!(parse_sysroot_num_path("core::num::<impl u16>::saturating_add").is_none());
+        assert!(parse_sysroot_num_path("core::num::<impl f32>::unchecked_add").is_none());
         for refused_bin in [
-            mir::BinOp::AddUnchecked,
-            mir::BinOp::SubUnchecked,
-            mir::BinOp::MulUnchecked,
             mir::BinOp::ShlUnchecked,
             mir::BinOp::ShrUnchecked,
         ] {

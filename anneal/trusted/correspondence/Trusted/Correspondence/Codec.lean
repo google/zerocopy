@@ -88,6 +88,8 @@ inductive RefTerminatorKind where
       (target : Option BasicBlockId) (unwind : UnwindAction)
   | coreCall (op : CoreCallOp) (args : List RefOperand) (dst : RefPlace)
       (target : Option BasicBlockId) (unwind : UnwindAction)
+  | sysrootCall (op : SysrootNumOp) (args : List RefOperand) (dst : RefPlace)
+      (target : Option BasicBlockId) (unwind : UnwindAction)
   | unsupported
 
 /-- Reference MIR basic block (`Miri.MIR.BasicBlock`). -/
@@ -99,9 +101,12 @@ structure RefBasicBlock where
 /-- Reference MIR function body (`Miri.MIR.Body`) whose local declarations
 store `TyId` indices into `RefProg.types`.
 
-`isUnsafe` and `identity` are inert in $M_{\text{ref}}$: `encodeProg` and
-`decodeProg` preserve them for structural alignment with `Body`, and neither
-`initRefState` nor `evalRefStep` consults them. -/
+`isUnsafe` and `identity` are preserved by `encodeProg` and `decodeProg` for
+structural alignment with `Body`. `evalRefStep` never consults them;
+`initRefState` reads them only for entry admission, mirroring
+`callsAdmitted`/`singleBodyStaticAdmitted`: `refCallsAdmitted` rejects
+`isUnsafe` `.call` targets and `refSingleBodyStaticAdmitted` requires a
+non-empty `identity`. -/
 structure RefBody where
   argumentCount : Nat
   locals : List TyId
@@ -254,6 +259,10 @@ noncomputable def collectTerminator (acc : List MirTy) :
   | .assert c _ _ _ _ => collectOperand acc c
   | .call _ args dst _ _ | .coreCall _ args dst _ _ =>
     collectPlace (args.foldl collectOperand acc) dst
+  | .sysrootCall op args dst _ _ =>
+    collectPlace
+      (args.foldl collectOperand (collectTy acc (.int op.width op.signed)))
+      dst
   | .goto _ | .return_ | .unreachable | .unwindResume | .unsupported => acc
 
 /-- Intern all `MirTy` descriptors carried in a `BasicBlock`. -/
@@ -326,6 +335,8 @@ noncomputable def encodeTerminator (ts : List MirTy) :
     .call callee (args.map (encodeOperand ts)) (encodePlace ts dst) t u
   | .coreCall op args dst t u =>
     .coreCall op (args.map (encodeOperand ts)) (encodePlace ts dst) t u
+  | .sysrootCall op args dst t u =>
+    .sysrootCall op (args.map (encodeOperand ts)) (encodePlace ts dst) t u
   | .unsupported => .unsupported
 
 /-- Encode a `BasicBlock` against type table `ts`. -/
@@ -417,6 +428,9 @@ noncomputable def decodeTerminator (ts : List MirTy) :
       (mapOption (decodeOperand ts) args) (decodePlace ts dst)
   | .coreCall op args dst t u =>
     optMap2 (fun args' dst' => .coreCall op args' dst' t u)
+      (mapOption (decodeOperand ts) args) (decodePlace ts dst)
+  | .sysrootCall op args dst t u =>
+    optMap2 (fun args' dst' => .sysrootCall op args' dst' t u)
       (mapOption (decodeOperand ts) args) (decodePlace ts dst)
   | .unsupported => some .unsupported
 

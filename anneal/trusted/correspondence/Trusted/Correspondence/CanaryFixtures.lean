@@ -158,4 +158,98 @@ noncomputable def progMoveUnitZstD9 : Program where
     }]
   }]
 
+/-- Input query `(19u16)` for `D17` intra-crate direct `.call`. -/
+noncomputable def queryU16_19 : Query where
+  args := [scalarNatVal .i16 false 19]
+
+/-- `D17a` (Multi-frame intra-crate `.call` push and return):
+body `0` calls body `1` with `copy _1`, adding `23u16` and returning `42u16`. -/
+noncomputable def progDirectCallD17 : Program where
+  entryDefId := 0
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies :=
+    [{
+      identity := "canary::d17_call_caller"
+      argumentCount := 1
+      locals := [.int .i16 false, .int .i16 false]
+      basicBlocks := [
+        {
+          statements := []
+          terminator := .call 1 [.copy ⟨1, []⟩] ⟨0, []⟩ (some 1) .continue_
+        },
+        {
+          statements := []
+          terminator := .return_
+        }
+      ]
+    },
+    {
+      identity := "canary::d17_call_callee"
+      argumentCount := 1
+      locals := [.int .i16 false, .int .i16 false]
+      basicBlocks := [{
+        statements := [
+          .assign ⟨0, []⟩ (.binaryOp .add (.copy ⟨1, []⟩)
+            (.constant ⟨.int .i16 false, .scalar (BitVec.ofNat 128 23)⟩))
+        ]
+        terminator := .return_
+      }]
+    }]
+
+/-- `D17b` (`.sysrootCall` `uncheckedAdd` in-bounds on `u16`):
+computes `19u16 + 23u16 = 42u16` across frame push/return. -/
+noncomputable def progSysrootUncheckedAddOkD17 : Program where
+  entryDefId := 0
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    identity := "canary::d17_sysroot_ok"
+    argumentCount := 0
+    locals := [.int .i16 false]
+    basicBlocks := [
+      {
+        statements := []
+        terminator := .sysrootCall
+          { kind := .uncheckedAdd, width := .i16, signed := false }
+          [.constant ⟨.int .i16 false, .scalar (BitVec.ofNat 128 19)⟩,
+           .constant ⟨.int .i16 false, .scalar (BitVec.ofNat 128 23)⟩]
+          ⟨0, []⟩ (some 1) .continue_
+      },
+      {
+        statements := []
+        terminator := .return_
+      }
+    ]
+  }]
+
+/-- `D17c` (`.sysrootCall` `uncheckedAdd` overflow UB on `u16`):
+`65500u16 + 100u16` faults `.undefined` / `.ub` in both machines. -/
+noncomputable def progSysrootUncheckedAddUbD17 : Program where
+  entryDefId := 0
+  scope := .unit
+  pointerWidthBits := 64
+  mirProfileVersion := 1
+  bodies := [{
+    identity := "canary::d17_sysroot_ub"
+    argumentCount := 0
+    locals := [.int .i16 false]
+    basicBlocks := [
+      {
+        statements := []
+        terminator := .sysrootCall
+          { kind := .uncheckedAdd, width := .i16, signed := false }
+          [.constant ⟨.int .i16 false, .scalar (BitVec.ofNat 128 65500)⟩,
+           .constant ⟨.int .i16 false, .scalar (BitVec.ofNat 128 100)⟩]
+          ⟨0, []⟩ (some 1) .continue_
+      },
+      {
+        statements := []
+        terminator := .return_
+      }
+    ]
+  }]
+
 end Trusted.Correspondence

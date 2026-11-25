@@ -86,12 +86,9 @@ private theorem afterLocalRead_no_race
       Miri.Interpreter.MachineHooks.FrameExtra)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (localId : LocalId)
-    (h_frames : st.stack.frames = (Array.mk [frame]))
+    (h_curr : st.stack.currentFrame? = some frame)
     (h_dr : frame.extra.dataRace = none) :
     Miri.Interpreter.MachineHooks.afterLocalRead localId st = .ok () st := by
-  have h_curr : st.stack.currentFrame? = some frame := by
-    dsimp only [Miri.Interpreter.Stack.currentFrame?]
-    rw [h_frames]; rfl
   dsimp only [Miri.Interpreter.MachineHooks.afterLocalRead,
     Miri.Interpreter.MachineHooks.currentFrame,
     get, getThe, MonadStateOf.get, EStateM.get,
@@ -111,25 +108,20 @@ private theorem refBaseCompilerHooks_projection (types : List MirTy) :
     (refBaseCompilerHooks types).projection = (fun _ st => .ok (refProjectionCx types) st) := rfl
 
 private theorem placeToOp_local_immediate (types : List MirTy)
-    (c : Choice) (localId : LocalId) (ty : MirTy)
+    (c : Choice) (frameIdx : Nat) (localId : LocalId) (ty : MirTy)
     (imm : Immediate Miri.Memory.Provenance)
     (frame : Miri.Interpreter.Frame Miri.Memory.Provenance LocalLayout
       Miri.Interpreter.MachineHooks.FrameExtra)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
-    (h_frames : st.stack.frames = (Array.mk [frame]))
+    (h_curr : st.stack.currentFrame? = some frame)
+    (h_fidx : st.stack.frameIndex = .ok frameIdx)
     (h_dr : frame.extra.dataRace = none)
     (h_get : frame.getLocal localId =
       .ok ⟨.live (.immediate imm), some (refLocalLayoutForTy types ty)⟩) :
     Miri.Interpreter.placeToOp (refBasePlaceProjectionHooks types).place c
-        ⟨.local 0 localId none (LocalsIdentity.ofAllocationToken 0),
+        ⟨.local frameIdx localId none (LocalsIdentity.ofAllocationToken 0),
           refLocalLayoutForTy types ty⟩ st =
       .ok ⟨.immediate imm, refLocalLayoutForTy types ty⟩ st := by
-  have h_curr : st.stack.currentFrame? = some frame := by
-    dsimp only [Miri.Interpreter.Stack.currentFrame?]
-    rw [h_frames]; rfl
-  have h_fidx : st.stack.frameIndex = .ok 0 := by
-    dsimp only [Miri.Interpreter.Stack.frameIndex]
-    rw [h_frames]; rfl
   have h_op : frame.getLocalOperand localId = .ok (.immediate imm) := by
     dsimp only [Miri.Interpreter.Frame.getLocalOperand]
     rw [h_get]; rfl
@@ -147,7 +139,7 @@ private theorem placeToOp_local_immediate (types : List MirTy)
     refBaseCompilerHooks_validationInProgress,
     h_fidx, h_curr, h_get, h_op, h_sz,
     bne_self_eq_false, Bool.not_true, Bool.false_eq_true, ite_false]
-  rw [afterLocalRead_no_race frame st localId h_frames h_dr]
+  rw [afterLocalRead_no_race frame st localId h_curr h_dr]
 
 private theorem validityMemory_readImmediate_imm_scalar
     (types : List MirTy) (ty : MirTy)
@@ -690,7 +682,7 @@ private theorem readDiscriminant_validity_local_scalar_enum
     _ _ st h_tr h_adm h_el h_get_d h_proj h_ri
 
 private theorem placeToOp_local_field0_enumLike (types : List MirTy)
-    (c : Choice) (localId : LocalId) (ty : MirTy) (ety : EnumTy)
+    (c : Choice) (frameIdx : Nat) (localId : LocalId) (ty : MirTy) (ety : EnumTy)
     (tagW : IntWidth)
     (tagS : Bool) (imm : Immediate Miri.Memory.Provenance)
     (frame : Miri.Interpreter.Frame Miri.Memory.Provenance LocalLayout
@@ -698,22 +690,17 @@ private theorem placeToOp_local_field0_enumLike (types : List MirTy)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_el : EnumLike types ty ety)
     (h_tr : ety.tagRepr = .scalar tagW tagS)
-    (h_frames : st.stack.frames = (Array.mk [frame]))
+    (h_curr : st.stack.currentFrame? = some frame)
+    (h_fidx : st.stack.frameIndex = .ok frameIdx)
     (h_dr : frame.extra.dataRace = none)
     (h_get : frame.getLocal localId =
       .ok ⟨.live (.immediate imm), some (refLocalLayoutForTy types ty)⟩)
     (h_imm_ok : imm = .uninit ∨
       ∃ sc, imm = .scalar sc ∧ sc.size = toMiriSize tagW) :
     Miri.Interpreter.placeToOp (refBasePlaceProjectionHooks types).place c
-        ⟨.local 0 localId (some Size.ZERO) (LocalsIdentity.ofAllocationToken 0),
+        ⟨.local frameIdx localId (some Size.ZERO) (LocalsIdentity.ofAllocationToken 0),
           refLocalLayoutForTy types (.int tagW tagS)⟩ st =
       .ok ⟨.immediate imm, refLocalLayoutForTy types (.int tagW tagS)⟩ st := by
-  have h_curr : st.stack.currentFrame? = some frame := by
-    dsimp only [Miri.Interpreter.Stack.currentFrame?]
-    rw [h_frames]; rfl
-  have h_fidx : st.stack.frameIndex = .ok 0 := by
-    dsimp only [Miri.Interpreter.Stack.frameIndex]
-    rw [h_frames]; rfl
   have h_op : frame.getLocalOperand localId = .ok (.immediate imm) := by
     dsimp only [Miri.Interpreter.Frame.getLocalOperand]
     rw [h_get]; rfl
@@ -750,7 +737,7 @@ private theorem placeToOp_local_field0_enumLike (types : List MirTy)
     refBaseCompilerHooks_projection,
     h_fidx, h_curr, h_get, h_op, h_sz,
     bne_self_eq_false, Bool.not_true, Bool.false_eq_true, ite_false]
-  rw [afterLocalRead_no_race frame st localId h_frames h_dr]
+  rw [afterLocalRead_no_race frame st localId h_curr h_dr]
   dsimp only [bind, Bind.bind, EStateM.bind, pure, Pure.pure, EStateM.pure]
   rw [h_off]
   rfl
@@ -1049,8 +1036,8 @@ theorem visit_local_never_ub (types : List MirTy) (c : Choice)
   exact ⟨_, rfl⟩
 
 private theorem visit_local_scalar_enum_ok (types : List MirTy) (c : Choice)
-    (fuel k : Nat) (h_fuel : fuel = k + 1) (localId : LocalId) (ty : MirTy)
-    (ety : EnumTy)
+    (fuel k : Nat) (h_fuel : fuel = k + 1) (frameIdx : Nat) (localId : LocalId)
+    (ty : MirTy) (ety : EnumTy)
     (tagW : IntWidth) (tagS : Bool) (variant disc : Nat)
     (frame : Miri.Interpreter.Frame Miri.Memory.Provenance LocalLayout
       Miri.Interpreter.MachineHooks.FrameExtra)
@@ -1059,7 +1046,8 @@ private theorem visit_local_scalar_enum_ok (types : List MirTy) (c : Choice)
     (h_adm : enumAdmitted ety = true)
     (h_el : EnumLike types ty ety)
     (h_get_d : MirSemantics.getElem? ety.discriminants variant = some disc)
-    (h_frames : st.stack.frames = (Array.mk [frame]))
+    (h_curr : st.stack.currentFrame? = some frame)
+    (h_fidx : st.stack.frameIndex = .ok frameIdx)
     (h_dr : frame.extra.dataRace = none)
     (h_pmd : st.machine.pendingMoveDeinit = false)
     (h_get : frame.getLocal localId =
@@ -1072,7 +1060,7 @@ private theorem visit_local_scalar_enum_ok (types : List MirTy) (c : Choice)
     }
     Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c (fuel + 1)
         initSess
-        ⟨.local 0 localId none (LocalsIdentity.ofAllocationToken 0),
+        ⟨.local frameIdx localId none (LocalsIdentity.ofAllocationToken 0),
           refLocalLayoutForTy types ty⟩ st = .ok initSess st := by
   have h_ne_box :
       (Miri.Interpreter.ValidityVisitor.TypeKind.aggregate false false true ==
@@ -1089,26 +1077,26 @@ private theorem visit_local_scalar_enum_ok (types : List MirTy) (c : Choice)
     rw [refEnumLayoutData_scalar ety tagW tagS h_tr]
   have h_v_lt : variant < ety.discriminants.length :=
     mirGetElem?_lt_of_some h_get_d
-  have h_toOp := placeToOp_local_immediate types c localId ty
+  have h_toOp := placeToOp_local_immediate types c frameIdx localId ty
     (.scalar (.fromScalarInt (miriScalar tagW (BitVec.ofNat 128 disc))))
-    frame st h_frames h_dr h_get
+    frame st h_curr h_fidx h_dr h_get
   have h_ms_sz :
       (Scalar.fromScalarInt (Prov := Miri.Memory.Provenance)
         (miriScalar tagW (BitVec.ofNat 128 disc))).size = toMiriSize tagW := by
     cases tagW <;> rfl
-  have h_toOp_f0 := placeToOp_local_field0_enumLike types c localId
+  have h_toOp_f0 := placeToOp_local_field0_enumLike types c frameIdx localId
     ty ety tagW tagS
     (.scalar (.fromScalarInt (miriScalar tagW (BitVec.ofNat 128 disc))))
-    frame st h_el h_tr h_frames h_dr h_get (Or.inr ⟨_, rfl, h_ms_sz⟩)
+    frame st h_el h_tr h_curr h_fidx h_dr h_get (Or.inr ⟨_, rfl, h_ms_sz⟩)
   have h_res_tag :
       resolveTy types (tyIdFor types (.int tagW tagS)) =
         some (.int tagW tagS) :=
     mem_resolveTy_tyIdFor_int types tagW tagS
   have h_pf0 :
       Miri.Interpreter.PlaceDynamic.field (refBasePlaceProjectionHooks types) c
-        ⟨.local 0 localId none (LocalsIdentity.ofAllocationToken 0),
+        ⟨.local frameIdx localId none (LocalsIdentity.ofAllocationToken 0),
           refLocalLayoutForTy types ty⟩ 0 st =
-      .ok ⟨.local 0 localId (some Size.ZERO)
+      .ok ⟨.local frameIdx localId (some Size.ZERO)
           (LocalsIdentity.ofAllocationToken 0),
           refLocalLayoutForTy types (.int tagW tagS)⟩ st := by
     dsimp only [Miri.Interpreter.PlaceDynamic.field,
@@ -1120,9 +1108,9 @@ private theorem visit_local_scalar_enum_ok (types : List MirTy) (c : Choice)
     cases tagW <;> cases tagS <;> rfl
   have h_dc :
       Miri.Interpreter.PlaceDynamic.downcast (refBasePlaceProjectionHooks types) c
-        ⟨.local 0 localId none (LocalsIdentity.ofAllocationToken 0),
+        ⟨.local frameIdx localId none (LocalsIdentity.ofAllocationToken 0),
           refLocalLayoutForTy types ty⟩ variant st =
-      .ok ⟨.local 0 localId (some Size.ZERO)
+      .ok ⟨.local frameIdx localId (some Size.ZERO)
           (LocalsIdentity.ofAllocationToken 0),
           ⟨tyIdFor types ty,
             { refUnitLayoutData with variants := .Single variant }⟩⟩ st := by
@@ -1179,14 +1167,16 @@ private theorem visit_local_scalar_enum_ok (types : List MirTy) (c : Choice)
   rfl
 
 private theorem visit_local_scalar_enum_uninit_ub (types : List MirTy)
-    (c : Choice) (fuel k : Nat) (h_fuel : fuel = k + 1) (localId : LocalId)
-    (ty : MirTy) (ety : EnumTy) (tagW : IntWidth) (tagS : Bool)
+    (c : Choice) (fuel k : Nat) (h_fuel : fuel = k + 1) (frameIdx : Nat)
+    (localId : LocalId) (ty : MirTy) (ety : EnumTy) (tagW : IntWidth)
+    (tagS : Bool)
     (frame : Miri.Interpreter.Frame Miri.Memory.Provenance LocalLayout
       Miri.Interpreter.MachineHooks.FrameExtra)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_tr : ety.tagRepr = .scalar tagW tagS)
     (h_el : EnumLike types ty ety)
-    (h_frames : st.stack.frames = (Array.mk [frame]))
+    (h_curr : st.stack.currentFrame? = some frame)
+    (h_fidx : st.stack.frameIndex = .ok frameIdx)
     (h_dr : frame.extra.dataRace = none)
     (h_get : frame.getLocal localId =
       .ok ⟨.live (.immediate .uninit),
@@ -1199,7 +1189,7 @@ private theorem visit_local_scalar_enum_uninit_ub (types : List MirTy)
     ∃ msg,
       Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c (fuel + 1)
           initSess
-          ⟨.local 0 localId none (LocalsIdentity.ofAllocationToken 0),
+          ⟨.local frameIdx localId none (LocalsIdentity.ofAllocationToken 0),
             refLocalLayoutForTy types ty⟩ st =
         .error (.undefinedBehavior msg) st := by
   have h_ne_box :
@@ -1210,17 +1200,17 @@ private theorem visit_local_scalar_enum_uninit_ub (types : List MirTy)
       .Arbitrary (Array.mk [Size.ZERO]) (Array.mk [0]) := by
     rw [enumLike_layout h_el]
     rw [refEnumLayoutData_scalar ety tagW tagS h_tr]
-  have h_toOp_f0 := placeToOp_local_field0_enumLike types c localId
-    ty ety tagW tagS .uninit frame st h_el h_tr h_frames h_dr h_get (Or.inl rfl)
+  have h_toOp_f0 := placeToOp_local_field0_enumLike types c frameIdx localId
+    ty ety tagW tagS .uninit frame st h_el h_tr h_curr h_fidx h_dr h_get (Or.inl rfl)
   have h_res_tag :
       resolveTy types (tyIdFor types (.int tagW tagS)) =
         some (.int tagW tagS) :=
     mem_resolveTy_tyIdFor_int types tagW tagS
   have h_pf0 :
       Miri.Interpreter.PlaceDynamic.field (refBasePlaceProjectionHooks types) c
-        ⟨.local 0 localId none (LocalsIdentity.ofAllocationToken 0),
+        ⟨.local frameIdx localId none (LocalsIdentity.ofAllocationToken 0),
           refLocalLayoutForTy types ty⟩ 0 st =
-      .ok ⟨.local 0 localId (some Size.ZERO)
+      .ok ⟨.local frameIdx localId (some Size.ZERO)
           (LocalsIdentity.ofAllocationToken 0),
           refLocalLayoutForTy types (.int tagW tagS)⟩ st := by
     dsimp only [Miri.Interpreter.PlaceDynamic.field,
@@ -1234,7 +1224,7 @@ private theorem visit_local_scalar_enum_uninit_ub (types : List MirTy)
     { path := (⟨"", (Array.mk [])⟩ : ValidationPath).push .enumTag,
       flags := ⟨true, false || false⟩, ctfeMode := none,
       refTracking := none, dataBytes := none }
-    ⟨.local 0 localId (some Size.ZERO) (LocalsIdentity.ofAllocationToken 0),
+    ⟨.local frameIdx localId (some Size.ZERO) (LocalsIdentity.ofAllocationToken 0),
       refLocalLayoutForTy types (.int tagW tagS)⟩
     tagW tagS st rfl h_res_tag h_toOp_f0
   refine ⟨msg, ?_⟩
@@ -1448,12 +1438,13 @@ private theorem pair_offset0_uninit (types : List MirTy) (w : IntWidth)
   cases w <;> rfl
 
 private theorem placeToOp_local_offset (types : List MirTy)
-    (c : Choice) (localId : LocalId) (ty fty : MirTy) (off : Size)
+    (c : Choice) (frameIdx : Nat) (localId : LocalId) (ty fty : MirTy) (off : Size)
     (imm res : Immediate Miri.Memory.Provenance)
     (frame : Miri.Interpreter.Frame Miri.Memory.Provenance LocalLayout
       Miri.Interpreter.MachineHooks.FrameExtra)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
-    (h_frames : st.stack.frames = (Array.mk [frame]))
+    (h_curr : st.stack.currentFrame? = some frame)
+    (h_fidx : st.stack.frameIndex = .ok frameIdx)
     (h_dr : frame.extra.dataRace = none)
     (h_get : frame.getLocal localId =
       .ok ⟨.live (.immediate imm), some (refLocalLayoutForTy types ty)⟩)
@@ -1463,15 +1454,9 @@ private theorem placeToOp_local_offset (types : List MirTy)
         off (refLocalLayoutForTy types fty) =
       .ok ⟨.immediate res, refLocalLayoutForTy types fty⟩) :
     Miri.Interpreter.placeToOp (refBasePlaceProjectionHooks types).place c
-        ⟨.local 0 localId (some off) (LocalsIdentity.ofAllocationToken 0),
+        ⟨.local frameIdx localId (some off) (LocalsIdentity.ofAllocationToken 0),
           refLocalLayoutForTy types fty⟩ st =
       .ok ⟨.immediate res, refLocalLayoutForTy types fty⟩ st := by
-  have h_curr : st.stack.currentFrame? = some frame := by
-    dsimp only [Miri.Interpreter.Stack.currentFrame?]
-    rw [h_frames]; rfl
-  have h_fidx : st.stack.frameIndex = .ok 0 := by
-    dsimp only [Miri.Interpreter.Stack.frameIndex]
-    rw [h_frames]; rfl
   have h_op : frame.getLocalOperand localId = .ok (.immediate imm) := by
     dsimp only [Miri.Interpreter.Frame.getLocalOperand]
     rw [h_get]; rfl
@@ -1490,20 +1475,20 @@ private theorem placeToOp_local_offset (types : List MirTy)
     refBaseCompilerHooks_projection,
     h_fidx, h_curr, h_get, h_op, h_sz,
     bne_self_eq_false, Bool.not_true, Bool.false_eq_true, ite_false]
-  rw [afterLocalRead_no_race frame st localId h_frames h_dr]
+  rw [afterLocalRead_no_race frame st localId h_curr h_dr]
   dsimp only [bind, Bind.bind, EStateM.bind, pure, Pure.pure, EStateM.pure]
   rw [h_off]
   rfl
 
 private theorem placeDynamic_field_local_pair0 (types : List MirTy) (c : Choice)
-    (localId : LocalId) (w : IntWidth) (s : Bool)
+    (frameIdx : Nat) (localId : LocalId) (w : IntWidth) (s : Bool)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_res : resolveTy types (tyIdFor types (.tuple [.int w s, .bool])) =
       some (.tuple [.int w s, .bool])) :
     Miri.Interpreter.PlaceDynamic.field (refBasePlaceProjectionHooks types) c
-        ⟨.local 0 localId none (LocalsIdentity.ofAllocationToken 0),
+        ⟨.local frameIdx localId none (LocalsIdentity.ofAllocationToken 0),
           refLocalLayoutForTy types (.tuple [.int w s, .bool])⟩ 0 st =
-      .ok ⟨.local 0 localId (some Size.ZERO)
+      .ok ⟨.local frameIdx localId (some Size.ZERO)
           (LocalsIdentity.ofAllocationToken 0),
           refLocalLayoutForTy types (.int w s)⟩ st := by
   dsimp only [Miri.Interpreter.PlaceDynamic.field,
@@ -1514,14 +1499,14 @@ private theorem placeDynamic_field_local_pair0 (types : List MirTy) (c : Choice)
   cases w <;> rfl
 
 private theorem placeDynamic_field_local_pair1 (types : List MirTy) (c : Choice)
-    (localId : LocalId) (w : IntWidth) (s : Bool)
+    (frameIdx : Nat) (localId : LocalId) (w : IntWidth) (s : Bool)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_res : resolveTy types (tyIdFor types (.tuple [.int w s, .bool])) =
       some (.tuple [.int w s, .bool])) :
     Miri.Interpreter.PlaceDynamic.field (refBasePlaceProjectionHooks types) c
-        ⟨.local 0 localId none (LocalsIdentity.ofAllocationToken 0),
+        ⟨.local frameIdx localId none (LocalsIdentity.ofAllocationToken 0),
           refLocalLayoutForTy types (.tuple [.int w s, .bool])⟩ 1 st =
-      .ok ⟨.local 0 localId (some (toMiriSize w))
+      .ok ⟨.local frameIdx localId (some (toMiriSize w))
           (LocalsIdentity.ofAllocationToken 0),
           refLocalLayoutForTy types .bool⟩ st := by
   dsimp only [Miri.Interpreter.PlaceDynamic.field,
@@ -1550,7 +1535,7 @@ private theorem pair_opsemInhabited (types : List MirTy) (c : Choice)
   rw [refValHooks_opsemInhabited, h_res]
 
 private theorem visit_local_pair_ok (types : List MirTy) (c : Choice)
-    (fuel k : Nat) (h_fuel : fuel = k + 1) (localId : LocalId) (w : IntWidth)
+    (fuel k : Nat) (h_fuel : fuel = k + 1) (frameIdx : Nat) (localId : LocalId) (w : IntWidth)
     (s : Bool)
     (bits : BitVec 128) (b : Bool)
     (frame : Miri.Interpreter.Frame Miri.Memory.Provenance LocalLayout
@@ -1558,7 +1543,8 @@ private theorem visit_local_pair_ok (types : List MirTy) (c : Choice)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_res : resolveTy types (tyIdFor types (.tuple [.int w s, .bool])) =
       some (.tuple [.int w s, .bool]))
-    (h_frames : st.stack.frames = (Array.mk [frame]))
+    (h_curr : st.stack.currentFrame? = some frame)
+    (h_fidx : st.stack.frameIndex = .ok frameIdx)
     (h_dr : frame.extra.dataRace = none)
     (h_get : frame.getLocal localId =
       .ok ⟨.live (.immediate (.scalarPair (.fromScalarInt (miriScalar w bits))
@@ -1571,7 +1557,7 @@ private theorem visit_local_pair_ok (types : List MirTy) (c : Choice)
     }
     Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c (fuel + 1)
         initSess
-        ⟨.local 0 localId none (LocalsIdentity.ofAllocationToken 0),
+        ⟨.local frameIdx localId none (LocalsIdentity.ofAllocationToken 0),
           refLocalLayoutForTy types (.tuple [.int w s, .bool])⟩ st =
       .ok initSess st := by
   have h_ne_box :
@@ -1587,15 +1573,15 @@ private theorem visit_local_pair_ok (types : List MirTy) (c : Choice)
   have h_res_int := mem_resolveTy_tyIdFor_int types w s
   have h_res_bool : resolveTy types (tyIdFor types .bool) = some .bool :=
     resolveTy_tyIdFor_of_aux (h := rfl)
-  have h_pf0 := placeDynamic_field_local_pair0 types c localId w s st h_res
-  have h_pf1 := placeDynamic_field_local_pair1 types c localId w s st h_res
-  have h_toOp_f0 := placeToOp_local_offset types c localId
+  have h_pf0 := placeDynamic_field_local_pair0 types c frameIdx localId w s st h_res
+  have h_pf1 := placeDynamic_field_local_pair1 types c frameIdx localId w s st h_res
+  have h_toOp_f0 := placeToOp_local_offset types c frameIdx localId
     (.tuple [.int w s, .bool]) (.int w s) Size.ZERO _
-    (.scalar (.fromScalarInt (miriScalar w bits))) frame st h_frames h_dr h_get
+    (.scalar (.fromScalarInt (miriScalar w bits))) frame st h_curr h_fidx h_dr h_get
     (pair_offset0 types w s _ _)
-  have h_toOp_f1 := placeToOp_local_offset types c localId
+  have h_toOp_f1 := placeToOp_local_offset types c frameIdx localId
     (.tuple [.int w s, .bool]) .bool (toMiriSize w) _
-    (.scalar (.fromBool b)) frame st h_frames h_dr h_get
+    (.scalar (.fromBool b)) frame st h_curr h_fidx h_dr h_get
     (pair_offset1 types w s _ _)
   dsimp only [Miri.Interpreter.ValidityVisitor.visit,
     bind, Bind.bind, EStateM.bind]
@@ -1630,14 +1616,15 @@ private theorem visit_local_pair_ok (types : List MirTy) (c : Choice)
   rfl
 
 private theorem visit_local_pair_uninit_ub (types : List MirTy) (c : Choice)
-    (fuel k : Nat) (h_fuel : fuel = k + 1) (localId : LocalId) (w : IntWidth)
+    (fuel k : Nat) (h_fuel : fuel = k + 1) (frameIdx : Nat) (localId : LocalId) (w : IntWidth)
     (s : Bool)
     (frame : Miri.Interpreter.Frame Miri.Memory.Provenance LocalLayout
       Miri.Interpreter.MachineHooks.FrameExtra)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
     (h_res : resolveTy types (tyIdFor types (.tuple [.int w s, .bool])) =
       some (.tuple [.int w s, .bool]))
-    (h_frames : st.stack.frames = (Array.mk [frame]))
+    (h_curr : st.stack.currentFrame? = some frame)
+    (h_fidx : st.stack.frameIndex = .ok frameIdx)
     (h_dr : frame.extra.dataRace = none)
     (h_get : frame.getLocal localId =
       .ok ⟨.live (.immediate .uninit),
@@ -1650,7 +1637,7 @@ private theorem visit_local_pair_uninit_ub (types : List MirTy) (c : Choice)
     ∃ msg,
       Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c (fuel + 1)
           initSess
-          ⟨.local 0 localId none (LocalsIdentity.ofAllocationToken 0),
+          ⟨.local frameIdx localId none (LocalsIdentity.ofAllocationToken 0),
             refLocalLayoutForTy types (.tuple [.int w s, .bool])⟩ st =
         .error (.undefinedBehavior msg) st := by
   have h_ne_box :
@@ -1661,15 +1648,15 @@ private theorem visit_local_pair_uninit_ub (types : List MirTy) (c : Choice)
       (refLocalLayoutForTy types (.tuple [.int w s, .bool])).layout.fields =
       .Arbitrary (Array.mk [Size.ZERO, toMiriSize w]) (Array.mk [0, 1]) := rfl
   have h_res_int := mem_resolveTy_tyIdFor_int types w s
-  have h_pf0 := placeDynamic_field_local_pair0 types c localId w s st h_res
-  have h_toOp_f0 := placeToOp_local_offset types c localId
+  have h_pf0 := placeDynamic_field_local_pair0 types c frameIdx localId w s st h_res
+  have h_toOp_f0 := placeToOp_local_offset types c frameIdx localId
     (.tuple [.int w s, .bool]) (.int w s) Size.ZERO _ .uninit frame st
-    h_frames h_dr h_get (pair_offset0_uninit types w s)
+    h_curr h_fidx h_dr h_get (pair_offset0_uninit types w s)
   let ⟨msg, h_vis_f0⟩ := visit_local_int_uninit_ub types c k
     { path := (⟨"", (Array.mk [])⟩ : ValidationPath).push .enumTag,
       flags := ⟨true, false || false⟩, ctfeMode := none,
       refTracking := none, dataBytes := none }
-    ⟨.local 0 localId (some Size.ZERO) (LocalsIdentity.ofAllocationToken 0),
+    ⟨.local frameIdx localId (some Size.ZERO) (LocalsIdentity.ofAllocationToken 0),
       refLocalLayoutForTy types (.int w s)⟩
     w s st rfl h_res_int h_toOp_f0
   refine ⟨msg, ?_⟩
@@ -1759,7 +1746,8 @@ theorem valToMiriImmediate_scalar_enumLike {ty : MirTy} {ety : EnumTy}
   | _ => cases h_as
 
 private theorem visit_local_enumLike_ok (types : List MirTy) (c : Choice)
-    (localId : LocalId) (ty : MirTy) (ety : EnumTy) (v : Val) (variant : Nat)
+    (frameIdx : Nat) (localId : LocalId) (ty : MirTy) (ety : EnumTy) (v : Val)
+    (variant : Nat)
     (frame : Miri.Interpreter.Frame Miri.Memory.Provenance LocalLayout
       Miri.Interpreter.MachineHooks.FrameExtra)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
@@ -1767,7 +1755,8 @@ private theorem visit_local_enumLike_ok (types : List MirTy) (c : Choice)
     (h_adm : enumAdmitted ety = true)
     (h_ev : refEnumVariantOfVal? ty v = some variant)
     (h_v_lt : variant < ety.discriminants.length)
-    (h_frames : st.stack.frames = (Array.mk [frame]))
+    (h_curr : st.stack.currentFrame? = some frame)
+    (h_fidx : st.stack.frameIndex = .ok frameIdx)
     (h_dr : frame.extra.dataRace = none)
     (h_pmd : st.machine.pendingMoveDeinit = false)
     (h_get : frame.getLocal localId =
@@ -1779,7 +1768,7 @@ private theorem visit_local_enumLike_ok (types : List MirTy) (c : Choice)
       refTracking := none, dataBytes := none
     }
     Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c 8 initSess
-        ⟨.local 0 localId none (LocalsIdentity.ofAllocationToken 0),
+        ⟨.local frameIdx localId none (LocalsIdentity.ofAllocationToken 0),
           refLocalLayoutForTy types ty⟩ st = .ok initSess st := by
   cases h_tr : ety.tagRepr with
   | zeroSized =>
@@ -1792,18 +1781,19 @@ private theorem visit_local_enumLike_ok (types : List MirTy) (c : Choice)
   | scalar tagW tagS =>
     let ⟨disc, h_get_d⟩ := mirGetElem?_some_of_lt h_v_lt
     rw [valToMiriImmediate_scalar_enumLike h_el.1 h_ev h_tr h_get_d] at h_get
-    exact visit_local_scalar_enum_ok types c 7 6 rfl localId ty ety tagW tagS
-      variant disc frame st h_tr h_adm h_el h_get_d h_frames h_dr h_pmd h_get
+    exact visit_local_scalar_enum_ok types c 7 6 rfl frameIdx localId ty ety tagW tagS
+      variant disc frame st h_tr h_adm h_el h_get_d h_curr h_fidx h_dr h_pmd h_get
 
 /-- `ValidityVisitor.validatePlace` on an initialized Day-1 `.local` holding
 `valToMiriImmediate ty v` with `checkVal v ty = true` succeeds without
 mutating state. -/
 theorem validatePlace_local_ok (types : List MirTy) (c : Choice)
-    (localId : LocalId) (ty : MirTy) (v : Val)
+    (frameIdx : Nat) (localId : LocalId) (ty : MirTy) (v : Val)
     (frame : Miri.Interpreter.Frame Miri.Memory.Provenance LocalLayout
       Miri.Interpreter.MachineHooks.FrameExtra)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
-    (h_frames : st.stack.frames = (Array.mk [frame]))
+    (h_curr : st.stack.currentFrame? = some frame)
+    (h_fidx : st.stack.frameIndex = .ok frameIdx)
     (h_dr : frame.extra.dataRace = none)
     (h_pmd : st.machine.pendingMoveDeinit = false)
     (h_get : frame.getLocal localId =
@@ -1815,11 +1805,11 @@ theorem validatePlace_local_ok (types : List MirTy) (c : Choice)
         (Miri.Interpreter.TypedMachineBindings.bindValidity
           (refValidityHooks types) refRetagHooks 8)
         c 8
-        ⟨.local 0 localId none (LocalsIdentity.ofAllocationToken 0),
+        ⟨.local frameIdx localId none (LocalsIdentity.ofAllocationToken 0),
           refLocalLayoutForTy types ty⟩
         false true st = .ok () st := by
-  have h_toOp := placeToOp_local_immediate types c localId ty
-    (valToMiriImmediate ty v) frame st h_frames h_dr h_get
+  have h_toOp := placeToOp_local_immediate types c frameIdx localId ty
+    (valToMiriImmediate ty v) frame st h_curr h_fidx h_dr h_get
   refine validatePlace_shallow_local_step types c _ _ st h_toOp ?_
   cases checkVal_eq_true_inv h_cv with
   | inl h_i =>
@@ -1849,9 +1839,9 @@ theorem validatePlace_local_ok (types : List MirTy) (c : Choice)
   | inl h_e =>
     let ⟨ety, variant, hty, hv, h_adm, h_v_lt⟩ := h_e
     subst hty hv
-    exact visit_local_enumLike_ok types c localId (.enum ety) ety
+    exact visit_local_enumLike_ok types c frameIdx localId (.enum ety) ety
       (.enumVal ety variant) variant frame st ⟨rfl, h_res⟩ h_adm rfl h_v_lt
-      h_frames h_dr h_pmd h_get
+      h_curr h_fidx h_dr h_pmd h_get
   | inr h_rest =>
   cases h_rest with
   | inl h_c =>
@@ -1863,25 +1853,26 @@ theorem validatePlace_local_ok (types : List MirTy) (c : Choice)
   | inl h_o =>
     let ⟨o, hty, hv⟩ := h_o
     subst hty hv
-    exact visit_local_enumLike_ok types c localId .ordering refOrderingEnumTy
+    exact visit_local_enumLike_ok types c frameIdx localId .ordering refOrderingEnumTy
       (.ordering o) (orderingVariantIdx o) frame st ⟨rfl, h_res⟩
       mem_refOrderingEnumTy_admitted (orderingVariant_enumVariantOfVal o)
       (mirGetElem?_lt_of_some (orderingVariant_getElem? o))
-      h_frames h_dr h_pmd h_get
+      h_curr h_fidx h_dr h_pmd h_get
   | inr h_p =>
     let ⟨w, s, bits, b, hty, hv, _⟩ := h_p
     subst hty hv
-    exact visit_local_pair_ok types c 7 6 rfl localId w s bits b frame st h_res
-      h_frames h_dr h_get
+    exact visit_local_pair_ok types c 7 6 rfl frameIdx localId w s bits b frame st h_res
+      h_curr h_fidx h_dr h_get
 
 /-- `ValidityVisitor.validatePlace` on an uninitialized non-ZST Day-1 `.local`
 fails with `.undefinedBehavior`. -/
 theorem validatePlace_local_uninit_ub (types : List MirTy) (c : Choice)
-    (localId : LocalId) (ty : MirTy)
+    (frameIdx : Nat) (localId : LocalId) (ty : MirTy)
     (frame : Miri.Interpreter.Frame Miri.Memory.Provenance LocalLayout
       Miri.Interpreter.MachineHooks.FrameExtra)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
-    (h_frames : st.stack.frames = (Array.mk [frame]))
+    (h_curr : st.stack.currentFrame? = some frame)
+    (h_fidx : st.stack.frameIndex = .ok frameIdx)
     (h_dr : frame.extra.dataRace = none)
     (h_get : frame.getLocal localId =
       .ok ⟨.live (.immediate .uninit), some (refLocalLayoutForTy types ty)⟩)
@@ -1893,11 +1884,11 @@ theorem validatePlace_local_uninit_ub (types : List MirTy) (c : Choice)
           (Miri.Interpreter.TypedMachineBindings.bindValidity
             (refValidityHooks types) refRetagHooks 8)
           c 8
-          ⟨.local 0 localId none (LocalsIdentity.ofAllocationToken 0),
+          ⟨.local frameIdx localId none (LocalsIdentity.ofAllocationToken 0),
             refLocalLayoutForTy types ty⟩
           false true st = .error (.undefinedBehavior msg) st' := by
-  have h_toOp := placeToOp_local_immediate types c localId ty .uninit frame st
-    h_frames h_dr h_get
+  have h_toOp := placeToOp_local_immediate types c frameIdx localId ty .uninit frame st
+    h_curr h_fidx h_dr h_get
   let initSess : Miri.Interpreter.ValidityVisitor.Session Miri.Memory.Provenance := {
     path := ⟨"", (Array.mk [])⟩, flags := ⟨true, false⟩, ctfeMode := none,
     refTracking := none, dataBytes := none
@@ -1906,32 +1897,32 @@ theorem validatePlace_local_uninit_ub (types : List MirTy) (c : Choice)
   | unit => exact False.elim (h_sm.1 rfl)
   | never =>
     let ⟨msg, h_vis⟩ := visit_local_never_ub types c 7 initSess
-      ⟨.local 0 localId none (LocalsIdentity.ofAllocationToken 0),
+      ⟨.local frameIdx localId none (LocalsIdentity.ofAllocationToken 0),
         refLocalLayoutForTy types .never⟩ st rfl h_res
     exact ⟨msg, st,
       validatePlace_shallow_local_ub_step types c _ _ st st msg h_toOp h_vis⟩
   | bool =>
     let ⟨msg, h_vis⟩ := visit_local_bool_uninit_ub types c 7 initSess
-      ⟨.local 0 localId none (LocalsIdentity.ofAllocationToken 0),
+      ⟨.local frameIdx localId none (LocalsIdentity.ofAllocationToken 0),
         refLocalLayoutForTy types .bool⟩ st rfl h_res h_toOp
     exact ⟨msg, st,
       validatePlace_shallow_local_ub_step types c _ _ st st msg h_toOp h_vis⟩
   | int w s =>
     let ⟨msg, h_vis⟩ := visit_local_int_uninit_ub types c 7 initSess
-      ⟨.local 0 localId none (LocalsIdentity.ofAllocationToken 0),
+      ⟨.local frameIdx localId none (LocalsIdentity.ofAllocationToken 0),
         refLocalLayoutForTy types (.int w s)⟩ w s st rfl h_res h_toOp
     exact ⟨msg, st,
       validatePlace_shallow_local_ub_step types c _ _ st st msg h_toOp h_vis⟩
   | char =>
     let ⟨msg, h_vis⟩ := visit_local_char_uninit_ub types c 7 initSess
-      ⟨.local 0 localId none (LocalsIdentity.ofAllocationToken 0),
+      ⟨.local frameIdx localId none (LocalsIdentity.ofAllocationToken 0),
         refLocalLayoutForTy types .char⟩ st rfl h_res h_toOp
     exact ⟨msg, st,
       validatePlace_shallow_local_ub_step types c _ _ st st msg h_toOp h_vis⟩
   | ordering =>
     let ⟨msg, h_vis⟩ := visit_local_scalar_enum_uninit_ub types c 7 6 rfl
-      localId .ordering refOrderingEnumTy .i8 true frame st rfl ⟨rfl, h_res⟩
-      h_frames h_dr h_get
+      frameIdx localId .ordering refOrderingEnumTy .i8 true frame st rfl ⟨rfl, h_res⟩
+      h_curr h_fidx h_dr h_get
     exact ⟨msg, st,
       validatePlace_shallow_local_ub_step types c _ _ st st msg h_toOp h_vis⟩
   | enum ety =>
@@ -1944,17 +1935,17 @@ theorem validatePlace_local_uninit_ub (types : List MirTy) (c : Choice)
       rw [h_supp] at h_zst
       cases h_zst
     | scalar tagW tagS =>
-      let ⟨msg, h_vis⟩ := visit_local_scalar_enum_uninit_ub types c 7 6 rfl localId
+      let ⟨msg, h_vis⟩ := visit_local_scalar_enum_uninit_ub types c 7 6 rfl frameIdx localId
         (.enum ety) ety tagW tagS frame st h_tr ⟨rfl, h_res⟩
-        h_frames h_dr h_get
+        h_curr h_fidx h_dr h_get
       exact ⟨msg, st,
         validatePlace_shallow_local_ub_step types c _ _ st st msg h_toOp h_vis⟩
   | tuple fs =>
     let ⟨w, s, h_fs⟩ := isOverflowPairTy_inv h_supp
     subst h_fs
-    let ⟨msg, h_vis⟩ := visit_local_pair_uninit_ub types c 7 6 rfl localId w s
+    let ⟨msg, h_vis⟩ := visit_local_pair_uninit_ub types c 7 6 rfl frameIdx localId w s
       frame st
-      h_res h_frames h_dr h_get
+      h_res h_curr h_fidx h_dr h_get
     exact ⟨msg, st,
       validatePlace_shallow_local_ub_step types c _ _ st st msg h_toOp h_vis⟩
   | ref _ _ | rawPtr _ _ | slice _ | rangeTo _ | rangeFrom _

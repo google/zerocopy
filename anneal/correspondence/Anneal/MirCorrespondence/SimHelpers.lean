@@ -643,6 +643,139 @@ theorem setElem?_liftLocals_none (types : List MirTy)
           dsimp only [liftLocals, MirSemantics.setElem?]
           rw [ih h_ss]
 
+theorem liftLocalsCached_length (types : List MirTy) {bodyLocals : List MirTy}
+    {slots : List LocalSlot} {cache : List Bool}
+    (h_slots : slots.length = bodyLocals.length)
+    (h_cache : cache.length = bodyLocals.length) :
+    (liftLocalsCached types bodyLocals slots cache).length =
+      bodyLocals.length := by
+  induction bodyLocals generalizing slots cache with
+  | nil => rfl
+  | cons _ _ ih =>
+    cases slots with
+    | nil => cases h_slots
+    | cons _ _ =>
+      cases cache with
+      | nil => cases h_cache
+      | cons _ _ =>
+        simp only [List.length_cons, Nat.add_right_cancel_iff] at h_slots h_cache
+        dsimp only [liftLocalsCached]
+        rw [List.length_cons, List.length_cons, ih h_slots h_cache]
+
+theorem getElem?_liftLocalsCached_some (types : List MirTy)
+    {bodyLocals : List MirTy} {slots : List LocalSlot} {cache : List Bool}
+    {i : Nat} {ty : MirTy} {slot : LocalSlot} {b : Bool}
+    (h_ty : MirSemantics.getElem? bodyLocals i = some ty)
+    (h_slot : MirSemantics.getElem? slots i = some slot)
+    (h_b : MirSemantics.getElem? cache i = some b) :
+    MirSemantics.getElem? (liftLocalsCached types bodyLocals slots cache) i =
+      some (refLocalStateOfSlotWithCache types ty slot b) := by
+  induction bodyLocals generalizing slots cache i with
+  | nil => cases h_ty
+  | cons t ts ih =>
+    cases slots with
+    | nil => cases h_slot
+    | cons s ss =>
+      cases cache with
+      | nil => cases h_b
+      | cons c cs =>
+        cases i with
+        | zero =>
+          injection h_ty with h_t
+          injection h_slot with h_s
+          injection h_b with h_c
+          subst h_t; subst h_s; subst h_c
+          rfl
+        | succ j => exact ih h_ty h_slot h_b
+
+theorem setElem?_liftLocalsCached_some (types : List MirTy)
+    {bodyLocals : List MirTy} {slots slots' : List LocalSlot}
+    {cache cache' : List Bool} {i : Nat} {ty : MirTy}
+    {slot' : LocalSlot} {b' : Bool}
+    (h_ty : MirSemantics.getElem? bodyLocals i = some ty)
+    (h_set : MirSemantics.setElem? slots i slot' = some slots')
+    (h_setc : MirSemantics.setElem? cache i b' = some cache') :
+    MirSemantics.setElem? (liftLocalsCached types bodyLocals slots cache) i
+        (refLocalStateOfSlotWithCache types ty slot' b') =
+      some (liftLocalsCached types bodyLocals slots' cache') := by
+  induction bodyLocals generalizing slots slots' cache cache' i with
+  | nil => cases h_ty
+  | cons _ _ ih =>
+    cases slots with
+    | nil => cases h_set
+    | cons _ _ =>
+      cases cache with
+      | nil => cases h_setc
+      | cons _ _ =>
+        cases i with
+        | zero =>
+          injection h_ty with h_t
+          injection h_set with h_s
+          injection h_setc with h_c
+          subst h_t; subst h_s; subst h_c
+          rfl
+        | succ j =>
+          dsimp only [MirSemantics.setElem?] at h_set h_setc
+          cases h_ss : MirSemantics.setElem? _ j slot' with
+          | none => rw [h_ss] at h_set; cases h_set
+          | some ss' =>
+            cases h_sc : MirSemantics.setElem? _ j b' with
+            | none => rw [h_sc] at h_setc; cases h_setc
+            | some cc' =>
+              rw [h_ss] at h_set
+              rw [h_sc] at h_setc
+              injection h_set with h_s
+              injection h_setc with h_c
+              subst h_s; subst h_c
+              dsimp only [liftLocalsCached, MirSemantics.setElem?]
+              rw [ih h_ty h_ss h_sc]
+
+theorem liftLocalsCached_map_isSome (types : List MirTy)
+    {bodyLocals : List MirTy} {slots : List LocalSlot} {cache : List Bool}
+    (h_slots : slots.length = bodyLocals.length)
+    (h_cache : cache.length = bodyLocals.length) :
+    (liftLocalsCached types bodyLocals slots cache).map
+        (fun l => l.layout.isSome) = cache := by
+  induction bodyLocals generalizing slots cache with
+  | nil =>
+    cases cache with
+    | nil => rfl
+    | cons _ _ => cases h_cache
+  | cons _ _ ih =>
+    cases slots with
+    | nil => cases h_slots
+    | cons _ _ =>
+      cases cache with
+      | nil => cases h_cache
+      | cons c cs =>
+        simp only [List.length_cons, Nat.add_right_cancel_iff] at h_slots h_cache
+        dsimp only [liftLocalsCached, List.map, refLocalStateOfSlotWithCache]
+        cases c with
+        | false =>
+          rw [Anneal.MirWp.ite_bool_false rfl]
+          exact congrArg (false :: ·) (ih h_slots h_cache)
+        | true =>
+          rw [Anneal.MirWp.ite_bool_true rfl]
+          exact congrArg (true :: ·) (ih h_slots h_cache)
+
+theorem liftLocalsCached_replicate_true (types : List MirTy)
+    {bodyLocals : List MirTy} {slots : List LocalSlot}
+    (h_slots : slots.length = bodyLocals.length) :
+    liftLocalsCached types bodyLocals slots
+        (List.replicate bodyLocals.length true) =
+      liftLocals types bodyLocals slots := by
+  induction bodyLocals generalizing slots with
+  | nil => rfl
+  | cons _ _ ih =>
+    cases slots with
+    | nil => cases h_slots
+    | cons _ _ =>
+      simp only [List.length_cons, Nat.add_right_cancel_iff] at h_slots
+      rw [List.length_cons, List.replicate_succ]
+      dsimp only [liftLocalsCached, liftLocals,
+        refLocalStateOfSlotWithCache, refLocalStateOfSlot]
+      rw [Anneal.MirWp.ite_bool_true rfl, ih h_slots]
+
 /-! ## Preservation of `SlotsMatchTys` Across `evalStatement` / `evalRvalue` -/
 
 theorem evalConstLit_checkVal {ty : MirTy} {lit : ConstLit} {v : Val}
@@ -824,6 +957,20 @@ theorem SlotsMatchTys.not_partialTuple {tys : List MirTy}
     (h_sl : MirSemantics.getElem? slots i = some (.partialTuple fields)) :
     False :=
   SlotsMatchTys.getElem? h h_ty h_sl
+/-- Well-typed frame locals hold no `.indirect` slot. -/
+theorem SlotsMatchTys.localsHaveIndirect_false {tys : List MirTy}
+    {slots : List LocalSlot} (h : SlotsMatchTys tys slots) :
+    localsHaveIndirect slots = false := by
+  induction h with
+  | nil => rfl
+  | @cons _ _ slot _ h_hd _ ih =>
+    unfold localsHaveIndirect at ih
+    unfold localsHaveIndirect
+    cases slot with
+    | indirect _ => exact False.elim h_hd
+    | dead => exact ih
+    | immediate _ => exact ih
+    | partialTuple _ => exact ih
 
 theorem evalOperandToSlot_slotsMatchTys {bodyLocals : List MirTy}
     {locals locals' : List LocalSlot} {mem mem' : MemoryState} {op : Operand}
@@ -1205,43 +1352,185 @@ theorem decodePlace_inv {ts : List MirTy} {rp : RefPlace} {p : Place}
 
 /-! ## Right-Injectivity of `SimulationInv` -/
 
+theorem slotsMatchTys_length {tys : List MirTy} {slots : List LocalSlot}
+    (h : SlotsMatchTys tys slots) : slots.length = tys.length := by
+  induction h with
+  | nil => rfl
+  | cons _ _ ih => simp only [List.length_cons, ih]
+
+private theorem topRel_eq_of_mkRefMiriStackState_threads
+    {f₁ f₂ : Array (Miri.Interpreter.Frame Miri.Memory.Provenance
+      Miri.Interpreter.LocalLayout Miri.Interpreter.MachineHooks.FrameExtra)}
+    {t₁ t₂ : Option Nat}
+    {m₁ m₂ : Miri.Memory.MemoryState Miri.Memory.Provenance
+      Miri.TreeBorrows.BorrowTree Unit}
+    {c₁ c₂ : Miri.Interpreter.TerminatorMachine.Control Unit}
+    {cm₁ cm₂ : CallerMemory}
+    (h : (mkRefMiriStackState f₁ t₁ m₁ c₁ cm₁).machine.threads =
+      (mkRefMiriStackState f₂ t₂ m₂ c₂ cm₂).machine.threads) :
+    t₁ = t₂ := by
+  have h_act := congrArg (fun (tm : Miri.Concurrency.ThreadManager) =>
+    Miri.Concurrency.ThreadManager.activeThread? tm) h
+  dsimp only [mkRefMiriStackState] at h_act
+  have h_sub : (Miri.Concurrency.ThreadManager.activeThread? {
+      Miri.Concurrency.ThreadManager.initial true with
+      threads := (Miri.Concurrency.ThreadManager.initial true).threads.mapIdx
+        fun index thread =>
+          if index == (Miri.Concurrency.ThreadManager.initial true).activeThread.toNat then
+            { thread with topUserRelevantFrame := t₁ }
+          else thread
+    }).map (·.topUserRelevantFrame) = some t₁ := by
+    rfl
+  have h_sub₂ : (Miri.Concurrency.ThreadManager.activeThread? {
+      Miri.Concurrency.ThreadManager.initial true with
+      threads := (Miri.Concurrency.ThreadManager.initial true).threads.mapIdx
+        fun index thread =>
+          if index == (Miri.Concurrency.ThreadManager.initial true).activeThread.toNat then
+            { thread with topUserRelevantFrame := t₂ }
+          else thread
+    }).map (·.topUserRelevantFrame) = some t₂ := by
+    rfl
+  have h_map := congrArg (Option.map (fun th => th.topUserRelevantFrame)) h_act
+  rw [h_sub, h_sub₂] at h_map
+  exact Option.some.inj h_map
+
+private theorem frameSimInv_unique {rp : RefProg} {p : Program} {f : FrameState}
+    {retPlace : Miri.Interpreter.MPlaceTy Miri.Memory.Provenance}
+    {rf₁ rf₂ : Miri.Interpreter.Frame Miri.Memory.Provenance
+      Miri.Interpreter.LocalLayout Miri.Interpreter.MachineHooks.FrameExtra}
+    (h₁ : FrameSimInv rp p f retPlace rf₁)
+    (h₂ : FrameSimInv rp p f retPlace rf₂)
+    (h_lay : rf₁.locals.map (fun l => l.layout.isSome) =
+      rf₂.locals.map (fun l => l.layout.isSome)) :
+    rf₁ = rf₂ := by
+  let ⟨body₁, rbody₁, c₁, hb₁, hrb₁, _, _, _, _, _, _, _, _, hsm₁, _, hc₁_rep, hrf₁⟩ := h₁
+  let ⟨body₂, rbody₂, c₂, hb₂, hrb₂, _, _, _, _, _, _, _, _, hsm₂, _, hc₂_rep, hrf₂⟩ := h₂
+  have hc₁ : c₁.length = body₁.locals.length := by rw [hc₁_rep, List.length_replicate]
+  have hc₂ : c₂.length = body₂.locals.length := by rw [hc₂_rep, List.length_replicate]
+  rw [hb₁] at hb₂; injection hb₂ with hb_eq; subst hb_eq
+  rw [hrb₁] at hrb₂; injection hrb₂ with hrb_eq; subst hrb_eq
+  rw [hrf₁, hrf₂] at h_lay
+  have h_list_lay := congrArg Array.toList h_lay
+  rw [Array.toList_map, Array.toList_map] at h_list_lay
+  dsimp only [mkRefMiriFrame] at h_list_lay
+  change (liftLocalsCached rp.types body₁.locals f.locals c₁).map
+      (fun l => l.layout.isSome) =
+    (liftLocalsCached rp.types body₁.locals f.locals c₂).map
+      (fun l => l.layout.isSome) at h_list_lay
+  rw [liftLocalsCached_map_isSome rp.types (slotsMatchTys_length hsm₁) hc₁,
+    liftLocalsCached_map_isSome rp.types (slotsMatchTys_length hsm₂) hc₂] at h_list_lay
+  subst h_list_lay
+  rw [hrf₁, hrf₂]
+
+private theorem callFrameSimInv_unique {rp : RefProg} {p : Program}
+    {f : FrameState} {callerIdx : Nat} {dstLocalId : LocalId} {dstTy : MirTy}
+    {rf₁ rf₂ : Miri.Interpreter.Frame Miri.Memory.Provenance
+      Miri.Interpreter.LocalLayout Miri.Interpreter.MachineHooks.FrameExtra}
+    (h₁ : CallFrameSimInv rp p f callerIdx dstLocalId dstTy rf₁)
+    (h₂ : CallFrameSimInv rp p f callerIdx dstLocalId dstTy rf₂)
+    (h_lay : rf₁.locals.map (fun l => l.layout.isSome) =
+      rf₂.locals.map (fun l => l.layout.isSome)) :
+    rf₁ = rf₂ := by
+  let ⟨body₁, rbody₁, c₁, fnTag₁, hb₁, hrb₁, _, hft₁, _, _, _, _, _, _, _, _, _, _,
+    hsm₁, _, hc₁, hrf₁⟩ := h₁
+  let ⟨body₂, rbody₂, c₂, fnTag₂, hb₂, hrb₂, _, hft₂, _, _, _, _, _, _, _, _, _, _,
+    hsm₂, _, hc₂, hrf₂⟩ := h₂
+  rw [hb₁] at hb₂; injection hb₂ with hb_eq; subst hb_eq
+  rw [hrb₁] at hrb₂; injection hrb₂ with hrb_eq; subst hrb_eq
+  have hft_eq : fnTag₁ = fnTag₂ := hft₁.trans hft₂.symm
+  subst hft_eq
+  rw [hrf₁, hrf₂] at h_lay
+  have h_list_lay := congrArg Array.toList h_lay
+  rw [Array.toList_map, Array.toList_map] at h_list_lay
+  dsimp only [mkRefMiriCallFrame] at h_list_lay
+  change (liftLocalsCached rp.types body₁.locals f.locals c₁).map
+      (fun l => l.layout.isSome) =
+    (liftLocalsCached rp.types body₁.locals f.locals c₂).map
+      (fun l => l.layout.isSome) at h_list_lay
+  rw [liftLocalsCached_map_isSome rp.types (slotsMatchTys_length hsm₁) hc₁,
+    liftLocalsCached_map_isSome rp.types (slotsMatchTys_length hsm₂) hc₂] at h_list_lay
+  subst h_list_lay
+  rw [hrf₁, hrf₂]
+
+private theorem framesSimInv_unique {rp : RefProg} {p : Program}
+    {retPlace : Miri.Interpreter.MPlaceTy Miri.Memory.Provenance}
+    {fs : List FrameState}
+    {rfs₁ rfs₂ : List (Miri.Interpreter.Frame Miri.Memory.Provenance
+      Miri.Interpreter.LocalLayout Miri.Interpreter.MachineHooks.FrameExtra)}
+    (h₁ : FramesSimInv rp p retPlace fs rfs₁)
+    (h₂ : FramesSimInv rp p retPlace fs rfs₂)
+    (h_lay : rfs₁.map (fun fr => fr.locals.map (fun l => l.layout.isSome)) =
+      rfs₂.map (fun fr => fr.locals.map (fun l => l.layout.isSome))) :
+    rfs₁ = rfs₂ := by
+  induction h₁ generalizing rfs₂ with
+  | root _ _ _ _ hf₁ =>
+    cases h₂ with
+    | root _ _ _ _ hf₂ =>
+      dsimp only [List.map] at h_lay
+      injection h_lay with h_l _
+      exact congrArg (fun r => [r]) (frameSimInv_unique hf₁ hf₂ h_l)
+  | push hp₁ hcb₁ _ hdst₁ _ hdty₁ _ _ _ _ _ hcf₁ ih =>
+    cases h₂ with
+    | push hp₂ hcb₂ _ hdst₂ _ hdty₂ _ _ _ _ _ hcf₂ =>
+      dsimp only [List.map] at h_lay
+      injection h_lay with h_top_lay h_rest_lay
+      have h_rest_eq := ih hp₂ h_rest_lay
+      rw [hcb₁] at hcb₂; injection hcb₂ with h_cb_eq; subst h_cb_eq
+      rw [hdst₁] at hdst₂; injection hdst₂ with h_d_eq; subst h_d_eq
+      rw [hdty₁] at hdty₂; injection hdty₂ with h_dt_eq; subst h_dt_eq
+      have h_top_eq := callFrameSimInv_unique hcf₁ hcf₂ h_top_lay
+      rw [h_top_eq, h_rest_eq]
+
 /-- One-to-one uniqueness of `SimulationInv` (right-injective at fixed step
-counters and terminator control): any $M_{\text{anneal}}$ `State` `s` together
-with `(stepsExecuted, maxSteps, control)` uniquely determines `rs`. -/
+counters, terminator control, thread state, and local layout cache bits): any
+$M_{\text{anneal}}$ `State` `s` together with those observations uniquely
+determines `rs`. -/
 theorem refState_unique_of_simulationInv_base :
     RefStateUniqueOfSimulationInvClaim := by
-  intro rp p s rs₁ rs₂ h₁ h₂ h_steps h_max h_ctrl
-  let ⟨f₁, rf₁, retTy₁, mem₁, ctrl₁, _, hs₁, _, _, hret₁, hrt₁, hinit₁, _,
+  intro rp p s rs₁ rs₂ h₁ h₂ h_steps h_max h_ctrl h_threads h_layouts
+  let ⟨rf₁, retTy₁, mem₁, ctrl₁, topRel₁?, _, _, _, heret₁, hret₁, hinit₁, _, _,
     hmiri₁, hframe₁⟩ := h₁
-  let ⟨f₂, rf₂, retTy₂, mem₂, ctrl₂, _, hs₂, _, _, hret₂, hrt₂, hinit₂, _,
+  let ⟨rf₂, retTy₂, mem₂, ctrl₂, topRel₂?, _, _, _, heret₂, hret₂, hinit₂, _, _,
     hmiri₂, hframe₂⟩ := h₂
-  rw [hs₁] at hs₂
-  injection hs₂ with h_f_eq
-  subst h_f_eq
-  rw [hret₁] at hret₂
-  injection hret₂ with h_ret_eq
-  subst h_ret_eq
+  rw [heret₁] at heret₂
+  injection heret₂ with h_rty_eq
+  subst h_rty_eq
+  have h_rty : rs₁.retTy = rs₂.retTy := hret₁.trans hret₂.symm
   rw [hinit₁] at hinit₂
   injection hinit₂ with h_pair
   injection h_pair with h_mem_eq h_rp_eq
   subst h_mem_eq
-  let ⟨body₁, rbody₁, hb₁, hrb₁, _, _, _, _, _, _, _, _, hrf₁⟩ := hframe₁
-  let ⟨body₂, rbody₂, hb₂, hrb₂, _, _, _, _, _, _, _, _, hrf₂⟩ := hframe₂
-  rw [hb₁] at hb₂
-  injection hb₂ with h_b_eq
-  subst h_b_eq
-  rw [hrb₁] at hrb₂
-  injection hrb₂ with h_rb_eq
-  subst h_rb_eq
   have h_ctrl_eq : ctrl₁ = ctrl₂ := by
     rw [hmiri₁, hmiri₂] at h_ctrl
+    dsimp only [mkRefMiriStackState] at h_ctrl
     exact h_ctrl
   subst h_ctrl_eq
+  have h_top_eq : topRel₁? = topRel₂? := by
+    rw [hmiri₁, hmiri₂] at h_threads
+    exact topRel_eq_of_mkRefMiriStackState_threads h_threads
+  subst h_top_eq
+  have h_rev_lay : rf₁.toList.reverse.map
+      (fun fr => fr.locals.map (fun l => l.layout.isSome)) =
+    rf₂.toList.reverse.map
+      (fun fr => fr.locals.map (fun l => l.layout.isSome)) := by
+    rw [hmiri₁, hmiri₂] at h_layouts
+    dsimp only [mkRefMiriStackState] at h_layouts
+    have h_l_arr := congrArg Array.toList h_layouts
+    rw [Array.toList_map, Array.toList_map] at h_l_arr
+    rw [List.map_reverse, List.map_reverse, h_l_arr]
+  have h_rev_eq := framesSimInv_unique hframe₁
+    (by rw [h_rp_eq]; exact hframe₂) h_rev_lay
+  have h_list_eq : rf₁.toList = rf₂.toList := by
+    have h_rev := congrArg List.reverse h_rev_eq
+    rw [List.reverse_reverse, List.reverse_reverse] at h_rev
+    exact h_rev
   have h_rf_eq : rf₁ = rf₂ := by
-    rw [hrf₁, hrf₂, h_rp_eq]
+    cases rf₁; cases rf₂
+    dsimp only at h_list_eq
+    exact congrArg Array.mk h_list_eq
   subst h_rf_eq
   cases rs₁; cases rs₂
-  dsimp only at hrt₁ hrt₂ h_rp_eq hmiri₁ hmiri₂ h_steps h_max
-  rw [hrt₁, hrt₂, h_rp_eq, hmiri₁, hmiri₂, h_steps, h_max]
+  dsimp only at h_rty h_rp_eq hmiri₁ hmiri₂ h_steps h_max
+  rw [h_rty, h_rp_eq, hmiri₁, hmiri₂, h_steps, h_max]
 
 end Anneal.MirCorrespondence

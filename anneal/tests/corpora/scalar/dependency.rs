@@ -11,5 +11,5 @@ pub fn zero() -> u64 {
 }
 
 fn helper() -> u64 {
-    0
+    0u64.saturating_add(0)
 }

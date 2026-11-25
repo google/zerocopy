@@ -710,7 +710,10 @@ theorem evalStep_bodyProg_block_term {body : Body} {bt : BlockTree BasicBlock}
     (hValid : ValidBlockTree body.basicBlocks bt)
     (hBlk : bt.lookup blockIdx = some bb)
     (hNone : compGetElem? bb.statements stmtIdx = none)
-    (hLen : stmtIdx = bb.statements.length) :
+    (hLen : stmtIdx = bb.statements.length)
+    (hNoCall : (match bb.terminator with
+      | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ => false
+      | _ => true) = true := by rfl) :
     evalStep (bodyProg body) 0
         { frames := [{ defId := 0, blockIdx := blockIdx, stmtIdx := stmtIdx,
                        locals := locals }],
@@ -727,6 +730,12 @@ theorem evalStep_bodyProg_block_term {body : Body} {bt : BlockTree BasicBlock}
   rw [hNone]
   dsimp only
   rw [ite_bool_true (Nat.beq_refl bb.statements.length)]
+  cases hTerm : bb.terminator with
+  | call _ _ _ _ _ | sysrootCall _ _ _ _ _ =>
+    rw [hTerm] at hNoCall
+    cases hNoCall
+  | goto _ | switchInt _ _ | return_ | unreachable | unwindResume
+  | assert _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported => rfl
 
 /-- Single-step `evalStep (bodyProg body) 0` transition for
 `mkOverflowCastEntryBlock flagLocal targetTrue targetFalse`. -/

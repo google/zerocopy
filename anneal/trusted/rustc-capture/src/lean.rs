@@ -14,7 +14,7 @@ use std::fmt::Write as _;
 
 use crate::ir::{
     self, AssertKind, BinOp, CastKind, ConstLit, CoreCallOp, Operand, Place, PlaceElem, Rvalue,
-    Statement, Terminator, Ty, UnOp,
+    Statement, SysrootNumKind, Terminator, Ty, UnOp,
 };
 
 const HEADER: &str = "-- Copyright 2026 The Fuchsia Authors\n--\n\
@@ -277,6 +277,9 @@ fn bin_op(op: BinOp) -> &'static str {
         BinOp::Add => "add",
         BinOp::Sub => "sub",
         BinOp::Mul => "mul",
+        BinOp::AddUnchecked => "addUnchecked",
+        BinOp::SubUnchecked => "subUnchecked",
+        BinOp::MulUnchecked => "mulUnchecked",
         BinOp::Div => "div",
         BinOp::Rem => "rem",
         BinOp::AddWithOverflow => "addWithOverflow",
@@ -470,6 +473,67 @@ fn terminator_at(term: &Terminator, indent: usize) -> String {
         Terminator::Ret => "Trusted.MirAst.TerminatorKind.return_".into(),
         Terminator::Unreachable => "Trusted.MirAst.TerminatorKind.unreachable".into(),
         Terminator::Unsupported => "Trusted.MirAst.TerminatorKind.unsupported".into(),
+        Terminator::Call {
+            callee,
+            args,
+            dst,
+            target,
+            unwind,
+        } => {
+            let child_pad = " ".repeat(indent + 2);
+            format!(
+                "(Trusted.MirAst.TerminatorKind.call\n\
+                 {child_pad}{callee}\n\
+                 {child_pad}{}\n\
+                 {child_pad}(Trusted.MirAst.Place.mk {dst} [])\n\
+                 {child_pad}{}\n\
+                 {child_pad}Trusted.MirAst.UnwindAction.{})",
+                list_pretty(args, indent + 2, operand_at),
+                block_target_opt(*target),
+                unwind.lean_name(),
+            )
+        }
+        Terminator::SysrootCall {
+            op,
+            args,
+            dst,
+            target,
+            unwind,
+        } => {
+            let child_pad = " ".repeat(indent + 2);
+            format!(
+                "(Trusted.MirAst.TerminatorKind.sysrootCall\n\
+                 {child_pad}(Trusted.MirAst.SysrootNumOp.mk Trusted.MirAst.SysrootNumKind.{} Trusted.MirAst.IntWidth.{} {})\n\
+                 {child_pad}{}\n\
+                 {child_pad}(Trusted.MirAst.Place.mk {dst} [])\n\
+                 {child_pad}{}\n\
+                 {child_pad}Trusted.MirAst.UnwindAction.{})",
+                sysroot_num_kind(op.kind),
+                op.ty.width.lean_name(),
+                op.ty.signed,
+                list_pretty(args, indent + 2, operand_at),
+                block_target_opt(*target),
+                unwind.lean_name(),
+            )
+        }
+    }
+}
+
+fn sysroot_num_kind(kind: SysrootNumKind) -> &'static str {
+    match kind {
+        SysrootNumKind::UncheckedAdd => "uncheckedAdd",
+        SysrootNumKind::UncheckedSub => "uncheckedSub",
+        SysrootNumKind::UncheckedMul => "uncheckedMul",
+        SysrootNumKind::WrappingAdd => "wrappingAdd",
+        SysrootNumKind::WrappingSub => "wrappingSub",
+        SysrootNumKind::WrappingMul => "wrappingMul",
+    }
+}
+
+fn block_target_opt(target: Option<u32>) -> String {
+    match target {
+        None => "none".into(),
+        Some(b) => format!("(some {b})"),
     }
 }
 

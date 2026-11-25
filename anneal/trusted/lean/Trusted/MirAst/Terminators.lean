@@ -144,6 +144,30 @@ inductive CoreCallOp where
   | ptrAdd (mutability : Mutability) (pointee : MirTy)
   | usizeUncheckedSub
 
+/-- Closed set of `core::num` primitive arithmetic operations supported via
+pinned sysroot-body lowering (verified at capture time against `core`'s
+`tcx.instance_mir`): checked-UB (`unchecked_{add,sub,mul}`) and wrapping
+(`wrapping_{add,sub,mul}`) integer arithmetic.
+
+This is the Profile v1 call path (`TerminatorKind.sysrootCall`). Profile v2
+models its `core` calls atomically through `CoreCallOp` instead, and each
+profile refuses the other's terminator. -/
+inductive SysrootNumKind where
+  | uncheckedAdd
+  | uncheckedSub
+  | uncheckedMul
+  | wrappingAdd
+  | wrappingSub
+  | wrappingMul
+
+/-- Typed `core::num` sysroot call descriptor (`op : SysrootNumOp`), specifying
+the operation kind (`SysrootNumKind`) and the integer operand/return width and
+signedness. -/
+structure SysrootNumOp where
+  kind : SysrootNumKind
+  width : IntWidth
+  signed : Bool
+
 /-- A MIR basic-block terminator (`rustc_middle::mir::TerminatorKind` in
 `compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
 `8144389c895da997dbdecaa635e41d6a50be6ffd`):
@@ -182,14 +206,18 @@ Constructor correspondence:
 - `.unwindResume` corresponds to `TerminatorKind::UnwindResume`.
 - `.assert cond expected msg target unwind` corresponds to
   `TerminatorKind::Assert { cond, expected, msg, target, unwind }`.
-- `.call callee args dst target unwind` corresponds to direct `FnDef`
-  `TerminatorKind::Call`.
+- `.call callee args dst target unwind` corresponds to direct intra-crate
+  `FnDef` `TerminatorKind::Call`.
 - `.coreCall op args dst target unwind` corresponds to a direct `FnDef`
   `TerminatorKind::Call` whose callee is the sysroot `core` function that
   `op` names (Profile v2).
+- `.sysrootCall op args dst target unwind` corresponds to a pinned `core::num`
+  `FnDef` `TerminatorKind::Call` verified against `core`'s `tcx.instance_mir`
+  (Profile v1).
 - `.unsupported` represents all other `TerminatorKind` variants
-  (`UnwindTerminate`, `Drop`, indirect `Call`, `TailCall`, `Yield`,
-  `CoroutineDrop`, `FalseEdge`, `FalseUnwind`, and `InlineAsm`). -/
+  (`UnwindTerminate`, `Drop`, indirect or unverified external `Call`,
+  `TailCall`, `Yield`, `CoroutineDrop`, `FalseEdge`, `FalseUnwind`, and
+  `InlineAsm`). -/
 inductive TerminatorKind where
   | goto (target : BasicBlockId)
   | switchInt (discr : Operand) (targets : SwitchTargets)
@@ -201,6 +229,8 @@ inductive TerminatorKind where
   | call (callee : DefId) (args : List Operand) (dst : Place)
       (target : Option BasicBlockId) (unwind : UnwindAction)
   | coreCall (op : CoreCallOp) (args : List Operand) (dst : Place)
+      (target : Option BasicBlockId) (unwind : UnwindAction)
+  | sysrootCall (op : SysrootNumOp) (args : List Operand) (dst : Place)
       (target : Option BasicBlockId) (unwind : UnwindAction)
   | unsupported
 

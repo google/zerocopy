@@ -521,14 +521,22 @@ private theorem initState_ok_frame_of_body0 (p : Program) (q : Query)
               · rw [h7] at h_init
                 cases h8 : (!body.locals.all isSupportedScalarOrUnitTy)
                 · rw [h8] at h_init
-                  cases h9 :
-                    (!checkArgsMatch q.args
-                      ((body.locals.drop 1).take body.argumentCount))
-                  · rw [h9] at h_init
-                    dsimp only [ite_false_eq, Bool.false_or] at h_init
-                    injection h_init with h_eq
-                    exact h_eq.symm
-                  · rw [h9] at h_init
+                  cases hc1 : (!callsAdmitted p body)
+                  · rw [hc1] at h_init
+                    cases hc2 : (!allCallBodiesStaticAdmitted p body)
+                    · rw [hc2] at h_init
+                      cases h9 :
+                        (!checkArgsMatch q.args
+                          ((body.locals.drop 1).take body.argumentCount))
+                      · rw [h9] at h_init
+                        dsimp only [ite_false_eq, Bool.false_or] at h_init
+                        injection h_init with h_eq
+                        exact h_eq.symm
+                      · rw [h9] at h_init
+                        cases h_init
+                    · rw [hc2] at h_init
+                      cases h_init
+                  · rw [hc1] at h_init
                     cases h_init
                 · rw [h8] at h_init
                   cases h_init
@@ -616,7 +624,8 @@ private theorem isReadUninitU32Shape_not_wellFormed (p : Program) (q : Query)
                     have hst0 := isCopy1To0Stmt_eq h_shape
                     have h_step : evalStep p 0 s₀ = .fault .undefined := by
                       rw [h_s0, h_locs, ht0, ht1]
-                      dsimp only [evalStep, initLocalsLoop]
+                      dsimp only [evalStep, initLocalsLoop, activeFrameBody,
+                        attachCallers]
                       rw [h_bodies, h_arg]
                       dsimp only [MirSemantics.getElem?, Nat.beq, Nat.ble]
                       rw [h_bbs]

@@ -278,6 +278,7 @@ certified `Body`. -/
   ∃ frame bb entryEnv curEnv,
     s.frames = [frame] ∧
     frame.defId = 0 ∧
+    frame.sysrootOp? = none ∧
     compGetElem? body.basicBlocks frame.blockIdx = some bb ∧
     compGetElem? invs frame.blockIdx = some (some entryEnv) ∧
     frame.stmtIdx ≤ bb.statements.length ∧
@@ -301,11 +302,12 @@ private theorem mirPccInv_step_and_safe {body : Body} {retInv : MirAbsSlot}
   cases hInv with | intro curEnv hInv =>
   have hFrames := hInv.1
   have hDef0 := hInv.2.1
-  have hBb := hInv.2.2.1
-  have hInvB := hInv.2.2.2.1
-  have hIdxLe := hInv.2.2.2.2.1
-  have hTo := hInv.2.2.2.2.2.1
-  have hDen := hInv.2.2.2.2.2.2
+  have hSys := hInv.2.2.1
+  have hBb := hInv.2.2.2.1
+  have hInvB := hInv.2.2.2.2.1
+  have hIdxLe := hInv.2.2.2.2.2.1
+  have hTo := hInv.2.2.2.2.2.2.1
+  have hDen := hInv.2.2.2.2.2.2.2
   have hBlkChk := checkAllBlocksCert_get hAll hBb hInvB
   dsimp only [checkBlockCert] at hBlkChk
   cases hStmts : stepStmtsAbs body.locals entryEnv bb.statements with
@@ -336,21 +338,23 @@ private theorem mirPccInv_step_and_safe {body : Body} {retInv : MirAbsSlot}
                     } := by
                 dsimp only [evalStep, bodyProg]
                 rw [hFrames]
-                dsimp only
-                rw [hDef0]
+                dsimp only [activeFrameBody]
+                rw [hSys, hDef0]
                 dsimp only [Trusted.MirSemantics.getElem?]
                 rw [← compGetElem?_eq, hBb]
                 dsimp only
                 rw [← compGetElem?_eq, hStmt]
-                dsimp only
+                dsimp only [attachCallers]
                 rw [← hDef0]
-                exact hEvalStmt.1
+                have hStmtEq := hEvalStmt.1
+                rw [hSys] at hStmtEq
+                exact hStmtEq
               refine ⟨?_, ?_, ?_⟩
               · intro k hF; rw [hEvalStep] at hF; nomatch hF
               · intro next hStep
                 rw [hEvalStep] at hStep
                 injection hStep with hEq; subst hEq
-                exact ⟨_, bb, entryEnv, nextEnv, rfl, hDef0, hBb, hInvB,
+                exact ⟨_, bb, entryEnv, nextEnv, rfl, hDef0, hSys, hBb, hInvB,
                   Nat.succ_le_of_lt hIdxLt, hNext.2, hEvalStmt.2⟩
               · intro _ _ hDone; rw [hEvalStep] at hDone; nomatch hDone
       | inl hIdxEq =>
@@ -365,20 +369,20 @@ private theorem mirPccInv_step_and_safe {body : Body} {retInv : MirAbsSlot}
               evalTerminator body bb frame s.mem s.callerMem := by
           dsimp only [evalStep, bodyProg]
           rw [hFrames]
-          dsimp only
-          rw [hDef0]
+          dsimp only [activeFrameBody]
+          rw [hSys, hDef0]
           dsimp only [Trusted.MirSemantics.getElem?]
           rw [← compGetElem?_eq, hBb]
           dsimp only
           rw [← compGetElem?_eq, hNoneStmt]
           dsimp only
-          have hIte :
-              (if Nat.beq frame.stmtIdx bb.statements.length = true then
-                evalTerminator body bb frame s.mem s.callerMem
-               else StepResult.fault FaultKind.unsupported) =
-              evalTerminator body bb frame s.mem s.callerMem := by
-            rw [hBeqLen]; rfl
-          exact hIte
+          rw [hBeqLen]
+          cases hT : bb.terminator with
+          | call _ _ _ _ _ =>
+            dsimp only [stepTermAbs] at hTerm; rw [hT] at hTerm; nomatch hTerm
+          | sysrootCall _ _ _ _ _ =>
+            dsimp only [stepTermAbs] at hTerm; rw [hT] at hTerm; nomatch hTerm
+          | _ => rfl
         have hTermS := stepTermAbs_sound (body := body) (bb := bb)
           (frame := frame) (mem := s.mem) (callerMem := s.callerMem) hDen hTerm
         cases out with
@@ -427,7 +431,7 @@ private theorem mirPccInv_step_and_safe {body : Body} {retInv : MirAbsSlot}
           · intro next hSt
             rw [hStepNext] at hSt
             injection hSt with hEq; subst hEq
-            exact ⟨_, bbT, invT, invT, rfl, hDef0, hBbT, hInvT,
+            exact ⟨_, bbT, invT, invT, rfl, hDef0, hSys, hBbT, hInvT,
               Nat.zero_le _, rfl, mirAbsEnvLe_sound hLeT hDenT⟩
           · intro _ _ hDone; rw [hStepNext] at hDone; nomatch hDone
 
@@ -469,7 +473,8 @@ theorem checkMirCert_sound {body : Body} {entryEnv : MirAbsEnv}
         rw [hBb0, hInv0] at hEntryChk
         have hStartInv : MirPccInv body invs start :=
           ⟨{ defId := 0, blockIdx := 0, stmtIdx := 0, locals := locals0 },
-           bb0, inv0, inv0, hStartFrames, rfl, hBb0, hInv0, Nat.zero_le _, rfl,
+           bb0, inv0, inv0, hStartFrames, rfl, rfl, hBb0, hInv0, Nat.zero_le _,
+           rfl,
            mirAbsEnvLe_sound hEntryChk hEntry⟩
         have hReachInv : ∀ s, Reach body start s → MirPccInv body invs s := by
           intro s hR
@@ -517,7 +522,8 @@ theorem checkMirCert_sound {body : Body} {entryEnv : MirAbsEnv}
     targets.branches.foldr (fun p acc => p.2 :: acc) [targets.otherwise]
   | .assert _ _ _ target unwind =>
     target :: (match unwind with | .cleanup b => [b] | _ => [])
-  | .call _ _ _ target unwind | .coreCall _ _ _ target unwind =>
+  | .call _ _ _ target unwind | .coreCall _ _ _ target unwind
+  | .sysrootCall _ _ _ target unwind =>
     (match target with | some t => [t] | none => []) ++
       (match unwind with | .cleanup b => [b] | _ => [])
   | .return_ | .unreachable | .unwindResume | .unsupported => []
@@ -1207,9 +1213,17 @@ theorem bodyVerified_of_autoVerifyAcyclic {p : Program} {defId : DefId}
     {body : Body} {safetyPre : List Val → Prop}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
     (h_adm : BodyStaticAdmitted p body = true)
-    (hVer : autoVerifyAcyclic body (defaultRpoOrder body []) = true) :
+    (hVer : autoVerifyAcyclic body (defaultRpoOrder body []) = true)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     BodyVerified p defId body safetyPre :=
-  bodyVerified_of_safe h_body h_adm (fun _ hArgs _ => autoVerifyAcyclic_sound hVer hArgs)
+  bodyVerified_of_safe h_body h_adm
+    (fun _ hArgs _ => autoVerifyAcyclic_sound hVer hArgs) h_nocall
 
 /-- One-liner `BodyVerified` discharge for any acyclic function with an
 explicit `rpoOrder`. -/
@@ -1218,9 +1232,17 @@ theorem bodyVerified_of_autoVerifyAcyclicOrder {p : Program} {defId : DefId}
     {rpoOrder : List BasicBlockId}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
     (h_adm : BodyStaticAdmitted p body = true)
-    (hVer : autoVerifyAcyclic body rpoOrder = true) :
+    (hVer : autoVerifyAcyclic body rpoOrder = true)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     BodyVerified p defId body safetyPre :=
-  bodyVerified_of_safe h_body h_adm (fun _ hArgs _ => autoVerifyAcyclicOrder_sound hVer hArgs)
+  bodyVerified_of_safe h_body h_adm
+    (fun _ hArgs _ => autoVerifyAcyclicOrder_sound hVer hArgs) h_nocall
 
 /-- One-liner `BodyVerified` discharge for a function verified by
 `autoVerifyCutpoints` (supporting loops with Bourdoncle cutpoints). -/
@@ -1230,10 +1252,17 @@ theorem bodyVerified_of_autoVerifyCutpoints {p : Program} {defId : DefId}
     {rpoOrder : List BasicBlockId}
     (h_body : Trusted.MirSemantics.getElem? p.bodies defId = some body)
     (h_adm : BodyStaticAdmitted p body = true)
-    (hVer : autoVerifyCutpoints body retInv cutpoints rpoOrder = true) :
+    (hVer : autoVerifyCutpoints body retInv cutpoints rpoOrder = true)
+    (h_nocall : bodyHasAnyCall body = false := by
+      first
+      | rfl
+      | exact bodyHasAnyCall_false_of_basicBlocks
+          ‹Trusted.MirAst.Body.basicBlocks _ = _› rfl
+      | exact bodyHasAnyCall_false_of_all
+          ‹Trusted.MirSemantics.getElem? _ _ = some _› rfl) :
     BodyVerified p defId body safetyPre :=
   bodyVerified_of_safe h_body h_adm
-    (fun _ hArgs _ => (autoVerifyCutpoints_sound hVer hArgs).1)
+    (fun _ hArgs _ => (autoVerifyCutpoints_sound hVer hArgs).1) h_nocall
 
 end AutoProve
 

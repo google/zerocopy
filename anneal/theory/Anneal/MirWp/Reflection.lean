@@ -603,25 +603,29 @@ theorem initState_eq_ok {p : Program} {body : Body} {args : List Val}
     initState p { args := args } =
       .ok (mkState 0 0 (initLocalsLoop body args 0 body.locals)
         p.entryDefId) := by
-  unfold BodyStaticAdmitted at h_adm
+  unfold BodyStaticAdmitted singleBodyStaticAdmitted at h_adm
   unfold ValidEntryArgs at h_args
   unfold initState mkState
   dsimp only
   rw [h_body]
   dsimp only
   rw [h_args]
-  cases h1 : Nat.beq p.pointerWidthBits 64 <;>
-    cases h2 : Nat.beq p.mirProfileVersion 1 <;>
-    cases hid : stringIsEmpty body.identity <;>
-    cases h3 : body.basicBlocks.isEmpty <;>
-    cases h4 : Nat.blt body.argumentCount body.locals.length <;>
-    cases h5 : storageAnnotationsInBounds body <;>
-    cases h5d : discriminantTypesValid body <;>
-    cases h5c : castTypesValid body <;>
-    cases h6 : body.locals.all isSupportedScalarOrUnitTy <;>
-    rw [h1, h2, hid, h3, h4, h5, h5d, h5c, h6] at h_adm <;>
-    cases h_adm
-  rfl
+  have hAnd : ∀ {a b : Bool}, (a && b) = true → a = true ∧ b = true := by
+    intro a b h; cases a <;> cases b <;> cases h <;> exact ⟨rfl, rfl⟩
+  let ⟨h1to7, h8⟩ := hAnd h_adm
+  let ⟨h1to6c, h7⟩ := hAnd h1to7
+  let ⟨h1to5c, h6⟩ := hAnd h1to6c
+  let ⟨h1to5d, h5c⟩ := hAnd h1to5c
+  let ⟨h1to5, h5d⟩ := hAnd h1to5d
+  let ⟨h1to4, h5⟩ := hAnd h1to5
+  let ⟨h1to3, h4⟩ := hAnd h1to4
+  let ⟨h1toId, h3⟩ := hAnd h1to3
+  let ⟨h1to2, hid⟩ := hAnd h1toId
+  let ⟨h1, h2⟩ := hAnd h1to2
+  cases h3e : body.basicBlocks.isEmpty
+  · rw [h1, h2, h4, h5, h5d, h5c, h6, h7, h8]
+    rfl
+  · rw [h3e] at h3; cases h3
 
 /-! ### Width- and Signedness-Parametric Operator Adequacy -/
 

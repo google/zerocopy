@@ -3176,7 +3176,7 @@ theorem evalTerminatorV2_return_enforces_callerMem_validity_and_disjoint_spans
                 cases res2 with | mk locals2 mem2 =>
                 rw [h_wp] at h_t
                 cases h_t
-  | unwindResume | call _ _ _ _ _ | unsupported =>
+  | unwindResume | call _ _ _ _ _ | sysrootCall _ _ _ _ _ | unsupported =>
     rw [h_term] at h_t; cases h_t
   | return_ =>
     rw [h_term] at h_t

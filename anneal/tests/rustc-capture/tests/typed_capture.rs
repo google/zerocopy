@@ -77,6 +77,10 @@ impl Capture {
         command
     }
 
+    fn lean_source(&self) -> String {
+        std::fs::read_to_string(self.output.join("Captured.lean")).expect("read Captured.lean")
+    }
+
     fn manifest(&self) -> Value {
         serde_json::from_slice(
             &std::fs::read(self.output.join("capture.json")).expect("read capture manifest"),
@@ -186,7 +190,7 @@ fn selected_capture_keeps_unselected_unsupported_items_in_the_census() {
     assert!(output.status.success(), "{output:?}");
     assert_eq!(status(&output)["status"], "captured", "{output:?}");
     let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 4);
+    assert_eq!(manifest["schema_version"], 5);
     assert!(manifest.get("scope").is_none(), "{manifest}");
     assert_eq!(manifest["program"]["scope"]["kind"], "selected_unit");
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 1);
@@ -936,7 +940,7 @@ fn whole_crate_admits_pure_anon_consts_and_refuses_unsafe_or_call_anon_consts() 
         let output = fixture.command().arg("--scope=crate").output().unwrap();
         assert!(output.status.success(), "{name}: {output:?}");
         let manifest = fixture.manifest();
-        assert_eq!(manifest["schema_version"], 4, "{name}");
+        assert_eq!(manifest["schema_version"], 5, "{name}");
     }
 
     // Pure arithmetic array-length `AnonConst` (`2 + 2`) is admitted while the
@@ -1063,7 +1067,7 @@ fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_
     let output = fixture.command().arg("--select=read_discr").output().unwrap();
     assert!(output.status.success(), "{output:?}");
     let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 4);
+    assert_eq!(manifest["schema_version"], 5);
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 1);
     let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
     assert!(lean.contains("EnumTagRepr.scalar Trusted.MirAst.IntWidth.i8 true"), "{lean}");
@@ -1687,7 +1691,7 @@ fn linux_residency_accepts_symlinked_sysroot_and_rejects_mismatched_driver_inode
         .output()
         .unwrap();
     assert!(output.status.success(), "{output:?}");
-    assert_eq!(fixture.manifest()["schema_version"], 4);
+    assert_eq!(fixture.manifest()["schema_version"], 5);
 
     // Replacing the driver symlink with a distinct regular file inode must fail
     // closed.
@@ -1963,7 +1967,7 @@ fn sysroot_only_gate_admits_no_std_core_and_refuses_proc_macro_and_extern_crates
     let no_std_fixture = Capture::new(b"#![no_std]\npub fn selected(x: u64) -> u64 { x }\n");
     let output = no_std_fixture.selected_command().output().unwrap();
     assert!(output.status.success(), "{output:?}");
-    assert_eq!(no_std_fixture.manifest()["schema_version"], 4);
+    assert_eq!(no_std_fixture.manifest()["schema_version"], 5);
 
     let proc_macro_fixture = Capture::new(
         b"#![crate_type = \"proc-macro\"]\n\
@@ -2167,7 +2171,7 @@ pub fn overflow_pairs(a: u64, b: u64) -> (u64, bool) {
         stderr(&output)
     );
     let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 4);
+    assert_eq!(manifest["schema_version"], 5);
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 5);
 
     let manifest_text = std::fs::read_to_string(fixture.output.join("capture.json")).unwrap();
@@ -2304,13 +2308,13 @@ fn unmodeled_projections_tuples_casts_and_operators_fail_closed() {
             "unsupported cast kind: Transmute",
         ),
         (
-            "unchecked_add_bin_op",
+            "shl_unchecked_bin_op",
             b"#![feature(core_intrinsics)]\n\
               #![allow(internal_features)]\n\
               pub unsafe fn selected(a: u32, b: u32) -> u32 {\n\
-                  unsafe { core::intrinsics::unchecked_add(a, b) }\n\
+                  unsafe { core::intrinsics::unchecked_shl(a, b) }\n\
               }\n",
-            "unsupported binary operator: AddUnchecked",
+            "unsupported binary operator: ShlUnchecked",
         ),
         (
             "ptr_metadata_un_op_or_ptr_type",
@@ -2335,6 +2339,250 @@ fn unmodeled_projections_tuples_casts_and_operators_fail_closed() {
 }
 
 #[test]
+fn unchecked_arith_intrinsics_and_intra_crate_and_sysroot_num_calls_capture() {
+    // Direct unchecked_add/sub/mul intrinsics capture as `BinOp.*Unchecked`.
+    let intrinsics_source = b"#![feature(core_intrinsics)]\n\
+        #![allow(internal_features)]\n\
+        pub unsafe fn selected(a: u32, b: u32) -> u32 {\n\
+            let s = unsafe { core::intrinsics::unchecked_add(a, b) };\n\
+            let d = unsafe { core::intrinsics::unchecked_sub(s, 1) };\n\
+            unsafe { core::intrinsics::unchecked_mul(d, 2) }\n\
+        }\n";
+    let intrinsics_fixture = Capture::new(intrinsics_source);
+    let out = intrinsics_fixture.selected_command().output().unwrap();
+    assert!(out.status.success(), "{out:?}");
+    let subject = intrinsics_fixture.lean_source();
+    for tok in ["BinOp.addUnchecked", "BinOp.subUnchecked", "BinOp.mulUnchecked"] {
+        assert!(subject.contains(tok), "missing {tok}:\n{subject}");
+    }
+
+    // `zerocopy::layout::add_scaled_metadata` pattern (`usize::unchecked_mul`
+    // + `usize::unchecked_add`) captures cleanly as `sysrootCall` on
+    // `selected`.
+    let add_scaled_source = b"pub unsafe fn add_scaled_metadata(base: usize, metadata: usize, multiple: usize) -> usize {\n\
+            let scaled = unsafe { metadata.unchecked_mul(multiple) };\n\
+            unsafe { base.unchecked_add(scaled) }\n\
+        }\n";
+    let scaled_fixture = Capture::new(add_scaled_source);
+    let out = scaled_fixture
+        .command()
+        .arg("--select=add_scaled_metadata")
+        .output()
+        .unwrap();
+    assert!(out.status.success(), "{out:?}");
+    let subject = scaled_fixture.lean_source();
+    assert!(
+        subject.contains("Trusted.MirAst.TerminatorKind.sysrootCall")
+            && subject.contains("Trusted.MirAst.SysrootNumKind.uncheckedMul")
+            && subject.contains("Trusted.MirAst.SysrootNumKind.uncheckedAdd")
+            && subject.contains("Trusted.MirAst.IntWidth.isize false"),
+        "{subject}"
+    );
+    let manifest = scaled_fixture.manifest();
+    assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 1);
+    assert_eq!(manifest["selected"][0]["path"], "add_scaled_metadata");
+    assert_eq!(manifest["selected"][0]["body_index"], 0);
+
+    // All 6 whitelisted `core::num` ops capture across signed/unsigned types.
+    let all_sysroot_source = b"pub unsafe fn selected(a: u16, b: i128) -> u16 {\n\
+            let u0 = a.wrapping_add(1);\n\
+            let u1 = u0.wrapping_sub(2);\n\
+            let u2 = u1.wrapping_mul(3);\n\
+            let u3 = unsafe { u2.unchecked_add(1) };\n\
+            let u4 = unsafe { u3.unchecked_sub(1) };\n\
+            let u5 = unsafe { u4.unchecked_mul(2) };\n\
+            let _s0 = b.wrapping_add(1);\n\
+            let _s1 = unsafe { b.unchecked_sub(1) };\n\
+            u5\n\
+        }\n";
+    let all_sysroot_fixture = Capture::new(all_sysroot_source);
+    let out = all_sysroot_fixture.selected_command().output().unwrap();
+    assert!(out.status.success(), "{out:?}");
+    let subject = all_sysroot_fixture.lean_source();
+    for kind in [
+        "SysrootNumKind.wrappingAdd",
+        "SysrootNumKind.wrappingSub",
+        "SysrootNumKind.wrappingMul",
+        "SysrootNumKind.uncheckedAdd",
+        "SysrootNumKind.uncheckedSub",
+        "SysrootNumKind.uncheckedMul",
+    ] {
+        assert!(subject.contains(kind), "missing {kind}:\n{subject}");
+    }
+
+    // Intra-crate multi-hop calls pull private helpers into `program.bodies`
+    // while keeping `--select` root at `body_index: 0` and leaving
+    // `census.selected` strictly for `--select` roots.
+    let call_source = b"#[inline(never)] fn leaf(x: u16) -> u16 { x.wrapping_add(3) }\n\
+        #[inline(never)] fn mid(x: u16) -> u16 { leaf(x).wrapping_mul(2) }\n\
+        #[allow(dead_code)] fn unused_ptr(p: *const u8) -> *const u8 { p }\n\
+        pub fn selected(x: u16) -> u16 { mid(x) }\n";
+    let call_fixture = Capture::new(call_source);
+    let out = call_fixture.selected_command().output().unwrap();
+    assert!(out.status.success(), "{out:?}");
+    let subject = call_fixture.lean_source();
+    assert!(
+        subject.contains("Trusted.MirAst.TerminatorKind.call")
+            && subject.contains("body_0")
+            && subject.contains("body_1")
+            && subject.contains("body_2"),
+        "{subject}"
+    );
+    let manifest = call_fixture.manifest();
+    assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 3);
+    // Reachable helpers stay out of `selected` (and so out of the receipt).
+    assert_eq!(manifest["selected"].as_array().unwrap().len(), 1, "{manifest}");
+    assert_eq!(manifest["selected"][0]["path"], "selected");
+    assert_eq!(manifest["selected"][0]["body_index"], 0);
+    let census = manifest["census"].as_array().unwrap();
+    let mid_census = census.iter().find(|item| item["path"] == "mid").unwrap();
+    assert_eq!(mid_census["selected"], false, "{mid_census}");
+
+    // A crate-local look-alike of a `core::num` method is an ordinary
+    // intra-crate `call`, never a pinned `sysrootCall`: only callees in the
+    // authenticated sysroot crate named `core` reach sysroot matching.
+    let spoof_source = b"mod core {\n\
+            pub mod num {\n\
+                #[inline(never)]\n\
+                pub fn wrapping_add(a: u16, b: u16) -> u16 { a ^ b }\n\
+            }\n\
+        }\n\
+        pub fn selected(x: u16) -> u16 { crate::core::num::wrapping_add(x, 1) }\n";
+    let spoof_fixture = Capture::new(spoof_source);
+    let out = spoof_fixture.selected_command().output().unwrap();
+    assert!(out.status.success(), "{out:?}");
+    let subject = spoof_fixture.lean_source();
+    assert!(
+        subject.contains("Trusted.MirAst.TerminatorKind.call")
+            && !subject.contains("sysrootCall")
+            && !subject.contains("SysrootNumKind"),
+        "{subject}"
+    );
+}
+
+#[test]
+fn unsupported_calls_fail_closed() {
+    let bad_call_cases: &[(&str, &[u8], &str)] = &[
+        (
+            "indirect_fn_ptr_call",
+            b"pub fn selected(f: fn(u16) -> u16, x: u16) -> u16 { f(x) }\n",
+            "unsupported",
+        ),
+        (
+            "generic_local_call",
+            b"fn id<T>(x: T) -> T { x }\n\
+              pub fn selected(x: u16) -> u16 { id(x) }\n",
+            "generic",
+        ),
+        (
+            "external_non_whitelisted_core_call",
+            b"pub fn selected(x: u16) -> u16 { x.saturating_add(1) }\n",
+            "unsupported core call",
+        ),
+        (
+            "track_caller_intra_crate_callee",
+            b"#[track_caller] fn helper(x: u16) -> u16 { x }\n\
+              pub fn selected(x: u16) -> u16 { helper(x) }\n",
+            "#[track_caller]",
+        ),
+        (
+            "tuple_struct_ctor_callee",
+            b"pub struct Wrap(pub u16);\n\
+              pub fn make(x: u16) -> Wrap { Wrap(x) }\n\
+              pub fn selected(x: u16) -> u16 { make(x).0 }\n",
+            "unsupported",
+        ),
+        (
+            "transitive_unsupported_helper",
+            b"fn bad_helper(a: f32) -> f32 { a }\n\
+              pub fn selected(a: u32) -> u32 { let _ = bad_helper(1.0); a }\n",
+            "unsupported",
+        ),
+    ];
+    for (name, source, expected) in bad_call_cases {
+        let fixture = Capture::new(source);
+        let output = fixture.selected_command().output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        assert!(
+            failure.to_string().contains(expected),
+            "{name}: expected {expected:?}, got {failure}"
+        );
+        fixture.assert_no_capture_artifacts();
+    }
+}
+
+#[test]
+fn each_sysroot_num_method_captures_its_own_kind() {
+    // Each `core::num` method maps to exactly one `SysrootNumKind`; a swapped
+    // entry would otherwise still emit some valid kind.
+    let kinds = [
+        ("unchecked_add", "uncheckedAdd"),
+        ("unchecked_sub", "uncheckedSub"),
+        ("unchecked_mul", "uncheckedMul"),
+        ("wrapping_add", "wrappingAdd"),
+        ("wrapping_sub", "wrappingSub"),
+        ("wrapping_mul", "wrappingMul"),
+    ];
+    for (method, kind) in kinds {
+        let source = format!(
+            "pub unsafe fn selected(a: u16, b: u16) -> u16 {{\n\
+                 #[allow(unused_unsafe)]\n\
+                 unsafe {{ a.{method}(b) }}\n\
+             }}\n"
+        );
+        let fixture = Capture::new(source.as_bytes());
+        let output = fixture.selected_command().output().unwrap();
+        assert!(output.status.success(), "{method}: {output:?}");
+        let subject = fixture.lean_source();
+        for (_, other) in kinds {
+            let needle = format!("Trusted.MirAst.SysrootNumKind.{other} ");
+            assert_eq!(
+                subject.contains(&needle),
+                other == kind,
+                "{method} must capture only `{kind}`:\n{subject}"
+            );
+        }
+    }
+}
+
+#[test]
+fn profile_v1_calls_and_profile_v2_core_calls_stay_disjoint() {
+    // `usize::unchecked_sub` is in the Profile v2 `CoreCallOp` table, so it
+    // lowers to `coreCall` rather than the Profile v1 `sysrootCall` path.
+    let core_call = Capture::new(
+        b"pub unsafe fn selected(a: usize, b: usize) -> usize {\n\
+              unsafe { a.unchecked_sub(b) }\n\
+          }\n",
+    );
+    let output = core_call.selected_command().output().unwrap();
+    assert!(output.status.success(), "{output:?}");
+    let subject = core_call.lean_source();
+    assert!(
+        subject.contains("Trusted.MirAst.TerminatorKind.coreCall")
+            && subject.contains("Trusted.MirAst.CoreCallOp.usizeUncheckedSub")
+            && !subject.contains("Trusted.MirAst.TerminatorKind.sysrootCall"),
+        "{subject}"
+    );
+
+    // The runtime division-by-zero `Assert` makes `helper` a Profile v2 body,
+    // and Profile v2 refuses Profile v1 intra-crate calls.
+    let mixed = Capture::new(
+        b"fn helper(a: u32, b: u32) -> u32 { a / b }\n\
+          pub fn selected(a: u32, b: u32) -> u32 { helper(a, b) }\n",
+    );
+    let output = mixed.selected_command().output().unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    let failure = status(&output);
+    assert!(
+        failure.to_string().contains("makes a Profile v1 call in a Profile v2 program"),
+        "{failure}"
+    );
+    mixed.assert_no_capture_artifacts();
+}
+
+#[test]
 fn thousand_one_hundred_function_crate_compiles_in_lean_under_default_max_rec_depth() {
     let mut source = String::with_capacity(64 * 1024);
     for idx in 0..1_100usize {
@@ -2349,7 +2597,7 @@ fn thousand_one_hundred_function_crate_compiles_in_lean_under_default_max_rec_de
         stderr(&output)
     );
     let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 4);
+    assert_eq!(manifest["schema_version"], 5);
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 1_100);
 
     let captured_lean = fixture.output.join("Captured.lean");
@@ -2981,14 +3229,23 @@ pub fn id(x: u64) -> u64 { x }
     );
     attr_bin.assert_no_capture_artifacts();
 
-    // 4. Returning calls (`target: Some(_)`) remain refused in both `bin` and `lib`.
+    // 4. Intra-crate returning calls (`target: Some(_)`) succeed in `bin`,
+    // while unsupported external returning calls remain refused in both `bin`
+    // and `lib`.
     let returning_call = b"#[inline(never)] fn helper() -> u64 { 1 }\npub fn caller() -> u64 { helper() }\nfn main() {}\n";
     let call_bin = Capture::new(returning_call);
     let call_out =
         call_bin.command().args(["--crate-type=bin", "--select=caller"]).output().unwrap();
-    assert_eq!(call_out.status.code(), Some(1), "{call_out:?}");
-    assert_eq!(status(&call_out)["status"], "unsupported");
-    call_bin.assert_no_capture_artifacts();
+    assert!(call_out.status.success(), "{call_out:?}");
+
+    let unsupported_call =
+        b"pub fn caller(x: u64) -> u64 { x.saturating_add(1) }\nfn main() {}\n";
+    let unsup_bin = Capture::new(unsupported_call);
+    let unsup_out =
+        unsup_bin.command().args(["--crate-type=bin", "--select=caller"]).output().unwrap();
+    assert_eq!(unsup_out.status.code(), Some(1), "{unsup_out:?}");
+    assert_eq!(status(&unsup_out)["status"], "unsupported");
+    unsup_bin.assert_no_capture_artifacts();
 
     // 5. `static` items remain refused (`StaticDef` / `GlobalAlloc::Static`).
     let static_src = b"static S: u64 = 7;\npub fn read_static() -> u64 { S }\n";
@@ -3192,6 +3449,69 @@ fn explicit_concrete_monomorphization_captures_generics_consts_lifetimes_and_tra
     assert!(lean_text.contains("ConstLit.scalar (BitVec.ofNat 128 42)"), "{lean_text}");
     assert!(lean_text.contains("ConstLit.scalar (BitVec.ofNat 128 7)"), "{lean_text}");
     compile_captured_lean_if_trusted_sources_present(&fixture.output.join("Captured.lean"));
+}
+
+#[test]
+fn non_generic_instantiation_shares_body_with_reachable_calls() {
+    let source = b"#[inline(never)] pub fn helper(x: u16) -> u16 { x.wrapping_add(1) }\n\
+        pub fn selected(x: u16) -> u16 { helper(x) }\n\
+        #[inline(never)]\n\
+        pub fn countdown(n: u16) -> u16 {\n\
+            if n == 0 { 0 } else { countdown(n.wrapping_sub(1)) }\n\
+        }\n";
+    let identities = |manifest: &Value| -> Vec<String> {
+        manifest["program"]["bodies"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|b| b["identity"].as_str().unwrap().to_owned())
+            .collect()
+    };
+    let call_callees = |body: &Value| -> Vec<u64> {
+        body["blocks"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter(|block| block["terminator"]["kind"] == "call")
+            .map(|block| block["terminator"]["callee"].as_u64().unwrap())
+            .collect()
+    };
+
+    // A `--select` root calls a non-generic helper that is also passed via
+    // `--instantiate`: the call must reuse the instantiated body.
+    let fixture = Capture::new(source);
+    let output = fixture
+        .selected_command()
+        .arg("--instantiate")
+        .arg(r#"{"path":"helper","args":[]}"#)
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{}\n{}", stdout(&output), stderr(&output));
+    let manifest = fixture.manifest();
+    let ids = identities(&manifest);
+    assert_eq!(ids, ["rust-path-v1::selected", "rust-path-v1::helper"], "{manifest}");
+    let selected = manifest["selected"].as_array().unwrap();
+    assert_eq!(selected.len(), 2, "{manifest}");
+    assert_eq!(selected[0]["path"], "selected");
+    assert_eq!(selected[0]["body_index"], 0);
+    assert_eq!(selected[1]["body_index"], 1);
+    assert_eq!(call_callees(&manifest["program"]["bodies"][0]), [1]);
+
+    // A self-recursive non-generic instantiation resolves its own call to
+    // its own body index rather than re-extracting itself.
+    let recursive = Capture::new(source);
+    let output = recursive
+        .command()
+        .arg("--instantiate")
+        .arg(r#"{"path":"countdown","args":[]}"#)
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{}\n{}", stdout(&output), stderr(&output));
+    let manifest = recursive.manifest();
+    assert_eq!(identities(&manifest), ["rust-path-v1::countdown"], "{manifest}");
+    assert_eq!(manifest["selected"].as_array().unwrap().len(), 1, "{manifest}");
+    assert_eq!(call_callees(&manifest["program"]["bodies"][0]), [0]);
+    compile_captured_lean_if_trusted_sources_present(&recursive.output.join("Captured.lean"));
 }
 
 #[test]

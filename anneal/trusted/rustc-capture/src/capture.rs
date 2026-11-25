@@ -10,10 +10,12 @@
 //! authenticates the compiler/sysroot distribution and stages declared inputs;
 //! these checks do not defend against a compromised execution environment.
 
-use std::collections::{BTreeMap, BTreeSet, HashSet};
-use std::io;
-use std::path::{Path, PathBuf};
-use std::sync::{Arc, Mutex, OnceLock};
+use std::{
+    collections::{BTreeMap, BTreeSet, HashSet, VecDeque},
+    io,
+    path::{Path, PathBuf},
+    sync::{Arc, Mutex, OnceLock},
+};
 
 use std::ops::ControlFlow;
 
@@ -65,9 +67,7 @@ static OBSERVED_HOOK: Mutex<BTreeSet<u32>> = Mutex::new(BTreeSet::new());
 /// Early hook observation does not decide coverage. The independent compiler
 /// census is enumerated in full before selecting or assembling any output.
 fn hook<'tcx>(tcx: TyCtxt<'tcx>, def: LocalDefId) -> &'tcx Steal<mir::Body<'tcx>> {
-    let provider = DEFAULT_PROVIDER
-        .get()
-        .expect("provider installed before queries");
+    let provider = DEFAULT_PROVIDER.get().expect("provider installed before queries");
     let original = provider(tcx, def);
     if callable(tcx.def_kind(def)) {
         OBSERVED_HOOK
@@ -194,9 +194,7 @@ impl RecordingLoader {
         // allowed target is invisible under an undeclared name. The canonical
         // name itself must still denote the declared regular file.
         if path.canonicalize()? != path || !path.is_file() {
-            return Err(io::Error::other(
-                "declared source is not a canonical regular file",
-            ));
+            return Err(io::Error::other("declared source is not a canonical regular file"));
         }
         Ok(path)
     }
@@ -209,10 +207,8 @@ impl RecordingLoader {
                 // Missing module candidates are normal negative probes. An
                 // actual denied read is different: compiler recovery must not
                 // publish a capture after handling this I/O error.
-                let mut reads = self
-                    .reads
-                    .lock()
-                    .map_err(|_| io::Error::other("input read mutex poisoned"))?;
+                let mut reads =
+                    self.reads.lock().map_err(|_| io::Error::other("input read mutex poisoned"))?;
                 reads.refusals.push(error.clone());
                 Err(io::Error::other(error))
             }
@@ -221,10 +217,8 @@ impl RecordingLoader {
 
     fn record(&self, path: &Path, bytes: &[u8], read_kind: &'static str) -> io::Result<()> {
         let path = path.canonicalize()?;
-        let mut reads = self
-            .reads
-            .lock()
-            .map_err(|_| io::Error::other("input read mutex poisoned"))?;
+        let mut reads =
+            self.reads.lock().map_err(|_| io::Error::other("input read mutex poisoned"))?;
         // Membership, not an empty-list convention, authorizes the read. Keep
         // refusals separately so a compiler recovery path cannot turn a denied
         // input into success merely by handling the loader's I/O error.
@@ -241,14 +235,7 @@ impl RecordingLoader {
                 return Err(io::Error::other(error));
             }
         } else {
-            reads.files.insert(
-                path.clone(),
-                ir::SourceFile {
-                    path,
-                    sha256,
-                    read_kind,
-                },
-            );
+            reads.files.insert(path.clone(), ir::SourceFile { path, sha256, read_kind });
         }
         Ok(())
     }
@@ -1170,7 +1157,7 @@ fn validate_crate_root_attrs(attrs: &[Attribute], expected: ir::CrateType) -> Re
             validate_crate_root_meta(&meta, expected, true)?;
         } else if attr.has_name(sym::crate_type) {
             return Err(
-                "crate-level #![crate_type] attributes are unsupported during capture".into(),
+                "crate-level #![crate_type] attributes are unsupported during capture".into()
             );
         } else if attr.has_name(sym::cfg_attr) || attr.has_name(sym::feature) {
             return Err("crate-level #![cfg_attr] or #![feature] attributes with \
@@ -1184,9 +1171,7 @@ fn validate_crate_root_attrs(attrs: &[Attribute], expected: ir::CrateType) -> Re
 fn validate_compiler_args(compiler_args: &[String]) -> Result<(), Failure> {
     for arg in compiler_args {
         if arg.starts_with('@') {
-            return Err(Failure::tool(
-                "response-file arguments are forbidden during capture",
-            ));
+            return Err(Failure::tool("response-file arguments are forbidden during capture"));
         }
         if arg == "--extern" || arg.starts_with("--extern=") || arg == "-L" || arg.starts_with("-L")
         {
@@ -1206,9 +1191,7 @@ fn validate_compiler_args(compiler_args: &[String]) -> Result<(), Failure> {
                     "--crate-type=lib" | "--crate-type=rlib" | "--crate-type=bin"
                 ))
         {
-            return Err(Failure::tool(format!(
-                "unsupported crate type during capture: {arg}"
-            )));
+            return Err(Failure::tool(format!("unsupported crate type during capture: {arg}")));
         }
         if arg == "-C"
             || arg == "-Cpanic"
@@ -1448,9 +1431,7 @@ fn verify_sysroot_only_crates(
         ));
     }
     if tcx.proc_macro_decls_static(()).is_some() {
-        return Err(Failure::unsupported(
-            "proc-macro declarations are unsupported during capture",
-        ));
+        return Err(Failure::unsupported("proc-macro declarations are unsupported during capture"));
     }
     if tcx.sess.opts.externs.iter().next().is_some() || !tcx.sess.opts.search_paths.is_empty() {
         return Err(Failure::tool(
@@ -1497,9 +1478,7 @@ fn verify_session_sysroot(
     let sysroot = identity::normalize_logical_sysroot(session_sysroot)?;
     let session_sysroot_id = identity::dir_dev_ino(&sysroot).map_err(Failure::io)?;
     if sysroot != verified_sysroot || session_sysroot_id != verified_sysroot_id {
-        return Err(Failure::tool(
-            "compiler session sysroot diverged from verified sysroot",
-        ));
+        return Err(Failure::tool("compiler session sysroot diverged from verified sysroot"));
     }
     Ok(sysroot)
 }
@@ -1904,10 +1883,8 @@ fn collect(
     // selected bodies.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/context.rs#L1353-L1371
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/hir/map.rs
-    let body_owners: BTreeSet<_> = tcx
-        .hir_body_owners()
-        .map(|def| def.local_def_index.as_u32())
-        .collect();
+    let body_owners: BTreeSet<_> =
+        tcx.hir_body_owners().map(|def| def.local_def_index.as_u32()).collect();
     let mut found = BTreeSet::new();
     let mut census = Vec::new();
     let mut selected_defs = Vec::new();
@@ -1989,52 +1966,87 @@ fn collect(
         )));
     }
     // A provider is only called when a query is demanded. Force every selected
-    // body before code generation, with no incremental cache or fallback to
-    // optimized MIR. Confirm the provider hook fired and the body is unstolen,
-    // then extract outside the query frame so CTFE cannot cycle on self-calls.
+    // body (and any intra-crate callees reached from them) before code
+    // generation, with no incremental cache or fallback to optimized MIR.
+    // Confirm the provider hook fired and the body is unstolen, then extract
+    // outside the query frame so CTFE cannot cycle on self-calls.
     // The query is declared `no_hash` without `cache_on_disk_if`, and capture
     // passes no `-Cincremental`, so no stored result can stand in for the
     // provider call.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/queries.rs#L638-L641
-    let mut bodies = Vec::new();
-    let mut selected = Vec::new();
-    let mut seen_instances = HashSet::new();
-    for &def in &selected_defs {
-        let key = def.local_def_index.as_u32();
-        let steal = tcx.mir_drops_elaborated_and_const_checked(def);
-        let observed = OBSERVED_HOOK
-            .lock()
-            .map_err(|_| Failure::tool("capture hook mutex poisoned"))?
-            .contains(&key);
-        let result = if !observed {
-            Err("compiler did not provide Runtime(PostCleanup) MIR".into())
-        } else if steal.is_stolen() {
-            Err("Runtime(PostCleanup) MIR was already stolen before capture".into())
-        } else {
-            extract::body(tcx, def, &steal.borrow())
-        };
-        match result {
-            Ok(body) => {
-                seen_instances.insert(ty::Instance::mono(tcx, def.to_def_id()));
-                selected.push(ir::SelectedBody {
-                    def_id: key,
-                    path: tcx.def_path_str(def),
-                    body_index: bodies.len(),
-                });
-                bodies.push(body);
+    struct LocalCaptureState<'tcx> {
+        raw_bodies: Vec<(LocalDefId, String, extract::ExtractedBody)>,
+        body_indices: BTreeMap<u32, usize>,
+        seen_instances: HashSet<ty::Instance<'tcx>>,
+        callee_queue: VecDeque<LocalDefId>,
+        selected: Vec<ir::SelectedBody>,
+        unsupported: Vec<ir::Unsupported>,
+    }
+
+    impl<'tcx> LocalCaptureState<'tcx> {
+        // Only operator-requested roots enter `selected`; transitive
+        // callees appear solely in `program.bodies`.
+        fn record_local_body(
+            &mut self,
+            tcx: TyCtxt<'tcx>,
+            target: LocalDefId,
+            path: String,
+            is_root: bool,
+        ) -> Result<(), Failure> {
+            let key = target.local_def_index.as_u32();
+            let steal = tcx.mir_drops_elaborated_and_const_checked(target);
+            let observed = OBSERVED_HOOK
+                .lock()
+                .map_err(|_| Failure::tool("capture hook mutex poisoned"))?
+                .contains(&key);
+            let result = if !observed {
+                Err("compiler did not provide Runtime(PostCleanup) MIR".into())
+            } else if steal.is_stolen() {
+                Err("Runtime(PostCleanup) MIR was already stolen before capture".into())
+            } else {
+                extract::extract_body(tcx, target, &steal.borrow())
+            };
+            match result {
+                Ok(extracted) => {
+                    self.seen_instances.insert(ty::Instance::mono(tcx, target.to_def_id()));
+                    let body_index = self.raw_bodies.len();
+                    self.body_indices.insert(key, body_index);
+                    if is_root {
+                        self.selected.push(ir::SelectedBody {
+                            def_id: key,
+                            path: path.clone(),
+                            body_index,
+                        });
+                    }
+                    for &next_callee in extracted.local_callees() {
+                        self.callee_queue.push_back(next_callee);
+                    }
+                    self.raw_bodies.push((target, path, extracted));
+                }
+                Err(reason) => self.unsupported.push(ir::Unsupported { def_id: key, path, reason }),
             }
-            Err(reason) => unsupported.push(ir::Unsupported {
-                def_id: key,
-                path: tcx.def_path_str(def),
-                reason,
-            }),
+            Ok(())
         }
+    }
+
+    let mut state = LocalCaptureState {
+        raw_bodies: Vec::new(),
+        body_indices: BTreeMap::new(),
+        seen_instances: HashSet::new(),
+        callee_queue: VecDeque::new(),
+        selected: Vec::new(),
+        unsupported,
+    };
+    let mut visited_callees: BTreeSet<u32> = BTreeSet::new();
+    for def in selected_defs {
+        visited_callees.insert(def.local_def_index.as_u32());
+        state.record_local_body(tcx, def, tcx.def_path_str(def), true)?;
     }
     if let ir::Scope::SelectedUnit { instantiations, .. } = scope {
         for inst in instantiations {
             match mono::instantiate_body(tcx, &inst.path, &inst.args) {
                 Ok(resolved) => {
-                    if !seen_instances.insert(resolved.instance) {
+                    if !state.seen_instances.insert(resolved.instance) {
                         continue;
                     }
                     let inst_path = extract::instance_path(tcx, resolved.instance);
@@ -2046,25 +2058,39 @@ fn collect(
                     let extracted = if !observed {
                         Err("compiler did not provide Runtime(PostCleanup) MIR".into())
                     } else {
-                        extract::instantiated_body(tcx, &resolved)
+                        extract::extract_instantiated_body(tcx, &resolved)
                     };
                     match extracted {
-                        Ok(body) => {
-                            selected.push(ir::SelectedBody {
+                        Ok(extracted) => {
+                            let body_index = state.raw_bodies.len();
+                            // `LocalCall` admits only non-generic callees
+                            // and `resolve` keys them by definition, so a
+                            // non-generic instantiation is the same body a
+                            // queued call would reach. Register it so a
+                            // call (or self-recursion) reuses this index
+                            // instead of extracting a duplicate identity.
+                            if tcx.generics_of(resolved.resolved_local).count() == 0 {
+                                visited_callees.insert(key);
+                                state.body_indices.insert(key, body_index);
+                            }
+                            state.selected.push(ir::SelectedBody {
                                 def_id: key,
-                                path: inst_path,
-                                body_index: bodies.len(),
+                                path: inst_path.clone(),
+                                body_index,
                             });
-                            bodies.push(body);
+                            for &next_callee in extracted.local_callees() {
+                                state.callee_queue.push_back(next_callee);
+                            }
+                            state.raw_bodies.push((resolved.resolved_local, inst_path, extracted));
                         }
-                        Err(reason) => unsupported.push(ir::Unsupported {
+                        Err(reason) => state.unsupported.push(ir::Unsupported {
                             def_id: key,
                             path: inst_path,
                             reason,
                         }),
                     }
                 }
-                Err(reason) => unsupported.push(ir::Unsupported {
+                Err(reason) => state.unsupported.push(ir::Unsupported {
                     def_id: 0,
                     path: format!("{}<{}>", inst.path, inst.args.join(", ")),
                     reason,
@@ -2072,22 +2098,53 @@ fn collect(
             }
         }
     }
+    while let Some(callee) = state.callee_queue.pop_front() {
+        let key = callee.local_def_index.as_u32();
+        if !visited_callees.insert(key) {
+            continue;
+        }
+        let kind = tcx.def_kind(callee);
+        let path = tcx.def_path_str(callee);
+        if !callable(kind) || !body_owners.contains(&key) {
+            state.unsupported.push(ir::Unsupported {
+                def_id: key,
+                path,
+                reason: format!(
+                    "called local item of kind {kind:?} lacks an extractable callable MIR body"
+                ),
+            });
+            continue;
+        }
+        state.record_local_body(tcx, callee, path, false)?;
+    }
     if tcx.dcx().has_errors().is_some() {
-        return Err(Failure::compiler(
-            "late compiler diagnostics prohibit capture",
-        ));
+        return Err(Failure::compiler("late compiler diagnostics prohibit capture"));
     }
-    if !unsupported.is_empty() {
-        return Err(Failure::unsupported_items(unsupported));
+    if !state.unsupported.is_empty() {
+        return Err(Failure::unsupported_items(state.unsupported));
     }
+    let body_indices = state.body_indices;
+    let selected = state.selected;
+    let unsupported = state.unsupported;
+    let bodies = state
+        .raw_bodies
+        .into_iter()
+        .map(|(def, path, extracted)| {
+            extracted.resolve(&body_indices).map_err(|reason| {
+                Failure::unsupported_items(vec![ir::Unsupported {
+                    def_id: def.local_def_index.as_u32(),
+                    path,
+                    reason,
+                }])
+            })
+        })
+        .collect::<Result<Vec<_>, Failure>>()?;
     // Belt-and-suspenders guard complementing `DefKind::ForeignMod`: refuse
     // any crate carrying native-library link directives in crate metadata
     // (such as item-less `#[link(name = ...)]` blocks or `-l` flags), since
     // link-time native-library obligations are unmodeled in the scalar profile.
     if !tcx.native_libraries(LOCAL_CRATE).is_empty() {
-        return Err(Failure::unsupported(
-            "crate-local native libraries are unsupported",
-        ));
+        return Err(Failure::unsupported("crate-local native libraries are unsupported"));
     }
     for body in &bodies {
         body.collect_enum_ids(&mut admitted_enum_ids);
@@ -2096,9 +2153,7 @@ fn collect(
     // Defense in depth: confirm `rustc`'s logical environment still matches the
     // explicit `--env` map installed in `Callbacks::config`.
     if tcx.sess.opts.logical_env.len() != declared_env.len()
-        || !declared_env
-            .iter()
-            .all(|(k, v)| tcx.sess.opts.logical_env.get(k) == Some(v))
+        || !declared_env.iter().all(|(k, v)| tcx.sess.opts.logical_env.get(k) == Some(v))
     {
         return Err(Failure::tool(
             "compiler logical environment diverged from declared --env bindings",
@@ -2123,9 +2178,7 @@ fn collect(
                 .map(|(var, value)| (var.as_str(), value.as_ref().map(rustc_span::Symbol::as_str))),
         )?;
     }
-    let reads = reads
-        .lock()
-        .map_err(|_| Failure::tool("input read mutex poisoned"))?;
+    let reads = reads.lock().map_err(|_| Failure::tool("input read mutex poisoned"))?;
     // Cross-check rustc's input inventories against the loader instead of
     // assuming that installing a loader intercepted every source dependency.
     // Imported source-map entries describe precompiled dependency source;
@@ -2144,9 +2197,7 @@ fn collect(
             continue;
         }
         let FileName::Real(real) = &file.name else {
-            return Err(Failure::unsupported(
-                "non-file compiler source input is unsupported",
-            ));
+            return Err(Failure::unsupported("non-file compiler source input is unsupported"));
         };
         let path = real
             .local_path()
@@ -2165,9 +2216,7 @@ fn collect(
     // as textual source, even when they have no source-map entry.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/session.rs#L158-L159
     for file in tcx.sess.file_depinfo.borrow().iter() {
-        let path = Path::new(file.as_str())
-            .canonicalize()
-            .map_err(Failure::io)?;
+        let path = Path::new(file.as_str()).canonicalize().map_err(Failure::io)?;
         if !reads.files.contains_key(&path) {
             return Err(Failure::unsupported(format!(
                 "dependency input bypassed read recording: {}",
@@ -2347,9 +2396,7 @@ pub(crate) fn run(
         crate::driver::install_ice_hook();
         rustc_driver::run_compiler(&compiler_args, &mut callbacks);
     });
-    let reads = reads
-        .lock()
-        .map_err(|_| Failure::tool("input read mutex poisoned"))?;
+    let reads = reads.lock().map_err(|_| Failure::tool("input read mutex poisoned"))?;
     if !reads.tool_errors.is_empty() {
         return Err(Failure::tool(reads.tool_errors.join("; ")));
     }
@@ -2357,9 +2404,7 @@ pub(crate) fn run(
         return Err(Failure::unsupported(reads.refusals.join("; ")));
     }
     if compiler_result.is_err() {
-        return Err(Failure::compiler(
-            "rustc rejected the compilation; see stderr diagnostics",
-        ));
+        return Err(Failure::compiler("rustc rejected the compilation; see stderr diagnostics"));
     }
     let manifest = callbacks
         .result
@@ -2368,26 +2413,17 @@ pub(crate) fn run(
     // the source binding. Reject a changed read set rather than completing
     // an earlier snapshot with inputs that its compiler census never checked.
     if manifest.source_files.len() != reads.files.len()
-        || !manifest
-            .source_files
-            .iter()
-            .zip(reads.files.values())
-            .all(|(captured, final_read)| {
-                captured.path == final_read.path
-                    && captured.sha256 == final_read.sha256
-                    && captured.read_kind == final_read.read_kind
-            })
+        || !manifest.source_files.iter().zip(reads.files.values()).all(|(captured, final_read)| {
+            captured.path == final_read.path
+                && captured.sha256 == final_read.sha256
+                && captured.read_kind == final_read.read_kind
+        })
     {
-        return Err(Failure::unsupported(
-            "compiler inputs changed after the analysis snapshot",
-        ));
+        return Err(Failure::unsupported("compiler inputs changed after the analysis snapshot"));
     }
     check_current_inputs(&reads)?;
-    let _ = verify_session_sysroot(
-        verified_sysroot,
-        verified_sysroot,
-        verified_compiler.sysroot_id,
-    )?;
+    let _ =
+        verify_session_sysroot(verified_sysroot, verified_sysroot, verified_compiler.sysroot_id)?;
     Ok(manifest)
 }
 
@@ -2429,10 +2465,7 @@ mod tests {
             vec!["-Cpanic".to_owned(), "abort".to_owned()],
             vec!["-C".to_owned(), "panic=abort".to_owned()],
         ] {
-            assert!(
-                validate_compiler_args(&bad).is_err(),
-                "expected {bad:?} to fail"
-            );
+            assert!(validate_compiler_args(&bad).is_err(), "expected {bad:?} to fail");
         }
     }
 

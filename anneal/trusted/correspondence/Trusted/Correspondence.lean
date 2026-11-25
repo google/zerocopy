@@ -72,7 +72,7 @@ This module defines five components:
    `8144389c895da997dbdecaa635e41d6a50be6ffd`) with opt-in runtime move
    deinitialization (`deinitMovedPlace := true`) and shallow validation
    (`ValidityMemory.bind` -> `ValidityVisitor.validatePlace`).
-4. **Top-level correspondence claims (37 locked Pass 2 claims):** States both
+4. **Top-level correspondence claims (38 locked Pass 2 claims):** States both
    aggregate (`CorrespondenceClaim`, `FaultEquivalenceClaim`) and
    choice-coupled (`CorrespondenceAtChoicesClaim`,
    `FaultEquivalenceAtChoicesClaim`) correspondence and fault equivalence,
@@ -82,7 +82,7 @@ This module defines five components:
    `LocalAccess.evalOperand`), `BytesCodecMatchesMiriClaim` (pinning
    $M_{\text{anneal}}$'s byte codec against `lean-miri`'s `Allocation`
    scalar accesses), the 6 codec claims, the 11 simulation/uniqueness claims,
-   and canaries `D6`–`D16`.
+   and canaries `D6`–`D17`.
 5. **Fail-closed target, profile, and stack shape:** `initRefState` rejects
    non-64-bit targets, non-v1 MIR profiles, non-empty `callerMem`, out-of-bounds
    storage markers, ill-typed `Discriminant` and `Cast` destinations, and
@@ -304,13 +304,28 @@ def StateUniqueOfSimulationInvClaim : Prop :=
     SimulationInv rp p s₁ rs → SimulationInv rp p s₂ rs → s₁ = s₂
 
 /-- Trusted claim for
-`Anneal.MirCorrespondenceProof.refState_unique_of_simulationInv`. -/
+`Anneal.MirCorrespondenceProof.refState_unique_of_simulationInv`.
+
+With multi-frame states, `SimulationInv` no longer pins two pieces of
+`lean-miri` bookkeeping that it pinned for a single frame:
+`refTopRelevanceValid` admits both `none` and `some 0` for the
+`topUserRelevantFrame` thread cache (part of `machine.threads`) when one frame
+is live, and per-frame local `layout` caches may be filled or
+empty. Uniqueness is therefore stated up to equal `machine.threads` and equal
+per-frame `layout.isSome` shapes, in addition to equal step counters and
+control state. This is weaker than the single-frame form, which needed only
+the step counters and control state. -/
 def RefStateUniqueOfSimulationInvClaim : Prop :=
   ∀ {rp : RefProg} {p : Program} {s : State} {rs₁ rs₂ : RefState},
     SimulationInv rp p s rs₁ → SimulationInv rp p s rs₂ →
     rs₁.stepsExecuted = rs₂.stepsExecuted →
     rs₁.maxSteps = rs₂.maxSteps →
     rs₁.miri.machine.user.control = rs₂.miri.machine.user.control →
+    rs₁.miri.machine.threads = rs₂.miri.machine.threads →
+    (rs₁.miri.stack.frames.map
+        (fun fr => fr.locals.map (fun l => l.layout.isSome))) =
+      (rs₂.miri.stack.frames.map
+        (fun fr => fr.locals.map (fun l => l.layout.isSome))) →
     rs₁ = rs₂
 
 /-- Trusted claim for `Anneal.MirCorrespondenceProof.initRefState_sim`. -/
@@ -327,12 +342,13 @@ def InitRefStateSimClaim : Prop :=
 /-- Trusted claim for `Anneal.MirCorrespondenceProof.evalRefStep_eq`. -/
 def EvalRefStepEqClaim : Prop :=
   ∀ {rp : RefProg} {p : Program} {s : State} {rs : RefState}
-    {f : FrameState} {body : Body} {rbody : RefBody},
+    {f : FrameState} {callers : List FrameState} {body : Body}
+    {rbody : RefBody},
     decodeProg rp = some p →
     SimulationInv rp p s rs →
-    s.frames = [f] →
-    MirSemantics.getElem? p.bodies f.defId = some body →
-    MirSemantics.getElem? rp.bodies f.defId = some rbody →
+    s.frames = f :: callers →
+    activeFrameBody p f = some body →
+    activeRefFrameBody rp f = some rbody →
     Nat.blt rs.stepsExecuted rs.maxSteps = true →
     ∀ (c : Choice),
       evalRefStep rp c rs =
@@ -688,5 +704,30 @@ def BytesCodecMatchesMiriClaim : Prop :=
         .error (.invalidUninitBytes info) ∧
       decodeVal profileTargetEndian (.int w s)
           (List.replicate w.byteSize .uninit) = .ok none)
+
+/-- Trusted claim for
+`Anneal.MirCorrespondenceProof.canary_D17_call_and_sysroot_call`: in both
+$M_{\text{anneal}}$ and $M_{\text{ref}}$,
+1. an intra-crate multi-frame `.call` returns `42u16`;
+2. an in-bounds `u16::unchecked_add` `.sysrootCall` returns `42u16`; and
+3. an overflowing `u16::unchecked_add` `.sysrootCall` faults with
+   `.undefined` / `.ub`. -/
+def CanaryD17CallAndSysrootCallClaim : Prop :=
+  WellFormed progDirectCallD17 queryU16_19 ∧
+  Behavior progDirectCallD17 queryU16_19
+    (.returned ⟨scalarNatVal .i16 false 42, ⟨[]⟩⟩) ∧
+  RefWellFormed (encodeProg progDirectCallD17) queryU16_19 ∧
+  RefBehavior (encodeProg progDirectCallD17) queryU16_19
+    (.returned ⟨scalarNatVal .i16 false 42, ⟨[]⟩⟩) ∧
+  WellFormed progSysrootUncheckedAddOkD17 queryEmpty ∧
+  Behavior progSysrootUncheckedAddOkD17 queryEmpty
+    (.returned ⟨scalarNatVal .i16 false 42, ⟨[]⟩⟩) ∧
+  RefWellFormed (encodeProg progSysrootUncheckedAddOkD17) queryEmpty ∧
+  RefBehavior (encodeProg progSysrootUncheckedAddOkD17) queryEmpty
+    (.returned ⟨scalarNatVal .i16 false 42, ⟨[]⟩⟩) ∧
+  ReachesResult progSysrootUncheckedAddUbD17 queryEmpty (.fault .undefined) ∧
+  ¬ WellFormed progSysrootUncheckedAddUbD17 queryEmpty ∧
+  (∃ maxSteps, RefReachesOutcome (encodeProg progSysrootUncheckedAddUbD17)
+    queryEmpty maxSteps .ub)
 
 end Trusted.Correspondence

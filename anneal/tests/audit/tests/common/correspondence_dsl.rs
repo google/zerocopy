@@ -8,7 +8,7 @@
 
 //! Declarative Lean Pass 2 correspondence harness and request builders.
 //!
-//! Replaces repeated inline synthetic Miri stub modules, 37-claim/proof blocks,
+//! Replaces repeated inline synthetic Miri stub modules, 38-claim/proof blocks,
 //! and verbose [`InspectorRequest::CorrespondenceAudit`] literals across
 //! `anneal-audit-tests`.
 
@@ -156,6 +156,8 @@ def mkCmpDiscriminantProg : Nat := 0
 def progCharSwitch : Nat := 0
 def mkIntToIntCastProg : Nat := 0
 def overflowPairTy : Nat := 0
+def queryEmpty : Nat := 0
+def scalarNatVal : Nat := 0
 def unlistedAnnealHelper : Nat := 0
 end Trusted.MirSemantics
 ";
@@ -392,6 +394,10 @@ impl ClaimsSpec {
              def progBinOpMoveThenMoveD7c : Nat := 0\n\
              def progSelfMoveD8 : Nat := 0\n\
              def progMoveUnitZstD9 : Nat := 0\n\
+             def progDirectCallD17 : Nat := 0\n\
+             def progSysrootUncheckedAddOkD17 : Nat := 0\n\
+             def progSysrootUncheckedAddUbD17 : Nat := 0\n\
+             def queryU16_19 : Nat := 0\n\
              def transitiveSubHelper : Nat := Trusted.MirSemantics.subEvalHelper\n\
              def initRefState : Nat := {init_ref_state}\n\
              def evalRefStep : Nat := {eval_ref_step}\n\
@@ -474,6 +480,14 @@ impl ClaimsSpec {
                Trusted.MirAst.BinOp.addWithOverflow = Trusted.MirAst.BinOp.subWithOverflow ∧\n\
                encodeProg = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
                Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n\
+             def CanaryD17CallAndSysrootCallClaim : Prop :=\n\
+               progDirectCallD17 = progSysrootUncheckedAddOkD17 ∧\n\
+               progSysrootUncheckedAddOkD17 = progSysrootUncheckedAddUbD17 ∧\n\
+               queryU16_19 = Trusted.MirSemantics.queryEmpty ∧\n\
+               Trusted.MirSemantics.scalarNatVal = encodeProg ∧\n\
+               Trusted.MirSemantics.WellFormed ∧ Trusted.MirSemantics.Behavior ∧\n\
+               Trusted.MirSemantics.ReachesResult ∧ RefWellFormed ∧\n\
+               RefBehavior ∧ RefReachesOutcome\n\
              def RefStepSoundForAllowedStepClaim : Prop := {ref_step_allowed_def}\n\
              {VALID_BYTES_CODEC_DEF}\
              end Trusted.Correspondence\n",
@@ -573,6 +587,8 @@ impl ProofsSpec {
                ⟨Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro, True.intro, True.intro⟩\n\
              theorem canary_D16_with_overflow_ok : CanaryD16WithOverflowOkClaim :=\n\
                ⟨Eq.refl _, Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro⟩\n\
+             theorem canary_D17_call_and_sysroot_call : CanaryD17CallAndSysrootCallClaim :=\n\
+               ⟨Eq.refl _, Eq.refl _, Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro, True.intro, True.intro⟩\n\
              theorem refStep_sound_for_allowedStep_holds : RefStepSoundForAllowedStepClaim :=\n\
                {ref_step_allowed}\n\
              theorem bytes_codec_matches_miri : BytesCodecMatchesMiriClaim :=\n\

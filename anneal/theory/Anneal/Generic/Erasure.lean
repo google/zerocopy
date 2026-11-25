@@ -3646,6 +3646,8 @@ theorem openInitState_framesNoParam (prog : OpenProgram) (env : OpenExecEnv)
               have hIS := (ite_err_ok hIS).2
               have hIS := (ite_err_ok hIS).2
               have hIS := (ite_err_ok hIS).2
+              have hIS := (ite_err_ok hIS).2
+              have hIS := (ite_err_ok hIS).2
               cases hIS
               have hEntryId : day1Prog.entryDefId = prog.entryDefId := by
                 unfold OpenProgram.toDay1? at hD
@@ -3674,16 +3676,225 @@ theorem openInitState_framesNoParam (prog : OpenProgram) (env : OpenExecEnv)
               cases hInit
               exact ⟨hEntry, True.intro⟩
 
-/-- Day-1 `evalStep` on a singleton frame preserves the active `defId` whenever
-it steps. -/
+/-- Whether a Day-1 terminator is `.call` or `.sysrootCall` (the per-block test
+inside `bodyHasAnyCall`). -/
+private noncomputable def day1TermIsCall (t : TerminatorKind) : Bool :=
+  match t with
+  | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ => true
+  | _ => false
+
+private theorem openTerm_toDay1_noCall (t : OpenTerminatorKind)
+    (dt : TerminatorKind) (h : OpenTerminatorKind.toDay1? t = some dt) :
+    day1TermIsCall dt = false := by
+  cases t with
+  | goto _ =>
+      dsimp only [OpenTerminatorKind.toDay1?] at h
+      injection h with h; subst h; rfl
+  | switchInt d tgts =>
+      dsimp only [OpenTerminatorKind.toDay1?] at h
+      cases hd : OpenOperand.toDay1? d with
+      | none => rw [hd] at h; cases h
+      | some _ => rw [hd] at h; injection h with h; subst h; rfl
+  | return_ =>
+      dsimp only [OpenTerminatorKind.toDay1?] at h
+      injection h with h; subst h; rfl
+  | unreachable =>
+      dsimp only [OpenTerminatorKind.toDay1?] at h
+      injection h with h; subst h; rfl
+  | unwindResume =>
+      dsimp only [OpenTerminatorKind.toDay1?] at h
+      injection h with h; subst h; rfl
+  | assert cond _ _ _ _ =>
+      dsimp only [OpenTerminatorKind.toDay1?] at h
+      cases hc : OpenOperand.toDay1? cond with
+      | none => rw [hc] at h; cases h
+      | some _ => rw [hc] at h; injection h with h; subst h; rfl
+  | call _ _ _ _ _ _ =>
+      dsimp only [OpenTerminatorKind.toDay1?] at h
+      cases h
+  | traitCall _ _ _ _ _ _ _ _ =>
+      dsimp only [OpenTerminatorKind.toDay1?] at h
+      cases h
+  | unsupported =>
+      dsimp only [OpenTerminatorKind.toDay1?] at h
+      injection h with h; subst h; rfl
+
+private theorem openBlocks_toDay1_noCall :
+    ∀ (obs : List OpenBasicBlock) (bs : List BasicBlock),
+      OpenBasicBlock.toDay1List? obs = some bs →
+      bs.any (fun b =>
+        match b.terminator with
+        | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ => true
+        | _ => false) = false
+  | [], bs, h => by
+      dsimp only [OpenBasicBlock.toDay1List?] at h
+      injection h with h; subst h; rfl
+  | ob :: rest, bs, h => by
+      dsimp only [OpenBasicBlock.toDay1List?] at h
+      cases hb : OpenBasicBlock.toDay1? ob with
+      | none => rw [hb] at h; cases h
+      | some db =>
+          cases hr : OpenBasicBlock.toDay1List? rest with
+          | none => rw [hb, hr] at h; cases h
+          | some drest =>
+              rw [hb, hr] at h
+              injection h with h; subst h
+              have hRest := openBlocks_toDay1_noCall rest drest hr
+              unfold OpenBasicBlock.toDay1? at hb
+              cases hs : OpenStatementKind.toDay1List? ob.statements with
+              | none => rw [hs] at hb; cases hb
+              | some stmts =>
+                  cases ht : OpenTerminatorKind.toDay1? ob.terminator with
+                  | none => rw [hs, ht] at hb; cases hb
+                  | some term =>
+                      rw [hs, ht] at hb
+                      injection hb with hb; subst hb
+                      have hT := openTerm_toDay1_noCall ob.terminator term ht
+                      unfold List.any
+                      dsimp only
+                      change (day1TermIsCall term || drest.any _) = false
+                      rw [hT, Bool.false_or]
+                      exact hRest
+
+private theorem openBody_toDay1_noCall (ob : OpenBody) (b : Body)
+    (h : OpenBody.toDay1? ob = some b) : bodyHasAnyCall b = false := by
+  unfold OpenBody.toDay1? at h
+  cases hl : OpenMirTy.toClosedMirTyList? ob.locals with
+  | none => rw [hl] at h; cases h
+  | some dLocals =>
+      cases hbs : OpenBasicBlock.toDay1List? ob.basicBlocks with
+      | none => rw [hl, hbs] at h; cases h
+      | some dBlocks =>
+          rw [hl, hbs] at h
+          injection h with h; subst h
+          unfold bodyHasAnyCall
+          exact openBlocks_toDay1_noCall ob.basicBlocks dBlocks hbs
+
+private theorem openProgList_toDay1_noCall :
+    ∀ (obs : List OpenBody) (bs : List Body),
+      OpenProgram.toDay1List? obs = some bs →
+      bs.all (fun b => !bodyHasAnyCall b) = true
+  | [], bs, h => by
+      dsimp only [OpenProgram.toDay1List?] at h
+      injection h with h; subst h; rfl
+  | ob :: rest, bs, h => by
+      dsimp only [OpenProgram.toDay1List?] at h
+      cases hb : OpenBody.toDay1? ob with
+      | none => rw [hb] at h; cases h
+      | some db =>
+          cases hr : OpenProgram.toDay1List? rest with
+          | none => rw [hb, hr] at h; cases h
+          | some drest =>
+              rw [hb, hr] at h
+              injection h with h; subst h
+              unfold List.all
+              dsimp only
+              rw [openBody_toDay1_noCall ob db hb, Bool.not_false,
+                Bool.true_and]
+              exact openProgList_toDay1_noCall rest drest hr
+
+/-- Every Day-1 program produced by `OpenProgram.toDay1?` is call-free. -/
+theorem toDay1?_noCall (prog : OpenProgram) (p : Program)
+    (h : OpenProgram.toDay1? prog = some p) :
+    p.bodies.all (fun b => !bodyHasAnyCall b) = true := by
+  unfold OpenProgram.toDay1? at h
+  cases hl : OpenProgram.toDay1List? prog.bodies with
+  | none => rw [hl] at h; cases h
+  | some bs =>
+      rw [hl] at h
+      injection h with h; subst h
+      exact openProgList_toDay1_noCall prog.bodies bs hl
+
+private theorem bodies_all_noCall_getElem? :
+    ∀ (bodies : List Body) (defId : DefId) (b : Body),
+      bodies.all (fun b => !bodyHasAnyCall b) = true →
+      Trusted.MirSemantics.getElem? bodies defId = some b →
+      bodyHasAnyCall b = false
+  | [], _, _, _, hb => by cases hb
+  | b0 :: rest, defId, b, hAll, hb => by
+      unfold List.all at hAll
+      dsimp only at hAll
+      cases h0 : bodyHasAnyCall b0 with
+      | true =>
+          rw [h0, Bool.not_true, Bool.false_and] at hAll; cases hAll
+      | false =>
+          rw [h0, Bool.not_false, Bool.true_and] at hAll
+          cases defId with
+          | zero =>
+              dsimp only [Trusted.MirSemantics.getElem?] at hb
+              injection hb with hb; subst hb; exact h0
+          | succ k =>
+              dsimp only [Trusted.MirSemantics.getElem?] at hb
+              exact bodies_all_noCall_getElem? rest k b hAll hb
+
+/-- In a call-free program, every frame's active body (including a pinned
+`sysrootNumBody`) is call-free. -/
+theorem activeFrameBody_noCall (p : Program) (f : FrameState)
+    (hAll : p.bodies.all (fun b => !bodyHasAnyCall b) = true) :
+    ∀ b, activeFrameBody p f = some b → bodyHasAnyCall b = false := by
+  intro b hb
+  unfold activeFrameBody at hb
+  cases hs : f.sysrootOp? with
+  | some op =>
+      rw [hs] at hb
+      injection hb with hb; subst hb
+      unfold bodyHasAnyCall
+      cases op with
+      | mk kind _ _ => cases kind <;> rfl
+  | none =>
+      rw [hs] at hb
+      exact bodies_all_noCall_getElem? p.bodies f.defId b hAll hb
+
+private theorem basicBlocks_noCall_term_aux
+    {bbs : List BasicBlock} {blk : BasicBlockId} {bb : BasicBlock}
+    (hNo : bbs.any (fun b =>
+      match b.terminator with
+      | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ => true
+      | _ => false) = false)
+    (hBb : Trusted.MirSemantics.getElem? bbs blk = some bb) :
+    (match bb.terminator with
+     | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ => true
+     | _ => false) = false := by
+  induction bbs generalizing blk with
+  | nil => cases hBb
+  | cons b rest ih =>
+    unfold List.any at hNo
+    dsimp only at hNo
+    cases hOr : (match b.terminator with
+      | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ => true
+      | _ => false)
+    · rw [hOr, Bool.false_or] at hNo
+      cases blk with
+      | zero =>
+        injection hBb with hEq; subst hEq; exact hOr
+      | succ blk' =>
+        exact ih hNo hBb
+    · rw [hOr, Bool.true_or] at hNo
+      cases hNo
+
+/-- A basic block of a call-free body (`bodyHasAnyCall body = false`) never
+ends in `.call` or `.sysrootCall`. -/
+theorem basicBlocks_noCall_term {body : Body} {blk : BasicBlockId}
+    {bb : BasicBlock} (hNo : bodyHasAnyCall body = false)
+    (hBb : Trusted.MirSemantics.getElem? body.basicBlocks blk = some bb) :
+    (match bb.terminator with
+     | .call _ _ _ _ _ | .sysrootCall _ _ _ _ _ => true
+     | _ => false) = false := by
+  unfold bodyHasAnyCall at hNo
+  exact basicBlocks_noCall_term_aux hNo hBb
+
+/-- Day-1 `evalStep` on a singleton frame whose active body is call-free
+preserves the active `defId` and `sysrootOp?` whenever it steps. -/
 theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
     (mem : MemoryState) (cm : CallerMemory) (next : State)
+    (hNoCall : ∀ b, activeFrameBody p df = some b → bodyHasAnyCall b = false)
     (h : evalStep p 0 { frames := [df], callerMem := cm, mem := mem } =
       .step next) :
-    ∃ df', next.frames = [df'] ∧ df'.defId = df.defId := by
+    ∃ df', next.frames = [df'] ∧ df'.defId = df.defId ∧
+      df'.sysrootOp? = df.sysrootOp? := by
   unfold evalStep at h
   dsimp only at h
-  cases hB : Trusted.MirSemantics.getElem? p.bodies df.defId with
+  cases hB : activeFrameBody p df with
   | none => rw [hB] at h; cases h
   | some body =>
       rw [hB] at h
@@ -3697,10 +3908,10 @@ theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
               with
           | some stmt =>
               rw [hSt] at h
-              dsimp only at h
+              dsimp only [attachCallers] at h
               unfold evalStatement at h
               cases stmt with
-              | nop => cases h; exact ⟨_, rfl, rfl⟩
+              | nop => cases h; exact ⟨_, rfl, rfl, rfl⟩
               | storageLive lid =>
                   dsimp only at h
                   cases h1 : Trusted.MirSemantics.getElem? body.locals lid with
@@ -3722,7 +3933,7 @@ theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
                               dsimp only at h
                               cases h4 : deallocateLocal mem _ with
                               | error _ => rw [h4] at h; cases h
-                              | ok _ => rw [h4] at h; cases h; exact ⟨_, rfl, rfl⟩
+                              | ok _ => rw [h4] at h; cases h; exact ⟨_, rfl, rfl, rfl⟩
               | storageDead lid =>
                   dsimp only at h
                   have h := ite_fault_step h
@@ -3738,7 +3949,7 @@ theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
                           dsimp only at h
                           cases h3 : deallocateLocal mem _ with
                           | error _ => rw [h3] at h; cases h
-                          | ok _ => rw [h3] at h; cases h; exact ⟨_, rfl, rfl⟩
+                          | ok _ => rw [h3] at h; cases h; exact ⟨_, rfl, rfl, rfl⟩
               | assign dst rv =>
                   dsimp only at h
                   have h := ite_fault_step h
@@ -3757,7 +3968,7 @@ theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
                           cases h3 : writePlace r2.2.1 r2.2.2 dst.localId dstTy
                               r2.1 with
                           | error _ => rw [h3] at h; cases h
-                          | ok r3 => rw [h3] at h; cases h; exact ⟨_, rfl, rfl⟩
+                          | ok r3 => rw [h3] at h; cases h; exact ⟨_, rfl, rfl, rfl⟩
               | unsupported => cases h
           | none =>
               rw [hSt] at h
@@ -3767,12 +3978,12 @@ theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
               cases hTerm : bb.terminator with
               | goto tgt =>
                   rw [hTerm] at h
-                  dsimp only at h
+                  dsimp only [attachCallers] at h
                   unfold jumpToBlock at h
-                  cases h; exact ⟨_, rfl, rfl⟩
+                  cases h; exact ⟨_, rfl, rfl, rfl⟩
               | switchInt discr tgts =>
                   rw [hTerm] at h
-                  dsimp only at h
+                  dsimp only [attachCallers] at h
                   cases h1 : evalPrimitiveOperand body.locals df.locals mem
                       discr with
                   | error _ => rw [h1] at h; cases h
@@ -3788,7 +3999,7 @@ theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
                           | ok _ =>
                               rw [h2] at h; dsimp only at h
                               unfold jumpToBlock at h
-                              cases h; exact ⟨_, rfl, rfl⟩
+                              cases h; exact ⟨_, rfl, rfl, rfl⟩
                       | bool b =>
                           rw [hDv] at h; dsimp only at h
                           cases h2 : evalBoolSwitchBranches b tgts.otherwise
@@ -3797,7 +4008,7 @@ theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
                           | ok _ =>
                               rw [h2] at h; dsimp only at h
                               unfold jumpToBlock at h
-                              cases h; exact ⟨_, rfl, rfl⟩
+                              cases h; exact ⟨_, rfl, rfl, rfl⟩
                       | char c =>
                           rw [hDv] at h; dsimp only at h
                           cases h2 : evalCharSwitchBranches c tgts.otherwise
@@ -3806,7 +4017,7 @@ theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
                           | ok _ =>
                               rw [h2] at h; dsimp only at h
                               unfold jumpToBlock at h
-                              cases h; exact ⟨_, rfl, rfl⟩
+                              cases h; exact ⟨_, rfl, rfl, rfl⟩
                       | unit | enumVal _ _ | ordering _ | tuple _
                       | bytes _ | ptr _ | slicePtr _ _ | rangeTo _
                       | rangeFrom _ =>
@@ -3815,12 +4026,12 @@ theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
                           | nil =>
                               rw [hBr] at h
                               unfold jumpToBlock at h
-                              cases h; exact ⟨_, rfl, rfl⟩
+                              cases h; exact ⟨_, rfl, rfl, rfl⟩
                           | cons _ _ =>
                               rw [hBr] at h; cases h
               | return_ =>
                   rw [hTerm] at h
-                  dsimp only at h
+                  dsimp only [attachCallers] at h
                   have h := ite_fault_step h
                   cases h1 : Trusted.MirSemantics.getElem? df.locals 0 with
                   | none => rw [h1] at h; cases h
@@ -3845,8 +4056,12 @@ theorem evalStep_single_preserves_defId (p : Program) (df : FrameState)
                               | ok opt =>
                                   rw [h3] at h
                                   cases opt <;> cases h
-              | unreachable | unwindResume | assert _ _ _ _ _ | call _ _ _ _ _
-              | coreCall _ _ _ _ _ | unsupported => rw [hTerm] at h; cases h
+              | call _ _ _ _ _ | sysrootCall _ _ _ _ _ =>
+                  have hc := basicBlocks_noCall_term (hNoCall body hB) hBb
+                  rw [hTerm] at hc; cases hc
+              | unreachable | unwindResume | assert _ _ _ _ _
+              | coreCall _ _ _ _ _ | unsupported =>
+                  rw [hTerm] at h; dsimp only [attachCallers] at h; cases h
 
 /-- `evalOpenOperand` preserves `frame.defId`. -/
 theorem evalOpenOperand_preserves_defId (prog : OpenProgram) (env : OpenExecEnv)
@@ -4117,7 +4332,8 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
               rw [hSf] at hStep
               cases hStep
           | nil =>
-              rw [hSf] at hFrames
+              rw [hSf] at hFrames hStep
+              dsimp only at hStep
               have hStep' :
                   liftStepResult
                       (evalStep day1Prog 0
@@ -4137,9 +4353,11 @@ theorem openEvalDetStep_preserves_framesNoParam (prog : OpenProgram)
               | step next =>
                   rw [hEval] at hStep'
                   cases hStep'
-                  let ⟨df', hNextFr, hDefEq⟩ :=
+                  let ⟨df', hNextFr, hDefEq, _⟩ :=
                     evalStep_single_preserves_defId day1Prog
                       (OpenFrameState.toFrameState of_) s.mem s.callerMem next
+                      (activeFrameBody_noCall day1Prog _
+                        (toDay1?_noCall prog day1Prog hD))
                       hEval
                   change FramesNoParam prog
                     (next.frames.map OpenFrameState.ofFrameState)
@@ -6675,23 +6893,9 @@ private theorem toDay1?_erase_term (reg : TraitRegistry) (σ : List OpenMirTy)
           rw [hc] at h; cases h
           dsimp only [OpenTerminatorKind.subst, eraseOpenTerminatorKind]
           rw [toDay1?_erase_operand reg σ hc]
-  | call callee substs args dst tgt uw =>
+  | call _ _ _ _ _ _ =>
       dsimp only [OpenTerminatorKind.toDay1?] at h
-      cases substs with
-      | cons _ _ => cases h
-      | nil =>
-          cases ha : OpenOperand.toDay1List? args with
-          | none => rw [ha] at h; cases h
-          | some dargs =>
-              rw [ha] at h
-              cases hd : OpenPlace.toDay1? dst with
-              | none => rw [hd] at h; cases h
-              | some ddst =>
-                  rw [hd] at h; cases h
-                  dsimp only [OpenTerminatorKind.subst,
-                    eraseOpenTerminatorKind, List.map]
-                  rw [toDay1List?_erase_operand reg σ ha,
-                    toDay1?_erase_place reg σ hd]
+      cases h
 
 private theorem toDay1?_erase_bb (reg : TraitRegistry) (σ : List OpenMirTy)
     {bb : OpenBasicBlock} {dbb : BasicBlock}
@@ -6878,202 +7082,42 @@ private theorem openState_toState_ofState (s : State) :
             rw [hf, ih]
       rw [hFrames]
 
+/-- In a call-free program, Day-1 `evalStep` keeps a single frame with no
+pinned `sysrootOp?` in that shape. -/
 private theorem evalStep_singleFrame (p : Program) (s s' : State)
-    (hSingle : ∃ f : FrameState, s.frames = [f])
+    (hSingle : ∃ f : FrameState, s.frames = [f] ∧ f.sysrootOp? = none)
+    (hAll : p.bodies.all (fun b => !bodyHasAnyCall b) = true)
     (hEv : evalStep p 0 s = .step s') :
-    ∃ f' : FrameState, s'.frames = [f'] := by
-  let ⟨f, hFs⟩ := hSingle
-  unfold evalStep at hEv
-  rw [hFs] at hEv
-  dsimp only at hEv
-  cases hB : Trusted.MirSemantics.getElem? p.bodies f.defId with
-  | none => rw [hB] at hEv; cases hEv
-  | some body =>
-      rw [hB] at hEv
-      dsimp only at hEv
-      cases hBb : Trusted.MirSemantics.getElem? body.basicBlocks f.blockIdx with
-      | none => rw [hBb] at hEv; cases hEv
-      | some bb =>
-          rw [hBb] at hEv
-          dsimp only at hEv
-          cases hSt : Trusted.MirSemantics.getElem? bb.statements f.stmtIdx with
-          | some stmt =>
-              rw [hSt] at hEv
-              cases stmt with
-              | nop => cases hEv; exact ⟨_, rfl⟩
-              | storageLive lid =>
-                  dsimp only [evalStatement] at hEv
-                  cases hL1 : Trusted.MirSemantics.getElem? body.locals lid with
-                  | none => rw [hL1] at hEv; cases hEv
-                  | some localTy =>
-                      rw [hL1] at hEv
-                      dsimp only at hEv
-                      cases hL2 : Trusted.MirSemantics.getElem? f.locals lid with
-                      | none => rw [hL2] at hEv; cases hEv
-                      | some old =>
-                          rw [hL2] at hEv
-                          dsimp only at hEv
-                          cases hS1 : setElem? f.locals lid
-                              (liveUninitSlot localTy) with
-                          | none => rw [hS1] at hEv; cases hEv
-                          | some ls' =>
-                              rw [hS1] at hEv
-                              dsimp only at hEv
-                              cases hD1 : deallocateLocal s.mem old with
-                              | error _ => rw [hD1] at hEv; cases hEv
-                              | ok mem' =>
-                                  rw [hD1] at hEv
-                                  cases hEv; exact ⟨_, rfl⟩
-              | storageDead lid =>
-                  dsimp only [evalStatement] at hEv
-                  cases hZ : Nat.beq lid 0 with
-                  | true => rw [ite_cond_true hZ] at hEv; cases hEv
-                  | false =>
-                      rw [ite_cond_false hZ] at hEv
-                      cases hL2 : Trusted.MirSemantics.getElem? f.locals lid with
-                      | none => rw [hL2] at hEv; cases hEv
-                      | some old =>
-                          rw [hL2] at hEv
-                          dsimp only at hEv
-                          cases hS1 : setElem? f.locals lid .dead with
-                          | none => rw [hS1] at hEv; cases hEv
-                          | some ls' =>
-                              rw [hS1] at hEv
-                              dsimp only at hEv
-                              cases hD1 : deallocateLocal s.mem old with
-                              | error _ => rw [hD1] at hEv; cases hEv
-                              | ok mem' =>
-                                  rw [hD1] at hEv
-                                  cases hEv; exact ⟨_, rfl⟩
-              | assign dst rv =>
-                  dsimp only [evalStatement] at hEv
-                  cases hEmp : dst.projection.isEmpty with
-                  | false => rw [ite_not_false hEmp] at hEv; cases hEv
-                  | true =>
-                      rw [ite_not_true hEmp] at hEv
-                      cases hL1 : Trusted.MirSemantics.getElem? body.locals
-                          dst.localId with
-                      | none => rw [hL1] at hEv; cases hEv
-                      | some dstTy =>
-                          rw [hL1] at hEv
-                          dsimp only at hEv
-                          cases hRv : evalRvalue body.locals f.locals s.mem
-                              dstTy rv with
-                          | error _ => rw [hRv] at hEv; cases hEv
-                          | ok r =>
-                              rw [hRv] at hEv
-                              dsimp only at hEv
-                              cases hWp : writePlace r.2.1 r.2.2 dst.localId
-                                  dstTy r.1 with
-                              | error _ => rw [hWp] at hEv; cases hEv
-                              | ok wp =>
-                                  rw [hWp] at hEv
-                                  cases hEv; exact ⟨_, rfl⟩
-              | unsupported => cases hEv
-          | none =>
-              rw [hSt] at hEv
-              dsimp only at hEv
-              cases hAtEnd : Nat.beq f.stmtIdx bb.statements.length with
-              | false => rw [ite_cond_false hAtEnd] at hEv; cases hEv
-              | true =>
-                  rw [ite_cond_true hAtEnd] at hEv
-                  dsimp only [evalTerminator] at hEv
-                  cases hTm : bb.terminator with
-                  | goto _ =>
-                      rw [hTm] at hEv; cases hEv; exact ⟨_, rfl⟩
-                  | return_ =>
-                      rw [hTm] at hEv
-                      dsimp only at hEv
-                      cases hCln : bb.cleanup with
-                      | true => rw [ite_cond_true hCln] at hEv; cases hEv
-                      | false =>
-                          rw [ite_cond_false hCln] at hEv
-                          cases hL0 : Trusted.MirSemantics.getElem? f.locals 0
-                              with
-                          | none => rw [hL0] at hEv; cases hEv
-                          | some slot0 =>
-                              rw [hL0] at hEv
-                              cases slot0 with
-                              | dead => cases hEv
-                              | partialTuple _ => cases hEv
-                              | immediate ov =>
-                                  cases ov <;> cases hEv
-                              | indirect mp =>
-                                  cases hBL0 : Trusted.MirSemantics.getElem?
-                                      body.locals 0 with
-                                  | none => rw [hBL0] at hEv; cases hEv
-                                  | some rt =>
-                                      rw [hBL0] at hEv
-                                      dsimp only at hEv
-                                      cases hLI : loadIndirect s.mem rt mp with
-                                      | error _ => rw [hLI] at hEv; cases hEv
-                                      | ok ov =>
-                                          rw [hLI] at hEv
-                                          cases ov <;> cases hEv
-                  | switchInt discr tgts =>
-                      rw [hTm] at hEv
-                      dsimp only at hEv
-                      cases hOp : evalPrimitiveOperand body.locals f.locals s.mem
-                          discr with
-                      | error _ => rw [hOp] at hEv; cases hEv
-                      | ok resP =>
-                          cases resP with
-                          | mk discrVal restP =>
-                              cases restP with
-                              | mk locs1 mem1 =>
-                                  rw [hOp] at hEv
-                                  dsimp only at hEv
-                                  cases discrVal with
-                                  | scalar sv =>
-                                      dsimp only at hEv
-                                      cases hSw : evalSwitchBranches sv.width
-                                          sv.bits tgts.otherwise tgts.branches
-                                          with
-                                      | error _ => rw [hSw] at hEv; cases hEv
-                                      | ok _ =>
-                                          rw [hSw] at hEv
-                                          cases hEv; exact ⟨_, rfl⟩
-                                  | bool b =>
-                                      dsimp only at hEv
-                                      cases hSw : evalBoolSwitchBranches b
-                                          tgts.otherwise tgts.branches with
-                                      | error _ => rw [hSw] at hEv; cases hEv
-                                      | ok _ =>
-                                          rw [hSw] at hEv
-                                          cases hEv; exact ⟨_, rfl⟩
-                                  | char c =>
-                                      dsimp only at hEv
-                                      cases hSw : evalCharSwitchBranches c
-                                          tgts.otherwise tgts.branches with
-                                      | error _ => rw [hSw] at hEv; cases hEv
-                                      | ok _ =>
-                                          rw [hSw] at hEv
-                                          cases hEv; exact ⟨_, rfl⟩
-                                  | unit | ordering _ | enumVal _ _ | ptr _
-                                  | tuple _ | bytes _ | slicePtr _ _
-                                  | rangeTo _ | rangeFrom _ =>
-                                      cases hBr : tgts.branches with
-                                      | nil =>
-                                          rw [hBr] at hEv
-                                          dsimp only at hEv
-                                          cases hEv; exact ⟨_, rfl⟩
-                                      | cons _ _ => rw [hBr] at hEv; cases hEv
-                  | unreachable | unwindResume | assert _ _ _ _ _
-                  | call _ _ _ _ _ | coreCall _ _ _ _ _ | unsupported =>
-                      rw [hTm] at hEv; cases hEv
+    ∃ f' : FrameState, s'.frames = [f'] ∧ f'.sysrootOp? = none := by
+  let ⟨f, hFs, hSys⟩ := hSingle
+  cases s with
+  | mk frames cm mem =>
+      dsimp only at hFs
+      subst hFs
+      let ⟨df', hNext, _, hSys'⟩ := evalStep_single_preserves_defId p f mem cm
+        s' (activeFrameBody_noCall p f hAll) hEv
+      exact ⟨df', hNext, hSys'.trans hSys⟩
 
 private theorem openStep_day1Some_iff (prog : OpenProgram) (env : OpenExecEnv)
     (wcs : List WhereClause) (day1P : Program)
     (hDay1 : OpenProgram.toDay1? prog = some day1P)
-    (s : State) (hSingle : ∃ f : FrameState, s.frames = [f])
+    (s : State)
+    (hSingle : ∃ f : FrameState, s.frames = [f] ∧ f.sysrootOp? = none)
     (res : StepResult State TerminalOut) :
     OpenStep prog env wcs (OpenState.ofState s) (liftStepResult res) ↔
       evalStep day1P 0 s = res := by
-  let ⟨f, hFs⟩ := hSingle
+  let ⟨f, hFs, hSys⟩ := hSingle
   have hDet : openEvalDetStep prog env (OpenState.ofState s) =
       liftStepResult (evalStep day1P 0 s) := by
     unfold openEvalDetStep openEvalDetStepAux
-    rw [hDay1, openState_toState_ofState s]
+    have hOF : (OpenState.ofState s).frames =
+        [OpenFrameState.ofFrameState f] := by
+      dsimp only [OpenState.ofState]
+      rw [hFs]
+      rfl
+    rw [hDay1, hOF]
+    dsimp only
+    rw [openState_toState_ofState s]
   dsimp only [OpenState.ofState] at hDet
   rw [hFs] at hDet
   dsimp only [List.map, OpenFrameState.ofFrameState] at hDet
@@ -7151,6 +7195,8 @@ private theorem openStep_day1Some_iff (prog : OpenProgram) (env : OpenExecEnv)
                 0 s = .fault .unsupported := by
               unfold evalStep
               rw [hFs]
+              dsimp only [activeFrameBody]
+              rw [hSys]
               dsimp only
               rw [hNone]
             rw [hEvNone]
@@ -7211,6 +7257,8 @@ private theorem openStep_day1Some_iff (prog : OpenProgram) (env : OpenExecEnv)
                     0 s = .fault .unsupported := by
                   unfold evalStep
                   rw [hFs]
+                  dsimp only [activeFrameBody]
+                  rw [hSys]
                   dsimp only
                   rw [hGetD]
                   dsimp only
@@ -7261,11 +7309,12 @@ private theorem openWellFormed_day1Some_to_wellFormed (prog : OpenProgram)
     unfold openInitState openInitStateAux
     rw [hDay1]
     rfl
+  have hAll := toDay1?_noCall prog day1P hDay1
   have hLiftReach : ∀ {s₀ s : State},
-      (∃ f : FrameState, s₀.frames = [f]) →
+      (∃ f : FrameState, s₀.frames = [f] ∧ f.sysrootOp? = none) →
       Reaches day1P s₀ s →
       OpenReaches prog env wcs (OpenState.ofState s₀) (OpenState.ofState s) ∧
-        (∃ f : FrameState, s.frames = [f]) := by
+        (∃ f : FrameState, s.frames = [f] ∧ f.sysrootOp? = none) := by
     intro s₀ s hF0 hReach
     induction hReach with
     | refl => exact ⟨.refl _, hF0⟩
@@ -7275,9 +7324,10 @@ private theorem openWellFormed_day1Some_to_wellFormed (prog : OpenProgram)
         exact ⟨openReaches_snoc prog env wcs hOR
             ((openStep_day1Some_iff prog env wcs day1P hDay1 _ hFs1
               (.step _)).mpr hEv),
-          evalStep_singleFrame day1P _ _ hFs1 hEv⟩
+          evalStep_singleFrame day1P _ _ hFs1 hAll hEv⟩
   have hInitSingle : ∀ {s₀ : State},
-      initState day1P q = .ok s₀ → ∃ f : FrameState, s₀.frames = [f] := by
+      initState day1P q = .ok s₀ →
+        ∃ f : FrameState, s₀.frames = [f] ∧ f.sysrootOp? = none := by
     intro s₀ hI
     unfold initState at hI
     cases hHdr : (!Nat.beq day1P.pointerWidthBits 64 ||
@@ -7323,6 +7373,8 @@ private theorem openWellFormed_day1Some_to_wellFormed (prog : OpenProgram)
                                         rw [ite_cond_true hSup] at hI; cases hI
                                     | false =>
                                         rw [ite_cond_false hSup] at hI
+                                        have hI := (ite_err_ok hI).2
+                                        have hI := (ite_err_ok hI).2
                                         cases hChk : (!checkArgsMatch q.args
                                             ((body.locals.drop 1).take
                                               body.argumentCount)) with
@@ -7332,7 +7384,7 @@ private theorem openWellFormed_day1Some_to_wellFormed (prog : OpenProgram)
                                         | false =>
                                             rw [ite_cond_false hChk] at hI
                                             cases hI
-                                            exact ⟨_, rfl⟩
+                                            exact ⟨_, rfl, rfl⟩
   constructor
   · let ⟨os₀, hOInit, _⟩ := hOWf.1
     rw [hInitEq] at hOInit
@@ -8272,21 +8324,9 @@ private theorem erasedOb_locals_eq_map (prog : OpenProgram) (σ : List OpenMirTy
                                     rw [hc] at htm; cases htm
                                     dsimp only [eraseOpenTerminatorKind]
                                     rw [h4 hc]
-                            | call callee substs args dst tgt uw =>
+                            | call _ _ _ _ _ _ =>
                                 dsimp only [OpenTerminatorKind.toDay1?] at htm
-                                cases substs with
-                                | cons _ _ => cases htm
-                                | nil =>
-                                    cases ha : OpenOperand.toDay1List? args with
-                                    | none => rw [ha] at htm; cases htm
-                                    | some dargs =>
-                                        rw [ha] at htm
-                                        cases hd : OpenPlace.toDay1? dst with
-                                        | none => rw [hd] at htm; cases htm
-                                        | some ddst =>
-                                            rw [hd] at htm; cases htm
-                                            dsimp only [eraseOpenTerminatorKind]
-                                            rw [h5 ha, h3 hd]
+                                cases htm
                           dsimp only [OpenBasicBlock.toDay1?] at hb
                           cases hSts : OpenStatementKind.toDay1List? b.statements with
                           | none => rw [hSts] at hb; cases hb
@@ -8860,9 +8900,13 @@ private theorem init_sim (prog : OpenProgram) (env' : OpenExecEnv)
         { args := args } = .ok ds₀ ∧
       StateRel prog σ defId ob ds₀ os₀ := by
   have hParts := erasedOb_locals_eq_map prog σ ob erasedOb hObEq
-  unfold BodyStaticAdmitted at hDay1Adm
-  have hSupp := bool_and_right hDay1Adm
-  have h1 := bool_and_left hDay1Adm
+  unfold BodyStaticAdmitted singleBodyStaticAdmitted at hDay1Adm
+  have hAllCall := bool_and_right hDay1Adm
+  have h0 := bool_and_left hDay1Adm
+  have hCallsAdm := bool_and_right h0
+  have hS0 := bool_and_left h0
+  have hSupp := bool_and_right hS0
+  have h1 := bool_and_left hS0
   have hCast := bool_and_right h1
   have h2 := bool_and_left h1
   have hDiscr := bool_and_right h2
@@ -8906,13 +8950,21 @@ private theorem init_sim (prog : OpenProgram) (env' : OpenExecEnv)
     have hCmD : (!({ args := args } : Query).callerMem.allocations.isEmpty) =
         false := rfl
     have hE : erasedOb.basicBlocks.isEmpty = false := not_bool_eq_true hBbsNE
+    have hEntryD :
+        (entryProgForBody (eraseOpenProgram σ prog) defId).entryDefId =
+          defId := rfl
+    have hCallsAdmE : callsAdmitted
+        (entryProgForBody (eraseOpenProgram σ prog) defId) erasedOb = true :=
+      hCallsAdm
+    have hAllCallE : allCallBodiesStaticAdmitted
+        (entryProgForBody (eraseOpenProgram σ prog) defId) erasedOb = true :=
+      hAllCall
     unfold initState
-    rw [ite_cond_false hHdrD, ite_cond_false hCmD]
-    dsimp only [entryProgForBody]
-    rw [hGetErased]
+    rw [ite_cond_false hHdrD, ite_cond_false hCmD, hEntryD, hErasedP]
     dsimp only
     rw [ite_cond_false hE, ite_not_true hArgLt, ite_not_true hSto,
       ite_not_true hDiscr, ite_not_true hCast, ite_not_true hSupp,
+      ite_not_true hCallsAdmE, ite_not_true hAllCallE,
       ite_not_true hChkArgs]
   unfold openInitState openInitStateAux at hOInit
   rw [hNone] at hOInit
@@ -11066,7 +11118,8 @@ private theorem openStep_sim (prog : OpenProgram)
       { env with typeSpecs := (substTypeSpecEnv env.typeSpecs paramSpecs
           (List.replicate paramSpecs.length (fun _ => True))
           (instAssocSpecs prog.traitRegistry env.typeSpecs σ)) }
-      ob.sig.whereClauses os (.fault k)) :
+      ob.sig.whereClauses os (.fault k))
+    (hDSys : ∃ f : FrameState, ds.frames = [f] ∧ f.sysrootOp? = none) :
     (∀ k, evalStep (entryProgForBody (eraseOpenProgram σ prog) defId) 0 ds ≠
       .fault k) ∧
     (∀ ds', evalStep (entryProgForBody (eraseOpenProgram σ prog) defId) 0 ds =
@@ -11084,6 +11137,12 @@ private theorem openStep_sim (prog : OpenProgram)
         (instAssocSpecs prog.traitRegistry env.typeSpecs σ)) }
   let ⟨df, of_, hDF, hOF, hDDef, hODef, hBlk, hStmtIdx, hRet,
     hDCM, hOCM, hDMem, hOMem, hLRel⟩ := hRel
+  have hDfSys : df.sysrootOp? = none := by
+    let ⟨f0, hF0, hS0⟩ := hDSys
+    rw [hDF] at hF0
+    injection hF0 with hEq _
+    rw [hEq]
+    exact hS0
   have hParts := erasedOb_locals_eq_map prog σ ob erasedOb hObEq
   cases hBb : openListGet? ob.basicBlocks of_.blockIdx with
   | none =>
@@ -11154,6 +11213,8 @@ private theorem openStep_sim (prog : OpenProgram)
                     df entryMemory ⟨[]⟩ := by
                 unfold evalStep
                 rw [hDF]
+                dsimp only [activeFrameBody]
+                rw [hDfSys]
                 dsimp only
                 rw [hDDef]
                 dsimp only [entryProgForBody]
@@ -11163,6 +11224,13 @@ private theorem openStep_sim (prog : OpenProgram)
                 dsimp only
                 rw [hStmtD, hStmtsLen, hStmtIdx, ite_cond_true hAtEnd, hDMem,
                   hDCM]
+                have hNoT := basicBlocks_noCall_term
+                  (openBody_toDay1_noCall _ erasedOb hObEq) hBbD
+                cases hTm : (eraseOpenBasicBlock (OpenBasicBlock.subst
+                    prog.traitRegistry normFuel σ bb)).terminator <;>
+                  first
+                  | rfl
+                  | (rw [hTm] at hNoT; cases hNoT)
               rw [hEvStep]
               refine ⟨hTermSim.1, fun ds' hS => ?_⟩
               let ⟨os', hDetS, hRel'⟩ := hTermSim.2 ds' hS
@@ -11184,6 +11252,8 @@ private theorem openStep_sim (prog : OpenProgram)
                   (OpenStatementKind.subst prog.traitRegistry normFuel σ stmt)) := by
             unfold evalStep
             rw [hDF]
+            dsimp only [activeFrameBody]
+            rw [hDfSys]
             dsimp only
             rw [hDDef]
             dsimp only [entryProgForBody]
@@ -11192,6 +11262,7 @@ private theorem openStep_sim (prog : OpenProgram)
             rw [hBbD]
             dsimp only
             rw [hStmtD, hDMem, hDCM]
+            rfl
           rw [hEvStep]
           cases stmt with
           | nop =>
@@ -11407,6 +11478,75 @@ private theorem openStep_sim (prog : OpenProgram)
               let ⟨os', hDetS, hRel'⟩ := hAs.2 ds' hS
               exact ⟨os', (hStepIff (.step os')).mpr hDetS.symm, hRel'⟩
 
+/-- Day-1 `initState` builds one entry frame at `p.entryDefId` with no pinned
+`sysrootOp?`. -/
+private theorem initState_singleFrame (p : Program) (q : Query) (s : State)
+    (h : initState p q = .ok s) :
+    ∃ f : FrameState, s.frames = [f] ∧ f.defId = p.entryDefId ∧
+      f.sysrootOp? = none := by
+  unfold initState at h
+  have h := (ite_err_ok h).2
+  have h := (ite_err_ok h).2
+  cases hB : Trusted.MirSemantics.getElem? p.bodies p.entryDefId with
+  | none =>
+      rw [hB] at h
+      dsimp only at h
+      cases h
+  | some body =>
+      rw [hB] at h
+      dsimp only at h
+      have h := (ite_err_ok h).2
+      have h := (ite_err_ok h).2
+      have h := (ite_err_ok h).2
+      have h := (ite_err_ok h).2
+      have h := (ite_err_ok h).2
+      have h := (ite_err_ok h).2
+      have h := (ite_err_ok h).2
+      have h := (ite_err_ok h).2
+      have h := (ite_err_ok h).2
+      cases h
+      exact ⟨_, rfl, rfl, rfl⟩
+
+/-- Day-1 executions of a call-free entry body stay in one frame at `defId`
+with no pinned `sysrootOp?`. -/
+private theorem reaches_singleFrame_noSysroot (p : Program) (defId : DefId)
+    (body : Body)
+    (hGet : Trusted.MirSemantics.getElem? p.bodies defId = some body)
+    (hNo : bodyHasAnyCall body = false) {s₀ s : State}
+    (h0 : ∃ f : FrameState, s₀.frames = [f] ∧ f.defId = defId ∧
+      f.sysrootOp? = none)
+    (hR : Reaches p s₀ s) :
+    ∃ f : FrameState, s.frames = [f] ∧ f.defId = defId ∧
+      f.sysrootOp? = none := by
+  induction hR with
+  | refl => exact h0
+  | tail _ hStep ih =>
+      let ⟨f, hFs, hD, hS⟩ := ih
+      let ⟨_, _, hEv⟩ := hStep
+      have hNoCall : ∀ b, activeFrameBody p f = some b →
+          bodyHasAnyCall b = false := by
+        intro b hb
+        unfold activeFrameBody at hb
+        rw [hS] at hb
+        dsimp only at hb
+        rw [hD, hGet] at hb
+        injection hb with hb
+        subst hb
+        exact hNo
+      have key : ∀ (m s' : State), m.frames = [f] →
+          evalStep p 0 m = .step s' →
+          ∃ f' : FrameState, s'.frames = [f'] ∧ f'.defId = defId ∧
+            f'.sysrootOp? = none := by
+        intro m s' hF hE
+        cases m with
+        | mk fr cm mem =>
+            dsimp only at hF
+            subst hF
+            let ⟨f', hN, hD', hS'⟩ :=
+              evalStep_single_preserves_defId p f mem cm s' hNoCall hE
+            exact ⟨f', hN, hD'.trans hD, hS'.trans hS⟩
+      exact key _ _ hFs hEv
+
 /-- End-to-end closed-instantiation erasure soundness: proving
 `OpenInstantiationErasureClaim eraseOpenBody eraseOpenProgram` via genuine
 Day-1 `evalStep` <-> `OpenStep` lockstep simulation with zero trust-bypassing
@@ -11446,8 +11586,8 @@ theorem ClosedInstantiationTransfer :
       (allWhereParamsSem_of_discharged prog hRegWf env σ paramSpecs' hPsLen
         hMap ob.sig.whereClauses hBounded hWhereDisch)).2
   have hSupp : erasedOb.locals.all isSupportedScalarOrUnitTy = true := by
-    unfold BodyStaticAdmitted at hDay1Adm
-    exact bool_and_right hDay1Adm
+    unfold BodyStaticAdmitted singleBodyStaticAdmitted at hDay1Adm
+    exact bool_and_right (bool_and_left (bool_and_left hDay1Adm))
   have hValidOpen : ValidOpenEntryArgs prog env' ob args :=
     validEntryArgs_to_validOpenEntryArgs prog hRegWf env σ paramSpecs' hPsLen
       hMap' ob erasedOb hObEq hAdm'.2.2.2.2.2.2.2.2.2 hSupp args hValidEntry
@@ -11466,6 +11606,16 @@ theorem ClosedInstantiationTransfer :
       let ⟨ds₀, hDInit, hInitRel⟩ := init_sim prog env' hRegWf σ defId ob
         erasedOb hParam.1 hGetErased rfl hObEq hDay1Adm hDay1 args hValidEntry
         os₀ hOInit
+      have hErasedNoCall : bodyHasAnyCall erasedOb = false :=
+        openBody_toDay1_noCall _ erasedOb hObEq
+      have hSingleAt : ∀ s : State,
+          Reaches (entryProgForBody (eraseOpenProgram σ prog) defId) ds₀ s →
+          ∃ f : FrameState, s.frames = [f] ∧ f.sysrootOp? = none := by
+        intro s hR
+        let ⟨f, hFs, _, hS⟩ := reaches_singleFrame_noSysroot
+          (entryProgForBody (eraseOpenProgram σ prog) defId) defId erasedOb
+          hGetErased hErasedNoCall (initState_singleFrame _ _ ds₀ hDInit) hR
+        exact ⟨f, hFs, hS⟩
       have hReachRel : ∀ s : State,
           Reaches (entryProgForBody (eraseOpenProgram σ prog) defId) ds₀ s →
           ∃ os : OpenState,
@@ -11475,22 +11625,25 @@ theorem ClosedInstantiationTransfer :
         intro s hReach
         induction hReach with
         | refl => exact ⟨os₀, .refl os₀, hInitRel⟩
-        | tail _ hStep ih =>
+        | tail hR1 hStep ih =>
             let ⟨os1, hOReach1, hRel1⟩ := ih
             let ⟨_, _, hEv⟩ := hStep
+            have hSys1 := hSingleAt _ hR1
             have hNoFault1 : ∀ k, ¬ OpenStep (entryOpenProgForBody prog defId)
                 env' ob.sig.whereClauses os1 (.fault k) :=
               fun k => hOWf.2 os₀ hOInit os1 k hOReach1
             have hArgLt : Nat.blt ob.argumentCount ob.locals.length = true := by
               have hParts := erasedOb_locals_eq_map prog σ ob erasedOb hObEq
-              unfold BodyStaticAdmitted at hDay1Adm
+              unfold BodyStaticAdmitted singleBodyStaticAdmitted at hDay1Adm
               have hAL := bool_and_right (bool_and_left (bool_and_left
-                (bool_and_left (bool_and_left hDay1Adm))))
+                (bool_and_left (bool_and_left (bool_and_left
+                  (bool_and_left hDay1Adm))))))
               rw [hParts.1, hParts.2.1, length_map_eq] at hAL
               exact hAL
             have hStepSim := openStep_sim prog hRegWf env σ paramSpecs' hPsLen
               hMap' defId ob erasedOb hObEq hAdm'.2.2.2.2.2.2.2.2.2 hSupp
               hParam.1 hGetErased hObErasable hArgLt hDay1 _ os1 hRel1 hNoFault1
+              hSys1
             let ⟨os2, hOStep, hRel2⟩ := hStepSim.2 _ hEv
             exact ⟨os2, openReaches_snoc (entryOpenProgForBody prog defId) env'
               ob.sig.whereClauses hOReach1 hOStep, hRel2⟩
@@ -11506,14 +11659,16 @@ theorem ClosedInstantiationTransfer :
           fun k' => hOWf.2 os₀ hOInit os k' hOReach
         have hArgLt : Nat.blt ob.argumentCount ob.locals.length = true := by
           have hParts := erasedOb_locals_eq_map prog σ ob erasedOb hObEq
-          unfold BodyStaticAdmitted at hDay1Adm
+          unfold BodyStaticAdmitted singleBodyStaticAdmitted at hDay1Adm
           have hAL := bool_and_right (bool_and_left (bool_and_left
-            (bool_and_left (bool_and_left hDay1Adm))))
+            (bool_and_left (bool_and_left (bool_and_left
+              (bool_and_left hDay1Adm))))))
           rw [hParts.1, hParts.2.1, length_map_eq] at hAL
           exact hAL
         have hStepSim := openStep_sim prog hRegWf env σ paramSpecs' hPsLen hMap'
           defId ob erasedOb hObEq hAdm'.2.2.2.2.2.2.2.2.2 hSupp hParam.1
           hGetErased hObErasable hArgLt hDay1 s os hRelS hNoFaultS
+          (hSingleAt s hReach)
         exact hStepSim.1 k hEv
 
 end Anneal.Generic

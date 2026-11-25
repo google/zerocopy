@@ -584,7 +584,9 @@ theorem progMutFieldAddAssignU32_realizes_summary :
                 List.foldr, HAppend.hAppend, Append.append, List.append,
                 liveUninitSlotComp]
               rw [mirCalleeRunsTo_succ]
-              dsimp only [evalStep, progMutFieldAddAssignU32, u32MirTy,
+              dsimp only [evalStep, activeFrameBody, attachCallers,
+                List.append, HAppend.hAppend, Append.append,
+                progMutFieldAddAssignU32, u32MirTy,
                 Trusted.MirSemantics.getElem?, evalStatement, evalRvalue,
                 evalPrimitiveOperand, evalOperandToSlot]
               rw [cn_ite_bool_false hProjEmpty,
@@ -611,7 +613,9 @@ theorem progMutFieldAddAssignU32_realizes_summary :
               rw [cn_ite_bool_false hNotSumWf]
               dsimp only [Trusted.MirSemantics.setElem?]
               rw [mirCalleeRunsTo_succ]
-              dsimp only [evalStep, progMutFieldAddAssignU32, u32MirTy,
+              dsimp only [evalStep, activeFrameBody, attachCallers,
+                List.append, HAppend.hAppend, Append.append,
+                progMutFieldAddAssignU32, u32MirTy,
                 Trusted.MirSemantics.getElem?, evalStatement, evalRvalue,
                 evalOperandToSlot, writePlace]
               rw [cn_ite_bool_false hProjEmpty, cn_ite_bool_false hProjEmpty]
@@ -763,7 +767,8 @@ theorem progMutSlotMintIfEmptyU32_realizes_summary :
                   List.foldr, HAppend.hAppend, Append.append, List.append,
                   liveUninitSlotComp]
                 rw [mirCalleeRunsTo_succ]
-                dsimp only [evalStep, progMutSlotMintIfEmptyU32, u32MirTy,
+                dsimp only [evalStep, activeFrameBody, attachCallers,
+                  progMutSlotMintIfEmptyU32, u32MirTy,
                   Trusted.MirSemantics.getElem?, evalStatement, evalRvalue,
                   evalPrimitiveOperand, evalOperandToSlot, evalConstLit]
                 rw [cn_ite_bool_false hProjEmpty,
@@ -798,7 +803,8 @@ theorem progMutSlotMintIfEmptyU32_realizes_summary :
                     callerMem := ⟨[]⟩
                     mem := mem }
                 rw [mirCalleeRunsTo_succ]
-                dsimp only [evalStep, progMutSlotMintIfEmptyU32, u32MirTy,
+                dsimp only [evalStep, activeFrameBody, attachCallers,
+                  progMutSlotMintIfEmptyU32, u32MirTy,
                   Trusted.MirSemantics.getElem?, evalStatement, evalRvalue,
                   evalOperandToSlot, writePlace]
                 rw [cn_ite_bool_false hProjEmpty, cn_ite_bool_false hProjEmpty]
@@ -829,7 +835,9 @@ theorem progMutSlotMintIfEmptyU32_realizes_summary :
                 List.foldr, HAppend.hAppend, Append.append, List.append,
                 liveUninitSlotComp]
               rw [mirCalleeRunsTo_succ]
-              dsimp only [evalStep, progMutSlotMintIfEmptyU32, u32MirTy,
+              dsimp only [evalStep, activeFrameBody, attachCallers,
+                List.append, HAppend.hAppend, Append.append,
+                progMutSlotMintIfEmptyU32, u32MirTy,
                 Trusted.MirSemantics.getElem?, evalStatement, evalRvalue,
                 evalPrimitiveOperand, evalOperandToSlot, evalConstLit]
               rw [cn_ite_bool_false hProjEmpty,
