@@ -2870,6 +2870,19 @@ private theorem prop_ite_step_rhs {P : Prop} {inst : Decidable P}
   | isTrue _ => cases h
   | isFalse _ => exact h
 
+/-- `prop_ite_step_rhs` for a hypothesis still in the goal. Use it via
+`revert h; refine prop_ite_step_rhs_imp ?_; intro h` when the `ite`
+condition is expensive to reduce: elaborating `prop_ite_step_rhs h` puts
+the type of `h` in weak head normal form, which evaluates the condition,
+whereas unifying against the goal does not. -/
+private theorem prop_ite_step_rhs_imp {P : Prop} {inst : Decidable P}
+    {Out : Type} {k : FaultKind} {s' : OpenState} {Q G : Prop}
+    (hQ : Q → G) :
+    @ite Prop P inst
+        (@StepResult.step OpenState Out s' =
+          @StepResult.fault OpenState Out k) Q → G :=
+  fun h => hQ (prop_ite_step_rhs h)
+
 private theorem except_ite_ok {α : Type} {b : Bool}
     {inst : Decidable (b = true)} {k : FaultKind} {x y : α}
     (h : @ite (Except FaultKind α) (b = true) inst (Except.ok x)
@@ -5114,7 +5127,9 @@ theorem assumeGuaranteeTraitCall_preserves_framesNoParam (prog : OpenProgram)
                                       cases rv with
                                       | mk retVal cm' =>
                                           dsimp only at hOut
-                                          have hOut := prop_ite_step_rhs hOut
+                                          revert hOut
+                                          refine prop_ite_step_rhs_imp ?_
+                                          intro hOut
                                           cases tgt with
                                           | none => cases hOut
                                           | some nextBlk =>
