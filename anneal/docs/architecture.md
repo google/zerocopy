@@ -403,9 +403,9 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `theory/Anneal/{InitLemmas,ClassicalEm,Firewall,LeBytes,ListChunks}.lean`,
   `theory/Anneal/{NatBitwise,BitTrieLrat,PTree,SpineForce,Generic}.lean`,
   `theory/Anneal/{Scalar,Simd,Wp}.lean`,
-  `theory/Anneal/{ByteRun,ByteSubLens,CallStackUnwind,CnfOrd,F2Simd}/`,
-  `theory/Anneal/{AiPcc,Framework,OverflowCastJoin,PureLift,RefFrame}/`, and
-  planned `Theory/Rust/{Wp,Tactics}/`):**
+  `theory/Anneal/{AiPcc,ByteRun,ByteSubLens,CallStackUnwind,CnfOrd,F2Simd}/`,
+  `theory/Anneal/{Framework,MirMemComp,OverflowCastJoin,PureLift}/`,
+  `theory/Anneal/RefFrame/`, and planned `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
   Diaconescu classical excluded middle and existential choice, WHNF and
   rewrite firewall combinators, foundation-locked `Bool`/`BEq`/`Nat`/`Int`/
@@ -424,14 +424,16 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   certificate evaluators (`F2Simd`), standalone, unbundled open-generic MIR
   syntax, parametric type layouts, assume-guarantee trait contracts, and
   closed-instantiation erasure to Day-1 `BodyVerified` (`Generic`, audited
-  standalone in Pass 1), `@[irreducible]` stage-cut interval joins
-  for overflowing tuple arithmetic and `intToInt` casts (`OverflowCastJoin`),
-  4-way call-continuation `&mut` writeback frames and ranged Tree Borrows
-  protectors (`RefFrame`), functional borrow lifting, separation-logic frame
-  rules, and proof automation built against $M_{\text{anneal}}$ and
-  `StableAst` / `StableSemantics` (`cargo-anneal` bundles the scalar and MIR
-  proof libraries under `theory/Anneal/`, compiling and auditing only the
-  transitive `Anneal.*` closure imported by target proof modules).
+  standalone in Pass 1), computable MIR memory, layout, and indirect
+  byte-codec re-exports and stack framing laws (`MirMemComp`),
+  `@[irreducible]` stage-cut interval joins for overflowing tuple arithmetic
+  and `intToInt` casts (`OverflowCastJoin`), 4-way call-continuation `&mut`
+  writeback frames and ranged Tree Borrows protectors (`RefFrame`), functional
+  borrow lifting, separation-logic frame rules, and proof automation built
+  against $M_{\text{anneal}}$ and `StableAst` / `StableSemantics`
+  (`cargo-anneal` bundles the scalar and MIR proof libraries under
+  `theory/Anneal/`, compiling and auditing only the transitive `Anneal.*`
+  closure imported by target proof modules).
 
 #### Why $M_{\text{anneal}}$'s step rules and `theory/` do not expand the TCB
 
@@ -559,6 +561,7 @@ anneal/
     │   ├── LinearArith.lean        # Sparse Farkas & Chvatal-Gomory checker
     │   ├── ListChunks.lean         # Ceiling division & fixed-size chunking
     │   ├── LoopInv.lean            # CFG loop-invariant & simulation combinators
+    │   ├── MirMemComp.lean         # MIR memory/codec layer (+ MirMemComp/)
     │   ├── MirSymExec.lean         # Reflective symbolic MIR executor (+ MirSymExec/)
     │   ├── MirTotal.lean           # Computable MIR step mirrors & bridges (+ MirTotal/)
     │   ├── MirWp.lean              # Fuel-bounded MIR WP (+ MirWp/, decoupled Canaries)
