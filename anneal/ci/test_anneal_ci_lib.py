@@ -91,67 +91,100 @@ class AnnealCiLibTests(unittest.TestCase):
             aud_dbg.parent.mkdir(parents=True)
             aud_dbg.write_text("aud", encoding="utf-8")
 
-            discovered = anneal_ci_lib.discover_tools(
-                anneal_root,
-                install_root=install_root,
-                defaults_fn=lambda _root: {
-                    "cli": None,
-                    "capture": None,
-                    "sysroot": None,
-                    "lean": None,
-                },
+            env_keys = (
+                "CARGO_TARGET_DIR",
+                "ANNEAL_CLI",
+                "ANNEAL_TEST_CARGO_ANNEAL",
+                "ANNEAL_CAPTURE",
+                "ANNEAL_SYSROOT",
+                "ANNEAL_TEST_RUST_SYSROOT",
+                "ANNEAL_LEAN",
+                "ANNEAL_TEST_INSTALL_ROOT",
             )
-            self.assertEqual(discovered["cli"], cli_rel.resolve())
-            self.assertEqual(discovered["capture"], cap_inst.resolve())
-            self.assertEqual(discovered["sysroot"], (install_root / "rust").resolve())
-            self.assertEqual(discovered["lean"], lean_inst.resolve())
-            self.assertEqual(discovered["auditor"], aud_dbg.resolve())
-
-            calls = {"count": 0}
-
-            def counting_defaults(_root: Path) -> dict[str, Path | None]:
-                calls["count"] += 1
-                return {
-                    "cli": cli_rel,
-                    "capture": cap_inst,
-                    "sysroot": install_root / "rust",
-                    "lean": lean_inst,
-                }
-
-            args_full = argparse.Namespace(
-                cli=cli_rel,
-                capture=cap_inst,
-                sysroot=install_root / "rust",
-                lean=lean_inst,
-            )
-            anneal_ci_lib.resolve_cli_tools(
-                anneal_root,
-                args_full,
-                defaults_fn=counting_defaults,
-            )
-            self.assertEqual(calls["count"], 0)
-
-            args_partial = argparse.Namespace(
-                cli=None,
-                capture=None,
-                sysroot=None,
-                lean=None,
-            )
-            old_env = {
-                k: os.environ.get(k)
-                for k in (
-                    "ANNEAL_CLI",
-                    "ANNEAL_TEST_CARGO_ANNEAL",
-                    "ANNEAL_CAPTURE",
-                    "ANNEAL_SYSROOT",
-                    "ANNEAL_TEST_RUST_SYSROOT",
-                    "ANNEAL_LEAN",
-                    "ANNEAL_TEST_INSTALL_ROOT",
-                )
-            }
-            try:
-                for key in old_env:
+            with mock.patch.dict(os.environ, {}, clear=False):
+                for key in env_keys:
                     os.environ.pop(key, None)
+
+                discovered = anneal_ci_lib.discover_tools(
+                    anneal_root,
+                    install_root=install_root,
+                    defaults_fn=lambda _root: {
+                        "cli": None,
+                        "capture": None,
+                        "sysroot": None,
+                        "lean": None,
+                    },
+                )
+                self.assertEqual(discovered["cli"], cli_rel.resolve())
+                self.assertEqual(discovered["capture"], cap_inst.resolve())
+                self.assertEqual(
+                    discovered["sysroot"], (install_root / "rust").resolve()
+                )
+                self.assertEqual(discovered["lean"], lean_inst.resolve())
+                self.assertEqual(discovered["auditor"], aud_dbg.resolve())
+
+                # Exporting CARGO_TARGET_DIR redirects default target lookup,
+                # while explicit target_dir takes precedence over the env var.
+                override_target = root / "override-target"
+                override_cli = override_target / "debug" / "cargo-anneal"
+                override_cli.parent.mkdir(parents=True)
+                override_cli.write_text("override-cli", encoding="utf-8")
+                os.environ["CARGO_TARGET_DIR"] = str(override_target)
+                overridden = anneal_ci_lib.discover_tools(
+                    anneal_root,
+                    install_root=install_root,
+                    defaults_fn=lambda _root: {
+                        "cli": None,
+                        "capture": None,
+                        "sysroot": None,
+                        "lean": None,
+                    },
+                )
+                self.assertEqual(overridden["cli"], override_cli.resolve())
+                explicit_target = anneal_ci_lib.discover_tools(
+                    anneal_root,
+                    install_root=install_root,
+                    target_dir=target_dir,
+                    defaults_fn=lambda _root: {
+                        "cli": None,
+                        "capture": None,
+                        "sysroot": None,
+                        "lean": None,
+                    },
+                )
+                self.assertEqual(explicit_target["cli"], cli_rel.resolve())
+                os.environ.pop("CARGO_TARGET_DIR", None)
+
+                calls = {"count": 0}
+
+                def counting_defaults(_root: Path) -> dict[str, Path | None]:
+                    calls["count"] += 1
+                    return {
+                        "cli": cli_rel,
+                        "capture": cap_inst,
+                        "sysroot": install_root / "rust",
+                        "lean": lean_inst,
+                    }
+
+                args_full = argparse.Namespace(
+                    cli=cli_rel,
+                    capture=cap_inst,
+                    sysroot=install_root / "rust",
+                    lean=lean_inst,
+                )
+                anneal_ci_lib.resolve_cli_tools(
+                    anneal_root,
+                    args_full,
+                    defaults_fn=counting_defaults,
+                )
+                self.assertEqual(calls["count"], 0)
+
+                args_partial = argparse.Namespace(
+                    cli=None,
+                    capture=None,
+                    sysroot=None,
+                    lean=None,
+                )
                 os.environ["ANNEAL_TEST_INSTALL_ROOT"] = str(install_root)
                 os.environ["ANNEAL_CLI"] = str(cli_rel)
                 resolved = anneal_ci_lib.resolve_cli_tools(
@@ -164,12 +197,6 @@ class AnnealCiLibTests(unittest.TestCase):
                 self.assertEqual(resolved["capture"], cap_inst)
                 self.assertEqual(resolved["sysroot"], install_root / "rust")
                 self.assertEqual(resolved["lean"], lean_inst)
-            finally:
-                for key, val in old_env.items():
-                    if val is None:
-                        os.environ.pop(key, None)
-                    else:
-                        os.environ[key] = val
 
     def test_run_cargo_anneal_verify_preserves_dot_log_prefix_and_validates(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -497,6 +524,7 @@ class AnnealCiLibTests(unittest.TestCase):
                 mock.patch.object(Path, "home", return_value=home),
                 mock.patch("subprocess.check_output", side_effect=OSError),
             ):
+                os.environ.pop("CARGO_TARGET_DIR", None)
                 defaults = anneal_ci_lib.discover_local_defaults(anneal_root)
                 self.assertEqual(defaults["lean"], new_lean)
 
